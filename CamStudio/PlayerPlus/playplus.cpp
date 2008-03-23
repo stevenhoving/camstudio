@@ -61,6 +61,45 @@ CPlayplusApp theApp;
 
 BOOL CPlayplusApp::InitInstance()
 {
+
+	//Multilang
+	CurLangID = STANDARD_LANGID;
+	HKEY hKey;
+  	DWORD language=7;
+    LONG returnStatus;
+	DWORD Type=REG_DWORD;
+    DWORD Size=sizeof(DWORD);
+    returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
+  
+	
+	//create default LanguageID no exists
+	if (returnStatus != ERROR_SUCCESS)
+	{
+     returnStatus =RegCreateKeyEx(HKEY_CURRENT_USER,"Software\\CamStudioOpenSource for Nick",0,0,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&hKey,0);		
+	 returnStatus =RegCreateKeyEx(HKEY_CURRENT_USER,"Software\\CamStudioOpenSource for Nick\\vscap",0,0,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&hKey,0);		
+	 returnStatus =RegCreateKeyEx(HKEY_CURRENT_USER,"Software\\CamStudioOpenSource for Nick\\vscap\\Language",0,0,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&hKey,0);		
+     RegSetValueEx(hKey,"LanguageID",0,REG_DWORD,(BYTE*)&language,sizeof(DWORD));
+	 returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
+
+	}
+
+    //read LanguageID    
+	if (returnStatus == ERROR_SUCCESS)
+    {
+	 	
+        returnStatus = RegQueryValueEx(hKey, "LanguageID", NULL, &Type,(LPBYTE)&language, &Size);
+        
+		if (returnStatus == ERROR_SUCCESS)
+        {
+            //load ResDLL
+        	if( !LoadLangIDDLL((int) language) ) 
+	         if( !LoadLangIDDLL(GetUserDefaultLangID()) )
+     			LoadLangIDDLL(GetSystemDefaultLangID());
+        }
+     }
+
+    RegCloseKey(hKey);
+
 	AfxEnableControlContainer();
 
 	// Standard initialization
@@ -77,7 +116,7 @@ BOOL CPlayplusApp::InitInstance()
 	// Change the registry key under which our settings are stored.
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization.
-	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
+	SetRegistryKey(_T("CamStudioOpenSource for Nick"));
 
 	LoadStdProfileSettings();  // Load standard INI file options (including MRU)
 
@@ -151,6 +190,26 @@ BOOL CPlayplusApp::InitInstance()
 	return TRUE;
 }
 
+BOOL CPlayplusApp::LoadLangIDDLL(LANGID LangID)
+{
+	HINSTANCE hInstance;
+	CString strLangIDDLL;
+	
+	//if( LangID == STANDARD_LANGID )	// integrated language is the right one
+	//	return true;
+
+	
+	strLangIDDLL.Format( _T("PlayPlusLANG%.2x.dll"), LangID );
+	
+	hInstance = LoadLibrary( strLangIDDLL );
+	if( hInstance )
+	{
+		AfxSetResourceHandle( hInstance );
+		CurLangID = LangID;
+		return true;
+	}
+	return false;
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // CAboutDlg dialog used for App About
@@ -178,6 +237,7 @@ protected:
 	afx_msg void OnDestroy();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+	afx_msg void OnBnClickedButtonlink1();
 };
 
 CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
@@ -201,6 +261,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 	//{{AFX_MSG_MAP(CAboutDlg)
 	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_BUTTONLINK1, OnBnClickedButtonlink1)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -248,4 +309,23 @@ void CAboutDlg::OnDestroy()
 		hAboutBM = NULL;
 	}
 	
+}
+
+int CPlayplusApp::ExitInstance() 
+{
+	// TODO: Add your specialized code here and/or call the base class
+		//Multilanguage
+	if( CurLangID != STANDARD_LANGID )
+    FreeLibrary( AfxGetResourceHandle() );
+	
+	return CWinApp::ExitInstance();
+}
+
+void CAboutDlg::OnBnClickedButtonlink1()
+{
+  LPCTSTR mode;
+  mode = ("open");
+
+  ShellExecute (GetSafeHwnd (), mode, "http://www.camstudio.org", NULL, NULL, SW_SHOW);
+
 }

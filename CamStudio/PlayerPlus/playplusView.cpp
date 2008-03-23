@@ -21,6 +21,7 @@ static char THIS_FILE[] = __FILE__;
 
 #include "fister/soundfile.h"
 #include "AudioFormat.h"
+#include ".\playplusview.h"
 
 
 // Program Mode -- to be set at compile time
@@ -4027,7 +4028,3 @@ void CPlayplusView::OnUpdateAudioExtension(CCmdUI* pCmdUI)
 	pCmdUI->SetCheck(!allowRecordExtension);
 	
 }
-
-
-
-

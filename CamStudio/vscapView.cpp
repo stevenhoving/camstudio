@@ -49,6 +49,11 @@
 #include "SyncDialog.h"
 #include "muldiv32.h"
 
+#include "AnnotationEffectsOptions.h"
+#include "EffectsOptions.h"
+#include "EffectsOptions2.h"
+#include "cxImage\\CxImage\\ximage.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -108,10 +113,17 @@ CString GetTempPath();
 CString GetProgPath();
 void InsertHighLight(HDC hdc,int xoffset, int yoffset);
 
+void InsertText(HDC hdc,int xoffset, int yoffset, LPCTSTR lpString);
+void InsertText(HDC hdc, RECT& brect, TextAttributes& textattributes);
+void InsertImage(HDC hdc, RECT& brect, ImageAttributes& imageattributes);
+
 
 //////////////////
 //State variables
 ///////////////////
+//Multilanguage
+
+int languageID;
 
 //Vars used for selecting fixed /variableregion
 RECT   rcOffset;
@@ -216,6 +228,9 @@ int g_highlightcursor=0;
 int g_highlightsize=64;
 int g_highlightshape=0;
 COLORREF g_highlightcolor = RGB(255,255,125);
+int g_highlightclick=0; 
+COLORREF g_highlightclickcolorleft = RGB(255,0,0);
+COLORREF g_highlightclickcolorright = RGB(0,0,255);
 
 
 //Path to temporary avi file
@@ -548,8 +563,92 @@ int restrictVideoCodecs = 0;
 //extern HANDLE  AllocMakeDib( int reduced_width, int reduced_height, UINT bits );
 
 
+
+int timestampAnnotation = 0;
+int captionAnnotation = 0;
+int watermarkAnnotation = 0;
+
+TextAttributes caption = {TOP_LEFT, "ScreenCam", RGB(0, 0, 0), RGB(0xff, 0xff, 0xff), 0, 0};
+TextAttributes timestamp  = {TOP_LEFT, "", RGB(0, 0, 0), RGB(0xff, 0xff, 0xff), 0, 0};
+ImageAttributes watermark = {TOP_LEFT, ""};
+
+
+CString FindExtension(const CString& name)
+{
+	int len = name.GetLength();
+	int i;
+	for (i = len-1; i >= 0; i--){
+		if (name[i] == '.'){
+			return name.Mid(i+1);
+		}
+	}
+	return CString("");
+}
+
+int FindFormat(const CString& ext)
+{
+	int type = 0;
+	if (ext == "bmp")					type = CXIMAGE_FORMAT_BMP;
+#if CXIMAGE_SUPPORT_JPG
+	else if (ext=="jpg"||ext=="jpeg")	type = CXIMAGE_FORMAT_JPG;
+#endif
+#if CXIMAGE_SUPPORT_GIF
+	else if (ext == "gif")				type = CXIMAGE_FORMAT_GIF;
+#endif
+#if CXIMAGE_SUPPORT_PNG
+	else if (ext == "png")				type = CXIMAGE_FORMAT_PNG;
+#endif
+#if CXIMAGE_SUPPORT_MNG
+	else if (ext=="mng"||ext=="jng")	type = CXIMAGE_FORMAT_MNG;
+#endif
+#if CXIMAGE_SUPPORT_ICO
+	else if (ext == "ico")				type = CXIMAGE_FORMAT_ICO;
+#endif
+#if CXIMAGE_SUPPORT_TIF
+	else if (ext=="tiff"||ext=="tif")	type = CXIMAGE_FORMAT_TIF;
+#endif
+#if CXIMAGE_SUPPORT_TGA
+	else if (ext=="tga")				type = CXIMAGE_FORMAT_TGA;
+#endif
+#if CXIMAGE_SUPPORT_PCX
+	else if (ext=="pcx")				type = CXIMAGE_FORMAT_PCX;
+#endif
+#if CXIMAGE_SUPPORT_WBMP
+	else if (ext=="wbmp")				type = CXIMAGE_FORMAT_WBMP;
+#endif
+#if CXIMAGE_SUPPORT_WMF
+	else if (ext=="wmf"||ext=="emf")	type = CXIMAGE_FORMAT_WMF;
+#endif
+#if CXIMAGE_SUPPORT_J2K
+	else if (ext=="j2k"||ext=="jp2")	type = CXIMAGE_FORMAT_J2K;
+#endif
+#if CXIMAGE_SUPPORT_JBG
+	else if (ext=="jbg")				type = CXIMAGE_FORMAT_JBG;
+#endif
+#if CXIMAGE_SUPPORT_JP2
+	else if (ext=="jp2"||ext=="j2k")	type = CXIMAGE_FORMAT_JP2;
+#endif
+#if CXIMAGE_SUPPORT_JPC
+	else if (ext=="jpc"||ext=="j2c")	type = CXIMAGE_FORMAT_JPC;
+#endif
+#if CXIMAGE_SUPPORT_PGX
+	else if (ext=="pgx")				type = CXIMAGE_FORMAT_PGX;
+#endif
+#if CXIMAGE_SUPPORT_RAS
+	else if (ext=="ras")				type = CXIMAGE_FORMAT_RAS;
+#endif
+#if CXIMAGE_SUPPORT_PNM
+	else if (ext=="pnm"||ext=="pgm"||ext=="ppm") type = CXIMAGE_FORMAT_PNM;
+#endif
+	else type = CXIMAGE_FORMAT_UNKNOWN;
+
+	return type;
+}
+
+
 //ver 2.4
 #include "PresetTime.h"
+#include ".\vscapview.h"
 
 
 int presettime = 60;
@@ -652,6 +751,10 @@ BEGIN_MESSAGE_MAP(CVscapView, CView)
 	ON_COMMAND(ID_OPTIONS_NAMING_ASK, OnOptionsNamingAsk)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_NAMING_ASK, OnUpdateOptionsNamingAsk)
 	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_PRESETTIME, OnOptionsProgramoptionsPresettime)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_LANGUAGE_ENGLISH, OnUpdateOptionsLanguageEnglish)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_LANGUAGE_GERMAN, OnUpdateOptionsLanguageGerman)
+	ON_COMMAND(ID_OPTIONS_LANGUAGE_ENGLISH, OnOptionsLanguageEnglish)
+	ON_COMMAND(ID_OPTIONS_LANGUAGE_GERMAN, OnOptionsLanguageGerman)
 	//}}AFX_MSG_MAP
 	// Standard printing commands
 	ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
@@ -665,7 +768,19 @@ BEGIN_MESSAGE_MAP(CVscapView, CView)
 	ON_MESSAGE(MM_WIM_DATA, OnMM_WIM_DATA)
 	ON_MESSAGE(WM_TRAY_ICON_NOTIFY_MESSAGE,OnTrayNotify)	
 	ON_MESSAGE(WM_HOTKEY, OnHotKey)
-END_MESSAGE_MAP()
+	ON_COMMAND(ID_REGION_WINDOW, OnRegionWindow)
+	ON_UPDATE_COMMAND_UI(ID_REGION_WINDOW, OnUpdateRegionWindow)
+	ON_WM_CAPTURECHANGED()
+	ON_COMMAND(ID_ANNOTATION_ADDSYSTEMTIMESTAMP, OnAnnotationAddsystemtimestamp)
+	ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDSYSTEMTIMESTAMP, OnUpdateAnnotationAddsystemtimestamp)
+	ON_COMMAND(ID_ANNOTATION_ADDCAPTION, OnAnnotationAddcaption)
+	ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDCAPTION, OnUpdateAnnotationAddcaption)
+	ON_COMMAND(ID_ANNOTATION_ADDWATERMARK, OnAnnotationAddwatermark)
+	ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDWATERMARK, OnUpdateAnnotationAddwatermark)
+	ON_COMMAND(ID_EFFECTS_OPTIONS, OnEffectsOptions)
+	ON_COMMAND(ID_HELP_CAMSTUDIOBLOG, OnHelpCamstudioblog)
+	ON_BN_CLICKED(IDC_BUTTONLINK, OnBnClickedButtonlink)
+	END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CVscapView construction/destruction
@@ -3480,7 +3595,29 @@ LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height,int
 		bltFlags |= CAPTUREBLT;
 	BitBlt(hMemDC, 0, 0, width, height, hScreenDC, left, top, bltFlags);	 	
 	
-	
+	RECT rect;
+	rect.left = 0;
+	rect.top = 0;
+	rect.right = rect.left + width;
+	rect.bottom = rect.top + height;
+	if(timestampAnnotation){
+		SYSTEMTIME systime;
+		::GetLocalTime(&systime);
+		//::GetSystemTime(&systime);
+		TCHAR msg[0x100];
+		::sprintf(msg, "%s %02d:%02d:%02d:%03d", "Recording", systime.wHour, systime.wMinute, systime.wSecond, systime.wMilliseconds);
+		//InsertText(hMemDC, 0, 0, msg);
+		timestamp.text = msg;
+		InsertText(hMemDC, rect, timestamp);
+		//InsertText(hMemDC, 0, 0, "Recorded by You!!!");
+	}
+	if(captionAnnotation){
+		InsertText(hMemDC, rect, caption);
+	}
+	if(watermarkAnnotation){
+		InsertImage(hMemDC, rect, watermark);
+	}
+
 	
 	//Get Cursor Pos
 	POINT xPoint; 
@@ -3974,7 +4111,10 @@ void CVscapView::OnRecord()
 		::PostMessage (hWndGlobal,WM_USER_RECORDSTART,0,(LPARAM) 0); 
 
 	}	
-	
+	else if (MouseCaptureMode==3) {// window
+		AfxMessageBox("Click on Window to be captured");
+		SetCapture();
+	}
 }
 
 
@@ -3997,8 +4137,6 @@ void CVscapView::OnStop()
 	OnRecordInterrupted (0, 0);
 	
 }
-
-
 
 void CVscapView::OnUpdateRegionPanregion(CCmdUI* pCmdUI) 
 {
@@ -4138,6 +4276,23 @@ void InsertHighLight(HDC hdc,int xoffset, int yoffset)
 
 	int highlightsize = g_highlightsize;
 	COLORREF highlightcolor = g_highlightcolor;
+	if (g_highlightclick==1)
+	{
+		SHORT tmpShort = -999;
+		tmpShort=GetKeyState(VK_LBUTTON);
+		if (tmpShort!=0 && tmpShort!=1)
+		{
+			highlightcolor=g_highlightclickcolorleft;
+			highlightsize *= 1.5;
+		}
+		tmpShort=GetKeyState(VK_RBUTTON);
+		if (tmpShort!=0 && tmpShort!=1)
+		{
+			highlightcolor=g_highlightclickcolorright;
+			highlightsize *= 1.5;
+		}
+	}
+	
 	int highlightshape = g_highlightshape;
 		
 	double x1,x2,y1,y2;
@@ -4172,9 +4327,12 @@ void InsertHighLight(HDC hdc,int xoffset, int yoffset)
 	
 	HBRUSH oldbrush = (HBRUSH)  ::SelectObject(hdcBits,ptbrush);	
 	HPEN oldpen = (HPEN) ::SelectObject(hdcBits,nullpen);			
-	::Rectangle(hdcBits, 0,0,fullsize.cx+1,fullsize.cy+1);		
+	::Rectangle(hdcBits, 0,0,fullsize.cx+1,fullsize.cy+1);	
+	//CString xxx;
+	//xxx.Format("%d",tmpShort);
+	//CRect r=CRect(0,0,fullsize.cx+1,fullsize.cy+1);
+	//::DrawText(hdcBits,xxx,xxx.GetLength(),r,DT_SINGLELINE);
 	
-
 
 		//Draw the highlight
 		::SelectObject(hdcBits,hlbrush);				
@@ -4201,6 +4359,223 @@ void InsertHighLight(HDC hdc,int xoffset, int yoffset)
     DeleteDC(hdcBits);
 
 	
+}
+
+void InsertText(HDC hdc, RECT& brect, TextAttributes& textattributes)
+{
+	RECT rect;
+	SIZE size, full_size;
+	UINT uFormat;
+
+	size_t length = ::strlen(textattributes.text);
+
+	//OffScreen Buffer	
+	HBITMAP hbm = NULL;
+	HBITMAP old_bitmap;
+	HDC hdcBits = ::CreateCompatibleDC(hdc);
+
+	HFONT hf;
+	HFONT old_font;
+	if(textattributes.isFontSelected){
+		hf = ::CreateFontIndirect(&textattributes.logfont);
+		old_font = SelectFont(hdcBits, hf);
+	}
+
+	::GetTextExtentPoint32(hdcBits, textattributes.text, length, &size);
+	full_size.cx = size.cx + 10;
+	full_size.cy = size.cy + 10;
+	RECT mRect;
+	mRect.top = 0;
+	mRect.left = 0;
+	mRect.bottom = mRect.top + full_size.cy;
+	mRect.right = mRect.left + full_size.cx;
+	//full_size.cx = 2 * size.cx;
+	//full_size.cy = 2 * size.cy;
+	switch(textattributes.position){
+		case TOP_LEFT:
+			rect.left = 0;
+			rect.top = 0;
+			break;
+		case TOP_CENTER:
+			rect.left = (brect.right - brect.left - full_size.cx) / 2;
+			rect.top = 0;
+			break;
+		case TOP_RIGHT:
+			rect.left = brect.right - full_size.cx;
+			rect.top = 0;
+			break;
+		case CENTER_LEFT:
+			rect.left = 0;
+			rect.top = (brect.bottom - brect.top - full_size.cy) / 2;
+			break;
+		case CENTER_CENTER:
+			rect.left = (brect.right - brect.left - full_size.cx) / 2;
+			rect.top = (brect.bottom - brect.top - full_size.cy) / 2;
+			break;
+		case CENTER_RIGHT:
+			rect.left = brect.right - full_size.cx;
+			rect.top = (brect.bottom - brect.top - full_size.cy) / 2;
+			break;
+		case BOTTOM_LEFT:
+			rect.left = 0;
+			rect.top = brect.bottom - full_size.cy;
+			break;
+		case BOTTOM_CENTER:
+			rect.left = (brect.right - brect.left - full_size.cx) / 2;
+			rect.top = brect.bottom - full_size.cy;
+			break;
+		case BOTTOM_RIGHT:
+			rect.left = brect.right - full_size.cx;
+			rect.top = brect.bottom - full_size.cy;
+			break;
+		default:
+			rect.left = 0;
+			rect.top = 0;
+			break;
+	}
+	rect.right = rect.left + full_size.cx;
+	rect.bottom = rect.top + full_size.cy;
+
+	hbm = (HBITMAP) ::CreateCompatibleBitmap(hdc, full_size.cx,full_size.cy);    	
+	old_bitmap = (HBITMAP) ::SelectObject(hdcBits,hbm);		
+
+	HBRUSH ptbrush = ::CreateSolidBrush(textattributes.backgroundColor);//GetStockBrush(BLACK_BRUSH);
+	HBRUSH oldbrush = SelectBrush(hdcBits,ptbrush);
+	::Rectangle(hdcBits, 0,0,full_size.cx,full_size.cy);
+	SelectBrush(hdcBits,oldbrush);
+	DeleteBrush(ptbrush);
+
+	uFormat = DT_CENTER | DT_SINGLELINE | DT_VCENTER;
+
+	COLORREF old_bk_color = ::GetBkColor(hdcBits);
+	COLORREF old_txt_color = ::GetTextColor(hdcBits);
+	::SetBkColor(hdcBits, textattributes.backgroundColor);
+	::SetTextColor(hdcBits, textattributes.textColor);
+	::DrawTextEx(hdcBits, LPTSTR((LPCTSTR)textattributes.text), length, &mRect, uFormat, NULL);
+	::SetTextColor(hdcBits, old_txt_color);
+	::SetBkColor(hdcBits, old_bk_color);
+
+	//OffScreen Buffer	
+	BitBlt(hdc, rect.left, rect.top, full_size.cx, full_size.cy, hdcBits, 0, 0, SRCCOPY);  	
+
+	SelectObject(hdcBits, old_bitmap);        
+	DeleteObject(hbm);
+
+	if(textattributes.isFontSelected){
+		SelectFont(hdcBits, old_font);
+		DeleteFont(hf);
+	}
+
+	DeleteDC(hdcBits);
+}
+
+void InsertImage(HDC hdc, RECT& brect, ImageAttributes& imageattributes)
+{
+	static CxImage image;
+	static CString imageName = "";
+
+	if(imageName != imageattributes.text){// load
+
+		image.Destroy();
+
+	CString extin(FindExtension(imageattributes.text));
+	extin.MakeLower();
+	int typein = FindFormat(extin);
+	if (typein == CXIMAGE_FORMAT_UNKNOWN) {
+        return;
+	}
+
+	if(!image.Load(imageattributes.text, typein)){
+		return;
+	}
+
+		imageName = imageattributes.text;// cache
+
+	}
+	else{// image is cached
+	}
+
+	RECT rect;
+	SIZE size, full_size;
+
+/*
+	//OffScreen Buffer	
+	HBITMAP hbm = NULL;
+	HBITMAP old_bitmap;
+	HDC hdcBits = ::CreateCompatibleDC(hdc);
+*/
+	size.cx = image.GetWidth();
+	size.cy = image.GetHeight();
+
+	full_size.cx = size.cx;
+	full_size.cy = size.cy;
+	RECT mRect;
+	mRect.top = 0;
+	mRect.left = 0;
+	mRect.bottom = mRect.top + full_size.cy;
+	mRect.right = mRect.left + full_size.cx;
+	//full_size.cx = 2 * size.cx;
+	//full_size.cy = 2 * size.cy;
+	switch(imageattributes.position){
+		case TOP_LEFT:
+			rect.left = 0;
+			rect.top = 0;
+			break;
+		case TOP_CENTER:
+			rect.left = (brect.right - brect.left - full_size.cx) / 2;
+			rect.top = 0;
+			break;
+		case TOP_RIGHT:
+			rect.left = brect.right - full_size.cx;
+			rect.top = 0;
+			break;
+		case CENTER_LEFT:
+			rect.left = 0;
+			rect.top = (brect.bottom - brect.top - full_size.cy) / 2;
+			break;
+		case CENTER_CENTER:
+			rect.left = (brect.right - brect.left - full_size.cx) / 2;
+			rect.top = (brect.bottom - brect.top - full_size.cy) / 2;
+			break;
+		case CENTER_RIGHT:
+			rect.left = brect.right - full_size.cx;
+			rect.top = (brect.bottom - brect.top - full_size.cy) / 2;
+			break;
+		case BOTTOM_LEFT:
+			rect.left = 0;
+			rect.top = brect.bottom - full_size.cy;
+			break;
+		case BOTTOM_CENTER:
+			rect.left = (brect.right - brect.left - full_size.cx) / 2;
+			rect.top = brect.bottom - full_size.cy;
+			break;
+		case BOTTOM_RIGHT:
+			rect.left = brect.right - full_size.cx;
+			rect.top = brect.bottom - full_size.cy;
+			break;
+		default:
+			rect.left = 0;
+			rect.top = 0;
+			break;
+	}
+	rect.right = rect.left + full_size.cx;
+	rect.bottom = rect.top + full_size.cy;
+
+	image.Draw(hdc, rect);
+/*
+	hbm = image.MakeBitmap(hdcBits);
+	//hbm = (HBITMAP) ::CreateCompatibleBitmap(hdc, full_size.cx,full_size.cy);    	
+	old_bitmap = (HBITMAP) ::SelectObject(hdcBits,hbm);		
+
+
+	//OffScreen Buffer	
+	BitBlt(hdc, rect.left, rect.top, full_size.cx, full_size.cy, hdcBits, 0, 0, SRCCOPY);  	
+
+	SelectObject(hdcBits, old_bitmap); 
+	DeleteObject(hbm);
+
+	DeleteDC(hdcBits);
+*/
 }
 
 void CVscapView::OnOptionsAutopan() 
@@ -4457,7 +4832,7 @@ void CVscapView::OnHelpWebsite()
 	// TODO: Add your command handler code here
 	//Openlink("http://www.atomixbuttons.com/vsc");
 	//Openlink("http://www.rendersoftware.com");
-	Openlink("http://www.rendersoftware.com/products/camstudio");
+	Openlink("http://www.camstudio.org");
 	
 }
 
@@ -4525,7 +4900,7 @@ void CVscapView::OnHelpFaq()
 {
 	// TODO: Add your command handler code here
 	//Openlink("http://www.atomixbuttons.com/vsc/page5.html");
-	Openlink("http://www.rendersoftware.com/products/camstudio/faq.htm");
+	Openlink("http://www.camstudio.org/faq.htm");
 	
 }
 
@@ -5752,7 +6127,7 @@ void CVscapView::SaveSettings()
 	// Dump Variables	
 	// ****************************
 	//Take note of those vars with printf %ld	
-	float ver = (float) 2.4;
+	float ver = (float) 2.5;
 
 	fprintf(sFile, "[ CamStudio Settings ver%.2f -- Please do not edit ] \n\n",ver);
 	fprintf(sFile, "flashingRect=%d \n",flashingRect);
@@ -5778,10 +6153,19 @@ void CVscapView::SaveSettings()
 	fprintf(sFile, "g_highlightcursor=%d \n",g_highlightcursor);
 	fprintf(sFile, "g_highlightsize=%d \n",g_highlightsize);
 	fprintf(sFile, "g_highlightshape=%d \n",g_highlightshape);
+	fprintf(sFile, "g_highlightclick=%d \n",g_highlightclick);
 
 	fprintf(sFile, "g_highlightcolorR=%d \n",GetRValue(g_highlightcolor));
 	fprintf(sFile, "g_highlightcolorG=%d \n",GetGValue(g_highlightcolor));
 	fprintf(sFile, "g_highlightcolorB=%d \n",GetBValue(g_highlightcolor));	
+
+	fprintf(sFile, "g_highlightclickcolorleftR=%d \n",GetRValue(g_highlightclickcolorleft));
+	fprintf(sFile, "g_highlightclickcolorleftG=%d \n",GetGValue(g_highlightclickcolorleft));
+	fprintf(sFile, "g_highlightclickcolorleftB=%d \n",GetBValue(g_highlightclickcolorleft));
+
+	fprintf(sFile, "g_highlightclickcolorrightR=%d \n",GetRValue(g_highlightclickcolorright));
+	fprintf(sFile, "g_highlightclickcolorrightG=%d \n",GetGValue(g_highlightclickcolorright)); 
+	fprintf(sFile, "g_highlightclickcolorrightB=%d \n",GetBValue(g_highlightclickcolorright)); 
 
 	//fprintf(sFile, "savedir=%s; \n",LPCTSTR(savedir));
 	//fprintf(sFile, "cursordir=%s; \n",LPCTSTR(cursordir));	
@@ -5906,6 +6290,33 @@ void CVscapView::SaveSettings()
 	fprintf(sFile, "recordpreset=%d \n",recordpreset);
 
 	//Add new variables here
+    //Multilanguage
+	fprintf(sFile, "language=%d \n",languageID);
+
+	// Effects
+	fprintf(sFile, "timestampAnnotation=%d \n",timestampAnnotation);
+	fprintf(sFile, "timestampBackColor=%d \n", timestamp.backgroundColor);
+	fprintf(sFile, "timestampSelected=%d \n",  timestamp.isFontSelected);
+	fprintf(sFile, "timestampPosition=%d \n",  timestamp.position);
+	fprintf(sFile, "timestampTextColor=%d \n", timestamp.textColor);
+	fprintf(sFile, "timestampTextFont=%s \n", timestamp.logfont.lfFaceName);
+	fprintf(sFile, "timestampTextWeight=%d \n", timestamp.logfont.lfWeight);
+	fprintf(sFile, "timestampTextHeight=%d \n", timestamp.logfont.lfHeight);
+	fprintf(sFile, "timestampTextWidth=%d \n", timestamp.logfont.lfWidth);
+
+	fprintf(sFile, "captionAnnotation=%d \n", captionAnnotation);
+	fprintf(sFile, "captionBackColor=%d \n",  caption.backgroundColor);
+	fprintf(sFile, "captionSelected=%d \n",   caption.isFontSelected);
+	fprintf(sFile, "captionPosition=%d \n",   caption.position);
+//	fprintf(sFile, "captionText=%s \n",       caption.text);
+	fprintf(sFile, "captionTextColor=%d \n",  caption.textColor);
+	fprintf(sFile, "captionTextFont=%s \n",   caption.logfont.lfFaceName);
+	fprintf(sFile, "captionTextWeight=%d \n", caption.logfont.lfWeight);
+	fprintf(sFile, "captionTextHeight=%d \n", caption.logfont.lfHeight);
+	fprintf(sFile, "captionTextWidth=%d \n",  caption.logfont.lfWidth);
+
+	fprintf(sFile, "watermarkAnnotation=%d \n",watermarkAnnotation);
+	fprintf(sFile, "watermarkAnnotation=%d \n",watermark.position);
 
 	fclose(sFile);
 
@@ -6087,8 +6498,10 @@ void CVscapView::LoadSettings()
 		fscanf(sFile, "g_highlightcursor=%d \n",&g_highlightcursor);
 		fscanf(sFile, "g_highlightsize=%d \n",&g_highlightsize);
 		fscanf(sFile, "g_highlightshape=%d \n",&g_highlightshape);	
+		fscanf(sFile, "g_highlightclick=%d \n",&g_highlightclick);	
 		
 		int redv,greenv,bluev;
+		redv=0;greenv=0;bluev=0;
 		fscanf(sFile, "g_highlightcolorR=%d \n",&idata);
 		redv=idata;
 		fscanf(sFile, "g_highlightcolorG=%d \n",&idata);
@@ -6097,7 +6510,23 @@ void CVscapView::LoadSettings()
 		bluev=idata;
 		g_highlightcolor = RGB(redv,greenv,bluev);
 
+		redv=0;greenv=0;bluev=0;
+		fscanf(sFile, "g_highlightclickcolorleftR=%d \n",&idata);
+		redv=idata;
+		fscanf(sFile, "g_highlightclickcolorleftG=%d \n",&idata);
+		greenv=idata;
+		fscanf(sFile, "g_highlightclickcolorleftB=%d \n",&idata);	
+		bluev=idata;
+		g_highlightclickcolorleft = RGB(redv,greenv,bluev);
 
+		redv=0;greenv=0;bluev=0;
+		fscanf(sFile, "g_highlightclickcolorrightR=%d \n",&idata);
+		redv=idata;
+		fscanf(sFile, "g_highlightclickcolorrightG=%d \n",&idata);
+		greenv=idata;
+		fscanf(sFile, "g_highlightclickcolorrightB=%d \n",&idata);	
+		bluev=idata;
+		g_highlightclickcolorright = RGB(redv,greenv,bluev);
 		
 		fscanf(sFile, "autopan=%d \n",&autopan);
 		fscanf(sFile, "maxpan= %d \n",&maxpan);
@@ -6383,9 +6812,35 @@ void CVscapView::LoadSettings()
 	}
 
 	//new variables add here
+	//Multilanguage
+    fscanf(sFile, "language=%d \n",&languageID);
+
+	// Effects
+	fscanf(sFile, "timestampAnnotation=%d \n",&timestampAnnotation);
+	fscanf(sFile, "timestampBackColor=%d \n", &timestamp.backgroundColor);
+	fscanf(sFile, "timestampSelected=%d \n",  &timestamp.isFontSelected);
+	fscanf(sFile, "timestampPosition=%d \n",  &timestamp.position);
+	fscanf(sFile, "timestampTextColor=%d \n", &timestamp.textColor);
+	fscanf(sFile, "timestampTextFont=%s \n",  &timestamp.logfont.lfFaceName);
+	fscanf(sFile, "timestampTextWeight=%d \n", &timestamp.logfont.lfWeight);
+	fscanf(sFile, "timestampTextHeight=%d \n", &timestamp.logfont.lfHeight);
+	fscanf(sFile, "timestampTextWidth=%d \n",  &timestamp.logfont.lfWidth);
+
+	fscanf(sFile, "captionAnnotation=%d \n", &captionAnnotation);
+	fscanf(sFile, "captionBackColor=%d \n",  &caption.backgroundColor);
+	fscanf(sFile, "captionSelected=%d \n",   &caption.isFontSelected);
+	fscanf(sFile, "captionPosition=%d \n",   &caption.position);
+//	fscanf(sFile, "captionText=%s \n",       &caption.text);
+	fscanf(sFile, "captionTextColor=%d \n",  &caption.textColor);
+	fscanf(sFile, "captionTextFont=%s \n",   &caption.logfont.lfFaceName);
+	fscanf(sFile, "captionTextWeight=%d \n", &caption.logfont.lfWeight);
+	fscanf(sFile, "captionTextHeight=%d \n", &caption.logfont.lfHeight);
+	fscanf(sFile, "captionTextWidth=%d \n",  &caption.logfont.lfWidth);
+	
+	fscanf(sFile, "watermarkAnnotation=%d \n",&watermarkAnnotation);
+	fscanf(sFile, "watermarkAnnotation=%d \n",&watermark.position);
 
 	fclose(sFile);
-
 
 
 	//********************************************
@@ -8372,3 +8827,158 @@ void CVscapView::OnOptionsProgramoptionsPresettime()
 	prestDlg.DoModal();
 	
 }
+
+//Multilanguage
+
+void CVscapView::OnUpdateOptionsLanguageEnglish(CCmdUI* pCmdUI) 
+{
+	pCmdUI->SetCheck(languageID==9);
+	
+}
+
+void CVscapView::OnUpdateOptionsLanguageGerman(CCmdUI* pCmdUI) 
+{
+	// TODO: Add your command update UI handler code here
+	pCmdUI->SetCheck(languageID==7);
+	
+}
+
+void CVscapView::OnOptionsLanguageEnglish() 
+{
+	// TODO: Add your command handler code here
+	languageID=9;
+    AfxGetApp()->WriteProfileInt( SEC_SETTINGS, ENT_LANGID, 9) ;
+	AfxMessageBox( IDS_RESTARTAPP );
+}
+
+void CVscapView::OnOptionsLanguageGerman() 
+{
+	// TODO: Add your command handler code here
+	
+	languageID=7;
+	AfxGetApp()->WriteProfileInt( SEC_SETTINGS, ENT_LANGID, 7) ;
+	AfxMessageBox( IDS_RESTARTAPP );
+	
+}
+
+void CVscapView::OnRegionWindow()
+{
+	// TODO: Add your command handler code here
+	MouseCaptureMode = 3;
+}
+
+void CVscapView::OnUpdateRegionWindow(CCmdUI *pCmdUI)
+{
+	// TODO: Add your command update UI handler code here
+	if (MouseCaptureMode==3) pCmdUI->SetCheck(TRUE);
+	else pCmdUI->SetCheck(FALSE);
+}
+
+void CVscapView::OnCaptureChanged(CWnd *pWnd)
+{
+	// TODO: Add your message handler code here
+	CPoint point;
+    VERIFY(GetCursorPos(&point));
+	ScreenToClient(&point);
+	ClientToScreen(&point);
+	CWnd* wnd = WindowFromPoint(point);    	
+	HWND hWnd = NULL;
+	CWnd* wnd2 = NULL;
+	if(wnd)
+	{
+			hWnd = wnd->m_hWnd;
+			wnd2 = wnd;
+
+/*
+		HWND desktop = ::GetDesktopWindow();
+		if((wnd->GetParent() == NULL) || (wnd->GetParent()->m_hWnd == desktop)){
+			hWnd = wnd->m_hWnd;
+			wnd2 = wnd;
+		}
+		else{
+			hWnd = wnd->GetTopLevelParent()->m_hWnd;
+			wnd2 = wnd->GetTopLevelParent();
+		}
+*/
+		ReleaseCapture();
+
+		CView::OnCaptureChanged(pWnd);
+
+		//::GetClientRect(hWnd , &rcUse);
+		::GetWindowRect(hWnd , &rcUse);
+		//::ClientToScreen(&rcUse);
+
+		::PostMessage (hWndGlobal,WM_USER_RECORDSTART,0,(LPARAM) 0); 
+	}
+	else{
+
+		ReleaseCapture();
+
+		CView::OnCaptureChanged(pWnd);
+	}
+}
+
+
+void CVscapView::OnAnnotationAddsystemtimestamp()
+{
+	// TODO: Add your command handler code here
+	timestampAnnotation = !timestampAnnotation;
+}
+
+void CVscapView::OnUpdateAnnotationAddsystemtimestamp(CCmdUI *pCmdUI)
+{
+	// TODO: Add your command update UI handler code here
+	pCmdUI->SetCheck(timestampAnnotation);
+}
+
+void CVscapView::OnAnnotationAddcaption()
+{
+	// TODO: Add your command handler code here
+	captionAnnotation = !captionAnnotation;
+}
+
+void CVscapView::OnUpdateAnnotationAddcaption(CCmdUI *pCmdUI)
+{
+	// TODO: Add your command update UI handler code here
+	pCmdUI->SetCheck(captionAnnotation);
+}
+
+void CVscapView::OnAnnotationAddwatermark()
+{
+	// TODO: Add your command handler code here
+	watermarkAnnotation = !watermarkAnnotation;
+}
+
+void CVscapView::OnUpdateAnnotationAddwatermark(CCmdUI *pCmdUI)
+{
+	// TODO: Add your command update UI handler code here
+	pCmdUI->SetCheck(watermarkAnnotation);
+}
+
+void CVscapView::OnEffectsOptions()
+{
+	// TODO: Add your command handler code here
+	CAnnotationEffectsOptions dlg;
+	dlg.m_timestamp = timestamp;
+	dlg.m_caption = caption;
+	dlg.m_image = watermark;
+	if(dlg.DoModal() == IDOK){
+		timestamp = dlg.m_timestamp;
+		caption = dlg.m_caption;
+		watermark = dlg.m_image;
+	}
+}
+
+void CVscapView::OnHelpCamstudioblog()
+{
+	Openlink("http://www.camstudio.org/blog");
+}
+
+void CVscapView::OnBnClickedButtonlink()
+{
+	Openlink("http://www.camstudio.org/blog");
+}
+BEGIN_EVENTSINK_MAP(CVscapView, CView)
+
+END_EVENTSINK_MAP()
+

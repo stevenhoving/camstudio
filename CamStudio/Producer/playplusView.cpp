@@ -487,6 +487,7 @@ int sampleFPS = 40;
 int convertBits = 16; 
 
 int noLoop = 0;
+int noUrl = 0;
 int noAutoPlay = 0;
 int addControls = 1;
 int controlsWidth = 100;
@@ -608,6 +609,7 @@ CString swfname;
 CString swfhtmlname;
 CString swfbasename;
 CString avifilename;
+CString urlRedirect;
 
 int swfbk_red = 255;
 int swfbk_green = 255;
@@ -646,7 +648,7 @@ int DrawRightPiece(std::ostringstream &f,int imagewidth, int imageheight,  CStri
 int DrawLeftPiece(std::ostringstream &f,int imagewidth, int imageheight,  CString subdir, int imageoffset,int yoffset);
 int DrawLoading(std::ostringstream &f,int imagewidth, int imageheight,  CString subdir, int imageoffset,int yoffset);
 
-int ButtonSpaceX = 1;
+int ButtonSpaceX = 0;
 int ButtonSpaceY = 7;
 int PieceOffsetY = 2;
 int ProgressOffsetY = 2;
@@ -2477,7 +2479,9 @@ void CPlayplusView::OnDestroy()
 
 	//SaveController();
 
-	
+	  //Multilanguage
+	if( CurLangID != STANDARD_LANGID )
+    FreeLibrary( AfxGetResourceHandle() );	
 }
 
 void CPlayplusView::OnPaint() 
@@ -5534,10 +5538,12 @@ void CreateBackgroundBar(std::ostringstream &f, int controlsWidth, int controlsH
 //LPBYTE MakeBitmapRect(LPBITMAPINFOHEADER alpbi, int BITMAP_X, int BITMAP_Y, int format, CChangeRectSwf * itemrect, int lenght, int height, int wLineLen, int dwSize);
 
 
-void CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime) 
+bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime) 
 {
 		
 		//Indirect lpbi
+		bool result = true;
+
 		AVISTREAMINFO   avis;						
 		AVIStreamInfo(gapavi[giFirstVideo], &avis, sizeof(avis));		
 		int bmWidth = avis.rcFrame.right - avis.rcFrame.left  + 1;
@@ -5903,6 +5909,12 @@ void CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
 
 				CString msgStr;
 
+				if (progressdlogptr->CheckCancelButton())
+				{
+					result = false;
+					break;
+				}
+
 				//Progress Dialog
 				int percentcompeleted;
 				if  ((timeEnd>1) && (currentTime <= timeEnd))
@@ -6003,7 +6015,18 @@ void CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
 
 					FlashActionStop s;
 					FlashTagDoAction ftd;
-					ftd.AddAction(&s);	 
+					ftd.AddAction(&s);
+
+					// me
+					if (urlRedirect.GetLength() > 0)
+					{					
+						char actionScriptal[1000];
+						sprintf(actionScriptal,"getURL(\"%s\", \"_self\");", urlRedirect);
+
+						ActionCompiler acomal(5);	
+						acomal.Compile(actionScriptal,f);
+					}
+					// end me
 					f << ftd;
 
 
@@ -6038,6 +6061,17 @@ void CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
 						FlashActionStop s;
 						FlashTagDoAction ftd;
 						ftd.AddAction(&s);	
+
+						// me	
+						if (urlRedirect.GetLength() > 0)
+						{					
+							char actionScriptal[1000];
+							sprintf(actionScriptal,"getURL(\"%s\", \"_self\");", urlRedirect);
+
+							ActionCompiler acomal(5);	
+							acomal.Compile(actionScriptal,f);
+						}
+						// end me
  
 						f << ftd;
 						f << FlashTagShowFrame();
@@ -6100,7 +6134,6 @@ void CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
 					f << ftd;
 					f << FlashTagShowFrame();
 					framecount++;
-
 				}
 				
 
@@ -6149,12 +6182,39 @@ void CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
 
 		
 		finishTemporalCompress();
+
+		return result;
 }
 
 
 //CFlash
 void CPlayplusView::OnFileConverttoswf() 
 {
+
+	CurLangID = STANDARD_LANGID;
+	HKEY hKey;
+  	DWORD language;
+    LONG returnStatus;
+	DWORD Type=REG_DWORD;
+    DWORD Size=sizeof(DWORD);
+    returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
+    
+	if (returnStatus == ERROR_SUCCESS)
+    {
+		
+        returnStatus = RegQueryValueEx(hKey, "LanguageID", NULL, &Type,(LPBYTE)&language, &Size);
+        
+		/*if (returnStatus == ERROR_SUCCESS)
+        {
+			
+    
+        	if( !LoadLangIDDLL((int) language) ) 
+	         if( !LoadLangIDDLL(GetUserDefaultLangID()) )
+     			LoadLangIDDLL(GetSystemDefaultLangID());
+        }*/
+     }
+
+    RegCloseKey(hKey);
 
 		LoadController();
 
@@ -6210,8 +6270,9 @@ void CPlayplusView::OnFileConverttoswf()
 		LONG currentTime  = 0;
 		moreSWFsneeded = 1;
 
+		bool performResult = true;
 		if (!needbreakapart)
-			PerformFlash(ww,hh,currentTime);
+			performResult = PerformFlash(ww,hh,currentTime);
 		else
 		{
 			while (moreSWFsneeded)
@@ -6238,7 +6299,8 @@ void CPlayplusView::OnFileConverttoswf()
 
 		if (launchHTMLPlayer)
 		{
-			Openlink(swfhtmlname);
+			if (performResult)
+				Openlink(swfhtmlname);
 		}
 		EndWaitCursor();
 
@@ -8277,23 +8339,43 @@ void produceFlashHTML(CString htmlfilename, CString flashfilename, CString flash
 	fprintf(htmlfile,"<BODY> \n");
 
 
+// 	fprintf(htmlfile,"<!-- Flash movie tag--> \n");
+//     fprintf(htmlfile,"<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" \n");
+// 	fprintf(htmlfile,"codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0\" \n");
+// 	fprintf(htmlfile,"WIDTH=\"%d\" HEIGHT=\"%d\" id=\"loader.swf?clip=",width,height);
+// 	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));
+// 	fprintf(htmlfile,"\" ALIGN=\"\"> \n");
+// 	fprintf(htmlfile," <PARAM NAME=movie VALUE=\"loader.swf?clip=");
+// 	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));
+// 	fprintf(htmlfile,"\"> \n <PARAM NAME=quality VALUE=high> ");
+// 	fprintf(htmlfile,"\n <param name=\"scale\" value=\"noscale\" /> ");
+// 	fprintf(htmlfile,"\n <param name=\"salign\" value=\"lt\" /> ");	
+// 	fprintf(htmlfile,"\n <PARAM NAME=bgcolor VALUE=#%x> \n <EMBED src=\"loader.swf?clip=",bkcolor);
+// 	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));	
+// 	fprintf(htmlfile,"\" scale=noscale salign=lt quality=high bgcolor=#%x  WIDTH=\"%d\" HEIGHT=\"%d\" ",bkcolor, width, height);	
+// 	fprintf(htmlfile,"NAME=\"");
+// 	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));
+// 	fprintf(htmlfile,"\" ALIGN=\"\" TYPE=\"application/x-shockwave-flash\" ");
+// 	fprintf(htmlfile,"PLUGINSPAGE=\"http://www.macromedia.com/go/getflashplayer\">\n</EMBED> \n");
+// 	fprintf(htmlfile,"</OBJECT>\n");	
+
 	fprintf(htmlfile,"<!-- Flash movie tag--> \n");
-    fprintf(htmlfile,"<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" \n");
+	fprintf(htmlfile,"<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" \n");
 	fprintf(htmlfile,"codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0\" \n");
 	fprintf(htmlfile,"WIDTH=\"%d\" HEIGHT=\"%d\" id=\"",width,height);
 	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));
 	fprintf(htmlfile,"\" ALIGN=\"\"> \n");
 	fprintf(htmlfile," <PARAM NAME=movie VALUE=\"");
 	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));
-	fprintf(htmlfile,"\"> \n <PARAM NAME=quality VALUE=high> ");
+	fprintf(htmlfile,"\"> \n <PARAM NAME=quality VALUE=high> ");	
 	fprintf(htmlfile,"\n <PARAM NAME=bgcolor VALUE=#%x> \n <EMBED src=\"",bkcolor);
 	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));	
-	fprintf(htmlfile,"\" quality=high bgcolor=#%x  WIDTH=\"%d\" HEIGHT=\"%d\" ",width, height,bkcolor);	
+	fprintf(htmlfile,"\" quality=high bgcolor=#%x  WIDTH=\"%d\" HEIGHT=\"%d\" ",bkcolor, width, height);	
 	fprintf(htmlfile,"NAME=\"");
 	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));
 	fprintf(htmlfile,"\" ALIGN=\"\" TYPE=\"application/x-shockwave-flash\" ");
 	fprintf(htmlfile,"PLUGINSPAGE=\"http://www.macromedia.com/go/getflashplayer\">\n</EMBED> \n");
-	fprintf(htmlfile,"</OBJECT>\n");	
+	fprintf(htmlfile,"</OBJECT>\n");
 
 	fprintf(htmlfile,"</BODY> \n");
 	fprintf(htmlfile,"</HTML> \n");
@@ -8435,7 +8517,7 @@ void LoadSettings()
 		
 		fscanf(sFile, "addPreloader = %d \n",&addPreloader);
 		fscanf(sFile, "applyPreloaderToSplitFiles = %d \n",&applyPreloaderToSplitFiles);
-		fscanf(sFile, "produceRaw = %d \n",&produceRaw);		
+		fscanf(sFile, "produceRaw = %d \n",&produceRaw);	
 	
 
 	}		
@@ -8716,7 +8798,7 @@ void SaveSettings()
 		
 		fprintf(sFile, "addPreloader = %d \n",addPreloader);
 		fprintf(sFile, "applyPreloaderToSplitFiles = %d \n",applyPreloaderToSplitFiles);
-		fprintf(sFile, "produceRaw = %d \n",produceRaw);		
+		fprintf(sFile, "produceRaw = %d \n",produceRaw);	
 
 
 
@@ -8805,7 +8887,20 @@ void CPlayplusView::OnConvert()
 
 void CreatePropertySheet()
 {
-	flashProp.Construct("Conversion to Flash");	
+	//flashProp.Construct("Conversion to Flash");	
+  //Multilanguage
+
+
+	//SWITCH_RESOURCE_HANDLE temporary_switch(::GetModuleHandle("ProducerLANG07.dll"));
+	CString dlgcaption("");
+	dlgcaption.LoadString (IDS_Conversion3); 
+
+
+    flashProp.Construct (dlgcaption);
+
+    //flashProp.Construct.LoadString( IDS_Conversion3 );
+	//SWITCH_RESOURCE_HANDLE temporary_switch(::GetModuleHandle("ProducerLANG07.dll"));
+
 	flashProp.AddPage( &page1);
 	flashProp.AddPage( &page2);
 	flashProp.AddPage( &page3);
@@ -9684,8 +9779,7 @@ void gcFlash(std::ostringstream &f)
 
 void CPlayplusView::OnHelpSwfproducerfaq() 
 {
-
-	Openlink("http://www.rendersoftware.com/products/camstudio/producerFAQ.htm");
+	Openlink("http://www.camstudio.org/SWFProducerFAQ.htm");
 }
 
 
@@ -9872,18 +9966,34 @@ void Preloader(std::ostringstream &f, int widthBar, int bmWidth, int bmHeight, i
 
 	
 	char actionScript[1000];	
+	char actionScriptal[1000];
 	char actionScript2[1000];	
 
 	FlashActionGetPropertyVar(f,"",_totalframes, "tframes" );  
 	FlashActionGetPropertyVar(f,"",_framesloaded, "floaded" );  
 
 	//is this actionscript stable ?
-	sprintf(actionScript,"FullWidth = %d;percent = floaded / tframes; adjustedPercent = percent / %.2f ; currentWidth = adjustedPercent * FullWidth; if (currentWidth > FullWidth) currentWidth = FullWidth;", widthBar, percentLoadedThreshold); 	
+	//sprintf(actionScript,"FullWidth = %d;percent = floaded / tframes; adjustedPercent = percent / %.2f ; currentWidth = adjustedPercent * FullWidth; if (currentWidth > FullWidth) currentWidth = FullWidth;", widthBar, percentLoadedThreshold); 			
+	sprintf(actionScript,"FullWidth = %d;percent = floaded / tframes; adjustedPercent = percent / %.2f ; currentWidth = adjustedPercent * FullWidth; if (currentWidth > FullWidth) currentWidth = FullWidth;", widthBar, percentLoadedThreshold, "http://news.bbc.co.uk"); 			
+	//sprintf(actionScript,"", );
 	
 	ActionCompiler acom(5);	
-	acom.Compile(actionScript,f);	
+	bool success = acom.Compile(actionScript,f);		
 
-	 	
+	/*
+	// me
+	//sprintf(actionScriptal,"onEnterFrame = function(){if (_framesloaded> 4 && _currentframe >= _totalframes-2){stop();delete onEnterFrame;getURL(\"%s\", \"_self\");}}", "http://news.bbc.co.uk"); 	
+	sprintf(actionScriptal,"trace(\"test\");");
+	::MessageBox(NULL,actionScriptal,"note", MB_OK|MB_ICONEXCLAMATION|MB_TASKMODAL);
+
+	ActionCompiler acomal(5);	
+	bool success = acomal.Compile(actionScriptal,f);
+
+	char tmp[1000];
+	sprintf(tmp,"%d;", (int)success);
+	::MessageBox(NULL,tmp,"note", MB_OK|MB_ICONEXCLAMATION|MB_TASKMODAL);
+	// end me
+	 */	
 		
 	//is this stable ?
 	sprintf(actionScript2,"alphaVal = 150 - counter; if (dir==0) counter=counter+2;  if (dir==1) counter=counter-2; if (counter > 148) dir = 1; if (counter < 2) dir = 0;");

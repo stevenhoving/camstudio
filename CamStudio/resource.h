@@ -1,5 +1,5 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by vscap.rc
 //
 #define IDC_HIGHLIGHTCOLOR              3
@@ -18,10 +18,13 @@
 #define ID_TEXTCOLOR                    4
 #define ID_JUSTLEFT                     4
 #define IDLOAD                          4
+#define IDC_HIGHLIGHTCOLOR2             4
+#define IDC_HIGHLIGHTCOLORLB            4
 #define IDOPTIONSGRAPHICS               5
 #define ID_BGCOLOR                      5
 #define ID_AUTOCONFIG                   5
 #define ID_JUSTCENTER                   5
+#define IDC_HIGHLIGHTCOLORRB            5
 #define ID_JUSTRIGHT                    6
 #define IDFONT2                         7
 #define IDD_CURSOROPTIONS               132
@@ -87,10 +90,13 @@
 #define IDD_SYNCHRONIZATION             196
 #define IDD_PRESETTIME                  197
 #define IDR_CONTEXTLANGUAGE             198
+#define IDD_EFFECTS_OPTIONS             198
 #define IDD_TRANSPARENCY                199
 #define IDD_TRANSPARENCYRATE2           199
+#define IDB_BITMAP5                     199
 #define IDD_NEWSHAPE                    200
 #define IDD_EDITIMAGE                   201
+#define IDD_DIALOG_MAIN_EFFECTS_OPTIONS 202
 #define IDC_CURSORDROPPER               205
 #define IDC_CURSORDRAG                  207
 #define IDC_CURSOR4                     208
@@ -126,6 +132,7 @@
 #define IDC_GROUPBOX                    1013
 #define IDC_WIDTH                       1013
 #define IDC_SHOWKEY                     1013
+#define IDC_HIGHLIGHTCLICK              1013
 #define IDC_MAXSPEED                    1014
 #define IDC_HEIGHT                      1014
 #define IDC_MSG                         1015
@@ -180,40 +187,64 @@
 #define IDC_BUTTONLINK                  1055
 #define IDC_EDIT1                       1055
 #define IDC_CTRL1                       1056
+#define IDC_BUTTONLINK2                 1056
 #define IDC_TRANSTEXT                   1057
 #define IDC_ALT1                        1057
 #define IDC_SYSTEMRECORD                1057
 #define IDC_SHIFT1                      1058
 #define IDC_RATETEXT                    1058
+#define IDC_BUTTON_FONT                 1058
+#define IDC_BUTTON_TEXT_COLOR           1059
 #define IDC_IMAGEFILETEXT               1059
 #define IDC_CTRL2                       1059
 #define IDC_BUTTON1                     1060
+#define IDC_BUTTON_BACKGROUND_COLOR     1060
 #define IDC_ALT2                        1060
+#define IDC_LABEL1                      1060
 #define IDC_NAME                        1061
 #define IDC_SHIFT2                      1061
 #define IDC_EDIT3                       1062
 #define IDC_CTRL3                       1062
+#define IDC_LABEL2                      1062
 #define IDC_COLOR                       1063
 #define IDC_ALT3                        1063
+#define IDC_RADIO_TOP_LEFT              1064
 #define IDC_COLORSTATIC                 1064
 #define IDC_SHIFT3                      1064
+#define IDC_STATIC_POSITION             1065
 #define IDC_COLOR3                      1065
 #define IDC_CTRL4                       1065
 #define IDC_BORDERSIZE                  1066
+#define IDC_EDIT_TIMESTAMP_FORMAT       1066
 #define IDC_ALT4                        1066
 #define IDC_COLOR2                      1067
+#define IDC_RADIO_TOP_CENTER            1067
+#define IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS 1067
 #define IDC_SHIFT4                      1067
 #define IDC_COLORSTATIC2                1068
+#define IDC_EDIT_CAPTION_TEXT           1068
+#define IDC_RADIO_TOP_RIGHT             1068
 #define IDC_CTRL5                       1068
 #define IDC_STATIC1                     1069
+#define IDC_RADIO_CENTER_LEFT           1069
+#define IDC_BUTTON_CAPTION_OPTIONS      1069
 #define IDC_ALT5                        1069
 #define IDC_BORDERSTATIC                1070
+#define IDC_EDIT_IMAGE_PATH             1070
+#define IDC_RADIO_CENTER_CENTER         1070
 #define IDC_SHIFT5                      1070
 #define IDC_CTRL6                       1071
+#define IDC_RADIO_CENTER_RIGHT          1071
+#define IDC_BUTTON_WATERMARK_OPTIONS2   1071
+#define IDC_BUTTON_WATERMARK_OPTIONS    1071
+#define IDC_BUTTON_IMAGE_PATH           1072
 #define IDC_SPIN1                       1072
+#define IDC_RADIO_BOTTOM_LEFT           1072
 #define IDC_ALT6                        1072
+#define IDC_RADIO_BOTTOM_CENTER         1073
 #define IDC_STATICCHOOSE                1073
 #define IDC_SHIFT6                      1073
+#define IDC_RADIO_BOTTOM_RIGHT          1074
 #define IDC_STATICWIDTH                 1074
 #define IDC_STATICHEIGHT                1075
 #define IDC_KEYFRAMES                   1153
@@ -236,6 +267,7 @@
 #define IDD_SCREENANNOTATIONS2          5103
 #define IDD_TRANSPARENCYRATE            5104
 #define IDD_TRANSRATE                   5104
+#define IDD_EFFECTS_OPTIONS2            5105
 #define IDR_MAINFRAME                   5128
 #define IDR_MAINFRAMESMALL              5129
 #define IDR_MAINFRAME1                  5129
@@ -391,6 +423,14 @@
 #define ID_OPTIONS_PROGRAMOPTIONS_SAVINGOFAVINAMING_AUTOMATICFILENAMINGFIXEDNAME 32905
 #define ID_OPTIONS_NAMING_AUTODATE      32906
 #define ID_OPTIONS_PROGRAMOPTIONS_PRESETTIME 32907
+#define ID_Menu                         32908
+#define ID_OPTIONS_LANGUAGE_ENGLISH     32909
+#define ID_OPTIONS_LANGUAGE_GERMAN      32910
+#define ID_ANNOTATION_ADDSYSTEMTIMESTAMP 32915
+#define ID_ANNOTATION_ADDCAPTION        32916
+#define ID_ANNOTATION_ADDWATERMARK      32917
+#define ID_EFFECTS_OPTIONS              32918
+#define ID_HELP_CAMSTUDIOBLOG           32919
 #define IDS_STRING_NOTE                 61446
 #define IDS_STRING_INTERLEAVE1          61447
 #define IDS_STRING_NOINPUT1             61448
@@ -518,15 +558,16 @@
 #define IDS_ERRPPRODUCER                61569
 #define IDS_RECAVI                      61570
 #define IDS_RECSWF                      61571
+#define IDS_RESTARTAPP                  61572
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        198
-#define _APS_NEXT_COMMAND_VALUE         32908
-#define _APS_NEXT_CONTROL_VALUE         1058
+#define _APS_NEXT_RESOURCE_VALUE        200
+#define _APS_NEXT_COMMAND_VALUE         32920
+#define _APS_NEXT_CONTROL_VALUE         1061
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

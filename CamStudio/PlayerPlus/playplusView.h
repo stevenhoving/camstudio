@@ -98,6 +98,7 @@ protected:
 	afx_msg LRESULT OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2);
 	afx_msg LRESULT OnMM_WOM_DONE(WPARAM parm1, LPARAM parm2);
 	DECLARE_MESSAGE_MAP()
+public:
 };
 
 #ifndef _DEBUG  // debug version in playplusView.cpp

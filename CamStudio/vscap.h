@@ -14,6 +14,11 @@
 
 #include "resource.h"       // main symbols
 
+//Multilanguage
+#define ENT_LANGID _T("LanguageID")
+#define ENT_LANGINI _T("LangINI")
+#define SEC_SETTINGS _T("Language")
+#define STANDARD_LANGID 0x09	// English
 /////////////////////////////////////////////////////////////////////////////
 // CVscapApp:
 // See vscap.cpp for the implementation of this class
@@ -25,10 +30,16 @@ public:
 	CVscapApp();
 	BOOL FirstInstance();
 
+private:
+	LANGID CurLangID;
+
+
+	BOOL LoadLangIDDLL(LANGID LangID);
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CVscapApp)
-	public:
+public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
 	//}}AFX_VIRTUAL

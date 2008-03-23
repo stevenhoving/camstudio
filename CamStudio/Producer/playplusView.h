@@ -1,7 +1,7 @@
 // playplusView.h : interface of the CPlayplusView class
 //
 /////////////////////////////////////////////////////////////////////////////
-
+#include <assert.h>
 #if !defined(AFX_PLAYPLUSVIEW_H__8B1773D6_C15C_4371_BEB4_1943076AD478__INCLUDED_)
 #define AFX_PLAYPLUSVIEW_H__8B1773D6_C15C_4371_BEB4_1943076AD478__INCLUDED_
 
@@ -9,6 +9,12 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+//Multilanguage
+#define ENT_LANGID _T("LanguageID")
+#define ENT_LANGINI _T("LangINI")
+#define SEC_SETTINGS _T("Language")
+#define STANDARD_LANGID 0x09	// English
+//#define STANDARD_LANGID 0x07	// German
 
 class CPlayplusView : public CView
 {
@@ -24,7 +30,7 @@ public:
 	LONG GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata);
 	BOOL OpenUsingRegisteredClass (CString);
 
-	void PerformFlash(int &ww, int &hh, LONG& currenttime); 
+	bool PerformFlash(int &ww, int &hh, LONG& currenttime); 
 	
 		
 	
@@ -54,6 +60,10 @@ public:
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
+
+private:
+	LANGID CurLangID;
+    BOOL LoadLangIDDLL(LANGID LangID);
 
 protected:
 
@@ -116,6 +126,29 @@ protected:
 inline CPlayplusDoc* CPlayplusView::GetDocument()
    { return (CPlayplusDoc*)m_pDocument; }
 #endif
+
+class SWITCH_RESOURCE_HANDLE
+{
+public:
+SWITCH_RESOURCE_HANDLE(HMODULE new_resource_handle):
+OldResourceHandle_(AfxGetResourceHandle())
+{
+assert(OldResourceHandle_);
+assert(new_resource_handle);
+AfxSetResourceHandle(new_resource_handle);
+
+}
+
+~SWITCH_RESOURCE_HANDLE()
+{
+AfxSetResourceHandle(OldResourceHandle_);
+}
+
+private:
+HMODULE OldResourceHandle_;
+
+};
+
 
 /////////////////////////////////////////////////////////////////////////////
 
