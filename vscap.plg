@@ -1,0 +1,459 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: hook - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\WINDOWS\TEMP\RSP6363.TMP" with contents
+[
+/nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release/hook.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\vc\vstemp8\vscap_vc7\hook\hook.cpp"
+]
+Creating command line "cl.exe @C:\WINDOWS\TEMP\RSP6363.TMP" 
+Creating temporary file "C:\WINDOWS\TEMP\RSP6364.TMP" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"Release/hook.pdb" /machine:I386 /out:"../Release/hook.dll" /implib:"Release/hook.lib" 
+.\Release\hook.obj
+]
+Creating command line "link.exe @C:\WINDOWS\TEMP\RSP6364.TMP"
+<h3>Output Window</h3>
+Compiling...
+hook.cpp
+Linking...
+   Creating library Release/hook.lib and object Release/hook.exp
+<h3>
+--------------------Configuration: Player - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x409 /fo"Release/player.res" /d "NDEBUG" "C:\vc\vstemp8\vscap_vc7\Player\player.rc"" 
+Creating temporary file "C:\WINDOWS\TEMP\RSP7013.TMP" with contents
+[
+/nologo /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"Release/Player.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\vc\vstemp8\vscap_vc7\Player\player.cpp"
+]
+Creating command line "cl.exe @C:\WINDOWS\TEMP\RSP7013.TMP" 
+Creating temporary file "C:\WINDOWS\TEMP\RSP7014.TMP" with contents
+[
+winmm.lib vfw32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/Player.pdb" /machine:I386 /out:"../Release/Player.exe" 
+.\Release\player.obj
+.\Release\player.res
+]
+Creating command line "link.exe @C:\WINDOWS\TEMP\RSP7014.TMP"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+player.cpp
+Linking...
+<h3>
+--------------------Configuration: playplus - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x409 /fo"Release/playplus.res" /d "NDEBUG" /d "_AFXDLL" "C:\vc\vstemp8\vscap_vc7\PlayerPlus\playplus.rc"" 
+Creating temporary file "C:\WINDOWS\TEMP\RSP7043.TMP" with contents
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Release/playplus.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\vc\vstemp8\vscap_vc7\PlayerPlus\audio.cpp"
+"C:\vc\vstemp8\vscap_vc7\PlayerPlus\AudioFormat.cpp"
+"C:\vc\vstemp8\vscap_vc7\PlayerPlus\fister\Buffer.cpp"
+"C:\vc\vstemp8\vscap_vc7\PlayerPlus\MainFrm.cpp"
+"C:\vc\vstemp8\vscap_vc7\PlayerPlus\playplus.cpp"
+"C:\vc\vstemp8\vscap_vc7\PlayerPlus\playplusDoc.cpp"
+"C:\vc\vstemp8\vscap_vc7\PlayerPlus\playplusView.cpp"
+"C:\vc\vstemp8\vscap_vc7\PlayerPlus\SlideToolBar.cpp"
+"C:\vc\vstemp8\vscap_vc7\PlayerPlus\fister\SoundBase.cpp"
+"C:\vc\vstemp8\vscap_vc7\PlayerPlus\fister\SoundFile.cpp"
+]
+Creating command line "cl.exe @C:\WINDOWS\TEMP\RSP7043.TMP" 
+Creating temporary file "C:\WINDOWS\TEMP\RSP7044.TMP" with contents
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Release/playplus.pch" /Yc"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\vc\vstemp8\vscap_vc7\PlayerPlus\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\WINDOWS\TEMP\RSP7044.TMP" 
+Creating temporary file "C:\WINDOWS\TEMP\RSP7045.TMP" with contents
+[
+vfw32.lib winmm.lib msacm32.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/Playplus.pdb" /machine:I386 /out:"../Release/Playplus.exe" 
+.\Release\audio.obj
+.\Release\AudioFormat.obj
+.\Release\Buffer.obj
+.\Release\MainFrm.obj
+.\Release\playplus.obj
+.\Release\playplusDoc.obj
+.\Release\playplusView.obj
+.\Release\SlideToolBar.obj
+.\Release\SoundBase.obj
+.\Release\SoundFile.obj
+.\Release\StdAfx.obj
+.\Release\playplus.res
+]
+Creating command line "link.exe @C:\WINDOWS\TEMP\RSP7045.TMP"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+audio.cpp
+AudioFormat.cpp
+Buffer.cpp
+MainFrm.cpp
+playplus.cpp
+playplusDoc.cpp
+playplusView.cpp
+SlideToolBar.cpp
+SoundBase.cpp
+SoundFile.cpp
+Linking...
+<h3>
+--------------------Configuration: Producer - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x409 /fo"Release/Producer.res" /d "NDEBUG" /d "_AFXDLL" "C:\vc\vstemp8\vscap_vc7\Producer\Producer.rc"" 
+Creating temporary file "C:\WINDOWS\TEMP\RSP71C5.TMP" with contents
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Release/Producer.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\adler32.c"
+"C:\vc\vstemp8\vscap_vc7\Producer\AdvProperty.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\actioncompiler\assembler.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\audio.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\AudioFormat.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\fister\Buffer.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\actioncompiler\common.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\actioncompiler\compile.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\actioncompiler\compileaction.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\compress.c"
+"C:\vc\vstemp8\vscap_vc7\Producer\Conversion.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\crc32.c"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\deflate.c"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\FAction.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\FBase.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\FBitmap.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\FButton.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\FControl.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\FDisplay.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\FFont.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\FImport.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\FlashConversionDlg.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\FlashFontObj.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\FlashInterface.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\FlashMP3Encoder.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\FMorph.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\FShape.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\FSound.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\flashsdk\FSoundSDK.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\FSprite.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\FTarga.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\gzio.c"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\infblock.c"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\infcodes.c"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\inffast.c"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\inflate.c"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\inftrees.c"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\infutil.c"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\actioncompiler\lex.swf4.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\actioncompiler\lex.swf5.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\actioncompiler\listaction.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\MainFrm.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\md5\md5.c"
+"C:\vc\vstemp8\vscap_vc7\Producer\MessageWnd.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\Picture.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\playplus.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\playplusDoc.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\playplusView.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\ProgressDlg.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\SlideToolBar.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\fister\SoundBase.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\fister\SoundFile.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\actioncompiler\swf4compiler.tab.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\actioncompiler\swf5compiler.tab.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\SWFPropertySheet.cpp"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\trees.c"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\uncompr.c"
+"C:\vc\vstemp8\vscap_vc7\Producer\Conversion\WAVEIO.CPP"
+"C:\vc\vstemp8\vscap_vc7\Producer\swfsource\zutil.c"
+]
+Creating command line "cl.exe @C:\WINDOWS\TEMP\RSP71C5.TMP" 
+Creating temporary file "C:\WINDOWS\TEMP\RSP71C6.TMP" with contents
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Release/Producer.pch" /Yc"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\vc\vstemp8\vscap_vc7\Producer\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\WINDOWS\TEMP\RSP71C6.TMP" 
+Creating temporary file "C:\WINDOWS\TEMP\RSP71C7.TMP" with contents
+[
+vfw32.lib winmm.lib msacm32.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/Producer.pdb" /machine:I386 /out:"../Release/Producer.exe" 
+.\Release\adler32.obj
+.\Release\AdvProperty.obj
+.\Release\assembler.obj
+.\Release\audio.obj
+.\Release\AudioFormat.obj
+.\Release\Buffer.obj
+.\Release\common.obj
+.\Release\compile.obj
+.\Release\compileaction.obj
+.\Release\compress.obj
+.\Release\Conversion.obj
+.\Release\crc32.obj
+.\Release\deflate.obj
+.\Release\FAction.obj
+.\Release\FBase.obj
+.\Release\FBitmap.obj
+.\Release\FButton.obj
+.\Release\FControl.obj
+.\Release\FDisplay.obj
+.\Release\FFont.obj
+.\Release\FImport.obj
+.\Release\FlashConversionDlg.obj
+.\Release\FlashFontObj.obj
+.\Release\FlashInterface.obj
+.\Release\FlashMP3Encoder.obj
+.\Release\FMorph.obj
+.\Release\FShape.obj
+.\Release\FSound.obj
+.\Release\FSoundSDK.obj
+.\Release\FSprite.obj
+.\Release\FTarga.obj
+.\Release\gzio.obj
+.\Release\infblock.obj
+.\Release\infcodes.obj
+.\Release\inffast.obj
+.\Release\inflate.obj
+.\Release\inftrees.obj
+.\Release\infutil.obj
+.\Release\lex.swf4.obj
+.\Release\lex.swf5.obj
+.\Release\listaction.obj
+.\Release\MainFrm.obj
+.\Release\md5.obj
+.\Release\MessageWnd.obj
+.\Release\Picture.obj
+.\Release\playplus.obj
+.\Release\playplusDoc.obj
+.\Release\playplusView.obj
+.\Release\ProgressDlg.obj
+.\Release\SlideToolBar.obj
+.\Release\SoundBase.obj
+.\Release\SoundFile.obj
+.\Release\StdAfx.obj
+.\Release\swf4compiler.tab.obj
+.\Release\swf5compiler.tab.obj
+.\Release\SWFPropertySheet.obj
+.\Release\trees.obj
+.\Release\uncompr.obj
+.\Release\WAVEIO.OBJ
+.\Release\zutil.obj
+.\Release\Producer.res
+]
+Creating command line "link.exe @C:\WINDOWS\TEMP\RSP71C7.TMP"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+adler32.c
+AdvProperty.cpp
+assembler.cpp
+audio.cpp
+AudioFormat.cpp
+Buffer.cpp
+common.cpp
+compile.cpp
+compileaction.cpp
+compress.c
+Conversion.cpp
+crc32.c
+deflate.c
+FAction.cpp
+FBase.cpp
+FBitmap.cpp
+FButton.cpp
+FControl.cpp
+FDisplay.cpp
+FFont.cpp
+FImport.cpp
+FlashConversionDlg.cpp
+FlashFontObj.cpp
+FlashInterface.cpp
+FlashMP3Encoder.cpp
+FMorph.cpp
+FShape.cpp
+FSound.cpp
+FSoundSDK.cpp
+FSprite.cpp
+FTarga.cpp
+gzio.c
+infblock.c
+infcodes.c
+inffast.c
+inflate.c
+inftrees.c
+infutil.c
+lex.swf4.cpp
+lex.swf5.cpp
+listaction.cpp
+MainFrm.cpp
+md5.c
+MessageWnd.cpp
+Picture.cpp
+playplus.cpp
+playplusDoc.cpp
+playplusView.cpp
+ProgressDlg.cpp
+SlideToolBar.cpp
+SoundBase.cpp
+SoundFile.cpp
+swf4compiler.tab.cpp
+swf5compiler.tab.cpp
+SWFPropertySheet.cpp
+trees.c
+uncompr.c
+WAVEIO.CPP
+zutil.c
+Linking...
+<h3>
+--------------------Configuration: vscap - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x409 /fo"Release/vscap.res" /d "NDEBUG" /d "_AFXDLL" "C:\vc\vstemp8\vscap_vc7\vscap.rc"" 
+Creating temporary file "C:\WINDOWS\TEMP\RSP92A3.TMP" with contents
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /Fp"Release/vscap.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\vc\vstemp8\vscap_vc7\AudioFormat.cpp"
+"C:\vc\vstemp8\vscap_vc7\AudioSpeakers.cpp"
+"C:\vc\vstemp8\vscap_vc7\AutopanSpeed.cpp"
+"C:\vc\vstemp8\vscap_vc7\AutoSearchDialog.cpp"
+"C:\vc\vstemp8\vscap_vc7\fister\Buffer.cpp"
+"C:\vc\vstemp8\vscap_vc7\CBitmapEx.cpp"
+"C:\vc\vstemp8\vscap_vc7\CursorOptionsDlg.cpp"
+"C:\vc\vstemp8\vscap_vc7\EditImage.cpp"
+"C:\vc\vstemp8\vscap_vc7\EditTransparency.cpp"
+"C:\vc\vstemp8\vscap_vc7\FixedRegion.cpp"
+"C:\vc\vstemp8\vscap_vc7\FlashingWnd.cpp"
+"C:\vc\vstemp8\vscap_vc7\FolderDialog.cpp"
+"C:\vc\vstemp8\vscap_vc7\FrameGrabber.cpp"
+"C:\vc\vstemp8\vscap_vc7\Keyshortcuts.cpp"
+"C:\vc\vstemp8\vscap_vc7\LayeredWindowHelperST.cpp"
+"C:\vc\vstemp8\vscap_vc7\LayoutList.cpp"
+"C:\vc\vstemp8\vscap_vc7\ListManager.cpp"
+"C:\vc\vstemp8\vscap_vc7\MainFrm.cpp"
+"C:\vc\vstemp8\vscap_vc7\NewShape.cpp"
+"C:\vc\vstemp8\vscap_vc7\Picture.cpp"
+"C:\vc\vstemp8\vscap_vc7\PresetTime.cpp"
+"C:\vc\vstemp8\vscap_vc7\ResizeDialog.cpp"
+"C:\vc\vstemp8\vscap_vc7\ScreenAnnotations.cpp"
+"C:\vc\vstemp8\vscap_vc7\fister\SoundBase.cpp"
+"C:\vc\vstemp8\vscap_vc7\fister\SoundFile.cpp"
+"C:\vc\vstemp8\vscap_vc7\SpeakersImpl.cpp"
+"C:\vc\vstemp8\vscap_vc7\SyncDialog.cpp"
+"C:\vc\vstemp8\vscap_vc7\TextDialog.cpp"
+"C:\vc\vstemp8\vscap_vc7\TransparentWnd.cpp"
+"C:\vc\vstemp8\vscap_vc7\TransRateDialog.cpp"
+"C:\vc\vstemp8\vscap_vc7\TroubleShoot.cpp"
+"C:\vc\vstemp8\vscap_vc7\VideoOptions.cpp"
+"C:\vc\vstemp8\vscap_vc7\VideoWnd.cpp"
+"C:\vc\vstemp8\vscap_vc7\vscap.cpp"
+"C:\vc\vstemp8\vscap_vc7\vscapDoc.cpp"
+"C:\vc\vstemp8\vscap_vc7\vscapView.cpp"
+]
+Creating command line "cl.exe @C:\WINDOWS\TEMP\RSP92A3.TMP" 
+Creating temporary file "C:\WINDOWS\TEMP\RSP92A4.TMP" with contents
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /Fp"Release/vscap.pch" /Yc"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\vc\vstemp8\vscap_vc7\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\WINDOWS\TEMP\RSP92A4.TMP" 
+Creating temporary file "C:\WINDOWS\TEMP\RSP92A5.TMP" with contents
+[
+winmm.lib vfw32.lib msacm32.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/Recorder.pdb" /machine:I386 /out:"Release/Recorder.exe" 
+.\Release\AudioFormat.obj
+.\Release\AudioSpeakers.obj
+.\Release\AutopanSpeed.obj
+.\Release\AutoSearchDialog.obj
+.\Release\Buffer.obj
+.\Release\CBitmapEx.obj
+.\Release\CursorOptionsDlg.obj
+.\Release\EditImage.obj
+.\Release\EditTransparency.obj
+.\Release\FixedRegion.obj
+.\Release\FlashingWnd.obj
+.\Release\FolderDialog.obj
+.\Release\FrameGrabber.obj
+.\Release\Keyshortcuts.obj
+.\Release\LayeredWindowHelperST.obj
+.\Release\LayoutList.obj
+.\Release\ListManager.obj
+.\Release\MainFrm.obj
+.\Release\NewShape.obj
+.\Release\Picture.obj
+.\Release\PresetTime.obj
+.\Release\ResizeDialog.obj
+.\Release\ScreenAnnotations.obj
+.\Release\SoundBase.obj
+.\Release\SoundFile.obj
+.\Release\SpeakersImpl.obj
+.\Release\StdAfx.obj
+.\Release\SyncDialog.obj
+.\Release\TextDialog.obj
+.\Release\TransparentWnd.obj
+.\Release\TransRateDialog.obj
+.\Release\TroubleShoot.obj
+.\Release\VideoOptions.obj
+.\Release\VideoWnd.obj
+.\Release\vscap.obj
+.\Release\vscapDoc.obj
+.\Release\vscapView.obj
+.\Release\vscap.res
+.\hook\Release\hook.lib
+]
+Creating command line "link.exe @C:\WINDOWS\TEMP\RSP92A5.TMP"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+AudioFormat.cpp
+AudioSpeakers.cpp
+AutopanSpeed.cpp
+AutoSearchDialog.cpp
+Buffer.cpp
+CBitmapEx.cpp
+CursorOptionsDlg.cpp
+EditImage.cpp
+EditTransparency.cpp
+FixedRegion.cpp
+FlashingWnd.cpp
+FolderDialog.cpp
+FrameGrabber.cpp
+Keyshortcuts.cpp
+LayeredWindowHelperST.cpp
+LayoutList.cpp
+ListManager.cpp
+MainFrm.cpp
+NewShape.cpp
+Picture.cpp
+PresetTime.cpp
+ResizeDialog.cpp
+ScreenAnnotations.cpp
+SoundBase.cpp
+SoundFile.cpp
+SpeakersImpl.cpp
+SyncDialog.cpp
+TextDialog.cpp
+TransparentWnd.cpp
+TransRateDialog.cpp
+TroubleShoot.cpp
+VideoOptions.cpp
+VideoWnd.cpp
+vscap.cpp
+vscapDoc.cpp
+vscapView.cpp
+Linking...
+
+
+
+<h3>Results</h3>
+Recorder.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

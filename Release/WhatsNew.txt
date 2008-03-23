@@ -1,0 +1,113 @@
+What's new in ver 2.0
+=====================
+
+1) Flash (.swf) Output -- you can now produce small, stream-able Flash files with lossless compression (in perfect quality) with CamStudio.
+   
+This is made possible with the introduction of a new module -- the SWF Producer -- that is distributed with the CamStudio package.	
+   
+What the SWF Producer basically does is to convert AVI files to Flash (.swf) files. It can convert almost all AVI files to Flash, including those not produced with CamStudio. 
+   
+   
+The SWF Producer can operate in 3 modes
+   
+A) Standalone mode
+The SWF Producer runs like a normal program. You launch it by selecting the Tools :: SWF Producer command inside the CamStudio Screen Recorder. 
+Or you can simply double click the Producer.exe file in the installed directory.
+   
+   
+   
+B) Record Directly to Flash
+You can set the CamStudio Recorder to record directly to Flash.
+   
+   
+   
+C) Commandline mode (silence mode)
+The Producer can also be launched on the command line (in DOS Prompt) by typing 
+
+Producer -b filename.avi
+
+When Producer is launched this way, it opens the file "filename.avi" when it starts, automatically converts the AVI movie to Flash, and then exits.  
+It will not issue any error messages during conversion. You can convert multiple AVI files this way.
+   
+
+
+2) With the Autonaming feature -- you can now avoid giving a name to every AVI you record. 
+(Options : Program Options : Name of AVI file)
+
+The name of the file is automatically formed using the system's date and time of recording and is saved in CamStudio's installed directory. 
+
+   
+   
+3) Improvements to CamStudio Player 2.0 (playplus.exe). 
+
+The following options are now available when running playplus.exe in the command line mode.
+
+
+playplus  -a filename.avi   
+ 
+This will launch the AVI file (filename.avi) and play it automatically.
+  
+   
+
+
+playplus  -x filename.avi 
+   
+This will launch the AVI file (filename.avi) and play it automatically. The player will exit when the playback is completed.
+
+
+
+What's new in ver 1.8
+=====================
+
+1)Screen Annotation -- allows you to display screen captions on your desktop while recording. These captions are anti-aliased, high quality images that can display text in multiple languages. You can also make a caption transparent and create a cutout region for it. 
+
+2)Video Annotation  -- allows you to stream the contents of your webcam onto your desktop. With this feature, you can add a personal touch to your recordings by including a movie of yourself into the AVI. The video annotations window, like the screen annotations, can be made transparent (Win XP) and assigned a cutout region.
+ 
+3)You can now pan the fixed region of recording by dragging any of the four corners around it.
+ 
+4)With the new Audio and Video Synchronization feature, you can now shift the video stream slightly to make the audio and video streams to be in phase. 
+ 
+5)Bugs are fixed for keyboard shortcuts that may not function properly in previous versions.
+
+
+Bugs fixed and improvements in ver 1.60
+=======================================
+
+1)Recording of sound from your speakers (for soundcards that support this feature)
+
+2)Capturing of translucent/layered windows (for Win 2000/XP)
+
+3)Update of the controls to Win XP look (for Win XP users only)
+
+3)Ability to customize the temporary directory for recording. Setting this to an appropriate drive can reduce crashes due to lack of free space.
+
+4)Some bug fixes (filtering out certain codecs that crash CamStudio)
+
+
+
+Bugs fixed and improvements in ver 1.25
+=======================================
+
+1)Support for the DivX Codec (for certain image dimensions).
+
+2)Recording with audio in default settings will no longer give a huge filesize.
+
+3)You may now specify the interleave factor of audio of video in milliseconds instead of frames.
+
+4)You may now indicate the X and Y values of a fixed region *before* the recording starts. 
+ 
+
+
+
+What's new in ver 1.2
+=====================
+
+1)Saving of user settings on exit. 
+
+2)Support for user-customizable shortcuts to start/stop the recorder. 
+
+3)An improved video options panel. 
+
+4)A new button for toggling between different views. 
+
+5)CamStudio now minimizes to the system tray. Double click its icon in the system tray to restore CamStudio.
