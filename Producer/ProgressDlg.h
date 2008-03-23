@@ -62,6 +62,8 @@ protected:
     virtual BOOL OnInitDialog();
     //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedProgressCancel();
 };
 
 #endif // __PROGRESSDLG_H__

@@ -1,5 +1,5 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by Producer.rc
 //
 #define IDS_APPNAME                     1
@@ -86,7 +86,13 @@
 #define IDC_BUTTONCHOOSE                1021
 #define IDC_IFACTOR                     1022
 #define IDC_INTERLEAVE                  1023
+#define IDC_EDIT1                       1023
+#define IDC_URLREDIR                    1024
+#define IDC_CHECK1                      1025
+#define ID_CANCEL                       1026
+#define ID_PROGRESS_CANCEL              1027
 #define IDC_INTERLEAVEFRAMES            1049
+#define IDC_BUTTONLINK1                 1055
 #define IDC_RECORDFORMAT                1290
 #define IDC_INPUTDEVICE                 1291
 #define ID_FILE_PLAY                    32772
@@ -189,6 +195,7 @@
 #define IDS_FOYERRSTR                   61483
 #define IDS_FOXERRLESS                  61484
 #define IDS_FOYERRLESS                  61485
+#define IDS_Conversion3                 61486
 
 // Next default values for new objects
 // 
@@ -197,7 +204,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        147
 #define _APS_NEXT_COMMAND_VALUE         32848
-#define _APS_NEXT_CONTROL_VALUE         1022
+#define _APS_NEXT_CONTROL_VALUE         1027
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

@@ -14,6 +14,12 @@
 
 #include "resource.h"       // main symbols
 
+//Multilanguage
+#define ENT_LANGID _T("LanguageID")
+#define ENT_LANGINI _T("LangINI")
+#define SEC_SETTINGS _T("Language")
+#define STANDARD_LANGID 0x09	// English
+
 /////////////////////////////////////////////////////////////////////////////
 // CPlayplusApp:
 // See playplus.cpp for the implementation of this class
@@ -29,6 +35,7 @@ public:
 	//{{AFX_VIRTUAL(CPlayplusApp)
 	public:
 	virtual BOOL InitInstance();
+	virtual int ExitInstance();
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -38,6 +45,10 @@ public:
 		//    DO NOT EDIT what you see in these blocks of generated code !
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+
+private:
+	LANGID CurLangID;
+    BOOL LoadLangIDDLL(LANGID LangID);
 };
 
 

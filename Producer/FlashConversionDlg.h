@@ -4,6 +4,14 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+
+//Multilanguage
+#define ENT_LANGID _T("LanguageID")
+#define ENT_LANGINI _T("LangINI")
+#define SEC_SETTINGS _T("Language")
+#define STANDARD_LANGID 0x09	// English
+//#define STANDARD_LANGID 0x07	// German
+
 // FlashConversionDlg.h : header file
 //
 
@@ -49,6 +57,13 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
+public:
+	afx_msg void OnBnClickedLoop();
+	afx_msg void OnBnClickedCheck1();
+
+private:
+	LANGID CurLangID;
+    BOOL LoadLangIDDLL(LANGID LangID);
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "playplus.h"
 #include "FlashConversionDlg.h"
+#include ".\flashconversiondlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -15,11 +16,13 @@ extern CString GetProgPath();
 extern void MsgC(const char fmt[], ...);
 
 extern int noLoop;
+extern int noUrl;
 extern int noAutoPlay;
 extern int convertBits;
 extern CString swfname;
 extern CString swfbasename; 
 extern CString swfhtmlname;
+extern CString urlRedirect;
 
 extern int Max_HalfKeyDepth;
 extern int sampleFPS;
@@ -31,6 +34,8 @@ extern int produceRaw;
 
 CString m_newbasefile;
 CString m_newbaseHTMLfile;
+
+CString m_urlRedirect;
 
 extern HINSTANCE   ghInstApp;
 
@@ -71,6 +76,8 @@ BEGIN_MESSAGE_MAP(FlashConversionDlg, CPropertyPage)
 	ON_BN_CLICKED(IDC_RADIO1, OnRadio1)
 	ON_BN_CLICKED(IDC_RAW, OnRaw)
 	//}}AFX_MSG_MAP
+	ON_BN_CLICKED(IDC_LOOP, OnBnClickedLoop)
+	ON_BN_CLICKED(IDC_CHECK1, OnBnClickedCheck1)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -78,12 +85,39 @@ END_MESSAGE_MAP()
 
 BOOL FlashConversionDlg::OnInitDialog() 
 {
+	 //Multilanguage
+		CurLangID = STANDARD_LANGID;
+	HKEY hKey;
+  	DWORD language;
+    LONG returnStatus;
+	DWORD Type=REG_DWORD;
+    DWORD Size=sizeof(DWORD);
+    returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
+    
+	if (returnStatus == ERROR_SUCCESS)
+    {
+		
+        returnStatus = RegQueryValueEx(hKey, "LanguageID", NULL, &Type,(LPBYTE)&language, &Size);
+        
+	/*	if (returnStatus == ERROR_SUCCESS)
+        {
+    
+        	if( !LoadLangIDDLL((int) language) ) 
+	         if( !LoadLangIDDLL(GetUserDefaultLangID()) )
+     			LoadLangIDDLL(GetSystemDefaultLangID());
+        }*/
+     }
+
+    RegCloseKey(hKey);
+
 	CPropertyPage::OnInitDialog();
 
-	// TODO: Add extra initialization here
+	((CEdit *)GetDlgItem(IDC_URLREDIR))->EnableWindow(FALSE);
+
 	((CEdit *)GetDlgItem(IDC_BASENAME))->SetWindowText(swfbasename);
 	((CEdit *)GetDlgItem(IDC_FLASHNAME))->SetWindowText(swfname);
 	((CEdit *)GetDlgItem(IDC_HTMLNAME))->SetWindowText(swfhtmlname);
+	((CEdit *)GetDlgItem(IDC_URLREDIR))->SetWindowText("");
 		
 
 	if (convertBits == 32)
@@ -174,13 +208,33 @@ BOOL FlashConversionDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
+BOOL FlashConversionDlg::LoadLangIDDLL(LANGID LangID)
+{
+	HINSTANCE ghInstApp;
+	CString strLangIDDLL;
+	
+	if( LangID == STANDARD_LANGID )	// integrated language is the right one
+		return true;
+	//AfxMessageBox( "lLang" );
+	strLangIDDLL.Format( _T("ProducerLANG%.2x.dll"), LangID );
+	ghInstApp = LoadLibrary( strLangIDDLL );
+	//hInstance = LoadLibrary( strLangIDDLL );
+	if( ghInstApp )
+	{
+		AfxSetResourceHandle( ghInstApp );
+		CurLangID = LangID;
+		return true;
+	}
+	return false;
+}
+
 void FlashConversionDlg::OnOK() 
 {
 	// TODO: Add extra validation here	
 
 	((CEdit *)GetDlgItem(IDC_BASENAME))->GetWindowText(swfbasename);
 	((CEdit *)GetDlgItem(IDC_FLASHNAME))->GetWindowText(swfname);
-	((CEdit *)GetDlgItem(IDC_HTMLNAME))->GetWindowText(swfhtmlname);
+	((CEdit *)GetDlgItem(IDC_HTMLNAME))->GetWindowText(swfhtmlname);		
 	
 	FILE* testSWF = fopen(LPCTSTR(swfname),"wb");
 	if (testSWF==NULL)
@@ -265,6 +319,16 @@ void FlashConversionDlg::OnOK()
 		noLoop=0;
 	else
 		noLoop=1;
+
+	bVal = ((CButton *) GetDlgItem(IDC_CHECK1))->GetCheck();
+	if (bVal)
+	{
+		((CEdit *)GetDlgItem(IDC_URLREDIR))->GetWindowText(urlRedirect);
+	}
+	else
+	{
+		urlRedirect = "";
+	}
 	
 
 	bVal = ((CButton *) GetDlgItem(IDC_AUTOSTART))->GetCheck();
@@ -395,6 +459,9 @@ void FlashConversionDlg::UpdateBehavior(int val)
 		((CButton *) GetDlgItem(IDC_ADDPRELOADER))->SetCheck(FALSE);
 		((CButton *) GetDlgItem(IDC_ADDCONTROLS))->SetCheck(FALSE);
 		((CButton *) GetDlgItem(IDC_LOOP))->SetCheck(TRUE);
+		((CButton *) GetDlgItem(IDC_CHECK1))->SetCheck(FALSE);
+		((CButton *) GetDlgItem(IDC_CHECK1))->EnableWindow(FALSE);
+		((CEdit *)	 GetDlgItem(IDC_URLREDIR))->SetWindowText("");
 		((CButton *) GetDlgItem(IDC_AUTOSTART))->SetCheck(TRUE);	
 
 	}
@@ -408,10 +475,27 @@ void FlashConversionDlg::UpdateBehavior(int val)
 		((CButton *) GetDlgItem(IDC_ADDPRELOADER))->SetCheck(TRUE);
 		((CButton *) GetDlgItem(IDC_ADDCONTROLS))->SetCheck(TRUE);
 		((CButton *) GetDlgItem(IDC_LOOP))->SetCheck(TRUE);
-		((CButton *) GetDlgItem(IDC_AUTOSTART))->SetCheck(TRUE);	
+		((CButton *) GetDlgItem(IDC_AUTOSTART))->SetCheck(TRUE);
+		((CButton *) GetDlgItem(IDC_CHECK1))->SetCheck(FALSE);
+		((CButton *) GetDlgItem(IDC_CHECK1))->EnableWindow(TRUE);
 
 	}
 
 
 
+}
+
+void FlashConversionDlg::OnBnClickedLoop()
+{
+	((CButton *) GetDlgItem(IDC_CHECK1))->SetCheck(FALSE);
+//	((CButton *) GetDlgItem(IDC_LOOP))->SetCheck(TRUE);
+
+	((CEdit *)GetDlgItem(IDC_URLREDIR))->EnableWindow(FALSE);
+}
+
+void FlashConversionDlg::OnBnClickedCheck1()
+{
+	((CButton *) GetDlgItem(IDC_CHECK1))->SetCheck(TRUE);
+	((CButton *) GetDlgItem(IDC_LOOP))->SetCheck(FALSE);
+	((CEdit *)GetDlgItem(IDC_URLREDIR))->EnableWindow(TRUE);
 }

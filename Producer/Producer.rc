@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -27,18 +27,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
     "#define _AFX_NO_OLE_RESOURCES\r\n"
@@ -67,30 +67,30 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON    DISCARDABLE     "res\\playplus.ico"
-IDR_PLAYPLTYPE          ICON    DISCARDABLE     "res\\playplusDoc.ico"
+IDR_MAINFRAME           ICON                    "res\\playplus.ico"
+IDR_PLAYPLTYPE          ICON                    "res\\playplusDoc.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Bitmap
 //
 
-IDR_MAINFRAME           BITMAP  MOVEABLE PURE   "res\\Toolbar.bmp"
-IDB_BITMAP1             BITMAP  DISCARDABLE     "ABOUT.BMP"
-IDB_BITMAP2             BITMAP  DISCARDABLE     "LOGO.BMP"
-IDR_PLAYERTOOLBAR       BITMAP  DISCARDABLE     "res\\toolbar1.bmp"
-IDB_BITMAP_LOGO_PLAYER  BITMAP  DISCARDABLE     "LOGOPLAYER.BMP"
-IDB_BITMAP_LOGO_DUBBER  BITMAP  DISCARDABLE     "LOGODUBBER.BMP"
-IDB_BITMAP_ABOUT_PLAYER BITMAP  DISCARDABLE     "ABOUTPLAYER.BMP"
-IDB_BITMAP_ABOUT_DUBBER BITMAP  DISCARDABLE     "ABOUTDUBBER.BMP"
-IDB_NODE                BITMAP  DISCARDABLE     "res\\bitmap3.bmp"
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+IDB_BITMAP1             BITMAP                  "ABOUT.BMP"
+IDB_BITMAP2             BITMAP                  "LOGO.BMP"
+IDR_PLAYERTOOLBAR       BITMAP                  "res\\toolbar1.bmp"
+IDB_BITMAP_LOGO_PLAYER  BITMAP                  "LOGOPLAYER.BMP"
+IDB_BITMAP_LOGO_DUBBER  BITMAP                  "LOGODUBBER.BMP"
+IDB_BITMAP_ABOUT_PLAYER BITMAP                  "ABOUTPLAYER.BMP"
+IDB_BITMAP_ABOUT_DUBBER BITMAP                  "ABOUTDUBBER.BMP"
+IDB_NODE                BITMAP                  "res\\bitmap3.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Toolbar
 //
 
-IDR_MAINFRAME TOOLBAR DISCARDABLE  15, 15
+IDR_MAINFRAME TOOLBAR  15, 15
 BEGIN
     BUTTON      ID_FILE_PLAY
     BUTTON      ID_FILE_STOP
@@ -119,7 +119,7 @@ BEGIN
     BUTTON      ID_BUTTON32803
 END
 
-IDR_PLAYERTOOLBAR TOOLBAR DISCARDABLE  16, 15
+IDR_PLAYERTOOLBAR TOOLBAR  16, 15
 BEGIN
     BUTTON      ID_FILE_PLAY
     BUTTON      ID_FILE_STOP
@@ -152,7 +152,7 @@ END
 // Menu
 //
 
-IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+IDR_MAINFRAME MENU 
 BEGIN
     POPUP "&File"
     BEGIN
@@ -160,7 +160,7 @@ BEGIN
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM "Save &As",                    ID_FILE_SAVEAS
         MENUITEM SEPARATOR
-        MENUITEM "Convert To Swf",              ID_FILE_CONVERTTOSWF
+        MENUITEM "Convert To SWF",              ID_FILE_CONVERTTOSWF
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
     END
@@ -191,7 +191,7 @@ BEGIN
     END
 END
 
-IDR_MENUPLAYER MENU DISCARDABLE 
+IDR_MENUPLAYER MENU 
 BEGIN
     POPUP "File"
     BEGIN
@@ -223,7 +223,7 @@ BEGIN
     END
 END
 
-IDR_MENUPRODUCER_ORG MENU DISCARDABLE 
+IDR_MENUPRODUCER_ORG MENU 
 BEGIN
     POPUP "&File"
     BEGIN
@@ -231,7 +231,7 @@ BEGIN
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM "Save &As",                    ID_FILE_SAVEAS
         MENUITEM SEPARATOR
-        MENUITEM "Convert To Swf",              ID_FILE_CONVERTTOSWF
+        MENUITEM "Convert To SWF",              ID_FILE_CONVERTTOSWF
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
     END
@@ -275,7 +275,7 @@ END
 // Accelerator
 //
 
-IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
+IDR_MAINFRAME ACCELERATORS 
 BEGIN
     "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
@@ -299,24 +299,29 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 189, 172
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_ABOUTBOX DIALOGEX 0, 0, 217, 214
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About Producer"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     CONTROL         130,IDC_IMAGE,"Static",SS_BITMAP,13,8,163,73,
                     WS_EX_DLGMODALFRAME
-    CTEXT           " Rendersoft CamStudio SWF Producer  1.0",IDC_TITLE,7,90,
-                    175,9,NOT WS_GROUP
-    CTEXT           "Copyright (C) 2001 - 2003",IDC_STATIC,7,108,175,9,NOT 
+    CTEXT           "Rendersoft CamStudio SWF Producer 1.5",IDC_TITLE,7,90,
+                    203,9,NOT WS_GROUP
+    CTEXT           "Copyright (C) 2001 - 2003",IDC_STATIC,7,108,203,9,NOT 
                     WS_GROUP
     CTEXT           "RenderSoft Software and Web Publishing",IDC_STATIC,7,
-                    123,175,9,NOT WS_GROUP
-    DEFPUSHBUTTON   "OK",IDOK,58,147,73,16,WS_GROUP
+                    123,203,9,NOT WS_GROUP
+    DEFPUSHBUTTON   "OK",IDOK,67,142,73,16,WS_GROUP
+    CTEXT           "Part of CamStudio: Free Screen Recording Software",
+                    IDC_STATIC,7,171,203,9
+    PUSHBUTTON      "http://www.camstudio.org",IDC_BUTTONLINK1,21,182,176,14,
+                    BS_FLAT
+    GROUPBOX        "",IDC_STATIC,7,160,204,44
 END
 
-IDD_AUDIODIALOG DIALOG DISCARDABLE  0, 0, 200, 225
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_AUDIODIALOG DIALOG  0, 0, 200, 225
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Audio Options"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -346,12 +351,12 @@ BEGIN
                     BS_AUTORADIOBUTTON,133,179,53,10
 END
 
-CG_IDD_PROGRESS DIALOG DISCARDABLE  0, 0, 186, 108
-STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CG_IDD_PROGRESS DIALOGEX 0, 0, 186, 108
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION
 CAPTION "Please Wait - Converting to SWF"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "Cancel",IDCANCEL,66,87,50,14,NOT WS_VISIBLE
+    DEFPUSHBUTTON   "Cancel",ID_PROGRESS_CANCEL,66,87,50,14
     CONTROL         "Progress1",CG_IDC_PROGDLG_PROGRESS,"msctls_progress32",
                     WS_BORDER,15,65,154,13
     LTEXT           " 0 %",CG_IDC_PROGDLG_PERCENT,83,50,18,8
@@ -359,13 +364,13 @@ BEGIN
     CTEXT           "Generating ..",IDC_CONVERSIONTEXT,14,11,149,12
 END
 
-IDD_FLASHCONVERSION DIALOG DISCARDABLE  0, 0, 249, 276
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_FLASHCONVERSION DIALOGEX 0, 0, 249, 314
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "General"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,204,254,20,14,NOT WS_VISIBLE
-    PUSHBUTTON      "Cancel",IDCANCEL,229,254,13,14,NOT WS_VISIBLE
+    DEFPUSHBUTTON   "OK",IDOK,204,288,20,14,NOT WS_VISIBLE
+    PUSHBUTTON      "Cancel",IDCANCEL,229,288,13,14,NOT WS_VISIBLE
     GROUPBOX        "Output Filename",IDC_STATIC,7,3,235,78
     LTEXT           "Flash (.swf)",IDC_STATIC,15,42,45,13
     LTEXT           "HTML (.html)",IDC_STATIC,16,61,45,13
@@ -393,11 +398,11 @@ BEGIN
     LTEXT           "Compression",IDC_STATIC,93,175,49,15
     COMBOBOX        IDC_AUDIOCOMPRESSION,150,172,87,64,CBS_DROPDOWN | 
                     WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        "Behavior",IDC_STATIC,7,199,235,71
+    GROUPBOX        "Behavior",IDC_STATIC,7,199,235,108
     CONTROL         "Add Player Controls",IDC_ADDCONTROLS,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,19,214,80,13
-    CONTROL         "Loop",IDC_LOOP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    109,214,47,13
+    CONTROL         "Loop",IDC_LOOP,"Button",BS_AUTOCHECKBOX | WS_GROUP | 
+                    WS_TABSTOP,20,261,47,13
     CONTROL         "Autostart",IDC_AUTOSTART,"Button",BS_AUTOCHECKBOX | 
                     WS_TABSTOP,172,214,51,13
     LTEXT           "Filename",IDC_STATIC,15,22,45,13
@@ -408,10 +413,13 @@ BEGIN
     CONTROL         "Produce raw movie for further editing in Flash MX editor",
                     IDC_RAW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,246,192,
                     13
+    EDITTEXT        IDC_URLREDIR,82,271,125,14,ES_AUTOHSCROLL
+    CONTROL         "Redirect URL",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | 
+                    WS_GROUP | WS_TABSTOP,20,274,59,10
 END
 
-IDD_ADVPROP DIALOG DISCARDABLE  0, 0, 241, 260
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_ADVPROP DIALOG  0, 0, 241, 260
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Advanced"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -427,8 +435,8 @@ BEGIN
                     BS_MULTILINE | WS_TABSTOP,24,81,190,48
 END
 
-IDD_INTERFACE DIALOG DISCARDABLE  0, 0, 240, 275
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_INTERFACE DIALOG  0, 0, 240, 275
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Interface"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -457,7 +465,6 @@ BEGIN
 END
 
 
-#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -478,17 +485,15 @@ VS_VERSION_INFO VERSIONINFO
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
-        BLOCK "040904B0"
+        BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName", "\0"
-            VALUE "FileDescription", "Producer MFC Application\0"
-            VALUE "FileVersion", "1, 0, 0, 1\0"
-            VALUE "InternalName", "Producer\0"
-            VALUE "LegalCopyright", "Copyright (C) 2002\0"
-            VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "Producer.EXE\0"
-            VALUE "ProductName", "Producer Application\0"
-            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "FileDescription", "Producer MFC Application"
+            VALUE "FileVersion", "1, 1, 0, 0"
+            VALUE "InternalName", "Producer"
+            VALUE "LegalCopyright", "Copyright (C) 2002"
+            VALUE "OriginalFilename", "Producer.EXE"
+            VALUE "ProductName", "Producer Application"
+            VALUE "ProductVersion", "1, 5, 0, 0"
         END
     END
     BLOCK "VarFileInfo"
@@ -497,8 +502,6 @@ BEGIN
     END
 END
 
-#endif    // !_MAC
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -506,14 +509,14 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO 
 BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 182
+        RIGHTMARGIN, 210
         TOPMARGIN, 7
-        BOTTOMMARGIN, 163
+        BOTTOMMARGIN, 205
     END
 
     IDD_AUDIODIALOG, DIALOG
@@ -535,7 +538,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 242
         TOPMARGIN, 7
-        BOTTOMMARGIN, 269
+        BOTTOMMARGIN, 307
     END
 
     IDD_ADVPROP, DIALOG
@@ -606,18 +609,18 @@ END
 // String Table
 //
 
-STRINGTABLE PRELOAD DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDR_MAINFRAME           "Producer\n\nPlaypl\n\n\nPlayplus.Document\nPlaypl Document"
 END
 
-STRINGTABLE PRELOAD DISCARDABLE 
+STRINGTABLE 
 BEGIN
     AFX_IDS_APP_TITLE       "Producer"
     AFX_IDS_IDLEMESSAGE     "Ready"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_INDICATOR_EXT        "EXT"
     ID_INDICATOR_CAPS       "CAP"
@@ -627,7 +630,7 @@ BEGIN
     ID_INDICATOR_REC        "REC"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_FILE_NEW             "Create a new document\nNew"
     ID_FILE_OPEN            "Open an AVI movie"
@@ -640,13 +643,13 @@ BEGIN
     ID_FILE_PRINT_PREVIEW   "Display full pages\nPrint Preview"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_APP_ABOUT            "About\nAbout"
     ID_APP_EXIT             "Exit the application\nExit"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_FILE_MRU_FILE1       "Open this document"
     ID_FILE_MRU_FILE2       "Open this document"
@@ -666,18 +669,18 @@ BEGIN
     ID_FILE_MRU_FILE16      "Open this document"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
     ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_EDIT_CLEAR           "Erase the selection\nErase"
     ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
@@ -692,13 +695,13 @@ BEGIN
     ID_EDIT_REDO            "Redo the previously undone action\nRedo"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
     ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     AFX_IDS_SCSIZE          "Change the window size"
     AFX_IDS_SCMOVE          "Change the window position"
@@ -709,13 +712,13 @@ BEGIN
     AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     AFX_IDS_SCRESTORE       "Restore the window to normal size"
     AFX_IDS_SCTASKLIST      "Activate Task List"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
     IDS_OPENTITLE2          "Select an AVI file to convert"
@@ -730,7 +733,7 @@ BEGIN
     IDS_AIDSC               "Unable to detect audio input device. You need a sound card with microphone input."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_APPNAME             "AVI Player"
     IDS_DEFEXT              "avi"
@@ -749,7 +752,7 @@ BEGIN
     IDS_STRCPYERR           "Error copying stream"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_STRCUTERR           "Error cutting stream"
     IDS_NOCLIP              "Couldn't put streams on clipboard"
@@ -762,7 +765,7 @@ BEGIN
     IDS_OPENWAVE            "Add Audio File"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_FILE_PLAY            "Play\nPlay"
     ID_FILE_STOP            "Stop\nPlay"
@@ -770,7 +773,7 @@ BEGIN
     ID_FILE_LASTFRAME       "Forward to Last Frame\nLast Frame"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_ZOOM_QUARTER         "Zoom X 25%"
     ID_ZOOM_HALF            "Zoom X 50%"
@@ -780,12 +783,12 @@ BEGIN
     ID_ZOOM_RESIZETOMOVIESIZE "Resize window to movie size"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_BUTTON32785          "Record Audio\nRecord Audio"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_AUDIO_EXTENSION      "Allow audio recording to extend the length of the movie"
     ID_FILE_CONVERTTOSWF    "Convert to Flash movie"
@@ -794,12 +797,12 @@ BEGIN
     ID_HELP_SWFPRODUCERFAQ  "Visit the FAQ page for SWF Producer"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     CG_IDS_PROGRESS_CAPTION "Please Wait - Converting to SWF"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_VOLCON              "Error launching Volume Control"
     IDS_DESTNOTPCM          "Destination Format not PCM"
@@ -819,7 +822,7 @@ BEGIN
     IDS_UAACSOYMIAC         "Unable to apply audio compression with the selected options. Your movie is saved without audio compression."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_UTMAVS2             "Unable to merge audio and video streams (2)."
     IDS_WIERROR             "Wave in Error"
@@ -835,6 +838,7 @@ BEGIN
     IDS_FOYERRSTR           "Border height must be larger than / equal to  0"
     IDS_FOXERRLESS          "Border width must be less than / equal to  200"
     IDS_FOYERRLESS          "Border height must be less than / equal to  200"
+    IDS_Conversion3         "In Flash konvertieren"
 END
 
 #endif    // English (U.S.) resources

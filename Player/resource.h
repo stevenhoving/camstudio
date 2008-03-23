@@ -1,5 +1,5 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by Player.rc
 //
 #define IDS_STRING_VERSION              1
@@ -7,6 +7,7 @@
 #define IDS_STRING_REGCLASS             3
 #define IDS_STRING_CREATEWIN            4
 #define IDS_STRING_NOOPEN               5
+#define IDC_BUTTONLINK1                 1055
 #define ID_PLAY                         40001
 #define ID_STOP                         40002
 #define ID_FILE_LASTFRAME               40006

@@ -446,8 +446,19 @@ BOOL CALLBACK AboutDlgProc(
 {
         switch (msg) {
         case WM_COMMAND:
+			if (wParam == 1055)
+			{
+				LPCTSTR mode;
+				mode = "open";
+				ShellExecute ( NULL, mode, 
+					"http://www.camstudio.org", NULL, NULL, SW_SHOW);
+			}
+			else
+			{
                 EndDialog(hwnd, TRUE);
                 return TRUE;
+			}
+			break;
         case WM_INITDIALOG:
                 return TRUE;
         }

@@ -10,6 +10,7 @@
 #include "vscap.h"
 //#include <stdio.h>
 #include "CursorOptionsDlg.h"
+#include ".\cursoroptionsdlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -29,8 +30,12 @@ int cursortype;
 int highlightcursor;
 int highlightsize;
 int highlightshape;
+int highlightclick;
 COLORREF highlightcolor;
+COLORREF highlightclickcolorleft;
+COLORREF highlightclickcolorright;
 int initpaint=TRUE;
+int sliding=FALSE;
 
 
 //extern CFileDialog *iconFileDlg;
@@ -42,7 +47,10 @@ extern int g_cursortype;
 extern int g_highlightcursor;
 extern int g_highlightsize;
 extern int g_highlightshape;
+extern int g_highlightclick;
 extern COLORREF g_highlightcolor;
+extern COLORREF g_highlightclickcolorleft;
+extern COLORREF g_highlightclickcolorright;
 extern CString cursordir;
 extern CString g_cursorFilePath;
 
@@ -124,6 +132,16 @@ BEGIN_MESSAGE_MAP(CCursorOptionsDlg, CDialog)
 	ON_WM_HSCROLL()
 	ON_WM_PAINT()
 	//}}AFX_MSG_MAP
+	ON_BN_CLICKED(IDOK, OnBnClickedOk)
+	ON_BN_CLICKED(IDC_HIGHLIGHTCOLORLB, OnHighlightColorLeft)
+	ON_BN_CLICKED(IDC_HIGHLIGHTCOLORRB, OnHighlightColorRight)
+	ON_BN_CLICKED(IDC_HIGHLIGHTCLICK, OnEnableVisualClickFeedback)
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
+	ON_WM_RBUTTONDOWN()
+	ON_WM_RBUTTONUP()
+	ON_WM_RBUTTONDBLCLK()
+	ON_WM_LBUTTONDBLCLK()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -251,6 +269,10 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 	highlightcolor = g_highlightcolor;
 	loadcursor = g_loadcursor;
 	customcursor = g_customcursor;
+	highlightclick = g_highlightclick;
+	highlightclickcolorleft = g_highlightclickcolorleft;
+	highlightclickcolorright = g_highlightclickcolorright;
+
 
 	HICON loadFileIcon= LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(IDI_ICON1));
 	((CButton *) GetDlgItem(IDC_FILECURSOR))->SetIcon(loadFileIcon);
@@ -269,6 +291,7 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 	((CSliderCtrl *) GetDlgItem(IDC_HIGHLIGHTSIZE))->SetPos(highlightsize);
 	((CComboBox *) GetDlgItem(IDC_HIGHLIGHTSHAPE))->SetCurSel(highlightshape);
 	((CButton *) GetDlgItem(IDC_HIGHLIGHTCURSOR))->SetCheck(highlightcursor);
+	((CButton *) GetDlgItem(IDC_HIGHLIGHTCLICK))->SetCheck(highlightclick);
 
 
 	//RefreshHighlight doesn't work in init dialog....so defer this to OnPaint
@@ -284,6 +307,18 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 		((CStatic *) GetDlgItem(IDC_STATIC_SIZE))->EnableWindow(TRUE);
 		((CStatic *) GetDlgItem(IDC_STATIC_SHAPE))->EnableWindow(TRUE);
 		((CStatic *) GetDlgItem(IDC_STATIC_HALFSIZE))->EnableWindow(TRUE);
+		((CButton *) GetDlgItem(IDC_HIGHLIGHTCLICK))->EnableWindow(TRUE);
+	
+		if(highlightclick)
+		{
+			((CButton *) GetDlgItem(IDC_HIGHLIGHTCOLORLB))->EnableWindow(TRUE);
+			((CButton *) GetDlgItem(IDC_HIGHLIGHTCOLORRB))->EnableWindow(TRUE);
+		}
+		else
+		{
+			((CButton *) GetDlgItem(IDC_HIGHLIGHTCOLORLB))->EnableWindow(FALSE);
+			((CButton *) GetDlgItem(IDC_HIGHLIGHTCOLORRB))->EnableWindow(FALSE);
+		}
 
 	}
 	else {
@@ -295,6 +330,10 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 		((CStatic *) GetDlgItem(IDC_STATIC_SIZE))->EnableWindow(FALSE);
 		((CStatic *) GetDlgItem(IDC_STATIC_SHAPE))->EnableWindow(FALSE);
 		((CStatic *) GetDlgItem(IDC_STATIC_HALFSIZE))->EnableWindow(FALSE);
+
+		((CButton *) GetDlgItem(IDC_HIGHLIGHTCLICK))->EnableWindow(FALSE);
+		((CButton *) GetDlgItem(IDC_HIGHLIGHTCOLORLB))->EnableWindow(FALSE);
+		((CButton *) GetDlgItem(IDC_HIGHLIGHTCOLORRB))->EnableWindow(FALSE);
 
 	}
 	
@@ -503,6 +542,9 @@ void CCursorOptionsDlg::OnOK()
 	g_highlightcolor = highlightcolor;	
 	g_loadcursor = loadcursor;
 	g_customcursor = customcursor;
+	g_highlightclick=highlightclick;
+	g_highlightclickcolorleft=highlightclickcolorleft;
+	g_highlightclickcolorright=highlightclickcolorright;
 	
 	CDialog::OnOK();
 }
@@ -548,6 +590,8 @@ void CCursorOptionsDlg::OnHighlightcursor()
 		((CStatic *) GetDlgItem(IDC_STATIC_SHAPE))->EnableWindow(TRUE);
 		((CStatic *) GetDlgItem(IDC_STATIC_HALFSIZE))->EnableWindow(TRUE);
 
+		((CButton *) GetDlgItem(IDC_HIGHLIGHTCLICK))->EnableWindow(TRUE);
+
 	}
 	else {
 
@@ -558,6 +602,10 @@ void CCursorOptionsDlg::OnHighlightcursor()
 		((CStatic *) GetDlgItem(IDC_STATIC_SIZE))->EnableWindow(FALSE);
 		((CStatic *) GetDlgItem(IDC_STATIC_SHAPE))->EnableWindow(FALSE);
 		((CStatic *) GetDlgItem(IDC_STATIC_HALFSIZE))->EnableWindow(FALSE);
+
+		((CButton *) GetDlgItem(IDC_HIGHLIGHTCLICK))->EnableWindow(FALSE);
+		((CButton *) GetDlgItem(IDC_HIGHLIGHTCOLORLB))->EnableWindow(FALSE);
+		((CButton *) GetDlgItem(IDC_HIGHLIGHTCOLORRB))->EnableWindow(FALSE);
 
 	}
 
@@ -570,10 +618,10 @@ void CCursorOptionsDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBa
 {
 	// TODO: Add your message handler code here and/or call default
 	highlightsize = ((CSliderCtrl *) GetDlgItem(IDC_HIGHLIGHTSIZE))->GetPos();	
-	
+	sliding=TRUE;
 	RefreshHighlight();
-	
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
+	sliding=FALSE;
 }
 
 
@@ -586,11 +634,35 @@ void CCursorOptionsDlg::RefreshHighlight()
 	int xoffset = 300;
 	int yoffset = 230;
 
-	
 
 	int highlightsizehalf = highlightsize/2;
 		
 	double x1,x2,y1,y2;
+
+	COLORREF usecolor = highlightcolor;
+
+
+	if (highlightclick==1 && sliding==FALSE)
+	{
+		SHORT tmpShort = -999;
+		tmpShort=GetKeyState(VK_LBUTTON);
+		if (tmpShort!=0 && tmpShort!=1)
+		{
+			usecolor = highlightclickcolorleft;
+			highlightsizehalf *= 1.5;
+		}
+		tmpShort=GetKeyState(VK_RBUTTON);
+		if (tmpShort!=0 && tmpShort!=1)
+		{
+			usecolor = highlightclickcolorright;
+			highlightsizehalf *= 1.5;
+		}
+	}
+
+
+
+
+
 
 	//OffScreen Buffer
 	CDC* cdc= GetWindowDC();
@@ -622,7 +694,7 @@ void CCursorOptionsDlg::RefreshHighlight()
 
 	HBRUSH ptbrush = (HBRUSH) ::GetStockObject(LTGRAY_BRUSH);
 	HPEN nullpen = CreatePen( PS_NULL,0,0); 
-	HBRUSH hlbrush = CreateSolidBrush( highlightcolor);
+	HBRUSH hlbrush = CreateSolidBrush( usecolor );
 	
 	
 	HBRUSH oldbrush = (HBRUSH)  ::SelectObject(hdcBits,ptbrush);	
@@ -668,3 +740,90 @@ void CCursorOptionsDlg::OnPaint()
 	RefreshHighlight();
 }
 
+
+void CCursorOptionsDlg::OnBnClickedOk()
+{
+	// TODO: Add your control notification handler code here
+	OnOK();
+}
+
+void CCursorOptionsDlg::OnHighlightColorLeft()
+{
+ 	CColorDialog colerdlog(highlightclickcolorleft,CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT);
+	if (colerdlog.DoModal() ==IDOK) {
+		 
+		highlightclickcolorleft=colerdlog.GetColor();			
+		
+	}	
+
+	RefreshHighlight();
+	
+}
+
+void CCursorOptionsDlg::OnHighlightColorRight()
+{
+ 	CColorDialog colerdlog(highlightclickcolorright,CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT);
+	if (colerdlog.DoModal() ==IDOK) {
+		 
+		highlightclickcolorright=colerdlog.GetColor();			
+		
+	}	
+
+	RefreshHighlight();
+	
+}
+
+void CCursorOptionsDlg::OnEnableVisualClickFeedback()
+{
+	highlightclick = ((CButton *) GetDlgItem(IDC_HIGHLIGHTCLICK))->GetCheck();	
+	if (highlightclick) {
+
+		((CButton *) GetDlgItem(IDC_HIGHLIGHTCOLORLB))->EnableWindow(TRUE);
+		((CButton *) GetDlgItem(IDC_HIGHLIGHTCOLORRB))->EnableWindow(TRUE);
+
+	}
+	else {
+
+		((CButton *) GetDlgItem(IDC_HIGHLIGHTCOLORLB))->EnableWindow(FALSE);
+		((CButton *) GetDlgItem(IDC_HIGHLIGHTCOLORRB))->EnableWindow(FALSE);
+
+	}
+
+	RefreshHighlight();
+}
+
+void CCursorOptionsDlg::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	RefreshHighlight();
+	CDialog::OnLButtonDown(nFlags, point);
+}
+
+void CCursorOptionsDlg::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	RefreshHighlight();
+	CDialog::OnLButtonUp(nFlags, point);
+}
+
+void CCursorOptionsDlg::OnRButtonDown(UINT nFlags, CPoint point)
+{
+	RefreshHighlight();
+	CDialog::OnRButtonDown(nFlags, point);
+}
+
+void CCursorOptionsDlg::OnRButtonUp(UINT nFlags, CPoint point)
+{
+	RefreshHighlight();
+	CDialog::OnRButtonUp(nFlags, point);
+}
+
+void CCursorOptionsDlg::OnRButtonDblClk(UINT nFlags, CPoint point)
+{
+	RefreshHighlight();
+	CDialog::OnRButtonDblClk(nFlags, point);
+}
+
+void CCursorOptionsDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+	RefreshHighlight();
+	CDialog::OnLButtonDblClk(nFlags, point);
+}
