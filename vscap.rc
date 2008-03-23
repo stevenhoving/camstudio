@@ -1,0 +1,2598 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif\r\n"
+    "#include ""res\\vscap.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#include ""afxprint.rc""       // printing/print preview resources\r\n"
+    "#endif\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON    DISCARDABLE     "res\\icon1.ico"
+IDI_CUSTOMICON_CONTEXTHELP ICON    DISCARDABLE     "res\\icon2.ico"
+IDI_CUSTOMICON_MAGNIFY  ICON    DISCARDABLE     "res\\ico00001.ico"
+IDI_CUSTOMICON_NODRAG   ICON    DISCARDABLE     "res\\ico00002.ico"
+IDI_CUSTOMICON_SPLITBARH ICON    DISCARDABLE     "res\\customic.ico"
+IDI_CUSTOMICON_SPLITBARV ICON    DISCARDABLE     "res\\ico00003.ico"
+IDI_CUSTOMICON_TOPOFTABLE ICON    DISCARDABLE     "res\\ico00004.ico"
+IDI_CUSTOMICON_BOOK1    ICON    DISCARDABLE     "res\\icon3.ico"
+IDI_CUSTOMICON_BOOK2    ICON    DISCARDABLE     "res\\ico00005.ico"
+IDI_CUSTOMICON_CLIP1    ICON    DISCARDABLE     "res\\ico00006.ico"
+IDI_CUSTOMICON_CLIP2    ICON    DISCARDABLE     "res\\ico00007.ico"
+IDI_CUSTOMICON_CLOCK1   ICON    DISCARDABLE     "res\\ico00008.ico"
+IDI_CUSTOMICON_CLOCK2   ICON    DISCARDABLE     "res\\ico00009.ico"
+IDI_CUSTOMICON_CARDFILE1 ICON    DISCARDABLE     "res\\ico00010.ico"
+IDI_CUSTOMICON_CARDFILE2 ICON    DISCARDABLE     "res\\ico00011.ico"
+IDI_CUSTOMICON_DISK1    ICON    DISCARDABLE     "res\\ico00012.ico"
+IDI_CUSTOMICON_DISK2    ICON    DISCARDABLE     "res\\ico00013.ico"
+IDI_CUSTOMICON_FILES1   ICON    DISCARDABLE     "res\\ico00014.ico"
+IDI_CUSTOMICON_FILES2   ICON    DISCARDABLE     "res\\ico00015.ico"
+IDI_CUSTOMICON_FOLDER2  ICON    DISCARDABLE     "res\\ico00016.ico"
+IDI_CUSTOMICON_FOLDER1  ICON    DISCARDABLE     "res\\ico00017.ico"
+IDI_CUSTOMICON_MAIL1    ICON    DISCARDABLE     "res\\ico00018.ico"
+IDI_CUSTOMICON_MAIL2    ICON    DISCARDABLE     "res\\ico00019.ico"
+IDI_CUSTOMICON_NOTE1    ICON    DISCARDABLE     "res\\ico00020.ico"
+IDI_CUSTOMICON_NOTE2    ICON    DISCARDABLE     "res\\ico00021.ico"
+IDI_CUSTOMICON_PEN1     ICON    DISCARDABLE     "res\\ico00022.ico"
+IDI_CUSTOMICON_PEN2     ICON    DISCARDABLE     "res\\ico00023.ico"
+IDI_CUSTOMICON_PENCIL1  ICON    DISCARDABLE     "res\\ico00024.ico"
+IDI_CUSTOMICON_PENCIL2  ICON    DISCARDABLE     "res\\ico00025.ico"
+IDI_CUSTOMICON_PHONE1   ICON    DISCARDABLE     "res\\ico00026.ico"
+IDI_CUSTOMICON_PHONE2   ICON    DISCARDABLE     "res\\ico00027.ico"
+IDI_CUSTOMICON_POINT1   ICON    DISCARDABLE     "res\\ico00028.ico"
+IDI_CUSTOMICON_POINT2   ICON    DISCARDABLE     "res\\ico00029.ico"
+IDI_CUSTOMICON_SERCURITY ICON    DISCARDABLE     "res\\ico00030.ico"
+IDI_CUSTOMICON_SECURITY2 ICON    DISCARDABLE     "res\\ico00031.ico"
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\vscap.ico"
+IDR_VSCAPTYPE           ICON    DISCARDABLE     "res\\vscapDoc.ico"
+IDI_ICONCROSSHAIR       ICON    DISCARDABLE     "res\\ico00032.ico"
+IDR_VSCAPTYPE_BK        ICON    DISCARDABLE     "res\\idr_vsca.ico"
+IDR_MAINFRAMESMALL      ICON    DISCARDABLE     "res\\idr_main.ico"
+IDI_ICONJUSTIFYRIGHT    ICON    DISCARDABLE     "res\\ico00035.ico"
+IDI_ICONJUSTIFYLEFT     ICON    DISCARDABLE     "res\\ico00033.ico"
+IDI_ICONJUSTIFYCENTER   ICON    DISCARDABLE     "res\\ico00034.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP  MOVEABLE PURE   "res\\Toolbar.bmp"
+IDB_BITMAP1             BITMAP  DISCARDABLE     "res\\bitmap1.bmp"
+IDB_BITMAP3             BITMAP  DISCARDABLE     "Logo.bmp"
+IDB_TOOLBAR256          BITMAP  DISCARDABLE     "res\\ToolbarPalette256.bmp"
+IDB_TOOLBARMASK         BITMAP  DISCARDABLE     "res\\ToolbarMask.bmp"
+IDB_BITMAP4             BITMAP  DISCARDABLE     "ABOUT.BMP"
+IDB_SCREENANNOTATIONS_SMALL BITMAP  DISCARDABLE     "res\\bmp00001.bmp"
+IDR_MAINFRAME1          BITMAP  MOVEABLE PURE   "res\\mainfram.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR DISCARDABLE  22, 22
+BEGIN
+    BUTTON      ID_RECORD
+    BUTTON      ID_PAUSE
+    BUTTON      ID_STOP
+    SEPARATOR
+    BUTTON      ID_VIEWTYPE
+    BUTTON      ID_VIEW_SCREENANNOTATIONS
+    BUTTON      ID_AVISWF
+END
+
+IDR_MAINFRAME1 TOOLBAR DISCARDABLE  21, 21
+BEGIN
+    BUTTON      ID_RECORD
+    BUTTON      ID_PAUSE
+    BUTTON      ID_STOP
+    SEPARATOR
+    BUTTON      ID_VIEWTYPE
+    BUTTON      ID_VIEW_SCREENANNOTATIONS
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Record",                     ID_RECORD
+        MENUITEM "&Stop",                       ID_STOP
+        MENUITEM "&Pause",                      ID_PAUSE
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Region"
+    BEGIN
+        MENUITEM "&Region",                     ID_REGION_RUBBER
+        MENUITEM "&Fixed Region ...",           ID_REGION_PANREGION
+        MENUITEM "Full &Screen",                ID_REGION_FULLSCREEN
+    END
+    POPUP "&Options"
+    BEGIN
+        MENUITEM "&Video Options",              ID_FILE_VIDEOOPTIONS
+        MENUITEM "&Cursor Options",             ID_OPTIONS_CURSOROPTIONS
+        MENUITEM SEPARATOR
+        MENUITEM "Do not record audio",         ID_OPTIONS_RECORDAUDIO_DONOTRECORDAUDIO
+
+        MENUITEM "Record audio from microphone", 
+                                                ID_OPTIONS_RECORDAUDIOMICROPHONE
+
+        MENUITEM SEPARATOR
+        POPUP "&Audio Options"
+        BEGIN
+            MENUITEM "&Audio Options for Microphone", ID_OPTIONS_AUDIOFORMAT
+            MENUITEM "Audio and  Video Synchronization", 
+                                                    ID_OPTIONS_AUDIOOPTIONS_AUDIOVIDEOSYNCHRONIZATION
+
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "&Enable Autopan",             ID_OPTIONS_AUTOPAN
+        MENUITEM "Autopan &Speed ...",          ID_OPTIONS_ATUOPANSPEED
+        MENUITEM SEPARATOR
+        POPUP "Program Options"
+        BEGIN
+            MENUITEM "Minimize program on start recording", 
+                                                    ID_OPTIONS_MINIMIZEONSTART
+
+            MENUITEM "Hide flashing rectangle during recording", 
+                                                    ID_OPTIONS_HIDEFLASHING
+            MENUITEM "Save settings on exit",       ID_OPTIONS_PROGRAMOPTIONS_SAVESETTINGSONEXIT
+
+            MENUITEM "Capture translucent/layered Windows", 
+                                                    ID_OPTIONS_CAPTURETRANS
+            MENUITEM SEPARATOR
+            POPUP "Play AVI file when recording stops"
+            BEGIN
+                MENUITEM "Do not play AVI file",        ID_OPTIONS_PROGRAMOPTIONS_NOPLAY
+
+                MENUITEM "Use System Default Player",   ID_OPTIONS_PROGRAMOPTIONS_DEFAULTPLAY
+
+                MENUITEM "Use CamStudio Player 1.0",    ID_OPTIONS_PROGRAMOPTIONS_CAMSTUDIOPLAY
+
+                MENUITEM "Use CamStudio Player 2.0",    ID_OPTIONS_PROGRAMOPTIONS_PLAYAVIFILEWHENRECORDINGSTOPS_USECAMSTUDIOPLAYER20
+
+            END
+            POPUP "Temporary directory for recording"
+            BEGIN
+                MENUITEM "Use Windows temporary directory", 
+                                                        ID_OPTIONS_TEMPDIR_WINDOWS
+
+                MENUITEM "Use installed directory",     ID_OPTIONS_TEMPDIR_INSTALLED
+
+                MENUITEM "Use user specified directory ...", 
+                                                        ID_OPTIONS_TEMPDIR_USER
+
+            END
+            POPUP "Recording Thread Priority"
+            BEGIN
+                MENUITEM "Normal",                      ID_OPTIONS_RECORDINGTHREADPRIORITY_NORMAL
+
+                MENUITEM "Above Normal",                ID_OPTIONS_RECORDINGTHREADPRIORITY_ABOVENORMAL
+
+                MENUITEM "Highest",                     ID_OPTIONS_RECORDINGTHREADPRIORITY_HIGHEST
+
+                MENUITEM "Time Critical",               ID_OPTIONS_RECORDINGTHREADPRIORITY_TIMECRITICAL
+
+            END
+            POPUP "Name of AVI file"
+            BEGIN
+                MENUITEM "Ask for file name",           ID_OPTIONS_NAMING_ASK
+
+                MENUITEM "Automatic file naming ( Use Date / Time )", 
+                                                        ID_OPTIONS_NAMING_AUTODATE
+
+            END
+            MENUITEM "Preset Time",                 ID_OPTIONS_PROGRAMOPTIONS_PRESETTIME
+
+            MENUITEM "Troubleshoot ...",            ID_OPTIONS_PROGRAMOPTIONS_TROUBLESHOOT
+
+        END
+        POPUP "Record to Flash Options"
+        BEGIN
+            MENUITEM "Preview SWF File upon completion", 
+                                                    ID_OPTIONS_SWF_LAUNCHHTML
+
+            MENUITEM "Delete the intermediate AVI file upon completion", 
+                                                    ID_OPTIONS_SWF_DELETEAVIFILE
+
+            MENUITEM "Display conversion options before generating SWF", 
+                                                    ID_OPTIONS_SWF_DISPLAYPARAMETERS
+
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "&Keyboard Shortcuts",         ID_OPTIONS_KEYBOARDSHORTCUTS
+    END
+    POPUP "&Tools"
+    BEGIN
+        MENUITEM "&Screen Annotations",         ID_VIEW_SCREENANNOTATIONS
+        MENUITEM "&Video Annotations",          ID_VIEW_VIDEOANNOTATIONS
+        MENUITEM SEPARATOR
+        MENUITEM "SWF Producer ( Converts AVI to Flash )", 
+                                                ID_TOOLS_SWFPRODUCER
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Normal View",                ID_VIEW_NORMALVIEW
+        MENUITEM "&Compact View",               ID_VIEW_COMPACTVIEW
+        MENUITEM "&Buttons View",               ID_VIEW_BUTTONSVIEW
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&Help",                       ID_HELP_HELP
+        MENUITEM SEPARATOR
+        MENUITEM "&CamStudio Website",          ID_HELP_WEBSITE
+        MENUITEM "&Frequently Asked Questions", ID_HELP_FAQ
+        MENUITEM SEPARATOR
+        MENUITEM "Donations",                   ID_HELP_DONATIONS
+        MENUITEM SEPARATOR
+        MENUITEM "&About",                      ID_APP_ABOUT
+    END
+END
+
+IDR_TRAYMENU MENU DISCARDABLE 
+BEGIN
+    POPUP "Menu"
+    BEGIN
+        MENUITEM "&Record",                     ID_RECORD
+        MENUITEM "&Stop",                       ID_STOP
+        MENUITEM "&Pause",                      ID_PAUSE
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+END
+
+IDR_CONTEXTMENU MENU DISCARDABLE 
+BEGIN
+    POPUP "Context"
+    BEGIN
+        MENUITEM "Save",                        ID_CONTEXT_SAVE
+        MENUITEM "Save Layout",                 ID_CONTEXT_SAVELAYOUT
+        MENUITEM SEPARATOR
+        MENUITEM "Clone",                       ID_CONTEXT_CLONE
+        MENUITEM SEPARATOR
+        MENUITEM "Edit Text ...",               ID_CONTEXT_EDITTEXT
+        MENUITEM "Edit Image ...",              ID_CONTEXT_EDITIMAGE
+        MENUITEM "Edit Transparency...",        ID_CONTEXT_EDITTRANSPARENCY
+        MENUITEM "Resize ...",                  ID_CONTEXT_RESIZE
+        MENUITEM SEPARATOR
+        POPUP "Anti Alias"
+        BEGIN
+            MENUITEM "No Anti Alias (Fastest)",     ID_CONTEXT_ANTIALIAS_NOANTIALIAS
+
+            MENUITEM "Anti Alias X 2 (Better Quality)", 
+                                                    ID_CONTEXT_ANTIALIAS_ANTIALIASX2
+
+            MENUITEM "Anti Alias X 3 (Best Quality)", 
+                                                    ID_CONTEXT_ANTIALIAS_ANTIALIASX3SLOWEST
+
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "Close",                       ID_CONTEXT_CLOSE
+        MENUITEM "Close All",                   ID_CONTEXT_CLOSEALL
+        MENUITEM SEPARATOR
+        MENUITEM "Refresh",                     ID_CONTEXT_REFRESH
+    END
+END
+
+IDR_CONTEXTLANGUAGE MENU DISCARDABLE 
+BEGIN
+    POPUP "Script"
+    BEGIN
+        MENUITEM "Western   (English, French, German, etc..)", 
+                                                ID_SCRIPT_WESTERN
+        MENUITEM "Baltic",                      ID_SCRIPT_BALTIC
+        MENUITEM "Chinese Big 5",               ID_SCRIPT_CHINESEBIG5
+        MENUITEM "Default",                     ID_SCRIPT_DEFAULT
+        MENUITEM "East Europe",                 ID_SCRIPT_EASTEUROPE
+        MENUITEM "Chinese GB 2312",             ID_SCRIPT_CHINESEGB2312
+        MENUITEM "Greek",                       ID_SCRIPT_GREEK
+        MENUITEM "Hangul",                      ID_SCRIPT_HANGUL
+        MENUITEM "Mac",                         ID_SCRIPT_MAC
+        MENUITEM "Oem",                         ID_SCRIPT_OEM
+        MENUITEM "Russian",                     ID_SCRIPT_RUSSIAN
+        MENUITEM "Japanese Shift JIS",          ID_SCRIPT_JAPANESESHIFTJIS
+        MENUITEM "Symbol",                      ID_SCRIPT_SYMBOL
+        MENUITEM "Turkish",                     ID_SCRIPT_TURKISH
+        MENUITEM "Johab (Korean)",              ID_SCRIPT_JOHABKOREAN
+        MENUITEM "Hebrew",                      ID_SCRIPT_HEBREW
+        MENUITEM "Arabic",                      ID_SCRIPT_ARABIC
+        MENUITEM "Thai",                        ID_SCRIPT_THAI
+    END
+END
+
+IDR_CONTEXTEDITOBJ MENU DISCARDABLE 
+BEGIN
+    POPUP "EditObj"
+    BEGIN
+        MENUITEM "New Shape",                   ID_EDITOBJ_NEWOBJECT
+        MENUITEM SEPARATOR
+        MENUITEM "Edit Image ...",              ID_EDITOBJ_EDITIMAGE
+        MENUITEM "Edit Text ...",               ID_EDITOBJ_EDITTEXT
+        MENUITEM "Edit Transparency ...",       ID_EDITOBJ_EDITTRANSPARENCY
+        MENUITEM "Edit Shape Name",             ID_EDITOBJ_TESTEDIT
+        MENUITEM SEPARATOR
+        MENUITEM "Copy",                        ID_EDITOBJ_COPY
+        MENUITEM "Paste",                       ID_EDITOBJ_PASTE
+        MENUITEM "Remove",                      ID_EDITOBJ_REMOVE
+        MENUITEM SEPARATOR
+        POPUP "Shape Library"
+        BEGIN
+            MENUITEM "New Shape Library",           ID_EDITOBJ_LIBRARY_NEWLIBRARY
+
+            MENUITEM "Open Shape Library",          ID_EDITOBJ_LIBRARY_OPENLIBRARY
+
+            MENUITEM "Save Shape Library",          ID_EDITOBJ_LIBRARY_CLOSELIBRARY
+
+        END
+    END
+END
+
+IDR_CONTEXTEDITLAYOUT MENU DISCARDABLE 
+BEGIN
+    POPUP "EditLayout"
+    BEGIN
+        MENUITEM "Open Layout",                 ID_EDITLAYOUT_OPENLAYOUT
+        MENUITEM "Save Layout",                 ID_EDITLAYOUT_SAVELAYOUT
+        MENUITEM SEPARATOR
+        MENUITEM "Copy Layout",                 ID_EDITOBJ_COPY
+        MENUITEM "Paste Layout",                ID_EDITOBJ_PASTE
+        MENUITEM "Remove Layout",               ID_EDITOBJ_REMOVE
+        MENUITEM "Edit Layout Name",            ID_EDITOBJ_TESTEDIT
+        MENUITEM SEPARATOR
+        POPUP "Layout Library"
+        BEGIN
+            MENUITEM "New Layout Library",          ID_EDITLAYOUT_LIBRARY_NEWLIBRARY
+
+            MENUITEM "Open Layout Library",         ID_EDITLAYOUT_LIBRARY_OPENLIBRARY
+
+            MENUITEM "Save Layout Library",         ID_EDITLAYOUT_LIBRARY_CLOSELIBRARY
+
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "Close All Objects",           ID_EDITLAYOUT_CLOSEALLOBJECTS
+
+        MENUITEM SEPARATOR
+        MENUITEM "Layout Shortcuts ...",        ID_EDITLAYOUT_LAYOUTSHORTCUTS
+
+    END
+END
+
+IDR_CONTEXTVIDEO MENU DISCARDABLE 
+BEGIN
+    POPUP "ContextVideo"
+    BEGIN
+        MENUITEM "Video Source",                ID_CONTEXTVIDEO_SOURCEFORMAT
+        MENUITEM "Video Format",                ID_CONTEXTVIDEO_VIDEOSOURCE
+        MENUITEM SEPARATOR
+        MENUITEM "Edit Text ...",               ID_CONTEXT_EDITTEXT
+        MENUITEM "Edit Image ...",              ID_CONTEXT_EDITIMAGE
+        MENUITEM "Edit Transparency...",        ID_CONTEXTVIDEO_EDITTRANSPARENCY
+
+        MENUITEM "Edit Refresh Rate ...",       ID_CONTEXTVIDEO_EDITTRANSPARENCYREFRESHRATE
+
+        MENUITEM SEPARATOR
+        MENUITEM "Close",                       ID_CONTEXT_CLOSE
+    END
+END
+
+IDR_ANNOTATIONMENU MENU DISCARDABLE 
+BEGIN
+    POPUP "Library"
+    BEGIN
+        MENUITEM "New Shape Library",           ID_LIBRARY_NEWSHAPELIBRARY
+        MENUITEM "Open Shape Library",          ID_LIBRARY_OPENSHAPELIBRARY
+        MENUITEM "Save Shape Library",          ID_LIBRARY_SAVESHAPELIBRARY
+        MENUITEM "Insert Shape Libary",         ID_LIBRARY_INSERTSHAPELIBARAY
+
+        MENUITEM SEPARATOR
+        MENUITEM "New Layout Library",          ID_LIBRARY_NEWLAYOUTLIBRARY
+        MENUITEM "Open Layout Library",         ID_LIBRARY_OPENLAYOUTLIBRARY
+        MENUITEM "Save Layout Library",         ID_LIBRARY_SAVELAYOUTLIBRARY
+        MENUITEM SEPARATOR
+        MENUITEM "Close Screen Annotations",    ID_OPTIONS_CLOSESCREENANNOTATIONS
+
+    END
+    POPUP "Objects"
+    BEGIN
+        MENUITEM "Save Layout",                 IDR_ANN_SAVELAYOUT
+        MENUITEM SEPARATOR
+        MENUITEM "Copy",                        ID_OBJECTS_COPY
+        MENUITEM "Paste",                       ID_OBJECTS_PASTE
+        MENUITEM "Remove",                      ID_OBJECTS_REMOVE
+        MENUITEM SEPARATOR
+        MENUITEM "Move Item Up",                ID_OBJECTS_MOVEITEMUP
+        MENUITEM "Move Item Down",              ID_OBJECTS_MOVEITEMDOWN
+        MENUITEM SEPARATOR
+        MENUITEM "Edit Text",                   ID_OBJECTS_EDITTEXT
+        MENUITEM "Edit Image",                  ID_OBJECTS_EDITIMAGE
+        MENUITEM "Edit Transaprency",           ID_OBJECTS_EDITTRANSAPRENCY
+        MENUITEM "Edit Name",                   ID_OBJECTS_EDITNAME
+        MENUITEM SEPARATOR
+        MENUITEM "Layout Shortcuts ...",        ID_EDITLAYOUT_LAYOUTSHORTCUTS
+
+        MENUITEM "Close All Objects",           ID_OBJECTS_CLOSEALLOBJECTS
+    END
+    POPUP "Help "
+    BEGIN
+        MENUITEM "Screen Annotations Help",     ID_HELP_HELP
+        MENUITEM SEPARATOR
+        MENUITEM "Shapes",                      ID_HELP_SHAPES
+        POPUP "Shape Topics"
+        BEGIN
+            MENUITEM "Instantiating a shape",       ID_HELP_SHAPETOPICS_INSTANTIATINGASHAPE
+
+            MENUITEM "Editing a shape",             ID_HELP_SHAPETOPICS_EDITINGASHAPE
+
+            MENUITEM "Editing Text",                ID_HELP_SHAPETOPICS_EDITINGTEXT
+
+            MENUITEM "Editing Image",               ID_HELP_SHAPETOPICS_EDITINGIMAGE
+
+            MENUITEM "Editing Transparency",        ID_HELP_SHAPETOPICS_EDITINGTRANSPARENCY
+
+            MENUITEM "Resizing Shapes",             ID_HELP_SHAPETOPICS_RESIZINGSHAPES
+
+            MENUITEM "Managing shapes\t",           ID_HELP_SHAPETOPICS_MANAGINGSHAPES
+
+            MENUITEM "Creating a new shape",        ID_HELP_SHAPETOPICS_CREATINGANEWSHAPE
+
+        END
+        MENUITEM "Layouts",                     ID_HELP_LAYOUTS
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 263, 119
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About CamStudio"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CONTROL         189,IDC_STATIC,"Static",SS_BITMAP,7,13,163,53,
+                    WS_EX_DLGMODALFRAME
+    DEFPUSHBUTTON   "OK",IDOK,185,13,49,15,WS_GROUP
+    LTEXT           "CamStudio",IDC_STATIC,186,39,53,9,SS_NOPREFIX
+    LTEXT           "Version 2.00",IDC_STATIC,186,53,55,8
+    LTEXT           "Copyright (C) 2001 - 2003  RenderSoft Software and Web Publishing",
+                    IDC_STATIC,19,79,222,12
+    GROUPBOX        "",IDC_STATIC,7,68,249,47
+    PUSHBUTTON      "http://www.rendersoftware.com/products/camstudio",
+                    IDC_BUTTONLINK,17,94,218,14,BS_FLAT
+END
+
+IDD_VIDEOOPTIONS DIALOGEX 0, 0, 303, 258
+STYLE DS_MODALFRAME | DS_CONTEXTHELP | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CONTEXTHELP
+CAPTION "Video Options"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,92,233,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,162,233,50,14
+    EDITTEXT        IDC_KEYFRAMES,111,68,46,13,ES_AUTOHSCROLL
+    LTEXT           "frames",IDC_STATIC_KEYFRAMES,163,71,37,8
+    LTEXT           "Quality",IDC_STATIC_QUALITY_LABEL,19,46,22,14,
+                    SS_CENTERIMAGE
+    CONTROL         "Slider1",IDC_QUALITY_SLIDER,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,50,46,130,14
+    LTEXT           "Playback Rate",IDC_STATIC,19,129,85,14
+    EDITTEXT        IDC_FPS,111,128,46,13,ES_AUTOHSCROLL
+    LTEXT           "Set Key Frames Every",IDC_STATIC,19,70,77,13
+    LTEXT           "frames/second",IDC_STATIC_KEYFRAMES2,163,130,57,8
+    EDITTEXT        IDC_KEYFRAMES2,111,108,46,13,ES_AUTOHSCROLL
+    LTEXT           "milliseconds",IDC_STATIC_KEYFRAMES3,163,112,59,8
+    LTEXT           "Capture Frames Every",IDC_STATIC,19,110,85,14
+    COMBOBOX        IDC_COMPRESSORS,19,23,191,84,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    GROUPBOX        "Compressor",IDC_STATIC,7,5,291,85
+    LTEXT           "Ql",IDC_QUALITY,187,47,31,12,SS_CENTERIMAGE
+    PUSHBUTTON      "&About",ID_ABOUT,236,22,50,14,NOT WS_TABSTOP
+    PUSHBUTTON      "&Configure",ID_CONFIGURE,236,43,50,14,NOT WS_TABSTOP
+    CONTROL         "Auto Adjust",IDC_AUTO,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,20,165,128,10
+    CONTROL         "Slider2",IDC_ADJUST,"msctls_trackbar32",TBS_AUTOTICKS | 
+                    TBS_TOP | WS_TABSTOP,61,183,167,17
+    LTEXT           "Max Framerate",IDC_STATIC,21,184,37,21
+    LTEXT           "Time Lapse ",IDC_STATIC,136,205,41,11
+    LTEXT           "1 Frame/Minute",IDC_STATIC,236,183,59,22
+    GROUPBOX        "",IDC_STATIC,7,155,292,67
+    GROUPBOX        "Framerates",IDC_STATIC,7,93,291,61
+END
+
+IDD_CURSOROPTIONS DIALOG DISCARDABLE  0, 0, 254, 215
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Cursor Options"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,73,198,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,137,198,50,14
+    RADIOBUTTON     "Hide Cursor",IDC_RADIO1,21,21,96,12
+    RADIOBUTTON     "Show Cursor",IDC_RADIO2,21,38,96,12
+    RADIOBUTTON     "Use Actual Cursor",IDC_CURSOR1,45,58,96,12
+    RADIOBUTTON     "Use Custom Cursor",IDC_CURSOR2,45,75,85,12
+    RADIOBUTTON     "Use Cursor From File",IDC_CURSOR3,45,93,96,12
+    CONTROL         "Highlight Cursor",IDC_HIGHLIGHTCURSOR,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,21,131,97,13
+    GROUPBOX        "Cursor Display",-1,7,7,240,109
+    CONTROL         "Slider1",IDC_HIGHLIGHTSIZE,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,52,145,125,13
+    COMBOBOX        IDC_HIGHLIGHTSHAPE,57,164,67,64,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_CUSTOMCURSOR,148,73,84,64,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "..",IDC_FILECURSOR,148,91,16,14,BS_ICON | BS_LEFT | 
+                    BS_TOP
+    LTEXT           "Size",IDC_STATIC_SIZE,22,148,30,11
+    LTEXT           "Shape",IDC_STATIC_SHAPE,21,167,30,11
+    GROUPBOX        "Cursor Highlight",-1,7,120,240,68
+    ICON            IDR_MAINFRAME,IDC_ICONCURSOR,194,25,20,20
+    DEFPUSHBUTTON   "Color",IDC_HIGHLIGHTCOLOR,129,164,43,14,BS_FLAT
+    LTEXT           "Halfsize",IDC_STATIC_HALFSIZE,204,172,36,10
+END
+
+IDD_AUTOPANSPEED DIALOG DISCARDABLE  0, 0, 186, 66
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Autopan Speed"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,17,39,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,75,39,50,14
+    GROUPBOX        " Maximum Pan Speed  ",IDC_GROUPBOX,7,7,172,52
+    CONTROL         "Slider1",IDC_PANSLIDER,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,13,20,163,13
+    LTEXT           "Sp",IDC_MAXSPEED,142,39,35,14,SS_CENTERIMAGE
+END
+
+IDD_FIXEDREGION DIALOG DISCARDABLE  0, 0, 162, 186
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Fixed Region"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,7,165,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,105,165,50,14
+    LTEXT           "Width",IDC_STATIC,19,102,46,11
+    LTEXT           "Height",IDC_STATIC,93,102,46,12
+    EDITTEXT        IDC_WIDTH,17,118,43,15,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_HEIGHT,91,118,43,15,ES_AUTOHSCROLL | ES_NUMBER
+    GROUPBOX        "Fixed Region",IDC_STATIC,7,7,148,151
+    PUSHBUTTON      "Select",IDSELECT,90,21,47,14
+    LTEXT           "Msg",IDC_MSG,19,23,63,20
+    LTEXT           "Left",IDC_STATIC,19,65,46,11
+    LTEXT           "Top",IDC_STATIC,93,65,46,12
+    EDITTEXT        IDC_X,17,81,43,15,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_Y,91,81,43,15,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Fixed Top-Left Corner",IDC_FIXEDTOPLEFT,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,18,50,119,10
+    CONTROL         "Drag Corners to Pan",IDC_SUPPORTMOUSEDRAG,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,17,144,126,10
+END
+
+IDD_AUDIODIALOG DIALOG DISCARDABLE  0, 0, 200, 254
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Audio Options for Microphone"
+FONT 8, "MS Sans Serif"
+BEGIN
+    COMBOBOX        IDC_RECORDFORMAT,15,54,167,100,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    DEFPUSHBUTTON   "Volume",IDVOLUME,134,17,48,14
+    GROUPBOX        "Recording Format",IDC_STATIC,6,42,187,33
+    GROUPBOX        "Compressed Format",IDC_STATIC,6,78,187,73
+    PUSHBUTTON      "Choose  Compressed Format",IDC_CHOOSE,16,128,166,15
+    EDITTEXT        IDC_COMPRESSEDFORMATTAG,16,90,165,15,ES_AUTOHSCROLL | 
+                    ES_READONLY
+    EDITTEXT        IDC_COMPRESSEDFORMAT,16,109,165,15,ES_AUTOHSCROLL | 
+                    ES_READONLY
+    EDITTEXT        IDC_IFACTOR,93,171,29,15,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Interleave every",IDC_INTERLEAVE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,15,172,72,11
+    GROUPBOX        "Interleave Video and Audio",IDC_STATIC,6,153,187,44
+    DEFPUSHBUTTON   "OK",IDOK,6,235,87,15
+    PUSHBUTTON      "Cancel",IDCANCEL,106,235,87,15
+    COMBOBOX        IDC_INPUTDEVICE,15,18,112,100,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    GROUPBOX        "Audio Capture Device",IDC_STATIC,6,6,187,32
+    CONTROL         "Frames",IDC_INTERLEAVEFRAMES,"Button",
+                    BS_AUTORADIOBUTTON,133,166,54,10
+    CONTROL         "Milliseconds",IDC_INTERLEAVESECONDS,"Button",
+                    BS_AUTORADIOBUTTON,133,180,53,10
+    CONTROL         "Use MCI Recording",IDC_SYSTEMRECORD,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,14,212,112,11
+    GROUPBOX        "Use system method for audio recording",IDC_STATIC,6,200,
+                    187,31
+    PUSHBUTTON      "Help",IDC_BUTTON1,132,211,51,15
+END
+
+IDD_KEYSHORTCUTS DIALOG DISCARDABLE  0, 0, 311, 170
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Keyboard Shortcuts"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,99,149,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,162,149,50,14
+    GROUPBOX        "Record/Pause Key",IDC_STATIC,7,7,143,41
+    COMBOBOX        IDC_RECORDKEY,93,29,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    GROUPBOX        "Stop Key",IDC_STATIC,7,51,143,41
+    COMBOBOX        IDC_STOPKEY,93,73,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    GROUPBOX        "Cancel Recording Key",IDC_STATIC,7,97,143,41
+    COMBOBOX        IDC_CANCELKEY,93,119,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    CONTROL         "",IDC_CTRL1,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,17,31,10,10
+    LTEXT           "CTRL",IDC_STATIC,13,20,20,9
+    CONTROL         "",IDC_ALT1,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,42,31,10,10
+    LTEXT           "ALT",IDC_STATIC,42,20,15,10
+    CONTROL         "",IDC_SHIFT1,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,69,31,10,10
+    LTEXT           "SHIFT",IDC_STATIC,66,20,24,10
+    CONTROL         "",IDC_CTRL2,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,19,75,10,10
+    LTEXT           "CTRL",IDC_STATIC,15,65,20,9
+    CONTROL         "",IDC_ALT2,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,44,75,10,10
+    LTEXT           "ALT",IDC_STATIC,44,65,15,10
+    CONTROL         "",IDC_SHIFT2,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,71,75,10,10
+    LTEXT           "SHIFT",IDC_STATIC,68,65,22,10
+    CONTROL         "",IDC_CTRL3,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,18,122,10,10
+    LTEXT           "CTRL",IDC_STATIC,14,112,20,9
+    CONTROL         "",IDC_ALT3,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,44,122,10,10
+    LTEXT           "ALT",IDC_STATIC,44,112,15,10
+    CONTROL         "",IDC_SHIFT3,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,70,122,10,10
+    LTEXT           "SHIFT",IDC_STATIC,68,112,22,10
+    GROUPBOX        "Next Layout Key",IDC_STATIC,162,7,143,41
+    COMBOBOX        IDC_NEXTKEY,248,29,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    GROUPBOX        "Previous Layout Key",IDC_STATIC,162,51,143,41
+    COMBOBOX        IDC_PREVKEY,248,73,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    GROUPBOX        "Show/Hide Layout Key",IDC_STATIC,162,97,143,41
+    COMBOBOX        IDC_SHOWKEY,248,119,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    CONTROL         "",IDC_CTRL4,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,172,31,10,10
+    LTEXT           "CTRL",IDC_STATIC,168,20,20,9
+    CONTROL         "",IDC_ALT4,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,197,31,10,10
+    LTEXT           "ALT",IDC_STATIC,197,20,15,10
+    CONTROL         "",IDC_SHIFT4,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,224,31,10,10
+    LTEXT           "SHIFT",IDC_STATIC,221,20,24,10
+    CONTROL         "",IDC_CTRL5,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,174,75,10,10
+    LTEXT           "CTRL",IDC_STATIC,170,65,20,9
+    CONTROL         "",IDC_ALT5,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,199,75,10,10
+    LTEXT           "ALT",IDC_STATIC,199,65,15,10
+    CONTROL         "",IDC_SHIFT5,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,226,75,10,10
+    LTEXT           "SHIFT",IDC_STATIC,223,65,22,10
+    CONTROL         "",IDC_CTRL6,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,173,122,10,10
+    LTEXT           "CTRL",IDC_STATIC,169,112,20,9
+    CONTROL         "",IDC_ALT6,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,199,122,10,10
+    LTEXT           "ALT",IDC_STATIC,199,112,15,10
+    CONTROL         "",IDC_SHIFT6,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
+                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,225,122,10,10
+    LTEXT           "SHIFT",IDC_STATIC,223,112,22,10
+END
+
+IDD_ANNOTATION DIALOG DISCARDABLE  0, 0, 222, 239
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Annotation"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,7,218,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,67,218,50,14
+    GROUPBOX        "Caption",IDC_STATIC,7,7,207,59
+    GROUPBOX        "Date",IDC_STATIC,7,71,207,44
+    GROUPBOX        "Graphics",IDC_STATIC,7,120,208,87
+    DEFPUSHBUTTON   "Options",IDOPTIONSCAPTION,155,18,50,14
+    EDITTEXT        IDC_EDITCAPTION,19,42,186,15,ES_MULTILINE | 
+                    ES_AUTOHSCROLL
+    CONTROL         "Add Date",IDC_DATE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,17,82,71,13
+    DEFPUSHBUTTON   "Options",IDOPTIONSDATE,155,88,50,14
+    DEFPUSHBUTTON   "Options",IDOPTIONSGRAPHICS,155,133,50,14
+    CONTROL         "Add Caption",IDC_CAPTION,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,19,22,63,13
+    CONTROL         "Add Graphics",IDC_GRAPHICS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,16,135,102,13
+    CONTROL         "Add Date/Time",IDC_DATETIME,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,17,97,70,13
+    EDITTEXT        IDC_IMAGEPATH,26,170,152,15,ES_MULTILINE | 
+                    ES_AUTOHSCROLL | WS_DISABLED
+    GROUPBOX        "Image Path",IDC_STATIC,16,153,189,45
+    PUSHBUTTON      "..",IDC_FILEIMAGE,182,170,16,14,BS_ICON | BS_LEFT | 
+                    BS_TOP
+END
+
+IDD_AUTOSEARCH DIALOG DISCARDABLE  0, 0, 181, 121
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Searching"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "Static",IDC_TEXT1,14,17,156,33
+    LTEXT           "Static",IDC_TEXT2,13,60,156,36
+    PUSHBUTTON      "Close",IDC_CLOSE,14,100,76,14
+END
+
+IDD_AUDIOWAVEOUT DIALOG DISCARDABLE  0, 0, 199, 241
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "Audio Options for Speakers"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "Adjust Playback Volume",IDVOLUME,17,99,164,15
+    DEFPUSHBUTTON   "Close",IDOK,44,218,112,15
+    COMBOBOX        IDC_SOUNDDEVICE,17,53,164,100,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    GROUPBOX        "Soundcard Device",IDC_STATIC,7,6,187,71
+    CONTROL         "Slider1",IDC_VOLUMESLIDER,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,83,165,102,13
+    GROUPBOX        "Playback Volume",IDC_STATIC,7,84,187,38
+    LTEXT           "Please select the device that is attached to your speakers",
+                    IDC_STATIC,15,24,168,20
+    DEFPUSHBUTTON   "Manual Search",ID_MANUALCONFIG,13,185,78,15
+    DEFPUSHBUTTON   "Auto Search",ID_AUTOCONFIG,106,185,78,15
+    GROUPBOX        "Recording Line Configuration",IDC_STATIC,7,130,187,78
+    CONTROL         "Recording Volume",IDC_STATICVOLUME,"Static",
+                    SS_LEFTNOWORDWRAP | WS_GROUP,17,167,60,11
+    CONTROL         "Recording Line:",IDC_STATIC,"Static",SS_LEFTNOWORDWRAP | 
+                    WS_GROUP,16,147,60,11
+    CONTROL         "Static",IDC_STATICINFO,"Static",SS_LEFTNOWORDWRAP | 
+                    WS_GROUP,88,147,95,11
+END
+
+IDD_TROUBLESHOOT DIALOG DISCARDABLE  0, 0, 186, 207
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Troubleshoot"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,7,185,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,64,185,50,14
+    LTEXT           "After CamStudio exits, many of my sound recording applications no longer record from the microphone. They record from my speakers instead.",
+                    IDC_STATIC,18,21,148,38
+    CONTROL         "I have encountered the above problem.",IDC_CHECK1,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,62,146,18
+    GROUPBOX        "Problem",IDC_STATIC,7,7,172,82
+    LTEXT           "When I open the Video Options dialog, CamStudio crashes.",
+                    IDC_STATIC,18,108,148,28
+    CONTROL         "Restrict my video codecs to prevent crashing.",
+                    IDC_CHECK2,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | 
+                    WS_TABSTOP,18,141,146,30
+    GROUPBOX        "Problem",IDC_STATIC,7,94,172,83
+END
+
+IDD_TEXTDIALOG DIALOGEX 0, 0, 144, 158
+STYLE DS_SYSMODAL | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Text Properties"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Close",IDOK,7,136,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,88,136,50,14,NOT WS_VISIBLE
+    EDITTEXT        IDC_EDIT1,7,25,130,91,ES_MULTILINE | ES_AUTOVSCROLL | 
+                    ES_AUTOHSCROLL | ES_WANTRETURN
+    PUSHBUTTON      "Font",IDFONT,7,6,50,14
+    PUSHBUTTON      "",ID_JUSTLEFT,86,6,15,14,BS_ICON | BS_FLAT
+    PUSHBUTTON      "",ID_JUSTCENTER,103,6,16,14,BS_ICON | BS_FLAT
+    PUSHBUTTON      "",ID_JUSTRIGHT,121,6,15,14,BS_ICON | BS_FLAT
+    PUSHBUTTON      "Choose Language / Encoding",IDFONT2,7,119,131,14
+END
+
+IDD_SCREENANNOTATIONS2 DIALOGEX 65376, 65496, 130, 175
+STYLE WS_POPUP | WS_CAPTION
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Screen Annotations"
+MENU IDR_ANNOTATIONMENU
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CONTROL         "List1",IDC_LIST1,"SysListView32",LVS_SMALLICON | 
+                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | 
+                    LVS_EDITLABELS | WS_BORDER | WS_TABSTOP,7,26,116,121,
+                    WS_EX_STATICEDGE
+    PUSHBUTTON      "Close",IDOK,7,154,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,63,154,13,14,NOT WS_VISIBLE
+    CONTROL         "Tab1",IDC_TAB1,"SysTabControl32",0x0,7,7,116,18,
+                    WS_EX_TRANSPARENT
+    PUSHBUTTON      "Next Layout",IDNEXT,68,154,56,14
+END
+
+IDD_NEWSHAPE DIALOG DISCARDABLE  0, 0, 177, 231
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "New Shape"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_NAME,20,16,141,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "OK",IDOK,7,210,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,67,210,50,14
+    GROUPBOX        "Image",IDC_STATIC,7,38,162,65
+    CONTROL         "Blank Image",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON,19,
+                    50,53,14
+    CONTROL         "Image File",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,19,
+                    70,48,10
+    EDITTEXT        IDC_IMAGEFILETEXT,20,84,141,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BUTTON1,77,67,16,14,BS_ICON | BS_LEFT | BS_TOP
+    GROUPBOX        "Size",IDC_STATIC,7,107,163,38
+    EDITTEXT        IDC_WIDTH,47,125,36,13,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_HEIGHT,124,125,36,13,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Width",IDC_STATICWIDTH,20,124,22,14,SS_CENTERIMAGE
+    LTEXT           "Height",IDC_STATICHEIGHT,93,124,23,14,SS_CENTERIMAGE
+    GROUPBOX        "Text",IDC_STATIC,7,149,163,56
+    EDITTEXT        IDC_EDIT3,20,163,141,35,ES_AUTOHSCROLL
+    GROUPBOX        "Name",IDC_STATIC,7,3,162,32
+END
+
+IDD_EDITIMAGE DIALOGEX 0, 0, 203, 279
+STYLE DS_SYSMODAL | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Edit Image"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Close",IDOK,7,258,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,67,258,50,14,NOT WS_VISIBLE
+    GROUPBOX        "Cutout / Transparent  Region",IDC_STATIC,7,7,189,209
+    CONTROL         "Create cutout using transparency color",IDC_RADIO1,
+                    "Button",BS_AUTORADIOBUTTON,17,40,151,11
+    PUSHBUTTON      "Color",IDC_COLOR,39,70,37,14
+    LTEXT           "",IDC_COLORSTATIC,137,188,19,13,NOT WS_VISIBLE,
+                    WS_EX_STATICEDGE
+    CONTROL         "Create cutout using pre-defined shape",IDC_RADIO3,
+                    "Button",BS_AUTORADIOBUTTON,18,96,151,11
+    CONTROL         "Add border to image",IDC_CHECK1,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,43,151,102,13
+    LTEXT           "Border Size",IDC_STATIC1,43,171,44,12
+    COMBOBOX        IDC_PREDEFINEDSHAPE,29,115,98,42,CBS_DROPDOWN | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "No cutout region",IDC_RADIO2,"Button",
+                    BS_AUTORADIOBUTTON,17,20,91,11
+    EDITTEXT        IDC_BORDERSIZE,96,168,36,15,ES_AUTOHSCROLL | ES_READONLY | 
+                    ES_NUMBER
+    PUSHBUTTON      "Border Color",IDC_COLOR2,42,188,50,14
+    LTEXT           "",IDC_COLORSTATIC2,97,188,35,13,NOT WS_VISIBLE,
+                    WS_EX_STATICEDGE
+    GROUPBOX        "Border",IDC_BORDERSTATIC,28,135,157,76
+    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | 
+                    UDS_ALIGNRIGHT | UDS_ARROWKEYS,137,167,13,18
+    PUSHBUTTON      "Pick Color From Screen",IDC_COLOR3,81,70,91,14
+    GROUPBOX        "Choose color to be made transparent",IDC_STATICCHOOSE,
+                    28,56,157,33
+    GROUPBOX        "Background",IDC_STATIC,7,219,189,32
+    DEFPUSHBUTTON   "Background Color",IDBKCOLOR,26,230,72,14
+    PUSHBUTTON      "Load New Image",IDLOAD,108,230,77,14
+END
+
+IDD_RESIZE DIALOG DISCARDABLE  0, 0, 207, 81
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Resize"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "Close",IDOK,9,60,55,14
+    PUSHBUTTON      "Cancel",IDCANCEL,127,60,55,14,NOT WS_VISIBLE
+    GROUPBOX        "Dimensions",IDC_STATIC,9,5,189,48
+    LTEXT           "Width",IDC_STATIC,25,19,27,8
+    LTEXT           "Height",IDC_STATIC,25,35,34,8
+    CONTROL         "Slider1",IDC_WIDTHSLIDER,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,58,16,134,13
+    CONTROL         "Slider1",IDC_HEIGHTSLIDER,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,58,33,134,13
+    DEFPUSHBUTTON   "Reset Size",IDRESET,68,60,55,14
+END
+
+IDD_TRANSPARENCY DIALOG DISCARDABLE  0, 0, 186, 110
+STYLE DS_SYSMODAL | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Edit Transparency"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,14,83,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,70,83,50,14
+    GROUPBOX        "Windows Transparency",IDC_STATIC,7,7,172,96
+    CONTROL         "Slider1",IDC_TRANSSLIDER,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,12,64,154,12
+    LTEXT           "Trans",IDC_TRANSTEXT,135,84,39,13
+    CONTROL         "Enable Transparency\n( Making a window transparent will slow the recording rate significantly)",
+                    IDC_CHECK1,"Button",BS_AUTOCHECKBOX | BS_TOP | 
+                    BS_MULTILINE | WS_TABSTOP,17,22,150,33
+END
+
+IDD_TRANSRATE DIALOG DISCARDABLE  0, 0, 186, 126
+STYLE DS_SYSMODAL | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Edit Refresh Rate"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "Close",IDOK,6,97,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,62,97,50,14,NOT WS_VISIBLE
+    GROUPBOX        "Webcam / Video Refresh Rate ",-1,7,7,172,83
+    CONTROL         "Slider1",IDC_RATESLIDER,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,12,73,112,12
+    LTEXT           "Rate",IDC_RATETEXT,135,73,34,13
+    LTEXT           "Note : If the refresh rate is too high, it will cause your system to slow down and will even freeze the display of dialog boxes in CamStudio. This is especially true if transparency is turned on.",
+                    -1,17,22,156,42
+END
+
+IDD_SYNCHRONIZATION DIALOG DISCARDABLE  0, 0, 244, 134
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Audio and Video Synchronization"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,7,112,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,65,112,50,14
+    GROUPBOX        "Synchronization",IDC_STATIC,7,3,230,103
+    CONTROL         "(Invalid) My video goes before audio, delay the recording of video by",
+                    IDC_RADIO1,"Button",BS_AUTORADIOBUTTON | BS_TOP | 
+                    BS_MULTILINE | NOT WS_VISIBLE,20,92,202,13
+    CONTROL         "My audio goes before my video (I hear the words before I see the mouth movements) . Delay the recording of the video stream and shift by",
+                    IDC_RADIO3,"Button",BS_AUTORADIOBUTTON | BS_TOP | 
+                    BS_MULTILINE,19,39,207,27
+    CONTROL         "Do not shift the audio or video streams",IDC_RADIO4,
+                    "Button",BS_AUTORADIOBUTTON | BS_TOP | BS_MULTILINE,19,
+                    20,176,12
+    LTEXT           "Timeshift",IDC_STATIC,32,74,37,13
+    EDITTEXT        IDC_EDIT1,77,70,48,16,ES_AUTOHSCROLL | ES_READONLY | 
+                    ES_NUMBER
+    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | 
+                    UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS,203,69,
+                    12,17
+    LTEXT           "milliseconds",IDC_STATIC,140,74,44,13
+END
+
+IDD_PRESETTIME DIALOG DISCARDABLE  0, 0, 186, 90
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Preset Time"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,18,65,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,82,65,50,14
+    GROUPBOX        "Preset Time",IDC_STATIC,7,2,172,56
+    EDITTEXT        IDC_EDIT1,19,33,85,17,ES_AUTOHSCROLL | ES_READONLY | 
+                    ES_NUMBER
+    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | 
+                    UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,112,28,11,
+                    21
+    CONTROL         "Stop recording after a period of",IDC_CHECK1,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,20,14,142,13
+    LTEXT           "Seconds",IDC_STATIC,129,38,39,14
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "vscap MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "vscap\0"
+            VALUE "LegalCopyright", "Copyright (C) 1901\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "vscap.EXE\0"
+            VALUE "ProductName", "vscap Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 256
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
+    END
+
+    IDD_VIDEOOPTIONS, DIALOG
+    BEGIN
+        RIGHTMARGIN, 298
+        BOTTOMMARGIN, 253
+    END
+
+    IDD_CURSOROPTIONS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 247
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 212
+    END
+
+    IDD_AUTOPANSPEED, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 59
+    END
+
+    IDD_FIXEDREGION, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 155
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 179
+    END
+
+    IDD_AUDIODIALOG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 194
+        BOTTOMMARGIN, 250
+    END
+
+    IDD_KEYSHORTCUTS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 304
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 163
+    END
+
+    IDD_ANNOTATION, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 215
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 232
+    END
+
+    IDD_AUTOSEARCH, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 174
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 114
+    END
+
+    IDD_AUDIOWAVEOUT, DIALOG
+    BEGIN
+        RIGHTMARGIN, 193
+        BOTTOMMARGIN, 237
+    END
+
+    IDD_TROUBLESHOOT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 199
+    END
+
+    IDD_TEXTDIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 138
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 150
+    END
+
+    IDD_SCREENANNOTATIONS2, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 123
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 168
+    END
+
+    IDD_NEWSHAPE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 170
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 224
+    END
+
+    IDD_EDITIMAGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 196
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 272
+    END
+
+    IDD_RESIZE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 74
+    END
+
+    IDD_TRANSPARENCY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+    END
+
+    IDD_TRANSRATE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 119
+    END
+
+    IDD_SYNCHRONIZATION, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 237
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 127
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_CURSOROPTIONS DLGINIT
+BEGIN
+    IDC_HIGHLIGHTSHAPE, 0x403, 7, 0
+0x6943, 0x6372, 0x656c, "\000" 
+    IDC_HIGHLIGHTSHAPE, 0x403, 8, 0
+0x6c45, 0x696c, 0x7370, 0x0065, 
+    IDC_HIGHLIGHTSHAPE, 0x403, 7, 0
+0x7153, 0x6175, 0x6572, "\000" 
+    IDC_HIGHLIGHTSHAPE, 0x403, 10, 0
+0x6552, 0x7463, 0x6e61, 0x6c67, 0x0065, 
+    IDC_CUSTOMCURSOR, 0x403, 12, 0
+0x4f43, 0x544e, 0x5845, 0x4854, 0x4c45, 0x0050, 
+    IDC_CUSTOMCURSOR, 0x403, 8, 0
+0x414d, 0x4e47, 0x4649, 0x0059, 
+    IDC_CUSTOMCURSOR, 0x403, 7, 0
+0x4f4e, 0x5244, 0x4741, "\000" 
+    IDC_CUSTOMCURSOR, 0x403, 10, 0
+0x5053, 0x494c, 0x4254, 0x5241, 0x0048, 
+    IDC_CUSTOMCURSOR, 0x403, 10, 0
+0x5053, 0x494c, 0x4254, 0x5241, 0x0056, 
+    IDC_CUSTOMCURSOR, 0x403, 13, 0
+0x4f54, 0x2050, 0x464f, 0x5420, 0x4241, 0x454c, "\000" 
+    IDC_CUSTOMCURSOR, 0x403, 6, 0
+0x4f42, 0x4b4f, 0x0031, 
+    IDC_CUSTOMCURSOR, 0x403, 6, 0
+0x4f42, 0x4b4f, 0x0032, 
+    IDC_CUSTOMCURSOR, 0x403, 6, 0
+0x4c43, 0x5049, 0x0031, 
+    IDC_CUSTOMCURSOR, 0x403, 6, 0
+0x4c43, 0x5049, 0x0032, 
+    IDC_CUSTOMCURSOR, 0x403, 7, 0
+0x4c43, 0x434f, 0x314b, "\000" 
+    IDC_CUSTOMCURSOR, 0x403, 7, 0
+0x4c43, 0x434f, 0x324b, "\000" 
+    IDC_CUSTOMCURSOR, 0x403, 10, 0
+0x4143, 0x4452, 0x4946, 0x454c, 0x0031, 
+    IDC_CUSTOMCURSOR, 0x403, 10, 0
+0x4143, 0x4452, 0x4946, 0x454c, 0x0032, 
+    IDC_CUSTOMCURSOR, 0x403, 6, 0
+0x4944, 0x4b53, 0x0031, 
+    IDC_CUSTOMCURSOR, 0x403, 6, 0
+0x4944, 0x4b53, 0x0032, 
+    IDC_CUSTOMCURSOR, 0x403, 7, 0
+0x4946, 0x454c, 0x3153, "\000" 
+    IDC_CUSTOMCURSOR, 0x403, 7, 0
+0x4946, 0x454c, 0x3253, "\000" 
+    IDC_CUSTOMCURSOR, 0x403, 8, 0
+0x4f46, 0x444c, 0x5245, 0x0032, 
+    IDC_CUSTOMCURSOR, 0x403, 8, 0
+0x4f46, 0x444c, 0x5245, 0x0031, 
+    IDC_CUSTOMCURSOR, 0x403, 6, 0
+0x414d, 0x4c49, 0x0031, 
+    IDC_CUSTOMCURSOR, 0x403, 6, 0
+0x414d, 0x4c49, 0x0032, 
+    IDC_CUSTOMCURSOR, 0x403, 6, 0
+0x4f4e, 0x4554, 0x0031, 
+    IDC_CUSTOMCURSOR, 0x403, 6, 0
+0x4f4e, 0x4554, 0x0032, 
+    IDC_CUSTOMCURSOR, 0x403, 5, 0
+0x4550, 0x314e, "\000" 
+    IDC_CUSTOMCURSOR, 0x403, 5, 0
+0x4550, 0x324e, "\000" 
+    IDC_CUSTOMCURSOR, 0x403, 8, 0
+0x4550, 0x434e, 0x4c49, 0x0031, 
+    IDC_CUSTOMCURSOR, 0x403, 8, 0
+0x4550, 0x434e, 0x4c49, 0x0032, 
+    IDC_CUSTOMCURSOR, 0x403, 7, 0
+0x4850, 0x4e4f, 0x3145, "\000" 
+    IDC_CUSTOMCURSOR, 0x403, 7, 0
+0x4850, 0x4e4f, 0x3245, "\000" 
+    IDC_CUSTOMCURSOR, 0x403, 7, 0
+0x4f50, 0x4e49, 0x3154, "\000" 
+    IDC_CUSTOMCURSOR, 0x403, 7, 0
+0x4f50, 0x4e49, 0x3254, "\000" 
+    IDC_CUSTOMCURSOR, 0x403, 10, 0
+0x4553, 0x5543, 0x4952, 0x5954, 0x0031, 
+    IDC_CUSTOMCURSOR, 0x403, 10, 0
+0x4553, 0x5543, 0x4952, 0x5954, 0x0032, 
+    0
+END
+
+IDD_KEYSHORTCUTS DLGINIT
+BEGIN
+    IDC_RECORDKEY, 0x403, 3, 0
+0x3146, "\000" 
+    IDC_RECORDKEY, 0x403, 3, 0
+0x3246, "\000" 
+    IDC_RECORDKEY, 0x403, 3, 0
+0x3346, "\000" 
+    IDC_RECORDKEY, 0x403, 3, 0
+0x3446, "\000" 
+    IDC_RECORDKEY, 0x403, 3, 0
+0x3546, "\000" 
+    IDC_RECORDKEY, 0x403, 3, 0
+0x3646, "\000" 
+    IDC_RECORDKEY, 0x403, 3, 0
+0x3746, "\000" 
+    IDC_RECORDKEY, 0x403, 3, 0
+0x3846, "\000" 
+    IDC_RECORDKEY, 0x403, 3, 0
+0x3946, "\000" 
+    IDC_RECORDKEY, 0x403, 4, 0
+0x3146, 0x0030, 
+    IDC_RECORDKEY, 0x403, 4, 0
+0x3146, 0x0031, 
+    IDC_RECORDKEY, 0x403, 4, 0
+0x3146, 0x0032, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0041, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0042, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0043, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0044, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0045, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0046, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0047, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0048, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0049, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x004a, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x004b, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x004c, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x004d, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x004e, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x004f, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0050, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0051, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0052, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0053, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0054, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0055, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0056, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0057, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0058, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0059, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x005a, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0031, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0032, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0033, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0034, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0035, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0036, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0037, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0038, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0039, 
+    IDC_RECORDKEY, 0x403, 2, 0
+0x0030, 
+    IDC_RECORDKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2030, "\000" 
+    IDC_RECORDKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2031, "\000" 
+    IDC_RECORDKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2032, "\000" 
+    IDC_RECORDKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2033, "\000" 
+    IDC_RECORDKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2034, "\000" 
+    IDC_RECORDKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2035, "\000" 
+    IDC_RECORDKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2036, "\000" 
+    IDC_RECORDKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2037, "\000" 
+    IDC_RECORDKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2038, "\000" 
+    IDC_RECORDKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2039, "\000" 
+    IDC_RECORDKEY, 0x403, 6, 0
+0x4f48, 0x454d, 0x0020, 
+    IDC_RECORDKEY, 0x403, 8, 0
+0x4e49, 0x4553, 0x5452, 0x0020, 
+    IDC_RECORDKEY, 0x403, 8, 0
+0x4544, 0x454c, 0x4554, 0x0020, 
+    IDC_RECORDKEY, 0x403, 5, 0
+0x4e45, 0x2044, "\000" 
+    IDC_RECORDKEY, 0x403, 7, 0
+0x4e45, 0x4554, 0x2052, "\000" 
+    IDC_RECORDKEY, 0x403, 7, 0
+0x5053, 0x4341, 0x2045, "\000" 
+    IDC_RECORDKEY, 0x403, 5, 0
+0x4154, 0x2042, "\000" 
+    IDC_RECORDKEY, 0x403, 5, 0
+0x4f4e, 0x454e, "\000" 
+    IDC_STOPKEY, 0x403, 3, 0
+0x3146, "\000" 
+    IDC_STOPKEY, 0x403, 3, 0
+0x3246, "\000" 
+    IDC_STOPKEY, 0x403, 3, 0
+0x3346, "\000" 
+    IDC_STOPKEY, 0x403, 3, 0
+0x3446, "\000" 
+    IDC_STOPKEY, 0x403, 3, 0
+0x3546, "\000" 
+    IDC_STOPKEY, 0x403, 3, 0
+0x3646, "\000" 
+    IDC_STOPKEY, 0x403, 3, 0
+0x3746, "\000" 
+    IDC_STOPKEY, 0x403, 3, 0
+0x3846, "\000" 
+    IDC_STOPKEY, 0x403, 3, 0
+0x3946, "\000" 
+    IDC_STOPKEY, 0x403, 4, 0
+0x3146, 0x0030, 
+    IDC_STOPKEY, 0x403, 4, 0
+0x3146, 0x0031, 
+    IDC_STOPKEY, 0x403, 4, 0
+0x3146, 0x0032, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0041, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0042, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0043, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0044, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0045, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0046, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0047, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0048, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0049, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x004a, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x004b, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x004c, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x004d, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x004e, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x004f, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0050, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0051, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0052, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0053, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0054, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0055, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0056, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0057, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0058, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0059, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x005a, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0031, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0032, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0033, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0034, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0035, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0036, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0037, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0038, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0039, 
+    IDC_STOPKEY, 0x403, 2, 0
+0x0030, 
+    IDC_STOPKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2030, "\000" 
+    IDC_STOPKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2031, "\000" 
+    IDC_STOPKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2032, "\000" 
+    IDC_STOPKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2033, "\000" 
+    IDC_STOPKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2034, "\000" 
+    IDC_STOPKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2035, "\000" 
+    IDC_STOPKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2036, "\000" 
+    IDC_STOPKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2037, "\000" 
+    IDC_STOPKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2038, "\000" 
+    IDC_STOPKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2039, "\000" 
+    IDC_STOPKEY, 0x403, 6, 0
+0x4f48, 0x454d, 0x0020, 
+    IDC_STOPKEY, 0x403, 8, 0
+0x4e49, 0x4553, 0x5452, 0x0020, 
+    IDC_STOPKEY, 0x403, 8, 0
+0x4544, 0x454c, 0x4554, 0x0020, 
+    IDC_STOPKEY, 0x403, 5, 0
+0x4e45, 0x2044, "\000" 
+    IDC_STOPKEY, 0x403, 7, 0
+0x4e45, 0x4554, 0x2052, "\000" 
+    IDC_STOPKEY, 0x403, 7, 0
+0x5053, 0x4341, 0x2045, "\000" 
+    IDC_STOPKEY, 0x403, 5, 0
+0x4154, 0x2042, "\000" 
+    IDC_STOPKEY, 0x403, 5, 0
+0x4f4e, 0x454e, "\000" 
+    IDC_CANCELKEY, 0x403, 3, 0
+0x3146, "\000" 
+    IDC_CANCELKEY, 0x403, 3, 0
+0x3246, "\000" 
+    IDC_CANCELKEY, 0x403, 3, 0
+0x3346, "\000" 
+    IDC_CANCELKEY, 0x403, 3, 0
+0x3446, "\000" 
+    IDC_CANCELKEY, 0x403, 3, 0
+0x3546, "\000" 
+    IDC_CANCELKEY, 0x403, 3, 0
+0x3646, "\000" 
+    IDC_CANCELKEY, 0x403, 3, 0
+0x3746, "\000" 
+    IDC_CANCELKEY, 0x403, 3, 0
+0x3846, "\000" 
+    IDC_CANCELKEY, 0x403, 3, 0
+0x3946, "\000" 
+    IDC_CANCELKEY, 0x403, 4, 0
+0x3146, 0x0030, 
+    IDC_CANCELKEY, 0x403, 4, 0
+0x3146, 0x0031, 
+    IDC_CANCELKEY, 0x403, 4, 0
+0x3146, 0x0032, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0041, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0042, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0043, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0044, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0045, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0046, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0047, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0048, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0049, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x004a, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x004b, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x004c, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x004d, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x004e, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x004f, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0050, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0051, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0052, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0053, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0054, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0055, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0056, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0057, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0058, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0059, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x005a, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0031, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0032, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0033, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0034, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0035, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0036, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0037, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0038, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0039, 
+    IDC_CANCELKEY, 0x403, 2, 0
+0x0030, 
+    IDC_CANCELKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2030, "\000" 
+    IDC_CANCELKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2031, "\000" 
+    IDC_CANCELKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2032, "\000" 
+    IDC_CANCELKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2033, "\000" 
+    IDC_CANCELKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2034, "\000" 
+    IDC_CANCELKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2035, "\000" 
+    IDC_CANCELKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2036, "\000" 
+    IDC_CANCELKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2037, "\000" 
+    IDC_CANCELKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2038, "\000" 
+    IDC_CANCELKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2039, "\000" 
+    IDC_CANCELKEY, 0x403, 6, 0
+0x4f48, 0x454d, 0x0020, 
+    IDC_CANCELKEY, 0x403, 8, 0
+0x4e49, 0x4553, 0x5452, 0x0020, 
+    IDC_CANCELKEY, 0x403, 8, 0
+0x4544, 0x454c, 0x4554, 0x0020, 
+    IDC_CANCELKEY, 0x403, 5, 0
+0x4e45, 0x2044, "\000" 
+    IDC_CANCELKEY, 0x403, 7, 0
+0x4e45, 0x4554, 0x2052, "\000" 
+    IDC_CANCELKEY, 0x403, 7, 0
+0x5053, 0x4341, 0x2045, "\000" 
+    IDC_CANCELKEY, 0x403, 5, 0
+0x4154, 0x2042, "\000" 
+    IDC_CANCELKEY, 0x403, 5, 0
+0x4f4e, 0x454e, "\000" 
+    IDC_NEXTKEY, 0x403, 3, 0
+0x3146, "\000" 
+    IDC_NEXTKEY, 0x403, 3, 0
+0x3246, "\000" 
+    IDC_NEXTKEY, 0x403, 3, 0
+0x3346, "\000" 
+    IDC_NEXTKEY, 0x403, 3, 0
+0x3446, "\000" 
+    IDC_NEXTKEY, 0x403, 3, 0
+0x3546, "\000" 
+    IDC_NEXTKEY, 0x403, 3, 0
+0x3646, "\000" 
+    IDC_NEXTKEY, 0x403, 3, 0
+0x3746, "\000" 
+    IDC_NEXTKEY, 0x403, 3, 0
+0x3846, "\000" 
+    IDC_NEXTKEY, 0x403, 3, 0
+0x3946, "\000" 
+    IDC_NEXTKEY, 0x403, 4, 0
+0x3146, 0x0030, 
+    IDC_NEXTKEY, 0x403, 4, 0
+0x3146, 0x0031, 
+    IDC_NEXTKEY, 0x403, 4, 0
+0x3146, 0x0032, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0041, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0042, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0043, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0044, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0045, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0046, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0047, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0048, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0049, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x004a, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x004b, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x004c, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x004d, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x004e, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x004f, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0050, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0051, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0052, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0053, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0054, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0055, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0056, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0057, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0058, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0059, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x005a, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0031, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0032, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0033, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0034, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0035, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0036, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0037, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0038, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0039, 
+    IDC_NEXTKEY, 0x403, 2, 0
+0x0030, 
+    IDC_NEXTKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2030, "\000" 
+    IDC_NEXTKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2031, "\000" 
+    IDC_NEXTKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2032, "\000" 
+    IDC_NEXTKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2033, "\000" 
+    IDC_NEXTKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2034, "\000" 
+    IDC_NEXTKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2035, "\000" 
+    IDC_NEXTKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2036, "\000" 
+    IDC_NEXTKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2037, "\000" 
+    IDC_NEXTKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2038, "\000" 
+    IDC_NEXTKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2039, "\000" 
+    IDC_NEXTKEY, 0x403, 6, 0
+0x4f48, 0x454d, 0x0020, 
+    IDC_NEXTKEY, 0x403, 8, 0
+0x4e49, 0x4553, 0x5452, 0x0020, 
+    IDC_NEXTKEY, 0x403, 8, 0
+0x4544, 0x454c, 0x4554, 0x0020, 
+    IDC_NEXTKEY, 0x403, 5, 0
+0x4e45, 0x2044, "\000" 
+    IDC_NEXTKEY, 0x403, 7, 0
+0x4e45, 0x4554, 0x2052, "\000" 
+    IDC_NEXTKEY, 0x403, 7, 0
+0x5053, 0x4341, 0x2045, "\000" 
+    IDC_NEXTKEY, 0x403, 5, 0
+0x4154, 0x2042, "\000" 
+    IDC_NEXTKEY, 0x403, 5, 0
+0x4f4e, 0x454e, "\000" 
+    IDC_PREVKEY, 0x403, 3, 0
+0x3146, "\000" 
+    IDC_PREVKEY, 0x403, 3, 0
+0x3246, "\000" 
+    IDC_PREVKEY, 0x403, 3, 0
+0x3346, "\000" 
+    IDC_PREVKEY, 0x403, 3, 0
+0x3446, "\000" 
+    IDC_PREVKEY, 0x403, 3, 0
+0x3546, "\000" 
+    IDC_PREVKEY, 0x403, 3, 0
+0x3646, "\000" 
+    IDC_PREVKEY, 0x403, 3, 0
+0x3746, "\000" 
+    IDC_PREVKEY, 0x403, 3, 0
+0x3846, "\000" 
+    IDC_PREVKEY, 0x403, 3, 0
+0x3946, "\000" 
+    IDC_PREVKEY, 0x403, 4, 0
+0x3146, 0x0030, 
+    IDC_PREVKEY, 0x403, 4, 0
+0x3146, 0x0031, 
+    IDC_PREVKEY, 0x403, 4, 0
+0x3146, 0x0032, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0041, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0042, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0043, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0044, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0045, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0046, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0047, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0048, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0049, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x004a, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x004b, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x004c, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x004d, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x004e, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x004f, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0050, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0051, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0052, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0053, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0054, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0055, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0056, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0057, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0058, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0059, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x005a, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0031, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0032, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0033, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0034, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0035, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0036, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0037, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0038, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0039, 
+    IDC_PREVKEY, 0x403, 2, 0
+0x0030, 
+    IDC_PREVKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2030, "\000" 
+    IDC_PREVKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2031, "\000" 
+    IDC_PREVKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2032, "\000" 
+    IDC_PREVKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2033, "\000" 
+    IDC_PREVKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2034, "\000" 
+    IDC_PREVKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2035, "\000" 
+    IDC_PREVKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2036, "\000" 
+    IDC_PREVKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2037, "\000" 
+    IDC_PREVKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2038, "\000" 
+    IDC_PREVKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2039, "\000" 
+    IDC_PREVKEY, 0x403, 6, 0
+0x4f48, 0x454d, 0x0020, 
+    IDC_PREVKEY, 0x403, 8, 0
+0x4e49, 0x4553, 0x5452, 0x0020, 
+    IDC_PREVKEY, 0x403, 8, 0
+0x4544, 0x454c, 0x4554, 0x0020, 
+    IDC_PREVKEY, 0x403, 5, 0
+0x4e45, 0x2044, "\000" 
+    IDC_PREVKEY, 0x403, 7, 0
+0x4e45, 0x4554, 0x2052, "\000" 
+    IDC_PREVKEY, 0x403, 7, 0
+0x5053, 0x4341, 0x2045, "\000" 
+    IDC_PREVKEY, 0x403, 5, 0
+0x4154, 0x2042, "\000" 
+    IDC_PREVKEY, 0x403, 5, 0
+0x4f4e, 0x454e, "\000" 
+    IDC_SHOWKEY, 0x403, 3, 0
+0x3146, "\000" 
+    IDC_SHOWKEY, 0x403, 3, 0
+0x3246, "\000" 
+    IDC_SHOWKEY, 0x403, 3, 0
+0x3346, "\000" 
+    IDC_SHOWKEY, 0x403, 3, 0
+0x3446, "\000" 
+    IDC_SHOWKEY, 0x403, 3, 0
+0x3546, "\000" 
+    IDC_SHOWKEY, 0x403, 3, 0
+0x3646, "\000" 
+    IDC_SHOWKEY, 0x403, 3, 0
+0x3746, "\000" 
+    IDC_SHOWKEY, 0x403, 3, 0
+0x3846, "\000" 
+    IDC_SHOWKEY, 0x403, 3, 0
+0x3946, "\000" 
+    IDC_SHOWKEY, 0x403, 4, 0
+0x3146, 0x0030, 
+    IDC_SHOWKEY, 0x403, 4, 0
+0x3146, 0x0031, 
+    IDC_SHOWKEY, 0x403, 4, 0
+0x3146, 0x0032, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0041, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0042, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0043, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0044, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0045, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0046, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0047, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0048, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0049, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x004a, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x004b, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x004c, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x004d, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x004e, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x004f, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0050, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0051, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0052, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0053, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0054, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0055, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0056, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0057, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0058, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0059, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x005a, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0031, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0032, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0033, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0034, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0035, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0036, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0037, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0038, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0039, 
+    IDC_SHOWKEY, 0x403, 2, 0
+0x0030, 
+    IDC_SHOWKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2030, "\000" 
+    IDC_SHOWKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2031, "\000" 
+    IDC_SHOWKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2032, "\000" 
+    IDC_SHOWKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2033, "\000" 
+    IDC_SHOWKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2034, "\000" 
+    IDC_SHOWKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2035, "\000" 
+    IDC_SHOWKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2036, "\000" 
+    IDC_SHOWKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2037, "\000" 
+    IDC_SHOWKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2038, "\000" 
+    IDC_SHOWKEY, 0x403, 9, 0
+0x554e, 0x504d, 0x4441, 0x2039, "\000" 
+    IDC_SHOWKEY, 0x403, 6, 0
+0x4f48, 0x454d, 0x0020, 
+    IDC_SHOWKEY, 0x403, 8, 0
+0x4e49, 0x4553, 0x5452, 0x0020, 
+    IDC_SHOWKEY, 0x403, 8, 0
+0x4544, 0x454c, 0x4554, 0x0020, 
+    IDC_SHOWKEY, 0x403, 5, 0
+0x4e45, 0x2044, "\000" 
+    IDC_SHOWKEY, 0x403, 7, 0
+0x4e45, 0x4554, 0x2052, "\000" 
+    IDC_SHOWKEY, 0x403, 7, 0
+0x5053, 0x4341, 0x2045, "\000" 
+    IDC_SHOWKEY, 0x403, 5, 0
+0x4154, 0x2042, "\000" 
+    IDC_SHOWKEY, 0x403, 5, 0
+0x4f4e, 0x454e, "\000" 
+    0
+END
+
+IDD_EDITIMAGE DLGINIT
+BEGIN
+    IDC_PREDEFINEDSHAPE, 0x403, 16, 0
+0x6f52, 0x6e75, 0x2064, 0x6552, 0x7463, 0x6e61, 0x6c67, 0x0065, 
+    IDC_PREDEFINEDSHAPE, 0x403, 8, 0
+0x6c45, 0x696c, 0x7370, 0x0065, 
+    IDC_PREDEFINEDSHAPE, 0x403, 10, 0
+0x6552, 0x7463, 0x6e61, 0x6c67, 0x0065, 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_CURSOR4             CURSOR  DISCARDABLE     "res\\cur00002.cur"
+IDC_CURSORDROPPER       CURSOR  DISCARDABLE     "res\\cursor4.cur"
+IDC_CURSORDRAG          CURSOR  DISCARDABLE     "res\\cur00001.cur"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    IDR_MAINFRAME           "vscap\n\nVscap\n\n\nVscap.Document\nVscap Document"
+END
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "vscap"
+    AFX_IDS_IDLEMESSAGE     "Ready"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_NEW             "Create a new document\nNew"
+    ID_FILE_OPEN            "Open an existing document\nOpen"
+    ID_FILE_CLOSE           "Close the active document\nClose"
+    ID_FILE_SAVE            "Save the active document\nSave"
+    ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
+    ID_FILE_PAGE_SETUP      "Change the printing options\nPage Setup"
+    ID_FILE_PRINT_SETUP     "Change the printer and printing options\nPrint Setup"
+    ID_FILE_PRINT           "Print the active document\nPrint"
+    ID_FILE_PRINT_PREVIEW   "Display full pages\nPrint Preview"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_APP_ABOUT            "Display program information and copyright\nAbout"
+    ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_MRU_FILE1       "Open this document"
+    ID_FILE_MRU_FILE2       "Open this document"
+    ID_FILE_MRU_FILE3       "Open this document"
+    ID_FILE_MRU_FILE4       "Open this document"
+    ID_FILE_MRU_FILE5       "Open this document"
+    ID_FILE_MRU_FILE6       "Open this document"
+    ID_FILE_MRU_FILE7       "Open this document"
+    ID_FILE_MRU_FILE8       "Open this document"
+    ID_FILE_MRU_FILE9       "Open this document"
+    ID_FILE_MRU_FILE10      "Open this document"
+    ID_FILE_MRU_FILE11      "Open this document"
+    ID_FILE_MRU_FILE12      "Open this document"
+    ID_FILE_MRU_FILE13      "Open this document"
+    ID_FILE_MRU_FILE14      "Open this document"
+    ID_FILE_MRU_FILE15      "Open this document"
+    ID_FILE_MRU_FILE16      "Open this document"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
+    ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_EDIT_CLEAR           "Erase the selection\nErase"
+    ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
+    ID_EDIT_COPY            "Copy the selection and put it on the Clipboard\nCopy"
+    ID_EDIT_CUT             "Cut the selection and put it on the Clipboard\nCut"
+    ID_EDIT_FIND            "Find the specified text\nFind"
+    ID_EDIT_PASTE           "Insert Clipboard contents\nPaste"
+    ID_EDIT_REPEAT          "Repeat the last action\nRepeat"
+    ID_EDIT_REPLACE         "Replace specific text with different text\nReplace"
+    ID_EDIT_SELECT_ALL      "Select the entire document\nSelect All"
+    ID_EDIT_UNDO            "Undo the last action\nUndo"
+    ID_EDIT_REDO            "Redo the previously undone action\nRedo"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
+    ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "Change the window size"
+    AFX_IDS_SCMOVE          "Change the window position"
+    AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    AFX_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    AFX_IDS_SCNEXTWINDOW    "Switch to the next document window"
+    AFX_IDS_SCPREVWINDOW    "Switch to the previous document window"
+    AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "Restore the window to normal size"
+    AFX_IDS_SCTASKLIST      "Activate Task List"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
+    IDS_STRING_NOTE         "Note"
+    IDS_STRING_INTERLEAVE1  "Interleave factor must greater than 0."
+    IDS_STRING_NOINPUT1     "Unable to detect audio input device. You need a sound card with microphone input."
+    IDS_STRING_ERRVOLCTRL1  "Error launching Volume Control."
+    IDS_STRING_ERRVOLREC    "Error Setting Recording Volume."
+    IDS_STRING_NOINPUT2     "Unable to detect audio input device. You need a sound card with microphone input."
+    IDS_STRING_ERRVOLCTRL2  "Error launching Volume Control !"
+    IDS_STRING_WIDTHGREATER "The width must be greater than 0"
+    IDS_STRING_WIDTHSMALLER "The width must be smaller than the screen width (%d)"
+    IDS_STRING_HEIGHTGREATER "The height must be greater than 0"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_REGION_RUBBER        "Capture a selected Region"
+    ID_REGION_PANREGION     "Capture a fixed size region"
+    ID_RECORD               "Record video from the screen\nRecord"
+    ID_STOP                 "Stop recording video from screen\nStop"
+    ID_FILE_VIDEOOPTIONS    "Set Video Options"
+    ID_OPTIONS_CURSOROPTIONS "Set Cursor Effects and Options"
+    ID_OPTIONS_AUTOPAN      "Make capture area follow cursor"
+    ID_OPTIONS_ATUOPANSPEED "Set Autopan Speed"
+    ID_REGION_FULLSCREEN    "Capture Entire Desktop"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_OPTIONS_MINIMIZEPROGRAMONSTARTRECORDING 
+                            "Minimize program on start recording"
+    ID_OPTIONS_HIDEFLASHINGRECTANGLEDURINGRECORDING 
+                            "Hide flashing rectangle during recording"
+    ID_OPTIONS_MINIMIZEONSTART "Minimize program on start recording"
+    ID_OPTIONS_PROGRAMOPTIONS_PLAYAVIFILEWHENRECORDINGSTOPS 
+                            "Play AVI file when recording stops"
+    ID_OPTIONS_HIDEFLASHING "Hide flashing rectangle during recording"
+    ID_OPTIONS_PROGRAMOPTIONS_PLAYAVI "Play AVI file when recording stops"
+    ID_HELP_WEBSITE         "Visit the website of CamStudio"
+    ID_HELP_HELP            "Display Help"
+    ID_VIEW_COMPACTVIEW     "Compact View"
+    ID_PAUSE                "Pause Recording\nPause"
+    ID_VIEW_BUTTONVIEW      "Button View"
+    ID_OPTIONS_RECORDAUDIO  "Recording audio from microphone"
+    ID_OPTIONS_AUDIOOPTIONS "Audio Options"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_OPTIONS_AUDIOFORMAT  "Set Audio Options for Microphone"
+    ID_HELP_FAQ             "Visit the frequently asked questions webpage "
+    ID_OPTIONS_KEYBOARDSHORTCUTS "Setup Key Shortcuts"
+    ID_VIEW_BUTTONSVIEW     "Buttons View"
+    ID_VIEWTYPE             "Toggle View\nToggle View"
+    ID_VIEW_NORMALVIEW      "Normal View"
+    ID_OPTIONS_PROGRAMOPTIONS_SAVESETTINGSONEXIT "Save settings on exit"
+    ID_OPTIONS_CAPTURETRANS "Allow capture of translucent or layered windows"
+    ID_OPTIONS_TEMPDIR_WINDOWS 
+                            "Use Window temporary directory as recording directory"
+    ID_OPTIONS_TEMPDIR_INSTALLED 
+                            "Use CamStudio's installed directory as recording directory"
+    ID_OPTIONS_TEMPDIR_USER "Use user specified directory as recording directory"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_OPTIONS_RECORDAUDIO_DONOTRECORDAUDIO "Do not record audio"
+    ID_OPTIONS_RECORDAUDIO_RECORDFROMSPEAKERS "Record audio from speakers"
+    ID_OPTIONS_RECORDAUDIOMICROPHONE "Record audio from microphone"
+    ID_OPTIONS_AUDIOSPEAKERS "Set Audio Options for Speakers"
+    ID_OPTIONS_PROGRAMOPTIONS_TROUBLESHOOT "Troubleshoot some problems"
+    ID_OPTIONS_PROGRAMOPTIONS_CAMSTUDIOPLAY 
+                            "Use CamStudio Player to play the AVI file"
+    ID_OPTIONS_PROGRAMOPTIONS_DEFAULTPLAY 
+                            "Use your system's default player to play the AVI file "
+    ID_OPTIONS_PROGRAMOPTIONS_NOPLAY 
+                            "Do not play AVI file when recording stops"
+    ID_HELP_DONATIONS       "Donate to CamStudio"
+    ID_OPTIONS_PROGRAMOPTIONS_PLAYAVIFILEWHENRECORDINGSTOPS_USECAMSTUDIOPLAYER20 
+                            "Use CamStudio Player 2.0 (Scrollable)"
+    ID_VIEW_SCREENANNOTATIONS 
+                            "Display Screen Annotations Dialog\nScreen Annotations"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING_HEIGHTSMALLER 
+                            "The height must be smaller than the screen height (%d)"
+    IDS_STRING_LEFTGREATER  "The left value must be greater than 0"
+    IDS_STRING_LEFTSMALLER  "The left value must be smaller than the screen width (%d)"
+    IDS_STRING_TOPGREATER   "The top value must be greater than 0"
+    IDS_STRING_TOPSMALLER   "The top value must be smaller than the screen height (%d)"
+    IDS_STRING_VALUEEXCEEDWIDTH 
+                            "Value exceed screen width. The width is adjusted to %d"
+    IDS_STRING_VALUEEXCEEDHEIGHT 
+                            "Value exceed screen height. The height is adjusted to %d"
+    IDS_STRING_KEYRECORD    "This key is used by the Record/Pause Key"
+    IDS_STRING_KEYCANCEL    "This key is used by the Cancel Key"
+    IDS_STRING_KEYSTOP      "This key is used by the Stop Key"
+    IDS_STRING_STOPBEFOREEXIT 
+                            "Please stop video recording before exiting program."
+    IDS_STRING_EXITSET      "CamStudio will now exit and set your system to record with microphone. Proceed ?"
+    IDS_STRING_TIMELAPSELESS 
+                            "Timelapse for each frame cannot be less than 0 milliseconds."
+    IDS_STRING_TIMELAPSEMORE 
+                            "Timelapse for each frame cannot be more than 7200000 milliseconds (2 hours)."
+    IDS_STRING_KEYFRAMES1   "Key frames cannot be set for every %d frames. Please enter a value in the range 1 to 200."
+    IDS_STRING_PLAYBACKRATE "Playback Rate cannot be set to %d frames per second. Please enter a value in the range 1 to 200."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING_NOCREATEWFILE 
+                            "Unable to create new file. The file may be opened by another application. Please use another filename."
+    IDS_STRING_FILECREATIONERROR 
+                            "File Creation Error. Unable to rename/copy file."
+    IDS_STRING_NOSOUNDTRACK "Your AVI movie will not contain a soundtrack. CamStudio is unable to merge the video with audio."
+    IDS_STRINGFILECREATION2 "File Creation Error. Unable to rename/copy video file."
+    IDS_STRING_FILECREATION3 
+                            "File Creation Error. Unable to rename/copy audio file."
+    IDS_STRING_NOMERGE      "CamStudio is unable to merge the video with audio files. Your video and audio files are saved separately as \n\n"
+    IDS_STRING_FILECREATION4 
+                            "File Creation Error. Unable to rename/copy file. The file may be opened by another application. Please use another filename."
+    IDS_STRING_ERRPLAYER    "Error launching CamStudio Player !"
+    IDS_STRING_VERSIONOLD   "CamStudio requires a newer version of  Video for Windows."
+    IDS_STRING_ERRAVIDEFAULT 
+                            "Error recording AVI file using current compressor. Use default compressor ? "
+    IDS_STRING_ERRCREATEAVI "Error Creating AVI File"
+    IDS_STRING_ERRFRAME     "Error reading a frame!"
+    IDS_STRING_WAVEINERR    "Wave in Error"
+    IDS_STRING_ERRSOUND     "Error Creating Sound File"
+    IDS_STRING_AUDIOBUF     "Audio buffers still in queue!"
+    IDS_STRING_ERRSOUND2    "Error Writing Sound File"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING_NOINPUT3     "Unable to detect audio input device. You need a sound card with microphone input."
+    IDS_STRING_METRICSFAILED "Metrics failed mmresult=%u!"
+    IDS_STRING_GALLOC       "GlobalAllocPtr  failed!"
+    IDS_STRING_NOOPENVIDEO  "Unable to open video file."
+    IDS_STRING_NOOPENSREAM  "Unable to open video stream."
+    IDS_STRING_NOCREATESTREAM "Unable to create editable video stream."
+    IDS_STRING_NOOPENAUDIO  "Unable to open audio stream."
+    IDS_STRING_NOEDITAUDIO  "Unable to create editable audio stream."
+    IDS_STRING_NOVERIFYVIDEO "Unable to verify video stream."
+    IDS_STRING_NOVERIFYAUDIO "Unable to verify audio stream."
+    IDS_STRING_NOMERGE1     "Unable to merge audio and video streams (1)."
+    IDS_STRING_NOAUDIOCOMPRESS 
+                            "Unable to apply audio compression with the selected options. Your movie is saved without audio compression."
+    IDS_STRING_NOMERGE2     "Unable to merge audio and video streams (2)."
+    IDS_STRING_GALLOCVCM    "GlobalAllocPtr for Video Compress Parameters failed!"
+    IDS_STRING_FAILALLOCVCM "Failure allocating Video Parameters for compression"
+    IDS_STRING_COMPRESSORSTATE 
+                            "Failure in getting compressor state ! Error Value = %d"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING_SETCOMPRESSOR "Failure in setting compressor state !"
+    IDS_STRING_UNNECESSARY  "Please note : This step is unecessary if the Auto Search function already managed to detect the line for recording speakers output. You should use this only if the Auto Search function fails. Proceed?"
+    IDS_STRING_ASKQUESTIONS "You will now be asked several questions. A tone may or may not be heard after you click 'OK'. Please listen carefully before answering the questions."
+    IDS_STRING_ANALYZE      "Analyzing"
+    IDS_STRING_TESTINGLINE  "Testing line %d of %d. Did you hear a tone (that sound like the recorded tone)? "
+    IDS_STRING_SETTINGLINE  "Line %d set for recording sound from speakers !"
+    IDS_STRING_NODETECT     "Unable to detect recording line for speakers. Please make sure your soundcard is selected correctly in the 'Soundcard Device' of 'Audio Options for Speakers' "
+    IDS_STRING_MANUALSEARCH "We will now proceed with the manual search for the line used for recording speakers output. Not all soundcards support this function. CamStudio will play several tones and then ask you a series of questions. Please turn on your speakers now. \n\nIt is strongly recommended that you detach your microphone from your soundcard, or at least make sure that there is no background noise around your microphone. When you are ready, click 'OK'."
+    IDS_STRING_MANUAL       "Manual Search"
+    IDS_STRING_GETSELCTRL   "WaveoutGetSelectControl() failed."
+    IDS_STRING_UNINIT       "WaveoutUnInitialize() failed."
+    IDS_STRING_INIT         "WaveoutInitialize() failed."
+    IDS_STRING_MCIWAVE      "Error setting wave format on MCI Device"
+    IDS_STRING_HEARTONES    "You will hear several tones while CamStudio is searching your system. Please wait....."
+    IDS_STRING_RECLINE      "Recording line %d of %d"
+    IDS_STRING_HEARSEARCH   "You will hear several tones while CamStudio is searching your system. Please wait....."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING_ANALINE      "Analyzing line %d of %d"
+    IDS_STRING_LINEDETECTED "Line %d detected for recording sound from speakers ! You may now close this dialog box."
+    IDS_STRING_AUTODETECTFAILS 
+                            "CamStudio is unable to detected the line on your system for recording sound from your speakers. You may want to try manual configuration in Audio Options."
+    IDS_STRING_COMPRESSINGAUDIO "Compressing Audio %d%%"
+    IDS_STRING_CURRFRAME    "Current Frame : %d"
+    IDS_STRING_TIMEELASPED  "Time Elasped  : %.2f sec"
+    IDS_STRING_NUMCOLORS    "Number of Colors  : %d bits"
+    IDS_STRING_CODEC        "Codec  : %s"
+    IDS_STRING_ACTUALRATE   "Actual Input Rate  : %.2f fps"
+    IDS_STRING_DIMENSION    "Dimension  : %d X %d"
+    IDS_STRING_NOTALL       "Not all soundcards support the recording of sound from your speakers. CamStudio will attempt to find the appropriate line on your system. \n\nIt is strongly recommended that you detach your microphone from your soundcard, or at least make sure that there is no background noise around your microphone. \n\nWhen you are ready, click 'OK'."
+    IDS_STRING_ERRSND       "Error opening sound file."
+    IDS_STRING_NOAUDIOOUTPUT 
+                            "Unable to detect audio output device. You need a sound card with speakers attached."
+    IDS_STRING_WSETVOL      "WaveoutSetVolume() failed."
+    IDS_STRING_WGETVOL      "WaveoutGetVolume() failed."
+    IDS_STRING_WGETVOLCTRL  "WaveoutGetVolumeControl() failed."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING_WVOLINIT     "WaveoutVolumeInitialize() failed."
+    IDS_STRING_OUTOFMEM     "Out of memory for audio buffer!"
+    IDS_STRING_ERRDESCENT   "Error descending into file"
+    IDS_STRING_ERRDEFAULTPLAYER "Error launching default player !"
+    IDS_STRING_NODETECTLINE "Unable to detect audio line for recording from speakers. Please try the manual search in the Audio Options for Speakers dialog box."
+    IDS_STRING_LINEDETECTEDTH 
+                            "Line %d detected for recording sound from speakers (by threshold) ! You may now close this dialog box."
+    IDS_STRINGSPRKEY        "Record / Pause Key"
+    IDS_STRINGSRKEY         "Stop Key"
+    IDS_STRINGCRKEY         "Cancel Recording Key"
+    IDS_STRINGNLKEY         "Next Layout Key"
+    IDS_STRINGPLKEY         "Previous Layout Key"
+    IDS_STRINGSHLKEY        "Show / Hide Layout Key"
+    IDS_STRINGSAMEKEY       "%s has the same keystrokes as %s"
+    IDS_STRINGINSHAPEFILE   "Invalid shape file"
+    IDS_STRING_EOSFS        "Error opening shape file for saving"
+    IDS_STRINGINVLAYOUTFILE "Invalid layout file"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_EDITOBJ_TESTEDIT     "Edit the name of the shape or layout"
+    ID_EDITLAYOUT_OPENLAYOUT "Instantiate a  Layout"
+    ID_EDITLAYOUT_SAVELAYOUT "Save Layout"
+    ID_EDITLAYOUT_CLOSEALLOBJECTS "Close all shapes on the screen"
+    ID_EDITLAYOUT_LAYOUTSHORTCUTS "Display Layout Shortcuts"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_EDITOBJ_EDITIMAGE    "Edit the image of current shape"
+    ID_EDITOBJ_EDITTEXT     "Edit the text of current shape"
+    ID_EDITOBJ_COPY         "Copy shape or layout"
+    ID_EDITOBJ_PASTE        "Paste shape or layout"
+    ID_EDITOBJ_REMOVE       "Remove shape or layout"
+    ID_EDITOBJ_LIBRARY_CLOSELIBRARY "Save shape library to a file"
+    ID_EDITOBJ_EDITTRANSPARENCY 
+                            "Edit the transparency of current shape (Win 2000 / XP)"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_EDITLAYOUT_LIBRARY_NEWLIBRARY "Create a new layout library"
+    ID_EDITLAYOUT_LIBRARY_OPENLIBRARY "Open an existing layout library"
+    ID_EDITLAYOUT_LIBRARY_CLOSELIBRARY "Display Video Annotations Window"
+    ID_OPTIONS_CLOSESCREENANNOTATIONS "Close Screen Annotations Dialog"
+    ID_OPTIONS_AUDIOOPTIONS_AUDIOVIDEOSYNCHRONIZATION 
+                            "Delay recording of audio or video stream to synchronize"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING_EOLFS        "Error opening layout file for saving"
+    IDS_STRINGWIDTHLESS20   "Width cannot be less than 20"
+    IDS_STRINGWIDTHLARGER   "Width cannot be larger than %d"
+    IDS_STRINGHEIGHTLESS20  "Height cannot be less than 20"
+    IDS_STRINGHEIGHTLARGER  "Height cannot be larger than %d"
+    IDS_STRINGINVIMGFILE    "Invalid Image File"
+    IDS_STRING_SHAPES       "Shapes"
+    IDS_STRING_LAYOUT       "Layout"
+    IDS_STRING_WORKSWINXP   "This feature works only in Win 2000/ XP."
+    IDS_STRINGCANNOTSAVEO   "You cannot save over the default shape file."
+    IDS_STRINGSAVECL        "Save Current Shape Library"
+    IDS_STRINGcANNOTSAVEOL  "You cannot save over the default layout file."
+    IDS_STRING_AVAILXP      "This feature is only available in Win 2000/ XP."
+    IDS_STRING_TRANSBLAHBLAH 
+                            "Enabling Transparency at a high refresh rate will cause dialog boxes to freeze. If this happens, you will have to close the Video Annotation window to make the dialog boxes appear. Reduce the refresh rate ?"
+    IDS_STRING_NOWEBCAM     "Unable to Detect Webcam / Video Source"
+    IDS_STRINGSAVECLLA      "Save Current Layout Library"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING_UNSSC        "Unable to set shortcuts for %s"
+    IDS_ERRPPRODUCER        "Error launching SWF Producer !"
+    IDS_RECAVI              "Record to AVI"
+    IDS_RECSWF              "Record to SWF"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_TOOLS_SWFPRODUCER    "Launch SWF Producer"
+    ID_OPTIONS_SWF_LAUNCHHTML 
+                            "Launch a HTML file to preview the SWF file upon completion"
+    ID_OPTIONS_SWF_DELETEAVIFILE 
+                            "Delete the intermediate AVI file upon completion"
+    ID_OPTIONS_SWF_DISPLAYPARAMETERS 
+                            "Display conversion options before generating SWF"
+    ID_AVISWF               "Toggle mode to record AVI or Flash\nRecord to Flash / AVI"
+    ID_OPTIONS_NAMING_ASK   "Ask for filename when recording stops"
+    ID_OPTIONS_PROGRAMOPTIONS_NAMINGOFFILES_AUTOMATICFILENAMINGUSEDATETIME 
+                            "Automatically use today's date and time to name the file"
+    ID_OPTIONS_PROGRAMOPTIONS_SAVINGOFAVINAMING_AUTOMATICFILENAMINGFIXEDNAME 
+                            "Assign a fix name to a "
+    ID_OPTIONS_NAMING_AUTODATE "Automatically name the AVI using today's date"
+    ID_OPTIONS_PROGRAMOPTIONS_PRESETTIME 
+                            "Automatically stop recording after some time"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif
+#include "res\vscap.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#include "afxprint.rc"       // printing/print preview resources
+#endif
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

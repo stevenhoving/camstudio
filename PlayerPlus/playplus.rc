@@ -1,0 +1,583 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\playplus.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#include ""afxprint.rc""       // printing/print preview resources\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\playplus.ico"
+IDR_PLAYPLTYPE          ICON    DISCARDABLE     "res\\playplusDoc.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP  MOVEABLE PURE   "res\\Toolbar.bmp"
+IDB_BITMAP1             BITMAP  DISCARDABLE     "ABOUT.BMP"
+IDB_BITMAP2             BITMAP  DISCARDABLE     "LOGO.BMP"
+IDR_PLAYERTOOLBAR       BITMAP  DISCARDABLE     "res\\toolbar1.bmp"
+IDB_BITMAP_LOGO_PLAYER  BITMAP  DISCARDABLE     "LOGOPLAYER.BMP"
+IDB_BITMAP_LOGO_DUBBER  BITMAP  DISCARDABLE     "LOGODUBBER.BMP"
+IDB_BITMAP_ABOUT_PLAYER BITMAP  DISCARDABLE     "ABOUTPLAYER.BMP"
+IDB_BITMAP_ABOUT_DUBBER BITMAP  DISCARDABLE     "ABOUTDUBBER.BMP"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR DISCARDABLE  15, 15
+BEGIN
+    BUTTON      ID_FILE_PLAY
+    BUTTON      ID_FILE_STOP
+    SEPARATOR
+    BUTTON      ID_FILE_REWIND
+    BUTTON      ID_FILE_LASTFRAME
+    BUTTON      ID_BUTTON32785
+    SEPARATOR
+    BUTTON      ID_BUTTON32784
+    BUTTON      ID_BUTTON32786
+    BUTTON      ID_BUTTON32787
+    BUTTON      ID_BUTTON32788
+    BUTTON      ID_BUTTON32789
+    BUTTON      ID_BUTTON32790
+    BUTTON      ID_BUTTON32791
+    BUTTON      ID_BUTTON32792
+    BUTTON      ID_BUTTON32793
+    BUTTON      ID_BUTTON32794
+    BUTTON      ID_BUTTON32795
+    BUTTON      ID_BUTTON32796
+    BUTTON      ID_BUTTON32797
+    BUTTON      ID_BUTTON32798
+    BUTTON      ID_BUTTON32799
+    BUTTON      ID_BUTTON32800
+    BUTTON      ID_BUTTON32801
+    BUTTON      ID_BUTTON32802
+    BUTTON      ID_BUTTON32803
+END
+
+IDR_PLAYERTOOLBAR TOOLBAR DISCARDABLE  16, 15
+BEGIN
+    BUTTON      ID_FILE_PLAY
+    BUTTON      ID_FILE_STOP
+    SEPARATOR
+    BUTTON      ID_FILE_REWIND
+    BUTTON      ID_FILE_LASTFRAME
+    SEPARATOR
+    BUTTON      ID_BUTTON32784
+    BUTTON      ID_BUTTON32826
+    BUTTON      ID_BUTTON32827
+    BUTTON      ID_BUTTON32828
+    BUTTON      ID_BUTTON32829
+    BUTTON      ID_BUTTON32830
+    BUTTON      ID_BUTTON32831
+    BUTTON      ID_BUTTON32832
+    BUTTON      ID_BUTTON32833
+    BUTTON      ID_BUTTON32834
+    BUTTON      ID_BUTTON32835
+    BUTTON      ID_BUTTON32836
+    BUTTON      ID_BUTTON32837
+    BUTTON      ID_BUTTON32838
+    BUTTON      ID_BUTTON32839
+    BUTTON      ID_BUTTON32840
+    BUTTON      ID_BUTTON32841
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM "Save &As",                    ID_FILE_SAVEAS
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "Audio"
+    BEGIN
+        MENUITEM "Remove Audio",                ID_AUDIO_REMOVEEXISTINGAUDIOTRACKS
+
+        MENUITEM "Add Audio Wave File",         ID_AUDIO_ADDAUDIOFROMWAVEFILE
+
+        MENUITEM SEPARATOR
+        MENUITEM "Audio Options",               ID_AUDIO_AUDIOOPTIONS
+        MENUITEM "Stop Recording at End of Video", ID_AUDIO_EXTENSION
+    END
+    POPUP "Play"
+    BEGIN
+        MENUITEM "Play",                        ID_FILE_PLAY
+        MENUITEM "Stop",                        ID_FILE_STOP
+        MENUITEM "Rewind",                      ID_FILE_REWIND
+        MENUITEM "Last Frame",                  ID_FILE_LASTFRAME
+    END
+    POPUP "Zoom"
+    BEGIN
+        MENUITEM "1/4",                         ID_ZOOM_QUARTER
+        MENUITEM "1/2",                         ID_ZOOM_HALF
+        MENUITEM "1",                           ID_ZOOM_1
+        MENUITEM "2",                           ID_ZOOM_2
+        MENUITEM "4",                           ID_ZOOM_4
+        MENUITEM SEPARATOR
+        MENUITEM "Resize To Movie",             ID_ZOOM_RESIZETOMOVIESIZE
+        MENUITEM "TestAudio",                   ID_ZOOM_TESTAUDIO
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About Dubber",               ID_APP_ABOUT
+    END
+END
+
+IDR_MENUPLAYER MENU DISCARDABLE 
+BEGIN
+    POPUP "File"
+    BEGIN
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "Play"
+    BEGIN
+        MENUITEM "Play",                        ID_FILE_PLAY
+        MENUITEM "Stop",                        ID_FILE_STOP
+        MENUITEM "Rewind",                      ID_FILE_REWIND
+        MENUITEM "Last Frame",                  ID_FILE_LASTFRAME
+    END
+    POPUP "Zoom"
+    BEGIN
+        MENUITEM "1/4",                         ID_ZOOM_QUARTER
+        MENUITEM "1/2",                         ID_ZOOM_HALF
+        MENUITEM "1",                           ID_ZOOM_1
+        MENUITEM "2",                           ID_ZOOM_2
+        MENUITEM "4",                           ID_ZOOM_4
+        MENUITEM SEPARATOR
+        MENUITEM "Resize To Movie",             ID_ZOOM_RESIZETOMOVIESIZE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About Player",               ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 189, 172
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About playplus"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         130,IDC_IMAGE,"Static",SS_BITMAP,13,8,163,73,
+                    WS_EX_DLGMODALFRAME
+    CTEXT           "[ Rendersoft CamStudio Player ]",IDC_TITLE,7,90,175,9,
+                    NOT WS_GROUP
+    CTEXT           "Copyright (C) 2001 - 2002",IDC_STATIC,7,108,175,9,NOT 
+                    WS_GROUP
+    CTEXT           "RenderSoft Software and Web Publishing",IDC_STATIC,7,
+                    123,175,9,NOT WS_GROUP
+    DEFPUSHBUTTON   "OK",IDOK,58,147,73,16,WS_GROUP
+END
+
+IDD_AUDIODIALOG DIALOG DISCARDABLE  0, 0, 200, 225
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Audio Options"
+FONT 8, "MS Sans Serif"
+BEGIN
+    COMBOBOX        IDC_RECORDFORMAT,15,53,167,100,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    GROUPBOX        "Working Format (Recording Format)",IDC_STATIC,6,41,187,
+                    33
+    GROUPBOX        "Compressed Format (Save Format)",IDC_STATIC,7,77,186,73
+    PUSHBUTTON      "Choose  Compressed Format",IDC_CHOOSE,16,127,166,15
+    EDITTEXT        IDC_COMPRESSEDFORMATTAG,16,89,165,15,ES_AUTOHSCROLL | 
+                    ES_READONLY
+    EDITTEXT        IDC_COMPRESSEDFORMAT,16,108,165,15,ES_AUTOHSCROLL | 
+                    ES_READONLY
+    EDITTEXT        IDC_IFACTOR,93,170,29,15,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Interleave every",IDC_INTERLEAVE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,15,171,72,11
+    GROUPBOX        "Interleave Video and Audio",IDC_STATIC,7,153,186,43
+    DEFPUSHBUTTON   "Volume",IDVOLUME,134,16,48,14
+    DEFPUSHBUTTON   "OK",IDOK,7,201,87,15
+    PUSHBUTTON      "Cancel",IDCANCEL,106,201,87,15
+    COMBOBOX        IDC_INPUTDEVICE,15,17,112,100,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    GROUPBOX        "Audio Capture Device",IDC_STATIC,6,5,187,32
+    CONTROL         "Frames",IDC_INTERLEAVEFRAMES,"Button",
+                    BS_AUTORADIOBUTTON,133,165,54,10
+    CONTROL         "Milliseconds",IDC_INTERLEAVESECONDS,"Button",
+                    BS_AUTORADIOBUTTON,133,179,53,10
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "playplus MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "playplus\0"
+            VALUE "LegalCopyright", "Copyright (C) 2002\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "playplus.EXE\0"
+            VALUE "ProductName", "playplus Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 182
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 163
+    END
+
+    IDD_AUDIODIALOG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 194
+        BOTTOMMARGIN, 221
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    IDR_MAINFRAME           "playplus\n\nPlaypl\n\n\nPlayplus.Document\nPlaypl Document"
+END
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "playplus"
+    AFX_IDS_IDLEMESSAGE     "Ready"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_NEW             "Create a new document\nNew"
+    ID_FILE_OPEN            "Open an AVI movie"
+    ID_FILE_CLOSE           "Close AVI movie"
+    ID_FILE_SAVE            "Save the active document\nSave"
+    ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
+    ID_FILE_PAGE_SETUP      "Change the printing options\nPage Setup"
+    ID_FILE_PRINT_SETUP     "Change the printer and printing options\nPrint Setup"
+    ID_FILE_PRINT           "Print the active document\nPrint"
+    ID_FILE_PRINT_PREVIEW   "Display full pages\nPrint Preview"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_APP_ABOUT            "About\nAbout"
+    ID_APP_EXIT             "Exit the application\nExit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_MRU_FILE1       "Open this document"
+    ID_FILE_MRU_FILE2       "Open this document"
+    ID_FILE_MRU_FILE3       "Open this document"
+    ID_FILE_MRU_FILE4       "Open this document"
+    ID_FILE_MRU_FILE5       "Open this document"
+    ID_FILE_MRU_FILE6       "Open this document"
+    ID_FILE_MRU_FILE7       "Open this document"
+    ID_FILE_MRU_FILE8       "Open this document"
+    ID_FILE_MRU_FILE9       "Open this document"
+    ID_FILE_MRU_FILE10      "Open this document"
+    ID_FILE_MRU_FILE11      "Open this document"
+    ID_FILE_MRU_FILE12      "Open this document"
+    ID_FILE_MRU_FILE13      "Open this document"
+    ID_FILE_MRU_FILE14      "Open this document"
+    ID_FILE_MRU_FILE15      "Open this document"
+    ID_FILE_MRU_FILE16      "Open this document"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
+    ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_EDIT_CLEAR           "Erase the selection\nErase"
+    ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
+    ID_EDIT_COPY            "Copy the selection and put it on the Clipboard\nCopy"
+    ID_EDIT_CUT             "Cut the selection and put it on the Clipboard\nCut"
+    ID_EDIT_FIND            "Find the specified text\nFind"
+    ID_EDIT_PASTE           "Insert Clipboard contents\nPaste"
+    ID_EDIT_REPEAT          "Repeat the last action\nRepeat"
+    ID_EDIT_REPLACE         "Replace specific text with different text\nReplace"
+    ID_EDIT_SELECT_ALL      "Select the entire document\nSelect All"
+    ID_EDIT_UNDO            "Undo the last action\nUndo"
+    ID_EDIT_REDO            "Redo the previously undone action\nRedo"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
+    ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "Change the window size"
+    AFX_IDS_SCMOVE          "Change the window position"
+    AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    AFX_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    AFX_IDS_SCNEXTWINDOW    "Switch to the next document window"
+    AFX_IDS_SCPREVWINDOW    "Switch to the previous document window"
+    AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "Restore the window to normal size"
+    AFX_IDS_SCTASKLIST      "Activate Task List"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_APPNAME             "AVI Player"
+    IDS_DEFEXT              "avi"
+    IDS_SAVETITLE           "Save As"
+    IDS_APPERR              "Player Error"
+    IDS_OLDVFW              "Video for Windows version is too old"
+    IDS_MAXSTREAMS          "Exceeded maximum number of streams"
+    IDS_SAVEFORMAT          "%s - Saving %s: %d%%"
+    IDS_NOOPEN              "Unable to open  '%s'"
+    IDS_NOPASTE             "Cannot paste into this stream"
+    IDS_PASTEERROR          "Error pasting a new stream"
+    IDS_NODRAW              "Unable to draw this type of DIB"
+    IDS_SAVEERROR           "Error saving AVI file"
+    IDS_OPENTITLE           "Open AVI"
+    IDS_MERGETITLE          "Merge With"
+    IDS_STRCPYERR           "Error copying stream"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRCUTERR           "Error cutting stream"
+    IDS_NOCLIP              "Couldn't put streams on clipboard"
+    IDS_FORMAT_1            "#%d[%4.4s]  Start: %ld   Length: %ld (%ld Seconds)                                            "
+    IDS_FORMAT_2            "#%d[%4.4s]  Start: %ld   Length: %ld (%ld Seconds)  Selection: %ld to %ld                    "
+    IDS_NAME                "Name"
+    IDS_ABORTNAME           "Abort Name"
+    IDS_ERROVERWRITE        "Overwriting an AVI file is not possible"
+    IDS_SLIDER              "Drag Slider"
+    IDS_OPENWAVE            "Add Audio File"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_PLAY            "Play\nPlay"
+    ID_FILE_STOP            "Stop\nPlay"
+    ID_FILE_REWIND          "Rewind\nRewind"
+    ID_FILE_LASTFRAME       "Forward to Last Frame\nLast Frame"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_ZOOM_QUARTER         "Zoom X 1/4"
+    ID_ZOOM_HALF            "Zoom X 1/2"
+    ID_ZOOM_1               "Zoom X 1"
+    ID_ZOOM_2               "Zoom X 2"
+    ID_ZOOM_4               "Zoom X 4"
+    ID_ZOOM_RESIZETOMOVIESIZE "Resize window to movie size"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_BUTTON32785          "Record Audio\nRecord Audio"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_AUDIO_EXTENSION      "Allow audio recording to extend the length of the movie"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\playplus.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#include "afxprint.rc"       // printing/print preview resources
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
