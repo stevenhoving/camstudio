@@ -143,8 +143,6 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	cs.x = 200;	
 	cs.y = 200;
 	cs.cx=280;   
-	
-	//cs.cy=280;    
 	cs.cy=292;    
 
 	cs.style &= ~FWS_ADDTOTITLE;
@@ -216,9 +214,10 @@ void CMainFrame::OnViewCompactview()
 	CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);	
 	pStatus->ShowWindow(SW_HIDE);
 
-	int compactcx = 280;
-	//int compactcy = 280;	
-	int compactcy = 292;	
+//	int compactcx = 280;
+//	int compactcy = 292;	
+	int compactcx = 340;
+	int compactcy = 360;
 
 	compactcx=windowrect.Width();
 	compactcy=windowrect.Height() - clientrect.Height() + toolbarrect.Height() - borderHeight;
@@ -266,9 +265,10 @@ void CMainFrame::OnViewButtonsview()
 	//Hide Status Bar
 	pStatus->ShowWindow(SW_HIDE);
 	
-	int compactcx = 280;
-	//int compactcy = 280;	
-	int compactcy = 292;	
+//	int compactcx = 280;
+//	int compactcy = 292;	
+	int compactcx = 340;
+	int compactcy = 360;
 
 	compactcx=windowrect.Width();
 	compactcy=captionHeight + toolbarrect.Height() + borderHeight + borderHeight;
@@ -302,8 +302,9 @@ void CMainFrame::OnViewNormalview()
 	if ( hMenu != NULL )	
 		::SetMenu( m_hWnd, hMenu );
 	
-	int compactcx = 280;
-	//int compactcy = 280;
+//	int compactcx = 280;
+//	int compactcy = 292;
+	int compactcx = 300;
 	int compactcy = 292;
 	viewtype = 0;
 

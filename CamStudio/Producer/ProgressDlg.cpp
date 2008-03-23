@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "resource.h"
 #include "ProgressDlg.h"
+#include ".\progressdlg.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -83,6 +84,7 @@ void CProgressDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CProgressDlg, CDialog)
     //{{AFX_MSG_MAP(CProgressDlg)
     //}}AFX_MSG_MAP
+	ON_BN_CLICKED(ID_PROGRESS_CANCEL, OnBnClickedProgressCancel)
 END_MESSAGE_MAP()
 
 
@@ -158,7 +160,7 @@ BOOL CProgressDlg::CheckCancelButton()
     // CheckCancelButton would always return TRUE
 
     BOOL bResult = m_bCancel;
-    m_bCancel = FALSE;
+//    m_bCancel = FALSE;
 
     return bResult;
 }
@@ -207,4 +209,10 @@ BOOL CProgressDlg::OnInitDialog()
     SetWindowText(strCaption);
 
     return TRUE;  
+}
+
+void CProgressDlg::OnBnClickedProgressCancel()
+{
+//	MessageBox("Hi");
+	m_bCancel=TRUE;
 }

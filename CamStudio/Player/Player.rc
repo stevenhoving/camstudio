@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -31,15 +31,15 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-APPICON                 ICON    DISCARDABLE     "player.ico"
-APPICON1                ICON    DISCARDABLE     "appicon1.ico"
+APPICON                 ICON                    "player.ico"
+APPICON1                ICON                    "appicon1.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Menu
 //
 
-PLAYER MENU DISCARDABLE 
+PLAYER MENU 
 BEGIN
     POPUP "&File"
     BEGIN
@@ -63,19 +63,25 @@ END
 // Dialog
 //
 
-IDD_ABOUT DIALOGEX 0, 0, 206, 71
-STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+IDD_ABOUT DIALOGEX 0, 0, 193, 99
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "About"
 FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    CTEXT           "Rendersoft Video Player 1.0",IDC_STATIC,40,7,160,8,NOT 
+    CTEXT           "Rendersoft Video Player 1.0",IDC_STATIC,27,6,122,8,NOT 
                     WS_GROUP
-    CTEXT           "Copyright (C) 2001",IDC_STATIC,39,22,160,8,NOT WS_GROUP
-    CTEXT           "RenderSoft Software and Web Publishing",IDC_STATIC,39,
-                    37,160,8,NOT WS_GROUP
-    DEFPUSHBUTTON   "OK",IDOK,102,51,32,14,WS_GROUP
-    ICON            "APPICON",IDC_STATIC,7,15,20,20
+    CTEXT           "Copyright (C) 2001",IDC_STATIC,29,22,120,8,NOT WS_GROUP
+    CTEXT           "RenderSoft Software and Web Publishing",IDC_STATIC,10,
+                    35,160,8,NOT WS_GROUP
+    DEFPUSHBUTTON   "OK",IDOK,157,5,32,14,WS_GROUP
+    ICON            "APPICON",IDC_STATIC,8,7,18,18
+    CTEXT           "Part of CamStudio: Free Screen Recording Software",
+                    IDC_STATIC,12,63,170,8
+    PUSHBUTTON      "http://www.camstudio.org",IDC_BUTTONLINK1,13,74,162,13,
+                    BS_FLAT
+    GROUPBOX        "",IDC_STATIC,6,51,181,41
 END
 
 
@@ -85,12 +91,12 @@ END
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
     "#include ""windows.h""\r\n"
@@ -100,7 +106,7 @@ BEGIN
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "\r\n"
     "\0"
@@ -115,11 +121,12 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO 
 BEGIN
     IDD_ABOUT, DIALOG
     BEGIN
-        RIGHTMARGIN, 187
+        RIGHTMARGIN, 192
+        BOTTOMMARGIN, 89
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -130,7 +137,7 @@ END
 // String Table
 //
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_STRING_VERSION      "CamStudio Player requires a newer version of Video for Windows."
     IDS_STRING_NOTE         "Note"

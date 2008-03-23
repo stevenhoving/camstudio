@@ -63,6 +63,24 @@ BOOL CVscapApp::InitInstance()
 	// If you are not using these features and wish to reduce the size
 	//  of your final executable, you should remove from the following
 	//  the specific initialization routines you do not need.
+    int languageID = STANDARD_LANGID; 
+
+	SetRegistryKey(_T("CamStudioOpenSource for Nick"));
+
+	CurLangID = STANDARD_LANGID;
+	languageID = GetProfileInt( SEC_SETTINGS, ENT_LANGID, 0 );
+	//str.Format (_T ("Unknown Error (%d) occurred."), (int) languageID);
+    
+	if ( languageID == 0)
+	{
+    //AfxGetApp()->
+	
+		WriteProfileInt( SEC_SETTINGS, ENT_LANGID, STANDARD_LANGID) ;
+	}
+
+	if( !LoadLangIDDLL( static_cast<LANGID>( GetProfileInt( SEC_SETTINGS, ENT_LANGID, STANDARD_LANGID ) )) )
+		if( !LoadLangIDDLL(GetUserDefaultLangID()) )
+			LoadLangIDDLL(GetSystemDefaultLangID());
 
     //if(!FirstInstance())
     //  return FALSE;
@@ -101,7 +119,7 @@ BOOL CVscapApp::InitInstance()
 	// Change the registry key under which our settings are stored.
 	// You should modify this string to be something appropriate
 	// such as the name of your company or organization.
-	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
+//	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
 	LoadStdProfileSettings();  // Load standard INI file options (including MRU)
 
@@ -156,6 +174,10 @@ protected:
 	afx_msg void OnButtonlink();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	//afx_msg void OnBnClickedButtonlink();
+	DECLARE_EVENTSINK_MAP()
+	afx_msg void OnBnClickedButtonlink2();
 };
 
 CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
@@ -174,6 +196,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 	//{{AFX_MSG_MAP(CAboutDlg)
 	ON_BN_CLICKED(IDC_BUTTONLINK, OnButtonlink)
+	ON_BN_CLICKED(IDC_BUTTONLINK2, OnBnClickedButtonlink2)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -226,8 +249,44 @@ BOOL CVscapApp::FirstInstance()
 
 int CVscapApp::ExitInstance() 
 {
+  //Multilanguage
+  if( CurLangID != STANDARD_LANGID )
+    FreeLibrary( AfxGetResourceHandle() );
+
   if(bClassRegistered)
     ::UnregisterClass(_T("CamStudio"),AfxGetInstanceHandle());
   return CWinApp::ExitInstance();
 }
 
+
+
+BOOL CVscapApp::LoadLangIDDLL(LANGID LangID)
+{
+	HINSTANCE hInstance;
+	CString strLangIDDLL;
+	
+	if( LangID == STANDARD_LANGID )	// integrated language is the right one
+		return true;
+	
+	strLangIDDLL.Format( _T("RecorderLANG%.2x.dll"), LangID );
+	//AfxMessageBox( strLangIDDLL );
+	hInstance = LoadLibrary( strLangIDDLL );
+	if( hInstance )
+	{
+		AfxSetResourceHandle( hInstance );
+		CurLangID = LangID;
+		return true;
+	}
+	return false;
+}
+BEGIN_EVENTSINK_MAP(CAboutDlg, CDialog)
+//	ON_EVENT(CAboutDlg, IDC_BUTTONLINK2, DISPID_CLICK, OnBnClickedButtonlink2, VTS_NONE)
+END_EVENTSINK_MAP()
+
+void CAboutDlg::OnBnClickedButtonlink2()
+{
+  LPCTSTR mode;
+  mode = ("open");
+
+  ShellExecute (GetSafeHwnd (), mode, "http://www.camstudio.org/donate", NULL, NULL, SW_SHOW);
+}

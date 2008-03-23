@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -13,6 +13,25 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
+// Russian resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
+#ifdef _WIN32
+LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
+#pragma code_page(1251)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP5             BITMAP                  "res\\bitmap5.bmp"
+#endif    // Russian resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
 // English (U.S.) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
@@ -21,24 +40,38 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
 #endif //_WIN32
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+IDB_BITMAP1             BITMAP                  "res\\bitmap1.bmp"
+IDB_BITMAP3             BITMAP                  "Logo.bmp"
+IDB_TOOLBAR256          BITMAP                  "res\\ToolbarPalette256.bmp"
+IDB_TOOLBARMASK         BITMAP                  "res\\ToolbarMask.bmp"
+IDB_BITMAP4             BITMAP                  "ABOUT.BMP"
+IDB_SCREENANNOTATIONS_SMALL BITMAP                  "res\\bmp00001.bmp"
+IDR_MAINFRAME1          BITMAP                  "res\\mainfram.bmp"
+
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
     "#define _AFX_NO_OLE_RESOURCES\r\n"
@@ -66,70 +99,56 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_ICON1               ICON    DISCARDABLE     "res\\icon1.ico"
-IDI_CUSTOMICON_CONTEXTHELP ICON    DISCARDABLE     "res\\icon2.ico"
-IDI_CUSTOMICON_MAGNIFY  ICON    DISCARDABLE     "res\\ico00001.ico"
-IDI_CUSTOMICON_NODRAG   ICON    DISCARDABLE     "res\\ico00002.ico"
-IDI_CUSTOMICON_SPLITBARH ICON    DISCARDABLE     "res\\customic.ico"
-IDI_CUSTOMICON_SPLITBARV ICON    DISCARDABLE     "res\\ico00003.ico"
-IDI_CUSTOMICON_TOPOFTABLE ICON    DISCARDABLE     "res\\ico00004.ico"
-IDI_CUSTOMICON_BOOK1    ICON    DISCARDABLE     "res\\icon3.ico"
-IDI_CUSTOMICON_BOOK2    ICON    DISCARDABLE     "res\\ico00005.ico"
-IDI_CUSTOMICON_CLIP1    ICON    DISCARDABLE     "res\\ico00006.ico"
-IDI_CUSTOMICON_CLIP2    ICON    DISCARDABLE     "res\\ico00007.ico"
-IDI_CUSTOMICON_CLOCK1   ICON    DISCARDABLE     "res\\ico00008.ico"
-IDI_CUSTOMICON_CLOCK2   ICON    DISCARDABLE     "res\\ico00009.ico"
-IDI_CUSTOMICON_CARDFILE1 ICON    DISCARDABLE     "res\\ico00010.ico"
-IDI_CUSTOMICON_CARDFILE2 ICON    DISCARDABLE     "res\\ico00011.ico"
-IDI_CUSTOMICON_DISK1    ICON    DISCARDABLE     "res\\ico00012.ico"
-IDI_CUSTOMICON_DISK2    ICON    DISCARDABLE     "res\\ico00013.ico"
-IDI_CUSTOMICON_FILES1   ICON    DISCARDABLE     "res\\ico00014.ico"
-IDI_CUSTOMICON_FILES2   ICON    DISCARDABLE     "res\\ico00015.ico"
-IDI_CUSTOMICON_FOLDER2  ICON    DISCARDABLE     "res\\ico00016.ico"
-IDI_CUSTOMICON_FOLDER1  ICON    DISCARDABLE     "res\\ico00017.ico"
-IDI_CUSTOMICON_MAIL1    ICON    DISCARDABLE     "res\\ico00018.ico"
-IDI_CUSTOMICON_MAIL2    ICON    DISCARDABLE     "res\\ico00019.ico"
-IDI_CUSTOMICON_NOTE1    ICON    DISCARDABLE     "res\\ico00020.ico"
-IDI_CUSTOMICON_NOTE2    ICON    DISCARDABLE     "res\\ico00021.ico"
-IDI_CUSTOMICON_PEN1     ICON    DISCARDABLE     "res\\ico00022.ico"
-IDI_CUSTOMICON_PEN2     ICON    DISCARDABLE     "res\\ico00023.ico"
-IDI_CUSTOMICON_PENCIL1  ICON    DISCARDABLE     "res\\ico00024.ico"
-IDI_CUSTOMICON_PENCIL2  ICON    DISCARDABLE     "res\\ico00025.ico"
-IDI_CUSTOMICON_PHONE1   ICON    DISCARDABLE     "res\\ico00026.ico"
-IDI_CUSTOMICON_PHONE2   ICON    DISCARDABLE     "res\\ico00027.ico"
-IDI_CUSTOMICON_POINT1   ICON    DISCARDABLE     "res\\ico00028.ico"
-IDI_CUSTOMICON_POINT2   ICON    DISCARDABLE     "res\\ico00029.ico"
-IDI_CUSTOMICON_SERCURITY ICON    DISCARDABLE     "res\\ico00030.ico"
-IDI_CUSTOMICON_SECURITY2 ICON    DISCARDABLE     "res\\ico00031.ico"
-IDR_MAINFRAME           ICON    DISCARDABLE     "res\\vscap.ico"
-IDR_VSCAPTYPE           ICON    DISCARDABLE     "res\\vscapDoc.ico"
-IDI_ICONCROSSHAIR       ICON    DISCARDABLE     "res\\ico00032.ico"
-IDR_VSCAPTYPE_BK        ICON    DISCARDABLE     "res\\idr_vsca.ico"
-IDR_MAINFRAMESMALL      ICON    DISCARDABLE     "res\\idr_main.ico"
-IDI_ICONJUSTIFYRIGHT    ICON    DISCARDABLE     "res\\ico00035.ico"
-IDI_ICONJUSTIFYLEFT     ICON    DISCARDABLE     "res\\ico00033.ico"
-IDI_ICONJUSTIFYCENTER   ICON    DISCARDABLE     "res\\ico00034.ico"
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-IDR_MAINFRAME           BITMAP  MOVEABLE PURE   "res\\Toolbar.bmp"
-IDB_BITMAP1             BITMAP  DISCARDABLE     "res\\bitmap1.bmp"
-IDB_BITMAP3             BITMAP  DISCARDABLE     "Logo.bmp"
-IDB_TOOLBAR256          BITMAP  DISCARDABLE     "res\\ToolbarPalette256.bmp"
-IDB_TOOLBARMASK         BITMAP  DISCARDABLE     "res\\ToolbarMask.bmp"
-IDB_BITMAP4             BITMAP  DISCARDABLE     "ABOUT.BMP"
-IDB_SCREENANNOTATIONS_SMALL BITMAP  DISCARDABLE     "res\\bmp00001.bmp"
-IDR_MAINFRAME1          BITMAP  MOVEABLE PURE   "res\\mainfram.bmp"
+IDI_ICON1               ICON                    "res\\icon1.ico"
+IDI_CUSTOMICON_CONTEXTHELP ICON                    "res\\icon2.ico"
+IDI_CUSTOMICON_MAGNIFY  ICON                    "res\\ico00001.ico"
+IDI_CUSTOMICON_NODRAG   ICON                    "res\\ico00002.ico"
+IDI_CUSTOMICON_SPLITBARH ICON                    "res\\customic.ico"
+IDI_CUSTOMICON_SPLITBARV ICON                    "res\\ico00003.ico"
+IDI_CUSTOMICON_TOPOFTABLE ICON                    "res\\ico00004.ico"
+IDI_CUSTOMICON_BOOK1    ICON                    "res\\icon3.ico"
+IDI_CUSTOMICON_BOOK2    ICON                    "res\\ico00005.ico"
+IDI_CUSTOMICON_CLIP1    ICON                    "res\\ico00006.ico"
+IDI_CUSTOMICON_CLIP2    ICON                    "res\\ico00007.ico"
+IDI_CUSTOMICON_CLOCK1   ICON                    "res\\ico00008.ico"
+IDI_CUSTOMICON_CLOCK2   ICON                    "res\\ico00009.ico"
+IDI_CUSTOMICON_CARDFILE1 ICON                    "res\\ico00010.ico"
+IDI_CUSTOMICON_CARDFILE2 ICON                    "res\\ico00011.ico"
+IDI_CUSTOMICON_DISK1    ICON                    "res\\ico00012.ico"
+IDI_CUSTOMICON_DISK2    ICON                    "res\\ico00013.ico"
+IDI_CUSTOMICON_FILES1   ICON                    "res\\ico00014.ico"
+IDI_CUSTOMICON_FILES2   ICON                    "res\\ico00015.ico"
+IDI_CUSTOMICON_FOLDER2  ICON                    "res\\ico00016.ico"
+IDI_CUSTOMICON_FOLDER1  ICON                    "res\\ico00017.ico"
+IDI_CUSTOMICON_MAIL1    ICON                    "res\\ico00018.ico"
+IDI_CUSTOMICON_MAIL2    ICON                    "res\\ico00019.ico"
+IDI_CUSTOMICON_NOTE1    ICON                    "res\\ico00020.ico"
+IDI_CUSTOMICON_NOTE2    ICON                    "res\\ico00021.ico"
+IDI_CUSTOMICON_PEN1     ICON                    "res\\ico00022.ico"
+IDI_CUSTOMICON_PEN2     ICON                    "res\\ico00023.ico"
+IDI_CUSTOMICON_PENCIL1  ICON                    "res\\ico00024.ico"
+IDI_CUSTOMICON_PENCIL2  ICON                    "res\\ico00025.ico"
+IDI_CUSTOMICON_PHONE1   ICON                    "res\\ico00026.ico"
+IDI_CUSTOMICON_PHONE2   ICON                    "res\\ico00027.ico"
+IDI_CUSTOMICON_POINT1   ICON                    "res\\ico00028.ico"
+IDI_CUSTOMICON_POINT2   ICON                    "res\\ico00029.ico"
+IDI_CUSTOMICON_SERCURITY ICON                    "res\\ico00030.ico"
+IDI_CUSTOMICON_SECURITY2 ICON                    "res\\ico00031.ico"
+IDR_MAINFRAME           ICON                    "res\\vscap.ico"
+IDR_VSCAPTYPE           ICON                    "res\\vscapDoc.ico"
+IDI_ICONCROSSHAIR       ICON                    "res\\ico00032.ico"
+IDR_VSCAPTYPE_BK        ICON                    "res\\idr_vsca.ico"
+IDR_MAINFRAMESMALL      ICON                    "res\\idr_main.ico"
+IDI_ICONJUSTIFYRIGHT    ICON                    "res\\ico00035.ico"
+IDI_ICONJUSTIFYLEFT     ICON                    "res\\ico00033.ico"
+IDI_ICONJUSTIFYCENTER   ICON                    "res\\ico00034.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Toolbar
 //
 
-IDR_MAINFRAME TOOLBAR DISCARDABLE  22, 22
+IDR_MAINFRAME TOOLBAR  22, 22
 BEGIN
     BUTTON      ID_RECORD
     BUTTON      ID_PAUSE
@@ -140,7 +159,7 @@ BEGIN
     BUTTON      ID_AVISWF
 END
 
-IDR_MAINFRAME1 TOOLBAR DISCARDABLE  21, 21
+IDR_MAINFRAME1 TOOLBAR  21, 21
 BEGIN
     BUTTON      ID_RECORD
     BUTTON      ID_PAUSE
@@ -156,7 +175,7 @@ END
 // Menu
 //
 
-IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+IDR_MAINFRAME MENU 
 BEGIN
     POPUP "&File"
     BEGIN
@@ -170,6 +189,7 @@ BEGIN
     BEGIN
         MENUITEM "&Region",                     ID_REGION_RUBBER
         MENUITEM "&Fixed Region ...",           ID_REGION_PANREGION
+        MENUITEM "&Window",                     ID_REGION_WINDOW
         MENUITEM "Full &Screen",                ID_REGION_FULLSCREEN
     END
     POPUP "&Options"
@@ -266,6 +286,14 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Keyboard Shortcuts",         ID_OPTIONS_KEYBOARDSHORTCUTS
+        MENUITEM SEPARATOR
+        POPUP "Language"
+        BEGIN
+            MENUITEM "English",                     ID_OPTIONS_LANGUAGE_ENGLISH
+
+            MENUITEM "German",                      ID_OPTIONS_LANGUAGE_GERMAN
+
+        END
     END
     POPUP "&Tools"
     BEGIN
@@ -274,6 +302,16 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "SWF Producer ( Converts AVI to Flash )", 
                                                 ID_TOOLS_SWFPRODUCER
+    END
+    POPUP "&Effects"
+    BEGIN
+        POPUP "A&nnotation"
+        BEGIN
+            MENUITEM "Add System Time Stamp",       32915
+            MENUITEM "Add Caption",                 32916
+            MENUITEM "Add Watermark",               32917
+        END
+        MENUITEM "Options...",                  32918
     END
     POPUP "&View"
     BEGIN
@@ -285,16 +323,15 @@ BEGIN
     BEGIN
         MENUITEM "&Help",                       ID_HELP_HELP
         MENUITEM SEPARATOR
-        MENUITEM "&CamStudio Website",          ID_HELP_WEBSITE
+        MENUITEM "&CamStudio Homepage",         ID_HELP_WEBSITE
+        MENUITEM "CamStudio &Blog",             ID_HELP_CAMSTUDIOBLOG
         MENUITEM "&Frequently Asked Questions", ID_HELP_FAQ
-        MENUITEM SEPARATOR
-        MENUITEM "Donations",                   ID_HELP_DONATIONS
         MENUITEM SEPARATOR
         MENUITEM "&About",                      ID_APP_ABOUT
     END
 END
 
-IDR_TRAYMENU MENU DISCARDABLE 
+IDR_TRAYMENU MENU 
 BEGIN
     POPUP "Menu"
     BEGIN
@@ -306,7 +343,7 @@ BEGIN
     END
 END
 
-IDR_CONTEXTMENU MENU DISCARDABLE 
+IDR_CONTEXTMENU MENU 
 BEGIN
     POPUP "Context"
     BEGIN
@@ -339,7 +376,7 @@ BEGIN
     END
 END
 
-IDR_CONTEXTLANGUAGE MENU DISCARDABLE 
+IDR_CONTEXTLANGUAGE MENU 
 BEGIN
     POPUP "Script"
     BEGIN
@@ -365,7 +402,7 @@ BEGIN
     END
 END
 
-IDR_CONTEXTEDITOBJ MENU DISCARDABLE 
+IDR_CONTEXTEDITOBJ MENU 
 BEGIN
     POPUP "EditObj"
     BEGIN
@@ -392,7 +429,7 @@ BEGIN
     END
 END
 
-IDR_CONTEXTEDITLAYOUT MENU DISCARDABLE 
+IDR_CONTEXTEDITLAYOUT MENU 
 BEGIN
     POPUP "EditLayout"
     BEGIN
@@ -422,7 +459,7 @@ BEGIN
     END
 END
 
-IDR_CONTEXTVIDEO MENU DISCARDABLE 
+IDR_CONTEXTVIDEO MENU 
 BEGIN
     POPUP "ContextVideo"
     BEGIN
@@ -440,7 +477,7 @@ BEGIN
     END
 END
 
-IDR_ANNOTATIONMENU MENU DISCARDABLE 
+IDR_ANNOTATIONMENU MENU 
 BEGIN
     POPUP "Library"
     BEGIN
@@ -511,7 +548,7 @@ END
 // Accelerator
 //
 
-IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
+IDR_MAINFRAME ACCELERATORS 
 BEGIN
     "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
@@ -535,25 +572,30 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 263, 119
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_ABOUTBOX DIALOGEX 0, 0, 252, 146
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About CamStudio"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     CONTROL         189,IDC_STATIC,"Static",SS_BITMAP,7,13,163,53,
                     WS_EX_DLGMODALFRAME
-    DEFPUSHBUTTON   "OK",IDOK,185,13,49,15,WS_GROUP
-    LTEXT           "CamStudio",IDC_STATIC,186,39,53,9,SS_NOPREFIX
-    LTEXT           "Version 2.00",IDC_STATIC,186,53,55,8
-    LTEXT           "Copyright (C) 2001 - 2003  RenderSoft Software and Web Publishing",
-                    IDC_STATIC,19,79,222,12
-    GROUPBOX        "",IDC_STATIC,7,68,249,47
-    PUSHBUTTON      "http://www.rendersoftware.com/products/camstudio",
-                    IDC_BUTTONLINK,17,94,218,14,BS_FLAT
+    DEFPUSHBUTTON   "OK",IDOK,178,15,49,15,WS_GROUP
+    CTEXT           "CamStudio",IDC_STATIC,170,39,75,9,SS_NOPREFIX
+    CTEXT           "Version 2.5",IDC_STATIC,170,53,75,8
+    CTEXT           "CamStudio (c) 2001 - 2007  RenderSoft And Web Publishing",
+                    IDC_STATIC,7,78,238,13
+    GROUPBOX        "",IDC_STATIC,7,68,238,75
+    PUSHBUTTON      "http://www.camstudio.org",IDC_BUTTONLINK,22,105,214,14,
+                    BS_FLAT
+    CTEXT           "Bugfixes and Additional Features Added By Nick The Geek",
+                    IDC_STATIC,15,89,223,8
+    PUSHBUTTON      "Please donate to support Camstudio's development",
+                    IDC_BUTTONLINK2,21,125,214,14,BS_FLAT
 END
 
 IDD_VIDEOOPTIONS DIALOGEX 0, 0, 303, 258
-STYLE DS_MODALFRAME | DS_CONTEXTHELP | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CONTEXTHELP | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
 EXSTYLE WS_EX_CONTEXTHELP
 CAPTION "Video Options"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
@@ -590,13 +632,13 @@ BEGIN
     GROUPBOX        "Framerates",IDC_STATIC,7,93,291,61
 END
 
-IDD_CURSOROPTIONS DIALOG DISCARDABLE  0, 0, 254, 215
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_CURSOROPTIONS DIALOGEX 0, 0, 254, 236
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Cursor Options"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,73,198,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,137,198,50,14
+    DEFPUSHBUTTON   "OK",IDOK,73,219,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,137,219,50,14
     RADIOBUTTON     "Hide Cursor",IDC_RADIO1,21,21,96,12
     RADIOBUTTON     "Show Cursor",IDC_RADIO2,21,38,96,12
     RADIOBUTTON     "Use Actual Cursor",IDC_CURSOR1,45,58,96,12
@@ -615,14 +657,20 @@ BEGIN
                     BS_TOP
     LTEXT           "Size",IDC_STATIC_SIZE,22,148,30,11
     LTEXT           "Shape",IDC_STATIC_SHAPE,21,167,30,11
-    GROUPBOX        "Cursor Highlight",-1,7,120,240,68
-    ICON            IDR_MAINFRAME,IDC_ICONCURSOR,194,25,20,20
+    GROUPBOX        "Cursor Highlight",-1,7,120,240,94
+    ICON            IDR_MAINFRAME,IDC_ICONCURSOR,194,25,21,20
     DEFPUSHBUTTON   "Color",IDC_HIGHLIGHTCOLOR,129,164,43,14,BS_FLAT
     LTEXT           "Halfsize",IDC_STATIC_HALFSIZE,204,172,36,10
+    CONTROL         "Enable Visual Click Feedback",IDC_HIGHLIGHTCLICK,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,21,182,110,13
+    DEFPUSHBUTTON   "Left Button Color",IDC_HIGHLIGHTCOLORLB,33,195,69,14,
+                    BS_FLAT
+    DEFPUSHBUTTON   "Right Button Color",IDC_HIGHLIGHTCOLORRB,107,195,72,14,
+                    BS_FLAT
 END
 
-IDD_AUTOPANSPEED DIALOG DISCARDABLE  0, 0, 186, 66
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_AUTOPANSPEED DIALOG  0, 0, 186, 66
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Autopan Speed"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -634,8 +682,8 @@ BEGIN
     LTEXT           "Sp",IDC_MAXSPEED,142,39,35,14,SS_CENTERIMAGE
 END
 
-IDD_FIXEDREGION DIALOG DISCARDABLE  0, 0, 162, 186
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_FIXEDREGION DIALOG  0, 0, 162, 186
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Fixed Region"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -658,8 +706,8 @@ BEGIN
                     BS_AUTOCHECKBOX | WS_TABSTOP,17,144,126,10
 END
 
-IDD_AUDIODIALOG DIALOG DISCARDABLE  0, 0, 200, 254
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_AUDIODIALOG DIALOG  0, 0, 200, 254
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Audio Options for Microphone"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -693,8 +741,8 @@ BEGIN
     PUSHBUTTON      "Help",IDC_BUTTON1,132,211,51,15
 END
 
-IDD_KEYSHORTCUTS DIALOG DISCARDABLE  0, 0, 311, 170
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_KEYSHORTCUTS DIALOG  0, 0, 311, 170
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Keyboard Shortcuts"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -774,8 +822,8 @@ BEGIN
     LTEXT           "SHIFT",IDC_STATIC,223,112,22,10
 END
 
-IDD_ANNOTATION DIALOG DISCARDABLE  0, 0, 222, 239
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_ANNOTATION DIALOG  0, 0, 222, 239
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Annotation"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -804,8 +852,8 @@ BEGIN
                     BS_TOP
 END
 
-IDD_AUTOSEARCH DIALOG DISCARDABLE  0, 0, 181, 121
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_AUTOSEARCH DIALOG  0, 0, 181, 121
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Searching"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -814,8 +862,8 @@ BEGIN
     PUSHBUTTON      "Close",IDC_CLOSE,14,100,76,14
 END
 
-IDD_AUDIOWAVEOUT DIALOG DISCARDABLE  0, 0, 199, 241
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+IDD_AUDIOWAVEOUT DIALOG  0, 0, 199, 241
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
 CAPTION "Audio Options for Speakers"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -840,8 +888,8 @@ BEGIN
                     WS_GROUP,88,147,95,11
 END
 
-IDD_TROUBLESHOOT DIALOG DISCARDABLE  0, 0, 186, 207
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_TROUBLESHOOT DIALOG  0, 0, 186, 207
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Troubleshoot"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -861,7 +909,8 @@ BEGIN
 END
 
 IDD_TEXTDIALOG DIALOGEX 0, 0, 144, 158
-STYLE DS_SYSMODAL | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "Text Properties"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
@@ -878,7 +927,7 @@ BEGIN
 END
 
 IDD_SCREENANNOTATIONS2 DIALOGEX 65376, 65496, 130, 175
-STYLE WS_POPUP | WS_CAPTION
+STYLE DS_SETFONT | WS_POPUP | WS_CAPTION
 EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "Screen Annotations"
 MENU IDR_ANNOTATIONMENU
@@ -895,8 +944,8 @@ BEGIN
     PUSHBUTTON      "Next Layout",IDNEXT,68,154,56,14
 END
 
-IDD_NEWSHAPE DIALOG DISCARDABLE  0, 0, 177, 231
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_NEWSHAPE DIALOG  0, 0, 177, 231
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "New Shape"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -921,7 +970,8 @@ BEGIN
 END
 
 IDD_EDITIMAGE DIALOGEX 0, 0, 203, 279
-STYLE DS_SYSMODAL | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
 CAPTION "Edit Image"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
@@ -958,8 +1008,8 @@ BEGIN
     PUSHBUTTON      "Load New Image",IDLOAD,108,230,77,14
 END
 
-IDD_RESIZE DIALOG DISCARDABLE  0, 0, 207, 81
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_RESIZE DIALOG  0, 0, 207, 81
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Resize"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -975,8 +1025,9 @@ BEGIN
     DEFPUSHBUTTON   "Reset Size",IDRESET,68,60,55,14
 END
 
-IDD_TRANSPARENCY DIALOG DISCARDABLE  0, 0, 186, 110
-STYLE DS_SYSMODAL | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_TRANSPARENCY DIALOG  0, 0, 186, 110
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
 CAPTION "Edit Transparency"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -991,8 +1042,9 @@ BEGIN
                     BS_MULTILINE | WS_TABSTOP,17,22,150,33
 END
 
-IDD_TRANSRATE DIALOG DISCARDABLE  0, 0, 186, 126
-STYLE DS_SYSMODAL | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_TRANSRATE DIALOG  0, 0, 186, 126
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
 CAPTION "Edit Refresh Rate"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -1006,8 +1058,8 @@ BEGIN
                     -1,17,22,156,42
 END
 
-IDD_SYNCHRONIZATION DIALOG DISCARDABLE  0, 0, 244, 134
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_SYNCHRONIZATION DIALOG  0, 0, 244, 134
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Audio and Video Synchronization"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -1032,8 +1084,8 @@ BEGIN
     LTEXT           "milliseconds",IDC_STATIC,140,74,44,13
 END
 
-IDD_PRESETTIME DIALOG DISCARDABLE  0, 0, 186, 90
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_PRESETTIME DIALOG  0, 0, 186, 90
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Preset Time"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -1050,8 +1102,93 @@ BEGIN
     LTEXT           "Seconds",IDC_STATIC,129,38,39,14
 END
 
+IDD_EFFECTS_OPTIONS DIALOGEX 0, 0, 218, 190
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Text Effects Options"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Position",IDC_STATIC_POSITION,7,7,99,93,WS_TABSTOP
+    CONTROL         "",IDC_RADIO_TOP_LEFT,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,15,23,26,21
+    CONTROL         "",IDC_RADIO_TOP_CENTER,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_TABSTOP,43,23,26,21
+    CONTROL         "",IDC_RADIO_TOP_RIGHT,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_TABSTOP,71,23,26,21
+    CONTROL         "",IDC_RADIO_CENTER_LEFT,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_TABSTOP,15,46,26,21
+    CONTROL         "",IDC_RADIO_CENTER_CENTER,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_TABSTOP,43,46,26,21
+    CONTROL         "",IDC_RADIO_CENTER_RIGHT,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_TABSTOP,71,46,26,21
+    CONTROL         "",IDC_RADIO_BOTTOM_LEFT,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_TABSTOP,15,70,26,21
+    CONTROL         "",IDC_RADIO_BOTTOM_CENTER,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_TABSTOP,43,70,26,21
+    CONTROL         "",IDC_RADIO_BOTTOM_RIGHT,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_TABSTOP,71,70,26,21
+    PUSHBUTTON      "Font...",IDC_BUTTON_FONT,16,106,81,14
+    PUSHBUTTON      "Text Color...",IDC_BUTTON_TEXT_COLOR,16,125,81,14
+    PUSHBUTTON      "Background Color...",IDC_BUTTON_BACKGROUND_COLOR,16,146,
+                    81,14
+    DEFPUSHBUTTON   "OK",IDOK,104,169,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,161,169,50,14
+END
 
-#ifndef _MAC
+IDD_DIALOG_MAIN_EFFECTS_OPTIONS DIALOGEX 0, 0, 254, 222
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Effects options"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Time stamp",IDC_STATIC,7,14,240,44
+    LTEXT           "Format",IDC_STATIC,17,29,24,8
+    EDITTEXT        IDC_EDIT_TIMESTAMP_FORMAT,17,38,93,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Options...",IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS,122,37,
+                    50,14
+    GROUPBOX        "Caption",IDC_STATIC,7,70,240,46
+    LTEXT           "Text",IDC_STATIC,17,84,16,8
+    EDITTEXT        IDC_EDIT_CAPTION_TEXT,17,94,93,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Options...",IDC_BUTTON_CAPTION_OPTIONS,122,95,50,14
+    GROUPBOX        "Water mark",IDC_STATIC,7,124,240,65
+    LTEXT           "Image Path",IDC_STATIC,17,138,38,8
+    EDITTEXT        IDC_EDIT_IMAGE_PATH,17,148,195,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BUTTON_IMAGE_PATH,216,146,23,17
+    DEFPUSHBUTTON   "OK",IDOK,141,201,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,197,201,50,14
+    PUSHBUTTON      "Options...",IDC_BUTTON_WATERMARK_OPTIONS,189,169,50,14
+END
+
+IDD_EFFECTS_OPTIONS2 DIALOGEX 0, 0, 131, 145
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Image Effects Options"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Position",IDC_STATIC_POSITION,7,7,99,93,WS_TABSTOP
+    CONTROL         "",IDC_RADIO_TOP_LEFT,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,15,23,26,21
+    CONTROL         "",IDC_RADIO_TOP_CENTER,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_TABSTOP,43,23,26,21
+    CONTROL         "",IDC_RADIO_TOP_RIGHT,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_TABSTOP,71,23,26,21
+    CONTROL         "",IDC_RADIO_CENTER_LEFT,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_TABSTOP,15,46,26,21
+    CONTROL         "",IDC_RADIO_CENTER_CENTER,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_TABSTOP,43,46,26,21
+    CONTROL         "",IDC_RADIO_CENTER_RIGHT,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_TABSTOP,71,46,26,21
+    CONTROL         "",IDC_RADIO_BOTTOM_LEFT,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_TABSTOP,15,70,26,21
+    CONTROL         "",IDC_RADIO_BOTTOM_CENTER,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_TABSTOP,43,70,26,21
+    CONTROL         "",IDC_RADIO_BOTTOM_RIGHT,"Button",BS_AUTORADIOBUTTON | 
+                    BS_PUSHLIKE | WS_TABSTOP,71,70,26,21
+    DEFPUSHBUTTON   "OK",IDOK,7,124,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,61,124,50,14
+END
+
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -1074,15 +1211,13 @@ BEGIN
     BEGIN
         BLOCK "040904B0"
         BEGIN
-            VALUE "CompanyName", "\0"
-            VALUE "FileDescription", "vscap MFC Application\0"
-            VALUE "FileVersion", "1, 0, 0, 1\0"
-            VALUE "InternalName", "vscap\0"
-            VALUE "LegalCopyright", "Copyright (C) 1901\0"
-            VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "vscap.EXE\0"
-            VALUE "ProductName", "vscap Application\0"
-            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "FileDescription", "vscap MFC Application"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "vscap"
+            VALUE "LegalCopyright", "Copyright (C) 1901"
+            VALUE "OriginalFilename", "vscap.EXE"
+            VALUE "ProductName", "vscap Application"
+            VALUE "ProductVersion", "1, 0, 0, 1"
         END
     END
     BLOCK "VarFileInfo"
@@ -1091,8 +1226,6 @@ BEGIN
     END
 END
 
-#endif    // !_MAC
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1100,14 +1233,14 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO 
 BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 256
+        RIGHTMARGIN, 245
         TOPMARGIN, 7
-        BOTTOMMARGIN, 88
+        BOTTOMMARGIN, 142
     END
 
     IDD_VIDEOOPTIONS, DIALOG
@@ -1121,7 +1254,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 247
         TOPMARGIN, 7
-        BOTTOMMARGIN, 212
+        BOTTOMMARGIN, 233
     END
 
     IDD_AUTOPANSPEED, DIALOG
@@ -2150,27 +2283,27 @@ END
 // Cursor
 //
 
-IDC_CURSOR4             CURSOR  DISCARDABLE     "res\\cur00002.cur"
-IDC_CURSORDROPPER       CURSOR  DISCARDABLE     "res\\cursor4.cur"
-IDC_CURSORDRAG          CURSOR  DISCARDABLE     "res\\cur00001.cur"
+IDC_CURSOR4             CURSOR                  "res\\cur00002.cur"
+IDC_CURSORDROPPER       CURSOR                  "res\\cursor4.cur"
+IDC_CURSORDRAG          CURSOR                  "res\\cur00001.cur"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
 //
 
-STRINGTABLE PRELOAD DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDR_MAINFRAME           "vscap\n\nVscap\n\n\nVscap.Document\nVscap Document"
 END
 
-STRINGTABLE PRELOAD DISCARDABLE 
+STRINGTABLE 
 BEGIN
     AFX_IDS_APP_TITLE       "vscap"
     AFX_IDS_IDLEMESSAGE     "Ready"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_INDICATOR_EXT        "EXT"
     ID_INDICATOR_CAPS       "CAP"
@@ -2180,7 +2313,7 @@ BEGIN
     ID_INDICATOR_REC        "REC"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_FILE_NEW             "Create a new document\nNew"
     ID_FILE_OPEN            "Open an existing document\nOpen"
@@ -2193,13 +2326,13 @@ BEGIN
     ID_FILE_PRINT_PREVIEW   "Display full pages\nPrint Preview"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_APP_ABOUT            "Display program information and copyright\nAbout"
     ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_FILE_MRU_FILE1       "Open this document"
     ID_FILE_MRU_FILE2       "Open this document"
@@ -2219,18 +2352,18 @@ BEGIN
     ID_FILE_MRU_FILE16      "Open this document"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
     ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_EDIT_CLEAR           "Erase the selection\nErase"
     ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
@@ -2245,13 +2378,13 @@ BEGIN
     ID_EDIT_REDO            "Redo the previously undone action\nRedo"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
     ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     AFX_IDS_SCSIZE          "Change the window size"
     AFX_IDS_SCMOVE          "Change the window position"
@@ -2262,13 +2395,13 @@ BEGIN
     AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     AFX_IDS_SCRESTORE       "Restore the window to normal size"
     AFX_IDS_SCTASKLIST      "Activate Task List"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
     IDS_STRING_NOTE         "Note"
@@ -2283,7 +2416,7 @@ BEGIN
     IDS_STRING_HEIGHTGREATER "The height must be greater than 0"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_REGION_RUBBER        "Capture a selected Region"
     ID_REGION_PANREGION     "Capture a fixed size region"
@@ -2296,8 +2429,9 @@ BEGIN
     ID_REGION_FULLSCREEN    "Capture Entire Desktop"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
+    ID_REGION_WINDOW        "Capture A Window"
     ID_OPTIONS_MINIMIZEPROGRAMONSTARTRECORDING 
                             "Minimize program on start recording"
     ID_OPTIONS_HIDEFLASHINGRECTANGLEDURINGRECORDING 
@@ -2316,7 +2450,7 @@ BEGIN
     ID_OPTIONS_AUDIOOPTIONS "Audio Options"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_OPTIONS_AUDIOFORMAT  "Set Audio Options for Microphone"
     ID_HELP_FAQ             "Visit the frequently asked questions webpage "
@@ -2333,7 +2467,7 @@ BEGIN
     ID_OPTIONS_TEMPDIR_USER "Use user specified directory as recording directory"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_OPTIONS_RECORDAUDIO_DONOTRECORDAUDIO "Do not record audio"
     ID_OPTIONS_RECORDAUDIO_RECORDFROMSPEAKERS "Record audio from speakers"
@@ -2353,7 +2487,7 @@ BEGIN
                             "Display Screen Annotations Dialog\nScreen Annotations"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_STRING_HEIGHTSMALLER 
                             "The height must be smaller than the screen height (%d)"
@@ -2379,7 +2513,7 @@ BEGIN
     IDS_STRING_PLAYBACKRATE "Playback Rate cannot be set to %d frames per second. Please enter a value in the range 1 to 200."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_STRING_NOCREATEWFILE 
                             "Unable to create new file. The file may be opened by another application. Please use another filename."
@@ -2404,7 +2538,7 @@ BEGIN
     IDS_STRING_ERRSOUND2    "Error Writing Sound File"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_STRING_NOINPUT3     "Unable to detect audio input device. You need a sound card with microphone input."
     IDS_STRING_METRICSFAILED "Metrics failed mmresult=%u!"
@@ -2426,7 +2560,7 @@ BEGIN
                             "Failure in getting compressor state ! Error Value = %d"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_STRING_SETCOMPRESSOR "Failure in setting compressor state !"
     IDS_STRING_UNNECESSARY  "Please note : This step is unecessary if the Auto Search function already managed to detect the line for recording speakers output. You should use this only if the Auto Search function fails. Proceed?"
@@ -2446,7 +2580,7 @@ BEGIN
     IDS_STRING_HEARSEARCH   "You will hear several tones while CamStudio is searching your system. Please wait....."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_STRING_ANALINE      "Analyzing line %d of %d"
     IDS_STRING_LINEDETECTED "Line %d detected for recording sound from speakers ! You may now close this dialog box."
@@ -2468,7 +2602,7 @@ BEGIN
     IDS_STRING_WGETVOLCTRL  "WaveoutGetVolumeControl() failed."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_STRING_WVOLINIT     "WaveoutVolumeInitialize() failed."
     IDS_STRING_OUTOFMEM     "Out of memory for audio buffer!"
@@ -2489,7 +2623,7 @@ BEGIN
     IDS_STRINGINVLAYOUTFILE "Invalid layout file"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_EDITOBJ_TESTEDIT     "Edit the name of the shape or layout"
     ID_EDITLAYOUT_OPENLAYOUT "Instantiate a  Layout"
@@ -2498,7 +2632,7 @@ BEGIN
     ID_EDITLAYOUT_LAYOUTSHORTCUTS "Display Layout Shortcuts"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_EDITOBJ_EDITIMAGE    "Edit the image of current shape"
     ID_EDITOBJ_EDITTEXT     "Edit the text of current shape"
@@ -2510,7 +2644,7 @@ BEGIN
                             "Edit the transparency of current shape (Win 2000 / XP)"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_EDITLAYOUT_LIBRARY_NEWLIBRARY "Create a new layout library"
     ID_EDITLAYOUT_LIBRARY_OPENLIBRARY "Open an existing layout library"
@@ -2520,7 +2654,7 @@ BEGIN
                             "Delay recording of audio or video stream to synchronize"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_STRING_EOLFS        "Error opening layout file for saving"
     IDS_STRINGWIDTHLESS20   "Width cannot be less than 20"
@@ -2541,15 +2675,16 @@ BEGIN
     IDS_STRINGSAVECLLA      "Save Current Layout Library"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_STRING_UNSSC        "Unable to set shortcuts for %s"
     IDS_ERRPPRODUCER        "Error launching SWF Producer !"
     IDS_RECAVI              "Record to AVI"
     IDS_RECSWF              "Record to SWF"
+    IDS_RESTARTAPP          "Application must be restarted to apply the changes!"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_TOOLS_SWFPRODUCER    "Launch SWF Producer"
     ID_OPTIONS_SWF_LAUNCHHTML 

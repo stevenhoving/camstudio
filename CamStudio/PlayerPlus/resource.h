@@ -1,5 +1,5 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by playplus.rc
 //
 #define IDS_APPNAME                     1
@@ -49,6 +49,8 @@
 #define IDC_IFACTOR                     1022
 #define IDC_INTERLEAVE                  1023
 #define IDC_INTERLEAVEFRAMES            1049
+#define IDC_BUTTONLINK1                 1055
+#define IDC_BUTTONLINK2                 1056
 #define IDC_RECORDFORMAT                1290
 #define IDC_INPUTDEVICE                 1291
 #define ID_FILE_PLAY                    32772

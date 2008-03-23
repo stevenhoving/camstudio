@@ -65,6 +65,30 @@ END_MESSAGE_MAP()
 
 BOOL CFlashInterface::OnInitDialog() 
 {
+	CurLangID = STANDARD_LANGID;
+	HKEY hKey;
+  	DWORD language;
+    LONG returnStatus;
+	DWORD Type=REG_DWORD;
+    DWORD Size=sizeof(DWORD);
+    returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
+    
+	if (returnStatus == ERROR_SUCCESS)
+    {
+		
+        returnStatus = RegQueryValueEx(hKey, "LanguageID", NULL, &Type,(LPBYTE)&language, &Size);
+        
+		if (returnStatus == ERROR_SUCCESS)
+        {
+    
+        	if( !LoadLangIDDLL((int) language) ) 
+	         if( !LoadLangIDDLL(GetUserDefaultLangID()) )
+     			LoadLangIDDLL(GetSystemDefaultLangID());
+        }
+     }
+
+    RegCloseKey(hKey);
+
 	CPropertyPage::OnInitDialog();
 
 	int valset = int(percentLoadedThreshold * 100.0);
@@ -100,6 +124,27 @@ BOOL CFlashInterface::OnInitDialog()
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+BOOL CFlashInterface::LoadLangIDDLL(LANGID LangID)
+{
+	HINSTANCE ghInstApp;
+	CString strLangIDDLL;
+	
+	if( LangID == STANDARD_LANGID )	// integrated language is the right one
+		return true;
+	
+	strLangIDDLL.Format( _T("ProducerLANG%.2x.dll"), LangID );
+	ghInstApp = LoadLibrary( strLangIDDLL );
+	//AfxMessageBox( strLangIDDLL );
+	//hInstance = LoadLibrary( strLangIDDLL );
+	if( ghInstApp )
+	{
+		AfxSetResourceHandle( ghInstApp );
+		CurLangID = LangID;
+		return true;
+	}
+	return false;
 }
 
 void CFlashInterface::OnOK() 

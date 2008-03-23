@@ -143,6 +143,10 @@ protected:
 	afx_msg void OnOptionsNamingAsk();
 	afx_msg void OnUpdateOptionsNamingAsk(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsProgramoptionsPresettime();
+	afx_msg void OnUpdateOptionsLanguageEnglish(CCmdUI* pCmdUI);
+	afx_msg void OnUpdateOptionsLanguageGerman(CCmdUI* pCmdUI);
+	afx_msg void OnOptionsLanguageEnglish();
+	afx_msg void OnOptionsLanguageGerman();
 	//}}AFX_MSG
 	afx_msg LRESULT OnRecordStart (UINT wParam, LONG lParam);
 	afx_msg LRESULT OnRecordInterrupted (UINT wParam, LONG lParam);
@@ -153,6 +157,21 @@ protected:
 	afx_msg LRESULT OnTrayNotify(WPARAM wParam, LPARAM lParam);	
 	afx_msg LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnRegionWindow();
+	afx_msg void OnUpdateRegionWindow(CCmdUI *pCmdUI);
+	afx_msg void OnCaptureChanged(CWnd *pWnd);
+	afx_msg void OnAnnotationAddsystemtimestamp();
+	afx_msg void OnUpdateAnnotationAddsystemtimestamp(CCmdUI *pCmdUI);
+	afx_msg void OnAnnotationAddcaption();
+	afx_msg void OnUpdateAnnotationAddcaption(CCmdUI *pCmdUI);
+	afx_msg void OnAnnotationAddwatermark();
+	afx_msg void OnUpdateAnnotationAddwatermark(CCmdUI *pCmdUI);
+	afx_msg void OnEffectsOptions();
+	afx_msg void OnHelpCamstudioblog();
+	afx_msg void OnBnClickedButtonlink();
+	DECLARE_EVENTSINK_MAP()
+	void ClickLabel1();
 };
 
 #ifndef _DEBUG  // debug version in vscapView.cpp
