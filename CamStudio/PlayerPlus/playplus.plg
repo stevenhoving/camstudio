@@ -1,0 +1,71 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: playplus - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x409 /fo"Release/playplus.res" /d "NDEBUG" /d "_AFXDLL" "C:\vc\vstemp8\vscap\PlayerPlus\playplus.rc"" 
+Creating temporary file "C:\DOCUME~1\Default\LOCALS~1\Temp\RSP5C.tmp" with contents
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Release/playplus.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\vc\vstemp8\vscap\PlayerPlus\audio.cpp"
+"C:\vc\vstemp8\vscap\PlayerPlus\AudioFormat.cpp"
+"C:\vc\vstemp8\vscap\PlayerPlus\fister\Buffer.cpp"
+"C:\vc\vstemp8\vscap\PlayerPlus\MainFrm.cpp"
+"C:\vc\vstemp8\vscap\PlayerPlus\playplus.cpp"
+"C:\vc\vstemp8\vscap\PlayerPlus\playplusDoc.cpp"
+"C:\vc\vstemp8\vscap\PlayerPlus\playplusView.cpp"
+"C:\vc\vstemp8\vscap\PlayerPlus\SlideToolBar.cpp"
+"C:\vc\vstemp8\vscap\PlayerPlus\fister\SoundBase.cpp"
+"C:\vc\vstemp8\vscap\PlayerPlus\fister\SoundFile.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Default\LOCALS~1\Temp\RSP5C.tmp" 
+Creating temporary file "C:\DOCUME~1\Default\LOCALS~1\Temp\RSP5E.tmp" with contents
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Release/playplus.pch" /Yc"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\vc\vstemp8\vscap\PlayerPlus\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Default\LOCALS~1\Temp\RSP5E.tmp" 
+Creating temporary file "C:\DOCUME~1\Default\LOCALS~1\Temp\RSP5F.tmp" with contents
+[
+vfw32.lib winmm.lib msacm32.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/Playplus.pdb" /machine:I386 /out:"../Release/Playplus.exe" 
+.\Release\audio.obj
+.\Release\AudioFormat.obj
+.\Release\Buffer.obj
+.\Release\MainFrm.obj
+.\Release\playplus.obj
+.\Release\playplusDoc.obj
+.\Release\playplusView.obj
+.\Release\SlideToolBar.obj
+.\Release\SoundBase.obj
+.\Release\SoundFile.obj
+.\Release\StdAfx.obj
+.\Release\playplus.res
+]
+Creating command line "link.exe @C:\DOCUME~1\Default\LOCALS~1\Temp\RSP5F.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+audio.cpp
+AudioFormat.cpp
+Buffer.cpp
+MainFrm.cpp
+playplus.cpp
+playplusDoc.cpp
+playplusView.cpp
+SlideToolBar.cpp
+SoundBase.cpp
+SoundFile.cpp
+Linking...
+
+
+
+<h3>Results</h3>
+Playplus.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
