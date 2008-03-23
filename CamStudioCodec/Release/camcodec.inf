@@ -1,0 +1,56 @@
+; CamStudio Codec v1.0 install
+
+[Version]
+Signature="$CHICAGO$"
+Class=Media
+
+[DefaultInstall]
+CopyFiles=camcodec.CopyFile,camcodec.INFFile
+UpdateInis=camcodec.UpdateIni
+AddReg=camcodec.AddReg
+MediaType=SOFTWARE
+
+[DefaultUnInstall]
+DelFiles=camcodec.CopyFile,camcodec.INFFile
+DelReg=camcodec.AddReg
+UpdateInis=camcodec.UpdateIni.Del
+
+
+[DestinationDirs]
+camcodec.INFFile=12
+
+[camcodec.CopyFile]
+camcodec.dll
+
+[camcodec.INFFile]
+camcodec.inf
+
+[camcodec.UpdateIni]
+system.ini,drivers32,,"VIDC.CSCD=camcodec.dll"
+
+[camcodec.UpdateIni.Del]
+system.ini, drivers32, "VIDC.CSCD=camcodec.dll"
+
+[camcodec.AddReg]
+HKLM,SYSTEM\CurrentControlSet\Control\MediaResources\icm\VIDC.CSCD,Description,,%Description%
+HKLM,SYSTEM\CurrentControlSet\Control\MediaResources\icm\VIDC.CSCD,Driver,,"camcodec.dll"
+HKLM,SYSTEM\CurrentControlSet\Control\MediaResources\icm\VIDC.CSCD,FriendlyName,,%Description%
+
+HKLM,Software\Microsoft\Windows\CurrentVersion\Uninstall\camcodec
+HKLM,Software\Microsoft\Windows\CurrentVersion\Uninstall\camcodec,DisplayName,,"CamStudio Lossless Codec"
+HKLM,Software\Microsoft\Windows\CurrentVersion\Uninstall\camcodec,UninstallString,,"rundll.exe setupx.dll,InstallHinfSection DefaultUninstall 132 %12%\camcodec.inf"
+
+
+[DestinationDirs]
+DefaultDestDir=11	; windows\system
+
+[SourceDisksNames]
+1="camcodec","",1
+
+[SourceDisksFiles]
+camcodec.dll=1
+
+[Strings]
+Description="CamStudio lossless codec [CSCD]"
+
+
