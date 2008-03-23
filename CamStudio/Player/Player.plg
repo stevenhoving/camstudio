@@ -1,0 +1,31 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: Player - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x409 /fo"Debug/player.res" /d "_DEBUG" "C:\vc\vstemp7\vscap\Player\player.rc"" 
+Creating temporary file "C:\DOCUME~1\Default\LOCALS~1\Temp\RSP130.tmp" with contents
+[
+/nologo /MLd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"Debug/Player.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c 
+"C:\vc\vstemp7\vscap\Player\player.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Default\LOCALS~1\Temp\RSP130.tmp" 
+Creating temporary file "C:\DOCUME~1\Default\LOCALS~1\Temp\RSP131.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib vfw32.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/Player.pdb" /debug /machine:I386 /out:"../Debug/Player.exe" /pdbtype:sept 
+.\Debug\player.obj
+.\Debug\player.res
+]
+Creating command line "link.exe @C:\DOCUME~1\Default\LOCALS~1\Temp\RSP131.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+player.cpp
+cl.exe terminated at user request.
+
+</pre>
+</body>
+</html>

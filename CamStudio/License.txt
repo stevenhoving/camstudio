@@ -1,0 +1,24 @@
+
+==============================
+RenderSoft CamStudio
+==============================
+
+
+Unless otherwise specified, RenderSoft Software and Web Publishing owns all title to this software and its copyright, which are protected by international copyright law.
+
+This product is FREEWARE and you are free to duplicate and distribute this software through the internet or any preferred media.
+
+This product is OPENSOURCED and you are free to edit and modify its source code for your needs. The source code may be obtained from the product's website at : http://www.rendersoftware.com/products/camstudio
+
+If you create an product that contains code derived from CamStudio, you are free to distribute it for any purposes, including commercial purposes. However, your product must include an acknowledgement that mention it contains code from RenderSoft CamStudio. A simple statement like "Part of this product is derived from RenderSoft CamStudio" in the AboutBox will do. You are not obliged to reveal the source code of your derived product but are encouraged to do so.
+ 
+
+RenderSoft Software and Web Publishing specifically disclaims ALL warranties, express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, and non-infingement with respect to this software, its source code and any accompanying written materials.
+
+IN NO EVENT will RenderSoft Software and Web Publishing be liable to you for damages, including any loss of profits, data, or other incidental or consequential damages arising out of your use or inability to use this software, even if RenderSoft Software and Web Publishing has been specifically advised on the possiblility of such damages.
+
+By agreeing below, you indicate that you have read and understood the above licensing aggreement, and accept it as legally binding upon you.
+
+If you choose not to accept any of the terms of this licensing agreement, please click the 'Exit' button now.
+
+
