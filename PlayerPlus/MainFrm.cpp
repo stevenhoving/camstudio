@@ -161,10 +161,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	//DockControlBar(&m_wndToolBar);
 
 	if (pmode == PLAYER) {
-		SetWindowText("Player");
+		SetWindowText("CamStudio Player - Custom Build");
 	}
 	else
-		SetWindowText("Dubber");
+		SetWindowText("CamStudio Dubber - Custom Build");
 
 	return 0;
 }
@@ -174,7 +174,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	
 	cs.x = 100;	
 	cs.y = 100;
-	cs.cx=320;   
+	cs.cx=350;   
 	cs.cy=320;    
 
 	cs.style &= ~FWS_ADDTOTITLE;
@@ -264,7 +264,8 @@ void CMainFrame::ResizeToMovie(RECT movierect)
 	int captionHeight = GetSystemMetrics(SM_CYCAPTION);
 	
 	//Dock Toolbar
-	DockControlBar(&m_wndToolBar);
+	// @FIXME[Carlo Lanzotti]: No need to call this unless the tool bar are set to be dockable.
+	//DockControlBar(&m_wndToolBar);
 
 	//Menu Height
 	int menuY = GetSystemMetrics(SM_CYMENU);

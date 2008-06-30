@@ -12,13 +12,13 @@
 
 #include "MessageWnd.h"
 #include "ProgressDlg.h"
-
+/*
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
+*/
 #include <windowsx.h>
 #include "muldiv32.h"
 #include <vfw.h>
@@ -575,7 +575,7 @@ CString tempfile2("");
 
 // ver 2.24
 // produce HTML preview
-void produceFlashHTML(CString htmlfilename, CString flashfilename, CString flashfilepath, int width, int height,int bk_red, int bk_green, int bk_blue);	
+void produceFlashHTML(CString htmlfilename, CString flashfilename, CString flashfilepath, int onlyflashtag, int width, int height,int bk_red, int bk_green, int bk_blue);	
 
 // *****************************
 // Audio Compression
@@ -608,6 +608,7 @@ int deleteAVIAfterUse = 0;
 CString swfname;
 CString swfhtmlname;
 CString swfbasename;
+int onlyflashtag;
 CString avifilename;
 CString urlRedirect;
 
@@ -2473,7 +2474,7 @@ void CPlayplusView::OnDestroy()
 
 
 
-	if (runmode == 0)
+	if(runmode == 0 || runmode == 1)
 		SaveSettings() ;
 
 
@@ -2633,7 +2634,8 @@ BOOL CPlayplusView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD 
 	
 	if (runmode == 1)
 		LoadCommand(); //used internally by CamStudio Recorder
-	else if (runmode == 2)
+	
+	//else if (runmode == 0 || runmode == 2)
 		LoadSettings();	
 
 
@@ -5545,9 +5547,13 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
 		bool result = true;
 
 		AVISTREAMINFO   avis;						
-		AVIStreamInfo(gapavi[giFirstVideo], &avis, sizeof(avis));		
-		int bmWidth = avis.rcFrame.right - avis.rcFrame.left  + 1;
-		int bmHeight = avis.rcFrame.bottom - avis.rcFrame.top + 1;
+		AVIStreamInfo(gapavi[giFirstVideo], &avis, sizeof(avis));
+
+		// @FIXME[Carlo Lanzotti]: Why this +1 ?
+//		int bmWidth = avis.rcFrame.right - avis.rcFrame.left  + 1;
+//		int bmHeight = avis.rcFrame.bottom - avis.rcFrame.top + 1;
+		int bmWidth = avis.rcFrame.right - avis.rcFrame.left;
+		int bmHeight = avis.rcFrame.bottom - avis.rcFrame.top;
 		
 		HDC hdc, screenDC;
 		screenDC = ::GetDC(NULL);
@@ -6286,7 +6292,7 @@ void CPlayplusView::OnFileConverttoswf()
 		}
 		///
 	
-		produceFlashHTML(LPCTSTR(swfhtmlname),LPCTSTR(swfbasename),LPCTSTR(swfname), ww , hh ,swfbk_red, swfbk_green, swfbk_blue);		
+		produceFlashHTML(LPCTSTR(swfhtmlname),LPCTSTR(swfbasename),LPCTSTR(swfname), onlyflashtag, ww , hh ,swfbk_red, swfbk_green, swfbk_blue);		
 
 
 		BeginWaitCursor();
@@ -7624,6 +7630,11 @@ void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitma
 
 					f << ftd;
 					
+/*					FlashActionGotoFrame gt(200);
+					FlashTagDoAction ftdg;
+					ftdg.AddAction(&gt);	
+
+					f << ftdg;*/
 
 				}
 			}
@@ -8321,7 +8332,7 @@ void cleanTempFile()
 
 }
 
-void produceFlashHTML(CString htmlfilename, CString flashfilename, CString flashfilepath, int width, int height,int bk_red, int bk_green, int bk_blue)	
+void produceFlashHTML(CString htmlfilename, CString flashfilename, CString flashfilepath, int onlyflashtag, int width, int height,int bk_red, int bk_green, int bk_blue)	
 {
 
 	COLORREF bkcolor = RGB(bk_blue,bk_green,bk_red);
@@ -8331,53 +8342,90 @@ void produceFlashHTML(CString htmlfilename, CString flashfilename, CString flash
 	htmlfile = fopen(LPCTSTR(htmlfilename),"wt");
 	if (!htmlfile) return;
 
-
 	fprintf(htmlfile,"<HTML> \n");
-	fprintf(htmlfile,"<HEAD> \n");
-	fprintf(htmlfile,"<TITLE> %s </TITLE> \n",LPCTSTR(flashfilename));
-	fprintf(htmlfile,"</HEAD> \n");
-	fprintf(htmlfile,"<BODY> \n");
 
+	if(!onlyflashtag)
+	{
+		fprintf(htmlfile,"<HEAD> \n");
+		fprintf(htmlfile,"<TITLE> %s </TITLE> \n",LPCTSTR(flashfilename));
+		fprintf(htmlfile,"</HEAD> \n");
+		fprintf(htmlfile,"<BODY> \n");
+	}
 
-// 	fprintf(htmlfile,"<!-- Flash movie tag--> \n");
-//     fprintf(htmlfile,"<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" \n");
-// 	fprintf(htmlfile,"codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0\" \n");
-// 	fprintf(htmlfile,"WIDTH=\"%d\" HEIGHT=\"%d\" id=\"loader.swf?clip=",width,height);
-// 	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));
-// 	fprintf(htmlfile,"\" ALIGN=\"\"> \n");
-// 	fprintf(htmlfile," <PARAM NAME=movie VALUE=\"loader.swf?clip=");
-// 	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));
-// 	fprintf(htmlfile,"\"> \n <PARAM NAME=quality VALUE=high> ");
-// 	fprintf(htmlfile,"\n <param name=\"scale\" value=\"noscale\" /> ");
-// 	fprintf(htmlfile,"\n <param name=\"salign\" value=\"lt\" /> ");	
-// 	fprintf(htmlfile,"\n <PARAM NAME=bgcolor VALUE=#%x> \n <EMBED src=\"loader.swf?clip=",bkcolor);
-// 	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));	
-// 	fprintf(htmlfile,"\" scale=noscale salign=lt quality=high bgcolor=#%x  WIDTH=\"%d\" HEIGHT=\"%d\" ",bkcolor, width, height);	
-// 	fprintf(htmlfile,"NAME=\"");
-// 	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));
-// 	fprintf(htmlfile,"\" ALIGN=\"\" TYPE=\"application/x-shockwave-flash\" ");
-// 	fprintf(htmlfile,"PLUGINSPAGE=\"http://www.macromedia.com/go/getflashplayer\">\n</EMBED> \n");
-// 	fprintf(htmlfile,"</OBJECT>\n");	
+//#define SLAB_CUSTOM_SWF
 
+#ifndef SLAB_CUSTOM_SWF
 	fprintf(htmlfile,"<!-- Flash movie tag--> \n");
-	fprintf(htmlfile,"<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" \n");
-	fprintf(htmlfile,"codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0\" \n");
+	fprintf(htmlfile,"<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" ");
+	fprintf(htmlfile,"codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0\" ");
 	fprintf(htmlfile,"WIDTH=\"%d\" HEIGHT=\"%d\" id=\"",width,height);
 	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));
 	fprintf(htmlfile,"\" ALIGN=\"\"> \n");
-	fprintf(htmlfile," <PARAM NAME=movie VALUE=\"");
+	fprintf(htmlfile," <PARAM NAME=\"movie\" VALUE=\"");
 	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));
-	fprintf(htmlfile,"\"> \n <PARAM NAME=quality VALUE=high> ");	
-	fprintf(htmlfile,"\n <PARAM NAME=bgcolor VALUE=#%x> \n <EMBED src=\"",bkcolor);
-	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));	
-	fprintf(htmlfile,"\" quality=high bgcolor=#%x  WIDTH=\"%d\" HEIGHT=\"%d\" ",bkcolor, width, height);	
+	fprintf(htmlfile,"\"/> \n <PARAM NAME=\"quality\" VALUE=\"high\"/> ");	
+	fprintf(htmlfile,"\n <PARAM NAME=\"bgcolor\" VALUE=\"#%x\"/> \n <EMBED src=\"",bkcolor);
+	if(!onlyflashtag)
+		fprintf(htmlfile,"%s",LPCTSTR(flashfilename));	
+	else
+		fprintf(htmlfile,"video/%s",LPCTSTR(flashfilename));	
+
+	fprintf(htmlfile,"\" quality=\"high\" bgcolor=\"#%x\"  WIDTH=\"%d\" HEIGHT=\"%d\" ",bkcolor, width, height);	
 	fprintf(htmlfile,"NAME=\"");
 	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));
 	fprintf(htmlfile,"\" ALIGN=\"\" TYPE=\"application/x-shockwave-flash\" ");
-	fprintf(htmlfile,"PLUGINSPAGE=\"http://www.macromedia.com/go/getflashplayer\">\n</EMBED> \n");
+	fprintf(htmlfile,"PLUGINSPAGE=\"http://www.macromedia.com/go/getflashplayer\"/> \n");
 	fprintf(htmlfile,"</OBJECT>\n");
+#else
+	CString moviename = flashfilename.Left(flashfilename.GetLength()-4);
+	fprintf(htmlfile, "<DIV style=\"width: %dpx; padding: 0px 0px 0px 0px; margin-left: 15px; margin-bottom: -15px; border: 1px solid #ffffff;\">\n", width);
+	fprintf(htmlfile, "<OBJECT id=\"%s\" xmlns=\"\" classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0\" WIDTH=\"%d\" HEIGHT=\"%d\" ALIGN=\"\">\n", LPCTSTR(moviename), width, height);
+	fprintf(htmlfile, "<PARAM NAME=\"movie\" VALUE=\"%s\"/>\n", LPCTSTR(flashfilename));
+	fprintf(htmlfile, "<PARAM NAME=\"quality\" VALUE=\"high\"/>\n");
+	fprintf(htmlfile, "<PARAM NAME=\"bgcolor\" VALUE=\"#%x\"/>\n", bkcolor);
 
-	fprintf(htmlfile,"</BODY> \n");
+	if(!onlyflashtag)
+	{
+		fprintf(htmlfile, "<EMBED swliveconnect=\"true\" name=\"%s\" src=\"%s\" quality=\"high\" bgcolor=\"#%x\" WIDTH=\"%d\" HEIGHT=\"%d\" ALIGN=\"\" TYPE=\"application/x-shockwave-flash\" PLUGINSPAGE=\"http://www.macromedia.com/go/getflashplayer\"/>\n", 
+			LPCTSTR(moviename), LPCTSTR(flashfilename), bkcolor, width, height);
+	}
+	else
+	{
+		fprintf(htmlfile, "<EMBED swliveconnect=\"true\" name=\"%s\" src=\"video/%s\" quality=\"high\" bgcolor=\"#%x\" WIDTH=\"%d\" HEIGHT=\"%d\" ALIGN=\"\" TYPE=\"application/x-shockwave-flash\" PLUGINSPAGE=\"http://www.macromedia.com/go/getflashplayer\"/>\n", 
+			LPCTSTR(moviename), LPCTSTR(flashfilename), bkcolor, width, height);
+	}
+
+	fprintf(htmlfile, "</OBJECT>\n");
+	fprintf(htmlfile, "</DIV>\n");
+
+	fprintf(htmlfile, "\n");
+
+/*	fprintf(htmlfile, "<script>\n");
+	fprintf(htmlfile, "function init_%s()\n", LPCTSTR(moviename));
+	fprintf(htmlfile, "{\n");
+	fprintf(htmlfile, "\tEndFlashMovie('%s')\n", LPCTSTR(moviename));
+	fprintf(htmlfile, "}\n");
+	fprintf(htmlfile, "window.onload = init_%s\n", LPCTSTR(moviename));
+	fprintf(htmlfile, "</script>\n");*/
+
+	fprintf(htmlfile, "<br/>\n");
+
+	fprintf(htmlfile, "<DIV style=\"margin-left: 15px; margin-bottom: 2px;\">\n");
+	fprintf(htmlfile, "<input class=\"button\" id=\"start\" name=\"Start\" title=\"Va all'inizio del filmato\" onClick=\"RewindFlashMovie('%s');\"/>\n", LPCTSTR(moviename));
+	fprintf(htmlfile, "<input class=\"button\" id=\"prev\" name=\"Previous\" title=\"Indietro di un fotogramma\" onClick=\"PrevFrameFlashMovie('%s');\"/>\n", LPCTSTR(moviename));
+	fprintf(htmlfile, "<input class=\"button\" id=\"play\" name=\"Play\" title=\"Esegue il filmato\" onClick=\"PlayFlashMovie('%s');\"/>\n", LPCTSTR(moviename));
+	fprintf(htmlfile, "<input class=\"button\" id=\"stop\" name=\"Stop\" title=\"Interrompe il filmato\" onClick=\"StopFlashMovie('%s');\"/>\n", LPCTSTR(moviename));
+	fprintf(htmlfile, "<input class=\"button\" id=\"next\" name=\"Next\" title=\"Avanti di un fotogramma\" onClick=\"NextFrameFlashMovie('%s');\"/>\n", LPCTSTR(moviename));
+	fprintf(htmlfile, "<input class=\"button\" id=\"end\"  name=\"End\" title=\"Va alla fine del filmato\" onClick=\"EndFlashMovie('%s');\"/>\n", LPCTSTR(moviename));
+	fprintf(htmlfile, "</DIV>\n");
+
+#endif // SLAB_CUSTOM_SWF
+
+	if(!onlyflashtag)
+	{
+		fprintf(htmlfile,"</BODY> \n");
+	}
+		
 	fprintf(htmlfile,"</HTML> \n");
 
 	fclose(htmlfile);
@@ -8389,8 +8437,8 @@ void produceFlashHTML(CString htmlfilename, CString flashfilename, CString flash
 void LoadSettings() 
 {
 	//Do not load saved settings for now
-	if (runmode==0)
-		return;
+//	if (runmode==0)
+//		return;
 
 	//if runmode==2 (batch mode...attempt to load settings)	
 	
@@ -8402,7 +8450,7 @@ void LoadSettings()
 	//********************************************
 	//Loading CamProducer.ini for storing text data
 	//********************************************
-	if (runmode==0)
+	if (runmode == 0 || runmode == 1)
 		fileName="\\CamStudio.Producer.ini";	
 	else if (runmode==2)
 		fileName="\\CamStudio.Producer.param";	//command line mode 
@@ -8473,7 +8521,7 @@ void LoadSettings()
 		fscanf(sFile, "swfnameLen = %d \n",&swfnameLen);
 		fscanf(sFile, "swfhtmlnameLen = %d \n",&swfhtmlnameLen);
 		fscanf(sFile, "swfbasenameLen = %d \n",&swfbasenameLen);
-
+		fscanf(sFile, "onlyflashtag = %d \n",&onlyflashtag);
 
 			
 		
@@ -8756,10 +8804,9 @@ void SaveSettings()
 		fprintf(sFile, "swfnameLen = %d \n",swfname.GetLength());
 		fprintf(sFile, "swfhtmlnameLen = %d \n",swfhtmlname.GetLength());
 		fprintf(sFile, "swfbasenameLen = %d \n",swfbasename.GetLength());
-			
+		fprintf(sFile, "onlyflashtag = %d \n", onlyflashtag);
 	
 		//Lesser Variables
-		
 		fprintf(sFile, "PercentThreshold = %f \n",PercentThreshold);
 		fprintf(sFile, "HalfKeyThreshold = %f \n",HalfKeyThreshold);
 		
