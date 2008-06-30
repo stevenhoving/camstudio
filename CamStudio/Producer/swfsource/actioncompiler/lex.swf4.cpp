@@ -951,25 +951,25 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 83 "swf4compiler.flex"
-{ count();	swf4lval.str = strdup(yytext);
+{ count();	swf4lval.str = _strdup(yytext);
 					return NUMBER; 		}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 85 "swf4compiler.flex"
-{ count();	swf4lval.str = strdup(yytext);
+{ count();	swf4lval.str = _strdup(yytext);
 					return NUMBER; 		}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 87 "swf4compiler.flex"
-{ count();	swf4lval.str = strdup("1");
+{ count();	swf4lval.str = _strdup("1");
 					return NUMBER;		}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 89 "swf4compiler.flex"
-{ count();	swf4lval.str = strdup("0");
+{ count();	swf4lval.str = _strdup("0");
 					return NUMBER;		}
 	YY_BREAK
 case 5:
@@ -1192,25 +1192,25 @@ YY_RULE_SETUP
 case 47:
 YY_RULE_SETUP
 #line 149 "swf4compiler.flex"
-{ count();	swf4lval.str = strdup(yytext);
+{ count();	swf4lval.str = _strdup(yytext);
 					return IDENTIFIER;	}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
 #line 152 "swf4compiler.flex"
-{ count();	swf4lval.str = strdup(yytext);
+{ count();	swf4lval.str = _strdup(yytext);
 					return PATH;    }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
 #line 155 "swf4compiler.flex"
-{ count();	swf4lval.str = strdup(yytext);
+{ count();	swf4lval.str = _strdup(yytext);
 					return PATH;    }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
 #line 158 "swf4compiler.flex"
-{ count();	swf4lval.str = strdup(yytext+1);
+{ count();	swf4lval.str = _strdup(yytext+1);
 					swf4lval.str[strlen(swf4lval.str)-1]=0;
                                         unescape(swf4lval.str);
 					return STRING;		}
@@ -1218,7 +1218,7 @@ YY_RULE_SETUP
 case 51:
 YY_RULE_SETUP
 #line 163 "swf4compiler.flex"
-{ count();	swf4lval.str = strdup(yytext+1);
+{ count();	swf4lval.str = _strdup(yytext+1);
 					swf4lval.str[strlen(swf4lval.str)-1]=0;
                                         unescape(swf4lval.str);
 					return STRING; 		}
@@ -1229,7 +1229,7 @@ yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 #line 168 "swf4compiler.flex"
-{ count();	swf4lval.str = strdup("");
+{ count();	swf4lval.str = _strdup("");
 					warning("Unterminated string!");
 					return STRING;		}
 	YY_BREAK
@@ -1239,7 +1239,7 @@ yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 #line 172 "swf4compiler.flex"
-{ count();	swf4lval.str = strdup("");
+{ count();	swf4lval.str = _strdup("");
 					warning("Unterminated string!");
 					return STRING;		}
 	YY_BREAK

@@ -52,7 +52,7 @@ public:
 	friend N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineFont &data);
 	friend N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineFont &data);
 private:
-	N_STD_HMAP::hash_map<int, int> glyphs;
+	stdext::hash_map<int, int> glyphs;
 	N_STD::vector<FlashShape> shapes;
 };
 
@@ -257,7 +257,7 @@ public:
 
 private:
 
-	N_STD_HMAP::hash_map<int, int> glyphs;
+	stdext::hash_map<int, int> glyphs;
 	N_STD::vector<UWORD> codes;
 	N_STD::vector<FlashShape> shapes;
 	bool layout;

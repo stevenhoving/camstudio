@@ -171,7 +171,7 @@ bool CxImage::RotateLeft(CxImage* iDst)
 	if (head.biBitCount == 1) {
 	
 		BYTE *sbits, *dbits, *dbitsmax, bitpos, *nrow,*srcdisp;
-		div_t div_r;
+		ldiv_t div_r;
 
 		BYTE *bsrc = GetBits(), *bdest = imgDest.GetBits();
 		dbitsmax = bdest + imgDest.head.biSizeImage - 1;
@@ -180,7 +180,7 @@ bool CxImage::RotateLeft(CxImage* iDst)
 		imgDest.Clear(0);
 		for (y = 0; y < head.biHeight; y++) {
 			// Figure out the Column we are going to be copying to
-			div_r = div(y + dlineup, 8);
+			div_r = div(y + dlineup, (long)8);
 			// set bit pos of src column byte				
 			bitpos = 1 << div_r.rem;
 			srcdisp = bsrc + y * info.dwEffWidth;
@@ -290,7 +290,7 @@ bool CxImage::RotateRight(CxImage* iDst)
 	if (head.biBitCount == 1) {
 	
 		BYTE *sbits, *dbits, *dbitsmax, bitpos, *nrow,*srcdisp;
-		div_t div_r;
+		ldiv_t div_r;
 
 		BYTE *bsrc = GetBits(), *bdest = imgDest.GetBits();
 		dbitsmax = bdest + imgDest.head.biSizeImage - 1;
@@ -298,7 +298,7 @@ bool CxImage::RotateRight(CxImage* iDst)
 		imgDest.Clear(0);
 		for (y = 0; y < head.biHeight; y++) {
 			// Figure out the Column we are going to be copying to
-			div_r = div(y, 8);
+			div_r = div(y, (long)8);
 			// set bit pos of src column byte				
 			bitpos = 128 >> div_r.rem;
 			srcdisp = bsrc + y * info.dwEffWidth;

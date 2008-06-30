@@ -14,7 +14,7 @@
 
 #include <afxwin.h>         // MFC core and standard components
 #include <afxext.h>         // MFC extensions
-#include <afxdisp.h>        // MFC Automation classes
+//#include <afxdisp.h>        // MFC Automation classes
 #include <afxcmn.h>			// MFC support for Windows Common Controls
 
 

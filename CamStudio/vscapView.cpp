@@ -5866,7 +5866,7 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
 	HWND mainwnd = NULL;
 	mainwnd = AfxGetApp()->m_pMainWnd->m_hWnd;
 	if (mainwnd)
-		::SetWindowText(mainwnd,"CamStudio");
+		::SetWindowText(mainwnd,"CamStudio - Custom Build");
     
     
     AVISaveOptionsFree(NUMSTREAMS,galpAVIOptions);		
@@ -6746,33 +6746,33 @@ void CVscapView::LoadSettings()
 	
 		fscanf(sFile, "supportMouseDrag=%d \n",&supportMouseDrag);	
 
-		fscanf(sFile,& "keyRecordStartCtrl=%d \n",&keyRecordStartCtrl);
-		fscanf(sFile,& "keyRecordEndCtrl=%d \n",&keyRecordEndCtrl);
-		fscanf(sFile,& "keyRecordCancelCtrl=%d \n",&keyRecordCancelCtrl);
+		fscanf(sFile, "keyRecordStartCtrl=%d \n",&keyRecordStartCtrl);
+		fscanf(sFile, "keyRecordEndCtrl=%d \n",&keyRecordEndCtrl);
+		fscanf(sFile, "keyRecordCancelCtrl=%d \n",&keyRecordCancelCtrl);
 
-		fscanf(sFile,& "keyRecordStartAlt=%d \n",&keyRecordStartAlt);
-		fscanf(sFile,& "keyRecordEndAlt=%d \n",&keyRecordEndAlt);
-		fscanf(sFile,& "keyRecordCancelAlt=%d \n",&keyRecordCancelAlt);
+		fscanf(sFile, "keyRecordStartAlt=%d \n",&keyRecordStartAlt);
+		fscanf(sFile, "keyRecordEndAlt=%d \n",&keyRecordEndAlt);
+		fscanf(sFile, "keyRecordCancelAlt=%d \n",&keyRecordCancelAlt);
 
-		fscanf(sFile,& "keyRecordStartShift=%d \n",&keyRecordStartShift);
-		fscanf(sFile,& "keyRecordEndShift=%d \n",&keyRecordEndShift);
-		fscanf(sFile,& "keyRecordCancelShift=%d \n",&keyRecordCancelShift);
+		fscanf(sFile, "keyRecordStartShift=%d \n",&keyRecordStartShift);
+		fscanf(sFile, "keyRecordEndShift=%d \n",&keyRecordEndShift);
+		fscanf(sFile, "keyRecordCancelShift=%d \n",&keyRecordCancelShift);
 
-		fscanf(sFile,& "keyNext=%d \n",&keyNext);
-		fscanf(sFile,& "keyPrev=%d \n",&keyPrev);
-		fscanf(sFile,& "keyShowLayout=%d \n",&keyShowLayout);
+		fscanf(sFile, "keyNext=%d \n",&keyNext);
+		fscanf(sFile, "keyPrev=%d \n",&keyPrev);
+		fscanf(sFile, "keyShowLayout=%d \n",&keyShowLayout);
 
-		fscanf(sFile,& "keyNextCtrl=%d \n",&keyNextCtrl);
-		fscanf(sFile,& "keyPrevCtrl=%d \n",&keyPrevCtrl);
-		fscanf(sFile,& "keyShowLayoutCtrl=%d \n",&keyShowLayoutCtrl);
+		fscanf(sFile, "keyNextCtrl=%d \n",&keyNextCtrl);
+		fscanf(sFile, "keyPrevCtrl=%d \n",&keyPrevCtrl);
+		fscanf(sFile, "keyShowLayoutCtrl=%d \n",&keyShowLayoutCtrl);
 
-		fscanf(sFile,& "keyNextAlt=%d \n",&keyNextAlt );
-		fscanf(sFile,& "keyPrevAlt=%d \n",&keyPrevAlt );
-		fscanf(sFile,& "keyShowLayoutAlt=%d \n",&keyShowLayoutAlt);
+		fscanf(sFile, "keyNextAlt=%d \n",&keyNextAlt );
+		fscanf(sFile, "keyPrevAlt=%d \n",&keyPrevAlt );
+		fscanf(sFile, "keyShowLayoutAlt=%d \n",&keyShowLayoutAlt);
 
-		fscanf(sFile,& "keyNextShift=%d \n",&keyNextShift);
-		fscanf(sFile,& "keyPrevShift=%d \n",&keyPrevShift);
-		fscanf(sFile,& "keyShowLayoutShift=%d \n",&keyShowLayoutShift);	
+		fscanf(sFile, "keyNextShift=%d \n",&keyNextShift);
+		fscanf(sFile, "keyPrevShift=%d \n",&keyPrevShift);
+		fscanf(sFile, "keyShowLayoutShift=%d \n",&keyShowLayoutShift);	
 
 		fscanf(sFile, "shapeNameInt=%d \n",&shapeNameInt);
 		fscanf(sFile, "shapeNameLen=%d \n",&shapeNameLen);

@@ -1951,24 +1951,24 @@ case 108:
 case 110:
 #line 849 "swf4compiler.y"
 { yyval.str = yyvsp[-2].str;
-		  yyval.str = stringConcat(yyval.str, strdup(":"));
+		  yyval.str = stringConcat(yyval.str, _strdup(":"));
 		  yyval.str = stringConcat(yyval.str, yyvsp[0].str); ;
     break;}
 case 111:
 #line 856 "swf4compiler.y"
-{ yyval.str = strdup(""); ;
+{ yyval.str = _strdup(""); ;
     break;}
 case 112:
 #line 859 "swf4compiler.y"
-{ yyval.str = strdup(""); ;
+{ yyval.str = _strdup(""); ;
     break;}
 case 113:
 #line 862 "swf4compiler.y"
-{ yyval.str = strdup("/"); ;
+{ yyval.str = _strdup("/"); ;
     break;}
 case 114:
 #line 865 "swf4compiler.y"
-{ yyval.str = strdup(".."); ;
+{ yyval.str = _strdup(".."); ;
     break;}
 case 115:
 #line 868 "swf4compiler.y"
