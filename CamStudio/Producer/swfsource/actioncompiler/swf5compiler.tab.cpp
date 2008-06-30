@@ -2225,307 +2225,307 @@ case 34:
     break;}
 case 36:
 #line 268 "swf5compiler.y"
-{ yyval.str = strdup("new"); ;
+{ yyval.str = _strdup("new"); ;
     break;}
 case 37:
 #line 269 "swf5compiler.y"
-{ yyval.str = strdup("delete"); ;
+{ yyval.str = _strdup("delete"); ;
     break;}
 case 38:
 #line 270 "swf5compiler.y"
-{ yyval.str = strdup("random"); ;
+{ yyval.str = _strdup("random"); ;
     break;}
 case 39:
 #line 271 "swf5compiler.y"
-{ yyval.str = strdup("getTimer"); ;
+{ yyval.str = _strdup("getTimer"); ;
     break;}
 case 40:
 #line 272 "swf5compiler.y"
-{ yyval.str = strdup("length"); ;
+{ yyval.str = _strdup("length"); ;
     break;}
 case 41:
 #line 273 "swf5compiler.y"
-{ yyval.str = strdup("concat"); ;
+{ yyval.str = _strdup("concat"); ;
     break;}
 case 42:
 #line 274 "swf5compiler.y"
-{ yyval.str = strdup("substr"); ;
+{ yyval.str = _strdup("substr"); ;
     break;}
 case 43:
 #line 275 "swf5compiler.y"
-{ yyval.str = strdup("trace"); ;
+{ yyval.str = _strdup("trace"); ;
     break;}
 case 44:
 #line 276 "swf5compiler.y"
-{ yyval.str = strdup("int"); ;
+{ yyval.str = _strdup("int"); ;
     break;}
 case 45:
 #line 277 "swf5compiler.y"
-{ yyval.str = strdup("ord"); ;
+{ yyval.str = _strdup("ord"); ;
     break;}
 case 46:
 #line 278 "swf5compiler.y"
-{ yyval.str = strdup("chr"); ;
+{ yyval.str = _strdup("chr"); ;
     break;}
 case 47:
 #line 279 "swf5compiler.y"
-{ yyval.str = strdup("getURL"); ;
+{ yyval.str = _strdup("getURL"); ;
     break;}
 case 48:
 #line 280 "swf5compiler.y"
-{ yyval.str = strdup("getURL1"); ;
+{ yyval.str = _strdup("getURL1"); ;
     break;}
 case 49:
 #line 281 "swf5compiler.y"
-{ yyval.str = strdup("nextFrame"); ;
+{ yyval.str = _strdup("nextFrame"); ;
     break;}
 case 50:
 #line 282 "swf5compiler.y"
-{ yyval.str = strdup("prevFrame"); ;
+{ yyval.str = _strdup("prevFrame"); ;
     break;}
 case 51:
 #line 283 "swf5compiler.y"
-{ yyval.str = strdup("play"); ;
+{ yyval.str = _strdup("play"); ;
     break;}
 case 52:
 #line 284 "swf5compiler.y"
-{ yyval.str = strdup("stop"); ;
+{ yyval.str = _strdup("stop"); ;
     break;}
 case 53:
 #line 285 "swf5compiler.y"
-{ yyval.str = strdup("toggleQuality"); ;
+{ yyval.str = _strdup("toggleQuality"); ;
     break;}
 case 54:
 #line 286 "swf5compiler.y"
-{ yyval.str = strdup("stopSounds"); ;
+{ yyval.str = _strdup("stopSounds"); ;
     break;}
 case 55:
 #line 287 "swf5compiler.y"
-{ yyval.str = strdup("dup"); ;
+{ yyval.str = _strdup("dup"); ;
     break;}
 case 56:
 #line 288 "swf5compiler.y"
-{ yyval.str = strdup("swap"); ;
+{ yyval.str = _strdup("swap"); ;
     break;}
 case 57:
 #line 289 "swf5compiler.y"
-{ yyval.str = strdup("pop"); ;
+{ yyval.str = _strdup("pop"); ;
     break;}
 case 58:
 #line 290 "swf5compiler.y"
-{ yyval.str = strdup("push"); ;
+{ yyval.str = _strdup("push"); ;
     break;}
 case 59:
 #line 291 "swf5compiler.y"
-{ yyval.str = strdup("setRegister"); ;
+{ yyval.str = _strdup("setRegister"); ;
     break;}
 case 60:
 #line 292 "swf5compiler.y"
-{ yyval.str = strdup("callFunction"); ;
+{ yyval.str = _strdup("callFunction"); ;
     break;}
 case 61:
 #line 293 "swf5compiler.y"
-{ yyval.str = strdup("callMethod"); ;
+{ yyval.str = _strdup("callMethod"); ;
     break;}
 case 62:
 #line 294 "swf5compiler.y"
-{ yyval.str = strdup("and"); ;
+{ yyval.str = _strdup("and"); ;
     break;}
 case 63:
 #line 295 "swf5compiler.y"
-{ yyval.str = strdup("or"); ;
+{ yyval.str = _strdup("or"); ;
     break;}
 case 64:
 #line 296 "swf5compiler.y"
-{ yyval.str = strdup("xor"); ;
+{ yyval.str = _strdup("xor"); ;
     break;}
 case 65:
 #line 297 "swf5compiler.y"
-{ yyval.str = strdup("modulo"); ;
+{ yyval.str = _strdup("modulo"); ;
     break;}
 case 66:
 #line 298 "swf5compiler.y"
-{ yyval.str = strdup("add"); ;
+{ yyval.str = _strdup("add"); ;
     break;}
 case 67:
 #line 299 "swf5compiler.y"
-{ yyval.str = strdup("lessThan"); ;
+{ yyval.str = _strdup("lessThan"); ;
     break;}
 case 68:
 #line 300 "swf5compiler.y"
-{ yyval.str = strdup("equals"); ;
+{ yyval.str = _strdup("equals"); ;
     break;}
 case 69:
 #line 301 "swf5compiler.y"
-{ yyval.str = strdup("inc"); ;
+{ yyval.str = _strdup("inc"); ;
     break;}
 case 70:
 #line 302 "swf5compiler.y"
-{ yyval.str = strdup("dec"); ;
+{ yyval.str = _strdup("dec"); ;
     break;}
 case 71:
 #line 303 "swf5compiler.y"
-{ yyval.str = strdup("typeof"); ;
+{ yyval.str = _strdup("typeof"); ;
     break;}
 case 72:
 #line 304 "swf5compiler.y"
-{ yyval.str = strdup("enumerate"); ;
+{ yyval.str = _strdup("enumerate"); ;
     break;}
 case 73:
 #line 305 "swf5compiler.y"
-{ yyval.str = strdup("initobject"); ;
+{ yyval.str = _strdup("initobject"); ;
     break;}
 case 74:
 #line 306 "swf5compiler.y"
-{ yyval.str = strdup("initarray"); ;
+{ yyval.str = _strdup("initarray"); ;
     break;}
 case 75:
 #line 307 "swf5compiler.y"
-{ yyval.str = strdup("getmember"); ;
+{ yyval.str = _strdup("getmember"); ;
     break;}
 case 76:
 #line 308 "swf5compiler.y"
-{ yyval.str = strdup("setmember"); ;
+{ yyval.str = _strdup("setmember"); ;
     break;}
 case 77:
 #line 309 "swf5compiler.y"
-{ yyval.str = strdup("shiftleft"); ;
+{ yyval.str = _strdup("shiftleft"); ;
     break;}
 case 78:
 #line 310 "swf5compiler.y"
-{ yyval.str = strdup("shiftright"); ;
+{ yyval.str = _strdup("shiftright"); ;
     break;}
 case 79:
 #line 311 "swf5compiler.y"
-{ yyval.str = strdup("shiftright2"); ;
+{ yyval.str = _strdup("shiftright2"); ;
     break;}
 case 80:
 #line 312 "swf5compiler.y"
-{ yyval.str = strdup("varequals"); ;
+{ yyval.str = _strdup("varequals"); ;
     break;}
 case 81:
 #line 313 "swf5compiler.y"
-{ yyval.str = strdup("oldAdd"); ;
+{ yyval.str = _strdup("oldAdd"); ;
     break;}
 case 82:
 #line 314 "swf5compiler.y"
-{ yyval.str = strdup("subtract"); ;
+{ yyval.str = _strdup("subtract"); ;
     break;}
 case 83:
 #line 315 "swf5compiler.y"
-{ yyval.str = strdup("multiply"); ;
+{ yyval.str = _strdup("multiply"); ;
     break;}
 case 84:
 #line 316 "swf5compiler.y"
-{ yyval.str = strdup("divide"); ;
+{ yyval.str = _strdup("divide"); ;
     break;}
 case 85:
 #line 317 "swf5compiler.y"
-{ yyval.str = strdup("oldequals"); ;
+{ yyval.str = _strdup("oldequals"); ;
     break;}
 case 86:
 #line 318 "swf5compiler.y"
-{ yyval.str = strdup("oldlessthan"); ;
+{ yyval.str = _strdup("oldlessthan"); ;
     break;}
 case 87:
 #line 319 "swf5compiler.y"
-{ yyval.str = strdup("logicaland"); ;
+{ yyval.str = _strdup("logicaland"); ;
     break;}
 case 88:
 #line 320 "swf5compiler.y"
-{ yyval.str = strdup("logicalor"); ;
+{ yyval.str = _strdup("logicalor"); ;
     break;}
 case 89:
 #line 321 "swf5compiler.y"
-{ yyval.str = strdup("not"); ;
+{ yyval.str = _strdup("not"); ;
     break;}
 case 90:
 #line 322 "swf5compiler.y"
-{ yyval.str = strdup("stringeq"); ;
+{ yyval.str = _strdup("stringeq"); ;
     break;}
 case 91:
 #line 323 "swf5compiler.y"
-{ yyval.str = strdup("stringlength"); ;
+{ yyval.str = _strdup("stringlength"); ;
     break;}
 case 92:
 #line 324 "swf5compiler.y"
-{ yyval.str = strdup("substring"); ;
+{ yyval.str = _strdup("substring"); ;
     break;}
 case 93:
 #line 325 "swf5compiler.y"
-{ yyval.str = strdup("getvariable"); ;
+{ yyval.str = _strdup("getvariable"); ;
     break;}
 case 94:
 #line 326 "swf5compiler.y"
-{ yyval.str = strdup("setvariable"); ;
+{ yyval.str = _strdup("setvariable"); ;
     break;}
 case 95:
 #line 327 "swf5compiler.y"
-{ yyval.str = strdup("settargetexpression"); ;
+{ yyval.str = _strdup("settargetexpression"); ;
     break;}
 case 96:
 #line 328 "swf5compiler.y"
-{ yyval.str = strdup("duplicatemovieclip"); ;
+{ yyval.str = _strdup("duplicatemovieclip"); ;
     break;}
 case 97:
 #line 329 "swf5compiler.y"
-{ yyval.str = strdup("removemovieclip"); ;
+{ yyval.str = _strdup("removemovieclip"); ;
     break;}
 case 98:
 #line 330 "swf5compiler.y"
-{ yyval.str = strdup("startdrag"); ;
+{ yyval.str = _strdup("startdrag"); ;
     break;}
 case 99:
 #line 331 "swf5compiler.y"
-{ yyval.str = strdup("stopdrag"); ;
+{ yyval.str = _strdup("stopdrag"); ;
     break;}
 case 100:
 #line 332 "swf5compiler.y"
-{ yyval.str = strdup("stringlessthan"); ;
+{ yyval.str = _strdup("stringlessthan"); ;
     break;}
 case 101:
 #line 333 "swf5compiler.y"
-{ yyval.str = strdup("mblength"); ;
+{ yyval.str = _strdup("mblength"); ;
     break;}
 case 102:
 #line 334 "swf5compiler.y"
-{ yyval.str = strdup("mbsubstring"); ;
+{ yyval.str = _strdup("mbsubstring"); ;
     break;}
 case 103:
 #line 335 "swf5compiler.y"
-{ yyval.str = strdup("mbord"); ;
+{ yyval.str = _strdup("mbord"); ;
     break;}
 case 104:
 #line 336 "swf5compiler.y"
-{ yyval.str = strdup("mbchr"); ;
+{ yyval.str = _strdup("mbchr"); ;
     break;}
 case 105:
 #line 337 "swf5compiler.y"
-{ yyval.str = strdup("branchalways"); ;
+{ yyval.str = _strdup("branchalways"); ;
     break;}
 case 106:
 #line 338 "swf5compiler.y"
-{ yyval.str = strdup("branchiftrue"); ;
+{ yyval.str = _strdup("branchiftrue"); ;
     break;}
 case 107:
 #line 339 "swf5compiler.y"
-{ yyval.str = strdup("getURL2"); ;
+{ yyval.str = _strdup("getURL2"); ;
     break;}
 case 108:
 #line 340 "swf5compiler.y"
-{ yyval.str = strdup("post"); ;
+{ yyval.str = _strdup("post"); ;
     break;}
 case 109:
 #line 341 "swf5compiler.y"
-{ yyval.str = strdup("get"); ;
+{ yyval.str = _strdup("get"); ;
     break;}
 case 110:
 #line 342 "swf5compiler.y"
-{ yyval.str = strdup("loadvariables"); ;
+{ yyval.str = _strdup("loadvariables"); ;
     break;}
 case 111:
 #line 343 "swf5compiler.y"
-{ yyval.str = strdup("loadmovie"); ;
+{ yyval.str = _strdup("loadmovie"); ;
     break;}
 case 112:
 #line 348 "swf5compiler.y"

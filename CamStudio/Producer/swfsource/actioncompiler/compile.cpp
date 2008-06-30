@@ -95,7 +95,7 @@ int addConstant(char *s)
 
   if(nConstants < 256)
   {
-    constants[nConstants] = strdup(s);
+    constants[nConstants] = _strdup(s);
     return nConstants++;
   }
   else

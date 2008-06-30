@@ -91,6 +91,8 @@
 #define IDC_CHECK1                      1025
 #define ID_CANCEL                       1026
 #define ID_PROGRESS_CANCEL              1027
+#define IDC_CHECK2                      1027
+#define IDC_ONLYFLASHTAG                1027
 #define IDC_INTERLEAVEFRAMES            1049
 #define IDC_BUTTONLINK1                 1055
 #define IDC_RECORDFORMAT                1290
@@ -204,7 +206,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        147
 #define _APS_NEXT_COMMAND_VALUE         32848
-#define _APS_NEXT_CONTROL_VALUE         1027
+#define _APS_NEXT_CONTROL_VALUE         1028
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

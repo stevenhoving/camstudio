@@ -495,6 +495,6 @@ N_STD::ostream &operator << (N_STD::ostream &out, const FlashTagRawData &data)
 }
 N_STD::istream &operator >> (N_STD::istream &in, FlashTagRawData &data)
 {
-	throw N_STD_EXCEP::exception();
+	throw std::exception();
 	return in;	
 }

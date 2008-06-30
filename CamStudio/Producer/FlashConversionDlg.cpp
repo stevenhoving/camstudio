@@ -22,6 +22,7 @@ extern int convertBits;
 extern CString swfname;
 extern CString swfbasename; 
 extern CString swfhtmlname;
+extern int onlyflashtag;
 extern CString urlRedirect;
 
 extern int Max_HalfKeyDepth;
@@ -118,7 +119,7 @@ BOOL FlashConversionDlg::OnInitDialog()
 	((CEdit *)GetDlgItem(IDC_FLASHNAME))->SetWindowText(swfname);
 	((CEdit *)GetDlgItem(IDC_HTMLNAME))->SetWindowText(swfhtmlname);
 	((CEdit *)GetDlgItem(IDC_URLREDIR))->SetWindowText("");
-		
+	((CButton *)GetDlgItem(IDC_ONLYFLASHTAG))->SetCheck(onlyflashtag);		
 
 	if (convertBits == 32)
 	{
@@ -197,7 +198,9 @@ BOOL FlashConversionDlg::OnInitDialog()
 		((CButton *) GetDlgItem(IDC_ADDPRELOADER))->SetCheck(FALSE);
 
 	
-	UpdateBehavior(produceRaw);
+	// @FIXME[Carlo Lanzotti]: This will ruin the loaded configuration
+	//UpdateBehavior(produceRaw);
+
 	if (produceRaw)
 		((CButton *) GetDlgItem(IDC_RAW))->SetCheck(TRUE);
 	else
@@ -235,7 +238,8 @@ void FlashConversionDlg::OnOK()
 	((CEdit *)GetDlgItem(IDC_BASENAME))->GetWindowText(swfbasename);
 	((CEdit *)GetDlgItem(IDC_FLASHNAME))->GetWindowText(swfname);
 	((CEdit *)GetDlgItem(IDC_HTMLNAME))->GetWindowText(swfhtmlname);		
-	
+	onlyflashtag = ((CButton *)GetDlgItem(IDC_ONLYFLASHTAG))->GetCheck();
+
 	FILE* testSWF = fopen(LPCTSTR(swfname),"wb");
 	if (testSWF==NULL)
 	{
@@ -442,13 +446,14 @@ void FlashConversionDlg::OnRadio1()
 void FlashConversionDlg::OnRaw() 
 {
 	int val = ((CButton *) GetDlgItem(IDC_RAW))->GetCheck();
-	UpdateBehavior(val);
+
+	// @FIXME[Carlo Lanzotti]: This will ruin the loaded configuration
+	// UpdateBehavior(val);
 	
 }
 
 void FlashConversionDlg::UpdateBehavior(int val) 
 {
-
 	if (val)
 	{
 		((CButton *) GetDlgItem(IDC_ADDPRELOADER))->EnableWindow(FALSE);

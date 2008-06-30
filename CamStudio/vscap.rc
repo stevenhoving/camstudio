@@ -198,17 +198,12 @@ BEGIN
         MENUITEM "&Cursor Options",             ID_OPTIONS_CURSOROPTIONS
         MENUITEM SEPARATOR
         MENUITEM "Do not record audio",         ID_OPTIONS_RECORDAUDIO_DONOTRECORDAUDIO
-
-        MENUITEM "Record audio from microphone", 
-                                                ID_OPTIONS_RECORDAUDIOMICROPHONE
-
+        MENUITEM "Record audio from microphone", ID_OPTIONS_RECORDAUDIOMICROPHONE
         MENUITEM SEPARATOR
         POPUP "&Audio Options"
         BEGIN
             MENUITEM "&Audio Options for Microphone", ID_OPTIONS_AUDIOFORMAT
-            MENUITEM "Audio and  Video Synchronization", 
-                                                    ID_OPTIONS_AUDIOOPTIONS_AUDIOVIDEOSYNCHRONIZATION
-
+            MENUITEM "Audio and  Video Synchronization", ID_OPTIONS_AUDIOOPTIONS_AUDIOVIDEOSYNCHRONIZATION
         END
         MENUITEM SEPARATOR
         MENUITEM "&Enable Autopan",             ID_OPTIONS_AUTOPAN
@@ -216,73 +211,44 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Program Options"
         BEGIN
-            MENUITEM "Minimize program on start recording", 
-                                                    ID_OPTIONS_MINIMIZEONSTART
-
-            MENUITEM "Hide flashing rectangle during recording", 
-                                                    ID_OPTIONS_HIDEFLASHING
+            MENUITEM "Minimize program on start recording", ID_OPTIONS_MINIMIZEONSTART
+            MENUITEM "Hide flashing rectangle during recording", ID_OPTIONS_HIDEFLASHING
             MENUITEM "Save settings on exit",       ID_OPTIONS_PROGRAMOPTIONS_SAVESETTINGSONEXIT
-
-            MENUITEM "Capture translucent/layered Windows", 
-                                                    ID_OPTIONS_CAPTURETRANS
+            MENUITEM "Capture translucent/layered Windows", ID_OPTIONS_CAPTURETRANS
             MENUITEM SEPARATOR
             POPUP "Play AVI file when recording stops"
             BEGIN
                 MENUITEM "Do not play AVI file",        ID_OPTIONS_PROGRAMOPTIONS_NOPLAY
-
                 MENUITEM "Use System Default Player",   ID_OPTIONS_PROGRAMOPTIONS_DEFAULTPLAY
-
                 MENUITEM "Use CamStudio Player 1.0",    ID_OPTIONS_PROGRAMOPTIONS_CAMSTUDIOPLAY
-
                 MENUITEM "Use CamStudio Player 2.0",    ID_OPTIONS_PROGRAMOPTIONS_PLAYAVIFILEWHENRECORDINGSTOPS_USECAMSTUDIOPLAYER20
-
             END
             POPUP "Temporary directory for recording"
             BEGIN
-                MENUITEM "Use Windows temporary directory", 
-                                                        ID_OPTIONS_TEMPDIR_WINDOWS
-
+                MENUITEM "Use Windows temporary directory", ID_OPTIONS_TEMPDIR_WINDOWS
                 MENUITEM "Use installed directory",     ID_OPTIONS_TEMPDIR_INSTALLED
-
-                MENUITEM "Use user specified directory ...", 
-                                                        ID_OPTIONS_TEMPDIR_USER
-
+                MENUITEM "Use user specified directory ...", ID_OPTIONS_TEMPDIR_USER
             END
             POPUP "Recording Thread Priority"
             BEGIN
                 MENUITEM "Normal",                      ID_OPTIONS_RECORDINGTHREADPRIORITY_NORMAL
-
                 MENUITEM "Above Normal",                ID_OPTIONS_RECORDINGTHREADPRIORITY_ABOVENORMAL
-
                 MENUITEM "Highest",                     ID_OPTIONS_RECORDINGTHREADPRIORITY_HIGHEST
-
                 MENUITEM "Time Critical",               ID_OPTIONS_RECORDINGTHREADPRIORITY_TIMECRITICAL
-
             END
             POPUP "Name of AVI file"
             BEGIN
                 MENUITEM "Ask for file name",           ID_OPTIONS_NAMING_ASK
-
-                MENUITEM "Automatic file naming ( Use Date / Time )", 
-                                                        ID_OPTIONS_NAMING_AUTODATE
-
+                MENUITEM "Automatic file naming ( Use Date / Time )", ID_OPTIONS_NAMING_AUTODATE
             END
             MENUITEM "Preset Time",                 ID_OPTIONS_PROGRAMOPTIONS_PRESETTIME
-
             MENUITEM "Troubleshoot ...",            ID_OPTIONS_PROGRAMOPTIONS_TROUBLESHOOT
-
         END
         POPUP "Record to Flash Options"
         BEGIN
-            MENUITEM "Preview SWF File upon completion", 
-                                                    ID_OPTIONS_SWF_LAUNCHHTML
-
-            MENUITEM "Delete the intermediate AVI file upon completion", 
-                                                    ID_OPTIONS_SWF_DELETEAVIFILE
-
-            MENUITEM "Display conversion options before generating SWF", 
-                                                    ID_OPTIONS_SWF_DISPLAYPARAMETERS
-
+            MENUITEM "Preview SWF File upon completion", ID_OPTIONS_SWF_LAUNCHHTML
+            MENUITEM "Delete the intermediate AVI file upon completion", ID_OPTIONS_SWF_DELETEAVIFILE
+            MENUITEM "Display conversion options before generating SWF", ID_OPTIONS_SWF_DISPLAYPARAMETERS
         END
         MENUITEM SEPARATOR
         MENUITEM "&Keyboard Shortcuts",         ID_OPTIONS_KEYBOARDSHORTCUTS
@@ -290,9 +256,7 @@ BEGIN
         POPUP "Language"
         BEGIN
             MENUITEM "English",                     ID_OPTIONS_LANGUAGE_ENGLISH
-
             MENUITEM "German",                      ID_OPTIONS_LANGUAGE_GERMAN
-
         END
     END
     POPUP "&Tools"
@@ -300,8 +264,7 @@ BEGIN
         MENUITEM "&Screen Annotations",         ID_VIEW_SCREENANNOTATIONS
         MENUITEM "&Video Annotations",          ID_VIEW_VIDEOANNOTATIONS
         MENUITEM SEPARATOR
-        MENUITEM "SWF Producer ( Converts AVI to Flash )", 
-                                                ID_TOOLS_SWFPRODUCER
+        MENUITEM "SWF Producer ( Converts AVI to Flash )", ID_TOOLS_SWFPRODUCER
     END
     POPUP "&Effects"
     BEGIN
@@ -360,13 +323,8 @@ BEGIN
         POPUP "Anti Alias"
         BEGIN
             MENUITEM "No Anti Alias (Fastest)",     ID_CONTEXT_ANTIALIAS_NOANTIALIAS
-
-            MENUITEM "Anti Alias X 2 (Better Quality)", 
-                                                    ID_CONTEXT_ANTIALIAS_ANTIALIASX2
-
-            MENUITEM "Anti Alias X 3 (Best Quality)", 
-                                                    ID_CONTEXT_ANTIALIAS_ANTIALIASX3SLOWEST
-
+            MENUITEM "Anti Alias X 2 (Better Quality)", ID_CONTEXT_ANTIALIAS_ANTIALIASX2
+            MENUITEM "Anti Alias X 3 (Best Quality)", ID_CONTEXT_ANTIALIAS_ANTIALIASX3SLOWEST
         END
         MENUITEM SEPARATOR
         MENUITEM "Close",                       ID_CONTEXT_CLOSE
@@ -380,8 +338,7 @@ IDR_CONTEXTLANGUAGE MENU
 BEGIN
     POPUP "Script"
     BEGIN
-        MENUITEM "Western   (English, French, German, etc..)", 
-                                                ID_SCRIPT_WESTERN
+        MENUITEM "Western   (English, French, German, etc..)", ID_SCRIPT_WESTERN
         MENUITEM "Baltic",                      ID_SCRIPT_BALTIC
         MENUITEM "Chinese Big 5",               ID_SCRIPT_CHINESEBIG5
         MENUITEM "Default",                     ID_SCRIPT_DEFAULT
@@ -420,11 +377,8 @@ BEGIN
         POPUP "Shape Library"
         BEGIN
             MENUITEM "New Shape Library",           ID_EDITOBJ_LIBRARY_NEWLIBRARY
-
             MENUITEM "Open Shape Library",          ID_EDITOBJ_LIBRARY_OPENLIBRARY
-
             MENUITEM "Save Shape Library",          ID_EDITOBJ_LIBRARY_CLOSELIBRARY
-
         END
     END
 END
@@ -444,18 +398,13 @@ BEGIN
         POPUP "Layout Library"
         BEGIN
             MENUITEM "New Layout Library",          ID_EDITLAYOUT_LIBRARY_NEWLIBRARY
-
             MENUITEM "Open Layout Library",         ID_EDITLAYOUT_LIBRARY_OPENLIBRARY
-
             MENUITEM "Save Layout Library",         ID_EDITLAYOUT_LIBRARY_CLOSELIBRARY
-
         END
         MENUITEM SEPARATOR
         MENUITEM "Close All Objects",           ID_EDITLAYOUT_CLOSEALLOBJECTS
-
         MENUITEM SEPARATOR
         MENUITEM "Layout Shortcuts ...",        ID_EDITLAYOUT_LAYOUTSHORTCUTS
-
     END
 END
 
@@ -469,9 +418,7 @@ BEGIN
         MENUITEM "Edit Text ...",               ID_CONTEXT_EDITTEXT
         MENUITEM "Edit Image ...",              ID_CONTEXT_EDITIMAGE
         MENUITEM "Edit Transparency...",        ID_CONTEXTVIDEO_EDITTRANSPARENCY
-
         MENUITEM "Edit Refresh Rate ...",       ID_CONTEXTVIDEO_EDITTRANSPARENCYREFRESHRATE
-
         MENUITEM SEPARATOR
         MENUITEM "Close",                       ID_CONTEXT_CLOSE
     END
@@ -485,14 +432,12 @@ BEGIN
         MENUITEM "Open Shape Library",          ID_LIBRARY_OPENSHAPELIBRARY
         MENUITEM "Save Shape Library",          ID_LIBRARY_SAVESHAPELIBRARY
         MENUITEM "Insert Shape Libary",         ID_LIBRARY_INSERTSHAPELIBARAY
-
         MENUITEM SEPARATOR
         MENUITEM "New Layout Library",          ID_LIBRARY_NEWLAYOUTLIBRARY
         MENUITEM "Open Layout Library",         ID_LIBRARY_OPENLAYOUTLIBRARY
         MENUITEM "Save Layout Library",         ID_LIBRARY_SAVELAYOUTLIBRARY
         MENUITEM SEPARATOR
         MENUITEM "Close Screen Annotations",    ID_OPTIONS_CLOSESCREENANNOTATIONS
-
     END
     POPUP "Objects"
     BEGIN
@@ -511,7 +456,6 @@ BEGIN
         MENUITEM "Edit Name",                   ID_OBJECTS_EDITNAME
         MENUITEM SEPARATOR
         MENUITEM "Layout Shortcuts ...",        ID_EDITLAYOUT_LAYOUTSHORTCUTS
-
         MENUITEM "Close All Objects",           ID_OBJECTS_CLOSEALLOBJECTS
     END
     POPUP "Help "
@@ -522,21 +466,13 @@ BEGIN
         POPUP "Shape Topics"
         BEGIN
             MENUITEM "Instantiating a shape",       ID_HELP_SHAPETOPICS_INSTANTIATINGASHAPE
-
             MENUITEM "Editing a shape",             ID_HELP_SHAPETOPICS_EDITINGASHAPE
-
             MENUITEM "Editing Text",                ID_HELP_SHAPETOPICS_EDITINGTEXT
-
             MENUITEM "Editing Image",               ID_HELP_SHAPETOPICS_EDITINGIMAGE
-
             MENUITEM "Editing Transparency",        ID_HELP_SHAPETOPICS_EDITINGTRANSPARENCY
-
             MENUITEM "Resizing Shapes",             ID_HELP_SHAPETOPICS_RESIZINGSHAPES
-
             MENUITEM "Managing shapes\t",           ID_HELP_SHAPETOPICS_MANAGINGSHAPES
-
             MENUITEM "Creating a new shape",        ID_HELP_SHAPETOPICS_CREATINGANEWSHAPE
-
         END
         MENUITEM "Layouts",                     ID_HELP_LAYOUTS
     END
@@ -572,30 +508,25 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 252, 146
+IDD_ABOUTBOX DIALOGEX 0, 0, 252, 186
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About CamStudio"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    CONTROL         189,IDC_STATIC,"Static",SS_BITMAP,7,13,163,53,
-                    WS_EX_DLGMODALFRAME
+    CONTROL         189,IDC_STATIC,"Static",SS_BITMAP,7,13,163,53,WS_EX_DLGMODALFRAME
     DEFPUSHBUTTON   "OK",IDOK,178,15,49,15,WS_GROUP
     CTEXT           "CamStudio",IDC_STATIC,170,39,75,9,SS_NOPREFIX
     CTEXT           "Version 2.5",IDC_STATIC,170,53,75,8
-    CTEXT           "CamStudio (c) 2001 - 2007  RenderSoft And Web Publishing",
-                    IDC_STATIC,7,78,238,13
-    GROUPBOX        "",IDC_STATIC,7,68,238,75
-    PUSHBUTTON      "http://www.camstudio.org",IDC_BUTTONLINK,22,105,214,14,
-                    BS_FLAT
-    CTEXT           "Bugfixes and Additional Features Added By Nick The Geek",
-                    IDC_STATIC,15,89,223,8
-    PUSHBUTTON      "Please donate to support Camstudio's development",
-                    IDC_BUTTONLINK2,21,125,214,14,BS_FLAT
+    CTEXT           "CamStudio (c) 2001 - 2007  RenderSoft And Web Publishing",IDC_STATIC,7,78,238,13
+    GROUPBOX        "",IDC_STATIC,7,112,238,70
+    PUSHBUTTON      "http://www.camstudio.org",IDC_BUTTONLINK,22,136,214,14,BS_FLAT
+    CTEXT           "Bugfixes and Additional Features Added By Nick The Geek",IDC_STATIC,15,89,223,8
+    PUSHBUTTON      "Please donate to support Camstudio's development",IDC_BUTTONLINK2,21,156,214,14,BS_FLAT
+    CTEXT           "More bug fixes, Support for VS2005 Added by Carlo Lanzotti",IDC_STATIC,14,101,223,8
 END
 
 IDD_VIDEOOPTIONS DIALOGEX 0, 0, 303, 258
-STYLE DS_SETFONT | DS_MODALFRAME | DS_CONTEXTHELP | WS_POPUP | WS_CAPTION | 
-    WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CONTEXTHELP | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_CONTEXTHELP
 CAPTION "Video Options"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
@@ -604,10 +535,8 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,162,233,50,14
     EDITTEXT        IDC_KEYFRAMES,111,68,46,13,ES_AUTOHSCROLL
     LTEXT           "frames",IDC_STATIC_KEYFRAMES,163,71,37,8
-    LTEXT           "Quality",IDC_STATIC_QUALITY_LABEL,19,46,22,14,
-                    SS_CENTERIMAGE
-    CONTROL         "Slider1",IDC_QUALITY_SLIDER,"msctls_trackbar32",
-                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,50,46,130,14
+    LTEXT           "Quality",IDC_STATIC_QUALITY_LABEL,19,46,22,14,SS_CENTERIMAGE
+    CONTROL         "Slider1",IDC_QUALITY_SLIDER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,50,46,130,14
     LTEXT           "Playback Rate",IDC_STATIC,19,129,85,14
     EDITTEXT        IDC_FPS,111,128,46,13,ES_AUTOHSCROLL
     LTEXT           "Set Key Frames Every",IDC_STATIC,19,70,77,13
@@ -615,16 +544,13 @@ BEGIN
     EDITTEXT        IDC_KEYFRAMES2,111,108,46,13,ES_AUTOHSCROLL
     LTEXT           "milliseconds",IDC_STATIC_KEYFRAMES3,163,112,59,8
     LTEXT           "Capture Frames Every",IDC_STATIC,19,110,85,14
-    COMBOBOX        IDC_COMPRESSORS,19,23,191,84,CBS_DROPDOWN | WS_VSCROLL | 
-                    WS_TABSTOP
+    COMBOBOX        IDC_COMPRESSORS,19,23,191,84,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     GROUPBOX        "Compressor",IDC_STATIC,7,5,291,85
     LTEXT           "Ql",IDC_QUALITY,187,47,31,12,SS_CENTERIMAGE
     PUSHBUTTON      "&About",ID_ABOUT,236,22,50,14,NOT WS_TABSTOP
     PUSHBUTTON      "&Configure",ID_CONFIGURE,236,43,50,14,NOT WS_TABSTOP
-    CONTROL         "Auto Adjust",IDC_AUTO,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,20,165,128,10
-    CONTROL         "Slider2",IDC_ADJUST,"msctls_trackbar32",TBS_AUTOTICKS | 
-                    TBS_TOP | WS_TABSTOP,61,183,167,17
+    CONTROL         "Auto Adjust",IDC_AUTO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,165,128,10
+    CONTROL         "Slider2",IDC_ADJUST,"msctls_trackbar32",TBS_AUTOTICKS | TBS_TOP | WS_TABSTOP,61,183,167,17
     LTEXT           "Max Framerate",IDC_STATIC,21,184,37,21
     LTEXT           "Time Lapse ",IDC_STATIC,136,205,41,11
     LTEXT           "1 Frame/Minute",IDC_STATIC,236,183,59,22
@@ -644,29 +570,21 @@ BEGIN
     RADIOBUTTON     "Use Actual Cursor",IDC_CURSOR1,45,58,96,12
     RADIOBUTTON     "Use Custom Cursor",IDC_CURSOR2,45,75,85,12
     RADIOBUTTON     "Use Cursor From File",IDC_CURSOR3,45,93,96,12
-    CONTROL         "Highlight Cursor",IDC_HIGHLIGHTCURSOR,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,21,131,97,13
+    CONTROL         "Highlight Cursor",IDC_HIGHLIGHTCURSOR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,21,131,97,13
     GROUPBOX        "Cursor Display",-1,7,7,240,109
-    CONTROL         "Slider1",IDC_HIGHLIGHTSIZE,"msctls_trackbar32",TBS_BOTH | 
-                    TBS_NOTICKS | WS_TABSTOP,52,145,125,13
-    COMBOBOX        IDC_HIGHLIGHTSHAPE,57,164,67,64,CBS_DROPDOWNLIST | 
-                    WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_CUSTOMCURSOR,148,73,84,64,CBS_DROPDOWNLIST | 
-                    WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "..",IDC_FILECURSOR,148,91,16,14,BS_ICON | BS_LEFT | 
-                    BS_TOP
+    CONTROL         "Slider1",IDC_HIGHLIGHTSIZE,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,52,145,125,13
+    COMBOBOX        IDC_HIGHLIGHTSHAPE,57,164,67,64,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_CUSTOMCURSOR,148,73,84,64,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "..",IDC_FILECURSOR,148,91,16,14,BS_ICON | BS_LEFT | BS_TOP
     LTEXT           "Size",IDC_STATIC_SIZE,22,148,30,11
     LTEXT           "Shape",IDC_STATIC_SHAPE,21,167,30,11
     GROUPBOX        "Cursor Highlight",-1,7,120,240,94
     ICON            IDR_MAINFRAME,IDC_ICONCURSOR,194,25,21,20
     DEFPUSHBUTTON   "Color",IDC_HIGHLIGHTCOLOR,129,164,43,14,BS_FLAT
     LTEXT           "Halfsize",IDC_STATIC_HALFSIZE,204,172,36,10
-    CONTROL         "Enable Visual Click Feedback",IDC_HIGHLIGHTCLICK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,21,182,110,13
-    DEFPUSHBUTTON   "Left Button Color",IDC_HIGHLIGHTCOLORLB,33,195,69,14,
-                    BS_FLAT
-    DEFPUSHBUTTON   "Right Button Color",IDC_HIGHLIGHTCOLORRB,107,195,72,14,
-                    BS_FLAT
+    CONTROL         "Enable Visual Click Feedback",IDC_HIGHLIGHTCLICK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,21,182,110,13
+    DEFPUSHBUTTON   "Left Button Color",IDC_HIGHLIGHTCOLORLB,33,195,69,14,BS_FLAT
+    DEFPUSHBUTTON   "Right Button Color",IDC_HIGHLIGHTCOLORRB,107,195,72,14,BS_FLAT
 END
 
 IDD_AUTOPANSPEED DIALOG  0, 0, 186, 66
@@ -677,8 +595,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,17,39,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,75,39,50,14
     GROUPBOX        " Maximum Pan Speed  ",IDC_GROUPBOX,7,7,172,52
-    CONTROL         "Slider1",IDC_PANSLIDER,"msctls_trackbar32",TBS_BOTH | 
-                    TBS_NOTICKS | WS_TABSTOP,13,20,163,13
+    CONTROL         "Slider1",IDC_PANSLIDER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,13,20,163,13
     LTEXT           "Sp",IDC_MAXSPEED,142,39,35,14,SS_CENTERIMAGE
 END
 
@@ -700,10 +617,8 @@ BEGIN
     LTEXT           "Top",IDC_STATIC,93,65,46,12
     EDITTEXT        IDC_X,17,81,43,15,ES_AUTOHSCROLL | ES_NUMBER
     EDITTEXT        IDC_Y,91,81,43,15,ES_AUTOHSCROLL | ES_NUMBER
-    CONTROL         "Fixed Top-Left Corner",IDC_FIXEDTOPLEFT,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,18,50,119,10
-    CONTROL         "Drag Corners to Pan",IDC_SUPPORTMOUSEDRAG,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,17,144,126,10
+    CONTROL         "Fixed Top-Left Corner",IDC_FIXEDTOPLEFT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,50,119,10
+    CONTROL         "Drag Corners to Pan",IDC_SUPPORTMOUSEDRAG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,144,126,10
 END
 
 IDD_AUDIODIALOG DIALOG  0, 0, 200, 254
@@ -711,33 +626,24 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Audio Options for Microphone"
 FONT 8, "MS Sans Serif"
 BEGIN
-    COMBOBOX        IDC_RECORDFORMAT,15,54,167,100,CBS_DROPDOWN | WS_VSCROLL | 
-                    WS_TABSTOP
+    COMBOBOX        IDC_RECORDFORMAT,15,54,167,100,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "Volume",IDVOLUME,134,17,48,14
     GROUPBOX        "Recording Format",IDC_STATIC,6,42,187,33
     GROUPBOX        "Compressed Format",IDC_STATIC,6,78,187,73
     PUSHBUTTON      "Choose  Compressed Format",IDC_CHOOSE,16,128,166,15
-    EDITTEXT        IDC_COMPRESSEDFORMATTAG,16,90,165,15,ES_AUTOHSCROLL | 
-                    ES_READONLY
-    EDITTEXT        IDC_COMPRESSEDFORMAT,16,109,165,15,ES_AUTOHSCROLL | 
-                    ES_READONLY
+    EDITTEXT        IDC_COMPRESSEDFORMATTAG,16,90,165,15,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_COMPRESSEDFORMAT,16,109,165,15,ES_AUTOHSCROLL | ES_READONLY
     EDITTEXT        IDC_IFACTOR,93,171,29,15,ES_AUTOHSCROLL | ES_NUMBER
-    CONTROL         "Interleave every",IDC_INTERLEAVE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,15,172,72,11
+    CONTROL         "Interleave every",IDC_INTERLEAVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,172,72,11
     GROUPBOX        "Interleave Video and Audio",IDC_STATIC,6,153,187,44
     DEFPUSHBUTTON   "OK",IDOK,6,235,87,15
     PUSHBUTTON      "Cancel",IDCANCEL,106,235,87,15
-    COMBOBOX        IDC_INPUTDEVICE,15,18,112,100,CBS_DROPDOWN | WS_VSCROLL | 
-                    WS_TABSTOP
+    COMBOBOX        IDC_INPUTDEVICE,15,18,112,100,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     GROUPBOX        "Audio Capture Device",IDC_STATIC,6,6,187,32
-    CONTROL         "Frames",IDC_INTERLEAVEFRAMES,"Button",
-                    BS_AUTORADIOBUTTON,133,166,54,10
-    CONTROL         "Milliseconds",IDC_INTERLEAVESECONDS,"Button",
-                    BS_AUTORADIOBUTTON,133,180,53,10
-    CONTROL         "Use MCI Recording",IDC_SYSTEMRECORD,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,14,212,112,11
-    GROUPBOX        "Use system method for audio recording",IDC_STATIC,6,200,
-                    187,31
+    CONTROL         "Frames",IDC_INTERLEAVEFRAMES,"Button",BS_AUTORADIOBUTTON,133,166,54,10
+    CONTROL         "Milliseconds",IDC_INTERLEAVESECONDS,"Button",BS_AUTORADIOBUTTON,133,180,53,10
+    CONTROL         "Use MCI Recording",IDC_SYSTEMRECORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,212,112,11
+    GROUPBOX        "Use system method for audio recording",IDC_STATIC,6,200,187,31
     PUSHBUTTON      "Help",IDC_BUTTON1,132,211,51,15
 END
 
@@ -749,76 +655,52 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,99,149,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,162,149,50,14
     GROUPBOX        "Record/Pause Key",IDC_STATIC,7,7,143,41
-    COMBOBOX        IDC_RECORDKEY,93,29,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
+    COMBOBOX        IDC_RECORDKEY,93,29,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     GROUPBOX        "Stop Key",IDC_STATIC,7,51,143,41
-    COMBOBOX        IDC_STOPKEY,93,73,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
+    COMBOBOX        IDC_STOPKEY,93,73,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     GROUPBOX        "Cancel Recording Key",IDC_STATIC,7,97,143,41
-    COMBOBOX        IDC_CANCELKEY,93,119,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
-    CONTROL         "",IDC_CTRL1,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,17,31,10,10
+    COMBOBOX        IDC_CANCELKEY,93,119,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",IDC_CTRL1,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,17,31,10,10
     LTEXT           "CTRL",IDC_STATIC,13,20,20,9
-    CONTROL         "",IDC_ALT1,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,42,31,10,10
+    CONTROL         "",IDC_ALT1,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,42,31,10,10
     LTEXT           "ALT",IDC_STATIC,42,20,15,10
-    CONTROL         "",IDC_SHIFT1,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,69,31,10,10
+    CONTROL         "",IDC_SHIFT1,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,69,31,10,10
     LTEXT           "SHIFT",IDC_STATIC,66,20,24,10
-    CONTROL         "",IDC_CTRL2,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,19,75,10,10
+    CONTROL         "",IDC_CTRL2,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,19,75,10,10
     LTEXT           "CTRL",IDC_STATIC,15,65,20,9
-    CONTROL         "",IDC_ALT2,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,44,75,10,10
+    CONTROL         "",IDC_ALT2,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,44,75,10,10
     LTEXT           "ALT",IDC_STATIC,44,65,15,10
-    CONTROL         "",IDC_SHIFT2,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,71,75,10,10
+    CONTROL         "",IDC_SHIFT2,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,71,75,10,10
     LTEXT           "SHIFT",IDC_STATIC,68,65,22,10
-    CONTROL         "",IDC_CTRL3,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,18,122,10,10
+    CONTROL         "",IDC_CTRL3,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,18,122,10,10
     LTEXT           "CTRL",IDC_STATIC,14,112,20,9
-    CONTROL         "",IDC_ALT3,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,44,122,10,10
+    CONTROL         "",IDC_ALT3,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,44,122,10,10
     LTEXT           "ALT",IDC_STATIC,44,112,15,10
-    CONTROL         "",IDC_SHIFT3,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,70,122,10,10
+    CONTROL         "",IDC_SHIFT3,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,70,122,10,10
     LTEXT           "SHIFT",IDC_STATIC,68,112,22,10
     GROUPBOX        "Next Layout Key",IDC_STATIC,162,7,143,41
-    COMBOBOX        IDC_NEXTKEY,248,29,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
+    COMBOBOX        IDC_NEXTKEY,248,29,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     GROUPBOX        "Previous Layout Key",IDC_STATIC,162,51,143,41
-    COMBOBOX        IDC_PREVKEY,248,73,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
+    COMBOBOX        IDC_PREVKEY,248,73,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     GROUPBOX        "Show/Hide Layout Key",IDC_STATIC,162,97,143,41
-    COMBOBOX        IDC_SHOWKEY,248,119,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
-    CONTROL         "",IDC_CTRL4,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,172,31,10,10
+    COMBOBOX        IDC_SHOWKEY,248,119,52,64,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",IDC_CTRL4,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,172,31,10,10
     LTEXT           "CTRL",IDC_STATIC,168,20,20,9
-    CONTROL         "",IDC_ALT4,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,197,31,10,10
+    CONTROL         "",IDC_ALT4,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,197,31,10,10
     LTEXT           "ALT",IDC_STATIC,197,20,15,10
-    CONTROL         "",IDC_SHIFT4,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,224,31,10,10
+    CONTROL         "",IDC_SHIFT4,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,224,31,10,10
     LTEXT           "SHIFT",IDC_STATIC,221,20,24,10
-    CONTROL         "",IDC_CTRL5,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,174,75,10,10
+    CONTROL         "",IDC_CTRL5,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,174,75,10,10
     LTEXT           "CTRL",IDC_STATIC,170,65,20,9
-    CONTROL         "",IDC_ALT5,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,199,75,10,10
+    CONTROL         "",IDC_ALT5,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,199,75,10,10
     LTEXT           "ALT",IDC_STATIC,199,65,15,10
-    CONTROL         "",IDC_SHIFT5,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,226,75,10,10
+    CONTROL         "",IDC_SHIFT5,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,226,75,10,10
     LTEXT           "SHIFT",IDC_STATIC,223,65,22,10
-    CONTROL         "",IDC_CTRL6,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,173,122,10,10
+    CONTROL         "",IDC_CTRL6,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,173,122,10,10
     LTEXT           "CTRL",IDC_STATIC,169,112,20,9
-    CONTROL         "",IDC_ALT6,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,199,122,10,10
+    CONTROL         "",IDC_ALT6,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,199,122,10,10
     LTEXT           "ALT",IDC_STATIC,199,112,15,10
-    CONTROL         "",IDC_SHIFT6,"Button",BS_AUTOCHECKBOX | BS_CENTER | 
-                    BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,225,122,10,10
+    CONTROL         "",IDC_SHIFT6,"Button",BS_AUTOCHECKBOX | BS_CENTER | BS_BOTTOM | BS_MULTILINE | WS_TABSTOP,225,122,10,10
     LTEXT           "SHIFT",IDC_STATIC,223,112,22,10
 END
 
@@ -833,23 +715,16 @@ BEGIN
     GROUPBOX        "Date",IDC_STATIC,7,71,207,44
     GROUPBOX        "Graphics",IDC_STATIC,7,120,208,87
     DEFPUSHBUTTON   "Options",IDOPTIONSCAPTION,155,18,50,14
-    EDITTEXT        IDC_EDITCAPTION,19,42,186,15,ES_MULTILINE | 
-                    ES_AUTOHSCROLL
-    CONTROL         "Add Date",IDC_DATE,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,17,82,71,13
+    EDITTEXT        IDC_EDITCAPTION,19,42,186,15,ES_MULTILINE | ES_AUTOHSCROLL
+    CONTROL         "Add Date",IDC_DATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,82,71,13
     DEFPUSHBUTTON   "Options",IDOPTIONSDATE,155,88,50,14
     DEFPUSHBUTTON   "Options",IDOPTIONSGRAPHICS,155,133,50,14
-    CONTROL         "Add Caption",IDC_CAPTION,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,19,22,63,13
-    CONTROL         "Add Graphics",IDC_GRAPHICS,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,16,135,102,13
-    CONTROL         "Add Date/Time",IDC_DATETIME,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,17,97,70,13
-    EDITTEXT        IDC_IMAGEPATH,26,170,152,15,ES_MULTILINE | 
-                    ES_AUTOHSCROLL | WS_DISABLED
+    CONTROL         "Add Caption",IDC_CAPTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,22,63,13
+    CONTROL         "Add Graphics",IDC_GRAPHICS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,135,102,13
+    CONTROL         "Add Date/Time",IDC_DATETIME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,97,70,13
+    EDITTEXT        IDC_IMAGEPATH,26,170,152,15,ES_MULTILINE | ES_AUTOHSCROLL | WS_DISABLED
     GROUPBOX        "Image Path",IDC_STATIC,16,153,189,45
-    PUSHBUTTON      "..",IDC_FILEIMAGE,182,170,16,14,BS_ICON | BS_LEFT | 
-                    BS_TOP
+    PUSHBUTTON      "..",IDC_FILEIMAGE,182,170,16,14,BS_ICON | BS_LEFT | BS_TOP
 END
 
 IDD_AUTOSEARCH DIALOG  0, 0, 181, 121
@@ -869,23 +744,17 @@ FONT 8, "MS Sans Serif"
 BEGIN
     DEFPUSHBUTTON   "Adjust Playback Volume",IDVOLUME,17,99,164,15
     DEFPUSHBUTTON   "Close",IDOK,44,218,112,15
-    COMBOBOX        IDC_SOUNDDEVICE,17,53,164,100,CBS_DROPDOWN | WS_VSCROLL | 
-                    WS_TABSTOP
+    COMBOBOX        IDC_SOUNDDEVICE,17,53,164,100,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     GROUPBOX        "Soundcard Device",IDC_STATIC,7,6,187,71
-    CONTROL         "Slider1",IDC_VOLUMESLIDER,"msctls_trackbar32",TBS_BOTH | 
-                    TBS_NOTICKS | WS_TABSTOP,83,165,102,13
+    CONTROL         "Slider1",IDC_VOLUMESLIDER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,83,165,102,13
     GROUPBOX        "Playback Volume",IDC_STATIC,7,84,187,38
-    LTEXT           "Please select the device that is attached to your speakers",
-                    IDC_STATIC,15,24,168,20
+    LTEXT           "Please select the device that is attached to your speakers",IDC_STATIC,15,24,168,20
     DEFPUSHBUTTON   "Manual Search",ID_MANUALCONFIG,13,185,78,15
     DEFPUSHBUTTON   "Auto Search",ID_AUTOCONFIG,106,185,78,15
     GROUPBOX        "Recording Line Configuration",IDC_STATIC,7,130,187,78
-    CONTROL         "Recording Volume",IDC_STATICVOLUME,"Static",
-                    SS_LEFTNOWORDWRAP | WS_GROUP,17,167,60,11
-    CONTROL         "Recording Line:",IDC_STATIC,"Static",SS_LEFTNOWORDWRAP | 
-                    WS_GROUP,16,147,60,11
-    CONTROL         "Static",IDC_STATICINFO,"Static",SS_LEFTNOWORDWRAP | 
-                    WS_GROUP,88,147,95,11
+    CONTROL         "Recording Volume",IDC_STATICVOLUME,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,17,167,60,11
+    CONTROL         "Recording Line:",IDC_STATIC,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,16,147,60,11
+    CONTROL         "Static",IDC_STATICINFO,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,88,147,95,11
 END
 
 IDD_TROUBLESHOOT DIALOG  0, 0, 186, 207
@@ -895,30 +764,25 @@ FONT 8, "MS Sans Serif"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,7,185,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,64,185,50,14
-    LTEXT           "After CamStudio exits, many of my sound recording applications no longer record from the microphone. They record from my speakers instead.",
-                    IDC_STATIC,18,21,148,38
+    LTEXT           "After CamStudio exits, many of my sound recording applications no longer record from the microphone. They record from my speakers instead.",IDC_STATIC,18,21,148,38
     CONTROL         "I have encountered the above problem.",IDC_CHECK1,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,62,146,18
     GROUPBOX        "Problem",IDC_STATIC,7,7,172,82
-    LTEXT           "When I open the Video Options dialog, CamStudio crashes.",
-                    IDC_STATIC,18,108,148,28
-    CONTROL         "Restrict my video codecs to prevent crashing.",
-                    IDC_CHECK2,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | 
-                    WS_TABSTOP,18,141,146,30
+    LTEXT           "When I open the Video Options dialog, CamStudio crashes.",IDC_STATIC,18,108,148,28
+    CONTROL         "Restrict my video codecs to prevent crashing.",IDC_CHECK2,
+                    "Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,18,141,146,30
     GROUPBOX        "Problem",IDC_STATIC,7,94,172,83
 END
 
 IDD_TEXTDIALOG DIALOGEX 0, 0, 144, 158
-STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | 
-    WS_SYSMENU
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "Text Properties"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "Close",IDOK,7,136,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,88,136,50,14,NOT WS_VISIBLE
-    EDITTEXT        IDC_EDIT1,7,25,130,91,ES_MULTILINE | ES_AUTOVSCROLL | 
-                    ES_AUTOHSCROLL | ES_WANTRETURN
+    EDITTEXT        IDC_EDIT1,7,25,130,91,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN
     PUSHBUTTON      "Font",IDFONT,7,6,50,14
     PUSHBUTTON      "",ID_JUSTLEFT,86,6,15,14,BS_ICON | BS_FLAT
     PUSHBUTTON      "",ID_JUSTCENTER,103,6,16,14,BS_ICON | BS_FLAT
@@ -933,14 +797,10 @@ CAPTION "Screen Annotations"
 MENU IDR_ANNOTATIONMENU
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    CONTROL         "List1",IDC_LIST1,"SysListView32",LVS_SMALLICON | 
-                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | 
-                    LVS_EDITLABELS | WS_BORDER | WS_TABSTOP,7,26,116,121,
-                    WS_EX_STATICEDGE
+    CONTROL         "List1",IDC_LIST1,"SysListView32",LVS_SMALLICON | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_EDITLABELS | WS_BORDER | WS_TABSTOP,7,26,116,121,WS_EX_STATICEDGE
     PUSHBUTTON      "Close",IDOK,7,154,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,63,154,13,14,NOT WS_VISIBLE
-    CONTROL         "Tab1",IDC_TAB1,"SysTabControl32",0x0,7,7,116,18,
-                    WS_EX_TRANSPARENT
+    CONTROL         "Tab1",IDC_TAB1,"SysTabControl32",0x0,7,7,116,18,WS_EX_TRANSPARENT
     PUSHBUTTON      "Next Layout",IDNEXT,68,154,56,14
 END
 
@@ -953,10 +813,8 @@ BEGIN
     PUSHBUTTON      "OK",IDOK,7,210,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,67,210,50,14
     GROUPBOX        "Image",IDC_STATIC,7,38,162,65
-    CONTROL         "Blank Image",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON,19,
-                    50,53,14
-    CONTROL         "Image File",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,19,
-                    70,48,10
+    CONTROL         "Blank Image",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON,19,50,53,14
+    CONTROL         "Image File",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,19,70,48,10
     EDITTEXT        IDC_IMAGEFILETEXT,20,84,141,13,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_BUTTON1,77,67,16,14,BS_ICON | BS_LEFT | BS_TOP
     GROUPBOX        "Size",IDC_STATIC,7,107,163,38
@@ -970,8 +828,7 @@ BEGIN
 END
 
 IDD_EDITIMAGE DIALOGEX 0, 0, 203, 279
-STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | 
-    WS_SYSMENU
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Edit Image"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
@@ -981,28 +838,20 @@ BEGIN
     CONTROL         "Create cutout using transparency color",IDC_RADIO1,
                     "Button",BS_AUTORADIOBUTTON,17,40,151,11
     PUSHBUTTON      "Color",IDC_COLOR,39,70,37,14
-    LTEXT           "",IDC_COLORSTATIC,137,188,19,13,NOT WS_VISIBLE,
-                    WS_EX_STATICEDGE
+    LTEXT           "",IDC_COLORSTATIC,137,188,19,13,NOT WS_VISIBLE,WS_EX_STATICEDGE
     CONTROL         "Create cutout using pre-defined shape",IDC_RADIO3,
                     "Button",BS_AUTORADIOBUTTON,18,96,151,11
-    CONTROL         "Add border to image",IDC_CHECK1,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,43,151,102,13
+    CONTROL         "Add border to image",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,43,151,102,13
     LTEXT           "Border Size",IDC_STATIC1,43,171,44,12
-    COMBOBOX        IDC_PREDEFINEDSHAPE,29,115,98,42,CBS_DROPDOWN | 
-                    WS_VSCROLL | WS_TABSTOP
-    CONTROL         "No cutout region",IDC_RADIO2,"Button",
-                    BS_AUTORADIOBUTTON,17,20,91,11
-    EDITTEXT        IDC_BORDERSIZE,96,168,36,15,ES_AUTOHSCROLL | ES_READONLY | 
-                    ES_NUMBER
+    COMBOBOX        IDC_PREDEFINEDSHAPE,29,115,98,42,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "No cutout region",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,17,20,91,11
+    EDITTEXT        IDC_BORDERSIZE,96,168,36,15,ES_AUTOHSCROLL | ES_READONLY | ES_NUMBER
     PUSHBUTTON      "Border Color",IDC_COLOR2,42,188,50,14
-    LTEXT           "",IDC_COLORSTATIC2,97,188,35,13,NOT WS_VISIBLE,
-                    WS_EX_STATICEDGE
+    LTEXT           "",IDC_COLORSTATIC2,97,188,35,13,NOT WS_VISIBLE,WS_EX_STATICEDGE
     GROUPBOX        "Border",IDC_BORDERSTATIC,28,135,157,76
-    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | 
-                    UDS_ALIGNRIGHT | UDS_ARROWKEYS,137,167,13,18
+    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_ARROWKEYS,137,167,13,18
     PUSHBUTTON      "Pick Color From Screen",IDC_COLOR3,81,70,91,14
-    GROUPBOX        "Choose color to be made transparent",IDC_STATICCHOOSE,
-                    28,56,157,33
+    GROUPBOX        "Choose color to be made transparent",IDC_STATICCHOOSE,28,56,157,33
     GROUPBOX        "Background",IDC_STATIC,7,219,189,32
     DEFPUSHBUTTON   "Background Color",IDBKCOLOR,26,230,72,14
     PUSHBUTTON      "Load New Image",IDLOAD,108,230,77,14
@@ -1018,44 +867,36 @@ BEGIN
     GROUPBOX        "Dimensions",IDC_STATIC,9,5,189,48
     LTEXT           "Width",IDC_STATIC,25,19,27,8
     LTEXT           "Height",IDC_STATIC,25,35,34,8
-    CONTROL         "Slider1",IDC_WIDTHSLIDER,"msctls_trackbar32",TBS_BOTH | 
-                    TBS_NOTICKS | WS_TABSTOP,58,16,134,13
-    CONTROL         "Slider1",IDC_HEIGHTSLIDER,"msctls_trackbar32",TBS_BOTH | 
-                    TBS_NOTICKS | WS_TABSTOP,58,33,134,13
+    CONTROL         "Slider1",IDC_WIDTHSLIDER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,58,16,134,13
+    CONTROL         "Slider1",IDC_HEIGHTSLIDER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,58,33,134,13
     DEFPUSHBUTTON   "Reset Size",IDRESET,68,60,55,14
 END
 
 IDD_TRANSPARENCY DIALOG  0, 0, 186, 110
-STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | 
-    WS_SYSMENU
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Edit Transparency"
 FONT 8, "MS Sans Serif"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,14,83,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,70,83,50,14
     GROUPBOX        "Windows Transparency",IDC_STATIC,7,7,172,96
-    CONTROL         "Slider1",IDC_TRANSSLIDER,"msctls_trackbar32",TBS_BOTH | 
-                    TBS_NOTICKS | WS_TABSTOP,12,64,154,12
+    CONTROL         "Slider1",IDC_TRANSSLIDER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,12,64,154,12
     LTEXT           "Trans",IDC_TRANSTEXT,135,84,39,13
-    CONTROL         "Enable Transparency\n( Making a window transparent will slow the recording rate significantly)",
-                    IDC_CHECK1,"Button",BS_AUTOCHECKBOX | BS_TOP | 
-                    BS_MULTILINE | WS_TABSTOP,17,22,150,33
+    CONTROL         "Enable Transparency\n( Making a window transparent will slow the recording rate significantly)",IDC_CHECK1,
+                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,17,22,150,33
 END
 
 IDD_TRANSRATE DIALOG  0, 0, 186, 126
-STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | 
-    WS_SYSMENU
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Edit Refresh Rate"
 FONT 8, "MS Sans Serif"
 BEGIN
     DEFPUSHBUTTON   "Close",IDOK,6,97,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,62,97,50,14,NOT WS_VISIBLE
     GROUPBOX        "Webcam / Video Refresh Rate ",-1,7,7,172,83
-    CONTROL         "Slider1",IDC_RATESLIDER,"msctls_trackbar32",TBS_BOTH | 
-                    TBS_NOTICKS | WS_TABSTOP,12,73,112,12
+    CONTROL         "Slider1",IDC_RATESLIDER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,12,73,112,12
     LTEXT           "Rate",IDC_RATETEXT,135,73,34,13
-    LTEXT           "Note : If the refresh rate is too high, it will cause your system to slow down and will even freeze the display of dialog boxes in CamStudio. This is especially true if transparency is turned on.",
-                    -1,17,22,156,42
+    LTEXT           "Note : If the refresh rate is too high, it will cause your system to slow down and will even freeze the display of dialog boxes in CamStudio. This is especially true if transparency is turned on.",-1,17,22,156,42
 END
 
 IDD_SYNCHRONIZATION DIALOG  0, 0, 244, 134
@@ -1066,21 +907,15 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,7,112,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,65,112,50,14
     GROUPBOX        "Synchronization",IDC_STATIC,7,3,230,103
-    CONTROL         "(Invalid) My video goes before audio, delay the recording of video by",
-                    IDC_RADIO1,"Button",BS_AUTORADIOBUTTON | BS_TOP | 
-                    BS_MULTILINE | NOT WS_VISIBLE,20,92,202,13
-    CONTROL         "My audio goes before my video (I hear the words before I see the mouth movements) . Delay the recording of the video stream and shift by",
-                    IDC_RADIO3,"Button",BS_AUTORADIOBUTTON | BS_TOP | 
-                    BS_MULTILINE,19,39,207,27
+    CONTROL         "(Invalid) My video goes before audio, delay the recording of video by",IDC_RADIO1,
+                    "Button",BS_AUTORADIOBUTTON | BS_TOP | BS_MULTILINE | NOT WS_VISIBLE,20,92,202,13
+    CONTROL         "My audio goes before my video (I hear the words before I see the mouth movements) . Delay the recording of the video stream and shift by",IDC_RADIO3,
+                    "Button",BS_AUTORADIOBUTTON | BS_TOP | BS_MULTILINE,19,39,207,27
     CONTROL         "Do not shift the audio or video streams",IDC_RADIO4,
-                    "Button",BS_AUTORADIOBUTTON | BS_TOP | BS_MULTILINE,19,
-                    20,176,12
+                    "Button",BS_AUTORADIOBUTTON | BS_TOP | BS_MULTILINE,19,20,176,12
     LTEXT           "Timeshift",IDC_STATIC,32,74,37,13
-    EDITTEXT        IDC_EDIT1,77,70,48,16,ES_AUTOHSCROLL | ES_READONLY | 
-                    ES_NUMBER
-    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | 
-                    UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS,203,69,
-                    12,17
+    EDITTEXT        IDC_EDIT1,77,70,48,16,ES_AUTOHSCROLL | ES_READONLY | ES_NUMBER
+    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS,203,69,12,17
     LTEXT           "milliseconds",IDC_STATIC,140,74,44,13
 END
 
@@ -1092,60 +927,43 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,18,65,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,82,65,50,14
     GROUPBOX        "Preset Time",IDC_STATIC,7,2,172,56
-    EDITTEXT        IDC_EDIT1,19,33,85,17,ES_AUTOHSCROLL | ES_READONLY | 
-                    ES_NUMBER
-    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | 
-                    UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,112,28,11,
-                    21
-    CONTROL         "Stop recording after a period of",IDC_CHECK1,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,20,14,142,13
+    EDITTEXT        IDC_EDIT1,19,33,85,17,ES_AUTOHSCROLL | ES_READONLY | ES_NUMBER
+    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,112,28,11,21
+    CONTROL         "Stop recording after a period of",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,14,142,13
     LTEXT           "Seconds",IDC_STATIC,129,38,39,14
 END
 
 IDD_EFFECTS_OPTIONS DIALOGEX 0, 0, 218, 190
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
-    WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Text Effects Options"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Position",IDC_STATIC_POSITION,7,7,99,93,WS_TABSTOP
-    CONTROL         "",IDC_RADIO_TOP_LEFT,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,15,23,26,21
-    CONTROL         "",IDC_RADIO_TOP_CENTER,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_TABSTOP,43,23,26,21
-    CONTROL         "",IDC_RADIO_TOP_RIGHT,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_TABSTOP,71,23,26,21
-    CONTROL         "",IDC_RADIO_CENTER_LEFT,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_TABSTOP,15,46,26,21
-    CONTROL         "",IDC_RADIO_CENTER_CENTER,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_TABSTOP,43,46,26,21
-    CONTROL         "",IDC_RADIO_CENTER_RIGHT,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_TABSTOP,71,46,26,21
-    CONTROL         "",IDC_RADIO_BOTTOM_LEFT,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_TABSTOP,15,70,26,21
-    CONTROL         "",IDC_RADIO_BOTTOM_CENTER,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_TABSTOP,43,70,26,21
-    CONTROL         "",IDC_RADIO_BOTTOM_RIGHT,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_TABSTOP,71,70,26,21
+    CONTROL         "",IDC_RADIO_TOP_LEFT,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,15,23,26,21
+    CONTROL         "",IDC_RADIO_TOP_CENTER,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_TABSTOP,43,23,26,21
+    CONTROL         "",IDC_RADIO_TOP_RIGHT,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_TABSTOP,71,23,26,21
+    CONTROL         "",IDC_RADIO_CENTER_LEFT,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_TABSTOP,15,46,26,21
+    CONTROL         "",IDC_RADIO_CENTER_CENTER,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_TABSTOP,43,46,26,21
+    CONTROL         "",IDC_RADIO_CENTER_RIGHT,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_TABSTOP,71,46,26,21
+    CONTROL         "",IDC_RADIO_BOTTOM_LEFT,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_TABSTOP,15,70,26,21
+    CONTROL         "",IDC_RADIO_BOTTOM_CENTER,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_TABSTOP,43,70,26,21
+    CONTROL         "",IDC_RADIO_BOTTOM_RIGHT,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_TABSTOP,71,70,26,21
     PUSHBUTTON      "Font...",IDC_BUTTON_FONT,16,106,81,14
     PUSHBUTTON      "Text Color...",IDC_BUTTON_TEXT_COLOR,16,125,81,14
-    PUSHBUTTON      "Background Color...",IDC_BUTTON_BACKGROUND_COLOR,16,146,
-                    81,14
+    PUSHBUTTON      "Background Color...",IDC_BUTTON_BACKGROUND_COLOR,16,146,81,14
     DEFPUSHBUTTON   "OK",IDOK,104,169,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,161,169,50,14
 END
 
 IDD_DIALOG_MAIN_EFFECTS_OPTIONS DIALOGEX 0, 0, 254, 222
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
-    WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Effects options"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Time stamp",IDC_STATIC,7,14,240,44
     LTEXT           "Format",IDC_STATIC,17,29,24,8
     EDITTEXT        IDC_EDIT_TIMESTAMP_FORMAT,17,38,93,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "Options...",IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS,122,37,
-                    50,14
+    PUSHBUTTON      "Options...",IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS,122,37,50,14
     GROUPBOX        "Caption",IDC_STATIC,7,70,240,46
     LTEXT           "Text",IDC_STATIC,17,84,16,8
     EDITTEXT        IDC_EDIT_CAPTION_TEXT,17,94,93,14,ES_AUTOHSCROLL
@@ -1160,30 +978,20 @@ BEGIN
 END
 
 IDD_EFFECTS_OPTIONS2 DIALOGEX 0, 0, 131, 145
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
-    WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Image Effects Options"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Position",IDC_STATIC_POSITION,7,7,99,93,WS_TABSTOP
-    CONTROL         "",IDC_RADIO_TOP_LEFT,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,15,23,26,21
-    CONTROL         "",IDC_RADIO_TOP_CENTER,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_TABSTOP,43,23,26,21
-    CONTROL         "",IDC_RADIO_TOP_RIGHT,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_TABSTOP,71,23,26,21
-    CONTROL         "",IDC_RADIO_CENTER_LEFT,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_TABSTOP,15,46,26,21
-    CONTROL         "",IDC_RADIO_CENTER_CENTER,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_TABSTOP,43,46,26,21
-    CONTROL         "",IDC_RADIO_CENTER_RIGHT,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_TABSTOP,71,46,26,21
-    CONTROL         "",IDC_RADIO_BOTTOM_LEFT,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_TABSTOP,15,70,26,21
-    CONTROL         "",IDC_RADIO_BOTTOM_CENTER,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_TABSTOP,43,70,26,21
-    CONTROL         "",IDC_RADIO_BOTTOM_RIGHT,"Button",BS_AUTORADIOBUTTON | 
-                    BS_PUSHLIKE | WS_TABSTOP,71,70,26,21
+    CONTROL         "",IDC_RADIO_TOP_LEFT,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,15,23,26,21
+    CONTROL         "",IDC_RADIO_TOP_CENTER,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_TABSTOP,43,23,26,21
+    CONTROL         "",IDC_RADIO_TOP_RIGHT,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_TABSTOP,71,23,26,21
+    CONTROL         "",IDC_RADIO_CENTER_LEFT,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_TABSTOP,15,46,26,21
+    CONTROL         "",IDC_RADIO_CENTER_CENTER,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_TABSTOP,43,46,26,21
+    CONTROL         "",IDC_RADIO_CENTER_RIGHT,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_TABSTOP,71,46,26,21
+    CONTROL         "",IDC_RADIO_BOTTOM_LEFT,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_TABSTOP,15,70,26,21
+    CONTROL         "",IDC_RADIO_BOTTOM_CENTER,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_TABSTOP,43,70,26,21
+    CONTROL         "",IDC_RADIO_BOTTOM_RIGHT,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_TABSTOP,71,70,26,21
     DEFPUSHBUTTON   "OK",IDOK,7,124,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,61,124,50,14
 END
@@ -1240,7 +1048,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 245
         TOPMARGIN, 7
-        BOTTOMMARGIN, 142
+        BOTTOMMARGIN, 182
     END
 
     IDD_VIDEOOPTIONS, DIALOG
