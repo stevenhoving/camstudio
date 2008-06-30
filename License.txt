@@ -1,0 +1,58 @@
+
+Note from Nick Smith: 9th July 2007
++++++++++++++++++++++++++++++++++++
+
+For the sake of being historically complete, I am including the original license text that accompanied CamStudio 2.0. 
+
+However the licensing conditions below seem to be incompatible with V2 of the GNU Public License which CamStudio 2.0 was originally released under.
+
+In my opinion the GPL will almost certainly take precidence over the conditions below, so unless you have heard otherwise, you must abide by the conditions set out in the GNU Public License V2 (see accompanying gpl.txt textfile for full details or go to http://www.gnu.org/gpl)
+
+If you are in any doubt, please contact your lawyer or get legal advice before releasing a commercial product based on CamStudio. Do not take my opinion as legal advice, I am not a lawyer nor do I play one on TV.
+
++++
+
+Unless otherwise specified, RenderSoft Software and Web Publishing owns all title to this software and its copyright, which are protected by international copyright law.
+
+This product is FREEWARE and you are free to duplicate and distribute this software through the internet or any preferred media.
+
+This product is released under the GNU Public License V2 and you are free to edit and modify its source code for your needs. The source code may be obtained from my website here: http://www.camstudio.org
+
+RenderSoft Software and Web Publishing specifically disclaims ALL warranties, express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, and non-infingement with respect to this software, its source code and any accompanying written materials.
+
+IN NO EVENT will RenderSoft Software and Web Publishing be liable to you for damages, including any loss of profits, data, or other incidental or consequential damages arising out of your use or inability to use this software, even if RenderSoft Software and Web Publishing has been specifically advised on the possiblility of such damages.
+
+By using CamStudio and/or its related source code, you indicate that you have read and understood the above licensing agreement and accept it as legally binding upon you.
+
+
+
++++++++++++++++++++++++++++
+ORIGINAL LICENSE TEXT BELOW
++++++++++++++++++++++++++++
+
+
+
+
+==============================
+RenderSoft CamStudio
+==============================
+
+
+Unless otherwise specified, RenderSoft Software and Web Publishing owns all title to this software and its copyright, which are protected by international copyright law.
+
+This product is FREEWARE and you are free to duplicate and distribute this software through the internet or any preferred media.
+
+This product is released under the GNU Public License V2 and you are free to edit and modify its source code for your needs. The source code may be obtained from the product's website at: http://www.camstudio.org
+
+If you create an product that contains code derived from CamStudio, you are free to distribute it for any purposes, including commercial purposes. However, your product must include an acknowledgement that mention it contains code from RenderSoft CamStudio. A simple statement like "Part of this product is derived from RenderSoft CamStudio" in the AboutBox will do. You are not obliged to reveal the source code of your derived product but are encouraged to do so.
+ 
+
+RenderSoft Software and Web Publishing specifically disclaims ALL warranties, express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, and non-infingement with respect to this software, its source code and any accompanying written materials.
+
+IN NO EVENT will RenderSoft Software and Web Publishing be liable to you for damages, including any loss of profits, data, or other incidental or consequential damages arising out of your use or inability to use this software, even if RenderSoft Software and Web Publishing has been specifically advised on the possiblility of such damages.
+
+By agreeing below, you indicate that you have read and understood the above licensing aggreement, and accept it as legally binding upon you.
+
+If you choose not to accept any of the terms of this licensing agreement, please click the 'Exit' button now.
+
+
