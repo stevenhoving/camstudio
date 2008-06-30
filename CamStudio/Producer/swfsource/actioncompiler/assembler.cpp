@@ -40,7 +40,7 @@ void addLabel(char *label)
 
   if(i == -1)
   {
-    labels[nLabels].name = strdup(label);
+    labels[nLabels].name = _strdup(label);
     labels[nLabels].offset = len;
     ++nLabels;
   }

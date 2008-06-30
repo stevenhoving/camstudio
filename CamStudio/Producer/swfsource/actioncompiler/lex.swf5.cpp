@@ -1570,19 +1570,19 @@ YY_RULE_SETUP
 case 107:
 YY_RULE_SETUP
 #line 199 "swf5compiler.flex"
-{ count();	swf5lval.str = strdup(yytext+2);
+{ count();	swf5lval.str = _strdup(yytext+2);
 					return REGISTER;	}
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
 #line 203 "swf5compiler.flex"
-{ count();	swf5lval.str = strdup(yytext);
+{ count();	swf5lval.str = _strdup(yytext);
 					return IDENTIFIER;	}
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
 #line 206 "swf5compiler.flex"
-{ count();	swf5lval.str = strdup(yytext+1);
+{ count();	swf5lval.str = _strdup(yytext+1);
 					swf5lval.str[strlen(swf5lval.str)-1]=0;
                                         unescape(swf5lval.str);
 					return STRING;		}
@@ -1590,7 +1590,7 @@ YY_RULE_SETUP
 case 110:
 YY_RULE_SETUP
 #line 211 "swf5compiler.flex"
-{ count();	swf5lval.str = strdup(yytext+1);
+{ count();	swf5lval.str = _strdup(yytext+1);
 					swf5lval.str[strlen(swf5lval.str)-1]=0;
                                         unescape(swf5lval.str);
 					return STRING; 		}
@@ -1601,7 +1601,7 @@ yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 #line 216 "swf5compiler.flex"
-{ count();	swf5lval.str = strdup("");
+{ count();	swf5lval.str = _strdup("");
 					warning("Unterminated string!");
 					return STRING;		}
 	YY_BREAK
@@ -1611,7 +1611,7 @@ yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 #line 220 "swf5compiler.flex"
-{ count();	swf5lval.str = strdup("");
+{ count();	swf5lval.str = _strdup("");
 					warning("Unterminated string!");
 					return STRING;		}
 	YY_BREAK

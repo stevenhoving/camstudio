@@ -129,7 +129,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndToolBar);
 
-	SetWindowText("CamStudio");
+	SetWindowText("CamStudio - Custom Build");
 
 	return 0;
 }

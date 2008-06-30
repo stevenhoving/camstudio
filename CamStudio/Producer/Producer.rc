@@ -364,58 +364,60 @@ BEGIN
     CTEXT           "Generating ..",IDC_CONVERSIONTEXT,14,11,149,12
 END
 
-IDD_FLASHCONVERSION DIALOGEX 0, 0, 249, 314
+IDD_FLASHCONVERSION DIALOGEX 0, 0, 249, 334
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "General"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,204,288,20,14,NOT WS_VISIBLE
-    PUSHBUTTON      "Cancel",IDCANCEL,229,288,13,14,NOT WS_VISIBLE
-    GROUPBOX        "Output Filename",IDC_STATIC,7,3,235,78
+    DEFPUSHBUTTON   "OK",IDOK,203,313,20,14,NOT WS_VISIBLE
+    PUSHBUTTON      "Cancel",IDCANCEL,229,313,13,14,NOT WS_VISIBLE
+    GROUPBOX        "Output Filename",IDC_STATIC,7,3,235,95
     LTEXT           "Flash (.swf)",IDC_STATIC,15,42,45,13
     LTEXT           "HTML (.html)",IDC_STATIC,16,61,45,13
     EDITTEXT        IDC_FLASHNAME,72,39,115,15,ES_AUTOHSCROLL | ES_READONLY
     EDITTEXT        IDC_HTMLNAME,72,58,115,15,ES_AUTOHSCROLL | ES_READONLY
-    GROUPBOX        "Video Properties",IDC_STATIC,7,85,235,69
+    GROUPBOX        "Video Properties",IDC_STATIC,7,105,235,69
     PUSHBUTTON      "Change",IDC_SELECTFLASH,192,38,37,15
     PUSHBUTTON      "Change",IDC_SELECTHTML,192,57,37,15
-    LTEXT           "Color Mode",IDC_STATIC,15,101,43,11
-    CONTROL         "16Bit",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON,66,99,47,
+    LTEXT           "Color Mode",IDC_STATIC,15,121,43,11
+    CONTROL         "16Bit",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON,66,119,47,
                     13
-    CONTROL         "32Bit",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,119,99,52,
-                    13
-    LTEXT           "Sample / Playback  Rate",IDC_STATIC,15,119,98,11
-    COMBOBOX        IDC_SAMPLEFPS,117,116,53,64,CBS_DROPDOWN | WS_VSCROLL | 
+    CONTROL         "32Bit",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,119,119,
+                    52,13
+    LTEXT           "Sample / Playback  Rate",IDC_STATIC,15,139,98,11
+    COMBOBOX        IDC_SAMPLEFPS,117,137,53,64,CBS_DROPDOWN | WS_VSCROLL | 
                     WS_TABSTOP
-    LTEXT           "Keyframe  Rate",IDC_STATIC,15,136,81,11
-    COMBOBOX        IDC_KEYFRAMERATE,117,134,53,64,CBS_DROPDOWN | WS_VSCROLL | 
+    LTEXT           "Keyframe  Rate",IDC_STATIC,15,156,81,11
+    COMBOBOX        IDC_KEYFRAMERATE,117,154,53,64,CBS_DROPDOWN | WS_VSCROLL | 
                     WS_TABSTOP
-    LTEXT           "Frames / Sec",IDC_STATIC,182,119,48,11
-    LTEXT           "Frames / Sec",IDC_STATIC,182,134,48,11
-    GROUPBOX        "Audio Properties",IDC_STATIC,7,159,235,37
+    LTEXT           "Frames / Sec",IDC_STATIC,182,139,48,11
+    LTEXT           "Frames / Sec",IDC_STATIC,182,154,48,11
+    GROUPBOX        "Audio Properties",IDC_STATIC,7,180,235,37
     CONTROL         "Encode Audio",IDC_ENCODEAUDIO,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,18,173,66,13
-    LTEXT           "Compression",IDC_STATIC,93,175,49,15
-    COMBOBOX        IDC_AUDIOCOMPRESSION,150,172,87,64,CBS_DROPDOWN | 
+                    WS_TABSTOP,18,194,66,13
+    LTEXT           "Compression",IDC_STATIC,93,196,49,15
+    COMBOBOX        IDC_AUDIOCOMPRESSION,150,194,87,64,CBS_DROPDOWN | 
                     WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        "Behavior",IDC_STATIC,7,199,235,108
+    GROUPBOX        "Behavior",IDC_STATIC,7,225,235,102
     CONTROL         "Add Player Controls",IDC_ADDCONTROLS,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,19,214,80,13
+                    BS_AUTOCHECKBOX | WS_TABSTOP,17,237,80,13
     CONTROL         "Loop",IDC_LOOP,"Button",BS_AUTOCHECKBOX | WS_GROUP | 
-                    WS_TABSTOP,20,261,47,13
+                    WS_TABSTOP,18,284,47,13
     CONTROL         "Autostart",IDC_AUTOSTART,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,172,214,51,13
+                    WS_TABSTOP,170,237,51,13
     LTEXT           "Filename",IDC_STATIC,15,22,45,13
     EDITTEXT        IDC_BASENAME,72,19,115,15,ES_AUTOHSCROLL | ES_READONLY
     CONTROL         "Add Preloader + Progress Bar  (Flash 5/MX only)",
                     IDC_ADDPRELOADER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    19,230,192,13
+                    17,253,192,13
     CONTROL         "Produce raw movie for further editing in Flash MX editor",
-                    IDC_RAW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,246,192,
+                    IDC_RAW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,269,192,
                     13
-    EDITTEXT        IDC_URLREDIR,82,271,125,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_URLREDIR,79,296,125,14,ES_AUTOHSCROLL
     CONTROL         "Redirect URL",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | 
-                    WS_GROUP | WS_TABSTOP,20,274,59,10
+                    WS_GROUP | WS_TABSTOP,17,299,59,10
+    CONTROL         "Generate Flash Movie Tag Only",IDC_ONLYFLASHTAG,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,72,77,116,10
 END
 
 IDD_ADVPROP DIALOG  0, 0, 241, 260
@@ -538,7 +540,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 242
         TOPMARGIN, 7
-        BOTTOMMARGIN, 307
+        BOTTOMMARGIN, 327
     END
 
     IDD_ADVPROP, DIALOG

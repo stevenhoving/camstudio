@@ -20,7 +20,7 @@
 HWND hWndMCI;                 /* window handle of the movie */
 BOOL bIsOpenMovie = FALSE;        /* Open flag: TRUE == movie open, FALSE = none */
 HMENU hMenuBar = NULL;          /* menu bar handle */
-char szAppName [] = "Player";
+char szAppName [] = "Player - Custom Build";
 char playfiledir[300];	
 //char seps[] = "*\t\n";
 char seps[] = "*";
@@ -329,9 +329,9 @@ void UpdateTitle(HWND hWnd, LPSTR lpstrMovie)
         char achNewTitle[BUFFER_LENGTH];        // space for the title
 
         if (lpstrMovie != NULL)
-                wsprintf((LPSTR)achNewTitle,"%s - %s", (LPSTR)szAppName,lpstrMovie);
+			wsprintf((LPSTR)achNewTitle,"%s - %s", (LPSTR)szAppName,lpstrMovie);
         else
-                lstrcpy((LPSTR)achNewTitle, (LPSTR)szAppName);
+			lstrcpy((LPSTR)achNewTitle, (LPSTR)szAppName);
         SetWindowText(hWnd, (LPSTR)achNewTitle);
 }
 
