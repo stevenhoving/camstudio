@@ -10,6 +10,7 @@
 #include "stdafx.h"
 #include "CBitmapEx.h"
 
+
 #define WIDTHBYTES(bits)        (((bits) + 31) / 32 * 4)
 #define PALETTESIZE(lpbi)		(_DIBNumColors((LPBITMAPINFOHEADER) lpbi)* sizeof (RGBQUAD))
 #define DIBCOLORS(lpbi)         ((LPRGBQUAD)((LPBYTE)(lpbi) + (int)(lpbi)->biSize))
