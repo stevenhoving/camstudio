@@ -1,34 +1,61 @@
 #include "FlashFontObj.h"
+
 #include "FFont.h"
+
 #include "FDisplay.h"
+
 #include <iostream>
+
 #include <windows.h>
+
 #include <math.h>
+
 #include <hash_map>
 
+
+
 SWORD SWORDFromFixed(FIXED f)
+
 {
 	SWORD ret = f.value;
-	if(f.fract > 0x8000) ret+=1;
+
+	if(f.fract > 0x8000)
+	ret+=1;
+
 	return (SWORD)ret;
+
 }
 
+
+
 bool FlashFontFactory::GetGlyphShape(const char *font, UWORD charindex, FlashShape & s, bool bold, bool italic, bool uLine)
+
 {
 
+
 	unsigned int fWeight=400;
-    if(bold==true)fWeight=700;
+ 
+   if(bold==true)fWeight=700;
+
 
 	FlashShape &r=s;
+
 	FlashShapeRecordChange c;
+
 	c.ChangeFillStyle0(1);
+
 	c.ChangeLineStyle(0);
+
 	s.AddRecord(c);
-	HDC tmphdc = CreateDC("DISPLAY", NULL, NULL, NULL); 
+	
+HDC tmphdc = CreateDC("DISPLAY", NULL, NULL, NULL);
+ 
 	HDC hdcScreen = CreateCompatibleDC(tmphdc); 
-    	
+   
+ 	
 	long base = 1300;
-	HFONT myfont = CreateFont(-base,0,0,0,fWeight,italic ? TRUE : FALSE,uLine ? TRUE : FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,PROOF_QUALITY,DEFAULT_PITCH,font);	
+	
+HFONT myfont = CreateFont(-base,0,0,0,fWeight,italic ? TRUE : FALSE,uLine ? TRUE : FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,PROOF_QUALITY,DEFAULT_PITCH,font);	
 	HGDIOBJ obj = SelectObject(hdcScreen,myfont);
 	
 	unsigned int c2=charindex;
@@ -52,10 +79,11 @@ bool FlashFontFactory::GetGlyphShape(const char *font, UWORD charindex, FlashSha
 	if(c2 != ' ')
 	{
 		if((size = GetGlyphOutline(hdcScreen,c2,GGO_NATIVE,&gm,0,NULL,&matrix)) != GDI_ERROR)
-		{ 
-			
-			char *buffer = new char[size+1];
-			if((size = GetGlyphOutline(hdcScreen,c2,GGO_NATIVE,&gm,size,buffer,&matrix)) != GDI_ERROR)
+
+{
+	char *buffer = new char[size+1];
+
+	if((size = GetGlyphOutline(hdcScreen,c2,GGO_NATIVE,&gm,size,buffer,&matrix)) != GDI_ERROR)
 			{
 				if(uLine==true)
 				{
@@ -84,7 +112,7 @@ bool FlashFontFactory::GetGlyphShape(const char *font, UWORD charindex, FlashSha
 					while(pos < (char*)header+(header->cb))
 					{			
 						
-						TTPOLYCURVE *curve = (TTPOLYCURVE *)pos;
+						TTPOLY	CURVE *curve = (TTPOLYCURVE *)pos;
 						// handle polylines
 						if(curve->wType == TT_PRIM_LINE)
 						{
@@ -192,8 +220,8 @@ UWORD FlashFontFactory::WriteText(std::ostream &out, const char *fontname, const
 {
 	FlashRect textBounds;
 
-	std::hash_map<int,FlashShape> shapes;
-	std::hash_map<int,int> shapes_lookup;
+	stdext::hash_map<int,FlashShape> shapes;
+	stdext::hash_map<int,int> shapes_lookup;
 	
 	FlashTagDefineFont df;
 		
@@ -271,8 +299,8 @@ UWORD FlashFontFactory::WriteText(std::ostream &out, const char *fontname, const
 
 UWORD FlashFontFactory::WriteText(std::ostream &out, const char *fontname, const char *text, int x, int y, FlashRGB color, int pointsize, int depth, FlashRect& textBounds, int extraspacing, bool bold, bool italic, bool uLine)
 {
-	std::hash_map<int,FlashShape> shapes;
-	std::hash_map<int,int> shapes_lookup;
+	stdext::hash_map<int,FlashShape> shapes;
+	stdext::hash_map<int,int> shapes_lookup;
 	
 	FlashTagDefineFont df;
 		
@@ -352,8 +380,8 @@ UWORD FlashFontFactory::WriteText(std::ostream &out, const char *fontname, const
 
 UWORD FlashFontFactory::GetBounds(std::ostream &out, const char *fontname, const char *text, int x, int y, FlashRGB color, int pointsize, int depth, FlashRect& textBounds, int extraspacing, bool bold, bool italic, bool uLine)
 {
-	std::hash_map<int,FlashShape> shapes;
-	std::hash_map<int,int> shapes_lookup;
+	stdext::hash_map<int,FlashShape> shapes;
+	stdext::hash_map<int,int> shapes_lookup;
 	
 	FlashTagDefineFont df;
 		
