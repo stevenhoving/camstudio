@@ -96,3 +96,33 @@ don't do this, some of the UI elements of your application will remain in the
 language of the operating system.
 
 /////////////////////////////////////////////////////////////////////////////
+9/21/08 TFM:
+
+AudioFormat.cpp
+AudioFormat::OnInitDialog
+-	for-loop variable scoping
+-	remove dead whitespace
+
+SpeakersImpl.cpp
+::configWaveOutManual
+-	for-loop variable scoping
+-	remove dead whitespace
+-	simplified filename format
+
+screenannotations.cpp
+::AreWindowsEdited
+-	for-loop variable scoping
+-	remove dead whitespace
+
+Linking error:
+-	remove Nafxcwd.lib Libcmtd.lib library references in link
+
+Added projects:
+-	jasper, jpeg, png, tiff, zlib static libraries
+
+Project dependencies:
+-	CxImage static library
+		- jasper, jpeg, png, tiff, zlib static libraries
+-	vscap
+		- CxImage static library
+		
