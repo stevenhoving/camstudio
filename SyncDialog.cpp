@@ -21,10 +21,10 @@ int timeShiftLocal = 0;
 
 
 CSyncDialog::CSyncDialog(CWnd* pParent /*=NULL*/)
-	: CDialog(CSyncDialog::IDD, pParent)
+: CDialog(CSyncDialog::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CSyncDialog)
-		// NOTE: the ClassWizard will add member initialization here
+	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
@@ -33,7 +33,7 @@ void CSyncDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CSyncDialog)
-		// NOTE: the ClassWizard will add DDX and DDV calls here
+	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
@@ -58,11 +58,11 @@ BOOL CSyncDialog::OnInitDialog()
 	timeShiftLocal = timeshift;
 
 	UpdateGui();
-	
+
 	// TODO: Add extra initialization here
-	
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
+
+	return TRUE; // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void CSyncDialog::OnRadio1() 
@@ -75,7 +75,7 @@ void CSyncDialog::OnRadio1()
 	shiftTypeLocal = 1;
 
 
-	
+
 }
 
 void CSyncDialog::OnRadio3() 
@@ -87,7 +87,7 @@ void CSyncDialog::OnRadio3()
 
 	shiftTypeLocal = 2;
 
-	
+
 }
 
 void CSyncDialog::OnRadio4() 
@@ -99,15 +99,15 @@ void CSyncDialog::OnRadio4()
 
 	shiftTypeLocal = 0;
 
-	
+
 }
 
 void CSyncDialog::OnOK() 
 {
-	// TODO: Add extra validation here	
+	// TODO: Add extra validation here 
 	shiftType = shiftTypeLocal;
 	timeshift = timeShiftLocal;
-	
+
 	CDialog::OnOK();
 }
 
@@ -120,19 +120,19 @@ void CSyncDialog::UpdateGui()
 	((CButton *) GetDlgItem(IDC_RADIO3))->SetCheck(shiftType == 2);
 
 	UDACCEL acc[2];
-    acc[0].nSec = 2; 
-    acc[0].nInc = 10; 
+	acc[0].nSec = 2; 
+	acc[0].nInc = 10; 
 
 	acc[1].nSec = 4; 
-    acc[1].nInc = 50; 
+	acc[1].nInc = 50; 
 
- 
+
 
 
 	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetBuddy(GetDlgItem(IDC_EDIT1));
 	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetRange(0,5000);
-	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetPos(timeshift);			
-	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetAccel(2,acc);		
+	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetPos(timeshift); 
+	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetAccel(2,acc); 
 
 
 
@@ -144,11 +144,11 @@ void CSyncDialog::OnChangeEdit1()
 	// send this notification unless you override the CDialog::OnInitDialog()
 	// function to send the EM_SETEVENTMASK message to the control
 	// with the ENM_CHANGE flag ORed into the lParam mask.
-	
+
 	// TODO: Add your control notification handler code here
 	CString timeshStr("");
 	((CEdit *) GetDlgItem(IDC_EDIT1))->GetWindowText(timeshStr);
 	sscanf(LPCTSTR(timeshStr),"%d",&timeShiftLocal);
-	
-	
+
+
 }

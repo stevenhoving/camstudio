@@ -55,7 +55,6 @@ extern CString cursordir;
 extern CString g_cursorFilePath;
 
 DWORD icon_info[] = {
-
 	IDI_CUSTOMICON_CONTEXTHELP,
 	IDI_CUSTOMICON_MAGNIFY,
 	IDI_CUSTOMICON_NODRAG,
@@ -90,20 +89,17 @@ DWORD icon_info[] = {
 	IDI_CUSTOMICON_POINT2,
 	IDI_CUSTOMICON_SERCURITY,
 	IDI_CUSTOMICON_SECURITY2
-
 };
-
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CCursorOptionsDlg dialog
 
 
 CCursorOptionsDlg::CCursorOptionsDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CCursorOptionsDlg::IDD, pParent)
+: CDialog(CCursorOptionsDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CCursorOptionsDlg)
-		// NOTE: the ClassWizard will add member initialization here
+	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
@@ -112,7 +108,7 @@ void CCursorOptionsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CCursorOptionsDlg)
-		// NOTE: the ClassWizard will add DDX and DDV calls here
+	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
@@ -154,7 +150,7 @@ void CCursorOptionsDlg::OnRadio1()
 	recordcursor = 0;
 	((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(TRUE);
 	((CButton *) GetDlgItem(IDC_RADIO2))->SetCheck(FALSE);
-	
+
 	((CButton *) GetDlgItem(IDC_CURSOR1))->EnableWindow(FALSE);
 	((CButton *) GetDlgItem(IDC_CURSOR2))->EnableWindow(FALSE);
 	((CButton *) GetDlgItem(IDC_CURSOR3))->EnableWindow(FALSE);
@@ -162,8 +158,8 @@ void CCursorOptionsDlg::OnRadio1()
 	((CButton *) GetDlgItem(IDC_FILECURSOR))->EnableWindow(FALSE);
 
 	RefreshPreviewCursor();
-	
-	
+
+
 }
 
 void CCursorOptionsDlg::OnRadio2() 
@@ -180,28 +176,28 @@ void CCursorOptionsDlg::OnRadio2()
 
 	if (cursortype == 0) {
 
-		((CButton *) GetDlgItem(IDC_CUSTOMCURSOR))->EnableWindow(FALSE);	
+		((CButton *) GetDlgItem(IDC_CUSTOMCURSOR))->EnableWindow(FALSE); 
 		((CButton *) GetDlgItem(IDC_FILECURSOR))->EnableWindow(FALSE);
 
 
 	}
-	else if  (cursortype == 1) {
-	
-		((CButton *) GetDlgItem(IDC_CUSTOMCURSOR))->EnableWindow(TRUE);	
+	else if (cursortype == 1) {
+
+		((CButton *) GetDlgItem(IDC_CUSTOMCURSOR))->EnableWindow(TRUE); 
 		((CButton *) GetDlgItem(IDC_FILECURSOR))->EnableWindow(FALSE);
 
 	}
 	else {
 
-		((CButton *) GetDlgItem(IDC_CUSTOMCURSOR))->EnableWindow(FALSE);	
+		((CButton *) GetDlgItem(IDC_CUSTOMCURSOR))->EnableWindow(FALSE); 
 		((CButton *) GetDlgItem(IDC_FILECURSOR))->EnableWindow(TRUE);
 
 	}
 
 
-	
-	RefreshPreviewCursor();	
-	
+
+	RefreshPreviewCursor(); 
+
 }
 
 void CCursorOptionsDlg::OnCursor1() 
@@ -215,10 +211,10 @@ void CCursorOptionsDlg::OnCursor1()
 
 	((CButton *) GetDlgItem(IDC_CUSTOMCURSOR))->EnableWindow(FALSE);
 	((CButton *) GetDlgItem(IDC_FILECURSOR))->EnableWindow(FALSE);
-	
+
 
 	RefreshPreviewCursor();
-	
+
 }
 
 void CCursorOptionsDlg::OnCursor2() 
@@ -232,10 +228,10 @@ void CCursorOptionsDlg::OnCursor2()
 
 	((CButton *) GetDlgItem(IDC_CUSTOMCURSOR))->EnableWindow(TRUE);
 	((CButton *) GetDlgItem(IDC_FILECURSOR))->EnableWindow(FALSE);
-	
+
 
 	RefreshPreviewCursor();
-			
+
 }
 
 void CCursorOptionsDlg::OnCursor3() 
@@ -249,8 +245,8 @@ void CCursorOptionsDlg::OnCursor3()
 
 	((CButton *) GetDlgItem(IDC_CUSTOMCURSOR))->EnableWindow(FALSE);
 	((CButton *) GetDlgItem(IDC_FILECURSOR))->EnableWindow(TRUE);
-	
-	
+
+
 	RefreshPreviewCursor();
 }
 
@@ -258,7 +254,7 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-		
+
 	// TODO: Add extra initialization here
 	customsel = g_customsel;
 	recordcursor = g_recordcursor; 
@@ -280,13 +276,13 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 
 	//Highlight UI
 	((CSliderCtrl *) GetDlgItem(IDC_HIGHLIGHTSIZE))->EnableWindow(TRUE);
-	((CComboBox *) GetDlgItem(IDC_HIGHLIGHTSHAPE))->EnableWindow(TRUE);	
+	((CComboBox *) GetDlgItem(IDC_HIGHLIGHTSHAPE))->EnableWindow(TRUE); 
 
 	((CStatic *) GetDlgItem(IDC_STATIC_SIZE))->EnableWindow(TRUE);
 	((CStatic *) GetDlgItem(IDC_STATIC_SHAPE))->EnableWindow(TRUE);
 	((CStatic *) GetDlgItem(IDC_STATIC_HALFSIZE))->EnableWindow(TRUE);
-	
-	
+
+
 	((CSliderCtrl *) GetDlgItem(IDC_HIGHLIGHTSIZE))->SetRange(1,128,TRUE);
 	((CSliderCtrl *) GetDlgItem(IDC_HIGHLIGHTSIZE))->SetPos(highlightsize);
 	((CComboBox *) GetDlgItem(IDC_HIGHLIGHTSHAPE))->SetCurSel(highlightshape);
@@ -308,7 +304,7 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 		((CStatic *) GetDlgItem(IDC_STATIC_SHAPE))->EnableWindow(TRUE);
 		((CStatic *) GetDlgItem(IDC_STATIC_HALFSIZE))->EnableWindow(TRUE);
 		((CButton *) GetDlgItem(IDC_HIGHLIGHTCLICK))->EnableWindow(TRUE);
-	
+
 		if(highlightclick)
 		{
 			((CButton *) GetDlgItem(IDC_HIGHLIGHTCOLORLB))->EnableWindow(TRUE);
@@ -336,8 +332,8 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 		((CButton *) GetDlgItem(IDC_HIGHLIGHTCOLORRB))->EnableWindow(FALSE);
 
 	}
-	
-	//Highlight UI	
+
+	//Highlight UI 
 
 
 
@@ -346,9 +342,9 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 	((CButton *) GetDlgItem(IDC_CURSOR3))->EnableWindow(TRUE);
 	((CButton *) GetDlgItem(IDC_CUSTOMCURSOR))->EnableWindow(TRUE);
 	((CButton *) GetDlgItem(IDC_FILECURSOR))->EnableWindow(TRUE);
-	
+
 	((CComboBox *) GetDlgItem(IDC_CUSTOMCURSOR))->SetCurSel(customsel);
-	
+
 	RefreshPreviewCursor();
 
 	if (cursortype==0) {
@@ -387,7 +383,7 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 
 		((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(TRUE);
 		((CButton *) GetDlgItem(IDC_RADIO2))->SetCheck(FALSE);
-		
+
 		((CButton *) GetDlgItem(IDC_CURSOR1))->EnableWindow(FALSE);
 		((CButton *) GetDlgItem(IDC_CURSOR2))->EnableWindow(FALSE);
 		((CButton *) GetDlgItem(IDC_CURSOR3))->EnableWindow(FALSE);
@@ -403,13 +399,13 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 		((CButton *) GetDlgItem(IDC_CURSOR1))->EnableWindow(TRUE);
 		((CButton *) GetDlgItem(IDC_CURSOR2))->EnableWindow(TRUE);
 		((CButton *) GetDlgItem(IDC_CURSOR3))->EnableWindow(TRUE);
-		
-		
+
+
 	}
 
-	
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
+
+	return TRUE; // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void CCursorOptionsDlg::OnSelchangeCustomcursor() 
@@ -427,8 +423,8 @@ void CCursorOptionsDlg::RefreshPreviewCursor()
 		previewcursor = NULL;
 
 	}
-	else  {
-	
+	else {
+
 		if (cursortype==0) {
 
 			previewcursor = GetCursor();
@@ -437,18 +433,18 @@ void CCursorOptionsDlg::RefreshPreviewCursor()
 		else if (cursortype==1) {
 
 			customsel = ((CComboBox *) GetDlgItem(IDC_CUSTOMCURSOR))->GetCurSel();
-			
+
 			DWORD customicon;
 			if (customsel<0) customsel = 0;
-			customicon = icon_info[customsel];	
-			
+			customicon = icon_info[customsel]; 
+
 			previewcursor = LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(customicon));
 			customcursor = previewcursor;
 
 		}
 		else {
 
-			previewcursor =	loadcursor;		
+			previewcursor = loadcursor; 
 
 		} //cursortype
 
@@ -463,89 +459,89 @@ void CCursorOptionsDlg::RefreshPreviewCursor()
 void CCursorOptionsDlg::OnFilecursor() 
 {
 	// TODO: Add your command handler code here
-			CString fileName;
-			CString filt="Icon and Cursor Files (*.ico; *.cur)|*.ico;*.cur||";
-			
-			if (iconFileDlg == NULL) 	
-				iconFileDlg = new CFileDialog(TRUE,"*.ico;*.cur","*.ico;*.cur",NULL,filt,this);						
-			
-			
-			if (iconFileDlg!=NULL) {
+	CString fileName;
+	CString filt="Icon and Cursor Files (*.ico; *.cur)|*.ico;*.cur||";
 
-				char dirx[200];
-				GetWindowsDirectory(dirx,200);				
-				CString initdir(dirx);
-				initdir = initdir + "\\cursors";						
-				
-				iconFileDlg->m_ofn.Flags|=OFN_FILEMUSTEXIST;
-				iconFileDlg->m_ofn.lpstrTitle="File to load";				
-
-				if (cursordir=="")
-					cursordir=initdir;
-				iconFileDlg->m_ofn.lpstrInitialDir = cursordir;			
-				
-
-				if (iconFileDlg->DoModal()==IDOK) {
-
-					fileName=iconFileDlg->GetPathName();
-					CString extension =fileName.Right(4);
-					extension.MakeUpper();
-					if ((extension==".ICO") || 	(extension==".CUR")) {
-
-						 loadcursor = LoadCursorFromFile(fileName);
-						 previewcursor = loadcursor;
-						 ((CStatic *) GetDlgItem(IDC_ICONCURSOR))->SetIcon(previewcursor);
-						
-						//LoadBMP(fileName);
-					}
+	if (iconFileDlg == NULL) 
+		iconFileDlg = new CFileDialog(TRUE,"*.ico;*.cur","*.ico;*.cur",NULL,filt,this); 
 
 
-					g_cursorFilePath = fileName;
-					
-					fileName=fileName.Left(fileName.ReverseFind('\\'));		
-					cursordir = fileName;
-				 
+	if (iconFileDlg!=NULL) {
 
-				}            
-				delete iconFileDlg;
-				iconFileDlg = NULL;
+		char dirx[200];
+		GetWindowsDirectory(dirx,200); 
+		CString initdir(dirx);
+		initdir = initdir + "\\cursors"; 
+
+		iconFileDlg->m_ofn.Flags|=OFN_FILEMUSTEXIST;
+		iconFileDlg->m_ofn.lpstrTitle="File to load"; 
+
+		if (cursordir=="")
+			cursordir=initdir;
+		iconFileDlg->m_ofn.lpstrInitialDir = cursordir; 
+
+
+		if (iconFileDlg->DoModal()==IDOK) {
+
+			fileName=iconFileDlg->GetPathName();
+			CString extension =fileName.Right(4);
+			extension.MakeUpper();
+			if ((extension==".ICO") || (extension==".CUR")) {
+
+				loadcursor = LoadCursorFromFile(fileName);
+				previewcursor = loadcursor;
+				((CStatic *) GetDlgItem(IDC_ICONCURSOR))->SetIcon(previewcursor);
+
+				//LoadBMP(fileName);
 			}
-	
+
+
+			g_cursorFilePath = fileName;
+
+			fileName=fileName.Left(fileName.ReverseFind('\\')); 
+			cursordir = fileName;
+
+
+		} 
+		delete iconFileDlg;
+		iconFileDlg = NULL;
+	}
+
 }
 
 void CCursorOptionsDlg::OnOK() 
 {
-		// TODO: Add extra validation here
-		if (cursortype==0) {
+	// TODO: Add extra validation here
+	if (cursortype==0) {
 
 
-		}
-		else if (cursortype==1) {
-			
-			customcursor = previewcursor;
+	}
+	else if (cursortype==1) {
 
-		}
-		else {
+		customcursor = previewcursor;
 
-			loadcursor = previewcursor;
+	}
+	else {
 
-		} //cursortype
+		loadcursor = previewcursor;
+
+	} //cursortype
 
 
-	
+
 	g_customsel = customsel;
 	g_recordcursor = recordcursor; 
 	g_cursortype = cursortype; 
 	g_highlightcursor = highlightcursor;
 	g_highlightsize = highlightsize;
 	g_highlightshape = highlightshape;
-	g_highlightcolor = highlightcolor;	
+	g_highlightcolor = highlightcolor; 
 	g_loadcursor = loadcursor;
 	g_customcursor = customcursor;
 	g_highlightclick=highlightclick;
 	g_highlightclickcolorleft=highlightclickcolorleft;
 	g_highlightclickcolorright=highlightclickcolorright;
-	
+
 	CDialog::OnOK();
 }
 
@@ -557,29 +553,29 @@ void CCursorOptionsDlg::OnSelchangeHighlightshape()
 	highlightshape = ((CComboBox *) GetDlgItem(IDC_HIGHLIGHTSHAPE))->GetCurSel();
 
 	RefreshHighlight();
-		
+
 }
 
 
 void CCursorOptionsDlg::OnHighlightcolor() 
-{	
-	
- 	CColorDialog colerdlog(highlightcolor,CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT);
+{ 
+
+	CColorDialog colerdlog(highlightcolor,CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT);
 	if (colerdlog.DoModal() ==IDOK) {
-		 
-		highlightcolor=colerdlog.GetColor();			
-		
-	}	
+
+		highlightcolor=colerdlog.GetColor(); 
+
+	} 
 
 	RefreshHighlight();
-	
+
 }
 
 
 void CCursorOptionsDlg::OnHighlightcursor() 
 {
 	// TODO: Add your control notification handler code here
-	highlightcursor = ((CButton *) GetDlgItem(IDC_HIGHLIGHTCURSOR))->GetCheck();	
+	highlightcursor = ((CButton *) GetDlgItem(IDC_HIGHLIGHTCURSOR))->GetCheck(); 
 	if (highlightcursor) {
 
 		((CSliderCtrl *) GetDlgItem(IDC_HIGHLIGHTSIZE))->EnableWindow(TRUE);
@@ -611,13 +607,13 @@ void CCursorOptionsDlg::OnHighlightcursor()
 
 	RefreshHighlight();
 
-	
+
 }
 
 void CCursorOptionsDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
 {
 	// TODO: Add your message handler code here and/or call default
-	highlightsize = ((CSliderCtrl *) GetDlgItem(IDC_HIGHLIGHTSIZE))->GetPos();	
+	highlightsize = ((CSliderCtrl *) GetDlgItem(IDC_HIGHLIGHTSIZE))->GetPos(); 
 	sliding=TRUE;
 	RefreshHighlight();
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
@@ -636,7 +632,7 @@ void CCursorOptionsDlg::RefreshHighlight()
 
 
 	int highlightsizehalf = highlightsize/2;
-		
+
 	double x1,x2,y1,y2;
 
 	COLORREF usecolor = highlightcolor;
@@ -672,9 +668,9 @@ void CCursorOptionsDlg::RefreshHighlight()
 	HBITMAP hbm = NULL;
 	HBITMAP old_bitmap;
 	HDC hdcBits = ::CreateCompatibleDC(hdc);
-    hbm = (HBITMAP) ::CreateCompatibleBitmap(hdc,previewsize.cx,previewsize.cy);    	
-	old_bitmap = (HBITMAP) ::SelectObject(hdcBits,hbm);		
-		
+	hbm = (HBITMAP) ::CreateCompatibleBitmap(hdc,previewsize.cx,previewsize.cy); 
+	old_bitmap = (HBITMAP) ::SelectObject(hdcBits,hbm); 
+
 	if ((highlightshape == 0) || (highlightshape == 2)) { //circle and square
 
 		x1 = (previewsize.cx - highlightsizehalf)/2.0;
@@ -695,39 +691,39 @@ void CCursorOptionsDlg::RefreshHighlight()
 	HBRUSH ptbrush = (HBRUSH) ::GetStockObject(LTGRAY_BRUSH);
 	HPEN nullpen = CreatePen( PS_NULL,0,0); 
 	HBRUSH hlbrush = CreateSolidBrush( usecolor );
-	
-	
-	HBRUSH oldbrush = (HBRUSH)  ::SelectObject(hdcBits,ptbrush);	
-	HPEN oldpen = (HPEN) ::SelectObject(hdcBits,nullpen);			
-	::Rectangle(hdcBits, 0,0,previewsize.cx+1,previewsize.cy+1);		
-	
+
+
+	HBRUSH oldbrush = (HBRUSH) ::SelectObject(hdcBits,ptbrush); 
+	HPEN oldpen = (HPEN) ::SelectObject(hdcBits,nullpen); 
+	::Rectangle(hdcBits, 0,0,previewsize.cx+1,previewsize.cy+1); 
+
 
 	if (highlightcursor) { //draw the shape only if highlight cursor is selected
 
-		::SelectObject(hdcBits,hlbrush);		
-		
-		
-		if ((highlightshape == 0)  || (highlightshape == 1)) { //circle and ellipse
+		::SelectObject(hdcBits,hlbrush); 
+
+
+		if ((highlightshape == 0) || (highlightshape == 1)) { //circle and ellipse
 			::Ellipse(hdcBits,(int) x1,(int) y1,(int) x2,(int) y2);
 		}
 		else if ((highlightshape == 2) || (highlightshape == 3)) { //square and rectangle
 			::Rectangle(hdcBits,(int) x1,(int) y1,(int) x2,(int) y2);
 		}
 
-		
-		::SelectObject(hdcBits,oldbrush);		
+
+		::SelectObject(hdcBits,oldbrush); 
 
 	}
 
-	::SelectObject(hdcBits,oldpen);	
-	DeleteObject(hlbrush);  	
-	DeleteObject(nullpen);		
+	::SelectObject(hdcBits,oldpen); 
+	DeleteObject(hlbrush); 
+	DeleteObject(nullpen); 
 
 	//OffScreen Buffer
-	BitBlt(hdc, xoffset, yoffset, previewsize.cx, previewsize.cy, hdcBits, 0, 0, SRCCOPY);  
-	SelectObject(hdcBits, old_bitmap);        
+	BitBlt(hdc, xoffset, yoffset, previewsize.cx, previewsize.cy, hdcBits, 0, 0, SRCCOPY); 
+	SelectObject(hdcBits, old_bitmap); 
 	DeleteObject(hbm);
-    DeleteDC(hdcBits);
+	DeleteDC(hdcBits);
 
 	ReleaseDC(cdc);
 
@@ -736,7 +732,7 @@ void CCursorOptionsDlg::RefreshHighlight()
 void CCursorOptionsDlg::OnPaint() 
 {
 	CPaintDC dc(this); // device context for painting
-	
+
 	RefreshHighlight();
 }
 
@@ -749,33 +745,33 @@ void CCursorOptionsDlg::OnBnClickedOk()
 
 void CCursorOptionsDlg::OnHighlightColorLeft()
 {
- 	CColorDialog colerdlog(highlightclickcolorleft,CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT);
+	CColorDialog colerdlog(highlightclickcolorleft,CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT);
 	if (colerdlog.DoModal() ==IDOK) {
-		 
-		highlightclickcolorleft=colerdlog.GetColor();			
-		
-	}	
+
+		highlightclickcolorleft=colerdlog.GetColor(); 
+
+	} 
 
 	RefreshHighlight();
-	
+
 }
 
 void CCursorOptionsDlg::OnHighlightColorRight()
 {
- 	CColorDialog colerdlog(highlightclickcolorright,CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT);
+	CColorDialog colerdlog(highlightclickcolorright,CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT);
 	if (colerdlog.DoModal() ==IDOK) {
-		 
-		highlightclickcolorright=colerdlog.GetColor();			
-		
-	}	
+
+		highlightclickcolorright=colerdlog.GetColor(); 
+
+	} 
 
 	RefreshHighlight();
-	
+
 }
 
 void CCursorOptionsDlg::OnEnableVisualClickFeedback()
 {
-	highlightclick = ((CButton *) GetDlgItem(IDC_HIGHLIGHTCLICK))->GetCheck();	
+	highlightclick = ((CButton *) GetDlgItem(IDC_HIGHLIGHTCLICK))->GetCheck(); 
 	if (highlightclick) {
 
 		((CButton *) GetDlgItem(IDC_HIGHLIGHTCOLORLB))->EnableWindow(TRUE);

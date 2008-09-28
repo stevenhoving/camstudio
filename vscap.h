@@ -1,6 +1,6 @@
 // vscap.h : main header file for the VSCAP application
 //
-
+/////////////////////////////////////////////////////////////////////////////
 #if !defined(AFX_VSCAP_H__CAB648E2_684F_4FF1_B574_9714ACAC6D57__INCLUDED_)
 #define AFX_VSCAP_H__CAB648E2_684F_4FF1_B574_9714ACAC6D57__INCLUDED_
 
@@ -13,12 +13,14 @@
 #endif
 
 #include "resource.h"       // main symbols
+#include "CamStudioCommandLineInfo.h"
 
 //Multilanguage
 #define ENT_LANGID _T("LanguageID")
 #define ENT_LANGINI _T("LangINI")
 #define SEC_SETTINGS _T("Language")
 #define STANDARD_LANGID 0x09	// English
+
 /////////////////////////////////////////////////////////////////////////////
 // CVscapApp:
 // See vscap.cpp for the implementation of this class
@@ -28,13 +30,6 @@ class CVscapApp : public CWinApp
 {
 public:
 	CVscapApp();
-	BOOL FirstInstance();
-
-private:
-	LANGID CurLangID;
-
-
-	BOOL LoadLangIDDLL(LANGID LangID);
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -52,6 +47,15 @@ public:
 		//    DO NOT EDIT what you see in these blocks of generated code !
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+private:
+	static const char * CAMSTUDIO_MUTEX;
+	HANDLE m_hAppMutex;
+	LANGID CurLangID;
+	CCamStudioCommandLineInfo m_cmdInfo;
+
+	bool RegisterWindowClass();
+	BOOL FirstInstance();
+	bool LoadLanguage(LANGID LangID);
 };
 
 
@@ -59,5 +63,8 @@ public:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
+
+// general error handler
+void OnError(LPTSTR lpszFunction);
 
 #endif // !defined(AFX_VSCAP_H__CAB648E2_684F_4FF1_B574_9714ACAC6D57__INCLUDED_)

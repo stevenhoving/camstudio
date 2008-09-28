@@ -23,7 +23,7 @@ CSoundFile::CSoundFile(CString FileName, WAVEFORMATEX* format)
 	ZeroMemory(&m_MMCKInfoParent,sizeof(MMCKINFO));
 	ZeroMemory(&m_MMCKInfoChild,sizeof(MMCKINFO));
 	ZeroMemory(&m_MMCKInfoData,sizeof(MMCKINFO));
-	
+
 	if(format == NULL)
 	{
 		m_Mode = READ;
@@ -35,7 +35,7 @@ CSoundFile::CSoundFile(CString FileName, WAVEFORMATEX* format)
 		m_Format = *format;
 		CreateWaveFile();
 	}
-	
+
 	if(m_Mode == ERROR) Close();
 }
 
@@ -50,12 +50,12 @@ void CSoundFile::Close()
 	{
 		if(m_Mode == WRITE)
 		{
-		::mmioAscend(m_hFile, &m_MMCKInfoChild, 0);
-		::mmioAscend(m_hFile, &m_MMCKInfoParent, 0);
+			::mmioAscend(m_hFile, &m_MMCKInfoChild, 0);
+			::mmioAscend(m_hFile, &m_MMCKInfoParent, 0);
 		}
 		::mmioClose(m_hFile, 0);
 		m_hFile = NULL;
-	}	
+	} 
 
 }
 
@@ -76,7 +76,7 @@ CBuffer* CSoundFile::Read()
 	CBuffer* buf = new CBuffer(m_Format.nBlockAlign*m_BufferSize);
 	if(buf == NULL) 
 		return NULL;
-	
+
 	if(Read(buf))
 		return buf;
 
@@ -100,8 +100,8 @@ bool CSoundFile::CreateWaveFile()
 {
 	// check if file is already open
 	if(m_hFile) 
-		return FALSE;	
-	
+		return FALSE; 
+
 	// open file
 	m_hFile = ::mmioOpen(m_FileName.GetBuffer(0),NULL, MMIO_CREATE|MMIO_WRITE|MMIO_EXCLUSIVE | MMIO_ALLOCBUF);
 	if(m_hFile == NULL) 
@@ -114,7 +114,7 @@ bool CSoundFile::CreateWaveFile()
 	m_MMCKInfoParent.fccType = mmioFOURCC('W','A','V','E');
 
 	MMRESULT mmResult = ::mmioCreateChunk( m_hFile,&m_MMCKInfoParent, MMIO_CREATERIFF);
-	
+
 	ZeroMemory(&m_MMCKInfoChild, sizeof(MMCKINFO));
 	m_MMCKInfoChild.ckid = mmioFOURCC('f','m','t',' ');
 	m_MMCKInfoChild.cksize = sizeof(WAVEFORMATEX) + m_Format.cbSize;
@@ -130,11 +130,11 @@ bool CSoundFile::CreateWaveFile()
 bool CSoundFile::OpenWaveFile()
 {
 	// code taken from Visual C++ Multimedia -- Aitken and Jarol p 122
-	
+
 	// check if file is already open
 	if(m_hFile) 
 		return FALSE; 
-	
+
 	m_hFile = mmioOpen(m_FileName.GetBuffer(0),NULL,MMIO_READ);
 	if(m_hFile == NULL) 
 	{
@@ -147,9 +147,9 @@ bool CSoundFile::OpenWaveFile()
 	if(mmResult)
 	{
 		//CString tstr;
-		//tstr.LoadString(IDS_STRING_ERRDESCENT);		
+		//tstr.LoadString(IDS_STRING_ERRDESCENT); 
 		//AfxMessageBox(tstr);
-		
+
 		AfxMessageBox("Error descending into file");
 		mmioClose(m_hFile,0);
 		m_hFile = NULL;
@@ -174,7 +174,7 @@ bool CSoundFile::OpenWaveFile()
 		m_Mode = FILE_ERROR;
 		return FALSE;
 	}
-	
+
 	// open output sound file
 	mmResult = mmioAscend(m_hFile,&m_MMCKInfoChild,0);
 	if(mmResult)

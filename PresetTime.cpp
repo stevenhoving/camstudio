@@ -20,10 +20,10 @@ extern int recordpreset;
 
 
 CPresetTime::CPresetTime(CWnd* pParent /*=NULL*/)
-	: CDialog(CPresetTime::IDD, pParent)
+: CDialog(CPresetTime::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CPresetTime)
-		// NOTE: the ClassWizard will add member initialization here
+	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
@@ -32,7 +32,7 @@ void CPresetTime::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CPresetTime)
-		// NOTE: the ClassWizard will add DDX and DDV calls here
+	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
@@ -49,47 +49,47 @@ extern void ErrMsg(char frmt[], ...);
 
 void CPresetTime::OnOK() 
 {
-	
-	int val = ((CButton *) GetDlgItem(IDC_CHECK1))->GetCheck();	
+
+	int val = ((CButton *) GetDlgItem(IDC_CHECK1))->GetCheck(); 
 	if (val)
 		recordpreset = 1;
 	else
 		recordpreset = 0;
 
-	int val2 = ((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->GetPos();	
+	int val2 = ((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->GetPos(); 
 	presettime = val2;
 
 
 	//ErrMsg("%d",presettime);
-	
+
 	CDialog::OnOK();
 }
 
 BOOL CPresetTime::OnInitDialog() 
 {
 	CDialog::OnInitDialog();
-	
+
 	// TODO: Add extra initialization here
-	((CButton *) GetDlgItem(IDC_CHECK1))->SetCheck(recordpreset);	
-	
+	((CButton *) GetDlgItem(IDC_CHECK1))->SetCheck(recordpreset); 
+
 	UDACCEL acc[4];
-    acc[0].nSec = 1; 
-    acc[0].nInc = 1; 
+	acc[0].nSec = 1; 
+	acc[0].nInc = 1; 
 
 	acc[1].nSec = 2; 
-    acc[1].nInc = 5; 
+	acc[1].nInc = 5; 
 
 	acc[2].nSec = 3; 
-    acc[2].nInc = 20; 
+	acc[2].nInc = 20; 
 
 	acc[2].nSec = 4; 
-    acc[2].nInc = 100; 
-	
-	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetAccel(4,acc);	
-	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetRange(1,7200);	
-	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetPos(presettime);	
+	acc[2].nInc = 100; 
 
-	
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
+	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetAccel(4,acc); 
+	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetRange(1,7200); 
+	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetPos(presettime); 
+
+
+	return TRUE; // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX Property Pages should return FALSE
 }

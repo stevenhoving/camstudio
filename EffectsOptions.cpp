@@ -11,8 +11,8 @@
 
 IMPLEMENT_DYNAMIC(CEffectsOptions, CDialog)
 CEffectsOptions::CEffectsOptions(CWnd* pParent /*=NULL*/)
-	: CDialog(CEffectsOptions::IDD, pParent)
-//	, m_Position(TOP_LEFT)
+: CDialog(CEffectsOptions::IDD, pParent)
+// , m_Position(TOP_LEFT)
 {
 }
 

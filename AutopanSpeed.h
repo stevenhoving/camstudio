@@ -1,11 +1,12 @@
+// AutopanSpeed.h : header file
+//
+/////////////////////////////////////////////////////////////////////////////
 #if !defined(AFX_AUTOPANSPEED_H__49D4B2FA_02DF_4EAC_BA42_F2EEDEA2FE58__INCLUDED_)
 #define AFX_AUTOPANSPEED_H__49D4B2FA_02DF_4EAC_BA42_F2EEDEA2FE58__INCLUDED_
 
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
-// AutopanSpeed.h : header file
-//
 
 /////////////////////////////////////////////////////////////////////////////
 // CAutopanSpeed dialog

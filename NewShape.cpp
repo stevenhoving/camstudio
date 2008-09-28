@@ -10,7 +10,7 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-  
+
 int m_newShapeWidth = 200;
 int m_newShapeHeight = 150;
 CString m_newShapeText("Right Click to Edit Text");
@@ -39,10 +39,10 @@ extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 
 
 CNewShape::CNewShape(CWnd* pParent /*=NULL*/)
-	: CDialog(CNewShape::IDD, pParent)
+: CDialog(CNewShape::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CNewShape)
-		// NOTE: the ClassWizard will add member initialization here
+	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
@@ -51,7 +51,7 @@ void CNewShape::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CNewShape)
-		// NOTE: the ClassWizard will add DDX and DDV calls here
+	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
@@ -79,19 +79,19 @@ BOOL CNewShape::OnInitDialog()
 
 	((CEdit *) GetDlgItem(IDC_IMAGEFILETEXT))->SetWindowText(m_imageFilename);
 
-	
+
 	shapeStr.Format("%d",shapeNameInt);
-	shapeStr = shapeName + shapeStr;	
+	shapeStr = shapeName + shapeStr; 
 	((CEdit *) GetDlgItem(IDC_NAME))->SetWindowText(shapeStr);
 
 	proposedShapeStr = shapeStr;
 	//((CEdit *) GetDlgItem(IDC_NAME))->SetSel( 0, 0, FALSE );
 	//((CEdit *) GetDlgItem(IDC_NAME))->SetFocus();
-	
+
 	// TODO: Add extra initialization here
 	HICON loadFileIcon= LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(IDI_ICON1));
 	((CButton *) GetDlgItem(IDC_BUTTON1))->SetIcon(loadFileIcon);
-	
+
 	if (m_imagetype == 0) {
 
 		((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(1);
@@ -130,9 +130,9 @@ BOOL CNewShape::OnInitDialog()
 	((CEdit *) GetDlgItem(IDC_HEIGHT))->SetWindowText(heightStr);
 	((CEdit *) GetDlgItem(IDC_EDIT3))->SetWindowText(m_newShapeText);
 
-	
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
+
+	return TRUE; // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void CNewShape::OnRadio1() 
@@ -149,7 +149,7 @@ void CNewShape::OnRadio1()
 	((CEdit *) GetDlgItem(IDC_IMAGEFILETEXT))->EnableWindow(FALSE);
 	((CEdit *) GetDlgItem(IDC_BUTTON1))->EnableWindow(FALSE);
 
-	
+
 }
 
 void CNewShape::OnRadio2() 
@@ -165,7 +165,7 @@ void CNewShape::OnRadio2()
 
 	((CEdit *) GetDlgItem(IDC_IMAGEFILETEXT))->EnableWindow(TRUE);
 	((CEdit *) GetDlgItem(IDC_BUTTON1))->EnableWindow(TRUE);
-	
+
 }
 
 
@@ -184,61 +184,61 @@ void CNewShape::OnOK()
 
 	if (m_imagetype==0) {
 
-			CString widthStr, heightStr;
+		CString widthStr, heightStr;
 
-			((CEdit *) GetDlgItem(IDC_WIDTH))->GetWindowText(widthStr);
-			((CEdit *) GetDlgItem(IDC_HEIGHT))->GetWindowText(heightStr);
-			sscanf(LPCTSTR(widthStr),"%d",&m_newShapeWidth);
-			sscanf(LPCTSTR(heightStr),"%d",&m_newShapeHeight);	
+		((CEdit *) GetDlgItem(IDC_WIDTH))->GetWindowText(widthStr);
+		((CEdit *) GetDlgItem(IDC_HEIGHT))->GetWindowText(heightStr);
+		sscanf(LPCTSTR(widthStr),"%d",&m_newShapeWidth);
+		sscanf(LPCTSTR(heightStr),"%d",&m_newShapeHeight); 
 
 
-			if (m_newShapeWidth<20) {
-				MessageOut(NULL,IDS_STRINGWIDTHLESS20,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);				
-				m_newShapeWidth  = oldWidth; 
-				return;
+		if (m_newShapeWidth<20) {
+			MessageOut(NULL,IDS_STRINGWIDTHLESS20,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION); 
+			m_newShapeWidth = oldWidth; 
+			return;
 
-			}
+		}
 
-			if (m_newShapeWidth>maxxScreen) {
-				
-				//CString msgstr;
-				//msgstr.Format("Width cannot be larger than %d",maxxScreen);
-				//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-				MessageOutINT(NULL,IDS_STRINGWIDTHLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,maxxScreen);
-				m_newShapeWidth  = oldWidth; 
-				return;
+		if (m_newShapeWidth>maxxScreen) {
 
-			}
+			//CString msgstr;
+			//msgstr.Format("Width cannot be larger than %d",maxxScreen);
+			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
+			MessageOutINT(NULL,IDS_STRINGWIDTHLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,maxxScreen);
+			m_newShapeWidth = oldWidth; 
+			return;
 
-			if (m_newShapeHeight<20) {
+		}
 
-				//MessageBox("Height cannot be less than 20","Note",MB_OK | MB_ICONEXCLAMATION);
-				MessageOut(NULL,IDS_STRINGHEIGHTLESS20,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);				
-				m_newShapeHeight  = oldHeight; 
-				return;
+		if (m_newShapeHeight<20) {
 
-			}
+			//MessageBox("Height cannot be less than 20","Note",MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(NULL,IDS_STRINGHEIGHTLESS20,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION); 
+			m_newShapeHeight = oldHeight; 
+			return;
 
-			if (m_newShapeHeight>maxyScreen) {
-				
-				//CString msgstr;
-				//msgstr.Format("Height cannot be larger than %d",maxyScreen);
-				//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-				
-				MessageOutINT(NULL,IDS_STRINGHEIGHTLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,maxyScreen);
-				m_newShapeHeight  = oldHeight; 
-				return;
+		}
 
-			}
+		if (m_newShapeHeight>maxyScreen) {
+
+			//CString msgstr;
+			//msgstr.Format("Height cannot be larger than %d",maxyScreen);
+			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
+
+			MessageOutINT(NULL,IDS_STRINGHEIGHTLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,maxyScreen);
+			m_newShapeHeight = oldHeight; 
+			return;
+
+		}
 
 	}
-	
+
 
 
 	((CEdit *) GetDlgItem(IDC_IMAGEFILETEXT))->GetWindowText(m_imageFilename);
 	m_imageFilename.TrimLeft();
 	m_imageFilename.TrimRight();
-	
+
 	if (m_imagetype == 1) {
 
 		if (m_imageFilename == "") 
@@ -250,20 +250,20 @@ void CNewShape::OnOK()
 		}
 
 	}
-	
-	((CEdit *) GetDlgItem(IDC_EDIT3))->GetWindowText(m_newShapeText);	
+
+	((CEdit *) GetDlgItem(IDC_EDIT3))->GetWindowText(m_newShapeText); 
 	//m_newShapeText.TrimLeft();
 	//m_newShapeText.TrimRight();
 	//if (m_imageFilename=="") {
 
-	//	MessageBox("Shape name is empty,"Note",MB_OK | MB_ICONEXCLAMATION);
-	//	return;
+	// MessageBox("Shape name is empty,"Note",MB_OK | MB_ICONEXCLAMATION);
+	// return;
 
 	//}
 
 
-	
-	
+
+
 	((CEdit *) GetDlgItem(IDC_NAME))->GetWindowText(shapeStr);
 
 	if (proposedShapeStr != shapeStr) 
@@ -278,16 +278,16 @@ void CNewShape::OnOK()
 
 	}
 	else {
-		
+
 		shapeNameInt++;
 		if (shapeNameInt>2147483600) //assume int32
 			shapeNameInt = 1;
 	}
 
 
-	
 
-	
+
+
 	CDialog::OnOK();
 }
 
@@ -297,29 +297,29 @@ void CNewShape::OnButton1()
 	CString widthStr, heightStr;
 	((CEdit *) GetDlgItem(IDC_WIDTH))->GetWindowText(widthStr);
 	((CEdit *) GetDlgItem(IDC_HEIGHT))->GetWindowText(heightStr);
-	
-	if (m_imageDir == "")
-		m_imageDir = GetProgPath();	
 
-	static char BASED_CODE szFilter[] =	"Picture Files (*.bmp; *.jpg; *.gif)|*.bmp; *.jpg; *.gif||";
-	static char szTitle[]="Load Picture";		
-	
-	CFileDialog fdlg(TRUE,"*.bmp; *.jpg; *.gif","*.bmp; *.jpg; *.gif",OFN_LONGNAMES | OFN_FILEMUSTEXIST ,szFilter,this);	
-	fdlg.m_ofn.lpstrTitle=szTitle;		
+	if (m_imageDir == "")
+		m_imageDir = GetProgPath(); 
+
+	static char BASED_CODE szFilter[] = "Picture Files (*.bmp; *.jpg; *.gif)|*.bmp; *.jpg; *.gif||";
+	static char szTitle[]="Load Picture"; 
+
+	CFileDialog fdlg(TRUE,"*.bmp; *.jpg; *.gif","*.bmp; *.jpg; *.gif",OFN_LONGNAMES | OFN_FILEMUSTEXIST ,szFilter,this); 
+	fdlg.m_ofn.lpstrTitle=szTitle; 
 	fdlg.m_ofn.lpstrInitialDir = m_imageDir;
 
 	CString m_newfileTitle;
 	if(fdlg.DoModal() == IDOK)
-	{	
+	{ 
 		//m_imageFilename = fdlg.GetPathName();
-		m_newfileTitle = fdlg.GetPathName();		
+		m_newfileTitle = fdlg.GetPathName(); 
 		((CEdit *) GetDlgItem(IDC_IMAGEFILETEXT))->SetWindowText(m_newfileTitle);
 
 
-		m_newfileTitle=m_newfileTitle.Left(m_newfileTitle.ReverseFind('\\'));		
-		m_imageDir = m_newfileTitle;	
-		
-				
+		m_newfileTitle=m_newfileTitle.Left(m_newfileTitle.ReverseFind('\\')); 
+		m_imageDir = m_newfileTitle; 
+
+
 	}
-	
+
 }

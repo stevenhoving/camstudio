@@ -17,10 +17,10 @@ static char THIS_FILE[] = __FILE__;
 
 
 CEditTransparency::CEditTransparency(CWnd* pParent /*=NULL*/)
-	: CDialog(CEditTransparency::IDD, pParent)
+: CDialog(CEditTransparency::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CEditTransparency)
-		// NOTE: the ClassWizard will add member initialization here
+	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 
 	m_backup_enableTrans = 0;
@@ -32,7 +32,7 @@ void CEditTransparency::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CEditTransparency)
-		// NOTE: the ClassWizard will add DDX and DDV calls here
+	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
@@ -54,7 +54,7 @@ void CEditTransparency::OnCheck1()
 
 	if (*m_enableTrans) {
 
-				
+
 		((CSliderCtrl *) GetDlgItem(IDC_TRANSSLIDER))->EnableWindow(TRUE);
 
 	}
@@ -64,7 +64,7 @@ void CEditTransparency::OnCheck1()
 
 	if (m_myparent)
 		((CTransparentWnd *) m_myparent)->InvalidateTransparency();
-	
+
 }
 
 void CEditTransparency::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
@@ -78,7 +78,7 @@ void CEditTransparency::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBa
 
 	if (m_myparent)
 		((CTransparentWnd *) m_myparent)->InvalidateTransparency();
-	
+
 
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }
@@ -86,7 +86,7 @@ void CEditTransparency::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBa
 
 void CEditTransparency::PreModal(int *enableTrans, int *valTrans, CWnd * parent) 
 {
-	m_enableTrans = enableTrans;	
+	m_enableTrans = enableTrans; 
 	m_valTrans = valTrans;
 	m_myparent = parent;
 
@@ -98,7 +98,7 @@ void CEditTransparency::PreModal(int *enableTrans, int *valTrans, CWnd * parent)
 BOOL CEditTransparency::OnInitDialog() 
 {
 	CDialog::OnInitDialog();
-	
+
 	// TODO: Add extra initialization here
 	((CSliderCtrl *) GetDlgItem(IDC_TRANSSLIDER))->EnableWindow(TRUE);
 	((CSliderCtrl *) GetDlgItem(IDC_TRANSSLIDER))->SetRange(0,100);
@@ -115,9 +115,9 @@ BOOL CEditTransparency::OnInitDialog()
 	CString valstr;
 	valstr.Format("%d",*m_valTrans);
 	((CSliderCtrl *) GetDlgItem(IDC_TRANSTEXT))->SetWindowText(valstr);
-	
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
+
+	return TRUE; // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void CEditTransparency::OnCancel() 
@@ -129,6 +129,6 @@ void CEditTransparency::OnCancel()
 	if (m_myparent)
 		((CTransparentWnd *) m_myparent)->InvalidateTransparency();
 
-	
+
 	CDialog::OnCancel();
 }

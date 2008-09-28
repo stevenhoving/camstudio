@@ -1,20 +1,19 @@
+// AudioFormat.h : header file
+//
+/////////////////////////////////////////////////////////////////////////////
 #if !defined(AFX_AUDIOFORMAT_H__D1098020_67C5_491D_AC06_2EE69A7C135D__INCLUDED_)
 #define AFX_AUDIOFORMAT_H__D1098020_67C5_491D_AC06_2EE69A7C135D__INCLUDED_
 
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-// AudioFormat.h : header file
-//
-
-
 
 /////////////////////////////////////////////////////////////////////////////
 // AudioFormat dialog
 
 class AudioFormat : public CDialog
 {
-// Construction
+	// Construction
 public:
 	AudioFormat(CWnd* pParent = NULL);   // standard constructor
 	void UpdateLocalCompressFormatInterface();
@@ -25,25 +24,20 @@ public:
 	LONG GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata);
 	BOOL OpenUsingRegisteredClass (CString);
 
-
-	//CVscapView *myparent;
-	//void PreModal(CVscapView *myparent);
-
-// Dialog Data
+	// Dialog Data
 	//{{AFX_DATA(AudioFormat)
 	enum { IDD = IDD_AUDIODIALOG };
-		// NOTE: the ClassWizard will add data members here
+	// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
-
-// Overrides
+	// Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(AudioFormat)
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
 
-// Implementation
+	// Implementation
 protected:
 
 	// Generated message map functions

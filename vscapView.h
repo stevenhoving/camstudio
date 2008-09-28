@@ -1,7 +1,6 @@
 // vscapView.h : interface of the CVscapView class
 //
 /////////////////////////////////////////////////////////////////////////////
-
 #if !defined(AFX_VSCAPVIEW_H__DCC4865E_3B37_402E_AC1B_C8ABF4519F51__INCLUDED_)
 #define AFX_VSCAPVIEW_H__DCC4865E_3B37_402E_AC1B_C8ABF4519F51__INCLUDED_
 
@@ -9,8 +8,9 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
+#include "VideoWnd.h"	// for CVideoWnd
 
-class CVscapView : public CView 
+class CVscapView : public CView
 {
 protected: // create from serialization only
 	CVscapView();
@@ -19,13 +19,13 @@ protected: // create from serialization only
 // Attributes
 public:
 	CVscapDoc* GetDocument();
-	void SaveSettings(); 
-	void LoadSettings(); 
+	void SaveSettings();
+	void LoadSettings();
 	void DecideSaveSettings();
 
 // Operations
 public:
-	
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CVscapView)
@@ -113,7 +113,7 @@ protected:
 	afx_msg void OnOptionsRecordaudioRecordfromspeakers();
 	afx_msg void OnUpdateOptionsRecordaudioRecordfromspeakers(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsRecordaudiomicrophone();
-	afx_msg void OnUpdateOptionsRecordaudiomicrophone(CCmdUI* pCmdUI);	
+	afx_msg void OnUpdateOptionsRecordaudiomicrophone(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsProgramoptionsTroubleshoot();
 	afx_msg void OnOptionsProgramoptionsCamstudioplay();
 	afx_msg void OnUpdateOptionsProgramoptionsCamstudioplay(CCmdUI* pCmdUI);
@@ -150,11 +150,11 @@ protected:
 	//}}AFX_MSG
 	afx_msg LRESULT OnRecordStart (UINT wParam, LONG lParam);
 	afx_msg LRESULT OnRecordInterrupted (UINT wParam, LONG lParam);
-	afx_msg LRESULT OnSaveCursor (UINT wParam, LONG lParam);	
-	afx_msg LRESULT OnUserGeneric	(UINT wParam, LONG lParam);		
-	afx_msg LRESULT OnKeyStart	(UINT wParam, LONG lParam);	
+	afx_msg LRESULT OnSaveCursor (UINT wParam, LONG lParam);
+	afx_msg LRESULT OnUserGeneric	(UINT wParam, LONG lParam);
+	afx_msg LRESULT OnKeyStart	(UINT wParam, LONG lParam);
 	afx_msg LRESULT OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2);
-	afx_msg LRESULT OnTrayNotify(WPARAM wParam, LPARAM lParam);	
+	afx_msg LRESULT OnTrayNotify(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 public:
@@ -172,6 +172,12 @@ public:
 	afx_msg void OnBnClickedButtonlink();
 	DECLARE_EVENTSINK_MAP()
 	void ClickLabel1();
+private:
+	CVideoWnd m_vanWnd;
+	void DisplayRecordingStatistics(CDC & srcDC);
+	void DisplayBackground(CDC & srcDC);
+	void DisplayRecordingMsg(CDC & srcDC);
+	bool SaveAppSettings();
 };
 
 #ifndef _DEBUG  // debug version in vscapView.cpp
