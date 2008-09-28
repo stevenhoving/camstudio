@@ -20,10 +20,10 @@ extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 
 
 TroubleShoot::TroubleShoot(CWnd* pParent /*=NULL*/)
-	: CDialog(TroubleShoot::IDD, pParent)
+: CDialog(TroubleShoot::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(TroubleShoot)
-		// NOTE: the ClassWizard will add member initialization here
+	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
@@ -32,7 +32,7 @@ void TroubleShoot::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(TroubleShoot)
-		// NOTE: the ClassWizard will add DDX and DDV calls here
+	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
@@ -50,7 +50,7 @@ END_MESSAGE_MAP()
 void TroubleShoot::OnCheck1() 
 {
 	// TODO: Add your control notification handler code here
-	
+
 }
 
 void TroubleShoot::OnOK() 
@@ -89,7 +89,7 @@ void TroubleShoot::OnOK()
 void TroubleShoot::OnCheck2() 
 {
 	// TODO: Add your control notification handler code here
-	
+
 }
 
 BOOL TroubleShoot::OnInitDialog() 
@@ -99,12 +99,12 @@ BOOL TroubleShoot::OnInitDialog()
 		((CButton *) GetDlgItem(IDC_CHECK2))->SetCheck(TRUE);
 	else
 		((CButton *) GetDlgItem(IDC_CHECK2))->SetCheck(FALSE);
-	
-		
+
+
 	CDialog::OnInitDialog();
-	
+
 	// TODO: Add extra initialization here
-	
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
+
+	return TRUE; // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX Property Pages should return FALSE
 }

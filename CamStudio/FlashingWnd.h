@@ -9,10 +9,8 @@
 #pragma once
 #endif
 
-
 class CFlashingWnd : public CWnd
 {
-
 public:
 	CFlashingWnd();
 
@@ -26,12 +24,9 @@ public:
 	void UpdateRegionMove();
 	void MakeFixedRegion(CRgn  &wndRgn, CRgn  &rgnTemp, CRgn  &rgnTemp2,CRgn  &rgnTemp3);
 
-
 public:
 	CRect cRect;
 	HRGN oldregion;
-
-
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -47,13 +42,13 @@ public:
 	virtual ~CFlashingWnd();
 
 protected:
-	
-
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CFlashingWnd)
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	void DrawFlashingRect(BOOL bDraw, int mode);
 };
 
 /////////////////////////////////////////////////////////////////////////////

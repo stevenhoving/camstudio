@@ -16,10 +16,10 @@ static char THIS_FILE[] = __FILE__;
 
 
 CAutoSearchDialog::CAutoSearchDialog(CWnd* pParent /*=NULL*/)
-	: CDialog(CAutoSearchDialog::IDD, pParent)
+: CDialog(CAutoSearchDialog::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CAutoSearchDialog)
-		// NOTE: the ClassWizard will add member initialization here
+	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
@@ -28,7 +28,7 @@ void CAutoSearchDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CAutoSearchDialog)
-		// NOTE: the ClassWizard will add DDX and DDV calls here
+	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
@@ -66,13 +66,13 @@ void CAutoSearchDialog::OnCloseDialog()
 {
 	// TODO: Add your control notification handler code here
 	ShowWindow(SW_HIDE);
-	
+
 }
 
 void CAutoSearchDialog::OnClose() 
 {
 	// TODO: Add your message handler code here and/or call default
 	ShowWindow(SW_HIDE);
-	
+
 	//CDialog::OnClose();
 }

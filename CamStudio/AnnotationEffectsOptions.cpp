@@ -11,7 +11,7 @@
 
 IMPLEMENT_DYNAMIC(CAnnotationEffectsOptions, CDialog)
 CAnnotationEffectsOptions::CAnnotationEffectsOptions(CWnd* pParent /*=NULL*/)
-	: CDialog(CAnnotationEffectsOptions::IDD, pParent)
+: CDialog(CAnnotationEffectsOptions::IDD, pParent)
 {
 }
 
