@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-
+//#include "afxwin.h"
 
 class CMainFrame : public CFrameWnd
 {
@@ -19,6 +19,7 @@ protected: // create from serialization only
 
 // Attributes
 public:
+	CBitmap& Logo()	{return m_bmLogo;}
 
 // Operations
 public:
@@ -45,6 +46,7 @@ protected:  // control bar embedded members
 	CBitmap		m_ToolbarBitmap256;
 	CBitmap		m_ToolbarBitmapMask;
 	CImageList  m_ilToolBar;
+	CBitmap		m_bmLogo;
 
 // Generated message map functions
 protected:
@@ -61,6 +63,7 @@ protected:
 	//}}AFX_MSG
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);	
 	DECLARE_MESSAGE_MAP()
+private:
 };
 
 /////////////////////////////////////////////////////////////////////////////

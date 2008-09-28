@@ -10,7 +10,7 @@
 
 IMPLEMENT_DYNAMIC(CEffectsOptions2, CDialog)
 CEffectsOptions2::CEffectsOptions2(CWnd* pParent /*=NULL*/)
-	: CDialog(CEffectsOptions2::IDD, pParent)
+: CDialog(CEffectsOptions2::IDD, pParent)
 {
 }
 

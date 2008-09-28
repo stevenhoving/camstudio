@@ -1,6 +1,6 @@
 // FolderDialog.cpp: implementation of the CFolderDialog class.
-//	$Copyright ©  1998 Kenneth M. Reed, ALL RIGHTS RESERVED. $
-//	$Header: FolderDialog.cpp  Revision:1.11  Tue Jun 23 18:00:44 1998  KenReed $
+// $Copyright © 1998 Kenneth M. Reed, ALL RIGHTS RESERVED. $
+// $Header: FolderDialog.cpp Revision:1.11 Tue Jun 23 18:00:44 1998 KenReed $
 
 #include "stdafx.h"
 #include "FolderDialog.h"
@@ -15,7 +15,7 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 static int CALLBACK BrowseDirectoryCallback(
-				HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
+	HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
 {
 	// Context was pointer to CFolderDialog instance
 	CFolderDialog* pFd = (CFolderDialog*)lpData;
@@ -57,10 +57,10 @@ CFolderDialog::~CFolderDialog()
 
 }
 
-void CFolderDialog::CallbackFunction(HWND hWnd, UINT uMsg,	LPARAM lParam)
+void CFolderDialog::CallbackFunction(HWND hWnd, UINT uMsg, LPARAM lParam)
 {
 	// Save the window handle. The Set* functions need it and they may
-	//	be called by the virtual funtions.
+	// be called by the virtual funtions.
 	m_hDialogBox = hWnd;
 
 	// Dispatch the two message types to the virtual functions
@@ -118,7 +118,7 @@ CString CFolderDialog::GetPathName() const
 void CFolderDialog::EnableOK(BOOL bEnable)
 {
 	// Documentation is incorrect! It is the lParam, not the wParam, that
-	//	controls the enable!
+	// controls the enable!
 	//::SendMessage(m_hDialogBox, BFFM_ENABLEOK, (bEnable ? 1 : 0), 0);
 	::SendMessage(m_hDialogBox, BFFM_ENABLEOK, 0, (bEnable ? 1 : 0));
 }
@@ -152,7 +152,7 @@ CString CFolderDialog::ShortName(const CString& strName)
 void CFolderDialog::OnInitDialog()
 {
 	// Default handing of the init dialog message sets the selection to 
-	//	the initial folder
+	// the initial folder
 	SetSelection(m_strInitialFolderName);
 	SetStatusText(ShortName(m_strInitialFolderName));
 }

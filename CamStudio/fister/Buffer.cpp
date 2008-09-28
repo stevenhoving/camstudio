@@ -50,7 +50,7 @@ CBuffer::CBuffer(void* buffer, DWORD length)
 CBuffer::~CBuffer()
 {
 	// remember to delete the memory
-	if(m_bAutoDelete && ptr.b != NULL)  delete ptr.b;
+	if(m_bAutoDelete && ptr.b != NULL) delete ptr.b;
 }
 
 void CBuffer::Erase()

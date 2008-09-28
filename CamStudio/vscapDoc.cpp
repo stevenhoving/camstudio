@@ -24,8 +24,8 @@ IMPLEMENT_DYNCREATE(CVscapDoc, CDocument)
 
 BEGIN_MESSAGE_MAP(CVscapDoc, CDocument)
 	//{{AFX_MSG_MAP(CVscapDoc)
-		// NOTE - the ClassWizard will add and remove mapping macros here.
-		//    DO NOT EDIT what you see in these blocks of generated code!
+	// NOTE - the ClassWizard will add and remove mapping macros here.
+	// DO NOT EDIT what you see in these blocks of generated code!
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 

@@ -96,33 +96,33 @@ don't do this, some of the UI elements of your application will remain in the
 language of the operating system.
 
 /////////////////////////////////////////////////////////////////////////////
-9/21/08 TFM:
+9/28/08 TFM:
 
-AudioFormat.cpp
-AudioFormat::OnInitDialog
--	for-loop variable scoping
--	remove dead whitespace
+More changes than I care to think about but here's what's new:
 
-SpeakersImpl.cpp
-::configWaveOutManual
--	for-loop variable scoping
--	remove dead whitespace
--	simplified filename format
+-	Updated the project files. It may be tied to Visual Studio 9.0 (I hope not!)
+	but until we get the build configuration workied out this will have to do.
 
-screenannotations.cpp
-::AreWindowsEdited
--	for-loop variable scoping
--	remove dead whitespace
+-	Added all the image static libraries, the command line project, and the
+	codec project to the solution.
 
-Linking error:
--	remove Nafxcwd.lib Libcmtd.lib library references in link
+-	Added a static library to hold the utility/generic code to clear up the
+	base files
 
-Added projects:
--	jasper, jpeg, png, tiff, zlib static libraries
+-	Added a class to deal with the command line. Used the options from the
+	command line project files. These need to be merged.
 
-Project dependencies:
--	CxImage static library
-		- jasper, jpeg, png, tiff, zlib static libraries
--	vscap
-		- CxImage static library
-		
+-	Re-activated the First Instance code to use a mutex and then search the
+	window space. Need to use PD code for this (p.J.Naughter's class is a
+	good start.)
+	
+-	Used the logo bitmap for a background and updated the record screen to
+	display transparent text.
+	
+-	More code layout clean up.
+
+Issues:
+
+	Video quality less than 50% generates flicker. This actually looks like
+	wipe of some kind and doesn't look like it should be there.  
+ 
