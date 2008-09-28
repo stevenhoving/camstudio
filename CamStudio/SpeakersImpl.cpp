@@ -8,7 +8,7 @@ extern void mciRecordOpen();
 extern void mciRecordStart();
 extern void mciRecordStop(CString strFile);
 extern void mciRecordClose();
-extern void mciSetWaveFormat();  //add before mcirecord
+extern void mciSetWaveFormat(); //add before mcirecord
 
 extern int recordaudio;
 extern CAutoSearchDialog asd;
@@ -41,7 +41,7 @@ int m_dwVolumeControlID=-1;
 //all thsee variables will be ready after WaveoutGetSelectControl()
 DWORD m_dwControlType; //MUX or MIXER ...we are searching for these
 DWORD m_dwSelectControlID; //the found controlID of the MUX/MIXER
-DWORD m_dwMultipleItems;   //max source lines connected to the MUX/MIXER
+DWORD m_dwMultipleItems; //max source lines connected to the MUX/MIXER
 DWORD m_dwIndex;
 
 int NumberOfMixerDevices=0;
@@ -93,7 +93,7 @@ BOOL WaveoutInternalAdjustVolume(long lineID);
 //Note:
 //We can use the following variables after calling WaveoutGetSelectControl()
 //m_dwMultipleItems ...number of MUX/MIXER source lines
-//m_dwIndex  ... ranging from 0..to..m_dwMultipleItems, test each value to see with is the analogue feedback from speakers
+//m_dwIndex ... ranging from 0..to..m_dwMultipleItems, test each value to see with is the analogue feedback from speakers
 BOOL useWaveout(BOOL silence_mode,int feedback_skip_namesearch)
 {
 	return useWave(MIXERLINE_COMPONENTTYPE_SRC_ANALOG,"Stereo Mix",silence_mode,feedback_skip_namesearch);
@@ -134,8 +134,8 @@ BOOL WaveoutUninitialize()
 	}
 
 	//if (m_SelectArray) {
-	//	delete []m_SelectArray;
-	//	m_SelectArray=NULL;
+	// delete []m_SelectArray;
+	// m_SelectArray=NULL;
 	//}
 
 	return bSucc;
@@ -154,8 +154,8 @@ BOOL WaveoutInitialize()
 	m_strMicName.Empty();
 	m_dwMultipleItems = 0;
 
-	//#undef max  // The max macro conflicts with the following function.
-	//	m_dwIndex = numeric_limits<DWORD>::max();
+	//#undef max // The max macro conflicts with the following function.
+	// m_dwIndex = numeric_limits<DWORD>::max();
 	m_dwIndex = 100000;
 
 	// open the first mixer
@@ -232,17 +232,17 @@ BOOL WaveoutGetSelectControl(DWORD lineToSearch,CString namesearch,int feedback_
 			//// determine which controls the speaker feedback source line
 			//for (DWORD dwi = 0; dwi < m_dwMultipleItems; dwi++)
 			//{
-			//	// get the line information
-			//	MIXERLINE mxl;
-			//	mxl.cbStruct = sizeof(MIXERLINE);
-			//	mxl.dwLineID = pmxcdSelectText[dwi].dwParam1;
-			//	if (::mixerGetLineInfo(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_LINEID) == MMSYSERR_NOERROR
-			//		&& mxl.dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_ANALOG) {
-			//		// found, dwi is the index.
-			//		m_dwIndex = dwi;
-			//		m_strMicName = pmxcdSelectText[dwi].szName;
-			//		break;
-			//	}
+			// // get the line information
+			// MIXERLINE mxl;
+			// mxl.cbStruct = sizeof(MIXERLINE);
+			// mxl.dwLineID = pmxcdSelectText[dwi].dwParam1;
+			// if (::mixerGetLineInfo(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_LINEID) == MMSYSERR_NOERROR
+			// && mxl.dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_ANALOG) {
+			// // found, dwi is the index.
+			// m_dwIndex = dwi;
+			// m_strMicName = pmxcdSelectText[dwi].szName;
+			// break;
+			// }
 			//}
 
 			WaveoutSearchSrcLine(pmxcdSelectText,lineToSearch,namesearch,feedback_skip_namesearch);
@@ -517,7 +517,7 @@ BOOL initialSaveMMMode()
 
 		BOOL bRetVal = FALSE;
 
-		MIXERCONTROLDETAILS_BOOLEAN *pmxcdSelectValue =	new MIXERCONTROLDETAILS_BOOLEAN[m_dwMultipleItems];
+		MIXERCONTROLDETAILS_BOOLEAN *pmxcdSelectValue = new MIXERCONTROLDETAILS_BOOLEAN[m_dwMultipleItems];
 		if (pmxcdSelectValue != NULL) {
 			MIXERCONTROLDETAILS mxcd;
 			mxcd.cbStruct = sizeof(MIXERCONTROLDETAILS);
@@ -553,11 +553,11 @@ BOOL WaveoutSearchSrcLine(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD li
 	BOOL retval=FALSE;
 
 	//This code allows the manual config to override the 2 pass searching
-	if (lineToSearch==MIXERLINE_COMPONENTTYPE_SRC_ANALOG) {	//if searching for speakers line
+	if (lineToSearch==MIXERLINE_COMPONENTTYPE_SRC_ANALOG) { //if searching for speakers line
 		if (feedback_line>=0) {
 			m_dwIndex = feedback_line;
 
-			//not necessary because  the validity of feedback_line ==> feedback_lineInfo is also valid
+			//not necessary because the validity of feedback_line ==> feedback_lineInfo is also valid
 			//feedback_lineInfo = pmxcdSelectText[m_dwIndex].dwParam1;
 
 			return TRUE;
@@ -565,7 +565,7 @@ BOOL WaveoutSearchSrcLine(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD li
 	}
 
 	//1st Pass Search (Name Search)
-	if (!feedback_skip_namesearch)  { //if skip the first pass
+	if (!feedback_skip_namesearch) { //if skip the first pass
 		// determine which line controls the speaker feedback source
 		for (DWORD dwi = 0; dwi < m_dwMultipleItems; dwi++) {
 			// get the line information
@@ -573,7 +573,7 @@ BOOL WaveoutSearchSrcLine(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD li
 			mxl.cbStruct = sizeof(MIXERLINE);
 			mxl.dwLineID = pmxcdSelectText[dwi].dwParam1;
 			if (::mixerGetLineInfo(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_LINEID) == MMSYSERR_NOERROR) {
-				if 	((mxl.dwComponentType == lineToSearch) || ((mxl.dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT) && (lineToSearch==MIXERLINE_COMPONENTTYPE_SRC_ANALOG))) {
+				if ((mxl.dwComponentType == lineToSearch) || ((mxl.dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT) && (lineToSearch==MIXERLINE_COMPONENTTYPE_SRC_ANALOG))) {
 					//if match
 					//or if don't match, but we are searching for waveout, and that dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT
 
@@ -642,7 +642,7 @@ BOOL configWaveOutManual()
 		//anstr.Format("This is a sample tone. Did you hear a tone?");
 		////int ret = ::MessageBox(hWndGlobal,anstr,"Analyzing",MB_YESNO | MB_ICONQUESTION);
 		//if (ret==IDNO) {
-		//	break;
+		// break;
 		//}
 
 		CString testfile("");
@@ -679,7 +679,7 @@ BOOL configWaveOutManual()
 	if (orig_recordaudio==1)
 		useWavein(TRUE,FALSE); //set to record from microphone
 	//else if (orig_recordaudio==2)
-	//	useWaveout(TRUE,FALSE); //set to record from speakers
+	// useWaveout(TRUE,FALSE); //set to record from speakers
 
 	return TRUE;
 }
@@ -768,9 +768,9 @@ BOOL useWave(DWORD lineToSearch,CString namesearch,BOOL silence_mode,int feedbac
 
 			//}
 			//else {
-			//	if (!silence_mode)
-			//		::MessageBox(NULL,"WaveoutSaveSelectArray() failed.","Note",MB_OK | MB_ICONEXCLAMATION);
-			//	return FALSE;
+			// if (!silence_mode)
+			// ::MessageBox(NULL,"WaveoutSaveSelectArray() failed.","Note",MB_OK | MB_ICONEXCLAMATION);
+			// return FALSE;
 			//}
 		} else {
 			if (!silence_mode)
@@ -819,7 +819,7 @@ BOOL SafeUseWaveoutOnLoad()
 {
 	BOOL val = TRUE;
 
-	if (feedback_line>=0)  //if feedback_line already found
+	if (feedback_line>=0) //if feedback_line already found
 		useWaveout(TRUE,FALSE);
 	else if (feedback_line<0) {
 		recordaudio=1;
@@ -1103,7 +1103,7 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 	if (lineToSearch==MIXERLINE_COMPONENTTYPE_SRC_ANALOG) {
 		//if searching for speakers line
 		//ver 1.6
-		double analyze_threshold  =3.0;
+		double analyze_threshold =3.0;
 
 		if (!asdCreated) {
 			asd.Create(IDD_AUTOSEARCH,NULL);
@@ -1117,7 +1117,7 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 		if (m_dwIndex>m_dwMultipleItems) { //if still not found
 			//Assume searching for MIXERLINE_COMPONENTTYPE_SRC_ANALOG means searching for speaker source line
 			//int ret = ::MessageBox(NULL,"Not all soundcards support the recording of sound from your speakers. CamStudio will attempt to find the appropriate line on your system. \n\nIt is strongly recommended that you detach your microphone from your soundcard, or at least make sure that there is no background noise around your microphone. When you are ready, click 'OK'.","Note",MB_OK | MB_ICONEXCLAMATION | MB_OK);
-			int ret =  MessageOut(NULL,IDS_STRING_NOTALL ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+			int ret = MessageOut(NULL,IDS_STRING_NOTALL ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			//if (ret==IDNO) return FALSE;
 
 			asd.ShowWindow(SW_RESTORE);

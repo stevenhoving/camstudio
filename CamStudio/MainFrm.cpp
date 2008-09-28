@@ -1,6 +1,6 @@
 // MainFrm.cpp : implementation of the CMainFrame class
 //
-
+/////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "vscap.h"
 
@@ -13,12 +13,12 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 extern int recordstate;
-int viewtype = 0;
-static HMENU hMenu = NULL;
-
 extern BOOL bMinimizeToTray;
 extern BOOL TrayShow();
 extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
+
+int viewtype = 0;
+static HMENU hMenu = NULL;
 
 /////////////////////////////////////////////////////////////////////////////
 // CMainFrame
@@ -42,7 +42,7 @@ END_MESSAGE_MAP()
 
 static UINT indicators[] =
 {
-	ID_SEPARATOR,           // status line indicator
+	ID_SEPARATOR, // status line indicator
 
 };
 
@@ -52,6 +52,7 @@ static UINT indicators[] =
 CMainFrame::CMainFrame()
 {
 	// TODO: add member initialization code here
+	m_bmLogo.LoadBitmap(IDB_BITMAP3);
 }
 
 CMainFrame::~CMainFrame()
@@ -70,19 +71,19 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		|| !m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
 	{
 		TRACE0("Failed to create toolbar\n");
-		return -1;      // fail to create
+		return -1; // fail to create
 	}
 
 	if (!m_wndStatusBar.Create(this)
 		|| !m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT)))
 	{
 		TRACE0("Failed to create status bar\n");
-		return -1;      // fail to create
+		return -1; // fail to create
 	}
 
 	//ver 1.2
-	m_ToolbarBitmap256.LoadBitmap( IDB_TOOLBAR256 );
-	m_ToolbarBitmapMask.LoadBitmap( IDB_TOOLBARMASK );
+	m_ToolbarBitmap256.LoadBitmap(IDB_TOOLBAR256);
+	m_ToolbarBitmapMask.LoadBitmap(IDB_TOOLBARMASK);
 
 	HDC hScreenDC = ::GetDC(NULL);
 	int numbits = ::GetDeviceCaps(hScreenDC, BITSPIXEL );
@@ -111,7 +112,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	//m_wndToolBar.SetButtonText(1,"Record");
 	// TODO: Delete these three lines if you don't want the toolbar to
-	//  be dockable
+	// be dockable
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndToolBar);
@@ -125,11 +126,27 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: Modify the Window class or styles here by modifying
 
-	//  the CREATESTRUCT cs
+	// the CREATESTRUCT cs
 	cs.x = 200;
 	cs.y = 200;
-	cs.cx=280;
-	cs.cy=292;
+	cs.cx = 280;
+	cs.cy = 292;
+	
+	// use logo to set widht and heights
+	BITMAP bitmap;
+	m_bmLogo.GetBitmap(&bitmap);
+	cs.cx = bitmap.bmWidth;
+	cs.cy = bitmap.bmHeight;
+	// add width of borders
+	cs.cx += (::GetSystemMetrics(SM_CXFRAME) * 2)
+		+ ::GetSystemMetrics(SM_CXMENUSIZE)
+		;
+	// add height of Caption + menu + toolbar + status + borders
+	cs.cy += ::GetSystemMetrics(SM_CYCAPTION)
+		+ (::GetSystemMetrics(SM_CYMENU) * 2)	// assume statusbar same hieght
+		+ ::GetSystemMetrics(SM_CXMENUSIZE)
+		+ (::GetSystemMetrics(SM_CYFRAME) * 2)
+		;
 
 	cs.style &= ~FWS_ADDTOTITLE;
 	cs.style &= ~WS_THICKFRAME;
@@ -180,8 +197,8 @@ void CMainFrame::OnViewCompactview()
 	CRect toolbarrect;
 	CRect statusbarrect;
 
-	GetWindowRect( &windowrect);
-	GetClientRect( &clientrect);
+	GetWindowRect(&windowrect);
+	GetClientRect(&clientrect);
 	m_wndToolBar.GetWindowRect(&toolbarrect);
 
 	int borderHeight = GetSystemMetrics(SM_CYBORDER);
@@ -198,7 +215,7 @@ void CMainFrame::OnViewCompactview()
 	pStatus->ShowWindow(SW_HIDE);
 
 	int compactcx = windowrect.Width();
-	int compactcy = windowrect.Height() - clientrect.Height() + toolbarrect.Height() - borderHeight;
+	int compactcy = windowrect.Height() - clientrect.Height() + toolbarrect.Height() - borderHeight - borderHeight;
 	viewtype = 1;
 
 	SetWindowPos( &wndTop, windowrect.left, windowrect.top, compactcx, compactcy, SWP_SHOWWINDOW);
@@ -213,17 +230,16 @@ void CMainFrame::OnUpdateViewCompactview(CCmdUI* pCmdUI)
 void CMainFrame::OnViewButtonsview()
 {
 	// TODO: Add your command handler code here
-	CRect clientrect;
+
 	CRect windowrect;
+	CRect clientrect;
 	CRect toolbarrect;
 	CRect statusbarrect;
 
-	GetWindowRect( &windowrect);
-	GetClientRect( &clientrect);
+	GetWindowRect(&windowrect);
+	GetClientRect(&clientrect);
 	m_wndToolBar.GetWindowRect(&toolbarrect);
-
-	CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
-	pStatus->GetWindowRect(&statusbarrect);
+	m_wndStatusBar.GetWindowRect(&statusbarrect);
 
 	int borderHeight = GetSystemMetrics(SM_CYBORDER);
 	int captionHeight = GetSystemMetrics(SM_CYCAPTION);
@@ -232,11 +248,12 @@ void CMainFrame::OnViewButtonsview()
 	DockControlBar(&m_wndToolBar);
 
 	//Hide menu
-	hMenu = ::GetMenu(m_hWnd);
-	::SetMenu( m_hWnd, NULL );
+	CMenu *pOldMenu = GetMenu();
+	hMenu = pOldMenu->Detach();
+	SetMenu(0);
 
 	//Hide Status Bar
-	pStatus->ShowWindow(SW_HIDE);
+	m_wndStatusBar.ShowWindow(SW_HIDE);
 
 	int compactcx = windowrect.Width();
 	int compactcy = captionHeight + toolbarrect.Height() + borderHeight + borderHeight;
@@ -248,30 +265,46 @@ void CMainFrame::OnViewButtonsview()
 void CMainFrame::OnViewNormalview()
 {
 	// TODO: Add your command handler code here
-	CRect clientrect;
 	CRect windowrect;
-	CRect toolbarrect;
-	CRect statusbarrect;
+	GetWindowRect(&windowrect);
 
-	GetWindowRect( &windowrect);
-	GetClientRect( &clientrect);
+	CRect rectToolbar;
+	m_wndToolBar.GetWindowRect(&rectToolbar);
 
 	//Show Status Bar
-	CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
-	pStatus->ShowWindow(SW_SHOW);
+	CRect rectStatusbar;
+	m_wndStatusBar.GetWindowRect(&rectStatusbar);
+	m_wndStatusBar.ShowWindow(SW_SHOW);
 
 	//Dock Toolbar
 	DockControlBar(&m_wndToolBar);
 
 	//Show Menu
-	if ( hMenu != NULL )
-		::SetMenu( m_hWnd, hMenu );
+	if (hMenu) {
+		SetMenu(CMenu::FromHandle(hMenu));
+	}
 
-	int compactcx = 300;
-	int compactcy = 292;
+	// use logo to set widht and heights
+	BITMAP bitmap;
+	m_bmLogo.GetBitmap(&bitmap);
+	int compactcx = bitmap.bmWidth;
+	// add width of borders
+	compactcx += (::GetSystemMetrics(SM_CXFRAME) * 2)
+		+ ::GetSystemMetrics(SM_CXMENUSIZE)
+		;
+
+	int compactcy = bitmap.bmHeight;
+	// add height of Caption + menu + status + borders
+	compactcy += ::GetSystemMetrics(SM_CYCAPTION)
+		+ ::GetSystemMetrics(SM_CYMENU)
+		+ rectToolbar.Height()
+		+ rectStatusbar.Height()
+		+ (::GetSystemMetrics(SM_CYFRAME) * 2)
+		;
+
 	viewtype = 0;
 
-	SetWindowPos( &wndTop, windowrect.left, windowrect.top, compactcx, compactcy, SWP_SHOWWINDOW);
+	SetWindowPos(&wndTop, windowrect.left, windowrect.top, compactcx, compactcy, SWP_SHOWWINDOW);
 }
 
 void CMainFrame::OnUpdateViewButtonsview(CCmdUI* pCmdUI)

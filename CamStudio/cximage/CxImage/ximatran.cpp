@@ -165,12 +165,20 @@ bool CxImage::RotateLeft(CxImage* iDst)
 	if (AlphaIsValid()) imgDest.AlphaCreate();
 #endif
 
-	long x,x2,y,dlineup;
+	long x;
+	long x2;
+	long y;
+	long dlineup;
 	
 	// Speedy rotate for BW images <Robert Abram>
 	if (head.biBitCount == 1) {
 	
-		BYTE *sbits, *dbits, *dbitsmax, bitpos, *nrow,*srcdisp;
+		BYTE *sbits;
+		BYTE *dbits;
+		BYTE *dbitsmax;
+		BYTE bitpos;
+		BYTE *nrow;
+		BYTE *srcdisp;
 		ldiv_t div_r;
 
 		BYTE *bsrc = GetBits(), *bdest = imgDest.GetBits();
@@ -180,7 +188,7 @@ bool CxImage::RotateLeft(CxImage* iDst)
 		imgDest.Clear(0);
 		for (y = 0; y < head.biHeight; y++) {
 			// Figure out the Column we are going to be copying to
-			div_r = div(y + dlineup, (long)8);
+			div_r = div(y + dlineup, 8L);
 			// set bit pos of src column byte				
 			bitpos = 1 << div_r.rem;
 			srcdisp = bsrc + y * info.dwEffWidth;
@@ -271,7 +279,8 @@ bool CxImage::RotateLeft(CxImage* iDst)
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImage::RotateRight(CxImage* iDst)
 {
-	if (!pDib) return false;
+	if (!pDib)
+		return false;
 
 	long newWidth = GetHeight();
 	long newHeight = GetWidth();
@@ -285,20 +294,26 @@ bool CxImage::RotateRight(CxImage* iDst)
 	if (AlphaIsValid()) imgDest.AlphaCreate();
 #endif
 
-	long x,y,y2;
+	long x = 0L;
+	long y = 0L;
+	long y2 = 0L;
 	// Speedy rotate for BW images <Robert Abram>
 	if (head.biBitCount == 1) {
-	
-		BYTE *sbits, *dbits, *dbitsmax, bitpos, *nrow,*srcdisp;
+		BYTE *sbits		= 0;
+		BYTE *dbits		= 0;
+		BYTE bitpos		= 0;
+		BYTE *nrow		= 0;
+		BYTE *srcdisp	= 0;
 		ldiv_t div_r;
 
-		BYTE *bsrc = GetBits(), *bdest = imgDest.GetBits();
-		dbitsmax = bdest + imgDest.head.biSizeImage - 1;
+		BYTE *bsrc = GetBits();
+		BYTE *bdest = imgDest.GetBits();
+		BYTE *dbitsmax = bdest + imgDest.head.biSizeImage - 1;
 
 		imgDest.Clear(0);
 		for (y = 0; y < head.biHeight; y++) {
 			// Figure out the Column we are going to be copying to
-			div_r = div(y, (long)8);
+			div_r = div(y, 8L);
 			// set bit pos of src column byte				
 			bitpos = 128 >> div_r.rem;
 			srcdisp = bsrc + y * info.dwEffWidth;
@@ -310,8 +325,10 @@ bool CxImage::RotateRight(CxImage* iDst)
 				for (long z = 0; z < 8; z++) {
 				   // Get Destination Byte
 					dbits = nrow - z * imgDest.info.dwEffWidth;
-					if ((dbits < bdest) || (dbits > dbitsmax)) break;
-					if (*sbits & (128 >> z)) *dbits |= bitpos;
+					if ((dbits < bdest) || (dbits > dbitsmax))
+						break;
+					if (*sbits & (128 >> z))
+						*dbits |= bitpos;
 				}
 			}
 		}
@@ -319,18 +336,19 @@ bool CxImage::RotateRight(CxImage* iDst)
 #if CXIMAGE_SUPPORT_ALPHA
 	  if (AlphaIsValid()){
 		  for (y = 0; y < newHeight; y++){
-			  y2=newHeight-y-1;
+			  y2 = newHeight-y-1;
 			  for (x = 0; x < newWidth; x++){
 				  imgDest.AlphaSet(x,y,BlindAlphaGet(y2, x));
 			  }
 		  }
 	  }
 #endif //CXIMAGE_SUPPORT_ALPHA
-
 	} else {
 		//anything else but BW
-		BYTE *srcPtr, *dstPtr;                        //source and destionation for 24-bit version
-		int xs, ys;                                   //x-segment and y-segment
+		BYTE *srcPtr;
+		BYTE *dstPtr;                        //source and destionation for 24-bit version
+		int xs;
+		int ys;                                   //x-segment and y-segment
 		for (xs = 0; xs < newWidth; xs+=RBLOCK) {
 			for (ys = 0; ys < newHeight; ys+=RBLOCK) {
 				if (head.biBitCount==24) {
@@ -374,8 +392,11 @@ bool CxImage::RotateRight(CxImage* iDst)
 	}//if
 
 	//select the destination
-	if (iDst) iDst->Transfer(imgDest);
-	else Transfer(imgDest);
+	if (iDst) {
+		iDst->Transfer(imgDest);
+	} else {
+		Transfer(imgDest);
+	}
 	return true;
 }
 
