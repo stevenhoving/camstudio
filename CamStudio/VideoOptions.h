@@ -15,7 +15,7 @@ class CVideoOptions : public CDialog
 // Construction
 public:
 	CVideoOptions(CWnd* pParent = NULL);   // standard constructor
-	void RefreshCompressorButtons(); 
+	void RefreshCompressorButtons();
 	void RefreshAutoOptions();
 	void UpdateAdjustSliderVal();
 
@@ -23,7 +23,6 @@ public:
 	//{{AFX_DATA(CVideoOptions)
 	enum { IDD = IDD_VIDEOOPTIONS };
 	//}}AFX_DATA
-
 
 // Overrides
 	// ClassWizard generated virtual function overrides

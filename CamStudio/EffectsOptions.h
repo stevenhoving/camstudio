@@ -1,7 +1,6 @@
 #pragma once
 //#include "annotationeffectsoptions.h"
 
-
 // CEffectsOptions dialog
 
 enum Position {

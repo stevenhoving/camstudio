@@ -79,13 +79,11 @@
 
 #line 3 "swf4compiler.y"
 
-
 #include <time.h>
 #include <string.h>
 #include "compile.h"
 
 #define YYPARSE_PARAM buffer
-
 
 #line 13 "swf4compiler.y"
 typedef union {
@@ -101,8 +99,6 @@ typedef union {
 #define const
 #endif
 #endif
-
-
 
 #define	YYFINAL		369
 #define	YYFLAG		-32768
@@ -250,7 +246,6 @@ static const short yyrline[] = { 0,
 };
 #endif
 
-
 #if YYDEBUG != 0 || defined (YYERROR_VERBOSE)
 
 static const char * const yytname[] = {   "$","error","$undefined.","BREAK",
@@ -394,9 +389,7 @@ static const short yypgoto[] = {-32768,
 -32768,-32768,-32768,-32768,   -21,     0,     6,    12,   -52,   222
 };
 
-
 #define	YYLAST		1293
-
 
 static const short yytable[] = {    48,
    120,   177,   178,    52,    48,    49,   191,   192,    53,   312,
@@ -1203,7 +1196,6 @@ yyreduce:
     }
 #endif
 
-
   switch (yyn) {
 
 case 1:
@@ -1408,7 +1400,7 @@ case 31:
                   bufferWriteS16(yyvsp[-4].action, -(bufferLength(yyvsp[-4].action)+2));
                   bufferResolveJumps(yyvsp[-4].action);
                   yyval.action = yyvsp[-6].action;
-                  if(!yyval.action) yyval.action = newBuffer();
+                  if (!yyval.action) yyval.action = newBuffer();
                   bufferConcat(yyval.action, yyvsp[-4].action);
                 ;
     break;}
@@ -1640,7 +1632,7 @@ case 64:
 #line 568 "swf4compiler.y"
 { yyval.action = yyvsp[-2].action;
 			/* SetTarget(expr) */
-		  bufferWriteU8(yyval.action, SWFACTION_SETTARGETEXPRESSION); 
+		  bufferWriteU8(yyval.action, SWFACTION_SETTARGETEXPRESSION);
 			/* stmt */
 		  bufferConcat(yyval.action, yyvsp[0].action);
 			/* SetTarget('') */

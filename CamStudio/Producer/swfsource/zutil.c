@@ -1,6 +1,6 @@
 /* zutil.c -- target dependent utility functions for the compression library
  * Copyright (C) 1995-1998 Jean-loup Gailly.
- * For conditions of distribution and use, see copyright notice in zlib.h 
+ * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
 /* @(#) $Id$ */
@@ -24,7 +24,6 @@ const char *z_errmsg[10] = {
 "buffer error",        /* Z_BUF_ERROR     (-5) */
 "incompatible version",/* Z_VERSION_ERROR (-6) */
 ""};
-
 
 const char * ZEXPORT zlibVersion()
 {
@@ -54,7 +53,6 @@ const char * ZEXPORT zError(err)
 {
     return ERR_MSG(err);
 }
-
 
 #ifndef HAVE_MEMCPY
 
@@ -172,7 +170,6 @@ void  zcfree (voidpf opaque, voidpf ptr)
 #endif
 #endif /* __TURBOC__ */
 
-
 #if defined(M_I86) && !defined(__32BIT__)
 /* Microsoft C in 16-bit mode */
 
@@ -196,7 +193,6 @@ void  zcfree (voidpf opaque, voidpf ptr)
 }
 
 #endif /* MSC */
-
 
 #ifndef MY_ZCALLOC /* Any system without a special alloc function */
 

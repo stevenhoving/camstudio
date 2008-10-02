@@ -2,7 +2,8 @@
 #include <mmsystem.h>
 #include "resource.h"
 #include "AutoSearchDialog.h"
-#include "fister/soundfile.h"
+#include "soundfile.h"
+#include "Buffer.h"
 
 extern void mciRecordOpen();
 extern void mciRecordStart();
@@ -20,7 +21,7 @@ extern int MessageOutINT(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,lon
 extern int MessageOutINT2(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val1,long val2);
 extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 extern CString GetProgPath();
-extern CSoundFile *m_pFile;
+extern CSoundFile * pSoundFile;
 
 //version 1.6
 // =============== Capture waveout ===================
@@ -170,7 +171,6 @@ BOOL WaveoutInitialize()
 
 	return TRUE;
 }
-
 
 //The value return by this function is important
 //it (is returned to the useWave function) and indicates whether a control and its source line is found
@@ -328,7 +328,6 @@ BOOL WaveoutSetSelectValue(LONG lVal,DWORD dwIndex,BOOL zero_others)
 
 	return bRetVal;
 }
-
 
 BOOL WaveoutSetSelectArray(MIXERCONTROLDETAILS_BOOLEAN *pmxcdSelectValue)
 {
@@ -1167,7 +1166,7 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 
 				int BasicBufSize = 32768;
 
-				if (pFile->GetBitsPerSample()==16)
+				if (pFile->BitsPerSample()==16)
 					analyze_threshold=300.0;
 
 				CBuffer* buf;
@@ -1178,7 +1177,7 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 
 				while (buf = pFile->Read())
 				{
-					AnalyzeData(buf,pFile->GetBitsPerSample());
+					AnalyzeData(buf,pFile->BitsPerSample());
 				}
 				analyzeAggregate/=analyzeCount;
 
@@ -1191,7 +1190,7 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 				}
 
 				delete pFile;
-				m_pFile = NULL;
+				pSoundFile = NULL;
 
 				DeleteFile(testfile);
 			}

@@ -13,7 +13,7 @@
 #include "TransparentWnd.h"
 #include "LayoutList.h"
 
-class CListManager  
+class CListManager
 {
 public:
 	CListManager();
@@ -40,10 +40,10 @@ public:
 	int FreeDisplayArray();
 	int SwapLayoutArray(long uniqueID1, long uniqueID2);
 	CArray<CTransparentWnd *,CTransparentWnd *> * CloneDisplayArray();
-	int DestroyLayout(CLayoutList* pLayout);	
+	int DestroyLayout(CLayoutList* pLayout);
 	int SaveLayoutArrayToFile(CArray<CTransparentWnd *,CTransparentWnd *> * layoutArrayPtr , FILE* fptr);
 	int LoadLayoutArrayFromFile(CArray<CTransparentWnd *,CTransparentWnd *> * layoutArrayPtr , FILE* fptr);
-	void EnsureOnTopList(CTransparentWnd* transWnd ); 
+	void EnsureOnTopList(CTransparentWnd* transWnd );
 
 	int AddLayoutArray(CLayoutList* pLayout);
 	int RemoveLayoutArray(CLayoutList* pLayout, int wantDestroyLayout);
@@ -55,5 +55,4 @@ public:
 };
 
 #endif // !defined(AFX_LISTMANAGER_H__0F5DD254_C4A6_4E45_BCBD_8FA13F605F2A__INCLUDED_)
-
 

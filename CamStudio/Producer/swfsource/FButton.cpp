@@ -1,12 +1,11 @@
 #include <strstream>
 #include "FButton.h"
 
-FlashButtonRecord::FlashButtonRecord(UWORD _charID, UWORD _depth, char _validstates, 
+FlashButtonRecord::FlashButtonRecord(UWORD _charID, UWORD _depth, char _validstates,
 									 FlashMatrix &_matrix, FlashColorTransform &_cfx) :
 									 charID(_charID), depth(_depth), validstates(_validstates),
 										 matrix(_matrix), cfx(_cfx)
 {
-
 }
 
 N_STD::ostream &operator<< (N_STD::ostream &out, FlashButtonRecord &data)
@@ -15,12 +14,12 @@ N_STD::ostream &operator<< (N_STD::ostream &out, FlashButtonRecord &data)
 	WRITE_UWORD(data.charID);
 	WRITE_UWORD(data.depth);
 	out << data.matrix;
-	if(data.GetTagVersion() > 0)
+	if (data.GetTagVersion() > 0)
 	{
 		data.cfx.SetTagVersion(data.GetTagVersion());
 		out << data.cfx;
 	}
-	
+
 	return out;
 }
 
@@ -31,7 +30,7 @@ N_STD::istream &operator>> (N_STD::istream &in,  FlashButtonRecord &data)
 	READ_UWORD(data.depth);
 	in >> data.matrix;
 	data.cfx.SetTagVersion(data.GetTagVersion());
-	if(data.GetTagVersion() > 1) in >> data.cfx;
+	if (data.GetTagVersion() > 1) in >> data.cfx;
 	return in;
 }
 
@@ -46,9 +45,9 @@ void FlashTagDefineButton::AddActionRecord(FlashActionRecord *r)
 
 N_STD::ostream &operator<< (N_STD::ostream &out, FlashTagDefineButton &data)
 {
-	
+
 	N_STD::ostrstream tmp;
-	
+
 	for(N_STD::vector<FlashButtonRecord*>::iterator ib=data.buttonrecords.begin();
 		ib != data.buttonrecords.end(); ib++)
 		{
@@ -56,30 +55,29 @@ N_STD::ostream &operator<< (N_STD::ostream &out, FlashTagDefineButton &data)
 			(*ib)->Write(tmp);
 		}
 		tmp.put( (char) 0);
-	
+
 	for(N_STD::vector<FlashActionRecord*>::iterator ir=data.actionrecords.begin();
 		ir != data.actionrecords.end(); ir++)
 		{
 			(*ir)->Write(tmp);
 		}
 		tmp.put( (char) 0);
-	
-		
+
 	out << FlashTagHeader(7,tmp.pcount()+2);
 	WRITE_UWORD(data.GetID());
-	
+
 	out.write(tmp.rdbuf()->str(), tmp.pcount());
-	
+
 	return out;
 }
 
 N_STD::istream &operator>> (N_STD::istream &in,  FlashTagDefineButton &data)
 {
-	
+
 	UWORD d;
 	READ_UWORD(d);
 	data.SetID(d);
-	
+
 	int i;
 	int count = 0;
 	for(i = in.get(); i != 0; i=in.get())
@@ -95,12 +93,12 @@ N_STD::istream &operator>> (N_STD::istream &in,  FlashTagDefineButton &data)
 
 	FlashActionVectorImporter import;
 	import.Import(in, data.actionrecords, data.gcactionrecords);
-	
+
 	return in;
 }
 
-FlashTagDefineButton2::~FlashTagDefineButton2() 
-{ 	
+FlashTagDefineButton2::~FlashTagDefineButton2()
+{
 }
 void FlashTagDefineButton2::AddButtonRecord(FlashButtonRecord *r)
 {
@@ -120,37 +118,37 @@ N_STD::ostream &operator<< (N_STD::ostream &out, FlashTagDefineButton2 &data)
 			(*ib)->Write(tmp); // tmp << *(*ib);
 		}
 		tmp.put((char)0);
-	
+
 	UWORD offset = tmp.pcount();
-		
+
 	for(N_STD::vector<flash_pair<N_STD::vector<FlashActionRecord *>,UWORD> >::iterator ir
 			= data.actionrecords.begin();
 		ir != data.actionrecords.end(); ir++)
 		{
 			N_STD::ostrstream tmp2;
 			WRITE_UWORD2((*ir).second,tmp2);
-			
-			for(N_STD::vector<FlashActionRecord *>::iterator i = (*ir).first.begin(); 
+
+			for(N_STD::vector<FlashActionRecord *>::iterator i = (*ir).first.begin();
 				i != (*ir).first.end();
 				i++)
 				{
-					(*i)->Write(tmp2);			
+					(*i)->Write(tmp2);
 				}
 			tmp2.put((char)0);
 
 			N_STD::vector<flash_pair<N_STD::vector<FlashActionRecord *>,UWORD> >::iterator irt = ir;
 			irt++;
-			if(irt != (data.actionrecords.end()))
+			if (irt != (data.actionrecords.end()))
 			{
 				WRITE_UWORD2(tmp2.pcount(), tmp);
 			}
-			else 
+			else
 			{
 				WRITE_UWORD2(0, tmp);
 			}
 			tmp.write(tmp2.rdbuf()->str(), tmp2.pcount());
-		}		
-	out << FlashTagHeader(34,tmp.pcount()+5);	
+		}
+	out << FlashTagHeader(34,tmp.pcount()+5);
 	WRITE_UWORD(data.GetID());
 	out.put((char)data.menu);
 	WRITE_UWORD(offset+2);
@@ -180,7 +178,7 @@ N_STD::istream &operator>> (N_STD::istream &in,  FlashTagDefineButton2 &data)
 		count ++;
 	}
 
-	if(data.importsize + start == (UDWORD)in.tellg())
+	if (data.importsize + start == (UDWORD)in.tellg())
       return in;
 
 	int count2 = 0;
@@ -189,14 +187,14 @@ N_STD::istream &operator>> (N_STD::istream &in,  FlashTagDefineButton2 &data)
 		READ_UWORD(d);
 		UWORD d2;
 		READ_UWORD(d2);
-		
+
 		N_STD::vector<FlashActionRecord *> x;
 		flash_pair<N_STD::vector<FlashActionRecord *>,UWORD> tmp(x,d2);
 		data.actionrecords.push_back(tmp);
-		
+
 		FlashActionVectorImporter import;
 		import.Import(in, data.actionrecords[count2].first, data.gcactionrecords);
-		
+
 		count2++;
 
 	} while (d != 0);
@@ -219,20 +217,20 @@ N_STD::istream &operator>> (N_STD::istream &in,  FlashTagDefineButtonSound &data
 	data.SetID(d);
 
 	READ_UWORD(d);    // SoundChar0 Id
-	if(d>0)
+	if (d>0)
 		in >> soundInfoChar0;
 
 	READ_UWORD(d);    // SoundChar1 Id
-	if(d>0)
+	if (d>0)
 		in >> soundInfoChar1;
 
 	READ_UWORD(d);    // SoundChar2 Id
-	if(d>0)
+	if (d>0)
 		in >> soundInfoChar2;
 
 	READ_UWORD(d);    // SoundChar3 Id
-	if(d>0)
+	if (d>0)
 		in >> soundInfoChar3;
-	
+
 	return in;
 }

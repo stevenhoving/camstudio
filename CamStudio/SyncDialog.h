@@ -15,14 +15,13 @@ class CSyncDialog : public CDialog
 // Construction
 public:
 	CSyncDialog(CWnd* pParent = NULL);   // standard constructor
-	void UpdateGui(); 
+	void UpdateGui();
 
 // Dialog Data
 	//{{AFX_DATA(CSyncDialog)
 	enum { IDD = IDD_SYNCHRONIZATION };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
-
 
 // Overrides
 	// ClassWizard generated virtual function overrides

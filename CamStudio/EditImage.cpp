@@ -18,14 +18,12 @@ HCURSOR cursorArrow_EI = NULL;
 /////////////////////////////////////////////////////////////////////////////
 // CEditImage dialog
 
-
 CEditImage::CEditImage(CWnd* pParent /*=NULL*/)
 : CDialog(CEditImage::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CEditImage)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
-
 
 	if (cursorCross_EI == NULL)
 		cursorCross_EI=::LoadCursor(NULL,IDC_CROSS);
@@ -37,7 +35,6 @@ CEditImage::CEditImage(CWnd* pParent /*=NULL*/)
 	pickingColor = 0;
 }
 
-
 void CEditImage::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -45,7 +42,6 @@ void CEditImage::DoDataExchange(CDataExchange* pDX)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
-
 
 BEGIN_MESSAGE_MAP(CEditImage, CDialog)
 	//{{AFX_MSG_MAP(CEditImage)
@@ -68,18 +64,16 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CEditImage message handlers
 
-BOOL CEditImage::OnInitDialog() 
+BOOL CEditImage::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
 	// TODO: Add extra initialization here
 
-
 	((CButton *) GetDlgItem(IDC_COLOR))->EnableWindow(1);
 	((CButton *) GetDlgItem(IDC_COLOR3))->EnableWindow(1);
 	((CStatic *) GetDlgItem(IDC_COLORSTATIC))->EnableWindow(1);
 	((CStatic *) GetDlgItem(IDC_STATICCHOOSE))->EnableWindow(1);
-
 
 	((CComboBox *) GetDlgItem(IDC_PREDEFINEDSHAPE))->EnableWindow(1);
 	((CButton *) GetDlgItem(IDC_CHECK1))->EnableWindow(1);
@@ -90,17 +84,9 @@ BOOL CEditImage::OnInitDialog()
 	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->EnableWindow(1);
 	((CStatic *) GetDlgItem(IDC_BORDERSTATIC))->EnableWindow(1);
 
-
-
-
 	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetBuddy(GetDlgItem(IDC_BORDERSIZE));
 
-
-
-
-
-
-	if (m_transWnd) 
+	if (m_transWnd)
 	{
 
 		/*
@@ -113,32 +99,28 @@ BOOL CEditImage::OnInitDialog()
 		ReleaseDC(tempDC);
 		*/
 
-		if (m_transWnd->m_hbitmap) 
-			((CButton *) GetDlgItem(IDBKCOLOR))->EnableWindow(0); 
+		if (m_transWnd->m_hbitmap)
+			((CButton *) GetDlgItem(IDBKCOLOR))->EnableWindow(0);
 		else
 			((CButton *) GetDlgItem(IDBKCOLOR))->EnableWindow(1);
 
 		((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetRange(1,15);
 		((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetPos(m_transWnd->m_borderSize);
 
-
-
 		//((CEdit *) GetDlgItem(IDC_COLORSTATIC))->SetTextColor(m_transWnd->m_transparentColor);
 		if ((m_transWnd->m_regionPredefinedShape>=0) && (m_transWnd->m_regionPredefinedShape<=2))
 			((CComboBox *) GetDlgItem(IDC_PREDEFINEDSHAPE))->SetCurSel(m_transWnd->m_regionPredefinedShape);
 
-		if (m_transWnd->m_borderYes) 
+		if (m_transWnd->m_borderYes)
 			((CButton *) GetDlgItem(IDC_CHECK1))->SetCheck(1);
 		else
 			((CButton *) GetDlgItem(IDC_CHECK1))->SetCheck(0);
-
 
 		//CString txt;
 		//txt.Format("%d",m_transWnd->m_borderSize);
 		//((CEdit *) GetDlgItem(IDC_BORDERSIZE))->SetWindowText(txt);
 
 	}
-
 
 	UpdateGUI();
 
@@ -148,8 +130,8 @@ BOOL CEditImage::OnInitDialog()
 	{
 		if (m_transWnd->baseType == 1)
 		{
-			((CButton *) GetDlgItem(IDBKCOLOR))->EnableWindow(0); 
-			((CButton *) GetDlgItem(IDLOAD))->EnableWindow(0); 
+			((CButton *) GetDlgItem(IDBKCOLOR))->EnableWindow(0);
+			((CButton *) GetDlgItem(IDLOAD))->EnableWindow(0);
 
 		}
 	}
@@ -164,7 +146,7 @@ void CEditImage::PreModal(CTransparentWnd *transWnd)
 
 }
 
-void CEditImage::OnNoCutout() 
+void CEditImage::OnNoCutout()
 {
 	// TODO: Add your control notification handler code here
 	if (!m_transWnd) return;
@@ -177,7 +159,7 @@ void CEditImage::OnNoCutout()
 
 }
 
-void CEditImage::OnCutoutTrans() 
+void CEditImage::OnCutoutTrans()
 {
 	// TODO: Add your control notification handler code here
 	if (!m_transWnd) return;
@@ -190,7 +172,7 @@ void CEditImage::OnCutoutTrans()
 
 }
 
-void CEditImage::OnCutoutPredefined() 
+void CEditImage::OnCutoutPredefined()
 {
 	// TODO: Add your control notification handler code here
 	if (!m_transWnd) return;
@@ -228,7 +210,6 @@ void CEditImage::UpdateGUI()
 		((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->EnableWindow(0);
 		((CStatic *) GetDlgItem(IDC_BORDERSTATIC))->EnableWindow(0);
 
-
 	}
 	else if (m_transWnd->m_regionType == regionTRANSPARENTCOLOR) {
 
@@ -249,9 +230,6 @@ void CEditImage::UpdateGUI()
 		((CEdit *) GetDlgItem(IDC_BORDERSIZE))->EnableWindow(0);
 		((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->EnableWindow(0);
 		((CStatic *) GetDlgItem(IDC_BORDERSTATIC))->EnableWindow(0);
-
-
-
 
 	}
 	else if (m_transWnd->m_regionType == regionSHAPE) {
@@ -276,8 +254,7 @@ void CEditImage::UpdateGUI()
 
 	}
 
-
-	if (!(m_transWnd->m_hbitmap)) 
+	if (!(m_transWnd->m_hbitmap))
 	{
 
 		((CButton *) GetDlgItem(IDC_RADIO1))->EnableWindow(0);
@@ -291,19 +268,13 @@ void CEditImage::UpdateGUI()
 	else
 		((CButton *) GetDlgItem(IDC_RADIO1))->EnableWindow(1);
 
-
-
-
-
-
 	//#define regionROUNDRECT 0
 	//#define regionELLIPSE 1
 	//#define regionRECTANGLE 2
 
-
 }
 
-void CEditImage::OnAddBorder() 
+void CEditImage::OnAddBorder()
 {
 	// TODO: Add your control notification handler code here
 	if (m_transWnd->m_borderYes) {
@@ -321,7 +292,7 @@ void CEditImage::OnAddBorder()
 
 }
 
-void CEditImage::OnBorderColor() 
+void CEditImage::OnBorderColor()
 {
 	// TODO: Add your control notification handler code here
 	if (!m_transWnd) return;
@@ -334,10 +305,9 @@ void CEditImage::OnBorderColor()
 
 	m_transWnd->Invalidate();
 
-
 }
 
-void CEditImage::OnColor() 
+void CEditImage::OnColor()
 {
 	// TODO: Add your control notification handler code here
 	if (!m_transWnd) return;
@@ -352,14 +322,12 @@ void CEditImage::OnColor()
 	m_transWnd->InvalidateRegion();
 	m_transWnd->Invalidate();
 
-
-
 }
 
-void CEditImage::OnSelchangePredefinedshape() 
+void CEditImage::OnSelchangePredefinedshape()
 {
 	if (!m_transWnd) return;
-	// TODO: Add your control notification handler code here 
+	// TODO: Add your control notification handler code here
 	m_transWnd->m_regionPredefinedShape = ((CComboBox *) GetDlgItem(IDC_PREDEFINEDSHAPE))->GetCurSel();
 
 	m_transWnd->Invalidate();
@@ -367,8 +335,7 @@ void CEditImage::OnSelchangePredefinedshape()
 
 }
 
-
-void CEditImage::OnChangeBordersize() 
+void CEditImage::OnChangeBordersize()
 {
 	// TODO: If this is a RICHEDIT control, the control will not
 	// send this notification unless you override the CDialog::OnInitDialog()
@@ -385,21 +352,20 @@ void CEditImage::OnChangeBordersize()
 	m_transWnd->m_borderSize = ((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->GetPos();
 	m_transWnd->Invalidate();
 
-
 }
 
-void CEditImage::OnColorPick() 
+void CEditImage::OnColorPick()
 {
 	// TODO: Add your control notification handler code here
 	SetCapture();
 	SetCursor(cursorCross_EI);
-	pickingColor = 1; 
+	pickingColor = 1;
 
 	((CButton *) GetDlgItem(IDC_COLOR3))->EnableWindow(0);
 
 }
 
-void CEditImage::OnLButtonDown(UINT nFlags, CPoint point) 
+void CEditImage::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 
@@ -409,7 +375,7 @@ void CEditImage::OnLButtonDown(UINT nFlags, CPoint point)
 
 		CPoint pt;
 		GetCursorPos(&pt);
-		COLORREF val = GetPixel(hDC,pt.x,pt.y); 
+		COLORREF val = GetPixel(hDC,pt.x,pt.y);
 		::ReleaseDC(NULL,hDC);
 
 		ReleaseCapture();
@@ -423,23 +389,23 @@ void CEditImage::OnLButtonDown(UINT nFlags, CPoint point)
 
 		((CButton *) GetDlgItem(IDC_COLOR3))->EnableWindow(1);
 
-		pickingColor = 0; 
+		pickingColor = 0;
 
 	}
 
 	CDialog::OnLButtonDown(nFlags, point);
 }
 
-void CEditImage::OnMouseMove(UINT nFlags, CPoint point) 
+void CEditImage::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	if (pickingColor == 1) 
+	if (pickingColor == 1)
 		SetCursor(cursorCross_EI);
 
 	CDialog::OnMouseMove(nFlags, point);
 }
 
-void CEditImage::OnBkcolor() 
+void CEditImage::OnBkcolor()
 {
 	// TODO: Add your control notification handler code here
 	if (!m_transWnd) return;
@@ -452,11 +418,9 @@ void CEditImage::OnBkcolor()
 
 	m_transWnd->Invalidate();
 
-
 }
 
-
-void CEditImage::OnLoad() 
+void CEditImage::OnLoad()
 {
 	// TODO: Add your control notification handler code here
 	if (!m_transWnd) return;
@@ -464,18 +428,17 @@ void CEditImage::OnLoad()
 	CString filename;
 
 	static char BASED_CODE szFilter[] = "Picture Files (*.bmp; *.jpg; *.gif)|*.bmp; *.jpg; *.gif||";
-	static char szTitle[]="Load Picture"; 
+	static char szTitle[]="Load Picture";
 
-	CFileDialog fdlg(TRUE,"*.bmp; *.jpg; *.gif","*.bmp; *.jpg; *.gif",OFN_LONGNAMES | OFN_FILEMUSTEXIST ,szFilter,this); 
-	fdlg.m_ofn.lpstrTitle=szTitle; 
+	CFileDialog fdlg(TRUE,"*.bmp; *.jpg; *.gif","*.bmp; *.jpg; *.gif",OFN_LONGNAMES | OFN_FILEMUSTEXIST ,szFilter,this);
+	fdlg.m_ofn.lpstrTitle=szTitle;
 
-	if(fdlg.DoModal() == IDOK)
+	if (fdlg.DoModal() == IDOK)
 	{
 		filename = fdlg.GetPathName();
 		m_transWnd->ReloadPic(filename);
-		m_transWnd->Invalidate(); 
+		m_transWnd->Invalidate();
 
 	}
-
 
 }

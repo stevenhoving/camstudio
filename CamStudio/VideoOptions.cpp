@@ -1,7 +1,7 @@
 // RenderSoft CamStudio
 //
 // Copyright 2001 RenderSoft Software & Web Publishing
-// 
+//
 //
 // VideoOptions.cpp : implementation file
 //
@@ -33,7 +33,7 @@ extern int selected_compressor;
 extern CString strCodec;
 
 //Video Compress Parameters
-extern LPVOID pVideoCompressParams; 
+extern LPVOID pVideoCompressParams;
 extern DWORD CompressorStateIsFor;
 extern DWORD CompressorStateSize;
 
@@ -56,7 +56,6 @@ extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 /////////////////////////////////////////////////////////////////////////////
 // CVideoOptions dialog
 
-
 CVideoOptions::CVideoOptions(CWnd* pParent /*=NULL*/)
 : CDialog(CVideoOptions::IDD, pParent)
 {
@@ -65,7 +64,6 @@ CVideoOptions::CVideoOptions(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 }
 
-
 void CVideoOptions::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -73,7 +71,6 @@ void CVideoOptions::DoDataExchange(CDataExchange* pDX)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
-
 
 BEGIN_MESSAGE_MAP(CVideoOptions, CDialog)
 	//{{AFX_MSG_MAP(CVideoOptions)
@@ -88,11 +85,11 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CVideoOptions message handlers
 
-void CVideoOptions::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
+void CVideoOptions::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: Add your message handler code here and/or call default
 	int quality;
-	CString qualitystr; 
+	CString qualitystr;
 
 	quality = ((CSliderCtrl *) GetDlgItem(IDC_QUALITY_SLIDER))->GetPos();
 	qualitystr.Format("%d",quality);
@@ -104,8 +101,7 @@ void CVideoOptions::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
-
-void CVideoOptions::OnOK() 
+void CVideoOptions::OnOK()
 {
 	// TODO: Add extra validation here
 	CString fps;
@@ -113,40 +109,35 @@ void CVideoOptions::OnOK()
 	CString timelp;
 	CString qualitystr;
 
+	((CEdit *) GetDlgItem(IDC_FPS))->GetWindowText(fps);
+	((CEdit *) GetDlgItem(IDC_KEYFRAMES))->GetWindowText(keyframes);
+	((CEdit *) GetDlgItem(IDC_KEYFRAMES2))->GetWindowText(timelp);
+	((CStatic *) GetDlgItem(IDC_QUALITY))->GetWindowText(qualitystr);
 
 	int own_timelapse;
 	int own_frames_per_second;
 	int own_keyFramesEvery;
 	int quality;
 
-	((CEdit *) GetDlgItem(IDC_FPS))->GetWindowText(fps);
-	((CEdit *) GetDlgItem(IDC_KEYFRAMES))->GetWindowText(keyframes);
-	((CEdit *) GetDlgItem(IDC_KEYFRAMES2))->GetWindowText(timelp);
-	((CStatic *) GetDlgItem(IDC_QUALITY))->GetWindowText(qualitystr);
-
 	//Can into local variables first
-	sscanf(LPCTSTR(fps),"%d",&own_frames_per_second);
-	sscanf(LPCTSTR(keyframes),"%d",&own_keyFramesEvery);
-	sscanf(LPCTSTR(timelp),"%d",&own_timelapse);
-	sscanf(LPCTSTR(qualitystr),"%d",&quality);
+	sscanf_s(LPCTSTR(fps),"%d",&own_frames_per_second);
+	sscanf_s(LPCTSTR(keyframes),"%d",&own_keyFramesEvery);
+	sscanf_s(LPCTSTR(timelp),"%d",&own_timelapse);
+	sscanf_s(LPCTSTR(qualitystr),"%d",&quality);
 
 	if (own_timelapse<0) {
-
 		//MessageBox("Timelapse for each frame cannot be less than 0 milliseconds.","Note",MB_OK);
 		MessageOut(this->m_hWnd,IDS_STRING_TIMELAPSELESS ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
 		return;
 	}
 
 	if (own_timelapse>7200000) {
-
 		//MessageBox("Timelapse for each frame cannot be more than 7200000 milliseconds (2 hours).","Note",MB_OK);
 		MessageOut(this->m_hWnd,IDS_STRING_TIMELAPSEMORE ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 		return;
 	}
 
 	if ((own_keyFramesEvery<1) || (own_keyFramesEvery>200)) {
-
 		//char tempstr[300];
 		//sprintf(tempstr,"Key frames cannot be set for every %d frames. Please enter a value in the range 1 to 200.",own_keyFramesEvery);
 		//MessageBox(tempstr,"Note",MB_OK);
@@ -157,7 +148,6 @@ void CVideoOptions::OnOK()
 	}
 
 	if ((own_frames_per_second<1) || (own_frames_per_second>200)) {
-
 		//char tempstr[300];
 		//sprintf(tempstr,"Playback Rate cannot be set to %d frames per second. Please enter a value in the range 1 to 200.",own_frames_per_second);
 		//MessageBox(tempstr,"Note",MB_OK);
@@ -166,22 +156,18 @@ void CVideoOptions::OnOK()
 		return;
 	}
 
-
 	//Verification Passed..Setting Global Values
 	timelapse = own_timelapse;
 	frames_per_second =own_frames_per_second;
 	keyFramesEvery =own_keyFramesEvery;
 
-
 	compquality = quality * 100;
-
 
 	int sel = ((CComboBox *) GetDlgItem(IDC_COMPRESSORS))->GetCurSel();
 	if (sel != CB_ERR) {
 		compfccHandler = compressor_info[sel].fccHandler;
-		strCodec = CString(compressor_info[sel].szDescription); 
+		strCodec = CString(compressor_info[sel].szDescription);
 		selected_compressor = sel;
-
 	}
 	//else
 	// selected_compressor = -1;
@@ -193,7 +179,7 @@ void CVideoOptions::OnOK()
 	CDialog::OnOK();
 }
 
-BOOL CVideoOptions::OnInitDialog() 
+BOOL CVideoOptions::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -216,24 +202,20 @@ BOOL CVideoOptions::OnInitDialog()
 	((CEdit *) GetDlgItem(IDC_KEYFRAMES2))->SetWindowText(timelp);
 	((CStatic *) GetDlgItem(IDC_QUALITY))->SetWindowText(qualitystr);
 
-
 	((CSliderCtrl *) GetDlgItem(IDC_QUALITY_SLIDER))->SetRange(1,100,TRUE);
 	((CSliderCtrl *) GetDlgItem(IDC_QUALITY_SLIDER))->SetPos(quality);
-
 
 	//Ver 1.2
 	autoadjust = g_autoadjust;
 	valueadjust = g_valueadjust;
 
 	((CSliderCtrl *) GetDlgItem(IDC_ADJUST))->SetTicFreq( 10 );
-	((CSliderCtrl *) GetDlgItem(IDC_ADJUST))->SetRange(1,100,TRUE); 
+	((CSliderCtrl *) GetDlgItem(IDC_ADJUST))->SetRange(1,100,TRUE);
 
 	((CSliderCtrl *) GetDlgItem(IDC_ADJUST))->SetPos(valueadjust);
 
 	((CButton *) GetDlgItem(IDC_AUTO))->SetCheck(autoadjust);
-	RefreshAutoOptions(); 
-
-
+	RefreshAutoOptions();
 
 	if (num_compressor>0) {
 
@@ -251,129 +233,112 @@ BOOL CVideoOptions::OnInitDialog()
 
 		}
 
-
 		if (sel == -1)
 		{
 			sel = 0;
 			compfccHandler = compressor_info[sel].fccHandler;
 		}
 
-
 		((CComboBox *) GetDlgItem(IDC_COMPRESSORS))->SetCurSel(sel);
 
-		RefreshCompressorButtons(); 
+		RefreshCompressorButtons();
 
-	} 
-
-
+	}
 
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-
-
-void CVideoOptions::RefreshCompressorButtons() 
+void CVideoOptions::RefreshCompressorButtons()
 {
 
 	int sel = ((CComboBox *) GetDlgItem(IDC_COMPRESSORS))->GetCurSel();
 	if (sel != CB_ERR) {
-
 
 		HIC hic = ICOpen(compressor_info[sel].fccType, compressor_info[sel].fccHandler, ICMODE_QUERY);
 		if (hic) {
 
-
-			if (ICQueryAbout(hic)) 
+			if (ICQueryAbout(hic))
 				((CButton *) GetDlgItem(ID_ABOUT))->EnableWindow(TRUE);
 			else
 				((CButton *) GetDlgItem(ID_ABOUT))->EnableWindow(FALSE);
 
-			if (ICQueryConfigure(hic)) 
+			if (ICQueryConfigure(hic))
 				((CButton *) GetDlgItem(ID_CONFIGURE))->EnableWindow(TRUE);
 			else
-				((CButton *) GetDlgItem(ID_CONFIGURE))->EnableWindow(FALSE); 
-
-
+				((CButton *) GetDlgItem(ID_CONFIGURE))->EnableWindow(FALSE);
 
 			ICClose(hic);
 		}
-
 
 	}
 
 }
 
-void CVideoOptions::OnAbout() 
+void CVideoOptions::OnAbout()
 {
 	// TODO: Add your control notification handler code here
 	int sel = ((CComboBox *) GetDlgItem(IDC_COMPRESSORS))->GetCurSel();
 	if (sel != CB_ERR) {
 
-
 		HIC hic = ICOpen(compressor_info[sel].fccType, compressor_info[sel].fccHandler, ICMODE_QUERY);
-		if (hic) { 
+		if (hic) {
 
-			ICAbout(hic,m_hWnd); 
+			ICAbout(hic,m_hWnd);
 			ICClose(hic);
 		}
-
 
 	}
 
 }
 
-void CVideoOptions::OnSelchangeCompressors() 
+void CVideoOptions::OnSelchangeCompressors()
 {
 	// TODO: Add your control notification handler code here
-	RefreshCompressorButtons(); 
+	RefreshCompressorButtons();
 
 }
-
-
 
 //Ver 1.2
 //Note : Because the program stores the state for only one compressor (in the pVideoCompressParams),
 //if the user chooses "Configure" for compressor A, then chooses another compressor B and presses "Configure" again
-//the previous state info for compressor A will be lost. 
-void CVideoOptions::OnConfigure() 
+//the previous state info for compressor A will be lost.
+void CVideoOptions::OnConfigure()
 {
 	// TODO: Add your control notification handler code here
 	int sel = ((CComboBox *) GetDlgItem(IDC_COMPRESSORS))->GetCurSel();
-	if (sel != CB_ERR) { 
+	if (sel != CB_ERR) {
 
 		//Still unable to handle DIVX state (results in error)
 		//if (compressor_info[sel].fccHandler==mmioFOURCC('D', 'I', 'V', 'X')) return;
 
-
-		HIC hic = ICOpen(compressor_info[sel].fccType, compressor_info[sel].fccHandler, ICMODE_QUERY); 
-		if (hic) { 
+		HIC hic = ICOpen(compressor_info[sel].fccType, compressor_info[sel].fccHandler, ICMODE_QUERY);
+		if (hic) {
 
 			//Set our current Video Compress State Info into the hic, which will update the ICConfigure Dialog
 			SetVideoCompressState (hic , compressor_info[sel].fccHandler);
 
-			ICConfigure(hic,m_hWnd); 
+			ICConfigure(hic,m_hWnd);
 
 			//Get Video Compress State Info from the hic after adjustment with the ICConfigure dialog
 			//This will set the external pVideoCompressParams variable which is used by AVICOMPRESSOPTIONS
 			//(This means the external variable pVideoCompressParams will be changed even if user press "Cancel")
-			GetVideoCompressState (hic , compressor_info[sel].fccHandler); 
+			GetVideoCompressState (hic , compressor_info[sel].fccHandler);
 
 			ICClose(hic);
 		}
 
-	} 
+	}
 
 }
 
-void CVideoOptions::OnCancel() 
-{ 
+void CVideoOptions::OnCancel()
+{
 
 	CDialog::OnCancel();
 }
 
-
-void CVideoOptions::OnAuto() 
+void CVideoOptions::OnAuto()
 {
 	// TODO: Add your control notification handler code here
 	BOOL val = ((CButton *) GetDlgItem(IDC_AUTO))->GetCheck();
@@ -386,7 +351,6 @@ void CVideoOptions::OnAuto()
 
 }
 
-
 void CVideoOptions::RefreshAutoOptions()
 {
 
@@ -397,7 +361,7 @@ void CVideoOptions::RefreshAutoOptions()
 		((CEdit *) GetDlgItem(IDC_KEYFRAMES2))->EnableWindow(FALSE);
 		((CSliderCtrl *) GetDlgItem(IDC_ADJUST))->EnableWindow(TRUE);
 
-		UpdateAdjustSliderVal(); 
+		UpdateAdjustSliderVal();
 
 	}
 	else {
@@ -411,9 +375,7 @@ void CVideoOptions::RefreshAutoOptions()
 
 }
 
-
-
-void CVideoOptions::UpdateAdjustSliderVal() 
+void CVideoOptions::UpdateAdjustSliderVal()
 {
 	int framerate;
 	int delayms;

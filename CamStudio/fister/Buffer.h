@@ -11,7 +11,7 @@
 
 //#include "errorprint.h"
 
-class CBuffer  
+class CBuffer
 {
 public:
 	void Erase();

@@ -20,9 +20,9 @@ int m_imagetype = 0;
 
 CString shapeName("Label_");
 int shapeNameInt = 1;
-CString shapeStr; 
+CString shapeStr;
 
-CString proposedShapeStr; 
+CString proposedShapeStr;
 
 extern int maxxScreen;
 extern int maxyScreen;
@@ -33,10 +33,8 @@ extern int MessageOutINT(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,lon
 extern int MessageOutINT2(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val1,long val2);
 extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 
-
 /////////////////////////////////////////////////////////////////////////////
 // CNewShape dialog
-
 
 CNewShape::CNewShape(CWnd* pParent /*=NULL*/)
 : CDialog(CNewShape::IDD, pParent)
@@ -46,7 +44,6 @@ CNewShape::CNewShape(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 }
 
-
 void CNewShape::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -54,7 +51,6 @@ void CNewShape::DoDataExchange(CDataExchange* pDX)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
-
 
 BEGIN_MESSAGE_MAP(CNewShape, CDialog)
 	//{{AFX_MSG_MAP(CNewShape)
@@ -67,7 +63,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CNewShape message handlers
 
-BOOL CNewShape::OnInitDialog() 
+BOOL CNewShape::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -79,9 +75,8 @@ BOOL CNewShape::OnInitDialog()
 
 	((CEdit *) GetDlgItem(IDC_IMAGEFILETEXT))->SetWindowText(m_imageFilename);
 
-
 	shapeStr.Format("%d",shapeNameInt);
-	shapeStr = shapeName + shapeStr; 
+	shapeStr = shapeName + shapeStr;
 	((CEdit *) GetDlgItem(IDC_NAME))->SetWindowText(shapeStr);
 
 	proposedShapeStr = shapeStr;
@@ -106,7 +101,7 @@ BOOL CNewShape::OnInitDialog()
 		((CEdit *) GetDlgItem(IDC_BUTTON1))->EnableWindow(FALSE);
 
 	}
-	else 
+	else
 	{
 
 		((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(0);
@@ -120,7 +115,6 @@ BOOL CNewShape::OnInitDialog()
 		((CEdit *) GetDlgItem(IDC_IMAGEFILETEXT))->EnableWindow(TRUE);
 		((CEdit *) GetDlgItem(IDC_BUTTON1))->EnableWindow(TRUE);
 
-
 	}
 
 	CString widthStr, heightStr;
@@ -130,12 +124,11 @@ BOOL CNewShape::OnInitDialog()
 	((CEdit *) GetDlgItem(IDC_HEIGHT))->SetWindowText(heightStr);
 	((CEdit *) GetDlgItem(IDC_EDIT3))->SetWindowText(m_newShapeText);
 
-
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CNewShape::OnRadio1() 
+void CNewShape::OnRadio1()
 {
 	// TODO: Add your control notification handler code here
 	((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(1);
@@ -149,10 +142,9 @@ void CNewShape::OnRadio1()
 	((CEdit *) GetDlgItem(IDC_IMAGEFILETEXT))->EnableWindow(FALSE);
 	((CEdit *) GetDlgItem(IDC_BUTTON1))->EnableWindow(FALSE);
 
-
 }
 
-void CNewShape::OnRadio2() 
+void CNewShape::OnRadio2()
 {
 	// TODO: Add your control notification handler code here
 	((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(0);
@@ -168,8 +160,7 @@ void CNewShape::OnRadio2()
 
 }
 
-
-void CNewShape::OnOK() 
+void CNewShape::OnOK()
 {
 	// TODO: Add extra validation here
 
@@ -188,13 +179,12 @@ void CNewShape::OnOK()
 
 		((CEdit *) GetDlgItem(IDC_WIDTH))->GetWindowText(widthStr);
 		((CEdit *) GetDlgItem(IDC_HEIGHT))->GetWindowText(heightStr);
-		sscanf(LPCTSTR(widthStr),"%d",&m_newShapeWidth);
-		sscanf(LPCTSTR(heightStr),"%d",&m_newShapeHeight); 
-
+		sscanf_s(LPCTSTR(widthStr),"%d",&m_newShapeWidth);
+		sscanf_s(LPCTSTR(heightStr),"%d",&m_newShapeHeight);
 
 		if (m_newShapeWidth<20) {
-			MessageOut(NULL,IDS_STRINGWIDTHLESS20,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION); 
-			m_newShapeWidth = oldWidth; 
+			MessageOut(NULL,IDS_STRINGWIDTHLESS20,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+			m_newShapeWidth = oldWidth;
 			return;
 
 		}
@@ -205,7 +195,7 @@ void CNewShape::OnOK()
 			//msgstr.Format("Width cannot be larger than %d",maxxScreen);
 			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 			MessageOutINT(NULL,IDS_STRINGWIDTHLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,maxxScreen);
-			m_newShapeWidth = oldWidth; 
+			m_newShapeWidth = oldWidth;
 			return;
 
 		}
@@ -213,8 +203,8 @@ void CNewShape::OnOK()
 		if (m_newShapeHeight<20) {
 
 			//MessageBox("Height cannot be less than 20","Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(NULL,IDS_STRINGHEIGHTLESS20,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION); 
-			m_newShapeHeight = oldHeight; 
+			MessageOut(NULL,IDS_STRINGHEIGHTLESS20,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+			m_newShapeHeight = oldHeight;
 			return;
 
 		}
@@ -226,14 +216,12 @@ void CNewShape::OnOK()
 			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 
 			MessageOutINT(NULL,IDS_STRINGHEIGHTLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,maxyScreen);
-			m_newShapeHeight = oldHeight; 
+			m_newShapeHeight = oldHeight;
 			return;
 
 		}
 
 	}
-
-
 
 	((CEdit *) GetDlgItem(IDC_IMAGEFILETEXT))->GetWindowText(m_imageFilename);
 	m_imageFilename.TrimLeft();
@@ -241,7 +229,7 @@ void CNewShape::OnOK()
 
 	if (m_imagetype == 1) {
 
-		if (m_imageFilename == "") 
+		if (m_imageFilename == "")
 		{
 
 			MessageOut(NULL,IDS_STRINGINVIMGFILE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
@@ -251,7 +239,7 @@ void CNewShape::OnOK()
 
 	}
 
-	((CEdit *) GetDlgItem(IDC_EDIT3))->GetWindowText(m_newShapeText); 
+	((CEdit *) GetDlgItem(IDC_EDIT3))->GetWindowText(m_newShapeText);
 	//m_newShapeText.TrimLeft();
 	//m_newShapeText.TrimRight();
 	//if (m_imageFilename=="") {
@@ -261,12 +249,9 @@ void CNewShape::OnOK()
 
 	//}
 
-
-
-
 	((CEdit *) GetDlgItem(IDC_NAME))->GetWindowText(shapeStr);
 
-	if (proposedShapeStr != shapeStr) 
+	if (proposedShapeStr != shapeStr)
 	{
 		//shape name has been changed, reset counter to 1
 		shapeName = shapeStr;
@@ -274,7 +259,6 @@ void CNewShape::OnOK()
 		//a better method is to extract the trailing number from shapestr and use it as number for shapeNameInt
 		//shapeNameInt = 1;
 		AdjustShapeName(shapeName);
-
 
 	}
 	else {
@@ -284,14 +268,10 @@ void CNewShape::OnOK()
 			shapeNameInt = 1;
 	}
 
-
-
-
-
 	CDialog::OnOK();
 }
 
-void CNewShape::OnButton1() 
+void CNewShape::OnButton1()
 {
 	// TODO: Add your control notification handler code here
 	CString widthStr, heightStr;
@@ -299,26 +279,24 @@ void CNewShape::OnButton1()
 	((CEdit *) GetDlgItem(IDC_HEIGHT))->GetWindowText(heightStr);
 
 	if (m_imageDir == "")
-		m_imageDir = GetProgPath(); 
+		m_imageDir = GetProgPath();
 
 	static char BASED_CODE szFilter[] = "Picture Files (*.bmp; *.jpg; *.gif)|*.bmp; *.jpg; *.gif||";
-	static char szTitle[]="Load Picture"; 
+	static char szTitle[]="Load Picture";
 
-	CFileDialog fdlg(TRUE,"*.bmp; *.jpg; *.gif","*.bmp; *.jpg; *.gif",OFN_LONGNAMES | OFN_FILEMUSTEXIST ,szFilter,this); 
-	fdlg.m_ofn.lpstrTitle=szTitle; 
+	CFileDialog fdlg(TRUE,"*.bmp; *.jpg; *.gif","*.bmp; *.jpg; *.gif",OFN_LONGNAMES | OFN_FILEMUSTEXIST ,szFilter,this);
+	fdlg.m_ofn.lpstrTitle=szTitle;
 	fdlg.m_ofn.lpstrInitialDir = m_imageDir;
 
 	CString m_newfileTitle;
-	if(fdlg.DoModal() == IDOK)
-	{ 
+	if (fdlg.DoModal() == IDOK)
+	{
 		//m_imageFilename = fdlg.GetPathName();
-		m_newfileTitle = fdlg.GetPathName(); 
+		m_newfileTitle = fdlg.GetPathName();
 		((CEdit *) GetDlgItem(IDC_IMAGEFILETEXT))->SetWindowText(m_newfileTitle);
 
-
-		m_newfileTitle=m_newfileTitle.Left(m_newfileTitle.ReverseFind('\\')); 
-		m_imageDir = m_newfileTitle; 
-
+		m_newfileTitle=m_newfileTitle.Left(m_newfileTitle.ReverseFind('\\'));
+		m_imageDir = m_newfileTitle;
 
 	}
 

@@ -28,21 +28,20 @@
 
 #include "debug.h"
 
-
 //--------------------------------------------------------------------------;
-//  
+//
 //  WIOERR wioFileClose
-//  
+//
 //  Description:
-//  
-//  
+//
+//
 //  Arguments:
 //      LPWAVEIOCB pwio:
-//  
+//
 //      DWORD fdwClose:
-//  
+//
 //  Return (WIOERR):
-//  
+//
 //--------------------------------------------------------------------------;
 
 WIOERR WIOAPI wioFileClose
@@ -57,23 +56,22 @@ WIOERR WIOAPI wioFileClose
     if (NULL == pwio)
         return (WIOERR_BADPARAM);
 
-
     //
     //  get rid of stuff...
     //
 //  wioStopWave(pwio);
-    
+
     if (NULL != pwio->hmmio)
     {
         mmioClose(pwio->hmmio, 0);
     }
-    
+
 //  FreeWaveHeaders(lpwio);
 
 #if 0
     if (pwio->pInfo)
         riffFreeINFO(&(lpwio->pInfo));
-    
+
     if (pwio->pDisp)
         riffFreeDISP(&(lpwio->pDisp));
 #endif
@@ -86,24 +84,23 @@ WIOERR WIOAPI wioFileClose
     return (WIOERR_NOERROR);
 } // wioFileClose()
 
-
 //--------------------------------------------------------------------------;
-//  
+//
 //  WIOERR wioFileOpen
-//  
+//
 //  Description:
-//  
-//  
+//
+//
 //  Arguments:
 //      LPWAVEIOCB pwio:
-//  
+//
 //      LPCTSTR pszFilePath:
-//  
+//
 //      DWORD fdwOpen:
-//  
+//
 //  Return (WIOERR):
-//  
-//  
+//
+//
 //--------------------------------------------------------------------------;
 
 WIOERR WIOAPI wioFileOpen
@@ -144,7 +141,6 @@ WIOERR WIOAPI wioFileOpen
         goto wio_Open_Error;
 
     pwio->hmmio     = hmmio;
-
 
     //
     //  locate a 'WAVE' form type...
@@ -200,7 +196,7 @@ WIOERR WIOAPI wioFileOpen
                 if (ck.fccType == mmioFOURCC('I', 'N', 'F', 'O'))
                 {
 #if 0
-                    if(lrt=riffReadINFO(hmmio, &ck, wio.pInfo))
+                    if (lrt=riffReadINFO(hmmio, &ck, wio.pInfo))
                     {
                         lr=lrt;
                         goto wio_Open_Error;
@@ -208,13 +204,13 @@ WIOERR WIOAPI wioFileOpen
 #endif
                 }
                 break;
-                
+
             case mmioFOURCC('D', 'I', 'S', 'P'):
 #if 0
                 riffReadDISP(hmmio, &ck, &(wio.pDisp));
 #endif
                 break;
-                
+
             case mmioFOURCC('f', 'm', 't', ' '):
                 //
                 //  !?! another format chunk !?!
@@ -248,7 +244,6 @@ WIOERR WIOAPI wioFileOpen
                     goto wio_Open_Error;
                 break;
 
-
             case mmioFOURCC('d', 'a', 't', 'a'):
                 //
                 //  !?! multiple data chunks !?!
@@ -263,7 +258,6 @@ WIOERR WIOAPI wioFileOpen
                 pwio->dwDataBytes  = ck.cksize;
                 pwio->dwDataOffset = ck.dwDataOffset;
                 break;
-
 
             case mmioFOURCC('f', 'a', 'c', 't'):
                 //
@@ -342,10 +336,9 @@ WIOERR WIOAPI wioFileOpen
     }
 
     //
-    //  cool! no problems.. 
+    //  cool! no problems..
     //
     return (WIOERR_NOERROR);
-
 
     //
     //  return error (after minor cleanup)
@@ -355,8 +348,4 @@ wio_Open_Error:
     wioFileClose(pwio, 0L);
     return (werr);
 } // wioFileOpen()
-
-
-
-
 

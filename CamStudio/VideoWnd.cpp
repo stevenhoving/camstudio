@@ -20,7 +20,6 @@ int g_refreshRate = 30;
 extern int versionOp;
 extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 
-
 /////////////////////////////////////////////////////////////////////////////
 // CVideoWnd
 CVideoWnd::CVideoWnd()
@@ -34,13 +33,11 @@ CVideoWnd::CVideoWnd()
 	//m_regionType = 2; //regionShape
 	//m_regionPredefinedShape = regionRECTANGLE;
 
-
 }
 
 CVideoWnd::~CVideoWnd()
 {
 }
-
 
 BEGIN_MESSAGE_MAP(CVideoWnd, CTransparentWnd)
 	//{{AFX_MSG_MAP(CVideoWnd)
@@ -54,7 +51,6 @@ BEGIN_MESSAGE_MAP(CVideoWnd, CTransparentWnd)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-
 /////////////////////////////////////////////////////////////////////////////
 // CVideoWnd message handlers
 
@@ -65,8 +61,8 @@ void CVideoWnd::AdjustRefreshRate(int rate)
 	{
 		refreshRate = rate;
 		g_refreshRate = refreshRate;
-		double delayPeriod = 1000 / refreshRate; 
-		SetTimer(0x1, (int) delayPeriod, NULL); 
+		double delayPeriod = 1000 / refreshRate;
+		SetTimer(0x1, (int) delayPeriod, NULL);
 
 	}
 
@@ -78,8 +74,8 @@ void CVideoWnd::CreateTransparent(LPCTSTR pTitle, RECT rect, HBITMAP BitmapID)
 
 	BeginWaitCursor();
 
-	//FrameGrabber 
-	if(!m_FrameGrabber.GetSafeHwnd())
+	//FrameGrabber
+	if (!m_FrameGrabber.GetSafeHwnd())
 	{
 		//m_FrameGrabber.Create(0,9,this);
 		int ret = m_FrameGrabber.Create(0,9,this);
@@ -89,7 +85,7 @@ void CVideoWnd::CreateTransparent(LPCTSTR pTitle, RECT rect, HBITMAP BitmapID)
 		{
 			double delayPeriod = 1000 / refreshRate;
 			//SetTimer(0x1, DEFAULT_PERIOD, NULL);
-			SetTimer(0x1, (int) delayPeriod, NULL); 
+			SetTimer(0x1, (int) delayPeriod, NULL);
 			status = 1;
 
 		}
@@ -104,39 +100,31 @@ void CVideoWnd::CreateTransparent(LPCTSTR pTitle, RECT rect, HBITMAP BitmapID)
 }
 
 //FrameGrabber
-void CVideoWnd::OnTimer(UINT nIDEvent) 
+void CVideoWnd::OnTimer(UINT nIDEvent)
 {
-	if(!m_FrameGrabber.GetSafeHwnd()) return;
+	if (!m_FrameGrabber.GetSafeHwnd()) return;
 
 	if (!IsWindowVisible()) return;
 
-
-	if ((trackingOn) || (editImageOn) || (editTransOn)) 
+	if ((trackingOn) || (editImageOn) || (editTransOn))
 	{
 
 		return;
 	}
 
-
-
 	LPBITMAPINFO lpBi = m_FrameGrabber.GetDIB();
 	m_ImageBitmap.CreateFromDib(lpBi);
 	InvalidateRect(NULL);
 
-
-
 }
-
-
 
 void CVideoWnd::OnPaint()
 {
 
 	CPaintDC dc(this);
 
-
 	// Add your drawing code here!
-	CDC *pDC = &dc; 
+	CDC *pDC = &dc;
 
 	//WIDTHHEIGHT
 	CRect clrect;
@@ -153,10 +141,9 @@ void CVideoWnd::OnPaint()
 	CRect cRect;
 	cRect = clrect;
 
-
 	/*
-	if(m_ImageBitmap.GetSafeHandle())
-	{ 
+	if (m_ImageBitmap.GetSafeHandle())
+	{
 	//old_pDC = pDC;
 	//pDC = m_ImageBitmap.BegingModify();
 
@@ -168,42 +155,39 @@ void CVideoWnd::OnPaint()
 	}
 	*/
 
+	CDC memDC;
 
-
-	CDC memDC; 
-
-	CBitmap* pOldMemBmp = NULL; 
-	CBitmap NewMemBmp; 
-	memDC.CreateCompatibleDC(&dc); 
+	CBitmap* pOldMemBmp = NULL;
+	CBitmap NewMemBmp;
+	memDC.CreateCompatibleDC(&dc);
 
 	pDC = &memDC;
 
 	NewMemBmp.CreateCompatibleBitmap(&dc,width,height);
-	pOldMemBmp = pDC->SelectObject(&NewMemBmp); 
+	pOldMemBmp = pDC->SelectObject(&NewMemBmp);
 	if (!status)
-	{ 
+	{
 		pDC->FillSolidRect(0,0,clrect.Width(),clrect.Height(),RGB(255,255,255));
 
 	}
-	else if(m_ImageBitmap.GetSafeHandle())
-	{ 
+	else if (m_ImageBitmap.GetSafeHandle())
+	{
 		//NewMemBmp.CreateCompatibleBitmap(&dc,width,height);
-		//pOldMemBmp = pDC->SelectObject(&NewMemBmp); 
+		//pOldMemBmp = pDC->SelectObject(&NewMemBmp);
 		m_ImageBitmap.BitBlt(pDC,CPoint(0,0));
 
 	}
 
-
 	CFont* oldfont;
-	CFont dxfont; 
+	CFont dxfont;
 
 	dxfont.CreateFontIndirect(&m_textfont);
 	oldfont = (CFont *) pDC->SelectObject(&dxfont);
 
-	int textlength = m_textstring.GetLength(); //get number of bytes 
+	int textlength = m_textstring.GetLength(); //get number of bytes
 
 	//Draw Text
-	pDC->SetBkMode(TRANSPARENT); 
+	pDC->SetBkMode(TRANSPARENT);
 	pDC->SetTextColor(rgb);
 	pDC->DrawText((char *)LPCTSTR(m_textstring), textlength, &m_tracker.m_rect, m_horzalign | DT_VCENTER | DT_WORDBREAK );
 	//DrawTextW(pDC->m_hDC, (unsigned short *)LPCTSTR(m_textstring), textlength, &m_tracker.m_rect, m_horzalign | DT_VCENTER | DT_WORDBREAK );
@@ -229,15 +213,15 @@ void CVideoWnd::OnPaint()
 		LOGBRUSH logbrush;
 		CBrush borderBrush;
 		CBrush* oldBrush;
-		logbrush.lbStyle = BS_HOLLOW; 
+		logbrush.lbStyle = BS_HOLLOW;
 		borderBrush.CreateBrushIndirect(&logbrush);
 
-		oldBrush = (CBrush *) pDC->SelectObject(&borderBrush); 
+		oldBrush = (CBrush *) pDC->SelectObject(&borderBrush);
 
 		int drawOffset = m_borderSize/2;
 
 		if (m_regionPredefinedShape == regionROUNDRECT)
-		{ 
+		{
 			pDC->RoundRect(drawOffset-1, drawOffset-1, cRect.Width()-1-drawOffset, cRect.Height()-1-drawOffset, (int) rval, (int) rval);
 
 		}
@@ -256,83 +240,67 @@ void CVideoWnd::OnPaint()
 		borderPen.DeleteObject();
 		borderBrush.DeleteObject();
 
-
 	}
 
-
-	CDC *winDC = &dc; 
+	CDC *winDC = &dc;
 	winDC->BitBlt(0,0,clrect.Width(),clrect.Height(),pDC,0,0,SRCCOPY);
 
-
-	pDC->SelectObject(pOldMemBmp); 
-	NewMemBmp.DeleteObject(); 
-	memDC.DeleteDC(); 
+	pDC->SelectObject(pOldMemBmp);
+	NewMemBmp.DeleteObject();
+	memDC.DeleteDC();
 
 	if (trackingOn)
 		m_tracker.Draw(winDC);
 
-
 }
 
-
-void CVideoWnd::OnContextvideoSourceformat() 
+void CVideoWnd::OnContextvideoSourceformat()
 {
 	// TODO: Add your command handler code here
-	if(m_FrameGrabber.GetSafeHwnd())
+	if (m_FrameGrabber.GetSafeHwnd())
 	{
 		m_FrameGrabber.VideoSourceDialog();
-		//OnUpdate(NULL, 0, NULL); 
+		//OnUpdate(NULL, 0, NULL);
 		OnUpdateSize();
 		Invalidate();
 	}
 
-
-
 }
 
-
-void CVideoWnd::OnContextvideoVideosource() 
+void CVideoWnd::OnContextvideoVideosource()
 {
 	// TODO: Add your command handler code here
-	if(m_FrameGrabber.GetSafeHwnd())
+	if (m_FrameGrabber.GetSafeHwnd())
 	{
 		m_FrameGrabber.VideoFormatDialog();
-		//OnUpdate(NULL, 0, NULL); 
+		//OnUpdate(NULL, 0, NULL);
 
 		OnUpdateSize();
 		Invalidate();
 	}
 
-
-
 }
 
-
-void CVideoWnd::OnContextMenu(CWnd* pWnd, CPoint point) 
+void CVideoWnd::OnContextMenu(CWnd* pWnd, CPoint point)
 {
 	// TODO: Add your message handler code here
 	//int isEdited = AreWindowsEdited();
 
-
 	CPoint local = point;
 	ScreenToClient(&local);
-
 
 	if (menuLoaded == 0) {
 		menu.LoadMenu(IDR_CONTEXTVIDEO);
 		menuLoaded = 1;
-	} 
-
-
+	}
 
 	CMenu* pPopup = menu.GetSubMenu(0);
 	ASSERT(pPopup != NULL);
 
-
-	//if (isEdited) 
+	//if (isEdited)
 	//{
 	//DisableContextMenu();
-	//} 
+	//}
 	//else
 	OnUpdateContextMenu();
 
@@ -341,63 +309,53 @@ void CVideoWnd::OnContextMenu(CWnd* pWnd, CPoint point)
 		point.x, point.y,
 		this); // route commands through main window
 
-
 }
-
-
 
 void CVideoWnd::OnUpdateContextMenu()
 {
 	if (menuLoaded == 0) {
 		menu.LoadMenu(IDR_CONTEXTVIDEO);
 		menuLoaded = 1;
-	} 
+	}
 
 	CMenu* pPopup = menu.GetSubMenu(0);
 	ASSERT(pPopup != NULL);
-
-
 
 	if ((m_FrameGrabber.GetSafeHwnd()) && (status))
 	{
 		pPopup->EnableMenuItem(ID_CONTEXTVIDEO_SOURCEFORMAT,MF_ENABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXTVIDEO_VIDEOSOURCE,MF_ENABLED|MF_BYCOMMAND);
 
-	} 
+	}
 	else
 	{
-		pPopup->EnableMenuItem(ID_CONTEXTVIDEO_SOURCEFORMAT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND); 
-		pPopup->EnableMenuItem(ID_CONTEXTVIDEO_VIDEOSOURCE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND); 
+		pPopup->EnableMenuItem(ID_CONTEXTVIDEO_SOURCEFORMAT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
+		pPopup->EnableMenuItem(ID_CONTEXTVIDEO_VIDEOSOURCE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 	}
-
-
 
 	if ((trackingOn) || (editImageOn) || (editTransOn)) {
 
-		pPopup->EnableMenuItem(ID_CONTEXT_EDITTEXT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND); 
-		pPopup->EnableMenuItem(ID_CONTEXT_CLOSE, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND); 
+		pPopup->EnableMenuItem(ID_CONTEXT_EDITTEXT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
+		pPopup->EnableMenuItem(ID_CONTEXT_CLOSE, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_RESIZE, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_EDITIMAGE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_EDITTRANSPARENCY,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 
-		//pPopup->EnableMenuItem(ID_CONTEXTVIDEO_SOURCEFORMAT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND); 
-		//pPopup->EnableMenuItem(ID_CONTEXTVIDEO_VIDEOSOURCE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND); 
+		//pPopup->EnableMenuItem(ID_CONTEXTVIDEO_SOURCEFORMAT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
+		//pPopup->EnableMenuItem(ID_CONTEXTVIDEO_VIDEOSOURCE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 
 	}
 	else {
 
-		pPopup->EnableMenuItem(ID_CONTEXT_EDITTEXT,MF_ENABLED|MF_BYCOMMAND); 
-		pPopup->EnableMenuItem(ID_CONTEXT_CLOSE, MF_ENABLED|MF_BYCOMMAND); 
-		pPopup->EnableMenuItem(ID_CONTEXT_RESIZE, MF_ENABLED|MF_BYCOMMAND); 
+		pPopup->EnableMenuItem(ID_CONTEXT_EDITTEXT,MF_ENABLED|MF_BYCOMMAND);
+		pPopup->EnableMenuItem(ID_CONTEXT_CLOSE, MF_ENABLED|MF_BYCOMMAND);
+		pPopup->EnableMenuItem(ID_CONTEXT_RESIZE, MF_ENABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_EDITIMAGE, MF_ENABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_EDITTRANSPARENCY, MF_ENABLED|MF_BYCOMMAND);
 
 	}
 
-
-
 }
-
 
 void CVideoWnd::OnUpdateSize()
 {
@@ -414,7 +372,7 @@ void CVideoWnd::OnUpdateSize()
 		Invalidate();
 
 	}
-	else if(m_FrameGrabber.GetSafeHwnd())
+	else if (m_FrameGrabber.GetSafeHwnd())
 	{
 		CSize sz = m_FrameGrabber.GetImageSize();
 		SetWindowPos(NULL,0,0, sz.cx-1, sz.cy-1, SWP_NOMOVE|SWP_NOZORDER);
@@ -430,7 +388,7 @@ void CVideoWnd::OnUpdateSize()
 		int dx = rcw.Width()-rcc.Width();
 		int dy = rcw.Height()-rcc.Height();
 
-		if(sz.cx && (rcc.Width()!=sz.cx || rcc.Height()!=sz.cy))
+		if (sz.cx && (rcc.Width()!=sz.cx || rcc.Height()!=sz.cy))
 		{
 		SetWindowPos(NULL,0,0,
 		sz.cx+dx, sz.cy+dy, SWP_NOMOVE|SWP_NOZORDER);
@@ -453,7 +411,7 @@ void CVideoWnd::OnUpdateSize()
 
 //Dialogs does not appears for large image....
 
-void CVideoWnd::OnContextvideoEdittransparencyrefreshrate() 
+void CVideoWnd::OnContextvideoEdittransparencyrefreshrate()
 {
 	// TODO: Add your command handler code here
 	//if (versionOp<5) {
@@ -471,7 +429,7 @@ void CVideoWnd::OnContextvideoEdittransparencyrefreshrate()
 
 }
 
-void CVideoWnd::OnContextvideoEdittransparency() 
+void CVideoWnd::OnContextvideoEdittransparency()
 {
 	// TODO: Add your command handler code here
 	if (versionOp<5) {
@@ -486,7 +444,7 @@ void CVideoWnd::OnContextvideoEdittransparency()
 		int ret = MessageOut(this->m_hWnd,IDS_STRING_TRANSBLAHBLAH ,IDS_STRING_NOTE,MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (ret == IDYES)
 		{
-			AdjustRefreshRate(10); 
+			AdjustRefreshRate(10);
 
 		}
 		else if (ret == IDCANCEL)

@@ -28,13 +28,13 @@ public:
 
 // Attributes
 public:
-	
+
 	LPBITMAPINFO	GetDIB();
 	LPBYTE			GetImageBitsBuffer();
 
 	CSize		GetImageSize();
 	DWORD		GetImageBitsResolution();
-	
+
 	BOOL		VideoFormatDialog();
 	BOOL		VideoSourceDialog();
 // Operations

@@ -18,7 +18,7 @@ public:
 	void SetUpRegion(int x, int y, int width, int height, int type);
 	void SetUpRect(int x, int y, int width, int height);
 	void PaintBorder(COLORREF colorval);
-	void PaintInvertedBorder(COLORREF colorval);	
+	void PaintInvertedBorder(COLORREF colorval);
 	void MoveRegion(int diffx, int diffy);
 	void CheckRect(int diffx, int diffy);
 	void UpdateRegionMove();

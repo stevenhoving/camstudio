@@ -24,10 +24,10 @@ struct label labels[256];
 
 int findLabel(char *label)
 {
-  int i;	
+  int i;
   for(i=0; i<nLabels; ++i)
   {
-    if(strcmp(label, labels[i].name) == 0)
+    if (strcmp(label, labels[i].name) == 0)
       return i;
   }
 
@@ -38,7 +38,7 @@ void addLabel(char *label)
 {
   int i = findLabel(label);
 
-  if(i == -1)
+  if (i == -1)
   {
     labels[nLabels].name = _strdup(label);
     labels[nLabels].offset = len;
@@ -52,7 +52,7 @@ int bufferBranchTarget(Buffer output, char *label)
 {
   int i = findLabel(label);
 
-  if(i == -1)
+  if (i == -1)
   {
     i = nLabels;
     addLabel(label);
@@ -68,9 +68,9 @@ void bufferPatchTargets(Buffer buffer)
 
   while(i<len)
   {
-    if(output[i] & 0x80) /* then it's a multisbyte instruction */
+    if (output[i] & 0x80) /* then it's a multisbyte instruction */
     {
-      if(output[i] == SWFACTION_BRANCHALWAYS ||
+      if (output[i] == SWFACTION_BRANCHALWAYS ||
 	 output[i] == SWFACTION_BRANCHIFTRUE)
       {
 	int target, offset;

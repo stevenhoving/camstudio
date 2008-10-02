@@ -29,7 +29,7 @@ CLayoutList::CLayoutList()
 	uniqueID = currentLayoutID;
 	currentLayoutID++;
 	if (currentLayoutID > 2147483647)
-		currentLayoutID = 0; 
+		currentLayoutID = 0;
 
 	//layoutName.Format("Layout_%d",uniqueID);
 	//CString layoutIntStr;
@@ -48,15 +48,13 @@ CLayoutList::~CLayoutList()
 
 }
 
-
-
 BOOL CLayoutList::SaveLayoutToFile(FILE *fptr)
 {
 
 	long layoutversion = 1;
 	fwrite( (void *) &layoutversion, sizeof(long), 1, fptr );
 
-	int len = layoutName.GetLength(); 
+	int len = layoutName.GetLength();
 	fwrite( (void *) &len, sizeof(int), 1, fptr );
 	fwrite( (void *) LPCTSTR(layoutName), len, 1, fptr );
 
@@ -65,8 +63,6 @@ BOOL CLayoutList::SaveLayoutToFile(FILE *fptr)
 	return 1;
 
 }
-
-
 
 BOOL CLayoutList::LoadLayoutFromFile(FILE *fptr)
 {
@@ -78,15 +74,15 @@ BOOL CLayoutList::LoadLayoutFromFile(FILE *fptr)
 	fread( (void *) &len, sizeof(int), 1, fptr );
 	if ((len>0) && (len<100000))
 	{
-		//void *buf = malloc(len); 
-		char *buf = (char *) malloc(len + 2); 
+		//void *buf = malloc(len);
+		char *buf = (char *) malloc(len + 2);
 		fread( (void *) buf, len, 1, fptr );
 		buf[len] = 0;
 		buf[len+1] = 0;
 		layoutName = (char *) buf;
 		free(buf);
 
-	} 
+	}
 
 	if (layoutArrayPtr==NULL)
 		layoutArrayPtr = new CArray<CTransparentWnd *,CTransparentWnd *>;
@@ -94,7 +90,6 @@ BOOL CLayoutList::LoadLayoutFromFile(FILE *fptr)
 
 	if (layoutversion>1)
 	{
-
 
 	}
 

@@ -1,4 +1,4 @@
-// CStudioLib.cpp	- implementation file for CamStudio Library 
+// CStudioLib.cpp	- implementation file for CamStudio Library
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "CStudioLib.h"
@@ -17,7 +17,7 @@ BOOL isRectEqual(RECT a, RECT b)
 	//	return FALSE;
 }
 
-// The rectangle is normalized for fourth-quadrant positioning, which Windows typically uses for coordinates. 
+// The rectangle is normalized for fourth-quadrant positioning, which Windows typically uses for coordinates.
 // this is dubious
 void WINAPI NormalizeRect(LPRECT prc)
 {
@@ -242,7 +242,7 @@ RECT FrameWindow(HWND hWnd, int maxxScreen, int maxyScreen, RECT rcClip)
 HANDLE Bitmap2Dib(HBITMAP hbitmap, UINT bits)
 {
 	BITMAP bitmap;
-	GetObject(hbitmap, sizeof(BITMAP), &bitmap);
+	::GetObject(hbitmap, sizeof(BITMAP), &bitmap);
 
 	// DWORD align the width of the DIB
 	// Figure out the size of the colour table
@@ -274,11 +274,11 @@ HANDLE Bitmap2Dib(HBITMAP hbitmap, UINT bits)
 	// Get the bits from the bitmap and stuff them after the LPBI
 	LPBYTE lpBits = (LPBYTE)(lpbi + 1) + wColSize;
 
-	HDC hdc = CreateCompatibleDC(NULL);
-	GetDIBits(hdc, hbitmap, 0, bitmap.bmHeight, lpBits, (LPBITMAPINFO)lpbi, DIB_RGB_COLORS);
+	HDC hdc = ::CreateCompatibleDC(NULL);
+	::GetDIBits(hdc, hbitmap, 0, bitmap.bmHeight, lpBits, (LPBITMAPINFO)lpbi, DIB_RGB_COLORS);
 	lpbi->biClrUsed = (bits <= 8) ? 1<<bits : 0;
 
-	DeleteDC(hdc);
+	::DeleteDC(hdc);
 	GlobalUnlock(hdib);
 
 	return hdib;
@@ -347,3 +347,36 @@ CString GetTempPath(int tempPath_Access, CString specifieddir)
 	return GetProgPath();
 }
 
+void SaveBitmapCopy(HBITMAP& hBitmap, HDC hdc, HDC hdcbits, int x, int y, int sx, int sy)
+{
+	if (hBitmap) {
+		::DeleteObject(hBitmap);
+	}
+	hBitmap = (HBITMAP) ::CreateCompatibleBitmap(hdc, sx, sy);
+	HBITMAP oldbitmap = (HBITMAP) ::SelectObject(hdcbits, hBitmap);
+	::BitBlt(hdcbits, 0, 0, sx, sy, hdc, x, y, SRCCOPY);
+
+	::SelectObject(hdcbits, oldbitmap);
+}
+
+void SaveBitmapCopy(HBITMAP& hBitmap, HDC hdc, HDC hdcbits, const RECT& rect)
+{
+	SaveBitmapCopy(hBitmap, hdc, hdcbits, rect.left, rect.top, (rect.right-rect.left), (rect.bottom-rect.top));
+}
+
+void RestoreBitmapCopy(HBITMAP& hBitmap, HDC hdc, HDC hdcbits, int x, int y, int sx, int sy)
+{
+	if (!hBitmap) {
+		return;
+	}
+	HBITMAP oldbitmap = (HBITMAP) ::SelectObject(hdcbits, hBitmap);
+	::BitBlt(hdc, x, y, sx, sy, hdcbits, 0, 0, SRCCOPY);
+	::SelectObject(hdcbits, oldbitmap);
+	::DeleteObject(hBitmap);
+	hBitmap = 0;
+}
+
+void RestoreBitmapCopy(HBITMAP& hBitmap, HDC hdc, HDC hdcbits, const RECT& rect)
+{
+	RestoreBitmapCopy(hBitmap, hdc, hdcbits, rect.left, rect.top, (rect.right-rect.left), (rect.bottom-rect.top));
+}

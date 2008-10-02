@@ -32,7 +32,7 @@ CProgressDlg::CProgressDlg(UINT nCaptionID)
 
 CProgressDlg::~CProgressDlg()
 {
-    if(m_hWnd!=NULL)
+    if (m_hWnd!=NULL)
       DestroyWindow();
 }
 
@@ -44,7 +44,7 @@ BOOL CProgressDlg::DestroyWindow()
 
 void CProgressDlg::ReEnableParent()
 {
-    if(m_bParentDisabled && (m_pParentWnd!=NULL))
+    if (m_bParentDisabled && (m_pParentWnd!=NULL))
       m_pParentWnd->EnableWindow(TRUE);
     m_bParentDisabled=FALSE;
 }
@@ -58,13 +58,13 @@ BOOL CProgressDlg::Create(CWnd *pParent)
     // when the dialog is destroyed. So we don't want to set
     // it to TRUE unless the parent was already enabled.
 
-    if((m_pParentWnd!=NULL) && m_pParentWnd->IsWindowEnabled())
+    if ((m_pParentWnd!=NULL) && m_pParentWnd->IsWindowEnabled())
     {
       m_pParentWnd->EnableWindow(FALSE);
       m_bParentDisabled = TRUE;
     }
 
-    if(!CDialog::Create(CProgressDlg::IDD,pParent))
+    if (!CDialog::Create(CProgressDlg::IDD,pParent))
     {
       ReEnableParent();
       return FALSE;
@@ -87,7 +87,6 @@ BEGIN_MESSAGE_MAP(CProgressDlg, CDialog)
 	ON_BN_CLICKED(ID_PROGRESS_CANCEL, OnBnClickedProgressCancel)
 END_MESSAGE_MAP()
 
-
 void CProgressDlg::OnCancel()
 {
     m_bCancel=TRUE;
@@ -99,7 +98,7 @@ void CProgressDlg::SetRange(int nLower,int nUpper)
     m_nUpper = nUpper;
     m_Progress.SetRange(nLower,nUpper);
 }
-  
+
 int CProgressDlg::SetPos(int nPos)
 {
     PumpMessages();
@@ -139,10 +138,10 @@ void CProgressDlg::PumpMessages()
     // Handle dialog messages
     while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
     {
-      if(!IsDialogMessage(&msg))
+      if (!IsDialogMessage(&msg))
       {
         TranslateMessage(&msg);
-        DispatchMessage(&msg);  
+        DispatchMessage(&msg);
       }
     }
 }
@@ -169,7 +168,7 @@ void CProgressDlg::UpdatePercent(int nNewPos)
 {
     CWnd *pWndPercent = GetDlgItem(CG_IDC_PROGDLG_PERCENT);
     int nPercent;
-    
+
     int nDivisor = m_nUpper - m_nLower;
     ASSERT(nDivisor>0);  // m_nLower should be smaller than m_nUpper
 
@@ -180,7 +179,7 @@ void CProgressDlg::UpdatePercent(int nNewPos)
 
     // Since the Progress Control wraps, we will wrap the percentage
     // along with it. However, don't reset 100% back to 0%
-    if(nPercent!=100)
+    if (nPercent!=100)
       nPercent %= 100;
 
     // Display the percentage
@@ -193,11 +192,11 @@ void CProgressDlg::UpdatePercent(int nNewPos)
 	if (strCur != strBuf)
 		pWndPercent->SetWindowText(strBuf);
 }
-    
+
 /////////////////////////////////////////////////////////////////////////////
 // CProgressDlg message handlers
 
-BOOL CProgressDlg::OnInitDialog() 
+BOOL CProgressDlg::OnInitDialog()
 {
     CDialog::OnInitDialog();
     m_Progress.SetRange(m_nLower,m_nUpper);
@@ -208,7 +207,7 @@ BOOL CProgressDlg::OnInitDialog()
 	VERIFY(strCaption.LoadString(m_nCaptionID));
     SetWindowText(strCaption);
 
-    return TRUE;  
+    return TRUE;
 }
 
 void CProgressDlg::OnBnClickedProgressCancel()

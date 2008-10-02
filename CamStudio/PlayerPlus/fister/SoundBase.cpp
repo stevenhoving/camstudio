@@ -38,7 +38,7 @@ void CSoundBase::SetBitsPerSample(int bps)
 
 int CSoundBase::GetBitsPerSample()
 {
-	return m_Format.wBitsPerSample;	
+	return m_Format.wBitsPerSample;
 }
 
 void CSoundBase::SetSamplesPerSecond(int sps)

@@ -43,7 +43,7 @@
 #define LWA_ALPHA               0x00000002
 #endif
 
-class CLayeredWindowHelperST  
+class CLayeredWindowHelperST
 {
 public:
 	CLayeredWindowHelperST();

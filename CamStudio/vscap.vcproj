@@ -50,7 +50,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;$(InputDir)\CStudioLib&quot;"
+				AdditionalIncludeDirectories="&quot;$(InputDir)\CStudioLib&quot;;&quot;C:\AppDev\CamStudio X\CamStudio\fister&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -145,7 +145,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(InputDir)\CStudioLib&quot;"
+				AdditionalIncludeDirectories="&quot;$(InputDir)\CStudioLib&quot;;&quot;C:\AppDev\CamStudio X\CamStudio\fister&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
