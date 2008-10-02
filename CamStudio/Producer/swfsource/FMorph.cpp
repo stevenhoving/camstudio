@@ -50,12 +50,12 @@ void FlashMorphFillStyleRadial::Write(N_STD::ostream &out)
 
 void FlashMorphFillStyles::Write(N_STD::ostream &out)
 {
-	if(fillStyles.size() >= 0xff)
+	if (fillStyles.size() >= 0xff)
 	{
 		out.put((char)0xff);
 		WRITE_UWORD((UWORD)fillStyles.size());
 	}
-	else 
+	else
 	{
 		out.put((unsigned char)fillStyles.size());
 	}
@@ -78,12 +78,12 @@ void FlashMorphLineStyle::Write(N_STD::ostream &out)
 
 void FlashMorphLineStyles::Write(N_STD::ostream &out)
 {
-	if(lineStyles.size() >= 0xff)
+	if (lineStyles.size() >= 0xff)
 	{
 		out.put((char)0xff);
 		WRITE_UWORD((UWORD)lineStyles.size());
 	}
-	else 
+	else
 	{
 		out.put((unsigned char)lineStyles.size());
 	}
@@ -113,10 +113,10 @@ N_STD::ostream &operator<< (N_STD::ostream &out, FlashTagDefineMorphShape &data)
 	data.fs2.Write(tmp2);
 	tmp2 << data.s1;
 	WRITE_UDWORD2(tmp2.pcount(),tmp);
-	
-	tmp.write(tmp2.rdbuf()->str(), tmp2.pcount());	
+
+	tmp.write(tmp2.rdbuf()->str(), tmp2.pcount());
 	tmp << data.s2;
-	
+
 	out << FlashTagHeader(46, tmp.pcount());
 	out.write(tmp.rdbuf()->str(), tmp.pcount());
 	return out;
@@ -133,4 +133,4 @@ N_STD::istream &operator>> (N_STD::istream &in,  FlashTagDefineMorphShape &data)
 
 	return in;
 }
-	
+

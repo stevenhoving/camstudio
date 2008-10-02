@@ -53,7 +53,6 @@ HANDLE AllocMakeDib( int reduced_width, int reduced_height, UINT bits );
 
 long currentWndID = 0;
 
-
 //important: this window does not create or delete the m_hbitmap passed to it
 
 #ifdef _DEBUG
@@ -75,15 +74,13 @@ CTransparentWnd::CTransparentWnd()
 
 	saveMethod = saveMethodNew;
 
-
 	m_textstring = "Right Click to Edit Text";
 
 	ZeroMemory(&m_textfont, sizeof(LOGFONT));
 	m_textfont.lfHeight = 12;
 	m_textfont.lfWidth = 8;
-	strcpy(m_textfont.lfFaceName,"Arial");
+	strcpy_s(m_textfont.lfFaceName,"Arial");
 	rgb = RGB(0,0,0);
-
 
 	m_tracker.m_rect.left = 20;
 	m_tracker.m_rect.top = 20;
@@ -108,7 +105,6 @@ CTransparentWnd::CTransparentWnd()
 	trackingOn = 0;
 	editTransOn = 0;
 	editImageOn = 0;
-
 
 	enableTransparency = 0;
 	valueTransparency = 50;
@@ -189,7 +185,6 @@ BOOL CTransparentWnd::PreCreateWindow(CREATESTRUCT& cs)
 	//This line here prevents taskbar buttons from appearing for each TransparentWnd
 	//cs.hwndParent = hWndGlobal; //this will cause the text tracker unable to move/resize
 	cs.hwndParent = hMouseCaptureWnd;
-
 
 	return CWnd::PreCreateWindow(cs);
 }
@@ -314,20 +309,20 @@ void CTransparentWnd::SetupRegionByTransColor(CDC *pDC, COLORREF transColor)
 	if (!m_hbitmap)
 		return;
 
-	CDC memDC;
-	CBitmap cBitmap, zoomBitmap;
-	CBitmap *old_zoomBitmap;
+	CBitmap cBitmap;
+	CBitmap zoomBitmap;
+	CBitmap * old_zoomBitmap;
 	HBITMAP pOldMemBmp = NULL;
 	COLORREF col;
-	CRect cRect;
-	int x, y;
 
 	//need to make wndRgn a member...???
 	CRgn rgnTemp;
+
+	CRect cRect;
 	GetWindowRect(&cRect);
 
+	CDC memDC;
 	memDC.CreateCompatibleDC(pDC);
-	//pOldMemBmp = memDC.SelectObject(&cBitmap);
 
 	//if window is zoomed, create a resized-bitmap for computation
 	int needCleanZoom = 0;
@@ -346,7 +341,7 @@ void CTransparentWnd::SetupRegionByTransColor(CDC *pDC, COLORREF transColor)
 
 		needCleanZoom = 1;
 	} else {
-		pOldMemBmp = (HBITMAP) ::SelectObject(memDC.m_hDC,m_hbitmap);
+		pOldMemBmp = (HBITMAP) ::SelectObject(memDC.m_hDC, m_hbitmap);
 	}
 
 	if (wndRgn.m_hObject) {
@@ -354,27 +349,28 @@ void CTransparentWnd::SetupRegionByTransColor(CDC *pDC, COLORREF transColor)
 	}
 	wndRgn.CreateRectRgn(0, 0, cRect.Width(), cRect.Height());
 
-	int yStart;
-	BOOL bStart=FALSE;
-	for (x = 0; x <= cRect.Width(); x++) {
+	BOOL bStart = FALSE;
+	int yStart = 0;
+	for (int x = 0; x <= cRect.Width(); x++) {
+		int y = 0;
 		for (y = 0; y<=cRect.Height(); y++) {
 			col = memDC.GetPixel(x, y);
 			if (col == transColor) {
-				if(!bStart) {
-					yStart=y;
-					bStart=TRUE;
+				if (!bStart) {
+					yStart = y;
+					bStart = TRUE;
 				}
 			} else {
-				if(bStart) {
+				if (bStart) {
 					rgnTemp.CreateRectRgn(x, yStart, x+1, y);
 					wndRgn.CombineRgn(&wndRgn, &rgnTemp, RGN_DIFF);
 					rgnTemp.DeleteObject();
 				}
-				bStart=FALSE;
+				bStart = FALSE;
 			}
 		}
 		// End of column
-		if(bStart) {
+		if (bStart) {
 			rgnTemp.CreateRectRgn(x, yStart, x+1, y);
 			wndRgn.CombineRgn(&wndRgn, &rgnTemp, RGN_XOR);
 			rgnTemp.DeleteObject();
@@ -425,7 +421,8 @@ void CTransparentWnd::OnPaint()
 	int height = clrect.bottom - clrect.top;
 
 	//BitBlt Background
-	CRect rect,cRect;
+	CRect rect;
+	CRect cRect;
 	GetWindowRect(&rect);
 	cRect = rect;
 
@@ -444,12 +441,10 @@ void CTransparentWnd::OnPaint()
 		pDC->FillSolidRect(0,0,rect.Width(),rect.Height(),m_backgroundColor);
 	}
 
-	if ((m_factor==1) || (trackingOn)) {
-		CFont* oldfont;
+	if ((m_factor == 1) || (trackingOn)) {
 		CFont dxfont;
-
 		dxfont.CreateFontIndirect(&m_textfont);
-		oldfont = (CFont *) pDC->SelectObject(&dxfont);
+		CFont* oldfont = (CFont *) pDC->SelectObject(&dxfont);
 
 		int textlength = m_textstring.GetLength(); //get number of bytes
 
@@ -492,8 +487,10 @@ void CTransparentWnd::OnPaint()
 			borderBrush.DeleteObject();
 		}
 	} else {
-		LPBITMAPINFO pbmiText = GetTextBitmap(pDC, &CRect(clrect),m_factor,&m_tracker.m_rect, &m_textfont, m_textstring, NULL, NULL, rgb, m_horzalign);
-		HBITMAP newbm = DrawResampleRGB(pDC, &CRect(clrect),m_factor, (LPBITMAPINFOHEADER) pbmiText);
+		//LPBITMAPINFO pbmiText = GetTextBitmap(pDC, &CRect(clrect),m_factor,&m_tracker.m_rect, &m_textfont, m_textstring, NULL, NULL, rgb, m_horzalign);
+		//HBITMAP newbm = DrawResampleRGB(pDC, &CRect(clrect), m_factor, (LPBITMAPINFOHEADER) pbmiText);
+		LPBITMAPINFO pbmiText = GetTextBitmap(pDC, &clrect, m_factor, &m_tracker.m_rect, &m_textfont, m_textstring, NULL, NULL, rgb, m_horzalign);
+		HBITMAP newbm = DrawResampleRGB(pDC, &clrect, m_factor, (LPBITMAPINFOHEADER) pbmiText);
 
 		if (pbmiText) {
 			GlobalFreePtr(pbmiText);
@@ -1494,7 +1491,7 @@ BOOL CTransparentWnd::LoadShape(FILE* fptr)
 
 	ret = TRUE;
 	if (picture.LoadFromFile(fptr)) {
-		if(picture.m_IPicture == NULL) {
+		if (picture.m_IPicture == NULL) {
 			//Case : No image
 			m_hbitmap = NULL;
 		} else {
@@ -1551,7 +1548,6 @@ void CTransparentWnd::RefreshWindowSize()
 	SetWindowPos( &wndTopMost, m_rectWnd.left, m_rectWnd.top,m_rectWnd.right - m_rectWnd.left + 1 , m_rectWnd.bottom - m_rectWnd.top + 1, SWP_NOMOVE );
 	Invalidate();
 }
-
 
 //WidthHeight
 void CTransparentWnd::OnContextResize()

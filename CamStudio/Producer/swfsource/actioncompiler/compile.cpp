@@ -34,16 +34,15 @@ void checksbyteOrder()
   x = 0x01020304;
   p = (unsigned char *)&x;
 
-  if(*p == 1)
+  if (*p == 1)
     sbyteorder = SWF_BIG_ENDIAN;
   else
     sbyteorder = SWF_LITTLE_ENDIAN;
 }
 
-
 char *stringConcat(char *a, char *b)
 {
-  if(a)
+  if (a)
   {
     a = (char *)realloc(a, strlen(a)+strlen(b)+1);
     strcat(a,b);
@@ -63,7 +62,6 @@ void bufferPatchLength(Buffer buffer, int back)
   output[len-back-2] = back & 0xff;
 }
 
-
 /* add len more sbytes to length of the pushdata opcode pointed to by
    buffer->pushloc */
 
@@ -71,7 +69,7 @@ void bufferPatchPushLength(Buffer buffer, int len)
 {
   int oldsize;
 
-  if(buffer->pushloc != NULL)
+  if (buffer->pushloc != NULL)
   {
     oldsize = (buffer->pushloc[0] & 0xff) | ((buffer->pushloc[1] & 0xff) << 8);
     oldsize += len;
@@ -82,18 +80,17 @@ void bufferPatchPushLength(Buffer buffer, int len)
     SWF_error(error_fp,"problem with bufferPatchPushLength\n");
 }
 
-
 int addConstant(char *s)
 {
   int i;
 
   for(i=0; i<nConstants; ++i)
   {
-    if(strcmp(s, constants[i]) == 0)
+    if (strcmp(s, constants[i]) == 0)
       return i;
   }
 
-  if(nConstants < 256)
+  if (nConstants < 256)
   {
     constants[nConstants] = _strdup(s);
     return nConstants++;
@@ -106,7 +103,7 @@ int bufferWriteConstants(Buffer out)
 {
   int i, len=2;
 
-  if(nConstants == 0)
+  if (nConstants == 0)
     return 0;
 
   bufferWriteU8(out, SWFACTION_CONSTANTPOOL);
@@ -142,7 +139,7 @@ Buffer newBuffer()
 
 void destroyBuffer(Buffer out)
 {
-  if(out)
+  if (out)
   {
     free(out->buffer);
     free(out);
@@ -151,7 +148,7 @@ void destroyBuffer(Buffer out)
 
 int bufferLength(Buffer out)
 {
-  if(out)
+  if (out)
     return (out->pos)-(out->buffer);
   else
     return 0;
@@ -160,23 +157,23 @@ int bufferLength(Buffer out)
 /* make sure there's enough space for sbytes sbytes */
 void bufferCheckSize(Buffer out, int sbytes)
 {
-  if(sbytes > out->free)
+  if (sbytes > out->free)
   {
     int new_ = BUFFER_INCREMENT * ((sbytes-out->free-1)/BUFFER_INCREMENT + 1);
 
     int num = bufferLength(out); /* in case buffer gets displaced.. */
     unsigned char *newbuf = (unsigned char *)realloc(out->buffer, out->buffersize+new_);
 
-    if((char *)newbuf != (char *)out->buffer)
+    if ((char *)newbuf != (char *)out->buffer)
     {
       int pushd;
 
-      if(out->pushloc)
+      if (out->pushloc)
 	pushd = out->pos - out->pushloc;
 
       out->pos = (char *)newbuf+num;
 
-      if(out->pushloc)
+      if (out->pushloc)
 	out->pushloc = out->pos - pushd;
     }
 
@@ -200,10 +197,10 @@ int bufferWriteData(Buffer b, sbyte *data, int length)
 
 int bufferWriteBuffer(Buffer a, Buffer b)
 {
-  if(!a)
+  if (!a)
     return 0;
 
-  if(b)
+  if (b)
     return bufferWriteData(a, b->buffer, bufferLength(b));
 
   return 0;
@@ -218,7 +215,7 @@ int bufferWriteDataAndPush(Buffer a, Buffer b)
   sbyte *data = b->buffer;
   int length = b->pos - b->buffer;
 
-  if(a->pushloc && (b->buffer[0] == SWFACTION_PUSHDATA) && SWF_versionNum > 4)
+  if (a->pushloc && (b->buffer[0] == SWFACTION_PUSHDATA) && SWF_versionNum > 4)
   {
     pushd = (b->buffer[1] & 0xff) | ((b->buffer[2] & 0xff) << 8);
     bufferPatchPushLength(a, pushd);
@@ -226,7 +223,7 @@ int bufferWriteDataAndPush(Buffer a, Buffer b)
     length -= 3;
   }
 
-  if(b->pushloc)
+  if (b->pushloc)
     pushd = b->pos - b->pushloc;
 
   bufferCheckSize(a, length);
@@ -234,10 +231,10 @@ int bufferWriteDataAndPush(Buffer a, Buffer b)
   for(i=0; i<length; ++i)
     bufferWriteU8(a, data[i]);
 
-  if(a->pushloc &&
+  if (a->pushloc &&
      (b->buffer[0] == SWFACTION_PUSHDATA) && (b->pushloc == b->buffer+1))
     ; /* b is just one pushdata, so do nothing.. */
-  else if(b->pushloc)
+  else if (b->pushloc)
     a->pushloc = a->pos - pushd;
   else
     a->pushloc = 0;
@@ -249,10 +246,10 @@ int bufferConcat(Buffer a, Buffer b)
 {
   int len;
 
-  if(!a)
+  if (!a)
     return 0;
 
-  if(b)
+  if (b)
     len = bufferWriteDataAndPush(a, b);
 
   destroyBuffer(b);
@@ -288,7 +285,7 @@ int bufferWriteU8(Buffer out, int data)
 
 int bufferWriteS16(Buffer out, int data)
 {
-  if(data < 0)
+  if (data < 0)
     data = (1<<16)+data;
 
   bufferWriteU8(out, data%256);
@@ -312,12 +309,12 @@ int bufferWriteConstantString(Buffer out, sbyte *string, int length)
 {
   int n;
 
-  if(SWF_versionNum < 5)
+  if (SWF_versionNum < 5)
     return -1;
 
   n = addConstant(string);
 
-  if(n == -1)
+  if (n == -1)
   {
     bufferWriteU8(out, PUSH_STRING);
     return bufferWriteHardString(out, string, length) + 1;
@@ -331,7 +328,7 @@ int bufferWriteConstantString(Buffer out, sbyte *string, int length)
 
 int bufferWriteString(Buffer out, sbyte *string, int length)
 {
-  if(SWF_versionNum < 5)
+  if (SWF_versionNum < 5)
   {
     bufferWritePushOp(out);
     bufferWriteS16(out, length+1);
@@ -344,7 +341,7 @@ int bufferWriteString(Buffer out, sbyte *string, int length)
   {
     int l;
 
-    if(out->pushloc == NULL)
+    if (out->pushloc == NULL)
     {
       bufferWritePushOp(out);
       bufferWriteS16(out, 0);
@@ -362,7 +359,7 @@ int bufferWriteInt(Buffer out, int i)
   int len = 0;
   unsigned char *p = (unsigned char *)&i;
 
-  if(out->pushloc == NULL || SWF_versionNum < 5)
+  if (out->pushloc == NULL || SWF_versionNum < 5)
   {
     len = 3;
     bufferWritePushOp(out);
@@ -373,7 +370,7 @@ int bufferWriteInt(Buffer out, int i)
 
   bufferWriteU8(out, PUSH_INT);
 
-  if(sbyteorder == SWF_LITTLE_ENDIAN)
+  if (sbyteorder == SWF_LITTLE_ENDIAN)
   {
     bufferWriteU8(out, p[0]);
     bufferWriteU8(out, p[1]);
@@ -396,7 +393,7 @@ int bufferWriteDouble(Buffer out, double d)
   int len = 0;
   unsigned char *p = (unsigned char *)&d;
 
-  if(out->pushloc == NULL || SWF_versionNum < 5)
+  if (out->pushloc == NULL || SWF_versionNum < 5)
   {
     len = 3;
     bufferWritePushOp(out);
@@ -407,7 +404,7 @@ int bufferWriteDouble(Buffer out, double d)
 
   bufferWriteU8(out, PUSH_DOUBLE);
 
-  if(sbyteorder == SWF_LITTLE_ENDIAN)
+  if (sbyteorder == SWF_LITTLE_ENDIAN)
   {
     bufferWriteU8(out, p[4]);
     bufferWriteU8(out, p[5]);
@@ -437,7 +434,7 @@ int bufferWriteNull(Buffer out)
 {
   int len = 0;
 
-  if(out->pushloc == NULL || SWF_versionNum < 5)
+  if (out->pushloc == NULL || SWF_versionNum < 5)
   {
     len = 3;
     bufferWritePushOp(out);
@@ -455,7 +452,7 @@ int bufferWriteBoolean(Buffer out, int val)
 {
   int len = 0;
 
-  if(out->pushloc == NULL || SWF_versionNum < 5)
+  if (out->pushloc == NULL || SWF_versionNum < 5)
   {
     len = 3;
     bufferWritePushOp(out);
@@ -474,7 +471,7 @@ int bufferWriteRegister(Buffer out, int num)
 {
   int len = 0;
 
-  if(out->pushloc == NULL || SWF_versionNum < 5)
+  if (out->pushloc == NULL || SWF_versionNum < 5)
   {
     len = 3;
     bufferWritePushOp(out);
@@ -518,20 +515,20 @@ void bufferResolveJumps(Buffer out)
 
   while(p < out->pos)
   {
-    if(*p & 0x80) /* then it's a multisbyte instruction */
+    if (*p & 0x80) /* then it's a multisbyte instruction */
     {
-      if(*p == SWFACTION_BRANCHALWAYS)
+      if (*p == SWFACTION_BRANCHALWAYS)
       {
 	p += 3; /* plus instruction plus two-sbyte length */
 
-	if(*p == MAGIC_CONTINUE_NUMBER_LO &&
+	if (*p == MAGIC_CONTINUE_NUMBER_LO &&
 	   *(p+1) == MAGIC_CONTINUE_NUMBER_HI)
 	{
 	  target = out->buffer - (p+2);
 	  *p = target & 0xff;
 	  *(p+1) = (target>>8) & 0xff;
 	}
-	else if(*p == MAGIC_BREAK_NUMBER_LO &&
+	else if (*p == MAGIC_BREAK_NUMBER_LO &&
 		*(p+1) == MAGIC_BREAK_NUMBER_HI)
 	{
 	  target = out->pos - (p+2);
@@ -561,17 +558,17 @@ int lookupSetProperty(char *string)
 {
   lower(string);
 
-  if(strcmp(string,"x")==0)		return 0x0000;
-  if(strcmp(string,"y")==0)		return 0x3f80;
-  if(strcmp(string,"xscale")==0)	return 0x4000;
-  if(strcmp(string,"yscale")==0)	return 0x4040;
-  if(strcmp(string,"alpha")==0)		return 0x40c0;
-  if(strcmp(string,"visible")==0)	return 0x40e0;
-  if(strcmp(string,"rotation")==0)	return 0x4120;
-  if(strcmp(string,"name")==0)		return 0x4140;
-  if(strcmp(string,"quality")==0)	return 0x4180;
-  if(strcmp(string,"focusrect")==0)	return 0x4188;
-  if(strcmp(string,"soundbuftime")==0)	return 0x4190;
+  if (strcmp(string,"x")==0)		return 0x0000;
+  if (strcmp(string,"y")==0)		return 0x3f80;
+  if (strcmp(string,"xscale")==0)	return 0x4000;
+  if (strcmp(string,"yscale")==0)	return 0x4040;
+  if (strcmp(string,"alpha")==0)		return 0x40c0;
+  if (strcmp(string,"visible")==0)	return 0x40e0;
+  if (strcmp(string,"rotation")==0)	return 0x4120;
+  if (strcmp(string,"name")==0)		return 0x4140;
+  if (strcmp(string,"quality")==0)	return 0x4180;
+  if (strcmp(string,"focusrect")==0)	return 0x4188;
+  if (strcmp(string,"soundbuftime")==0)	return 0x4190;
 
   SWF_error(error_fp,"No such property: %s\n", string);
   return -1;
@@ -605,25 +602,25 @@ char *lookupGetProperty(char *string)
 {
   lower(string);
 
-  if(strcmp(string,"x")==0)		return "0";
-  if(strcmp(string,"y")==0)		return "1";
-  if(strcmp(string,"xscale")==0)	return "2";
-  if(strcmp(string,"yscale")==0)	return "3";
-  if(strcmp(string,"currentframe")==0)	return "4";
-  if(strcmp(string,"totalframes")==0)	return "5";
-  if(strcmp(string,"alpha")==0)		return "6";
-  if(strcmp(string,"visible")==0)	return "7";
-  if(strcmp(string,"width")==0)		return "8";
-  if(strcmp(string,"height")==0)	return "9";
-  if(strcmp(string,"rotation")==0)	return "10";
-  if(strcmp(string,"target")==0)	return "11";
-  if(strcmp(string,"framesloaded")==0)	return "12";
-  if(strcmp(string,"name")==0)		return "13";
-  if(strcmp(string,"droptarget")==0)	return "14";
-  if(strcmp(string,"url")==0)		return "15";
-  if(strcmp(string,"quality")==0)	return "16";
-  if(strcmp(string,"focusrect")==0)	return "17";
-  if(strcmp(string,"soundbuftime")==0)	return "18";
+  if (strcmp(string,"x")==0)		return "0";
+  if (strcmp(string,"y")==0)		return "1";
+  if (strcmp(string,"xscale")==0)	return "2";
+  if (strcmp(string,"yscale")==0)	return "3";
+  if (strcmp(string,"currentframe")==0)	return "4";
+  if (strcmp(string,"totalframes")==0)	return "5";
+  if (strcmp(string,"alpha")==0)		return "6";
+  if (strcmp(string,"visible")==0)	return "7";
+  if (strcmp(string,"width")==0)		return "8";
+  if (strcmp(string,"height")==0)	return "9";
+  if (strcmp(string,"rotation")==0)	return "10";
+  if (strcmp(string,"target")==0)	return "11";
+  if (strcmp(string,"framesloaded")==0)	return "12";
+  if (strcmp(string,"name")==0)		return "13";
+  if (strcmp(string,"droptarget")==0)	return "14";
+  if (strcmp(string,"url")==0)		return "15";
+  if (strcmp(string,"quality")==0)	return "16";
+  if (strcmp(string,"focusrect")==0)	return "17";
+  if (strcmp(string,"soundbuftime")==0)	return "18";
 
   SWF_error(error_fp,"No such property: %s\n", string);
   return "";

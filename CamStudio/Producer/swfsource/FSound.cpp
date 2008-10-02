@@ -19,12 +19,12 @@ N_STD::istream& operator>>(N_STD::istream& in, FlashTagDefineSound &data)
 	READ_UWORD(id);
 	data.SetID(id);
 	int flags = in.get();
-	//if(flags == EOF) throw;
+	//if (flags == EOF) throw;
 	data.flags = flags;
 	READ_UDWORD(data.samplecount);
-	
+
 	data.len = data.importsize - (2+1+4);
-	
+
 	data.samples = (char *)malloc(data.len);
 	data.samplevec.push_back(data.samples);
 	in.read(data.samples,data.len);
@@ -50,12 +50,12 @@ N_STD::istream& operator>>(N_STD::istream& in, FlashTagDefineSoundMP3 &data)
 	READ_UWORD(id);
 	data.SetID(id);
 	int flags = in.get();
-	//if(flags == EOF) throw;
+	//if (flags == EOF) throw;
 	data.flags = flags;
 	READ_UDWORD(data.samplecount);
 	READ_UWORD(data.delayseek);
 	data.len = data.importsize - (2+1+6);
-	
+
 	data.samples = (char *)malloc(data.len);
 	data.samplevec.push_back(data.samples);
 	in.read(data.samples,data.len);
@@ -81,10 +81,10 @@ N_STD::istream& operator>>(N_STD::istream& in, FlashSoundEnvelope &data)
 N_STD::ostream& operator<<(N_STD::ostream& out, FlashSoundInfo &data)
 {
 	out.put(data.flags);
-	if(data.flags & 0x1) WRITE_UDWORD(data.inPoint);
-	if(data.flags & 0x2) WRITE_UDWORD(data.outPoint);
-	if(data.flags & 0x4) WRITE_UWORD(data.loopCount);
-	if(data.flags & 0x8) 
+	if (data.flags & 0x1) WRITE_UDWORD(data.inPoint);
+	if (data.flags & 0x2) WRITE_UDWORD(data.outPoint);
+	if (data.flags & 0x4) WRITE_UWORD(data.loopCount);
+	if (data.flags & 0x8)
 	{
 		out.put((char)data.v_snd_env.size());
 		for(N_STD::vector<FlashSoundEnvelope>::iterator i=data.v_snd_env.begin();
@@ -98,17 +98,17 @@ N_STD::ostream& operator<<(N_STD::ostream& out, FlashSoundInfo &data)
 N_STD::istream& operator>>(N_STD::istream& in, FlashSoundInfo &data)
 {
 	int flags = in.get();
-	//if(flags == EOF) throw;
+	//if (flags == EOF) throw;
 	data.flags = flags;
 
-	if(data.flags & 0x1) READ_UDWORD(data.inPoint);
-	if(data.flags & 0x2) READ_UDWORD(data.outPoint);
-	if(data.flags & 0x4) READ_UWORD(data.loopCount);
-	if(data.flags & 0x8) 
+	if (data.flags & 0x1) READ_UDWORD(data.inPoint);
+	if (data.flags & 0x2) READ_UDWORD(data.outPoint);
+	if (data.flags & 0x4) READ_UWORD(data.loopCount);
+	if (data.flags & 0x8)
 	{
 		int size = in.get();
-		//if(size != EOF) throw;
-		
+		//if (size != EOF) throw;
+
 		for(int i = 0; i < size; i++)
 		{
 			FlashSoundEnvelope fse(0,0,0);
@@ -146,14 +146,14 @@ N_STD::ostream& operator<<(N_STD::ostream& out, const FlashTagSoundStreamHead &d
 N_STD::istream& operator>>(N_STD::istream& in, FlashTagSoundStreamHead &data)
 {
 	int flags = in.get();
-	//if(flags == EOF) throw;
-	
+	//if (flags == EOF) throw;
+
 	data.mplay_rate = (GetIsolatedBits((unsigned char)flags, 2, 4));
 	data.mplay_16bit = (GetIsolatedBits((unsigned char)flags, 1, 2) == 1);
 	data.mplay_stereo = (GetIsolatedBits((unsigned char)flags, 0, 1) == 1);
-	
+
 	flags = in.get();
-	//if(flags == EOF) throw;
+	//if (flags == EOF) throw;
 	data.mcompression = (GetIsolatedBits((unsigned char)flags, 4, 6));
 	data.mstream_rate = (GetIsolatedBits((unsigned char)flags, 2, 4));
 	data.mstream_16bit = (GetIsolatedBits((unsigned char)flags, 1, 2) == 1);
@@ -176,13 +176,13 @@ N_STD::ostream& operator<<(N_STD::ostream& out, const FlashTagSoundStreamHead2 &
 N_STD::istream& operator>>(N_STD::istream& in, FlashTagSoundStreamHead2 &data)
 {
 	int flags = in.get();
-	//if(flags == EOF) throw;
+	//if (flags == EOF) throw;
 	data.mplay_rate = (GetIsolatedBits((unsigned char)flags, 2, 4));
 	data.mplay_16bit = (GetIsolatedBits((unsigned char)flags, 1, 2) == 1);
 	data.mplay_stereo = (GetIsolatedBits((unsigned char)flags, 0, 1) == 1);
-	
+
 	flags = in.get();
-	//if(flags == EOF) throw;
+	//if (flags == EOF) throw;
 	data.mcompression = (GetIsolatedBits((unsigned char)flags, 4, 6));
 	data.mstream_rate = (GetIsolatedBits((unsigned char)flags, 2, 4));
 	data.mstream_16bit = (GetIsolatedBits((unsigned char)flags, 1, 2) == 1);
@@ -233,18 +233,16 @@ N_STD::istream& operator>>(N_STD::istream& in, FlashTagSoundStreamBlockMP3 &data
 	return in;
 }
 
-
-
 // *******************************
 // CamStudio v2.2 extension
 // *******************************
-// 
+//
 // ADPCM tables
 //
 /*
 
 int indexTable2[2] = {
-    -1, 2, 
+    -1, 2,
 };
 
 int indexTable3[4] = {
@@ -256,14 +254,14 @@ int indexTable4[8] = {
 };
 
 int indexTable5[16] = {
-	-1, -1, -1, -1, -1, -1, -1, -1, 1, 2, 4, 6, 8, 10, 13, 16, 
+	-1, -1, -1, -1, -1, -1, -1, -1, 1, 2, 4, 6, 8, 10, 13, 16,
 };
 
 int* indexTables[] = {
 	indexTable2,
 	indexTable3,
 	indexTable4,
-	indexTable5 
+	indexTable5
 };
 
 static const int stepsizeTable[89] = {
@@ -277,8 +275,6 @@ static const int stepsizeTable[89] = {
     5894, 6484, 7132, 7845, 8630, 9493, 10442, 11487, 12635, 13899,
     15289, 16818, 18500, 20350, 22385, 24623, 27086, 29794, 32767
 };
-
-
 
 N_STD::ostream& operator<<(N_STD::ostream& out, const FlashTagSoundStreamBlockADPCM &data)
 {

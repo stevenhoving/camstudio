@@ -5,7 +5,6 @@
 #include "vscap.h"
 #include "EffectsOptions2.h"
 
-
 // CEffectsOptions2 dialog
 
 IMPLEMENT_DYNAMIC(CEffectsOptions2, CDialog)
@@ -26,9 +25,7 @@ void CEffectsOptions2::DoDataExchange(CDataExchange* pDX)
 	DDX_Radio(pDX, IDC_RADIO_TOP_LEFT, pos);
 }
 
-
 BEGIN_MESSAGE_MAP(CEffectsOptions2, CDialog)
 END_MESSAGE_MAP()
-
 
 // CEffectsOptions2 message handlers

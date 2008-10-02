@@ -1,6 +1,6 @@
 /* trees.c -- output deflated data using Huffman coding
  * Copyright (C) 1995-1998 Jean-loup Gailly
- * For conditions of distribution and use, see copyright notice in zlib.h 
+ * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
 /*
@@ -229,7 +229,6 @@ local void send_bits(s, value, length)
 }
 #endif /* DEBUG */
 
-
 #define MAX(a,b) (a >= b ? a : b)
 /* the arguments must not have side effects */
 
@@ -426,7 +425,6 @@ local void init_block(s)
 
 #define SMALLEST 1
 /* Index within the heap array of least frequent node in the Huffman tree */
-
 
 /* ===========================================================================
  * Remove the smallest element from the heap and recreate the heap with
@@ -1199,7 +1197,7 @@ local void copy_block(s, buf, len, header)
     s->last_eob_len = 8; /* enough lookahead for inflate */
 
     if (header) {
-        put_short(s, (ush)len);   
+        put_short(s, (ush)len);
         put_short(s, (ush)~len);
 #ifdef DEBUG
         s->bits_sent += 2*16;

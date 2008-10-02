@@ -9,7 +9,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-
 class CPlayplusDoc : public CDocument
 {
 protected: // create from serialization only

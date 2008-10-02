@@ -41,8 +41,8 @@ public:
 #endif
 
 protected:  // control bar embedded members
-	CStatusBar  m_wndStatusBar;	
-	CToolBar    m_wndToolBar;	
+	CStatusBar  m_wndStatusBar;
+	CToolBar    m_wndToolBar;
 	CBitmap		m_ToolbarBitmap256;
 	CBitmap		m_ToolbarBitmapMask;
 	CImageList  m_ilToolBar;
@@ -61,7 +61,7 @@ protected:
 	afx_msg void OnUpdateViewNormalview(CCmdUI* pCmdUI);
 	afx_msg void OnViewtype();
 	//}}AFX_MSG
-	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);	
+	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 private:
 };

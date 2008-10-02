@@ -131,7 +131,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	cs.y = 200;
 	cs.cx = 280;
 	cs.cy = 292;
-	
+
 	// use logo to set widht and heights
 	BITMAP bitmap;
 	m_bmLogo.GetBitmap(&bitmap);

@@ -25,6 +25,7 @@
 #ifndef _INC_MULDIV32
 #define _INC_MULDIV32
 
+#error "include muldiv32.h"
 
 #ifndef INLINE
 #define INLINE __inline

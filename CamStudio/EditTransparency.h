@@ -15,7 +15,7 @@ class CEditTransparency : public CDialog
 // Construction
 public:
 	CEditTransparency(CWnd* pParent = NULL);   // standard constructor
-	void PreModal(int *enableTrans, int *valTrans, CWnd *myParent); 
+	void PreModal(int *enableTrans, int *valTrans, CWnd *myParent);
 	int *m_enableTrans;
 	int *m_valTrans;
 
@@ -28,7 +28,6 @@ public:
 	enum { IDD = IDD_TRANSPARENCY };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
-
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -54,3 +53,4 @@ protected:
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
 #endif // !defined(AFX_EDITTRANSPARENCY_H__585926AC_E741_4A9F_8787_4D8651D48468__INCLUDED_)
+

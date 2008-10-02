@@ -1,13 +1,18 @@
 // playplusView.h : interface of the CPlayplusView class
 //
 /////////////////////////////////////////////////////////////////////////////
-#include <assert.h>
 #if !defined(AFX_PLAYPLUSVIEW_H__8B1773D6_C15C_4371_BEB4_1943076AD478__INCLUDED_)
 #define AFX_PLAYPLUSVIEW_H__8B1773D6_C15C_4371_BEB4_1943076AD478__INCLUDED_
 
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+
+//#include <assert.h>
+
+#include "FlashConversionDlg.h"		// property page
+#include "FlashInterface.h"			// property page
+#include "AdvProperty.h"			// property page
 
 //Multilanguage
 #define ENT_LANGID _T("LanguageID")
@@ -22,7 +27,7 @@ protected: // create from serialization only
 	CPlayplusView();
 	DECLARE_DYNCREATE(CPlayplusView)
 
-// Attributes
+	// Attributes
 public:
 	CPlayplusDoc* GetDocument();
 	BOOL Openlink (CString);
@@ -30,30 +35,25 @@ public:
 	LONG GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata);
 	BOOL OpenUsingRegisteredClass (CString);
 
-	bool PerformFlash(int &ww, int &hh, LONG& currenttime); 
-	
-		
-	
+	bool PerformFlash(int &ww, int &hh, LONG& currenttime);
 
-
-// Operations
+	// Operations
 public:
 
-
-// Overrides
+	// Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CPlayplusView)
-	public:
+public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext = NULL);
-	protected:
+protected:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
 	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
 	//}}AFX_VIRTUAL
 
-// Implementation
+	// Implementation
 public:
 	virtual ~CPlayplusView();
 #ifdef _DEBUG
@@ -61,13 +61,9 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-private:
-	LANGID CurLangID;
-    BOOL LoadLangIDDLL(LANGID LangID);
-
 protected:
 
-// Generated message map functions
+	// Generated message map functions
 protected:
 	//{{AFX_MSG(CPlayplusView)
 	afx_msg void OnFileOpen();
@@ -116,39 +112,46 @@ protected:
 	afx_msg void OnHelpHelp();
 	afx_msg void OnHelpSwfproducerfaq();
 	//}}AFX_MSG
-	afx_msg LRESULT OnUserGeneric	(UINT wParam, LONG lParam);	
+	afx_msg LRESULT OnUserGeneric	(UINT wParam, LONG lParam);
 	afx_msg LRESULT OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2);
 	afx_msg LRESULT OnMM_WOM_DONE(WPARAM parm1, LPARAM parm2);
 	DECLARE_MESSAGE_MAP()
+
+private:
+	LANGID CurLangID;
+	BOOL LoadLangIDDLL(LANGID LangID);
+
+	CPropertySheet		flashProp;
+	FlashConversionDlg  page1;
+	CFlashInterface		page2;
+	CAdvProperty		page3;
+	void CreatePropertySheet();
 };
 
 #ifndef _DEBUG  // debug version in playplusView.cpp
 inline CPlayplusDoc* CPlayplusView::GetDocument()
-   { return (CPlayplusDoc*)m_pDocument; }
+{ return (CPlayplusDoc*)m_pDocument; }
 #endif
 
 class SWITCH_RESOURCE_HANDLE
 {
 public:
-SWITCH_RESOURCE_HANDLE(HMODULE new_resource_handle):
-OldResourceHandle_(AfxGetResourceHandle())
-{
-assert(OldResourceHandle_);
-assert(new_resource_handle);
-AfxSetResourceHandle(new_resource_handle);
+	SWITCH_RESOURCE_HANDLE(HMODULE new_resource_handle):
+	  OldResourceHandle_(AfxGetResourceHandle())
+	  {
+		  ASSERT(OldResourceHandle_);
+		  ASSERT(new_resource_handle);
+		  AfxSetResourceHandle(new_resource_handle);
+	  }
 
-}
-
-~SWITCH_RESOURCE_HANDLE()
-{
-AfxSetResourceHandle(OldResourceHandle_);
-}
+	  ~SWITCH_RESOURCE_HANDLE()
+	  {
+		  AfxSetResourceHandle(OldResourceHandle_);
+	  }
 
 private:
-HMODULE OldResourceHandle_;
-
+	HMODULE OldResourceHandle_;
 };
-
 
 /////////////////////////////////////////////////////////////////////////////
 

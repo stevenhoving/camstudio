@@ -24,7 +24,7 @@ public:
     int  SetPos(int nPos);
     int  OffsetPos(int nPos);
     int  StepIt();
-        
+
 // Dialog Data
     //{{AFX_DATA(CProgressDlg)
     enum { IDD = CG_IDD_PROGRESS };
@@ -46,14 +46,14 @@ protected:
     int m_nLower;
     int m_nUpper;
     int m_nStep;
-    
+
     BOOL m_bCancel;
     BOOL m_bParentDisabled;
 
     void ReEnableParent();
 
     virtual void OnCancel();
-    virtual void OnOK() {}; 
+    virtual void OnOK() {};
     void UpdatePercent(int nCurrent);
     void PumpMessages();
 

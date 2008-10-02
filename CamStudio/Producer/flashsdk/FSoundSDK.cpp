@@ -25,19 +25,16 @@ void FSound::Set(WaveFormat* wfmt)
 	wfmt->wBitsPerSample =	BitsPerSample();
 	wfmt->nBlockAlign =		( wfmt->wBitsPerSample*wfmt->nChannels )/8;
 	wfmt->nAvgBytesPerSec = wfmt->nBlockAlign*wfmt->nSamplesPerSec;
-	
+
 	//wfmt->cbSize = 0;
 }
 
-
-
-
-// 
+//
 // ADPCM tables
 //
 
 static const int indexTable2[2] = {
-    -1, 2, 
+    -1, 2,
 };
 
 // Is this ok?
@@ -50,14 +47,14 @@ static const int indexTable4[8] = {
 };
 
 static const int indexTable5[16] = {
-	-1, -1, -1, -1, -1, -1, -1, -1, 1, 2, 4, 6, 8, 10, 13, 16, 
+	-1, -1, -1, -1, -1, -1, -1, -1, 1, 2, 4, 6, 8, 10, 13, 16,
 };
 
 static const int* indexTables[] = {
 	indexTable2,
 	indexTable3,
 	indexTable4,
-	indexTable5 
+	indexTable5
 };
 
 static const int stepsizeTable[89] = {
@@ -71,8 +68,6 @@ static const int stepsizeTable[89] = {
     5894, 6484, 7132, 7845, 8630, 9493, 10442, 11487, 12635, 13899,
     15289, 16818, 18500, 20350, 22385, 24623, 27086, 29794, 32767
 };
-
-
 
 //
 // The Compressor
@@ -170,7 +165,7 @@ void FSoundComp::Compress16(S16* src, S32 n, std::vector<U8>* stream )
 				int step = stepsizeTable[index[i]];		/* Stepsize */
 				S32 delta = 0;				/* Current adpcm output value */
 				S32 vpdiff = 0;			/* Current change to valpred */
-				
+
 				int k = 1<<(nBits-2);
 				do {
 					if ( diff >= step ) {
@@ -178,7 +173,7 @@ void FSoundComp::Compress16(S16* src, S32 n, std::vector<U8>* stream )
 						diff -= step;
 						vpdiff += step;
 					}
-					step >>= 1;	
+					step >>= 1;
 					k >>= 1;
 				} while ( k );
 				vpdiff += step;	// add the 0.5
@@ -200,14 +195,13 @@ void FSoundComp::Compress16(S16* src, S32 n, std::vector<U8>* stream )
 				else if ( index[i] > 88 ) index[i] = 88;
 
 				delta |= sign;
-				
+
 				/* Step 6 - Output value */
 				PutBits(delta, nBits, stream );
 			}
 		}
 	}
 }
-
 
 //This filter only the number of S16  (WORDS or 2Bytes)
 //and not the number of samples
@@ -226,8 +220,8 @@ void FSoundComp::Compress(void* src, S32 n, std::vector<U8>* stream)
 	if ( is8Bit ) {
 		if ( !isStereo ) { //Mono
 
-			//MsgC("\nMono");	
-			
+			//MsgC("\nMono");
+
 			S16 buf[4096];
 			U8* s = (U8*)src;
 			while ( n > 0 ) {
@@ -239,11 +233,11 @@ void FSoundComp::Compress(void* src, S32 n, std::vector<U8>* stream)
 				s += nb;
 			}
 
-		}		
+		}
 		else { //Stereo   //CamStudio Extension v2.24
 
-			//MsgC("\nStereo");			
-		
+			//MsgC("\nStereo");
+
 			S16 buf[4096*2];
 			U8* s = (U8*)src;
 			while ( n > 0 ) {

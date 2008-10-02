@@ -84,7 +84,7 @@ char *readString(Buffer f)
 
   while((c=(char)readUInt8(f)) != '\0')
   {
-    if(len==buflen)
+    if (len==buflen)
     {
       buf = (char *)realloc(buf, sizeof(char)*(buflen+256));
       buflen += 256;
@@ -105,7 +105,7 @@ void dumpsbytes(Buffer f, int length)
   int j=0, i, k;
   unsigned char buf[16];
 
-  if(length==0)
+  if (length==0)
     return;
 
   for(;;)
@@ -115,11 +115,11 @@ void dumpsbytes(Buffer f, int length)
       printf("%02x ", buf[i] = readUInt8(f));
       ++j;
 
-      if(j==length)
+      if (j==length)
 		break;
     }
 
-    if(j==length)
+    if (j==length)
     {
       for(k=i+1; k<16; ++k)
 	print("   ");
@@ -130,14 +130,14 @@ void dumpsbytes(Buffer f, int length)
     print("   ");
 
     for(k=0; k<i; ++k)
-      if((buf[k] > 31) && (buf[k] < 128))
+      if ((buf[k] > 31) && (buf[k] < 128))
 	putchar(buf[k]);
       else
 	putchar('.');
 
     putchar('\n');
 
-    if(j==length)
+    if (j==length)
       break;
   }
   putchar('\n');
@@ -156,7 +156,7 @@ int printActionRecord(Buffer f)
 
   type = readUInt8(f);
 
-  if((type&0x80) == 0x80)
+  if ((type&0x80) == 0x80)
     length = readUInt16(f);
 
   switch(type)
@@ -305,11 +305,11 @@ int printActionRecord(Buffer f)
 	  case 3: /* ??? */
 	    println("Push type 3- ??");
 	    break;
-	  case 4: 
+	  case 4:
 	    println("Push type 4 (%i)- ??", readUInt8(f));
 	    break;
 	  case 5:
-	    if(readUInt8(f))
+	    if (readUInt8(f))
 	      println("Push true");
 	    else
 	      println("Push false");
@@ -368,7 +368,7 @@ int printActionRecord(Buffer f)
       break;
     case SWFACTION_GOTOEXPRESSION:
       print("Goto Expression");
-      if(readUInt8(f) == 1)
+      if (readUInt8(f) == 1)
 	printf(" and Play\n");
       else
 	printf(" and Stop\n");
@@ -496,7 +496,7 @@ int printActionRecord(Buffer f)
       print(name);
       putchar('(');
 
-      if(n > 0)
+      if (n > 0)
       {
 	printf("%s", readString(f));
 	--n;
@@ -535,7 +535,7 @@ void printDoAction(Buffer f, int length)
 {
   int end;
 
-  if(!f)
+  if (!f)
     return;
 
   end = fileOffset + length;
@@ -543,3 +543,4 @@ void printDoAction(Buffer f, int length)
   while(fileOffset < end && printActionRecord(f))
     ;
 }
+

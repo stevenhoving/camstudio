@@ -1,7 +1,7 @@
 // RenderSoft CamStudio
 //
 // Copyright 2001 RenderSoft Software & Web Publishing
-// 
+//
 //
 // vscapDoc.cpp : implementation of the CVscapDoc class
 //
@@ -52,8 +52,6 @@ BOOL CVscapDoc::OnNewDocument()
 
 	return TRUE;
 }
-
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CVscapDoc serialization

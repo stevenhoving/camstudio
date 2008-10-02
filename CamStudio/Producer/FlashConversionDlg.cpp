@@ -20,7 +20,7 @@ extern int noUrl;
 extern int noAutoPlay;
 extern int convertBits;
 extern CString swfname;
-extern CString swfbasename; 
+extern CString swfbasename;
 extern CString swfhtmlname;
 extern int onlyflashtag;
 extern CString urlRedirect;
@@ -68,7 +68,6 @@ void FlashConversionDlg::DoDataExchange(CDataExchange* pDX)
 	//}}AFX_DATA_MAP
 }
 
-
 BEGIN_MESSAGE_MAP(FlashConversionDlg, CPropertyPage)
 	//{{AFX_MSG_MAP(FlashConversionDlg)
 	ON_BN_CLICKED(IDC_SELECTFLASH, OnSelectflash)
@@ -84,7 +83,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // FlashConversionDlg message handlers
 
-BOOL FlashConversionDlg::OnInitDialog() 
+BOOL FlashConversionDlg::OnInitDialog()
 {
 	 //Multilanguage
 		CurLangID = STANDARD_LANGID;
@@ -94,17 +93,17 @@ BOOL FlashConversionDlg::OnInitDialog()
 	DWORD Type=REG_DWORD;
     DWORD Size=sizeof(DWORD);
     returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
-    
+
 	if (returnStatus == ERROR_SUCCESS)
     {
-		
+
         returnStatus = RegQueryValueEx(hKey, "LanguageID", NULL, &Type,(LPBYTE)&language, &Size);
-        
+
 	/*	if (returnStatus == ERROR_SUCCESS)
         {
-    
-        	if( !LoadLangIDDLL((int) language) ) 
-	         if( !LoadLangIDDLL(GetUserDefaultLangID()) )
+
+        	if ( !LoadLangIDDLL((int) language) )
+	         if ( !LoadLangIDDLL(GetUserDefaultLangID()) )
      			LoadLangIDDLL(GetSystemDefaultLangID());
         }*/
      }
@@ -119,7 +118,7 @@ BOOL FlashConversionDlg::OnInitDialog()
 	((CEdit *)GetDlgItem(IDC_FLASHNAME))->SetWindowText(swfname);
 	((CEdit *)GetDlgItem(IDC_HTMLNAME))->SetWindowText(swfhtmlname);
 	((CEdit *)GetDlgItem(IDC_URLREDIR))->SetWindowText("");
-	((CButton *)GetDlgItem(IDC_ONLYFLASHTAG))->SetCheck(onlyflashtag);		
+	((CButton *)GetDlgItem(IDC_ONLYFLASHTAG))->SetCheck(onlyflashtag);
 
 	if (convertBits == 32)
 	{
@@ -133,7 +132,6 @@ BOOL FlashConversionDlg::OnInitDialog()
 		((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(TRUE);
 
 	}
-
 
 	int sampleFPSIndex=8;
 	if (sampleFPS <=5 )
@@ -165,17 +163,16 @@ BOOL FlashConversionDlg::OnInitDialog()
 		keyframeIndex = 2;
 	else if (Max_HalfKeyDepth <=15 )
 		keyframeIndex = 3;
-	else 
-		keyframeIndex = 4;		
+	else
+		keyframeIndex = 4;
 	((CComboBox *) GetDlgItem(IDC_KEYFRAMERATE))->SetCurSel(keyframeIndex);
-	
+
 	if (useAudio)
 		((CButton *) GetDlgItem(IDC_ENCODEAUDIO))->SetCheck(TRUE);
 	else
 		((CButton *) GetDlgItem(IDC_ENCODEAUDIO))->SetCheck(FALSE);
 
 	((CComboBox *) GetDlgItem(IDC_AUDIOCOMPRESSION))->SetCurSel(useAudioCompression);
-
 
 	if (addControls)
 		((CButton *) GetDlgItem(IDC_ADDCONTROLS))->SetCheck(TRUE);
@@ -197,7 +194,6 @@ BOOL FlashConversionDlg::OnInitDialog()
 	else
 		((CButton *) GetDlgItem(IDC_ADDPRELOADER))->SetCheck(FALSE);
 
-	
 	// @FIXME[Carlo Lanzotti]: This will ruin the loaded configuration
 	//UpdateBehavior(produceRaw);
 
@@ -205,8 +201,7 @@ BOOL FlashConversionDlg::OnInitDialog()
 		((CButton *) GetDlgItem(IDC_RAW))->SetCheck(TRUE);
 	else
 		((CButton *) GetDlgItem(IDC_RAW))->SetCheck(FALSE);
-	
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -215,14 +210,14 @@ BOOL FlashConversionDlg::LoadLangIDDLL(LANGID LangID)
 {
 	HINSTANCE ghInstApp;
 	CString strLangIDDLL;
-	
-	if( LangID == STANDARD_LANGID )	// integrated language is the right one
+
+	if ( LangID == STANDARD_LANGID )	// integrated language is the right one
 		return true;
 	//AfxMessageBox( "lLang" );
 	strLangIDDLL.Format( _T("ProducerLANG%.2x.dll"), LangID );
 	ghInstApp = LoadLibrary( strLangIDDLL );
 	//hInstance = LoadLibrary( strLangIDDLL );
-	if( ghInstApp )
+	if ( ghInstApp )
 	{
 		AfxSetResourceHandle( ghInstApp );
 		CurLangID = LangID;
@@ -231,13 +226,13 @@ BOOL FlashConversionDlg::LoadLangIDDLL(LANGID LangID)
 	return false;
 }
 
-void FlashConversionDlg::OnOK() 
+void FlashConversionDlg::OnOK()
 {
-	// TODO: Add extra validation here	
+	// TODO: Add extra validation here
 
 	((CEdit *)GetDlgItem(IDC_BASENAME))->GetWindowText(swfbasename);
 	((CEdit *)GetDlgItem(IDC_FLASHNAME))->GetWindowText(swfname);
-	((CEdit *)GetDlgItem(IDC_HTMLNAME))->GetWindowText(swfhtmlname);		
+	((CEdit *)GetDlgItem(IDC_HTMLNAME))->GetWindowText(swfhtmlname);
 	onlyflashtag = ((CButton *)GetDlgItem(IDC_ONLYFLASHTAG))->GetCheck();
 
 	FILE* testSWF = fopen(LPCTSTR(swfname),"wb");
@@ -246,12 +241,12 @@ void FlashConversionDlg::OnOK()
 		CString msg, title, formatstr;
 		formatstr.LoadString(IDS_UCFS);
 		msg.Format(formatstr,LPCTSTR(swfname));
-		title.LoadString(IDS_NOTE);		
+		title.LoadString(IDS_NOTE);
 		MessageBox(msg,title,MB_OK | MB_ICONEXCLAMATION);
 		return;
 	}
 	else
-	{	
+	{
 		fclose(testSWF);
 		DeleteFile(swfname);
 
@@ -263,7 +258,7 @@ void FlashConversionDlg::OnOK()
 	else
 		convertBits = 32;
 
-	int sampleFPSIndex = ((CComboBox *) GetDlgItem(IDC_SAMPLEFPS))->GetCurSel();	 
+	int sampleFPSIndex = ((CComboBox *) GetDlgItem(IDC_SAMPLEFPS))->GetCurSel();
 	if	(sampleFPSIndex == 0)
 		sampleFPS =5;
 	else if	(sampleFPSIndex == 1)
@@ -283,27 +278,25 @@ void FlashConversionDlg::OnOK()
 	else if	(sampleFPSIndex == 8)
 		sampleFPS =40;
 
-	int keyframeIndex = ((CComboBox *) GetDlgItem(IDC_KEYFRAMERATE))->GetCurSel();	 
+	int keyframeIndex = ((CComboBox *) GetDlgItem(IDC_KEYFRAMERATE))->GetCurSel();
 	if (keyframeIndex ==0)
-		Max_HalfKeyDepth =5; 
+		Max_HalfKeyDepth =5;
 	else if (keyframeIndex ==1)
-		Max_HalfKeyDepth =10; 
+		Max_HalfKeyDepth =10;
 	else if (keyframeIndex ==2)
-		Max_HalfKeyDepth =12; 
+		Max_HalfKeyDepth =12;
 	else if (keyframeIndex ==3)
-		Max_HalfKeyDepth =15; 
-	else 
-		Max_HalfKeyDepth =20; 
+		Max_HalfKeyDepth =15;
+	else
+		Max_HalfKeyDepth =20;
 
-		
 	int bVal = ((CButton *) GetDlgItem(IDC_ENCODEAUDIO))->GetCheck();
 	if (bVal)
 		useAudio = 1;
 	else
 		useAudio = 0;
-		
-	useAudioCompression = ((CComboBox *) GetDlgItem(IDC_AUDIOCOMPRESSION))->GetCurSel();
 
+	useAudioCompression = ((CComboBox *) GetDlgItem(IDC_AUDIOCOMPRESSION))->GetCurSel();
 
 	bVal = ((CButton *) GetDlgItem(IDC_ADDCONTROLS))->GetCheck();
 	if (bVal)
@@ -316,7 +309,6 @@ void FlashConversionDlg::OnOK()
 		addPreloader=1;
 	else
 		addPreloader=0;
-		
 
 	bVal = ((CButton *) GetDlgItem(IDC_LOOP))->GetCheck();
 	if (bVal)
@@ -333,7 +325,6 @@ void FlashConversionDlg::OnOK()
 	{
 		urlRedirect = "";
 	}
-	
 
 	bVal = ((CButton *) GetDlgItem(IDC_AUTOSTART))->GetCheck();
 	if (bVal)
@@ -341,125 +332,109 @@ void FlashConversionDlg::OnOK()
 	else
 		noAutoPlay=1;
 
-
 	bVal = ((CButton *) GetDlgItem(IDC_RAW))->GetCheck();
 	if (bVal)
 		produceRaw=1;
 	else
 		produceRaw=0;
-	
+
 	CPropertyPage::OnOK();
 }
 
-void FlashConversionDlg::OnSelectflash() 
+void FlashConversionDlg::OnSelectflash()
 {
-			
 
 	//Prompt the user for the filename
-	static char BASED_CODE szFilter[] =	"Flash Movie Files (*.swf)|*.swf||";	
-	char szTitle[BUFSIZE];	
-	
-	LoadString( ghInstApp, IDS_SAVESWF1, szTitle, BUFSIZE );	 		
-				
-	CFileDialog fdlg(FALSE,"*.swf","*.swf",OFN_LONGNAMES,szFilter,this);	
-	fdlg.m_ofn.lpstrTitle=szTitle;	
-	
-			
+	static char BASED_CODE szFilter[] =	"Flash Movie Files (*.swf)|*.swf||";
+	char szTitle[BUFSIZE];
+
+	LoadString( ghInstApp, IDS_SAVESWF1, szTitle, BUFSIZE );
+
+	CFileDialog fdlg(FALSE,"*.swf","*.swf",OFN_LONGNAMES,szFilter,this);
+	fdlg.m_ofn.lpstrTitle=szTitle;
+
 	CString m_newfile;
-	
-	
-	if(fdlg.DoModal() == IDOK)
+
+	if (fdlg.DoModal() == IDOK)
 	{
-		m_newfile = fdlg.GetPathName();		
+		m_newfile = fdlg.GetPathName();
 		m_newbasefile = fdlg.GetFileName();
 
 		CString m_newHTMLfile = m_newfile +".html";
 		((CEdit *)GetDlgItem(IDC_BASENAME))->SetWindowText(m_newbasefile);
 		((CEdit *)GetDlgItem(IDC_FLASHNAME))->SetWindowText(m_newfile);
 		((CEdit *)GetDlgItem(IDC_HTMLNAME))->SetWindowText(m_newHTMLfile);
-		
-		//swfname = m_newfile;							
-		//swfbasename = m_newbasefile;				
+
+		//swfname = m_newfile;
+		//swfbasename = m_newbasefile;
 
 	}
-	else {				
-		
+	else {
+
 		return;
 
 	}
-
-				 
-
-	
 }
 
-void FlashConversionDlg::OnSelecthtml() 
+void FlashConversionDlg::OnSelecthtml()
 {
 	// TODO: Add your control notification handler code here
-	static char BASED_CODE szFilter[] =	"HTML Files (*.html)|*.html||";	
-	char szTitle[BUFSIZE];	
-	
-	LoadString( ghInstApp, IDS_SAVEHTML, szTitle, BUFSIZE );	 		
-				
-	CFileDialog fdlg(FALSE,"*.html","*.html",OFN_LONGNAMES,szFilter,this);	
-	fdlg.m_ofn.lpstrTitle=szTitle;	
-	
-			
+	static char BASED_CODE szFilter[] =	"HTML Files (*.html)|*.html||";
+	char szTitle[BUFSIZE];
+
+	LoadString( ghInstApp, IDS_SAVEHTML, szTitle, BUFSIZE );
+
+	CFileDialog fdlg(FALSE,"*.html","*.html",OFN_LONGNAMES,szFilter,this);
+	fdlg.m_ofn.lpstrTitle=szTitle;
+
 	CString m_newfile;
-	
-	
-	if(fdlg.DoModal() == IDOK)
+
+	if (fdlg.DoModal() == IDOK)
 	{
-		m_newfile = fdlg.GetPathName();		
+		m_newfile = fdlg.GetPathName();
 		((CEdit *)GetDlgItem(IDC_HTMLNAME))->SetWindowText(m_newfile);
-		
-		//swfname = m_newfile;							
-		//swfbasename = m_newbasefile;				
+
+		//swfname = m_newfile;
+		//swfbasename = m_newbasefile;
 
 	}
-	else {				
-		
+	else {
+
 		return;
 
 	}
-
-	
 }
 
-void FlashConversionDlg::OnRadio2() 
+void FlashConversionDlg::OnRadio2()
 {
 	// TODO: Add your control notification handler code here
 	((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(FALSE);
 	((CButton *) GetDlgItem(IDC_RADIO2))->SetCheck(TRUE);
-
-	
 }
 
-void FlashConversionDlg::OnRadio1() 
+void FlashConversionDlg::OnRadio1()
 {
 	// TODO: Add your control notification handler code here
 	((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(TRUE);
 	((CButton *) GetDlgItem(IDC_RADIO2))->SetCheck(FALSE);
-	
 }
 
-void FlashConversionDlg::OnRaw() 
+void FlashConversionDlg::OnRaw()
 {
 	int val = ((CButton *) GetDlgItem(IDC_RAW))->GetCheck();
 
 	// @FIXME[Carlo Lanzotti]: This will ruin the loaded configuration
 	// UpdateBehavior(val);
-	
 }
 
-void FlashConversionDlg::UpdateBehavior(int val) 
+void FlashConversionDlg::UpdateBehavior(int val)
 {
 	if (val)
 	{
 		((CButton *) GetDlgItem(IDC_ADDPRELOADER))->EnableWindow(FALSE);
 		((CButton *) GetDlgItem(IDC_ADDCONTROLS))->EnableWindow(FALSE);
 		((CButton *) GetDlgItem(IDC_LOOP))->EnableWindow(FALSE);
-		((CButton *) GetDlgItem(IDC_AUTOSTART))->EnableWindow(FALSE);	
+		((CButton *) GetDlgItem(IDC_AUTOSTART))->EnableWindow(FALSE);
 
 		((CButton *) GetDlgItem(IDC_ADDPRELOADER))->SetCheck(FALSE);
 		((CButton *) GetDlgItem(IDC_ADDCONTROLS))->SetCheck(FALSE);
@@ -467,7 +442,7 @@ void FlashConversionDlg::UpdateBehavior(int val)
 		((CButton *) GetDlgItem(IDC_CHECK1))->SetCheck(FALSE);
 		((CButton *) GetDlgItem(IDC_CHECK1))->EnableWindow(FALSE);
 		((CEdit *)	 GetDlgItem(IDC_URLREDIR))->SetWindowText("");
-		((CButton *) GetDlgItem(IDC_AUTOSTART))->SetCheck(TRUE);	
+		((CButton *) GetDlgItem(IDC_AUTOSTART))->SetCheck(TRUE);
 
 	}
 	else
@@ -475,7 +450,7 @@ void FlashConversionDlg::UpdateBehavior(int val)
 		((CButton *) GetDlgItem(IDC_ADDPRELOADER))->EnableWindow(TRUE);
 		((CButton *) GetDlgItem(IDC_ADDCONTROLS))->EnableWindow(TRUE);
 		((CButton *) GetDlgItem(IDC_LOOP))->EnableWindow(TRUE);
-		((CButton *) GetDlgItem(IDC_AUTOSTART))->EnableWindow(TRUE);	
+		((CButton *) GetDlgItem(IDC_AUTOSTART))->EnableWindow(TRUE);
 
 		((CButton *) GetDlgItem(IDC_ADDPRELOADER))->SetCheck(TRUE);
 		((CButton *) GetDlgItem(IDC_ADDCONTROLS))->SetCheck(TRUE);
@@ -485,9 +460,6 @@ void FlashConversionDlg::UpdateBehavior(int val)
 		((CButton *) GetDlgItem(IDC_CHECK1))->EnableWindow(TRUE);
 
 	}
-
-
-
 }
 
 void FlashConversionDlg::OnBnClickedLoop()
@@ -504,3 +476,4 @@ void FlashConversionDlg::OnBnClickedCheck1()
 	((CButton *) GetDlgItem(IDC_LOOP))->SetCheck(FALSE);
 	((CEdit *)GetDlgItem(IDC_URLREDIR))->EnableWindow(TRUE);
 }
+

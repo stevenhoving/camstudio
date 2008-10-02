@@ -10,7 +10,7 @@
 class CBitmapEx : public CBitmap
 {
 public:
-		CBitmapEx();	
+		CBitmapEx();
 		~CBitmapEx();
 		//load&save DDB
 		BOOL	Open(LPCSTR filename, LPCSTR DialogTitle=NULL);
@@ -19,18 +19,17 @@ public:
 		void	BitBlt(CDC *dc_to, POINT at, DWORD rop=SRCCOPY);
 		void	StretchBlt(CDC *dc_to, CRect to, DWORD rop=SRCCOPY);
 		CSize 	GetSize();
-		
+
 		BOOL 	CreateMono(int dx, int dy);
 		BOOL 	CreateColor(int dx, int dy);
 		BOOL	CreateFromDib(LPBITMAPINFO lpBi);
-
 
 		BOOL	CopyRect(CBitmap& bmp, CRect& rc);
 		HANDLE	DibFromBitmap();
 
 		CDC		*BegingModify();
 		void	EndModify();
-	
+
 static	HANDLE	DibFromBitmap(HBITMAP);
 static	DWORD	DibImageSize(HANDLE hDIB);
 

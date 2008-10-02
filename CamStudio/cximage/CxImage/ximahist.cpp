@@ -94,12 +94,12 @@ bool CxImage::HistogramStretch(long method)
 		for (long x=0; x<head.biWidth; x++)	{
 			gray = GetPixelIndex(x, y);
 			if (gray < minc)   minc = gray;
-			if (gray > maxc)   maxc = gray; 
+			if (gray > maxc)   maxc = gray;
 		}
 	}
 
 	if (minc == 0 && maxc == 255) return true;
-	
+
 	// calculate LUT
 	BYTE lut[256];
 	BYTE range = maxc - minc;
@@ -138,15 +138,15 @@ bool CxImage::HistogramStretch(long method)
 				if (color.rgbBlue < minc)  minc = color.rgbBlue;
 				if (color.rgbGreen < minc) minc = color.rgbGreen;
 
-				if (color.rgbRed > maxc)   maxc = color.rgbRed; 
-				if (color.rgbBlue > maxc)  maxc = color.rgbBlue; 
-				if (color.rgbGreen > maxc) maxc = color.rgbGreen; 
+				if (color.rgbRed > maxc)   maxc = color.rgbRed;
+				if (color.rgbBlue > maxc)  maxc = color.rgbBlue;
+				if (color.rgbGreen > maxc) maxc = color.rgbGreen;
 			}
 		}
 
 		if (minc == 0 && maxc == 255)
 			return true;
-		
+
 		// calculate LUT
 		BYTE lut[256];
 		BYTE range = maxc - minc;
@@ -198,9 +198,9 @@ bool CxImage::HistogramStretch(long method)
 				if (color.rgbBlue < minB)  minB = color.rgbBlue;
 				if (color.rgbGreen < minG) minG = color.rgbGreen;
 
-				if (color.rgbRed > maxR)   maxR = color.rgbRed; 
-				if (color.rgbBlue > maxB)  maxB = color.rgbBlue; 
-				if (color.rgbGreen > maxG) maxG = color.rgbGreen; 
+				if (color.rgbRed > maxR)   maxR = color.rgbRed;
+				if (color.rgbBlue > maxB)  maxB = color.rgbBlue;
+				if (color.rgbGreen > maxG) maxG = color.rgbGreen;
 			}
 		}
 
@@ -223,7 +223,7 @@ bool CxImage::HistogramStretch(long method)
 				lutG[x] = (BYTE)(255 * (x - minG) / range);
 			}
 		} else lutG[minG] = minG;
-			
+
 		BYTE lutB[256];
 		range = maxB - minB;
 		if (range != 0)	{
@@ -269,7 +269,7 @@ bool CxImage::HistogramStretch(long method)
 		if ( head.biClrUsed == 0 ){
 			long x, y, xmin, xmax, ymin, ymax;
 			xmin = ymin = 0;
-			xmax = head.biWidth; 
+			xmax = head.biWidth;
 			ymax = head.biHeight;
 
 			for( y = ymin; y < ymax; y++ ){
@@ -283,7 +283,7 @@ bool CxImage::HistogramStretch(long method)
 				}
 			}
 			if (upperd==lowerc) return false;
-			
+
 			for( y = ymin; y < ymax; y++ ){
 				info.nProgress = (long)(50+50*y/ymax);
 				if (info.nEscape) break;
@@ -351,7 +351,7 @@ bool CxImage::HistogramEqualize()
 	memset( &histogram, 0, sizeof(int) * 256 );
 	memset( &map, 0, sizeof(int) * 256 );
 	memset( &equalize_map, 0, sizeof(int) * 256 );
- 
+
      // form histogram
 	for(y=0; y < head.biHeight; y++){
 		info.nProgress = (long)(50*y/head.biHeight);
@@ -367,7 +367,7 @@ bool CxImage::HistogramEqualize()
 	j = 0;
 	for(i=0; i <= 255; i++){
 		j += histogram[i];
-		map[i] = j; 
+		map[i] = j;
 	}
 
 	// equalize
@@ -379,7 +379,7 @@ bool CxImage::HistogramEqualize()
 	}
 
 	// stretch the histogram
-	if(head.biClrUsed == 0){ // No Palette
+	if (head.biClrUsed == 0){ // No Palette
 		for( y = 0; y < head.biHeight; y++ ){
 			info.nProgress = (long)(50+50*y/head.biHeight);
 			if (info.nEscape) break;
@@ -425,7 +425,7 @@ bool CxImage::HistogramNormalize()
 
 	memset( &histogram, 0, sizeof( int ) * 256 );
 	memset( &normalize_map, 0, sizeof( unsigned int ) * 256 );
- 
+
      // form histogram
 	for(y=0; y < head.biHeight; y++){
 		info.nProgress = (long)(50*y/head.biHeight);
@@ -443,13 +443,13 @@ bool CxImage::HistogramNormalize()
 	intense = 0;
 	for( low = 0; low < 255; low++ ){
 		intense += histogram[low];
-		if( intense > threshold_intensity )	break;
+		if ( intense > threshold_intensity )	break;
 	}
 
 	intense = 0;
 	for( high = 255; high != 0; high--){
 		intense += histogram[ high ];
-		if( intense > threshold_intensity ) break;
+		if ( intense > threshold_intensity ) break;
 	}
 
 	if ( low == high ){
@@ -458,22 +458,22 @@ bool CxImage::HistogramNormalize()
 		intense = 0;
 		for( low = 0; low < 255; low++){
 			intense += histogram[low];
-			if( intense > threshold_intensity )	break;
+			if ( intense > threshold_intensity )	break;
 		}
 		intense = 0;
 		for( high = 255; high != 0; high-- ){
 			intense += histogram [high ];
-			if( intense > threshold_intensity )	break;
+			if ( intense > threshold_intensity )	break;
 		}
 	}
-	if( low == high ) return false;  // zero span bound
+	if ( low == high ) return false;  // zero span bound
 
 	// Stretch the histogram to create the normalized image mapping.
 	for(i = 0; i <= 255; i++){
 		if ( i < (int) low ){
 			normalize_map[i] = 0;
 		} else {
-			if(i > (int) high)
+			if (i > (int) high)
 				normalize_map[i] = 255;
 			else
 				normalize_map[i] = ( 255 - 1) * ( i - low) / ( high - low );
@@ -481,7 +481,7 @@ bool CxImage::HistogramNormalize()
 	}
 
 	// Normalize
-	if( head.biClrUsed == 0 ){
+	if ( head.biClrUsed == 0 ){
 		for( y = 0; y < head.biHeight; y++ ){
 			info.nProgress = (long)(50+50*y/head.biHeight);
 			if (info.nEscape) break;
@@ -524,7 +524,7 @@ bool CxImage::HistogramLog()
 	unsigned int YVal, high = 1;
 
     // Find Highest Luminance Value in the Image
-	if( head.biClrUsed == 0 ){ // No Palette
+	if ( head.biClrUsed == 0 ){ // No Palette
 		for(y=0; y < head.biHeight; y++){
 			info.nProgress = (long)(50*y/head.biHeight);
 			if (info.nEscape) break;
@@ -544,7 +544,7 @@ bool CxImage::HistogramLog()
 
 	// Logarithm Operator
 	double k = 255.0 / ::log( 1.0 + (double)high );
-	if( head.biClrUsed == 0 ){
+	if ( head.biClrUsed == 0 ){
 		for( y = 0; y < head.biHeight; y++ ){
 			info.nProgress = (long)(50+50*y/head.biHeight);
 			if (info.nEscape) break;
@@ -552,7 +552,7 @@ bool CxImage::HistogramLog()
 
 				color = GetPixelColor( x, y );
 				yuvClr = RGBtoYUV( color );
-                
+
 				yuvClr.rgbRed = (BYTE)(k * ::log( 1.0 + (double)yuvClr.rgbRed ) );
 
 				color = YUVtoRGB( yuvClr );
@@ -566,12 +566,12 @@ bool CxImage::HistogramLog()
 			yuvClr = RGBtoYUV( color );
 
             yuvClr.rgbRed = (BYTE)(k * ::log( 1.0 + (double)yuvClr.rgbRed ) );
-			
+
 			color = YUVtoRGB( yuvClr );
  			SetPaletteColor( (BYTE)i, color );
 		}
 	}
- 
+
 	return true;
 }
 
@@ -589,7 +589,7 @@ bool CxImage::HistogramRoot()
 	unsigned int YVal, high = 1;
 
      // Find Highest Luminance Value in the Image
-	if( head.biClrUsed == 0 ){ // No Palette
+	if ( head.biClrUsed == 0 ){ // No Palette
 		for(y=0; y < head.biHeight; y++){
 			info.nProgress = (long)(50*y/head.biHeight);
 			if (info.nEscape) break;
@@ -609,7 +609,7 @@ bool CxImage::HistogramRoot()
 
 	// Root Operator
 	double k = 128.0 / ::log( 1.0 + (double)high );
-	if( head.biClrUsed == 0 ){
+	if ( head.biClrUsed == 0 ){
 		for( y = 0; y < head.biHeight; y++ ){
 			info.nProgress = (long)(50+50*y/head.biHeight);
 			if (info.nEscape) break;
@@ -642,7 +642,7 @@ bool CxImage::HistogramRoot()
  			SetPaletteColor( (BYTE)i, color );
 		}
 	}
- 
+
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////

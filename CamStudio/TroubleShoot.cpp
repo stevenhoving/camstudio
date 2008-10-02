@@ -12,12 +12,11 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 extern int restrictVideoCodecs;
-extern int TroubleShootVal; 
+extern int TroubleShootVal;
 extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 
 /////////////////////////////////////////////////////////////////////////////
 // TroubleShoot dialog
-
 
 TroubleShoot::TroubleShoot(CWnd* pParent /*=NULL*/)
 : CDialog(TroubleShoot::IDD, pParent)
@@ -27,7 +26,6 @@ TroubleShoot::TroubleShoot(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 }
 
-
 void TroubleShoot::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -35,7 +33,6 @@ void TroubleShoot::DoDataExchange(CDataExchange* pDX)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
-
 
 BEGIN_MESSAGE_MAP(TroubleShoot, CDialog)
 	//{{AFX_MSG_MAP(TroubleShoot)
@@ -47,13 +44,13 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // TroubleShoot message handlers
 
-void TroubleShoot::OnCheck1() 
+void TroubleShoot::OnCheck1()
 {
 	// TODO: Add your control notification handler code here
 
 }
 
-void TroubleShoot::OnOK() 
+void TroubleShoot::OnOK()
 {
 	// TODO: Add extra validation here
 
@@ -62,9 +59,8 @@ void TroubleShoot::OnOK()
 	int check = ((CButton *) GetDlgItem(IDC_CHECK1))->GetCheck();
 	int ret=IDNO;
 	if (check) {
-		//ret = MessageBox("CamStudio will now exit and set your system to record with microphone. Proceed ?","Note",MB_YESNOCANCEL | MB_ICONQUESTION); 
+		//ret = MessageBox("CamStudio will now exit and set your system to record with microphone. Proceed ?","Note",MB_YESNOCANCEL | MB_ICONQUESTION);
 		ret = MessageOut(this->m_hWnd,IDS_STRING_EXITSET ,IDS_STRING_NOTE,MB_YESNOCANCEL | MB_ICONQUESTION);
-
 
 		if (ret==IDYES)
 			TroubleShootVal += 1;
@@ -85,21 +81,19 @@ void TroubleShoot::OnOK()
 	CDialog::OnOK();
 }
 
-
-void TroubleShoot::OnCheck2() 
+void TroubleShoot::OnCheck2()
 {
 	// TODO: Add your control notification handler code here
 
 }
 
-BOOL TroubleShoot::OnInitDialog() 
+BOOL TroubleShoot::OnInitDialog()
 {
 
 	if (restrictVideoCodecs)
 		((CButton *) GetDlgItem(IDC_CHECK2))->SetCheck(TRUE);
 	else
 		((CButton *) GetDlgItem(IDC_CHECK2))->SetCheck(FALSE);
-
 
 	CDialog::OnInitDialog();
 

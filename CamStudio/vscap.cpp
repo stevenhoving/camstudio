@@ -103,7 +103,7 @@ BOOL CVscapApp::InitInstance()
 	free((void*)m_pszProfileName);
 	// Change the name of the .INI file.
 	// The CWinApp destructor will free the memory.
-	m_pszProfileName = _tcsdup(_T(".\\CamStudio.ini"));	
+	m_pszProfileName = _tcsdup(_T(".\\CamStudio.ini"));
 
 	CurLangID = static_cast<LANGID>(GetProfileInt(SEC_SETTINGS, ENT_LANGID, STANDARD_LANGID));
 	if (!LoadLanguage(CurLangID)) {
@@ -232,7 +232,6 @@ void CAboutDlg::OnButtonlink()
 
 /////////////////////////////////////////////////////////////////////////////
 // CVscapApp commands
-
 
 // App command to run the dialog
 void CVscapApp::OnAppAbout()

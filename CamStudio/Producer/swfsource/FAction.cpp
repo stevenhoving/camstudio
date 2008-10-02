@@ -3,16 +3,15 @@
 
 void FlashActionRecord::WriteHeader(N_STD::ostream &out, UWORD size)
 {
-	if(m_code > 0x80)
+	if (m_code > 0x80)
 	{
 		out.put( (char)m_code);
 		WRITE_UWORD(size);
 	}
 	else
 	{
-		out.put( (char)m_code);			
+		out.put( (char)m_code);
 	}
-
 }
 
 void FlashActionPush::Write(N_STD::ostream &out)
@@ -31,10 +30,9 @@ void FlashActionPush::Read(N_STD::istream &in)
 	in.read(data,m_size-1);
 }
 
-
 FlashActionDefineFunction::FlashActionDefineFunction( char *function ...)
 {
-		
+
 	m_functionName=function;
 
 	va_list ap;
@@ -43,13 +41,12 @@ FlashActionDefineFunction::FlashActionDefineFunction( char *function ...)
 	for(;;)
 	{
 		char *p=va_arg(ap,char*);
-		if(p == 0) break;
+		if (p == 0) break;
 		m_paramNames.push_back(p);
 	}
 	va_end(ap);
 
 	m_numParams = m_paramNames.size();
-	
 }
 
 FlashActionDefineFunction::~FlashActionDefineFunction()
@@ -65,7 +62,7 @@ void FlashActionDefineFunction::Write(N_STD::ostream &out)
 {
 
 	out.put((char)0x9B); // FActionDefineFunction tag
-	
+
 	int len=0;
 	for(N_STD::vector<char*>::iterator i=m_paramNames.begin(); i != m_paramNames.end(); i++)
 	{
@@ -73,12 +70,12 @@ void FlashActionDefineFunction::Write(N_STD::ostream &out)
 	}
 
 	WRITE_UWORD(strlen(m_functionName)+1+len+4);
-	
+
 	out << m_functionName;
 	out.put((char)0);
-	
+
 	WRITE_UWORD(m_numParams);
-	
+
 	for(N_STD::vector<char*>::iterator is=m_paramNames.begin(); is != m_paramNames.end(); is++)
 	{
 		out << (*is);
@@ -95,7 +92,7 @@ void FlashActionDefineFunction::Write(N_STD::ostream &out)
 void FlashActionDefineFunction::Read(N_STD::istream &in)
 {
 	ReadHeader(in);
-	
+
 	{
 		N_STD::vector<char> str;
 		unsigned int i;
@@ -106,16 +103,16 @@ void FlashActionDefineFunction::Read(N_STD::istream &in)
 		m_functionName = (char*)malloc(str.size()+1);
 		m_gcstrings.push_back(m_functionName);
 		i=0;
-	
+
 		for(;i < str.size(); i++)
 		{
 			(m_functionName)[i]=str[i];
 		}
 		(m_functionName)[i]=0;
 	}
-	
+
 	READ_UWORD(m_numParams);
-	
+
 	for(UDWORD it = 0; it < (UDWORD)m_numParams; it++)
 	{
 		N_STD::vector<char> str;
@@ -128,7 +125,7 @@ void FlashActionDefineFunction::Read(N_STD::istream &in)
 		m_paramNames.push_back(s);
 		m_gcstrings.push_back(s);
 		i=0;
-	
+
 		for(;i < str.size(); i++)
 		{
 			(m_paramNames[it])[i]=str[i];
@@ -138,7 +135,7 @@ void FlashActionDefineFunction::Read(N_STD::istream &in)
 
 	UWORD actionsBlockSize;
 	READ_UWORD(actionsBlockSize);
-	
+
 	FlashActionVectorImporter i;
 	i.Import(in,m_actions, records_delete, actionsBlockSize);
 }
@@ -153,39 +150,37 @@ FlashActionConstantPool::FlashActionConstantPool(char *c ...)
 	char *p=c;
 	m_strings.push_back(p);
 	m_length+=strlen(p)+1;
-	
+
 	for(;;)
 	{
 		char *p=va_arg(ap,char*);
-		if(p == 0) break;
+		if (p == 0) break;
 		m_strings.push_back(p);
 		m_length+=strlen(p)+1;
 	}
 	va_end(ap);
-	
 }
 void FlashActionConstantPool::Write(N_STD::ostream &out)
 {
 	out.put((char)0x88);
 	WRITE_UWORD(m_length+2);
 	WRITE_UWORD(m_strings.size());
-	
+
 	for(N_STD::vector<char*>::iterator is=m_strings.begin(); is != m_strings.end(); is++)
 	{
 		out << (*is);
 		out.put((char)0);
 	}
-
 }
 
 void FlashActionConstantPool::Read(N_STD::istream &in)
 {
 	ReadHeader(in);
-	
+
 	UWORD size;
 	m_length = m_size - 2;
 	READ_UWORD(size);
-	
+
 	for(UDWORD it = 0; it < (UDWORD)size; it++)
 	{
 		N_STD::vector<char> str;
@@ -197,9 +192,9 @@ void FlashActionConstantPool::Read(N_STD::istream &in)
 		char *s = (char*)malloc(str.size()+1);
 		m_strings.push_back(s);
 		m_gcstrings.push_back(s);
-		
+
 		i=0;
-	
+
 		for(;i < str.size(); i++)
 		{
 			(m_strings[it])[i]=str[i];
@@ -215,7 +210,7 @@ void FlashActionWith::AddAction(FlashActionRecord *r)
 
 void FlashActionWith::Write(N_STD::ostream &out)
 {
-	out.put((char)0x94);		
+	out.put((char)0x94);
 	N_STD::ostrstream tmp;
 	for(N_STD::vector<FlashActionRecord *>::iterator ir = m_actions.begin(); ir != m_actions.end(); ir++)
 	{
@@ -225,7 +220,7 @@ void FlashActionWith::Write(N_STD::ostream &out)
 	out.write(tmp.rdbuf()->str(),tmp.pcount());
 }
 void FlashActionWith::Read(N_STD::istream &in)
-{	
+{
 	ReadHeader(in);
 	FlashActionVectorImporter i;
 	i.Import(in,m_actions, records_delete);
@@ -234,7 +229,7 @@ void FlashTagDoAction::AddAction(FlashActionRecord *r)
 {
 	records.push_back(r);
 }
-FlashTagDoAction::~FlashTagDoAction() 
+FlashTagDoAction::~FlashTagDoAction()
 {
 }
 N_STD::ostream &operator<< (N_STD::ostream &out, FlashTagDoAction &data)
@@ -244,9 +239,9 @@ N_STD::ostream &operator<< (N_STD::ostream &out, FlashTagDoAction &data)
 	{
 		(*i)->Write(tmp);
 	}
-	
+
 	out << FlashTagHeader(12, tmp.pcount()+1);
-	out.write(tmp.rdbuf()->str(),tmp.pcount());		
+	out.write(tmp.rdbuf()->str(),tmp.pcount());
 	out << (char)0;
 	return out;
 }
@@ -256,15 +251,17 @@ N_STD::istream &operator>> (N_STD::istream &in,  FlashTagDoAction &data)
 	i.Import(in,data.records, data.records_delete);
 	return in;
 }
-#define IMPORT_ACTION_IF(n,x)					\
-		if(i == x)								\
-		{										\
-			FlashActionRecord *p = new n();     \
-			v.push_back(p);				        \
-			d.push_back(p);                     \
-			(*v[count]).Read(in);				\
-		}
-#define IMPORT_ACTION_ELSE_IF(n,x)				\
+
+#define IMPORT_ACTION_IF(n, x)				\
+	if (i == x)								\
+	{										\
+		FlashActionRecord *p = new n();     \
+		v.push_back(p);				        \
+		d.push_back(p);                     \
+		(*v[count]).Read(in);				\
+	}
+
+#define IMPORT_ACTION_ELSE_IF(n,x)			\
 		else IMPORT_ACTION_IF(n,x)
 
 void FlashActionVectorImporter::Import(N_STD::istream &in, N_STD::vector<FlashActionRecord *> &v, gc_vector<FlashActionRecord*> &d)
@@ -287,7 +284,7 @@ void FlashActionVectorImporter::Import(N_STD::istream &in, N_STD::vector<FlashAc
 
 		IMPORT_ACTION_ELSE_IF(FlashActionGetURL, 0x83)
 		IMPORT_ACTION_ELSE_IF(FlashActionWaitForFrame, 0x8A)
-				
+
 		IMPORT_ACTION_ELSE_IF(FlashActionAdd,0x0A)
 		IMPORT_ACTION_ELSE_IF(FlashActionSubtract,0x0B)
 		IMPORT_ACTION_ELSE_IF(FlashActionMultiply,0x0C)
@@ -330,7 +327,7 @@ void FlashActionVectorImporter::Import(N_STD::istream &in, N_STD::vector<FlashAc
 		IMPORT_ACTION_ELSE_IF(FlashActionGotoFrame2,0x9F)
 
 		IMPORT_ACTION_ELSE_IF(FlashActionPush, 0x96) // handle alternate instances??
-		
+
 		IMPORT_ACTION_ELSE_IF(FlashActionDelete,0x3a)
 		IMPORT_ACTION_ELSE_IF(FlashActionDelete2,0x3b)
 		IMPORT_ACTION_ELSE_IF(FlashActionDefineLocal,0x3c)
@@ -402,7 +399,7 @@ void FlashActionVectorImporter::Import(N_STD::istream &in, N_STD::vector<FlashAc
 
 		IMPORT_ACTION_ELSE_IF(FlashActionGetURL, 0x83)
 		IMPORT_ACTION_ELSE_IF(FlashActionWaitForFrame, 0x8A)
-				
+
 		IMPORT_ACTION_ELSE_IF(FlashActionAdd,0x0A)
 		IMPORT_ACTION_ELSE_IF(FlashActionSubtract,0x0B)
 		IMPORT_ACTION_ELSE_IF(FlashActionMultiply,0x0C)
@@ -445,7 +442,7 @@ void FlashActionVectorImporter::Import(N_STD::istream &in, N_STD::vector<FlashAc
 		IMPORT_ACTION_ELSE_IF(FlashActionGotoFrame2,0x9F)
 
 		IMPORT_ACTION_ELSE_IF(FlashActionPush, 0x96) // Not Exactly....handle alternate instances
-		
+
 		IMPORT_ACTION_ELSE_IF(FlashActionDelete,0x3a)
 		IMPORT_ACTION_ELSE_IF(FlashActionDelete2,0x3b)
 		IMPORT_ACTION_ELSE_IF(FlashActionDefineLocal,0x3c)
@@ -492,7 +489,7 @@ void FlashActionVectorImporter::Import(N_STD::istream &in, N_STD::vector<FlashAc
 		}
 		count ++;
 	}
-	if((actionsBlockSize + start) < (UDWORD)in.tellg())
+	if ((actionsBlockSize + start) < (UDWORD)in.tellg())
 	{
 		UDWORD difference = (UDWORD)in.tellg() - (UDWORD)(actionsBlockSize + start);
 		std::cout << "ActionBlock Size Discrepancy: -" << difference << "\n";

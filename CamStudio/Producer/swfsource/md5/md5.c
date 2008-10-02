@@ -85,7 +85,7 @@ void MD5Update(struct MD5Context *ctx, unsigned char const *buf, unsigned len)
 }
 
 /*
- * Final wrapup - pad to 64-byte boundary with the bit pattern 
+ * Final wrapup - pad to 64-byte boundary with the bit pattern
  * 1 0* (64-bit count of bits processed, MSB-first)
  */
 void MD5Final(unsigned char digest[16], struct MD5Context *ctx)
@@ -229,7 +229,7 @@ void MD5Transform(word32 buf[4], word32 const in[16])
     buf[3] += d;
 }
 
-char* crypt_md5(const char* pw, const char* salt)	
+char* crypt_md5(const char* pw, const char* salt)
 {
 	static char	*magic = "$1$";	/*
 					 * This string is magic for
@@ -248,7 +248,7 @@ char* crypt_md5(const char* pw, const char* salt)
 	sp = salt;
 
 	/* If it starts with the magic string, then skip that */
-	if(!strncmp(sp,magic,strlen(magic)))
+	if (!strncmp(sp,magic,strlen(magic)))
 		sp += strlen(magic);
 
 	/* It stops at the first '$', max 8 chars */
@@ -283,7 +283,7 @@ char* crypt_md5(const char* pw, const char* salt)
 
 	/* Then something really weird... */
 	for (i = strlen(pw); i ; i >>= 1)
-		if(i&1)
+		if (i&1)
 		    MD5Update(&ctx, final, 1);
 		else
 		    MD5Update(&ctx, pw, 1);
@@ -302,18 +302,18 @@ char* crypt_md5(const char* pw, const char* salt)
 	 */
 	for(i=0;i<1000;i++) {
 		MD5Init(&ctx1);
-		if(i & 1)
+		if (i & 1)
 			MD5Update(&ctx1,pw,strlen(pw));
 		else
 			MD5Update(&ctx1,final,MD5_SIZE);
 
-		if(i % 3)
+		if (i % 3)
 			MD5Update(&ctx1,sp,sl);
 
-		if(i % 7)
+		if (i % 7)
 			MD5Update(&ctx1,pw,strlen(pw));
 
-		if(i & 1)
+		if (i & 1)
 			MD5Update(&ctx1,final,MD5_SIZE);
 		else
 			MD5Update(&ctx1,pw,strlen(pw));
