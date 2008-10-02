@@ -39,7 +39,7 @@ APPICON1                ICON                    "appicon1.ico"
 // Menu
 //
 
-PLAYER MENU 
+PLAYER MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -64,13 +64,13 @@ END
 //
 
 IDD_ABOUT DIALOGEX 0, 0, 193, 99
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | 
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE |
     WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "About"
 FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    CTEXT           "Rendersoft Video Player 1.0",IDC_STATIC,27,6,122,8,NOT 
+    CTEXT           "Rendersoft Video Player 1.0",IDC_STATIC,27,6,122,8,NOT
                     WS_GROUP
     CTEXT           "Copyright (C) 2001",IDC_STATIC,29,22,120,8,NOT WS_GROUP
     CTEXT           "RenderSoft Software and Web Publishing",IDC_STATIC,10,
@@ -91,12 +91,12 @@ END
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
     "#include ""windows.h""\r\n"
@@ -106,7 +106,7 @@ BEGIN
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -121,7 +121,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_ABOUT, DIALOG
     BEGIN
@@ -137,7 +137,7 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_VERSION      "CamStudio Player requires a newer version of Video for Windows."
     IDS_STRING_NOTE         "Note"

@@ -83,7 +83,6 @@ AudioFormat::AudioFormat(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 }
 
-
 void AudioFormat::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -115,7 +114,7 @@ void AudioFormat::OnOK()
 	int ifactornum;
 
 	((CEdit *) (GetDlgItem(IDC_IFACTOR)))->GetWindowText(interleaveFactorStr);
-	sscanf(LPCTSTR(interleaveFactorStr),"%d",&ifactornum);
+	sscanf_s(LPCTSTR(interleaveFactorStr),"%d",&ifactornum);
 	if (ifactornum<=0) {
 		MessageOut(this->m_hWnd,IDS_STRING_INTERLEAVE1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 		//MessageBox("Interleave factor must greater than 0","Note",MB_OK | MB_ICONEXCLAMATION);
@@ -130,22 +129,16 @@ void AudioFormat::OnOK()
 	interleaveFactor = ifactornum;
 
 	BOOL binteleave =((CButton *) (GetDlgItem(IDC_INTERLEAVE)))->GetCheck();
-	if (binteleave)
-		interleaveFrames = TRUE;
-	else
-		interleaveFrames = FALSE;
+	interleaveFrames = (binteleave) ? TRUE : FALSE;
 
 	BOOL interleave_unit= ((CButton *) (GetDlgItem(IDC_INTERLEAVEFRAMES)))->GetCheck();
-	if (interleave_unit)
-		interleaveUnit = FRAMES;
-	else
-		interleaveUnit = MILLISECONDS;
+	interleaveUnit = (interleave_unit) ? FRAMES : MILLISECONDS;
 
 	//The Recording format, Compressed format and device must be valid before
 	//data from the Audio Options Dialog can be updated to the external variables
 	if (numformat>0) {
 		int sel =((CComboBox *) (GetDlgItem(IDC_COMBO1)))->GetCurSel();
-		if (sel>=0) {
+		if (sel >= 0) {
 			if (pwfxLocal) {
 				//Ver 1.2
 				int getdevice = ((CComboBox *) (GetDlgItem(IDC_INPUTDEVICE)))->GetCurSel();
@@ -543,7 +536,7 @@ void SuggestLocalCompressFormat()
 		mmr = acmFormatSuggest(NULL, &m_FormatLocal, pwfxLocal, cbwfxLocal, ACM_FORMATSUGGESTF_WFORMATTAG);
 	}
 
-	if (mmr!=0) {
+	if (mmr != 0) {
 		//ver 1.6, use PCM if MP3 not available
 
 		//Then try ADPCM
@@ -896,16 +889,14 @@ BOOL AudioFormat::OpenUsingRegisteredClass (CString link)
 	HINSTANCE result;
 
 	if (GetRegKey (HKEY_CLASSES_ROOT, _T (".htm"), key) == ERROR_SUCCESS) {
-		LPCTSTR mode;
-		mode = _T ("\\shell\\open\\command");
-		_tcscat (key, mode);
+		LPCTSTR mode = _T ("\\shell\\open\\command");
+		strcat(key, mode);
 		if (GetRegKey (HKEY_CLASSES_ROOT, key, key) == ERROR_SUCCESS) {
-			LPTSTR pos;
-			pos = _tcsstr (key, _T ("\"%1\""));
+			LPTSTR pos = strstr(key, _T ("\"%1\""));
 			if (pos == NULL) {
 				// No quotes found
 
-				pos = strstr (key, _T ("%1")); // Check for %1, without quotes
+				pos = strstr(key, _T ("%1")); // Check for %1, without quotes
 
 				if (pos == NULL) // No parameter at all...
 					pos = key + _tcslen (key) - 1;
@@ -914,8 +905,8 @@ BOOL AudioFormat::OpenUsingRegisteredClass (CString link)
 			} else
 				*pos = _T ('\0'); // Remove the parameter
 
-			_tcscat (pos, _T (" "));
-			_tcscat (pos, link);
+			strcat_s(pos, strlen(pos) + 2, _T (" "));
+			strcat_s(pos, strlen(pos) + strlen(link) + 1, link);
 			result = (HINSTANCE) WinExec (key, SW_SHOW);
 			if ((int) result <= HINSTANCE_ERROR) {
 				CString str;
@@ -965,14 +956,13 @@ BOOL AudioFormat::OpenUsingRegisteredClass (CString link)
 				}
 				str = _T ("Unable to open hyperlink:\n\n") + str;
 				AfxMessageBox (str, MB_ICONEXCLAMATION | MB_OK);
-			}
-			else
+			} else {
 				return TRUE;
+			}
 		}
 	}
 	return FALSE;
 }
-
 
 LONG AudioFormat::GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata)
 {
@@ -982,7 +972,7 @@ LONG AudioFormat::GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata)
 		long datasize = MAX_PATH;
 		TCHAR data[MAX_PATH];
 		RegQueryValue (hkey, NULL, data, &datasize);
-		_tcscpy (retdata, data);
+		strcpy_s(retdata, strlen(retdata) + strlen(data) + 1, data);
 		RegCloseKey (hkey);
 	}
 

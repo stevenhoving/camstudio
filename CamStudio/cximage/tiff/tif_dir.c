@@ -4,23 +4,23 @@
  * Copyright (c) 1988-1997 Sam Leffler
  * Copyright (c) 1991-1997 Silicon Graphics, Inc.
  *
- * Permission to use, copy, modify, distribute, and sell this software and 
+ * Permission to use, copy, modify, distribute, and sell this software and
  * its documentation for any purpose is hereby granted without fee, provided
  * that (i) the above copyright notices and this permission notice appear in
  * all copies of the software and related documentation, and (ii) the names of
  * Sam Leffler and Silicon Graphics may not be used in any advertising or
  * publicity relating to the software without the specific, prior written
  * permission of Sam Leffler and Silicon Graphics.
- * 
- * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND, 
- * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY 
- * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  
- * 
+ *
+ * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
+ * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+ *
  * IN NO EVENT SHALL SAM LEFFLER OR SILICON GRAPHICS BE LIABLE FOR
  * ANY SPECIAL, INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
  * OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
- * WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF 
- * LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE 
+ * WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
+ * LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
  * OF THIS SOFTWARE.
  */
 
@@ -167,7 +167,7 @@ _TIFFVSetField(TIFF* tif, ttag_t tag, va_list ap)
 		/*
 		 * Setup new compression routine state.
 		 */
-		if( (status = TIFFSetCompressionScheme(tif, v)) != 0 )
+		if ( (status = TIFFSetCompressionScheme(tif, v)) != 0 )
                     td->td_compression = v;
                 else
                     status = 0;
@@ -380,7 +380,7 @@ _TIFFVSetField(TIFF* tif, ttag_t tag, va_list ap)
  		_TIFFsetFloatArray(&td->td_matrixWorldToCamera,
  			va_arg(ap, float*), 16);
  		break;
- 	/* End Pixar Tags */	       
+ 	/* End Pixar Tags */
 
 #if SUBIFD_SUPPORT
 	case TIFFTAG_SUBIFD:
@@ -438,7 +438,7 @@ _TIFFVSetField(TIFF* tif, ttag_t tag, va_list ap)
 		s = va_arg(ap, char*);
 		i = checkInkNamesString(tif, i, s);
                 status = i > 0;
-		if( i > 0 ) {
+		if ( i > 0 ) {
 			_TIFFsetNString(&td->td_inknames, s, i);
 			td->td_inknameslen = i;
 		}
@@ -465,7 +465,7 @@ _TIFFVSetField(TIFF* tif, ttag_t tag, va_list ap)
  		break;
 #endif
 #ifdef IPTC_SUPPORT
-    case TIFFTAG_RICHTIFFIPTC: 
+    case TIFFTAG_RICHTIFFIPTC:
   		td->td_richtiffiptcLength = (uint32) va_arg(ap, uint32);
 #ifdef PHOTOSHOP_SUPPORT
   		_TIFFsetLongArray ((uint32**)&td->td_richtiffiptcData, va_arg(ap, uint32*),
@@ -481,7 +481,7 @@ _TIFFVSetField(TIFF* tif, ttag_t tag, va_list ap)
 		 * This can happen if multiple images are open with
 		 * different codecs which have private tags.  The
 		 * global tag information table may then have tags
-		 * that are valid for one file but not the other. 
+		 * that are valid for one file but not the other.
 		 * If the client tries to set a tag that is not valid
 		 * for the image's codec then we'll arrive here.  This
 		 * happens, for example, when tiffcp is used to convert
@@ -848,7 +848,7 @@ _TIFFVGetField(TIFF* tif, ttag_t tag, va_list ap)
 		 * This can happen if multiple images are open with
 		 * different codecs which have private tags.  The
 		 * global tag information table may then have tags
-		 * that are valid for one file but not the other. 
+		 * that are valid for one file but not the other.
 		 * If the client tries to get a tag that is not valid
 		 * for the image's codec then we'll arrive here.
 		 */
@@ -1119,7 +1119,7 @@ TIFFNumberOfDirectories(TIFF* tif)
 {
     toff_t nextdir = tif->tif_header.tiff_diroff;
     tdir_t n = 0;
-    
+
     while (nextdir != 0 && TIFFAdvanceDirectory(tif, &nextdir, NULL))
         n++;
     return (n);
@@ -1283,7 +1283,7 @@ TIFFReassignTagToIgnore (enum TIFFIgnoreSense task, int TIFFtagID)
             return (TRUE) ;
         }
         break ;
-        
+
       case TIS_EXTRACT:
         for ( i = 0 ; i < tagcount ; ++i )
         {
@@ -1291,14 +1291,14 @@ TIFFReassignTagToIgnore (enum TIFFIgnoreSense task, int TIFFtagID)
                 return (TRUE) ;
         }
         break;
-        
+
       case TIS_EMPTY:
         tagcount = 0 ;			/* Clear the list */
         return (TRUE) ;
-        
+
       default:
         break;
     }
-    
+
     return (FALSE);
 }

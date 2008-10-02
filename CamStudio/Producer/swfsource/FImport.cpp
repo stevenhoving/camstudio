@@ -11,32 +11,31 @@
 
 void FlashMyImporter::PrintMatrix(const FlashMatrix &m)
 {
-	if(m.HasRotate()) std::cout << "  Rotate:    " << (double)m.GetRotateX().lowerval/0xffff + m.GetRotateX().upperval << ", " << (double)m.GetRotateY().lowerval/0xffff + m.GetRotateY().upperval << "\n";
-	if(m.HasScale())  std::cout << "  Scale:     " << (double)m.GetScaleX().lowerval/0xffff + m.GetScaleX().upperval << ", " << (double)m.GetScaleY().lowerval/0xffff + m.GetScaleY().upperval << "\n";
+	if (m.HasRotate()) std::cout << "  Rotate:    " << (double)m.GetRotateX().lowerval/0xffff + m.GetRotateX().upperval << ", " << (double)m.GetRotateY().lowerval/0xffff + m.GetRotateY().upperval << "\n";
+	if (m.HasScale())  std::cout << "  Scale:     " << (double)m.GetScaleX().lowerval/0xffff + m.GetScaleX().upperval << ", " << (double)m.GetScaleY().lowerval/0xffff + m.GetScaleY().upperval << "\n";
 	std::cout					<< "  Translate: " << m.GetTranslateX()  << ", " << m.GetTranslateY() << "\n";
 }
 
 void FlashMyImporter::PrintCFX(const FlashColorTransform &cfx)
 {
-	
-	if(cfx.HasAdd())
+
+	if (cfx.HasAdd())
 	{
-		if(cfx.GetAddRGB().GetAlphaWriteMode())
+		if (cfx.GetAddRGB().GetAlphaWriteMode())
 		{
 			std::cout   << "  AddRGBA:  " << cfx.GetAddRGB().GetR() << ", " << cfx.GetAddRGB().GetG() << ", " << cfx.GetAddRGB().GetB() << ", " << cfx.GetAddRGB().GetA() << "\n";
 		}
 		else std::cout  << "  AddRGB:   " << cfx.GetAddRGB().GetR() << ", " << cfx.GetAddRGB().GetG() << ", " << cfx.GetAddRGB().GetB() << "\n";
 	}
-	if(cfx.HasMult())
+	if (cfx.HasMult())
 	{
-		if(cfx.GetMultRGB().GetAlphaWriteMode())
+		if (cfx.GetMultRGB().GetAlphaWriteMode())
 		{
 			std::cout   << "  MultRGBA:  " << cfx.GetMultRGB().GetR() << ", " << cfx.GetMultRGB().GetG() << ", " << cfx.GetMultRGB().GetB() << ", " << cfx.GetMultRGB().GetA() << "\n";
 		}
 		else std::cout   <<"  MultRGB:   " << cfx.GetMultRGB().GetR() << ", " << cfx.GetMultRGB().GetG() << ", " << cfx.GetMultRGB().GetB() << "\n";
 	}
 }
-
 
 void FlashMyImporter::PrintRect(const FlashRect &r)
 {
@@ -52,7 +51,7 @@ void FlashMyImporter::Import(FlashHeader &data)
 	std::cout << "Frame Rate: "  << data.GetFrameRate().ConvertToDouble() << "\n";
 	std::cout << "Frame Count: " << data.GetFrameCount() << "\n";
 	std::cout << "File Length: " << data.GetFilesize() << "\n";
-	if( (int)data.GetVersion() > 5 )
+	if ( (int)data.GetVersion() > 5 )
 		std::cout << "Compressed Movie: " << data.IsMovieCompressed() << "\n";
 }
 
@@ -80,41 +79,39 @@ void FlashMyImporter::Import(FlashTagPlaceObject &data)
 	std::cout << "Depth: "		  << data.GetDepth() << "\n";
 	std::cout << "Matrix: "		  << "\n";
 	PrintMatrix(data.GetMatrix());
-	if(data.HasColorTransform())  std::cout << "HasColorTransform: true"  << "\n"; 
-	else						std::cout << "HasColorTransform: false" << "\n"; 
+	if (data.HasColorTransform())  std::cout << "HasColorTransform: true"  << "\n";
+	else						std::cout << "HasColorTransform: false" << "\n";
 }
 void FlashMyImporter::Import(FlashTagPlaceObject2 &data)
 {
 	std::cout << "\n<PlaceObject2>\n";
 	std::cout << "Depth: "		  << data.GetDepth() << "\n";
-	
-	if(data.HasCharID())		std::cout << "HasCharID: true [" << data.GetCharID() << "]\n"; 
-	else						std::cout << "HasCharID: false" << "\n"; 
-	if(data.HasMatrix())
+
+	if (data.HasCharID())		std::cout << "HasCharID: true [" << data.GetCharID() << "]\n";
+	else						std::cout << "HasCharID: false" << "\n";
+	if (data.HasMatrix())
 	{
-		std::cout << "HasMatrix: true"  << "\n"; 
+		std::cout << "HasMatrix: true"  << "\n";
 		PrintMatrix(data.GetMatrix());
 	}
-	else						std::cout << "HasMatrix: false" << "\n"; 
-	
-	if(data.HasColorTransform())
+	else						std::cout << "HasMatrix: false" << "\n";
+
+	if (data.HasColorTransform())
 	{
-		std::cout << "HasColorTransform: true"  << "\n"; 
+		std::cout << "HasColorTransform: true"  << "\n";
 		PrintCFX(data.GetColorTransform());
 	}
-	else						std::cout << "HasColorTransform: false" << "\n"; 
-	if(data.HasMove())			std::cout << "HasMove: true"  << "\n"; 
-	else						std::cout << "HasMove: false" << "\n"; 
-	if(data.HasRatio())			std::cout << "HasRatio: true ["  << data.GetRatio() << "]\n"; 
-	else						std::cout << "HasRatio: false" << "\n"; 
-	if(data.HasName())			std::cout << "HasName: true ["  << data.GetName() << "]\n"; 
-	else						std::cout << "HasName: false" << "\n"; 
-	if(data.HasClipDepth())		std::cout << "HasClipDepth: true ["  << data.GetClipDepth() << "]\n"; 
-	else						std::cout << "HasClipDepth: false" << "\n"; 
-
-
+	else						std::cout << "HasColorTransform: false" << "\n";
+	if (data.HasMove())			std::cout << "HasMove: true"  << "\n";
+	else						std::cout << "HasMove: false" << "\n";
+	if (data.HasRatio())			std::cout << "HasRatio: true ["  << data.GetRatio() << "]\n";
+	else						std::cout << "HasRatio: false" << "\n";
+	if (data.HasName())			std::cout << "HasName: true ["  << data.GetName() << "]\n";
+	else						std::cout << "HasName: false" << "\n";
+	if (data.HasClipDepth())		std::cout << "HasClipDepth: true ["  << data.GetClipDepth() << "]\n";
+	else						std::cout << "HasClipDepth: false" << "\n";
 }
-void FlashMyImporter::Import(FlashTagShowFrame &data) 
+void FlashMyImporter::Import(FlashTagShowFrame &data)
 {
 	std::cout << "\n<FlashTagShowFrame>\n";
 }
@@ -127,7 +124,7 @@ void FlashMyImporter::Import(FlashTagBackgroundColor &data)
 void FlashMyImporter::Import(FlashTagLabelFrame &data)
 {
 	std::cout << "\n<FlashTagLabelFrame>";
-	if( data.IsNamedAnchor() )
+	if ( data.IsNamedAnchor() )
 		std::cout << "\t>> ANCHOR <<";
 	std::cout << "\n";
 	std::cout << "Label: " << data.GetLabel() << "\n";
@@ -135,7 +132,7 @@ void FlashMyImporter::Import(FlashTagLabelFrame &data)
 void FlashMyImporter::Import(FlashTagProtect &data)
 {
 	std::cout << "\n<FlashTagProtect>\n";
-	if(data.HasPassword())
+	if (data.HasPassword())
 	{
 		std::cout << "Password (Encrypted): " << data.GetEncryptedPassword() << "\n";
 	}
@@ -143,8 +140,8 @@ void FlashMyImporter::Import(FlashTagProtect &data)
 void FlashMyImporter::Import(FlashTagEnableDebugger &data)
 {
 	std::cout << "\n<FlashTagEnableDebugger>\n";
-	
-	if(data.HasPassword())
+
+	if (data.HasPassword())
 	{
 		std::cout << "Password: " << data.GetEncryptedPassword() << "\n";
 	}
@@ -154,7 +151,6 @@ void FlashMyImporter::Import(FlashTagDefineBitsPtr &data)
 {
 	std::cout << "\n<FlashTagDefineBitsPtr>\n";
 	std::cout << "Ptr: " << data.GetPtr() << "\n";
-	
 }
 
 void FlashMyImporter::Import(FlashTagEnd &data)
@@ -167,10 +163,9 @@ void FlashMyImporter::Import(FlashTagExportAssets &data)
 	int num = data.GetAssetNum();
 	for(int i=0; i < num; i++)
 	{
-		std::cout << "Asset " << i << " (name): " << data.GetAsset(i).first << "\n"; 
-		std::cout << "Asset " << i << " (id):   " << data.GetAsset(i).second << "\n"; 
+		std::cout << "Asset " << i << " (name): " << data.GetAsset(i).first << "\n";
+		std::cout << "Asset " << i << " (id):   " << data.GetAsset(i).second << "\n";
 	}
-	
 }
 void FlashMyImporter::Import(FlashTagImportAssets &data)
 {
@@ -179,15 +174,14 @@ void FlashMyImporter::Import(FlashTagImportAssets &data)
 	int num = data.GetAssetNum();
 	for(int i=0; i < num; i++)
 	{
-		std::cout << "Asset " << i << " (name): " << data.GetAsset(i).first << "\n"; 
-		std::cout << "Asset " << i << " (id):   " << data.GetAsset(i).second << "\n"; 
+		std::cout << "Asset " << i << " (name): " << data.GetAsset(i).first << "\n";
+		std::cout << "Asset " << i << " (id):   " << data.GetAsset(i).second << "\n";
 	}
 }
 void FlashMyImporter::Import(FlashTagDoAction &data)
 {
 	std::cout << "\n<FlashTagDoAction>\n";
 	std::cout << "Num Actions: " << data.GetNumActions() << "\n";
-
 }
 
 void FlashMyImporter::Import(FlashTagDefineBitsJPEG1 &data)
@@ -199,33 +193,29 @@ void FlashMyImporter::Import(FlashTagJPEGTables &data)
 {
 	std::cout << "\n<FlashTagJPEGTables>\n";
 }
-void FlashMyImporter::Import(FlashTagDefineBitsJPEG2 &data) 
+void FlashMyImporter::Import(FlashTagDefineBitsJPEG2 &data)
 {
 	std::cout << "\n<FlashTagDefineBitsJPEG2>\n";
 	std::cout << "ID:" << data.GetID() << "\n";
-
 }
-void FlashMyImporter::Import(FlashTagDefineBitsJPEG3 &data) 
+void FlashMyImporter::Import(FlashTagDefineBitsJPEG3 &data)
 {
 	std::cout << "\n<FlashTagDefineBitsJPEG3>\n";
 	std::cout << "ID:" << data.GetID() << "\n";
-
 }
-void FlashMyImporter::Import(FlashTagDefineBitsLossless &data) 
+void FlashMyImporter::Import(FlashTagDefineBitsLossless &data)
 {
 	std::cout << "\n<FlashTagDefineBitsLossless>\n";
 	std::cout << "ID:" << data.GetID() << "\n";
 	std::cout << "Format: " << data.GetFormat() << "\n";
 	std::cout << "Width: " << data.GetWidth() << " Height: " << data.GetHeight() << "\n";
-
 }
-void FlashMyImporter::Import(FlashTagDefineBitsLossless2 &data) 
+void FlashMyImporter::Import(FlashTagDefineBitsLossless2 &data)
 {
 	std::cout << "\n<FlashTagDefineBitsLossless2>\n";
 	std::cout << "ID:" << data.GetID() << "\n";
 	std::cout << "Format: " << data.GetFormat() << "\n";
 	std::cout << "Width: " << data.GetWidth() << " Height: " << data.GetHeight() << "\n";
-
 }
 
 void FlashMyImporter::Import(FlashTagDefineShape1 &data)
@@ -286,11 +276,11 @@ void FlashMyImporter::Import(FlashTagStartSound &data)
 	std::cout << "ID:" << data.GetID() << "\n";
 	std::cout << "Sound Info:\n";
 	std::cout << "  Flags: "  << (int)data.GetSoundInfo().GetFlags()   << "\n";
-	
-	if((data.GetSoundInfo().GetFlags() & FSI_HAS_IN) != 0) std::cout << "  In Point: "  << data.GetSoundInfo().GetInPoint()   << "\n";
-	if((data.GetSoundInfo().GetFlags() & FSI_HAS_OUT) != 0) std::cout << "  Out Point: " << data.GetSoundInfo().GetOutPoint()  << "\n";
-	if((data.GetSoundInfo().GetFlags() & FSI_HAS_LOOP) != 0) std::cout << "  Loop Count: " << data.GetSoundInfo().GetLoopCount() <<  "\n";
-	if((data.GetSoundInfo().GetFlags() & FSI_HAS_ENVELOPE) != 0) std::cout << "  Sound Envelopes Found\n";
+
+	if ((data.GetSoundInfo().GetFlags() & FSI_HAS_IN) != 0) std::cout << "  In Point: "  << data.GetSoundInfo().GetInPoint()   << "\n";
+	if ((data.GetSoundInfo().GetFlags() & FSI_HAS_OUT) != 0) std::cout << "  Out Point: " << data.GetSoundInfo().GetOutPoint()  << "\n";
+	if ((data.GetSoundInfo().GetFlags() & FSI_HAS_LOOP) != 0) std::cout << "  Loop Count: " << data.GetSoundInfo().GetLoopCount() <<  "\n";
+	if ((data.GetSoundInfo().GetFlags() & FSI_HAS_ENVELOPE) != 0) std::cout << "  Sound Envelopes Found\n";
 }
 void FlashMyImporter::Import(FlashTagSoundStreamHead &data)
 {
@@ -303,8 +293,6 @@ void FlashMyImporter::Import(FlashTagSoundStreamHead &data)
 	std::cout << "Stream 16 Bit: " << data.GetStream16bit() << "\n";
 	std::cout << "Stream Stereo: " << data.GetStreamStereo() << "\n";
 	std::cout << "Sample Count Avg.: " << data.GetSampleCountAvg() << "\n";
-
-	
 }
 void FlashMyImporter::Import(FlashTagSoundStreamHead2 &data)
 {
@@ -317,7 +305,6 @@ void FlashMyImporter::Import(FlashTagSoundStreamHead2 &data)
 	std::cout << "Stream 16 Bit: " << data.GetStream16bit() << "\n";
 	std::cout << "Stream Stereo: " << data.GetStreamStereo() << "\n";
 	std::cout << "Sample Count Avg.: " << data.GetSampleCountAvg() << "\n";
-
 }
 void FlashMyImporter::Import(FlashTagSoundStreamBlock &data)
 {
@@ -378,22 +365,21 @@ FlashHeader FlashImporter::ImportHeader(N_STD::istream &in, FlashImportHandler &
 	i.Import(h);
 	return h;
 }
- 
 
 #define IMPORT_MACRO(id, name)                              \
-	if(tagHeader.GetTagID() == id)                           \
+	if (tagHeader.GetTagID() == id)                           \
 	{                                                        \
 		name tmp;                                            \
 		tmp.SetTagHeader(tagHeader.GetTagID(),tagHeader.GetTagLength());  \
 		in >> tmp;                                           \
 		i.Import(tmp);                                       \
-} 
+}
 
 bool FlashImporter::ImportTag(N_STD::istream &in, FlashImportHandler &i)
 {
 	FlashTagHeader tagHeader;
 	in >> tagHeader;
-	
+
 	N_STD::streampos start = in.tellg();
 
         IMPORT_MACRO(4,  FlashTagPlaceObject)
@@ -420,18 +406,18 @@ bool FlashImporter::ImportTag(N_STD::istream &in, FlashImportHandler &i)
 	else IMPORT_MACRO(46, FlashTagDefineMorphShape)
 	else IMPORT_MACRO(3,  FlashTagFreeCharacter)
 
-	else if(tagHeader.GetTagID() == 14)
+	else if (tagHeader.GetTagID() == 14)
 	{
-		
+
 		int c = in.get();
-		if(c == EOF)
-		{ 
+		if (c == EOF)
+		{
 			//throw
 		}
 		else
 		{
 			in.putback(c);
-			if((c & FTDS_COMPRESS_MP3) != 0) 
+			if ((c & FTDS_COMPRESS_MP3) != 0)
 			{
 				IMPORT_MACRO(14, FlashTagDefineSoundMP3)
 			}
@@ -439,7 +425,7 @@ bool FlashImporter::ImportTag(N_STD::istream &in, FlashImportHandler &i)
 			{
 				IMPORT_MACRO(14, FlashTagDefineSound)
 			}
-		}	
+		}
 	}
 
 	else IMPORT_MACRO(15, FlashTagStartSound)
@@ -454,7 +440,7 @@ bool FlashImporter::ImportTag(N_STD::istream &in, FlashImportHandler &i)
 
 	else IMPORT_MACRO(38, FlashTagDefineMovie)
 
-	else if(tagHeader.GetTagID() == 39)    // FlashTagSprite
+	else if (tagHeader.GetTagID() == 39)    // FlashTagSprite
 	{
 		FlashTagSprite tmp;
 		tmp.SetTagHeader(tagHeader.GetTagID(),tagHeader.GetTagLength());
@@ -472,7 +458,7 @@ bool FlashImporter::ImportTag(N_STD::istream &in, FlashImportHandler &i)
 			tmp.Add( (*t), false );
 		}
 
-		// Call the handler 
+		// Call the handler
 		i.Import(tmp);
 
 		// Free the remaining tags in list (if Handler 'i' hasn't kept them for its own purposes)
@@ -491,13 +477,13 @@ bool FlashImporter::ImportTag(N_STD::istream &in, FlashImportHandler &i)
 		}
 		i.Import(tagHeader);
 	}
-	
-	if(tagHeader.GetTagLength() + start != (UDWORD)in.tellg())
+
+	if (tagHeader.GetTagLength() + start != (UDWORD)in.tellg())
 	{
-		if(tagHeader.GetTagLength() + start > (UDWORD)in.tellg())
+		if (tagHeader.GetTagLength() + start > (UDWORD)in.tellg())
 		{
 			UDWORD difference = (tagHeader.GetTagLength() + start) - (UDWORD)in.tellg();
-			
+
 			std::cout << "Extra Tag Data Encountered: " << difference << "\n";
 
 			for(UDWORD index=0; index < difference; index++)
@@ -508,13 +494,13 @@ bool FlashImporter::ImportTag(N_STD::istream &in, FlashImportHandler &i)
 		else
 		{
 			//ADD HANDLER???
-			
+
 			long difference = (long )in.tellg() - (long)(tagHeader.GetTagLength() + start);
 			std::cout << "Tag Size Discrepancy: -" << difference << "\n";
 			return false;
 		}
 	}
-	if(tagHeader.GetTagID() == 0)
+	if (tagHeader.GetTagID() == 0)
 	{
 		return false;
 	}
@@ -524,19 +510,19 @@ bool FlashImporter::ImportTag(N_STD::istream &in, FlashImportHandler &i)
 //*****************************************************************************
 
 #define IMPORT_MACRO_AT(id, name)                           \
-	if(tagHeader.GetTagID() == id)                           \
+	if (tagHeader.GetTagID() == id)                           \
 	{                                                        \
 		name *tmp = new name();                               \
 		tmp->SetTagHeader(tagHeader.GetTagID(),tagHeader.GetTagLength());    \
 		in >> *tmp;                                           \
 		i.Import(tmp);                                        \
-	} 
+	}
 
 bool FlashImporter::ImportTag_AT(N_STD::istream &in, FlashImportHandler &i)
 {
 	FlashTagHeader tagHeader;
 	in >> tagHeader;
-	
+
 	N_STD::streampos start = in.tellg();
 
         IMPORT_MACRO_AT(4,  FlashTagPlaceObject)
@@ -563,18 +549,18 @@ bool FlashImporter::ImportTag_AT(N_STD::istream &in, FlashImportHandler &i)
 	else IMPORT_MACRO_AT(46, FlashTagDefineMorphShape)
 	else IMPORT_MACRO_AT(3,  FlashTagFreeCharacter)
 
-	else if(tagHeader.GetTagID() == 14)
+	else if (tagHeader.GetTagID() == 14)
 	{
-		
+
 		int c = in.get();
-		if(c == EOF)
-		{ 
+		if (c == EOF)
+		{
 			//throw
 		}
 		else
 		{
 			in.putback(c);
-			if((c & FTDS_COMPRESS_MP3) != 0) 
+			if ((c & FTDS_COMPRESS_MP3) != 0)
 			{
 				IMPORT_MACRO_AT(14, FlashTagDefineSoundMP3)
 			}
@@ -582,7 +568,7 @@ bool FlashImporter::ImportTag_AT(N_STD::istream &in, FlashImportHandler &i)
 			{
 				IMPORT_MACRO_AT(14, FlashTagDefineSound)
 			}
-		}	
+		}
 	}
 
 	else IMPORT_MACRO_AT(15, FlashTagStartSound)
@@ -597,7 +583,7 @@ bool FlashImporter::ImportTag_AT(N_STD::istream &in, FlashImportHandler &i)
 
 	else IMPORT_MACRO_AT(38, FlashTagDefineMovie)
 
-	else if(tagHeader.GetTagID() == 39)    // FlashTagSprite
+	else if (tagHeader.GetTagID() == 39)    // FlashTagSprite
 	{
       FlashTagSprite *tmp = new FlashTagSprite();
 		tmp->SetTagHeader(tagHeader.GetTagID(),tagHeader.GetTagLength());
@@ -615,7 +601,7 @@ bool FlashImporter::ImportTag_AT(N_STD::istream &in, FlashImportHandler &i)
 			tmp->Add( (*t), false );
 		}
 
-		// Call the handler 
+		// Call the handler
 		i.Import(tmp);
 
       // Free the remaining tags in list (if Handler 'i' hasn't kept them for its own purposes)
@@ -634,13 +620,13 @@ bool FlashImporter::ImportTag_AT(N_STD::istream &in, FlashImportHandler &i)
 		}
 		i.Import(tagHeader);
 	}
-	
-	if(tagHeader.GetTagLength() + start != (UDWORD)in.tellg())
+
+	if (tagHeader.GetTagLength() + start != (UDWORD)in.tellg())
 	{
-		if(tagHeader.GetTagLength() + start > (UDWORD)in.tellg())
+		if (tagHeader.GetTagLength() + start > (UDWORD)in.tellg())
 		{
 			UDWORD difference = (tagHeader.GetTagLength() + start) - (UDWORD)in.tellg();
-			
+
 			std::cout << "Extra Tag Data Encountered: " << difference << "\n";
 
 			for(UDWORD index=0; index < difference; index++)
@@ -651,13 +637,13 @@ bool FlashImporter::ImportTag_AT(N_STD::istream &in, FlashImportHandler &i)
 		else
 		{
 			//ADD HANDLER???
-			
+
 			long difference = (long )in.tellg() - (long)(tagHeader.GetTagLength() + start);
 			std::cout << "Tag Size Discrepancy: -" << difference << "\n";
 			return false;
 		}
 	}
-	if(tagHeader.GetTagID() == 0)
+	if (tagHeader.GetTagID() == 0)
 	{
 		return false;
 	}

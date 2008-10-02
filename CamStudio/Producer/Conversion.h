@@ -4,7 +4,6 @@
 #define APP_MAX_FILE_TITLE_CHARS    APP_MAX_FILE_PATH_CHARS
 #define APP_MAX_FILE_TITLE_BYTES    (APP_MAX_FILE_TITLE_CHARS * sizeof(TCHAR))
 
-
 typedef struct tAACONVERTDESC
 {
     HACMDRIVERID        hadid;
@@ -51,7 +50,6 @@ typedef struct tAACONVERTDESC
     DWORD               dwShortestConvert;
     DWORD               dwTimeLongest;
     DWORD               dwLongestConvert;
-
 } AACONVERTDESC, *PAACONVERTDESC;
 
 typedef struct tACMAPPFILEDESC
@@ -60,7 +58,7 @@ typedef struct tACMAPPFILEDESC
 
     TCHAR           szFileTitle[APP_MAX_FILE_TITLE_CHARS];
     TCHAR           szFilePath[APP_MAX_FILE_PATH_CHARS];
-    
+
     DWORD           cbFileSize;
     UINT            uDosChangeDate;
     UINT            uDosChangeTime;
@@ -71,10 +69,7 @@ typedef struct tACMAPPFILEDESC
 
     DWORD           dwDataBytes;
     DWORD           dwDataSamples;
-
 } ACMAPPFILEDESC, *PACMAPPFILEDESC;
-
-
 
 #define PCM_TO_PCM_TYPE 0
 #define NONPCM_TO_PCM_TYPE  1
@@ -91,7 +86,6 @@ extern BOOL AcmAppConvertConvert(HWND hdlg,PAACONVERTDESC paacd);
 int ConvertFile(const char* filename, const char* SaveFile, LPWAVEFORMATEX dstFormat, int sizeDstFormat);
 int MultiStepConvertToPCM(CString filename, CString SaveFile, LPWAVEFORMATEX dstFormat, int sizeDstFormat);
 char* GetTempIntermediatePath();
-
 
 BOOL AppGetFileTitle(PTSTR pszFilePath,PTSTR pszFileTitle);
 BOOL AcmAppFileOpen(HWND hwnd, PACMAPPFILEDESC paafd);

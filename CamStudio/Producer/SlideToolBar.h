@@ -18,11 +18,9 @@ public:
 
 // Attributes
 public:
-	
-	CSliderCtrl m_wndSliderCtrl;	
-	int	m_slidevalue;
 
-		   
+	CSliderCtrl m_wndSliderCtrl;
+	int	m_slidevalue;
 
 // Operations
 public:

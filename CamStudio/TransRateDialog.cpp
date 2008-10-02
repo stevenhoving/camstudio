@@ -5,7 +5,6 @@
 #include "vscap.h"
 #include "TransRateDialog.h"
 
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -17,7 +16,6 @@ extern int g_refreshRate;
 /////////////////////////////////////////////////////////////////////////////
 // CTransRateDialog dialog
 
-
 CTransRateDialog::CTransRateDialog(CWnd* pParent /*=NULL*/)
 : CDialog(CTransRateDialog::IDD, pParent)
 {
@@ -27,7 +25,6 @@ CTransRateDialog::CTransRateDialog(CWnd* pParent /*=NULL*/)
 	m_myparent = NULL;
 }
 
-
 void CTransRateDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -35,7 +32,6 @@ void CTransRateDialog::DoDataExchange(CDataExchange* pDX)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
-
 
 BEGIN_MESSAGE_MAP(CTransRateDialog, CDialog)
 	//{{AFX_MSG_MAP(CTransRateDialog)
@@ -46,8 +42,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CTransRateDialog message handlers
 
-
-void CTransRateDialog::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
+void CTransRateDialog::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: Add your message handler code here and/or call default
 
@@ -57,7 +52,7 @@ void CTransRateDialog::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar
 	valstr.Format("%d fps",valRate);
 	((CSliderCtrl *) GetDlgItem(IDC_RATETEXT))->SetWindowText(valstr);
 
-	if (m_myparent) { 
+	if (m_myparent) {
 
 		m_myparent->AdjustRefreshRate(valRate);
 
@@ -65,19 +60,18 @@ void CTransRateDialog::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar
 		m_myparent->refreshRate = valRate;
 		g_refreshRate = valRate;
 
-	} 
+	}
 
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
-
-void CTransRateDialog::PreModal( CVideoWnd * parent) 
-{ 
-	m_myparent = parent; 
+void CTransRateDialog::PreModal( CVideoWnd * parent)
+{
+	m_myparent = parent;
 
 }
 
-BOOL CTransRateDialog::OnInitDialog() 
+BOOL CTransRateDialog::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -97,19 +91,17 @@ BOOL CTransRateDialog::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CTransRateDialog::OnCancel() 
+void CTransRateDialog::OnCancel()
 {
 	// TODO: Add extra cleanup here
 
 	CDialog::OnCancel();
 }
 
-void CTransRateDialog::OnOK() 
+void CTransRateDialog::OnOK()
 {
 	// TODO: Add extra cleanup here
 
 	CDialog::OnOK();
 }
-
-
 

@@ -26,7 +26,7 @@ class FlashConversionDlg : public CPropertyPage
 public:
 	FlashConversionDlg();
 	~FlashConversionDlg();
-	void UpdateBehavior(int val); 
+	void UpdateBehavior(int val);
 
 // Dialog Data
 	//{{AFX_DATA(FlashConversionDlg)
@@ -34,7 +34,6 @@ public:
 		// NOTE - ClassWizard will add data members here.
 		//    DO NOT EDIT what you see in these blocks of generated code !
 	//}}AFX_DATA
-
 
 // Overrides
 	// ClassWizard generate virtual function overrides

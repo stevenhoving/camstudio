@@ -21,14 +21,14 @@ HWND hWndMCI;                 /* window handle of the movie */
 BOOL bIsOpenMovie = FALSE;        /* Open flag: TRUE == movie open, FALSE = none */
 HMENU hMenuBar = NULL;          /* menu bar handle */
 char szAppName [] = "Player - Custom Build";
-char playfiledir[300];	
+char playfiledir[300];
 //char seps[] = "*\t\n";
 char seps[] = "*";
 #define WM_USER_PLAY 0x00401
 HINSTANCE m_hInstance = NULL;
 
 
-// function declarations 
+// function declarations
 long FAR PASCAL WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 void OpenMCIMovieFile(HWND hWnd);
 void OpenMCIMovieFileInit(HWND hWnd);
@@ -52,7 +52,7 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
         int             iWinHeight;
         WORD    wVer;
 
-		
+
 
         /* first let's make sure we are running on 1.1 */
         wVer = HIWORD(VideoForWindowsVersion());
@@ -61,15 +61,15 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
                 MessageBeep(MB_ICONHAND);
                 //MessageBox(NULL, "Video for Windows version is too old",
                 //         "Error", MB_OK|MB_ICONSTOP);
-				
+
 				MessageOut(NULL,IDS_STRING_VERSION ,IDS_STRING_NOTE,MB_OK | MB_ICONSTOP);
 
                 return FALSE;
         }
 
 
-				
-		
+
+
         if (!hPrevInstance){
                 WNDCLASS    wndclass;
 
@@ -99,7 +99,7 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
                 WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT, 180, iWinHeight,
                 NULL, NULL, hInstance, NULL);
 
-		 
+
 
 
         if (hWnd == NULL){
@@ -118,19 +118,19 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
         /* create the movie window using MCIWnd that has no file open initially */
         hWndMCI = MCIWndCreate(hWnd, hInstance, WS_CHILD |WS_VISIBLE | MCIWNDF_NOOPEN |
                                 MCIWNDF_NOERRORDLG | MCIWNDF_NOTIFYSIZE | MCIWNDF_SHOWMODE , NULL);
-		
+
         if (!hWndMCI){
                 /* we didn't get the movie window, destroy the app's window and bail out */
                 DestroyWindow(hWnd);
                 return NULL;
-        }		
-		
+        }
+
 		MCIWndSetInactiveTimer(hWndMCI, 20);
 		MCIWndSetActiveTimer(hWndMCI, 20);
 		//MCIWndSetRepeat( hWndMCI, TRUE );
 		MCIWndSetRepeat( hWndMCI, FALSE );
 
-		ShowWindow(hWndMCI, SW_SHOW);		
+		ShowWindow(hWndMCI, SW_SHOW);
 
         return hWnd;
 }
@@ -143,7 +143,7 @@ int PASCAL WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
                                 LPSTR lpszCmdParam, int nCmdShow)
 {
         HWND        hWnd;
-        MSG         msg;		
+        MSG         msg;
 
 		m_hInstance = hInstance;
 
@@ -158,20 +158,20 @@ int PASCAL WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				//MessageBox(NULL,"Error in reading parameters. AVI Aborted","Error",MB_OK);
 				exit(1);
 			}
-			strcpy(playfiledir,token);		
+			strcpy(playfiledir,token);
 			//playfiledir[strlen(playfiledir)]=0;
 			PostMessage(hWnd,WM_USER_PLAY,0,0);
-			*/			
+			*/
 
 			strcpy(playfiledir,lpszCmdParam);
-			
+
 			//MessageBox(NULL,lpszCmdParam,"Note",MB_OK);
 			//exit(0);
-			
+
 			PostMessage(hWnd,WM_USER_PLAY,0,0);
 		}
 
-		
+
 
         while (GetMessage(&msg, NULL, 0, 0)){
                 TranslateMessage(&msg);
@@ -182,7 +182,7 @@ int PASCAL WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 
-//WndProc - window proc for the app                            
+//WndProc - window proc for the app
 long FAR PASCAL WndProc (HWND hWnd, UINT message, WPARAM wParam,
                                                 LPARAM lParam)
 {
@@ -192,7 +192,7 @@ long FAR PASCAL WndProc (HWND hWnd, UINT message, WPARAM wParam,
         RECT    rc;
 
         switch (message){
-				case WM_USER_PLAY :					
+				case WM_USER_PLAY :
 					OpenMCIMovieFileInit(hWnd);
 					return 0;
 
@@ -223,7 +223,7 @@ long FAR PASCAL WndProc (HWND hWnd, UINT message, WPARAM wParam,
                                         MCIWndPlay(hWndMCI);
                                         break;
 								case ID_STOP:
-                                        MCIWndStop(hWndMCI);										
+                                        MCIWndStop(hWndMCI);
                                         break;
                                 case IDM_OPEN:
                                         OpenMCIMovieFile(hWnd);
@@ -239,7 +239,7 @@ long FAR PASCAL WndProc (HWND hWnd, UINT message, WPARAM wParam,
                                         PostMessage(hWnd, WM_CLOSE, 0, 0L);
                                         break;
 
-                                
+
                                 case IDM_ABOUT:
                                         DialogBox(GetWindowInstance(hWnd),
                                                   MAKEINTRESOURCE(IDD_ABOUT),
@@ -310,14 +310,14 @@ void UpdateMenubar(HWND hWnd)
 
         if (bIsOpenMovie){
                 w = MF_ENABLED|MF_BYPOSITION;
-				wp = MF_ENABLED;		
+				wp = MF_ENABLED;
         } else {
                 //w = MF_GRAYED|MF_DISABLED|MF_BYPOSITION;
 				w = MF_ENABLED|MF_BYPOSITION;
-				wp = MF_GRAYED;		
+				wp = MF_GRAYED;
         }
 
-		
+
         EnableMenuItem(hMenuBar, 1, w); /* change the Movie menu (#1) */
 		EnableMenuItem(hMenuBar, ID_PLAY, wp);
         DrawMenuBar(hWnd);      /* re-draw the menu bar */
@@ -336,7 +336,7 @@ void UpdateTitle(HWND hWnd, LPSTR lpstrMovie)
 }
 
 
-// OpenMCIMovieFile - open an AVI movie. 
+// OpenMCIMovieFile - open an AVI movie.
 void OpenMCIMovieFile(HWND hWnd)
 {
 
@@ -356,19 +356,19 @@ void OpenMCIMovieFile(HWND hWnd)
         ofn.nMaxFileTitle = sizeof(szFileTitle);
         ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
-        
-        if (GetOpenFileName(&ofn)){        
-            
+
+        if (GetOpenFileName(&ofn)){
+
                 if (bIsOpenMovie)
                         MCIWndClose(hWndMCI);
 
-                
-            
+
+
                 bIsOpenMovie = TRUE;              // assume the best
 				if (MCIWndOpen(hWndMCI, ofn.lpstrFile, 0) == 0){
                         ShowWindow(hWndMCI, SW_SHOW);
                 } else {
-            
+
                         //MessageBox(hWnd, "Unable to open Movie", NULL,MB_ICONEXCLAMATION|MB_OK);
 						MessageOut(hWnd,IDS_STRING_NOOPEN ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
                         bIsOpenMovie = FALSE;
@@ -382,10 +382,10 @@ void OpenMCIMovieFile(HWND hWnd)
         else
                 UpdateTitle(hWnd, NULL);
 
-        // update  
+        // update
         InvalidateRect(hWnd, NULL, FALSE);
         UpdateWindow(hWnd);
-		
+
 }
 
 
@@ -401,29 +401,29 @@ void OpenMCIMovieFileInit(HWND hWnd)
 
 
 		//MCIWndSetActiveTimer(hWndMCI, 20);
-        
- 
-        bIsOpenMovie = TRUE;              
+
+
+        bIsOpenMovie = TRUE;
         if (MCIWndOpen(hWndMCI, playfiledir, 0) == 0){
-		
+
                 ShowWindow(hWndMCI, SW_SHOW);
         } else {
-        
+
                 //MessageBox(hWnd, "Unable to open Movie", NULL,
                 //      MB_ICONEXCLAMATION|MB_OK);
 				MessageOut(hWnd,IDS_STRING_NOOPEN ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
                 bIsOpenMovie = FALSE;
         }
 
-    
-        
+
+
         UpdateMenubar(hWnd);
         if (bIsOpenMovie)
                 UpdateTitle(hWnd, (LPSTR)"Playing AVI Movie");
         else
                 UpdateTitle(hWnd, NULL);
 
-        
+
         InvalidateRect(hWnd, NULL, FALSE);
         UpdateWindow(hWnd);
 
@@ -450,7 +450,7 @@ BOOL CALLBACK AboutDlgProc(
 			{
 				LPCTSTR mode;
 				mode = "open";
-				ShellExecute ( NULL, mode, 
+				ShellExecute ( NULL, mode,
 					"http://www.camstudio.org", NULL, NULL, SW_SHOW);
 			}
 			else
@@ -479,7 +479,7 @@ int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus)
 		LoadString(m_hInstance,strMsg , Msg_buffer,1000);
 
 		//LoadString(hinst, IDS_APP_NAME, gszAppName, SIZEOF(gszAppName));
-		
+
 		//tstr.LoadString( strTitle );
 		//mstr.LoadString( strMsg );
 

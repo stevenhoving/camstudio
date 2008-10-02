@@ -41,7 +41,6 @@ void CAdvProperty::DoDataExchange(CDataExchange* pDX)
 	//}}AFX_DATA_MAP
 }
 
-
 BEGIN_MESSAGE_MAP(CAdvProperty, CPropertyPage)
 	//{{AFX_MSG_MAP(CAdvProperty)
 	//}}AFX_MSG_MAP
@@ -50,7 +49,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CAdvProperty message handlers
 
-void CAdvProperty::OnOK() 
+void CAdvProperty::OnOK()
 {
 
 	int val1 = ((CButton *) GetDlgItem(IDC_FREECHARACTER))->GetCheck();
@@ -66,18 +65,16 @@ void CAdvProperty::OnOK()
 	else
 		allowChaining = 0;
 
-	
 	CPropertyPage::OnOK();
 }
 
-BOOL CAdvProperty::OnInitDialog() 
+BOOL CAdvProperty::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
-	
+
 	((CButton *) GetDlgItem(IDC_FREECHARACTER))->SetCheck(freecharacter != 0);
 	((CButton *) GetDlgItem(IDC_ALLOWCHAINING))->SetCheck(allowChaining != 0);
 
-	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }

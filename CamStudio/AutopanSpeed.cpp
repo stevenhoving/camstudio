@@ -1,7 +1,7 @@
 // RenderSoft CamStudio
 //
 // Copyright 2001 RenderSoft Software & Web Publishing
-// 
+//
 //
 // AutopanSpeed.cpp : implementation file
 //
@@ -29,7 +29,6 @@ CAutopanSpeed::CAutopanSpeed(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 }
 
-
 void CAutopanSpeed::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -37,7 +36,6 @@ void CAutopanSpeed::DoDataExchange(CDataExchange* pDX)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
-
 
 BEGIN_MESSAGE_MAP(CAutopanSpeed, CDialog)
 	//{{AFX_MSG_MAP(CAutopanSpeed)
@@ -48,7 +46,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CAutopanSpeed message handlers
 
-BOOL CAutopanSpeed::OnInitDialog() 
+BOOL CAutopanSpeed::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -61,26 +59,26 @@ BOOL CAutopanSpeed::OnInitDialog()
 	maxpanspeedstr.Format("%d",maxpan);
 	((CStatic *) GetDlgItem(IDC_MAXSPEED))->SetWindowText(maxpanspeedstr);
 
-
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CAutopanSpeed::OnOK() 
+void CAutopanSpeed::OnOK()
 {
 	// TODO: Add extra validation here
 	int maxpanspeed;
 	CString maxpanspeedstr;
 
 	((CStatic *) GetDlgItem(IDC_MAXSPEED))->GetWindowText(maxpanspeedstr);
-	sscanf(LPCTSTR(maxpanspeedstr),"%d",&maxpanspeed);
+	//sscanf_(LPCTSTR(maxpanspeedstr),"%d",&maxpanspeed);
+	sscanf_s(LPCTSTR(maxpanspeedstr),"%d",&maxpanspeed);
 
 	maxpan = maxpanspeed;
 
 	CDialog::OnOK();
 }
 
-void CAutopanSpeed::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
+void CAutopanSpeed::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: Add your message handler code here and/or call default
 	int maxpanspeed;
@@ -89,7 +87,6 @@ void CAutopanSpeed::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	maxpanspeed = ((CSliderCtrl *) GetDlgItem(IDC_PANSLIDER))->GetPos();
 	maxpanspeedstr.Format("%d",maxpanspeed);
 	((CStatic *) GetDlgItem(IDC_MAXSPEED))->SetWindowText(maxpanspeedstr);
-
 
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }

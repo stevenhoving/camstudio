@@ -14,7 +14,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern char playfiledir[300];	
+extern char playfiledir[300];
 extern void OpenMovieFileInit(char *filename);
 
 #define PLAYER  0
@@ -70,30 +70,30 @@ BOOL CPlayplusApp::InitInstance()
 	DWORD Type=REG_DWORD;
     DWORD Size=sizeof(DWORD);
     returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
-  
-	
+
+
 	//create default LanguageID no exists
 	if (returnStatus != ERROR_SUCCESS)
 	{
-     returnStatus =RegCreateKeyEx(HKEY_CURRENT_USER,"Software\\CamStudioOpenSource for Nick",0,0,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&hKey,0);		
-	 returnStatus =RegCreateKeyEx(HKEY_CURRENT_USER,"Software\\CamStudioOpenSource for Nick\\vscap",0,0,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&hKey,0);		
-	 returnStatus =RegCreateKeyEx(HKEY_CURRENT_USER,"Software\\CamStudioOpenSource for Nick\\vscap\\Language",0,0,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&hKey,0);		
+     returnStatus =RegCreateKeyEx(HKEY_CURRENT_USER,"Software\\CamStudioOpenSource for Nick",0,0,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&hKey,0);
+	 returnStatus =RegCreateKeyEx(HKEY_CURRENT_USER,"Software\\CamStudioOpenSource for Nick\\vscap",0,0,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&hKey,0);
+	 returnStatus =RegCreateKeyEx(HKEY_CURRENT_USER,"Software\\CamStudioOpenSource for Nick\\vscap\\Language",0,0,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&hKey,0);
      RegSetValueEx(hKey,"LanguageID",0,REG_DWORD,(BYTE*)&language,sizeof(DWORD));
 	 returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
 
 	}
 
-    //read LanguageID    
+    //read LanguageID
 	if (returnStatus == ERROR_SUCCESS)
     {
-	 	
+
         returnStatus = RegQueryValueEx(hKey, "LanguageID", NULL, &Type,(LPBYTE)&language, &Size);
-        
+
 		if (returnStatus == ERROR_SUCCESS)
         {
             //load ResDLL
-        	if( !LoadLangIDDLL((int) language) ) 
-	         if( !LoadLangIDDLL(GetUserDefaultLangID()) )
+        	if ( !LoadLangIDDLL((int) language) )
+	         if ( !LoadLangIDDLL(GetUserDefaultLangID()) )
      			LoadLangIDDLL(GetSystemDefaultLangID());
         }
      }
@@ -137,15 +137,15 @@ BOOL CPlayplusApp::InitInstance()
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
 
-	playfiledir[0]=0;	
-	if (strlen(m_lpCmdLine)!=0) {				
-		
+	playfiledir[0]=0;
+	if (strlen(m_lpCmdLine)!=0) {
+
 		if ((m_lpCmdLine[0]=='-') && ((m_lpCmdLine[1]=='a') || (m_lpCmdLine[1]=='x')))
 		{
-			autoplay = 1;		
+			autoplay = 1;
 			if (m_lpCmdLine[1]=='x')
 				autoexit = 1;
-			
+
 			int i;
 			int lenx = strlen(m_lpCmdLine);
 			for (i=2;i<lenx;i++)
@@ -159,31 +159,31 @@ BOOL CPlayplusApp::InitInstance()
 			{
 				strcpy(playfiledir,&m_lpCmdLine[i]);
 			}
-	
+
 		}
-		else		
+		else
 			strcpy(playfiledir,m_lpCmdLine);
 
 		//Fix to open long filename on launch
 		cmdInfo.m_strFileName = playfiledir;
-		
+
 
 	}
 	/*
-	if (strlen(m_lpCmdLine)!=0) {		
-		
-		strcpy(playfiledir,m_lpCmdLine);			
-		
+	if (strlen(m_lpCmdLine)!=0) {
+
+		strcpy(playfiledir,m_lpCmdLine);
+
 		//Fix to open long filename on launch
 		cmdInfo.m_strFileName = playfiledir;
 	}
 	*/
-	
-	
+
+
 	// Dispatch commands specified on the command line
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
-	
+
 
 	// The one and only window has been initialized, so show and update it.
 	m_pMainWnd->ShowWindow(SW_SHOW);
@@ -196,15 +196,15 @@ BOOL CPlayplusApp::LoadLangIDDLL(LANGID LangID)
 {
 	HINSTANCE hInstance;
 	CString strLangIDDLL;
-	
-	//if( LangID == STANDARD_LANGID )	// integrated language is the right one
+
+	//if ( LangID == STANDARD_LANGID )	// integrated language is the right one
 	//	return true;
 
-	
+
 	strLangIDDLL.Format( _T("PlayPlusLANG%.2x.dll"), LangID );
-	
+
 	hInstance = LoadLibrary( strLangIDDLL );
-	if( hInstance )
+	if ( hInstance )
 	{
 		AfxSetResourceHandle( hInstance );
 		CurLangID = LangID;
@@ -248,9 +248,9 @@ CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
 	//}}AFX_DATA_INIT
 
 	if (pmode == PLAYER)
-		hAboutBM = LoadBitmap( AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_ABOUT_PLAYER)); 
+		hAboutBM = LoadBitmap( AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_ABOUT_PLAYER));
 	else
-		hAboutBM = LoadBitmap( AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_ABOUT_DUBBER)); 
+		hAboutBM = LoadBitmap( AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_ABOUT_DUBBER));
 }
 
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
@@ -278,48 +278,48 @@ void CPlayplusApp::OnAppAbout()
 // CPlayplusApp message handlers
 
 
-BOOL CAboutDlg::OnInitDialog() 
+BOOL CAboutDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-	
+
 	// TODO: Add extra initialization here
 	if (pmode == PLAYER)
-		((CStatic *) (GetDlgItem(IDC_TITLE)))->SetWindowText("RenderSoft CamStudio Player 2.1");		
+		((CStatic *) (GetDlgItem(IDC_TITLE)))->SetWindowText("RenderSoft CamStudio Player 2.1");
 	else if (pmode == DUBBER)
-		((CStatic *) (GetDlgItem(IDC_TITLE)))->SetWindowText("RenderSoft CamStudio Dubber 1.0");		
+		((CStatic *) (GetDlgItem(IDC_TITLE)))->SetWindowText("RenderSoft CamStudio Dubber 1.0");
 
 
 	if ((pmode == PLAYER) || (pmode == DUBBER))  {
 		if (hAboutBM)
-			((CStatic *) (GetDlgItem(IDC_IMAGE)))->SetBitmap( hAboutBM );		
+			((CStatic *) (GetDlgItem(IDC_IMAGE)))->SetBitmap( hAboutBM );
 
 	}
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CAboutDlg::OnDestroy() 
+void CAboutDlg::OnDestroy()
 {
 	CDialog::OnDestroy();
 
 	//::MessageBox(NULL,"Note Destory","nn",MB_OK);
-	
+
 	// TODO: Add your message handler code here
 	if (hAboutBM) {
 		DeleteObject(hAboutBM);
 		hAboutBM = NULL;
 	}
-	
+
 }
 
-int CPlayplusApp::ExitInstance() 
+int CPlayplusApp::ExitInstance()
 {
 	// TODO: Add your specialized code here and/or call the base class
 		//Multilanguage
-	if( CurLangID != STANDARD_LANGID )
+	if ( CurLangID != STANDARD_LANGID )
     FreeLibrary( AfxGetResourceHandle() );
-	
+
 	return CWinApp::ExitInstance();
 }
 

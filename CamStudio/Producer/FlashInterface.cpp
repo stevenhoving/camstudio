@@ -52,7 +52,6 @@ void CFlashInterface::DoDataExchange(CDataExchange* pDX)
 	//}}AFX_DATA_MAP
 }
 
-
 BEGIN_MESSAGE_MAP(CFlashInterface, CPropertyPage)
 	//{{AFX_MSG_MAP(CFlashInterface)
 	ON_BN_CLICKED(IDC_BUTTON1, OnButton1)
@@ -63,7 +62,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CFlashInterface message handlers
 
-BOOL CFlashInterface::OnInitDialog() 
+BOOL CFlashInterface::OnInitDialog()
 {
 	CurLangID = STANDARD_LANGID;
 	HKEY hKey;
@@ -72,17 +71,17 @@ BOOL CFlashInterface::OnInitDialog()
 	DWORD Type=REG_DWORD;
     DWORD Size=sizeof(DWORD);
     returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
-    
+
 	if (returnStatus == ERROR_SUCCESS)
     {
-		
+
         returnStatus = RegQueryValueEx(hKey, "LanguageID", NULL, &Type,(LPBYTE)&language, &Size);
-        
+
 		if (returnStatus == ERROR_SUCCESS)
         {
-    
-        	if( !LoadLangIDDLL((int) language) ) 
-	         if( !LoadLangIDDLL(GetUserDefaultLangID()) )
+
+        	if ( !LoadLangIDDLL((int) language) )
+	         if ( !LoadLangIDDLL(GetUserDefaultLangID()) )
      			LoadLangIDDLL(GetSystemDefaultLangID());
         }
      }
@@ -96,32 +95,30 @@ BOOL CFlashInterface::OnInitDialog()
 	if (valset < 10) valset = 10;
 
 	UDACCEL acc[2];
-    acc[0].nSec = 1; 
-    acc[0].nInc = 5; 
+    acc[0].nSec = 1;
+    acc[0].nInc = 5;
 
-	acc[1].nSec = 3; 
-    acc[1].nInc = 10; 
+	acc[1].nSec = 3;
+    acc[1].nInc = 10;
 
 	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetBuddy(GetDlgItem(IDC_PRELOADPERCENT));
 	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetRange(10,100);
-	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetPos(valset);			
-	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetAccel(2,acc);		
-	
+	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetPos(valset);
+	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetAccel(2,acc);
+
 	// TODO: Add extra initialization here
 	((CEdit *)GetDlgItem(IDC_PRELOADBITMAP))->SetWindowText(loadingPath);
 
-
 	local_swfbk_red = swfbk_red;
 	local_swfbk_green = swfbk_green;
-	local_swfbk_blue = swfbk_blue;	
+	local_swfbk_blue = swfbk_blue;
 
 	CString foxStr,foyStr;
 	foxStr.Format("%d",FrameOffsetX);
-	foyStr.Format("%d",FrameOffsetY);	
+	foyStr.Format("%d",FrameOffsetY);
 	((CEdit *) GetDlgItem(IDC_FRAMEOFFSETX))->SetWindowText(foxStr);
 	((CEdit *) GetDlgItem(IDC_FRAMEOFFSETY))->SetWindowText(foyStr);
-	
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -130,15 +127,15 @@ BOOL CFlashInterface::LoadLangIDDLL(LANGID LangID)
 {
 	HINSTANCE ghInstApp;
 	CString strLangIDDLL;
-	
-	if( LangID == STANDARD_LANGID )	// integrated language is the right one
+
+	if ( LangID == STANDARD_LANGID )	// integrated language is the right one
 		return true;
-	
+
 	strLangIDDLL.Format( _T("ProducerLANG%.2x.dll"), LangID );
 	ghInstApp = LoadLibrary( strLangIDDLL );
 	//AfxMessageBox( strLangIDDLL );
 	//hInstance = LoadLibrary( strLangIDDLL );
-	if( ghInstApp )
+	if ( ghInstApp )
 	{
 		AfxSetResourceHandle( ghInstApp );
 		CurLangID = LangID;
@@ -147,10 +144,10 @@ BOOL CFlashInterface::LoadLangIDDLL(LANGID LangID)
 	return false;
 }
 
-void CFlashInterface::OnOK() 
+void CFlashInterface::OnOK()
 {
 
-	CString foxStr,foyStr;	
+	CString foxStr,foyStr;
 	((CEdit *) GetDlgItem(IDC_FRAMEOFFSETX))->GetWindowText(foxStr);
 	((CEdit *) GetDlgItem(IDC_FRAMEOFFSETY))->GetWindowText(foyStr);
 
@@ -160,42 +157,40 @@ void CFlashInterface::OnOK()
 
 	int foxValid = 1;
 	int foyValid = 1;
-	if (lfox < 0) 
+	if (lfox < 0)
 	{
 		MessageOut(this->m_hWnd,IDS_FOXERRSTR, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
 		foxValid = 0;
 
-		//Question : how to return from a property sheet? 
+		//Question : how to return from a property sheet?
 		//return only return this page .. and not the others
-		
-	
+
 	}
 
-	if (lfoy < 0) 
+	if (lfoy < 0)
 	{
 		MessageOut(this->m_hWnd,IDS_FOYERRSTR, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
 		foyValid = 0;
 	}
 
-
-	if (lfox > 200) 
+	if (lfox > 200)
 	{
 		MessageOut(this->m_hWnd,IDS_FOXERRLESS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
 		foxValid = 0;
 	}
 
-	if (lfoy > 200) 
+	if (lfoy > 200)
 	{
 		MessageOut(this->m_hWnd,IDS_FOYERRLESS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
 		foyValid = 0;
 	}
 
-	if (foxValid)		
+	if (foxValid)
 		FrameOffsetX = lfox ;
-	
-	if (foyValid)	
+
+	if (foyValid)
 		FrameOffsetY = lfoy ;
-		
+
 	swfbk_red = local_swfbk_red;
 	swfbk_green = local_swfbk_green;
 	swfbk_blue = local_swfbk_blue;
@@ -204,45 +199,39 @@ void CFlashInterface::OnOK()
 	//MsgC("swfbk_green %d",swfbk_green);
 	//MsgC("swfbk_blue %d",swfbk_blue);
 
-
-
 	((CEdit *)GetDlgItem(IDC_PRELOADBITMAP))->GetWindowText(loadingPath);
 
-	int spinpos = ((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->GetPos();			
+	int spinpos = ((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->GetPos();
 	percentLoadedThreshold = ((double) spinpos) / 100.0;
-	
+
 	CPropertyPage::OnOK();
 }
 
-
-void CFlashInterface::OnButtonchoose() 
+void CFlashInterface::OnButtonchoose()
 {
-	
-	static char BASED_CODE szFilter[] =	"Windows Bitamp Files (*.bmp)|*.bmp||";	
+
+	static char BASED_CODE szFilter[] =	"Windows Bitamp Files (*.bmp)|*.bmp||";
 	char szTitle[] = "Select bitmap to display when SWF is loading"		;
-	
-	CFileDialog fdlg(FALSE,"*.bmp","*.bmp",OFN_LONGNAMES,szFilter,this);	
-	fdlg.m_ofn.lpstrTitle=szTitle;	
-	
-			
-	CString m_newfile;	
-	
-	if(fdlg.DoModal() == IDOK)
+
+	CFileDialog fdlg(FALSE,"*.bmp","*.bmp",OFN_LONGNAMES,szFilter,this);
+	fdlg.m_ofn.lpstrTitle=szTitle;
+
+	CString m_newfile;
+
+	if (fdlg.DoModal() == IDOK)
 	{
-		m_newfile = fdlg.GetPathName();						
+		m_newfile = fdlg.GetPathName();
 		((CEdit *)GetDlgItem(IDC_PRELOADBITMAP))->SetWindowText(m_newfile);
-			
+
 	}
-	else {				
-		
+	else {
+
 		return;
 
 	}
-	
 }
 
-
-void CFlashInterface::OnButton1() 
+void CFlashInterface::OnButton1()
 {
 	// TODO: Add your control notification handler code here
 	COLORREF localColor = RGB(local_swfbk_red,local_swfbk_green,local_swfbk_blue);
@@ -255,11 +244,5 @@ void CFlashInterface::OnButton1()
 		local_swfbk_blue  = GetBValue(localColor);
 
 	}
-
-	
 }
-
-
-
-		
 

@@ -19,19 +19,19 @@ class CScreenAnnotations : public CDialog
 public:
 	CScreenAnnotations(CWnd* pParent = NULL);   // standard constructor
 	void CloseAllWindows(int wantDelete);
-	CTransparentWnd* LocateWndFromItem(int nItem); 
-	CTransparentWnd* LocateWndFromShapeList(); 
+	CTransparentWnd* LocateWndFromItem(int nItem);
+	CTransparentWnd* LocateWndFromShapeList();
 	void SaveShapeNew(CTransparentWnd *newWnd);
 	void SaveShapeReplace(CTransparentWnd *newWnd);
-	void InstantiateWnd(int x, int y); 
+	void InstantiateWnd(int x, int y);
 	void SaveLayoutNew();
 
 	void TabSelectShapeMode(int updateTab);
 	void TabSelectLayoutMode(int updateTab);
 	void UpdateTabCtrl(int sel);
 
-	void InstantiateLayout(); 
-	CLayoutList* LocateLayoutFromItem(int nItem); 
+	void InstantiateLayout();
+	CLayoutList* LocateLayoutFromItem(int nItem);
 	void RefreshShapeList();
 	void RefreshLayoutList();
 
@@ -39,19 +39,16 @@ public:
 	BOOL OpenUsingShellExecute (CString);
 	LONG GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata);
 	BOOL OpenUsingRegisteredClass (CString);
-	void InstantiateLayout(int nItem, int makeselect); 
+	void InstantiateLayout(int nItem, int makeselect);
 	int GetLayoutListSelection();
 
 	void MoveItem(int direction);
 
-	
-	
 // Dialog Data
 	//{{AFX_DATA(CScreenAnnotations)
 	enum { IDD = IDD_SCREENANNOTATIONS2 };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
-
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -108,8 +105,8 @@ protected:
 	afx_msg void OnHelpShapetopicsCreatinganewshape();
 	afx_msg void OnHelpShapetopicsEditingtransparency();
 	afx_msg void OnHelpShapetopicsManagingshapes();
-	afx_msg void OnHelpShapetopicsResizingshapes();	
-	afx_msg void OnHelpLayouts();	
+	afx_msg void OnHelpShapetopicsResizingshapes();
+	afx_msg void OnHelpLayouts();
 	afx_msg void OnAnnSavelayout();
 	afx_msg void OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu);
 	afx_msg void OnLibraryOpenshapelibrary();
@@ -138,3 +135,4 @@ protected:
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
 #endif // !defined(AFX_SCREENANNOTATIONS_H__BD963A1F_33E6_424C_AEC5_4A3A78700C29__INCLUDED_)
+

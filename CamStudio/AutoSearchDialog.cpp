@@ -14,7 +14,6 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CAutoSearchDialog dialog
 
-
 CAutoSearchDialog::CAutoSearchDialog(CWnd* pParent /*=NULL*/)
 : CDialog(CAutoSearchDialog::IDD, pParent)
 {
@@ -23,7 +22,6 @@ CAutoSearchDialog::CAutoSearchDialog(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 }
 
-
 void CAutoSearchDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -31,7 +29,6 @@ void CAutoSearchDialog::DoDataExchange(CDataExchange* pDX)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
-
 
 BEGIN_MESSAGE_MAP(CAutoSearchDialog, CDialog)
 	//{{AFX_MSG_MAP(CAutoSearchDialog)
@@ -61,15 +58,14 @@ void CAutoSearchDialog::SetButtonEnable(BOOL enable)
 
 }
 
-
-void CAutoSearchDialog::OnCloseDialog() 
+void CAutoSearchDialog::OnCloseDialog()
 {
 	// TODO: Add your control notification handler code here
 	ShowWindow(SW_HIDE);
 
 }
 
-void CAutoSearchDialog::OnClose() 
+void CAutoSearchDialog::OnClose()
 {
 	// TODO: Add your message handler code here and/or call default
 	ShowWindow(SW_HIDE);

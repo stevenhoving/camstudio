@@ -23,10 +23,10 @@ CLayeredWindowHelperST::~CLayeredWindowHelperST()
 // This function add the WS_EX_LAYERED style to the specified window.
 //
 // Parameters:
-// [IN] Handle to the window and, indirectly, the class to which the window belongs. 
-// Windows 95/98/Me: The SetWindowLong function may fail if the window 
-// specified by the hWnd parameter does not belong to the same process 
-// as the calling thread. 
+// [IN] Handle to the window and, indirectly, the class to which the window belongs.
+// Windows 95/98/Me: The SetWindowLong function may fail if the window
+// specified by the hWnd parameter does not belong to the same process
+// as the calling thread.
 //
 // Return value:
 // Non zero
@@ -51,10 +51,10 @@ LONG CLayeredWindowHelperST::AddLayeredStyle(HWND hWnd)
 // [IN] bAlpha
 // Alpha value used to describe the opacity of the layered window.
 // When bAlpha is 0, the window is completely transparent.
-// When bAlpha is 255, the window is opaque. 
-// [IN] dwFlags 
+// When bAlpha is 255, the window is opaque.
+// [IN] dwFlags
 // Specifies an action to take. This parameter can be one or more of the following values:
-// LWA_COLORKEY Use crKey as the transparency color. 
+// LWA_COLORKEY Use crKey as the transparency color.
 // LWA_ALPHA Use bAlpha to determine the opacity of the layered window.
 //
 // Return value:

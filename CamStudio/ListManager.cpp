@@ -26,7 +26,6 @@ CListManager::CListManager()
 	displayArray.RemoveAll( );
 	layoutArray.RemoveAll( );
 
-
 }
 
 CListManager::~CListManager()
@@ -34,14 +33,12 @@ CListManager::~CListManager()
 
 }
 
-
 int CListManager::AddShapeArray(CTransparentWnd * newWnd)
 {
 
 	shapeArray.Add(newWnd);
 	return 1;
 }
-
 
 //Note: The window is only detached from the array, it is not destroyed
 int CListManager::RemoveShapeArray(CTransparentWnd * removeWnd, int wantDestroy)
@@ -83,95 +80,62 @@ int CListManager::LoadShapeArray(CString loadDir)
 
 int CListManager::LoadShapeArray(CString loadDir, int freeExisting)
 {
-
 	int ret = TRUE;
 	FILE* fptr = fopen(LPCTSTR(loadDir),"rb");
-	if (fptr != NULL) {
-
-
-
-		long fileversion = 0;
-		fread( (void *) &fileversion, sizeof(long), 1, fptr ); 
-
-		int max = 0;
-		fread( (void *) &max, sizeof(int), 1, fptr ); //Number of Shapes
-
-		int reserve[100];
-		for (int j=0;j<100;j++)
-			fread( (void *) &reserve[j], sizeof(int), 1, fptr ); //Reserve Bytes
-
-		//Testing
-		int failtest = 0;
-		if (reserve[0]!='c') failtest=1;
-		if (reserve[1]!='s') failtest=1;
-		if (reserve[2]!='h') failtest=1;
-		if (reserve[3]!='a') failtest=1;
-		if (reserve[4]!='p') failtest=1;
-		if (reserve[5]!='e') failtest=1;
-
-		if (failtest)
-		{
-			//MessageBox(NULL,"Invalid shape file CamShapes.ini","Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(NULL,IDS_STRINGINSHAPEFILE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-			fclose(fptr);
-			return FALSE;
-
-		}
-
-		if ((max>0) && (max<100000))
-		{
-			if (freeExisting)
-				FreeShapeArray();
-			for (int i=0; i<max ; i++)
-			{
-
-				CTransparentWnd * itemWnd = new CTransparentWnd;
-				if (itemWnd)
-				{
-					if (!itemWnd->LoadShape(fptr))
-					{
-						ret = FALSE;
-						break;
-					}
-					else
-					{
-
-						CString pTitle(itemWnd->m_shapeStr);
-						itemWnd->CreateEx( WS_EX_TOPMOST , 
-							AfxRegisterWndClass(0),
-							LPCTSTR(pTitle),
-							WS_POPUP | WS_SYSMENU,
-							itemWnd->m_rectWnd,
-							NULL,
-							NULL,
-							NULL ); 
-
-						AddShapeArray(itemWnd);
-					}
-
-				}
-
-			}
-
-
-		}
-
-
-		fclose(fptr);
-
-	}
-	else 
-	{
-
+	if (fptr == NULL) {
 		//Silent Mode
 		//MessageBox(NULL,"Error opening shape file for loading","Note",MB_OK | MB_ICONEXCLAMATION);
+	}
+	long fileversion = 0;
+	fread( (void *) &fileversion, sizeof(long), 1, fptr );
 
+	int max = 0;
+	fread( (void *) &max, sizeof(int), 1, fptr ); //Number of Shapes
+
+	int reserve[100];
+	for (int j=0;j<100;j++)
+		fread( (void *) &reserve[j], sizeof(int), 1, fptr ); //Reserve Bytes
+
+	//Testing
+	int failtest = 0;
+	if (reserve[0]!='c') failtest=1;
+	if (reserve[1]!='s') failtest=1;
+	if (reserve[2]!='h') failtest=1;
+	if (reserve[3]!='a') failtest=1;
+	if (reserve[4]!='p') failtest=1;
+	if (reserve[5]!='e') failtest=1;
+
+	if (failtest) {
+		//MessageBox(NULL,"Invalid shape file CamShapes.ini","Note",MB_OK | MB_ICONEXCLAMATION);
+		MessageOut(NULL,IDS_STRINGINSHAPEFILE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		fclose(fptr);
+		return FALSE;
 	}
 
+	if ((0 < max) && (max < 100000)) {
+		if (freeExisting) {
+			FreeShapeArray();
+		}
+		for (int i = 0; i < max; i++) {
+			CTransparentWnd * itemWnd = new CTransparentWnd;
+			if (itemWnd) {
+				if (!itemWnd->LoadShape(fptr)) {
+					ret = FALSE;
+					break;
+				} else {
+					CString pTitle(itemWnd->m_shapeStr);
+					itemWnd->CreateEx( WS_EX_TOPMOST, AfxRegisterWndClass(0), LPCTSTR(pTitle), WS_POPUP | WS_SYSMENU, itemWnd->m_rectWnd, NULL, NULL, NULL);
+
+					AddShapeArray(itemWnd);
+				}
+			}
+		}
+	}
+
+	fclose(fptr);
 
 	return ret;
 }
-
 
 int CListManager::SaveShapeArray(CString saveDir)
 {
@@ -180,9 +144,8 @@ int CListManager::SaveShapeArray(CString saveDir)
 	FILE* fptr = fopen(LPCTSTR(saveDir),"wb");
 	if (fptr != NULL) {
 
-
 		long fileversion = 100;
-		fwrite( (void *) &fileversion, sizeof(long), 1, fptr ); 
+		fwrite( (void *) &fileversion, sizeof(long), 1, fptr );
 
 		int max = shapeArray.GetSize();
 		fwrite( (void *) &max, sizeof(int), 1, fptr ); //Number of Shapes
@@ -198,7 +161,6 @@ int CListManager::SaveShapeArray(CString saveDir)
 		for (int j=0;j<100;j++)
 			fwrite( (void *) &reserve[j], sizeof(int), 1, fptr ); //Reserve Bytes
 
-
 		CTransparentWnd * itemWnd = NULL;
 		for (int i=0;i<max; i++)
 		{
@@ -209,12 +171,12 @@ int CListManager::SaveShapeArray(CString saveDir)
 					ret = FALSE;
 
 			}
-		} 
+		}
 
 		fclose(fptr);
 
 	}
-	else 
+	else
 		//MessageBox(NULL,"Error opening shape file for saving","Note",MB_OK | MB_ICONEXCLAMATION);
 		MessageOut(NULL,IDS_STRING_EOSFS,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 
@@ -278,10 +240,8 @@ int CListManager::AddLayoutArray(CLayoutList* pLayout)
 	return 1;
 }
 
-
 int CListManager::RemoveLayoutArray(CLayoutList* pLayout,int wantDestroyLayout)
 {
-
 
 	int found = 0;
 
@@ -294,7 +254,7 @@ int CListManager::RemoveLayoutArray(CLayoutList* pLayout,int wantDestroyLayout)
 		{
 			layoutArray.RemoveAt( i, 1);
 			found = 1;
-			break; //allow only one removal 
+			break; //allow only one removal
 
 		}
 	}
@@ -310,7 +270,6 @@ int CListManager::RemoveLayoutArray(CLayoutList* pLayout,int wantDestroyLayout)
 	}
 
 	return found;
-
 
 }
 
@@ -330,7 +289,6 @@ int CListManager::DestroyLayout(CLayoutList* pLayout)
 
 }
 
-
 int CListManager::DestroyArrayItems(CArray<CTransparentWnd *,CTransparentWnd *> *removeArray)
 {
 
@@ -348,11 +306,10 @@ int CListManager::DestroyArrayItems(CArray<CTransparentWnd *,CTransparentWnd *> 
 
 			}
 			else
-			{ 
-				itemWnd->ShowWindow(SW_HIDE); 
+			{
+				itemWnd->ShowWindow(SW_HIDE);
 
-
-				//need to clone the display array 
+				//need to clone the display array
 				removeArray->RemoveAt( i, 1);
 				itemWnd->DestroyWindow();
 				delete itemWnd;
@@ -391,8 +348,6 @@ CArray<CTransparentWnd *,CTransparentWnd *> * CListManager::CloneDisplayArray()
 
 }
 
-
-
 int CListManager::FreeShapeArray()
 {
 
@@ -404,14 +359,14 @@ int CListManager::FreeShapeArray()
 int CListManager::FreeDisplayArray()
 {
 
-	DestroyArrayItems(&displayArray); 
+	DestroyArrayItems(&displayArray);
 	return 1;
 }
 
 int CListManager::FreeLayoutArray()
 {
 
-	//Free Multiple Lists 
+	//Free Multiple Lists
 	int max = layoutArray.GetSize();
 	CLayoutList * pLayout = NULL;
 	for (int i=max-1;i>=0; i--)
@@ -420,14 +375,13 @@ int CListManager::FreeLayoutArray()
 		if (pLayout)
 		{
 
-			RemoveLayoutArray(pLayout,1); 
+			RemoveLayoutArray(pLayout,1);
 		}
 
-	} 
+	}
 
 	return 1;
 }
-
 
 CArray<CTransparentWnd *,CTransparentWnd *> * CListManager::CloneLayoutArrayPtr(CLayoutList* itemLayout)
 {
@@ -453,17 +407,14 @@ CArray<CTransparentWnd *,CTransparentWnd *> * CListManager::CloneLayoutArrayPtr(
 
 	return cloneArray;
 
-
 }
-
-
 
 CLayoutList * CListManager::CloneLayout(CLayoutList * itemLayout)
 {
 
 	CLayoutList * newLayout = NULL;
 	if (itemLayout)
-	{ 
+	{
 		CArray<CTransparentWnd *,CTransparentWnd *> *cloneArray = CloneLayoutArrayPtr(itemLayout);
 		if (cloneArray)
 		{
@@ -473,7 +424,7 @@ CLayoutList * CListManager::CloneLayout(CLayoutList * itemLayout)
 
 				newLayout->layoutArrayPtr = cloneArray;
 				//gList.AddLayoutArray(newLayout);
-				newLayout->layoutName = itemLayout->layoutName; 
+				newLayout->layoutName = itemLayout->layoutName;
 
 			}
 
@@ -484,7 +435,6 @@ CLayoutList * CListManager::CloneLayout(CLayoutList * itemLayout)
 	return newLayout;
 
 }
-
 
 int CListManager::SwapShapeArray(long uniqueID1, long uniqueID2)
 {
@@ -513,7 +463,6 @@ int CListManager::SwapShapeArray(long uniqueID1, long uniqueID2)
 		}
 	}
 
-
 	//Perform the swap
 	if ((swapItem1>-1) && (swapItem2>-1))
 	{
@@ -526,8 +475,6 @@ int CListManager::SwapShapeArray(long uniqueID1, long uniqueID2)
 
 	return 0;
 }
-
-
 
 int CListManager::SwapLayoutArray(long uniqueID1, long uniqueID2)
 {
@@ -556,7 +503,6 @@ int CListManager::SwapLayoutArray(long uniqueID1, long uniqueID2)
 		}
 	}
 
-
 	//Perform the swap
 	if ((swapItem1>-1) && (swapItem2>-1))
 	{
@@ -570,18 +516,15 @@ int CListManager::SwapLayoutArray(long uniqueID1, long uniqueID2)
 	return 0;
 }
 
-
 int CListManager::LoadLayout(CString loadDir)
 {
-
 
 	int ret = TRUE;
 	FILE* fptr = fopen(LPCTSTR(loadDir),"rb");
 	if (fptr != NULL) {
 
-
 		long fileversion = 0;
-		fread( (void *) &fileversion, sizeof(long), 1, fptr ); 
+		fread( (void *) &fileversion, sizeof(long), 1, fptr );
 
 		int max = 0;
 		fread( (void *) &max, sizeof(int), 1, fptr ); //Number of Layouts
@@ -589,7 +532,6 @@ int CListManager::LoadLayout(CString loadDir)
 		int reserve[100];
 		for (int j=0;j<100;j++)
 			fread( (void *) &reserve[j], sizeof(int), 1, fptr ); //Reserve Bytes
-
 
 		//Testing
 		int failtest = 0;
@@ -609,8 +551,6 @@ int CListManager::LoadLayout(CString loadDir)
 			fclose(fptr);
 			return FALSE;
 		}
-
-
 
 		if ((max>0) && (max<100000))
 		{
@@ -634,20 +574,17 @@ int CListManager::LoadLayout(CString loadDir)
 
 			}
 
-
 		}
-
 
 		fclose(fptr);
 
 	}
-	else 
+	else
 	{
 		//Silent Mode
 		//MessageBox(NULL,"Error opening layout file for loading","Note",MB_OK | MB_ICONEXCLAMATION);
 
 	}
-
 
 	return ret;
 }
@@ -659,14 +596,11 @@ int CListManager::SaveLayout(CString saveDir)
 	FILE* fptr = fopen(LPCTSTR(saveDir),"wb");
 	if (fptr != NULL) {
 
-
-
 		long fileversion = 100;
-		fwrite( (void *) &fileversion, sizeof(long), 1, fptr ); 
+		fwrite( (void *) &fileversion, sizeof(long), 1, fptr );
 
 		int max = layoutArray.GetSize();
 		fwrite( (void *) &max, sizeof(int), 1, fptr ); //Number of Shapes
-
 
 		int reserve[100];
 		reserve[0]='c';
@@ -680,7 +614,6 @@ int CListManager::SaveLayout(CString saveDir)
 		for (int j=0;j<100;j++)
 			fwrite( (void *) &reserve[j], sizeof(int), 1, fptr ); //Reserve Bytes
 
-
 		CLayoutList * itemLayout = NULL;
 		for (int i=0;i<max; i++)
 		{
@@ -691,30 +624,27 @@ int CListManager::SaveLayout(CString saveDir)
 					ret = FALSE;
 
 			}
-		} 
+		}
 
 		fclose(fptr);
 
 	}
-	else 
+	else
 		//MessageBox(NULL,"Error opening layout file for saving","Note",MB_OK | MB_ICONEXCLAMATION);
 		MessageOut(NULL,IDS_STRING_EOLFS,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 
 	return ret;
 }
 
-
 int CListManager::SaveLayoutArrayToFile(CArray<CTransparentWnd *,CTransparentWnd *> * layoutArrayPtr , FILE* fptr)
 {
 
 	int ret = TRUE;
 	long shapearrayversion = 100;
-	fwrite( (void *) &shapearrayversion, sizeof(long), 1, fptr ); 
+	fwrite( (void *) &shapearrayversion, sizeof(long), 1, fptr );
 
 	int max = layoutArrayPtr->GetSize();
 	fwrite( (void *) &max, sizeof(int), 1, fptr ); //Number of Shapes
-
-
 
 	CTransparentWnd * itemWnd = NULL;
 	for (int i=0;i<max; i++)
@@ -726,17 +656,14 @@ int CListManager::SaveLayoutArrayToFile(CArray<CTransparentWnd *,CTransparentWnd
 				ret = FALSE;
 
 		}
-	} 
-
-
-
+	}
 
 	return ret;
 
 }
 
 //Ensure window is on the top of displaylist
-void CListManager::EnsureOnTopList(CTransparentWnd* transWnd ) 
+void CListManager::EnsureOnTopList(CTransparentWnd* transWnd )
 {
 
 	int max = displayArray.GetSize();
@@ -762,11 +689,10 @@ int CListManager::LoadLayoutArrayFromFile(CArray<CTransparentWnd *,CTransparentW
 		return FALSE;
 
 	long layoutarrayversion = 0;
-	fread( (void *) &layoutarrayversion, sizeof(long), 1, fptr ); 
+	fread( (void *) &layoutarrayversion, sizeof(long), 1, fptr );
 
 	int max = 0;
 	fread( (void *) &max, sizeof(int), 1, fptr ); //Number of Shapes
-
 
 	if ((max>0) && (max<10000))
 	{
@@ -786,18 +712,17 @@ int CListManager::LoadLayoutArrayFromFile(CArray<CTransparentWnd *,CTransparentW
 				{
 
 					CString pTitle(itemWnd->m_shapeStr);
-					itemWnd->CreateEx( WS_EX_TOPMOST , 
+					itemWnd->CreateEx( WS_EX_TOPMOST ,
 						AfxRegisterWndClass(0),
 						LPCTSTR(pTitle),
 						WS_POPUP | WS_SYSMENU,
 						itemWnd->m_rectWnd,
 						NULL,
 						NULL,
-						NULL ); 
+						NULL );
 
 					if (layoutArrayPtr)
 						layoutArrayPtr->Add(itemWnd);
-
 
 				}
 
@@ -805,15 +730,11 @@ int CListManager::LoadLayoutArrayFromFile(CArray<CTransparentWnd *,CTransparentW
 
 		}
 
-
 	}
-
 
 	//Future Enhancements
 	if (layoutarrayversion>100)
 	{
-
-
 
 	}
 

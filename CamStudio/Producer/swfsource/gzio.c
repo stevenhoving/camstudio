@@ -52,7 +52,6 @@ typedef struct gz_stream {
     long     startpos; /* start of compressed data in file (header skipped) */
 } gz_stream;
 
-
 local gzFile gz_open      OF((const char *path, const char *mode, int  fd));
 local int do_flush        OF((gzFile file, int flush));
 local int    get_byte     OF((gz_stream *s));
@@ -122,7 +121,7 @@ local gzFile gz_open (path, mode, fd)
 	}
     } while (*p++ && m != fmode + sizeof(fmode));
     if (s->mode == '\0') return destroy(s), (gzFile)Z_NULL;
-    
+
     if (s->mode == 'w') {
 #ifdef NO_DEFLATE
         err = Z_STREAM_ERROR;
@@ -173,7 +172,7 @@ local gzFile gz_open (path, mode, fd)
 	check_header(s); /* skip the .gz header */
 	s->startpos = (ftell(s->file) - s->stream.avail_in);
     }
-    
+
     return (gzFile)s;
 }
 
@@ -441,7 +440,6 @@ int ZEXPORT gzread (file, buf, len)
     return (int)(len - s->stream.avail_out);
 }
 
-
 /* ===========================================================================
       Reads one byte from the compressed file. gzgetc returns this byte
    or -1 in case of end of file or error.
@@ -453,7 +451,6 @@ int ZEXPORT gzgetc(file)
 
     return gzread(file, &c, 1) == 1 ? c : -1;
 }
-
 
 /* ===========================================================================
       Reads bytes from the compressed file until len-1 characters are
@@ -476,7 +473,6 @@ char * ZEXPORT gzgets(file, buf, len)
     *buf = '\0';
     return b == buf && len > 0 ? Z_NULL : b;
 }
-
 
 #ifndef NO_DEFLATE
 /* ===========================================================================
@@ -579,7 +575,6 @@ int ZEXPORT gzputc(file, c)
     return gzwrite(file, &cc, 1) == 1 ? (int)cc : -1;
 }
 
-
 /* ===========================================================================
       Writes the given null-terminated string to the compressed file, excluding
    the terminating null character.
@@ -591,7 +586,6 @@ int ZEXPORT gzputs(file, s)
 {
     return gzwrite(file, (char*)s, (unsigned)strlen(s));
 }
-
 
 /* ===========================================================================
      Flushes all pending output into the compressed file. The parameter
@@ -627,10 +621,10 @@ local int do_flush (file, flush)
 	if (len == 0 && s->z_err == Z_BUF_ERROR) s->z_err = Z_OK;
 
         /* deflate has finished flushing only when it hasn't used up
-         * all the available space in the output buffer: 
+         * all the available space in the output buffer:
          */
         done = (s->stream.avail_out != 0 || s->z_err == Z_STREAM_END);
- 
+
         if (s->z_err != Z_OK && s->z_err != Z_STREAM_END) break;
     }
     return  s->z_err == Z_STREAM_END ? Z_OK : s->z_err;
@@ -668,7 +662,7 @@ z_off_t ZEXPORT gzseek (file, offset, whence)
 	s->z_err == Z_ERRNO || s->z_err == Z_DATA_ERROR) {
 	return -1L;
     }
-    
+
     if (s->mode == 'w') {
 #ifdef NO_DEFLATE
 	return -1L;
@@ -736,13 +730,13 @@ z_off_t ZEXPORT gzseek (file, offset, whence)
 }
 
 /* ===========================================================================
-     Rewinds input file. 
+     Rewinds input file.
 */
 int ZEXPORT gzrewind (file)
     gzFile file;
 {
     gz_stream *s = (gz_stream*)file;
-    
+
     if (s == NULL || s->mode != 'r') return -1;
 
     s->z_err = Z_OK;
@@ -750,7 +744,7 @@ int ZEXPORT gzrewind (file)
     s->stream.avail_in = 0;
     s->stream.next_in = s->inbuf;
     s->crc = crc32(0L, Z_NULL, 0);
-	
+
     if (s->startpos == 0) { /* not a compressed file */
 	rewind(s->file);
 	return 0;
@@ -779,7 +773,7 @@ int ZEXPORT gzeof (file)
     gzFile file;
 {
     gz_stream *s = (gz_stream*)file;
-    
+
     return (s == NULL || s->mode != 'r') ? 0 : s->z_eof;
 }
 

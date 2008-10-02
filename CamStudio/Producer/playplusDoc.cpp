@@ -30,7 +30,6 @@ END_MESSAGE_MAP()
 CPlayplusDoc::CPlayplusDoc()
 {
 	// TODO: add one-time construction code here
-
 }
 
 CPlayplusDoc::~CPlayplusDoc()
@@ -47,8 +46,6 @@ BOOL CPlayplusDoc::OnNewDocument()
 
 	return TRUE;
 }
-
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CPlayplusDoc serialization

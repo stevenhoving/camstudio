@@ -36,6 +36,7 @@
 #include "hook\hook.h"
 #include "hookkey\hookkey.h"
 
+#include "Buffer.h"
 #include "CStudioLib.h"
 #include "TrayIIcon.h"
 
@@ -148,7 +149,6 @@ RECT rc;
 HWND hMouseCaptureWnd;
 HWND hWnd_FixedRegion;
 
-HBITMAP savedBitmap = NULL;
 HBITMAP hLogoBM = NULL;
 CFlashingWnd* pFrame = NULL;
 
@@ -212,7 +212,6 @@ int nColors=24;
 int actualwidth=0;
 int actualheight=0;
 
-
 //Path to temporary avi file
 CString tempfilepath;
 
@@ -243,7 +242,7 @@ WAVEFORMATEX m_Format;
 DWORD m_ThreadID;
 int m_QueuedBuffers=0;
 int m_BufferSize = 1000; // number of samples
-CSoundFile *m_pFile = NULL;
+CSoundFile * pSoundFile = NULL;
 
 //Audio Options Dialog
 LPWAVEFORMATEX pwfx = NULL;
@@ -280,7 +279,6 @@ int g_valueadjust=1;
 
 //Cursor Path, used for copying cursor file
 CString g_cursorFilePath;
-
 
 //ver 1.3
 int threadPriority = THREAD_PRIORITY_NORMAL;
@@ -408,7 +406,6 @@ int InitDrawShiftWindow();
 int InitSelectRegionWindow();
 int CreateShiftWindow();
 int DestroyShiftWindow();
-
 
 //Use these 2 functions to create frames and free frames
 LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height,int tempDisableRect);
@@ -687,7 +684,6 @@ int SetAdjustHotKeys()
 		outstr.Format(msgstr,keystr);
 		//keystr = "Unable to set shortcuts for %d" + keystr;
 		MessageBox(NULL,outstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-
 	}
 
 	return ret;
@@ -814,32 +810,7 @@ int SetHotKeys(int succ[])
 // Utility()
 /////////////////////////////////////////////////////////////////////////////
 
-void SaveBitmapCopy(HDC hdc, HDC hdcbits, int x, int y, int sx, int sy)
-{
-	if (savedBitmap) {
-		DeleteObject(savedBitmap);
-	}
-	savedBitmap = (HBITMAP) CreateCompatibleBitmap(hdc, sx, sy);
-	HBITMAP oldbitmap = (HBITMAP) SelectObject(hdcbits, savedBitmap);
-	BitBlt(hdcbits, 0, 0, sx, sy, hdc, x, y, SRCCOPY);
-
-	SelectObject(hdcbits, oldbitmap);
-}
-
-void RestoreBitmapCopy(HDC hdc, HDC hdcbits, int x, int y, int sx, int sy)
-{
-	if (savedBitmap) {
-		HBITMAP oldbitmap = (HBITMAP) SelectObject(hdcbits,savedBitmap);
-		BitBlt(hdc, x, y, sx, sy, hdcbits, 0, 0, SRCCOPY);
-		SelectObject(hdcbits,oldbitmap);
-		if (savedBitmap) {
-			DeleteObject(savedBitmap);
-		}
-		savedBitmap = NULL;
-	}
-}
-
-
+HBITMAP savedBitmap = NULL;
 /////////////////////////////////////////////////////////////////////////////
 //
 // DrawSelect
@@ -890,15 +861,14 @@ void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip)
 
 	if (fDraw) {
 		//Save Original Picture
-		SaveBitmapCopy(hdc,hdcBits, x-4, y-4, dx+8, dy+8);
+		SaveBitmapCopy(savedBitmap, hdc, hdcBits, x - 4, y - 4, dx + 8, dy + 8);
 
 		//Text
 		COLORREF oldtextcolor = SetTextColor(hdc,RGB(0,0,0));
 		COLORREF oldbkcolor = SetBkColor(hdc,RGB(255,255,255));
 		SetBkMode(hdc,TRANSPARENT);
 
-		//Rectangle(hdc,x-1,y-1,x+dx, y+dy);
-		RoundRect(hdc,x-4,y-4,x+dx+4, y+dy+4,10,10);
+		RoundRect(hdc, x - 4, y - 4, x + dx + 4, y + dy + 4, 10, 10);
 
 		SetBkMode(hdc,OPAQUE);
 
@@ -907,7 +877,7 @@ void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip)
 		SetTextColor(hdc,oldtextcolor);
 		SelectObject(hdc, oldfont);
 	} else {
-		RestoreBitmapCopy(hdc,hdcBits, x-4, y-4, dx+8, dy+8);
+		RestoreBitmapCopy(savedBitmap, hdc, hdcBits, x - 4, y - 4, dx + 8, dy + 8);
 	}
 
 	//Icon
@@ -939,26 +909,26 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 				POINT pt;
 				GetCursorPos(&pt);
 
-				rcClip.left = pt.x+rcOffset.left; // Update rect with new mouse info
-				rcClip.top = pt.y+rcOffset.top;
-				rcClip.right = pt.x+rcOffset.right;
-				rcClip.bottom = pt.y+rcOffset.bottom;
+				rcClip.left = pt.x + rcOffset.left; // Update rect with new mouse info
+				rcClip.top = pt.y + rcOffset.top;
+				rcClip.right = pt.x + rcOffset.right;
+				rcClip.bottom = pt.y + rcOffset.bottom;
 
-				if (rcClip.left<0) {
-					rcClip.left=0;
-					rcClip.right=((rc.right)-(rc.left));
+				if (rcClip.left < 0) {
+					rcClip.left = 0;
+					rcClip.right = (rc.right - rc.left);
 				}
-				if (rcClip.top<0) {
-					rcClip.top=0;
-					rcClip.bottom=((rc.bottom)-(rc.top));
+				if (rcClip.top < 0) {
+					rcClip.top = 0;
+					rcClip.bottom = (rc.bottom - rc.top);
 				}
-				if (rcClip.right>maxxScreen-1) {
-					rcClip.right=maxxScreen-1;
-					rcClip.left=maxxScreen-1-((rc.right)-(rc.left));
+				if (rcClip.right > maxxScreen - 1) {
+					rcClip.right = maxxScreen - 1;
+					rcClip.left = maxxScreen - 1 - (rc.right - rc.left);
 				}
-				if (rcClip.bottom>maxyScreen-1) {
-					rcClip.bottom=maxyScreen-1;
-					rcClip.top=maxyScreen-1-((rc.bottom)-(rc.top));
+				if (rcClip.bottom > maxyScreen - 1) {
+					rcClip.bottom = maxyScreen - 1;
+					rcClip.top = maxyScreen - 1 - (rc.bottom - rc.top);
 				}
 
 				if (!isRectEqual(old_rcClip,rcClip)) {
@@ -966,7 +936,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 					DrawSelect(hScreenDC, FALSE, &old_rcClip); // erase old rubber-band
 					DrawSelect(hScreenDC, TRUE, &rcClip); // new rubber-band
 					ReleaseDC(hWnd,hScreenDC);
-				}// if old
+				} // if old
 
 				old_rcClip=rcClip;
 			} else if (MouseCaptureMode==1) { //Variable Region
@@ -990,8 +960,6 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 					ReleaseDC(hWnd,hScreenDC);
 				}
 			}
-
-			return DefWindowProc(hWnd, wMessage, wParam, lParam);
 		}
 
 	case WM_LBUTTONUP:
@@ -1020,8 +988,6 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 					PostMessage (hWnd_FixedRegion,WM_USER_REGIONUPDATE,0,(LPARAM) 0);
 				}
 			}
-
-			return DefWindowProc(hWnd, wMessage, wParam, lParam);
 		}
 
 	case WM_LBUTTONDOWN:
@@ -1029,15 +995,12 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 			// User pressed left button, initialize selection
 			// Set origin to current mouse position (in window coords)
 
-			if (MouseCaptureMode==1) {
+			if (MouseCaptureMode == 1) {
 				POINT pt;
 				GetCursorPos(&pt);
-
 				ptOrigin = pt;
-
 				rcClip.left = rcClip.right = pt.x;
 				rcClip.top = rcClip.bottom = pt.y;
-
 				NormalizeRect(&rcClip); // Make sure it is a normal rect
 				HDC hScreenDC = GetDC(hWnd);
 				DrawSelect(hScreenDC, TRUE, &rcClip); // Draw the rubber-band box
@@ -1045,8 +1008,6 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 
 				bCapturing = TRUE;
 			}
-
-			return DefWindowProc(hWnd, wMessage, wParam, lParam);
 		}
 
 	case WM_RBUTTONDOWN:
@@ -1064,8 +1025,6 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 				//ver 1.2
 				AllowNewRecordStartKey = TRUE;
 			}
-
-			return DefWindowProc(hWnd, wMessage, wParam, lParam);
 		}
 
 	case WM_KEYDOWN:
@@ -1095,51 +1054,40 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 				AllowNewRecordStartKey = TRUE;
 
 			} //VK_ESCAPE (keyRecordCancel)
-
-			return DefWindowProc(hWnd, wMessage, wParam, lParam);
 		}
-
-	default:
-		return DefWindowProc(hWnd, wMessage, wParam, lParam);
 	}
 
-	return 0;
+	return DefWindowProc(hWnd, wMessage, wParam, lParam);
 }
 
+// Code For Creating a Window for Specifying Region
+// A borderless, invisible window used only for capturing mouse input for the whole screen
 int CreateShiftWindow()
 {
-	// Code For Creating a Window for Specifying Region
-	// A borderless, invisible window used only for capturing mouse input for the whole screen
 	HINSTANCE hInstance = AfxGetInstanceHandle();
+	HICON hcur = ::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICONCROSSHAIR));
 
 	WNDCLASS wndclass;
-
 	wndclass.style = 0;
 	wndclass.lpfnWndProc = (WNDPROC)MouseCaptureWndProc;
 	wndclass.cbClsExtra = 0;
 	wndclass.cbWndExtra = 0;
 	wndclass.hInstance = hInstance;
 	wndclass.hIcon = LoadIcon(hInstance, "WINCAP");
-
-	HICON hcur= LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(IDI_ICONCROSSHAIR));
-	//wndclass.hCursor = LoadCursor(NULL, IDC_CROSS);
-	wndclass.hCursor = hcur;
-
-	wndclass.hbrBackground = NULL;
-
-	//wndclass.lpszMenuName = (LPSTR)"MAINMENU";
 	wndclass.lpszMenuName = NULL;
 	wndclass.lpszClassName = (LPSTR) "ShiftRegionWindow";
+	wndclass.hCursor = hcur;
+	wndclass.hbrBackground = NULL;
 
 	if (!RegisterClass(&wndclass))
 		return 0;
 
-	HDC hScreenDC=::GetDC(NULL);
+	HDC hScreenDC = ::GetDC(NULL);
 	maxxScreen = GetDeviceCaps(hScreenDC,HORZRES);
 	maxyScreen = GetDeviceCaps(hScreenDC,VERTRES);
 	::ReleaseDC(NULL,hScreenDC);
 
-	hMouseCaptureWnd = CreateWindowEx(WS_EX_TOPMOST,"ShiftRegionWindow", "Title",WS_POPUP,0,0,maxxScreen,maxyScreen,NULL,NULL, hInstance, NULL);
+	hMouseCaptureWnd = CreateWindowEx(WS_EX_TOPMOST, "ShiftRegionWindow", "Title", WS_POPUP, 0, 0, maxxScreen, maxyScreen, NULL, NULL, hInstance, NULL);
 
 	return 0;
 }
@@ -1189,7 +1137,7 @@ int DestroyShiftWindow()
 /////////////// Functions //////////////////
 ///////////////////////// //////////////////
 
-LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height,int tempDisableRect)
+LPBITMAPINFOHEADER captureScreenFrame(int left, int top, int width, int height, int tempDisableRect)
 {
 	TRACE("captureScreenFrame\n");
 	HDC hScreenDC = ::GetDC(NULL);
@@ -1197,11 +1145,9 @@ LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height,int
 	//if flashing rect
 	if (flashingRect && !tempDisableRect) {
 		if (autopan) {
-			pFrame->SetUpRegion(left,top,width,height,1);
-			pFrame->DrawFlashingRect(TRUE, 1);
-		} else {
-			pFrame->DrawFlashingRect(TRUE, 0);
+			pFrame->SetUpRegion(left, top, width, height, 1);
 		}
+		pFrame->DrawFlashingRect(TRUE, (autopan) ? 1 : 0);
 	}
 
 	HDC hMemDC = ::CreateCompatibleDC(hScreenDC);
@@ -1269,14 +1215,13 @@ LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height,int
 		::DrawIcon( hMemDC, xPoint.x, xPoint.y, hcur);
 	}
 
-	SelectObject(hMemDC,oldbm);
+	SelectObject(hMemDC, oldbm);
 	LPBITMAPINFOHEADER pBM_HEADER = (LPBITMAPINFOHEADER)GlobalLock(Bitmap2Dib(hbm, bits));
-	//LPBITMAPINFOHEADER pBM_HEADER = (LPBITMAPINFOHEADER)GlobalLock(Bitmap2Dib(hbm, 24));
 	if (pBM_HEADER == NULL) {
 		//MessageBox(NULL,"Error reading a frame!","Error",MB_OK | MB_ICONEXCLAMATION);
 		MessageOut(NULL,IDS_STRING_ERRFRAME,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 
-		exit(1);
+		exit(1);	// todo: WHAT??? Exit???
 	}
 
 	DeleteObject(hbm);
@@ -1284,11 +1229,7 @@ LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height,int
 
 	//if flashing rect
 	if (flashingRect && !tempDisableRect) {
-		if (autopan) {
-			pFrame->DrawFlashingRect(FALSE, 1);
-		} else {
-			pFrame->DrawFlashingRect(FALSE, 0);
-		}
+		pFrame->DrawFlashingRect(FALSE, (autopan) ? 1 : 0);
 	}
 
 	ReleaseDC(NULL,hScreenDC);
@@ -1606,13 +1547,21 @@ void waveInErrorMsg(MMRESULT result, const char * addstr)
 	// say error message
 	char errorbuffer[500];
 	waveInGetErrorText(result, errorbuffer,500);
-	//ErrorMsg("WAVEIN:%x:%s %s", result, errorbuffer, addstr);
 	CString msgstr;
-	msgstr.Format("%s %s",errorbuffer, addstr);
+	msgstr.Format("%s %s", errorbuffer, addstr);
 
 	CString tstr;
 	tstr.LoadString(IDS_STRING_WAVEINERR);
-	MessageBox(NULL,msgstr,tstr,MB_OK | MB_ICONEXCLAMATION);
+	MessageBox(NULL, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
+}
+
+//Delete the pSoundFile variable and close existing audio file
+void ClearAudioFile()
+{
+	if (pSoundFile) {
+		delete pSoundFile;	// will close output file
+		pSoundFile = NULL;
+	}
 }
 
 BOOL InitAudioRecording()
@@ -1629,9 +1578,9 @@ BOOL InitAudioRecording()
 
 	//Create temporary wav file for audio recording
 	GetTempWavePath();
-	m_pFile = new CSoundFile(tempaudiopath, &m_Format);
+	pSoundFile = new CSoundFile(tempaudiopath, &m_Format);
 
-	if (!(m_pFile && m_pFile->IsOK()))
+	if (!(pSoundFile && pSoundFile->IsOK()))
 		//MessageBox(NULL,"Error Creating Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
 		MessageOut(NULL,IDS_STRING_ERRSOUND,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 
@@ -1672,16 +1621,6 @@ void GetTempWavePath()
 	}
 }
 
-//Delete the m_pFile variable and close existing audio file
-void ClearAudioFile()
-{
-	if (m_pFile) {
-		//will close output file
-		delete m_pFile;
-		m_pFile = NULL;
-	}
-}
-
 void SetBufferSize(int NumberOfSamples)
 {
 	m_BufferSize = NumberOfSamples;
@@ -1698,7 +1637,7 @@ BOOL StartAudioRecording(WAVEFORMATEX* format)
 	if (mmReturn) {
 		waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
 		return FALSE;
-	} 
+	}
 
 	// make several input buffers and add them to the input queue
 	for (int i = 0; i < 3; i++) {
@@ -1784,8 +1723,8 @@ void StopAudioRecording()
 
 void DataFromSoundIn(CBuffer* buffer)
 {
-	if (m_pFile) {
-		if (!m_pFile->Write(buffer)) {
+	if (pSoundFile) {
+		if (!pSoundFile->Write(buffer)) {
 			//m_SoundIn.Stop();
 			StopAudioRecording();
 			ClearAudioFile();
@@ -1969,7 +1908,6 @@ void SuggestCompressFormat()
 //		WAVE_FORMAT_QUERY)); // query only, do not open device
 //}
 
-
 // Ver 1.1
 // ========================================
 // Merge Audio and Video File Function
@@ -1983,22 +1921,18 @@ void SuggestCompressFormat()
 // ========================================
 int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_path, CString output_avi_path, BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format, DWORD audio_format_size, BOOL bInterleave, int interleave_factor, int interleave_unit)
 {
-	PAVISTREAM AviStream[NUMSTREAMS]; // the editable streams
-	AVICOMPRESSOPTIONS gaAVIOptions[NUMSTREAMS]; // compression options
-	LPAVICOMPRESSOPTIONS galpAVIOptions[NUMSTREAMS];
-
-	PAVIFILE pfileVideo = NULL;
-
 	AVIFileInit();
 
 	//Open Video and Audio Files
+	PAVIFILE pfileVideo = NULL;
 	HRESULT hr = AVIFileOpen(&pfileVideo, LPCTSTR(input_video_path), OF_READ | OF_SHARE_DENY_NONE, 0L);
 	if (hr != 0) {
 		//MessageBox(NULL,"Unable to open video file.","Note",MB_OK | MB_ICONEXCLAMATION);
 		MessageOut(NULL,IDS_STRING_NOOPENVIDEO,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
 		return 1;
 	}
+
+	PAVISTREAM AviStream[NUMSTREAMS];					// the editable streams
 
 	//Get Video Stream from Video File and Audio Stream from Audio File
 
@@ -2012,7 +1946,6 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
 			AVIFileRelease(pfileVideo);
 			//MessageBox(NULL,"Unable to open video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
 			MessageOut(NULL,IDS_STRING_NOOPENSREAM,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
 			return 1;
 		}
 
@@ -2023,7 +1956,6 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
 
 			//MessageBox(NULL,"Unable to create editable video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
 			MessageOut(NULL, IDS_STRING_NOCREATESTREAM,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
 			return 1;
 		}
 
@@ -2086,6 +2018,8 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
 	}
 
 	// AVISaveV code takes a pointer to compression opts
+	AVICOMPRESSOPTIONS gaAVIOptions[NUMSTREAMS];		// compression options
+	LPAVICOMPRESSOPTIONS galpAVIOptions[NUMSTREAMS];
 	galpAVIOptions[0] = &gaAVIOptions[0];
 	galpAVIOptions[1] = &gaAVIOptions[1];
 
@@ -2271,10 +2205,10 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
 	AVISaveOptionsFree(NUMSTREAMS,galpAVIOptions);
 
 	// Free Editable Avi Streams
-	for (int i=0;i< NUMSTREAMS;i++) {
+	for (int i = 0; i < NUMSTREAMS; i++) {
 		if (AviStream[i]) {
 			AVIStreamRelease(AviStream[i]);
-			AviStream[i]=NULL;
+			AviStream[i] = NULL;
 		}
 	}
 
@@ -2715,19 +2649,14 @@ void BuildSpeakerRecordingFormat()
 
 void SaveProducerCommand()
 {
-	FILE * sFile;
-	CString setDir,setPath;
-	CString fileName;
-
 	//********************************************
 	//Saving CamProducer.ini for storing text data
 	//********************************************
 
-	fileName="\\CamStudio.Producer.command";
-	setDir=GetProgPath();
-	setPath=setDir+fileName;
-
-	sFile = fopen(LPCTSTR(setPath),"wt");
+	CString fileName = "\\CamStudio.Producer.command";
+	CString setDir = GetProgPath();
+	CString setPath = setDir + fileName;
+	FILE * sFile = fopen((LPCTSTR)(setPath), "wt");
 	if (sFile == NULL) {
 		return;
 	}
@@ -3195,7 +3124,6 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
 	//	strCodec = CString("MS Video 1");
 	//}
 
-
 	//IV50
 	if (compfccHandler == mmioFOURCC('I', 'V', '5', '0')) { //Still Can't Handle Indeo 5.04
 		compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
@@ -3221,7 +3149,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
 
 	// Open the movie file for writing....
 	char szTitle[BUFSIZE];
-	strcpy(szTitle, "AVI Movie");
+	strcpy_s(szTitle, "AVI Movie");
 
 	PAVIFILE pfile = NULL;
 	HRESULT hr;
@@ -3505,15 +3433,14 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
 			//			1, // number to write
 			//			(LPBYTE) alpbi +				// pointer to data
 			//			alpbi->biSize +
-			//			alpbi->biClrUsed * sizeof(RGBQUAD), 
+			//			alpbi->biClrUsed * sizeof(RGBQUAD),
 			//			alpbi->biSizeImage, // size of this frame
 			//			//AVIIF_KEYFRAME, // flags....
 			//			0, //Dependent n previous frame, not key frame
-			//			NULL, 
+			//			NULL,
 			//			NULL);
 			//	}
 			//} else {
-
 
 			//if frametime repeats (frametime == oldframetime) ...the avistreamwrite will cause an error
 			hr = AVIStreamWrite(psCompressed, frametime, 1, (LPBYTE) alpbi + alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD), alpbi->biSizeImage, 0, NULL, NULL);
@@ -4178,13 +4105,13 @@ LRESULT CVscapView::OnUserGeneric (UINT wParam, LONG lParam)
 
 	//ver 2.26
 	if (RecordingMode == ModeAVI) {
-		strcpy(szFilter,"AVI Movie Files (*.avi)|*.avi||");
-		strcpy(szTitle,"Save AVI File");
-		strcpy(extFilter,"*.avi");
+		strcpy_s(szFilter,"AVI Movie Files (*.avi)|*.avi||");
+		strcpy_s(szTitle,"Save AVI File");
+		strcpy_s(extFilter,"*.avi");
 	} else {
-		strcpy(szFilter,"FLASH Movie Files (*.swf)|*.swf||");
-		strcpy(szTitle,"Save SWF File");
-		strcpy(extFilter,"*.swf");
+		strcpy_s(szFilter,"FLASH Movie Files (*.swf)|*.swf||");
+		strcpy_s(szTitle,"Save SWF File");
+		strcpy_s(extFilter,"*.swf");
 	}
 
 	CFileDialog fdlg(FALSE,extFilter,extFilter,OFN_LONGNAMES,szFilter,this);
@@ -4438,9 +4365,6 @@ BOOL CVscapView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwS
 	hWndGlobal = m_hWnd;
 
 	//ver 1.2
-	LoadSettings();
-
-	//ver 1.2
 	//InstallMyKeyHook(hWndGlobal,WM_USER_KEYSTART);
 	int val = SetAdjustHotKeys();
 
@@ -4450,6 +4374,9 @@ BOOL CVscapView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwS
 	TraySetToolTip("CamStudio");
 	TraySetMenu(IDR_TRAYMENU);
 	TrayShow();
+
+	//ver 1.2
+	LoadSettings();
 
 	return result;
 }
@@ -4762,8 +4689,8 @@ BOOL CVscapView::OpenUsingRegisteredClass (CString link)
 				*pos = _T ('\0'); // Remove the parameter
 			}
 
-			_tcscat (pos, _T (" "));
-			_tcscat (pos, link);
+			strcat(pos, _T (" "));
+			strcat(pos, link);
 			result = (HINSTANCE) WinExec (key, SW_SHOW);
 			if ((int) result <= HINSTANCE_ERROR) {
 				CString str;
@@ -4825,13 +4752,11 @@ LONG CVscapView::GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata)
 {
 	HKEY hkey;
 	LONG retval = RegOpenKeyEx (key, subkey, 0, KEY_QUERY_VALUE, &hkey);
-
-	if (retval == ERROR_SUCCESS)
-	{
+	if (retval == ERROR_SUCCESS) {
 		long datasize = MAX_PATH;
 		TCHAR data[MAX_PATH];
 		RegQueryValue (hkey, NULL, data, &datasize);
-		_tcscpy (retdata, data);
+		strcpy(retdata, data);
 		RegCloseKey (hkey);
 	}
 
@@ -5044,7 +4969,7 @@ void CVscapView::SaveSettings()
 	CString setPath;
 	setPath.Format("%s\\CamStudio.ini", (LPCSTR)GetProgPath());
 
-	FILE * sFile = fopen(LPCTSTR(setPath),"wt");
+	FILE * sFile = fopen((LPCTSTR)setPath, "wt");
 	if (sFile == NULL) {
 		//Error creating file ...do nothing...return
 		return;
@@ -5262,7 +5187,7 @@ void CVscapView::SaveSettings()
 	setDir = GetProgPath();
 	setPath = setDir+fileName;
 
-	FILE * tFile = fopen(LPCTSTR(setPath),"wb");
+	FILE * tFile = fopen((LPCTSTR)setPath, "wb");
 	if (tFile == NULL) {
 		//Error creating file ...do nothing...return
 		return;
@@ -5315,39 +5240,32 @@ void CVscapView::LoadSettings()
 
 	}
 
-	FILE * sFile;
-	FILE * rFile;
-	CString setDir,setPath;
-
 	//The absence of nosave.ini file indicates savesettings = 1
 	CString fileName("\\NoSave.ini ");
-	setDir=GetProgPath();
-	setPath=setDir+fileName;
+	CString setDir = GetProgPath();
+	CString setPath = setDir+fileName;
 
-	rFile = fopen(LPCTSTR(setPath),"rt");
+	FILE * rFile = fopen((LPCTSTR)setPath,"rt");
 	if (rFile == NULL) {
 		savesettings = 1;
-	}
-	else {
+	} else {
 		fclose(rFile);
 		savesettings = 0;
-
 	}
 
 	//********************************************
 	//Loading CamStudio.ini for storing text data
 	//********************************************
-	fileName="\\CamStudio.ini";
-	setDir=GetProgPath();
-	setPath=setDir+fileName;
+	fileName = "\\CamStudio.ini";
+	setDir = GetProgPath();
+	setPath = setDir+fileName;
 
-	sFile = fopen(LPCTSTR(setPath),"rt");
+	FILE * sFile = fopen((LPCTSTR)setPath,"rt");
 	if (sFile == NULL) {
 		//Error creating file ...
 		SuggestRecordingFormat();
 		SuggestCompressFormat();
 		return;
-
 	}
 
 	// ****************************
@@ -5365,98 +5283,98 @@ void CVscapView::LoadSettings()
 	int specifiedDirLength=0;
 	char specdata[1000];
 
-	fscanf(sFile, "[ CamStudio Settings ver%f -- Please do not edit ] \n\n",&ver);
+	fscanf_s(sFile, "[ CamStudio Settings ver%f -- Please do not edit ] \n\n",&ver);
 
 	//Ver 1.2
 	if (ver>=1.199999) {
-		fscanf(sFile, "flashingRect=%d \n",&flashingRect);
+		fscanf_s(sFile, "flashingRect=%d \n",&flashingRect);
 
-		fscanf(sFile, "launchPlayer=%d \n",&launchPlayer);
-		fscanf(sFile, "minimizeOnStart=%d \n",&minimizeOnStart);
-		fscanf(sFile, "MouseCaptureMode= %d \n",&MouseCaptureMode);
-		fscanf(sFile, "capturewidth=%d \n",&capturewidth);
-		fscanf(sFile, "captureheight=%d \n",&captureheight);
+		fscanf_s(sFile, "launchPlayer=%d \n",&launchPlayer);
+		fscanf_s(sFile, "minimizeOnStart=%d \n",&minimizeOnStart);
+		fscanf_s(sFile, "MouseCaptureMode= %d \n",&MouseCaptureMode);
+		fscanf_s(sFile, "capturewidth=%d \n",&capturewidth);
+		fscanf_s(sFile, "captureheight=%d \n",&captureheight);
 
-		fscanf(sFile, "timelapse=%d \n",&timelapse);
-		fscanf(sFile, "frames_per_second= %d \n",&frames_per_second);
-		fscanf(sFile, "keyFramesEvery= %d \n",&keyFramesEvery);
-		fscanf(sFile, "compquality= %d \n",&compquality);
-		fscanf(sFile, "compfccHandler= %ld \n",&compfccHandler);
+		fscanf_s(sFile, "timelapse=%d \n",&timelapse);
+		fscanf_s(sFile, "frames_per_second= %d \n",&frames_per_second);
+		fscanf_s(sFile, "keyFramesEvery= %d \n",&keyFramesEvery);
+		fscanf_s(sFile, "compquality= %d \n",&compquality);
+		fscanf_s(sFile, "compfccHandler= %ld \n",&compfccHandler);
 
 		//LPVOID pVideoCompressParams = NULL;
-		fscanf(sFile, "CompressorStateIsFor= %ld \n",&CompressorStateIsFor);
-		fscanf(sFile, "CompressorStateSize= %d \n",&CompressorStateSize);
+		fscanf_s(sFile, "CompressorStateIsFor= %ld \n",&CompressorStateIsFor);
+		fscanf_s(sFile, "CompressorStateSize= %d \n",&CompressorStateSize);
 
-		fscanf(sFile, "g_recordcursor=%d \n",&g_recordcursor);
-		fscanf(sFile, "g_customsel=%d \n",&g_customsel); //Having this line means the custom cursor type cannot be re-arranged in a new order in the combo box...else previous saved settings referring to the custom type will not be correct
-		fscanf(sFile, "g_cursortype=%d \n",&g_cursortype);
-		fscanf(sFile, "g_highlightcursor=%d \n",&g_highlightcursor);
-		fscanf(sFile, "g_highlightsize=%d \n",&g_highlightsize);
-		fscanf(sFile, "g_highlightshape=%d \n",&g_highlightshape);
-		fscanf(sFile, "g_highlightclick=%d \n",&g_highlightclick);
+		fscanf_s(sFile, "g_recordcursor=%d \n",&g_recordcursor);
+		fscanf_s(sFile, "g_customsel=%d \n",&g_customsel); //Having this line means the custom cursor type cannot be re-arranged in a new order in the combo box...else previous saved settings referring to the custom type will not be correct
+		fscanf_s(sFile, "g_cursortype=%d \n",&g_cursortype);
+		fscanf_s(sFile, "g_highlightcursor=%d \n",&g_highlightcursor);
+		fscanf_s(sFile, "g_highlightsize=%d \n",&g_highlightsize);
+		fscanf_s(sFile, "g_highlightshape=%d \n",&g_highlightshape);
+		fscanf_s(sFile, "g_highlightclick=%d \n",&g_highlightclick);
 
 		int redv,greenv,bluev;
 		redv=0;greenv=0;bluev=0;
-		fscanf(sFile, "g_highlightcolorR=%d \n",&idata);
+		fscanf_s(sFile, "g_highlightcolorR=%d \n",&idata);
 		redv=idata;
-		fscanf(sFile, "g_highlightcolorG=%d \n",&idata);
+		fscanf_s(sFile, "g_highlightcolorG=%d \n",&idata);
 		greenv=idata;
-		fscanf(sFile, "g_highlightcolorB=%d \n",&idata);
+		fscanf_s(sFile, "g_highlightcolorB=%d \n",&idata);
 		bluev=idata;
 		g_highlightcolor = RGB(redv,greenv,bluev);
 
 		redv=0;greenv=0;bluev=0;
-		fscanf(sFile, "g_highlightclickcolorleftR=%d \n",&idata);
+		fscanf_s(sFile, "g_highlightclickcolorleftR=%d \n",&idata);
 		redv=idata;
-		fscanf(sFile, "g_highlightclickcolorleftG=%d \n",&idata);
+		fscanf_s(sFile, "g_highlightclickcolorleftG=%d \n",&idata);
 		greenv=idata;
-		fscanf(sFile, "g_highlightclickcolorleftB=%d \n",&idata);
+		fscanf_s(sFile, "g_highlightclickcolorleftB=%d \n",&idata);
 		bluev=idata;
 		g_highlightclickcolorleft = RGB(redv,greenv,bluev);
 
 		redv=0;greenv=0;bluev=0;
-		fscanf(sFile, "g_highlightclickcolorrightR=%d \n",&idata);
+		fscanf_s(sFile, "g_highlightclickcolorrightR=%d \n",&idata);
 		redv=idata;
-		fscanf(sFile, "g_highlightclickcolorrightG=%d \n",&idata);
+		fscanf_s(sFile, "g_highlightclickcolorrightG=%d \n",&idata);
 		greenv=idata;
-		fscanf(sFile, "g_highlightclickcolorrightB=%d \n",&idata);
+		fscanf_s(sFile, "g_highlightclickcolorrightB=%d \n",&idata);
 		bluev=idata;
 		g_highlightclickcolorright = RGB(redv,greenv,bluev);
 
-		fscanf(sFile, "autopan=%d \n",&autopan);
-		fscanf(sFile, "maxpan= %d \n",&maxpan);
+		fscanf_s(sFile, "autopan=%d \n",&autopan);
+		fscanf_s(sFile, "maxpan= %d \n",&maxpan);
 
 		//Audio Functions and Variables
-		fscanf(sFile, "AudioDeviceID= %d \n",&AudioDeviceID);
+		fscanf_s(sFile, "AudioDeviceID= %d \n",&AudioDeviceID);
 
 		//Audio Options Dialog
 		//LPWAVEFORMATEX pwfx = NULL;
 		//DWORD cbwfx;
-		fscanf(sFile, "cbwfx= %ld \n", &cbwfx);
-		fscanf(sFile, "recordaudio= %d \n", &recordaudio);
+		fscanf_s(sFile, "cbwfx= %ld \n", &cbwfx);
+		fscanf_s(sFile, "recordaudio= %d \n", &recordaudio);
 
 		//Audio Formats Dialog
-		fscanf(sFile, "waveinselected= %d \n", &waveinselected);
-		fscanf(sFile, "audio_bits_per_sample= %d \n", &audio_bits_per_sample);
-		fscanf(sFile, "audio_num_channels= %d \n", &audio_num_channels);
-		fscanf(sFile, "audio_samples_per_seconds= %d \n", &audio_samples_per_seconds);
-		fscanf(sFile, "bAudioCompression= %d \n", &bAudioCompression);
+		fscanf_s(sFile, "waveinselected= %d \n", &waveinselected);
+		fscanf_s(sFile, "audio_bits_per_sample= %d \n", &audio_bits_per_sample);
+		fscanf_s(sFile, "audio_num_channels= %d \n", &audio_num_channels);
+		fscanf_s(sFile, "audio_samples_per_seconds= %d \n", &audio_samples_per_seconds);
+		fscanf_s(sFile, "bAudioCompression= %d \n", &bAudioCompression);
 
-		fscanf(sFile, "interleaveFrames= %d \n", &interleaveFrames);
-		fscanf(sFile, "interleaveFactor= %d \n", &interleaveFactor);
+		fscanf_s(sFile, "interleaveFrames= %d \n", &interleaveFrames);
+		fscanf_s(sFile, "interleaveFactor= %d \n", &interleaveFactor);
 
 		//Key Shortcuts
-		fscanf(sFile, "keyRecordStart= %d \n",&keyRecordStart);
-		fscanf(sFile, "keyRecordEnd= %d \n",&keyRecordEnd);
-		fscanf(sFile, "keyRecordCancel= %d \n",&keyRecordCancel);
+		fscanf_s(sFile, "keyRecordStart= %d \n",&keyRecordStart);
+		fscanf_s(sFile, "keyRecordEnd= %d \n",&keyRecordEnd);
+		fscanf_s(sFile, "keyRecordCancel= %d \n",&keyRecordCancel);
 
-		fscanf(sFile, "viewtype= %d \n",&viewtype);
+		fscanf_s(sFile, "viewtype= %d \n",&viewtype);
 
-		fscanf(sFile, "g_autoadjust= %d \n",&g_autoadjust);
-		fscanf(sFile, "g_valueadjust= %d \n",&g_valueadjust);
+		fscanf_s(sFile, "g_autoadjust= %d \n",&g_autoadjust);
+		fscanf_s(sFile, "g_valueadjust= %d \n",&g_valueadjust);
 
-		fscanf(sFile, "savedir=%d \n",&savelen);
-		fscanf(sFile, "cursordir=%d \n",&cursorlen);
+		fscanf_s(sFile, "savedir=%d \n",&savelen);
+		fscanf_s(sFile, "cursordir=%d \n",&cursorlen);
 
 		AttemptRecordingFormat();
 
@@ -5476,7 +5394,6 @@ void CVscapView::LoadSettings()
 			//set default audio recording format and compress format
 			SuggestRecordingFormat();
 			SuggestCompressFormat();
-
 		}
 
 		if (g_autoadjust) {
@@ -5489,26 +5406,22 @@ void CVscapView::LoadSettings()
 			timelapse=delayms;
 			frames_per_second = framerate;
 			keyFramesEvery = framerate;
-
 		}
 
 		strCodec = GetCodecDescription(compfccHandler);
 
-		if (g_cursortype == 1)
-		{
+		if (g_cursortype == 1) {
 			DWORD customicon;
-			if (g_customsel<0) g_customsel = 0;
+			if (g_customsel<0) {
+				g_customsel = 0;
+			}
 			customicon = icon_info[g_customsel];
 
 			g_customcursor = LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(customicon));
 			if (g_customcursor==NULL) {
 				g_cursortype = 0;
-
 			}
-
-		}
-		else if (g_cursortype == 2) { //load cursor
-
+		} else if (g_cursortype == 2) { //load cursor
 			CString cursorFileName="\\CamCursor.ini";
 			CString cursorDir=GetProgPath();
 			CString cursorPath=cursorDir+cursorFileName;
@@ -5518,52 +5431,44 @@ void CVscapView::LoadSettings()
 			if (g_loadcursor==NULL) {
 				g_cursortype = 0;
 			}
-
 		}
-
 	}//ver 1.2
 
 	//Ver 1.3
 	if (ver>=1.299999) {
-		fscanf(sFile, "threadPriority=%d \n",&threadPriority);
+		fscanf_s(sFile, "threadPriority=%d \n",&threadPriority);
 
 		//CString tracex;
 		//tracex.Format("Thread %d ver %f",threadPriority, ver);
 		//MessageBox(tracex,"Note",MB_OK);
-
 	}
 
 	//Ver 1.5
 	if (ver>=1.499999) {
-		fscanf(sFile, "captureleft= %d \n",&captureleft);
-		fscanf(sFile, "capturetop= %d \n",&capturetop);
-		fscanf(sFile, "fixedcapture=%d \n",&fixedcapture);
-		fscanf(sFile, "interleaveUnit= %d \n", &interleaveUnit);
-
-	}
-	else {
+		fscanf_s(sFile, "captureleft= %d \n",&captureleft);
+		fscanf_s(sFile, "capturetop= %d \n",&capturetop);
+		fscanf_s(sFile, "fixedcapture=%d \n",&fixedcapture);
+		fscanf_s(sFile, "interleaveUnit= %d \n", &interleaveUnit);
+	} else {
 		//force interleve settings
 		interleaveUnit= MILLISECONDS;
 		interleaveFactor = 100;
-
 	}
 
 	//Ver 1.6
 	if (ver>=1.599999) {
-		fscanf(sFile, "tempPath_Access=%d \n",&tempPath_Access);
-		fscanf(sFile, "captureTrans=%d \n",&captureTrans);
-		fscanf(sFile, "specifieddir=%d \n",&specifiedDirLength);
+		fscanf_s(sFile, "tempPath_Access=%d \n",&tempPath_Access);
+		fscanf_s(sFile, "captureTrans=%d \n",&captureTrans);
+		fscanf_s(sFile, "specifieddir=%d \n",&specifiedDirLength);
 
-		fscanf(sFile, "NumDev=%d \n",&NumberOfMixerDevices);
-		fscanf(sFile, "SelectedDev=%d \n",&SelectedMixer);
-		fscanf(sFile, "feedback_line=%d \n",&feedback_line);
-		fscanf(sFile, "feedback_line_info=%d \n",&feedback_lineInfo);
-		fscanf(sFile, "performAutoSearch=%d \n",&performAutoSearch);
+		fscanf_s(sFile, "NumDev=%d \n",&NumberOfMixerDevices);
+		fscanf_s(sFile, "SelectedDev=%d \n",&SelectedMixer);
+		fscanf_s(sFile, "feedback_line=%d \n",&feedback_line);
+		fscanf_s(sFile, "feedback_line_info=%d \n",&feedback_lineInfo);
+		fscanf_s(sFile, "performAutoSearch=%d \n",&performAutoSearch);
 
 		onLoadSettings(recordaudio);
-
-	}
-	else {
+	} else {
 		tempPath_Access = USE_WINDOWS_TEMP_DIR;
 		captureTrans = 1;
 		specifiedDirLength = 0;
@@ -5573,7 +5478,6 @@ void CVscapView::LoadSettings()
 		feedback_line = -1;
 		feedback_lineInfo = -1;
 		performAutoSearch=1;
-
 	}
 
 	if (specifiedDirLength == 0) {
@@ -5605,104 +5509,100 @@ void CVscapView::LoadSettings()
 			keyRecordCancel = VK_F10;
 			keyRecordCancelCtrl = 1;
 		}
-
 	}
 
 	//Ver 1.8
 	int shapeNameLen=0;
 	int layoutNameLen=0;
 	if (ver>=1.799999) {
-		fscanf(sFile, "supportMouseDrag=%d \n",&supportMouseDrag);
+		fscanf_s(sFile, "supportMouseDrag=%d \n",&supportMouseDrag);
 
-		fscanf(sFile, "keyRecordStartCtrl=%d \n",&keyRecordStartCtrl);
-		fscanf(sFile, "keyRecordEndCtrl=%d \n",&keyRecordEndCtrl);
-		fscanf(sFile, "keyRecordCancelCtrl=%d \n",&keyRecordCancelCtrl);
+		fscanf_s(sFile, "keyRecordStartCtrl=%d \n",&keyRecordStartCtrl);
+		fscanf_s(sFile, "keyRecordEndCtrl=%d \n",&keyRecordEndCtrl);
+		fscanf_s(sFile, "keyRecordCancelCtrl=%d \n",&keyRecordCancelCtrl);
 
-		fscanf(sFile, "keyRecordStartAlt=%d \n",&keyRecordStartAlt);
-		fscanf(sFile, "keyRecordEndAlt=%d \n",&keyRecordEndAlt);
-		fscanf(sFile, "keyRecordCancelAlt=%d \n",&keyRecordCancelAlt);
+		fscanf_s(sFile, "keyRecordStartAlt=%d \n",&keyRecordStartAlt);
+		fscanf_s(sFile, "keyRecordEndAlt=%d \n",&keyRecordEndAlt);
+		fscanf_s(sFile, "keyRecordCancelAlt=%d \n",&keyRecordCancelAlt);
 
-		fscanf(sFile, "keyRecordStartShift=%d \n",&keyRecordStartShift);
-		fscanf(sFile, "keyRecordEndShift=%d \n",&keyRecordEndShift);
-		fscanf(sFile, "keyRecordCancelShift=%d \n",&keyRecordCancelShift);
+		fscanf_s(sFile, "keyRecordStartShift=%d \n",&keyRecordStartShift);
+		fscanf_s(sFile, "keyRecordEndShift=%d \n",&keyRecordEndShift);
+		fscanf_s(sFile, "keyRecordCancelShift=%d \n",&keyRecordCancelShift);
 
-		fscanf(sFile, "keyNext=%d \n",&keyNext);
-		fscanf(sFile, "keyPrev=%d \n",&keyPrev);
-		fscanf(sFile, "keyShowLayout=%d \n",&keyShowLayout);
+		fscanf_s(sFile, "keyNext=%d \n",&keyNext);
+		fscanf_s(sFile, "keyPrev=%d \n",&keyPrev);
+		fscanf_s(sFile, "keyShowLayout=%d \n",&keyShowLayout);
 
-		fscanf(sFile, "keyNextCtrl=%d \n",&keyNextCtrl);
-		fscanf(sFile, "keyPrevCtrl=%d \n",&keyPrevCtrl);
-		fscanf(sFile, "keyShowLayoutCtrl=%d \n",&keyShowLayoutCtrl);
+		fscanf_s(sFile, "keyNextCtrl=%d \n",&keyNextCtrl);
+		fscanf_s(sFile, "keyPrevCtrl=%d \n",&keyPrevCtrl);
+		fscanf_s(sFile, "keyShowLayoutCtrl=%d \n",&keyShowLayoutCtrl);
 
-		fscanf(sFile, "keyNextAlt=%d \n",&keyNextAlt);
-		fscanf(sFile, "keyPrevAlt=%d \n",&keyPrevAlt);
-		fscanf(sFile, "keyShowLayoutAlt=%d \n",&keyShowLayoutAlt);
+		fscanf_s(sFile, "keyNextAlt=%d \n",&keyNextAlt);
+		fscanf_s(sFile, "keyPrevAlt=%d \n",&keyPrevAlt);
+		fscanf_s(sFile, "keyShowLayoutAlt=%d \n",&keyShowLayoutAlt);
 
-		fscanf(sFile, "keyNextShift=%d \n",&keyNextShift);
-		fscanf(sFile, "keyPrevShift=%d \n",&keyPrevShift);
-		fscanf(sFile, "keyShowLayoutShift=%d \n",&keyShowLayoutShift);
+		fscanf_s(sFile, "keyNextShift=%d \n",&keyNextShift);
+		fscanf_s(sFile, "keyPrevShift=%d \n",&keyPrevShift);
+		fscanf_s(sFile, "keyShowLayoutShift=%d \n",&keyShowLayoutShift);
 
-		fscanf(sFile, "shapeNameInt=%d \n",&shapeNameInt);
-		fscanf(sFile, "shapeNameLen=%d \n",&shapeNameLen);
+		fscanf_s(sFile, "shapeNameInt=%d \n",&shapeNameInt);
+		fscanf_s(sFile, "shapeNameLen=%d \n",&shapeNameLen);
 
-		fscanf(sFile, "layoutNameInt=%d \n",&layoutNameInt);
-		fscanf(sFile, "g_layoutNameLen=%d \n",&layoutNameLen);
+		fscanf_s(sFile, "layoutNameInt=%d \n",&layoutNameInt);
+		fscanf_s(sFile, "g_layoutNameLen=%d \n",&layoutNameLen);
 
-		fscanf(sFile, "useMCI=%d \n",&useMCI);
-		fscanf(sFile, "shiftType=%d \n",&shiftType);
-		fscanf(sFile, "timeshift=%d \n",&timeshift);
-		fscanf(sFile, "frameshift=%d \n",&frameshift);
-
+		fscanf_s(sFile, "useMCI=%d \n",&useMCI);
+		fscanf_s(sFile, "shiftType=%d \n",&shiftType);
+		fscanf_s(sFile, "timeshift=%d \n",&timeshift);
+		fscanf_s(sFile, "frameshift=%d \n",&frameshift);
 	}
 
 	//ver 2.26
 	//save format is set as 2.0
 	if (ver>=1.999999) {
-		fscanf(sFile, "launchPropPrompt=%d \n",&launchPropPrompt);
-		fscanf(sFile, "launchHTMLPlayer=%d \n",&launchHTMLPlayer);
-		fscanf(sFile, "deleteAVIAfterUse=%d \n",&deleteAVIAfterUse);
-		fscanf(sFile, "RecordingMode=%d \n",&RecordingMode);
-		fscanf(sFile, "autonaming=%d \n",&autonaming);
-		fscanf(sFile, "restrictVideoCodecs=%d \n",&restrictVideoCodecs);
-		//fscanf(sFile, "base_nid=%d \n",&base_nid);
-
+		fscanf_s(sFile, "launchPropPrompt=%d \n",&launchPropPrompt);
+		fscanf_s(sFile, "launchHTMLPlayer=%d \n",&launchHTMLPlayer);
+		fscanf_s(sFile, "deleteAVIAfterUse=%d \n",&deleteAVIAfterUse);
+		fscanf_s(sFile, "RecordingMode=%d \n",&RecordingMode);
+		fscanf_s(sFile, "autonaming=%d \n",&autonaming);
+		fscanf_s(sFile, "restrictVideoCodecs=%d \n",&restrictVideoCodecs);
+		//fscanf_s(sFile, "base_nid=%d \n",&base_nid);
 	}
 
 	//ver 2.40
 	if (ver>=2.399999) {
-		fscanf(sFile, "presettime=%d \n",&presettime);
-		fscanf(sFile, "recordpreset=%d \n",&recordpreset);
-
+		fscanf_s(sFile, "presettime=%d \n",&presettime);
+		fscanf_s(sFile, "recordpreset=%d \n",&recordpreset);
 	}
 
 	//new variables add here
 	//Multilanguage
-	fscanf(sFile, "language=%d \n",&languageID);
+	fscanf_s(sFile, "language=%d \n",&languageID);
 
 	// Effects
-	fscanf(sFile, "timestampAnnotation=%d \n",&timestampAnnotation);
-	fscanf(sFile, "timestampBackColor=%d \n", &timestamp.backgroundColor);
-	fscanf(sFile, "timestampSelected=%d \n", &timestamp.isFontSelected);
-	fscanf(sFile, "timestampPosition=%d \n", &timestamp.position);
-	fscanf(sFile, "timestampTextColor=%d \n", &timestamp.textColor);
-	fscanf(sFile, "timestampTextFont=%s \n", &timestamp.logfont.lfFaceName);
-	fscanf(sFile, "timestampTextWeight=%d \n", &timestamp.logfont.lfWeight);
-	fscanf(sFile, "timestampTextHeight=%d \n", &timestamp.logfont.lfHeight);
-	fscanf(sFile, "timestampTextWidth=%d \n", &timestamp.logfont.lfWidth);
+	fscanf_s(sFile, "timestampAnnotation=%d \n",&timestampAnnotation);
+	fscanf_s(sFile, "timestampBackColor=%d \n", &timestamp.backgroundColor);
+	fscanf_s(sFile, "timestampSelected=%d \n", &timestamp.isFontSelected);
+	fscanf_s(sFile, "timestampPosition=%d \n", &timestamp.position);
+	fscanf_s(sFile, "timestampTextColor=%d \n", &timestamp.textColor);
+	fscanf(sFile, "timestampTextFont=%s \n", timestamp.logfont.lfFaceName);
+	fscanf_s(sFile, "timestampTextWeight=%d \n", &timestamp.logfont.lfWeight);
+	fscanf_s(sFile, "timestampTextHeight=%d \n", &timestamp.logfont.lfHeight);
+	fscanf_s(sFile, "timestampTextWidth=%d \n", &timestamp.logfont.lfWidth);
 
-	fscanf(sFile, "captionAnnotation=%d \n", &captionAnnotation);
-	fscanf(sFile, "captionBackColor=%d \n", &caption.backgroundColor);
-	fscanf(sFile, "captionSelected=%d \n", &caption.isFontSelected);
-	fscanf(sFile, "captionPosition=%d \n", &caption.position);
-	// fscanf(sFile, "captionText=%s \n", &caption.text);
-	fscanf(sFile, "captionTextColor=%d \n", &caption.textColor);
-	fscanf(sFile, "captionTextFont=%s \n", &caption.logfont.lfFaceName);
-	fscanf(sFile, "captionTextWeight=%d \n", &caption.logfont.lfWeight);
-	fscanf(sFile, "captionTextHeight=%d \n", &caption.logfont.lfHeight);
-	fscanf(sFile, "captionTextWidth=%d \n", &caption.logfont.lfWidth);
+	fscanf_s(sFile, "captionAnnotation=%d \n", &captionAnnotation);
+	fscanf_s(sFile, "captionBackColor=%d \n", &caption.backgroundColor);
+	fscanf_s(sFile, "captionSelected=%d \n", &caption.isFontSelected);
+	fscanf_s(sFile, "captionPosition=%d \n", &caption.position);
+	// fscanf_s(sFile, "captionText=%s \n", &caption.text);
+	fscanf_s(sFile, "captionTextColor=%d \n", &caption.textColor);
+	fscanf(sFile, "captionTextFont=%s \n", caption.logfont.lfFaceName);
+	fscanf_s(sFile, "captionTextWeight=%d \n", &caption.logfont.lfWeight);
+	fscanf_s(sFile, "captionTextHeight=%d \n", &caption.logfont.lfHeight);
+	fscanf_s(sFile, "captionTextWidth=%d \n", &caption.logfont.lfWidth);
 
-	fscanf(sFile, "watermarkAnnotation=%d \n",&watermarkAnnotation);
-	fscanf(sFile, "watermarkAnnotation=%d \n",&watermark.position);
+	fscanf_s(sFile, "watermarkAnnotation=%d \n",&watermarkAnnotation);
+	fscanf_s(sFile, "watermarkAnnotation=%d \n",&watermark.position);
 
 	fclose(sFile);
 
@@ -5720,7 +5620,6 @@ void CVscapView::LoadSettings()
 		cbwfx = 0;
 		SuggestCompressFormat();
 		return;
-
 	}
 
 	if (ver>=1.2) {
@@ -5740,7 +5639,6 @@ void CVscapView::LoadSettings()
 		}
 
 		if (ver > 1.35) { //if perfoming an upgrade from previous settings, do not load these additional camdata.ini information
-
 			if (cbwfx>0) {
 				AllocCompressFormat();
 				int countread = fread( (void *) pwfx, cbwfx, 1, tFile);
@@ -5751,20 +5649,15 @@ void CVscapView::LoadSettings()
 						GlobalFreePtr(pwfx);
 						pwfx = NULL;
 						SuggestCompressFormat();
-
 					}
-				}
-				else {
+				} else {
 					AttemptCompressFormat();
-
 				}
-
 			}
 
 			if (CompressorStateSize>0) {
 				AllocVideoCompressParams(CompressorStateSize);
 				fread( (void *) pVideoCompressParams, CompressorStateSize, 1, tFile);
-
 			}
 
 			//ver 1.6
@@ -5791,7 +5684,6 @@ void CVscapView::LoadSettings()
 						namedata[layoutNameLen]=0;
 						g_layoutName=CString(namedata);
 					}
-
 				}
 
 			}// if ver >=1.55
@@ -6470,7 +6362,7 @@ void CVscapView::OnCaptureChanged(CWnd *pWnd)
 	{
 		hWnd = wnd->m_hWnd;
 		wnd2 = wnd;
-		
+
 		//HWND desktop = ::GetDesktopWindow();
 		//if ((wnd->GetParent() == NULL) || (wnd->GetParent()->m_hWnd == desktop)){
 		//	hWnd = wnd->m_hWnd;
@@ -6480,7 +6372,7 @@ void CVscapView::OnCaptureChanged(CWnd *pWnd)
 		//	hWnd = wnd->GetTopLevelParent()->m_hWnd;
 		//	wnd2 = wnd->GetTopLevelParent();
 		//}
-		
+
 		ReleaseCapture();
 
 		CView::OnCaptureChanged(pWnd);
@@ -6579,7 +6471,7 @@ void CVscapView::DisplayRecordingStatistics(CDC & srcDC)
 	CString csMsg;
 	csMsg.Format("Current Frame : %d",  nCurrFrame);
 	CSize sizeExtent = srcDC.GetTextExtent(csMsg);
-	
+
 	CRect rectText;
 	GetClientRect(&rectText);
 	int xoffset = 40;
@@ -6587,7 +6479,7 @@ void CVscapView::DisplayRecordingStatistics(CDC & srcDC)
 	int iLines = 6;
 	int iStartPosY = rectText.bottom;
 	iStartPosY -= (iLines * (sizeExtent.cy + 10));
-	yoffset = iStartPosY; 
+	yoffset = iStartPosY;
 
 	rectText.top = yoffset - 2;
 	rectText.bottom = yoffset + sizeExtent.cy + 4;
@@ -6706,7 +6598,7 @@ void CVscapView::DisplayRecordingMsg(CDC & srcDC)
 	srcDC.Rectangle(&rectMode);
 	srcDC.Rectangle(rectMode.left - 3, rectMode.top - 3, rectMode.right + 3, rectMode.bottom + 3);
 	srcDC.TextOut(rectMode.left, rectMode.top,  msgRecMode);
-	
+
 	srcDC.SelectObject(pOldPen);
 	srcDC.SelectObject(pOldBrush);
 	srcDC.SelectObject(pOldFont);
