@@ -10,7 +10,6 @@
 #define WM_USER_INVALIDATEWND_MSG "WM_USER_INVALIDATEWND_MSG"
 static UINT WM_USER_INVALIDATEWND = ::RegisterWindowMessage(WM_USER_INVALIDATEWND_MSG);
 
-
 /////////////////////////////////////////////////////////////////////////////
 // TextDialog dialog
 
@@ -19,12 +18,12 @@ class TextDialog : public CDialog
 // Construction
 public:
 	TextDialog(CWnd* pParent = NULL);   // standard constructor
-	void PreModal(CString* inStr, LOGFONT *inFont, COLORREF* inRgb, CWnd* parent,int* horzalign); 
+	void PreModal(CString* inStr, LOGFONT *inFont, COLORREF* inRgb, CWnd* parent,int* horzalign);
 	void InvalidateTransWnd();
-	void ChooseScriptFont(); 
-	
+	void ChooseScriptFont();
+
 	CString* displayStr;
-	LOGFONT* logFont; 
+	LOGFONT* logFont;
 	COLORREF* colorrgb;
 	CWnd* myparent;
 	int* myhorzalign;
@@ -36,7 +35,6 @@ public:
 	enum { IDD = IDD_TEXTDIALOG };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
-
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -85,3 +83,4 @@ protected:
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
 #endif // !defined(AFX_TEXTDIALOG_H__63374646_A843_482E_998F_8DD0E32477E3__INCLUDED_)
+

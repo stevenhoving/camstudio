@@ -2,7 +2,6 @@
 #include <sstream>
 #include <strstream>
 
-
 N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineFontInfo &data)
 {
 	out << FlashTagHeader(13, (UDWORD)strlen(data.str)+2+2+data.codes.size()*((data.flags & 1) ? 2:1));
@@ -10,11 +9,11 @@ N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineFontInfo &data)
 	out.put((unsigned char)strlen(data.str));
 	out << data.str;
 	out.put((unsigned char)data.flags);
-	if((data.flags & 1) == 1)
+	if ((data.flags & 1) == 1)
 	{
 		for(N_STD::vector<UWORD>::iterator i = data.codes.begin(); i != data.codes.end(); i++)
 		{
-			WRITE_UWORD(*i);		
+			WRITE_UWORD(*i);
 		}
 	}
 	else
@@ -30,36 +29,36 @@ N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineFontInfo &data)
 N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineFontInfo &data)
 {
 	READ_UWORD(data.FontID);
-	
+
 	int len = in.get();
-	//if(i == EOF) throw;
-	
+	//if (i == EOF) throw;
+
 	data.str = (char *)malloc(len+1);
 	data.strings.push_back(data.str);
 	data.str[len] = 0;
-	
+
 	unsigned char * tmp = (unsigned char *)data.str;
-	
+
 	for(int i=0; (i < len); i++)
 	{
 		int c = in.get();
-		//if(c == EOF) throw;
+		//if (c == EOF) throw;
 		tmp[i] = c;
 	}
 	int flags = in.get();
-	//if(flags == EOF) throw;
-	
+	//if (flags == EOF) throw;
+
 	data.flags = flags;
-	
+
 	UWORD size = data.importsize - (len+2+2);
-	
-	if(data.flags & 1)
+
+	if (data.flags & 1)
 	{
 		for(UWORD i = 0; i < size; i+=2)
 		{
 			UWORD tmp;
 			READ_UWORD(tmp);
-			data.codes.push_back(tmp);		
+			data.codes.push_back(tmp);
 		}
 	}
 	else
@@ -67,14 +66,13 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineFontInfo &data)
 		for(UWORD i = 0; i < size; i++)
 		{
 			int c = in.get();
-			//if(c == EOF) throw;
+			//if (c == EOF) throw;
 			data.codes.push_back(c);
 		}
-		
+
 	}
 	return in;
 }
-
 
 int FlashTagDefineFont::AddShape(FlashShape &shape)
 {
@@ -91,8 +89,8 @@ int FlashTagDefineFont::AddShape(FlashShape &shape, int glyphId)
 	}
 
 int FlashTagDefineFont::GetGlyphId(int glyph)
-{	
-	if(glyphs.find(glyph) == glyphs.end())
+{
+	if (glyphs.find(glyph) == glyphs.end())
 	{
 		return -1;
 	}
@@ -101,9 +99,9 @@ int FlashTagDefineFont::GetGlyphId(int glyph)
 
 N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineFont &data)
 {
-	
+
 	N_STD::ostrstream tmp;
-		
+
 	N_STD::vector<UWORD> offsets;
 
 	for(N_STD::vector<FlashShape>::iterator i = data.shapes.begin(); i < data.shapes.end(); i++)
@@ -111,15 +109,15 @@ N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineFont &data)
 		offsets.push_back(tmp.pcount());
 		tmp << *i;
 	}
-	
+
 	out << FlashTagHeader(10, (UDWORD)2+offsets.size()*2+tmp.pcount());
 	WRITE_UWORD(data.GetID());
-	
+
 	for(N_STD::vector<UWORD>::iterator i2 = offsets.begin(); i2 < offsets.end(); i2++)
 	{
 		WRITE_UWORD((UWORD)(*i2+offsets.size()*2));
 	}
-	
+
 	out.write(tmp.rdbuf()->str(), tmp.pcount());
 
 	return out;
@@ -130,7 +128,7 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineFont &data)
 	UWORD FontId;
 	READ_UWORD(FontId);
 	data.SetID(FontId);
-	
+
 	UWORD Offset1;
 	READ_UWORD(Offset1);
 	UWORD NumGlyphs = Offset1/2;
@@ -148,34 +146,34 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineFont &data)
 	for(int i2 = 0; i2 < NumGlyphs; i2++)
 	{
 		FlashShape s;
-		in >> s;		
+		in >> s;
 		data.shapes.push_back(s);
 	}
-	
+
 	return in;
 }
 
 void FlashTextRecordStyle::Write(N_STD::ostream &out, unsigned char bitsGlyph, unsigned char bitsAdvance)
 {
 	out.put((char)((char)(1 << 7)  | (char)(mhasFont << 3) | (char)(mhasFlashRGB << 2) | (char)(mhasOffsetx << 1) | (char)(mhasOffsety)));
-	if(mhasFont)
+	if (mhasFont)
 	{
 		WRITE_UWORD(mFontID);
 	}
-	if(mhasFlashRGB)
-	{		
+	if (mhasFlashRGB)
+	{
 		mcolor.SetAlphaWriteMode(GetTagVersion() > 1);
 		out << mcolor;
 	}
-	if(mhasOffsetx)
+	if (mhasOffsetx)
 	{
 		WRITE_SWORD(moffsetx);
 	}
-	if(mhasOffsety)
+	if (mhasOffsety)
 	{
 		WRITE_SWORD(moffsety);
 	}
-	if(mhasFont)
+	if (mhasFont)
 	{
 		WRITE_UWORD(mFontHeight);
 	}
@@ -189,25 +187,25 @@ void FlashTextRecordStyle::Read(N_STD::istream &in, unsigned char bitsGlyph, uns
 	mhasFlashRGB	= (bool)(GetIsolatedBits(c,2,3) == 1);
 	mhasOffsetx		= (bool)(GetIsolatedBits(c,1,2) == 1);
 	mhasOffsety		= (bool)(GetIsolatedBits(c,0,1) == 1);
-	
-	if(mhasFont)
+
+	if (mhasFont)
 	{
 		READ_UWORD(mFontID);
 	}
-	if(mhasFlashRGB)
-	{		
+	if (mhasFlashRGB)
+	{
 		mcolor.SetAlphaWriteMode(GetTagVersion() > 1);
 		in >> mcolor;
 	}
-	if(mhasOffsetx)
+	if (mhasOffsetx)
 	{
 		READ_SWORD(moffsetx);
 	}
-	if(mhasOffsety)
+	if (mhasOffsety)
 	{
 		READ_SWORD(moffsety);
 	}
-	if(mhasFont)
+	if (mhasFont)
 	{
 		READ_UWORD(mFontHeight);
 	}
@@ -234,7 +232,7 @@ void FlashTextRecordGlyph::Read(N_STD::istream &in, unsigned char bitsGlyph, uns
 {
 	int c = in.get();
 	BitStreamIn b(&in);
-	
+
 	for(int i = 0; i < c; i++)
 	{
 		FlashGlyphEntry tmp;
@@ -244,14 +242,13 @@ void FlashTextRecordGlyph::Read(N_STD::istream &in, unsigned char bitsGlyph, uns
 	}
 
 	b.Align();
-
 }
 int FlashTextRecordGlyph::returnGlyphBits(void)
 {
 	int ret=0;
 	for(N_STD::vector<FlashGlyphEntry>::iterator i=v.begin(); i != v.end(); i++)
 	{
-		if(GetBitSize((*i).first) > ret) ret = GetBitSize((*i).first);
+		if (GetBitSize((*i).first) > ret) ret = GetBitSize((*i).first);
 	}
 	return ret;
 }
@@ -261,11 +258,10 @@ int FlashTextRecordGlyph::returnAdvBits(void)
 		int ret=0;
 	for(N_STD::vector<FlashGlyphEntry>::iterator i=v.begin(); i != v.end(); i++)
 	{
-		if(GetBitSizeSigned((*i).second) > ret) ret = GetBitSizeSigned((*i).second);
+		if (GetBitSizeSigned((*i).second) > ret) ret = GetBitSizeSigned((*i).second);
 	}
 	return ret;
 }
-
 
 void FlashTagDefineText::AddTextRecord(FlashTextRecord *r)
 {
@@ -279,26 +275,25 @@ N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineText &data)
 	int abits=0;
 	for(N_STD::vector<FlashTextRecord *>::iterator i = data.records.begin(); i != data.records.end(); i++)
 	{
-		if((*i)->isGlyph())
+		if ((*i)->isGlyph())
 		{
-			if((*i)->returnGlyphBits() > gbits) { gbits=(*i)->returnGlyphBits(); }
-			if((*i)->returnAdvBits()   > abits) { abits=(*i)->returnAdvBits(); }
+			if ((*i)->returnGlyphBits() > gbits) { gbits=(*i)->returnGlyphBits(); }
+			if ((*i)->returnAdvBits()   > abits) { abits=(*i)->returnAdvBits(); }
 		}
 	}
-	
 
 	WRITE_UWORD2(data.GetID(), tmp);
 	tmp << data.rect;
 	tmp << data.matrix;
 	tmp << (char)gbits;
 	tmp << (char)abits;
-	
+
 	for(N_STD::vector<FlashTextRecord *>::iterator i2 = data.records.begin(); i2 != data.records.end(); i2++)
 	{
 		(*i2)->SetTagVersion(1);
 		(*i2)->Write(tmp,gbits,abits);
 	}
-	
+
 	tmp << (char)0;
 
 	out << FlashTagHeader(11, tmp.pcount());
@@ -309,7 +304,7 @@ N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineText &data)
 
 N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineText &data)
 {
-	UWORD id;	
+	UWORD id;
 	READ_UWORD(id);
 	data.SetID(id);
 
@@ -317,30 +312,29 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineText &data)
 	in >> data.matrix;
 	int gbits = in.get();
 	int abits = in.get();
-	
-	
+
 	for(;;)
 	{
 		int c = in.get();
-		if(in.eof())
+		if (in.eof())
 		{
 			break;
 			//throw;
 		}
 
-		if(c == 0)
+		if (c == 0)
 		{
 			break;
 		}
 
-		if(GetIsolatedBits(c,7,8) == 1)
+		if (GetIsolatedBits(c,7,8) == 1)
 		{
 			in.putback(c);
 			FlashTextRecordStyle *s = new FlashTextRecordStyle();
 			s->Read(in, gbits, abits);
 			data.AddTextRecord(s);
 			data.gc_records.push_back(s);
-			
+
 		}
 		else
 		{
@@ -366,26 +360,25 @@ N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineText2 &data)
 	int abits=0;
 	for(N_STD::vector<FlashTextRecord *>::iterator i = data.records.begin(); i != data.records.end(); i++)
 	{
-		if((*i)->isGlyph())
+		if ((*i)->isGlyph())
 		{
-			if((*i)->returnGlyphBits() > gbits) { gbits=(*i)->returnGlyphBits(); }
-			if((*i)->returnAdvBits()   > abits) { abits=(*i)->returnAdvBits(); }
+			if ((*i)->returnGlyphBits() > gbits) { gbits=(*i)->returnGlyphBits(); }
+			if ((*i)->returnAdvBits()   > abits) { abits=(*i)->returnAdvBits(); }
 		}
 	}
-	
 
 	WRITE_UWORD2(data.GetID(), tmp);
 	tmp << data.rect;
 	tmp << data.matrix;
 	tmp << (char)gbits;
 	tmp << (char)abits;
-	
+
 	for(N_STD::vector<FlashTextRecord *>::iterator i2 = data.records.begin(); i2 != data.records.end(); i2++)
 	{
 		(*i2)->SetTagVersion(2);
 		(*i2)->Write(tmp,gbits,abits);
 	}
-	
+
 	tmp << (char)0;
 
 	out << FlashTagHeader(33, tmp.pcount());
@@ -396,31 +389,30 @@ N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineText2 &data)
 
 N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineText2 &data)
 {
-	UWORD id;	
+	UWORD id;
 	READ_UWORD(id);
 	data.SetID(id);
 
-	in >> data.rect;	
+	in >> data.rect;
 	in >> data.matrix;
 	int gbits = in.get();
 	int abits = in.get();
-	
-	
+
 	for(;;)
 	{
 		int c = in.get();
-		if(in.eof())
+		if (in.eof())
 		{
 			break;
 			//throw;
 		}
 
-		if(c == 0)
+		if (c == 0)
 		{
 			break;
 		}
 
-		if(GetIsolatedBits(c,7,8) == 1)
+		if (GetIsolatedBits(c,7,8) == 1)
 		{
 			in.putback(c);
 			FlashTextRecordStyle *s = new FlashTextRecordStyle();
@@ -428,7 +420,7 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineText2 &data)
 			s->Read(in, gbits, abits);
 			data.AddTextRecord(s);
 			data.gc_records.push_back(s);
-			
+
 		}
 		else
 		{
@@ -439,12 +431,12 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineText2 &data)
 			data.gc_records.push_back(g);
 		}
 	}
-	return in;	
+	return in;
 }
 
 N_STD::ostream &operator << (N_STD::ostream &out, FlashKerningRecord &data)
 {
-	if(data.GetTagVersion() > 1)
+	if (data.GetTagVersion() > 1)
 	{
 		WRITE_UWORD(data.code1);
 		WRITE_UWORD(data.code2);
@@ -460,7 +452,7 @@ N_STD::ostream &operator << (N_STD::ostream &out, FlashKerningRecord &data)
 }
 N_STD::istream &operator >> (N_STD::istream &in,  FlashKerningRecord &data)
 {
-	if(data.GetTagVersion() > 1)
+	if (data.GetTagVersion() > 1)
 	{
 		READ_UWORD(data.code1);
 		READ_UWORD(data.code2);
@@ -471,10 +463,9 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashKerningRecord &data)
 		data.code1 = in.get();
 		data.code2 = in.get();
 		READ_SWORD(data.adjustment);
-	}	
+	}
 	return in;
 }
-
 
 // TODO: Error checking nGlyph?!
 void FlashFontLayout::Write(N_STD::ostream &out)
@@ -502,7 +493,7 @@ void FlashFontLayout::Read(N_STD::istream &in, UWORD NumGlyphs)
 	READ_SWORD(fontAscent);
 	READ_SWORD(fontDescent);
 	READ_SWORD(fontLeading);
-	
+
 	for(int i = 0; i < NumGlyphs; i++)
 	{
 		SWORD tmp;
@@ -517,7 +508,7 @@ void FlashFontLayout::Read(N_STD::istream &in, UWORD NumGlyphs)
 	}
 	UWORD size;
 	READ_UWORD(size);
-	
+
 	for(int i3 = 0; i3 < NumGlyphs; i3++)
 	{
 		FlashKerningRecord r;
@@ -528,56 +519,52 @@ void FlashFontLayout::Read(N_STD::istream &in, UWORD NumGlyphs)
 
 N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineFont2 &data)
 {
-	
+
 	N_STD::ostringstream tmp(N_STD::ios_base::binary);
 	N_STD::ostringstream tmp3(N_STD::ios_base::binary);
-	
-	
+
 	tmp.put((unsigned char)strlen(data.fontname));
 	tmp << data.fontname;
 	WRITE_UWORD2((UWORD)data.shapes.size(),tmp);
 
 	N_STD::ostringstream tmp2(N_STD::ios_base::binary);
-	
+
 	N_STD::vector<UDWORD> offsets;
 
 	for(N_STD::vector<FlashShape>::iterator i = data.shapes.begin(); i != data.shapes.end(); i++)
 	{
 		offsets.push_back(tmp3.str().size());
 		tmp3 << *i;
-	}	
-	
+	}
+
 	bool longoffsets;
-	
-	if(offsets.size() > 0) longoffsets = offsets[offsets.size()-1] > (64*1024);
+
+	if (offsets.size() > 0) longoffsets = offsets[offsets.size()-1] > (64*1024);
 	else longoffsets = false;
 
 	for(N_STD::vector<UDWORD>::iterator i2 = offsets.begin(); i2 != offsets.end(); i2++)
 	{
-		if(longoffsets)
+		if (longoffsets)
 		{
 			WRITE_UDWORD2((UDWORD)*i2+offsets.size()*4+2,tmp2);
 		}
 		else
 		{
 			WRITE_UWORD2((UWORD)(*i2+offsets.size()*2+2),tmp2);
-		}		
+		}
 	}
 
-				
 	tmp.write(tmp2.str().c_str(), tmp2.str().size());
 	WRITE_UWORD2((UWORD)(offsets.size()*2+tmp3.str().size()+2),tmp);
-	
-	tmp.write(tmp3.str().c_str(), tmp3.str().size());	
-	
-	
-	
+
+	tmp.write(tmp3.str().c_str(), tmp3.str().size());
+
 	bool longcodes = data.shapes.size() > (64*1024);
-	if(longcodes)
+	if (longcodes)
 	{
 		for(N_STD::vector<UWORD>::iterator i = data.codes.begin(); i != data.codes.end(); i++)
-		{			
-			WRITE_UWORD2(*i,tmp);		
+		{
+			WRITE_UWORD2(*i,tmp);
 		}
 	}
 	else
@@ -588,19 +575,19 @@ N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineFont2 &data)
 		}
 	}
 
-	if(data.layout)
+	if (data.layout)
 	{
 		data.layout_data.Write(tmp);
 	}
-	
+
 	out << FlashTagHeader(48,tmp.str().size()+4);
-	
+
 	WRITE_UWORD(data.GetID());
-	
+
 	out.put((char)((data.layout << 7) | (longoffsets << 3) | (longcodes << 2) | (data.flags)));
 	out.put(0);
 	out.write(tmp.str().c_str(), tmp.str().size());
-	
+
 	return out;
 }
 
@@ -609,7 +596,6 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineFont2 &data)
 	return in;
 }
 
-
 N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineEditBox &data)
 {
 	N_STD::ostrstream tmp;
@@ -617,33 +603,32 @@ N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineEditBox &data)
 	tmp << data.mr;
 	tmp.put((unsigned char)(data.mflags >> 8));
 	tmp.put((unsigned char)(data.mflags & 0xff));
-	
-	
-	if(data.mflags & FTDEB_HASFONT)
+
+	if (data.mflags & FTDEB_HASFONT)
 	{
-		WRITE_UWORD2(data.mfontID,tmp); 
+		WRITE_UWORD2(data.mfontID,tmp);
 		WRITE_UWORD2(data.mfontHeight,tmp);
 	}
-	if(data.mflags & FTDEB_HASTEXTCOLOR)
+	if (data.mflags & FTDEB_HASTEXTCOLOR)
 	{
 		data.mcolor.SetAlphaWriteMode(true);
 		tmp << data.mcolor;
 	}
-	if(data.mflags & FTDEB_HASMAXLENGTH)
+	if (data.mflags & FTDEB_HASMAXLENGTH)
 	{
-		WRITE_UWORD2(data.mmaxLength, tmp); 
+		WRITE_UWORD2(data.mmaxLength, tmp);
 	}
-	if(data.mflags & FTDEB_HASLAYOUT)
+	if (data.mflags & FTDEB_HASLAYOUT)
 	{
 		tmp.put(data.malign);
-		WRITE_UWORD2(data.mleftmargin, tmp); 
-		WRITE_UWORD2(data.mrightmargin, tmp); 
-		WRITE_UWORD2(data.mindent, tmp); 
-		WRITE_UWORD2(data.mleading, tmp);	
+		WRITE_UWORD2(data.mleftmargin, tmp);
+		WRITE_UWORD2(data.mrightmargin, tmp);
+		WRITE_UWORD2(data.mindent, tmp);
+		WRITE_UWORD2(data.mleading, tmp);
 	}
-	tmp << data.mvariable; 
+	tmp << data.mvariable;
 	tmp.put((char)0);
-	if(data.mflags & FTDEB_HASTEXT)
+	if (data.mflags & FTDEB_HASTEXT)
 	{
 		tmp << data.minitialtext;
 		tmp.put((char)0);
@@ -657,9 +642,9 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineEditBox &data)
 	UWORD id;
 	READ_UWORD(id);
 	data.SetID(id);
-	
+
 	in >> data.mr;
-	
+
 	int c = in.get();
 	//if c == EOF throw
 	int c2 = in.get();
@@ -668,25 +653,24 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineEditBox &data)
 	data.mflags = ((unsigned char)c);
 	data.mflags = (data.mflags << 8) | (c2 & 0xff);
 
-	
-	if(data.mflags & FTDEB_HASFONT)
+	if (data.mflags & FTDEB_HASFONT)
 	{
-		READ_UWORD(data.mfontID); 
+		READ_UWORD(data.mfontID);
 		READ_UWORD(data.mfontHeight);
 	}
-	if(data.mflags & FTDEB_HASTEXTCOLOR)
+	if (data.mflags & FTDEB_HASTEXTCOLOR)
 	{
 		data.mcolor.SetAlphaWriteMode(true);
 		in >> data.mcolor;
 	}
-	if(data.mflags & FTDEB_HASMAXLENGTH)
+	if (data.mflags & FTDEB_HASMAXLENGTH)
 	{
-		READ_UWORD(data.mmaxLength); 
+		READ_UWORD(data.mmaxLength);
 	}
-	if(data.mflags & FTDEB_HASLAYOUT)
+	if (data.mflags & FTDEB_HASLAYOUT)
 	{
 		data.malign = in.get();
-		// if(data.malign == EOF) throw
+		// if (data.malign == EOF) throw
 		READ_UWORD(data.mleftmargin);
 		READ_UWORD(data.mrightmargin);
 		READ_UWORD(data.mindent);
@@ -697,9 +681,9 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineEditBox &data)
 		for(;;)
 		{
 			int i = in.get();
-			//if(i == EOF) throw;
+			//if (i == EOF) throw;
 			text.push_back(i);
-			if(i==0) break;
+			if (i==0) break;
 		}
 		data.mvariable = (char *)malloc(text.size());
 		data.gc.push_back(data.mvariable);
@@ -708,19 +692,19 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineEditBox &data)
 			{
 				unsigned char *c = (unsigned char *)data.mvariable;
 				c[i] = text[i];
-			}		
+			}
 		}
 	}
 
-	if(data.mflags & FTDEB_HASTEXT)
+	if (data.mflags & FTDEB_HASTEXT)
 	{
 		N_STD::vector<int> text;
 		for(;;)
 		{
 			int i = in.get();
-			//if(i == EOF) throw;
+			//if (i == EOF) throw;
 			text.push_back(i);
-			if(i==0) break;
+			if (i==0) break;
 		}
 		data.minitialtext = (char *)malloc(text.size());
 		data.gc.push_back(data.minitialtext);
@@ -729,8 +713,8 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineEditBox &data)
 			{
 				unsigned char *c = (unsigned char *)data.minitialtext;
 				c[i] = text[i];
-			}		
-		}	
+			}
+		}
 	}
 	return in;
 }

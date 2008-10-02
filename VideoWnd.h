@@ -11,7 +11,6 @@
 #include "FrameGrabber.h"
 #include "CBitmapEx.h"
 
-
 /////////////////////////////////////////////////////////////////////////////
 // CVideoWnd window
 
@@ -39,14 +38,13 @@ public:
 	CFrameGrabber	m_FrameGrabber;
 	CBitmapEx	m_ImageBitmap;
 	int refreshRate;
-	
+
 	virtual void CreateTransparent(LPCTSTR pTitle, RECT rect,  HBITMAP BitmapID);
 	virtual void OnUpdateContextMenu();
 	void OnUpdateSize();
 	void AdjustRefreshRate(int rate);
 
 	int status;
-	
 
 	// Generated message map functions
 protected:

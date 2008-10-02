@@ -23,8 +23,8 @@ CSoundFile::CSoundFile(CString FileName, WAVEFORMATEX* format)
 	ZeroMemory(&m_MMCKInfoParent,sizeof(MMCKINFO));
 	ZeroMemory(&m_MMCKInfoChild,sizeof(MMCKINFO));
 	ZeroMemory(&m_MMCKInfoData,sizeof(MMCKINFO));
-	
-	if(format == NULL)
+
+	if (format == NULL)
 	{
 		m_Mode = READ;
 		OpenWaveFile();
@@ -35,8 +35,8 @@ CSoundFile::CSoundFile(CString FileName, WAVEFORMATEX* format)
 		m_Format = *format;
 		CreateWaveFile();
 	}
-	
-	if(m_Mode == ERROR) Close();
+
+	if (m_Mode == ERROR) Close();
 }
 
 CSoundFile::~CSoundFile()
@@ -46,25 +46,24 @@ CSoundFile::~CSoundFile()
 
 void CSoundFile::Close()
 {
-	if(m_hFile)
+	if (m_hFile)
 	{
-		if(m_Mode == WRITE)
+		if (m_Mode == WRITE)
 		{
 		::mmioAscend(m_hFile, &m_MMCKInfoChild, 0);
 		::mmioAscend(m_hFile, &m_MMCKInfoParent, 0);
 		}
 		::mmioClose(m_hFile, 0);
 		m_hFile = NULL;
-	}	
-
+	}
 }
 
 bool CSoundFile::Write(CBuffer *buffer)
 {
-	if(m_Mode == WRITE)
+	if (m_Mode == WRITE)
 	{
 		int length = mmioWrite(m_hFile, buffer->ptr.c, buffer->ByteLen);
-		if(length == buffer->ByteLen)
+		if (length == buffer->ByteLen)
 			return true;
 	}
 	return false;
@@ -74,10 +73,10 @@ CBuffer* CSoundFile::Read()
 {
 	// create a new buffer
 	CBuffer* buf = new CBuffer(m_Format.nBlockAlign*m_BufferSize);
-	if(buf == NULL) 
+	if (buf == NULL)
 		return NULL;
-	
-	if(Read(buf))
+
+	if (Read(buf))
 		return buf;
 
 	// if we reach here there was an error
@@ -87,10 +86,10 @@ CBuffer* CSoundFile::Read()
 
 bool CSoundFile::Read(CBuffer *buffer)
 {
-	if(m_Mode == READ)
+	if (m_Mode == READ)
 	{
 		buffer->ByteLen = ::mmioRead(m_hFile, buffer->ptr.c, buffer->ByteLen);
-		if(buffer->ByteLen > 0)
+		if (buffer->ByteLen > 0)
 			return true;
 	}
 	return false;
@@ -99,12 +98,12 @@ bool CSoundFile::Read(CBuffer *buffer)
 bool CSoundFile::CreateWaveFile()
 {
 	// check if file is already open
-	if(m_hFile) 
-		return FALSE;	
-	
+	if (m_hFile)
+		return FALSE;
+
 	// open file
 	m_hFile = ::mmioOpen(m_FileName.GetBuffer(0),NULL, MMIO_CREATE|MMIO_WRITE|MMIO_EXCLUSIVE | MMIO_ALLOCBUF);
-	if(m_hFile == NULL) 
+	if (m_hFile == NULL)
 	{
 		m_Mode = FILE_ERROR;
 		return FALSE;
@@ -114,12 +113,12 @@ bool CSoundFile::CreateWaveFile()
 	m_MMCKInfoParent.fccType = mmioFOURCC('W','A','V','E');
 
 	MMRESULT mmResult = ::mmioCreateChunk( m_hFile,&m_MMCKInfoParent, MMIO_CREATERIFF);
-	
+
 	ZeroMemory(&m_MMCKInfoChild, sizeof(MMCKINFO));
 	m_MMCKInfoChild.ckid = mmioFOURCC('f','m','t',' ');
 	m_MMCKInfoChild.cksize = sizeof(WAVEFORMATEX) + m_Format.cbSize;
 	mmResult = ::mmioCreateChunk(m_hFile, &m_MMCKInfoChild, 0);
-	mmResult = ::mmioWrite(m_hFile, (char*)&m_Format, sizeof(WAVEFORMATEX) + m_Format.cbSize); 
+	mmResult = ::mmioWrite(m_hFile, (char*)&m_Format, sizeof(WAVEFORMATEX) + m_Format.cbSize);
 	mmResult = ::mmioAscend(m_hFile, &m_MMCKInfoChild, 0);
 	m_MMCKInfoChild.ckid = mmioFOURCC('d', 'a', 't', 'a');
 	mmResult = ::mmioCreateChunk(m_hFile, &m_MMCKInfoChild, 0);
@@ -130,13 +129,13 @@ bool CSoundFile::CreateWaveFile()
 bool CSoundFile::OpenWaveFile()
 {
 	// code taken from Visual C++ Multimedia -- Aitken and Jarol p 122
-	
+
 	// check if file is already open
-	if(m_hFile) 
-		return FALSE; 
-	
+	if (m_hFile)
+		return FALSE;
+
 	m_hFile = mmioOpen(m_FileName.GetBuffer(0),NULL,MMIO_READ);
-	if(m_hFile == NULL) 
+	if (m_hFile == NULL)
 	{
 		m_Mode = FILE_ERROR;
 		return FALSE;
@@ -144,7 +143,7 @@ bool CSoundFile::OpenWaveFile()
 
 	m_MMCKInfoParent.fccType = mmioFOURCC('W','A','V','E');
 	MMRESULT mmResult = ::mmioDescend(m_hFile, &m_MMCKInfoParent,NULL,MMIO_FINDRIFF);
-	if(mmResult)
+	if (mmResult)
 	{
 		AfxMessageBox("Error descending into file");
 		mmioClose(m_hFile,0);
@@ -154,7 +153,7 @@ bool CSoundFile::OpenWaveFile()
 	}
 	m_MMCKInfoChild.ckid = mmioFOURCC('f','m','t',' ');
 	mmResult = mmioDescend(m_hFile,&m_MMCKInfoChild,&m_MMCKInfoParent,MMIO_FINDCHUNK);
-	if(mmResult)
+	if (mmResult)
 	{
 		AfxMessageBox("Error descending in wave file");
 		mmioClose(m_hFile,0);
@@ -163,17 +162,17 @@ bool CSoundFile::OpenWaveFile()
 		return FALSE;
 	}
 	DWORD bytesRead = mmioRead(m_hFile,(LPSTR)&m_Format,m_MMCKInfoChild.cksize);
-	if(bytesRead < 0)
+	if (bytesRead < 0)
 	{
 		AfxMessageBox("Error reading PCM wave format record");
 		mmioClose(m_hFile,0);
 		m_Mode = FILE_ERROR;
 		return FALSE;
 	}
-	
+
 	// open output sound file
 	mmResult = mmioAscend(m_hFile,&m_MMCKInfoChild,0);
-	if(mmResult)
+	if (mmResult)
 	{
 		AfxMessageBox("Error ascending in File");
 		mmioClose(m_hFile,0);
@@ -184,7 +183,7 @@ bool CSoundFile::OpenWaveFile()
 	m_MMCKInfoChild.ckid = mmioFOURCC('d','a','t','a');
 	mmResult = mmioDescend(m_hFile,&m_MMCKInfoChild,
 		&m_MMCKInfoParent,MMIO_FINDCHUNK);
-	if(mmResult)
+	if (mmResult)
 	{
 		AfxMessageBox("error reading data chunk");
 		mmioClose(m_hFile,0);
@@ -203,7 +202,7 @@ EREADWRITE CSoundFile::GetMode()
 
 bool CSoundFile::IsOK()
 {
-	if(m_Mode == FILE_ERROR)
+	if (m_Mode == FILE_ERROR)
 		return false;
 	else
 		return true;

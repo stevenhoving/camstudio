@@ -44,7 +44,7 @@ res\playplus.ico
     icon is included by the main resource file playplus.rc.
 
 res\playplus.rc2
-    This file contains resources that are not edited by Microsoft 
+    This file contains resources that are not edited by Microsoft
 	Visual C++.  You should place all resources not editable by
 	the resource editor in this file.
 
@@ -96,7 +96,7 @@ Other notes:
 AppWizard uses "TODO:" to indicate parts of the source code you
 should add to or customize.
 
-If your application uses MFC in a shared DLL, and your application is 
+If your application uses MFC in a shared DLL, and your application is
 in a language other than the operating system's current language, you
 will need to copy the corresponding localized resources MFC42XXX.DLL
 from the Microsoft Visual C++ CD-ROM onto the system or system32 directory,

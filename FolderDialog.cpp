@@ -151,7 +151,7 @@ CString CFolderDialog::ShortName(const CString& strName)
 
 void CFolderDialog::OnInitDialog()
 {
-	// Default handing of the init dialog message sets the selection to 
+	// Default handing of the init dialog message sets the selection to
 	// the initial folder
 	SetSelection(m_strInitialFolderName);
 	SetStatusText(ShortName(m_strInitialFolderName));

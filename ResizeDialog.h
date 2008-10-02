@@ -20,13 +20,11 @@ public:
 	CTransparentWnd * m_transWnd;
 	void PreModal(CTransparentWnd *transWnd);
 
-
 // Dialog Data
 	//{{AFX_DATA(CResizeDialog)
 	enum { IDD = IDD_RESIZE };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
-
 
 // Overrides
 	// ClassWizard generated virtual function overrides

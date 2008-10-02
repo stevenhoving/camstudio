@@ -19,13 +19,11 @@ public:
 	void SetVarTextLine2(CString textstr);
 	void SetButtonEnable(BOOL enable);
 
-
 // Dialog Data
 	//{{AFX_DATA(CAutoSearchDialog)
 	enum { IDD = IDD_AUTOSEARCH };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
-
 
 // Overrides
 	// ClassWizard generated virtual function overrides

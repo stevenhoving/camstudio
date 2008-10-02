@@ -30,7 +30,6 @@ SWFPropertySheet::~SWFPropertySheet()
 {
 }
 
-
 BEGIN_MESSAGE_MAP(SWFPropertySheet, CPropertySheet)
 	//{{AFX_MSG_MAP(SWFPropertySheet)
 		// NOTE - the ClassWizard will add and remove mapping macros here.

@@ -18,14 +18,13 @@ class CTransRateDialog : public CDialog
 public:
 	CTransRateDialog(CWnd* pParent = NULL);   // standard constructor
 	CVideoWnd* m_myparent;
-	void PreModal( CVideoWnd * parent); 
+	void PreModal( CVideoWnd * parent);
 
 // Dialog Data
 	//{{AFX_DATA(CTransRateDialog)
 	enum { IDD = IDD_TRANSRATE };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
-
 
 // Overrides
 	// ClassWizard generated virtual function overrides

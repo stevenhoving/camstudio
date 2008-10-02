@@ -13,14 +13,14 @@
 
 class CMainFrame : public CFrameWnd
 {
-	
+
 protected: // create from serialization only
 	CMainFrame();
 	DECLARE_DYNCREATE(CMainFrame)
 
 // Attributes
 public:
-	
+
 
 // Operations
 public:
@@ -42,8 +42,8 @@ public:
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
-	void ResizeToMovie(RECT movierect); 
-	void OffsetRectZero(CRect& winrect); 
+	void ResizeToMovie(RECT movierect);
+	void OffsetRectZero(CRect& winrect);
 
 protected:  // control bar embedded members
 	CStatusBar  m_wndStatusBar;

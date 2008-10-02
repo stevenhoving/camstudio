@@ -1,6 +1,6 @@
 /* deflate.c -- compress data using the deflation algorithm
  * Copyright (C) 1995-1998 Jean-loup Gailly.
- * For conditions of distribution and use, see copyright notice in zlib.h 
+ * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
 /*
@@ -154,7 +154,6 @@ struct static_tree_desc_s {int dummy;}; /* for buggy compilers */
  *    previous key instead of complete recalculation each time.
  */
 #define UPDATE_HASH(s,h,c) (h = (((h)<<s->hash_shift) ^ (c)) & s->hash_mask)
-
 
 /* ===========================================================================
  * Insert string str in the dictionary and set match_head to the previous head
@@ -333,7 +332,7 @@ int ZEXPORT deflateReset (strm)
     z_streamp strm;
 {
     deflate_state *s;
-    
+
     if (strm == Z_NULL || strm->state == Z_NULL ||
         strm->zalloc == Z_NULL || strm->zfree == Z_NULL) return Z_STREAM_ERROR;
 
@@ -405,7 +404,7 @@ local void putShortMSB (s, b)
 {
     put_byte(s, (Byte)(b >> 8));
     put_byte(s, (Byte)(b & 0xff));
-}   
+}
 
 /* =========================================================================
  * Flush as much pending output as possible. All deflate() output goes
@@ -607,7 +606,6 @@ int ZEXPORT deflateCopy (dest, source)
     deflate_state *ds;
     deflate_state *ss;
     ushf *overlay;
-
 
     if (source == Z_NULL || dest == Z_NULL || source->state == Z_NULL) {
         return Z_STREAM_ERROR;
@@ -1199,7 +1197,7 @@ local block_state deflate_fast(s, flush)
                      * always MIN_MATCH bytes ahead.
                      */
                 } while (--s->match_length != 0);
-                s->strstart++; 
+                s->strstart++;
             } else
 #endif
 	    {
@@ -1219,7 +1217,7 @@ local block_state deflate_fast(s, flush)
             Tracevv((stderr,"%c", s->window[s->strstart]));
             _tr_tally_lit (s, s->window[s->strstart], bflush);
             s->lookahead--;
-            s->strstart++; 
+            s->strstart++;
         }
         if (bflush) FLUSH_BLOCK(s, 0);
     }
@@ -1348,3 +1346,4 @@ local block_state deflate_slow(s, flush)
     FLUSH_BLOCK(s, flush == Z_FINISH);
     return flush == Z_FINISH ? finish_done : block_done;
 }
+

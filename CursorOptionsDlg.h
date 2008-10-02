@@ -23,7 +23,6 @@ public:
 	enum { IDD = IDD_CURSOROPTIONS };
 	//}}AFX_DATA
 
-
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CCursorOptionsDlg)

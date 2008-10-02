@@ -80,7 +80,7 @@ BOOL CALLBACK aviaudioOpenDevice(HWND hwnd, PAVISTREAM pavi)
 
     if (shWaveOut)      // already something playing
 		return TRUE;
-	
+
     spavi = pavi;
 
 	recalc = 1;
@@ -100,7 +100,7 @@ BOOL CALLBACK aviaudioOpenDevice(HWND hwnd, PAVISTREAM pavi)
 
     //AVIStreamReadFormat(pavi, 0, lpFormat, &cbFormat);
 	AVIStreamReadFormat(pavi, AVIStreamStart(pavi), lpFormat, &cbFormat);
-	
+
 
     sdwSamplesPerSec = ((LPWAVEFORMAT) lpFormat)->nSamplesPerSec;
     sdwBytesPerSec = ((LPWAVEFORMAT) lpFormat)->nAvgBytesPerSec;
@@ -117,7 +117,7 @@ BOOL CALLBACK aviaudioOpenDevice(HWND hwnd, PAVISTREAM pavi)
 	mmResult = waveOutOpen(&shWaveOut, (UINT)WAVE_MAPPER, (WAVEFORMATEX *) lpFormat,
 			(DWORD) (UINT)hwnd, 0L, CALLBACK_WINDOW);
     }
-		
+
     if (mmResult != 0)
     {
 
@@ -137,7 +137,7 @@ BOOL CALLBACK aviaudioOpenDevice(HWND hwnd, PAVISTREAM pavi)
 		if (!waveOutPrepareHeader(shWaveOut, salpAudioBuf[swBuffers],
 					sizeof(WAVEHDR)))
 		continue;
-	
+
 		GlobalFreePtr((LPSTR) salpAudioBuf[swBuffers]);
 		break;
     }
@@ -158,29 +158,29 @@ BOOL CALLBACK aviaudioOpenDevice(HWND hwnd, PAVISTREAM pavi)
 
 
 
-// Return the time in milliseconds corresponding to the  currently playing audio sample, or -1 if no audio is playing. 
+// Return the time in milliseconds corresponding to the  currently playing audio sample, or -1 if no audio is playing.
 LONG CALLBACK aviaudioTime(void)
 {
     MMTIME      mmtime;
 
 	if (audioPlayable<=0) return -1;
 
-		
+
     if (!sfPlaying)
 		return -1;
 
-	
-	//not sure	
+
+	//not sure
 	if (recalc) {
 		streamEnd = AVIStreamEnd(spavi);
 		streamStart = AVIStreamStart(spavi);
 		recalc = 0;
 		//ErrMsg("recalc");
-	}	
-	
+	}
+
 	if ((streamEnd<=streamStart) || (streamEnd<=0))
 		return -1;
-		
+
 
     mmtime.wType = TIME_SAMPLES;
 
@@ -198,7 +198,7 @@ LONG CALLBACK aviaudioTime(void)
 
 
 
-// Fill up any empty audio buffers and ship them out to the  device.                                                       
+// Fill up any empty audio buffers and ship them out to the  device.
 BOOL aviaudioiFillBuffers(void)
 {
     LONG            lRead;
@@ -223,7 +223,7 @@ BOOL aviaudioiFillBuffers(void)
 			break;
 		}
 
-	
+
 	lSamplesToPlay = slEnd - slCurrent;
 	if (lSamplesToPlay > AUDIO_BUFFER_SIZE / slSampleSize )
 	    lSamplesToPlay = AUDIO_BUFFER_SIZE / slSampleSize ;
@@ -238,27 +238,27 @@ BOOL aviaudioiFillBuffers(void)
 
 	//ErrMsg("slCurrent %ld, lSamplesToPlay %ld, toplay %ld",slCurrent, lSamplesToPlay, slEnd - slCurrent);
 
-	
+
 	//over here
 	//This seems to be the condition related to the non-stopping at end of movie
 	if ((lRead <= 0) && (lSamplesToPlay>0)) {
-		
-			
-			//retry 
 
-			
-		
+
+			//retry
+
+
+
 			retval = AVIStreamRead(spavi, slCurrent, lSamplesToPlay,
 		      salpAudioBuf[swNextBuffer]->lpData,
 		      AUDIO_BUFFER_SIZE,
 		      (long *)&salpAudioBuf[swNextBuffer]->dwBufferLength,
 		      &lRead);
-			  
+
 
 			if ((lRead <= 0) && (lSamplesToPlay>0)) {
 
 			//if (retval == AVIERR_FILEREAD) {
-			
+
 				slCurrent += lSamplesToPlay;
 				break;
 
@@ -267,12 +267,12 @@ BOOL aviaudioiFillBuffers(void)
 
 			}
 
-			
+
 	}
-	
+
 
 	if (lRead != lSamplesToPlay) {
-	 
+
 		if (lRead == lSamplesToPlay-1)
 		{
 			//do nothing...allow it to pass on
@@ -282,19 +282,19 @@ BOOL aviaudioiFillBuffers(void)
 
 		}
 	}
-	
+
 
 	slCurrent += lRead;
-	
+
 	mmResult = waveOutWrite(shWaveOut, salpAudioBuf[swNextBuffer],sizeof(WAVEHDR));
-		
+
 	if (mmResult != 0) {
-	 
-		//::MessageBox(NULL,"Waveoutwrite problem","note",MB_OK);	
+
+		//::MessageBox(NULL,"Waveoutwrite problem","note",MB_OK);
 		return FALSE;
 
 	}
-		
+
 	++swBuffersOut;
 	++swNextBuffer;
 	if (swNextBuffer >= swBuffers)
@@ -306,7 +306,7 @@ BOOL aviaudioiFillBuffers(void)
 			aviaudioStop();
 
 	}
-	
+
     // All buffers Filled
     return TRUE;
 }
@@ -316,7 +316,7 @@ BOOL aviaudioiFillBuffers(void)
 BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, BOOL fWait)
 {
 
-	if (audioPlayable<=0) 
+	if (audioPlayable<=0)
 		return FALSE;
 
 	recalc = 1;
@@ -324,9 +324,9 @@ BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, B
 	//CString tx;
 	//tx.Format("audioPlayable %d",audioPlayable);
 	//MessageBox(NULL,tx,"Note",MB_OK);
-    
-	CString msx;	
-	
+
+	CString msx;
+
 	if (lStart < 0)
 		lStart = AVIStreamStart(pavi);
 
@@ -337,7 +337,7 @@ BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, B
 
 
     if (lStart >= lEnd) {
-		
+
 		return FALSE;
 	}
 
@@ -352,16 +352,16 @@ BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, B
     {
 
 		// We're beginning play, so pause until we've filled the buffers
-		// for a seamless start		
+		// for a seamless start
 		waveOutPause(shWaveOut);
 
-			
+
 		slBegin = lStart;
 		slCurrent = lStart;
 		slEnd = lEnd;
 		sfPlaying = TRUE;
 
-	
+
     }
     else
     {
@@ -369,18 +369,18 @@ BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, B
     }
 
 
-	
+
 
     aviaudioiFillBuffers();
 
-	
-    
-    // Now unpause the audio and away it goes!    
+
+
+    // Now unpause the audio and away it goes!
     waveOutRestart(shWaveOut);
 
-    
-    // Caller wants us not to return until play is finished    
-    if(fWait)
+
+    // Caller wants us not to return until play is finished
+    if (fWait)
     {
 		while (swBuffersOut > 0)
 		Yield();
@@ -393,26 +393,26 @@ BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, B
 void CALLBACK aviaudioMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 
-	
+
     if (msg == MM_WOM_DONE) {
         --swBuffersOut;
         aviaudioiFillBuffers();
     }
-	
+
 }
 
 
-// Stop playing, close the device.               
+// Stop playing, close the device.
 void CALLBACK aviaudioStop(void)
 {
 	MMRESULT        mmResult;
 
     if (shWaveOut != 0)
     {
-		
+
 		sfPlaying = FALSE;
-		mmResult = waveOutReset(shWaveOut);		
-	
+		mmResult = waveOutReset(shWaveOut);
+
 		aviaudioCloseDevice();
     }
 }

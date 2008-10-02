@@ -62,7 +62,7 @@ void TraySetToolTip(LPCTSTR lpszToolTip)
 	IconData.uFlags |= NIF_TIP;
 }
 
-void initTrayIconData(HWND hWndGlobal)
+void initTrayIconData(HWND hWnd)
 {
 	IconData.cbSize = sizeof(NOTIFYICONDATA);
 	IconData.hWnd = 0;
@@ -71,7 +71,7 @@ void initTrayIconData(HWND hWndGlobal)
 	IconData.hIcon = 0;
 	IconData.szTip[0] = 0;
 	IconData.uFlags = NIF_MESSAGE;
-	IconData.hWnd = hWndGlobal;
+	IconData.hWnd = hWnd;
 
 	bTrayIconVisible = FALSE;
 	DefaultMenuItem = 0;

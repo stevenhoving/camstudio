@@ -30,7 +30,7 @@ bool CxImageJAS::Decode(CxFile *hFile, DWORD imagetype)
 
 	CxFileJas src(hFile,in);
 
-	if (!(image = jas_image_decode(in, -1, 0))) 
+	if (!(image = jas_image_decode(in, -1, 0)))
 		throw "error: cannot load image data";
 
 	long x,y,w,h,depth,cmptno;
@@ -73,7 +73,7 @@ bool CxImageJAS::Decode(CxFile *hFile, DWORD imagetype)
 		image->cmpts_[1]->prec_ == image->cmpts_[2]->prec_ )
 	{
 
-		if(!Create(w,h,24,imagetype))
+		if (!Create(w,h,24,imagetype))
 			throw "Can't allocate memory";
 
 		RGBQUAD c;
@@ -99,7 +99,7 @@ bool CxImageJAS::Decode(CxFile *hFile, DWORD imagetype)
 			h = jas_image_cmptheight(image,cmptno);
 			depth = jas_image_cmptprec(image,cmptno);
 			if (depth>8) depth=8;
-			if(!Create(w,h,depth,imagetype))
+			if (!Create(w,h,depth,imagetype))
 				throw "Can't allocate memory";
 			SetGrayPalette();
 			for (y=0; y<h; y++) {

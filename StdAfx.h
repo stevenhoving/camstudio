@@ -10,10 +10,13 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
+#pragma message("Recorder: stdafx.h")
+
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 //#define _AFX_SECURE_NO_WARNINGS
 // replacing calls to deprecated functions with calls to the new secure versions of those functions.
-//#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES		1
+#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES		1
+#define _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES		1
 
 #include "targetver.h"		// define WINVER
 
@@ -33,7 +36,5 @@
 //#include <mmsystem.h>
 #include <vfw.h>
 //#include <windowsx.h>
-
-#define sscanf	sscanf_s
 
 #endif // !defined(AFX_STDAFX_H__EB5B2A10_2312_4984_8371_6DE5181F903F__INCLUDED_)

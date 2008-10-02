@@ -140,7 +140,6 @@
 
 #line 4 "swf5compiler.y"
 
-
 #include <time.h>
 #include <string.h>
 #include "compile.h"
@@ -149,7 +148,6 @@
 #define YYPARSE_PARAM buffer
 
 Buffer bf, bc;
-
 
 #line 17 "swf5compiler.y"
 typedef union
@@ -179,8 +177,6 @@ typedef union
 #define const
 #endif
 #endif
-
-
 
 #define	YYFINAL		596
 #define	YYFLAG		-32768
@@ -408,7 +404,6 @@ static const short yyrline[] = { 0,
   1547,  1548,  1549,  1550,  1551,  1552,  1553,  1554,  1557,  1561
 };
 #endif
-
 
 #if YYDEBUG != 0 || defined (YYERROR_VERBOSE)
 
@@ -656,9 +651,7 @@ static const short yypgoto[] = {-32768,
     27,  -148,-32768,  -212,-32768,-32768,  -286,-32768,  -410,-32768
 };
 
-
 #define	YYLAST		4438
-
 
 static const short yytable[] = {   115,
    153,   238,   284,   339,   284,   116,   467,   115,   286,   550,
@@ -2093,7 +2086,6 @@ yyreduce:
     }
 #endif
 
-
   switch (yyn) {
 
 case 1:
@@ -2600,12 +2592,12 @@ case 122:
 case 123:
 #line 419 "swf5compiler.y"
 {
-		  if(yyvsp[-6].action)
+		  if (yyvsp[-6].action)
 		    yyval.action = yyvsp[-6].action;
 		  else
 		    yyval.action = newBuffer();
 
-		  if(yyvsp[-2].action)
+		  if (yyvsp[-2].action)
 		  {
                     bufferWriteOp(yyval.action, SWFACTION_BRANCHALWAYS);
                     bufferWriteS16(yyval.action, 2);
@@ -2614,7 +2606,7 @@ case 123:
 		  else
 		    yyvsp[-2].action = newBuffer();
 
-		  if(yyvsp[-4].action)
+		  if (yyvsp[-4].action)
 		  {
 		    bufferConcat(yyvsp[-2].action, yyvsp[-4].action);
                     bufferWriteOp(yyvsp[-2].action, SWFACTION_LOGICALNOT);
@@ -2638,7 +2630,7 @@ case 124:
 		  int tmp;
 
 		  yyval.action = yyvsp[-2].action;
-		  bufferWriteOp(yyval.action, SWFACTION_ENUMERATE);	
+		  bufferWriteOp(yyval.action, SWFACTION_ENUMERATE);
 
 		  b2 = newBuffer();
 		  bufferWriteSetRegister(b2, 0);
@@ -2670,7 +2662,7 @@ case 125:
 		  int tmp;
 
 		  yyval.action = yyvsp[-2].action;
-		  bufferWriteOp(yyval.action, SWFACTION_ENUMERATE);	
+		  bufferWriteOp(yyval.action, SWFACTION_ENUMERATE);
 
 		  b2 = newBuffer();
 		  bufferWriteSetRegister(b2, 0);
@@ -2727,9 +2719,9 @@ case 132:
     break;}
 case 133:
 #line 542 "swf5compiler.y"
-{ if(strcmp(yyvsp[0].str, "GET") == 0)
+{ if (strcmp(yyvsp[0].str, "GET") == 0)
 				    yyval.getURLMethod = GETURL_METHOD_GET;
-				  else if(strcmp(yyvsp[0].str, "POST") == 0)
+				  else if (strcmp(yyvsp[0].str, "POST") == 0)
 				    yyval.getURLMethod = GETURL_METHOD_POST; ;
     break;}
 case 134:
@@ -3094,11 +3086,11 @@ case 192:
     break;}
 case 193:
 #line 872 "swf5compiler.y"
-{ if(yyvsp[0].lval.obj)
+{ if (yyvsp[0].lval.obj)
 		  {
 		    yyval.action = yyvsp[0].lval.obj;
 
-		    if(yyvsp[0].lval.ident)
+		    if (yyvsp[0].lval.ident)
 		      bufferConcat(yyval.action, yyvsp[0].lval.ident);
 		    else
 		      bufferConcat(yyval.action, yyvsp[0].lval.memexpr);
@@ -3283,11 +3275,11 @@ case 220:
     break;}
 case 221:
 #line 1042 "swf5compiler.y"
-{ if(yyvsp[-2].lval.obj) /* obj[memexpr] or obj.ident */
+{ if (yyvsp[-2].lval.obj) /* obj[memexpr] or obj.ident */
 		  {
 		    yyval.action = yyvsp[-2].lval.obj;
 
-		    if(yyvsp[-2].lval.ident)
+		    if (yyvsp[-2].lval.ident)
 		      bufferConcat(yyval.action, yyvsp[-2].lval.ident);
 		    else
 		      bufferConcat(yyval.action, yyvsp[-2].lval.memexpr);
@@ -3343,9 +3335,9 @@ case 227:
     break;}
 case 232:
 #line 1111 "swf5compiler.y"
-{ if(yyvsp[0].lval.obj)
+{ if (yyvsp[0].lval.obj)
 		  {
-		    if(yyvsp[0].lval.ident)	// expr . identifier
+		    if (yyvsp[0].lval.ident)	// expr . identifier
 		    {
 		      yyval.action = yyvsp[0].lval.obj;
 		      bufferWriteOp(yyval.action, SWFACTION_DUP);	      /* a, a */
@@ -3389,9 +3381,9 @@ case 232:
     break;}
 case 233:
 #line 1156 "swf5compiler.y"
-{ if(yyvsp[-1].lval.obj)
+{ if (yyvsp[-1].lval.obj)
 		  {
-		    if(yyvsp[-1].lval.ident)
+		    if (yyvsp[-1].lval.ident)
 		    {
 		      yyval.action = yyvsp[-1].lval.obj;	                      /* a */
 		      bufferWriteOp(yyval.action, SWFACTION_DUP);	      /* a, a */
@@ -3515,9 +3507,9 @@ case 251:
     break;}
 case 252:
 #line 1274 "swf5compiler.y"
-{ if(yyvsp[0].lval.obj)
+{ if (yyvsp[0].lval.obj)
 		  {
-		    if(yyvsp[0].lval.ident)
+		    if (yyvsp[0].lval.ident)
 		    {
 		      yyval.action = yyvsp[0].lval.obj;		              /* a */
 		      bufferWriteOp(yyval.action, SWFACTION_DUP);	      /* a, a */
@@ -3555,9 +3547,9 @@ case 252:
     break;}
 case 253:
 #line 1313 "swf5compiler.y"
-{ if(yyvsp[-1].lval.obj)
+{ if (yyvsp[-1].lval.obj)
 		  {
-		    if(yyvsp[-1].lval.ident)
+		    if (yyvsp[-1].lval.ident)
 		    {
 		      yyval.action = yyvsp[-1].lval.obj;			      /* a */
 		      bufferWriteOp(yyval.action, SWFACTION_DUP);       /* a, a */
@@ -3586,7 +3578,7 @@ case 253:
 		  else
 		  {
 		    yyval.action = yyvsp[-1].lval.ident;
-		    bufferWriteOp(yyval.action, SWFACTION_DUP);	
+		    bufferWriteOp(yyval.action, SWFACTION_DUP);
 		    bufferWriteOp(yyval.action, SWFACTION_GETVARIABLE);
 		    bufferWriteOp(yyval.action, yyvsp[0].op);
 		    bufferWriteOp(yyval.action, SWFACTION_SETVARIABLE);
@@ -3595,11 +3587,11 @@ case 253:
     break;}
 case 254:
 #line 1352 "swf5compiler.y"
-{ if(yyvsp[-2].lval.obj)
+{ if (yyvsp[-2].lval.obj)
 		  {
 		    yyval.action = yyvsp[-2].lval.obj;
 
-		    if(yyvsp[-2].lval.ident)
+		    if (yyvsp[-2].lval.ident)
 		      bufferConcat(yyval.action, yyvsp[-2].lval.ident);
 		    else
 		      bufferConcat(yyval.action, yyvsp[-2].lval.memexpr);
@@ -3617,9 +3609,9 @@ case 254:
     break;}
 case 255:
 #line 1373 "swf5compiler.y"
-{ if(yyvsp[-2].lval.obj)
+{ if (yyvsp[-2].lval.obj)
 		  {
-		    if(yyvsp[-2].lval.ident)
+		    if (yyvsp[-2].lval.ident)
 		    {
 		      yyval.action = yyvsp[-2].lval.obj;			      /* a */
 		      bufferWriteOp(yyval.action, SWFACTION_DUP);	      /* a, a */
@@ -3722,7 +3714,7 @@ case 269:
     break;}
 case 271:
 #line 1465 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_SETREGISTER);
 				  yyval.len += bufferWriteS16(asmBuffer, 1);
 				  yyval.len += bufferWriteU8(asmBuffer,
@@ -3740,117 +3732,117 @@ case 273:
     break;}
 case 274:
 #line 1475 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_CALLMETHOD); ;
     break;}
 case 275:
 #line 1477 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_BITWISEAND); ;
     break;}
 case 276:
 #line 1479 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_BITWISEOR); ;
     break;}
 case 277:
 #line 1481 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_BITWISEXOR); ;
     break;}
 case 278:
 #line 1483 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_MODULO); ;
     break;}
 case 279:
 #line 1485 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_NEWADD); ;
     break;}
 case 280:
 #line 1487 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_NEWLESSTHAN); ;
     break;}
 case 281:
 #line 1489 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_NEWEQUALS); ;
     break;}
 case 282:
 #line 1491 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_INCREMENT); ;
     break;}
 case 283:
 #line 1493 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_DECREMENT); ;
     break;}
 case 284:
 #line 1495 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_TYPEOF); ;
     break;}
 case 285:
 #line 1497 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_ENUMERATE); ;
     break;}
 case 286:
 #line 1499 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_DELETE); ;
     break;}
 case 287:
 #line 1501 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_NEW); ;
     break;}
 case 288:
 #line 1503 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_INITARRAY); ;
     break;}
 case 289:
 #line 1505 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_INITOBJECT); ;
     break;}
 case 290:
 #line 1507 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_GETMEMBER); ;
     break;}
 case 291:
 #line 1509 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_SETMEMBER); ;
     break;}
 case 292:
 #line 1511 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_SHIFTLEFT); ;
     break;}
 case 293:
 #line 1513 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_SHIFTRIGHT); ;
     break;}
 case 294:
 #line 1515 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_SHIFTRIGHT2); ;
     break;}
 case 295:
 #line 1517 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_VAR); ;
     break;}
 case 296:
 #line 1519 "swf5compiler.y"
-{ yyval.len = bufferWriteOp(asmBuffer, 
+{ yyval.len = bufferWriteOp(asmBuffer,
 						     SWFACTION_VAREQUALS); ;
     break;}
 case 297:

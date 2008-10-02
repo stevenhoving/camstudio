@@ -17,20 +17,20 @@ Buffer compileSWFActionCode(char *script)
 
   /* yydebug = 1; */
 
-  if(SWF_versionNum == 4)
+  if (SWF_versionNum == 4)
   {
     swf4ParseInit(script, 0);
 
-    if(swf4parse((void *)&b) != 0)
+    if (swf4parse((void *)&b) != 0)
       return NULL;
   }
   else
   {
     swf5ParseInit(script, 0);
 
-    if(swf5parse((void *)&b) != 0)
+    if (swf5parse((void *)&b) != 0)
       return NULL;
   }
-  
-  return b;  
+
+  return b;
 }

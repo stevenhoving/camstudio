@@ -1,6 +1,6 @@
 /* infcodes.c -- process literals and length/distance pairs
  * Copyright (C) 1995-1998 Mark Adler
- * For conditions of distribution and use, see copyright notice in zlib.h 
+ * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
 #include "zutil.h"
@@ -52,9 +52,7 @@ struct inflate_codes_state {
   Byte dbits;           /* dtree bits decoder per branch */
   inflate_huft *ltree;          /* literal/length/eob tree */
   inflate_huft *dtree;          /* distance tree */
-
 };
-
 
 inflate_codes_statef *inflate_codes_new(bl, bd, tl, td, z)
 uInt bl, bd;
@@ -76,7 +74,6 @@ z_streamp z;
   }
   return c;
 }
-
 
 int inflate_codes(s, z, r)
 inflate_blocks_statef *s;
@@ -246,7 +243,6 @@ int r;
   return Z_STREAM_ERROR;  /* Some dumb compilers complain without this */
 #endif
 }
-
 
 void inflate_codes_free(c, z)
 inflate_codes_statef *c;
