@@ -13,8 +13,6 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 extern int recordstate;
-extern BOOL bMinimizeToTray;
-extern BOOL TrayShow();
 extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 
 int viewtype = 0;
@@ -37,6 +35,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_NORMALVIEW, OnUpdateViewNormalview)
 	ON_COMMAND(ID_VIEWTYPE, OnViewtype)
 	//}}AFX_MSG_MAP
+	ON_MESSAGE(CTrayIcon::m_WM_TRAY_ICON_NOTIFY_MESSAGE,OnTrayNotify)
 	ON_WM_SYSCOMMAND()
 END_MESSAGE_MAP()
 
@@ -70,14 +69,14 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (!m_wndToolBar.Create(this)
 		|| !m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
 	{
-		TRACE0("Failed to create toolbar\n");
+		TRACE("Failed to create toolbar\n");
 		return -1; // fail to create
 	}
 
 	if (!m_wndStatusBar.Create(this)
 		|| !m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT)))
 	{
-		TRACE0("Failed to create status bar\n");
+		TRACE("Failed to create status bar\n");
 		return -1; // fail to create
 	}
 
@@ -116,6 +115,13 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndToolBar);
+
+	//ver 1.2
+	m_TrayIcon.SetNotifyWnd(*this);
+	m_TrayIcon.TraySetIcon(IDR_MAINFRAMESMALL);
+	m_TrayIcon.TraySetToolTip("CamStudio");
+	m_TrayIcon.TraySetMenu(IDR_TRAYMENU);
+	m_TrayIcon.TrayShow();
 
 	SetWindowText("CamStudio - Custom Build");
 
@@ -341,11 +347,15 @@ void CMainFrame::UpdateViewtype()
 
 void CMainFrame::OnSysCommand(UINT nID, LPARAM lParam)
 {
-	if (bMinimizeToTray) {
+	if (m_TrayIcon.MinimizeToTray()) {
 		if ((nID & 0xFFF0) == SC_MINIMIZE) {
 			ShowWindow(SW_HIDE);
 			return;
 		}
 	}
 	CFrameWnd::OnSysCommand(nID, lParam);
+}
+LRESULT CMainFrame::OnTrayNotify(WPARAM wParam, LPARAM lParam)
+{
+	return m_TrayIcon.OnTrayNotify(wParam, lParam);
 }

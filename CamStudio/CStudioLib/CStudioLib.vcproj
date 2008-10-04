@@ -175,7 +175,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\TrayIIcon.cpp"
+				RelativePath=".\TrayIcon.cpp"
 				>
 			</File>
 		</Filter>
@@ -197,7 +197,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TrayIIcon.h"
+				RelativePath=".\TrayIcon.h"
 				>
 			</File>
 		</Filter>

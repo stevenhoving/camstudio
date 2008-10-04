@@ -38,7 +38,8 @@
 
 #include "Buffer.h"
 #include "CStudioLib.h"
-#include "TrayIIcon.h"
+#include "TrayIcon.h"
+#include "AudioSpeakers.h"
 
 #include <windowsx.h>
 //#include "muldiv32.h"
@@ -3736,7 +3737,6 @@ BEGIN_MESSAGE_MAP(CVscapView, CView)
 	ON_REGISTERED_MESSAGE (WM_USER_GENERIC, OnUserGeneric)
 	ON_REGISTERED_MESSAGE (WM_USER_KEYSTART, OnKeyStart)
 	ON_MESSAGE(MM_WIM_DATA, OnMM_WIM_DATA)
-	ON_MESSAGE(WM_TRAY_ICON_NOTIFY_MESSAGE,OnTrayNotify)
 	ON_MESSAGE(WM_HOTKEY, OnHotKey)
 	ON_COMMAND(ID_REGION_WINDOW, OnRegionWindow)
 	ON_UPDATE_COMMAND_UI(ID_REGION_WINDOW, OnUpdateRegionWindow)
@@ -3926,9 +3926,6 @@ void CVscapView::OnDestroy()
 	//ver 1.2
 	//UninstallMyKeyHook(hWndGlobal);
 	UnSetHotKeys();
-
-	//ver 1.2
-	finishTrayIconData();
 
 	DestroyShiftWindow();
 
@@ -4195,7 +4192,7 @@ LRESULT CVscapView::OnUserGeneric (UINT wParam, LONG lParam)
 		HANDLE hfile = CreateFile(m_newfile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 		if (hfile == INVALID_HANDLE_VALUE) {
 			//::MessageBox(NULL,"Unable to create new file. The file may be opened by another application. Please use another filename.","Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(this->m_hWnd,IDS_STRING_NOCREATEWFILE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(m_hWnd,IDS_STRING_NOCREATEWFILE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			::PostMessage(hWndGlobal,WM_USER_GENERIC,0,0);
 			return 0;
 		}
@@ -4240,14 +4237,14 @@ LRESULT CVscapView::OnUserGeneric (UINT wParam, LONG lParam)
 			if (!CopyFile( tempfilepath,m_newfile,FALSE)) {
 				//Although there is error copying, the temp file still remains in the temp directory and is not deleted, in case user wants a manual recover
 				//MessageBox("File Creation Error. Unable to rename/copy file.","Note",MB_OK | MB_ICONEXCLAMATION);
-				MessageOut(this->m_hWnd,IDS_STRING_FILECREATIONERROR,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+				MessageOut(m_hWnd,IDS_STRING_FILECREATIONERROR,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 				return 0;
 			}
 			DeleteFile(tempfilepath);
 			DeleteFile(tempaudiopath);
 
 			//::MessageBox(NULL,"Your AVI movie will not contain a soundtrack. CamStudio is unable to merge the video with audio.","Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(this->m_hWnd,IDS_STRING_NOSOUNDTRACK,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(m_hWnd,IDS_STRING_NOSOUNDTRACK,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 		} else if (result == 5) {
 			//recover both files, but as separate files
 			CString m_audioext(".wav");
@@ -4255,14 +4252,14 @@ LRESULT CVscapView::OnUserGeneric (UINT wParam, LONG lParam)
 
 			if (!CopyFile( tempfilepath,m_newfile,FALSE)) {
 				//MessageBox("File Creation Error. Unable to rename/copy video file.","Note",MB_OK | MB_ICONEXCLAMATION);
-				MessageOut(this->m_hWnd,IDS_STRINGFILECREATION2,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+				MessageOut(m_hWnd,IDS_STRINGFILECREATION2,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 				return 0;
 			}
 			DeleteFile(tempfilepath);
 
 			if (!CopyFile(tempaudiopath,m_audiofile,FALSE)) {
 				//MessageBox("File Creation Error. Unable to rename/copy audio file.","Note",MB_OK | MB_ICONEXCLAMATION);
-				MessageOut(this->m_hWnd,IDS_STRING_FILECREATION3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+				MessageOut(m_hWnd,IDS_STRING_FILECREATION3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 				return 0;
 			}
 			DeleteFile(tempaudiopath);
@@ -4282,7 +4279,7 @@ LRESULT CVscapView::OnUserGeneric (UINT wParam, LONG lParam)
 			//Ver 1.1
 			//DeleteFile(m_newfile);
 			//MessageBox("File Creation Error. Unable to rename/copy file. The file may be opened by another application. Please use another filename.","Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(this->m_hWnd,IDS_STRING_FILECREATION4,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(m_hWnd,IDS_STRING_FILECREATION4,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			//Repeat this function until success
 			::PostMessage(hWndGlobal,WM_USER_GENERIC,0,0);
 			return 0;
@@ -4303,13 +4300,13 @@ LRESULT CVscapView::OnUserGeneric (UINT wParam, LONG lParam)
 			if (WinExec(launchPath,SW_SHOW)!=0) {
 			} else {
 				//MessageBox("Error launching avi player!","Note",MB_OK | MB_ICONEXCLAMATION);
-				MessageOut(this->m_hWnd,IDS_STRING_ERRPLAYER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+				MessageOut(m_hWnd,IDS_STRING_ERRPLAYER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			}
 		} else if (launchPlayer == 2) {
 			if (Openlink(m_newfile)) {
 			} else {
 				//MessageBox("Error launching avi player!","Note",MB_OK | MB_ICONEXCLAMATION);
-				MessageOut(this->m_hWnd,IDS_STRING_ERRDEFAULTPLAYER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+				MessageOut(m_hWnd,IDS_STRING_ERRDEFAULTPLAYER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			}
 		} else if (launchPlayer == 3) {
 			CString AppDir=GetProgPath();
@@ -4320,7 +4317,7 @@ LRESULT CVscapView::OnUserGeneric (UINT wParam, LONG lParam)
 			if (WinExec(launchPath,SW_SHOW)!=0) {
 			} else {
 				//MessageBox("Error launching avi player!","Note",MB_OK | MB_ICONEXCLAMATION);
-				MessageOut(this->m_hWnd,IDS_STRING_ERRPLAYER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+				MessageOut(m_hWnd,IDS_STRING_ERRPLAYER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			}
 		}
 	} else {
@@ -4349,7 +4346,7 @@ LRESULT CVscapView::OnUserGeneric (UINT wParam, LONG lParam)
 		if (WinExec(launchPath,SW_SHOW) != 0) {
 		} else {
 			MessageBox("Error launching SWF Producer!","Note",MB_OK | MB_ICONEXCLAMATION);
-			//MessageOut(this->m_hWnd,IDS_STRING_ERRPRODUCER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+			//MessageOut(m_hWnd,IDS_STRING_ERRPRODUCER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 		}
 	}
 
@@ -4367,13 +4364,6 @@ BOOL CVscapView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwS
 	//ver 1.2
 	//InstallMyKeyHook(hWndGlobal,WM_USER_KEYSTART);
 	int val = SetAdjustHotKeys();
-
-	//ver 1.2
-	initTrayIconData(hWndGlobal);
-	TraySetIcon(IDR_MAINFRAMESMALL);
-	TraySetToolTip("CamStudio");
-	TraySetMenu(IDR_TRAYMENU);
-	TrayShow();
 
 	//ver 1.2
 	LoadSettings();
@@ -4886,7 +4876,7 @@ void CVscapView::OnOptionsRecordaudio()
 		//CString msgstr;
 		//msgstr.Format("Unable to detect audio input device. You need a sound card with microphone input.");
 		//MessageBox(msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
-		MessageOut(this->m_hWnd,IDS_STRING_NOINPUT3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		MessageOut(m_hWnd,IDS_STRING_NOINPUT3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 		return;
 	}
 
@@ -4901,48 +4891,40 @@ void CVscapView::OnUpdateOptionsRecordaudio(CCmdUI* pCmdUI)
 
 void CVscapView::OnOptionsAudioformat()
 {
-	// TODO: Add your command handler code here
-
 	if (waveInGetNumDevs() == 0) {
 		//CString msgstr;
 		//msgstr.Format("Unable to detect audio input device. You need a sound card with microphone input.");
 		//MessageBox(msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
 
-		MessageOut(this->m_hWnd,IDS_STRING_NOINPUT3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		MessageOut(m_hWnd,IDS_STRING_NOINPUT3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 		return;
-
 	}
 
 	AudioFormat aod;
 	aod.DoModal();
 
-	/*
-	if (interleaveUnit == MILLISECONDS) {
-	double interfloat = (((double) interleaveFactor) * ((double) frames_per_second))/1000.0;
-	int interint = (int) interfloat;
-	if (interint<=0)
-	interint = 1;
+	//if (interleaveUnit == MILLISECONDS) {
+	//	double interfloat = (((double) interleaveFactor) * ((double) frames_per_second))/1000.0;
+	//	int interint = (int) interfloat;
+	//	if (interint<=0)
+	//		interint = 1;
 
-	CString bstr;
-	bstr.Format("interleave Unit = %d",interint);
-	//MessageBox(bstr,"Note",MB_OK);
-
-	}
-	*/
+	//	CString bstr;
+	//	bstr.Format("interleave Unit = %d",interint);
+	//	//MessageBox(bstr,"Note",MB_OK);
+	//}
 }
 
 void CVscapView::OnOptionsKeyboardshortcuts()
 {
 	// TODO: Add your command handler code here
-	if (!keySCOpened)
-	{
+	if (!keySCOpened) {
 		keySCOpened = 1;
 		Keyshortcuts kscDlg;
 		kscDlg.DoModal();
 		keySCOpened = 0;
 
 		SetAdjustHotKeys();
-
 	}
 }
 
@@ -5743,50 +5725,7 @@ void CVscapView::DecideSaveSettings()
 		setPath=setDir+fileName;
 
 		DeleteFile(setPath);
-
 	}
-}
-
-LRESULT CVscapView::OnTrayNotify(WPARAM wParam, LPARAM lParam)
-{
-	UINT uID = (UINT) wParam;
-	if (uID != 1)
-		return 0;
-
-	UINT uMsg = (UINT) lParam;
-	CPoint pt;
-	switch (uMsg)
-	{
-	case WM_MOUSEMOVE:
-		GetCursorPos(&pt);
-		ClientToScreen(&pt);
-		OnTrayMouseMove(pt);
-		break;
-	case WM_LBUTTONDOWN:
-		GetCursorPos(&pt);
-		ClientToScreen(&pt);
-		OnTrayLButtonDown(pt);
-		break;
-	case WM_LBUTTONDBLCLK:
-		GetCursorPos(&pt);
-		ClientToScreen(&pt);
-		OnTrayLButtonDblClk(pt);
-		break;
-
-	case WM_RBUTTONDOWN:
-	case WM_CONTEXTMENU:
-		GetCursorPos(&pt);
-		//ClientToScreen(&pt);
-		OnTrayRButtonDown(pt);
-
-		break;
-	case WM_RBUTTONDBLCLK:
-		GetCursorPos(&pt);
-		ClientToScreen(&pt);
-		OnTrayRButtonDblClk(pt);
-		break;
-	}
-	return 0;
 }
 
 void CVscapView::OnOptionsRecordingthreadpriorityNormal()
@@ -5918,7 +5857,7 @@ void CVscapView::OnOptionsRecordaudioRecordfromspeakers()
 		//CString msgstr;
 		//msgstr.Format("Unable to detect audio output device. You need a sound card with speakers attached.");
 		//MessageBox(msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
-		MessageOut(this->m_hWnd,IDS_STRING_NOAUDIOOUTPUT,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		MessageOut(m_hWnd,IDS_STRING_NOAUDIOOUTPUT,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 
 		return;
 	}
@@ -5936,7 +5875,7 @@ void CVscapView::OnUpdateOptionsRecordaudioRecordfromspeakers(CCmdUI* pCmdUI)
 void CVscapView::OnOptionsRecordaudiomicrophone()
 {
 	if (waveInGetNumDevs() == 0) {
-		MessageOut(this->m_hWnd,IDS_STRING_NOINPUT1,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		MessageOut(m_hWnd,IDS_STRING_NOINPUT1,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 
 		return;
 
@@ -6191,7 +6130,7 @@ void CVscapView::OnOptionsSynchronization()
 {
 	// TODO: Add your command handler code here
 	if ((waveInGetNumDevs() == 0) || (waveOutGetNumDevs() == 0)) {
-		MessageOut(this->m_hWnd,IDS_STRING_NOINPUT3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		MessageOut(m_hWnd,IDS_STRING_NOINPUT3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 		return;
 	}
 
@@ -6210,7 +6149,7 @@ void CVscapView::OnToolsSwfproducer()
 	}
 	else {
 		//MessageBox("Error launching SWF Producer!","Note",MB_OK | MB_ICONEXCLAMATION);
-		MessageOut(this->m_hWnd,IDS_ERRPPRODUCER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		MessageOut(m_hWnd,IDS_ERRPPRODUCER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 	}
 }
 
@@ -6605,3 +6544,4 @@ void CVscapView::DisplayRecordingMsg(CDC & srcDC)
 	srcDC.SetTextColor(oldTextColor);
 	srcDC.SetBkColor(oldBkColor);
 }
+
