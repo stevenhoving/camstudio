@@ -615,7 +615,6 @@ BOOL configWaveOutManual()
 {
 	//int retv = ::MessageBox(NULL,"Please note : This step is unecessary if the Auto Search function already managed to detect the line for recording speakers output. You should use this only if the Auto Search function fails. Proceed?","Note",MB_YESNO | MB_ICONQUESTION);
 	int retv = MessageOut(NULL,IDS_STRING_UNNECESSARY ,IDS_STRING_NOTE,MB_YESNO | MB_ICONQUESTION);
-
 	if (retv == IDNO)
 		return FALSE;
 
