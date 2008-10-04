@@ -546,7 +546,7 @@ BOOL CPicture::ShowBitmapResource(CDC *pDC, const int BMPResource, CPoint LeftTo
 	}
 	else
 	{
-		TRACE0("ERROR: Can Not Find The Bitmap Resource\n");
+		TRACE("ERROR: Can Not Find The Bitmap Resource\n");
 		return(FALSE);
 	}
 

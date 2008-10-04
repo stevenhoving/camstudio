@@ -2,6 +2,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
+#include "c:\appdev\camstudio x\camstudio\cstudiolib\trayicon.h"
 #if !defined(AFX_MAINFRM_H__DBFD9E21_C771_4321_8322_1F45ED8D4A66__INCLUDED_)
 #define AFX_MAINFRM_H__DBFD9E21_C771_4321_8322_1F45ED8D4A66__INCLUDED_
 
@@ -62,8 +63,10 @@ protected:
 	afx_msg void OnViewtype();
 	//}}AFX_MSG
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
+	afx_msg LRESULT OnTrayNotify(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 private:
+	CTrayIcon m_TrayIcon;
 };
 
 /////////////////////////////////////////////////////////////////////////////
