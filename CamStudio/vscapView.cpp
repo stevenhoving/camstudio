@@ -1140,7 +1140,7 @@ int DestroyShiftWindow()
 
 LPBITMAPINFOHEADER captureScreenFrame(int left, int top, int width, int height, int tempDisableRect)
 {
-	TRACE("captureScreenFrame\n");
+	//TRACE("captureScreenFrame\n");
 	HDC hScreenDC = ::GetDC(NULL);
 
 	//if flashing rect
@@ -3726,6 +3726,15 @@ BEGIN_MESSAGE_MAP(CVscapView, CView)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_LANGUAGE_GERMAN, OnUpdateOptionsLanguageGerman)
 	ON_COMMAND(ID_OPTIONS_LANGUAGE_ENGLISH, OnOptionsLanguageEnglish)
 	ON_COMMAND(ID_OPTIONS_LANGUAGE_GERMAN, OnOptionsLanguageGerman)
+	ON_COMMAND(ID_REGION_WINDOW, OnRegionWindow)
+	ON_UPDATE_COMMAND_UI(ID_REGION_WINDOW, OnUpdateRegionWindow)
+	ON_COMMAND(ID_ANNOTATION_ADDSYSTEMTIMESTAMP, OnAnnotationAddsystemtimestamp)
+	ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDSYSTEMTIMESTAMP, OnUpdateAnnotationAddsystemtimestamp)
+	ON_COMMAND(ID_ANNOTATION_ADDCAPTION, OnAnnotationAddcaption)
+	ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDCAPTION, OnUpdateAnnotationAddcaption)
+	ON_COMMAND(ID_ANNOTATION_ADDWATERMARK, OnAnnotationAddwatermark)
+	ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDWATERMARK, OnUpdateAnnotationAddwatermark)
+	ON_COMMAND(ID_EFFECTS_OPTIONS, OnEffectsOptions)
 	//}}AFX_MSG_MAP
 	// Standard printing commands
 	ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
@@ -3738,15 +3747,6 @@ BEGIN_MESSAGE_MAP(CVscapView, CView)
 	ON_REGISTERED_MESSAGE (WM_USER_KEYSTART, OnKeyStart)
 	ON_MESSAGE(MM_WIM_DATA, OnMM_WIM_DATA)
 	ON_MESSAGE(WM_HOTKEY, OnHotKey)
-	ON_COMMAND(ID_REGION_WINDOW, OnRegionWindow)
-	ON_UPDATE_COMMAND_UI(ID_REGION_WINDOW, OnUpdateRegionWindow)
-	ON_COMMAND(ID_ANNOTATION_ADDSYSTEMTIMESTAMP, OnAnnotationAddsystemtimestamp)
-	ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDSYSTEMTIMESTAMP, OnUpdateAnnotationAddsystemtimestamp)
-	ON_COMMAND(ID_ANNOTATION_ADDCAPTION, OnAnnotationAddcaption)
-	ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDCAPTION, OnUpdateAnnotationAddcaption)
-	ON_COMMAND(ID_ANNOTATION_ADDWATERMARK, OnAnnotationAddwatermark)
-	ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDWATERMARK, OnUpdateAnnotationAddwatermark)
-	ON_COMMAND(ID_EFFECTS_OPTIONS, OnEffectsOptions)
 	ON_COMMAND(ID_HELP_CAMSTUDIOBLOG, OnHelpCamstudioblog)
 	ON_BN_CLICKED(IDC_BUTTONLINK, OnBnClickedButtonlink)
 	ON_WM_CAPTURECHANGED()
@@ -5858,7 +5858,6 @@ void CVscapView::OnOptionsRecordaudioRecordfromspeakers()
 		//msgstr.Format("Unable to detect audio output device. You need a sound card with speakers attached.");
 		//MessageBox(msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
 		MessageOut(m_hWnd,IDS_STRING_NOAUDIOOUTPUT,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
 		return;
 	}
 
