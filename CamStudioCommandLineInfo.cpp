@@ -3,6 +3,7 @@
 #include "stdafx.h"
 #include "vscap.h"
 #include "CamStudioCommandLineInfo.h"
+#include <tchar.h>
 
 CCamStudioCommandLineInfo::CCamStudioCommandLineInfo(void)
 : m_iCodecID(0)
@@ -62,7 +63,7 @@ void CCamStudioCommandLineInfo::ParseParam(const TCHAR* pszParam, BOOL bFlag, BO
 			break;
 		case 1:	// [-codec <codec ID>]
 			// integer argument
-			m_iCodecID = ::atoi(pszParam);
+			m_iCodecID = ::_tstoi(pszParam);
 			break;
 		case 2:	// [-outfile <filename>]
 			// string argument
@@ -70,7 +71,7 @@ void CCamStudioCommandLineInfo::ParseParam(const TCHAR* pszParam, BOOL bFlag, BO
 			break;
 		case 3:	// [-seconds <seconds>]
 			// integer argument
-			m_iSeconds = ::atoi(pszParam);
+			m_iSeconds = ::_tstoi(pszParam);
 			break;
 		}
 	}
