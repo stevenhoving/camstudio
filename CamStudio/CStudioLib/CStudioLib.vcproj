@@ -46,7 +46,7 @@
 				MinimalRebuild="false"
 				BasicRuntimeChecks="1"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="1"
 				WarningLevel="4"
 				DebugInformationFormat="4"
 			/>
@@ -109,7 +109,7 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="1"
 				WarningLevel="4"
 				DebugInformationFormat="3"
 			/>
