@@ -2,7 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "SoundBase.h"
 
 #pragma message("CamStudio\\fister\\SoundBase.cpp")
@@ -30,62 +30,5 @@ CSoundBase::CSoundBase()
 
 CSoundBase::~CSoundBase()
 {
-
 }
-
-#ifdef OBSOLETE_CODE
-void CSoundBase::Update()
-{
-	m_Format.nAvgBytesPerSec = m_Format.nSamplesPerSec*(m_Format.wBitsPerSample/8);
-	m_Format.nBlockAlign = m_Format.nChannels *(m_Format.wBitsPerSample/8);
-}
-
-void CSoundBase::SetBitsPerSample(int bps)
-{
-	m_Format.wBitsPerSample = bps;
-	Update();
-}
-
-int CSoundBase::GetBitsPerSample()
-{
-	return m_Format.wBitsPerSample;
-}
-
-void CSoundBase::SetSamplesPerSecond(int sps)
-{
-	m_Format.nSamplesPerSec = sps;
-	Update();
-}
-
-int CSoundBase::GetSamplesPerSecond()
-{
-	return m_Format.nSamplesPerSec;
-}
-
-void CSoundBase::SetNumberOfChannels(int nchan)
-{
-	m_Format.nChannels = nchan;
-	Update();
-}
-
-int CSoundBase::GetNumberOfChannels()
-{
-	return m_Format.nChannels;
-}
-
-void CSoundBase::SetBufferSize(int NumberOfSamples)
-{
-	m_BufferSize = NumberOfSamples;
-}
-
-int CSoundBase::GetBufferSize()
-{
-	return m_BufferSize;
-}
-
-WAVEFORMATEX* CSoundBase::GetFormat()
-{
-	return &m_Format;
-}
-#endif	// OBSOLETE_CODE
 
