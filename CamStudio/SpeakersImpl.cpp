@@ -1,9 +1,14 @@
+//
+/////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include <mmsystem.h>
+#include "vscap.h"
 #include "resource.h"
 #include "AutoSearchDialog.h"
 #include "soundfile.h"
 #include "Buffer.h"
+#include <mmsystem.h>
+
+#include "AudioMixer.h"
 
 extern void mciRecordOpen();
 extern void mciRecordStart();
@@ -25,24 +30,27 @@ extern CSoundFile * pSoundFile;
 
 //version 1.6
 // =============== Capture waveout ===================
-UINT m_nNumMixers;
-HMIXER m_hMixer;
+UINT m_nNumMixers = 0;
+
+CAudioMixer cAudioMixer;
+
 MIXERCAPS m_mxcaps;
-MIXERCONTROLDETAILS_BOOLEAN *m_SelectArray=NULL;
-MIXERCONTROLDETAILS_BOOLEAN *m_SelectArrayInitialState=NULL;
-BOOL usingWaveout=FALSE;
+MIXERCONTROLDETAILS_BOOLEAN *m_SelectArray = 0;
+MIXERCONTROLDETAILS_BOOLEAN *m_SelectArrayInitialState = 0;
+BOOL usingWaveout = FALSE;
 
 CString m_strDstLineName;
 CString m_strSelectControlName;
 CString m_strMicName;
 CString m_strVolumeControlName;
-DWORD m_dwMinimum, m_dwMaximum;
-int m_dwVolumeControlID=-1;
+DWORD m_dwMinimum;
+DWORD m_dwMaximum;
+int m_dwVolumeControlID = -1;
 
 //all thsee variables will be ready after WaveoutGetSelectControl()
-DWORD m_dwControlType; //MUX or MIXER ...we are searching for these
-DWORD m_dwSelectControlID; //the found controlID of the MUX/MIXER
-DWORD m_dwMultipleItems; //max source lines connected to the MUX/MIXER
+DWORD m_dwControlType;		//MUX or MIXER ...we are searching for these
+DWORD m_dwSelectControlID;	//the found controlID of the MUX/MIXER
+DWORD m_dwMultipleItems;	//max source lines connected to the MUX/MIXER
 DWORD m_dwIndex;
 
 int NumberOfMixerDevices=0;
@@ -88,6 +96,8 @@ BOOL SafeUseWaveout();
 BOOL SafeUseWaveoutOnLoad();
 BOOL WaveoutInternalAdjustVolume(long lineID);
 
+/////////////////////////////////////////////////////////////////////////////
+
 //Ver 1.6
 //Mixer Routines
 
@@ -129,9 +139,8 @@ BOOL WaveoutUninitialize()
 {
 	BOOL bSucc = TRUE;
 
-	if (m_hMixer != NULL) {
-		bSucc = ::mixerClose(m_hMixer) == MMSYSERR_NOERROR;
-		m_hMixer = NULL;
+	if (cAudioMixer.isValid()) {
+		bSucc = (MMSYSERR_NOERROR == cAudioMixer.Close());
 	}
 
 	//if (m_SelectArray) {
@@ -147,7 +156,8 @@ BOOL WaveoutInitialize()
 	// get the number of mixer devices present in the system
 	m_nNumMixers = ::mixerGetNumDevs();
 
-	m_hMixer = NULL;
+	if (cAudioMixer.isValid())
+		cAudioMixer.Close();
 	::ZeroMemory(&m_mxcaps, sizeof(MIXERCAPS));
 
 	m_strDstLineName.Empty();
@@ -162,11 +172,15 @@ BOOL WaveoutInitialize()
 	// open the first mixer
 	// A "mapper" for audio mixer devices does not currently exist.
 	if (m_nNumMixers != 0) {
-		if (::mixerOpen(&m_hMixer, SelectedMixer, (DWORD) hWndGlobal, NULL, MIXER_OBJECTF_MIXER | CALLBACK_WINDOW) != MMSYSERR_NOERROR)
+		if (MMSYSERR_NOERROR != cAudioMixer.Open(SelectedMixer, (DWORD) hWndGlobal, NULL, MIXER_OBJECTF_MIXER | CALLBACK_WINDOW)) {
+			OnError("WaveoutInitialize");
 			return FALSE;
+		}
 
-		if (::mixerGetDevCaps(reinterpret_cast<UINT>(m_hMixer), &m_mxcaps, sizeof(MIXERCAPS)) != MMSYSERR_NOERROR)
+		if (MMSYSERR_NOERROR != cAudioMixer.GetDevCaps(&m_mxcaps, sizeof(MIXERCAPS))) {
+			OnError("WaveoutInitialize");
 			return FALSE;
+		}
 	}
 
 	return TRUE;
@@ -174,39 +188,51 @@ BOOL WaveoutInitialize()
 
 //The value return by this function is important
 //it (is returned to the useWave function) and indicates whether a control and its source line is found
-BOOL WaveoutGetSelectControl(DWORD lineToSearch,CString namesearch,int feedback_skip_namesearch)
+BOOL WaveoutGetSelectControl(DWORD lineToSearch, CString namesearch, int feedback_skip_namesearch)
 {
-	if (m_hMixer == NULL)
+	if (!cAudioMixer.isValid()) {
+		TRACE("WaveoutGetSelectControl: NULL m_hMixer\n");
 		return FALSE;
+	}
 
 	// get dwLineID
 	MIXERLINE mxl;
+	::ZeroMemory(&mxl, sizeof(mxl));
 	mxl.cbStruct = sizeof(MIXERLINE);
 	mxl.dwComponentType = MIXERLINE_COMPONENTTYPE_DST_WAVEIN;
-	if (::mixerGetLineInfo(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_COMPONENTTYPE) != MMSYSERR_NOERROR)
+	MMRESULT mmResult = cAudioMixer.GetLineInfo(&mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_COMPONENTTYPE);
+	if (MMSYSERR_NOERROR != mmResult) {
+		OnError("WaveoutGetSelectControl: mixerGetLineInfo");
 		return FALSE;
+	}
 
 	// get dwControlID
-	MIXERCONTROL mxc;
-	MIXERLINECONTROLS mxlc;
 	m_dwControlType = MIXERCONTROL_CONTROLTYPE_MIXER;
+	MIXERCONTROL mxc;
+	::ZeroMemory(&mxc, sizeof(mxc));
+	mxc.cbStruct = sizeof(mxc);
+
+	MIXERLINECONTROLS mxlc;
+	::ZeroMemory(&mxlc, sizeof(mxlc));
 	mxlc.cbStruct = sizeof(MIXERLINECONTROLS);
 	mxlc.dwLineID = mxl.dwLineID;
 	mxlc.dwControlType = m_dwControlType;
 	mxlc.cControls = 1;
 	mxlc.cbmxctrl = sizeof(MIXERCONTROL);
 	mxlc.pamxctrl = &mxc;
-	if (::mixerGetLineControls(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE) != MMSYSERR_NOERROR) {
+	if (MMSYSERR_NOERROR != cAudioMixer.GetLineControls(&mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE)) {
 		// no mixer, try MUX
 		m_dwControlType = MIXERCONTROL_CONTROLTYPE_MUX;
-		mxlc.cbStruct = sizeof(MIXERLINECONTROLS);
+		//mxlc.cbStruct = sizeof(MIXERLINECONTROLS);
 		mxlc.dwLineID = mxl.dwLineID;
 		mxlc.dwControlType = m_dwControlType;
 		mxlc.cControls = 1;
 		mxlc.cbmxctrl = sizeof(MIXERCONTROL);
 		mxlc.pamxctrl = &mxc;
-		if (::mixerGetLineControls(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE) != MMSYSERR_NOERROR)
+		if (MMSYSERR_NOERROR != cAudioMixer.GetLineControls(&mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE)) {
+			OnError("WaveoutGetSelectControl: mixerGetLineControls");
 			return FALSE;
+		}
 	}
 
 	// store dwControlID, cMultipleItems
@@ -214,9 +240,10 @@ BOOL WaveoutGetSelectControl(DWORD lineToSearch,CString namesearch,int feedback_
 	m_strSelectControlName = mxc.szName;
 	m_dwSelectControlID = mxc.dwControlID;
 	m_dwMultipleItems = mxc.cMultipleItems;
-
-	if (m_dwMultipleItems == 0)
+	if (m_dwMultipleItems == 0) {
+		TRACE("WaveoutGetSelectControl: m_dwMultipleItems == 0\n");
 		return FALSE;
+	}
 
 	// get the index of the Select control
 	MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText = new MIXERCONTROLDETAILS_LISTTEXT[m_dwMultipleItems];
@@ -228,7 +255,7 @@ BOOL WaveoutGetSelectControl(DWORD lineToSearch,CString namesearch,int feedback_
 		mxcd.cMultipleItems = m_dwMultipleItems;
 		mxcd.cbDetails = sizeof(MIXERCONTROLDETAILS_LISTTEXT);
 		mxcd.paDetails = pmxcdSelectText;
-		if (::mixerGetControlDetails(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxcd, MIXER_OBJECTF_HMIXER | MIXER_GETCONTROLDETAILSF_LISTTEXT) == MMSYSERR_NOERROR) {
+		if (MMSYSERR_NOERROR == cAudioMixer.GetControlDetails(&mxcd, MIXER_OBJECTF_HMIXER | MIXER_GETCONTROLDETAILSF_LISTTEXT)) {
 			//// determine which controls the speaker feedback source line
 			//for (DWORD dwi = 0; dwi < m_dwMultipleItems; dwi++)
 			//{
@@ -249,14 +276,16 @@ BOOL WaveoutGetSelectControl(DWORD lineToSearch,CString namesearch,int feedback_
 		}
 
 		delete []pmxcdSelectText;
+	} else {
+		OnError("WaveoutGetSelectControl: pmxcdSelectText");
 	}
 
-	return m_dwIndex < m_dwMultipleItems;
+	return (m_dwIndex < m_dwMultipleItems);
 }
 
 BOOL WaveoutGetSelectValue(LONG &lVal,DWORD dwIndex)
 {
-	if (m_hMixer == NULL
+	if (!cAudioMixer.isValid()
 		|| m_dwMultipleItems == 0
 		|| dwIndex >= m_dwMultipleItems)
 		return FALSE;
@@ -272,7 +301,7 @@ BOOL WaveoutGetSelectValue(LONG &lVal,DWORD dwIndex)
 		mxcd.cMultipleItems = m_dwMultipleItems;
 		mxcd.cbDetails = sizeof(MIXERCONTROLDETAILS_BOOLEAN);
 		mxcd.paDetails = pmxcdSelectValue;
-		if (::mixerGetControlDetails(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxcd, MIXER_OBJECTF_HMIXER | MIXER_GETCONTROLDETAILSF_VALUE) == MMSYSERR_NOERROR) {
+		if (MMSYSERR_NOERROR == cAudioMixer.GetControlDetails(&mxcd, MIXER_OBJECTF_HMIXER | MIXER_GETCONTROLDETAILSF_VALUE)) {
 			lVal = pmxcdSelectValue[dwIndex].fValue;
 			bRetVal = TRUE;
 		}
@@ -285,7 +314,7 @@ BOOL WaveoutGetSelectValue(LONG &lVal,DWORD dwIndex)
 
 BOOL WaveoutSetSelectValue(LONG lVal,DWORD dwIndex,BOOL zero_others)
 {
-	if (m_hMixer == NULL
+	if (!cAudioMixer.isValid()
 		|| m_dwMultipleItems == 0
 		|| dwIndex >= m_dwMultipleItems)
 		return FALSE;
@@ -302,7 +331,7 @@ BOOL WaveoutSetSelectValue(LONG lVal,DWORD dwIndex,BOOL zero_others)
 		mxcd.cMultipleItems = m_dwMultipleItems;
 		mxcd.cbDetails = sizeof(MIXERCONTROLDETAILS_BOOLEAN);
 		mxcd.paDetails = pmxcdSelectValue;
-		if (::mixerGetControlDetails(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxcd, MIXER_OBJECTF_HMIXER | MIXER_GETCONTROLDETAILSF_VALUE) == MMSYSERR_NOERROR) {
+		if (MMSYSERR_NOERROR == cAudioMixer.GetControlDetails(&mxcd, MIXER_OBJECTF_HMIXER | MIXER_GETCONTROLDETAILSF_VALUE)) {
 			ASSERT(m_dwControlType == MIXERCONTROL_CONTROLTYPE_MIXER
 				|| m_dwControlType == MIXERCONTROL_CONTROLTYPE_MUX);
 
@@ -319,7 +348,7 @@ BOOL WaveoutSetSelectValue(LONG lVal,DWORD dwIndex,BOOL zero_others)
 			mxcd.cMultipleItems = m_dwMultipleItems;
 			mxcd.cbDetails = sizeof(MIXERCONTROLDETAILS_BOOLEAN);
 			mxcd.paDetails = pmxcdSelectValue;
-			if (::mixerSetControlDetails(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxcd, MIXER_OBJECTF_HMIXER | MIXER_SETCONTROLDETAILSF_VALUE) == MMSYSERR_NOERROR)
+			if ( MMSYSERR_NOERROR == cAudioMixer.SetControlDetails(&mxcd, MIXER_OBJECTF_HMIXER | MIXER_SETCONTROLDETAILSF_VALUE))
 				bRetVal = TRUE;
 		}
 
@@ -331,8 +360,7 @@ BOOL WaveoutSetSelectValue(LONG lVal,DWORD dwIndex,BOOL zero_others)
 
 BOOL WaveoutSetSelectArray(MIXERCONTROLDETAILS_BOOLEAN *pmxcdSelectValue)
 {
-	if (m_hMixer == NULL
-		|| m_dwMultipleItems == 0 )
+	if (!cAudioMixer.isValid() || m_dwMultipleItems == 0 )
 		return FALSE;
 
 	BOOL bRetVal = FALSE;
@@ -349,7 +377,7 @@ BOOL WaveoutSetSelectArray(MIXERCONTROLDETAILS_BOOLEAN *pmxcdSelectValue)
 			mxcd.cMultipleItems = m_dwMultipleItems;
 			mxcd.cbDetails = sizeof(MIXERCONTROLDETAILS_BOOLEAN);
 			mxcd.paDetails = pmxcdSelectValue;
-			if (::mixerSetControlDetails(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxcd, MIXER_OBJECTF_HMIXER | MIXER_SETCONTROLDETAILSF_VALUE)
+			if (cAudioMixer.SetControlDetails(&mxcd, MIXER_OBJECTF_HMIXER | MIXER_SETCONTROLDETAILSF_VALUE)
 				== MMSYSERR_NOERROR)
 				bRetVal = TRUE;
 		}
@@ -373,14 +401,15 @@ BOOL finalRestoreMMMode()
 		// ***************************************
 		// get the Control ID, index and the names
 		// ***************************************
-		if (m_hMixer == NULL)
+		if (!cAudioMixer.isValid())
 			return FALSE;
 
 		// get dwLineID
 		MIXERLINE mxl;
 		mxl.cbStruct = sizeof(MIXERLINE);
 		mxl.dwComponentType = MIXERLINE_COMPONENTTYPE_DST_WAVEIN;
-		if (::mixerGetLineInfo(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_COMPONENTTYPE) != MMSYSERR_NOERROR)
+		MMRESULT mmResult = cAudioMixer.GetLineInfo(&mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_COMPONENTTYPE);
+		if (MMSYSERR_NOERROR != mmResult)
 			return FALSE;
 
 		// get dwControlID
@@ -393,7 +422,7 @@ BOOL finalRestoreMMMode()
 		mxlc.cControls = 1;
 		mxlc.cbmxctrl = sizeof(MIXERCONTROL);
 		mxlc.pamxctrl = &mxc;
-		if (::mixerGetLineControls(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE) != MMSYSERR_NOERROR) {
+		if (cAudioMixer.GetLineControls(&mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE) != MMSYSERR_NOERROR) {
 			// no mixer, try MUX
 			m_dwControlType = MIXERCONTROL_CONTROLTYPE_MUX;
 			mxlc.cbStruct = sizeof(MIXERLINECONTROLS);
@@ -402,7 +431,7 @@ BOOL finalRestoreMMMode()
 			mxlc.cControls = 1;
 			mxlc.cbmxctrl = sizeof(MIXERCONTROL);
 			mxlc.pamxctrl = &mxc;
-			if (::mixerGetLineControls(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE) != MMSYSERR_NOERROR)
+			if (cAudioMixer.GetLineControls(&mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE) != MMSYSERR_NOERROR)
 				return FALSE;
 		}
 
@@ -418,7 +447,7 @@ BOOL finalRestoreMMMode()
 		// *******************
 		// Restore mixer array
 		// *******************
-		if (m_hMixer == NULL || m_dwMultipleItems == 0 ) return FALSE;
+		if (!cAudioMixer.isValid() || m_dwMultipleItems == 0 ) return FALSE;
 
 		BOOL bRetVal = FALSE;
 
@@ -436,7 +465,7 @@ BOOL finalRestoreMMMode()
 				mxcd.cMultipleItems = m_dwMultipleItems;
 				mxcd.cbDetails = sizeof(MIXERCONTROLDETAILS_BOOLEAN);
 				mxcd.paDetails = pmxcdSelectValue;
-				if (::mixerSetControlDetails(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxcd, MIXER_OBJECTF_HMIXER | MIXER_SETCONTROLDETAILSF_VALUE) == MMSYSERR_NOERROR)
+				if (cAudioMixer.SetControlDetails(&mxcd, MIXER_OBJECTF_HMIXER | MIXER_SETCONTROLDETAILSF_VALUE) == MMSYSERR_NOERROR)
 					bRetVal = TRUE;
 			}
 		}
@@ -458,6 +487,7 @@ BOOL initialSaveMMMode()
 	//Safety code
 	if ((waveInGetNumDevs() == 0) || (waveOutGetNumDevs() == 0) || (mixerGetNumDevs() == 0)) {
 		//Do not proceed with mixer code unless soundcard with mic/speaker is detected
+		TRACE("initialSaveMMMode: no devices!\n");
 		return FALSE;
 	}
 
@@ -466,15 +496,21 @@ BOOL initialSaveMMMode()
 		// ***************************************
 		// get the Control ID, index and the names
 		// ***************************************
-		if (m_hMixer == NULL)
+		if (!cAudioMixer.isValid()) {
+			TRACE("initialSaveMMMode: WaveoutInitialize failed\n");
 			return FALSE;
+		}
 
 		// get dwLineID
 		MIXERLINE mxl;
+		::ZeroMemory(&mxl, sizeof(mxl));
 		mxl.cbStruct = sizeof(MIXERLINE);
 		mxl.dwComponentType = MIXERLINE_COMPONENTTYPE_DST_WAVEIN;
-		if (::mixerGetLineInfo(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_COMPONENTTYPE) != MMSYSERR_NOERROR)
+		MMRESULT mmResult = cAudioMixer.GetLineInfo(&mxl, (MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_COMPONENTTYPE));
+		if (MMSYSERR_NOERROR != mmResult) {
+			OnError("initialSaveMMMode: mixerGetLineInfo");
 			return FALSE;
+		}
 
 		// get dwControlID
 		MIXERCONTROL mxc;
@@ -486,7 +522,8 @@ BOOL initialSaveMMMode()
 		mxlc.cControls = 1;
 		mxlc.cbmxctrl = sizeof(MIXERCONTROL);
 		mxlc.pamxctrl = &mxc;
-		if (::mixerGetLineControls(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE) != MMSYSERR_NOERROR) {
+		mmResult = cAudioMixer.GetLineControls(&mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE);
+		if (MMSYSERR_NOERROR != mmResult) {
 			// no mixer, try MUX
 			m_dwControlType = MIXERCONTROL_CONTROLTYPE_MUX;
 			mxlc.cbStruct = sizeof(MIXERLINECONTROLS);
@@ -495,8 +532,11 @@ BOOL initialSaveMMMode()
 			mxlc.cControls = 1;
 			mxlc.cbmxctrl = sizeof(MIXERCONTROL);
 			mxlc.pamxctrl = &mxc;
-			if (::mixerGetLineControls(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE) != MMSYSERR_NOERROR)
+			mmResult = cAudioMixer.GetLineControls(&mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE);
+			if (MMSYSERR_NOERROR != mmResult) {
+				OnError("initialSaveMMMode: mixerGetLineControls");
 				return FALSE;
+			}
 		}
 
 		// store dwControlID, cMultipleItems
@@ -511,7 +551,7 @@ BOOL initialSaveMMMode()
 		// ****************
 		// Save mixer array
 		// ****************
-		if (m_hMixer == NULL || m_dwMultipleItems == 0)
+		if (!cAudioMixer.isValid() || m_dwMultipleItems == 0)
 			return FALSE;
 
 		BOOL bRetVal = FALSE;
@@ -525,7 +565,7 @@ BOOL initialSaveMMMode()
 			mxcd.cMultipleItems = m_dwMultipleItems;
 			mxcd.cbDetails = sizeof(MIXERCONTROLDETAILS_BOOLEAN);
 			mxcd.paDetails = pmxcdSelectValue;
-			if (::mixerGetControlDetails(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxcd, MIXER_OBJECTF_HMIXER | MIXER_GETCONTROLDETAILSF_VALUE) == MMSYSERR_NOERROR) {
+			if (MMSYSERR_NOERROR == cAudioMixer.GetControlDetails(&mxcd, MIXER_OBJECTF_HMIXER | MIXER_GETCONTROLDETAILSF_VALUE)) {
 				if (m_SelectArrayInitialState)
 					delete []m_SelectArrayInitialState;
 
@@ -571,7 +611,8 @@ BOOL WaveoutSearchSrcLine(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD li
 			MIXERLINE mxl;
 			mxl.cbStruct = sizeof(MIXERLINE);
 			mxl.dwLineID = pmxcdSelectText[dwi].dwParam1;
-			if (::mixerGetLineInfo(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_LINEID) == MMSYSERR_NOERROR) {
+			MMRESULT mmResult = cAudioMixer.GetLineInfo(&mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_LINEID);
+			if (MMSYSERR_NOERROR == mmResult) {
 				if ((mxl.dwComponentType == lineToSearch) || ((mxl.dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT) && (lineToSearch==MIXERLINE_COMPONENTTYPE_SRC_ANALOG))) {
 					//if match
 					//or if don't match, but we are searching for waveout, and that dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT
@@ -839,7 +880,7 @@ BOOL WaveoutInternalAdjustVolume(long lineID)
 	mxlc.cControls = 1;
 	mxlc.cbmxctrl = sizeof(MIXERCONTROL);
 	mxlc.pamxctrl = &mxc;
-	if (::mixerGetLineControls(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE) != MMSYSERR_NOERROR)
+	if (cAudioMixer.GetLineControls(&mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE) != MMSYSERR_NOERROR)
 		return FALSE;
 
 	// store dwControlID
@@ -859,7 +900,7 @@ BOOL WaveoutInternalAdjustVolume(long lineID)
 	mxcd.cMultipleItems = 0;
 	mxcd.cbDetails = sizeof(MIXERCONTROLDETAILS_UNSIGNED);
 	mxcd.paDetails = &mxcdVolume;
-	if (::mixerGetControlDetails(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxcd, MIXER_OBJECTF_HMIXER | MIXER_GETCONTROLDETAILSF_VALUE) != MMSYSERR_NOERROR)
+	if (MMSYSERR_NOERROR != cAudioMixer.GetControlDetails(&mxcd, MIXER_OBJECTF_HMIXER | MIXER_GETCONTROLDETAILSF_VALUE))
 		return FALSE;
 
 	long dwVal = mxcdVolume.dwValue;
@@ -884,7 +925,7 @@ BOOL WaveoutInternalAdjustVolume(long lineID)
 			mxcd.cMultipleItems = 0;
 			mxcd.cbDetails = sizeof(MIXERCONTROLDETAILS_UNSIGNED);
 			mxcd.paDetails = &mxcdVolume;
-			if (::mixerSetControlDetails(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxcd, MIXER_OBJECTF_HMIXER | MIXER_SETCONTROLDETAILSF_VALUE) != MMSYSERR_NOERROR)
+			if (cAudioMixer.SetControlDetails(&mxcd, MIXER_OBJECTF_HMIXER | MIXER_SETCONTROLDETAILSF_VALUE) != MMSYSERR_NOERROR)
 				return FALSE;
 		}
 	}
@@ -899,7 +940,7 @@ BOOL WaveoutGetVolumeControl()
 		return FALSE;
 	}
 
-	if (m_hMixer == NULL)
+	if (!cAudioMixer.isValid())
 		return FALSE;
 
 	// get dwLineID
@@ -907,7 +948,8 @@ BOOL WaveoutGetVolumeControl()
 
 	mxl.cbStruct = sizeof(MIXERLINE);
 	mxl.dwComponentType = MIXERLINE_COMPONENTTYPE_DST_WAVEIN;
-	if (::mixerGetLineInfo(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_COMPONENTTYPE) != MMSYSERR_NOERROR)
+	MMRESULT mmResult = cAudioMixer.GetLineInfo(&mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_COMPONENTTYPE);
+	if (MMSYSERR_NOERROR != mmResult)
 		return FALSE;
 
 	//got the CD audio volume instead of Steroes mix???? for line 7, feedback_line = 6, the source==6 ==> CD Audio
@@ -915,7 +957,8 @@ BOOL WaveoutGetVolumeControl()
 	mxl2.cbStruct = sizeof(MIXERLINE);
 	mxl2.dwLineID = feedback_lineInfo;
 
-	if (::mixerGetLineInfo(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxl2, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_LINEID) != MMSYSERR_NOERROR)
+	mmResult = cAudioMixer.GetLineInfo(&mxl2, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_LINEID);
+	if (MMSYSERR_NOERROR != mmResult)
 		return FALSE;
 
 	// get dwControlID
@@ -927,7 +970,7 @@ BOOL WaveoutGetVolumeControl()
 	mxlc.cControls = 1;
 	mxlc.cbmxctrl = sizeof(MIXERCONTROL);
 	mxlc.pamxctrl = &mxc;
-	if (::mixerGetLineControls(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE) != MMSYSERR_NOERROR)
+	if (cAudioMixer.GetLineControls(&mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE) != MMSYSERR_NOERROR)
 		return FALSE;
 
 	// store dwControlID
@@ -942,7 +985,7 @@ BOOL WaveoutGetVolumeControl()
 
 BOOL WaveoutGetVolume(DWORD &dwVal)
 {
-	if (m_hMixer == NULL)
+	if (!cAudioMixer.isValid())
 		return FALSE;
 
 	if (m_dwVolumeControlID == -1)
@@ -956,7 +999,7 @@ BOOL WaveoutGetVolume(DWORD &dwVal)
 	mxcd.cMultipleItems = 0;
 	mxcd.cbDetails = sizeof(MIXERCONTROLDETAILS_UNSIGNED);
 	mxcd.paDetails = &mxcdVolume;
-	if (::mixerGetControlDetails(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxcd, MIXER_OBJECTF_HMIXER | MIXER_GETCONTROLDETAILSF_VALUE) != MMSYSERR_NOERROR)
+	if (MMSYSERR_NOERROR != cAudioMixer.GetControlDetails(&mxcd, MIXER_OBJECTF_HMIXER | MIXER_GETCONTROLDETAILSF_VALUE))
 		return FALSE;
 
 	dwVal = mxcdVolume.dwValue;
@@ -966,8 +1009,9 @@ BOOL WaveoutGetVolume(DWORD &dwVal)
 
 BOOL WaveoutSetVolume(DWORD dwVal)
 {
-	if (m_hMixer == NULL)
+	if (!cAudioMixer.isValid()) {
 		return FALSE;
+	}
 
 	if (m_dwVolumeControlID == -1)
 		return FALSE;
@@ -980,7 +1024,7 @@ BOOL WaveoutSetVolume(DWORD dwVal)
 	mxcd.cMultipleItems = 0;
 	mxcd.cbDetails = sizeof(MIXERCONTROLDETAILS_UNSIGNED);
 	mxcd.paDetails = &mxcdVolume;
-	if (::mixerSetControlDetails(reinterpret_cast<HMIXEROBJ>(m_hMixer), &mxcd, MIXER_OBJECTF_HMIXER | MIXER_SETCONTROLDETAILSF_VALUE) != MMSYSERR_NOERROR)
+	if (cAudioMixer.SetControlDetails(&mxcd, MIXER_OBJECTF_HMIXER | MIXER_SETCONTROLDETAILSF_VALUE) != MMSYSERR_NOERROR)
 		return FALSE;
 
 	return TRUE;
@@ -991,7 +1035,7 @@ BOOL WaveoutVolumeInitialize()
 	// get the number of mixer devices present in the system
 	m_nNumMixers = ::mixerGetNumDevs();
 
-	m_hMixer = NULL;
+	cAudioMixer.Close();
 	::ZeroMemory(&m_mxcaps, sizeof(MIXERCAPS));
 
 	m_strVolumeControlName.Empty();
@@ -1000,10 +1044,10 @@ BOOL WaveoutVolumeInitialize()
 	// open the first mixer
 	// A "mapper" for audio mixer devices does not currently exist.
 	if (m_nNumMixers != 0) {
-		if (::mixerOpen(&m_hMixer, SelectedMixer, (DWORD) hWndGlobal, NULL, MIXER_OBJECTF_MIXER | CALLBACK_WINDOW) != MMSYSERR_NOERROR)
+		if (MMSYSERR_NOERROR != cAudioMixer.Open(SelectedMixer, (DWORD) hWndGlobal, NULL, MIXER_OBJECTF_MIXER | CALLBACK_WINDOW))
 			return FALSE;
 
-		if (::mixerGetDevCaps(reinterpret_cast<UINT>(m_hMixer), &m_mxcaps, sizeof(MIXERCAPS)) != MMSYSERR_NOERROR)
+		if (MMSYSERR_NOERROR != cAudioMixer.GetDevCaps(&m_mxcaps, sizeof(MIXERCAPS)))
 			return FALSE;
 	}
 
@@ -1012,13 +1056,7 @@ BOOL WaveoutVolumeInitialize()
 
 BOOL WaveoutVolumeUninitialize()
 {
-	BOOL bSucc = TRUE;
-
-	if (m_hMixer != NULL) {
-		bSucc = ::mixerClose(m_hMixer) == MMSYSERR_NOERROR;
-		m_hMixer = NULL;
-	}
-
+	BOOL bSucc = cAudioMixer.isValid() && (MMSYSERR_NOERROR == cAudioMixer.Close());
 	return bSucc;
 }
 
