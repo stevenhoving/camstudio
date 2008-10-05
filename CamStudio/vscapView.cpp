@@ -1739,36 +1739,32 @@ void DataFromSoundIn(CBuffer* buffer)
 //Alloc Maximum Size for Save Format pwfx
 void AllocCompressFormat()
 {
-	int initial_audiosetup=1;
-
-	if (pwfx) {
-		initial_audiosetup=0;
+	int initial_audiosetup = (pwfx) ? 0 : 1;
+	if (!initial_audiosetup) {
 		//Do nothing....already allocated
-	} else {
-		MMRESULT mmresult = acmMetrics(NULL, ACM_METRIC_MAX_SIZE_FORMAT, &cbwfx);
-		if (MMSYSERR_NOERROR != mmresult) {
-			//CString msgstr;
-			//msgstr.Format("Metrics failed mmresult=%u!", mmresult);
-			//::MessageBox(NULL,msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
-
-			MessageOutINT(NULL,IDS_STRING_METRICSFAILED, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,mmresult);
-
-			return;
-		}
-
-		pwfx = (LPWAVEFORMATEX)GlobalAllocPtr(GHND, cbwfx);
-		if (NULL == pwfx) {
-			//CString msgstr;
-			//msgstr.Format("GlobalAllocPtr(%lu) failed!", cbwfx);
-			//::MessageBox(NULL,msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
-
-			MessageOut(NULL,IDS_STRING_GALLOC,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
-			return;
-		}
-
-		initial_audiosetup=1;
+		return;
 	}
+	MMRESULT mmresult = acmMetrics(NULL, ACM_METRIC_MAX_SIZE_FORMAT, &cbwfx);
+	if (MMSYSERR_NOERROR != mmresult) {
+		//CString msgstr;
+		//msgstr.Format("Metrics failed mmresult=%u!", mmresult);
+		//::MessageBox(NULL,msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
+
+		MessageOutINT(NULL,IDS_STRING_METRICSFAILED, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,mmresult);
+		return;
+	}
+
+	pwfx = (LPWAVEFORMATEX)GlobalAllocPtr(GHND, cbwfx);
+	if (NULL == pwfx) {
+		//CString msgstr;
+		//msgstr.Format("GlobalAllocPtr(%lu) failed!", cbwfx);
+		//::MessageBox(NULL,msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
+
+		MessageOut(NULL,IDS_STRING_GALLOC,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		return;
+	}
+
+	initial_audiosetup = 1;
 }
 
 //Build Recording Format to m_Format
