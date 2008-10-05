@@ -1088,7 +1088,7 @@ int CreateShiftWindow()
 	maxyScreen = GetDeviceCaps(hScreenDC,VERTRES);
 	::ReleaseDC(NULL,hScreenDC);
 
-	hMouseCaptureWnd = CreateWindowEx(WS_EX_TOPMOST, "ShiftRegionWindow", "Title", WS_POPUP, 0, 0, maxxScreen, maxyScreen, NULL, NULL, hInstance, NULL);
+	hMouseCaptureWnd = ::CreateWindowEx(WS_EX_TOPMOST, "ShiftRegionWindow", "Title", WS_POPUP, 0, 0, maxxScreen, maxyScreen, NULL, NULL, hInstance, NULL);
 
 	return 0;
 }
