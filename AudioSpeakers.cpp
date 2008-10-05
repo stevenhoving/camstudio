@@ -95,7 +95,7 @@ BOOL AudioSpeakers::OnInitDialog()
 	DWORD volume = 0;
 
 	if (success) {
-		line.Format("%d", feedback_line + 1);
+		line.Format(_T("%d"), feedback_line + 1);
 		if (!useVolume(GETVOLUME, volume, TRUE)) {
 			success = false;
 		}
@@ -109,7 +109,7 @@ BOOL AudioSpeakers::OnInitDialog()
 	((CSliderCtrl *) (GetDlgItem(IDC_VOLUMESLIDER)))->EnableWindow(success);
 	((CStatic *) (GetDlgItem(IDC_STATICVOLUME)))->EnableWindow(success);
 	((CSliderCtrl *) (GetDlgItem(IDC_VOLUMESLIDER)))->SetPos(volume);
-	((CStatic *)(GetDlgItem(IDC_STATICINFO)))->SetWindowTextA(line);
+	((CStatic *)(GetDlgItem(IDC_STATICINFO)))->SetWindowText(line);
 	// END Get the line index
 
 	//Generate device list
@@ -156,7 +156,7 @@ void AudioSpeakers::OnVolume()
 		return;
 	}
 
-	char dirx[_MAX_PATH];
+	TCHAR dirx[_MAX_PATH];
 	GetWindowsDirectory(dirx, _MAX_PATH);
 	CString Windir(dirx);
 	//Test Windows\sndvol32.exe
@@ -206,8 +206,8 @@ void AudioSpeakers::OnVolume()
 
 	if (launchPath != "") { //launch Volume Control
 		//not sure
-		launchPath = launchPath + " /d ";
-		launchPath.AppendFormat("%d", (((CComboBox *)(GetDlgItem(IDC_SOUNDDEVICE)))->GetCurSel()));
+		launchPath = launchPath + _T(" /d ");
+		launchPath.AppendFormat(_T("%d"), (((CComboBox *)(GetDlgItem(IDC_SOUNDDEVICE)))->GetCurSel()));
 
 		if (WinExec(launchPath,SW_SHOW) != 0) {
 		} else {
