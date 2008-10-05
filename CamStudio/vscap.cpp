@@ -25,6 +25,12 @@ static char THIS_FILE[] = __FILE__;
 extern HWND hWndGlobal;
 static BOOL bClassRegistered = FALSE;
 
+/////////////////////////////////////////////////////////////////////////////
+// OnError
+// Windows Error handler
+// Gets the last windows error and then resets the error; gets the string
+// associated with the error and displays a messagebox of the error
+/////////////////////////////////////////////////////////////////////////////
 void OnError(LPTSTR lpszFunction)
 {
 	// Retrieve the system error message for the last-error code
@@ -32,9 +38,11 @@ void OnError(LPTSTR lpszFunction)
 	if (ERROR_SUCCESS == dwError) {
 		return;
 	}
+	TRACE("OnError: %s: %ud\n", lpszFunction, dwError);
+	::SetLastError(ERROR_SUCCESS);	// reset the error
 
-	LPVOID lpMsgBuf;
-	FormatMessage(
+	LPVOID lpMsgBuf = 0;
+	DWORD dwLen = ::FormatMessage(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER
 		| FORMAT_MESSAGE_FROM_SYSTEM
 		| FORMAT_MESSAGE_IGNORE_INSERTS,
@@ -44,14 +52,27 @@ void OnError(LPTSTR lpszFunction)
 		(LPTSTR) &lpMsgBuf,
 		0, NULL );
 
+	if (0 == dwLen) {
+		TRACE("OnError: FormatMessage error: %ud\n", ::GetLastError());
+		::SetLastError(ERROR_SUCCESS);	// reset the error
+		return;
+	}
 	// Display the error message and exit the process
 	LPVOID lpDisplayBuf = (LPVOID)::LocalAlloc(LMEM_ZEROINIT, (lstrlen((LPCTSTR)lpMsgBuf) + lstrlen((LPCTSTR)lpszFunction) + 40) * sizeof(TCHAR));
-	StringCchPrintf((LPTSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / sizeof(TCHAR), TEXT("%s failed with error %d: %s"), lpszFunction, dwError, lpMsgBuf);
-	::MessageBox(0, (LPCTSTR)lpDisplayBuf, TEXT("Error"), MB_OK);
+	if (!lpDisplayBuf) {
+		TRACE("OnError: LocalAlloc error: %ud\n", ::GetLastError());
+		::SetLastError(ERROR_SUCCESS);	// reset the error
+	}
+	HRESULT hr = StringCchPrintf((LPTSTR)lpDisplayBuf, ::LocalSize(lpDisplayBuf) / sizeof(TCHAR), TEXT("%s failed with error %d: %s"), lpszFunction, dwError, lpMsgBuf);
+	if (SUCCEEDED(hr)) {
+		::MessageBox(0, (LPCTSTR)lpDisplayBuf, TEXT("Error"), MB_OK);
+	} else {
+		TRACE("OnError: StringCchPrintf error: %ud\n", ::GetLastError());
+		::SetLastError(ERROR_SUCCESS);	// reset the error
+	}
 
 	::LocalFree(lpMsgBuf);
 	::LocalFree(lpDisplayBuf);
-	::SetLastError(ERROR_SUCCESS);	// reset the error
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -90,6 +111,7 @@ CVscapApp theApp;
 
 BOOL CVscapApp::InitInstance()
 {
+	OnError("CVscapApp::InitInstance");
 	AfxEnableControlContainer();
 
 	// Standard initialization
