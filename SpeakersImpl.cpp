@@ -137,17 +137,7 @@ BOOL configWaveOut()
 
 BOOL WaveoutUninitialize()
 {
-	BOOL bSucc = TRUE;
-
-	if (cAudioMixer.isValid()) {
-		bSucc = (MMSYSERR_NOERROR == cAudioMixer.Close());
-	}
-
-	//if (m_SelectArray) {
-	// delete []m_SelectArray;
-	// m_SelectArray=NULL;
-	//}
-
+	BOOL bSucc = (cAudioMixer.isValid()) ? (MMSYSERR_NOERROR == cAudioMixer.Close()) : TRUE; 
 	return bSucc;
 }
 
