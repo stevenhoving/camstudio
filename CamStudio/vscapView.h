@@ -170,7 +170,6 @@ public:
 	afx_msg void OnHelpCamstudioblog();
 	afx_msg void OnBnClickedButtonlink();
 	DECLARE_EVENTSINK_MAP()
-	void ClickLabel1();
 private:
 	CVideoWnd m_vanWnd;
 	void DisplayRecordingStatistics(CDC & srcDC);
