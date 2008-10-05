@@ -239,6 +239,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\AudioMixer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AudioSpeakers.cpp"
 				>
 			</File>
@@ -1043,6 +1047,10 @@
 			</File>
 			<File
 				RelativePath="AudioFormat.h"
+				>
+			</File>
+			<File
+				RelativePath=".\AudioMixer.h"
 				>
 			</File>
 			<File
