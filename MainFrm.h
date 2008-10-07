@@ -2,15 +2,13 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#include "c:\appdev\camstudio x\camstudio\cstudiolib\trayicon.h"
 #if !defined(AFX_MAINFRM_H__DBFD9E21_C771_4321_8322_1F45ED8D4A66__INCLUDED_)
 #define AFX_MAINFRM_H__DBFD9E21_C771_4321_8322_1F45ED8D4A66__INCLUDED_
 
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
-
-//#include "afxwin.h"
+#include "TrayIcon.h"
 
 class CMainFrame : public CFrameWnd
 {
