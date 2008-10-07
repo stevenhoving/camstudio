@@ -8,6 +8,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "afxwin.h"
+
 /////////////////////////////////////////////////////////////////////////////
 // AudioFormat dialog
 
@@ -56,6 +58,33 @@ protected:
 	afx_msg void OnHelp();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+private:
+	void AllocLocalCompressFormat();
+	void BuildLocalRecordingFormat();
+	void SuggestLocalCompressFormat();
+	BOOL GetFormatDescription(LPWAVEFORMATEX pwformat, LPTSTR pszFormatTag, LPTSTR pszFormat);
+
+	LPWAVEFORMATEX m_pwfx;
+	DWORD m_cbwfx;
+	int m_iAudioBitsPerSample;
+	int m_iAudioNumChannels;
+	int m_iAudioSamplesPerSeconds;
+	BOOL m_bAudioCompression;
+	WAVEFORMATEX m_FormatLocal;
+	int m_iNumFormat;
+	DWORD m_formatmap[15];
+	int m_iNumDevice;
+	UINT m_devicemap[15];
+	CEdit m_ctrlEditFactor;
+	CButton m_ctrlButtonInterleave;
+	CButton m_ctrlButtonInterleaveFrames;
+	CButton m_ctrlButtonInterleaveSeconds;
+	CComboBox m_ctrlCBRecordFormat;
+	CComboBox m_ctrlCBInputDevice;
+	CButton m_ctrlButtonSystemRecord;
+	CEdit m_ctrlEditCompressedFormatTag;
+	CEdit m_ctrlEditCompressedFormat;
+	CButton m_ctrlButtonChooseCompressedFormat;
 };
 
 //{{AFX_INSERT_LOCATION}}
