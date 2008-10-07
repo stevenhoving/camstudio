@@ -142,6 +142,7 @@
 #define IDC_Y                           1017
 #define IDC_STATIC_HALFSIZE             1018
 #define IDC_CHOOSE                      1019
+#define IDC_CHOOSE_COMPRESSED_FORMAT    1019
 #define IDC_COMPRESSEDFORMATTAG         1020
 #define IDC_COMPRESSEDFORMAT            1021
 #define IDC_IFACTOR                     1022
@@ -561,7 +562,7 @@
 #define IDS_RESTARTAPP                  61572
 
 // Next default values for new objects
-//
+// 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
