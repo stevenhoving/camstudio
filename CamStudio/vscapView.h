@@ -88,6 +88,7 @@ protected:
 	afx_msg void OnOptionsRecordaudio();
 	afx_msg void OnUpdateOptionsRecordaudio(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsAudioformat();
+	afx_msg void OnOptionsAudiospeakers();
 	afx_msg void OnHelpFaq();
 	afx_msg void OnOptionsKeyboardshortcuts();
 	afx_msg void OnOptionsProgramoptionsSavesettingsonexit();
