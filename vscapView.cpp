@@ -37,8 +37,8 @@
 #include "hookkey\hookkey.h"
 
 #include "Buffer.h"
-#include "CStudioLib.h"
-#include "TrayIcon.h"
+#include "cstudiolib/CStudioLib.h"
+#include "cstudiolib/TrayIcon.h"
 #include "AudioSpeakers.h"
 
 #include <windowsx.h>
@@ -3665,6 +3665,7 @@ BEGIN_MESSAGE_MAP(CVscapView, CView)
 	ON_COMMAND(ID_OPTIONS_RECORDAUDIO, OnOptionsRecordaudio)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDAUDIO, OnUpdateOptionsRecordaudio)
 	ON_COMMAND(ID_OPTIONS_AUDIOFORMAT, OnOptionsAudioformat)
+	ON_COMMAND(ID_OPTIONS_AUDIOSPEAKERS, OnOptionsAudiospeakers)
 	ON_COMMAND(ID_HELP_FAQ, OnHelpFaq)
 	ON_COMMAND(ID_OPTIONS_KEYBOARDSHORTCUTS, OnOptionsKeyboardshortcuts)
 	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_SAVESETTINGSONEXIT, OnOptionsProgramoptionsSavesettingsonexit)
@@ -4437,7 +4438,7 @@ void CVscapView::OnRecord()
 	} else if (MouseCaptureMode==3) {
 		// window
 		AfxMessageBox("Click on Window to be captured");
-		SetCapture();
+		//SetCapture();
 	}
 }
 
@@ -4909,6 +4910,17 @@ void CVscapView::OnOptionsAudioformat()
 	//	bstr.Format("interleave Unit = %d",interint);
 	//	//MessageBox(bstr,"Note",MB_OK);
 	//}
+}
+
+void CVscapView::OnOptionsAudiospeakers()
+{
+	if (waveOutGetNumDevs() == 0)
+	{
+		MessageOut(m_hWnd, IDS_STRING_NOAUDIOOUTPUT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+	}
+
+	AudioSpeakers aos;
+	aos.DoModal();
 }
 
 void CVscapView::OnOptionsKeyboardshortcuts()
