@@ -1,4 +1,4 @@
-// RecorderView.h : interface of the CVscapView class
+// RecorderView.h : interface of the CRecorderView class
 //
 /////////////////////////////////////////////////////////////////////////////
 #if !defined(AFX_VSCAPVIEW_H__DCC4865E_3B37_402E_AC1B_C8ABF4519F51__INCLUDED_)
@@ -10,15 +10,15 @@
 
 #include "VideoWnd.h"	// for CVideoWnd
 
-class CVscapView : public CView
+class CRecorderView : public CView
 {
 protected: // create from serialization only
-	CVscapView();
-	DECLARE_DYNCREATE(CVscapView)
+	CRecorderView();
+	DECLARE_DYNCREATE(CRecorderView)
 
 // Attributes
 public:
-	CVscapDoc* GetDocument();
+	CRecorderDoc* GetDocument();
 	void SaveSettings();
 	void LoadSettings();
 	void DecideSaveSettings();
@@ -28,7 +28,7 @@ public:
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CVscapView)
+	//{{AFX_VIRTUAL(CRecorderView)
 	public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
@@ -41,7 +41,7 @@ public:
 
 // Implementation
 public:
-	virtual ~CVscapView();
+	virtual ~CRecorderView();
 	BOOL Openlink (CString);
 	BOOL OpenUsingShellExecute (CString);
 	LONG GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata);
@@ -56,7 +56,7 @@ protected:
 
 // Generated message map functions
 protected:
-	//{{AFX_MSG(CVscapView)
+	//{{AFX_MSG(CRecorderView)
 	afx_msg void OnRegionRubber();
 	afx_msg void OnRegionPanregion();
 	afx_msg void OnPaint();
@@ -179,8 +179,8 @@ private:
 };
 
 #ifndef _DEBUG  // debug version in vscapView.cpp
-inline CVscapDoc* CVscapView::GetDocument()
-   { return (CVscapDoc*)m_pDocument; }
+inline CRecorderDoc* CRecorderView::GetDocument()
+   { return (CRecorderDoc*)m_pDocument; }
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
