@@ -722,6 +722,28 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\RecorderView.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="ResizeDialog.cpp"
 				>
 				<FileConfiguration
@@ -1015,28 +1037,6 @@
 				RelativePath="vscap.rc"
 				>
 			</File>
-			<File
-				RelativePath="vscapView.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -1147,6 +1147,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RecorderView.h"
+				>
+			</File>
+			<File
 				RelativePath="ResizeDialog.h"
 				>
 			</File>
@@ -1200,10 +1204,6 @@
 			</File>
 			<File
 				RelativePath="VideoWnd.h"
-				>
-			</File>
-			<File
-				RelativePath="vscapView.h"
 				>
 			</File>
 		</Filter>
