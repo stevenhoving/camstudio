@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "vscap.h"
+#include "Recorder.h"
 #include "SyncDialog.h"
 
 #ifdef _DEBUG

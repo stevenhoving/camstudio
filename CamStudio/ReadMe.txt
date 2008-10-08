@@ -9,14 +9,14 @@ but is also a starting point for writing your application.
 This file contains a summary of what you will find in each of the files that
 make up your vscap application.
 
-vscap.h
+Recorder.h
     This is the main header file for the application.  It includes other
     project specific headers (including Resource.h) and declares the
-    CVscapApp application class.
+    CRecorderApp application class.
 
 vscap.cpp
     This is the main application source file that contains the application
-    class CVscapApp.
+    class CRecorderApp.
 
 vscap.rc
     This is a listing of all of the Microsoft Windows resources that the
