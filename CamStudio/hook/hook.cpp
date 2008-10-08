@@ -1,7 +1,3 @@
-// MouseHook.cpp : Defines the entry point for the DLL application.
-//
-
-
 #include "stdafx.h"
 #define _COMPILING_44E531B1_14D3_11d5_A025_006067718D04
 #include "Hook.h"
@@ -26,74 +22,84 @@ static LRESULT CALLBACK hookproc(UINT nCode, WPARAM wParam, LPARAM lParam);
 
 BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD  Reason, LPVOID Reserved)
 {
-	switch(Reason)
-	{ /* reason */
-	case DLL_PROCESS_ATTACH:
-		hInst = hInstance;
-		WM_USER_RECORDINTERRUPTED = RegisterWindowMessage(WM_USER_RECORDINTERRUPTED_MSG);
-		WM_USER_SAVECURSOR = RegisterWindowMessage(WM_USER_SAVECURSOR_MSG);
-		WM_USER_GENERIC = RegisterWindowMessage(WM_USER_GENERIC_MSG);
-		WM_USER_RECORDSTART = RegisterWindowMessage(WM_USER_RECORDSTART_MSG);
-		return TRUE;
-	case DLL_PROCESS_DETACH:
-		if (hWndServer != NULL)
-			UninstallMyHook(hWndServer);
-		return TRUE;
-	} /* reason */
+	switch (Reason)
+	{
+		case DLL_PROCESS_ATTACH:
+			hInst = hInstance;
+			WM_USER_RECORDINTERRUPTED = RegisterWindowMessage(WM_USER_RECORDINTERRUPTED_MSG);
+			WM_USER_SAVECURSOR = RegisterWindowMessage(WM_USER_SAVECURSOR_MSG);
+			WM_USER_GENERIC = RegisterWindowMessage(WM_USER_GENERIC_MSG);
+			WM_USER_RECORDSTART = RegisterWindowMessage(WM_USER_RECORDSTART_MSG);
+			return TRUE;
+		case DLL_PROCESS_DETACH:
+			if (hWndServer != NULL)
+			{
+				UninstallMyHook(hWndServer);
+			}
+
+			return TRUE;
+	}
+
 	return TRUE;
 }
 
 __declspec(dllexport) BOOL InstallMyHook(HWND hWnd, UINT message_to_call)
 {
-	if (hWndServer != NULL) {
-		return FALSE; // already hooked!
+	if (hWndServer != NULL)
+	{
+		return FALSE;
 	}
 
 	hook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)hookproc, hInst, 0);
-	if (hook != NULL) {
-		/* success */
+	if (hook != NULL)
+	{
+		// Success
 		hWndServer = hWnd;
 		nMsg = message_to_call;
 		return TRUE;
 	}
 
-	return FALSE; // failed to set hook
-} // setMyHook
+	return FALSE; // Failed to set hook
+}
 
 __declspec(dllexport) BOOL UninstallMyHook(HWND hWnd)
 {
-	if (hWnd != hWndServer || hWnd == NULL) {
+	if (hWnd != hWndServer || hWnd == NULL)
+	{
 		return FALSE;
 	}
 
 	BOOL unhooked = UnhookWindowsHookEx(hook);
 	if (unhooked)
+	{
 		hWndServer = NULL;
+	}
+
 	return unhooked;
 }
 
 static LRESULT CALLBACK hookproc(UINT nCode, WPARAM wParam, LPARAM lParam)
 {
-	if (nCode < 0) {
-		/* pass it on */
+	if (nCode < 0)
+	{
+		// Pass it on
 		CallNextHookEx(hook, nCode, wParam, lParam);
 		return 0;
 	}
 
-	//ver 1.2
+	// Version 1.2
 	LPMSG msg = (LPMSG)lParam;
-	if (msg->message == WM_MOUSEMOVE
-		|| msg->message == WM_NCMOUSEMOVE
-		|| msg->message == WM_LBUTTONDOWN
-		|| (msg->message == WM_LBUTTONUP)) {
-		unsigned long currentKeyMouseTime = timeGetTime();
-		unsigned long difftime = currentKeyMouseTime - oldKeyMouseTime;
-		if (difftime > 20) {
-			//up to 50 frames per second
-			HCURSOR hcur= GetCursor();
-			PostMessage(hWndServer, WM_USER_SAVECURSOR, (unsigned int) hcur, msg->message);
-			oldKeyMouseTime = currentKeyMouseTime;
-		}
+	if (msg->message == WM_MOUSEMOVE || msg->message == WM_NCMOUSEMOVE || msg->message == WM_LBUTTONDOWN || (msg->message == WM_LBUTTONUP))
+	{
+			unsigned long currentKeyMouseTime = timeGetTime();
+			unsigned long difftime = currentKeyMouseTime - oldKeyMouseTime;
+			if (difftime > 20)
+			{
+				// Up to 50 frames per second
+				HCURSOR hcur = GetCursor();
+				PostMessage(hWndServer, WM_USER_SAVECURSOR, (unsigned int)hcur, msg->message);
+				oldKeyMouseTime = currentKeyMouseTime;
+			}
 	}
 
 	return CallNextHookEx(hook, nCode, wParam, lParam);
