@@ -203,11 +203,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath="appicon1.ico"
-			>
-		</File>
-		<File
-			RelativePath="player.cpp"
+			RelativePath=".\player.cpp"
 			>
 			<FileConfiguration
 				Name="Release|Win32"
@@ -229,19 +225,19 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="player.h"
+			RelativePath=".\player.h"
 			>
 		</File>
 		<File
-			RelativePath="player.ico"
+			RelativePath=".\player.ico"
 			>
 		</File>
 		<File
-			RelativePath="player.rc"
+			RelativePath=".\player.rc"
 			>
 		</File>
 		<File
-			RelativePath="resource.h"
+			RelativePath=".\resource.h"
 			>
 		</File>
 	</Files>
