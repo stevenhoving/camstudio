@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "vscap.h"
+#include "Recorder.h"
 #include "LayoutList.h"
 #include "ListManager.h"
 

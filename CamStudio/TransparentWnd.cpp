@@ -14,7 +14,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "vscap.h"
+#include "Recorder.h"
 #include "TransparentWnd.h"
 #include "resource.h"
 
