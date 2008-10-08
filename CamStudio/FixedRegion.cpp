@@ -34,9 +34,6 @@ extern HWND hWnd_FixedRegion;
 
 extern RECT rcUse;
 
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
-extern int MessageOutINT(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val);
-
 extern int supportMouseDrag;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -95,7 +92,7 @@ void CFixedRegion::OnOK()
 		//CString msgstr;
 		//msgstr.Format("The width must be smaller than the screen width (%d)",maxxScreen);
 		//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-		MessageOutINT(this->m_hWnd,IDS_STRING_WIDTHSMALLER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,maxxScreen);
+		MessageOut(this->m_hWnd,IDS_STRING_WIDTHSMALLER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,maxxScreen);
 		return;
 	}
 
@@ -112,7 +109,7 @@ void CFixedRegion::OnOK()
 		//msgstr.Format("The height must be smaller than the screen height (%d)",maxyScreen);
 		//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 
-		MessageOutINT(this->m_hWnd,IDS_STRING_HEIGHTSMALLER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,maxyScreen);
+		MessageOut(this->m_hWnd,IDS_STRING_HEIGHTSMALLER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,maxyScreen);
 		return;
 	}
 
@@ -147,7 +144,7 @@ void CFixedRegion::OnOK()
 			//CString msgstr;
 			//msgstr.Format("The left value must be smaller than the screen width (%d)",maxxScreen);
 			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOutINT(this->m_hWnd,IDS_STRING_LEFTSMALLER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,maxxScreen);
+			MessageOut(this->m_hWnd,IDS_STRING_LEFTSMALLER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,maxxScreen);
 			return;
 
 		}
@@ -169,7 +166,7 @@ void CFixedRegion::OnOK()
 			//msgstr.Format("The top value must be smaller than the screen height (%d)",maxyScreen);
 			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 
-			MessageOutINT(this->m_hWnd,IDS_STRING_TOPSMALLER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,maxyScreen);
+			MessageOut(this->m_hWnd,IDS_STRING_TOPSMALLER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,maxyScreen);
 
 			return;
 
@@ -188,7 +185,7 @@ void CFixedRegion::OnOK()
 			//CString msgstr;
 			//msgstr.Format("Value exceed screen width. The width is adjusted to %d",width);
 			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOutINT(this->m_hWnd,IDS_STRING_VALUEEXCEEDWIDTH, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,width);
+			MessageOut(this->m_hWnd,IDS_STRING_VALUEEXCEEDWIDTH, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,width);
 
 		}
 
@@ -207,7 +204,7 @@ void CFixedRegion::OnOK()
 			//msgstr.Format("Value exceed screen height. The height is adjusted to %d",height);
 			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 
-			MessageOutINT(this->m_hWnd,IDS_STRING_VALUEEXCEEDHEIGHT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,height);
+			MessageOut(this->m_hWnd,IDS_STRING_VALUEEXCEEDHEIGHT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,height);
 
 		}
 

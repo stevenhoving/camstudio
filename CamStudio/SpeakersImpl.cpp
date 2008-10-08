@@ -22,9 +22,6 @@ extern int asdCreated;
 
 extern HWND hWndGlobal;
 
-extern int MessageOutINT(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val);
-extern int MessageOutINT2(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val1,long val2);
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 extern CString GetProgPath();
 extern CSoundFile * pSoundFile;
 
@@ -681,11 +678,11 @@ BOOL configWaveOutManual()
 		//anstr.Format("Testing line %d of %d. Did you hear a tone?",dwi+1,m_dwMultipleItems);
 		//int ret = ::MessageBox(hWndGlobal,anstr,"Analyzing",MB_YESNO | MB_ICONQUESTION);
 
-		int ret = MessageOutINT2(hWndGlobal,IDS_STRING_TESTINGLINE, IDS_STRING_ANALYZE, MB_YESNO | MB_ICONQUESTION, dwi+1,m_dwMultipleItems);
+		int ret = MessageOut(hWndGlobal,IDS_STRING_TESTINGLINE, IDS_STRING_ANALYZE, MB_YESNO | MB_ICONQUESTION, dwi+1,m_dwMultipleItems);
 		if (ret == IDYES) {
 			//anstr.Format("Line %d set for recording sound from speakers !",dwi+1);
 			//int ret = ::MessageBox(hWndGlobal,anstr,"Analyzing",MB_OK | MB_ICONEXCLAMATION);
-			int ret = MessageOutINT(hWndGlobal,IDS_STRING_SETTINGLINE, IDS_STRING_ANALYZE, MB_OK | MB_ICONEXCLAMATION, dwi+1);
+			int ret = MessageOut(hWndGlobal,IDS_STRING_SETTINGLINE, IDS_STRING_ANALYZE, MB_OK | MB_ICONEXCLAMATION, dwi+1);
 
 			feedback_line = dwi;
 			feedback_lineInfo = storedID[feedback_line]; //storedID s crated in the manual mode of useWaveout/useWave

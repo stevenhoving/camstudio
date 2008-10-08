@@ -63,13 +63,8 @@ extern CString g_layoutName;
 extern int keySCOpened;
 extern CString GetProgPath();
 
-extern void ErrMsg(char format[], ...);
-
 extern int currentLayout;
 
-extern int MessageOutINT(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val);
-extern int MessageOutINT2(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val1,long val2);
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 extern int SetAdjustHotKeys();
 
 /////////////////////////////////////////////////////////////////////////////

@@ -31,8 +31,6 @@ extern void BuildRecordingFormat();
 extern void AllocCompressFormat();
 extern CString GetProgPath();
 
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
