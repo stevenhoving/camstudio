@@ -11,7 +11,7 @@
 
 #include "MainFrm.h"
 #include "RecorderDoc.h"
-#include "vscapView.h"
+#include "RecorderView.h"
 #include "CamStudioCommandLineInfo.h"
 
 #include <strsafe.h>		// for StringCchPrintf

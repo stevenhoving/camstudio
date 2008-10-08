@@ -62,7 +62,7 @@ RecorderDoc.h, vscapDoc.cpp - the document
     add your special document data and to implement file saving and loading
     (via CVscapDoc::Serialize).
 
-vscapView.h, vscapView.cpp - the view of the document
+RecorderView.h, vscapView.cpp - the view of the document
     These files contain your CVscapView class.
     CVscapView objects are used to view CVscapDoc objects.
 
