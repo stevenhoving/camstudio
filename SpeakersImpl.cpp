@@ -1,7 +1,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include "vscap.h"
+#include "Recorder.h"
 #include "resource.h"
 #include "AutoSearchDialog.h"
 #include "soundfile.h"
