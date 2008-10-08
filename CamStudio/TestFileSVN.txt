@@ -1,4 +1,0 @@
-This is a test file for use with SVN oeprations.
-1. add
-2. rename
-3. delete
