@@ -14,6 +14,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include "vscap.h"
 #include "TransparentWnd.h"
 #include "resource.h"
 
@@ -41,14 +42,11 @@ extern HWND hMouseCaptureWnd;
 extern int tempPath_Access;
 extern CString specifieddir;
 
-extern void ErrMsg(char format[], ...);
 extern HANDLE Bitmap2Dib(HBITMAP, UINT);
 
 //extern CString GetTempPath();
 
 extern int AreWindowsEdited();
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
-
 HANDLE AllocMakeDib( int reduced_width, int reduced_height, UINT bits );
 
 long currentWndID = 0;

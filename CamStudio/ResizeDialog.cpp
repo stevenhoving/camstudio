@@ -11,8 +11,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern void ErrMsg(char format[], ...);
-
 /////////////////////////////////////////////////////////////////////////////
 // CResizeDialog dialog
 

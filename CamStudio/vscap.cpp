@@ -15,6 +15,7 @@
 #include "CamStudioCommandLineInfo.h"
 
 #include <strsafe.h>		// for StringCchPrintf
+#include "afxwin.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -73,6 +74,54 @@ void OnError(LPTSTR lpszFunction)
 
 	::LocalFree(lpMsgBuf);
 	::LocalFree(lpDisplayBuf);
+}
+
+void ErrMsg(char frmt[], ...)
+{
+	DWORD written;
+	char buf[5000];
+	va_list val;
+
+	va_start(val, frmt);
+	wvsprintf(buf, frmt, val);
+
+	const COORD _80x50 = {80,50};
+	static BOOL startup = (AllocConsole(), SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), _80x50));
+	WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buf, lstrlen(buf), &written, 0);
+}
+
+int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus)
+{
+	CString tstr("");
+	CString mstr("");
+	tstr.LoadString(strTitle);
+	mstr.LoadString(strMsg);
+
+	return ::MessageBox(hWnd,mstr,tstr,mbstatus);
+}
+
+int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus, long val)
+{
+	CString tstr("");
+	CString mstr("");
+	CString fstr("");
+	tstr.LoadString(strTitle);
+	mstr.LoadString(strMsg);
+	fstr.Format(mstr,val);
+
+	return ::MessageBox(hWnd,fstr,tstr,mbstatus);
+}
+
+int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus, long val1, long val2)
+{
+	CString tstr("");
+	CString mstr("");
+	CString fstr("");
+	tstr.LoadString(strTitle);
+	mstr.LoadString(strMsg);
+	fstr.Format(mstr,val1,val2);
+
+	return ::MessageBox(hWnd,fstr,tstr,mbstatus);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -214,9 +263,13 @@ public:
 	//afx_msg void OnBnClickedButtonlink();
 	DECLARE_EVENTSINK_MAP()
 	afx_msg void OnBnClickedButtonlink2();
+private:
+	CStatic m_ctrlStaticVersion;
+	CString m_strVersion;
 };
 
 CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
+, m_strVersion(_T("Version 2.6"))
 {
 	//{{AFX_DATA_INIT(CAboutDlg)
 	//}}AFX_DATA_INIT
@@ -227,6 +280,8 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CAboutDlg)
 	//}}AFX_DATA_MAP
+	DDX_Control(pDX, IDC_STATIC_VERSION, m_ctrlStaticVersion);
+	DDX_Text(pDX, IDC_STATIC_VERSION, m_strVersion);
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)

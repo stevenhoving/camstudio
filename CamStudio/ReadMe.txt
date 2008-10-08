@@ -93,31 +93,22 @@ don't do this, some of the UI elements of your application will remain in the
 language of the operating system.
 
 /////////////////////////////////////////////////////////////////////////////
-9/29/08 TFM:
+10/8/08
+Project build
+o	Renamed vscap project to "Recorder" and changed output file.
+o	Renamed play projects
+o	Include files should not contain a path. The project settings manage this;
+	(see project settings "Additional include directories".) There should not be
+	conflicts between "StdAfx.h" headers due to the standard search for include
+	files. Cross project includes imply a project and include dependency. An
+	advantage of this is the ability to freely move/rename project folders.
+o	change codec project debug output to debug folder; writing to the Windows
+	system32 folder is prohibited; developers make local change.
+o	fix cstudiolib release build precompiled header usage.
 
-Take note of these 2 preprocessor constants! They make many warnings go away!
-
-#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES		1
-#define _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES		1
-
-Still have to fix a few of the strxxx functions to get the replacement templates
-to trigger but the end result are the secure functions. Have to see what happens
-with UNICODE builds.
-
-10/1/09
-
-Produccer builds again! The fix is shift all the include files before the
-redeinition of the "new" to DEBUG_NEW. Additional changes were for window classes
-that cannot be global variables as they require a instance handle and the
-encapsulation of the propery dialog into the view class to have the property
-pages classes created properly.
-
-- added the testver.h file to set the WIN_VER value. Alter as needed as it
-may need to be extended to Vista and MSC_VER 1500.
-
-- more code layout changes; (It never ends!)
-
-- All the projects shoudl build in both release and debug more. SWF files
-shoudl be generated with audio and if you put the controll fodler in the
-output folder you should get a loadable web page with the video.
- 
+Code changes:
+o	removed unused hookkey header and message handler.
+o	removed unused global transparent window variable "CTransparentWnd* transWnd"
+o	moved general functions MessageOutXXX functions to WinApp; changed declarations
+	to common overload name.
+o	added/repair resource symbols and strings for CamStudio movie menu item (jard_y_dooku)

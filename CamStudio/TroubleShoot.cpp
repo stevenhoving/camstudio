@@ -13,7 +13,6 @@ static char THIS_FILE[] = __FILE__;
 
 extern int restrictVideoCodecs;
 extern int TroubleShootVal;
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 
 /////////////////////////////////////////////////////////////////////////////
 // TroubleShoot dialog

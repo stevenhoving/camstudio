@@ -13,7 +13,6 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 extern int recordstate;
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 
 int viewtype = 0;
 static HMENU hMenu = NULL;

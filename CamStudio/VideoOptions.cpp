@@ -50,9 +50,6 @@ extern int g_autoadjust;
 extern int g_valueadjust;
 extern void AutoSetRate(int val,int& framerate,int& delayms);
 
-extern int MessageOutINT(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val);
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
-
 /////////////////////////////////////////////////////////////////////////////
 // CVideoOptions dialog
 
@@ -142,7 +139,7 @@ void CVideoOptions::OnOK()
 		//sprintf(tempstr,"Key frames cannot be set for every %d frames. Please enter a value in the range 1 to 200.",own_keyFramesEvery);
 		//MessageBox(tempstr,"Note",MB_OK);
 
-		MessageOutINT(this->m_hWnd,IDS_STRING_KEYFRAMES1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,own_keyFramesEvery);
+		MessageOut(this->m_hWnd,IDS_STRING_KEYFRAMES1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,own_keyFramesEvery);
 
 		return;
 	}
@@ -152,7 +149,7 @@ void CVideoOptions::OnOK()
 		//sprintf(tempstr,"Playback Rate cannot be set to %d frames per second. Please enter a value in the range 1 to 200.",own_frames_per_second);
 		//MessageBox(tempstr,"Note",MB_OK);
 
-		MessageOutINT(this->m_hWnd,IDS_STRING_PLAYBACKRATE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,own_frames_per_second);
+		MessageOut(this->m_hWnd,IDS_STRING_PLAYBACKRATE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,own_frames_per_second);
 		return;
 	}
 

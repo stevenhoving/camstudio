@@ -12,13 +12,11 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern void ErrMsg(char format[], ...);
 extern int AreWindowsEdited();
 #define DEFAULT_PERIOD 30
 int g_refreshRate = 30;
 
 extern int versionOp;
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 
 /////////////////////////////////////////////////////////////////////////////
 // CVideoWnd

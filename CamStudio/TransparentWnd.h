@@ -14,6 +14,12 @@
 #if !defined(AFX_TRANSPARENTWND_H__INCLUDED_)
 #define AFX_TRANSPARENTWND_H__INCLUDED_
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#pragma message("TransparentWnd included")
+
 #include "LayeredWindowHelperST.h"
 #include "Picture.h"
 
@@ -27,10 +33,6 @@
 
 #define saveMethodNew 0
 #define saveMethodReplace 1
-
-#if _MSC_VER > 1000
-#pragma once
-#endif
 
 class CTransparentWnd : public CWnd
 {

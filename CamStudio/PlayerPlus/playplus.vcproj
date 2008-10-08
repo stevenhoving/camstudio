@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="playplus"
+	Name="PlayerPlus"
 	ProjectGUID="{76FA275B-EEF6-420B-A7C1-61CEDEE5EF0E}"
 	RootNamespace="playplus"
 	Keyword="MFCProj"

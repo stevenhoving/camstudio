@@ -153,7 +153,6 @@ protected:
 	afx_msg LRESULT OnRecordInterrupted (UINT wParam, LONG lParam);
 	afx_msg LRESULT OnSaveCursor (UINT wParam, LONG lParam);
 	afx_msg LRESULT OnUserGeneric	(UINT wParam, LONG lParam);
-	afx_msg LRESULT OnKeyStart	(UINT wParam, LONG lParam);
 	afx_msg LRESULT OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2);
 	afx_msg LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
