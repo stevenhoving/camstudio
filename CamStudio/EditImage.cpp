@@ -11,7 +11,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern void ErrMsg(char format[], ...);
 HCURSOR cursorCross_EI = NULL;
 HCURSOR cursorArrow_EI = NULL;
 

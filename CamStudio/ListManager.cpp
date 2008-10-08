@@ -12,8 +12,6 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-extern void ErrMsg(char format[], ...);
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

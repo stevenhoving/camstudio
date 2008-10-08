@@ -38,8 +38,6 @@ BEGIN_MESSAGE_MAP(CPresetTime, CDialog)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-extern void ErrMsg(char frmt[], ...);
-
 /////////////////////////////////////////////////////////////////////////////
 // CPresetTime message handlers
 

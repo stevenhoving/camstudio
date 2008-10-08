@@ -519,8 +519,8 @@ BEGIN
     CONTROL         189,IDC_STATIC,"Static",SS_BITMAP,7,13,163,53,WS_EX_DLGMODALFRAME
     DEFPUSHBUTTON   "OK",IDOK,178,15,49,15,WS_GROUP
     CTEXT           "CamStudio",IDC_STATIC,170,39,75,9,SS_NOPREFIX
-    CTEXT           "Version 2.5",IDC_STATIC,170,53,75,8
-    CTEXT           "CamStudio (c) 2001 - 2007  RenderSoft And Web Publishing",IDC_STATIC,7,78,238,13
+    CTEXT           "Version 2.5",IDC_STATIC_VERSION,170,53,75,8
+    CTEXT           "CamStudio ï¿½ 2001 - 2007  RenderSoft And Web Publishing",IDC_STATIC,7,78,238,13
     GROUPBOX        "",IDC_STATIC,7,112,238,70
     PUSHBUTTON      "http://www.camstudio.org",IDC_BUTTONLINK,22,136,214,14,BS_FLAT
     CTEXT           "Bugfixes and Additional Features Added By Nick The Geek",IDC_STATIC,15,89,223,8
@@ -1026,7 +1026,7 @@ BEGIN
             VALUE "CompanyName", "CamStudio Group"
             VALUE "FileDescription", "CamStudio Recorder"
             VALUE "FileVersion", "2.5.0.0"
-            VALUE "LegalCopyright", "Copyright © 2008 Contributors"
+            VALUE "LegalCopyright", "Copyright ï¿½ 2008 Contributors"
             VALUE "ProductName", "CamStudio Recorder"
             VALUE "ProductVersion", "2.5.0.0"
         END
@@ -2452,8 +2452,8 @@ BEGIN
     ID_ANNOTATION_ADDWATERMARK "Add a watermark to the recording"
     ID_EFFECTS_OPTIONS      "Set effects options"
     ID_HELP_CAMSTUDIOBLOG   "Visit the CamStudio blog"
-    ID_TOOLS_PLAYER         "Launch CamStudio Player"
-    ID_TOOLS_PLAYER2        "Launch CamStudio Player 2.0"
+    ID_TOOLS_PLAYER         "Launch CamStudio Movie Player"
+    ID_TOOLS_PLAYER2        "Launch CamStudio Movie Player 2.0"
 END
 
 #endif    // English (U.S.) resources

@@ -167,7 +167,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib odbc32.lib odbccp32.lib"
-				OutputFile="c:\windows\system\camcodec.dll"
+				OutputFile=".\Debug\camcodec.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				ModuleDefinitionFile=".\camcodec.def"

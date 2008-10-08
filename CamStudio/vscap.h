@@ -65,5 +65,9 @@ private:
 
 // general error handler
 void OnError(LPTSTR lpszFunction);
+extern void ErrMsg(char format[], ...);
+extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
+extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val);
+extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val1,long val2);
 
 #endif // !defined(AFX_VSCAP_H__CAB648E2_684F_4FF1_B574_9714ACAC6D57__INCLUDED_)

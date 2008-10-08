@@ -23,7 +23,6 @@ extern int maxxScreen;
 extern int maxyScreen;
 
 //ver 1.8
-void ErrMsg(char format[], ...);
 HCURSOR cursorMove = NULL;
 POINT startPoint;
 int m_type = 0;

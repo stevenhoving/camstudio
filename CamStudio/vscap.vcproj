@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="vscap"
+	Name="Recorder"
 	ProjectGUID="{1FFF3225-865D-4B14-A579-794547E26F79}"
 	RootNamespace="vscap"
 	Keyword="MFCProj"
@@ -50,7 +50,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(ProjectDir)fister&quot;;&quot;$(ProjectDir)CStudioLib&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(ProjectDir)fister&quot;;&quot;$(ProjectDir)CStudioLib&quot;;&quot;$(ProjectDir)\cximage\CxImage&quot;;&quot;$(ProjectDir)hook&quot;;&quot;$(ProjectDir)hookkey&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -145,7 +145,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(ProjectDir)fister&quot;;&quot;$(ProjectDir)CStudioLib&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(ProjectDir)fister&quot;;&quot;$(ProjectDir)CStudioLib&quot;;&quot;$(ProjectDir)\cximage\CxImage&quot;;&quot;$(ProjectDir)hook&quot;;&quot;$(ProjectDir)hookkey&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
@@ -156,6 +156,7 @@
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
+				ShowIncludes="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -171,7 +172,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib vfw32.lib msacm32.lib"
-				OutputFile=".\Debug/vscap.exe"
+				OutputFile=".\Debug/Recorder.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				IgnoreDefaultLibraryNames=""

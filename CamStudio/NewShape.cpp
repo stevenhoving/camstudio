@@ -29,10 +29,6 @@ extern int maxyScreen;
 extern CString GetProgPath();
 extern void AdjustShapeName(CString& shapeName);
 
-extern int MessageOutINT(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val);
-extern int MessageOutINT2(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val1,long val2);
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
-
 /////////////////////////////////////////////////////////////////////////////
 // CNewShape dialog
 
@@ -194,7 +190,7 @@ void CNewShape::OnOK()
 			//CString msgstr;
 			//msgstr.Format("Width cannot be larger than %d",maxxScreen);
 			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOutINT(NULL,IDS_STRINGWIDTHLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,maxxScreen);
+			MessageOut(NULL,IDS_STRINGWIDTHLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,maxxScreen);
 			m_newShapeWidth = oldWidth;
 			return;
 
@@ -215,7 +211,7 @@ void CNewShape::OnOK()
 			//msgstr.Format("Height cannot be larger than %d",maxyScreen);
 			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 
-			MessageOutINT(NULL,IDS_STRINGHEIGHTLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,maxyScreen);
+			MessageOut(NULL,IDS_STRINGHEIGHTLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,maxyScreen);
 			m_newShapeHeight = oldHeight;
 			return;
 

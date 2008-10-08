@@ -81,7 +81,6 @@ int key[6];
 int keySpecial[6][3];
 CString keyName[6];
 
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 int TestKeysOverlap(int& o1, int& o2);
 
 /////////////////////////////////////////////////////////////////////////////

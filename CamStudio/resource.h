@@ -204,6 +204,7 @@
 #define IDC_LABEL1                      1060
 #define IDC_NAME                        1061
 #define IDC_SHIFT2                      1061
+#define IDC_STATIC_VERSION              1061
 #define IDC_EDIT3                       1062
 #define IDC_CTRL3                       1062
 #define IDC_LABEL2                      1062
@@ -432,6 +433,10 @@
 #define ID_ANNOTATION_ADDWATERMARK      32917
 #define ID_EFFECTS_OPTIONS              32918
 #define ID_HELP_CAMSTUDIOBLOG           32919
+#define ID_TOOLS_CAMSTUDIOMOVIEPLAYER   32920
+#define ID_TOOLS_CAMSTUDIOMOVIEPLAYER2  32921
+#define ID_TOOLS_PLAYER                 32922
+#define ID_TOOLS_PLAYER2                32923
 #define IDS_STRING_NOTE                 61446
 #define IDS_STRING_INTERLEAVE1          61447
 #define IDS_STRING_NOINPUT1             61448
@@ -552,7 +557,6 @@
 #define IDS_STRINGcANNOTSAVEOL          61563
 #define IDS_STRING_AVAILXP              61564
 #define IDS_STRING_TRANSBLAHBLAH        61565
-#define _APS_NEXT_STRNG_VALUE           61566
 #define IDS_STRING_NOWEBCAM             61566
 #define IDS_STRINGSAVECLLA              61567
 #define IDS_STRING_UNSSC                61568
@@ -560,6 +564,10 @@
 #define IDS_RECAVI                      61570
 #define IDS_RECSWF                      61571
 #define IDS_RESTARTAPP                  61572
+#define IDS_ERROR_PLAYER                61573
+#define IDS_ERROR_PLAYER2               61574
+#define IDS_STRING_LINEUNDETECTED       61575
+#define _APS_NEXT_STRNG_VALUE           61566
 
 // Next default values for new objects
 // 
@@ -567,8 +575,8 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        200
-#define _APS_NEXT_COMMAND_VALUE         32920
-#define _APS_NEXT_CONTROL_VALUE         1061
+#define _APS_NEXT_COMMAND_VALUE         32924
+#define _APS_NEXT_CONTROL_VALUE         1062
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
