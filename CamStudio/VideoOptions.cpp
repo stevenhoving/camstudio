@@ -7,7 +7,7 @@
 //
 
 #include "stdafx.h"
-#include "vscap.h"
+#include "Recorder.h"
 #include "VideoOptions.h"
 
 #include <mmsystem.h>

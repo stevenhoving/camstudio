@@ -7,7 +7,7 @@
 //
 
 #include "stdafx.h"
-#include "vscap.h"
+#include "Recorder.h"
 //#include <stdio.h>
 #include "CursorOptionsDlg.h"
 #include ".\cursoroptionsdlg.h"

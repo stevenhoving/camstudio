@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "vscap.h"
+#include "Recorder.h"
 #include "AutoSearchDialog.h"
 
 #ifdef _DEBUG
