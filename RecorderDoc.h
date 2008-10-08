@@ -1,4 +1,4 @@
-// RecorderDoc.h : interface of the CVscapDoc class
+// RecorderDoc.h : interface of the CRecorderDoc class
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -9,11 +9,11 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-class CVscapDoc : public CDocument
+class CRecorderDoc : public CDocument
 {
 protected: // create from serialization only
-	CVscapDoc();
-	DECLARE_DYNCREATE(CVscapDoc)
+	CRecorderDoc();
+	DECLARE_DYNCREATE(CRecorderDoc)
 
 // Attributes
 public:
@@ -23,7 +23,7 @@ public:
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CVscapDoc)
+	//{{AFX_VIRTUAL(CRecorderDoc)
 	public:
 	virtual BOOL OnNewDocument();
 	virtual void Serialize(CArchive& ar);
@@ -31,7 +31,7 @@ public:
 
 // Implementation
 public:
-	virtual ~CVscapDoc();
+	virtual ~CRecorderDoc();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
@@ -41,7 +41,7 @@ protected:
 
 // Generated message map functions
 protected:
-	//{{AFX_MSG(CVscapDoc)
+	//{{AFX_MSG(CRecorderDoc)
 		// NOTE - the ClassWizard will add and remove member functions here.
 		//    DO NOT EDIT what you see in these blocks of generated code !
 	//}}AFX_MSG
