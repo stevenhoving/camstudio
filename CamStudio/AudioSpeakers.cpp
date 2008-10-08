@@ -7,7 +7,7 @@
 // having access to the feature itself. To the future of CamStudio! ~Jake P.
 
 #include "stdafx.h"
-#include "vscap.h"
+#include "Recorder.h"
 
 #include <mmsystem.h>
 #include <vfw.h>
