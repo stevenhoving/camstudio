@@ -39,8 +39,6 @@ extern BOOL useVolume(int operation,DWORD &dwVal,int silence_mode);
 extern BOOL configWaveOut();
 extern BOOL configWaveOutManual();
 
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
-
 /////////////////////////////////////////////////////////////////////////////
 // AudioSpeakers dialog
 

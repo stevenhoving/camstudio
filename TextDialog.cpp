@@ -14,11 +14,6 @@ static char THIS_FILE[] = __FILE__;
 extern int versionOp;
 int msgShown = 0;
 
-extern void ErrMsg(char format[], ...);
-extern int MessageOutINT(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val);
-extern int MessageOutINT2(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val1,long val2);
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
-
 /////////////////////////////////////////////////////////////////////////////
 // TextDialog dialog
 

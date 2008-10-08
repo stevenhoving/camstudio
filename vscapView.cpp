@@ -31,18 +31,16 @@
 #include "TroubleShoot.h"
 #include "VideoOptions.h"
 
-#include "cxImage\CxImage\ximage.h"
-#include "fister\soundfile.h"
-#include "hook\hook.h"
-#include "hookkey\hookkey.h"
+#include "ximage.h"
+#include "soundfile.h"
+#include "hook.h"
 
 #include "Buffer.h"
-#include "cstudiolib/CStudioLib.h"
-#include "cstudiolib/TrayIcon.h"
+#include "CStudioLib.h"
+#include "TrayIcon.h"
 #include "AudioSpeakers.h"
 
 #include <windowsx.h>
-//#include "muldiv32.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -122,6 +120,14 @@ extern BOOL finalRestoreMMMode();
 extern BOOL onLoadSettings(int recordaudio);
 
 /////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////
+// unused variables
+/////////////////////////////////////////////////////////////////////////////
+#ifdef UNUSED_CODE
+CTransparentWnd* transWnd;
+#endif	// UNUSED_CODE
+
 /////////////////////////////////////////////////////////////////////////////
 //State variables
 /////////////////////////////////////////////////////////////////////////////
@@ -130,7 +136,6 @@ static UINT WM_USER_RECORDINTERRUPTED = ::RegisterWindowMessage(WM_USER_RECORDIN
 static UINT WM_USER_SAVECURSOR = ::RegisterWindowMessage(WM_USER_SAVECURSOR_MSG);
 static UINT WM_USER_GENERIC = ::RegisterWindowMessage(WM_USER_GENERIC_MSG);
 static UINT WM_USER_RECORDSTART = ::RegisterWindowMessage(WM_USER_RECORDSTART_MSG);
-static UINT WM_USER_KEYSTART = ::RegisterWindowMessage(WM_USER_KEYSTART_MSG);
 
 //Multilanguage
 
@@ -141,7 +146,7 @@ RECT rcOffset;
 RECT rcClip;
 RECT rcUse;
 RECT old_rcClip;
-BOOL bCapturing=FALSE;
+BOOL bCapturing = FALSE;
 POINT ptOrigin;
 
 int maxxScreen;
@@ -154,13 +159,13 @@ HBITMAP hLogoBM = NULL;
 CFlashingWnd* pFrame = NULL;
 
 //Misc Vars
-int recordstate=0;
-int recordpaused=0;
+int recordstate = 0;
+int recordpaused = 0;
 UINT interruptkey = 0;
-int tdata=0;
-DWORD initialtime=0;
+int tdata = 0;
+DWORD initialtime = 0;
 int initcapture = 0;
-int irsmallcount=0;
+int irsmallcount = 0;
 
 // Messaging
 HWND hWndGlobal = NULL;
@@ -172,27 +177,27 @@ CString specifieddir;
 //Variables/Options requiring interface
 /////////////////////////////////////////////////////////////////////////////
 int bits = 24;
-int flashingRect=1;
-int launchPlayer=3;
-int minimizeOnStart=0;
+int flashingRect = 1;
+int launchPlayer = 3;
+int minimizeOnStart = 0;
 int MouseCaptureMode = 0;
 int DefineMode = 0; //set only in FixedRegion.cpp
-int capturewidth=320;
-int captureheight=240;
+int capturewidth = 320;
+int captureheight = 240;
 
 //Video Options and Compressions
 //int timelapse=40;
 //int frames_per_second = 25;
 //int keyFramesEvery = 25;
 
-int timelapse=5;
+int timelapse = 5;
 int frames_per_second = 200;
 int keyFramesEvery = 200;
 
 int compquality = 7000;
 DWORD compfccHandler = 0;
 ICINFO * compressor_info = NULL;
-int num_compressor =0;
+int num_compressor = 0;
 int selected_compressor = -1;
 
 //Ver 1.2
@@ -204,20 +209,20 @@ DWORD CompressorStateSize = 0;
 LPVOID pParamsUse = NULL;
 
 //Report variables
-int nActualFrame=0;
-int nCurrFrame=0;
-float fRate=0.0;
-float fActualRate=0.0;
-float fTimeLength=0.0;
-int nColors=24;
-int actualwidth=0;
-int actualheight=0;
+int nActualFrame = 0;
+int nCurrFrame = 0;
+float fRate = 0.0;
+float fActualRate = 0.0;
+float fTimeLength = 0.0;
+int nColors = 24;
+int actualwidth = 0;
+int actualheight = 0;
 
 //Path to temporary avi file
 CString tempfilepath;
 
 //Autopan
-int autopan=0;
+int autopan = 0;
 int maxpan = 20;
 RECT panrect_current;
 RECT panrect_dest;
@@ -233,7 +238,7 @@ RECT panrect_dest;
 
 //Path to temporary wav file
 CString tempaudiopath;
-int recordaudio=0;
+int recordaudio = 0;
 
 //Audio Recording Variables
 UINT AudioDeviceID = WAVE_MAPPER;
@@ -241,7 +246,7 @@ UINT AudioDeviceID = WAVE_MAPPER;
 HWAVEIN m_hRecord;
 WAVEFORMATEX m_Format;
 DWORD m_ThreadID;
-int m_QueuedBuffers=0;
+int m_QueuedBuffers = 0;
 int m_BufferSize = 1000; // number of samples
 CSoundFile * pSoundFile = NULL;
 
@@ -270,13 +275,13 @@ UINT keyRecordEnd = VK_F9;
 UINT keyRecordCancel = VK_F10;
 
 //state vars
-BOOL AllowNewRecordStartKey=TRUE;
-int savesettings=1;
+BOOL AllowNewRecordStartKey = TRUE;
+int savesettings = 1;
 
 //Enhanced video options
-int g_autoadjust=1;
+int g_autoadjust = 1;
 //int g_valueadjust=32;
-int g_valueadjust=1;
+int g_valueadjust = 1;
 
 //Cursor Path, used for copying cursor file
 CString g_cursorFilePath;
@@ -285,11 +290,11 @@ CString g_cursorFilePath;
 int threadPriority = THREAD_PRIORITY_NORMAL;
 
 //ver 1.5
-int captureleft=100;
-int capturetop=100;
-int fixedcapture=0;
+int captureleft = 100;
+int capturetop = 100;
+int fixedcapture = 0;
 
-int captureTrans=1;
+int captureTrans = 1;
 int versionOp = 0;
 
 MCI_OPEN_PARMS mop;
@@ -305,19 +310,19 @@ int audio_samples_per_seconds_Speaker = 44100;
 CAutoSearchDialog asd;
 int asdCreated = FALSE;
 
-int TroubleShootVal=0;
-int performAutoSearch=1;
+int TroubleShootVal = 0;
+int performAutoSearch = 1;
 
 //ver 1.8
 int supportMouseDrag = 1;
 
 CScreenAnnotations sadlg;
 int sadlgCreated = 0;
-CTransparentWnd* transWnd;
+
 CMenu contextmenu;
 
-int isMciRecordOpen= 0;
-int alreadyMCIPause=0;
+int isMciRecordOpen = 0;
+int alreadyMCIPause = 0;
 
 //ver 1.8 key shortcuts
 UINT keyRecordStartCtrl = 0;
@@ -362,14 +367,12 @@ int timeshift = 100;
 int frameshift = 0;
 int shiftType = 0; // 0 : no shift, 1 : delayAudio, 2: delayVideo
 
-int currentLayout=0;
+int currentLayout = 0;
 
 //ver 2.26 Vscap Interface
 #define ModeAVI 0
 #define ModeFlash 1
 int RecordingMode = 0;
-void ErrMsg(char frmt[], ...);
-void SaveProducerCommand();
 
 int launchPropPrompt = 0;
 int launchHTMLPlayer = 1;
@@ -397,6 +400,7 @@ int recordpreset = 0;
 /////////////////////////////////////////////////////////////////////////////
 //Function prototypes
 /////////////////////////////////////////////////////////////////////////////
+void SaveProducerCommand();
 
 //Region Display Functions
 void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip);
@@ -464,10 +468,6 @@ void mciRecordResume(CString strFile);
 int UnSetHotKeys();
 int SetHotKeys(int succ[]);
 int SetAdjustHotKeys();
-
-int MessageOutINT(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val);
-int MessageOutINT2(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val1,long val2);
-int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -1750,7 +1750,7 @@ void AllocCompressFormat()
 		//msgstr.Format("Metrics failed mmresult=%u!", mmresult);
 		//::MessageBox(NULL,msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
 
-		MessageOutINT(NULL,IDS_STRING_METRICSFAILED, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,mmresult);
+		MessageOut(NULL,IDS_STRING_METRICSFAILED, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,mmresult);
 		return;
 	}
 
@@ -2307,7 +2307,7 @@ void GetVideoCompressState (HIC hic, DWORD fccHandler)
 			//CString reportstr;
 			//reportstr.Format("Failure in getting compressor state ! Error Value = %d", ret);
 			//MessageBox(NULL,reportstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOutINT(NULL,IDS_STRING_COMPRESSORSTATE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,ret);
+			MessageOut(NULL,IDS_STRING_COMPRESSORSTATE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,ret);
 		} else {
 			//we store only the state for one compressor in pVideoCompressParams
 			//So we need to indicate which compressor the state is referring to
@@ -2678,54 +2678,6 @@ void SaveProducerCommand()
 
 	//fflush(sFile);
 	fclose(sFile);
-}
-
-void ErrMsg(char frmt[], ...)
-{
-	DWORD written;
-	char buf[5000];
-	va_list val;
-
-	va_start(val, frmt);
-	wvsprintf(buf, frmt, val);
-
-	const COORD _80x50 = {80,50};
-	static BOOL startup = (AllocConsole(), SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), _80x50));
-	WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buf, lstrlen(buf), &written, 0);
-}
-
-int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus)
-{
-	CString tstr("");
-	CString mstr("");
-	tstr.LoadString(strTitle);
-	mstr.LoadString(strMsg);
-
-	return ::MessageBox(hWnd,mstr,tstr,mbstatus);
-}
-
-int MessageOutINT(HWND hWnd, long strMsg, long strTitle, UINT mbstatus, long val)
-{
-	CString tstr("");
-	CString mstr("");
-	CString fstr("");
-	tstr.LoadString(strTitle);
-	mstr.LoadString(strMsg);
-	fstr.Format(mstr,val);
-
-	return ::MessageBox(hWnd,fstr,tstr,mbstatus);
-}
-
-int MessageOutINT2(HWND hWnd, long strMsg, long strTitle, UINT mbstatus, long val1, long val2)
-{
-	CString tstr("");
-	CString mstr("");
-	CString fstr("");
-	tstr.LoadString(strTitle);
-	mstr.LoadString(strMsg);
-	fstr.Format(mstr,val1,val2);
-
-	return ::MessageBox(hWnd,fstr,tstr,mbstatus);
 }
 
 //LPBITMAPINFO GetTextBitmap(CDC *thisDC, CRect* caprect,int factor,CRect* drawtextRect, LOGFONT *drawfont, CString textstr, CPen* pPen, CBrush * pBrush, COLORREF textcolor, int horzalign)
@@ -3741,7 +3693,6 @@ BEGIN_MESSAGE_MAP(CVscapView, CView)
 	ON_REGISTERED_MESSAGE (WM_USER_RECORDINTERRUPTED, OnRecordInterrupted)
 	ON_REGISTERED_MESSAGE (WM_USER_SAVECURSOR, OnSaveCursor)
 	ON_REGISTERED_MESSAGE (WM_USER_GENERIC, OnUserGeneric)
-	ON_REGISTERED_MESSAGE (WM_USER_KEYSTART, OnKeyStart)
 	ON_MESSAGE(MM_WIM_DATA, OnMM_WIM_DATA)
 	ON_MESSAGE(WM_HOTKEY, OnHotKey)
 	ON_COMMAND(ID_HELP_CAMSTUDIOBLOG, OnHelpCamstudioblog)
@@ -4009,12 +3960,6 @@ LRESULT CVscapView::OnRecordStart (UINT wParam, LONG lParam)
 	//Ver 1.2
 	AllowNewRecordStartKey = TRUE; //allow this only after recordstate is set to 1
 
-	return 0;
-}
-
-//ver 1.8
-LRESULT CVscapView::OnKeyStart (UINT wParam, LONG lParam)
-{
 	return 0;
 }
 
