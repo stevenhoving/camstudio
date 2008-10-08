@@ -58,13 +58,13 @@ res\Toolbar.bmp
 AppWizard creates one document type and one view:
 
 RecorderDoc.h, vscapDoc.cpp - the document
-    These files contain your CVscapDoc class.  Edit these files to
+    These files contain your CRecorderDoc class.  Edit these files to
     add your special document data and to implement file saving and loading
-    (via CVscapDoc::Serialize).
+    (via CRecorderDoc::Serialize).
 
 RecorderView.h, vscapView.cpp - the view of the document
-    These files contain your CVscapView class.
-    CVscapView objects are used to view CVscapDoc objects.
+    These files contain your CRecorderView class.
+    CRecorderView objects are used to view CRecorderDoc objects.
 
 /////////////////////////////////////////////////////////////////////////////
 Other standard files:

@@ -3,7 +3,7 @@
 // Copyright 2001 - 2003 RenderSoft Software & Web Publishing
 //
 //
-// vscapView.cpp : implementation of the CVscapView class
+// vscapView.cpp : implementation of the CRecorderView class
 //
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
@@ -3578,12 +3578,12 @@ error:
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CVscapView
+// CRecorderView
 
-IMPLEMENT_DYNCREATE(CVscapView, CView)
+IMPLEMENT_DYNCREATE(CRecorderView, CView)
 
-BEGIN_MESSAGE_MAP(CVscapView, CView)
-	//{{AFX_MSG_MAP(CVscapView)
+BEGIN_MESSAGE_MAP(CRecorderView, CView)
+	//{{AFX_MSG_MAP(CRecorderView)
 	ON_WM_PAINT()
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
@@ -3700,23 +3700,23 @@ BEGIN_MESSAGE_MAP(CVscapView, CView)
 	ON_WM_CAPTURECHANGED()
 END_MESSAGE_MAP()
 
-BEGIN_EVENTSINK_MAP(CVscapView, CView)
+BEGIN_EVENTSINK_MAP(CRecorderView, CView)
 
 END_EVENTSINK_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CVscapView construction/destruction
+// CRecorderView construction/destruction
 
-CVscapView::CVscapView()
+CRecorderView::CRecorderView()
 {
 	// TODO: add construction code here
 }
 
-CVscapView::~CVscapView()
+CRecorderView::~CRecorderView()
 {
 }
 
-BOOL CVscapView::PreCreateWindow(CREATESTRUCT& cs)
+BOOL CRecorderView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: Modify the Window class or styles here by modifying
 	// the CREATESTRUCT cs
@@ -3725,60 +3725,60 @@ BOOL CVscapView::PreCreateWindow(CREATESTRUCT& cs)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CVscapView drawing
+// CRecorderView drawing
 
-void CVscapView::OnDraw(CDC* pDC)
+void CRecorderView::OnDraw(CDC* pDC)
 {
-	CVscapDoc* pDoc = GetDocument();
+	CRecorderDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 
 	// TODO: add draw code for native data here
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CVscapView printing
+// CRecorderView printing
 
-BOOL CVscapView::OnPreparePrinting(CPrintInfo* pInfo)
+BOOL CRecorderView::OnPreparePrinting(CPrintInfo* pInfo)
 {
 	// default preparation
 	return DoPreparePrinting(pInfo);
 }
 
-void CVscapView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
+void CRecorderView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
 	// TODO: add extra initialization before printing
 }
 
-void CVscapView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
+void CRecorderView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
 	// TODO: add cleanup after printing
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CVscapView diagnostics
+// CRecorderView diagnostics
 
 #ifdef _DEBUG
-void CVscapView::AssertValid() const
+void CRecorderView::AssertValid() const
 {
 	CView::AssertValid();
 }
 
-void CVscapView::Dump(CDumpContext& dc) const
+void CRecorderView::Dump(CDumpContext& dc) const
 {
 	CView::Dump(dc);
 }
 
-CVscapDoc* CVscapView::GetDocument() // non-debug version is inline
+CRecorderDoc* CRecorderView::GetDocument() // non-debug version is inline
 {
-	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CVscapDoc)));
-	return (CVscapDoc*)m_pDocument;
+	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CRecorderDoc)));
+	return (CRecorderDoc*)m_pDocument;
 }
 #endif //_DEBUG
 
 /////////////////////////////////////////////////////////////////////////////
-// CVscapView message handlers
+// CRecorderView message handlers
 
-void CVscapView::OnPaint()
+void CRecorderView::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
 
@@ -3817,7 +3817,7 @@ void CVscapView::OnPaint()
 	// Do not call CView::OnPaint() for painting messages
 }
 
-int CVscapView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CView::OnCreate(lpCreateStruct) == -1)
 		return -1;
@@ -3862,7 +3862,7 @@ int CVscapView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-void CVscapView::OnDestroy()
+void CRecorderView::OnDestroy()
 {
 	CView::OnDestroy();
 
@@ -3926,7 +3926,7 @@ void CVscapView::OnDestroy()
 	gList.FreeLayoutArray();
 }
 
-LRESULT CVscapView::OnRecordStart (UINT wParam, LONG lParam)
+LRESULT CRecorderView::OnRecordStart (UINT wParam, LONG lParam)
 {
 	CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
 	pStatus->SetPaneText(0,"Press the Stop Button to stop recording");
@@ -3963,7 +3963,7 @@ LRESULT CVscapView::OnRecordStart (UINT wParam, LONG lParam)
 	return 0;
 }
 
-LRESULT CVscapView::OnRecordInterrupted (UINT wParam, LONG lParam)
+LRESULT CRecorderView::OnRecordInterrupted (UINT wParam, LONG lParam)
 {
 	UninstallMyHook(hWndGlobal);
 
@@ -3990,19 +3990,19 @@ LRESULT CVscapView::OnRecordInterrupted (UINT wParam, LONG lParam)
 	return 0;
 }
 
-LRESULT CVscapView::OnSaveCursor (UINT wParam, LONG lParam)
+LRESULT CRecorderView::OnSaveCursor (UINT wParam, LONG lParam)
 {
 	hSavedCursor = (HCURSOR) wParam;
 
 	return 0;
 }
 
-void CVscapView::OnRegionRubber()
+void CRecorderView::OnRegionRubber()
 {
 	MouseCaptureMode=1;
 }
 
-void CVscapView::OnRegionPanregion()
+void CRecorderView::OnRegionPanregion()
 {
 	DefineMode = 0;
 
@@ -4013,13 +4013,13 @@ void CVscapView::OnRegionPanregion()
 	DefineMode = 0;
 }
 
-void CVscapView::OnRegionFullscreen()
+void CRecorderView::OnRegionFullscreen()
 {
 	MouseCaptureMode=2;
 }
 
 //This function is called when the avi saving is completed
-LRESULT CVscapView::OnUserGeneric (UINT wParam, LONG lParam)
+LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 {
 	//ver 1.2
 	::SetForegroundWindow( AfxGetMainWnd()->m_hWnd);
@@ -4295,7 +4295,7 @@ LRESULT CVscapView::OnUserGeneric (UINT wParam, LONG lParam)
 	return 0;
 }
 
-BOOL CVscapView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext)
+BOOL CRecorderView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext)
 {
 	// TODO: Add your specialized code here and/or call the base class
 	BOOL result = CWnd::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
@@ -4313,7 +4313,7 @@ BOOL CVscapView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwS
 	return result;
 }
 
-void CVscapView::OnRecord()
+void CRecorderView::OnRecord()
 {
 	// TODO: Add your command handler code here
 	CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
@@ -4387,7 +4387,7 @@ void CVscapView::OnRecord()
 	}
 }
 
-void CVscapView::OnStop()
+void CRecorderView::OnStop()
 {
 	//Version 1.1
 	if (recordstate==0) {
@@ -4404,14 +4404,14 @@ void CVscapView::OnStop()
 	OnRecordInterrupted (0, 0);
 }
 
-void CVscapView::OnUpdateRegionPanregion(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateRegionPanregion(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	if (MouseCaptureMode==0) pCmdUI->SetCheck(TRUE);
 	else pCmdUI->SetCheck(FALSE);
 }
 
-void CVscapView::OnUpdateRegionRubber(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateRegionRubber(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	if (MouseCaptureMode==1) pCmdUI->SetCheck(TRUE);
@@ -4420,7 +4420,7 @@ void CVscapView::OnUpdateRegionRubber(CCmdUI* pCmdUI)
 
 //ver 1.6
 #define MAXCOMPRESSORS 50
-void CVscapView::OnFileVideooptions()
+void CRecorderView::OnFileVideooptions()
 {
 	//Capture a frame and use it to determine compatitble compressors for user to select
 
@@ -4489,33 +4489,33 @@ void CVscapView::OnFileVideooptions()
 	vod.DoModal();
 }
 
-void CVscapView::OnOptionsCursoroptions()
+void CRecorderView::OnOptionsCursoroptions()
 {
 	// TODO: Add your command handler code here
 	CCursorOptionsDlg cod;
 	cod.DoModal();
 }
 
-void CVscapView::OnOptionsAutopan()
+void CRecorderView::OnOptionsAutopan()
 {
 	// TODO: Add your command handler code here
 	autopan = (autopan) ? 0 : 1;
 }
 
-void CVscapView::OnOptionsAtuopanspeed()
+void CRecorderView::OnOptionsAtuopanspeed()
 {
 	// TODO: Add your command handler code here
 	CAutopanSpeed aps_dlg;
 	aps_dlg.DoModal();
 }
 
-void CVscapView::OnUpdateOptionsAutopan(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsAutopan(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(autopan);
 }
 
-void CVscapView::OnUpdateRegionFullscreen(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateRegionFullscreen(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	if (MouseCaptureMode==2)
@@ -4524,7 +4524,7 @@ void CVscapView::OnUpdateRegionFullscreen(CCmdUI* pCmdUI)
 		pCmdUI->SetCheck(FALSE);
 }
 
-void CVscapView::OnOptionsMinimizeonstart()
+void CRecorderView::OnOptionsMinimizeonstart()
 {
 	// TODO: Add your command handler code here
 	if (minimizeOnStart==0)
@@ -4533,13 +4533,13 @@ void CVscapView::OnOptionsMinimizeonstart()
 		minimizeOnStart = 0;
 }
 
-void CVscapView::OnUpdateOptionsMinimizeonstart(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsMinimizeonstart(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(minimizeOnStart);
 }
 
-void CVscapView::OnOptionsHideflashing()
+void CRecorderView::OnOptionsHideflashing()
 {
 	// TODO: Add your command handler code here
 	if (flashingRect==0)
@@ -4548,7 +4548,7 @@ void CVscapView::OnOptionsHideflashing()
 		flashingRect = 0;
 }
 
-void CVscapView::OnUpdateOptionsHideflashing(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsHideflashing(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 
@@ -4556,7 +4556,7 @@ void CVscapView::OnUpdateOptionsHideflashing(CCmdUI* pCmdUI)
 	pCmdUI->SetCheck(!flashingRect);
 }
 
-void CVscapView::OnOptionsProgramoptionsPlayavi()
+void CRecorderView::OnOptionsProgramoptionsPlayavi()
 {
 	// TODO: Add your command handler code here
 	if (launchPlayer==0)
@@ -4565,13 +4565,13 @@ void CVscapView::OnOptionsProgramoptionsPlayavi()
 		launchPlayer = 0;
 }
 
-void CVscapView::OnUpdateOptionsProgramoptionsPlayavi(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsProgramoptionsPlayavi(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(launchPlayer);
 }
 
-BOOL CVscapView::Openlink (CString link)
+BOOL CRecorderView::Openlink (CString link)
 {
 	BOOL bSuccess = FALSE;
 
@@ -4585,7 +4585,7 @@ BOOL CVscapView::Openlink (CString link)
 	return bSuccess;
 }
 
-BOOL CVscapView::OpenUsingShellExecute (CString link)
+BOOL CRecorderView::OpenUsingShellExecute (CString link)
 {
 	LPCTSTR mode = _T ("open");
 	HINSTANCE hRun = ShellExecute (GetSafeHwnd (), mode, link, NULL, NULL, SW_SHOW);
@@ -4596,7 +4596,7 @@ BOOL CVscapView::OpenUsingShellExecute (CString link)
 	return TRUE;
 }
 
-BOOL CVscapView::OpenUsingRegisteredClass (CString link)
+BOOL CRecorderView::OpenUsingRegisteredClass (CString link)
 {
 	TCHAR key[MAX_PATH + MAX_PATH];
 	HINSTANCE result;
@@ -4680,7 +4680,7 @@ BOOL CVscapView::OpenUsingRegisteredClass (CString link)
 	return FALSE;
 }
 
-LONG CVscapView::GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata)
+LONG CRecorderView::GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata)
 {
 	HKEY hkey;
 	LONG retval = RegOpenKeyEx (key, subkey, 0, KEY_QUERY_VALUE, &hkey);
@@ -4695,7 +4695,7 @@ LONG CVscapView::GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata)
 	return retval;
 }
 
-void CVscapView::OnHelpWebsite()
+void CRecorderView::OnHelpWebsite()
 {
 	// TODO: Add your command handler code here
 	//Openlink("http://www.atomixbuttons.com/vsc");
@@ -4703,7 +4703,7 @@ void CVscapView::OnHelpWebsite()
 	Openlink("http://www.camstudio.org");
 }
 
-void CVscapView::OnHelpHelp()
+void CRecorderView::OnHelpHelp()
 {
 	// TODO: Add your command handler code here
 
@@ -4716,7 +4716,7 @@ void CVscapView::OnHelpHelp()
 	//HtmlHelp( hWndGlobal, progdir + "\\help.chm", HH_DISPLAY_INDEX, (DWORD)"CamStudio");
 }
 
-void CVscapView::OnPause()
+void CRecorderView::OnPause()
 {
 	// TODO: Add your command handler code here
 
@@ -4737,33 +4737,33 @@ void CVscapView::OnPause()
 	SetTitleBar("Paused");
 }
 
-void CVscapView::OnUpdatePause(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdatePause(CCmdUI* pCmdUI)
 {
 	//Version 1.1
 	//pCmdUI->Enable(recordstate && (!recordpaused));
 	pCmdUI->Enable(!recordpaused);
 }
 
-void CVscapView::OnUpdateStop(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateStop(CCmdUI* pCmdUI)
 {
 	//Version 1.1
 	//pCmdUI->Enable(recordstate);
 }
 
-void CVscapView::OnUpdateRecord(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateRecord(CCmdUI* pCmdUI)
 {
 	//Version 1.1
 	pCmdUI->Enable(!recordstate || recordpaused);
 }
 
-void CVscapView::OnHelpFaq()
+void CRecorderView::OnHelpFaq()
 {
 	// TODO: Add your command handler code here
 	//Openlink("http://www.atomixbuttons.com/vsc/page5.html");
 	Openlink("http://www.camstudio.org/faq.htm");
 }
 
-LRESULT CVscapView::OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2)
+LRESULT CRecorderView::OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2)
 {
 	HANDLE hInputDev = (HANDLE) parm1;
 	ASSERT(hInputDev == m_hRecord);
@@ -4812,7 +4812,7 @@ LRESULT CVscapView::OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2)
 	return 0;
 }
 
-void CVscapView::OnOptionsRecordaudio()
+void CRecorderView::OnOptionsRecordaudio()
 {
 	if (waveInGetNumDevs() == 0) {
 		//CString msgstr;
@@ -4825,13 +4825,13 @@ void CVscapView::OnOptionsRecordaudio()
 	recordaudio = (recordaudio) ? 0 : 1;
 }
 
-void CVscapView::OnUpdateOptionsRecordaudio(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsRecordaudio(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(recordaudio);
 }
 
-void CVscapView::OnOptionsAudioformat()
+void CRecorderView::OnOptionsAudioformat()
 {
 	if (waveInGetNumDevs() == 0) {
 		//CString msgstr;
@@ -4857,7 +4857,7 @@ void CVscapView::OnOptionsAudioformat()
 	//}
 }
 
-void CVscapView::OnOptionsAudiospeakers()
+void CRecorderView::OnOptionsAudiospeakers()
 {
 	if (waveOutGetNumDevs() == 0)
 	{
@@ -4868,7 +4868,7 @@ void CVscapView::OnOptionsAudiospeakers()
 	aos.DoModal();
 }
 
-void CVscapView::OnOptionsKeyboardshortcuts()
+void CRecorderView::OnOptionsKeyboardshortcuts()
 {
 	// TODO: Add your command handler code here
 	if (!keySCOpened) {
@@ -4882,13 +4882,13 @@ void CVscapView::OnOptionsKeyboardshortcuts()
 }
 
 // use CWinApp class profile API's
-bool CVscapView::SaveAppSettings()
+bool CRecorderView::SaveAppSettings()
 {
 	return false;
 }
 
 // Ver 1.2
-void CVscapView::SaveSettings()
+void CRecorderView::SaveSettings()
 {
 
 	//********************************************
@@ -5159,7 +5159,7 @@ void CVscapView::SaveSettings()
 }
 
 // Ver 1.2
-void CVscapView::LoadSettings()
+void CRecorderView::LoadSettings()
 {
 	// this can be deferred until the Create of the Screen Annotation dialog
 	//if (ver>=1.799999) {
@@ -5630,19 +5630,19 @@ void CVscapView::LoadSettings()
 	fclose(tFile);
 }
 
-void CVscapView::OnOptionsProgramoptionsSavesettingsonexit()
+void CRecorderView::OnOptionsProgramoptionsSavesettingsonexit()
 {
 	// TODO: Add your command handler code here
 	savesettings = (savesettings) ? 0 : 1;
 }
 
-void CVscapView::OnUpdateOptionsProgramoptionsSavesettingsonexit(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsProgramoptionsSavesettingsonexit(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(savesettings);
 }
 
-void CVscapView::DecideSaveSettings()
+void CRecorderView::DecideSaveSettings()
 {
 	CString nosaveName("\\NoSave.ini");
 	CString nosaveDir=GetProgPath();
@@ -5681,55 +5681,55 @@ void CVscapView::DecideSaveSettings()
 	}
 }
 
-void CVscapView::OnOptionsRecordingthreadpriorityNormal()
+void CRecorderView::OnOptionsRecordingthreadpriorityNormal()
 {
 	// TODO: Add your command handler code here
 	threadPriority = THREAD_PRIORITY_NORMAL;
 }
 
-void CVscapView::OnOptionsRecordingthreadpriorityHighest()
+void CRecorderView::OnOptionsRecordingthreadpriorityHighest()
 {
 	// TODO: Add your command handler code here
 	threadPriority = THREAD_PRIORITY_HIGHEST;
 }
 
-void CVscapView::OnOptionsRecordingthreadpriorityAbovenormal()
+void CRecorderView::OnOptionsRecordingthreadpriorityAbovenormal()
 {
 	// TODO: Add your command handler code here
 	threadPriority = THREAD_PRIORITY_ABOVE_NORMAL;
 }
 
-void CVscapView::OnOptionsRecordingthreadpriorityTimecritical()
+void CRecorderView::OnOptionsRecordingthreadpriorityTimecritical()
 {
 	// TODO: Add your command handler code here
 	threadPriority = THREAD_PRIORITY_TIME_CRITICAL;
 }
 
-void CVscapView::OnUpdateOptionsRecordingthreadpriorityNormal(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsRecordingthreadpriorityNormal(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(threadPriority == THREAD_PRIORITY_NORMAL);
 }
 
-void CVscapView::OnUpdateOptionsRecordingthreadpriorityHighest(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsRecordingthreadpriorityHighest(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(threadPriority == THREAD_PRIORITY_HIGHEST);
 }
 
-void CVscapView::OnUpdateOptionsRecordingthreadpriorityAbovenormal(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsRecordingthreadpriorityAbovenormal(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(threadPriority == THREAD_PRIORITY_ABOVE_NORMAL);
 }
 
-void CVscapView::OnUpdateOptionsRecordingthreadpriorityTimecritical(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsRecordingthreadpriorityTimecritical(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(threadPriority == THREAD_PRIORITY_TIME_CRITICAL);
 }
 
-void CVscapView::OnOptionsCapturetrans()
+void CRecorderView::OnOptionsCapturetrans()
 {
 	// TODO: Add your command handler code here
 
@@ -5739,37 +5739,37 @@ void CVscapView::OnOptionsCapturetrans()
 		captureTrans = 1;
 }
 
-void CVscapView::OnUpdateOptionsCapturetrans(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsCapturetrans(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(captureTrans==1);
 }
 
-void CVscapView::OnOptionsTempdirWindows()
+void CRecorderView::OnOptionsTempdirWindows()
 {
 	// TODO: Add your command handler code here
 	tempPath_Access = USE_WINDOWS_TEMP_DIR;
 }
 
-void CVscapView::OnUpdateOptionsTempdirWindows(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsTempdirWindows(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(tempPath_Access == USE_WINDOWS_TEMP_DIR);
 }
 
-void CVscapView::OnOptionsTempdirInstalled()
+void CRecorderView::OnOptionsTempdirInstalled()
 {
 	// TODO: Add your command handler code here
 	tempPath_Access = USE_INSTALLED_DIR;
 }
 
-void CVscapView::OnUpdateOptionsTempdirInstalled(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsTempdirInstalled(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(tempPath_Access == USE_INSTALLED_DIR);
 }
 
-void CVscapView::OnOptionsTempdirUser()
+void CRecorderView::OnOptionsTempdirUser()
 {
 	// TODO: Add your command handler code here
 	tempPath_Access = USE_USER_SPECIFIED_DIR;
@@ -5785,25 +5785,25 @@ void CVscapView::OnOptionsTempdirUser()
 	}
 }
 
-void CVscapView::OnUpdateOptionsTempdirUser(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsTempdirUser(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(tempPath_Access == USE_USER_SPECIFIED_DIR);
 }
 
-void CVscapView::OnOptionsRecordaudioDonotrecordaudio()
+void CRecorderView::OnOptionsRecordaudioDonotrecordaudio()
 {
 	// TODO: Add your command handler code here
 	recordaudio = 0;
 }
 
-void CVscapView::OnUpdateOptionsRecordaudioDonotrecordaudio(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsRecordaudioDonotrecordaudio(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(recordaudio==0);
 }
 
-void CVscapView::OnOptionsRecordaudioRecordfromspeakers()
+void CRecorderView::OnOptionsRecordaudioRecordfromspeakers()
 {
 	// TODO: Add your command handler code here
 	if (waveOutGetNumDevs() == 0) {
@@ -5819,12 +5819,12 @@ void CVscapView::OnOptionsRecordaudioRecordfromspeakers()
 	useWaveout(FALSE,FALSE);
 }
 
-void CVscapView::OnUpdateOptionsRecordaudioRecordfromspeakers(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsRecordaudioRecordfromspeakers(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetCheck(recordaudio==2);
 }
 
-void CVscapView::OnOptionsRecordaudiomicrophone()
+void CRecorderView::OnOptionsRecordaudiomicrophone()
 {
 	if (waveInGetNumDevs() == 0) {
 		MessageOut(m_hWnd,IDS_STRING_NOINPUT1,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
@@ -5838,13 +5838,13 @@ void CVscapView::OnOptionsRecordaudiomicrophone()
 	useWavein(TRUE,FALSE); //TRUE ==> silence mode, will not report errors
 }
 
-void CVscapView::OnUpdateOptionsRecordaudiomicrophone(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsRecordaudiomicrophone(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(recordaudio==1);
 }
 
-void CVscapView::OnOptionsProgramoptionsTroubleshoot()
+void CRecorderView::OnOptionsProgramoptionsTroubleshoot()
 {
 	TroubleShoot tbsDlg;
 	tbsDlg.DoModal();
@@ -5854,43 +5854,43 @@ void CVscapView::OnOptionsProgramoptionsTroubleshoot()
 	}
 }
 
-void CVscapView::OnOptionsProgramoptionsCamstudioplay()
+void CRecorderView::OnOptionsProgramoptionsCamstudioplay()
 {
 	// TODO: Add your command handler code here
 	launchPlayer = 1;
 }
 
-void CVscapView::OnUpdateOptionsProgramoptionsCamstudioplay(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsProgramoptionsCamstudioplay(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(launchPlayer == 1);
 }
 
-void CVscapView::OnOptionsProgramoptionsDefaultplay()
+void CRecorderView::OnOptionsProgramoptionsDefaultplay()
 {
 	// TODO: Add your command handler code here
 	launchPlayer = 2;
 }
 
-void CVscapView::OnUpdateOptionsProgramoptionsDefaultplay(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsProgramoptionsDefaultplay(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(launchPlayer == 2);
 }
 
-void CVscapView::OnOptionsProgramoptionsNoplay()
+void CRecorderView::OnOptionsProgramoptionsNoplay()
 {
 	// TODO: Add your command handler code here
 	launchPlayer = 0;
 }
 
-void CVscapView::OnUpdateOptionsProgramoptionsNoplay(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsProgramoptionsNoplay(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(launchPlayer == 0);
 }
 
-void CVscapView::OnHelpDonations()
+void CRecorderView::OnHelpDonations()
 {
 	// TODO: Add your command handler code here
 	CString progdir,donatepath;
@@ -5900,19 +5900,19 @@ void CVscapView::OnHelpDonations()
 	Openlink(donatepath);
 }
 
-void CVscapView::OnOptionsUsePlayer20()
+void CRecorderView::OnOptionsUsePlayer20()
 {
 	// TODO: Add your command handler code here
 	launchPlayer = 3;
 }
 
-void CVscapView::OnUpdateUsePlayer20(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateUsePlayer20(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(launchPlayer == 3);
 }
 
-void CVscapView::OnViewScreenannotations()
+void CRecorderView::OnViewScreenannotations()
 {
 	// TODO: Add your command handler code here
 	if (!sadlgCreated) {
@@ -5927,11 +5927,11 @@ void CVscapView::OnViewScreenannotations()
 		sadlg.ShowWindow(SW_RESTORE);
 }
 
-void CVscapView::OnUpdateViewScreenannotations(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateViewScreenannotations(CCmdUI* pCmdUI)
 {
 }
 
-void CVscapView::OnViewVideoannotations()
+void CRecorderView::OnViewVideoannotations()
 {
 	// TODO: Add your command handler code here
 	if (!vanWndCreated) {
@@ -5969,12 +5969,12 @@ void CVscapView::OnViewVideoannotations()
 	}
 }
 
-void CVscapView::OnSetFocus(CWnd* pOldWnd)
+void CRecorderView::OnSetFocus(CWnd* pOldWnd)
 {
 	CView::OnSetFocus(pOldWnd);
 }
 
-LRESULT CVscapView::OnHotKey(WPARAM wParam, LPARAM lParam)
+LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM lParam)
 {
 	if (wParam==0) {
 		//lParam > 0 means keydown??
@@ -6078,7 +6078,7 @@ LRESULT CVscapView::OnHotKey(WPARAM wParam, LPARAM lParam)
 	return 1;
 }
 
-void CVscapView::OnOptionsSynchronization()
+void CRecorderView::OnOptionsSynchronization()
 {
 	// TODO: Add your command handler code here
 	if ((waveInGetNumDevs() == 0) || (waveOutGetNumDevs() == 0)) {
@@ -6090,7 +6090,7 @@ void CVscapView::OnOptionsSynchronization()
 	synDlg.DoModal();
 }
 
-void CVscapView::OnToolsSwfproducer()
+void CRecorderView::OnToolsSwfproducer()
 {
 	CString AppDir=GetProgPath();
 	CString launchPath;
@@ -6105,45 +6105,45 @@ void CVscapView::OnToolsSwfproducer()
 	}
 }
 
-void CVscapView::OnOptionsSwfLaunchhtml()
+void CRecorderView::OnOptionsSwfLaunchhtml()
 {
 	// TODO: Add your command handler code here
 	launchHTMLPlayer = (launchHTMLPlayer) ? 0 : 1;
 }
 
-void CVscapView::OnOptionsSwfDeleteavifile()
+void CRecorderView::OnOptionsSwfDeleteavifile()
 {
 	deleteAVIAfterUse = (deleteAVIAfterUse) ? 0 : 1;
 }
 
-void CVscapView::OnOptionsSwfDisplayparameters()
+void CRecorderView::OnOptionsSwfDisplayparameters()
 {
 	launchPropPrompt = (launchPropPrompt) ? 0 : 1;
 }
 
-void CVscapView::OnUpdateOptionsSwfLaunchhtml(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsSwfLaunchhtml(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetCheck(launchHTMLPlayer);
 }
 
-void CVscapView::OnUpdateOptionsSwfDisplayparameters(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsSwfDisplayparameters(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetCheck(launchPropPrompt);
 }
 
-void CVscapView::OnUpdateOptionsSwfDeleteavifile(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsSwfDeleteavifile(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetCheck(deleteAVIAfterUse);
 }
 
-void CVscapView::OnAviswf()
+void CRecorderView::OnAviswf()
 {
 	// TODO: Add your command handler code here
 	RecordingMode = (RecordingMode == 0) ? 1 : 0;
 	Invalidate();
 }
 
-BOOL CVscapView::OnEraseBkgnd(CDC* pDC)
+BOOL CRecorderView::OnEraseBkgnd(CDC* pDC)
 {
 	// TODO: Add your message handler code here and/or call default
 	CMainFrame * pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
@@ -6166,31 +6166,31 @@ BOOL CVscapView::OnEraseBkgnd(CDC* pDC)
 	return TRUE;
 }
 
-void CVscapView::OnOptionsNamingAutodate()
+void CRecorderView::OnOptionsNamingAutodate()
 {
 	// TODO: Add your command handler code here
 	autonaming = 1;
 }
 
-void CVscapView::OnUpdateOptionsNamingAutodate(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsNamingAutodate(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(autonaming == 1);
 }
 
-void CVscapView::OnOptionsNamingAsk()
+void CRecorderView::OnOptionsNamingAsk()
 {
 	// TODO: Add your command handler code here
 	autonaming = 0;
 }
 
-void CVscapView::OnUpdateOptionsNamingAsk(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsNamingAsk(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(autonaming == 0);
 }
 
-void CVscapView::OnOptionsProgramoptionsPresettime()
+void CRecorderView::OnOptionsProgramoptionsPresettime()
 {
 	// TODO: Add your command handler code here
 	CPresetTime prestDlg;
@@ -6199,18 +6199,18 @@ void CVscapView::OnOptionsProgramoptionsPresettime()
 
 //Multilanguage
 
-void CVscapView::OnUpdateOptionsLanguageEnglish(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsLanguageEnglish(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetCheck(languageID==9);
 }
 
-void CVscapView::OnUpdateOptionsLanguageGerman(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateOptionsLanguageGerman(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(languageID==7);
 }
 
-void CVscapView::OnOptionsLanguageEnglish()
+void CRecorderView::OnOptionsLanguageEnglish()
 {
 	// TODO: Add your command handler code here
 	languageID=9;
@@ -6218,7 +6218,7 @@ void CVscapView::OnOptionsLanguageEnglish()
 	AfxMessageBox( IDS_RESTARTAPP);
 }
 
-void CVscapView::OnOptionsLanguageGerman()
+void CRecorderView::OnOptionsLanguageGerman()
 {
 	// TODO: Add your command handler code here
 
@@ -6227,19 +6227,19 @@ void CVscapView::OnOptionsLanguageGerman()
 	AfxMessageBox( IDS_RESTARTAPP);
 }
 
-void CVscapView::OnRegionWindow()
+void CRecorderView::OnRegionWindow()
 {
 	// TODO: Add your command handler code here
 	MouseCaptureMode = 3;
 }
 
-void CVscapView::OnUpdateRegionWindow(CCmdUI *pCmdUI)
+void CRecorderView::OnUpdateRegionWindow(CCmdUI *pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck((MouseCaptureMode==3) ? TRUE : FALSE);
 }
 
-void CVscapView::OnCaptureChanged(CWnd *pWnd)
+void CRecorderView::OnCaptureChanged(CWnd *pWnd)
 {
 	// TODO: Add your message handler code here
 	CPoint point;
@@ -6279,43 +6279,43 @@ void CVscapView::OnCaptureChanged(CWnd *pWnd)
 	}
 }
 
-void CVscapView::OnAnnotationAddsystemtimestamp()
+void CRecorderView::OnAnnotationAddsystemtimestamp()
 {
 	// TODO: Add your command handler code here
 	timestampAnnotation = !timestampAnnotation;
 }
 
-void CVscapView::OnUpdateAnnotationAddsystemtimestamp(CCmdUI *pCmdUI)
+void CRecorderView::OnUpdateAnnotationAddsystemtimestamp(CCmdUI *pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(timestampAnnotation);
 }
 
-void CVscapView::OnAnnotationAddcaption()
+void CRecorderView::OnAnnotationAddcaption()
 {
 	// TODO: Add your command handler code here
 	captionAnnotation = !captionAnnotation;
 }
 
-void CVscapView::OnUpdateAnnotationAddcaption(CCmdUI *pCmdUI)
+void CRecorderView::OnUpdateAnnotationAddcaption(CCmdUI *pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(captionAnnotation);
 }
 
-void CVscapView::OnAnnotationAddwatermark()
+void CRecorderView::OnAnnotationAddwatermark()
 {
 	// TODO: Add your command handler code here
 	watermarkAnnotation = !watermarkAnnotation;
 }
 
-void CVscapView::OnUpdateAnnotationAddwatermark(CCmdUI *pCmdUI)
+void CRecorderView::OnUpdateAnnotationAddwatermark(CCmdUI *pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
 	pCmdUI->SetCheck(watermarkAnnotation);
 }
 
-void CVscapView::OnEffectsOptions()
+void CRecorderView::OnEffectsOptions()
 {
 	// TODO: Add your command handler code here
 	CAnnotationEffectsOptions dlg;
@@ -6329,19 +6329,19 @@ void CVscapView::OnEffectsOptions()
 	}
 }
 
-void CVscapView::OnHelpCamstudioblog()
+void CRecorderView::OnHelpCamstudioblog()
 {
 	Openlink("http://www.camstudio.org/blog");
 }
 
-void CVscapView::OnBnClickedButtonlink()
+void CRecorderView::OnBnClickedButtonlink()
 {
 	Openlink("http://www.camstudio.org/blog");
 }
 
-void CVscapView::DisplayRecordingStatistics(CDC & srcDC)
+void CRecorderView::DisplayRecordingStatistics(CDC & srcDC)
 {
-	//TRACE("CVscapView::DisplayRecordingStatistics\n");
+	//TRACE("CRecorderView::DisplayRecordingStatistics\n");
 
 	CFont fontANSI;
 	fontANSI.CreateStockObject(ANSI_VAR_FONT);
@@ -6424,9 +6424,9 @@ void CVscapView::DisplayRecordingStatistics(CDC & srcDC)
 	srcDC.SetBkMode(iOldBkMode);
 }
 
-void CVscapView::DisplayBackground(CDC & srcDC)
+void CRecorderView::DisplayBackground(CDC & srcDC)
 {
-	//TRACE("CVscapView::DisplayBackground\n");
+	//TRACE("CRecorderView::DisplayBackground\n");
 
 	//Ver 1.1
 	if (8 <= nColors) {
@@ -6454,9 +6454,9 @@ void CVscapView::DisplayBackground(CDC & srcDC)
 	}
 }
 
-void CVscapView::DisplayRecordingMsg(CDC & srcDC)
+void CRecorderView::DisplayRecordingMsg(CDC & srcDC)
 {
-	//TRACE("CVscapView::DisplayRecordingMsg\n");
+	//TRACE("CRecorderView::DisplayRecordingMsg\n");
 
 	CPen penSolid;
 	penSolid.CreatePen(PS_SOLID, 1, RGB(225, 225, 225));

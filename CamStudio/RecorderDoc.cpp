@@ -3,7 +3,7 @@
 // Copyright 2001 RenderSoft Software & Web Publishing
 //
 //
-// vscapDoc.cpp : implementation of the CVscapDoc class
+// vscapDoc.cpp : implementation of the CRecorderDoc class
 //
 
 #include "stdafx.h"
@@ -18,31 +18,31 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-// CVscapDoc
+// CRecorderDoc
 
-IMPLEMENT_DYNCREATE(CVscapDoc, CDocument)
+IMPLEMENT_DYNCREATE(CRecorderDoc, CDocument)
 
-BEGIN_MESSAGE_MAP(CVscapDoc, CDocument)
-	//{{AFX_MSG_MAP(CVscapDoc)
+BEGIN_MESSAGE_MAP(CRecorderDoc, CDocument)
+	//{{AFX_MSG_MAP(CRecorderDoc)
 	// NOTE - the ClassWizard will add and remove mapping macros here.
 	// DO NOT EDIT what you see in these blocks of generated code!
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CVscapDoc construction/destruction
+// CRecorderDoc construction/destruction
 
-CVscapDoc::CVscapDoc()
+CRecorderDoc::CRecorderDoc()
 {
 	// TODO: add one-time construction code here
 
 }
 
-CVscapDoc::~CVscapDoc()
+CRecorderDoc::~CRecorderDoc()
 {
 }
 
-BOOL CVscapDoc::OnNewDocument()
+BOOL CRecorderDoc::OnNewDocument()
 {
 	if (!CDocument::OnNewDocument())
 		return FALSE;
@@ -54,9 +54,9 @@ BOOL CVscapDoc::OnNewDocument()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CVscapDoc serialization
+// CRecorderDoc serialization
 
-void CVscapDoc::Serialize(CArchive& ar)
+void CRecorderDoc::Serialize(CArchive& ar)
 {
 	if (ar.IsStoring())
 	{
@@ -69,19 +69,19 @@ void CVscapDoc::Serialize(CArchive& ar)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CVscapDoc diagnostics
+// CRecorderDoc diagnostics
 
 #ifdef _DEBUG
-void CVscapDoc::AssertValid() const
+void CRecorderDoc::AssertValid() const
 {
 	CDocument::AssertValid();
 }
 
-void CVscapDoc::Dump(CDumpContext& dc) const
+void CRecorderDoc::Dump(CDumpContext& dc) const
 {
 	CDocument::Dump(dc);
 }
 #endif //_DEBUG
 
 /////////////////////////////////////////////////////////////////////////////
-// CVscapDoc commands
+// CRecorderDoc commands

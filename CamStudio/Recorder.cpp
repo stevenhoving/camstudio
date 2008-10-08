@@ -214,9 +214,9 @@ BOOL CRecorderApp::InitInstance()
 	CSingleDocTemplate* pDocTemplate;
 	pDocTemplate = new CSingleDocTemplate(
 		IDR_MAINFRAME,
-		RUNTIME_CLASS(CVscapDoc),
+		RUNTIME_CLASS(CRecorderDoc),
 		RUNTIME_CLASS(CMainFrame), // main SDI frame window
-		RUNTIME_CLASS(CVscapView));
+		RUNTIME_CLASS(CRecorderView));
 	AddDocTemplate(pDocTemplate);
 
 	// Parse command line for standard shell commands, DDE, file open
