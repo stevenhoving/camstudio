@@ -9,7 +9,7 @@
 #include "stdafx.h"
 #include "Recorder.h"
 
-#include "vscapDoc.h"
+#include "RecorderDoc.h"
 #include "vscapView.h"
 #include "MainFrm.h"
 

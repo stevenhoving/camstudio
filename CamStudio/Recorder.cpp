@@ -10,7 +10,7 @@
 #include "Recorder.h"
 
 #include "MainFrm.h"
-#include "vscapDoc.h"
+#include "RecorderDoc.h"
 #include "vscapView.h"
 #include "CamStudioCommandLineInfo.h"
 
