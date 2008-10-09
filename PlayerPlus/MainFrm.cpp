@@ -65,7 +65,6 @@ static UINT indicators[] =
 CMainFrame::CMainFrame()
 {
 	// TODO: add member initialization code here
-
 }
 
 CMainFrame::~CMainFrame()
@@ -74,35 +73,29 @@ CMainFrame::~CMainFrame()
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
+	if (CFrameWnd::OnCreate(lpCreateStruct) == -1) {
 		return -1;
-
-
+	}
 
 	if (pmode==DUBBER) {
-
 		if (!m_wndToolBar.Create(this) ||
 			!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
 		{
 			TRACE0("Failed to create toolbar\n");
 			return -1;      // fail to create
 		}
-
-	}
-	else if (pmode==PLAYER) {
-
+	} else if (pmode==PLAYER) {
 		if (!m_wndToolBar.Create(this) ||
 			!m_wndToolBar.LoadToolBar(IDR_PLAYERTOOLBAR))
 		{
 			TRACE0("Failed to create toolbar\n");
 			return -1;      // fail to create
 		}
-
 	}
 
 	if (!m_wndStatusBar.Create(this) ||
 		!m_wndStatusBar.SetIndicators(indicators,
-		  sizeof(indicators)/sizeof(UINT)))
+		sizeof(indicators)/sizeof(UINT)))
 	{
 		TRACE0("Failed to create status bar\n");
 		return -1;      // fail to create
@@ -132,25 +125,25 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 
 	if (!m_wndSliderCtrl.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP |// dwStyle
-						TBS_HORZ |
-						//TBS_AUTOTICKS |
-						TBS_NOTICKS |
-						TBS_BOTH,
-						rect,					// rect
-						&m_wndToolBar,		// CWnd* pParentWnd
-						ID_SLIDER))		// UINT  nID
+	TBS_HORZ |
+	//TBS_AUTOTICKS |
+	TBS_NOTICKS |
+	TBS_BOTH,
+	rect,					// rect
+	&m_wndToolBar,		// CWnd* pParentWnd
+	ID_SLIDER))		// UINT  nID
 	{
-		return -1;
+	return -1;
 	}
 	*/
-
-
 
 	m_wndToolBar.ModifyStyle(0, TBSTYLE_FLAT);
 
 	// TODO: Remove this if you don't want tool tips or a resizeable toolbar
-	m_wndToolBar.SetBarStyle(m_wndToolBar.GetBarStyle() |
-		CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
+	m_wndToolBar.SetBarStyle(m_wndToolBar.GetBarStyle()
+		| CBRS_TOOLTIPS
+		| CBRS_FLYBY
+		| CBRS_SIZE_DYNAMIC);
 
 	//Disable Floating
 	// TODO: Delete these three lines if you don't want the toolbar to
@@ -162,26 +155,22 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	if (pmode == PLAYER) {
 		SetWindowText("CamStudio Player - Custom Build");
-	}
-	else
+	} else {
 		SetWindowText("CamStudio Dubber - Custom Build");
+	}
 
 	return 0;
 }
 
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
-
 	cs.x = 100;
 	cs.y = 100;
-	cs.cx=350;
-	cs.cy=320;
+	cs.cx = 350;
+	cs.cy = 320;
 
 	cs.style &= ~FWS_ADDTOTITLE;
-
-
 	return CFrameWnd::PreCreateWindow(cs);
-
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -205,20 +194,13 @@ void CMainFrame::Dump(CDumpContext& dc) const
 
 
 BOOL CMainFrame::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext)
-{
-	// TODO: Add your specialized code here and/or call the base class
+{	// TODO: Add your specialized code here and/or call the base class
 
 	BOOL retval = CWnd::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
-
 	mainWnd = m_hWnd;
-
-
-
 	//::SetWindowPos(mainWnd, NULL, 0, 0, 100, 100,0 );
 	//SetWindowPos( &wndTop, 0, 0, 100, 100, SWP_SHOWWINDOW);
-
 	return retval;
-
 }
 
 void CMainFrame::OnClose()
@@ -227,25 +209,20 @@ void CMainFrame::OnClose()
 	playerAlive = FALSE;
 
 	if ((fileModified == 1) && (pmode == DUBBER)) {
-
 		int ret = MessageBox("Do you want to save changes ?","Note",MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (ret == IDYES) {
 			SendMessage(WM_COMMAND,ID_FILE_SAVEAS,0);
 			return;
-		}
-		else if (ret == IDCANCEL)
+		} else if (ret == IDCANCEL) {
 			return;
-
+		}
 	}
-
 
 	CFrameWnd::OnClose();
 }
 
-
 void CMainFrame::ResizeToMovie(RECT movierect)
 {
-
 	// TODO: Add your command handler code here
 	CRect clientrect;
 	CRect windowrect;
@@ -282,25 +259,26 @@ void CMainFrame::ResizeToMovie(RECT movierect)
 	//if (compactcx > 600) compactcx=600;
 	//if (compactcy > 480) compactcy=480;
 
-	if (compactcx > maxxScreen  - windowrect.left)
+	if (compactcx > maxxScreen  - windowrect.left) {
 		windowrect.left = maxxScreen - compactcx;
+	}
 
-	if (compactcy > maxyScreen  - windowrect.top)
+	if (compactcy > maxyScreen  - windowrect.top) {
 		windowrect.top = maxyScreen - compactcy - 20; //20 to compensate for taskbar height
+	}
 
-	if (windowrect.left<=0) windowrect.left = 1;
-	if (windowrect.top<=0) windowrect.top = 1;
+	if (windowrect.left<=0) {
+		windowrect.left = 1;
+	}
+	if (windowrect.top<=0) {
+		windowrect.top = 1;
+	}
 
 	SetWindowPos( &wndTop, windowrect.left, windowrect.top, compactcx, compactcy, SWP_SHOWWINDOW);
-
-
-
-
 }
 
 void CMainFrame::OffsetRectZero(CRect& winrect)
 {
-
 	int x = winrect.left;
 	int y = winrect.top;
 
@@ -308,38 +286,31 @@ void CMainFrame::OffsetRectZero(CRect& winrect)
 	winrect.top = 0;
 	winrect.right = winrect.right - x;
 	winrect.bottom = winrect.bottom - x;
-
 }
-
-
 
 void CMainFrame::AdjustTimeBar(CRect clientrect)
 {
-
 	m_wndToolBar.AdjustTimeBar(clientrect);
-
 }
 
 BOOL CMainFrame::OnQueryNewPalette()
 {
 	// TODO: Add your message handler code here and/or call default
 
-
 	BOOL val;
-
 	if (giFirstVideo >= 0) {
 		HDC hdc = ::GetDC(viewWnd);
 
 		//
 		// Realize the palette of the first video stream
 		//
-		if (val = DrawDibRealize(ghdd[giFirstVideo], hdc, FALSE))
+		if (val = DrawDibRealize(ghdd[giFirstVideo], hdc, FALSE)) {
 			::InvalidateRect(viewWnd,NULL,TRUE);
+		}
 
 		::ReleaseDC(viewWnd,hdc);
 		return val;
 	}
-
 
 	return CFrameWnd::OnQueryNewPalette();
 }
@@ -349,47 +320,39 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 	CFrameWnd::OnSize(nType, cx, cy);
 
 	// TODO: Add your message handler code here
+	
+	// Do not attempt to resize controls that haven't been created yet!
+	if (!::IsWindow(m_wndToolBar)) {
+		return;
+	}
+
 	CRect clientrect;
-	GetClientRect( &clientrect);
+	GetClientRect(&clientrect);
 
 	AdjustTimeBar(clientrect);
 
 	// TODO: Add your message handler code here
 	if (pmode==DUBBER) {
-
-	}
-	else if (pmode==PLAYER) {
-
+	} else if (pmode==PLAYER) {
 		if  (!menu_loaded) {
-
 			PlayerMenu.LoadMenu(IDR_MENUPLAYER);
 			menu_loaded = 1;
 
 			//HMENU hMenu = ::GetMenu(m_hWnd);
 			//::SetMenu( m_hWnd, PlayerMenu.m_hMenu );
 			SetMenu(&PlayerMenu);
-
 		}
-
 	}
-
-
 }
-
 
 void CMainFrame::OnInitMenu(CMenu* pMenu)
 {
 	CFrameWnd::OnInitMenu(pMenu);
-
-
-
 }
 
 void CMainFrame::EnableSlideBarButton(BOOL setToOn, int nIndex)
 {
-
 	m_wndToolBar.EnableButton(setToOn, nIndex);
 	//m_wndToolBar.EnableButton(TRUE, ID_FILE_REWIND);
 	//m_wndToolBar.EnableButton(TRUE, 4);
-
 }
