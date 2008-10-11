@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="Recorder"
-	ProjectGUID="{1FFF3225-865D-4B14-A579-794547E26F79}"
+	ProjectGUID="{E6A9946A-612B-40A3-BCA3-FEF0B64B4B6C}"
 	RootNamespace="vscap"
 	Keyword="MFCProj"
 	TargetFrameworkVersion="131072"
@@ -704,6 +704,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Recorder.rc"
+				>
+			</File>
+			<File
 				RelativePath=".\RecorderDoc.cpp"
 				>
 				<FileConfiguration
@@ -1036,10 +1040,6 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="vscap.rc"
-				>
 			</File>
 		</Filter>
 		<Filter
