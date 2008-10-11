@@ -3177,7 +3177,7 @@ LRESULT CRecorderView::OnRecordInterrupted (UINT wParam, LONG lParam)
 		SetTitleBar("CamStudio");
 	}
 
-	recordstate=0;
+	recordstate = 0;
 
 	//Store the interrupt key in case this function is triggered by a keypress
 	interruptkey = wParam;
@@ -3188,7 +3188,7 @@ LRESULT CRecorderView::OnRecordInterrupted (UINT wParam, LONG lParam)
 	Invalidate();
 
 	//ver 1.2
-	::SetForegroundWindow( AfxGetMainWnd()->m_hWnd);
+	::SetForegroundWindow(AfxGetMainWnd()->m_hWnd);
 	AfxGetMainWnd()->ShowWindow(SW_RESTORE);
 
 	return 0;
@@ -3519,36 +3519,36 @@ void CRecorderView::OnRecord()
 	}
 	recordpaused = 0;
 
-	nActualFrame=0;
-	nCurrFrame=0;
-	fRate=0.0;
-	fActualRate=0.0;
-	fTimeLength=0.0;
+	nActualFrame = 0;
+	nCurrFrame = 0;
+	fRate = 0.0;
+	fActualRate = 0.0;
+	fTimeLength = 0.0;
 
-	if (MouseCaptureMode==0) {
+	if (MouseCaptureMode == 0) {
 		if (fixedcapture) {
-			rc.top=capturetop;
-			rc.left=captureleft;
-			rc.right=captureleft+capturewidth-1;
-			rc.bottom=capturetop+captureheight-1;
+			rc.top = capturetop;
+			rc.left = captureleft;
+			rc.right = captureleft + capturewidth - 1;
+			rc.bottom = capturetop + captureheight - 1;
 
-			if (rc.top<0) rc.top=0;
-			if (rc.left<0) rc.left=0;
-			if (rc.right>maxxScreen-1) rc.right=maxxScreen-1;
-			if (rc.bottom>maxyScreen-1) rc.bottom=maxyScreen-1;
+			if (rc.top<0) rc.top = 0;
+			if (rc.left<0) rc.left = 0;
+			if (rc.right>maxxScreen-1) rc.right = maxxScreen -1 ;
+			if (rc.bottom>maxyScreen-1) rc.bottom = maxyScreen - 1;
 
 			//using protocols for MouseCaptureMode==0
 			rcClip = rc;
-			old_rcClip=rcClip;
+			old_rcClip = rcClip;
 			NormalizeRect(&old_rcClip);
 			CopyRect(&rcUse, &old_rcClip);
 
 			::PostMessage (hWndGlobal,WM_USER_RECORDSTART,0,(LPARAM) 0);
 		} else {
-			rc.top=0;
-			rc.left=0;
-			rc.right=capturewidth-1;
-			rc.bottom=captureheight-1;
+			rc.top = 0;
+			rc.left = 0;
+			rc.right = capturewidth-1;
+			rc.bottom = captureheight-1;
 
 			::ShowWindow(hMouseCaptureWnd,SW_MAXIMIZE);
 			::UpdateWindow(hMouseCaptureWnd);
@@ -3561,12 +3561,12 @@ void CRecorderView::OnRecord()
 
 		InitSelectRegionWindow(); //will affect rc implicity
 	} else if (MouseCaptureMode==2) {
-		rcUse.left=0;
-		rcUse.top=0;
-		rcUse.right= maxxScreen-1;
-		rcUse.bottom= maxyScreen-1;
-		::PostMessage (hWndGlobal,WM_USER_RECORDSTART,0,(LPARAM) 0);
-	} else if (MouseCaptureMode==3) {
+		rcUse.left = 0;
+		rcUse.top = 0;
+		rcUse.right = maxxScreen - 1;
+		rcUse.bottom = maxyScreen - 1;
+		::PostMessage(hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM) 0);
+	} else if (MouseCaptureMode == 3) {
 		// window
 		AfxMessageBox("Click on Window to be captured");
 		//SetCapture();
@@ -3576,12 +3576,12 @@ void CRecorderView::OnRecord()
 void CRecorderView::OnStop()
 {
 	//Version 1.1
-	if (recordstate==0) {
+	if (recordstate == 0) {
 		return;
 	}
 
 	if (recordpaused) {
-		recordpaused=0;
+		recordpaused = 0;
 
 		//Set Title Bar
 		SetTitleBar("CamStudio");
@@ -3593,15 +3593,13 @@ void CRecorderView::OnStop()
 void CRecorderView::OnUpdateRegionPanregion(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	if (MouseCaptureMode==0) pCmdUI->SetCheck(TRUE);
-	else pCmdUI->SetCheck(FALSE);
+	pCmdUI->SetCheck(0 == MouseCaptureMode);
 }
 
 void CRecorderView::OnUpdateRegionRubber(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	if (MouseCaptureMode==1) pCmdUI->SetCheck(TRUE);
-	else pCmdUI->SetCheck(FALSE);
+	pCmdUI->SetCheck(1 == MouseCaptureMode);
 }
 
 //ver 1.6
