@@ -78,7 +78,8 @@ MMRESULT CAudioMixer::GetDevCaps(LPMIXERCAPS pmxcaps, UINT cbmxcaps)
 
 MMRESULT CAudioMixer::GetLineInfo(LPMIXERLINE pmxl, DWORD fdwInfo)
 {
-	MMRESULT uResult = ::mixerGetLineInfo(reinterpret_cast<HMIXEROBJ>(m_hMixer), pmxl, fdwInfo);
+	//MMRESULT uResult = ::mixerGetLineInfo(reinterpret_cast<HMIXEROBJ>(m_hMixer), pmxl, fdwInfo);
+	MMRESULT uResult = ::mixerGetLineInfo((HMIXEROBJ)(m_hMixer), pmxl, fdwInfo);
 	OnError(uResult);
 	return uResult;
 }

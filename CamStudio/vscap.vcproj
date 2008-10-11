@@ -678,6 +678,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Profile.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Recorder.cpp"
 				>
 				<FileConfiguration
@@ -1139,6 +1143,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Profile.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Recorder.h"
 				>
 			</File>
@@ -1448,6 +1456,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\ClassDiagram1.cd"
+			>
+		</File>
 		<File
 			RelativePath="ReadMe.txt"
 			>

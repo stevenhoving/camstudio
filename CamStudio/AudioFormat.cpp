@@ -657,6 +657,8 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
 		if (curr_sel_pwfx==NULL) {
 			SuggestLocalCompressFormat();
 		} else {
+			ASSERT(m_pwfx);
+			ASSERT(curr_sel_pwfx);
 			memcpy( (void *) m_pwfx, (void *) curr_sel_pwfx, cbwfx );
 		}
 
@@ -813,7 +815,7 @@ LONG AudioFormat::GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata)
 
 void AudioFormat::AllocLocalCompressFormat()
 {
-	if (!m_pwfx) {
+	if (m_pwfx) {
 		//Do nothing....already allocated
 		return;
 	}
