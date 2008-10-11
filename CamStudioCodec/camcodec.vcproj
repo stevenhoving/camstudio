@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="camcodec"
+	Name="CamCodec"
 	ProjectGUID="{EE246C7E-6ABE-4228-96ED-A44DE8B8C6D7}"
 	TargetFrameworkVersion="0"
 	>
