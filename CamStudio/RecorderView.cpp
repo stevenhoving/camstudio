@@ -33,7 +33,7 @@
 
 #include "ximage.h"
 #include "soundfile.h"
-#include "hook.h"
+#include "hook.h"		// for WM_USER_RECORDSTART_MSG
 
 #include "Buffer.h"
 #include "CStudioLib.h"
@@ -131,11 +131,6 @@ CTransparentWnd* transWnd;
 /////////////////////////////////////////////////////////////////////////////
 //State variables
 /////////////////////////////////////////////////////////////////////////////
-
-static UINT WM_USER_RECORDINTERRUPTED = ::RegisterWindowMessage(WM_USER_RECORDINTERRUPTED_MSG);
-static UINT WM_USER_SAVECURSOR = ::RegisterWindowMessage(WM_USER_SAVECURSOR_MSG);
-static UINT WM_USER_GENERIC = ::RegisterWindowMessage(WM_USER_GENERIC_MSG);
-static UINT WM_USER_RECORDSTART = ::RegisterWindowMessage(WM_USER_RECORDSTART_MSG);
 
 //Multilanguage
 
@@ -295,7 +290,6 @@ int capturetop = 100;
 int fixedcapture = 0;
 
 int captureTrans = 1;
-int versionOp = 0;
 
 MCI_OPEN_PARMS mop;
 MCI_SAVE_PARMS msp;
@@ -400,7 +394,6 @@ int recordpreset = 0;
 /////////////////////////////////////////////////////////////////////////////
 //Function prototypes
 /////////////////////////////////////////////////////////////////////////////
-void SaveProducerCommand();
 
 //Region Display Functions
 void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip);
@@ -411,10 +404,6 @@ int InitDrawShiftWindow();
 int InitSelectRegionWindow();
 int CreateShiftWindow();
 int DestroyShiftWindow();
-
-//Use these 2 functions to create frames and free frames
-LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height,int tempDisableRect);
-void FreeFrame(LPBITMAPINFOHEADER);
 
 //Misc Functions
 void InsertHighLight(HDC hdc,int xoffset, int yoffset);
@@ -465,9 +454,6 @@ void mciRecordClose();
 void mciSetWaveFormat(); //add before mcirecord
 void mciRecordPause(CString strFile);
 void mciRecordResume(CString strFile);
-int UnSetHotKeys();
-int SetHotKeys(int succ[]);
-int SetAdjustHotKeys();
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -584,6 +570,7 @@ int FindFormat(const CString& ext)
 }
 
 //ver 1.8
+int UnSetHotKeys();
 int UnSetHotKeys()
 {
 	UnregisterHotKey(hWndGlobal,0);
@@ -596,6 +583,121 @@ int UnSetHotKeys()
 	return 0;
 }
 
+int SetHotKeys(int succ[]);
+int SetHotKeys(int succ[])
+{
+	UnSetHotKeys();
+
+	for (int i = 0; i < 6; i++)
+		succ[i] = 0;
+
+	int nid = 0;
+	UINT modf = 0;
+	if (keyRecordStartCtrl)
+		modf |= MOD_CONTROL;
+
+	if (keyRecordStartShift)
+		modf |= MOD_SHIFT;
+
+	if (keyRecordStartAlt)
+		modf |= MOD_ALT;
+
+	if (keyRecordStart != 100000) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, keyRecordStart);
+		if (!ret)
+			succ[0] = 1;
+	}
+
+	nid++;
+	modf = 0;
+	if (keyRecordEndCtrl)
+		modf |= MOD_CONTROL;
+
+	if (keyRecordEndShift)
+		modf |= MOD_SHIFT;
+
+	if (keyRecordEndAlt)
+		modf |= MOD_ALT;
+
+	if (keyRecordEnd!=100000) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, keyRecordEnd);
+		if (!ret)
+			succ[1] = 1;
+	}
+
+	nid++;
+	modf = 0;
+	if (keyRecordCancelCtrl)
+		modf |= MOD_CONTROL;
+
+	if (keyRecordCancelShift)
+		modf |= MOD_SHIFT;
+
+	if (keyRecordCancelAlt)
+		modf |= MOD_ALT;
+
+	if (keyRecordCancel!=100000) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, keyRecordCancel);
+		if (!ret)
+			succ[2] = 1;
+	}
+
+	nid++;
+	modf = 0;
+	if (keyNextCtrl)
+		modf |= MOD_CONTROL;
+
+	if (keyNextShift)
+		modf |= MOD_SHIFT;
+
+	if (keyNextAlt)
+		modf |= MOD_ALT;
+
+	if (keyNext!=100000) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, keyNext);
+		if (!ret)
+			succ[3] = 1;
+	}
+
+	nid++;
+	modf = 0;
+	if (keyPrevCtrl)
+		modf |= MOD_CONTROL;
+
+	if (keyPrevShift)
+		modf |= MOD_SHIFT;
+
+	if (keyPrevAlt)
+		modf |= MOD_ALT;
+
+	if (keyPrev!=100000) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, keyPrev);
+		if (!ret)
+			succ[4] = 1;
+	}
+
+	nid++;
+	modf = 0;
+	if (keyShowLayoutCtrl)
+		modf |= MOD_CONTROL;
+
+	if (keyShowLayoutShift)
+		modf |= MOD_SHIFT;
+
+	if (keyShowLayoutAlt)
+		modf |= MOD_ALT;
+
+	if (keyShowLayout!=100000) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, keyShowLayout);
+		if (!ret)
+			succ[5] = 1;
+	}
+
+	int tstatus = 0;	// TODO: this is a little silly
+	return tstatus;
+}
+
+int SetAdjustHotKeys();
 int SetAdjustHotKeys()
 {
 	int succ[6];
@@ -615,7 +717,7 @@ int SetAdjustHotKeys()
 		msgstr.LoadString(IDS_STRING_UNSSC);
 		outstr.Format(msgstr,keystr);
 		//keystr = "Unable to set shortcuts for %d" + keystr;
-		MessageBox(NULL,outstr,"Note",MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
 	}
 
 	if (succ[1]) {
@@ -629,7 +731,7 @@ int SetAdjustHotKeys()
 		msgstr.LoadString(IDS_STRING_UNSSC);
 		outstr.Format(msgstr,keystr);
 		//keystr = "Unable to set shortcuts for %d" + keystr;
-		MessageBox(NULL,outstr,"Note",MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
 	}
 
 	if (succ[2]) {
@@ -643,7 +745,7 @@ int SetAdjustHotKeys()
 		msgstr.LoadString(IDS_STRING_UNSSC);
 		outstr.Format(msgstr,keystr);
 		//keystr = "Unable to set shortcuts for %d" + keystr;
-		MessageBox(NULL,outstr,"Note",MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
 	}
 
 	if (succ[3]) {
@@ -657,7 +759,7 @@ int SetAdjustHotKeys()
 		msgstr.LoadString(IDS_STRING_UNSSC);
 		outstr.Format(msgstr,keystr);
 		//keystr = "Unable to set shortcuts for %d" + keystr;
-		MessageBox(NULL,outstr,"Note",MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
 	}
 
 	if (succ[4]) {
@@ -671,7 +773,7 @@ int SetAdjustHotKeys()
 		msgstr.LoadString(IDS_STRING_UNSSC);
 		outstr.Format(msgstr,keystr);
 		//keystr = "Unable to set shortcuts for %d" + keystr;
-		MessageBox(NULL,outstr,"Note",MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
 	}
 
 	if (succ[5]) {
@@ -684,127 +786,10 @@ int SetAdjustHotKeys()
 		msgstr.LoadString(IDS_STRING_UNSSC);
 		outstr.Format(msgstr,keystr);
 		//keystr = "Unable to set shortcuts for %d" + keystr;
-		MessageBox(NULL,outstr,"Note",MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
 	}
 
 	return ret;
-}
-
-int SetHotKeys(int succ[])
-{
-	UnSetHotKeys();
-
-	for (int i =0;i<6;i++)
-		succ[i]=0;
-
-	int tstatus = 0;
-
-	BOOL ret;
-	//int nid = base_nid;
-	int nid = 0;
-	UINT modf = 0;
-
-	if (keyRecordStartCtrl)
-		modf |= MOD_CONTROL;
-
-	if (keyRecordStartShift)
-		modf |= MOD_SHIFT;
-
-	if (keyRecordStartAlt)
-		modf |= MOD_ALT;
-
-	if (keyRecordStart!=100000) {
-		ret = RegisterHotKey(hWndGlobal,nid,modf,keyRecordStart);
-		if (!ret)
-			succ[0] = 1;
-	}
-
-	nid++;
-	modf = 0;
-	if (keyRecordEndCtrl)
-		modf |= MOD_CONTROL;
-
-	if (keyRecordEndShift)
-		modf |= MOD_SHIFT;
-
-	if (keyRecordEndAlt)
-		modf |= MOD_ALT;
-
-	if (keyRecordEnd!=100000) {
-		ret = RegisterHotKey(hWndGlobal,nid,modf,keyRecordEnd);
-		if (!ret)
-			succ[1] = 1;
-	}
-
-	nid++;
-	modf = 0;
-	if (keyRecordCancelCtrl)
-		modf |= MOD_CONTROL;
-
-	if (keyRecordCancelShift)
-		modf |= MOD_SHIFT;
-
-	if (keyRecordCancelAlt)
-		modf |= MOD_ALT;
-
-	if (keyRecordCancel!=100000) {
-		ret = RegisterHotKey(hWndGlobal,nid,modf,keyRecordCancel);
-		if (!ret)
-			succ[2] = 1;
-	}
-
-	nid++;
-	modf = 0;
-	if (keyNextCtrl)
-		modf |= MOD_CONTROL;
-
-	if (keyNextShift)
-		modf |= MOD_SHIFT;
-
-	if (keyNextAlt)
-		modf |= MOD_ALT;
-
-	if (keyNext!=100000) {
-		ret = RegisterHotKey(hWndGlobal,nid,modf,keyNext);
-		if (!ret)
-			succ[3] = 1;
-	}
-
-	nid++;
-	modf = 0;
-	if (keyPrevCtrl)
-		modf |= MOD_CONTROL;
-
-	if (keyPrevShift)
-		modf |= MOD_SHIFT;
-
-	if (keyPrevAlt)
-		modf |= MOD_ALT;
-
-	if (keyPrev!=100000) {
-		ret = RegisterHotKey(hWndGlobal,nid,modf,keyPrev);
-		if (!ret)
-			succ[4] = 1;
-	}
-
-	nid++;
-	modf = 0;
-	if (keyShowLayoutCtrl)
-		modf |= MOD_CONTROL;
-
-	if (keyShowLayoutShift)
-		modf |= MOD_SHIFT;
-
-	if (keyShowLayoutAlt)
-		modf |= MOD_ALT;
-
-	if (keyShowLayout!=100000) {
-		ret = RegisterHotKey(hWndGlobal,nid,modf,keyShowLayout);
-		if (!ret)
-			succ[5] = 1;
-	}
-
-	return tstatus;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -984,9 +969,9 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 				CopyRect(&rcUse, &old_rcClip);
 
 				if (DefineMode==0) {
-					PostMessage (hWndGlobal,WM_USER_RECORDSTART,0,(LPARAM) 0);
+					::PostMessage (hWndGlobal, CRecorderView::WM_USER_RECORDSTART, 0, (LPARAM) 0);
 				} else {
-					PostMessage (hWnd_FixedRegion,WM_USER_REGIONUPDATE,0,(LPARAM) 0);
+					::PostMessage (hWnd_FixedRegion, WM_USER_REGIONUPDATE, 0, (LPARAM) 0);
 				}
 			}
 		}
@@ -1137,116 +1122,6 @@ int DestroyShiftWindow()
 ///////////////////////// //////////////////
 /////////////// Functions //////////////////
 ///////////////////////// //////////////////
-
-LPBITMAPINFOHEADER captureScreenFrame(int left, int top, int width, int height, int tempDisableRect)
-{
-	//TRACE("captureScreenFrame\n");
-	HDC hScreenDC = ::GetDC(NULL);
-
-	//if flashing rect
-	if (flashingRect && !tempDisableRect) {
-		if (autopan) {
-			pFrame->SetUpRegion(left, top, width, height, 1);
-		}
-		pFrame->DrawFlashingRect(TRUE, (autopan) ? 1 : 0);
-	}
-
-	HDC hMemDC = ::CreateCompatibleDC(hScreenDC);
-	HBITMAP hbm = ::CreateCompatibleBitmap(hScreenDC, width, height);
-	HBITMAP oldbm = (HBITMAP) ::SelectObject(hMemDC, hbm);
-
-	//ver 1.6
-	DWORD bltFlags = SRCCOPY;
-	if (captureTrans && (4 < versionOp))
-		bltFlags |= CAPTUREBLT;
-	BitBlt(hMemDC, 0, 0, width, height, hScreenDC, left, top, bltFlags);
-
-	RECT rect;
-	rect.left = 0;
-	rect.top = 0;
-	rect.right = rect.left + width;
-	rect.bottom = rect.top + height;
-	if (timestampAnnotation){
-		SYSTEMTIME systime;
-		::GetLocalTime(&systime);
-		timestamp.text.Format("%s %02d:%02d:%02d:%03d", "Recording", systime.wHour, systime.wMinute, systime.wSecond, systime.wMilliseconds);
-		//InsertText(hMemDC, 0, 0, msg);
-		InsertText(hMemDC, rect, timestamp);
-		//InsertText(hMemDC, 0, 0, "Recorded by You!!!");
-	}
-	if (captionAnnotation){
-		InsertText(hMemDC, rect, caption);
-	}
-	if (watermarkAnnotation){
-		InsertImage(hMemDC, rect, watermark);
-	}
-
-	//Get Cursor Pos
-	POINT xPoint;
-	GetCursorPos( &xPoint);
-	HCURSOR hcur= FetchCursorHandle();
-	xPoint.x-=left;
-	xPoint.y-=top;
-
-	//Draw the HighLight
-	if (g_highlightcursor==1) {
-		POINT highlightPoint;
-		highlightPoint.x = xPoint.x -64;
-		highlightPoint.y = xPoint.y -64;
-		InsertHighLight( hMemDC, highlightPoint.x, highlightPoint.y);
-	}
-
-	//Draw the Cursor
-	if (g_recordcursor==1) {
-		ICONINFO iconinfo;
-		BOOL ret;
-		ret = GetIconInfo( hcur, &iconinfo);
-		if (ret) {
-			xPoint.x -= iconinfo.xHotspot;
-			xPoint.y -= iconinfo.yHotspot;
-
-			//need to delete the hbmMask and hbmColor bitmaps
-			//otherwise the program will crash after a while after running out of resource
-			if (iconinfo.hbmMask)
-				DeleteObject(iconinfo.hbmMask);
-			if (iconinfo.hbmColor)
-				DeleteObject(iconinfo.hbmColor);
-		}
-
-		::DrawIcon( hMemDC, xPoint.x, xPoint.y, hcur);
-	}
-
-	SelectObject(hMemDC, oldbm);
-	LPBITMAPINFOHEADER pBM_HEADER = (LPBITMAPINFOHEADER)GlobalLock(Bitmap2Dib(hbm, bits));
-	if (pBM_HEADER == NULL) {
-		//MessageBox(NULL,"Error reading a frame!","Error",MB_OK | MB_ICONEXCLAMATION);
-		MessageOut(NULL,IDS_STRING_ERRFRAME,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
-		exit(1);	// todo: WHAT??? Exit???
-	}
-
-	DeleteObject(hbm);
-	DeleteDC(hMemDC);
-
-	//if flashing rect
-	if (flashingRect && !tempDisableRect) {
-		pFrame->DrawFlashingRect(FALSE, (autopan) ? 1 : 0);
-	}
-
-	ReleaseDC(NULL,hScreenDC);
-
-	return pBM_HEADER;
-}
-
-void FreeFrame(LPBITMAPINFOHEADER alpbi)
-{
-	if (!alpbi)
-		return;
-
-	GlobalFreePtr(alpbi);
-	//GlobalFree(alpbi);
-	alpbi = NULL;
-}
 
 void InsertHighLight(HDC hdc,int xoffset, int yoffset)
 {
@@ -2644,42 +2519,6 @@ void BuildSpeakerRecordingFormat()
 	m_FormatSpeaker.cbSize = 0;
 }
 
-void SaveProducerCommand()
-{
-	//********************************************
-	//Saving CamProducer.ini for storing text data
-	//********************************************
-
-	CString fileName = "\\CamStudio.Producer.command";
-	CString setDir = GetProgPath();
-	CString setPath = setDir + fileName;
-	FILE * sFile = fopen((LPCTSTR)(setPath), "wt");
-	if (sFile == NULL) {
-		return;
-	}
-
-	// ****************************
-	// Write Variables
-	// ****************************
-
-	float ver=1.0;
-
-	//fprintf(sFile, "[ CamStudio Flash Producer Commands ver%.2f -- Activate with -x or -b in command line mode ] \n\n",ver);
-	fprintf(sFile, "[ CamStudio Flash Producer Commands ver%.2f ] \n\n",ver);
-
-	fprintf(sFile, "launchPropPrompt=%d \n",launchPropPrompt);
-	fprintf(sFile, "launchHTMLPlayer=%d \n",launchHTMLPlayer);
-	fprintf(sFile, "deleteAVIAfterUse=%d \n",deleteAVIAfterUse);
-
-	//ErrMsg( "\nvscap\n");
-	//ErrMsg( "launchPropPrompt = %d \n",launchPropPrompt);
-	//ErrMsg( "launchHTMLPlayer = %d \n",launchHTMLPlayer);
-	//ErrMsg( "deleteAVIAfterUse = %d \n",deleteAVIAfterUse);
-
-	//fflush(sFile);
-	fclose(sFile);
-}
-
 //LPBITMAPINFO GetTextBitmap(CDC *thisDC, CRect* caprect,int factor,CRect* drawtextRect, LOGFONT *drawfont, CString textstr, CPen* pPen, CBrush * pBrush, COLORREF textcolor, int horzalign)
 //{
 //
@@ -2936,649 +2775,12 @@ void SaveProducerCommand()
 //}
 
 /////////////////////////////////////////////////////////////////////////////
-int RecordVideo(int top,int left,int width,int height,int numframes,const char *szFileName);
-UINT RecordAVIThread(LPVOID pParam);
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-UINT RecordAVIThread(LPVOID pParam)
-{
-	//Test the validity of writing to the file
-	//Make sure the file to be created is currently not used by another application
-	CString csTempFolder(GetTempPath(tempPath_Access, specifieddir));
-	tempfilepath.Format("%s\\~temp.avi", (LPCSTR)csTempFolder);
-
-	srand( (unsigned)time( NULL));
-	bool fileverified = false;
-	while (!fileverified)
-	{
-		OFSTRUCT ofstruct;
-		HFILE hFile = OpenFile(tempfilepath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE | OF_CREATE);
-		fileverified = (hFile != HFILE_ERROR);
-		if (fileverified) {
-			CloseHandle((HANDLE)hFile);
-			DeleteFile(tempfilepath);
-		} else {
-			tempfilepath.Format("%s\\~temp%d.avi", (LPCSTR)csTempFolder, rand());
-		}
-	}
-
-	int top = rcUse.top;
-	int left = rcUse.left;
-	int width = rcUse.right - rcUse.left+1;
-	int height = rcUse.bottom - rcUse.top + 1;
-	int fps = frames_per_second;
-
-	RecordVideo(top, left, width, height, fps, tempfilepath);
-
-	return 0;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// RecordVideo
-//
-// The main function used in the recording of video
-// Includes opening/closing avi file, initializing avi settings, capturing
-// frames, applying cursor effects etc.
-/////////////////////////////////////////////////////////////////////////////
-int RecordVideo(int top, int left, int width, int height, int fps, const char *szFileName)
-{
-	TRACE("RecordVideo\n");
-	WORD wVer = HIWORD(VideoForWindowsVersion());
-	if (wVer < 0x010a) {
-		MessageOut(NULL, IDS_STRING_VERSIONOLD , IDS_STRING_NOTE, MB_OK | MB_ICONSTOP);
-		return FALSE;
-	}
-
-	actualwidth = width;
-	actualheight = height;
-
-	////////////////////////////////////////////////
-	// CAPTURE FIRST FRAME
-	////////////////////////////////////////////////
-	LPBITMAPINFOHEADER alpbi = captureScreenFrame(left, top, width, height, 1);
-
-	////////////////////////////////////////////////
-	// TEST VALIDITY OF COMPRESSOR
-	//////////////////////////////////////////////////
-
-	if (selected_compressor > 0) {
-		HIC hic = ICOpen(compressor_info[selected_compressor].fccType, compressor_info[selected_compressor].fccHandler, ICMODE_QUERY);
-		if (hic) {
-			int newleft;
-			int newtop;
-			int newwidth;
-			int newheight;
-			int align = 1;
-			while (ICERR_OK!=ICCompressQuery(hic, alpbi, NULL)) {
-				//Try adjusting width/height a little bit
-				align = align * 2 ;
-				if (align>8)
-					break;
-
-				newleft=left;
-				newtop=top;
-				int wm = (width % align);
-				if (wm > 0) {
-					newwidth = width + (align - wm);
-					if (newwidth>maxxScreen) {
-						newwidth = width - wm;
-					}
-				}
-
-				int hm = (height % align);
-				if (hm > 0) {
-					newheight = height + (align - hm);
-					if (newheight>maxyScreen) {
-						newwidth = height - hm;
-					}
-				}
-
-				if (alpbi) {
-					FreeFrame(alpbi);
-				}
-				alpbi=captureScreenFrame(newleft, newtop, newwidth, newheight, 1);
-			}
-
-			//if succeed with new width/height, use the new width and height
-			//else if still fails == > default to MS Video 1 (MSVC)
-			if (align == 1) {
-				//Compressor has no problem with the current dimensions...so proceed
-				//do nothing here
-			} else if  (align <= 8) {
-				//Compressor can work if the dimensions is adjusted slightly
-				left = newleft;
-				top = newtop;
-				width = newwidth;
-				height = newheight;
-
-				actualwidth = newwidth;
-				actualheight = newheight;
-			} else {
-				compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-				strCodec = CString("MS Video 1");
-			}
-
-			ICClose(hic);
-		} else {
-			compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-			strCodec = CString("MS Video 1");
-			//MessageBox(NULL, "hic default", "note", MB_OK);
-		}
-	} //selected_compressor
-
-	//Special Cases
-	//DIVX
-	//if (compfccHandler == mmioFOURCC('D', 'I', 'V', 'X')) { //Still Can't Handle DIVX
-	//	compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-	//	strCodec = CString("MS Video 1");
-	//}
-
-	//IV50
-	if (compfccHandler == mmioFOURCC('I', 'V', '5', '0')) { //Still Can't Handle Indeo 5.04
-		compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-		strCodec = CString("MS Video 1");
-	}
-
-	////////////////////////////////////////////////
-	// Set Up Flashing Rect
-	////////////////////////////////////////////////
-	if (flashingRect) {
-		if (autopan) {
-			pFrame->SetUpRegion(left, top, width, height, 1);
-		} else {
-			pFrame->SetUpRegion(left, top, width, height, 0);
-		}
-		pFrame->ShowWindow(SW_SHOW);
-	}
-
-	////////////////////////////////////////////////
-	// INIT AVI USING FIRST FRAME
-	////////////////////////////////////////////////
-	AVIFileInit();
-
-	// Open the movie file for writing....
-	char szTitle[BUFSIZE];
-	strcpy_s(szTitle, "AVI Movie");
-
-	PAVIFILE pfile = NULL;
-	HRESULT hr;
-	hr = AVIFileOpen(&pfile, szFileName, OF_WRITE | OF_CREATE, NULL);
-	if (hr != AVIERR_OK) {
-		goto error;
-	}
-
-	// Fill in the header for the video stream....
-	// The video stream will run in 15ths of a second....
-	AVISTREAMINFO strhdr;
-	_fmemset(&strhdr, 0, sizeof(strhdr));
-	strhdr.fccType                = streamtypeVIDEO;// stream type
-
-	//strhdr.fccHandler             = compfccHandler;
-	strhdr.fccHandler             = 0;
-
-	strhdr.dwScale                = 1;
-	strhdr.dwRate                 = fps;
-	strhdr.dwSuggestedBufferSize  = alpbi->biSizeImage;
-	// rectangle for stream
-	SetRect(&strhdr.rcFrame, 0, 0, (int) alpbi->biWidth, (int) alpbi->biHeight);
-
-	// And create the stream;
-	PAVISTREAM ps = NULL;
-	hr = AVIFileCreateStream(pfile, &ps, &strhdr);
-	if (hr != AVIERR_OK) {
-		goto error;
-	}
-
-	AVICOMPRESSOPTIONS opts;
-	AVICOMPRESSOPTIONS FAR * aopts[1] = {&opts};
-	memset(&opts, 0, sizeof(opts));
-	aopts[0]->fccType			= streamtypeVIDEO;
-	aopts[0]->fccHandler		= compfccHandler;
-	aopts[0]->dwKeyFrameEvery	= keyFramesEvery;		// keyframe rate
-	aopts[0]->dwQuality			= compquality;        // compress quality 0-10, 000
-	aopts[0]->dwBytesPerSecond	= 0;		// bytes per second
-	aopts[0]->dwFlags			= AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES;    // flags
-	aopts[0]->lpFormat			= 0x0;                         // save format
-	aopts[0]->cbFormat			= 0;
-	aopts[0]->dwInterleaveEvery = 0;			// for non-video streams only
-
-	//ver 2.26
-	if (RecordingMode == ModeFlash) {
-		//Internally adjust codec to MSVC 100 Quality
-		aopts[0]->fccHandler = mmioFOURCC('M', 'S', 'V', 'C');	 //msvc
-		strCodec = CString("MS Video 1");
-		aopts[0]->dwQuality = 10000;
-	} else {
-		//Ver 1.2
-		//
-		if ((compfccHandler == CompressorStateIsFor) && (compfccHandler != 0)) {
-			//make a copy of the pVideoCompressParams just in case after compression, this variable become messed up
-			if (MakeCompressParamsCopy(CompressorStateSize, pVideoCompressParams)) {
-				aopts[0]->lpParms = pParamsUse;
-				aopts[0]->cbParms = CompressorStateSize;
-			}
-		}
-	}
-
-	//The 1 here indicates only 1 stream
-	//if (!AVISaveOptions(NULL, 0, 1, &ps, (LPAVICOMPRESSOPTIONS *) &aopts))
-	//        goto error;
-
-	PAVISTREAM psCompressed = NULL;
-	hr = AVIMakeCompressedStream(&psCompressed, ps, &opts, NULL);
-	if (hr != AVIERR_OK) {
-		goto error;
-	}
-
-	hr = AVIStreamSetFormat(psCompressed, 0, alpbi, alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD));
-	if (hr != AVIERR_OK) {
-		goto error;
-	}
-
-	FreeFrame(alpbi);
-	alpbi=NULL;
-
-	if (autopan) {
-		panrect_current.left = left;
-		panrect_current.top = top;
-		panrect_current.right = left + width - 1;
-		panrect_current.bottom = top + height - 1;
-	}
-
-	//////////////////////////////////////////////
-	// Recording Audio
-	//////////////////////////////////////////////
-	if ((recordaudio == 2) || (useMCI)) {
-		mciRecordOpen();
-		mciSetWaveFormat();
-		mciRecordStart();
-
-		//if (shiftType == 1)
-		//{
-		//	mci::mciRecordPause(tempaudiopath);
-		//	unshifted = 1;
-		//}
-	} else if (recordaudio) {
-		InitAudioRecording();
-		StartAudioRecording(&m_Format);
-	}
-
-	if (shiftType == 2) {
-		Sleep(timeshift);
-	}
-
-	DWORD timeexpended, frametime, oldframetime;
-
-	initialtime = timeGetTime();
-	initcapture = 1;
-	oldframetime = 0;
-	nCurrFrame = 0;
-	nActualFrame = 0;
-
-	//timeshift = 100;
-
-	//////////////////////////////////////////////
-	// WRITING FRAMES
-	//////////////////////////////////////////////
-
-	long divx = 0L;
-	long oldsec = 0L;
-	while (recordstate) {  //repeatedly loop
-		if (initcapture == 0) {
-			timeexpended = timeGetTime() - initialtime;
-		} else {
-			frametime = 0;
-			timeexpended = 0;
-		}
-
-		//Autopan
-		if ((autopan) && (width < maxxScreen) && (height < maxyScreen)) {
-			POINT xPoint;
-			GetCursorPos(&xPoint);
-
-			int extleft = ((panrect_current.right - panrect_current.left)*1)/4 + panrect_current.left;
-			int extright = ((panrect_current.right - panrect_current.left)*3)/4 + panrect_current.left;
-			int exttop = ((panrect_current.bottom - panrect_current.top)*1)/4 + panrect_current.top;
-			int extbottom = ((panrect_current.bottom - panrect_current.top)*3)/4 + panrect_current.top;
-
-			if (xPoint.x  < extleft ) { //need to pan left
-				panrect_dest.left = xPoint.x - width/2;
-				panrect_dest.right = panrect_dest.left +  width - 1;
-				if (panrect_dest.left < 0)  {
-					panrect_dest.left = 0;
-					panrect_dest.right = panrect_dest.left +  width - 1;
-				}
-			} else if (xPoint.x  > extright ) { //need to pan right
-				panrect_dest.left = xPoint.x - width/2;
-				panrect_dest.right = panrect_dest.left +  width - 1;
-				if (panrect_dest.right >= maxxScreen) {
-					panrect_dest.right = maxxScreen - 1;
-					panrect_dest.left  = panrect_dest.right - width + 1;
-				}
-			} else {
-				panrect_dest.right = panrect_current.right;
-				panrect_dest.left  = panrect_current.left;
-			}
-
-			if (xPoint.y  < exttop ) { //need to pan up
-				panrect_dest.top = xPoint.y - height/2;
-				panrect_dest.bottom = panrect_dest.top +  height - 1;
-				if (panrect_dest.top < 0)  {
-					panrect_dest.top = 0;
-					panrect_dest.bottom = panrect_dest.top +  height - 1;
-				}
-			} else if (xPoint.y  > extbottom ) { //need to pan down
-				panrect_dest.top = xPoint.y - height/2;
-				panrect_dest.bottom = panrect_dest.top +  height - 1;
-				if (panrect_dest.bottom >= maxyScreen) {
-					panrect_dest.bottom = maxyScreen - 1;
-					panrect_dest.top  = panrect_dest.bottom - height + 1;
-				}
-			} else {
-				panrect_dest.top = panrect_current.top;
-				panrect_dest.bottom  = panrect_current.bottom;
-			}
-
-			//Determine Pan Values
-			int xdiff, ydiff;
-			xdiff = panrect_dest.left - panrect_current.left;
-			ydiff = panrect_dest.top - panrect_current.top;
-
-			if (abs(xdiff) < maxpan) {
-				panrect_current.left += xdiff;
-			} else {
-				if (xdiff<0) {
-					panrect_current.left -= maxpan;
-				} else {
-					panrect_current.left += maxpan;
-				}
-			}
-
-			if (abs(ydiff) < maxpan) {
-				panrect_current.top += ydiff;
-			} else {
-				if (ydiff<0) {
-					panrect_current.top -= maxpan;
-				} else {
-					panrect_current.top += maxpan;
-				}
-			}
-
-			panrect_current.right = panrect_current.left + width - 1;
-			panrect_current.bottom =  panrect_current.top + height - 1;
-
-			alpbi=captureScreenFrame(panrect_current.left, panrect_current.top, width, height, 0);
-		} else {
-			//ver 1.8
-			//moving region
-			readingRegion = 0;
-			while (writingRegion)
-			{
-			}
-			readingRegion = 1;
-
-			if (newRegionUsed) {
-				left = newRect.left;
-				top = newRect.top;
-				newRegionUsed = 0;
-				//width and height unchanged
-			}
-
-			readingRegion = 0;
-
-			alpbi=captureScreenFrame(left, top, width, height, 0);
-		}
-
-		if (initcapture == 0) {
-			if (timelapse>1000) {
-				frametime++;
-			} else {
-				frametime = (DWORD) (((double) timeexpended /1000.0 ) * (double) (1000.0/timelapse));
-			}
-		} else {
-			initcapture = 0;
-		}
-
-		fTimeLength = ((float) timeexpended) /((float) 1000.0);
-
-		if (recordpreset) {
-			if (int(fTimeLength) >= presettime) {
-				//recordstate = 0;
-				PostMessage(hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
-			}
-
-			//CString msgStr;
-			//msgStr.Format("%.2f %d", fTimeLength, presettime);
-			//MessageBox(NULL, msgStr, "N", MB_OK);
-
-			//or should we post messages
-		}
-
-		//if ((shiftType == 1) && (unshifted))
-		//{
-		//	cc++;
-		//	unsigned long thistime = timeGetTime();
-		//	int diffInTime = thistime - initialtime;
-		//	if (diffInTime >= timeshift)
-		//	{
-		//		ErrMsg("cc %d diffInTime %d", cc-1, diffInTime);
-		//		if ((recordaudio == 2) || (useMCI))
-		//		{
-		//			mci::mciRecordResume(tempaudiopath);
-		//			unshifted = 0;
-		//		}
-		//	}
-		//}
-
-		if ((frametime == 0) || (frametime>oldframetime)) {
-			//ver 1.8
-			//if (shiftType == 1) {
-			//	if (frametime == 0) {
-			//		//Discard .. do nothing
-			//	} else {
-			//		//writr old frame time instead
-			//		hr = AVIStreamWrite(psCompressed, // stream pointer
-			//			oldframetime, // time of this frame
-			//			1, // number to write
-			//			(LPBYTE) alpbi +				// pointer to data
-			//			alpbi->biSize +
-			//			alpbi->biClrUsed * sizeof(RGBQUAD),
-			//			alpbi->biSizeImage, // size of this frame
-			//			//AVIIF_KEYFRAME, // flags....
-			//			0, //Dependent n previous frame, not key frame
-			//			NULL,
-			//			NULL);
-			//	}
-			//} else {
-
-			//if frametime repeats (frametime == oldframetime) ...the avistreamwrite will cause an error
-			hr = AVIStreamWrite(psCompressed, frametime, 1, (LPBYTE) alpbi + alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD), alpbi->biSizeImage, 0, NULL, NULL);
-			//}
-
-			if (hr != AVIERR_OK) {
-				break;
-			}
-
-			nActualFrame ++ ;
-			nCurrFrame = frametime;
-			fRate = ((float) nCurrFrame)/fTimeLength;
-			fActualRate = ((float) nActualFrame)/fTimeLength;
-
-			//Update recording stats every half a second
-			divx = timeexpended / 500;
-			if (divx != oldsec) {
-				oldsec = divx;
-				InvalidateRect(hWndGlobal, NULL, FALSE);
-			}
-
-			//free memory
-			FreeFrame(alpbi);
-			alpbi=NULL;
-
-			oldframetime = frametime;
-		} // if frametime is different
-
-		//Version 1.1
-		int haveslept = 0;
-		int pausecounter = 0;
-		// local variable is initialized but not referenced
-		//int pauseremainder = 0;
-		int pauseindicator = 1;
-		DWORD timestartpause;
-		DWORD timeendpause;
-		DWORD timedurationpause;
-		while (recordpaused) {
-			if (!haveslept) {
-				timestartpause = timeGetTime();
-			}
-
-			//Flash Pause Indicator in Title Bar
-			pausecounter++;
-			if ((pausecounter % 8) == 0) {
-				//if after every 400 milliseconds (8 * 50)
-				if (pauseindicator) {
-					SetTitleBar("");
-					pauseindicator = 0;
-				} else {
-					SetTitleBar("Paused");
-					pauseindicator = 1;
-				}
-			}
-
-			if ((recordaudio == 2) || (useMCI)) {
-				if (alreadyMCIPause == 0) {
-					mciRecordPause(tempaudiopath);
-					alreadyMCIPause = 1;
-				}
-			}
-
-			//do nothing.. wait
-			::Sleep(50); //Sleep for 50
-
-			haveslept=1;
-		}
-
-		//Version 1.1
-		if (haveslept) {
-			if ((recordaudio == 2) || (useMCI)) {
-				if (alreadyMCIPause == 1) {
-					mciRecordResume(tempaudiopath);
-					alreadyMCIPause = 0;
-				}
-			}
-
-			timeendpause = timeGetTime();
-			timedurationpause =  timeendpause - timestartpause;
-
-			//CString msgstr;
-			//msgstr.Format("timestartpause %ld\ntimeendpause %ld\ntimedurationpause %ld", timeendpause, timeendpause, timedurationpause);
-			//MessageBox(NULL, msgstr, "Note", MB_OK);
-
-			initialtime = initialtime + timedurationpause;
-		} else {
-			//introduce time lapse
-			//maximum lapse when recordstate changes will be less than 100 milliseconds
-			int no_iteration = timelapse/50;
-			int remainlapse = timelapse - no_iteration * 50;
-			for (int j = 0; j < no_iteration; j++) {
-				::Sleep(50); //Sleep for 50 milliseconds many times
-				if (recordstate == 0) {
-					break;
-				}
-			}
-			if (recordstate == 1) {
-				::Sleep(remainlapse);
-			}
-		}
-	} //for loop
-
-error:
-
-	// Now close the file
-
-	if (flashingRect) {
-		pFrame->ShowWindow(SW_HIDE);
-	}
-
-	//Ver 1.2
-	//
-	if ((compfccHandler == CompressorStateIsFor) && (compfccHandler != 0)) {
-		//Detach pParamsUse from AVICOMPRESSOPTIONS so AVISaveOptionsFree will not free it
-		//(we will free it ourselves)
-
-		//Setting this is no harm even if pParamsUse is not attached to lpParams
-		aopts[0]->lpParms			 = 0;
-		aopts[0]->cbParms			 = 0;
-	}
-
-	AVISaveOptionsFree(1, (LPAVICOMPRESSOPTIONS FAR *) &aopts);
-
-	//////////////////////////////////////////////
-	// Recording Audio
-	//////////////////////////////////////////////
-	if ((recordaudio == 2) || (useMCI)) {
-		GetTempWavePath();
-		mciRecordStop(tempaudiopath);
-		mciRecordClose();
-		//restoreWave();
-	} else if (recordaudio) {
-		StopAudioRecording();
-		ClearAudioFile();
-	}
-
-	if (pfile) {
-		AVIFileClose(pfile);
-	}
-
-	if (ps) {
-		AVIStreamClose(ps);
-	}
-
-	if (psCompressed) {
-		AVIStreamClose(psCompressed);
-	}
-
-	AVIFileExit();
-
-	if (hr != NOERROR) 	{
-		PostMessage(hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
-
-		/*
-		char *ErrorBuffer; // This really is a pointer - not reserved space!
-		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | 	FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPTSTR)&ErrorBuffer, 0, NULL);
-
-		CString reasonstr(ErrorBuffer);
-		CString errorstr("File Creation Error. Unable to rename file.\n\n");
-		CString reportstr;
-
-		reportstr = errorstr + reasonstr;
-		//MessageBox(NULL, reportstr, "Note", MB_OK | MB_ICONEXCLAMATION);
-		*/
-
-		if (compfccHandler != mmioFOURCC('M', 'S', 'V', 'C')) {
-			//if (IDYES == MessageBox(NULL, "Error recording AVI file using current compressor. Use default compressor ? ", "Note", MB_YESNO | MB_ICONEXCLAMATION)) {
-			if (IDYES == MessageOut(NULL, IDS_STRING_ERRAVIDEFAULT, IDS_STRING_NOTE, MB_YESNO | MB_ICONQUESTION	)) {
-				compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-				strCodec = "MS Video 1";
-				PostMessage(hWndGlobal, WM_USER_RECORDSTART, 0, 0);
-			}
-		} else {
-			//MessageBox(NULL, "Error Creating AVI File", "Error", MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(NULL, IDS_STRING_ERRCREATEAVI , IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-		}
-
-		return 0;
-	}
-
-	//Save the file on success
-	PostMessage(hWndGlobal, WM_USER_GENERIC, 0, 0);
-
-	TRACE("Success end\n");
-	return 0;
-}
-
-/////////////////////////////////////////////////////////////////////////////
 // CRecorderView
+
+UINT CRecorderView::WM_USER_RECORDINTERRUPTED = ::RegisterWindowMessage(WM_USER_RECORDINTERRUPTED_MSG);
+UINT CRecorderView::WM_USER_SAVECURSOR = ::RegisterWindowMessage(WM_USER_SAVECURSOR_MSG);
+UINT CRecorderView::WM_USER_GENERIC = ::RegisterWindowMessage(WM_USER_GENERIC_MSG);
+UINT CRecorderView::WM_USER_RECORDSTART = ::RegisterWindowMessage(WM_USER_RECORDSTART_MSG);
 
 IMPLEMENT_DYNCREATE(CRecorderView, CView)
 
@@ -3823,7 +3025,9 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	// TODO: Add your specialized creation code here
-	versionOp = GetOperatingSystem();
+	hWndGlobal = m_hWnd;
+	VERIFY(0 == SetAdjustHotKeys());
+	LoadSettings();
 
 	CreateShiftWindow();
 
@@ -4295,24 +3499,6 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 	return 0;
 }
 
-BOOL CRecorderView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext)
-{
-	// TODO: Add your specialized code here and/or call the base class
-	BOOL result = CWnd::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
-
-	//Can we put the following line here to get the m_hWnd of this CWnd ?
-	hWndGlobal = m_hWnd;
-
-	//ver 1.2
-	//InstallMyKeyHook(hWndGlobal,WM_USER_KEYSTART);
-	int val = SetAdjustHotKeys();
-
-	//ver 1.2
-	LoadSettings();
-
-	return result;
-}
-
 void CRecorderView::OnRecord()
 {
 	// TODO: Add your command handler code here
@@ -4541,11 +3727,7 @@ void CRecorderView::OnUpdateOptionsMinimizeonstart(CCmdUI* pCmdUI)
 
 void CRecorderView::OnOptionsHideflashing()
 {
-	// TODO: Add your command handler code here
-	if (flashingRect==0)
-		flashingRect = 1;
-	else
-		flashingRect = 0;
+	flashingRect = !flashingRect;
 }
 
 void CRecorderView::OnUpdateOptionsHideflashing(CCmdUI* pCmdUI)
@@ -4890,7 +4072,6 @@ bool CRecorderView::SaveAppSettings()
 // Ver 1.2
 void CRecorderView::SaveSettings()
 {
-
 	//********************************************
 	//Creating CamStudio.ini for storing text data
 	//********************************************
@@ -5141,7 +4322,7 @@ void CRecorderView::SaveSettings()
 	if (cbwfx>0)
 		fwrite( (void *) pwfx, cbwfx, 1, tFile);
 
-	if (CompressorStateSize>0)
+	if (CompressorStateSize > 0)
 		fwrite( (void *) pVideoCompressParams, CompressorStateSize, 1, tFile);
 
 	//Ver 1.6
@@ -5222,19 +4403,19 @@ void CRecorderView::LoadSettings()
 
 	//Ver 1.2
 	if (ver>=1.199999) {
-		fscanf_s(sFile, "flashingRect=%d \n",&flashingRect);
+		fscanf_s(sFile, "flashingRect=%d \n", &flashingRect);
 
-		fscanf_s(sFile, "launchPlayer=%d \n",&launchPlayer);
-		fscanf_s(sFile, "minimizeOnStart=%d \n",&minimizeOnStart);
-		fscanf_s(sFile, "MouseCaptureMode= %d \n",&MouseCaptureMode);
-		fscanf_s(sFile, "capturewidth=%d \n",&capturewidth);
-		fscanf_s(sFile, "captureheight=%d \n",&captureheight);
+		fscanf_s(sFile, "launchPlayer=%d \n", &launchPlayer);
+		fscanf_s(sFile, "minimizeOnStart=%d \n", &minimizeOnStart);
+		fscanf_s(sFile, "MouseCaptureMode= %d \n", &MouseCaptureMode);
+		fscanf_s(sFile, "capturewidth=%d \n", &capturewidth);
+		fscanf_s(sFile, "captureheight=%d \n", &captureheight);
 
-		fscanf_s(sFile, "timelapse=%d \n",&timelapse);
-		fscanf_s(sFile, "frames_per_second= %d \n",&frames_per_second);
-		fscanf_s(sFile, "keyFramesEvery= %d \n",&keyFramesEvery);
-		fscanf_s(sFile, "compquality= %d \n",&compquality);
-		fscanf_s(sFile, "compfccHandler= %ld \n",&compfccHandler);
+		fscanf_s(sFile, "timelapse=%d \n", &timelapse);
+		fscanf_s(sFile, "frames_per_second= %d \n", &frames_per_second);
+		fscanf_s(sFile, "keyFramesEvery= %d \n", &keyFramesEvery);
+		fscanf_s(sFile, "compquality= %d \n", &compquality);
+		fscanf_s(sFile, "compfccHandler= %ld \n", &compfccHandler);
 
 		//LPVOID pVideoCompressParams = NULL;
 		fscanf_s(sFile, "CompressorStateIsFor= %ld \n",&CompressorStateIsFor);
@@ -5248,8 +4429,9 @@ void CRecorderView::LoadSettings()
 		fscanf_s(sFile, "g_highlightshape=%d \n",&g_highlightshape);
 		fscanf_s(sFile, "g_highlightclick=%d \n",&g_highlightclick);
 
-		int redv,greenv,bluev;
-		redv=0;greenv=0;bluev=0;
+		int redv = 0;
+		int greenv = 0;
+		int bluev = 0;
 		fscanf_s(sFile, "g_highlightcolorR=%d \n",&idata);
 		redv=idata;
 		fscanf_s(sFile, "g_highlightcolorG=%d \n",&idata);
@@ -5395,7 +4577,6 @@ void CRecorderView::LoadSettings()
 		fscanf_s(sFile, "tempPath_Access=%d \n",&tempPath_Access);
 		fscanf_s(sFile, "captureTrans=%d \n",&captureTrans);
 		fscanf_s(sFile, "specifieddir=%d \n",&specifiedDirLength);
-
 		fscanf_s(sFile, "NumDev=%d \n",&NumberOfMixerDevices);
 		fscanf_s(sFile, "SelectedDev=%d \n",&SelectedMixer);
 		fscanf_s(sFile, "feedback_line=%d \n",&feedback_line);
@@ -5974,105 +5155,132 @@ void CRecorderView::OnSetFocus(CWnd* pOldWnd)
 	CView::OnSetFocus(pOldWnd);
 }
 
+/////////////////////////////////////////////////////////////////////////////
+// OnHotKey WM_HOTKEY message handler
+// The WM_HOTKEY message is posted when the user presses a hot key registered
+// by the RegisterHotKey function.
+// wParam - Specifies the identifier of the hot key that generated the message. 
+// lParam - The low-order word specifies the keys that were to be pressed in
+// combination with the key specified by the high-order word to generate the
+// WM_HOTKEY message. This word can be one or more of the following values.
+//	MOD_ALT - Either ALT key was held down.
+//	MOD_CONTROL - Either CTRL key was held down.
+//	MOD_SHIFT - Either SHIFT key was held down.
+//	MOD_WIN - Either WINDOWS key was held down. 
+// The high-order word specifies the virtual key code of the hot key. 
+/////////////////////////////////////////////////////////////////////////////
 LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM lParam)
 {
-	if (wParam==0) {
-		//lParam > 0 means keydown??
-		if (recordstate==0) {
+	switch (wParam)
+	{
+	case 0:
+		if (recordstate == 0) {
 			if (AllowNewRecordStartKey) {
-				AllowNewRecordStartKey = FALSE; //prevent the case which CamStudio presents more than one region for the user to select
+				//prevent the case which CamStudio presents more than one region for the user to select
+				AllowNewRecordStartKey = FALSE;
 				OnRecord();
 			}
-		} else if (recordstate==1) {
-			if (recordpaused==0) {
-				OnPause(); //pause if currently recording
+		} else if (recordstate == 1) {
+			// pause if currently recording
+			if (recordpaused == 0) {
+				OnPause();
 			} else {
 				OnRecord();
 			}
 		}
-	} else if (wParam==1) {
-		if (recordstate==1) {
-			if (keyRecordEnd!=keyRecordCancel) {
-				OnRecordInterrupted (keyRecordEnd,0);
+		break;
+	case 1:
+		if (recordstate == 1) {
+			if (keyRecordEnd != keyRecordCancel) {
+				OnRecordInterrupted(keyRecordEnd, 0);
 			} else {
-				OnRecordInterrupted (keyRecordCancel + 1,0);
+				OnRecordInterrupted(keyRecordCancel + 1, 0);
 			}
 		}
-	} else if (wParam==2) {
-		//wParam
-		if (recordstate==1) {
-			OnRecordInterrupted (keyRecordCancel,0);
+		break;
+	case 2:
+		if (recordstate == 1) {
+			OnRecordInterrupted(keyRecordCancel, 0);
 		}
-	} else if (wParam==3) {
-		if (!sadlgCreated) {
-			sadlg.Create(IDD_SCREENANNOTATIONS2,NULL);
-			sadlgCreated = 1;
+		break;
+	case 3:
+		{
+			if (!sadlgCreated) {
+				sadlg.Create(IDD_SCREENANNOTATIONS2,NULL);
+				sadlgCreated = 1;
+			}
+			int max = gList.layoutArray.GetSize();
+			if (max<=0)
+				return 0;
+
+			//Get Current selected
+			int cursel = sadlg.GetLayoutListSelection();
+			if (cursel == -1)
+				currentLayout = 0;
+			else
+				currentLayout = cursel + 1;
+
+			if (currentLayout>=max)
+				currentLayout=0;
+
+			sadlg.InstantiateLayout(currentLayout,1);
 		}
-		int max = gList.layoutArray.GetSize();
-		if (max<=0)
-			return 0;
+		break;
+	case 4:
+		{
+			if (!sadlgCreated) {
+				sadlg.Create(IDD_SCREENANNOTATIONS2,NULL);
+				//sadlg.RefreshLayoutList();
+				sadlgCreated = 1;
+			}
+			int max = gList.layoutArray.GetSize();
+			if (max<=0) return 0;
 
-		//Get Current selected
-		int cursel = sadlg.GetLayoutListSelection();
-		if (cursel == -1)
-			currentLayout = 0;
-		else
-			currentLayout = cursel + 1;
+			//Get Current selected
+			int cursel = sadlg.GetLayoutListSelection();
+			if (cursel == -1) {
+				currentLayout = 0;
+			} else {
+				currentLayout = cursel - 1;
+			}
 
-		if (currentLayout>=max)
-			currentLayout=0;
+			if (currentLayout<0)
+				currentLayout=max-1;
 
-		sadlg.InstantiateLayout(currentLayout,1);
-	} else if (wParam==4) {
-		if (!sadlgCreated) {
-			sadlg.Create(IDD_SCREENANNOTATIONS2,NULL);
-			//sadlg.RefreshLayoutList();
-			sadlgCreated = 1;
+			sadlg.InstantiateLayout(currentLayout,1);
 		}
-		int max = gList.layoutArray.GetSize();
-		if (max<=0) return 0;
+		break;
+	case 5:
+		{
+			if (!sadlgCreated) {
+				sadlg.Create(IDD_SCREENANNOTATIONS2,NULL);
+				sadlgCreated = 1;
+			}
 
-		//Get Current selected
-		int cursel = sadlg.GetLayoutListSelection();
-		if (cursel == -1) {
-			currentLayout = 0;
-		} else {
-			currentLayout = cursel - 1;
+			int displaynum = gList.displayArray.GetSize();
+			if (displaynum>0) {
+				sadlg.CloseAllWindows(1);
+				return 0;
+			}
+
+			int max = gList.layoutArray.GetSize();
+			if (max<=0)
+				return 0;
+
+			//Get Current selected
+			int cursel = sadlg.GetLayoutListSelection();
+			if (cursel == -1) {
+				currentLayout = 0;
+			} else {
+				currentLayout = cursel;
+			}
+
+			if ((currentLayout<0) || (currentLayout>=max)) {
+				currentLayout=0;
+			}
+
+			sadlg.InstantiateLayout(currentLayout,1);
 		}
-
-		if (currentLayout<0)
-			currentLayout=max-1;
-
-		sadlg.InstantiateLayout(currentLayout,1);
-	} else if (wParam==5) {
-		if (!sadlgCreated) {
-			sadlg.Create(IDD_SCREENANNOTATIONS2,NULL);
-			sadlgCreated = 1;
-		}
-
-		int displaynum = gList.displayArray.GetSize();
-		if (displaynum>0) {
-			sadlg.CloseAllWindows(1);
-			return 0;
-		}
-
-		int max = gList.layoutArray.GetSize();
-		if (max<=0)
-			return 0;
-
-		//Get Current selected
-		int cursel = sadlg.GetLayoutListSelection();
-		if (cursel == -1) {
-			currentLayout = 0;
-		} else {
-			currentLayout = cursel;
-		}
-
-		if ((currentLayout<0) || (currentLayout>=max)) {
-			currentLayout=0;
-		}
-
-		sadlg.InstantiateLayout(currentLayout,1);
 	}
 
 	return 1;
@@ -6495,5 +5703,787 @@ void CRecorderView::DisplayRecordingMsg(CDC & srcDC)
 	srcDC.SelectObject(pOldFont);
 	srcDC.SetTextColor(oldTextColor);
 	srcDC.SetBkColor(oldBkColor);
+}
+
+LPBITMAPINFOHEADER CRecorderView::captureScreenFrame(int left, int top, int width, int height, int tempDisableRect)
+{
+	//TRACE("captureScreenFrame\n");
+	HDC hScreenDC = ::GetDC(NULL);
+
+	//if flashing rect
+	if (flashingRect && !tempDisableRect) {
+		if (autopan) {
+			pFrame->SetUpRegion(left, top, width, height, 1);
+		}
+		pFrame->DrawFlashingRect(TRUE, (autopan) ? 1 : 0);
+	}
+
+	HDC hMemDC = ::CreateCompatibleDC(hScreenDC);
+	HBITMAP hbm = ::CreateCompatibleBitmap(hScreenDC, width, height);
+	HBITMAP oldbm = (HBITMAP) ::SelectObject(hMemDC, hbm);
+
+	//ver 1.6
+	DWORD bltFlags = SRCCOPY;
+	if (captureTrans && (4 < versionOp))
+		bltFlags |= CAPTUREBLT;
+	BitBlt(hMemDC, 0, 0, width, height, hScreenDC, left, top, bltFlags);
+
+	RECT rect;
+	rect.left = 0;
+	rect.top = 0;
+	rect.right = rect.left + width;
+	rect.bottom = rect.top + height;
+	if (timestampAnnotation){
+		SYSTEMTIME systime;
+		::GetLocalTime(&systime);
+		timestamp.text.Format("%s %02d:%02d:%02d:%03d", "Recording", systime.wHour, systime.wMinute, systime.wSecond, systime.wMilliseconds);
+		//InsertText(hMemDC, 0, 0, msg);
+		InsertText(hMemDC, rect, timestamp);
+		//InsertText(hMemDC, 0, 0, "Recorded by You!!!");
+	}
+	if (captionAnnotation){
+		InsertText(hMemDC, rect, caption);
+	}
+	if (watermarkAnnotation){
+		InsertImage(hMemDC, rect, watermark);
+	}
+
+	//Get Cursor Pos
+	POINT xPoint;
+	GetCursorPos( &xPoint);
+	HCURSOR hcur= FetchCursorHandle();
+	xPoint.x-=left;
+	xPoint.y-=top;
+
+	//Draw the HighLight
+	if (g_highlightcursor==1) {
+		POINT highlightPoint;
+		highlightPoint.x = xPoint.x -64;
+		highlightPoint.y = xPoint.y -64;
+		InsertHighLight( hMemDC, highlightPoint.x, highlightPoint.y);
+	}
+
+	//Draw the Cursor
+	if (g_recordcursor==1) {
+		ICONINFO iconinfo;
+		BOOL ret;
+		ret = GetIconInfo( hcur, &iconinfo);
+		if (ret) {
+			xPoint.x -= iconinfo.xHotspot;
+			xPoint.y -= iconinfo.yHotspot;
+
+			//need to delete the hbmMask and hbmColor bitmaps
+			//otherwise the program will crash after a while after running out of resource
+			if (iconinfo.hbmMask)
+				DeleteObject(iconinfo.hbmMask);
+			if (iconinfo.hbmColor)
+				DeleteObject(iconinfo.hbmColor);
+		}
+
+		::DrawIcon( hMemDC, xPoint.x, xPoint.y, hcur);
+	}
+
+	SelectObject(hMemDC, oldbm);
+	LPBITMAPINFOHEADER pBM_HEADER = (LPBITMAPINFOHEADER)GlobalLock(Bitmap2Dib(hbm, bits));
+	if (pBM_HEADER == NULL) {
+		//MessageBox(NULL,"Error reading a frame!","Error",MB_OK | MB_ICONEXCLAMATION);
+		MessageOut(NULL,IDS_STRING_ERRFRAME,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+
+		exit(1);	// todo: WHAT??? Exit???
+	}
+
+	DeleteObject(hbm);
+	DeleteDC(hMemDC);
+
+	//if flashing rect
+	if (flashingRect && !tempDisableRect) {
+		pFrame->DrawFlashingRect(FALSE, (autopan) ? 1 : 0);
+	}
+
+	::ReleaseDC(NULL,hScreenDC);
+
+	return pBM_HEADER;
+}
+
+void CRecorderView::FreeFrame(LPBITMAPINFOHEADER alpbi)
+{
+	if (!alpbi)
+		return;
+
+	GlobalFreePtr(alpbi);
+	alpbi = 0;
+}
+
+UINT CRecorderView::RecordAVIThread(LPVOID pParam)
+{
+	//Test the validity of writing to the file
+	//Make sure the file to be created is currently not used by another application
+	CString csTempFolder(GetTempPath(tempPath_Access, specifieddir));
+	tempfilepath.Format("%s\\~temp.avi", (LPCSTR)csTempFolder);
+
+	srand( (unsigned)time( NULL));
+	bool fileverified = false;
+	while (!fileverified)
+	{
+		OFSTRUCT ofstruct;
+		HFILE hFile = OpenFile(tempfilepath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE | OF_CREATE);
+		fileverified = (hFile != HFILE_ERROR);
+		if (fileverified) {
+			CloseHandle((HANDLE)hFile);
+			DeleteFile(tempfilepath);
+		} else {
+			tempfilepath.Format("%s\\~temp%d.avi", (LPCSTR)csTempFolder, rand());
+		}
+	}
+
+	int top = rcUse.top;
+	int left = rcUse.left;
+	int width = rcUse.right - rcUse.left+1;
+	int height = rcUse.bottom - rcUse.top + 1;
+	int fps = frames_per_second;
+
+	RecordVideo(top, left, width, height, fps, tempfilepath);
+
+	return 0;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// RecordVideo
+//
+// The main function used in the recording of video
+// Includes opening/closing avi file, initializing avi settings, capturing
+// frames, applying cursor effects etc.
+/////////////////////////////////////////////////////////////////////////////
+int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps, const char *szFileName)
+{
+	TRACE("RecordVideo\n");
+	WORD wVer = HIWORD(VideoForWindowsVersion());
+	if (wVer < 0x010a) {
+		MessageOut(NULL, IDS_STRING_VERSIONOLD , IDS_STRING_NOTE, MB_OK | MB_ICONSTOP);
+		return FALSE;
+	}
+
+	actualwidth = width;
+	actualheight = height;
+
+	////////////////////////////////////////////////
+	// CAPTURE FIRST FRAME
+	////////////////////////////////////////////////
+	LPBITMAPINFOHEADER alpbi = captureScreenFrame(left, top, width, height, 1);
+
+	////////////////////////////////////////////////
+	// TEST VALIDITY OF COMPRESSOR
+	//////////////////////////////////////////////////
+
+	if (selected_compressor > 0) {
+		HIC hic = ICOpen(compressor_info[selected_compressor].fccType, compressor_info[selected_compressor].fccHandler, ICMODE_QUERY);
+		if (hic) {
+			int newleft;
+			int newtop;
+			int newwidth;
+			int newheight;
+			int align = 1;
+			while (ICERR_OK!=ICCompressQuery(hic, alpbi, NULL)) {
+				//Try adjusting width/height a little bit
+				align = align * 2 ;
+				if (align>8)
+					break;
+
+				newleft=left;
+				newtop=top;
+				int wm = (width % align);
+				if (wm > 0) {
+					newwidth = width + (align - wm);
+					if (newwidth>maxxScreen) {
+						newwidth = width - wm;
+					}
+				}
+
+				int hm = (height % align);
+				if (hm > 0) {
+					newheight = height + (align - hm);
+					if (newheight>maxyScreen) {
+						newwidth = height - hm;
+					}
+				}
+
+				if (alpbi) {
+					FreeFrame(alpbi);
+				}
+				alpbi=captureScreenFrame(newleft, newtop, newwidth, newheight, 1);
+			}
+
+			//if succeed with new width/height, use the new width and height
+			//else if still fails == > default to MS Video 1 (MSVC)
+			if (align == 1) {
+				//Compressor has no problem with the current dimensions...so proceed
+				//do nothing here
+			} else if  (align <= 8) {
+				//Compressor can work if the dimensions is adjusted slightly
+				left = newleft;
+				top = newtop;
+				width = newwidth;
+				height = newheight;
+
+				actualwidth = newwidth;
+				actualheight = newheight;
+			} else {
+				compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
+				strCodec = CString("MS Video 1");
+			}
+
+			ICClose(hic);
+		} else {
+			compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
+			strCodec = CString("MS Video 1");
+			//MessageBox(NULL, "hic default", "note", MB_OK);
+		}
+	} //selected_compressor
+
+	//Special Cases
+	//DIVX
+	//if (compfccHandler == mmioFOURCC('D', 'I', 'V', 'X')) { //Still Can't Handle DIVX
+	//	compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
+	//	strCodec = CString("MS Video 1");
+	//}
+
+	//IV50
+	if (compfccHandler == mmioFOURCC('I', 'V', '5', '0')) { //Still Can't Handle Indeo 5.04
+		compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
+		strCodec = CString("MS Video 1");
+	}
+
+	////////////////////////////////////////////////
+	// Set Up Flashing Rect
+	////////////////////////////////////////////////
+	if (flashingRect) {
+		if (autopan) {
+			pFrame->SetUpRegion(left, top, width, height, 1);
+		} else {
+			pFrame->SetUpRegion(left, top, width, height, 0);
+		}
+		pFrame->ShowWindow(SW_SHOW);
+	}
+
+	////////////////////////////////////////////////
+	// INIT AVI USING FIRST FRAME
+	////////////////////////////////////////////////
+	AVIFileInit();
+
+	// Open the movie file for writing....
+	char szTitle[BUFSIZE];
+	strcpy_s(szTitle, "AVI Movie");
+
+	PAVIFILE pfile = NULL;
+	HRESULT hr;
+	hr = AVIFileOpen(&pfile, szFileName, OF_WRITE | OF_CREATE, NULL);
+	if (hr != AVIERR_OK) {
+		goto error;
+	}
+
+	// Fill in the header for the video stream....
+	// The video stream will run in 15ths of a second....
+	AVISTREAMINFO strhdr;
+	_fmemset(&strhdr, 0, sizeof(strhdr));
+	strhdr.fccType                = streamtypeVIDEO;// stream type
+
+	//strhdr.fccHandler             = compfccHandler;
+	strhdr.fccHandler             = 0;
+
+	strhdr.dwScale                = 1;
+	strhdr.dwRate                 = fps;
+	strhdr.dwSuggestedBufferSize  = alpbi->biSizeImage;
+	// rectangle for stream
+	SetRect(&strhdr.rcFrame, 0, 0, (int) alpbi->biWidth, (int) alpbi->biHeight);
+
+	// And create the stream;
+	PAVISTREAM ps = NULL;
+	hr = AVIFileCreateStream(pfile, &ps, &strhdr);
+	if (hr != AVIERR_OK) {
+		goto error;
+	}
+
+	AVICOMPRESSOPTIONS opts;
+	AVICOMPRESSOPTIONS FAR * aopts[1] = {&opts};
+	memset(&opts, 0, sizeof(opts));
+	aopts[0]->fccType			= streamtypeVIDEO;
+	aopts[0]->fccHandler		= compfccHandler;
+	aopts[0]->dwKeyFrameEvery	= keyFramesEvery;		// keyframe rate
+	aopts[0]->dwQuality			= compquality;        // compress quality 0-10, 000
+	aopts[0]->dwBytesPerSecond	= 0;		// bytes per second
+	aopts[0]->dwFlags			= AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES;    // flags
+	aopts[0]->lpFormat			= 0x0;                         // save format
+	aopts[0]->cbFormat			= 0;
+	aopts[0]->dwInterleaveEvery = 0;			// for non-video streams only
+
+	//ver 2.26
+	if (RecordingMode == ModeFlash) {
+		//Internally adjust codec to MSVC 100 Quality
+		aopts[0]->fccHandler = mmioFOURCC('M', 'S', 'V', 'C');	 //msvc
+		strCodec = CString("MS Video 1");
+		aopts[0]->dwQuality = 10000;
+	} else {
+		//Ver 1.2
+		//
+		if ((compfccHandler == CompressorStateIsFor) && (compfccHandler != 0)) {
+			//make a copy of the pVideoCompressParams just in case after compression, this variable become messed up
+			if (MakeCompressParamsCopy(CompressorStateSize, pVideoCompressParams)) {
+				aopts[0]->lpParms = pParamsUse;
+				aopts[0]->cbParms = CompressorStateSize;
+			}
+		}
+	}
+
+	//The 1 here indicates only 1 stream
+	//if (!AVISaveOptions(NULL, 0, 1, &ps, (LPAVICOMPRESSOPTIONS *) &aopts))
+	//        goto error;
+
+	PAVISTREAM psCompressed = NULL;
+	hr = AVIMakeCompressedStream(&psCompressed, ps, &opts, NULL);
+	if (hr != AVIERR_OK) {
+		goto error;
+	}
+
+	hr = AVIStreamSetFormat(psCompressed, 0, alpbi, alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD));
+	if (hr != AVIERR_OK) {
+		goto error;
+	}
+
+	FreeFrame(alpbi);
+	alpbi=NULL;
+
+	if (autopan) {
+		panrect_current.left = left;
+		panrect_current.top = top;
+		panrect_current.right = left + width - 1;
+		panrect_current.bottom = top + height - 1;
+	}
+
+	//////////////////////////////////////////////
+	// Recording Audio
+	//////////////////////////////////////////////
+	if ((recordaudio == 2) || (useMCI)) {
+		mciRecordOpen();
+		mciSetWaveFormat();
+		mciRecordStart();
+
+		//if (shiftType == 1)
+		//{
+		//	mci::mciRecordPause(tempaudiopath);
+		//	unshifted = 1;
+		//}
+	} else if (recordaudio) {
+		InitAudioRecording();
+		StartAudioRecording(&m_Format);
+	}
+
+	if (shiftType == 2) {
+		Sleep(timeshift);
+	}
+
+	DWORD timeexpended, frametime, oldframetime;
+
+	initialtime = timeGetTime();
+	initcapture = 1;
+	oldframetime = 0;
+	nCurrFrame = 0;
+	nActualFrame = 0;
+
+	//timeshift = 100;
+
+	//////////////////////////////////////////////
+	// WRITING FRAMES
+	//////////////////////////////////////////////
+
+	long divx = 0L;
+	long oldsec = 0L;
+	while (recordstate) {  //repeatedly loop
+		if (initcapture == 0) {
+			timeexpended = timeGetTime() - initialtime;
+		} else {
+			frametime = 0;
+			timeexpended = 0;
+		}
+
+		//Autopan
+		if ((autopan) && (width < maxxScreen) && (height < maxyScreen)) {
+			POINT xPoint;
+			GetCursorPos(&xPoint);
+
+			int extleft = ((panrect_current.right - panrect_current.left)*1)/4 + panrect_current.left;
+			int extright = ((panrect_current.right - panrect_current.left)*3)/4 + panrect_current.left;
+			int exttop = ((panrect_current.bottom - panrect_current.top)*1)/4 + panrect_current.top;
+			int extbottom = ((panrect_current.bottom - panrect_current.top)*3)/4 + panrect_current.top;
+
+			if (xPoint.x  < extleft ) { //need to pan left
+				panrect_dest.left = xPoint.x - width/2;
+				panrect_dest.right = panrect_dest.left +  width - 1;
+				if (panrect_dest.left < 0)  {
+					panrect_dest.left = 0;
+					panrect_dest.right = panrect_dest.left +  width - 1;
+				}
+			} else if (xPoint.x  > extright ) { //need to pan right
+				panrect_dest.left = xPoint.x - width/2;
+				panrect_dest.right = panrect_dest.left +  width - 1;
+				if (panrect_dest.right >= maxxScreen) {
+					panrect_dest.right = maxxScreen - 1;
+					panrect_dest.left  = panrect_dest.right - width + 1;
+				}
+			} else {
+				panrect_dest.right = panrect_current.right;
+				panrect_dest.left  = panrect_current.left;
+			}
+
+			if (xPoint.y  < exttop ) { //need to pan up
+				panrect_dest.top = xPoint.y - height/2;
+				panrect_dest.bottom = panrect_dest.top +  height - 1;
+				if (panrect_dest.top < 0)  {
+					panrect_dest.top = 0;
+					panrect_dest.bottom = panrect_dest.top +  height - 1;
+				}
+			} else if (xPoint.y  > extbottom ) { //need to pan down
+				panrect_dest.top = xPoint.y - height/2;
+				panrect_dest.bottom = panrect_dest.top +  height - 1;
+				if (panrect_dest.bottom >= maxyScreen) {
+					panrect_dest.bottom = maxyScreen - 1;
+					panrect_dest.top  = panrect_dest.bottom - height + 1;
+				}
+			} else {
+				panrect_dest.top = panrect_current.top;
+				panrect_dest.bottom  = panrect_current.bottom;
+			}
+
+			//Determine Pan Values
+			int xdiff, ydiff;
+			xdiff = panrect_dest.left - panrect_current.left;
+			ydiff = panrect_dest.top - panrect_current.top;
+
+			if (abs(xdiff) < maxpan) {
+				panrect_current.left += xdiff;
+			} else {
+				if (xdiff<0) {
+					panrect_current.left -= maxpan;
+				} else {
+					panrect_current.left += maxpan;
+				}
+			}
+
+			if (abs(ydiff) < maxpan) {
+				panrect_current.top += ydiff;
+			} else {
+				if (ydiff<0) {
+					panrect_current.top -= maxpan;
+				} else {
+					panrect_current.top += maxpan;
+				}
+			}
+
+			panrect_current.right = panrect_current.left + width - 1;
+			panrect_current.bottom =  panrect_current.top + height - 1;
+
+			alpbi=captureScreenFrame(panrect_current.left, panrect_current.top, width, height, 0);
+		} else {
+			//ver 1.8
+			//moving region
+			readingRegion = 0;
+			while (writingRegion)
+			{
+			}
+			readingRegion = 1;
+
+			if (newRegionUsed) {
+				left = newRect.left;
+				top = newRect.top;
+				newRegionUsed = 0;
+				//width and height unchanged
+			}
+
+			readingRegion = 0;
+
+			alpbi=captureScreenFrame(left, top, width, height, 0);
+		}
+
+		if (initcapture == 0) {
+			if (timelapse>1000) {
+				frametime++;
+			} else {
+				frametime = (DWORD) (((double) timeexpended /1000.0 ) * (double) (1000.0/timelapse));
+			}
+		} else {
+			initcapture = 0;
+		}
+
+		fTimeLength = ((float) timeexpended) /((float) 1000.0);
+
+		if (recordpreset) {
+			if (int(fTimeLength) >= presettime) {
+				//recordstate = 0;
+				::PostMessage(hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
+			}
+
+			//CString msgStr;
+			//msgStr.Format("%.2f %d", fTimeLength, presettime);
+			//MessageBox(NULL, msgStr, "N", MB_OK);
+
+			//or should we post messages
+		}
+
+		//if ((shiftType == 1) && (unshifted))
+		//{
+		//	cc++;
+		//	unsigned long thistime = timeGetTime();
+		//	int diffInTime = thistime - initialtime;
+		//	if (diffInTime >= timeshift)
+		//	{
+		//		ErrMsg("cc %d diffInTime %d", cc-1, diffInTime);
+		//		if ((recordaudio == 2) || (useMCI))
+		//		{
+		//			mci::mciRecordResume(tempaudiopath);
+		//			unshifted = 0;
+		//		}
+		//	}
+		//}
+
+		if ((frametime == 0) || (frametime>oldframetime)) {
+			//ver 1.8
+			//if (shiftType == 1) {
+			//	if (frametime == 0) {
+			//		//Discard .. do nothing
+			//	} else {
+			//		//writr old frame time instead
+			//		hr = AVIStreamWrite(psCompressed, // stream pointer
+			//			oldframetime, // time of this frame
+			//			1, // number to write
+			//			(LPBYTE) alpbi +				// pointer to data
+			//			alpbi->biSize +
+			//			alpbi->biClrUsed * sizeof(RGBQUAD),
+			//			alpbi->biSizeImage, // size of this frame
+			//			//AVIIF_KEYFRAME, // flags....
+			//			0, //Dependent n previous frame, not key frame
+			//			NULL,
+			//			NULL);
+			//	}
+			//} else {
+
+			//if frametime repeats (frametime == oldframetime) ...the avistreamwrite will cause an error
+			hr = AVIStreamWrite(psCompressed, frametime, 1, (LPBYTE) alpbi + alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD), alpbi->biSizeImage, 0, NULL, NULL);
+			//}
+
+			if (hr != AVIERR_OK) {
+				break;
+			}
+
+			nActualFrame ++ ;
+			nCurrFrame = frametime;
+			fRate = ((float) nCurrFrame)/fTimeLength;
+			fActualRate = ((float) nActualFrame)/fTimeLength;
+
+			//Update recording stats every half a second
+			divx = timeexpended / 500;
+			if (divx != oldsec) {
+				oldsec = divx;
+				::InvalidateRect(hWndGlobal, NULL, FALSE);
+			}
+
+			//free memory
+			FreeFrame(alpbi);
+			alpbi=NULL;
+
+			oldframetime = frametime;
+		} // if frametime is different
+
+		//Version 1.1
+		int haveslept = 0;
+		int pausecounter = 0;
+		// local variable is initialized but not referenced
+		//int pauseremainder = 0;
+		int pauseindicator = 1;
+		DWORD timestartpause;
+		DWORD timeendpause;
+		DWORD timedurationpause;
+		while (recordpaused) {
+			if (!haveslept) {
+				timestartpause = timeGetTime();
+			}
+
+			//Flash Pause Indicator in Title Bar
+			pausecounter++;
+			if ((pausecounter % 8) == 0) {
+				//if after every 400 milliseconds (8 * 50)
+				if (pauseindicator) {
+					SetTitleBar("");
+					pauseindicator = 0;
+				} else {
+					SetTitleBar("Paused");
+					pauseindicator = 1;
+				}
+			}
+
+			if ((recordaudio == 2) || (useMCI)) {
+				if (alreadyMCIPause == 0) {
+					mciRecordPause(tempaudiopath);
+					alreadyMCIPause = 1;
+				}
+			}
+
+			//do nothing.. wait
+			::Sleep(50); //Sleep for 50
+
+			haveslept=1;
+		}
+
+		//Version 1.1
+		if (haveslept) {
+			if ((recordaudio == 2) || (useMCI)) {
+				if (alreadyMCIPause == 1) {
+					mciRecordResume(tempaudiopath);
+					alreadyMCIPause = 0;
+				}
+			}
+
+			timeendpause = timeGetTime();
+			timedurationpause =  timeendpause - timestartpause;
+
+			//CString msgstr;
+			//msgstr.Format("timestartpause %ld\ntimeendpause %ld\ntimedurationpause %ld", timeendpause, timeendpause, timedurationpause);
+			//MessageBox(NULL, msgstr, "Note", MB_OK);
+
+			initialtime = initialtime + timedurationpause;
+		} else {
+			//introduce time lapse
+			//maximum lapse when recordstate changes will be less than 100 milliseconds
+			int no_iteration = timelapse/50;
+			int remainlapse = timelapse - no_iteration * 50;
+			for (int j = 0; j < no_iteration; j++) {
+				::Sleep(50); //Sleep for 50 milliseconds many times
+				if (recordstate == 0) {
+					break;
+				}
+			}
+			if (recordstate == 1) {
+				::Sleep(remainlapse);
+			}
+		}
+	} //for loop
+
+error:
+
+	// Now close the file
+
+	if (flashingRect) {
+		pFrame->ShowWindow(SW_HIDE);
+	}
+
+	//Ver 1.2
+	//
+	if ((compfccHandler == CompressorStateIsFor) && (compfccHandler != 0)) {
+		//Detach pParamsUse from AVICOMPRESSOPTIONS so AVISaveOptionsFree will not free it
+		//(we will free it ourselves)
+
+		//Setting this is no harm even if pParamsUse is not attached to lpParams
+		aopts[0]->lpParms			 = 0;
+		aopts[0]->cbParms			 = 0;
+	}
+
+	AVISaveOptionsFree(1, (LPAVICOMPRESSOPTIONS FAR *) &aopts);
+
+	//////////////////////////////////////////////
+	// Recording Audio
+	//////////////////////////////////////////////
+	if ((recordaudio == 2) || (useMCI)) {
+		GetTempWavePath();
+		mciRecordStop(tempaudiopath);
+		mciRecordClose();
+		//restoreWave();
+	} else if (recordaudio) {
+		StopAudioRecording();
+		ClearAudioFile();
+	}
+
+	if (pfile) {
+		AVIFileClose(pfile);
+	}
+
+	if (ps) {
+		AVIStreamClose(ps);
+	}
+
+	if (psCompressed) {
+		AVIStreamClose(psCompressed);
+	}
+
+	AVIFileExit();
+
+	if (hr != NOERROR) 	{
+		::PostMessage(hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
+
+		/*
+		char *ErrorBuffer; // This really is a pointer - not reserved space!
+		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | 	FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPTSTR)&ErrorBuffer, 0, NULL);
+
+		CString reasonstr(ErrorBuffer);
+		CString errorstr("File Creation Error. Unable to rename file.\n\n");
+		CString reportstr;
+
+		reportstr = errorstr + reasonstr;
+		//MessageBox(NULL, reportstr, "Note", MB_OK | MB_ICONEXCLAMATION);
+		*/
+
+		if (compfccHandler != mmioFOURCC('M', 'S', 'V', 'C')) {
+			//if (IDYES == MessageBox(NULL, "Error recording AVI file using current compressor. Use default compressor ? ", "Note", MB_YESNO | MB_ICONEXCLAMATION)) {
+			if (IDYES == MessageOut(NULL, IDS_STRING_ERRAVIDEFAULT, IDS_STRING_NOTE, MB_YESNO | MB_ICONQUESTION	)) {
+				compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
+				strCodec = "MS Video 1";
+				::PostMessage(hWndGlobal, WM_USER_RECORDSTART, 0, 0);
+			}
+		} else {
+			//MessageBox(NULL, "Error Creating AVI File", "Error", MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(NULL, IDS_STRING_ERRCREATEAVI , IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+		}
+
+		return 0;
+	}
+
+	//Save the file on success
+	::PostMessage(hWndGlobal, WM_USER_GENERIC, 0, 0);
+
+	TRACE("Success end\n");
+	return 0;
+}
+
+void CRecorderView::SaveProducerCommand()
+{
+	//********************************************
+	//Saving CamProducer.ini for storing text data
+	//********************************************
+
+	CString fileName = "\\CamStudio.Producer.command";
+	CString setDir = GetProgPath();
+	CString setPath = setDir + fileName;
+	FILE * sFile = fopen((LPCTSTR)(setPath), "wt");
+	if (sFile == NULL) {
+		return;
+	}
+
+	// ****************************
+	// Write Variables
+	// ****************************
+
+	float ver=1.0;
+
+	//fprintf(sFile, "[ CamStudio Flash Producer Commands ver%.2f -- Activate with -x or -b in command line mode ] \n\n",ver);
+	fprintf(sFile, "[ CamStudio Flash Producer Commands ver%.2f ] \n\n",ver);
+
+	fprintf(sFile, "launchPropPrompt=%d \n",launchPropPrompt);
+	fprintf(sFile, "launchHTMLPlayer=%d \n",launchHTMLPlayer);
+	fprintf(sFile, "deleteAVIAfterUse=%d \n",deleteAVIAfterUse);
+
+	//ErrMsg( "\nvscap\n");
+	//ErrMsg( "launchPropPrompt = %d \n",launchPropPrompt);
+	//ErrMsg( "launchHTMLPlayer = %d \n",launchHTMLPlayer);
+	//ErrMsg( "deleteAVIAfterUse = %d \n",deleteAVIAfterUse);
+
+	//fflush(sFile);
+	fclose(sFile);
 }
 

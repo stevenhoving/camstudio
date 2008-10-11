@@ -32,7 +32,6 @@ public:
 	public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext = NULL);
 	protected:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
@@ -170,12 +169,28 @@ public:
 	afx_msg void OnHelpCamstudioblog();
 	afx_msg void OnBnClickedButtonlink();
 	DECLARE_EVENTSINK_MAP()
+
+public:
+	// TODO: should be private
+	static UINT WM_USER_RECORDINTERRUPTED;
+	static UINT WM_USER_SAVECURSOR;
+	static UINT WM_USER_GENERIC;
+	static UINT WM_USER_RECORDSTART;
+
 private:
 	CVideoWnd m_vanWnd;
 	void DisplayRecordingStatistics(CDC & srcDC);
 	void DisplayBackground(CDC & srcDC);
 	void DisplayRecordingMsg(CDC & srcDC);
 	bool SaveAppSettings();
+	void SaveProducerCommand();
+	
+	static LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height,int tempDisableRect);
+	static void FreeFrame(LPBITMAPINFOHEADER);
+
+	static UINT RecordAVIThread(LPVOID pParam);
+	static int RecordVideo(int top,int left,int width,int height,int numframes,const char *szFileName);
+	// CamStudio.ini settings
 };
 
 #ifndef _DEBUG  // debug version in vscapView.cpp

@@ -30,8 +30,6 @@
 
 #include <windowsx.h>
 
-extern HWND hWndGlobal;
-extern int versionOp;
 extern int maxxScreen;
 extern int maxyScreen;
 
