@@ -16,8 +16,6 @@ extern int AreWindowsEdited();
 #define DEFAULT_PERIOD 30
 int g_refreshRate = 30;
 
-extern int versionOp;
-
 /////////////////////////////////////////////////////////////////////////////
 // CVideoWnd
 CVideoWnd::CVideoWnd()

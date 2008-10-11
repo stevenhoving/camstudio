@@ -63,6 +63,9 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
+//int versionOp = 0;
+extern int versionOp;
+
 // general error handler
 void OnError(LPTSTR lpszFunction);
 extern void ErrMsg(char format[], ...);

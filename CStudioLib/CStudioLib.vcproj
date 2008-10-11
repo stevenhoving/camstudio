@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="CStudioLib"
+	Name="CamLib"
 	ProjectGUID="{90BC3E7C-3D9B-4D95-9A6A-18DE32AE0208}"
 	RootNamespace="CStudioLib"
 	Keyword="Win32Proj"

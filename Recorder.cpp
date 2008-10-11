@@ -13,6 +13,8 @@
 #include "RecorderDoc.h"
 #include "RecorderView.h"
 #include "CamStudioCommandLineInfo.h"
+#include "CStudioLib.h"
+#include "Profile.h"
 
 #include <strsafe.h>		// for StringCchPrintf
 #include "afxwin.h"
@@ -25,6 +27,8 @@ static char THIS_FILE[] = __FILE__;
 
 extern HWND hWndGlobal;
 static BOOL bClassRegistered = FALSE;
+
+int versionOp = 0;	// operating system version
 
 /////////////////////////////////////////////////////////////////////////////
 // OnError
@@ -174,7 +178,6 @@ BOOL CRecorderApp::InitInstance()
 	free((void*)m_pszProfileName);
 	// Change the name of the .INI file.
 	// The CWinApp destructor will free the memory.
-	m_pszProfileName = _tcsdup(_T(".\\CamStudio.ini"));
 
 	CurLangID = static_cast<LANGID>(GetProfileInt(SEC_SETTINGS, ENT_LANGID, STANDARD_LANGID));
 	if (!LoadLanguage(CurLangID)) {
@@ -207,6 +210,18 @@ BOOL CRecorderApp::InitInstance()
 	// SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
 	LoadStdProfileSettings(); // Load standard INI file options (including MRU)
+
+	{
+		CString strProfile;
+		strProfile.Format("%s\\CamStudio.ini", (LPCSTR)(GetProgPath()));
+		m_pszProfileName = _tcsdup(strProfile);
+		//m_pszProfileName = _tcsdup(_T(".\\CamStudio.ini"));
+		CCamStudioSettings cmSettings;
+		cmSettings.LoadSettings();
+		cmSettings.WriteSettings();
+	}
+
+	versionOp = GetOperatingSystem();
 
 	// Register the application's document templates. Document templates
 	// serve as the connection between documents, frame windows and views.
