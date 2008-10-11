@@ -100,8 +100,7 @@ BOOL AudioSpeakers::OnInitDialog()
 	}
 
 	if (!success) {
-		//line.LoadString(IDS_STRING_LINEUNDETECTED);
-		line.LoadString(IDS_STRING_NODETECTLINE);		
+		line.LoadString(IDS_STRING_LINEUNDETECTED);
 	}
 
 	((CSliderCtrl *) (GetDlgItem(IDC_VOLUMESLIDER)))->EnableWindow(success);
