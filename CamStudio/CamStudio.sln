@@ -29,8 +29,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "cximage\zlib\zlib.v
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CamCodec", "..\CamStudioCodec\camcodec.vcproj", "{EE246C7E-6ABE-4228-96ED-A44DE8B8C6D7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CamLib", "CStudioLib\CStudioLib.vcproj", "{90BC3E7C-3D9B-4D95-9A6A-18DE32AE0208}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Recorder", "Recorder.vcproj", "{E6A9946A-612B-40A3-BCA3-FEF0B64B4B6C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A9F1DC57-4FBD-4E58-B838-C3A850173C6F} = {A9F1DC57-4FBD-4E58-B838-C3A850173C6F}
@@ -39,6 +37,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Recorder", "Recorder.vcproj
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CamCommandLine", "..\CamStudioCommandline\CamStudioCommandline.vcproj", "{5AF4A6BD-43EF-4703-A79E-6047A9D2F1BE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CamLib", "CamLib\CamLib.vcproj", "{90BC3E7C-3D9B-4D95-9A6A-18DE32AE0208}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,10 +90,6 @@ Global
 		{EE246C7E-6ABE-4228-96ED-A44DE8B8C6D7}.Debug|Win32.Build.0 = Debug|Win32
 		{EE246C7E-6ABE-4228-96ED-A44DE8B8C6D7}.Release|Win32.ActiveCfg = Release|Win32
 		{EE246C7E-6ABE-4228-96ED-A44DE8B8C6D7}.Release|Win32.Build.0 = Release|Win32
-		{90BC3E7C-3D9B-4D95-9A6A-18DE32AE0208}.Debug|Win32.ActiveCfg = Debug|Win32
-		{90BC3E7C-3D9B-4D95-9A6A-18DE32AE0208}.Debug|Win32.Build.0 = Debug|Win32
-		{90BC3E7C-3D9B-4D95-9A6A-18DE32AE0208}.Release|Win32.ActiveCfg = Release|Win32
-		{90BC3E7C-3D9B-4D95-9A6A-18DE32AE0208}.Release|Win32.Build.0 = Release|Win32
 		{E6A9946A-612B-40A3-BCA3-FEF0B64B4B6C}.Debug|Win32.ActiveCfg = Debug|Win32
 		{E6A9946A-612B-40A3-BCA3-FEF0B64B4B6C}.Debug|Win32.Build.0 = Debug|Win32
 		{E6A9946A-612B-40A3-BCA3-FEF0B64B4B6C}.Release|Win32.ActiveCfg = Release|Win32
@@ -102,6 +98,10 @@ Global
 		{5AF4A6BD-43EF-4703-A79E-6047A9D2F1BE}.Debug|Win32.Build.0 = Debug|Win32
 		{5AF4A6BD-43EF-4703-A79E-6047A9D2F1BE}.Release|Win32.ActiveCfg = Release|Win32
 		{5AF4A6BD-43EF-4703-A79E-6047A9D2F1BE}.Release|Win32.Build.0 = Release|Win32
+		{90BC3E7C-3D9B-4D95-9A6A-18DE32AE0208}.Debug|Win32.ActiveCfg = Debug|Win32
+		{90BC3E7C-3D9B-4D95-9A6A-18DE32AE0208}.Debug|Win32.Build.0 = Debug|Win32
+		{90BC3E7C-3D9B-4D95-9A6A-18DE32AE0208}.Release|Win32.ActiveCfg = Release|Win32
+		{90BC3E7C-3D9B-4D95-9A6A-18DE32AE0208}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
