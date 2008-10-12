@@ -19,67 +19,15 @@ public:
 	BOOL Register(HWND hWnd);
 	BOOL Unregister();
 
-	const int ID() const
-	{
-		return m_iID;
-	}
-	int ID(int iID)
-	{
-		if (m_bRegistered)
-		{
-			HWND hWndOld = m_hWnd;
-			Unregister();
-			m_iID = iID;
-			VERIFY(Register(hWndOld));
-			return m_iID;
-		}
-		return m_iID = iID;
-	}
-	const UINT Modifier() const
-	{
-		return m_uModifier;
-	}
-	UINT SetModifier(UINT uModifier)
-	{
-		if (m_bRegistered)
-		{
-			HWND hWndOld = m_hWnd;
-			Unregister();
-			m_uModifier |= uModifier;
-			VERIFY(Register(hWndOld));
-			return m_uModifier;
-		}
-		return m_uModifier |= uModifier;
-	}
-	UINT ClearModifier(UINT uModifier)
-	{
-		if (m_bRegistered)
-		{
-			HWND hWndOld = m_hWnd;
-			Unregister();
-			m_uModifier ^= ~uModifier;
-			VERIFY(Register(hWndOld));
-			return m_uModifier;
-		}
-		return m_uModifier ^= ~uModifier;
-	}
+	const int ID() const			{return m_iID;}
+	int ID(int iID);
+
+	const UINT Modifier() const		{return m_uModifier;}
+	UINT SetModifier(UINT uModifier);
+	UINT ClearModifier(UINT uModifier);
 	
-	const UINT VirtualKey() const
-	{
-		return m_uVirtualKey;
-	}
-	UINT VirtualKey(UINT uVirtualKey)
-	{
-		if (m_bRegistered)
-		{
-			HWND hWndOld = m_hWnd;
-			Unregister();
-			m_uVirtualKey = uVirtualKey;
-			VERIFY(Register(hWndOld));
-			return m_uVirtualKey;
-		}
-		return m_uVirtualKey = uVirtualKey;
-	}
+	const UINT VirtualKey() const	{return m_uVirtualKey;}
+	UINT VirtualKey(UINT uVirtualKey);
 
 private:
 	int m_iID;				// hotkey identifier
@@ -107,3 +55,29 @@ private:
 	std::vector <CHotKey> m_vHotKeys;
 };
 
+extern UINT keyRecordStart;
+extern UINT keyRecordEnd;
+extern UINT keyRecordCancel;
+
+extern UINT keyRecordStartCtrl;
+extern UINT keyRecordEndCtrl;
+extern UINT keyRecordCancelCtrl;
+extern UINT keyRecordStartAlt;
+extern UINT keyRecordEndAlt;
+extern UINT keyRecordCancelAlt;
+extern UINT keyRecordStartShift;
+extern UINT keyRecordEndShift;
+extern UINT keyRecordCancelShift;
+
+extern UINT keyNext;
+extern UINT keyPrev;
+extern UINT keyShowLayout;
+extern UINT keyNextCtrl;
+extern UINT keyPrevCtrl;
+extern UINT keyShowLayoutCtrl;
+extern UINT keyNextAlt;
+extern UINT keyPrevAlt;
+extern UINT keyShowLayoutAlt;
+extern UINT keyNextShift;
+extern UINT keyPrevShift;
+extern UINT keyShowLayoutShift;

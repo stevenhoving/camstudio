@@ -4,9 +4,8 @@
 //********************************************************************************
 
 #include "stdafx.h"
+#include "Recorder.h"
 #include "FlashingWnd.h"
-
-#include <assert.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -19,8 +18,7 @@ static char THIS_FILE[] = __FILE__;
 #define SIDELEN 12
 #define SIDELEN2 24
 
-extern int maxxScreen;
-extern int maxyScreen;
+extern int supportMouseDrag;
 
 //ver 1.8
 HCURSOR cursorMove = NULL;
@@ -36,7 +34,6 @@ int writingRegion = 0;
 int settingRegion = 0;
 int capturingRegion = 0;
 
-extern int supportMouseDrag;
 
 //********************************************************************************
 //* Constructor
@@ -44,8 +41,7 @@ extern int supportMouseDrag;
 
 CFlashingWnd::CFlashingWnd()
 {
-
-	cursorMove=::LoadCursor(NULL,IDC_SIZEALL);
+	cursorMove = ::LoadCursor(NULL,IDC_SIZEALL);
 }
 
 //********************************************************************************
@@ -54,7 +50,10 @@ CFlashingWnd::CFlashingWnd()
 
 CFlashingWnd::~CFlashingWnd()
 {
-	if (cursorMove) DeleteObject(cursorMove);
+	if (cursorMove)
+	{
+		DeleteObject(cursorMove);
+	}
 }
 
 BEGIN_MESSAGE_MAP(CFlashingWnd, CWnd)
@@ -74,17 +73,11 @@ END_MESSAGE_MAP()
 
 void CFlashingWnd::CreateFlashing(LPCTSTR pTitle, RECT &rect)
 {
-	CreateEx( WS_EX_TOPMOST ,
-		AfxRegisterWndClass(0,LoadCursor(NULL, IDC_ARROW)),
-		pTitle,
-		WS_POPUP ,
-		rect,
-		NULL,
-		NULL,
-		NULL );
-
+	if (!CreateEx(WS_EX_TOPMOST, AfxRegisterWndClass(0,LoadCursor(NULL, IDC_ARROW)), pTitle, WS_POPUP, rect, NULL, NULL, NULL))
+	{
+		::OnError("CFlashingWnd::CreateFlashing");
+	}
 	oldregion = NULL;
-
 }
 
 //********************************************************************************
@@ -94,16 +87,18 @@ void CFlashingWnd::CreateFlashing(LPCTSTR pTitle, RECT &rect)
 //********************************************************************************
 void CFlashingWnd::SetUpRegion(int x, int y, int width, int height, int type)
 {
+	CRgn wndRgn;
+	CRgn rgnTemp;
+	CRgn rgnTemp2;
+	CRgn rgnTemp3;
 
-	CRgn wndRgn, rgnTemp, rgnTemp2,rgnTemp3;
-
-	cRect.left= x;
-	cRect.top= y;
+	cRect.left = x;
+	cRect.top = y;
 	cRect.right = cRect.left + width -1;
 	cRect.bottom = cRect.top + height -1;
 
-	if (type == 0) {
-
+	if (type == 0)
+	{
 		wndRgn.CreateRectRgn(0,0, cRect.Width()+THICKNESS+THICKNESS, cRect.Height()+THICKNESS+THICKNESS);
 		rgnTemp.CreateRectRgn(THICKNESS, THICKNESS, cRect.Width()+THICKNESS+1, cRect.Height()+THICKNESS+1);
 		rgnTemp2.CreateRectRgn(0, SIDELEN2, cRect.Width()+THICKNESS+THICKNESS, cRect.Height()-SIDELEN+1);
@@ -114,34 +109,33 @@ void CFlashingWnd::SetUpRegion(int x, int y, int width, int height, int type)
 		wndRgn.CombineRgn(&wndRgn,&rgnTemp3,RGN_DIFF);
 
 		wndRgn.OffsetRgn( cRect.left-THICKNESS, cRect.top-THICKNESS );
-
 	}
-	else {
-
+	else
+	{
 		wndRgn.CreateRectRgn(0,0, cRect.Width()+SMALLTHICKNESS+SMALLTHICKNESS, cRect.Height()+SMALLTHICKNESS+SMALLTHICKNESS);
 		rgnTemp.CreateRectRgn(SMALLTHICKNESS, SMALLTHICKNESS, cRect.Width()+SMALLTHICKNESS+1, cRect.Height()+SMALLTHICKNESS+1);
 
 		wndRgn.CombineRgn(&wndRgn,&rgnTemp,RGN_DIFF);
 
 		wndRgn.OffsetRgn( cRect.left-SMALLTHICKNESS, cRect.top-SMALLTHICKNESS );
-
 	}
 
 	HRGN newregion = (HRGN) wndRgn.Detach();
 	SetWindowRgn((HRGN) newregion, TRUE);
 
-	if (oldregion) DeleteObject(oldregion);
+	if (oldregion)
+	{
+		DeleteObject(oldregion);
+	}
 	oldregion = newregion;
-
 }
 
 void CFlashingWnd::SetUpRect(int x, int y, int width, int height)
 {
-	cRect.left= x;
-	cRect.top= y;
-	cRect.right = cRect.left + width -1;
-	cRect.bottom = cRect.top + height -1;
-
+	cRect.left = x;
+	cRect.top = y;
+	cRect.right = cRect.left + width - 1;
+	cRect.bottom = cRect.top + height - 1;
 }
 
 //********************************************************************************
@@ -150,11 +144,10 @@ void CFlashingWnd::SetUpRect(int x, int y, int width, int height)
 
 void CFlashingWnd::PaintBorder(COLORREF colorval)
 {
-
 	// Add your drawing code here!
 	HDC hdc = ::GetDC(m_hWnd);
-	if ((cRect.right>cRect.left) && (cRect.bottom>cRect.top)) {
-
+	if ((cRect.right>cRect.left) && (cRect.bottom>cRect.top))
+	{
 		HBRUSH newbrush = (HBRUSH) CreateSolidBrush( colorval);
 		HBRUSH newpen = (HBRUSH) CreatePen(PS_SOLID,1, colorval);
 		HBRUSH oldbrush = (HBRUSH) SelectObject(hdc,newbrush);
@@ -166,7 +159,6 @@ void CFlashingWnd::PaintBorder(COLORREF colorval)
 		SelectObject(hdc,oldbrush);
 		DeleteObject(newpen);
 		DeleteObject(newbrush);
-
 	}
 
 	::ReleaseDC(m_hWnd,hdc);
@@ -174,11 +166,10 @@ void CFlashingWnd::PaintBorder(COLORREF colorval)
 
 void CFlashingWnd::PaintInvertedBorder(COLORREF colorval)
 {
-
 	// Add your drawing code here!
 	HDC hdc = ::GetDC(m_hWnd);
-	if ((cRect.right>cRect.left) && (cRect.bottom>cRect.top)) {
-
+	if ((cRect.right>cRect.left) && (cRect.bottom>cRect.top))
+	{
 		HBRUSH newbrush = (HBRUSH) CreateSolidBrush( colorval);
 		HBRUSH newpen = (HBRUSH) CreatePen(PS_SOLID,1, colorval);
 		HBRUSH oldbrush = (HBRUSH) SelectObject(hdc,newbrush);
@@ -191,7 +182,6 @@ void CFlashingWnd::PaintInvertedBorder(COLORREF colorval)
 		SelectObject(hdc,oldbrush);
 		DeleteObject(newpen);
 		DeleteObject(newbrush);
-
 	}
 
 	::ReleaseDC(m_hWnd,hdc);
@@ -208,43 +198,44 @@ void CFlashingWnd::OnLButtonDown(UINT nFlags, CPoint point)
 	// TODO: Add your message handler code here and/or call default
 
 	if (!supportMouseDrag)
+	{
 		return;
+	}
 
-	if (m_type == 0) {
-
+	if (m_type == 0)
+	{
 		GetCursorPos( &startPoint );
 		m_startDrag = 1;
 		SetCapture();
 
 		//recordpaused=1;
-
 	}
 
 	//CWnd::OnLButtonDown(nFlags, point);
-
 }
 
 void CFlashingWnd::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	if (!supportMouseDrag)
+	{
 		return;
+	}
 
-	if (m_type == 0) {
 
+	if (m_type == 0)
+	{
 		POINT currPoint;
 		GetCursorPos( &currPoint );
 
-		if (m_startDrag) {
+		if (m_startDrag)
+		{
 			m_startDrag = 0;
 			ReleaseCapture();
-
-			int diffx, diffy;
-			diffx = currPoint.x-startPoint.x;
-			diffy = currPoint.y-startPoint.y;
+			int diffx = currPoint.x-startPoint.x;
+			int diffy = currPoint.y-startPoint.y;
 			MoveRegion(diffx, diffy);
 		}
-
 	}
 
 	//CWnd::OnLButtonUp(nFlags, point);
@@ -252,32 +243,25 @@ void CFlashingWnd::OnLButtonUp(UINT nFlags, CPoint point)
 
 void CFlashingWnd::OnMouseMove(UINT nFlags, CPoint point)
 {
-	if (supportMouseDrag) {
-
-		if (m_type == 0) {
-
-			if (m_startDrag)
-			{
-
-				/*
-				POINT currPoint;
-				GetCursorPos( &currPoint );
-
-				int diffx, diffy;
-				diffx = currPoint.x-startPoint.x;
-				diffy = currPoint.y-startPoint.y;
-				MoveRegion(diffx, diffy);
-
-				startPoint = currPoint;
-				*/
-
-			}
+	if (supportMouseDrag)
+	{
+		if (m_type == 0)
+		{
+			//if (m_startDrag)
+			//{				
+			//	POINT currPoint;
+			//	GetCursorPos( &currPoint );
+			//	int diffx = currPoint.x-startPoint.x;
+			//	int diffy = currPoint.y-startPoint.y;
+			//	MoveRegion(diffx, diffy);
+			//	startPoint = currPoint;
+			//}
 
 			if (cursorMove)
+			{
 				SetCursor(cursorMove);
-
+			}
 		}
-
 	}
 
 	CWnd::OnMouseMove(nFlags, point);
@@ -289,26 +273,26 @@ void CFlashingWnd::MoveRegion(int diffx, int diffy)
 
 	CheckRect(diffx,diffy);
 
-	if (m_type == 0) {
-
+	if (m_type == 0)
+	{
 		MakeFixedRegion(wndRgn,rgnTemp, rgnTemp2,rgnTemp3);
 
 		//while (capturingRegion) {
-
 		//}
 		//settingRegion = 1;
 
 		HRGN newregion = (HRGN) wndRgn.Detach();
 		SetWindowRgn((HRGN) newregion, TRUE);
 
-		if (oldregion) DeleteObject(oldregion);
+		if (oldregion)
+		{
+			DeleteObject(oldregion);
+		}
 		oldregion = newregion;
 		UpdateRegionMove();
 
 		//settingRegion = 0;
-
 	}
-
 }
 
 void CFlashingWnd::CheckRect(int diffx, int diffy)
@@ -323,40 +307,31 @@ void CFlashingWnd::CheckRect(int diffx, int diffy)
 	cRect.bottom += diffy;
 
 	if (cRect.left < 0) {
-
 		cRect.left = 0;
 		cRect.right = cRect.left + saveRect.right - saveRect.left;
-
 	}
 
 	if (cRect.top < 0) {
-
 		cRect.top = 0;
 		cRect.bottom = cRect.top + saveRect.bottom - saveRect.top;
-
 	}
 
 	if (cRect.right > maxxScreen-1) {
-
 		cRect.right = maxxScreen-1;
 		cRect.left = cRect.right-(saveRect.right - saveRect.left);
-
 	}
 
 	if (cRect.bottom > maxyScreen-1) {
-
 		cRect.bottom = maxyScreen-1;
 		cRect.top = cRect.bottom-(saveRect.bottom - saveRect.top);
-
 	}
-
 }
 
 void CFlashingWnd::UpdateRegionMove()
 {
+	// TODO: what is this????
 	writingRegion = 0;
 	while (readingRegion) {
-
 	}
 	writingRegion = 1;
 
@@ -364,7 +339,6 @@ void CFlashingWnd::UpdateRegionMove()
 	newRegionUsed = 1;
 
 	writingRegion = 0;
-
 }
 
 void CFlashingWnd::MakeFixedRegion(CRgn &wndRgn, CRgn &rgnTemp, CRgn &rgnTemp2,CRgn &rgnTemp3)

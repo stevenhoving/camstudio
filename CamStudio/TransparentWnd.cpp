@@ -30,9 +30,6 @@
 
 #include <windowsx.h>
 
-extern int maxxScreen;
-extern int maxyScreen;
-
 extern CListManager gList;
 extern CScreenAnnotations sadlg;
 extern HWND hMouseCaptureWnd;

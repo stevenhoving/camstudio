@@ -1,11 +1,12 @@
+// Keyshortcuts.h : header file
+//
+/////////////////////////////////////////////////////////////////////////////
 #if !defined(AFX_KEYSHORTCUTS_H__7D91F35B_8385_4EBB_96CA_AEFB403E2121__INCLUDED_)
 #define AFX_KEYSHORTCUTS_H__7D91F35B_8385_4EBB_96CA_AEFB403E2121__INCLUDED_
 
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-// Keyshortcuts.h : header file
-//
 
 /////////////////////////////////////////////////////////////////////////////
 // Keyshortcuts dialog
@@ -15,6 +16,7 @@ class Keyshortcuts : public CDialog
 // Construction
 public:
 	Keyshortcuts(CWnd* pParent = NULL);   // standard constructor
+
 	int GetIndex(UINT keyShortCut);
 	UINT GetCode(int index);
 
@@ -33,7 +35,6 @@ public:
 
 // Implementation
 protected:
-
 	// Generated message map functions
 	//{{AFX_MSG(Keyshortcuts)
 	virtual void OnOK();
@@ -64,6 +65,47 @@ protected:
 	afx_msg void OnAlt6();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+
+private:
+	int TestKeysOverlap(int& o1, int& o2);
+
+	UINT keyNextLocal;
+	UINT keyPrevLocal;
+	UINT keyShowLayoutLocal;
+
+	UINT keyNextLocalCtrl;
+	UINT keyPrevLocalCtrl;
+	UINT keyShowLayoutLocalCtrl;
+
+	UINT keyNextLocalAlt;
+	UINT keyPrevLocalAlt;
+	UINT keyShowLayoutLocalAlt;
+
+	UINT keyNextLocalShift;
+	UINT keyPrevLocalShift;
+	UINT keyShowLayoutLocalShift;
+
+	UINT keyRecordStartLocal;
+	UINT keyRecordEndLocal;
+	UINT keyRecordCancelLocal;
+
+	UINT keyRecordStartLocalCtrl;
+	UINT keyRecordEndLocalCtrl;
+	UINT keyRecordCancelLocalCtrl;
+
+	UINT keyRecordStartLocalAlt;
+	UINT keyRecordEndLocalAlt;
+	UINT keyRecordCancelLocalAlt;
+
+	UINT keyRecordStartLocalShift;
+	UINT keyRecordEndLocalShift;
+	UINT keyRecordCancelLocalShift;
+
+	int numkeys;
+	int numSpecial;
+	int key[6];
+	int keySpecial[6][3];
+	CString keyName[6];
 };
 
 //{{AFX_INSERT_LOCATION}}
