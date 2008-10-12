@@ -14,6 +14,7 @@
 
 #include "resource.h"       // main symbols
 #include "CamStudioCommandLineInfo.h"
+#include "Profile.h"
 
 //Multilanguage
 #define ENT_LANGID _T("LanguageID")
@@ -52,6 +53,7 @@ private:
 	HANDLE m_hAppMutex;
 	LANGID CurLangID;
 	CCamStudioCommandLineInfo m_cmdInfo;
+	CCamStudioSettings m_cmSettings;
 
 	bool RegisterWindowClass();
 	BOOL FirstInstance();
@@ -65,6 +67,8 @@ private:
 
 //int versionOp = 0;
 extern int versionOp;
+extern int maxxScreen;
+extern int maxyScreen;
 
 // general error handler
 void OnError(LPTSTR lpszFunction);

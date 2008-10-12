@@ -39,6 +39,7 @@
 #include "CStudioLib.h"
 #include "TrayIcon.h"
 #include "AudioSpeakers.h"
+#include "HotKey.h"
 
 #include <windowsx.h>
 
@@ -55,10 +56,6 @@ static char THIS_FILE[] = __FILE__;
 #define BUFSIZE			260
 #define N_FRAMES		50
 #define TEXT_HEIGHT		20
-
-#define MILLISECONDS	0
-#define FRAMES			1
-#define NUMSTREAMS		2
 
 #define LPLPBI			LPBITMAPINFOHEADER *
 
@@ -78,14 +75,14 @@ static char THIS_FILE[] = __FILE__;
 // external variables
 /////////////////////////////////////////////////////////////////////////////
 
-extern int viewtype;
+//extern int viewtype;
 //Link to customized icon info
 extern DWORD icon_info[];
-extern int NumberOfMixerDevices;
-extern int SelectedMixer;
+//extern int NumberOfMixerDevices;
+//extern int SelectedMixer;
 
-extern int feedback_line;
-extern int feedback_lineInfo;
+//extern int feedback_line;
+//extern int feedback_lineInfo;
 
 //Region Movement
 extern CRect newRect;
@@ -144,14 +141,12 @@ RECT old_rcClip;
 BOOL bCapturing = FALSE;
 POINT ptOrigin;
 
-int maxxScreen;
-int maxyScreen;
 RECT rc;
 HWND hMouseCaptureWnd;
 HWND hWnd_FixedRegion;
 
 HBITMAP hLogoBM = NULL;
-CFlashingWnd* pFrame = NULL;
+CFlashingWnd* pFlashingWnd = 0;
 
 //Misc Vars
 int recordstate = 0;
@@ -165,32 +160,28 @@ int irsmallcount = 0;
 // Messaging
 HWND hWndGlobal = NULL;
 
-int tempPath_Access = USE_WINDOWS_TEMP_DIR;
+//int tempPath_Access = USE_WINDOWS_TEMP_DIR;
 CString specifieddir;
 
 /////////////////////////////////////////////////////////////////////////////
 //Variables/Options requiring interface
 /////////////////////////////////////////////////////////////////////////////
 int bits = 24;
-int flashingRect = 1;
-int launchPlayer = 3;
-int minimizeOnStart = 0;
-int MouseCaptureMode = 0;
+//int flashingRect = 1;
+//int launchPlayer = 3;
+//int minimizeOnStart = 0;
+//int MouseCaptureMode = 0;
+//int capturewidth = 320;
+//int captureheight = 240;
 int DefineMode = 0; //set only in FixedRegion.cpp
-int capturewidth = 320;
-int captureheight = 240;
 
 //Video Options and Compressions
-//int timelapse=40;
-//int frames_per_second = 25;
-//int keyFramesEvery = 25;
+//int timelapse = 5;
+//int frames_per_second = 200;
+//int keyFramesEvery = 200;
+//int compquality = 7000;
+//DWORD compfccHandler = 0;
 
-int timelapse = 5;
-int frames_per_second = 200;
-int keyFramesEvery = 200;
-
-int compquality = 7000;
-DWORD compfccHandler = 0;
 ICINFO * compressor_info = NULL;
 int num_compressor = 0;
 int selected_compressor = -1;
@@ -198,8 +189,8 @@ int selected_compressor = -1;
 //Ver 1.2
 //Video Compress Parameters
 LPVOID pVideoCompressParams = NULL;
-DWORD CompressorStateIsFor = 0;
-DWORD CompressorStateSize = 0;
+//DWORD CompressorStateIsFor = 0;
+//DWORD CompressorStateSize = 0;
 
 LPVOID pParamsUse = NULL;
 
@@ -217,8 +208,8 @@ int actualheight = 0;
 CString tempfilepath;
 
 //Autopan
-int autopan = 0;
-int maxpan = 20;
+//int autopan = 0;
+//int maxpan = 20;
 RECT panrect_current;
 RECT panrect_dest;
 
@@ -233,10 +224,10 @@ RECT panrect_dest;
 
 //Path to temporary wav file
 CString tempaudiopath;
-int recordaudio = 0;
+//int recordaudio = 0;
 
 //Audio Recording Variables
-UINT AudioDeviceID = WAVE_MAPPER;
+//UINT AudioDeviceID = WAVE_MAPPER;
 
 HWAVEIN m_hRecord;
 WAVEFORMATEX m_Format;
@@ -247,49 +238,44 @@ CSoundFile * pSoundFile = NULL;
 
 //Audio Options Dialog
 LPWAVEFORMATEX pwfx = NULL;
-DWORD cbwfx;
+//DWORD cbwfx;
 
 //Audio Formats Dialog
-DWORD waveinselected = WAVE_FORMAT_2S16;
-int audio_bits_per_sample = 16;
-int audio_num_channels = 2;
-int audio_samples_per_seconds = 22050;
-BOOL bAudioCompression = TRUE;
+//DWORD waveinselected = WAVE_FORMAT_2S16;
+//int audio_bits_per_sample = 16;
+//int audio_num_channels = 2;
+//int audio_samples_per_seconds = 22050;
+//BOOL bAudioCompression = TRUE;
 
-BOOL interleaveFrames = TRUE;
-int interleaveFactor = 100;
-int interleaveUnit = MILLISECONDS;
+//BOOL interleaveFrames = TRUE;
+//int interleaveFactor = 100;
+//int interleaveUnit = MILLISECONDS;
 
 /////////////////////////////////////////////////////////////////////////////
 //ver 1.2
 /////////////////////////////////////////////////////////////////////////////
 //Key short-cuts variables
 /////////////////////////////////////////////////////////////////////////////
-UINT keyRecordStart = VK_F8;
-UINT keyRecordEnd = VK_F9;
-UINT keyRecordCancel = VK_F10;
-
 //state vars
 BOOL AllowNewRecordStartKey = TRUE;
 int savesettings = 1;
 
 //Enhanced video options
-int g_autoadjust = 1;
-//int g_valueadjust=32;
-int g_valueadjust = 1;
+//int g_autoadjust = 1;
+//int g_valueadjust = 1;
 
 //Cursor Path, used for copying cursor file
 CString g_cursorFilePath;
 
 //ver 1.3
-int threadPriority = THREAD_PRIORITY_NORMAL;
+//int threadPriority = THREAD_PRIORITY_NORMAL;
 
 //ver 1.5
-int captureleft = 100;
-int capturetop = 100;
-int fixedcapture = 0;
+//int captureleft = 100;
+//int capturetop = 100;
+//int fixedcapture = 0;
 
-int captureTrans = 1;
+//int captureTrans = 1;
 
 MCI_OPEN_PARMS mop;
 MCI_SAVE_PARMS msp;
@@ -305,7 +291,7 @@ CAutoSearchDialog asd;
 int asdCreated = FALSE;
 
 int TroubleShootVal = 0;
-int performAutoSearch = 1;
+//int performAutoSearch = 1;
 
 //ver 1.8
 int supportMouseDrag = 1;
@@ -317,35 +303,6 @@ CMenu contextmenu;
 
 int isMciRecordOpen = 0;
 int alreadyMCIPause = 0;
-
-//ver 1.8 key shortcuts
-UINT keyRecordStartCtrl = 0;
-UINT keyRecordEndCtrl = 0;
-UINT keyRecordCancelCtrl = 0;
-
-UINT keyRecordStartAlt = 0;
-UINT keyRecordEndAlt = 0;
-UINT keyRecordCancelAlt = 0;
-
-UINT keyRecordStartShift = 0;
-UINT keyRecordEndShift = 0;
-UINT keyRecordCancelShift = 0;
-
-UINT keyNext = VK_F11;
-UINT keyPrev = VK_F12;
-UINT keyShowLayout = 100000; //none
-
-UINT keyNextCtrl = 1;
-UINT keyPrevCtrl = 1;
-UINT keyShowLayoutCtrl = 0;
-
-UINT keyNextAlt = 0;
-UINT keyPrevAlt = 0;
-UINT keyShowLayoutAlt = 0;
-
-UINT keyNextShift = 0;
-UINT keyPrevShift = 0;
-UINT keyShowLayoutShift = 0;
 
 //ver 1.8
 int vanWndCreated = 0;
@@ -463,16 +420,18 @@ void mciRecordResume(CString strFile);
 HCURSOR hSavedCursor = NULL;
 HCURSOR g_loadcursor = NULL;
 HCURSOR g_customcursor = NULL;
-int g_cursortype = 0;
-int g_customsel = 0;
-int g_recordcursor = 1;
-int g_highlightcursor = 0;
-int g_highlightsize = 64;
-int g_highlightshape = 0;
-int g_highlightclick = 0;
-COLORREF g_highlightcolor = RGB(255,255,125);
-COLORREF g_highlightclickcolorleft = RGB(255,0,0);
-COLORREF g_highlightclickcolorright = RGB(0,0,255);
+
+//int g_recordcursor = 1;
+//int g_customsel = 0;
+//int g_cursortype = 0;
+//int g_highlightcursor = 0;
+//int g_highlightsize = 64;
+//int g_highlightshape = 0;
+//int g_highlightclick = 0;
+
+//COLORREF g_highlightcolor = RGB(255,255,125);
+//COLORREF g_highlightclickcolorleft = RGB(255,0,0);
+//COLORREF g_highlightclickcolorright = RGB(0,0,255);
 
 HCURSOR FetchCursorHandle();
 HCURSOR FetchCursorHandle()
@@ -573,6 +532,8 @@ int FindFormat(const CString& ext)
 int UnSetHotKeys();
 int UnSetHotKeys()
 {
+//#pragma message("Disable UnSetHotKeys")
+//	return 0;
 	UnregisterHotKey(hWndGlobal,0);
 	UnregisterHotKey(hWndGlobal,1);
 	UnregisterHotKey(hWndGlobal,2);
@@ -586,6 +547,9 @@ int UnSetHotKeys()
 int SetHotKeys(int succ[]);
 int SetHotKeys(int succ[])
 {
+//#pragma message("Disable SetHotKeys")
+//	return 0;
+
 	UnSetHotKeys();
 
 	for (int i = 0; i < 6; i++)
@@ -805,7 +769,6 @@ HBITMAP savedBitmap = NULL;
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#define DINV 3
 void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip)
 {
 	RECT rectDraw = *lprClip;
@@ -818,6 +781,7 @@ void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip)
 	HBRUSH oldbrush = (HBRUSH) SelectObject(hdc, newbrush);
 
 	//PatBlt SRCINVERT regardless fDraw is TRUE or FALSE
+	const int DINV = 3;
 	PatBlt(hdc, rectDraw.left, rectDraw.top, rectDraw.right-rectDraw.left, DINV, PATINVERT);
 	PatBlt(hdc, rectDraw.left, rectDraw.bottom-DINV, DINV, -(rectDraw.bottom-rectDraw.top-2*DINV), PATINVERT);
 	PatBlt(hdc, rectDraw.right-DINV, rectDraw.top+DINV, DINV, rectDraw.bottom-rectDraw.top-2*DINV, PATINVERT);
@@ -829,14 +793,12 @@ void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip)
 	HDC hdcBits = CreateCompatibleDC(hdc);
 	HFONT newfont = (HFONT) GetStockObject(ANSI_VAR_FONT);
 	HFONT oldfont = (HFONT) SelectObject(hdc, newfont);
-	//HFONT oldfont = (HFONT) SelectObject(hdcBits, newfont);
 
 	char sz[80];
 	wsprintf(sz, "Left : %d Top : %d Width : %d Height : %d", rectDraw.left, rectDraw.top, rectDraw.right - rectDraw.left+1, rectDraw.bottom - rectDraw.top+1);
 	int len = lstrlen(sz);
 	SIZE sExtent;
 	DWORD dw = GetTextExtentPoint(hdc, sz, len, &sExtent);
-	//dw = GetTextExtentPoint(hdcBits, sz, len, &sExtent);
 
 	int dx = sExtent.cx;
 	int dy = sExtent.cy;
@@ -877,7 +839,6 @@ void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip)
 
 	DeleteDC(hdcBits);
 }
-#undef DINV
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -888,8 +849,12 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 {
 	switch (wMessage)
 	{
+	default:
+		TRACE("MouseCaptureWndProc : skip message\n");
+		break;
 	case WM_MOUSEMOVE:
 		{
+			TRACE("MouseCaptureWndProc : WM_MOUSEMOVE\n");
 			if (MouseCaptureMode == 0) {
 				//Fixed Region
 				POINT pt;
@@ -924,8 +889,8 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 					ReleaseDC(hWnd,hScreenDC);
 				} // if old
 
-				old_rcClip=rcClip;
-			} else if (MouseCaptureMode==1) { //Variable Region
+				old_rcClip = rcClip;
+			} else if (MouseCaptureMode == 1) { //Variable Region
 				if (bCapturing) {
 					POINT pt;
 					GetCursorPos(&pt);
@@ -950,27 +915,34 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 
 	case WM_LBUTTONUP:
 		{
-			if (MouseCaptureMode==0) {
+			TRACE("MouseCaptureWndProc : WM_LBUTTONUP\n");
+
+			if (MouseCaptureMode == 0) {
 				//erase final
 				HDC hScreenDC = GetDC(hWnd);
 				DrawSelect(hScreenDC, FALSE, &old_rcClip);
-				old_rcClip=rcClip;
+				old_rcClip = rcClip;
 				ReleaseDC(hWnd,hScreenDC);
-			} else if (MouseCaptureMode==1) {
+			} else if (MouseCaptureMode == 1) {
 				NormalizeRect(&rcClip);
-				old_rcClip=rcClip;
+				old_rcClip = rcClip;
 				bCapturing = FALSE;
 			}
 
-			ShowWindow(hWnd,SW_HIDE);
+			ShowWindow(hWnd, SW_HIDE);
 
-			if (!IsRectEmpty(&old_rcClip)) {
+			if (!IsRectEmpty(&old_rcClip))
+			{
 				NormalizeRect(&old_rcClip);
 				CopyRect(&rcUse, &old_rcClip);
-
-				if (DefineMode==0) {
+				if (DefineMode == 0)
+				{
+					TRACE("MouseCaptureWndProc: CRecorderView::WM_USER_RECORDSTART\n");
 					::PostMessage (hWndGlobal, CRecorderView::WM_USER_RECORDSTART, 0, (LPARAM) 0);
-				} else {
+				}
+				else
+				{
+					TRACE("MouseCaptureWndProc: WM_USER_REGIONUPDATE\n");
 					::PostMessage (hWnd_FixedRegion, WM_USER_REGIONUPDATE, 0, (LPARAM) 0);
 				}
 			}
@@ -978,6 +950,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 
 	case WM_LBUTTONDOWN:
 		{
+			TRACE("MouseCaptureWndProc : WM_LBUTTONDOWN\n");
 			// User pressed left button, initialize selection
 			// Set origin to current mouse position (in window coords)
 
@@ -998,7 +971,8 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 
 	case WM_RBUTTONDOWN:
 		{
-			if (MouseCaptureMode==0) {
+			TRACE("MouseCaptureWndProc : WM_RBUTTONDOWN\n");
+			if (MouseCaptureMode == 0) {
 				//Cancel the operation
 				//erase final
 				HDC hScreenDC = GetDC(hWnd);
@@ -1015,13 +989,14 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 
 	case WM_KEYDOWN:
 		{
+			TRACE("MouseCaptureWndProc : WM_KEYDOWN\n");
 			int nVirtKey = (int) wParam; // virtual-key code
 			int lKeyData = lParam; // key data
 
 			//ver 1.2
-			if (nVirtKey==(int) keyRecordCancel) { //Cancel the operation
+			if (nVirtKey == (int) keyRecordCancel) { //Cancel the operation
 				//if (nVirtKey==VK_ESCAPE) {
-				if (MouseCaptureMode==0) {
+				if (MouseCaptureMode == 0) {
 					//erase final
 					HDC hScreenDC = GetDC(hWnd);
 					DrawSelect(hScreenDC, FALSE, &old_rcClip);
@@ -1038,7 +1013,6 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 
 				//ver 1.2
 				AllowNewRecordStartKey = TRUE;
-
 			} //VK_ESCAPE (keyRecordCancel)
 		}
 	}
@@ -1069,11 +1043,12 @@ int CreateShiftWindow()
 		return 0;
 
 	HDC hScreenDC = ::GetDC(NULL);
-	maxxScreen = GetDeviceCaps(hScreenDC,HORZRES);
-	maxyScreen = GetDeviceCaps(hScreenDC,VERTRES);
+	maxxScreen = ::GetDeviceCaps(hScreenDC, HORZRES);
+	maxyScreen = ::GetDeviceCaps(hScreenDC, VERTRES);
 	::ReleaseDC(NULL,hScreenDC);
 
 	hMouseCaptureWnd = ::CreateWindowEx(WS_EX_TOPMOST, "ShiftRegionWindow", "Title", WS_POPUP, 0, 0, maxxScreen, maxyScreen, NULL, NULL, hInstance, NULL);
+	TRACE("CreateShiftWindow : %s\n", ::IsWindow(hMouseCaptureWnd) ? "SUCCEEDED" : "FAIL");
 
 	return 0;
 }
@@ -2891,10 +2866,10 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, CView::OnFilePrintPreview)
-	ON_REGISTERED_MESSAGE (WM_USER_RECORDSTART, OnRecordStart)
-	ON_REGISTERED_MESSAGE (WM_USER_RECORDINTERRUPTED, OnRecordInterrupted)
-	ON_REGISTERED_MESSAGE (WM_USER_SAVECURSOR, OnSaveCursor)
-	ON_REGISTERED_MESSAGE (WM_USER_GENERIC, OnUserGeneric)
+	ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDSTART, OnRecordStart)
+	ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDINTERRUPTED, OnRecordInterrupted)
+	ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_SAVECURSOR, OnSaveCursor)
+	ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_GENERIC, OnUserGeneric)
 	ON_MESSAGE(MM_WIM_DATA, OnMM_WIM_DATA)
 	ON_MESSAGE(WM_HOTKEY, OnHotKey)
 	ON_COMMAND(ID_HELP_CAMSTUDIOBLOG, OnHelpCamstudioblog)
@@ -3040,9 +3015,9 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	hLogoBM = LoadBitmap( AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP3));
 
-	pFrame = new CFlashingWnd;
-	CRect rect(0, 0, maxxScreen-1, maxyScreen-1);
-	pFrame->CreateFlashing("Flashing", rect);
+	CRect rect(0, 0, maxxScreen - 1, maxyScreen - 1);
+	pFlashingWnd = new CFlashingWnd;
+	pFlashingWnd->CreateFlashing("Flashing", rect);
 
 	//Ver 1.2
 	//cursordir default
@@ -3096,9 +3071,9 @@ void CRecorderView::OnDestroy()
 		hLogoBM = NULL;
 	}
 
-	if (pFrame) {
-		pFrame->DestroyWindow();
-		delete pFrame;
+	if (pFlashingWnd) {
+		pFlashingWnd->DestroyWindow();
+		delete pFlashingWnd;
 	}
 
 	if (pwfx) {
@@ -3130,8 +3105,9 @@ void CRecorderView::OnDestroy()
 	gList.FreeLayoutArray();
 }
 
-LRESULT CRecorderView::OnRecordStart (UINT wParam, LONG lParam)
+LRESULT CRecorderView::OnRecordStart(UINT wParam, LONG lParam)
 {
+	TRACE("CRecorderView::OnRecordStart\n");
 	CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
 	pStatus->SetPaneText(0,"Press the Stop Button to stop recording");
 
@@ -3143,16 +3119,11 @@ LRESULT CRecorderView::OnRecordStart (UINT wParam, LONG lParam)
 		::PostMessage(AfxGetMainWnd()->m_hWnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
 
 	//Check validity of rc and fix it
-	HDC hScreenDC = ::GetDC(NULL);
-	maxxScreen = GetDeviceCaps(hScreenDC,HORZRES);
-	maxyScreen = GetDeviceCaps(hScreenDC,VERTRES);
-	FixRectSizePos(&rc,maxxScreen, maxyScreen);
-
-	::ReleaseDC(NULL,hScreenDC);
+	FixRectSizePos(&rc, maxxScreen, maxyScreen);
 
 	InstallMyHook(hWndGlobal,WM_USER_SAVECURSOR);
 
-	recordstate=1;
+	recordstate = 1;
 	interruptkey = 0;
 
 	CWinThread * pThread = AfxBeginThread(RecordAVIThread, &tdata);
@@ -3213,7 +3184,7 @@ void CRecorderView::OnRegionPanregion()
 	CFixedRegion cfrdlg;
 	cfrdlg.DoModal();
 
-	MouseCaptureMode=0;
+	MouseCaptureMode = 0;
 	DefineMode = 0;
 }
 
@@ -3525,25 +3496,30 @@ void CRecorderView::OnRecord()
 	fActualRate = 0.0;
 	fTimeLength = 0.0;
 
-	if (MouseCaptureMode == 0) {
+	switch (MouseCaptureMode)
+	{
+	case 0:
 		if (fixedcapture) {
 			rc.top = capturetop;
 			rc.left = captureleft;
 			rc.right = captureleft + capturewidth - 1;
 			rc.bottom = capturetop + captureheight - 1;
 
-			if (rc.top<0) rc.top = 0;
-			if (rc.left<0) rc.left = 0;
-			if (rc.right>maxxScreen-1) rc.right = maxxScreen -1 ;
-			if (rc.bottom>maxyScreen-1) rc.bottom = maxyScreen - 1;
+			if (rc.top < 0)
+				rc.top = 0;
+			if (rc.left < 0)
+				rc.left = 0;
+			if (rc.right > maxxScreen - 1)
+				rc.right = maxxScreen -1 ;
+			if (rc.bottom > maxyScreen - 1)
+				rc.bottom = maxyScreen - 1;
 
 			//using protocols for MouseCaptureMode==0
 			rcClip = rc;
 			old_rcClip = rcClip;
 			NormalizeRect(&old_rcClip);
 			CopyRect(&rcUse, &old_rcClip);
-
-			::PostMessage (hWndGlobal,WM_USER_RECORDSTART,0,(LPARAM) 0);
+			::PostMessage (hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM) 0);
 		} else {
 			rc.top = 0;
 			rc.left = 0;
@@ -3555,21 +3531,24 @@ void CRecorderView::OnRecord()
 
 			InitDrawShiftWindow(); //will affect rc implicity
 		}
-	} else if (MouseCaptureMode==1) {
-		::ShowWindow(hMouseCaptureWnd,SW_MAXIMIZE);
+		break;
+	case 1:
+		::ShowWindow(hMouseCaptureWnd, SW_MAXIMIZE);
 		::UpdateWindow(hMouseCaptureWnd);
-
 		InitSelectRegionWindow(); //will affect rc implicity
-	} else if (MouseCaptureMode==2) {
+		break;
+	case 2:
 		rcUse.left = 0;
 		rcUse.top = 0;
 		rcUse.right = maxxScreen - 1;
 		rcUse.bottom = maxyScreen - 1;
 		::PostMessage(hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM) 0);
-	} else if (MouseCaptureMode == 3) {
+		break;
+	case 3:
 		// window
 		AfxMessageBox("Click on Window to be captured");
 		//SetCapture();
+		break;
 	}
 }
 
@@ -3702,19 +3681,13 @@ void CRecorderView::OnUpdateOptionsAutopan(CCmdUI* pCmdUI)
 void CRecorderView::OnUpdateRegionFullscreen(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	if (MouseCaptureMode==2)
-		pCmdUI->SetCheck(TRUE);
-	else
-		pCmdUI->SetCheck(FALSE);
+	pCmdUI->SetCheck(MouseCaptureMode == 2);
 }
 
 void CRecorderView::OnOptionsMinimizeonstart()
 {
 	// TODO: Add your command handler code here
-	if (minimizeOnStart==0)
-		minimizeOnStart = 1;
-	else
-		minimizeOnStart = 0;
+	minimizeOnStart = (minimizeOnStart == 0) ? 1 : 0;
 }
 
 void CRecorderView::OnUpdateOptionsMinimizeonstart(CCmdUI* pCmdUI)
@@ -4387,14 +4360,14 @@ void CRecorderView::LoadSettings()
 	// ****************************
 
 	int idata;
-	int savelen=0;
-	int cursorlen=0;
+	//int savelen=0;
+	//int cursorlen=0;
 	char sdata[1000];
 	char tdata[1000];
 	float ver=1.0;
 
 	//Ver 1.6
-	int specifiedDirLength=0;
+	//int specifiedDirLength=0;
 	char specdata[1000];
 
 	fscanf_s(sFile, "[ CamStudio Settings ver%f -- Please do not edit ] \n\n",&ver);
@@ -4463,8 +4436,6 @@ void CRecorderView::LoadSettings()
 		fscanf_s(sFile, "AudioDeviceID= %d \n",&AudioDeviceID);
 
 		//Audio Options Dialog
-		//LPWAVEFORMATEX pwfx = NULL;
-		//DWORD cbwfx;
 		fscanf_s(sFile, "cbwfx= %ld \n", &cbwfx);
 		fscanf_s(sFile, "recordaudio= %d \n", &recordaudio);
 
@@ -4723,12 +4694,10 @@ void CRecorderView::LoadSettings()
 	//********************************************
 	//Loading Camdata.ini binary data
 	//********************************************
-	FILE * tFile;
-	fileName="\\Camdata.ini";
-	setDir=GetProgPath();
-	setPath=setDir+fileName;
-
-	tFile = fopen(LPCTSTR(setPath),"rb");
+	fileName = "\\Camdata.ini";
+	setDir = GetProgPath();
+	setPath = setDir + fileName;
+	FILE * tFile = fopen(LPCTSTR(setPath),"rb");
 	if (tFile == NULL) {
 		//Error creating file
 		cbwfx = 0;
@@ -4756,7 +4725,6 @@ void CRecorderView::LoadSettings()
 			if (cbwfx>0) {
 				AllocCompressFormat();
 				int countread = fread( (void *) pwfx, cbwfx, 1, tFile);
-
 				if (countread!=1) {
 					cbwfx=0;
 					if (pwfx) {
@@ -5633,30 +5601,23 @@ void CRecorderView::DisplayRecordingStatistics(CDC & srcDC)
 void CRecorderView::DisplayBackground(CDC & srcDC)
 {
 	//TRACE("CRecorderView::DisplayBackground\n");
-
 	//Ver 1.1
 	if (8 <= nColors) {
-#ifndef EXPERIMENTAL_CODE
 		CRect rectClient;
 		GetClientRect(&rectClient);
 		CDC dcBits;
 		dcBits.CreateCompatibleDC(&srcDC);
 		CBitmap bitmapLogo;
 		bitmapLogo.Attach(hLogoBM);
+
 		BITMAP bitmap;
 		bitmapLogo.GetBitmap(&bitmap);
 		CBitmap *pOldBitmap = dcBits.SelectObject(&bitmapLogo);
 
 		srcDC.StretchBlt(0, 0, rectClient.Width(), rectClient.Height(), &dcBits, 0, 0, bitmap.bmWidth, bitmap.bmHeight, SRCCOPY);
 		dcBits.SelectObject(pOldBitmap);
-		bitmapLogo.Detach();
 
-#else
-		CBitmap bitmapLogo;
-		bitmapLogo.Attach(hLogoBM);
-		srcDC.SelectObject(&bitmapLogo);
 		bitmapLogo.Detach();
-#endif
 	}
 }
 
@@ -5705,15 +5666,15 @@ void CRecorderView::DisplayRecordingMsg(CDC & srcDC)
 
 LPBITMAPINFOHEADER CRecorderView::captureScreenFrame(int left, int top, int width, int height, int tempDisableRect)
 {
-	//TRACE("captureScreenFrame\n");
+	TRACE("CRecorderView::captureScreenFrame\n");
 	HDC hScreenDC = ::GetDC(NULL);
 
 	//if flashing rect
 	if (flashingRect && !tempDisableRect) {
 		if (autopan) {
-			pFrame->SetUpRegion(left, top, width, height, 1);
+			pFlashingWnd->SetUpRegion(left, top, width, height, 1);
 		}
-		pFrame->DrawFlashingRect(TRUE, (autopan) ? 1 : 0);
+		pFlashingWnd->DrawFlashingRect(TRUE, (autopan) ? 1 : 0);
 	}
 
 	HDC hMemDC = ::CreateCompatibleDC(hScreenDC);
@@ -5795,7 +5756,7 @@ LPBITMAPINFOHEADER CRecorderView::captureScreenFrame(int left, int top, int widt
 
 	//if flashing rect
 	if (flashingRect && !tempDisableRect) {
-		pFrame->DrawFlashingRect(FALSE, (autopan) ? 1 : 0);
+		pFlashingWnd->DrawFlashingRect(FALSE, (autopan) ? 1 : 0);
 	}
 
 	::ReleaseDC(NULL,hScreenDC);
@@ -5814,10 +5775,11 @@ void CRecorderView::FreeFrame(LPBITMAPINFOHEADER alpbi)
 
 UINT CRecorderView::RecordAVIThread(LPVOID pParam)
 {
+	TRACE("CRecorderView::RecordAVIThread\n");
 	//Test the validity of writing to the file
 	//Make sure the file to be created is currently not used by another application
 	CString csTempFolder(GetTempPath(tempPath_Access, specifieddir));
-	tempfilepath.Format("%s\\~temp.avi", (LPCSTR)csTempFolder);
+	tempfilepath.Format("%s\\temp.avi", (LPCSTR)csTempFolder);
 
 	srand( (unsigned)time( NULL));
 	bool fileverified = false;
@@ -5830,7 +5792,7 @@ UINT CRecorderView::RecordAVIThread(LPVOID pParam)
 			CloseHandle((HANDLE)hFile);
 			DeleteFile(tempfilepath);
 		} else {
-			tempfilepath.Format("%s\\~temp%d.avi", (LPCSTR)csTempFolder, rand());
+			tempfilepath.Format("%s\\temp%d.avi", (LPCSTR)csTempFolder, rand());
 		}
 	}
 
@@ -5854,9 +5816,10 @@ UINT CRecorderView::RecordAVIThread(LPVOID pParam)
 /////////////////////////////////////////////////////////////////////////////
 int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps, const char *szFileName)
 {
-	TRACE("RecordVideo\n");
+	TRACE("CRecorderView::RecordVideo\n");
 	WORD wVer = HIWORD(VideoForWindowsVersion());
 	if (wVer < 0x010a) {
+		TRACE("CRecorderView::RecordVideo: Wrong VideoForWindowsVersion\n");
 		MessageOut(NULL, IDS_STRING_VERSIONOLD , IDS_STRING_NOTE, MB_OK | MB_ICONSTOP);
 		return FALSE;
 	}
@@ -5956,11 +5919,11 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 	////////////////////////////////////////////////
 	if (flashingRect) {
 		if (autopan) {
-			pFrame->SetUpRegion(left, top, width, height, 1);
+			pFlashingWnd->SetUpRegion(left, top, width, height, 1);
 		} else {
-			pFrame->SetUpRegion(left, top, width, height, 0);
+			pFlashingWnd->SetUpRegion(left, top, width, height, 0);
 		}
-		pFrame->ShowWindow(SW_SHOW);
+		pFlashingWnd->ShowWindow(SW_SHOW);
 	}
 
 	////////////////////////////////////////////////
@@ -5976,6 +5939,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 	HRESULT hr;
 	hr = AVIFileOpen(&pfile, szFileName, OF_WRITE | OF_CREATE, NULL);
 	if (hr != AVIERR_OK) {
+		TRACE("CRecorderView::RecordVideo: AVIFileOpen error\n");
 		goto error;
 	}
 
@@ -5998,6 +5962,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 	PAVISTREAM ps = NULL;
 	hr = AVIFileCreateStream(pfile, &ps, &strhdr);
 	if (hr != AVIERR_OK) {
+		TRACE("CRecorderView::RecordVideo: AVIFileCreateStream error\n");
 		goto error;
 	}
 
@@ -6039,6 +6004,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 	PAVISTREAM psCompressed = NULL;
 	hr = AVIMakeCompressedStream(&psCompressed, ps, &opts, NULL);
 	if (hr != AVIERR_OK) {
+		TRACE("CRecorderView::RecordVideo: AVIMakeCompressedStream error\n");
 		goto error;
 	}
 
@@ -6198,7 +6164,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 
 			readingRegion = 0;
 
-			alpbi=captureScreenFrame(left, top, width, height, 0);
+			alpbi = captureScreenFrame(left, top, width, height, 0);
 		}
 
 		if (initcapture == 0) {
@@ -6369,7 +6335,7 @@ error:
 	// Now close the file
 
 	if (flashingRect) {
-		pFrame->ShowWindow(SW_HIDE);
+		pFlashingWnd->ShowWindow(SW_HIDE);
 	}
 
 	//Ver 1.2
@@ -6415,17 +6381,13 @@ error:
 	if (hr != NOERROR) 	{
 		::PostMessage(hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
 
-		/*
-		char *ErrorBuffer; // This really is a pointer - not reserved space!
-		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | 	FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPTSTR)&ErrorBuffer, 0, NULL);
-
-		CString reasonstr(ErrorBuffer);
-		CString errorstr("File Creation Error. Unable to rename file.\n\n");
-		CString reportstr;
-
-		reportstr = errorstr + reasonstr;
+		//char *ErrorBuffer; // This really is a pointer - not reserved space!
+		//FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | 	FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPTSTR)&ErrorBuffer, 0, NULL);
+		//CString reasonstr(ErrorBuffer);
+		//CString errorstr("File Creation Error. Unable to rename file.\n\n");
+		//CString reportstr;
+		//reportstr = errorstr + reasonstr;
 		//MessageBox(NULL, reportstr, "Note", MB_OK | MB_ICONEXCLAMATION);
-		*/
 
 		if (compfccHandler != mmioFOURCC('M', 'S', 'V', 'C')) {
 			//if (IDYES == MessageBox(NULL, "Error recording AVI file using current compressor. Use default compressor ? ", "Note", MB_YESNO | MB_ICONEXCLAMATION)) {
