@@ -14,7 +14,11 @@ static char THIS_FILE[] = __FILE__;
 
 extern int recordstate;
 
-int viewtype = 0;
+int maxxScreen;
+int maxyScreen;
+
+//int viewtype = 0;
+
 static HMENU hMenu = NULL;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -85,6 +89,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	HDC hScreenDC = ::GetDC(NULL);
 	int numbits = ::GetDeviceCaps(hScreenDC, BITSPIXEL );
+	maxxScreen = ::GetDeviceCaps(hScreenDC, HORZRES);
+	maxyScreen = ::GetDeviceCaps(hScreenDC, VERTRES);
 	::ReleaseDC(NULL,hScreenDC);
 
 	if (numbits>8) {

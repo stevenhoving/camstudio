@@ -14,7 +14,6 @@
 #include "RecorderView.h"
 #include "CamStudioCommandLineInfo.h"
 #include "CStudioLib.h"
-#include "Profile.h"
 
 #include <strsafe.h>		// for StringCchPrintf
 #include "afxwin.h"
@@ -178,6 +177,9 @@ BOOL CRecorderApp::InitInstance()
 	free((void*)m_pszProfileName);
 	// Change the name of the .INI file.
 	// The CWinApp destructor will free the memory.
+	CString strProfile;
+	strProfile.Format("%s\\CamStudio.ini", (LPCSTR)(GetProgPath()));
+	m_pszProfileName = _tcsdup(strProfile);
 
 	CurLangID = static_cast<LANGID>(GetProfileInt(SEC_SETTINGS, ENT_LANGID, STANDARD_LANGID));
 	if (!LoadLanguage(CurLangID)) {
@@ -211,15 +213,8 @@ BOOL CRecorderApp::InitInstance()
 
 	LoadStdProfileSettings(); // Load standard INI file options (including MRU)
 
-	{
-		CString strProfile;
-		strProfile.Format("%s\\CamStudio.ini", (LPCSTR)(GetProgPath()));
-		m_pszProfileName = _tcsdup(strProfile);
-		//m_pszProfileName = _tcsdup(_T(".\\CamStudio.ini"));
-		CCamStudioSettings cmSettings;
-		cmSettings.LoadSettings();
-		cmSettings.WriteSettings();
-	}
+	m_cmSettings.LoadSettings();
+	m_cmSettings.WriteSettings();
 
 	versionOp = GetOperatingSystem();
 
