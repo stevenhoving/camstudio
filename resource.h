@@ -558,7 +558,6 @@
 #define IDS_STRING_AVAILXP              61564
 #define IDS_STRING_TRANSBLAHBLAH        61565
 #define IDS_STRING_NOWEBCAM             61566
-#define _APS_NEXT_STRNG_VALUE           61566
 #define IDS_STRINGSAVECLLA              61567
 #define IDS_STRING_UNSSC                61568
 #define IDS_ERRPPRODUCER                61569
@@ -577,6 +576,7 @@
 #define _APS_NEXT_RESOURCE_VALUE        200
 #define _APS_NEXT_COMMAND_VALUE         32924
 #define _APS_NEXT_CONTROL_VALUE         1062
+#define _APS_NEXT_STRNG_VALUE           61576
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
