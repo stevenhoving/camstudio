@@ -50,8 +50,8 @@ DWORD m_dwSelectControlID;	//the found controlID of the MUX/MIXER
 DWORD m_dwMultipleItems;	//max source lines connected to the MUX/MIXER
 DWORD m_dwIndex;
 
-int NumberOfMixerDevices=0;
-int SelectedMixer=0;
+//int NumberOfMixerDevices=0;
+//int SelectedMixer=0;
 int manual_mode = 0;
 
 double analyzeTotal=0;
@@ -64,8 +64,8 @@ int second_maximum_line=-1;
 double maximum_value=-1;
 double second_maximum_value=-1;
 
-int feedback_line = -1;
-int feedback_lineInfo = -1;
+//int feedback_line = -1;
+//int feedback_lineInfo = -1;
 DWORD volume;
 
 int storedID[100]; //assume there is less than 100 lines, this array is used for manual search

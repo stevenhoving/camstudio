@@ -24,8 +24,6 @@ CString shapeStr;
 
 CString proposedShapeStr;
 
-extern int maxxScreen;
-extern int maxyScreen;
 extern CString GetProgPath();
 extern void AdjustShapeName(CString& shapeName);
 

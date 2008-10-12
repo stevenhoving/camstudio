@@ -22,8 +22,6 @@ extern int captureleft;
 extern int capturetop;
 extern int fixedcapture;
 
-extern int maxxScreen;
-extern int maxyScreen;
 extern int capturewidth;
 extern int captureheight;
 
