@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by vscap.rc
+// Used by Recorder.rc
 //
 #define IDC_HIGHLIGHTCOLOR              3
 #define ID_ABOUT                        3
@@ -558,6 +558,7 @@
 #define IDS_STRING_AVAILXP              61564
 #define IDS_STRING_TRANSBLAHBLAH        61565
 #define IDS_STRING_NOWEBCAM             61566
+#define _APS_NEXT_STRNG_VALUE           61566
 #define IDS_STRINGSAVECLLA              61567
 #define IDS_STRING_UNSSC                61568
 #define IDS_ERRPPRODUCER                61569
@@ -567,7 +568,6 @@
 #define IDS_ERROR_PLAYER                61573
 #define IDS_ERROR_PLAYER2               61574
 #define IDS_STRING_LINEUNDETECTED       61575
-#define _APS_NEXT_STRNG_VALUE           61566
 
 // Next default values for new objects
 // 

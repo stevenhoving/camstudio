@@ -1420,10 +1420,6 @@
 				>
 			</File>
 			<File
-				RelativePath="res\idr_vsca.ico"
-				>
-			</File>
-			<File
 				RelativePath="Logo.bmp"
 				>
 			</File>
@@ -1453,10 +1449,6 @@
 			</File>
 			<File
 				RelativePath="res\vscap.rc2"
-				>
-			</File>
-			<File
-				RelativePath="res\vscapDoc.ico"
 				>
 			</File>
 		</Filter>
