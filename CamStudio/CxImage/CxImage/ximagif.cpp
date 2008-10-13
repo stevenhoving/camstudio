@@ -2,7 +2,7 @@
  * File:	ximagif.cpp
  * Purpose:	Platform Independent GIF Image Class Loader and Writer
  * 07/Aug/2001 Davide Pizzolato - www.xdp.it
- * CxImage version 5.99c 17/Oct/2004
+ * CxImage version 6.0.0 02/Feb/2008
  */
 
 #include "ximagif.h"
@@ -11,12 +11,14 @@
 
 #include "ximaiter.h"
 
-#if CXIMAGE_SUPPORT_WINCE
+#if defined (_WIN32_WCE)
 	#define assert(s)
 #else
 	#include <assert.h>
 #endif
 
+////////////////////////////////////////////////////////////////////////////////
+#if CXIMAGE_SUPPORT_DECODE
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageGIF::Decode(CxFile *fp)
 {
@@ -31,16 +33,21 @@ bool CxImageGIF::Decode(CxFile *fp)
 	//if (strncmp(dscgif.header,"GIF8",3)!=0) {
 	if (strncmp(dscgif.header,"GIF8",4)!=0) return FALSE;
 
+	// Avoid Byte order problem with Mac <AMSN>
+	dscgif.scrheight = ntohs(dscgif.scrheight);
+	dscgif.scrwidth = ntohs(dscgif.scrwidth);
+
 	if (info.nEscape == -1) {
 		// Return output dimensions only
 		head.biWidth = dscgif.scrwidth;
 		head.biHeight = dscgif.scrheight;
+		info.dwType = CXIMAGE_FORMAT_GIF;
 		return true;
 	}
 
 	/* AD - for interlace */
 	TabCol.sogct = (short)(1 << ((dscgif.pflds & 0x07)+1));
-	TabCol.colres = (short)(((dscgif.pflds & 0x70) >> 3) + 1);
+	TabCol.colres = (short)(((dscgif.pflds & 0x70) >> 4) + 1);
 
 	// assume that the image is a truecolor-gif if
 	// 1) no global color map found
@@ -54,7 +61,7 @@ bool CxImageGIF::Decode(CxFile *fp)
 	else 
 		bTrueColor++;	//first chance for a truecolor gif
 
-	long first_transparent_index;
+	long first_transparent_index = 0;
 
 	int iImage = 0;
 	info.nNumFrames=get_num_frames(fp,&TabCol,&dscgif);
@@ -68,6 +75,7 @@ bool CxImageGIF::Decode(CxFile *fp)
 	char ch;
 	bool bPreviousWasNull = true;
 	int  prevdispmeth = 0;
+	CxImage *previousFrame = NULL;
 
 	for (BOOL bContinue = TRUE; bContinue; )
 	{
@@ -87,12 +95,11 @@ bool CxImageGIF::Decode(CxFile *fp)
 				{
 				assert(sizeof(image) == 9);
 				fp->Read(&image,sizeof(image),1);
-				//avoid byte order problems with Solaris <candan>
-				BYTE *byteData = (BYTE *) & image;
-				image.l = byteData[0]+byteData[1]*256;
-				image.t = byteData[2]+byteData[3]*256;
-				image.w = byteData[4]+byteData[5]*256;
-				image.h = byteData[6]+byteData[7]*256;
+				//avoid byte order problems with Solaris <candan> <AMSN>
+				image.l = ntohs(image.l);
+				image.t = ntohs(image.t);
+				image.w = ntohs(image.w);
+				image.h = ntohs(image.h);
 
 				if (((image.l + image.w) > dscgif.scrwidth)||((image.t + image.h) > dscgif.scrheight))
 					break;
@@ -101,18 +108,22 @@ bool CxImageGIF::Decode(CxFile *fp)
 				if ((iImage==0) && (image.w != dscgif.scrwidth) && (image.h != dscgif.scrheight))
 					bTrueColor++;
 
+				rgb_color  locpal[256];				//Local Palette 
+				rgb_color* pcurpal = TabCol.paleta;	//Current Palette 
+				short palcount = TabCol.sogct;		//Current Palette color count  
+
 				// Local colour map?
 				if (image.pf & 0x80) {
-					TabCol.sogct = (short)(1 << ((image.pf & 0x07) +1));
+					palcount = (short)(1 << ((image.pf & 0x07) +1));
 					assert(3 == sizeof(struct rgb_color));
-					fp->Read(TabCol.paleta,sizeof(struct rgb_color)*TabCol.sogct,1);
-					//log << "Local colour map" << endl;
+					fp->Read(locpal,sizeof(struct rgb_color)*palcount,1);
+					pcurpal = locpal;
 				}
 
 				int bpp; //<DP> select the correct bit per pixel value
-				if		(TabCol.sogct <= 2)  bpp = 1;
-				else if (TabCol.sogct <= 16) bpp = 4;
-				else						 bpp = 8;
+				if		(palcount <= 2)  bpp = 1;
+				else if (palcount <= 16) bpp = 4;
+				else					 bpp = 8;
 
 				CxImageGIF backimage;
 				backimage.CopyInfo(*this);
@@ -121,6 +132,8 @@ bool CxImageGIF::Decode(CxFile *fp)
 					backimage.Create(dscgif.scrwidth, dscgif.scrheight, bpp, CXIMAGE_FORMAT_GIF);
 					first_transparent_index = info.nBkgndIndex;
 					backimage.Clear((BYTE)gifgce.transpcolindex);
+					previousFrame = new CxImage(backimage);
+					previousFrame->SetRetreiveAllFrames(false);
 				} else {
 				//generic frame: handle disposal method from previous one
 				/*Values :  0 -   No disposal specified. The decoder is
@@ -133,12 +146,26 @@ bool CxImageGIF::Decode(CxFile *fp)
 								  restore the area overwritten by the graphic with
 								  what was there prior to rendering the graphic.
 				*/
-					backimage.Copy(*this);
+				/*	backimage.Copy(*this);
 					if (prevdispmeth==2){
 						backimage.Clear((BYTE)first_transparent_index);
+					}*/
+					if (prevdispmeth==2){
+						backimage.Copy(*this,false,false,false);
+						backimage.Clear((BYTE)first_transparent_index);
+					} else if (prevdispmeth==3) {
+						backimage.Copy(*this,false,false,false);
+						backimage.Create(previousFrame->GetWidth(),
+							previousFrame->GetHeight(),
+							previousFrame->GetBpp(),CXIMAGE_FORMAT_GIF);
+						memcpy(backimage.GetDIB(),previousFrame->GetDIB(),
+							backimage.GetSize());
+						backimage.AlphaSet(*previousFrame);
+					} else {
+						backimage.Copy(*this);
 					}
 				}
-				
+
 				//active frame
 				Create(image.w, image.h, bpp, CXIMAGE_FORMAT_GIF);
 
@@ -146,19 +173,18 @@ bool CxImageGIF::Decode(CxFile *fp)
 					unsigned char r[256], g[256], b[256];
 					int i, has_white = 0;
 
-					for (i=0; i < TabCol.sogct; i++) {
-						r[i] = TabCol.paleta[i].r;
-						g[i] = TabCol.paleta[i].g;
-						b[i] = TabCol.paleta[i].b;
-
+					for (i=0; i < palcount; i++) {
+						r[i] = pcurpal[i].r;
+						g[i] = pcurpal[i].g;
+						b[i] = pcurpal[i].b;
 						if (RGB(r[i],g[i],b[i]) == 0xFFFFFF) has_white = 1;
 					}
 
 					// Force transparency colour white...
-					//if (0) if (info.nBkgndIndex != -1)
+					//if (0) if (info.nBkgndIndex >= 0)
 					//	r[info.nBkgndIndex] = g[info.nBkgndIndex] = b[info.nBkgndIndex] = 255;
 					// Fill in with white // AD
-					if (info.nBkgndIndex != -1) {
+					if (info.nBkgndIndex >= 0) {
 						while (i < 256)	{
 							has_white = 1;
 							r[i] = g[i] = b[i] = 255;
@@ -167,11 +193,11 @@ bool CxImageGIF::Decode(CxFile *fp)
 					}
 
 					// Force last colour to white...   // AD
-					//if ((info.nBkgndIndex != -1) && !has_white) {
+					//if ((info.nBkgndIndex >= 0) && !has_white) {
 					//	r[255] = g[255] = b[255] = 255;
 					//}
 
-					SetPalette((info.nBkgndIndex != -1 ? 256 : TabCol.sogct), r, g, b);
+					SetPalette((info.nBkgndIndex >= 0 ? 256 : palcount), r, g, b);
 				}
 
 				CImageIterator* iter = new CImageIterator(this);
@@ -196,7 +222,7 @@ bool CxImageGIF::Decode(CxFile *fp)
 					backimage.GifMix(*this,image);
 					backimage.SetTransIndex(first_transparent_index);
 					backimage.SetPalette(GetPalette());
-					Transfer(backimage);
+					Transfer(backimage,false);
 				} else { //it's a truecolor gif!
 					//force full image decoding
 					info.nFrame=info.nNumFrames-1;
@@ -210,7 +236,7 @@ bool CxImageGIF::Decode(CxFile *fp)
 					}
 				}
 
-				prevdispmeth = gifgce.dispmeth;
+				prevdispmeth = (gifgce.flags >> 2) & 0x7;
 
 				//restore the correct position in the file for the next image
 				if (badcode){
@@ -218,7 +244,24 @@ bool CxImageGIF::Decode(CxFile *fp)
 				} else {
 					fp->Seek(-(ibfmax - ibf - 1), SEEK_CUR);
 				}
-				
+
+				if (info.bGetAllFrames && imaRGB == NULL) {
+					if (iImage == 0) {
+						DestroyFrames();
+						ppFrames = new CxImage*[info.nNumFrames];
+						for(int frameIdx = 0; frameIdx < info.nNumFrames; frameIdx++){
+							ppFrames[frameIdx] = NULL;
+						}
+					}
+					ppFrames[iImage] = new CxImage(*this);
+					ppFrames[iImage]->SetRetreiveAllFrames(false);
+				}
+				if (prevdispmeth <= 1) {
+					delete previousFrame;
+					previousFrame = new CxImage(*this);
+					previousFrame->SetRetreiveAllFrames(false);
+				}
+
 				if (info.nFrame==iImage) bContinue=false; else iImage++;
 
 				break;
@@ -234,13 +277,15 @@ bool CxImageGIF::Decode(CxFile *fp)
 	}
 
 	if (bTrueColor>=2 && imaRGB){
-		if (gifgce.transpcolflag){
+		if (gifgce.flags & 0x1){
 			imaRGB->SetTransColor(GetPaletteColor((BYTE)info.nBkgndIndex));
 			imaRGB->SetTransIndex(0);
 		}
 		Transfer(*imaRGB);
 	}
 	delete imaRGB;
+
+	delete previousFrame;
 
 	return true;
 
@@ -260,10 +305,11 @@ bool CxImageGIF::DecodeExtension(CxFile *fp)
 			if (bContinue) {
 				assert(sizeof(gifgce) == 4);
 				bContinue = (count == fp->Read(&gifgce, 1, sizeof(gifgce)));
+				gifgce.delaytime = ntohs(gifgce.delaytime); // Avoid Byte order problem with Mac <AMSN>
 				if (bContinue) {
-					if (gifgce.transpcolflag) info.nBkgndIndex  = gifgce.transpcolindex;
+					info.nBkgndIndex  = (gifgce.flags & 0x1) ? gifgce.transpcolindex : -1;
 					info.dwFrameDelay = gifgce.delaytime;
-					m_dispmeth = gifgce.dispmeth;
+					SetDisposalMethod((gifgce.flags >> 2) & 0x7);
 		}	}	}
 
 		if (fc == 0xFE) { //<DP> Comment block
@@ -302,7 +348,9 @@ bool CxImageGIF::DecodeExtension(CxFile *fp)
 	return bContinue;
 
 }
-
+////////////////////////////////////////////////////////////////////////////////
+#endif //CXIMAGE_SUPPORT_DECODE
+////////////////////////////////////////////////////////////////////////////////
 
 //   - This external (machine specific) function is expected to return
 // either the next BYTE from the GIF file, or a negative error number.
@@ -310,7 +358,7 @@ int CxImageGIF::get_byte(CxFile* file)
 {
 	if (ibf>=GIFBUFTAM){
 		// FW 06/02/98 >>>
-		ibfmax = file->Read( buf , 1 , GIFBUFTAM) ;
+		ibfmax = (int)file->Read( buf , 1 , GIFBUFTAM) ;
 		if( ibfmax < GIFBUFTAM ) buf[ ibfmax ] = 255 ;
 		// FW 06/02/98 <<<
 		ibf = 0;
@@ -330,6 +378,9 @@ int CxImageGIF::get_byte(CxFile* file)
 */
 int CxImageGIF::out_line(CImageIterator* iter, unsigned char *pixels, int linelen)
 {
+	if (iter == NULL || pixels == NULL)
+		return -1;
+
 	//<DP> for 1 & 4 bpp images, the pixels are compressed
 	if (head.biBitCount < 8){
 		for(long x=0;x<head.biWidth;x++){
@@ -387,6 +438,10 @@ bool CxImageGIF::Encode(CxFile * fp)
 		return EncodeRGB(fp);
 	}
 
+	if ( GetNumFrames()>1 && ppFrames ) {
+		return Encode(fp, ppFrames, GetNumFrames() );
+	}
+
 	EncodeHeader(fp);
 
 	EncodeExtension(fp);
@@ -400,11 +455,21 @@ bool CxImageGIF::Encode(CxFile * fp)
 	return true; // done!
 }
 ////////////////////////////////////////////////////////////////////////////////
-bool CxImageGIF::Encode(CxFile * fp, CxImage ** pImages, int pagecount, bool bLocalColorMap)
+bool CxImageGIF::Encode(CxFile * fp, CxImage ** pImages, int pagecount, bool bLocalColorMap, bool bLocalDispMeth)
 {
-  try{
-	if (fp==NULL) throw "invalid file pointer";
-	if (pImages==NULL || pagecount==0 || pImages[0]==NULL) throw "multipage GIF, no images!";
+  cx_try {
+	if (fp==NULL) cx_throw("invalid file pointer");
+	if (pImages==NULL || pagecount<=0 || pImages[0]==NULL) cx_throw("multipage GIF, no images!");
+
+	int i;
+	for (i=0; i<pagecount; i++){
+		if (pImages[i]==NULL)
+			cx_throw("Bad image pointer");
+		if (!(pImages[i]->IsValid()))
+			cx_throw("Empty image");
+		if (pImages[i]->GetNumColors()==0)
+			cx_throw("CxImageGIF::Encode cannot create animated GIFs with a true color frame. Use DecreaseBpp before");
+	}
 
 	CxImageGIF ghost;
 
@@ -417,27 +482,38 @@ bool CxImageGIF::Encode(CxFile * fp, CxImage ** pImages, int pagecount, bool bLo
 		ghost.EncodeLoopExtension(fp);
 	}
 
-	ghost.SetDisposalMethod(GetDisposalMethod());
-	ghost.EncodeExtension(fp);
+	if (bLocalDispMeth) {
+		ghost.EncodeExtension(fp);
+	} else {
+		BYTE dm = ghost.GetDisposalMethod();
+		ghost.SetDisposalMethod(GetDisposalMethod());
+		ghost.EncodeExtension(fp);
+		ghost.SetDisposalMethod(dm);
+	}
 
 	EncodeComment(fp);
 
 	ghost.EncodeBody(fp);
-	
-	for (int i=2; i<=pagecount; i++){
-		if (pImages[i-1]==NULL) throw "Bad image pointer";
-		ghost.Ghost(pImages[i-1]);
 
-		ghost.SetDisposalMethod(GetDisposalMethod());
-		ghost.EncodeExtension(fp);
+	for (i=1; i<pagecount; i++){
+		ghost.Ghost(pImages[i]);
+
+		if (bLocalDispMeth) {
+			ghost.EncodeExtension(fp);
+		} else {
+			BYTE dm = ghost.GetDisposalMethod();
+			ghost.SetDisposalMethod(GetDisposalMethod());
+			ghost.EncodeExtension(fp);
+			ghost.SetDisposalMethod(dm);
+		}
 
 		ghost.EncodeBody(fp,bLocalColorMap);
 	}
 
 	fp->PutC(';'); // Write the GIF file terminator
 
-  } catch (char *message) {
-	  strncpy(info.szLastError,message,255);
+  } cx_catch {
+	  if (strcmp(message,"")) strncpy(info.szLastError,message,255);
 	  return false;
   }
 	return true;
@@ -480,14 +556,18 @@ void CxImageGIF::EncodeExtension(CxFile *fp)
 	fp->PutC('!');
 	fp->PutC(TRANSPARENCY_CODE);
 
-	gifgce.transpcolflag = (info.nBkgndIndex != -1) ? 1 : 0;
-	gifgce.userinputflag = 0;
-	gifgce.dispmeth = m_dispmeth;
-	gifgce.res = 0;
+	gifgce.flags = 0;
+	gifgce.flags |= ((info.nBkgndIndex != -1) ? 1 : 0);
+	gifgce.flags |= ((GetDisposalMethod() & 0x7) << 2);
 	gifgce.delaytime = (WORD)info.dwFrameDelay;
 	gifgce.transpcolindex = (BYTE)info.nBkgndIndex;	   
+
+	//Invert byte order in case we use a byte order arch, then set it back <AMSN>
+	gifgce.delaytime = ntohs(gifgce.delaytime);
 	fp->PutC(sizeof(gifgce));
 	fp->Write(&gifgce, sizeof(gifgce), 1);
+	gifgce.delaytime = ntohs(gifgce.delaytime);
+
 	fp->PutC(0);
 	// TRK END
 }
@@ -633,7 +713,7 @@ int CxImageGIF::GifNextPixel( )
 void CxImageGIF::Putword(int w, CxFile *fp )
 {
 	fp->PutC((BYTE)(w & 0xff));
-	fp->PutC((BYTE)((w / 256) & 0xff));
+	fp->PutC((BYTE)((w >> 8) & 0xff));
 }
 ////////////////////////////////////////////////////////////////////////////////
 void CxImageGIF::compressNONE( int init_bits, CxFile* outfile)
@@ -808,7 +888,7 @@ void CxImageGIF::output( code_int  code)
 }
 ////////////////////////////////////////////////////////////////////////////////
 
-void CxImageGIF::cl_hash(register long hsize)
+void CxImageGIF::cl_hash(long hsize)
 
 {
 	register long *htab_p = htab+hsize;
@@ -1018,7 +1098,7 @@ short CxImageGIF::decoder(CxFile* file, CImageIterator* iter, short linewidth, i
 	while ((c = get_next_code(file)) != ending) {
 		/* If we had a file error, return without completing the decode*/
 		if (c < 0){
-			delete[] buf;
+			delete [] buf;
 			return(0);
 		}
 		/* If the code is a clear code, reinitialize all necessary items.*/
@@ -1052,9 +1132,11 @@ short CxImageGIF::decoder(CxFile* file, CImageIterator* iter, short linewidth, i
 			*/
 			*bufptr++ = (BYTE)c;
 			if (--bufcnt == 0) {
-				if ((ret = (short)out_line(iter, buf, linewidth)) < 0) {
-					delete[] buf;
-					return(ret);
+				if (iter) {
+					if ((ret = (short)out_line(iter, buf, linewidth)) < 0) {
+						delete [] buf;
+						return(ret);
+					}
 				}
 				bufptr = buf;
 				bufcnt = linewidth;
@@ -1072,8 +1154,9 @@ short CxImageGIF::decoder(CxFile* file, CImageIterator* iter, short linewidth, i
 			* the decoder into thinking it actually got the last code read.
 			* (Hmmn... I'm not sure why this works...  But it does...)
 			*/
-			if (code >= slot) {
-				if (code > slot) ++bad_code_count;
+			if (code >= slot && sp<(stack+MAX_CODES-1)) {
+				if (code > slot)
+					++bad_code_count;
 				code = oc;
 				*sp++ = (BYTE)fc;
             }
@@ -1081,7 +1164,7 @@ short CxImageGIF::decoder(CxFile* file, CImageIterator* iter, short linewidth, i
 			/* Here we scan back along the linked list of prefixes, pushing
 			* helpless characters (ie. suffixes) onto the stack as we do so.
 			*/
-			while (code >= newcodes) {
+			while (code >= newcodes && sp<(stack+MAX_CODES-1)) {
 				*sp++ = suffix[code];
 				code = prefix[code];
             }
@@ -1114,9 +1197,11 @@ short CxImageGIF::decoder(CxFile* file, CImageIterator* iter, short linewidth, i
 			while (sp > stack) {
 				*bufptr++ = *(--sp);
 				if (--bufcnt == 0) {
-					if ((ret = (short)out_line(iter, buf, linewidth)) < 0) {
-						delete[] buf;
-						return(ret);
+					if (iter) {
+						if ((ret = (short)out_line(iter, buf, linewidth)) < 0) {
+							delete [] buf;
+							return(ret);
+						}
 					}
 					bufptr = buf;
 					bufcnt = linewidth;
@@ -1125,9 +1210,9 @@ short CxImageGIF::decoder(CxFile* file, CImageIterator* iter, short linewidth, i
 		}
 	}
 	ret = 0;
-	if (bufcnt != linewidth)
+	if (bufcnt != linewidth && iter)
 		ret = (short)out_line(iter, buf, (linewidth - bufcnt));
-	delete[] buf;
+	delete [] buf;
 	return(ret);
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -1164,12 +1249,17 @@ int CxImageGIF::get_num_frames(CxFile *fp,struct_TabCol* TabColSrc,struct_dscgif
 				//log << "Image header" << endl;
 				fp->Read(&image,sizeof(image),1);
 
-				//avoid byte order problems with Solaris <candan>
-				BYTE *byteData = (BYTE *) & image;
-				image.l = byteData[0]+byteData[1]*256;
-				image.t = byteData[2]+byteData[3]*256;
-				image.w = byteData[4]+byteData[5]*256;
-				image.h = byteData[6]+byteData[7]*256;
+				//avoid byte order problems with Solaris <candan> <AMSN>
+				image.l = ntohs(image.l);
+				image.t = ntohs(image.t);
+				image.w = ntohs(image.w);
+				image.h = ntohs(image.h);
+
+				// in case of images with empty screen descriptor, give a last chance
+				if (dscgif->scrwidth==0 && dscgif->scrheight==0){
+					dscgif->scrwidth = image.w;
+					dscgif->scrheight = image.h;
+				}
 
 				if (((image.l + image.w) > dscgif->scrwidth)||((image.t + image.h) > dscgif->scrheight))
 					break;
@@ -1184,15 +1274,6 @@ int CxImageGIF::get_num_frames(CxFile *fp,struct_TabCol* TabColSrc,struct_dscgif
 					//log << "Local colour map" << endl;
 				}
 
-				int bpp; //<DP> select the correct bit per pixel value
-				if		(TempTabCol.sogct <= 2)  bpp = 1;
-				else if (TempTabCol.sogct <= 16) bpp = 4;
-				else						 bpp = 8;
-
-				Create(image.w, image.h, bpp, CXIMAGE_FORMAT_GIF);
-
-				CImageIterator* iter = new CImageIterator(this);
-				iter->Upset();
 				int badcode=0;
 				ibf = GIFBUFTAM+1;
 
@@ -1205,8 +1286,7 @@ int CxImageGIF::get_num_frames(CxFile *fp,struct_TabCol* TabColSrc,struct_dscgif
 				long pos_start = fp->Tell();
 
 				//if (interlaced) log << "Interlaced" << endl;
-				decoder(fp, iter, image.w, badcode);
-				delete iter;
+				decoder(fp, 0, image.w, badcode);
 
 				if (badcode){
 					seek_next_image(fp,pos_start);
@@ -1245,12 +1325,6 @@ long CxImageGIF::seek_next_image(CxFile* fp, long position)
 	}
 	return -1;
 }
-////////////////////////////////////////////////////////////////////////////////
-void CxImageGIF::SetDisposalMethod(int dm)
-{	m_dispmeth=dm; }
-////////////////////////////////////////////////////////////////////////////////
-long CxImageGIF::GetDisposalMethod()
-{	return m_dispmeth; }
 ////////////////////////////////////////////////////////////////////////////////
 void CxImageGIF::SetLoops(int loops)
 {	m_loops=loops; }
@@ -1469,7 +1543,8 @@ unsigned int CxImageGIF::rle_isqrt(unsigned int x)
 
 	if (x < 2) return(x);
 	for (v=x,r=1;v;v>>=2,r<<=1) ;
-	while (1){
+	for( ;; )
+	{
 		v = ((x / r) + r) / 2;
 		if ((v == r) || (v == r+1)) return(r);
 		r = v;
@@ -1512,7 +1587,7 @@ void CxImageGIF::rle_output(int val, struct_RLE* rle)
 	rle->obuf |= val << rle->obits;
 	rle->obits += rle->out_bits;
 	while (rle->obits >= 8){
-		rle_block_out(rle->obuf&0xff,rle);
+		rle_block_out((unsigned char)(rle->obuf&0xff),rle);
 		rle->obuf >>= 8;
 		rle->obits -= 8;
 	}
@@ -1520,7 +1595,7 @@ void CxImageGIF::rle_output(int val, struct_RLE* rle)
 ////////////////////////////////////////////////////////////////////////////////
 void CxImageGIF::rle_output_flush(struct_RLE* rle)
 {
-	 if (rle->obits > 0) rle_block_out(rle->obuf,rle);
+	 if (rle->obits > 0) rle_block_out((unsigned char)(rle->obuf),rle);
 	 rle_block_flush(rle);
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -1546,7 +1621,8 @@ void CxImageGIF::compressRLE( int init_bits, CxFile* outfile)
 	rle_output(rle.code_clear,&rle);
 
 	int c;
-	while (1){
+	for( ;; )
+	{
 		c = GifNextPixel();
 		if ((rle.rl_count > 0) && (c != rle.rl_pixel)) rle_flush(&rle);
 		if (c == EOF) break;

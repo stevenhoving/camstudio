@@ -1,6 +1,6 @@
 // xImaLyr.cpp : Layers functions
 /* 21/04/2003 v1.00 - Davide Pizzolato - www.xdp.it
- * CxImage version 5.99c 17/Oct/2004
+ * CxImage version 6.0.0 02/Feb/2008
  */
 
 #include "ximage.h"
@@ -31,7 +31,7 @@ bool CxImage::LayerCreate(long position)
 {
 	if ( position < 0 || position > info.nNumLayers ) position = info.nNumLayers;
 
-	CxImage** ptmp = (CxImage**)malloc((info.nNumLayers + 1)*sizeof(CxImage**));
+	CxImage** ptmp = new CxImage*[info.nNumLayers + 1];
 	if (ptmp==0) return false;
 
 	int i=0;
@@ -40,7 +40,7 @@ bool CxImage::LayerCreate(long position)
 			ptmp[n] = new CxImage();
 			i=1;
 		}
-		ptmp[n+i]=pLayers[n];
+		ptmp[n+i]=ppLayers[n];
 	}
 	if (i==0) ptmp[info.nNumLayers] = new CxImage();
 
@@ -52,8 +52,8 @@ bool CxImage::LayerCreate(long position)
 	}
 
 	info.nNumLayers++;
-	if (pLayers) free(pLayers);
-	pLayers = ptmp;
+	delete [] ppLayers;
+	ppLayers = ptmp;
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -64,31 +64,40 @@ bool CxImage::LayerDelete(long position)
 {
 	if ( position >= info.nNumLayers ) return false;
 	if ( position < 0) position = info.nNumLayers - 1;
+	if ( position < 0) return false;
 
-	CxImage** ptmp = (CxImage**)malloc((info.nNumLayers - 1)*sizeof(CxImage**));
-	if (ptmp==0) return false;
+	if (info.nNumLayers>1){
 
-	int i=0;
-	for (int n=0; n<(info.nNumLayers - 1); n++){
-		if (position == n){
-			delete pLayers[n];
-			i=1;
+		CxImage** ptmp = new CxImage*[info.nNumLayers - 1];
+		if (ptmp==0) return false;
+
+		int i=0;
+		for (int n=0; n<info.nNumLayers; n++){
+			if (position == n){
+				delete ppLayers[n];
+				i=1;
+			}
+			ptmp[n]=ppLayers[n+i];
 		}
-		ptmp[n]=pLayers[n+i];
-	}
-	if (i==0) delete pLayers[info.nNumLayers - 1];
 
-	info.nNumLayers--;
-	if (pLayers) free(pLayers);
-	pLayers = ptmp;
+		info.nNumLayers--;
+		delete [] ppLayers;
+		ppLayers = ptmp;
+
+	} else {
+		delete ppLayers[0];
+		delete [] ppLayers;
+		ppLayers = 0;
+		info.nNumLayers = 0;
+	}
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
 void CxImage::LayerDeleteAll()
 {
-	if (pLayers) {
-		for(long n=0; n<info.nNumLayers;n++){ delete pLayers[n]; }
-		free(pLayers); pLayers=0;
+	if (ppLayers) { 
+		for(long n=0; n<info.nNumLayers;n++){ delete ppLayers[n]; }
+		delete [] ppLayers; ppLayers=0; info.nNumLayers = 0;
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -97,9 +106,11 @@ void CxImage::LayerDeleteAll()
  */
 CxImage* CxImage::GetLayer(long position)
 {
-	if ( position >= info.nNumLayers ) return 0;
+	if ( ppLayers == NULL) return NULL;
+	if ( info.nNumLayers == 0) return NULL;
+	if ( position >= info.nNumLayers ) return NULL;
 	if ( position < 0) position = info.nNumLayers - 1;
-	return pLayers[position];
+	return ppLayers[position];
 }
 ////////////////////////////////////////////////////////////////////////////////
 #endif //CXIMAGE_SUPPORT_LAYERS

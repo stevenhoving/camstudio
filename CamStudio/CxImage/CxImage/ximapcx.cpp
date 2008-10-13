@@ -2,7 +2,7 @@
  * File:	ximapcx.cpp
  * Purpose:	Platform Independent PCX Image Class Loader and Writer
  * 05/Jan/2002 Davide Pizzolato - www.xdp.it
- * CxImage version 5.99c 17/Oct/2004
+ * CxImage version 6.0.0 02/Feb/2008
  *
  * based on ppmtopcx.c - convert a portable pixmap to PCX
  * Copyright (C) 1994 by Ingo Wilken (Ingo.Wilken@informatik.uni-oldenburg.de)
@@ -23,6 +23,8 @@
 #define PCX_MAXVAL 255
 
 ////////////////////////////////////////////////////////////////////////////////
+#if CXIMAGE_SUPPORT_DECODE
+////////////////////////////////////////////////////////////////////////////////
 bool CxImagePCX::Decode(CxFile *hFile)
 {
 	if (hFile == NULL) return false;
@@ -33,22 +35,31 @@ bool CxImagePCX::Decode(CxFile *hFile)
 	BYTE *pcximage = NULL, *lpHead1 = NULL, *lpHead2 = NULL;
 	BYTE *pcxplanes, *pcxpixels;
 
-  try
+  cx_try
   {
-	if (hFile->Read(&pcxHeader,sizeof(PCXHEADER),1)==0) throw "Can't read PCX image";
+	if (hFile->Read(&pcxHeader,sizeof(PCXHEADER),1)==0) cx_throw("Can't read PCX image");
 
-    if (pcxHeader.Manufacturer != PCX_MAGIC) throw "Error: Not a PCX file";
+	PCX_toh(&pcxHeader);
+
+    if (pcxHeader.Manufacturer != PCX_MAGIC) cx_throw("Error: Not a PCX file");
     // Check for PCX run length encoding
-    if (pcxHeader.Encoding != 1) throw "PCX file has unknown encoding scheme";
-
+    if (pcxHeader.Encoding != 1) cx_throw("PCX file has unknown encoding scheme");
+ 
     Width = (pcxHeader.Xmax - pcxHeader.Xmin) + 1;
     Height = (pcxHeader.Ymax - pcxHeader.Ymin) + 1;
 	info.xDPI = pcxHeader.Hres;
 	info.yDPI = pcxHeader.Vres;
 
+	if (info.nEscape == -1){
+		head.biWidth = Width;
+		head.biHeight= Height;
+		info.dwType = CXIMAGE_FORMAT_PCX;
+		return true;
+	}
+
     // Check that we can handle this image format
     if (pcxHeader.ColorPlanes > 4)
-		throw "Can't handle image with more than 4 planes";
+		cx_throw("Can't handle image with more than 4 planes");
 
 	// Create the image
 	if (pcxHeader.ColorPlanes >= 3 && pcxHeader.BitsPerPixel == 8){
@@ -61,13 +72,13 @@ bool CxImagePCX::Decode(CxFile *hFile)
 	else
 		Create (Width, Height, pcxHeader.BitsPerPixel, CXIMAGE_FORMAT_PCX);
 
-	if (info.nEscape) throw "Cancelled"; // <vho> - cancel decoding
+	if (info.nEscape) cx_throw("Cancelled"); // <vho> - cancel decoding
 
 	//Read the image and check if it's ok
     nbytes = pcxHeader.BytesPerLine * pcxHeader.ColorPlanes * Height;
     lpHead1 = pcximage = (BYTE*)malloc(nbytes);
     while (nbytes > 0){
-		if (hFile == NULL || hFile->Eof()) throw "corrupted PCX";
+		if (hFile == NULL || hFile->Eof()) cx_throw("corrupted PCX");
 
 		hFile->Read(&c,1,1);
 		if ((c & 0XC0) != 0XC0){ // Repeated group
@@ -77,7 +88,7 @@ bool CxImagePCX::Decode(CxFile *hFile)
 		}
 		count = c & 0X3F; // extract count
 		hFile->Read(&c,1,1);
-		if (count > nbytes) throw "repeat count spans end of image";
+		if (count > nbytes) cx_throw("repeat count spans end of image");
 
 		nbytes -= count;
 		while (--count >=0) *pcximage++ = c;
@@ -92,8 +103,8 @@ bool CxImagePCX::Decode(CxFile *hFile)
 	}
     if (pcxHeader.BitsPerPixel == 8 && pcxHeader.ColorPlanes == 1){
 		hFile->Read(&c,1,1);
-		if (c != PCX_256_COLORS) throw "bad color map signature";
-
+		if (c != PCX_256_COLORS) cx_throw("bad color map signature");
+		
 		for (i = 0; i < PCX_MAXCOLORS; i++){
 			hFile->Read(&ColorMap[i][0],1,1);
 			hFile->Read(&ColorMap[i][1],1,1);
@@ -111,7 +122,7 @@ bool CxImagePCX::Decode(CxFile *hFile)
     // Convert the image
     for (y = 0; y < Height; y++){
 
-		if (info.nEscape) throw "Cancelled"; // <vho> - cancel decoding
+		if (info.nEscape) cx_throw("Cancelled"); // <vho> - cancel decoding
 
 		y2=Height-1-y;
 		pcxpixels = lpHead2;
@@ -132,15 +143,19 @@ bool CxImagePCX::Decode(CxFile *hFile)
 			continue;
 #endif //CXIMAGE_SUPPORT_ALPHA
 		} else if (pcxHeader.ColorPlanes == 1) {
-			PCX_UnpackPixels(pcxpixels, pcxplanes, pcxHeader.BytesPerLine, pcxHeader.ColorPlanes, pcxHeader.BitsPerPixel);
+			if (!PCX_UnpackPixels(pcxpixels, pcxplanes, pcxHeader.BytesPerLine, pcxHeader.ColorPlanes, pcxHeader.BitsPerPixel)){
+				cx_throw("PCX_UnpackPixels: Can't handle packed pixels with more than 1 plane");
+			}
 		} else {
-			PCX_PlanesToPixels(pcxpixels, pcxplanes, pcxHeader.BytesPerLine, pcxHeader.ColorPlanes, pcxHeader.BitsPerPixel);
+			if (!PCX_PlanesToPixels(pcxpixels, pcxplanes, pcxHeader.BytesPerLine, pcxHeader.ColorPlanes, pcxHeader.BitsPerPixel)){
+				cx_throw("PCX_PlanesToPixels: more than 4 planes or more than 1 bit per pixel");
+			}
 		}
 		for (x = 0; x < Width; x++)	SetPixelIndex(x,y2,pcxpixels[x]);
 	}
 
-  } catch (char *message) {
-	strncpy(info.szLastError,message,255);
+  } cx_catch {
+	if (strcmp(message,"")) strncpy(info.szLastError,message,255);
 	if (lpHead1){ free(lpHead1); lpHead1 = NULL; }
     if (lpHead2){ free(lpHead2); lpHead2 = NULL; }
 	return false;
@@ -150,13 +165,16 @@ bool CxImagePCX::Decode(CxFile *hFile)
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
+#endif //CXIMAGE_SUPPORT_DECODE
+////////////////////////////////////////////////////////////////////////////////
 #if CXIMAGE_SUPPORT_ENCODE
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImagePCX::Encode(CxFile * hFile)
 {
 	if (EncodeSafeCheck(hFile)) return false;
 
-  try {
+  cx_try
+  {
 	PCXHEADER pcxHeader;
 	memset(&pcxHeader,0,sizeof(pcxHeader));
 	pcxHeader.Manufacturer = PCX_MAGIC;
@@ -205,8 +223,10 @@ bool CxImagePCX::Encode(CxFile * hFile)
 
 	pcxHeader.BytesPerLine = (pcxHeader.BytesPerLine + 1)&(~1);
 
+	PCX_toh(&pcxHeader);
 	if (hFile->Write(&pcxHeader, sizeof(pcxHeader), 1) == 0 )
-	   throw "cannot write PCX header";
+	   cx_throw("cannot write PCX header");
+	PCX_toh(&pcxHeader);
 
 	CxMemFile buffer;
 	buffer.Open();
@@ -219,21 +239,21 @@ bool CxImagePCX::Encode(CxFile * hFile)
 				c=n=0;
 				for (x = 0; x<head.biWidth; x++){
 					if (p==0)
-						PCX_PackPixels(GetPixelColor(x,y).rgbRed,c,n,buffer);
+						PCX_PackPixels(BlindGetPixelColor(x,y).rgbRed,c,n,buffer);
 					else if (p==1)
-						PCX_PackPixels(GetPixelColor(x,y).rgbGreen,c,n,buffer);
+						PCX_PackPixels(BlindGetPixelColor(x,y).rgbGreen,c,n,buffer);
 					else if (p==2)
-						PCX_PackPixels(GetPixelColor(x,y).rgbBlue,c,n,buffer);
+						PCX_PackPixels(BlindGetPixelColor(x,y).rgbBlue,c,n,buffer);
 #if CXIMAGE_SUPPORT_ALPHA
 					else if (p==3)
-						PCX_PackPixels(AlphaGet(x,y),c,n,buffer);
+						PCX_PackPixels(BlindAlphaGet(x,y),c,n,buffer);
 #endif //CXIMAGE_SUPPORT_ALPHA
 				}
 				PCX_PackPixels(-1-(head.biWidth&0x1),c,n,buffer);
 			}
 		}
 
-		hFile->Write(buffer.GetBuffer(false),buffer.Size(),1);
+		hFile->Write(buffer.GetBuffer(false),buffer.Tell(),1);
 
 	} else if (head.biBitCount==8) {
 
@@ -245,7 +265,7 @@ bool CxImagePCX::Encode(CxFile * hFile)
 			PCX_PackPixels(-1-(head.biWidth&0x1),c,n,buffer);
 		}
 
-		hFile->Write(buffer.GetBuffer(false),buffer.Size(),1);
+		hFile->Write(buffer.GetBuffer(false),buffer.Tell(),1);
 
 		if (head.biBitCount == 8){
 			hFile->PutC(0x0C);
@@ -265,7 +285,7 @@ bool CxImagePCX::Encode(CxFile * hFile)
 		RGBQUAD *rgb = GetPalette();
 		bool binvert = false;
 		if (CompareColors(&rgb[0],&rgb[1])>0) binvert=(head.biBitCount==1);
-
+		
 		BYTE* plane = (BYTE*)malloc(pcxHeader.BytesPerLine);
 		BYTE* raw = (BYTE*)malloc(head.biWidth);
 
@@ -284,12 +304,12 @@ bool CxImagePCX::Encode(CxFile * hFile)
 		free(plane);
 		free(raw);
 
-		hFile->Write(buffer.GetBuffer(false),buffer.Size(),1);
+		hFile->Write(buffer.GetBuffer(false),buffer.Tell(),1);
 
 	}
 
-  } catch (char *message) {
-	strncpy(info.szLastError,message,255);
+  } cx_catch {
+	if (strcmp(message,"")) strncpy(info.szLastError,message,255);
 	return false;
   }
     return true;
@@ -301,12 +321,12 @@ bool CxImagePCX::Encode(CxFile * hFile)
 // from unpacked file data bitplanes[] into pixel row pixels[]
 // image Height rows, with each row having planes image planes each
 // bytesperline bytes
-void CxImagePCX::PCX_PlanesToPixels(BYTE * pixels, BYTE * bitplanes, short bytesperline, short planes, short bitsperpixel)
+bool CxImagePCX::PCX_PlanesToPixels(BYTE * pixels, BYTE * bitplanes, short bytesperline, short planes, short bitsperpixel)
 {
 	int i, j, npixels;
 	BYTE * p;
-	if (planes > 4) throw "Can't handle more than 4 planes";
-	if (bitsperpixel != 1) throw "Can't handle more than 1 bit per pixel";
+	if (planes > 4) return false;
+	if (bitsperpixel != 1) return false;
 
 	// Clear the pixel buffer
 	npixels = (bytesperline * 8) / bitsperpixel;
@@ -324,17 +344,18 @@ void CxImagePCX::PCX_PlanesToPixels(BYTE * pixels, BYTE * bitplanes, short bytes
 				if (bits & mask) *p |= pixbit;
 		}
 	}
+	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
 // convert packed pixel format into 1 pixel per byte
 // from unpacked file data bitplanes[] into pixel row pixels[]
 // image Height rows, with each row having planes image planes each
 // bytesperline bytes
-void CxImagePCX::PCX_UnpackPixels(BYTE * pixels, BYTE * bitplanes, short bytesperline, short planes, short bitsperpixel)
+bool CxImagePCX::PCX_UnpackPixels(BYTE * pixels, BYTE * bitplanes, short bytesperline, short planes, short bitsperpixel)
 {
 	register int bits;
-	if (planes != 1) throw "Can't handle packed pixels with more than 1 plane.";
-
+	if (planes != 1) return false;
+	
 	if (bitsperpixel == 8){  // 8 bits/pixels, no unpacking needed
 		while (bytesperline-- > 0) *pixels++ = *bitplanes++;
 	} else if (bitsperpixel == 4){  // 4 bits/pixel, two pixels per byte
@@ -364,6 +385,7 @@ void CxImagePCX::PCX_UnpackPixels(BYTE * pixels, BYTE * bitplanes, short bytespe
 			*pixels++ = ((bits & 0X01) != 0);
 		}
 	}
+	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /* PCX_PackPixels(const long p,BYTE &c, BYTE &n, long &l, CxFile &f)
@@ -432,14 +454,26 @@ void CxImagePCX::PCX_PixelsToPlanes(BYTE* raw, long width, BYTE* buf, long plane
     mask = 1 << plane;
     cbit = -1;
     for( x = 0; x < width; x++ ) {
-        if ( cbit < 0 ) {
+        if( cbit < 0 ) {
             cbit = 7;
             *++cp = 0;
         }
-        if ( raw[x] & mask )
+        if( raw[x] & mask )
             *cp |= (1<<cbit);
         --cbit;
     }
+}
+////////////////////////////////////////////////////////////////////////////////
+void CxImagePCX::PCX_toh(PCXHEADER* p)
+{
+	p->Xmin = ntohs(p->Xmin);
+	p->Ymin = ntohs(p->Ymin);
+	p->Xmax = ntohs(p->Xmax);
+	p->Ymax = ntohs(p->Ymax);
+	p->Hres = ntohs(p->Hres);
+	p->Vres = ntohs(p->Vres);
+	p->BytesPerLine = ntohs(p->BytesPerLine);
+	p->PaletteType = ntohs(p->PaletteType);
 }
 ////////////////////////////////////////////////////////////////////////////////
 #endif // CXIMAGE_SUPPORT_PCX

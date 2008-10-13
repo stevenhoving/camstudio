@@ -2,13 +2,15 @@
  * File:	ximajas.cpp
  * Purpose:	Platform Independent JasPer Image Class Loader and Writer
  * 12/Apr/2003 Davide Pizzolato - www.xdp.it
- * CxImage version 5.99c 17/Oct/2004
+ * CxImage version 6.0.0 02/Feb/2008
  */
 
 #include "ximajas.h"
 
 #if CXIMAGE_SUPPORT_JASPER
 
+////////////////////////////////////////////////////////////////////////////////
+#if CXIMAGE_SUPPORT_DECODE
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageJAS::Decode(CxFile *hFile, DWORD imagetype)
 {
@@ -18,20 +20,54 @@ bool CxImageJAS::Decode(CxFile *hFile, DWORD imagetype)
 	jas_stream_t *in=0;
 	jas_matrix_t **bufs=0;
 	long i,error=0;
+	int fmt;
 	//jas_setdbglevel(0);
 
-  try
+  cx_try
   {
 	if (jas_init())
-		throw "cannot initialize jasper";
+		cx_throw("cannot initialize jasper");
 
-	if (!(in = jas_stream_fdopen(0, "rb")))
-		throw "error: cannot open standard input";
+	in = jas_stream_fdopen(0, "rb");
+	if (!in)
+		cx_throw("error: cannot open standard input");
 
 	CxFileJas src(hFile,in);
 
-	if (!(image = jas_image_decode(in, -1, 0)))
-		throw "error: cannot load image data";
+	fmt = jas_image_getfmt(in);
+	if (fmt<0)
+		cx_throw("error: unknowm format");
+
+	image = jas_image_decode(in, fmt, 0);
+	if (!image){
+		fmt = -1;
+		cx_throw("error: cannot load image data");
+	}
+
+	char szfmt[4];
+	*szfmt = '\0';
+	strncpy(szfmt,jas_image_fmttostr(fmt),3);
+	szfmt[3] = '\0';
+
+	fmt = -1;
+#if CXIMAGE_SUPPORT_JP2
+	if (strcmp(szfmt,"jp2")==0) fmt = CXIMAGE_FORMAT_JP2;
+#endif
+#if CXIMAGE_SUPPORT_JPC
+	if (strcmp(szfmt,"jpc")==0) fmt = CXIMAGE_FORMAT_JPC;
+#endif
+#if CXIMAGE_SUPPORT_RAS
+	if (strcmp(szfmt,"ras")==0) fmt = CXIMAGE_FORMAT_RAS;
+#endif
+#if CXIMAGE_SUPPORT_PNM
+	if (strcmp(szfmt,"pnm")==0) fmt = CXIMAGE_FORMAT_PNM;
+#endif
+#if CXIMAGE_SUPPORT_PGX
+	if (strcmp(szfmt,"pgx")==0) fmt = CXIMAGE_FORMAT_PGX;
+#endif
+
+	//if (fmt<0)
+	//	cx_throw("error: unknowm format");
 
 	long x,y,w,h,depth,cmptno;
 
@@ -39,18 +75,31 @@ bool CxImageJAS::Decode(CxFile *hFile, DWORD imagetype)
 	h = jas_image_cmptheight(image,0);
 	depth = jas_image_cmptprec(image,0);
 
-	if (image->numcmpts_ > 64 || image->numcmpts_ < 0)
-		throw "error: too much components";
+	if (info.nEscape == -1){
+		head.biWidth = w;
+		head.biHeight= h;
+		info.dwType = fmt<0 ? 0 : fmt;
+		cx_throw("output dimensions returned");
+	}
 
-	if (depth!=1 && depth!=4 && depth!=8){
+	if (image->numcmpts_ > 64 || image->numcmpts_ < 0)
+		cx_throw("error: too many components");
+
+	// <LD> 01/Jan/2005: Always force conversion to sRGB. Seems to be required for many types of JPEG2000 file.
+	// if (depth!=1 && depth!=4 && depth!=8)
+	if (image->numcmpts_>=3 && depth <=8)
+	{
 		jas_image_t *newimage;
 		jas_cmprof_t *outprof;
 		//jas_eprintf("forcing conversion to sRGB\n");
-		if (!(outprof = jas_cmprof_createfromclrspc(JAS_CLRSPC_SRGB))) {
-			throw "cannot create sRGB profile";
+		outprof = jas_cmprof_createfromclrspc(JAS_CLRSPC_SRGB);
+		if (!outprof) {
+			cx_throw("cannot create sRGB profile");
 		}
-		if (!(newimage = jas_image_chclrspc(image, outprof, JAS_CMXFORM_INTENT_PER))) {
-			throw "cannot convert to sRGB";
+		newimage = jas_image_chclrspc(image, outprof, JAS_CMXFORM_INTENT_PER);
+		if (!newimage) {
+			jas_cmprof_destroy(outprof); // <LD> 01/Jan/2005: Destroy color profile on error.
+			cx_throw("cannot convert to sRGB");
 		}
 		jas_image_destroy(image);
 		jas_cmprof_destroy(outprof);
@@ -59,10 +108,13 @@ bool CxImageJAS::Decode(CxFile *hFile, DWORD imagetype)
 
 	bufs = (jas_matrix_t **)calloc(image->numcmpts_, sizeof(jas_matrix_t**));
 	for (i = 0; i < image->numcmpts_; ++i) {
-		if (!(bufs[i] = jas_matrix_create(1, w))) {
-			throw "error: cannot allocate memory";
+		bufs[i] = jas_matrix_create(1, w);
+		if (!bufs[i]) {
+			cx_throw("error: cannot allocate memory");
 		}
 	}
+
+	int nshift = (depth>8) ? (depth-8) : 0;
 
 	if (image->numcmpts_==3 &&
 		image->cmpts_[0]->width_ == image->cmpts_[1]->width_ &&
@@ -73,8 +125,8 @@ bool CxImageJAS::Decode(CxFile *hFile, DWORD imagetype)
 		image->cmpts_[1]->prec_ == image->cmpts_[2]->prec_ )
 	{
 
-		if (!Create(w,h,24,imagetype))
-			throw "Can't allocate memory";
+		if(!Create(w,h,24,fmt))
+			cx_throw("");
 
 		RGBQUAD c;
         for (y=0; y<h; y++) {
@@ -83,38 +135,42 @@ bool CxImageJAS::Decode(CxFile *hFile, DWORD imagetype)
 			}
 
 			for (x=0; x<w; x++){
-				c.rgbRed   = (jas_matrix_getv(bufs[0], x));
-				c.rgbGreen = (jas_matrix_getv(bufs[1], x));
-				c.rgbBlue  = (jas_matrix_getv(bufs[2], x));
+				c.rgbRed   = (BYTE)((jas_matrix_getv(bufs[0], x)>>nshift));
+				c.rgbGreen = (BYTE)((jas_matrix_getv(bufs[1], x)>>nshift));
+				c.rgbBlue  = (BYTE)((jas_matrix_getv(bufs[2], x)>>nshift));
 				SetPixelColor(x,h-1-y,c);
 			}
 		}
 	} else {
 		info.nNumFrames = image->numcmpts_;
 		if ((info.nFrame<0)||(info.nFrame>=info.nNumFrames)){
-			throw "wrong frame!";
+			cx_throw("wrong frame!");
 		}
 		for (cmptno=0; cmptno<=info.nFrame; cmptno++) {
 			w = jas_image_cmptwidth(image,cmptno);
 			h = jas_image_cmptheight(image,cmptno);
 			depth = jas_image_cmptprec(image,cmptno);
 			if (depth>8) depth=8;
-			if (!Create(w,h,depth,imagetype))
-				throw "Can't allocate memory";
+			if(!Create(w,h,depth,imagetype))
+				cx_throw("");
 			SetGrayPalette();
 			for (y=0; y<h; y++) {
 				jas_image_readcmpt(image, cmptno, 0, y, w, 1, bufs[0]);
 				for (x=0; x<w; x++){
-					SetPixelIndex(x,h-1-y,(jas_matrix_getv(bufs[0], x)));
+					SetPixelIndex(x,h-1-y,(BYTE)((jas_matrix_getv(bufs[0], x)>>nshift)));
 				}
 			}
 		}
 	}
 
 
-  } catch (char *message) {
-	strncpy(info.szLastError,message,255);
-	error = 1;
+  } cx_catch {
+	if (strcmp(message,"")) strncpy(info.szLastError,message,255);
+	if (info.nEscape == -1 && fmt>0){
+		error = 0;
+	} else {
+		error = 1;
+	}
   }
 
 	if (bufs) {
@@ -126,6 +182,8 @@ bool CxImageJAS::Decode(CxFile *hFile, DWORD imagetype)
 	if (in) jas_stream_close(in);
 	return (error==0);
 }
+////////////////////////////////////////////////////////////////////////////////
+#endif //CXIMAGE_SUPPORT_DECODE
 ////////////////////////////////////////////////////////////////////////////////
 #if CXIMAGE_SUPPORT_ENCODE
 ////////////////////////////////////////////////////////////////////////////////
@@ -142,17 +200,17 @@ bool CxImageJAS::Encode(CxFile * hFile, DWORD imagetype)
 	jas_stream_t *out=0;
 	jas_matrix_t *cmpts[3];
 	long x,y,yflip,error=0;
-	uint_fast16_t cmptno, numcmpts;
+	uint_fast16_t cmptno, numcmpts=0;
 	jas_image_cmptparm_t cmptparms[3], *cmptparm;
 
-  try
-  {
+  cx_try {
 
 	if (jas_init())
-		throw "cannot initialize jasper";
+		cx_throw("cannot initialize jasper");
 
-	if (!(out = jas_stream_fdopen(0, "wb")))
-		throw "error: cannot open standard output";
+	out = jas_stream_fdopen(0, "wb");
+	if (!out)
+		cx_throw("error: cannot open standard output");
 
 	CxFileJas src(hFile,out);
 
@@ -170,8 +228,9 @@ bool CxImageJAS::Encode(CxFile * hFile, DWORD imagetype)
 	}
 
 	/* Create image object. */
-	if (!(image = jas_image_create(numcmpts, cmptparms, JAS_CLRSPC_UNKNOWN)))
-		throw "error : jas_image_create";
+	image = jas_image_create(numcmpts, cmptparms, JAS_CLRSPC_UNKNOWN);
+	if (!image)
+		cx_throw("error : jas_image_create");
 
 	if (numcmpts == 3) {
 		jas_image_setclrspc(image, JAS_CLRSPC_SRGB);
@@ -191,8 +250,9 @@ bool CxImageJAS::Encode(CxFile * hFile, DWORD imagetype)
 	for (x = 0; x < numcmpts; ++x) { cmpts[x] = 0; }
 	/* Create temporary matrices to hold component data. */
 	for (x = 0; x < numcmpts; ++x) {
-		if (!(cmpts[x] = jas_matrix_create(1, head.biWidth))) {
-			throw "error : can't allocate memory";
+		cmpts[x] = jas_matrix_create(1, head.biWidth);
+		if (!cmpts[x]) {
+			cx_throw("error : can't allocate memory");
 		}
 	}
 
@@ -211,7 +271,7 @@ bool CxImageJAS::Encode(CxFile * hFile, DWORD imagetype)
 		yflip = head.biHeight - 1 - y;
 		for (cmptno = 0; cmptno < numcmpts; ++cmptno) {
 			if (jas_image_writecmpt(image, cmptno, 0, yflip, head.biWidth, 1, cmpts[cmptno])) {
-				throw "error : jas_image_writecmpt";
+				cx_throw("error : jas_image_writecmpt");
 			}
 		}
 	}
@@ -233,21 +293,21 @@ bool CxImageJAS::Encode(CxFile * hFile, DWORD imagetype)
 #if CXIMAGE_SUPPORT_PGX
 	if (imagetype == CXIMAGE_FORMAT_PGX){
 		strcpy(szfmt,"pgx");
-		if (head.biClrUsed==0) throw "PGX can save only GrayScale images";
+		if (head.biClrUsed==0) cx_throw("PGX can save only GrayScale images");
 	}
 #endif
 	int outfmt = jas_image_strtofmt(szfmt);
 
-	char szoutopts[16];
-	sprintf(szoutopts,"rate=%.3f", info.nQuality/100.0f);
+	char szoutopts[32];
+	sprintf(szoutopts,"rate=%.3f", info.fQuality/100.0f);
 
 	if (jas_image_encode(image, out, outfmt, szoutopts)) {
-		throw "error: cannot encode image\n";
+		cx_throw("error: cannot encode image");
 	}
 	jas_stream_flush(out);
 
-  } catch (char *message) {
-	strncpy(info.szLastError,message,255);
+  } cx_catch {
+	if (strcmp(message,"")) strncpy(info.szLastError,message,255);
 	error = 1;
   }
 

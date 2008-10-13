@@ -15,22 +15,22 @@
 
 #include "xfile.h"
 
-static tsize_t
+static tsize_t 
 _tiffReadProcEx(thandle_t fd, tdata_t buf, tsize_t size)
 {
-	return ((CxFile*)fd)->Read(buf, 1, size);
+	return (tsize_t)((CxFile*)fd)->Read(buf, 1, size);
 }
 
 static tsize_t
 _tiffWriteProcEx(thandle_t fd, tdata_t buf, tsize_t size)
 {
-	return ((CxFile*)fd)->Write(buf, 1, size);
+	return (tsize_t)((CxFile*)fd)->Write(buf, 1, size);
 }
 
 static toff_t
 _tiffSeekProcEx(thandle_t fd, toff_t off, int whence)
 {
-	if ( off == 0xFFFFFFFF )
+	if ( off == 0xFFFFFFFF ) 
 		return 0xFFFFFFFF;
 	if (!((CxFile*)fd)->Seek(off, whence))
 		return 0xFFFFFFFF;
@@ -42,7 +42,7 @@ _tiffSeekProcEx(thandle_t fd, toff_t off, int whence)
 
 // Return nonzero if error
 static int
-_tiffCloseProcEx(thandle_t fd)
+_tiffCloseProcEx(thandle_t /*fd*/)
 {
 //	return !((CxFile*)fd)->Close(); // "//" needed for memory files <DP>
 	return 0;
@@ -57,13 +57,13 @@ _tiffSizeProcEx(thandle_t fd)
 }
 
 static int
-_tiffMapProcEx(thandle_t fd, tdata_t* pbase, toff_t* psize)
+_tiffMapProcEx(thandle_t /*fd*/, tdata_t* /*pbase*/, toff_t* /*psize*/)
 {
 	return (0);
 }
 
 static void
-_tiffUnmapProcEx(thandle_t fd, tdata_t base, toff_t size)
+_tiffUnmapProcEx(thandle_t /*fd*/, tdata_t /*base*/, toff_t /*size*/)
 {
 }
 
@@ -74,7 +74,7 @@ TIFFOpen(const char* name, const char* mode)
 {
 	static const char module[] = "TIFFOpen";
    FILE* stream = fopen(name, mode);
-	if (stream == NULL)
+	if (stream == NULL) 
    {
 		TIFFError(module, "%s: Cannot open", name);
 		return NULL;
@@ -84,7 +84,7 @@ TIFFOpen(const char* name, const char* mode)
 */
 
 TIFF*
-_TIFFFdOpen(int fd, const char* name, const char* mode)
+_TIFFFdOpen(void* fd, const char* name, const char* mode)
 {
 	TIFF* tif;
 
@@ -99,7 +99,7 @@ _TIFFFdOpen(int fd, const char* name, const char* mode)
 
 extern "C" TIFF* _TIFFOpenEx(CxFile* stream, const char* mode)
 {
-	return (_TIFFFdOpen((int)stream, "TIFF IMAGE", mode));
+	return (_TIFFFdOpen(stream, "TIFF IMAGE", mode));
 }
 
 #ifdef __GNUC__
@@ -145,23 +145,33 @@ _TIFFmemcmp(const tdata_t p1, const tdata_t p2, tsize_t c)
 	return (memcmp(p1, p2, (size_t) c));
 }
 
+#ifndef UNICODE
+#define DbgPrint wvsprintf
+#define DbgPrint2 wsprintf
+#define DbgMsgBox MessageBox
+#else
+#define DbgPrint wvsprintfA
+#define DbgPrint2 wsprintfA
+#define DbgMsgBox MessageBoxA
+#endif
+
 static void
 Win32WarningHandler(const char* module, const char* fmt, va_list ap)
 {
 #ifdef _DEBUG
-#if (!defined(_CONSOLE) && defined(WIN32))
-	LPTSTR szTitle;
-	LPTSTR szTmp;
-	LPCTSTR szTitleText = "%s Warning";
-	LPCTSTR szDefaultModule = "TIFFLIB";
-	szTmp = (module == NULL) ? (LPTSTR)szDefaultModule : (LPTSTR)module;
-	if ((szTitle = (LPTSTR)LocalAlloc(LMEM_FIXED, (lstrlen(szTmp) +
-			lstrlen(szTitleText) + lstrlen(fmt) + 128)*sizeof(TCHAR))) == NULL)
+#if (!defined(_CONSOLE) && !defined(_WIN32_WCE) && defined(WIN32))
+	LPSTR szTitle;
+	LPSTR szTmp;
+	LPCSTR szTitleText = "%s Warning";
+	LPCSTR szDefaultModule = "TIFFLIB";
+	szTmp = (module == NULL) ? (LPSTR)szDefaultModule : (LPSTR)module;
+	if ((szTitle = (LPSTR)LocalAlloc(LMEM_FIXED, (strlen(szTmp) +
+			strlen(szTitleText) + strlen(fmt) + 128))) == NULL)
 		return;
-	wsprintf(szTitle, szTitleText, szTmp);
-	szTmp = szTitle + (lstrlen(szTitle)+2)*sizeof(TCHAR);
-	wvsprintf(szTmp, fmt, ap);
-	MessageBox(GetFocus(), szTmp, szTitle, MB_OK | MB_ICONINFORMATION);
+	DbgPrint2(szTitle, szTitleText, szTmp);
+	szTmp = szTitle + (strlen(szTitle)+2);
+	DbgPrint(szTmp, fmt, ap);
+	DbgMsgBox(GetFocus(), szTmp, szTitle, MB_OK | MB_ICONINFORMATION);
 	LocalFree(szTitle);
 	return;
 #else
@@ -179,19 +189,19 @@ static void
 Win32ErrorHandler(const char* module, const char* fmt, va_list ap)
 {
 #ifdef _DEBUG
-#if (!defined(_CONSOLE) && defined(WIN32))
-	LPTSTR szTitle;
-	LPTSTR szTmp;
-	LPCTSTR szTitleText = "%s Error";
-	LPCTSTR szDefaultModule = "TIFFLIB";
-	szTmp = (module == NULL) ? (LPTSTR)szDefaultModule : (LPTSTR)module;
-	if ((szTitle = (LPTSTR)LocalAlloc(LMEM_FIXED, (lstrlen(szTmp) +
-			lstrlen(szTitleText) + lstrlen(fmt) + 128)*sizeof(TCHAR))) == NULL)
+#if (!defined(_CONSOLE) && !defined(_WIN32_WCE) && defined(WIN32))
+	LPSTR szTitle;
+	LPSTR szTmp;
+	LPCSTR szTitleText = "%s Error";
+	LPCSTR szDefaultModule = "TIFFLIB";
+	szTmp = (module == NULL) ? (LPSTR)szDefaultModule : (LPSTR)module;
+	if ((szTitle = (LPSTR)LocalAlloc(LMEM_FIXED, (strlen(szTmp) +
+			strlen(szTitleText) + strlen(fmt) + 128))) == NULL)
 		return;
-	wsprintf(szTitle, szTitleText, szTmp);
-	szTmp = szTitle + (lstrlen(szTitle)+2)*sizeof(TCHAR);
-	wvsprintf(szTmp, fmt, ap);
-	MessageBox(GetFocus(), szTmp, szTitle, MB_OK | MB_ICONEXCLAMATION);
+	DbgPrint2(szTitle, szTitleText, szTmp);
+	szTmp = szTitle + (strlen(szTitle)+2);
+	DbgPrint(szTmp, fmt, ap);
+	DbgMsgBox(GetFocus(), szTmp, szTitle, MB_OK | MB_ICONEXCLAMATION);
 	LocalFree(szTitle);
 	return;
 #else

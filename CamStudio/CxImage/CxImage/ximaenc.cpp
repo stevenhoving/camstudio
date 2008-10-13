@@ -1,6 +1,6 @@
 // xImaCodec.cpp : Encode Decode functions
 /* 07/08/2001 v1.00 - Davide Pizzolato - www.xdp.it
- * CxImage version 5.99c 17/Oct/2004
+ * CxImage version 6.0.0 02/Feb/2008
  */
 
 #include "ximage.h"
@@ -49,16 +49,20 @@
 #include "ximawmf.h" // <vho> - WMF/EMF support
 #endif
 
-#if CXIMAGE_SUPPORT_J2K
-#include "ximaj2k.h"
-#endif
-
 #if CXIMAGE_SUPPORT_JBG
 #include "ximajbg.h"
 #endif
 
 #if CXIMAGE_SUPPORT_JASPER
 #include "ximajas.h"
+#endif
+
+#if CXIMAGE_SUPPORT_SKA
+#include "ximaska.h"
+#endif
+
+#if CXIMAGE_SUPPORT_RAW
+#include "ximaraw.h"
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,7 +144,7 @@ bool CxImage::Encode(BYTE * &buffer, long &size, DWORD imagetype)
 	}
 	CxMemFile file;
 	file.Open();
-	if (Encode(&file,imagetype)){
+	if(Encode(&file,imagetype)){
 		buffer=file.GetBuffer();
 		size=file.Size();
 		return true;
@@ -150,8 +154,7 @@ bool CxImage::Encode(BYTE * &buffer, long &size, DWORD imagetype)
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Saves to disk the image in a specific format.
- * \param hFile: file handle (implemented using CxMemFile or CxIOFile),
- * open and enabled for writing.
+ * \param hFile: file handle (CxMemFile or CxIOFile), with write access.
  * \param imagetype: file format, see ENUM_CXIMAGE_FORMATS
  * \return true if everything is ok
  * \sa ENUM_CXIMAGE_FORMATS
@@ -292,18 +295,6 @@ bool CxImage::Encode(CxFile *hFile, DWORD imagetype)
 		}
 	}
 #endif
-#if CXIMAGE_SUPPORT_J2K
-	if (imagetype==CXIMAGE_FORMAT_J2K){
-		CxImageJ2K newima;
-		newima.Ghost(this);
-		if (newima.Encode(hFile)){
-			return true;
-		} else {
-			strcpy(info.szLastError,newima.GetLastError());
-			return false;
-		}
-	}
-#endif
 #if CXIMAGE_SUPPORT_JBG
 	if (imagetype==CXIMAGE_FORMAT_JBG){
 		CxImageJBG newima;
@@ -319,24 +310,50 @@ bool CxImage::Encode(CxFile *hFile, DWORD imagetype)
 #if CXIMAGE_SUPPORT_JASPER
 	if (
  #if	CXIMAGE_SUPPORT_JP2
-		imagetype==CXIMAGE_FORMAT_JP2 ||
+		imagetype==CXIMAGE_FORMAT_JP2 || 
  #endif
  #if	CXIMAGE_SUPPORT_JPC
-		imagetype==CXIMAGE_FORMAT_JPC ||
+		imagetype==CXIMAGE_FORMAT_JPC || 
  #endif
  #if	CXIMAGE_SUPPORT_PGX
-		imagetype==CXIMAGE_FORMAT_PGX ||
+		imagetype==CXIMAGE_FORMAT_PGX || 
  #endif
  #if	CXIMAGE_SUPPORT_PNM
-		imagetype==CXIMAGE_FORMAT_PNM ||
+		imagetype==CXIMAGE_FORMAT_PNM || 
  #endif
  #if	CXIMAGE_SUPPORT_RAS
-		imagetype==CXIMAGE_FORMAT_RAS ||
+		imagetype==CXIMAGE_FORMAT_RAS || 
  #endif
 		 false ){
 		CxImageJAS newima;
 		newima.Ghost(this);
 		if (newima.Encode(hFile,imagetype)){
+			return true;
+		} else {
+			strcpy(info.szLastError,newima.GetLastError());
+			return false;
+		}
+	}
+#endif
+
+#if CXIMAGE_SUPPORT_SKA
+	if (imagetype==CXIMAGE_FORMAT_SKA){
+		CxImageSKA newima;
+		newima.Ghost(this);
+		if (newima.Encode(hFile)){
+			return true;
+		} else {
+			strcpy(info.szLastError,newima.GetLastError());
+			return false;
+		}
+	}
+#endif
+
+#if CXIMAGE_SUPPORT_RAW
+	if (imagetype==CXIMAGE_FORMAT_RAW){
+		CxImageRAW newima;
+		newima.Ghost(this);
+		if (newima.Encode(hFile)){
 			return true;
 		} else {
 			strcpy(info.szLastError,newima.GetLastError());
@@ -365,10 +382,10 @@ bool CxImage::Encode(FILE * hFile, CxImage ** pImages, int pagecount, DWORD imag
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Saves to disk or memory pagecount images, referenced by an array of CxImage pointers.
- * \param hFile: file handle (implemented using CxMemFile or CxIOFile).
+ * \param hFile: file handle (CxMemFile or CxIOFile), with write access.
  * \param pImages: array of CxImage pointers.
  * \param pagecount: number of images.
- * \param imagetype: can be CXIMAGE_FORMAT_TIF or CXIMAGE_FORMAT_GIF.
+ * \param imagetype: can be CXIMAGE_FORMAT_TIF, CXIMAGE_FORMAT_GIF or CXIMAGE_FORMAT_ICO.
  * \return true if everything is ok
  */
 bool CxImage::Encode(CxFile * hFile, CxImage ** pImages, int pagecount, DWORD imagetype)
@@ -397,6 +414,18 @@ bool CxImage::Encode(CxFile * hFile, CxImage ** pImages, int pagecount, DWORD im
 		}
 	}
 #endif
+#if CXIMAGE_SUPPORT_ICO
+	if (imagetype==CXIMAGE_FORMAT_ICO){
+		CxImageICO newima;
+		newima.Ghost(this);
+		if (newima.Encode(hFile,pImages,pagecount)){
+			return true;
+		} else {
+			strcpy(info.szLastError,newima.GetLastError());
+			return false;
+		}
+	}
+#endif
 	strcpy(info.szLastError,"Multipage Encode, Unsupported operation for this format");
 	return false;
 }
@@ -408,9 +437,10 @@ bool CxImage::Encode(CxFile * hFile, CxImage ** pImages, int pagecount, DWORD im
  * the function allocates and fill the memory,
  * the application must free the buffer, see also FreeMemory().
  * \param size: output memory buffer size.
+ * \param bFlipY: direction of Y axis. default = false.
  * \return true if everything is ok
  */
-bool CxImage::Encode2RGBA(BYTE * &buffer, long &size)
+bool CxImage::Encode2RGBA(BYTE * &buffer, long &size, bool bFlipY)
 {
 	if (buffer!=NULL){
 		strcpy(info.szLastError,"the buffer must be empty");
@@ -418,7 +448,7 @@ bool CxImage::Encode2RGBA(BYTE * &buffer, long &size)
 	}
 	CxMemFile file;
 	file.Open();
-	if (Encode2RGBA(&file)){
+	if(Encode2RGBA(&file,bFlipY)){
 		buffer=file.GetBuffer();
 		size=file.Size();
 		return true;
@@ -428,15 +458,17 @@ bool CxImage::Encode2RGBA(BYTE * &buffer, long &size)
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * exports the image into a RGBA buffer, Useful for OpenGL applications.
- * \param hFile: file handle (implemented using CxMemFile or CxIOFile).
+ * \param hFile: file handle (CxMemFile or CxIOFile), with write access.
+ * \param bFlipY: direction of Y axis. default = false.
  * \return true if everything is ok
  */
-bool CxImage::Encode2RGBA(CxFile *hFile)
+bool CxImage::Encode2RGBA(CxFile *hFile, bool bFlipY)
 {
 	if (EncodeSafeCheck(hFile)) return false;
 
-	for (DWORD y = 0; y<GetHeight(); y++) {
-		for(DWORD x = 0; x<GetWidth(); x++) {
+	for (long y1 = 0; y1 < head.biHeight; y1++) {
+		long y = bFlipY ? head.biHeight - 1 - y1 : y1;
+		for(long x = 0; x < head.biWidth; x++) {
 			RGBQUAD color = BlindGetPixelColor(x,y);
 			hFile->PutC(color.rgbRed);
 			hFile->PutC(color.rgbGreen);
@@ -474,7 +506,7 @@ bool CxImage::Load(const TCHAR * filename, DWORD imagetype)
 
 	/* automatic file type recognition */
 	bool bOK = false;
-	if ( imagetype > 0 && imagetype < CMAX_IMAGE_FORMATS ){
+	if ( GetTypeIndexFromId(imagetype) ){
 		FILE* hFile;	//file handle to read the image
 
 #ifdef WIN32
@@ -518,7 +550,7 @@ bool CxImage::Load(const TCHAR * filename, DWORD imagetype)
 //
 //	/* automatic file type recognition */
 //	bool bOK = false;
-//	if ( imagetype > 0 && imagetype < CMAX_IMAGE_FORMATS ){
+//	if ( GetTypeIndexFromId(imagetype) ){
 //		FILE* hFile;	//file handle to read the image
 //		if ((hFile=_wfopen(filename,L"rb"))==NULL)  return false;
 //		bOK = Decode(hFile,imagetype);
@@ -582,7 +614,7 @@ bool CxImage::LoadResource(HRSRC hRes, DWORD imagetype, HMODULE hModule)
  * \param filename: file name
  * \param imagetype: file format, see ENUM_CXIMAGE_FORMATS
  */
-//
+// 
 // > filename: file name
 // > imagetype: specify the image format (CXIMAGE_FORMAT_BMP,...)
 // For UNICODE support: char -> TCHAR
@@ -606,7 +638,7 @@ CxImage::CxImage(FILE * stream, DWORD imagetype)
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Constructor from CxFile object, see Decode()
- * \param stream: file handle (implemented using CxMemFile or CxIOFile), with read access.
+ * \param stream: file handle (CxMemFile or CxIOFile), with read access.
  * \param imagetype: file format, see ENUM_CXIMAGE_FORMATS
  */
 CxImage::CxImage(CxFile * stream, DWORD imagetype)
@@ -655,13 +687,17 @@ bool CxImage::Decode(FILE *hFile, DWORD imagetype)
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Loads an image from CxFile object
- * \param hFile: file handle (implemented using CxMemFile or CxIOFile), with read access.
+ * \param hFile: file handle (CxMemFile or CxIOFile), with read access.
  * \param imagetype: file format, see ENUM_CXIMAGE_FORMATS
  * \return true if everything is ok
  * \sa ENUM_CXIMAGE_FORMATS
  */
 bool CxImage::Decode(CxFile *hFile, DWORD imagetype)
 {
+	if (hFile == NULL){
+		strcpy(info.szLastError,CXIMAGE_ERR_NOFILE);
+		return false;
+	}
 
 	if (imagetype==CXIMAGE_FORMAT_UNKNOWN){
 		DWORD pos = hFile->Tell();
@@ -698,14 +734,17 @@ bool CxImage::Decode(CxFile *hFile, DWORD imagetype)
 #if CXIMAGE_SUPPORT_WMF && CXIMAGE_SUPPORT_WINDOWS
 		{ CxImageWMF newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
 #endif
-#if CXIMAGE_SUPPORT_J2K
-		{ CxImageJ2K newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
-#endif
 #if CXIMAGE_SUPPORT_JBG
 		{ CxImageJBG newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
 #endif
 #if CXIMAGE_SUPPORT_JASPER
 		{ CxImageJAS newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+#endif
+#if CXIMAGE_SUPPORT_SKA
+		{ CxImageSKA newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+#endif
+#if CXIMAGE_SUPPORT_RAW
+		{ CxImageRAW newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
 #endif
 	}
 
@@ -856,19 +895,6 @@ bool CxImage::Decode(CxFile *hFile, DWORD imagetype)
 		}
 	}
 #endif
-#if CXIMAGE_SUPPORT_J2K
-	if (imagetype==CXIMAGE_FORMAT_J2K){
-		CxImageJ2K newima;
-		newima.CopyInfo(*this);
-		if (newima.Decode(hFile)){
-			Transfer(newima);
-			return true;
-		} else {
-			strcpy(info.szLastError,newima.GetLastError());
-			return false;
-		}
-	}
-#endif
 #if CXIMAGE_SUPPORT_JBG
 	if (imagetype==CXIMAGE_FORMAT_JBG){
 		CxImageJBG newima;
@@ -885,19 +911,19 @@ bool CxImage::Decode(CxFile *hFile, DWORD imagetype)
 #if CXIMAGE_SUPPORT_JASPER
 	if (
  #if	CXIMAGE_SUPPORT_JP2
-		imagetype==CXIMAGE_FORMAT_JP2 ||
+		imagetype==CXIMAGE_FORMAT_JP2 || 
  #endif
  #if	CXIMAGE_SUPPORT_JPC
-		imagetype==CXIMAGE_FORMAT_JPC ||
+		imagetype==CXIMAGE_FORMAT_JPC || 
  #endif
  #if	CXIMAGE_SUPPORT_PGX
-		imagetype==CXIMAGE_FORMAT_PGX ||
+		imagetype==CXIMAGE_FORMAT_PGX || 
  #endif
  #if	CXIMAGE_SUPPORT_PNM
-		imagetype==CXIMAGE_FORMAT_PNM ||
+		imagetype==CXIMAGE_FORMAT_PNM || 
  #endif
  #if	CXIMAGE_SUPPORT_RAS
-		imagetype==CXIMAGE_FORMAT_RAS ||
+		imagetype==CXIMAGE_FORMAT_RAS || 
  #endif
 		 false ){
 		CxImageJAS newima;
@@ -911,9 +937,71 @@ bool CxImage::Decode(CxFile *hFile, DWORD imagetype)
 		}
 	}
 #endif
+#if CXIMAGE_SUPPORT_SKA
+	if (imagetype==CXIMAGE_FORMAT_SKA){
+		CxImageSKA newima;
+		newima.CopyInfo(*this);
+		if (newima.Decode(hFile)){
+			Transfer(newima);
+			return true;
+		} else {
+			strcpy(info.szLastError,newima.GetLastError());
+			return false;
+		}
+	}
+#endif
+
+#if CXIMAGE_SUPPORT_RAW
+	if (imagetype==CXIMAGE_FORMAT_RAW){
+		CxImageRAW newima;
+		newima.CopyInfo(*this);
+		if (newima.Decode(hFile)){
+			Transfer(newima);
+			return true;
+		} else {
+			strcpy(info.szLastError,newima.GetLastError());
+			return false;
+		}
+	}
+#endif
 
 	strcpy(info.szLastError,"Decode: Unknown or wrong format");
 	return false;
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Loads an image from CxFile object
+ * \param hFile: file handle (CxMemFile or CxIOFile), with read access.
+ * \param imagetype: file format, default = 0 (CXIMAGE_FORMAT_UNKNOWN)
+ * \return : if imagetype is not 0, the function returns true when imagetype
+ *  matches the file image format. If imagetype is 0, the function returns true
+ *  when the file image format is recognized as a supported format.
+ *  If the returned value is true, use GetHeight(), GetWidth() or GetType()
+ *  to retrieve the basic image information.
+ * \sa ENUM_CXIMAGE_FORMATS
+ */
+bool CxImage::CheckFormat(CxFile * hFile, DWORD imagetype)
+{
+	SetType(CXIMAGE_FORMAT_UNKNOWN);
+	SetEscape(-1);
+
+	if (!Decode(hFile,imagetype))
+		return false;
+
+	if (GetType() == CXIMAGE_FORMAT_UNKNOWN || GetType() != imagetype)
+		return false;
+
+	return true;
+}
+////////////////////////////////////////////////////////////////////////////////
+bool CxImage::CheckFormat(BYTE * buffer, DWORD size, DWORD imagetype)
+{
+	if (buffer==NULL || size==NULL){
+		strcpy(info.szLastError,"invalid or empty buffer");
+		return false;
+	}
+	CxMemFile file(buffer,size);
+	return CheckFormat(&file,imagetype);
 }
 ////////////////////////////////////////////////////////////////////////////////
 #endif //CXIMAGE_SUPPORT_DECODE

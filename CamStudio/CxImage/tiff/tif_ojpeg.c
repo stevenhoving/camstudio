@@ -1396,7 +1396,7 @@ OJPEGPreDecode(register TIFF *tif,tsample_t s)
         else
 
        // PLANARCONFIG_SEPARATE's single component should have sampling factors
-
+       
           if (   sp->cinfo.d.comp_info[0].h_samp_factor != 1
               || sp->cinfo.d.comp_info[0].v_samp_factor != 1
              )

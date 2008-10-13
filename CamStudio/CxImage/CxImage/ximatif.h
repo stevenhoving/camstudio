@@ -34,8 +34,8 @@ public:
 	TIFF* TIFFOpenEx(CxFile * hFile);
 	void  TIFFCloseEx(TIFF* tif);
 
-//	bool Load(const char * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_TIF);}
-//	bool Save(const char * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_TIF);}
+//	bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_TIF);}
+//	bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_TIF);}
 	bool Decode(CxFile * hFile);
 	bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
 
@@ -53,6 +53,8 @@ protected:
 	TIFF *m_tif2;
 	bool m_multipage;
 	int  m_pages;
+	void MoveBits( BYTE* dest, BYTE* from, int count, int bpp );
+	void MoveBitsPal( BYTE* dest, BYTE*from, int count, int bpp, RGBQUAD* pal );
 };
 
 #endif

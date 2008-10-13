@@ -1,6 +1,6 @@
 // xImaPal.cpp : Palette and Pixel functions
 /* 07/08/2001 v1.00 - Davide Pizzolato - www.xdp.it
- * CxImage version 5.99c 17/Oct/2004
+ * CxImage version 6.0.0 02/Feb/2008
  */
 
 #include "ximage.h"
@@ -96,7 +96,7 @@ BYTE CxImage::GetPixelIndex(long x,long y)
 	if ((pDib==NULL)||(head.biClrUsed==0)) return 0;
 
 	if ((x<0)||(y<0)||(x>=head.biWidth)||(y>=head.biHeight)) {
-		if (info.nBkgndIndex != -1)	return (BYTE)info.nBkgndIndex;
+		if (info.nBkgndIndex >= 0)	return (BYTE)info.nBkgndIndex;
 		else return *info.pImage;
 	}
 	if (head.biBitCount==8){
@@ -120,7 +120,12 @@ BYTE CxImage::GetPixelIndex(long x,long y)
 BYTE CxImage::BlindGetPixelIndex(const long x,const long y)
 {
 #ifdef _DEBUG
-	if ((pDib==NULL) || (head.biClrUsed==0) || !IsInside(x,y)) throw 0;
+	if ((pDib==NULL) || (head.biClrUsed==0) || !IsInside(x,y))
+  #if CXIMAGE_SUPPORT_EXCEPTION_HANDLING
+		throw 0;
+  #else
+		return 0;
+  #endif
 #endif
 
 	if (head.biBitCount==8){
@@ -147,7 +152,7 @@ RGBQUAD CxImage::GetPixelColor(long x,long y, bool bGetAlpha)
 	RGBQUAD rgb=info.nBkgndColor; //<mpwolski>
 	if ((pDib==NULL)||(x<0)||(y<0)||
 		(x>=head.biWidth)||(y>=head.biHeight)){
-		if (info.nBkgndIndex != -1){
+		if (info.nBkgndIndex >= 0){
 			if (head.biBitCount<24) return GetPaletteColor((BYTE)info.nBkgndIndex);
 			else return info.nBkgndColor;
 		} else if (pDib) return GetPixelColor(0,0);
@@ -155,7 +160,7 @@ RGBQUAD CxImage::GetPixelColor(long x,long y, bool bGetAlpha)
 	}
 
 	if (head.biClrUsed){
-		rgb = GetPaletteColor(GetPixelIndex(x,y));
+		rgb = GetPaletteColor(BlindGetPixelIndex(x,y));
 	} else {
 		BYTE* iDst  = info.pImage + y*info.dwEffWidth + x*3;
 		rgb.rgbBlue = *iDst++;
@@ -163,7 +168,7 @@ RGBQUAD CxImage::GetPixelColor(long x,long y, bool bGetAlpha)
 		rgb.rgbRed  = *iDst;
 	}
 #if CXIMAGE_SUPPORT_ALPHA
-	if (pAlpha && bGetAlpha) rgb.rgbReserved = AlphaGet(x,y);
+	if (pAlpha && bGetAlpha) rgb.rgbReserved = BlindAlphaGet(x,y);
 #else
 	rgb.rgbReserved = 0;
 #endif //CXIMAGE_SUPPORT_ALPHA
@@ -171,30 +176,36 @@ RGBQUAD CxImage::GetPixelColor(long x,long y, bool bGetAlpha)
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * This is (a bit) faster version of GetPixelColor.
+ * This is (a bit) faster version of GetPixelColor. 
  * It tests bounds only in debug mode (_DEBUG defined).
- *
- * It is an error to request out-of-borders pixel with this method.
- * In DEBUG mode an exception will be thrown, and data will be violated in non-DEBUG mode.
+ * 
+ * It is an error to request out-of-borders pixel with this method. 
+ * In DEBUG mode an exception will be thrown, and data will be violated in non-DEBUG mode. 
  * \author ***bd*** 2.2004
  */
-RGBQUAD CxImage::BlindGetPixelColor(const long x,const long y)
+RGBQUAD CxImage::BlindGetPixelColor(const long x,const long y, bool bGetAlpha)
 {
   RGBQUAD rgb;
 #ifdef _DEBUG
-	if ((pDib==NULL) || !IsInside(x,y)) throw 0;
+	if ((pDib==NULL) || !IsInside(x,y))
+  #if CXIMAGE_SUPPORT_EXCEPTION_HANDLING
+		throw 0;
+  #else
+		{rgb.rgbReserved = 0; return rgb;}
+  #endif
 #endif
 
 	if (head.biClrUsed){
-		return GetPaletteColor(BlindGetPixelIndex(x,y));
+		rgb = GetPaletteColor(BlindGetPixelIndex(x,y));
+	} else {
+		BYTE* iDst  = info.pImage + y*info.dwEffWidth + x*3;
+		rgb.rgbBlue = *iDst++;
+		rgb.rgbGreen= *iDst++;
+		rgb.rgbRed  = *iDst;
+		rgb.rgbReserved = 0; //needed for images without alpha layer
 	}
-
-	BYTE* iDst  = info.pImage + y*info.dwEffWidth + x*3;
-	rgb.rgbBlue = *iDst++;
-	rgb.rgbGreen= *iDst++;
-	rgb.rgbRed  = *iDst;
 #if CXIMAGE_SUPPORT_ALPHA
-	if (pAlpha) rgb.rgbReserved = pAlpha[x+y*head.biWidth];
+	if (pAlpha && bGetAlpha) rgb.rgbReserved = BlindAlphaGet(x,y);
 #else
 	rgb.rgbReserved = 0;
 #endif //CXIMAGE_SUPPORT_ALPHA
@@ -205,6 +216,38 @@ BYTE CxImage::GetPixelGray(long x, long y)
 {
 	RGBQUAD color = GetPixelColor(x,y);
 	return (BYTE)RGB2GRAY(color.rgbRed,color.rgbGreen,color.rgbBlue);
+}
+////////////////////////////////////////////////////////////////////////////////
+void CxImage::BlindSetPixelIndex(long x,long y,BYTE i)
+{
+#ifdef _DEBUG
+	if ((pDib==NULL)||(head.biClrUsed==0)||
+		(x<0)||(y<0)||(x>=head.biWidth)||(y>=head.biHeight))
+  #if CXIMAGE_SUPPORT_EXCEPTION_HANDLING
+		throw 0;
+  #else
+		return;
+  #endif
+#endif
+
+	if (head.biBitCount==8){
+		info.pImage[y*info.dwEffWidth + x]=i;
+		return;
+	} else {
+		BYTE pos;
+		BYTE* iDst= info.pImage + y*info.dwEffWidth + (x*head.biBitCount >> 3);
+		if (head.biBitCount==4){
+			pos = (BYTE)(4*(1-x%2));
+			*iDst &= ~(0x0F<<pos);
+			*iDst |= ((i & 0x0F)<<pos);
+			return;
+		} else if (head.biBitCount==1){
+			pos = (BYTE)(7-x%8);
+			*iDst &= ~(0x01<<pos);
+			*iDst |= ((i & 0x01)<<pos);
+			return;
+		}
+	}
 }
 ////////////////////////////////////////////////////////////////////////////////
 void CxImage::SetPixelIndex(long x,long y,BYTE i)
@@ -237,21 +280,45 @@ void CxImage::SetPixelColor(long x,long y,COLORREF cr)
 	SetPixelColor(x,y,RGBtoRGBQUAD(cr));
 }
 ////////////////////////////////////////////////////////////////////////////////
-void CxImage::SetPixelColor(long x,long y,RGBQUAD c, bool bSetAlpha)
+void CxImage::BlindSetPixelColor(long x,long y,RGBQUAD c, bool bSetAlpha)
 {
+#ifdef _DEBUG
 	if ((pDib==NULL)||(x<0)||(y<0)||
-		(x>=head.biWidth)||(y>=head.biHeight)) return;
+		(x>=head.biWidth)||(y>=head.biHeight))
+  #if CXIMAGE_SUPPORT_EXCEPTION_HANDLING
+		throw 0;
+  #else
+		return;
+  #endif
+#endif
 	if (head.biClrUsed)
-		SetPixelIndex(x,y,GetNearestIndex(c));
+		BlindSetPixelIndex(x,y,GetNearestIndex(c));
 	else {
 		BYTE* iDst = info.pImage + y*info.dwEffWidth + x*3;
 		*iDst++ = c.rgbBlue;
 		*iDst++ = c.rgbGreen;
 		*iDst   = c.rgbRed;
-#if CXIMAGE_SUPPORT_ALPHA
-		if (bSetAlpha) AlphaSet(x,y,c.rgbReserved);
-#endif //CXIMAGE_SUPPORT_ALPHA
 	}
+#if CXIMAGE_SUPPORT_ALPHA
+	if (bSetAlpha) AlphaSet(x,y,c.rgbReserved);
+#endif //CXIMAGE_SUPPORT_ALPHA
+}
+////////////////////////////////////////////////////////////////////////////////
+void CxImage::SetPixelColor(long x,long y,RGBQUAD c, bool bSetAlpha)
+{
+	if ((pDib==NULL)||(x<0)||(y<0)||
+		(x>=head.biWidth)||(y>=head.biHeight)) return;
+	if (head.biClrUsed)
+		BlindSetPixelIndex(x,y,GetNearestIndex(c));
+	else {
+		BYTE* iDst = info.pImage + y*info.dwEffWidth + x*3;
+		*iDst++ = c.rgbBlue;
+		*iDst++ = c.rgbGreen;
+		*iDst   = c.rgbRed;
+	}
+#if CXIMAGE_SUPPORT_ALPHA
+	if (bSetAlpha) AlphaSet(x,y,c.rgbReserved);
+#endif //CXIMAGE_SUPPORT_ALPHA
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -275,7 +342,7 @@ void CxImage::BlendPixelColor(long x,long y,RGBQUAD c, float blend, bool bSetAlp
 	c.rgbGreen  = (BYTE)((c.rgbGreen * a0 + c0.rgbGreen * a1)>>8);
 
 	if (head.biClrUsed)
-		SetPixelIndex(x,y,GetNearestIndex(c));
+		BlindSetPixelIndex(x,y,GetNearestIndex(c));
 	else {
 		BYTE* iDst = info.pImage + y*info.dwEffWidth + x*3;
 		*iDst++ = c.rgbBlue;
@@ -318,7 +385,7 @@ BYTE CxImage::GetNearestIndex(RGBQUAD c)
 			j=i;
 		}
 	}
-	info.last_c_index = j;
+	info.last_c_index = (BYTE)j;
 	return (BYTE)j;
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -332,6 +399,7 @@ void CxImage::RGBtoBGR(BYTE *buffer, int length)
 	if (buffer && (head.biClrUsed==0)){
 		BYTE temp;
 		length = min(length,(int)info.dwEffWidth);
+		length = min(length,(int)(3*head.biWidth));
 		for (int i=0;i<length;i+=3){
 			temp = buffer[i]; buffer[i] = buffer[i+2]; buffer[i+2] = temp;
 		}
@@ -364,7 +432,7 @@ bool CxImage::GetPaletteColor(BYTE i, BYTE* r, BYTE* g, BYTE* b)
 	if (ppal) {
 		*r = ppal[i].rgbRed;
 		*g = ppal[i].rgbGreen;
-		*b = ppal[i].rgbBlue;
+		*b = ppal[i].rgbBlue; 
 		return true;
 	}
 	return false;
@@ -445,7 +513,7 @@ void CxImage::BlendPalette(COLORREF cr,long perc)
 bool CxImage::IsGrayScale()
 {
 	RGBQUAD* ppal=GetPalette();
-	if (!(pDib && ppal && head.biClrUsed)) return false;
+	if(!(pDib && ppal && head.biClrUsed)) return false;
 	for(DWORD i=0;i<head.biClrUsed;i++){
 		if (ppal[i].rgbBlue!=i || ppal[i].rgbGreen!=i || ppal[i].rgbRed!=i) return false;
 	}
@@ -458,7 +526,7 @@ bool CxImage::IsGrayScale()
 void CxImage::SwapIndex(BYTE idx1, BYTE idx2)
 {
 	RGBQUAD* ppal=GetPalette();
-	if (!(pDib && ppal)) return;
+	if(!(pDib && ppal)) return;
 	//swap the colors
 	RGBQUAD tempRGB=GetPaletteColor(idx1);
 	SetPaletteColor(idx1,GetPaletteColor(idx2));
@@ -466,10 +534,31 @@ void CxImage::SwapIndex(BYTE idx1, BYTE idx2)
 	//swap the pixels
 	BYTE idx;
 	for(long y=0; y < head.biHeight; y++){
-		for(long x=0; x <= head.biWidth; x++){
-			idx=GetPixelIndex(x,y);
-			if (idx==idx1) SetPixelIndex(x,y,idx2);
-			if (idx==idx2) SetPixelIndex(x,y,idx1);
+		for(long x=0; x < head.biWidth; x++){
+			idx=BlindGetPixelIndex(x,y);
+			if (idx==idx1) BlindSetPixelIndex(x,y,idx2);
+			if (idx==idx2) BlindSetPixelIndex(x,y,idx1);
+		}
+	}
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * swap Red and Blue colors
+ */
+void CxImage::SwapRGB2BGR()
+{
+	if (!pDib) return;
+
+	if (head.biClrUsed){
+		RGBQUAD* ppal=GetPalette();
+		BYTE b;
+		if(!ppal) return;
+		for(WORD a=0;a<head.biClrUsed;a++){
+			b=ppal[a].rgbBlue; ppal[a].rgbBlue=ppal[a].rgbRed; ppal[a].rgbRed=b;
+		}
+	} else {
+		for(long y=0;y<head.biHeight;y++){
+			RGBtoBGR(GetBits(y),3*head.biWidth);
 		}
 	}
 }
@@ -493,6 +582,29 @@ bool CxImage::IsTransparent(long x, long y)
 #endif
 
 	return false;
+}
+////////////////////////////////////////////////////////////////////////////////
+bool CxImage::GetTransparentMask(CxImage* iDst)
+{
+	if (!pDib) return false;
+
+	CxImage tmp;
+	tmp.Create(head.biWidth, head.biHeight, 1, GetType());
+	tmp.SetStdPalette();
+	tmp.Clear(0);
+
+	for(long y=0; y<head.biHeight; y++){
+		for(long x=0; x<head.biWidth; x++){
+			if (IsTransparent(x,y)){
+				tmp.BlindSetPixelIndex(x,y,1);
+			}
+		}
+	}
+
+	if (iDst) iDst->Transfer(tmp);
+	else Transfer(tmp);
+
+	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -556,7 +668,7 @@ void CxImage::SetClrImportant(DWORD ncolors)
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Returns pointer to pixel. Currently implemented only for truecolor images.
- *
+ *  
  * \param  x,y - coordinates
  *
  * \return pointer to first byte of pixel data
@@ -565,6 +677,14 @@ void CxImage::SetClrImportant(DWORD ncolors)
  */
 void* CxImage::BlindGetPixelPointer(const long x, const long y)
 {
+#ifdef _DEBUG
+	if ((pDib==NULL) || !IsInside(x,y))
+  #if CXIMAGE_SUPPORT_EXCEPTION_HANDLING
+		throw 0;
+  #else
+		return 0;
+  #endif
+#endif
   if (!IsIndexed())
     return info.pImage + y*info.dwEffWidth + x*3;
   else
@@ -591,7 +711,7 @@ void CxImage::DrawLine(int StartX, int EndX, int StartY, int EndY, RGBQUAD color
 	int y2 = EndY;
 
 	int xinc1,xinc2,yinc1,yinc2;      // Increasing values
-	int den, num, numadd,numpixels;
+	int den, num, numadd,numpixels;   
 	int deltax = abs(x2 - x1);        // The difference between the x's
 	int deltay = abs(y2 - y1);        // The difference between the y's
 
@@ -631,12 +751,12 @@ void CxImage::DrawLine(int StartX, int EndX, int StartY, int EndY, RGBQUAD color
 		numadd = deltax;
 		numpixels = deltay;         // There are more y-values than x-values
 	}
-
+	
 	for (int curpixel = 0; curpixel <= numpixels; curpixel++)
 	{
 		// Draw the current pixel
 		SetPixelColor(x,y,color,bSetAlpha);
-
+		
 		num += numadd;              // Increase the numerator by the top of the fraction
 		if (num >= den)             // Check if numerator >= denominator
 		{
@@ -650,7 +770,7 @@ void CxImage::DrawLine(int StartX, int EndX, int StartY, int EndY, RGBQUAD color
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * Sets a palette with standard colors for 4 and 8 bpp images.
+ * Sets a palette with standard colors for 1, 4 and 8 bpp images.
  */
 void CxImage::SetStdPalette()
 {
@@ -701,7 +821,14 @@ void CxImage::SetStdPalette()
 			memcpy(GetPalette(),pal16,64);
 			break;
 		}
+	case 1:
+		{
+			const BYTE pal2[8]={0,0,0,0,255,255,255,0};
+			memcpy(GetPalette(),pal2,8);
+			break;
+		}
 	}
+	info.last_c_isvalid = false;
 	return;
 }
 ////////////////////////////////////////////////////////////////////////////////

@@ -20,7 +20,7 @@
  * ==========================================================
  */
 #if !defined(__ximaJPEG_h)
-#define __ixmaJPEG_h
+#define __ximaJPEG_h
 
 #include "ximage.h"
 
@@ -39,8 +39,8 @@ public:
 	CxImageJPG();
 	~CxImageJPG();
 
-//	bool Load(const char * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_JPG);}
-//	bool Save(const char * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_JPG);}
+//	bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_JPG);}
+//	bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_JPG);}
 	bool Decode(CxFile * hFile);
 	bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
 
@@ -118,7 +118,7 @@ typedef struct tag_ExifInfo {
 #define M_SOS   0xDA            // Start Of Scan (begins compressed data)
 #define M_JFIF  0xE0            // Jfif marker
 #define M_EXIF  0xE1            // Exif marker
-#define M_COM   0xFE            // COMment
+#define M_COM   0xFE            // COMment 
 
 #define PSEUDO_IMAGE_MARKER 0x123; // Extra value.
 
@@ -140,11 +140,11 @@ public:
 	char m_szLastError[256];
 	CxExifInfo(EXIFINFO* info = NULL);
 	~CxExifInfo();
-	bool DecodeExif (CxFile * hFile, int nReadMode = EXIF_READ_EXIF);
-	bool EncodeExif (CxFile * hFile);
-	void DiscardAllButExif ();
+	bool DecodeExif(CxFile * hFile, int nReadMode = EXIF_READ_EXIF);
+	bool EncodeExif(CxFile * hFile);
+	void DiscardAllButExif();
 protected:
-	bool process_EXif (unsigned char * CharBuf, unsigned int length);
+	bool process_EXIF(unsigned char * CharBuf, unsigned int length);
 	void process_COM (const BYTE * Data, int length);
 	void process_SOFn (const BYTE * Data, int marker);
 	int Get16u(void * Short);
@@ -154,7 +154,7 @@ protected:
 	double ConvertAnyFormat(void * ValuePtr, int Format);
 	void* FindSection(int SectionType);
 	bool ProcessExifDir(unsigned char * DirStart, unsigned char * OffsetBase, unsigned ExifLength,
-                           EXIFINFO * const pInfo, unsigned char ** const LastExifRefdP);
+                           EXIFINFO * const pInfo, unsigned char ** const LastExifRefdP, int NestingLevel=0);
 	int ExifImageWidth;
 	int MotorolaOrder;
 	Section_t Sections[MAX_SECTIONS];
@@ -164,8 +164,8 @@ protected:
 
 	CxExifInfo* m_exif;
 	EXIFINFO m_exifinfo;
-	bool DecodeExif (CxFile * hFile);
-	bool DecodeExif (FILE * hFile) { CxIOFile file(hFile); return DecodeExif (&file); }
+	bool DecodeExif(CxFile * hFile);
+	bool DecodeExif(FILE * hFile) { CxIOFile file(hFile); return DecodeExif(&file); }
 
 #endif //CXIMAGEJPG_SUPPORT_EXIF
 
@@ -192,8 +192,8 @@ public:
 		skip_input_data = SkipInputData;
 		resync_to_restart = jpeg_resync_to_restart; // use default method
 		term_source = TermSource;
-		next_input_byte = NULL; //* => next byte to read from buffer
-		bytes_in_buffer = 0;	//* # of bytes remaining in buffer
+		next_input_byte = NULL; //* => next byte to read from buffer 
+		bytes_in_buffer = 0;	//* # of bytes remaining in buffer 
 
 		m_pBuffer = new unsigned char[eBufSize];
 	}
@@ -246,10 +246,10 @@ public:
 		CxFileJpg* pSource = (CxFileJpg*)cinfo->src;
 		nbytes = pSource->m_pFile->Read(pSource->m_pBuffer,1,eBufSize);
 		if (nbytes <= 0){
-			if (pSource->m_bStartOfFile)	//* Treat empty input file as fatal error
+			if (pSource->m_bStartOfFile)	//* Treat empty input file as fatal error 
 				ERREXIT(cinfo, JERR_INPUT_EMPTY);
 			WARNMS(cinfo, JWRN_JPEG_EOF);
-			// Insert a fake EOI marker
+			// Insert a fake EOI marker 
 			pSource->m_pBuffer[0] = (JOCTET) 0xFF;
 			pSource->m_pBuffer[1] = (JOCTET) JPEG_EOI;
 			nbytes = 2;
@@ -275,7 +275,7 @@ public:
 		}
 	}
 
-	static void TermSource(j_decompress_ptr cinfo)
+	static void TermSource(j_decompress_ptr /*cinfo*/)
 	{
 		return;
 	}
@@ -299,8 +299,10 @@ public:
 		DECODE_QUANTIZE = 0x100,
 		DECODE_DITHER = 0x200,
 		DECODE_ONEPASS = 0x400,
-		DECODE_NOSMOOTH = 0x800
-	};
+		DECODE_NOSMOOTH = 0x800,
+		ENCODE_SUBSAMPLE_422 = 0x1000,
+		ENCODE_SUBSAMPLE_444 = 0x2000
+	}; 
 
 	int m_nPredictor;
 	int m_nPointTransform;

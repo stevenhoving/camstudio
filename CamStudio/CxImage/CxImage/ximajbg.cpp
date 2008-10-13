@@ -2,7 +2,7 @@
  * File:	ximajbg.cpp
  * Purpose:	Platform Independent JBG Image Class Loader and Writer
  * 18/Aug/2002 Davide Pizzolato - www.xdp.it
- * CxImage version 5.99c 17/Oct/2004
+ * CxImage version 6.0.0 02/Feb/2008
  */
 
 #include "ximajbg.h"
@@ -14,6 +14,8 @@
 #define JBIG_BUFSIZE 8192
 
 ////////////////////////////////////////////////////////////////////////////////
+#if CXIMAGE_SUPPORT_DECODE
+////////////////////////////////////////////////////////////////////////////////
 bool CxImageJBG::Decode(CxFile *hFile)
 {
 	if (hFile == NULL) return false;
@@ -24,13 +26,13 @@ bool CxImageJBG::Decode(CxFile *hFile)
 	BYTE *buffer,*p;
 	int result;
 
-  try
+  cx_try
   {
 	jbg_dec_init(&jbig_state);
 	jbg_dec_maxsize(&jbig_state, xmax, ymax);
 
 	buffer = (BYTE*)malloc(JBIG_BUFSIZE);
-	if (!buffer) throw "Sorry, not enough memory available!";
+	if (!buffer) cx_throw("Sorry, not enough memory available!");
 
 	result = JBG_EAGAIN;
 	do {
@@ -46,9 +48,9 @@ bool CxImageJBG::Decode(CxFile *hFile)
 	} while (result == JBG_EAGAIN || result == JBG_EOK);
 
 	if (hFile->Error())
-		throw "Problem while reading input file";
+		cx_throw("Problem while reading input file");
 	if (result != JBG_EOK && result != JBG_EOK_INTR)
-		throw "Problem with input file";
+		cx_throw("Problem with input file"); 
 
 	int w, h, bpp, planes, ew;
 
@@ -58,13 +60,20 @@ bool CxImageJBG::Decode(CxFile *hFile)
 	bpp = (planes+7)>>3;
 	ew = (w + 7)>>3;
 
+	if (info.nEscape == -1){
+		head.biWidth = w;
+		head.biHeight= h;
+		info.dwType = CXIMAGE_FORMAT_JBG;
+		cx_throw("output dimensions returned");
+	}
+
 	switch (planes){
 	case 1:
 		{
 			BYTE* binary_image = jbg_dec_getimage(&jbig_state, 0);
 
 			if (!Create(w,h,1,CXIMAGE_FORMAT_JBG))
-				throw "Can't allocate memory";
+				cx_throw("");
 
 			SetPaletteColor(0,255,255,255);
 			SetPaletteColor(1,0,0,0);
@@ -79,20 +88,23 @@ bool CxImageJBG::Decode(CxFile *hFile)
 			break;
 		}
 	default:
-		throw "cannot decode images with more than 1 plane";
+		cx_throw("cannot decode images with more than 1 plane");
 	}
 
 	jbg_dec_free(&jbig_state);
 	free(buffer);
 
-  } catch (char *message) {
+  } cx_catch {
 	jbg_dec_free(&jbig_state);
 	if (buffer) free(buffer);
-	strncpy(info.szLastError,message,255);
-	return FALSE;
+	if (strcmp(message,"")) strncpy(info.szLastError,message,255);
+	if (info.nEscape == -1 && info.dwType == CXIMAGE_FORMAT_JBG) return true;
+	return false;
   }
 	return true;
 }
+////////////////////////////////////////////////////////////////////////////////
+#endif //CXIMAGE_SUPPORT_DECODE
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageJBG::Encode(CxFile * hFile)
 {

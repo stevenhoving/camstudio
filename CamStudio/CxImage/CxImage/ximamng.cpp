@@ -2,7 +2,7 @@
  * File:	ximamng.cpp
  * Purpose:	Platform Independent MNG Image Class Loader and Writer
  * Author:	07/Aug/2001 Davide Pizzolato - www.xdp.it
- * CxImage version 5.99c 17/Oct/2004
+ * CxImage version 6.0.0 02/Feb/2008
  */
 
 #include "ximamng.h"
@@ -64,7 +64,7 @@ static mng_bool mymngprocessheader( mng_handle mng, mng_uint32 width, mng_uint32
 	// the final environment.
 
 	mngstuff *mymng = (mngstuff *)mng_get_userdata(mng);
-
+	
 	mymng->width  = width;
 	mymng->height = height;
 	mymng->bpp    = 24;
@@ -80,7 +80,13 @@ static mng_bool mymngprocessheader( mng_handle mng, mng_uint32 width, mng_uint32
 	mymng->image = (BYTE*)malloc(height * mymng->effwdt);
 
 	// tell the mng decoder about our bit-depth choice
-	mng_set_canvasstyle( mng, MNG_CANVAS_BGR8 );
+#if CXIMAGE_SUPPORT_ALPHA
+	mng_set_canvasstyle( mng, MNG_CANVAS_RGB8_A8 );
+	mymng->alpha = (BYTE*)malloc(height * width);
+#else
+	mng_set_canvasstyle( mng, MNG_CANVAS_BGR8);
+	mymng->alpha = NULL;
+#endif
 	return MNG_TRUE;
 }
 
@@ -90,6 +96,13 @@ static mng_ptr mymnggetcanvasline( mng_handle mng, mng_uint32 line )
 {
 	mngstuff *mymng = (mngstuff *)mng_get_userdata(mng);
 	return (mng_ptr)(mymng->image + (mymng->effwdt * (mymng->height - 1 - line)));
+}
+////////////////////////////////////////////////////////////////////////////////
+// return a row pointer for the decoder to fill for alpha channel
+static mng_ptr mymnggetalphaline( mng_handle mng, mng_uint32 line )
+{
+	mngstuff *mymng = (mngstuff *)mng_get_userdata(mng);
+	return (mng_ptr)(mymng->alpha + (mymng->width * (mymng->height - 1 - line)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +136,6 @@ static mng_bool mymngsettimer(mng_handle mng, mng_uint32 msecs)
 ////////////////////////////////////////////////////////////////////////////////
 static mng_bool mymngerror(mng_handle mng, mng_int32 code, mng_int8 severity, mng_chunkid chunktype, mng_uint32 chunkseq, mng_int32 extra1, mng_int32 extra2, mng_pchar text)
 {
-	//throw (const char *)text;
 	return mng_cleanup(&mng); //<Arkadiy Olovyannikov>
 }
 
@@ -149,6 +161,7 @@ CxImageMNG::~CxImageMNG()
 	}
 	// free objects
 	if (mnginfo.image) free(mnginfo.image);
+	if (mnginfo.alpha) free(mnginfo.alpha);
 	if (hmng) mng_cleanup(&hmng); //be sure it's not needed any more. (active timers ?)
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -165,25 +178,33 @@ void CxImageMNG::SetCallbacks(mng_handle mng)
 	mng_setcb_gettickcount(mng, mymnggetticks);
 	mng_setcb_settimer(mng, mymngsettimer);
 	mng_setcb_refresh(mng, mymngrefresh);
+	mng_setcb_getalphaline(mng, mymnggetalphaline);
 }
 ////////////////////////////////////////////////////////////////////////////////
 // can't use the CxImage implementation because it looses mnginfo
-bool CxImageMNG::Load(const char * imageFileName){
-		FILE* hFile;	//file handle to read the image
-		if ((hFile=fopen(imageFileName,"rb"))==NULL)  return false;
-		bool bOK = Decode(hFile);
-		fclose(hFile);
-		return bOK;
+bool CxImageMNG::Load(const TCHAR * imageFileName){
+	FILE* hFile;	//file handle to read the image
+#ifdef WIN32
+	if ((hFile=_tfopen(imageFileName,_T("rb")))==NULL)  return false;	// For UNICODE support
+#else
+	if ((hFile=fopen(imageFileName,"rb"))==NULL)  return false;
+#endif
+	bool bOK = Decode(hFile);
+	fclose(hFile);
+	return bOK;
 }
+////////////////////////////////////////////////////////////////////////////////
+#if CXIMAGE_SUPPORT_DECODE
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageMNG::Decode(CxFile *hFile)
 {
 	if (hFile == NULL) return false;
 
-	try {
+	cx_try
+	{
 		// set up the mng decoder for our stream
 		hmng = mng_initialize(&mnginfo, mymngalloc, mymngfree, MNG_NULL);
-		if (hmng == NULL) throw "could not initialize libmng";
+		if (hmng == NULL) cx_throw("could not initialize libmng");			
 
 		// set the file we want to play
 		mnginfo.file = hFile;
@@ -208,10 +229,28 @@ bool CxImageMNG::Decode(CxFile *hFile)
 
 		// read in the image
 		info.nNumFrames=0;
-		mng_readdisplay(hmng);
+		int retval=MNG_NOERROR;
+
+		retval = mng_readdisplay(hmng);
+
+		if (retval != MNG_NOERROR && retval != MNG_NEEDTIMERWAIT){
+			mng_store_error(hmng,retval,0,0);
+			if (hmng->zErrortext){
+				cx_throw(hmng->zErrortext);
+			} else {
+				cx_throw("Error in MNG file");
+			}
+		}
+
+		if (info.nEscape == -1) {
+			// Return output dimensions only
+			head.biWidth = hmng->iWidth;
+			head.biHeight = hmng->iHeight;
+			info.dwType = CXIMAGE_FORMAT_MNG;
+			return true;
+		}
 
 		// read all
-		int retval=MNG_NOERROR;
 		while(pData->bReading){
 			retval = mng_display_resume(hmng);
 			info.nNumFrames++;
@@ -230,10 +269,10 @@ bool CxImageMNG::Decode(CxFile *hFile)
 			// select the frame
 			if (info.nFrame>=0 && info.nFrame<info.nNumFrames){
 				for (int n=0;n<info.nFrame;n++) mng_display_resume(hmng);
-			} else throw "Error: frame not present in MNG file";
+			} else cx_throw("Error: frame not present in MNG file");
 		}
 
-		if (mnginfo.nBkgndIndex != -1){
+		if (mnginfo.nBkgndIndex >= 0){
 			info.nBkgndIndex = mnginfo.nBkgndIndex;
 			info.nBkgndColor.rgbRed = mnginfo.nBkgndColor.rgbRed;
 			info.nBkgndColor.rgbGreen = mnginfo.nBkgndColor.rgbGreen;
@@ -242,23 +281,35 @@ bool CxImageMNG::Decode(CxFile *hFile)
 
 		//store the newly created image
 		if (Create(mnginfo.width,mnginfo.height,mnginfo.bpp, CXIMAGE_FORMAT_MNG)){
-			memcpy(GetBits(), mnginfo.image, mnginfo.effwdt * mnginfo.height);
-		} else throw "CxImageMNG::Decode cannot create image";
+			memcpy(GetBits(), mnginfo.image, info.dwEffWidth * head.biHeight);
+#if CXIMAGE_SUPPORT_ALPHA
+			SwapRGB2BGR();
+			AlphaCreate();
+			if(AlphaIsValid() && mnginfo.alpha){
+				memcpy(AlphaGetPointer(),mnginfo.alpha,mnginfo.width * mnginfo.height);
+			}
+#endif
+		} else cx_throw("CxImageMNG::Decode cannot create image");
 
 
-	} catch (char *message) {
-		strncpy(info.szLastError,message,255);
+	} cx_catch {
+		if (strcmp(message,"")) strncpy(info.szLastError,message,255);
 		return false;
 	}
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
+#endif //CXIMAGE_SUPPORT_DECODE
+////////////////////////////////////////////////////////////////////////////////
+#if CXIMAGE_SUPPORT_ENCODE
+////////////////////////////////////////////////////////////////////////////////
 bool CxImageMNG::Encode(CxFile *hFile)
 {
 	if (EncodeSafeCheck(hFile)) return false;
 
-	try {
-		if (head.biClrUsed != 0) throw "MNG encoder can save only RGB images";
+	cx_try
+	{
+		if (head.biClrUsed != 0) cx_throw("MNG encoder can save only RGB images");
 		// set the file we want to play
 		mnginfo.file = hFile;
 		mnginfo.bpp = head.biBitCount;
@@ -267,12 +318,12 @@ bool CxImageMNG::Encode(CxFile *hFile)
 		mnginfo.width =  head.biWidth;
 
 		mnginfo.image = (BYTE*)malloc(head.biSizeImage);
-		if (mnginfo.image == NULL) throw "could not allocate memory for MNG";
+		if (mnginfo.image == NULL) cx_throw("could not allocate memory for MNG");
 		memcpy(mnginfo.image,info.pImage, head.biSizeImage);
 
 		// set up the mng decoder for our stream
 		hmng = mng_initialize(&mnginfo, mymngalloc, mymngfree, MNG_NULL);
-		if (hmng == NULL) throw "could not initialize libmng";
+		if (hmng == NULL) cx_throw("could not initialize libmng");			
 
 		mng_setcb_openstream(hmng, mymngopenstreamwrite );
 		mng_setcb_closestream(hmng, mymngclosestream);
@@ -285,8 +336,8 @@ bool CxImageMNG::Encode(CxFile *hFile)
 		// Now write file:
 		mng_write(hmng);
 
-	} catch (char *message) {
-		strncpy(info.szLastError,message,255);
+	} cx_catch {
+		if (strcmp(message,"")) strncpy(info.szLastError,message,255);
 		return false;
 	}
 	return true;
@@ -296,44 +347,44 @@ bool CxImageMNG::Encode(CxFile *hFile)
 void CxImageMNG::WritePNG( mng_handle hMNG, int Frame, int FrameCount )
 {
 	mngstuff *mymng = (mngstuff *)mng_get_userdata(hMNG);
-
+	
 	int OffsetX=0,OffsetY=0,OffsetW=mymng->width,OffsetH=mymng->height;
 
 	BYTE *tmpbuffer = new BYTE[ (mymng->effwdt+1) * mymng->height];
-	if ( tmpbuffer == 0 ) return;
+	if( tmpbuffer == 0 ) return;
 
 	// Write DEFI chunk.
 	mng_putchunk_defi( hMNG, 0, 0, 0, MNG_TRUE, OffsetX, OffsetY, MNG_FALSE, 0, 0, 0, 0 );
-
+ 		 
 	// Write Header:
 	mng_putchunk_ihdr(
-		hMNG,
-		OffsetW, OffsetH,
-		MNG_BITDEPTH_8,
-		MNG_COLORTYPE_RGB,
-		MNG_COMPRESSION_DEFLATE,
-		MNG_FILTER_ADAPTIVE,
-		MNG_INTERLACE_NONE
+		hMNG, 
+		OffsetW, OffsetH, 
+		MNG_BITDEPTH_8, 
+		MNG_COLORTYPE_RGB, 
+		MNG_COMPRESSION_DEFLATE, 
+		MNG_FILTER_ADAPTIVE, 
+		MNG_INTERLACE_NONE 
 	);
 
 	// transfer data, add Filterbyte:
 	for( int Row=0; Row<OffsetH; Row++ ){
 		// First Byte in each Scanline is Filterbyte: Currently 0 -> No Filter.
-		tmpbuffer[Row*(mymng->effwdt+1)]=0;
+		tmpbuffer[Row*(mymng->effwdt+1)]=0; 
 		// Copy the scanline: (reverse order)
-		memcpy(tmpbuffer+Row*(mymng->effwdt+1)+1,
+		memcpy(tmpbuffer+Row*(mymng->effwdt+1)+1, 
 			mymng->image+((OffsetH-1-(OffsetY+Row))*(mymng->effwdt))+OffsetX,mymng->effwdt);
 		// swap red and blue components
 		RGBtoBGR(tmpbuffer+Row*(mymng->effwdt+1)+1,mymng->effwdt);
-	}
+	} 
 
 	// Compress data with ZLib (Deflate):
 	BYTE *dstbuffer = new BYTE[(mymng->effwdt+1)*OffsetH];
-	if ( dstbuffer == 0 ) return;
+	if( dstbuffer == 0 ) return;
 	DWORD dstbufferSize=(mymng->effwdt+1)*OffsetH;
 
 	// Compress data:
-	if (Z_OK != compress2((Bytef *)dstbuffer,(ULONG *)&dstbufferSize,(const Bytef*)tmpbuffer,
+	if(Z_OK != compress2((Bytef *)dstbuffer,(ULONG *)&dstbufferSize,(const Bytef*)tmpbuffer,
 						(ULONG) (mymng->effwdt+1)*OffsetH,9 )) return;
 
 	// Write Data into MNG File:
@@ -348,8 +399,19 @@ void CxImageMNG::WritePNG( mng_handle hMNG, int Frame, int FrameCount )
 long CxImageMNG::Resume()
 {
 	if (MNG_NEEDTIMERWAIT == mng_display_resume(hmng)){
-		if (info.pImage==NULL) Create(mnginfo.width,mnginfo.height,mnginfo.bpp, CXIMAGE_FORMAT_MNG);
-		if (IsValid()) memcpy(GetBits(), mnginfo.image, mnginfo.effwdt * mnginfo.height);
+		if (info.pImage==NULL){
+			Create(mnginfo.width,mnginfo.height,mnginfo.bpp, CXIMAGE_FORMAT_MNG);
+		}
+		if (IsValid()){
+			memcpy(GetBits(), mnginfo.image, info.dwEffWidth * head.biHeight);
+#if CXIMAGE_SUPPORT_ALPHA
+			SwapRGB2BGR();
+			AlphaCreate();
+			if(AlphaIsValid() && mnginfo.alpha){
+				memcpy(AlphaGetPointer(),mnginfo.alpha,mnginfo.width * mnginfo.height);
+			}
+#endif
+		}
 	} else {
 		mnginfo.animation_enabled = 0;
 	}
@@ -362,5 +424,7 @@ void CxImageMNG::SetSpeed(float speed)
 	else if (speed<0.1) mnginfo.speed = 0.1f;
 	else mnginfo.speed=speed;
 }
+////////////////////////////////////////////////////////////////////////////////
+#endif //CXIMAGE_SUPPORT_ENCODE
 ////////////////////////////////////////////////////////////////////////////////
 #endif // CXIMAGE_SUPPORT_MNG

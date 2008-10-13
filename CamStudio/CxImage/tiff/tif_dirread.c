@@ -4,23 +4,23 @@
  * Copyright (c) 1988-1997 Sam Leffler
  * Copyright (c) 1991-1997 Silicon Graphics, Inc.
  *
- * Permission to use, copy, modify, distribute, and sell this software and
+ * Permission to use, copy, modify, distribute, and sell this software and 
  * its documentation for any purpose is hereby granted without fee, provided
  * that (i) the above copyright notices and this permission notice appear in
  * all copies of the software and related documentation, and (ii) the names of
  * Sam Leffler and Silicon Graphics may not be used in any advertising or
  * publicity relating to the software without the specific, prior written
  * permission of Sam Leffler and Silicon Graphics.
- *
- * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
- * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
- *
+ * 
+ * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND, 
+ * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY 
+ * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  
+ * 
  * IN NO EVENT SHALL SAM LEFFLER OR SILICON GRAPHICS BE LIABLE FOR
  * ANY SPECIAL, INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
  * OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
- * WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
- * LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
+ * WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF 
+ * LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE 
  * OF THIS SOFTWARE.
  */
 
@@ -193,7 +193,7 @@ TIFFReadDirectory(TIFF* tif)
 	 *
 	 * It sure would have been nice if Aldus had really thought
 	 * this stuff through carefully.
-	 */
+	 */ 
 	for (dp = dir, n = dircount; n > 0; n--, dp++) {
 		if (tif->tif_flags & TIFF_SWAB) {
 			TIFFSwabArrayOfShort(&dp->tdir_tag, 2);
@@ -215,12 +215,12 @@ TIFFReadDirectory(TIFF* tif)
                  * Find the field information entry for this tag.
 		 * Added check for tags to ignore ... [BFC]
                  */
-		if ( TIFFReassignTagToIgnore(TIS_EXTRACT, dp->tdir_tag) )
+		if( TIFFReassignTagToIgnore(TIS_EXTRACT, dp->tdir_tag) )
                     dp->tdir_tag = IGNORE;
 
 		if (dp->tdir_tag == IGNORE)
                     continue;
-
+                
 		/*
 		 * Silicon Beach (at least) writes unordered
 		 * directory tags (violating the spec).  Handle
@@ -337,7 +337,7 @@ TIFFReadDirectory(TIFF* tif)
 		MissingRequired(tif, "PlanarConfiguration");
 		goto bad;
 	}
-	/*
+	/* 
  	 * Setup appropriate structures (by strip or by tile)
 	 */
 	if (!TIFFFieldSet(tif, FIELD_TILEDIMENSIONS)) {
@@ -596,7 +596,7 @@ EstimateStripByteCounts(TIFF* tif, TIFFDirEntry* dir, uint16 dircount)
 		 * should begin.  Since a strip of data must be contiguous,
 		 * it's safe to assume that we've overestimated the amount
 		 * of data in the strip and trim this number back accordingly.
-		 */
+		 */ 
 		i--;
 		if (((toff_t)(td->td_stripoffset[i]+td->td_stripbytecount[i]))
                                                                > filesize)
@@ -1044,7 +1044,7 @@ TIFFFetchNormalTag(TIFF* tif, TIFFDirEntry* dp)
 			 * NULL byte, so always append one just in case.
 			 */
 			cp = CheckMalloc(tif, dp->tdir_count+1, mesg);
-			if ( (ok = (cp && TIFFFetchString(tif, dp, cp))) != 0 )
+			if( (ok = (cp && TIFFFetchString(tif, dp, cp))) != 0 )
 				cp[dp->tdir_count] = '\0';	/* XXX */
 			break;
 		}
@@ -1089,7 +1089,7 @@ TIFFFetchNormalTag(TIFF* tif, TIFFDirEntry* dp)
 		case TIFF_SLONG:
 			{ uint32 v32 =
 		    TIFFExtractData(tif, dp->tdir_type, dp->tdir_offset);
-			  ok = (fip->field_passcount ?
+			  ok = (fip->field_passcount ? 
 			      TIFFSetField(tif, dp->tdir_tag, 1, &v32)
 			    : TIFFSetField(tif, dp->tdir_tag, v32));
 			}
@@ -1097,7 +1097,7 @@ TIFFFetchNormalTag(TIFF* tif, TIFFDirEntry* dp)
 		case TIFF_RATIONAL:
 		case TIFF_SRATIONAL:
 		case TIFF_FLOAT:
-			{ float v = (dp->tdir_type == TIFF_FLOAT ?
+			{ float v = (dp->tdir_type == TIFF_FLOAT ? 
 			      TIFFFetchFloat(tif, dp)
 			    : TIFFFetchRational(tif, dp));
 			  ok = (fip->field_passcount ?
@@ -1117,7 +1117,7 @@ TIFFFetchNormalTag(TIFF* tif, TIFFDirEntry* dp)
 		case TIFF_ASCII:
 		case TIFF_UNDEFINED:		/* bit of a cheat... */
 			{ char c[2];
-			  if ( (ok = (TIFFFetchString(tif, dp, c) != 0)) != 0 ){
+			  if( (ok = (TIFFFetchString(tif, dp, c) != 0)) != 0 ){
 				c[1] = '\0';		/* XXX paranoid */
 				ok = TIFFSetField(tif, dp->tdir_tag, c);
 			  }
@@ -1130,7 +1130,7 @@ TIFFFetchNormalTag(TIFF* tif, TIFFDirEntry* dp)
 
 #define	NITEMS(x)	(sizeof (x) / sizeof (x[0]))
 /*
- * Fetch samples/pixel short values for
+ * Fetch samples/pixel short values for 
  * the specified tag and verify that
  * all values are the same.
  */
@@ -1166,7 +1166,7 @@ TIFFFetchPerSampleShorts(TIFF* tif, TIFFDirEntry* dir, int* pl)
 }
 
 /*
- * Fetch samples/pixel ANY values for
+ * Fetch samples/pixel ANY values for 
  * the specified tag and verify that
  * all values are the same.
  */
@@ -1231,7 +1231,7 @@ TIFFFetchStripThing(TIFF* tif, TIFFDirEntry* dir, long nstrips, uint32** lpp)
 		    dir->tdir_count* sizeof (uint16), "to fetch strip tag");
 		if (dp == NULL)
 			return (0);
-		if ( (status = TIFFFetchShortArray(tif, dir, dp)) != 0 ) {
+		if( (status = TIFFFetchShortArray(tif, dir, dp)) != 0 ) {
 			register uint16* wp = dp;
 			while (nstrips-- > 0)
 				*lp++ = *wp++;
@@ -1284,10 +1284,10 @@ TIFFFetchRefBlackWhite(TIFF* tif, TIFFDirEntry* dir)
 	 * Handle LONG's for backward compatibility.
 	 */
 	cp = CheckMalloc(tif, dir->tdir_count * sizeof (uint32), mesg);
-	if ( (ok = (cp && TIFFFetchLongArray(tif, dir, (uint32*) cp))) != 0) {
+	if( (ok = (cp && TIFFFetchLongArray(tif, dir, (uint32*) cp))) != 0) {
 		float* fp = (float*)
 		    CheckMalloc(tif, dir->tdir_count * sizeof (float), mesg);
-		if ( (ok = (fp != NULL)) != 0 ) {
+		if( (ok = (fp != NULL)) != 0 ) {
 			uint32 i;
 			for (i = 0; i < dir->tdir_count; i++)
 				fp[i] = (float)((uint32*) cp)[i];

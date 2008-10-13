@@ -4,23 +4,23 @@
  * Copyright (c) 1988-1997 Sam Leffler
  * Copyright (c) 1991-1997 Silicon Graphics, Inc.
  *
- * Permission to use, copy, modify, distribute, and sell this software and
+ * Permission to use, copy, modify, distribute, and sell this software and 
  * its documentation for any purpose is hereby granted without fee, provided
  * that (i) the above copyright notices and this permission notice appear in
  * all copies of the software and related documentation, and (ii) the names of
  * Sam Leffler and Silicon Graphics may not be used in any advertising or
  * publicity relating to the software without the specific, prior written
  * permission of Sam Leffler and Silicon Graphics.
- *
- * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
- * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
- *
+ * 
+ * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND, 
+ * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY 
+ * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  
+ * 
  * IN NO EVENT SHALL SAM LEFFLER OR SILICON GRAPHICS BE LIABLE FOR
  * ANY SPECIAL, INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
  * OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
- * WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
- * LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
+ * WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF 
+ * LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE 
  * OF THIS SOFTWARE.
  */
 
@@ -475,7 +475,7 @@ TIFFWriteNormalTag(TIFF* tif, TIFFDirEntry* dir, const TIFFFieldInfo* fip)
         /* added based on patch request from MARTIN.MCBRIDE.MM@agfa.co.uk,
            correctness not verified (FW, 99/08) */
         case TIFF_BYTE:
-        case TIFF_SBYTE:
+        case TIFF_SBYTE:          
                 if (wc > 1) {
                     char* cp;
                     if (wc == (u_short) TIFF_VARIABLE) {
@@ -504,7 +504,7 @@ TIFFWriteNormalTag(TIFF* tif, TIFFDirEntry* dir, const TIFFFieldInfo* fip)
 		  } else if (wc == (u_short) TIFF_VARIABLE2) {
 			TIFFGetField(tif, fip->field_tag, &wc2, &cp);
 			dir->tdir_count = wc2;
-		  } else
+		  } else 
 			TIFFGetField(tif, fip->field_tag, &cp);
 		  if (!TIFFWriteByteArray(tif, dir, cp))
 			return (0);
@@ -945,34 +945,34 @@ TIFFWriteData(TIFF* tif, TIFFDirEntry* dir, char* cp)
 /*
  * Similar to TIFFWriteDirectory(), but if the directory has already
  * been written once, it is relocated to the end of the file, in case it
- * has changed in size.  Note that this will result in the loss of the
- * previously used directory space.
- */
+ * has changed in size.  Note that this will result in the loss of the 
+ * previously used directory space. 
+ */ 
 
-int
+int 
 TIFFRewriteDirectory( TIFF *tif )
 {
     static const char module[] = "TIFFRewriteDirectory";
 
     /* We don't need to do anything special if it hasn't been written. */
-    if ( tif->tif_diroff == 0 )
+    if( tif->tif_diroff == 0 )
         return TIFFWriteDirectory( tif );
 
     /*
     ** Find and zero the pointer to this directory, so that TIFFLinkDirectory
     ** will cause it to be added after this directories current pre-link.
     */
-
+    
     /* Is it the first directory in the file? */
-    if (tif->tif_header.tiff_diroff == tif->tif_diroff)
+    if (tif->tif_header.tiff_diroff == tif->tif_diroff) 
     {
         tif->tif_header.tiff_diroff = 0;
         tif->tif_diroff = 0;
 
 #define	HDROFF(f)	((toff_t) &(((TIFFHeader*) 0)->f))
         TIFFSeekFile(tif, HDROFF(tiff_diroff), SEEK_SET);
-        if (!WriteOK(tif, &(tif->tif_header.tiff_diroff),
-                     sizeof (tif->tif_diroff)))
+        if (!WriteOK(tif, &(tif->tif_header.tiff_diroff), 
+                     sizeof (tif->tif_diroff))) 
         {
             TIFFError(tif->tif_name, "Error updating TIFF header");
             return (0);
