@@ -3547,7 +3547,7 @@ void CRecorderView::OnRecord()
 	case 3:
 		// window
 		AfxMessageBox("Click on Window to be captured");
-		//SetCapture();
+		SetCapture();
 		break;
 	}
 }
