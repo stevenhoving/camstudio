@@ -148,6 +148,7 @@ END_MESSAGE_MAP()
 // CRecorderApp construction
 
 CRecorderApp::CRecorderApp()
+: m_cmSettings(CString(GetProgPath() + _T("\\CamStudio.ini")))
 {
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance

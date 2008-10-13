@@ -74,7 +74,7 @@ private:
 class CCamStudioSettings : public CProfile
 {
 public:
-	CCamStudioSettings(CString strFileName = ::AfxGetApp()->m_pszProfileName);
+	CCamStudioSettings(CString strFileName);
 	virtual ~CCamStudioSettings();
 public:
 	virtual bool LoadSettings();
