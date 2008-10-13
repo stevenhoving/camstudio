@@ -50,7 +50,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)fister&quot;;&quot;$(SolutionDir)CamLib&quot;;&quot;$(SolutionDir)\cximage\CxImage&quot;;&quot;$(SolutionDir)hook&quot;;&quot;$(SolutionDir)hookkey&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)$(ProjectName)\fister&quot;;&quot;$(SolutionDir)CxImage\CxImage&quot;;&quot;$(SolutionDir)CamLib&quot;;&quot;$(SolutionDir)hook&quot;;&quot;$(SolutionDir)hookkey&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -109,8 +109,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Moving files that don&apos;t belong in output"
-				CommandLine="copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot;"
+				Description="Moving files that don&apos;t belong in output and copying other files (help docs, etc) to output directory"
+				CommandLine="copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;xcopy /s /y &quot;$(ProjectDir)\output\*.*&quot; &quot;$(SolutionDir)\$(ConfigurationName)\&quot;"
 			/>
 		</Configuration>
 		<Configuration
@@ -147,7 +147,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)fister&quot;;&quot;$(SolutionDir)CamLib&quot;;&quot;$(SolutionDir)\cximage\CxImage&quot;;&quot;$(SolutionDir)hook&quot;;&quot;$(SolutionDir)hookkey&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)$(ProjectName)\fister&quot;;&quot;$(SolutionDir)CxImage\CxImage&quot;;&quot;$(SolutionDir)CamLib&quot;;&quot;$(SolutionDir)hook&quot;;&quot;$(SolutionDir)hookkey&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
@@ -205,8 +205,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Moving files that don&apos;t belong in output"
-				CommandLine="copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot;"
+				Description="Moving files that don&apos;t belong in output and copying other files (help docs, etc) to output directory"
+				CommandLine="copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;xcopy /s /y &quot;$(ProjectDir)\output\*.*&quot; &quot;$(SolutionDir)\$(ConfigurationName)\&quot;"
 			/>
 		</Configuration>
 	</Configurations>
