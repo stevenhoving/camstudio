@@ -5,8 +5,6 @@
 #if !defined(AFX_SOUNDBASE_H__041D24CC_3A2F_4E33_AAB9_6C98297DAC59__INCLUDED_)
 #define AFX_SOUNDBASE_H__041D24CC_3A2F_4E33_AAB9_6C98297DAC59__INCLUDED_
 
-#pragma message("CamStudio\\Producer\\fister\\SoundBase.h")
-
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
@@ -17,11 +15,6 @@
 class CSoundBase  
 {
 public:
-	CSoundBase();
-	virtual ~CSoundBase();
-
-public:
-	// New
 	const WAVEFORMATEX& Format() const					{return m_Format;}
 	WAVEFORMATEX& Format(const WAVEFORMATEX& rhs) 		{return m_Format = rhs;}
 	int BufferSize() const								{return m_BufferSize;}
@@ -32,12 +25,13 @@ public:
 	int SamplesPerSecond(int sps)						{m_Format.nSamplesPerSec = sps; Update(); return m_Format.nSamplesPerSec;}
 	int BitsPerSample() const							{return m_Format.wBitsPerSample;}
 	int BitsPerSample(int bps)							{m_Format.wBitsPerSample = bps; Update(); return m_Format.wBitsPerSample;}
+	CSoundBase();
+	virtual ~CSoundBase();
 
 protected:
 	WAVEFORMATEX m_Format;
 	int			 m_BufferSize;	// number of samples
 
-private:
 private:
 	void Update()
 	{
