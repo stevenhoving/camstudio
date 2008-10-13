@@ -123,7 +123,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	//ver 1.2
 	m_TrayIcon.SetNotifyWnd(*this);
-	m_TrayIcon.TraySetIcon(IDR_MAINFRAMESMALL);
+	m_TrayIcon.TraySetIcon(IDR_MAINFRAME);
 	m_TrayIcon.TraySetToolTip("CamStudio");
 	m_TrayIcon.TraySetMenu(IDR_TRAYMENU);
 	m_TrayIcon.TrayShow();
