@@ -229,6 +229,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Player.ico"
+			>
+		</File>
+		<File
 			RelativePath=".\player.rc"
 			>
 		</File>
