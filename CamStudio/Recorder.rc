@@ -99,6 +99,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\vscap.ico"
 IDI_ICON1               ICON                    "res\\icon1.ico"
 IDI_CUSTOMICON_CONTEXTHELP ICON                    "res\\icon2.ico"
 IDI_CUSTOMICON_MAGNIFY  ICON                    "res\\ico00001.ico"
@@ -134,7 +135,6 @@ IDI_CUSTOMICON_POINT1   ICON                    "res\\ico00028.ico"
 IDI_CUSTOMICON_POINT2   ICON                    "res\\ico00029.ico"
 IDI_CUSTOMICON_SERCURITY ICON                    "res\\ico00030.ico"
 IDI_CUSTOMICON_SECURITY2 ICON                    "res\\ico00031.ico"
-IDR_MAINFRAME           ICON                    "res\\vscap.ico"
 IDI_ICONCROSSHAIR       ICON                    "res\\ico00032.ico"
 IDR_MAINFRAMESMALL      ICON                    "res\\idr_main.ico"
 IDI_ICONJUSTIFYRIGHT    ICON                    "res\\ico00035.ico"
