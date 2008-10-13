@@ -10,11 +10,9 @@
 #endif // _MSC_VER > 1000
 
 #include "soundbase.h"
-// is this file used anywhere?
-#pragma message("include SoundIn.h")
 
-// CWinThread must be before CSoundBase -> and it's very difficult to debug!
-// Trust me!   Thomas.Holme@openmpeg4.org
+				// CWinThread must be before CSoundBase -> and it's very difficult to debug!
+				// Trust me!   Thomas.Holme@openmpeg4.org
 class CSoundIn : public CWinThread, public CSoundBase
 {
 	DECLARE_DYNCREATE(CSoundIn)
@@ -22,6 +20,7 @@ class CSoundIn : public CWinThread, public CSoundBase
 public:
 	CSoundIn();
 	virtual ~CSoundIn();
+
 
 	// pointer to callback function
 	void (*DataFromSoundIn)(CBuffer* buffer, void* Owner);
