@@ -1638,15 +1638,11 @@
 				>
 			</File>
 			<File
-				RelativePath="res\playplus.ico"
-				>
-			</File>
-			<File
 				RelativePath="res\playplus.rc2"
 				>
 			</File>
 			<File
-				RelativePath="res\playplusDoc.ico"
+				RelativePath=".\res\Producer.ico"
 				>
 			</File>
 			<File
