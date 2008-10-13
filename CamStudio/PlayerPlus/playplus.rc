@@ -67,8 +67,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\playplus.ico"
-IDR_PLAYPLTYPE          ICON                    "res\\playplusDoc.ico"
+IDR_MAINFRAME           ICON                    "res\\PlayerPlus.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //

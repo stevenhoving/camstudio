@@ -31,7 +31,6 @@
 #define CG_IDD_PROGRESS                 102
 #define CG_IDS_PROGRESS_CAPTION         103
 #define IDR_MAINFRAME                   128
-#define IDR_PLAYPLTYPE                  129
 #define IDB_BITMAP1                     130
 #define IDB_BITMAP2                     132
 #define IDR_MENUPLAYER                  133

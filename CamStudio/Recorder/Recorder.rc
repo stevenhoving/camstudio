@@ -99,8 +99,8 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\vscap.ico"
 IDI_ICON1               ICON                    "res\\icon1.ico"
+IDR_MAINFRAME           ICON                    "res\\Recorder.ico"
 IDI_CUSTOMICON_CONTEXTHELP ICON                    "res\\icon2.ico"
 IDI_CUSTOMICON_MAGNIFY  ICON                    "res\\ico00001.ico"
 IDI_CUSTOMICON_NODRAG   ICON                    "res\\ico00002.ico"
@@ -136,10 +136,9 @@ IDI_CUSTOMICON_POINT2   ICON                    "res\\ico00029.ico"
 IDI_CUSTOMICON_SERCURITY ICON                    "res\\ico00030.ico"
 IDI_CUSTOMICON_SECURITY2 ICON                    "res\\ico00031.ico"
 IDI_ICONCROSSHAIR       ICON                    "res\\ico00032.ico"
-IDR_MAINFRAMESMALL      ICON                    "res\\idr_main.ico"
-IDI_ICONJUSTIFYRIGHT    ICON                    "res\\ico00035.ico"
 IDI_ICONJUSTIFYLEFT     ICON                    "res\\ico00033.ico"
 IDI_ICONJUSTIFYCENTER   ICON                    "res\\ico00034.ico"
+IDI_ICONJUSTIFYRIGHT    ICON                    "res\\ico00035.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -580,7 +579,7 @@ BEGIN
     LTEXT           "Size",IDC_STATIC_SIZE,22,148,30,11
     LTEXT           "Shape",IDC_STATIC_SHAPE,21,167,30,11
     GROUPBOX        "Cursor Highlight",-1,7,120,240,94
-    ICON            IDR_MAINFRAME,IDC_ICONCURSOR,194,25,21,20
+    ICON            128,IDC_ICONCURSOR,194,25,21,20
     DEFPUSHBUTTON   "Color",IDC_HIGHLIGHTCOLOR,129,164,43,14,BS_FLAT
     LTEXT           "Halfsize",IDC_STATIC_HALFSIZE,204,172,36,10
     CONTROL         "Enable Visual Click Feedback",IDC_HIGHLIGHTCLICK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,21,182,110,13
@@ -2103,7 +2102,7 @@ IDC_CURSORDRAG          CURSOR                  "res\\cur00001.cur"
 
 STRINGTABLE 
 BEGIN
-    IDR_MAINFRAME           "vscap\n\nVscap\n\n\nVscap.Document\nVscap Document"
+    IDR_MAINFRAME           "Recorder\n\nRecorder\n\n\nRecorder.Document\nRecorder Document"
 END
 
 STRINGTABLE 

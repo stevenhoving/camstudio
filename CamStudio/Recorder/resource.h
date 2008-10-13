@@ -27,6 +27,8 @@
 #define IDC_HIGHLIGHTCOLORRB            5
 #define ID_JUSTRIGHT                    6
 #define IDFONT2                         7
+#define IDR_MAINFRAME                   128
+#define IDB_BITMAP1                     130
 #define IDD_CURSOROPTIONS               132
 #define IDB_BITMAP2                     134
 #define IDB_SCREENANNOTATIONS_SMALL     134
@@ -270,10 +272,6 @@
 #define IDD_TRANSPARENCYRATE            5104
 #define IDD_TRANSRATE                   5104
 #define IDD_EFFECTS_OPTIONS2            5105
-#define IDR_MAINFRAME                   5128
-#define IDR_MAINFRAMESMALL              5129
-#define IDR_MAINFRAME1                  5129
-#define IDB_BITMAP1                     5130
 #define IDR_CONTEXTEDITOBJ              5130
 #define IDR_CONTEXTEDITLAYOUT           5131
 #define IDR_CONTEXTVIDEO                5132
@@ -567,16 +565,16 @@
 #define IDS_ERROR_PLAYER                61573
 #define IDS_ERROR_PLAYER2               61574
 #define IDS_STRING_LINEUNDETECTED       61575
+#define _APS_NEXT_STRNG_VALUE           61576
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        200
+#define _APS_NEXT_RESOURCE_VALUE        201
 #define _APS_NEXT_COMMAND_VALUE         32924
 #define _APS_NEXT_CONTROL_VALUE         1062
-#define _APS_NEXT_STRNG_VALUE           61576
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
