@@ -4,7 +4,7 @@
 	Version="9.00"
 	Name="Recorder"
 	ProjectGUID="{E6A9946A-612B-40A3-BCA3-FEF0B64B4B6C}"
-	RootNamespace="vscap"
+	RootNamespace="Recorder"
 	Keyword="MFCProj"
 	TargetFrameworkVersion="131072"
 	>
@@ -110,7 +110,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Moving files that don&apos;t belong in output and copying other files (help docs, etc) to output directory"
-				CommandLine="copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;xcopy /s /y &quot;$(ProjectDir)\output\*.*&quot; &quot;$(SolutionDir)\$(ConfigurationName)\&quot;"
+				CommandLine="copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;xcopy /s /y &quot;$(ProjectDir)\output\*.*&quot; &quot;$(SolutionDir)\$(ConfigurationName)\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -206,7 +206,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Moving files that don&apos;t belong in output and copying other files (help docs, etc) to output directory"
-				CommandLine="copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;xcopy /s /y &quot;$(ProjectDir)\output\*.*&quot; &quot;$(SolutionDir)\$(ConfigurationName)\&quot;"
+				CommandLine="copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;xcopy /s /y &quot;$(ProjectDir)\output\*.*&quot; &quot;$(SolutionDir)\$(ConfigurationName)\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -1420,15 +1420,19 @@
 				>
 			</File>
 			<File
-				RelativePath="res\idr_main.ico"
-				>
-			</File>
-			<File
 				RelativePath="Logo.bmp"
 				>
 			</File>
 			<File
 				RelativePath="res\mainfram.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\Recorder.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\res\Recorder.rc2"
 				>
 			</File>
 			<File
@@ -1447,23 +1451,7 @@
 				RelativePath="res\ToolbarPalette256.bmp"
 				>
 			</File>
-			<File
-				RelativePath="res\vscap.ico"
-				>
-			</File>
-			<File
-				RelativePath="res\vscap.rc2"
-				>
-			</File>
 		</Filter>
-		<File
-			RelativePath=".\ClassDiagram1.cd"
-			>
-		</File>
-		<File
-			RelativePath="ReadMe.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 		<Global
