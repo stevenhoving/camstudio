@@ -3,7 +3,7 @@
  *
  *  Markus Kuhn -- http://www.cl.cam.ac.uk/~mgk25/
  *
- *  $Id$
+ *  $Id: jbig.h,v 1.17 2004-06-11 15:18:21+01 mgk25 Exp $
  */
 
 #ifndef JBG_H

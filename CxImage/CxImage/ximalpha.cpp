@@ -1,6 +1,6 @@
 // xImalpha.cpp : Alpha channel functions
 /* 07/08/2001 v1.00 - Davide Pizzolato - www.xdp.it
- * CxImage version 5.99c 17/Oct/2004
+ * CxImage version 6.0.0 02/Feb/2008
  */
 
 #include "ximage.h"
@@ -51,7 +51,7 @@ bool CxImage::AlphaPaletteIsEnabled()
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * Inverts the alpha channel.
+ * Sets the alpha channel to full transparent. AlphaSet(0) has the same effect
  */
 void CxImage::AlphaClear()
 {
@@ -59,7 +59,8 @@ void CxImage::AlphaClear()
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * Sets the alpha level for the whole image
+ * Sets the alpha level for the whole image.
+ * \param level : from 0 (transparent) to 255 (opaque)
  */
 void CxImage::AlphaSet(BYTE level)
 {
@@ -69,12 +70,13 @@ void CxImage::AlphaSet(BYTE level)
 /**
  * Allocates an empty (opaque) alpha channel.
  */
-void CxImage::AlphaCreate()
+bool CxImage::AlphaCreate()
 {
 	if (pAlpha==NULL) {
 		pAlpha = (BYTE*)malloc(head.biWidth * head.biHeight);
 		if (pAlpha) memset(pAlpha,255,head.biWidth * head.biHeight);
 	}
+	return (pAlpha!=0);
 }
 ////////////////////////////////////////////////////////////////////////////////
 void CxImage::AlphaDelete()
@@ -126,7 +128,7 @@ bool CxImage::AlphaSet(CxImage &from)
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * Sets the alpha level for a single pixel
+ * Sets the alpha level for a single pixel 
  */
 void CxImage::AlphaSet(const long x,const long y,const BYTE level)
 {
@@ -134,7 +136,7 @@ void CxImage::AlphaSet(const long x,const long y,const BYTE level)
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * Gets the alpha level for a single pixel
+ * Gets the alpha level for a single pixel 
  */
 BYTE CxImage::AlphaGet(const long x,const long y)
 {
@@ -161,13 +163,18 @@ BYTE* CxImage::AlphaGetPointer(const long x,const long y)
 BYTE CxImage::BlindAlphaGet(const long x,const long y)
 {
 #ifdef _DEBUG
-	if (!IsInside(x,y) || (pAlpha==0)) throw 0;
+	if (!IsInside(x,y) || (pAlpha==0))
+  #if CXIMAGE_SUPPORT_EXCEPTION_HANDLING
+		throw 0;
+  #else
+		return 0;
+  #endif
 #endif
 	return pAlpha[x+y*head.biWidth];
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * Resets the alpha palette
+ * Resets the alpha palette 
  */
 void CxImage::AlphaPaletteClear()
 {
@@ -180,7 +187,7 @@ void CxImage::AlphaPaletteClear()
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * Checks if the image has a valid alpha palette.
+ * Checks if the image has a valid alpha palette. 
  */
 bool CxImage::AlphaPaletteIsValid()
 {
@@ -206,29 +213,33 @@ void CxImage::AlphaStrip()
 	if (head.biBitCount==24){
 		for(long y=0; y<head.biHeight; y++){
 			for(long x=0; x<head.biWidth; x++){
-				c=GetPixelColor(x,y);
-				if (bAlphaIsValid) a=(AlphaGet(x,y)*info.nAlphaMax)/255; else a=info.nAlphaMax;
-				a1 = 255-a;
-				c.rgbBlue = (BYTE)((c.rgbBlue * a + a1 * info.nBkgndColor.rgbBlue)/255);
-				c.rgbGreen = (BYTE)((c.rgbGreen * a + a1 * info.nBkgndColor.rgbGreen)/255);
-				c.rgbRed = (BYTE)((c.rgbRed * a + a1 * info.nBkgndColor.rgbRed)/255);
-				SetPixelColor(x,y,c);
+				c = BlindGetPixelColor(x,y);
+				if (bAlphaIsValid) a=(BlindAlphaGet(x,y)*info.nAlphaMax)/255; else a=info.nAlphaMax;
+				a1 = 256-a;
+				c.rgbBlue = (BYTE)((c.rgbBlue * a + a1 * info.nBkgndColor.rgbBlue)>>8);
+				c.rgbGreen = (BYTE)((c.rgbGreen * a + a1 * info.nBkgndColor.rgbGreen)>>8);
+				c.rgbRed = (BYTE)((c.rgbRed * a + a1 * info.nBkgndColor.rgbRed)>>8);
+				BlindSetPixelColor(x,y,c);
 			}
 		}
 		AlphaDelete();
 	} else {
 		CxImage tmp(head.biWidth,head.biHeight,24);
-		if (!tmp.IsValid()) return;
+		if (!tmp.IsValid()){
+			strcpy(info.szLastError,tmp.GetLastError());
+			return;
+		}
+
 		for(long y=0; y<head.biHeight; y++){
 			for(long x=0; x<head.biWidth; x++){
-				c=GetPixelColor(x,y);
-				if (bAlphaIsValid) a=(AlphaGet(x,y)*info.nAlphaMax)/255; else a=info.nAlphaMax;
+				c = BlindGetPixelColor(x,y);
+				if (bAlphaIsValid) a=(BlindAlphaGet(x,y)*info.nAlphaMax)/255; else a=info.nAlphaMax;
 				if (bAlphaPaletteIsValid) a=(c.rgbReserved*a)/255;
-				a1 = 255-a;
-				c.rgbBlue = (BYTE)((c.rgbBlue * a + a1 * info.nBkgndColor.rgbBlue)/255);
-				c.rgbGreen = (BYTE)((c.rgbGreen * a + a1 * info.nBkgndColor.rgbGreen)/255);
-				c.rgbRed = (BYTE)((c.rgbRed * a + a1 * info.nBkgndColor.rgbRed)/255);
-				tmp.SetPixelColor(x,y,c);
+				a1 = 256-a;
+				c.rgbBlue = (BYTE)((c.rgbBlue * a + a1 * info.nBkgndColor.rgbBlue)>>8);
+				c.rgbGreen = (BYTE)((c.rgbGreen * a + a1 * info.nBkgndColor.rgbGreen)>>8);
+				c.rgbRed = (BYTE)((c.rgbRed * a + a1 * info.nBkgndColor.rgbRed)>>8);
+				tmp.BlindSetPixelColor(x,y,c);
 			}
 		}
 		Transfer(tmp);
@@ -239,18 +250,24 @@ void CxImage::AlphaStrip()
 bool CxImage::AlphaFlip()
 {
 	if (!pAlpha) return false;
-	BYTE* pAlpha2 = (BYTE*)malloc(head.biWidth * head.biHeight);
-	if (!pAlpha2) return false;
+
+	BYTE *buff = (BYTE*)malloc(head.biWidth);
+	if (!buff) return false;
+
 	BYTE *iSrc,*iDst;
-	iSrc=pAlpha + (head.biHeight-1)*head.biWidth;
-	iDst=pAlpha2;
-    for(long y=0; y < head.biHeight; y++){
-		memcpy(iDst,iSrc,head.biWidth);
+	iSrc = pAlpha + (head.biHeight-1)*head.biWidth;
+	iDst = pAlpha;
+	for (long i=0; i<(head.biHeight/2); ++i)
+	{
+		memcpy(buff, iSrc, head.biWidth);
+		memcpy(iSrc, iDst, head.biWidth);
+		memcpy(iDst, buff, head.biWidth);
 		iSrc-=head.biWidth;
 		iDst+=head.biWidth;
 	}
-	free(pAlpha);
-	pAlpha=pAlpha2;
+
+	free(buff);
+
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -275,18 +292,21 @@ bool CxImage::AlphaMirror()
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * Exports the alpha channel in a 8bpp grayscale image.
+ * Exports the alpha channel in a 8bpp grayscale image. 
  */
 bool CxImage::AlphaSplit(CxImage *dest)
 {
 	if (!pAlpha || !dest) return false;
 
 	CxImage tmp(head.biWidth,head.biHeight,8);
-	if (!tmp.IsValid()) return false;
+	if (!tmp.IsValid()){
+		strcpy(info.szLastError,tmp.GetLastError());
+		return false;
+	}
 
 	for(long y=0; y<head.biHeight; y++){
 		for(long x=0; x<head.biWidth; x++){
-			tmp.SetPixelIndex(x,y,pAlpha[x+y*head.biWidth]);
+			tmp.BlindSetPixelIndex(x,y,pAlpha[x+y*head.biWidth]);
 		}
 	}
 
@@ -297,24 +317,48 @@ bool CxImage::AlphaSplit(CxImage *dest)
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * Exports the alpha palette channel in a 8bpp grayscale image.
+ * Exports the alpha palette channel in a 8bpp grayscale image. 
  */
 bool CxImage::AlphaPaletteSplit(CxImage *dest)
 {
 	if (!AlphaPaletteIsValid() || !dest) return false;
 
 	CxImage tmp(head.biWidth,head.biHeight,8);
-	if (!tmp.IsValid()) return false;
+	if (!tmp.IsValid()){
+		strcpy(info.szLastError,tmp.GetLastError());
+		return false;
+	}
 
 	for(long y=0; y<head.biHeight; y++){
 		for(long x=0; x<head.biWidth; x++){
-			tmp.SetPixelIndex(x,y,GetPixelColor(x,y).rgbReserved);
+			tmp.BlindSetPixelIndex(x,y,BlindGetPixelColor(x,y).rgbReserved);
 		}
 	}
 
 	tmp.SetGrayPalette();
 	dest->Transfer(tmp);
 
+	return true;
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Merge in the alpha layer the transparent color mask
+ * (previously set with SetTransColor or SetTransIndex) 
+ */
+bool CxImage::AlphaFromTransparency()
+{
+	if (!IsValid() || !IsTransparent())
+		return false;
+
+	AlphaCreate();
+
+	for(long y=0; y<head.biHeight; y++){
+		for(long x=0; x<head.biWidth; x++){
+			if (IsTransparent(x,y)){
+				AlphaSet(x,y,0);
+			}
+		}
+	}
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////

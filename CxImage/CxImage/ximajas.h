@@ -23,8 +23,8 @@ class CxImageJAS: public CxImage
 public:
 	CxImageJAS(): CxImage((DWORD)0) {}	// <vho> cast to DWORD
 
-//	bool Load(const char * imageFileName){ return CxImage::Load(imageFileName,0);}
-//	bool Save(const char * imageFileName){ return CxImage::Save(imageFileName,0);}
+//	bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,0);}
+//	bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,0);}
 	bool Decode(CxFile * hFile, DWORD imagetype = 0);
 	bool Decode(FILE *hFile, DWORD imagetype = 0) { CxIOFile file(hFile); return Decode(&file,imagetype); }
 
@@ -67,11 +67,11 @@ protected:
 		{		return ((CxFile*)obj)->Write(buf,1,cnt); }
 		static long JasSeek(jas_stream_obj_t *obj, long offset, int origin)
 		{		return ((CxFile*)obj)->Seek(offset,origin); }
-		static int JasClose(jas_stream_obj_t *obj)
+		static int JasClose(jas_stream_obj_t * /*obj*/)
 		{		return 1; }
 
 	// <vho>
-	private:
+private:
 		jas_stream_ops_t jas_stream_CxFile;
 	// <vho> - end
 

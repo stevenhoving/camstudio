@@ -33,14 +33,16 @@
 extern "C" {
 #include "../mng/libmng.h"
 #include "../mng/libmng_data.h"
+#include "../mng/libmng_error.h"
 }
 
 //unsigned long _stdcall RunMNGThread(void *lpParam);
 
-typedef struct tagmngstuff
+typedef struct tagmngstuff 
 {
 	CxFile		*file;
 	BYTE		*image;
+	BYTE		*alpha;
 	HANDLE		thread;
 	mng_uint32	delay;
 	mng_uint32  width;
@@ -60,8 +62,7 @@ public:
 	CxImageMNG();
 	~CxImageMNG();
 
-	bool Load(const char * imageFileName);
-	bool Save(const char * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_MNG);}
+	bool Load(const TCHAR * imageFileName);
 
 	bool Decode(CxFile * hFile);
 	bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
@@ -69,11 +70,12 @@ public:
 #if CXIMAGE_SUPPORT_ENCODE
 	bool Encode(CxFile * hFile);
 	bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
+	bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_MNG);}
 #endif // CXIMAGE_SUPPORT_ENCODE
 
 	long Resume();
 	void SetSpeed(float speed);
-
+	
 	mng_handle hmng;
 	mngstuff mnginfo;
 protected:

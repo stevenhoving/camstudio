@@ -3,7 +3,7 @@
  *
  *  Markus Kuhn -- http://www.cl.cam.ac.uk/~mgk25/
  *
- *  $Id$
+ *  $Id: jbig.c,v 1.22 2004-06-11 15:17:06+01 mgk25 Exp $
  *
  *  This module implements a portable standard C encoder and decoder
  *  using the JBIG lossless bi-level image compression algorithm as
@@ -97,7 +97,7 @@
 
 const char jbg_version[] = 
 " JBIG-KIT " JBG_VERSION " -- Markus Kuhn -- "
-"$Id$ ";
+"$Id: jbig.c,v 1.22 2004-06-11 15:17:06+01 mgk25 Exp $ ";
 
 /*
  * the following array specifies for each combination of the 3

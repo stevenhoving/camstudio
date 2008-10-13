@@ -30,8 +30,8 @@ class CxImagePNG: public CxImage
 public:
 	CxImagePNG(): CxImage(CXIMAGE_FORMAT_PNG) {}
 
-//	bool Load(const char * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_PNG);}
-//	bool Save(const char * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_PNG);}
+//	bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_PNG);}
+//	bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_PNG);}
 	bool Decode(CxFile * hFile);
 	bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
 
@@ -44,24 +44,25 @@ protected:
 	void ima_png_error(png_struct *png_ptr, char *message);
 	void expand2to4bpp(BYTE* prow);
 
-	static void user_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
+	static void PNGAPI user_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
 	{
-		CxFile* hFile = (CxFile*)png_ptr->io_ptr;
-		if (hFile->Read(data,1,length) != length) png_error(png_ptr, "Read Error");
+		CxFile* hFile = (CxFile*)png_get_io_ptr(png_ptr);
+		if (hFile == NULL || hFile->Read(data,1,length) != length) png_error(png_ptr, "Read Error");
 	}
 
-	static void user_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
+	static void PNGAPI user_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
 	{
-		CxFile* hFile = (CxFile*)png_ptr->io_ptr;
-		if (hFile->Write(data,1,length) != length) png_error(png_ptr, "Write Error");
+		CxFile* hFile = (CxFile*)png_get_io_ptr(png_ptr);
+		if (hFile == NULL || hFile->Write(data,1,length) != length) png_error(png_ptr, "Write Error");
 	}
 
-	static void user_flush_data(png_structp png_ptr)
+	static void PNGAPI user_flush_data(png_structp png_ptr)
 	{
-		CxFile* hFile = (CxFile*)png_ptr->io_ptr;
-		if (!hFile->Flush()) png_error(png_ptr, "Flush Error");
+		CxFile* hFile = (CxFile*)png_get_io_ptr(png_ptr);
+		if (hFile == NULL || !hFile->Flush()) png_error(png_ptr, "Flush Error");
 	}
-    static void user_error_fn(png_structp png_ptr,png_const_charp error_msg)
+
+    static void PNGAPI user_error_fn(png_structp png_ptr,png_const_charp error_msg)
 	{
 		strncpy((char*)png_ptr->error_ptr,error_msg,255);
 		longjmp(png_ptr->jmpbuf, 1);
