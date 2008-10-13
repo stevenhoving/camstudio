@@ -5,8 +5,6 @@
 #include "../stdafx.h"
 #include "SoundBase.h"
 
-#pragma message("CamStudio\\Producer\\fister\\SoundBase.cpp")
-
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -29,6 +27,7 @@ CSoundBase::CSoundBase()
 
 CSoundBase::~CSoundBase()
 {
+
 }
 
 #ifdef OBSOLETE_CODE
@@ -67,8 +66,8 @@ int CSoundBase::GetNumberOfChannels()
 
 void CSoundBase::Update()
 {
-	m_Format.nAvgBytesPerSec = m_Format.nSamplesPerSec * (m_Format.wBitsPerSample/8);
-	m_Format.nBlockAlign = m_Format.nChannels * (m_Format.wBitsPerSample/8);
+	m_Format.nAvgBytesPerSec	= m_Format.nSamplesPerSec*(m_Format.wBitsPerSample/8);
+	m_Format.nBlockAlign		= m_Format.nChannels     *(m_Format.wBitsPerSample/8);
 }
 
 void CSoundBase::SetBufferSize(int NumberOfSamples)

@@ -56,7 +56,6 @@ void CSoundFile::Close()
 		::mmioClose(m_hFile, 0);
 		m_hFile = NULL;
 	}
-
 }
 
 bool CSoundFile::Write(CBuffer *buffer)
