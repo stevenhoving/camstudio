@@ -504,35 +504,27 @@
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
 			<File
-				RelativePath="ABOUT.BMP"
+				RelativePath="..\GlobalResources\Player.ico"
 				>
 			</File>
 			<File
-				RelativePath="Aboutdubber.bmp"
+				RelativePath="..\GlobalResources\Player_icon.bmp"
 				>
 			</File>
 			<File
-				RelativePath="Aboutplayer.bmp"
-				>
-			</File>
-			<File
-				RelativePath="Logo.bmp"
-				>
-			</File>
-			<File
-				RelativePath="Logodubber.bmp"
-				>
-			</File>
-			<File
-				RelativePath="Logoplayer.bmp"
-				>
-			</File>
-			<File
-				RelativePath=".\res\PlayerPlus.ico"
+				RelativePath="..\GlobalResources\Player_logo.bmp"
 				>
 			</File>
 			<File
 				RelativePath="res\playplus.rc2"
+				>
+			</File>
+			<File
+				RelativePath="..\GlobalResources\Producer_icon.bmp"
+				>
+			</File>
+			<File
+				RelativePath="..\GlobalResources\Producer_logo.bmp"
 				>
 			</File>
 			<File
@@ -544,10 +536,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath="ReadMe.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 		<Global

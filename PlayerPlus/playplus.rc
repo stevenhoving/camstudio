@@ -27,18 +27,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE
+3 TEXTINCLUDE 
 BEGIN
     "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
     "#define _AFX_NO_OLE_RESOURCES\r\n"
@@ -75,13 +75,11 @@ IDR_MAINFRAME           ICON                    "res\\PlayerPlus.ico"
 //
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
-IDB_BITMAP1             BITMAP                  "ABOUT.BMP"
-IDB_BITMAP2             BITMAP                  "LOGO.BMP"
 IDR_PLAYERTOOLBAR       BITMAP                  "res\\toolbar1.bmp"
-IDB_BITMAP_LOGO_PLAYER  BITMAP                  "LOGOPLAYER.BMP"
-IDB_BITMAP_LOGO_DUBBER  BITMAP                  "LOGODUBBER.BMP"
-IDB_BITMAP_ABOUT_PLAYER BITMAP                  "ABOUTPLAYER.BMP"
-IDB_BITMAP_ABOUT_DUBBER BITMAP                  "ABOUTDUBBER.BMP"
+IDB_BITMAP_LOGO_PLAYER  BITMAP                  "..\\GlobalResources\\Player_logo.bmp"
+IDB_BITMAP_LOGO_DUBBER  BITMAP                  "..\\GlobalResources\\Producer_logo.bmp"
+IDB_BITMAP_ABOUT_PLAYER BITMAP                  "..\\GlobalResources\\Player_icon.bmp"
+IDB_BITMAP_ABOUT_DUBBER BITMAP                  "..\\GlobalResources\\Producer_icon.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -151,7 +149,7 @@ END
 // Menu
 //
 
-IDR_MAINFRAME MENU
+IDR_MAINFRAME MENU 
 BEGIN
     POPUP "&File"
     BEGIN
@@ -193,7 +191,7 @@ BEGIN
     END
 END
 
-IDR_MENUPLAYER MENU
+IDR_MENUPLAYER MENU 
 BEGIN
     POPUP "File"
     BEGIN
@@ -231,7 +229,7 @@ END
 // Accelerator
 //
 
-IDR_MAINFRAME ACCELERATORS
+IDR_MAINFRAME ACCELERATORS 
 BEGIN
     "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
@@ -245,7 +243,7 @@ BEGIN
     VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
     VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
     VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
-    VK_F6,          ID_NEXT_PANE,           VIRTKEY
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
     VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
 END
 
@@ -338,7 +336,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO
+GUIDELINES DESIGNINFO 
 BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
@@ -362,18 +360,18 @@ END
 // String Table
 //
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     IDR_MAINFRAME           "playplus\n\nPlaypl\n\n\nPlayplus.Document\nPlaypl Document"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     AFX_IDS_APP_TITLE       "playplus"
     AFX_IDS_IDLEMESSAGE     "Ready"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     ID_INDICATOR_EXT        "EXT"
     ID_INDICATOR_CAPS       "CAP"
@@ -383,7 +381,7 @@ BEGIN
     ID_INDICATOR_REC        "REC"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     ID_FILE_NEW             "Create a new document\nNew"
     ID_FILE_OPEN            "Open an AVI movie"
@@ -396,13 +394,13 @@ BEGIN
     ID_FILE_PRINT_PREVIEW   "Display full pages\nPrint Preview"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     ID_APP_ABOUT            "About\nAbout"
     ID_APP_EXIT             "Exit the application\nExit"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     ID_FILE_MRU_FILE1       "Open this document"
     ID_FILE_MRU_FILE2       "Open this document"
@@ -422,18 +420,18 @@ BEGIN
     ID_FILE_MRU_FILE16      "Open this document"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
     ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     ID_EDIT_CLEAR           "Erase the selection\nErase"
     ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
@@ -448,13 +446,13 @@ BEGIN
     ID_EDIT_REDO            "Redo the previously undone action\nRedo"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
     ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     AFX_IDS_SCSIZE          "Change the window size"
     AFX_IDS_SCMOVE          "Change the window position"
@@ -465,18 +463,18 @@ BEGIN
     AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     AFX_IDS_SCRESTORE       "Restore the window to normal size"
     AFX_IDS_SCTASKLIST      "Activate Task List"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     IDS_APPNAME             "AVI Player"
     IDS_DEFEXT              "avi"
@@ -495,7 +493,7 @@ BEGIN
     IDS_STRCPYERR           "Error copying stream"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     IDS_STRCUTERR           "Error cutting stream"
     IDS_NOCLIP              "Couldn't put streams on clipboard"
@@ -508,7 +506,7 @@ BEGIN
     IDS_OPENWAVE            "Add Audio File"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     ID_FILE_PLAY            "Play\nPlay"
     ID_FILE_STOP            "Stop\nPlay"
@@ -516,7 +514,7 @@ BEGIN
     ID_FILE_LASTFRAME       "Forward to Last Frame\nLast Frame"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     ID_ZOOM_QUARTER         "Zoom X 1/4"
     ID_ZOOM_HALF            "Zoom X 1/2"
@@ -526,12 +524,12 @@ BEGIN
     ID_ZOOM_RESIZETOMOVIESIZE "Resize window to movie size"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     ID_BUTTON32785          "Record Audio\nRecord Audio"
 END
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
     ID_AUDIO_EXTENSION      "Allow audio recording to extend the length of the movie"
 END
