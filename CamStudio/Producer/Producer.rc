@@ -75,13 +75,11 @@ IDR_MAINFRAME           ICON                    "res\\Producer.ico"
 //
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
-IDB_BITMAP1             BITMAP                  "ABOUT.BMP"
-IDB_BITMAP2             BITMAP                  "LOGO.BMP"
 IDR_PLAYERTOOLBAR       BITMAP                  "res\\toolbar1.bmp"
-IDB_BITMAP_LOGO_PLAYER  BITMAP                  "LOGOPLAYER.BMP"
-IDB_BITMAP_LOGO_DUBBER  BITMAP                  "LOGODUBBER.BMP"
-IDB_BITMAP_ABOUT_PLAYER BITMAP                  "ABOUTPLAYER.BMP"
-IDB_BITMAP_ABOUT_DUBBER BITMAP                  "ABOUTDUBBER.BMP"
+IDB_BITMAP_LOGO_PLAYER  BITMAP                  "..\\GlobalResources\\Player_logo.bmp"
+IDB_BITMAP_LOGO_DUBBER  BITMAP                  "..\\GlobalResources\\Producer_logo.bmp"
+IDB_BITMAP_ABOUT_PLAYER BITMAP                  "..\\GlobalResources\\Player_icon.bmp"
+IDB_BITMAP_ABOUT_DUBBER BITMAP                  "..\\GlobalResources\\Producer_icon.bmp"
 IDB_NODE                BITMAP                  "res\\bitmap3.bmp"
 
 /////////////////////////////////////////////////////////////////////////////

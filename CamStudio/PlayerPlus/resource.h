@@ -30,8 +30,6 @@
 #define IDD_ABOUTBOX                    100
 #define IDR_MAINFRAME                   128
 #define IDR_PLAYPLTYPE                  129
-#define IDB_BITMAP1                     130
-#define IDB_BITMAP2                     132
 #define IDR_MENUPLAYER                  133
 #define IDR_PLAYERTOOLBAR               134
 #define IDB_BITMAP_LOGO_PLAYER          136

@@ -229,7 +229,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Player.ico"
+			RelativePath="..\GlobalResources\Player.ico"
 			>
 		</File>
 		<File
