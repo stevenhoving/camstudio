@@ -47,12 +47,12 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 IDB_BITMAP1             BITMAP                  "res\\bitmap1.bmp"
-IDB_BITMAP3             BITMAP                  "Logo.bmp"
 IDB_TOOLBAR256          BITMAP                  "res\\ToolbarPalette256.bmp"
 IDB_TOOLBARMASK         BITMAP                  "res\\ToolbarMask.bmp"
-IDB_BITMAP4             BITMAP                  "ABOUT.BMP"
 IDB_SCREENANNOTATIONS_SMALL BITMAP                  "res\\bmp00001.bmp"
 IDR_MAINFRAME1          BITMAP                  "res\\mainfram.bmp"
+IDB_BITMAP3             BITMAP                  "..\\GlobalResources\\Recorder_banner.bmp"
+IDB_BITMAP4             BITMAP                  "..\\GlobalResources\\Recorder_logo.bmp"
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -99,8 +99,8 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "..\\GlobalResources\\Recorder.ico"
 IDI_ICON1               ICON                    "res\\icon1.ico"
-IDR_MAINFRAME           ICON                    "res\\Recorder.ico"
 IDI_CUSTOMICON_CONTEXTHELP ICON                    "res\\icon2.ico"
 IDI_CUSTOMICON_MAGNIFY  ICON                    "res\\ico00001.ico"
 IDI_CUSTOMICON_NODRAG   ICON                    "res\\ico00002.ico"
@@ -508,21 +508,16 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 252, 186
+IDD_ABOUTBOX DIALOGEX 0, 0, 282, 204
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About CamStudio"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    CONTROL         189,IDC_STATIC,"Static",SS_BITMAP,7,13,163,53,WS_EX_DLGMODALFRAME
-    DEFPUSHBUTTON   "OK",IDOK,178,15,49,15,WS_GROUP
-    CTEXT           "CamStudio",IDC_STATIC,170,39,75,9,SS_NOPREFIX
-    CTEXT           "Version 2.5",IDC_STATIC_VERSION,170,53,75,8
-    CTEXT           "CamStudio ï¿½ 2001 - 2007  RenderSoft And Web Publishing",IDC_STATIC,7,78,238,13
-    GROUPBOX        "",IDC_STATIC,7,112,238,70
-    PUSHBUTTON      "http://www.camstudio.org",IDC_BUTTONLINK,22,136,214,14,BS_FLAT
-    CTEXT           "Bugfixes and Additional Features Added By Nick The Geek",IDC_STATIC,15,89,223,8
-    PUSHBUTTON      "Please donate to support Camstudio's development",IDC_BUTTONLINK2,21,156,214,14,BS_FLAT
-    CTEXT           "More bug fixes, Support for VS2005 Added by Carlo Lanzotti",IDC_STATIC,14,101,223,8
+    CONTROL         189,IDC_STATIC,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_REALSIZEIMAGE,55,6,171,58,WS_EX_DLGMODALFRAME
+    DEFPUSHBUTTON   "OK",IDOK,114,72,49,15,WS_GROUP
+    CTEXT           "CamStudio 2.6\n\nCopyright © 2001 RenderSoft And Web Publishing\nCopyright © 2008 CamStudio Group && Contributors\n\nBugfixes and additional features added by Nick the Geek\nMore bug fixes and support for Visual Studio 2005 added by Carlo Lanzotti",IDC_STATIC,6,96,268,56
+    PUSHBUTTON      "http://www.camstudio.org/",IDC_BUTTONLINK,36,162,102,33,BS_FLAT
+    PUSHBUTTON      "Please donate to support Camstudio's development",IDC_BUTTONLINK2,144,162,102,33,BS_MULTILINE | BS_FLAT
 END
 
 IDD_VIDEOOPTIONS DIALOGEX 0, 0, 303, 258
@@ -579,7 +574,7 @@ BEGIN
     LTEXT           "Size",IDC_STATIC_SIZE,22,148,30,11
     LTEXT           "Shape",IDC_STATIC_SHAPE,21,167,30,11
     GROUPBOX        "Cursor Highlight",-1,7,120,240,94
-    ICON            128,IDC_ICONCURSOR,194,25,21,20
+    ICON            IDR_MAINFRAME,IDC_ICONCURSOR,194,25,21,20
     DEFPUSHBUTTON   "Color",IDC_HIGHLIGHTCOLOR,129,164,43,14,BS_FLAT
     LTEXT           "Halfsize",IDC_STATIC_HALFSIZE,204,172,36,10
     CONTROL         "Enable Visual Click Feedback",IDC_HIGHLIGHTCLICK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,21,182,110,13
@@ -1003,8 +998,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,5,0,0
- PRODUCTVERSION 2,5,0,0
+ FILEVERSION 2,6,0,0
+ PRODUCTVERSION 2,6,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1022,10 +1017,10 @@ BEGIN
             VALUE "Comments", "CamStudio Recorder"
             VALUE "CompanyName", "CamStudio Group"
             VALUE "FileDescription", "CamStudio Recorder"
-            VALUE "FileVersion", "2.5.0.0"
-            VALUE "LegalCopyright", "Copyright ï¿½ 2008 Contributors"
+            VALUE "FileVersion", "2.6.0.0"
+            VALUE "LegalCopyright", "Copyright © 2001 RenderSoft Software and Web Publishing, Copyright © 2008 CamStudio Group & Contributors"
             VALUE "ProductName", "CamStudio Recorder"
-            VALUE "ProductVersion", "2.5.0.0"
+            VALUE "ProductVersion", "2.6.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -1046,9 +1041,9 @@ BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 245
+        RIGHTMARGIN, 275
         TOPMARGIN, 7
-        BOTTOMMARGIN, 182
+        BOTTOMMARGIN, 200
     END
 
     IDD_VIDEOOPTIONS, DIALOG
