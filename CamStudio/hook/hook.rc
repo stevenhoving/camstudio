@@ -69,12 +69,12 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "CamHook Mouse Hook Library"
+            VALUE "Comments", "CamStudio Mouse Hook Library"
             VALUE "CompanyName", "CamStudio Group"
-            VALUE "FileDescription", "CamHook Mouse Hook Library"
+            VALUE "FileDescription", "CamStudio Mouse Hook Library"
             VALUE "FileVersion", "1.0.0.0"
-            VALUE "LegalCopyright", "Copyright © 2008 CamStudio Group & Contributors"
-            VALUE "ProductName", "CamHook Mouse Hook Library"
+            VALUE "LegalCopyright", "Copyright © 2001 RenderSoft Software and Web Publishing, Copyright © 2008 CamStudio Group & Contributors"
+            VALUE "ProductName", "CamStudio Mouse Hook Library"
             VALUE "ProductVersion", "1.0.0.0"
         END
     END
