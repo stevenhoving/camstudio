@@ -108,7 +108,6 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description=""
 				CommandLine=""
 			/>
 		</Configuration>
@@ -227,6 +226,14 @@
 					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;$(NoInherit)"
 				/>
 			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\hook.rc"
+			>
+		</File>
+		<File
+			RelativePath=".\resource.h"
+			>
 		</File>
 	</Files>
 	<Globals>

@@ -1610,31 +1610,15 @@
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
 			<File
-				RelativePath="ABOUT.BMP"
-				>
-			</File>
-			<File
-				RelativePath="Aboutdubber.bmp"
-				>
-			</File>
-			<File
-				RelativePath="Aboutplayer.bmp"
-				>
-			</File>
-			<File
 				RelativePath="res\bitmap3.bmp"
 				>
 			</File>
 			<File
-				RelativePath="Logo.bmp"
+				RelativePath="..\GlobalResources\Player_icon.bmp"
 				>
 			</File>
 			<File
-				RelativePath="Logodubber.bmp"
-				>
-			</File>
-			<File
-				RelativePath="Logoplayer.bmp"
+				RelativePath="..\GlobalResources\Player_logo.bmp"
 				>
 			</File>
 			<File
@@ -1642,7 +1626,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\res\Producer.ico"
+				RelativePath="..\GlobalResources\Producer_icon.bmp"
+				>
+			</File>
+			<File
+				RelativePath="..\GlobalResources\Producer_logo.bmp"
+				>
+			</File>
+			<File
+				RelativePath="..\GlobalResources\Recorder.ico"
 				>
 			</File>
 			<File
@@ -1654,10 +1646,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath="ReadMe.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 		<Global

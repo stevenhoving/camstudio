@@ -31,8 +31,6 @@
 #define CG_IDD_PROGRESS                 102
 #define CG_IDS_PROGRESS_CAPTION         103
 #define IDR_MAINFRAME                   128
-#define IDB_BITMAP1                     130
-#define IDB_BITMAP2                     132
 #define IDR_MENUPLAYER                  133
 #define IDR_PLAYERTOOLBAR               134
 #define IDB_BITMAP_LOGO_PLAYER          136
@@ -199,7 +197,7 @@
 #define IDS_Conversion3                 61486
 
 // Next default values for new objects
-//
+// 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1

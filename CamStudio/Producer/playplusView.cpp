@@ -2013,8 +2013,6 @@ int CPlayplusView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		hLogoBM = LoadBitmap( AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_LOGO_PLAYER));
 	else if (pmode == DUBBER)
 		hLogoBM = LoadBitmap( AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_LOGO_DUBBER));
-	else
-		hLogoBM = LoadBitmap( AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP2));
 
 	int tdata=0;
 	CWinThread * pThread = AfxBeginThread(PlayAVIThread, &tdata);
