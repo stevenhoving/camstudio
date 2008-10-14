@@ -1232,10 +1232,6 @@
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 			>
 			<File
-				RelativePath="About.bmp"
-				>
-			</File>
-			<File
 				RelativePath="res\bitmap1.bmp"
 				>
 			</File>
@@ -1420,19 +1416,23 @@
 				>
 			</File>
 			<File
-				RelativePath="Logo.bmp"
-				>
-			</File>
-			<File
 				RelativePath="res\mainfram.bmp"
 				>
 			</File>
 			<File
-				RelativePath=".\res\Recorder.ico"
+				RelativePath="..\GlobalResources\Recorder.ico"
 				>
 			</File>
 			<File
 				RelativePath=".\res\Recorder.rc2"
+				>
+			</File>
+			<File
+				RelativePath="..\GlobalResources\Recorder_banner.bmp"
+				>
+			</File>
+			<File
+				RelativePath="..\GlobalResources\Recorder_logo.bmp"
 				>
 			</File>
 			<File
