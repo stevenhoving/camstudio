@@ -140,14 +140,14 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	// the CREATESTRUCT cs
 	cs.x = 200;
 	cs.y = 200;
-	cs.cx = 280;
-	cs.cy = 292;
+	cs.cx = 280 - 16;
+	cs.cy = 292 + 19;
 
 	// use logo to set widht and heights
 	BITMAP bitmap;
 	m_bmLogo.GetBitmap(&bitmap);
-	cs.cx = bitmap.bmWidth;
-	cs.cy = bitmap.bmHeight;
+	cs.cx = bitmap.bmWidth - 16; // Otherwise size won't be correct
+	cs.cy = bitmap.bmHeight + 19; // Otherwise size won't be correct
 	// add width of borders
 	cs.cx += (::GetSystemMetrics(SM_CXFRAME) * 2)
 		+ ::GetSystemMetrics(SM_CXMENUSIZE)
@@ -298,7 +298,7 @@ void CMainFrame::OnViewNormalview()
 	// use logo to set widht and heights
 	BITMAP bitmap;
 	m_bmLogo.GetBitmap(&bitmap);
-	int compactcx = bitmap.bmWidth;
+	int compactcx = bitmap.bmWidth - 16;
 	// add width of borders
 	compactcx += (::GetSystemMetrics(SM_CXFRAME) * 2)
 		+ ::GetSystemMetrics(SM_CXMENUSIZE)
