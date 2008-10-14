@@ -7126,8 +7126,6 @@ void LoadSettings()
 	//********************************************
 	if (runmode == 0 || runmode == 1)
 		fileName="\\CamStudio.Producer.ini";
-	else if (runmode==2)
-		fileName="\\CamStudio.Producer.param";	//command line mode
 
 	setDir=GetProgPath();
 	setPath=setDir+fileName;

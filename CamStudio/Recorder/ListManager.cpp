@@ -83,6 +83,7 @@ int CListManager::LoadShapeArray(CString loadDir, int freeExisting)
 	if (fptr == NULL) {
 		//Silent Mode
 		//MessageBox(NULL,"Error opening shape file for loading","Note",MB_OK | MB_ICONEXCLAMATION);
+		return FALSE;
 	}
 	long fileversion = 0;
 	fread( (void *) &fileversion, sizeof(long), 1, fptr );
@@ -581,7 +582,7 @@ int CListManager::LoadLayout(CString loadDir)
 	{
 		//Silent Mode
 		//MessageBox(NULL,"Error opening layout file for loading","Note",MB_OK | MB_ICONEXCLAMATION);
-
+		return FALSE;
 	}
 
 	return ret;
