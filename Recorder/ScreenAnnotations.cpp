@@ -55,10 +55,8 @@ extern CString m_imageFilename;
 extern int m_imagetype;
 extern CString shapeStr;
 
-extern int shapeNameInt;
 extern CString shapeName;
 
-extern int layoutNameInt;
 extern CString g_layoutName;
 extern int keySCOpened;
 extern CString GetProgPath();
@@ -495,11 +493,11 @@ void CScreenAnnotations::SaveLayoutNew()
 			newLayout->layoutArrayPtr = cloneArray;
 
 			CString layoutIntStr;
-			layoutIntStr.Format("%d",layoutNameInt);
+			layoutIntStr.Format("%d",iLayoutNameInt);
 			newLayout->layoutName = g_layoutName + layoutIntStr;
-			layoutNameInt++ ;
-			if (layoutNameInt > 2147483647)
-				layoutNameInt = 1;
+			iLayoutNameInt++ ;
+			if (iLayoutNameInt > 2147483647)
+				iLayoutNameInt = 1;
 
 			gList.AddLayoutArray(newLayout);
 
@@ -530,10 +528,10 @@ void CScreenAnnotations::SaveShapeNew(CTransparentWnd *newWnd)
 		int nItemMod = modeShape;
 
 		CString shapeStr;
-		shapeStr.Format("%d",shapeNameInt);
-		shapeNameInt++;
-		if (shapeNameInt>2147483600) //assume int32
-			shapeNameInt = 1;
+		shapeStr.Format("%d",iShapeNameInt);
+		iShapeNameInt++;
+		if (iShapeNameInt>2147483600) //assume int32
+			iShapeNameInt = 1;
 
 		shapeStr = shapeName + shapeStr;
 		CString insstr = shapeStr;
@@ -768,14 +766,14 @@ void CScreenAnnotations::OnEndlabeleditList1(NMHDR* pNMHDR, LRESULT* pResult)
 				//shape name has been changed, reset counter to 1
 				shapeName = newWnd->m_shapeStr;
 
-				//a better method is to extract the trailing number from shapestr and use it as number for shapeNameInt
+				//a better method is to extract the trailing number from shapestr and use it as number for iShapeNameInt
 				AdjustShapeName(shapeName);
 
 			}
 			else {
-				shapeNameInt++;
-				if (shapeNameInt>2147483600) //assume int32
-					shapeNameInt = 1;
+				iShapeNameInt++;
+				if (iShapeNameInt>2147483600) //assume int32
+					iShapeNameInt = 1;
 			}
 			*pResult = TRUE;
 			return;
@@ -808,14 +806,14 @@ void CScreenAnnotations::OnEndlabeleditList1(NMHDR* pNMHDR, LRESULT* pResult)
 				//shape name has been changed, reset counter to 1
 				g_layoutName = itemLayout->layoutName;
 
-				//a better method is to extract the trailing number from shapestr and use it as number for layoutNameInt
+				//a better method is to extract the trailing number from shapestr and use it as number for iLayoutNameInt
 				AdjustLayoutName(g_layoutName);
 
 			}
 			else {
-				layoutNameInt++;
-				if (layoutNameInt>2147483600) //assume int32
-					layoutNameInt = 1;
+				iLayoutNameInt++;
+				if (iLayoutNameInt>2147483600) //assume int32
+					iLayoutNameInt = 1;
 			}
 			*pResult = TRUE;
 			return;
@@ -1352,7 +1350,7 @@ void AdjustShapeName(CString& shapeName)
 	reconstructNum.MakeReverse();
 	int xchar = reconstructNum.GetLength();
 	if (xchar <= 0)
-		shapeNameInt = 1;
+		iShapeNameInt = 1;
 	else {
 		for (int j=0; j<xchar; j++)
 		{
@@ -1367,15 +1365,15 @@ void AdjustShapeName(CString& shapeName)
 			int val;
 			sscanf_s(LPCTSTR(reconstructNum),"%d",&val);
 			if ((val>=0) && (val<100000)) {
-				shapeNameInt = val + 1;
+				iShapeNameInt = val + 1;
 				shapeName = shapeName.Left(numchar- xchar);
 			}
 			else
-				shapeNameInt = 1;
+				iShapeNameInt = 1;
 
 		}
 		else
-			shapeNameInt = 1;
+			iShapeNameInt = 1;
 	}
 }
 
@@ -1394,7 +1392,7 @@ void AdjustLayoutName(CString& layoutName)
 	reconstructNum.MakeReverse();
 	int xchar = reconstructNum.GetLength();
 	if (xchar <= 0) {
-		layoutNameInt = 1;
+		iLayoutNameInt = 1;
 	} else {
 		for (int j=0; j<xchar; j++) {
 			if (reconstructNum[j]=='0') {
@@ -1407,13 +1405,13 @@ void AdjustLayoutName(CString& layoutName)
 			int val;
 			sscanf_s(LPCTSTR(reconstructNum),"%d",&val);
 			if ((val>=0) && (val<100000)) {
-				layoutNameInt = val + 1;
+				iLayoutNameInt = val + 1;
 				layoutName = layoutName.Left(numchar- xchar);
 			} else {
-				layoutNameInt = 1;
+				iLayoutNameInt = 1;
 			}
 		} else {
-			layoutNameInt = 1;
+			iLayoutNameInt = 1;
 		}
 	}
 }

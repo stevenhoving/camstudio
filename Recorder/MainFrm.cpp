@@ -17,7 +17,7 @@ extern int recordstate;
 int maxxScreen;
 int maxyScreen;
 
-//int viewtype = 0;
+//int iViewType = 0;
 
 static HMENU hMenu = NULL;
 
@@ -227,7 +227,7 @@ void CMainFrame::OnViewCompactview()
 
 	int compactcx = windowrect.Width();
 	int compactcy = windowrect.Height() - clientrect.Height() + toolbarrect.Height() - borderHeight - borderHeight;
-	viewtype = 1;
+	iViewType = 1;
 
 	SetWindowPos( &wndTop, windowrect.left, windowrect.top, compactcx, compactcy, SWP_SHOWWINDOW);
 }
@@ -235,7 +235,7 @@ void CMainFrame::OnViewCompactview()
 void CMainFrame::OnUpdateViewCompactview(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(viewtype==1);
+	pCmdUI->SetCheck(iViewType==1);
 }
 
 void CMainFrame::OnViewButtonsview()
@@ -268,7 +268,7 @@ void CMainFrame::OnViewButtonsview()
 
 	int compactcx = windowrect.Width();
 	int compactcy = captionHeight + toolbarrect.Height() + borderHeight + borderHeight;
-	viewtype = 2;
+	iViewType = 2;
 
 	SetWindowPos( &wndTop, windowrect.left, windowrect.top, compactcx, compactcy, SWP_SHOWWINDOW);
 }
@@ -313,7 +313,7 @@ void CMainFrame::OnViewNormalview()
 		+ (::GetSystemMetrics(SM_CYFRAME) * 2)
 		;
 
-	viewtype = 0;
+	iViewType = 0;
 
 	SetWindowPos(&wndTop, windowrect.left, windowrect.top, compactcx, compactcy, SWP_SHOWWINDOW);
 }
@@ -321,32 +321,32 @@ void CMainFrame::OnViewNormalview()
 void CMainFrame::OnUpdateViewButtonsview(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(viewtype==2);
+	pCmdUI->SetCheck(iViewType==2);
 }
 
 void CMainFrame::OnUpdateViewNormalview(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(viewtype==0);
+	pCmdUI->SetCheck(iViewType==0);
 }
 
 void CMainFrame::OnViewtype()
 {
 	// TODO: Add your command handler code here
-	viewtype++;
-	if (viewtype>2)
-		viewtype=0;
+	iViewType++;
+	if (iViewType>2)
+		iViewType=0;
 
 	UpdateViewtype() ;
 }
 
 void CMainFrame::UpdateViewtype()
 {
-	if (viewtype==0)
+	if (iViewType==0)
 		OnViewNormalview();
-	else if (viewtype==1)
+	else if (iViewType==1)
 		OnViewCompactview();
-	else if (viewtype==2)
+	else if (iViewType==2)
 		OnViewButtonsview();
 }
 

@@ -25,11 +25,6 @@ static char THIS_FILE[] = __FILE__;
 
 extern DWORD m_dwIndex;
 
-extern int feedback_line;
-
-extern int NumberOfMixerDevices;
-extern int SelectedMixer;
-
 #define SETVOLUME 0
 #define GETVOLUME 1
 #define GETVOLUMEINFO 2
@@ -74,7 +69,7 @@ END_MESSAGE_MAP()
 void AudioSpeakers::OnOK()
 {
 	// Set the volume
-	if (feedback_line > -1)
+	if (iFeedbackLine > -1)
 	{
 		DWORD volume = (unsigned long)((CSliderCtrl *) (GetDlgItem(IDC_VOLUMESLIDER)))->GetPos( );
 		useVolume(SETVOLUME, volume, TRUE);
@@ -89,11 +84,11 @@ BOOL AudioSpeakers::OnInitDialog()
 
 	// Get the line index
 	CString line;
-	BOOL success = (feedback_line > -1);
+	BOOL success = (iFeedbackLine > -1);
 	DWORD volume = 0;
 
 	if (success) {
-		line.Format(_T("%d"), feedback_line + 1);
+		line.Format(_T("%d"), iFeedbackLine + 1);
 		if (!useVolume(GETVOLUME, volume, TRUE)) {
 			success = false;
 		}
@@ -112,8 +107,8 @@ BOOL AudioSpeakers::OnInitDialog()
 	//Generate device list
 	((CComboBox *) (GetDlgItem(IDC_SOUNDDEVICE)))->ResetContent( );
 
-	NumberOfMixerDevices = waveOutGetNumDevs();
-	for (int i = 0; i < NumberOfMixerDevices; i++) {
+	iNumberOfMixerDevices = waveOutGetNumDevs();
+	for (int i = 0; i < iNumberOfMixerDevices; i++) {
 		WAVEOUTCAPS wocaps;
 		MMRESULT mmr_s = waveOutGetDevCaps(i,&wocaps,sizeof(WAVEOUTCAPS));
 		if (mmr_s == MMSYSERR_NOERROR) {
@@ -124,8 +119,8 @@ BOOL AudioSpeakers::OnInitDialog()
 	//Select the device combo box
 	int deviceIsSelected = 0;
 	int selectedDevice = WAVE_MAPPER;
-	for (int i = 0; i < NumberOfMixerDevices; i++) {
-		if (SelectedMixer == i) {
+	for (int i = 0; i < iNumberOfMixerDevices; i++) {
+		if (iSelectedMixer == i) {
 			((CComboBox *) (GetDlgItem(IDC_SOUNDDEVICE)))->SetCurSel(i);
 			selectedDevice = i;
 			deviceIsSelected = 1;
@@ -133,8 +128,8 @@ BOOL AudioSpeakers::OnInitDialog()
 	}
 
 	if (!deviceIsSelected) {
-		if (NumberOfMixerDevices > 0) {
-			SelectedMixer = 0;
+		if (iNumberOfMixerDevices > 0) {
+			iSelectedMixer = 0;
 		}
 		((CComboBox *) (GetDlgItem(IDC_SOUNDDEVICE)))->SetCurSel(0);
 	}
@@ -222,8 +217,8 @@ void AudioSpeakers::OnAutoconfig()
 
 void AudioSpeakers::OnSelchangeSounddevice()
 {
-	SelectedMixer = ((CComboBox *)(GetDlgItem(IDC_SOUNDDEVICE)))->GetCurSel();
-	feedback_line = -1;
+	iSelectedMixer = ((CComboBox *)(GetDlgItem(IDC_SOUNDDEVICE)))->GetCurSel();
+	iFeedbackLine = -1;
 	OnInitDialog();
 }
 

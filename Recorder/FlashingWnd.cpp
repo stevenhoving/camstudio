@@ -18,8 +18,6 @@ static char THIS_FILE[] = __FILE__;
 #define SIDELEN 12
 #define SIDELEN2 24
 
-extern int supportMouseDrag;
-
 //ver 1.8
 HCURSOR cursorMove = NULL;
 POINT startPoint;
@@ -197,7 +195,7 @@ void CFlashingWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 
-	if (!supportMouseDrag)
+	if (!bSupportMouseDrag)
 	{
 		return;
 	}
@@ -217,7 +215,7 @@ void CFlashingWnd::OnLButtonDown(UINT nFlags, CPoint point)
 void CFlashingWnd::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	if (!supportMouseDrag)
+	if (!bSupportMouseDrag)
 	{
 		return;
 	}
@@ -243,7 +241,7 @@ void CFlashingWnd::OnLButtonUp(UINT nFlags, CPoint point)
 
 void CFlashingWnd::OnMouseMove(UINT nFlags, CPoint point)
 {
-	if (supportMouseDrag)
+	if (bSupportMouseDrag)
 	{
 		if (m_type == 0)
 		{

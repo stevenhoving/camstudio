@@ -1,11 +1,14 @@
+// CursorOptionsDlg.h : header file
+//
+/////////////////////////////////////////////////////////////////////////////
 #if !defined(AFX_CURSOROPTIONSDLG_H__53E9FA38_56DF_4034_A58F_A0434F2A8EAA__INCLUDED_)
 #define AFX_CURSOROPTIONSDLG_H__53E9FA38_56DF_4034_A58F_A0434F2A8EAA__INCLUDED_
 
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
-// CursorOptionsDlg.h : header file
-//
+
+//#include "afxwin.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CCursorOptionsDlg dialog
@@ -62,6 +65,8 @@ public:
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
+private:
+	CButton ctrlButtonHideCursor;
 };
 
 //{{AFX_INSERT_LOCATION}}
