@@ -276,11 +276,9 @@ public:
 	afx_msg void OnBnClickedButtonlink2();
 private:
 	CStatic m_ctrlStaticVersion;
-	CString m_strVersion;
 };
 
 CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
-, m_strVersion(_T("Version 2.6"))
 {
 	//{{AFX_DATA_INIT(CAboutDlg)
 	//}}AFX_DATA_INIT
@@ -292,7 +290,12 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CAboutDlg)
 	//}}AFX_DATA_MAP
 	DDX_Control(pDX, IDC_STATIC_VERSION, m_ctrlStaticVersion);
-	DDX_Text(pDX, IDC_STATIC_VERSION, m_strVersion);
+
+	CString stringBuffer;
+	m_ctrlStaticVersion.GetWindowTextA(stringBuffer);
+	stringBuffer.Replace("<VERSION>", "2.6");
+
+	DDX_Text(pDX, IDC_STATIC_VERSION, stringBuffer);
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)

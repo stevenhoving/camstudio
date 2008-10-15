@@ -73,6 +73,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
 				Culture="1033"
+				AdditionalIncludeDirectories="$(SolutionDir)GlobalResources"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -167,6 +168,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
 				Culture="1033"
+				AdditionalIncludeDirectories="$(SolutionDir)GlobalResources"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -1424,11 +1426,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Recorder.ico"
+				>
+			</File>
+			<File
 				RelativePath=".\res\Recorder.rc2"
 				>
 			</File>
 			<File
+				RelativePath=".\Recorder_banner.bmp"
+				>
+			</File>
+			<File
 				RelativePath="..\GlobalResources\Recorder_banner.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\Recorder_logo.bmp"
 				>
 			</File>
 			<File

@@ -72,6 +72,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
 				Culture="1033"
+				AdditionalIncludeDirectories="$(SolutionDir)GlobalResources"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -164,6 +165,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
 				Culture="1033"
+				AdditionalIncludeDirectories="$(SolutionDir)GlobalResources"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -504,11 +506,23 @@
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
 			<File
+				RelativePath=".\Player.ico"
+				>
+			</File>
+			<File
 				RelativePath="..\GlobalResources\Player.ico"
 				>
 			</File>
 			<File
+				RelativePath=".\Player_banner.bmp"
+				>
+			</File>
+			<File
 				RelativePath="..\GlobalResources\Player_icon.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\Player_logo.bmp"
 				>
 			</File>
 			<File
@@ -520,11 +534,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Producer_banner.bmp"
+				>
+			</File>
+			<File
 				RelativePath="..\GlobalResources\Producer_icon.bmp"
 				>
 			</File>
 			<File
 				RelativePath="..\GlobalResources\Producer_logo.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\Producer_logo.bmp"
 				>
 			</File>
 			<File
