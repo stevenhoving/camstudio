@@ -30,7 +30,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-APPICON                 ICON                    "..\\GlobalResources\\Player.ico"
+APPICON                 ICON                    "Player.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -63,15 +63,15 @@ END
 
 IDD_ABOUT DIALOGEX 0, 0, 250, 102
 STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
-CAPTION "About"
+CAPTION "About CamStudio Player Classic"
 FONT 8, "Microsoft Sans Serif", 400, 0, 0x0
 BEGIN
-    CTEXT           "CamStudio Player Classic v1.1",IDC_STATIC,77,11,96,8,NOT WS_GROUP
+    CTEXT           "CamStudio Player Classic v1.1",IDC_STATIC,77,16,96,8,NOT WS_GROUP
     CTEXT           "Copyright © 2001 RenderSoft Software and Web Publishing\nCopyright © 2008 CamStudio Group && Contributors",IDC_STATIC,0,28,249,16,NOT WS_GROUP
-    DEFPUSHBUTTON   "OK",IDOK,201,8,40,14,WS_GROUP
+    DEFPUSHBUTTON   "OK",IDOK,201,12,40,14,WS_GROUP
     ICON            "APPICON",IDC_STATIC,8,8,20,20
     CTEXT           "Part of CamStudio: Free Screen Recording Software",IDC_STATIC,42,63,165,8
-    PUSHBUTTON      "http://www.camstudio.org/",IDC_BUTTONLINK1,42,74,165,13,BS_FLAT
+    PUSHBUTTON      "Visit the CamStudio website",IDC_BUTTONLINK1,42,74,165,13,BS_FLAT
     GROUPBOX        "",IDC_STATIC,34,51,181,41
 END
 
