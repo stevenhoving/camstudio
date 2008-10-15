@@ -17,18 +17,11 @@
    sodipodi:docname="Player_logo.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.0"
-   inkscape:export-filename="C:\Documents and Settings\Owner\My Documents\Player_icon.png"
+   inkscape:export-filename="C:\Documents and Settings\Owner\My Documents\Player_logo.png"
    inkscape:export-xdpi="11.25"
    inkscape:export-ydpi="11.25">
   <defs
      id="defs4">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 350 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="2000 : 350 : 1"
-       inkscape:persp3d-origin="1000 : 233.33333 : 1"
-       id="perspective26" />
     <linearGradient
        id="linearGradient4187">
       <stop
@@ -194,12 +187,12 @@
     <text
        xml:space="preserve"
        style="font-size:60px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="1738.5938"
+       x="1678.5938"
        y="285"
        id="tm"><tspan
          sodipodi:role="line"
          id="tm_text"
-         x="1738.5938"
+         x="1678.5938"
          y="285">TM</tspan></text>
   </g>
 </svg>
