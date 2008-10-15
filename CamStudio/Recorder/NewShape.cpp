@@ -19,7 +19,6 @@ CString m_imageFilename("");
 int m_imagetype = 0;
 
 CString shapeName("Label_");
-int shapeNameInt = 1;
 CString shapeStr;
 
 CString proposedShapeStr;
@@ -69,7 +68,7 @@ BOOL CNewShape::OnInitDialog()
 
 	((CEdit *) GetDlgItem(IDC_IMAGEFILETEXT))->SetWindowText(m_imageFilename);
 
-	shapeStr.Format("%d",shapeNameInt);
+	shapeStr.Format("%d",iShapeNameInt);
 	shapeStr = shapeName + shapeStr;
 	((CEdit *) GetDlgItem(IDC_NAME))->SetWindowText(shapeStr);
 
@@ -250,16 +249,16 @@ void CNewShape::OnOK()
 		//shape name has been changed, reset counter to 1
 		shapeName = shapeStr;
 
-		//a better method is to extract the trailing number from shapestr and use it as number for shapeNameInt
-		//shapeNameInt = 1;
+		//a better method is to extract the trailing number from shapestr and use it as number for iShapeNameInt
+		//iShapeNameInt = 1;
 		AdjustShapeName(shapeName);
 
 	}
 	else {
 
-		shapeNameInt++;
-		if (shapeNameInt>2147483600) //assume int32
-			shapeNameInt = 1;
+		iShapeNameInt++;
+		if (iShapeNameInt>2147483600) //assume int32
+			iShapeNameInt = 1;
 	}
 
 	CDialog::OnOK();

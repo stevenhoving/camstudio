@@ -12,20 +12,8 @@
 
 //External Variables
 
-extern DWORD waveinselected;
-extern int audio_bits_per_sample;
-extern int audio_num_channels;
-extern int audio_samples_per_seconds;
-extern BOOL bAudioCompression;
-
 extern LPWAVEFORMATEX pwfx;
-extern DWORD cbwfx;
-
-extern UINT AudioDeviceID;
-
-extern BOOL interleaveFrames;
-extern int interleaveFactor;
-extern int interleaveUnit;
+extern DWORD dwCbwFX;
 
 extern void BuildRecordingFormat();
 extern void AllocCompressFormat();
@@ -47,7 +35,6 @@ static char THIS_FILE[] = __FILE__;
 //Local Variables
 
 //ver 1.8
-int useMCI = 0;
 
 /////////////////////////////////////////////////////////////////////////////
 // AudioFormat dialog
@@ -121,13 +108,13 @@ void AudioFormat::OnOK()
 	// return;
 	//}
 
-	interleaveFactor = ifactornum;
+	iInterleaveFactor = ifactornum;
 
 	BOOL binteleave = m_ctrlButtonInterleave.GetCheck();
-	interleaveFrames = (binteleave) ? TRUE : FALSE;
+	bInterleaveFrames = (binteleave) ? TRUE : FALSE;
 
 	BOOL interleave_unit = m_ctrlButtonInterleaveFrames.GetCheck();
-	interleaveUnit = (interleave_unit) ? FRAMES : MILLISECONDS;
+	iInterleaveUnit = (interleave_unit) ? FRAMES : MILLISECONDS;
 
 	//The Recording format, Compressed format and device must be valid before
 	//data from the Audio Options Dialog can be updated to the external variables
@@ -141,22 +128,22 @@ void AudioFormat::OnOK()
 					if (pwfx == NULL)
 						AllocCompressFormat(); //Allocate external format in order to return values
 
-					if (cbwfx >= m_cbwfx) { //All checks cleared, update external values
+					if (dwCbwFX >= m_cbwfx) { //All checks cleared, update external values
 						//Updating to external variables
 
-						AudioDeviceID = m_devicemap[getdevice];
+						uAudioDeviceID = m_devicemap[getdevice];
 
 						bAudioCompression = m_bAudioCompression;
 
 						//Update the external pwfx (compressed format) ;
-						cbwfx = m_cbwfx;
+						dwCbwFX = m_cbwfx;
 						memcpy( (void *) pwfx, (void *) m_pwfx, m_cbwfx );
 
 						//Update the external m_Format (Recording format) and related variables;
-						waveinselected = m_formatmap[sel];
-						audio_bits_per_sample = m_iAudioBitsPerSample;
-						audio_num_channels = m_iAudioNumChannels;
-						audio_samples_per_seconds = m_iAudioSamplesPerSeconds;
+						dwWaveinSelected = m_formatmap[sel];
+						iAudioBitsPerSample = m_iAudioBitsPerSample;
+						iAudioNumChannels = m_iAudioNumChannels;
+						iAudioSamplesPerSeconds = m_iAudioSamplesPerSeconds;
 
 						BuildRecordingFormat();
 					}
@@ -172,7 +159,7 @@ void AudioFormat::OnOK()
 
 	//ver 1.8
 	int val = m_ctrlButtonSystemRecord.GetCheck();
-	useMCI = (val) ? 1 : 0;
+	bUseMCI = (val) ? 1 : 0;
 
 	CDialog::OnOK();
 }
@@ -182,21 +169,21 @@ BOOL AudioFormat::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	//Interleave
-	m_ctrlButtonInterleave.SetCheck(interleaveFrames);
+	m_ctrlButtonInterleave.SetCheck(bInterleaveFrames);
 	CString interleaveFactorStr;
-	interleaveFactorStr.Format("%d",interleaveFactor);
+	interleaveFactorStr.Format("%d",iInterleaveFactor);
 	m_ctrlEditFactor.SetWindowText(interleaveFactorStr);
 
-	m_ctrlEditFactor.EnableWindow(interleaveFrames);
-	m_ctrlButtonInterleaveFrames.EnableWindow(interleaveFrames);
-	m_ctrlButtonInterleaveSeconds.EnableWindow(interleaveFrames);
+	m_ctrlEditFactor.EnableWindow(bInterleaveFrames);
+	m_ctrlButtonInterleaveFrames.EnableWindow(bInterleaveFrames);
+	m_ctrlButtonInterleaveSeconds.EnableWindow(bInterleaveFrames);
 
-	m_ctrlButtonInterleaveFrames.SetCheck(interleaveUnit == FRAMES);
-	m_ctrlButtonInterleaveSeconds.SetCheck(interleaveUnit == MILLISECONDS);
+	m_ctrlButtonInterleaveFrames.SetCheck(iInterleaveUnit == FRAMES);
+	m_ctrlButtonInterleaveSeconds.SetCheck(iInterleaveUnit == MILLISECONDS);
 
-	m_iAudioBitsPerSample = audio_bits_per_sample;
-	m_iAudioNumChannels = audio_num_channels;
-	m_iAudioSamplesPerSeconds = audio_samples_per_seconds;
+	m_iAudioBitsPerSample = iAudioBitsPerSample;
+	m_iAudioNumChannels = iAudioNumChannels;
+	m_iAudioSamplesPerSeconds = iAudioSamplesPerSeconds;
 
 	m_bAudioCompression = bAudioCompression;
 
@@ -225,7 +212,7 @@ BOOL AudioFormat::OnInitDialog()
 	int deviceIsSelected= 0;
 	int selectedDevice = WAVE_MAPPER;
 	for (int i = 0; i < m_iNumDevice; ++i) {
-		if (AudioDeviceID == m_devicemap[i]) {
+		if (uAudioDeviceID == m_devicemap[i]) {
 			m_ctrlCBInputDevice.SetCurSel(i);
 			selectedDevice = m_devicemap[i];
 			deviceIsSelected = 1;
@@ -239,7 +226,7 @@ BOOL AudioFormat::OnInitDialog()
 
 	//Ver 1.2
 	WAVEINCAPS pwic;
-	MMRESULT mmr = waveInGetDevCaps( AudioDeviceID , &pwic, sizeof(pwic) );
+	MMRESULT mmr = waveInGetDevCaps( uAudioDeviceID , &pwic, sizeof(pwic) );
 
 	m_iNumFormat = 0; //counter, number of format
 
@@ -247,11 +234,11 @@ BOOL AudioFormat::OnInitDialog()
 	//that the m_Format and pwfx formats (external variables) are already chosen correctly and compatibile with each other
 	int devID = m_ctrlCBInputDevice.GetCurSel();
 	if (devID < m_iNumDevice) {
-		UpdateDeviceData(selectedDevice, waveinselected, pwfx);
+		UpdateDeviceData(selectedDevice, dwWaveinSelected, pwfx);
 	}
 
 	//ver 1.8
-	m_ctrlButtonSystemRecord.SetCheck(useMCI);
+	m_ctrlButtonSystemRecord.SetCheck(bUseMCI);
 
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -525,7 +512,7 @@ void AudioFormat::OnSelchangeInputdevice()
 {
 	int devID = m_ctrlCBInputDevice.GetCurSel();
 	if (devID < m_iNumDevice) {
-		UpdateDeviceData(m_devicemap[devID],waveinselected,NULL);
+		UpdateDeviceData(m_devicemap[devID],dwWaveinSelected,NULL);
 	}
 }
 
@@ -659,7 +646,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
 		} else {
 			ASSERT(m_pwfx);
 			ASSERT(curr_sel_pwfx);
-			memcpy( (void *) m_pwfx, (void *) curr_sel_pwfx, cbwfx );
+			memcpy( (void *) m_pwfx, (void *) curr_sel_pwfx, dwCbwFX );
 		}
 
 		UpdateLocalCompressFormatInterface();
@@ -829,8 +816,8 @@ void AudioFormat::AllocLocalCompressFormat()
 		return;
 	}
 
-	if (m_cbwfx < cbwfx)
-		m_cbwfx = cbwfx;
+	if (m_cbwfx < dwCbwFX)
+		m_cbwfx = dwCbwFX;
 
 	m_pwfx = (LPWAVEFORMATEX)GlobalAllocPtr(GHND, m_cbwfx);
 	if (NULL == m_pwfx) {

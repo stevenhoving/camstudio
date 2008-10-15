@@ -11,9 +11,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern int presettime;
-extern int recordpreset;
-
 /////////////////////////////////////////////////////////////////////////////
 // CPresetTime dialog
 
@@ -45,15 +42,12 @@ void CPresetTime::OnOK()
 {
 
 	int val = ((CButton *) GetDlgItem(IDC_CHECK1))->GetCheck();
-	if (val)
-		recordpreset = 1;
-	else
-		recordpreset = 0;
+	bRecordPreset = (val) ? true : false;
 
 	int val2 = ((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->GetPos();
-	presettime = val2;
+	iPresetTime = val2;
 
-	//ErrMsg("%d",presettime);
+	//ErrMsg("%d",iPresetTime);
 
 	CDialog::OnOK();
 }
@@ -63,7 +57,7 @@ BOOL CPresetTime::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO: Add extra initialization here
-	((CButton *) GetDlgItem(IDC_CHECK1))->SetCheck(recordpreset);
+	((CButton *) GetDlgItem(IDC_CHECK1))->SetCheck(bRecordPreset);
 
 	UDACCEL acc[4];
 	acc[0].nSec = 1;
@@ -80,7 +74,7 @@ BOOL CPresetTime::OnInitDialog()
 
 	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetAccel(4,acc);
 	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetRange(1,7200);
-	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetPos(presettime);
+	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetPos(iPresetTime);
 
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
