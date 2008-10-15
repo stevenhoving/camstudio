@@ -67,7 +67,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "..\\GlobalResources\\Player.ico"
+IDR_MAINFRAME           ICON                    "Player.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -76,10 +76,10 @@ IDR_MAINFRAME           ICON                    "..\\GlobalResources\\Player.ico
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 IDR_PLAYERTOOLBAR       BITMAP                  "res\\toolbar1.bmp"
-IDB_BITMAP_LOGO_PLAYER  BITMAP                  "..\\GlobalResources\\Player_banner.bmp"
-IDB_BITMAP_LOGO_DUBBER  BITMAP                  "..\\GlobalResources\\Producer_banner.bmp"
-IDB_BITMAP_ABOUT_PLAYER BITMAP                  "..\\GlobalResources\\Player_logo.bmp"
-IDB_BITMAP_ABOUT_DUBBER BITMAP                  "..\\GlobalResources\\Producer_logo.bmp"
+IDB_BITMAP_LOGO_PLAYER  BITMAP                  "Player_banner.bmp"
+IDB_BITMAP_LOGO_DUBBER  BITMAP                  "Producer_banner.bmp"
+IDB_BITMAP_ABOUT_PLAYER BITMAP                  "Player_logo.bmp"
+IDB_BITMAP_ABOUT_DUBBER BITMAP                  "Producer_logo.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -253,19 +253,15 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 225, 214
+IDD_ABOUTBOX DIALOGEX 0, 0, 282, 204
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About playplus"
+CAPTION "About CamStudio PlayerPlus"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    CONTROL         139,IDC_IMAGE,"Static",SS_BITMAP | SS_REALSIZEIMAGE,13,8,204,161,WS_EX_DLGMODALFRAME
-    CTEXT           "[ Rendersoft CamStudio Player ]",IDC_TITLE,7,90,211,9,NOT WS_GROUP
-    CTEXT           "Copyright © 2001 - 2002",IDC_STATIC,7,108,211,9,NOT WS_GROUP
-    CTEXT           "RenderSoft Software and Web Publishing",IDC_STATIC,7,123,211,9,NOT WS_GROUP
-    DEFPUSHBUTTON   "OK",IDOK,78,137,73,16,WS_GROUP
-    CTEXT           "Part of CamStudio: Free Screen Recording Software",IDC_STATIC,7,171,199,9
-    PUSHBUTTON      "http://www.camstudio.org",IDC_BUTTONLINK1,19,183,189,14,BS_FLAT
-    GROUPBOX        "",IDC_STATIC,7,160,211,44
+    CONTROL         139,IDC_IMAGE,"Static",SS_BITMAP | SS_REALSIZEIMAGE,55,7,171,58,WS_EX_DLGMODALFRAME
+    CTEXT           "CamStudio PlayerPlus 2.1\n\nCopyright © 2001 - 2002 RenderSoft Software and Web Publishing\nCopyright © 2008 CamStudio Group && Contributors\n\nBugfixes and additional features added by Nick the Geek\nMore bug fixes and support for Visual Studio 2005 added by Carlo Lanzotti",IDC_TITLE,6,96,268,56,NOT WS_GROUP
+    DEFPUSHBUTTON   "OK",IDOK,110,71,60,15,WS_GROUP
+    PUSHBUTTON      "Visit the CamStudio website",IDC_BUTTONLINK1,90,162,102,33,BS_FLAT
 END
 
 IDD_AUDIODIALOG DIALOG  0, 0, 200, 225
@@ -341,9 +337,9 @@ BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 218
+        RIGHTMARGIN, 275
         TOPMARGIN, 7
-        BOTTOMMARGIN, 205
+        BOTTOMMARGIN, 195
     END
 
     IDD_AUDIODIALOG, DIALOG

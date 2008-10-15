@@ -28,6 +28,7 @@
 #define ID_JUSTRIGHT                    6
 #define IDFONT2                         7
 #define IDR_MAINFRAME                   128
+#define IDS_STRING_VERSION              129
 #define IDB_BITMAP1                     130
 #define IDD_CURSOROPTIONS               132
 #define IDB_BITMAP2                     134

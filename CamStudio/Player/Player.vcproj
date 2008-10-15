@@ -70,6 +70,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
 				Culture="1033"
+				AdditionalIncludeDirectories="$(SolutionDir)GlobalResources"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -159,6 +160,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
 				Culture="1033"
+				AdditionalIncludeDirectories="$(SolutionDir)GlobalResources"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -226,6 +228,10 @@
 		</File>
 		<File
 			RelativePath=".\player.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Player.ico"
 			>
 		</File>
 		<File

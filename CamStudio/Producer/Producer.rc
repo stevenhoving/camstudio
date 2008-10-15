@@ -67,7 +67,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "..\\GlobalResources\\Recorder.ico"
+IDR_MAINFRAME           ICON                    "Recorder.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -76,10 +76,10 @@ IDR_MAINFRAME           ICON                    "..\\GlobalResources\\Recorder.i
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 IDR_PLAYERTOOLBAR       BITMAP                  "res\\toolbar1.bmp"
-IDB_BITMAP_LOGO_PLAYER  BITMAP                  "..\\GlobalResources\\Player_banner.bmp"
-IDB_BITMAP_LOGO_DUBBER  BITMAP                  "..\\GlobalResources\\Producer_banner.bmp"
-IDB_BITMAP_ABOUT_PLAYER BITMAP                  "..\\GlobalResources\\Player_logo.bmp"
-IDB_BITMAP_ABOUT_DUBBER BITMAP                  "..\\GlobalResources\\Producer_logo.bmp"
+IDB_BITMAP_LOGO_PLAYER  BITMAP                  "Player_banner.bmp"
+IDB_BITMAP_LOGO_DUBBER  BITMAP                  "Producer_banner.bmp"
+IDB_BITMAP_ABOUT_PLAYER BITMAP                  "Player_logo.bmp"
+IDB_BITMAP_ABOUT_DUBBER BITMAP                  "Producer_logo.bmp"
 IDB_NODE                BITMAP                  "res\\bitmap3.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -294,19 +294,15 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 217, 214
+IDD_ABOUTBOX DIALOGEX 0, 0, 282, 204
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About Producer"
+CAPTION "About CamStudio SWF Producer"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    CONTROL         140,IDC_IMAGE,"Static",SS_BITMAP,13,8,171,58,WS_EX_DLGMODALFRAME
-    CTEXT           "Rendersoft CamStudio SWF Producer 1.5",IDC_TITLE,7,90,203,9,NOT WS_GROUP
-    CTEXT           "Copyright © 2001 - 2003",IDC_STATIC,7,108,203,9,NOT WS_GROUP
-    CTEXT           "RenderSoft Software and Web Publishing",IDC_STATIC,7,123,203,9,NOT WS_GROUP
-    DEFPUSHBUTTON   "OK",IDOK,67,142,73,16,WS_GROUP
-    CTEXT           "CamStudio: 2.6 Beta Free Screen Recording Software",IDC_STATIC,7,171,203,9
-    PUSHBUTTON      "http://www.camstudio.org",IDC_BUTTONLINK1,21,182,176,14,BS_FLAT
-    GROUPBOX        "",IDC_STATIC,7,160,204,44
+    CONTROL         140,IDC_IMAGE,"Static",SS_BITMAP | SS_REALSIZEIMAGE,54,6,171,58,WS_EX_DLGMODALFRAME
+    CTEXT           "CamStudio SWF Producer 1.5\n\nCopyright © 2001 RenderSoft Software and Web Publishing\nCopyright © 2008 CamStudio Group && Contributors\n\nBugfixes and additional features added by Nick the Geek\nMore bug fixes and support for Visual Studio 2005 added by Carlo Lanzotti",IDC_TITLE,6,96,269,56,NOT WS_GROUP
+    DEFPUSHBUTTON   "OK",IDOK,110,72,60,15,WS_GROUP
+    PUSHBUTTON      "Visit the CamStudio website",IDC_BUTTONLINK1,89,162,102,33,BS_FLAT
 END
 
 IDD_AUDIODIALOG DIALOG  0, 0, 200, 225
@@ -474,9 +470,9 @@ BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 210
+        RIGHTMARGIN, 275
         TOPMARGIN, 7
-        BOTTOMMARGIN, 205
+        BOTTOMMARGIN, 199
     END
 
     IDD_AUDIODIALOG, DIALOG
