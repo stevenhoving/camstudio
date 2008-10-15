@@ -34,7 +34,6 @@ extern CListManager gList;
 extern CScreenAnnotations sadlg;
 extern HWND hMouseCaptureWnd;
 
-extern int tempPath_Access;
 extern CString specifieddir;
 
 extern HANDLE Bitmap2Dib(HBITMAP, UINT);
@@ -1234,12 +1233,12 @@ CTransparentWnd* CTransparentWnd::Clone(int offsetx, int offsety)
 		CString cnumstr(numstr);
 		CString fxstr("\\~txPic");
 		CString exstr(".bmp");
-		tempFile = GetTempPath (tempPath_Access, specifieddir) + fxstr + cnumstr + exstr;
+		tempFile = GetTempPath (iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
 		int ret = picture.CopyToPicture(&newWnd->picture,tempFile);
 		if (!ret) {
 			randnum = rand();
 			sprintf(numstr,"%d",randnum);
-			tempFile = GetTempPath (tempPath_Access, specifieddir) + fxstr + cnumstr + exstr;
+			tempFile = GetTempPath (iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
 			ret = picture.CopyToPicture(&newWnd->picture,tempFile);
 			if (!ret) { //if 2nd try fails
 				newWnd->m_hbitmap = NULL;

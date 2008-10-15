@@ -5,12 +5,10 @@
 //
 // CursorOptionsDlg.cpp : implementation file
 //
-
+/////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Recorder.h"
-//#include <stdio.h>
 #include "CursorOptionsDlg.h"
-#include ".\cursoroptionsdlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -39,16 +37,6 @@ int sliding=FALSE;
 //extern CFileDialog *iconFileDlg;
 extern HCURSOR g_loadcursor;
 extern HCURSOR g_customcursor;
-extern int g_customsel;
-extern int g_recordcursor;
-extern int g_cursortype;
-extern int g_highlightcursor;
-extern int g_highlightsize;
-extern int g_highlightshape;
-extern int g_highlightclick;
-extern COLORREF g_highlightcolor;
-extern COLORREF g_highlightclickcolorleft;
-extern COLORREF g_highlightclickcolorright;
 extern CString cursordir;
 extern CString g_cursorFilePath;
 
@@ -106,6 +94,7 @@ void CCursorOptionsDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CCursorOptionsDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
+	DDX_Control(pDX, IDC_RADIO1, ctrlButtonHideCursor);
 }
 
 BEGIN_MESSAGE_MAP(CCursorOptionsDlg, CDialog)
@@ -143,7 +132,7 @@ void CCursorOptionsDlg::OnRadio1()
 	// TODO: Add your control notification handler code here
 
 	recordcursor = 0;
-	((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(TRUE);
+	ctrlButtonHideCursor.SetCheck(TRUE);
 	((CButton *) GetDlgItem(IDC_RADIO2))->SetCheck(FALSE);
 
 	((CButton *) GetDlgItem(IDC_CURSOR1))->EnableWindow(FALSE);
@@ -161,7 +150,7 @@ void CCursorOptionsDlg::OnRadio2()
 	// TODO: Add your control notification handler code here
 
 	recordcursor = 1;
-	((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(FALSE);
+	ctrlButtonHideCursor.SetCheck(FALSE);
 	((CButton *) GetDlgItem(IDC_RADIO2))->SetCheck(TRUE);
 
 	((CButton *) GetDlgItem(IDC_CURSOR1))->EnableWindow(TRUE);
@@ -243,18 +232,18 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO: Add extra initialization here
-	customsel = g_customsel;
-	recordcursor = g_recordcursor;
-	cursortype = g_cursortype;
-	highlightcursor = g_highlightcursor;
-	highlightsize = g_highlightsize;
-	highlightshape = g_highlightshape;
-	highlightcolor = g_highlightcolor;
+	customsel = iCustomSel;
+	recordcursor = bRecordCursor;
+	cursortype = iCursorType;
+	highlightcursor = bHighlightCursor;
+	highlightsize = iHighlightSize;
+	highlightshape = iHighlightShape;
+	highlightcolor = clrHighlightColor;
 	loadcursor = g_loadcursor;
 	customcursor = g_customcursor;
-	highlightclick = g_highlightclick;
-	highlightclickcolorleft = g_highlightclickcolorleft;
-	highlightclickcolorright = g_highlightclickcolorright;
+	highlightclick = bHighlightClick;
+	highlightclickcolorleft = clrHighlightClickColorLeft;
+	highlightclickcolorright = clrHighlightClickColorRight;
 
 	HICON loadFileIcon= LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(IDI_ICON1));
 	((CButton *) GetDlgItem(IDC_FILECURSOR))->SetIcon(loadFileIcon);
@@ -361,7 +350,7 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 
 	if (recordcursor==0) {
 
-		((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(TRUE);
+		ctrlButtonHideCursor.SetCheck(TRUE);
 		((CButton *) GetDlgItem(IDC_RADIO2))->SetCheck(FALSE);
 
 		((CButton *) GetDlgItem(IDC_CURSOR1))->EnableWindow(FALSE);
@@ -373,7 +362,7 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 	}
 	else {
 
-		((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(FALSE);
+		ctrlButtonHideCursor.SetCheck(FALSE);
 		((CButton *) GetDlgItem(IDC_RADIO2))->SetCheck(TRUE);
 
 		((CButton *) GetDlgItem(IDC_CURSOR1))->EnableWindow(TRUE);
@@ -497,18 +486,18 @@ void CCursorOptionsDlg::OnOK()
 
 	} //cursortype
 
-	g_customsel = customsel;
-	g_recordcursor = recordcursor;
-	g_cursortype = cursortype;
-	g_highlightcursor = highlightcursor;
-	g_highlightsize = highlightsize;
-	g_highlightshape = highlightshape;
-	g_highlightcolor = highlightcolor;
+	iCustomSel = customsel;
+	bRecordCursor = recordcursor;
+	iCursorType = cursortype;
+	bHighlightCursor = highlightcursor;
+	iHighlightSize = highlightsize;
+	iHighlightShape = highlightshape;
+	clrHighlightColor = highlightcolor;
 	g_loadcursor = loadcursor;
 	g_customcursor = customcursor;
-	g_highlightclick=highlightclick;
-	g_highlightclickcolorleft=highlightclickcolorleft;
-	g_highlightclickcolorright=highlightclickcolorright;
+	bHighlightClick=highlightclick;
+	clrHighlightClickColorLeft=highlightclickcolorleft;
+	clrHighlightClickColorRight=highlightclickcolorright;
 
 	CDialog::OnOK();
 }

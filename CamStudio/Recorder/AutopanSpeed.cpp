@@ -10,8 +10,6 @@
 #include "Recorder.h"
 #include "AutopanSpeed.h"
 
-extern int maxpan;
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -54,9 +52,9 @@ BOOL CAutopanSpeed::OnInitDialog()
 	CString maxpanspeedstr;
 
 	((CSliderCtrl *) GetDlgItem(IDC_PANSLIDER))->SetRange(1,200,TRUE);
-	((CSliderCtrl *) GetDlgItem(IDC_PANSLIDER))->SetPos(maxpan);
+	((CSliderCtrl *) GetDlgItem(IDC_PANSLIDER))->SetPos(iMaxPan);
 
-	maxpanspeedstr.Format("%d",maxpan);
+	maxpanspeedstr.Format("%d",iMaxPan);
 	((CStatic *) GetDlgItem(IDC_MAXSPEED))->SetWindowText(maxpanspeedstr);
 
 	return TRUE; // return TRUE unless you set the focus to a control
@@ -73,7 +71,7 @@ void CAutopanSpeed::OnOK()
 	//sscanf_(LPCTSTR(maxpanspeedstr),"%d",&maxpanspeed);
 	sscanf_s(LPCTSTR(maxpanspeedstr),"%d",&maxpanspeed);
 
-	maxpan = maxpanspeed;
+	iMaxPan = maxpanspeed;
 
 	CDialog::OnOK();
 }
