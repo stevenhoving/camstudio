@@ -11,7 +11,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern int restrictVideoCodecs;
 extern int TroubleShootVal;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -70,12 +69,7 @@ void TroubleShoot::OnOK()
 
 	int check2 = ((CButton *) GetDlgItem(IDC_CHECK2))->GetCheck();
 	int ret2=IDNO;
-	if (check2) {
-
-		restrictVideoCodecs = 1;
-	}
-	else
-		restrictVideoCodecs = 0;
+	bRestrictVideoCodecs = (check2) ? true : false;
 
 	CDialog::OnOK();
 }
@@ -89,7 +83,7 @@ void TroubleShoot::OnCheck2()
 BOOL TroubleShoot::OnInitDialog()
 {
 
-	if (restrictVideoCodecs)
+	if (bRestrictVideoCodecs)
 		((CButton *) GetDlgItem(IDC_CHECK2))->SetCheck(TRUE);
 	else
 		((CButton *) GetDlgItem(IDC_CHECK2))->SetCheck(FALSE);

@@ -1,11 +1,12 @@
+// FixedRegion.h : header file
+//
+/////////////////////////////////////////////////////////////////////////////
 #if !defined(AFX_FIXEDREGION_H__FA179C45_83DC_4DE0_BF6B_0C6E841C7BD2__INCLUDED_)
 #define AFX_FIXEDREGION_H__FA179C45_83DC_4DE0_BF6B_0C6E841C7BD2__INCLUDED_
 
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
-// FixedRegion.h : header file
-//
 
 #define WM_USER_REGIONUPDATE 0x00500
 

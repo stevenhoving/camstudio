@@ -11,8 +11,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern int shiftType;
-extern int timeshift;
 int shiftTypeLocal = 0;
 int timeShiftLocal = 0;
 
@@ -51,8 +49,8 @@ BOOL CSyncDialog::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	shiftTypeLocal = shiftType;
-	timeShiftLocal = timeshift;
+	shiftTypeLocal = iShiftType;
+	timeShiftLocal = iTimeShift;
 
 	UpdateGui();
 
@@ -98,8 +96,8 @@ void CSyncDialog::OnRadio4()
 void CSyncDialog::OnOK()
 {
 	// TODO: Add extra validation here
-	shiftType = shiftTypeLocal;
-	timeshift = timeShiftLocal;
+	iShiftType = shiftTypeLocal;
+	iTimeShift = timeShiftLocal;
 
 	CDialog::OnOK();
 }
@@ -107,9 +105,9 @@ void CSyncDialog::OnOK()
 void CSyncDialog::UpdateGui()
 {
 
-	((CButton *) GetDlgItem(IDC_RADIO4))->SetCheck(shiftType == 0);
-	((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(shiftType == 1);
-	((CButton *) GetDlgItem(IDC_RADIO3))->SetCheck(shiftType == 2);
+	((CButton *) GetDlgItem(IDC_RADIO4))->SetCheck(iShiftType == 0);
+	((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(iShiftType == 1);
+	((CButton *) GetDlgItem(IDC_RADIO3))->SetCheck(iShiftType == 2);
 
 	UDACCEL acc[2];
 	acc[0].nSec = 2;
@@ -120,7 +118,7 @@ void CSyncDialog::UpdateGui()
 
 	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetBuddy(GetDlgItem(IDC_EDIT1));
 	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetRange(0,5000);
-	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetPos(timeshift);
+	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetPos(iTimeShift);
 	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetAccel(2,acc);
 
 }

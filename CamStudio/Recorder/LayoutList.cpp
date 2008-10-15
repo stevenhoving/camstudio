@@ -14,7 +14,6 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 int currentLayoutID = 1;
-int layoutNameInt = 1;
 CString g_layoutName("Layout_");
 
 extern CListManager gList;
@@ -33,11 +32,11 @@ CLayoutList::CLayoutList()
 
 	//layoutName.Format("Layout_%d",uniqueID);
 	//CString layoutIntStr;
-	//layoutIntStr.Format("%d",layoutNameInt);
+	//layoutIntStr.Format("%d",iLayoutNameInt);
 	//layoutName = g_layoutName + layoutIntStr;
-	//layoutNameInt++ ;
-	//if (layoutNameInt > 2147483647)
-	// layoutNameInt = 1;
+	//iLayoutNameInt++ ;
+	//if (iLayoutNameInt > 2147483647)
+	// iLayoutNameInt = 1;
 
 	layoutArrayPtr = NULL;
 

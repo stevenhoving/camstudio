@@ -21,12 +21,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern int timelapse;
-extern int frames_per_second;
-extern int keyFramesEvery;
-extern int compquality;
-extern DWORD compfccHandler;
-
 extern ICINFO * compressor_info;
 extern int num_compressor;
 extern int selected_compressor;
@@ -34,8 +28,6 @@ extern CString strCodec;
 
 //Video Compress Parameters
 extern LPVOID pVideoCompressParams;
-extern DWORD CompressorStateIsFor;
-extern DWORD CompressorStateSize;
 
 extern void FreeVideoCompressParams();
 extern BOOL AllocVideoCompressParams(DWORD paramsSize);
@@ -46,8 +38,7 @@ extern void SetVideoCompressState (HIC hic , DWORD fccHandler);
 int autoadjust;
 int valueadjust;
 
-extern int g_autoadjust;
-extern int g_valueadjust;
+extern int iValueAdjust;
 extern void AutoSetRate(int val,int& framerate,int& delayms);
 
 /////////////////////////////////////////////////////////////////////////////
@@ -154,15 +145,15 @@ void CVideoOptions::OnOK()
 	}
 
 	//Verification Passed..Setting Global Values
-	timelapse = own_timelapse;
-	frames_per_second =own_frames_per_second;
-	keyFramesEvery =own_keyFramesEvery;
+	iTimeLapse = own_timelapse;
+	iFramesPerSecond =own_frames_per_second;
+	iKeyFramesEvery =own_keyFramesEvery;
 
-	compquality = quality * 100;
+	iCompQuality = quality * 100;
 
 	int sel = ((CComboBox *) GetDlgItem(IDC_COMPRESSORS))->GetCurSel();
 	if (sel != CB_ERR) {
-		compfccHandler = compressor_info[sel].fccHandler;
+		dwCompfccHandler = compressor_info[sel].fccHandler;
 		strCodec = CString(compressor_info[sel].szDescription);
 		selected_compressor = sel;
 	}
@@ -170,8 +161,8 @@ void CVideoOptions::OnOK()
 	// selected_compressor = -1;
 
 	//Ver 1.2
-	g_autoadjust = ((CButton *) GetDlgItem(IDC_AUTO))->GetCheck();
-	g_valueadjust = ((CSliderCtrl *) GetDlgItem(IDC_ADJUST))->GetPos();
+	bAutoAdjust = ((CButton *) GetDlgItem(IDC_AUTO))->GetCheck();
+	iValueAdjust = ((CSliderCtrl *) GetDlgItem(IDC_ADJUST))->GetPos();
 
 	CDialog::OnOK();
 }
@@ -187,11 +178,11 @@ BOOL CVideoOptions::OnInitDialog()
 	CString qualitystr;
 	int quality;
 
-	quality = compquality/100;
+	quality = iCompQuality/100;
 
-	fps.Format("%d",frames_per_second);
-	keyframes.Format("%d",keyFramesEvery);
-	timelp.Format("%d",timelapse);
+	fps.Format("%d",iFramesPerSecond);
+	keyframes.Format("%d",iKeyFramesEvery);
+	timelp.Format("%d",iTimeLapse);
 	qualitystr.Format("%d",quality);
 
 	((CEdit *) GetDlgItem(IDC_FPS))->SetWindowText(fps);
@@ -203,8 +194,8 @@ BOOL CVideoOptions::OnInitDialog()
 	((CSliderCtrl *) GetDlgItem(IDC_QUALITY_SLIDER))->SetPos(quality);
 
 	//Ver 1.2
-	autoadjust = g_autoadjust;
-	valueadjust = g_valueadjust;
+	autoadjust = bAutoAdjust;
+	valueadjust = iValueAdjust;
 
 	((CSliderCtrl *) GetDlgItem(IDC_ADJUST))->SetTicFreq( 10 );
 	((CSliderCtrl *) GetDlgItem(IDC_ADJUST))->SetRange(1,100,TRUE);
@@ -222,7 +213,7 @@ BOOL CVideoOptions::OnInitDialog()
 			CString cname(compressor_info[i].szDescription);
 			((CComboBox *) GetDlgItem(IDC_COMPRESSORS))->AddString(cname);
 
-			if (compfccHandler == compressor_info[i].fccHandler) {
+			if (dwCompfccHandler == compressor_info[i].fccHandler) {
 
 				sel = i;
 
@@ -233,7 +224,7 @@ BOOL CVideoOptions::OnInitDialog()
 		if (sel == -1)
 		{
 			sel = 0;
-			compfccHandler = compressor_info[sel].fccHandler;
+			dwCompfccHandler = compressor_info[sel].fccHandler;
 		}
 
 		((CComboBox *) GetDlgItem(IDC_COMPRESSORS))->SetCurSel(sel);

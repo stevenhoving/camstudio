@@ -16,7 +16,6 @@ extern void mciRecordStop(CString strFile);
 extern void mciRecordClose();
 extern void mciSetWaveFormat(); //add before mcirecord
 
-extern int recordaudio;
 extern CAutoSearchDialog asd;
 extern int asdCreated;
 
@@ -50,8 +49,8 @@ DWORD m_dwSelectControlID;	//the found controlID of the MUX/MIXER
 DWORD m_dwMultipleItems;	//max source lines connected to the MUX/MIXER
 DWORD m_dwIndex;
 
-//int NumberOfMixerDevices=0;
-//int SelectedMixer=0;
+//int iNumberOfMixerDevices=0;
+//int iSelectedMixer=0;
 int manual_mode = 0;
 
 double analyzeTotal=0;
@@ -64,8 +63,8 @@ int second_maximum_line=-1;
 double maximum_value=-1;
 double second_maximum_value=-1;
 
-//int feedback_line = -1;
-//int feedback_lineInfo = -1;
+//int iFeedbackLine = -1;
+//int iFeedbackLineInfo = -1;
 DWORD volume;
 
 int storedID[100]; //assume there is less than 100 lines, this array is used for manual search
@@ -115,9 +114,9 @@ BOOL useWavein(BOOL silence_mode,int feedback_skip_namesearch)
 BOOL configWaveOut()
 {
 	//set to undetected state to force detection
-	feedback_line = -1;
+	iFeedbackLine = -1;
 
-	int orig_recordaudio = recordaudio;
+	int orig_recordaudio = iRecordAudio;
 
 	//Automatically Configure feedback line by simply selecting it
 	useWaveout(FALSE,TRUE); //report errors, skip (1st Pass) name search
@@ -159,7 +158,7 @@ BOOL WaveoutInitialize()
 	// open the first mixer
 	// A "mapper" for audio mixer devices does not currently exist.
 	if (m_nNumMixers != 0) {
-		if (MMSYSERR_NOERROR != cAudioMixer.Open(SelectedMixer, (DWORD) hWndGlobal, NULL, MIXER_OBJECTF_MIXER | CALLBACK_WINDOW)) {
+		if (MMSYSERR_NOERROR != cAudioMixer.Open(iSelectedMixer, (DWORD) hWndGlobal, NULL, MIXER_OBJECTF_MIXER | CALLBACK_WINDOW)) {
 			OnError("WaveoutInitialize");
 			return FALSE;
 		}
@@ -580,11 +579,11 @@ BOOL WaveoutSearchSrcLine(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD li
 
 	//This code allows the manual config to override the 2 pass searching
 	if (lineToSearch==MIXERLINE_COMPONENTTYPE_SRC_ANALOG) { //if searching for speakers line
-		if (feedback_line>=0) {
-			m_dwIndex = feedback_line;
+		if (iFeedbackLine>=0) {
+			m_dwIndex = iFeedbackLine;
 
-			//not necessary because the validity of feedback_line ==> feedback_lineInfo is also valid
-			//feedback_lineInfo = pmxcdSelectText[m_dwIndex].dwParam1;
+			//not necessary because the validity of iFeedbackLine ==> iFeedbackLineInfo is also valid
+			//iFeedbackLineInfo = pmxcdSelectText[m_dwIndex].dwParam1;
 
 			return TRUE;
 		}
@@ -611,8 +610,8 @@ BOOL WaveoutSearchSrcLine(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD li
 							// found, dwi is the index.
 							retval=TRUE;
 							m_dwIndex = dwi;
-							feedback_line = m_dwIndex;
-							feedback_lineInfo = pmxcdSelectText[m_dwIndex].dwParam1;
+							iFeedbackLine = m_dwIndex;
+							iFeedbackLineInfo = pmxcdSelectText[m_dwIndex].dwParam1;
 							//::MessageBox(NULL,m_strMicName,"Note",MB_OK |MB_ICONEXCLAMATION);
 							break;
 						}
@@ -647,9 +646,9 @@ BOOL configWaveOutManual()
 		return FALSE;
 
 	//set to undetected state to force detection
-	feedback_line = -1;
+	iFeedbackLine = -1;
 
-	int orig_recordaudio = recordaudio;
+	int orig_recordaudio = iRecordAudio;
 
 	manual_mode = 1;
 	//Record the wave out for each line
@@ -684,8 +683,8 @@ BOOL configWaveOutManual()
 			//int ret = ::MessageBox(hWndGlobal,anstr,"Analyzing",MB_OK | MB_ICONEXCLAMATION);
 			int ret = MessageOut(hWndGlobal,IDS_STRING_SETTINGLINE, IDS_STRING_ANALYZE, MB_OK | MB_ICONEXCLAMATION, dwi+1);
 
-			feedback_line = dwi;
-			feedback_lineInfo = storedID[feedback_line]; //storedID s crated in the manual mode of useWaveout/useWave
+			iFeedbackLine = dwi;
+			iFeedbackLineInfo = storedID[iFeedbackLine]; //storedID s crated in the manual mode of useWaveout/useWave
 			break;
 		}
 	}
@@ -698,7 +697,7 @@ BOOL configWaveOutManual()
 		DeleteFile(testfile);
 	}
 
-	if (feedback_line == -1)
+	if (iFeedbackLine == -1)
 		MessageOut(hWndGlobal,IDS_STRING_NODETECT ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 
 	//restore
@@ -821,7 +820,7 @@ BOOL useWave(DWORD lineToSearch,CString namesearch,BOOL silence_mode,int feedbac
 	return TRUE;
 }
 
-BOOL onLoadSettings(int recordaudio)
+BOOL onLoadSettings(int iRecordAudio)
 {
 	//Safety code
 	if ((waveInGetNumDevs() == 0) || (waveOutGetNumDevs() == 0) || (mixerGetNumDevs() == 0)) {
@@ -829,9 +828,9 @@ BOOL onLoadSettings(int recordaudio)
 		return FALSE;
 	}
 
-	if (recordaudio==1)
+	if (iRecordAudio==1)
 		useWavein(TRUE,FALSE); //silence mode
-	else if (recordaudio==2) {
+	else if (iRecordAudio==2) {
 
 		//useWaveout(TRUE,FALSE); //silence mode
 		SafeUseWaveoutOnLoad();
@@ -845,10 +844,10 @@ BOOL SafeUseWaveoutOnLoad()
 {
 	BOOL val = TRUE;
 
-	if (feedback_line>=0) //if feedback_line already found
+	if (iFeedbackLine>=0) //if iFeedbackLine already found
 		useWaveout(TRUE,FALSE);
-	else if (feedback_line<0) {
-		recordaudio=1;
+	else if (iFeedbackLine<0) {
+		iRecordAudio=1;
 		useWavein(TRUE,FALSE); //silence mode
 		//MessageOut(NULL,IDS_STRING_NODETECTLINE,IDS_STING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 	}
@@ -922,8 +921,8 @@ BOOL WaveoutInternalAdjustVolume(long lineID)
 
 BOOL WaveoutGetVolumeControl()
 {
-	//We do not even know the feedback_line, let alone its volume
-	if (feedback_line<0) {
+	//We do not even know the iFeedbackLine, let alone its volume
+	if (iFeedbackLine<0) {
 		return FALSE;
 	}
 
@@ -939,10 +938,10 @@ BOOL WaveoutGetVolumeControl()
 	if (MMSYSERR_NOERROR != mmResult)
 		return FALSE;
 
-	//got the CD audio volume instead of Steroes mix???? for line 7, feedback_line = 6, the source==6 ==> CD Audio
+	//got the CD audio volume instead of Steroes mix???? for line 7, iFeedbackLine = 6, the source==6 ==> CD Audio
 	MIXERLINE mxl2;
 	mxl2.cbStruct = sizeof(MIXERLINE);
-	mxl2.dwLineID = feedback_lineInfo;
+	mxl2.dwLineID = iFeedbackLineInfo;
 
 	mmResult = cAudioMixer.GetLineInfo(&mxl2, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_LINEID);
 	if (MMSYSERR_NOERROR != mmResult)
@@ -1031,7 +1030,7 @@ BOOL WaveoutVolumeInitialize()
 	// open the first mixer
 	// A "mapper" for audio mixer devices does not currently exist.
 	if (m_nNumMixers != 0) {
-		if (MMSYSERR_NOERROR != cAudioMixer.Open(SelectedMixer, (DWORD) hWndGlobal, NULL, MIXER_OBJECTF_MIXER | CALLBACK_WINDOW))
+		if (MMSYSERR_NOERROR != cAudioMixer.Open(iSelectedMixer, (DWORD) hWndGlobal, NULL, MIXER_OBJECTF_MIXER | CALLBACK_WINDOW))
 			return FALSE;
 
 		if (MMSYSERR_NOERROR != cAudioMixer.GetDevCaps(&m_mxcaps, sizeof(MIXERCAPS)))
@@ -1231,8 +1230,8 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 					//if (maximum_value>analyze_threshold) {
 
 					m_dwIndex = maximum_line;
-					feedback_line = m_dwIndex;
-					feedback_lineInfo = pmxcdSelectText[m_dwIndex].dwParam1;
+					iFeedbackLine = m_dwIndex;
+					iFeedbackLineInfo = pmxcdSelectText[m_dwIndex].dwParam1;
 
 					CString anstr,fmtstr;
 					fmtstr.LoadString(IDS_STRING_LINEDETECTED);
