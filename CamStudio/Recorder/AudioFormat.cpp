@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "AudioFormat.h"
+#include "CStudioLib.h"
 
 //#include <stdio.h>
 //#include <mmsystem.h>
@@ -17,7 +18,6 @@ extern DWORD dwCbwFX;
 
 extern void BuildRecordingFormat();
 extern void AllocCompressFormat();
-extern CString GetProgPath();
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
