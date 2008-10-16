@@ -75,14 +75,7 @@ static char THIS_FILE[] = __FILE__;
 // external variables
 /////////////////////////////////////////////////////////////////////////////
 
-//extern int iViewType;
-//Link to customized icon info
 extern DWORD icon_info[];
-//extern int iNumberOfMixerDevices;
-//extern int iSelectedMixer;
-
-//extern int iFeedbackLine;
-//extern int iFeedbackLineInfo;
 
 //Region Movement
 extern CRect newRect;
@@ -126,9 +119,6 @@ CTransparentWnd* transWnd;
 //State variables
 /////////////////////////////////////////////////////////////////////////////
 
-//Multilanguage
-
-
 //Vars used for selecting fixed /variableregion
 RECT rcOffset;
 RECT rcClip;
@@ -163,20 +153,7 @@ CString specifieddir;
 //Variables/Options requiring interface
 /////////////////////////////////////////////////////////////////////////////
 int bits = 24;
-//int bFlashingRect = 1;
-//int iLaunchPlayer = 3;
-//int bMinimizeOnStart = 0;
-//int iMouseCaptureMode = 0;
-//int iCaptureWidth = 320;
-//int iCaptureHeight = 240;
 int DefineMode = 0; //set only in FixedRegion.cpp
-
-//Video Options and Compressions
-//int iTimeLapse = 5;
-//int iFramesPerSecond = 200;
-//int iKeyFramesEvery = 200;
-//int iCompQuality = 7000;
-//DWORD dwCompfccHandler = 0;
 
 ICINFO * compressor_info = NULL;
 int num_compressor = 0;
@@ -185,8 +162,6 @@ int selected_compressor = -1;
 //Ver 1.2
 //Video Compress Parameters
 LPVOID pVideoCompressParams = NULL;
-//DWORD dwCompressorStateIsFor = 0;
-//DWORD dwCompressorStateSize = 0;
 
 LPVOID pParamsUse = NULL;
 
@@ -204,8 +179,6 @@ int actualheight = 0;
 CString tempfilepath;
 
 //Autopan
-//int bAutoPan = 0;
-//int iMaxPan = 20;
 RECT panrect_current;
 RECT panrect_dest;
 
@@ -220,10 +193,6 @@ RECT panrect_dest;
 
 //Path to temporary wav file
 CString tempaudiopath;
-//int iRecordAudio = 0;
-
-//Audio Recording Variables
-//UINT uAudioDeviceID = WAVE_MAPPER;
 
 HWAVEIN m_hRecord;
 WAVEFORMATEX m_Format;
@@ -234,18 +203,6 @@ CSoundFile * pSoundFile = NULL;
 
 //Audio Options Dialog
 LPWAVEFORMATEX pwfx = NULL;
-//DWORD dwCbwFX;
-
-//Audio Formats Dialog
-//DWORD dwWaveinSelected = WAVE_FORMAT_2S16;
-//int iAudioBitsPerSample = 16;
-//int iAudioNumChannels = 2;
-//int iAudioSamplesPerSeconds = 22050;
-//BOOL bAudioCompression = TRUE;
-
-//BOOL bInterleaveFrames = TRUE;
-//int iInterleaveFactor = 100;
-//int iInterleaveUnit = MILLISECONDS;
 
 /////////////////////////////////////////////////////////////////////////////
 //ver 1.2
@@ -256,38 +213,20 @@ LPWAVEFORMATEX pwfx = NULL;
 BOOL AllowNewRecordStartKey = TRUE;
 int savesettings = 1;
 
-//Enhanced video options
-//int bAutoAdjust = 1;
-//int iValueAdjust = 1;
-
 //Cursor Path, used for copying cursor file
 CString g_cursorFilePath;
-
-//ver 1.3
-//int iThreadPriority = THREAD_PRIORITY_NORMAL;
-
-//ver 1.5
-//int iCaptureLeft = 100;
-//int iCaptureTop = 100;
-//int bFixedCapture = 0;
-
-//int bCaptureTrans = 1;
 
 MCI_OPEN_PARMS mop;
 MCI_SAVE_PARMS msp;
 PSTR strFile;
 
 WAVEFORMATEX m_FormatSpeaker;
-DWORD waveinselected_Speaker = WAVE_FORMAT_4S16;
 int audio_bits_per_sample_Speaker = 16;
 int audio_num_channels_Speaker = 2;
 int audio_samples_per_seconds_Speaker = 44100;
-
-CAutoSearchDialog asd;
-int asdCreated = FALSE;
+//DWORD waveinselected_Speaker = WAVE_FORMAT_4S16;	// not used: only assigned
 
 int TroubleShootVal = 0;
-//int bPerformAutoSearch = 1;
 
 //ver 1.8
 
@@ -301,7 +240,6 @@ int alreadyMCIPause = 0;
 
 //ver 1.8
 int vanWndCreated = 0;
-//CVideoWnd m_vanWnd;
 
 int keySCOpened = 0;
 
@@ -309,17 +247,7 @@ int audioTimeInitiated = 0;
 int sdwSamplesPerSec = 22050;
 int sdwBytesPerSec = 44100;
 
-
 int currentLayout = 0;
-
-//ver 2.26 Vscap Interface
-
-//int base_nid = 0; //for keyboard shotcuts
-
-//LPBITMAPINFO GetTextBitmap(CDC *thisDC, CRect* caprect,int factor,CRect* drawtextRect, LOGFONT* drawfont, CString textstr, CPen* pPen, CBrush * pBrush, COLORREF textcolor, int horzalign);
-//HBITMAP DrawResampleRGB(CDC *thisDC, CRect* caprect,int factor, LPBITMAPINFOHEADER expanded_bmi, int xmove, int ymove);
-//extern HANDLE AllocMakeDib( int reduced_width, int reduced_height, UINT bits);
-
 
 /////////////////////////////////////////////////////////////////////////////
 //Function prototypes
@@ -393,18 +321,6 @@ void mciRecordResume(CString strFile);
 HCURSOR hSavedCursor = NULL;
 HCURSOR g_loadcursor = NULL;
 HCURSOR g_customcursor = NULL;
-
-//int bRecordCursor = 1;
-//int iCustomSel = 0;
-//int iCursorType = 0;
-//int bHighlightCursor = 0;
-//int iHighlightSize = 64;
-//int iHighlightShape = 0;
-//int bHighlightClick = 0;
-
-//COLORREF clrHighlightColor = RGB(255,255,125);
-//COLORREF clrHighlightClickColorLeft = RGB(255,0,0);
-//COLORREF clrHighlightClickColorRight = RGB(0,0,255);
 
 HCURSOR FetchCursorHandle();
 HCURSOR FetchCursorHandle()
@@ -643,7 +559,8 @@ int SetAdjustHotKeys()
 	CString keystr;
 	CString msgstr;
 	CString outstr;
-	if (succ[0]) {
+	if (succ[0])
+	{
 		keyRecordStart = 100000;
 		keyRecordStartCtrl = 0;
 		keyRecordStartShift = 0;
@@ -657,7 +574,8 @@ int SetAdjustHotKeys()
 		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
 	}
 
-	if (succ[1]) {
+	if (succ[1])
+	{
 		keyRecordEnd = 100000;
 		keyRecordEndCtrl = 0;
 		keyRecordEndShift = 0;
@@ -671,7 +589,8 @@ int SetAdjustHotKeys()
 		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
 	}
 
-	if (succ[2]) {
+	if (succ[2])
+	{
 		keyRecordCancel = 100000;
 		keyRecordCancelCtrl = 0;
 		keyRecordCancelShift = 0;
@@ -685,7 +604,8 @@ int SetAdjustHotKeys()
 		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
 	}
 
-	if (succ[3]) {
+	if (succ[3])
+	{
 		keyNext = 100000;
 		keyNextCtrl = 0;
 		keyNextShift = 0;
@@ -699,7 +619,8 @@ int SetAdjustHotKeys()
 		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
 	}
 
-	if (succ[4]) {
+	if (succ[4])
+	{
 		keyPrev = 100000;
 		keyPrevCtrl = 0;
 		keyPrevShift = 0;
@@ -713,7 +634,8 @@ int SetAdjustHotKeys()
 		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
 	}
 
-	if (succ[5]) {
+	if (succ[5])
+	{
 		keyShowLayout = 100000;
 		keyShowLayoutCtrl = 0;
 		keyShowLayoutShift = 0;
@@ -734,14 +656,11 @@ int SetAdjustHotKeys()
 /////////////////////////////////////////////////////////////////////////////
 
 HBITMAP savedBitmap = NULL;
-/////////////////////////////////////////////////////////////////////////////
-//
-// DrawSelect
-//
-// Draws the selected clip rectangle with its dimensions on the DC
-//
-/////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////////
+// DrawSelect
+// Draws the selected clip rectangle with its dimensions on the DC
+/////////////////////////////////////////////////////////////////////////////
 void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip)
 {
 	RECT rectDraw = *lprClip;
@@ -823,7 +742,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 	switch (wMessage)
 	{
 	default:
-		TRACE("MouseCaptureWndProc : skip message\n");
+		//TRACE("MouseCaptureWndProc : skip message\n");
 		break;
 	case WM_MOUSEMOVE:
 		{
@@ -1606,7 +1525,14 @@ void BuildRecordingFormat()
 void SuggestRecordingFormat()
 {
 	WAVEINCAPS pwic;
-	MMRESULT mmr = waveInGetDevCaps( uAudioDeviceID, &pwic, sizeof(pwic));
+	::ZeroMemory(&pwic, sizeof(WAVEINCAPS));
+	MMRESULT mmResult = ::waveInGetDevCaps(uAudioDeviceID, &pwic, sizeof(pwic));
+	if (MMSYSERR_NOERROR != mmResult)
+	{
+		// report error
+		TRACE("SuggestRecordingFormat: waveInGetDevCaps failed %d\n", mmResult);
+		return; 
+	}
 
 	//Ordered in preference of choice
 	if ((pwic.dwFormats) & WAVE_FORMAT_2S16) {
@@ -2182,6 +2108,8 @@ CString GetCodecDescription(long fccHandler)
 {
 	// TODO: initialization
 	ICINFO compinfo;
+	::ZeroMemory(&compinfo, sizeof(compinfo));
+	compinfo.dwSize = sizeof(ICINFO);
 	HIC hic = ICOpen(ICTYPE_VIDEO, fccHandler, ICMODE_QUERY);
 	if (hic) {
 		ICGetInfo(hic, &compinfo, sizeof(ICINFO));
@@ -2248,7 +2176,7 @@ void mciRecordStart()
 	if (dwReturn) {
 		char buffer[300];
 		mciGetErrorString(dwReturn, buffer, sizeof (buffer));
-		MessageBox( NULL, buffer, "MCI_RECORD",MB_ICONEXCLAMATION | MB_OK);
+		MessageBox(NULL, buffer, "MCI_RECORD", MB_ICONEXCLAMATION | MB_OK);
 	}
 }
 
@@ -2295,9 +2223,9 @@ void mciRecordResume(CString strFile)
 	//can call this only in the same thread as the one opening the device?
 
 	msp.dwCallback = (DWORD)hWndGlobal;
-	msp.lpfilename = LPCTSTR(strFile);
+	msp.lpfilename = strFile;
 
-	if (isMciRecordOpen==0) {
+	if (isMciRecordOpen == 0) {
 		return;
 	}
 
@@ -2316,51 +2244,51 @@ void mciRecordClose()
 	isMciRecordOpen = 0;
 }
 
-//The setting/suggesting of format for recording Speakers is deferred until recording starts
-//Default is to use best settings avalable
+// The setting/suggesting of format for recording Speakers is deferred until recording starts
+// Default is to use best settings avalable.
+// TODO: 
 void mciSetWaveFormat()
 {
-	MCI_WAVE_SET_PARMS set_parms;
-	DWORD dwReturn;
 	char buffer[128];
 
-	//Suggest 10 formats
-	dwReturn=-1;
-	for (int i=0;((i<10) && (dwReturn!=0));i++) {
+	// Suggest 10 formats
+	// TODO: wrap the mci api. 
+	MCI_WAVE_SET_PARMS set_parms;
+	DWORD dwReturn = -1;
+	for (int i = 0; ((i < 10) && (dwReturn != 0)); i++)
+	{
 		SuggestSpeakerRecordingFormat(i);
 		BuildSpeakerRecordingFormat();
 
 		// Set PCM format of recording.
-		set_parms.wFormatTag = m_FormatSpeaker.wFormatTag;
-		set_parms.wBitsPerSample = m_FormatSpeaker.wBitsPerSample;
-		set_parms.nChannels = m_FormatSpeaker.nChannels;
-		set_parms.nSamplesPerSec = m_FormatSpeaker.nSamplesPerSec;
-		set_parms.nAvgBytesPerSec = m_FormatSpeaker.nAvgBytesPerSec;
-		set_parms.nBlockAlign = m_FormatSpeaker.nBlockAlign;
+		::ZeroMemory(&set_parms, sizeof(set_parms));
+		set_parms.wFormatTag		= m_FormatSpeaker.wFormatTag;
+		set_parms.wBitsPerSample	= m_FormatSpeaker.wBitsPerSample;
+		set_parms.nChannels			= m_FormatSpeaker.nChannels;
+		set_parms.nSamplesPerSec	= m_FormatSpeaker.nSamplesPerSec;
+		set_parms.nAvgBytesPerSec	= m_FormatSpeaker.nAvgBytesPerSec;
+		set_parms.nBlockAlign		= m_FormatSpeaker.nBlockAlign;
 
-		if (dwReturn = mciSendCommand( mop.wDeviceID, MCI_SET, MCI_WAIT |
-			MCI_WAVE_SET_FORMATTAG |
-			MCI_WAVE_SET_BITSPERSAMPLE |
-			MCI_WAVE_SET_CHANNELS |
-			MCI_WAVE_SET_SAMPLESPERSEC |
-
-			MCI_WAVE_SET_AVGBYTESPERSEC |
-			MCI_WAVE_SET_BLOCKALIGN,
-			(DWORD)(LPVOID)&set_parms))
-		{
-			//mciGetErrorString(dwReturn, buffer, sizeof(buffer));
-			//MessageBox( NULL, buffer, "Error setting Wave format on MCI Device",MB_ICONEXCLAMATION | MB_OK);
-		}
+		dwReturn = mciSendCommand(mop.wDeviceID, MCI_SET,
+			MCI_WAIT
+			| MCI_WAVE_SET_FORMATTAG
+			| MCI_WAVE_SET_BITSPERSAMPLE
+			| MCI_WAVE_SET_CHANNELS
+			| MCI_WAVE_SET_SAMPLESPERSEC
+			| MCI_WAVE_SET_AVGBYTESPERSEC
+			| MCI_WAVE_SET_BLOCKALIGN,
+			(DWORD)(LPVOID)&set_parms);
 	}
 
 	if (dwReturn) {
 		mciGetErrorString(dwReturn, buffer, sizeof(buffer));
 		CString tstr;
 		tstr.LoadString(IDS_STRING_MCIWAVE);
-		MessageBox( NULL, buffer, tstr,MB_ICONEXCLAMATION | MB_OK);
+		MessageBox(NULL, buffer, tstr,MB_ICONEXCLAMATION | MB_OK);
 	}
 }
 
+// TODO: Put these into a collection
 void SuggestSpeakerRecordingFormat(int i)
 {
 	//Ordered in preference of choice
@@ -2371,7 +2299,7 @@ void SuggestSpeakerRecordingFormat(int i)
 			audio_bits_per_sample_Speaker = 16;
 			audio_num_channels_Speaker = 2;
 			audio_samples_per_seconds_Speaker = 44100;
-			waveinselected_Speaker = WAVE_FORMAT_4S16;
+			//waveinselected_Speaker = WAVE_FORMAT_4S16;
 			break;
 		}
 	case 1:
@@ -2379,7 +2307,7 @@ void SuggestSpeakerRecordingFormat(int i)
 			audio_bits_per_sample_Speaker = 16;
 			audio_num_channels_Speaker = 2;
 			audio_samples_per_seconds_Speaker = 22050;
-			waveinselected_Speaker = WAVE_FORMAT_2S16;
+			//waveinselected_Speaker = WAVE_FORMAT_2S16;
 			break;
 		}
 	case 2:
@@ -2387,7 +2315,7 @@ void SuggestSpeakerRecordingFormat(int i)
 			audio_bits_per_sample_Speaker = 8;
 			audio_num_channels_Speaker = 2;
 			audio_samples_per_seconds_Speaker = 44100;
-			waveinselected_Speaker = WAVE_FORMAT_4S08;
+			//waveinselected_Speaker = WAVE_FORMAT_4S08;
 			break;
 		}
 	case 3:
@@ -2395,7 +2323,7 @@ void SuggestSpeakerRecordingFormat(int i)
 			audio_bits_per_sample_Speaker = 8;
 			audio_num_channels_Speaker = 2;
 			audio_samples_per_seconds_Speaker = 22050;
-			waveinselected_Speaker = WAVE_FORMAT_2S08;
+			//waveinselected_Speaker = WAVE_FORMAT_2S08;
 			break;
 		}
 	case 4:
@@ -2403,7 +2331,7 @@ void SuggestSpeakerRecordingFormat(int i)
 			audio_bits_per_sample_Speaker = 16;
 			audio_num_channels_Speaker = 1;
 			audio_samples_per_seconds_Speaker = 44100;
-			waveinselected_Speaker = WAVE_FORMAT_4M16;
+			//waveinselected_Speaker = WAVE_FORMAT_4M16;
 			break;
 		}
 	case 5:
@@ -2411,7 +2339,7 @@ void SuggestSpeakerRecordingFormat(int i)
 			audio_bits_per_sample_Speaker = 8;
 			audio_num_channels_Speaker = 1;
 			audio_samples_per_seconds_Speaker = 44100;
-			waveinselected_Speaker = WAVE_FORMAT_4M08;
+			//waveinselected_Speaker = WAVE_FORMAT_4M08;
 			break;
 		}
 	case 6:
@@ -2419,7 +2347,7 @@ void SuggestSpeakerRecordingFormat(int i)
 			audio_bits_per_sample_Speaker = 16;
 			audio_num_channels_Speaker = 1;
 			audio_samples_per_seconds_Speaker = 22050;
-			waveinselected_Speaker = WAVE_FORMAT_2M16;
+			//waveinselected_Speaker = WAVE_FORMAT_2M16;
 			break;
 		}
 	case 7:
@@ -2427,7 +2355,7 @@ void SuggestSpeakerRecordingFormat(int i)
 			audio_bits_per_sample_Speaker = 16;
 			audio_num_channels_Speaker = 2;
 			audio_samples_per_seconds_Speaker = 11025;
-			waveinselected_Speaker = WAVE_FORMAT_1S16;
+			//waveinselected_Speaker = WAVE_FORMAT_1S16;
 			break;
 		}
 	case 8:
@@ -2435,7 +2363,7 @@ void SuggestSpeakerRecordingFormat(int i)
 			audio_bits_per_sample_Speaker = 8;
 			audio_num_channels_Speaker = 1;
 			audio_samples_per_seconds_Speaker = 22050;
-			waveinselected_Speaker = WAVE_FORMAT_2M08;
+			//waveinselected_Speaker = WAVE_FORMAT_2M08;
 			break;
 		}
 	case 9:
@@ -2443,7 +2371,7 @@ void SuggestSpeakerRecordingFormat(int i)
 			audio_bits_per_sample_Speaker = 8;
 			audio_num_channels_Speaker = 2;
 			audio_samples_per_seconds_Speaker = 11025;
-			waveinselected_Speaker = WAVE_FORMAT_1S08;
+			//waveinselected_Speaker = WAVE_FORMAT_1S08;
 			break;
 		}
 	default :
@@ -2451,20 +2379,24 @@ void SuggestSpeakerRecordingFormat(int i)
 			audio_bits_per_sample_Speaker = 8;
 			audio_num_channels_Speaker = 1;
 			audio_samples_per_seconds_Speaker = 11025;
-			waveinselected_Speaker = WAVE_FORMAT_1M08;
+			//waveinselected_Speaker = WAVE_FORMAT_1M08;
 		}
 	}
 }
 
+// copy speaker format settins from global variables.
+// TOSO: encapsulate WAVEFORMATEX and provide a copy op and assignment op
+// for a structure that holds the global variables.
+
 void BuildSpeakerRecordingFormat()
 {
-	m_FormatSpeaker.wFormatTag = WAVE_FORMAT_PCM;
-	m_FormatSpeaker.wBitsPerSample = audio_bits_per_sample_Speaker;
-	m_FormatSpeaker.nSamplesPerSec = audio_samples_per_seconds_Speaker;
-	m_FormatSpeaker.nChannels = audio_num_channels_Speaker;
-	m_FormatSpeaker.nBlockAlign = m_FormatSpeaker.nChannels * (m_FormatSpeaker.wBitsPerSample/8);
-	m_FormatSpeaker.nAvgBytesPerSec = m_FormatSpeaker.nSamplesPerSec * m_FormatSpeaker.nBlockAlign;
-	m_FormatSpeaker.cbSize = 0;
+	m_FormatSpeaker.wFormatTag		= WAVE_FORMAT_PCM;
+	m_FormatSpeaker.wBitsPerSample	= audio_bits_per_sample_Speaker;
+	m_FormatSpeaker.nSamplesPerSec	= audio_samples_per_seconds_Speaker;
+	m_FormatSpeaker.nChannels		= audio_num_channels_Speaker;
+	m_FormatSpeaker.nBlockAlign		= m_FormatSpeaker.nChannels * (m_FormatSpeaker.wBitsPerSample/8);
+	m_FormatSpeaker.nAvgBytesPerSec	= m_FormatSpeaker.nSamplesPerSec * m_FormatSpeaker.nBlockAlign;
+	m_FormatSpeaker.cbSize			= 0;
 }
 
 //LPBITMAPINFO GetTextBitmap(CDC *thisDC, CRect* caprect,int factor,CRect* drawtextRect, LOGFONT *drawfont, CString textstr, CPen* pPen, CBrush * pBrush, COLORREF textcolor, int horzalign)

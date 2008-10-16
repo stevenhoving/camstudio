@@ -6,9 +6,10 @@
 #include "AutoSearchDialog.h"
 #include "soundfile.h"
 #include "Buffer.h"
-#include <mmsystem.h>
-
 #include "AudioMixer.h"
+#include "CStudioLib.h"
+
+#include <mmsystem.h>
 
 extern void mciRecordOpen();
 extern void mciRecordStart();
@@ -16,13 +17,15 @@ extern void mciRecordStop(CString strFile);
 extern void mciRecordClose();
 extern void mciSetWaveFormat(); //add before mcirecord
 
-extern CAutoSearchDialog asd;
 extern int asdCreated;
 
 extern HWND hWndGlobal;
 
-extern CString GetProgPath();
 extern CSoundFile * pSoundFile;
+
+/////////////////////////////////////////////////////////////////////////////
+CAutoSearchDialog asd;
+int asdCreated = FALSE;
 
 //version 1.6
 // =============== Capture waveout ===================
@@ -742,26 +745,30 @@ BOOL ManualSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToSear
 			for (DWORD dwi = 0; dwi < m_dwMultipleItems; dwi++) {
 				storedID[dwi] = pmxcdSelectText[dwi].dwParam1;
 
-				CString anstr,fmtstr;
+				CString fmtstr;
 				fmtstr.LoadString(IDS_STRING_RECLINE);
 
-				anstr.Format(LPCTSTR(fmtstr),dwi+1,m_dwMultipleItems);
+				CString anstr;
+				anstr.Format(LPCTSTR(fmtstr), dwi+1, m_dwMultipleItems);
 				asd.SetVarTextLine2(anstr);
 
 				WaveoutSetSelectValue(TRUE,dwi,TRUE);
-
 				WaveoutInternalAdjustVolume(pmxcdSelectText[dwi].dwParam1);
 
-				CString fnum;
-				fnum.Format("%d",dwi);
+				// TODO: why different files? Record: testrecX.wav; Play: testsnd.wav ???
+				//CString fnum;
+				//fnum.Format("%d", dwi);
 				CString testfile;
-				testfile=GetProgPath()+"\\testrec" + fnum + ".wav";
+				//testfile = GetProgPath() + "\\testrec" + fnum + ".wav";
+				testfile.Format("%s\\testrec%d.wav", GetProgPath(), dwi);
 
+				// TODO: How is testfile used here?
 				mciRecordOpen();
 				mciSetWaveFormat();
 				mciRecordStart();
 
-				CString soundpath=GetProgPath()+"\\testsnd.wav";
+				// TODO: Isn't testfile the file we want to play?
+				CString soundpath = GetProgPath() + "\\testsnd.wav";
 				sndPlaySound(soundpath, SND_SYNC);
 
 				mciRecordStop(testfile);

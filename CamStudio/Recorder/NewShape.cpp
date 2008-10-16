@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "NewShape.h"
+#include "CStudioLib.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -23,7 +24,6 @@ CString shapeStr;
 
 CString proposedShapeStr;
 
-extern CString GetProgPath();
 extern void AdjustShapeName(CString& shapeName);
 
 /////////////////////////////////////////////////////////////////////////////
