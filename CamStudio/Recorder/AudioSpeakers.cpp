@@ -51,6 +51,10 @@ void AudioSpeakers::DoDataExchange(CDataExchange *pDX)
 	//{{AFX_DATA_MAP(AudioSpeakers)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
+	DDX_Control(pDX, IDC_VOLUMESLIDER, m_ctrlSliderVolume);
+	DDX_Control(pDX, IDC_STATICVOLUME, m_ctrlStaticVolume);
+	DDX_Control(pDX, IDC_STATICINFO, m_ctrlStaticLineInfo);
+	DDX_Control(pDX, IDC_SOUNDDEVICE, m_ctrlCBSoundDevice);
 }
 
 BEGIN_MESSAGE_MAP(AudioSpeakers, CDialog)
@@ -69,9 +73,9 @@ END_MESSAGE_MAP()
 void AudioSpeakers::OnOK()
 {
 	// Set the volume
-	if (iFeedbackLine > -1)
+	if (-1 < iFeedbackLine)
 	{
-		DWORD volume = (unsigned long)((CSliderCtrl *) (GetDlgItem(IDC_VOLUMESLIDER)))->GetPos( );
+		DWORD volume = m_ctrlSliderVolume.GetPos();
 		useVolume(SETVOLUME, volume, TRUE);
 	}
 
@@ -98,21 +102,21 @@ BOOL AudioSpeakers::OnInitDialog()
 		line.LoadString(IDS_STRING_LINEUNDETECTED);
 	}
 
-	((CSliderCtrl *) (GetDlgItem(IDC_VOLUMESLIDER)))->EnableWindow(success);
-	((CStatic *) (GetDlgItem(IDC_STATICVOLUME)))->EnableWindow(success);
-	((CSliderCtrl *) (GetDlgItem(IDC_VOLUMESLIDER)))->SetPos(volume);
-	((CStatic *)(GetDlgItem(IDC_STATICINFO)))->SetWindowText(line);
+	m_ctrlSliderVolume.EnableWindow(success);
+	m_ctrlSliderVolume.SetPos(volume);
+	m_ctrlStaticVolume.EnableWindow(success);
+	m_ctrlStaticLineInfo.SetWindowText(line);
 	// END Get the line index
 
 	//Generate device list
-	((CComboBox *) (GetDlgItem(IDC_SOUNDDEVICE)))->ResetContent( );
+	m_ctrlCBSoundDevice.ResetContent( );
 
 	iNumberOfMixerDevices = waveOutGetNumDevs();
 	for (int i = 0; i < iNumberOfMixerDevices; i++) {
 		WAVEOUTCAPS wocaps;
 		MMRESULT mmr_s = waveOutGetDevCaps(i,&wocaps,sizeof(WAVEOUTCAPS));
 		if (mmr_s == MMSYSERR_NOERROR) {
-			((CComboBox *) (GetDlgItem(IDC_SOUNDDEVICE)))->AddString(wocaps.szPname);
+			m_ctrlCBSoundDevice.AddString(wocaps.szPname);
 		}
 	}
 
@@ -121,7 +125,7 @@ BOOL AudioSpeakers::OnInitDialog()
 	int selectedDevice = WAVE_MAPPER;
 	for (int i = 0; i < iNumberOfMixerDevices; i++) {
 		if (iSelectedMixer == i) {
-			((CComboBox *) (GetDlgItem(IDC_SOUNDDEVICE)))->SetCurSel(i);
+			m_ctrlCBSoundDevice.SetCurSel(i);
 			selectedDevice = i;
 			deviceIsSelected = 1;
 		}
@@ -131,7 +135,7 @@ BOOL AudioSpeakers::OnInitDialog()
 		if (iNumberOfMixerDevices > 0) {
 			iSelectedMixer = 0;
 		}
-		((CComboBox *) (GetDlgItem(IDC_SOUNDDEVICE)))->SetCurSel(0);
+		m_ctrlCBSoundDevice.SetCurSel(0);
 	}
 
 	return TRUE;
@@ -199,12 +203,12 @@ void AudioSpeakers::OnVolume()
 	if (launchPath != "") { //launch Volume Control
 		//not sure
 		launchPath = launchPath + _T(" /d ");
-		launchPath.AppendFormat(_T("%d"), (((CComboBox *)(GetDlgItem(IDC_SOUNDDEVICE)))->GetCurSel()));
+		launchPath.AppendFormat(_T("%d"), m_ctrlCBSoundDevice.GetCurSel());
 
 		if (WinExec(launchPath,SW_SHOW) != 0) {
 		} else {
 			//MessageBox("Error launching Volume Control!","Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(this->m_hWnd,IDS_STRING_ERRVOLCTRL1 ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(m_hWnd,IDS_STRING_ERRVOLCTRL1 ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 		}
 	}
 }
@@ -217,7 +221,7 @@ void AudioSpeakers::OnAutoconfig()
 
 void AudioSpeakers::OnSelchangeSounddevice()
 {
-	iSelectedMixer = ((CComboBox *)(GetDlgItem(IDC_SOUNDDEVICE)))->GetCurSel();
+	iSelectedMixer = m_ctrlCBSoundDevice.GetCurSel();
 	iFeedbackLine = -1;
 	OnInitDialog();
 }

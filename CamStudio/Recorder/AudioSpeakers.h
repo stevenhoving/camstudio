@@ -1,3 +1,5 @@
+#include "afxcmn.h"
+#include "afxwin.h"
 #if !defined(AFX_AUDIOSPEAKERS_H__125948FB_55C2_4D8E_8E21_36B3AE266E28__INCLUDED_)
 #define AFX_AUDIOSPEAKERS_H__125948FB_55C2_4D8E_8E21_36B3AE266E28__INCLUDED_
 
@@ -45,6 +47,11 @@ protected:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+private:
+	CSliderCtrl m_ctrlSliderVolume;
+	CStatic m_ctrlStaticVolume;
+	CStatic m_ctrlStaticLineInfo;
+	CComboBox m_ctrlCBSoundDevice;
 };
 
 //{{AFX_INSERT_LOCATION}}
