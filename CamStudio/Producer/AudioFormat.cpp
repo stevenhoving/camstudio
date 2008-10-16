@@ -1,16 +1,18 @@
 // AudioFormat.cpp : implementation file
 //
+// TODO: code layout
+// TODO: Replace GetDlgItem with control classes + simplify
+// TODO: add control variables
 
 #include "stdafx.h"
 #include "playplus.h"
 
+#include <stdio.h>
 #include <mmsystem.h>
 #include <vfw.h>
 #include <windowsx.h>
 
 #include "AudioFormat.h"
-
-#include <stdio.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -205,7 +207,7 @@ BOOL AudioFormat::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// TODO: Add extra initialization here
+	// Add extra initialization here
 
 	//Interleave
 	((CButton *) (GetDlgItem(IDC_INTERLEAVE)))->SetCheck(interleaveFrames);
@@ -213,24 +215,26 @@ BOOL AudioFormat::OnInitDialog()
 	interleaveFactorStr.Format("%d",interleaveFactor);
 	((CEdit *) (GetDlgItem(IDC_IFACTOR)))->SetWindowText(interleaveFactorStr);
 
-		if (interleaveFrames) {
+	if (interleaveFrames)
+	{
 		((CButton *) (GetDlgItem(IDC_IFACTOR)))->EnableWindow(TRUE);
 		((CButton *) (GetDlgItem(IDC_INTERLEAVEFRAMES)))->EnableWindow(TRUE);
 		((CButton *) (GetDlgItem(IDC_INTERLEAVESECONDS)))->EnableWindow(TRUE);
-
 	}
-	else {
+	else
+	{
 		((CButton *) (GetDlgItem(IDC_IFACTOR)))->EnableWindow(FALSE);
 		((CButton *) (GetDlgItem(IDC_INTERLEAVEFRAMES)))->EnableWindow(FALSE);
 		((CButton *) (GetDlgItem(IDC_INTERLEAVESECONDS)))->EnableWindow(FALSE);
-
 	}
 
-	if (interleaveUnit == FRAMES) {
+	if (interleaveUnit == FRAMES)
+	{
 		((CButton *) (GetDlgItem(IDC_INTERLEAVEFRAMES)))->SetCheck(TRUE);
 		((CButton *) (GetDlgItem(IDC_INTERLEAVESECONDS)))->SetCheck(FALSE);
 	}
-	else {
+	else
+	{
 		((CButton *) (GetDlgItem(IDC_INTERLEAVEFRAMES)))->SetCheck(FALSE);
 		((CButton *) (GetDlgItem(IDC_INTERLEAVESECONDS)))->SetCheck(TRUE);
 	}
@@ -245,8 +249,7 @@ BOOL AudioFormat::OnInitDialog()
 
 	//Generate device list
 	numdevice = 0;
-	devicemap[numdevice] = WAVE_MAPPER;
-	numdevice ++ ;
+	devicemap[numdevice++] = WAVE_MAPPER;
 
 	((CComboBox *) (GetDlgItem(IDC_INPUTDEVICE)))->ResetContent( );
 	((CComboBox *) (GetDlgItem(IDC_INPUTDEVICE)))->AddString("Default input device");
@@ -258,52 +261,47 @@ BOOL AudioFormat::OnInitDialog()
 		MMRESULT mmr=waveInGetDevCaps(i,&wicaps,sizeof(WAVEINCAPS));
 		if (mmr==MMSYSERR_NOERROR)
 		{
-
-				((CComboBox *) (GetDlgItem(IDC_INPUTDEVICE)))->AddString(wicaps.szPname);
-				devicemap[numdevice] = i;
-				numdevice ++ ;
-
+			((CComboBox *) (GetDlgItem(IDC_INPUTDEVICE)))->AddString(wicaps.szPname);
+			devicemap[numdevice] = i;
+			numdevice ++ ;
 		}
-
 	}
 
 	//Select the device combo box
-	int deviceIsSelected= 0;
+	int deviceIsSelected = 0;
 	int selectedDevice = WAVE_MAPPER;
-	for (i=0; i<numdevice; i++) {
-
-		if (AudioDeviceID == devicemap[i]) {
+	for (i = 0; i < numdevice; i++)
+	{
+		if (AudioDeviceID == devicemap[i])
+		{
 			((CComboBox *) (GetDlgItem(IDC_INPUTDEVICE)))->SetCurSel(i);
 			selectedDevice = devicemap[i];
 			deviceIsSelected = 1;
 		}
-
 	}
-	if (!deviceIsSelected) {
+	if (!deviceIsSelected)
+	{
 		if (numdevice)
 			((CComboBox *) (GetDlgItem(IDC_INPUTDEVICE)))->SetCurSel(0);
-
 	}
 
 	//Ver 1.2
 	WAVEINCAPS pwic;
-	MMRESULT mmr = waveInGetDevCaps( AudioDeviceID ,  &pwic, sizeof(pwic) );
+	MMRESULT mmr = waveInGetDevCaps( AudioDeviceID, &pwic, sizeof(pwic));
 
-	int selected_cindex=-1; //selected index of combo box
-	numformat=0; //counter, number of format
+	int selected_cindex = -1; //selected index of combo box
+	numformat = 0; //counter, number of format
 
 	//This code works on the assumption (when filling in values for the user - interfaces)
 	//that the  m_Format and pwfx formats (external variables) are already chosen correctly and compatibile with each other
-	int devID;
-	devID = ((CComboBox *) (GetDlgItem(IDC_INPUTDEVICE)))->GetCurSel();
-	if (devID < numdevice) {
-
+	int devID = ((CComboBox *) (GetDlgItem(IDC_INPUTDEVICE)))->GetCurSel();
+	if (devID < numdevice)
+	{
 		UpdateDeviceData(selectedDevice,waveinselected,pwfx);
-
 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
+	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void AudioFormat::OnChoose()
