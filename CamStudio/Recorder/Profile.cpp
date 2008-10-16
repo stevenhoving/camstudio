@@ -2,9 +2,9 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "StdAfx.h"
 #include "Profile.h"
-#include "resource.h"       // main symbols
-#include "EffectsOptions.h"
-#include "EffectsOptions2.h"
+#include "TextAttributes.h"	// for position
+#include "ImageAttributes.h"
+//#include "EffectsOptions2.h"	// includes EffectsOptions.h
 #include "CStudioLib.h"
 
 bool bFlashingRect = true;
@@ -85,475 +85,172 @@ TextAttributes taCaption = {TOP_LEFT, "ScreenCam", RGB(0, 0, 0), RGB(0xff, 0xff,
 TextAttributes taTimestamp = {TOP_LEFT, "", RGB(0, 0, 0), RGB(0xff, 0xff, 0xff), 0, 0};
 ImageAttributes iaWatermark = {TOP_LEFT, ""};
 
+const char * const LEGACY_SECTION_NAME = _T(" CamStudio Settings ver2.50 -- Please do not edit ");
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
-CProfile::CProfile(CString strFileName)
+CProfile::CProfile(const CString strFileName)
 : m_strFileName(strFileName)
+, m_Section(LEGACY_SECTION_NAME)
 {
+	Add(FLASHINGRECT, "flashingRect", false);
+	Add(LAUNCHPLAYER, "launchPlayer", 0);
+	Add(MINIMIZEONSTART, "minimizeOnStart", false);
+	Add(MOUSECAPTUREMODE, "MouseCaptureMode", 0);
+	Add(CAPTUREWIDTH, "capturewidth", 0);
+	Add(CAPTUREHEIGHT, "captureheight", 0);
+	Add(TIMELAPSE, "timelapse", 0);
+	Add(FRAMES_PER_SECOND, "frames_per_second", 0);
+	Add(KEYFRAMESEVERY, "keyFramesEvery", 0);
+	Add(COMPQUALITY, "compquality", 0);
+	Add(COMPFCCHANDLER, "compfccHandler", 0);
+	Add(COMPRESSORSTATEISFOR, "CompressorStateIsFor", 0);
+	Add(COMPRESSORSTATESIZE, "CompressorStateSize", 0);
+	Add(G_RECORDCURSOR, "g_recordcursor", true);
+	Add(G_CUSTOMSEL, "g_customsel", 0);
+	Add(G_CURSORTYPE, "g_cursortype", 0);
+	Add(G_HIGHLIGHTCURSOR, "g_highlightcursor", false);
+	Add(G_HIGHLIGHTSIZE, "g_highlightsize", 0);
+	Add(G_HIGHLIGHTSHAPE, "g_highlightshape", 0);
+	Add(G_HIGHLIGHTCLICK, "g_highlightclick", false);
+	Add(G_HIGHLIGHTCOLORR, "g_highlightcolorR", 255);
+	Add(G_HIGHLIGHTCOLORG, "g_highlightcolorG", 255);
+	Add(G_HIGHLIGHTCOLORB, "g_highlightcolorB", 125);
+	Add(G_HIGHLIGHTCLICKCOLORLEFTR, "g_highlightclickcolorleftR", 255);
+	Add(G_HIGHLIGHTCLICKCOLORLEFTG, "g_highlightclickcolorleftG", 0);
+	Add(G_HIGHLIGHTCLICKCOLORLEFTB, "g_highlightclickcolorleftB", 0);
+	Add(G_HIGHLIGHTCLICKCOLORRIGHTR, "g_highlightclickcolorrightR", 0);
+	Add(G_HIGHLIGHTCLICKCOLORRIGHTG, "g_highlightclickcolorrightG", 0);
+	Add(G_HIGHLIGHTCLICKCOLORRIGHTB, "g_highlightclickcolorrightB", 255);
+	Add(AUTOPAN, "autopan", false);
+	Add(MAXPAN, "maxpan", 0);
+	Add(AUDIODEVICEID, "AudioDeviceID", 0);
+	Add(CBWFX, "cbwfx", 50);
+	Add(RECORDAUDIO, "recordaudio", 0);
+	Add(WAVEINSELECTED, "waveinselected", 128);
+	Add(AUDIO_BITS_PER_SAMPLE, "audio_bits_per_sample", 16);
+	Add(AUDIO_NUM_CHANNELS, "audio_num_channels", 2);
+	Add(AUDIO_SAMPLES_PER_SECONDS, "audio_samples_per_seconds", 22050);
+	Add(BAUDIOCOMPRESSION, "bAudioCompression", true);
+	Add(INTERLEAVEFRAMES, "interleaveFrames", true);
+	Add(INTERLEAVEFACTOR, "interleaveFactor", 100);
+	Add(KEYRECORDSTART, "keyRecordStart", 0);
+	Add(KEYRECORDEND, "keyRecordEnd", 100000);
+	Add(KEYRECORDCANCEL, "keyRecordCancel", 100000);
+	Add(VIEWTYPE, "viewtype", 0);
+	Add(G_AUTOADJUST, "g_autoadjust", true);
+	Add(G_VALUEADJUST, "g_valueadjust", 0);
+	Add(SAVEDIR, "savedir", 25);
+	Add(CURSORDIR, "cursordir", 18);
+	Add(THREADPRIORITY, "threadPriority", 0);
+	Add(CAPTURELEFT, "captureleft", 0);
+	Add(CAPTURETOP, "capturetop", 0);
+	Add(FIXEDCAPTURE, "fixedcapture", false);
+	Add(INTERLEAVEUNIT, "interleaveUnit", 1);
+	Add(TEMPPATH_ACCESS, "tempPath_Access", 0);
+	Add(CAPTURETRANS, "captureTrans", true);
+	Add(SPECIFIEDDIR, "specifieddir", 15);
+	Add(NUMDEV, "NumDev", 0);
+	Add(SELECTEDDEV, "SelectedDev", 0);
+	Add(FEEDBACK_LINE, "feedback_line", 0);
+	Add(FEEDBACK_LINE_INFO, "feedback_line_info", 0);
+	Add(PERFORMAUTOSEARCH, "performAutoSearch", true);
+	Add(SUPPORTMOUSEDRAG, "supportMouseDrag", true);
+	Add(KEYRECORDSTARTCTRL, "keyRecordStartCtrl", 0);
+	Add(KEYRECORDENDCTRL, "keyRecordEndCtrl", 0);
+	Add(KEYRECORDCANCELCTRL, "keyRecordCancelCtrl", 0);
+	Add(KEYRECORDSTARTALT, "keyRecordStartAlt", 0);
+	Add(KEYRECORDENDALT, "keyRecordEndAlt", 0);
+	Add(KEYRECORDCANCELALT, "keyRecordCancelAlt", 0);
+	Add(KEYRECORDSTARTSHIFT, "keyRecordStartShift", 0);
+	Add(KEYRECORDENDSHIFT, "keyRecordEndShift", 0);
+	Add(KEYRECORDCANCELSHIFT, "keyRecordCancelShift", 0);
+	Add(KEYNEXT, "keyNext", 100000);
+	Add(KEYPREV, "keyPrev", 100000);
+	Add(KEYSHOWLAYOUT, "keyShowLayout", 100000);
+	Add(KEYNEXTCTRL, "keyNextCtrl", 0);
+	Add(KEYPREVCTRL, "keyPrevCtrl", 0);
+	Add(KEYSHOWLAYOUTCTRL, "keyShowLayoutCtrl", 0);
+	Add(KEYNEXTALT, "keyNextAlt", 0);
+	Add(KEYPREVALT, "keyPrevAlt", 0);
+	Add(KEYSHOWLAYOUTALT, "keyShowLayoutAlt", 0);
+	Add(KEYNEXTSHIFT, "keyNextShift", 0);
+	Add(KEYPREVSHIFT, "keyPrevShift", 0);
+	Add(KEYSHOWLAYOUTSHIFT, "keyShowLayoutShift", 0);
+	Add(SHAPENAMEINT, "shapeNameInt", 0);
+	Add(SHAPENAMELEN, "shapeNameLen", 6);
+	Add(LAYOUTNAMEINT, "layoutNameInt", 0);
+	Add(G_LAYOUTNAMELEN, "g_layoutNameLen", 7);
+	Add(USEMCI, "useMCI", false);
+	Add(SHIFTTYPE, "shiftType", 0);
+	Add(TIMESHIFT, "timeshift", 0);
+	Add(FRAMESHIFT, "frameshift", 0);
+	Add(LAUNCHPROPPROMPT, "launchPropPrompt", false);
+	Add(LAUNCHHTMLPLAYER, "launchHTMLPlayer", true);
+	Add(DELETEAVIAFTERUSE, "deleteAVIAfterUse", true);
+	Add(RECORDINGMODE, "RecordingMode", 0);
+	Add(AUTONAMING, "autonaming", false);
+	Add(RESTRICTVIDEOCODECS, "restrictVideoCodecs", false);
+	Add(PRESETTIME, "presettime", 0);
+	Add(RECORDPRESET, "recordpreset", false);
+	Add(LANGUAGE, "language", 0);
+	Add(TIMESTAMPANNOTATION, "timestampAnnotation", false);
+	Add(TIMESTAMPBACKCOLOR, "timestampBackColor", 0);
+	Add(TIMESTAMPSELECTED, "timestampSelected", 0);
+	Add(TIMESTAMPPOSITION, "timestampPosition", 0);
+	Add(TIMESTAMPTEXTCOLOR, "timestampTextColor", 16777215);
+	Add(TIMESTAMPTEXTWEIGHT, "timestampTextWeight", 0);
+	Add(TIMESTAMPTEXTHEIGHT, "timestampTextHeight", 0);
+	Add(TIMESTAMPTEXTWIDTH, "timestampTextWidth", 0);
+	Add(CAPTIONANNOTATION, "captionAnnotation", false);
+	Add(CAPTIONBACKCOLOR, "captionBackColor", 0);
+	Add(CAPTIONSELECTED, "captionSelected", 0);
+	Add(CAPTIONPOSITION, "captionPosition", 0);
+	Add(CAPTIONTEXTCOLOR, "captionTextColor", 16777215);
+	Add(CAPTIONTEXTWEIGHT, "captionTextWeight", 0);
+	Add(CAPTIONTEXTHEIGHT, "captionTextHeight", 0);
+	Add(CAPTIONTEXTWIDTH, "captionTextWidth", 0);
+	Add(WATERMARKANNOTATION, "watermarkAnnotation", false);
+
+	Add(CAPTIONTEXTFONT, CString(_T("captionTextFont")), CString(_T("Arial")));
+	Add(TIMESTAMPTEXTFONT, CString(_T("timestampTextFont")), CString(_T("Arial")));
 }
 
 CProfile::~CProfile()
 {
 }
 
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-char const * const CCamStudioSettings::LEGACY_SECTION = _T(" CamStudio Settings ver2.50 -- Please do not edit ");
-CCamStudioSettings::CCamStudioSettings(CString strFileName)
-:	CProfile(strFileName)
-, m_StrSection(LEGACY_SECTION)
-, m_IntSection(LEGACY_SECTION)
-, m_BoolSection(LEGACY_SECTION)
-, m_LongSection(LEGACY_SECTION)
-, m_DblSection(LEGACY_SECTION)
-, m_ColorSection(LEGACY_SECTION)
+bool CProfile::Add(const int iID, const CString strName, const int Value)
 {
-//Still moving legacy names around so thery are here for easy edit purposes.
-
-//flashingRect=1 
-//launchPlayer=3 
-//minimizeOnStart=0 
-//MouseCaptureMode= 0 
-//capturewidth=320 
-//captureheight=240 
-//timelapse=50 
-//frames_per_second= 20 
-//keyFramesEvery= 30 
-//compquality= 7000 
-//compfccHandler= 1129730893 
-//CompressorStateIsFor= 1129730893 
-//CompressorStateSize= 4 
-//g_recordcursor=1 
-//g_customsel=0 
-//g_cursortype=0 
-//g_highlightcursor=0 
-//g_highlightsize=64 
-//g_highlightshape=0 
-//g_highlightclick=0 
-//g_highlightcolorR=255 
-//g_highlightcolorG=255 
-//g_highlightcolorB=125 
-//g_highlightclickcolorleftR=255 
-//g_highlightclickcolorleftG=0 
-//g_highlightclickcolorleftB=0 
-//g_highlightclickcolorrightR=0 
-//g_highlightclickcolorrightG=0 
-//g_highlightclickcolorrightB=255 
-//autopan=0 
-//maxpan= 20 
-//AudioDeviceID= -1 
-//cbwfx= 50 
-//recordaudio= 0 
-//waveinselected= 128 
-//audio_bits_per_sample= 16 
-//audio_num_channels= 2 
-//audio_samples_per_seconds= 22050 
-//bAudioCompression= 1 
-//interleaveFrames= 1 
-//interleaveFactor= 100 
-//keyRecordStart= 119 
-//keyRecordEnd= 120 
-//keyRecordCancel= 121 
-//viewtype= 0 
-//g_autoadjust= 0 
-//g_valueadjust= 1 
-//savedir=58 
-//cursordir=18 
-//threadPriority=0 
-//captureleft= 100 
-//capturetop= 100 
-//fixedcapture=0 
-//interleaveUnit= 0 
-//tempPath_Access=0 
-//captureTrans=1 
-//specifieddir=15 
-//NumDev=0 
-//SelectedDev=0 
-//feedback_line=-1 
-//feedback_line_info=-1 
-//performAutoSearch=1 
-//supportMouseDrag=1 
-//keyRecordStartCtrl=0 
-//keyRecordEndCtrl=0 
-//keyRecordCancelCtrl=0 
-//keyRecordStartAlt=0 
-//keyRecordEndAlt=0 
-//keyRecordCancelAlt=0 
-//keyRecordStartShift=0 
-//keyRecordEndShift=0 
-//keyRecordCancelShift=0 
-//keyNext=122 
-//keyPrev=123 
-//keyShowLayout=100000 
-//keyNextCtrl=1 
-//keyPrevCtrl=1 
-//keyShowLayoutCtrl=0 
-//keyNextAlt=0 
-//keyPrevAlt=0 
-//keyShowLayoutAlt=0 
-//keyNextShift=0 
-//keyPrevShift=0 
-//keyShowLayoutShift=0 
-//shapeNameInt=1 
-//shapeNameLen=6 
-//layoutNameInt=1 
-//g_layoutNameLen=7 
-//useMCI=0 
-//shiftType=0 
-//timeshift=100 
-//frameshift=0 
-//launchPropPrompt=0 
-//launchHTMLPlayer=1 
-//deleteAVIAfterUse=1 
-//RecordingMode=0 
-//autonaming=0 
-//restrictVideoCodecs=0 
-//presettime=60 
-//recordpreset=0 
-//language=9 
-//timestampAnnotation=0 
-//timestampBackColor=0 
-//timestampSelected=0 
-//timestampPosition=0 
-//timestampTextColor=16777215 
-//timestampTextFont=timestampTextWeight=0 
-//timestampTextWeight=0 
-//timestampTextHeight=0 
-//timestampTextWidth=0 
-//captionAnnotation=0 
-//captionBackColor=0 
-//captionSelected=0 
-//captionPosition=0 
-//captionTextColor=16777215 
-//captionTextFont=captionTextWeight=0 
-//captionTextWeight=0 
-//captionTextHeight=0 
-//captionTextWidth=0 
-//watermarkAnnotation=0 
-//watermarkAnnotation=0 
-
-#if defined(VERSION) && (VERSION < 260)
-	// TODO: Place this is a throw away section/profile for conversion
-	// Old names
-// booleans
-	Add(_T("flashingRect"), FLASHINGRECT, true);
-	Add(_T("minimizeOnStart"), MINIMIZEONSTART, false);
-	Add(_T("g_recordcursor"), RECORDCURSOR, true);
-	Add(_T("g_highlightcursor"), HIGHLIGHTCURSOR, false);
-	Add(_T("g_highlightclick"), HIGHLIGHTCLICK, false);
-	Add(_T("autopan"), AUTOPAN, false);
-	Add(_T("bAudioCompression"), AUDIOCOMPRESSION, true);
-	Add(_T("interleaveFrames"), INTERLEAVEFRAMES, true);
-	Add(_T("g_autoadjust"), AUTOADJUST, true);
-	Add(_T("fixedcapture"), FIXEDCAPTURE, false);
-	Add(_T("captureTrans"), CAPTURETRANS, true);
-	Add(_T("performAutoSearch"), PERFORMAUTOSEARCH, true);
-	Add(_T("supportMouseDrag"), SUPPORTMOUSEDRAG, true);
-// TODO
-	Add(_T("bUseMCI"), USEMCI, false);
-	Add(_T("bLaunchPropPrompt"), LAUNCHPROPPROMPT, false);
-	Add(_T("bLaunchHTMLPlayer"), LAUNCHHTMLPLAYER, true);
-	Add(_T("bDeleteAVIAfterUse"), DELETEAVIAFTERUSE, true);
-	Add(_T("bAutoNaming"), AUTONAMING, false);
-	Add(_T("bRestrictVideoCodecs"), RESTRICTVIDEOCODECS, false);
-	Add(_T("bRecordPreset"), RECORDPRESET, false);
-	Add(_T("bTimestampAnnotation"), TIMESTAMPANNOTATION, false);
-	Add(_T("bCaptionAnnotation"), CAPTIONANNOTATION, false);
-	Add(_T("bWatermarkAnnotation"), WATERMARKANNOTATION, false);
-
-// integers
-	Add(_T("launchPlayer"), LAUNCHPLAYER, 3);
-	Add(_T("MouseCaptureMode"), MOUSECAPTUREMODE, 0);
-	Add(_T("capturewidth"), CAPTUREWIDTH, 320);
-	Add(_T("captureheight"), CAPTUREHEIGHT, 240);
-	Add(_T("timelapse"), TIMELAPSE, 5);
-	Add(_T("frames_per_second"), FRAMESPERSECOND, 200);
-	Add(_T("keyFramesEvery"), KEYFRAMESEVERY, 200);
-	Add(_T("compquality"), COMPQUALITY, 7000);
-	Add(_T("compfccHandler"), COMPFCCHANDLER, 0);
-	Add(_T("CompressorStateIsFor"), COMPRESSORSTATEISFOR, 0);
-	Add(_T("CompressorStateSize"), COMPRESSORSTATEISFOR, 0);
-	Add(_T("g_customsel"), COMPRESSORSTATEISFOR, 0);
-	Add(_T("g_cursortype"), CURSORTYPE, 0);
-	Add(_T("g_highlightsize"), HIGHLIGHTSIZE, 64);
-	Add(_T("g_highlightshape"), HIGHLIGHTSHAPE, 0);
-	Add(_T("g_highlightcolor"), HIGHLIGHTCOLOR, RGB(255,255,125));
-	Add(_T("g_highlightclickcolorleft"), HIGHLIGHTCLICKCOLORLEFT, RGB(255,0,0));
-	Add(_T("g_highlightclickcolorright"), HIGHLIGHTCLICKCOLORRIGHT, RGB(0,0,255));
-	Add(_T("maxpan"), MAXPAN, 20);
-	Add(_T("AudioDeviceID"), AUDIODEVICEID, (int)WAVE_MAPPER);
-	Add(_T("cbwfx"), CBWFX, 0);
-	Add(_T("recordaudio"), RECORDAUDIO, 0);
-	Add(_T("waveinselected"), WAVEINSELECTED, WAVE_FORMAT_2S16);
-	Add(_T("audio_bits_per_sample"), AUDIOBITSPERSAMPLE, 16);
-	Add(_T("audio_num_channels"), AUDIONUCHANNELS, 2);
-	Add(_T("audio_samples_per_seconds"), AUDIOSAMPLESPERSECONDS, 22050);
-	Add(_T("interleaveFactor"), INTERLEAVEFACTOR, 100);
-	Add(_T("keyRecordStart"), KEYRECORDSTART, MILLISECONDS);
-	Add(_T("keyRecordEnd"), KEYRECORDEND, 0);
-	Add(_T("keyRecordCancel"), KEYRECORDCANCEL, 1);
-	Add(_T("viewtype"), VIEWTYPE, 0);
-	Add(_T("g_valueadjust"), VALUEADJUST, 0);
-	Add(_T("savedir"), SAVEDIR, 0);
-	Add(_T("cursordir"), CURSORDIR, 0);
-	Add(_T("threadPriority"), THREADPRIORITY, THREAD_PRIORITY_NORMAL);
-	Add(_T("captureleft"), CAPTURELEFT, 100);
-	Add(_T("capturetop"), CAPTURETOP, 100);
-	Add(_T("interleaveUnit"), INTERLEAVEUNIT, 0);
-	Add(_T("tempPath_Access"), TEMPPATHACCESS, USE_WINDOWS_TEMP_DIR);
-	Add(_T("specifieddir"), SPECIFIEDDIR, 0);
-	Add(_T("NumDev"), NUMDEV, 0);
-	Add(_T("SelectedDev"), SELECTEDDEV, 0);
-	Add(_T("feedback_line"), FEEDBACKLINE, -1);
-	Add(_T("feedback_line_info"), FEEDBACKLINEINFO, -1);
-	Add(_T("keyRecordStartCtrl"), KEYRECORDSTARTCTRL, 0);
-// TODO
-	Add(_T("keyRecordEndCtrl"), KEYRECORDENDCTRL, 0);
-	Add(_T("keyRecordCancelCtrl"), KEYRECORDCANCELCTRL, 0);
-	Add(_T("keyRecordStartAlt"), KEYRECORDSTARTALT, 0);
-	Add(_T("keyRecordEndAlt"), KEYRECORDENDALT, 0);
-	Add(_T("keyRecordCancelAlt"), KEYRECORDCANCELALT, 0);
-	Add(_T("keyRecordStartShift"), KEYRECORDSTARTSHIFT, 0);
-	Add(_T("keyRecordEndShift"), KEYRECORDENDSHIFT, 0);
-	Add(_T("keyRecordCancelShift"), KEYRECORDCANCELSHIFT, 0);
-	Add(_T("keyNext"), KEYNEXT, 0);
-	Add(_T("keyPrev"), KEYPREV, 0);
-	Add(_T("keyShowLayout"), KEYSHOWLAYOUT, 0);
-	Add(_T("keyNextCtrl"), KEYNEXTCTRL, 0);
-	Add(_T("keyPrevCtrl"), KEYPREVCTRL, 0);
-	Add(_T("keyShowLayoutCtrl"), KEYSHOWLAYOUTCTRL, 0);
-	Add(_T("keyNextAlt"), KEYNEXTALT, 0);
-	Add(_T("keyPrevAlt"), KEYPREVALT, 0);
-	Add(_T("keyShowLayoutAlt"), KEYSHOWLAYOUTALT, 0);
-	Add(_T("keyNextShift"), KEYNEXTSHIFT, 0);
-	Add(_T("keyPrevShift"), KEYPREVSHIFT, 0);
-	Add(_T("keyShowLayoutShift"), KEYSHOWLAYOUTSHIFT, 0);
-	Add(_T("iShapeNameInt"), SHAPENAMEINT, 1);
-	Add(_T("shapeNameLen"), SHAPENAMELEN, 0);
-	Add(_T("iLayoutNameInt"), LAYOUTNAMEINT, 1);
-	Add(_T("g_layoutNameLen"), LAYOUTNAMELEN, 0);
-	Add(_T("iShiftType"), SHIFTTYPE, 0);
-	Add(_T("iTimeShift"), TIMESHIFT, 100);
-	Add(_T("iFrameShift"), FRAMESHIFT, 0);
-	Add(_T("iRecordingMode"), RECORDINGMODE, ModeAVI);
-	Add(_T("iPresetTime"), PRESETTIME, 60);
-	Add(_T("language"), LANGUAGE, 0);
-	Add(_T("timestampBackColor"), TIMESTAMPBACKCOLOR, RGB(255, 255, 255));
-	Add(_T("timestampSelected"), TIMESTAMPSELECTED, 0);
-	Add(_T("timestampPosition"), TIMESTAMPPOSITION, TOP_LEFT);
-	Add(_T("timestampTextColor"), TIMESTAMPTEXTCOLOR, RGB(0, 0, 0));
-	Add(_T("timestampTextWeight"), TIMESTAMPTEXTWEIGHT, 0);
-	Add(_T("timestampTextHeight"), TIMESTAMPTEXTHEIGHT, 0);
-	Add(_T("timestampTextWidth"), TIMESTAMPTEXTWIDTH, 0);
-	Add(_T("captionBackColor"), CAPTIONBACKCOLOR, RGB(255, 255, 255));
-	Add(_T("captionSelected"), CAPTIONSELECTED, 0);
-	Add(_T("captionPosition"), CAPTIONPOSITION, TOP_LEFT);
-	Add(_T("captionTextColor"), CAPTIONTEXTCOLOR, RGB(0, 0, 0));
-	Add(_T("captionTextWeight"), CAPTIONTEXTWEIGHT, 0);
-	Add(_T("captionTextHeight"), CAPTIONTEXTHEIGHT, 0);
-	Add(_T("captionTextWidth"), CAPTIONTEXTWIDTH, 0);
-	Add(_T("watermarkPosition"), WATERMARKPOSITION, TOP_LEFT);
-
-	Add(_T("captionTextFont"), CAPTIONTEXTFONT, CString(_T("")));
-	Add(_T("timestampTextFont"), TIMESTAMPTEXTFONT, CString(_T("")));
-#else
-	Add(_T("bFlashingRect"), FLASHINGRECT, true);
-	Add(_T("bMinimizeOnStart"), MINIMIZEONSTART, false);
-	Add(_T("bRecordCursor"), RECORDCURSOR, true);
-	Add(_T("bHighlightCursor"), HIGHLIGHTCURSOR, false);
-	Add(_T("bHighlightClick"), HIGHLIGHTCLICK, false);
-	Add(_T("bAutoAdjust"), AUTOADJUST, true);
-	Add(_T("bFixedCapture"), FIXEDCAPTURE, false);
-	Add(_T("bCaptureTrans"), CAPTURETRANS, true);
-	Add(_T("bPerformAutoSearch"), PERFORMAUTOSEARCH, true);
-	Add(_T("bSupportMouseDrag"), SUPPORTMOUSEDRAG, true);
-	Add(_T("bUseMCI"), USEMCI, false);
-	Add(_T("bLaunchPropPrompt"), LAUNCHPROPPROMPT, false);
-	Add(_T("bLaunchHTMLPlayer"), LAUNCHHTMLPLAYER, true);
-	Add(_T("bDeleteAVIAfterUse"), DELETEAVIAFTERUSE, true);
-	Add(_T("bAutoNaming"), AUTONAMING, false);
-	Add(_T("bRestrictVideoCodecs"), RESTRICTVIDEOCODECS, false);
-	Add(_T("bRecordPreset"), RECORDPRESET, false);
-	Add(_T("bTimestampAnnotation"), TIMESTAMPANNOTATION, false);
-	Add(_T("bCaptionAnnotation"), CAPTIONANNOTATION, false);
-	Add(_T("bWatermarkAnnotation"), WATERMARKANNOTATION, false);
-	Add(_T("bAudioCompression"), AUDIOCOMPRESSION, true);
-	Add(_T("bInterleaveFrames"), INTERLEAVEFRAMES, true);
-	Add(_T("bAutoPan"), AUTOPAN, false);
-
-	Add(_T("iLaunchPlayer"), LAUNCHPLAYER, 3);
-	Add(_T("iMouseCaptureMode"), MOUSECAPTUREMODE, 0);
-	Add(_T("iCaptureWidth"), CAPTUREWIDTH, 320);
-	Add(_T("iCaptureHeight"), CAPTUREHEIGHT, 240);
-	Add(_T("iTimeLapse"), TIMELAPSE, 5);
-	Add(_T("iFramesPerSecond"), FRAMESPERSECOND, 200);
-	Add(_T("iKeyFramesEvery"), KEYFRAMESEVERY, 200);
-	Add(_T("iCompQuality"), COMPQUALITY, 7000);
-	Add(_T("dwCompfccHandler"), COMPFCCHANDLER, 0);
-	Add(_T("dwCompressorStateIsFor"), COMPRESSORSTATEISFOR, 0);
-	Add(_T("dwCompressorStateSize"), COMPRESSORSTATEISFOR, 0);
-	Add(_T("iCustomSel"), COMPRESSORSTATEISFOR, 0);
-	Add(_T("iCursorType"), CURSORTYPE, 0);
-	Add(_T("iHighlightSize"), HIGHLIGHTSIZE, 64);
-	Add(_T("iHighlightShape"), HIGHLIGHTSHAPE, 0);
-	Add(_T("clrHighlightColor"), HIGHLIGHTCOLOR, RGB(255,255,125));
-	Add(_T("clrHighlightClickColorLeft"), HIGHLIGHTCLICKCOLORLEFT, RGB(255,0,0));
-	Add(_T("clrHighlightClickColorRight"), HIGHLIGHTCLICKCOLORRIGHT, RGB(0,0,255));
-	Add(_T("iMaxPan"), MAXPAN, 20);
-	Add(_T("uAudioDeviceID"), AUDIODEVICEID, (int)WAVE_MAPPER);
-	Add(_T("dwCbwFX"), CBWFX, 0);
-	Add(_T("iRecordAudio"), RECORDAUDIO, 0);
-	Add(_T("dwWaveinSelected"), WAVEINSELECTED, WAVE_FORMAT_2S16);
-	Add(_T("iAudioBitsPerSample"), AUDIOBITSPERSAMPLE, 16);
-	Add(_T("iAudioNumChannels"), AUDIONUCHANNELS, 2);
-	Add(_T("iAudioSamplesPerSeconds"), AUDIOSAMPLESPERSECONDS, 22050);
-	Add(_T("iInterleaveFactor"), INTERLEAVEFACTOR, 100);
-	Add(_T("keyRecordStart"), KEYRECORDSTART, MILLISECONDS);
-	Add(_T("keyRecordEnd"), KEYRECORDEND, 0);
-	Add(_T("keyRecordCancel"), KEYRECORDCANCEL, 1);
-	Add(_T("iViewType"), VIEWTYPE, 0);
-	Add(_T("iValueAdjust"), VALUEADJUST, 0);
-	Add(_T("savedir"), SAVEDIR, 0);
-	Add(_T("cursordir"), CURSORDIR, 0);
-	Add(_T("iThreadPriority"), THREADPRIORITY, THREAD_PRIORITY_NORMAL);
-	Add(_T("iCaptureLeft"), CAPTURELEFT, 100);
-	Add(_T("iCaptureTop"), CAPTURETOP, 100);
-	Add(_T("iInterleaveUnit"), INTERLEAVEUNIT, 0);
-	Add(_T("iTempPathAccess"), TEMPPATHACCESS, USE_WINDOWS_TEMP_DIR);
-	Add(_T("specifieddir"), SPECIFIEDDIR, 0);
-	Add(_T("NumDev"), NUMDEV, 0);
-	Add(_T("SelectedDev"), SELECTEDDEV, 0);
-	Add(_T("iFeedbackLine"), FEEDBACKLINE, -1);
-	Add(_T("feedback_line_info"), FEEDBACKLINEINFO, -1);
-	Add(_T("keyRecordStartCtrl"), KEYRECORDSTARTCTRL, 0);
-	Add(_T("keyRecordEndCtrl"), KEYRECORDENDCTRL, 0);
-	Add(_T("keyRecordCancelCtrl"), KEYRECORDCANCELCTRL, 0);
-	Add(_T("keyRecordStartAlt"), KEYRECORDSTARTALT, 0);
-	Add(_T("keyRecordEndAlt"), KEYRECORDENDALT, 0);
-	Add(_T("keyRecordCancelAlt"), KEYRECORDCANCELALT, 0);
-	Add(_T("keyRecordStartShift"), KEYRECORDSTARTSHIFT, 0);
-	Add(_T("keyRecordEndShift"), KEYRECORDENDSHIFT, 0);
-	Add(_T("keyRecordCancelShift"), KEYRECORDCANCELSHIFT, 0);
-	Add(_T("keyNext"), KEYNEXT, 0);
-	Add(_T("keyPrev"), KEYPREV, 0);
-	Add(_T("keyShowLayout"), KEYSHOWLAYOUT, 0);
-	Add(_T("keyNextCtrl"), KEYNEXTCTRL, 0);
-	Add(_T("keyPrevCtrl"), KEYPREVCTRL, 0);
-	Add(_T("keyShowLayoutCtrl"), KEYSHOWLAYOUTCTRL, 0);
-	Add(_T("keyNextAlt"), KEYNEXTALT, 0);
-	Add(_T("keyPrevAlt"), KEYPREVALT, 0);
-	Add(_T("keyShowLayoutAlt"), KEYSHOWLAYOUTALT, 0);
-	Add(_T("keyNextShift"), KEYNEXTSHIFT, 0);
-	Add(_T("keyPrevShift"), KEYPREVSHIFT, 0);
-	Add(_T("keyShowLayoutShift"), KEYSHOWLAYOUTSHIFT, 0);
-	Add(_T("iShapeNameInt"), SHAPENAMEINT, 1);
-	Add(_T("shapeNameLen"), SHAPENAMELEN, 0);
-	Add(_T("iLayoutNameInt"), LAYOUTNAMEINT, 1);
-	Add(_T("g_layoutNameLen"), LAYOUTNAMELEN, 0);
-	Add(_T("iShiftType"), SHIFTTYPE, 0);
-	Add(_T("iTimeShift"), TIMESHIFT, 100);
-	Add(_T("iFrameShift"), FRAMESHIFT, 0);
-	Add(_T("iRecordingMode"), RECORDINGMODE, ModeAVI);
-	Add(_T("iPresetTime"), PRESETTIME, 60);
-	Add(_T("language"), LANGUAGE, 0);
-	Add(_T("timestampBackColor"), TIMESTAMPBACKCOLOR, RGB(255, 255, 255));
-	Add(_T("timestampSelected"), TIMESTAMPSELECTED, 0);
-	Add(_T("timestampPosition"), TIMESTAMPPOSITION, TOP_LEFT);
-	Add(_T("timestampTextColor"), TIMESTAMPTEXTCOLOR, RGB(0, 0, 0));
-	Add(_T("timestampTextWeight"), TIMESTAMPTEXTWEIGHT, 0);
-	Add(_T("timestampTextHeight"), TIMESTAMPTEXTHEIGHT, 0);
-	Add(_T("timestampTextWidth"), TIMESTAMPTEXTWIDTH, 0);
-	Add(_T("captionBackColor"), CAPTIONBACKCOLOR, RGB(255, 255, 255));
-	Add(_T("captionSelected"), CAPTIONSELECTED, 0);
-	Add(_T("captionPosition"), CAPTIONPOSITION, TOP_LEFT);
-	Add(_T("captionTextColor"), CAPTIONTEXTCOLOR, RGB(0, 0, 0));
-	Add(_T("captionTextWeight"), CAPTIONTEXTWEIGHT, 0);
-	Add(_T("captionTextHeight"), CAPTIONTEXTHEIGHT, 0);
-	Add(_T("captionTextWidth"), CAPTIONTEXTWIDTH, 0);
-	Add(_T("watermarkPosition"), WATERMARKPOSITION, TOP_LEFT);
-
-	Add(_T("captionTextFont"), CAPTIONTEXTFONT, CString(_T("")));
-	Add(_T("timestampTextFont"), TIMESTAMPTEXTFONT, CString(_T("")));
-#endif
-}
-
-CCamStudioSettings::~CCamStudioSettings()
-{
-}
-
-bool CCamStudioSettings::Add(const CString strName, const eLegacySetting eKey, const CString strDefault)
-{
-	m_StrSection.Add(strName, eKey, strDefault);
-	return false;
-}
-bool CCamStudioSettings::Add(const CString strName, const eLegacySetting eKey, const int iDefault)
-{
-	m_IntSection.Add(strName, eKey, iDefault);
-	return false;
-}
-bool CCamStudioSettings::Add(const CString strName, const eLegacySetting eKey, const bool bDefault)
-{
-	m_BoolSection.Add(strName, eKey, bDefault);
-	return false;
-}
-bool CCamStudioSettings::Add(const CString strName, const eLegacySetting eKey, const long lDefault)
-{
-	m_LongSection.Add(strName, eKey, lDefault);
-	return false;
-}
-bool CCamStudioSettings::Add(const CString strName, const eLegacySetting eKey, const double dDefault)
-{
-	m_DblSection.Add(strName, eKey, dDefault);
-	return false;
-}
-bool CCamStudioSettings::Add(const CString strName, const eLegacySetting eKey, const COLORREF clrDefault)
-{
-	m_ColorSection.Add(strName, eKey, clrDefault);
+	m_Section.Add(iID, strName, Value);
 	return false;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-bool CCamStudioSettings::LoadSettings()
+bool CProfile::Add(const int iID, const CString strName, const CString Value)
 {
-#ifdef EXPERIMENTAL_CODE
-	TRACE("CCamStudioSettings::LoadSettings\n");
-	TRACE("CCamStudioSettings::LoadSettings: m_StrSection\n");
-	m_StrSection.Read(m_strFileName);
-	TRACE("CCamStudioSettings::LoadSettings: m_IntSection\n");
-	m_IntSection.Read(m_strFileName);
-	TRACE("CCamStudioSettings::LoadSettings: m_BoolSection\n");
-	m_BoolSection.Read(m_strFileName);
-	TRACE("CCamStudioSettings::LoadSettings: m_LongSection\n");
-	m_LongSection.Read(m_strFileName);
-	TRACE("CCamStudioSettings::LoadSettings: m_DblSection\n");
-	m_DblSection.Read(m_strFileName);
-	TRACE("CCamStudioSettings::LoadSettings: m_ColorSection\n");
-	m_ColorSection.Read(m_strFileName);
-#endif
+	m_Section.Add(iID, strName, Value);
+	return false;
+}
 
+bool CProfile::Add(const int iID, const CString strName, const bool Value)
+{
+	m_Section.Add(iID, strName, Value);
+	return false;
+}
+
+bool CProfile::Add(const int iID, const CString strName, const long Value)
+{
+	m_Section.Add(iID, strName, Value);
 	return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
-bool CCamStudioSettings::WriteSettings()
+CProfileSection::CProfileSection(const CString strSectionName)
+: m_strSectionName(strSectionName)
 {
-#ifdef EXPERIMENTAL_CODE
-	TRACE("CCamStudioSettings::WriteSettings\n");
-	TRACE("CCamStudioSettings::WriteSettings: m_StrSection\n");
-	m_StrSection.Write(m_strFileName);
-	TRACE("CCamStudioSettings::WriteSettings: m_IntSection\n");
-	m_IntSection.Write(m_strFileName);
-	TRACE("CCamStudioSettings::WriteSettings: m_BoolSection\n");
-	m_BoolSection.Write(m_strFileName);
-	TRACE("CCamStudioSettings::WriteSettings: m_LongSection\n");
-	m_LongSection.Write(m_strFileName);
-	TRACE("CCamStudioSettings::WriteSettings: m_DblSection\n");
-	m_DblSection.Write(m_strFileName);
-	TRACE("CCamStudioSettings::WriteSettings: m_ColorSection\n");
-	m_ColorSection.Write(m_strFileName);
-#endif
+}
 
-	return false;
+CProfileSection::~CProfileSection()
+{
 }

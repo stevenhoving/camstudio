@@ -1,344 +1,262 @@
-/////////////////////////////////////////////////////////////////////////////
 // Profile.h
-// include file for windows profile classes
+// include file for windows profile (*ini file) classes
 /////////////////////////////////////////////////////////////////////////////
+#ifndef PROFILE_H	// because pragma once is compiler specific
+#define PROFILE_H
 #pragma once
 
 #include <vector>
 
-// enumerated legacy settings
-// used to identify setting string and values
-enum eLegacySetting
+#include "TextAttributes.h"
+#include "ImageAttributes.h"
+
+enum eLegacySettings
 {
-	FLASHINGRECT, LAUNCHPLAYER, MINIMIZEONSTART, MOUSECAPTUREMODE, CAPTUREWIDTH
-	, CAPTUREHEIGHT, TIMELAPSE, FRAMESPERSECOND, KEYFRAMESEVERY, COMPQUALITY
-	, COMPFCCHANDLER, COMPRESSORSTATEISFOR, COMPRESSORSTATESIZE, RECORDCURSOR, CUSTOMSEL
-	, CURSORTYPE, HIGHLIGHTCURSOR, HIGHLIGHTSIZE, HIGHLIGHTSHAPE, HIGHLIGHTCLICK
-	, HIGHLIGHTCOLOR, HIGHLIGHTCLICKCOLORLEFT, HIGHLIGHTCLICKCOLORRIGHT, AUTOPAN, MAXPAN
-	, AUDIODEVICEID, CBWFX, RECORDAUDIO, WAVEINSELECTED, AUDIOBITSPERSAMPLE
-	, AUDIONUCHANNELS, AUDIOSAMPLESPERSECONDS, AUDIOCOMPRESSION, INTERLEAVEFRAMES
-	, INTERLEAVEFACTOR, KEYRECORDSTART, KEYRECORDEND, KEYRECORDCANCEL, VIEWTYPE, AUTOADJUST
-	, VALUEADJUST, SAVEDIR, CURSORDIR, THREADPRIORITY, CAPTURELEFT, CAPTURETOP, FIXEDCAPTURE
-	, INTERLEAVEUNIT, TEMPPATHACCESS, CAPTURETRANS, SPECIFIEDDIR, NUMDEV, SELECTEDDEV
-	, FEEDBACKLINE, FEEDBACKLINEINFO, PERFORMAUTOSEARCH, SUPPORTMOUSEDRAG, KEYRECORDSTARTCTRL
-	, KEYRECORDENDCTRL, KEYRECORDCANCELCTRL, KEYRECORDSTARTALT, KEYRECORDENDALT
-	, KEYRECORDCANCELALT, KEYRECORDSTARTSHIFT, KEYRECORDENDSHIFT, KEYRECORDCANCELSHIFT
-	, KEYNEXT, KEYPREV, KEYSHOWLAYOUT, KEYNEXTCTRL, KEYPREVCTRL, KEYSHOWLAYOUTCTRL, KEYNEXTALT
-	, KEYPREVALT, KEYSHOWLAYOUTALT, KEYNEXTSHIFT, KEYPREVSHIFT, KEYSHOWLAYOUTSHIFT, SHAPENAMEINT
-	, SHAPENAMELEN, LAYOUTNAMEINT, LAYOUTNAMELEN, USEMCI, SHIFTTYPE, TIMESHIFT, FRAMESHIFT
-	, LAUNCHPROPPROMPT, LAUNCHHTMLPLAYER, DELETEAVIAFTERUSE, RECORDINGMODE, AUTONAMING
-	, RESTRICTVIDEOCODECS, PRESETTIME, RECORDPRESET, LANGUAGE, TIMESTAMPANNOTATION
-	, TIMESTAMPBACKCOLOR, TIMESTAMPSELECTED, TIMESTAMPPOSITION, TIMESTAMPTEXTCOLOR
-	, TIMESTAMPTEXTFONT, TIMESTAMPTEXTWEIGHT, TIMESTAMPTEXTHEIGHT, TIMESTAMPTEXTWIDTH
-	, CAPTIONANNOTATION, CAPTIONBACKCOLOR, CAPTIONSELECTED, CAPTIONPOSITION
-	, CAPTIONTEXTCOLOR, CAPTIONTEXTFONT, CAPTIONTEXTWEIGHT, CAPTIONTEXTHEIGHT
-	, CAPTIONTEXTWIDTH, WATERMARKANNOTATION, WATERMARKPOSITION
-	, MAX_LEGACY_SETTING
+	FLASHINGRECT, LAUNCHPLAYER, MINIMIZEONSTART, MOUSECAPTUREMODE, CAPTUREWIDTH,
+	CAPTUREHEIGHT, TIMELAPSE, FRAMES_PER_SECOND, KEYFRAMESEVERY, COMPQUALITY,
+	COMPFCCHANDLER, COMPRESSORSTATEISFOR, COMPRESSORSTATESIZE, G_RECORDCURSOR,
+	G_CUSTOMSEL, G_CURSORTYPE, G_HIGHLIGHTCURSOR, G_HIGHLIGHTSIZE, G_HIGHLIGHTSHAPE,
+	G_HIGHLIGHTCLICK, G_HIGHLIGHTCOLORR, G_HIGHLIGHTCOLORG, G_HIGHLIGHTCOLORB,
+	G_HIGHLIGHTCLICKCOLORLEFTR, G_HIGHLIGHTCLICKCOLORLEFTG, G_HIGHLIGHTCLICKCOLORLEFTB,
+	G_HIGHLIGHTCLICKCOLORRIGHTR, G_HIGHLIGHTCLICKCOLORRIGHTG, G_HIGHLIGHTCLICKCOLORRIGHTB,
+	AUTOPAN, MAXPAN, AUDIODEVICEID, CBWFX, RECORDAUDIO, WAVEINSELECTED, AUDIO_BITS_PER_SAMPLE,
+	AUDIO_NUM_CHANNELS, AUDIO_SAMPLES_PER_SECONDS, BAUDIOCOMPRESSION, INTERLEAVEFRAMES,
+	INTERLEAVEFACTOR, KEYRECORDSTART, KEYRECORDEND, KEYRECORDCANCEL, VIEWTYPE, G_AUTOADJUST,
+	G_VALUEADJUST, SAVEDIR, CURSORDIR, THREADPRIORITY, CAPTURELEFT, CAPTURETOP, FIXEDCAPTURE,
+	INTERLEAVEUNIT, TEMPPATH_ACCESS, CAPTURETRANS, SPECIFIEDDIR, NUMDEV, SELECTEDDEV,
+	FEEDBACK_LINE, FEEDBACK_LINE_INFO, PERFORMAUTOSEARCH, SUPPORTMOUSEDRAG, KEYRECORDSTARTCTRL,
+	KEYRECORDENDCTRL, KEYRECORDCANCELCTRL, KEYRECORDSTARTALT, KEYRECORDENDALT, KEYRECORDCANCELALT,
+	KEYRECORDSTARTSHIFT, KEYRECORDENDSHIFT, KEYRECORDCANCELSHIFT, KEYNEXT, KEYPREV, KEYSHOWLAYOUT,
+	KEYNEXTCTRL, KEYPREVCTRL, KEYSHOWLAYOUTCTRL, KEYNEXTALT, KEYPREVALT, KEYSHOWLAYOUTALT,
+	KEYNEXTSHIFT, KEYPREVSHIFT, KEYSHOWLAYOUTSHIFT, SHAPENAMEINT, SHAPENAMELEN, LAYOUTNAMEINT,
+	G_LAYOUTNAMELEN, USEMCI, SHIFTTYPE, TIMESHIFT, FRAMESHIFT, LAUNCHPROPPROMPT, LAUNCHHTMLPLAYER,
+	DELETEAVIAFTERUSE, RECORDINGMODE, AUTONAMING, RESTRICTVIDEOCODECS, PRESETTIME, RECORDPRESET,
+	LANGUAGE, TIMESTAMPANNOTATION, TIMESTAMPBACKCOLOR, TIMESTAMPSELECTED, TIMESTAMPPOSITION,
+	TIMESTAMPTEXTCOLOR, TIMESTAMPTEXTFONT, TIMESTAMPTEXTWEIGHT, TIMESTAMPTEXTHEIGHT,
+	TIMESTAMPTEXTWIDTH, CAPTIONANNOTATION, CAPTIONBACKCOLOR, CAPTIONSELECTED, CAPTIONPOSITION,
+	CAPTIONTEXTCOLOR, CAPTIONTEXTFONT, CAPTIONTEXTWEIGHT, CAPTIONTEXTHEIGHT, CAPTIONTEXTWIDTH,
+	WATERMARKANNOTATION,
+	MAX_LEGACT_SETTING
 };
 
+// CGroupItem
+// template class for section items
 /////////////////////////////////////////////////////////////////////////////
-// class CKeyGroup
-// template class to hold section type names and values
-// i.e. all integers in a section
-// Add - add a setting name, key, and value 
-// Read - red the section group values
-// Write - write the section values
-// Individual reads and writes are done with private sepcialization functions
-// TODO: add group delete
-/////////////////////////////////////////////////////////////////////////////
-template <typename K, typename V>
-class CKeyGroup
+template <typename V>
+class CGroupItem
 {
+	CGroupItem(); // not implemented
 public:
-
-	CKeyGroup()
+	CGroupItem(int iID, CString strName, V Value)
 	{
+		m_vIDValue.push_back(IDValuePair(iID, ValuePair(strName, Value)));
 	}
-	virtual ~CKeyGroup() {}
+	virtual ~CGroupItem() {}
 
-	// add item to section group
-	void Add(const CString strName, K key, V value)	// add a key and default value
+	bool Read(const CString strFile, const CString strSection)
 	{
-		m_vLookup.push_back(std::pair <CString, K>(strName, key));
-		m_vKeylist.push_back(element(key, value));
-	}
-	// read all items from profile
-	bool Read(const CString strFileName, const CString strSection)
-	{
-		bool bResult = (0 < m_vKeylist.size());
-		if (!bResult)
-			return bResult;
-
-		for (std::vector <element>::iterator iter = m_vKeylist.begin(); iter != m_vKeylist.end(); ++iter)
+		// iterate over the group items
+		for (IDVALUE_ITER iter = m_vIDValue.begin(); iter != m_vIDValue.end(); ++iter)
 		{
-			iter->second = Read(strFileName, strSection, *iter);
+			iter->second.second = Read(strFile, strSection, iter->second.first, iter->second.second);
+		}
+		return true;
+	}
+	bool Write(const CString strFile, const CString strSection)
+	{
+		bool bResult = true;
+		for (IDVALUE_ITER iter = m_vIDValue.begin(); iter != m_vIDValue.end(); ++iter)
+		{
+			bResult = bResult && Write(strFile, strSection, iter->second.first, iter->second.second);
 		}
 		return bResult;
-	}
-	// write all items to profile
-	bool Write(const CString strFileName, const CString strSection)
-	{
-		bool bResult = (0 < m_vKeylist.size());
-		if (!bResult)
-			return bResult;
-
-		for (std::vector <element>::iterator iter = m_vKeylist.begin(); bResult && (iter != m_vKeylist.end()); ++iter)
-		{
-			bResult = bResult && Write(strFileName, strSection, *iter);
-		}
-		return bResult;
-	}
-
-private:
-	typedef std::pair<K, V> element;
-	std::vector <std::pair<K, V>> m_vKeylist;		// list key-value pairs
-	std::vector<std::pair <CString, K>> m_vLookup;	// list of name-key pairs
-
-	// brute force lookup of key by name
-	typename std::vector <std::pair <CString, K>>::iterator find(const K key)
-	{
-		for (std::vector <std::pair <CString, K>>::iterator iter = m_vLookup.begin(); (iter != m_vLookup.end()); ++iter)
-		{
-			if (key == iter->second)
-			{
-				return iter;
-			}
-		}
-		return m_vLookup.end();
-	}
-
-	// specialization read for key-string pair
-	CString Read(const CString strFileName, const CString strSection, std::pair<K, CString> entry)
-	{
-		// lookup the string-name pair
-		std::vector <std::pair <CString, K>>::iterator iter = find(entry.first);
-		if (iter == m_vLookup.end())
-		{
-			// TODO: report error
-			entry.second;
-		}
-		TCHAR szValue[BUFSIZ];
-		DWORD dwLen = ::GetPrivateProfileString(strSection, iter->first, entry.second, szValue, BUFSIZ, strFileName);
-		entry.second = (dwLen) ? szValue : entry.second;
-		TRACE("CKeyGroup:Read: %s = %s\n", iter->first, entry.second);
-		return entry.second;
-	}
-	// specialization read for key-int pair
-	int Read(const CString strFileName, const CString strSection, std::pair<K, int> entry)
-	{
-		// lookup the string-name pair
-		std::vector <std::pair <CString, K>>::iterator iter = find(entry.first);
-		if (iter == m_vLookup.end())
-		{
-			// TODO: report error
-			entry.second;
-		}
-		entry.second = ::GetPrivateProfileInt(strSection, iter->first, entry.second, strFileName);
-		TRACE("CKeyGroup:Read: %s = %d\n", iter->first, entry.second);
-		return entry.second;
-	}
-	// specialization read for key-bool pair
-	bool Read(const CString strFileName, const CString strSection, std::pair<K, bool> entry)
-	{		
-		entry.second = (1 == Read(strFileName, strSection, std::pair<K, int>(entry.first, entry.second)))
-			? true : false;
-		//TRACE("CKeyGroup:Read: %s = %s\n", entry.first, entry.second ? "true" : "false");
-		return entry.second;
-	}
-	// specialization read for key-long pair
-	// read value as string
-	long Read(const CString strFileName, const CString strSection, std::pair<K, long> entry)
-	{
-		CString strValue(_T("X"));
-		strValue = Read(strFileName, strSection, std::pair<K, CString>(entry.first, strValue));
-		entry.second = (strValue == _T("X"))
-			? entry.second
-			: ::atol(strValue);
-		//TRACE("CKeyGroup:Read: %s = %ld\n", entry.first, entry.second);
-		return entry.second;
-	}
-	// specialization read for key-double pair
-	double Read(const CString strFileName, const CString strSection, std::pair<K, double> entry)
-	{
-		CString strValue(_T("X"));
-		strValue = Read(strFileName, strSection, std::pair<K, CString>(entry.first, strValue));
-		entry.second = (strValue == _T("X"))
-			? entry.second
-			: ::_tstof(strValue);
-		//TRACE("CKeyGroup:Read: %s = %f\n", entry.first, entry.second);
-		return entry.second;
-	}
-	// specialization read for key-COLORREF pair
-	// note the item is in 3 entries
-	COLORREF Read(const CString strFileName, const CString strSection, std::pair<K, COLORREF> entry)
-	{
-		// lookup the string-name pair
-		std::vector <std::pair <CString, K>>::iterator iter = find(entry.first);
-		if (iter == m_vLookup.end())
-		{
-			// TODO: report error
-			entry.second;
-		}
-		CString strColorKey;
-		strColorKey.Format("%sR", iter->first);
-		int iRed = ::GetPrivateProfileInt(strSection, strColorKey, GetRValue(entry.second), strFileName);
-		strColorKey.Format("%sG", iter->first);
-		int iGreen = ::GetPrivateProfileInt(strSection, strColorKey, GetGValue(entry.second), strFileName);
-		strColorKey.Format("%sB", iter->first);
-		int iBlue = ::GetPrivateProfileInt(strSection, strColorKey, GetBValue(entry.second), strFileName);
-		entry.second = RGB(iRed, iGreen, iBlue);
-		//TRACE("CKeyGroup:Read: %s = COLOR : %ld\n", entry.first, entry.second);
-		return entry.second;
-	}
-	
-	// specialization write for key-string pair
-	bool Write(const CString strFileName, const CString strSection, std::pair<K, CString> entry)
-	{
-		std::vector <std::pair <CString, K>>::iterator iter = find(entry.first);
-		if (iter == m_vLookup.end())
-		{
-			// TODO: report error
-			return false;
-		}
-		return (entry.second.IsEmpty())
-			? ::WritePrivateProfileString(strSection, iter->first, 0, strFileName)
-				? true : false
-			: ::WritePrivateProfileString(strSection, iter->first, entry.second, strFileName)
-				? true : false;
-	}
-	// specialization write for key-int pair
-	bool Write(const CString strFileName, const CString strSection, std::pair<K, int> entry)
-	{
-		CString strValue;
-		strValue.Format("%d", entry.second);
-		return Write(strFileName, strSection, std::pair<K, CString>(entry.first, strValue));
-	}
-	// specialization write for key-bool pair
-	bool Write(const CString strFileName, const CString strSection, std::pair<K, bool> entry)
-	{
-		CString strValue;
-		strValue.Format("%d", entry.second);
-		return Write(strFileName, strSection, std::pair<K, CString>(entry.first, strValue));
-	}
-	// specialization write for key-long pair
-	bool Write(const CString strFileName, const CString strSection, std::pair<K, long> entry)
-	{
-		CString strValue;
-		strValue.Format("%ld", entry.second);
-		return Write(strFileName, strSection, std::pair<K, CString>(entry.first, strValue));
-	}
-	// specialization write for key-double pair
-	bool Write(const CString strFileName, const CString strSection, std::pair<K, double> entry)
-	{
-		CString strValue;
-		strValue.Format("%f", entry.second);
-		return Write(strFileName, strSection, std::pair<K, CString>(entry.first, strValue));
-	}
-	// specialization write for key-COLORREF pair
-	// note the item is in 3 entries
-	bool Write(const CString strFileName, const CString strSection, std::pair<K, COLORREF> entry)
-	{
-		// lookup the string-name pair
-		std::vector <std::pair <CString, K>>::iterator iter = find(entry.first);
-		if (iter == m_vLookup.end())
-		{
-			// TODO: report error
-			return false;
-		}
-		CString strValue;
-		strValue.Format("%d", GetRValue(entry.second));
-		CString strColorKey;
-		strColorKey.Format("%sR", iter->first);
-		bool bResult = ::WritePrivateProfileString(strSection, strColorKey, strValue, strFileName);
-
-		strValue.Format("%d", GetGValue(entry.second));
-		strColorKey.Format("%sG", iter->first);
-		bResult = bResult && ::WritePrivateProfileString(strSection, strColorKey, strValue, strFileName);
-		strValue.Format("%d", GetBValue(entry.second));
-		strColorKey.Format("%sB", iter->first);
-		bResult = bResult && ::WritePrivateProfileString(strSection, strColorKey, strValue, strFileName);
-		return bResult;
-	}
-};
-
-/////////////////////////////////////////////////////////////////////////////
-// class CProfileSection
-// wrapper for group + section name 
-/////////////////////////////////////////////////////////////////////////////
-template <typename K, typename V>
-class CProfileSection
-{
-	CProfileSection();
-public:
-	CProfileSection(CString strSectionName)
-		: m_strSectionName(strSectionName)
-	{
-	}
-	virtual ~CProfileSection() {}
-
-	void Add(const CString strName, K key, V value)
-	{
-		m_KeyGroup.Add(strName, key, value);
-	}
-	bool Read(const CString strFileName)
-	{
-		return m_KeyGroup.Read(strFileName, m_strSectionName);
-	}
-	bool Write(const CString strFileName)
-	{
-		return m_KeyGroup.Write(strFileName, m_strSectionName);
 	}
 
 protected:
-	CString m_strSectionName;
-	CKeyGroup <K, V> m_KeyGroup;
+	typename typedef std::pair <CString, V> ValuePair;
+	typename typedef std::pair <int, ValuePair> IDValuePair;
+	typename typedef std::vector <IDValuePair>::iterator IDVALUE_ITER;
+	
+	std::vector <IDValuePair> m_vIDValue;
+
+	CString Read(CString strFilename, CString strSection, CString strKeyName, CString DefValue)
+	{
+		TRACE("Read File(CString): %s,\nSection: %s\nKey: %s\nValue: %s\n", strFilename, strSection, strKeyName, DefValue);
+		const int BUFSIZE = 260;
+		TCHAR szBuf[BUFSIZE];
+		DWORD dwLen = ::GetPrivateProfileString(strSection, strKeyName, DefValue, szBuf, BUFSIZE, strFilename);
+		return (dwLen) ? szBuf : "";
+	}
+	int Read(CString strFilename, CString strSection, CString strKeyName, int DefValue)
+	{
+		TRACE("Read File(int): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, DefValue);
+		return ::GetPrivateProfileInt(strSection, strKeyName, DefValue, strFilename);
+	}
+	bool Read(CString strFilename, CString strSection, CString strKeyName, bool DefValue)
+	{
+		TRACE("Read File(bool): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, DefValue);
+		return ::GetPrivateProfileInt(strSection, strKeyName, DefValue, strFilename)
+			? true : false;
+	}
+	long Read(CString strFilename, CString strSection, CString strKeyName, long DefValue)
+	{
+		TRACE("Read File(long): %s,\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
+		const int BUFSIZE = 128;
+		TCHAR szBuf[BUFSIZE];
+		DWORD dwLen = ::GetPrivateProfileString(strSection, strKeyName, _T(""), szBuf, BUFSIZE, strFilename);
+		return (dwLen) ? ::_tstol(szBuf) : DefValue;
+	}
+
+	bool Write(CString strFilename, CString strSection, CString strKeyName, CString Value)
+	{
+		TRACE("Write File(CString): %s\nSection: %s\nKey: %s\nValue: %s\n", strFilename, strSection, strKeyName, Value);
+		return ::WritePrivateProfileString(strSection, strKeyName, Value, strFilename)
+			? true : false;
+	}
+	bool Write(CString strFilename, CString strSection, CString strKeyName, int Value)
+	{
+		TRACE("Write File(int): %s\nSection: %s\nKey: %s\n, Value: %d\n", strFilename, strSection, strKeyName, Value);
+		CString strValue;
+		strValue.Format("%d", Value);
+		return ::WritePrivateProfileString(strSection, strKeyName, strValue, strFilename)
+			? true : false;
+	}
+	bool Write(CString strFilename, CString strSection, CString strKeyName, bool Value)
+	{
+		TRACE("Write File(bool): %s\nSection: %s\nKey: %s\n, Value: %d\n", strFilename, strSection, strKeyName, Value);
+		CString strValue;
+		strValue.Format("%d", Value ? 1 : 0);
+		return ::WritePrivateProfileString(strSection, strKeyName, strValue, strFilename)
+			? true : false;
+	}
+	bool Write(CString strFilename, CString strSection, CString strKeyName, long Value)
+	{
+		TRACE("Write File(bool): %s\nSection: %s\nKey: %s\n, Value: %d\n", strFilename, strSection, strKeyName, Value);
+		CString strValue;
+		strValue.Format("%ld", Value);
+		return ::WritePrivateProfileString(strSection, strKeyName, strValue, strFilename)
+			? true : false;
+	}
 };
 
+// CSectionGroup
+// template class for section items of same type
 /////////////////////////////////////////////////////////////////////////////
+template <typename V>
+class CSectionGroup
+{
+public:
+	CSectionGroup() {}
+	virtual ~CSectionGroup() {}
+	bool Add(const int iID, const CString strName, const V Value)
+	{
+		m_vValue.push_back(CGroupItem<V>(iID, strName, Value));
+		return true;
+	}
+	bool Read(const CString strFile, const CString strSection)
+	{
+		for (GRPITEM_ITER iter = m_vValue.begin(); iter != m_vValue.end(); ++iter)
+		{
+			iter->Read(strFile, strSection);
+		}
+		return true;
+	}
+	bool Write(const CString strFile, const CString strSection)
+	{
+		for (GRPITEM_ITER iter = m_vValue.begin(); iter != m_vValue.end(); ++iter)
+		{
+			iter->Write(strFile, strSection);
+		}
+		return true;
+	}
+protected:
+	typename typedef std::vector <CGroupItem<V>>::iterator GRPITEM_ITER;
+	std::vector <CGroupItem<V>> m_vValue;
+};
+
+// class CProfileSection
+// CProfileSection encapsulates a profile section behavior
+/////////////////////////////////////////////////////////////////////////////
+class CProfileSection
+{
+	CProfileSection();	// not implemented
+public:
+	CProfileSection(const CString strSectionName);
+	virtual ~CProfileSection();
+
+	// add item to specific section group
+
+	bool Add(const int iID, const CString strName, const CString Value)
+	{
+		return m_grpStrings.Add(iID, strName, Value);
+	}
+	bool Add(const int iID, const CString strName, const int Value)
+	{
+		return m_grpIntegers.Add(iID, strName, Value);
+	}
+	bool Add(const int iID, const CString strName, const bool Value)
+	{
+		return m_grpBools.Add(iID, strName, Value);
+	}
+	bool Add(const int iID, const CString strName, const long Value)
+	{
+		return m_grpLongs.Add(iID, strName, Value);
+	}
+
+	// read items from section groups
+	bool Read(const CString strFile)
+	{
+		bool bResult = m_grpStrings.Read(strFile, m_strSectionName);
+		bResult = bResult && m_grpIntegers.Read(strFile, m_strSectionName);
+		bResult = bResult && m_grpBools.Read(strFile, m_strSectionName);
+		bResult = bResult && m_grpLongs.Read(strFile, m_strSectionName);
+		return bResult;
+	}
+	// write items from section groups
+	bool Write(const CString strFile)
+	{
+		bool bResult = m_grpStrings.Write(strFile, m_strSectionName);
+		bResult = bResult && m_grpIntegers.Write(strFile, m_strSectionName);
+		bResult = bResult && m_grpBools.Write(strFile, m_strSectionName);
+		bResult = bResult && m_grpLongs.Write(strFile, m_strSectionName);
+		return bResult;
+	}
+protected:
+	CString m_strSectionName;
+	
+	// supported group types
+	CSectionGroup<CString>			m_grpStrings;
+	CSectionGroup<int>				m_grpIntegers;
+	CSectionGroup<bool>				m_grpBools;
+	CSectionGroup<long>				m_grpLongs;
+	// TODO: activate these types
+	//CSectionGroup<double>			m_grpDoubles;
+	//CSectionGroup<COLORREF>			m_grpColorRefs;
+	//CSectionGroup<TextAttributes>	m_taTextAttribs;
+	//CSectionGroup<ImageAttributes>	m_iaImageAttribs;
+};
+
 // class CProfile
-// base profile class = holds filename
+// The CProfile encapsulates the reading and writing of an application
+// settings file (profile) on Windows 
 /////////////////////////////////////////////////////////////////////////////
 class CProfile
 {
-	CProfile();
+	CProfile();	// not implemented
 public:
-	CProfile(CString strFileName);
+	CProfile(const CString strFileName);
 	virtual ~CProfile();
-
 protected:
 	CString m_strFileName;
-};
-
-/////////////////////////////////////////////////////////////////////////////
-// class CCamStudioSettings
-// Profile class
-// One section (currently) with all types
-// overloaded apis to add name-key-value tuples for all types.
-/////////////////////////////////////////////////////////////////////////////
-class CCamStudioSettings : public CProfile
-{
+	CProfileSection m_Section;
 public:
-	CCamStudioSettings(CString strFileName);
-	virtual ~CCamStudioSettings();
-public:
-	virtual bool LoadSettings();
-	virtual bool WriteSettings();
-
-	bool Add(const CString strName, const eLegacySetting eKey, const CString strDefault);
-	bool Add(const CString strName, const eLegacySetting eKey, const int iDefault);
-	bool Add(const CString strName, const eLegacySetting eKey, const bool bDefault);
-	bool Add(const CString strName, const eLegacySetting eKey, const long lDefault);
-	bool Add(const CString strName, const eLegacySetting eKey, const double dDefault);
-	bool Add(const CString strName, const eLegacySetting eKey, const COLORREF clrDefault);
-private:
-	static char const * const LEGACY_SECTION;	// section name
-
-	CProfileSection <eLegacySetting, CString>	m_StrSection;
-	CProfileSection <eLegacySetting, int>		m_IntSection;
-	CProfileSection <eLegacySetting, bool>		m_BoolSection;
-	CProfileSection <eLegacySetting, long>		m_LongSection;
-	CProfileSection <eLegacySetting, double>	m_DblSection;
-	CProfileSection <eLegacySetting, COLORREF>	m_ColorSection;
+	// add item to section
+	bool Add(const int iID, const CString strName, const CString Value);
+	bool Add(const int iID, const CString strName, const int Value);
+	bool Add(const int iID, const CString strName, const bool Value);
+	bool Add(const int iID, const CString strName, const long Value);
+	bool Read()		{return m_Section.Read(m_strFileName);}
+	bool Write()	{return m_Section.Write(m_strFileName);}
 };
 
 // legacy settings values.
@@ -425,9 +343,8 @@ extern int iRecordingMode;
 extern int iPresetTime;
 extern int iLanguageID;
 
-struct TextAttributes;	// forward declaration
-struct ImageAttributes;	// forward declaration
-
 extern TextAttributes taCaption;
 extern TextAttributes taTimestamp;
 extern ImageAttributes iaWatermark;
+
+#endif	// PROFILE_H

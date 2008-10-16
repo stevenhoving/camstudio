@@ -214,8 +214,8 @@ BOOL CRecorderApp::InitInstance()
 
 	LoadStdProfileSettings(); // Load standard INI file options (including MRU)
 
-	m_cmSettings.LoadSettings();
-	m_cmSettings.WriteSettings();
+	m_cmSettings.Read();
+	m_cmSettings.Write();
 
 	versionOp = GetOperatingSystem();
 
@@ -274,6 +274,8 @@ public:
 	//afx_msg void OnBnClickedButtonlink();
 	DECLARE_EVENTSINK_MAP()
 	afx_msg void OnBnClickedButtonlink2();
+public:
+	virtual BOOL OnInitDialog();
 private:
 	CStatic m_ctrlStaticVersion;
 };
@@ -290,12 +292,6 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CAboutDlg)
 	//}}AFX_DATA_MAP
 	DDX_Control(pDX, IDC_STATIC_VERSION, m_ctrlStaticVersion);
-
-	CString stringBuffer;
-	m_ctrlStaticVersion.GetWindowTextA(stringBuffer);
-	stringBuffer.Replace("<VERSION>", "2.6");
-
-	DDX_Text(pDX, IDC_STATIC_VERSION, stringBuffer);
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
@@ -308,6 +304,20 @@ END_MESSAGE_MAP()
 BEGIN_EVENTSINK_MAP(CAboutDlg, CDialog)
 	// ON_EVENT(CAboutDlg, IDC_BUTTONLINK2, DISPID_CLICK, OnBnClickedButtonlink2, VTS_NONE)
 END_EVENTSINK_MAP()
+
+BOOL CAboutDlg::OnInitDialog()
+{
+	CDialog::OnInitDialog();
+
+	// only needs to be done once.
+	CString strBuffer;
+	m_ctrlStaticVersion.GetWindowText(strBuffer);
+	strBuffer.Replace("<VERSION>", "2.6");
+	m_ctrlStaticVersion.SetWindowText(strBuffer);
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX Property Pages should return FALSE
+}
 
 void CAboutDlg::OnBnClickedButtonlink2()
 {
@@ -426,3 +436,4 @@ bool CRecorderApp::RegisterWindowClass()
 	}
 	return true;
 }
+

@@ -513,9 +513,9 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About CamStudio Recorder"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    CONTROL         189,IDC_STATIC,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_REALSIZEIMAGE,54,6,171,58,WS_EX_DLGMODALFRAME
-    DEFPUSHBUTTON   "OK",IDOK,111,72,60,15,WS_GROUP
-    CTEXT           "CamStudio Recorder <VERSION>\n\nCopyright © 2001 RenderSoft Software and Web Publishing\nCopyright © 2008 CamStudio Group && Contributors\n\nBugfixes and additional features added by Nick the Geek\nMore bug fixes and support for Visual Studio 2005 added by Carlo Lanzotti",IDC_STATIC_VERSION,6,96,268,56
+    CONTROL         189,IDC_STATIC,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_REALSIZEIMAGE,55,6,171,58,WS_EX_DLGMODALFRAME
+    DEFPUSHBUTTON   "OK",IDOK,111,73,60,15,WS_GROUP
+    CTEXT           "CamStudio Recorder <VERSION>\n\nCopyright © 2001 RenderSoft Software and Web Publishing\nCopyright © 2008 CamStudio Group && Contributors\n\nBugfixes and additional features added by Nick the Geek\nMore bug fixes and support for Visual Studio 2005 added by Carlou?",IDC_STATIC_VERSION,7,97,267,56
     PUSHBUTTON      "Visit the CamStudio website",IDC_BUTTONLINK,36,162,102,33,BS_FLAT
     PUSHBUTTON      "Please donate to support Camstudio's development",IDC_BUTTONLINK2,144,162,102,33,BS_MULTILINE | BS_FLAT
 END

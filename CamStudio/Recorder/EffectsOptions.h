@@ -1,39 +1,18 @@
+// EffectsOptions.h
+// include file for CEffectsOptions dialog
+/////////////////////////////////////////////////////////////////////////////
+#ifndef EFFECTSOPTIONS_H	// because pragma once is compiler specific
+#define EFFECTSOPTIONS_H
+
 #pragma once
-//#include "annotationeffectsoptions.h"
+
+#include "TextAttributes.h"
+
+#ifndef IDD_EFFECTS_OPTIONS
+	#error include 'resource.h' before including this file for dialog resource
+#endif
 
 // CEffectsOptions dialog
-
-enum Position {
-	TOP_LEFT = 0,
-	TOP_CENTER = 1,
-	TOP_RIGHT = 2,
-	CENTER_LEFT = 3,
-	CENTER_CENTER = 4,
-	CENTER_RIGHT = 5,
-	BOTTOM_LEFT = 6,
-	BOTTOM_CENTER = 7,
-	BOTTOM_RIGHT = 8,
-};
-
-struct TextAttributes
-{
-	Position position;
-	CString text;
-	COLORREF backgroundColor;
-	COLORREF textColor;
-	int isFontSelected;
-	LOGFONT logfont;
-	const TextAttributes& operator=(const TextAttributes& obj)
-	{
-		text = obj.text;
-		memcpy(&logfont, &obj.logfont, sizeof(LOGFONT));
-		isFontSelected = obj.isFontSelected;
-		backgroundColor = obj.backgroundColor;
-		textColor = obj.textColor;
-		position = obj.position;
-		return *this;
-	}
-};
 
 class CEffectsOptions : public CDialog
 {
@@ -57,3 +36,5 @@ public:
 	//int m_Position;
 	TextAttributes m_params;
 };
+
+#endif	// EFFECTSOPTIONS_H
