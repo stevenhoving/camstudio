@@ -1,0 +1,7 @@
+Bugs.txt
+=======================================
+- Options-Record audio from Speakers:
+	WaveoutgetSelectedControl fails with an unknown error (1024)
+	Platform: (Vista) 
+- Audio Options for speakers dialog device names are truncated.
+	Platform: (Vista) 
