@@ -49,6 +49,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jbig", "CxImage\jbig\jbig.v
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libdcr", "CxImage\raw\libdcr.vcproj", "{EB5DAE08-55A0-413D-95C2-76AB86303B72}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6818B205-44B7-491D-8B28-9A18A2F4FB88}"
+	ProjectSection(SolutionItems) = preProject
+		TODO.txt = TODO.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32

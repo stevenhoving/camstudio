@@ -1,18 +1,15 @@
+// EffectsOptions2.h
+// include file for CEffectsOptions2 dialog
+/////////////////////////////////////////////////////////////////////////////
+#ifndef EFFECTSOPTIONS2_H	// because pragma once is compiler specific
+#define EFFECTSOPTIONS2_H
+
 #pragma once
+#include "ImageAttributes.h"
 
-#include "EffectsOptions.h"
-
-struct ImageAttributes
-{
-	Position position;
-	CString text;
-	const ImageAttributes& operator=(const ImageAttributes& obj)
-	{
-		text = obj.text;
-		position = obj.position;
-		return *this;
-	}
-};
+#ifndef IDD_EFFECTS_OPTIONS2
+	#error include 'resource.h' before including this file for dialog resource
+#endif
 
 // CEffectsOptions2 dialog
 
@@ -34,3 +31,5 @@ protected:
 public:
 	ImageAttributes m_params;
 };
+
+#endif	// EFFECTSOPTIONS2_H

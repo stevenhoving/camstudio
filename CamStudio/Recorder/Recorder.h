@@ -53,7 +53,7 @@ private:
 	HANDLE m_hAppMutex;
 	LANGID CurLangID;
 	CCamStudioCommandLineInfo m_cmdInfo;
-	CCamStudioSettings m_cmSettings;
+	CProfile m_cmSettings;
 
 	bool RegisterWindowClass();
 	BOOL FirstInstance();
