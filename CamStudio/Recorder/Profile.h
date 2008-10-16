@@ -115,7 +115,7 @@ protected:
 	}
 	bool Write(CString strFilename, CString strSection, CString strKeyName, int Value)
 	{
-		TRACE("Write File(int): %s\nSection: %s\nKey: %s\n, Value: %d\n", strFilename, strSection, strKeyName, Value);
+		TRACE("Write File(int): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, Value);
 		CString strValue;
 		strValue.Format("%d", Value);
 		return ::WritePrivateProfileString(strSection, strKeyName, strValue, strFilename)
@@ -123,7 +123,7 @@ protected:
 	}
 	bool Write(CString strFilename, CString strSection, CString strKeyName, bool Value)
 	{
-		TRACE("Write File(bool): %s\nSection: %s\nKey: %s\n, Value: %d\n", strFilename, strSection, strKeyName, Value);
+		TRACE("Write File(bool): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, Value);
 		CString strValue;
 		strValue.Format("%d", Value ? 1 : 0);
 		return ::WritePrivateProfileString(strSection, strKeyName, strValue, strFilename)
@@ -131,7 +131,7 @@ protected:
 	}
 	bool Write(CString strFilename, CString strSection, CString strKeyName, long Value)
 	{
-		TRACE("Write File(bool): %s\nSection: %s\nKey: %s\n, Value: %d\n", strFilename, strSection, strKeyName, Value);
+		TRACE("Write File(bool): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, Value);
 		CString strValue;
 		strValue.Format("%ld", Value);
 		return ::WritePrivateProfileString(strSection, strKeyName, strValue, strFilename)

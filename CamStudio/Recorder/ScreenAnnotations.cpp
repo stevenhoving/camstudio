@@ -8,6 +8,7 @@
 #include "NewShape.h"
 #include "LayoutList.h"
 #include "Keyshortcuts.h"
+#include "CStudioLib.h"
 
 CListManager gList;
 
@@ -59,7 +60,6 @@ extern CString shapeName;
 
 extern CString g_layoutName;
 extern int keySCOpened;
-extern CString GetProgPath();
 
 extern int currentLayout;
 
