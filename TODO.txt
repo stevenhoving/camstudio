@@ -1,0 +1,102 @@
+TODO.txt (There had to be one, right?)
+
+In no particular order:
+
+o	Scan code for "TODO" to find what to do.
+
+o	Code layout needs to be standardized. 
+	-	hungarian notiation for variable names (please!)
+		int				iValue;
+		char			chChar;
+		long			lValue;
+		unsigned int	uValue;
+		WORD			wValue;
+		DWORD			dwValue;
+		CString			strValue; (csValue if STL string used)
+		struct X		sxValue;
+		X *				pxValue;
+		
+	-	No underscores.		
+	-	First letter capitalized, e.g. iTextAttribute				
+	-	Generally tighten up the code
+	-	fewer blank lines
+	-	white space around operators
+	-	variable declarations at the closest scope to useage.
+	-	variable declarationa and intialization on one line
+	-	use the global scope operator
+	-	reduce 
+			gratuitous
+				code
+					drift
+						across
+							the
+								page
+	-	brace layout du jour
+		if (<exp>)
+		{
+			<stmt list>
+		}
+		else
+		{
+			<stmt list>
+		}
+	-	early exit if fine but has no "else"
+		if (<exp>)
+		{
+			<stmt list>
+			return;
+		}
+		// there is no else here!
+	
+	-	ASSERT only what should never be FALSE.
+	-	DO NOT ASSERT valid error states.
+	-	Use Trace statements liberally.
+	-	Debug new code and step through every line.
+	
+	I'm sure there's more here.
+
+o	Error handling. Use OnError() [see RecorderApp.cpp] for Windows errors (the others
+	functions are depreciated and wil be removed.) Create an overloaded OnError for
+	class or library specific errors.
+
+o	Look for header reduction. Class implementations files should have the class header
+	immediately following the standard project headers:
+	
+		#include "stdafx.h"
+		#include "project.h"	// Recorder.h, Producer.h, etc.
+		#include "class.h"
+		#include "other.h"		// headers required ONLY by the class impleentation
+		
+	-	Prefer forward delcarations in class headers to inclusion.
+	-	Angle brackets (i.e. #include <header.h>) for MS windows and MS library files.
+		All other use quoted names.
+
+o	Warning level 4 ONLY!
+
+o	Move global varaibles and functions into classes		
+
+o	Remove hard coded paths in include files, resources, etc. Use project settings instead.
+
+o	Prefer string Format to piecewise construction, e.g.,
+
+		CString strFileName = "MyFile.txt";
+		CString strProgPath = "\\Recorder\\";
+		CString strFullName = ::GetProgPath() + strProgPath + strFileName;
+		
+	can be done as,
+		
+		CString strFullName;
+		strFullName.Fromat("%s\\Recorder\\MyFile.txt", ::GetProgPath());
+		
+	And if later we do folder api's:
+	
+		strFullName.Fromat("%s%s\\MyFile.txt", ::GetProgPath(), ::TargetFolder());
+
+o	Initialize all variables.
+
+o	Fix unreachable code; don't just remove it. It probably needs to be refactored.
+
+o	Don't turn off warnings with pragmas without a comment why.
+
+o	Drop "TODO" comments freely in the code.
+o	Remove "TODO" comments from completed tasks or the superfluous "TODO: Add your code here."
