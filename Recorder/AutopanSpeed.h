@@ -1,6 +1,8 @@
 // AutopanSpeed.h : header file
 //
 /////////////////////////////////////////////////////////////////////////////
+#include "afxcmn.h"
+#include "afxwin.h"
 #if !defined(AFX_AUTOPANSPEED_H__49D4B2FA_02DF_4EAC_BA42_F2EEDEA2FE58__INCLUDED_)
 #define AFX_AUTOPANSPEED_H__49D4B2FA_02DF_4EAC_BA42_F2EEDEA2FE58__INCLUDED_
 
@@ -40,6 +42,9 @@ protected:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+private:
+	CSliderCtrl m_ctrlSliderPanSpeed;
+	CStatic m_ctrlStaticMaxSpeed;
 };
 
 //{{AFX_INSERT_LOCATION}}
