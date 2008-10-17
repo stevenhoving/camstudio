@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -21,15 +21,14 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
 #endif //_WIN32
 
-#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,3,1,1
- PRODUCTVERSION 1,3,1,1
+ FILEVERSION 1,4,0,0
+ PRODUCTVERSION 1,4,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -44,18 +43,13 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "See http://www.rendersoftware.com/\0"
-            VALUE "CompanyName", "RenderSoft Software.\0"
-            VALUE "FileDescription", "CamStudio lossless video codec\0"
-            VALUE "FileVersion", "1.0.0\0"
-            VALUE "InternalName", "CamCodec\0"
-            VALUE "LegalCopyright", "Copyright © 2003 RenderSoft Software and Web Publishing.\0"
-            VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "comcodec.dll\0"
-            VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "CamCodec\0"
-            VALUE "ProductVersion", "1.0.0\0"
-            VALUE "SpecialBuild", "\0"
+            VALUE "Comments", "CamStudio Lossless Video Codec"
+            VALUE "CompanyName", "CamStudio Group"
+            VALUE "FileDescription", "CamStudio Lossless Video Codec"
+            VALUE "FileVersion", "1.4.0.0"
+            VALUE "LegalCopyright", "Copyright © 2003 RenderSoft Software and Web Publishing, Copyright © 2008 CamStudio Group & Contributors"
+            VALUE "ProductName", "CamStudio Lossless Video Codec"
+            VALUE "ProductVersion", "1.4.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -64,8 +58,6 @@ BEGIN
     END
 END
 
-#endif    // !_MAC
-
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -73,18 +65,18 @@ END
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""winres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "\r\n"
     "\0"
@@ -98,47 +90,36 @@ END
 // Dialog
 //
 
-IDD_ABOUT DIALOG DISCARDABLE  0, 0, 205, 197
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_ABOUT DIALOG  0, 0, 205, 197
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About CamStudio Codec "
 FONT 8, "MS Sans Serif"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,63,167,73,14
-    CTEXT           "CamStudio Lossless Codec v1.0,\nCopyright 2003 RenderSoft Software",
-                    IDC_STATIC,22,22,162,20,SS_NOPREFIX
-    PUSHBUTTON      "http://www.rendersoftware.com",IDC_HOMEPAGE,20,47,168,
-                    14
-    LTEXT           "The source code for this codec is available at the above site and is released under the GNU General Public License, v2. ",
-                    IDC_STATIC,22,70,163,27
-    LTEXT           "This codec is based on the LZO compression library by Markus Franz Xaver Johannes Oberhumer, zlib compression library by Jean-loup Gailly and Mark Adler, and the HUFFYUV codec by Ben Rudiak-Gould.",
-                    IDC_STATIC,21,104,168,52
+    CTEXT           "CamStudio Lossless Codec v1.0,\nCopyright 2003 RenderSoft Software",IDC_STATIC,22,22,162,20,SS_NOPREFIX
+    PUSHBUTTON      "http://www.rendersoftware.com",IDC_HOMEPAGE,20,47,168,14
+    LTEXT           "The source code for this codec is available at the above site and is released under the GNU General Public License, v2. ",IDC_STATIC,22,70,163,27
+    LTEXT           "This codec is based on the LZO compression library by Markus Franz Xaver Johannes Oberhumer, zlib compression library by Jean-loup Gailly and Mark Adler, and the HUFFYUV codec by Ben Rudiak-Gould.",IDC_STATIC,21,104,168,52
     GROUPBOX        "CamStudio Codec",IDC_STATIC,7,3,191,187
 END
 
 IDD_CONFIGURE DIALOGEX 0, 0, 220, 190
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Encoding Options"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,7,169,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,60,169,50,14
-    CONTROL         "LZO    ( Fast encoding , use for screen capture )",
-                    IDC_RADIO1,"Button",BS_AUTORADIOBUTTON,23,18,174,18
+    CONTROL         "LZO    ( Fast encoding , use for screen capture )",IDC_RADIO1,
+                    "Button",BS_AUTORADIOBUTTON,23,18,174,18
     GROUPBOX        "Algorithm for Compression",IDC_STATIC,7,3,206,161
-    CONTROL         "GZIP  ",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON | 
-                    BS_MULTILINE,23,40,171,14
-    EDITTEXT        IDC_EDIT1,60,141,50,17,ES_AUTOHSCROLL | ES_READONLY | 
-                    ES_NUMBER
-    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | 
-                    UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,114,140,
-                    13,19
+    CONTROL         "GZIP  ",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON | BS_MULTILINE,23,40,171,14
+    EDITTEXT        IDC_EDIT1,60,141,50,17,ES_AUTOHSCROLL | ES_READONLY | ES_NUMBER
+    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,114,140,13,19
     LTEXT           "Level",IDC_STATIC,22,145,30,13,0,WS_EX_RIGHT
-    LTEXT           "When encoding with a third party application, remember to enable / force keyframes to take advantage of this codec's temporal compression. )",
-                    IDC_STATIC,35,104,171,33
-    LTEXT           "( Select this algorithm if an AVI already exists and you are converting the AVI or recompressing it with CamStudio codec. This algorithm is slower but produces a better compression ratio. ",
-                    IDC_STATIC,35,59,171,39
-    LTEXT           "1 - Fastest\n9 - Best Compression",IDC_STATIC,134,141,
-                    73,18
+    LTEXT           "When encoding with a third party application, remember to enable / force keyframes to take advantage of this codec's temporal compression. )",IDC_STATIC,35,104,171,33
+    LTEXT           "( Select this algorithm if an AVI already exists and you are converting the AVI or recompressing it with CamStudio codec. This algorithm is slower but produces a better compression ratio. ",IDC_STATIC,35,59,171,39
+    LTEXT           "1 - Fastest\n9 - Best Compression",IDC_STATIC,134,141,73,18
 END
 
 
@@ -148,7 +129,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO 
 BEGIN
     IDD_ABOUT, DIALOG
     BEGIN

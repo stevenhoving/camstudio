@@ -228,11 +228,23 @@
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath=".\Hook.h"
+			>
+		</File>
+		<File
 			RelativePath=".\hook.rc"
 			>
 		</File>
 		<File
 			RelativePath=".\resource.h"
+			>
+		</File>
+		<File
+			RelativePath=".\StdAfx.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\StdAfx.h"
 			>
 		</File>
 	</Files>

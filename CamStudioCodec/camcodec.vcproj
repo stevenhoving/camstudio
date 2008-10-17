@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="CamCodec"
 	ProjectGUID="{EE246C7E-6ABE-4228-96ED-A44DE8B8C6D7}"
+	RootNamespace="CamCodec"
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -57,7 +58,7 @@
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -74,7 +75,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib odbc32.lib odbccp32.lib"
-				OutputFile=".\Release/camcodec.dll"
+				OutputFile="$(SolutionDir)$(OutDir)\$(ProjectName).dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				ModuleDefinitionFile=".\camcodec.def"
@@ -149,7 +150,7 @@
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 			/>
@@ -167,7 +168,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib odbc32.lib odbccp32.lib"
-				OutputFile=".\Debug\camcodec.dll"
+				OutputFile="$(SolutionDir)$(OutDir)\$(ProjectName).dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				ModuleDefinitionFile=".\camcodec.def"
