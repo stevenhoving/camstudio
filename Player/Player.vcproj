@@ -60,7 +60,7 @@
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -231,11 +231,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Player.ico"
+			RelativePath="..\GlobalResources\Player.ico"
 			>
 		</File>
 		<File
-			RelativePath="..\GlobalResources\Player.ico"
+			RelativePath=".\Player.ico"
 			>
 		</File>
 		<File

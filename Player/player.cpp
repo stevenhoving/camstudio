@@ -406,13 +406,14 @@ void OpenMCIMovieFileInit(HWND hWnd)
  */
 BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(lParam);
+
 	switch (msg)
 	{
 		case WM_COMMAND:
 			if (wParam == 1055)
 			{
-				LPCTSTR mode = "open";
-				ShellExecute(NULL, mode, "http://www.camstudio.org/", NULL, NULL, SW_SHOW);
+				ShellExecute(NULL, "open", "http://www.camstudio.org/", NULL, NULL, SW_SHOW);
 			}
 			else
 			{
