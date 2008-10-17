@@ -89,7 +89,7 @@ void CTrayIcon::TraySetToolTip(LPCTSTR lpszToolTip)
 {
 	ASSERT((strlen(lpszToolTip) > 0) && (strlen(lpszToolTip) < 64));
 
-	strcpy(m_nid.szTip, lpszToolTip);
+	strcpy_s(m_nid.szTip, lpszToolTip);
 	m_nid.uFlags |= NIF_TIP;
 }
 
