@@ -473,11 +473,12 @@ BOOL finalRestoreMMMode()
 //it does not have restoreWave at the beginning to protect it from use when the mixer is already opened
 BOOL initialSaveMMMode()
 {
+	BOOL bResult = FALSE;
 	//Safety code
-	if ((waveInGetNumDevs() == 0) || (waveOutGetNumDevs() == 0) || (mixerGetNumDevs() == 0)) {
+	if (!waveInGetNumDevs() || !waveOutGetNumDevs() || !mixerGetNumDevs()) {
 		//Do not proceed with mixer code unless soundcard with mic/speaker is detected
 		TRACE("initialSaveMMMode: no devices!\n");
-		return FALSE;
+		return bResult;
 	}
 
 	//select the waveout as recording source
@@ -487,7 +488,7 @@ BOOL initialSaveMMMode()
 		// ***************************************
 		if (!cAudioMixer.isValid()) {
 			TRACE("initialSaveMMMode: WaveoutInitialize failed\n");
-			return FALSE;
+			return bResult;
 		}
 
 		// get dwLineID
@@ -498,7 +499,7 @@ BOOL initialSaveMMMode()
 		MMRESULT mmResult = cAudioMixer.GetLineInfo(&mxl, (MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_COMPONENTTYPE));
 		if (MMSYSERR_NOERROR != mmResult) {
 			OnError("initialSaveMMMode: mixerGetLineInfo");
-			return FALSE;
+			return bResult;
 		}
 
 		// get dwControlID
@@ -524,7 +525,7 @@ BOOL initialSaveMMMode()
 			mmResult = cAudioMixer.GetLineControls(&mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE);
 			if (MMSYSERR_NOERROR != mmResult) {
 				OnError("initialSaveMMMode: mixerGetLineControls");
-				return FALSE;
+				return bResult;
 			}
 		}
 
@@ -535,110 +536,124 @@ BOOL initialSaveMMMode()
 		m_dwMultipleItems = mxc.cMultipleItems;
 
 		if (m_dwMultipleItems == 0)
-			return FALSE;
+		{
+			return bResult;
+		}
 
 		// ****************
 		// Save mixer array
 		// ****************
 		if (!cAudioMixer.isValid() || m_dwMultipleItems == 0)
-			return FALSE;
-
-		BOOL bRetVal = FALSE;
+		{
+			return bResult;
+		}
 
 		MIXERCONTROLDETAILS_BOOLEAN *pmxcdSelectValue = new MIXERCONTROLDETAILS_BOOLEAN[m_dwMultipleItems];
 		if (pmxcdSelectValue != NULL) {
 			MIXERCONTROLDETAILS mxcd;
+			::ZeroMemory(&mxcd, sizeof(MIXERCONTROLDETAILS));
 			mxcd.cbStruct = sizeof(MIXERCONTROLDETAILS);
 			mxcd.dwControlID = m_dwSelectControlID;
 			mxcd.cChannels = 1;
 			mxcd.cMultipleItems = m_dwMultipleItems;
 			mxcd.cbDetails = sizeof(MIXERCONTROLDETAILS_BOOLEAN);
 			mxcd.paDetails = pmxcdSelectValue;
-			if (MMSYSERR_NOERROR == cAudioMixer.GetControlDetails(&mxcd, MIXER_OBJECTF_HMIXER | MIXER_GETCONTROLDETAILSF_VALUE)) {
+			MMRESULT mmResult = cAudioMixer.GetControlDetails(&mxcd, MIXER_OBJECTF_HMIXER | MIXER_GETCONTROLDETAILSF_VALUE);
+			if (MMSYSERR_NOERROR == mmResult)
+			{
 				if (m_SelectArrayInitialState)
+				{
 					delete []m_SelectArrayInitialState;
+				}
 
-				m_SelectArrayInitialState=pmxcdSelectValue;
-				bRetVal = TRUE;
+				m_SelectArrayInitialState = pmxcdSelectValue;
+				bResult = TRUE;
 			}
 		}
 
 		WaveoutUninitialize();
-
-		return bRetVal;
-	} else {
-		return FALSE;
 	}
 
-	return TRUE;
+	return bResult;
 }
 
-//use this function only inside WaveoutGetSelectControl()
-//passing MIXERLINE_COMPONENTTYPE_SRC_ANALOG to this function indicates not onl that we are only searching for this line
-//but also, if we cannot find it, we should also try to find for MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT
+// use this function only inside WaveoutGetSelectControl()
+// passing MIXERLINE_COMPONENTTYPE_SRC_ANALOG to this function indicates not only that we are
+// only searching for this line but also, if we cannot find it, we should also try to find for
+// MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT
 BOOL WaveoutSearchSrcLine(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToSearch,CString namesearch,int feedback_skip_namesearch)
 {
-	BOOL retval=FALSE;
+	BOOL bResult = FALSE;
 
-	//This code allows the manual config to override the 2 pass searching
-	if (lineToSearch==MIXERLINE_COMPONENTTYPE_SRC_ANALOG) { //if searching for speakers line
-		if (iFeedbackLine>=0) {
+	// This code allows the manual config to override the 2 pass searching
+
+	// if searching for speakers line
+	if (lineToSearch == MIXERLINE_COMPONENTTYPE_SRC_ANALOG)
+	{
+		bResult = (0 <= iFeedbackLine);
+		if (bResult)
+		{
 			m_dwIndex = iFeedbackLine;
 
-			//not necessary because the validity of iFeedbackLine ==> iFeedbackLineInfo is also valid
-			//iFeedbackLineInfo = pmxcdSelectText[m_dwIndex].dwParam1;
-
-			return TRUE;
+			// not necessary because the validity of iFeedbackLine ==> iFeedbackLineInfo
+			// is also valid
+			// iFeedbackLineInfo = pmxcdSelectText[m_dwIndex].dwParam1;
+			return bResult;
 		}
 	}
 
-	//1st Pass Search (Name Search)
-	if (!feedback_skip_namesearch) { //if skip the first pass
+	// 1st Pass Search (Name Search)
+	if (!feedback_skip_namesearch)	// if skip the first pass
+	{
 		// determine which line controls the speaker feedback source
-		for (DWORD dwi = 0; dwi < m_dwMultipleItems; dwi++) {
+		for (DWORD dwi = 0; !bResult && dwi < m_dwMultipleItems; dwi++)
+		{
 			// get the line information
 			MIXERLINE mxl;
 			mxl.cbStruct = sizeof(MIXERLINE);
 			mxl.dwLineID = pmxcdSelectText[dwi].dwParam1;
 			MMRESULT mmResult = cAudioMixer.GetLineInfo(&mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_LINEID);
-			if (MMSYSERR_NOERROR == mmResult) {
-				if ((mxl.dwComponentType == lineToSearch) || ((mxl.dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT) && (lineToSearch==MIXERLINE_COMPONENTTYPE_SRC_ANALOG))) {
-					//if match
-					//or if don't match, but we are searching for waveout, and that dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT
+			if (MMSYSERR_NOERROR == mmResult)
+			{
+				if ((mxl.dwComponentType == lineToSearch)
+					|| ((mxl.dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT)
+					&& (lineToSearch == MIXERLINE_COMPONENTTYPE_SRC_ANALOG)))
+				{
+					// if match
+					// or if don't match, but we are searching for waveout,
+					// and that dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT
 
 					m_strMicName = pmxcdSelectText[dwi].szName;
 
-					if (namesearch!="") {
-						if (m_strMicName==namesearch) {
+					if (namesearch != "")
+					{
+						if (m_strMicName == namesearch)
+						{
 							// found, dwi is the index.
-							retval=TRUE;
+							bResult = TRUE;
 							m_dwIndex = dwi;
 							iFeedbackLine = m_dwIndex;
 							iFeedbackLineInfo = pmxcdSelectText[m_dwIndex].dwParam1;
 							//::MessageBox(NULL,m_strMicName,"Note",MB_OK |MB_ICONEXCLAMATION);
-							break;
 						}
 					} else {
-						retval=TRUE;
+						bResult = TRUE;
 						m_dwIndex = dwi;
-						break;
 					}
-				} //if coponent match
-
-			} //if GetlineInfo succeeded
-
-		} // for each items
+				}
+			}
+		}
 	}
 
-	//2nd Pass Search
-	//if line not found, if recording from microphone ...do nothing
-	//if line not found, if recording from speakers ...do a automatic search
+	// 2nd Pass Search
+	// if line not found, if recording from microphone ...do nothing
+	// if line not found, if recording from speakers ...do a automatic search
 	if (manual_mode)
-		ManualSearch(pmxcdSelectText,lineToSearch,namesearch);
+		ManualSearch(pmxcdSelectText, lineToSearch, namesearch);
 	else
-		AutomaticSearch(pmxcdSelectText,lineToSearch,namesearch);
+		AutomaticSearch(pmxcdSelectText, lineToSearch, namesearch);
 
-	return retval;
+	return bResult;
 }
 
 BOOL configWaveOutManual()
