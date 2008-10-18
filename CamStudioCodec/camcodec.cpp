@@ -102,7 +102,7 @@ Comments) 1950 to 1952 in the files ftp://ds.internic.net/rfc/rfc1950.txt
 #include "zlib/zlib.h"
 #include <stdio.h>
 
-TCHAR szDescription[] = TEXT("CamStudio Lossless Codec v1.4");
+TCHAR szDescription[] = TEXT("CamStudio Lossless Codec v1.5");
 TCHAR szName[]        = TEXT("CamCodec");
 
 #define HEAP_ALLOC(var,size) \

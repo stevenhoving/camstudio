@@ -27,8 +27,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,4,0,0
- PRODUCTVERSION 1,4,0,0
+ FILEVERSION 1,5,0,0
+ PRODUCTVERSION 1,5,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -46,10 +46,10 @@ BEGIN
             VALUE "Comments", "CamStudio Lossless Video Codec"
             VALUE "CompanyName", "CamStudio Group"
             VALUE "FileDescription", "CamStudio Lossless Video Codec"
-            VALUE "FileVersion", "1.4.0.0"
+            VALUE "FileVersion", "1.5.0.0"
             VALUE "LegalCopyright", "Copyright © 2003 RenderSoft Software and Web Publishing, Copyright © 2008 CamStudio Group & Contributors"
             VALUE "ProductName", "CamStudio Lossless Video Codec"
-            VALUE "ProductVersion", "1.4.0.0"
+            VALUE "ProductVersion", "1.5.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -90,36 +90,37 @@ END
 // Dialog
 //
 
-IDD_ABOUT DIALOG  0, 0, 205, 197
+IDD_ABOUT DIALOGEX 0, 0, 230, 201
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About CamStudio Codec "
-FONT 8, "MS Sans Serif"
+CAPTION "About CamStudio Lossless Video Codec "
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,63,167,73,14
-    CTEXT           "CamStudio Lossless Codec v1.0,\nCopyright 2003 RenderSoft Software",IDC_STATIC,22,22,162,20,SS_NOPREFIX
-    PUSHBUTTON      "http://www.rendersoftware.com",IDC_HOMEPAGE,20,47,168,14
-    LTEXT           "The source code for this codec is available at the above site and is released under the GNU General Public License, v2. ",IDC_STATIC,22,70,163,27
-    LTEXT           "This codec is based on the LZO compression library by Markus Franz Xaver Johannes Oberhumer, zlib compression library by Jean-loup Gailly and Mark Adler, and the HUFFYUV codec by Ben Rudiak-Gould.",IDC_STATIC,21,104,168,52
-    GROUPBOX        "CamStudio Codec",IDC_STATIC,7,3,191,187
+    DEFPUSHBUTTON   "OK",IDOK,85,171,60,15
+    CTEXT           "CamStudio Lossless Video Codec v1.5\nCopyright © 2003 RenderSoft Software and Web Publishing, Copyright © 2008 CamStudio Group & Contributors",IDC_STATIC,7,24,216,24,SS_NOPREFIX
+    PUSHBUTTON      "Visit the CamStudio website",IDC_HOMEPAGE,30,56,170,15
+    CTEXT           "The source code for this codec is available at the above site and is released under the GNU General Public License, v2. ",IDC_STATIC,7,78,216,16
+    CTEXT           "This codec is based on the LZO compression library by Markus Franz Xaver Johannes Oberhumer, zlib compression library by Jean-loup Gailly and Mark Adler, and the HUFFYUV codec by Ben Rudiak-Gould.",IDC_STATIC,7,102,216,32
+    CTEXT           "The codec operates in RGB mode and is able to compress 16, 24 and 32 bit RGB bitmaps.",IDC_STATIC,7,142,216,16
+    GROUPBOX        "CamStudio Lossless Video Codec",IDC_STATIC,7,7,216,187
 END
 
-IDD_CONFIGURE DIALOGEX 0, 0, 220, 190
+IDD_CONFIGURE DIALOGEX 0, 0, 220, 201
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Encoding Options"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,7,169,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,60,169,50,14
-    CONTROL         "LZO    ( Fast encoding , use for screen capture )",IDC_RADIO1,
-                    "Button",BS_AUTORADIOBUTTON,23,18,174,18
-    GROUPBOX        "Algorithm for Compression",IDC_STATIC,7,3,206,161
-    CONTROL         "GZIP  ",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON | BS_MULTILINE,23,40,171,14
-    EDITTEXT        IDC_EDIT1,60,141,50,17,ES_AUTOHSCROLL | ES_READONLY | ES_NUMBER
-    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,114,140,13,19
-    LTEXT           "Level",IDC_STATIC,22,145,30,13,0,WS_EX_RIGHT
-    LTEXT           "When encoding with a third party application, remember to enable / force keyframes to take advantage of this codec's temporal compression. )",IDC_STATIC,35,104,171,33
-    LTEXT           "( Select this algorithm if an AVI already exists and you are converting the AVI or recompressing it with CamStudio codec. This algorithm is slower but produces a better compression ratio. ",IDC_STATIC,35,59,171,39
-    LTEXT           "1 - Fastest\n9 - Best Compression",IDC_STATIC,134,141,73,18
+    DEFPUSHBUTTON   "OK",IDOK,110,179,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,163,179,50,14
+    CONTROL         "LZO (Fast encoding, use for screen capture)",IDC_RADIO1,
+                    "Button",BS_AUTORADIOBUTTON,24,24,150,8
+    GROUPBOX        "Algorithm for compression",IDC_STATIC,7,7,206,165
+    CONTROL         "GZIP",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON | BS_MULTILINE,24,40,27,8
+    EDITTEXT        IDC_EDIT1,56,148,50,12,ES_AUTOHSCROLL | ES_READONLY | ES_NUMBER
+    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | UDS_AUTOBUDDY | UDS_ARROWKEYS,106,148,11,12
+    LTEXT           "Level",IDC_STATIC,35,150,17,8
+    LTEXT           "When encoding with a third party application, remember to enable/force keyframes to take advantage of this codec's temporal compression, otherwise each frame will be stored as a key frame and the resulting file size will be very large.",IDC_STATIC,35,96,153,40
+    LTEXT           "Select this algorithm if an AVI already exists and you are converting the AVI or recompressing it with the CamStudio codec. This algorithm is slower but produces a better compression ratio.",IDC_STATIC,35,56,159,32
+    LTEXT           "1 - Fastest\n9 - Best Compression",IDC_STATIC,121,146,66,16
 END
 
 
@@ -134,9 +135,9 @@ BEGIN
     IDD_ABOUT, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 198
+        RIGHTMARGIN, 223
         TOPMARGIN, 7
-        BOTTOMMARGIN, 190
+        BOTTOMMARGIN, 194
     END
 
     IDD_CONFIGURE, DIALOG
@@ -144,7 +145,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 213
         TOPMARGIN, 7
-        BOTTOMMARGIN, 183
+        BOTTOMMARGIN, 193
     END
 END
 #endif    // APSTUDIO_INVOKED
