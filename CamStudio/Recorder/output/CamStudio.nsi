@@ -1,20 +1,42 @@
-;NSIS Modern User Interface
-;Start Menu Folder Selection Example Script
-;Written by Joost Verburg
-
 ;--------------------------------
 ;Include Modern UI
 
 	!include "MUI2.nsh"
 
 ;--------------------------------
+;Constants
+
+	!define MUI_ICON "..\GlobalResources\Recorder.ico"
+	!define MUI_UNICON "..\GlobalResources\Uninstall.ico"
+	
+	!define COPYRIGHT_YEARS "2008"
+	
+	!define CAMST_VERSION "2.6.0.0"
+	!define CAMST_VERSION_SHORT "2.6"
+	!define CODEC_VERSION_SHORT "1.5"
+
+;--------------------------------
+;Language strings
+	
+	;English
+	LangString LANG_Name ${LANG_ENGLISH} "CamStudio Desktop Screen Recorder" ;Name of the installer
+	LangString LANG_SecCoreFiles ${LANG_ENGLISH} "Core files required for CamStudio to operate." ;Core files section description
+	LangString LANG_SecCodec ${LANG_ENGLISH} "The CamStudio Lossless Video Codec ${CODEC_VERSION_SHORT}. Recommended." ;Codec description
+	LangString LANG_CaptionPlayerClassic ${LANG_ENGLISH} "CamStudio Player Classic"
+	LangString LANG_CaptionPlayerPlus ${LANG_ENGLISH} "CamStudio PlayerPlus"
+	LangString LANG_CaptionProducer ${LANG_ENGLISH} "CamStudio SWF Producer"
+	LangString LANG_CaptionRecorder ${LANG_ENGLISH} "CamStudio Recorder"
+	LangString LANG_CaptionUninstall ${LANG_ENGLISH} "Uninstall CamStudio"
+	LangString LANG_UninstallCodec ${LANG_ENGLISH} "Do you wish to uninstall the CamStudio Lossless Video Codec ${CODEC_VERSION_SHORT}?"
+	LangString LANG_UninstallError ${LANG_ENGLISH} "There was a serious error uninstalling CamStudio. Please visit www.camstudio.org for assistance."
+	LangString LANG_Codec ${LANG_ENGLISH} "Codec"
+
+;--------------------------------
 ;General
 
 	;Name, file, icon
-	Name "CamStudio Desktop Screen Recorder"
-	OutFile "CamStudioInstall.exe"
-	!define MUI_ICON "..\GlobalResources\Recorder.ico"
-	!define MUI_UNICON "..\GlobalResources\Recorder.ico"
+	Name $(LANG_NAME)
+	OutFile "CamStudioInstall${CAMST_VERSION_SHORT}.exe"
 
 	;Default installation folder
 	InstallDir "$PROGRAMFILES\CamStudio"
@@ -28,13 +50,13 @@
 ;--------------------------------
 ;Version
 
-	VIProductVersion "2.6.0.0"
+	VIProductVersion ${CAMST_VERSION}
 	VIAddVersionKey "ProductName" "CamStudio Desktop Screen Recorder"
 	VIAddVersionKey "Comments" "CamStudio Desktop Screen Recorder"
 	VIAddVersionKey "CompanyName" "CamStudio Group"
-	VIAddVersionKey "LegalCopyright" "Copyright © 2008 CamStudio Group & Contributors"
+	VIAddVersionKey "LegalCopyright" "Copyright © ${COPYRIGHT_YEARS} CamStudio Group & Contributors"
 	VIAddVersionKey "FileDescription" "CamStudio Desktop Screen Recorder"
-	VIAddVersionKey "FileVersion" "2.6.0.0"
+	VIAddVersionKey "FileVersion" ${CAMST_VERSION}
 
 ;--------------------------------
 ;Variables
@@ -60,11 +82,8 @@
 
 	!insertmacro MUI_UNPAGE_CONFIRM
 	!insertmacro MUI_UNPAGE_INSTFILES
-
-;--------------------------------
-;Languages
- 
-  !insertmacro MUI_LANGUAGE "English"
+	
+	!insertmacro MUI_LANGUAGE "English"
 
 ;--------------------------------
 ;Installer Sections
@@ -88,52 +107,77 @@
 		File "stlport_vc645.dll"
 		File "testsnd.wav"
 		File "WhatsNew.htm"
+		WriteUninstaller "Uninstall.exe"
 		!insertmacro MUI_STARTMENU_WRITE_BEGIN Application
 		CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
 		CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Recorder.lnk" "$INSTDIR\Recorder.exe" \
 		"" "$INSTDIR\Recorder.exe" 0 SW_SHOWNORMAL \
-		ALT|CONTROL|SHIFT|F5 "CamStudio Recorder"
-		CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Player.lnk" "$INSTDIR\Player.exe" \
+		"" $(LANG_CaptionRecorder)
+		CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Player Classic.lnk" "$INSTDIR\Player.exe" \
 		"" "$INSTDIR\Player.exe" 0 SW_SHOWNORMAL \
-		ALT|CONTROL|SHIFT|F5 "CamStudio Player"
+		"" $(LANG_CaptionPlayerClassic)
 		CreateShortCut "$SMPROGRAMS\$StartMenuFolder\PlayerPlus.lnk" "$INSTDIR\PlayerPlus.exe" \
 		"" "$INSTDIR\PlayerPlus.exe" 0 SW_SHOWNORMAL \
-		ALT|CONTROL|SHIFT|F5 "CamStudio PlayerPlus"
+		"" $(LANG_CaptionPlayerPlus)
 		CreateShortCut "$SMPROGRAMS\$StartMenuFolder\SWF Producer.lnk" "$INSTDIR\Producer.exe" \
 		"" "$INSTDIR\Producer.exe" 0 SW_SHOWNORMAL \
-		ALT|CONTROL|SHIFT|F5 "CamStudio SWF Producer"
+		"" $(LANG_CaptionProducer)
 		CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\Uninstall.exe" \
 		"" "$INSTDIR\Uninstall.exe" 0 SW_SHOWNORMAL \
-		ALT|CONTROL|SHIFT|F5 "Uninstall"
+		"" $(LANG_CaptionUninstall)
 		!insertmacro MUI_STARTMENU_WRITE_END
-		WriteUninstaller "Uninstall.exe"
 	SectionEnd
 
-	Section /o "CamStudio Codec" SecCodec
-		SectionIn RO
-		;SetOutPath $INSTDIR
-		;File "..."
+	Section "CamStudio $(LANG_Codec)" SecCodec
+		SetOutPath $SYSDIR
+		File "CamCodec.dll"
 	SectionEnd
 
 ;--------------------------------
 ;Descriptions
 
-	;Language strings
-	LangString DESC_SecCoreFiles ${LANG_ENGLISH} "Core files required for CamStudio to operate."
-	LangString DESC_SecCodec ${LANG_ENGLISH} "The CamStudio lossless video codec, version 1.4. Recommended."
-
 	;Assign language strings to sections
 	!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-	!insertmacro MUI_DESCRIPTION_TEXT ${SecCoreFiles} $(DESC_SecCoreFiles)
-	!insertmacro MUI_DESCRIPTION_TEXT ${SecCodec} $(DESC_SecCodec)
+	!insertmacro MUI_DESCRIPTION_TEXT ${SecCoreFiles} $(LANG_SecCoreFiles)
+	!insertmacro MUI_DESCRIPTION_TEXT ${SecCodec} $(LANG_SecCodec)
 	!insertmacro MUI_FUNCTION_DESCRIPTION_END
  
 ;--------------------------------
 ;Uninstaller Section
 
+	;Uninstall path safety check
+	!macro BadPathsCheck
+	StrCpy $R0 $INSTDIR "" -2
+	StrCmp $R0 ":\" bad
+	StrCpy $R0 $INSTDIR "" -14
+	StrCmp $R0 "\Program Files" bad
+	StrCpy $R0 $INSTDIR "" -8
+	StrCmp $R0 "\Windows" bad
+	StrCpy $R0 $INSTDIR "" -6
+	StrCmp $R0 "\WinNT" bad
+	StrCpy $R0 $INSTDIR "" -9
+	StrCmp $R0 "\system32" bad
+	StrCpy $R0 $INSTDIR "" -8
+	StrCmp $R0 "\Desktop" bad
+	StrCpy $R0 $INSTDIR "" -22
+	StrCmp $R0 "\Documents and Settings" bad
+	StrCpy $R0 $INSTDIR "" -13
+	StrCmp $R0 "\My Documents" bad done
+	bad:
+		MessageBox MB_OK|MB_ICONSTOP $(LANG_UninstallError)
+		Abort
+	done:
+	!macroend
+	
 	Section "Uninstall"
+		;Make sure the uninstall path isn't dangerous
+		!insertmacro BadPathsCheck
+		
 		Delete "$INSTDIR\Uninstall.exe"
 		!insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
 		RMDir /r "$INSTDIR"
 		RMDir /r "$SMPROGRAMS\$StartMenuFolder"
+		IfFileExists "$SYSDIR\CamCodec.dll" 0 +2
+			MessageBox MB_YESNO $(LANG_UninstallCodec) IDYES true
+				true: Delete "$SYSDIR\CamCodec.dll"
 	SectionEnd

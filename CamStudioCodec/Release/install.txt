@@ -1,7 +1,0 @@
-CamStudio Lossless Codec v1.0
-Copyright 2003 RenderSoft Software
-
-
-Installation
-============
-To install this codec, right click on the file camcodec.inf and select install

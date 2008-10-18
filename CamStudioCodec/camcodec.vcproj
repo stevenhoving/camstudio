@@ -544,6 +544,10 @@
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath=".\resource.h"
+			>
+		</File>
+		<File
 			RelativePath="zlib\trees.c"
 			>
 			<FileConfiguration
