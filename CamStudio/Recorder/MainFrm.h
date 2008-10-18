@@ -22,7 +22,7 @@ public:
 
 // Operations
 public:
-	void UpdateViewtype() ;
+	void UpdateViewtype();
 
 // Overrides
 	// ClassWizard generated virtual function overrides

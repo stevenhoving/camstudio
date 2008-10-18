@@ -13,10 +13,10 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-int currentLayoutID = 1;
-CString g_layoutName("Layout_");
+int iCurrentLayoutID = 1;
+CString strLayoutName("Layout_");
 
-extern CListManager gList;
+extern CListManager ListManager;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -25,16 +25,16 @@ extern CListManager gList;
 CLayoutList::CLayoutList()
 {
 
-	uniqueID = currentLayoutID;
-	currentLayoutID++;
-	if (currentLayoutID > 2147483647)
-		currentLayoutID = 0;
+	uniqueID = iCurrentLayoutID;
+	iCurrentLayoutID++;
+	if (iCurrentLayoutID > 2147483647)
+		iCurrentLayoutID = 0;
 
 	//layoutName.Format("Layout_%d",uniqueID);
 	//CString layoutIntStr;
 	//layoutIntStr.Format("%d",iLayoutNameInt);
-	//layoutName = g_layoutName + layoutIntStr;
-	//iLayoutNameInt++ ;
+	//layoutName = strLayoutName + layoutIntStr;
+	//iLayoutNameInt++;
 	//if (iLayoutNameInt > 2147483647)
 	// iLayoutNameInt = 1;
 
@@ -57,7 +57,7 @@ BOOL CLayoutList::SaveLayoutToFile(FILE *fptr)
 	fwrite( (void *) &len, sizeof(int), 1, fptr );
 	fwrite( (void *) LPCTSTR(layoutName), len, 1, fptr );
 
-	gList.SaveLayoutArrayToFile(layoutArrayPtr , fptr);
+	ListManager.SaveLayoutArrayToFile(layoutArrayPtr , fptr);
 
 	return 1;
 
@@ -85,7 +85,7 @@ BOOL CLayoutList::LoadLayoutFromFile(FILE *fptr)
 
 	if (layoutArrayPtr==NULL)
 		layoutArrayPtr = new CArray<CTransparentWnd *,CTransparentWnd *>;
-	gList.LoadLayoutArrayFromFile(layoutArrayPtr , fptr);
+	ListManager.LoadLayoutArrayFromFile(layoutArrayPtr , fptr);
 
 	if (layoutversion>1)
 	{

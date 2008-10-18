@@ -422,7 +422,7 @@ CLayoutList * CListManager::CloneLayout(CLayoutList * itemLayout)
 			if (newLayout) {
 
 				newLayout->layoutArrayPtr = cloneArray;
-				//gList.AddLayoutArray(newLayout);
+				//ListManager.AddLayoutArray(newLayout);
 				newLayout->layoutName = itemLayout->layoutName;
 
 			}
@@ -555,7 +555,7 @@ int CListManager::LoadLayout(CString loadDir)
 		{
 
 			FreeLayoutArray();
-			for (int i=0; i<max ; i++)
+			for (int i=0; i<max; i++)
 			{
 
 				CLayoutList * itemLayout = new CLayoutList;
@@ -696,7 +696,7 @@ int CListManager::LoadLayoutArrayFromFile(CArray<CTransparentWnd *,CTransparentW
 	if ((max>0) && (max<10000))
 	{
 
-		for (int i=0; i<max ; i++)
+		for (int i=0; i<max; i++)
 		{
 
 			CTransparentWnd * itemWnd = new CTransparentWnd;

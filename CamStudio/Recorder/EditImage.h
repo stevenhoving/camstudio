@@ -58,6 +58,9 @@ protected:
 	afx_msg void OnLoad();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+private:
+	HCURSOR m_hCursorCross;
+	HCURSOR m_hCursorArrow;
 };
 
 //{{AFX_INSERT_LOCATION}}

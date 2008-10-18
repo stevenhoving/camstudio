@@ -144,8 +144,8 @@ void Keyshortcuts::OnOK()
 {
 	// TODO: Add extra validation here
 
-	int key1 = 0 ;
-	int key2 = 0 ;
+	int key1 = 0;
+	int key2 = 0;
 	if (TestKeysOverlap( key1, key2))
 	{
 		if ((key1>=0) && (key1<numkeys) && (key2>=0) && (key2<numkeys))
@@ -408,24 +408,24 @@ UINT Keyshortcuts::GetCode(int index)
 	case 45 : vcode = '8'; break;
 	case 46 : vcode = '9'; break;
 	case 47 : vcode = '0'; break;
-	case 48 : vcode = VK_NUMPAD0 ; break;
-	case 49 : vcode = VK_NUMPAD1 ; break;
-	case 50 : vcode = VK_NUMPAD2 ; break;
-	case 51 : vcode = VK_NUMPAD3 ; break;
-	case 52 : vcode = VK_NUMPAD4 ; break;
-	case 53 : vcode = VK_NUMPAD5 ; break;
-	case 54 : vcode = VK_NUMPAD6 ; break;
-	case 55 : vcode = VK_NUMPAD7 ; break;
-	case 56 : vcode = VK_NUMPAD8 ; break;
-	case 57 : vcode = VK_NUMPAD9 ; break;
-	case 58 : vcode = VK_HOME ; break;
-	case 59 : vcode = VK_INSERT ; break;
-	case 60 : vcode = VK_DELETE ; break;
-	case 61 : vcode = VK_END ; break;
-	case 62 : vcode = VK_RETURN ; break;
-	case 63 : vcode = VK_SPACE ; break;
-	case 64 : vcode = VK_TAB ; break;
-	case 65 : vcode = 100000 ; break;
+	case 48 : vcode = VK_NUMPAD0; break;
+	case 49 : vcode = VK_NUMPAD1; break;
+	case 50 : vcode = VK_NUMPAD2; break;
+	case 51 : vcode = VK_NUMPAD3; break;
+	case 52 : vcode = VK_NUMPAD4; break;
+	case 53 : vcode = VK_NUMPAD5; break;
+	case 54 : vcode = VK_NUMPAD6; break;
+	case 55 : vcode = VK_NUMPAD7; break;
+	case 56 : vcode = VK_NUMPAD8; break;
+	case 57 : vcode = VK_NUMPAD9; break;
+	case 58 : vcode = VK_HOME; break;
+	case 59 : vcode = VK_INSERT; break;
+	case 60 : vcode = VK_DELETE; break;
+	case 61 : vcode = VK_END; break;
+	case 62 : vcode = VK_RETURN; break;
+	case 63 : vcode = VK_SPACE; break;
+	case 64 : vcode = VK_TAB; break;
+	case 65 : vcode = 100000; break;
 	}
 
 	return vcode;

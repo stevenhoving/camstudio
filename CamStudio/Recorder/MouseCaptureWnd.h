@@ -17,7 +17,7 @@ extern int iDefineMode;
 extern UINT uKeyRecordCancel;
 extern POINT ptOrigin;
 extern BOOL bCapturing;
-extern BOOL AllowNewRecordStartKey;
+extern BOOL bAllowNewRecordStartKey;
 
 extern HBITMAP hSavedBitmap;
 
