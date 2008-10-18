@@ -116,7 +116,7 @@ void CEditTransparency::OnCancel()
 {
 	// TODO: Add extra cleanup here
 	*m_enableTrans = m_backup_enableTrans;
-	*m_valTrans = m_backup_valTrans ;
+	*m_valTrans = m_backup_valTrans;
 
 	if (m_myparent)
 		((CTransparentWnd *) m_myparent)->InvalidateTransparency();

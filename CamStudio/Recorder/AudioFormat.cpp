@@ -135,7 +135,7 @@ void AudioFormat::OnOK()
 
 						bAudioCompression = m_bAudioCompression;
 
-						//Update the external pwfx (compressed format) ;
+						//Update the external pwfx (compressed format);
 						dwCbwFX = m_cbwfx;
 						memcpy( (void *) pwfx, (void *) m_pwfx, m_cbwfx );
 
@@ -192,7 +192,7 @@ BOOL AudioFormat::OnInitDialog()
 	//Generate device list
 	m_iNumDevice = 0;
 	m_devicemap[m_iNumDevice] = WAVE_MAPPER;
-	m_iNumDevice ++ ;
+	m_iNumDevice ++;
 
 	m_ctrlCBInputDevice.ResetContent( );
 	m_ctrlCBInputDevice.AddString("Default input device");
@@ -204,7 +204,7 @@ BOOL AudioFormat::OnInitDialog()
 		if (mmr == MMSYSERR_NOERROR) {
 			m_ctrlCBInputDevice.AddString(wicaps.szPname);
 			m_devicemap[m_iNumDevice] = i;
-			m_iNumDevice ++ ;
+			m_iNumDevice ++;
 		}
 	}
 
@@ -282,7 +282,7 @@ void AudioFormat::OnChoose()
 	BuildLocalRecordingFormat();
 
 	acmfc.pwfxEnum = &m_FormatLocal;
-	acmfc.fdwEnum = ACM_FORMATENUMF_SUGGEST ;
+	acmfc.fdwEnum = ACM_FORMATENUMF_SUGGEST;
 
 	MMRESULT mmresult = acmFormatChoose(&acmfc);
 	if (MMSYSERR_NOERROR != mmresult) {
@@ -294,7 +294,7 @@ void AudioFormat::OnChoose()
 			MessageBox(msgstr,tstr, MB_OK | MB_ICONEXCLAMATION);
 		}
 
-		return ;
+		return;
 	}
 
 	TRACE("\nWAVEFORMAT:");
@@ -637,7 +637,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
 		m_ctrlCBRecordFormat.SetCurSel(selected_cindex);
 
 		//force selection of compress format
-		OnSelchangeRecordformat() ;
+		OnSelchangeRecordformat();
 	} else {
 		//Compressed or Save format
 		AllocLocalCompressFormat();

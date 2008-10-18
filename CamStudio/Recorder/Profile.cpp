@@ -6,29 +6,29 @@
 #include "ImageAttributes.h"
 #include "CStudioLib.h"
 
+bool bAudioCompression = true;
+bool bAutoAdjust = true;
+bool bAutoPan = false;
+bool bAutoNaming = false;
+bool bCaptureTrans = true;
+bool bCaptionAnnotation = false;
+bool bDeleteAVIAfterUse = true;
+bool bFixedCapture = false;
 bool bFlashingRect = true;
-bool bMinimizeOnStart = false;
-bool bRecordCursor = true;
 bool bHighlightCursor = false;
 bool bHighlightClick = false;
-bool bAutoPan = false;
-bool bAutoAdjust = true;
-bool bFixedCapture = false;
-bool bCaptureTrans = true;
-bool bPerformAutoSearch = true;
-bool bSupportMouseDrag = true;
-bool bUseMCI = false;
+bool bInterleaveFrames = true;
 bool bLaunchPropPrompt = false;
 bool bLaunchHTMLPlayer = true;
-bool bDeleteAVIAfterUse = true;
-bool bAutoNaming = false;
+bool bMinimizeOnStart = false;
+bool bPerformAutoSearch = true;
+bool bRecordCursor = true;
 bool bRestrictVideoCodecs = false;
 bool bRecordPreset = false;
+bool bSupportMouseDrag = true;
 bool bTimestampAnnotation = false;
-bool bCaptionAnnotation = false;
+bool bUseMCI = false;
 bool bWatermarkAnnotation = false;
-bool bAudioCompression = true;
-bool bInterleaveFrames = true;
 
 int iLaunchPlayer = 3;
 int iMouseCaptureMode = 0;
@@ -140,7 +140,7 @@ CProfile::CProfile(const CString strFileName)
 	Add(G_AUTOADJUST, "g_autoadjust", true);
 	Add(G_VALUEADJUST, "g_valueadjust", 0);
 	Add(SAVEDIR, "savedir", 25);
-	Add(CURSORDIR, "cursordir", 18);
+	Add(CURSORDIR, "strCursorDir", 18);
 	Add(THREADPRIORITY, "threadPriority", 0);
 	Add(CAPTURELEFT, "captureleft", 0);
 	Add(CAPTURETOP, "capturetop", 0);

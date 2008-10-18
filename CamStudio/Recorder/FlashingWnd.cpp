@@ -30,8 +30,6 @@ int readingRegion = 0;
 int writingRegion = 0;
 
 int settingRegion = 0;
-int capturingRegion = 0;
-
 
 //********************************************************************************
 //* Constructor

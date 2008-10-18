@@ -35,12 +35,12 @@ int initpaint=TRUE;
 int sliding=FALSE;
 
 //extern CFileDialog *iconFileDlg;
-extern HCURSOR g_loadcursor;
-extern HCURSOR g_customcursor;
-extern CString cursordir;
-extern CString g_cursorFilePath;
+extern HCURSOR hLoadCursor;
+extern HCURSOR hCustomCursor;
+extern CString strCursorDir;
+extern CString strCursorFilePath;
 
-DWORD icon_info[] = {
+DWORD arrIconInfo[] = {
 	IDI_CUSTOMICON_CONTEXTHELP,
 	IDI_CUSTOMICON_MAGNIFY,
 	IDI_CUSTOMICON_NODRAG,
@@ -239,8 +239,8 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 	highlightsize = iHighlightSize;
 	highlightshape = iHighlightShape;
 	highlightcolor = clrHighlightColor;
-	loadcursor = g_loadcursor;
-	customcursor = g_customcursor;
+	loadcursor = hLoadCursor;
+	customcursor = hCustomCursor;
 	highlightclick = bHighlightClick;
 	highlightclickcolorleft = clrHighlightClickColorLeft;
 	highlightclickcolorright = clrHighlightClickColorRight;
@@ -402,7 +402,7 @@ void CCursorOptionsDlg::RefreshPreviewCursor()
 
 			DWORD customicon;
 			if (customsel<0) customsel = 0;
-			customicon = icon_info[customsel];
+			customicon = arrIconInfo[customsel];
 
 			previewcursor = LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(customicon));
 			customcursor = previewcursor;
@@ -439,9 +439,9 @@ void CCursorOptionsDlg::OnFilecursor()
 		iconFileDlg->m_ofn.Flags|=OFN_FILEMUSTEXIST;
 		iconFileDlg->m_ofn.lpstrTitle="File to load";
 
-		if (cursordir=="")
-			cursordir=initdir;
-		iconFileDlg->m_ofn.lpstrInitialDir = cursordir;
+		if (strCursorDir=="")
+			strCursorDir=initdir;
+		iconFileDlg->m_ofn.lpstrInitialDir = strCursorDir;
 
 		if (iconFileDlg->DoModal()==IDOK) {
 
@@ -457,10 +457,10 @@ void CCursorOptionsDlg::OnFilecursor()
 				//LoadBMP(fileName);
 			}
 
-			g_cursorFilePath = fileName;
+			strCursorFilePath = fileName;
 
 			fileName=fileName.Left(fileName.ReverseFind('\\'));
-			cursordir = fileName;
+			strCursorDir = fileName;
 
 		}
 		delete iconFileDlg;
@@ -493,8 +493,8 @@ void CCursorOptionsDlg::OnOK()
 	iHighlightSize = highlightsize;
 	iHighlightShape = highlightshape;
 	clrHighlightColor = highlightcolor;
-	g_loadcursor = loadcursor;
-	g_customcursor = customcursor;
+	hLoadCursor = loadcursor;
+	hCustomCursor = customcursor;
 	bHighlightClick=highlightclick;
 	clrHighlightClickColorLeft=highlightclickcolorleft;
 	clrHighlightClickColorRight=highlightclickcolorright;
