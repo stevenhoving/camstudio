@@ -10,6 +10,9 @@
 
 #include "VideoWnd.h"	// for CVideoWnd
 
+// forward declaration
+class CRecorderDoc;
+
 class CRecorderView : public CView
 {
 protected: // create from serialization only

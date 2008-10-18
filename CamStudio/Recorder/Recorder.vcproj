@@ -160,6 +160,7 @@
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				ShowIncludes="false"
+				EnablePREfast="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -420,26 +421,8 @@
 				>
 			</File>
 			<File
-				RelativePath="FixedRegion.cpp"
+				RelativePath=".\FixedRegion.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="FlashingWnd.cpp"
@@ -620,6 +603,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\MouseCaptureWnd.cpp"
+				>
 			</File>
 			<File
 				RelativePath="NewShape.cpp"
@@ -1113,6 +1100,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FixedRegion.h"
+				>
+			</File>
+			<File
 				RelativePath="FlashingWnd.h"
 				>
 			</File>
@@ -1146,6 +1137,10 @@
 			</File>
 			<File
 				RelativePath="MainFrm.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MouseCaptureWnd.h"
 				>
 			</File>
 			<File

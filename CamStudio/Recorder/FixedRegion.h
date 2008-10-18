@@ -8,13 +8,13 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#define WM_USER_REGIONUPDATE 0x00500
-
 /////////////////////////////////////////////////////////////////////////////
 // CFixedRegion dialog
 
 class CFixedRegion : public CDialog
 {
+	DECLARE_DYNAMIC(CFixedRegion)
+
 // Construction
 public:
 	CFixedRegion(CWnd* pParent = NULL);   // standard constructor
@@ -45,6 +45,9 @@ protected:
 	//}}AFX_MSG
 	afx_msg LRESULT OnRegionUpdate (WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
+private:
+	CStatic m_ctrlStaticMsg;
+	CEdit m_ctrlEditWidth;
 };
 
 //{{AFX_INSERT_LOCATION}}

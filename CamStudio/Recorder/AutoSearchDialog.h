@@ -1,3 +1,4 @@
+#include "afxwin.h"
 #if !defined(AFX_AUTOSEARCHDIALOG_H__CAEFF236_0E36_49BC_8B1A_0F2D903EDE9D__INCLUDED_)
 #define AFX_AUTOSEARCHDIALOG_H__CAEFF236_0E36_49BC_8B1A_0F2D903EDE9D__INCLUDED_
 
@@ -41,6 +42,10 @@ protected:
 	afx_msg void OnClose();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+private:
+	CStatic m_ctrlStaticText1;
+	CStatic m_ctrlStaticText2;
+	CButton m_ctrlButtonClose;
 };
 
 //{{AFX_INSERT_LOCATION}}

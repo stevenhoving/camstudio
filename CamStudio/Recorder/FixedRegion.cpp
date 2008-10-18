@@ -9,8 +9,7 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "FixedRegion.h"
-
-//#include <stdio.h>
+#include "MouseCaptureWnd.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -18,14 +17,11 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern int DefineMode;
-extern HWND hMouseCaptureWnd;
-extern HWND hWnd_FixedRegion;
-
-extern RECT rcUse;
+extern int iDefineMode;
 
 /////////////////////////////////////////////////////////////////////////////
 // CFixedRegion dialog
+IMPLEMENT_DYNAMIC(CFixedRegion, CDialog)
 
 CFixedRegion::CFixedRegion(CWnd* pParent /*=NULL*/)
 : CDialog(CFixedRegion::IDD, pParent)
@@ -40,6 +36,8 @@ void CFixedRegion::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CFixedRegion)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
+	DDX_Control(pDX, IDC_MSG, m_ctrlStaticMsg);	
+	DDX_Control(pDX, IDC_WIDTH, m_ctrlEditWidth);	
 	//}}AFX_DATA_MAP
 }
 
@@ -59,7 +57,7 @@ void CFixedRegion::OnOK()
 	// TODO: Add extra validation here
 	CString widthstr;
 	CString heightstr;
-	((CEdit *) GetDlgItem(IDC_WIDTH))->GetWindowText(widthstr);
+	m_ctrlEditWidth.GetWindowText(widthstr);
 	((CEdit *) GetDlgItem(IDC_HEIGHT))->GetWindowText(heightstr);
 
 	int width;
@@ -166,7 +164,7 @@ void CFixedRegion::OnOK()
 			//CString msgstr;
 			//msgstr.Format("Value exceed screen width. The width is adjusted to %d",width);
 			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(this->m_hWnd,IDS_STRING_VALUEEXCEEDWIDTH, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,width);
+			MessageOut(m_hWnd, IDS_STRING_VALUEEXCEEDWIDTH, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,width);
 		}
 
 		if (maxyScreen < (yval + height))
@@ -239,9 +237,9 @@ BOOL CFixedRegion::OnInitDialog()
 	widthstr.Format("%d",iCaptureWidth);
 	heightstr.Format("%d",iCaptureHeight);
 
-	((CEdit *) GetDlgItem(IDC_WIDTH))->SetWindowText(widthstr);
+	m_ctrlEditWidth.SetWindowText(widthstr);
 	((CEdit *) GetDlgItem(IDC_HEIGHT))->SetWindowText(heightstr);
-	((CStatic *) GetDlgItem(IDC_MSG))->SetWindowText("");
+	m_ctrlStaticMsg.SetWindowText("");
 
 	if (bSupportMouseDrag)
 	{
@@ -259,14 +257,14 @@ BOOL CFixedRegion::OnInitDialog()
 void CFixedRegion::OnSelect()
 {
 	// TODO: Add your control notification handler code here
-	((CStatic *) GetDlgItem(IDC_MSG))->SetWindowText("Click and drag to define a rectangle");
+	m_ctrlStaticMsg.SetWindowText("Click and drag to define a rectangle");
 
 	iMouseCaptureMode = 1; //set temporarily to 1
-	DefineMode = 1;
-	hWnd_FixedRegion = m_hWnd;
+	iDefineMode = 1;
+	hFixedRegionWnd = m_hWnd;
 	::ShowWindow(hMouseCaptureWnd, SW_MAXIMIZE);
 	::UpdateWindow(hMouseCaptureWnd);
-	((CStatic *) GetDlgItem(IDC_MSG))->SetWindowText("");
+	m_ctrlStaticMsg.SetWindowText("");
 }
 
 LRESULT CFixedRegion::OnRegionUpdate (WPARAM wParam, LPARAM lParam) {
@@ -279,7 +277,7 @@ LRESULT CFixedRegion::OnRegionUpdate (WPARAM wParam, LPARAM lParam) {
 	widthstr.Format("%d",width);
 	heightstr.Format("%d",height);
 
-	((CEdit *) GetDlgItem(IDC_WIDTH))->SetWindowText(widthstr);
+	m_ctrlEditWidth.SetWindowText(widthstr);
 	((CEdit *) GetDlgItem(IDC_HEIGHT))->SetWindowText(heightstr);
 
 	//version 1.5

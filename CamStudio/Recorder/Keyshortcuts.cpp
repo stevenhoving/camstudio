@@ -165,7 +165,7 @@ void Keyshortcuts::OnOK()
 
 	keyRecordStart = keyRecordStartLocal;
 	keyRecordEnd = keyRecordEndLocal;
-	keyRecordCancel = keyRecordCancelLocal;
+	uKeyRecordCancel = keyRecordCancelLocal;
 
 	keyNext = keyNextLocal;
 	keyPrev = keyPrevLocal;
@@ -205,7 +205,7 @@ BOOL Keyshortcuts::OnInitDialog()
 	// TODO: Add extra initialization here
 	keyRecordStartLocal = keyRecordStart;
 	keyRecordEndLocal = keyRecordEnd;
-	keyRecordCancelLocal = keyRecordCancel;
+	keyRecordCancelLocal = uKeyRecordCancel;
 
 	keyRecordStartLocalCtrl = keyRecordStartCtrl;
 	keyRecordEndLocalCtrl = keyRecordEndCtrl;
@@ -241,7 +241,7 @@ BOOL Keyshortcuts::OnInitDialog()
 	nx = GetIndex(keyRecordEnd);
 	((CComboBox *) GetDlgItem(IDC_STOPKEY))->SetCurSel(nx);
 
-	nx = GetIndex(keyRecordCancel);
+	nx = GetIndex(uKeyRecordCancel);
 	((CComboBox *) GetDlgItem(IDC_CANCELKEY))->SetCurSel(nx);
 
 	nx = GetIndex(keyNext);
