@@ -129,6 +129,10 @@ protected:
 	afx_msg void OnObjectsMoveitemdown();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+private:
+	bool m_bEditingLabelOn;
+	HCURSOR m_hCursorDrag;
+	HCURSOR m_hCursorArrow;
 };
 
 //{{AFX_INSERT_LOCATION}}

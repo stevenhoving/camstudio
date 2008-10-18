@@ -11,7 +11,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern int g_refreshRate;
+extern int iRrefreshRate;
 
 /////////////////////////////////////////////////////////////////////////////
 // CTransRateDialog dialog
@@ -58,7 +58,7 @@ void CTransRateDialog::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar
 
 		//this line should not be put before m_myparent->AdjustRefreshRate(valRate);
 		m_myparent->refreshRate = valRate;
-		g_refreshRate = valRate;
+		iRrefreshRate = valRate;
 
 	}
 
