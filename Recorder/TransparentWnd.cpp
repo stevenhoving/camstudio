@@ -30,7 +30,7 @@
 
 #include <windowsx.h>
 
-extern CListManager gList;
+extern CListManager ListManager;
 extern CScreenAnnotations sadlg;
 extern HWND hMouseCaptureWnd;
 
@@ -41,9 +41,9 @@ extern HANDLE Bitmap2Dib(HBITMAP, UINT);
 //extern CString GetTempPath();
 
 extern int AreWindowsEdited();
-HANDLE AllocMakeDib( int reduced_width, int reduced_height, UINT bits );
+HANDLE AllocMakeDib( int reduced_width, int reduced_height, UINT iBits );
 
-long currentWndID = 0;
+long lCurrentWndID = 0;
 
 //important: this window does not create or delete the m_hbitmap passed to it
 
@@ -59,10 +59,10 @@ static char THIS_FILE[] = __FILE__;
 
 CTransparentWnd::CTransparentWnd()
 {
-	uniqueID = currentWndID;
-	currentWndID++;
-	if (currentWndID > 2147483647)
-		currentWndID = 0;
+	uniqueID = lCurrentWndID;
+	lCurrentWndID++;
+	if (lCurrentWndID > 2147483647)
+		lCurrentWndID = 0;
 
 	saveMethod = saveMethodNew;
 
@@ -743,15 +743,15 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect* caprect,int fact
 //valid factors : 1, 2, 3
 HBITMAP CTransparentWnd::DrawResampleRGB(CDC *thisDC, CRect* caprect,int factor, LPBITMAPINFOHEADER expanded_bmi)
 {
-	int bits = 24;
+	int iBits = 24;
 
 	LONG Width = expanded_bmi->biWidth;
 	LONG Height = expanded_bmi->biHeight;
-	long Rowbytes = (Width*bits+31)/32 *4;
+	long Rowbytes = (Width*iBits+31)/32 *4;
 
 	long reduced_width = Width/factor;
 	long reduced_height = Height/factor;
-	long reduced_rowbytes = (reduced_width*bits+31)/32 *4;
+	long reduced_rowbytes = (reduced_width*iBits+31)/32 *4;
 
 	if ((factor<1) || (factor>3))
 		return NULL;
@@ -765,7 +765,7 @@ HBITMAP CTransparentWnd::DrawResampleRGB(CDC *thisDC, CRect* caprect,int factor,
 		return NULL;
 	}
 
-	// Get the bits from the bitmap and stuff them after the LPBI
+	// Get the iBits from the bitmap and stuff them after the LPBI
 	LPBYTE lpBits = (LPBYTE)(smallbi+1);
 
 	//Perform the re-sampling
@@ -800,9 +800,9 @@ HBITMAP CTransparentWnd::DrawResampleRGB(CDC *thisDC, CRect* caprect,int factor,
 				} else if (factor==2) {
 					totalval = 0;
 					totalval += *Ptr;
-					totalval += *(Ptr + 3) ;
-					totalval += *(Ptr + Rowbytes) ;
-					totalval += *(Ptr + Rowbytes + 3) ;
+					totalval += *(Ptr + 3);
+					totalval += *(Ptr + Rowbytes);
+					totalval += *(Ptr + Rowbytes + 3);
 					totalval/=4;
 
 					if (totalval<0) {
@@ -817,16 +817,16 @@ HBITMAP CTransparentWnd::DrawResampleRGB(CDC *thisDC, CRect* caprect,int factor,
 				} else if (factor==3) {
 					totalval = 0;
 					totalval += *Ptr;
-					totalval += *(Ptr + 3) ;
-					totalval += *(Ptr + 6) ;
+					totalval += *(Ptr + 3);
+					totalval += *(Ptr + 6);
 
-					totalval += *(Ptr + Rowbytes) ;
-					totalval += *(Ptr + Rowbytes + 3) ;
-					totalval += *(Ptr + Rowbytes + 6) ;
+					totalval += *(Ptr + Rowbytes);
+					totalval += *(Ptr + Rowbytes + 3);
+					totalval += *(Ptr + Rowbytes + 6);
 
-					totalval += *(Ptr + Rowbytes + Rowbytes) ;
-					totalval += *(Ptr + Rowbytes + Rowbytes + 3) ;
-					totalval += *(Ptr + Rowbytes + Rowbytes + 6) ;
+					totalval += *(Ptr + Rowbytes + Rowbytes);
+					totalval += *(Ptr + Rowbytes + Rowbytes + 3);
+					totalval += *(Ptr + Rowbytes + Rowbytes + 6);
 
 					totalval/=9;
 
@@ -867,40 +867,40 @@ HBITMAP CTransparentWnd::DrawResampleRGB(CDC *thisDC, CRect* caprect,int factor,
 
 //need to unlock to use it and then
 //use GlobalFreePtr to free it
-HANDLE AllocMakeDib( int reduced_width, int reduced_height, UINT bits )
+HANDLE AllocMakeDib( int reduced_width, int reduced_height, UINT iBits )
 {
 	// DWORD align the width of the DIB
 	// Figure out the size of the colour table
 	// Calculate the size of the DIB
-	UINT wLineLen = (reduced_width*bits+31)/32 * 4;
-	DWORD wColSize = sizeof(RGBQUAD)*((bits <= 8) ? 1<<bits : 0);
+	UINT wLineLen = (reduced_width*iBits+31)/32 * 4;
+	DWORD wColSize = sizeof(RGBQUAD)*((iBits <= 8) ? 1<<iBits : 0);
 	DWORD dwSize = sizeof(BITMAPINFOHEADER) + wColSize + (DWORD)(UINT)wLineLen * (DWORD)(UINT)reduced_height;
 
 	// Allocate room for a DIB and set the LPBI fields
 	HANDLE hdib = GlobalAlloc(GHND,dwSize);
 	if (!hdib)
-		return hdib ;
+		return hdib;
 
-	LPBITMAPINFOHEADER lpbi = (LPBITMAPINFOHEADER)GlobalLock(hdib) ;
-	lpbi->biSize = sizeof(BITMAPINFOHEADER) ;
-	lpbi->biWidth = reduced_width ;
-	lpbi->biHeight = reduced_height ;
-	lpbi->biPlanes = 1 ;
-	lpbi->biBitCount = (WORD) bits ;
-	lpbi->biCompression = BI_RGB ;
-	lpbi->biSizeImage = dwSize - sizeof(BITMAPINFOHEADER) - wColSize ;
-	lpbi->biXPelsPerMeter = 0 ;
-	lpbi->biYPelsPerMeter = 0 ;
-	lpbi->biClrUsed = (bits <= 8) ? 1<<bits : 0;
-	lpbi->biClrImportant = 0 ;
+	LPBITMAPINFOHEADER lpbi = (LPBITMAPINFOHEADER)GlobalLock(hdib);
+	lpbi->biSize = sizeof(BITMAPINFOHEADER);
+	lpbi->biWidth = reduced_width;
+	lpbi->biHeight = reduced_height;
+	lpbi->biPlanes = 1;
+	lpbi->biBitCount = (WORD) iBits;
+	lpbi->biCompression = BI_RGB;
+	lpbi->biSizeImage = dwSize - sizeof(BITMAPINFOHEADER) - wColSize;
+	lpbi->biXPelsPerMeter = 0;
+	lpbi->biYPelsPerMeter = 0;
+	lpbi->biClrUsed = (iBits <= 8) ? 1<<iBits : 0;
+	lpbi->biClrImportant = 0;
 
-	// Get the bits from the bitmap and stuff them after the LPBI
-	LPBYTE lpBits = (LPBYTE)(lpbi+1)+wColSize ;
-	lpbi->biClrUsed = (bits <= 8) ? 1<<bits : 0;
+	// Get the iBits from the bitmap and stuff them after the LPBI
+	LPBYTE lpBits = (LPBYTE)(lpbi+1)+wColSize;
+	lpbi->biClrUsed = (iBits <= 8) ? 1<<iBits : 0;
 
 	GlobalUnlock(hdib);
 
-	return hdib ;
+	return hdib;
 }
 
 LRESULT CTransparentWnd::OnInvalidateWnd(WPARAM p1, LPARAM p2)
@@ -926,7 +926,7 @@ void CTransparentWnd::EnsureOnTopList(CTransparentWnd* transWnd )
 	if (baseType>0)
 		return; //if not screen annotation...skip
 
-	gList.EnsureOnTopList(transWnd);
+	ListManager.EnsureOnTopList(transWnd);
 }
 
 void CTransparentWnd::OnLButtonDown(UINT nFlags, CPoint point)
@@ -947,7 +947,7 @@ void CTransparentWnd::OnLButtonDown(UINT nFlags, CPoint point)
 	} else {
 		if (m_movewindow == 0) {
 			m_movewindow = 1;
-			GetCursorPos(&m_movepoint) ;
+			GetCursorPos(&m_movepoint);
 			SetCapture();
 		}
 		//PostMessage(WM_NCLBUTTONDOWN, HTCAPTION, MAKELPARAM(point.x,point.y));
@@ -1107,7 +1107,7 @@ void CTransparentWnd::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if (m_movewindow) {
 		POINT currpoint;
-		GetCursorPos(&currpoint) ;
+		GetCursorPos(&currpoint);
 
 		int nWidth = m_rectWnd.right - m_rectWnd.left + 1;
 		int nHeight = m_rectWnd.bottom - m_rectWnd.top + 1;
@@ -1126,7 +1126,7 @@ void CTransparentWnd::OnMouseMove(UINT nFlags, CPoint point)
 
 void CTransparentWnd::OnContextEditImage()
 {
-	EditImage() ;
+	EditImage();
 }
 
 void CTransparentWnd::EditImage()
@@ -1134,8 +1134,7 @@ void CTransparentWnd::EditImage()
 	editImageOn = 1;
 
 	CEditImage editDlg;
-	editDlg.PreModal(this);
-
+	editDlg.PreModal(this);	// TODO: What is this doing?
 	editDlg.DoModal();
 
 	editImageOn = 0;
@@ -1263,8 +1262,8 @@ CTransparentWnd* CTransparentWnd::Clone(int offsetx, int offsety)
 CTransparentWnd* CTransparentWnd::CloneByPos(int x, int y)
 {
 	int offsetx, offsety;
-	offsetx = x - m_rectWnd.left ;
-	offsety = y - m_rectWnd.top ;
+	offsetx = x - m_rectWnd.left;
+	offsety = y - m_rectWnd.top;
 
 	return Clone(offsetx, offsety);
 }
@@ -1317,7 +1316,7 @@ void CTransparentWnd::OnContextClone()
 	cloneWnd = Clone(x, y);
 
 	if (cloneWnd) {
-		gList.AddDisplayArray(cloneWnd);
+		ListManager.AddDisplayArray(cloneWnd);
 
 		cloneWnd->InvalidateRegion();
 		cloneWnd->InvalidateTransparency();
@@ -1333,7 +1332,7 @@ void CTransparentWnd::OnContextCloseall()
 void CTransparentWnd::OnContextClose()
 {
 	ShowWindow(SW_HIDE);
-	gList.RemoveDisplayArray(this,1);
+	ListManager.RemoveDisplayArray(this,1);
 }
 
 BOOL CTransparentWnd::SaveShape(FILE* fptr)
