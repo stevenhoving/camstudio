@@ -380,3 +380,4 @@ void RestoreBitmapCopy(HBITMAP& hBitmap, HDC hdc, HDC hdcbits, const RECT& rect)
 {
 	RestoreBitmapCopy(hBitmap, hdc, hdcbits, rect.left, rect.top, (rect.right-rect.left), (rect.bottom-rect.top));
 }
+

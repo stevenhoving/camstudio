@@ -4,7 +4,6 @@
 #include "Profile.h"
 #include "TextAttributes.h"	// for position
 #include "ImageAttributes.h"
-//#include "EffectsOptions2.h"	// includes EffectsOptions.h
 #include "CStudioLib.h"
 
 bool bFlashingRect = true;
@@ -136,7 +135,7 @@ CProfile::CProfile(const CString strFileName)
 	Add(INTERLEAVEFACTOR, "interleaveFactor", 100);
 	Add(KEYRECORDSTART, "keyRecordStart", 0);
 	Add(KEYRECORDEND, "keyRecordEnd", 100000);
-	Add(KEYRECORDCANCEL, "keyRecordCancel", 100000);
+	Add(KEYRECORDCANCEL, "uKeyRecordCancel", 100000);
 	Add(VIEWTYPE, "viewtype", 0);
 	Add(G_AUTOADJUST, "g_autoadjust", true);
 	Add(G_VALUEADJUST, "g_valueadjust", 0);
