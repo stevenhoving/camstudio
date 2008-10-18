@@ -151,13 +151,13 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	// add width of borders
 	cs.cx += (::GetSystemMetrics(SM_CXFRAME) * 2)
 		+ ::GetSystemMetrics(SM_CXMENUSIZE)
-		;
+;
 	// add height of Caption + menu + toolbar + status + borders
 	cs.cy += ::GetSystemMetrics(SM_CYCAPTION)
 		+ (::GetSystemMetrics(SM_CYMENU) * 2)	// assume statusbar same hieght
 		+ ::GetSystemMetrics(SM_CXMENUSIZE)
 		+ (::GetSystemMetrics(SM_CYFRAME) * 2)
-		;
+;
 
 	cs.style &= ~FWS_ADDTOTITLE;
 	cs.style &= ~WS_THICKFRAME;
@@ -302,7 +302,7 @@ void CMainFrame::OnViewNormalview()
 	// add width of borders
 	compactcx += (::GetSystemMetrics(SM_CXFRAME) * 2)
 		+ ::GetSystemMetrics(SM_CXMENUSIZE)
-		;
+;
 
 	int compactcy = bitmap.bmHeight;
 	// add height of Caption + menu + status + borders
@@ -311,7 +311,7 @@ void CMainFrame::OnViewNormalview()
 		+ rectToolbar.Height()
 		+ rectStatusbar.Height()
 		+ (::GetSystemMetrics(SM_CYFRAME) * 2)
-		;
+;
 
 	iViewType = 0;
 
@@ -337,7 +337,7 @@ void CMainFrame::OnViewtype()
 	if (iViewType>2)
 		iViewType=0;
 
-	UpdateViewtype() ;
+	UpdateViewtype();
 }
 
 void CMainFrame::UpdateViewtype()
