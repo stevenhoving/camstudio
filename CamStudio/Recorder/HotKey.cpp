@@ -5,7 +5,7 @@
 //ver 1.8 key shortcuts
 UINT keyRecordStart = VK_F8;
 UINT keyRecordEnd = VK_F9;
-UINT keyRecordCancel = VK_F10;
+UINT uKeyRecordCancel = VK_F10;
 
 UINT keyRecordStartCtrl = 0;
 UINT keyRecordEndCtrl = 0;

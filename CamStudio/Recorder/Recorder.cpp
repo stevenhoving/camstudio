@@ -66,6 +66,8 @@ void OnError(LPTSTR lpszFunction)
 	if (!lpDisplayBuf) {
 		TRACE("OnError: LocalAlloc error: %ud\n", ::GetLastError());
 		::SetLastError(ERROR_SUCCESS);	// reset the error
+		::LocalFree(lpMsgBuf);
+		return;
 	}
 	HRESULT hr = StringCchPrintf((LPTSTR)lpDisplayBuf, ::LocalSize(lpDisplayBuf) / sizeof(TCHAR), TEXT("%s failed with error %d: %s"), lpszFunction, dwError, lpMsgBuf);
 	if (SUCCEEDED(hr)) {

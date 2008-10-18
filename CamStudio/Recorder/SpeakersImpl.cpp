@@ -17,15 +17,15 @@ extern void mciRecordStop(CString strFile);
 extern void mciRecordClose();
 extern void mciSetWaveFormat(); //add before mcirecord
 
-extern int asdCreated;
+extern bool bSearchDlgCreated;
 
 extern HWND hWndGlobal;
 
 extern CSoundFile * pSoundFile;
 
 /////////////////////////////////////////////////////////////////////////////
-CAutoSearchDialog asd;
-int asdCreated = FALSE;
+CAutoSearchDialog SearchDlg;
+bool bSearchDlgCreated = false;
 
 //version 1.6
 // =============== Capture waveout ===================
@@ -128,8 +128,8 @@ BOOL configWaveOut()
 	if (orig_recordaudio==1)
 		useWavein(TRUE,FALSE); //set back to record from microphone
 
-	if (asdCreated)
-		asd.ShowWindow(SW_HIDE);
+	if (bSearchDlgCreated)
+		SearchDlg.ShowWindow(SW_HIDE);
 
 	return TRUE;
 }
@@ -733,13 +733,13 @@ BOOL ManualSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToSear
 		//if searching for speakers line
 		//ver 1.6
 
-		if (!asdCreated) {
-			asd.Create(IDD_AUTOSEARCH,NULL);
-			asdCreated = 1;
+		if (!bSearchDlgCreated) {
+			SearchDlg.Create(IDD_AUTOSEARCH,NULL);
+			bSearchDlgCreated = true;
 		} else {
-			//This line is needed to ensure the AutoSearchDialog (asd) is not shown before the searching proceeds
+			//This line is needed to ensure the AutoSearchDialog (SearchDlg) is not shown before the searching proceeds
 			//This can happen if the user forgets to close it after a previous search
-			asd.ShowWindow(SW_HIDE);
+			SearchDlg.ShowWindow(SW_HIDE);
 		}
 
 		if (m_dwIndex>m_dwMultipleItems) { //if still not found
@@ -749,12 +749,12 @@ BOOL ManualSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToSear
 
 			//if (ret==IDNO) return FALSE;
 
-			asd.ShowWindow(SW_RESTORE);
+			SearchDlg.ShowWindow(SW_RESTORE);
 			CString anstr;
 			anstr.LoadString(IDS_STRING_HEARTONES);
 			//anstr.Format("You will hear several tones while CamStudio is searching your system. Please wait.....");
-			asd.SetVarText(anstr);
-			asd.SetButtonEnable(FALSE);
+			SearchDlg.SetVarText(anstr);
+			SearchDlg.SetButtonEnable(FALSE);
 
 			//analyze every source line
 			for (DWORD dwi = 0; dwi < m_dwMultipleItems; dwi++) {
@@ -765,7 +765,7 @@ BOOL ManualSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToSear
 
 				CString anstr;
 				anstr.Format(LPCTSTR(fmtstr), dwi+1, m_dwMultipleItems);
-				asd.SetVarTextLine2(anstr);
+				SearchDlg.SetVarTextLine2(anstr);
 
 				WaveoutSetSelectValue(TRUE,dwi,TRUE);
 				WaveoutInternalAdjustVolume(pmxcdSelectText[dwi].dwParam1);
@@ -790,8 +790,8 @@ BOOL ManualSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToSear
 				mciRecordClose();
 			}
 
-			asd.ShowWindow(SW_HIDE);
-			//asd.SetButtonEnable(TRUE);
+			SearchDlg.ShowWindow(SW_HIDE);
+			//SearchDlg.SetButtonEnable(TRUE);
 		}
 	}
 
@@ -1149,13 +1149,13 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 		//ver 1.6
 		double analyze_threshold =3.0;
 
-		if (!asdCreated) {
-			asd.Create(IDD_AUTOSEARCH,NULL);
-			asdCreated = 1;
+		if (!bSearchDlgCreated) {
+			SearchDlg.Create(IDD_AUTOSEARCH,NULL);
+			bSearchDlgCreated = true;
 		} else {
-			//This line is needed to ensure the AutoSearchDialog (asd) is not shown before the searching proceeds
+			//This line is needed to ensure the AutoSearchDialog (SearchDlg) is not shown before the searching proceeds
 			//This can happen if the user forgets to close it after a previous search
-			asd.ShowWindow(SW_HIDE);
+			SearchDlg.ShowWindow(SW_HIDE);
 		}
 
 		if (m_dwIndex>m_dwMultipleItems) { //if still not found
@@ -1164,12 +1164,12 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 			int ret = MessageOut(NULL,IDS_STRING_NOTALL ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			//if (ret==IDNO) return FALSE;
 
-			asd.ShowWindow(SW_RESTORE);
+			SearchDlg.ShowWindow(SW_RESTORE);
 			CString anstr;
 			//anstr.Format("You will hear several tones while CamStudio is searching your system. Please wait.....");
 			anstr.LoadString(IDS_STRING_HEARSEARCH);
-			asd.SetVarText(anstr);
-			asd.SetButtonEnable(FALSE);
+			SearchDlg.SetVarText(anstr);
+			SearchDlg.SetButtonEnable(FALSE);
 
 			//analyze every source line
 
@@ -1181,8 +1181,8 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 				CString anstr,fmtstr;
 				fmtstr.LoadString(IDS_STRING_ANALINE);
 				anstr.Format(LPCTSTR(fmtstr),dwi+1,m_dwMultipleItems);
-				asd.SetVarTextLine2(anstr);
-				//((CStatic *) GetDlgItem(asd.m_hWnd,IDC_TEXT1))->SetWindowText(anstr);
+				SearchDlg.SetVarTextLine2(anstr);
+				//((CStatic *) GetDlgItem(SearchDlg.m_hWnd,IDC_TEXT1))->SetWindowText(anstr);
 
 				WaveoutSetSelectValue(TRUE,dwi,TRUE);
 
@@ -1260,7 +1260,7 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 
 					//anstr.Format("CamStudio detected line %d for recording sound from speakers! \n[%.2f,%.2f]",maximum_line+1,ratio,maximum_value);
 					anstr.Format(LPCTSTR(fmtstr),maximum_line+1);
-					asd.SetVarTextLine2(anstr);
+					SearchDlg.SetVarTextLine2(anstr);
 					//}
 				}
 			}
@@ -1269,9 +1269,9 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 				CString anstr;
 				//anstr.Format("CamStudio is unable to detected the line on your system for recording sound from your speakers. You may want to try manual configuration in Audio Options.");
 				anstr.LoadString(IDS_STRING_AUTODETECTFAILS);
-				asd.SetVarTextLine2(anstr);
+				SearchDlg.SetVarTextLine2(anstr);
 			}
-			asd.SetButtonEnable(TRUE);
+			SearchDlg.SetButtonEnable(TRUE);
 		}
 	}
 	return TRUE;
