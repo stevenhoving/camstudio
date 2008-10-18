@@ -99,7 +99,7 @@ BOOL AudioSpeakers::OnInitDialog()
 	}
 
 	if (!success) {
-		line.LoadString(IDS_STRING_LINEUNDETECTED);
+		VERIFY(line.LoadString(IDS_STRING_LINEUNDETECTED));
 	}
 
 	m_ctrlSliderVolume.EnableWindow(success);
@@ -153,7 +153,7 @@ void AudioSpeakers::OnVolume()
 	}
 
 	TCHAR dirx[_MAX_PATH];
-	GetWindowsDirectory(dirx, _MAX_PATH);
+	VERIFY(::GetWindowsDirectory(dirx, _MAX_PATH));
 	CString Windir(dirx);
 	//Test Windows\sndvol32.exe
 	CString AppDir = Windir;

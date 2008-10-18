@@ -28,6 +28,9 @@ void CAutoSearchDialog::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CAutoSearchDialog)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
+	DDX_Control(pDX, IDC_TEXT1, m_ctrlStaticText1);
+	DDX_Control(pDX, IDC_TEXT2, m_ctrlStaticText2);
+	DDX_Control(pDX, IDC_CLOSE, m_ctrlButtonClose);
 }
 
 BEGIN_MESSAGE_MAP(CAutoSearchDialog, CDialog)
@@ -42,27 +45,24 @@ END_MESSAGE_MAP()
 
 void CAutoSearchDialog::SetVarText(CString textstr)
 {
-	((CStatic *) GetDlgItem(IDC_TEXT1))->SetWindowText(textstr);
-
+	m_ctrlStaticText1.SetWindowText(textstr);
 }
 
 void CAutoSearchDialog::SetVarTextLine2(CString textstr)
 {
-	((CStatic *) GetDlgItem(IDC_TEXT2))->SetWindowText(textstr);
-
+	m_ctrlStaticText2.SetWindowText(textstr);
 }
 
 void CAutoSearchDialog::SetButtonEnable(BOOL enable)
 {
-	((CStatic *) GetDlgItem(IDC_CLOSE))->EnableWindow(enable);
-
+	m_ctrlButtonClose.EnableWindow(enable);
 }
 
 void CAutoSearchDialog::OnCloseDialog()
 {
-	// TODO: Add your control notification handler code here
+	// TODO: This needs to change.
+	// The dialog should not persist for the duration fo the program.
 	ShowWindow(SW_HIDE);
-
 }
 
 void CAutoSearchDialog::OnClose()

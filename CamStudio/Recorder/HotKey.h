@@ -57,7 +57,7 @@ private:
 
 extern UINT keyRecordStart;
 extern UINT keyRecordEnd;
-extern UINT keyRecordCancel;
+extern UINT uKeyRecordCancel;
 
 extern UINT keyRecordStartCtrl;
 extern UINT keyRecordEndCtrl;
