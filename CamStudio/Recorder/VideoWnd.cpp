@@ -12,9 +12,10 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern int AreWindowsEdited();
 #define DEFAULT_PERIOD 30
-int g_refreshRate = 30;
+int iRrefreshRate = DEFAULT_PERIOD;
+
+extern int AreWindowsEdited();
 
 /////////////////////////////////////////////////////////////////////////////
 // CVideoWnd
@@ -23,7 +24,7 @@ CVideoWnd::CVideoWnd()
 	//CTransparentWnd();
 	status = 0;
 	baseType = 1;
-	refreshRate = g_refreshRate;
+	refreshRate = iRrefreshRate;
 
 	//m_borderYes = 1;
 	//m_regionType = 2; //regionShape
@@ -56,7 +57,7 @@ void CVideoWnd::AdjustRefreshRate(int rate)
 	if (rate != refreshRate)
 	{
 		refreshRate = rate;
-		g_refreshRate = refreshRate;
+		iRrefreshRate = refreshRate;
 		double delayPeriod = 1000 / refreshRate;
 		SetTimer(0x1, (int) delayPeriod, NULL);
 
