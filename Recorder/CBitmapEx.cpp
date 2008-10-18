@@ -10,7 +10,7 @@
 #include "stdafx.h"
 #include "CBitmapEx.h"
 
-#define WIDTHBYTES(bits) (((bits) + 31) / 32 * 4)
+#define WIDTHBYTES(iBits) (((iBits) + 31) / 32 * 4)
 #define PALETTESIZE(lpbi) (_DIBNumColors((LPBITMAPINFOHEADER) lpbi)* sizeof (RGBQUAD))
 #define DIBCOLORS(lpbi) ((LPRGBQUAD)((LPBYTE)(lpbi) + (int)(lpbi)->biSize))
 #define DIBPTR(lpbi) (LPBYTE)(DIBCOLORS((LPBITMAPINFOHEADER)lpbi) + (UINT)((LPBITMAPINFOHEADER)lpbi)->biClrUsed)
@@ -54,20 +54,20 @@ BOOL CBitmapEx::CreateFromDib(LPBITMAPINFO lpBi)
 			bmp.bmHeight == ((LPBITMAPINFOHEADER)lpBi)->biHeight)
 		{
 			// special case: we don't need to destroy existing
-			// DDB, just rewrite bits.
+			// DDB, just rewrite iBits.
 			// Note: we must be sure, the color resolution is
 			// not changed, so, let's test it:
 			HDC hdc = ::GetDC(NULL);
 			int hdc_bits = GetDeviceCaps(hdc,BITSPIXEL);
 			if (hdc_bits == bmp.bmBitsPixel)
 			{
-				//ok to set new bits
+				//ok to set new iBits
 				BOOL ret = ::SetDIBits(
 					hdc, // handle to device context
 					(HBITMAP)GetSafeHandle( ), // handle to bitmap
 					0, // starting scan line
 					bmp.bmHeight, // number of scan lines
-					DIBPTR(lpBi), // array of bitmap bits
+					DIBPTR(lpBi), // array of bitmap iBits
 					lpBi, // address of structure with bitmap data
 					DIB_RGB_COLORS // type of color indexes to use
 					) == bmp.bmHeight;
@@ -545,6 +545,6 @@ int _DIBNumColors (LPBITMAPINFOHEADER lpbi)
 	case 8:
 		return 256;
 	default:
-		return 0; //16,24,32 bits bitmap has no color table
+		return 0; //16,24,32 iBits bitmap has no color table
 	}
 }

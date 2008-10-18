@@ -229,7 +229,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 				ShowWindow(hWnd,SW_HIDE);
 
 				//ver 1.2
-				AllowNewRecordStartKey = TRUE;
+				bAllowNewRecordStartKey = TRUE;
 			}
 		}
 		break;
@@ -259,7 +259,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 				ShowWindow(hWnd,SW_HIDE);
 
 				//ver 1.2
-				AllowNewRecordStartKey = TRUE;
+				bAllowNewRecordStartKey = TRUE;
 			} //VK_ESCAPE (uKeyRecordCancel)
 		}
 		break;

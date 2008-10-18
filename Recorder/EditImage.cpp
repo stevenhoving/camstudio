@@ -11,25 +11,18 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-HCURSOR cursorCross_EI = NULL;
-HCURSOR cursorArrow_EI = NULL;
 
 /////////////////////////////////////////////////////////////////////////////
 // CEditImage dialog
 
 CEditImage::CEditImage(CWnd* pParent /*=NULL*/)
 : CDialog(CEditImage::IDD, pParent)
+, m_hCursorCross(::LoadCursor(NULL,IDC_CROSS))
+, m_hCursorArrow(::LoadCursor(NULL,IDC_ARROW))
 {
 	//{{AFX_DATA_INIT(CEditImage)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
-
-	if (cursorCross_EI == NULL)
-		cursorCross_EI=::LoadCursor(NULL,IDC_CROSS);
-	//cursorCross=::LoadCursor(AfxGetInstanceHandle(),MAKEINTRESOURCE(IDC_CURSORDROPPER));
-	if (cursorArrow_EI == NULL)
-		cursorArrow_EI=::LoadCursor(NULL,IDC_ARROW);
-
 	m_dialogInitialized = 0;
 	pickingColor = 0;
 }
@@ -357,7 +350,7 @@ void CEditImage::OnColorPick()
 {
 	// TODO: Add your control notification handler code here
 	SetCapture();
-	SetCursor(cursorCross_EI);
+	SetCursor(m_hCursorCross);
 	pickingColor = 1;
 
 	((CButton *) GetDlgItem(IDC_COLOR3))->EnableWindow(0);
@@ -378,7 +371,7 @@ void CEditImage::OnLButtonDown(UINT nFlags, CPoint point)
 		::ReleaseDC(NULL,hDC);
 
 		ReleaseCapture();
-		SetCursor(cursorArrow_EI);
+		SetCursor(m_hCursorArrow);
 
 		m_transWnd->m_transparentColor = val;
 
@@ -399,7 +392,7 @@ void CEditImage::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	if (pickingColor == 1)
-		SetCursor(cursorCross_EI);
+		SetCursor(m_hCursorCross);
 
 	CDialog::OnMouseMove(nFlags, point);
 }

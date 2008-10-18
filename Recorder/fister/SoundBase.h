@@ -23,8 +23,8 @@ public:
 	// New
 	const WAVEFORMATEX& Format() const					{return m_Format;}
 	WAVEFORMATEX& Format(const WAVEFORMATEX& rhs) 		{return m_Format = rhs;}
-	int BufferSize() const								{return m_BufferSize;}
-	int BufferSize(int NumberOfSamples)					{return m_BufferSize = NumberOfSamples;}
+	int BufferSize() const								{return iBufferSize;}
+	int BufferSize(int NumberOfSamples)					{return iBufferSize = NumberOfSamples;}
 	int NumberOfChannels() const						{return m_Format.nChannels;}
 	int NumberOfChannels(int nchan)						{m_Format.nChannels = nchan; Update(); return m_Format.nChannels;}
 	int SamplesPerSecond() const						{return m_Format.nSamplesPerSec;}
@@ -34,7 +34,7 @@ public:
 
 protected:
 	WAVEFORMATEX m_Format;
-	int			 m_BufferSize;	// number of samples
+	int			 iBufferSize;	// number of samples
 
 private:
 	void Update()
