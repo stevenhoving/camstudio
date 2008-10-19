@@ -20,29 +20,29 @@ static char THIS_FILE[] = __FILE__;
 extern int iDefineMode;
 
 /////////////////////////////////////////////////////////////////////////////
-// CFixedRegion dialog
-IMPLEMENT_DYNAMIC(CFixedRegion, CDialog)
+// CFixedRegionDlg dialog
+IMPLEMENT_DYNAMIC(CFixedRegionDlg, CDialog)
 
-CFixedRegion::CFixedRegion(CWnd* pParent /*=NULL*/)
-: CDialog(CFixedRegion::IDD, pParent)
+CFixedRegionDlg::CFixedRegionDlg(CWnd* pParent /*=NULL*/)
+: CDialog(CFixedRegionDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CFixedRegion)
+	//{{AFX_DATA_INIT(CFixedRegionDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
-void CFixedRegion::DoDataExchange(CDataExchange* pDX)
+void CFixedRegionDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CFixedRegion)
+	//{{AFX_DATA_MAP(CFixedRegionDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	DDX_Control(pDX, IDC_MSG, m_ctrlStaticMsg);	
 	DDX_Control(pDX, IDC_WIDTH, m_ctrlEditWidth);	
 	//}}AFX_DATA_MAP
 }
 
-BEGIN_MESSAGE_MAP(CFixedRegion, CDialog)
-	//{{AFX_MSG_MAP(CFixedRegion)
+BEGIN_MESSAGE_MAP(CFixedRegionDlg, CDialog)
+	//{{AFX_MSG_MAP(CFixedRegionDlg)
 	ON_BN_CLICKED(IDSELECT, OnSelect)
 	ON_BN_CLICKED(IDC_FIXEDTOPLEFT, OnFixedtopleft)
 	//}}AFX_MSG_MAP
@@ -50,9 +50,9 @@ BEGIN_MESSAGE_MAP(CFixedRegion, CDialog)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CFixedRegion message handlers
+// CFixedRegionDlg message handlers
 
-void CFixedRegion::OnOK()
+void CFixedRegionDlg::OnOK()
 {
 	// TODO: Add extra validation here
 	CString widthstr;
@@ -203,7 +203,7 @@ void CFixedRegion::OnOK()
 	CDialog::OnOK();
 }
 
-BOOL CFixedRegion::OnInitDialog()
+BOOL CFixedRegionDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -254,7 +254,7 @@ BOOL CFixedRegion::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CFixedRegion::OnSelect()
+void CFixedRegionDlg::OnSelect()
 {
 	// TODO: Add your control notification handler code here
 	m_ctrlStaticMsg.SetWindowText("Click and drag to define a rectangle");
@@ -267,7 +267,7 @@ void CFixedRegion::OnSelect()
 	m_ctrlStaticMsg.SetWindowText("");
 }
 
-LRESULT CFixedRegion::OnRegionUpdate (WPARAM wParam, LPARAM lParam) {
+LRESULT CFixedRegionDlg::OnRegionUpdate (WPARAM wParam, LPARAM lParam) {
 
 	int width = rcUse.right - rcUse.left + 1;
 	int height = rcUse.bottom - rcUse.top + 1;
@@ -295,7 +295,7 @@ LRESULT CFixedRegion::OnRegionUpdate (WPARAM wParam, LPARAM lParam) {
 	return 0;
 }
 
-void CFixedRegion::OnFixedtopleft()
+void CFixedRegionDlg::OnFixedtopleft()
 {
 	// TODO: Add your control notification handler code here
 	int fixtl = ((CButton *) GetDlgItem(IDC_FIXEDTOPLEFT))->GetCheck();

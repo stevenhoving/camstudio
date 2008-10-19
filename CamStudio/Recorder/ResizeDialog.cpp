@@ -12,42 +12,42 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-// CResizeDialog dialog
+// CResizeDlg dialog
 
-CResizeDialog::CResizeDialog(CWnd* pParent /*=NULL*/)
-: CDialog(CResizeDialog::IDD, pParent)
+CResizeDlg::CResizeDlg(CWnd* pParent /*=NULL*/)
+: CDialog(CResizeDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CResizeDialog)
+	//{{AFX_DATA_INIT(CResizeDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
-void CResizeDialog::DoDataExchange(CDataExchange* pDX)
+void CResizeDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CResizeDialog)
+	//{{AFX_DATA_MAP(CResizeDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
-BEGIN_MESSAGE_MAP(CResizeDialog, CDialog)
-	//{{AFX_MSG_MAP(CResizeDialog)
+BEGIN_MESSAGE_MAP(CResizeDlg, CDialog)
+	//{{AFX_MSG_MAP(CResizeDlg)
 	ON_BN_CLICKED(IDRESET, OnReset)
 	ON_WM_HSCROLL()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CResizeDialog message handlers
+// CResizeDlg message handlers
 
-void CResizeDialog::OnOK()
+void CResizeDlg::OnOK()
 {
 	// TODO: Add extra validation here
 
 	CDialog::OnOK();
 }
 
-void CResizeDialog::OnReset()
+void CResizeDlg::OnReset()
 {
 	if (m_transWnd) {
 
@@ -62,7 +62,7 @@ void CResizeDialog::OnReset()
 
 }
 
-void CResizeDialog::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+void CResizeDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 
 	if (m_transWnd) {
@@ -76,13 +76,13 @@ void CResizeDialog::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
-void CResizeDialog::PreModal(CTransparentWnd *transWnd)
+void CResizeDlg::PreModal(CTransparentWnd *transWnd)
 {
 	m_transWnd = transWnd;
 
 }
 
-BOOL CResizeDialog::OnInitDialog()
+BOOL CResizeDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 

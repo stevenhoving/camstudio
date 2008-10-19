@@ -230,7 +230,7 @@ int TroubleShootVal = 0;
 
 //ver 1.8
 
-CScreenAnnotations sadlg;
+CScreenAnnotationsDlg sadlg;
 int bCreatedSADlg = false;
 
 int isMciRecordOpen = 0;
@@ -2786,7 +2786,7 @@ void CRecorderView::OnRegionPanregion()
 {
 	iDefineMode = 0;
 
-	CFixedRegion cfrdlg;
+	CFixedRegionDlg cfrdlg;
 	cfrdlg.DoModal();
 
 	iMouseCaptureMode = 0;
@@ -3253,7 +3253,7 @@ void CRecorderView::OnFileVideooptions()
 
 	FreeFrame(first_alpbi);
 
-	CVideoOptions vod;
+	CVideoOptionsDlg vod;
 	vod.DoModal();
 }
 
@@ -3273,7 +3273,7 @@ void CRecorderView::OnOptionsAutopan()
 void CRecorderView::OnOptionsAtuopanspeed()
 {
 	// TODO: Add your command handler code here
-	CAutopanSpeed aps_dlg;
+	CAutopanSpeedDlg aps_dlg;
 	aps_dlg.DoModal();
 }
 
@@ -3600,7 +3600,7 @@ void CRecorderView::OnOptionsAudioformat()
 		return;
 	}
 
-	AudioFormat aod;
+	CAudioFormatDlg aod;
 	aod.DoModal();
 
 	//if (iInterleaveUnit == MILLISECONDS) {
@@ -3622,7 +3622,7 @@ void CRecorderView::OnOptionsAudiospeakers()
 		MessageOut(m_hWnd, IDS_STRING_NOAUDIOOUTPUT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 	}
 
-	AudioSpeakers aos;
+	CAudioSpeakersDlg aos;
 	aos.DoModal();
 }
 
@@ -3631,7 +3631,7 @@ void CRecorderView::OnOptionsKeyboardshortcuts()
 	// TODO: Add your command handler code here
 	if (!keySCOpened) {
 		keySCOpened = 1;
-		Keyshortcuts kscDlg;
+		CKeyshortcutsDlg kscDlg;
 		kscDlg.DoModal();
 		keySCOpened = 0;
 
@@ -4598,7 +4598,7 @@ void CRecorderView::OnUpdateOptionsRecordaudiomicrophone(CCmdUI* pCmdUI)
 
 void CRecorderView::OnOptionsProgramoptionsTroubleshoot()
 {
-	TroubleShoot tbsDlg;
+	CTroubleShootDlg tbsDlg;
 	tbsDlg.DoModal();
 
 	if ((TroubleShootVal == 1)) {
@@ -4867,7 +4867,7 @@ void CRecorderView::OnOptionsSynchronization()
 		return;
 	}
 
-	CSyncDialog synDlg;
+	CSyncDlg synDlg;
 	synDlg.DoModal();
 }
 
@@ -4974,7 +4974,7 @@ void CRecorderView::OnUpdateOptionsNamingAsk(CCmdUI* pCmdUI)
 void CRecorderView::OnOptionsProgramoptionsPresettime()
 {
 	// TODO: Add your command handler code here
-	CPresetTime prestDlg;
+	CPresetTimeDlg prestDlg;
 	prestDlg.DoModal();
 }
 
@@ -5099,7 +5099,7 @@ void CRecorderView::OnUpdateAnnotationAddwatermark(CCmdUI *pCmdUI)
 void CRecorderView::OnEffectsOptions()
 {
 	// TODO: Add your command handler code here
-	CAnnotationEffectsOptions dlg;
+	CAnnotationEffectsOptionsDlg dlg;
 	dlg.m_timestamp = taTimestamp;
 	dlg.m_caption = taCaption;
 	dlg.m_image = iaWatermark;

@@ -10,29 +10,29 @@
 //
 
 /////////////////////////////////////////////////////////////////////////////
-// CEditImage dialog
+// CEditImageDlg dialog
 
-class CEditImage : public CDialog
+class CEditImageDlg : public CDialog
 {
 // Construction
 public:
 	void UpdateGUI();
 	void PreModal(CTransparentWnd* transWnd);
-	CEditImage(CWnd* pParent = NULL);   // standard constructor
+	CEditImageDlg(CWnd* pParent = NULL);   // standard constructor
 
 	CTransparentWnd* m_transWnd;
 	int m_dialogInitialized;
 	int pickingColor;
 
 // Dialog Data
-	//{{AFX_DATA(CEditImage)
+	//{{AFX_DATA(CEditImageDlg)
 	enum { IDD = IDD_EDITIMAGE };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CEditImage)
+	//{{AFX_VIRTUAL(CEditImageDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -41,7 +41,7 @@ public:
 protected:
 
 	// Generated message map functions
-	//{{AFX_MSG(CEditImage)
+	//{{AFX_MSG(CEditImageDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnNoCutout();
 	afx_msg void OnCutoutTrans();

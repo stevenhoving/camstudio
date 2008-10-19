@@ -1,4 +1,4 @@
-// AudioFormat.h : header file
+// CAudioFormatDlg.h : header file
 //
 /////////////////////////////////////////////////////////////////////////////
 #if !defined(AFX_AUDIOFORMAT_H__D1098020_67C5_491D_AC06_2EE69A7C135D__INCLUDED_)
@@ -11,13 +11,13 @@
 #include "afxwin.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// AudioFormat dialog
+// CAudioFormatDlg dialog
 
-class AudioFormat : public CDialog
+class CAudioFormatDlg : public CDialog
 {
 	// Construction
 public:
-	AudioFormat(CWnd* pParent = NULL);   // standard constructor
+	CAudioFormatDlg(CWnd* pParent = NULL);   // standard constructor
 	void UpdateLocalCompressFormatInterface();
 	void UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPWAVEFORMATEX  curr_sel_pwfx);
 
@@ -27,14 +27,14 @@ public:
 	BOOL OpenUsingRegisteredClass (CString);
 
 	// Dialog Data
-	//{{AFX_DATA(AudioFormat)
+	//{{AFX_DATA(CAudioFormatDlg)
 	enum { IDD = IDD_AUDIODIALOG };
 	// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
 	// Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(AudioFormat)
+	//{{AFX_VIRTUAL(CAudioFormatDlg)
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -43,7 +43,7 @@ protected:
 protected:
 
 	// Generated message map functions
-	//{{AFX_MSG(AudioFormat)
+	//{{AFX_MSG(CAudioFormatDlg)
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnChoose();

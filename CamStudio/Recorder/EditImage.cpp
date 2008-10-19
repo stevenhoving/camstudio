@@ -13,30 +13,30 @@ static char THIS_FILE[] = __FILE__;
 
 
 /////////////////////////////////////////////////////////////////////////////
-// CEditImage dialog
+// CEditImageDlg dialog
 
-CEditImage::CEditImage(CWnd* pParent /*=NULL*/)
-: CDialog(CEditImage::IDD, pParent)
+CEditImageDlg::CEditImageDlg(CWnd* pParent /*=NULL*/)
+: CDialog(CEditImageDlg::IDD, pParent)
 , m_hCursorCross(::LoadCursor(NULL,IDC_CROSS))
 , m_hCursorArrow(::LoadCursor(NULL,IDC_ARROW))
 {
-	//{{AFX_DATA_INIT(CEditImage)
+	//{{AFX_DATA_INIT(CEditImageDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 	m_dialogInitialized = 0;
 	pickingColor = 0;
 }
 
-void CEditImage::DoDataExchange(CDataExchange* pDX)
+void CEditImageDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CEditImage)
+	//{{AFX_DATA_MAP(CEditImageDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
-BEGIN_MESSAGE_MAP(CEditImage, CDialog)
-	//{{AFX_MSG_MAP(CEditImage)
+BEGIN_MESSAGE_MAP(CEditImageDlg, CDialog)
+	//{{AFX_MSG_MAP(CEditImageDlg)
 	ON_BN_CLICKED(IDC_RADIO2, OnNoCutout)
 	ON_BN_CLICKED(IDC_RADIO1, OnCutoutTrans)
 	ON_BN_CLICKED(IDC_RADIO3, OnCutoutPredefined)
@@ -54,9 +54,9 @@ BEGIN_MESSAGE_MAP(CEditImage, CDialog)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CEditImage message handlers
+// CEditImageDlg message handlers
 
-BOOL CEditImage::OnInitDialog()
+BOOL CEditImageDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -132,13 +132,13 @@ BOOL CEditImage::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CEditImage::PreModal(CTransparentWnd *transWnd)
+void CEditImageDlg::PreModal(CTransparentWnd *transWnd)
 {
 	m_transWnd = transWnd;
 
 }
 
-void CEditImage::OnNoCutout()
+void CEditImageDlg::OnNoCutout()
 {
 	// TODO: Add your control notification handler code here
 	if (!m_transWnd) return;
@@ -151,7 +151,7 @@ void CEditImage::OnNoCutout()
 
 }
 
-void CEditImage::OnCutoutTrans()
+void CEditImageDlg::OnCutoutTrans()
 {
 	// TODO: Add your control notification handler code here
 	if (!m_transWnd) return;
@@ -164,7 +164,7 @@ void CEditImage::OnCutoutTrans()
 
 }
 
-void CEditImage::OnCutoutPredefined()
+void CEditImageDlg::OnCutoutPredefined()
 {
 	// TODO: Add your control notification handler code here
 	if (!m_transWnd) return;
@@ -177,7 +177,7 @@ void CEditImage::OnCutoutPredefined()
 
 }
 
-void CEditImage::UpdateGUI()
+void CEditImageDlg::UpdateGUI()
 {
 
 	if (!m_transWnd) return;
@@ -266,7 +266,7 @@ void CEditImage::UpdateGUI()
 
 }
 
-void CEditImage::OnAddBorder()
+void CEditImageDlg::OnAddBorder()
 {
 	// TODO: Add your control notification handler code here
 	if (m_transWnd->m_borderYes) {
@@ -284,7 +284,7 @@ void CEditImage::OnAddBorder()
 
 }
 
-void CEditImage::OnBorderColor()
+void CEditImageDlg::OnBorderColor()
 {
 	// TODO: Add your control notification handler code here
 	if (!m_transWnd) return;
@@ -299,7 +299,7 @@ void CEditImage::OnBorderColor()
 
 }
 
-void CEditImage::OnColor()
+void CEditImageDlg::OnColor()
 {
 	// TODO: Add your control notification handler code here
 	if (!m_transWnd) return;
@@ -316,7 +316,7 @@ void CEditImage::OnColor()
 
 }
 
-void CEditImage::OnSelchangePredefinedshape()
+void CEditImageDlg::OnSelchangePredefinedshape()
 {
 	if (!m_transWnd) return;
 	// TODO: Add your control notification handler code here
@@ -327,7 +327,7 @@ void CEditImage::OnSelchangePredefinedshape()
 
 }
 
-void CEditImage::OnChangeBordersize()
+void CEditImageDlg::OnChangeBordersize()
 {
 	// TODO: If this is a RICHEDIT control, the control will not
 	// send this notification unless you override the CDialog::OnInitDialog()
@@ -346,7 +346,7 @@ void CEditImage::OnChangeBordersize()
 
 }
 
-void CEditImage::OnColorPick()
+void CEditImageDlg::OnColorPick()
 {
 	// TODO: Add your control notification handler code here
 	SetCapture();
@@ -357,7 +357,7 @@ void CEditImage::OnColorPick()
 
 }
 
-void CEditImage::OnLButtonDown(UINT nFlags, CPoint point)
+void CEditImageDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 
@@ -388,7 +388,7 @@ void CEditImage::OnLButtonDown(UINT nFlags, CPoint point)
 	CDialog::OnLButtonDown(nFlags, point);
 }
 
-void CEditImage::OnMouseMove(UINT nFlags, CPoint point)
+void CEditImageDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	if (pickingColor == 1)
@@ -397,7 +397,7 @@ void CEditImage::OnMouseMove(UINT nFlags, CPoint point)
 	CDialog::OnMouseMove(nFlags, point);
 }
 
-void CEditImage::OnBkcolor()
+void CEditImageDlg::OnBkcolor()
 {
 	// TODO: Add your control notification handler code here
 	if (!m_transWnd) return;
@@ -412,7 +412,7 @@ void CEditImage::OnBkcolor()
 
 }
 
-void CEditImage::OnLoad()
+void CEditImageDlg::OnLoad()
 {
 	// TODO: Add your control notification handler code here
 	if (!m_transWnd) return;

@@ -10,25 +10,25 @@
 #include "TransparentWnd.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// CResizeDialog dialog
+// CResizeDlg dialog
 
-class CResizeDialog : public CDialog
+class CResizeDlg : public CDialog
 {
 // Construction
 public:
-	CResizeDialog(CWnd* pParent = NULL);   // standard constructor
+	CResizeDlg(CWnd* pParent = NULL);   // standard constructor
 	CTransparentWnd * m_transWnd;
 	void PreModal(CTransparentWnd *transWnd);
 
 // Dialog Data
-	//{{AFX_DATA(CResizeDialog)
+	//{{AFX_DATA(CResizeDlg)
 	enum { IDD = IDD_RESIZE };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CResizeDialog)
+	//{{AFX_VIRTUAL(CResizeDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -37,7 +37,7 @@ public:
 protected:
 
 	// Generated message map functions
-	//{{AFX_MSG(CResizeDialog)
+	//{{AFX_MSG(CResizeDlg)
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnReset();

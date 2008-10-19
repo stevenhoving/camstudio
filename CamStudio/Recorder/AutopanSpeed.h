@@ -11,23 +11,23 @@
 #endif // _MSC_VER >= 1000
 
 /////////////////////////////////////////////////////////////////////////////
-// CAutopanSpeed dialog
+// CAutopanSpeedDlg dialog
 
-class CAutopanSpeed : public CDialog
+class CAutopanSpeedDlg : public CDialog
 {
 // Construction
 public:
-	CAutopanSpeed(CWnd* pParent = NULL);   // standard constructor
+	CAutopanSpeedDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
-	//{{AFX_DATA(CAutopanSpeed)
+	//{{AFX_DATA(CAutopanSpeedDlg)
 	enum { IDD = IDD_AUTOPANSPEED };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CAutopanSpeed)
+	//{{AFX_VIRTUAL(CAutopanSpeedDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -36,7 +36,7 @@ public:
 protected:
 
 	// Generated message map functions
-	//{{AFX_MSG(CAutopanSpeed)
+	//{{AFX_MSG(CAutopanSpeedDlg)
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);

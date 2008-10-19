@@ -4,27 +4,27 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-// TroubleShoot.h : header file
+// CTroubleShootDlg.h : header file
 //
 
 /////////////////////////////////////////////////////////////////////////////
-// TroubleShoot dialog
+// CTroubleShootDlg dialog
 
-class TroubleShoot : public CDialog
+class CTroubleShootDlg : public CDialog
 {
 // Construction
 public:
-	TroubleShoot(CWnd* pParent = NULL);   // standard constructor
+	CTroubleShootDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
-	//{{AFX_DATA(TroubleShoot)
+	//{{AFX_DATA(CTroubleShootDlg)
 	enum { IDD = IDD_TROUBLESHOOT };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(TroubleShoot)
+	//{{AFX_VIRTUAL(CTroubleShootDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -33,7 +33,7 @@ public:
 protected:
 
 	// Generated message map functions
-	//{{AFX_MSG(TroubleShoot)
+	//{{AFX_MSG(CTroubleShootDlg)
 	afx_msg void OnCheck1();
 	virtual void OnOK();
 	afx_msg void OnCheck2();
