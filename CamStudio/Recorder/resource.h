@@ -9,17 +9,17 @@
 #define ID_FONT                         3
 #define ID_MANUALCONFIG                 3
 #define IDFONT                          3
-#define IDBKCOLOR                       3
 #define IDRESET                         3
 #define IDNEXT                          3
+#define IDC_BKCOLOR                     3
 #define IDVOLUME                        4
 #define ID_CONFIGURE                    4
 #define IDOPTIONSDATE                   4
 #define ID_TEXTCOLOR                    4
 #define ID_JUSTLEFT                     4
-#define IDLOAD                          4
 #define IDC_HIGHLIGHTCOLOR2             4
 #define IDC_HIGHLIGHTCOLORLB            4
+#define IDC_LOAD                        4
 #define IDOPTIONSGRAPHICS               5
 #define ID_BGCOLOR                      5
 #define ID_AUTOCONFIG                   5
@@ -144,7 +144,6 @@
 #define IDC_STATIC_SHAPE                1017
 #define IDC_Y                           1017
 #define IDC_STATIC_HALFSIZE             1018
-#define IDC_CHOOSE                      1019
 #define IDC_CHOOSE_COMPRESSED_FORMAT    1019
 #define IDC_COMPRESSEDFORMATTAG         1020
 #define IDC_COMPRESSEDFORMAT            1021
@@ -219,6 +218,7 @@
 #define IDC_STATIC_POSITION             1065
 #define IDC_COLOR3                      1065
 #define IDC_CTRL4                       1065
+#define IDC_PICK_SCREEN_COLOR           1065
 #define IDC_BORDERSIZE                  1066
 #define IDC_EDIT_TIMESTAMP_FORMAT       1066
 #define IDC_ALT4                        1066

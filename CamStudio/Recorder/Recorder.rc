@@ -831,25 +831,25 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,67,258,50,14,NOT WS_VISIBLE
     GROUPBOX        "Cutout / Transparent  Region",IDC_STATIC,7,7,189,209
     CONTROL         "Create cutout using transparency color",IDC_RADIO1,
-                    "Button",BS_AUTORADIOBUTTON,17,40,151,11
+                    "Button",BS_AUTORADIOBUTTON,17,40,137,10
     PUSHBUTTON      "Color",IDC_COLOR,39,70,37,14
     LTEXT           "",IDC_COLORSTATIC,137,188,19,13,NOT WS_VISIBLE,WS_EX_STATICEDGE
     CONTROL         "Create cutout using pre-defined shape",IDC_RADIO3,
-                    "Button",BS_AUTORADIOBUTTON,18,96,151,11
-    CONTROL         "Add border to image",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,43,151,102,13
-    LTEXT           "Border Size",IDC_STATIC1,43,171,44,12
+                    "Button",BS_AUTORADIOBUTTON,17,96,136,10
+    CONTROL         "Add border to image",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,43,151,79,10
+    LTEXT           "Border Size",IDC_STATIC1,43,171,37,8
     COMBOBOX        IDC_PREDEFINEDSHAPE,29,115,98,42,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "No cutout region",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,17,20,91,11
+    CONTROL         "No cutout region",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,17,20,69,10
     EDITTEXT        IDC_BORDERSIZE,96,168,36,15,ES_AUTOHSCROLL | ES_READONLY | ES_NUMBER
     PUSHBUTTON      "Border Color",IDC_COLOR2,42,188,50,14
     LTEXT           "",IDC_COLORSTATIC2,97,188,35,13,NOT WS_VISIBLE,WS_EX_STATICEDGE
     GROUPBOX        "Border",IDC_BORDERSTATIC,28,135,157,76
-    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_ARROWKEYS,137,167,13,18
-    PUSHBUTTON      "Pick Color From Screen",IDC_COLOR3,81,70,91,14
+    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,137,167,13,18
+    PUSHBUTTON      "Pick Color From Screen",IDC_PICK_SCREEN_COLOR,81,70,91,14
     GROUPBOX        "Choose color to be made transparent",IDC_STATICCHOOSE,28,56,157,33
     GROUPBOX        "Background",IDC_STATIC,7,219,189,32
-    DEFPUSHBUTTON   "Background Color",IDBKCOLOR,26,230,72,14
-    PUSHBUTTON      "Load New Image",IDLOAD,108,230,77,14
+    DEFPUSHBUTTON   "Background Color",IDC_BKCOLOR,26,230,72,14
+    PUSHBUTTON      "Load New Image",IDC_LOAD,108,230,77,14
 END
 
 IDD_RESIZE DIALOG  0, 0, 207, 81
