@@ -1,5 +1,5 @@
 // EffectsOptions2.h
-// include file for CEffectsOptions2 dialog
+// include file for CEffectsOptions2Dlg dialog
 /////////////////////////////////////////////////////////////////////////////
 #ifndef EFFECTSOPTIONS2_H	// because pragma once is compiler specific
 #define EFFECTSOPTIONS2_H
@@ -11,15 +11,15 @@
 	#error include 'resource.h' before including this file for dialog resource
 #endif
 
-// CEffectsOptions2 dialog
+// CEffectsOptions2Dlg dialog
 
-class CEffectsOptions2 : public CDialog
+class CEffectsOptions2Dlg : public CDialog
 {
-	DECLARE_DYNAMIC(CEffectsOptions2)
+	DECLARE_DYNAMIC(CEffectsOptions2Dlg)
 
 public:
-	CEffectsOptions2(CWnd* pParent = NULL);   // standard constructor
-	virtual ~CEffectsOptions2();
+	CEffectsOptions2Dlg(CWnd* pParent = NULL);   // standard constructor
+	virtual ~CEffectsOptions2Dlg();
 
 // Dialog Data
 	enum { IDD = IDD_EFFECTS_OPTIONS2 };

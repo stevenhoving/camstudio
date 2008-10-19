@@ -6,20 +6,20 @@
 #include "EffectsOptions.h"
 #include ".\effectsoptions.h"
 
-// CEffectsOptions dialog
+// CEffectsOptionsDlg dialog
 
-IMPLEMENT_DYNAMIC(CEffectsOptions, CDialog)
-CEffectsOptions::CEffectsOptions(CWnd* pParent /*=NULL*/)
-: CDialog(CEffectsOptions::IDD, pParent)
+IMPLEMENT_DYNAMIC(CEffectsOptionsDlg, CDialog)
+CEffectsOptionsDlg::CEffectsOptionsDlg(CWnd* pParent /*=NULL*/)
+: CDialog(CEffectsOptionsDlg::IDD, pParent)
 // , m_Position(TOP_LEFT)
 {
 }
 
-CEffectsOptions::~CEffectsOptions()
+CEffectsOptionsDlg::~CEffectsOptionsDlg()
 {
 }
 
-void CEffectsOptions::DoDataExchange(CDataExchange* pDX)
+void CEffectsOptionsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	int* pPos = (int*)(&m_params.position);
 	int& pos = *pPos;
@@ -28,15 +28,15 @@ void CEffectsOptions::DoDataExchange(CDataExchange* pDX)
 	DDX_Radio(pDX, IDC_RADIO_TOP_LEFT, pos);
 }
 
-BEGIN_MESSAGE_MAP(CEffectsOptions, CDialog)
+BEGIN_MESSAGE_MAP(CEffectsOptionsDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_BACKGROUND_COLOR, OnBnClickedButtonBackgroundColor)
 	ON_BN_CLICKED(IDC_BUTTON_TEXT_COLOR, OnBnClickedButtonTextColor)
 	ON_BN_CLICKED(IDC_BUTTON_FONT, OnBnClickedButtonFont)
 END_MESSAGE_MAP()
 
-// CEffectsOptions message handlers
+// CEffectsOptionsDlg message handlers
 
-void CEffectsOptions::OnBnClickedButtonBackgroundColor()
+void CEffectsOptionsDlg::OnBnClickedButtonBackgroundColor()
 {
 	// TODO: Add your control notification handler code here
 	CColorDialog dlg;
@@ -47,7 +47,7 @@ void CEffectsOptions::OnBnClickedButtonBackgroundColor()
 	}
 }
 
-void CEffectsOptions::OnBnClickedButtonTextColor()
+void CEffectsOptionsDlg::OnBnClickedButtonTextColor()
 {
 	// TODO: Add your control notification handler code here
 	CColorDialog dlg;
@@ -58,7 +58,7 @@ void CEffectsOptions::OnBnClickedButtonTextColor()
 	}
 }
 
-void CEffectsOptions::OnBnClickedButtonFont()
+void CEffectsOptionsDlg::OnBnClickedButtonFont()
 {
 	// TODO: Add your control notification handler code here
 	CFontDialog dlg(&m_params.logfont);

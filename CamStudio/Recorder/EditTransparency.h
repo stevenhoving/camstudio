@@ -8,13 +8,13 @@
 //
 
 /////////////////////////////////////////////////////////////////////////////
-// CEditTransparency dialog
+// CEditTransparencyDlg dialog
 
-class CEditTransparency : public CDialog
+class CEditTransparencyDlg : public CDialog
 {
 // Construction
 public:
-	CEditTransparency(CWnd* pParent = NULL);   // standard constructor
+	CEditTransparencyDlg(CWnd* pParent = NULL);   // standard constructor
 	void PreModal(int *enableTrans, int *valTrans, CWnd *myParent);
 	int *m_enableTrans;
 	int *m_valTrans;
@@ -24,14 +24,14 @@ public:
 	CWnd * m_myparent;
 
 // Dialog Data
-	//{{AFX_DATA(CEditTransparency)
+	//{{AFX_DATA(CEditTransparencyDlg)
 	enum { IDD = IDD_TRANSPARENCY };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CEditTransparency)
+	//{{AFX_VIRTUAL(CEditTransparencyDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -40,7 +40,7 @@ public:
 protected:
 
 	// Generated message map functions
-	//{{AFX_MSG(CEditTransparency)
+	//{{AFX_MSG(CEditTransparencyDlg)
 	afx_msg void OnCheck1();
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	virtual BOOL OnInitDialog();

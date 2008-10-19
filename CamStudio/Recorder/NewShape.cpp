@@ -27,26 +27,26 @@ CString proposedShapeStr;
 extern void AdjustShapeName(CString& shapeName);
 
 /////////////////////////////////////////////////////////////////////////////
-// CNewShape dialog
+// CNewShapeDlg dialog
 
-CNewShape::CNewShape(CWnd* pParent /*=NULL*/)
-: CDialog(CNewShape::IDD, pParent)
+CNewShapeDlg::CNewShapeDlg(CWnd* pParent /*=NULL*/)
+: CDialog(CNewShapeDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CNewShape)
+	//{{AFX_DATA_INIT(CNewShapeDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
-void CNewShape::DoDataExchange(CDataExchange* pDX)
+void CNewShapeDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CNewShape)
+	//{{AFX_DATA_MAP(CNewShapeDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
-BEGIN_MESSAGE_MAP(CNewShape, CDialog)
-	//{{AFX_MSG_MAP(CNewShape)
+BEGIN_MESSAGE_MAP(CNewShapeDlg, CDialog)
+	//{{AFX_MSG_MAP(CNewShapeDlg)
 	ON_BN_CLICKED(IDC_RADIO1, OnRadio1)
 	ON_BN_CLICKED(IDC_RADIO2, OnRadio2)
 	ON_BN_CLICKED(IDC_BUTTON1, OnButton1)
@@ -54,9 +54,9 @@ BEGIN_MESSAGE_MAP(CNewShape, CDialog)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CNewShape message handlers
+// CNewShapeDlg message handlers
 
-BOOL CNewShape::OnInitDialog()
+BOOL CNewShapeDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -121,7 +121,7 @@ BOOL CNewShape::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CNewShape::OnRadio1()
+void CNewShapeDlg::OnRadio1()
 {
 	// TODO: Add your control notification handler code here
 	((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(1);
@@ -137,7 +137,7 @@ void CNewShape::OnRadio1()
 
 }
 
-void CNewShape::OnRadio2()
+void CNewShapeDlg::OnRadio2()
 {
 	// TODO: Add your control notification handler code here
 	((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(0);
@@ -153,7 +153,7 @@ void CNewShape::OnRadio2()
 
 }
 
-void CNewShape::OnOK()
+void CNewShapeDlg::OnOK()
 {
 	// TODO: Add extra validation here
 
@@ -264,7 +264,7 @@ void CNewShape::OnOK()
 	CDialog::OnOK();
 }
 
-void CNewShape::OnButton1()
+void CNewShapeDlg::OnButton1()
 {
 	// TODO: Add your control notification handler code here
 	CString widthStr, heightStr;

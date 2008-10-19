@@ -63,28 +63,28 @@ extern int iCurrentLayout;
 extern int SetAdjustHotKeys();
 
 /////////////////////////////////////////////////////////////////////////////
-// CScreenAnnotations dialog
+// CScreenAnnotationsDlg dialog
 
-CScreenAnnotations::CScreenAnnotations(CWnd* pParent /*=NULL*/)
-: CDialog(CScreenAnnotations::IDD, pParent)
+CScreenAnnotationsDlg::CScreenAnnotationsDlg(CWnd* pParent /*=NULL*/)
+: CDialog(CScreenAnnotationsDlg::IDD, pParent)
 , m_bEditingLabelOn(false)
 , m_hCursorDrag(::LoadCursor(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDC_CURSORDRAG)))
 , m_hCursorArrow(::LoadCursor(NULL,IDC_ARROW))
 {
-	//{{AFX_DATA_INIT(CScreenAnnotations)
+	//{{AFX_DATA_INIT(CScreenAnnotationsDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
-void CScreenAnnotations::DoDataExchange(CDataExchange* pDX)
+void CScreenAnnotationsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CScreenAnnotations)
+	//{{AFX_DATA_MAP(CScreenAnnotationsDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
-BEGIN_MESSAGE_MAP(CScreenAnnotations, CDialog)
-	//{{AFX_MSG_MAP(CScreenAnnotations)
+BEGIN_MESSAGE_MAP(CScreenAnnotationsDlg, CDialog)
+	//{{AFX_MSG_MAP(CScreenAnnotationsDlg)
 	ON_NOTIFY(LVN_BEGINDRAG, IDC_LIST1, OnBegindragList1)
 	ON_WM_CONTEXTMENU()
 	ON_NOTIFY(NM_RCLICK, IDC_LIST1, OnRclickList1)
@@ -151,9 +151,9 @@ BEGIN_MESSAGE_MAP(CScreenAnnotations, CDialog)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CScreenAnnotations message handlers
+// CScreenAnnotationsDlg message handlers
 
-void CScreenAnnotations::OnOK()
+void CScreenAnnotationsDlg::OnOK()
 {
 	// TODO: Add extra validation here
 	ShowWindow(SW_HIDE);
@@ -161,7 +161,7 @@ void CScreenAnnotations::OnOK()
 	//CDialog::OnOK();
 }
 
-BOOL CScreenAnnotations::OnInitDialog()
+BOOL CScreenAnnotationsDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -203,12 +203,12 @@ BOOL CScreenAnnotations::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CScreenAnnotations::OnContextMenu(CWnd* pWnd, CPoint point)
+void CScreenAnnotationsDlg::OnContextMenu(CWnd* pWnd, CPoint point)
 {
 	// TODO: Add your message handler code here
 }
 
-void CScreenAnnotations::OnRclickList1(NMHDR* pNMHDR, LRESULT* pResult)
+void CScreenAnnotationsDlg::OnRclickList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	int nItem = -1;
 	int numitems = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemCount();
@@ -366,7 +366,7 @@ void CScreenAnnotations::OnRclickList1(NMHDR* pNMHDR, LRESULT* pResult)
 
 }
 
-void CScreenAnnotations::CloseAllWindows(int wantDelete)
+void CScreenAnnotationsDlg::CloseAllWindows(int wantDelete)
 {
 	int max = ListManager.displayArray.GetSize();
 	CTransparentWnd * itemWnd = NULL;
@@ -392,11 +392,11 @@ void CScreenAnnotations::CloseAllWindows(int wantDelete)
 	}
 }
 
-void CScreenAnnotations::OnEditobjNewobject()
+void CScreenAnnotationsDlg::OnEditobjNewobject()
 {
 	newObjectOn = 1;
 
-	CNewShape newshapeDlg;
+	CNewShapeDlg newshapeDlg;
 	if (newshapeDlg.DoModal() == IDOK) {
 		CTransparentWnd *newWnd;
 		newWnd = new CTransparentWnd;
@@ -447,7 +447,7 @@ void CScreenAnnotations::OnEditobjNewobject()
 	newObjectOn = 0;
 }
 
-void CScreenAnnotations::OnEditobjEditimage()
+void CScreenAnnotationsDlg::OnEditobjEditimage()
 {
 	CTransparentWnd * editWnd = LocateWndFromShapeList();
 	editWnd->saveMethod = saveMethodReplace;
@@ -459,7 +459,7 @@ void CScreenAnnotations::OnEditobjEditimage()
 	SaveShapeReplace(editWnd);
 }
 
-void CScreenAnnotations::OnEditobjEdittext()
+void CScreenAnnotationsDlg::OnEditobjEdittext()
 {
 	CTransparentWnd * editWnd = LocateWndFromShapeList();
 	editWnd->saveMethod = saveMethodReplace;
@@ -471,7 +471,7 @@ void CScreenAnnotations::OnEditobjEdittext()
 	SaveShapeReplace(editWnd);
 }
 
-void CScreenAnnotations::SaveLayoutNew()
+void CScreenAnnotationsDlg::SaveLayoutNew()
 {
 	//set to layout mode for tabctrl
 	TabSelectLayoutMode(1);
@@ -504,7 +504,7 @@ void CScreenAnnotations::SaveLayoutNew()
 	}
 }
 
-void CScreenAnnotations::SaveShapeNew(CTransparentWnd *newWnd)
+void CScreenAnnotationsDlg::SaveShapeNew(CTransparentWnd *newWnd)
 {
 	//set to shape mode for tabctrl
 	TabSelectShapeMode(1);
@@ -546,7 +546,7 @@ void CScreenAnnotations::SaveShapeNew(CTransparentWnd *newWnd)
 	}
 }
 
-void CScreenAnnotations::SaveShapeReplace(CTransparentWnd *newWnd)
+void CScreenAnnotationsDlg::SaveShapeReplace(CTransparentWnd *newWnd)
 {
 	//set to shape mode for tabctrl
 	TabSelectShapeMode(1);
@@ -558,7 +558,7 @@ void CScreenAnnotations::SaveShapeReplace(CTransparentWnd *newWnd)
 	}
 }
 
-void CScreenAnnotations::OnEditobjEdittransparency()
+void CScreenAnnotationsDlg::OnEditobjEdittransparency()
 {
 	CTransparentWnd * editWnd = LocateWndFromShapeList();
 	editWnd->saveMethod = saveMethodReplace;
@@ -570,7 +570,7 @@ void CScreenAnnotations::OnEditobjEdittransparency()
 	SaveShapeReplace(editWnd);
 }
 
-void CScreenAnnotations::OnEditobjCopy()
+void CScreenAnnotationsDlg::OnEditobjCopy()
 {
 	if (tabMode == modeShape) {
 		CTransparentWnd *newWnd = LocateWndFromShapeList();
@@ -631,7 +631,7 @@ void CScreenAnnotations::OnEditobjCopy()
 	}
 }
 
-void CScreenAnnotations::OnEditobjPaste()
+void CScreenAnnotationsDlg::OnEditobjPaste()
 {
 	if (tabMode == modeShape) {
 		if (objectIsCopied) {
@@ -669,7 +669,7 @@ void CScreenAnnotations::OnEditobjPaste()
 	}
 }
 
-void CScreenAnnotations::OnEditobjRemove()
+void CScreenAnnotationsDlg::OnEditobjRemove()
 {
 	int nItem = -1;
 	int numitems = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemCount();
@@ -703,7 +703,7 @@ void CScreenAnnotations::OnEditobjRemove()
 	}
 }
 
-void CScreenAnnotations::OnEditobjTestedit()
+void CScreenAnnotationsDlg::OnEditobjTestedit()
 {
 	int nItem = -1;
 	int numitems = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemCount();
@@ -721,12 +721,12 @@ void CScreenAnnotations::OnEditobjTestedit()
 	}
 }
 
-void CScreenAnnotations::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+void CScreenAnnotationsDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	CDialog::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
-void CScreenAnnotations::OnCancel()
+void CScreenAnnotationsDlg::OnCancel()
 {
 	if (!m_bEditingLabelOn) {
 		return;
@@ -734,7 +734,7 @@ void CScreenAnnotations::OnCancel()
 	CDialog::OnCancel();
 }
 
-void CScreenAnnotations::OnEndlabeleditList1(NMHDR* pNMHDR, LRESULT* pResult)
+void CScreenAnnotationsDlg::OnEndlabeleditList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	m_bEditingLabelOn = false;
 	LV_DISPINFO* pDispInfo = (LV_DISPINFO*)pNMHDR;
@@ -815,7 +815,7 @@ void CScreenAnnotations::OnEndlabeleditList1(NMHDR* pNMHDR, LRESULT* pResult)
 	}
 }
 
-void CScreenAnnotations::OnDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
+void CScreenAnnotationsDlg::OnDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	if (tabMode == modeShape)
 	{
@@ -830,7 +830,7 @@ void CScreenAnnotations::OnDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = 0;
 }
 
-void CScreenAnnotations::InstantiateWnd(int x, int y)
+void CScreenAnnotationsDlg::InstantiateWnd(int x, int y)
 {
 	if (tabMode == modeShape)
 	{
@@ -849,7 +849,7 @@ void CScreenAnnotations::InstantiateWnd(int x, int y)
 	}
 }
 
-CTransparentWnd* CScreenAnnotations::LocateWndFromShapeList()
+CTransparentWnd* CScreenAnnotationsDlg::LocateWndFromShapeList()
 {
 	CTransparentWnd *newWnd = NULL;
 
@@ -870,7 +870,7 @@ CTransparentWnd* CScreenAnnotations::LocateWndFromShapeList()
 
 }
 
-CTransparentWnd* CScreenAnnotations::LocateWndFromItem(int nItem)
+CTransparentWnd* CScreenAnnotationsDlg::LocateWndFromItem(int nItem)
 {
 	CTransparentWnd *newWnd = NULL;
 	long WndID = -1;
@@ -903,7 +903,7 @@ CTransparentWnd* CScreenAnnotations::LocateWndFromItem(int nItem)
 
 }
 
-void CScreenAnnotations::OnKeydownList1(NMHDR* pNMHDR, LRESULT* pResult)
+void CScreenAnnotationsDlg::OnKeydownList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LV_KEYDOWN* pLVKeyDow = (LV_KEYDOWN*)pNMHDR;
 
@@ -913,7 +913,7 @@ void CScreenAnnotations::OnKeydownList1(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = 0;
 }
 
-void CScreenAnnotations::OnDestroy()
+void CScreenAnnotationsDlg::OnDestroy()
 {
 	CDialog::OnDestroy();
 
@@ -941,7 +941,7 @@ void CScreenAnnotations::OnDestroy()
 	}
 }
 
-void CScreenAnnotations::OnBegindragList1(NMHDR* pNMHDR, LRESULT* pResult)
+void CScreenAnnotationsDlg::OnBegindragList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
 
@@ -956,7 +956,7 @@ void CScreenAnnotations::OnBegindragList1(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = 0;
 }
 
-void CScreenAnnotations::OnMouseMove(UINT nFlags, CPoint point)
+void CScreenAnnotationsDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if (draggingOn) {
 		SetCursor(m_hCursorDrag);
@@ -964,7 +964,7 @@ void CScreenAnnotations::OnMouseMove(UINT nFlags, CPoint point)
 	CDialog::OnMouseMove(nFlags, point);
 }
 
-void CScreenAnnotations::OnLButtonUp(UINT nFlags, CPoint point)
+void CScreenAnnotationsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	if (draggingOn) {
 		ReleaseCapture ();
@@ -1096,7 +1096,7 @@ void CScreenAnnotations::OnLButtonUp(UINT nFlags, CPoint point)
 	CDialog::OnLButtonUp(nFlags, point);
 }
 
-void CScreenAnnotations::RefreshShapeList()
+void CScreenAnnotationsDlg::RefreshShapeList()
 {
 	//tabmode must be set to shapeMode before calling this
 
@@ -1119,7 +1119,7 @@ void CScreenAnnotations::RefreshShapeList()
 	}
 }
 
-void CScreenAnnotations::RefreshLayoutList()
+void CScreenAnnotationsDlg::RefreshLayoutList()
 {
 	//tabmode must be layoutMode before calling this
 	CListCtrl *listctrl = ((CListCtrl *) GetDlgItem (IDC_LIST1));
@@ -1141,7 +1141,7 @@ void CScreenAnnotations::RefreshLayoutList()
 	}
 }
 
-void CScreenAnnotations::TabSelectShapeMode(int updateTab)
+void CScreenAnnotationsDlg::TabSelectShapeMode(int updateTab)
 {
 	if (tabMode == modeLayout) {
 		RefreshShapeList();
@@ -1154,7 +1154,7 @@ void CScreenAnnotations::TabSelectShapeMode(int updateTab)
 	}
 }
 
-void CScreenAnnotations::TabSelectLayoutMode(int updateTab)
+void CScreenAnnotationsDlg::TabSelectLayoutMode(int updateTab)
 {
 	if (tabMode == modeShape) {
 		RefreshLayoutList();
@@ -1167,7 +1167,7 @@ void CScreenAnnotations::TabSelectLayoutMode(int updateTab)
 	}
 }
 
-void CScreenAnnotations::OnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult)
+void CScreenAnnotationsDlg::OnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	CTabCtrl * tabctrl = ((CTabCtrl *) GetDlgItem (IDC_TAB1));
 	int sel = tabctrl->GetCurSel( );
@@ -1176,7 +1176,7 @@ void CScreenAnnotations::OnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = 0;
 }
 
-void CScreenAnnotations::UpdateTabCtrl(int sel)
+void CScreenAnnotationsDlg::UpdateTabCtrl(int sel)
 {
 	if (sel == modeShape)
 	{
@@ -1187,30 +1187,30 @@ void CScreenAnnotations::UpdateTabCtrl(int sel)
 
 }
 
-void CScreenAnnotations::OnEditlayoutSavelayout()
+void CScreenAnnotationsDlg::OnEditlayoutSavelayout()
 {
 	SaveLayoutNew();
 
 }
 
-void CScreenAnnotations::OnEditlayoutOpenlayout()
+void CScreenAnnotationsDlg::OnEditlayoutOpenlayout()
 {
 	InstantiateLayout();
 
 }
 
-void CScreenAnnotations::OnEditlayoutCloseallobjects()
+void CScreenAnnotationsDlg::OnEditlayoutCloseallobjects()
 {
 	CloseAllWindows(1);
 
 }
 
-void CScreenAnnotations::OnEditlayoutLayoutshortcuts()
+void CScreenAnnotationsDlg::OnEditlayoutLayoutshortcuts()
 {
 	if (!keySCOpened)
 	{
 		keySCOpened = 1;
-		Keyshortcuts kscDlg;
+		CKeyshortcutsDlg kscDlg;
 		kscDlg.DoModal();
 		keySCOpened = 0;
 
@@ -1247,7 +1247,7 @@ int AreWindowsEdited()
 	return bisEdited ? 1 : 0;
 }
 
-CLayoutList* CScreenAnnotations::LocateLayoutFromItem(int nItem)
+CLayoutList* CScreenAnnotationsDlg::LocateLayoutFromItem(int nItem)
 {
 	CLayoutList* returnLayout = NULL;
 
@@ -1280,7 +1280,7 @@ CLayoutList* CScreenAnnotations::LocateLayoutFromItem(int nItem)
 
 }
 
-void CScreenAnnotations::InstantiateLayout()
+void CScreenAnnotationsDlg::InstantiateLayout()
 {
 	if (tabMode == modeLayout)
 	{
@@ -1409,7 +1409,7 @@ void AdjustLayoutName(CString& layoutName)
 	}
 }
 
-void CScreenAnnotations::OnEditobjLibraryCloselibrary()
+void CScreenAnnotationsDlg::OnEditobjLibraryCloselibrary()
 {
 	CString m_newfile;
 
@@ -1440,7 +1440,7 @@ void CScreenAnnotations::OnEditobjLibraryCloselibrary()
 	}
 }
 
-void CScreenAnnotations::OnEditobjLibraryOpenlibrary()
+void CScreenAnnotationsDlg::OnEditobjLibraryOpenlibrary()
 {
 	static char BASED_CODE szFilter[] = "Shape Files (*.shapes)|*.shapes||";
 	static char szTitle[]="Load Shapes";
@@ -1454,7 +1454,7 @@ void CScreenAnnotations::OnEditobjLibraryOpenlibrary()
 	}
 }
 
-void CScreenAnnotations::OnEditobjLibraryNewlibrary()
+void CScreenAnnotationsDlg::OnEditobjLibraryNewlibrary()
 {
 	int ret = MessageOut(NULL,IDS_STRINGSAVECL, IDS_STRING_NOTE, MB_YESNOCANCEL | MB_ICONQUESTION);
 	if (ret == IDYES)
@@ -1469,7 +1469,7 @@ void CScreenAnnotations::OnEditobjLibraryNewlibrary()
 
 }
 
-void CScreenAnnotations::OnEditlayoutLibraryNewlibrary()
+void CScreenAnnotationsDlg::OnEditlayoutLibraryNewlibrary()
 {
 	int ret = MessageOut(NULL,IDS_STRINGSAVECLLA, IDS_STRING_NOTE, MB_YESNOCANCEL | MB_ICONQUESTION);
 	if (ret == IDYES)
@@ -1484,7 +1484,7 @@ void CScreenAnnotations::OnEditlayoutLibraryNewlibrary()
 
 }
 
-void CScreenAnnotations::OnEditlayoutLibraryOpenlibrary()
+void CScreenAnnotationsDlg::OnEditlayoutLibraryOpenlibrary()
 {
 	CString filename;
 
@@ -1503,7 +1503,7 @@ void CScreenAnnotations::OnEditlayoutLibraryOpenlibrary()
 	}
 }
 
-void CScreenAnnotations::OnEditlayoutLibraryCloselibrary()
+void CScreenAnnotationsDlg::OnEditlayoutLibraryCloselibrary()
 {
 	CString m_newfile;
 
@@ -1533,7 +1533,7 @@ void CScreenAnnotations::OnEditlayoutLibraryCloselibrary()
 	}
 }
 
-void CScreenAnnotations::OnHelpHelp()
+void CScreenAnnotationsDlg::OnHelpHelp()
 {
 	CString progdir,helpScreenPath;
 	progdir=GetProgPath();
@@ -1543,13 +1543,13 @@ void CScreenAnnotations::OnHelpHelp()
 
 }
 
-void CScreenAnnotations::OnOptionsClosescreenannotations()
+void CScreenAnnotationsDlg::OnOptionsClosescreenannotations()
 {
 	OnOK();
 
 }
 
-BOOL CScreenAnnotations::Openlink (CString link)
+BOOL CScreenAnnotationsDlg::Openlink (CString link)
 {
 	BOOL bSuccess = FALSE;
 
@@ -1563,7 +1563,7 @@ BOOL CScreenAnnotations::Openlink (CString link)
 	return bSuccess;
 }
 
-BOOL CScreenAnnotations::OpenUsingShellExecute (CString link)
+BOOL CScreenAnnotationsDlg::OpenUsingShellExecute (CString link)
 {
 	LPCTSTR mode;
 	mode = _T ("open");
@@ -1578,7 +1578,7 @@ BOOL CScreenAnnotations::OpenUsingShellExecute (CString link)
 	return TRUE;
 }
 
-BOOL CScreenAnnotations::OpenUsingRegisteredClass (CString link)
+BOOL CScreenAnnotationsDlg::OpenUsingRegisteredClass (CString link)
 {
 	TCHAR key[MAX_PATH + MAX_PATH];
 	HINSTANCE result;
@@ -1667,7 +1667,7 @@ BOOL CScreenAnnotations::OpenUsingRegisteredClass (CString link)
 	return FALSE;
 }
 
-LONG CScreenAnnotations::GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata)
+LONG CScreenAnnotationsDlg::GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata)
 {
 	HKEY hkey;
 	LONG retval = RegOpenKeyEx (key, subkey, 0, KEY_QUERY_VALUE, &hkey);
@@ -1684,7 +1684,7 @@ LONG CScreenAnnotations::GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata)
 }
 
 //partial
-void CScreenAnnotations::InstantiateLayout(int nItem, int makeselect)
+void CScreenAnnotationsDlg::InstantiateLayout(int nItem, int makeselect)
 {
 	TabSelectLayoutMode(1);
 
@@ -1733,7 +1733,7 @@ void CScreenAnnotations::InstantiateLayout(int nItem, int makeselect)
 	}
 }
 
-int CScreenAnnotations::GetLayoutListSelection()
+int CScreenAnnotationsDlg::GetLayoutListSelection()
 {
 	TabSelectLayoutMode(1);
 
@@ -1766,7 +1766,7 @@ int CScreenAnnotations::GetLayoutListSelection()
 
 }
 
-void CScreenAnnotations::OnNext()
+void CScreenAnnotationsDlg::OnNext()
 {
 	int max = ListManager.layoutArray.GetSize();
 	if (max<=0) return;
@@ -1785,7 +1785,7 @@ void CScreenAnnotations::OnNext()
 
 }
 
-void CScreenAnnotations::OnHelpShapes()
+void CScreenAnnotationsDlg::OnHelpShapes()
 {
 	CString progdir,helpScreenPath;
 	progdir=GetProgPath();
@@ -1795,7 +1795,7 @@ void CScreenAnnotations::OnHelpShapes()
 
 }
 
-void CScreenAnnotations::OnHelpShapetopicsInstantiatingashape()
+void CScreenAnnotationsDlg::OnHelpShapetopicsInstantiatingashape()
 {
 	CString progdir,helpScreenPath;
 	progdir=GetProgPath();
@@ -1805,7 +1805,7 @@ void CScreenAnnotations::OnHelpShapetopicsInstantiatingashape()
 
 }
 
-void CScreenAnnotations::OnHelpShapetopicsEditingashape()
+void CScreenAnnotationsDlg::OnHelpShapetopicsEditingashape()
 {
 	CString progdir,helpScreenPath;
 	progdir=GetProgPath();
@@ -1815,7 +1815,7 @@ void CScreenAnnotations::OnHelpShapetopicsEditingashape()
 
 }
 
-void CScreenAnnotations::OnHelpShapetopicsEditingtext()
+void CScreenAnnotationsDlg::OnHelpShapetopicsEditingtext()
 {
 	CString progdir,helpScreenPath;
 	progdir=GetProgPath();
@@ -1825,7 +1825,7 @@ void CScreenAnnotations::OnHelpShapetopicsEditingtext()
 
 }
 
-void CScreenAnnotations::OnHelpShapetopicsEditingimage()
+void CScreenAnnotationsDlg::OnHelpShapetopicsEditingimage()
 {
 	CString progdir,helpScreenPath;
 	progdir=GetProgPath();
@@ -1835,7 +1835,7 @@ void CScreenAnnotations::OnHelpShapetopicsEditingimage()
 
 }
 
-void CScreenAnnotations::OnHelpShapetopicsCreatinganewshape()
+void CScreenAnnotationsDlg::OnHelpShapetopicsCreatinganewshape()
 {
 	CString progdir,helpScreenPath;
 	progdir=GetProgPath();
@@ -1845,7 +1845,7 @@ void CScreenAnnotations::OnHelpShapetopicsCreatinganewshape()
 
 }
 
-void CScreenAnnotations::OnHelpShapetopicsEditingtransparency()
+void CScreenAnnotationsDlg::OnHelpShapetopicsEditingtransparency()
 {
 	CString progdir,helpScreenPath;
 	progdir=GetProgPath();
@@ -1855,7 +1855,7 @@ void CScreenAnnotations::OnHelpShapetopicsEditingtransparency()
 
 }
 
-void CScreenAnnotations::OnHelpShapetopicsManagingshapes()
+void CScreenAnnotationsDlg::OnHelpShapetopicsManagingshapes()
 {
 	CString progdir,helpScreenPath;
 	progdir=GetProgPath();
@@ -1865,7 +1865,7 @@ void CScreenAnnotations::OnHelpShapetopicsManagingshapes()
 
 }
 
-void CScreenAnnotations::OnHelpShapetopicsResizingshapes()
+void CScreenAnnotationsDlg::OnHelpShapetopicsResizingshapes()
 {
 	CString progdir,helpScreenPath;
 	progdir=GetProgPath();
@@ -1875,7 +1875,7 @@ void CScreenAnnotations::OnHelpShapetopicsResizingshapes()
 
 }
 
-void CScreenAnnotations::OnHelpLayouts()
+void CScreenAnnotationsDlg::OnHelpLayouts()
 {
 	CString progdir,helpScreenPath;
 	progdir=GetProgPath();
@@ -1885,13 +1885,13 @@ void CScreenAnnotations::OnHelpLayouts()
 
 }
 
-void CScreenAnnotations::OnAnnSavelayout()
+void CScreenAnnotationsDlg::OnAnnSavelayout()
 {
 	SaveLayoutNew();
 
 }
 
-void CScreenAnnotations::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu)
+void CScreenAnnotationsDlg::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu)
 {
 	CDialog::OnInitMenuPopup(pPopupMenu, nIndex, bSysMenu);
 
@@ -1998,64 +1998,64 @@ void CScreenAnnotations::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bS
 
 }
 
-void CScreenAnnotations::OnLibraryOpenshapelibrary()
+void CScreenAnnotationsDlg::OnLibraryOpenshapelibrary()
 {
 	OnEditobjLibraryOpenlibrary();
 	TabSelectShapeMode(1);
 
 }
 
-void CScreenAnnotations::OnLibrarySaveshapelibrary()
+void CScreenAnnotationsDlg::OnLibrarySaveshapelibrary()
 {
 	OnEditobjLibraryCloselibrary();
 
 }
 
-void CScreenAnnotations::OnLibraryNewshapelibrary()
+void CScreenAnnotationsDlg::OnLibraryNewshapelibrary()
 {
 	OnEditobjLibraryNewlibrary();
 	TabSelectShapeMode(1);
 
 }
 
-void CScreenAnnotations::OnLibraryNewlayoutlibrary()
+void CScreenAnnotationsDlg::OnLibraryNewlayoutlibrary()
 {
 	OnEditlayoutLibraryNewlibrary();
 	TabSelectLayoutMode(1);
 
 }
 
-void CScreenAnnotations::OnLibraryOpenlayoutlibrary()
+void CScreenAnnotationsDlg::OnLibraryOpenlayoutlibrary()
 {
 	OnEditlayoutLibraryOpenlibrary();
 	TabSelectLayoutMode(1);
 }
 
-void CScreenAnnotations::OnLibrarySavelayoutlibrary()
+void CScreenAnnotationsDlg::OnLibrarySavelayoutlibrary()
 {
 	OnEditlayoutLibraryCloselibrary();
 
 }
 
-void CScreenAnnotations::OnObjectsCopy()
+void CScreenAnnotationsDlg::OnObjectsCopy()
 {
 	OnEditobjCopy();
 
 }
 
-void CScreenAnnotations::OnObjectsPaste()
+void CScreenAnnotationsDlg::OnObjectsPaste()
 {
 	OnEditobjPaste();
 
 }
 
-void CScreenAnnotations::OnObjectsRemove()
+void CScreenAnnotationsDlg::OnObjectsRemove()
 {
 	OnEditobjRemove();
 
 }
 
-int CScreenAnnotations::OnCreate(LPCREATESTRUCT lpCreateStruct)
+int CScreenAnnotationsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CDialog::OnCreate(lpCreateStruct) == -1)
 		return -1;
@@ -2063,37 +2063,37 @@ int CScreenAnnotations::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-void CScreenAnnotations::OnObjectsEdittext()
+void CScreenAnnotationsDlg::OnObjectsEdittext()
 {
 	OnEditobjEdittext();
 
 }
 
-void CScreenAnnotations::OnObjectsEditimage()
+void CScreenAnnotationsDlg::OnObjectsEditimage()
 {
 	OnEditobjEditimage();
 
 }
 
-void CScreenAnnotations::OnObjectsEditname()
+void CScreenAnnotationsDlg::OnObjectsEditname()
 {
 	OnEditobjTestedit();
 
 }
 
-void CScreenAnnotations::OnObjectsEdittransaprency()
+void CScreenAnnotationsDlg::OnObjectsEdittransaprency()
 {
 	OnEditobjEdittransparency();
 
 }
 
-void CScreenAnnotations::OnObjectsCloseallobjects()
+void CScreenAnnotationsDlg::OnObjectsCloseallobjects()
 {
 	OnEditlayoutCloseallobjects();
 
 }
 
-void CScreenAnnotations::OnLibraryInsertshapelibaray()
+void CScreenAnnotationsDlg::OnLibraryInsertshapelibaray()
 {
 	CString filename;
 
@@ -2115,19 +2115,19 @@ void CScreenAnnotations::OnLibraryInsertshapelibaray()
 
 }
 
-void CScreenAnnotations::OnObjectsMoveitemup()
+void CScreenAnnotationsDlg::OnObjectsMoveitemup()
 {
 	MoveItem(0);
 
 }
 
-void CScreenAnnotations::OnObjectsMoveitemdown()
+void CScreenAnnotationsDlg::OnObjectsMoveitemdown()
 {
 	MoveItem(1);
 
 }
 
-void CScreenAnnotations::MoveItem(int direction)
+void CScreenAnnotationsDlg::MoveItem(int direction)
 {
 	//Locate Selected Item
 	int nItem = -1;

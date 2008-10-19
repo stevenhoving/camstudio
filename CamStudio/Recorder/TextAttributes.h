@@ -6,7 +6,7 @@
 
 #pragma once
 
-enum Position
+enum ePosition
 {
 	TOP_LEFT = 0,
 	TOP_CENTER = 1,
@@ -21,7 +21,7 @@ enum Position
 
 struct TextAttributes
 {
-	Position position;
+	ePosition position;
 	CString text;
 	COLORREF backgroundColor;
 	COLORREF textColor;

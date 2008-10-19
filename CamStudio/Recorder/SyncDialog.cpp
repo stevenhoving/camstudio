@@ -15,26 +15,26 @@ int shiftTypeLocal = 0;
 int timeShiftLocal = 0;
 
 /////////////////////////////////////////////////////////////////////////////
-// CSyncDialog dialog
+// CSyncDlg dialog
 
-CSyncDialog::CSyncDialog(CWnd* pParent /*=NULL*/)
-: CDialog(CSyncDialog::IDD, pParent)
+CSyncDlg::CSyncDlg(CWnd* pParent /*=NULL*/)
+: CDialog(CSyncDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CSyncDialog)
+	//{{AFX_DATA_INIT(CSyncDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
-void CSyncDialog::DoDataExchange(CDataExchange* pDX)
+void CSyncDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CSyncDialog)
+	//{{AFX_DATA_MAP(CSyncDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
-BEGIN_MESSAGE_MAP(CSyncDialog, CDialog)
-	//{{AFX_MSG_MAP(CSyncDialog)
+BEGIN_MESSAGE_MAP(CSyncDlg, CDialog)
+	//{{AFX_MSG_MAP(CSyncDlg)
 	ON_BN_CLICKED(IDC_RADIO1, OnRadio1)
 	ON_BN_CLICKED(IDC_RADIO3, OnRadio3)
 	ON_BN_CLICKED(IDC_RADIO4, OnRadio4)
@@ -43,9 +43,9 @@ BEGIN_MESSAGE_MAP(CSyncDialog, CDialog)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CSyncDialog message handlers
+// CSyncDlg message handlers
 
-BOOL CSyncDialog::OnInitDialog()
+BOOL CSyncDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -60,7 +60,7 @@ BOOL CSyncDialog::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CSyncDialog::OnRadio1()
+void CSyncDlg::OnRadio1()
 {
 	// TODO: Add your control notification handler code here
 	((CButton *) GetDlgItem(IDC_RADIO4))->SetCheck(0);
@@ -71,7 +71,7 @@ void CSyncDialog::OnRadio1()
 
 }
 
-void CSyncDialog::OnRadio3()
+void CSyncDlg::OnRadio3()
 {
 	// TODO: Add your control notification handler code here
 	((CButton *) GetDlgItem(IDC_RADIO4))->SetCheck(0);
@@ -82,7 +82,7 @@ void CSyncDialog::OnRadio3()
 
 }
 
-void CSyncDialog::OnRadio4()
+void CSyncDlg::OnRadio4()
 {
 	// TODO: Add your control notification handler code here
 	((CButton *) GetDlgItem(IDC_RADIO4))->SetCheck(1);
@@ -93,7 +93,7 @@ void CSyncDialog::OnRadio4()
 
 }
 
-void CSyncDialog::OnOK()
+void CSyncDlg::OnOK()
 {
 	// TODO: Add extra validation here
 	iShiftType = shiftTypeLocal;
@@ -102,7 +102,7 @@ void CSyncDialog::OnOK()
 	CDialog::OnOK();
 }
 
-void CSyncDialog::UpdateGui()
+void CSyncDlg::UpdateGui()
 {
 
 	((CButton *) GetDlgItem(IDC_RADIO4))->SetCheck(iShiftType == 0);
@@ -123,7 +123,7 @@ void CSyncDialog::UpdateGui()
 
 }
 
-void CSyncDialog::OnChangeEdit1()
+void CSyncDlg::OnChangeEdit1()
 {
 	// TODO: If this is a RICHEDIT control, the control will not
 	// send this notification unless you override the CDialog::OnInitDialog()

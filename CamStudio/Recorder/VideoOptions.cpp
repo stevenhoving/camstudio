@@ -37,26 +37,26 @@ extern void SetVideoCompressState (HIC hic , DWORD fccHandler);
 extern void AutoSetRate(int val,int& framerate,int& delayms);
 
 /////////////////////////////////////////////////////////////////////////////
-// CVideoOptions dialog
+// CVideoOptionsDlg dialog
 
-CVideoOptions::CVideoOptions(CWnd* pParent /*=NULL*/)
-: CDialog(CVideoOptions::IDD, pParent)
+CVideoOptionsDlg::CVideoOptionsDlg(CWnd* pParent /*=NULL*/)
+: CDialog(CVideoOptionsDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CVideoOptions)
+	//{{AFX_DATA_INIT(CVideoOptionsDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
-void CVideoOptions::DoDataExchange(CDataExchange* pDX)
+void CVideoOptionsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CVideoOptions)
+	//{{AFX_DATA_MAP(CVideoOptionsDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
-BEGIN_MESSAGE_MAP(CVideoOptions, CDialog)
-	//{{AFX_MSG_MAP(CVideoOptions)
+BEGIN_MESSAGE_MAP(CVideoOptionsDlg, CDialog)
+	//{{AFX_MSG_MAP(CVideoOptionsDlg)
 	ON_WM_HSCROLL()
 	ON_BN_CLICKED(ID_ABOUT, OnAbout)
 	ON_CBN_SELCHANGE(IDC_COMPRESSORS, OnSelchangeCompressors)
@@ -66,9 +66,9 @@ BEGIN_MESSAGE_MAP(CVideoOptions, CDialog)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CVideoOptions message handlers
+// CVideoOptionsDlg message handlers
 
-void CVideoOptions::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+void CVideoOptionsDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: Add your message handler code here and/or call default
 	int quality;
@@ -84,7 +84,7 @@ void CVideoOptions::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
-void CVideoOptions::OnOK()
+void CVideoOptionsDlg::OnOK()
 {
 	// TODO: Add extra validation here
 	CString fps;
@@ -162,7 +162,7 @@ void CVideoOptions::OnOK()
 	CDialog::OnOK();
 }
 
-BOOL CVideoOptions::OnInitDialog()
+BOOL CVideoOptionsDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -232,7 +232,7 @@ BOOL CVideoOptions::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CVideoOptions::RefreshCompressorButtons()
+void CVideoOptionsDlg::RefreshCompressorButtons()
 {
 
 	int sel = ((CComboBox *) GetDlgItem(IDC_COMPRESSORS))->GetCurSel();
@@ -258,7 +258,7 @@ void CVideoOptions::RefreshCompressorButtons()
 
 }
 
-void CVideoOptions::OnAbout()
+void CVideoOptionsDlg::OnAbout()
 {
 	// TODO: Add your control notification handler code here
 	int sel = ((CComboBox *) GetDlgItem(IDC_COMPRESSORS))->GetCurSel();
@@ -275,7 +275,7 @@ void CVideoOptions::OnAbout()
 
 }
 
-void CVideoOptions::OnSelchangeCompressors()
+void CVideoOptionsDlg::OnSelchangeCompressors()
 {
 	// TODO: Add your control notification handler code here
 	RefreshCompressorButtons();
@@ -286,7 +286,7 @@ void CVideoOptions::OnSelchangeCompressors()
 //Note : Because the program stores the state for only one compressor (in the pVideoCompressParams),
 //if the user chooses "Configure" for compressor A, then chooses another compressor B and presses "Configure" again
 //the previous state info for compressor A will be lost.
-void CVideoOptions::OnConfigure()
+void CVideoOptionsDlg::OnConfigure()
 {
 	// TODO: Add your control notification handler code here
 	int sel = ((CComboBox *) GetDlgItem(IDC_COMPRESSORS))->GetCurSel();
@@ -315,13 +315,13 @@ void CVideoOptions::OnConfigure()
 
 }
 
-void CVideoOptions::OnCancel()
+void CVideoOptionsDlg::OnCancel()
 {
 
 	CDialog::OnCancel();
 }
 
-void CVideoOptions::OnAuto()
+void CVideoOptionsDlg::OnAuto()
 {
 	// TODO: Add your control notification handler code here
 	BOOL val = ((CButton *) GetDlgItem(IDC_AUTO))->GetCheck();
@@ -334,7 +334,7 @@ void CVideoOptions::OnAuto()
 
 }
 
-void CVideoOptions::RefreshAutoOptions()
+void CVideoOptionsDlg::RefreshAutoOptions()
 {
 
 	if (bAutoAdjust) {
@@ -358,7 +358,7 @@ void CVideoOptions::RefreshAutoOptions()
 
 }
 
-void CVideoOptions::UpdateAdjustSliderVal()
+void CVideoOptionsDlg::UpdateAdjustSliderVal()
 {
 	int framerate;
 	int delayms;

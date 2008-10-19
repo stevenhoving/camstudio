@@ -9,18 +9,18 @@
 #endif // _MSC_VER >= 1000
 
 /////////////////////////////////////////////////////////////////////////////
-// CFixedRegion dialog
+// CFixedRegionDlg dialog
 
-class CFixedRegion : public CDialog
+class CFixedRegionDlg : public CDialog
 {
-	DECLARE_DYNAMIC(CFixedRegion)
+	DECLARE_DYNAMIC(CFixedRegionDlg)
 
 // Construction
 public:
-	CFixedRegion(CWnd* pParent = NULL);   // standard constructor
+	CFixedRegionDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
-	//{{AFX_DATA(CFixedRegion)
+	//{{AFX_DATA(CFixedRegionDlg)
 	enum { IDD = IDD_FIXEDREGION };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
@@ -28,7 +28,7 @@ public:
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CFixedRegion)
+	//{{AFX_VIRTUAL(CFixedRegionDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -37,7 +37,7 @@ public:
 protected:
 
 	// Generated message map functions
-	//{{AFX_MSG(CFixedRegion)
+	//{{AFX_MSG(CFixedRegionDlg)
 	virtual void OnOK();
 	afx_msg void OnSelect();
 	virtual BOOL OnInitDialog();

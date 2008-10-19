@@ -5,19 +5,19 @@
 #include "Recorder.h"
 #include "EffectsOptions2.h"
 
-// CEffectsOptions2 dialog
+// CEffectsOptions2Dlg dialog
 
-IMPLEMENT_DYNAMIC(CEffectsOptions2, CDialog)
-CEffectsOptions2::CEffectsOptions2(CWnd* pParent /*=NULL*/)
-: CDialog(CEffectsOptions2::IDD, pParent)
+IMPLEMENT_DYNAMIC(CEffectsOptions2Dlg, CDialog)
+CEffectsOptions2Dlg::CEffectsOptions2Dlg(CWnd* pParent /*=NULL*/)
+: CDialog(CEffectsOptions2Dlg::IDD, pParent)
 {
 }
 
-CEffectsOptions2::~CEffectsOptions2()
+CEffectsOptions2Dlg::~CEffectsOptions2Dlg()
 {
 }
 
-void CEffectsOptions2::DoDataExchange(CDataExchange* pDX)
+void CEffectsOptions2Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	int* pPos = (int*)(&m_params.position);
 	int& pos = *pPos;
@@ -25,7 +25,7 @@ void CEffectsOptions2::DoDataExchange(CDataExchange* pDX)
 	DDX_Radio(pDX, IDC_RADIO_TOP_LEFT, pos);
 }
 
-BEGIN_MESSAGE_MAP(CEffectsOptions2, CDialog)
+BEGIN_MESSAGE_MAP(CEffectsOptions2Dlg, CDialog)
 END_MESSAGE_MAP()
 
-// CEffectsOptions2 message handlers
+// CEffectsOptions2Dlg message handlers

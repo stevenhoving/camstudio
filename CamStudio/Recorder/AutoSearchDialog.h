@@ -9,26 +9,26 @@
 //
 
 /////////////////////////////////////////////////////////////////////////////
-// CAutoSearchDialog dialog
+// CAutoSearchDlg dialog
 
-class CAutoSearchDialog : public CDialog
+class CAutoSearchDlg : public CDialog
 {
 // Construction
 public:
-	CAutoSearchDialog(CWnd* pParent = NULL);   // standard constructor
+	CAutoSearchDlg(CWnd* pParent = NULL);   // standard constructor
 	void SetVarText(CString textstr);
 	void SetVarTextLine2(CString textstr);
 	void SetButtonEnable(BOOL enable);
 
 // Dialog Data
-	//{{AFX_DATA(CAutoSearchDialog)
+	//{{AFX_DATA(CAutoSearchDlg)
 	enum { IDD = IDD_AUTOSEARCH };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CAutoSearchDialog)
+	//{{AFX_VIRTUAL(CAutoSearchDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -37,7 +37,7 @@ public:
 protected:
 
 	// Generated message map functions
-	//{{AFX_MSG(CAutoSearchDialog)
+	//{{AFX_MSG(CAutoSearchDlg)
 	afx_msg void OnCloseDialog();
 	afx_msg void OnClose();
 	//}}AFX_MSG

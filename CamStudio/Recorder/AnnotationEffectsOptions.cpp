@@ -6,19 +6,19 @@
 #include "AnnotationEffectsOptions.h"
 #include ".\annotationeffectsoptions.h"
 
-// CAnnotationEffectsOptions dialog
+// CAnnotationEffectsOptionsDlg dialog
 
-IMPLEMENT_DYNAMIC(CAnnotationEffectsOptions, CDialog)
-CAnnotationEffectsOptions::CAnnotationEffectsOptions(CWnd* pParent /*=NULL*/)
-: CDialog(CAnnotationEffectsOptions::IDD, pParent)
+IMPLEMENT_DYNAMIC(CAnnotationEffectsOptionsDlg, CDialog)
+CAnnotationEffectsOptionsDlg::CAnnotationEffectsOptionsDlg(CWnd* pParent /*=NULL*/)
+: CDialog(CAnnotationEffectsOptionsDlg::IDD, pParent)
 {
 }
 
-CAnnotationEffectsOptions::~CAnnotationEffectsOptions()
+CAnnotationEffectsOptionsDlg::~CAnnotationEffectsOptionsDlg()
 {
 }
 
-void CAnnotationEffectsOptions::DoDataExchange(CDataExchange* pDX)
+void CAnnotationEffectsOptionsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_BUTTON_IMAGE_PATH, m_buttonImagePath);
@@ -28,16 +28,16 @@ void CAnnotationEffectsOptions::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_CAPTION_TEXT, m_caption.text);
 }
 
-BEGIN_MESSAGE_MAP(CAnnotationEffectsOptions, CDialog)
+BEGIN_MESSAGE_MAP(CAnnotationEffectsOptionsDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_IMAGE_PATH, OnBnClickedButtonImagePath)
 	ON_BN_CLICKED(IDC_BUTTON_CAPTION_OPTIONS, OnBnClickedButtonCaptionOptions)
 	ON_BN_CLICKED(IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS, OnBnClickedButtonTimestampFormatOptions)
 	ON_BN_CLICKED(IDC_BUTTON_WATERMARK_OPTIONS, OnBnClickedButtonWatermarkOptions)
 END_MESSAGE_MAP()
 
-// CAnnotationEffectsOptions message handlers
+// CAnnotationEffectsOptionsDlg message handlers
 
-void CAnnotationEffectsOptions::OnBnClickedButtonImagePath()
+void CAnnotationEffectsOptionsDlg::OnBnClickedButtonImagePath()
 {
 	// TODO: Add your control notification handler code here
 	static char BASED_CODE szFilter[] = "Bitmap Files (*.bmp)|*.bmp|GIF Files (*.gif)|*.gif|JPEG Files (*.jpg;*.jpeg)|*.jpg; *.jpeg|All Files (*.*)|*.*||";
@@ -49,30 +49,30 @@ void CAnnotationEffectsOptions::OnBnClickedButtonImagePath()
 	}
 }
 
-void CAnnotationEffectsOptions::OnBnClickedButtonCaptionOptions()
+void CAnnotationEffectsOptionsDlg::OnBnClickedButtonCaptionOptions()
 {
 	// TODO: Add your control notification handler code here
-	CEffectsOptions optDlg;
+	CEffectsOptionsDlg optDlg;
 	optDlg.m_params = m_caption;
 	if (optDlg.DoModal() == IDOK){
 		m_caption = optDlg.m_params;
 	}
 }
 
-void CAnnotationEffectsOptions::OnBnClickedButtonTimestampFormatOptions()
+void CAnnotationEffectsOptionsDlg::OnBnClickedButtonTimestampFormatOptions()
 {
 	// TODO: Add your control notification handler code here
-	CEffectsOptions optDlg;
+	CEffectsOptionsDlg optDlg;
 	optDlg.m_params = m_timestamp;
 	if (optDlg.DoModal() == IDOK){
 		m_timestamp = optDlg.m_params;
 	}
 }
 
-void CAnnotationEffectsOptions::OnBnClickedButtonWatermarkOptions()
+void CAnnotationEffectsOptionsDlg::OnBnClickedButtonWatermarkOptions()
 {
 	// TODO: Add your control notification handler code here
-	CEffectsOptions2 optDlg;
+	CEffectsOptions2Dlg optDlg;
 	optDlg.m_params = m_image;
 	if (optDlg.DoModal() == IDOK){
 		m_image = optDlg.m_params;

@@ -12,33 +12,33 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-// CPresetTime dialog
+// CPresetTimeDlg dialog
 
-CPresetTime::CPresetTime(CWnd* pParent /*=NULL*/)
-: CDialog(CPresetTime::IDD, pParent)
+CPresetTimeDlg::CPresetTimeDlg(CWnd* pParent /*=NULL*/)
+: CDialog(CPresetTimeDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CPresetTime)
+	//{{AFX_DATA_INIT(CPresetTimeDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
-void CPresetTime::DoDataExchange(CDataExchange* pDX)
+void CPresetTimeDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CPresetTime)
+	//{{AFX_DATA_MAP(CPresetTimeDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
-BEGIN_MESSAGE_MAP(CPresetTime, CDialog)
-	//{{AFX_MSG_MAP(CPresetTime)
+BEGIN_MESSAGE_MAP(CPresetTimeDlg, CDialog)
+	//{{AFX_MSG_MAP(CPresetTimeDlg)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CPresetTime message handlers
+// CPresetTimeDlg message handlers
 
-void CPresetTime::OnOK()
+void CPresetTimeDlg::OnOK()
 {
 
 	int val = ((CButton *) GetDlgItem(IDC_CHECK1))->GetCheck();
@@ -52,7 +52,7 @@ void CPresetTime::OnOK()
 	CDialog::OnOK();
 }
 
-BOOL CPresetTime::OnInitDialog()
+BOOL CPresetTimeDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 

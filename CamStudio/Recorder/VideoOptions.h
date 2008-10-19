@@ -8,25 +8,25 @@
 //
 
 /////////////////////////////////////////////////////////////////////////////
-// CVideoOptions dialog
+// CVideoOptionsDlg dialog
 
-class CVideoOptions : public CDialog
+class CVideoOptionsDlg : public CDialog
 {
 // Construction
 public:
-	CVideoOptions(CWnd* pParent = NULL);   // standard constructor
+	CVideoOptionsDlg(CWnd* pParent = NULL);   // standard constructor
 	void RefreshCompressorButtons();
 	void RefreshAutoOptions();
 	void UpdateAdjustSliderVal();
 
 // Dialog Data
-	//{{AFX_DATA(CVideoOptions)
+	//{{AFX_DATA(CVideoOptionsDlg)
 	enum { IDD = IDD_VIDEOOPTIONS };
 	//}}AFX_DATA
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CVideoOptions)
+	//{{AFX_VIRTUAL(CVideoOptionsDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -35,7 +35,7 @@ public:
 protected:
 
 	// Generated message map functions
-	//{{AFX_MSG(CVideoOptions)
+	//{{AFX_MSG(CVideoOptionsDlg)
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
