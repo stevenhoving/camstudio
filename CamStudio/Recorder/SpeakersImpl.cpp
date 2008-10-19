@@ -63,10 +63,6 @@ int second_maximum_line = -1;
 double maximum_value = -1.0;
 double second_maximum_value = -1.0;
 
-//int iFeedbackLine = -1;
-//int iFeedbackLineInfo = -1;
-DWORD volume;
-
 int storedID[100]; //assume there is less than 100 lines, this array is used for manual search
 
 void FreeWaveoutResouces();
