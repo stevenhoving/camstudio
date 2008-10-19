@@ -38,6 +38,11 @@ void CFixedRegionDlg::DoDataExchange(CDataExchange* pDX)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	DDX_Control(pDX, IDC_MSG, m_ctrlStaticMsg);	
 	DDX_Control(pDX, IDC_WIDTH, m_ctrlEditWidth);	
+	DDX_Control(pDX, IDC_HEIGHT, m_ctrlEditHeight);	
+	DDX_Control(pDX, IDC_X, m_ctrlEditPosX);
+	DDX_Control(pDX, IDC_Y, m_ctrlEditPosY);
+	DDX_Control(pDX, IDC_SUPPORTMOUSEDRAG, m_ctrlButtonMouseDrag);
+	DDX_Control(pDX, IDC_FIXEDTOPLEFT, m_ctrlButtonFixTopLeft);
 	//}}AFX_DATA_MAP
 }
 
@@ -46,7 +51,7 @@ BEGIN_MESSAGE_MAP(CFixedRegionDlg, CDialog)
 	ON_BN_CLICKED(IDSELECT, OnSelect)
 	ON_BN_CLICKED(IDC_FIXEDTOPLEFT, OnFixedtopleft)
 	//}}AFX_MSG_MAP
-	ON_MESSAGE(WM_USER_REGIONUPDATE, OnRegionUpdate)
+	ON_MESSAGE(WM_APP_REGIONUPDATE, OnRegionUpdate)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -58,7 +63,7 @@ void CFixedRegionDlg::OnOK()
 	CString widthstr;
 	CString heightstr;
 	m_ctrlEditWidth.GetWindowText(widthstr);
-	((CEdit *) GetDlgItem(IDC_HEIGHT))->GetWindowText(heightstr);
+	m_ctrlEditHeight.GetWindowText(heightstr);
 
 	int width;
 	int height;
@@ -88,7 +93,7 @@ void CFixedRegionDlg::OnOK()
 		//CString msgstr;
 		//msgstr.Format("The height must be greater than 0");
 		//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-		MessageOut(this->m_hWnd,IDS_STRING_HEIGHTGREATER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		MessageOut(m_hWnd,IDS_STRING_HEIGHTGREATER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 		return;
 	}
 
@@ -97,19 +102,19 @@ void CFixedRegionDlg::OnOK()
 		//CString msgstr;
 		//msgstr.Format("The height must be smaller than the screen height (%d)",maxyScreen);
 		//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-		MessageOut(this->m_hWnd,IDS_STRING_HEIGHTSMALLER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,maxyScreen);
+		MessageOut(m_hWnd,IDS_STRING_HEIGHTSMALLER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,maxyScreen);
 		return;
 	}
 
 	//version 1.5
-	int fval = ((CButton *) GetDlgItem(IDC_FIXEDTOPLEFT))->GetCheck();
+	int fval = m_ctrlButtonFixTopLeft.GetCheck();
 	if (fval)
 	{
 		//Bypass all the following checks if the Fixed Top-Left setting is not turned on
 		CString xstr;
 		CString ystr;
-		((CEdit *) GetDlgItem(IDC_X))->GetWindowText(xstr);
-		((CEdit *) GetDlgItem(IDC_Y))->GetWindowText(ystr);
+		m_ctrlEditPosX.GetWindowText(xstr);
+		m_ctrlEditPosY.GetWindowText(ystr);
 
 		int xval;
 		int yval;
@@ -121,7 +126,7 @@ void CFixedRegionDlg::OnOK()
 			//CString msgstr;
 			//msgstr.Format("The left value must be greater than 0");
 			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(this->m_hWnd,IDS_STRING_LEFTGREATER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(m_hWnd,IDS_STRING_LEFTGREATER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			return;
 		}
 
@@ -139,7 +144,7 @@ void CFixedRegionDlg::OnOK()
 			//CString msgstr;
 			//msgstr.Format("The top value must be greater than 0");
 			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(this->m_hWnd,IDS_STRING_TOPGREATER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(m_hWnd,IDS_STRING_TOPGREATER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			return;
 		}
 
@@ -148,7 +153,7 @@ void CFixedRegionDlg::OnOK()
 			//CString msgstr;
 			//msgstr.Format("The top value must be smaller than the screen height (%d)",maxyScreen);
 			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(this->m_hWnd,IDS_STRING_TOPSMALLER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,maxyScreen);
+			MessageOut(m_hWnd,IDS_STRING_TOPSMALLER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,maxyScreen);
 			return;
 		}
 
@@ -180,14 +185,14 @@ void CFixedRegionDlg::OnOK()
 			//msgstr.Format("Value exceed screen height. The height is adjusted to %d",height);
 			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 
-			MessageOut(this->m_hWnd,IDS_STRING_VALUEEXCEEDHEIGHT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,height);
+			MessageOut(m_hWnd,IDS_STRING_VALUEEXCEEDHEIGHT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,height);
 		}
 
 		iCaptureLeft = xval;
 		iCaptureTop = yval;
 	}
 
-	bFixedCapture = fval;
+	bFixedCapture = fval ? true : false;
 
 	/////////
 
@@ -195,10 +200,7 @@ void CFixedRegionDlg::OnOK()
 	iCaptureHeight = height;
 
 	//ver 1.8
-	if (((CButton *) GetDlgItem(IDC_SUPPORTMOUSEDRAG))->GetCheck())
-		bSupportMouseDrag = 1;
-	else
-		bSupportMouseDrag = 0;
+	bSupportMouseDrag = m_ctrlButtonMouseDrag.GetCheck() ? true : false;
 
 	CDialog::OnOK();
 }
@@ -215,40 +217,27 @@ BOOL CFixedRegionDlg::OnInitDialog()
 	xstr.Format("%d",iCaptureLeft);
 	ystr.Format("%d",iCaptureTop);
 
-	((CEdit *) GetDlgItem(IDC_X))->EnableWindow(TRUE);
-	((CEdit *) GetDlgItem(IDC_Y))->EnableWindow(TRUE);
-	((CEdit *) GetDlgItem(IDC_X))->SetWindowText(xstr);
-	((CEdit *) GetDlgItem(IDC_Y))->SetWindowText(ystr);
+	m_ctrlEditPosX.EnableWindow(TRUE);
+	m_ctrlEditPosY.EnableWindow(TRUE);
+	m_ctrlEditPosX.SetWindowText(xstr);
+	m_ctrlEditPosY.SetWindowText(ystr);
 
-	if (bFixedCapture)
-	{
-		((CButton *) GetDlgItem(IDC_FIXEDTOPLEFT))->SetCheck(TRUE);
-	}
-	else
-	{
-		((CButton *) GetDlgItem(IDC_FIXEDTOPLEFT))->SetCheck(FALSE);
-		((CEdit *) GetDlgItem(IDC_X))->EnableWindow(FALSE);
-		((CEdit *) GetDlgItem(IDC_Y))->EnableWindow(FALSE);
-	}
+	m_ctrlButtonFixTopLeft.SetCheck(bFixedCapture);
+	m_ctrlEditPosX.EnableWindow(bFixedCapture);
+	m_ctrlEditPosY.EnableWindow(bFixedCapture);
+
 	///////////////////////////////
 
 	CString widthstr;
 	CString heightstr;
-	widthstr.Format("%d",iCaptureWidth);
-	heightstr.Format("%d",iCaptureHeight);
+	widthstr.Format("%d", iCaptureWidth);
+	heightstr.Format("%d", iCaptureHeight);
 
 	m_ctrlEditWidth.SetWindowText(widthstr);
-	((CEdit *) GetDlgItem(IDC_HEIGHT))->SetWindowText(heightstr);
+	m_ctrlEditHeight.SetWindowText(heightstr);
 	m_ctrlStaticMsg.SetWindowText("");
 
-	if (bSupportMouseDrag)
-	{
-		((CButton *) GetDlgItem(IDC_SUPPORTMOUSEDRAG))->SetCheck(TRUE);
-	}
-	else
-	{
-		((CButton *) GetDlgItem(IDC_SUPPORTMOUSEDRAG))->SetCheck(FALSE);
-	}
+	m_ctrlButtonMouseDrag.SetCheck(bSupportMouseDrag);
 
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -267,29 +256,32 @@ void CFixedRegionDlg::OnSelect()
 	m_ctrlStaticMsg.SetWindowText("");
 }
 
-LRESULT CFixedRegionDlg::OnRegionUpdate (WPARAM wParam, LPARAM lParam) {
-
+// OnRegionUpdate
+// message handler for WM_APP_REGIONUPDATE
+// TODO: why doesn't this message send position values?
+LRESULT CFixedRegionDlg::OnRegionUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/)
+{
 	int width = rcUse.right - rcUse.left + 1;
 	int height = rcUse.bottom - rcUse.top + 1;
 
 	CString widthstr;
 	CString heightstr;
-	widthstr.Format("%d",width);
-	heightstr.Format("%d",height);
+	widthstr.Format("%d", width);
+	heightstr.Format("%d", height);
 
 	m_ctrlEditWidth.SetWindowText(widthstr);
-	((CEdit *) GetDlgItem(IDC_HEIGHT))->SetWindowText(heightstr);
+	m_ctrlEditHeight.SetWindowText(heightstr);
 
 	//version 1.5
-	int fixtl = ((CButton *) GetDlgItem(IDC_FIXEDTOPLEFT))->GetCheck();
+	int fixtl = m_ctrlButtonFixTopLeft.GetCheck();
 	if (fixtl)
 	{
 		CString xstr;
 		CString ystr;
 		xstr.Format("%d", rcUse.left);
 		ystr.Format("%d", rcUse.top);
-		((CEdit *) GetDlgItem(IDC_X))->SetWindowText(xstr);
-		((CEdit *) GetDlgItem(IDC_Y))->SetWindowText(ystr);
+		m_ctrlEditPosX.SetWindowText(xstr);
+		m_ctrlEditPosY.SetWindowText(ystr);
 	}
 
 	return 0;
@@ -298,15 +290,7 @@ LRESULT CFixedRegionDlg::OnRegionUpdate (WPARAM wParam, LPARAM lParam) {
 void CFixedRegionDlg::OnFixedtopleft()
 {
 	// TODO: Add your control notification handler code here
-	int fixtl = ((CButton *) GetDlgItem(IDC_FIXEDTOPLEFT))->GetCheck();
-	if (fixtl)
-	{
-		((CEdit *) GetDlgItem(IDC_X))->EnableWindow(TRUE);
-		((CEdit *) GetDlgItem(IDC_Y))->EnableWindow(TRUE);
-	}
-	else
-	{
-		((CEdit *) GetDlgItem(IDC_X))->EnableWindow(FALSE);
-		((CEdit *) GetDlgItem(IDC_Y))->EnableWindow(FALSE);
-	}
+	int fixtl = m_ctrlButtonFixTopLeft.GetCheck();
+	m_ctrlEditPosX.EnableWindow(fixtl);
+	m_ctrlEditPosY.EnableWindow(fixtl);
 }
