@@ -206,4 +206,6 @@ inline CRecorderDoc* CRecorderView::GetDocument()
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
+extern bool bRecordState;
+
 #endif // !defined(AFX_VSCAPVIEW_H__DCC4865E_3B37_402E_AC1B_C8ABF4519F51__INCLUDED_)
