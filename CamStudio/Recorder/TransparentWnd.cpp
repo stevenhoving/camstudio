@@ -961,7 +961,7 @@ void CTransparentWnd::OnContextEditTransparency()
 
 void CTransparentWnd::EditTransparency()
 {
-	if (versionOp<5) {
+	if (versionOp < 5) {
 		//int ret = MessageBox("This feature is only available in Win 2000/ XP." ,"Note",MB_OK | MB_ICONEXCLAMATION);
 		int ret = MessageOut(this->m_hWnd,IDS_STRING_AVAILXP ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 		return;
@@ -969,8 +969,7 @@ void CTransparentWnd::EditTransparency()
 
 	editTransOn = 1;
 
-	CEditTransparencyDlg etDlg;
-	etDlg.PreModal(&enableTransparency,&valueTransparency,this);
+	CEditTransparencyDlg etDlg(enableTransparency, valueTransparency, this);
 	etDlg.DoModal();
 
 	editTransOn = 0;

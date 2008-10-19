@@ -1,3 +1,5 @@
+#include "afxwin.h"
+#include "afxcmn.h"
 #if !defined(AFX_EDITTRANSPARENCY_H__585926AC_E741_4A9F_8787_4D8651D48468__INCLUDED_)
 #define AFX_EDITTRANSPARENCY_H__585926AC_E741_4A9F_8787_4D8651D48468__INCLUDED_
 
@@ -10,18 +12,14 @@
 /////////////////////////////////////////////////////////////////////////////
 // CEditTransparencyDlg dialog
 
+class CTransparentWnd;	// forward declaration
+
 class CEditTransparencyDlg : public CDialog
 {
 // Construction
+	CEditTransparencyDlg(CWnd* pParent = NULL);   // standard constructor; not used
 public:
-	CEditTransparencyDlg(CWnd* pParent = NULL);   // standard constructor
-	void PreModal(int *enableTrans, int *valTrans, CWnd *myParent);
-	int *m_enableTrans;
-	int *m_valTrans;
-
-	int m_backup_enableTrans;
-	int m_backup_valTrans;
-	CWnd * m_myparent;
+	CEditTransparencyDlg(int& bEnable, int& iLevel, CTransparentWnd* pParent);
 
 // Dialog Data
 	//{{AFX_DATA(CEditTransparencyDlg)
@@ -47,6 +45,19 @@ protected:
 	virtual void OnCancel();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+
+private:
+	int& m_rbEnableTrans;	// TODO: should be bool&
+	int& m_riLevel;
+	int m_bEnableTransOld;	// TODO: should be bool
+	int m_iLevelOld;
+	CTransparentWnd* m_pTransparentWnd;
+
+	CButton m_ctrlButtonEnableTranparency;
+	CSliderCtrl m_ctrlSliderTransparency;
+	CStatic m_ctrlStaticTransparency;
+protected:
 };
 
 //{{AFX_INSERT_LOCATION}}

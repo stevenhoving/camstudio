@@ -867,18 +867,18 @@ BEGIN
     DEFPUSHBUTTON   "Reset Size",IDRESET,68,60,55,14
 END
 
-IDD_TRANSPARENCY DIALOG  0, 0, 186, 110
+IDD_TRANSPARENCY DIALOGEX 0, 0, 186, 110
 STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Edit Transparency"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,14,83,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,70,83,50,14
     GROUPBOX        "Windows Transparency",IDC_STATIC,7,7,172,96
     CONTROL         "Slider1",IDC_TRANSSLIDER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,12,64,154,12
-    LTEXT           "Trans",IDC_TRANSTEXT,135,84,39,13
-    CONTROL         "Enable Transparency\n( Making a window transparent will slow the recording rate significantly)",IDC_CHECK1,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,17,22,150,33
+    CTEXT           "Trans",IDC_TRANSTEXT,135,84,39,13,SS_CENTERIMAGE
+    CONTROL         "Enable Transparency",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,17,22,83,10
+    LTEXT           "Making a window transparent will slow\nthe recording rate significantly.",IDC_STATIC,29,35,120,17
 END
 
 IDD_TRANSRATE DIALOG  0, 0, 186, 126
