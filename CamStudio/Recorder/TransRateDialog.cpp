@@ -14,35 +14,35 @@ static char THIS_FILE[] = __FILE__;
 extern int iRrefreshRate;
 
 /////////////////////////////////////////////////////////////////////////////
-// CTransRateDialog dialog
+// CTransRateDlg dialog
 
-CTransRateDialog::CTransRateDialog(CWnd* pParent /*=NULL*/)
-: CDialog(CTransRateDialog::IDD, pParent)
+CTransRateDlg::CTransRateDlg(CWnd* pParent /*=NULL*/)
+: CDialog(CTransRateDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CTransRateDialog)
+	//{{AFX_DATA_INIT(CTransRateDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 	m_myparent = NULL;
 }
 
-void CTransRateDialog::DoDataExchange(CDataExchange* pDX)
+void CTransRateDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CTransRateDialog)
+	//{{AFX_DATA_MAP(CTransRateDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
-BEGIN_MESSAGE_MAP(CTransRateDialog, CDialog)
-	//{{AFX_MSG_MAP(CTransRateDialog)
+BEGIN_MESSAGE_MAP(CTransRateDlg, CDialog)
+	//{{AFX_MSG_MAP(CTransRateDlg)
 	ON_WM_HSCROLL()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CTransRateDialog message handlers
+// CTransRateDlg message handlers
 
-void CTransRateDialog::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+void CTransRateDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: Add your message handler code here and/or call default
 
@@ -65,13 +65,13 @@ void CTransRateDialog::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
-void CTransRateDialog::PreModal( CVideoWnd * parent)
+void CTransRateDlg::PreModal( CVideoWnd * parent)
 {
 	m_myparent = parent;
 
 }
 
-BOOL CTransRateDialog::OnInitDialog()
+BOOL CTransRateDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -91,14 +91,14 @@ BOOL CTransRateDialog::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CTransRateDialog::OnCancel()
+void CTransRateDlg::OnCancel()
 {
 	// TODO: Add extra cleanup here
 
 	CDialog::OnCancel();
 }
 
-void CTransRateDialog::OnOK()
+void CTransRateDlg::OnOK()
 {
 	// TODO: Add extra cleanup here
 

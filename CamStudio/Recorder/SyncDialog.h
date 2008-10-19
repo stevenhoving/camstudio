@@ -8,24 +8,24 @@
 //
 
 /////////////////////////////////////////////////////////////////////////////
-// CSyncDialog dialog
+// CSyncDlg dialog
 
-class CSyncDialog : public CDialog
+class CSyncDlg : public CDialog
 {
 // Construction
 public:
-	CSyncDialog(CWnd* pParent = NULL);   // standard constructor
+	CSyncDlg(CWnd* pParent = NULL);   // standard constructor
 	void UpdateGui();
 
 // Dialog Data
-	//{{AFX_DATA(CSyncDialog)
+	//{{AFX_DATA(CSyncDlg)
 	enum { IDD = IDD_SYNCHRONIZATION };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CSyncDialog)
+	//{{AFX_VIRTUAL(CSyncDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -34,7 +34,7 @@ public:
 protected:
 
 	// Generated message map functions
-	//{{AFX_MSG(CSyncDialog)
+	//{{AFX_MSG(CSyncDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnRadio1();
 	afx_msg void OnRadio3();

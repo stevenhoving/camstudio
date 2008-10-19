@@ -6,29 +6,29 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-// AudioSpeakers.h : header file
+// CAudioSpeakersDlg.h : header file
 //
 
 /////////////////////////////////////////////////////////////////////////////
-// AudioSpeakers dialog
+// CAudioSpeakersDlg dialog
 
-class AudioSpeakers : public CDialog
+class CAudioSpeakersDlg : public CDialog
 {
 // Construction
 public:
-	AudioSpeakers(CWnd* pParent = NULL);   // standard constructor
+	CAudioSpeakersDlg(CWnd* pParent = NULL);   // standard constructor
 	void OnUpdateLineConfig(int line_proper);
 	void OnUpdateVolume();
 
 // Dialog Data
-	//{{AFX_DATA(AudioSpeakers)
+	//{{AFX_DATA(CAudioSpeakersDlg)
 	enum { IDD = IDD_AUDIOWAVEOUT };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(AudioSpeakers)
+	//{{AFX_VIRTUAL(CAudioSpeakersDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -37,7 +37,7 @@ public:
 protected:
 
 	// Generated message map functions
-	//{{AFX_MSG(AudioSpeakers)
+	//{{AFX_MSG(CAudioSpeakersDlg)
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnVolume();

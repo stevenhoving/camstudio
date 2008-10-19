@@ -13,12 +13,12 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-// CEditTransparency dialog
+// CEditTransparencyDlg dialog
 
-CEditTransparency::CEditTransparency(CWnd* pParent /*=NULL*/)
-: CDialog(CEditTransparency::IDD, pParent)
+CEditTransparencyDlg::CEditTransparencyDlg(CWnd* pParent /*=NULL*/)
+: CDialog(CEditTransparencyDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CEditTransparency)
+	//{{AFX_DATA_INIT(CEditTransparencyDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 
@@ -26,25 +26,25 @@ CEditTransparency::CEditTransparency(CWnd* pParent /*=NULL*/)
 	m_backup_valTrans = 50;
 }
 
-void CEditTransparency::DoDataExchange(CDataExchange* pDX)
+void CEditTransparencyDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CEditTransparency)
+	//{{AFX_DATA_MAP(CEditTransparencyDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
-BEGIN_MESSAGE_MAP(CEditTransparency, CDialog)
-	//{{AFX_MSG_MAP(CEditTransparency)
+BEGIN_MESSAGE_MAP(CEditTransparencyDlg, CDialog)
+	//{{AFX_MSG_MAP(CEditTransparencyDlg)
 	ON_BN_CLICKED(IDC_CHECK1, OnCheck1)
 	ON_WM_HSCROLL()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CEditTransparency message handlers
+// CEditTransparencyDlg message handlers
 
-void CEditTransparency::OnCheck1()
+void CEditTransparencyDlg::OnCheck1()
 {
 	// TODO: Add your control notification handler code here
 	*m_enableTrans = ((CButton *) GetDlgItem(IDC_CHECK1))->GetCheck();
@@ -62,7 +62,7 @@ void CEditTransparency::OnCheck1()
 
 }
 
-void CEditTransparency::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+void CEditTransparencyDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: Add your message handler code here and/or call default
 	*m_valTrans = ((CSliderCtrl *) GetDlgItem(IDC_TRANSSLIDER))->GetPos();
@@ -77,7 +77,7 @@ void CEditTransparency::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBa
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
-void CEditTransparency::PreModal(int *enableTrans, int *valTrans, CWnd * parent)
+void CEditTransparencyDlg::PreModal(int *enableTrans, int *valTrans, CWnd * parent)
 {
 	m_enableTrans = enableTrans;
 	m_valTrans = valTrans;
@@ -88,7 +88,7 @@ void CEditTransparency::PreModal(int *enableTrans, int *valTrans, CWnd * parent)
 
 }
 
-BOOL CEditTransparency::OnInitDialog()
+BOOL CEditTransparencyDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -112,7 +112,7 @@ BOOL CEditTransparency::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CEditTransparency::OnCancel()
+void CEditTransparencyDlg::OnCancel()
 {
 	// TODO: Add extra cleanup here
 	*m_enableTrans = m_backup_enableTrans;

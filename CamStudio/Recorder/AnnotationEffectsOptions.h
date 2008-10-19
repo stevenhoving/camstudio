@@ -5,15 +5,15 @@
 #include "EffectsOptions.h"
 #include "EffectsOptions2.h"
 
-// CAnnotationEffectsOptions dialog
+// CAnnotationEffectsOptionsDlg dialog
 
-class CAnnotationEffectsOptions : public CDialog
+class CAnnotationEffectsOptionsDlg : public CDialog
 {
-	DECLARE_DYNAMIC(CAnnotationEffectsOptions)
+	DECLARE_DYNAMIC(CAnnotationEffectsOptionsDlg)
 
 public:
-	CAnnotationEffectsOptions(CWnd* pParent = NULL);   // standard constructor
-	virtual ~CAnnotationEffectsOptions();
+	CAnnotationEffectsOptionsDlg(CWnd* pParent = NULL);   // standard constructor
+	virtual ~CAnnotationEffectsOptionsDlg();
 
 // Dialog Data
 	enum { IDD = IDD_DIALOG_MAIN_EFFECTS_OPTIONS };

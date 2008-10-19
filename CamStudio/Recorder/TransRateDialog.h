@@ -10,25 +10,25 @@
 #include "VideoWnd.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// CTransRateDialog dialog
+// CTransRateDlg dialog
 
-class CTransRateDialog : public CDialog
+class CTransRateDlg : public CDialog
 {
 // Construction
 public:
-	CTransRateDialog(CWnd* pParent = NULL);   // standard constructor
+	CTransRateDlg(CWnd* pParent = NULL);   // standard constructor
 	CVideoWnd* m_myparent;
 	void PreModal( CVideoWnd * parent);
 
 // Dialog Data
-	//{{AFX_DATA(CTransRateDialog)
+	//{{AFX_DATA(CTransRateDlg)
 	enum { IDD = IDD_TRANSRATE };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CTransRateDialog)
+	//{{AFX_VIRTUAL(CTransRateDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -37,7 +37,7 @@ public:
 protected:
 
 	// Generated message map functions
-	//{{AFX_MSG(CTransRateDialog)
+	//{{AFX_MSG(CTransRateDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	virtual void OnOK();

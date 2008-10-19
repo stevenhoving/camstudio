@@ -24,7 +24,7 @@ extern HWND hWndGlobal;
 extern CSoundFile * pSoundFile;
 
 /////////////////////////////////////////////////////////////////////////////
-CAutoSearchDialog SearchDlg;
+CAutoSearchDlg SearchDlg;
 bool bSearchDlgCreated = false;
 
 //version 1.6

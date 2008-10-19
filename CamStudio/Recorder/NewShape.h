@@ -8,23 +8,23 @@
 //
 
 /////////////////////////////////////////////////////////////////////////////
-// CNewShape dialog
+// CNewShapeDlg dialog
 
-class CNewShape : public CDialog
+class CNewShapeDlg : public CDialog
 {
 // Construction
 public:
-	CNewShape(CWnd* pParent = NULL);   // standard constructor
+	CNewShapeDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
-	//{{AFX_DATA(CNewShape)
+	//{{AFX_DATA(CNewShapeDlg)
 	enum { IDD = IDD_NEWSHAPE };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CNewShape)
+	//{{AFX_VIRTUAL(CNewShapeDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -33,7 +33,7 @@ public:
 protected:
 
 	// Generated message map functions
-	//{{AFX_MSG(CNewShape)
+	//{{AFX_MSG(CNewShapeDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnRadio1();
 	afx_msg void OnRadio2();
