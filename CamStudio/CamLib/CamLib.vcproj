@@ -151,6 +151,26 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\CamFile.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CamImage.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CamRect.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CamSys.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CamWindow.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CStudiolib.cpp"
 				>
 			</File>
@@ -184,6 +204,26 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\CamFile.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CamImage.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CamRect.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CamSys.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CamWindow.h"
+				>
+			</File>
 			<File
 				RelativePath=".\CStudioLib.h"
 				>
