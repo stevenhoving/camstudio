@@ -17,36 +17,36 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-// CAutopanSpeed dialog
+// CAutopanSpeedDlg dialog
 
-CAutopanSpeed::CAutopanSpeed(CWnd* pParent /*=NULL*/)
-: CDialog(CAutopanSpeed::IDD, pParent)
+CAutopanSpeedDlg::CAutopanSpeedDlg(CWnd* pParent /*=NULL*/)
+: CDialog(CAutopanSpeedDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CAutopanSpeed)
+	//{{AFX_DATA_INIT(CAutopanSpeedDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
-void CAutopanSpeed::DoDataExchange(CDataExchange* pDX)
+void CAutopanSpeedDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CAutopanSpeed)
+	//{{AFX_DATA_MAP(CAutopanSpeedDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 	DDX_Control(pDX, IDC_PANSLIDER, m_ctrlSliderPanSpeed);
 	DDX_Control(pDX, IDC_MAXSPEED, m_ctrlStaticMaxSpeed);
 }
 
-BEGIN_MESSAGE_MAP(CAutopanSpeed, CDialog)
-	//{{AFX_MSG_MAP(CAutopanSpeed)
+BEGIN_MESSAGE_MAP(CAutopanSpeedDlg, CDialog)
+	//{{AFX_MSG_MAP(CAutopanSpeedDlg)
 	ON_WM_HSCROLL()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CAutopanSpeed message handlers
+// CAutopanSpeedDlg message handlers
 
-BOOL CAutopanSpeed::OnInitDialog()
+BOOL CAutopanSpeedDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -66,14 +66,14 @@ BOOL CAutopanSpeed::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CAutopanSpeed::OnOK()
+void CAutopanSpeedDlg::OnOK()
 {
 	// read the slider position and set the max pan speed
 	iMaxPan = m_ctrlSliderPanSpeed.GetPos();
 	CDialog::OnOK();
 }
 
-void CAutopanSpeed::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+void CAutopanSpeedDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// update the text display
 	CString maxpanspeedstr;

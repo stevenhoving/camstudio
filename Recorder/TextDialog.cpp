@@ -1,4 +1,4 @@
-// TextDialog.cpp : implementation file
+// CTextDlg.cpp : implementation file
 //
 
 #include "stdafx.h"
@@ -14,28 +14,28 @@ static char THIS_FILE[] = __FILE__;
 int msgShown = 0;
 
 /////////////////////////////////////////////////////////////////////////////
-// TextDialog dialog
+// CTextDlg dialog
 
-TextDialog::TextDialog(CWnd* pParent /*=NULL*/)
-: CDialog(TextDialog::IDD, pParent)
+CTextDlg::CTextDlg(CWnd* pParent /*=NULL*/)
+: CDialog(CTextDlg::IDD, pParent)
 {
 
 	mycharset = ANSI_CHARSET;
-	//{{AFX_DATA_INIT(TextDialog)
+	//{{AFX_DATA_INIT(CTextDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
-void TextDialog::DoDataExchange(CDataExchange* pDX)
+void CTextDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(TextDialog)
+	//{{AFX_DATA_MAP(CTextDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
-BEGIN_MESSAGE_MAP(TextDialog, CDialog)
-	//{{AFX_MSG_MAP(TextDialog)
+BEGIN_MESSAGE_MAP(CTextDlg, CDialog)
+	//{{AFX_MSG_MAP(CTextDlg)
 	ON_BN_CLICKED(IDFONT, OnFont)
 	ON_EN_CHANGE(IDC_EDIT1, OnChangeEdit1)
 	ON_BN_CLICKED(ID_JUSTLEFT, OnJustleft)
@@ -65,16 +65,16 @@ BEGIN_MESSAGE_MAP(TextDialog, CDialog)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// TextDialog message handlers
+// CTextDlg message handlers
 
-void TextDialog::OnOK()
+void CTextDlg::OnOK()
 {
 	// TODO: Add extra validation here
 
 	CDialog::OnOK();
 }
 
-BOOL TextDialog::OnInitDialog()
+BOOL CTextDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -122,7 +122,7 @@ BOOL TextDialog::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void TextDialog::OnFont()
+void CTextDlg::OnFont()
 {
 	// TODO: Add your control notification handler code here
 
@@ -149,7 +149,7 @@ void TextDialog::OnFont()
 
 }
 
-void TextDialog::PreModal(CString* inStr, LOGFONT *inFont,COLORREF* inRGB, CWnd* parent,int* horzalign)
+void CTextDlg::PreModal(CString* inStr, LOGFONT *inFont,COLORREF* inRGB, CWnd* parent,int* horzalign)
 {
 
 	logFont = inFont;
@@ -160,7 +160,7 @@ void TextDialog::PreModal(CString* inStr, LOGFONT *inFont,COLORREF* inRGB, CWnd*
 
 }
 
-void TextDialog::OnChangeEdit1()
+void CTextDlg::OnChangeEdit1()
 {
 	// TODO: If this is a RICHEDIT control, the control will not
 	// send this notification unless you override the CDialog::OnInitDialog()
@@ -174,7 +174,7 @@ void TextDialog::OnChangeEdit1()
 
 }
 
-void TextDialog::InvalidateTransWnd()
+void CTextDlg::InvalidateTransWnd()
 {
 
 	myparent->Invalidate();
@@ -183,7 +183,7 @@ void TextDialog::InvalidateTransWnd()
 
 }
 
-void TextDialog::OnJustleft()
+void CTextDlg::OnJustleft()
 {
 	// TODO: Add your control notification handler code here
 	*myhorzalign = DT_LEFT;
@@ -191,7 +191,7 @@ void TextDialog::OnJustleft()
 
 }
 
-void TextDialog::OnJustcenter()
+void CTextDlg::OnJustcenter()
 {
 	// TODO: Add your control notification handler code here
 	*myhorzalign = DT_CENTER;
@@ -199,7 +199,7 @@ void TextDialog::OnJustcenter()
 
 }
 
-void TextDialog::OnJustright()
+void CTextDlg::OnJustright()
 {
 	// TODO: Add your control notification handler code here
 	*myhorzalign = DT_RIGHT;
@@ -209,7 +209,7 @@ void TextDialog::OnJustright()
 
 }
 
-void TextDialog::ChooseScriptFont()
+void CTextDlg::ChooseScriptFont()
 {
 	// TODO: Add your control notification handler code here
 	//ZeroMemory(logFont, sizeof(LOGFONT));
@@ -233,7 +233,7 @@ void TextDialog::ChooseScriptFont()
 
 }
 
-void TextDialog::OnFont2()
+void CTextDlg::OnFont2()
 {
 	// TODO: Add your control notification handler code here
 
@@ -269,7 +269,7 @@ void TextDialog::OnFont2()
 
 }
 
-void TextDialog::OnScriptWestern()
+void CTextDlg::OnScriptWestern()
 {
 	// TODO: Add your command handler code here
 	mycharset = ANSI_CHARSET;
@@ -277,7 +277,7 @@ void TextDialog::OnScriptWestern()
 
 }
 
-void TextDialog::OnScriptArabic()
+void CTextDlg::OnScriptArabic()
 {
 	// TODO: Add your command handler code here
 	mycharset = ARABIC_CHARSET;
@@ -285,7 +285,7 @@ void TextDialog::OnScriptArabic()
 
 }
 
-void TextDialog::OnScriptBaltic()
+void CTextDlg::OnScriptBaltic()
 {
 	// TODO: Add your command handler code here
 	mycharset = BALTIC_CHARSET;
@@ -293,7 +293,7 @@ void TextDialog::OnScriptBaltic()
 
 }
 
-void TextDialog::OnScriptChinesebig5()
+void CTextDlg::OnScriptChinesebig5()
 {
 	// TODO: Add your command handler code here
 	mycharset = CHINESEBIG5_CHARSET;
@@ -301,7 +301,7 @@ void TextDialog::OnScriptChinesebig5()
 
 }
 
-void TextDialog::OnScriptChinesegb2312()
+void CTextDlg::OnScriptChinesegb2312()
 {
 	// TODO: Add your command handler code here
 	mycharset = GB2312_CHARSET;
@@ -309,7 +309,7 @@ void TextDialog::OnScriptChinesegb2312()
 
 }
 
-void TextDialog::OnScriptDefault()
+void CTextDlg::OnScriptDefault()
 {
 	// TODO: Add your command handler code here
 	mycharset = DEFAULT_CHARSET;
@@ -317,7 +317,7 @@ void TextDialog::OnScriptDefault()
 
 }
 
-void TextDialog::OnScriptEasteurope()
+void CTextDlg::OnScriptEasteurope()
 {
 	// TODO: Add your command handler code here
 	mycharset = EASTEUROPE_CHARSET;
@@ -325,7 +325,7 @@ void TextDialog::OnScriptEasteurope()
 
 }
 
-void TextDialog::OnScriptGreek()
+void CTextDlg::OnScriptGreek()
 {
 	// TODO: Add your command handler code here
 	mycharset = GREEK_CHARSET;
@@ -333,7 +333,7 @@ void TextDialog::OnScriptGreek()
 
 }
 
-void TextDialog::OnScriptHangul()
+void CTextDlg::OnScriptHangul()
 {
 	// TODO: Add your command handler code here
 	//mycharset = HANGUL_CHARSET;
@@ -342,7 +342,7 @@ void TextDialog::OnScriptHangul()
 
 }
 
-void TextDialog::OnScriptHebrew()
+void CTextDlg::OnScriptHebrew()
 {
 	// TODO: Add your command handler code here
 	mycharset = HEBREW_CHARSET;
@@ -350,7 +350,7 @@ void TextDialog::OnScriptHebrew()
 
 }
 
-void TextDialog::OnScriptJapaneseshiftjis()
+void CTextDlg::OnScriptJapaneseshiftjis()
 {
 	// TODO: Add your command handler code here
 	mycharset = SHIFTJIS_CHARSET;
@@ -358,7 +358,7 @@ void TextDialog::OnScriptJapaneseshiftjis()
 
 }
 
-void TextDialog::OnScriptJohabkorean()
+void CTextDlg::OnScriptJohabkorean()
 {
 	// TODO: Add your command handler code here
 	mycharset = JOHAB_CHARSET;
@@ -366,7 +366,7 @@ void TextDialog::OnScriptJohabkorean()
 
 }
 
-void TextDialog::OnScriptMac()
+void CTextDlg::OnScriptMac()
 {
 	// TODO: Add your command handler code here
 	mycharset = MAC_CHARSET;
@@ -374,7 +374,7 @@ void TextDialog::OnScriptMac()
 
 }
 
-void TextDialog::OnScriptOem()
+void CTextDlg::OnScriptOem()
 {
 	// TODO: Add your command handler code here
 	mycharset = OEM_CHARSET;
@@ -382,7 +382,7 @@ void TextDialog::OnScriptOem()
 
 }
 
-void TextDialog::OnScriptRussian()
+void CTextDlg::OnScriptRussian()
 {
 	// TODO: Add your command handler code here
 	mycharset = RUSSIAN_CHARSET;
@@ -390,7 +390,7 @@ void TextDialog::OnScriptRussian()
 
 }
 
-void TextDialog::OnScriptSymbol()
+void CTextDlg::OnScriptSymbol()
 {
 	// TODO: Add your command handler code here
 	mycharset = SYMBOL_CHARSET;
@@ -398,7 +398,7 @@ void TextDialog::OnScriptSymbol()
 
 }
 
-void TextDialog::OnScriptThai()
+void CTextDlg::OnScriptThai()
 {
 	// TODO: Add your command handler code here
 	mycharset = THAI_CHARSET;
@@ -406,7 +406,7 @@ void TextDialog::OnScriptThai()
 
 }
 
-void TextDialog::OnScriptTurkish()
+void CTextDlg::OnScriptTurkish()
 {
 	// TODO: Add your command handler code here
 	mycharset = TURKISH_CHARSET;
@@ -414,7 +414,7 @@ void TextDialog::OnScriptTurkish()
 
 }
 
-void TextDialog::OnKillFocus(CWnd* pNewWnd)
+void CTextDlg::OnKillFocus(CWnd* pNewWnd)
 {
 	CDialog::OnKillFocus(pNewWnd);
 

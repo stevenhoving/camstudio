@@ -1,4 +1,4 @@
-// TroubleShoot.cpp : implementation file
+// CTroubleShootDlg.cpp : implementation file
 //
 
 #include "stdafx.h"
@@ -14,41 +14,41 @@ static char THIS_FILE[] = __FILE__;
 extern int TroubleShootVal;
 
 /////////////////////////////////////////////////////////////////////////////
-// TroubleShoot dialog
+// CTroubleShootDlg dialog
 
-TroubleShoot::TroubleShoot(CWnd* pParent /*=NULL*/)
-: CDialog(TroubleShoot::IDD, pParent)
+CTroubleShootDlg::CTroubleShootDlg(CWnd* pParent /*=NULL*/)
+: CDialog(CTroubleShootDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(TroubleShoot)
+	//{{AFX_DATA_INIT(CTroubleShootDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
-void TroubleShoot::DoDataExchange(CDataExchange* pDX)
+void CTroubleShootDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(TroubleShoot)
+	//{{AFX_DATA_MAP(CTroubleShootDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
-BEGIN_MESSAGE_MAP(TroubleShoot, CDialog)
-	//{{AFX_MSG_MAP(TroubleShoot)
+BEGIN_MESSAGE_MAP(CTroubleShootDlg, CDialog)
+	//{{AFX_MSG_MAP(CTroubleShootDlg)
 	ON_BN_CLICKED(IDC_CHECK1, OnCheck1)
 	ON_BN_CLICKED(IDC_CHECK2, OnCheck2)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// TroubleShoot message handlers
+// CTroubleShootDlg message handlers
 
-void TroubleShoot::OnCheck1()
+void CTroubleShootDlg::OnCheck1()
 {
 	// TODO: Add your control notification handler code here
 
 }
 
-void TroubleShoot::OnOK()
+void CTroubleShootDlg::OnOK()
 {
 	// TODO: Add extra validation here
 
@@ -74,13 +74,13 @@ void TroubleShoot::OnOK()
 	CDialog::OnOK();
 }
 
-void TroubleShoot::OnCheck2()
+void CTroubleShootDlg::OnCheck2()
 {
 	// TODO: Add your control notification handler code here
 
 }
 
-BOOL TroubleShoot::OnInitDialog()
+BOOL CTroubleShootDlg::OnInitDialog()
 {
 
 	if (bRestrictVideoCodecs)

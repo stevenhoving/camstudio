@@ -11,13 +11,13 @@
 #include "LayoutList.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// CScreenAnnotations dialog
+// CScreenAnnotationsDlg dialog
 
-class CScreenAnnotations : public CDialog
+class CScreenAnnotationsDlg : public CDialog
 {
 // Construction
 public:
-	CScreenAnnotations(CWnd* pParent = NULL);   // standard constructor
+	CScreenAnnotationsDlg(CWnd* pParent = NULL);   // standard constructor
 	void CloseAllWindows(int wantDelete);
 	CTransparentWnd* LocateWndFromItem(int nItem);
 	CTransparentWnd* LocateWndFromShapeList();
@@ -45,14 +45,14 @@ public:
 	void MoveItem(int direction);
 
 // Dialog Data
-	//{{AFX_DATA(CScreenAnnotations)
+	//{{AFX_DATA(CScreenAnnotationsDlg)
 	enum { IDD = IDD_SCREENANNOTATIONS2 };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CScreenAnnotations)
+	//{{AFX_VIRTUAL(CScreenAnnotationsDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -61,7 +61,7 @@ public:
 protected:
 
 	// Generated message map functions
-	//{{AFX_MSG(CScreenAnnotations)
+	//{{AFX_MSG(CScreenAnnotationsDlg)
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBegindragList1(NMHDR* pNMHDR, LRESULT* pResult);

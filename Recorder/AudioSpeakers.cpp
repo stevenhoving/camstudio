@@ -1,4 +1,4 @@
-// AudioSpeakers.cpp : implementation file
+// CAudioSpeakersDlg.cpp : implementation file
 //
 
 // With much experimentation, I've painstakingly restored this file which was missing
@@ -35,20 +35,20 @@ extern BOOL configWaveOut();
 extern BOOL configWaveOutManual();
 
 /////////////////////////////////////////////////////////////////////////////
-// AudioSpeakers dialog
+// CAudioSpeakersDlg dialog
 
-AudioSpeakers::AudioSpeakers(CWnd *pParent /*=NULL*/)
-: CDialog(AudioSpeakers::IDD, pParent)
+CAudioSpeakersDlg::CAudioSpeakersDlg(CWnd *pParent /*=NULL*/)
+: CDialog(CAudioSpeakersDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(AudioSpeakers)
+	//{{AFX_DATA_INIT(CAudioSpeakersDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
-void AudioSpeakers::DoDataExchange(CDataExchange *pDX)
+void CAudioSpeakersDlg::DoDataExchange(CDataExchange *pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(AudioSpeakers)
+	//{{AFX_DATA_MAP(CAudioSpeakersDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 	DDX_Control(pDX, IDC_VOLUMESLIDER, m_ctrlSliderVolume);
@@ -57,8 +57,8 @@ void AudioSpeakers::DoDataExchange(CDataExchange *pDX)
 	DDX_Control(pDX, IDC_SOUNDDEVICE, m_ctrlCBSoundDevice);
 }
 
-BEGIN_MESSAGE_MAP(AudioSpeakers, CDialog)
-	//{{AFX_MSG_MAP(AudioSpeakers)
+BEGIN_MESSAGE_MAP(CAudioSpeakersDlg, CDialog)
+	//{{AFX_MSG_MAP(CAudioSpeakersDlg)
 	ON_BN_CLICKED(IDVOLUME, OnVolume)
 	ON_BN_CLICKED(ID_AUTOCONFIG, OnAutoconfig)
 	ON_CBN_SELCHANGE(IDC_SOUNDDEVICE, OnSelchangeSounddevice)
@@ -68,9 +68,9 @@ BEGIN_MESSAGE_MAP(AudioSpeakers, CDialog)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// AudioFormat message handlers
+// CAudioFormatDlg message handlers
 
-void AudioSpeakers::OnOK()
+void CAudioSpeakersDlg::OnOK()
 {
 	// Set the volume
 	if (-1 < iFeedbackLine)
@@ -82,7 +82,7 @@ void AudioSpeakers::OnOK()
 	CDialog::OnOK();
 }
 
-BOOL AudioSpeakers::OnInitDialog()
+BOOL CAudioSpeakersDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -141,7 +141,7 @@ BOOL AudioSpeakers::OnInitDialog()
 	return TRUE;
 }
 
-void AudioSpeakers::OnVolume()
+void CAudioSpeakersDlg::OnVolume()
 {
 	// Ver 1.1
 	if (waveInGetNumDevs() == 0) {
@@ -213,26 +213,26 @@ void AudioSpeakers::OnVolume()
 	}
 }
 
-void AudioSpeakers::OnAutoconfig()
+void CAudioSpeakersDlg::OnAutoconfig()
 {
 	configWaveOut();
 	OnInitDialog();
 }
 
-void AudioSpeakers::OnSelchangeSounddevice()
+void CAudioSpeakersDlg::OnSelchangeSounddevice()
 {
 	iSelectedMixer = m_ctrlCBSoundDevice.GetCurSel();
 	iFeedbackLine = -1;
 	OnInitDialog();
 }
 
-void AudioSpeakers::OnManualconfig()
+void CAudioSpeakersDlg::OnManualconfig()
 {
 	configWaveOutManual();
 	OnInitDialog();
 }
 
-void AudioSpeakers::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+void CAudioSpeakersDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }

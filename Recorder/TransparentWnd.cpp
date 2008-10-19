@@ -31,7 +31,7 @@
 #include <windowsx.h>
 
 extern CListManager ListManager;
-extern CScreenAnnotations sadlg;
+extern CScreenAnnotationsDlg sadlg;
 extern HWND hMouseCaptureWnd;
 
 extern CString specifieddir;
@@ -550,7 +550,7 @@ void CTransparentWnd::EditText()
 
 	Invalidate();
 
-	TextDialog txdlg;
+	CTextDlg txdlg;
 	txdlg.PreModal(&m_textstring, &m_textfont, &rgb, this, &m_horzalign);
 	txdlg.DoModal();
 
@@ -969,7 +969,7 @@ void CTransparentWnd::EditTransparency()
 
 	editTransOn = 1;
 
-	CEditTransparency etDlg;
+	CEditTransparencyDlg etDlg;
 	etDlg.PreModal(&enableTransparency,&valueTransparency,this);
 	etDlg.DoModal();
 
@@ -1133,7 +1133,7 @@ void CTransparentWnd::EditImage()
 {
 	editImageOn = 1;
 
-	CEditImage editDlg;
+	CEditImageDlg editDlg;
 	editDlg.PreModal(this);	// TODO: What is this doing?
 	editDlg.DoModal();
 
@@ -1551,7 +1551,7 @@ void CTransparentWnd::OnContextResize()
 
 	Invalidate();
 
-	CResizeDialog rsDlg;
+	CResizeDlg rsDlg;
 	rsDlg.PreModal(this);
 	if (rsDlg.DoModal() == IDOK) {
 	}

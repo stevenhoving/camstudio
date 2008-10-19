@@ -10,7 +10,7 @@
 
 struct ImageAttributes
 {
-	Position position;
+	ePosition position;
 	CString text;
 
 	const ImageAttributes& operator=(const ImageAttributes& obj)

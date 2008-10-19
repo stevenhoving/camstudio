@@ -1,4 +1,4 @@
-// AudioFormat.cpp : implementation file
+// CAudioFormatDlg.cpp : implementation file
 //
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
@@ -37,10 +37,10 @@ static char THIS_FILE[] = __FILE__;
 //ver 1.8
 
 /////////////////////////////////////////////////////////////////////////////
-// AudioFormat dialog
+// CAudioFormatDlg dialog
 
-AudioFormat::AudioFormat(CWnd* pParent /*=NULL*/)
-: CDialog(AudioFormat::IDD, pParent)
+CAudioFormatDlg::CAudioFormatDlg(CWnd* pParent /*=NULL*/)
+: CDialog(CAudioFormatDlg::IDD, pParent)
 , m_pwfx(0)
 , m_cbwfx(0)
 , m_iAudioBitsPerSample(0)
@@ -50,15 +50,15 @@ AudioFormat::AudioFormat(CWnd* pParent /*=NULL*/)
 , m_iNumFormat(0)
 , m_iNumDevice(0)
 {
-	//{{AFX_DATA_INIT(AudioFormat)
+	//{{AFX_DATA_INIT(CAudioFormatDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
-void AudioFormat::DoDataExchange(CDataExchange* pDX)
+void CAudioFormatDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(AudioFormat)
+	//{{AFX_DATA_MAP(CAudioFormatDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 	DDX_Control(pDX, IDC_IFACTOR, m_ctrlEditFactor);
@@ -73,8 +73,8 @@ void AudioFormat::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHOOSE_COMPRESSED_FORMAT, m_ctrlButtonChooseCompressedFormat);
 }
 
-BEGIN_MESSAGE_MAP(AudioFormat, CDialog)
-	//{{AFX_MSG_MAP(AudioFormat)
+BEGIN_MESSAGE_MAP(CAudioFormatDlg, CDialog)
+	//{{AFX_MSG_MAP(CAudioFormatDlg)
 	ON_BN_CLICKED(IDC_CHOOSE_COMPRESSED_FORMAT, OnChoose)
 	ON_CBN_SELCHANGE(IDC_RECORDFORMAT, OnSelchangeRecordformat)
 	ON_BN_CLICKED(IDC_INTERLEAVE, OnInterleave)
@@ -88,9 +88,9 @@ BEGIN_MESSAGE_MAP(AudioFormat, CDialog)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// AudioFormat message handlers
+// CAudioFormatDlg message handlers
 
-void AudioFormat::OnOK()
+void CAudioFormatDlg::OnOK()
 {
 	CString interleaveFactorStr;
 	int ifactornum;
@@ -164,7 +164,7 @@ void AudioFormat::OnOK()
 	CDialog::OnOK();
 }
 
-BOOL AudioFormat::OnInitDialog()
+BOOL CAudioFormatDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -244,7 +244,7 @@ BOOL AudioFormat::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void AudioFormat::OnChoose()
+void CAudioFormatDlg::OnChoose()
 {
 	if (m_pwfx == NULL) {
 		SuggestLocalCompressFormat();
@@ -308,7 +308,7 @@ void AudioFormat::OnChoose()
 	UpdateLocalCompressFormatInterface();
 }
 
-void AudioFormat::UpdateLocalCompressFormatInterface()
+void CAudioFormatDlg::UpdateLocalCompressFormatInterface()
 {
 	if (m_bAudioCompression==0) {
 		m_ctrlEditCompressedFormatTag.SetWindowText("None Available");
@@ -325,7 +325,7 @@ void AudioFormat::UpdateLocalCompressFormatInterface()
 	}
 }
 
-void AudioFormat::OnSelchangeRecordformat()
+void CAudioFormatDlg::OnSelchangeRecordformat()
 {
 	if (m_iNumFormat <= 0) {
 		return; //no format to choose from
@@ -413,7 +413,7 @@ void AudioFormat::OnSelchangeRecordformat()
 	UpdateLocalCompressFormatInterface();
 }
 
-void AudioFormat::OnInterleave()
+void CAudioFormatDlg::OnInterleave()
 {
 	BOOL binteleave = m_ctrlButtonInterleave.GetCheck();
 	if (binteleave) {
@@ -427,7 +427,7 @@ void AudioFormat::OnInterleave()
 	}
 }
 
-void AudioFormat::OnCancel()
+void CAudioFormatDlg::OnCancel()
 {
 	if (m_pwfx) {
 		GlobalFreePtr(m_pwfx);
@@ -437,7 +437,7 @@ void AudioFormat::OnCancel()
 	CDialog::OnCancel();
 }
 
-void AudioFormat::OnVolume()
+void CAudioFormatDlg::OnVolume()
 {
 	// Ver 1.1
 	if (waveInGetNumDevs() == 0) {
@@ -508,7 +508,7 @@ void AudioFormat::OnVolume()
 	}
 }
 
-void AudioFormat::OnSelchangeInputdevice()
+void CAudioFormatDlg::OnSelchangeInputdevice()
 {
 	int devID = m_ctrlCBInputDevice.GetCurSel();
 	if (devID < m_iNumDevice) {
@@ -525,7 +525,7 @@ void AudioFormat::OnSelchangeInputdevice()
 // If the third parameter (compressed format) is not null, we assume it is compatibile with the 2nd parameter (recording format)
 //
 // =====================================
-void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPWAVEFORMATEX curr_sel_pwfx)
+void CAudioFormatDlg::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPWAVEFORMATEX curr_sel_pwfx)
 {
 	WAVEINCAPS pwic;
 	MMRESULT mmr = waveInGetDevCaps( deviceID , &pwic, sizeof(pwic) );
@@ -658,31 +658,31 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
 	}
 }
 
-void AudioFormat::OnInterleaveframes()
+void CAudioFormatDlg::OnInterleaveframes()
 {
 	m_ctrlButtonInterleaveFrames.SetCheck(TRUE);
 	m_ctrlButtonInterleaveSeconds.SetCheck(FALSE);
 }
 
-void AudioFormat::OnInterleaveseconds()
+void CAudioFormatDlg::OnInterleaveseconds()
 {
 	m_ctrlButtonInterleaveFrames.SetCheck(FALSE);
 	m_ctrlButtonInterleaveSeconds.SetCheck(TRUE);
 }
 
-void AudioFormat::OnSystemrecord()
+void CAudioFormatDlg::OnSystemrecord()
 {
 	// TODO: Add your control notification handler code here
 }
 
-void AudioFormat::OnHelp()
+void CAudioFormatDlg::OnHelp()
 {
 	CString progdir = GetProgPath();
 	CString helppath = progdir + "\\help.htm#Helpmci";
 	Openlink(helppath);
 }
 
-BOOL AudioFormat::Openlink (CString link)
+BOOL CAudioFormatDlg::Openlink (CString link)
 {
 	// As a last resort try ShellExecuting the URL, may even work on Navigator!
 	BOOL bSuccess = OpenUsingShellExecute (link);
@@ -693,7 +693,7 @@ BOOL AudioFormat::Openlink (CString link)
 	return bSuccess;
 }
 
-BOOL AudioFormat::OpenUsingShellExecute (CString link)
+BOOL CAudioFormatDlg::OpenUsingShellExecute (CString link)
 {
 	LPCTSTR mode = _T ("open");
 	//HINSTANCE hRun = ShellExecute (GetParent ()->GetSafeHwnd (), mode, m_sActualLink, NULL, NULL, SW_SHOW);
@@ -705,7 +705,7 @@ BOOL AudioFormat::OpenUsingShellExecute (CString link)
 	return TRUE;
 }
 
-BOOL AudioFormat::OpenUsingRegisteredClass (CString link)
+BOOL CAudioFormatDlg::OpenUsingRegisteredClass (CString link)
 {
 	TCHAR key[MAX_PATH + MAX_PATH];
 
@@ -785,7 +785,7 @@ BOOL AudioFormat::OpenUsingRegisteredClass (CString link)
 	return FALSE;
 }
 
-LONG AudioFormat::GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata)
+LONG CAudioFormatDlg::GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata)
 {
 	HKEY hkey;
 	LONG retval = RegOpenKeyEx (key, subkey, 0, KEY_QUERY_VALUE, &hkey);
@@ -800,7 +800,7 @@ LONG AudioFormat::GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata)
 	return retval;
 }
 
-void AudioFormat::AllocLocalCompressFormat()
+void CAudioFormatDlg::AllocLocalCompressFormat()
 {
 	if (m_pwfx) {
 		//Do nothing....already allocated
@@ -830,7 +830,7 @@ void AudioFormat::AllocLocalCompressFormat()
 	}
 }
 
-void AudioFormat::BuildLocalRecordingFormat()
+void CAudioFormatDlg::BuildLocalRecordingFormat()
 {
 	m_FormatLocal.wFormatTag = WAVE_FORMAT_PCM;
 	m_FormatLocal.wBitsPerSample = m_iAudioBitsPerSample;
@@ -841,7 +841,7 @@ void AudioFormat::BuildLocalRecordingFormat()
 	m_FormatLocal.cbSize = 0;
 }
 
-void AudioFormat::SuggestLocalCompressFormat()
+void CAudioFormatDlg::SuggestLocalCompressFormat()
 {
 	m_bAudioCompression = TRUE;
 	AllocLocalCompressFormat();
@@ -873,7 +873,7 @@ void AudioFormat::SuggestLocalCompressFormat()
 	}
 }
 
-BOOL AudioFormat::GetFormatDescription(LPWAVEFORMATEX pwformat, LPTSTR pszFormatTag, LPTSTR pszFormat)
+BOOL CAudioFormatDlg::GetFormatDescription(LPWAVEFORMATEX pwformat, LPTSTR pszFormatTag, LPTSTR pszFormat)
 {
 	MMRESULT mmr;
 

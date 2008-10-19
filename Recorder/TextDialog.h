@@ -4,20 +4,20 @@
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
-// TextDialog.h : header file
+// CTextDlg.h : header file
 //
 
 #define WM_USER_INVALIDATEWND_MSG "WM_USER_INVALIDATEWND_MSG"
 static UINT WM_USER_INVALIDATEWND = ::RegisterWindowMessage(WM_USER_INVALIDATEWND_MSG);
 
 /////////////////////////////////////////////////////////////////////////////
-// TextDialog dialog
+// CTextDlg dialog
 
-class TextDialog : public CDialog
+class CTextDlg : public CDialog
 {
 // Construction
 public:
-	TextDialog(CWnd* pParent = NULL);   // standard constructor
+	CTextDlg(CWnd* pParent = NULL);   // standard constructor
 	void PreModal(CString* inStr, LOGFONT *inFont, COLORREF* inRgb, CWnd* parent,int* horzalign);
 	void InvalidateTransWnd();
 	void ChooseScriptFont();
@@ -31,14 +31,14 @@ public:
 	int mycharset;
 
 // Dialog Data
-	//{{AFX_DATA(TextDialog)
+	//{{AFX_DATA(CTextDlg)
 	enum { IDD = IDD_TEXTDIALOG };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(TextDialog)
+	//{{AFX_VIRTUAL(CTextDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -47,7 +47,7 @@ public:
 protected:
 
 	// Generated message map functions
-	//{{AFX_MSG(TextDialog)
+	//{{AFX_MSG(CTextDlg)
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnFont();

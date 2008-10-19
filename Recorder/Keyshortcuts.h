@@ -1,4 +1,4 @@
-// Keyshortcuts.h : header file
+// CKeyshortcutsDlg.h : header file
 //
 /////////////////////////////////////////////////////////////////////////////
 #if !defined(AFX_KEYSHORTCUTS_H__7D91F35B_8385_4EBB_96CA_AEFB403E2121__INCLUDED_)
@@ -9,26 +9,26 @@
 #endif // _MSC_VER > 1000
 
 /////////////////////////////////////////////////////////////////////////////
-// Keyshortcuts dialog
+// CKeyshortcutsDlg dialog
 
-class Keyshortcuts : public CDialog
+class CKeyshortcutsDlg : public CDialog
 {
 // Construction
 public:
-	Keyshortcuts(CWnd* pParent = NULL);   // standard constructor
+	CKeyshortcutsDlg(CWnd* pParent = NULL);   // standard constructor
 
 	int GetIndex(UINT keyShortCut);
 	UINT GetCode(int index);
 
 // Dialog Data
-	//{{AFX_DATA(Keyshortcuts)
+	//{{AFX_DATA(CKeyshortcutsDlg)
 	enum { IDD = IDD_KEYSHORTCUTS };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(Keyshortcuts)
+	//{{AFX_VIRTUAL(CKeyshortcutsDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -36,7 +36,7 @@ public:
 // Implementation
 protected:
 	// Generated message map functions
-	//{{AFX_MSG(Keyshortcuts)
+	//{{AFX_MSG(CKeyshortcutsDlg)
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSelchangeStopkey();
