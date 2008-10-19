@@ -186,8 +186,8 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 				}
 				else
 				{
-					TRACE("MouseCaptureWndProc: WM_USER_REGIONUPDATE\n");
-					::PostMessage (hFixedRegionWnd, WM_USER_REGIONUPDATE, 0, (LPARAM) 0);
+					TRACE("MouseCaptureWndProc: WM_APP_REGIONUPDATE\n");
+					::PostMessage (hFixedRegionWnd, WM_APP_REGIONUPDATE, 0, (LPARAM) 0);
 				}
 			}
 		}

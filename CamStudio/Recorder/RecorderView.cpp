@@ -136,11 +136,11 @@ HBITMAP hLogoBM = NULL;
 CFlashingWnd* pFlashingWnd = 0;
 
 //Misc Vars
-int recordstate = 0;
+bool bRecordState = false;
 int recordpaused = 0;
 UINT interruptkey = 0;
 int tdata = 0;
-DWORD initialtime = 0;
+DWORD dwInitialTime = 0;
 bool bInitCapture = false;
 int irsmallcount = 0;
 
@@ -2565,12 +2565,12 @@ void CRecorderView::OnPaint()
 	CPaintDC dc(this); // device context for painting
 
 	//Draw Message msgRecMode
-	if (recordstate == 0) {
+	if (!bRecordState) {
 		DisplayRecordingMsg(dc);
 		return;
 	}
 	//Display the record information when recording
-	if (recordstate == 1) {
+	if (bRecordState) {
 		CRect rectClient;
 		GetClientRect(&rectClient);
 
@@ -2728,7 +2728,7 @@ LRESULT CRecorderView::OnRecordStart(UINT wParam, LONG lParam)
 
 	InstallMyHook(hWndGlobal,WM_USER_SAVECURSOR);
 
-	recordstate = 1;
+	bRecordState = true;
 	interruptkey = 0;
 
 	CWinThread * pThread = AfxBeginThread(RecordAVIThread, &tdata);
@@ -2738,7 +2738,7 @@ LRESULT CRecorderView::OnRecordStart(UINT wParam, LONG lParam)
 		pThread->SetThreadPriority(iThreadPriority);
 
 	//Ver 1.2
-	bAllowNewRecordStartKey = TRUE; //allow this only after recordstate is set to 1
+	bAllowNewRecordStartKey = TRUE; //allow this only after bRecordState is set to 1
 
 	return 0;
 }
@@ -2753,7 +2753,7 @@ LRESULT CRecorderView::OnRecordInterrupted (UINT wParam, LONG lParam)
 		SetTitleBar("CamStudio");
 	}
 
-	recordstate = 0;
+	bRecordState = false;
 
 	//Store the interrupt key in case this function is triggered by a keypress
 	interruptkey = wParam;
@@ -3160,7 +3160,7 @@ void CRecorderView::OnRecord()
 void CRecorderView::OnStop()
 {
 	//Version 1.1
-	if (recordstate == 0) {
+	if (!bRecordState) {
 		return;
 	}
 
@@ -3168,7 +3168,7 @@ void CRecorderView::OnStop()
 		recordpaused = 0;
 
 		//Set Title Bar
-		SetTitleBar("CamStudio");
+		SetTitleBar(_T("CamStudio"));
 	}
 
 	OnRecordInterrupted (0, 0);
@@ -3479,7 +3479,7 @@ void CRecorderView::OnPause()
 	// TODO: Add your command handler code here
 
 	//return if not current recording or already in paused state
-	if ((recordstate==0) || (recordpaused==1))
+	if (!bRecordState || (recordpaused==1))
 		return;
 
 	recordpaused=1;
@@ -3498,20 +3498,20 @@ void CRecorderView::OnPause()
 void CRecorderView::OnUpdatePause(CCmdUI* pCmdUI)
 {
 	//Version 1.1
-	//pCmdUI->Enable(recordstate && (!recordpaused));
+	//pCmdUI->Enable(bRecordState && (!recordpaused));
 	pCmdUI->Enable(!recordpaused);
 }
 
 void CRecorderView::OnUpdateStop(CCmdUI* pCmdUI)
 {
 	//Version 1.1
-	//pCmdUI->Enable(recordstate);
+	//pCmdUI->Enable(bRecordState);
 }
 
 void CRecorderView::OnUpdateRecord(CCmdUI* pCmdUI)
 {
 	//Version 1.1
-	pCmdUI->Enable(!recordstate || recordpaused);
+	pCmdUI->Enable(!bRecordState || recordpaused);
 }
 
 void CRecorderView::OnHelpFaq()
@@ -3534,7 +3534,7 @@ LRESULT CRecorderView::OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2)
 
 	TRACE("WIM_DATA %4d\n", pHdr->dwBytesRecorded);
 
-	if (recordstate) {
+	if (bRecordState) {
 		CBuffer buf(pHdr->lpData, pHdr->dwBufferLength);
 		if (!recordpaused) {
 			//write only if not paused
@@ -4745,13 +4745,13 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM lParam)
 	switch (wParam)
 	{
 	case 0:
-		if (recordstate == 0) {
+		if (!bRecordState) {
 			if (bAllowNewRecordStartKey) {
 				//prevent the case which CamStudio presents more than one region for the user to select
 				bAllowNewRecordStartKey = FALSE;
 				OnRecord();
 			}
-		} else if (recordstate == 1) {
+		} else if (bRecordState) {
 			// pause if currently recording
 			if (recordpaused == 0) {
 				OnPause();
@@ -4761,7 +4761,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	case 1:
-		if (recordstate == 1) {
+		if (bRecordState) {
 			if (keyRecordEnd != uKeyRecordCancel) {
 				OnRecordInterrupted(keyRecordEnd, 0);
 			} else {
@@ -4770,7 +4770,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	case 2:
-		if (recordstate == 1) {
+		if (bRecordState) {
 			OnRecordInterrupted(uKeyRecordCancel, 0);
 		}
 		break;
@@ -5652,15 +5652,13 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 		Sleep(iTimeShift);
 	}
 
-	DWORD timeexpended, frametime, oldframetime;
-
-	initialtime = timeGetTime();
 	bInitCapture = true;
-	oldframetime = 0;
 	nCurrFrame = 0;
 	nActualFrame = 0;
-
-	//iTimeShift = 100;
+	dwInitialTime = ::timeGetTime();
+	DWORD timeexpended = 0;
+	DWORD frametime = 0;
+	DWORD oldframetime = 0;
 
 	//////////////////////////////////////////////
 	// WRITING FRAMES
@@ -5668,9 +5666,10 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 
 	long divx = 0L;
 	long oldsec = 0L;
-	while (recordstate) {  //repeatedly loop
+	while (bRecordState)
+	{
 		if (!bInitCapture) {
-			timeexpended = timeGetTime() - initialtime;
+			timeexpended = timeGetTime() - dwInitialTime;
 		} else {
 			frametime = 0;
 			timeexpended = 0;
@@ -5788,7 +5787,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 
 		if (bRecordPreset) {
 			if (int(fTimeLength) >= iPresetTime) {
-				//recordstate = 0;
+				//bRecordState = 0;
 				::PostMessage(hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
 			}
 
@@ -5803,7 +5802,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 		//{
 		//	cc++;
 		//	unsigned long thistime = timeGetTime();
-		//	int diffInTime = thistime - initialtime;
+		//	int diffInTime = thistime - dwInitialTime;
 		//	if (diffInTime >= iTimeShift)
 		//	{
 		//		ErrMsg("cc %d diffInTime %d", cc-1, diffInTime);
@@ -5919,19 +5918,19 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 			//msgstr.Format("timestartpause %ld\ntimeendpause %ld\ntimedurationpause %ld", timeendpause, timeendpause, timedurationpause);
 			//MessageBox(NULL, msgstr, "Note", MB_OK);
 
-			initialtime = initialtime + timedurationpause;
+			dwInitialTime = dwInitialTime + timedurationpause;
 		} else {
 			//introduce time lapse
-			//maximum lapse when recordstate changes will be less than 100 milliseconds
+			//maximum lapse when bRecordState changes will be less than 100 milliseconds
 			int no_iteration = iTimeLapse/50;
 			int remainlapse = iTimeLapse - no_iteration * 50;
 			for (int j = 0; j < no_iteration; j++) {
 				::Sleep(50); //Sleep for 50 milliseconds many times
-				if (recordstate == 0) {
+				if (!bRecordState) {
 					break;
 				}
 			}
-			if (recordstate == 1) {
+			if (bRecordState) {
 				::Sleep(remainlapse);
 			}
 		}

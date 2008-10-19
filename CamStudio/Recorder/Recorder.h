@@ -16,9 +16,9 @@
 #include "CamStudioCommandLineInfo.h"
 #include "Profile.h"
 
-//#define WM_USER_REGIONUPDATE	0x00500	// TODO: Should this be a WM_USER/WM_APP message?
-//#define WM_USER_REGIONUPDATE	WM_USER + 0x00100
-#define WM_USER_REGIONUPDATE	(WM_APP + 100)
+//#define WM_APP_REGIONUPDATE	0x00500	// TODO: Should this be a WM_USER/WM_APP message?
+//#define WM_APP_REGIONUPDATE	WM_USER + 0x00100
+#define WM_APP_REGIONUPDATE	(WM_APP + 100)
 
 //Multilanguage
 #define ENT_LANGID _T("LanguageID")

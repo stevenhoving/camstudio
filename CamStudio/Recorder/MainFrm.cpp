@@ -12,12 +12,10 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern int recordstate;
+extern bool bRecordState;	// in RecorderView
 
 int maxxScreen;
 int maxyScreen;
-
-//int iViewType = 0;
 
 static HMENU hMenu = NULL;
 
@@ -190,8 +188,8 @@ void CMainFrame::Dump(CDumpContext& dc) const
 void CMainFrame::OnClose()
 {
 	// TODO: Add your message handler code here and/or call default
-	if (recordstate==1) {
-
+	if (bRecordState)
+	{
 		//MessageBox("Please stop video recording before exiting program.","Note",MB_OK | MB_ICONEXCLAMATION);
 		MessageOut(this->m_hWnd,IDS_STRING_STOPBEFOREEXIT ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 		return;
