@@ -48,6 +48,11 @@ protected:
 private:
 	CStatic m_ctrlStaticMsg;
 	CEdit m_ctrlEditWidth;
+	CEdit m_ctrlEditHeight;
+	CEdit m_ctrlEditPosX;
+	CEdit m_ctrlEditPosY;
+	CButton m_ctrlButtonMouseDrag;
+	CButton m_ctrlButtonFixTopLeft;
 };
 
 //{{AFX_INSERT_LOCATION}}
