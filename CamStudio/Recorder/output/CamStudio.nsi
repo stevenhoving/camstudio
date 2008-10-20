@@ -46,9 +46,9 @@
 	!define MUI_STARTMENUPAGE_DEFAULTFOLDER "${PRODUCT_NAME}" ; Set default start menu folder
 	!insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder
 	!insertmacro MUI_PAGE_INSTFILES
-        !define MUI_FINISHPAGE_NOAUTOCLOSE ; Don't automatically skip past the install details page when it's done
-        !define MUI_FINISHPAGE_LINK "$(LANG_CaptionWebsite)" ; Finish page link text
-        !define MUI_FINISHPAGE_LINK_LOCATION "${PRODUCT_WEB_SITE}" ; Finish page URL
+	!define MUI_FINISHPAGE_NOAUTOCLOSE ; Don't automatically skip past the install details page when it's done
+	!define MUI_FINISHPAGE_LINK "$(LANG_CaptionWebsite)" ; Finish page link text
+	!define MUI_FINISHPAGE_LINK_LOCATION "${PRODUCT_WEB_SITE}" ; Finish page URL
 	!insertmacro MUI_PAGE_FINISH
 
 	!insertmacro MUI_UNPAGE_COMPONENTS
@@ -79,7 +79,7 @@
 	LangString LANG_Website ${LANG_ENGLISH} "Website"
 	LangString LANG_Codec ${LANG_ENGLISH} "Codec"
 	LangString LANG_Settings ${LANG_ENGLISH} "Settings"
-    LicenseLangString license ${LANG_ENGLISH} "..\GlobalResources\License\English.rtf"
+	LicenseLangString license ${LANG_ENGLISH} "..\GlobalResources\License\English.rtf"
 	
 	# German
 	LangString LANG_SecCoreFiles ${LANG_GERMAN} "Für CamStudio erforderliche Kerndateien, um zu funktionieren." ;Core files section description
@@ -113,7 +113,7 @@
 	InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 
 	# Request application privileges for Windows Vista
-	RequestExecutionLevel user
+	RequestExecutionLevel admin
 
 	# Do not show the NSIS message at the bottom
 	BrandingText " "
