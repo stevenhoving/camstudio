@@ -117,5 +117,6 @@ o	CEditTransparencyDlg and CTransparentWnd
 	CTransparentWnd::InvalidateTransparency(bool bEnable, int iLevel) and let it deal with
 	its own internal state. The call to the edit dialog should simply pass in the current
 	state values and copy the new state after the dialog completes. Note that the dialog
-	still retains the old values and restores them on cancel. 
-	 
+	still retains the old values and restores them on cancel.
+
+o       CamStudio needs to use the OpenDML (AVI 2.0) extensions so files with size > 2 GB can be created.
