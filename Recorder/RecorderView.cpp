@@ -2606,8 +2606,8 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// TODO: Add your specialized creation code here
 	hWndGlobal = m_hWnd;
-	VERIFY(0 == SetAdjustHotKeys());
 	LoadSettings();
+	VERIFY(0 == SetAdjustHotKeys());
 
 	CreateShiftWindow();
 
@@ -3628,10 +3628,9 @@ void CRecorderView::OnOptionsAudiospeakers()
 
 void CRecorderView::OnOptionsKeyboardshortcuts()
 {
-	// TODO: Add your command handler code here
 	if (!keySCOpened) {
 		keySCOpened = 1;
-		CKeyshortcutsDlg kscDlg;
+		CKeyshortcutsDlg kscDlg(this);
 		kscDlg.DoModal();
 		keySCOpened = 0;
 

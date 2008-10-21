@@ -216,8 +216,9 @@ BOOL CRecorderApp::InitInstance()
 
 	LoadStdProfileSettings(); // Load standard INI file options (including MRU)
 
-	m_cmSettings.Read();
-	m_cmSettings.Write();
+	// TODO: re-enable when class complete
+	//m_cmSettings.Read();
+	//m_cmSettings.Write();
 
 	versionOp = GetOperatingSystem();
 

@@ -19,10 +19,6 @@ public:
 	CListManager();
 	virtual ~CListManager();
 
-	CArray<CTransparentWnd *,CTransparentWnd *> shapeArray;
-	CArray<CTransparentWnd *,CTransparentWnd *> displayArray;
-	CArray<CLayoutList* ,CLayoutList*> layoutArray;
-
 	int AddShapeArray(CTransparentWnd *);
 	int RemoveShapeArray(CTransparentWnd *,int wantDestroy);
 	int LoadShapeArray(CString loadDir);
@@ -52,6 +48,11 @@ public:
 	int FreeLayoutArray();
 	CArray<CTransparentWnd *,CTransparentWnd *> * CloneLayoutArrayPtr(CLayoutList* itemLayout);
 	CLayoutList* CloneLayout(CLayoutList * itemLayout);
+
+	CArray<CTransparentWnd *,CTransparentWnd *> shapeArray;
+	CArray<CTransparentWnd *,CTransparentWnd *> displayArray;
+	CArray<CLayoutList*, CLayoutList*> layoutArray;
+private:
 };
 
 #endif // !defined(AFX_LISTMANAGER_H__0F5DD254_C4A6_4E45_BCBD_8FA13F605F2A__INCLUDED_)
