@@ -1151,6 +1151,10 @@ void CTransparentWnd::InvalidateRegion()
 
 void CTransparentWnd::SetupRegion()
 {
+	// Argh!!!! CTransparentWnd may not be valid!
+	if (!::IsWindow(*this))
+		return;
+
 	CDC* tempDC = GetWindowDC();
 	SetupRegion(tempDC);
 	ReleaseDC(tempDC);
