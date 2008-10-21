@@ -6,6 +6,9 @@
 #include "Keyshortcuts.h"
 #include "HotKey.h"
 
+#include <vector>
+#include <algorithm>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -22,8 +25,74 @@ CKeyshortcutsDlg::CKeyshortcutsDlg(CWnd* pParent /*=NULL*/)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 
-	numkeys = 6;
-	numSpecial = 3;
+	m_iNumKeys = 6;
+	m_iNumSpecial = 3;
+	m_vKeyCode.push_back(VK_F1);
+	m_vKeyCode.push_back(VK_F2);
+	m_vKeyCode.push_back(VK_F3);
+	m_vKeyCode.push_back(VK_F4);
+	m_vKeyCode.push_back(VK_F5);
+	m_vKeyCode.push_back(VK_F6);
+	m_vKeyCode.push_back(VK_F7);
+	m_vKeyCode.push_back(VK_F8);
+	m_vKeyCode.push_back(VK_F9);
+	m_vKeyCode.push_back(VK_F10);
+	m_vKeyCode.push_back(VK_F11);
+	m_vKeyCode.push_back(VK_F12);
+	m_vKeyCode.push_back('A');
+	m_vKeyCode.push_back('B');
+	m_vKeyCode.push_back('C');
+	m_vKeyCode.push_back('D');
+	m_vKeyCode.push_back('E');
+	m_vKeyCode.push_back('F');
+	m_vKeyCode.push_back('G');
+	m_vKeyCode.push_back('H');
+	m_vKeyCode.push_back('I');
+	m_vKeyCode.push_back('J');
+	m_vKeyCode.push_back('K');
+	m_vKeyCode.push_back('L');
+	m_vKeyCode.push_back('M');
+	m_vKeyCode.push_back('N');
+	m_vKeyCode.push_back('O');
+	m_vKeyCode.push_back('P');
+	m_vKeyCode.push_back('Q');
+	m_vKeyCode.push_back('R');
+	m_vKeyCode.push_back('S');
+	m_vKeyCode.push_back('T');
+	m_vKeyCode.push_back('U');
+	m_vKeyCode.push_back('V');
+	m_vKeyCode.push_back('W');
+	m_vKeyCode.push_back('X');
+	m_vKeyCode.push_back('Y');
+	m_vKeyCode.push_back('Z');
+	m_vKeyCode.push_back('1');
+	m_vKeyCode.push_back('2');
+	m_vKeyCode.push_back('3');
+	m_vKeyCode.push_back('4');
+	m_vKeyCode.push_back('5');
+	m_vKeyCode.push_back('6');
+	m_vKeyCode.push_back('7');
+	m_vKeyCode.push_back('8');
+	m_vKeyCode.push_back('9');
+	m_vKeyCode.push_back('0');
+	m_vKeyCode.push_back(VK_NUMPAD0);
+	m_vKeyCode.push_back(VK_NUMPAD1);
+	m_vKeyCode.push_back(VK_NUMPAD2);
+	m_vKeyCode.push_back(VK_NUMPAD3);
+	m_vKeyCode.push_back(VK_NUMPAD4);
+	m_vKeyCode.push_back(VK_NUMPAD5);
+	m_vKeyCode.push_back(VK_NUMPAD6);
+	m_vKeyCode.push_back(VK_NUMPAD7);
+	m_vKeyCode.push_back(VK_NUMPAD8);
+	m_vKeyCode.push_back(VK_NUMPAD9);
+	m_vKeyCode.push_back(VK_HOME);
+	m_vKeyCode.push_back(VK_INSERT);
+	m_vKeyCode.push_back(VK_DELETE);
+	m_vKeyCode.push_back(VK_END);
+	m_vKeyCode.push_back(VK_RETURN);
+	m_vKeyCode.push_back(VK_SPACE);
+	m_vKeyCode.push_back(VK_TAB);
+	m_vKeyCode.push_back(100000);	// sentinel value; must be last
 }
 
 void CKeyshortcutsDlg::DoDataExchange(CDataExchange* pDX)
@@ -32,6 +101,30 @@ void CKeyshortcutsDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CKeyshortcutsDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
+	DDX_Control(pDX, IDC_CTRL1, m_ctrlButtonRecordCTRL);
+	DDX_Control(pDX, IDC_ALT1, m_ctrlButtonRecordALT);
+	DDX_Control(pDX, IDC_SHIFT1, m_ctrlButtonRecordSHFT);
+	DDX_Control(pDX, IDC_CTRL2, m_ctrlButtonStopCTRL);
+	DDX_Control(pDX, IDC_ALT2, m_ctrlButtonStopALT);
+	DDX_Control(pDX, IDC_SHIFT2, m_ctrlButtonStopSHFT);
+	DDX_Control(pDX, IDC_CTRL3, m_ctrlButtonCancelCTRL);
+	DDX_Control(pDX, IDC_ALT3, m_ctrlButtonCancelALT);
+	DDX_Control(pDX, IDC_SHIFT3, m_ctrlButtonCancelSHFT);
+	DDX_Control(pDX, IDC_CTRL4, m_ctrlButtonNextCTRL);
+	DDX_Control(pDX, IDC_ALT4, m_ctrlButtonNextALT);
+	DDX_Control(pDX, IDC_SHIFT4, m_ctrlButtonNextSHFT);
+	DDX_Control(pDX, IDC_CTRL5, m_ctrlButtonPrevCTRL);
+	DDX_Control(pDX, IDC_ALT5, m_ctrlButtonPrevALT);
+	DDX_Control(pDX, IDC_SHIFT5, m_ctrlButtonPrevSHFT);
+	DDX_Control(pDX, IDC_CTRL6, m_ctrlButtonShowCTRL);
+	DDX_Control(pDX, IDC_ALT6, m_ctrlButtonShowALT);
+	DDX_Control(pDX, IDC_SHIFT6, m_ctrlButtonShowCHFT);
+	DDX_Control(pDX, IDC_RECORDKEY, m_ctrlCBRecord);
+	DDX_Control(pDX, IDC_STOPKEY, m_ctrlCBStop);
+	DDX_Control(pDX, IDC_CANCELKEY, m_ctrlCBCancel);
+	DDX_Control(pDX, IDC_NEXTKEY, m_ctrlCBNext);
+	DDX_Control(pDX, IDC_PREVKEY, m_ctrlCBPrev);
+	DDX_Control(pDX, IDC_SHOWKEY, m_ctrlCBShow);
 }
 
 BEGIN_MESSAGE_MAP(CKeyshortcutsDlg, CDialog)
@@ -68,33 +161,33 @@ END_MESSAGE_MAP()
 
 int CKeyshortcutsDlg::TestKeysOverlap(int& o1, int& o2)
 {
-	key[0]= keyRecordStartLocal;
-	key[1]= keyRecordEndLocal;
-	key[2]= keyRecordCancelLocal;
-	key[3]= keyNextLocal;
-	key[4]= keyPrevLocal;
-	key[5]= keyShowLayoutLocal;
+	m_iKey[0] = m_keyRecordStart;
+	m_iKey[1] = m_keyRecordEnd;
+	m_iKey[2] = m_keyRecordCancel;
+	m_iKey[3] = m_keyNext;
+	m_iKey[4] = m_keyPrev;
+	m_iKey[5] = m_keyShowLayout;
 
-	keySpecial[0][0]= keyRecordStartLocalCtrl;
-	keySpecial[1][0]= keyRecordEndLocalCtrl;
-	keySpecial[2][0]= keyRecordCancelLocalCtrl;
-	keySpecial[3][0]= keyNextLocalCtrl;
-	keySpecial[4][0]= keyPrevLocalCtrl;
-	keySpecial[5][0]= keyShowLayoutLocalCtrl;
+	m_iKeySpecial[0][0] = m_keyRecordStartCtrl;
+	m_iKeySpecial[1][0] = m_keyRecordEndCtrl;
+	m_iKeySpecial[2][0] = m_keyRecordCancelCtrl;
+	m_iKeySpecial[3][0] = m_keyNextCtrl;
+	m_iKeySpecial[4][0] = m_keyPrevCtrl;
+	m_iKeySpecial[5][0] = m_keyShowLayoutCtrl;
 
-	keySpecial[0][1]= keyRecordStartLocalAlt;
-	keySpecial[1][1]= keyRecordEndLocalAlt;
-	keySpecial[2][1]= keyRecordCancelLocalAlt;
-	keySpecial[3][1]= keyNextLocalAlt;
-	keySpecial[4][1]= keyPrevLocalAlt;
-	keySpecial[5][1]= keyShowLayoutLocalAlt;
+	m_iKeySpecial[0][1] = m_keyRecordStartAlt;
+	m_iKeySpecial[1][1] = m_keyRecordEndAlt;
+	m_iKeySpecial[2][1] = m_keyRecordCancelAlt;
+	m_iKeySpecial[3][1] = m_keyNextAlt;
+	m_iKeySpecial[4][1] = m_keyPrevAlt;
+	m_iKeySpecial[5][1] = m_keyShowLayoutAlt;
 
-	keySpecial[0][2]= keyRecordStartLocalShift;
-	keySpecial[1][2]= keyRecordEndLocalShift;
-	keySpecial[2][2]= keyRecordCancelLocalShift;
-	keySpecial[3][2]= keyNextLocalShift;
-	keySpecial[4][2]= keyPrevLocalShift;
-	keySpecial[5][2]= keyShowLayoutLocalShift;
+	m_iKeySpecial[0][2] = m_keyRecordStartShift;
+	m_iKeySpecial[1][2] = m_keyRecordEndShift;
+	m_iKeySpecial[2][2] = m_keyRecordCancelShift;
+	m_iKeySpecial[3][2] = m_keyNextShift;
+	m_iKeySpecial[4][2] = m_keyPrevShift;
+	m_iKeySpecial[5][2] = m_keyShowLayoutShift;
 
 	keyName[0].LoadString(IDS_STRINGSPRKEY);
 	keyName[1].LoadString(IDS_STRINGSRKEY);
@@ -110,23 +203,24 @@ int CKeyshortcutsDlg::TestKeysOverlap(int& o1, int& o2)
 	//keyName[4] = "Previous Layout Key";
 	//keyName[5] = "Show / Hide Layout Key";
 
-	for (int i=0; i<numkeys; i++)
+	for (int i = 0; i < m_iNumKeys; i++)
 	{
-		for (int j=0; j<numkeys; j++)
+		for (int j = 0; j < m_iNumKeys; j++)
 		{
-			if (i!=j)
+			if (i != j)
 			{
-				if (key[i]==key[j])
+				if (m_iKey[i] == m_iKey[j])
 				{
-					int statusSpecial = 0;
-					for (int k=0; k<numSpecial; k++)
+					bool bStatusSpecial = false;
+					for (int k = 0; k < m_iNumSpecial; k++)
 					{
-						if (keySpecial[i][k]!=keySpecial[j][k])
+						if (m_iKeySpecial[i][k] != m_iKeySpecial[j][k])
 						{
-							statusSpecial = 1;
+							bStatusSpecial = true;
+							break;	// finished; mismatch found
 						}
 					}
-					if (!statusSpecial)
+					if (!bStatusSpecial)
 					{
 						o1 = i;
 						o2 = j;
@@ -142,15 +236,17 @@ int CKeyshortcutsDlg::TestKeysOverlap(int& o1, int& o2)
 
 void CKeyshortcutsDlg::OnOK()
 {
-	// TODO: Add extra validation here
+	// validation
 
 	int key1 = 0;
 	int key2 = 0;
-	if (TestKeysOverlap( key1, key2))
+	if (TestKeysOverlap(key1, key2))
 	{
-		if ((key1>=0) && (key1<numkeys) && (key2>=0) && (key2<numkeys))
+		if ((0 <= key1) && (key1 < m_iNumKeys) && (key2 >= 0) && (key2 < m_iNumKeys))
 		{
-			CString errStr, formatStr, noteStr;
+			CString errStr;
+			CString formatStr;
+			CString noteStr;
 			formatStr.LoadString(IDS_STRINGSAMEKEY);
 			errStr.Format(formatStr,keyName[key1],keyName[key2]);
 
@@ -163,37 +259,37 @@ void CKeyshortcutsDlg::OnOK()
 		}
 	}
 
-	keyRecordStart = keyRecordStartLocal;
-	keyRecordEnd = keyRecordEndLocal;
-	uKeyRecordCancel = keyRecordCancelLocal;
+	keyRecordStart = m_keyRecordStart;
+	keyRecordEnd = m_keyRecordEnd;
+	uKeyRecordCancel = m_keyRecordCancel;
 
-	keyNext = keyNextLocal;
-	keyPrev = keyPrevLocal;
-	keyShowLayout = keyShowLayoutLocal;
+	keyNext = m_keyNext;
+	keyPrev = m_keyPrev;
+	keyShowLayout = m_keyShowLayout;
 
-	keyRecordStartCtrl = keyRecordStartLocalCtrl;
-	keyRecordEndCtrl = keyRecordEndLocalCtrl;
-	keyRecordCancelCtrl = keyRecordCancelLocalCtrl;
+	keyRecordStartCtrl = m_keyRecordStartCtrl;
+	keyRecordEndCtrl = m_keyRecordEndCtrl;
+	keyRecordCancelCtrl = m_keyRecordCancelCtrl;
 
-	keyNextCtrl = keyNextLocalCtrl;
-	keyPrevCtrl = keyPrevLocalCtrl;
-	keyShowLayoutCtrl = keyShowLayoutLocalCtrl;
+	keyNextCtrl = m_keyNextCtrl;
+	keyPrevCtrl = m_keyPrevCtrl;
+	keyShowLayoutCtrl = m_keyShowLayoutCtrl;
 
-	keyRecordStartAlt = keyRecordStartLocalAlt;
-	keyRecordEndAlt = keyRecordEndLocalAlt;
-	keyRecordCancelAlt = keyRecordCancelLocalAlt;
+	keyRecordStartAlt = m_keyRecordStartAlt;
+	keyRecordEndAlt = m_keyRecordEndAlt;
+	keyRecordCancelAlt = m_keyRecordCancelAlt;
 
-	keyNextAlt = keyNextLocalAlt;
-	keyPrevAlt = keyPrevLocalAlt;
-	keyShowLayoutAlt = keyShowLayoutLocalAlt;
+	keyNextAlt = m_keyNextAlt;
+	keyPrevAlt = m_keyPrevAlt;
+	keyShowLayoutAlt = m_keyShowLayoutAlt;
 
-	keyRecordStartShift = keyRecordStartLocalShift;
-	keyRecordEndShift = keyRecordEndLocalShift;
-	keyRecordCancelShift = keyRecordCancelLocalShift;
+	keyRecordStartShift = m_keyRecordStartShift;
+	keyRecordEndShift = m_keyRecordEndShift;
+	keyRecordCancelShift = m_keyRecordCancelShift;
 
-	keyNextShift = keyNextLocalShift;
-	keyPrevShift = keyPrevLocalShift;
-	keyShowLayoutShift = keyShowLayoutLocalShift;
+	keyNextShift = m_keyNextShift;
+	keyPrevShift = m_keyPrevShift;
+	keyShowLayoutShift = m_keyShowLayoutShift;
 
 	CDialog::OnOK();
 }
@@ -203,476 +299,200 @@ BOOL CKeyshortcutsDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO: Add extra initialization here
-	keyRecordStartLocal = keyRecordStart;
-	keyRecordEndLocal = keyRecordEnd;
-	keyRecordCancelLocal = uKeyRecordCancel;
+	m_keyRecordStart = keyRecordStart;
+	m_keyRecordEnd = keyRecordEnd;
+	m_keyRecordCancel = uKeyRecordCancel;
 
-	keyRecordStartLocalCtrl = keyRecordStartCtrl;
-	keyRecordEndLocalCtrl = keyRecordEndCtrl;
-	keyRecordCancelLocalCtrl = keyRecordCancelCtrl;
+	m_keyRecordStartCtrl = keyRecordStartCtrl;
+	m_keyRecordEndCtrl = keyRecordEndCtrl;
+	m_keyRecordCancelCtrl = keyRecordCancelCtrl;
 
-	keyRecordStartLocalAlt = keyRecordStartAlt;
-	keyRecordEndLocalAlt = keyRecordEndAlt;
-	keyRecordCancelLocalAlt = keyRecordCancelAlt;
+	m_keyRecordStartAlt = keyRecordStartAlt;
+	m_keyRecordEndAlt = keyRecordEndAlt;
+	m_keyRecordCancelAlt = keyRecordCancelAlt;
 
-	keyRecordStartLocalShift = keyRecordStartShift;
-	keyRecordEndLocalShift = keyRecordEndShift;
-	keyRecordCancelLocalShift = keyRecordCancelShift;
+	m_keyRecordStartShift = keyRecordStartShift;
+	m_keyRecordEndShift = keyRecordEndShift;
+	m_keyRecordCancelShift = keyRecordCancelShift;
 
-	keyNextLocal = keyNext;
-	keyPrevLocal = keyPrev;
-	keyShowLayoutLocal = keyShowLayout;
+	m_keyNext = keyNext;
+	m_keyPrev = keyPrev;
+	m_keyShowLayout = keyShowLayout;
 
-	keyNextLocalCtrl = keyNextCtrl;
-	keyPrevLocalCtrl = keyPrevCtrl;
-	keyShowLayoutLocalCtrl = keyShowLayoutCtrl;
+	m_keyNextCtrl = keyNextCtrl;
+	m_keyPrevCtrl = keyPrevCtrl;
+	m_keyShowLayoutCtrl = keyShowLayoutCtrl;
 
-	keyNextLocalAlt = keyNextAlt;
-	keyPrevLocalAlt = keyPrevAlt;
-	keyShowLayoutLocalAlt = keyShowLayoutAlt;
+	m_keyNextAlt = keyNextAlt;
+	m_keyPrevAlt = keyPrevAlt;
+	m_keyShowLayoutAlt = keyShowLayoutAlt;
 
-	keyNextLocalShift = keyNextShift;
-	keyPrevLocalShift = keyPrevShift;
-	keyShowLayoutLocalShift = keyShowLayoutShift;
+	m_keyNextShift = keyNextShift;
+	m_keyPrevShift = keyPrevShift;
+	m_keyShowLayoutShift = keyShowLayoutShift;
 
-	int nx = GetIndex(keyRecordStart);
-	((CComboBox *) GetDlgItem(IDC_RECORDKEY))->SetCurSel(nx);
+	m_ctrlCBRecord.SetCurSel(GetIndex(keyRecordStart));
+	m_ctrlCBStop.SetCurSel(GetIndex(keyRecordEnd));
+	m_ctrlCBCancel.SetCurSel(GetIndex(uKeyRecordCancel));
+	m_ctrlCBNext.SetCurSel(GetIndex(keyNext));
+	m_ctrlCBPrev.SetCurSel(GetIndex(keyPrev));
+	m_ctrlCBShow.SetCurSel(GetIndex(keyShowLayout));
 
-	nx = GetIndex(keyRecordEnd);
-	((CComboBox *) GetDlgItem(IDC_STOPKEY))->SetCurSel(nx);
+	m_ctrlButtonRecordCTRL.SetCheck(keyRecordStartCtrl);
+	m_ctrlButtonStopCTRL.SetCheck(keyRecordEndCtrl);
+	m_ctrlButtonCancelCTRL.SetCheck(keyRecordCancelCtrl);
+	m_ctrlButtonNextCTRL.SetCheck(keyNextCtrl);
+	m_ctrlButtonPrevCTRL.SetCheck(keyPrevCtrl);
+	m_ctrlButtonShowCTRL.SetCheck(keyShowLayoutCtrl);
 
-	nx = GetIndex(uKeyRecordCancel);
-	((CComboBox *) GetDlgItem(IDC_CANCELKEY))->SetCurSel(nx);
+	m_ctrlButtonRecordALT.SetCheck(keyRecordStartAlt);
+	m_ctrlButtonStopALT.SetCheck(keyRecordEndAlt);
+	m_ctrlButtonCancelALT.SetCheck(keyRecordCancelAlt);
+	m_ctrlButtonNextALT.SetCheck(keyNextAlt);
+	m_ctrlButtonPrevALT.SetCheck(keyPrevAlt);
+	m_ctrlButtonShowALT.SetCheck(keyShowLayoutAlt);
 
-	nx = GetIndex(keyNext);
-	((CComboBox *) GetDlgItem(IDC_NEXTKEY))->SetCurSel(nx);
-
-	nx = GetIndex(keyPrev);
-	((CComboBox *) GetDlgItem(IDC_PREVKEY))->SetCurSel(nx);
-
-	nx = GetIndex(keyShowLayout);
-	((CComboBox *) GetDlgItem(IDC_SHOWKEY))->SetCurSel(nx);
-
-	((CButton *) GetDlgItem(IDC_CTRL1))->SetCheck(keyRecordStartCtrl);
-	((CButton *) GetDlgItem(IDC_CTRL2))->SetCheck(keyRecordEndCtrl);
-	((CButton *) GetDlgItem(IDC_CTRL3))->SetCheck(keyRecordCancelCtrl);
-	((CButton *) GetDlgItem(IDC_CTRL4))->SetCheck(keyNextCtrl);
-	((CButton *) GetDlgItem(IDC_CTRL5))->SetCheck(keyPrevCtrl);
-	((CButton *) GetDlgItem(IDC_CTRL6))->SetCheck(keyShowLayoutCtrl);
-
-	((CButton *) GetDlgItem(IDC_ALT1))->SetCheck(keyRecordStartAlt);
-	((CButton *) GetDlgItem(IDC_ALT2))->SetCheck(keyRecordEndAlt);
-	((CButton *) GetDlgItem(IDC_ALT3))->SetCheck(keyRecordCancelAlt);
-	((CButton *) GetDlgItem(IDC_ALT4))->SetCheck(keyNextAlt);
-	((CButton *) GetDlgItem(IDC_ALT5))->SetCheck(keyPrevAlt);
-	((CButton *) GetDlgItem(IDC_ALT6))->SetCheck(keyShowLayoutAlt);
-
-	((CButton *) GetDlgItem(IDC_SHIFT1))->SetCheck(keyRecordStartShift);
-	((CButton *) GetDlgItem(IDC_SHIFT2))->SetCheck(keyRecordEndShift);
-	((CButton *) GetDlgItem(IDC_SHIFT3))->SetCheck(keyRecordCancelShift);
-	((CButton *) GetDlgItem(IDC_SHIFT4))->SetCheck(keyNextShift);
-	((CButton *) GetDlgItem(IDC_SHIFT5))->SetCheck(keyPrevShift);
-	((CButton *) GetDlgItem(IDC_SHIFT6))->SetCheck(keyShowLayoutShift);
+	m_ctrlButtonRecordSHFT.SetCheck(keyRecordStartShift);
+	m_ctrlButtonStopSHFT.SetCheck(keyRecordEndShift);
+	m_ctrlButtonCancelSHFT.SetCheck(keyRecordCancelShift);
+	m_ctrlButtonNextSHFT.SetCheck(keyNextShift);
+	m_ctrlButtonPrevSHFT.SetCheck(keyPrevShift);
+	m_ctrlButtonShowCHFT.SetCheck(keyShowLayoutShift);
 
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
 int CKeyshortcutsDlg::GetIndex(UINT keyShortCut)
-{
-	int index = 0;
-	switch (keyShortCut)
-	{
-	case VK_F1 : index = 0; break;
-	case VK_F2 : index = 1; break;
-	case VK_F3 : index = 2; break;
-	case VK_F4 : index = 3; break;
-	case VK_F5 : index = 4; break;
-	case VK_F6 : index = 5; break;
-	case VK_F7 : index = 6; break;
-	case VK_F8 : index = 7; break;
-	case VK_F9 : index = 8; break;
-	case VK_F10 : index = 9; break;
-	case VK_F11 : index = 10; break;
-	case VK_F12 : index = 11; break;
-	case 'A' : index = 12; break;
-	case 'B' : index = 13; break;
-	case 'C' : index = 14; break;
-	case 'D' : index = 15; break;
-	case 'E' : index = 16; break;
-	case 'F' : index = 17; break;
-	case 'G' : index = 18; break;
-	case 'H' : index = 19; break;
-	case 'I' : index = 20; break;
-	case 'J' : index = 21; break;
-	case 'K' : index = 22; break;
-	case 'L' : index = 23; break;
-	case 'M' : index = 24; break;
-	case 'N' : index = 25; break;
-	case 'O' : index = 26; break;
-	case 'P' : index = 27; break;
-	case 'Q' : index = 28; break;
-	case 'R' : index = 29; break;
-	case 'S' : index = 30; break;
-	case 'T' : index = 31; break;
-	case 'U' : index = 32; break;
-	case 'V' : index = 33; break;
-	case 'W' : index = 34; break;
-	case 'X' : index = 35; break;
-	case 'Y' : index = 36; break;
-	case 'Z' : index = 37; break;
-	case '1' : index = 38; break;
-	case '2' : index = 39; break;
-	case '3' : index = 40; break;
-	case '4' : index = 41; break;
-	case '5' : index = 42; break;
-	case '6' : index = 43; break;
-	case '7' : index = 44; break;
-	case '8' : index = 45; break;
-	case '9' : index = 46; break;
-	case '0' : index = 47; break;
-	case VK_NUMPAD0 : index = 48; break;
-	case VK_NUMPAD1 : index = 49; break;
-	case VK_NUMPAD2 : index = 50; break;
-	case VK_NUMPAD3 : index = 51; break;
-	case VK_NUMPAD4 : index = 52; break;
-	case VK_NUMPAD5 : index = 53; break;
-	case VK_NUMPAD6 : index = 54; break;
-	case VK_NUMPAD7 : index = 55; break;
-	case VK_NUMPAD8 : index = 56; break;
-	case VK_NUMPAD9 : index = 57; break;
-	case VK_HOME : index = 58; break;
-	case VK_INSERT : index = 59; break;
-	case VK_DELETE : index = 60; break;
-	case VK_END : index = 61; break;
-	case VK_RETURN : index = 62; break;
-	case VK_SPACE : index = 63; break;
-	case VK_TAB : index = 64; break;
-	case 100000 : index = 65; break;
-	}
-
-	return index;
+{	
+	std::vector <UINT>::iterator iter = std::find(m_vKeyCode.begin(), m_vKeyCode.end(), keyShortCut);
+	return (iter - m_vKeyCode.begin());
 }
 
-UINT CKeyshortcutsDlg::GetCode(int index)
+
+UINT CKeyshortcutsDlg::GetCode(size_t index)
 {
-	int vcode = 0;
-
-	switch (index)
-	{
-	case 0 : vcode = VK_F1; break;
-	case 1 : vcode = VK_F2; break;
-	case 2 : vcode = VK_F3; break;
-	case 3 : vcode = VK_F4; break;
-	case 4 : vcode = VK_F5; break;
-	case 5 : vcode = VK_F6; break;
-	case 6 : vcode = VK_F7; break;
-	case 7 : vcode = VK_F8; break;
-	case 8 : vcode = VK_F9; break;
-	case 9 : vcode = VK_F10; break;
-	case 10 : vcode = VK_F11; break;
-	case 11 : vcode = VK_F12; break;
-	case 12 : vcode = 'A'; break;
-	case 13 : vcode = 'B'; break;
-	case 14 : vcode = 'C'; break;
-	case 15 : vcode = 'D'; break;
-	case 16 : vcode = 'E'; break;
-	case 17 : vcode = 'F'; break;
-	case 18 : vcode = 'G'; break;
-	case 19 : vcode = 'H'; break;
-	case 20 : vcode = 'I'; break;
-	case 21 : vcode = 'J'; break;
-	case 22 : vcode = 'K'; break;
-	case 23 : vcode = 'L'; break;
-	case 24 : vcode = 'M'; break;
-	case 25 : vcode = 'N'; break;
-	case 26 : vcode = 'O'; break;
-	case 27 : vcode = 'P'; break;
-	case 28 : vcode = 'Q'; break;
-	case 29 : vcode = 'R'; break;
-	case 30 : vcode = 'S'; break;
-	case 31 : vcode = 'T'; break;
-	case 32 : vcode = 'U'; break;
-	case 33 : vcode = 'V'; break;
-	case 34 : vcode = 'W'; break;
-	case 35 : vcode = 'X'; break;
-	case 36 : vcode = 'Y'; break;
-	case 37 : vcode = 'Z'; break;
-	case 38 : vcode = '1'; break;
-	case 39 : vcode = '2'; break;
-	case 40 : vcode = '3'; break;
-	case 41 : vcode = '4'; break;
-	case 42 : vcode = '5'; break;
-	case 43 : vcode = '6'; break;
-	case 44 : vcode = '7'; break;
-	case 45 : vcode = '8'; break;
-	case 46 : vcode = '9'; break;
-	case 47 : vcode = '0'; break;
-	case 48 : vcode = VK_NUMPAD0; break;
-	case 49 : vcode = VK_NUMPAD1; break;
-	case 50 : vcode = VK_NUMPAD2; break;
-	case 51 : vcode = VK_NUMPAD3; break;
-	case 52 : vcode = VK_NUMPAD4; break;
-	case 53 : vcode = VK_NUMPAD5; break;
-	case 54 : vcode = VK_NUMPAD6; break;
-	case 55 : vcode = VK_NUMPAD7; break;
-	case 56 : vcode = VK_NUMPAD8; break;
-	case 57 : vcode = VK_NUMPAD9; break;
-	case 58 : vcode = VK_HOME; break;
-	case 59 : vcode = VK_INSERT; break;
-	case 60 : vcode = VK_DELETE; break;
-	case 61 : vcode = VK_END; break;
-	case 62 : vcode = VK_RETURN; break;
-	case 63 : vcode = VK_SPACE; break;
-	case 64 : vcode = VK_TAB; break;
-	case 65 : vcode = 100000; break;
-	}
-
-	return vcode;
+	return ((index < 0) || (m_vKeyCode.size() <= index))
+		? m_vKeyCode[m_vKeyCode.size()-1]
+		: m_vKeyCode[index];
 }
 
 void CKeyshortcutsDlg::OnSelchangeStopkey()
 {
-	// TODO: Add your control notification handler code here
-	int index = ((CComboBox *) GetDlgItem(IDC_STOPKEY))->GetCurSel();
-	UINT vcode = GetCode(index);
-
-	keyRecordEndLocal = vcode;
-
-	//if (vcode == keyRecordStartLocal)
-	//{
-	//	//MessageBox("This key is used by the Record/Pause Key");
-	//	MessageOut(this->m_hWnd,IDS_STRING_KEYRECORD ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
-	//	int nx = GetIndex(keyRecordEndLocal);
-	//	((CComboBox *) GetDlgItem(IDC_STOPKEY))->SetCurSel(nx);
-	//	return;
-	//}
-
-	//if (vcode == keyRecordCancelLocal)
-	//{
-	//	//MessageBox("This key is used by the Cancel Key");
-	//	MessageOut(this->m_hWnd,IDS_STRING_KEYCANCEL ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
-	//	int nx = GetIndex(keyRecordEndLocal);
-	//	((CComboBox *) GetDlgItem(IDC_STOPKEY))->SetCurSel(nx);
-	//	return;
-	//}
-
-	//keyRecordEndLocal = vcode;
+	m_keyRecordEnd = GetCode(m_ctrlCBStop.GetCurSel());
 }
 
 void CKeyshortcutsDlg::OnSelchangeCancelkey()
 {
-	// TODO: Add your control notification handler code here
-	int index = ((CComboBox *) GetDlgItem(IDC_CANCELKEY))->GetCurSel();
-	UINT vcode = GetCode(index);
-
-	keyRecordCancelLocal = vcode;
-
-	//if (vcode==keyRecordStartLocal)
-	//{
-	//	//MessageBox("This key is used by the Record/Pause Key");
-	//	MessageOut(this->m_hWnd,IDS_STRING_KEYRECORD ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
-	//	int nx = GetIndex(keyRecordCancelLocal);
-	//	((CComboBox *) GetDlgItem(IDC_CANCELKEY))->SetCurSel(nx);
-	//	return;
-	//}
-
-	//if (vcode==keyRecordEndLocal)
-	//{
-	//	//MessageBox("This key is used by the Stop Key");
-	//	MessageOut(this->m_hWnd,IDS_STRING_KEYSTOP ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
-	//	int nx = GetIndex(keyRecordCancelLocal);
-	//	((CComboBox *) GetDlgItem(IDC_CANCELKEY))->SetCurSel(nx);
-	//	return;
-	//}
-
-	//keyRecordCancelLocal = vcode;
+	m_keyRecordCancel = GetCode(m_ctrlCBCancel.GetCurSel());
 }
 
 void CKeyshortcutsDlg::OnSelchangeRecordkey()
 {
-	// TODO: Add your control notification handler code here
-	int index = ((CComboBox *) GetDlgItem(IDC_RECORDKEY))->GetCurSel();
-	UINT vcode = GetCode(index);
-
-	keyRecordStartLocal = vcode;
-
-	//if (vcode==keyRecordCancelLocal)
-	//{
-	//	//MessageBox("This key is used by the Cancel Recording Key");
-	//	MessageOut(this->m_hWnd,IDS_STRING_KEYCANCEL ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
-	//	int nx = GetIndex(keyRecordStartLocal);
-	//	((CComboBox *) GetDlgItem(IDC_RECORDKEY))->SetCurSel(nx);
-	//	return;
-	//}
-
-	//if (vcode==keyRecordEndLocal)
-	//{
-	//	//MessageBox("This key is used by the Stop Key");
-	//	MessageOut(this->m_hWnd,IDS_STRING_KEYSTOP ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
-	//	int nx = GetIndex(keyRecordStartLocal);
-	//	((CComboBox *) GetDlgItem(IDC_RECORDKEY))->SetCurSel(nx);
-	//	return;
-	//}
-
-	//keyRecordStartLocal = vcode;
+	m_keyRecordStart = GetCode(m_ctrlCBRecord.GetCurSel());
 }
 
 void CKeyshortcutsDlg::OnSelchangeNextkey()
 {
-	// TODO: Add your control notification handler code here
-	int index = ((CComboBox *) GetDlgItem(IDC_NEXTKEY))->GetCurSel();
-	UINT vcode = GetCode(index);
-
-	keyNextLocal = vcode;
+	m_keyNext = GetCode(m_ctrlCBNext.GetCurSel());
 }
 
 void CKeyshortcutsDlg::OnSelchangePrevkey()
 {
-	// TODO: Add your control notification handler code here
-	int index = ((CComboBox *) GetDlgItem(IDC_PREVKEY))->GetCurSel();
-	UINT vcode = GetCode(index);
-
-	keyPrevLocal = vcode;
+	m_keyPrev = GetCode(m_ctrlCBPrev.GetCurSel());
 }
 
 void CKeyshortcutsDlg::OnSelchangeShowkey()
 {
-	// TODO: Add your control notification handler code here
-	int index = ((CComboBox *) GetDlgItem(IDC_SHOWKEY))->GetCurSel();
-	UINT vcode = GetCode(index);
-
-	keyShowLayoutLocal = vcode;
+	m_keyShowLayout = GetCode(m_ctrlCBShow.GetCurSel());
 }
 
 void CKeyshortcutsDlg::OnCtrl1()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_CTRL1))->GetCheck();
-	keyRecordStartLocalCtrl = val;
+	m_keyRecordStartCtrl = m_ctrlButtonRecordCTRL.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnCtrl2()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_CTRL2))->GetCheck();
-	keyRecordEndLocalCtrl = val;
+	m_keyRecordEndCtrl = m_ctrlButtonStopCTRL.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnCtrl3()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_CTRL3))->GetCheck();
-	keyRecordCancelLocalCtrl = val;
+	m_keyRecordCancelCtrl = m_ctrlButtonCancelCTRL.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnCtrl4()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_CTRL4))->GetCheck();
-	keyNextLocalCtrl = val;
+	m_keyNextCtrl = m_ctrlButtonNextCTRL.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnCtrl5()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_CTRL5))->GetCheck();
-	keyPrevLocalCtrl = val;
+	m_keyPrevCtrl = m_ctrlButtonPrevCTRL.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnCtrl6()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_CTRL6))->GetCheck();
-	keyShowLayoutLocalCtrl = val;
+	m_keyShowLayoutCtrl = m_ctrlButtonShowCTRL.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnShift1()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_SHIFT1))->GetCheck();
-	keyRecordStartLocalShift = val;
+	m_keyRecordStartShift = m_ctrlButtonRecordSHFT.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnShift2()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_SHIFT2))->GetCheck();
-	keyRecordEndLocalShift = val;
+	m_keyRecordEndShift = m_ctrlButtonStopSHFT.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnShift3()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_SHIFT3))->GetCheck();
-	keyRecordCancelLocalShift = val;
+	m_keyRecordCancelShift = m_ctrlButtonCancelSHFT.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnShift4()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_SHIFT4))->GetCheck();
-	keyNextLocalShift = val;
+	m_keyNextShift = m_ctrlButtonNextSHFT.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnShift5()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_SHIFT5))->GetCheck();
-	keyPrevLocalShift = val;
+	m_keyPrevShift = m_ctrlButtonPrevSHFT.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnShift6()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_SHIFT6))->GetCheck();
-	keyShowLayoutLocalShift = val;
+	m_keyShowLayoutShift = m_ctrlButtonShowCHFT.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnAlt1()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_ALT1))->GetCheck();
-	keyRecordStartLocalAlt = val;
+	m_keyRecordStartAlt = m_ctrlButtonRecordALT.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnAlt2()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_ALT2))->GetCheck();
-	keyRecordEndLocalAlt = val;
+	m_keyRecordEndAlt = m_ctrlButtonStopALT.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnAlt3()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_ALT3))->GetCheck();
-	keyRecordCancelLocalAlt = val;
+	m_keyRecordCancelAlt = m_ctrlButtonCancelALT.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnAlt4()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_ALT4))->GetCheck();
-	keyNextLocalAlt = val;
+	m_keyNextAlt = m_ctrlButtonNextALT.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnAlt5()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_ALT5))->GetCheck();
-	keyPrevLocalAlt = val;
+	m_keyPrevAlt = m_ctrlButtonPrevALT.GetCheck();
 }
 
 void CKeyshortcutsDlg::OnAlt6()
 {
-	// TODO: Add your control notification handler code here
-	int val = ((CButton *) GetDlgItem(IDC_ALT6))->GetCheck();
-	keyShowLayoutLocalAlt = val;
+	m_keyShowLayoutAlt = m_ctrlButtonShowALT.GetCheck();
 }
