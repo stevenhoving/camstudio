@@ -1,6 +1,7 @@
 // CKeyshortcutsDlg.h : header file
 //
 /////////////////////////////////////////////////////////////////////////////
+#include "afxwin.h"
 #if !defined(AFX_KEYSHORTCUTS_H__7D91F35B_8385_4EBB_96CA_AEFB403E2121__INCLUDED_)
 #define AFX_KEYSHORTCUTS_H__7D91F35B_8385_4EBB_96CA_AEFB403E2121__INCLUDED_
 
@@ -16,9 +17,6 @@ class CKeyshortcutsDlg : public CDialog
 // Construction
 public:
 	CKeyshortcutsDlg(CWnd* pParent = NULL);   // standard constructor
-
-	int GetIndex(UINT keyShortCut);
-	UINT GetCode(int index);
 
 // Dialog Data
 	//{{AFX_DATA(CKeyshortcutsDlg)
@@ -67,45 +65,74 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	int GetIndex(UINT keyShortCut);
+	UINT GetCode(size_t index);
+
 	int TestKeysOverlap(int& o1, int& o2);
 
-	UINT keyNextLocal;
-	UINT keyPrevLocal;
-	UINT keyShowLayoutLocal;
+	std::vector <UINT> m_vKeyCode;
 
-	UINT keyNextLocalCtrl;
-	UINT keyPrevLocalCtrl;
-	UINT keyShowLayoutLocalCtrl;
+	UINT m_keyNext;
+	UINT m_keyPrev;
+	UINT m_keyShowLayout;
 
-	UINT keyNextLocalAlt;
-	UINT keyPrevLocalAlt;
-	UINT keyShowLayoutLocalAlt;
+	UINT m_keyNextCtrl;
+	UINT m_keyPrevCtrl;
+	UINT m_keyShowLayoutCtrl;
 
-	UINT keyNextLocalShift;
-	UINT keyPrevLocalShift;
-	UINT keyShowLayoutLocalShift;
+	UINT m_keyNextAlt;
+	UINT m_keyPrevAlt;
+	UINT m_keyShowLayoutAlt;
 
-	UINT keyRecordStartLocal;
-	UINT keyRecordEndLocal;
-	UINT keyRecordCancelLocal;
+	UINT m_keyNextShift;
+	UINT m_keyPrevShift;
+	UINT m_keyShowLayoutShift;
 
-	UINT keyRecordStartLocalCtrl;
-	UINT keyRecordEndLocalCtrl;
-	UINT keyRecordCancelLocalCtrl;
+	UINT m_keyRecordStart;
+	UINT m_keyRecordEnd;
+	UINT m_keyRecordCancel;
 
-	UINT keyRecordStartLocalAlt;
-	UINT keyRecordEndLocalAlt;
-	UINT keyRecordCancelLocalAlt;
+	UINT m_keyRecordStartCtrl;
+	UINT m_keyRecordEndCtrl;
+	UINT m_keyRecordCancelCtrl;
 
-	UINT keyRecordStartLocalShift;
-	UINT keyRecordEndLocalShift;
-	UINT keyRecordCancelLocalShift;
+	UINT m_keyRecordStartAlt;
+	UINT m_keyRecordEndAlt;
+	UINT m_keyRecordCancelAlt;
 
-	int numkeys;
-	int numSpecial;
-	int key[6];
-	int keySpecial[6][3];
+	UINT m_keyRecordStartShift;
+	UINT m_keyRecordEndShift;
+	UINT m_keyRecordCancelShift;
+
+	int m_iNumKeys;
+	int m_iNumSpecial;
+	int m_iKey[6];
+	int m_iKeySpecial[6][3];
 	CString keyName[6];
+	CButton m_ctrlButtonRecordCTRL;
+	CButton m_ctrlButtonRecordALT;
+	CButton m_ctrlButtonRecordSHFT;
+	CButton m_ctrlButtonStopCTRL;
+	CButton m_ctrlButtonStopALT;
+	CButton m_ctrlButtonStopSHFT;
+	CButton m_ctrlButtonCancelCTRL;
+	CButton m_ctrlButtonCancelALT;
+	CButton m_ctrlButtonCancelSHFT;
+	CButton m_ctrlButtonNextCTRL;
+	CButton m_ctrlButtonNextALT;
+	CButton m_ctrlButtonNextSHFT;
+	CButton m_ctrlButtonPrevCTRL;
+	CButton m_ctrlButtonPrevALT;
+	CButton m_ctrlButtonPrevSHFT;
+	CButton m_ctrlButtonShowCTRL;
+	CButton m_ctrlButtonShowALT;
+	CButton m_ctrlButtonShowCHFT;
+	CComboBox m_ctrlCBRecord;
+	CComboBox m_ctrlCBStop;
+	CComboBox m_ctrlCBCancel;
+	CComboBox m_ctrlCBNext;
+	CComboBox m_ctrlCBPrev;
+	CComboBox m_ctrlCBShow;
 };
 
 //{{AFX_INSERT_LOCATION}}

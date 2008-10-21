@@ -290,19 +290,16 @@ int CListManager::DestroyLayout(CLayoutList* pLayout)
 
 int CListManager::DestroyArrayItems(CArray<CTransparentWnd *,CTransparentWnd *> *removeArray)
 {
-
 	int max = removeArray->GetSize();
 	CTransparentWnd * itemWnd = NULL;
-	for (int i=max-1;i>=0; i--)
+	for (int i = max - 1; 0 <= i; i--)
 	{
 		itemWnd = (*removeArray)[i];
 		if (itemWnd)
 		{
-
 			if ((itemWnd->trackingOn) || (itemWnd->editTransOn) || (itemWnd->editImageOn))
 			{
 				//Do not remove, the item is undergoing editing
-
 			}
 			else
 			{
@@ -312,15 +309,11 @@ int CListManager::DestroyArrayItems(CArray<CTransparentWnd *,CTransparentWnd *> 
 				removeArray->RemoveAt( i, 1);
 				itemWnd->DestroyWindow();
 				delete itemWnd;
-
 			}
-
 		}
-
 	}
 
 	return 1;
-
 }
 
 CArray<CTransparentWnd *,CTransparentWnd *> * CListManager::CloneDisplayArray()
