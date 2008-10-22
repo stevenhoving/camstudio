@@ -26,3 +26,17 @@ BOOL WinYield()
 	return FALSE;
 }
 
+LONG GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata)
+{
+	HKEY hkey;
+	LONG retval = ::RegOpenKeyEx (key, subkey, 0, KEY_QUERY_VALUE, &hkey);
+	if (retval == ERROR_SUCCESS)
+	{
+		long datasize = MAX_PATH;
+		TCHAR data[MAX_PATH];
+		::RegQueryValue (hkey, NULL, data, &datasize);
+		_tcscpy (retdata, data);
+		::RegCloseKey (hkey);
+	}
+	return retval;
+}

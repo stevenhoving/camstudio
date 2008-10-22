@@ -1,6 +1,6 @@
 // ScreenAnnotations.cpp : implementation file
-//
-
+// TODO: this whole modeule needs cleanup
+/////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Recorder.h"
 #include "ScreenAnnotations.h"
@@ -10,40 +10,11 @@
 #include "Keyshortcuts.h"
 #include "CStudioLib.h"
 
-CListManager ListManager;
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
-#define modeShape 0
-#define modeLayout 1
-
-int AreWindowsEdited();
-
-int objectIsCopied = 0;
-int layoutIsCopied = 0;
-int tabMode = modeShape;
-int shapeLibraryMode = 0; //default shape library mode is 0, if >0 ==> opened library
-int layoutLibraryMode = 0; //default layout library mode is 0, if >0 ==> opened library
-
-int newObjectOn = 0;
-
-LV_ITEM itemCopied;
-CTransparentWnd* wndCopied = NULL;
-
-CLayoutList* layoutCopied = NULL;
-
-void AdjustShapeName(CString& shapeName);
-void AdjustLayoutName(CString& layoutName);
-
-int draggingOn = 0;
-int iDragIndex = -1;
-
-CImageList saImageList;
-int saImageListLoaded = 0;
 
 extern int m_newShapeWidth;
 extern int m_newShapeHeight;
@@ -61,6 +32,34 @@ extern int keySCOpened;
 extern int iCurrentLayout;
 
 extern int SetAdjustHotKeys();
+
+#define modeShape 0
+#define modeLayout 1
+
+int AreWindowsEdited();
+
+int objectIsCopied = 0;
+int layoutIsCopied = 0;
+int tabMode = modeShape;
+int shapeLibraryMode = 0; //default shape library mode is 0, if >0 ==> opened library
+int layoutLibraryMode = 0; //default layout library mode is 0, if >0 ==> opened library
+
+int newObjectOn = 0;
+
+LV_ITEM itemCopied;
+CTransparentWnd* wndCopied = NULL;
+CLayoutList* layoutCopied = NULL;
+
+void AdjustShapeName(CString& shapeName);
+void AdjustLayoutName(CString& layoutName);
+
+int draggingOn = 0;
+int iDragIndex = -1;
+
+CImageList saImageList;
+int saImageListLoaded = 0;
+
+CListManager ListManager;
 
 /////////////////////////////////////////////////////////////////////////////
 // CScreenAnnotationsDlg dialog
@@ -82,7 +81,10 @@ void CScreenAnnotationsDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CScreenAnnotationsDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
+	DDX_Control(pDX, IDC_LIST1, m_ctrlList);
+	DDX_Control(pDX, IDC_TAB1, m_ctrlTab);
 }
+
 BEGIN_MESSAGE_MAP(CScreenAnnotationsDlg, CDialog)
 	//{{AFX_MSG_MAP(CScreenAnnotationsDlg)
 	ON_NOTIFY(LVN_BEGINDRAG, IDC_LIST1, OnBegindragList1)
@@ -168,25 +170,16 @@ BOOL CScreenAnnotationsDlg::OnInitDialog()
 	// TODO: Add extra initialization here
 	CString shapesStr;
 	CString layoutStr;
-
 	shapesStr.LoadString(IDS_STRING_SHAPES);
 	layoutStr.LoadString(IDS_STRING_LAYOUT);
 
-	TC_ITEM item1, item2;
-	item1.mask = TCIF_TEXT;
-	//item1.pszText = "Shapes";
-	item1.pszText = (char *) LPCTSTR(shapesStr);
-	item2.mask = TCIF_TEXT;
-	//item2.pszText = "Layout";
-	item2.pszText = (char *) LPCTSTR(layoutStr);
-
-	((CTabCtrl *) GetDlgItem (IDC_TAB1))->InsertItem(0, &item1);
-	((CTabCtrl *) GetDlgItem (IDC_TAB1))->InsertItem(1, &item2);
+	m_ctrlTab.InsertItem(0, shapesStr);
+	m_ctrlTab.InsertItem(1, layoutStr);
 
 	m_bEditingLabelOn = false;
 	draggingOn = 0;
 
-	((CTabCtrl *) GetDlgItem (IDC_TAB1))->SetCurSel(tabMode);
+	m_ctrlTab.SetCurSel(tabMode);
 	//UpdateTabCtrl(tabMode);
 
 	if (!saImageListLoaded)
@@ -194,11 +187,11 @@ BOOL CScreenAnnotationsDlg::OnInitDialog()
 		//saBitmap.LoadBitmap(IDB_SCREENANNOTATIONS_SMALL);
 		//saImageList.Create(15,15, ILC_COLOR8 | ILC_MASK, 8, 8);
 		//saImageList.Create( IDB_SCREENANNOTATIONS_SMALL, 16, 10, RGB(255,0, 255) );
-		saImageList.Create( IDB_SCREENANNOTATIONS_SMALL, 16, 10, RGB(255,255, 255) );
+		saImageList.Create(IDB_SCREENANNOTATIONS_SMALL, 16, 10, RGB(255,255, 255));
 		saImageListLoaded = 1;
-		((CListCtrl *) GetDlgItem (IDC_LIST1))->SetImageList( &saImageList, LVSIL_SMALL );
-
+		m_ctrlList.SetImageList(&saImageList, LVSIL_SMALL);
 	}
+
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -211,11 +204,11 @@ void CScreenAnnotationsDlg::OnContextMenu(CWnd* pWnd, CPoint point)
 void CScreenAnnotationsDlg::OnRclickList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	int nItem = -1;
-	int numitems = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemCount();
+	int numitems = m_ctrlList.GetItemCount();
 	int itemstate = 0;
 
-	for (int i=0; i < numitems; i++) {
-		itemstate = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemState( i, LVIS_SELECTED);
+	for (int i = 0; i < numitems; i++) {
+		itemstate = m_ctrlList.GetItemState( i, LVIS_SELECTED);
 		if (itemstate & LVIS_SELECTED) {
 			nItem = i;
 		}
@@ -238,20 +231,18 @@ void CScreenAnnotationsDlg::OnRclickList1(NMHDR* pNMHDR, LRESULT* pResult)
 			if (layoutIsCopied)
 			{
 				pPopup->EnableMenuItem(ID_EDITOBJ_PASTE,MF_ENABLED|MF_BYCOMMAND);
-
 			}
 			else
 			{
 				pPopup->EnableMenuItem(ID_EDITOBJ_PASTE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
-
 			}
-			if (nItem<0) //item not selected
+
+			if (nItem < 0) //item not selected
 			{
 				pPopup->EnableMenuItem(ID_EDITLAYOUT_OPENLAYOUT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 				pPopup->EnableMenuItem(ID_EDITOBJ_REMOVE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 				pPopup->EnableMenuItem(ID_EDITOBJ_COPY,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 				pPopup->EnableMenuItem(ID_EDITOBJ_TESTEDIT, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
-
 			}
 			else
 			{
@@ -259,34 +250,31 @@ void CScreenAnnotationsDlg::OnRclickList1(NMHDR* pNMHDR, LRESULT* pResult)
 				pPopup->EnableMenuItem(ID_EDITOBJ_REMOVE,MF_ENABLED|MF_BYCOMMAND);
 				pPopup->EnableMenuItem(ID_EDITOBJ_COPY, MF_ENABLED|MF_BYCOMMAND);
 				pPopup->EnableMenuItem(ID_EDITOBJ_TESTEDIT, MF_ENABLED|MF_BYCOMMAND);
-
 			}
 			int max = ListManager.displayArray.GetSize();
 			int isEdited = AreWindowsEdited();
 
-			if ((isEdited) || (max<=0))
+			if ((isEdited) || (max <= 0))
 			{
 				pPopup->EnableMenuItem(ID_EDITLAYOUT_SAVELAYOUT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
-
 			}
 			else
 			{
 				pPopup->EnableMenuItem(ID_EDITLAYOUT_SAVELAYOUT,MF_ENABLED|MF_BYCOMMAND);
-
 			}
+			
 			if (isEdited)
+			{
 				pPopup->EnableMenuItem(ID_EDITLAYOUT_OPENLAYOUT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
+			}
 
-			pPopup->TrackPopupMenu(TPM_RIGHTBUTTON | TPM_LEFTALIGN,
-				point.x, point.y,
-				this); // route commands through main window
-
+			// route commands through main window
+			pPopup->TrackPopupMenu(TPM_RIGHTBUTTON | TPM_LEFTALIGN, point.x, point.y, this);
 		} //End loadMenu Successful
 
 		*pResult = 0;
 		return;
-	}
-	//End Layout Mode
+	} //End Layout Mode
 
 	//Shape Mode
 	if (menu.LoadMenu(menuToLoad))
@@ -294,13 +282,12 @@ void CScreenAnnotationsDlg::OnRclickList1(NMHDR* pNMHDR, LRESULT* pResult)
 		CMenu* pPopup = menu.GetSubMenu(0);
 		ASSERT(pPopup != NULL);
 
-		if ((tabMode==modeLayout) || (nItem<0) || (newObjectOn))
+		if ((tabMode == modeLayout) || (nItem < 0) || (newObjectOn))
 		{
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITIMAGE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITTEXT, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITTRANSPARENCY, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_TESTEDIT, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
-
 		}
 		else
 		{
@@ -308,35 +295,31 @@ void CScreenAnnotationsDlg::OnRclickList1(NMHDR* pNMHDR, LRESULT* pResult)
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITTEXT, MF_ENABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITTRANSPARENCY, MF_ENABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_TESTEDIT, MF_ENABLED|MF_BYCOMMAND);
-
 		}
-		if ((objectIsCopied) && (tabMode==modeShape))
+
+		if ((objectIsCopied) && (tabMode == modeShape))
 		{
 			pPopup->EnableMenuItem(ID_EDITOBJ_PASTE,MF_ENABLED|MF_BYCOMMAND);
-
 		}
-		else if ((layoutIsCopied) && (tabMode==modeLayout))
+		else if ((layoutIsCopied) && (tabMode == modeLayout))
 		{
 			pPopup->EnableMenuItem(ID_EDITOBJ_PASTE,MF_ENABLED|MF_BYCOMMAND);
-
 		}
 		else
 		{
 			pPopup->EnableMenuItem(ID_EDITOBJ_PASTE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
-
 		}
 		if (nItem<0) //item not selected
 		{
 			pPopup->EnableMenuItem(ID_EDITOBJ_REMOVE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_COPY,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
-
 		}
 		else
 		{
 			pPopup->EnableMenuItem(ID_EDITOBJ_REMOVE,MF_ENABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_COPY, MF_ENABLED|MF_BYCOMMAND);
-
 		}
+
 		if (newObjectOn)
 		{
 			pPopup->EnableMenuItem(ID_EDITOBJ_NEWOBJECT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
@@ -348,7 +331,6 @@ void CScreenAnnotationsDlg::OnRclickList1(NMHDR* pNMHDR, LRESULT* pResult)
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITIMAGE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITTEXT, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITTRANSPARENCY, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
-
 		}
 		else
 		{
@@ -356,14 +338,11 @@ void CScreenAnnotationsDlg::OnRclickList1(NMHDR* pNMHDR, LRESULT* pResult)
 
 			//pPopup->EnableMenuItem(ID_EDITOBJ_LIBRARY_NEWLIBRARY,MF_ENABLED|MF_BYCOMMAND);
 			//pPopup->EnableMenuItem(ID_EDITOBJ_LIBRARY_OPENLIBRARY,MF_ENABLED|MF_BYCOMMAND);
-
 		}
-		pPopup->TrackPopupMenu(TPM_RIGHTBUTTON | TPM_LEFTALIGN,
-			point.x, point.y,
-			this); // route commands through main window
+		// route commands through main window
+		pPopup->TrackPopupMenu(TPM_RIGHTBUTTON | TPM_LEFTALIGN, point.x, point.y, this);
 	}
 	*pResult = 0;
-
 }
 
 void CScreenAnnotationsDlg::CloseAllWindows(int wantDelete)
@@ -378,14 +357,12 @@ void CScreenAnnotationsDlg::CloseAllWindows(int wantDelete)
 			if ((itemWnd->trackingOn) || (itemWnd->editTransOn) || (itemWnd->editImageOn))
 			{
 				//Do not remove, the item is undergoing editing
-
 			}
 			else
 			{
 				itemWnd->ShowWindow(SW_HIDE);
 				if (wantDelete) {
 					ListManager.RemoveDisplayArray(itemWnd,1);
-
 				}
 			}
 		}
@@ -421,7 +398,9 @@ void CScreenAnnotationsDlg::OnEditobjNewobject()
 			newWnd->m_shapeStr = shapeStr;
 			newWnd->CreateTransparent(shapeStr,rect,m_imageFilename,1);
 		}
-		if (newWnd) {
+		
+		if (newWnd)
+		{
 			CTransparentWnd *cloneWnd = newWnd->Clone(0,0);
 			ListManager.AddDisplayArray(cloneWnd);
 
@@ -430,17 +409,15 @@ void CScreenAnnotationsDlg::OnEditobjNewobject()
 
 			//Use fill info for items, the wnd*, the text, the icons...etc
 			TabSelectShapeMode(1);
-			if (tabMode == modeShape) {
+			if (tabMode == modeShape)
+			{
 				//A shape window can never be shown....else crash...
 				ListManager.AddShapeArray(newWnd);
-
-				CListCtrl *listctrl = ((CListCtrl *) GetDlgItem (IDC_LIST1));
-
-				int nItem = listctrl->GetItemCount();
+				int nItem = m_ctrlList.GetItemCount();
 				int nItemMod = modeShape;
 
 				CString insstr = cloneWnd->m_shapeStr;
-				int ins = listctrl->InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(insstr), 0, 0, nItemMod, newWnd->uniqueID );
+				int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(insstr), 0, 0, nItemMod, newWnd->uniqueID );
 			}
 		}
 	}
@@ -476,30 +453,30 @@ void CScreenAnnotationsDlg::SaveLayoutNew()
 	//set to layout mode for tabctrl
 	TabSelectLayoutMode(1);
 
-	CArray<CTransparentWnd *,CTransparentWnd *> *cloneArray = ListManager.CloneDisplayArray();
-	if (cloneArray) {
+	CArray <CTransparentWnd *,CTransparentWnd *> *cloneArray = ListManager.CloneDisplayArray();
+	if (cloneArray)
+	{
 		CLayoutList * newLayout = NULL;
 		newLayout = new CLayoutList;
-		if (newLayout) {
+		if (newLayout)
+		{
 			newLayout->layoutArrayPtr = cloneArray;
 
 			CString layoutIntStr;
 			layoutIntStr.Format("%d",iLayoutNameInt);
 			newLayout->layoutName = strLayoutName + layoutIntStr;
 			iLayoutNameInt++;
-			if (iLayoutNameInt > 2147483647)
+			if (iLayoutNameInt > 2147483647)	// TODO; No Magic Numbers
 				iLayoutNameInt = 1;
 
 			ListManager.AddLayoutArray(newLayout);
-
-			CListCtrl *listctrl = ((CListCtrl *) GetDlgItem (IDC_LIST1));
-			int nItem = listctrl->GetItemCount();
+			int nItem = m_ctrlList.GetItemCount();
 			int nItemMod = modeLayout; //refering to layout images
 			CString insstr = newLayout->layoutName;
-			int ins = listctrl->InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(insstr), 0, 0, nItemMod, newLayout->uniqueID );
+			int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(insstr), 0, 0, nItemMod, newLayout->uniqueID );
 
-			listctrl->EnsureVisible( nItem, FALSE );
-			listctrl->SetItemState( nItem, LVIS_SELECTED, LVIS_SELECTED);
+			m_ctrlList.EnsureVisible( nItem, FALSE );
+			m_ctrlList.SetItemState( nItem, LVIS_SELECTED, LVIS_SELECTED);
 		}
 	}
 }
@@ -513,9 +490,7 @@ void CScreenAnnotationsDlg::SaveShapeNew(CTransparentWnd *newWnd)
 		CTransparentWnd *cloneWnd = newWnd->Clone(0,0);
 		ListManager.AddShapeArray(cloneWnd);
 
-		CListCtrl *listctrl = ((CListCtrl *) GetDlgItem (IDC_LIST1));
-
-		int nItem = listctrl->GetItemCount();
+		int nItem = m_ctrlList.GetItemCount();
 		int nItemMod = modeShape;
 
 		CString shapeStr;
@@ -539,10 +514,10 @@ void CScreenAnnotationsDlg::SaveShapeNew(CTransparentWnd *newWnd)
 			}
 		}
 		cloneWnd->m_shapeStr = insstr;
-		int ins = listctrl->InsertItem( LVIF_TEXT | LVIF_PARAM , nItem, LPCTSTR(insstr), 0, 0, nItemMod, cloneWnd->uniqueID );
+		int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM , nItem, LPCTSTR(insstr), 0, 0, nItemMod, cloneWnd->uniqueID );
 
-		listctrl->EnsureVisible( nItem, FALSE );
-		listctrl->SetItemState( nItem, LVIS_SELECTED, LVIS_SELECTED);
+		m_ctrlList.EnsureVisible( nItem, FALSE );
+		m_ctrlList.SetItemState( nItem, LVIS_SELECTED, LVIS_SELECTED);
 	}
 }
 
@@ -597,12 +572,12 @@ void CScreenAnnotationsDlg::OnEditobjCopy()
 		}
 	} else if (tabMode == modeLayout) {
 		int nItem = -1;
-		int numitems = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemCount();
+		int numitems = m_ctrlList.GetItemCount();
 		int itemstate = 0;
 
 		for (int i=0; i < numitems; i++) {
 			//GetItemState( int nItem, LVIS_SELECTED )
-			itemstate = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemState( i, LVIS_SELECTED);
+			itemstate = m_ctrlList.GetItemState( i, LVIS_SELECTED);
 			if (itemstate & LVIS_SELECTED) {
 				nItem = i;
 			}
@@ -633,38 +608,25 @@ void CScreenAnnotationsDlg::OnEditobjCopy()
 
 void CScreenAnnotationsDlg::OnEditobjPaste()
 {
-	if (tabMode == modeShape) {
-		if (objectIsCopied) {
-			if (wndCopied) {
-				CTransparentWnd *cloneWnd = wndCopied->Clone(0,0);
-				ListManager.AddShapeArray(cloneWnd);
+	if ((tabMode == modeShape) && (objectIsCopied) && (wndCopied)) {
+		CTransparentWnd *cloneWnd = wndCopied->Clone(0,0);
+		ListManager.AddShapeArray(cloneWnd);
 
-				CListCtrl *listctrl = ((CListCtrl *) GetDlgItem (IDC_LIST1));
+		int nItem = m_ctrlList.GetItemCount();
+		int nItemMod = modeShape;
+		int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(cloneWnd->m_shapeStr), 0, 0, nItemMod, cloneWnd->uniqueID );
+		m_ctrlList.EnsureVisible( nItem, FALSE );
+		m_ctrlList.SetItemState( nItem, LVIS_SELECTED, LVIS_SELECTED);
+	} else if ((tabMode == modeLayout) && (layoutIsCopied) && (layoutCopied)) {
+		CLayoutList *cloneLayout = ListManager.CloneLayout(layoutCopied);
+		if (cloneLayout) {
+			ListManager.AddLayoutArray(cloneLayout);
 
-				int nItem = listctrl->GetItemCount();
-				int nItemMod = modeShape;
-				int ins = listctrl->InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(cloneWnd->m_shapeStr), 0, 0, nItemMod, cloneWnd->uniqueID );
-				listctrl->EnsureVisible( nItem, FALSE );
-				listctrl->SetItemState( nItem, LVIS_SELECTED, LVIS_SELECTED);
-			}
-		}
-	} else if (tabMode == modeLayout) {
-		if (layoutIsCopied) {
-			if (layoutCopied) {
-				CLayoutList *cloneLayout = ListManager.CloneLayout(layoutCopied);
-
-				if (cloneLayout) {
-					ListManager.AddLayoutArray(cloneLayout);
-
-					CListCtrl *listctrl = ((CListCtrl *) GetDlgItem (IDC_LIST1));
-
-					int nItem = listctrl->GetItemCount();
-					int nItemMod = modeLayout;
-					int ins = listctrl->InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(cloneLayout->layoutName), 0, 0, nItemMod, cloneLayout->uniqueID );
-					listctrl->EnsureVisible( nItem, FALSE );
-					listctrl->SetItemState( nItem, LVIS_SELECTED, LVIS_SELECTED);
-				}
-			}
+			int nItem = m_ctrlList.GetItemCount();
+			int nItemMod = modeLayout;
+			int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(cloneLayout->layoutName), 0, 0, nItemMod, cloneLayout->uniqueID );
+			m_ctrlList.EnsureVisible( nItem, FALSE );
+			m_ctrlList.SetItemState( nItem, LVIS_SELECTED, LVIS_SELECTED);
 		}
 	}
 }
@@ -672,12 +634,12 @@ void CScreenAnnotationsDlg::OnEditobjPaste()
 void CScreenAnnotationsDlg::OnEditobjRemove()
 {
 	int nItem = -1;
-	int numitems = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemCount();
+	int numitems = m_ctrlList.GetItemCount();
 	int itemstate = 0;
 
 	for (int i=0; i < numitems; i++) {
 		//GetItemState( int nItem, LVIS_SELECTED )
-		itemstate = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemState( i, LVIS_SELECTED);
+		itemstate = m_ctrlList.GetItemState( i, LVIS_SELECTED);
 		if (itemstate & LVIS_SELECTED) {
 			nItem = i;
 		}
@@ -690,7 +652,7 @@ void CScreenAnnotationsDlg::OnEditobjRemove()
 		}
 		if (newWnd) {
 			ListManager.RemoveShapeArray(newWnd,1);
-			((CListCtrl *) GetDlgItem (IDC_LIST1))->DeleteItem( nItem );
+			m_ctrlList.DeleteItem( nItem );
 		}
 	} else if (tabMode == modeLayout) {
 		if ((nItem>-1) && (nItem<numitems)) {
@@ -698,7 +660,7 @@ void CScreenAnnotationsDlg::OnEditobjRemove()
 		}
 		if (newLayout) {
 			ListManager.RemoveLayoutArray(newLayout,1);
-			((CListCtrl *) GetDlgItem (IDC_LIST1))->DeleteItem( nItem );
+			m_ctrlList.DeleteItem( nItem );
 		}
 	}
 }
@@ -706,18 +668,19 @@ void CScreenAnnotationsDlg::OnEditobjRemove()
 void CScreenAnnotationsDlg::OnEditobjTestedit()
 {
 	int nItem = -1;
-	int numitems = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemCount();
+	int numitems = m_ctrlList.GetItemCount();
 	int itemstate = 0;
 
 	for (int i=0; i < numitems; i++) {
-		itemstate = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemState( i, LVIS_SELECTED);
+		itemstate = m_ctrlList.GetItemState( i, LVIS_SELECTED);
 		if (itemstate & LVIS_SELECTED) {
 			nItem = i;
 		}
 	}
+
 	if ((nItem>-1) && (nItem<numitems)) {
 		m_bEditingLabelOn = true;
-		((CListCtrl *) GetDlgItem (IDC_LIST1))->EditLabel( nItem );
+		m_ctrlList.EditLabel( nItem );
 	}
 }
 
@@ -777,12 +740,12 @@ void CScreenAnnotationsDlg::OnEndlabeleditList1(NMHDR* pNMHDR, LRESULT* pResult)
 		CLayoutList *itemLayout = NULL;
 
 		int nItem = -1;
-		int numitems = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemCount();
+		int numitems = m_ctrlList.GetItemCount();
 		int itemstate = 0;
 
 		for (int i=0; i < numitems; i++)
 		{
-			itemstate = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemState( i, LVIS_SELECTED);
+			itemstate = m_ctrlList.GetItemState( i, LVIS_SELECTED);
 			if (itemstate & LVIS_SELECTED)
 			{
 				nItem = i;
@@ -844,7 +807,6 @@ void CScreenAnnotationsDlg::InstantiateWnd(int x, int y)
 			cloneWnd->InvalidateTransparency();
 			cloneWnd->ShowWindow(SW_SHOW);
 			cloneWnd->UpdateWindow();
-
 		}
 	}
 }
@@ -854,11 +816,11 @@ CTransparentWnd* CScreenAnnotationsDlg::LocateWndFromShapeList()
 	CTransparentWnd *newWnd = NULL;
 
 	int nItem = -1;
-	int numitems = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemCount();
+	int numitems = m_ctrlList.GetItemCount();
 	int itemstate = 0;
 
 	for (int i=0; i < numitems; i++) {
-		itemstate = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemState( i, LVIS_SELECTED);
+		itemstate = m_ctrlList.GetItemState( i, LVIS_SELECTED);
 		if (itemstate & LVIS_SELECTED) {
 			nItem = i;
 		}
@@ -867,7 +829,6 @@ CTransparentWnd* CScreenAnnotationsDlg::LocateWndFromShapeList()
 		newWnd = LocateWndFromItem(nItem);
 	}
 	return newWnd;
-
 }
 
 CTransparentWnd* CScreenAnnotationsDlg::LocateWndFromItem(int nItem)
@@ -878,7 +839,7 @@ CTransparentWnd* CScreenAnnotationsDlg::LocateWndFromItem(int nItem)
 	LV_ITEM searchItem;
 	searchItem.mask = LVIF_PARAM;
 	searchItem.iItem = nItem;
-	((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItem( &searchItem);
+	m_ctrlList.GetItem(&searchItem);
 
 	WndID = searchItem.lParam;
 
@@ -895,12 +856,10 @@ CTransparentWnd* CScreenAnnotationsDlg::LocateWndFromItem(int nItem)
 				newWnd = itemWnd;
 				found = 1;
 				break; //allow only one removal
-
 			}
 		}
 	}
 	return newWnd;
-
 }
 
 void CScreenAnnotationsDlg::OnKeydownList1(NMHDR* pNMHDR, LRESULT* pResult)
@@ -928,7 +887,6 @@ void CScreenAnnotationsDlg::OnDestroy()
 
 			wndCopied = NULL;
 			objectIsCopied = 0;
-
 		}
 	}
 	if (layoutIsCopied)
@@ -936,7 +894,6 @@ void CScreenAnnotationsDlg::OnDestroy()
 		if (layoutCopied)
 		{
 			ListManager.DestroyLayout(layoutCopied);
-
 		}
 	}
 }
@@ -944,11 +901,7 @@ void CScreenAnnotationsDlg::OnDestroy()
 void CScreenAnnotationsDlg::OnBegindragList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
-
 	iDragIndex = pNMListView->iItem;
-
-	CListCtrl * listctrl = ((CListCtrl *) GetDlgItem (IDC_LIST1));
-
 	draggingOn = 1;
 	SetCursor(m_hCursorDrag);
 	SetCapture();
@@ -975,11 +928,9 @@ void CScreenAnnotationsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		ClientToScreen (&pt); //Convert to screen coordinates
 		CWnd* pDropWnd = WindowFromPoint (pt);
 
-		CWnd* m_pDragList = ((CListCtrl *) GetDlgItem (IDC_LIST1));
-
 		if (tabMode == modeShape)
 		{
-			if (pDropWnd != m_pDragList) {
+			if (pDropWnd != &m_ctrlList) {
 				CTransparentWnd *newWnd = LocateWndFromShapeList();
 
 				if (newWnd) {
@@ -994,18 +945,17 @@ void CScreenAnnotationsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 					cloneWnd->InvalidateTransparency();
 					cloneWnd->ShowWindow(SW_SHOW);
 					cloneWnd->UpdateWindow();
-
 				}
 			}
 			else
 			{
 				//Locate Selected Item
 				int nItem = -1;
-				int numitems = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemCount();
+				int numitems = m_ctrlList.GetItemCount();
 				int itemstate = 0;
 
 				for (int i=0; i < numitems; i++) {
-					itemstate = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemState( i, LVIS_SELECTED);
+					itemstate = m_ctrlList.GetItemState( i, LVIS_SELECTED);
 					if (itemstate & LVIS_SELECTED) {
 						nItem = i;
 					}
@@ -1017,9 +967,9 @@ void CScreenAnnotationsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 					int hotspoty = 10;
 					ptx.x += hotspotx;
 					ptx.y += hotspoty;
-					((CListCtrl *) GetDlgItem (IDC_LIST1))->ScreenToClient(&ptx);
+					m_ctrlList.ScreenToClient(&ptx);
 					UINT lvFlags = LVHT_ONITEM;
-					int targetItem = ((CListCtrl *) GetDlgItem (IDC_LIST1))->HitTest( ptx, &lvFlags );
+					int targetItem = m_ctrlList.HitTest( ptx, &lvFlags );
 
 					if (( targetItem >= 0) && (targetItem !=nItem))
 					{
@@ -1028,66 +978,63 @@ void CScreenAnnotationsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 						LV_ITEM swapItem, swapItem2;
 						swapItem.mask = LVIF_PARAM;
 						swapItem.iItem = nItem;
-						((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItem( &swapItem);
+						m_ctrlList.GetItem(&swapItem);
 
 						swapItem2.mask = LVIF_PARAM;
 						swapItem2.iItem = targetItem;
-						((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItem( &swapItem2);
+						m_ctrlList.GetItem(&swapItem2);
 
 						ListManager.SwapShapeArray(swapItem.lParam, swapItem2.lParam);
 						RefreshShapeList();
-
 					}
 				}
 			}
 		}
 		else if (tabMode == modeLayout)
 		{
-			if (pDropWnd != m_pDragList) {
+			if (pDropWnd != &m_ctrlList) {
 				InstantiateLayout();
-
 			}
 			else
 			{
 				//Locate Selected Item
 				int nItem = -1;
-				int numitems = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemCount();
+				int numitems = m_ctrlList.GetItemCount();
 				int itemstate = 0;
 
-				for (int i=0; i < numitems; i++) {
-					itemstate = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemState( i, LVIS_SELECTED);
-					if (itemstate & LVIS_SELECTED) {
+				for (int i = 0; i < numitems; i++)
+				{
+					itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
+					if (itemstate & LVIS_SELECTED)
+					{
 						nItem = i;
 					}
 				}
-				if ((nItem>-1) && (nItem<numitems)) {
+				if ((-1 < nItem) && (nItem < numitems)) {
 					//back here
 					CPoint ptx;
 					GetCursorPos(&ptx);
 					int hotspotx = 13;
 					int hotspoty = 10;
-					ptx.x += hotspotx;
-					ptx.y += hotspoty;
-					((CListCtrl *) GetDlgItem (IDC_LIST1))->ScreenToClient(&ptx);
+					ptx.Offset(hotspotx, hotspoty);
+					m_ctrlList.ScreenToClient(&ptx);
 					UINT lvFlags = LVHT_ONITEM;
-					int targetItem = ((CListCtrl *) GetDlgItem (IDC_LIST1))->HitTest( ptx, &lvFlags );
-
-					if (( targetItem >= 0) && (targetItem !=nItem))
+					int targetItem = m_ctrlList.HitTest( ptx, &lvFlags );
+					if ((0 <= targetItem) && (targetItem != nItem))
 					{
 						int nItemMod = modeLayout;
 
 						LV_ITEM swapItem, swapItem2;
 						swapItem.mask = LVIF_PARAM;
 						swapItem.iItem = nItem;
-						((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItem( &swapItem);
+						m_ctrlList.GetItem( &swapItem);
 
 						swapItem2.mask = LVIF_PARAM;
 						swapItem2.iItem = targetItem;
-						((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItem( &swapItem2);
+						m_ctrlList.GetItem( &swapItem2);
 
 						ListManager.SwapLayoutArray(swapItem.lParam, swapItem2.lParam);
 						RefreshLayoutList();
-
 					}
 				}
 			}
@@ -1099,22 +1046,18 @@ void CScreenAnnotationsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 void CScreenAnnotationsDlg::RefreshShapeList()
 {
 	//tabmode must be set to shapeMode before calling this
-
-	CListCtrl *listctrl = ((CListCtrl *) GetDlgItem (IDC_LIST1));
-	listctrl->DeleteAllItems();
+	m_ctrlList.DeleteAllItems();
 
 	int max = ListManager.shapeArray.GetSize();
-	CTransparentWnd * itemWnd = NULL;
-	for (int i=0;i<max; i++)
+	for (int i = 0; i < max; i++)
 	{
-		itemWnd = ListManager.shapeArray[i];
-		if (itemWnd)
+		CTransparentWnd * pItemWnd = ListManager.shapeArray[i];
+		if (pItemWnd)
 		{
-			int nItem = listctrl->GetItemCount();
+			int nItem = m_ctrlList.GetItemCount();
 			int nItemMod = modeShape; //refering to shape images
-			CString insstr = itemWnd->m_shapeStr;
-			int ins = listctrl->InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(insstr), 0, 0, nItemMod, itemWnd->uniqueID );
-
+			CString insstr = pItemWnd->m_shapeStr;
+			int ins = m_ctrlList.InsertItem(LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(insstr), 0, 0, nItemMod, pItemWnd->uniqueID);
 		}
 	}
 }
@@ -1122,35 +1065,34 @@ void CScreenAnnotationsDlg::RefreshShapeList()
 void CScreenAnnotationsDlg::RefreshLayoutList()
 {
 	//tabmode must be layoutMode before calling this
-	CListCtrl *listctrl = ((CListCtrl *) GetDlgItem (IDC_LIST1));
-	listctrl->DeleteAllItems();
+	m_ctrlList.DeleteAllItems();
 
 	int max = ListManager.layoutArray.GetSize();
-	CLayoutList * itemLayout = NULL;
-	for (int i=0;i<max; i++)
+	for (int i = 0; i < max; i++)
 	{
-		itemLayout = ListManager.layoutArray[i];
+		CLayoutList * itemLayout = ListManager.layoutArray[i];
 		if (itemLayout)
 		{
-			int nItem = listctrl->GetItemCount();
+			int nItem = m_ctrlList.GetItemCount();
 			int nItemMod = modeLayout; //refering to layout images
 			CString insstr = itemLayout->layoutName;
-			int ins = listctrl->InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(insstr), 0, 0, nItemMod, itemLayout->uniqueID );
-
+			int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(insstr), 0, 0, nItemMod, itemLayout->uniqueID );
 		}
 	}
 }
 
 void CScreenAnnotationsDlg::TabSelectShapeMode(int updateTab)
 {
-	if (tabMode == modeLayout) {
+	if (tabMode == modeLayout)
+	{
 		RefreshShapeList();
 
 		tabMode = modeShape;
 
 		if (updateTab)
-			((CTabCtrl *) GetDlgItem (IDC_TAB1))->SetCurSel(tabMode);
-
+		{
+			m_ctrlTab.SetCurSel(tabMode);
+		}
 	}
 }
 
@@ -1162,15 +1104,15 @@ void CScreenAnnotationsDlg::TabSelectLayoutMode(int updateTab)
 		tabMode = modeLayout;
 
 		if (updateTab)
-			((CTabCtrl *) GetDlgItem (IDC_TAB1))->SetCurSel(tabMode);
-
+		{
+			m_ctrlTab.SetCurSel(tabMode);
+		}
 	}
 }
 
 void CScreenAnnotationsDlg::OnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult)
 {
-	CTabCtrl * tabctrl = ((CTabCtrl *) GetDlgItem (IDC_TAB1));
-	int sel = tabctrl->GetCurSel( );
+	int sel = m_ctrlTab.GetCurSel( );
 	UpdateTabCtrl(sel);
 
 	*pResult = 0;
@@ -1215,7 +1157,6 @@ void CScreenAnnotationsDlg::OnEditlayoutLayoutshortcuts()
 		keySCOpened = 0;
 
 		SetAdjustHotKeys();
-
 	}
 }
 // tod: this should be: bool AreWindowsEdited()
@@ -1256,13 +1197,13 @@ CLayoutList* CScreenAnnotationsDlg::LocateLayoutFromItem(int nItem)
 	LV_ITEM searchItem;
 	searchItem.mask = LVIF_PARAM;
 	searchItem.iItem = nItem;
-	((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItem( &searchItem);
+	m_ctrlList.GetItem(&searchItem);
 	LayoutID = searchItem.lParam;
 
 	int found = 0;
 	CLayoutList* itemLayout = NULL;
 	int max = ListManager.layoutArray.GetSize();
-	for (int i=max-1;i>=0; i--)
+	for (int i = max - 1; i >= 0; i--)
 	{
 		itemLayout = ListManager.layoutArray[i];
 		if (itemLayout)
@@ -1272,12 +1213,10 @@ CLayoutList* CScreenAnnotationsDlg::LocateLayoutFromItem(int nItem)
 				returnLayout = itemLayout;
 				found = 1;
 				break; //allow only one removal
-
 			}
 		}
 	}
 	return returnLayout;
-
 }
 
 void CScreenAnnotationsDlg::InstantiateLayout()
@@ -1288,11 +1227,11 @@ void CScreenAnnotationsDlg::InstantiateLayout()
 		CLayoutList *itemLayout = NULL;
 
 		int nItem = -1;
-		int numitems = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemCount();
+		int numitems = m_ctrlList.GetItemCount();
 		int itemstate = 0;
 
 		for (int i=0; i < numitems; i++) {
-			itemstate = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemState( i, LVIS_SELECTED);
+			itemstate = m_ctrlList.GetItemState( i, LVIS_SELECTED);
 			if (itemstate & LVIS_SELECTED) {
 				nItem = i;
 			}
@@ -1363,7 +1302,6 @@ void AdjustShapeName(CString& shapeName)
 			}
 			else
 				iShapeNameInt = 1;
-
 		}
 		else
 			iShapeNameInt = 1;
@@ -1433,10 +1371,8 @@ void CScreenAnnotationsDlg::OnEditobjLibraryCloselibrary()
 			MessageOut(NULL,IDS_STRINGCANNOTSAVEO, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 
 			return;
-
 		}
 		ListManager.SaveShapeArray(m_newfile);
-
 	}
 }
 
@@ -1466,7 +1402,6 @@ void CScreenAnnotationsDlg::OnEditobjLibraryNewlibrary()
 
 	ListManager.FreeShapeArray();
 	RefreshShapeList();
-
 }
 
 void CScreenAnnotationsDlg::OnEditlayoutLibraryNewlibrary()
@@ -1481,7 +1416,6 @@ void CScreenAnnotationsDlg::OnEditlayoutLibraryNewlibrary()
 
 	ListManager.FreeLayoutArray();
 	RefreshLayoutList();
-
 }
 
 void CScreenAnnotationsDlg::OnEditlayoutLibraryOpenlibrary()
@@ -1499,7 +1433,6 @@ void CScreenAnnotationsDlg::OnEditlayoutLibraryOpenlibrary()
 		filename = fdlg.GetPathName();
 		ListManager.LoadLayout(filename);
 		RefreshLayoutList();
-
 	}
 }
 
@@ -1529,7 +1462,6 @@ void CScreenAnnotationsDlg::OnEditlayoutLibraryCloselibrary()
 			return;
 		}
 		ListManager.SaveLayout(m_newfile);
-
 	}
 }
 
@@ -1540,13 +1472,11 @@ void CScreenAnnotationsDlg::OnHelpHelp()
 	helpScreenPath= progdir + "\\help.htm#ScreenAnn";
 
 	Openlink(helpScreenPath);
-
 }
 
 void CScreenAnnotationsDlg::OnOptionsClosescreenannotations()
 {
 	OnOK();
-
 }
 
 BOOL CScreenAnnotationsDlg::Openlink (CString link)
@@ -1581,106 +1511,97 @@ BOOL CScreenAnnotationsDlg::OpenUsingShellExecute (CString link)
 BOOL CScreenAnnotationsDlg::OpenUsingRegisteredClass (CString link)
 {
 	TCHAR key[MAX_PATH + MAX_PATH];
-	HINSTANCE result;
-
-	if (GetRegKey (HKEY_CLASSES_ROOT, _T (".htm"), key) == ERROR_SUCCESS)
+	if (ERROR_SUCCESS != GetRegKey (HKEY_CLASSES_ROOT, _T (".htm"), key))
 	{
-		LPCTSTR mode;
-		mode = _T ("\\shell\\open\\command");
-		_tcscat (key, mode);
-		if (GetRegKey (HKEY_CLASSES_ROOT, key, key) == ERROR_SUCCESS)
+		return FALSE;
+	}
+
+	LPCTSTR mode = _T ("\\shell\\open\\command");
+	_tcscat (key, mode);
+	if (ERROR_SUCCESS != GetRegKey (HKEY_CLASSES_ROOT, key, key))
+	{
+		return FALSE;
+	}
+
+	LPTSTR pos = _tcsstr (key, _T ("\"%1\""));
+	if (pos)
+	{
+		*pos = _T ('\0'); // Remove the parameter
+	}
+	else	// No quotes found
+	{		
+		// Check for %1, without quotes
+		pos = strstr (key, _T ("%1"));
+		if (pos)
 		{
-			LPTSTR pos;
-			pos = _tcsstr (key, _T ("\"%1\""));
-			if (pos == NULL)
-			{ // No quotes found
-
-				pos = strstr (key, _T ("%1")); // Check for %1, without quotes
-
-				if (pos == NULL) // No parameter at all...
-
-					pos = key + _tcslen (key) - 1;
-				else
-					*pos = _T ('\0'); // Remove the parameter
-
-			}
-			else
-				*pos = _T ('\0'); // Remove the parameter
-
-			_tcscat (pos, _T (" "));
-			_tcscat (pos, link);
-			result = (HINSTANCE) WinExec (key, SW_SHOW);
-			if ((int) result <= HINSTANCE_ERROR)
-			{
-				CString str;
-				switch ((int) result)
-				{
-				case 0:
-					str = _T ("The operating system is out\nof memory or resources.");
-					break;
-				case SE_ERR_PNF:
-					str = _T ("The specified path was not found.");
-					break;
-				case SE_ERR_FNF:
-					str = _T ("The specified file was not found.");
-					break;
-				case ERROR_BAD_FORMAT:
-					str = _T ("The .EXE file is invalid\n(non-Win32 .EXE or error in .EXE image).");
-					break;
-				case SE_ERR_ACCESSDENIED:
-					str = _T ("The operating system denied\naccess to the specified file.");
-					break;
-				case SE_ERR_ASSOCINCOMPLETE:
-					str = _T ("The filename association is\nincomplete or invalid.");
-					break;
-				case SE_ERR_DDEBUSY:
-					str = _T ("The DDE transaction could not\nbe completed because other DDE transactions\nwere being processed.");
-					break;
-				case SE_ERR_DDEFAIL:
-					str = _T ("The DDE transaction failed.");
-					break;
-				case SE_ERR_DDETIMEOUT:
-					str = _T ("The DDE transaction could not\nbe completed because the request timed out.");
-					break;
-				case SE_ERR_DLLNOTFOUND:
-					str = _T ("The specified dynamic-link library was not found.");
-					break;
-				case SE_ERR_NOASSOC:
-					str = _T ("There is no application associated\nwith the given filename extension.");
-					break;
-				case SE_ERR_OOM:
-					str = _T ("There was not enough memory to complete the operation.");
-					break;
-				case SE_ERR_SHARE:
-					str = _T ("A sharing violation occurred.");
-					break;
-				default:
-					str.Format (_T ("Unknown Error (%d) occurred."), (int) result);
-				}
-				str = _T ("Unable to open hyperlink:\n\n") + str;
-				AfxMessageBox (str, MB_ICONEXCLAMATION | MB_OK);
-			}
-			else
-				return TRUE;
+			*pos = _T ('\0'); // Remove the parameter
+		}
+		else
+		{
+			// No parameter at all...
+			pos = key + _tcslen (key) - 1;
 		}
 	}
-	return FALSE;
-}
 
-LONG CScreenAnnotationsDlg::GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata)
-{
-	HKEY hkey;
-	LONG retval = RegOpenKeyEx (key, subkey, 0, KEY_QUERY_VALUE, &hkey);
-
-	if (retval == ERROR_SUCCESS)
+	_tcscat (pos, _T (" "));
+	_tcscat (pos, link);
+	// TODO: dicey; WinExec depreciated
+	UINT uResult = WinExec (key, SW_SHOW);
+	if (HINSTANCE_ERROR < uResult)
 	{
-		long datasize = MAX_PATH;
-		TCHAR data[MAX_PATH];
-		RegQueryValue (hkey, NULL, data, &datasize);
-		_tcscpy (retdata, data);
-		RegCloseKey (hkey);
+		return TRUE;
 	}
-	return retval;
+
+	// TODO: should be in OnError handler
+	CString str;
+	switch (uResult)
+	{
+	case 0:
+		str = _T ("The operating system is out\nof memory or resources.");
+		break;
+	case SE_ERR_PNF:
+		str = _T ("The specified path was not found.");
+		break;
+	case SE_ERR_FNF:
+		str = _T ("The specified file was not found.");
+		break;
+	case ERROR_BAD_FORMAT:
+		str = _T ("The .EXE file is invalid\n(non-Win32 .EXE or error in .EXE image).");
+		break;
+	case SE_ERR_ACCESSDENIED:
+		str = _T ("The operating system denied\naccess to the specified file.");
+		break;
+	case SE_ERR_ASSOCINCOMPLETE:
+		str = _T ("The filename association is\nincomplete or invalid.");
+		break;
+	case SE_ERR_DDEBUSY:
+		str = _T ("The DDE transaction could not\nbe completed because other DDE transactions\nwere being processed.");
+		break;
+	case SE_ERR_DDEFAIL:
+		str = _T ("The DDE transaction failed.");
+		break;
+	case SE_ERR_DDETIMEOUT:
+		str = _T ("The DDE transaction could not\nbe completed because the request timed out.");
+		break;
+	case SE_ERR_DLLNOTFOUND:
+		str = _T ("The specified dynamic-link library was not found.");
+		break;
+	case SE_ERR_NOASSOC:
+		str = _T ("There is no application associated\nwith the given filename extension.");
+		break;
+	case SE_ERR_OOM:
+		str = _T ("There was not enough memory to complete the operation.");
+		break;
+	case SE_ERR_SHARE:
+		str = _T ("A sharing violation occurred.");
+		break;
+	default:
+		str.Format (_T ("Unknown Error (%d) occurred."), uResult);
+	}
+	str = _T ("Unable to open hyperlink:\n\n") + str;
+	AfxMessageBox (str, MB_ICONEXCLAMATION | MB_OK);
+
+	return FALSE;
 }
 
 //partial
@@ -1693,14 +1614,13 @@ void CScreenAnnotationsDlg::InstantiateLayout(int nItem, int makeselect)
 		//Locate layout
 		CLayoutList *itemLayout = NULL;
 
-		int numitems = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemCount();
+		int numitems = m_ctrlList.GetItemCount();
 
 		if ((nItem>-1) && (nItem<numitems)) {
 			itemLayout = LocateLayoutFromItem(nItem);
 
-			((CListCtrl *) GetDlgItem (IDC_LIST1))->SetItemState( nItem, LVIS_SELECTED, LVIS_SELECTED);
-			((CListCtrl *) GetDlgItem (IDC_LIST1))->EnsureVisible( nItem, FALSE );
-
+			m_ctrlList.SetItemState( nItem, LVIS_SELECTED, LVIS_SELECTED);
+			m_ctrlList.EnsureVisible( nItem, FALSE );
 		}
 		if (itemLayout)
 		{
@@ -1712,7 +1632,7 @@ void CScreenAnnotationsDlg::InstantiateLayout(int nItem, int makeselect)
 				int max = itemLayout->layoutArrayPtr->GetSize();
 
 				CTransparentWnd * itemWnd = NULL;
-				for (int i=0;i<max; i++)
+				for (int i = 0; i < max; i++)
 				{
 					itemWnd = (*(itemLayout->layoutArrayPtr))[i];
 
@@ -1720,12 +1640,10 @@ void CScreenAnnotationsDlg::InstantiateLayout(int nItem, int makeselect)
 					{
 						CTransparentWnd *cloneWnd = itemWnd->Clone(0,0);
 						ListManager.AddDisplayArray(cloneWnd);
-
 						cloneWnd->UpdateWindow();
 						cloneWnd->InvalidateRegion();
 						cloneWnd->InvalidateTransparency();
 						cloneWnd->ShowWindow(SW_SHOW);
-
 					}
 				}
 			}
@@ -1733,56 +1651,31 @@ void CScreenAnnotationsDlg::InstantiateLayout(int nItem, int makeselect)
 	}
 }
 
+// GetLayoutListSelection
+// Return the index of the selected m_ctrlList item or -1 if no selection
+// m_ctrlList is a single selection list; so there is either a selection
+// or not there isn't
 int CScreenAnnotationsDlg::GetLayoutListSelection()
 {
-	TabSelectLayoutMode(1);
-
-	int numsel = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetSelectedCount();
-	if (numsel<=0)
-		return - 1;
-
-	int numitems = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemCount();
-	if (numitems<=0)
-		return - 1;
-
-	int itemstate = 0;
-	if ((iCurrentLayout>=0) && (iCurrentLayout<numitems))
-	{
-		itemstate = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemState( iCurrentLayout, LVIS_SELECTED);
-		if (itemstate)
-			return iCurrentLayout;
-
-	}
-	//Search thru' all
-	itemstate = 0;
-	int nItem = -1;
-	for (int i=0; i < numitems; i++) {
-		itemstate = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemState( i, LVIS_SELECTED);
-		if (itemstate & LVIS_SELECTED) {
-			return i;
-		}
-	}
-	return nItem;
-
+	POSITION pos = m_ctrlList.GetFirstSelectedItemPosition();
+	return (pos != NULL)
+		? m_ctrlList.GetNextSelectedItem(pos)
+		: -1;
 }
 
 void CScreenAnnotationsDlg::OnNext()
 {
 	int max = ListManager.layoutArray.GetSize();
-	if (max<=0) return;
+	if (max <= 0)
+		return;
 
 	//Get Current selected
 	int cursel = GetLayoutListSelection();
-	if (cursel == -1)
+	iCurrentLayout = (cursel == -1) ? 0 : cursel + 1;
+	if (max <= iCurrentLayout)
 		iCurrentLayout = 0;
-	else
-		iCurrentLayout = cursel + 1;
-
-	if (iCurrentLayout>=max)
-		iCurrentLayout=0;
 
 	InstantiateLayout(iCurrentLayout,1);
-
 }
 
 void CScreenAnnotationsDlg::OnHelpShapes()
@@ -1792,7 +1685,6 @@ void CScreenAnnotationsDlg::OnHelpShapes()
 	helpScreenPath= progdir + "\\help.htm#Shape";
 
 	Openlink(helpScreenPath);
-
 }
 
 void CScreenAnnotationsDlg::OnHelpShapetopicsInstantiatingashape()
@@ -1802,7 +1694,6 @@ void CScreenAnnotationsDlg::OnHelpShapetopicsInstantiatingashape()
 	helpScreenPath= progdir + "\\help.htm#InstantiatingShapes";
 
 	Openlink(helpScreenPath);
-
 }
 
 void CScreenAnnotationsDlg::OnHelpShapetopicsEditingashape()
@@ -1812,7 +1703,6 @@ void CScreenAnnotationsDlg::OnHelpShapetopicsEditingashape()
 	helpScreenPath= progdir + "\\help.htm#EditingShapes";
 
 	Openlink(helpScreenPath);
-
 }
 
 void CScreenAnnotationsDlg::OnHelpShapetopicsEditingtext()
@@ -1822,7 +1712,6 @@ void CScreenAnnotationsDlg::OnHelpShapetopicsEditingtext()
 	helpScreenPath= progdir + "\\help.htm#EditText";
 
 	Openlink(helpScreenPath);
-
 }
 
 void CScreenAnnotationsDlg::OnHelpShapetopicsEditingimage()
@@ -1832,7 +1721,6 @@ void CScreenAnnotationsDlg::OnHelpShapetopicsEditingimage()
 	helpScreenPath= progdir + "\\help.htm#EditImage";
 
 	Openlink(helpScreenPath);
-
 }
 
 void CScreenAnnotationsDlg::OnHelpShapetopicsCreatinganewshape()
@@ -1842,7 +1730,6 @@ void CScreenAnnotationsDlg::OnHelpShapetopicsCreatinganewshape()
 	helpScreenPath= progdir + "\\help.htm#NewShape";
 
 	Openlink(helpScreenPath);
-
 }
 
 void CScreenAnnotationsDlg::OnHelpShapetopicsEditingtransparency()
@@ -1852,7 +1739,6 @@ void CScreenAnnotationsDlg::OnHelpShapetopicsEditingtransparency()
 	helpScreenPath= progdir + "\\help.htm#EditTrans";
 
 	Openlink(helpScreenPath);
-
 }
 
 void CScreenAnnotationsDlg::OnHelpShapetopicsManagingshapes()
@@ -1862,7 +1748,6 @@ void CScreenAnnotationsDlg::OnHelpShapetopicsManagingshapes()
 	helpScreenPath= progdir + "\\help.htm#ManagingShapes";
 
 	Openlink(helpScreenPath);
-
 }
 
 void CScreenAnnotationsDlg::OnHelpShapetopicsResizingshapes()
@@ -1872,7 +1757,6 @@ void CScreenAnnotationsDlg::OnHelpShapetopicsResizingshapes()
 	helpScreenPath= progdir + "\\help.htm#Resize";
 
 	Openlink(helpScreenPath);
-
 }
 
 void CScreenAnnotationsDlg::OnHelpLayouts()
@@ -1882,13 +1766,11 @@ void CScreenAnnotationsDlg::OnHelpLayouts()
 	helpScreenPath= progdir + "\\help.htm#Layout";
 
 	Openlink(helpScreenPath);
-
 }
 
 void CScreenAnnotationsDlg::OnAnnSavelayout()
 {
 	SaveLayoutNew();
-
 }
 
 void CScreenAnnotationsDlg::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu)
@@ -1897,19 +1779,18 @@ void CScreenAnnotationsDlg::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL
 
 	int max = ListManager.displayArray.GetSize();
 
-	if (max<=0) {
+	if (max<=0)
+	{
 		pPopupMenu->EnableMenuItem(IDR_ANN_SAVELAYOUT,MF_DISABLED|MF_GRAYED|MF_BYCOMMAND);
 		pPopupMenu->EnableMenuItem(ID_OBJECTS_CLOSEALLOBJECTS, MF_DISABLED|MF_GRAYED|MF_BYCOMMAND);
-
 	}
 	else
 	{
 		pPopupMenu->EnableMenuItem(IDR_ANN_SAVELAYOUT,MF_ENABLED|MF_BYCOMMAND);
 		pPopupMenu->EnableMenuItem(ID_OBJECTS_CLOSEALLOBJECTS,MF_ENABLED|MF_BYCOMMAND);
-
 	}
-	int numitems = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemCount();
-	int numsel = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetSelectedCount();
+	int numitems = m_ctrlList.GetItemCount();
+	int numsel = m_ctrlList.GetSelectedCount();
 	if ((numitems<=0) || (numsel<=0))
 	{
 		pPopupMenu->EnableMenuItem(ID_OBJECTS_COPY,MF_DISABLED|MF_GRAYED|MF_BYCOMMAND);
@@ -1922,7 +1803,6 @@ void CScreenAnnotationsDlg::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL
 
 		pPopupMenu->EnableMenuItem(ID_OBJECTS_MOVEITEMUP,MF_DISABLED|MF_GRAYED|MF_BYCOMMAND);
 		pPopupMenu->EnableMenuItem(ID_OBJECTS_MOVEITEMDOWN,MF_DISABLED|MF_GRAYED|MF_BYCOMMAND);
-
 	}
 	else
 	{
@@ -1935,7 +1815,6 @@ void CScreenAnnotationsDlg::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL
 			pPopupMenu->EnableMenuItem(ID_OBJECTS_EDITIMAGE,MF_ENABLED|MF_BYCOMMAND);
 			pPopupMenu->EnableMenuItem(ID_OBJECTS_EDITNAME,MF_ENABLED|MF_BYCOMMAND);
 			pPopupMenu->EnableMenuItem(ID_OBJECTS_EDITTRANSAPRENCY,MF_ENABLED|MF_BYCOMMAND);
-
 		}
 		else
 		{
@@ -1943,13 +1822,12 @@ void CScreenAnnotationsDlg::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL
 			pPopupMenu->EnableMenuItem(ID_OBJECTS_EDITIMAGE,MF_DISABLED|MF_GRAYED|MF_BYCOMMAND);
 			pPopupMenu->EnableMenuItem(ID_OBJECTS_EDITTRANSAPRENCY,MF_DISABLED|MF_GRAYED|MF_BYCOMMAND);
 			pPopupMenu->EnableMenuItem(ID_OBJECTS_EDITNAME,MF_ENABLED|MF_BYCOMMAND);
-
 		}
 		//Enabling / Disabling Item Up / Down
 		int nItem = -1;
 		int itemstate = 0;
 		for (int i=0; i < numitems; i++) {
-			itemstate = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemState( i, LVIS_SELECTED);
+			itemstate = m_ctrlList.GetItemState( i, LVIS_SELECTED);
 			if (itemstate & LVIS_SELECTED) {
 				nItem = i;
 			}
@@ -1964,7 +1842,6 @@ void CScreenAnnotationsDlg::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL
 				pPopupMenu->EnableMenuItem(ID_OBJECTS_MOVEITEMDOWN,MF_ENABLED | MF_BYCOMMAND);
 			else
 				pPopupMenu->EnableMenuItem(ID_OBJECTS_MOVEITEMDOWN,MF_DISABLED|MF_GRAYED|MF_BYCOMMAND);
-
 		}
 	}
 	if (tabMode == modeLayout)
@@ -1972,12 +1849,10 @@ void CScreenAnnotationsDlg::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL
 		if (layoutIsCopied)
 		{
 			pPopupMenu->EnableMenuItem(ID_OBJECTS_PASTE,MF_ENABLED|MF_BYCOMMAND);
-
 		}
 		else
 		{
 			pPopupMenu->EnableMenuItem(ID_OBJECTS_PASTE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
-
 		}
 	}
 	else if (tabMode == modeShape)
@@ -1985,44 +1860,37 @@ void CScreenAnnotationsDlg::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL
 		if (objectIsCopied)
 		{
 			pPopupMenu->EnableMenuItem(ID_OBJECTS_PASTE,MF_ENABLED|MF_BYCOMMAND);
-
 		}
 		else
 		{
 			pPopupMenu->EnableMenuItem(ID_OBJECTS_PASTE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
-
 		}
 	}
 	else
 		pPopupMenu->EnableMenuItem(ID_OBJECTS_PASTE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
-
 }
 
 void CScreenAnnotationsDlg::OnLibraryOpenshapelibrary()
 {
 	OnEditobjLibraryOpenlibrary();
 	TabSelectShapeMode(1);
-
 }
 
 void CScreenAnnotationsDlg::OnLibrarySaveshapelibrary()
 {
 	OnEditobjLibraryCloselibrary();
-
 }
 
 void CScreenAnnotationsDlg::OnLibraryNewshapelibrary()
 {
 	OnEditobjLibraryNewlibrary();
 	TabSelectShapeMode(1);
-
 }
 
 void CScreenAnnotationsDlg::OnLibraryNewlayoutlibrary()
 {
 	OnEditlayoutLibraryNewlibrary();
 	TabSelectLayoutMode(1);
-
 }
 
 void CScreenAnnotationsDlg::OnLibraryOpenlayoutlibrary()
@@ -2034,25 +1902,21 @@ void CScreenAnnotationsDlg::OnLibraryOpenlayoutlibrary()
 void CScreenAnnotationsDlg::OnLibrarySavelayoutlibrary()
 {
 	OnEditlayoutLibraryCloselibrary();
-
 }
 
 void CScreenAnnotationsDlg::OnObjectsCopy()
 {
 	OnEditobjCopy();
-
 }
 
 void CScreenAnnotationsDlg::OnObjectsPaste()
 {
 	OnEditobjPaste();
-
 }
 
 void CScreenAnnotationsDlg::OnObjectsRemove()
 {
 	OnEditobjRemove();
-
 }
 
 int CScreenAnnotationsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -2066,31 +1930,26 @@ int CScreenAnnotationsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 void CScreenAnnotationsDlg::OnObjectsEdittext()
 {
 	OnEditobjEdittext();
-
 }
 
 void CScreenAnnotationsDlg::OnObjectsEditimage()
 {
 	OnEditobjEditimage();
-
 }
 
 void CScreenAnnotationsDlg::OnObjectsEditname()
 {
 	OnEditobjTestedit();
-
 }
 
 void CScreenAnnotationsDlg::OnObjectsEdittransaprency()
 {
 	OnEditobjEdittransparency();
-
 }
 
 void CScreenAnnotationsDlg::OnObjectsCloseallobjects()
 {
 	OnEditlayoutCloseallobjects();
-
 }
 
 void CScreenAnnotationsDlg::OnLibraryInsertshapelibaray()
@@ -2112,30 +1971,27 @@ void CScreenAnnotationsDlg::OnLibraryInsertshapelibaray()
 
 	}
 	TabSelectShapeMode(1);
-
 }
 
 void CScreenAnnotationsDlg::OnObjectsMoveitemup()
 {
 	MoveItem(0);
-
 }
 
 void CScreenAnnotationsDlg::OnObjectsMoveitemdown()
 {
 	MoveItem(1);
-
 }
 
 void CScreenAnnotationsDlg::MoveItem(int direction)
 {
 	//Locate Selected Item
 	int nItem = -1;
-	int numitems = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemCount();
+	int numitems = m_ctrlList.GetItemCount();
 	int itemstate = 0;
 
 	for (int i=0; i < numitems; i++) {
-		itemstate = ((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItemState( i, LVIS_SELECTED);
+		itemstate = m_ctrlList.GetItemState( i, LVIS_SELECTED);
 		if (itemstate & LVIS_SELECTED) {
 			nItem = i;
 		}
@@ -2163,11 +2019,11 @@ void CScreenAnnotationsDlg::MoveItem(int direction)
 		LV_ITEM swapItem, swapItem2;
 		swapItem.mask = LVIF_PARAM;
 		swapItem.iItem = nItem;
-		((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItem( &swapItem);
+		m_ctrlList.GetItem( &swapItem);
 
 		swapItem2.mask = LVIF_PARAM;
 		swapItem2.iItem = newitem;
-		((CListCtrl *) GetDlgItem (IDC_LIST1))->GetItem( &swapItem2);
+		m_ctrlList.GetItem( &swapItem2);
 
 		if (tabMode == modeShape)
 		{
@@ -2179,12 +2035,10 @@ void CScreenAnnotationsDlg::MoveItem(int direction)
 		{
 			ListManager.SwapLayoutArray(swapItem.lParam, swapItem2.lParam);
 			RefreshLayoutList();
-
 		}
 		if ((newitem>-1) && (newitem<numitems)) {
-			((CListCtrl *) GetDlgItem (IDC_LIST1))->EnsureVisible( newitem, FALSE );
-			((CListCtrl *) GetDlgItem (IDC_LIST1))->SetItemState( newitem, LVIS_SELECTED, LVIS_SELECTED);
-
+			m_ctrlList.EnsureVisible( newitem, FALSE );
+			m_ctrlList.SetItemState( newitem, LVIS_SELECTED, LVIS_SELECTED);
 		}
 	}
 }
