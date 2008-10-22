@@ -9,6 +9,7 @@
 
 #include "TransparentWnd.h"
 #include "LayoutList.h"
+#include "afxcmn.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CScreenAnnotationsDlg dialog
@@ -18,31 +19,7 @@ class CScreenAnnotationsDlg : public CDialog
 // Construction
 public:
 	CScreenAnnotationsDlg(CWnd* pParent = NULL);   // standard constructor
-	void CloseAllWindows(int wantDelete);
-	CTransparentWnd* LocateWndFromItem(int nItem);
-	CTransparentWnd* LocateWndFromShapeList();
-	void SaveShapeNew(CTransparentWnd *newWnd);
-	void SaveShapeReplace(CTransparentWnd *newWnd);
-	void InstantiateWnd(int x, int y);
-	void SaveLayoutNew();
-
-	void TabSelectShapeMode(int updateTab);
-	void TabSelectLayoutMode(int updateTab);
-	void UpdateTabCtrl(int sel);
-
-	void InstantiateLayout();
-	CLayoutList* LocateLayoutFromItem(int nItem);
-	void RefreshShapeList();
-	void RefreshLayoutList();
-
-	BOOL Openlink (CString);
-	BOOL OpenUsingShellExecute (CString);
-	LONG GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata);
-	BOOL OpenUsingRegisteredClass (CString);
-	void InstantiateLayout(int nItem, int makeselect);
-	int GetLayoutListSelection();
-
-	void MoveItem(int direction);
+	
 
 // Dialog Data
 	//{{AFX_DATA(CScreenAnnotationsDlg)
@@ -129,10 +106,41 @@ protected:
 	afx_msg void OnObjectsMoveitemdown();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+
+public:
+	void SaveLayoutNew();
+	int GetLayoutListSelection();
+	void InstantiateLayout(int nItem, int makeselect);
+	
+	void SaveShapeNew(CTransparentWnd *newWnd);
+	void SaveShapeReplace(CTransparentWnd *newWnd);
+	void RefreshShapeList();
+
+	void CloseAllWindows(int wantDelete);
 private:
 	bool m_bEditingLabelOn;
 	HCURSOR m_hCursorDrag;
 	HCURSOR m_hCursorArrow;
+
+	CTransparentWnd* LocateWndFromItem(int nItem);
+	CTransparentWnd* LocateWndFromShapeList();
+	void InstantiateWnd(int x, int y);
+
+	void TabSelectShapeMode(int updateTab);
+	void TabSelectLayoutMode(int updateTab);
+	void UpdateTabCtrl(int sel);
+
+	CLayoutList* LocateLayoutFromItem(int nItem);
+	void RefreshLayoutList();
+	void InstantiateLayout();
+
+	BOOL Openlink (CString);
+	BOOL OpenUsingShellExecute (CString);
+	BOOL OpenUsingRegisteredClass (CString);
+
+	void MoveItem(int direction);
+	CListCtrl m_ctrlList;
+	CTabCtrl m_ctrlTab;
 };
 
 //{{AFX_INSERT_LOCATION}}
