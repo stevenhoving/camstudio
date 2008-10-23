@@ -16,12 +16,11 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern int m_newShapeWidth;
-extern int m_newShapeHeight;
-extern CString m_newShapeText;
-extern CString m_imageDir;
-extern CString m_imageFilename;
-extern int m_imagetype;
+extern int iNewShapeWidth;
+extern int iNewShapeHeight;
+extern CString strNewShapeText;
+extern CString strImageFilename;
+extern int iImageType;
 extern CString shapeStr;
 
 extern CString shapeName;
@@ -381,12 +380,12 @@ void CScreenAnnotationsDlg::OnEditobjNewobject()
 		int x = (rand() % 100) + 100;
 		int y = (rand() % 100) + 100;
 		CRect rect;
-		if (m_imagetype==0) {
+		if (iImageType==0) {
 			rect.left = x;
 			rect.top = y;
-			rect.right = rect.left + m_newShapeWidth - 1;
-			rect.bottom = rect.top + m_newShapeHeight - 1;
-			newWnd->m_textstring = m_newShapeText;
+			rect.right = rect.left + iNewShapeWidth - 1;
+			rect.bottom = rect.top + iNewShapeHeight - 1;
+			newWnd->m_textstring = strNewShapeText;
 			newWnd->m_shapeStr = shapeStr;
 			newWnd->CreateTransparent(shapeStr,rect,NULL);
 		} else {
@@ -394,9 +393,9 @@ void CScreenAnnotationsDlg::OnEditobjNewobject()
 			rect.top = y;
 			rect.right = x + 100;
 			rect.bottom = y + 100;
-			newWnd->m_textstring = m_newShapeText;
+			newWnd->m_textstring = strNewShapeText;
 			newWnd->m_shapeStr = shapeStr;
-			newWnd->CreateTransparent(shapeStr,rect,m_imageFilename,1);
+			newWnd->CreateTransparent(shapeStr,rect,strImageFilename,1);
 		}
 		
 		if (newWnd)

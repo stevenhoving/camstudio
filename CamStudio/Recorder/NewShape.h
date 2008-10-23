@@ -1,3 +1,4 @@
+#include "afxwin.h"
 #if !defined(AFX_NEWSHAPE_H__04B11E2E_DC5E_4AC3_B324_DE8A8B41C9BB__INCLUDED_)
 #define AFX_NEWSHAPE_H__04B11E2E_DC5E_4AC3_B324_DE8A8B41C9BB__INCLUDED_
 
@@ -35,12 +36,26 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CNewShapeDlg)
 	virtual BOOL OnInitDialog();
-	afx_msg void OnRadio1();
-	afx_msg void OnRadio2();
+	afx_msg void OnClickBlankImage();
+	afx_msg void OnClickImageFile();
 	virtual void OnOK();
-	afx_msg void OnButton1();
+	afx_msg void OnFindImageFile();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+private:
+	CString m_imageDir;
+	CEdit m_ctrlTextFileText;
+	CEdit m_ctrlEditName;
+	CButton m_ctrlButtoBlankImage;
+	CButton m_ctrlButtoImageFile;
+	CStatic m_ctrlStaticWidth;
+	CStatic m_ctrlStaticHeight;
+	CButton m_ctrlButtonImageFile;
+	CEdit m_ctrlEditWidth;
+	CEdit m_ctrlEditHeight;
+	CEdit m_ctrlEditShaepText;
+	UINT m_uImageWidth;
+	UINT m_uImageHeight;
 };
 
 //{{AFX_INSERT_LOCATION}}
