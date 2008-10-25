@@ -111,7 +111,7 @@ BEGIN_MESSAGE_MAP(CCursorOptionsDlg, CDialog)
 	ON_BN_CLICKED(IDC_RADIO2, OnShowCursor)
 	ON_BN_CLICKED(IDC_CURSOR1, OnActualCursor)
 	ON_BN_CLICKED(IDC_CURSOR2, OnCustomCursor)
-	ON_BN_CLICKED(IDC_CURSOR3, OnFileCursor)
+	ON_BN_CLICKED(IDC_CURSOR3, OnOnBnClickedFileCursor)
 	ON_BN_CLICKED(IDC_FILECURSOR, OnFilecursor)
 	ON_CBN_SELCHANGE(IDC_CUSTOMCURSOR, OnSelchangeCustomcursor)
 	ON_CBN_SELCHANGE(IDC_HIGHLIGHTSHAPE, OnSelchangeHighlightshape)
@@ -318,8 +318,6 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 
 void CCursorOptionsDlg::OnHideCursor()
 {
-	// TODO: Add your control notification handler code here
-
 	m_bRecordCursor = false;
 	m_ctrlButtonHideCursor.SetCheck(TRUE);
 	m_ctrlButtonShowCursor.SetCheck(FALSE);
@@ -351,7 +349,6 @@ void CCursorOptionsDlg::OnShowCursor()
 
 void CCursorOptionsDlg::OnActualCursor()
 {
-	// TODO: Add your control notification handler code here
 	m_iCursorType = 0;
 	m_ctrlButtonActualCursor.SetCheck(TRUE);
 	m_ctrlButtonCustonCursor.SetCheck(FALSE);
@@ -365,7 +362,6 @@ void CCursorOptionsDlg::OnActualCursor()
 
 void CCursorOptionsDlg::OnCustomCursor()
 {
-	// TODO: Add your control notification handler code here
 	m_iCursorType = 1;
 
 	m_ctrlButtonActualCursor.SetCheck(FALSE);
@@ -378,9 +374,8 @@ void CCursorOptionsDlg::OnCustomCursor()
 	RefreshPreviewCursor();
 }
 
-void CCursorOptionsDlg::OnFileCursor()
+void CCursorOptionsDlg::OnOnBnClickedFileCursor()
 {
-	// TODO: Add your control notification handler code here
 	m_iCursorType = 2;
 
 	m_ctrlButtonActualCursor.SetCheck(FALSE);
@@ -395,13 +390,11 @@ void CCursorOptionsDlg::OnFileCursor()
 
 void CCursorOptionsDlg::OnSelchangeCustomcursor()
 {
-	// TODO: Add your control notification handler code here
 	RefreshPreviewCursor();
 }
 
 void CCursorOptionsDlg::OnFilecursor()
 {
-	// TODO: Add your command handler code here
 	CString fileName;
 	CString filt="Icon and Cursor Files (*.ico; *.cur)|*.ico;*.cur||";
 
@@ -480,7 +473,6 @@ void CCursorOptionsDlg::OnOK()
 
 void CCursorOptionsDlg::OnSelchangeHighlightshape()
 {
-	// TODO: Add your control notification handler code here
 	m_iHighlightShape = m_ctrlCBHightlightShape.GetCurSel();
 	RefreshHighlight();
 }
@@ -498,7 +490,6 @@ void CCursorOptionsDlg::OnHighlightcolor()
 
 void CCursorOptionsDlg::OnHighlightcursor()
 {
-	// TODO: Add your control notification handler code here
 	m_bHighlightCursor = m_ctrlButtonHighlightCursor.GetCheck();
 	m_ctrlSliderHighlightSize.EnableWindow(m_bHighlightCursor);
 	m_ctrlCBHightlightShape.EnableWindow(m_bHighlightCursor);
@@ -514,7 +505,6 @@ void CCursorOptionsDlg::OnHighlightcursor()
 
 void CCursorOptionsDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
-	// TODO: Add your message handler code here and/or call default
 	m_iHighlightSize = m_ctrlSliderHighlightSize.GetPos();
 	m_bSliding = TRUE;
 	RefreshHighlight();
@@ -531,7 +521,6 @@ void CCursorOptionsDlg::OnPaint()
 
 void CCursorOptionsDlg::OnBnClickedOk()
 {
-	// TODO: Add your control notification handler code here
 	OnOK();
 }
 
