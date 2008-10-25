@@ -894,37 +894,37 @@ BEGIN
     LTEXT           "Note : If the refresh rate is too high, it will cause your system to slow down and will even freeze the display of dialog boxes in CamStudio. This is especially true if transparency is turned on.",-1,17,22,156,42
 END
 
-IDD_SYNCHRONIZATION DIALOG  0, 0, 244, 134
+IDD_SYNCHRONIZATION DIALOGEX 0, 0, 244, 134
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Audio and Video Synchronization"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,7,112,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,65,112,50,14
+    DEFPUSHBUTTON   "OK",IDOK,64,113,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,130,113,50,14
     GROUPBOX        "Synchronization",IDC_STATIC,7,3,230,103
     CONTROL         "(Invalid) My video goes before audio, delay the recording of video by",IDC_RADIO1,
                     "Button",BS_AUTORADIOBUTTON | BS_TOP | BS_MULTILINE | NOT WS_VISIBLE,20,92,202,13
     CONTROL         "My audio goes before my video (I hear the words before I see the mouth movements) . Delay the recording of the video stream and shift by",IDC_RADIO3,
                     "Button",BS_AUTORADIOBUTTON | BS_TOP | BS_MULTILINE,19,39,207,27
     CONTROL         "Do not shift the audio or video streams",IDC_RADIO4,
-                    "Button",BS_AUTORADIOBUTTON | BS_TOP | BS_MULTILINE,19,20,176,12
-    LTEXT           "Timeshift",IDC_STATIC,32,74,37,13
-    EDITTEXT        IDC_EDIT1,77,70,48,16,ES_AUTOHSCROLL | ES_READONLY | ES_NUMBER
-    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_NOTHOUSANDS,203,69,12,17
-    LTEXT           "milliseconds",IDC_STATIC,140,74,44,13
+                    "Button",BS_AUTORADIOBUTTON | BS_TOP | BS_MULTILINE,19,20,137,10
+    LTEXT           "Timeshift",IDC_STATIC,32,74,29,12,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT1,68,74,48,12,ES_AUTOHSCROLL | ES_READONLY | ES_NUMBER
+    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_NOTHOUSANDS,171,74,11,17
+    LTEXT           "milliseconds",IDC_STATIC,126,74,38,12,SS_CENTERIMAGE
 END
 
-IDD_PRESETTIME DIALOG  0, 0, 186, 90
+IDD_PRESETTIME DIALOGEX 0, 0, 186, 90
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Preset Time"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,18,65,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,82,65,50,14
     GROUPBOX        "Preset Time",IDC_STATIC,7,2,172,56
     EDITTEXT        IDC_EDIT1,19,33,85,17,ES_AUTOHSCROLL | ES_READONLY | ES_NUMBER
     CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,112,28,11,21
-    CONTROL         "Stop recording after a period of",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,14,142,13
+    CONTROL         "Stop recording after a period of",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,14,113,10
     LTEXT           "Seconds",IDC_STATIC,129,38,39,14
 END
 

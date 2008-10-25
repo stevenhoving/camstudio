@@ -1,3 +1,5 @@
+#include "afxcmn.h"
+#include "afxwin.h"
 #if !defined(AFX_PRESETTIME_H__F8B0041D_C4EB_4568_AC06_E5D330F4408F__INCLUDED_)
 #define AFX_PRESETTIME_H__F8B0041D_C4EB_4568_AC06_E5D330F4408F__INCLUDED_
 
@@ -38,6 +40,9 @@ protected:
 	virtual BOOL OnInitDialog();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+private:
+	CSpinButtonCtrl m_ctrlSpinTime;
+	CButton m_ctrlButtonTime;
 };
 
 //{{AFX_INSERT_LOCATION}}

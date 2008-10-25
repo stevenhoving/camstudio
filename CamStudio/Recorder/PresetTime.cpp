@@ -28,6 +28,8 @@ void CPresetTimeDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CPresetTimeDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
+	DDX_Control(pDX, IDC_SPIN1, m_ctrlSpinTime);
+	DDX_Control(pDX, IDC_CHECK1, m_ctrlButtonTime);
 }
 
 BEGIN_MESSAGE_MAP(CPresetTimeDlg, CDialog)
@@ -40,11 +42,10 @@ END_MESSAGE_MAP()
 
 void CPresetTimeDlg::OnOK()
 {
-
-	int val = ((CButton *) GetDlgItem(IDC_CHECK1))->GetCheck();
+	int val = m_ctrlButtonTime.GetCheck();
 	bRecordPreset = (val) ? true : false;
 
-	int val2 = ((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->GetPos();
+	int val2 = m_ctrlSpinTime.GetPos();
 	iPresetTime = val2;
 
 	//ErrMsg("%d",iPresetTime);
@@ -57,7 +58,7 @@ BOOL CPresetTimeDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO: Add extra initialization here
-	((CButton *) GetDlgItem(IDC_CHECK1))->SetCheck(bRecordPreset);
+	m_ctrlButtonTime.SetCheck(bRecordPreset);
 
 	UDACCEL acc[4];
 	acc[0].nSec = 1;
@@ -72,9 +73,9 @@ BOOL CPresetTimeDlg::OnInitDialog()
 	acc[2].nSec = 4;
 	acc[2].nInc = 100;
 
-	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetAccel(4,acc);
-	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetRange(1,7200);
-	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetPos(iPresetTime);
+	m_ctrlSpinTime.SetAccel(4, acc);
+	m_ctrlSpinTime.SetRange(1, 7200);
+	m_ctrlSpinTime.SetPos(iPresetTime);
 
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE

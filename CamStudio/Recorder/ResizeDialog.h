@@ -8,6 +8,7 @@
 //
 
 #include "TransparentWnd.h"
+#include "afxcmn.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CResizeDlg dialog
@@ -44,6 +45,9 @@ protected:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+private:
+	CSliderCtrl m_ctrlSliderWidth;
+	CSliderCtrl m_ctrlSliderHeight;
 };
 
 //{{AFX_INSERT_LOCATION}}
