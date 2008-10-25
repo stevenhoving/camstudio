@@ -1,3 +1,5 @@
+#include "afxcmn.h"
+#include "afxwin.h"
 #if !defined(AFX_SYNCDIALOG_H__C6FE6223_66FB_4857_A9BB_E1589B288B7F__INCLUDED_)
 #define AFX_SYNCDIALOG_H__C6FE6223_66FB_4857_A9BB_E1589B288B7F__INCLUDED_
 
@@ -43,6 +45,12 @@ protected:
 	afx_msg void OnChangeEdit1();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+private:
+	CButton m_ctrlButtonNoSync;
+	CButton m_ctrlButtonAudioFirst;
+	CButton m_ctrlButtonInvalid;
+	CSpinButtonCtrl m_ctrlSpinTimeShift;
+	CEdit m_ctrlEditTimeShift;
 };
 
 //{{AFX_INSERT_LOCATION}}

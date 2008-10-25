@@ -25,3 +25,6 @@ Bugs.txt
 	o	From Windows Explorer: Right Button + "Open With..." + select Player
 		Classic or PlayerPlus will not play video; must use the player File-Open.
 	
+10/25/08
+- Recorder:
+	o The CSyncDlg if causing a non-fatal exception during initalization in wincore. 
