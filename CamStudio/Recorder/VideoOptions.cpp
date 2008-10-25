@@ -34,7 +34,7 @@ extern BOOL AllocVideoCompressParams(DWORD paramsSize);
 extern void GetVideoCompressState (HIC hic, DWORD fccHandler);
 extern void SetVideoCompressState (HIC hic , DWORD fccHandler);
 
-extern void AutoSetRate(int val,int& framerate,int& delayms);
+extern void AutoSetRate(int val, int& framerate, int& delayms);
 
 /////////////////////////////////////////////////////////////////////////////
 // CVideoOptionsDlg dialog

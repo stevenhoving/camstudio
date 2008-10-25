@@ -42,7 +42,6 @@ DWORD dwCompfccHandler = 0;
 DWORD dwCompressorStateIsFor = 0;
 DWORD dwCompressorStateSize = 0;
 int iCustomSel = 0;
-int iCursorType = 0;
 int iHighlightSize = 64;
 int iHighlightShape = 0;
 COLORREF clrHighlightColor = RGB(255,255,125);

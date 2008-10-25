@@ -1,3 +1,4 @@
+#include "afxwin.h"
 #if !defined(AFX_TEXTDIALOG_H__63374646_A843_482E_998F_8DD0E32477E3__INCLUDED_)
 #define AFX_TEXTDIALOG_H__63374646_A843_482E_998F_8DD0E32477E3__INCLUDED_
 
@@ -18,6 +19,7 @@ class CTextDlg : public CDialog
 // Construction
 public:
 	CTextDlg(CWnd* pParent = NULL);   // standard constructor
+	
 	void PreModal(CString* inStr, LOGFONT *inFont, COLORREF* inRgb, CWnd* parent,int* horzalign);
 	void InvalidateTransWnd();
 	void ChooseScriptFont();
@@ -77,6 +79,12 @@ protected:
 	afx_msg void OnKillFocus(CWnd* pNewWnd);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+private:
+	CButton m_ctrlButtonJustifyLeft;
+	CButton m_ctrlButtonJustifyCenter;
+	CButton m_ctrlButtonJustifyRight;
+	CEdit m_ctrlEditText;
+	CButton m_ctrlButtonLanguage;
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -31,6 +31,8 @@ void CTransRateDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CTransRateDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
+	DDX_Control(pDX, IDC_RATESLIDER, m_ctrlSliderTransRate);
+	DDX_Control(pDX, IDC_RATETEXT, m_ctrlStaticFrameRate);
 }
 
 BEGIN_MESSAGE_MAP(CTransRateDlg, CDialog)
@@ -46,11 +48,11 @@ void CTransRateDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: Add your message handler code here and/or call default
 
-	int valRate = ((CSliderCtrl *) GetDlgItem(IDC_RATESLIDER))->GetPos();
+	int valRate = m_ctrlSliderTransRate.GetPos();
 
 	CString valstr;
 	valstr.Format("%d fps",valRate);
-	((CSliderCtrl *) GetDlgItem(IDC_RATETEXT))->SetWindowText(valstr);
+	m_ctrlStaticFrameRate.SetWindowText(valstr);
 
 	if (m_myparent) {
 
@@ -79,13 +81,13 @@ BOOL CTransRateDlg::OnInitDialog()
 		return TRUE;
 
 	// TODO: Add extra initialization here
-	((CSliderCtrl *) GetDlgItem(IDC_RATESLIDER))->EnableWindow(TRUE);
-	((CSliderCtrl *) GetDlgItem(IDC_RATESLIDER))->SetRange(1,60);
-	((CSliderCtrl *) GetDlgItem(IDC_RATESLIDER))->SetPos(m_myparent->refreshRate);
+	m_ctrlSliderTransRate.EnableWindow(TRUE);
+	m_ctrlSliderTransRate.SetRange(1,60);
+	m_ctrlSliderTransRate.SetPos(m_myparent->refreshRate);
 
 	CString valstr;
 	valstr.Format("%d fps",m_myparent->refreshRate);
-	((CSliderCtrl *) GetDlgItem(IDC_RATETEXT))->SetWindowText(valstr);
+	m_ctrlStaticFrameRate.SetWindowText(valstr);
 
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE

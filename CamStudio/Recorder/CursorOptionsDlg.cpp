@@ -9,53 +9,13 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "CursorOptionsDlg.h"
+#include "CamCursor.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
-extern HCURSOR hLoadCursor;
-extern HCURSOR hCustomCursor;
-extern CString strCursorDir;
-extern CString strCursorFilePath;
-DWORD arrIconInfo[] = {
-	IDI_CUSTOMICON_CONTEXTHELP,
-	IDI_CUSTOMICON_MAGNIFY,
-	IDI_CUSTOMICON_NODRAG,
-	IDI_CUSTOMICON_SPLITBARH,
-	IDI_CUSTOMICON_SPLITBARV,
-	IDI_CUSTOMICON_TOPOFTABLE,
-	IDI_CUSTOMICON_BOOK1,
-	IDI_CUSTOMICON_BOOK2,
-	IDI_CUSTOMICON_CLIP1,
-	IDI_CUSTOMICON_CLIP2,
-	IDI_CUSTOMICON_CLOCK1,
-	IDI_CUSTOMICON_CLOCK2,
-	IDI_CUSTOMICON_CARDFILE1,
-	IDI_CUSTOMICON_CARDFILE2,
-	IDI_CUSTOMICON_DISK1,
-	IDI_CUSTOMICON_DISK2,
-	IDI_CUSTOMICON_FILES1,
-	IDI_CUSTOMICON_FILES2,
-	IDI_CUSTOMICON_FOLDER2,
-	IDI_CUSTOMICON_FOLDER1,
-	IDI_CUSTOMICON_MAIL1,
-	IDI_CUSTOMICON_MAIL2,
-	IDI_CUSTOMICON_NOTE1,
-	IDI_CUSTOMICON_NOTE2,
-	IDI_CUSTOMICON_PEN1,
-	IDI_CUSTOMICON_PEN2,
-	IDI_CUSTOMICON_PENCIL1,
-	IDI_CUSTOMICON_PENCIL2,
-	IDI_CUSTOMICON_PHONE1,
-	IDI_CUSTOMICON_PHONE2,
-	IDI_CUSTOMICON_POINT1,
-	IDI_CUSTOMICON_POINT2,
-	IDI_CUSTOMICON_SERCURITY,
-	IDI_CUSTOMICON_SECURITY2
-};
 
 /////////////////////////////////////////////////////////////////////////////
 // CCursorOptionsDlg dialog
@@ -64,11 +24,11 @@ CCursorOptionsDlg::CCursorOptionsDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CCursorOptionsDlg::IDD, pParent)
 , m_pIconFileDlg(0)
 , m_hPreviewCursor(NULL)
-, m_hLoadCursor(hLoadCursor)
-, m_hCustomCursor(hCustomCursor)
+, m_hLoadCursor(CamCursor.Load())
+, m_hCustomCursor(CamCursor.Custom())
 , m_iCustomSel(iCustomSel)
 , m_bRecordCursor(bRecordCursor)
-, m_iCursorType(iCursorType)
+, m_iCursorType(CamCursor.Select())
 , m_bHighlightCursor(bHighlightCursor)
 , m_iHighlightSize(iHighlightSize)
 , m_iHighlightShape(iHighlightShape)
@@ -82,6 +42,41 @@ CCursorOptionsDlg::CCursorOptionsDlg(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CCursorOptionsDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
+	
+	CamCursor.AddID(IDI_CUSTOMICON_CONTEXTHELP);
+	CamCursor.AddID(IDI_CUSTOMICON_MAGNIFY);
+	CamCursor.AddID(IDI_CUSTOMICON_NODRAG);
+	CamCursor.AddID(IDI_CUSTOMICON_SPLITBARH);
+	CamCursor.AddID(IDI_CUSTOMICON_SPLITBARV);
+	CamCursor.AddID(IDI_CUSTOMICON_TOPOFTABLE);
+	CamCursor.AddID(IDI_CUSTOMICON_BOOK1);
+	CamCursor.AddID(IDI_CUSTOMICON_BOOK2);
+	CamCursor.AddID(IDI_CUSTOMICON_CLIP1);
+	CamCursor.AddID(IDI_CUSTOMICON_CLIP2);
+	CamCursor.AddID(IDI_CUSTOMICON_CLOCK1);
+	CamCursor.AddID(IDI_CUSTOMICON_CLOCK2);
+	CamCursor.AddID(IDI_CUSTOMICON_CARDFILE1);
+	CamCursor.AddID(IDI_CUSTOMICON_CARDFILE2);
+	CamCursor.AddID(IDI_CUSTOMICON_DISK1);
+	CamCursor.AddID(IDI_CUSTOMICON_DISK2);
+	CamCursor.AddID(IDI_CUSTOMICON_FILES1);
+	CamCursor.AddID(IDI_CUSTOMICON_FILES2);
+	CamCursor.AddID(IDI_CUSTOMICON_FOLDER2);
+	CamCursor.AddID(IDI_CUSTOMICON_FOLDER1);
+	CamCursor.AddID(IDI_CUSTOMICON_MAIL1);
+	CamCursor.AddID(IDI_CUSTOMICON_MAIL2);
+	CamCursor.AddID(IDI_CUSTOMICON_NOTE1);
+	CamCursor.AddID(IDI_CUSTOMICON_NOTE2);
+	CamCursor.AddID(IDI_CUSTOMICON_PEN1);
+	CamCursor.AddID(IDI_CUSTOMICON_PEN2);
+	CamCursor.AddID(IDI_CUSTOMICON_PENCIL1);
+	CamCursor.AddID(IDI_CUSTOMICON_PENCIL2);
+	CamCursor.AddID(IDI_CUSTOMICON_PHONE1);
+	CamCursor.AddID(IDI_CUSTOMICON_PHONE2);
+	CamCursor.AddID(IDI_CUSTOMICON_POINT1);
+	CamCursor.AddID(IDI_CUSTOMICON_POINT2);
+	CamCursor.AddID(IDI_CUSTOMICON_SERCURITY);
+	CamCursor.AddID(IDI_CUSTOMICON_SECURITY2);
 }
 
 void CCursorOptionsDlg::DoDataExchange(CDataExchange* pDX)
@@ -112,11 +107,11 @@ void CCursorOptionsDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CCursorOptionsDlg, CDialog)
 	//{{AFX_MSG_MAP(CCursorOptionsDlg)
-	ON_BN_CLICKED(IDC_RADIO1, OnRadio1)
-	ON_BN_CLICKED(IDC_RADIO2, OnRadio2)
-	ON_BN_CLICKED(IDC_CURSOR1, OnCursor1)
-	ON_BN_CLICKED(IDC_CURSOR2, OnCursor2)
-	ON_BN_CLICKED(IDC_CURSOR3, OnCursor3)
+	ON_BN_CLICKED(IDC_RADIO1, OnHideCursor)
+	ON_BN_CLICKED(IDC_RADIO2, OnShowCursor)
+	ON_BN_CLICKED(IDC_CURSOR1, OnActualCursor)
+	ON_BN_CLICKED(IDC_CURSOR2, OnCustomCursor)
+	ON_BN_CLICKED(IDC_CURSOR3, OnFileCursor)
 	ON_BN_CLICKED(IDC_FILECURSOR, OnFilecursor)
 	ON_CBN_SELCHANGE(IDC_CUSTOMCURSOR, OnSelchangeCustomcursor)
 	ON_CBN_SELCHANGE(IDC_HIGHLIGHTSHAPE, OnSelchangeHighlightshape)
@@ -240,24 +235,27 @@ void CCursorOptionsDlg::RefreshHighlight()
 
 void CCursorOptionsDlg::RefreshPreviewCursor()
 {
+	m_hPreviewCursor = NULL;
 	if (m_bRecordCursor)
 	{
-		m_hPreviewCursor = NULL;
-	}
-	else if (m_iCursorType == 0)
-	{
-		m_hPreviewCursor = GetCursor();
-	}
-	else if (m_iCursorType == 1)
-	{
-		m_iCustomSel = m_ctrlCBCustomCursor.GetCurSel();
-		DWORD customicon = (m_iCustomSel < 0) ? 0 : arrIconInfo[m_iCustomSel];
-		m_hPreviewCursor = LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(customicon));
-		m_hCustomCursor = m_hPreviewCursor;
-	}
-	else
-	{
-		m_hPreviewCursor = m_hLoadCursor;
+		switch(m_iCursorType)
+		{
+		case 0:
+			m_hPreviewCursor = GetCursor();
+			break;
+		case 1:
+			{
+				m_iCustomSel = m_ctrlCBCustomCursor.GetCurSel();
+				DWORD customicon = (m_iCustomSel < 0) ? 0 : CamCursor.GetID(m_iCustomSel);
+				m_hPreviewCursor = ::LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(customicon));
+				m_hCustomCursor = m_hPreviewCursor;
+			}
+			break;
+		case 2:
+		default:
+			m_hPreviewCursor = m_hLoadCursor;
+			break;
+		}
 	}
 
 	m_ctrlStaticIconCursor.SetIcon(m_hPreviewCursor);
@@ -318,7 +316,7 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CCursorOptionsDlg::OnRadio1()
+void CCursorOptionsDlg::OnHideCursor()
 {
 	// TODO: Add your control notification handler code here
 
@@ -335,7 +333,7 @@ void CCursorOptionsDlg::OnRadio1()
 	RefreshPreviewCursor();
 }
 
-void CCursorOptionsDlg::OnRadio2()
+void CCursorOptionsDlg::OnShowCursor()
 {
 	m_bRecordCursor = true;
 	m_ctrlButtonHideCursor.SetCheck(!m_bRecordCursor);
@@ -351,7 +349,7 @@ void CCursorOptionsDlg::OnRadio2()
 	RefreshPreviewCursor();
 }
 
-void CCursorOptionsDlg::OnCursor1()
+void CCursorOptionsDlg::OnActualCursor()
 {
 	// TODO: Add your control notification handler code here
 	m_iCursorType = 0;
@@ -365,7 +363,7 @@ void CCursorOptionsDlg::OnCursor1()
 	RefreshPreviewCursor();
 }
 
-void CCursorOptionsDlg::OnCursor2()
+void CCursorOptionsDlg::OnCustomCursor()
 {
 	// TODO: Add your control notification handler code here
 	m_iCursorType = 1;
@@ -380,7 +378,7 @@ void CCursorOptionsDlg::OnCursor2()
 	RefreshPreviewCursor();
 }
 
-void CCursorOptionsDlg::OnCursor3()
+void CCursorOptionsDlg::OnFileCursor()
 {
 	// TODO: Add your control notification handler code here
 	m_iCursorType = 2;
@@ -424,11 +422,11 @@ void CCursorOptionsDlg::OnFilecursor()
 	m_pIconFileDlg->m_ofn.Flags|=OFN_FILEMUSTEXIST;
 	m_pIconFileDlg->m_ofn.lpstrTitle="File to load";
 
-	if (strCursorDir == "")
+	if (CamCursor.Dir().IsEmpty())
 	{
-		strCursorDir = initdir;
+		CamCursor.Dir(initdir);
 	}
-	m_pIconFileDlg->m_ofn.lpstrInitialDir = strCursorDir;
+	m_pIconFileDlg->m_ofn.lpstrInitialDir = CamCursor.Dir();
 	if (IDOK == m_pIconFileDlg->DoModal())
 	{
 		fileName = m_pIconFileDlg->GetPathName();
@@ -441,9 +439,9 @@ void CCursorOptionsDlg::OnFilecursor()
 			m_ctrlStaticIconCursor.SetIcon(m_hPreviewCursor);
 		}
 
-		strCursorFilePath = fileName;
+		CamCursor.FileName(fileName);
 		fileName = fileName.Left(fileName.ReverseFind('\\'));
-		strCursorDir = fileName;
+		CamCursor.Dir(fileName);
 	}
 	delete m_pIconFileDlg, m_pIconFileDlg = 0;
 }
@@ -466,13 +464,13 @@ void CCursorOptionsDlg::OnOK()
 
 	iCustomSel = m_iCustomSel;
 	bRecordCursor = m_bRecordCursor;
-	iCursorType = m_iCursorType;
+	CamCursor.Select(m_iCursorType);
 	bHighlightCursor = m_bHighlightCursor;
 	iHighlightSize = m_iHighlightSize;
 	iHighlightShape = m_iHighlightShape;
 	clrHighlightColor = m_clrHighlight;
-	hLoadCursor = m_hLoadCursor;
-	hCustomCursor = m_hCustomCursor;
+	CamCursor.Load(m_hLoadCursor);
+	CamCursor.Custom(m_hCustomCursor);
 	bHighlightClick = m_bHighlightClick;
 	clrHighlightClickColorLeft = m_clrHighlightClickLeft;
 	clrHighlightClickColorRight = m_clrHighlightClickRight;
