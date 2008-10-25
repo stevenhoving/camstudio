@@ -8,7 +8,6 @@
 #define IDOPTIONSCAPTION                3
 #define ID_FONT                         3
 #define ID_MANUALCONFIG                 3
-#define IDFONT                          3
 #define IDRESET                         3
 #define IDNEXT                          3
 #define IDC_BKCOLOR                     3
@@ -26,7 +25,7 @@
 #define ID_JUSTCENTER                   5
 #define IDC_HIGHLIGHTCOLORRB            5
 #define ID_JUSTRIGHT                    6
-#define IDFONT2                         7
+#define ID_FONT2                        7
 #define IDR_MAINFRAME                   128
 #define IDS_STRING_VERSION              129
 #define IDB_BITMAP1                     130

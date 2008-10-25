@@ -1,3 +1,4 @@
+#include "afxwin.h"
 #if !defined(AFX_TROUBLESHOOT_H__4E9048F9_4108_4B64_B5DF_04B0ECDAE07B__INCLUDED_)
 #define AFX_TROUBLESHOOT_H__4E9048F9_4108_4B64_B5DF_04B0ECDAE07B__INCLUDED_
 
@@ -34,12 +35,13 @@ protected:
 
 	// Generated message map functions
 	//{{AFX_MSG(CTroubleShootDlg)
-	afx_msg void OnCheck1();
 	virtual void OnOK();
-	afx_msg void OnCheck2();
 	virtual BOOL OnInitDialog();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+private:
+	CButton m_ctrlButtonBehavior1;
+	CButton m_ctrlButtonBehavior2;
 };
 
 //{{AFX_INSERT_LOCATION}}

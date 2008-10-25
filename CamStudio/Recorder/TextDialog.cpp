@@ -32,16 +32,21 @@ void CTextDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CTextDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
+	DDX_Control(pDX, ID_JUSTLEFT, m_ctrlButtonJustifyLeft);
+	DDX_Control(pDX, ID_JUSTCENTER, m_ctrlButtonJustifyCenter);
+	DDX_Control(pDX, ID_JUSTRIGHT, m_ctrlButtonJustifyRight);
+	DDX_Control(pDX, IDC_EDIT1, m_ctrlEditText);
+	DDX_Control(pDX, ID_FONT2, m_ctrlButtonLanguage);
 }
 
 BEGIN_MESSAGE_MAP(CTextDlg, CDialog)
 	//{{AFX_MSG_MAP(CTextDlg)
-	ON_BN_CLICKED(IDFONT, OnFont)
+	ON_BN_CLICKED(ID_FONT, OnFont)
 	ON_EN_CHANGE(IDC_EDIT1, OnChangeEdit1)
 	ON_BN_CLICKED(ID_JUSTLEFT, OnJustleft)
 	ON_BN_CLICKED(ID_JUSTCENTER, OnJustcenter)
 	ON_BN_CLICKED(ID_JUSTRIGHT, OnJustright)
-	ON_BN_CLICKED(IDFONT2, OnFont2)
+	ON_BN_CLICKED(ID_FONT2, OnFont2)
 	ON_COMMAND(ID_SCRIPT_WESTERN, OnScriptWestern)
 	ON_COMMAND(ID_SCRIPT_ARABIC, OnScriptArabic)
 	ON_COMMAND(ID_SCRIPT_BALTIC, OnScriptBaltic)
@@ -78,45 +83,41 @@ BOOL CTextDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	HICON justifyLeftIcon= LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(IDI_ICONJUSTIFYLEFT));
-	((CButton *) GetDlgItem(ID_JUSTLEFT))->SetIcon(justifyLeftIcon);
+	// TODO: Add extra initialization here
 
-	HICON justifyCenterIcon= LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(IDI_ICONJUSTIFYCENTER));
-	((CButton *) GetDlgItem(ID_JUSTCENTER))->SetIcon(justifyCenterIcon);
+	HICON justifyLeftIcon = LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(IDI_ICONJUSTIFYLEFT));
+	m_ctrlButtonJustifyLeft.SetIcon(justifyLeftIcon);
 
-	HICON justifyRightIcon= LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(IDI_ICONJUSTIFYRIGHT));
-	((CButton *) GetDlgItem(ID_JUSTRIGHT))->SetIcon(justifyRightIcon);
+	HICON justifyCenterIcon = LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(IDI_ICONJUSTIFYCENTER));
+	m_ctrlButtonJustifyCenter.SetIcon(justifyCenterIcon);
 
-	((CEdit *) GetDlgItem(IDC_EDIT1))->SetFocus();
+	HICON justifyRightIcon = LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(IDI_ICONJUSTIFYRIGHT));
+	m_ctrlButtonJustifyRight.SetIcon(justifyRightIcon);
 
-	if ((logFont) && (displayStr)) {
-
+	if ((logFont) && (displayStr))
+	{
 		//CFont tempFont;
-
 		//tempFont.CreateFontIndirect(logFont);
 		//((CEdit *) GetDlgItem(IDC_EDIT1))->SetFont(&tempFont);
 
 		tempFont.DeleteObject();
 		tempFont.CreateFontIndirect(logFont);
-		((CEdit *) GetDlgItem(IDC_EDIT1))->SetFont(&tempFont, TRUE);
-
-		((CEdit *) GetDlgItem(IDC_EDIT1))->SetWindowText(*displayStr);
+		m_ctrlEditText.SetFont(&tempFont, TRUE);
+		m_ctrlEditText.SetWindowText(*displayStr);
 
 		//tempFont.DeleteObject();
-
 	}
 
 	if ((versionOp < 5) && (msgShown))
 	{
-		((CButton *) GetDlgItem(IDFONT2))->EnableWindow(FALSE);
+		m_ctrlButtonLanguage.EnableWindow(FALSE);
 	}
 	else
 	{
-		((CButton *) GetDlgItem(IDFONT2))->EnableWindow(TRUE);
-
+		m_ctrlButtonLanguage.EnableWindow(TRUE);
 	}
 
-	// TODO: Add extra initialization here
+	//m_ctrlEditText.SetFocus();	// redundant; defined in resource editor with tab order
 
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -138,15 +139,13 @@ void CTextDlg::OnFont()
 
 		tempFont.DeleteObject();
 		tempFont.CreateFontIndirect(logFont);
-		((CEdit *) GetDlgItem(IDC_EDIT1))->SetFont(&tempFont, TRUE);
+		m_ctrlEditText.SetFont(&tempFont, TRUE);
 
 		//((CEdit *) GetDlgItem(IDC_EDIT1))->SetWindowText(*displayStr);
 		//tempFont.DeleteObject();
-
 	}
 
 	InvalidateTransWnd();
-
 }
 
 void CTextDlg::PreModal(CString* inStr, LOGFONT *inFont,COLORREF* inRGB, CWnd* parent,int* horzalign)
@@ -157,7 +156,6 @@ void CTextDlg::PreModal(CString* inStr, LOGFONT *inFont,COLORREF* inRGB, CWnd* p
 	colorrgb = inRGB;
 	myparent = parent;
 	myhorzalign = horzalign;
-
 }
 
 void CTextDlg::OnChangeEdit1()
@@ -168,10 +166,9 @@ void CTextDlg::OnChangeEdit1()
 	// with the ENM_CHANGE flag ORed into the lParam mask.
 
 	// TODO: Add your control notification handler code here
-	((CEdit *) GetDlgItem(IDC_EDIT1))->GetWindowText( *displayStr);
+	m_ctrlEditText.GetWindowText( *displayStr);
 
 	InvalidateTransWnd();
-
 }
 
 void CTextDlg::InvalidateTransWnd()
@@ -180,7 +177,6 @@ void CTextDlg::InvalidateTransWnd()
 	myparent->Invalidate();
 	//if (myparent)
 	// myparent->PostMessage(WM_USER_INVALIDATEWND,0,0);
-
 }
 
 void CTextDlg::OnJustleft()
@@ -188,7 +184,6 @@ void CTextDlg::OnJustleft()
 	// TODO: Add your control notification handler code here
 	*myhorzalign = DT_LEFT;
 	InvalidateTransWnd();
-
 }
 
 void CTextDlg::OnJustcenter()
@@ -196,7 +191,6 @@ void CTextDlg::OnJustcenter()
 	// TODO: Add your control notification handler code here
 	*myhorzalign = DT_CENTER;
 	InvalidateTransWnd();
-
 }
 
 void CTextDlg::OnJustright()
@@ -206,7 +200,6 @@ void CTextDlg::OnJustright()
 	InvalidateTransWnd();
 
 	//((CButton *) GetDlgItem(ID_JUSTRIGHT))->SetCheck(TRUE);
-
 }
 
 void CTextDlg::ChooseScriptFont()
@@ -225,25 +218,23 @@ void CTextDlg::ChooseScriptFont()
 
 		tempFont.DeleteObject();
 		tempFont.CreateFontIndirect(logFont);
-		((CEdit *) GetDlgItem(IDC_EDIT1))->SetFont(&tempFont, TRUE);
+		m_ctrlEditText.SetFont(&tempFont, TRUE);
 
 		InvalidateTransWnd();
-
 	}
-
 }
 
 void CTextDlg::OnFont2()
 {
 	// TODO: Add your control notification handler code here
 
-	if (versionOp<5) {
-
+	if (versionOp < 5)
+	{
 		//int ret = MessageBox("This feature works only in Win 2000/ XP." ,"Note",MB_OK | MB_ICONEXCLAMATION);
 		int ret = MessageOut(this->m_hWnd,IDS_STRING_WORKSWINXP,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 
 		msgShown = 1;
-		((CButton *) GetDlgItem(IDFONT2))->EnableWindow(FALSE);
+		m_ctrlButtonLanguage.EnableWindow(FALSE);
 
 		//if (ret==IDNO)
 		return;
@@ -262,11 +253,9 @@ void CTextDlg::OnFont2()
 		CMenu* pPopup = menu.GetSubMenu(0);
 		ASSERT(pPopup != NULL);
 
-		pPopup->TrackPopupMenu(TPM_RIGHTBUTTON | TPM_LEFTALIGN,
-			point.x, point.y,
-			this); // route commands through main window
+		// route commands through main window
+		pPopup->TrackPopupMenu(TPM_RIGHTBUTTON | TPM_LEFTALIGN, point.x, point.y, this);
 	}
-
 }
 
 void CTextDlg::OnScriptWestern()
@@ -282,7 +271,6 @@ void CTextDlg::OnScriptArabic()
 	// TODO: Add your command handler code here
 	mycharset = ARABIC_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptBaltic()
@@ -290,7 +278,6 @@ void CTextDlg::OnScriptBaltic()
 	// TODO: Add your command handler code here
 	mycharset = BALTIC_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptChinesebig5()
@@ -298,7 +285,6 @@ void CTextDlg::OnScriptChinesebig5()
 	// TODO: Add your command handler code here
 	mycharset = CHINESEBIG5_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptChinesegb2312()
@@ -306,7 +292,6 @@ void CTextDlg::OnScriptChinesegb2312()
 	// TODO: Add your command handler code here
 	mycharset = GB2312_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptDefault()
@@ -314,7 +299,6 @@ void CTextDlg::OnScriptDefault()
 	// TODO: Add your command handler code here
 	mycharset = DEFAULT_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptEasteurope()
@@ -322,7 +306,6 @@ void CTextDlg::OnScriptEasteurope()
 	// TODO: Add your command handler code here
 	mycharset = EASTEUROPE_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptGreek()
@@ -330,7 +313,6 @@ void CTextDlg::OnScriptGreek()
 	// TODO: Add your command handler code here
 	mycharset = GREEK_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptHangul()
@@ -339,7 +321,6 @@ void CTextDlg::OnScriptHangul()
 	//mycharset = HANGUL_CHARSET;
 	mycharset = HANGEUL_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptHebrew()
@@ -347,7 +328,6 @@ void CTextDlg::OnScriptHebrew()
 	// TODO: Add your command handler code here
 	mycharset = HEBREW_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptJapaneseshiftjis()
@@ -355,7 +335,6 @@ void CTextDlg::OnScriptJapaneseshiftjis()
 	// TODO: Add your command handler code here
 	mycharset = SHIFTJIS_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptJohabkorean()
@@ -363,7 +342,6 @@ void CTextDlg::OnScriptJohabkorean()
 	// TODO: Add your command handler code here
 	mycharset = JOHAB_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptMac()
@@ -371,7 +349,6 @@ void CTextDlg::OnScriptMac()
 	// TODO: Add your command handler code here
 	mycharset = MAC_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptOem()
@@ -379,7 +356,6 @@ void CTextDlg::OnScriptOem()
 	// TODO: Add your command handler code here
 	mycharset = OEM_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptRussian()
@@ -387,7 +363,6 @@ void CTextDlg::OnScriptRussian()
 	// TODO: Add your command handler code here
 	mycharset = RUSSIAN_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptSymbol()
@@ -395,7 +370,6 @@ void CTextDlg::OnScriptSymbol()
 	// TODO: Add your command handler code here
 	mycharset = SYMBOL_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptThai()
@@ -403,7 +377,6 @@ void CTextDlg::OnScriptThai()
 	// TODO: Add your command handler code here
 	mycharset = THAI_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptTurkish()
@@ -411,11 +384,9 @@ void CTextDlg::OnScriptTurkish()
 	// TODO: Add your command handler code here
 	mycharset = TURKISH_CHARSET;
 	ChooseScriptFont();
-
 }
 
 void CTextDlg::OnKillFocus(CWnd* pNewWnd)
 {
 	CDialog::OnKillFocus(pNewWnd);
-
 }

@@ -8,6 +8,8 @@
 //
 
 #include "VideoWnd.h"
+#include "afxcmn.h"
+#include "afxwin.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CTransRateDlg dialog
@@ -44,6 +46,9 @@ protected:
 	virtual void OnCancel();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+private:
+	CSliderCtrl m_ctrlSliderTransRate;
+	CStatic m_ctrlStaticFrameRate;
 };
 
 //{{AFX_INSERT_LOCATION}}

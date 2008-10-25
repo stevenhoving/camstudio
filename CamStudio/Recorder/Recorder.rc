@@ -752,37 +752,37 @@ BEGIN
     CONTROL         "Static",IDC_STATICINFO,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,88,147,95,11
 END
 
-IDD_TROUBLESHOOT DIALOG  0, 0, 186, 207
+IDD_TROUBLESHOOT DIALOGEX 0, 0, 200, 207
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Troubleshoot"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,7,185,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,64,185,50,14
-    LTEXT           "After CamStudio exits, many of my sound recording applications no longer record from the microphone. They record from my speakers instead.",IDC_STATIC,18,21,148,38
+    LTEXT           "After CamStudio exits, many of my sound recording applications no longer record from the microphone. They record from my speakers instead.",IDC_STATIC,18,21,167,30
     CONTROL         "I have encountered the above problem.",IDC_CHECK1,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,62,146,18
-    GROUPBOX        "Problem",IDC_STATIC,7,7,172,82
-    LTEXT           "When I open the Video Options dialog, CamStudio crashes.",IDC_STATIC,18,108,148,28
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,62,141,10
+    GROUPBOX        "Problem",IDC_STATIC,7,7,186,82
+    LTEXT           "When I open the Video Options dialog, CamStudio crashes.",IDC_STATIC,18,108,167,21
     CONTROL         "Restrict my video codecs to prevent crashing.",IDC_CHECK2,
-                    "Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,18,141,146,30
-    GROUPBOX        "Problem",IDC_STATIC,7,94,172,83
+                    "Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,18,141,160,10
+    GROUPBOX        "Problem",IDC_STATIC,7,94,186,83
 END
 
-IDD_TEXTDIALOG DIALOGEX 0, 0, 144, 158
+IDD_TEXTDIALOG DIALOGEX 0, 0, 144, 163
 STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "Text Properties"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Close",IDOK,7,136,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,88,136,50,14,NOT WS_VISIBLE
-    EDITTEXT        IDC_EDIT1,7,25,130,91,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN
-    PUSHBUTTON      "Font",IDFONT,7,6,50,14
-    PUSHBUTTON      "",ID_JUSTLEFT,86,6,15,14,BS_ICON | BS_FLAT
-    PUSHBUTTON      "",ID_JUSTCENTER,103,6,16,14,BS_ICON | BS_FLAT
-    PUSHBUTTON      "",ID_JUSTRIGHT,121,6,15,14,BS_ICON | BS_FLAT
-    PUSHBUTTON      "Choose Language / Encoding",IDFONT2,7,119,131,14
+    EDITTEXT        IDC_EDIT1,7,6,130,91,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN
+    PUSHBUTTON      "Font",ID_FONT,9,102,50,14
+    PUSHBUTTON      "",ID_JUSTLEFT,88,102,15,14,BS_ICON | BS_FLAT
+    PUSHBUTTON      "",ID_JUSTCENTER,105,102,16,14,BS_ICON | BS_FLAT
+    PUSHBUTTON      "",ID_JUSTRIGHT,123,102,15,14,BS_ICON | BS_FLAT
+    PUSHBUTTON      "Choose Language / Encoding",ID_FONT2,7,121,131,14
+    DEFPUSHBUTTON   "Close",IDOK,7,141,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,88,141,50,14,NOT WS_VISIBLE
 END
 
 IDD_SCREENANNOTATIONS2 DIALOGEX 65376, 65496, 130, 175
@@ -881,17 +881,17 @@ BEGIN
     LTEXT           "Making a window transparent will slow\nthe recording rate significantly.",IDC_STATIC,29,35,120,17
 END
 
-IDD_TRANSRATE DIALOG  0, 0, 186, 126
+IDD_TRANSRATE DIALOGEX 0, 0, 186, 126
 STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Edit Refresh Rate"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "Close",IDOK,6,97,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,62,97,50,14,NOT WS_VISIBLE
     GROUPBOX        "Webcam / Video Refresh Rate ",-1,7,7,172,83
-    CONTROL         "Slider1",IDC_RATESLIDER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,12,73,112,12
-    LTEXT           "Rate",IDC_RATETEXT,135,73,34,13
-    LTEXT           "Note : If the refresh rate is too high, it will cause your system to slow down and will even freeze the display of dialog boxes in CamStudio. This is especially true if transparency is turned on.",-1,17,22,156,42
+    CONTROL         "Slider1",IDC_RATESLIDER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,15,65,121,12
+    LTEXT           "Rate",IDC_RATETEXT,144,65,28,12,SS_CENTERIMAGE
+    LTEXT           "Note : If the refresh rate is too high, it will cause your system to slow down and will even freeze the display of dialog boxes in CamStudio. This is especially true if transparency is turned on.",-1,15,22,156,36
 END
 
 IDD_SYNCHRONIZATION DIALOGEX 0, 0, 244, 134
@@ -1115,7 +1115,7 @@ BEGIN
     IDD_TROUBLESHOOT, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 179
+        RIGHTMARGIN, 193
         TOPMARGIN, 7
         BOTTOMMARGIN, 199
     END
@@ -1125,7 +1125,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 138
         TOPMARGIN, 6
-        BOTTOMMARGIN, 150
+        BOTTOMMARGIN, 155
     END
 
     IDD_SCREENANNOTATIONS2, DIALOG
