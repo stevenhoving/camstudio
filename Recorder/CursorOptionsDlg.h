@@ -36,11 +36,11 @@ protected:
 
 	// Generated message map functions
 	//{{AFX_MSG(CCursorOptionsDlg)
-	afx_msg void OnRadio1();
-	afx_msg void OnRadio2();
-	afx_msg void OnCursor1();
-	afx_msg void OnCursor2();
-	afx_msg void OnCursor3();
+	afx_msg void OnHideCursor();
+	afx_msg void OnShowCursor();
+	afx_msg void OnActualCursor();
+	afx_msg void OnCustomCursor();
+	afx_msg void OnFileCursor();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnFilecursor();
 	afx_msg void OnSelchangeCustomcursor();

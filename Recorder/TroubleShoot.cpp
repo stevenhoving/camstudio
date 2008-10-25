@@ -30,68 +30,49 @@ void CTroubleShootDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CTroubleShootDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
+	DDX_Control(pDX, IDC_CHECK1, m_ctrlButtonBehavior1);
+	DDX_Control(pDX, IDC_CHECK2, m_ctrlButtonBehavior2);
 }
 
 BEGIN_MESSAGE_MAP(CTroubleShootDlg, CDialog)
 	//{{AFX_MSG_MAP(CTroubleShootDlg)
-	ON_BN_CLICKED(IDC_CHECK1, OnCheck1)
-	ON_BN_CLICKED(IDC_CHECK2, OnCheck2)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CTroubleShootDlg message handlers
 
-void CTroubleShootDlg::OnCheck1()
+BOOL CTroubleShootDlg::OnInitDialog()
 {
-	// TODO: Add your control notification handler code here
+	CDialog::OnInitDialog();
 
+	// TODO: Add extra initialization here
+	m_ctrlButtonBehavior2.SetCheck(bRestrictVideoCodecs);
+
+	return TRUE; // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void CTroubleShootDlg::OnOK()
 {
 	// TODO: Add extra validation here
-
 	TroubleShootVal = 0;
 
-	int check = ((CButton *) GetDlgItem(IDC_CHECK1))->GetCheck();
-	int ret=IDNO;
+	int check = m_ctrlButtonBehavior1.GetCheck();
 	if (check) {
-		//ret = MessageBox("CamStudio will now exit and set your system to record with microphone. Proceed ?","Note",MB_YESNOCANCEL | MB_ICONQUESTION);
-		ret = MessageOut(this->m_hWnd,IDS_STRING_EXITSET ,IDS_STRING_NOTE,MB_YESNOCANCEL | MB_ICONQUESTION);
-
-		if (ret==IDYES)
-			TroubleShootVal += 1;
-		else if (ret==IDCANCEL)
+		// "CamStudio will now exit and set your system to record with microphone. Proceed ?"
+		int ret = MessageOut(*this, IDS_STRING_EXITSET, IDS_STRING_NOTE,MB_YESNOCANCEL | MB_ICONQUESTION);
+		if (ret == IDCANCEL)
+		{
 			return;
-
+		}
+		TroubleShootVal = (ret == IDYES) ? 1 : 0;
 	}
 
-	int check2 = ((CButton *) GetDlgItem(IDC_CHECK2))->GetCheck();
-	int ret2=IDNO;
+	int check2 = m_ctrlButtonBehavior2.GetCheck();
+	int ret2 = IDNO;
 	bRestrictVideoCodecs = (check2) ? true : false;
 
 	CDialog::OnOK();
 }
 
-void CTroubleShootDlg::OnCheck2()
-{
-	// TODO: Add your control notification handler code here
-
-}
-
-BOOL CTroubleShootDlg::OnInitDialog()
-{
-
-	if (bRestrictVideoCodecs)
-		((CButton *) GetDlgItem(IDC_CHECK2))->SetCheck(TRUE);
-	else
-		((CButton *) GetDlgItem(IDC_CHECK2))->SetCheck(FALSE);
-
-	CDialog::OnInitDialog();
-
-	// TODO: Add extra initialization here
-
-	return TRUE; // return TRUE unless you set the focus to a control
-	// EXCEPTION: OCX Property Pages should return FALSE
-}

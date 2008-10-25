@@ -9,6 +9,7 @@
 
 #include "TextAttributes.h"
 #include "ImageAttributes.h"
+#include "CamCursor.h"
 
 enum eLegacySettings
 {
@@ -303,7 +304,6 @@ extern DWORD dwCompfccHandler;
 extern DWORD dwCompressorStateIsFor;
 extern DWORD dwCompressorStateSize;
 extern int iCustomSel;
-extern int iCursorType;
 extern int iHighlightSize;
 extern int iHighlightShape;
 extern COLORREF clrHighlightColor;

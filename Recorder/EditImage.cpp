@@ -116,10 +116,6 @@ BOOL CEditImageDlg::OnInitDialog()
 		}
 
 		m_ctrlButtonAddBorder.SetCheck(m_transWnd->m_borderYes);
-
-		//CString txt;
-		//txt.Format("%d",m_transWnd->m_borderSize);
-		//((CEdit *) GetDlgItem(IDC_BORDERSIZE))->SetWindowText(txt);
 	}
 
 	UpdateGUI();
