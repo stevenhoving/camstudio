@@ -2480,7 +2480,8 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_COMMAND(ID_HELP_CAMSTUDIOBLOG, OnHelpCamstudioblog)
 	ON_BN_CLICKED(IDC_BUTTONLINK, OnBnClickedButtonlink)
 	ON_WM_CAPTURECHANGED()
-END_MESSAGE_MAP()
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_AUDIOOPTIONS_AUDIOVIDEOSYNCHRONIZATION, &CRecorderView::OnUpdateOptionsAudiooptionsAudiovideosynchronization)
+	END_MESSAGE_MAP()
 
 BEGIN_EVENTSINK_MAP(CRecorderView, CView)
 
@@ -4858,15 +4859,22 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM lParam)
 	return 1;
 }
 
+
+void CRecorderView::OnUpdateOptionsAudiooptionsAudiovideosynchronization(CCmdUI *pCmdUI)
+{
+	// enable if audio or video devices
+	BOOL bEnable = ((0 < waveInGetNumDevs()) || (0 < waveOutGetNumDevs()));
+	pCmdUI->Enable(bEnable);
+}
+
 void CRecorderView::OnOptionsSynchronization()
 {
-	// TODO: Add your command handler code here
-	if ((waveInGetNumDevs() == 0) || (waveOutGetNumDevs() == 0)) {
-		MessageOut(m_hWnd,IDS_STRING_NOINPUT3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-		return;
-	}
+	//if ((waveInGetNumDevs() == 0) || (waveOutGetNumDevs() == 0)) {
+	//	MessageOut(m_hWnd,IDS_STRING_NOINPUT3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+	//	return;
+	//}
 
-	CSyncDlg synDlg;
+	CSyncDlg synDlg(this);
 	synDlg.DoModal();
 }
 
@@ -6051,4 +6059,3 @@ void CRecorderView::SaveProducerCommand()
 	//fflush(sFile);
 	fclose(sFile);
 }
-

@@ -194,6 +194,8 @@ private:
 	static UINT RecordAVIThread(LPVOID pParam);
 	static int RecordVideo(int top,int left,int width,int height,int numframes,const char *szFileName);
 	// CamStudio.ini settings
+public:
+	afx_msg void OnUpdateOptionsAudiooptionsAudiovideosynchronization(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // debug version in vscapView.cpp

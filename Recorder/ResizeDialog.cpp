@@ -28,6 +28,8 @@ void CResizeDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CResizeDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
+	DDX_Control(pDX, IDC_WIDTHSLIDER, m_ctrlSliderWidth);
+	DDX_Control(pDX, IDC_HEIGHTSLIDER, m_ctrlSliderHeight);
 }
 
 BEGIN_MESSAGE_MAP(CResizeDlg, CDialog)
@@ -49,28 +51,24 @@ void CResizeDlg::OnOK()
 
 void CResizeDlg::OnReset()
 {
-	if (m_transWnd) {
-
+	if (m_transWnd)
+	{
 		m_transWnd->widthPos = 32; //100%
 		m_transWnd->heightPos = 32;
-		((CSliderCtrl *) GetDlgItem(IDC_WIDTHSLIDER))->SetPos(m_transWnd->widthPos);
-		((CSliderCtrl *) GetDlgItem(IDC_HEIGHTSLIDER))->SetPos(m_transWnd->heightPos);
+		m_ctrlSliderWidth.SetPos(m_transWnd->widthPos);
+		m_ctrlSliderHeight.SetPos(m_transWnd->heightPos);
 
 		m_transWnd->RefreshWindowSize();
-
 	}
-
 }
 
 void CResizeDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
-
-	if (m_transWnd) {
-
-		m_transWnd->widthPos = ((CSliderCtrl *) GetDlgItem(IDC_WIDTHSLIDER))->GetPos();
-		m_transWnd->heightPos = ((CSliderCtrl *) GetDlgItem(IDC_HEIGHTSLIDER))->GetPos();
+	if (m_transWnd)
+	{
+		m_transWnd->widthPos = m_ctrlSliderWidth.GetPos();
+		m_transWnd->heightPos = m_ctrlSliderHeight.GetPos();
 		m_transWnd->RefreshWindowSize();
-
 	}
 
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
@@ -79,7 +77,6 @@ void CResizeDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 void CResizeDlg::PreModal(CTransparentWnd *transWnd)
 {
 	m_transWnd = transWnd;
-
 }
 
 BOOL CResizeDlg::OnInitDialog()
@@ -89,10 +86,10 @@ BOOL CResizeDlg::OnInitDialog()
 	//WidthHeight
 	if (m_transWnd)
 	{
-		((CSliderCtrl *) GetDlgItem(IDC_WIDTHSLIDER))->SetRange(0,200);
-		((CSliderCtrl *) GetDlgItem(IDC_HEIGHTSLIDER))->SetRange(0,200);
-		((CSliderCtrl *) GetDlgItem(IDC_WIDTHSLIDER))->SetPos(m_transWnd->widthPos);
-		((CSliderCtrl *) GetDlgItem(IDC_HEIGHTSLIDER))->SetPos(m_transWnd->heightPos);
+		m_ctrlSliderWidth.SetRange(0,200);
+		m_ctrlSliderHeight.SetRange(0,200);
+		m_ctrlSliderWidth.SetPos(m_transWnd->widthPos);
+		m_ctrlSliderHeight.SetPos(m_transWnd->heightPos);
 	}
 
 	return TRUE; // return TRUE unless you set the focus to a control

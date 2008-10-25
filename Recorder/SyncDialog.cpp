@@ -31,6 +31,11 @@ void CSyncDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CSyncDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
+	DDX_Control(pDX, IDC_RADIO4, m_ctrlButtonNoSync);
+	DDX_Control(pDX, IDC_RADIO3, m_ctrlButtonAudioFirst);	
+	DDX_Control(pDX, IDC_RADIO1, m_ctrlButtonInvalid);
+	DDX_Control(pDX, IDC_SPIN1, m_ctrlSpinTimeShift);
+	DDX_Control(pDX, IDC_EDIT1, m_ctrlEditTimeShift);
 }
 
 BEGIN_MESSAGE_MAP(CSyncDlg, CDialog)
@@ -63,9 +68,9 @@ BOOL CSyncDlg::OnInitDialog()
 void CSyncDlg::OnRadio1()
 {
 	// TODO: Add your control notification handler code here
-	((CButton *) GetDlgItem(IDC_RADIO4))->SetCheck(0);
-	((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(1);
-	((CButton *) GetDlgItem(IDC_RADIO3))->SetCheck(0);
+	m_ctrlButtonNoSync.SetCheck(0);
+	m_ctrlButtonInvalid.SetCheck(1);
+	m_ctrlButtonAudioFirst.SetCheck(0);
 
 	shiftTypeLocal = 1;
 
@@ -74,9 +79,9 @@ void CSyncDlg::OnRadio1()
 void CSyncDlg::OnRadio3()
 {
 	// TODO: Add your control notification handler code here
-	((CButton *) GetDlgItem(IDC_RADIO4))->SetCheck(0);
-	((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(0);
-	((CButton *) GetDlgItem(IDC_RADIO3))->SetCheck(1);
+	m_ctrlButtonNoSync.SetCheck(0);
+	m_ctrlButtonInvalid.SetCheck(0);
+	m_ctrlButtonAudioFirst.SetCheck(1);
 
 	shiftTypeLocal = 2;
 
@@ -85,9 +90,9 @@ void CSyncDlg::OnRadio3()
 void CSyncDlg::OnRadio4()
 {
 	// TODO: Add your control notification handler code here
-	((CButton *) GetDlgItem(IDC_RADIO4))->SetCheck(1);
-	((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(0);
-	((CButton *) GetDlgItem(IDC_RADIO3))->SetCheck(0);
+	m_ctrlButtonNoSync.SetCheck(1);
+	m_ctrlButtonInvalid.SetCheck(0);
+	m_ctrlButtonAudioFirst.SetCheck(0);
 
 	shiftTypeLocal = 0;
 
@@ -104,11 +109,11 @@ void CSyncDlg::OnOK()
 
 void CSyncDlg::UpdateGui()
 {
+	m_ctrlButtonNoSync.SetCheck(iShiftType == 0);
+	m_ctrlButtonInvalid.SetCheck(iShiftType == 1);
+	m_ctrlButtonAudioFirst.SetCheck(iShiftType == 2);
 
-	((CButton *) GetDlgItem(IDC_RADIO4))->SetCheck(iShiftType == 0);
-	((CButton *) GetDlgItem(IDC_RADIO1))->SetCheck(iShiftType == 1);
-	((CButton *) GetDlgItem(IDC_RADIO3))->SetCheck(iShiftType == 2);
-
+	// TODO: Is this really necessary?
 	UDACCEL acc[2];
 	acc[0].nSec = 2;
 	acc[0].nInc = 10;
@@ -116,11 +121,10 @@ void CSyncDlg::UpdateGui()
 	acc[1].nSec = 4;
 	acc[1].nInc = 50;
 
-	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetBuddy(GetDlgItem(IDC_EDIT1));
-	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetRange(0,5000);
-	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetPos(iTimeShift);
-	((CSpinButtonCtrl *) GetDlgItem(IDC_SPIN1))->SetAccel(2,acc);
-
+	//m_ctrlSpinTimeShift.SetBuddy(&m_ctrlEditTimeShift);	// TODO: redundant: done in resource editor
+	m_ctrlSpinTimeShift.SetRange(0,5000);
+	m_ctrlSpinTimeShift.SetPos(iTimeShift);
+	m_ctrlSpinTimeShift.SetAccel(2, acc);
 }
 
 void CSyncDlg::OnChangeEdit1()
@@ -132,7 +136,7 @@ void CSyncDlg::OnChangeEdit1()
 
 	// TODO: Add your control notification handler code here
 	CString timeshStr("");
-	((CEdit *) GetDlgItem(IDC_EDIT1))->GetWindowText(timeshStr);
+	m_ctrlEditTimeShift.GetWindowText(timeshStr);
 	sscanf_s(LPCTSTR(timeshStr),"%d",&timeShiftLocal);
 
 }
