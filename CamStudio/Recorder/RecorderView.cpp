@@ -14,6 +14,7 @@
 #include "MainFrm.h"
 
 #include "MouseCaptureWnd.h"
+#include "CamCursor.h"
 
 #include "AutopanSpeed.h"
 #include "AudioFormat.h"
@@ -76,8 +77,6 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // external variables
 /////////////////////////////////////////////////////////////////////////////
-
-extern DWORD arrIconInfo[];
 
 //Region Movement
 extern CRect newRect;
@@ -214,9 +213,6 @@ LPWAVEFORMATEX pwfx = NULL;
 BOOL bAllowNewRecordStartKey = TRUE;
 int savesettings = 1;
 
-//Cursor Path, used for copying cursor file
-CString strCursorFilePath;
-
 MCI_OPEN_PARMS mop;
 MCI_SAVE_PARMS msp;
 PSTR strFile;
@@ -247,6 +243,8 @@ int sdwBytesPerSec = 44100;
 
 int iCurrentLayout = 0;
 
+CCamCursor CamCursor;
+
 /////////////////////////////////////////////////////////////////////////////
 //Function prototypes
 /////////////////////////////////////////////////////////////////////////////
@@ -274,7 +272,7 @@ BOOL MakeCompressParamsCopy(DWORD paramsSize, LPVOID pOrg);
 CString strCodec("MS Video 1");
 //Files Directory
 CString savedir("");
-CString strCursorDir("");
+
 BOOL StartAudioRecording(WAVEFORMATEX* format);
 void waveInErrorMsg(MMRESULT result, const char *);
 int AddInputBufferToQueue();
@@ -297,7 +295,6 @@ void AttemptRecordingFormat();
 void AttemptCompressFormat();
 
 CString GetCodecDescription(long fccHandler);
-void AutoSetRate(int val,int& framerate,int& delayms);
 void BuildSpeakerRecordingFormat();
 void SuggestSpeakerRecordingFormat(int i);
 void mciRecordOpen();
@@ -310,26 +307,49 @@ void mciRecordResume(CString strFile);
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
-
-// Mouse Capture functions
-// Cursor variables
-HCURSOR hSavedCursor = NULL;
-HCURSOR hLoadCursor = NULL;
-HCURSOR hCustomCursor = NULL;
-
-HCURSOR FetchCursorHandle();
-HCURSOR FetchCursorHandle()
+void AutoSetRate(int val,int& framerate,int& delayms);
+void AutoSetRate(int val, int& framerate, int& delayms)
 {
-	switch (iCursorType)
+	if (val <= 17)
 	{
-	case 0:
-		if (hSavedCursor == NULL)
-			hSavedCursor = GetCursor();
-		return hSavedCursor;
-	case 1:
-		return hCustomCursor;
-	default:
-		return hLoadCursor;
+		//fps more than 1 per second
+		framerate = 200 - ((val - 1) * 10); //framerate 200 to 40;
+		//1 corr to 200, 17 corr to 40
+
+		delayms = 1000/framerate;
+
+		////Automatically Adjust the Quality for MSVC (MS Video 1) if the framerate is too high
+		//int sel = ((CComboBox *) GetDlgItem(IDC_COMPRESSORS))->GetCurSel();
+		//if (pCompressorInfo[sel].fccHandler==mmioFOURCC('M', 'S', 'V', 'C')) {
+		//	int cQuality = ((CSliderCtrl *) GetDlgItem(IDC_QUALITY_SLIDER))->GetPos();
+		//	if (cQuality<80) {
+		//		((CSliderCtrl *) GetDlgItem(IDC_QUALITY_SLIDER))->SetPos(80);
+		//	}
+		//}
+	} else if (val <= 56)
+	{
+		//fps more than 1 per second
+		framerate = (57 - val); //framerate 39 to 1;
+		//18 corr to 39, 56 corr to 1
+
+		delayms = 1000/framerate;
+	} else if (val <= 86) { //assume iTimeLapse
+		framerate = 20;
+		delayms = (val-56) * 1000;
+
+		//57 corr to 1000, 86 corr to 30000 (20 seconds)
+	} else if (val<=99) { //assume iTimeLapse
+		framerate = 20;
+		delayms = (val-86) * 2000 + 30000;
+
+		//87 corr to 30000, 99 corr to 56000 (56 seconds)
+	} else
+	{
+		//val=100, iTimeLapse
+		framerate = 20;
+		delayms = 60000;
+
+		//100 corr to 60000
 	}
 }
 
@@ -1819,45 +1839,6 @@ CString GetCodecDescription(long fccHandler)
 	return CString(compinfo.szDescription);
 }
 
-void AutoSetRate(int val,int& framerate,int& delayms)
-{
-	if (val<=17) { //fps more than 1 per second
-		framerate=200-((val-1)*10); //framerate 200 to 40;
-		//1 corr to 200, 17 corr to 40
-
-		delayms = 1000/framerate;
-
-		////Automatically Adjust the Quality for MSVC (MS Video 1) if the framerate is too high
-		//int sel = ((CComboBox *) GetDlgItem(IDC_COMPRESSORS))->GetCurSel();
-		//if (pCompressorInfo[sel].fccHandler==mmioFOURCC('M', 'S', 'V', 'C')) {
-		//	int cQuality = ((CSliderCtrl *) GetDlgItem(IDC_QUALITY_SLIDER))->GetPos();
-		//	if (cQuality<80) {
-		//		((CSliderCtrl *) GetDlgItem(IDC_QUALITY_SLIDER))->SetPos(80);
-		//	}
-		//}
-	} else if (val<=56) { //fps more than 1 per second
-		framerate=(57-val); //framerate 39 to 1;
-		//18 corr to 39, 56 corr to 1
-
-		delayms = 1000/framerate;
-	} else if (val<=86) { //assume iTimeLapse
-		framerate = 20;
-		delayms = (val-56)*1000;
-
-		//57 corr to 1000, 86 corr to 30000 (20 seconds)
-	} else if (val<=99) { //assume iTimeLapse
-		framerate = 20;
-		delayms = (val-86)*2000+30000;
-
-		//87 corr to 30000, 99 corr to 56000 (56 seconds)
-	} else { //val=100, iTimeLapse
-		framerate = 20;
-		delayms = 60000;
-
-		//100 corr to 60000
-	}
-}
-
 //ver 1.6
 //ver 1.6 Capture waveout
 //MCI functions
@@ -2627,10 +2608,11 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	//Ver 1.2
 	//strCursorDir default
-	char dirx[300];
-	GetWindowsDirectory(dirx,300);
-	CString windir(dirx);
-	strCursorDir = windir + "\\cursors";
+	char dirx[_MAX_PATH];
+	GetWindowsDirectory(dirx, _MAX_PATH);
+	CString windir;
+	windir.Format("%s\\cursors", dirx);
+	CamCursor.Dir(windir);
 
 	//savedir default
 	savedir=GetProgPath();
@@ -2773,8 +2755,7 @@ LRESULT CRecorderView::OnRecordInterrupted (UINT wParam, LONG lParam)
 
 LRESULT CRecorderView::OnSaveCursor (UINT wParam, LONG lParam)
 {
-	hSavedCursor = (HCURSOR) wParam;
-
+	CamCursor.Save(reinterpret_cast<HCURSOR>(wParam));
 	return 0;
 }
 
@@ -3692,7 +3673,7 @@ void CRecorderView::SaveSettings()
 
 	fprintf(sFile, "bRecordCursor=%d \n",bRecordCursor);
 	fprintf(sFile, "iCustomSel=%d \n",iCustomSel); //Having this line means the custom cursor type cannot be re-arranged in a new order in the combo box...else previous saved settings referring to the custom type will not be correct
-	fprintf(sFile, "iCursorType=%d \n",iCursorType);
+	fprintf(sFile, "iCursorType=%d \n", CamCursor.Select());
 	fprintf(sFile, "bHighlightCursor=%d \n",bHighlightCursor);
 	fprintf(sFile, "iHighlightSize=%d \n",iHighlightSize);
 	fprintf(sFile, "iHighlightShape=%d \n",iHighlightShape);
@@ -3746,8 +3727,8 @@ void CRecorderView::SaveSettings()
 	fprintf(sFile, "bAutoAdjust= %d \n",bAutoAdjust);
 	fprintf(sFile, "iValueAdjust= %d \n",iValueAdjust);
 
-	fprintf(sFile, "savedir=%d \n",savedir.GetLength());
-	fprintf(sFile, "strCursorDir=%d \n",strCursorDir.GetLength());
+	fprintf(sFile, "savedir=%d \n", savedir.GetLength());
+	fprintf(sFile, "strCursorDir=%d \n", CamCursor.Dir().GetLength());	// TODO: Just save the string
 
 	//Ver 1.3
 	fprintf(sFile, "iThreadPriority=%d \n",iThreadPriority);
@@ -3863,13 +3844,14 @@ void CRecorderView::SaveSettings()
 	m_newfile = GetProgPath() + "\\CamLayout.ini";
 	ListManager.SaveLayout(m_newfile);
 
-	if (iCursorType==2) {
-		CString cursorFileName = "\\CamCursor.ini";
-		CString cursorDir = GetProgPath();
-		CString cursorPath = cursorDir + cursorFileName;
-
-		//Note, we do not save the cursorFilePath, but instead we make a copy of the cursor file in the Prog directory
-		CopyFile(strCursorFilePath,cursorPath,FALSE);
+	if (CamCursor.Select() == 2) {
+		//CString cursorFileName = "\\CamCursor.ini";
+		//CString cursorDir = GetProgPath();
+		CString cursorPath;
+		cursorPath.Format("%s\\CamCursor.ini", GetProgPath());
+		//Note, we do not save the cursorFilePath, but instead we make a copy
+		// of the cursor file in the Prog directory
+		CopyFile(CamCursor.FileName(), cursorPath, FALSE);
 	}
 
 	//********************************************
@@ -3890,27 +3872,27 @@ void CRecorderView::SaveSettings()
 	// ****************************
 	//Saving Directories, put here
 	if (savedir.GetLength()>0)
-		fwrite( (void *) LPCTSTR(savedir), savedir.GetLength(), 1, tFile);
+		fwrite((LPCTSTR)savedir, savedir.GetLength(), 1, tFile);
 
-	if (strCursorDir.GetLength()>0)
-		fwrite( (void *) LPCTSTR(strCursorDir), strCursorDir.GetLength(), 1, tFile);
+	if (!CamCursor.Dir().IsEmpty())
+		fwrite((LPCTSTR)(CamCursor.Dir()), CamCursor.Dir().GetLength(), 1, tFile);
 
-	if (dwCbwFX>0)
-		fwrite( (void *) pwfx, dwCbwFX, 1, tFile);
+	if (dwCbwFX > 0)
+		fwrite(pwfx, dwCbwFX, 1, tFile);
 
 	if (dwCompressorStateSize > 0)
-		fwrite( (void *) pVideoCompressParams, dwCompressorStateSize, 1, tFile);
+		fwrite(pVideoCompressParams, dwCompressorStateSize, 1, tFile);
 
 	//Ver 1.6
-	if (specifieddir.GetLength()>0)
-		fwrite( (void *) LPCTSTR(specifieddir), specifieddir.GetLength(), 1, tFile);
+	if (specifieddir.GetLength() > 0)
+		fwrite((LPCTSTR)specifieddir, specifieddir.GetLength(), 1, tFile);
 
 	//Ver 1.8
-	if (shapeName.GetLength()>0)
-		fwrite( (void *) LPCTSTR(shapeName), shapeName.GetLength(), 1, tFile);
+	if (shapeName.GetLength() > 0)
+		fwrite((LPCTSTR)shapeName, shapeName.GetLength(), 1, tFile);
 
-	if (strLayoutName.GetLength()>0)
-		fwrite( (void *) LPCTSTR(strLayoutName), strLayoutName.GetLength(), 1, tFile);
+	if (strLayoutName.GetLength() > 0)
+		fwrite((LPCTSTR)strLayoutName, strLayoutName.GetLength(), 1, tFile);
 
 	fclose(tFile);
 }
@@ -3998,8 +3980,15 @@ void CRecorderView::LoadSettings()
 		fscanf_s(sFile, "dwCompressorStateSize= %d \n",&dwCompressorStateSize);
 
 		fscanf_s(sFile, "bRecordCursor=%d \n",&bRecordCursor);
-		fscanf_s(sFile, "iCustomSel=%d \n",&iCustomSel); //Having this line means the custom cursor type cannot be re-arranged in a new order in the combo box...else previous saved settings referring to the custom type will not be correct
-		fscanf_s(sFile, "iCursorType=%d \n",&iCursorType);
+		// Having this line means the custom cursor type cannot be re-arranged
+		// in a new order in the combo box...else previous saved settings
+		// referring to the custom type will not be correct
+		fscanf_s(sFile, "iCustomSel=%d \n",&iCustomSel);
+		{
+			int iCursorType = 0;
+			fscanf_s(sFile, "iCursorType=%d \n", &iCursorType);
+			CamCursor.Select(iCursorType);
+		}
 		fscanf_s(sFile, "bHighlightCursor=%d \n",&bHighlightCursor);
 		fscanf_s(sFile, "iHighlightSize=%d \n",&iHighlightSize);
 		fscanf_s(sFile, "iHighlightShape=%d \n",&iHighlightShape);
@@ -4087,55 +4076,56 @@ void CRecorderView::LoadSettings()
 			SuggestCompressFormat();
 		}
 
-		if (bAutoAdjust) {
+		if (bAutoAdjust)
+		{
 			int framerate;
 			int delayms;
 			int val = iValueAdjust;
-
-			AutoSetRate( val, framerate, delayms);
-
-			iTimeLapse=delayms;
+			AutoSetRate(val, framerate, delayms);
+			iTimeLapse = delayms;
 			iFramesPerSecond = framerate;
 			iKeyFramesEvery = framerate;
 		}
 
 		strCodec = GetCodecDescription(dwCompfccHandler);
 
-		if (iCursorType == 1) {
-			DWORD customicon;
-			if (iCustomSel<0) {
-				iCustomSel = 0;
+		switch (CamCursor.Select())
+		{
+		case 1:
+			{
+				if (iCustomSel < 0)
+				{
+					iCustomSel = 0;
+				}
+				DWORD customicon = CamCursor.GetID(iCustomSel);
+				if (!CamCursor.Custom(::LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(customicon))))
+				{
+					CamCursor.Select(0);
+				}
 			}
-			customicon = arrIconInfo[iCustomSel];
-
-			hCustomCursor = LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(customicon));
-			if (hCustomCursor==NULL) {
-				iCursorType = 0;
+			break;
+		case 2:		//load cursor
+			{
+				CString cursorPath;
+				cursorPath.Format("%s\\CamCursor.ini", GetProgPath());
+				if (!CamCursor.Load(::LoadCursorFromFile(cursorPath)))
+				{
+					CamCursor.Select(0);
+				}
 			}
-		} else if (iCursorType == 2) { //load cursor
-			CString cursorFileName="\\CamCursor.ini";
-			CString cursorDir=GetProgPath();
-			CString cursorPath=cursorDir+cursorFileName;
-
-			hLoadCursor = LoadCursorFromFile(cursorPath);
-
-			if (hLoadCursor==NULL) {
-				iCursorType = 0;
-			}
+			break;
 		}
 	}//ver 1.2
 
 	//Ver 1.3
-	if (ver>=1.299999) {
+	if (ver >= 1.299999)
+	{
 		fscanf_s(sFile, "iThreadPriority=%d \n",&iThreadPriority);
-
-		//CString tracex;
-		//tracex.Format("Thread %d ver %f",iThreadPriority, ver);
-		//MessageBox(tracex,"Note",MB_OK);
 	}
 
 	//Ver 1.5
-	if (ver>=1.499999) {
+	if (ver >= 1.499999)
+	{
 		fscanf_s(sFile, "iCaptureLeft= %d \n",&iCaptureLeft);
 		fscanf_s(sFile, "iCaptureTop= %d \n",&iCaptureTop);
 		fscanf_s(sFile, "bFixedCapture=%d \n",&bFixedCapture);
@@ -4147,7 +4137,8 @@ void CRecorderView::LoadSettings()
 	}
 
 	//Ver 1.6
-	if (ver>=1.599999) {
+	if (ver >= 1.599999)
+	{
 		fscanf_s(sFile, "iTempPathAccess=%d \n",&iTempPathAccess);
 		fscanf_s(sFile, "bCaptureTrans=%d \n",&bCaptureTrans);
 		fscanf_s(sFile, "specifieddir=%d \n",&iSpecifiedDirLength);
@@ -4158,7 +4149,8 @@ void CRecorderView::LoadSettings()
 		fscanf_s(sFile, "bPerformAutoSearch=%d \n",&bPerformAutoSearch);
 
 		onLoadSettings(iRecordAudio);
-	} else {
+	} else
+	{
 		iTempPathAccess = USE_WINDOWS_TEMP_DIR;
 		bCaptureTrans = 1;
 		iSpecifiedDirLength = 0;
@@ -4170,7 +4162,8 @@ void CRecorderView::LoadSettings()
 		bPerformAutoSearch=1;
 	}
 
-	if (iSpecifiedDirLength == 0) {
+	if (iSpecifiedDirLength == 0)
+	{
 		int old_tempPath_Access = iTempPathAccess;
 		iTempPathAccess = USE_WINDOWS_TEMP_DIR;
 		specifieddir = GetTempPath(iTempPathAccess, specifieddir);
@@ -4181,7 +4174,8 @@ void CRecorderView::LoadSettings()
 
 	//Update Player to ver 2.0
 	//Make the the modified keys do not overlap
-	if (ver<1.799999) {
+	if (ver < 1.799999)
+	{
 		if (iLaunchPlayer == 1)
 			iLaunchPlayer = 3;
 
@@ -4202,9 +4196,10 @@ void CRecorderView::LoadSettings()
 	}
 
 	//Ver 1.8
-	int shapeNameLen=0;
-	int layoutNameLen=0;
-	if (ver>=1.799999) {
+	int shapeNameLen = 0;
+	int layoutNameLen = 0;
+	if (ver >= 1.799999)
+	{
 		fscanf_s(sFile, "bSupportMouseDrag=%d \n",&bSupportMouseDrag);
 
 		fscanf_s(sFile, "keyRecordStartCtrl=%d \n",&keyRecordStartCtrl);
@@ -4249,7 +4244,8 @@ void CRecorderView::LoadSettings()
 
 	//ver 2.26
 	//save format is set as 2.0
-	if (ver>=1.999999) {
+	if (ver >= 1.999999)
+	{
 		fscanf_s(sFile, "bLaunchPropPrompt=%d \n",&bLaunchPropPrompt);
 		fscanf_s(sFile, "bLaunchHTMLPlayer=%d \n",&bLaunchHTMLPlayer);
 		fscanf_s(sFile, "bDeleteAVIAfterUse=%d \n",&bDeleteAVIAfterUse);
@@ -4260,7 +4256,8 @@ void CRecorderView::LoadSettings()
 	}
 
 	//ver 2.40
-	if (ver>=2.399999) {
+	if (ver >= 2.399999)
+	{
 		fscanf_s(sFile, "iPresetTime=%d \n",&iPresetTime);
 		fscanf_s(sFile, "bRecordPreset=%d \n",&bRecordPreset);
 	}
@@ -4310,7 +4307,8 @@ void CRecorderView::LoadSettings()
 		return;
 	}
 
-	if (ver>=1.2) {
+	if (ver >= 1.2)
+	{
 		// ****************************
 		// Load Binary Data
 		// ****************************
@@ -4320,19 +4318,23 @@ void CRecorderView::LoadSettings()
 			savedir=CString(sdata);
 		}
 
-		if ((iCursorLen>0) && (iCursorLen<1000)) {
+		if ((iCursorLen > 0) && (iCursorLen < 1000)) {
 			fread( (void *) tdata, iCursorLen, 1, tFile);
-			tdata[iCursorLen]=0;
-			strCursorDir=CString(tdata);
+			tdata[iCursorLen] = 0;
+			CamCursor.Dir(CString(tdata));
 		}
 
-		if (ver > 1.35) { //if perfoming an upgrade from previous settings, do not load these additional camdata.ini information
-			if (dwCbwFX>0) {
+		if (ver > 1.35)
+		{
+			// if perfoming an upgrade from previous settings,
+			// do not load these additional camdata.ini information
+			if (dwCbwFX > 0) {
 				AllocCompressFormat();
 				int countread = fread( (void *) pwfx, dwCbwFX, 1, tFile);
-				if (countread!=1) {
-					dwCbwFX=0;
-					if (pwfx) {
+				if (countread != 1) {
+					dwCbwFX = 0;
+					if (pwfx)
+					{
 						GlobalFreePtr(pwfx);
 						pwfx = NULL;
 						SuggestCompressFormat();
@@ -4342,42 +4344,44 @@ void CRecorderView::LoadSettings()
 				}
 			}
 
-			if (dwCompressorStateSize>0) {
+			if (dwCompressorStateSize > 0)
+			{
 				AllocVideoCompressParams(dwCompressorStateSize);
 				fread( (void *) pVideoCompressParams, dwCompressorStateSize, 1, tFile);
 			}
 
 			//ver 1.6
-			if (ver>1.55) {
-				//if upgrade from older file versions, iSpecifiedDirLength == 0 and the following code will not run
-				if ((iSpecifiedDirLength>0) && (iSpecifiedDirLength<1000)) {
+			if (ver > 1.55)
+			{
+				// if upgrade from older file versions,
+				// iSpecifiedDirLength == 0 and the following code will not run
+				if ((iSpecifiedDirLength > 0) && (iSpecifiedDirLength < 1000)) {
 					fread( (void *) specdata, iSpecifiedDirLength, 1, tFile);
 					specdata[iSpecifiedDirLength]=0;
 					specifieddir=CString(specdata);
 				}
 
 				//ver 1.8
-				if (ver>=1.799999) {
+				if (ver >= 1.799999)
+				{
 					char namedata[1000];
-
-					if ((shapeNameLen>0) && (shapeNameLen<1000)) {
+					if ((shapeNameLen > 0) && (shapeNameLen < 1000))
+					{
 						fread( (void *) namedata, shapeNameLen, 1, tFile);
 						namedata[shapeNameLen]=0;
-						shapeName=CString(namedata);
+						shapeName = CString(namedata);
 					}
 
-					if ((layoutNameLen>0) && (layoutNameLen<1000)) {
+					if ((layoutNameLen > 0) && (layoutNameLen < 1000))
+					{
 						fread( (void *) namedata, layoutNameLen, 1, tFile);
-						namedata[layoutNameLen]=0;
-						strLayoutName=CString(namedata);
+						namedata[layoutNameLen] = 0;
+						strLayoutName = CString(namedata);
 					}
 				}
-
-			}// if ver >=1.55
-
-		}// if ver >=1.35
-
-	} //if ver>=1.2
+			}
+		}
+	}
 
 	fclose(tFile);
 }
@@ -5323,34 +5327,39 @@ LPBITMAPINFOHEADER CRecorderView::captureScreenFrame(int left, int top, int widt
 
 	//Get Cursor Pos
 	POINT xPoint;
-	GetCursorPos( &xPoint);
-	HCURSOR hcur= FetchCursorHandle();
-	xPoint.x-=left;
-	xPoint.y-=top;
+	GetCursorPos(&xPoint);
+	xPoint.x -= left;
+	xPoint.y -= top;
 
 	//Draw the HighLight
 	if (bHighlightCursor==1) {
 		POINT highlightPoint;
 		highlightPoint.x = xPoint.x -64;
 		highlightPoint.y = xPoint.y -64;
-		InsertHighLight( hMemDC, highlightPoint.x, highlightPoint.y);
+		InsertHighLight(hMemDC, highlightPoint.x, highlightPoint.y);
 	}
 
-	//Draw the Cursor
-	if (bRecordCursor) {
+	// Draw the Cursor
+	HCURSOR hcur = CamCursor.FetchCursorHandle(CamCursor.Select());
+	if (bRecordCursor)
+	{
 		ICONINFO iconinfo;
-		BOOL ret;
-		ret = GetIconInfo( hcur, &iconinfo);
-		if (ret) {
+		BOOL ret = GetIconInfo(hcur, &iconinfo);
+		if (ret)
+		{
 			xPoint.x -= iconinfo.xHotspot;
 			xPoint.y -= iconinfo.yHotspot;
 
 			//need to delete the hbmMask and hbmColor bitmaps
 			//otherwise the program will crash after a while after running out of resource
 			if (iconinfo.hbmMask)
+			{
 				DeleteObject(iconinfo.hbmMask);
+			}
 			if (iconinfo.hbmColor)
+			{
 				DeleteObject(iconinfo.hbmColor);
+			}
 		}
 
 		::DrawIcon( hMemDC, xPoint.x, xPoint.y, hcur);
