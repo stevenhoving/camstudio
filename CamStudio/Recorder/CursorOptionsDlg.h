@@ -42,7 +42,7 @@ protected:
 	afx_msg void OnCustomCursor();
 	afx_msg void OnFileCursor();
 	virtual BOOL OnInitDialog();
-	afx_msg void OnOnBnClickedFileCursor();
+	afx_msg void OnBnClickedFileCursor();
 	afx_msg void OnSelchangeCustomcursor();
 	virtual void OnOK();
 	afx_msg void OnSelchangeHighlightshape();

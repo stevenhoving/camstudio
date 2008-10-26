@@ -111,8 +111,8 @@ BEGIN_MESSAGE_MAP(CCursorOptionsDlg, CDialog)
 	ON_BN_CLICKED(IDC_RADIO2, OnShowCursor)
 	ON_BN_CLICKED(IDC_CURSOR1, OnActualCursor)
 	ON_BN_CLICKED(IDC_CURSOR2, OnCustomCursor)
-	ON_BN_CLICKED(IDC_CURSOR3, OnOnBnClickedFileCursor)
-	ON_BN_CLICKED(IDC_FILECURSOR, OnFilecursor)
+	ON_BN_CLICKED(IDC_CURSOR3, OnFileCursor)
+	ON_BN_CLICKED(IDC_FILECURSOR, OnBnClickedFileCursor)
 	ON_CBN_SELCHANGE(IDC_CUSTOMCURSOR, OnSelchangeCustomcursor)
 	ON_CBN_SELCHANGE(IDC_HIGHLIGHTSHAPE, OnSelchangeHighlightshape)
 	ON_BN_CLICKED(IDC_HIGHLIGHTCOLOR, OnHighlightcolor)
@@ -374,7 +374,7 @@ void CCursorOptionsDlg::OnCustomCursor()
 	RefreshPreviewCursor();
 }
 
-void CCursorOptionsDlg::OnOnBnClickedFileCursor()
+void CCursorOptionsDlg::OnFileCursor()
 {
 	m_iCursorType = 2;
 
@@ -393,7 +393,7 @@ void CCursorOptionsDlg::OnSelchangeCustomcursor()
 	RefreshPreviewCursor();
 }
 
-void CCursorOptionsDlg::OnFilecursor()
+void CCursorOptionsDlg::OnBnClickedFileCursor()
 {
 	CString fileName;
 	CString filt="Icon and Cursor Files (*.ico; *.cur)|*.ico;*.cur||";

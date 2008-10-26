@@ -80,6 +80,9 @@ protected:
 	
 	std::vector <IDValuePair> m_vIDValue;
 
+	// Note: functions are in Read/Write pairs for each type
+
+	// CString Read/Write
 	CString Read(CString strFilename, CString strSection, CString strKeyName, CString DefValue)
 	{
 		TRACE("Read File(CString): %s,\nSection: %s\nKey: %s\nValue: %s\n", strFilename, strSection, strKeyName, DefValue);
@@ -88,31 +91,18 @@ protected:
 		DWORD dwLen = ::GetPrivateProfileString(strSection, strKeyName, DefValue, szBuf, BUFSIZE, strFilename);
 		return (dwLen) ? szBuf : "";
 	}
-	int Read(CString strFilename, CString strSection, CString strKeyName, int DefValue)
-	{
-		TRACE("Read File(int): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, DefValue);
-		return ::GetPrivateProfileInt(strSection, strKeyName, DefValue, strFilename);
-	}
-	bool Read(CString strFilename, CString strSection, CString strKeyName, bool DefValue)
-	{
-		TRACE("Read File(bool): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, DefValue);
-		return ::GetPrivateProfileInt(strSection, strKeyName, DefValue, strFilename)
-			? true : false;
-	}
-	long Read(CString strFilename, CString strSection, CString strKeyName, long DefValue)
-	{
-		TRACE("Read File(long): %s,\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
-		const int BUFSIZE = 128;
-		TCHAR szBuf[BUFSIZE];
-		DWORD dwLen = ::GetPrivateProfileString(strSection, strKeyName, _T(""), szBuf, BUFSIZE, strFilename);
-		return (dwLen) ? ::_tstol(szBuf) : DefValue;
-	}
-
 	bool Write(CString strFilename, CString strSection, CString strKeyName, CString Value)
 	{
 		TRACE("Write File(CString): %s\nSection: %s\nKey: %s\nValue: %s\n", strFilename, strSection, strKeyName, Value);
 		return ::WritePrivateProfileString(strSection, strKeyName, Value, strFilename)
 			? true : false;
+	}
+
+	// int Read/Write
+	int Read(CString strFilename, CString strSection, CString strKeyName, int DefValue)
+	{
+		TRACE("Read File(int): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, DefValue);
+		return ::GetPrivateProfileInt(strSection, strKeyName, DefValue, strFilename);
 	}
 	bool Write(CString strFilename, CString strSection, CString strKeyName, int Value)
 	{
@@ -120,6 +110,14 @@ protected:
 		CString strValue;
 		strValue.Format("%d", Value);
 		return ::WritePrivateProfileString(strSection, strKeyName, strValue, strFilename)
+			? true : false;
+	}
+
+	// bool Read/Write
+	bool Read(CString strFilename, CString strSection, CString strKeyName, bool DefValue)
+	{
+		TRACE("Read File(bool): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, DefValue);
+		return ::GetPrivateProfileInt(strSection, strKeyName, DefValue, strFilename)
 			? true : false;
 	}
 	bool Write(CString strFilename, CString strSection, CString strKeyName, bool Value)
@@ -130,11 +128,39 @@ protected:
 		return ::WritePrivateProfileString(strSection, strKeyName, strValue, strFilename)
 			? true : false;
 	}
+
+	// long Read/Write
+	long Read(CString strFilename, CString strSection, CString strKeyName, long DefValue)
+	{
+		TRACE("Read File(long): %s,\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
+		const int BUFSIZE = 128;
+		TCHAR szBuf[BUFSIZE];
+		DWORD dwLen = ::GetPrivateProfileString(strSection, strKeyName, _T(""), szBuf, BUFSIZE, strFilename);
+		return (dwLen) ? ::_tstol(szBuf) : DefValue;
+	}
 	bool Write(CString strFilename, CString strSection, CString strKeyName, long Value)
 	{
-		TRACE("Write File(bool): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, Value);
+		TRACE("Write File(long): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
 		CString strValue;
 		strValue.Format("%ld", Value);
+		return ::WritePrivateProfileString(strSection, strKeyName, strValue, strFilename)
+			? true : false;
+	}
+
+	// double Read/Write
+	double Read(CString strFilename, CString strSection, CString strKeyName, double DefValue)
+	{
+		TRACE("Read File(double): %s,\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
+		const int BUFSIZE = 128;
+		TCHAR szBuf[BUFSIZE];
+		DWORD dwLen = ::GetPrivateProfileString(strSection, strKeyName, _T(""), szBuf, BUFSIZE, strFilename);
+		return (dwLen) ? ::_tstof(szBuf) : DefValue;
+	}
+	bool Write(CString strFilename, CString strSection, CString strKeyName, double Value)
+	{
+		TRACE("Write File(double): %s\nSection: %s\nKey: %s\nValue: %f\n", strFilename, strSection, strKeyName, Value);
+		CString strValue;
+		strValue.Format("%f", Value);
 		return ::WritePrivateProfileString(strSection, strKeyName, strValue, strFilename)
 			? true : false;
 	}
@@ -203,6 +229,10 @@ public:
 	{
 		return m_grpLongs.Add(iID, strName, Value);
 	}
+	bool Add(const int iID, const CString strName, const double Value)
+	{
+		return m_grpDoubles.Add(iID, strName, Value);
+	}
 
 	// read items from section groups
 	bool Read(const CString strFile)
@@ -211,6 +241,7 @@ public:
 		bResult = bResult && m_grpIntegers.Read(strFile, m_strSectionName);
 		bResult = bResult && m_grpBools.Read(strFile, m_strSectionName);
 		bResult = bResult && m_grpLongs.Read(strFile, m_strSectionName);
+		bResult = bResult && m_grpDoubles.Read(strFile, m_strSectionName);
 		return bResult;
 	}
 	// write items from section groups
@@ -230,8 +261,7 @@ protected:
 	CSectionGroup<int>				m_grpIntegers;
 	CSectionGroup<bool>				m_grpBools;
 	CSectionGroup<long>				m_grpLongs;
-	// TODO: activate these types
-	//CSectionGroup<double>			m_grpDoubles;
+	CSectionGroup<double>			m_grpDoubles;
 	//CSectionGroup<COLORREF>			m_grpColorRefs;
 	//CSectionGroup<TextAttributes>	m_taTextAttribs;
 	//CSectionGroup<ImageAttributes>	m_iaImageAttribs;
