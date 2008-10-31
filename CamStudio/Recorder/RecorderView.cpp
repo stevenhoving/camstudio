@@ -4781,22 +4781,18 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM lParam)
 	case 3:
 		{
 			if (!bCreatedSADlg) {
-				sadlg.Create(IDD_SCREENANNOTATIONS2,NULL);
+				sadlg.Create(IDD_SCREENANNOTATIONS2, NULL);
 				bCreatedSADlg = true;
 			}
 			int max = ListManager.layoutArray.GetSize();
-			if (max<=0)
+			if (max <= 0)
 				return 0;
 
-			//Get Current selected
+			// Get Current selected
 			int cursel = sadlg.GetLayoutListSelection();
-			if (cursel == -1)
+			iCurrentLayout = (cursel < 0) ? 0 : cursel + 1;
+			if (iCurrentLayout >= max)
 				iCurrentLayout = 0;
-			else
-				iCurrentLayout = cursel + 1;
-
-			if (iCurrentLayout>=max)
-				iCurrentLayout=0;
 
 			sadlg.InstantiateLayout(iCurrentLayout,1);
 		}
@@ -4804,7 +4800,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM lParam)
 	case 4:
 		{
 			if (!bCreatedSADlg) {
-				sadlg.Create(IDD_SCREENANNOTATIONS2,NULL);
+				sadlg.Create(IDD_SCREENANNOTATIONS2, NULL);
 				//sadlg.RefreshLayoutList();
 				bCreatedSADlg = true;
 			}
@@ -4815,14 +4811,9 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM lParam)
 
 			//Get Current selected
 			int cursel = sadlg.GetLayoutListSelection();
-			if (cursel == -1) {
-				iCurrentLayout = 0;
-			} else {
-				iCurrentLayout = cursel - 1;
-			}
-
-			if (iCurrentLayout<0)
-				iCurrentLayout=max-1;
+			iCurrentLayout = (cursel < 0) ? 0 : cursel - 1;
+			if (iCurrentLayout < 0)
+				iCurrentLayout = max - 1;
 
 			sadlg.InstantiateLayout(iCurrentLayout,1);
 		}
@@ -4846,14 +4837,9 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM lParam)
 
 			//Get Current selected
 			int cursel = sadlg.GetLayoutListSelection();
-			if (cursel == -1) {
+			iCurrentLayout = (cursel < 0) ? 0 : cursel;
+			if ((iCurrentLayout < 0) || (iCurrentLayout >= max)) {
 				iCurrentLayout = 0;
-			} else {
-				iCurrentLayout = cursel;
-			}
-
-			if ((iCurrentLayout<0) || (iCurrentLayout>=max)) {
-				iCurrentLayout=0;
 			}
 
 			sadlg.InstantiateLayout(iCurrentLayout,1);
@@ -4984,7 +4970,6 @@ void CRecorderView::OnUpdateOptionsNamingAsk(CCmdUI* pCmdUI)
 
 void CRecorderView::OnOptionsProgramoptionsPresettime()
 {
-	// TODO: Add your command handler code here
 	CPresetTimeDlg prestDlg;
 	prestDlg.DoModal();
 }
@@ -4993,29 +4978,29 @@ void CRecorderView::OnOptionsProgramoptionsPresettime()
 
 void CRecorderView::OnUpdateOptionsLanguageEnglish(CCmdUI* pCmdUI)
 {
-	pCmdUI->SetCheck(iLanguageID==9);
+	CRecorderApp * pApp = static_cast<CRecorderApp*>(AfxGetApp());
+	pCmdUI->SetCheck(pApp->LanguageID() == 9);
 }
 
 void CRecorderView::OnUpdateOptionsLanguageGerman(CCmdUI* pCmdUI)
 {
-	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iLanguageID==7);
+	CRecorderApp * pApp = static_cast<CRecorderApp*>(AfxGetApp());
+	pCmdUI->SetCheck(pApp->LanguageID() == 7);
 }
 
 void CRecorderView::OnOptionsLanguageEnglish()
 {
-	// TODO: Add your command handler code here
-	iLanguageID=9;
-	AfxGetApp()->WriteProfileInt( SEC_SETTINGS, ENT_LANGID, 9);
-	AfxMessageBox( IDS_RESTARTAPP);
+	CRecorderApp * pApp = static_cast<CRecorderApp*>(AfxGetApp());
+	pApp->LanguageID(9);
+	//AfxGetApp()->WriteProfileInt(SEC_SETTINGS, ENT_LANGID, 9);
+	AfxMessageBox(IDS_RESTARTAPP);
 }
 
 void CRecorderView::OnOptionsLanguageGerman()
 {
-	// TODO: Add your command handler code here
-
-	iLanguageID=7;
-	AfxGetApp()->WriteProfileInt( SEC_SETTINGS, ENT_LANGID, 7);
+	CRecorderApp * pApp = static_cast<CRecorderApp*>(AfxGetApp());
+	pApp->LanguageID(7);
+	//AfxGetApp()->WriteProfileInt(SEC_SETTINGS, ENT_LANGID, 7);
 	AfxMessageBox( IDS_RESTARTAPP);
 }
 
@@ -5109,12 +5094,11 @@ void CRecorderView::OnUpdateAnnotationAddwatermark(CCmdUI *pCmdUI)
 
 void CRecorderView::OnEffectsOptions()
 {
-	// TODO: Add your command handler code here
-	CAnnotationEffectsOptionsDlg dlg;
+	CAnnotationEffectsOptionsDlg dlg(this);
 	dlg.m_timestamp = taTimestamp;
 	dlg.m_caption = taCaption;
 	dlg.m_image = iaWatermark;
-	if (dlg.DoModal() == IDOK){
+	if (IDOK == dlg.DoModal()){
 		taTimestamp = dlg.m_timestamp;
 		taCaption = dlg.m_caption;
 		iaWatermark = dlg.m_image;
@@ -5300,8 +5284,9 @@ LPBITMAPINFOHEADER CRecorderView::captureScreenFrame(int left, int top, int widt
 	HBITMAP oldbm = (HBITMAP) ::SelectObject(hMemDC, hbm);
 
 	//ver 1.6
+	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();	
 	DWORD bltFlags = SRCCOPY;
-	if (bCaptureTrans && (4 < versionOp))
+	if (bCaptureTrans && (4 < pApp->VersionOp()))
 		bltFlags |= CAPTUREBLT;
 	BitBlt(hMemDC, 0, 0, width, height, hScreenDC, left, top, bltFlags);
 
