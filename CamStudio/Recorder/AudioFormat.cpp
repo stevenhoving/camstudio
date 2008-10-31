@@ -5,10 +5,6 @@
 #include "Recorder.h"
 #include "AudioFormat.h"
 #include "CStudioLib.h"
-
-//#include <stdio.h>
-//#include <mmsystem.h>
-//#include <vfw.h>
 #include <windowsx.h> // for memory functions GlobalXXX
 
 //External Variables
@@ -93,17 +89,16 @@ END_MESSAGE_MAP()
 void CAudioFormatDlg::OnOK()
 {
 	CString interleaveFactorStr;
-	int ifactornum;
-
 	m_ctrlEditFactor.GetWindowText(interleaveFactorStr);
-	sscanf_s(LPCTSTR(interleaveFactorStr),"%d",&ifactornum);
-	if (ifactornum<=0) {
-		MessageOut(this->m_hWnd,IDS_STRING_INTERLEAVE1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+	int ifactornum = 0;
+	sscanf_s((LPCTSTR)interleaveFactorStr,"%d", &ifactornum);
+	if (ifactornum <= 0) {
+		MessageOut(m_hWnd, IDS_STRING_INTERLEAVE1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 		//MessageBox("Interleave factor must greater than 0","Note",MB_OK | MB_ICONEXCLAMATION);
 		return;
 	}
 
-	//if (ifactornum<1000) {
+	//if (ifactornum < 1000) {
 	// MessageBox("Interleave factor must be smaller than 1000","Note",MB_OK | MB_ICONEXCLAMATION);
 	// return;
 	//}
@@ -125,24 +120,25 @@ void CAudioFormatDlg::OnOK()
 				//Ver 1.2
 				int getdevice = m_ctrlCBInputDevice.GetCurSel();
 				if (getdevice < m_iNumDevice) {
-					if (pwfx == NULL)
+					if (pwfx == NULL) {
 						AllocCompressFormat(); //Allocate external format in order to return values
+					}
 
 					if (dwCbwFX >= m_cbwfx) { //All checks cleared, update external values
-						//Updating to external variables
-
+						// Updating to external variables
 						uAudioDeviceID = m_devicemap[getdevice];
 
 						bAudioCompression = m_bAudioCompression;
 
-						//Update the external pwfx (compressed format);
+						// Update the external pwfx (compressed format);
 						dwCbwFX = m_cbwfx;
-						memcpy( (void *) pwfx, (void *) m_pwfx, m_cbwfx );
+						//::memcpy((void *)pwfx, (void *)m_pwfx, m_cbwfx);
+						::memcpy(pwfx, m_pwfx, m_cbwfx);
 
-						//Update the external m_Format (Recording format) and related variables;
-						dwWaveinSelected = m_formatmap[sel];
-						iAudioBitsPerSample = m_iAudioBitsPerSample;
-						iAudioNumChannels = m_iAudioNumChannels;
+						// Update the external m_Format (Recording format) and related variables;
+						dwWaveinSelected		= m_formatmap[sel];
+						iAudioBitsPerSample		= m_iAudioBitsPerSample;
+						iAudioNumChannels		= m_iAudioNumChannels;
 						iAudioSamplesPerSeconds = m_iAudioSamplesPerSeconds;
 
 						BuildRecordingFormat();
@@ -192,7 +188,7 @@ BOOL CAudioFormatDlg::OnInitDialog()
 	//Generate device list
 	m_iNumDevice = 0;
 	m_devicemap[m_iNumDevice] = WAVE_MAPPER;
-	m_iNumDevice ++;
+	m_iNumDevice++;
 
 	m_ctrlCBInputDevice.ResetContent( );
 	m_ctrlCBInputDevice.AddString("Default input device");
@@ -641,12 +637,12 @@ void CAudioFormatDlg::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format,
 	} else {
 		//Compressed or Save format
 		AllocLocalCompressFormat();
-		if (curr_sel_pwfx==NULL) {
+		if (curr_sel_pwfx == NULL) {
 			SuggestLocalCompressFormat();
 		} else {
 			ASSERT(m_pwfx);
 			ASSERT(curr_sel_pwfx);
-			memcpy( (void *) m_pwfx, (void *) curr_sel_pwfx, dwCbwFX );
+			memcpy(m_pwfx, curr_sel_pwfx, dwCbwFX);
 		}
 
 		UpdateLocalCompressFormatInterface();

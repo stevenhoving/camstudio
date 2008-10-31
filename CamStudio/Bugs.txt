@@ -28,3 +28,9 @@ Bugs.txt
 10/25/08
 - Recorder:
 	o The CSyncDlg if causing a non-fatal exception during initalization in wincore. 
+10/30/08
+- Recorder
+	o	(fixed) the global ScreenAnnotationDlg (sad) ctor attempts to access the
+		instance handle from the AFX lib too early. The handle is now taken from
+		the system and tehn the varibles are reinitialized during the InitDialog
+		member function
