@@ -9,6 +9,7 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "FixedRegion.h"
+#include "MainFrm.h"			// for maxxScreen, maxyScreen
 #include "MouseCaptureWnd.h"
 
 #ifdef _DEBUG

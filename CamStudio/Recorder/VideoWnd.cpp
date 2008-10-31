@@ -428,8 +428,8 @@ void CVideoWnd::OnContextvideoEdittransparencyrefreshrate()
 
 void CVideoWnd::OnContextvideoEdittransparency()
 {
-	// TODO: Add your command handler code here
-	if (versionOp<5) {
+	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();	
+	if (pApp->VersionOp() < 5) {
 		//int ret = MessageBox("This feature is only available in Win 2000/ XP." ,"Note",MB_OK | MB_ICONEXCLAMATION);
 		int ret = MessageOut(this->m_hWnd,IDS_STRING_AVAILXP ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 		return;

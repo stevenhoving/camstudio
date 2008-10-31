@@ -28,17 +28,18 @@ struct TextAttributes
 	int isFontSelected;
 	LOGFONT logfont;
 
-	const TextAttributes& operator=(const TextAttributes& obj)
+	const TextAttributes& operator=(const TextAttributes& rhs)
 	{
-		if (this == &obj)
+		if (this == &rhs)
 			return *this;
 
-		text = obj.text;
-		::memcpy(&logfont, &obj.logfont, sizeof(LOGFONT));
-		isFontSelected = obj.isFontSelected;
-		backgroundColor = obj.backgroundColor;
-		textColor = obj.textColor;
-		position = obj.position;
+		position		= rhs.position;
+		text			= rhs.text;
+		backgroundColor = rhs.backgroundColor;
+		textColor		= rhs.textColor;
+		isFontSelected	= rhs.isFontSelected;
+		logfont			= rhs.logfont;	// bitwise copy is OK; logfont is POD
+		//::memcpy(&logfont, &rhs.logfont, sizeof(LOGFONT));
 
 		return *this;
 	}

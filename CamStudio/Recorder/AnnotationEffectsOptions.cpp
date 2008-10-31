@@ -1,14 +1,14 @@
 // AnnotationEffectsOptions.cpp : implementation file
-//
-
+// Modifies Timestamp, Caption, and Watermark
+/////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Recorder.h"
 #include "AnnotationEffectsOptions.h"
-#include ".\annotationeffectsoptions.h"
 
 // CAnnotationEffectsOptionsDlg dialog
 
 IMPLEMENT_DYNAMIC(CAnnotationEffectsOptionsDlg, CDialog)
+
 CAnnotationEffectsOptionsDlg::CAnnotationEffectsOptionsDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CAnnotationEffectsOptionsDlg::IDD, pParent)
 {
@@ -39,8 +39,7 @@ END_MESSAGE_MAP()
 
 void CAnnotationEffectsOptionsDlg::OnBnClickedButtonImagePath()
 {
-	// TODO: Add your control notification handler code here
-	static char BASED_CODE szFilter[] = "Bitmap Files (*.bmp)|*.bmp|GIF Files (*.gif)|*.gif|JPEG Files (*.jpg;*.jpeg)|*.jpg; *.jpeg|All Files (*.*)|*.*||";
+	const char *szFilter = TEXT("Bitmap Files (*.bmp)|*.bmp|GIF Files (*.gif)|*.gif|JPEG Files (*.jpg;*.jpeg)|*.jpg; *.jpeg|All Files (*.*)|*.*||");
 	CFileDialog dlg(TRUE, 0, m_image.text, OFN_HIDEREADONLY, szFilter);
 	if (dlg.DoModal() == IDOK){
 		m_image.text = dlg.GetPathName();
