@@ -149,6 +149,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
 }
 
+// long Read/Write
 template <>
 long ReadEntry(CString strFilename, CString strSection, CString strKeyName, const long& DefValue)
 {
@@ -162,6 +163,25 @@ template <>
 bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const long& Value)
 {
 	TRACE("WriteEntry(long): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
+	CString strValue;
+	strValue.Format("%ld", Value);
+	return WriteEntry(strFilename, strSection, strKeyName, strValue);
+}
+
+// DWORD Read/Write
+template <>
+DWORD ReadEntry(CString strFilename, CString strSection, CString strKeyName, const DWORD& DefValue)
+{
+	TRACE("ReadEntry(DWORD): %s,\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
+	const int BUFSIZE = 128;
+	TCHAR szBuf[BUFSIZE];
+	DWORD dwLen = ::GetPrivateProfileString(strSection, strKeyName, _T(""), szBuf, BUFSIZE, strFilename);
+	return (dwLen) ? ::_tstol(szBuf) : DefValue;
+}
+template <>
+bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const DWORD& Value)
+{
+	TRACE("WriteEntry(DWORD): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
 	CString strValue;
 	strValue.Format("%ld", Value);
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
@@ -203,39 +223,21 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
 }
 
-// COLORREF Read/Write
+// UINT Read/Write
 template <>
-COLORREF ReadEntry(CString strFilename, CString strSection, CString strKeyName, const COLORREF& DefValue)
+UINT ReadEntry(CString strFilename, CString strSection, CString strKeyName, const UINT& DefValue)
 {
-	TRACE("ReadEntry(COLORREF): %s,\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
-	CString strKeyNameEx;
-	strKeyNameEx = strKeyName + "R";
-	int iRed = ReadEntry(strFilename, strSection, strKeyNameEx, GetRValue(DefValue));
-	strKeyNameEx = strKeyName + "G";
-	int iGreen = ReadEntry(strFilename, strSection, strKeyNameEx, GetGValue(DefValue));
-	strKeyNameEx = strKeyName + "B";
-	int iBlue = ReadEntry(strFilename, strSection, strKeyNameEx, GetBValue(DefValue));
-	return RGB(iRed, iGreen, iBlue);
+	TRACE("ReadEntry(UINT): %s,\nSection: %s\nKey: %s\nValue: %u\n", strFilename, strSection, strKeyName, DefValue);
+	UINT iVal = ::GetPrivateProfileInt(strSection, strKeyName, DefValue, strFilename);
+	return iVal;
 }
 template <>
-bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const COLORREF& Value)
+bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const UINT& Value)
 {
-	TRACE("WriteEntry(COLORREF): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
-	CString strKeyNameEx;
-	strKeyNameEx = strKeyName + "R";
+	TRACE("WriteEntry(BYTE): %s\nSection: %s\nKey: %s\nValue: %u\n", strFilename, strSection, strKeyName, Value);
 	CString strValue;
-	strValue.Format("%d", GetRValue(Value));
-	bool bResult = WriteEntry(strFilename, strSection, strKeyNameEx, strValue)
-		? true : false;
-	strKeyNameEx = strKeyName + "G";
-	strValue.Format("%d", GetGValue(Value));
-	bResult &= WriteEntry(strFilename, strSection, strKeyNameEx, strValue)
-		? true : false;
-	strKeyNameEx = strKeyName + "B";
-	strValue.Format("%d", GetBValue(Value));
-	bResult &= WriteEntry(strFilename, strSection, strKeyNameEx, strValue)
-		? true : false;
-	return bResult;
+	strValue.Format("%u", Value);
+	return WriteEntry(strFilename, strSection, strKeyName, strValue);
 }
 
 // LANGID Read/Write
@@ -481,10 +483,10 @@ void CProfile::InitSections()
 
 	Add(AUTOPAN, "autopan", false);
 	Add(MAXPAN, "maxpan", 0);
-	Add(AUDIODEVICEID, "AudioDeviceID", 0);
-	Add(CBWFX, "cbwfx", 50);
+	Add(AUDIODEVICEID, "AudioDeviceID", 0U);
+	Add(CBWFX, "cbwfx", 50UL);
 	Add(RECORDAUDIO, "recordaudio", 0);
-	Add(WAVEINSELECTED, "waveinselected", 128);
+	Add(WAVEINSELECTED, "waveinselected", 128UL);
 	Add(AUDIO_BITS_PER_SAMPLE, "audio_bits_per_sample", 16);
 	Add(AUDIO_NUM_CHANNELS, "audio_num_channels", 2);
 	Add(AUDIO_SAMPLES_PER_SECONDS, "audio_samples_per_seconds", 22050);
@@ -596,10 +598,10 @@ void CProfile::InitLegacySection()
 	Add(m_SectionLegacy, HIGHLIGHTCLICKCOLORRIGHTB, "g_highlightclickcolorrightB", 255);
 	Add(m_SectionLegacy, AUTOPAN, "autopan", false);
 	Add(m_SectionLegacy, MAXPAN, "maxpan", 0);
-	Add(m_SectionLegacy, AUDIODEVICEID, "AudioDeviceID", 0);
-	Add(m_SectionLegacy, CBWFX, "cbwfx", 50);
+	Add(m_SectionLegacy, AUDIODEVICEID, "AudioDeviceID", 0U);
+	Add(m_SectionLegacy, CBWFX, "cbwfx", 50UL);
 	Add(m_SectionLegacy, RECORDAUDIO, "recordaudio", 0);
-	Add(m_SectionLegacy, WAVEINSELECTED, "waveinselected", 128);
+	Add(m_SectionLegacy, WAVEINSELECTED, "waveinselected", 128UL);
 	Add(m_SectionLegacy, AUDIO_BITS_PER_SAMPLE, "audio_bits_per_sample", 16);
 	Add(m_SectionLegacy, AUDIO_NUM_CHANNELS, "audio_num_channels", 2);
 	Add(m_SectionLegacy, AUDIO_SAMPLES_PER_SECONDS, "audio_samples_per_seconds", 22050);
@@ -721,14 +723,14 @@ bool CProfileSection::Add<>(const int iID, const CString strName, const long& Va
 	return m_grpLongs.Add(iID, strName, Value);
 }
 template <>
+bool CProfileSection::Add<>(const int iID, const CString strName, const DWORD& Value)
+{
+	return m_grpDWORD.Add(iID, strName, Value);
+}
+template <>
 bool CProfileSection::Add<>(const int iID, const CString strName, const double& Value)
 {
 	return m_grpDoubles.Add(iID, strName, Value);
-}
-template <>
-bool CProfileSection::Add<>(const int iID, const CString strName, const COLORREF& Value)
-{
-	return m_grpColorRefs.Add(iID, strName, Value);
 }
 
 template <>
@@ -753,6 +755,12 @@ bool CProfileSection::Add<>(const int iID, const CString strName, const ImageAtt
 	return m_grpImageAttribs.Add(iID, strName, Value);
 }
 
+template <>
+bool CProfileSection::Add<>(const int iID, const CString strName, const UINT& Value)
+{
+	return m_grpUINT.Add(iID, strName, Value);
+}
+
 // read items from section groups
 bool CProfileSection::Read(const CString strFile)
 {
@@ -761,7 +769,6 @@ bool CProfileSection::Read(const CString strFile)
 	bResult = bResult && m_grpBools.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpLongs.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpDoubles.Read(strFile, m_strSectionName);
-	bResult = bResult && m_grpColorRefs.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpLANGID.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpLogFont.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpTextAttribs.Read(strFile, m_strSectionName);
@@ -776,7 +783,6 @@ bool CProfileSection::Write(const CString strFile)
 	bResult = bResult && m_grpBools.Write(strFile, m_strSectionName);
 	bResult = bResult && m_grpLongs.Write(strFile, m_strSectionName);
 	bResult = bResult && m_grpDoubles.Write(strFile, m_strSectionName);
-	bResult = bResult && m_grpColorRefs.Write(strFile, m_strSectionName);
 	bResult = bResult && m_grpLANGID.Write(strFile, m_strSectionName);	
 	bResult = bResult && m_grpLogFont.Write(strFile, m_strSectionName);
 	bResult = bResult && m_grpTextAttribs.Write(strFile, m_strSectionName);		
