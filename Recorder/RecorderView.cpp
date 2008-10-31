@@ -3583,7 +3583,17 @@ void CRecorderView::OnOptionsAudioformat()
 	}
 
 	CAudioFormatDlg aod;
-	aod.DoModal();
+	if (IDOK == aod.DoModal()) {
+		// update profile settings
+		CRecorderApp * pApp = static_cast<CRecorderApp*>(AfxGetApp());
+		VERIFY(pApp->GetProfile().Write(AUDIODEVICEID, uAudioDeviceID));
+		VERIFY(pApp->GetProfile().Write(BAUDIOCOMPRESSION, bAudioCompression));
+		VERIFY(pApp->GetProfile().Write(CBWFX, dwCbwFX));
+		VERIFY(pApp->GetProfile().Write(WAVEINSELECTED, dwWaveinSelected));
+		VERIFY(pApp->GetProfile().Write(AUDIO_BITS_PER_SAMPLE, iAudioBitsPerSample));
+		VERIFY(pApp->GetProfile().Write(AUDIO_NUM_CHANNELS, iAudioNumChannels));
+		VERIFY(pApp->GetProfile().Write(AUDIO_SAMPLES_PER_SECONDS, iAudioSamplesPerSeconds));
+	}
 
 	//if (iInterleaveUnit == MILLISECONDS) {
 	//	double interfloat = (((double) iInterleaveFactor) * ((double) iFramesPerSecond))/1000.0;

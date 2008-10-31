@@ -18,6 +18,7 @@ class CAudioFormatDlg : public CDialog
 	// Construction
 public:
 	CAudioFormatDlg(CWnd* pParent = NULL);   // standard constructor
+	
 	void UpdateLocalCompressFormatInterface();
 	void UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPWAVEFORMATEX  curr_sel_pwfx);
 

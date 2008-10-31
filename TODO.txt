@@ -119,4 +119,8 @@ o	CEditTransparencyDlg and CTransparentWnd
 	state values and copy the new state after the dialog completes. Note that the dialog
 	still retains the old values and restores them on cancel.
 
-o       CamStudio needs to use the OpenDML (AVI 2.0) extensions so files with size > 2 GB can be created.
+o	CamStudio needs to use the OpenDML (AVI 2.0) extensions so files with size > 2 GB
+	can be created.
+	
+o	Move global variables into classes (doc, mainframe and view) and use teh profile
+	class to read and set them through the App interface to the profile class
