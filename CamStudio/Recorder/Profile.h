@@ -538,10 +538,11 @@ public:
 		bool bResult = m_grpLANGID.Read(iID, Value);
 		bResult = bResult || m_grpStrings.Read(iID, Value);
 		bResult = bResult || m_grpIntegers.Read(iID, Value);
+		bResult = bResult || m_grpUINT.Read(iID, Value);
 		bResult = bResult || m_grpBools.Read(iID, Value);
 		bResult = bResult || m_grpLongs.Read(iID, Value);
+		bResult = bResult || m_grpDWORD.Read(iID, Value);
 		bResult = bResult || m_grpDoubles.Read(iID, Value);
-		bResult = bResult || m_grpColorRefs.Read(iID, Value);
 		bResult = bResult || m_grpLogFont.Read(iID, Value);
 		bResult = bResult || m_grpTextAttribs.Read(iID, Value);
 		bResult = bResult || m_grpImageAttribs.Read(iID, Value);
@@ -554,10 +555,11 @@ public:
 		bool bResult = m_grpLANGID.Write(iID, Value);
 		bResult = bResult || m_grpStrings.Write(iID, Value);
 		bResult = bResult || m_grpIntegers.Write(iID, Value);
+		bResult = bResult || m_grpUINT.Write(iID, Value);
 		bResult = bResult || m_grpBools.Write(iID, Value);
 		bResult = bResult || m_grpLongs.Write(iID, Value);
+		bResult = bResult || m_grpDWORD.Write(iID, Value);
 		bResult = bResult || m_grpDoubles.Write(iID, Value);
-		bResult = bResult || m_grpColorRefs.Write(iID, Value);
 		bResult = bResult || m_grpLogFont.Write(iID, Value);
 		bResult = bResult || m_grpTextAttribs.Write(iID, Value);
 		bResult = bResult || m_grpImageAttribs.Write(iID, Value);
@@ -567,13 +569,15 @@ public:
 protected:
 	CString m_strSectionName;	// section name
 	
+	// COLORREF == DWORD
 	// supported group types
 	CSectionGroup<CString>			m_grpStrings;
 	CSectionGroup<int>				m_grpIntegers;
+	CSectionGroup<UINT>				m_grpUINT;
 	CSectionGroup<bool>				m_grpBools;
 	CSectionGroup<long>				m_grpLongs;
+	CSectionGroup<DWORD>			m_grpDWORD;		// unsigned long
 	CSectionGroup<double>			m_grpDoubles;
-	CSectionGroup<COLORREF>			m_grpColorRefs;
 	CSectionGroup<LANGID>			m_grpLANGID;
 	CSectionGroup<LOGFONT>			m_grpLogFont;
 	CSectionGroup<TextAttributes>	m_grpTextAttribs;
