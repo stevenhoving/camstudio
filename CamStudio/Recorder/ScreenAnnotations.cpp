@@ -66,8 +66,9 @@ CListManager ListManager;
 CScreenAnnotationsDlg::CScreenAnnotationsDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CScreenAnnotationsDlg::IDD, pParent)
 , m_bEditingLabelOn(false)
-, m_hCursorDrag(::LoadCursor(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDC_CURSORDRAG)))
-, m_hCursorArrow(::LoadCursor(NULL,IDC_ARROW))
+//, m_hCursorDrag(::LoadCursor(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDC_CURSORDRAG)))
+, m_hCursorDrag(::LoadCursor(0, MAKEINTRESOURCE(IDC_CURSORDRAG)))
+, m_hCursorArrow(::LoadCursor(0, IDC_ARROW))
 {
 	//{{AFX_DATA_INIT(CScreenAnnotationsDlg)
 	// NOTE: the ClassWizard will add member initialization here
@@ -167,6 +168,9 @@ BOOL CScreenAnnotationsDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO: Add extra initialization here
+	m_hCursorDrag = ::LoadCursor(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDC_CURSORDRAG));
+	m_hCursorArrow = ::LoadCursor(NULL,IDC_ARROW);
+
 	CString shapesStr;
 	CString layoutStr;
 	shapesStr.LoadString(IDS_STRING_SHAPES);

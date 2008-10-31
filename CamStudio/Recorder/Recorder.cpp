@@ -16,7 +16,6 @@
 #include "CStudioLib.h"
 
 #include <strsafe.h>		// for StringCchPrintf
-#include "afxwin.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -26,8 +25,6 @@ static char THIS_FILE[] = __FILE__;
 
 extern HWND hWndGlobal;
 static BOOL bClassRegistered = FALSE;
-
-int versionOp = 0;	// operating system version
 
 /////////////////////////////////////////////////////////////////////////////
 // OnError
@@ -184,13 +181,19 @@ BOOL CRecorderApp::InitInstance()
 	strProfile.Format("%s\\CamStudio.ini", (LPCSTR)(GetProgPath()));
 	m_pszProfileName = _tcsdup(strProfile);
 
-	CurLangID = static_cast<LANGID>(GetProfileInt(SEC_SETTINGS, ENT_LANGID, STANDARD_LANGID));
-	if (!LoadLanguage(CurLangID)) {
+	// TODO: re-enable when class complete
+	m_cmSettings.Read();
+	// initialize global values
+	VERIFY(m_cmSettings.Read(LANGUAGE, m_wCurLangID));
+
+//	m_wCurLangID = static_cast<LANGID>(GetProfileInt(SEC_SETTINGS, ENT_LANGID, STANDARD_LANGID));
+	if (!LoadLanguage(m_wCurLangID)) {
 		if (!LoadLanguage(::GetUserDefaultLangID())) {
 			LoadLanguage(::GetSystemDefaultLangID());
 		}
 	}
-	WriteProfileInt(SEC_SETTINGS, ENT_LANGID, CurLangID);
+	//WriteProfileInt(SEC_SETTINGS, ENT_LANGID, m_wCurLangID);
+	VERIFY(m_cmSettings.Write(LANGUAGE, m_wCurLangID));
 
 	if (!FirstInstance())
 		return FALSE;
@@ -216,11 +219,7 @@ BOOL CRecorderApp::InitInstance()
 
 	LoadStdProfileSettings(); // Load standard INI file options (including MRU)
 
-	// TODO: re-enable when class complete
-	//m_cmSettings.Read();
-	//m_cmSettings.Write();
-
-	versionOp = GetOperatingSystem();
+	m_iVersionOp = GetOperatingSystem();
 
 	// Register the application's document templates. Document templates
 	// serve as the connection between documents, frame windows and views.
@@ -384,7 +383,7 @@ BOOL CRecorderApp::FirstInstance()
 int CRecorderApp::ExitInstance()
 {
 	//Multilanguage
-	if (CurLangID != STANDARD_LANGID)
+	if (m_wCurLangID != STANDARD_LANGID)
 		FreeLibrary( AfxGetResourceHandle() );
 
 	if (bClassRegistered)
@@ -392,26 +391,26 @@ int CRecorderApp::ExitInstance()
 	return CWinApp::ExitInstance();
 }
 
-bool CRecorderApp::LoadLanguage(LANGID LangID)
+bool CRecorderApp::LoadLanguage(LANGID wLangID)
 {
 	// integrated language is the right one
-	bool bResult = (LangID == STANDARD_LANGID);
+	bool bResult = (wLangID == STANDARD_LANGID);
 	if (bResult) {
-		ASSERT(CurLangID == LangID);
-		TRACE("CurLangID: %d\n", CurLangID);
+		ASSERT(m_wCurLangID == wLangID);
+		TRACE("m_wCurLangID: %d\n", m_wCurLangID);
 		return true;
 	}
 
 	CString strLangIDDLL;
-	strLangIDDLL.Format(_T("RecorderLANG%.2x.dll"), LangID);
+	strLangIDDLL.Format(_T("RecorderLANG%.2x.dll"), wLangID);
 	HINSTANCE hInstance = ::LoadLibrary(strLangIDDLL);
 	bResult = (0 != hInstance);
 	if (bResult) {
 		AfxSetResourceHandle(hInstance);
-		CurLangID = LangID;
+		m_wCurLangID = wLangID;
 	}
 
-	TRACE("CurLangID: %d %s\n", CurLangID, bResult ? "loaded" : "failed");
+	TRACE("m_wCurLangID: %d %s\n", m_wCurLangID, bResult ? "loaded" : "failed");
 	return bResult;
 }
 

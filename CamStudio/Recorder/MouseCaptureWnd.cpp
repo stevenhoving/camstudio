@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "MouseCaptureWnd.h"
+#include "MainFrm.h"			// for maxxScreen, maxyScreen
 #include "RecorderView.h"
 #include "CStudioLib.h"
 

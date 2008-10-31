@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "NewShape.h"
+#include "MainFrm.h"			// for maxxScreen, maxyScreen
 #include "CStudioLib.h"
 
 #ifdef _DEBUG
