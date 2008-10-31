@@ -1,6 +1,10 @@
+/////////////////////////////////////////////////////////////////////////////
+// CAnnotationEffectsOptionsDlg dialog
+//
+#ifndef ANNOTATIONEFFECTSOPTIONS_H	// belt and suspenders
+#define ANNOTATIONEFFECTSOPTIONS_H
+
 #pragma once
-#include "afxext.h"
-#include "afxwin.h"
 
 #include "EffectsOptions.h"
 #include "EffectsOptions2.h"
@@ -22,17 +26,21 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
-	CBitmapButton m_buttonImagePath;
 public:
 //	virtual BOOL OnInitDialog();
-	afx_msg void OnBnClickedButtonImagePath();
-protected:
-	CEdit m_ctlImagePath;
 public:
-	TextAttributes m_timestamp;
-	TextAttributes m_caption;
-	ImageAttributes m_image;
+	// The input and output values
+	TextAttributes	m_timestamp;
+	TextAttributes	m_caption;
+	ImageAttributes	m_image;
+protected:
+private:
+	CBitmapButton m_buttonImagePath;
+	CEdit m_ctlImagePath;
+
+	afx_msg void OnBnClickedButtonImagePath();
 	afx_msg void OnBnClickedButtonCaptionOptions();
 	afx_msg void OnBnClickedButtonTimestampFormatOptions();
 	afx_msg void OnBnClickedButtonWatermarkOptions();
 };
+#endif	// ANNOTATIONEFFECTSOPTIONS_H

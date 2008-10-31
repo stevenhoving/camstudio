@@ -36,6 +36,16 @@ class CRecorderApp : public CWinApp
 public:
 	CRecorderApp();
 
+	LANGID LanguageID() const			{return m_wCurLangID;}
+	LANGID LanguageID(LANGID wLangID)
+	{
+		m_wCurLangID = wLangID;
+		VERIFY(m_cmSettings.Write(LANGUAGE, m_wCurLangID));
+		return m_wCurLangID;
+	}
+	int VersionOp() const				{return m_iVersionOp;}
+	CProfile& GetProfile()				{return m_cmSettings;}
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CRecorderApp)
@@ -55,7 +65,8 @@ public:
 private:
 	static const char * CAMSTUDIO_MUTEX;
 	HANDLE m_hAppMutex;
-	LANGID CurLangID;
+	LANGID m_wCurLangID;
+	int m_iVersionOp;
 	CCamStudioCommandLineInfo m_cmdInfo;
 	CProfile m_cmSettings;
 
@@ -68,11 +79,6 @@ private:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
-
-//int versionOp = 0;
-extern int versionOp;
-extern int maxxScreen;
-extern int maxyScreen;
 
 // general error handler
 void OnError(LPTSTR lpszFunction);

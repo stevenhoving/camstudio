@@ -108,16 +108,8 @@ BOOL CTextDlg::OnInitDialog()
 		//tempFont.DeleteObject();
 	}
 
-	if ((versionOp < 5) && (msgShown))
-	{
-		m_ctrlButtonLanguage.EnableWindow(FALSE);
-	}
-	else
-	{
-		m_ctrlButtonLanguage.EnableWindow(TRUE);
-	}
-
-	//m_ctrlEditText.SetFocus();	// redundant; defined in resource editor with tab order
+	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();	
+	m_ctrlButtonLanguage.EnableWindow(((pApp->VersionOp() >= 5) && (msgShown)));
 
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -226,17 +218,13 @@ void CTextDlg::ChooseScriptFont()
 
 void CTextDlg::OnFont2()
 {
-	// TODO: Add your control notification handler code here
-
-	if (versionOp < 5)
+	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();	
+	if (pApp->VersionOp() < 5)
 	{
 		//int ret = MessageBox("This feature works only in Win 2000/ XP." ,"Note",MB_OK | MB_ICONEXCLAMATION);
-		int ret = MessageOut(this->m_hWnd,IDS_STRING_WORKSWINXP,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
+		int ret = MessageOut(m_hWnd,IDS_STRING_WORKSWINXP,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 		msgShown = 1;
 		m_ctrlButtonLanguage.EnableWindow(FALSE);
-
-		//if (ret==IDNO)
 		return;
 	}
 

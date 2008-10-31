@@ -6,6 +6,7 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "FlashingWnd.h"
+#include "MainFrm.h"			// for maxxScreen, maxyScreen
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
