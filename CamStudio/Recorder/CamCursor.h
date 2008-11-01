@@ -54,6 +54,8 @@ public:
 		m_bHighlightClick	= rhs.m_bHighlightClick;
 		m_clrClickLeft		= rhs.m_clrClickLeft;
 		m_clrClickRight		= rhs.m_clrClickRight;
+
+		return *this;
 	}
 
 	HCURSOR Load() const					{return m_hLoadCursor;}
