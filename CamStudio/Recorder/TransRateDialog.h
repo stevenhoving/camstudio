@@ -4,12 +4,11 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-// TransRateDialog.h : header file
-//
 
 #include "VideoWnd.h"
-#include "afxcmn.h"
-#include "afxwin.h"
+
+// TransRateDialog.h : header file
+//
 
 /////////////////////////////////////////////////////////////////////////////
 // CTransRateDlg dialog
