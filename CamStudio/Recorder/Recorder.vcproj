@@ -82,7 +82,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib vfw32.lib msacm32.lib"
 				OutputFile="..\$(ConfigurationName)\$(ProjectName).exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				ProgramDatabaseFile=".\Release/Recorder.pdb"
 				SubSystem="2"
@@ -178,7 +178,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib vfw32.lib msacm32.lib"
 				OutputFile="..\$(ConfigurationName)\$(ProjectName).exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
@@ -1429,11 +1429,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\GlobalResources\Recorder.ico"
+				RelativePath=".\Recorder.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\Recorder.ico"
+				RelativePath="..\GlobalResources\Recorder.ico"
 				>
 			</File>
 			<File
@@ -1449,11 +1449,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Recorder_logo.bmp"
+				RelativePath="..\GlobalResources\Recorder_logo.bmp"
 				>
 			</File>
 			<File
-				RelativePath="..\GlobalResources\Recorder_logo.bmp"
+				RelativePath=".\Recorder_logo.bmp"
 				>
 			</File>
 			<File

@@ -7,7 +7,9 @@
 #include "ImageAttributes.h"
 #include "CStudioLib.h"
 
-bool bAutoAdjust = true;
+DWORD dwCompressorStateIsFor = 0;
+DWORD dwCompressorStateSize = 0;
+
 bool bAutoPan = false;
 bool bAutoNaming = false;
 bool bCaptureTrans = true;
@@ -30,26 +32,19 @@ int iLaunchPlayer = 3;
 int iMouseCaptureMode = 0;
 int iCaptureWidth = 320;
 int iCaptureHeight = 240;
-int iTimeLapse = 5;
-int iFramesPerSecond = 200;
-int iKeyFramesEvery = 200;
-int iCompQuality = 7000;
-DWORD dwCompfccHandler = 0;
-DWORD dwCompressorStateIsFor = 0;
-DWORD dwCompressorStateSize = 0;
+
 int iMaxPan = 20;
 int iRecordAudio = 0;
 int iViewType = 0;
-int iValueAdjust = 1;
 int iSaveLen = 0;	// dir len?
 int iCursorLen = 0;	// dir len?
 int iThreadPriority = THREAD_PRIORITY_NORMAL;
 int iCaptureLeft = 100;
 int iCaptureTop = 100;
 int iTempPathAccess = USE_WINDOWS_TEMP_DIR;
-int iSpecifiedDirLength=0;
-int iNumberOfMixerDevices=0;
-int iSelectedMixer=0;
+int iSpecifiedDirLength = 0;
+int iNumberOfMixerDevices = 0;
+int iSelectedMixer = 0;
 int iFeedbackLine = -1;
 int iFeedbackLineInfo = -1;
 int iShapeNameInt = 1;
@@ -443,9 +438,9 @@ void CProfile::InitSections()
 	Add(CAPTUREHEIGHT, "captureheight", 0);
 	Add(TIMELAPSE, "timelapse", 0);
 	Add(FRAMES_PER_SECOND, "frames_per_second", 0);
-	Add(KEYFRAMESEVERY, "keyFramesEvery", 0);
+	Add(KEYFRAMEINTERVAL, "keyFramesEvery", 0);
 	Add(COMPQUALITY, "compquality", 0);
-	Add(COMPFCCHANDLER, "compfccHandler", 0);
+	Add(COMPFCCHANDLER, "compfccHandler", 0UL);
 	Add(COMPRESSORSTATEISFOR, "CompressorStateIsFor", 0);
 	Add(COMPRESSORSTATESIZE, "CompressorStateSize", 0);
 
@@ -553,9 +548,9 @@ void CProfile::InitLegacySection()
 	Add(m_SectionLegacy, CAPTUREHEIGHT, "captureheight", 0);
 	Add(m_SectionLegacy, TIMELAPSE, "timelapse", 0);
 	Add(m_SectionLegacy, FRAMES_PER_SECOND, "frames_per_second", 0);
-	Add(m_SectionLegacy, KEYFRAMESEVERY, "keyFramesEvery", 0);
+	Add(m_SectionLegacy, KEYFRAMEINTERVAL, "keyFramesEvery", 0);
 	Add(m_SectionLegacy, COMPQUALITY, "compquality", 0);
-	Add(m_SectionLegacy, COMPFCCHANDLER, "compfccHandler", 0);
+	Add(m_SectionLegacy, COMPFCCHANDLER, "compfccHandler", 0UL);
 	Add(m_SectionLegacy, COMPRESSORSTATEISFOR, "CompressorStateIsFor", 0);
 	Add(m_SectionLegacy, COMPRESSORSTATESIZE, "CompressorStateSize", 0);
 	Add(m_SectionLegacy, RECORDCURSOR, "g_recordcursor", true);
