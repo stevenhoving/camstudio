@@ -10,8 +10,11 @@
 
 struct ImageAttributes
 {
-	ePosition position;
-	CString text;
+	ImageAttributes(ePosition pos = TOP_LEFT, CString strText = "")
+		: position(pos)
+		, text(strText)
+	{
+	}
 
 	const ImageAttributes& operator=(const ImageAttributes& obj)
 	{
@@ -22,6 +25,8 @@ struct ImageAttributes
 		position = obj.position;
 		return *this;
 	}
+	ePosition	position;
+	CString		text;
 };
 
 #endif	// IMAGEATTRIBUTES_H

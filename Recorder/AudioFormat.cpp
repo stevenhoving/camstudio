@@ -10,7 +10,6 @@
 //External Variables
 
 extern LPWAVEFORMATEX pwfx;
-extern DWORD dwCbwFX;
 
 extern void BuildRecordingFormat();
 extern void AllocCompressFormat();
@@ -20,9 +19,6 @@ extern void AllocCompressFormat();
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
-#define MILLISECONDS 0
-#define FRAMES 1
 
 #if !defined(AVE_FORMAT_MPEGLAYER3)
 #define WAVE_FORMAT_MPEGLAYER3 0x0055
@@ -45,10 +41,26 @@ CAudioFormatDlg::CAudioFormatDlg(CWnd* pParent /*=NULL*/)
 , m_bAudioCompression(TRUE)
 , m_iNumFormat(0)
 , m_iNumDevice(0)
+, m_iInterleavePeriod(0)
 {
 	//{{AFX_DATA_INIT(CAudioFormatDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
+}
+
+CAudioFormatDlg::CAudioFormatDlg(sAudioFormat& cFmt, CWnd* pParent)
+: CDialog(CAudioFormatDlg::IDD, pParent)
+, m_cFmt(cFmt)
+, m_pwfx(0)
+, m_cbwfx(0)
+, m_iAudioBitsPerSample(cFmt.m_iBitsPerSample)
+, m_iAudioNumChannels(cFmt.m_iNumChannels)
+, m_iAudioSamplesPerSeconds(cFmt.m_iSamplesPerSeconds)
+, m_bAudioCompression(cFmt.m_bCompression)
+, m_iNumFormat(0)
+, m_iNumDevice(0)
+, m_iInterleavePeriod(cFmt.m_iInterleavePeriod)
+{
 }
 
 void CAudioFormatDlg::DoDataExchange(CDataExchange* pDX)
@@ -67,6 +79,8 @@ void CAudioFormatDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMPRESSEDFORMATTAG, m_ctrlEditCompressedFormatTag);
 	DDX_Control(pDX, IDC_COMPRESSEDFORMAT, m_ctrlEditCompressedFormat);
 	DDX_Control(pDX, IDC_CHOOSE_COMPRESSED_FORMAT, m_ctrlButtonChooseCompressedFormat);
+	DDX_Text(pDX, IDC_IFACTOR, m_iInterleavePeriod);
+	DDV_MinMaxInt(pDX, m_iInterleavePeriod, 0, 1000);
 }
 
 BEGIN_MESSAGE_MAP(CAudioFormatDlg, CDialog)
@@ -86,102 +100,26 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CAudioFormatDlg message handlers
 
-void CAudioFormatDlg::OnOK()
-{
-	CString interleaveFactorStr;
-	m_ctrlEditFactor.GetWindowText(interleaveFactorStr);
-	int ifactornum = 0;
-	sscanf_s((LPCTSTR)interleaveFactorStr,"%d", &ifactornum);
-	if (ifactornum <= 0) {
-		MessageOut(m_hWnd, IDS_STRING_INTERLEAVE1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-		//MessageBox("Interleave factor must greater than 0","Note",MB_OK | MB_ICONEXCLAMATION);
-		return;
-	}
-
-	//if (ifactornum < 1000) {
-	// MessageBox("Interleave factor must be smaller than 1000","Note",MB_OK | MB_ICONEXCLAMATION);
-	// return;
-	//}
-
-	iInterleaveFactor = ifactornum;
-
-	BOOL binteleave = m_ctrlButtonInterleave.GetCheck();
-	bInterleaveFrames = (binteleave) ? TRUE : FALSE;
-
-	BOOL interleave_unit = m_ctrlButtonInterleaveFrames.GetCheck();
-	iInterleaveUnit = (interleave_unit) ? FRAMES : MILLISECONDS;
-
-	//The Recording format, Compressed format and device must be valid before
-	//data from the Audio Options Dialog can be updated to the external variables
-	if (m_iNumFormat > 0) {
-		int sel = m_ctrlCBRecordFormat.GetCurSel();
-		if (sel >= 0) {
-			if (m_pwfx) {
-				//Ver 1.2
-				int getdevice = m_ctrlCBInputDevice.GetCurSel();
-				if (getdevice < m_iNumDevice) {
-					if (pwfx == NULL) {
-						AllocCompressFormat(); //Allocate external format in order to return values
-					}
-
-					if (dwCbwFX >= m_cbwfx) { //All checks cleared, update external values
-						// Updating to external variables
-						uAudioDeviceID = m_devicemap[getdevice];
-
-						bAudioCompression = m_bAudioCompression;
-
-						// Update the external pwfx (compressed format);
-						dwCbwFX = m_cbwfx;
-						//::memcpy((void *)pwfx, (void *)m_pwfx, m_cbwfx);
-						::memcpy(pwfx, m_pwfx, m_cbwfx);
-
-						// Update the external m_Format (Recording format) and related variables;
-						dwWaveinSelected		= m_formatmap[sel];
-						iAudioBitsPerSample		= m_iAudioBitsPerSample;
-						iAudioNumChannels		= m_iAudioNumChannels;
-						iAudioSamplesPerSeconds = m_iAudioSamplesPerSeconds;
-
-						BuildRecordingFormat();
-					}
-				}
-			}
-		}
-	}
-
-	if (m_pwfx) {
-		GlobalFreePtr(m_pwfx);
-		m_pwfx = NULL;
-	}
-
-	//ver 1.8
-	int val = m_ctrlButtonSystemRecord.GetCheck();
-	bUseMCI = (val) ? 1 : 0;
-
-	CDialog::OnOK();
-}
-
 BOOL CAudioFormatDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
 	//Interleave
-	m_ctrlButtonInterleave.SetCheck(bInterleaveFrames);
-	CString interleaveFactorStr;
-	interleaveFactorStr.Format("%d",iInterleaveFactor);
-	m_ctrlEditFactor.SetWindowText(interleaveFactorStr);
+	m_ctrlButtonInterleave.SetCheck(cAudioFormat.m_bInterleaveFrames);
+	m_iInterleavePeriod = cAudioFormat.m_iInterleaveFactor;
 
-	m_ctrlEditFactor.EnableWindow(bInterleaveFrames);
-	m_ctrlButtonInterleaveFrames.EnableWindow(bInterleaveFrames);
-	m_ctrlButtonInterleaveSeconds.EnableWindow(bInterleaveFrames);
+	m_ctrlEditFactor.EnableWindow(cAudioFormat.m_bInterleaveFrames);
+	m_ctrlButtonInterleaveFrames.EnableWindow(cAudioFormat.m_bInterleaveFrames);
+	m_ctrlButtonInterleaveSeconds.EnableWindow(cAudioFormat.m_bInterleaveFrames);
 
-	m_ctrlButtonInterleaveFrames.SetCheck(iInterleaveUnit == FRAMES);
-	m_ctrlButtonInterleaveSeconds.SetCheck(iInterleaveUnit == MILLISECONDS);
+	m_ctrlButtonInterleaveFrames.SetCheck(cAudioFormat.m_iInterleavePeriod == FRAMES);
+	m_ctrlButtonInterleaveSeconds.SetCheck(cAudioFormat.m_iInterleavePeriod == MILLISECONDS);
 
-	m_iAudioBitsPerSample = iAudioBitsPerSample;
-	m_iAudioNumChannels = iAudioNumChannels;
-	m_iAudioSamplesPerSeconds = iAudioSamplesPerSeconds;
+	m_iAudioBitsPerSample = cAudioFormat.m_iBitsPerSample;
+	m_iAudioNumChannels = cAudioFormat.m_iNumChannels;
+	m_iAudioSamplesPerSeconds = cAudioFormat.m_iSamplesPerSeconds;
 
-	m_bAudioCompression = bAudioCompression;
+	m_bAudioCompression = cAudioFormat.m_bCompression;
 
 	//Ver 1.2
 
@@ -208,7 +146,7 @@ BOOL CAudioFormatDlg::OnInitDialog()
 	int deviceIsSelected= 0;
 	int selectedDevice = WAVE_MAPPER;
 	for (int i = 0; i < m_iNumDevice; ++i) {
-		if (uAudioDeviceID == m_devicemap[i]) {
+		if (cAudioFormat.m_uDeviceID == m_devicemap[i]) {
 			m_ctrlCBInputDevice.SetCurSel(i);
 			selectedDevice = m_devicemap[i];
 			deviceIsSelected = 1;
@@ -222,22 +160,78 @@ BOOL CAudioFormatDlg::OnInitDialog()
 
 	//Ver 1.2
 	WAVEINCAPS pwic;
-	MMRESULT mmr = waveInGetDevCaps( uAudioDeviceID , &pwic, sizeof(pwic) );
+	MMRESULT mmr = waveInGetDevCaps( cAudioFormat.m_uDeviceID , &pwic, sizeof(pwic) );
 
 	m_iNumFormat = 0; //counter, number of format
 
-	//This code works on the assumption (when filling in values for the user - interfaces)
-	//that the m_Format and pwfx formats (external variables) are already chosen correctly and compatibile with each other
+	// This code works on the assumption (when filling in values for the user - interfaces)
+	// that the m_Format and pwfx formats (external variables) are already chosen correctly
+	// and compatibile with each other
 	int devID = m_ctrlCBInputDevice.GetCurSel();
 	if (devID < m_iNumDevice) {
-		UpdateDeviceData(selectedDevice, dwWaveinSelected, pwfx);
+		UpdateDeviceData(selectedDevice, cAudioFormat.m_dwWaveinSelected, pwfx);
 	}
 
 	//ver 1.8
 	m_ctrlButtonSystemRecord.SetCheck(bUseMCI);
 
+	UpdateData(FALSE);
+
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void CAudioFormatDlg::OnOK()
+{
+	UpdateData();
+	cAudioFormat.m_iInterleaveFactor = m_iInterleavePeriod;
+	cAudioFormat.m_bInterleaveFrames = m_ctrlButtonInterleave.GetCheck();
+	cAudioFormat.m_iInterleavePeriod = (m_ctrlButtonInterleaveFrames.GetCheck()) ? FRAMES : MILLISECONDS;
+
+	//The Recording format, Compressed format and device must be valid before
+	//data from the Audio Options Dialog can be updated to the external variables
+	if (0 < m_iNumFormat) {
+		int sel = m_ctrlCBRecordFormat.GetCurSel();
+		if (0 <= sel) {
+			if (m_pwfx) {
+				//Ver 1.2
+				int getdevice = m_ctrlCBInputDevice.GetCurSel();
+				if (getdevice < m_iNumDevice) {
+					if (pwfx == NULL) {
+						AllocCompressFormat(); //Allocate external format in order to return values
+					}
+
+					if (m_cbwfx <= cAudioFormat.m_dwCbwFX) { //All checks cleared, update external values
+						// Updating to external variables
+						m_cFmt.m_uDeviceID			= m_devicemap[getdevice];
+						m_cFmt.m_bCompression		= m_bAudioCompression;
+						m_cFmt.m_iBitsPerSample		= m_iAudioBitsPerSample;
+						m_cFmt.m_iNumChannels		= m_iAudioNumChannels;
+						m_cFmt.m_iSamplesPerSeconds = m_iAudioSamplesPerSeconds;
+
+						// Update the external pwfx (compressed format);
+						cAudioFormat.m_dwWaveinSelected	= m_formatmap[sel];
+						cAudioFormat.m_dwCbwFX = m_cbwfx;
+						//::memcpy((void *)pwfx, (void *)m_pwfx, m_cbwfx);
+						::memcpy(pwfx, m_pwfx, m_cbwfx);
+
+						BuildRecordingFormat();
+					}
+				}
+			}
+		}
+	}
+
+	if (m_pwfx) {
+		GlobalFreePtr(m_pwfx);
+		m_pwfx = NULL;
+	}
+
+	//ver 1.8
+	int val = m_ctrlButtonSystemRecord.GetCheck();
+	bUseMCI = (val) ? 1 : 0;
+
+	CDialog::OnOK();
 }
 
 void CAudioFormatDlg::OnChoose()
@@ -508,7 +502,7 @@ void CAudioFormatDlg::OnSelchangeInputdevice()
 {
 	int devID = m_ctrlCBInputDevice.GetCurSel();
 	if (devID < m_iNumDevice) {
-		UpdateDeviceData(m_devicemap[devID],dwWaveinSelected,NULL);
+		UpdateDeviceData(m_devicemap[devID],cAudioFormat.m_dwWaveinSelected,NULL);
 	}
 }
 
@@ -642,7 +636,7 @@ void CAudioFormatDlg::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format,
 		} else {
 			ASSERT(m_pwfx);
 			ASSERT(curr_sel_pwfx);
-			memcpy(m_pwfx, curr_sel_pwfx, dwCbwFX);
+			memcpy(m_pwfx, curr_sel_pwfx, cAudioFormat.m_dwCbwFX);
 		}
 
 		UpdateLocalCompressFormatInterface();
@@ -812,8 +806,8 @@ void CAudioFormatDlg::AllocLocalCompressFormat()
 		return;
 	}
 
-	if (m_cbwfx < dwCbwFX)
-		m_cbwfx = dwCbwFX;
+	if (m_cbwfx < cAudioFormat.m_dwCbwFX)
+		m_cbwfx = cAudioFormat.m_dwCbwFX;
 
 	m_pwfx = (LPWAVEFORMATEX)GlobalAllocPtr(GHND, m_cbwfx);
 	if (NULL == m_pwfx) {
