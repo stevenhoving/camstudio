@@ -1215,14 +1215,13 @@ void CTransparentWnd::ReloadPic(CString filename)
 // *****************************************************************************
 CTransparentWnd* CTransparentWnd::Clone(int offsetx, int offsety)
 {
-	CTransparentWnd* newWnd;
-	newWnd = new CTransparentWnd;
-	CopyMembers(newWnd);
+	CTransparentWnd* newWnd = new CTransparentWnd;
+	newWnd->CopyMembers(*this);
 
-	newWnd->m_rectWnd.OffsetRect( offsetx, offsety );
+	newWnd->m_rectWnd.OffsetRect(offsetx, offsety);
 
 	CString pTitle(m_shapeStr);
-	newWnd->CreateEx( WS_EX_TOPMOST, AfxRegisterWndClass(0), LPCTSTR(pTitle), WS_POPUP | WS_SYSMENU, newWnd->m_rectWnd, NULL, NULL, NULL );
+	newWnd->CreateEx(WS_EX_TOPMOST, AfxRegisterWndClass(0), LPCTSTR(pTitle), WS_POPUP | WS_SYSMENU, newWnd->m_rectWnd, NULL, NULL, NULL);
 	newWnd->m_regionCreated = NULL;
 	newWnd->m_tracker.m_rect = m_tracker.m_rect;
 
@@ -1230,29 +1229,31 @@ CTransparentWnd* CTransparentWnd::Clone(int offsetx, int offsety)
 		newWnd->m_hbitmap = NULL;
 	} else {
 		//CPicture picture;
+		//int randnum = rand();
+		//char numstr[50];
+		//sprintf(numstr,"%d", randnum);
+		//CString cnumstr(numstr);
+		//CString fxstr("\\~txPic");
+		//CString exstr(".bmp");
+		//CString tempFile = GetTempPath(iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
 		CString tempFile;
-		int randnum = rand();
-		char numstr[50];
-		sprintf(numstr,"%d",randnum);
-
-		CString cnumstr(numstr);
-		CString fxstr("\\~txPic");
-		CString exstr(".bmp");
-		tempFile = GetTempPath (iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
+		tempFile.Format("%s\\~txPic%d.bmp", GetTempPath(iTempPathAccess, specifieddir), rand());
 		int ret = picture.CopyToPicture(&newWnd->picture,tempFile);
 		if (!ret) {
-			randnum = rand();
-			sprintf(numstr,"%d",randnum);
-			tempFile = GetTempPath (iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
+			//randnum = rand();
+			//sprintf(numstr, "%d", randnum);
+			//tempFile = GetTempPath(iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
+			tempFile.Format("%s\\~txPic%d.bmp", GetTempPath(iTempPathAccess, specifieddir), rand());
 			ret = picture.CopyToPicture(&newWnd->picture,tempFile);
-			if (!ret) { //if 2nd try fails
+			if (!ret) {
+				//if 2nd try fails
 				newWnd->m_hbitmap = NULL;
 				return newWnd;
 			}
 		}
 
 		HBITMAP testtrans = NULL;
-		if (newWnd->picture.m_IPicture->get_Handle( (unsigned int *) &testtrans ) == S_OK ) {
+		if (newWnd->picture.m_IPicture->get_Handle((unsigned int *) &testtrans) == S_OK) {
 			newWnd->m_hbitmap = testtrans;
 			newWnd->SetupRegion();
 		} else {
@@ -1267,39 +1268,37 @@ CTransparentWnd* CTransparentWnd::Clone(int offsetx, int offsety)
 
 CTransparentWnd* CTransparentWnd::CloneByPos(int x, int y)
 {
-	int offsetx, offsety;
-	offsetx = x - m_rectWnd.left;
-	offsety = y - m_rectWnd.top;
-
+	int offsetx = x - m_rectWnd.left;
+	int offsety = y - m_rectWnd.top;
 	return Clone(offsetx, offsety);
 }
 
-void CTransparentWnd::CopyMembers(CTransparentWnd *newWnd)
+void CTransparentWnd::CopyMembers(const CTransparentWnd& rhsWnd)
 {
-	newWnd->m_textstring = m_textstring;
-	newWnd->m_shapeStr = m_shapeStr;
-	newWnd->m_vertalign = m_vertalign;
-	newWnd->m_horzalign = m_horzalign;
-	newWnd->m_textfont = m_textfont;
-	newWnd->rgb = rgb;
-	newWnd->m_factor = m_factor;
-	newWnd->m_charset = m_charset;
-	newWnd->m_rectWnd = m_rectWnd;
-	newWnd->enableTransparency = enableTransparency;
-	newWnd->valueTransparency = valueTransparency;
-	newWnd->m_transparentColor = m_transparentColor;
-	newWnd->m_regionType = m_regionType;
-	newWnd->m_regionPredefinedShape = m_regionPredefinedShape;
-	newWnd->m_roundrectFactor = m_roundrectFactor;
-	newWnd->m_borderYes = m_borderYes;
-	newWnd->m_borderSize = m_borderSize;
-	newWnd->m_borderColor = m_borderColor;
-	newWnd->m_backgroundColor = m_backgroundColor;
+	m_textstring			= rhsWnd.m_textstring;
+	m_shapeStr				= rhsWnd.m_shapeStr;
+	m_vertalign				= rhsWnd.m_vertalign;
+	m_horzalign				= rhsWnd.m_horzalign;
+	m_textfont				= rhsWnd.m_textfont;
+	rgb						= rhsWnd.rgb;
+	m_factor				= rhsWnd.m_factor;
+	m_charset				= rhsWnd.m_charset;
+	m_rectWnd				= rhsWnd.m_rectWnd;
+	enableTransparency		= rhsWnd.enableTransparency;
+	valueTransparency		= rhsWnd.valueTransparency;
+	m_transparentColor		= rhsWnd.m_transparentColor;
+	m_regionType			= rhsWnd.m_regionType;
+	m_regionPredefinedShape = rhsWnd.m_regionPredefinedShape;
+	m_roundrectFactor		= rhsWnd.m_roundrectFactor;
+	m_borderYes				= rhsWnd.m_borderYes;
+	m_borderSize			= rhsWnd.m_borderSize;
+	m_borderColor			= rhsWnd.m_borderColor;
+	m_backgroundColor		= rhsWnd.m_backgroundColor;
 
 	//WidthHeight
-	newWnd->m_rectOriginalWnd = m_rectOriginalWnd;
-	newWnd->widthPos = widthPos;
-	newWnd->heightPos = heightPos;
+	m_rectOriginalWnd		= rhsWnd.m_rectOriginalWnd;
+	widthPos				= rhsWnd.widthPos;
+	heightPos				= rhsWnd.heightPos;
 
 	//uniqueID is not copied
 }
@@ -1345,67 +1344,66 @@ BOOL CTransparentWnd::SaveShape(FILE* fptr)
 {
 	if (fptr == NULL)
 		return FALSE;
-	int len = 0;
 
 	long shapeversion = 1;
-	fwrite( (void *) &shapeversion, sizeof(long), 1, fptr );
+	fwrite(&shapeversion, sizeof(long), 1, fptr);
 
-	fwrite( (void *) &m_tracker.m_rect.left, sizeof(long), 1, fptr );
-	fwrite( (void *) &m_tracker.m_rect.top, sizeof(long), 1, fptr );
-	fwrite( (void *) &m_tracker.m_rect.right, sizeof(long), 1, fptr );
-	fwrite( (void *) &m_tracker.m_rect.bottom, sizeof(long), 1, fptr );
+	fwrite(&m_tracker.m_rect.left, sizeof(long), 1, fptr);
+	fwrite(&m_tracker.m_rect.top, sizeof(long), 1, fptr);
+	fwrite(&m_tracker.m_rect.right, sizeof(long), 1, fptr);
+	fwrite(&m_tracker.m_rect.bottom, sizeof(long), 1, fptr);
 
-	len = m_textstring.GetLength();
-	fwrite( (void *) &len, sizeof(int), 1, fptr );
-	fwrite( (void *) LPCTSTR(m_textstring), len, 1, fptr );
+	int len = m_textstring.GetLength();
+	fwrite(&len, sizeof(int), 1, fptr);
+	fwrite(LPCTSTR(m_textstring), len, 1, fptr);
 
 	len = m_shapeStr.GetLength();
-	fwrite( (void *) &len, sizeof(int), 1, fptr );
-	fwrite( (void *) LPCTSTR(m_shapeStr), len, 1, fptr );
+	fwrite(&len, sizeof(int), 1, fptr);
+	fwrite((LPCTSTR)m_shapeStr, len, 1, fptr);
 
-	fwrite( (void *) &m_vertalign, sizeof(int), 1, fptr );
-	fwrite( (void *) &m_horzalign, sizeof(int), 1, fptr );
+	fwrite(&m_vertalign, sizeof(int), 1, fptr);
+	fwrite(&m_horzalign, sizeof(int), 1, fptr);
 
-	fwrite( (void *) &m_textfont, sizeof(LOGFONT), 1, fptr );
-	fwrite( (void *) &rgb, sizeof(COLORREF), 1, fptr );
+	fwrite(&m_textfont, sizeof(LOGFONT), 1, fptr);
+	fwrite(&rgb, sizeof(COLORREF), 1, fptr);
 
-	fwrite( (void *) &m_factor, sizeof(int), 1, fptr );
-	fwrite( (void *) &m_charset, sizeof(int), 1, fptr );
+	fwrite(&m_factor, sizeof(int), 1, fptr);
+	fwrite(&m_charset, sizeof(int), 1, fptr);
 
-	fwrite( (void *) &m_rectWnd.left, sizeof(long), 1, fptr );
-	fwrite( (void *) &m_rectWnd.top, sizeof(long), 1, fptr );
-	fwrite( (void *) &m_rectWnd.right, sizeof(long), 1, fptr );
-	fwrite( (void *) &m_rectWnd.bottom, sizeof(long), 1, fptr );
+	fwrite(&m_rectWnd.left, sizeof(long), 1, fptr);
+	fwrite(&m_rectWnd.top, sizeof(long), 1, fptr);
+	fwrite(&m_rectWnd.right, sizeof(long), 1, fptr);
+	fwrite(&m_rectWnd.bottom, sizeof(long), 1, fptr);
 
-	fwrite( (void *) &enableTransparency, sizeof(int), 1, fptr );
-	fwrite( (void *) &valueTransparency, sizeof(int), 1, fptr );
-	fwrite( (void *) &m_transparentColor, sizeof(COLORREF), 1, fptr );
+	fwrite(&enableTransparency, sizeof(int), 1, fptr);
+	fwrite(&valueTransparency, sizeof(int), 1, fptr);
+	fwrite(&m_transparentColor, sizeof(COLORREF), 1, fptr);
 
-	fwrite( (void *) &m_regionCreated, sizeof(int), 1, fptr );
-	fwrite( (void *) &m_regionType, sizeof(int), 1, fptr );
-	fwrite( (void *) &m_regionPredefinedShape, sizeof(int), 1, fptr );
-	fwrite( (void *) &m_roundrectFactor, sizeof(double), 1, fptr );
+	fwrite(&m_regionCreated, sizeof(int), 1, fptr);
+	fwrite(&m_regionType, sizeof(int), 1, fptr);
+	fwrite(&m_regionPredefinedShape, sizeof(int), 1, fptr);
+	fwrite(&m_roundrectFactor, sizeof(double), 1, fptr);
 
-	fwrite( (void *) &m_borderYes, sizeof(int), 1, fptr );
-	fwrite( (void *) &m_borderSize, sizeof(int), 1, fptr );
+	fwrite(&m_borderYes, sizeof(int), 1, fptr);
+	fwrite(&m_borderSize, sizeof(int), 1, fptr);
 
-	fwrite( (void *) &m_borderColor, sizeof(COLORREF), 1, fptr );
-	fwrite( (void *) &m_backgroundColor, sizeof(COLORREF), 1, fptr );
+	fwrite(&m_borderColor, sizeof(COLORREF), 1, fptr);
+	fwrite(&m_backgroundColor, sizeof(COLORREF), 1, fptr);
 
-	fwrite( (void *) &m_rectOriginalWnd.left, sizeof(long), 1, fptr );
-	fwrite( (void *) &m_rectOriginalWnd.top, sizeof(long), 1, fptr );
-	fwrite( (void *) &m_rectOriginalWnd.right, sizeof(long), 1, fptr );
-	fwrite( (void *) &m_rectOriginalWnd.bottom, sizeof(long), 1, fptr );
+	fwrite(&m_rectOriginalWnd.left, sizeof(long), 1, fptr);
+	fwrite(&m_rectOriginalWnd.top, sizeof(long), 1, fptr);
+	fwrite(&m_rectOriginalWnd.right, sizeof(long), 1, fptr);
+	fwrite(&m_rectOriginalWnd.bottom, sizeof(long), 1, fptr);
 
-	fwrite( (void *) &widthPos, sizeof(int), 1, fptr );
-	fwrite( (void *) &heightPos, sizeof(int), 1, fptr );
+	fwrite(&widthPos, sizeof(int), 1, fptr);
+	fwrite(&heightPos, sizeof(int), 1, fptr);
 
 	BOOL ret = TRUE;
 	if (m_hbitmap) {
-		BOOL ret = picture.SaveToFile(fptr);
+		ret = picture.SaveToFile(fptr);
 	} else {
 		DWORD sizefile = 0;
-		fwrite( (void *) &sizefile, sizeof(DWORD), 1, fptr );
+		fwrite(&sizefile, sizeof(DWORD), 1, fptr);
 	}
 
 	return ret;

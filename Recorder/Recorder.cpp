@@ -384,6 +384,7 @@ BOOL CRecorderApp::FirstInstance()
 int CRecorderApp::ExitInstance()
 {
 	VERIFY(cAudioFormat.Write(m_cmSettings));
+	VERIFY(cVideoOpts.Write(m_cmSettings));
 	VERIFY(CamCursor.Write(m_cmSettings));	
 
 	//Multilanguage
