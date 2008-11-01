@@ -3243,9 +3243,10 @@ void CRecorderView::OnFileVideooptions()
 
 void CRecorderView::OnOptionsCursoroptions()
 {
-	// TODO: Add your command handler code here
-	CCursorOptionsDlg cod;
-	cod.DoModal();
+	CCursorOptionsDlg cod(CamCursor, this);
+	if (IDOK == cod.DoModal()) {
+		CamCursor = cod.GetOptions(); 
+	}
 }
 
 void CRecorderView::OnOptionsAutopan()
