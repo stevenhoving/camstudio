@@ -48,7 +48,7 @@ CAudioFormatDlg::CAudioFormatDlg(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 }
 
-CAudioFormatDlg::CAudioFormatDlg(sAudioFormat& cFmt, CWnd* pParent)
+CAudioFormatDlg::CAudioFormatDlg(const sAudioFormat& cFmt, CWnd* pParent)
 : CDialog(CAudioFormatDlg::IDD, pParent)
 , m_cFmt(cFmt)
 , m_pwfx(0)
