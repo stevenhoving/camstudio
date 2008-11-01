@@ -3584,11 +3584,10 @@ void CRecorderView::OnOptionsAudioformat()
 		return;
 	}
 
-	sAudioFormat cFmt(cAudioFormat);
-	CAudioFormatDlg aod(cFmt, this);
+	CAudioFormatDlg aod(cAudioFormat, this);
 	if (IDOK == aod.DoModal()) {
 		// update settings
-		cAudioFormat = cFmt;
+		cAudioFormat = aod.Format();
 	}
 
 	//if (iInterleaveUnit == MILLISECONDS) {
