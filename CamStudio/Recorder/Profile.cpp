@@ -7,7 +7,6 @@
 #include "ImageAttributes.h"
 #include "CStudioLib.h"
 
-bool bAudioCompression = true;
 bool bAutoAdjust = true;
 bool bAutoPan = false;
 bool bAutoNaming = false;
@@ -16,14 +15,10 @@ bool bCaptionAnnotation = false;
 bool bDeleteAVIAfterUse = true;
 bool bFixedCapture = false;
 bool bFlashingRect = true;
-bool bHighlightCursor = false;
-bool bHighlightClick = false;
-bool bInterleaveFrames = true;
 bool bLaunchPropPrompt = false;
 bool bLaunchHTMLPlayer = true;
 bool bMinimizeOnStart = false;
 bool bPerformAutoSearch = true;
-bool bRecordCursor = true;
 bool bRestrictVideoCodecs = false;
 bool bRecordPreset = false;
 bool bSupportMouseDrag = true;
@@ -42,22 +37,8 @@ int iCompQuality = 7000;
 DWORD dwCompfccHandler = 0;
 DWORD dwCompressorStateIsFor = 0;
 DWORD dwCompressorStateSize = 0;
-int iCustomSel = 0;
-int iHighlightSize = 64;
-int iHighlightShape = 0;
-COLORREF clrHighlightColor = RGB(255,255,125);
-COLORREF clrHighlightClickColorLeft = RGB(255,0,0);
-COLORREF clrHighlightClickColorRight = RGB(0,0,255);
 int iMaxPan = 20;
-UINT uAudioDeviceID = WAVE_MAPPER;
-DWORD dwCbwFX;
 int iRecordAudio = 0;
-DWORD dwWaveinSelected = WAVE_FORMAT_2S16;
-int iAudioBitsPerSample = 16;
-int iAudioNumChannels = 2;
-int iAudioSamplesPerSeconds = 22050;
-int iInterleaveFactor = 100;
-int iInterleaveUnit = MILLISECONDS;
 int iViewType = 0;
 int iValueAdjust = 1;
 int iSaveLen = 0;	// dir len?
@@ -80,9 +61,9 @@ int iRecordingMode = ModeAVI;
 int iPresetTime = 60;
 int iLanguageID;
 
-TextAttributes taCaption = {TOP_LEFT, "ScreenCam", RGB(0, 0, 0), RGB(0xff, 0xff, 0xff), 0, 0};
-TextAttributes taTimestamp = {TOP_LEFT, "", RGB(0, 0, 0), RGB(0xff, 0xff, 0xff), 0, 0};
-ImageAttributes iaWatermark = {TOP_LEFT, ""};
+TextAttributes taCaption(TOP_LEFT, "ScreenCam", RGB(0, 0, 0), RGB(0xff, 0xff, 0xff));
+TextAttributes taTimestamp(TOP_LEFT, "", RGB(0, 0, 0), RGB(0xff, 0xff, 0xff));
+ImageAttributes iaWatermark(TOP_LEFT, "");
 
 /////////////////////////////////////////////////////////////////////////////
 namespace baseprofile {
@@ -425,7 +406,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 /////////////////////////////////////////////////////////////////////////////
 const char * const LEGACY_SECTION = _T(" CamStudio Settings ver2.50 -- Please do not edit ");
 const char * const APP_SECTION = _T("CamStudio");
-const char * const HIGHLIGHT_SECTION = _T("HighLight");
+const char * const CURSOR_SECTION = _T("Cursor");
 const char * const TIMESTAMP_SECTION = _T("TimeStamp");
 const char * const CAPTION_SECTION = _T("Caption");
 const char * const WATERMARK_SECTION = _T("Watermark");
@@ -436,7 +417,7 @@ CProfile::CProfile(const CString strFileName)
 : m_strFileName(strFileName)
 , m_SectionLegacy(LEGACY_SECTION)
 , m_SectionApp(APP_SECTION)
-, m_SectionHighLight(HIGHLIGHT_SECTION)
+, m_SectionHighLight(CURSOR_SECTION)
 , m_SectionTimeStamp(TIMESTAMP_SECTION)
 , m_SectionCaption(CAPTION_SECTION)
 , m_SectionWatermark(WATERMARK_SECTION)
@@ -449,7 +430,7 @@ CProfile::~CProfile()
 {
 	Write();
 	// delete the legacy section
-	m_SectionLegacy.Delete(m_strFileName);
+	//m_SectionLegacy.Delete(m_strFileName);
 }
 
 void CProfile::InitSections()
@@ -467,19 +448,6 @@ void CProfile::InitSections()
 	Add(COMPFCCHANDLER, "compfccHandler", 0);
 	Add(COMPRESSORSTATEISFOR, "CompressorStateIsFor", 0);
 	Add(COMPRESSORSTATESIZE, "CompressorStateSize", 0);
-	Add(RECORDCURSOR, "g_recordcursor", true);
-	Add(CUSTOMSEL, "g_customsel", 0);
-	Add(CURSORTYPE, "g_cursortype", 0);
-
-	Add(m_SectionHighLight, HIGHLIGHTCURSOR, "g_highlightcursor", false);
-	Add(m_SectionHighLight, HIGHLIGHTSIZE, "g_highlightsize", 0);
-	Add(m_SectionHighLight, HIGHLIGHTSHAPE, "g_highlightshape", 0);
-	Add(m_SectionHighLight, HIGHLIGHTCLICK, "g_highlightclick", false);
-	Add(m_SectionHighLight, HIGHLIGHTCOLORR, "highlightcolor", RGB(255, 255, 125));
-
-	Add(m_SectionHighLight, HIGHLIGHTCLICKCOLORLEFTR, "highlightclickcolorleft", RGB(255, 0, 0));
-
-	Add(m_SectionHighLight, HIGHLIGHTCLICKCOLORRIGHTR, "highlightclickcolorright", RGB(0, 0, 255));
 
 	Add(AUTOPAN, "autopan", false);
 	Add(MAXPAN, "maxpan", 0);
@@ -499,8 +467,6 @@ void CProfile::InitSections()
 	Add(VIEWTYPE, "viewtype", 0);
 	Add(AUTOADJUST, "g_autoadjust", true);
 	Add(VALUEADJUST, "g_valueadjust", 0);
-	Add(SAVEDIR, "savedir", 25);
-	Add(CURSORDIR, "strCursorDir", 18);
 	Add(THREADPRIORITY, "threadPriority", 0);
 	Add(CAPTURELEFT, "captureleft", 0);
 	Add(CAPTURETOP, "capturetop", 0);
@@ -553,6 +519,19 @@ void CProfile::InitSections()
 	Add(PRESETTIME, "presettime", 0);
 	Add(RECORDPRESET, "recordpreset", false);
 	Add(LANGUAGE, "language", LANGID(STANDARD_LANGID));
+
+	Add(m_SectionHighLight, RECORDCURSOR, "RecordCursor", true);
+	Add(m_SectionHighLight, CURSORTYPE, "CursorType", 0);
+	Add(m_SectionHighLight, CUSTOMSEL, "CustomSel", 0);
+	Add(m_SectionHighLight, HIGHLIGHTCURSOR, "HighlightCursor", false);
+	Add(m_SectionHighLight, HIGHLIGHTSIZE, "HighlightSize", 0);
+	Add(m_SectionHighLight, HIGHLIGHTSHAPE, "HighlightShape", 0);
+	Add(m_SectionHighLight, HIGHLIGHTCOLORR, "HighlightColor", RGB(255, 255, 125));
+	Add(m_SectionHighLight, HIGHLIGHTCLICK, "HighlightClick", false);
+	Add(m_SectionHighLight, HIGHLIGHTCLICKCOLORLEFTR, "ClickColorLeft", RGB(255, 0, 0));
+	Add(m_SectionHighLight, HIGHLIGHTCLICKCOLORRIGHTR, "ClickColorRight", RGB(0, 0, 255));
+	Add(m_SectionHighLight, SAVEDIR, "SaveDir", 25);		// TODO: should be string
+	Add(m_SectionHighLight, CURSORDIR, "CursorDir", 18);	// TODO: should be string
 
 	Add(m_SectionTimeStamp, TIMESTAMPANNOTATION, "timestampAnnotation", false);
 	Add(m_SectionTimeStamp, TIMESTAMPTEXTATTRIBUTES, "TimestampTextAttributes", taTimestamp);
@@ -768,6 +747,7 @@ bool CProfileSection::Read(const CString strFile)
 	bResult = bResult && m_grpIntegers.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpBools.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpLongs.Read(strFile, m_strSectionName);
+	bResult = bResult && m_grpDWORD.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpDoubles.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpLANGID.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpLogFont.Read(strFile, m_strSectionName);
@@ -782,6 +762,7 @@ bool CProfileSection::Write(const CString strFile)
 	bResult = bResult && m_grpIntegers.Write(strFile, m_strSectionName);
 	bResult = bResult && m_grpBools.Write(strFile, m_strSectionName);
 	bResult = bResult && m_grpLongs.Write(strFile, m_strSectionName);
+	bResult = bResult && m_grpDWORD.Write(strFile, m_strSectionName);	
 	bResult = bResult && m_grpDoubles.Write(strFile, m_strSectionName);
 	bResult = bResult && m_grpLANGID.Write(strFile, m_strSectionName);	
 	bResult = bResult && m_grpLogFont.Write(strFile, m_strSectionName);
