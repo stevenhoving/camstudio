@@ -1,3 +1,5 @@
+#include "afxwin.h"
+#include "afxcmn.h"
 #if !defined(AFX_VIDEOOPTIONS_H__25063B0F_28D8_469C_871E_F8A0DD84DA6B__INCLUDED_)
 #define AFX_VIDEOOPTIONS_H__25063B0F_28D8_469C_871E_F8A0DD84DA6B__INCLUDED_
 
@@ -46,6 +48,23 @@ protected:
 	afx_msg void OnAuto();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+private:
+	CComboBox m_ctrlCBCompressor;
+	CSliderCtrl m_ctrlSliderQuality;
+	CStatic m_ctrlStaticQuality;
+	CEdit m_ctrlEditKeyFrameInterval;
+	CEdit m_ctrlEdiPlaybackRate;
+	CButton m_ctrlButtonAutoAdjust;
+	CSliderCtrl m_ctrlSliderAdjust;
+	CEdit m_ctrlEditCaptureInterval;
+	CButton m_ctrlButtonAbout;
+	CButton m_ctrlButtonConfigure;
+	int m_iQuality;
+	int m_iKeyFrameInterval;
+	int m_iCaptureInterval;
+	int m_iPlaybackRate;
+	int m_iAdjust;
+	int m_iStaticQuality;
 };
 
 //{{AFX_INSERT_LOCATION}}
