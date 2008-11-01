@@ -124,3 +124,9 @@ o	CamStudio needs to use the OpenDML (AVI 2.0) extensions so files with size > 2
 	
 o	Move global variables into classes (doc, mainframe and view) and use teh profile
 	class to read and set them through the App interface to the profile class
+
+o	Rename profile setting strings to remove programming artifacts. Color values are
+	always single values (DWORD). Cursor folder and file name should be strings not
+	integer lengths.
+
+o	Delete legacy profile section when fully converted.

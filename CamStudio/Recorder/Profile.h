@@ -36,7 +36,6 @@
 
 #include "TextAttributes.h"
 #include "ImageAttributes.h"
-#include "CamCursor.h"
 
 enum eLegacySettings
 {
@@ -672,19 +671,81 @@ private:
 
 // legacy settings values.
 
-#define MILLISECONDS	0
-#define FRAMES			1
 #define NUMSTREAMS		2
 #define ModeAVI			0
 #define ModeFlash		1
 
-extern bool bAudioCompression;
-extern bool bInterleaveFrames;
+// Audio format values
+// POD to hold them
+const int MILLISECONDS	= 0;
+const int FRAMES		= 1;
+struct sAudioFormat
+{
+public:
+	sAudioFormat()
+		: m_uDeviceID(WAVE_MAPPER)
+		, m_bCompression(true)
+		, m_bInterleaveFrames(true)
+		, m_iNumChannels(2)
+		, m_iBitsPerSample(16)
+		, m_iSamplesPerSeconds(22050)
+		, m_iInterleaveFactor(100)
+		, m_iInterleavePeriod(MILLISECONDS)
+		, m_dwCbwFX(0)
+		, m_dwWaveinSelected(WAVE_FORMAT_2S16)
+	{
+	}
+	sAudioFormat(const sAudioFormat& rhs)
+	{
+		*this = rhs;
+	}
+	sAudioFormat& operator=(const sAudioFormat& rhs)
+	{
+		if (this == &rhs)
+			return *this;
+
+		m_uDeviceID				= rhs.m_uDeviceID;
+		m_bCompression			= rhs.m_bCompression;
+		m_bInterleaveFrames		= rhs.m_bInterleaveFrames;
+		m_iNumChannels			= rhs.m_iNumChannels;
+		m_iBitsPerSample		= rhs.m_iBitsPerSample;
+		m_iSamplesPerSeconds	= rhs.m_iSamplesPerSeconds;
+		m_iInterleaveFactor		= rhs.m_iInterleaveFactor;
+		m_iInterleavePeriod		= rhs.m_iInterleavePeriod;
+		m_dwCbwFX				= rhs.m_dwCbwFX;
+		m_dwWaveinSelected		= rhs.m_dwWaveinSelected;
+		return *this;
+	}
+	bool Write(CProfile& cProfile)
+	{
+		VERIFY(cProfile.Write(AUDIODEVICEID, m_uDeviceID));
+		VERIFY(cProfile.Write(BAUDIOCOMPRESSION, m_bCompression));
+		VERIFY(cProfile.Write(CBWFX, m_dwCbwFX));
+		VERIFY(cProfile.Write(WAVEINSELECTED, m_dwWaveinSelected));
+		VERIFY(cProfile.Write(AUDIO_BITS_PER_SAMPLE, m_iBitsPerSample));
+		VERIFY(cProfile.Write(AUDIO_NUM_CHANNELS, m_iNumChannels));
+		VERIFY(cProfile.Write(AUDIO_SAMPLES_PER_SECONDS, m_iSamplesPerSeconds));
+		VERIFY(cProfile.Write(INTERLEAVEFRAMES, m_bInterleaveFrames));
+		VERIFY(cProfile.Write(INTERLEAVEFACTOR, m_iInterleaveFactor));
+		VERIFY(cProfile.Write(INTERLEAVEUNIT, m_iInterleavePeriod));
+		return true;
+	}
+
+	UINT m_uDeviceID;
+	bool m_bCompression;
+	bool m_bInterleaveFrames;
+	int m_iNumChannels;
+	int m_iBitsPerSample;
+	int m_iSamplesPerSeconds;
+	int m_iInterleaveFactor;
+	int m_iInterleavePeriod;
+	DWORD m_dwCbwFX;
+	DWORD m_dwWaveinSelected;
+};
+extern sAudioFormat cAudioFormat;
+
 extern bool bFlashingRect;
 extern bool bMinimizeOnStart;
-extern bool bRecordCursor;
-extern bool bHighlightCursor;
-extern bool bHighlightClick;
 extern bool bAutoPan;
 extern bool bAutoAdjust;
 extern bool bFixedCapture;
@@ -714,22 +775,8 @@ extern int iCompQuality;
 extern DWORD dwCompfccHandler;
 extern DWORD dwCompressorStateIsFor;
 extern DWORD dwCompressorStateSize;
-extern int iCustomSel;
-extern int iHighlightSize;
-extern int iHighlightShape;
-extern COLORREF clrHighlightColor;
-extern COLORREF clrHighlightClickColorLeft;
-extern COLORREF clrHighlightClickColorRight;
 extern int iMaxPan;
-extern UINT uAudioDeviceID;
-extern DWORD dwCbwFX;
 extern int iRecordAudio;
-extern DWORD dwWaveinSelected;
-extern int iAudioBitsPerSample;
-extern int iAudioNumChannels;
-extern int iAudioSamplesPerSeconds;
-extern int iInterleaveFactor;
-extern int iInterleaveUnit;
 extern int iViewType;
 extern int iValueAdjust;
 extern int iSaveLen;

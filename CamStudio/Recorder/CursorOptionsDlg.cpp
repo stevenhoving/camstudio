@@ -26,16 +26,16 @@ CCursorOptionsDlg::CCursorOptionsDlg(CWnd* pParent /*=NULL*/)
 , m_hPreviewCursor(NULL)
 , m_hLoadCursor(CamCursor.Load())
 , m_hCustomCursor(CamCursor.Custom())
-, m_iCustomSel(iCustomSel)
-, m_bRecordCursor(bRecordCursor)
+, m_iCustomSel(CamCursor.CustomType())
+, m_bRecordCursor(CamCursor.Record())
 , m_iCursorType(CamCursor.Select())
-, m_bHighlightCursor(bHighlightCursor)
-, m_iHighlightSize(iHighlightSize)
-, m_iHighlightShape(iHighlightShape)
-, m_bHighlightClick(bHighlightClick)
-, m_clrHighlight(clrHighlightColor)
-, m_clrHighlightClickLeft(clrHighlightClickColorLeft)
-, m_clrHighlightClickRight(clrHighlightClickColorRight)
+, m_bHighlightCursor(CamCursor.Highlight())
+, m_iHighlightSize(CamCursor.HighlightSize())
+, m_iHighlightShape(CamCursor.HighlightShape())
+, m_bHighlightClick(CamCursor.HighlightClick())
+, m_clrHighlight(CamCursor.HighlightColor())
+, m_clrHighlightClickLeft(CamCursor.ClickLeftColor())
+, m_clrHighlightClickRight(CamCursor.ClickRightColor())
 , m_bInitPaint(true)
 , m_bSliding(false)
 {
@@ -441,10 +441,6 @@ void CCursorOptionsDlg::OnBnClickedFileCursor()
 
 void CCursorOptionsDlg::OnOK()
 {
-	//if (m_iCursorType == 0)
-	//{
-	//}
-	//else 
 	if (m_iCursorType == 1)
 	{
 		m_hCustomCursor = m_hPreviewCursor;
@@ -455,18 +451,18 @@ void CCursorOptionsDlg::OnOK()
 
 	} //cursortype
 
-	iCustomSel = m_iCustomSel;
-	bRecordCursor = m_bRecordCursor;
+	CamCursor.Record(m_bRecordCursor);
+	CamCursor.CustomType(m_iCustomSel);
 	CamCursor.Select(m_iCursorType);
-	bHighlightCursor = m_bHighlightCursor;
-	iHighlightSize = m_iHighlightSize;
-	iHighlightShape = m_iHighlightShape;
-	clrHighlightColor = m_clrHighlight;
 	CamCursor.Load(m_hLoadCursor);
 	CamCursor.Custom(m_hCustomCursor);
-	bHighlightClick = m_bHighlightClick;
-	clrHighlightClickColorLeft = m_clrHighlightClickLeft;
-	clrHighlightClickColorRight = m_clrHighlightClickRight;
+	CamCursor.Highlight(m_bHighlightCursor);
+	CamCursor.HighlightSize(m_iHighlightSize);
+	CamCursor.HighlightShape(m_iHighlightShape);
+	CamCursor.HighlightColor(m_clrHighlight);
+	CamCursor.HighlightClick(m_bHighlightClick);
+	CamCursor.ClickLeftColor(m_clrHighlightClickLeft);
+	CamCursor.ClickRightColor(m_clrHighlightClickRight);
 
 	CDialog::OnOK();
 }

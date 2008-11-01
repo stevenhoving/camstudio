@@ -243,6 +243,7 @@ int sdwBytesPerSec = 44100;
 
 int iCurrentLayout = 0;
 
+sAudioFormat cAudioFormat;
 CCamCursor CamCursor;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -716,23 +717,23 @@ void InsertHighLight(HDC hdc,int xoffset, int yoffset)
 	fullsize.cx=128;
 	fullsize.cy=128;
 
-	int highlightsize = iHighlightSize;
-	COLORREF highlightcolor = clrHighlightColor;
-	if (bHighlightClick==1) {
+	int highlightsize = CamCursor.HighlightSize();
+	COLORREF highlightcolor = CamCursor.HighlightColor();
+	if (CamCursor.HighlightClick()) {
 		SHORT tmpShort = -999;
 		tmpShort=GetKeyState(VK_LBUTTON);
 		if (tmpShort!=0 && tmpShort!=1) {
-			highlightcolor=clrHighlightClickColorLeft;
+			highlightcolor = CamCursor.ClickLeftColor();
 			highlightsize *= 1.5;
 		}
 		tmpShort=GetKeyState(VK_RBUTTON);
 		if (tmpShort!=0 && tmpShort!=1) {
-			highlightcolor=clrHighlightClickColorRight;
+			highlightcolor = CamCursor.ClickRightColor();
 			highlightsize *= 1.5;
 		}
 	}
 
-	int highlightshape = iHighlightShape;
+	int highlightshape = CamCursor.HighlightShape();
 
 	double x1,x2,y1,y2;
 
@@ -1096,7 +1097,7 @@ BOOL StartAudioRecording(WAVEFORMATEX* format)
 
 	// open wavein device
 	//use on message to map.....
-	MMRESULT mmReturn = ::waveInOpen(&m_hRecord, uAudioDeviceID, &m_Format,(DWORD) hWndGlobal, NULL, CALLBACK_WINDOW);
+	MMRESULT mmReturn = ::waveInOpen(&m_hRecord, cAudioFormat.m_uDeviceID, &m_Format,(DWORD) hWndGlobal, NULL, CALLBACK_WINDOW);
 	if (mmReturn) {
 		waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
 		return FALSE;
@@ -1206,7 +1207,7 @@ void AllocCompressFormat()
 		//Do nothing....already allocated
 		return;
 	}
-	MMRESULT mmresult = acmMetrics(NULL, ACM_METRIC_MAX_SIZE_FORMAT, &dwCbwFX);
+	MMRESULT mmresult = acmMetrics(NULL, ACM_METRIC_MAX_SIZE_FORMAT, &cAudioFormat.m_dwCbwFX);
 	if (MMSYSERR_NOERROR != mmresult) {
 		//CString msgstr;
 		//msgstr.Format("Metrics failed mmresult=%u!", mmresult);
@@ -1216,7 +1217,7 @@ void AllocCompressFormat()
 		return;
 	}
 
-	pwfx = (LPWAVEFORMATEX)GlobalAllocPtr(GHND, dwCbwFX);
+	pwfx = (LPWAVEFORMATEX)GlobalAllocPtr(GHND, cAudioFormat.m_dwCbwFX);
 	if (NULL == pwfx) {
 		//CString msgstr;
 		//msgstr.Format("GlobalAllocPtr(%lu) failed!", dwCbwFX);
@@ -1232,10 +1233,11 @@ void AllocCompressFormat()
 //Build Recording Format to m_Format
 void BuildRecordingFormat()
 {
-	m_Format.wFormatTag = WAVE_FORMAT_PCM;
-	m_Format.wBitsPerSample = iAudioBitsPerSample;
-	m_Format.nSamplesPerSec = iAudioSamplesPerSeconds;
-	m_Format.nChannels = iAudioNumChannels;
+	m_Format.wFormatTag		= WAVE_FORMAT_PCM;
+	m_Format.wBitsPerSample = cAudioFormat.m_iBitsPerSample;
+	m_Format.nSamplesPerSec = cAudioFormat.m_iSamplesPerSeconds;
+	m_Format.nChannels		= cAudioFormat.m_iNumChannels;
+
 	m_Format.nBlockAlign = m_Format.nChannels * (m_Format.wBitsPerSample/8);
 	m_Format.nAvgBytesPerSec = m_Format.nSamplesPerSec * m_Format.nBlockAlign;
 	m_Format.cbSize = 0;
@@ -1246,7 +1248,7 @@ void SuggestRecordingFormat()
 {
 	WAVEINCAPS pwic;
 	::ZeroMemory(&pwic, sizeof(WAVEINCAPS));
-	MMRESULT mmResult = ::waveInGetDevCaps(uAudioDeviceID, &pwic, sizeof(pwic));
+	MMRESULT mmResult = ::waveInGetDevCaps(cAudioFormat.m_uDeviceID, &pwic, sizeof(pwic));
 	if (MMSYSERR_NOERROR != mmResult)
 	{
 		// report error
@@ -1256,71 +1258,71 @@ void SuggestRecordingFormat()
 
 	//Ordered in preference of choice
 	if ((pwic.dwFormats) & WAVE_FORMAT_2S16) {
-		iAudioBitsPerSample = 16;
-		iAudioNumChannels = 2;
-		iAudioSamplesPerSeconds = 22050;
-		dwWaveinSelected = WAVE_FORMAT_2S16;
+		cAudioFormat.m_iBitsPerSample = 16;
+		cAudioFormat.m_iNumChannels = 2;
+		cAudioFormat.m_iSamplesPerSeconds = 22050;
+		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_2S16;
 	} else if ((pwic.dwFormats) & WAVE_FORMAT_2M08) {
-		iAudioBitsPerSample = 8;
-		iAudioNumChannels = 1;
-		iAudioSamplesPerSeconds = 22050;
-		dwWaveinSelected = WAVE_FORMAT_2M08;
+		cAudioFormat.m_iBitsPerSample = 8;
+		cAudioFormat.m_iNumChannels = 1;
+		cAudioFormat.m_iSamplesPerSeconds = 22050;
+		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_2M08;
 	} else if ((pwic.dwFormats) & WAVE_FORMAT_2S08) {
-		iAudioBitsPerSample = 8;
-		iAudioNumChannels = 2;
-		iAudioSamplesPerSeconds = 22050;
-		dwWaveinSelected = WAVE_FORMAT_2S08;
+		cAudioFormat.m_iBitsPerSample = 8;
+		cAudioFormat.m_iNumChannels = 2;
+		cAudioFormat.m_iSamplesPerSeconds = 22050;
+		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_2S08;
 	} else if ((pwic.dwFormats) & WAVE_FORMAT_2M16) {
-		iAudioBitsPerSample = 16;
-		iAudioNumChannels = 1;
-		iAudioSamplesPerSeconds = 22050;
-		dwWaveinSelected = WAVE_FORMAT_2M16;
+		cAudioFormat.m_iBitsPerSample = 16;
+		cAudioFormat.m_iNumChannels = 1;
+		cAudioFormat.m_iSamplesPerSeconds = 22050;
+		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_2M16;
 	} else if ((pwic.dwFormats) & WAVE_FORMAT_1M08) {
-		iAudioBitsPerSample = 8;
-		iAudioNumChannels = 1;
-		iAudioSamplesPerSeconds = 11025;
-		dwWaveinSelected = WAVE_FORMAT_1M08;
+		cAudioFormat.m_iBitsPerSample = 8;
+		cAudioFormat.m_iNumChannels = 1;
+		cAudioFormat.m_iSamplesPerSeconds = 11025;
+		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_1M08;
 	} else if ((pwic.dwFormats) & WAVE_FORMAT_1M16) {
-		iAudioBitsPerSample = 16;
-		iAudioNumChannels = 1;
-		iAudioSamplesPerSeconds = 11025;
-		dwWaveinSelected = WAVE_FORMAT_1M16;
+		cAudioFormat.m_iBitsPerSample = 16;
+		cAudioFormat.m_iNumChannels = 1;
+		cAudioFormat.m_iSamplesPerSeconds = 11025;
+		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_1M16;
 	} else if ((pwic.dwFormats) & WAVE_FORMAT_1S08) {
-		iAudioBitsPerSample = 8;
-		iAudioNumChannels = 2;
-		iAudioSamplesPerSeconds = 11025;
-		dwWaveinSelected = WAVE_FORMAT_1S08;
+		cAudioFormat.m_iBitsPerSample = 8;
+		cAudioFormat.m_iNumChannels = 2;
+		cAudioFormat.m_iSamplesPerSeconds = 11025;
+		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_1S08;
 	} else if ((pwic.dwFormats) & WAVE_FORMAT_1S16) {
-		iAudioBitsPerSample = 16;
-		iAudioNumChannels = 2;
-		iAudioSamplesPerSeconds = 11025;
-		dwWaveinSelected = WAVE_FORMAT_1S16;
+		cAudioFormat.m_iBitsPerSample = 16;
+		cAudioFormat.m_iNumChannels = 2;
+		cAudioFormat.m_iSamplesPerSeconds = 11025;
+		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_1S16;
 	} else if ((pwic.dwFormats) & WAVE_FORMAT_4M08) {
-		iAudioBitsPerSample = 8;
-		iAudioNumChannels = 1;
-		iAudioSamplesPerSeconds = 44100;
-		dwWaveinSelected = WAVE_FORMAT_4M08;
+		cAudioFormat.m_iBitsPerSample = 8;
+		cAudioFormat.m_iNumChannels = 1;
+		cAudioFormat.m_iSamplesPerSeconds = 44100;
+		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_4M08;
 	} else if ((pwic.dwFormats) & WAVE_FORMAT_4M16) {
-		iAudioBitsPerSample = 16;
-		iAudioNumChannels = 1;
-		iAudioSamplesPerSeconds = 44100;
-		dwWaveinSelected = WAVE_FORMAT_4M16;
+		cAudioFormat.m_iBitsPerSample = 16;
+		cAudioFormat.m_iNumChannels = 1;
+		cAudioFormat.m_iSamplesPerSeconds = 44100;
+		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_4M16;
 	} else if ((pwic.dwFormats) & WAVE_FORMAT_4S08) {
-		iAudioBitsPerSample = 8;
-		iAudioNumChannels = 2;
-		iAudioSamplesPerSeconds = 44100;
-		dwWaveinSelected = WAVE_FORMAT_4S08;
+		cAudioFormat.m_iBitsPerSample = 8;
+		cAudioFormat.m_iNumChannels = 2;
+		cAudioFormat.m_iSamplesPerSeconds = 44100;
+		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_4S08;
 	} else if ((pwic.dwFormats) & WAVE_FORMAT_4S16) {
-		iAudioBitsPerSample = 16;
-		iAudioNumChannels = 2;
-		iAudioSamplesPerSeconds = 44100;
-		dwWaveinSelected = WAVE_FORMAT_4S16;
+		cAudioFormat.m_iBitsPerSample = 16;
+		cAudioFormat.m_iNumChannels = 2;
+		cAudioFormat.m_iSamplesPerSeconds = 44100;
+		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_4S16;
 	} else {
 		//Arbitrarily choose one
-		iAudioBitsPerSample = 8;
-		iAudioNumChannels = 1;
-		iAudioSamplesPerSeconds = 22050;
-		dwWaveinSelected = WAVE_FORMAT_2M08;
+		cAudioFormat.m_iBitsPerSample = 8;
+		cAudioFormat.m_iNumChannels = 1;
+		cAudioFormat.m_iSamplesPerSeconds = 22050;
+		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_2M08;
 	}
 
 	//Build m_Format
@@ -1329,7 +1331,7 @@ void SuggestRecordingFormat()
 
 void SuggestCompressFormat()
 {
-	bAudioCompression = TRUE;
+	cAudioFormat.m_bCompression = TRUE;
 
 	AllocCompressFormat();
 
@@ -1338,7 +1340,7 @@ void SuggestCompressFormat()
 	MMRESULT mmr;
 	if ((m_Format.nSamplesPerSec == 22050) && (m_Format.nChannels==2) && (m_Format.wBitsPerSample <= 16)) {
 		pwfx->wFormatTag = WAVE_FORMAT_MPEGLAYER3;
-		mmr = acmFormatSuggest(NULL, &m_Format, pwfx, dwCbwFX, ACM_FORMATSUGGESTF_WFORMATTAG);
+		mmr = acmFormatSuggest(NULL, &m_Format, pwfx, cAudioFormat.m_dwCbwFX, ACM_FORMATSUGGESTF_WFORMATTAG);
 	}
 
 	if (mmr!=0) {
@@ -1353,10 +1355,10 @@ void SuggestCompressFormat()
 			//Use the PCM as default
 			BuildRecordingFormat();
 			pwfx->wFormatTag = WAVE_FORMAT_PCM;
-			MMRESULT mmr = acmFormatSuggest(NULL, &m_Format, pwfx, dwCbwFX, ACM_FORMATSUGGESTF_WFORMATTAG);
+			MMRESULT mmr = acmFormatSuggest(NULL, &m_Format, pwfx, cAudioFormat.m_dwCbwFX, ACM_FORMATSUGGESTF_WFORMATTAG);
 
 			if (mmr!=0) {
-				bAudioCompression = FALSE;
+				cAudioFormat.m_bCompression = FALSE;
 			}
 		}
 	}
@@ -1511,7 +1513,7 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
 	if (interleave_unit==FRAMES) {
 		galpAVIOptions[0]->dwInterleaveEvery = interleave_factor;
 	} else {
-		double interfloat = (((double) iInterleaveFactor) * ((double) iFramesPerSecond))/1000.0;
+		double interfloat = (((double) cAudioFormat.m_iInterleaveFactor) * ((double) iFramesPerSecond))/1000.0;
 		int interint = (int) interfloat;
 		if (interint<=0) {
 			interint = 1;
@@ -1543,7 +1545,7 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
 		galpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
 	} else {
 		//back here
-		double interfloat = (((double) iInterleaveFactor) * ((double) iFramesPerSecond))/1000.0;
+		double interfloat = (((double) cAudioFormat.m_iInterleaveFactor) * ((double) iFramesPerSecond))/1000.0;
 		int interint = (int) interfloat;
 		if (interint<=0) {
 			interint = 1;
@@ -1804,8 +1806,8 @@ void SetVideoCompressState (HIC hic, DWORD fccHandler)
 void AttemptRecordingFormat()
 {
 	WAVEINCAPS pwic;
-	MMRESULT mmr = waveInGetDevCaps(uAudioDeviceID, &pwic, sizeof(pwic));
-	if ((pwic.dwFormats) & dwWaveinSelected) {
+	MMRESULT mmr = waveInGetDevCaps(cAudioFormat.m_uDeviceID, &pwic, sizeof(pwic));
+	if ((pwic.dwFormats) & cAudioFormat.m_dwWaveinSelected) {
 		BuildRecordingFormat();
 	} else {
 		SuggestRecordingFormat();
@@ -1814,11 +1816,11 @@ void AttemptRecordingFormat()
 
 void AttemptCompressFormat()
 {
-	bAudioCompression = TRUE;
+	cAudioFormat.m_bCompression = TRUE;
 	AllocCompressFormat();
 	BuildRecordingFormat();
 	//Test Compatibility
-	MMRESULT mmr = acmFormatSuggest(NULL, &m_Format, pwfx, dwCbwFX, ACM_FORMATSUGGESTF_NCHANNELS | ACM_FORMATSUGGESTF_NSAMPLESPERSEC | ACM_FORMATSUGGESTF_WBITSPERSAMPLE | ACM_FORMATSUGGESTF_WFORMATTAG);
+	MMRESULT mmr = acmFormatSuggest(NULL, &m_Format, pwfx, cAudioFormat.m_dwCbwFX, ACM_FORMATSUGGESTF_NCHANNELS | ACM_FORMATSUGGESTF_NSAMPLESPERSEC | ACM_FORMATSUGGESTF_WBITSPERSAMPLE | ACM_FORMATSUGGESTF_WFORMATTAG);
 	if (mmr!=0) {
 		SuggestCompressFormat();
 	}
@@ -2917,9 +2919,9 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 		//if ((iRecordAudio==2) || (bUseMCI)) {
 		//ver 2.26 ...overwrite audio settings for Flash Moe recording ... no compression used...
 		if ((iRecordAudio == 2) || (bUseMCI) || (iRecordingMode == ModeFlash)) {
-			result = Merge_Video_And_Sound_File(strTempFilePath, tempaudiopath, m_newfile, FALSE, pwfx, dwCbwFX,bInterleaveFrames,iInterleaveFactor, iInterleaveUnit);
+			result = Merge_Video_And_Sound_File(strTempFilePath, tempaudiopath, m_newfile, FALSE, pwfx, cAudioFormat.m_dwCbwFX,cAudioFormat.m_bInterleaveFrames,cAudioFormat.m_iInterleaveFactor, cAudioFormat.m_iInterleavePeriod);
 		} else if (iRecordAudio==1) {
-			result = Merge_Video_And_Sound_File(strTempFilePath, tempaudiopath, m_newfile, bAudioCompression, pwfx, dwCbwFX,bInterleaveFrames,iInterleaveFactor, iInterleaveUnit);
+			result = Merge_Video_And_Sound_File(strTempFilePath, tempaudiopath, m_newfile, cAudioFormat.m_bCompression, pwfx, cAudioFormat.m_dwCbwFX,cAudioFormat.m_bInterleaveFrames,cAudioFormat.m_iInterleaveFactor, cAudioFormat.m_iInterleavePeriod);
 		}
 
 		//Check Results : Attempt Recovery on error
@@ -3582,17 +3584,11 @@ void CRecorderView::OnOptionsAudioformat()
 		return;
 	}
 
-	CAudioFormatDlg aod;
+	sAudioFormat cFmt(cAudioFormat);
+	CAudioFormatDlg aod(cFmt, this);
 	if (IDOK == aod.DoModal()) {
-		// update profile settings
-		CRecorderApp * pApp = static_cast<CRecorderApp*>(AfxGetApp());
-		VERIFY(pApp->GetProfile().Write(AUDIODEVICEID, uAudioDeviceID));
-		VERIFY(pApp->GetProfile().Write(BAUDIOCOMPRESSION, bAudioCompression));
-		VERIFY(pApp->GetProfile().Write(CBWFX, dwCbwFX));
-		VERIFY(pApp->GetProfile().Write(WAVEINSELECTED, dwWaveinSelected));
-		VERIFY(pApp->GetProfile().Write(AUDIO_BITS_PER_SAMPLE, iAudioBitsPerSample));
-		VERIFY(pApp->GetProfile().Write(AUDIO_NUM_CHANNELS, iAudioNumChannels));
-		VERIFY(pApp->GetProfile().Write(AUDIO_SAMPLES_PER_SECONDS, iAudioSamplesPerSeconds));
+		// update settings
+		cAudioFormat = cFmt;
 	}
 
 	//if (iInterleaveUnit == MILLISECONDS) {
@@ -3681,25 +3677,25 @@ void CRecorderView::SaveSettings()
 	fprintf(sFile, "dwCompressorStateIsFor= %ld \n",dwCompressorStateIsFor);
 	fprintf(sFile, "dwCompressorStateSize= %d \n",dwCompressorStateSize);
 
-	fprintf(sFile, "bRecordCursor=%d \n",bRecordCursor);
-	fprintf(sFile, "iCustomSel=%d \n",iCustomSel); //Having this line means the custom cursor type cannot be re-arranged in a new order in the combo box...else previous saved settings referring to the custom type will not be correct
+	fprintf(sFile, "bRecordCursor=%d \n",CamCursor.Record());
+	fprintf(sFile, "iCustomSel=%d \n",CamCursor.CustomType()); //Having this line means the custom cursor type cannot be re-arranged in a new order in the combo box...else previous saved settings referring to the custom type will not be correct
 	fprintf(sFile, "iCursorType=%d \n", CamCursor.Select());
-	fprintf(sFile, "bHighlightCursor=%d \n",bHighlightCursor);
-	fprintf(sFile, "iHighlightSize=%d \n",iHighlightSize);
-	fprintf(sFile, "iHighlightShape=%d \n",iHighlightShape);
-	fprintf(sFile, "bHighlightClick=%d \n",bHighlightClick);
+	fprintf(sFile, "bHighlightCursor=%d \n",CamCursor.Highlight());
+	fprintf(sFile, "iHighlightSize=%d \n",CamCursor.HighlightSize());
+	fprintf(sFile, "iHighlightShape=%d \n",CamCursor.HighlightShape());
+	fprintf(sFile, "bHighlightClick=%d \n",CamCursor.HighlightClick());
 
-	fprintf(sFile, "g_highlightcolorR=%d \n",GetRValue(clrHighlightColor));
-	fprintf(sFile, "g_highlightcolorG=%d \n",GetGValue(clrHighlightColor));
-	fprintf(sFile, "g_highlightcolorB=%d \n",GetBValue(clrHighlightColor));
+	fprintf(sFile, "g_highlightcolorR=%d \n",GetRValue(CamCursor.HighlightColor()));
+	fprintf(sFile, "g_highlightcolorG=%d \n",GetGValue(CamCursor.HighlightColor()));
+	fprintf(sFile, "g_highlightcolorB=%d \n",GetBValue(CamCursor.HighlightColor()));
 
-	fprintf(sFile, "g_highlightclickcolorleftR=%d \n",GetRValue(clrHighlightClickColorLeft));
-	fprintf(sFile, "g_highlightclickcolorleftG=%d \n",GetGValue(clrHighlightClickColorLeft));
-	fprintf(sFile, "g_highlightclickcolorleftB=%d \n",GetBValue(clrHighlightClickColorLeft));
+	fprintf(sFile, "g_highlightclickcolorleftR=%d \n",GetRValue(CamCursor.ClickLeftColor()));
+	fprintf(sFile, "g_highlightclickcolorleftG=%d \n",GetGValue(CamCursor.ClickLeftColor()));
+	fprintf(sFile, "g_highlightclickcolorleftB=%d \n",GetBValue(CamCursor.ClickLeftColor()));
 
-	fprintf(sFile, "g_highlightclickcolorrightR=%d \n",GetRValue(clrHighlightClickColorRight));
-	fprintf(sFile, "g_highlightclickcolorrightG=%d \n",GetGValue(clrHighlightClickColorRight));
-	fprintf(sFile, "g_highlightclickcolorrightB=%d \n",GetBValue(clrHighlightClickColorRight));
+	fprintf(sFile, "g_highlightclickcolorrightR=%d \n",GetRValue(CamCursor.ClickRightColor()));
+	fprintf(sFile, "g_highlightclickcolorrightG=%d \n",GetGValue(CamCursor.ClickRightColor()));
+	fprintf(sFile, "g_highlightclickcolorrightB=%d \n",GetBValue(CamCursor.ClickRightColor()));
 
 	//fprintf(sFile, "savedir=%s; \n",LPCTSTR(savedir));
 	//fprintf(sFile, "strCursorDir=%s; \n",LPCTSTR(strCursorDir));
@@ -3708,23 +3704,23 @@ void CRecorderView::SaveSettings()
 	fprintf(sFile, "iMaxPan= %d \n",iMaxPan);
 
 	//Audio Functions and Variables
-	fprintf(sFile, "uAudioDeviceID= %d \n",uAudioDeviceID);
+	fprintf(sFile, "uAudioDeviceID= %d \n",cAudioFormat.m_uDeviceID);
 
 	//Audio Options Dialog
 	//LPWAVEFORMATEX pwfx = NULL;
 	//DWORD dwCbwFX;
-	fprintf(sFile, "dwCbwFX= %ld \n", dwCbwFX);
+	fprintf(sFile, "dwCbwFX= %ld \n", cAudioFormat.m_dwCbwFX);
 	fprintf(sFile, "iRecordAudio= %d \n", iRecordAudio);
 
 	//Audio Formats Dialog
-	fprintf(sFile, "dwWaveinSelected= %d \n", dwWaveinSelected);
-	fprintf(sFile, "iAudioBitsPerSample= %d \n", iAudioBitsPerSample);
-	fprintf(sFile, "iAudioNumChannels= %d \n", iAudioNumChannels);
-	fprintf(sFile, "iAudioSamplesPerSeconds= %d \n", iAudioSamplesPerSeconds);
-	fprintf(sFile, "bAudioCompression= %d \n", bAudioCompression);
+	fprintf(sFile, "dwWaveinSelected= %d \n", cAudioFormat.m_dwWaveinSelected);
+	fprintf(sFile, "iAudioBitsPerSample= %d \n", cAudioFormat.m_iBitsPerSample);
+	fprintf(sFile, "iAudioNumChannels= %d \n", cAudioFormat.m_iNumChannels);
+	fprintf(sFile, "iAudioSamplesPerSeconds= %d \n", cAudioFormat.m_iSamplesPerSeconds);
+	fprintf(sFile, "bAudioCompression= %d \n", cAudioFormat.m_bCompression);
 
-	fprintf(sFile, "bInterleaveFrames= %d \n", bInterleaveFrames);
-	fprintf(sFile, "iInterleaveFactor= %d \n", iInterleaveFactor);
+	fprintf(sFile, "bInterleaveFrames= %d \n", cAudioFormat.m_bInterleaveFrames);
+	fprintf(sFile, "iInterleaveFactor= %d \n", cAudioFormat.m_iInterleaveFactor);
 
 	//Key Shortcuts
 	fprintf(sFile, "keyRecordStart= %d \n",keyRecordStart);
@@ -3747,7 +3743,7 @@ void CRecorderView::SaveSettings()
 	fprintf(sFile, "iCaptureLeft= %d \n",iCaptureLeft);
 	fprintf(sFile, "iCaptureTop= %d \n",iCaptureTop);
 	fprintf(sFile, "bFixedCapture=%d \n",bFixedCapture);
-	fprintf(sFile, "iInterleaveUnit= %d \n", iInterleaveUnit);
+	fprintf(sFile, "iInterleaveUnit= %d \n", cAudioFormat.m_iInterleavePeriod);
 
 	//Ver 1.6
 	fprintf(sFile, "iTempPathAccess=%d \n",iTempPathAccess);
@@ -3887,8 +3883,8 @@ void CRecorderView::SaveSettings()
 	if (!CamCursor.Dir().IsEmpty())
 		fwrite((LPCTSTR)(CamCursor.Dir()), CamCursor.Dir().GetLength(), 1, tFile);
 
-	if (dwCbwFX > 0)
-		fwrite(pwfx, dwCbwFX, 1, tFile);
+	if (cAudioFormat.m_dwCbwFX > 0)
+		fwrite(pwfx, cAudioFormat.m_dwCbwFX, 1, tFile);
 
 	if (dwCompressorStateSize > 0)
 		fwrite(pVideoCompressParams, dwCompressorStateSize, 1, tFile);
@@ -3989,20 +3985,29 @@ void CRecorderView::LoadSettings()
 		fscanf_s(sFile, "dwCompressorStateIsFor= %ld \n",&dwCompressorStateIsFor);
 		fscanf_s(sFile, "dwCompressorStateSize= %d \n",&dwCompressorStateSize);
 
-		fscanf_s(sFile, "bRecordCursor=%d \n",&bRecordCursor);
+		int itemp = 0;
+		fscanf_s(sFile, "bRecordCursor=%d \n",&itemp);
+		CamCursor.Record(itemp);
 		// Having this line means the custom cursor type cannot be re-arranged
 		// in a new order in the combo box...else previous saved settings
 		// referring to the custom type will not be correct
-		fscanf_s(sFile, "iCustomSel=%d \n",&iCustomSel);
+
 		{
 			int iCursorType = 0;
+			fscanf_s(sFile, "iCustomSel=%d \n",&iCursorType);
+			CamCursor.CustomType(iCursorType);
 			fscanf_s(sFile, "iCursorType=%d \n", &iCursorType);
 			CamCursor.Select(iCursorType);
+			int itemp = 0;
+			fscanf_s(sFile, "bHighlightCursor=%d \n",&itemp);
+			CamCursor.Highlight(itemp);
+			fscanf_s(sFile, "iHighlightSize=%d \n",&itemp);
+			CamCursor.HighlightSize(itemp);
+			fscanf_s(sFile, "iHighlightShape=%d \n",&itemp);
+			CamCursor.HighlightShape(itemp);
+			fscanf_s(sFile, "bHighlightClick=%d \n",&itemp);
+			CamCursor.HighlightClick(itemp);
 		}
-		fscanf_s(sFile, "bHighlightCursor=%d \n",&bHighlightCursor);
-		fscanf_s(sFile, "iHighlightSize=%d \n",&iHighlightSize);
-		fscanf_s(sFile, "iHighlightShape=%d \n",&iHighlightShape);
-		fscanf_s(sFile, "bHighlightClick=%d \n",&bHighlightClick);
 
 		int redv = 0;
 		int greenv = 0;
@@ -4013,7 +4018,7 @@ void CRecorderView::LoadSettings()
 		greenv=idata;
 		fscanf_s(sFile, "g_highlightcolorB=%d \n",&idata);
 		bluev=idata;
-		clrHighlightColor = RGB(redv,greenv,bluev);
+		CamCursor.HighlightColor(RGB(redv,greenv,bluev));
 
 		redv=0;greenv=0;bluev=0;
 		fscanf_s(sFile, "g_highlightclickcolorleftR=%d \n",&idata);
@@ -4022,7 +4027,7 @@ void CRecorderView::LoadSettings()
 		greenv=idata;
 		fscanf_s(sFile, "g_highlightclickcolorleftB=%d \n",&idata);
 		bluev=idata;
-		clrHighlightClickColorLeft = RGB(redv,greenv,bluev);
+		CamCursor.ClickLeftColor(RGB(redv,greenv,bluev));
 
 		redv=0;greenv=0;bluev=0;
 		fscanf_s(sFile, "g_highlightclickcolorrightR=%d \n",&idata);
@@ -4031,27 +4036,27 @@ void CRecorderView::LoadSettings()
 		greenv=idata;
 		fscanf_s(sFile, "g_highlightclickcolorrightB=%d \n",&idata);
 		bluev=idata;
-		clrHighlightClickColorRight = RGB(redv,greenv,bluev);
+		CamCursor.ClickRightColor(RGB(redv,greenv,bluev));
 
 		fscanf_s(sFile, "autopan=%d \n",&bAutoPan);
 		fscanf_s(sFile, "iMaxPan= %d \n",&iMaxPan);
 
 		//Audio Functions and Variables
-		fscanf_s(sFile, "uAudioDeviceID= %d \n",&uAudioDeviceID);
+		fscanf_s(sFile, "uAudioDeviceID= %d \n",&cAudioFormat.m_uDeviceID);
 
 		//Audio Options Dialog
-		fscanf_s(sFile, "dwCbwFX= %ld \n", &dwCbwFX);
+		fscanf_s(sFile, "dwCbwFX= %ld \n", &cAudioFormat.m_dwCbwFX);
 		fscanf_s(sFile, "iRecordAudio= %d \n", &iRecordAudio);
 
 		//Audio Formats Dialog
-		fscanf_s(sFile, "dwWaveinSelected= %d \n", &dwWaveinSelected);
-		fscanf_s(sFile, "iAudioBitsPerSample= %d \n", &iAudioBitsPerSample);
-		fscanf_s(sFile, "iAudioNumChannels= %d \n", &iAudioNumChannels);
-		fscanf_s(sFile, "iAudioSamplesPerSeconds= %d \n", &iAudioSamplesPerSeconds);
-		fscanf_s(sFile, "bAudioCompression= %d \n", &bAudioCompression);
+		fscanf_s(sFile, "dwWaveinSelected= %d \n", &cAudioFormat.m_dwWaveinSelected);
+		fscanf_s(sFile, "iAudioBitsPerSample= %d \n", &cAudioFormat.m_iBitsPerSample);
+		fscanf_s(sFile, "iAudioNumChannels= %d \n", &cAudioFormat.m_iNumChannels);
+		fscanf_s(sFile, "iAudioSamplesPerSeconds= %d \n", &cAudioFormat.m_iSamplesPerSeconds);
+		fscanf_s(sFile, "bAudioCompression= %d \n", &cAudioFormat.m_bCompression);
 
-		fscanf_s(sFile, "bInterleaveFrames= %d \n", &bInterleaveFrames);
-		fscanf_s(sFile, "iInterleaveFactor= %d \n", &iInterleaveFactor);
+		fscanf_s(sFile, "bInterleaveFrames= %d \n", &cAudioFormat.m_bInterleaveFrames);
+		fscanf_s(sFile, "iInterleaveFactor= %d \n", &cAudioFormat.m_iInterleaveFactor);
 
 		//Key Shortcuts
 		fscanf_s(sFile, "keyRecordStart= %d \n",&keyRecordStart);
@@ -4103,11 +4108,11 @@ void CRecorderView::LoadSettings()
 		{
 		case 1:
 			{
-				if (iCustomSel < 0)
+				if (CamCursor.CustomType() < 0)
 				{
-					iCustomSel = 0;
+					CamCursor.CustomType(0);
 				}
-				DWORD customicon = CamCursor.GetID(iCustomSel);
+				DWORD customicon = CamCursor.GetID(CamCursor.CustomType());
 				if (!CamCursor.Custom(::LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(customicon))))
 				{
 					CamCursor.Select(0);
@@ -4139,11 +4144,11 @@ void CRecorderView::LoadSettings()
 		fscanf_s(sFile, "iCaptureLeft= %d \n",&iCaptureLeft);
 		fscanf_s(sFile, "iCaptureTop= %d \n",&iCaptureTop);
 		fscanf_s(sFile, "bFixedCapture=%d \n",&bFixedCapture);
-		fscanf_s(sFile, "iInterleaveUnit= %d \n", &iInterleaveUnit);
+		fscanf_s(sFile, "iInterleaveUnit= %d \n", &cAudioFormat.m_iInterleavePeriod);
 	} else {
 		//force interleve settings
-		iInterleaveUnit= MILLISECONDS;
-		iInterleaveFactor = 100;
+		cAudioFormat.m_iInterleavePeriod = MILLISECONDS;
+		cAudioFormat.m_iInterleaveFactor = 100;
 	}
 
 	//Ver 1.6
@@ -4312,7 +4317,7 @@ void CRecorderView::LoadSettings()
 	FILE * tFile = fopen(LPCTSTR(setPath),"rb");
 	if (tFile == NULL) {
 		//Error creating file
-		dwCbwFX = 0;
+		cAudioFormat.m_dwCbwFX = 0;
 		SuggestCompressFormat();
 		return;
 	}
@@ -4338,11 +4343,11 @@ void CRecorderView::LoadSettings()
 		{
 			// if perfoming an upgrade from previous settings,
 			// do not load these additional camdata.ini information
-			if (dwCbwFX > 0) {
+			if (cAudioFormat.m_dwCbwFX > 0) {
 				AllocCompressFormat();
-				int countread = fread( (void *) pwfx, dwCbwFX, 1, tFile);
+				int countread = fread( (void *) pwfx, cAudioFormat.m_dwCbwFX, 1, tFile);
 				if (countread != 1) {
-					dwCbwFX = 0;
+					cAudioFormat.m_dwCbwFX = 0;
 					if (pwfx)
 					{
 						GlobalFreePtr(pwfx);
@@ -5327,7 +5332,7 @@ LPBITMAPINFOHEADER CRecorderView::captureScreenFrame(int left, int top, int widt
 	xPoint.y -= top;
 
 	//Draw the HighLight
-	if (bHighlightCursor==1) {
+	if (CamCursor.Highlight() == 1) {
 		POINT highlightPoint;
 		highlightPoint.x = xPoint.x -64;
 		highlightPoint.y = xPoint.y -64;
@@ -5336,7 +5341,7 @@ LPBITMAPINFOHEADER CRecorderView::captureScreenFrame(int left, int top, int widt
 
 	// Draw the Cursor
 	HCURSOR hcur = CamCursor.FetchCursorHandle(CamCursor.Select());
-	if (bRecordCursor)
+	if (CamCursor.Record())
 	{
 		ICONINFO iconinfo;
 		BOOL ret = GetIconInfo(hcur, &iconinfo);
