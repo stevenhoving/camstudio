@@ -36,13 +36,17 @@
 
 class CTransparentWnd : public CWnd
 {
-
 public:
 	CTransparentWnd();
+	virtual ~CTransparentWnd();
 
 	//void CreateTransparent(LPCTSTR pTitle, RECT &rect, unsigned short MaskID, unsigned short BitmapID);
 	void CreateTransparent(LPCTSTR pTitle, RECT rect,  HBITMAP BitmapID);
 	void CreateTransparent(LPCTSTR pTitle, RECT rect,  CString bitmapFile, int fitBitmapSize);
+
+	CTransparentWnd* Clone(int offsetx, int offsety);
+	CTransparentWnd* CloneByPos(int x, int y);
+
 	void SetupRegionByTransColor(CDC *pDC, COLORREF transColor);
 	void SetupRegion(CDC *pDC);
 	void SetupRegion();
@@ -52,9 +56,6 @@ public:
 	void InvalidateTransparency();
 	void OnUpdateContextMenu();
 	void ReloadPic(CString filename);
-	CTransparentWnd* Clone(int offsetx, int offsety);
-	CTransparentWnd* CloneByPos(int x, int y);
-	void CopyMembers(CTransparentWnd *newWnd);
 	void DisableContextMenu();
 
 	void EditTransparency();
@@ -65,49 +66,9 @@ public:
 
 	//WidthHeight
 	void RefreshWindowSize();
-	void EnsureOnTopList(CTransparentWnd* transWnd );
-
-	//Data to be saved
-	CRectTracker m_tracker;
-	CString m_textstring;
-	CString m_shapeStr;  //name of the shape
-	int m_vertalign;
-	int m_horzalign;
-	LOGFONT m_textfont;
-	COLORREF rgb; //textcolor
-	int m_factor;
-	int m_charset;
-	CRect m_rectWnd;
-	int enableTransparency;
-	int valueTransparency;
-	COLORREF m_transparentColor; //region for pre-defined shape, var applicable only to regiontype  -- transparent color
-	int m_regionCreated; //region for transparent color already created, var applicable only to regiontype  -- transparent color
-	int m_regionType;
-	int m_regionPredefinedShape;  //region for pre-defined shape, var applicable only to regiontype -- predefined shape
-	double m_roundrectFactor;
-	int m_borderYes;
-	int m_borderSize;
-	COLORREF m_borderColor;
-	COLORREF m_backgroundColor;
-	CPicture picture;
-	int widthPos;    //WidthHeight 	(Formula): faction of original =  widthPos*0.025 + 0.2 ... form 0.2 to 5.2
-	int heightPos;
-	CRect m_rectOriginalWnd;
-
-	//Temporary state variables
-	CMenu menu;
-	CLayeredWindowHelperST G_Layered;
-	int trackingOn;
-	int editTransOn;
-	int editImageOn;
-	int menuLoaded;
-	int m_movewindow;
-	POINT m_movepoint;
-	HBITMAP m_hbitmap;
-	CRgn wndRgn;
-	long uniqueID;
-	int saveMethod;
-	int baseType;
+	void EnsureOnTopList(CTransparentWnd* transWnd);
+protected:
+	void CopyMembers(const CTransparentWnd& rhsWnd);
 
 public:
 // Overrides
@@ -119,10 +80,6 @@ public:
 // Implementation
 public:
 	void InvalidateRegion();
-	virtual ~CTransparentWnd();
-
-protected:
-	unsigned short m_BitmapID;
 
 	// Generated message map functions
 protected:
@@ -151,6 +108,52 @@ protected:
 	afx_msg LRESULT OnInvalidateWnd(WPARAM p1, LPARAM p2);
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
+
+	//Data to be saved
+public:
+	int baseType;
+	int editImageOn;
+	int editTransOn;
+	int trackingOn;
+	int m_borderSize;
+	int m_borderYes;
+	int m_regionCreated;			// region for transparent color already created, var applicable only to regiontype  -- transparent color
+	int m_regionPredefinedShape;	// region for pre-defined shape, var applicable only to regiontype -- predefined shape
+	int m_regionType;
+	int saveMethod;
+	int widthPos;					// WidthHeight (Formula): faction of original =  widthPos*0.025 + 0.2 ... form 0.2 to 5.2
+	int heightPos;
+	long uniqueID;
+	CString m_shapeStr;				// name of the shape
+	CString m_textstring;
+	CRect m_rectWnd;
+	COLORREF m_backgroundColor;
+	COLORREF m_borderColor;
+	COLORREF m_transparentColor;	// region for pre-defined shape, var applicable only to regiontype  -- transparent color
+	HBITMAP m_hbitmap;
+protected:
+	unsigned short m_BitmapID;
+	int menuLoaded;
+	int m_horzalign;
+	double m_roundrectFactor;
+	CRectTracker m_tracker;
+	CMenu menu;
+	LOGFONT m_textfont;
+	COLORREF rgb;					// textcolor
+private:
+	int m_vertalign;
+	int m_factor;
+	int m_charset;
+	int enableTransparency;
+	int valueTransparency;
+	CPicture picture;
+	CRect m_rectOriginalWnd;
+
+	//Temporary state variables
+	CLayeredWindowHelperST G_Layered;
+	int m_movewindow;
+	POINT m_movepoint;
+	CRgn wndRgn;
 };
 
 /////////////////////////////////////////////////////////////////////////////

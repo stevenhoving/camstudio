@@ -244,6 +244,7 @@ int sdwBytesPerSec = 44100;
 int iCurrentLayout = 0;
 
 sAudioFormat cAudioFormat;
+sVideoOpts cVideoOpts;
 CCamCursor CamCursor;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -311,8 +312,7 @@ void mciRecordResume(CString strFile);
 void AutoSetRate(int val,int& framerate,int& delayms);
 void AutoSetRate(int val, int& framerate, int& delayms)
 {
-	if (val <= 17)
-	{
+	if (val <= 17) {
 		//fps more than 1 per second
 		framerate = 200 - ((val - 1) * 10); //framerate 200 to 40;
 		//1 corr to 200, 17 corr to 40
@@ -327,8 +327,7 @@ void AutoSetRate(int val, int& framerate, int& delayms)
 		//		((CSliderCtrl *) GetDlgItem(IDC_QUALITY_SLIDER))->SetPos(80);
 		//	}
 		//}
-	} else if (val <= 56)
-	{
+	} else if (val <= 56) {
 		//fps more than 1 per second
 		framerate = (57 - val); //framerate 39 to 1;
 		//18 corr to 39, 56 corr to 1
@@ -344,8 +343,7 @@ void AutoSetRate(int val, int& framerate, int& delayms)
 		delayms = (val-86) * 2000 + 30000;
 
 		//87 corr to 30000, 99 corr to 56000 (56 seconds)
-	} else
-	{
+	} else {
 		//val=100, iTimeLapse
 		framerate = 20;
 		delayms = 60000;
@@ -1513,7 +1511,7 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
 	if (interleave_unit==FRAMES) {
 		galpAVIOptions[0]->dwInterleaveEvery = interleave_factor;
 	} else {
-		double interfloat = (((double) cAudioFormat.m_iInterleaveFactor) * ((double) iFramesPerSecond))/1000.0;
+		double interfloat = (((double) cAudioFormat.m_iInterleaveFactor) * ((double) cVideoOpts.m_iFramesPerSecond))/1000.0;
 		int interint = (int) interfloat;
 		if (interint<=0) {
 			interint = 1;
@@ -1545,7 +1543,7 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
 		galpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
 	} else {
 		//back here
-		double interfloat = (((double) cAudioFormat.m_iInterleaveFactor) * ((double) iFramesPerSecond))/1000.0;
+		double interfloat = (((double) cAudioFormat.m_iInterleaveFactor) * ((double) cVideoOpts.m_iFramesPerSecond))/1000.0;
 		int interint = (int) interfloat;
 		if (interint<=0) {
 			interint = 1;
@@ -2600,7 +2598,7 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	nColors = iBits;
 	::ReleaseDC(NULL,hScreenDC);
 
-	dwCompfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
+	cVideoOpts.m_dwCompfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
 
 	hLogoBM = LoadBitmap( AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP3));
 
@@ -3667,11 +3665,11 @@ void CRecorderView::SaveSettings()
 	fprintf(sFile, "iCaptureWidth=%d \n",iCaptureWidth);
 	fprintf(sFile, "iCaptureHeight=%d \n",iCaptureHeight);
 
-	fprintf(sFile, "iTimeLapse=%d \n",iTimeLapse);
-	fprintf(sFile, "iFramesPerSecond= %d \n",iFramesPerSecond);
-	fprintf(sFile, "iKeyFramesEvery= %d \n",iKeyFramesEvery);
-	fprintf(sFile, "iCompQuality= %d \n",iCompQuality);
-	fprintf(sFile, "dwCompfccHandler= %ld \n",dwCompfccHandler);
+	fprintf(sFile, "iTimeLapse=%d \n",cVideoOpts.m_iTimeLapse);
+	fprintf(sFile, "iFramesPerSecond= %d \n",cVideoOpts.m_iFramesPerSecond);
+	fprintf(sFile, "iKeyFramesEvery= %d \n",cVideoOpts.m_iKeyFramesEvery);
+	fprintf(sFile, "iCompQuality= %d \n",cVideoOpts.m_iCompQuality);
+	fprintf(sFile, "dwCompfccHandler= %ld \n",cVideoOpts.m_dwCompfccHandler);
 
 	//LPVOID pVideoCompressParams = NULL;
 	fprintf(sFile, "dwCompressorStateIsFor= %ld \n",dwCompressorStateIsFor);
@@ -3730,8 +3728,8 @@ void CRecorderView::SaveSettings()
 	//iViewType
 	fprintf(sFile, "iViewType= %d \n",iViewType);
 
-	fprintf(sFile, "bAutoAdjust= %d \n",bAutoAdjust);
-	fprintf(sFile, "iValueAdjust= %d \n",iValueAdjust);
+	fprintf(sFile, "bAutoAdjust= %d \n",cVideoOpts.m_bAutoAdjust);
+	fprintf(sFile, "iValueAdjust= %d \n",cVideoOpts.m_iValueAdjust);
 
 	fprintf(sFile, "savedir=%d \n", savedir.GetLength());
 	fprintf(sFile, "strCursorDir=%d \n", CamCursor.Dir().GetLength());	// TODO: Just save the string
@@ -3975,11 +3973,11 @@ void CRecorderView::LoadSettings()
 		fscanf_s(sFile, "iCaptureWidth=%d \n", &iCaptureWidth);
 		fscanf_s(sFile, "iCaptureHeight=%d \n", &iCaptureHeight);
 
-		fscanf_s(sFile, "iTimeLapse=%d \n", &iTimeLapse);
-		fscanf_s(sFile, "iFramesPerSecond= %d \n", &iFramesPerSecond);
-		fscanf_s(sFile, "iKeyFramesEvery= %d \n", &iKeyFramesEvery);
-		fscanf_s(sFile, "iCompQuality= %d \n", &iCompQuality);
-		fscanf_s(sFile, "dwCompfccHandler= %ld \n", &dwCompfccHandler);
+		fscanf_s(sFile, "iTimeLapse=%d \n", &cVideoOpts.m_iTimeLapse);
+		fscanf_s(sFile, "iFramesPerSecond= %d \n", &cVideoOpts.m_iFramesPerSecond);
+		fscanf_s(sFile, "iKeyFramesEvery= %d \n", &cVideoOpts.m_iKeyFramesEvery);
+		fscanf_s(sFile, "iCompQuality= %d \n", &cVideoOpts.m_iCompQuality);
+		fscanf_s(sFile, "dwCompfccHandler= %ld \n", &cVideoOpts.m_dwCompfccHandler);
 
 		//LPVOID pVideoCompressParams = NULL;
 		fscanf_s(sFile, "dwCompressorStateIsFor= %ld \n",&dwCompressorStateIsFor);
@@ -4065,8 +4063,8 @@ void CRecorderView::LoadSettings()
 
 		fscanf_s(sFile, "iViewType= %d \n",&iViewType);
 
-		fscanf_s(sFile, "bAutoAdjust= %d \n",&bAutoAdjust);
-		fscanf_s(sFile, "iValueAdjust= %d \n",&iValueAdjust);
+		fscanf_s(sFile, "bAutoAdjust= %d \n",&cVideoOpts.m_bAutoAdjust);
+		fscanf_s(sFile, "iValueAdjust= %d \n",&cVideoOpts.m_iValueAdjust);
 
 		fscanf_s(sFile, "savedir=%d \n",&iSaveLen);
 		fscanf_s(sFile, "strCursorDir=%d \n",&iCursorLen);
@@ -4077,32 +4075,32 @@ void CRecorderView::LoadSettings()
 		//Force settings from previous version to upgrade
 		if (ver<1.35) {
 			//set auto adjust to max rate
-			bAutoAdjust = 1;
-			iValueAdjust = 1;
+			cVideoOpts.m_bAutoAdjust = 1;
+			cVideoOpts.m_iValueAdjust = 1;
 
 			//set default compressor
-			dwCompfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
+			cVideoOpts.m_dwCompfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
 			dwCompressorStateIsFor = 0;
 			dwCompressorStateSize = 0;
-			iCompQuality = 7000;
+			cVideoOpts.m_iCompQuality = 7000;
 
 			//set default audio recording format and compress format
 			SuggestRecordingFormat();
 			SuggestCompressFormat();
 		}
 
-		if (bAutoAdjust)
+		if (cVideoOpts.m_bAutoAdjust)
 		{
 			int framerate;
 			int delayms;
-			int val = iValueAdjust;
+			int val = cVideoOpts.m_iValueAdjust;
 			AutoSetRate(val, framerate, delayms);
-			iTimeLapse = delayms;
-			iFramesPerSecond = framerate;
-			iKeyFramesEvery = framerate;
+			cVideoOpts.m_iTimeLapse = delayms;
+			cVideoOpts.m_iFramesPerSecond = framerate;
+			cVideoOpts.m_iKeyFramesEvery = framerate;
 		}
 
-		strCodec = GetCodecDescription(dwCompfccHandler);
+		strCodec = GetCodecDescription(cVideoOpts.m_dwCompfccHandler);
 
 		switch (CamCursor.Select())
 		{
@@ -5423,7 +5421,7 @@ UINT CRecorderView::RecordAVIThread(LPVOID pParam)
 	int left = rcUse.left;
 	int width = rcUse.right - rcUse.left+1;
 	int height = rcUse.bottom - rcUse.top + 1;
-	int fps = iFramesPerSecond;
+	int fps = cVideoOpts.m_iFramesPerSecond;
 
 	RecordVideo(top, left, width, height, fps, strTempFilePath);
 
@@ -5459,8 +5457,8 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 	// TEST VALIDITY OF COMPRESSOR
 	//////////////////////////////////////////////////
 
-	if (selected_compressor > 0) {
-		HIC hic = ICOpen(pCompressorInfo[selected_compressor].fccType, pCompressorInfo[selected_compressor].fccHandler, ICMODE_QUERY);
+	if (cVideoOpts.m_iSelectedCompressor > 0) {
+		HIC hic = ICOpen(pCompressorInfo[cVideoOpts.m_iSelectedCompressor].fccType, pCompressorInfo[cVideoOpts.m_iSelectedCompressor].fccHandler, ICMODE_QUERY);
 		if (hic) {
 			int newleft;
 			int newtop;
@@ -5512,13 +5510,13 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 				iActualWidth = newwidth;
 				iActualHeight = newheight;
 			} else {
-				dwCompfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
+				cVideoOpts.m_dwCompfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
 				strCodec = CString("MS Video 1");
 			}
 
 			ICClose(hic);
 		} else {
-			dwCompfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
+			cVideoOpts.m_dwCompfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
 			strCodec = CString("MS Video 1");
 			//MessageBox(NULL, "hic default", "note", MB_OK);
 		}
@@ -5532,8 +5530,8 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 	//}
 
 	//IV50
-	if (dwCompfccHandler == mmioFOURCC('I', 'V', '5', '0')) { //Still Can't Handle Indeo 5.04
-		dwCompfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
+	if (cVideoOpts.m_dwCompfccHandler == mmioFOURCC('I', 'V', '5', '0')) { //Still Can't Handle Indeo 5.04
+		cVideoOpts.m_dwCompfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
 		strCodec = CString("MS Video 1");
 	}
 
@@ -5593,9 +5591,9 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 	AVICOMPRESSOPTIONS FAR * aopts[1] = {&opts};
 	memset(&opts, 0, sizeof(opts));
 	aopts[0]->fccType			= streamtypeVIDEO;
-	aopts[0]->fccHandler		= dwCompfccHandler;
-	aopts[0]->dwKeyFrameEvery	= iKeyFramesEvery;		// keyframe rate
-	aopts[0]->dwQuality			= iCompQuality;        // compress quality 0-10, 000
+	aopts[0]->fccHandler		= cVideoOpts.m_dwCompfccHandler;
+	aopts[0]->dwKeyFrameEvery	= cVideoOpts.m_iKeyFramesEvery;		// keyframe rate
+	aopts[0]->dwQuality			= cVideoOpts.m_iCompQuality;        // compress quality 0-10, 000
 	aopts[0]->dwBytesPerSecond	= 0;		// bytes per second
 	aopts[0]->dwFlags			= AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES;    // flags
 	aopts[0]->lpFormat			= 0x0;                         // save format
@@ -5611,7 +5609,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 	} else {
 		//Ver 1.2
 		//
-		if ((dwCompfccHandler == dwCompressorStateIsFor) && (dwCompfccHandler != 0)) {
+		if ((cVideoOpts.m_dwCompfccHandler == dwCompressorStateIsFor) && (cVideoOpts.m_dwCompfccHandler != 0)) {
 			//make a copy of the pVideoCompressParams just in case after compression, this variable become messed up
 			if (MakeCompressParamsCopy(dwCompressorStateSize, pVideoCompressParams)) {
 				aopts[0]->lpParms = pParamsUse;
@@ -5790,10 +5788,10 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 		}
 
 		if (!bInitCapture) {
-			if (iTimeLapse>1000) {
+			if (cVideoOpts.m_iTimeLapse > 1000) {
 				frametime++;
 			} else {
-				frametime = (DWORD) (((double) timeexpended /1000.0 ) * (double) (1000.0/iTimeLapse));
+				frametime = (DWORD) (((double) timeexpended /1000.0 ) * (double) (1000.0/cVideoOpts.m_iTimeLapse));
 			}
 		} else {
 			bInitCapture = false;
@@ -5938,8 +5936,8 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 		} else {
 			//introduce time lapse
 			//maximum lapse when bRecordState changes will be less than 100 milliseconds
-			int no_iteration = iTimeLapse/50;
-			int remainlapse = iTimeLapse - no_iteration * 50;
+			int no_iteration = cVideoOpts.m_iTimeLapse/50;
+			int remainlapse = cVideoOpts.m_iTimeLapse - no_iteration * 50;
 			for (int j = 0; j < no_iteration; j++) {
 				::Sleep(50); //Sleep for 50 milliseconds many times
 				if (!bRecordState) {
@@ -5962,7 +5960,7 @@ error:
 
 	//Ver 1.2
 	//
-	if ((dwCompfccHandler == dwCompressorStateIsFor) && (dwCompfccHandler != 0)) {
+	if ((cVideoOpts.m_dwCompfccHandler == dwCompressorStateIsFor) && (cVideoOpts.m_dwCompfccHandler != 0)) {
 		//Detach pParamsUse from AVICOMPRESSOPTIONS so AVISaveOptionsFree will not free it
 		//(we will free it ourselves)
 
@@ -6011,10 +6009,10 @@ error:
 		//reportstr = errorstr + reasonstr;
 		//MessageBox(NULL, reportstr, "Note", MB_OK | MB_ICONEXCLAMATION);
 
-		if (dwCompfccHandler != mmioFOURCC('M', 'S', 'V', 'C')) {
+		if (cVideoOpts.m_dwCompfccHandler != mmioFOURCC('M', 'S', 'V', 'C')) {
 			//if (IDYES == MessageBox(NULL, "Error recording AVI file using current compressor. Use default compressor ? ", "Note", MB_YESNO | MB_ICONEXCLAMATION)) {
 			if (IDYES == MessageOut(NULL, IDS_STRING_ERRAVIDEFAULT, IDS_STRING_NOTE, MB_YESNO | MB_ICONQUESTION	)) {
-				dwCompfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
+				cVideoOpts.m_dwCompfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
 				strCodec = "MS Video 1";
 				::PostMessage(hWndGlobal, WM_USER_RECORDSTART, 0, 0);
 			}

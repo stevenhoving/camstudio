@@ -58,14 +58,6 @@ enum eLegacySettings
 	, CAPTUREHEIGHT
 	, CAPTURETRANS
 
-	, TIMELAPSE
-	, FRAMES_PER_SECOND
-	, KEYFRAMESEVERY
-	, COMPQUALITY
-	, COMPFCCHANDLER
-	, COMPRESSORSTATEISFOR
-	, COMPRESSORSTATESIZE
-	
 	, USEMCI
 	, SHIFTTYPE
 	, TIMESHIFT
@@ -76,6 +68,63 @@ enum eLegacySettings
 	, PRESETTIME
 	, RECORDPRESET
 
+	, AUTOPAN
+	, MAXPAN
+	, CBWFX
+
+	// hotkeys
+	, KEYRECORDSTART
+	, KEYRECORDSTARTCTRL
+	, KEYRECORDSTARTALT
+	, KEYRECORDSTARTSHIFT
+	, KEYRECORDEND
+	, KEYRECORDENDCTRL
+	, KEYRECORDENDALT
+	, KEYRECORDENDSHIFT
+	, KEYRECORDCANCEL
+	, KEYRECORDCANCELCTRL
+	, KEYRECORDCANCELALT
+	, KEYRECORDCANCELSHIFT
+	, KEYNEXT
+	, KEYNEXTCTRL
+	, KEYNEXTALT
+	, KEYNEXTSHIFT
+	, KEYPREV
+	, KEYPREVCTRL
+	, KEYPREVALT
+	, KEYPREVSHIFT
+	, KEYSHOWLAYOUT
+	, KEYSHOWLAYOUTCTRL
+	, KEYSHOWLAYOUTALT
+	, KEYSHOWLAYOUTSHIFT
+
+	, INTERLEAVEUNIT
+	, SPECIFIEDDIR
+	, NUMDEV
+	, SELECTEDDEV
+	, FEEDBACK_LINE
+	, FEEDBACK_LINE_INFO
+	, PERFORMAUTOSEARCH
+	, SUPPORTMOUSEDRAG
+
+	// Video options
+	, AUTOADJUST
+	, VALUEADJUST
+	, TIMELAPSE
+	, FRAMES_PER_SECOND
+	, KEYFRAMEINTERVAL
+	, COMPQUALITY
+	, COMPFCCHANDLER
+	, COMPRESSORSTATEISFOR
+	, COMPRESSORSTATESIZE
+
+	// Shapes
+	, SHAPENAMEINT
+	, SHAPENAMELEN
+	// layout
+	, LAYOUTNAMEINT
+	, LAYOUTNAMELEN
+	
 	// cursor settings
 	, MOUSECAPTUREMODE
 	, RECORDCURSOR
@@ -108,54 +157,6 @@ enum eLegacySettings
 	, INTERLEAVEFRAMES
 	, INTERLEAVEFACTOR
 
-	, AUTOPAN
-	, MAXPAN
-	, CBWFX
-
-	// hotkeys
-	, KEYRECORDSTART
-	, KEYRECORDSTARTCTRL
-	, KEYRECORDSTARTALT
-	, KEYRECORDSTARTSHIFT
-	, KEYRECORDEND
-	, KEYRECORDENDCTRL
-	, KEYRECORDENDALT
-	, KEYRECORDENDSHIFT
-	, KEYRECORDCANCEL
-	, KEYRECORDCANCELCTRL
-	, KEYRECORDCANCELALT
-	, KEYRECORDCANCELSHIFT
-	, KEYNEXT
-	, KEYNEXTCTRL
-	, KEYNEXTALT
-	, KEYNEXTSHIFT
-	, KEYPREV
-	, KEYPREVCTRL
-	, KEYPREVALT
-	, KEYPREVSHIFT
-	, KEYSHOWLAYOUT
-	, KEYSHOWLAYOUTCTRL
-	, KEYSHOWLAYOUTALT
-	, KEYSHOWLAYOUTSHIFT
-
-	, AUTOADJUST
-	, VALUEADJUST
-	, INTERLEAVEUNIT
-	, SPECIFIEDDIR
-	, NUMDEV
-	, SELECTEDDEV
-	, FEEDBACK_LINE
-	, FEEDBACK_LINE_INFO
-	, PERFORMAUTOSEARCH
-	, SUPPORTMOUSEDRAG
-
-	// Shapes
-	, SHAPENAMEINT
-	, SHAPENAMELEN
-	// layout
-	, LAYOUTNAMEINT
-	, LAYOUTNAMELEN
-	
 	// Timestamp
 	, TIMESTAMPANNOTATION
 	, TIMESTAMPTEXTATTRIBUTES
@@ -197,7 +198,7 @@ enum eProfileID
 	, CAPTUREHEIGHT
 	, TIMELAPSE
 	, FRAMES_PER_SECOND
-	, KEYFRAMESEVERY
+	, KEYFRAMEINTERVAL
 	, COMPQUALITY
 	, COMPFCCHANDLER
 	, COMPRESSORSTATEISFOR
@@ -744,10 +745,72 @@ public:
 };
 extern sAudioFormat cAudioFormat;
 
+// video options
+// POD to hold them
+struct sVideoOpts
+{
+	sVideoOpts()
+		:	m_bAutoAdjust(true)
+		, m_iValueAdjust(1)
+		, m_iTimeLapse(5)
+		, m_iFramesPerSecond(200)
+		, m_iKeyFramesEvery(200)
+		, m_iCompQuality(7000)
+		, m_iSelectedCompressor(0)
+		, m_dwCompfccHandler(0UL)
+	{
+	}
+	sVideoOpts(const sVideoOpts& rhs)
+	{
+		*this = rhs;
+	}
+
+	sVideoOpts& operator=(const sVideoOpts& rhs)
+	{
+		if (this == &rhs)
+			return *this;
+
+		m_bAutoAdjust			= rhs.m_bAutoAdjust;
+		m_iValueAdjust			= rhs.m_iValueAdjust;
+		m_iTimeLapse			= rhs.m_iTimeLapse;
+		m_iFramesPerSecond		= rhs.m_iFramesPerSecond;
+		m_iKeyFramesEvery		= rhs.m_iKeyFramesEvery;
+		m_iCompQuality			= rhs.m_iCompQuality;
+		m_iSelectedCompressor	= rhs.m_iSelectedCompressor;
+		m_dwCompfccHandler		= rhs.m_dwCompfccHandler;
+
+		return *this;
+	}
+	
+	bool Write(CProfile& cProfile)
+	{
+		VERIFY(cProfile.Write(AUTOADJUST, m_bAutoAdjust));
+		VERIFY(cProfile.Write(VALUEADJUST, m_iValueAdjust));
+		VERIFY(cProfile.Write(TIMELAPSE, m_iTimeLapse));
+		VERIFY(cProfile.Write(FRAMES_PER_SECOND, m_iFramesPerSecond));
+		VERIFY(cProfile.Write(KEYFRAMEINTERVAL, m_iKeyFramesEvery));
+		VERIFY(cProfile.Write(COMPQUALITY, m_iCompQuality));
+		VERIFY(cProfile.Write(COMPFCCHANDLER, m_dwCompfccHandler));
+		// m_iSelectedCompressor
+		//COMPRESSORSTATEISFOR
+		//COMPRESSORSTATESIZE		
+		return true;
+	}
+
+	bool m_bAutoAdjust;
+	int m_iValueAdjust;
+	int m_iTimeLapse;
+	int m_iFramesPerSecond;
+	int m_iKeyFramesEvery;
+	int m_iCompQuality;
+	int m_iSelectedCompressor;
+	DWORD m_dwCompfccHandler;
+};
+extern sVideoOpts cVideoOpts;
+
 extern bool bFlashingRect;
 extern bool bMinimizeOnStart;
 extern bool bAutoPan;
-extern bool bAutoAdjust;
 extern bool bFixedCapture;
 extern bool bCaptureTrans;
 extern bool bPerformAutoSearch;
@@ -768,17 +831,11 @@ extern int iLaunchPlayer;
 extern int iMouseCaptureMode;
 extern int iCaptureWidth;
 extern int iCaptureHeight;
-extern int iTimeLapse;
-extern int iFramesPerSecond;
-extern int iKeyFramesEvery;
-extern int iCompQuality;
-extern DWORD dwCompfccHandler;
 extern DWORD dwCompressorStateIsFor;
 extern DWORD dwCompressorStateSize;
 extern int iMaxPan;
 extern int iRecordAudio;
 extern int iViewType;
-extern int iValueAdjust;
 extern int iSaveLen;
 extern int iCursorLen;
 extern int iThreadPriority;
