@@ -5,6 +5,8 @@
 #define CAMCURSOR_H
 #pragma once
 
+#include "Profile.h"
+
 #include <vector>
 #include <algorithm>
 
@@ -15,6 +17,12 @@ class CCamCursor
 {
 public:
 	CCamCursor()
+		: m_bRecord(true)
+		, m_iHighlightSize(64)
+		, m_bHighlightClick(false)
+		, m_clrHighlight(RGB(255,255,125))
+		, m_clrClickLeft(RGB(255,0,0))
+		, m_clrClickRight(RGB(0,0,255))
 	{
 	}
 	virtual ~CCamCursor()
@@ -64,6 +72,47 @@ public:
 	{
 		return (uIndex < m_vIconID.size()) ? m_vIconID[uIndex] : 0;
 	}
+
+	bool Record() const						{return m_bRecord;}
+	bool Record(bool bRec)					{return m_bRecord = bRec;}
+	int CustomType() const					{return m_iCustomSel;}
+	int CustomType(int iType)				{return m_iCustomSel = iType;}
+	bool Highlight() const					{return m_bHighlight;}
+	bool Highlight(bool bHiLight)			{return m_bHighlight = bHiLight;}
+	int HighlightSize() const				{return m_iHighlightSize;}
+	int HighlightSize(int iSize)			{return m_iHighlightSize = iSize;}
+	int HighlightShape() const				{return m_iHighlightShape;}
+	int HighlightShape(int iShape)			{return m_iHighlightShape = iShape;}
+	COLORREF HighlightColor() const			{return m_clrHighlight;}
+	COLORREF HighlightColor(COLORREF clr)	{return m_clrHighlight = clr;}
+	bool HighlightClick() const				{return m_bHighlightClick;}
+	bool HighlightClick(bool bHiLight)		{return m_bHighlightClick = bHiLight;}
+	COLORREF ClickLeftColor() const			{return m_clrClickLeft;}
+	COLORREF ClickLeftColor(COLORREF clr)	{return m_clrClickLeft = clr;}
+	COLORREF ClickRightColor() const		{return m_clrClickRight;}
+	COLORREF ClickRightColor(COLORREF clr)	{return m_clrClickRight = clr;}
+
+	bool Write(CProfile& cProfile)
+	{
+		VERIFY(cProfile.Write(RECORDCURSOR, m_bRecord));
+		VERIFY(cProfile.Write(CURSORTYPE, m_iCustomSel));
+		VERIFY(cProfile.Write(CUSTOMSEL, m_iSelect));
+		VERIFY(cProfile.Write(HIGHLIGHTCURSOR, m_bHighlight));
+		VERIFY(cProfile.Write(HIGHLIGHTSIZE, m_iHighlightSize));
+		VERIFY(cProfile.Write(HIGHLIGHTSHAPE, m_iHighlightShape));
+		VERIFY(cProfile.Write(HIGHLIGHTCOLORR, m_clrHighlight));	// todo: constant
+		VERIFY(cProfile.Write(HIGHLIGHTCLICK, m_bHighlightClick));
+		VERIFY(cProfile.Write(HIGHLIGHTCLICKCOLORLEFTR, m_clrClickLeft));
+		VERIFY(cProfile.Write(HIGHLIGHTCLICKCOLORRIGHTR, m_clrClickRight));
+		//VERIFY(cProfile.Write(CURSORDIR, m_strFileName));	// what it should be
+		int iLen = m_strFileName.GetLength();
+		VERIFY(cProfile.Write(CURSORDIR, iLen));
+		//VERIFY(cProfile.Write(SAVEDIR, m_strDir));		// what it should be
+		iLen = m_strDir.GetLength();
+		VERIFY(cProfile.Write(SAVEDIR, iLen));
+		return true;
+	}
+
 private:
 	// Cursor variables
 	int		m_iSelect;			// selected (active) cursor [0..2]
@@ -73,6 +122,16 @@ private:
 	CString m_strDir;			// directory to load icon images
 	CString m_strFileName;
 	std::vector <DWORD> m_vIconID;
+
+	bool		m_bRecord;			// record screen cursor
+	int			m_iCustomSel;		// cursor type (actual, predef, custom)
+	bool		m_bHighlight;		// highlight screen cursor
+	int			m_iHighlightSize;	// cursor highlilght size
+	int			m_iHighlightShape;	// cursor highlilght shape
+	COLORREF	m_clrHighlight;		// cursor highlilght color
+	bool		m_bHighlightClick;	// highlight cursor buttons
+	COLORREF	m_clrClickLeft;		// left click color
+	COLORREF	m_clrClickRight;	// right click color
 };
 
 extern CCamCursor CamCursor;		// cursors

@@ -8,17 +8,18 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "afxwin.h"
-
 /////////////////////////////////////////////////////////////////////////////
 // CAudioFormatDlg dialog
 
 class CAudioFormatDlg : public CDialog
 {
 	// Construction
+	CAudioFormatDlg(CWnd* pParent = NULL);   // standard constructor; disallowed
 public:
-	CAudioFormatDlg(CWnd* pParent = NULL);   // standard constructor
-	
+	CAudioFormatDlg(sAudioFormat& cFmt, CWnd* pParent = NULL);   // standard constructor
+
+	sAudioFormat m_cFmt;
+
 	void UpdateLocalCompressFormatInterface();
 	void UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPWAVEFORMATEX  curr_sel_pwfx);
 
@@ -86,6 +87,7 @@ private:
 	CEdit m_ctrlEditCompressedFormatTag;
 	CEdit m_ctrlEditCompressedFormat;
 	CButton m_ctrlButtonChooseCompressedFormat;
+	int m_iInterleavePeriod;
 };
 
 //{{AFX_INSERT_LOCATION}}

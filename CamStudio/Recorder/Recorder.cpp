@@ -13,6 +13,7 @@
 #include "RecorderDoc.h"
 #include "RecorderView.h"
 #include "CamStudioCommandLineInfo.h"
+#include "CamCursor.h"
 #include "CStudioLib.h"
 
 #include <strsafe.h>		// for StringCchPrintf
@@ -382,6 +383,9 @@ BOOL CRecorderApp::FirstInstance()
 
 int CRecorderApp::ExitInstance()
 {
+	VERIFY(cAudioFormat.Write(m_cmSettings));
+	VERIFY(CamCursor.Write(m_cmSettings));	
+
 	//Multilanguage
 	if (m_wCurLangID != STANDARD_LANGID)
 		FreeLibrary( AfxGetResourceHandle() );

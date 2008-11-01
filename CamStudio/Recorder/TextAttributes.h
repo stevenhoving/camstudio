@@ -21,12 +21,14 @@ enum ePosition
 
 struct TextAttributes
 {
-	ePosition position;
-	CString text;
-	COLORREF backgroundColor;
-	COLORREF textColor;
-	int isFontSelected;
-	LOGFONT logfont;
+	TextAttributes(ePosition pos = TOP_LEFT, CString strText = "", COLORREF clrBackground = 0UL, COLORREF clrText = 0UL)
+		: position(pos)
+		, text(strText)
+		, backgroundColor(clrBackground)
+		, textColor(clrText)
+		, isFontSelected(FALSE)
+	{
+	}
 
 	const TextAttributes& operator=(const TextAttributes& rhs)
 	{
@@ -43,6 +45,12 @@ struct TextAttributes
 
 		return *this;
 	}
+	ePosition	position;
+	CString		text;
+	COLORREF	backgroundColor;
+	COLORREF	textColor;
+	int			isFontSelected;
+	LOGFONT		logfont;
 };
 
 #endif	// TEXTATTRIBUTES_H
