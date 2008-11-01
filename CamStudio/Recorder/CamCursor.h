@@ -25,8 +25,35 @@ public:
 		, m_clrClickRight(RGB(0,0,255))
 	{
 	}
+	CCamCursor(const CCamCursor& rhs)
+	{
+		*this = rhs;
+	}
 	virtual ~CCamCursor()
 	{
+	}
+
+	CCamCursor& operator=(const CCamCursor& rhs)
+	{
+		if (this == &rhs)
+			return *this;
+
+		m_iSelect			= rhs.m_iSelect;
+		m_hSavedCursor		= rhs.m_hSavedCursor;
+		m_hLoadCursor		= rhs.m_hLoadCursor;
+		m_hCustomCursor		= rhs.m_hCustomCursor;
+		m_strDir			= rhs.m_strDir;
+		m_strFileName		= m_strFileName;
+		m_vIconID			= rhs.m_vIconID;
+		m_bRecord			= rhs.m_bRecord;
+		m_iCustomSel		= rhs.m_iCustomSel;
+		m_bHighlight		= rhs.m_bHighlight;
+		m_iHighlightSize	= rhs.m_iHighlightSize;
+		m_iHighlightShape	= rhs.m_iHighlightShape;
+		m_clrHighlight		= rhs.m_clrHighlight;
+		m_bHighlightClick	= rhs.m_bHighlightClick;
+		m_clrClickLeft		= rhs.m_clrClickLeft;
+		m_clrClickRight		= rhs.m_clrClickRight;
 	}
 
 	HCURSOR Load() const					{return m_hLoadCursor;}

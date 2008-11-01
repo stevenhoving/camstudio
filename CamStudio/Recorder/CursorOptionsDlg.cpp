@@ -22,6 +22,7 @@ static char THIS_FILE[] = __FILE__;
 
 CCursorOptionsDlg::CCursorOptionsDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CCursorOptionsDlg::IDD, pParent)
+, m_cCursor(CamCursor)
 , m_pIconFileDlg(0)
 , m_hPreviewCursor(NULL)
 , m_hLoadCursor(CamCursor.Load())
@@ -42,41 +43,31 @@ CCursorOptionsDlg::CCursorOptionsDlg(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CCursorOptionsDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
-	
-	CamCursor.AddID(IDI_CUSTOMICON_CONTEXTHELP);
-	CamCursor.AddID(IDI_CUSTOMICON_MAGNIFY);
-	CamCursor.AddID(IDI_CUSTOMICON_NODRAG);
-	CamCursor.AddID(IDI_CUSTOMICON_SPLITBARH);
-	CamCursor.AddID(IDI_CUSTOMICON_SPLITBARV);
-	CamCursor.AddID(IDI_CUSTOMICON_TOPOFTABLE);
-	CamCursor.AddID(IDI_CUSTOMICON_BOOK1);
-	CamCursor.AddID(IDI_CUSTOMICON_BOOK2);
-	CamCursor.AddID(IDI_CUSTOMICON_CLIP1);
-	CamCursor.AddID(IDI_CUSTOMICON_CLIP2);
-	CamCursor.AddID(IDI_CUSTOMICON_CLOCK1);
-	CamCursor.AddID(IDI_CUSTOMICON_CLOCK2);
-	CamCursor.AddID(IDI_CUSTOMICON_CARDFILE1);
-	CamCursor.AddID(IDI_CUSTOMICON_CARDFILE2);
-	CamCursor.AddID(IDI_CUSTOMICON_DISK1);
-	CamCursor.AddID(IDI_CUSTOMICON_DISK2);
-	CamCursor.AddID(IDI_CUSTOMICON_FILES1);
-	CamCursor.AddID(IDI_CUSTOMICON_FILES2);
-	CamCursor.AddID(IDI_CUSTOMICON_FOLDER2);
-	CamCursor.AddID(IDI_CUSTOMICON_FOLDER1);
-	CamCursor.AddID(IDI_CUSTOMICON_MAIL1);
-	CamCursor.AddID(IDI_CUSTOMICON_MAIL2);
-	CamCursor.AddID(IDI_CUSTOMICON_NOTE1);
-	CamCursor.AddID(IDI_CUSTOMICON_NOTE2);
-	CamCursor.AddID(IDI_CUSTOMICON_PEN1);
-	CamCursor.AddID(IDI_CUSTOMICON_PEN2);
-	CamCursor.AddID(IDI_CUSTOMICON_PENCIL1);
-	CamCursor.AddID(IDI_CUSTOMICON_PENCIL2);
-	CamCursor.AddID(IDI_CUSTOMICON_PHONE1);
-	CamCursor.AddID(IDI_CUSTOMICON_PHONE2);
-	CamCursor.AddID(IDI_CUSTOMICON_POINT1);
-	CamCursor.AddID(IDI_CUSTOMICON_POINT2);
-	CamCursor.AddID(IDI_CUSTOMICON_SERCURITY);
-	CamCursor.AddID(IDI_CUSTOMICON_SECURITY2);
+
+	VERIFY(LoadStdCursors());
+}
+
+CCursorOptionsDlg::CCursorOptionsDlg(const CCamCursor& cCursor, CWnd* pParent)
+: CDialog(CCursorOptionsDlg::IDD, pParent)
+, m_cCursor(cCursor)
+, m_pIconFileDlg(0)
+, m_hPreviewCursor(NULL)
+, m_hLoadCursor(cCursor.Load())
+, m_hCustomCursor(cCursor.Custom())
+, m_iCustomSel(cCursor.CustomType())
+, m_bRecordCursor(cCursor.Record())
+, m_iCursorType(cCursor.Select())
+, m_bHighlightCursor(cCursor.Highlight())
+, m_iHighlightSize(cCursor.HighlightSize())
+, m_iHighlightShape(cCursor.HighlightShape())
+, m_bHighlightClick(cCursor.HighlightClick())
+, m_clrHighlight(cCursor.HighlightColor())
+, m_clrHighlightClickLeft(cCursor.ClickLeftColor())
+, m_clrHighlightClickRight(cCursor.ClickRightColor())
+, m_bInitPaint(true)
+, m_bSliding(false)
+{
+	VERIFY(LoadStdCursors());
 }
 
 void CCursorOptionsDlg::DoDataExchange(CDataExchange* pDX)
@@ -246,7 +237,7 @@ void CCursorOptionsDlg::RefreshPreviewCursor()
 		case 1:
 			{
 				m_iCustomSel = m_ctrlCBCustomCursor.GetCurSel();
-				DWORD customicon = (m_iCustomSel < 0) ? 0 : CamCursor.GetID(m_iCustomSel);
+				DWORD customicon = (m_iCustomSel < 0) ? 0 : m_cCursor.GetID(m_iCustomSel);
 				m_hPreviewCursor = ::LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(customicon));
 				m_hCustomCursor = m_hPreviewCursor;
 			}
@@ -415,11 +406,11 @@ void CCursorOptionsDlg::OnBnClickedFileCursor()
 	m_pIconFileDlg->m_ofn.Flags|=OFN_FILEMUSTEXIST;
 	m_pIconFileDlg->m_ofn.lpstrTitle="File to load";
 
-	if (CamCursor.Dir().IsEmpty())
+	if (m_cCursor.Dir().IsEmpty())
 	{
-		CamCursor.Dir(initdir);
+		m_cCursor.Dir(initdir);
 	}
-	m_pIconFileDlg->m_ofn.lpstrInitialDir = CamCursor.Dir();
+	m_pIconFileDlg->m_ofn.lpstrInitialDir = m_cCursor.Dir();
 	if (IDOK == m_pIconFileDlg->DoModal())
 	{
 		fileName = m_pIconFileDlg->GetPathName();
@@ -432,9 +423,9 @@ void CCursorOptionsDlg::OnBnClickedFileCursor()
 			m_ctrlStaticIconCursor.SetIcon(m_hPreviewCursor);
 		}
 
-		CamCursor.FileName(fileName);
+		m_cCursor.FileName(fileName);
 		fileName = fileName.Left(fileName.ReverseFind('\\'));
-		CamCursor.Dir(fileName);
+		m_cCursor.Dir(fileName);
 	}
 	delete m_pIconFileDlg, m_pIconFileDlg = 0;
 }
@@ -451,18 +442,18 @@ void CCursorOptionsDlg::OnOK()
 
 	} //cursortype
 
-	CamCursor.Record(m_bRecordCursor);
-	CamCursor.CustomType(m_iCustomSel);
-	CamCursor.Select(m_iCursorType);
-	CamCursor.Load(m_hLoadCursor);
-	CamCursor.Custom(m_hCustomCursor);
-	CamCursor.Highlight(m_bHighlightCursor);
-	CamCursor.HighlightSize(m_iHighlightSize);
-	CamCursor.HighlightShape(m_iHighlightShape);
-	CamCursor.HighlightColor(m_clrHighlight);
-	CamCursor.HighlightClick(m_bHighlightClick);
-	CamCursor.ClickLeftColor(m_clrHighlightClickLeft);
-	CamCursor.ClickRightColor(m_clrHighlightClickRight);
+	m_cCursor.Record(m_bRecordCursor);
+	m_cCursor.CustomType(m_iCustomSel);
+	m_cCursor.Select(m_iCursorType);
+	m_cCursor.Load(m_hLoadCursor);
+	m_cCursor.Custom(m_hCustomCursor);
+	m_cCursor.Highlight(m_bHighlightCursor);
+	m_cCursor.HighlightSize(m_iHighlightSize);
+	m_cCursor.HighlightShape(m_iHighlightShape);
+	m_cCursor.HighlightColor(m_clrHighlight);
+	m_cCursor.HighlightClick(m_bHighlightClick);
+	m_cCursor.ClickLeftColor(m_clrHighlightClickLeft);
+	m_cCursor.ClickRightColor(m_clrHighlightClickRight);
 
 	CDialog::OnOK();
 }
@@ -585,4 +576,43 @@ void CCursorOptionsDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	RefreshHighlight();
 	CDialog::OnLButtonDblClk(nFlags, point);
+}
+
+bool CCursorOptionsDlg::LoadStdCursors()
+{
+	m_cCursor.AddID(IDI_CUSTOMICON_CONTEXTHELP);
+	m_cCursor.AddID(IDI_CUSTOMICON_MAGNIFY);
+	m_cCursor.AddID(IDI_CUSTOMICON_NODRAG);
+	m_cCursor.AddID(IDI_CUSTOMICON_SPLITBARH);
+	m_cCursor.AddID(IDI_CUSTOMICON_SPLITBARV);
+	m_cCursor.AddID(IDI_CUSTOMICON_TOPOFTABLE);
+	m_cCursor.AddID(IDI_CUSTOMICON_BOOK1);
+	m_cCursor.AddID(IDI_CUSTOMICON_BOOK2);
+	m_cCursor.AddID(IDI_CUSTOMICON_CLIP1);
+	m_cCursor.AddID(IDI_CUSTOMICON_CLIP2);
+	m_cCursor.AddID(IDI_CUSTOMICON_CLOCK1);
+	m_cCursor.AddID(IDI_CUSTOMICON_CLOCK2);
+	m_cCursor.AddID(IDI_CUSTOMICON_CARDFILE1);
+	m_cCursor.AddID(IDI_CUSTOMICON_CARDFILE2);
+	m_cCursor.AddID(IDI_CUSTOMICON_DISK1);
+	m_cCursor.AddID(IDI_CUSTOMICON_DISK2);
+	m_cCursor.AddID(IDI_CUSTOMICON_FILES1);
+	m_cCursor.AddID(IDI_CUSTOMICON_FILES2);
+	m_cCursor.AddID(IDI_CUSTOMICON_FOLDER2);
+	m_cCursor.AddID(IDI_CUSTOMICON_FOLDER1);
+	m_cCursor.AddID(IDI_CUSTOMICON_MAIL1);
+	m_cCursor.AddID(IDI_CUSTOMICON_MAIL2);
+	m_cCursor.AddID(IDI_CUSTOMICON_NOTE1);
+	m_cCursor.AddID(IDI_CUSTOMICON_NOTE2);
+	m_cCursor.AddID(IDI_CUSTOMICON_PEN1);
+	m_cCursor.AddID(IDI_CUSTOMICON_PEN2);
+	m_cCursor.AddID(IDI_CUSTOMICON_PENCIL1);
+	m_cCursor.AddID(IDI_CUSTOMICON_PENCIL2);
+	m_cCursor.AddID(IDI_CUSTOMICON_PHONE1);
+	m_cCursor.AddID(IDI_CUSTOMICON_PHONE2);
+	m_cCursor.AddID(IDI_CUSTOMICON_POINT1);
+	m_cCursor.AddID(IDI_CUSTOMICON_POINT2);
+	m_cCursor.AddID(IDI_CUSTOMICON_SERCURITY);
+	m_cCursor.AddID(IDI_CUSTOMICON_SECURITY2);
+	return true;
 }
