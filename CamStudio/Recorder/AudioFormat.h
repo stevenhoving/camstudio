@@ -16,9 +16,9 @@ class CAudioFormatDlg : public CDialog
 	// Construction
 	CAudioFormatDlg(CWnd* pParent = NULL);   // standard constructor; disallowed
 public:
-	CAudioFormatDlg(sAudioFormat& cFmt, CWnd* pParent = NULL);   // standard constructor
+	CAudioFormatDlg(const sAudioFormat& cFmt, CWnd* pParent = NULL);   // standard constructor
 
-	sAudioFormat m_cFmt;
+	const sAudioFormat& Format() const	{return m_cFmt;}
 
 	void UpdateLocalCompressFormatInterface();
 	void UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPWAVEFORMATEX  curr_sel_pwfx);
@@ -66,6 +66,7 @@ private:
 	void SuggestLocalCompressFormat();
 	BOOL GetFormatDescription(LPWAVEFORMATEX pwformat, LPTSTR pszFormatTag, LPTSTR pszFormat);
 
+	sAudioFormat m_cFmt;
 	LPWAVEFORMATEX m_pwfx;
 	DWORD m_cbwfx;
 	int m_iAudioBitsPerSample;
