@@ -460,7 +460,7 @@ public:
 	
 	// default read item by ID always fails
 	template <typename T>
-	bool Read(const int iID, T& Value)	{return false;}
+	bool Read(const int /*iID*/, T& /*Value*/)	{return false;}
 	
 	// specialized read item by ID for group type searchs the group values
 	template <>
@@ -479,7 +479,7 @@ public:
 
 	// default write item by ID always fails
 	template <typename T>
-	bool Write(const int iID, T& Value)	{return false;}
+	bool Write(const int /*iID*/, T& /*Value*/)	{return false;}
 
 	// specialized find item by ID for group type searchs the group values
 	template <>
