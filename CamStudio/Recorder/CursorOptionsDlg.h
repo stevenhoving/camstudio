@@ -1,8 +1,6 @@
 // CursorOptionsDlg.h : header file
 //
 /////////////////////////////////////////////////////////////////////////////
-#include "afxcmn.h"
-#include "afxwin.h"
 #if !defined(AFX_CURSOROPTIONSDLG_H__53E9FA38_56DF_4034_A58F_A0434F2A8EAA__INCLUDED_)
 #define AFX_CURSOROPTIONSDLG_H__53E9FA38_56DF_4034_A58F_A0434F2A8EAA__INCLUDED_
 
@@ -10,14 +8,19 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
+#include "CamCursor.h"
+
 /////////////////////////////////////////////////////////////////////////////
 // CCursorOptionsDlg dialog
 
 class CCursorOptionsDlg : public CDialog
 {
 // Construction
+	CCursorOptionsDlg(CWnd* pParent = NULL);   // standard constructor; disallowed
 public:
-	CCursorOptionsDlg(CWnd* pParent = NULL);   // standard constructor
+	CCursorOptionsDlg(const CCamCursor& cCursor, CWnd* pParent = NULL);
+
+	const CCamCursor& GetOptions() const	{return m_cCursor;}
 
 // Dialog Data
 	//{{AFX_DATA(CCursorOptionsDlg)
@@ -66,12 +69,14 @@ protected:
 private:
 	void RefreshPreviewCursor();
 	void RefreshHighlight();
+	bool LoadStdCursors();
 
 	CFileDialog * m_pIconFileDlg;
 	bool m_bInitPaint;
 	bool m_bSliding;
 
 	// input/output variables
+	CCamCursor m_cCursor;
 	HCURSOR m_hPreviewCursor;
 	HCURSOR m_hLoadCursor;
 	HCURSOR m_hCustomCursor;
