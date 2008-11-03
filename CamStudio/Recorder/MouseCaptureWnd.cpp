@@ -6,6 +6,7 @@
 #include "MouseCaptureWnd.h"
 #include "MainFrm.h"			// for maxxScreen, maxyScreen
 #include "RecorderView.h"
+#include "HotKey.h"
 #include "CStudioLib.h"
 
 // MouseCaptureWndProc referenced functions
@@ -99,7 +100,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 	case WM_MOUSEMOVE:
 		{
 			TRACE("MouseCaptureWndProc : WM_MOUSEMOVE\n");
-			if (iMouseCaptureMode == 0) {
+			if (cRegionOpts.isCaptureMode(CAPTURE_FIXED)) {
 				//Fixed Region
 				POINT pt;
 				GetCursorPos(&pt);
@@ -134,7 +135,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 				} // if old
 
 				old_rcClip = rcClip;
-			} else if (iMouseCaptureMode == 1) { //Variable Region
+			} else if (cRegionOpts.isCaptureMode(CAPTURE_VARIABLE)) { //Variable Region
 				if (bCapturing) {
 					POINT pt;
 					GetCursorPos(&pt);
@@ -162,13 +163,13 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 		{
 			TRACE("MouseCaptureWndProc : WM_LBUTTONUP\n");
 
-			if (iMouseCaptureMode == 0) {
+			if (cRegionOpts.isCaptureMode(CAPTURE_FIXED)) {
 				//erase final
 				HDC hScreenDC = GetDC(hWnd);
 				DrawSelect(hScreenDC, FALSE, &old_rcClip);
 				old_rcClip = rcClip;
 				ReleaseDC(hWnd,hScreenDC);
-			} else if (iMouseCaptureMode == 1) {
+			} else if (cRegionOpts.isCaptureMode(CAPTURE_VARIABLE)) {
 				NormalizeRect(&rcClip);
 				old_rcClip = rcClip;
 				bCapturing = FALSE;
@@ -200,7 +201,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 			// User pressed left button, initialize selection
 			// Set origin to current mouse position (in window coords)
 
-			if (iMouseCaptureMode == 1) {
+			if (cRegionOpts.isCaptureMode(CAPTURE_VARIABLE)) {
 				POINT pt;
 				GetCursorPos(&pt);
 				ptOrigin = pt;
@@ -219,7 +220,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 	case WM_RBUTTONDOWN:
 		{
 			TRACE("MouseCaptureWndProc : WM_RBUTTONDOWN\n");
-			if (iMouseCaptureMode == 0) {
+			if (cRegionOpts.isCaptureMode(CAPTURE_FIXED)) {
 				//Cancel the operation
 				//erase final
 				HDC hScreenDC = GetDC(hWnd);
@@ -242,14 +243,14 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 			int lKeyData = lParam; // key data
 
 			//ver 1.2
-			if (nVirtKey == (int) uKeyRecordCancel) { //Cancel the operation
+			if (nVirtKey == (int) cHotKeyOpts.m_RecordCancel.m_vKey) { //Cancel the operation
 				//if (nVirtKey==VK_ESCAPE) {
-				if (iMouseCaptureMode == 0) {
+				if (cRegionOpts.isCaptureMode(CAPTURE_FIXED)) {
 					//erase final
 					HDC hScreenDC = GetDC(hWnd);
 					DrawSelect(hScreenDC, FALSE, &old_rcClip);
 					ReleaseDC(hWnd,hScreenDC);
-				} else if (iMouseCaptureMode == 1) {
+				} else if (cRegionOpts.isCaptureMode(CAPTURE_VARIABLE)) {
 					NormalizeRect(&rcClip);
 					old_rcClip = rcClip;
 					if (bCapturing) {

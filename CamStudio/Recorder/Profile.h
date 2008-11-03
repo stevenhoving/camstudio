@@ -32,45 +32,43 @@
 #define PROFILE_H
 #pragma once
 
-#include <vector>
-
 #include "TextAttributes.h"
 #include "ImageAttributes.h"
+#include "CStudioLib.h"
+
+#include <vector>
 
 enum eLegacySettings
 {
 	// Application
 	LANGUAGE
-	, FLASHINGRECT
-	, MINIMIZEONSTART
-	, LAUNCHPLAYER
 	, LAUNCHPROPPROMPT
 	, LAUNCHHTMLPLAYER
 	, DELETEAVIAFTERUSE
-	, TEMPPATH_ACCESS
-	, THREADPRIORITY
 	, VIEWTYPE
 
-	, FIXEDCAPTURE
-	, CAPTURETOP
-	, CAPTURELEFT
-	, CAPTUREWIDTH
-	, CAPTUREHEIGHT
-	, CAPTURETRANS
-
-	, USEMCI
 	, SHIFTTYPE
 	, TIMESHIFT
 	, FRAMESHIFT
-	, RECORDINGMODE
-	, AUTONAMING
 	, RESTRICTVIDEOCODECS
 	, PRESETTIME
 	, RECORDPRESET
 
-	, AUTOPAN
-	, MAXPAN
-	, CBWFX
+	, NUMDEV
+	, SELECTEDDEV
+	, FEEDBACK_LINE
+	, FEEDBACK_LINE_INFO
+	, PERFORMAUTOSEARCH
+	, INTERLEAVEUNIT
+
+	// region
+	, FIXEDCAPTURE
+	, SUPPORTMOUSEDRAG
+	, MOUSECAPTUREMODE
+	, CAPTURETOP
+	, CAPTURELEFT
+	, CAPTUREWIDTH
+	, CAPTUREHEIGHT
 
 	// hotkeys
 	, KEYRECORDSTART
@@ -98,14 +96,18 @@ enum eLegacySettings
 	, KEYSHOWLAYOUTALT
 	, KEYSHOWLAYOUTSHIFT
 
-	, INTERLEAVEUNIT
+	// program options
+	, AUTONAMING
+	, CAPTURETRANS
+	, FLASHINGRECT
+	, MINIMIZEONSTART
+	, RECORDINGMODE
+	, LAUNCHPLAYER
 	, SPECIFIEDDIR
-	, NUMDEV
-	, SELECTEDDEV
-	, FEEDBACK_LINE
-	, FEEDBACK_LINE_INFO
-	, PERFORMAUTOSEARCH
-	, SUPPORTMOUSEDRAG
+	, TEMPPATH_ACCESS
+	, THREADPRIORITY
+	, AUTOPAN
+	, MAXPAN
 
 	// Video options
 	, AUTOADJUST
@@ -117,6 +119,7 @@ enum eLegacySettings
 	, COMPFCCHANDLER
 	, COMPRESSORSTATEISFOR
 	, COMPRESSORSTATESIZE
+	, CBWFX
 
 	// Shapes
 	, SHAPENAMEINT
@@ -126,7 +129,6 @@ enum eLegacySettings
 	, LAYOUTNAMELEN
 	
 	// cursor settings
-	, MOUSECAPTUREMODE
 	, RECORDCURSOR
 	, SAVEDIR
 	, CURSORDIR
@@ -149,6 +151,7 @@ enum eLegacySettings
 	// audio
 	, RECORDAUDIO
 	, AUDIODEVICEID
+	, USEMCI
 	, WAVEINSELECTED
 	, AUDIO_BITS_PER_SAMPLE
 	, AUDIO_NUM_CHANNELS
@@ -598,48 +601,33 @@ public:
 	virtual ~CProfile();
 
 public:
-	// read the entire file
-	bool Read()
-	{
-		bool bResult = m_SectionApp.Read(m_strFileName);
-		bResult |= m_SectionHighLight.Read(m_strFileName);
-		bResult |= m_SectionTimeStamp.Read(m_strFileName);
-		bResult |= m_SectionCaption.Read(m_strFileName);
-		bResult |= m_SectionWatermark.Read(m_strFileName);
-		return bResult;
-	}
-	// write the entire file
-	bool Write()
-	{
-		bool bResult = m_SectionApp.Write(m_strFileName);
-		bResult |= m_SectionHighLight.Write(m_strFileName);
-		bResult |= m_SectionTimeStamp.Write(m_strFileName);
-		bResult |= m_SectionCaption.Write(m_strFileName);
-		bResult |= m_SectionWatermark.Write(m_strFileName);
-		return bResult;
-	}
+	bool Read();	// read the entire file
+	bool Write();	// write the entire file
 
-	// find/read a key value
+	// read a key value by ID + type
 	template <typename T>
 	bool Read(const int iID, T& Value)
 	{
 		// search all sections
-		bool bResult = m_SectionApp.Read(iID, Value);
-		bResult = bResult || m_SectionHighLight.Read(iID, Value);
-		bResult = bResult || m_SectionTimeStamp.Read(iID, Value);
-		bResult = bResult || m_SectionCaption.Read(iID, Value);
-		bResult = bResult || m_SectionWatermark.Read(iID, Value);
+		typedef std::vector <CProfileSection>::iterator sect_iter;
+		bool bResult = false;
+		for (sect_iter iter = m_vAllSections.begin(); !bResult && (iter != m_vAllSections.end()); ++iter)
+		{
+			bResult = iter->Read(iID, Value);
+		}
 		return bResult;
 	}
+	// write a key value by ID + type
 	template <typename T>
 	bool Write(const int iID, T& Value)
 	{
 		// search all sections
-		bool bResult = m_SectionApp.Write(iID, Value);
-		bResult = bResult || m_SectionHighLight.Write(iID, Value);
-		bResult = bResult || m_SectionTimeStamp.Write(iID, Value);
-		bResult = bResult || m_SectionCaption.Write(iID, Value);
-		bResult = bResult || m_SectionWatermark.Write(iID, Value);
+		typedef std::vector <CProfileSection>::iterator sect_iter;
+		bool bResult = false;
+		for (sect_iter iter = m_vAllSections.begin(); !bResult && (iter != m_vAllSections.end()); ++iter)
+		{
+			bResult = iter->Write(iID, Value);
+		}
 		return bResult;
 	}
 
@@ -647,10 +635,17 @@ protected:
 	CString m_strFileName;					// name of the *.ini file
 	CProfileSection m_SectionLegacy;		// legacy (v2.50) section values
 	CProfileSection m_SectionApp;			// application wide settings
-	CProfileSection m_SectionHighLight;		// Cursor highlight settings
+	CProfileSection m_SectionVideo;			// Video options
+	CProfileSection m_SectionAudio;			// Audio options
+	CProfileSection m_SectionProgram;		// Program Options options
+	CProfileSection m_SectionCursor;		// Cursor highlight settings
+	CProfileSection m_SectionHotkeys;		// Cursor highlight settings
+	CProfileSection m_SectionRegion;		// Region settings
 	CProfileSection m_SectionTimeStamp;		// timestamp settings
 	CProfileSection m_SectionCaption;		// caption annotation settings
 	CProfileSection m_SectionWatermark;		// watermark annotation settings
+	// TODO: use a vector for sections
+	std::vector <CProfileSection> m_vAllSections;
 
 	// add item to section
 	template <typename T>
@@ -673,13 +668,269 @@ private:
 // legacy settings values.
 
 #define NUMSTREAMS		2
-#define ModeAVI			0
-#define ModeFlash		1
+
+// video options
+// POD to hold them
+struct sVideoOpts
+{
+	sVideoOpts()
+		: m_bAutoAdjust(true)
+		, m_iValueAdjust(1)
+		, m_iTimeLapse(5)
+		, m_iFramesPerSecond(200)
+		, m_iKeyFramesEvery(200)
+		, m_iCompQuality(7000)
+		, m_iSelectedCompressor(0)
+		, m_dwCompfccHandler(0UL)
+		, m_dwCompressorStateIsFor(0UL)
+		, m_dwCompressorStateSize(0UL)
+	{
+	}
+	sVideoOpts(const sVideoOpts& rhs)
+	{
+		*this = rhs;
+	}
+
+	sVideoOpts& operator=(const sVideoOpts& rhs)
+	{
+		if (this == &rhs)
+			return *this;
+
+		m_bAutoAdjust				= rhs.m_bAutoAdjust;
+		m_iValueAdjust				= rhs.m_iValueAdjust;
+		m_iTimeLapse				= rhs.m_iTimeLapse;
+		m_iFramesPerSecond			= rhs.m_iFramesPerSecond;
+		m_iKeyFramesEvery			= rhs.m_iKeyFramesEvery;
+		m_iCompQuality				= rhs.m_iCompQuality;
+		m_iSelectedCompressor		= rhs.m_iSelectedCompressor;
+		m_dwCompfccHandler			= rhs.m_dwCompfccHandler;
+		m_dwCompressorStateIsFor	= rhs.m_dwCompressorStateIsFor;
+		m_dwCompressorStateSize		= rhs.m_dwCompressorStateSize;
+
+		return *this;
+	}
+
+	bool Read(CProfile& cProfile)
+	{
+		VERIFY(cProfile.Read(AUTOADJUST, m_bAutoAdjust));
+		VERIFY(cProfile.Read(VALUEADJUST, m_iValueAdjust));
+		VERIFY(cProfile.Read(TIMELAPSE, m_iTimeLapse));
+		VERIFY(cProfile.Read(FRAMES_PER_SECOND, m_iFramesPerSecond));
+		VERIFY(cProfile.Read(KEYFRAMEINTERVAL, m_iKeyFramesEvery));
+		VERIFY(cProfile.Read(COMPQUALITY, m_iCompQuality));
+		VERIFY(cProfile.Read(COMPFCCHANDLER, m_dwCompfccHandler));
+		VERIFY(cProfile.Read(COMPRESSORSTATEISFOR, m_dwCompressorStateIsFor));
+		VERIFY(cProfile.Read(COMPRESSORSTATESIZE, m_dwCompressorStateSize));		
+		// m_iSelectedCompressor
+		return true;
+	}
+	bool Write(CProfile& cProfile)
+	{
+		VERIFY(cProfile.Write(AUTOADJUST, m_bAutoAdjust));
+		VERIFY(cProfile.Write(VALUEADJUST, m_iValueAdjust));
+		VERIFY(cProfile.Write(TIMELAPSE, m_iTimeLapse));
+		VERIFY(cProfile.Write(FRAMES_PER_SECOND, m_iFramesPerSecond));
+		VERIFY(cProfile.Write(KEYFRAMEINTERVAL, m_iKeyFramesEvery));
+		VERIFY(cProfile.Write(COMPQUALITY, m_iCompQuality));
+		VERIFY(cProfile.Write(COMPFCCHANDLER, m_dwCompfccHandler));
+		VERIFY(cProfile.Write(COMPRESSORSTATEISFOR, m_dwCompressorStateIsFor));
+		VERIFY(cProfile.Write(COMPRESSORSTATESIZE, m_dwCompressorStateSize));		
+		// m_iSelectedCompressor
+		return true;
+	}
+
+	bool m_bAutoAdjust;
+	int m_iValueAdjust;
+	int m_iTimeLapse;
+	int m_iFramesPerSecond;
+	int m_iKeyFramesEvery;
+	int m_iCompQuality;
+	int m_iSelectedCompressor;
+	DWORD m_dwCompfccHandler;
+	DWORD m_dwCompressorStateIsFor;
+	DWORD m_dwCompressorStateSize;
+};
+extern sVideoOpts cVideoOpts;
+
+enum eVideoFormat
+{
+	ModeAVI
+	, ModeFlash
+};
+
+struct sProgramOpts
+{
+	sProgramOpts()
+		: m_bAutoNaming(false)
+		, m_bCaptureTrans(true)
+		, m_bFlashingRect(true)
+		, m_bMinimizeOnStart(false)
+		, m_bSaveSettings(true)
+		, m_bAutoPan(false)
+		, m_iMaxPan(20)
+		, m_iRecordingMode(ModeAVI)
+		, m_iLaunchPlayer(3)
+		, m_iSpecifiedDirLength(0)
+		, m_iTempPathAccess(USE_WINDOWS_TEMP_DIR)
+		, m_iThreadPriority(THREAD_PRIORITY_NORMAL)
+	{
+	}
+	sProgramOpts(const sProgramOpts& rhs)
+	{
+		*this = rhs;
+	}
+	sProgramOpts& operator=(const sProgramOpts& rhs)
+	{
+		if (this == &rhs)
+			return *this;
+
+		m_bAutoNaming			= rhs.m_bAutoNaming;
+		m_bCaptureTrans			= rhs.m_bCaptureTrans;
+		m_bFlashingRect			= rhs.m_bFlashingRect;
+		m_bMinimizeOnStart		= rhs.m_bMinimizeOnStart;
+		m_bSaveSettings			= rhs.m_bSaveSettings;
+		m_bAutoPan				= rhs.m_bAutoPan;
+		m_iMaxPan				= rhs.m_iMaxPan;
+		m_iRecordingMode		= rhs.m_iRecordingMode;
+		m_iLaunchPlayer			= rhs.m_bSaveSettings;
+		m_iSpecifiedDirLength	= rhs.m_iSpecifiedDirLength;
+		m_iTempPathAccess		= rhs.m_iTempPathAccess;
+		m_iThreadPriority		= rhs.m_iThreadPriority;
+		return *this;
+	}
+	bool Read(CProfile& cProfile)
+	{
+		VERIFY(cProfile.Read(AUTONAMING, m_bAutoNaming));
+		VERIFY(cProfile.Read(CAPTURETRANS, m_bCaptureTrans));
+		VERIFY(cProfile.Read(FLASHINGRECT, m_bFlashingRect));
+		VERIFY(cProfile.Read(MINIMIZEONSTART, m_bMinimizeOnStart));
+		VERIFY(cProfile.Read(RECORDINGMODE, m_iRecordingMode));
+		VERIFY(cProfile.Read(LAUNCHPLAYER, m_iLaunchPlayer));
+		VERIFY(cProfile.Read(SPECIFIEDDIR, m_iLaunchPlayer));
+		VERIFY(cProfile.Read(TEMPPATH_ACCESS, m_iTempPathAccess));
+		VERIFY(cProfile.Read(THREADPRIORITY, m_iThreadPriority));
+		VERIFY(cProfile.Read(AUTOPAN, m_bAutoPan));
+		VERIFY(cProfile.Read(MAXPAN, m_iMaxPan));
+		return true;
+	}
+	bool Write(CProfile& cProfile)
+	{
+		VERIFY(cProfile.Write(AUTONAMING, m_bAutoNaming));
+		VERIFY(cProfile.Write(CAPTURETRANS, m_bCaptureTrans));
+		VERIFY(cProfile.Write(FLASHINGRECT, m_bFlashingRect));
+		VERIFY(cProfile.Write(MINIMIZEONSTART, m_bMinimizeOnStart));
+		VERIFY(cProfile.Write(RECORDINGMODE, m_iRecordingMode));
+		VERIFY(cProfile.Write(LAUNCHPLAYER, m_iLaunchPlayer));
+		VERIFY(cProfile.Write(SPECIFIEDDIR, m_iLaunchPlayer));
+		VERIFY(cProfile.Write(TEMPPATH_ACCESS, m_iTempPathAccess));
+		VERIFY(cProfile.Write(THREADPRIORITY, m_iThreadPriority));
+		VERIFY(cProfile.Write(AUTOPAN, m_bAutoPan));
+		VERIFY(cProfile.Write(MAXPAN, m_iMaxPan));
+		return true;
+	}
+
+	bool m_bAutoNaming;
+	bool m_bCaptureTrans;
+	bool m_bFlashingRect;
+	bool m_bMinimizeOnStart;
+	bool m_bSaveSettings;
+	bool m_bAutoPan;
+	int m_iMaxPan;
+	int m_iRecordingMode;
+	int m_iLaunchPlayer;
+	int m_iSpecifiedDirLength;
+	int m_iTempPathAccess;
+	int m_iThreadPriority;
+};
+extern sProgramOpts cProgramOpts;
+
+enum eCaptureType
+{
+	CAPTURE_FIXED
+	, CAPTURE_VARIABLE
+	, CAPTURE_FULLSCREEN
+	, CAPTURE_WINDOW
+};
+
+// miscellaneous options
+struct sRegionOpts
+{
+	sRegionOpts()
+		: m_bFixedCapture(false)
+		, m_bSupportMouseDrag(false)
+		, m_iMouseCaptureMode(CAPTURE_FIXED)
+		, m_iCaptureLeft(100)
+		, m_iCaptureTop(100)
+		, m_iCaptureWidth(320)
+		, m_iCaptureHeight(240)
+	{
+	}
+	sRegionOpts(const sRegionOpts& rhs)
+	{
+		*this = rhs;
+	}
+	sRegionOpts& operator=(const sRegionOpts& rhs)
+	{
+		if (this == &rhs)
+			return *this;
+
+		m_bFixedCapture		= rhs.m_bFixedCapture;
+		m_bSupportMouseDrag	= rhs.m_bSupportMouseDrag;
+		m_iMouseCaptureMode	= rhs.m_iMouseCaptureMode;
+		m_iCaptureLeft		= rhs.m_iCaptureLeft;
+		m_iCaptureTop		= rhs.m_iCaptureTop;
+		m_iCaptureWidth		= rhs.m_iCaptureWidth;
+		m_iCaptureHeight	= rhs.m_iCaptureHeight;
+		return *this;
+	}
+	bool Read(CProfile& cProfile)
+	{
+		VERIFY(cProfile.Read(FIXEDCAPTURE, m_bFixedCapture));
+		VERIFY(cProfile.Read(SUPPORTMOUSEDRAG, m_bSupportMouseDrag));
+		VERIFY(cProfile.Read(MOUSECAPTUREMODE, m_iMouseCaptureMode));		
+		VERIFY(cProfile.Read(CAPTURETOP, m_iCaptureLeft));
+		VERIFY(cProfile.Read(CAPTURELEFT, m_iCaptureTop));
+		VERIFY(cProfile.Read(CAPTUREWIDTH, m_iCaptureWidth));
+		VERIFY(cProfile.Read(CAPTUREHEIGHT, m_iCaptureHeight));
+
+		return true;
+	}
+	bool Write(CProfile& cProfile)
+	{
+		VERIFY(cProfile.Write(FIXEDCAPTURE, m_bFixedCapture));
+		VERIFY(cProfile.Write(SUPPORTMOUSEDRAG, m_bSupportMouseDrag));
+		VERIFY(cProfile.Write(MOUSECAPTUREMODE, m_iMouseCaptureMode));		
+		VERIFY(cProfile.Write(CAPTURETOP, m_iCaptureLeft));
+		VERIFY(cProfile.Write(CAPTURELEFT, m_iCaptureTop));
+		VERIFY(cProfile.Write(CAPTUREWIDTH, m_iCaptureWidth));
+		VERIFY(cProfile.Write(CAPTUREHEIGHT, m_iCaptureHeight));
+		return true;
+	}
+
+	bool isCaptureMode(const eCaptureType eType) const {return eType == m_iMouseCaptureMode;}
+
+	bool m_bFixedCapture;		// TODO: should be m_bFixed
+	bool m_bSupportMouseDrag;	// TODO: should be m_bMouseDrag
+	int m_iMouseCaptureMode;	// TODO: Mouse??? Just CaptureMode.
+	// TODO: should be a CRect
+	int m_iCaptureLeft;			// TODO: should be m_iLeft (if not CRect)
+	int m_iCaptureTop;			// TODO: should be m_iTop (if not CRect)
+	int m_iCaptureWidth;		// TODO: should be m_iWidth (if not CRect)
+	int m_iCaptureHeight;		// TODO: should be m_iHeight (if not CRect)
+};
+extern sRegionOpts cRegionOpts;
 
 // Audio format values
 // POD to hold them
 const int MILLISECONDS	= 0;
 const int FRAMES		= 1;
+enum eAudioInput
+{
+	NONE
+	, MICROPHONE
+	, SPEAKERS
+};
+
 struct sAudioFormat
 {
 public:
@@ -687,6 +938,8 @@ public:
 		: m_uDeviceID(WAVE_MAPPER)
 		, m_bCompression(true)
 		, m_bInterleaveFrames(true)
+		, m_bUseMCI(false)
+		, m_iRecordAudio(NONE)
 		, m_iNumChannels(2)
 		, m_iBitsPerSample(16)
 		, m_iSamplesPerSeconds(22050)
@@ -708,6 +961,8 @@ public:
 		m_uDeviceID				= rhs.m_uDeviceID;
 		m_bCompression			= rhs.m_bCompression;
 		m_bInterleaveFrames		= rhs.m_bInterleaveFrames;
+		m_bUseMCI				= rhs.m_bUseMCI;
+		m_iRecordAudio			= rhs.m_iRecordAudio;
 		m_iNumChannels			= rhs.m_iNumChannels;
 		m_iBitsPerSample		= rhs.m_iBitsPerSample;
 		m_iSamplesPerSeconds	= rhs.m_iSamplesPerSeconds;
@@ -717,10 +972,28 @@ public:
 		m_dwWaveinSelected		= rhs.m_dwWaveinSelected;
 		return *this;
 	}
+	bool Read(CProfile& cProfile)
+	{
+		VERIFY(cProfile.Read(AUDIODEVICEID, m_uDeviceID));
+		VERIFY(cProfile.Read(BAUDIOCOMPRESSION, m_bCompression));
+		VERIFY(cProfile.Read(USEMCI, m_bUseMCI));
+		VERIFY(cProfile.Read(RECORDAUDIO, m_iRecordAudio));		
+		VERIFY(cProfile.Read(CBWFX, m_dwCbwFX));
+		VERIFY(cProfile.Read(WAVEINSELECTED, m_dwWaveinSelected));
+		VERIFY(cProfile.Read(AUDIO_BITS_PER_SAMPLE, m_iBitsPerSample));
+		VERIFY(cProfile.Read(AUDIO_NUM_CHANNELS, m_iNumChannels));
+		VERIFY(cProfile.Read(AUDIO_SAMPLES_PER_SECONDS, m_iSamplesPerSeconds));
+		VERIFY(cProfile.Read(INTERLEAVEFRAMES, m_bInterleaveFrames));
+		VERIFY(cProfile.Read(INTERLEAVEFACTOR, m_iInterleaveFactor));
+		VERIFY(cProfile.Read(INTERLEAVEUNIT, m_iInterleavePeriod));
+		return true;
+	}
 	bool Write(CProfile& cProfile)
 	{
 		VERIFY(cProfile.Write(AUDIODEVICEID, m_uDeviceID));
 		VERIFY(cProfile.Write(BAUDIOCOMPRESSION, m_bCompression));
+		VERIFY(cProfile.Write(USEMCI, m_bUseMCI));		
+		VERIFY(cProfile.Write(RECORDAUDIO, m_iRecordAudio));		
 		VERIFY(cProfile.Write(CBWFX, m_dwCbwFX));
 		VERIFY(cProfile.Write(WAVEINSELECTED, m_dwWaveinSelected));
 		VERIFY(cProfile.Write(AUDIO_BITS_PER_SAMPLE, m_iBitsPerSample));
@@ -731,122 +1004,39 @@ public:
 		VERIFY(cProfile.Write(INTERLEAVEUNIT, m_iInterleavePeriod));
 		return true;
 	}
+	bool isInput(eAudioInput eInput) const {return eInput == m_iRecordAudio;}
 
-	UINT m_uDeviceID;
 	bool m_bCompression;
 	bool m_bInterleaveFrames;
+	bool m_bUseMCI;
+	int m_iRecordAudio;
 	int m_iNumChannels;
 	int m_iBitsPerSample;
 	int m_iSamplesPerSeconds;
 	int m_iInterleaveFactor;
 	int m_iInterleavePeriod;
+	UINT m_uDeviceID;
 	DWORD m_dwCbwFX;
 	DWORD m_dwWaveinSelected;
 };
 extern sAudioFormat cAudioFormat;
 
-// video options
-// POD to hold them
-struct sVideoOpts
-{
-	sVideoOpts()
-		:	m_bAutoAdjust(true)
-		, m_iValueAdjust(1)
-		, m_iTimeLapse(5)
-		, m_iFramesPerSecond(200)
-		, m_iKeyFramesEvery(200)
-		, m_iCompQuality(7000)
-		, m_iSelectedCompressor(0)
-		, m_dwCompfccHandler(0UL)
-	{
-	}
-	sVideoOpts(const sVideoOpts& rhs)
-	{
-		*this = rhs;
-	}
-
-	sVideoOpts& operator=(const sVideoOpts& rhs)
-	{
-		if (this == &rhs)
-			return *this;
-
-		m_bAutoAdjust			= rhs.m_bAutoAdjust;
-		m_iValueAdjust			= rhs.m_iValueAdjust;
-		m_iTimeLapse			= rhs.m_iTimeLapse;
-		m_iFramesPerSecond		= rhs.m_iFramesPerSecond;
-		m_iKeyFramesEvery		= rhs.m_iKeyFramesEvery;
-		m_iCompQuality			= rhs.m_iCompQuality;
-		m_iSelectedCompressor	= rhs.m_iSelectedCompressor;
-		m_dwCompfccHandler		= rhs.m_dwCompfccHandler;
-
-		return *this;
-	}
-	
-	bool Write(CProfile& cProfile)
-	{
-		VERIFY(cProfile.Write(AUTOADJUST, m_bAutoAdjust));
-		VERIFY(cProfile.Write(VALUEADJUST, m_iValueAdjust));
-		VERIFY(cProfile.Write(TIMELAPSE, m_iTimeLapse));
-		VERIFY(cProfile.Write(FRAMES_PER_SECOND, m_iFramesPerSecond));
-		VERIFY(cProfile.Write(KEYFRAMEINTERVAL, m_iKeyFramesEvery));
-		VERIFY(cProfile.Write(COMPQUALITY, m_iCompQuality));
-		VERIFY(cProfile.Write(COMPFCCHANDLER, m_dwCompfccHandler));
-		// m_iSelectedCompressor
-		//COMPRESSORSTATEISFOR
-		//COMPRESSORSTATESIZE		
-		return true;
-	}
-
-	bool m_bAutoAdjust;
-	int m_iValueAdjust;
-	int m_iTimeLapse;
-	int m_iFramesPerSecond;
-	int m_iKeyFramesEvery;
-	int m_iCompQuality;
-	int m_iSelectedCompressor;
-	DWORD m_dwCompfccHandler;
-};
-extern sVideoOpts cVideoOpts;
-
-extern bool bFlashingRect;
-extern bool bMinimizeOnStart;
-extern bool bAutoPan;
-extern bool bFixedCapture;
-extern bool bCaptureTrans;
-extern bool bPerformAutoSearch;
-extern bool bSupportMouseDrag;
-extern bool bUseMCI;
-extern bool bLaunchPropPrompt;
-extern bool bLaunchHTMLPlayer;
-extern bool bDeleteAVIAfterUse;
-extern bool bAutoNaming;
-extern bool bRestrictVideoCodecs;
-extern bool bRecordPreset;
-extern bool bTimestampAnnotation;
-extern bool bCaptionAnnotation;
-extern bool bWatermarkAnnotation;
-
-extern int iLanguageID;
-extern int iLaunchPlayer;
-extern int iMouseCaptureMode;
-extern int iCaptureWidth;
-extern int iCaptureHeight;
-extern DWORD dwCompressorStateIsFor;
-extern DWORD dwCompressorStateSize;
-extern int iMaxPan;
-extern int iRecordAudio;
-extern int iViewType;
-extern int iSaveLen;
-extern int iCursorLen;
-extern int iThreadPriority;
-extern int iCaptureLeft;
-extern int iCaptureTop;
-extern int iTempPathAccess;
-extern int iSpecifiedDirLength;
+// record from speaker
 extern int iNumberOfMixerDevices;
 extern int iSelectedMixer;
 extern int iFeedbackLine;
 extern int iFeedbackLineInfo;
+
+extern bool bPerformAutoSearch;
+extern bool bLaunchPropPrompt;
+extern bool bLaunchHTMLPlayer;
+extern bool bDeleteAVIAfterUse;
+extern bool bRestrictVideoCodecs;
+extern bool bRecordPreset;
+
+extern int iViewType;
+extern int iSaveLen;
+extern int iCursorLen;
 extern int iShapeNameInt;
 extern int iShapeNameLen;	// string length
 extern int iLayoutNameInt;
@@ -854,11 +1044,15 @@ extern int iLayoutNameLen;	// string length
 extern int iShiftType;
 extern int iTimeShift;
 extern int iFrameShift;
-extern int iRecordingMode;
 extern int iPresetTime;
 
+extern bool bCaptionAnnotation;
 extern TextAttributes taCaption;
+
+extern bool bTimestampAnnotation;
 extern TextAttributes taTimestamp;
+
+extern bool bWatermarkAnnotation;
 extern ImageAttributes iaWatermark;
 
 #endif	// PROFILE_H

@@ -5,44 +5,22 @@
 #include "Profile.h"
 #include "TextAttributes.h"	// for position
 #include "ImageAttributes.h"
+#include "HotKey.h"
 #include "CStudioLib.h"
 
-DWORD dwCompressorStateIsFor = 0;
-DWORD dwCompressorStateSize = 0;
-
-bool bAutoPan = false;
-bool bAutoNaming = false;
-bool bCaptureTrans = true;
 bool bCaptionAnnotation = false;
 bool bDeleteAVIAfterUse = true;
-bool bFixedCapture = false;
-bool bFlashingRect = true;
 bool bLaunchPropPrompt = false;
 bool bLaunchHTMLPlayer = true;
-bool bMinimizeOnStart = false;
 bool bPerformAutoSearch = true;
 bool bRestrictVideoCodecs = false;
 bool bRecordPreset = false;
-bool bSupportMouseDrag = true;
 bool bTimestampAnnotation = false;
-bool bUseMCI = false;
 bool bWatermarkAnnotation = false;
 
-int iLaunchPlayer = 3;
-int iMouseCaptureMode = 0;
-int iCaptureWidth = 320;
-int iCaptureHeight = 240;
-
-int iMaxPan = 20;
-int iRecordAudio = 0;
 int iViewType = 0;
 int iSaveLen = 0;	// dir len?
 int iCursorLen = 0;	// dir len?
-int iThreadPriority = THREAD_PRIORITY_NORMAL;
-int iCaptureLeft = 100;
-int iCaptureTop = 100;
-int iTempPathAccess = USE_WINDOWS_TEMP_DIR;
-int iSpecifiedDirLength = 0;
 int iNumberOfMixerDevices = 0;
 int iSelectedMixer = 0;
 int iFeedbackLine = -1;
@@ -52,9 +30,7 @@ int iLayoutNameInt = 1;
 int iShiftType = 0; // 0 : no shift, 1 : delayAudio, 2: delayVideo
 int iTimeShift = 100;
 int iFrameShift = 0;
-int iRecordingMode = ModeAVI;
 int iPresetTime = 60;
-int iLanguageID;
 
 TextAttributes taCaption(TOP_LEFT, "ScreenCam", RGB(0, 0, 0), RGB(0xff, 0xff, 0xff));
 TextAttributes taTimestamp(TOP_LEFT, "", RGB(0, 0, 0), RGB(0xff, 0xff, 0xff));
@@ -66,7 +42,7 @@ namespace baseprofile {
 template <>
 CString ReadEntry(CString strFilename, CString strSection, CString strKeyName, const CString& DefValue)
 {
-	TRACE("ReadEntry(CString): %s,\nSection: %s\nKey: %s\nValue: %s\n", strFilename, strSection, strKeyName, DefValue);
+	//TRACE("ReadEntry(CString): %s,\nSection: %s\nKey: %s\nValue: %s\n", strFilename, strSection, strKeyName, DefValue);
 	const int BUFSIZE = 260;
 	TCHAR szBuf[BUFSIZE];
 	DWORD dwLen = ::GetPrivateProfileString(strSection, strKeyName, DefValue, szBuf, BUFSIZE, strFilename);
@@ -75,7 +51,7 @@ CString ReadEntry(CString strFilename, CString strSection, CString strKeyName, c
 template <>
 bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const CString& Value)
 {
-	TRACE("WriteEntry(CString): %s\nSection: %s\nKey: %s\nValue: %s\n", strFilename, strSection, strKeyName, Value);
+	//TRACE("WriteEntry(CString): %s\nSection: %s\nKey: %s\nValue: %s\n", strFilename, strSection, strKeyName, Value);
 	bool bDeleteSection = strKeyName.IsEmpty();
 	bool bDeleteKey = Value.IsEmpty();
 	bool bResult = (bDeleteSection || bDeleteKey);
@@ -96,13 +72,13 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 template <>
 int ReadEntry(CString strFilename, CString strSection, CString strKeyName, const int& DefValue)
 {
-	TRACE("ReadEntry(int): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, DefValue);
+	//TRACE("ReadEntry(int): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, DefValue);
 	return ::GetPrivateProfileInt(strSection, strKeyName, DefValue, strFilename);
 }
 template <>
 bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const int& Value)
 {
-	TRACE("WriteEntry(int): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, Value);
+	//TRACE("WriteEntry(int): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, Value);
 	CString strValue;
 	strValue.Format("%d", Value);
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
@@ -112,14 +88,14 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 template <>
 bool ReadEntry(CString strFilename, CString strSection, CString strKeyName, const bool& DefValue)
 {
-	TRACE("ReadEntry(bool): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, DefValue);
+	//TRACE("ReadEntry(bool): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, DefValue);
 	return ::GetPrivateProfileInt(strSection, strKeyName, DefValue, strFilename)
 		? true : false;
 }
 template <>
 bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const bool& Value)
 {
-	TRACE("WriteEntry(bool): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, Value);
+	//TRACE("WriteEntry(bool): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, Value);
 	CString strValue;
 	strValue.Format("%d", Value ? 1 : 0);
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
@@ -129,7 +105,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 template <>
 long ReadEntry(CString strFilename, CString strSection, CString strKeyName, const long& DefValue)
 {
-	TRACE("ReadEntry(long): %s,\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
+	//TRACE("ReadEntry(long): %s,\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
 	const int BUFSIZE = 128;
 	TCHAR szBuf[BUFSIZE];
 	DWORD dwLen = ::GetPrivateProfileString(strSection, strKeyName, _T(""), szBuf, BUFSIZE, strFilename);
@@ -138,7 +114,7 @@ long ReadEntry(CString strFilename, CString strSection, CString strKeyName, cons
 template <>
 bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const long& Value)
 {
-	TRACE("WriteEntry(long): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
+	//TRACE("WriteEntry(long): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
 	CString strValue;
 	strValue.Format("%ld", Value);
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
@@ -148,7 +124,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 template <>
 DWORD ReadEntry(CString strFilename, CString strSection, CString strKeyName, const DWORD& DefValue)
 {
-	TRACE("ReadEntry(DWORD): %s,\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
+	//TRACE("ReadEntry(DWORD): %s,\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
 	const int BUFSIZE = 128;
 	TCHAR szBuf[BUFSIZE];
 	DWORD dwLen = ::GetPrivateProfileString(strSection, strKeyName, _T(""), szBuf, BUFSIZE, strFilename);
@@ -157,7 +133,7 @@ DWORD ReadEntry(CString strFilename, CString strSection, CString strKeyName, con
 template <>
 bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const DWORD& Value)
 {
-	TRACE("WriteEntry(DWORD): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
+	//TRACE("WriteEntry(DWORD): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
 	CString strValue;
 	strValue.Format("%ld", Value);
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
@@ -167,7 +143,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 template <>
 double ReadEntry(CString strFilename, CString strSection, CString strKeyName, const double& DefValue)
 {
-	TRACE("ReadEntry(double): %s,\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
+	//TRACE("ReadEntry(double): %s,\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
 	const int BUFSIZE = 128;
 	TCHAR szBuf[BUFSIZE];
 	DWORD dwLen = ::GetPrivateProfileString(strSection, strKeyName, _T(""), szBuf, BUFSIZE, strFilename);
@@ -176,7 +152,7 @@ double ReadEntry(CString strFilename, CString strSection, CString strKeyName, co
 template <>
 bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const double& Value)
 {
-	TRACE("WriteEntry(double): %s\nSection: %s\nKey: %s\nValue: %f\n", strFilename, strSection, strKeyName, Value);
+	//TRACE("WriteEntry(double): %s\nSection: %s\nKey: %s\nValue: %f\n", strFilename, strSection, strKeyName, Value);
 	CString strValue;
 	strValue.Format("%f", Value);
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
@@ -186,14 +162,14 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 template <>
 BYTE ReadEntry(CString strFilename, CString strSection, CString strKeyName, const BYTE& DefValue)
 {
-	TRACE("ReadEntry(BYTE): %s,\nSection: %s\nKey: %s\nValue: %u\n", strFilename, strSection, strKeyName, DefValue);
+	//TRACE("ReadEntry(BYTE): %s,\nSection: %s\nKey: %s\nValue: %u\n", strFilename, strSection, strKeyName, DefValue);
 	BYTE iVal = ::GetPrivateProfileInt(strSection, strKeyName, DefValue, strFilename);
 	return iVal;
 }
 template <>
 bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const BYTE& Value)
 {
-	TRACE("WriteEntry(BYTE): %s\nSection: %s\nKey: %s\nValue: %u\n", strFilename, strSection, strKeyName, Value);
+	//TRACE("WriteEntry(BYTE): %s\nSection: %s\nKey: %s\nValue: %u\n", strFilename, strSection, strKeyName, Value);
 	CString strValue;
 	strValue.Format("%u", Value);
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
@@ -203,14 +179,14 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 template <>
 UINT ReadEntry(CString strFilename, CString strSection, CString strKeyName, const UINT& DefValue)
 {
-	TRACE("ReadEntry(UINT): %s,\nSection: %s\nKey: %s\nValue: %u\n", strFilename, strSection, strKeyName, DefValue);
+	//TRACE("ReadEntry(UINT): %s,\nSection: %s\nKey: %s\nValue: %u\n", strFilename, strSection, strKeyName, DefValue);
 	UINT iVal = ::GetPrivateProfileInt(strSection, strKeyName, DefValue, strFilename);
 	return iVal;
 }
 template <>
 bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const UINT& Value)
 {
-	TRACE("WriteEntry(BYTE): %s\nSection: %s\nKey: %s\nValue: %u\n", strFilename, strSection, strKeyName, Value);
+	//TRACE("WriteEntry(BYTE): %s\nSection: %s\nKey: %s\nValue: %u\n", strFilename, strSection, strKeyName, Value);
 	CString strValue;
 	strValue.Format("%u", Value);
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
@@ -220,7 +196,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 template <>
 LANGID ReadEntry(CString strFilename, CString strSection, CString strKeyName, const LANGID& DefValue)
 {
-	TRACE("ReadEntry(LANGID): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
+	//TRACE("ReadEntry(LANGID): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
 	int iDefValue = DefValue;	
 	return LANGID(ReadEntry(strFilename, strSection, strKeyName, iDefValue));
 }
@@ -228,7 +204,7 @@ LANGID ReadEntry(CString strFilename, CString strSection, CString strKeyName, co
 template <>
 bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const LANGID& Value)
 {
-	TRACE("WriteEntry(LANGID): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
+	//TRACE("WriteEntry(LANGID): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
 	int iDefValue = Value;
 	return WriteEntry(strFilename, strSection, strKeyName, iDefValue);
 }
@@ -237,7 +213,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 template <>
 ePosition ReadEntry(CString strFilename, CString strSection, CString strKeyName, const ePosition& DefValue)
 {
-	TRACE("ReadEntry(ePosition): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
+	//TRACE("ReadEntry(ePosition): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
 	int iDefValue = DefValue;
 	return ePosition(ReadEntry(strFilename, strSection, strKeyName, iDefValue));
 }
@@ -245,7 +221,7 @@ ePosition ReadEntry(CString strFilename, CString strSection, CString strKeyName,
 template <>
 bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const ePosition& Value)
 {
-	TRACE("WriteEntry(ePosition): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
+	//TRACE("WriteEntry(ePosition): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
 	int iDefValue = Value;
 	return WriteEntry(strFilename, strSection, strKeyName, iDefValue);
 }
@@ -254,7 +230,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 template <>
 LOGFONT ReadEntry(CString strFilename, CString strSection, CString strKeyName, const LOGFONT& DefValue)
 {
-	TRACE("ReadEntry(LOGFONT): %s,\nSection: %s\nKey: %s\nValue: \n", strFilename, strSection, strKeyName);
+	//TRACE("ReadEntry(LOGFONT): %s,\nSection: %s\nKey: %s\nValue: \n", strFilename, strSection, strKeyName);
 
 	LOGFONT lfResult = DefValue;
 	CString strKeyNameEx;
@@ -295,7 +271,7 @@ LOGFONT ReadEntry(CString strFilename, CString strSection, CString strKeyName, c
 template <>
 bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const LOGFONT& Value)
 {
-	TRACE("WriteEntry(LOGFONT): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
+	//TRACE("WriteEntry(LOGFONT): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
 	CString strKeyNameEx;
 	strKeyNameEx = strKeyName + "lfHeight";
 	bool bResult = WriteEntry(strFilename, strSection, strKeyNameEx, Value.lfHeight);
@@ -333,7 +309,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 template <>
 TextAttributes ReadEntry(CString strFilename, CString strSection, CString strKeyName, const TextAttributes& DefValue)
 {
-	TRACE("ReadEntry(TextAttributes): %s,\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
+	//TRACE("ReadEntry(TextAttributes): %s,\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
 	TextAttributes taResult = DefValue;
 	CString strKeyNameEx;
 	strKeyNameEx = strKeyName + "position";
@@ -354,7 +330,7 @@ TextAttributes ReadEntry(CString strFilename, CString strSection, CString strKey
 template <>
 bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const TextAttributes& Value)
 {
-	TRACE("WriteEntry(TextAttributes): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
+	//TRACE("WriteEntry(TextAttributes): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
 	CString strKeyNameEx;
 	strKeyNameEx = strKeyName + "position";
 	bool bResult = WriteEntry(strFilename, strSection, strKeyNameEx, Value.position);
@@ -375,7 +351,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 template <>
 ImageAttributes ReadEntry(CString strFilename, CString strSection, CString strKeyName, const ImageAttributes& DefValue)
 {
-	TRACE("ReadEntry(ImageAttributes): %s,\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
+	//TRACE("ReadEntry(ImageAttributes): %s,\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
 	ImageAttributes iaResult = DefValue;
 	CString strKeyNameEx;
 	strKeyNameEx = strKeyName + "position";
@@ -387,7 +363,7 @@ ImageAttributes ReadEntry(CString strFilename, CString strSection, CString strKe
 template <>
 bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const ImageAttributes& Value)
 {
-	TRACE("WriteEntry(ImageAttributes): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
+	//TRACE("WriteEntry(ImageAttributes): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
 	CString strKeyNameEx;
 	strKeyNameEx = strKeyName + "position";
 	bool bResult = WriteEntry(strFilename, strSection, strKeyNameEx, Value.position);
@@ -401,7 +377,12 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 /////////////////////////////////////////////////////////////////////////////
 const char * const LEGACY_SECTION = _T(" CamStudio Settings ver2.50 -- Please do not edit ");
 const char * const APP_SECTION = _T("CamStudio");
+const char * const VIDEO_SECTION = _T("Video");
+const char * const AUDIO_SECTION = _T("Audio");
+const char * const PROGRAMOPTIONS_SECTION = _T("ProgramOptions");
 const char * const CURSOR_SECTION = _T("Cursor");
+const char * const HOTKEY_SECTION = _T("HotKeys");
+const char * const REGION_SECTION = _T("Region");
 const char * const TIMESTAMP_SECTION = _T("TimeStamp");
 const char * const CAPTION_SECTION = _T("Caption");
 const char * const WATERMARK_SECTION = _T("Watermark");
@@ -412,13 +393,30 @@ CProfile::CProfile(const CString strFileName)
 : m_strFileName(strFileName)
 , m_SectionLegacy(LEGACY_SECTION)
 , m_SectionApp(APP_SECTION)
-, m_SectionHighLight(CURSOR_SECTION)
+, m_SectionVideo(VIDEO_SECTION)
+, m_SectionAudio(AUDIO_SECTION)
+, m_SectionCursor(CURSOR_SECTION)
+, m_SectionHotkeys(HOTKEY_SECTION)
+, m_SectionRegion(REGION_SECTION)
+, m_SectionProgram(PROGRAMOPTIONS_SECTION)
 , m_SectionTimeStamp(TIMESTAMP_SECTION)
 , m_SectionCaption(CAPTION_SECTION)
 , m_SectionWatermark(WATERMARK_SECTION)
 {
 	InitSections();
 	InitLegacySection();
+
+	m_vAllSections.push_back(m_SectionLegacy);
+	m_vAllSections.push_back(m_SectionApp);
+	m_vAllSections.push_back(m_SectionVideo);
+	m_vAllSections.push_back(m_SectionAudio);
+	m_vAllSections.push_back(m_SectionCursor);
+	m_vAllSections.push_back(m_SectionHotkeys);
+	m_vAllSections.push_back(m_SectionProgram);
+	m_vAllSections.push_back(m_SectionRegion);
+	m_vAllSections.push_back(m_SectionTimeStamp);
+	m_vAllSections.push_back(m_SectionCaption);
+	m_vAllSections.push_back(m_SectionWatermark);	
 }
 
 CProfile::~CProfile()
@@ -430,103 +428,117 @@ CProfile::~CProfile()
 
 void CProfile::InitSections()
 {
-	Add(FLASHINGRECT, "flashingRect", false);
-	Add(LAUNCHPLAYER, "launchPlayer", 0);
-	Add(MINIMIZEONSTART, "minimizeOnStart", false);
+	Add(LANGUAGE, "language", LANGID(STANDARD_LANGID));
 	Add(MOUSECAPTUREMODE, "MouseCaptureMode", 0);
-	Add(CAPTUREWIDTH, "capturewidth", 0);
-	Add(CAPTUREHEIGHT, "captureheight", 0);
-	Add(TIMELAPSE, "timelapse", 0);
-	Add(FRAMES_PER_SECOND, "frames_per_second", 0);
-	Add(KEYFRAMEINTERVAL, "keyFramesEvery", 0);
-	Add(COMPQUALITY, "compquality", 0);
-	Add(COMPFCCHANDLER, "compfccHandler", 0UL);
-	Add(COMPRESSORSTATEISFOR, "CompressorStateIsFor", 0);
-	Add(COMPRESSORSTATESIZE, "CompressorStateSize", 0);
 
-	Add(AUTOPAN, "autopan", false);
-	Add(MAXPAN, "maxpan", 0);
-	Add(AUDIODEVICEID, "AudioDeviceID", 0U);
-	Add(CBWFX, "cbwfx", 50UL);
-	Add(RECORDAUDIO, "recordaudio", 0);
-	Add(WAVEINSELECTED, "waveinselected", 128UL);
-	Add(AUDIO_BITS_PER_SAMPLE, "audio_bits_per_sample", 16);
-	Add(AUDIO_NUM_CHANNELS, "audio_num_channels", 2);
-	Add(AUDIO_SAMPLES_PER_SECONDS, "audio_samples_per_seconds", 22050);
+	Add(m_SectionAudio, AUDIODEVICEID, "AudioDeviceID", 0U);
+	Add(m_SectionAudio, CBWFX, "cbwfx", 50UL);
+	Add(m_SectionAudio, RECORDAUDIO, "recordaudio", 0);
+	Add(m_SectionAudio, WAVEINSELECTED, "waveinselected", 128UL);
+	Add(m_SectionAudio, AUDIO_BITS_PER_SAMPLE, "audio_bits_per_sample", 16);
+	Add(m_SectionAudio, AUDIO_NUM_CHANNELS, "audio_num_channels", 2);
+	Add(m_SectionAudio, AUDIO_SAMPLES_PER_SECONDS, "audio_samples_per_seconds", 22050);
+	Add(m_SectionAudio, INTERLEAVEFRAMES, "interleaveFrames", true);
+	Add(m_SectionAudio, INTERLEAVEFACTOR, "interleaveFactor", 100);
+	Add(m_SectionAudio, INTERLEAVEUNIT, "interleaveUnit", 1);
+	Add(m_SectionAudio, USEMCI, "useMCI", false);
+
 	Add(BAUDIOCOMPRESSION, "bAudioCompression", true);
-	Add(INTERLEAVEFRAMES, "interleaveFrames", true);
-	Add(INTERLEAVEFACTOR, "interleaveFactor", 100);
-	Add(KEYRECORDSTART, "keyRecordStart", 0);
-	Add(KEYRECORDEND, "keyRecordEnd", 100000);
-	Add(KEYRECORDCANCEL, "uKeyRecordCancel", 100000);
 	Add(VIEWTYPE, "viewtype", 0);
-	Add(AUTOADJUST, "g_autoadjust", true);
-	Add(VALUEADJUST, "g_valueadjust", 0);
-	Add(THREADPRIORITY, "threadPriority", 0);
-	Add(CAPTURELEFT, "captureleft", 0);
-	Add(CAPTURETOP, "capturetop", 0);
-	Add(FIXEDCAPTURE, "fixedcapture", false);
-	Add(INTERLEAVEUNIT, "interleaveUnit", 1);
-	Add(TEMPPATH_ACCESS, "tempPath_Access", 0);
-	Add(CAPTURETRANS, "captureTrans", true);
-	Add(SPECIFIEDDIR, "specifieddir", 15);
 	Add(NUMDEV, "NumDev", 0);
 	Add(SELECTEDDEV, "SelectedDev", 0);
 	Add(FEEDBACK_LINE, "feedback_line", 0);
 	Add(FEEDBACK_LINE_INFO, "feedback_line_info", 0);
 	Add(PERFORMAUTOSEARCH, "performAutoSearch", true);
-	Add(SUPPORTMOUSEDRAG, "supportMouseDrag", true);
-	Add(KEYRECORDSTARTCTRL, "keyRecordStartCtrl", 0);
-	Add(KEYRECORDENDCTRL, "keyRecordEndCtrl", 0);
-	Add(KEYRECORDCANCELCTRL, "keyRecordCancelCtrl", 0);
-	Add(KEYRECORDSTARTALT, "keyRecordStartAlt", 0);
-	Add(KEYRECORDENDALT, "keyRecordEndAlt", 0);
-	Add(KEYRECORDCANCELALT, "keyRecordCancelAlt", 0);
-	Add(KEYRECORDSTARTSHIFT, "keyRecordStartShift", 0);
-	Add(KEYRECORDENDSHIFT, "keyRecordEndShift", 0);
-	Add(KEYRECORDCANCELSHIFT, "keyRecordCancelShift", 0);
-	Add(KEYNEXT, "keyNext", 100000);
-	Add(KEYPREV, "keyPrev", 100000);
-	Add(KEYSHOWLAYOUT, "keyShowLayout", 100000);
-	Add(KEYNEXTCTRL, "keyNextCtrl", 0);
-	Add(KEYPREVCTRL, "keyPrevCtrl", 0);
-	Add(KEYSHOWLAYOUTCTRL, "keyShowLayoutCtrl", 0);
-	Add(KEYNEXTALT, "keyNextAlt", 0);
-	Add(KEYPREVALT, "keyPrevAlt", 0);
-	Add(KEYSHOWLAYOUTALT, "keyShowLayoutAlt", 0);
-	Add(KEYNEXTSHIFT, "keyNextShift", 0);
-	Add(KEYPREVSHIFT, "keyPrevShift", 0);
-	Add(KEYSHOWLAYOUTSHIFT, "keyShowLayoutShift", 0);
 	Add(SHAPENAMEINT, "shapeNameInt", 0);
 	Add(SHAPENAMELEN, "shapeNameLen", 6);
 	Add(LAYOUTNAMEINT, "layoutNameInt", 0);
 	Add(LAYOUTNAMELEN, "g_layoutNameLen", 7);
-	Add(USEMCI, "useMCI", false);
 	Add(SHIFTTYPE, "shiftType", 0);
 	Add(TIMESHIFT, "timeshift", 0);
 	Add(FRAMESHIFT, "frameshift", 0);
 	Add(LAUNCHPROPPROMPT, "launchPropPrompt", false);
 	Add(LAUNCHHTMLPLAYER, "launchHTMLPlayer", true);
 	Add(DELETEAVIAFTERUSE, "deleteAVIAfterUse", true);
-	Add(RECORDINGMODE, "RecordingMode", 0);
-	Add(AUTONAMING, "autonaming", false);
 	Add(RESTRICTVIDEOCODECS, "restrictVideoCodecs", false);
 	Add(PRESETTIME, "presettime", 0);
 	Add(RECORDPRESET, "recordpreset", false);
-	Add(LANGUAGE, "language", LANGID(STANDARD_LANGID));
 
-	Add(m_SectionHighLight, RECORDCURSOR, "RecordCursor", true);
-	Add(m_SectionHighLight, CURSORTYPE, "CursorType", 0);
-	Add(m_SectionHighLight, CUSTOMSEL, "CustomSel", 0);
-	Add(m_SectionHighLight, HIGHLIGHTCURSOR, "HighlightCursor", false);
-	Add(m_SectionHighLight, HIGHLIGHTSIZE, "HighlightSize", 0);
-	Add(m_SectionHighLight, HIGHLIGHTSHAPE, "HighlightShape", 0);
-	Add(m_SectionHighLight, HIGHLIGHTCOLORR, "HighlightColor", RGB(255, 255, 125));
-	Add(m_SectionHighLight, HIGHLIGHTCLICK, "HighlightClick", false);
-	Add(m_SectionHighLight, HIGHLIGHTCLICKCOLORLEFTR, "ClickColorLeft", RGB(255, 0, 0));
-	Add(m_SectionHighLight, HIGHLIGHTCLICKCOLORRIGHTR, "ClickColorRight", RGB(0, 0, 255));
-	Add(m_SectionHighLight, SAVEDIR, "SaveDir", 25);		// TODO: should be string
-	Add(m_SectionHighLight, CURSORDIR, "CursorDir", 18);	// TODO: should be string
+	// region
+	Add(m_SectionRegion, FIXEDCAPTURE, "FixedCapture", false);
+	Add(m_SectionRegion, SUPPORTMOUSEDRAG, "SupportMouseDrag", true);
+	Add(m_SectionRegion, CAPTURELEFT, "CaptureLeft", 100);
+	Add(m_SectionRegion, CAPTURETOP, "CaptureTop", 100);
+	Add(m_SectionRegion, CAPTUREWIDTH, "CaptureWidth", 320);
+	Add(m_SectionRegion, CAPTUREHEIGHT, "CaptureHeight", 240);
+
+	// hotkeys
+	Add(m_SectionHotkeys, KEYRECORDSTART, "keyRecordStart", (UINT)VK_F8);
+	Add(m_SectionHotkeys, KEYRECORDSTARTCTRL, "keyRecordStartCtrl", false);
+	Add(m_SectionHotkeys, KEYRECORDSTARTALT, "keyRecordStartAlt", false);
+	Add(m_SectionHotkeys, KEYRECORDSTARTSHIFT, "keyRecordStartShift", false);
+
+	Add(m_SectionHotkeys, KEYRECORDEND, "keyRecordEnd", (UINT)VK_F9);
+	Add(m_SectionHotkeys, KEYRECORDENDCTRL, "keyRecordEndCtrl", false);
+	Add(m_SectionHotkeys, KEYRECORDENDALT, "keyRecordEndAlt", false);
+	Add(m_SectionHotkeys, KEYRECORDENDSHIFT, "keyRecordEndShift", false);
+
+	Add(m_SectionHotkeys, KEYRECORDCANCEL, "uKeyRecordCancel", (UINT)VK_F10);
+	Add(m_SectionHotkeys, KEYRECORDCANCELCTRL, "keyRecordCancelCtrl", false);
+	Add(m_SectionHotkeys, KEYRECORDCANCELALT, "keyRecordCancelAlt", false);
+	Add(m_SectionHotkeys, KEYRECORDCANCELSHIFT, "keyRecordCancelShift", false);
+
+	Add(m_SectionHotkeys, KEYNEXT, "keyNext", (UINT)VK_F11);
+	Add(m_SectionHotkeys, KEYNEXTCTRL, "keyNextCtrl", false);
+	Add(m_SectionHotkeys, KEYNEXTALT, "keyNextAlt", false);
+	Add(m_SectionHotkeys, KEYNEXTSHIFT, "keyNextShift", false);
+
+	Add(m_SectionHotkeys, KEYPREV, "keyPrev", (UINT)VK_UNDEFINED);
+	Add(m_SectionHotkeys, KEYPREVCTRL, "keyPrevCtrl", false);
+	Add(m_SectionHotkeys, KEYPREVALT, "keyPrevAlt", false);
+	Add(m_SectionHotkeys, KEYPREVSHIFT, "keyPrevShift", false);
+
+	Add(m_SectionHotkeys, KEYSHOWLAYOUT, "keyShowLayout", (UINT)VK_UNDEFINED);
+	Add(m_SectionHotkeys, KEYSHOWLAYOUTCTRL, "keyShowLayoutCtrl", false);
+	Add(m_SectionHotkeys, KEYSHOWLAYOUTALT, "keyShowLayoutAlt", false);
+	Add(m_SectionHotkeys, KEYSHOWLAYOUTSHIFT, "keyShowLayoutShift", false);
+
+	// program options
+	Add(m_SectionProgram, AUTONAMING, "AutoNaming", false);
+	Add(m_SectionProgram, CAPTURETRANS, "CaptureTrans", true);
+	Add(m_SectionProgram, FLASHINGRECT, "FlashingRect", true);
+	Add(m_SectionProgram, MINIMIZEONSTART, "MinimizeOnStart", false);
+	Add(m_SectionProgram, RECORDINGMODE, "RecordingMode", 0);
+	Add(m_SectionProgram, LAUNCHPLAYER, "LaunchPlayer", 3);
+	Add(m_SectionProgram, SPECIFIEDDIR, "SpecifiedDir", 15);
+	Add(m_SectionProgram, TEMPPATH_ACCESS, "TempPathAccess", 0);
+	Add(m_SectionProgram, THREADPRIORITY, "ThreadPriority", 0);
+	Add(m_SectionProgram, AUTOPAN, "autopan", false);
+	Add(m_SectionProgram, MAXPAN, "maxpan", 0);
+
+	// video options
+	Add(m_SectionVideo, AUTOADJUST, "AutoAdjust", true);
+	Add(m_SectionVideo, VALUEADJUST, "ValueAdjust", 0);
+	Add(m_SectionVideo, TIMELAPSE, "TimeLapse", 0);
+	Add(m_SectionVideo, FRAMES_PER_SECOND, "FramesPerSecond", 0);
+	Add(m_SectionVideo, KEYFRAMEINTERVAL, "KeyFramesEvery", 0);
+	Add(m_SectionVideo, COMPQUALITY, "CompQuality", 0);
+	Add(m_SectionVideo, COMPFCCHANDLER, "CompFCCHandler", 0UL);
+	Add(m_SectionVideo, COMPRESSORSTATEISFOR, "CompressorStateIsFor", 0UL);
+	Add(m_SectionVideo, COMPRESSORSTATESIZE, "CompressorStateSize", 0UL);
+
+	Add(m_SectionCursor, RECORDCURSOR, "RecordCursor", true);
+	Add(m_SectionCursor, CURSORTYPE, "CursorType", 0);
+	Add(m_SectionCursor, CUSTOMSEL, "CustomSel", 0);
+	Add(m_SectionCursor, HIGHLIGHTCURSOR, "HighlightCursor", false);
+	Add(m_SectionCursor, HIGHLIGHTSIZE, "HighlightSize", 0);
+	Add(m_SectionCursor, HIGHLIGHTSHAPE, "HighlightShape", 0);
+	Add(m_SectionCursor, HIGHLIGHTCOLORR, "HighlightColor", RGB(255, 255, 125));
+	Add(m_SectionCursor, HIGHLIGHTCLICK, "HighlightClick", false);
+	Add(m_SectionCursor, HIGHLIGHTCLICKCOLORLEFTR, "ClickColorLeft", RGB(255, 0, 0));
+	Add(m_SectionCursor, HIGHLIGHTCLICKCOLORRIGHTR, "ClickColorRight", RGB(0, 0, 255));
+	Add(m_SectionCursor, SAVEDIR, "SaveDir", 25);		// TODO: should be string
+	Add(m_SectionCursor, CURSORDIR, "CursorDir", 18);	// TODO: should be string
 
 	Add(m_SectionTimeStamp, TIMESTAMPANNOTATION, "timestampAnnotation", false);
 	Add(m_SectionTimeStamp, TIMESTAMPTEXTATTRIBUTES, "TimestampTextAttributes", taTimestamp);
@@ -583,8 +595,8 @@ void CProfile::InitLegacySection()
 	Add(m_SectionLegacy, INTERLEAVEFRAMES, "interleaveFrames", true);
 	Add(m_SectionLegacy, INTERLEAVEFACTOR, "interleaveFactor", 100);
 	Add(m_SectionLegacy, KEYRECORDSTART, "keyRecordStart", 0);
-	Add(m_SectionLegacy, KEYRECORDEND, "keyRecordEnd", 100000);
-	Add(m_SectionLegacy, KEYRECORDCANCEL, "uKeyRecordCancel", 100000);
+	Add(m_SectionLegacy, KEYRECORDEND, "keyRecordEnd", VK_UNDEFINED);
+	Add(m_SectionLegacy, KEYRECORDCANCEL, "uKeyRecordCancel", VK_UNDEFINED);
 	Add(m_SectionLegacy, VIEWTYPE, "viewtype", 0);
 	Add(m_SectionLegacy, AUTOADJUST, "g_autoadjust", true);
 	Add(m_SectionLegacy, VALUEADJUST, "g_valueadjust", 0);
@@ -613,9 +625,9 @@ void CProfile::InitLegacySection()
 	Add(m_SectionLegacy, KEYRECORDSTARTSHIFT, "keyRecordStartShift", 0);
 	Add(m_SectionLegacy, KEYRECORDENDSHIFT, "keyRecordEndShift", 0);
 	Add(m_SectionLegacy, KEYRECORDCANCELSHIFT, "keyRecordCancelShift", 0);
-	Add(m_SectionLegacy, KEYNEXT, "keyNext", 100000);
-	Add(m_SectionLegacy, KEYPREV, "keyPrev", 100000);
-	Add(m_SectionLegacy, KEYSHOWLAYOUT, "keyShowLayout", 100000);
+	Add(m_SectionLegacy, KEYNEXT, "keyNext", VK_UNDEFINED);
+	Add(m_SectionLegacy, KEYPREV, "keyPrev", VK_UNDEFINED);
+	Add(m_SectionLegacy, KEYSHOWLAYOUT, "keyShowLayout", VK_UNDEFINED);
 	Add(m_SectionLegacy, KEYNEXTCTRL, "keyNextCtrl", 0);
 	Add(m_SectionLegacy, KEYPREVCTRL, "keyPrevCtrl", 0);
 	Add(m_SectionLegacy, KEYSHOWLAYOUTCTRL, "keyShowLayoutCtrl", 0);
@@ -662,6 +674,27 @@ void CProfile::InitLegacySection()
 	Add(m_SectionLegacy, CAPTIONTEXTWIDTH, "captionTextWidth", 0);
 	Add(m_SectionLegacy, CAPTIONTEXTFONT, CString(_T("captionTextFont")), CString(_T("Arial")));
 	Add(m_SectionLegacy, WATERMARKANNOTATION, "watermarkAnnotation", false);
+}
+
+// read the entire file
+bool CProfile::Read()
+{
+	bool bResult = false;
+	for (std::vector <CProfileSection>::iterator iter = m_vAllSections.begin(); iter != m_vAllSections.end(); ++iter)
+	{
+		bResult |= iter->Read(m_strFileName);
+	}
+	return bResult;
+}
+// write the entire file
+bool CProfile::Write()
+{
+	bool bResult = false;
+	for (std::vector <CProfileSection>::iterator iter = m_vAllSections.begin(); iter != m_vAllSections.end(); ++iter)
+	{
+		bResult |= iter->Write(m_strFileName);
+	}
+	return bResult;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -741,6 +774,7 @@ bool CProfileSection::Read(const CString strFile)
 	bool bResult = m_grpStrings.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpIntegers.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpBools.Read(strFile, m_strSectionName);
+	bResult = bResult && m_grpUINT.Read(strFile, m_strSectionName);	
 	bResult = bResult && m_grpLongs.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpDWORD.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpDoubles.Read(strFile, m_strSectionName);
@@ -755,6 +789,7 @@ bool CProfileSection::Write(const CString strFile)
 {
 	bool bResult = m_grpStrings.Write(strFile, m_strSectionName);
 	bResult = bResult && m_grpIntegers.Write(strFile, m_strSectionName);
+	bResult = bResult && m_grpUINT.Write(strFile, m_strSectionName);	
 	bResult = bResult && m_grpBools.Write(strFile, m_strSectionName);
 	bResult = bResult && m_grpLongs.Write(strFile, m_strSectionName);
 	bResult = bResult && m_grpDWORD.Write(strFile, m_strSectionName);	

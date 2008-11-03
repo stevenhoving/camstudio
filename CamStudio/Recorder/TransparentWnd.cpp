@@ -39,8 +39,6 @@ extern CString specifieddir;
 
 extern HANDLE Bitmap2Dib(HBITMAP, UINT);
 
-//extern CString GetTempPath();
-
 extern int AreWindowsEdited();
 HANDLE AllocMakeDib( int reduced_width, int reduced_height, UINT iBits );
 
@@ -1235,15 +1233,15 @@ CTransparentWnd* CTransparentWnd::Clone(int offsetx, int offsety)
 		//CString cnumstr(numstr);
 		//CString fxstr("\\~txPic");
 		//CString exstr(".bmp");
-		//CString tempFile = GetTempPath(iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
+		//CString tempFile = GetTempFolder(iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
 		CString tempFile;
-		tempFile.Format("%s\\~txPic%d.bmp", GetTempPath(iTempPathAccess, specifieddir), rand());
+		tempFile.Format("%s\\~txPic%d.bmp", GetTempFolder(cProgramOpts.m_iTempPathAccess, specifieddir), rand());
 		int ret = picture.CopyToPicture(&newWnd->picture,tempFile);
 		if (!ret) {
 			//randnum = rand();
 			//sprintf(numstr, "%d", randnum);
-			//tempFile = GetTempPath(iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
-			tempFile.Format("%s\\~txPic%d.bmp", GetTempPath(iTempPathAccess, specifieddir), rand());
+			//tempFile = GetTempFolder(iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
+			tempFile.Format("%s\\~txPic%d.bmp", GetTempFolder(cProgramOpts.m_iTempPathAccess, specifieddir), rand());
 			ret = picture.CopyToPicture(&newWnd->picture,tempFile);
 			if (!ret) {
 				//if 2nd try fails

@@ -173,7 +173,7 @@ BOOL CAudioFormatDlg::OnInitDialog()
 	}
 
 	//ver 1.8
-	m_ctrlButtonSystemRecord.SetCheck(bUseMCI);
+	m_ctrlButtonSystemRecord.SetCheck(cAudioFormat.m_bUseMCI);
 
 	UpdateData(FALSE);
 
@@ -227,9 +227,7 @@ void CAudioFormatDlg::OnOK()
 		m_pwfx = NULL;
 	}
 
-	//ver 1.8
-	int val = m_ctrlButtonSystemRecord.GetCheck();
-	bUseMCI = (val) ? 1 : 0;
+	cAudioFormat.m_bUseMCI = m_ctrlButtonSystemRecord.GetCheck() ? true : false;
 
 	CDialog::OnOK();
 }
