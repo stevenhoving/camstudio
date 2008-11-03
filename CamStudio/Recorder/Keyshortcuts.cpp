@@ -259,37 +259,37 @@ void CKeyshortcutsDlg::OnOK()
 		}
 	}
 
-	keyRecordStart = m_keyRecordStart;
-	keyRecordEnd = m_keyRecordEnd;
-	uKeyRecordCancel = m_keyRecordCancel;
+	cHotKeyOpts.m_RecordStart.m_vKey = m_keyRecordStart;
+	cHotKeyOpts.m_RecordEnd.m_vKey = m_keyRecordEnd;
+	cHotKeyOpts.m_RecordCancel.m_vKey = m_keyRecordCancel;
 
-	keyNext = m_keyNext;
-	keyPrev = m_keyPrev;
-	keyShowLayout = m_keyShowLayout;
+	cHotKeyOpts.m_Next.m_vKey = m_keyNext;
+	cHotKeyOpts.m_Prev.m_vKey = m_keyPrev;
+	cHotKeyOpts.m_ShowLayout.m_vKey = m_keyShowLayout;
 
-	keyRecordStartCtrl = m_keyRecordStartCtrl;
-	keyRecordEndCtrl = m_keyRecordEndCtrl;
-	keyRecordCancelCtrl = m_keyRecordCancelCtrl;
+	cHotKeyOpts.m_RecordStart.m_bCtrl = m_keyRecordStartCtrl;
+	cHotKeyOpts.m_RecordEnd.m_bCtrl = m_keyRecordEndCtrl;
+	cHotKeyOpts.m_RecordCancel.m_bCtrl = m_keyRecordCancelCtrl;
 
-	keyNextCtrl = m_keyNextCtrl;
-	keyPrevCtrl = m_keyPrevCtrl;
-	keyShowLayoutCtrl = m_keyShowLayoutCtrl;
+	cHotKeyOpts.m_Next.m_bCtrl = m_keyNextCtrl;
+	cHotKeyOpts.m_Prev.m_bCtrl = m_keyPrevCtrl;
+	cHotKeyOpts.m_ShowLayout.m_bCtrl = m_keyShowLayoutCtrl;
 
-	keyRecordStartAlt = m_keyRecordStartAlt;
-	keyRecordEndAlt = m_keyRecordEndAlt;
-	keyRecordCancelAlt = m_keyRecordCancelAlt;
+	cHotKeyOpts.m_RecordStart.m_bAlt = m_keyRecordStartAlt;
+	cHotKeyOpts.m_RecordEnd.m_bAlt = m_keyRecordEndAlt;
+	cHotKeyOpts.m_RecordCancel.m_bAlt = m_keyRecordCancelAlt;
 
-	keyNextAlt = m_keyNextAlt;
-	keyPrevAlt = m_keyPrevAlt;
-	keyShowLayoutAlt = m_keyShowLayoutAlt;
+	cHotKeyOpts.m_Next.m_bAlt = m_keyNextAlt;
+	cHotKeyOpts.m_Prev.m_bAlt = m_keyPrevAlt;
+	cHotKeyOpts.m_ShowLayout.m_bAlt = m_keyShowLayoutAlt;
 
-	keyRecordStartShift = m_keyRecordStartShift;
-	keyRecordEndShift = m_keyRecordEndShift;
-	keyRecordCancelShift = m_keyRecordCancelShift;
+	cHotKeyOpts.m_RecordStart.m_bShift = m_keyRecordStartShift;
+	cHotKeyOpts.m_RecordEnd.m_bShift = m_keyRecordEndShift;
+	cHotKeyOpts.m_RecordCancel.m_bShift = m_keyRecordCancelShift;
 
-	keyNextShift = m_keyNextShift;
-	keyPrevShift = m_keyPrevShift;
-	keyShowLayoutShift = m_keyShowLayoutShift;
+	cHotKeyOpts.m_Next.m_bShift = m_keyNextShift;
+	cHotKeyOpts.m_Prev.m_bShift = m_keyPrevShift;
+	cHotKeyOpts.m_ShowLayout.m_bShift = m_keyShowLayoutShift;
 
 	CDialog::OnOK();
 }
@@ -299,65 +299,65 @@ BOOL CKeyshortcutsDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO: Add extra initialization here
-	m_keyRecordStart = keyRecordStart;
-	m_keyRecordEnd = keyRecordEnd;
-	m_keyRecordCancel = uKeyRecordCancel;
+	m_keyRecordStart = cHotKeyOpts.m_RecordStart.m_vKey;
+	m_keyRecordEnd = cHotKeyOpts.m_RecordEnd.m_vKey;
+	m_keyRecordCancel = cHotKeyOpts.m_RecordCancel.m_vKey;
 
-	m_keyRecordStartCtrl = keyRecordStartCtrl;
-	m_keyRecordEndCtrl = keyRecordEndCtrl;
-	m_keyRecordCancelCtrl = keyRecordCancelCtrl;
+	m_keyRecordStartCtrl = cHotKeyOpts.m_RecordStart.m_bCtrl;
+	m_keyRecordEndCtrl = cHotKeyOpts.m_RecordEnd.m_bCtrl;
+	m_keyRecordCancelCtrl = cHotKeyOpts.m_RecordCancel.m_bCtrl;
 
-	m_keyRecordStartAlt = keyRecordStartAlt;
-	m_keyRecordEndAlt = keyRecordEndAlt;
-	m_keyRecordCancelAlt = keyRecordCancelAlt;
+	m_keyRecordStartAlt = cHotKeyOpts.m_RecordStart.m_bAlt;
+	m_keyRecordEndAlt = cHotKeyOpts.m_RecordEnd.m_bAlt;
+	m_keyRecordCancelAlt = cHotKeyOpts.m_RecordCancel.m_bAlt;
 
-	m_keyRecordStartShift = keyRecordStartShift;
-	m_keyRecordEndShift = keyRecordEndShift;
-	m_keyRecordCancelShift = keyRecordCancelShift;
+	m_keyRecordStartShift = cHotKeyOpts.m_RecordStart.m_bShift;
+	m_keyRecordEndShift = cHotKeyOpts.m_RecordEnd.m_bShift;
+	m_keyRecordCancelShift = cHotKeyOpts.m_RecordCancel.m_bShift;
 
-	m_keyNext = keyNext;
-	m_keyPrev = keyPrev;
-	m_keyShowLayout = keyShowLayout;
+	m_keyNext = cHotKeyOpts.m_Next.m_vKey;
+	m_keyPrev = cHotKeyOpts.m_Prev.m_vKey;
+	m_keyShowLayout = cHotKeyOpts.m_ShowLayout.m_vKey;
 
-	m_keyNextCtrl = keyNextCtrl;
-	m_keyPrevCtrl = keyPrevCtrl;
-	m_keyShowLayoutCtrl = keyShowLayoutCtrl;
+	m_keyNextCtrl = cHotKeyOpts.m_Next.m_bCtrl;
+	m_keyPrevCtrl = cHotKeyOpts.m_Prev.m_bCtrl;
+	m_keyShowLayoutCtrl = cHotKeyOpts.m_ShowLayout.m_bCtrl;
 
-	m_keyNextAlt = keyNextAlt;
-	m_keyPrevAlt = keyPrevAlt;
-	m_keyShowLayoutAlt = keyShowLayoutAlt;
+	m_keyNextAlt = cHotKeyOpts.m_Next.m_bAlt;
+	m_keyPrevAlt = cHotKeyOpts.m_Prev.m_bAlt;
+	m_keyShowLayoutAlt = cHotKeyOpts.m_ShowLayout.m_bAlt;
 
-	m_keyNextShift = keyNextShift;
-	m_keyPrevShift = keyPrevShift;
-	m_keyShowLayoutShift = keyShowLayoutShift;
+	m_keyNextShift = cHotKeyOpts.m_Next.m_bShift;
+	m_keyPrevShift = cHotKeyOpts.m_Prev.m_bShift;
+	m_keyShowLayoutShift = cHotKeyOpts.m_ShowLayout.m_bShift;
 
-	m_ctrlCBRecord.SetCurSel(GetIndex(keyRecordStart));
-	m_ctrlCBStop.SetCurSel(GetIndex(keyRecordEnd));
-	m_ctrlCBCancel.SetCurSel(GetIndex(uKeyRecordCancel));
-	m_ctrlCBNext.SetCurSel(GetIndex(keyNext));
-	m_ctrlCBPrev.SetCurSel(GetIndex(keyPrev));
-	m_ctrlCBShow.SetCurSel(GetIndex(keyShowLayout));
+	m_ctrlCBRecord.SetCurSel(GetIndex(cHotKeyOpts.m_RecordStart.m_vKey));
+	m_ctrlCBStop.SetCurSel(GetIndex(cHotKeyOpts.m_RecordEnd.m_vKey));
+	m_ctrlCBCancel.SetCurSel(GetIndex(cHotKeyOpts.m_RecordCancel.m_vKey));
+	m_ctrlCBNext.SetCurSel(GetIndex(cHotKeyOpts.m_Next.m_vKey));
+	m_ctrlCBPrev.SetCurSel(GetIndex(cHotKeyOpts.m_Prev.m_vKey));
+	m_ctrlCBShow.SetCurSel(GetIndex(cHotKeyOpts.m_ShowLayout.m_vKey));
 
-	m_ctrlButtonRecordCTRL.SetCheck(keyRecordStartCtrl);
-	m_ctrlButtonStopCTRL.SetCheck(keyRecordEndCtrl);
-	m_ctrlButtonCancelCTRL.SetCheck(keyRecordCancelCtrl);
-	m_ctrlButtonNextCTRL.SetCheck(keyNextCtrl);
-	m_ctrlButtonPrevCTRL.SetCheck(keyPrevCtrl);
-	m_ctrlButtonShowCTRL.SetCheck(keyShowLayoutCtrl);
+	m_ctrlButtonRecordCTRL.SetCheck(cHotKeyOpts.m_RecordStart.m_bCtrl);
+	m_ctrlButtonStopCTRL.SetCheck(cHotKeyOpts.m_RecordEnd.m_bCtrl);
+	m_ctrlButtonCancelCTRL.SetCheck(cHotKeyOpts.m_RecordCancel.m_bCtrl);
+	m_ctrlButtonNextCTRL.SetCheck(cHotKeyOpts.m_Next.m_bCtrl);
+	m_ctrlButtonPrevCTRL.SetCheck(cHotKeyOpts.m_Prev.m_bCtrl);
+	m_ctrlButtonShowCTRL.SetCheck(cHotKeyOpts.m_ShowLayout.m_bCtrl);
 
-	m_ctrlButtonRecordALT.SetCheck(keyRecordStartAlt);
-	m_ctrlButtonStopALT.SetCheck(keyRecordEndAlt);
-	m_ctrlButtonCancelALT.SetCheck(keyRecordCancelAlt);
-	m_ctrlButtonNextALT.SetCheck(keyNextAlt);
-	m_ctrlButtonPrevALT.SetCheck(keyPrevAlt);
-	m_ctrlButtonShowALT.SetCheck(keyShowLayoutAlt);
+	m_ctrlButtonRecordALT.SetCheck(cHotKeyOpts.m_RecordStart.m_bAlt);
+	m_ctrlButtonStopALT.SetCheck(cHotKeyOpts.m_RecordEnd.m_bAlt);
+	m_ctrlButtonCancelALT.SetCheck(cHotKeyOpts.m_RecordCancel.m_bAlt);
+	m_ctrlButtonNextALT.SetCheck(cHotKeyOpts.m_Next.m_bAlt);
+	m_ctrlButtonPrevALT.SetCheck(cHotKeyOpts.m_Prev.m_bAlt);
+	m_ctrlButtonShowALT.SetCheck(cHotKeyOpts.m_ShowLayout.m_bAlt);
 
-	m_ctrlButtonRecordSHFT.SetCheck(keyRecordStartShift);
-	m_ctrlButtonStopSHFT.SetCheck(keyRecordEndShift);
-	m_ctrlButtonCancelSHFT.SetCheck(keyRecordCancelShift);
-	m_ctrlButtonNextSHFT.SetCheck(keyNextShift);
-	m_ctrlButtonPrevSHFT.SetCheck(keyPrevShift);
-	m_ctrlButtonShowCHFT.SetCheck(keyShowLayoutShift);
+	m_ctrlButtonRecordSHFT.SetCheck(cHotKeyOpts.m_RecordStart.m_bShift);
+	m_ctrlButtonStopSHFT.SetCheck(cHotKeyOpts.m_RecordEnd.m_bShift);
+	m_ctrlButtonCancelSHFT.SetCheck(cHotKeyOpts.m_RecordCancel.m_bShift);
+	m_ctrlButtonNextSHFT.SetCheck(cHotKeyOpts.m_Next.m_bShift);
+	m_ctrlButtonPrevSHFT.SetCheck(cHotKeyOpts.m_Prev.m_bShift);
+	m_ctrlButtonShowCHFT.SetCheck(cHotKeyOpts.m_ShowLayout.m_bShift);
 
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE

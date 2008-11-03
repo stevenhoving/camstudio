@@ -14,7 +14,6 @@ extern RECT rcOffset;
 extern RECT rcUse;
 
 extern int iDefineMode;
-extern UINT uKeyRecordCancel;
 extern POINT ptOrigin;
 extern BOOL bCapturing;
 extern BOOL bAllowNewRecordStartKey;

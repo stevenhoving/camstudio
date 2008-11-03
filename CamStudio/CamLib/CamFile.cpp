@@ -7,8 +7,9 @@
 // GetTempPath
 // n.b. Overloads DWORD GetTempPath(DWORD nBufferLength, LPTSTR lpBuffer)
 // There is a conversion from LPTSTR to CString
+// TODO: Rename; this is needlessly dangerous
 /////////////////////////////////////////////////////////////////////////////
-CString GetTempPath(int iAccess, const CString strFolder)
+CString GetTempFolder(int iAccess, const CString strFolder)
 {
 	if (iAccess == USE_WINDOWS_TEMP_DIR) {
 		TCHAR dirx[_MAX_PATH];

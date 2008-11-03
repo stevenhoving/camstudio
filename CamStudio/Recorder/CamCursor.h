@@ -121,6 +121,27 @@ public:
 	COLORREF ClickRightColor() const		{return m_clrClickRight;}
 	COLORREF ClickRightColor(COLORREF clr)	{return m_clrClickRight = clr;}
 
+	bool Read(CProfile& cProfile)
+	{
+		VERIFY(cProfile.Read(RECORDCURSOR, m_bRecord));
+		VERIFY(cProfile.Read(CURSORTYPE, m_iCustomSel));
+		VERIFY(cProfile.Read(CUSTOMSEL, m_iSelect));
+		VERIFY(cProfile.Read(HIGHLIGHTCURSOR, m_bHighlight));
+		VERIFY(cProfile.Read(HIGHLIGHTSIZE, m_iHighlightSize));
+		VERIFY(cProfile.Read(HIGHLIGHTSHAPE, m_iHighlightShape));
+		VERIFY(cProfile.Read(HIGHLIGHTCOLORR, m_clrHighlight));	// todo: constant
+		VERIFY(cProfile.Read(HIGHLIGHTCLICK, m_bHighlightClick));
+		VERIFY(cProfile.Read(HIGHLIGHTCLICKCOLORLEFTR, m_clrClickLeft));
+		VERIFY(cProfile.Read(HIGHLIGHTCLICKCOLORRIGHTR, m_clrClickRight));
+		//VERIFY(cProfile.Read(CURSORDIR, m_strFileName));	// what it should be
+		int iLen = m_strFileName.GetLength();
+		VERIFY(cProfile.Read(CURSORDIR, iLen));
+		//VERIFY(cProfile.Write(SAVEDIR, m_strDir));		// what it should be
+		iLen = m_strDir.GetLength();
+		VERIFY(cProfile.Read(SAVEDIR, iLen));
+		return true;
+	}
+
 	bool Write(CProfile& cProfile)
 	{
 		VERIFY(cProfile.Write(RECORDCURSOR, m_bRecord));

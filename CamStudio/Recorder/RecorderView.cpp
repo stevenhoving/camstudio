@@ -211,7 +211,6 @@ LPWAVEFORMATEX pwfx = NULL;
 /////////////////////////////////////////////////////////////////////////////
 //state vars
 BOOL bAllowNewRecordStartKey = TRUE;
-int savesettings = 1;
 
 MCI_OPEN_PARMS mop;
 MCI_SAVE_PARMS msp;
@@ -246,6 +245,10 @@ int iCurrentLayout = 0;
 sAudioFormat cAudioFormat;
 sVideoOpts cVideoOpts;
 CCamCursor CamCursor;
+sProgramOpts cProgramOpts;
+sHotKeyOpts cHotKeyOpts;
+sRegionOpts cRegionOpts;
+
 
 /////////////////////////////////////////////////////////////////////////////
 //Function prototypes
@@ -460,108 +463,107 @@ int SetHotKeys(int succ[])
 
 	int nid = 0;
 	UINT modf = 0;
-	if (keyRecordStartCtrl)
+	if (cHotKeyOpts.m_RecordStart.m_bCtrl)
 		modf |= MOD_CONTROL;
 
-	if (keyRecordStartShift)
+	if (cHotKeyOpts.m_RecordStart.m_bShift)
 		modf |= MOD_SHIFT;
 
-	if (keyRecordStartAlt)
+	if (cHotKeyOpts.m_RecordStart.m_bAlt)
 		modf |= MOD_ALT;
 
-	if (keyRecordStart != 100000) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, keyRecordStart);
+	if (cHotKeyOpts.m_RecordStart.m_vKey != VK_UNDEFINED) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_RecordStart.m_vKey);
 		if (!ret)
 			succ[0] = 1;
 	}
 
 	nid++;
 	modf = 0;
-	if (keyRecordEndCtrl)
+	if (cHotKeyOpts.m_RecordEnd.m_bCtrl)
 		modf |= MOD_CONTROL;
 
-	if (keyRecordEndShift)
+	if (cHotKeyOpts.m_RecordEnd.m_bShift)
 		modf |= MOD_SHIFT;
 
-	if (keyRecordEndAlt)
+	if (cHotKeyOpts.m_RecordEnd.m_bAlt)
 		modf |= MOD_ALT;
 
-	if (keyRecordEnd!=100000) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, keyRecordEnd);
+	if (cHotKeyOpts.m_RecordEnd.m_vKey != VK_UNDEFINED) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_RecordEnd.m_vKey);
 		if (!ret)
 			succ[1] = 1;
 	}
 
 	nid++;
 	modf = 0;
-	if (keyRecordCancelCtrl)
+	if (cHotKeyOpts.m_RecordCancel.m_bCtrl)
 		modf |= MOD_CONTROL;
 
-	if (keyRecordCancelShift)
+	if (cHotKeyOpts.m_RecordCancel.m_bShift)
 		modf |= MOD_SHIFT;
 
-	if (keyRecordCancelAlt)
+	if (cHotKeyOpts.m_RecordCancel.m_bAlt)
 		modf |= MOD_ALT;
 
-	if (uKeyRecordCancel!=100000) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, uKeyRecordCancel);
+	if (cHotKeyOpts.m_RecordCancel.m_vKey != VK_UNDEFINED) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_RecordCancel.m_vKey);
 		if (!ret)
 			succ[2] = 1;
 	}
 
 	nid++;
 	modf = 0;
-	if (keyNextCtrl)
+	if (cHotKeyOpts.m_Next.m_bCtrl)
 		modf |= MOD_CONTROL;
 
-	if (keyNextShift)
+	if (cHotKeyOpts.m_Next.m_bShift)
 		modf |= MOD_SHIFT;
 
-	if (keyNextAlt)
+	if (cHotKeyOpts.m_Next.m_bAlt)
 		modf |= MOD_ALT;
 
-	if (keyNext!=100000) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, keyNext);
+	if (cHotKeyOpts.m_Next.m_vKey != VK_UNDEFINED) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_Next.m_vKey);
 		if (!ret)
 			succ[3] = 1;
 	}
 
 	nid++;
 	modf = 0;
-	if (keyPrevCtrl)
+	if (cHotKeyOpts.m_Prev.m_bCtrl)
 		modf |= MOD_CONTROL;
 
-	if (keyPrevShift)
+	if (cHotKeyOpts.m_Prev.m_bShift)
 		modf |= MOD_SHIFT;
 
-	if (keyPrevAlt)
+	if (cHotKeyOpts.m_Prev.m_bAlt)
 		modf |= MOD_ALT;
 
-	if (keyPrev!=100000) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, keyPrev);
+	if (cHotKeyOpts.m_Prev.m_vKey != VK_UNDEFINED) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_Prev.m_vKey);
 		if (!ret)
 			succ[4] = 1;
 	}
 
 	nid++;
 	modf = 0;
-	if (keyShowLayoutCtrl)
+	if (cHotKeyOpts.m_ShowLayout.m_bCtrl)
 		modf |= MOD_CONTROL;
 
-	if (keyShowLayoutShift)
+	if (cHotKeyOpts.m_ShowLayout.m_bShift)
 		modf |= MOD_SHIFT;
 
-	if (keyShowLayoutAlt)
+	if (cHotKeyOpts.m_ShowLayout.m_bAlt)
 		modf |= MOD_ALT;
 
-	if (keyShowLayout!=100000) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, keyShowLayout);
+	if (cHotKeyOpts.m_ShowLayout.m_vKey != VK_UNDEFINED) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_ShowLayout.m_vKey);
 		if (!ret)
 			succ[5] = 1;
 	}
 
-	int tstatus = 0;	// TODO: this is a little silly
-	return tstatus;
+	return nid;
 }
 
 int SetAdjustHotKeys();
@@ -574,14 +576,9 @@ int SetAdjustHotKeys()
 	CString msgstr;
 	CString outstr;
 	if (succ[0])
-	{
-		keyRecordStart = 100000;
-		keyRecordStartCtrl = 0;
-		keyRecordStartShift = 0;
-		keyRecordStartAlt = 0;
-
+	{		
+		cHotKeyOpts.m_RecordStart = sHotKeyDef(VK_UNDEFINED);
 		keystr.LoadString(IDS_STRINGSPRKEY);
-
 		msgstr.LoadString(IDS_STRING_UNSSC);
 		outstr.Format(msgstr,keystr);
 		//keystr = "Unable to set shortcuts for %d" + keystr;
@@ -590,13 +587,8 @@ int SetAdjustHotKeys()
 
 	if (succ[1])
 	{
-		keyRecordEnd = 100000;
-		keyRecordEndCtrl = 0;
-		keyRecordEndShift = 0;
-		keyRecordEndAlt = 0;
-
+		cHotKeyOpts.m_RecordEnd = sHotKeyDef(VK_UNDEFINED);
 		keystr.LoadString(IDS_STRINGSRKEY);
-
 		msgstr.LoadString(IDS_STRING_UNSSC);
 		outstr.Format(msgstr,keystr);
 		//keystr = "Unable to set shortcuts for %d" + keystr;
@@ -605,13 +597,8 @@ int SetAdjustHotKeys()
 
 	if (succ[2])
 	{
-		uKeyRecordCancel = 100000;
-		keyRecordCancelCtrl = 0;
-		keyRecordCancelShift = 0;
-		keyRecordCancelAlt = 0;
-
+		cHotKeyOpts.m_RecordCancel = sHotKeyDef(VK_UNDEFINED);
 		keystr.LoadString(IDS_STRINGCRKEY);
-
 		msgstr.LoadString(IDS_STRING_UNSSC);
 		outstr.Format(msgstr,keystr);
 		//keystr = "Unable to set shortcuts for %d" + keystr;
@@ -620,13 +607,8 @@ int SetAdjustHotKeys()
 
 	if (succ[3])
 	{
-		keyNext = 100000;
-		keyNextCtrl = 0;
-		keyNextShift = 0;
-		keyNextAlt = 0;
-
+		cHotKeyOpts.m_Next = sHotKeyDef(VK_UNDEFINED);
 		keystr.LoadString(IDS_STRINGNLKEY);
-
 		msgstr.LoadString(IDS_STRING_UNSSC);
 		outstr.Format(msgstr,keystr);
 		//keystr = "Unable to set shortcuts for %d" + keystr;
@@ -635,13 +617,8 @@ int SetAdjustHotKeys()
 
 	if (succ[4])
 	{
-		keyPrev = 100000;
-		keyPrevCtrl = 0;
-		keyPrevShift = 0;
-		keyPrevAlt = 0;
-
+		cHotKeyOpts.m_Prev = sHotKeyDef(VK_UNDEFINED);
 		keystr.LoadString(IDS_STRINGPLKEY);
-
 		msgstr.LoadString(IDS_STRING_UNSSC);
 		outstr.Format(msgstr,keystr);
 		//keystr = "Unable to set shortcuts for %d" + keystr;
@@ -650,11 +627,7 @@ int SetAdjustHotKeys()
 
 	if (succ[5])
 	{
-		keyShowLayout = 100000;
-		keyShowLayoutCtrl = 0;
-		keyShowLayoutShift = 0;
-		keyShowLayoutAlt = 0;
-
+		cHotKeyOpts.m_ShowLayout = sHotKeyDef(VK_UNDEFINED);
 		keystr.LoadString(IDS_STRINGSHLKEY);
 		msgstr.LoadString(IDS_STRING_UNSSC);
 		outstr.Format(msgstr,keystr);
@@ -1053,7 +1026,7 @@ BOOL InitAudioRecording()
 void GetTempWavePath()
 {
 	CString fileName("\\~temp001.wav");
-	tempaudiopath = GetTempPath (iTempPathAccess, specifieddir) + fileName;
+	tempaudiopath = GetTempFolder (cProgramOpts.m_iTempPathAccess, specifieddir) + fileName;
 
 	//Test the validity of writing to the file
 	int fileverified = 0;
@@ -1074,7 +1047,7 @@ void GetTempWavePath()
 			CString cnumstr(numstr);
 			CString fxstr("\\~temp");
 			CString exstr(".wav");
-			tempaudiopath = GetTempPath (iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
+			tempaudiopath = GetTempFolder (cProgramOpts.m_iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
 
 			//MessageBox(NULL,tempaudiopath,"Uses Temp File",MB_OK);
 			//fileverified = 1;
@@ -1780,17 +1753,17 @@ void GetVideoCompressState (HIC hic, DWORD fccHandler)
 		} else {
 			//we store only the state for one compressor in pVideoCompressParams
 			//So we need to indicate which compressor the state is referring to
-			dwCompressorStateIsFor = fccHandler;
-			dwCompressorStateSize = statesize;
+			cVideoOpts.m_dwCompressorStateIsFor = fccHandler;
+			cVideoOpts.m_dwCompressorStateSize = statesize;
 		}
 	}
 }
 
 void SetVideoCompressState (HIC hic, DWORD fccHandler)
 {
-	if (dwCompressorStateIsFor == fccHandler) {
+	if (cVideoOpts.m_dwCompressorStateIsFor == fccHandler) {
 		if (pVideoCompressParams) {
-			DWORD ret = ICSetState(hic,(LPVOID) pVideoCompressParams,dwCompressorStateSize);
+			DWORD ret = ICSetState(hic,(LPVOID) pVideoCompressParams,cVideoOpts.m_dwCompressorStateSize);
 			//if (ret <= 0) {
 			if (ret < 0) {
 				//MessageBox(NULL, "Failure in setting compressor state !","Note",MB_OK | MB_ICONEXCLAMATION);
@@ -2367,12 +2340,6 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_COMMAND(ID_OPTIONS_ATUOPANSPEED, OnOptionsAtuopanspeed)
 	ON_COMMAND(ID_REGION_FULLSCREEN, OnRegionFullscreen)
 	ON_UPDATE_COMMAND_UI(ID_REGION_FULLSCREEN, OnUpdateRegionFullscreen)
-	ON_COMMAND(ID_OPTIONS_MINIMIZEONSTART, OnOptionsMinimizeonstart)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_MINIMIZEONSTART, OnUpdateOptionsMinimizeonstart)
-	ON_COMMAND(ID_OPTIONS_HIDEFLASHING, OnOptionsHideflashing)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_HIDEFLASHING, OnUpdateOptionsHideflashing)
-	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_PLAYAVI, OnOptionsProgramoptionsPlayavi)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_PLAYAVI, OnUpdateOptionsProgramoptionsPlayavi)
 	ON_COMMAND(ID_HELP_WEBSITE, OnHelpWebsite)
 	ON_COMMAND(ID_HELP_HELP, OnHelpHelp)
 	ON_COMMAND(ID_PAUSE, OnPause)
@@ -2382,41 +2349,13 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_COMMAND(ID_OPTIONS_AUDIOFORMAT, OnOptionsAudioformat)
 	ON_COMMAND(ID_OPTIONS_AUDIOSPEAKERS, OnOptionsAudiospeakers)
 	ON_COMMAND(ID_HELP_FAQ, OnHelpFaq)
-	ON_COMMAND(ID_OPTIONS_KEYBOARDSHORTCUTS, OnOptionsKeyboardshortcuts)
-	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_SAVESETTINGSONEXIT, OnOptionsProgramoptionsSavesettingsonexit)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_SAVESETTINGSONEXIT, OnUpdateOptionsProgramoptionsSavesettingsonexit)
-	ON_COMMAND(ID_OPTIONS_RECORDINGTHREADPRIORITY_NORMAL, OnOptionsRecordingthreadpriorityNormal)
-	ON_COMMAND(ID_OPTIONS_RECORDINGTHREADPRIORITY_HIGHEST, OnOptionsRecordingthreadpriorityHighest)
-	ON_COMMAND(ID_OPTIONS_RECORDINGTHREADPRIORITY_ABOVENORMAL, OnOptionsRecordingthreadpriorityAbovenormal)
-	ON_COMMAND(ID_OPTIONS_RECORDINGTHREADPRIORITY_TIMECRITICAL, OnOptionsRecordingthreadpriorityTimecritical)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDINGTHREADPRIORITY_TIMECRITICAL, OnUpdateOptionsRecordingthreadpriorityTimecritical)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDINGTHREADPRIORITY_NORMAL, OnUpdateOptionsRecordingthreadpriorityNormal)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDINGTHREADPRIORITY_HIGHEST, OnUpdateOptionsRecordingthreadpriorityHighest)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDINGTHREADPRIORITY_ABOVENORMAL, OnUpdateOptionsRecordingthreadpriorityAbovenormal)
-	ON_COMMAND(ID_OPTIONS_CAPTURETRANS, OnOptionsCapturetrans)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_CAPTURETRANS, OnUpdateOptionsCapturetrans)
-	ON_COMMAND(ID_OPTIONS_TEMPDIR_WINDOWS, OnOptionsTempdirWindows)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_TEMPDIR_WINDOWS, OnUpdateOptionsTempdirWindows)
-	ON_COMMAND(ID_OPTIONS_TEMPDIR_INSTALLED, OnOptionsTempdirInstalled)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_TEMPDIR_INSTALLED, OnUpdateOptionsTempdirInstalled)
-	ON_COMMAND(ID_OPTIONS_TEMPDIR_USER, OnOptionsTempdirUser)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_TEMPDIR_USER, OnUpdateOptionsTempdirUser)
 	ON_COMMAND(ID_OPTIONS_RECORDAUDIO_DONOTRECORDAUDIO, OnOptionsRecordaudioDonotrecordaudio)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDAUDIO_DONOTRECORDAUDIO, OnUpdateOptionsRecordaudioDonotrecordaudio)
 	ON_COMMAND(ID_OPTIONS_RECORDAUDIO_RECORDFROMSPEAKERS, OnOptionsRecordaudioRecordfromspeakers)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDAUDIO_RECORDFROMSPEAKERS, OnUpdateOptionsRecordaudioRecordfromspeakers)
 	ON_COMMAND(ID_OPTIONS_RECORDAUDIOMICROPHONE, OnOptionsRecordaudiomicrophone)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDAUDIOMICROPHONE, OnUpdateOptionsRecordaudiomicrophone)
-	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_TROUBLESHOOT, OnOptionsProgramoptionsTroubleshoot)
-	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_CAMSTUDIOPLAY, OnOptionsProgramoptionsCamstudioplay)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_CAMSTUDIOPLAY, OnUpdateOptionsProgramoptionsCamstudioplay)
-	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_DEFAULTPLAY, OnOptionsProgramoptionsDefaultplay)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_DEFAULTPLAY, OnUpdateOptionsProgramoptionsDefaultplay)
-	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_NOPLAY, OnOptionsProgramoptionsNoplay)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_NOPLAY, OnUpdateOptionsProgramoptionsNoplay)
 	ON_COMMAND(ID_HELP_DONATIONS, OnHelpDonations)
-	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_PLAYAVIFILEWHENRECORDINGSTOPS_USECAMSTUDIOPLAYER20, OnOptionsUsePlayer20)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_PLAYAVIFILEWHENRECORDINGSTOPS_USECAMSTUDIOPLAYER20, OnUpdateUsePlayer20)
 	ON_COMMAND(ID_VIEW_SCREENANNOTATIONS, OnViewScreenannotations)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_SCREENANNOTATIONS, OnUpdateViewScreenannotations)
 	ON_COMMAND(ID_VIEW_VIDEOANNOTATIONS, OnViewVideoannotations)
@@ -2431,9 +2370,6 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_COMMAND(ID_AVISWF, OnAviswf)
 	ON_COMMAND(ID_OPTIONS_NAMING_AUTODATE, OnOptionsNamingAutodate)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_NAMING_AUTODATE, OnUpdateOptionsNamingAutodate)
-	ON_COMMAND(ID_OPTIONS_NAMING_ASK, OnOptionsNamingAsk)
-	ON_UPDATE_COMMAND_UI(ID_OPTIONS_NAMING_ASK, OnUpdateOptionsNamingAsk)
-	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_PRESETTIME, OnOptionsProgramoptionsPresettime)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_LANGUAGE_ENGLISH, OnUpdateOptionsLanguageEnglish)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_LANGUAGE_GERMAN, OnUpdateOptionsLanguageGerman)
 	ON_COMMAND(ID_OPTIONS_LANGUAGE_ENGLISH, OnOptionsLanguageEnglish)
@@ -2447,6 +2383,44 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_COMMAND(ID_ANNOTATION_ADDWATERMARK, OnAnnotationAddwatermark)
 	ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDWATERMARK, OnUpdateAnnotationAddwatermark)
 	ON_COMMAND(ID_EFFECTS_OPTIONS, OnEffectsOptions)
+	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_PRESETTIME, OnOptionsProgramoptionsPresettime)
+
+	ON_COMMAND(ID_OPTIONS_MINIMIZEONSTART, OnOptionsMinimizeonstart)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_MINIMIZEONSTART, OnUpdateOptionsMinimizeonstart)
+	ON_COMMAND(ID_OPTIONS_HIDEFLASHING, OnOptionsHideflashing)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_HIDEFLASHING, OnUpdateOptionsHideflashing)
+	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_SAVESETTINGSONEXIT, OnOptionsProgramoptionsSavesettingsonexit)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_SAVESETTINGSONEXIT, OnUpdateOptionsProgramoptionsSavesettingsonexit)
+	ON_COMMAND(ID_OPTIONS_CAPTURETRANS, OnOptionsCapturetrans)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_CAPTURETRANS, OnUpdateOptionsCapturetrans)
+	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_PLAYAVI, OnOptionsProgramoptionsPlayavi)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_PLAYAVI, OnUpdateOptionsProgramoptionsPlayavi)
+	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_NOPLAY, OnOptionsProgramoptionsNoplay)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_NOPLAY, OnUpdateOptionsProgramoptionsNoplay)
+	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_DEFAULTPLAY, OnOptionsProgramoptionsDefaultplay)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_DEFAULTPLAY, OnUpdateOptionsProgramoptionsDefaultplay)
+	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_CAMSTUDIOPLAY, OnOptionsProgramoptionsCamstudioplay)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_CAMSTUDIOPLAY, OnUpdateOptionsProgramoptionsCamstudioplay)
+	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_PLAYAVIFILEWHENRECORDINGSTOPS_USECAMSTUDIOPLAYER20, OnOptionsUsePlayer20)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_PLAYAVIFILEWHENRECORDINGSTOPS_USECAMSTUDIOPLAYER20, OnUpdateUsePlayer20)
+	ON_COMMAND(ID_OPTIONS_TEMPDIR_WINDOWS, OnOptionsTempdirWindows)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_TEMPDIR_WINDOWS, OnUpdateOptionsTempdirWindows)
+	ON_COMMAND(ID_OPTIONS_TEMPDIR_INSTALLED, OnOptionsTempdirInstalled)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_TEMPDIR_INSTALLED, OnUpdateOptionsTempdirInstalled)
+	ON_COMMAND(ID_OPTIONS_TEMPDIR_USER, OnOptionsTempdirUser)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_TEMPDIR_USER, OnUpdateOptionsTempdirUser)
+	ON_COMMAND(ID_OPTIONS_RECORDINGTHREADPRIORITY_NORMAL, OnOptionsRecordingthreadpriorityNormal)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDINGTHREADPRIORITY_NORMAL, OnUpdateOptionsRecordingthreadpriorityNormal)
+	ON_COMMAND(ID_OPTIONS_RECORDINGTHREADPRIORITY_HIGHEST, OnOptionsRecordingthreadpriorityHighest)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDINGTHREADPRIORITY_HIGHEST, OnUpdateOptionsRecordingthreadpriorityHighest)
+	ON_COMMAND(ID_OPTIONS_RECORDINGTHREADPRIORITY_ABOVENORMAL, OnOptionsRecordingthreadpriorityAbovenormal)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDINGTHREADPRIORITY_ABOVENORMAL, OnUpdateOptionsRecordingthreadpriorityAbovenormal)
+	ON_COMMAND(ID_OPTIONS_RECORDINGTHREADPRIORITY_TIMECRITICAL, OnOptionsRecordingthreadpriorityTimecritical)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDINGTHREADPRIORITY_TIMECRITICAL, OnUpdateOptionsRecordingthreadpriorityTimecritical)
+	ON_COMMAND(ID_OPTIONS_NAMING_ASK, OnOptionsNamingAsk)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_NAMING_ASK, OnUpdateOptionsNamingAsk)
+	ON_COMMAND(ID_OPTIONS_KEYBOARDSHORTCUTS, OnOptionsKeyboardshortcuts)
+	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_TROUBLESHOOT, OnOptionsProgramoptionsTroubleshoot)
 	//}}AFX_MSG_MAP
 	// Standard printing commands
 	ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
@@ -2589,7 +2563,7 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// TODO: Add your specialized creation code here
 	hWndGlobal = m_hWnd;
 	LoadSettings();
-	VERIFY(0 == SetAdjustHotKeys());
+	VERIFY(0 < SetAdjustHotKeys());
 
 	CreateShiftWindow();
 
@@ -2703,7 +2677,7 @@ LRESULT CRecorderView::OnRecordStart(UINT wParam, LONG lParam)
 	// AfxGetMainWnd()->ShowWindow(SW_MINIMIZE);
 
 	//ver 1.2
-	if (bMinimizeOnStart == 1)
+	if (cProgramOpts.m_bMinimizeOnStart)
 		::PostMessage(AfxGetMainWnd()->m_hWnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
 
 	//Check validity of rc and fix it
@@ -2718,7 +2692,7 @@ LRESULT CRecorderView::OnRecordStart(UINT wParam, LONG lParam)
 
 	//Ver 1.3
 	if (pThread)
-		pThread->SetThreadPriority(iThreadPriority);
+		pThread->SetThreadPriority(cProgramOpts.m_iThreadPriority);
 
 	//Ver 1.2
 	bAllowNewRecordStartKey = TRUE; //allow this only after bRecordState is set to 1
@@ -2761,23 +2735,37 @@ LRESULT CRecorderView::OnSaveCursor (UINT wParam, LONG lParam)
 
 void CRecorderView::OnRegionRubber()
 {
-	iMouseCaptureMode=1;
+	cRegionOpts.m_iMouseCaptureMode = CAPTURE_VARIABLE;
+}
+
+void CRecorderView::OnUpdateRegionRubber(CCmdUI* pCmdUI)
+{
+	pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_VARIABLE));
 }
 
 void CRecorderView::OnRegionPanregion()
 {
 	iDefineMode = 0;
-
-	CFixedRegionDlg cfrdlg;
-	cfrdlg.DoModal();
-
-	iMouseCaptureMode = 0;
+	CFixedRegionDlg cfrdlg(this);
+	if (IDOK == cfrdlg.DoModal()) {
+		cRegionOpts.m_iMouseCaptureMode = CAPTURE_FIXED;
+	}
 	iDefineMode = 0;
+}
+
+void CRecorderView::OnUpdateRegionPanregion(CCmdUI* pCmdUI)
+{
+	pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_FIXED));
 }
 
 void CRecorderView::OnRegionFullscreen()
 {
-	iMouseCaptureMode=2;
+	cRegionOpts.m_iMouseCaptureMode = CAPTURE_FULLSCREEN;
+}
+
+void CRecorderView::OnUpdateRegionFullscreen(CCmdUI* pCmdUI)
+{
+	pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_FULLSCREEN));
 }
 
 //This function is called when the avi saving is completed
@@ -2788,11 +2776,12 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 	AfxGetMainWnd()->ShowWindow(SW_RESTORE);
 
 	//ver 1.2
-	if (interruptkey==uKeyRecordCancel) {
+	if (interruptkey == cHotKeyOpts.m_RecordCancel.m_vKey) {
 		//if (interruptkey==VK_ESCAPE) {
 		//Perform processing for cancel operation
 		DeleteFile(strTempFilePath);
-		if (iRecordAudio) DeleteFile(tempaudiopath);
+		if (!cAudioFormat.isInput(NONE))
+			DeleteFile(tempaudiopath);
 		return 0;
 
 	}
@@ -2805,7 +2794,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 	char extFilter[30];
 
 	//ver 2.26
-	if (iRecordingMode == ModeAVI) {
+	if (cProgramOpts.m_iRecordingMode == ModeAVI) {
 		strcpy_s(szFilter,"AVI Movie Files (*.avi)|*.avi||");
 		strcpy_s(szTitle,"Save AVI File");
 		strcpy_s(extFilter,"*.avi");
@@ -2831,7 +2820,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 	CString m_newfile;
 	CString m_newfileTitle;
 
-	if ((iRecordingMode == ModeAVI) && (bAutoNaming > 0)) {
+	if ((cProgramOpts.m_iRecordingMode == ModeAVI) && cProgramOpts.m_bAutoNaming) {
 		savedir=GetProgPath();
 
 		//ErrMsg("hereh");
@@ -2866,7 +2855,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 			savedir = m_newfileTitle;
 		} else {
 			DeleteFile(strTempFilePath);
-			if (iRecordAudio) {
+			if (!cAudioFormat.isInput(NONE)) {
 				DeleteFile(tempaudiopath);
 			}
 			return 0;
@@ -2874,7 +2863,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 	}
 
 	//ver 2.26
-	if (iRecordingMode == ModeFlash) {
+	if (cProgramOpts.m_iRecordingMode == ModeFlash) {
 		int lenx = m_newfile.GetLength();
 		if (((m_newfile.GetAt(lenx-1) == 'f') || (m_newfile.GetAt(lenx-1) == 'F'))
 			&& ((m_newfile.GetAt(lenx-2) == 'w') || (m_newfile.GetAt(lenx-2) == 'W'))
@@ -2891,7 +2880,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 	}
 
 	//Ver 1.1
-	if (iRecordAudio) {
+	if (cAudioFormat.m_iRecordAudio) {
 		//Check if file exists and if so, does it allow overwite
 		HANDLE hfile = CreateFile(m_newfile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 		if (hfile == INVALID_HANDLE_VALUE) {
@@ -2916,9 +2905,9 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 		//if (iRecordAudio==2) {
 		//if ((iRecordAudio==2) || (bUseMCI)) {
 		//ver 2.26 ...overwrite audio settings for Flash Moe recording ... no compression used...
-		if ((iRecordAudio == 2) || (bUseMCI) || (iRecordingMode == ModeFlash)) {
+		if ((cAudioFormat.isInput(SPEAKERS)) || (cAudioFormat.m_bUseMCI) || (cProgramOpts.m_iRecordingMode == ModeFlash)) {
 			result = Merge_Video_And_Sound_File(strTempFilePath, tempaudiopath, m_newfile, FALSE, pwfx, cAudioFormat.m_dwCbwFX,cAudioFormat.m_bInterleaveFrames,cAudioFormat.m_iInterleaveFactor, cAudioFormat.m_iInterleavePeriod);
-		} else if (iRecordAudio==1) {
+		} else if (cAudioFormat.isInput(MICROPHONE)) {
 			result = Merge_Video_And_Sound_File(strTempFilePath, tempaudiopath, m_newfile, cAudioFormat.m_bCompression, pwfx, cAudioFormat.m_dwCbwFX,cAudioFormat.m_bInterleaveFrames,cAudioFormat.m_iInterleaveFactor, cAudioFormat.m_iInterleavePeriod);
 		}
 
@@ -2989,15 +2978,15 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 			return 0;
 		}
 		DeleteFile(strTempFilePath);
-		if (iRecordAudio) {
+		if (!cAudioFormat.isInput(NONE)) {
 			DeleteFile(tempaudiopath);
 		}
 	}
 
 	//ver 2.26
-	if (iRecordingMode == ModeAVI) {
+	if (cProgramOpts.m_iRecordingMode == ModeAVI) {
 		//Launch the player
-		if (iLaunchPlayer == 1) {
+		if (cProgramOpts.m_iLaunchPlayer == 1) {
 			CString AppDir = GetProgPath();
 			CString exefileName("\\player.exe ");
 			CString launchPath = AppDir + exefileName + m_newfile;
@@ -3006,13 +2995,13 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 				//MessageBox("Error launching avi player!","Note",MB_OK | MB_ICONEXCLAMATION);
 				MessageOut(m_hWnd,IDS_STRING_ERRPLAYER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			}
-		} else if (iLaunchPlayer == 2) {
+		} else if (cProgramOpts.m_iLaunchPlayer == 2) {
 			if (Openlink(m_newfile)) {
 			} else {
 				//MessageBox("Error launching avi player!","Note",MB_OK | MB_ICONEXCLAMATION);
 				MessageOut(m_hWnd,IDS_STRING_ERRDEFAULTPLAYER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			}
-		} else if (iLaunchPlayer == 3) {
+		} else if (cProgramOpts.m_iLaunchPlayer == 3) {
 			CString AppDir=GetProgPath();
 			CString launchPath;
 			CString exefileName("\\Playplus.exe ");
@@ -3083,14 +3072,14 @@ void CRecorderView::OnRecord()
 	fActualRate = 0.0;
 	fTimeLength = 0.0;
 
-	switch (iMouseCaptureMode)
+	switch (cRegionOpts.m_iMouseCaptureMode)
 	{
 	case 0:
-		if (bFixedCapture) {
-			rc.top = iCaptureTop;
-			rc.left = iCaptureLeft;
-			rc.right = iCaptureLeft + iCaptureWidth - 1;
-			rc.bottom = iCaptureTop + iCaptureHeight - 1;
+		if (cRegionOpts.m_bFixedCapture) {
+			rc.top = cRegionOpts.m_iCaptureTop;
+			rc.left = cRegionOpts.m_iCaptureLeft;
+			rc.right = cRegionOpts.m_iCaptureLeft + cRegionOpts.m_iCaptureWidth - 1;
+			rc.bottom = cRegionOpts.m_iCaptureTop + cRegionOpts.m_iCaptureHeight - 1;
 
 			if (rc.top < 0)
 				rc.top = 0;
@@ -3110,8 +3099,8 @@ void CRecorderView::OnRecord()
 		} else {
 			rc.top = 0;
 			rc.left = 0;
-			rc.right = iCaptureWidth-1;
-			rc.bottom = iCaptureHeight-1;
+			rc.right = cRegionOpts.m_iCaptureWidth - 1;
+			rc.bottom = cRegionOpts.m_iCaptureHeight - 1;
 
 			::ShowWindow(hMouseCaptureWnd,SW_MAXIMIZE);
 			::UpdateWindow(hMouseCaptureWnd);
@@ -3154,18 +3143,6 @@ void CRecorderView::OnStop()
 	}
 
 	OnRecordInterrupted (0, 0);
-}
-
-void CRecorderView::OnUpdateRegionPanregion(CCmdUI* pCmdUI)
-{
-	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(0 == iMouseCaptureMode);
-}
-
-void CRecorderView::OnUpdateRegionRubber(CCmdUI* pCmdUI)
-{
-	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(1 == iMouseCaptureMode);
 }
 
 //ver 1.6
@@ -3250,7 +3227,7 @@ void CRecorderView::OnOptionsCursoroptions()
 void CRecorderView::OnOptionsAutopan()
 {
 	// TODO: Add your command handler code here
-	bAutoPan = (bAutoPan) ? 0 : 1;
+	cProgramOpts.m_bAutoPan = !cProgramOpts.m_bAutoPan;
 }
 
 void CRecorderView::OnOptionsAtuopanspeed()
@@ -3263,30 +3240,24 @@ void CRecorderView::OnOptionsAtuopanspeed()
 void CRecorderView::OnUpdateOptionsAutopan(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(bAutoPan);
-}
-
-void CRecorderView::OnUpdateRegionFullscreen(CCmdUI* pCmdUI)
-{
-	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iMouseCaptureMode == 2);
+	pCmdUI->SetCheck(cProgramOpts.m_bAutoPan);
 }
 
 void CRecorderView::OnOptionsMinimizeonstart()
 {
 	// TODO: Add your command handler code here
-	bMinimizeOnStart = !bMinimizeOnStart;
+	cProgramOpts.m_bMinimizeOnStart = !cProgramOpts.m_bMinimizeOnStart;
 }
 
 void CRecorderView::OnUpdateOptionsMinimizeonstart(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(bMinimizeOnStart);
+	pCmdUI->SetCheck(cProgramOpts.m_bMinimizeOnStart);
 }
 
 void CRecorderView::OnOptionsHideflashing()
 {
-	bFlashingRect = !bFlashingRect;
+	cProgramOpts.m_bFlashingRect = !cProgramOpts.m_bFlashingRect;
 }
 
 void CRecorderView::OnUpdateOptionsHideflashing(CCmdUI* pCmdUI)
@@ -3294,22 +3265,18 @@ void CRecorderView::OnUpdateOptionsHideflashing(CCmdUI* pCmdUI)
 	// TODO: Add your command update UI handler code here
 
 	//ver 1.2
-	pCmdUI->SetCheck(!bFlashingRect);
+	pCmdUI->SetCheck(!cProgramOpts.m_bFlashingRect);
 }
 
 void CRecorderView::OnOptionsProgramoptionsPlayavi()
 {
-	// TODO: Add your command handler code here
-	if (iLaunchPlayer==0)
-		iLaunchPlayer = 1;
-	else
-		iLaunchPlayer = 0;
+	cProgramOpts.m_iLaunchPlayer = (cProgramOpts.m_iLaunchPlayer) ? 0 : 1;
 }
 
 void CRecorderView::OnUpdateOptionsProgramoptionsPlayavi(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iLaunchPlayer);
+	pCmdUI->SetCheck(cProgramOpts.m_iLaunchPlayer);
 }
 
 BOOL CRecorderView::Openlink (CString link)
@@ -3563,13 +3530,13 @@ void CRecorderView::OnOptionsRecordaudio()
 		return;
 	}
 
-	iRecordAudio = (iRecordAudio) ? 0 : 1;
+	cAudioFormat.m_iRecordAudio = (!cAudioFormat.isInput(NONE)) ? NONE : MICROPHONE;
 }
 
 void CRecorderView::OnUpdateOptionsRecordaudio(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iRecordAudio);
+	pCmdUI->SetCheck(!cAudioFormat.isInput(NONE));
 }
 
 void CRecorderView::OnOptionsAudioformat()
@@ -3658,12 +3625,12 @@ void CRecorderView::SaveSettings()
 	//Take note of those vars with printf %ld
 	float ver = (float) 2.5;
 	fprintf(sFile, "[ CamStudio Settings ver%.2f -- Please do not edit ] \n\n", ver);
-	fprintf(sFile, "bFlashingRect=%d \n",bFlashingRect);
-	fprintf(sFile, "iLaunchPlayer=%d \n",iLaunchPlayer);
-	fprintf(sFile, "bMinimizeOnStart=%d \n",bMinimizeOnStart);
-	fprintf(sFile, "iMouseCaptureMode= %d \n",iMouseCaptureMode);
-	fprintf(sFile, "iCaptureWidth=%d \n",iCaptureWidth);
-	fprintf(sFile, "iCaptureHeight=%d \n",iCaptureHeight);
+	fprintf(sFile, "bFlashingRect=%d \n",cProgramOpts.m_bFlashingRect);
+	fprintf(sFile, "iLaunchPlayer=%d \n",cProgramOpts.m_iLaunchPlayer);
+	fprintf(sFile, "bMinimizeOnStart=%d \n",cProgramOpts.m_bMinimizeOnStart);
+	fprintf(sFile, "iMouseCaptureMode= %d \n",cRegionOpts.m_iMouseCaptureMode);
+	fprintf(sFile, "iCaptureWidth=%d \n",cRegionOpts.m_iCaptureWidth);
+	fprintf(sFile, "iCaptureHeight=%d \n",cRegionOpts.m_iCaptureHeight);
 
 	fprintf(sFile, "iTimeLapse=%d \n",cVideoOpts.m_iTimeLapse);
 	fprintf(sFile, "iFramesPerSecond= %d \n",cVideoOpts.m_iFramesPerSecond);
@@ -3672,8 +3639,8 @@ void CRecorderView::SaveSettings()
 	fprintf(sFile, "dwCompfccHandler= %ld \n",cVideoOpts.m_dwCompfccHandler);
 
 	//LPVOID pVideoCompressParams = NULL;
-	fprintf(sFile, "dwCompressorStateIsFor= %ld \n",dwCompressorStateIsFor);
-	fprintf(sFile, "dwCompressorStateSize= %d \n",dwCompressorStateSize);
+	fprintf(sFile, "dwCompressorStateIsFor= %ld \n",cVideoOpts.m_dwCompressorStateIsFor);
+	fprintf(sFile, "dwCompressorStateSize= %d \n",cVideoOpts.m_dwCompressorStateSize);
 
 	fprintf(sFile, "bRecordCursor=%d \n",CamCursor.Record());
 	fprintf(sFile, "iCustomSel=%d \n",CamCursor.CustomType()); //Having this line means the custom cursor type cannot be re-arranged in a new order in the combo box...else previous saved settings referring to the custom type will not be correct
@@ -3698,8 +3665,8 @@ void CRecorderView::SaveSettings()
 	//fprintf(sFile, "savedir=%s; \n",LPCTSTR(savedir));
 	//fprintf(sFile, "strCursorDir=%s; \n",LPCTSTR(strCursorDir));
 
-	fprintf(sFile, "autopan=%d \n",bAutoPan);
-	fprintf(sFile, "iMaxPan= %d \n",iMaxPan);
+	fprintf(sFile, "autopan=%d \n",cProgramOpts.m_bAutoPan);
+	fprintf(sFile, "iMaxPan= %d \n",cProgramOpts.m_iMaxPan);
 
 	//Audio Functions and Variables
 	fprintf(sFile, "uAudioDeviceID= %d \n",cAudioFormat.m_uDeviceID);
@@ -3708,7 +3675,7 @@ void CRecorderView::SaveSettings()
 	//LPWAVEFORMATEX pwfx = NULL;
 	//DWORD dwCbwFX;
 	fprintf(sFile, "dwCbwFX= %ld \n", cAudioFormat.m_dwCbwFX);
-	fprintf(sFile, "iRecordAudio= %d \n", iRecordAudio);
+	fprintf(sFile, "iRecordAudio= %d \n", cAudioFormat.m_iRecordAudio);
 
 	//Audio Formats Dialog
 	fprintf(sFile, "dwWaveinSelected= %d \n", cAudioFormat.m_dwWaveinSelected);
@@ -3721,9 +3688,9 @@ void CRecorderView::SaveSettings()
 	fprintf(sFile, "iInterleaveFactor= %d \n", cAudioFormat.m_iInterleaveFactor);
 
 	//Key Shortcuts
-	fprintf(sFile, "keyRecordStart= %d \n",keyRecordStart);
-	fprintf(sFile, "keyRecordEnd= %d \n",keyRecordEnd);
-	fprintf(sFile, "uKeyRecordCancel= %d \n",uKeyRecordCancel);
+	fprintf(sFile, "keyRecordStart= %d \n",cHotKeyOpts.m_RecordStart.m_vKey);
+	fprintf(sFile, "keyRecordEnd= %d \n",cHotKeyOpts.m_RecordEnd.m_vKey);
+	fprintf(sFile, "uKeyRecordCancel= %d \n",cHotKeyOpts.m_RecordCancel.m_vKey);
 
 	//iViewType
 	fprintf(sFile, "iViewType= %d \n",iViewType);
@@ -3735,17 +3702,17 @@ void CRecorderView::SaveSettings()
 	fprintf(sFile, "strCursorDir=%d \n", CamCursor.Dir().GetLength());	// TODO: Just save the string
 
 	//Ver 1.3
-	fprintf(sFile, "iThreadPriority=%d \n",iThreadPriority);
+	fprintf(sFile, "iThreadPriority=%d \n",cProgramOpts.m_iThreadPriority);
 
 	//Ver 1.5
-	fprintf(sFile, "iCaptureLeft= %d \n",iCaptureLeft);
-	fprintf(sFile, "iCaptureTop= %d \n",iCaptureTop);
-	fprintf(sFile, "bFixedCapture=%d \n",bFixedCapture);
+	fprintf(sFile, "iCaptureLeft= %d \n",cRegionOpts.m_iCaptureLeft);
+	fprintf(sFile, "iCaptureTop= %d \n",cRegionOpts.m_iCaptureTop);
+	fprintf(sFile, "bFixedCapture=%d \n",cRegionOpts.m_bFixedCapture);
 	fprintf(sFile, "iInterleaveUnit= %d \n", cAudioFormat.m_iInterleavePeriod);
 
 	//Ver 1.6
-	fprintf(sFile, "iTempPathAccess=%d \n",iTempPathAccess);
-	fprintf(sFile, "bCaptureTrans=%d \n",bCaptureTrans);
+	fprintf(sFile, "iTempPathAccess=%d \n",cProgramOpts.m_iTempPathAccess);
+	fprintf(sFile, "bCaptureTrans=%d \n",cProgramOpts.m_bCaptureTrans);
 	fprintf(sFile, "specifieddir=%d \n",specifieddir.GetLength());
 
 	fprintf(sFile, "NumDev=%d \n",iNumberOfMixerDevices);
@@ -3755,36 +3722,36 @@ void CRecorderView::SaveSettings()
 	fprintf(sFile, "bPerformAutoSearch=%d \n",bPerformAutoSearch);
 
 	//Ver 1.8
-	fprintf(sFile, "bSupportMouseDrag=%d \n",bSupportMouseDrag);
+	fprintf(sFile, "bSupportMouseDrag=%d \n",cRegionOpts.m_bSupportMouseDrag);
 
 	//New variables, add here
-	fprintf(sFile, "keyRecordStartCtrl=%d \n",keyRecordStartCtrl);
-	fprintf(sFile, "keyRecordEndCtrl=%d \n",keyRecordEndCtrl);
-	fprintf(sFile, "keyRecordCancelCtrl=%d \n",keyRecordCancelCtrl);
+	fprintf(sFile, "keyRecordStartCtrl=%d \n",cHotKeyOpts.m_RecordStart.m_bCtrl);
+	fprintf(sFile, "keyRecordEndCtrl=%d \n",cHotKeyOpts.m_RecordEnd.m_bCtrl);
+	fprintf(sFile, "keyRecordCancelCtrl=%d \n",cHotKeyOpts.m_RecordCancel.m_bCtrl);
 
-	fprintf(sFile, "keyRecordStartAlt=%d \n",keyRecordStartAlt);
-	fprintf(sFile, "keyRecordEndAlt=%d \n",keyRecordEndAlt);
-	fprintf(sFile, "keyRecordCancelAlt=%d \n",keyRecordCancelAlt);
+	fprintf(sFile, "keyRecordStartAlt=%d \n",cHotKeyOpts.m_RecordStart.m_bAlt);
+	fprintf(sFile, "keyRecordEndAlt=%d \n",cHotKeyOpts.m_RecordEnd.m_bAlt);
+	fprintf(sFile, "keyRecordCancelAlt=%d \n",cHotKeyOpts.m_RecordCancel.m_bAlt);
 
-	fprintf(sFile, "keyRecordStartShift=%d \n",keyRecordStartShift);
-	fprintf(sFile, "keyRecordEndShift=%d \n",keyRecordEndShift);
-	fprintf(sFile, "keyRecordCancelShift=%d \n",keyRecordCancelShift);
+	fprintf(sFile, "keyRecordStartShift=%d \n",cHotKeyOpts.m_RecordStart.m_bShift);
+	fprintf(sFile, "keyRecordEndShift=%d \n",cHotKeyOpts.m_RecordEnd.m_bShift);
+	fprintf(sFile, "keyRecordCancelShift=%d \n",cHotKeyOpts.m_RecordCancel.m_bShift);
 
-	fprintf(sFile, "keyNext=%d \n",keyNext);
-	fprintf(sFile, "keyPrev=%d \n",keyPrev);
-	fprintf(sFile, "keyShowLayout=%d \n",keyShowLayout);
+	fprintf(sFile, "keyNext=%d \n",cHotKeyOpts.m_Next.m_vKey);
+	fprintf(sFile, "keyPrev=%d \n",cHotKeyOpts.m_Prev.m_vKey);
+	fprintf(sFile, "keyShowLayout=%d \n",cHotKeyOpts.m_ShowLayout.m_vKey);
 
-	fprintf(sFile, "keyNextCtrl=%d \n",keyNextCtrl);
-	fprintf(sFile, "keyPrevCtrl=%d \n",keyPrevCtrl);
-	fprintf(sFile, "keyShowLayoutCtrl=%d \n",keyShowLayoutCtrl);
+	fprintf(sFile, "keyNextCtrl=%d \n",cHotKeyOpts.m_Next.m_bCtrl);
+	fprintf(sFile, "keyPrevCtrl=%d \n",cHotKeyOpts.m_Prev.m_bCtrl);
+	fprintf(sFile, "keyShowLayoutCtrl=%d \n",cHotKeyOpts.m_ShowLayout.m_bCtrl);
 
-	fprintf(sFile, "keyNextAlt=%d \n",keyNextAlt);
-	fprintf(sFile, "keyPrevAlt=%d \n",keyPrevAlt);
-	fprintf(sFile, "keyShowLayoutAlt=%d \n",keyShowLayoutAlt);
+	fprintf(sFile, "keyNextAlt=%d \n",cHotKeyOpts.m_Next.m_bAlt);
+	fprintf(sFile, "keyPrevAlt=%d \n",cHotKeyOpts.m_Prev.m_bAlt);
+	fprintf(sFile, "keyShowLayoutAlt=%d \n",cHotKeyOpts.m_ShowLayout.m_bAlt);
 
-	fprintf(sFile, "keyNextShift=%d \n",keyNextShift);
-	fprintf(sFile, "keyPrevShift=%d \n",keyPrevShift);
-	fprintf(sFile, "keyShowLayoutShift=%d \n",keyShowLayoutShift);
+	fprintf(sFile, "keyNextShift=%d \n",cHotKeyOpts.m_Next.m_bShift);
+	fprintf(sFile, "keyPrevShift=%d \n",cHotKeyOpts.m_Prev.m_bShift);
+	fprintf(sFile, "keyShowLayoutShift=%d \n",cHotKeyOpts.m_ShowLayout.m_bShift);
 
 	fprintf(sFile, "iShapeNameInt=%d \n",iShapeNameInt);
 	fprintf(sFile, "shapeNameLen=%d \n",shapeName.GetLength());
@@ -3792,7 +3759,7 @@ void CRecorderView::SaveSettings()
 	fprintf(sFile, "iLayoutNameInt=%d \n",iLayoutNameInt);
 	fprintf(sFile, "g_layoutNameLen=%d \n",strLayoutName.GetLength());
 
-	fprintf(sFile, "bUseMCI=%d \n",bUseMCI);
+	fprintf(sFile, "bUseMCI=%d \n",cAudioFormat.m_bUseMCI);
 	fprintf(sFile, "iShiftType=%d \n",iShiftType);
 	fprintf(sFile, "iTimeShift=%d \n",iTimeShift);
 	fprintf(sFile, "iFrameShift=%d \n",iFrameShift);
@@ -3801,8 +3768,8 @@ void CRecorderView::SaveSettings()
 	fprintf(sFile, "bLaunchPropPrompt=%d \n",bLaunchPropPrompt);
 	fprintf(sFile, "bLaunchHTMLPlayer=%d \n",bLaunchHTMLPlayer);
 	fprintf(sFile, "bDeleteAVIAfterUse=%d \n",bDeleteAVIAfterUse);
-	fprintf(sFile, "iRecordingMode=%d \n",iRecordingMode);
-	fprintf(sFile, "bAutoNaming=%d \n",bAutoNaming);
+	fprintf(sFile, "iRecordingMode=%d \n",cProgramOpts.m_iRecordingMode);
+	fprintf(sFile, "bAutoNaming=%d \n",cProgramOpts.m_bAutoNaming);
 	fprintf(sFile, "bRestrictVideoCodecs=%d \n",bRestrictVideoCodecs);
 	//fprintf(sFile, "base_nid=%d \n",base_nid);
 
@@ -3811,8 +3778,6 @@ void CRecorderView::SaveSettings()
 	fprintf(sFile, "bRecordPreset=%d \n",bRecordPreset);
 
 	//Add new variables here
-	//Multilanguage
-	fprintf(sFile, "language=%d \n",iLanguageID);
 
 	// Effects
 	fprintf(sFile, "bTimestampAnnotation=%d \n",bTimestampAnnotation);
@@ -3884,8 +3849,8 @@ void CRecorderView::SaveSettings()
 	if (cAudioFormat.m_dwCbwFX > 0)
 		fwrite(pwfx, cAudioFormat.m_dwCbwFX, 1, tFile);
 
-	if (dwCompressorStateSize > 0)
-		fwrite(pVideoCompressParams, dwCompressorStateSize, 1, tFile);
+	if (cVideoOpts.m_dwCompressorStateSize > 0)
+		fwrite(pVideoCompressParams, cVideoOpts.m_dwCompressorStateSize, 1, tFile);
 
 	//Ver 1.6
 	if (specifieddir.GetLength() > 0)
@@ -3925,10 +3890,10 @@ void CRecorderView::LoadSettings()
 
 	FILE * rFile = fopen((LPCTSTR)setPath,"rt");
 	if (rFile == NULL) {
-		savesettings = 1;
+		cProgramOpts.m_bSaveSettings = true;
 	} else {
 		fclose(rFile);
-		savesettings = 0;
+		cProgramOpts.m_bSaveSettings = false;
 	}
 
 	//********************************************
@@ -3965,13 +3930,13 @@ void CRecorderView::LoadSettings()
 
 	//Ver 1.2
 	if (ver>=1.199999) {
-		fscanf_s(sFile, "bFlashingRect=%d \n", &bFlashingRect);
+		fscanf_s(sFile, "bFlashingRect=%d \n", &cProgramOpts.m_bFlashingRect);
 
-		fscanf_s(sFile, "iLaunchPlayer=%d \n", &iLaunchPlayer);
-		fscanf_s(sFile, "bMinimizeOnStart=%d \n", &bMinimizeOnStart);
-		fscanf_s(sFile, "iMouseCaptureMode= %d \n", &iMouseCaptureMode);
-		fscanf_s(sFile, "iCaptureWidth=%d \n", &iCaptureWidth);
-		fscanf_s(sFile, "iCaptureHeight=%d \n", &iCaptureHeight);
+		fscanf_s(sFile, "iLaunchPlayer=%d \n", &cProgramOpts.m_iLaunchPlayer);
+		fscanf_s(sFile, "bMinimizeOnStart=%d \n", &cProgramOpts.m_bMinimizeOnStart);
+		fscanf_s(sFile, "iMouseCaptureMode= %d \n", &cRegionOpts.m_iMouseCaptureMode);
+		fscanf_s(sFile, "iCaptureWidth=%d \n", &cRegionOpts.m_iCaptureWidth);
+		fscanf_s(sFile, "iCaptureHeight=%d \n", &cRegionOpts.m_iCaptureHeight);
 
 		fscanf_s(sFile, "iTimeLapse=%d \n", &cVideoOpts.m_iTimeLapse);
 		fscanf_s(sFile, "iFramesPerSecond= %d \n", &cVideoOpts.m_iFramesPerSecond);
@@ -3980,8 +3945,8 @@ void CRecorderView::LoadSettings()
 		fscanf_s(sFile, "dwCompfccHandler= %ld \n", &cVideoOpts.m_dwCompfccHandler);
 
 		//LPVOID pVideoCompressParams = NULL;
-		fscanf_s(sFile, "dwCompressorStateIsFor= %ld \n",&dwCompressorStateIsFor);
-		fscanf_s(sFile, "dwCompressorStateSize= %d \n",&dwCompressorStateSize);
+		fscanf_s(sFile, "dwCompressorStateIsFor= %ld \n",&cVideoOpts.m_dwCompressorStateIsFor);
+		fscanf_s(sFile, "dwCompressorStateSize= %d \n",&cVideoOpts.m_dwCompressorStateSize);
 
 		int itemp = 0;
 		fscanf_s(sFile, "bRecordCursor=%d \n",&itemp);
@@ -4036,15 +4001,15 @@ void CRecorderView::LoadSettings()
 		bluev=idata;
 		CamCursor.ClickRightColor(RGB(redv,greenv,bluev));
 
-		fscanf_s(sFile, "autopan=%d \n",&bAutoPan);
-		fscanf_s(sFile, "iMaxPan= %d \n",&iMaxPan);
+		fscanf_s(sFile, "autopan=%d \n",&cProgramOpts.m_bAutoPan);
+		fscanf_s(sFile, "iMaxPan= %d \n",&cProgramOpts.m_iMaxPan);
 
 		//Audio Functions and Variables
 		fscanf_s(sFile, "uAudioDeviceID= %d \n",&cAudioFormat.m_uDeviceID);
 
 		//Audio Options Dialog
 		fscanf_s(sFile, "dwCbwFX= %ld \n", &cAudioFormat.m_dwCbwFX);
-		fscanf_s(sFile, "iRecordAudio= %d \n", &iRecordAudio);
+		fscanf_s(sFile, "iRecordAudio= %d \n", &cAudioFormat.m_iRecordAudio);
 
 		//Audio Formats Dialog
 		fscanf_s(sFile, "dwWaveinSelected= %d \n", &cAudioFormat.m_dwWaveinSelected);
@@ -4057,9 +4022,9 @@ void CRecorderView::LoadSettings()
 		fscanf_s(sFile, "iInterleaveFactor= %d \n", &cAudioFormat.m_iInterleaveFactor);
 
 		//Key Shortcuts
-		fscanf_s(sFile, "keyRecordStart= %d \n",&keyRecordStart);
-		fscanf_s(sFile, "keyRecordEnd= %d \n",&keyRecordEnd);
-		fscanf_s(sFile, "uKeyRecordCancel= %d \n",&uKeyRecordCancel);
+		fscanf_s(sFile, "keyRecordStart= %d \n",&cHotKeyOpts.m_RecordStart.m_vKey);
+		fscanf_s(sFile, "keyRecordEnd= %d \n",&cHotKeyOpts.m_RecordEnd.m_vKey);
+		fscanf_s(sFile, "uKeyRecordCancel= %d \n",&cHotKeyOpts.m_RecordCancel.m_vKey);
 
 		fscanf_s(sFile, "iViewType= %d \n",&iViewType);
 
@@ -4080,8 +4045,8 @@ void CRecorderView::LoadSettings()
 
 			//set default compressor
 			cVideoOpts.m_dwCompfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-			dwCompressorStateIsFor = 0;
-			dwCompressorStateSize = 0;
+			cVideoOpts.m_dwCompressorStateIsFor = 0;
+			cVideoOpts.m_dwCompressorStateSize = 0;
 			cVideoOpts.m_iCompQuality = 7000;
 
 			//set default audio recording format and compress format
@@ -4133,15 +4098,15 @@ void CRecorderView::LoadSettings()
 	//Ver 1.3
 	if (ver >= 1.299999)
 	{
-		fscanf_s(sFile, "iThreadPriority=%d \n",&iThreadPriority);
+		fscanf_s(sFile, "iThreadPriority=%d \n",&cProgramOpts.m_iThreadPriority);
 	}
 
 	//Ver 1.5
 	if (ver >= 1.499999)
 	{
-		fscanf_s(sFile, "iCaptureLeft= %d \n",&iCaptureLeft);
-		fscanf_s(sFile, "iCaptureTop= %d \n",&iCaptureTop);
-		fscanf_s(sFile, "bFixedCapture=%d \n",&bFixedCapture);
+		fscanf_s(sFile, "iCaptureLeft= %d \n",&cRegionOpts.m_iCaptureLeft);
+		fscanf_s(sFile, "iCaptureTop= %d \n",&cRegionOpts.m_iCaptureTop);
+		fscanf_s(sFile, "bFixedCapture=%d \n",&cRegionOpts.m_bFixedCapture);
 		fscanf_s(sFile, "iInterleaveUnit= %d \n", &cAudioFormat.m_iInterleavePeriod);
 	} else {
 		//force interleve settings
@@ -4152,21 +4117,21 @@ void CRecorderView::LoadSettings()
 	//Ver 1.6
 	if (ver >= 1.599999)
 	{
-		fscanf_s(sFile, "iTempPathAccess=%d \n",&iTempPathAccess);
-		fscanf_s(sFile, "bCaptureTrans=%d \n",&bCaptureTrans);
-		fscanf_s(sFile, "specifieddir=%d \n",&iSpecifiedDirLength);
+		fscanf_s(sFile, "iTempPathAccess=%d \n",&cProgramOpts.m_iTempPathAccess);
+		fscanf_s(sFile, "bCaptureTrans=%d \n",&cProgramOpts.m_bCaptureTrans);
+		fscanf_s(sFile, "specifieddir=%d \n",&cProgramOpts.m_iSpecifiedDirLength);
 		fscanf_s(sFile, "NumDev=%d \n",&iNumberOfMixerDevices);
 		fscanf_s(sFile, "SelectedDev=%d \n",&iSelectedMixer);
 		fscanf_s(sFile, "iFeedbackLine=%d \n",&iFeedbackLine);
 		fscanf_s(sFile, "feedback_line_info=%d \n",&iFeedbackLineInfo);
 		fscanf_s(sFile, "bPerformAutoSearch=%d \n",&bPerformAutoSearch);
 
-		onLoadSettings(iRecordAudio);
+		onLoadSettings(cAudioFormat.m_iRecordAudio);
 	} else
 	{
-		iTempPathAccess = USE_WINDOWS_TEMP_DIR;
-		bCaptureTrans = 1;
-		iSpecifiedDirLength = 0;
+		cProgramOpts.m_iTempPathAccess = USE_WINDOWS_TEMP_DIR;
+		cProgramOpts.m_bCaptureTrans = true;
+		cProgramOpts.m_iSpecifiedDirLength = 0;
 
 		iNumberOfMixerDevices=0;
 		iSelectedMixer=0;
@@ -4175,12 +4140,12 @@ void CRecorderView::LoadSettings()
 		bPerformAutoSearch=1;
 	}
 
-	if (iSpecifiedDirLength == 0)
+	if (cProgramOpts.m_iSpecifiedDirLength == 0)
 	{
-		int old_tempPath_Access = iTempPathAccess;
-		iTempPathAccess = USE_WINDOWS_TEMP_DIR;
-		specifieddir = GetTempPath(iTempPathAccess, specifieddir);
-		iTempPathAccess = old_tempPath_Access;
+		int old_tempPath_Access = cProgramOpts.m_iTempPathAccess;
+		cProgramOpts.m_iTempPathAccess = USE_WINDOWS_TEMP_DIR;
+		specifieddir = GetTempFolder(cProgramOpts.m_iTempPathAccess, specifieddir);
+		cProgramOpts.m_iTempPathAccess = old_tempPath_Access;
 
 		//Do not modify the iSpecifiedDirLength variable, even if specifieddir is changed. It will need to be used below
 	}
@@ -4189,22 +4154,31 @@ void CRecorderView::LoadSettings()
 	//Make the the modified keys do not overlap
 	if (ver < 1.799999)
 	{
-		if (iLaunchPlayer == 1)
-			iLaunchPlayer = 3;
+		if (cProgramOpts.m_iLaunchPlayer == 1)
+			cProgramOpts.m_iLaunchPlayer = 3;
 
-		if ((keyRecordStart == VK_MENU) || (keyRecordStart == VK_SHIFT) || (keyRecordStart == VK_CONTROL) || (keyRecordStart == VK_ESCAPE)) {
-			keyRecordStart = VK_F8;
-			keyRecordStartCtrl = 1;
+		if ((cHotKeyOpts.m_RecordStart.m_vKey == VK_MENU)
+			|| (cHotKeyOpts.m_RecordStart.m_vKey == VK_SHIFT)
+			|| (cHotKeyOpts.m_RecordStart.m_vKey == VK_CONTROL)
+			|| (cHotKeyOpts.m_RecordStart.m_vKey == VK_ESCAPE)) {
+			cHotKeyOpts.m_RecordStart.m_vKey = VK_F8;
+			cHotKeyOpts.m_RecordStart.m_bCtrl = true;
 		}
 
-		if ((keyRecordEnd == VK_MENU) || (keyRecordEnd == VK_SHIFT) || (keyRecordEnd == VK_CONTROL) || (keyRecordEnd == VK_ESCAPE)) {
-			keyRecordEnd = VK_F9;
-			keyRecordEndCtrl = 1;
+		if ((cHotKeyOpts.m_RecordEnd.m_vKey == VK_MENU)
+			|| (cHotKeyOpts.m_RecordEnd.m_vKey == VK_SHIFT)
+			|| (cHotKeyOpts.m_RecordEnd.m_vKey == VK_CONTROL)
+			|| (cHotKeyOpts.m_RecordEnd.m_vKey == VK_ESCAPE)) {
+			cHotKeyOpts.m_RecordEnd.m_vKey = VK_F9;
+			cHotKeyOpts.m_RecordEnd.m_bCtrl = true;
 		}
 
-		if ((uKeyRecordCancel == VK_MENU) || (uKeyRecordCancel == VK_SHIFT) || (uKeyRecordCancel == VK_CONTROL) || (uKeyRecordCancel == VK_ESCAPE)) {
-			uKeyRecordCancel = VK_F10;
-			keyRecordCancelCtrl = 1;
+		if ((cHotKeyOpts.m_RecordCancel.m_vKey == VK_MENU)
+			|| (cHotKeyOpts.m_RecordCancel.m_vKey == VK_SHIFT)
+			|| (cHotKeyOpts.m_RecordCancel.m_vKey == VK_CONTROL)
+			|| (cHotKeyOpts.m_RecordCancel.m_vKey == VK_ESCAPE)) {
+			cHotKeyOpts.m_RecordCancel.m_vKey = VK_F10;
+			cHotKeyOpts.m_RecordCancel.m_bCtrl = 1;
 		}
 	}
 
@@ -4213,35 +4187,35 @@ void CRecorderView::LoadSettings()
 	int layoutNameLen = 0;
 	if (ver >= 1.799999)
 	{
-		fscanf_s(sFile, "bSupportMouseDrag=%d \n",&bSupportMouseDrag);
+		fscanf_s(sFile, "bSupportMouseDrag=%d \n",&cRegionOpts.m_bSupportMouseDrag);
 
-		fscanf_s(sFile, "keyRecordStartCtrl=%d \n",&keyRecordStartCtrl);
-		fscanf_s(sFile, "keyRecordEndCtrl=%d \n",&keyRecordEndCtrl);
-		fscanf_s(sFile, "keyRecordCancelCtrl=%d \n",&keyRecordCancelCtrl);
+		fscanf_s(sFile, "keyRecordStartCtrl=%d \n",&cHotKeyOpts.m_RecordStart.m_bCtrl);
+		fscanf_s(sFile, "keyRecordEndCtrl=%d \n",&cHotKeyOpts.m_RecordEnd.m_bCtrl);
+		fscanf_s(sFile, "keyRecordCancelCtrl=%d \n",&cHotKeyOpts.m_RecordCancel.m_bCtrl);
 
-		fscanf_s(sFile, "keyRecordStartAlt=%d \n",&keyRecordStartAlt);
-		fscanf_s(sFile, "keyRecordEndAlt=%d \n",&keyRecordEndAlt);
-		fscanf_s(sFile, "keyRecordCancelAlt=%d \n",&keyRecordCancelAlt);
+		fscanf_s(sFile, "keyRecordStartAlt=%d \n",&cHotKeyOpts.m_RecordStart.m_bAlt);
+		fscanf_s(sFile, "keyRecordEndAlt=%d \n",&cHotKeyOpts.m_RecordEnd.m_bAlt);
+		fscanf_s(sFile, "keyRecordCancelAlt=%d \n",&cHotKeyOpts.m_RecordCancel.m_bAlt);
 
-		fscanf_s(sFile, "keyRecordStartShift=%d \n",&keyRecordStartShift);
-		fscanf_s(sFile, "keyRecordEndShift=%d \n",&keyRecordEndShift);
-		fscanf_s(sFile, "keyRecordCancelShift=%d \n",&keyRecordCancelShift);
+		fscanf_s(sFile, "keyRecordStartShift=%d \n",&cHotKeyOpts.m_RecordStart.m_bShift);
+		fscanf_s(sFile, "keyRecordEndShift=%d \n",&cHotKeyOpts.m_RecordEnd.m_bShift);
+		fscanf_s(sFile, "keyRecordCancelShift=%d \n",&cHotKeyOpts.m_RecordCancel.m_bShift);
 
-		fscanf_s(sFile, "keyNext=%d \n",&keyNext);
-		fscanf_s(sFile, "keyPrev=%d \n",&keyPrev);
-		fscanf_s(sFile, "keyShowLayout=%d \n",&keyShowLayout);
+		fscanf_s(sFile, "keyNext=%d \n",&cHotKeyOpts.m_Next.m_vKey);
+		fscanf_s(sFile, "keyPrev=%d \n",&cHotKeyOpts.m_Prev.m_vKey);
+		fscanf_s(sFile, "keyShowLayout=%d \n",&cHotKeyOpts.m_ShowLayout.m_vKey);
 
-		fscanf_s(sFile, "keyNextCtrl=%d \n",&keyNextCtrl);
-		fscanf_s(sFile, "keyPrevCtrl=%d \n",&keyPrevCtrl);
-		fscanf_s(sFile, "keyShowLayoutCtrl=%d \n",&keyShowLayoutCtrl);
+		fscanf_s(sFile, "keyNextCtrl=%d \n",&cHotKeyOpts.m_Next.m_bCtrl);
+		fscanf_s(sFile, "keyPrevCtrl=%d \n",&cHotKeyOpts.m_Prev.m_bCtrl);
+		fscanf_s(sFile, "keyShowLayoutCtrl=%d \n",&cHotKeyOpts.m_ShowLayout.m_bCtrl);
 
-		fscanf_s(sFile, "keyNextAlt=%d \n",&keyNextAlt);
-		fscanf_s(sFile, "keyPrevAlt=%d \n",&keyPrevAlt);
-		fscanf_s(sFile, "keyShowLayoutAlt=%d \n",&keyShowLayoutAlt);
+		fscanf_s(sFile, "keyNextAlt=%d \n",&cHotKeyOpts.m_Next.m_bAlt);
+		fscanf_s(sFile, "keyPrevAlt=%d \n",&cHotKeyOpts.m_Prev.m_bAlt);
+		fscanf_s(sFile, "keyShowLayoutAlt=%d \n",&cHotKeyOpts.m_ShowLayout.m_bAlt);
 
-		fscanf_s(sFile, "keyNextShift=%d \n",&keyNextShift);
-		fscanf_s(sFile, "keyPrevShift=%d \n",&keyPrevShift);
-		fscanf_s(sFile, "keyShowLayoutShift=%d \n",&keyShowLayoutShift);
+		fscanf_s(sFile, "keyNextShift=%d \n",&cHotKeyOpts.m_Next.m_bShift);
+		fscanf_s(sFile, "keyPrevShift=%d \n",&cHotKeyOpts.m_Prev.m_bShift);
+		fscanf_s(sFile, "keyShowLayoutShift=%d \n",&cHotKeyOpts.m_ShowLayout.m_bShift);
 
 		fscanf_s(sFile, "iShapeNameInt=%d \n",&iShapeNameInt);
 		fscanf_s(sFile, "shapeNameLen=%d \n",&shapeNameLen);
@@ -4249,7 +4223,7 @@ void CRecorderView::LoadSettings()
 		fscanf_s(sFile, "iLayoutNameInt=%d \n",&iLayoutNameInt);
 		fscanf_s(sFile, "g_layoutNameLen=%d \n",&layoutNameLen);
 
-		fscanf_s(sFile, "bUseMCI=%d \n",&bUseMCI);
+		fscanf_s(sFile, "bUseMCI=%d \n",&cAudioFormat.m_bUseMCI);
 		fscanf_s(sFile, "iShiftType=%d \n",&iShiftType);
 		fscanf_s(sFile, "iTimeShift=%d \n",&iTimeShift);
 		fscanf_s(sFile, "iFrameShift=%d \n",&iFrameShift);
@@ -4262,8 +4236,8 @@ void CRecorderView::LoadSettings()
 		fscanf_s(sFile, "bLaunchPropPrompt=%d \n",&bLaunchPropPrompt);
 		fscanf_s(sFile, "bLaunchHTMLPlayer=%d \n",&bLaunchHTMLPlayer);
 		fscanf_s(sFile, "bDeleteAVIAfterUse=%d \n",&bDeleteAVIAfterUse);
-		fscanf_s(sFile, "iRecordingMode=%d \n",&iRecordingMode);
-		fscanf_s(sFile, "bAutoNaming=%d \n",&bAutoNaming);
+		fscanf_s(sFile, "iRecordingMode=%d \n",&cProgramOpts.m_iRecordingMode);
+		fscanf_s(sFile, "bAutoNaming=%d \n",&cProgramOpts.m_bAutoNaming);
 		fscanf_s(sFile, "bRestrictVideoCodecs=%d \n",&bRestrictVideoCodecs);
 		//fscanf_s(sFile, "base_nid=%d \n",&base_nid);
 	}
@@ -4276,8 +4250,6 @@ void CRecorderView::LoadSettings()
 	}
 
 	//new variables add here
-	//Multilanguage
-	fscanf_s(sFile, "language=%d \n",&iLanguageID);
 
 	// Effects
 	fscanf_s(sFile, "bTimestampAnnotation=%d \n",&bTimestampAnnotation);
@@ -4357,10 +4329,10 @@ void CRecorderView::LoadSettings()
 				}
 			}
 
-			if (dwCompressorStateSize > 0)
+			if (cVideoOpts.m_dwCompressorStateSize > 0)
 			{
-				AllocVideoCompressParams(dwCompressorStateSize);
-				fread( (void *) pVideoCompressParams, dwCompressorStateSize, 1, tFile);
+				AllocVideoCompressParams(cVideoOpts.m_dwCompressorStateSize);
+				fread( (void *) pVideoCompressParams, cVideoOpts.m_dwCompressorStateSize, 1, tFile);
 			}
 
 			//ver 1.6
@@ -4368,9 +4340,9 @@ void CRecorderView::LoadSettings()
 			{
 				// if upgrade from older file versions,
 				// iSpecifiedDirLength == 0 and the following code will not run
-				if ((iSpecifiedDirLength > 0) && (iSpecifiedDirLength < 1000)) {
-					fread( (void *) specdata, iSpecifiedDirLength, 1, tFile);
-					specdata[iSpecifiedDirLength]=0;
+				if ((cProgramOpts.m_iSpecifiedDirLength > 0) && (cProgramOpts.m_iSpecifiedDirLength < 1000)) {
+					fread( (void *) specdata, cProgramOpts.m_iSpecifiedDirLength, 1, tFile);
+					specdata[cProgramOpts.m_iSpecifiedDirLength]=0;
 					specifieddir=CString(specdata);
 				}
 
@@ -4401,50 +4373,46 @@ void CRecorderView::LoadSettings()
 
 void CRecorderView::OnOptionsProgramoptionsSavesettingsonexit()
 {
-	// TODO: Add your command handler code here
-	savesettings = (savesettings) ? 0 : 1;
+	cProgramOpts.m_bSaveSettings = !cProgramOpts.m_bSaveSettings;
 }
 
 void CRecorderView::OnUpdateOptionsProgramoptionsSavesettingsonexit(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(savesettings);
+	pCmdUI->SetCheck(cProgramOpts.m_bSaveSettings);
 }
 
 void CRecorderView::DecideSaveSettings()
 {
 	CString nosaveName("\\NoSave.ini");
-	CString nosaveDir=GetProgPath();
-	CString nosavePath=nosaveDir+nosaveName;
+	CString nosaveDir = GetProgPath();
+	CString nosavePath = nosaveDir + nosaveName;
 
-	if (savesettings==1) {
+	if (cProgramOpts.m_bSaveSettings) {
 		SaveSettings();
 		DeleteFile(nosavePath);
-
-	}
-	else {
-		//Create the nosave.ini file if savesettings = 0;
-		FILE *rFile;
-		rFile = fopen(LPCTSTR(nosavePath),"wt");
+	} else {
+		// Create the nosave.ini file if savesettings = 0;
+		FILE *rFile = fopen(LPCTSTR(nosavePath),"wt");
 		fprintf(rFile,"savesettings = 0 \n");
 		fclose(rFile);
 
 		//Delete Settings File
-		CString setDir,setPath;
+		CString setDir;
+		CString setPath;
 		CString fileName("\\CamStudio.ini ");
-
-		setDir=GetProgPath();
-		setPath=setDir+fileName;
+		setDir = GetProgPath();
+		setPath = setDir+fileName;
 
 		DeleteFile(setPath);
 
 		fileName = "\\Camdata.ini";
-		setPath=setDir+fileName;
+		setPath = setDir + fileName;
 
 		DeleteFile(setPath);
 
 		fileName = "\\CamCursor.ini";
-		setPath=setDir+fileName;
+		setPath = setDir + fileName;
 
 		DeleteFile(setPath);
 	}
@@ -4453,123 +4421,112 @@ void CRecorderView::DecideSaveSettings()
 void CRecorderView::OnOptionsRecordingthreadpriorityNormal()
 {
 	// TODO: Add your command handler code here
-	iThreadPriority = THREAD_PRIORITY_NORMAL;
+	cProgramOpts.m_iThreadPriority = THREAD_PRIORITY_NORMAL;
 }
 
 void CRecorderView::OnOptionsRecordingthreadpriorityHighest()
 {
 	// TODO: Add your command handler code here
-	iThreadPriority = THREAD_PRIORITY_HIGHEST;
+	cProgramOpts.m_iThreadPriority = THREAD_PRIORITY_HIGHEST;
 }
 
 void CRecorderView::OnOptionsRecordingthreadpriorityAbovenormal()
 {
 	// TODO: Add your command handler code here
-	iThreadPriority = THREAD_PRIORITY_ABOVE_NORMAL;
+	cProgramOpts.m_iThreadPriority = THREAD_PRIORITY_ABOVE_NORMAL;
 }
 
 void CRecorderView::OnOptionsRecordingthreadpriorityTimecritical()
 {
 	// TODO: Add your command handler code here
-	iThreadPriority = THREAD_PRIORITY_TIME_CRITICAL;
+	cProgramOpts.m_iThreadPriority = THREAD_PRIORITY_TIME_CRITICAL;
 }
 
 void CRecorderView::OnUpdateOptionsRecordingthreadpriorityNormal(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iThreadPriority == THREAD_PRIORITY_NORMAL);
+	pCmdUI->SetCheck(cProgramOpts.m_iThreadPriority == THREAD_PRIORITY_NORMAL);
 }
 
 void CRecorderView::OnUpdateOptionsRecordingthreadpriorityHighest(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iThreadPriority == THREAD_PRIORITY_HIGHEST);
+	pCmdUI->SetCheck(cProgramOpts.m_iThreadPriority == THREAD_PRIORITY_HIGHEST);
 }
 
 void CRecorderView::OnUpdateOptionsRecordingthreadpriorityAbovenormal(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iThreadPriority == THREAD_PRIORITY_ABOVE_NORMAL);
+	pCmdUI->SetCheck(cProgramOpts.m_iThreadPriority == THREAD_PRIORITY_ABOVE_NORMAL);
 }
 
 void CRecorderView::OnUpdateOptionsRecordingthreadpriorityTimecritical(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iThreadPriority == THREAD_PRIORITY_TIME_CRITICAL);
+	pCmdUI->SetCheck(cProgramOpts.m_iThreadPriority == THREAD_PRIORITY_TIME_CRITICAL);
 }
 
 void CRecorderView::OnOptionsCapturetrans()
 {
 	// TODO: Add your command handler code here
-
-	if (bCaptureTrans)
-		bCaptureTrans = 0;
-	else
-		bCaptureTrans = 1;
+	cProgramOpts.m_bCaptureTrans = !cProgramOpts.m_bCaptureTrans;
 }
 
 void CRecorderView::OnUpdateOptionsCapturetrans(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(bCaptureTrans==1);
+	pCmdUI->SetCheck(cProgramOpts.m_bCaptureTrans);
 }
 
 void CRecorderView::OnOptionsTempdirWindows()
 {
 	// TODO: Add your command handler code here
-	iTempPathAccess = USE_WINDOWS_TEMP_DIR;
+	cProgramOpts.m_iTempPathAccess = USE_WINDOWS_TEMP_DIR;
 }
 
 void CRecorderView::OnUpdateOptionsTempdirWindows(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iTempPathAccess == USE_WINDOWS_TEMP_DIR);
+	pCmdUI->SetCheck(cProgramOpts.m_iTempPathAccess == USE_WINDOWS_TEMP_DIR);
 }
 
 void CRecorderView::OnOptionsTempdirInstalled()
 {
 	// TODO: Add your command handler code here
-	iTempPathAccess = USE_INSTALLED_DIR;
+	cProgramOpts.m_iTempPathAccess = USE_INSTALLED_DIR;
 }
 
 void CRecorderView::OnUpdateOptionsTempdirInstalled(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iTempPathAccess == USE_INSTALLED_DIR);
+	pCmdUI->SetCheck(cProgramOpts.m_iTempPathAccess == USE_INSTALLED_DIR);
 }
 
 void CRecorderView::OnOptionsTempdirUser()
 {
-	// TODO: Add your command handler code here
-	iTempPathAccess = USE_USER_SPECIFIED_DIR;
-
 	CFolderDialog cfg(specifieddir);
-	int retval;
-
-	retval=cfg.DoModal();
-
-	if (retval==IDOK) {
+	if (IDOK == cfg.DoModal()) {
 		specifieddir = cfg.GetPathName();
-
+		cProgramOpts.m_iTempPathAccess = USE_USER_SPECIFIED_DIR;
 	}
 }
 
 void CRecorderView::OnUpdateOptionsTempdirUser(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iTempPathAccess == USE_USER_SPECIFIED_DIR);
+	pCmdUI->SetCheck(cProgramOpts.m_iTempPathAccess == USE_USER_SPECIFIED_DIR);
 }
 
 void CRecorderView::OnOptionsRecordaudioDonotrecordaudio()
 {
 	// TODO: Add your command handler code here
-	iRecordAudio = 0;
+	cAudioFormat.m_iRecordAudio = NONE;
 }
 
 void CRecorderView::OnUpdateOptionsRecordaudioDonotrecordaudio(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iRecordAudio==0);
+	pCmdUI->SetCheck(cAudioFormat.isInput(NONE));
 }
 
 void CRecorderView::OnOptionsRecordaudioRecordfromspeakers()
@@ -4583,14 +4540,14 @@ void CRecorderView::OnOptionsRecordaudioRecordfromspeakers()
 		return;
 	}
 
-	iRecordAudio=2;
+	cAudioFormat.m_iRecordAudio = SPEAKERS;
 
 	useWaveout(FALSE,FALSE);
 }
 
 void CRecorderView::OnUpdateOptionsRecordaudioRecordfromspeakers(CCmdUI* pCmdUI)
 {
-	pCmdUI->SetCheck(iRecordAudio==2);
+	pCmdUI->SetCheck(cAudioFormat.isInput(SPEAKERS));
 }
 
 void CRecorderView::OnOptionsRecordaudiomicrophone()
@@ -4602,7 +4559,7 @@ void CRecorderView::OnOptionsRecordaudiomicrophone()
 
 	}
 
-	iRecordAudio=1;
+	cAudioFormat.m_iRecordAudio = MICROPHONE;
 
 	useWavein(TRUE,FALSE); //TRUE ==> silence mode, will not report errors
 }
@@ -4610,53 +4567,53 @@ void CRecorderView::OnOptionsRecordaudiomicrophone()
 void CRecorderView::OnUpdateOptionsRecordaudiomicrophone(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iRecordAudio==1);
+	pCmdUI->SetCheck(cAudioFormat.isInput(MICROPHONE));
 }
 
 void CRecorderView::OnOptionsProgramoptionsTroubleshoot()
 {
 	CTroubleShootDlg tbsDlg;
-	tbsDlg.DoModal();
-
-	if ((TroubleShootVal == 1)) {
-		::PostMessage(AfxGetMainWnd()->GetSafeHwnd(),WM_CLOSE,0,0);
+	if (IDOK == tbsDlg.DoModal()) {
+		if ((TroubleShootVal == 1)) {
+			::PostMessage(AfxGetMainWnd()->GetSafeHwnd(),WM_CLOSE,0,0);
+		}
 	}
 }
 
 void CRecorderView::OnOptionsProgramoptionsCamstudioplay()
 {
 	// TODO: Add your command handler code here
-	iLaunchPlayer = 1;
+	cProgramOpts.m_iLaunchPlayer = 1;
 }
 
 void CRecorderView::OnUpdateOptionsProgramoptionsCamstudioplay(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iLaunchPlayer == 1);
+	pCmdUI->SetCheck(cProgramOpts.m_iLaunchPlayer == 1);
 }
 
 void CRecorderView::OnOptionsProgramoptionsDefaultplay()
 {
 	// TODO: Add your command handler code here
-	iLaunchPlayer = 2;
+	cProgramOpts.m_iLaunchPlayer = 2;
 }
 
 void CRecorderView::OnUpdateOptionsProgramoptionsDefaultplay(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iLaunchPlayer == 2);
+	pCmdUI->SetCheck(cProgramOpts.m_iLaunchPlayer == 2);
 }
 
 void CRecorderView::OnOptionsProgramoptionsNoplay()
 {
 	// TODO: Add your command handler code here
-	iLaunchPlayer = 0;
+	cProgramOpts.m_iLaunchPlayer = 0;
 }
 
 void CRecorderView::OnUpdateOptionsProgramoptionsNoplay(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iLaunchPlayer == 0);
+	pCmdUI->SetCheck(cProgramOpts.m_iLaunchPlayer == 0);
 }
 
 void CRecorderView::OnHelpDonations()
@@ -4672,13 +4629,13 @@ void CRecorderView::OnHelpDonations()
 void CRecorderView::OnOptionsUsePlayer20()
 {
 	// TODO: Add your command handler code here
-	iLaunchPlayer = 3;
+	cProgramOpts.m_iLaunchPlayer = 3;
 }
 
 void CRecorderView::OnUpdateUsePlayer20(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iLaunchPlayer == 3);
+	pCmdUI->SetCheck(cProgramOpts.m_iLaunchPlayer == 3);
 }
 
 void CRecorderView::OnViewScreenannotations()
@@ -4779,16 +4736,16 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM lParam)
 		break;
 	case 1:
 		if (bRecordState) {
-			if (keyRecordEnd != uKeyRecordCancel) {
-				OnRecordInterrupted(keyRecordEnd, 0);
+			if (cHotKeyOpts.m_RecordEnd.m_vKey != cHotKeyOpts.m_RecordCancel.m_vKey) {
+				OnRecordInterrupted(cHotKeyOpts.m_RecordEnd.m_vKey, 0);
 			} else {
-				OnRecordInterrupted(uKeyRecordCancel + 1, 0);
+				OnRecordInterrupted(cHotKeyOpts.m_RecordCancel.m_vKey + 1, 0);
 			}
 		}
 		break;
 	case 2:
 		if (bRecordState) {
-			OnRecordInterrupted(uKeyRecordCancel, 0);
+			OnRecordInterrupted(cHotKeyOpts.m_RecordCancel.m_vKey, 0);
 		}
 		break;
 	case 3:
@@ -4930,7 +4887,7 @@ void CRecorderView::OnUpdateOptionsSwfDeleteavifile(CCmdUI* pCmdUI)
 void CRecorderView::OnAviswf()
 {
 	// TODO: Add your command handler code here
-	iRecordingMode = (iRecordingMode == ModeAVI) ? ModeFlash : ModeAVI;
+	cProgramOpts.m_iRecordingMode = (cProgramOpts.m_iRecordingMode == ModeAVI) ? ModeFlash : ModeAVI;
 	Invalidate();
 }
 
@@ -4960,25 +4917,25 @@ BOOL CRecorderView::OnEraseBkgnd(CDC* pDC)
 void CRecorderView::OnOptionsNamingAutodate()
 {
 	// TODO: Add your command handler code here
-	bAutoNaming = 1;
+	cProgramOpts.m_bAutoNaming = true;
 }
 
 void CRecorderView::OnUpdateOptionsNamingAutodate(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(bAutoNaming == 1);
+	pCmdUI->SetCheck(cProgramOpts.m_bAutoNaming);
 }
 
 void CRecorderView::OnOptionsNamingAsk()
 {
 	// TODO: Add your command handler code here
-	bAutoNaming = 0;
+	cProgramOpts.m_bAutoNaming = false;
 }
 
 void CRecorderView::OnUpdateOptionsNamingAsk(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(bAutoNaming == 0);
+	pCmdUI->SetCheck(!cProgramOpts.m_bAutoNaming);
 }
 
 void CRecorderView::OnOptionsProgramoptionsPresettime()
@@ -5020,13 +4977,13 @@ void CRecorderView::OnOptionsLanguageGerman()
 void CRecorderView::OnRegionWindow()
 {
 	// TODO: Add your command handler code here
-	iMouseCaptureMode = 3;
+	cRegionOpts.m_iMouseCaptureMode = CAPTURE_WINDOW;
 }
 
 void CRecorderView::OnUpdateRegionWindow(CCmdUI *pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck((iMouseCaptureMode==3) ? TRUE : FALSE);
+	pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_WINDOW));
 }
 
 void CRecorderView::OnCaptureChanged(CWnd *pWnd)
@@ -5256,7 +5213,7 @@ void CRecorderView::DisplayRecordingMsg(CDC & srcDC)
 	COLORREF oldBkColor = srcDC.SetBkColor(RGB(0, 0, 0));
 
 	CString msgRecMode;
-	msgRecMode.LoadString((iRecordingMode == ModeAVI) ? IDS_RECAVI : IDS_RECSWF);
+	msgRecMode.LoadString((cProgramOpts.m_iRecordingMode == ModeAVI) ? IDS_RECAVI : IDS_RECSWF);
 
 	CSize sizeExtent = srcDC.GetTextExtent(msgRecMode);
 
@@ -5285,11 +5242,11 @@ LPBITMAPINFOHEADER CRecorderView::captureScreenFrame(int left, int top, int widt
 	HDC hScreenDC = ::GetDC(NULL);
 
 	//if flashing rect
-	if (bFlashingRect && !tempDisableRect) {
-		if (bAutoPan) {
+	if (cProgramOpts.m_bFlashingRect && !tempDisableRect) {
+		if (cProgramOpts.m_bAutoPan) {
 			pFlashingWnd->SetUpRegion(left, top, width, height, 1);
 		}
-		pFlashingWnd->DrawFlashingRect(TRUE, (bAutoPan) ? 1 : 0);
+		pFlashingWnd->DrawFlashingRect(TRUE, cProgramOpts.m_bAutoPan);
 	}
 
 	HDC hMemDC = ::CreateCompatibleDC(hScreenDC);
@@ -5299,7 +5256,7 @@ LPBITMAPINFOHEADER CRecorderView::captureScreenFrame(int left, int top, int widt
 	//ver 1.6
 	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();	
 	DWORD bltFlags = SRCCOPY;
-	if (bCaptureTrans && (4 < pApp->VersionOp()))
+	if (cProgramOpts.m_bCaptureTrans && (4 < pApp->VersionOp()))
 		bltFlags |= CAPTUREBLT;
 	BitBlt(hMemDC, 0, 0, width, height, hScreenDC, left, top, bltFlags);
 
@@ -5376,8 +5333,8 @@ LPBITMAPINFOHEADER CRecorderView::captureScreenFrame(int left, int top, int widt
 	DeleteDC(hMemDC);
 
 	//if flashing rect
-	if (bFlashingRect && !tempDisableRect) {
-		pFlashingWnd->DrawFlashingRect(FALSE, (bAutoPan) ? 1 : 0);
+	if (cProgramOpts.m_bFlashingRect && !tempDisableRect) {
+		pFlashingWnd->DrawFlashingRect(FALSE, cProgramOpts.m_bAutoPan);
 	}
 
 	::ReleaseDC(NULL,hScreenDC);
@@ -5399,7 +5356,7 @@ UINT CRecorderView::RecordAVIThread(LPVOID pParam)
 	TRACE("CRecorderView::RecordAVIThread\n");
 	//Test the validity of writing to the file
 	//Make sure the file to be created is currently not used by another application
-	CString csTempFolder(GetTempPath(iTempPathAccess, specifieddir));
+	CString csTempFolder(GetTempFolder(cProgramOpts.m_iTempPathAccess, specifieddir));
 	strTempFilePath.Format("%s\\temp.avi", (LPCSTR)csTempFolder);
 
 	srand( (unsigned)time( NULL));
@@ -5538,12 +5495,8 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 	////////////////////////////////////////////////
 	// Set Up Flashing Rect
 	////////////////////////////////////////////////
-	if (bFlashingRect) {
-		if (bAutoPan) {
-			pFlashingWnd->SetUpRegion(left, top, width, height, 1);
-		} else {
-			pFlashingWnd->SetUpRegion(left, top, width, height, 0);
-		}
+	if (cProgramOpts.m_bFlashingRect) {
+		pFlashingWnd->SetUpRegion(left, top, width, height, cProgramOpts.m_bAutoPan);
 		pFlashingWnd->ShowWindow(SW_SHOW);
 	}
 
@@ -5601,7 +5554,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 	aopts[0]->dwInterleaveEvery = 0;			// for non-video streams only
 
 	//ver 2.26
-	if (iRecordingMode == ModeFlash) {
+	if (cProgramOpts.m_iRecordingMode == ModeFlash) {
 		//Internally adjust codec to MSVC 100 Quality
 		aopts[0]->fccHandler = mmioFOURCC('M', 'S', 'V', 'C');	 //msvc
 		strCodec = CString("MS Video 1");
@@ -5609,11 +5562,12 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 	} else {
 		//Ver 1.2
 		//
-		if ((cVideoOpts.m_dwCompfccHandler == dwCompressorStateIsFor) && (cVideoOpts.m_dwCompfccHandler != 0)) {
-			//make a copy of the pVideoCompressParams just in case after compression, this variable become messed up
-			if (MakeCompressParamsCopy(dwCompressorStateSize, pVideoCompressParams)) {
+		if ((cVideoOpts.m_dwCompfccHandler != 0) && (cVideoOpts.m_dwCompfccHandler == cVideoOpts.m_dwCompressorStateIsFor)) {
+			// make a copy of the pVideoCompressParams just in case after compression,
+			// this variable become messed up
+			if (MakeCompressParamsCopy(cVideoOpts.m_dwCompressorStateSize, pVideoCompressParams)) {
 				aopts[0]->lpParms = pParamsUse;
-				aopts[0]->cbParms = dwCompressorStateSize;
+				aopts[0]->cbParms = cVideoOpts.m_dwCompressorStateSize;
 			}
 		}
 	}
@@ -5637,7 +5591,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 	FreeFrame(alpbi);
 	alpbi=NULL;
 
-	if (bAutoPan) {
+	if (cProgramOpts.m_bAutoPan) {
 		rectPanCurrent.left = left;
 		rectPanCurrent.top = top;
 		rectPanCurrent.right = left + width - 1;
@@ -5647,7 +5601,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 	//////////////////////////////////////////////
 	// Recording Audio
 	//////////////////////////////////////////////
-	if ((iRecordAudio == 2) || (bUseMCI)) {
+	if ((cAudioFormat.isInput(SPEAKERS)) || (cAudioFormat.m_bUseMCI)) {
 		mciRecordOpen();
 		mciSetWaveFormat();
 		mciRecordStart();
@@ -5657,7 +5611,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 		//	mci::mciRecordPause(tempaudiopath);
 		//	unshifted = 1;
 		//}
-	} else if (iRecordAudio) {
+	} else if (!cAudioFormat.isInput(NONE)) {
 		InitAudioRecording();
 		StartAudioRecording(&m_Format);
 	}
@@ -5690,7 +5644,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 		}
 
 		//Autopan
-		if ((bAutoPan) && (width < maxxScreen) && (height < maxyScreen)) {
+		if (cProgramOpts.m_bAutoPan && (width < maxxScreen) && (height < maxyScreen)) {
 			POINT xPoint;
 			GetCursorPos(&xPoint);
 
@@ -5738,34 +5692,28 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 			}
 
 			//Determine Pan Values
-			int xdiff, ydiff;
-			xdiff = rectPanDest.left - rectPanCurrent.left;
-			ydiff = rectPanDest.top - rectPanCurrent.top;
-
-			if (abs(xdiff) < iMaxPan) {
+			int xdiff = rectPanDest.left - rectPanCurrent.left;
+			int ydiff = rectPanDest.top - rectPanCurrent.top;
+			if (abs(xdiff) < cProgramOpts.m_iMaxPan) {
 				rectPanCurrent.left += xdiff;
+			} else if (xdiff < 0) {
+				rectPanCurrent.left -= cProgramOpts.m_iMaxPan;
 			} else {
-				if (xdiff<0) {
-					rectPanCurrent.left -= iMaxPan;
-				} else {
-					rectPanCurrent.left += iMaxPan;
-				}
+				rectPanCurrent.left += cProgramOpts.m_iMaxPan;
 			}
 
-			if (abs(ydiff) < iMaxPan) {
+			if (abs(ydiff) < cProgramOpts.m_iMaxPan) {
 				rectPanCurrent.top += ydiff;
+			} else  if (ydiff<0) {
+				rectPanCurrent.top -= cProgramOpts.m_iMaxPan;
 			} else {
-				if (ydiff<0) {
-					rectPanCurrent.top -= iMaxPan;
-				} else {
-					rectPanCurrent.top += iMaxPan;
-				}
+				rectPanCurrent.top += cProgramOpts.m_iMaxPan;
 			}
 
 			rectPanCurrent.right = rectPanCurrent.left + width - 1;
 			rectPanCurrent.bottom =  rectPanCurrent.top + height - 1;
 
-			alpbi=captureScreenFrame(rectPanCurrent.left, rectPanCurrent.top, width, height, 0);
+			alpbi = captureScreenFrame(rectPanCurrent.left, rectPanCurrent.top, width, height, 0);
 		} else {
 			//ver 1.8
 			//moving region
@@ -5903,7 +5851,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 				}
 			}
 
-			if ((iRecordAudio == 2) || (bUseMCI)) {
+			if (cAudioFormat.isInput(SPEAKERS) || cAudioFormat.m_bUseMCI) {
 				if (bAlreadyMCIPause == 0) {
 					mciRecordPause(tempaudiopath);
 					bAlreadyMCIPause = true;
@@ -5918,7 +5866,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 
 		//Version 1.1
 		if (haveslept) {
-			if ((iRecordAudio == 2) || (bUseMCI)) {
+			if (cAudioFormat.isInput(SPEAKERS) || cAudioFormat.m_bUseMCI) {
 				if (bAlreadyMCIPause) {
 					mciRecordResume(tempaudiopath);
 					bAlreadyMCIPause = false;
@@ -5954,13 +5902,13 @@ error:
 
 	// Now close the file
 
-	if (bFlashingRect) {
+	if (cProgramOpts.m_bFlashingRect) {
 		pFlashingWnd->ShowWindow(SW_HIDE);
 	}
 
 	//Ver 1.2
 	//
-	if ((cVideoOpts.m_dwCompfccHandler == dwCompressorStateIsFor) && (cVideoOpts.m_dwCompfccHandler != 0)) {
+	if ((cVideoOpts.m_dwCompfccHandler == cVideoOpts.m_dwCompressorStateIsFor) && (cVideoOpts.m_dwCompfccHandler != 0)) {
 		//Detach pParamsUse from AVICOMPRESSOPTIONS so AVISaveOptionsFree will not free it
 		//(we will free it ourselves)
 
@@ -5974,12 +5922,12 @@ error:
 	//////////////////////////////////////////////
 	// Recording Audio
 	//////////////////////////////////////////////
-	if ((iRecordAudio == 2) || (bUseMCI)) {
+	if (cAudioFormat.isInput(SPEAKERS) || cAudioFormat.m_bUseMCI) {
 		GetTempWavePath();
 		mciRecordStop(tempaudiopath);
 		mciRecordClose();
 		//restoreWave();
-	} else if (iRecordAudio) {
+	} else if (!cAudioFormat.isInput(NONE)) {
 		StopAudioRecording();
 		ClearAudioFile();
 	}
@@ -6027,7 +5975,7 @@ error:
 	//Save the file on success
 	::PostMessage(hWndGlobal, WM_USER_GENERIC, 0, 0);
 
-	TRACE("Success end\n");
+	TRACE("CRecorderView::RecordVideo: Success end\n");
 	return 0;
 }
 

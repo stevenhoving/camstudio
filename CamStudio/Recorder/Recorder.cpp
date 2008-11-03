@@ -14,6 +14,7 @@
 #include "RecorderView.h"
 #include "CamStudioCommandLineInfo.h"
 #include "CamCursor.h"
+#include "HotKey.h"
 #include "CStudioLib.h"
 
 #include <strsafe.h>		// for StringCchPrintf
@@ -97,8 +98,8 @@ int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus)
 {
 	CString tstr("");
 	CString mstr("");
-	tstr.LoadString(strTitle);
-	mstr.LoadString(strMsg);
+	VERIFY(tstr.LoadString(strTitle));
+	VERIFY(mstr.LoadString(strMsg));
 
 	return ::MessageBox(hWnd,mstr,tstr,mbstatus);
 }
@@ -108,8 +109,8 @@ int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus, long val)
 	CString tstr("");
 	CString mstr("");
 	CString fstr("");
-	tstr.LoadString(strTitle);
-	mstr.LoadString(strMsg);
+	VERIFY(tstr.LoadString(strTitle));
+	VERIFY(mstr.LoadString(strMsg));
 	fstr.Format(mstr,val);
 
 	return ::MessageBox(hWnd,fstr,tstr,mbstatus);
@@ -120,11 +121,97 @@ int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus, long val1, 
 	CString tstr("");
 	CString mstr("");
 	CString fstr("");
-	tstr.LoadString(strTitle);
-	mstr.LoadString(strMsg);
+	VERIFY(tstr.LoadString(strTitle));
+	VERIFY(mstr.LoadString(strMsg));
 	fstr.Format(mstr,val1,val2);
 
 	return ::MessageBox(hWnd,fstr,tstr,mbstatus);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CAboutDlg dialog used for App About
+
+class CAboutDlg : public CDialog
+{
+public:
+	CAboutDlg();
+
+	// Dialog Data
+	//{{AFX_DATA(CAboutDlg)
+	enum { IDD = IDD_ABOUTBOX };
+	//}}AFX_DATA
+
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CAboutDlg)
+protected:
+	virtual void DoDataExchange(CDataExchange* pDX); // DDX/DDV support
+	//}}AFX_VIRTUAL
+
+	// Implementation
+protected:
+	//{{AFX_MSG(CAboutDlg)
+	afx_msg void OnButtonlink();
+	//}}AFX_MSG
+	DECLARE_MESSAGE_MAP()
+public:
+	//afx_msg void OnBnClickedButtonlink();
+	DECLARE_EVENTSINK_MAP()
+	afx_msg void OnBnClickedButtonlink2();
+public:
+	virtual BOOL OnInitDialog();
+private:
+	CStatic m_ctrlStaticVersion;
+};
+
+CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
+{
+	//{{AFX_DATA_INIT(CAboutDlg)
+	//}}AFX_DATA_INIT
+}
+
+void CAboutDlg::DoDataExchange(CDataExchange* pDX)
+{
+	CDialog::DoDataExchange(pDX);
+	//{{AFX_DATA_MAP(CAboutDlg)
+	//}}AFX_DATA_MAP
+	DDX_Control(pDX, IDC_STATIC_VERSION, m_ctrlStaticVersion);
+}
+
+BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
+	//{{AFX_MSG_MAP(CAboutDlg)
+	ON_BN_CLICKED(IDC_BUTTONLINK, OnButtonlink)
+	ON_BN_CLICKED(IDC_BUTTONLINK2, OnBnClickedButtonlink2)
+	//}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+
+BEGIN_EVENTSINK_MAP(CAboutDlg, CDialog)
+	// ON_EVENT(CAboutDlg, IDC_BUTTONLINK2, DISPID_CLICK, OnBnClickedButtonlink2, VTS_NONE)
+END_EVENTSINK_MAP()
+
+BOOL CAboutDlg::OnInitDialog()
+{
+	CDialog::OnInitDialog();
+
+	// only needs to be done once.
+	CString strBuffer;
+	m_ctrlStaticVersion.GetWindowText(strBuffer);
+	strBuffer.Replace("<VERSION>", "2.6");
+	m_ctrlStaticVersion.SetWindowText(strBuffer);
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void CAboutDlg::OnBnClickedButtonlink2()
+{
+	LPCTSTR mode = ("open");
+	ShellExecute (GetSafeHwnd (), mode, "http://www.camstudio.org/donate", NULL, NULL, SW_SHOW);
+}
+
+void CAboutDlg::OnButtonlink()
+{
+	// TODO: Add your control notification handler code here
+	::PostMessage(hWndGlobal,WM_COMMAND,ID_HELP_WEBSITE,0);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -222,6 +309,13 @@ BOOL CRecorderApp::InitInstance()
 
 	m_iVersionOp = GetOperatingSystem();
 
+	VERIFY(cAudioFormat.Read(m_cmSettings));
+	VERIFY(cVideoOpts.Read(m_cmSettings));
+	VERIFY(CamCursor.Read(m_cmSettings));	
+	VERIFY(cProgramOpts.Read(m_cmSettings));
+	VERIFY(cHotKeyOpts.Read(m_cmSettings));	
+	VERIFY(cRegionOpts.Read(m_cmSettings));		
+
 	// Register the application's document templates. Document templates
 	// serve as the connection between documents, frame windows and views.
 
@@ -248,90 +342,23 @@ BOOL CRecorderApp::InitInstance()
 	return TRUE;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CAboutDlg dialog used for App About
-
-class CAboutDlg : public CDialog
+int CRecorderApp::ExitInstance()
 {
-public:
-	CAboutDlg();
+	VERIFY(cAudioFormat.Write(m_cmSettings));
+	VERIFY(cVideoOpts.Write(m_cmSettings));
+	VERIFY(CamCursor.Write(m_cmSettings));	
+	VERIFY(cProgramOpts.Write(m_cmSettings));
+	VERIFY(cHotKeyOpts.Write(m_cmSettings));	
+	VERIFY(cRegionOpts.Write(m_cmSettings));		
 
-	// Dialog Data
-	//{{AFX_DATA(CAboutDlg)
-	enum { IDD = IDD_ABOUTBOX };
-	//}}AFX_DATA
+	//Multilanguage
+	if (m_wCurLangID != STANDARD_LANGID)
+		::FreeLibrary(AfxGetResourceHandle());
 
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CAboutDlg)
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX); // DDX/DDV support
-	//}}AFX_VIRTUAL
+	if (bClassRegistered)
+		::UnregisterClass(_T("CamStudio"), AfxGetInstanceHandle());
 
-	// Implementation
-protected:
-	//{{AFX_MSG(CAboutDlg)
-	afx_msg void OnButtonlink();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
-public:
-	//afx_msg void OnBnClickedButtonlink();
-	DECLARE_EVENTSINK_MAP()
-	afx_msg void OnBnClickedButtonlink2();
-public:
-	virtual BOOL OnInitDialog();
-private:
-	CStatic m_ctrlStaticVersion;
-};
-
-CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
-{
-	//{{AFX_DATA_INIT(CAboutDlg)
-	//}}AFX_DATA_INIT
-}
-
-void CAboutDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CAboutDlg)
-	//}}AFX_DATA_MAP
-	DDX_Control(pDX, IDC_STATIC_VERSION, m_ctrlStaticVersion);
-}
-
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
-	//{{AFX_MSG_MAP(CAboutDlg)
-	ON_BN_CLICKED(IDC_BUTTONLINK, OnButtonlink)
-	ON_BN_CLICKED(IDC_BUTTONLINK2, OnBnClickedButtonlink2)
-	//}}AFX_MSG_MAP
-END_MESSAGE_MAP()
-
-BEGIN_EVENTSINK_MAP(CAboutDlg, CDialog)
-	// ON_EVENT(CAboutDlg, IDC_BUTTONLINK2, DISPID_CLICK, OnBnClickedButtonlink2, VTS_NONE)
-END_EVENTSINK_MAP()
-
-BOOL CAboutDlg::OnInitDialog()
-{
-	CDialog::OnInitDialog();
-
-	// only needs to be done once.
-	CString strBuffer;
-	m_ctrlStaticVersion.GetWindowText(strBuffer);
-	strBuffer.Replace("<VERSION>", "2.6");
-	m_ctrlStaticVersion.SetWindowText(strBuffer);
-
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// EXCEPTION: OCX Property Pages should return FALSE
-}
-
-void CAboutDlg::OnBnClickedButtonlink2()
-{
-	LPCTSTR mode = ("open");
-	ShellExecute (GetSafeHwnd (), mode, "http://www.camstudio.org/donate", NULL, NULL, SW_SHOW);
-}
-
-void CAboutDlg::OnButtonlink()
-{
-	// TODO: Add your control notification handler code here
-	::PostMessage(hWndGlobal,WM_COMMAND,ID_HELP_WEBSITE,0);
+	return CWinApp::ExitInstance();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -379,21 +406,6 @@ BOOL CRecorderApp::FirstInstance()
 	}
 	TRACE("FirstInstance: %s\n", bPrevInstance ? "false" : "true");
 	return !bPrevInstance;
-}
-
-int CRecorderApp::ExitInstance()
-{
-	VERIFY(cAudioFormat.Write(m_cmSettings));
-	VERIFY(cVideoOpts.Write(m_cmSettings));
-	VERIFY(CamCursor.Write(m_cmSettings));	
-
-	//Multilanguage
-	if (m_wCurLangID != STANDARD_LANGID)
-		FreeLibrary( AfxGetResourceHandle() );
-
-	if (bClassRegistered)
-		::UnregisterClass(_T("CamStudio"),AfxGetInstanceHandle());
-	return CWinApp::ExitInstance();
 }
 
 bool CRecorderApp::LoadLanguage(LANGID wLangID)

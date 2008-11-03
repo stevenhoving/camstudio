@@ -1159,7 +1159,7 @@ void CScreenAnnotationsDlg::OnEditlayoutLayoutshortcuts()
 		kscDlg.DoModal();
 		keySCOpened = 0;
 
-		SetAdjustHotKeys();
+		VERIFY(6 == SetAdjustHotKeys());
 	}
 }
 // tod: this should be: bool AreWindowsEdited()

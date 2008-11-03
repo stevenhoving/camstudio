@@ -189,19 +189,15 @@ void CFixedRegionDlg::OnOK()
 			MessageOut(m_hWnd,IDS_STRING_VALUEEXCEEDHEIGHT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,height);
 		}
 
-		iCaptureLeft = xval;
-		iCaptureTop = yval;
+		cRegionOpts.m_iCaptureLeft = xval;
+		cRegionOpts.m_iCaptureTop = yval;
 	}
 
-	bFixedCapture = fval ? true : false;
-
-	/////////
-
-	iCaptureWidth = width;
-	iCaptureHeight = height;
-
+	cRegionOpts.m_bFixedCapture = fval ? true : false;
+	cRegionOpts.m_iCaptureWidth = width;
+	cRegionOpts.m_iCaptureHeight = height;
 	//ver 1.8
-	bSupportMouseDrag = m_ctrlButtonMouseDrag.GetCheck() ? true : false;
+	cRegionOpts.m_bSupportMouseDrag = m_ctrlButtonMouseDrag.GetCheck() ? true : false;
 
 	CDialog::OnOK();
 }
@@ -215,30 +211,30 @@ BOOL CFixedRegionDlg::OnInitDialog()
 	//version 1.5
 	CString xstr;
 	CString ystr;
-	xstr.Format("%d",iCaptureLeft);
-	ystr.Format("%d",iCaptureTop);
+	xstr.Format("%d",cRegionOpts.m_iCaptureLeft);
+	ystr.Format("%d",cRegionOpts.m_iCaptureTop);
 
 	m_ctrlEditPosX.EnableWindow(TRUE);
 	m_ctrlEditPosY.EnableWindow(TRUE);
 	m_ctrlEditPosX.SetWindowText(xstr);
 	m_ctrlEditPosY.SetWindowText(ystr);
 
-	m_ctrlButtonFixTopLeft.SetCheck(bFixedCapture);
-	m_ctrlEditPosX.EnableWindow(bFixedCapture);
-	m_ctrlEditPosY.EnableWindow(bFixedCapture);
+	m_ctrlButtonFixTopLeft.SetCheck(cRegionOpts.m_bFixedCapture);
+	m_ctrlEditPosX.EnableWindow(cRegionOpts.m_bFixedCapture);
+	m_ctrlEditPosY.EnableWindow(cRegionOpts.m_bFixedCapture);
 
 	///////////////////////////////
 
 	CString widthstr;
 	CString heightstr;
-	widthstr.Format("%d", iCaptureWidth);
-	heightstr.Format("%d", iCaptureHeight);
+	widthstr.Format("%d", cRegionOpts.m_iCaptureWidth);
+	heightstr.Format("%d", cRegionOpts.m_iCaptureHeight);
 
 	m_ctrlEditWidth.SetWindowText(widthstr);
 	m_ctrlEditHeight.SetWindowText(heightstr);
 	m_ctrlStaticMsg.SetWindowText("");
 
-	m_ctrlButtonMouseDrag.SetCheck(bSupportMouseDrag);
+	m_ctrlButtonMouseDrag.SetCheck(cRegionOpts.m_bSupportMouseDrag);
 
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -246,10 +242,9 @@ BOOL CFixedRegionDlg::OnInitDialog()
 
 void CFixedRegionDlg::OnSelect()
 {
-	// TODO: Add your control notification handler code here
 	m_ctrlStaticMsg.SetWindowText("Click and drag to define a rectangle");
 
-	iMouseCaptureMode = 1; //set temporarily to 1
+	cRegionOpts.m_iMouseCaptureMode = CAPTURE_VARIABLE; //set temporarily to variable region
 	iDefineMode = 1;
 	hFixedRegionWnd = m_hWnd;
 	::ShowWindow(hMouseCaptureWnd, SW_MAXIMIZE);

@@ -194,7 +194,7 @@ void CFlashingWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 
-	if (!bSupportMouseDrag)
+	if (!cRegionOpts.m_bSupportMouseDrag)
 	{
 		return;
 	}
@@ -214,7 +214,7 @@ void CFlashingWnd::OnLButtonDown(UINT nFlags, CPoint point)
 void CFlashingWnd::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	if (!bSupportMouseDrag)
+	if (!cRegionOpts.m_bSupportMouseDrag)
 	{
 		return;
 	}
@@ -240,7 +240,7 @@ void CFlashingWnd::OnLButtonUp(UINT nFlags, CPoint point)
 
 void CFlashingWnd::OnMouseMove(UINT nFlags, CPoint point)
 {
-	if (bSupportMouseDrag)
+	if (cRegionOpts.m_bSupportMouseDrag)
 	{
 		if (m_type == 0)
 		{
@@ -266,30 +266,25 @@ void CFlashingWnd::OnMouseMove(UINT nFlags, CPoint point)
 
 void CFlashingWnd::MoveRegion(int diffx, int diffy)
 {
-	CRgn wndRgn, rgnTemp, rgnTemp2,rgnTemp3;
+	CheckRect(diffx, diffy);
+	if (m_type)
+		return;
 
-	CheckRect(diffx,diffy);
+	CRgn wndRgn;
+	CRgn rgnTemp;
+	CRgn rgnTemp2;
+	CRgn rgnTemp3;
+	MakeFixedRegion(wndRgn, rgnTemp, rgnTemp2, rgnTemp3);
 
-	if (m_type == 0)
+	HRGN newregion = (HRGN) wndRgn.Detach();
+	SetWindowRgn((HRGN) newregion, TRUE);
+
+	if (oldregion)
 	{
-		MakeFixedRegion(wndRgn,rgnTemp, rgnTemp2,rgnTemp3);
-
-		//while (capturingRegion) {
-		//}
-		//settingRegion = 1;
-
-		HRGN newregion = (HRGN) wndRgn.Detach();
-		SetWindowRgn((HRGN) newregion, TRUE);
-
-		if (oldregion)
-		{
-			DeleteObject(oldregion);
-		}
-		oldregion = newregion;
-		UpdateRegionMove();
-
-		//settingRegion = 0;
+		DeleteObject(oldregion);
 	}
+	oldregion = newregion;
+	UpdateRegionMove();
 }
 
 void CFlashingWnd::CheckRect(int diffx, int diffy)
@@ -326,15 +321,13 @@ void CFlashingWnd::CheckRect(int diffx, int diffy)
 
 void CFlashingWnd::UpdateRegionMove()
 {
-	// TODO: what is this????
+	// TODO: what is this???? primative read/write locking?
 	writingRegion = 0;
 	while (readingRegion) {
 	}
 	writingRegion = 1;
-
 	newRect = cRect;
 	newRegionUsed = 1;
-
 	writingRegion = 0;
 }
 
