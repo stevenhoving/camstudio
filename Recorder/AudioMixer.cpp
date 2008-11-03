@@ -2,9 +2,12 @@
 #include "Recorder.h"
 #include "AudioMixer.h"
 
+UINT CAudioMixer::m_uDevices = ::mixerGetNumDevs();
+
 CAudioMixer::CAudioMixer()
 :	m_hMixer(0)
 {
+	m_sMixerLine.cbStruct = sizeof(m_sMixerLine);
 }
 
 CAudioMixer::~CAudioMixer()
@@ -42,8 +45,19 @@ void CAudioMixer::OnError(MMRESULT uError)
 	case MMSYSERR_VALNOTFOUND:	TRACE("registry value not found\n"); break;
 	case MMSYSERR_NODRIVERCB:	TRACE("driver does not call DriverCallback\n"); break;
 	case MMSYSERR_MOREDATA:		TRACE("more data to be returned\n"); break;
+	case MIXERR_INVALLINE:		TRACE("The audio line reference is invalid.\n"); break;
+	case MIXERR_INVALCONTROL:	TRACE("The control reference is invalid.\n"); break;
+	case MIXERR_INVALVALUE:		TRACE("The parameter value is invalid.\n"); break;
 	default:
-		TRACE("Unknown %d\n", uError);
+		{
+			TCHAR pszText[MAXERRORLENGTH];
+			MMRESULT mmCode = ::waveInGetErrorText(uError, pszText, MAXERRORLENGTH);
+			if (MMSYSERR_NOERROR == mmCode) {
+				TRACE("Error (%d) : %s\n", uError, pszText);
+			} else {
+				TRACE("Unknown (%d)\n", uError);
+			}
+		}
 		break;
 	}
 }
@@ -53,6 +67,10 @@ MMRESULT CAudioMixer::Open(UINT uMxId, DWORD_PTR dwCallback, DWORD_PTR dwInstanc
 	MMRESULT uResult = ::mixerOpen(&m_hMixer, uMxId, dwCallback, dwInstance, fdwOpen);
 	OnError(uResult);
 	TRACE("CAudioMixer::Open: %s\n", isValid() ? "OK" : "FAIL");
+	if (isValid()) {
+		GetDevCaps(&m_sMixerCaps);
+		GetLineInfo(&m_sMixerLine, MIXER_GETLINEINFOF_COMPONENTTYPE);
+	}
 	return uResult;
 }
 
@@ -76,10 +94,14 @@ MMRESULT CAudioMixer::GetDevCaps(LPMIXERCAPS pmxcaps, UINT cbmxcaps)
 	return uResult;
 }
 
+// The mixerGetLineInfo function retrieves information about a specific line
+// of a mixer device.
 MMRESULT CAudioMixer::GetLineInfo(LPMIXERLINE pmxl, DWORD fdwInfo)
 {
-	//MMRESULT uResult = ::mixerGetLineInfo(reinterpret_cast<HMIXEROBJ>(m_hMixer), pmxl, fdwInfo);
-	MMRESULT uResult = ::mixerGetLineInfo((HMIXEROBJ)(m_hMixer), pmxl, fdwInfo);
+	// The cbStruct member must always be initialized to be the size,
+	// in bytes, of the MIXERLINE structure.
+	pmxl->cbStruct = sizeof(MIXERLINE);
+	MMRESULT uResult = ::mixerGetLineInfo(reinterpret_cast<HMIXEROBJ>(m_hMixer), pmxl, fdwInfo);
 	OnError(uResult);
 	return uResult;
 }
@@ -103,4 +125,17 @@ MMRESULT CAudioMixer::SetControlDetails(LPMIXERCONTROLDETAILS pmxcd, DWORD fdwDe
 	MMRESULT uResult = ::mixerSetControlDetails(reinterpret_cast<HMIXEROBJ>(m_hMixer), pmxcd, fdwDetails);
 	OnError(uResult);
 	return uResult;
+}
+
+MMRESULT CAudioMixer::GetID(UINT * puMxId, DWORD fdwId)
+{	
+	MMRESULT uResult = ::mixerGetID(reinterpret_cast<HMIXEROBJ>(m_hMixer), puMxId, fdwId);
+	OnError(uResult);
+	return uResult;
+}
+DWORD CAudioMixer::Message(UINT driverID, UINT uMsg, DWORD_PTR dwParam1, DWORD_PTR dwParam2)
+{
+	DWORD dwResult = ::mixerMessage(reinterpret_cast<HMIXER>(driverID), uMsg, dwParam1, dwParam2);
+	OnError(dwResult);
+	return dwResult;
 }

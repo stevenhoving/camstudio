@@ -205,7 +205,7 @@ void CAudioSpeakersDlg::OnVolume()
 		launchPath = launchPath + _T(" /d ");
 		launchPath.AppendFormat(_T("%d"), m_ctrlCBSoundDevice.GetCurSel());
 
-		if (WinExec(launchPath,SW_SHOW) != 0) {
+		if (WinExec(launchPath, SW_SHOW) != 0) {
 		} else {
 			//MessageBox("Error launching Volume Control!","Note",MB_OK | MB_ICONEXCLAMATION);
 			MessageOut(m_hWnd,IDS_STRING_ERRVOLCTRL1 ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
