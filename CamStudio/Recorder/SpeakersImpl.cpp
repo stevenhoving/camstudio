@@ -112,7 +112,7 @@ BOOL configWaveOut()
 	//set to undetected state to force detection
 	iFeedbackLine = -1;
 
-	int orig_recordaudio = iRecordAudio;
+	int orig_recordaudio = cAudioFormat.m_iRecordAudio;
 
 	//Automatically Configure feedback line by simply selecting it
 	useWaveout(FALSE,TRUE); //report errors, skip (1st Pass) name search
@@ -468,7 +468,7 @@ BOOL initialSaveMMMode()
 {
 	BOOL bResult = FALSE;
 	//Safety code
-	if (!waveInGetNumDevs() || !waveOutGetNumDevs() || !mixerGetNumDevs()) {
+	if (!::waveInGetNumDevs() || !::waveOutGetNumDevs() || !::mixerGetNumDevs()) {
 		//Do not proceed with mixer code unless soundcard with mic/speaker is detected
 		TRACE("initialSaveMMMode: no devices!\n");
 		return bResult;
@@ -659,7 +659,7 @@ BOOL configWaveOutManual()
 	//set to undetected state to force detection
 	iFeedbackLine = -1;
 
-	int orig_recordaudio = iRecordAudio;
+	int orig_recordaudio = cAudioFormat.m_iRecordAudio;
 
 	manual_mode = 1;
 	//Record the wave out for each line
@@ -861,8 +861,8 @@ BOOL SafeUseWaveoutOnLoad()
 
 	if (iFeedbackLine>=0) //if iFeedbackLine already found
 		useWaveout(TRUE,FALSE);
-	else if (iFeedbackLine<0) {
-		iRecordAudio=1;
+	else if (iFeedbackLine < 0) {
+		cAudioFormat.m_iRecordAudio = MICROPHONE;
 		useWavein(TRUE,FALSE); //silence mode
 		//MessageOut(NULL,IDS_STRING_NODETECTLINE,IDS_STING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 	}

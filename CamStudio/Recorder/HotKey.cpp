@@ -2,39 +2,6 @@
 #include "Recorder.h"
 #include "HotKey.h"
 
-//ver 1.8 key shortcuts
-UINT keyRecordStart = VK_F8;
-UINT keyRecordEnd = VK_F9;
-UINT uKeyRecordCancel = VK_F10;
-
-UINT keyRecordStartCtrl = 0;
-UINT keyRecordEndCtrl = 0;
-UINT keyRecordCancelCtrl = 0;
-
-UINT keyRecordStartAlt = 0;
-UINT keyRecordEndAlt = 0;
-UINT keyRecordCancelAlt = 0;
-
-UINT keyRecordStartShift = 0;
-UINT keyRecordEndShift = 0;
-UINT keyRecordCancelShift = 0;
-
-UINT keyNext = VK_F11;
-UINT keyPrev = VK_F12;
-UINT keyShowLayout = 100000; //none
-
-UINT keyNextCtrl = 1;
-UINT keyPrevCtrl = 1;
-UINT keyShowLayoutCtrl = 0;
-
-UINT keyNextAlt = 0;
-UINT keyPrevAlt = 0;
-UINT keyShowLayoutAlt = 0;
-
-UINT keyNextShift = 0;
-UINT keyPrevShift = 0;
-UINT keyShowLayoutShift = 0;
-
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 CHotKey::CHotKey(int iID, UINT uModifier, UINT uVirtualKey)
