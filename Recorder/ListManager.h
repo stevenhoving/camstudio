@@ -46,9 +46,10 @@ public:
 	int LoadLayout(CString loadDir);
 	int SaveLayout(CString loadDir);
 	int FreeLayoutArray();
-	CArray<CTransparentWnd *,CTransparentWnd *> * CloneLayoutArrayPtr(CLayoutList* itemLayout);
 	CLayoutList* CloneLayout(CLayoutList * itemLayout);
+	CArray<CTransparentWnd *,CTransparentWnd *> * CloneLayoutArrayPtr(CLayoutList* itemLayout);
 
+public:
 	CArray<CTransparentWnd *,CTransparentWnd *> shapeArray;
 	CArray<CTransparentWnd *,CTransparentWnd *> displayArray;
 	CArray<CLayoutList*, CLayoutList*> layoutArray;
