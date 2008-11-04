@@ -129,10 +129,10 @@ public:
 		VERIFY(cProfile.Read(HIGHLIGHTCURSOR, m_bHighlight));
 		VERIFY(cProfile.Read(HIGHLIGHTSIZE, m_iHighlightSize));
 		VERIFY(cProfile.Read(HIGHLIGHTSHAPE, m_iHighlightShape));
-		VERIFY(cProfile.Read(HIGHLIGHTCOLORR, m_clrHighlight));	// todo: constant
+		VERIFY(cProfile.Read(HIGHLIGHTCOLOR, m_clrHighlight));	// todo: constant
 		VERIFY(cProfile.Read(HIGHLIGHTCLICK, m_bHighlightClick));
-		VERIFY(cProfile.Read(HIGHLIGHTCLICKCOLORLEFTR, m_clrClickLeft));
-		VERIFY(cProfile.Read(HIGHLIGHTCLICKCOLORRIGHTR, m_clrClickRight));
+		VERIFY(cProfile.Read(HIGHLIGHTCLICKCOLORLEFT, m_clrClickLeft));
+		VERIFY(cProfile.Read(HIGHLIGHTCLICKCOLORRIGHT, m_clrClickRight));
 		//VERIFY(cProfile.Read(CURSORDIR, m_strFileName));	// what it should be
 		int iLen = m_strFileName.GetLength();
 		VERIFY(cProfile.Read(CURSORDIR, iLen));
@@ -150,10 +150,10 @@ public:
 		VERIFY(cProfile.Write(HIGHLIGHTCURSOR, m_bHighlight));
 		VERIFY(cProfile.Write(HIGHLIGHTSIZE, m_iHighlightSize));
 		VERIFY(cProfile.Write(HIGHLIGHTSHAPE, m_iHighlightShape));
-		VERIFY(cProfile.Write(HIGHLIGHTCOLORR, m_clrHighlight));	// todo: constant
+		VERIFY(cProfile.Write(HIGHLIGHTCOLOR, m_clrHighlight));	// todo: constant
 		VERIFY(cProfile.Write(HIGHLIGHTCLICK, m_bHighlightClick));
-		VERIFY(cProfile.Write(HIGHLIGHTCLICKCOLORLEFTR, m_clrClickLeft));
-		VERIFY(cProfile.Write(HIGHLIGHTCLICKCOLORRIGHTR, m_clrClickRight));
+		VERIFY(cProfile.Write(HIGHLIGHTCLICKCOLORLEFT, m_clrClickLeft));
+		VERIFY(cProfile.Write(HIGHLIGHTCLICKCOLORRIGHT, m_clrClickRight));
 		//VERIFY(cProfile.Write(CURSORDIR, m_strFileName));	// what it should be
 		int iLen = m_strFileName.GetLength();
 		VERIFY(cProfile.Write(CURSORDIR, iLen));

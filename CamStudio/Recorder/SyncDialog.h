@@ -1,3 +1,5 @@
+// SyncDialog.h : header file
+//
 #if !defined(AFX_SYNCDIALOG_H__C6FE6223_66FB_4857_A9BB_E1589B288B7F__INCLUDED_)
 #define AFX_SYNCDIALOG_H__C6FE6223_66FB_4857_A9BB_E1589B288B7F__INCLUDED_
 
@@ -5,22 +7,21 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-// SyncDialog.h : header file
-//
-
 /////////////////////////////////////////////////////////////////////////////
 // CSyncDlg dialog
 
 class CSyncDlg : public CDialog
 {
 // Construction
+	CSyncDlg(CWnd* pParent = NULL);   // standard constructor; not implemeted
 public:
-	CSyncDlg(CWnd* pParent = NULL);   // standard constructor
-	void UpdateGui();
+	CSyncDlg(int iType, int iShift, CWnd* pParent = NULL);
 
 // Dialog Data
 	//{{AFX_DATA(CSyncDlg)
 	enum { IDD = IDD_SYNCHRONIZATION };
+	int m_iTimeShift;
+	int m_iShiftType;
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
@@ -37,11 +38,10 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CSyncDlg)
 	virtual BOOL OnInitDialog();
-	afx_msg void OnRadio1();
-	afx_msg void OnRadio3();
-	afx_msg void OnRadio4();
+	afx_msg void OnVideoFirst();
+	afx_msg void OnAudioFirst();
+	afx_msg void OnNoShift();
 	virtual void OnOK();
-	afx_msg void OnChangeEdit1();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 private:
