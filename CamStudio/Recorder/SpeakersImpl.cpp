@@ -63,7 +63,9 @@ int second_maximum_line = -1;
 double maximum_value = -1.0;
 double second_maximum_value = -1.0;
 
-int storedID[100]; //assume there is less than 100 lines, this array is used for manual search
+// assume there is less than 100 lines;
+// this array is used for manual search
+int storedID[100];
 
 void FreeWaveoutResouces();
 
@@ -110,7 +112,7 @@ BOOL useWavein(BOOL silence_mode,int feedback_skip_namesearch)
 BOOL configWaveOut()
 {
 	//set to undetected state to force detection
-	iFeedbackLine = -1;
+	cAudioFormat.m_iFeedbackLine = -1;
 
 	int orig_recordaudio = cAudioFormat.m_iRecordAudio;
 
@@ -154,7 +156,7 @@ BOOL WaveoutInitialize()
 	// open the first mixer
 	// A "mapper" for audio mixer devices does not currently exist.
 	if (uNumMixers != 0) {
-		if (MMSYSERR_NOERROR != AudioMixer.Open(iSelectedMixer, (DWORD) hWndGlobal, NULL, MIXER_OBJECTF_MIXER | CALLBACK_WINDOW)) {
+		if (MMSYSERR_NOERROR != AudioMixer.Open(cAudioFormat.m_iSelectedMixer, (DWORD) hWndGlobal, NULL, MIXER_OBJECTF_MIXER | CALLBACK_WINDOW)) {
 			OnError("WaveoutInitialize");
 			return FALSE;
 		}
@@ -583,10 +585,10 @@ BOOL WaveoutSearchSrcLine(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD li
 	// if searching for speakers line
 	if (lineToSearch == MIXERLINE_COMPONENTTYPE_SRC_ANALOG)
 	{
-		bResult = (0 <= iFeedbackLine);
+		bResult = (0 <= cAudioFormat.m_iFeedbackLine);
 		if (bResult)
 		{
-			m_dwIndex = iFeedbackLine;
+			m_dwIndex = cAudioFormat.m_iFeedbackLine;
 
 			// not necessary because the validity of iFeedbackLine ==> iFeedbackLineInfo
 			// is also valid
@@ -625,8 +627,8 @@ BOOL WaveoutSearchSrcLine(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD li
 							// found, dwi is the index.
 							bResult = TRUE;
 							m_dwIndex = dwi;
-							iFeedbackLine = m_dwIndex;
-							iFeedbackLineInfo = pmxcdSelectText[m_dwIndex].dwParam1;
+							cAudioFormat.m_iFeedbackLine = m_dwIndex;
+							cAudioFormat.m_iFeedbackLineInfo = pmxcdSelectText[m_dwIndex].dwParam1;
 							//::MessageBox(NULL,m_strMicName,"Note",MB_OK |MB_ICONEXCLAMATION);
 						}
 					} else {
@@ -657,7 +659,7 @@ BOOL configWaveOutManual()
 		return FALSE;
 
 	//set to undetected state to force detection
-	iFeedbackLine = -1;
+	cAudioFormat.m_iFeedbackLine = -1;
 
 	int orig_recordaudio = cAudioFormat.m_iRecordAudio;
 
@@ -694,8 +696,8 @@ BOOL configWaveOutManual()
 			//int ret = ::MessageBox(hWndGlobal,anstr,"Analyzing",MB_OK | MB_ICONEXCLAMATION);
 			int ret = MessageOut(hWndGlobal,IDS_STRING_SETTINGLINE, IDS_STRING_ANALYZE, MB_OK | MB_ICONEXCLAMATION, dwi+1);
 
-			iFeedbackLine = dwi;
-			iFeedbackLineInfo = storedID[iFeedbackLine]; //storedID s crated in the manual mode of useWaveout/useWave
+			cAudioFormat.m_iFeedbackLine = dwi;
+			cAudioFormat.m_iFeedbackLineInfo = storedID[cAudioFormat.m_iFeedbackLine]; //storedID s crated in the manual mode of useWaveout/useWave
 			break;
 		}
 	}
@@ -708,7 +710,7 @@ BOOL configWaveOutManual()
 		DeleteFile(testfile);
 	}
 
-	if (iFeedbackLine == -1)
+	if (cAudioFormat.m_iFeedbackLine == -1)
 		MessageOut(hWndGlobal,IDS_STRING_NODETECT ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 
 	//restore
@@ -859,9 +861,9 @@ BOOL SafeUseWaveoutOnLoad()
 {
 	BOOL val = TRUE;
 
-	if (iFeedbackLine>=0) //if iFeedbackLine already found
+	if (cAudioFormat.m_iFeedbackLine >= 0) //if iFeedbackLine already found
 		useWaveout(TRUE,FALSE);
-	else if (iFeedbackLine < 0) {
+	else if (cAudioFormat.m_iFeedbackLine < 0) {
 		cAudioFormat.m_iRecordAudio = MICROPHONE;
 		useWavein(TRUE,FALSE); //silence mode
 		//MessageOut(NULL,IDS_STRING_NODETECTLINE,IDS_STING_NOTE,MB_OK | MB_ICONEXCLAMATION);
@@ -937,7 +939,7 @@ BOOL WaveoutInternalAdjustVolume(long lineID)
 BOOL WaveoutGetVolumeControl()
 {
 	//We do not even know the iFeedbackLine, let alone its volume
-	if (iFeedbackLine<0) {
+	if (cAudioFormat.m_iFeedbackLine < 0) {
 		return FALSE;
 	}
 
@@ -946,18 +948,17 @@ BOOL WaveoutGetVolumeControl()
 
 	// get dwLineID
 	MIXERLINE mxl;
-
 	mxl.cbStruct = sizeof(MIXERLINE);
 	mxl.dwComponentType = MIXERLINE_COMPONENTTYPE_DST_WAVEIN;
 	MMRESULT mmResult = AudioMixer.GetLineInfo(&mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_COMPONENTTYPE);
 	if (MMSYSERR_NOERROR != mmResult)
 		return FALSE;
 
-	//got the CD audio volume instead of Steroes mix???? for line 7, iFeedbackLine = 6, the source==6 ==> CD Audio
+	// got the CD audio volume instead of Stereo mix????
+	// for line 7, iFeedbackLine = 6, the source==6 ==> CD Audio
 	MIXERLINE mxl2;
 	mxl2.cbStruct = sizeof(MIXERLINE);
-	mxl2.dwLineID = iFeedbackLineInfo;
-
+	mxl2.dwLineID = cAudioFormat.m_iFeedbackLineInfo;
 	mmResult = AudioMixer.GetLineInfo(&mxl2, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_LINEID);
 	if (MMSYSERR_NOERROR != mmResult)
 		return FALSE;
@@ -1045,7 +1046,7 @@ BOOL WaveoutVolumeInitialize()
 	// open the first mixer
 	// A "mapper" for audio mixer devices does not currently exist.
 	if (uNumMixers != 0) {
-		if (MMSYSERR_NOERROR != AudioMixer.Open(iSelectedMixer, (DWORD) hWndGlobal, NULL, MIXER_OBJECTF_MIXER | CALLBACK_WINDOW))
+		if (MMSYSERR_NOERROR != AudioMixer.Open(cAudioFormat.m_iSelectedMixer, (DWORD) hWndGlobal, NULL, MIXER_OBJECTF_MIXER | CALLBACK_WINDOW))
 			return FALSE;
 
 		if (MMSYSERR_NOERROR != AudioMixer.GetDevCaps(&sMixerCaps, sizeof(MIXERCAPS)))
@@ -1108,30 +1109,30 @@ BOOL useVolume(int operation,DWORD &dwVal,int silence_mode)
 	return TRUE;
 }
 
-void AnalyzeData(CBuffer* buffer,int wBitsPerSample)
+void AnalyzeData(const CBuffer& buffer, int wBitsPerSample)
 {
-	if (buffer==NULL)
-		return;
+	//if (buffer == NULL)
+	//	return;
 
-	if (wBitsPerSample==8) {
-		for (long i=0;i<(buffer->ByteLen);i++) {
-			int value=(byte) *(buffer->ptr.b+i) - 128;
-			dAnalyzeTotal+=labs(value);
+	if (wBitsPerSample == 8) {
+		for (long i = 0; i < (buffer.ByteLen); i++) {
+			int value = (byte)(*(buffer.ptr.b + i)) - 128;
+			dAnalyzeTotal += labs(value);
 		}
 
-		dAnalyzeTotal/=buffer->ByteLen; //divide by the number of samples
+		dAnalyzeTotal /= buffer.ByteLen; //divide by the number of samples
 
 		dAnalyzeAggregate += dAnalyzeTotal;
-		dAnalyzeCount +=1;
-	} else if (wBitsPerSample==16) {
-		for (long i=0;i<(buffer->ByteLen);i+=2) {
-			long offset=i/2;
-			int value=*(buffer->ptr.s+offset);
-			dAnalyzeTotal+=labs(value);
+		dAnalyzeCount += 1;
+	} else if (wBitsPerSample == 16) {
+		for (long i = 0; i < (buffer.ByteLen); i += 2) {
+			long offset = i/2;
+			int value = *(buffer.ptr.s + offset);
+			dAnalyzeTotal += labs(value);
 		}
-		dAnalyzeTotal/=((buffer->ByteLen)/2); //divide by the number of samples
+		dAnalyzeTotal /= ((buffer.ByteLen)/2); //divide by the number of samples
 		dAnalyzeAggregate += dAnalyzeTotal;
-		dAnalyzeCount +=1;
+		dAnalyzeCount += 1;
 	}
 }
 
@@ -1207,19 +1208,17 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 				if (pFile->BitsPerSample()==16)
 					analyze_threshold=300.0;
 
+				dAnalyzeTotal = 0;
+				dAnalyzeAggregate = 0;
+				dAnalyzeCount = 0;
 				CBuffer* buf;
-
-				dAnalyzeTotal=0;
-				dAnalyzeAggregate=0;
-				dAnalyzeCount=0;
-
 				while (buf = pFile->Read())
 				{
-					AnalyzeData(buf,pFile->BitsPerSample());
+					AnalyzeData(*buf, pFile->BitsPerSample());
 				}
-				dAnalyzeAggregate/=dAnalyzeCount;
+				dAnalyzeAggregate /= dAnalyzeCount;
 
-				if (dAnalyzeAggregate>maximum_value) {
+				if (dAnalyzeAggregate > maximum_value) {
 					second_maximum_value = maximum_value;
 					second_maximum_line = maximum_line;
 
@@ -1245,8 +1244,8 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 					//if (maximum_value>analyze_threshold) {
 
 					m_dwIndex = maximum_line;
-					iFeedbackLine = m_dwIndex;
-					iFeedbackLineInfo = pmxcdSelectText[m_dwIndex].dwParam1;
+					cAudioFormat.m_iFeedbackLine = m_dwIndex;
+					cAudioFormat.m_iFeedbackLineInfo = pmxcdSelectText[m_dwIndex].dwParam1;
 
 					CString anstr,fmtstr;
 					fmtstr.LoadString(IDS_STRING_LINEDETECTED);

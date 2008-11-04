@@ -47,7 +47,7 @@ BOOL CTroubleShootDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO: Add extra initialization here
-	m_ctrlButtonBehavior2.SetCheck(bRestrictVideoCodecs);
+	m_ctrlButtonBehavior2.SetCheck(cVideoOpts.m_bRestrictVideoCodecs);
 
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -71,7 +71,7 @@ void CTroubleShootDlg::OnOK()
 
 	int check2 = m_ctrlButtonBehavior2.GetCheck();
 	int ret2 = IDNO;
-	bRestrictVideoCodecs = (check2) ? true : false;
+	cVideoOpts.m_bRestrictVideoCodecs = (check2) ? true : false;
 
 	CDialog::OnOK();
 }

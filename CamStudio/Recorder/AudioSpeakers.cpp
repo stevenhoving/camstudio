@@ -73,7 +73,7 @@ END_MESSAGE_MAP()
 void CAudioSpeakersDlg::OnOK()
 {
 	// Set the volume
-	if (-1 < iFeedbackLine)
+	if (-1 < cAudioFormat.m_iFeedbackLine)
 	{
 		DWORD volume = m_ctrlSliderVolume.GetPos();
 		useVolume(SETVOLUME, volume, TRUE);
@@ -87,12 +87,11 @@ BOOL CAudioSpeakersDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// Get the line index
-	CString line;
-	BOOL success = (iFeedbackLine > -1);
+	BOOL success = (0 <= cAudioFormat.m_iFeedbackLine);
 	DWORD volume = 0;
-
+	CString line;
 	if (success) {
-		line.Format(_T("%d"), iFeedbackLine + 1);
+		line.Format(_T("%d"), cAudioFormat.m_iFeedbackLine + 1);
 		if (!useVolume(GETVOLUME, volume, TRUE)) {
 			success = false;
 		}
@@ -111,8 +110,8 @@ BOOL CAudioSpeakersDlg::OnInitDialog()
 	//Generate device list
 	m_ctrlCBSoundDevice.ResetContent( );
 
-	iNumberOfMixerDevices = waveOutGetNumDevs();
-	for (int i = 0; i < iNumberOfMixerDevices; i++) {
+	cAudioFormat.m_iMixerDevices = waveOutGetNumDevs();
+	for (int i = 0; i < cAudioFormat.m_iMixerDevices; i++) {
 		WAVEOUTCAPS wocaps;
 		MMRESULT mmr_s = waveOutGetDevCaps(i,&wocaps,sizeof(WAVEOUTCAPS));
 		if (mmr_s == MMSYSERR_NOERROR) {
@@ -123,8 +122,8 @@ BOOL CAudioSpeakersDlg::OnInitDialog()
 	//Select the device combo box
 	int deviceIsSelected = 0;
 	int selectedDevice = WAVE_MAPPER;
-	for (int i = 0; i < iNumberOfMixerDevices; i++) {
-		if (iSelectedMixer == i) {
+	for (int i = 0; i < cAudioFormat.m_iMixerDevices; i++) {
+		if (cAudioFormat.m_iSelectedMixer == i) {
 			m_ctrlCBSoundDevice.SetCurSel(i);
 			selectedDevice = i;
 			deviceIsSelected = 1;
@@ -132,8 +131,8 @@ BOOL CAudioSpeakersDlg::OnInitDialog()
 	}
 
 	if (!deviceIsSelected) {
-		if (iNumberOfMixerDevices > 0) {
-			iSelectedMixer = 0;
+		if (cAudioFormat.m_iMixerDevices > 0) {
+			cAudioFormat.m_iSelectedMixer = 0;
 		}
 		m_ctrlCBSoundDevice.SetCurSel(0);
 	}
@@ -221,8 +220,8 @@ void CAudioSpeakersDlg::OnAutoconfig()
 
 void CAudioSpeakersDlg::OnSelchangeSounddevice()
 {
-	iSelectedMixer = m_ctrlCBSoundDevice.GetCurSel();
-	iFeedbackLine = -1;
+	cAudioFormat.m_iSelectedMixer = m_ctrlCBSoundDevice.GetCurSel();
+	cAudioFormat.m_iFeedbackLine = -1;
 	OnInitDialog();
 }
 
