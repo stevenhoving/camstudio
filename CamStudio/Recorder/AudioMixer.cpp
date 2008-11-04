@@ -8,6 +8,7 @@ CAudioMixer::CAudioMixer()
 :	m_hMixer(0)
 {
 	m_sMixerLine.cbStruct = sizeof(m_sMixerLine);
+	ASSERT(queryAll());
 }
 
 CAudioMixer::~CAudioMixer()
@@ -16,10 +17,13 @@ CAudioMixer::~CAudioMixer()
 		Close();
 }
 
-void CAudioMixer::OnError(MMRESULT uError)
+void CAudioMixer::OnError(MMRESULT uError, LPTSTR lpszFunction)
 {
-	if (MMSYSERR_NOERROR != uError)
-		TRACE("CAudioMixer::OnError: ");
+	if (!lpszFunction)
+		lpszFunction = _T("CAudioMixer::OnError");
+	if (MMSYSERR_NOERROR != uError) {
+		TRACE("CAudioMixer::OnError : %s : ", lpszFunction);
+	}
 
 	switch (uError)
 	{
@@ -60,29 +64,28 @@ void CAudioMixer::OnError(MMRESULT uError)
 		}
 		break;
 	}
+	if (MMSYSERR_NOERROR != uError) {
+		::OnError(lpszFunction);
+	}
 }
 
 MMRESULT CAudioMixer::Open(UINT uMxId, DWORD_PTR dwCallback, DWORD_PTR dwInstance, DWORD fdwOpen)
 {
 	MMRESULT uResult = ::mixerOpen(&m_hMixer, uMxId, dwCallback, dwInstance, fdwOpen);
-	OnError(uResult);
+	OnError(uResult, _T("CAudioMixer::Open"));
 	TRACE("CAudioMixer::Open: %s\n", isValid() ? "OK" : "FAIL");
-	if (isValid()) {
-		GetDevCaps(&m_sMixerCaps);
-		GetLineInfo(&m_sMixerLine, MIXER_GETLINEINFOF_COMPONENTTYPE);
-	}
 	return uResult;
 }
 
 MMRESULT CAudioMixer::Close()
 {
 	if (!isValid()) {
-		OnError(MMSYSERR_INVALHANDLE);
+		OnError(MMSYSERR_INVALHANDLE, _T("CAudioMixer::Close"));
 		return MMSYSERR_INVALHANDLE;
 	}
 	MMRESULT uResult = ::mixerClose(m_hMixer);
 	m_hMixer = (MMSYSERR_NOERROR == uResult) ? 0 : m_hMixer;
-	OnError(uResult);
+	OnError(uResult, _T("CAudioMixer::Close"));
 	TRACE("CAudioMixer::Close: %s\n", !isValid() ? "OK" : "FAIL");
 	return uResult;
 }
@@ -90,7 +93,7 @@ MMRESULT CAudioMixer::Close()
 MMRESULT CAudioMixer::GetDevCaps(LPMIXERCAPS pmxcaps, UINT cbmxcaps)
 {
 	MMRESULT uResult = ::mixerGetDevCaps(reinterpret_cast<UINT_PTR>(m_hMixer), pmxcaps, cbmxcaps);
-	OnError(uResult);
+	OnError(uResult, _T("CAudioMixer::GetDevCaps"));
 	return uResult;
 }
 
@@ -100,42 +103,160 @@ MMRESULT CAudioMixer::GetLineInfo(LPMIXERLINE pmxl, DWORD fdwInfo)
 {
 	// The cbStruct member must always be initialized to be the size,
 	// in bytes, of the MIXERLINE structure.
-	pmxl->cbStruct = sizeof(MIXERLINE);
+	ASSERT(sizeof(MIXERLINE) == pmxl->cbStruct);
 	MMRESULT uResult = ::mixerGetLineInfo(reinterpret_cast<HMIXEROBJ>(m_hMixer), pmxl, fdwInfo);
-	OnError(uResult);
+	OnError(uResult, _T("CAudioMixer::GetLineInfo"));
 	return uResult;
 }
 
 MMRESULT CAudioMixer::GetLineControls(LPMIXERLINECONTROLS pmxlc, DWORD fdwControls)
 {
 	MMRESULT uResult = ::mixerGetLineControls(reinterpret_cast<HMIXEROBJ>(m_hMixer), pmxlc, fdwControls);
-	OnError(uResult);
+	OnError(uResult, _T("CAudioMixer::GetLineControls"));
 	return uResult;
 }
 
 MMRESULT CAudioMixer::GetControlDetails(LPMIXERCONTROLDETAILS pmxcd, DWORD fdwDetails)
 {
 	MMRESULT uResult = ::mixerGetControlDetails(reinterpret_cast<HMIXEROBJ>(m_hMixer), pmxcd, fdwDetails);
-	OnError(uResult);
+	OnError(uResult, _T("CAudioMixer::GetControlDetails"));
 	return uResult;
 }
 
 MMRESULT CAudioMixer::SetControlDetails(LPMIXERCONTROLDETAILS pmxcd, DWORD fdwDetails)
 {
 	MMRESULT uResult = ::mixerSetControlDetails(reinterpret_cast<HMIXEROBJ>(m_hMixer), pmxcd, fdwDetails);
-	OnError(uResult);
+	OnError(uResult, _T("CAudioMixer::SetControlDetails"));
 	return uResult;
 }
 
 MMRESULT CAudioMixer::GetID(UINT * puMxId, DWORD fdwId)
 {	
 	MMRESULT uResult = ::mixerGetID(reinterpret_cast<HMIXEROBJ>(m_hMixer), puMxId, fdwId);
-	OnError(uResult);
+	OnError(uResult, _T("CAudioMixer::GetID"));
 	return uResult;
 }
 DWORD CAudioMixer::Message(UINT driverID, UINT uMsg, DWORD_PTR dwParam1, DWORD_PTR dwParam2)
 {
 	DWORD dwResult = ::mixerMessage(reinterpret_cast<HMIXER>(driverID), uMsg, dwParam1, dwParam2);
-	OnError(dwResult);
+	OnError(dwResult, _T("CAudioMixer::Message"));
 	return dwResult;
 }
+#ifdef _DEBUG
+bool CAudioMixer::query()
+{
+	bool bResult = isValid();
+	if (!bResult)
+		return !bResult;	// only test valid devices
+
+#ifdef EXPERIMENTAL_CODE
+
+	VERIFY(MMSYSERR_NOERROR == GetDevCaps(&m_sMixerCaps));
+	TRACE("Mixer: %s\nVersion: %d.%d\nDestinations: %d\n",
+		m_sMixerCaps.szPname,
+		HIBYTE(m_sMixerCaps.vDriverVersion),
+		LOBYTE(m_sMixerCaps.vDriverVersion),
+		m_sMixerCaps.cDestinations);
+
+	std::vector <DWORD> vDestComponentType;
+	vDestComponentType.push_back(MIXERLINE_COMPONENTTYPE_DST_DIGITAL);
+	vDestComponentType.push_back(MIXERLINE_COMPONENTTYPE_DST_LINE);
+	vDestComponentType.push_back(MIXERLINE_COMPONENTTYPE_DST_MONITOR);
+	vDestComponentType.push_back(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
+	vDestComponentType.push_back(MIXERLINE_COMPONENTTYPE_DST_HEADPHONES);
+	vDestComponentType.push_back(MIXERLINE_COMPONENTTYPE_DST_TELEPHONE);
+	vDestComponentType.push_back(MIXERLINE_COMPONENTTYPE_DST_WAVEIN);
+	vDestComponentType.push_back(MIXERLINE_COMPONENTTYPE_DST_VOICEIN);	// optional
+
+	std::vector <DWORD> vSrcComponentType;
+	vSrcComponentType.push_back(MIXERLINE_COMPONENTTYPE_SRC_DIGITAL);
+	vSrcComponentType.push_back(MIXERLINE_COMPONENTTYPE_SRC_LINE);
+	vSrcComponentType.push_back(MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE);
+	vSrcComponentType.push_back(MIXERLINE_COMPONENTTYPE_SRC_SYNTHESIZER);
+	vSrcComponentType.push_back(MIXERLINE_COMPONENTTYPE_SRC_COMPACTDISC);
+	vSrcComponentType.push_back(MIXERLINE_COMPONENTTYPE_SRC_TELEPHONE);
+	vSrcComponentType.push_back(MIXERLINE_COMPONENTTYPE_SRC_PCSPEAKER);
+	vSrcComponentType.push_back(MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT);
+	vSrcComponentType.push_back(MIXERLINE_COMPONENTTYPE_SRC_AUXILIARY);
+	vSrcComponentType.push_back(MIXERLINE_COMPONENTTYPE_SRC_ANALOG);
+
+	for (std::vector<DWORD>::iterator iter = vDestComponentType.begin(); iter != vDestComponentType.end(); ++iter) {
+		::ZeroMemory(&m_sMixerLine, sizeof(m_sMixerLine));
+		m_sMixerLine.cbStruct = sizeof(m_sMixerLine);
+		m_sMixerLine.dwComponentType = *iter;
+		if (MMSYSERR_NOERROR == GetLineInfo(&m_sMixerLine, MIXER_GETLINEINFOF_COMPONENTTYPE)) {
+			TRACE("Device : %s\nLine : %d\nDest : %d\nSource : %d\n"
+				, m_sMixerLine.szName
+				, m_sMixerLine.dwLineID
+				, m_sMixerLine.dwDestination
+				, m_sMixerLine.dwSource);
+		} else {
+			DWORD dwError = ::GetLastError();
+			if (ERROR_SUCCESS != dwError) {
+				::SetLastError(ERROR_SUCCESS);	// reset the error
+			}
+		}
+	}
+	for (std::vector<DWORD>::iterator iter = vSrcComponentType.begin(); iter != vSrcComponentType.end(); ++iter) {
+		::ZeroMemory(&m_sMixerLine, sizeof(m_sMixerLine));
+		m_sMixerLine.cbStruct = sizeof(m_sMixerLine);
+		m_sMixerLine.dwComponentType = *iter;
+		if (MMSYSERR_NOERROR == GetLineInfo(&m_sMixerLine, MIXER_GETLINEINFOF_COMPONENTTYPE)) {
+			TRACE("Device : %s\nLine : %d\nDest : %d\nSource : %d\n"
+				, m_sMixerLine.szName
+				, m_sMixerLine.dwLineID
+				, m_sMixerLine.dwDestination
+				, m_sMixerLine.dwSource);
+		} else {
+			DWORD dwError = ::GetLastError();
+			if (ERROR_SUCCESS != dwError) {
+				::SetLastError(ERROR_SUCCESS);	// reset the error
+			}
+		}
+	}
+#endif	//EXPERIMENTAL_CODE
+
+	return bResult;
+}
+
+bool CAudioMixer::queryAll()
+{
+#ifdef EXPERIMENTAL_CODE
+	bool bResult = isValid();
+	if (bResult)
+		return !bResult;	// only test when no valid devices
+
+	// open each mixer ID
+	for (UINT uID = 0; uID < ::mixerGetNumDevs(); ++uID) {
+		MMRESULT uResult = Open(uID, 0, 0, MIXER_OBJECTF_MIXER);
+		if (MMSYSERR_NOERROR != uResult) {
+			continue;
+		}
+		query();
+
+		Close();
+	}
+	for (UINT uID = 0; uID < ::waveInGetNumDevs(); ++uID) {
+		MMRESULT uResult = Open(uID, 0, 0, MIXER_OBJECTF_WAVEIN);
+		if (MMSYSERR_NOERROR != uResult) {
+			continue;
+		}
+		query();
+
+		Close();
+	}
+	for (UINT uID = 0; uID < ::waveOutGetNumDevs(); ++uID) {
+		MMRESULT uResult = Open(uID, 0, 0, MIXER_OBJECTF_WAVEOUT);
+		if (MMSYSERR_NOERROR != uResult) {
+			continue;
+		}
+		query();
+
+		Close();
+	}
+#endif	//EXPERIMENTAL_CODE
+	return true;
+}
+
+#endif
+

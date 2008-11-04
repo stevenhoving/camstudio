@@ -225,7 +225,7 @@ void CMainFrame::OnViewCompactview()
 
 	int compactcx = windowrect.Width();
 	int compactcy = windowrect.Height() - clientrect.Height() + toolbarrect.Height() - borderHeight - borderHeight;
-	iViewType = 1;
+	cProgramOpts.m_iViewType = VIEW_COMPACT;
 
 	SetWindowPos( &wndTop, windowrect.left, windowrect.top, compactcx, compactcy, SWP_SHOWWINDOW);
 }
@@ -233,7 +233,7 @@ void CMainFrame::OnViewCompactview()
 void CMainFrame::OnUpdateViewCompactview(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iViewType==1);
+	pCmdUI->SetCheck(cProgramOpts.m_iViewType == VIEW_COMPACT);
 }
 
 void CMainFrame::OnViewButtonsview()
@@ -266,7 +266,7 @@ void CMainFrame::OnViewButtonsview()
 
 	int compactcx = windowrect.Width();
 	int compactcy = captionHeight + toolbarrect.Height() + borderHeight + borderHeight;
-	iViewType = 2;
+	cProgramOpts.m_iViewType = VIEW_BUTTON;
 
 	SetWindowPos( &wndTop, windowrect.left, windowrect.top, compactcx, compactcy, SWP_SHOWWINDOW);
 }
@@ -308,10 +308,9 @@ void CMainFrame::OnViewNormalview()
 		+ ::GetSystemMetrics(SM_CYMENU)
 		+ rectToolbar.Height()
 		+ rectStatusbar.Height()
-		+ (::GetSystemMetrics(SM_CYFRAME) * 2)
-;
+		+ (::GetSystemMetrics(SM_CYFRAME) * 2);
 
-	iViewType = 0;
+	cProgramOpts.m_iViewType = VIEW_NORMAL;
 
 	SetWindowPos(&wndTop, windowrect.left, windowrect.top, compactcx, compactcy, SWP_SHOWWINDOW);
 }
@@ -319,32 +318,32 @@ void CMainFrame::OnViewNormalview()
 void CMainFrame::OnUpdateViewButtonsview(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iViewType==2);
+	pCmdUI->SetCheck(cProgramOpts.m_iViewType == VIEW_BUTTON);
 }
 
 void CMainFrame::OnUpdateViewNormalview(CCmdUI* pCmdUI)
 {
 	// TODO: Add your command update UI handler code here
-	pCmdUI->SetCheck(iViewType==0);
+	pCmdUI->SetCheck(cProgramOpts.m_iViewType == VIEW_NORMAL);
 }
 
 void CMainFrame::OnViewtype()
 {
 	// TODO: Add your command handler code here
-	iViewType++;
-	if (iViewType>2)
-		iViewType=0;
+	cProgramOpts.m_iViewType++;
+	if (cProgramOpts.m_iViewType > VIEW_BUTTON)
+		cProgramOpts.m_iViewType = VIEW_NORMAL;
 
 	UpdateViewtype();
 }
 
 void CMainFrame::UpdateViewtype()
 {
-	if (iViewType==0)
+	if (cProgramOpts.m_iViewType == VIEW_NORMAL)
 		OnViewNormalview();
-	else if (iViewType==1)
+	else if (cProgramOpts.m_iViewType == VIEW_COMPACT)
 		OnViewCompactview();
-	else if (iViewType==2)
+	else if (cProgramOpts.m_iViewType == VIEW_BUTTON)
 		OnViewButtonsview();
 }
 

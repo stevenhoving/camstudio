@@ -41,7 +41,7 @@ void OnError(LPTSTR lpszFunction)
 	if (ERROR_SUCCESS == dwError) {
 		return;
 	}
-	TRACE("OnError: %s: %ud\n", lpszFunction, dwError);
+	TRACE("OnError: %s: %u\n", lpszFunction, dwError);
 	::SetLastError(ERROR_SUCCESS);	// reset the error
 
 	LPVOID lpMsgBuf = 0;
@@ -314,7 +314,11 @@ BOOL CRecorderApp::InitInstance()
 	VERIFY(CamCursor.Read(m_cmSettings));	
 	VERIFY(cProgramOpts.Read(m_cmSettings));
 	VERIFY(cHotKeyOpts.Read(m_cmSettings));	
-	VERIFY(cRegionOpts.Read(m_cmSettings));		
+	VERIFY(cRegionOpts.Read(m_cmSettings));
+	VERIFY(cCaptionOpts.Read(m_cmSettings));
+	VERIFY(cTimestampOpts.Read(m_cmSettings));
+	VERIFY(cWatermarkOpts.Read(m_cmSettings));	
+	VERIFY(cProducerOpts.Read(m_cmSettings));
 
 	// Register the application's document templates. Document templates
 	// serve as the connection between documents, frame windows and views.
@@ -350,6 +354,10 @@ int CRecorderApp::ExitInstance()
 	VERIFY(cProgramOpts.Write(m_cmSettings));
 	VERIFY(cHotKeyOpts.Write(m_cmSettings));	
 	VERIFY(cRegionOpts.Write(m_cmSettings));		
+	VERIFY(cCaptionOpts.Write(m_cmSettings));
+	VERIFY(cTimestampOpts.Write(m_cmSettings));	
+	VERIFY(cWatermarkOpts.Write(m_cmSettings));
+	VERIFY(cProducerOpts.Write(m_cmSettings));
 
 	//Multilanguage
 	if (m_wCurLangID != STANDARD_LANGID)

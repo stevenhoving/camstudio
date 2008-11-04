@@ -7,9 +7,9 @@ public:
 	virtual ~CAudioMixer();
 
 	operator HMIXER() const	{return m_hMixer;}
-	BOOL isValid() const	{return 0 != m_hMixer;}
+	bool isValid() const	{return 0 != m_hMixer;}
 
-	static void OnError(MMRESULT uError);
+	static void OnError(MMRESULT uError, LPTSTR lpszFunction=0);
 	MMRESULT Close();
 	MMRESULT GetControlDetails(LPMIXERCONTROLDETAILS pmxcd, DWORD fdwDetails);
 	MMRESULT GetDevCaps(LPMIXERCAPS pmxcaps, UINT cbmxcaps = sizeof(MIXERCAPS));
@@ -26,5 +26,9 @@ private:
 
 	MMRESULT GetID(UINT FAR * puMxId, DWORD fdwId = MIXER_OBJECTF_HMIXER);
 	DWORD Message(UINT driverID, UINT uMsg, DWORD_PTR dwParam1, DWORD_PTR dwParam2);
+#ifdef _DEBUG
+	bool query();
+	bool queryAll();
+#endif
 };
 

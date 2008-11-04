@@ -43,10 +43,10 @@ END_MESSAGE_MAP()
 void CPresetTimeDlg::OnOK()
 {
 	int val = m_ctrlButtonTime.GetCheck();
-	bRecordPreset = (val) ? true : false;
+	cProgramOpts.m_bRecordPreset = (val) ? true : false;
 
 	int val2 = m_ctrlSpinTime.GetPos();
-	iPresetTime = val2;
+	cProgramOpts.m_iPresetTime = val2;
 
 	//ErrMsg("%d",iPresetTime);
 
@@ -58,7 +58,7 @@ BOOL CPresetTimeDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO: Add extra initialization here
-	m_ctrlButtonTime.SetCheck(bRecordPreset);
+	m_ctrlButtonTime.SetCheck(cProgramOpts.m_bRecordPreset);
 
 	UDACCEL acc[4];
 	acc[0].nSec = 1;
@@ -75,7 +75,7 @@ BOOL CPresetTimeDlg::OnInitDialog()
 
 	m_ctrlSpinTime.SetAccel(4, acc);
 	m_ctrlSpinTime.SetRange(1, 7200);
-	m_ctrlSpinTime.SetPos(iPresetTime);
+	m_ctrlSpinTime.SetPos(cProgramOpts.m_iPresetTime);
 
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
