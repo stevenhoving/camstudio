@@ -279,9 +279,9 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 
 	m_ctrlButtonHideCursor.SetCheck(!m_bRecordCursor);
 	m_ctrlButtonShowCursor.SetCheck(m_bRecordCursor);
-	m_ctrlButtonActualCursor.SetCheck(m_iCursorType == 0);
-	m_ctrlButtonCustonCursor.SetCheck(m_iCursorType == 1);
-	m_ctrlButtonFileCursor.SetCheck(m_iCursorType == 2);
+	m_ctrlButtonActualCursor.SetCheck(m_iCursorType == ACTIVE);
+	m_ctrlButtonCustonCursor.SetCheck(m_iCursorType == CUSTOM);
+	m_ctrlButtonFileCursor.SetCheck(m_iCursorType == CUSTOMFILE);
 	m_ctrlCBCustomCursor.SetCurSel(m_iCustomSel);
 
 	m_ctrlSliderHighlightSize.EnableWindow(m_bHighlightCursor);
@@ -298,8 +298,8 @@ BOOL CCursorOptionsDlg::OnInitDialog()
 	m_ctrlButtonActualCursor.EnableWindow(m_bRecordCursor);
 	m_ctrlButtonCustonCursor.EnableWindow(m_bRecordCursor);
 	m_ctrlButtonFileCursor.EnableWindow(m_bRecordCursor);
-	m_ctrlCBCustomCursor.EnableWindow(m_iCursorType == 1);
-	m_ctrlButtonfileCursor.EnableWindow(m_iCursorType == 2);
+	m_ctrlCBCustomCursor.EnableWindow(m_iCursorType == CUSTOM);
+	m_ctrlButtonfileCursor.EnableWindow(m_iCursorType == CUSTOMFILE);
 
 	RefreshPreviewCursor();
 
@@ -332,15 +332,15 @@ void CCursorOptionsDlg::OnShowCursor()
 	m_ctrlButtonCustonCursor.EnableWindow(m_bRecordCursor);
 	m_ctrlButtonFileCursor.EnableWindow(m_bRecordCursor);
 
-	m_ctrlCBCustomCursor.EnableWindow(m_iCursorType == 1);
-	m_ctrlButtonfileCursor.EnableWindow(m_iCursorType == 2);
+	m_ctrlCBCustomCursor.EnableWindow(m_iCursorType == CUSTOM);
+	m_ctrlButtonfileCursor.EnableWindow(m_iCursorType == CUSTOMFILE);
 
 	RefreshPreviewCursor();
 }
 
 void CCursorOptionsDlg::OnActualCursor()
 {
-	m_iCursorType = 0;
+	m_iCursorType = ACTIVE;
 	m_ctrlButtonActualCursor.SetCheck(TRUE);
 	m_ctrlButtonCustonCursor.SetCheck(FALSE);
 	m_ctrlButtonFileCursor.SetCheck(FALSE);
@@ -353,7 +353,7 @@ void CCursorOptionsDlg::OnActualCursor()
 
 void CCursorOptionsDlg::OnCustomCursor()
 {
-	m_iCursorType = 1;
+	m_iCursorType = CUSTOM;
 
 	m_ctrlButtonActualCursor.SetCheck(FALSE);
 	m_ctrlButtonCustonCursor.SetCheck(TRUE);
@@ -367,7 +367,7 @@ void CCursorOptionsDlg::OnCustomCursor()
 
 void CCursorOptionsDlg::OnFileCursor()
 {
-	m_iCursorType = 2;
+	m_iCursorType = CUSTOMFILE;
 
 	m_ctrlButtonActualCursor.SetCheck(FALSE);
 	m_ctrlButtonCustonCursor.SetCheck(FALSE);
@@ -432,7 +432,7 @@ void CCursorOptionsDlg::OnBnClickedFileCursor()
 
 void CCursorOptionsDlg::OnOK()
 {
-	if (m_iCursorType == 1)
+	if (m_iCursorType == CUSTOM)
 	{
 		m_hCustomCursor = m_hPreviewCursor;
 	}

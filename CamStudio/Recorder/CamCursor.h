@@ -13,11 +13,19 @@
 /////////////////////////////////////////////////////////////////////////////
 // CCamCursor
 /////////////////////////////////////////////////////////////////////////////
+enum eCursorType
+{
+	ACTIVE
+	, CUSTOM
+	, CUSTOMFILE
+};
+
 class CCamCursor
 {
 public:
 	CCamCursor()
 		: m_bRecord(true)
+		, m_iSelect(ACTIVE)
 		, m_iHighlightSize(64)
 		, m_bHighlightClick(false)
 		, m_clrHighlight(RGB(255,255,125))
@@ -38,6 +46,7 @@ public:
 		if (this == &rhs)
 			return *this;
 
+		//TRACE("CCamCursor::Save assignment\n");
 		m_iSelect			= rhs.m_iSelect;
 		m_hSavedCursor		= rhs.m_hSavedCursor;
 		m_hLoadCursor		= rhs.m_hLoadCursor;
@@ -61,7 +70,12 @@ public:
 	HCURSOR Load() const					{return m_hLoadCursor;}
 	HCURSOR Load(HCURSOR hCursor)			{return m_hLoadCursor = hCursor;}
 	HCURSOR Save() const					{return m_hSavedCursor;}
-	HCURSOR Save(HCURSOR hCursor)			{return m_hSavedCursor = hCursor;}
+	HCURSOR Save(HCURSOR hCursor)
+	{
+		return (m_hSavedCursor == hCursor)
+			? m_hSavedCursor
+			: (m_hSavedCursor = hCursor);
+	}
 	HCURSOR Custom() const					{return m_hCustomCursor;}
 	HCURSOR Custom(HCURSOR hCursor)			{return m_hCustomCursor = hCursor;}
 	CString Dir() const						{return m_strDir;}
@@ -74,17 +88,19 @@ public:
 		return m_iSelect = ((0 <= iSelect) && (iSelect < 3)) ? iSelect : 0;
 	}
 
-	HCURSOR FetchCursorHandle(int iCursorType)
+	HCURSOR Cursor()	{return Cursor(m_iSelect);}
+	HCURSOR Cursor(int iCursorType)
 	{
 		switch (iCursorType)
 		{
-		case 0:
+		default:
+		case ACTIVE:
 			return (m_hSavedCursor)
 				? m_hSavedCursor
 				: (m_hSavedCursor = ::GetCursor());
-		case 1:
+		case CUSTOM:
 			return m_hCustomCursor;
-		default:
+		case CUSTOMFILE:
 			return m_hLoadCursor;
 		}
 	}

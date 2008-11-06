@@ -130,3 +130,11 @@ o	Rename profile setting strings to remove programming artifacts. Color values a
 	integer lengths.
 
 o	Delete legacy profile section when fully converted.
+
+o	warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
+	The quick fix,
+
+		int iTemp = 0;
+		f(itemp ? true : false);
+	
+	doesn't really deal with the fact that the type of iTemp should be bool. 
