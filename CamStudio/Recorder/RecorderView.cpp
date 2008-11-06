@@ -43,6 +43,7 @@
 #include "TrayIcon.h"
 #include "AudioSpeakers.h"
 #include "HotKey.h"
+#include "Screen.h"
 
 #include <windowsx.h>
 
@@ -138,7 +139,6 @@ CFlashingWnd* pFlashingWnd = 0;
 bool bRecordState = false;
 int recordpaused = 0;
 UINT interruptkey = 0;
-int tdata = 0;
 DWORD dwInitialTime = 0;
 bool bInitCapture = false;
 int irsmallcount = 0;
@@ -242,16 +242,16 @@ int sdwBytesPerSec = 44100;
 
 int iCurrentLayout = 0;
 
+sProgramOpts cProgramOpts;
+sProducerOpts cProducerOpts;
 sAudioFormat cAudioFormat;
 sVideoOpts cVideoOpts;
-CCamCursor CamCursor;
-sProgramOpts cProgramOpts;
 sHotKeyOpts cHotKeyOpts;
 sRegionOpts cRegionOpts;
+CCamCursor CamCursor;
 sCaptionOpts cCaptionOpts;
 sTimestampOpts cTimestampOpts;
 sWatermarkOpts cWatermarkOpts;
-sProducerOpts cProducerOpts;
 
 /////////////////////////////////////////////////////////////////////////////
 //Function prototypes
@@ -265,11 +265,6 @@ int InitDrawShiftWindow();
 int InitSelectRegionWindow();
 
 //Misc Functions
-void InsertHighLight(HDC hdc,int xoffset, int yoffset);
-
-void InsertText(HDC hdc,int xoffset, int yoffset, LPCTSTR lpString);
-void InsertText(HDC hdc, RECT& brect, TextAttributes& textattributes);
-void InsertImage(HDC hdc, RECT& brect, ImageAttributes& imageattributes);
 
 void FreeVideoCompressParams();
 BOOL AllocVideoCompressParams(DWORD paramsSize);
@@ -358,6 +353,10 @@ void AutoSetRate(int val, int& framerate, int& delayms)
 	}
 }
 
+//#define OBSOLETE_CODE
+#ifdef OBSOLETE_CODE
+
+// See CxImage::GetTypeIdFromName
 int FindFormat(const CString& ext)
 {
 	int type = 0;
@@ -436,6 +435,8 @@ int FindFormat(const CString& ext)
 
 	return type;
 }
+#endif	// OBSOLETE_CODE
+#undef OBSOLETE_CODE
 
 //ver 1.8
 int UnSetHotKeys();
@@ -684,295 +685,6 @@ int InitDrawShiftWindow()
 ///////////////////////// //////////////////
 /////////////// Functions //////////////////
 ///////////////////////// //////////////////
-
-void InsertHighLight(HDC hdc,int xoffset, int yoffset)
-{
-	CSize fullsize;
-	fullsize.cx=128;
-	fullsize.cy=128;
-
-	int highlightsize = CamCursor.HighlightSize();
-	COLORREF highlightcolor = CamCursor.HighlightColor();
-	if (CamCursor.HighlightClick()) {
-		SHORT tmpShort = -999;
-		tmpShort=GetKeyState(VK_LBUTTON);
-		if (tmpShort!=0 && tmpShort!=1) {
-			highlightcolor = CamCursor.ClickLeftColor();
-			highlightsize *= 1.5;
-		}
-		tmpShort=GetKeyState(VK_RBUTTON);
-		if (tmpShort!=0 && tmpShort!=1) {
-			highlightcolor = CamCursor.ClickRightColor();
-			highlightsize *= 1.5;
-		}
-	}
-
-	int highlightshape = CamCursor.HighlightShape();
-
-	double x1,x2,y1,y2;
-
-	//OffScreen Buffer
-	HBITMAP hbm = NULL;
-	HBITMAP old_bitmap;
-	HDC hdcBits = ::CreateCompatibleDC(hdc);
-	hbm = (HBITMAP) ::CreateCompatibleBitmap(hdc,fullsize.cx,fullsize.cy);
-	old_bitmap = (HBITMAP) ::SelectObject(hdcBits,hbm);
-
-	if ((highlightshape == 0) || (highlightshape == 2)) { //circle and square
-		x1 = (fullsize.cx - highlightsize)/2.0;
-		x2 = (fullsize.cx + highlightsize)/2.0;
-		y1 = (fullsize.cy - highlightsize)/2.0;
-		y2 = (fullsize.cy + highlightsize)/2.0;
-	} else if ((highlightshape == 1) || (highlightshape == 3)) { //ellipse and rectangle
-		x1 = (fullsize.cx - highlightsize)/2.0;
-		x2 = (fullsize.cx + highlightsize)/2.0;
-		y1 = (fullsize.cy - highlightsize/2.0)/2.0;
-		y2 = (fullsize.cy + highlightsize/2.0)/2.0;
-	}
-
-	HBRUSH ptbrush = (HBRUSH) ::GetStockObject(WHITE_BRUSH);
-	HPEN nullpen = CreatePen(PS_NULL,0,0);
-	HBRUSH hlbrush = CreateSolidBrush( highlightcolor);
-
-	HBRUSH oldbrush = (HBRUSH) ::SelectObject(hdcBits,ptbrush);
-	HPEN oldpen = (HPEN) ::SelectObject(hdcBits,nullpen);
-	::Rectangle(hdcBits, 0,0,fullsize.cx+1,fullsize.cy+1);
-	//CString xxx;
-	//xxx.Format("%d",tmpShort);
-	//CRect r=CRect(0,0,fullsize.cx+1,fullsize.cy+1);
-	//::DrawText(hdcBits,xxx,xxx.GetLength(),r,DT_SINGLELINE);
-
-	//Draw the highlight
-	::SelectObject(hdcBits,hlbrush);
-
-	if ((highlightshape == 0) || (highlightshape == 1)) { //circle and ellipse
-		::Ellipse(hdcBits,(int) x1,(int) y1,(int) x2,(int) y2);
-	}
-	else if ((highlightshape == 2) || (highlightshape == 3)) { //square and rectangle
-		::Rectangle(hdcBits,(int) x1,(int) y1,(int) x2,(int) y2);
-	}
-
-	::SelectObject(hdcBits,oldbrush);
-
-	::SelectObject(hdcBits,oldpen);
-	DeleteObject(hlbrush);
-	DeleteObject(nullpen);
-
-	//OffScreen Buffer
-	BitBlt(hdc, xoffset, yoffset, fullsize.cx, fullsize.cy, hdcBits, 0, 0, SRCAND);
-	SelectObject(hdcBits, old_bitmap);
-	DeleteObject(hbm);
-	DeleteDC(hdcBits);
-}
-
-void InsertText(HDC hdc, RECT& brect, TextAttributes& textattributes)
-{
-	RECT rect;
-	SIZE size, full_size;
-	UINT uFormat;
-
-	size_t length = ::strlen(textattributes.text);
-
-	//OffScreen Buffer
-	HBITMAP hbm = NULL;
-	HBITMAP old_bitmap;
-	HDC hdcBits = ::CreateCompatibleDC(hdc);
-
-	HFONT hf;
-	HFONT old_font;
-	if (textattributes.isFontSelected){
-		hf = ::CreateFontIndirect(&textattributes.logfont);
-		old_font = SelectFont(hdcBits, hf);
-	}
-
-	::GetTextExtentPoint32(hdcBits, textattributes.text, length, &size);
-	full_size.cx = size.cx + 10;
-	full_size.cy = size.cy + 10;
-	RECT mRect;
-	mRect.top = 0;
-	mRect.left = 0;
-	mRect.bottom = mRect.top + full_size.cy;
-	mRect.right = mRect.left + full_size.cx;
-	//full_size.cx = 2 * size.cx;
-	//full_size.cy = 2 * size.cy;
-	switch(textattributes.position)
-	{
-	case TOP_LEFT:
-		rect.left = 0;
-		rect.top = 0;
-		break;
-	case TOP_CENTER:
-		rect.left = (brect.right - brect.left - full_size.cx) / 2;
-		rect.top = 0;
-		break;
-	case TOP_RIGHT:
-		rect.left = brect.right - full_size.cx;
-		rect.top = 0;
-		break;
-	case CENTER_LEFT:
-		rect.left = 0;
-		rect.top = (brect.bottom - brect.top - full_size.cy) / 2;
-		break;
-	case CENTER_CENTER:
-		rect.left = (brect.right - brect.left - full_size.cx) / 2;
-		rect.top = (brect.bottom - brect.top - full_size.cy) / 2;
-		break;
-	case CENTER_RIGHT:
-		rect.left = brect.right - full_size.cx;
-		rect.top = (brect.bottom - brect.top - full_size.cy) / 2;
-		break;
-	case BOTTOM_LEFT:
-		rect.left = 0;
-		rect.top = brect.bottom - full_size.cy;
-		break;
-	case BOTTOM_CENTER:
-		rect.left = (brect.right - brect.left - full_size.cx) / 2;
-		rect.top = brect.bottom - full_size.cy;
-		break;
-	case BOTTOM_RIGHT:
-		rect.left = brect.right - full_size.cx;
-		rect.top = brect.bottom - full_size.cy;
-		break;
-	default:
-		rect.left = 0;
-		rect.top = 0;
-		break;
-	}
-	rect.right = rect.left + full_size.cx;
-	rect.bottom = rect.top + full_size.cy;
-
-	hbm = (HBITMAP) ::CreateCompatibleBitmap(hdc, full_size.cx,full_size.cy);
-	old_bitmap = (HBITMAP) ::SelectObject(hdcBits,hbm);
-
-	HBRUSH ptbrush = ::CreateSolidBrush(textattributes.backgroundColor);//GetStockBrush(BLACK_BRUSH);
-	HBRUSH oldbrush = SelectBrush(hdcBits,ptbrush);
-	::Rectangle(hdcBits, 0,0,full_size.cx,full_size.cy);
-	SelectBrush(hdcBits,oldbrush);
-	DeleteBrush(ptbrush);
-
-	uFormat = DT_CENTER | DT_SINGLELINE | DT_VCENTER;
-
-	COLORREF old_bk_color = ::GetBkColor(hdcBits);
-	COLORREF old_txt_color = ::GetTextColor(hdcBits);
-	::SetBkColor(hdcBits, textattributes.backgroundColor);
-	::SetTextColor(hdcBits, textattributes.textColor);
-	::DrawTextEx(hdcBits, LPTSTR((LPCTSTR)textattributes.text), length, &mRect, uFormat, NULL);
-	::SetTextColor(hdcBits, old_txt_color);
-	::SetBkColor(hdcBits, old_bk_color);
-
-	//OffScreen Buffer
-	BitBlt(hdc, rect.left, rect.top, full_size.cx, full_size.cy, hdcBits, 0, 0, SRCCOPY);
-
-	SelectObject(hdcBits, old_bitmap);
-	DeleteObject(hbm);
-
-	if (textattributes.isFontSelected){
-		SelectFont(hdcBits, old_font);
-		DeleteFont(hf);
-	}
-
-	DeleteDC(hdcBits);
-}
-
-void InsertImage(HDC hdc, RECT& brect, ImageAttributes& imageattributes)
-{
-	static CxImage image;
-	static CString imageName = "";
-
-	// load
-	if (imageName != imageattributes.text) {
-		image.Destroy();
-
-		CString extin(FindExtension(imageattributes.text));
-		extin.MakeLower();
-		int typein = FindFormat(extin);
-		if (typein == CXIMAGE_FORMAT_UNKNOWN) {
-			return;
-		}
-
-		if (!image.Load(imageattributes.text, typein)){
-			return;
-		}
-
-		imageName = imageattributes.text;// cache
-
-	} else {
-		// image is cached
-	}
-
-	RECT rect;
-	SIZE size, full_size;
-
-	size.cx = image.GetWidth();
-	size.cy = image.GetHeight();
-
-	full_size.cx = size.cx;
-	full_size.cy = size.cy;
-	RECT mRect;
-	mRect.top = 0;
-	mRect.left = 0;
-	mRect.bottom = mRect.top + full_size.cy;
-	mRect.right = mRect.left + full_size.cx;
-	//full_size.cx = 2 * size.cx;
-	//full_size.cy = 2 * size.cy;
-	switch(imageattributes.position)
-	{
-	case TOP_LEFT:
-		rect.left = 0;
-		rect.top = 0;
-		break;
-	case TOP_CENTER:
-		rect.left = (brect.right - brect.left - full_size.cx) / 2;
-		rect.top = 0;
-		break;
-	case TOP_RIGHT:
-		rect.left = brect.right - full_size.cx;
-		rect.top = 0;
-		break;
-	case CENTER_LEFT:
-		rect.left = 0;
-		rect.top = (brect.bottom - brect.top - full_size.cy) / 2;
-		break;
-	case CENTER_CENTER:
-		rect.left = (brect.right - brect.left - full_size.cx) / 2;
-		rect.top = (brect.bottom - brect.top - full_size.cy) / 2;
-		break;
-	case CENTER_RIGHT:
-		rect.left = brect.right - full_size.cx;
-		rect.top = (brect.bottom - brect.top - full_size.cy) / 2;
-		break;
-	case BOTTOM_LEFT:
-		rect.left = 0;
-		rect.top = brect.bottom - full_size.cy;
-		break;
-	case BOTTOM_CENTER:
-		rect.left = (brect.right - brect.left - full_size.cx) / 2;
-		rect.top = brect.bottom - full_size.cy;
-		break;
-	case BOTTOM_RIGHT:
-		rect.left = brect.right - full_size.cx;
-		rect.top = brect.bottom - full_size.cy;
-		break;
-	default:
-		rect.left = 0;
-		rect.top = 0;
-		break;
-	}
-	rect.right = rect.left + full_size.cx;
-	rect.bottom = rect.top + full_size.cy;
-
-	image.Draw(hdc, rect);
-
-	////OffScreen Buffer
-	//HDC hdcBits = ::CreateCompatibleDC(hdc);
-	//HBITMAP hbm = image.MakeBitmap(hdcBits);
-	////hbm = (HBITMAP) ::CreateCompatibleBitmap(hdc, full_size.cx,full_size.cy);
-	//HBITMAP old_bitmap = (HBITMAP) ::SelectObject(hdcBits,hbm);
-	//BitBlt(hdc, rect.left, rect.top, full_size.cx, full_size.cy, hdcBits, 0, 0, SRCCOPY);
-	//SelectObject(hdcBits, old_bitmap);
-	//DeleteObject(hbm);
-	//DeleteDC(hdcBits);
-}
 
 //===============================================
 // AUDIO CODE
@@ -2666,14 +2378,17 @@ void CRecorderView::OnDestroy()
 	ListManager.FreeLayoutArray();
 }
 
+int tdata = 0;	// TODO: delete when thread fixed
 LRESULT CRecorderView::OnRecordStart(UINT wParam, LONG lParam)
 {
 	TRACE("CRecorderView::OnRecordStart\n");
 	CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
 	pStatus->SetPaneText(0,"Press the Stop Button to stop recording");
 
-	//if (bMinimizeOnStart == 1)
-	// AfxGetMainWnd()->ShowWindow(SW_MINIMIZE);
+	m_cCamera.Set(cCaptionOpts);
+	m_cCamera.Set(cTimestampOpts);
+	m_cCamera.Set(cWatermarkOpts);
+	m_cCamera.Set(CamCursor);	
 
 	//ver 1.2
 	if (cProgramOpts.m_bMinimizeOnStart)
@@ -2687,7 +2402,8 @@ LRESULT CRecorderView::OnRecordStart(UINT wParam, LONG lParam)
 	bRecordState = true;
 	interruptkey = 0;
 
-	CWinThread * pThread = AfxBeginThread(RecordAVIThread, &tdata);
+	//CWinThread * pThread = AfxBeginThread(RecordAVIThread, &tdata);
+	CWinThread * pThread = AfxBeginThread(RecordAVIThread, this);
 
 	//Ver 1.3
 	if (pThread)
@@ -2728,7 +2444,9 @@ LRESULT CRecorderView::OnRecordInterrupted (UINT wParam, LONG lParam)
 
 LRESULT CRecorderView::OnSaveCursor (UINT wParam, LONG lParam)
 {
+	//TRACE("CRecorderView::OnSaveCursor\n");
 	CamCursor.Save(reinterpret_cast<HCURSOR>(wParam));
+	m_cCamera.Save(reinterpret_cast<HCURSOR>(wParam));
 	return 0;
 }
 
@@ -3147,46 +2865,41 @@ void CRecorderView::OnStop()
 #define MAXCOMPRESSORS 50
 void CRecorderView::OnFileVideooptions()
 {
-	//Capture a frame and use it to determine compatitble compressors for user to select
-
-	LPBITMAPINFOHEADER first_alpbi = NULL;
-
-	COMPVARS compVars;
-	compVars.cbSize = sizeof(COMPVARS); // validate it
-	compVars.dwFlags = 0;
+	//COMPVARS compVars;
+	//compVars.cbSize = sizeof(COMPVARS); // validate it
+	//compVars.dwFlags = 0;
 
 	int top = 0;
 	int left = 0;
 	int width = 320;
 	int height = 200;
 
-	first_alpbi=captureScreenFrame(left,top,width, height,1);
+	// Capture a frame and use it to determine compatitble compressors for user to select
+	LPBITMAPINFOHEADER first_alpbi = captureScreenFrame(left, top, width, height, 1);
 
-	num_compressor =0;
+	num_compressor = 0;
 	if (pCompressorInfo == NULL) {
-		pCompressorInfo = (ICINFO *) calloc(MAXCOMPRESSORS,sizeof(ICINFO));
+		pCompressorInfo = (ICINFO *) calloc(MAXCOMPRESSORS, sizeof(ICINFO));
 	} else {
 		free(pCompressorInfo);
-		pCompressorInfo = (ICINFO *) calloc(MAXCOMPRESSORS,sizeof(ICINFO));
+		pCompressorInfo = (ICINFO *) calloc(MAXCOMPRESSORS, sizeof(ICINFO));
 	}
 
-	for(int i=0; ICInfo(ICTYPE_VIDEO, i, &pCompressorInfo[num_compressor]); i++) {
-		if (num_compressor>=MAXCOMPRESSORS) {
+	for (int i = 0; ICInfo(ICTYPE_VIDEO, i, &pCompressorInfo[num_compressor]); i++) {
+		if (num_compressor >= MAXCOMPRESSORS) {
 			break; //maximum allows 30 compressors
 		}
 
-		HIC hic;
-
 		if (cVideoOpts.m_bRestrictVideoCodecs) {
 			//allow only a few
-			if ((pCompressorInfo[num_compressor].fccHandler==mmioFOURCC('m', 's', 'v', 'c'))
-				|| (pCompressorInfo[num_compressor].fccHandler==mmioFOURCC('m', 'r', 'l', 'e'))
-				|| (pCompressorInfo[num_compressor].fccHandler==mmioFOURCC('c', 'v', 'i', 'd'))
-				|| (pCompressorInfo[num_compressor].fccHandler==mmioFOURCC('d', 'i', 'v', 'x')))
+			if ((pCompressorInfo[num_compressor].fccHandler == mmioFOURCC('m', 's', 'v', 'c'))
+				|| (pCompressorInfo[num_compressor].fccHandler == mmioFOURCC('m', 'r', 'l', 'e'))
+				|| (pCompressorInfo[num_compressor].fccHandler == mmioFOURCC('c', 'v', 'i', 'd'))
+				|| (pCompressorInfo[num_compressor].fccHandler == mmioFOURCC('d', 'i', 'v', 'x')))
 			{
-				hic = ICOpen(pCompressorInfo[num_compressor].fccType, pCompressorInfo[num_compressor].fccHandler, ICMODE_QUERY);
+				HIC hic = ICOpen(pCompressorInfo[num_compressor].fccType, pCompressorInfo[num_compressor].fccHandler, ICMODE_QUERY);
 				if (hic) {
-					if (ICERR_OK==ICCompressQuery(hic, first_alpbi, NULL)) {
+					if (ICERR_OK == ICCompressQuery(hic, first_alpbi, NULL)) {
 						ICGetInfo(hic, &pCompressorInfo[num_compressor], sizeof(ICINFO));
 						num_compressor ++;
 					}
@@ -3196,9 +2909,9 @@ void CRecorderView::OnFileVideooptions()
 		} else {
 			//CamStudio still cannot handle VIFP
 			if (pCompressorInfo[num_compressor].fccHandler != mmioFOURCC('v', 'i', 'f', 'p')) {
-				hic = ICOpen(pCompressorInfo[num_compressor].fccType, pCompressorInfo[num_compressor].fccHandler, ICMODE_QUERY);
+				HIC hic = ICOpen(pCompressorInfo[num_compressor].fccType, pCompressorInfo[num_compressor].fccHandler, ICMODE_QUERY);
 				if (hic) {
-					if (ICERR_OK==ICCompressQuery(hic, first_alpbi, NULL)) {
+					if (ICERR_OK == ICCompressQuery(hic, first_alpbi, NULL)) {
 						ICGetInfo(hic, &pCompressorInfo[num_compressor], sizeof(ICINFO));
 						num_compressor ++;
 					}
@@ -3831,8 +3544,11 @@ void CRecorderView::SaveSettings()
 	if (cAudioFormat.m_dwCbwFX > 0)
 		fwrite(pwfx, cAudioFormat.m_dwCbwFX, 1, tFile);
 
-	if (cVideoOpts.m_dwCompressorStateSize > 0)
+	if (pVideoCompressParams && (cVideoOpts.m_dwCompressorStateSize > 0)) {
 		fwrite(pVideoCompressParams, cVideoOpts.m_dwCompressorStateSize, 1, tFile);
+	} else {
+		cVideoOpts.m_dwCompressorStateSize = 0;
+	}
 
 	//Ver 1.6
 	if (specifieddir.GetLength() > 0)
@@ -3932,7 +3648,7 @@ void CRecorderView::LoadSettings()
 
 		int itemp = 0;
 		fscanf_s(sFile, "bRecordCursor=%d \n",&itemp);
-		CamCursor.Record(itemp);
+		CamCursor.Record(itemp ? true : false);
 		// Having this line means the custom cursor type cannot be re-arranged
 		// in a new order in the combo box...else previous saved settings
 		// referring to the custom type will not be correct
@@ -3945,13 +3661,13 @@ void CRecorderView::LoadSettings()
 			CamCursor.Select(iCursorType);
 			int itemp = 0;
 			fscanf_s(sFile, "bHighlightCursor=%d \n",&itemp);
-			CamCursor.Highlight(itemp);
+			CamCursor.Highlight(itemp ? true : false);
 			fscanf_s(sFile, "iHighlightSize=%d \n",&itemp);
 			CamCursor.HighlightSize(itemp);
 			fscanf_s(sFile, "iHighlightShape=%d \n",&itemp);
 			CamCursor.HighlightShape(itemp);
 			fscanf_s(sFile, "bHighlightClick=%d \n",&itemp);
-			CamCursor.HighlightClick(itemp);
+			CamCursor.HighlightClick(itemp ? true : false);
 		}
 
 		int redv = 0;
@@ -5178,106 +4894,24 @@ void CRecorderView::DisplayRecordingMsg(CDC & srcDC)
 LPBITMAPINFOHEADER CRecorderView::captureScreenFrame(int left, int top, int width, int height, int tempDisableRect)
 {
 //	TRACE("CRecorderView::captureScreenFrame\n");
-	HDC hScreenDC = ::GetDC(NULL);
+	CRect rectView(left, top, left + width, top + height);
 
-	//if flashing rect
+	// if flashing rect
 	if (cProgramOpts.m_bFlashingRect && !tempDisableRect) {
 		if (cProgramOpts.m_bAutoPan) {
-			pFlashingWnd->SetUpRegion(left, top, width, height, 1);
+			pFlashingWnd->SetUpRegion(rectView.left, rectView.top, rectView.Width(), rectView.Height(), 1);
 		}
 		pFlashingWnd->DrawFlashingRect(TRUE, cProgramOpts.m_bAutoPan);
 	}
 
-	HDC hMemDC = ::CreateCompatibleDC(hScreenDC);
-	HBITMAP hbm = ::CreateCompatibleBitmap(hScreenDC, width, height);
-	HBITMAP oldbm = (HBITMAP) ::SelectObject(hMemDC, hbm);
-
-	//ver 1.6
-	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();	
-	DWORD bltFlags = SRCCOPY;
-	if (cProgramOpts.m_bCaptureTrans && (4 < pApp->VersionOp()))
-		bltFlags |= CAPTUREBLT;
-	BitBlt(hMemDC, 0, 0, width, height, hScreenDC, left, top, bltFlags);
-
-	RECT rect;
-	rect.left = 0;
-	rect.top = 0;
-	rect.right = rect.left + width;
-	rect.bottom = rect.top + height;
-	if (cTimestampOpts.m_bAnnotation){
-		SYSTEMTIME systime;
-		::GetLocalTime(&systime);
-		cTimestampOpts.m_taTimestamp.text.Format("%s %02d:%02d:%02d:%03d", "Recording", systime.wHour, systime.wMinute, systime.wSecond, systime.wMilliseconds);
-		InsertText(hMemDC, rect, cTimestampOpts.m_taTimestamp);
-		//InsertText(hMemDC, 0, 0, "Recorded by You!!!");
-	}
-	if (cCaptionOpts.m_bAnnotation){
-		InsertText(hMemDC, rect, cCaptionOpts.m_taCaption);
-	}
-	if (cWatermarkOpts.m_bAnnotation){
-		InsertImage(hMemDC, rect, cWatermarkOpts.m_iaWatermark);
-	}
-
-	//Get Cursor Pos
-	POINT xPoint;
-	GetCursorPos(&xPoint);
-	xPoint.x -= left;
-	xPoint.y -= top;
-
-	//Draw the HighLight
-	if (CamCursor.Highlight() == 1) {
-		POINT highlightPoint;
-		highlightPoint.x = xPoint.x -64;
-		highlightPoint.y = xPoint.y -64;
-		InsertHighLight(hMemDC, highlightPoint.x, highlightPoint.y);
-	}
-
-	// Draw the Cursor
-	HCURSOR hcur = CamCursor.FetchCursorHandle(CamCursor.Select());
-	if (CamCursor.Record())
-	{
-		ICONINFO iconinfo;
-		BOOL ret = GetIconInfo(hcur, &iconinfo);
-		if (ret)
-		{
-			xPoint.x -= iconinfo.xHotspot;
-			xPoint.y -= iconinfo.yHotspot;
-
-			//need to delete the hbmMask and hbmColor bitmaps
-			//otherwise the program will crash after a while after running out of resource
-			if (iconinfo.hbmMask)
-			{
-				DeleteObject(iconinfo.hbmMask);
-			}
-			if (iconinfo.hbmColor)
-			{
-				DeleteObject(iconinfo.hbmColor);
-			}
-		}
-
-		::DrawIcon( hMemDC, xPoint.x, xPoint.y, hcur);
-	}
-
-	SelectObject(hMemDC, oldbm);
-	LPBITMAPINFOHEADER pBM_HEADER = (LPBITMAPINFOHEADER)GlobalLock(Bitmap2Dib(hbm, iBits));
-	if (pBM_HEADER == NULL) {
-		//MessageBox(NULL,"Error reading a frame!","Error",MB_OK | MB_ICONEXCLAMATION);
-		MessageOut(NULL,IDS_STRING_ERRFRAME,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
-		exit(1);	// todo: WHAT??? Exit???
-	}
-
-	DeleteObject(hbm);
-	DeleteDC(hMemDC);
+	m_cCamera.SetView(rectView);
+	m_cCamera.CaptureFrame(rectView);
 
 	//if flashing rect
 	if (cProgramOpts.m_bFlashingRect && !tempDisableRect) {
 		pFlashingWnd->DrawFlashingRect(FALSE, cProgramOpts.m_bAutoPan);
 	}
-
-	::ReleaseDC(NULL,hScreenDC);
-
-	return pBM_HEADER;
+	return m_cCamera.Image();
 }
 
 void CRecorderView::FreeFrame(LPBITMAPINFOHEADER alpbi)
@@ -5285,11 +4919,23 @@ void CRecorderView::FreeFrame(LPBITMAPINFOHEADER alpbi)
 	if (!alpbi)
 		return;
 
-	GlobalFreePtr(alpbi);
+#pragma message("CRecorderView::FreeFrame: ignore")
+
+	//GlobalFreePtr(alpbi);
 	alpbi = 0;
 }
 
+
 UINT CRecorderView::RecordAVIThread(LPVOID pParam)
+{
+	CRecorderView *pcRecorderView = reinterpret_cast<CRecorderView*>(pParam);
+	if (!pcRecorderView)
+		return 0;
+
+	return pcRecorderView->RecordAVI();
+}
+
+UINT CRecorderView::RecordAVI()
 {
 	TRACE("CRecorderView::RecordAVIThread\n");
 	//Test the validity of writing to the file
@@ -5360,14 +5006,14 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 			int newwidth;
 			int newheight;
 			int align = 1;
-			while (ICERR_OK!=ICCompressQuery(hic, alpbi, NULL)) {
-				//Try adjusting width/height a little bit
+			while (ICERR_OK != ICCompressQuery(hic, alpbi, NULL)) {
+				// Try adjusting width/height a little bit
 				align = align * 2;
-				if (align>8)
+				if (align > 8)
 					break;
 
-				newleft=left;
-				newtop=top;
+				newleft = left;
+				newtop = top;
 				int wm = (width % align);
 				if (wm > 0) {
 					newwidth = width + (align - wm);
@@ -5387,7 +5033,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 				if (alpbi) {
 					FreeFrame(alpbi);
 				}
-				alpbi=captureScreenFrame(newleft, newtop, newwidth, newheight, 1);
+				alpbi = captureScreenFrame(newleft, newtop, newwidth, newheight, 1);
 			}
 
 			//if succeed with new width/height, use the new width and height
@@ -5687,14 +5333,12 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 
 		if (cProgramOpts.m_bRecordPreset) {
 			if (int(fTimeLength) >= cProgramOpts.m_iPresetTime) {
-				//bRecordState = 0;
 				::PostMessage(hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
 			}
 
 			//CString msgStr;
 			//msgStr.Format("%.2f %d", fTimeLength, iPresetTime);
 			//MessageBox(NULL, msgStr, "N", MB_OK);
-
 			//or should we post messages
 		}
 
@@ -5714,7 +5358,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 		//	}
 		//}
 
-		if ((frametime == 0) || (frametime>oldframetime)) {
+		if ((frametime == 0) || (frametime > oldframetime)) {
 			//ver 1.8
 			//if (iShiftType == 1) {
 			//	if (frametime == 0) {
@@ -5735,7 +5379,8 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 			//	}
 			//} else {
 
-			//if frametime repeats (frametime == oldframetime) ...the avistreamwrite will cause an error
+			// if frametime repeats (frametime == oldframetime)
+			// ...the avistreamwrite will cause an error
 			hr = AVIStreamWrite(psCompressed, frametime, 1, (LPBYTE) alpbi + alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD), alpbi->biSizeImage, 0, NULL, NULL);
 			//}
 
@@ -5743,7 +5388,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 				break;
 			}
 
-			nActualFrame ++;
+			nActualFrame++;
 			nCurrFrame = frametime;
 			fRate = ((float) nCurrFrame)/fTimeLength;
 			fActualRate = ((float) nActualFrame)/fTimeLength;
@@ -5757,7 +5402,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 
 			//free memory
 			FreeFrame(alpbi);
-			alpbi=NULL;
+			alpbi = NULL;
 
 			oldframetime = frametime;
 		} // if frametime is different
@@ -5799,7 +5444,7 @@ int CRecorderView::RecordVideo(int top, int left, int width, int height, int fps
 			//do nothing.. wait
 			::Sleep(50); //Sleep for 50
 
-			haveslept=1;
+			haveslept = 1;
 		}
 
 		//Version 1.1

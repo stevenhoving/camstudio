@@ -39,8 +39,9 @@ HANDLE Bitmap2Dib(HBITMAP hbitmap, UINT bits)
 	LPBYTE lpBits = (LPBYTE)(lpbi + 1) + wColSize;
 
 	HDC hdc = ::CreateCompatibleDC(NULL);
+
 	::GetDIBits(hdc, hbitmap, 0, bitmap.bmHeight, lpBits, (LPBITMAPINFO)lpbi, DIB_RGB_COLORS);
-	lpbi->biClrUsed = (bits <= 8) ? 1<<bits : 0;
+	lpbi->biClrUsed = (bits <= 8) ? (1 << bits) : 0;
 
 	::DeleteDC(hdc);
 	::GlobalUnlock(hdib);
