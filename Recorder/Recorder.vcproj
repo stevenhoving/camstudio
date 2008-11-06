@@ -771,6 +771,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Screen.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ScreenAnnotations.cpp"
 				>
 				<FileConfiguration
@@ -995,6 +999,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\VCM.cpp"
+				>
+			</File>
+			<File
 				RelativePath="VideoOptions.cpp"
 				>
 				<FileConfiguration
@@ -1184,6 +1192,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Screen.h"
+				>
+			</File>
+			<File
 				RelativePath="ScreenAnnotations.h"
 				>
 			</File>
@@ -1225,6 +1237,10 @@
 			</File>
 			<File
 				RelativePath="TroubleShoot.h"
+				>
+			</File>
+			<File
+				RelativePath=".\VCM.h"
 				>
 			</File>
 			<File

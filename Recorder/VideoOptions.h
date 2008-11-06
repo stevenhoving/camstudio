@@ -65,6 +65,7 @@ private:
 	int m_iPlaybackRate;
 	int m_iAdjust;
 	int m_iStaticQuality;
+	int LoadICList();
 };
 
 //{{AFX_INSERT_LOCATION}}

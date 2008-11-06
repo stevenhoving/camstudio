@@ -9,6 +9,7 @@
 #endif // _MSC_VER >= 1000
 
 #include "VideoWnd.h"	// for CVideoWnd
+#include "screen.h"
 
 // forward declaration
 class CRecorderDoc;
@@ -182,17 +183,20 @@ public:
 
 private:
 	CVideoWnd m_vanWnd;
+	CCamera m_cCamera;
+
 	void DisplayRecordingStatistics(CDC & srcDC);
 	void DisplayBackground(CDC & srcDC);
 	void DisplayRecordingMsg(CDC & srcDC);
 	bool SaveAppSettings();
 	void SaveProducerCommand();
 	
-	static LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height,int tempDisableRect);
-	static void FreeFrame(LPBITMAPINFOHEADER);
+	LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height,int tempDisableRect);
+	void FreeFrame(LPBITMAPINFOHEADER);
 
+	int RecordVideo(int top,int left,int width,int height,int numframes,const char *szFileName);
+	UINT RecordAVI();
 	static UINT RecordAVIThread(LPVOID pParam);
-	static int RecordVideo(int top,int left,int width,int height,int numframes,const char *szFileName);
 	// CamStudio.ini settings
 public:
 	afx_msg void OnUpdateOptionsAudiooptionsAudiovideosynchronization(CCmdUI *pCmdUI);
