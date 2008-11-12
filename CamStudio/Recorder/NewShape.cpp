@@ -82,7 +82,7 @@ BOOL CNewShapeDlg::OnInitDialog()
 
 	m_ctrlTextFileText.SetWindowText(strImageFilename);
 
-	shapeStr.Format("%d", iShapeNameInt);
+	shapeStr.Format(TEXT("%d"), iShapeNameInt);
 	shapeStr = shapeName + shapeStr;
 	m_ctrlEditName.SetWindowText(shapeStr);
 
@@ -217,10 +217,10 @@ void CNewShapeDlg::OnOK()
 
 void CNewShapeDlg::OnFindImageFile()
 {
-	const char * const pszTitle = _T("Load Picture");
-	const char * const pszDefExt = _T("*.bmp; *.jpg; *.gif");
-	const char * const pszFileName = _T("*.bmp; *.jpg; *.gif");
-	const char * const pszFilter = _T("Picture Files (*.bmp; *.jpg; *.gif)|*.bmp; *.jpg; *.gif||");
+	const TCHAR * const pszTitle = _T("Load Picture");
+	const TCHAR * const pszDefExt = _T("*.bmp; *.jpg; *.gif");
+	const TCHAR * const pszFileName = _T("*.bmp; *.jpg; *.gif");
+	const TCHAR * const pszFilter = _T("Picture Files (*.bmp; *.jpg; *.gif)|*.bmp; *.jpg; *.gif||");
 	CFileDialog fdlg(TRUE, pszDefExt, pszFileName, OFN_LONGNAMES | OFN_FILEMUSTEXIST, pszFilter, this);
 	fdlg.m_ofn.lpstrTitle = pszTitle;
 	fdlg.m_ofn.lpstrInitialDir = m_imageDir;

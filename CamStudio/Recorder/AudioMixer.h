@@ -27,6 +27,7 @@ private:
 	MMRESULT GetID(UINT FAR * puMxId, DWORD fdwId = MIXER_OBJECTF_HMIXER);
 	DWORD Message(UINT driverID, UINT uMsg, DWORD_PTR dwParam1, DWORD_PTR dwParam2);
 #ifdef _DEBUG
+
 	bool query();
 	bool queryAll();
 #endif

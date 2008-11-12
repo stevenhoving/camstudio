@@ -27,7 +27,7 @@ CString ReadEntry(CString strFilename, CString strSection, CString strKeyName, c
 	const int BUFSIZE = 260;
 	TCHAR szBuf[BUFSIZE];
 	DWORD dwLen = ::GetPrivateProfileString(strSection, strKeyName, DefValue, szBuf, BUFSIZE, strFilename);
-	return (dwLen) ? szBuf : "";
+	return (dwLen) ? szBuf : TEXT("");
 }
 template <>
 bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const CString& Value)
@@ -61,7 +61,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 {
 	//TRACE("WriteEntry(int): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, Value);
 	CString strValue;
-	strValue.Format("%d", Value);
+	strValue.Format(TEXT("%d"), Value);
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
 }
 
@@ -78,7 +78,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 {
 	//TRACE("WriteEntry(bool): %s\nSection: %s\nKey: %s\nValue: %d\n", strFilename, strSection, strKeyName, Value);
 	CString strValue;
-	strValue.Format("%d", Value ? 1 : 0);
+	strValue.Format(TEXT("%d"), Value ? 1 : 0);
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
 }
 
@@ -97,7 +97,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 {
 	//TRACE("WriteEntry(long): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
 	CString strValue;
-	strValue.Format("%ld", Value);
+	strValue.Format(TEXT("%ld"), Value);
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
 }
 
@@ -116,7 +116,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 {
 	//TRACE("WriteEntry(DWORD): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
 	CString strValue;
-	strValue.Format("%ld", Value);
+	strValue.Format(TEXT("%ld"), Value);
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
 }
 
@@ -135,7 +135,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 {
 	//TRACE("WriteEntry(double): %s\nSection: %s\nKey: %s\nValue: %f\n", strFilename, strSection, strKeyName, Value);
 	CString strValue;
-	strValue.Format("%f", Value);
+	strValue.Format(TEXT("%f"), Value);
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
 }
 
@@ -152,7 +152,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 {
 	//TRACE("WriteEntry(BYTE): %s\nSection: %s\nKey: %s\nValue: %u\n", strFilename, strSection, strKeyName, Value);
 	CString strValue;
-	strValue.Format("%u", Value);
+	strValue.Format(TEXT("%u"), Value);
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
 }
 
@@ -169,7 +169,7 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 {
 	//TRACE("WriteEntry(BYTE): %s\nSection: %s\nKey: %s\nValue: %u\n", strFilename, strSection, strKeyName, Value);
 	CString strValue;
-	strValue.Format("%u", Value);
+	strValue.Format(TEXT("%u"), Value);
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
 }
 
@@ -215,38 +215,40 @@ LOGFONT ReadEntry(CString strFilename, CString strSection, CString strKeyName, c
 
 	LOGFONT lfResult = DefValue;
 	CString strKeyNameEx;
-	strKeyNameEx = strKeyName + "lfHeight";
+	strKeyNameEx = strKeyName + _T("lfHeight");
 	lfResult.lfHeight = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.lfHeight);
-	strKeyNameEx = strKeyName + "lfWidth";
+	strKeyNameEx = strKeyName + _T("lfWidth");
 	lfResult.lfWidth = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.lfWidth);
-	strKeyNameEx = strKeyName + "lfEscapement";
+	strKeyNameEx = strKeyName + _T("lfEscapement");
 	lfResult.lfEscapement = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.lfEscapement);
-	strKeyNameEx = strKeyName + "lfOrientation";
+	strKeyNameEx = strKeyName + _T("lfOrientation");
 	lfResult.lfOrientation = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.lfOrientation);
-	strKeyNameEx = strKeyName + "lfWeight";
+	strKeyNameEx = strKeyName + _T("lfWeight");
 	lfResult.lfWeight = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.lfWeight);
-	strKeyNameEx = strKeyName + "lfItalic";
+	strKeyNameEx = strKeyName + _T("lfItalic");
 	lfResult.lfItalic = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.lfItalic);
-	strKeyNameEx = strKeyName + "lfUnderline";
+	strKeyNameEx = strKeyName + _T("lfUnderline");
 	lfResult.lfUnderline = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.lfUnderline);
-	strKeyNameEx = strKeyName + "lfStrikeOut";
+	strKeyNameEx = strKeyName + _T("lfStrikeOut");
 	lfResult.lfStrikeOut = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.lfStrikeOut);
-	strKeyNameEx = strKeyName + "lfCharSet";
+	strKeyNameEx = strKeyName + _T("lfCharSet");
 	lfResult.lfCharSet = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.lfCharSet);
-	strKeyNameEx = strKeyName + "lfOutPrecision";
+	strKeyNameEx = strKeyName + _T("lfOutPrecision");
 	lfResult.lfOutPrecision = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.lfOutPrecision);
-	strKeyNameEx = strKeyName + "lfClipPrecision";
+	strKeyNameEx = strKeyName + _T("lfClipPrecision");
 	lfResult.lfClipPrecision = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.lfClipPrecision);
-	strKeyNameEx = strKeyName + "lfQuality";
+	strKeyNameEx = strKeyName + _T("lfQuality");
 	lfResult.lfQuality = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.lfQuality);
-	strKeyNameEx = strKeyName + "lfPitchAndFamily";
+	strKeyNameEx = strKeyName + _T("lfPitchAndFamily");
 	lfResult.lfPitchAndFamily = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.lfPitchAndFamily);
-	strKeyNameEx = strKeyName + "lfFaceName";
+	strKeyNameEx = strKeyName + _T("lfFaceName");
 	CString strFaceName(DefValue.lfFaceName);
 	// TEST
-	strFaceName = "Arial";
+	strFaceName = _T("Arial");
 	strFaceName = ReadEntry(strFilename, strSection, strKeyNameEx, strFaceName);
 	_tcscpy(lfResult.lfFaceName, strFaceName);
+	//wcscpy_s(lfResult.lfFaceName, LF_FACESIZE, strFaceName);
+
 	return lfResult;
 }
 template <>
@@ -463,17 +465,17 @@ bool CProfileSection::Write(const CString strFile)
 /////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////
-const char * const LEGACY_SECTION = _T(" CamStudio Settings ver2.50 -- Please do not edit ");
-const char * const APP_SECTION = _T("CamStudio");
-const char * const VIDEO_SECTION = _T("Video");
-const char * const AUDIO_SECTION = _T("Audio");
-const char * const PROGRAMOPTIONS_SECTION = _T("ProgramOptions");
-const char * const CURSOR_SECTION = _T("Cursor");
-const char * const HOTKEY_SECTION = _T("HotKeys");
-const char * const REGION_SECTION = _T("Region");
-const char * const TIMESTAMP_SECTION = _T("TimeStamp");
-const char * const CAPTION_SECTION = _T("Caption");
-const char * const WATERMARK_SECTION = _T("Watermark");
+const TCHAR * const LEGACY_SECTION = _T(" CamStudio Settings ver2.50 -- Please do not edit ");
+const TCHAR * const APP_SECTION = _T("CamStudio");
+const TCHAR * const VIDEO_SECTION = _T("Video");
+const TCHAR * const AUDIO_SECTION = _T("Audio");
+const TCHAR * const PROGRAMOPTIONS_SECTION = _T("ProgramOptions");
+const TCHAR * const CURSOR_SECTION = _T("Cursor");
+const TCHAR * const HOTKEY_SECTION = _T("HotKeys");
+const TCHAR * const REGION_SECTION = _T("Region");
+const TCHAR * const TIMESTAMP_SECTION = _T("TimeStamp");
+const TCHAR * const CAPTION_SECTION = _T("Caption");
+const TCHAR * const WATERMARK_SECTION = _T("Watermark");
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -903,6 +905,7 @@ bool CProfile::Convert()
 		CString strFaceName;
 		VERIFY(m_SectionLegacy.Read(TIMESTAMPTEXTFONT, strFaceName));
 		::strncpy_s(cTimestamp.m_taTimestamp.logfont.lfFaceName, LF_FACESIZE, strFaceName, LF_FACESIZE);
+		//wcscpy_s(cTimestamp.m_taTimestamp.logfont.lfFaceName, LF_FACESIZE, strFaceName);
 
 		sCaptionOpts cCaption;
 		VERIFY(m_SectionLegacy.Read(CAPTIONANNOTATION, cCaption.m_bAnnotation));
@@ -915,6 +918,7 @@ bool CProfile::Convert()
 		VERIFY(m_SectionLegacy.Read(CAPTIONTEXTWIDTH, cCaption.m_taCaption.logfont.lfWidth));
 		VERIFY(m_SectionLegacy.Read(CAPTIONTEXTFONT, strFaceName));
 		::strncpy_s(cCaption.m_taCaption.logfont.lfFaceName, LF_FACESIZE, strFaceName, LF_FACESIZE);
+		//wcscpy_s(cCaption.m_taCaption.logfont.lfFaceName, LF_FACESIZE, strFaceName);
 
 		sWatermarkOpts cWatermark;
 		VERIFY(Convert(m_SectionLegacy, WATERMARKANNOTATION, cWatermark.m_bAnnotation));

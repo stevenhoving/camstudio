@@ -31,10 +31,8 @@
 #pragma once
 #endif
 
-
 class CTransparentWnd : public CWnd
 {
-
 public:
 	CTransparentWnd();
 
@@ -50,11 +48,9 @@ public:
 	void InvalidateTransparency();
 	void ReloadPic(CString filename);
 	void CopyMembers(CTransparentWnd *newWnd);
-	
 
 	void DrawStuff(CDC* dc);
 	void UpdateNoWait();
-	
 
 	//WidthHeight
 	void RefreshWindowSize();
@@ -73,19 +69,18 @@ public:
 	CRect m_rectWnd;
 	int enableTransparency;
 	int valueTransparency;		
-	COLORREF m_transparentColor; //region for pre-defined shape, var applicable only to regiontype  -- transparent color
-	int m_regionCreated; //region for transparent color already created, var applicable only to regiontype  -- transparent color
+	COLORREF m_transparentColor;	// region for pre-defined shape, var applicable only to regiontype  -- transparent color
+	int m_regionCreated;			// region for transparent color already created, var applicable only to regiontype  -- transparent color
 	int m_regionType; 
-	int m_regionPredefinedShape;  //region for pre-defined shape, var applicable only to regiontype -- predefined shape
+	int m_regionPredefinedShape;	// region for pre-defined shape, var applicable only to regiontype -- predefined shape
 	double m_roundrectFactor; 
 	int m_borderYes;
 	int m_borderSize;
 	COLORREF m_borderColor;
 	COLORREF m_backgroundColor;	
-	int widthPos;    //WidthHeight 	(Formula): faction of original =  widthPos*0.025 + 0.2 ... form 0.2 to 5.2
+	int widthPos;					// WidthHeight 	(Formula): faction of original =  widthPos*0.025 + 0.2 ... form 0.2 to 5.2
 	int heightPos;
 	CRect m_rectOriginalWnd;
-
 	
 	//Temporary state variables
 	CMenu menu;		
