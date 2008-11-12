@@ -14,27 +14,31 @@ class CFlashingWnd : public CWnd
 public:
 	CFlashingWnd();
 
-	void CreateFlashing(LPCTSTR pTitle, RECT &rect);
-	void SetUpRegion(int x, int y, int width, int height, int type);
-	void SetUpRect(int x, int y, int width, int height);
-	void PaintBorder(COLORREF colorval);
-	void PaintInvertedBorder(COLORREF colorval);
-	void MoveRegion(int diffx, int diffy);
-	void CheckRect(int diffx, int diffy);
-	void UpdateRegionMove();
-	void MakeFixedRegion(CRgn  &wndRgn, CRgn  &rgnTemp, CRgn  &rgnTemp2,CRgn  &rgnTemp3);
+	static const UINT WM_FLASH_WINDOW = (WM_APP + 200);	// wparm = invert; lparam = draw
 
-public:
-	CRect cRect;
-	HRGN oldregion;
+	BOOL CreateFlashing(LPCTSTR pTitle, RECT &rect);
+	void DrawFlashingRect(bool bInvert, bool bDraw = true)
+	{
+		PaintBorder(bInvert, bDraw);
+	}
+
+	void SetUpRegion(const CRect& cRect, int type);
+
+private:
+	void PaintBorder(bool bInvert, bool bDraw = true);
+	//void SetUpRect(int x, int y, int width, int height);
+	//void SetUpRect(int x, int y, int width, int height)
+	//{
+	//	m_cRect = CRect(x, y, x + width, y + height);
+	//}
+	void CheckRect(int diffx, int diffy);
+	void MoveRegion(int diffx, int diffy);
+	void UpdateRegionMove();
+	void MakeFixedRegion(CRgn &wndRgn, CRgn &rgnTemp, CRgn &rgnTemp2, CRgn &rgnTemp3);
 
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CFlashingWnd)
-	afx_msg BOOL OnEraseBkgnd( CDC* pDC );
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -45,15 +49,36 @@ protected:
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CFlashingWnd)
+	afx_msg BOOL OnEraseBkgnd( CDC* pDC );
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	//}}AFX_MSG
+	afx_msg LRESULT OnFlashWindow(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
-public:
-	void DrawFlashingRect(BOOL bDraw, int mode);
+
+private:
+	COLORREF m_clrBorderON;
+	COLORREF m_clrBorderOFF;
+
+	CRect m_cRect;	
+	CRgn m_rgnOld;
+	HCURSOR m_hCursorMove;
+	CPoint m_ptStart;
+	//int m_iSettingRegion;	// unused
+	int m_iType;
+	bool m_bStartDrag;
 };
 
 /////////////////////////////////////////////////////////////////////////////
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
+
+//Region Movement
+extern CRect newRect;
+extern bool bNewRegionUsed;
+extern bool bReadingRegion;
+extern bool bWritingRegion;
 
 #endif

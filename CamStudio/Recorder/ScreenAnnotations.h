@@ -1,15 +1,15 @@
+// ScreenAnnotations.h : header file
+//
 #if !defined(AFX_SCREENANNOTATIONS_H__BD963A1F_33E6_424C_AEC5_4A3A78700C29__INCLUDED_)
 #define AFX_SCREENANNOTATIONS_H__BD963A1F_33E6_424C_AEC5_4A3A78700C29__INCLUDED_
 
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
-// ScreenAnnotations.h : header file
-//
 
 #include "TransparentWnd.h"
 #include "LayoutList.h"
-#include "afxcmn.h"
+#include "ListManager.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CScreenAnnotationsDlg dialog
@@ -145,6 +145,8 @@ private:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
+
+extern CListManager ListManager;
 
 #endif // !defined(AFX_SCREENANNOTATIONS_H__BD963A1F_33E6_424C_AEC5_4A3A78700C29__INCLUDED_)
 

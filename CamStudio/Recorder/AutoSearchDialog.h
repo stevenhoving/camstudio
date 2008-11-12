@@ -1,3 +1,6 @@
+// AutoSearchDialog.h : header file
+//
+/////////////////////////////////////////////////////////////////////////////
 #if !defined(AFX_AUTOSEARCHDIALOG_H__CAEFF236_0E36_49BC_8B1A_0F2D903EDE9D__INCLUDED_)
 #define AFX_AUTOSEARCHDIALOG_H__CAEFF236_0E36_49BC_8B1A_0F2D903EDE9D__INCLUDED_
 
@@ -5,8 +8,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-// AutoSearchDialog.h : header file
-//
 
 /////////////////////////////////////////////////////////////////////////////
 // CAutoSearchDlg dialog

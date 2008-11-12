@@ -1,6 +1,20 @@
 TODO.txt (There had to be one, right?)
-
 In no particular order:
+[Scratch that. Add to the top [the nail that sticks out gets the hammmer.] ;)]
+
+o	Combine various option and settings into a single configure dialog.
+o	Delete legacy profile section when fully converted.
+o	CamStudio needs to use the OpenDML (AVI 2.0) extensions so files with size > 2 GB
+	can be created.
+	
+o	Move global variables into classes (doc, mainframe and view) and use teh profile
+	class to read and set them through the App interface to the profile class
+
+o	Rename profile setting strings to remove programming artifacts. Color values are
+	always single values (DWORD). Cursor folder and file name should be strings not
+	integer lengths.
+
+
 
 o	Scan code for "TODO" to find what to do.
 
@@ -118,18 +132,6 @@ o	CEditTransparencyDlg and CTransparentWnd
 	its own internal state. The call to the edit dialog should simply pass in the current
 	state values and copy the new state after the dialog completes. Note that the dialog
 	still retains the old values and restores them on cancel.
-
-o	CamStudio needs to use the OpenDML (AVI 2.0) extensions so files with size > 2 GB
-	can be created.
-	
-o	Move global variables into classes (doc, mainframe and view) and use teh profile
-	class to read and set them through the App interface to the profile class
-
-o	Rename profile setting strings to remove programming artifacts. Color values are
-	always single values (DWORD). Cursor folder and file name should be strings not
-	integer lengths.
-
-o	Delete legacy profile section when fully converted.
 
 o	warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
 	The quick fix,

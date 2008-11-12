@@ -39,7 +39,7 @@ END_MESSAGE_MAP()
 
 void CAnnotationEffectsOptionsDlg::OnBnClickedButtonImagePath()
 {
-	const char *szFilter = TEXT("Bitmap Files (*.bmp)|*.bmp|GIF Files (*.gif)|*.gif|JPEG Files (*.jpg;*.jpeg)|*.jpg; *.jpeg|All Files (*.*)|*.*||");
+	const TCHAR *szFilter = TEXT("Bitmap Files (*.bmp)|*.bmp|GIF Files (*.gif)|*.gif|JPEG Files (*.jpg;*.jpeg)|*.jpg; *.jpeg|All Files (*.*)|*.*||");
 	CFileDialog dlg(TRUE, 0, m_image.text, OFN_HIDEREADONLY, szFilter);
 	if (dlg.DoModal() == IDOK){
 		m_image.text = dlg.GetPathName();

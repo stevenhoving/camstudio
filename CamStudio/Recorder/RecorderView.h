@@ -8,7 +8,8 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include "VideoWnd.h"	// for CVideoWnd
+#include "VideoWnd.h"		// for CVideoWnd
+#include "FlashingWnd.h"	// for CFlashingWnd
 #include "screen.h"
 
 // forward declaration
@@ -23,6 +24,7 @@ protected: // create from serialization only
 // Attributes
 public:
 	CRecorderDoc* GetDocument();
+	
 	void SaveSettings();
 	void LoadSettings();
 	void DecideSaveSettings();
@@ -45,6 +47,7 @@ public:
 // Implementation
 public:
 	virtual ~CRecorderView();
+	
 	BOOL Openlink (CString);
 	BOOL OpenUsingShellExecute (CString);
 	LONG GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata);
@@ -151,15 +154,12 @@ protected:
 	afx_msg void OnUpdateOptionsLanguageGerman(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsLanguageEnglish();
 	afx_msg void OnOptionsLanguageGerman();
-	//}}AFX_MSG
 	afx_msg LRESULT OnRecordStart (UINT wParam, LONG lParam);
 	afx_msg LRESULT OnRecordInterrupted (UINT wParam, LONG lParam);
 	afx_msg LRESULT OnSaveCursor (UINT wParam, LONG lParam);
 	afx_msg LRESULT OnUserGeneric (UINT wParam, LONG lParam);
 	afx_msg LRESULT OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2);
 	afx_msg LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);
-	DECLARE_MESSAGE_MAP()
-public:
 	afx_msg void OnRegionWindow();
 	afx_msg void OnUpdateRegionWindow(CCmdUI *pCmdUI);
 	afx_msg void OnCaptureChanged(CWnd *pWnd);
@@ -172,6 +172,10 @@ public:
 	afx_msg void OnEffectsOptions();
 	afx_msg void OnHelpCamstudioblog();
 	afx_msg void OnBnClickedButtonlink();
+	afx_msg void OnUpdateOptionsAudiooptionsAudiovideosynchronization(CCmdUI *pCmdUI);
+	//}}AFX_MSG
+	DECLARE_MESSAGE_MAP()
+public:
 	DECLARE_EVENTSINK_MAP()
 
 public:
@@ -182,8 +186,13 @@ public:
 	static UINT WM_USER_RECORDSTART;
 
 private:
+	CFlashingWnd m_FlashingWnd;
 	CVideoWnd m_vanWnd;
 	CCamera m_cCamera;
+	int m_iFrameWidth;
+	int m_iFrameHeight;
+
+	// CamStudio.ini settings
 
 	void DisplayRecordingStatistics(CDC & srcDC);
 	void DisplayBackground(CDC & srcDC);
@@ -191,15 +200,10 @@ private:
 	bool SaveAppSettings();
 	void SaveProducerCommand();
 	
-	LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height,int tempDisableRect);
-	void FreeFrame(LPBITMAPINFOHEADER);
-
-	int RecordVideo(int top,int left,int width,int height,int numframes,const char *szFileName);
-	UINT RecordAVI();
-	static UINT RecordAVIThread(LPVOID pParam);
-	// CamStudio.ini settings
-public:
-	afx_msg void OnUpdateOptionsAudiooptionsAudiovideosynchronization(CCmdUI *pCmdUI);
+	bool captureScreenFrame(const CRect& rectView, bool bDisableRect = true);
+	bool RecordVideo(CRect rectFrame, int fps, const char *szFileName);
+	UINT RecordVideo();
+	static UINT RecordThread(LPVOID pParam);
 };
 
 #ifndef _DEBUG  // debug version in vscapView.cpp
@@ -213,5 +217,17 @@ inline CRecorderDoc* CRecorderView::GetDocument()
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
 extern bool bRecordState;
+extern CRect rc;
+extern CRect rcUse;
+extern CRect rcClip;
+extern CRect old_rcClip;
+extern CRect rcOffset;
+extern CPoint ptOrigin;
+
+extern CString strCodec;
+
+//Video Compress Parameters
+extern void GetVideoCompressState (HIC hic, DWORD fccHandler);
+extern void SetVideoCompressState (HIC hic, DWORD fccHandler);
 
 #endif // !defined(AFX_VSCAPVIEW_H__DCC4865E_3B37_402E_AC1B_C8ABF4519F51__INCLUDED_)

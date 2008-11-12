@@ -94,6 +94,7 @@ void CCursorOptionsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CUSTOMCURSOR, m_ctrlCBCustomCursor);
 	DDX_Control(pDX, IDC_RADIO2, m_ctrlButtonShowCursor);
 	DDX_Control(pDX, IDC_ICONCURSOR, m_ctrlStaticIconCursor);
+	DDX_Control(pDX, IDC_STATIC_HIGHLIGHT_PREVIEW, m_ctrlStaticPreviewHighlight);
 }
 
 BEGIN_MESSAGE_MAP(CCursorOptionsDlg, CDialog)
@@ -125,11 +126,16 @@ END_MESSAGE_MAP()
 
 void CCursorOptionsDlg::RefreshHighlight()
 {
-	CSize previewsize;
-	previewsize.cx = 64;
-	previewsize.cy = 64;
+	CSize previewsize(64, 64);
 	int xoffset = 300;
 	int yoffset = 230;
+	CRect rectFrame;
+	m_ctrlStaticPreviewHighlight.GetWindowRect(&rectFrame);
+	ScreenToClient(&rectFrame);
+	previewsize.cx = rectFrame.Width();
+	previewsize.cy = rectFrame.Height();
+	xoffset = rectFrame.left;
+	yoffset = rectFrame.top + previewsize.cy/3;
 
 	int highlightsizehalf = m_iHighlightSize/2;
 
@@ -174,54 +180,44 @@ void CCursorOptionsDlg::RefreshHighlight()
 		y2 = (previewsize.cy + highlightsizehalf/2.0)/2.0;
 	}
 
-	//OffScreen Buffer
-	// TODO: this should all be done with a CDC
-	CDC* cdc = GetWindowDC();
-	HDC hdc = cdc->m_hDC;
-
-	HBITMAP hbm = NULL;
-	HBITMAP old_bitmap;
-	HDC hdcBits = ::CreateCompatibleDC(hdc);
-	hbm = (HBITMAP) ::CreateCompatibleBitmap(hdc,previewsize.cx,previewsize.cy);
-	old_bitmap = (HBITMAP) ::SelectObject(hdcBits,hbm);
-
-	HBRUSH ptbrush = (HBRUSH) ::GetStockObject(LTGRAY_BRUSH);
-	HPEN nullpen = CreatePen( PS_NULL,0,0);
-	HBRUSH hlbrush = CreateSolidBrush(usecolor);
-
-	HBRUSH oldbrush = (HBRUSH) ::SelectObject(hdcBits,ptbrush);
-	HPEN oldpen = (HPEN) ::SelectObject(hdcBits,nullpen);
-	::Rectangle(hdcBits, 0, 0, previewsize.cx + 1, previewsize.cy + 1);
+	// OffScreen Buffer
+	CWindowDC cWindowDC(this);
+	CDC cDCBits;
+	cDCBits.CreateCompatibleDC(&cWindowDC);
+	CBitmap cBitmap;
+	cBitmap.CreateCompatibleBitmap(&cWindowDC, previewsize.cx, previewsize.cy);
+	CBitmap * pOldBitmap = cDCBits.SelectObject(&cBitmap);
+	CBrush ptbrush;
+	ptbrush.CreateStockObject(LTGRAY_BRUSH);
+	CPen cNullPen;
+	cNullPen.CreatePen(PS_NULL, 0, COLORREF(0));
+	CBrush hlbrush;
+	hlbrush.CreateSolidBrush(usecolor);
+	CBrush * pOldbrush = cDCBits.SelectObject(&ptbrush);
+	CPen * pOldPen = cDCBits.SelectObject(&cNullPen);
+	cDCBits.Rectangle(0, 0, previewsize.cx + 1, previewsize.cy + 1);
 
 	if (m_bHighlightCursor)
 	{
 		//draw the shape only if highlight cursor is selected
-		::SelectObject(hdcBits, hlbrush);
+		cDCBits.SelectObject(&hlbrush);
 
 		if ((m_iHighlightShape == 0) || (m_iHighlightShape == 1))
 		{
 			//circle and ellipse
-			::Ellipse(hdcBits,(int) x1,(int) y1,(int) x2,(int) y2);
+			cDCBits.Ellipse((int) x1,(int) y1,(int) x2,(int) y2);
 		}
 		else if ((m_iHighlightShape == 2) || (m_iHighlightShape == 3))
 		{ //square and rectangle
-			::Rectangle(hdcBits,(int) x1,(int) y1,(int) x2,(int) y2);
+			cDCBits.Rectangle((int) x1,(int) y1,(int) x2,(int) y2);
 		}
-
-		::SelectObject(hdcBits,oldbrush);
 	}
 
-	::SelectObject(hdcBits,oldpen);
-	DeleteObject(hlbrush);
-	DeleteObject(nullpen);
-
+	cDCBits.SelectObject(pOldbrush);
+	cDCBits.SelectObject(pOldPen);
 	//OffScreen Buffer
-	BitBlt(hdc, xoffset, yoffset, previewsize.cx, previewsize.cy, hdcBits, 0, 0, SRCCOPY);
-	SelectObject(hdcBits, old_bitmap);
-	DeleteObject(hbm);
-	DeleteDC(hdcBits);
-
-	ReleaseDC(cdc);
+	cWindowDC.BitBlt(xoffset, yoffset, previewsize.cx, previewsize.cy, &cDCBits, 0, 0, SRCCOPY);
+	cDCBits.SelectObject(pOldBitmap);
 }
 
 void CCursorOptionsDlg::RefreshPreviewCursor()

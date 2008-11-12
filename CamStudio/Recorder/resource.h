@@ -120,6 +120,7 @@
 #define IDC_VOLUMESLIDER                1007
 #define IDC_TRANSSLIDER                 1007
 #define IDC_WIDTHSLIDER                 1007
+#define IDC_SLIDER_BRIGHTNESS           1007
 #define IDC_COMBO2                      1008
 #define IDC_HIGHLIGHTSHAPE              1008
 #define IDC_SLIDERY                     1008
@@ -209,8 +210,10 @@
 #define IDC_EDIT3                       1062
 #define IDC_CTRL3                       1062
 #define IDC_LABEL2                      1062
+#define IDC_STATIC_HIGHLIGHT_PREVIEW    1062
 #define IDC_COLOR                       1063
 #define IDC_ALT3                        1063
+#define IDC_STATIC_PREVIEW_IMAGE        1063
 #define IDC_RADIO_TOP_LEFT              1064
 #define IDC_COLORSTATIC                 1064
 #define IDC_SHIFT3                      1064
@@ -221,6 +224,8 @@
 #define IDC_BORDERSIZE                  1066
 #define IDC_EDIT_TIMESTAMP_FORMAT       1066
 #define IDC_ALT4                        1066
+#define IDC_SLIDER2                     1066
+#define IDC_SLIDER_CONTRAST             1066
 #define IDC_COLOR2                      1067
 #define IDC_RADIO_TOP_CENTER            1067
 #define IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS 1067
@@ -574,7 +579,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        201
 #define _APS_NEXT_COMMAND_VALUE         32924
-#define _APS_NEXT_CONTROL_VALUE         1062
+#define _APS_NEXT_CONTROL_VALUE         1067
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -11,12 +11,18 @@
 #endif // _MSC_VER >= 1000
 
 #pragma message("Recorder: stdafx.h")
+#ifdef UNICODE
+#pragma message("UNICODE defined")
+#else
+#pragma message("UNICODE NOT defined")
+#endif
 
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 //#define _AFX_SECURE_NO_WARNINGS
 // replacing calls to deprecated functions with calls to the new secure versions of those functions.
-#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES		1
-#define _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES		1
+
+//#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES		1
+//#define _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES		1
 
 #include "targetver.h"		// define WINVER
 

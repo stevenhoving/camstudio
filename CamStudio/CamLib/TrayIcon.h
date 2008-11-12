@@ -11,7 +11,7 @@ public:
 
 	virtual ~CTrayIcon();
 
-	static const UINT m_WM_TRAY_ICON_NOTIFY_MESSAGE = WM_APP + 50;
+	static const UINT m_WM_TRAY_ICON_NOTIFY_MESSAGE = (WM_APP + 50);
 
 	void SetNotifyWnd(HWND hWnd);
 	void initTrayIconData(HWND hWnd);
