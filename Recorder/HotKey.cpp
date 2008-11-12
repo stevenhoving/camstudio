@@ -33,7 +33,7 @@ BOOL CHotKey::Register(HWND hWnd)
 	m_bRegistered = bResult ? true : false; 
 	if (!m_bRegistered)
 	{
-		OnError("CHotKey::Register");
+		OnError(_T("CHotKey::Register"));
 	}
 	m_hWnd = m_bRegistered ? hWnd : 0;
 
@@ -52,7 +52,7 @@ BOOL CHotKey::Unregister()
 	m_bRegistered = bResult ? false : true; 
 	if (m_bRegistered)
 	{
-		OnError("CHotKey::Unregister");
+		OnError(_T("CHotKey::Unregister"));
 	}
 	m_hWnd = m_bRegistered ? m_hWnd : 0;
 

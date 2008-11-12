@@ -38,6 +38,10 @@
 
 #include <vector>
 
+// define LEGACY_PROFILE_DISABLE to disable CRecordView::LoadSettings()
+// and CRecorderView::SaveSettings() from changing CamStudio.ini file
+#define LEGACY_PROFILE_DISABLE
+
 enum eLegacySettings
 {
 	// Application
@@ -711,11 +715,31 @@ struct sVideoOpts
 		, m_dwCompfccHandler(0UL)
 		, m_dwCompressorStateIsFor(0UL)
 		, m_dwCompressorStateSize(0UL)
+		, m_pState(0)
 	{
 	}
 	sVideoOpts(const sVideoOpts& rhs)
+		: m_bRestrictVideoCodecs(false)
+		, m_bAutoAdjust(true)
+		, m_iValueAdjust(1)
+		, m_iTimeLapse(5)
+		, m_iFramesPerSecond(200)
+		, m_iKeyFramesEvery(200)
+		, m_iCompQuality(7000)
+		, m_iSelectedCompressor(0)
+		, m_iShiftType(NOSYNCH)
+		, m_iTimeShift(100)
+		, m_dwCompfccHandler(0UL)
+		, m_dwCompressorStateIsFor(0UL)
+		, m_dwCompressorStateSize(0UL)
+		, m_pState(0)
 	{
 		*this = rhs;
+	}
+	virtual ~sVideoOpts()
+	{
+		if (m_pState)
+			delete [] m_pState;
 	}
 
 	sVideoOpts& operator=(const sVideoOpts& rhs)
@@ -735,10 +759,57 @@ struct sVideoOpts
 		m_iTimeShift				= rhs.m_iTimeShift;
 		m_dwCompfccHandler			= rhs.m_dwCompfccHandler;
 		m_dwCompressorStateIsFor	= rhs.m_dwCompressorStateIsFor;
-		m_dwCompressorStateSize		= rhs.m_dwCompressorStateSize;
+
+		State(rhs.m_pState, rhs.m_dwCompressorStateSize);
 
 		return *this;
 	}
+
+	DWORD StateSize() const	{return m_dwCompressorStateSize;}
+	// n.b. Keep LPCVOID definition; good for memory corruption check
+	//LPCVOID State() const	{return m_pState;}
+	LPVOID State() const	{return m_pState;}
+	LPVOID State(DWORD dwStateSize)
+	{
+		if (m_pState) {
+			delete [] m_pState;
+			m_pState = 0;
+			m_dwCompressorStateSize = 0L;
+		}
+
+		ASSERT(0L == m_dwCompressorStateSize);
+		if (dwStateSize < 1L) {
+			return m_pState;
+		}
+		m_dwCompressorStateSize = dwStateSize;
+		m_pState = new char[m_dwCompressorStateSize];
+		return m_pState;
+	}
+	LPVOID State(LPCVOID pState, DWORD dwStateSize)
+	{
+		State(pState ? dwStateSize : 0L);
+		if (!pState || (dwStateSize < 1L)) {
+			return m_pState;
+		}
+		
+		::_memccpy(m_pState, pState, 1, m_dwCompressorStateSize);
+
+		return m_pState;
+	}
+	// CAVEAT!!!  CAVEAT!!!  CAVEAT!!!  CAVEAT!!!
+	// Caller of CopyState() must delete the allocated memory!
+	//LPVOID CopyState()
+	//{
+	//	if (!m_pState)
+	//		return m_pState;
+	//	ASSERT(0L < m_dwCompressorStateSize);
+	//	LPVOID lpOldState = m_pState;
+	//	DWORD dwOldSize = m_dwCompressorStateSize;
+	//	m_pState = 0;
+	//	m_dwCompressorStateSize = 0L;
+	//	VERIFY(0 != State(lpOldState, dwOldSize));
+	//	return lpOldState;
+	//}
 
 	bool Read(CProfile& cProfile)
 	{
@@ -753,7 +824,9 @@ struct sVideoOpts
 		VERIFY(cProfile.Read(TIMESHIFT, m_iTimeShift));
 		VERIFY(cProfile.Read(COMPFCCHANDLER, m_dwCompfccHandler));
 		VERIFY(cProfile.Read(COMPRESSORSTATEISFOR, m_dwCompressorStateIsFor));
-		VERIFY(cProfile.Read(COMPRESSORSTATESIZE, m_dwCompressorStateSize));		
+		DWORD dwSize = 0UL;
+		VERIFY(cProfile.Read(COMPRESSORSTATESIZE, dwSize));
+		State(dwSize);
 		// m_iSelectedCompressor
 		return true;
 	}
@@ -785,8 +858,10 @@ struct sVideoOpts
 	int m_iSelectedCompressor;
 	int m_iShiftType;	// NOSYNCH, VIDEOFIRST, AUDIOFIRST
 	int m_iTimeShift;
-	DWORD m_dwCompfccHandler;
-	DWORD m_dwCompressorStateIsFor;
+	FOURCC m_dwCompfccHandler;
+	FOURCC m_dwCompressorStateIsFor;
+protected:
+	LPVOID m_pState;
 	DWORD m_dwCompressorStateSize;
 };
 extern sVideoOpts cVideoOpts;

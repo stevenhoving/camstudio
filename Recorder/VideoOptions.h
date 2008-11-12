@@ -1,11 +1,12 @@
-#include "afxwin.h"
-#include "afxcmn.h"
 #if !defined(AFX_VIDEOOPTIONS_H__25063B0F_28D8_469C_871E_F8A0DD84DA6B__INCLUDED_)
 #define AFX_VIDEOOPTIONS_H__25063B0F_28D8_469C_871E_F8A0DD84DA6B__INCLUDED_
 
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
+
+#include "profile.h"
+
 // VideoOptions.h : header file
 //
 
@@ -15,11 +16,19 @@
 class CVideoOptionsDlg : public CDialog
 {
 // Construction
-public:
 	CVideoOptionsDlg(CWnd* pParent = NULL);   // standard constructor
+public:
+	CVideoOptionsDlg(const sVideoOpts& cOpts, CWnd* pParent = NULL);   // standard constructor
+
+	const sVideoOpts& Opts() const	{return m_cOpts;}
+
 	void RefreshCompressorButtons();
 	void RefreshAutoOptions();
 	void UpdateAdjustSliderVal();
+
+	void DDV_KeyFrameInterval(CDataExchange* pDX, int value, int minVal, int maxVal);
+	void DDV_CaptureInterval(CDataExchange* pDX, int value, int minVal, int maxVal);
+	void DDV_PlaybackRate(CDataExchange* pDX, int value, int minVal, int maxVal);
 
 // Dialog Data
 	//{{AFX_DATA(CVideoOptionsDlg)
@@ -49,6 +58,7 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 private:
+	sVideoOpts m_cOpts;
 	CComboBox m_ctrlCBCompressor;
 	CSliderCtrl m_ctrlSliderQuality;
 	CStatic m_ctrlStaticQuality;
@@ -65,7 +75,9 @@ private:
 	int m_iPlaybackRate;
 	int m_iAdjust;
 	int m_iStaticQuality;
+
 	int LoadICList();
+	void AutoSetRate(int val, int& framerate, int& delayms);
 };
 
 //{{AFX_INSERT_LOCATION}}

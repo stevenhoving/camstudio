@@ -9,6 +9,7 @@
 #include "HotKey.h"
 #include "CStudioLib.h"
 
+HWND hMouseCaptureWnd;
 // MouseCaptureWndProc referenced functions
 
 /////////////////////////////////////////////////////////////////////////////
@@ -42,9 +43,9 @@ void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip)
 	HFONT oldfont = (HFONT) SelectObject(hdc, newfont);
 
 	CString strSize;
-	strSize.Format("Left : %d Top : %d Width : %d Height : %d", rectDraw.left, rectDraw.top, rectDraw.Width() + 1, rectDraw.Height() + 1);
+	strSize.Format(_T("Left : %d Top : %d Width : %d Height : %d"), rectDraw.left, rectDraw.top, rectDraw.Width() + 1, rectDraw.Height() + 1);
 	SIZE sExtent;
-	DWORD dw = GetTextExtentPoint(hdc, (LPCSTR)strSize, strSize.GetLength(), &sExtent);
+	DWORD dw = GetTextExtentPoint(hdc, (LPCTSTR)strSize, strSize.GetLength(), &sExtent);
 
 	int dx = sExtent.cx;
 	int dy = sExtent.cy;
@@ -64,7 +65,7 @@ void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip)
 		RoundRect(hdc, x - 4, y - 4, x + dx + 4, y + dy + 4, 10, 10);
 		SetBkMode(hdc,OPAQUE);
 
-		ExtTextOut(hdc, x, y, 0, NULL, (LPCSTR)strSize, strSize.GetLength(), NULL);
+		ExtTextOut(hdc, x, y, 0, NULL, (LPCTSTR)strSize, strSize.GetLength(), NULL);
 		SetBkColor(hdc,oldbkcolor);
 		SetTextColor(hdc,oldtextcolor);
 		SelectObject(hdc, oldfont);
@@ -99,32 +100,33 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 		break;
 	case WM_MOUSEMOVE:
 		{
-			TRACE("MouseCaptureWndProc : WM_MOUSEMOVE\n");
+			//TRACE(_T("MouseCaptureWndProc : WM_MOUSEMOVE\n"));
 			if (cRegionOpts.isCaptureMode(CAPTURE_FIXED)) {
 				//Fixed Region
 				POINT pt;
 				GetCursorPos(&pt);
 
-				rcClip.left = pt.x + rcOffset.left; // Update rect with new mouse info
+				// Update rect with new mouse info
+				rcClip.left = pt.x + rcOffset.left;
 				rcClip.top = pt.y + rcOffset.top;
 				rcClip.right = pt.x + rcOffset.right;
 				rcClip.bottom = pt.y + rcOffset.bottom;
 
 				if (rcClip.left < 0) {
 					rcClip.left = 0;
-					rcClip.right = (rc.right - rc.left);
+					rcClip.right = rc.Width();
 				}
 				if (rcClip.top < 0) {
 					rcClip.top = 0;
-					rcClip.bottom = (rc.bottom - rc.top);
+					rcClip.bottom = rc.Height();
 				}
 				if (rcClip.right > maxxScreen - 1) {
 					rcClip.right = maxxScreen - 1;
-					rcClip.left = maxxScreen - 1 - (rc.right - rc.left);
+					rcClip.left = maxxScreen - 1 - rc.Width();
 				}
 				if (rcClip.bottom > maxyScreen - 1) {
 					rcClip.bottom = maxyScreen - 1;
-					rcClip.top = maxyScreen - 1 - (rc.bottom - rc.top);
+					rcClip.top = maxyScreen - 1 - rc.Height();
 				}
 
 				if (!isRectEqual(old_rcClip,rcClip)) {
@@ -161,7 +163,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 
 	case WM_LBUTTONUP:
 		{
-			TRACE("MouseCaptureWndProc : WM_LBUTTONUP\n");
+			//TRACE(_T("MouseCaptureWndProc : WM_LBUTTONUP\n"));
 
 			if (cRegionOpts.isCaptureMode(CAPTURE_FIXED)) {
 				//erase final
@@ -183,12 +185,12 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 				CopyRect(&rcUse, &old_rcClip);
 				if (iDefineMode == 0)
 				{
-					TRACE("MouseCaptureWndProc: CRecorderView::WM_USER_RECORDSTART\n");
+					TRACE(_T("MouseCaptureWndProc: CRecorderView::WM_USER_RECORDSTART\n"));
 					::PostMessage (hWndGlobal, CRecorderView::WM_USER_RECORDSTART, 0, (LPARAM) 0);
 				}
 				else
 				{
-					TRACE("MouseCaptureWndProc: WM_APP_REGIONUPDATE\n");
+					TRACE(_T("MouseCaptureWndProc: WM_APP_REGIONUPDATE\n"));
 					::PostMessage (hFixedRegionWnd, WM_APP_REGIONUPDATE, 0, (LPARAM) 0);
 				}
 			}
@@ -197,20 +199,22 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 
 	case WM_LBUTTONDOWN:
 		{
-			TRACE("MouseCaptureWndProc : WM_LBUTTONDOWN\n");
+			//TRACE(_T("MouseCaptureWndProc : WM_LBUTTONDOWN\n"));
 			// User pressed left button, initialize selection
 			// Set origin to current mouse position (in window coords)
 
 			if (cRegionOpts.isCaptureMode(CAPTURE_VARIABLE)) {
-				POINT pt;
+				CPoint pt;
 				GetCursorPos(&pt);
 				ptOrigin = pt;
 				rcClip.left = rcClip.right = pt.x;
 				rcClip.top = rcClip.bottom = pt.y;
-				NormalizeRect(&rcClip); // Make sure it is a normal rect
-				HDC hScreenDC = GetDC(hWnd);
-				DrawSelect(hScreenDC, TRUE, &rcClip); // Draw the rubber-band box
-				ReleaseDC(hWnd,hScreenDC);
+				rcClip.NormalizeRect();	// Make sure it is a normal rect
+				CWindowDC cScreenDC(CWnd::FromHandle(hWnd));
+				DrawSelect(cScreenDC, TRUE, &rcClip); // Draw the rubber-band box
+				//HDC hScreenDC = GetDC(hWnd);
+				//DrawSelect(hScreenDC, TRUE, &rcClip); // Draw the rubber-band box
+				//ReleaseDC(hWnd,hScreenDC);
 
 				bCapturing = TRUE;
 			}
@@ -219,7 +223,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 
 	case WM_RBUTTONDOWN:
 		{
-			TRACE("MouseCaptureWndProc : WM_RBUTTONDOWN\n");
+			//TRACE(_T("MouseCaptureWndProc : WM_RBUTTONDOWN\n"));
 			if (cRegionOpts.isCaptureMode(CAPTURE_FIXED)) {
 				//Cancel the operation
 				//erase final
@@ -238,7 +242,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 
 	case WM_KEYDOWN:
 		{
-			TRACE("MouseCaptureWndProc : WM_KEYDOWN\n");
+			//TRACE(_T("MouseCaptureWndProc : WM_KEYDOWN\n"));
 			int nVirtKey = (int) wParam; // virtual-key code
 			int lKeyData = lParam; // key data
 
@@ -272,7 +276,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 
 // Code For Creating a Window for Specifying Region
 // A borderless, invisible window used only for capturing mouse input for the whole screen
-int CreateShiftWindow()
+bool CreateShiftWindow()
 {
 	HINSTANCE hInstance = AfxGetInstanceHandle();
 	HICON hcur = ::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICONCROSSHAIR));
@@ -283,24 +287,24 @@ int CreateShiftWindow()
 	wndclass.cbClsExtra = 0;
 	wndclass.cbWndExtra = 0;
 	wndclass.hInstance = hInstance;
-	wndclass.hIcon = LoadIcon(hInstance, "WINCAP");
+	wndclass.hIcon = LoadIcon(hInstance, _T("WINCAP"));
 	wndclass.lpszMenuName = NULL;
-	wndclass.lpszClassName = (LPSTR) "ShiftRegionWindow";
+	wndclass.lpszClassName = _T("ShiftRegionWindow");
 	wndclass.hCursor = hcur;
 	wndclass.hbrBackground = NULL;
 
 	if (!RegisterClass(&wndclass))
-		return 0;
+		return false;
 
 	HDC hScreenDC = ::GetDC(NULL);
 	maxxScreen = ::GetDeviceCaps(hScreenDC, HORZRES);
 	maxyScreen = ::GetDeviceCaps(hScreenDC, VERTRES);
 	::ReleaseDC(NULL,hScreenDC);
 
-	hMouseCaptureWnd = ::CreateWindowEx(WS_EX_TOPMOST, "ShiftRegionWindow", "Title", WS_POPUP, 0, 0, maxxScreen, maxyScreen, NULL, NULL, hInstance, NULL);
-	TRACE("CreateShiftWindow : %s\n", ::IsWindow(hMouseCaptureWnd) ? "SUCCEEDED" : "FAIL");
+	hMouseCaptureWnd = ::CreateWindowEx(WS_EX_TOPMOST, _T("ShiftRegionWindow"), _T("Title"), WS_POPUP, 0, 0, maxxScreen, maxyScreen, NULL, NULL, hInstance, NULL);
 
-	return 0;
+	TRACE(_T("CreateShiftWindow : %s\n"), ::IsWindow(hMouseCaptureWnd) ? _T("SUCCEEDED") : _T("FAIL"));
+	return ::IsWindow(hMouseCaptureWnd) ? true : false;
 }
 
 int DestroyShiftWindow()

@@ -1,6 +1,36 @@
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 #include "StdAfx.h"
 #include "VCM.h"
 
+ICINFO * pCompressorInfo = 0;
+int num_compressor = 0;
+
+CString GetCodecDescription(FOURCC fccHandler)
+{
+	//ICINFO compinfo;
+	//::ZeroMemory(&compinfo, sizeof(compinfo));
+	//compinfo.dwSize = sizeof(ICINFO);
+	//HIC hic = ICOpen(ICTYPE_VIDEO, fccHandler, ICMODE_QUERY);
+	//if (hic) {
+	//	ICGetInfo(hic, &compinfo, sizeof(ICINFO));
+	//	ICClose(hic);
+	//}
+	CHIC Hic;
+	if (Hic.Open(ICTYPE_VIDEO, fccHandler, ICMODE_QUERY)) {
+		ICINFO sICInfo;
+		LRESULT lResult = Hic.GetInfo(sICInfo, sizeof(ICINFO));
+		Hic.Close();
+		return (0L < lResult)
+			? CString(sICInfo.szDescription)
+			: CString(_T(""));
+	}
+
+	return CString("");
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 CHIC::CHIC()
 : m_hIC(0)
 , m_dwfccType(0UL)
@@ -9,14 +39,62 @@ CHIC::CHIC()
 , m_ulStateSize(0UL)
 {
 	::ZeroMemory(&m_icInfo, sizeof(m_icInfo));
+	m_icInfo.dwSize = sizeof(ICINFO);
 }
 
 CHIC::~CHIC()
 {
 	if (isOpen()) {
 		VERIFY(ICERR_OK == Close());
-		//VERIFY(!getState());
+		VERIFY(!isOpen());
 	}
+	if (m_pState) {
+		ASSERT(0 < m_ulStateSize);
+		delete [] m_pState;
+		m_ulStateSize = 0L;
+	}
+}
+
+bool CHIC::getState()
+{
+	bool bResult = isOpen();
+	if (!bResult) {
+		TRACE("CHIC::getState: %s Not open\n", bResult ? "OK" : "FAIL");
+		return bResult;
+	}
+	try
+	{
+		if (m_pState) {
+			ASSERT(0 < m_ulStateSize);
+			delete [] m_pState;
+			m_ulStateSize = 0L;
+		}
+		ASSERT(0L == m_ulStateSize);
+		m_ulStateSize = GetStateSize();
+		bResult = (0 < m_ulStateSize);
+		if (!bResult) {
+			TRACE("CHIC::getState: %s bad size\n", bResult ? "OK" : "FAIL");
+			return bResult;
+		}
+
+		m_pState = new char[m_ulStateSize];
+		LRESULT lResult = ::ICGetState(m_hIC, m_pState, m_ulStateSize);
+		bResult = (lResult == m_ulStateSize);
+		if (!bResult)
+			throw "ICGetState failed";
+	}
+	catch(...)
+	{
+		bResult = false;
+		if (m_pState) {
+			ASSERT(0 < m_ulStateSize);
+			delete [] m_pState, m_pState = 0;
+			m_ulStateSize = 0L;
+		}
+		ASSERT(0L == m_ulStateSize);
+	}
+	TRACE("CHIC::getState: %s\n", bResult ? "OK" : "FAIL");
+	return bResult;
 }
 
 // queries a video compression driver to determine if it has an About dialog box.
@@ -25,14 +103,16 @@ CHIC::~CHIC()
 DWORD CHIC::QueryAbout()
 {
 	DWORD dwResult = ICQueryAbout(m_hIC);
-	TRACE("CHIC::QueryAbout : %s About\n", (ICERR_UNSUPPORTED == dwResult) ? "No" : "Have");
+	//TRACE("CHIC::QueryAbout : %s About\n", (ICERR_UNSUPPORTED == dwResult) ? "No" : "Have");
+	TRACE("CHIC::QueryAbout : %s About\n", (dwResult) ? "Have" : "No");
 	return dwResult;
 }
 
 DWORD CHIC::About(HWND hWnd)
 {
 	DWORD dwResult = QueryAbout();
-	return (ICERR_UNSUPPORTED == dwResult) ? dwResult : ICAbout(m_hIC, hWnd);
+	//return (ICERR_UNSUPPORTED == dwResult) ? dwResult : ICAbout(m_hIC, hWnd);
+	return (dwResult) ? ICAbout(m_hIC, hWnd) : dwResult;
 }
 
 // closes a compressor or decompressor.

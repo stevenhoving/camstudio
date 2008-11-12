@@ -111,25 +111,25 @@ protected:
 
 	//Data to be saved
 public:
-	int baseType;
 	int editImageOn;
 	int editTransOn;
 	int trackingOn;
-	int m_borderSize;
 	int m_borderYes;
-	int m_regionCreated;			// region for transparent color already created, var applicable only to regiontype  -- transparent color
+	int m_borderSize;
 	int m_regionPredefinedShape;	// region for pre-defined shape, var applicable only to regiontype -- predefined shape
+	int m_regionCreated;			// region for transparent color already created, var applicable only to regiontype  -- transparent color
+	int baseType;
 	int m_regionType;
 	int saveMethod;
-	int widthPos;					// WidthHeight (Formula): faction of original =  widthPos*0.025 + 0.2 ... form 0.2 to 5.2
+	int widthPos;					// Width-Height (Formula): faction of original =  widthPos*0.025 + 0.2 ... form 0.2 to 5.2
 	int heightPos;
 	long uniqueID;
 	CString m_shapeStr;				// name of the shape
 	CString m_textstring;
 	CRect m_rectWnd;
-	COLORREF m_backgroundColor;
 	COLORREF m_borderColor;
 	COLORREF m_transparentColor;	// region for pre-defined shape, var applicable only to regiontype  -- transparent color
+	COLORREF m_backgroundColor;
 	HBITMAP m_hbitmap;
 protected:
 	unsigned short m_BitmapID;

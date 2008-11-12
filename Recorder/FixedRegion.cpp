@@ -10,6 +10,7 @@
 #include "Recorder.h"
 #include "FixedRegion.h"
 #include "MainFrm.h"			// for maxxScreen, maxyScreen
+#include "RecorderView.h"
 #include "MouseCaptureWnd.h"
 
 #ifdef _DEBUG
@@ -26,6 +27,10 @@ IMPLEMENT_DYNAMIC(CFixedRegionDlg, CDialog)
 
 CFixedRegionDlg::CFixedRegionDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CFixedRegionDlg::IDD, pParent)
+, m_iLeft(1)
+, m_iTop(1)
+, m_iWidth(1)
+, m_iHeight(1)
 {
 	//{{AFX_DATA_INIT(CFixedRegionDlg)
 	// NOTE: the ClassWizard will add member initialization here
@@ -45,6 +50,14 @@ void CFixedRegionDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SUPPORTMOUSEDRAG, m_ctrlButtonMouseDrag);
 	DDX_Control(pDX, IDC_FIXEDTOPLEFT, m_ctrlButtonFixTopLeft);
 	//}}AFX_DATA_MAP
+	DDX_Text(pDX, IDC_X, m_iLeft);
+	DDV_MinMaxInt(pDX, m_iLeft, 0, maxxScreen);
+	DDX_Text(pDX, IDC_Y, m_iTop);
+	DDV_MinMaxInt(pDX, m_iTop, 0, maxyScreen);
+	DDX_Text(pDX, IDC_WIDTH, m_iWidth);
+	DDV_MinMaxInt(pDX, m_iWidth, 0, maxxScreen);
+	DDX_Text(pDX, IDC_HEIGHT, m_iHeight);
+	DDV_MinMaxInt(pDX, m_iHeight, 0, maxyScreen);
 }
 
 BEGIN_MESSAGE_MAP(CFixedRegionDlg, CDialog)
@@ -60,18 +73,11 @@ END_MESSAGE_MAP()
 
 void CFixedRegionDlg::OnOK()
 {
-	// TODO: Add extra validation here
-	CString widthstr;
-	CString heightstr;
-	m_ctrlEditWidth.GetWindowText(widthstr);
-	m_ctrlEditHeight.GetWindowText(heightstr);
+	if (!UpdateData()) {
+		return;
+	}
 
-	int width;
-	int height;
-	sscanf_s(LPCTSTR(widthstr),"%d", &width);
-	sscanf_s(LPCTSTR(heightstr),"%d", &height);
-
-	if (width <= 0)
+	if (m_iWidth <= 0)
 	{
 		//CString msgstr;
 		//msgstr.Format("The width must be greater than 0");
@@ -80,7 +86,7 @@ void CFixedRegionDlg::OnOK()
 		return;
 	}
 
-	if (maxxScreen < width)
+	if (maxxScreen < m_iWidth)
 	{
 		//CString msgstr;
 		//msgstr.Format("The width must be smaller than the screen width (%d)",maxxScreen);
@@ -89,7 +95,7 @@ void CFixedRegionDlg::OnOK()
 		return;
 	}
 
-	if (height <= 0)
+	if (m_iHeight <= 0)
 	{
 		//CString msgstr;
 		//msgstr.Format("The height must be greater than 0");
@@ -98,7 +104,7 @@ void CFixedRegionDlg::OnOK()
 		return;
 	}
 
-	if (maxyScreen < height)
+	if (maxyScreen < m_iHeight)
 	{
 		//CString msgstr;
 		//msgstr.Format("The height must be smaller than the screen height (%d)",maxyScreen);
@@ -111,18 +117,7 @@ void CFixedRegionDlg::OnOK()
 	int fval = m_ctrlButtonFixTopLeft.GetCheck();
 	if (fval)
 	{
-		//Bypass all the following checks if the Fixed Top-Left setting is not turned on
-		CString xstr;
-		CString ystr;
-		m_ctrlEditPosX.GetWindowText(xstr);
-		m_ctrlEditPosY.GetWindowText(ystr);
-
-		int xval;
-		int yval;
-		sscanf_s(LPCTSTR(xstr),"%d", &xval);
-		sscanf_s(LPCTSTR(ystr),"%d", &yval);
-
-		if (xval <= 0)
+		if (m_iLeft <= 0)
 		{
 			//CString msgstr;
 			//msgstr.Format("The left value must be greater than 0");
@@ -131,7 +126,7 @@ void CFixedRegionDlg::OnOK()
 			return;
 		}
 
-		if (maxxScreen < xval)
+		if (maxxScreen < m_iLeft)
 		{
 			//CString msgstr;
 			//msgstr.Format("The left value must be smaller than the screen width (%d)",maxxScreen);
@@ -140,7 +135,7 @@ void CFixedRegionDlg::OnOK()
 			return;
 		}
 
-		if (yval <= 0)
+		if (m_iTop <= 0)
 		{
 			//CString msgstr;
 			//msgstr.Format("The top value must be greater than 0");
@@ -149,7 +144,7 @@ void CFixedRegionDlg::OnOK()
 			return;
 		}
 
-		if (maxyScreen < yval)
+		if (maxyScreen < m_iTop)
 		{
 			//CString msgstr;
 			//msgstr.Format("The top value must be smaller than the screen height (%d)",maxyScreen);
@@ -158,45 +153,43 @@ void CFixedRegionDlg::OnOK()
 			return;
 		}
 
-		if (maxxScreen < (xval + width))
+		if (maxxScreen < (m_iLeft + m_iWidth))
 		{
-			width = maxxScreen - xval;
-			if (width <= 0)
+			m_iWidth = maxxScreen - m_iLeft;
+			if (m_iWidth <= 0)
 			{
-				xval = 100;
-				width = 320;
+				m_iLeft = 100;
+				m_iWidth = 320;
 			}
 
 			//CString msgstr;
 			//msgstr.Format("Value exceed screen width. The width is adjusted to %d",width);
 			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(m_hWnd, IDS_STRING_VALUEEXCEEDWIDTH, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,width);
+			MessageOut(m_hWnd, IDS_STRING_VALUEEXCEEDWIDTH, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, m_iWidth);
 		}
 
-		if (maxyScreen < (yval + height))
+		if (maxyScreen < (m_iTop + m_iHeight))
 		{
-			height = maxyScreen - yval;
-			if (height <= 0)
+			m_iHeight = maxyScreen - m_iTop;
+			if (m_iHeight <= 0)
 			{
-				yval = 100;
-				height = 240;
+				m_iTop = 100;
+				m_iHeight = 240;
 			}
 
 			//CString msgstr;
 			//msgstr.Format("Value exceed screen height. The height is adjusted to %d",height);
 			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 
-			MessageOut(m_hWnd,IDS_STRING_VALUEEXCEEDHEIGHT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,height);
+			MessageOut(m_hWnd,IDS_STRING_VALUEEXCEEDHEIGHT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, m_iHeight);
 		}
-
-		cRegionOpts.m_iCaptureLeft = xval;
-		cRegionOpts.m_iCaptureTop = yval;
 	}
 
+	cRegionOpts.m_iCaptureLeft = m_iLeft;
+	cRegionOpts.m_iCaptureTop = m_iTop;
 	cRegionOpts.m_bFixedCapture = fval ? true : false;
-	cRegionOpts.m_iCaptureWidth = width;
-	cRegionOpts.m_iCaptureHeight = height;
-	//ver 1.8
+	cRegionOpts.m_iCaptureWidth = m_iWidth;
+	cRegionOpts.m_iCaptureHeight = m_iHeight;
 	cRegionOpts.m_bSupportMouseDrag = m_ctrlButtonMouseDrag.GetCheck() ? true : false;
 
 	CDialog::OnOK();
@@ -206,34 +199,17 @@ BOOL CFixedRegionDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// TODO: Add extra initialization here
-
-	//version 1.5
-	CString xstr;
-	CString ystr;
-	xstr.Format("%d",cRegionOpts.m_iCaptureLeft);
-	ystr.Format("%d",cRegionOpts.m_iCaptureTop);
+	m_iLeft = cRegionOpts.m_iCaptureLeft;
+	m_iTop = cRegionOpts.m_iCaptureTop;
+	m_iWidth = cRegionOpts.m_iCaptureWidth;
+	m_iHeight = cRegionOpts.m_iCaptureHeight;
+	UpdateData(FALSE);
 
 	m_ctrlEditPosX.EnableWindow(TRUE);
 	m_ctrlEditPosY.EnableWindow(TRUE);
-	m_ctrlEditPosX.SetWindowText(xstr);
-	m_ctrlEditPosY.SetWindowText(ystr);
-
 	m_ctrlButtonFixTopLeft.SetCheck(cRegionOpts.m_bFixedCapture);
 	m_ctrlEditPosX.EnableWindow(cRegionOpts.m_bFixedCapture);
 	m_ctrlEditPosY.EnableWindow(cRegionOpts.m_bFixedCapture);
-
-	///////////////////////////////
-
-	CString widthstr;
-	CString heightstr;
-	widthstr.Format("%d", cRegionOpts.m_iCaptureWidth);
-	heightstr.Format("%d", cRegionOpts.m_iCaptureHeight);
-
-	m_ctrlEditWidth.SetWindowText(widthstr);
-	m_ctrlEditHeight.SetWindowText(heightstr);
-	m_ctrlStaticMsg.SetWindowText("");
-
 	m_ctrlButtonMouseDrag.SetCheck(cRegionOpts.m_bSupportMouseDrag);
 
 	return TRUE; // return TRUE unless you set the focus to a control
@@ -242,14 +218,14 @@ BOOL CFixedRegionDlg::OnInitDialog()
 
 void CFixedRegionDlg::OnSelect()
 {
-	m_ctrlStaticMsg.SetWindowText("Click and drag to define a rectangle");
+	m_ctrlStaticMsg.SetWindowText(_T("Click and drag to define a rectangle"));
 
 	cRegionOpts.m_iMouseCaptureMode = CAPTURE_VARIABLE; //set temporarily to variable region
 	iDefineMode = 1;
 	hFixedRegionWnd = m_hWnd;
 	::ShowWindow(hMouseCaptureWnd, SW_MAXIMIZE);
 	::UpdateWindow(hMouseCaptureWnd);
-	m_ctrlStaticMsg.SetWindowText("");
+	m_ctrlStaticMsg.SetWindowText(_T(""));
 }
 
 // OnRegionUpdate
@@ -257,28 +233,15 @@ void CFixedRegionDlg::OnSelect()
 // TODO: why doesn't this message send position values?
 LRESULT CFixedRegionDlg::OnRegionUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
-	int width = rcUse.right - rcUse.left + 1;
-	int height = rcUse.bottom - rcUse.top + 1;
-
-	CString widthstr;
-	CString heightstr;
-	widthstr.Format("%d", width);
-	heightstr.Format("%d", height);
-
-	m_ctrlEditWidth.SetWindowText(widthstr);
-	m_ctrlEditHeight.SetWindowText(heightstr);
-
-	//version 1.5
-	int fixtl = m_ctrlButtonFixTopLeft.GetCheck();
-	if (fixtl)
-	{
-		CString xstr;
-		CString ystr;
-		xstr.Format("%d", rcUse.left);
-		ystr.Format("%d", rcUse.top);
-		m_ctrlEditPosX.SetWindowText(xstr);
-		m_ctrlEditPosY.SetWindowText(ystr);
+	CRect rectUse(rcUse);
+	if (m_ctrlButtonFixTopLeft.GetCheck()) {
+		m_iLeft		= rectUse.left;
+		m_iTop		= rectUse.top;
 	}
+	m_iWidth	= rectUse.Width();
+	m_iHeight	= rectUse.Height();
+
+	UpdateData(FALSE);
 
 	return 0;
 }

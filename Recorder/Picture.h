@@ -18,7 +18,7 @@ class CPicture
 public:
 	void FreePictureData();
 	BOOL Load(CString sFilePathName);
-	BOOL Load(UINT ResourceName, LPCSTR ResourceType);
+	BOOL Load(UINT ResourceName, LPCTSTR ResourceType);
 	BOOL LoadPictureData(BYTE* pBuffer, int nSize);
 	BOOL SaveAsBitmap(CString sFilePathName);
 	BOOL Show(CDC* pDC, CPoint LeftTop, CPoint WidthHeight, int MagnifyX, int MagnifyY);

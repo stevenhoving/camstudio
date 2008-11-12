@@ -1,7 +1,18 @@
 /////////////////////////////////////////////////////////////////////////////
 // VCM.h - include file for video compression manager interface class
+// CHIC -	provides a thin wrappper to the installable comprression API of
+//			the MS Video for Windows library.
 /////////////////////////////////////////////////////////////////////////////
 #pragma once
+#include <vector>
+
+// known video handlers
+const FOURCC ICHANDLER_MSVC = mmioFOURCC('M', 'S', 'V', 'C');
+const FOURCC ICHANDLER_MRLE = mmioFOURCC('M', 'R', 'L', 'E');
+const FOURCC ICHANDLER_CVID = mmioFOURCC('C', 'V', 'I', 'D');
+const FOURCC ICHANDLER_DIVX = mmioFOURCC('D', 'I', 'V', 'X');
+const FOURCC ICHANDLER_VIFP = mmioFOURCC('V', 'I', 'F', 'P');
+const FOURCC ICHANDLER_IV50 = mmioFOURCC('I', 'V', '5', '0');
 
 // CVCM - simple wrapper class around a HIC and the VCM interface.
 class CHIC
@@ -9,6 +20,10 @@ class CHIC
 public:
 	CHIC();
 	virtual ~CHIC();
+	
+	operator HIC() const	{return m_hIC;}
+	FOURCC Handler() const	{return m_dwfccHandler;}
+
 private:
 	HIC m_hIC;					// handle to a compressor or decompressor
 	FOURCC m_dwfccType;			// type of compressor or decompressor
@@ -16,54 +31,42 @@ private:
 	ICINFO m_icInfo;
 	LPVOID m_pState;			// pointer to compressor state info.
 	DWORD_PTR m_ulStateSize;	// size (in bytes) of memory m_pState points to.
-
+	
+public:
 #ifdef _DEBUG
-	void TRACEFOURCC(FOURCC dwfcc, const LPCTSTR pName = 0)
+	static void TRACEFOURCC(FOURCC dwfcc, const LPCTSTR pName = 0)
 	{
 		CString csFourCC;
 		csFourCC += (BYTE)(0xFF & dwfcc);
 		csFourCC += (BYTE)(0xFF & (dwfcc >> 8));
 		csFourCC += (BYTE)(0xFF & (dwfcc >> 16));
 		csFourCC += (BYTE)(0xFF & (dwfcc >> 24));
-		TRACE("FourCC %s: %s\n", pName, (LPCSTR)csFourCC);
+		TRACE(TEXT("FourCC %s: %s\n"), pName ? pName : TEXT(""), (LPCTSTR)csFourCC);
+	}
+	static void TRACEINFO(const ICINFO& cInfo)
+	{
+		CString strSupport("Flags:\n");
+		if (cInfo.dwFlags & VIDCF_QUALITY)			strSupport += TEXT("VIDCF_QUALITY : supports quality\n");
+		if (cInfo.dwFlags & VIDCF_CRUNCH)			strSupport += TEXT("VIDCF_CRUNCH : supports crunching to a frame size\n");
+		if (cInfo.dwFlags & VIDCF_TEMPORAL)			strSupport += TEXT("VIDCF_TEMPORAL : supports inter-frame compress\n");
+		if (cInfo.dwFlags & VIDCF_COMPRESSFRAMES)	strSupport += TEXT("VIDCF_COMPRESSFRAMES : wants the compress all frames message\n");
+		if (cInfo.dwFlags & VIDCF_DRAW)				strSupport += TEXT("VIDCF_DRAW : supports drawing\n");
+		if (cInfo.dwFlags & VIDCF_FASTTEMPORALC)	strSupport += TEXT("VIDCF_FASTTEMPORALC : does not need prev frame on compress\n");
+		if (cInfo.dwFlags & VIDCF_FASTTEMPORALD)	strSupport += TEXT("VIDCF_FASTTEMPORALD : does not need prev frame on decompress\n");
+		TRACE(TEXT("%s"), (LPCTSTR)strSupport);
 	}
 #else
-#define TRACEFOURCC		TRACE
+	static void TRACEFOURCC(FOURCC dwfcc, const LPCTSTR pName = 0){}
+	static void TRACEINFO(const ICINFO& cInfo) {}
 #endif
 
-	bool getState()
-	{
-		if (m_pState) {
-			ASSERT(0 < m_ulStateSize);
-			delete [] m_pState;
-			m_ulStateSize = 0L;
-		}
-		bool bResult = isOpen();
-		if (!bResult) {
-			return bResult;
-		}
-		m_ulStateSize = GetStateSize();
-		bResult = (0 < m_ulStateSize);
-		if (!bResult)
-			return bResult;
-
-		try
-		{
-			m_pState = new char[m_ulStateSize];
-		}
-		catch(...)
-		{
-			bResult = false;
-			m_ulStateSize = 0L;
-		}
-		TRACE("CHIC::getState: %s\n", bResult ? "OK" : "FAIL");
-		return bResult;
-	}
+private:
+	bool getState();
 
 public:
 	bool isOpen() const							{return (0 != m_hIC);}
-	bool isType(DWORD dwfccType) const			{return dwfccType == m_dwfccType;}
-	bool isHandler(DWORD dwfccHandler) const	{return dwfccHandler == m_dwfccHandler;}
+	bool isType(FOURCC dwfccType) const			{return dwfccType == m_dwfccType;}
+	bool isHandler(FOURCC dwfccHandler) const	{return dwfccHandler == m_dwfccHandler;}
 
 	// notifies a video compression driver to prepare to compress data.
 	// Returns ICERR_OK if the specified compression is supported or ICERR_BADFORMAT
@@ -113,7 +116,8 @@ public:
 	DWORD Configure(HWND hWnd)
 	{
 		DWORD dwResult = QueryConfigure();
-		return (ICERR_OK == dwResult) ? ICConfigure(m_hIC, hWnd) : dwResult;
+		//return (ICERR_OK == dwResult) ? ICConfigure(m_hIC, hWnd) : dwResult;
+		return (dwResult) ? ICConfigure(m_hIC, hWnd) : dwResult;
 	}
 	
 	// queries a video compression driver to determine the amount of memory required
@@ -133,6 +137,11 @@ public:
 	{
 		VERIFY(getState());
 		return ICGetState(m_hIC, pv, cb);
+	}
+	LPVOID GetState()
+	{
+		VERIFY(getState());
+		return m_pState;
 	}
 	// notifies a video compression driver to set the state of the compressor.
 	// Returns the number of bytes used by the compressor if successful or zero otherwise.
@@ -399,6 +408,14 @@ public:
 	{
 		return ::ICGetInfo(m_hIC, &icinfo, cb);
 	}
+	// retrieves information about specific installed compressors or enumerates the
+	// installed compressors.
+	// Returns TRUE if successful or an error otherwise.
+	static BOOL GetInfo(FOURCC fccType, FOURCC fccHandler, ICINFO& ricinfo)
+	{
+		return ::ICInfo(fccType, fccHandler, &ricinfo);
+	}
+
 	// compresses an image to a given size.
 	// This function does not require initialization functions.
 	// Returns a handle to a compressed DIB. The image data follows the format header.
@@ -487,3 +504,7 @@ public:
 	//}
 };
 
+extern ICINFO * pCompressorInfo;
+extern int num_compressor;
+
+extern CString GetCodecDescription(FOURCC fccHandler);
