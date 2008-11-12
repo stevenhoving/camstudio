@@ -1,12 +1,12 @@
+// NewShape.h : header file
+//
+/////////////////////////////////////////////////////////////////////////////
 #if !defined(AFX_NEWSHAPE_H__04B11E2E_DC5E_4AC3_B324_DE8A8B41C9BB__INCLUDED_)
 #define AFX_NEWSHAPE_H__04B11E2E_DC5E_4AC3_B324_DE8A8B41C9BB__INCLUDED_
 
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-
-// NewShape.h : header file
-//
 
 /////////////////////////////////////////////////////////////////////////////
 // CNewShapeDlg dialog

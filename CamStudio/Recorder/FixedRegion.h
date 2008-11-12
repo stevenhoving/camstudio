@@ -53,6 +53,10 @@ private:
 	CEdit m_ctrlEditPosY;
 	CButton m_ctrlButtonMouseDrag;
 	CButton m_ctrlButtonFixTopLeft;
+	int m_iLeft;
+	int m_iTop;
+	int m_iWidth;
+	int m_iHeight;
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -1,3 +1,6 @@
+// PresetTime.h : header file
+//
+/////////////////////////////////////////////////////////////////////////////
 #if !defined(AFX_PRESETTIME_H__F8B0041D_C4EB_4568_AC06_E5D330F4408F__INCLUDED_)
 #define AFX_PRESETTIME_H__F8B0041D_C4EB_4568_AC06_E5D330F4408F__INCLUDED_
 

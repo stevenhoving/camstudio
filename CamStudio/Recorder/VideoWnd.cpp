@@ -21,15 +21,9 @@ extern int AreWindowsEdited();
 // CVideoWnd
 CVideoWnd::CVideoWnd()
 {
-	//CTransparentWnd();
-	status = 0;
+	m_iStatus = 0;
 	baseType = 1;
-	refreshRate = iRrefreshRate;
-
-	//m_borderYes = 1;
-	//m_regionType = 2; //regionShape
-	//m_regionPredefinedShape = regionRECTANGLE;
-
+	m_iRefreshRate = iRrefreshRate;
 }
 
 CVideoWnd::~CVideoWnd()
@@ -54,11 +48,11 @@ END_MESSAGE_MAP()
 void CVideoWnd::AdjustRefreshRate(int rate)
 {
 
-	if (rate != refreshRate)
+	if (rate != m_iRefreshRate)
 	{
-		refreshRate = rate;
-		iRrefreshRate = refreshRate;
-		double delayPeriod = 1000 / refreshRate;
+		m_iRefreshRate = rate;
+		iRrefreshRate = m_iRefreshRate;
+		double delayPeriod = 1000 / m_iRefreshRate;
 		SetTimer(0x1, (int) delayPeriod, NULL);
 
 	}
@@ -80,10 +74,10 @@ void CVideoWnd::CreateTransparent(LPCTSTR pTitle, RECT rect, HBITMAP BitmapID)
 		//ret = 0;
 		if (ret)
 		{
-			double delayPeriod = 1000 / refreshRate;
+			double delayPeriod = 1000 / m_iRefreshRate;
 			//SetTimer(0x1, DEFAULT_PERIOD, NULL);
 			SetTimer(0x1, (int) delayPeriod, NULL);
-			status = 1;
+			m_iStatus = 1;
 
 		}
 		else {
@@ -99,20 +93,21 @@ void CVideoWnd::CreateTransparent(LPCTSTR pTitle, RECT rect, HBITMAP BitmapID)
 //FrameGrabber
 void CVideoWnd::OnTimer(UINT nIDEvent)
 {
-	if (!m_FrameGrabber.GetSafeHwnd()) return;
+	if (!m_FrameGrabber.GetSafeHwnd()) {
+		return;
+	}
 
-	if (!IsWindowVisible()) return;
+	if (!IsWindowVisible()) {
+		return;
+	}
 
-	if ((trackingOn) || (editImageOn) || (editTransOn))
-	{
-
+	if ((trackingOn) || (editImageOn) || (editTransOn)) {
 		return;
 	}
 
 	LPBITMAPINFO lpBi = m_FrameGrabber.GetDIB();
 	m_ImageBitmap.CreateFromDib(lpBi);
 	InvalidateRect(NULL);
-
 }
 
 void CVideoWnd::OnPaint()
@@ -162,7 +157,7 @@ void CVideoWnd::OnPaint()
 
 	NewMemBmp.CreateCompatibleBitmap(&dc,width,height);
 	pOldMemBmp = pDC->SelectObject(&NewMemBmp);
-	if (!status)
+	if (!m_iStatus)
 	{
 		pDC->FillSolidRect(0,0,clrect.Width(),clrect.Height(),RGB(255,255,255));
 
@@ -318,7 +313,7 @@ void CVideoWnd::OnUpdateContextMenu()
 	CMenu* pPopup = menu.GetSubMenu(0);
 	ASSERT(pPopup != NULL);
 
-	if ((m_FrameGrabber.GetSafeHwnd()) && (status))
+	if ((m_FrameGrabber.GetSafeHwnd()) && (m_iStatus))
 	{
 		pPopup->EnableMenuItem(ID_CONTEXTVIDEO_SOURCEFORMAT,MF_ENABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXTVIDEO_VIDEOSOURCE,MF_ENABLED|MF_BYCOMMAND);
@@ -357,7 +352,7 @@ void CVideoWnd::OnUpdateContextMenu()
 void CVideoWnd::OnUpdateSize()
 {
 
-	if (!status)
+	if (!m_iStatus)
 	{
 		CSize sz(180,160);
 		SetWindowPos(NULL,0,0, sz.cx-1, sz.cy-1, SWP_NOMOVE|SWP_NOZORDER);
@@ -435,7 +430,7 @@ void CVideoWnd::OnContextvideoEdittransparency()
 		return;
 	}
 
-	if (refreshRate>10)
+	if (m_iRefreshRate>10)
 	{
 		//int ret = MessageBox("Enabling Transparency at a high refresh rate will cause dialog boxes to freeze. If this happens, you will have to close the Video Annotation window to make the dialog boxes appear. Reduce the refresh rate ?" ,"Note",MB_YESNOCANCEL | MB_ICONQUESTION);
 		int ret = MessageOut(this->m_hWnd,IDS_STRING_TRANSBLAHBLAH ,IDS_STRING_NOTE,MB_YESNOCANCEL | MB_ICONQUESTION);

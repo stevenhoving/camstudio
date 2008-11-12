@@ -51,7 +51,7 @@ void CTransRateDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	int valRate = m_ctrlSliderTransRate.GetPos();
 
 	CString valstr;
-	valstr.Format("%d fps",valRate);
+	valstr.Format(TEXT("%d fps"), valRate);
 	m_ctrlStaticFrameRate.SetWindowText(valstr);
 
 	if (m_myparent) {
@@ -59,7 +59,7 @@ void CTransRateDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 		m_myparent->AdjustRefreshRate(valRate);
 
 		//this line should not be put before m_myparent->AdjustRefreshRate(valRate);
-		m_myparent->refreshRate = valRate;
+		m_myparent->m_iRefreshRate = valRate;
 		iRrefreshRate = valRate;
 
 	}
@@ -83,10 +83,10 @@ BOOL CTransRateDlg::OnInitDialog()
 	// TODO: Add extra initialization here
 	m_ctrlSliderTransRate.EnableWindow(TRUE);
 	m_ctrlSliderTransRate.SetRange(1,60);
-	m_ctrlSliderTransRate.SetPos(m_myparent->refreshRate);
+	m_ctrlSliderTransRate.SetPos(m_myparent->m_iRefreshRate);
 
 	CString valstr;
-	valstr.Format("%d fps",m_myparent->refreshRate);
+	valstr.Format(_T("%d fps"),m_myparent->m_iRefreshRate);
 	m_ctrlStaticFrameRate.SetWindowText(valstr);
 
 	return TRUE; // return TRUE unless you set the focus to a control

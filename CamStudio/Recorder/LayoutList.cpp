@@ -5,7 +5,8 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "LayoutList.h"
-#include "ListManager.h"
+//#include "ListManager.h"
+#include "ScreenAnnotations.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -16,7 +17,6 @@ static char THIS_FILE[]=__FILE__;
 int iCurrentLayoutID = 1;
 CString strLayoutName("Layout_");
 
-extern CListManager ListManager;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

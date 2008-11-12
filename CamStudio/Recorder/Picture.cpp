@@ -78,8 +78,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-#define HIMETRIC_INCH 2540
-#define ERROR_TITLE "CPicture Error" // Error Title (Related To This Class)...
+#define HIMETRIC_INCH	2540
+#define ERROR_TITLE		TEXT("CPicture Error") // Error Title (Related To This Class)...
 
 
 //-----------------------------------------------------------------------------
@@ -144,7 +144,7 @@ void CPicture::FreePictureData()
 // OutPut: TRUE If Succeeded...
 // ~~~~~~
 //-----------------------------------------------------------------------------
-BOOL CPicture::Load(UINT ResourceName, LPCSTR ResourceType)
+BOOL CPicture::Load(UINT ResourceName, LPCTSTR ResourceType)
 //=============================================================================
 {
 	BOOL bResult = FALSE;
@@ -161,7 +161,7 @@ BOOL CPicture::Load(UINT ResourceName, LPCSTR ResourceType)
 	if (hSource == NULL)
 	{
 		HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
-		MessageBoxEx(hWnd, "FindResource() Failed\t", ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
+		MessageBoxEx(hWnd, TEXT("FindResource() Failed\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
 		return(FALSE);
 	}
 
@@ -169,7 +169,7 @@ BOOL CPicture::Load(UINT ResourceName, LPCSTR ResourceType)
 	if (hGlobal == NULL)
 	{
 		HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
-		MessageBoxEx(hWnd, "LoadResource() Failed\t", ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
+		MessageBoxEx(hWnd, TEXT("LoadResource() Failed\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
 		return(FALSE);
 	}
 
@@ -177,7 +177,7 @@ BOOL CPicture::Load(UINT ResourceName, LPCSTR ResourceType)
 	if (lpVoid == NULL)
 	{
 		HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
-		MessageBoxEx(hWnd, "LockResource() Failed\t", ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
+		MessageBoxEx(hWnd, TEXT("LockResource() Failed\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
 		return(FALSE);
 	}
 
@@ -290,7 +290,7 @@ BOOL CPicture::LoadPictureData(BYTE *pBuffer, int nSize)
 	if (hGlobal == NULL)
 	{
 		HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
-		MessageBoxEx(hWnd, "Can not allocate enough memory\t", ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
+		MessageBoxEx(hWnd, TEXT("Can not allocate enough memory\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
 		return(FALSE);
 	}
 
@@ -306,7 +306,7 @@ BOOL CPicture::LoadPictureData(BYTE *pBuffer, int nSize)
 		if ((hr = OleLoadPicture(pStream, nSize, FALSE, IID_IPicture, (LPVOID *)&m_IPicture)) == E_NOINTERFACE)
 		{
 			HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
-			MessageBoxEx(hWnd, "IPicture interface is not supported\t", ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
+			MessageBoxEx(hWnd, TEXT("IPicture interface is not supported\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
 			return(FALSE);
 		}
 		else // S_OK
@@ -361,7 +361,7 @@ BOOL CPicture::Show(CDC *pDC, CRect DrawRect)
 	if (SUCCEEDED(hrP)) return(TRUE);
 
 	HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
-	MessageBoxEx(hWnd, "Can not allocate enough memory\t", ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
+	MessageBoxEx(hWnd, TEXT("Can not allocate enough memory\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
 	return(FALSE);
 }
 
@@ -413,7 +413,7 @@ BOOL CPicture::Show(CDC *pDC, CPoint LeftTop, CPoint WidthHeight, int MagnifyX, 
 	if (SUCCEEDED(hrP)) return(TRUE);
 
 	HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
-	MessageBoxEx(hWnd, "Can not allocate enough memory\t", ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
+	MessageBoxEx(hWnd, TEXT("Can not allocate enough memory\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
 	return(FALSE);
 }
 
@@ -477,7 +477,7 @@ BOOL CPicture::SaveAsBitmap(CString sFilePathName)
 	{
 		Buffer->Release();
 		HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
-		MessageBoxEx(hWnd, "Can not allocate enough memory\t", ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
+		MessageBoxEx(hWnd, TEXT("Can not allocate enough memory\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
 	}
 
 	Buffer->ReadAt(RealData, BufferBytes, OutStream, &OutData);
@@ -700,20 +700,20 @@ BOOL CPicture::SaveToFile(FILE* fptr)
 	{
 		Buffer->Release();
 		HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
-		MessageBoxEx(hWnd, "Can not allocate enough memory\t", ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
+		MessageBoxEx(hWnd, TEXT("Can not allocate enough memory\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
 	}
 
 	Buffer->ReadAt(RealData, BufferBytes, OutStream, &OutData);
 
 	size_t written = fwrite( (void *) &OutData, sizeof(DWORD), 1, fptr );
 	if (written<1) {
-		MessageBoxEx(NULL, "Unable to write image size\t", ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
+		MessageBoxEx(NULL, TEXT("Unable to write image size\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
 		return FALSE;
 	}
 
 	written = fwrite( (void *) BufferBytes, OutData, 1, fptr );
 	if (written<1) {
-		MessageBoxEx(NULL, "Unable to write image\t", ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
+		MessageBoxEx(NULL, TEXT("Unable to write image\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
 		return FALSE;
 	}
 
@@ -736,7 +736,7 @@ BOOL CPicture::LoadFromFile(FILE* fptr)
 
 	size_t readcount = fread( (void *) &OutData, sizeof(DWORD), 1, fptr );
 	if (readcount<1) {
-		MessageBoxEx(NULL, "Unable to read image size\t", ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
+		MessageBoxEx(NULL, TEXT("Unable to read image size\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
 		return FALSE;
 	}
 
@@ -746,7 +746,7 @@ BOOL CPicture::LoadFromFile(FILE* fptr)
 	BufferBytes = (BYTE *) malloc(OutData+1);
 	readcount = fread( (void *) BufferBytes, OutData, 1, fptr );
 	if (readcount<1) {
-		MessageBoxEx(NULL, "Unable to read image\t", ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
+		MessageBoxEx(NULL, TEXT("Unable to read image\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
 		return FALSE;
 	}
 

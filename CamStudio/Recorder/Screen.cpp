@@ -17,7 +17,7 @@ bool CCamera::AddTimestamp(CDC* pDC)
 	if (m_sTimestamp.m_bAnnotation) {
 		SYSTEMTIME systime;
 		::GetLocalTime(&systime);
-		m_sTimestamp.m_taTimestamp.text.Format("%s %02d:%02d:%02d:%03d", "Recording", systime.wHour, systime.wMinute, systime.wSecond, systime.wMilliseconds);
+		m_sTimestamp.m_taTimestamp.text.Format(TEXT("%s %02d:%02d:%02d:%03d"), TEXT("Recording"), systime.wHour, systime.wMinute, systime.wSecond, systime.wMilliseconds);
 		InsertText(pDC, m_rectFrame, m_sTimestamp.m_taTimestamp);
 	}
 	return true;
@@ -29,11 +29,37 @@ bool CCamera::AddCaption(CDC* pDC)
 	}
 	return true;
 }
+
+bool CCamera::LoadWatermark()
+{
+	m_imageWatermark.Destroy();
+	m_strWatermarkName = m_sWatermark.m_iaWatermark.text;// cache
+	CString extin(FindExtension(m_strWatermarkName));
+	extin.MakeLower();
+	int typein = CxImage::GetTypeIdFromName(extin);
+	if (typein == CXIMAGE_FORMAT_UNKNOWN) {
+		m_strWatermarkName = "";
+		return false;
+	}
+
+	if (!m_imageWatermark.Load(m_strWatermarkName, typein)){
+		m_strWatermarkName = "";
+		return false;
+	}
+
+	m_imageWatermark.Light(m_sWatermark.m_iaWatermark.m_lBrightness, m_sWatermark.m_iaWatermark.m_lContrast);
+	m_imageWatermark.SetTransIndex(0);
+	m_imageWatermark.SetTransColor(m_imageWatermark.GetPixelColor(0L, 0L));
+	return true;
+}
+
 bool CCamera::AddWatermark(CDC* pDC)
 {
-	if (m_sWatermark.m_bAnnotation){
-		InsertImage(pDC, m_rectFrame, m_sWatermark.m_iaWatermark);
+	if (!m_sWatermark.m_bAnnotation) {
+		return m_sWatermark.m_bAnnotation;
 	}
+	InsertImage(pDC, m_rectFrame, m_sWatermark.m_iaWatermark);
+
 	return true;
 }
 bool CCamera::AddCursor(CDC* pDC)
@@ -76,10 +102,10 @@ bool CCamera::AddCursor(CDC* pDC)
 
 bool CCamera::Annotate(CDC* pDC)
 {
-	VERIFY(AddTimestamp(pDC));
-	VERIFY(AddCaption(pDC));
-	VERIFY(AddWatermark(pDC));
-	VERIFY(AddCursor(pDC));
+	AddTimestamp(pDC);
+	AddCaption(pDC);
+	AddWatermark(pDC);
+	AddCursor(pDC);
 	return true;
 }
 
@@ -253,31 +279,8 @@ void CCamera::InsertHighLight(CDC *pDC, CPoint pt)
 
 void CCamera::InsertImage(CDC *pDC, CRect& rectFrame, const ImageAttributes& rImgAttr)
 {
-	// TODO: These should be member variables.
-	static CxImage image;
-	static CString imageName("");
-
-	// load
-	// check if image is cached
-	if (imageName != rImgAttr.text) {
-		image.Destroy();
-
-		CString extin(FindExtension(rImgAttr.text));
-		extin.MakeLower();
-		int typein = CxImage::GetTypeIdFromName(extin);
-		if (typein == CXIMAGE_FORMAT_UNKNOWN) {
-			return;
-		}
-
-		if (!image.Load(rImgAttr.text, typein)){
-			return;
-		}
-
-		imageName = rImgAttr.text;// cache
-	}
-
 	CRect rect;
-	CSize size(image.GetWidth(), image.GetHeight());
+	CSize size(m_imageWatermark.GetWidth(), m_imageWatermark.GetHeight());
 	CSize full_size = size;
 	CRect mRect(0, 0, full_size.cx, full_size.cy);
 	switch (rImgAttr.position)
@@ -326,7 +329,7 @@ void CCamera::InsertImage(CDC *pDC, CRect& rectFrame, const ImageAttributes& rIm
 	rect.right = rect.left + full_size.cx;
 	rect.bottom = rect.top + full_size.cy;
 
-	image.Draw(*pDC, rect);
+	m_imageWatermark.Draw(*pDC, rect);
 }
 
 bool CCamera::CaptureFrame(const CRect& rectView)
@@ -354,6 +357,12 @@ bool CCamera::CaptureFrame(const CRect& rectView)
 	
 	// convert cBitmap to Image
 	m_cImage.CreateFromHBITMAP(cBitmap);
+	// TEST/TODO: shrink the output!
+	//m_cImage.QIShrink((rectView.Width() * 3)/8, (rectView.Height() * 3)/8, 0, false);
+	// TEST/TODO: convert to GrayScale!
+	//m_cImage.GrayScale();
+
+	++m_uFrameCount;
 
 	return true;
 }

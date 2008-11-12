@@ -109,6 +109,7 @@ private:
 	CComboBox m_ctrlCBCustomCursor;
 	CButton m_ctrlButtonShowCursor;
 	CStatic m_ctrlStaticIconCursor;
+	CStatic m_ctrlStaticPreviewHighlight;
 };
 
 //{{AFX_INSERT_LOCATION}}

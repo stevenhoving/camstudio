@@ -17,6 +17,8 @@
 #include "Recorder.h"
 #include "TransparentWnd.h"
 #include "MainFrm.h"			// for maxxScreen, maxyScreen
+#include "RecorderView.h"
+#include "MouseCaptureWnd.h"
 #include "resource.h"
 
 #include "TextDialog.h"
@@ -33,7 +35,6 @@
 
 extern CListManager ListManager;
 extern CScreenAnnotationsDlg sadlg;
-extern HWND hMouseCaptureWnd;
 
 extern CString specifieddir;
 
@@ -1424,25 +1425,27 @@ BOOL CTransparentWnd::LoadShape(FILE* fptr)
 	fread( (void *) &m_tracker.m_rect.bottom, sizeof(long), 1, fptr );
 
 	fread( (void *) &len, sizeof(int), 1, fptr );
-	if ((len>0) && (len<100000)) {
-		//void *buf = malloc(len);
-		char *buf = (char *) malloc(len + 2);
-		fread( (void *) buf, len, 1, fptr );
+	if ((0 < len) && (len < 100000)) {
+		//char *buf = (char *) malloc(len + 2);
+		char *buf = new char[len + 2];
+		fread(buf, len, 1, fptr );
 		buf[len] = 0;
 		buf[len+1] = 0;
 		m_textstring = (char *) buf;
-		free(buf);
+		//free(buf);
+		delete [] buf;
 	}
 
 	fread( (void *) &len, sizeof(int), 1, fptr );
 	if ((len>0) && (len<100000)) {
-		//void *buf = malloc(len);
-		char *buf = (char *) malloc(len + 2);
+		//char *buf = (char *) malloc(len + 2);
+		char *buf = new char[len + 2];
 		fread( (void *) buf, len, 1, fptr );
 		buf[len] = 0;
 		buf[len+1] = 0;
 		m_shapeStr = (char *) buf;
-		free(buf);
+		//free(buf);
+		delete [] buf;
 	}
 
 	fread( (void *) &m_vertalign, sizeof(int), 1, fptr );

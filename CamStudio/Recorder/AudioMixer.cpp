@@ -94,6 +94,9 @@ MMRESULT CAudioMixer::GetDevCaps(LPMIXERCAPS pmxcaps, UINT cbmxcaps)
 {
 	MMRESULT uResult = ::mixerGetDevCaps(reinterpret_cast<UINT_PTR>(m_hMixer), pmxcaps, cbmxcaps);
 	OnError(uResult, _T("CAudioMixer::GetDevCaps"));
+	if (MMSYSERR_NOERROR == uResult) {
+		m_sMixerCaps = *pmxcaps;
+	}
 	return uResult;
 }
 
@@ -104,6 +107,7 @@ MMRESULT CAudioMixer::GetLineInfo(LPMIXERLINE pmxl, DWORD fdwInfo)
 	// The cbStruct member must always be initialized to be the size,
 	// in bytes, of the MIXERLINE structure.
 	ASSERT(sizeof(MIXERLINE) == pmxl->cbStruct);
+	//ASSERT((0UL <= pmxl->dwDestination) && (pmxl->dwDestination < m_sMixerCaps.cDestinations));
 	MMRESULT uResult = ::mixerGetLineInfo(reinterpret_cast<HMIXEROBJ>(m_hMixer), pmxl, fdwInfo);
 	OnError(uResult, _T("CAudioMixer::GetLineInfo"));
 	return uResult;
@@ -149,7 +153,10 @@ bool CAudioMixer::query()
 	if (!bResult)
 		return !bResult;	// only test valid devices
 
+#define EXPERIMENTAL_CODE
 #ifdef EXPERIMENTAL_CODE
+#endif	//EXPERIMENTAL_CODE
+#undef EXPERIMENTAL_CODE
 
 	VERIFY(MMSYSERR_NOERROR == GetDevCaps(&m_sMixerCaps));
 	TRACE("Mixer: %s\nVersion: %d.%d\nDestinations: %d\n",
@@ -181,9 +188,10 @@ bool CAudioMixer::query()
 	vSrcComponentType.push_back(MIXERLINE_COMPONENTTYPE_SRC_ANALOG);
 
 	for (std::vector<DWORD>::iterator iter = vDestComponentType.begin(); iter != vDestComponentType.end(); ++iter) {
-		::ZeroMemory(&m_sMixerLine, sizeof(m_sMixerLine));
-		m_sMixerLine.cbStruct = sizeof(m_sMixerLine);
-		m_sMixerLine.dwComponentType = *iter;
+		::ZeroMemory(&m_sMixerLine, sizeof(MIXERLINE));
+		m_sMixerLine.cbStruct = sizeof(MIXERLINE);
+		m_sMixerLine.dwSource = 0UL;
+		m_sMixerLine.dwDestination = 0UL;
 		if (MMSYSERR_NOERROR == GetLineInfo(&m_sMixerLine, MIXER_GETLINEINFOF_COMPONENTTYPE)) {
 			TRACE("Device : %s\nLine : %d\nDest : %d\nSource : %d\n"
 				, m_sMixerLine.szName
@@ -214,20 +222,22 @@ bool CAudioMixer::query()
 			}
 		}
 	}
-#endif	//EXPERIMENTAL_CODE
-
 	return bResult;
 }
 
 bool CAudioMixer::queryAll()
 {
+#define EXPERIMENTAL_CODE
 #ifdef EXPERIMENTAL_CODE
+#endif	//EXPERIMENTAL_CODE
+#undef EXPERIMENTAL_CODE
+
 	bool bResult = isValid();
 	if (bResult)
 		return !bResult;	// only test when no valid devices
 
 	// open each mixer ID
-	for (UINT uID = 0; uID < ::mixerGetNumDevs(); ++uID) {
+	for (UINT uID = 0; uID < m_uDevices; ++uID) {
 		MMRESULT uResult = Open(uID, 0, 0, MIXER_OBJECTF_MIXER);
 		if (MMSYSERR_NOERROR != uResult) {
 			continue;
@@ -236,27 +246,8 @@ bool CAudioMixer::queryAll()
 
 		Close();
 	}
-	for (UINT uID = 0; uID < ::waveInGetNumDevs(); ++uID) {
-		MMRESULT uResult = Open(uID, 0, 0, MIXER_OBJECTF_WAVEIN);
-		if (MMSYSERR_NOERROR != uResult) {
-			continue;
-		}
-		query();
-
-		Close();
-	}
-	for (UINT uID = 0; uID < ::waveOutGetNumDevs(); ++uID) {
-		MMRESULT uResult = Open(uID, 0, 0, MIXER_OBJECTF_WAVEOUT);
-		if (MMSYSERR_NOERROR != uResult) {
-			continue;
-		}
-		query();
-
-		Close();
-	}
-#endif	//EXPERIMENTAL_CODE
 	return true;
 }
 
-#endif
+#endif	// _DEBUG
 
