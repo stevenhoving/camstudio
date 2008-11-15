@@ -9,6 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+// TODO: This needs serious memory check
 class CBuffer  
 {
 public:

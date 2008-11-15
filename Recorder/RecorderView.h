@@ -216,6 +216,7 @@ inline CRecorderDoc* CRecorderView::GetDocument()
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
+//External Variables
 extern bool bRecordState;
 extern CRect rc;
 extern CRect rcUse;
@@ -226,8 +227,11 @@ extern CPoint ptOrigin;
 
 extern CString strCodec;
 
+//extern LPWAVEFORMATEX pwfx;
+
 //Video Compress Parameters
 extern void GetVideoCompressState (HIC hic, DWORD fccHandler);
 extern void SetVideoCompressState (HIC hic, DWORD fccHandler);
+//extern void AllocCompressFormat(DWORD& dwCbwFX);
 
 #endif // !defined(AFX_VSCAPVIEW_H__DCC4865E_3B37_402E_AC1B_C8ABF4519F51__INCLUDED_)

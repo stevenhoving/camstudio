@@ -41,7 +41,7 @@ void OnError(LPTSTR lpszFunction)
 	if (ERROR_SUCCESS == dwError) {
 		return;
 	}
-	TRACE("OnError: %s: %u\n", lpszFunction, dwError);
+	TRACE(_T("OnError: %s: %u\n"), lpszFunction, dwError);
 	::SetLastError(ERROR_SUCCESS);	// reset the error
 
 	LPVOID lpMsgBuf = 0;
@@ -56,23 +56,24 @@ void OnError(LPTSTR lpszFunction)
 		0, NULL );
 
 	if (0 == dwLen) {
-		TRACE("OnError: FormatMessage error: %ud\n", ::GetLastError());
+		TRACE(_T("OnError: FormatMessage error: %ud\n"), ::GetLastError());
 		::SetLastError(ERROR_SUCCESS);	// reset the error
 		return;
 	}
 	// Display the error message and exit the process
 	LPVOID lpDisplayBuf = (LPVOID)::LocalAlloc(LMEM_ZEROINIT, (lstrlen((LPCTSTR)lpMsgBuf) + lstrlen((LPCTSTR)lpszFunction) + 40) * sizeof(TCHAR));
 	if (!lpDisplayBuf) {
-		TRACE("OnError: LocalAlloc error: %ud\n", ::GetLastError());
+		TRACE(_T("OnError: LocalAlloc error: %ud\n"), ::GetLastError());
 		::SetLastError(ERROR_SUCCESS);	// reset the error
 		::LocalFree(lpMsgBuf);
 		return;
 	}
 	HRESULT hr = StringCchPrintf((LPTSTR)lpDisplayBuf, ::LocalSize(lpDisplayBuf) / sizeof(TCHAR), TEXT("%s failed with error %d: %s"), lpszFunction, dwError, lpMsgBuf);
 	if (SUCCEEDED(hr)) {
-		::MessageBox(0, (LPCTSTR)lpDisplayBuf, TEXT("Error"), MB_OK);
+		//::MessageBox(0, (LPCTSTR)lpDisplayBuf, TEXT("Error"), MB_OK);
+		TRACE(_T("OnError: : %s\n"), lpDisplayBuf);
 	} else {
-		TRACE("OnError: StringCchPrintf error: %ud\n", ::GetLastError());
+		TRACE(_T("OnError: StringCchPrintf error: %ud\n"), ::GetLastError());
 		::SetLastError(ERROR_SUCCESS);	// reset the error
 	}
 

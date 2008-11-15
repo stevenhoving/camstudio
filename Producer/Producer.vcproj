@@ -157,6 +157,7 @@
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
+				EnablePREfast="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -1624,11 +1625,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Player_logo.bmp"
+				RelativePath="..\GlobalResources\Player_logo.bmp"
 				>
 			</File>
 			<File
-				RelativePath="..\GlobalResources\Player_logo.bmp"
+				RelativePath=".\Player_logo.bmp"
 				>
 			</File>
 			<File
@@ -1644,19 +1645,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\GlobalResources\Producer_logo.bmp"
-				>
-			</File>
-			<File
 				RelativePath=".\Producer_logo.bmp"
 				>
 			</File>
 			<File
-				RelativePath="..\GlobalResources\Recorder.ico"
+				RelativePath="..\GlobalResources\Producer_logo.bmp"
 				>
 			</File>
 			<File
 				RelativePath=".\Recorder.ico"
+				>
+			</File>
+			<File
+				RelativePath="..\GlobalResources\Recorder.ico"
 				>
 			</File>
 			<File

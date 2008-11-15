@@ -780,10 +780,10 @@ public:
     FlashTagHeader(UWORD _tagID, UDWORD _length) : tagID(_tagID), length(_length) {}
     virtual ~FlashTagHeader() {}
 
-    UWORD GetTagID(void) { return tagID; }
-    UDWORD GetTagLength(void) { return length; }
-    void SetTagID(UWORD _tagID) { tagID = _tagID; }
-    void SetTagLength(UDWORD _length) { length = _length; }
+    UWORD GetTagID(void)				{ return tagID; }
+    UDWORD GetTagLength(void)			{ return length; }
+    void SetTagID(UWORD _tagID)			{ tagID = _tagID; }
+    void SetTagLength(UDWORD _length)	{ length = _length; }
 
 private:
     UWORD  tagID;
