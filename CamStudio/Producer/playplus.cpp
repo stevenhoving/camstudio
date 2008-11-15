@@ -81,8 +81,8 @@ BOOL CPlayplusApp::InitInstance()
 	if (returnStatus == ERROR_SUCCESS) {
 		returnStatus = RegQueryValueEx(hKey, "LanguageID", NULL, &Type,(LPBYTE)&language, &Size);
 		if (returnStatus == ERROR_SUCCESS) {
-			if ( !LoadLangIDDLL((int) language) ) {
-				if ( !LoadLangIDDLL(GetUserDefaultLangID()) ) {
+			if (!LoadLangIDDLL((int) language)) {
+				if (!LoadLangIDDLL(GetUserDefaultLangID())) {
 					LoadLangIDDLL(GetSystemDefaultLangID());
 				}
 			}
@@ -126,24 +126,24 @@ BOOL CPlayplusApp::InitInstance()
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
 
-	playfiledir[0]=0;
+	playfiledir[0] = 0;
 	if (strlen(m_lpCmdLine)!=0) {
 		if ((m_lpCmdLine[0] == '-') && ((m_lpCmdLine[1]== 'b') || (m_lpCmdLine[1] == 'x'))) {
 			if (m_lpCmdLine[1] == 'x')
-				runmode = 1;	//Used internally by CamStudio recorder
+				runmode = 1;	// Used internally by CamStudio recorder
 			else
-				runmode = 2;	//no html launched on finish, no prompt asked
+				runmode = 2;	// no html launched on finish, no prompt asked
 
 			int i;
 			int lenx = strlen(m_lpCmdLine);
-			for (i=2;i<lenx;i++) {
-				if ((m_lpCmdLine[i]!=' ') && (m_lpCmdLine[i]!='\t')) {
+			for (i = 2; i < lenx; i++) {
+				if ((m_lpCmdLine[i] != ' ') && (m_lpCmdLine[i] != '\t')) {
 					break;
 				}
 			}
 
-			if (lenx>4) {
-				strcpy(playfiledir,&m_lpCmdLine[i]);
+			if (lenx > 4) {
+				strcpy(playfiledir, &m_lpCmdLine[i]);
 				//::MessageBox(NULL,playfiledir,"Note",MB_OK);
 			}
 
@@ -156,9 +156,9 @@ BOOL CPlayplusApp::InitInstance()
 			//playfiledir[1]= ' ';
 			//::MessageBox(NULL,&m_lpCmdLine[3],"Note",MB_OK);
 		} else {
-			strcpy(playfiledir,m_lpCmdLine);
+			strcpy(playfiledir, m_lpCmdLine);
 
-			//Fix to open long filename on launch
+			// Fix to open long filename on launch
 			cmdInfo.m_strFileName = playfiledir;
 		}
 	}

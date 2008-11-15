@@ -248,29 +248,24 @@ void CVideoWnd::OnPaint()
 
 void CVideoWnd::OnContextvideoSourceformat()
 {
-	// TODO: Add your command handler code here
-	if (m_FrameGrabber.GetSafeHwnd())
-	{
+	if (m_FrameGrabber.GetSafeHwnd()) {
 		m_FrameGrabber.VideoSourceDialog();
 		//OnUpdate(NULL, 0, NULL);
 		OnUpdateSize();
 		Invalidate();
 	}
-
 }
 
 void CVideoWnd::OnContextvideoVideosource()
 {
 	// TODO: Add your command handler code here
-	if (m_FrameGrabber.GetSafeHwnd())
-	{
+	if (m_FrameGrabber.GetSafeHwnd()) {
 		m_FrameGrabber.VideoFormatDialog();
 		//OnUpdate(NULL, 0, NULL);
 
 		OnUpdateSize();
 		Invalidate();
 	}
-
 }
 
 void CVideoWnd::OnContextMenu(CWnd* pWnd, CPoint point)
@@ -297,10 +292,8 @@ void CVideoWnd::OnContextMenu(CWnd* pWnd, CPoint point)
 	OnUpdateContextMenu();
 
 	//SetTimer(0x1, ADJUST_PERIOD, NULL);
-	pPopup->TrackPopupMenu(TPM_RIGHTBUTTON | TPM_LEFTALIGN,
-		point.x, point.y,
-		this); // route commands through main window
-
+	// route commands through main window
+	pPopup->TrackPopupMenu(TPM_RIGHTBUTTON | TPM_LEFTALIGN, point.x, point.y, this);
 }
 
 void CVideoWnd::OnUpdateContextMenu()
@@ -318,15 +311,12 @@ void CVideoWnd::OnUpdateContextMenu()
 		pPopup->EnableMenuItem(ID_CONTEXTVIDEO_SOURCEFORMAT,MF_ENABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXTVIDEO_VIDEOSOURCE,MF_ENABLED|MF_BYCOMMAND);
 
-	}
-	else
-	{
+	} else {
 		pPopup->EnableMenuItem(ID_CONTEXTVIDEO_SOURCEFORMAT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXTVIDEO_VIDEOSOURCE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 	}
 
 	if ((trackingOn) || (editImageOn) || (editTransOn)) {
-
 		pPopup->EnableMenuItem(ID_CONTEXT_EDITTEXT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_CLOSE, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_RESIZE, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
@@ -335,25 +325,18 @@ void CVideoWnd::OnUpdateContextMenu()
 
 		//pPopup->EnableMenuItem(ID_CONTEXTVIDEO_SOURCEFORMAT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 		//pPopup->EnableMenuItem(ID_CONTEXTVIDEO_VIDEOSOURCE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
-
-	}
-	else {
-
+	} else {
 		pPopup->EnableMenuItem(ID_CONTEXT_EDITTEXT,MF_ENABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_CLOSE, MF_ENABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_RESIZE, MF_ENABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_EDITIMAGE, MF_ENABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_EDITTRANSPARENCY, MF_ENABLED|MF_BYCOMMAND);
-
 	}
-
 }
 
 void CVideoWnd::OnUpdateSize()
 {
-
-	if (!m_iStatus)
-	{
+	if (!m_iStatus) {
 		CSize sz(180,160);
 		SetWindowPos(NULL,0,0, sz.cx-1, sz.cy-1, SWP_NOMOVE|SWP_NOZORDER);
 
@@ -362,43 +345,37 @@ void CVideoWnd::OnUpdateSize()
 
 		SetupRegion();
 		Invalidate();
-
-	}
-	else if (m_FrameGrabber.GetSafeHwnd())
-	{
+	} else if (m_FrameGrabber.GetSafeHwnd()) {
 		CSize sz = m_FrameGrabber.GetImageSize();
 		SetWindowPos(NULL,0,0, sz.cx-1, sz.cy-1, SWP_NOMOVE|SWP_NOZORDER);
 
 		m_rectWnd.right = m_rectWnd.left + sz.cx - 1;
 		m_rectWnd.bottom = m_rectWnd.top + sz.cy - 1;
+		
+		//CRect rcc;
+		//CRect rcw;
+		//GetClientRect(&rcc);
+		//GetWindowRect(&rcw);
+		//int dx = rcw.Width()-rcc.Width();
+		//int dy = rcw.Height()-rcc.Height();
 
-		/*
-		CRect rcc;
-		CRect rcw;
-		GetClientRect(&rcc);
-		GetWindowRect(&rcw);
-		int dx = rcw.Width()-rcc.Width();
-		int dy = rcw.Height()-rcc.Height();
+		//if (sz.cx && (rcc.Width()!=sz.cx || rcc.Height()!=sz.cy))
+		//{
+		//	SetWindowPos(NULL,0,0,
+		//		sz.cx+dx, sz.cy+dy, SWP_NOMOVE|SWP_NOZORDER);
 
-		if (sz.cx && (rcc.Width()!=sz.cx || rcc.Height()!=sz.cy))
-		{
-		SetWindowPos(NULL,0,0,
-		sz.cx+dx, sz.cy+dy, SWP_NOMOVE|SWP_NOZORDER);
+		//	GetParentFrame()->GetClientRect(&rcc);
+		//	GetParentFrame()->GetWindowRect(&rcw);
+		//	dx+= rcw.Width()-rcc.Width();
+		//	dy+= rcw.Height()-rcc.Height();
 
-		GetParentFrame()->GetClientRect(&rcc);
-		GetParentFrame()->GetWindowRect(&rcw);
-		dx+= rcw.Width()-rcc.Width();
-		dy+= rcw.Height()-rcc.Height();
-
-		GetParentFrame()->SetWindowPos(NULL,0,0,
-		sz.cx+dx, sz.cy+dy, SWP_NOMOVE|SWP_NOZORDER);
-		}
-		*/
+		//	GetParentFrame()->SetWindowPos(NULL,0,0,
+		//		sz.cx+dx, sz.cy+dy, SWP_NOMOVE|SWP_NOZORDER);
+		//}
 
 		SetupRegion();
 		Invalidate();
 	}
-
 }
 
 //Dialogs does not appears for large image....
@@ -418,7 +395,6 @@ void CVideoWnd::OnContextvideoEdittransparencyrefreshrate()
 
 	//editTransOn = 0;
 	OnUpdateContextMenu();
-
 }
 
 void CVideoWnd::OnContextvideoEdittransparency()
@@ -445,5 +421,4 @@ void CVideoWnd::OnContextvideoEdittransparency()
 	}
 
 	CTransparentWnd::EditTransparency();
-
 }
