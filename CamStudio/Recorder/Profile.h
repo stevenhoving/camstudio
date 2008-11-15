@@ -164,6 +164,7 @@ enum eLegacySettings
 	, INTERLEAVEUNIT
 	, NUMDEV
 	, SELECTEDDEV
+	, COMPRESSFORMATTAG
 	, FEEDBACK_LINE
 	, FEEDBACK_LINE_INFO
 
@@ -1088,36 +1089,44 @@ public:
 		, m_iFeedbackLineInfo(0)
 		, m_dwCbwFX(0)
 		, m_dwWaveinSelected(WAVE_FORMAT_2S16)
+		, m_pwfx(0)
+		, m_wFormatTag(0)
 	{
 	}
 	sAudioFormat(const sAudioFormat& rhs)
+		: m_uDeviceID(WAVE_MAPPER)
+		, m_bCompression(true)
+		, m_bInterleaveFrames(true)
+		, m_bUseMCI(false)
+		, m_bPerformAutoSearch(true)
+		, m_iRecordAudio(NONE)
+		, m_iNumChannels(2)
+		, m_iBitsPerSample(16)
+		, m_iSamplesPerSeconds(22050)
+		, m_iInterleaveFactor(100)
+		, m_iInterleavePeriod(MILLISECONDS)
+		, m_iMixerDevices(0)
+		, m_iSelectedMixer(0)
+		, m_iFeedbackLine(0)
+		, m_iFeedbackLineInfo(0)
+		, m_dwCbwFX(0)
+		, m_dwWaveinSelected(WAVE_FORMAT_2S16)
+		, m_pwfx(0)
+		, m_wFormatTag(0)
 	{
 		*this = rhs;
 	}
-	sAudioFormat& operator=(const sAudioFormat& rhs)
+	virtual ~sAudioFormat()
 	{
-		if (this == &rhs)
-			return *this;
-
-		m_uDeviceID				= rhs.m_uDeviceID;
-		m_bCompression			= rhs.m_bCompression;
-		m_bInterleaveFrames		= rhs.m_bInterleaveFrames;
-		m_bUseMCI				= rhs.m_bUseMCI;
-		m_bPerformAutoSearch	= rhs.m_bPerformAutoSearch;
-		m_iRecordAudio			= rhs.m_iRecordAudio;
-		m_iNumChannels			= rhs.m_iNumChannels;
-		m_iBitsPerSample		= rhs.m_iBitsPerSample;
-		m_iSamplesPerSeconds	= rhs.m_iSamplesPerSeconds;
-		m_iInterleaveFactor		= rhs.m_iInterleaveFactor;
-		m_iInterleavePeriod		= rhs.m_iInterleavePeriod;
-		m_iMixerDevices			= rhs.m_iMixerDevices;
-		m_iSelectedMixer		= rhs.m_iSelectedMixer;
-		m_iFeedbackLine			= rhs.m_iFeedbackLine;
-		m_iFeedbackLineInfo		= rhs.m_iFeedbackLineInfo;
-		m_dwCbwFX				= rhs.m_dwCbwFX;
-		m_dwWaveinSelected		= rhs.m_dwWaveinSelected;
-		return *this;
+		DeleteAudio();
 	}
+
+	sAudioFormat& operator=(const sAudioFormat& rhs);
+
+	////////////////////////////
+	// TODO: need pimple idom
+	////////////////////////////
+
 	bool Read(CProfile& cProfile)
 	{
 		VERIFY(cProfile.Read(AUDIODEVICEID, m_uDeviceID));
@@ -1131,7 +1140,9 @@ public:
 		VERIFY(cProfile.Read(AUDIO_NUM_CHANNELS, m_iNumChannels));
 		VERIFY(cProfile.Read(AUDIO_SAMPLES_PER_SECONDS, m_iSamplesPerSeconds));
 		VERIFY(cProfile.Read(NUMDEV, m_iMixerDevices));		
-		VERIFY(cProfile.Read(SELECTEDDEV, m_iSelectedMixer));		
+		VERIFY(cProfile.Read(SELECTEDDEV, m_iSelectedMixer));
+		VERIFY(cProfile.Read(COMPRESSFORMATTAG, m_wFormatTag));
+		AudioFormat().wFormatTag = m_wFormatTag;
 		VERIFY(cProfile.Read(FEEDBACK_LINE, m_iFeedbackLine));
 		VERIFY(cProfile.Read(FEEDBACK_LINE_INFO, m_iFeedbackLineInfo));		
 		VERIFY(cProfile.Read(INTERLEAVEFRAMES, m_bInterleaveFrames));
@@ -1152,7 +1163,9 @@ public:
 		VERIFY(cProfile.Write(AUDIO_NUM_CHANNELS, m_iNumChannels));
 		VERIFY(cProfile.Write(AUDIO_SAMPLES_PER_SECONDS, m_iSamplesPerSeconds));
 		VERIFY(cProfile.Write(NUMDEV, m_iMixerDevices));		
-		VERIFY(cProfile.Write(SELECTEDDEV, m_iSelectedMixer));		
+		VERIFY(cProfile.Write(SELECTEDDEV, m_iSelectedMixer));
+		m_wFormatTag = AudioFormat().wFormatTag;
+		VERIFY(cProfile.Write(COMPRESSFORMATTAG, m_wFormatTag));
 		VERIFY(cProfile.Write(FEEDBACK_LINE, m_iFeedbackLine));
 		VERIFY(cProfile.Write(FEEDBACK_LINE_INFO, m_iFeedbackLineInfo));		
 		VERIFY(cProfile.Write(INTERLEAVEFRAMES, m_bInterleaveFrames));
@@ -1160,7 +1173,19 @@ public:
 		VERIFY(cProfile.Write(INTERLEAVEUNIT, m_iInterleavePeriod));
 		return true;
 	}
-	bool isInput(eAudioInput eInput) const {return eInput == m_iRecordAudio;}
+	bool isInput(eAudioInput eInput) const	{return eInput == m_iRecordAudio;}
+	bool isAudioFormat() const				{return (m_pwfx) ? true : false;}
+	WAVEFORMATEX& AudioFormat()
+	{
+		if (!m_pwfx) {
+			VERIFY(NewAudio());
+		}
+		return *m_pwfx;
+	}
+
+	bool DeleteAudio();
+	bool WriteAudio(const LPWAVEFORMATEX pwfx);
+	void BuildRecordingFormat();
 
 	bool m_bCompression;
 	bool m_bInterleaveFrames;
@@ -1177,8 +1202,13 @@ public:
 	int m_iFeedbackLine;
 	int m_iFeedbackLineInfo;
 	UINT m_uDeviceID;
-	DWORD m_dwCbwFX;
+	int m_wFormatTag;
+	DWORD m_dwCbwFX;	// TODO; can be 
 	DWORD m_dwWaveinSelected;
+private:
+	bool NewAudio();
+	bool CopyAudio(LPWAVEFORMATEX pwfx, DWORD dwCbwFX);
+	LPWAVEFORMATEX m_pwfx;
 };
 extern sAudioFormat cAudioFormat;
 

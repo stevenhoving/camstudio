@@ -1997,8 +1997,8 @@ int CPlayplusView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	WORD wVer = HIWORD(VideoForWindowsVersion());
 	if (wVer < 0x010a)
 	{
-		if ((runmode==0) || (runmode==1))
-			MessageOut(NULL,IDS_TPRVFW11, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+		if ((0 == runmode) || (1 == runmode))
+			MessageOut(NULL, IDS_TPRVFW11, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
 		return -1;
 	}
 	AVIFileInit();
@@ -2025,9 +2025,9 @@ int CPlayplusView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		SuggestCompressFormat();
 
 	}
-	if (pmode == PLAYER)
+	if (PLAYER == pmode)
 		allowRecordExtension = 0;
-	else if (pmode == DUBBER)
+	else if (DUBBER == pmode)
 		allowRecordExtension = 1;
 
 	//ver 2.25
