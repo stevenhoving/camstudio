@@ -221,6 +221,10 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\ACM.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AnnotationEffectsOptions.cpp"
 				>
 			</File>
@@ -1059,6 +1063,10 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
+			<File
+				RelativePath=".\ACM.h"
+				>
+			</File>
 			<File
 				RelativePath=".\AnnotationEffectsOptions.h"
 				>

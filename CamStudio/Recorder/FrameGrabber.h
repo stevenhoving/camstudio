@@ -28,15 +28,14 @@ public:
 
 // Attributes
 public:
+	LPBITMAPINFO GetDIB();
+	LPBYTE GetImageBitsBuffer();
 
-	LPBITMAPINFO	GetDIB();
-	LPBYTE			GetImageBitsBuffer();
+	CSize GetImageSize();
+	DWORD GetImageBitsResolution();
 
-	CSize		GetImageSize();
-	DWORD		GetImageBitsResolution();
-
-	BOOL		VideoFormatDialog();
-	BOOL		VideoSourceDialog();
+	BOOL VideoFormatDialog();
+	BOOL VideoSourceDialog();
 // Operations
 public:
 
@@ -49,9 +48,10 @@ public:
 
 // Implementation
 public:
-	//must be a public method (for use with callbac)
-	void	SetImageData(LPVOID data);
 	virtual ~CFrameGrabber();
+
+	//must be a public method (for use with callbac)
+	void SetImageData(LPVOID data);
 
 	// Generated message map functions
 protected:

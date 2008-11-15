@@ -46,6 +46,7 @@
 #include "VCM.h"
 #include "AVI.h"
 #include "MCI.h"
+#include "ACM.h"
 
 #include <windowsx.h>
 
@@ -177,14 +178,13 @@ CString strTempFilePath;
 CString tempaudiopath;
 
 HWAVEIN m_hRecord;
-WAVEFORMATEX m_Format;
 DWORD m_ThreadID;
 int m_QueuedBuffers = 0;
 int iBufferSize = 1000; // number of samples
 CSoundFile * pSoundFile = NULL;
 
 //Audio Options Dialog
-LPWAVEFORMATEX pwfx = NULL;
+//LPWAVEFORMATEX pwfx = NULL;
 
 /////////////////////////////////////////////////////////////////////////////
 //ver 1.2
@@ -245,7 +245,6 @@ CString strCodec("MS Video 1");
 //Files Directory
 CString savedir("");
 
-BOOL StartAudioRecording(WAVEFORMATEX* format);
 void waveInErrorMsg(MMRESULT result, const char *);
 int AddInputBufferToQueue();
 void SetBufferSize(int NumberOfSamples);
@@ -255,14 +254,8 @@ void StopAudioRecording();
 BOOL InitAudioRecording();
 void ClearAudioFile();
 void GetTempWavePath();
-void BuildRecordingFormat();
-void SuggestCompressFormat();
-void SuggestRecordingFormat();
-void AllocCompressFormat();
 BOOL CALLBACK SaveCallback(int iProgress);
 //Functions that select audio options based on settings read
-void AttemptRecordingFormat();
-void AttemptCompressFormat();
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -270,12 +263,21 @@ void AttemptCompressFormat();
 bool UnSetHotKeys(HWND hWnd);
 bool UnSetHotKeys(HWND hWnd)
 {
-	VERIFY(UnregisterHotKey(hWnd, 0));
-	VERIFY(UnregisterHotKey(hWnd, 1));
-	VERIFY(UnregisterHotKey(hWnd, 2));
-	VERIFY(UnregisterHotKey(hWnd, 3));
-	VERIFY(UnregisterHotKey(hWnd, 4));
-	VERIFY(UnregisterHotKey(hWnd, 5));
+	if (!::UnregisterHotKey(hWnd, 0)) {
+		::OnError(_T("UnSetHotKeys"));
+	}
+	if (!::UnregisterHotKey(hWnd, 2)) {
+		::OnError(_T("UnSetHotKeys"));
+	}
+	if (!::UnregisterHotKey(hWnd, 3)) {
+		::OnError(_T("UnSetHotKeys"));
+	}
+	if (!::UnregisterHotKey(hWnd, 4)) {
+		::OnError(_T("UnSetHotKeys"));
+	}
+	if (!::UnregisterHotKey(hWnd, 5)) {
+		::OnError(_T("UnSetHotKeys"));
+	}
 	return 0;
 }
 
@@ -541,13 +543,13 @@ BOOL InitAudioRecording()
 
 	iBufferSize = 1000; // samples per callback
 
-	BuildRecordingFormat();
+	cAudioFormat.BuildRecordingFormat();
 
 	ClearAudioFile();
 
 	//Create temporary wav file for audio recording
 	GetTempWavePath();
-	pSoundFile = new CSoundFile(tempaudiopath, &m_Format);
+	pSoundFile = new CSoundFile(tempaudiopath, &(cAudioFormat.AudioFormat()));
 
 	if (!(pSoundFile && pSoundFile->IsOK()))
 		//MessageBox(NULL,"Error Creating Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
@@ -595,15 +597,14 @@ void SetBufferSize(int NumberOfSamples)
 	iBufferSize = NumberOfSamples;
 }
 
-BOOL StartAudioRecording(WAVEFORMATEX* format)
+//BOOL StartAudioRecording(WAVEFORMATEX* format);
+BOOL StartAudioRecording()
 {
 	TRACE(_T("StartAudioRecording\n"));
-	if (format != NULL)
-		m_Format = *format;
 
 	// open wavein device
 	// use on message to map.....
-	MMRESULT mmReturn = ::waveInOpen(&m_hRecord, cAudioFormat.m_uDeviceID, &m_Format,(DWORD) hWndGlobal, NULL, CALLBACK_WINDOW);
+	MMRESULT mmReturn = ::waveInOpen(&m_hRecord, cAudioFormat.m_uDeviceID, &(cAudioFormat.AudioFormat()),(DWORD) hWndGlobal, NULL, CALLBACK_WINDOW);
 	if (mmReturn) {
 		waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
 		return FALSE;
@@ -622,8 +623,8 @@ BOOL StartAudioRecording(WAVEFORMATEX* format)
 	}
 
 	iAudioTimeInitiated = 1;
-	sdwSamplesPerSec = ((LPWAVEFORMAT) &m_Format)->nSamplesPerSec;
-	sdwBytesPerSec = ((LPWAVEFORMAT) &m_Format)->nAvgBytesPerSec;
+	sdwSamplesPerSec = cAudioFormat.AudioFormat().nSamplesPerSec;
+	sdwBytesPerSec = cAudioFormat.AudioFormat().nAvgBytesPerSec;
 
 	return TRUE;
 }
@@ -638,7 +639,7 @@ int AddInputBufferToQueue()
 	ZeroMemory(pHdr, sizeof(WAVEHDR));
 
 	// new a buffer
-	CBuffer buf(m_Format.nBlockAlign * iBufferSize, false);
+	CBuffer buf(cAudioFormat.AudioFormat().nBlockAlign * iBufferSize, false);
 	pHdr->lpData = buf.ptr.c;
 	pHdr->dwBufferLength = buf.ByteLen;
 
@@ -706,169 +707,36 @@ void DataFromSoundIn(CBuffer* buffer)
 }
 
 //Alloc Maximum Size for Save Format pwfx
-void AllocCompressFormat()
-{
-	int initial_audiosetup = (pwfx) ? 0 : 1;
-	if (!initial_audiosetup) {
-		//Do nothing....already allocated
-		return;
-	}
-	MMRESULT mmresult = acmMetrics(NULL, ACM_METRIC_MAX_SIZE_FORMAT, &cAudioFormat.m_dwCbwFX);
-	if (MMSYSERR_NOERROR != mmresult) {
-		//CString msgstr;
-		//msgstr.Format("Metrics failed mmresult=%u!", mmresult);
-		//::MessageBox(NULL,msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
+//void AllocCompressFormat(DWORD& rdwCbwFX)
+//{
+//	int initial_audiosetup = (cAudioFormat.m_pwfx) ? 0 : 1;
+//	if (!initial_audiosetup) {
+//		//Do nothing....already allocated
+//		return;
+//	}
+//	MMRESULT mmresult = ::acmMetrics(NULL, ACM_METRIC_MAX_SIZE_FORMAT, &rdwCbwFX);
+//	if (MMSYSERR_NOERROR != mmresult) {
+//		//CString msgstr;
+//		//msgstr.Format("Metrics failed mmresult=%u!", mmresult);
+//		//::MessageBox(NULL,msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
+//
+//		::MessageOut(NULL, IDS_STRING_METRICSFAILED, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, mmresult);
+//		return;
+//	}
+//
+//	cAudioFormat.m_pwfx = (LPWAVEFORMATEX)GlobalAllocPtr(GHND, rdwCbwFX);
+//	if (NULL == cAudioFormat.m_pwfx) {
+//		//CString msgstr;
+//		//msgstr.Format("GlobalAllocPtr(%lu) failed!", dwCbwFX);
+//		//::MessageBox(NULL,msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
+//
+//		MessageOut(NULL,IDS_STRING_GALLOC,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+//		return;
+//	}
+//
+//	initial_audiosetup = 1;
+//}
 
-		MessageOut(NULL,IDS_STRING_METRICSFAILED, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,mmresult);
-		return;
-	}
-
-	pwfx = (LPWAVEFORMATEX)GlobalAllocPtr(GHND, cAudioFormat.m_dwCbwFX);
-	if (NULL == pwfx) {
-		//CString msgstr;
-		//msgstr.Format("GlobalAllocPtr(%lu) failed!", dwCbwFX);
-		//::MessageBox(NULL,msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
-
-		MessageOut(NULL,IDS_STRING_GALLOC,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-		return;
-	}
-
-	initial_audiosetup = 1;
-}
-
-//Build Recording Format to m_Format
-void BuildRecordingFormat()
-{
-	m_Format.wFormatTag		= WAVE_FORMAT_PCM;
-	m_Format.wBitsPerSample = cAudioFormat.m_iBitsPerSample;
-	m_Format.nSamplesPerSec = cAudioFormat.m_iSamplesPerSeconds;
-	m_Format.nChannels		= cAudioFormat.m_iNumChannels;
-
-	m_Format.nBlockAlign = m_Format.nChannels * (m_Format.wBitsPerSample/8);
-	m_Format.nAvgBytesPerSec = m_Format.nSamplesPerSec * m_Format.nBlockAlign;
-	m_Format.cbSize = 0;
-}
-
-//Suggest Save/Compress Format to pwfx
-void SuggestRecordingFormat()
-{
-	WAVEINCAPS pwic;
-	::ZeroMemory(&pwic, sizeof(WAVEINCAPS));
-	MMRESULT mmResult = ::waveInGetDevCaps(cAudioFormat.m_uDeviceID, &pwic, sizeof(pwic));
-	if (MMSYSERR_NOERROR != mmResult)
-	{
-		// report error
-		TRACE("SuggestRecordingFormat: waveInGetDevCaps failed %d\n", mmResult);
-		return; 
-	}
-
-	//Ordered in preference of choice
-	if ((pwic.dwFormats) & WAVE_FORMAT_2S16) {
-		cAudioFormat.m_iBitsPerSample = 16;
-		cAudioFormat.m_iNumChannels = 2;
-		cAudioFormat.m_iSamplesPerSeconds = 22050;
-		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_2S16;
-	} else if ((pwic.dwFormats) & WAVE_FORMAT_2M08) {
-		cAudioFormat.m_iBitsPerSample = 8;
-		cAudioFormat.m_iNumChannels = 1;
-		cAudioFormat.m_iSamplesPerSeconds = 22050;
-		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_2M08;
-	} else if ((pwic.dwFormats) & WAVE_FORMAT_2S08) {
-		cAudioFormat.m_iBitsPerSample = 8;
-		cAudioFormat.m_iNumChannels = 2;
-		cAudioFormat.m_iSamplesPerSeconds = 22050;
-		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_2S08;
-	} else if ((pwic.dwFormats) & WAVE_FORMAT_2M16) {
-		cAudioFormat.m_iBitsPerSample = 16;
-		cAudioFormat.m_iNumChannels = 1;
-		cAudioFormat.m_iSamplesPerSeconds = 22050;
-		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_2M16;
-	} else if ((pwic.dwFormats) & WAVE_FORMAT_1M08) {
-		cAudioFormat.m_iBitsPerSample = 8;
-		cAudioFormat.m_iNumChannels = 1;
-		cAudioFormat.m_iSamplesPerSeconds = 11025;
-		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_1M08;
-	} else if ((pwic.dwFormats) & WAVE_FORMAT_1M16) {
-		cAudioFormat.m_iBitsPerSample = 16;
-		cAudioFormat.m_iNumChannels = 1;
-		cAudioFormat.m_iSamplesPerSeconds = 11025;
-		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_1M16;
-	} else if ((pwic.dwFormats) & WAVE_FORMAT_1S08) {
-		cAudioFormat.m_iBitsPerSample = 8;
-		cAudioFormat.m_iNumChannels = 2;
-		cAudioFormat.m_iSamplesPerSeconds = 11025;
-		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_1S08;
-	} else if ((pwic.dwFormats) & WAVE_FORMAT_1S16) {
-		cAudioFormat.m_iBitsPerSample = 16;
-		cAudioFormat.m_iNumChannels = 2;
-		cAudioFormat.m_iSamplesPerSeconds = 11025;
-		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_1S16;
-	} else if ((pwic.dwFormats) & WAVE_FORMAT_4M08) {
-		cAudioFormat.m_iBitsPerSample = 8;
-		cAudioFormat.m_iNumChannels = 1;
-		cAudioFormat.m_iSamplesPerSeconds = 44100;
-		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_4M08;
-	} else if ((pwic.dwFormats) & WAVE_FORMAT_4M16) {
-		cAudioFormat.m_iBitsPerSample = 16;
-		cAudioFormat.m_iNumChannels = 1;
-		cAudioFormat.m_iSamplesPerSeconds = 44100;
-		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_4M16;
-	} else if ((pwic.dwFormats) & WAVE_FORMAT_4S08) {
-		cAudioFormat.m_iBitsPerSample = 8;
-		cAudioFormat.m_iNumChannels = 2;
-		cAudioFormat.m_iSamplesPerSeconds = 44100;
-		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_4S08;
-	} else if ((pwic.dwFormats) & WAVE_FORMAT_4S16) {
-		cAudioFormat.m_iBitsPerSample = 16;
-		cAudioFormat.m_iNumChannels = 2;
-		cAudioFormat.m_iSamplesPerSeconds = 44100;
-		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_4S16;
-	} else {
-		//Arbitrarily choose one
-		cAudioFormat.m_iBitsPerSample = 8;
-		cAudioFormat.m_iNumChannels = 1;
-		cAudioFormat.m_iSamplesPerSeconds = 22050;
-		cAudioFormat.m_dwWaveinSelected = WAVE_FORMAT_2M08;
-	}
-
-	//Build m_Format
-	BuildRecordingFormat();
-}
-
-void SuggestCompressFormat()
-{
-	cAudioFormat.m_bCompression = TRUE;
-
-	AllocCompressFormat();
-
-	//1st try MPEGLAYER3
-	BuildRecordingFormat();
-	MMRESULT mmr;
-	if ((m_Format.nSamplesPerSec == 22050) && (m_Format.nChannels==2) && (m_Format.wBitsPerSample <= 16)) {
-		pwfx->wFormatTag = WAVE_FORMAT_MPEGLAYER3;
-		mmr = acmFormatSuggest(NULL, &m_Format, pwfx, cAudioFormat.m_dwCbwFX, ACM_FORMATSUGGESTF_WFORMATTAG);
-	}
-
-	if (mmr!=0) {
-		//ver 1.6, use PCM if MP3 not available
-
-		//Then try ADPCM
-		//BuildRecordingFormat();
-		//pwfx->wFormatTag = WAVE_FORMAT_ADPCM;
-		//MMRESULT mmr = acmFormatSuggest(NULL, &m_Format, pwfx, dwCbwFX, ACM_FORMATSUGGESTF_WFORMATTAG);
-
-		if (mmr!=0) {
-			//Use the PCM as default
-			BuildRecordingFormat();
-			pwfx->wFormatTag = WAVE_FORMAT_PCM;
-			MMRESULT mmr = acmFormatSuggest(NULL, &m_Format, pwfx, cAudioFormat.m_dwCbwFX, ACM_FORMATSUGGESTF_WFORMATTAG);
-
-			if (mmr!=0) {
-				cAudioFormat.m_bCompression = FALSE;
-			}
-		}
-	}
-}
 
 //MMRESULT IsFormatSupported(LPWAVEFORMATEX pwfx, UINT uDeviceID);
 //MMRESULT IsFormatSupported(LPWAVEFORMATEX pwfx, UINT uDeviceID)
@@ -1246,30 +1114,6 @@ void SetVideoCompressState (HIC hic, DWORD fccHandler)
 				MessageOut(NULL,IDS_STRING_SETCOMPRESSOR,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			}
 		}
-	}
-}
-
-//ver .12
-void AttemptRecordingFormat()
-{
-	WAVEINCAPS pwic;
-	MMRESULT mmr = waveInGetDevCaps(cAudioFormat.m_uDeviceID, &pwic, sizeof(pwic));
-	if ((pwic.dwFormats) & cAudioFormat.m_dwWaveinSelected) {
-		BuildRecordingFormat();
-	} else {
-		SuggestRecordingFormat();
-	}
-}
-
-void AttemptCompressFormat()
-{
-	cAudioFormat.m_bCompression = TRUE;
-	AllocCompressFormat();
-	BuildRecordingFormat();
-	//Test Compatibility
-	MMRESULT mmr = acmFormatSuggest(NULL, &m_Format, pwfx, cAudioFormat.m_dwCbwFX, ACM_FORMATSUGGESTF_NCHANNELS | ACM_FORMATSUGGESTF_NSAMPLESPERSEC | ACM_FORMATSUGGESTF_WBITSPERSAMPLE | ACM_FORMATSUGGESTF_WFORMATTAG);
-	if (mmr!=0) {
-		SuggestCompressFormat();
 	}
 }
 
@@ -1847,10 +1691,10 @@ void CRecorderView::OnDestroy()
 		hLogoBM = NULL;
 	}
 
-	if (pwfx) {
-		GlobalFreePtr(pwfx);
-		pwfx = NULL;
-	}
+	//if (pwfx) {
+	//	GlobalFreePtr(pwfx);
+	//	pwfx = NULL;
+	//}
 
 	//ver 1.6
 	if (TroubleShootVal) {
@@ -2103,9 +1947,9 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 		//if ((iRecordAudio==2) || (bUseMCI)) {
 		//ver 2.26 ...overwrite audio settings for Flash Moe recording ... no compression used...
 		if ((cAudioFormat.isInput(SPEAKERS)) || (cAudioFormat.m_bUseMCI) || (cProgramOpts.m_iRecordingMode == ModeFlash)) {
-			result = Merge_Video_And_Sound_File(strTempFilePath, tempaudiopath, m_newfile, FALSE, pwfx, cAudioFormat.m_dwCbwFX,cAudioFormat.m_bInterleaveFrames,cAudioFormat.m_iInterleaveFactor, cAudioFormat.m_iInterleavePeriod);
+			result = Merge_Video_And_Sound_File(strTempFilePath, tempaudiopath, m_newfile, FALSE, &(cAudioFormat.AudioFormat()), cAudioFormat.m_dwCbwFX, cAudioFormat.m_bInterleaveFrames, cAudioFormat.m_iInterleaveFactor, cAudioFormat.m_iInterleavePeriod);
 		} else if (cAudioFormat.isInput(MICROPHONE)) {
-			result = Merge_Video_And_Sound_File(strTempFilePath, tempaudiopath, m_newfile, cAudioFormat.m_bCompression, pwfx, cAudioFormat.m_dwCbwFX,cAudioFormat.m_bInterleaveFrames,cAudioFormat.m_iInterleaveFactor, cAudioFormat.m_iInterleavePeriod);
+			result = Merge_Video_And_Sound_File(strTempFilePath, tempaudiopath, m_newfile, cAudioFormat.m_bCompression, &(cAudioFormat.AudioFormat()), cAudioFormat.m_dwCbwFX,cAudioFormat.m_bInterleaveFrames,cAudioFormat.m_iInterleaveFactor, cAudioFormat.m_iInterleavePeriod);
 		}
 
 		//Check Results : Attempt Recovery on error
@@ -3013,7 +2857,7 @@ void CRecorderView::SaveSettings()
 		fwrite((LPCTSTR)(CamCursor.Dir()), CamCursor.Dir().GetLength(), 1, tFile);
 
 	if (cAudioFormat.m_dwCbwFX > 0)
-		fwrite(pwfx, cAudioFormat.m_dwCbwFX, 1, tFile);
+		fwrite(&(cAudioFormat.AudioFormat()), cAudioFormat.m_dwCbwFX, 1, tFile);
 
 	if (0L < cVideoOpts.StateSize()) {
 		fwrite(cVideoOpts.State(), cVideoOpts.StateSize(), 1, tFile);
@@ -3497,19 +3341,14 @@ void CRecorderView::LoadSettings()
 		{
 			// if perfoming an upgrade from previous settings,
 			// do not load these additional camdata.ini information
-			if (cAudioFormat.m_dwCbwFX > 0) {
-				AllocCompressFormat();
-				int countread = fread(pwfx, cAudioFormat.m_dwCbwFX, 1, tFile);
-				if (countread != 1) {
-					cAudioFormat.m_dwCbwFX = 0;
-					if (pwfx)
-					{
-						GlobalFreePtr(pwfx);
-						pwfx = NULL;
-						SuggestCompressFormat();
-					}
-				} else {
+			if (0 < cAudioFormat.m_dwCbwFX) {
+				//AllocCompressFormat(cAudioFormat.m_dwCbwFX);
+				int countread = fread(&(cAudioFormat.AudioFormat()), cAudioFormat.m_dwCbwFX, 1, tFile);
+				if (1 == countread) {
 					AttemptCompressFormat();
+				} else {
+					cAudioFormat.DeleteAudio();
+					SuggestCompressFormat();
 				}
 			}
 
@@ -3991,16 +3830,14 @@ void CRecorderView::OnOptionsSynchronization()
 
 void CRecorderView::OnToolsSwfproducer()
 {
-	CString AppDir=GetProgPath();
+	CString AppDir = GetProgPath();
 	CString launchPath;
 	CString exefileName("\\Producer.exe ");
-	launchPath=AppDir+exefileName;
+	launchPath = AppDir + exefileName;
 
-	if (WinExec(launchPath,SW_SHOW)!=0) {
-	}
-	else {
+	if (31 < WinExec(launchPath, SW_SHOW)) {
 		//MessageBox("Error launching SWF Producer!","Note",MB_OK | MB_ICONEXCLAMATION);
-		MessageOut(m_hWnd,IDS_ERRPPRODUCER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		MessageOut(m_hWnd, IDS_ERRPPRODUCER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 	}
 }
 
@@ -4667,7 +4504,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 		//}
 	} else if (!cAudioFormat.isInput(NONE)) {
 		InitAudioRecording();
-		StartAudioRecording(&m_Format);
+		StartAudioRecording();
 	}
 
 	if (cVideoOpts.m_iShiftType == AUDIOFIRST) {

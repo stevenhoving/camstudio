@@ -17,6 +17,124 @@ int iLayoutNameInt = 1;
 int iFrameShift = 0;
 int iPresetTime = 60;
 
+sAudioFormat& sAudioFormat::operator=(const sAudioFormat& rhs)
+{
+	if (this == &rhs)
+		return *this;
+
+	m_uDeviceID				= rhs.m_uDeviceID;
+	m_bCompression			= rhs.m_bCompression;
+	m_bInterleaveFrames		= rhs.m_bInterleaveFrames;
+	m_bUseMCI				= rhs.m_bUseMCI;
+	m_bPerformAutoSearch	= rhs.m_bPerformAutoSearch;
+	m_iRecordAudio			= rhs.m_iRecordAudio;
+	m_iNumChannels			= rhs.m_iNumChannels;
+	m_iBitsPerSample		= rhs.m_iBitsPerSample;
+	m_iSamplesPerSeconds	= rhs.m_iSamplesPerSeconds;
+	m_iInterleaveFactor		= rhs.m_iInterleaveFactor;
+	m_iInterleavePeriod		= rhs.m_iInterleavePeriod;
+	m_iMixerDevices			= rhs.m_iMixerDevices;
+	m_iSelectedMixer		= rhs.m_iSelectedMixer;
+	m_iFeedbackLine			= rhs.m_iFeedbackLine;
+	m_iFeedbackLineInfo		= rhs.m_iFeedbackLineInfo;
+	m_dwWaveinSelected		= rhs.m_dwWaveinSelected;
+	m_wFormatTag			= rhs.m_wFormatTag;
+	
+	DeleteAudio();
+	if (rhs.m_pwfx && rhs.m_dwCbwFX) {
+		if (NewAudio()) {
+			ASSERT(m_dwCbwFX == rhs.m_dwCbwFX);
+			ASSERT(m_dwCbwFX == (sizeof(WAVEFORMATEX) + m_pwfx->cbSize));
+			::CopyMemory(m_pwfx, rhs.m_pwfx, m_dwCbwFX);
+			if (m_pwfx->wFormatTag != m_wFormatTag) {
+				m_pwfx->wFormatTag = m_wFormatTag;
+			}
+		}
+	} else {
+		TRACE(_T("error! pointer and size mismatch!\n"));
+	}
+	return *this;
+}
+	
+
+// special memory allocator for sAudioFormat
+bool sAudioFormat::DeleteAudio()
+{
+	if (m_pwfx) {
+		delete [] m_pwfx, m_pwfx = 0;
+	}
+	m_dwCbwFX = 0;
+	return true;
+}
+
+bool sAudioFormat::NewAudio()
+{
+	bool bResult = DeleteAudio();
+	if (!bResult)  {
+		return bResult;
+	}
+	MMRESULT mmresult = ::acmMetrics(NULL, ACM_METRIC_MAX_SIZE_FORMAT, &m_dwCbwFX);
+	bResult = (MMSYSERR_NOERROR == mmresult);
+	if (!bResult)  {
+		return bResult;
+	}
+
+	m_pwfx = (LPWAVEFORMATEX)new char[m_dwCbwFX];
+	bResult = (0 != m_pwfx);
+	if (!bResult) {
+		m_dwCbwFX = 0;
+	} else {
+		::ZeroMemory(m_pwfx, m_dwCbwFX);
+		m_pwfx->cbSize = m_dwCbwFX - sizeof(WAVEFORMATEX); 
+	}
+	return bResult;
+}
+
+bool sAudioFormat::CopyAudio(LPWAVEFORMATEX pwfx, DWORD dwCbwFX)
+{
+	bool bResult = (0 != pwfx);
+	if (!bResult)  {
+		return bResult;
+	}
+	bResult = (m_dwCbwFX == dwCbwFX);
+	if (!bResult)  {
+		return bResult;
+	}
+	::CopyMemory(pwfx, m_pwfx, m_dwCbwFX);
+
+	return bResult;
+}
+
+bool sAudioFormat::WriteAudio(const LPWAVEFORMATEX pwfx)
+{
+	bool bResult = (0 != pwfx);
+	if (!bResult)  {
+		return bResult;
+	}
+	bResult = NewAudio();
+	if (!bResult)  {
+		return bResult;
+	}
+	::CopyMemory(m_pwfx, pwfx, m_dwCbwFX);
+	m_wFormatTag = m_pwfx->wFormatTag;
+
+	return bResult;
+}
+
+void sAudioFormat::BuildRecordingFormat()
+{
+	WAVEFORMATEX& rFormat = AudioFormat();
+
+	rFormat.wFormatTag		= WAVE_FORMAT_PCM;
+	rFormat.wBitsPerSample	= m_iBitsPerSample;
+	rFormat.nSamplesPerSec	= m_iSamplesPerSeconds;
+	rFormat.nChannels		= m_iNumChannels;
+
+	rFormat.nBlockAlign		= rFormat.nChannels * (rFormat.wBitsPerSample/8);
+	rFormat.nAvgBytesPerSec	= rFormat.nSamplesPerSec * rFormat.nBlockAlign;
+	rFormat.cbSize			= 0;
+}
+
 /////////////////////////////////////////////////////////////////////////////
 namespace baseprofile {
 
@@ -534,6 +652,7 @@ void CProfile::InitSections()
 	Add(m_SectionAudio, USEMCI, "useMCI", false);
 	Add(m_SectionAudio, NUMDEV, "NumDev", 0);
 	Add(m_SectionAudio, SELECTEDDEV, "SelectedDev", 0);
+	Add(m_SectionAudio, COMPRESSFORMATTAG, "CompressionFormatTag", 0);	
 	Add(m_SectionAudio, FEEDBACK_LINE, "feedback_line", 0);
 	Add(m_SectionAudio, FEEDBACK_LINE_INFO, "feedback_line_info", 0);
 	Add(m_SectionAudio, BAUDIOCOMPRESSION, "bAudioCompression", true);
