@@ -149,9 +149,6 @@
 	# Core files required to install the CamStudio recording suite
 	Section "${PRODUCT_NAME} ${PRODUCT_VERSION}" SecCoreFiles
 		CreateDirectory "$INSTDIR"
-		CreateDirectory "$INSTDIR\controller\"
-		CreateDirectory "$INSTDIR\help_files\"
-		CreateDirectory "$INSTDIR\helpProducer_files\"
 		SetOutPath "$INSTDIR"
 		File "camstudio_cl.exe"
 		File "default.shapes"
@@ -164,6 +161,7 @@
 		File "Recorder.exe"
 		File "testsnd.wav"
 		File "..\GlobalResources\Web.ico"
+		CreateDirectory "$INSTDIR\controller\"
 		SetOutPath "$INSTDIR\controller"
 		File "controller\controller.ini"
 		File "controller\controller_backup.ini"
