@@ -111,7 +111,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Moving files that don&apos;t belong in output and copying other files (help docs, etc) to output directory"
-				CommandLine="copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;xcopy /s /y &quot;$(ProjectDir)\output\*.*&quot; &quot;$(SolutionDir)\$(ConfigurationName)\&quot;&#x0D;&#x0A;"
+				CommandLine="copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).ilk&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).ilk&quot;&#x0D;&#x0A;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).ilk&quot;&#x0D;&#x0A;&#x0D;&#x0A;xcopy /s /y &quot;$(ProjectDir)\output\*.*&quot; &quot;$(SolutionDir)\$(ConfigurationName)\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -209,7 +209,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Moving files that don&apos;t belong in output and copying other files (help docs, etc) to output directory"
-				CommandLine="copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;&#x0D;&#x0A;xcopy /s /y &quot;$(ProjectDir)\output\*.*&quot; &quot;$(SolutionDir)\$(ConfigurationName)\&quot;&#x0D;&#x0A;"
+				CommandLine="copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;copy &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).ilk&quot; &quot;$(ProjectDir)\$(ConfigurationName)\$(ProjectName).ilk&quot;&#x0D;&#x0A;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).exp&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).lib&quot;&#x0D;&#x0A;del &quot;$(SolutionDir)\$(ConfigurationName)\$(ProjectName).ilk&quot;&#x0D;&#x0A;&#x0D;&#x0A;xcopy /s /y &quot;$(ProjectDir)\output\*.*&quot; &quot;$(SolutionDir)\$(ConfigurationName)\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -1469,11 +1469,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\GlobalResources\Recorder.ico"
+				RelativePath=".\Recorder.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\Recorder.ico"
+				RelativePath="..\GlobalResources\Recorder.ico"
 				>
 			</File>
 			<File
@@ -1489,11 +1489,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Recorder_logo.bmp"
+				RelativePath="..\GlobalResources\Recorder_logo.bmp"
 				>
 			</File>
 			<File
-				RelativePath="..\GlobalResources\Recorder_logo.bmp"
+				RelativePath=".\Recorder_logo.bmp"
 				>
 			</File>
 			<File
