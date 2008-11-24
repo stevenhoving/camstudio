@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="copyright" content="Copyright &copy; 2001 RenderSoft Software and Web Publishing, Copyright &copy; 2008 CamStudio Group &amp; Contributors." />
+<meta name="creator" content="RenderSoft Software and Web Publishing, CamStudio Group &amp; Contributors." />
+<meta name="language" content="en-us" />
+<link href="../help.css" rel="stylesheet" type="text/css" />
+<title>Further Editing</title>
+</head>
+<body>
+<h1>Further Editing</h1>
+<p class="standout">WARNING: This section assumes you already know how to use Flash MX.</p>
+<p>You can actually import the .swf produced by CamStudio into the Flash MX editor with the File->Import command. However, this will expand the individual frames and remove the inherent compression in the original .swf file.</p>
+<p>Instead, you can use the <code>loadmovie</code> (Actionscript function) to load the file to control or enhance it.</p>
+<p>To accomplish this, you need to produce two Flash files and upload both of them on the web. The first file is the raw .swf movie file, produced by CamStudio's Producer with the following option: Produce raw movie for further editing in Flash MX editor.</p>
+<p>The second file is a container file that loads the first file using the <code>loadmovie</code> function. This file is created in the Flash MX editor and can be used to control the first file. As an example:</p>
+<p>Within the Flash MX editor...</p>
+<ol>
+	<li><p>Start a new Flash MX Project.</p></li>
+	<li><p>Create a blank Movie Clip Symbol by choosing Insert->New Symbol and selecting the Movie Clip radio button. Give a name, say 'movie', to the symbol.</p></li>
+	<li><p>Instantiate the Symbol by clicking Choose Window->Library and dragging the symbol 'movie' into your scene.</p></li>
+	<li><p>Select the 'movie' instance that you have dragged into your scene, and add the following ActionScripts to it. (Assuming you have already saved a file 'untitled.swf' produced by CamStudio in the folder 'C:\folder1')</p><pre><code>onClipEvent (load)
+{
+	this.loadMovie ("C:\folder1\untitled.swf", "");
+}</code></pre></li>
+	<li><p>Press Ctrl+Enter to test the movie.</p></li>
+	<li><p>Export the .swf file. This file is the container for untitled.swf. When you upload the container .swf, you will of course have to change the local folder in the actionscript to something like <code>this.loadMovie ("http://www.domain.com/flashmovie/untitled.swf", "");</code>, or you can simply use 'untitled.swf' without any path, and put the file untiled.swf in the same folder with the container.</p></li>
+</ol>
+<p>After you have successfully created the container to load the movie, you can enhance it further by adding a pre-loader or a control bar with play/stop/pause buttons.</p>
+</body>
+</html>
