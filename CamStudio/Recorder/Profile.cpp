@@ -712,7 +712,7 @@ void CProfile::InitSections()
 	Add(m_SectionProgram, RECORDPRESET, "recordpreset", false);
 	Add(m_SectionProgram, RECORDINGMODE, "RecordingMode", 0);
 	Add(m_SectionProgram, LAUNCHPLAYER, "LaunchPlayer", 3);
-	Add(m_SectionProgram, SPECIFIEDDIR, "SpecifiedDir", 15);
+	Add(m_SectionProgram, SPECIFIEDDIR, "SpecifiedDir", CString(_T("")));
 	Add(m_SectionProgram, TEMPPATH_ACCESS, "TempPathAccess", 0);
 	Add(m_SectionProgram, THREADPRIORITY, "ThreadPriority", 0);
 	Add(m_SectionProgram, AUTOPAN, "autopan", false);
@@ -818,7 +818,7 @@ void CProfile::InitLegacySection()
 	VERIFY(Add(m_SectionLegacy, INTERLEAVEUNIT, "interleaveUnit", 1));
 	VERIFY(Add(m_SectionLegacy, TEMPPATH_ACCESS, "tempPath_Access", 0));
 	VERIFY(Add(m_SectionLegacy, CAPTURETRANS, "captureTrans", true));
-	VERIFY(Add(m_SectionLegacy, SPECIFIEDDIR, "specifieddir", 15));
+	VERIFY(Add(m_SectionLegacy, SPECIFIEDDIR, "specifieddir", CString(_T(""))));
 	VERIFY(Add(m_SectionLegacy, NUMDEV, "NumDev", 0));
 	VERIFY(Add(m_SectionLegacy, SELECTEDDEV, "SelectedDev", 0));
 	VERIFY(Add(m_SectionLegacy, FEEDBACK_LINE, "feedback_line", 0));
@@ -937,7 +937,7 @@ bool CProfile::Convert()
 	VERIFY(Convert(m_SectionLegacy, INTERLEAVEUNIT, 1));
 	VERIFY(Convert(m_SectionLegacy, TEMPPATH_ACCESS, 0));
 	VERIFY(Convert(m_SectionLegacy, CAPTURETRANS, true));
-	VERIFY(Convert(m_SectionLegacy, SPECIFIEDDIR, 15));
+	VERIFY(Convert(m_SectionLegacy, SPECIFIEDDIR, CString(_T(""))));
 	VERIFY(Convert(m_SectionLegacy, NUMDEV, 0));
 	VERIFY(Convert(m_SectionLegacy, SELECTEDDEV, 0));
 	VERIFY(Convert(m_SectionLegacy, FEEDBACK_LINE, 0));

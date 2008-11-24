@@ -36,7 +36,7 @@
 extern CListManager ListManager;
 extern CScreenAnnotationsDlg sadlg;
 
-extern CString specifieddir;
+//extern CString specifieddir;
 
 extern HANDLE Bitmap2Dib(HBITMAP, UINT);
 
@@ -1236,13 +1236,13 @@ CTransparentWnd* CTransparentWnd::Clone(int offsetx, int offsety)
 		//CString exstr(".bmp");
 		//CString tempFile = GetTempFolder(iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
 		CString tempFile;
-		tempFile.Format("%s\\~txPic%d.bmp", GetTempFolder(cProgramOpts.m_iTempPathAccess, specifieddir), rand());
+		tempFile.Format("%s\\~txPic%d.bmp", GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir), rand());
 		int ret = picture.CopyToPicture(&newWnd->picture,tempFile);
 		if (!ret) {
 			//randnum = rand();
 			//sprintf(numstr, "%d", randnum);
 			//tempFile = GetTempFolder(iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
-			tempFile.Format("%s\\~txPic%d.bmp", GetTempFolder(cProgramOpts.m_iTempPathAccess, specifieddir), rand());
+			tempFile.Format("%s\\~txPic%d.bmp", GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir), rand());
 			ret = picture.CopyToPicture(&newWnd->picture,tempFile);
 			if (!ret) {
 				//if 2nd try fails

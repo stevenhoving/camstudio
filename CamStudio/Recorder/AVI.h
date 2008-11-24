@@ -1,8 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 #pragma once
 
-// Video/Audio Merging Functions and Definitions
-extern int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_path, CString output_avi_path, BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format, DWORD audio_format_size, BOOL bInterleave, int interleave_factor, int interleave_unit);
+#include "Profile.h"
 
+// Video/Audio Merging Functions and Definitions
+extern int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, BOOL bAudioRecompress, sAudioFormat& rAudioFormat);
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 class CAVI
 {
 public:
@@ -10,6 +16,8 @@ public:
 	{
 		switch (hrErr)
 		{
+		case AVIERR_OK:
+			break;
 		case AVIERR_UNSUPPORTED:
 			TRACE("CAVI::Error: AVIERR_UNSUPPORTED\n");
 			break;
@@ -64,9 +72,11 @@ public:
 		case AVIERR_USERABORT:
 			TRACE("CAVI::Error: AVIERR_USERABORT\n");
 			break;
-		default:
 		case AVIERR_ERROR:
 			TRACE("CAVI::Error: AVIERR_ERROR\n");
+			break;
+		default:
+			TRACE("CAVI::Error: Unknown\n");
 			break;
 		}
 	}
@@ -77,71 +87,8 @@ protected:
 	void FileExit()		{::AVIFileExit();}
 };
 
-class CAVIFile :
-	public CAVI
-{
-public:
-	CAVIFile();
-	~CAVIFile();
-
-	operator PAVIFILE()		{return m_pfile;}
-
-private:
-	PAVIFILE m_pfile;
-
-protected:
-	// Opening and Closing AVI Files
-	void Open(LPCTSTR szFile, UINT uMode, LPCLSID lpHandler = 0)
-	{
-		::AVIFileOpen(&m_pfile, szFile, uMode, lpHandler);
-	}
-	ULONG AddRef()	{return ::AVIFileAddRef(m_pfile);}
-	ULONG Release()	{return ::AVIFileRelease(m_pfile);}
-	// '_' to avoid macro substitution
-	BOOL GetOpenFileName_Preview(LPOPENFILENAME lpofn)
-	{
-		::GetOpenFileNamePreview(lpofn);
-	}
-
-	// Reading from a File
-	HRESULT Info(AVIFILEINFO * pfi, LONG lSize)
-	{
-		return ::AVIFileInfo(m_pfile, pfi, lSize);
-	}
-	HRESULT ReadData(DWORD ckid, LPVOID lpData, LONG * lpcbData)
-	{
-		return ::AVIFileReadData(m_pfile, ckid, lpData, lpcbData);
-	}
-
-	// Writing to a File
-	HRESULT WriteData(DWORD ckid, LPVOID lpData, LONG cbData)
-	{
-		return ::AVIFileWriteData(m_pfile, ckid, lpData, cbData);
-	}
-
-	// Using the Clipboard
-	HRESULT PutFileOnClipboard()
-	{
-		return ::AVIPutFileOnClipboard(m_pfile);
-	}
-	HRESULT GetFromClipboard()
-	{
-		return ::AVIGetFromClipboard(&m_pfile);
-	}
-
-	// Opening and Closing Streams
-	HRESULT GetStream(PAVISTREAM * ppavi, FOURCC fccType, LONG lParam)
-	{
-		return ::AVIFileGetStream(m_pfile, ppavi, fccType, lParam);
-	}
-
-	// Writing Individual Streams
-	HRESULT CreateStream(PAVISTREAM * ppavi, AVISTREAMINFO * psi)
-	{
-		return ::AVIFileCreateStream(m_pfile, ppavi, psi);
-	}
-};
-
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 class CAVIStream :
 	public CAVI
 {
@@ -149,30 +96,43 @@ public:
 	CAVIStream();
 	~CAVIStream();
 
-	operator PAVISTREAM()		{return m_pavi;}
+	operator PAVISTREAM()			{return m_pstream;}
+	//operator PAVISTREAM&()		{return m_pstream;}
+	operator PAVISTREAM*()			{return &m_pstream;}
+	const AVISTREAMINFO& getInfo()	{return m_sAVISTREAMINFO;}
 
 private:
-	PAVISTREAM m_pavi;
+	PAVISTREAM m_pstream;
+	AVISTREAMINFO m_sAVISTREAMINFO;
 
-protected:
+//protected:
+public:
 	HRESULT OpenFromFile(LPCTSTR szFile, FOURCC fccType, LONG lParam, UINT mode, CLSID * pclsidHandler)
 	{
-		return ::AVIStreamOpenFromFile(&m_pavi, szFile, fccType, lParam, mode, pclsidHandler);
+		return ::AVIStreamOpenFromFile(&m_pstream, szFile, fccType, lParam, mode, pclsidHandler);
 	}
 	LONG AddRef()
 	{
-		return ::AVIStreamAddRef(m_pavi);
+		return ::AVIStreamAddRef(m_pstream);
 	}
 	// This function supersedes the obsolete AVIStreamClose function.
 	LONG Release()
 	{
-		return ::AVIStreamRelease(m_pavi);
+		return (m_pstream) ? ::AVIStreamRelease(m_pstream) : 0L;
+	}
+	HRESULT Info(AVISTREAMINFO * psi, LONG lSize)
+	{
+		return ::AVIStreamInfo(m_pstream, psi, lSize);
+	}
+	HRESULT Info()
+	{
+		return ::AVIStreamInfo(m_pstream, &m_sAVISTREAMINFO, sizeof(AVISTREAMINFO));
 	}
 	
 	// Reading Stream Information
 	HRESULT ReadData(DWORD ckid, LPVOID lpData, LONG * lpcbData)
 	{
-		return ::AVIStreamReadData(m_pavi, ckid, lpData, lpcbData);
+		return ::AVIStreamReadData(m_pstream, ckid, lpData, lpcbData);
 	}
 	HRESULT DataSize(FOURCC fcc, LONG * plSize)
 	{
@@ -180,15 +140,15 @@ protected:
 	}
 	HRESULT ReadFormat(LONG lPos, LPVOID lpFormat, LONG * lpcbFormat)
 	{
-		return ::AVIStreamReadFormat(m_pavi, lPos, lpFormat, lpcbFormat);
+		return ::AVIStreamReadFormat(m_pstream, lPos, lpFormat, lpcbFormat);
 	}
 	HRESULT FormatSize(LONG lPos, LONG * lpcbFormat)
 	{
-		return ::AVIStreamReadFormat(m_pavi, lPos, 0, lpcbFormat);
+		return ::AVIStreamReadFormat(m_pstream, lPos, 0, lpcbFormat);
 	}
 	HRESULT Read(LONG lStart, LONG lSamples, LPVOID lpBuffer, LONG cbBuffer, LONG * plBytes, LONG * plSamples)
 	{
-		return ::AVIStreamRead(m_pavi, lStart, lSamples, lpBuffer, cbBuffer, plBytes, plSamples);
+		return ::AVIStreamRead(m_pstream, lStart, lSamples, lpBuffer, cbBuffer, plBytes, plSamples);
 	}
 	HRESULT SampleSize(LONG lPos, LONG * plSize)
 	{		
@@ -196,17 +156,17 @@ protected:
 	}
 	HRESULT BeginStreaming(LONG lStart, LONG lEnd, LONG lRate)
 	{
-		return ::AVIStreamBeginStreaming(m_pavi, lStart, lEnd, lRate);
+		return ::AVIStreamBeginStreaming(m_pstream, lStart, lEnd, lRate);
 	}
 	HRESULT EndStreaming()
 	{
-		return ::AVIStreamEndStreaming(m_pavi);
+		return ::AVIStreamEndStreaming(m_pstream);
 	}
 
 	// Decompressing Video Data in a Stream
 	PGETFRAME GetFrameOpen(LPBITMAPINFOHEADER lpbiWanted)
 	{
-		return ::AVIStreamGetFrameOpen(m_pavi, lpbiWanted);
+		return ::AVIStreamGetFrameOpen(m_pstream, lpbiWanted);
 	}
 	LPVOID GetFrame(PGETFRAME pgf, LONG lPos)
 	{
@@ -224,14 +184,15 @@ protected:
 	//	return ::AVISave(szFile, pclsidHandler, lpfnCallback, nStreams, pavi, lpOptions,...);
 	//}
 
-	HRESULT SaveV(LPCTSTR szFile, CLSID * pclsidHandler, AVISAVECALLBACK lpfnCallback, int nStreams, LPAVICOMPRESSOPTIONS * plpOptions)
+	// TODO: Not safe! Do not use.
+	HRESULT SaveV(LPCTSTR szFile, CLSID * pclsidHandler, AVISAVECALLBACK lpfnCallback, int nStreams, PAVISTREAM * pavi, LPAVICOMPRESSOPTIONS * plpOptions)
 	{
-		return ::AVISaveV(szFile, pclsidHandler, lpfnCallback, nStreams, &m_pavi, plpOptions);
+		return ::AVISaveV(szFile, pclsidHandler, lpfnCallback, nStreams, pavi, plpOptions);
 	}
 
 	BOOL SaveOptions(HWND hwnd, UINT uiFlags, int nStreams, LPAVICOMPRESSOPTIONS * plpOptions)
 	{
-		return ::AVISaveOptions(hwnd, uiFlags, nStreams, &m_pavi, plpOptions);
+		return ::AVISaveOptions(hwnd, uiFlags, nStreams, &m_pstream, plpOptions);
 	}
 	// n.b. '_' used to avoid macro substitution
 	BOOL GetSaveFileName_Preview(LPOPENFILENAME lpofn)
@@ -246,21 +207,21 @@ protected:
 	// Writing Individual Streams
 	HRESULT SetFormat(LONG lPos, LPVOID lpFormat, LONG cbFormat)
 	{
-		return ::AVIStreamSetFormat(m_pavi, lPos, lpFormat, cbFormat);
+		return ::AVIStreamSetFormat(m_pstream, lPos, lpFormat, cbFormat);
 	}
 	HRESULT Write(LONG lStart, LONG lSamples, LPVOID lpBuffer, LONG cbBuffer, DWORD dwFlags, LONG * plSampWritten, LONG * plBytesWritten)
 	{
-		return ::AVIStreamWrite(m_pavi, lStart, lSamples, lpBuffer, cbBuffer, dwFlags, plSampWritten, plBytesWritten);
+		return ::AVIStreamWrite(m_pstream, lStart, lSamples, lpBuffer, cbBuffer, dwFlags, plSampWritten, plBytesWritten);
 	}
 	HRESULT WriteData(DWORD ckid, LPVOID lpData, LONG cbData)
 	{
-		return ::AVIStreamWriteData(m_pavi, ckid, lpData, cbData);
+		return ::AVIStreamWriteData(m_pstream, ckid, lpData, cbData);
 	}
 
 	// Finding the Starting Position in a Stream
 	LONG Start()
 	{
-		return ::AVIStreamStart(m_pavi);
+		return ::AVIStreamStart(m_pstream);
 	}
 	LONG StartTime()
 	{
@@ -268,7 +229,7 @@ protected:
 	}
 	LONG Length()
 	{
-		return ::AVIStreamLength(m_pavi);
+		return ::AVIStreamLength(m_pstream);
 	}
 	LONG LengthTime()
 	{
@@ -277,7 +238,7 @@ protected:
 	// This function supersedes the obsolete AVIStreamFindKeyFrame function.
 	LONG FindSample(LONG lPos, LONG lFlags)
 	{
-		return ::AVIStreamFindSample(m_pavi, lPos, lFlags);
+		return ::AVIStreamFindSample(m_pstream, lPos, lFlags);
 	}
 
 	// TODO: AVI 2.0 issue?
@@ -352,50 +313,142 @@ protected:
 	// Switching Between Samples and Time
 	LONG SampleToTime(LONG lSample)
 	{
-		return ::AVIStreamSampleToTime(m_pavi, lSample);
+		return ::AVIStreamSampleToTime(m_pstream, lSample);
 	}
 	LONG TimeToSample(LONG lTime)
 	{
-		return ::AVIStreamTimeToSample(m_pavi, lTime);
+		return ::AVIStreamTimeToSample(m_pstream, lTime);
 	}
 
 	// Creating Temporary Streams
 	HRESULT Create(LONG lParam1, LONG lParam2, CLSID * pclsidHandler)
 	{
-		return ::AVIStreamCreate(&m_pavi, lParam1, lParam2, pclsidHandler);
+		return ::AVIStreamCreate(&m_pstream, lParam1, lParam2, pclsidHandler);
 	}
 	HRESULT MakeCompressedStream(PAVISTREAM * ppsCompressed, AVICOMPRESSOPTIONS * lpOptions, CLSID * pclsidHandler)
 	{
-		return ::AVIMakeCompressedStream(ppsCompressed, m_pavi, lpOptions, pclsidHandler);
+		return ::AVIMakeCompressedStream(ppsCompressed, m_pstream, lpOptions, pclsidHandler);
 	}
 
 	// Editing AVI Streams
 	HRESULT CreateEditableStream(PAVISTREAM * ppsEditable)
 	{
-		return ::CreateEditableStream(ppsEditable, m_pavi);
+		return ::CreateEditableStream(ppsEditable, m_pstream);
 	}
 	HRESULT EditStreamCut(LONG * plStart, LONG * plLength, PAVISTREAM * ppResult)
 	{
-		return ::EditStreamCut(m_pavi, plStart, plLength, ppResult);
+		return ::EditStreamCut(m_pstream, plStart, plLength, ppResult);
 	}
 	HRESULT EditStreamCopy(LONG * plStart, LONG * plLength, PAVISTREAM * ppResult)
 	{
-		return ::EditStreamCopy(m_pavi, plStart, plLength, ppResult);
+		return ::EditStreamCopy(m_pstream, plStart, plLength, ppResult);
 	}
 	HRESULT EditStreamPaste(LONG * plPos, LONG * plLength, PAVISTREAM pstream, LONG lStart, LONG lLength)
 	{
-		return ::EditStreamPaste(m_pavi, plPos, plLength, pstream, lStart, lLength);
+		return ::EditStreamPaste(m_pstream, plPos, plLength, pstream, lStart, lLength);
 	}
 	HRESULT EditStreamClone(PAVISTREAM * ppResult)
 	{
-		return ::EditStreamClone(m_pavi, ppResult);
+		return ::EditStreamClone(m_pstream, ppResult);
 	}
 	HRESULT EditStreamSetInfo(AVISTREAMINFO * lpInfo, LONG cbInfo)
 	{
-		return ::EditStreamSetInfo(m_pavi, lpInfo, cbInfo);
+		return ::EditStreamSetInfo(m_pstream, lpInfo, cbInfo);
 	}
 	HRESULT EditStreamSetName(LPCTSTR lpszName)
 	{
-		return ::EditStreamSetName(m_pavi, lpszName);
+		return ::EditStreamSetName(m_pstream, lpszName);
 	}
 };
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+class CAVIFile :
+	public CAVI
+{
+public:
+	CAVIFile();
+	~CAVIFile();
+
+	operator PAVIFILE()		{return m_pfile;}
+
+private:
+	PAVIFILE m_pfile;
+
+protected:
+public:
+	// Opening and Closing AVI Files
+	HRESULT Open(LPCTSTR szFile, UINT uMode, LPCLSID lpHandler = 0)
+	{
+		return ::AVIFileOpen(&m_pfile, szFile, uMode, lpHandler);
+	}
+	ULONG AddRef()	{return (m_pfile) ? ::AVIFileAddRef(m_pfile) : 0UL;}
+	ULONG Release()	{return (m_pfile) ? ::AVIFileRelease(m_pfile) : 0UL;}
+	
+	// '_' to avoid macro substitution
+	// n.b. This appears to be obsolete on Vista
+	BOOL GetOpenFileName_Preview(LPOPENFILENAME lpofn)
+	{
+		::GetOpenFileNamePreview(lpofn);
+	}
+
+	// Reading from a File
+	HRESULT Info(AVIFILEINFO * pfi, LONG lSize)
+	{
+		return ::AVIFileInfo(m_pfile, pfi, lSize);
+	}
+	HRESULT ReadData(DWORD ckid, LPVOID lpData, LONG * lpcbData)
+	{
+		return ::AVIFileReadData(m_pfile, ckid, lpData, lpcbData);
+	}
+
+	// Writing to a File
+	HRESULT WriteData(DWORD ckid, LPVOID lpData, LONG cbData)
+	{
+		return ::AVIFileWriteData(m_pfile, ckid, lpData, cbData);
+	}
+
+	// Using the Clipboard
+	HRESULT PutFileOnClipboard()
+	{
+		return ::AVIPutFileOnClipboard(m_pfile);
+	}
+	HRESULT GetFromClipboard()
+	{
+		return ::AVIGetFromClipboard(&m_pfile);
+	}
+
+	// Opening and Closing Streams
+	HRESULT GetStream(PAVISTREAM * ppavi, FOURCC fccType = streamtypeVIDEO, LONG lParam = 0L)
+	{
+		return ::AVIFileGetStream(m_pfile, ppavi, fccType, lParam);
+	}
+
+	// Writing Individual Streams
+	HRESULT CreateStream(PAVISTREAM * ppavi, AVISTREAMINFO * psi)
+	{
+		return ::AVIFileCreateStream(m_pfile, ppavi, psi);
+	}
+};
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+class CamAVIFile :
+	public CAVIFile
+{
+	CamAVIFile();
+public:
+	CamAVIFile(const sVideoOpts& rVideoOpts, const sAudioFormat& rAudioFormat);
+	~CamAVIFile();
+
+	bool Merge(const CString& strVideoIn, const CString& strAudioIn, const CString& strAVIOut);
+	bool FadeOut(const CString& strAVIIn, const CString& strAVIOut);
+
+private:
+	CString m_strAVIFile;
+	sVideoOpts m_sVideoOpts;
+	sAudioFormat m_sAudioFormat;
+	bool CompressionOpts(AVICOMPRESSOPTIONS& rOptions, CAVIStream& raviStream);
+public:
+};
+

@@ -168,7 +168,8 @@ BOOL CPlayplusApp::InitInstance()
 		return FALSE;
 
 	// The one and only window has been initialized, so show and update it.
-	m_pMainWnd->ShowWindow(SW_SHOW);
+	int nCmdShow = SW_SHOW;
+	m_pMainWnd->ShowWindow(nCmdShow);
 	m_pMainWnd->UpdateWindow();
 
 	return CWinApp::InitInstance();;
