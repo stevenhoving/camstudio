@@ -2068,9 +2068,9 @@ void CPlayplusView::OnPaint()
 	if (!doneOnce) {
 		if (strlen(playfiledir)!=0) {
 			OpenMovieFileInit(playfiledir);
-			doneOnce=1;
+			doneOnce = 1;
 
-			if (runmode>0)
+			if (0 < runmode)
 			{
 				//Assign default output name
 				//swfname = playfiledir;
@@ -2089,7 +2089,6 @@ void CPlayplusView::OnPaint()
 				//launchHTMLPlayer = 0;
 				//OnFileConverttoswf();
 				PostMessage(WM_COMMAND,ID_FILE_CONVERTTOSWF,0);
-
 			}
 		}
 		doneOnce=1;
@@ -2177,14 +2176,13 @@ BOOL CPlayplusView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD 
 	swfhtmlname = GetProgPath() + "\\untitled.swf.html";
 	swfbasename = "untitled.swf";
 
-	if (runmode == 1)
+	if (1 == runmode)
 		LoadCommand(); //used internally by CamStudio Recorder
 
 	//else if (runmode == 0 || runmode == 2)
 	LoadSettings();
 
 	loadingPath = GetProgPath() + "\\controller\\loadpiece.bmp";
-
 	return retval;
 }
 
@@ -4770,16 +4768,12 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
 			if ((needbreakapart) && (breakcycle>0))
 			{
 				//can we just do nothing ...lets use the old value of startsampleSwf
+				//if (usePCMConvertedStream)
+				//	startsampleSwf = AVIStreamTimeToSample( PCMConvertedStream,  currentTime);
+				//else
+				//	startsampleSwf = AVIStreamTimeToSample( gapavi[giFirstAudio],  currentTime);
 
-				/*
-				if (usePCMConvertedStream)
-				startsampleSwf = AVIStreamTimeToSample( PCMConvertedStream,  currentTime);
-				else
-				startsampleSwf = AVIStreamTimeToSample( gapavi[giFirstAudio],  currentTime);
-
-				slCurrentSwf = startsampleSwf;
-				*/
-
+				//slCurrentSwf = startsampleSwf;
 			}
 			else
 			{
@@ -5145,36 +5139,27 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
 //CFlash
 void CPlayplusView::OnFileConverttoswf()
 {
-	CurLangID = STANDARD_LANGID;
-	HKEY hKey;
-	DWORD language;
-	LONG returnStatus;
-	DWORD Type=REG_DWORD;
-	DWORD Size=sizeof(DWORD);
-	returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
+	//CurLangID = STANDARD_LANGID;
+	//HKEY hKey;
+	//DWORD language;
+	//DWORD Type = REG_DWORD;
+	//DWORD Size = sizeof(DWORD);
+	//LONG returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
+	//if (returnStatus == ERROR_SUCCESS) {
+	//	returnStatus = RegQueryValueEx(hKey, "LanguageID", NULL, &Type,(LPBYTE)&language, &Size);
 
-	if (returnStatus == ERROR_SUCCESS)
-	{
-		returnStatus = RegQueryValueEx(hKey, "LanguageID", NULL, &Type,(LPBYTE)&language, &Size);
-
-		/*if (returnStatus == ERROR_SUCCESS)
-		{
-		if ( !LoadLangIDDLL((int) language) )
-		if ( !LoadLangIDDLL(GetUserDefaultLangID()) )
-		LoadLangIDDLL(GetSystemDefaultLangID());
-		}*/
-	}
-	RegCloseKey(hKey);
+	//	if (returnStatus == ERROR_SUCCESS) {
+	//		if ( !LoadLangIDDLL((int) language) )
+	//			if ( !LoadLangIDDLL(GetUserDefaultLangID()) )
+	//				LoadLangIDDLL(GetSystemDefaultLangID());
+	//	}
+	//}
+	//RegCloseKey(hKey);
 
 	LoadController();
 
-	if (launchPropPrompt)
-	{
-		if (flashProp.DoModal()==IDOK)
-		{
-		}
-		else
-			return;
+	if (launchPropPrompt && (IDOK != flashProp.DoModal())) {
+		return;
 	}
 	int ww =0 ;
 	int hh =0 ;
@@ -5189,7 +5174,8 @@ void CPlayplusView::OnFileConverttoswf()
 
 	if (sampleFPS>0)
 		sampletimeInc = 1000/ sampleFPS;
-	else return;
+	else
+		return;
 
 	int numframesTotal;
 	if (sampletimeInc>=1)
@@ -5208,21 +5194,17 @@ void CPlayplusView::OnFileConverttoswf()
 
 		}
 		//MsgC("numframesTotal %d",numframesTotal);
-
 	}
 	LONG currentTime  = 0;
 	moreSWFsneeded = 1;
-
 	bool performResult = true;
-	if (!needbreakapart)
-		performResult = PerformFlash(ww,hh,currentTime);
-	else
-	{
+	if (!needbreakapart) {
+		performResult = PerformFlash(ww, hh, currentTime);
+	} else {
 		while (moreSWFsneeded)
 		{
-			PerformFlash(ww,hh,currentTime);
+			PerformFlash(ww, hh, currentTime);
 			breakcycle++;
-
 		}
 	}
 	///
@@ -5230,37 +5212,33 @@ void CPlayplusView::OnFileConverttoswf()
 	produceFlashHTML(LPCTSTR(swfhtmlname),LPCTSTR(swfbasename),LPCTSTR(swfname), onlyflashtag, ww , hh ,swfbk_red, swfbk_green, swfbk_blue);
 
 	BeginWaitCursor();
-	if (usePCMConvertedStream)
-	{
+	if (usePCMConvertedStream) {
 		cleanTempFile();
-
 	}
-	if (launchHTMLPlayer)
-	{
-		if (performResult)
+	if (launchHTMLPlayer) {
+		if (performResult) {
 			Openlink(swfhtmlname);
+		}
 	}
 	EndWaitCursor();
 
-	if (runmode == 1) //allow this only in CamStudio internal mode
-	{
-		if (deleteAVIAfterUse)
-		{
-			if (strlen(playfiledir) > 0)
-			{
+	//allow this only in CamStudio internal mode
+	if (runmode == 1) {
+		if (deleteAVIAfterUse) {
+			if (strlen(playfiledir) > 0) {
 				OnFileClose();
 				DeleteFile(playfiledir);
-
 			}
 			//MessageBox(playfiledir,"Delete",MB_OK);
-
 		}
 	}
-	if (runmode>0)
-		::PostMessage(AfxGetMainWnd()->m_hWnd,WM_COMMAND,ID_APP_EXIT,0);
+	if (runmode) {
+		//::PostMessage(AfxGetMainWnd()->m_hWnd, WM_COMMAND, ID_APP_EXIT, 0);
+		AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_APP_EXIT);
+	}
 }
 
-void ConvertToFlash(long currentTime,HDC hdc, HBITMAP hbm,std::ostringstream &f)
+void ConvertToFlash(long currentTime, HDC hdc, HBITMAP hbm, std::ostringstream &f)
 {
 	if (gcpavi<=0)
 		return;
@@ -5314,8 +5292,7 @@ void ConvertToFlash(long currentTime,HDC hdc, HBITMAP hbm,std::ostringstream &f)
 					//HDC hdc = GetDC(NULL);
 					//PaintVideo(hdc, rcFrame, i, lpbi, lSamp, 0);
 					//ReleaseDC(NULL,hdc);
-					PaintSwfFrame(hdc, hbm, rcFrame,  lpbi,  i,f);
-
+					PaintSwfFrame(hdc, hbm, rcFrame, lpbi, i, f);
 				}
 			} //If Video Stream
 
@@ -5812,10 +5789,9 @@ void CreateStopButton(std::ostringstream &f, int controlsWidth, int controlsHeig
 void PaintSwfFrame(HDC hdc, HBITMAP hbm, RECT rcFrame, LPBITMAPINFOHEADER lpbi, int iStream, std::ostringstream &f)
 {
 	//if lbpi is present, draw it
-	if (lpbi)
-	{
-		int offsetx=0;
-		int offsety=0;
+	if (lpbi) {
+		int offsetx = 0;
+		int offsety = 0;
 		int bitmapwidth = rcFrame.right-rcFrame.left+1;
 		int bitmapheight = rcFrame.bottom-rcFrame.top+1;
 
@@ -5834,17 +5810,14 @@ void PaintSwfFrame(HDC hdc, HBITMAP hbm, RECT rcFrame, LPBITMAPINFOHEADER lpbi, 
 		int BITMAP_Y = 0;
 		LPBYTE bitmap;
 		LPBITMAPINFOHEADER alpbi = GetFrame(hbm, &bitmap, BITMAP_X, BITMAP_Y, convertBits);
-
 		if (convertBits == 16)
 			format = 4;
 		else if (convertBits == 32)
 			format = 5;
 
-		if (alpbi)
-		{
+		if (alpbi) {
 			WriteSwfFrame(alpbi, f,  bitmap,  BITMAP_X, BITMAP_Y,  format);
 			FreeFrame(alpbi);
-
 		}
 	}
 	return;
@@ -7534,42 +7507,33 @@ void AdjustOutName(CString avioutpath)
 {
 	swfname = avioutpath;
 	int lenx = swfname.GetLength();
-
 	//::MessageBox(NULL,swfname,"Adjust",MB_OK);
-	if ((lenx>=5) &&
-		((swfname[lenx-1]=='i') || (swfname[lenx-1]=='I')) &&
-		((swfname[lenx-2]=='v') || (swfname[lenx-2]=='V')) &&
-		((swfname[lenx-3]=='a') || (swfname[lenx-3]=='A')) &&
-		(swfname[lenx-4]=='.'))
+	if ((5 <= lenx)
+		&& ((swfname[lenx - 1] == 'i') || (swfname[lenx - 1] == 'I'))
+		&& ((swfname[lenx - 2] == 'v') || (swfname[lenx - 2] == 'V'))
+		&& ((swfname[lenx - 3] == 'a') || (swfname[lenx - 3] == 'A'))
+		&& (swfname[lenx - 4] == '.'))
 	{
-		swfname.SetAt(lenx-1,'f');
-		swfname.SetAt(lenx-2,'w');
-		swfname.SetAt(lenx-3,'s');
-		swfname.SetAt(lenx-4,'.');
+		swfname.SetAt(lenx - 1,'f');
+		swfname.SetAt(lenx - 2,'w');
+		swfname.SetAt(lenx - 3,'s');
+		swfname.SetAt(lenx - 4,'.');
 
 		swfbasename=swfname.Right(lenx - swfname.ReverseFind('\\') - 1);
 		swfhtmlname = swfname + ".html";
-
-	}
-	else {
+	} else {
 		swfname += ".swf";
 		swfhtmlname = swfname + ".html";
 		swfbasename = swfname.Right(lenx - swfname.ReverseFind('\\') - 1);
-
 	}
 }
 
 void LoadCommand()
 {
-	FILE * sFile;
-	CString setDir,setPath;
-	CString fileName;
-	fileName="\\CamStudio.Producer.command";	//command line mode
-
-	setDir=GetProgPath();
-	setPath=setDir+fileName;
-
-	sFile = fopen(LPCTSTR(setPath),"rt");
+	CString fileName = "\\CamStudio.Producer.command";	//command line mode
+	CString setDir = GetProgPath();
+	CString setPath = setDir + fileName;
+	FILE * sFile = fopen(LPCTSTR(setPath), "rt");
 	if (sFile == NULL) {
 		return;
 	}

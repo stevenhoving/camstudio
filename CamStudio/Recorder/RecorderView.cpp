@@ -143,7 +143,7 @@ int irsmallcount = 0;
 HWND hWndGlobal = NULL;
 
 //int iTempPathAccess = USE_WINDOWS_TEMP_DIR;
-CString specifieddir;
+//CString specifieddir;
 
 /////////////////////////////////////////////////////////////////////////////
 //Variables/Options requiring interface
@@ -562,7 +562,7 @@ BOOL InitAudioRecording()
 void GetTempWavePath()
 {
 	CString fileName("\\~temp001.wav");
-	tempaudiopath = GetTempFolder (cProgramOpts.m_iTempPathAccess, specifieddir) + fileName;
+	tempaudiopath = GetTempFolder (cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir) + fileName;
 
 	//Test the validity of writing to the file
 	int fileverified = 0;
@@ -583,7 +583,7 @@ void GetTempWavePath()
 			CString cnumstr(numstr);
 			CString fxstr("\\~temp");
 			CString exstr(".wav");
-			tempaudiopath = GetTempFolder (cProgramOpts.m_iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
+			tempaudiopath = GetTempFolder (cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir) + fxstr + cnumstr + exstr;
 
 			//MessageBox(NULL,tempaudiopath,"Uses Temp File",MB_OK);
 			//fileverified = 1;
@@ -749,336 +749,6 @@ void DataFromSoundIn(CBuffer* buffer)
 //		NULL, // no instance data
 //		WAVE_FORMAT_QUERY)); // query only, do not open device
 //}
-
-// Ver 1.1
-// ========================================
-// Merge Audio and Video File Function
-// ========================================
-//
-// No recompression is applied to the Video File
-// Optional Recompression is applied to the Audio File
-// Assuming audio_recompress_format is compatible with the existing format of the audio file
-//
-// If recompress audio is set to FALSE, both audio_recompress_format and audio_format_size can be NULL
-// ========================================
-int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_path, CString output_avi_path, BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format, DWORD audio_format_size, BOOL bInterleave, int interleave_factor, int interleave_unit)
-{
-	AVIFileInit();
-
-	//Open Video and Audio Files
-	PAVIFILE pfileVideo = NULL;
-	HRESULT hr = AVIFileOpen(&pfileVideo, LPCTSTR(input_video_path), OF_READ | OF_SHARE_DENY_NONE, 0L);
-	if (hr != 0) {
-		//MessageBox(NULL,"Unable to open video file.","Note",MB_OK | MB_ICONEXCLAMATION);
-		MessageOut(NULL,IDS_STRING_NOOPENVIDEO,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-		return 1;
-	}
-
-	PAVISTREAM AviStream[NUMSTREAMS];					// the editable streams
-
-	//Get Video Stream from Video File and Audio Stream from Audio File
-
-	// ==========================================================
-	// Important Assumption
-	// Assume stream 0 is the correct stream in the files
-	// ==========================================================
-	if (pfileVideo) {
-		PAVISTREAM pavi;
-		if (AVIFileGetStream(pfileVideo, &pavi, streamtypeVIDEO, 0) != AVIERR_OK) {
-			AVIFileRelease(pfileVideo);
-			// MessageBox(NULL,"Unable to open video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(NULL,IDS_STRING_NOOPENSREAM,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-			return 1;
-		}
-
-		// Set editable stream number as 0
-		if (CreateEditableStream(&AviStream[0], pavi) != AVIERR_OK) {
-			AVIStreamRelease(pavi);
-			AVIFileRelease(pfileVideo);
-
-			// MessageBox(NULL,"Unable to create editable video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(NULL, IDS_STRING_NOCREATESTREAM,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-			return 1;
-		}
-
-		AVIStreamRelease(pavi);
-
-		AVIFileRelease(pfileVideo);
-		pfileVideo = NULL;
-	}
-
-	// =============================
-	// Getting Audio Stream
-	// =============================
-	{
-		PAVISTREAM pavi;
-		if (AVIStreamOpenFromFile(&pavi, input_audio_path, streamtypeAUDIO, 0, OF_READ | OF_SHARE_DENY_NONE, NULL) != AVIERR_OK) {
-			AVIStreamRelease(AviStream[0]);
-			//MessageBox(NULL,"Unable to open audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(NULL,IDS_STRING_NOOPENAUDIO,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
-			return 2;
-		}
-
-		//Set editable stream number as 1
-		if (CreateEditableStream(&AviStream[1], pavi) != AVIERR_OK) {
-			AVIStreamRelease(pavi);
-			AVIStreamRelease(AviStream[0]);
-			//MessageBox(NULL,"Unable to create editable audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(NULL,IDS_STRING_NOEDITAUDIO,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
-			return 2;
-		}
-		AVIStreamRelease(pavi);
-	}
-
-	//Verifying streams are of the correct type
-	AVISTREAMINFO avis[NUMSTREAMS];
-
-	AVIStreamInfo(AviStream[0], &avis[0], sizeof(avis[0]));
-	AVIStreamInfo(AviStream[1], &avis[1], sizeof(avis[1]));
-
-	//Assert that the streams we are going to work with are correct in our assumption
-	//such that stream 0 is video and stream 1 is audio
-
-	if (avis[0].fccType != streamtypeVIDEO) {
-		//MessageBox(NULL,"Unable to verify video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
-		MessageOut(NULL,IDS_STRING_NOVERIFYVIDEO,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
-		AVIStreamRelease(AviStream[0]);
-		AVIStreamRelease(AviStream[1]);
-		return 3;
-	}
-
-	if (avis[1].fccType != streamtypeAUDIO) {
-		//MessageBox(NULL,"Unable to verify audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
-		MessageOut(NULL,IDS_STRING_NOVERIFYAUDIO,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
-		AVIStreamRelease(AviStream[0]);
-		AVIStreamRelease(AviStream[1]);
-		return 4;
-	}
-
-	// AVISaveV code takes a pointer to compression opts
-	AVICOMPRESSOPTIONS gaAVIOptions[NUMSTREAMS];		// compression options
-	LPAVICOMPRESSOPTIONS galpAVIOptions[NUMSTREAMS];
-	galpAVIOptions[0] = &gaAVIOptions[0];
-	galpAVIOptions[1] = &gaAVIOptions[1];
-
-	// clear options structure to zeroes
-	_fmemset(galpAVIOptions[0], 0, sizeof(AVICOMPRESSOPTIONS));
-	_fmemset(galpAVIOptions[1], 0, sizeof(AVICOMPRESSOPTIONS));
-
-	//=========================================
-	//Set Video Stream Compress Options
-	//=========================================
-
-	//No Recompression
-	galpAVIOptions[0]->fccType = streamtypeVIDEO;
-	galpAVIOptions[0]->fccHandler = 0;
-	galpAVIOptions[0]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
-	if (bInterleave) {
-		galpAVIOptions[0]->dwFlags = galpAVIOptions[0]->dwFlags | AVICOMPRESSF_INTERLEAVE;
-	}
-	galpAVIOptions[0]->dwKeyFrameEvery = (DWORD) -1;
-	galpAVIOptions[0]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
-	galpAVIOptions[0]->dwBytesPerSecond = 0;
-
-	if (interleave_unit==FRAMES) {
-		galpAVIOptions[0]->dwInterleaveEvery = interleave_factor;
-	} else {
-		double interfloat = (((double) cAudioFormat.m_iInterleaveFactor) * ((double) cVideoOpts.m_iFramesPerSecond))/1000.0;
-		int interint = (int) interfloat;
-		if (interint<=0) {
-			interint = 1;
-		}
-
-		galpAVIOptions[0]->dwInterleaveEvery = interint;
-	}
-
-	//galpAVIOptions[0]->cbParms = 0;
-	//galpAVIOptions[0]->cbFormat = 0;
-
-	//=========================================
-	//Set Audio Stream Compress Options
-	//=========================================
-	//Recompression may be applied
-	//
-	//Audio Compress Options seems to be specified by the audio format in avicompressoptions
-	galpAVIOptions[1]->fccType = streamtypeAUDIO;
-	galpAVIOptions[1]->fccHandler = 0;
-	galpAVIOptions[1]->dwFlags = AVICOMPRESSF_VALID;
-	if (bInterleave) {
-		galpAVIOptions[1]->dwFlags = galpAVIOptions[1]->dwFlags | AVICOMPRESSF_INTERLEAVE;
-	}
-	galpAVIOptions[1]->dwKeyFrameEvery = 0;
-	galpAVIOptions[1]->dwQuality = 0;
-	galpAVIOptions[1]->dwBytesPerSecond = 0;
-
-	if (interleave_unit==FRAMES) {
-		galpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
-	} else {
-		//back here
-		double interfloat = (((double) cAudioFormat.m_iInterleaveFactor) * ((double) cVideoOpts.m_iFramesPerSecond))/1000.0;
-		int interint = (int) interfloat;
-		if (interint<=0) {
-			interint = 1;
-		}
-
-		galpAVIOptions[1]->dwInterleaveEvery = interint;
-	}
-	//galpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
-	//galpAVIOptions[1]->cbParms = 0;
-
-	if (recompress_audio) {
-		galpAVIOptions[1]->cbFormat = audio_format_size;
-		galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, audio_format_size);
-		memcpy( (void *) galpAVIOptions[1]->lpFormat, (void *) audio_recompress_format, audio_format_size);
-	} else {
-		LONG lTemp;
-		AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), NULL, &lTemp);
-		galpAVIOptions[1]->cbFormat = lTemp;
-
-		if (lTemp) {
-			galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
-		}
-		// Use existing format as compress format
-		if (galpAVIOptions[1]->lpFormat) {
-			AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]),galpAVIOptions[1]->lpFormat, &lTemp);
-		}
-	}
-
-	// ============================
-	// Do the work! Merging
-	// ============================
-
-	//Save fccHandlers
-	DWORD fccHandler[NUMSTREAMS];
-	fccHandler[0] = galpAVIOptions[0]->fccHandler;
-	fccHandler[1] = galpAVIOptions[1]->fccHandler;
-
-	hr = AVISaveV(LPCTSTR(output_avi_path), NULL, (AVISAVECALLBACK) SaveCallback, NUMSTREAMS, AviStream, galpAVIOptions);
-	//hr = AVISaveV(LPCTSTR(output_avi_path), NULL, (AVISAVECALLBACK) NULL, NUMSTREAMS, AviStream, galpAVIOptions);
-	if (hr != AVIERR_OK) {
-		//Error merging with audio compress options, retry merging with default audio options (no recompression)
-		if (recompress_audio) {
-			AVISaveOptionsFree(NUMSTREAMS,galpAVIOptions);
-
-			galpAVIOptions[0] = &gaAVIOptions[0];
-			galpAVIOptions[1] = &gaAVIOptions[1];
-
-			//Resetting Compress Options
-			_fmemset(galpAVIOptions[0], 0, sizeof(AVICOMPRESSOPTIONS));
-			_fmemset(galpAVIOptions[1], 0, sizeof(AVICOMPRESSOPTIONS));
-
-			galpAVIOptions[0]->fccType = streamtypeVIDEO;
-			galpAVIOptions[0]->fccHandler = 0;
-			galpAVIOptions[0]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
-			if (bInterleave) {
-				galpAVIOptions[0]->dwFlags = galpAVIOptions[0]->dwFlags | AVICOMPRESSF_INTERLEAVE;
-			}
-			galpAVIOptions[0]->dwKeyFrameEvery = (DWORD) -1;
-			galpAVIOptions[0]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
-			galpAVIOptions[0]->dwBytesPerSecond = 0;
-			galpAVIOptions[0]->dwInterleaveEvery = interleave_factor;
-
-			galpAVIOptions[1]->fccType = streamtypeAUDIO;
-			galpAVIOptions[1]->fccHandler = 0;
-			galpAVIOptions[1]->dwFlags = AVICOMPRESSF_VALID;
-			if (bInterleave) {
-				galpAVIOptions[1]->dwFlags = galpAVIOptions[1]->dwFlags | AVICOMPRESSF_INTERLEAVE;
-			}
-			galpAVIOptions[1]->dwKeyFrameEvery = 0;
-			galpAVIOptions[1]->dwQuality = 0;
-			galpAVIOptions[1]->dwBytesPerSecond = 0;
-			galpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
-
-			//Use default audio format
-			LONG lTemp;
-			AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), NULL, &lTemp);
-			galpAVIOptions[1]->cbFormat = lTemp;
-			if (lTemp) {
-				galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
-			}
-			// Use existing format as compress format
-			if (galpAVIOptions[1]->lpFormat) {
-				AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]),galpAVIOptions[1]->lpFormat, &lTemp);
-			}
-
-			//Do the Work .... Merging
-			hr = AVISaveV(LPCTSTR(output_avi_path), NULL, (AVISAVECALLBACK) NULL, NUMSTREAMS, AviStream, galpAVIOptions);
-
-			if (hr != AVIERR_OK) {
-				AVISaveOptionsFree(NUMSTREAMS,galpAVIOptions);
-				AVIStreamRelease(AviStream[0]);
-				AVIStreamRelease(AviStream[1]);
-
-				//MessageBox(NULL,"Unable to merge audio and video streams (1).","Note",MB_OK | MB_ICONEXCLAMATION);
-				MessageOut(NULL,IDS_STRING_NOMERGE1,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
-				return 5;
-			}
-
-			//Succesful Merging, but with no audio recompression
-			//MessageBox(NULL,"Unable to apply audio compression with the selected options. Your movie is saved without audio compression.","Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(NULL,IDS_STRING_NOAUDIOCOMPRESS,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-		} else {
-			// if recompress audio retry
-			AVISaveOptionsFree(NUMSTREAMS,galpAVIOptions);
-			AVIStreamRelease(AviStream[0]);
-			AVIStreamRelease(AviStream[1]);
-			//MessageBox(NULL,"Unable to audio and video merge streams (2).","Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(NULL,IDS_STRING_NOMERGE2,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
-			return 5;
-		}
-	}
-
-	// Restore fccHandlers
-	galpAVIOptions[0]->fccHandler = fccHandler[0];
-	galpAVIOptions[1]->fccHandler = fccHandler[1];
-
-	// Set Title Bar
-	HWND mainwnd = AfxGetApp()->m_pMainWnd->m_hWnd;
-	if (mainwnd) {
-		::SetWindowText(mainwnd,"CamStudio - Custom Build");
-	}
-
-	AVISaveOptionsFree(NUMSTREAMS,galpAVIOptions);
-
-	// Free Editable Avi Streams
-	for (int i = 0; i < NUMSTREAMS; i++) {
-		if (AviStream[i]) {
-			AVIStreamRelease(AviStream[i]);
-			AviStream[i] = NULL;
-		}
-	}
-
-	AVIFileExit();
-
-	return 0;
-}
-
-BOOL CALLBACK SaveCallback(int iProgress)
-{
-	//Set Progress in Title Bar
-
-	//char szText[300];
-	//wsprintf(szText, "Compressing Audio %d%%", iProgress);
-
-	CString szText, fmtstr;
-	fmtstr.LoadString(IDS_STRING_COMPRESSINGAUDIO);
-	szText.Format(LPCTSTR(fmtstr),iProgress);
-
-	HWND mainwnd = AfxGetApp()->m_pMainWnd->m_hWnd;
-	if (mainwnd) {
-		//::SetWindowText(mainwnd, szText);
-		::SetWindowText(mainwnd, LPCTSTR(szText));
-	}
-
-	return WinYield();
-	//return FALSE;
-}
 
 void GetVideoCompressState (HIC hic, DWORD fccHandler)
 {
@@ -1842,32 +1512,25 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 
 	//Normal thread exit
 	//Prompt the user for the filename
-
-	char szFilter[100];
-	char szTitle[100];
-	char extFilter[30];
-
-	//ver 2.26
-	if (cProgramOpts.m_iRecordingMode == ModeAVI) {
-		strcpy_s(szFilter,"AVI Movie Files (*.avi)|*.avi||");
-		strcpy_s(szTitle,"Save AVI File");
-		strcpy_s(extFilter,"*.avi");
-	} else {
-		strcpy_s(szFilter,"FLASH Movie Files (*.swf)|*.swf||");
-		strcpy_s(szTitle,"Save SWF File");
-		strcpy_s(extFilter,"*.swf");
+	CString strFilter(_T("AVI Movie Files (*.avi)|*.avi||"));
+	CString strTitle(_T("Save AVI File"));
+	CString strExtFilter(_T("*.avi"));
+	if (cProgramOpts.m_iRecordingMode == ModeFlash) {
+		strFilter = _T("FLASH Movie Files (*.swf)|*.swf||");
+		strTitle = _T("Save SWF File");
+		strExtFilter = _T("*.swf");
 	}
 
-	CFileDialog fdlg(FALSE, extFilter, extFilter, OFN_LONGNAMES, szFilter, this);
-	fdlg.m_ofn.lpstrTitle = szTitle;
+	CFileDialog fdlg(FALSE, strExtFilter, strExtFilter, OFN_LONGNAMES, strFilter, this);
+	fdlg.m_ofn.lpstrTitle = strTitle;
 
 	if (savedir == "")
 		savedir = GetProgPath();
 
 	fdlg.m_ofn.lpstrInitialDir = savedir;
 
-	CString m_newfile;
-	CString m_newfileTitle;
+	CString strNewFile;
+	CString strNewFileTitle;
 	if ((cProgramOpts.m_iRecordingMode == ModeAVI) && cProgramOpts.m_bAutoNaming) {
 		savedir = GetProgPath();
 		time_t osBinaryTime; // C run-time time (defined in <time.h>)
@@ -1887,14 +1550,14 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 
 		fdlg.m_ofn.lpstrInitialDir = savedir;
 
-		m_newfile = savedir + "\\" + filestr + ".avi";
-		m_newfileTitle = savedir + "\\" + filestr + ".avi";
-		m_newfileTitle = m_newfileTitle.Left(m_newfileTitle.ReverseFind('\\'));
+		strNewFile = savedir + "\\" + filestr + ".avi";
+		strNewFileTitle = savedir + "\\" + filestr + ".avi";
+		strNewFileTitle = strNewFileTitle.Left(strNewFileTitle.ReverseFind('\\'));
 	} else if (fdlg.DoModal() == IDOK) {
-		m_newfile = fdlg.GetPathName();
-		m_newfileTitle = fdlg.GetPathName();
-		m_newfileTitle = m_newfileTitle.Left(m_newfileTitle.ReverseFind('\\'));
-		savedir = m_newfileTitle;
+		strNewFile = fdlg.GetPathName();
+		strNewFileTitle = fdlg.GetPathName();
+		strNewFileTitle = strNewFileTitle.Left(strNewFileTitle.ReverseFind('\\'));
+		savedir = strNewFileTitle;
 	} else {
 		DeleteFile(strTempFilePath);
 		if (!cAudioFormat.isInput(NONE)) {
@@ -1905,25 +1568,21 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 
 	//ver 2.26
 	if (cProgramOpts.m_iRecordingMode == ModeFlash) {
-		int lenx = m_newfile.GetLength();
-		if (((m_newfile.GetAt(lenx-1) == 'f') || (m_newfile.GetAt(lenx-1) == 'F'))
-			&& ((m_newfile.GetAt(lenx-2) == 'w') || (m_newfile.GetAt(lenx-2) == 'W'))
-			&& ((m_newfile.GetAt(lenx-3) == 's') || (m_newfile.GetAt(lenx-3) == 'S'))
-			&& (m_newfile.GetAt(lenx-4) == '.'))
-		{
-			m_newfile.SetAt(lenx-1,'i');
-			m_newfile.SetAt(lenx-2,'v');
-			m_newfile.SetAt(lenx-3,'a');
-			m_newfile.SetAt(lenx-4,'.');
+		int iPos = strNewFile.Find(_T("."));
+		if (0 < iPos) {
+			if (strNewFile.Right(strNewFile.GetLength() - iPos).MakeUpper() == _T(".SWF")) {
+				CString strLeft = strNewFile.Left(iPos);
+				strNewFile = strLeft + _T(".avi");
+			}
 		} else {
-			m_newfile += ".avi";
+			strNewFile += _T(".avi");
 		}
 	}
 
 	//Ver 1.1
 	if (cAudioFormat.m_iRecordAudio) {
 		// Check if file exists and if so, does it allow overwite
-		HANDLE hfile = CreateFile(m_newfile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+		HANDLE hfile = CreateFile(strNewFile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 		if (hfile == INVALID_HANDLE_VALUE) {
 			//::MessageBox(NULL,"Unable to create new file. The file may be opened by another application. Please use another filename.","Note",MB_OK | MB_ICONEXCLAMATION);
 			MessageOut(m_hWnd,IDS_STRING_NOCREATEWFILE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
@@ -1931,7 +1590,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 			return 0;
 		}
 		CloseHandle(hfile);
-		DeleteFile(m_newfile);
+		DeleteFile(strNewFile);
 
 		//ver 1.8
 		if (vanWndCreated) {
@@ -1947,28 +1606,25 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 		//if ((iRecordAudio==2) || (bUseMCI)) {
 		//ver 2.26 ...overwrite audio settings for Flash Moe recording ... no compression used...
 		if ((cAudioFormat.isInput(SPEAKERS)) || (cAudioFormat.m_bUseMCI) || (cProgramOpts.m_iRecordingMode == ModeFlash)) {
-			result = Merge_Video_And_Sound_File(strTempFilePath, tempaudiopath, m_newfile, FALSE, &(cAudioFormat.AudioFormat()), cAudioFormat.m_dwCbwFX, cAudioFormat.m_bInterleaveFrames, cAudioFormat.m_iInterleaveFactor, cAudioFormat.m_iInterleavePeriod);
+			result = MergeVideoAudio(strTempFilePath, tempaudiopath, strNewFile, FALSE, cAudioFormat);
 		} else if (cAudioFormat.isInput(MICROPHONE)) {
-			result = Merge_Video_And_Sound_File(strTempFilePath, tempaudiopath, m_newfile, cAudioFormat.m_bCompression, &(cAudioFormat.AudioFormat()), cAudioFormat.m_dwCbwFX,cAudioFormat.m_bInterleaveFrames,cAudioFormat.m_iInterleaveFactor, cAudioFormat.m_iInterleavePeriod);
+			result = MergeVideoAudio(strTempFilePath, tempaudiopath, strNewFile, cAudioFormat.m_bCompression, cAudioFormat);
 		}
 
 		//Check Results : Attempt Recovery on error
-		if (result==0) {
-			//Successful
+		switch (result)
+		{
+		case 0:		// Successful
+		case 1:		// video file broken; Unable to recover
+		case 3:		// this case is rare; Unable to recover
 			DeleteFile(strTempFilePath);
 			DeleteFile(tempaudiopath);
-		} else if (result==1) { //video file broken
-			//Unable to recover
-			DeleteFile(strTempFilePath);
-			DeleteFile(tempaudiopath);
-		} else if (result==3) { //this case is rare
-			//Unable to recover
-			DeleteFile(strTempFilePath);
-			DeleteFile(tempaudiopath);
-		} else if ((result==2) || (result==4)) { //recover video file
-			//video file is ok, but not audio file
-			//so copy the video file as avi and ignore the audio
-			if (!CopyFile( strTempFilePath,m_newfile,FALSE)) {
+			break;
+		case 2:
+		case 4:		// recover video file
+			// video file is ok, but not audio file
+			// so copy the video file as avi and ignore the audio
+			if (!CopyFile( strTempFilePath,strNewFile,FALSE)) {
 				//Although there is error copying, the temp file still remains in the temp directory and is not deleted, in case user wants a manual recover
 				//MessageBox("File Creation Error. Unable to rename/copy file.","Note",MB_OK | MB_ICONEXCLAMATION);
 				MessageOut(m_hWnd,IDS_STRING_FILECREATIONERROR,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
@@ -1978,44 +1634,49 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 			DeleteFile(tempaudiopath);
 
 			//::MessageBox(NULL,"Your AVI movie will not contain a soundtrack. CamStudio is unable to merge the video with audio.","Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(m_hWnd,IDS_STRING_NOSOUNDTRACK,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-		} else if (result == 5) {
-			//recover both files, but as separate files
-			CString m_audioext(".wav");
-			CString m_audiofile = m_newfile + m_audioext;
+			MessageOut(m_hWnd, IDS_STRING_NOSOUNDTRACK, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+			break;
+		case 5:		// recover both files, but as separate files
+			{
+				CString m_audioext(".wav");
+				CString m_audiofile = strNewFile + m_audioext;
+				if (!CopyFile( strTempFilePath,strNewFile,FALSE)) {
+					//MessageBox("File Creation Error. Unable to rename/copy video file.","Note",MB_OK | MB_ICONEXCLAMATION);
+					MessageOut(m_hWnd,IDS_STRINGFILECREATION2,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+					return 0;
+				}
+				DeleteFile(strTempFilePath);
 
-			if (!CopyFile( strTempFilePath,m_newfile,FALSE)) {
-				//MessageBox("File Creation Error. Unable to rename/copy video file.","Note",MB_OK | MB_ICONEXCLAMATION);
-				MessageOut(m_hWnd,IDS_STRINGFILECREATION2,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-				return 0;
+				if (!CopyFile(tempaudiopath,m_audiofile,FALSE)) {
+					//MessageBox("File Creation Error. Unable to rename/copy audio file.","Note",MB_OK | MB_ICONEXCLAMATION);
+					MessageOut(m_hWnd,IDS_STRING_FILECREATION3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+					return 0;
+				}
+				DeleteFile(tempaudiopath);
+
+				CString tstr;
+				tstr.LoadString(IDS_STRING_NOTE);
+				CString msgstr;
+				msgstr.LoadString(IDS_STRING_NOMERGE);
+				//CString msgstr("CamStudio is unable to merge the video with audio files. Your video and audio files are saved separately as \n\n");
+
+				msgstr = msgstr + strNewFile + "\n";
+				msgstr = msgstr + m_audiofile;
+				::MessageBox(NULL, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
 			}
-			DeleteFile(strTempFilePath);
-
-			if (!CopyFile(tempaudiopath,m_audiofile,FALSE)) {
-				//MessageBox("File Creation Error. Unable to rename/copy audio file.","Note",MB_OK | MB_ICONEXCLAMATION);
-				MessageOut(m_hWnd,IDS_STRING_FILECREATION3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-				return 0;
-			}
-			DeleteFile(tempaudiopath);
-
-			CString tstr,msgstr;
-			tstr.LoadString(IDS_STRING_NOTE);
-			msgstr.LoadString(IDS_STRING_NOMERGE);
-			//CString msgstr("CamStudio is unable to merge the video with audio files. Your video and audio files are saved separately as \n\n");
-
-			msgstr = msgstr + m_newfile + "\n";
-			msgstr = msgstr + m_audiofile;
-			::MessageBox(NULL,msgstr,tstr,MB_OK | MB_ICONEXCLAMATION);
-		} //if result
+			break;
+		}
 	} else {
 		//no audio, just do a plain copy of temp avi to final avi
-		if (!CopyFile( strTempFilePath,m_newfile,FALSE)) {
+		if (!CopyFile(strTempFilePath,strNewFile,FALSE)) {
 			//Ver 1.1
-			//DeleteFile(m_newfile);
-			//MessageBox("File Creation Error. Unable to rename/copy file. The file may be opened by another application. Please use another filename.","Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(m_hWnd,IDS_STRING_FILECREATION4,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+			// "File Creation Error.
+			// Unable to rename/copy file.
+			// The file may be opened by another application.
+			// Please use another filename."
+			MessageOut(m_hWnd, IDS_STRING_FILECREATION4, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 			//Repeat this function until success
-			::PostMessage(hWndGlobal,WM_USER_GENERIC,0,0);
+			::PostMessage(hWndGlobal, WM_USER_GENERIC, 0, 0);
 			return 0;
 		}
 		DeleteFile(strTempFilePath);
@@ -2024,64 +1685,21 @@ LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
 		}
 	}
 
+	// TEST
+	if (0)
+	{
+		CString strAVIOut;
+		strAVIOut.Format(_T("%s\\FadeOut.avi"), GetProgPath());
+		CamAVIFile aviFile(cVideoOpts, cAudioFormat);
+		aviFile.FadeOut(strNewFile, strAVIOut);
+	}
+	// TEST
+
 	//ver 2.26
 	if (cProgramOpts.m_iRecordingMode == ModeAVI) {
-		//Launch the player
-		if (cProgramOpts.m_iLaunchPlayer == CAM1_PLAYER) {
-			CString AppDir = GetProgPath();
-			CString exefileName("\\player.exe ");
-			CString launchPath = AppDir + exefileName + m_newfile;
-			if (WinExec(launchPath,SW_SHOW)!=0) {
-			} else {
-				//MessageBox("Error launching avi player!","Note",MB_OK | MB_ICONEXCLAMATION);
-				MessageOut(m_hWnd,IDS_STRING_ERRPLAYER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-			}
-		} else if (cProgramOpts.m_iLaunchPlayer == DEFAULT_PLAYER) {
-			if (Openlink(m_newfile)) {
-			} else {
-				//MessageBox("Error launching avi player!","Note",MB_OK | MB_ICONEXCLAMATION);
-				MessageOut(m_hWnd,IDS_STRING_ERRDEFAULTPLAYER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-			}
-		} else if (cProgramOpts.m_iLaunchPlayer == CAM2_PLAYER) {
-			CString AppDir=GetProgPath();
-			CString launchPath;
-			CString exefileName("\\Playplus.exe ");
-			launchPath=AppDir+exefileName+m_newfile;
-
-			if (WinExec(launchPath,SW_SHOW)!=0) {
-			} else {
-				//MessageBox("Error launching avi player!","Note",MB_OK | MB_ICONEXCLAMATION);
-				MessageOut(m_hWnd,IDS_STRING_ERRPLAYER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-			}
-		}
+		RunViewer(strNewFile);
 	} else {
-		//CString swfname;
-		//swfname = m_newfile;
-		//int lenx = m_newfile.GetLength();
-		//if (((m_newfile.GetAt(lenx-1) == 'i') || (m_newfile.GetAt(lenx-1) == 'I')) &&
-		//	((m_newfile.GetAt(lenx-2) == 'v') || (m_newfile.GetAt(lenx-2) == 'V')) &&
-		//	((m_newfile.GetAt(lenx-3) == 'a') || (m_newfile.GetAt(lenx-3) == 'A')) &&
-		//	(m_newfile.GetAt(lenx-4) == '.'))
-		//{
-		//	m_newfile.SetAt(lenx-1,'f');
-		//	m_newfile.SetAt(lenx-2,'w');
-		//	m_newfile.SetAt(lenx-3,'s');
-		//	m_newfile.SetAt(lenx-4,'.');
-		//}
-
-		//ver 2.26
-		SaveProducerCommand();
-
-		//Sleep(2000);
-
-		CString AppDir = GetProgPath();
-		CString exefileName("\\producer.exe -x ");
-		CString launchPath = AppDir + exefileName + m_newfile;
-		if (WinExec(launchPath,SW_SHOW) != 0) {
-		} else {
-			MessageBox("Error launching SWF Producer!","Note",MB_OK | MB_ICONEXCLAMATION);
-			//MessageOut(m_hWnd,IDS_STRING_ERRPRODUCER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-		}
+		RunProducer(strNewFile);
 	}
 
 	return 0;
@@ -2864,8 +2482,8 @@ void CRecorderView::SaveSettings()
 	}
 
 	//Ver 1.6
-	if (specifieddir.GetLength() > 0)
-		fwrite((LPCTSTR)specifieddir, specifieddir.GetLength(), 1, tFile);
+	if (cProgramOpts.m_strSpecifiedDir.GetLength() > 0)
+		fwrite((LPCTSTR)cProgramOpts.m_strSpecifiedDir, cProgramOpts.m_strSpecifiedDir.GetLength(), 1, tFile);
 
 	//Ver 1.8
 	if (shapeName.GetLength() > 0)
@@ -3155,7 +2773,7 @@ void CRecorderView::LoadSettings()
 	{
 		int old_tempPath_Access = cProgramOpts.m_iTempPathAccess;
 		cProgramOpts.m_iTempPathAccess = USE_WINDOWS_TEMP_DIR;
-		specifieddir = GetTempFolder(cProgramOpts.m_iTempPathAccess, specifieddir);
+		cProgramOpts.m_strSpecifiedDir = GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir);
 		cProgramOpts.m_iTempPathAccess = old_tempPath_Access;
 
 		//Do not modify the iSpecifiedDirLength variable, even if specifieddir is changed. It will need to be used below
@@ -3359,13 +2977,15 @@ void CRecorderView::LoadSettings()
 			//ver 1.6
 			if (ver > 1.55)
 			{
+#ifdef OBSOLETE_CODE
 				// if upgrade from older file versions,
 				// iSpecifiedDirLength == 0 and the following code will not run
 				if ((cProgramOpts.m_iSpecifiedDirLength > 0) && (cProgramOpts.m_iSpecifiedDirLength < 1000)) {
 					fread(specdata, cProgramOpts.m_iSpecifiedDirLength, 1, tFile);
 					specdata[cProgramOpts.m_iSpecifiedDirLength]=0;
-					specifieddir=CString(specdata);
+					cProgramOpts.m_strSpecifiedDir = CString(specdata);
 				}
+#endif // OBSOLETE_CODE
 
 				//ver 1.8
 				if (ver >= 1.799999)
@@ -3511,9 +3131,9 @@ void CRecorderView::OnUpdateOptionsTempdirInstalled(CCmdUI* pCmdUI)
 
 void CRecorderView::OnOptionsTempdirUser()
 {
-	CFolderDialog cfg(specifieddir);
+	CFolderDialog cfg(cProgramOpts.m_strSpecifiedDir);
 	if (IDOK == cfg.DoModal()) {
-		specifieddir = cfg.GetPathName();
+		cProgramOpts.m_strSpecifiedDir = cfg.GetPathName();
 		cProgramOpts.m_iTempPathAccess = USE_USER_SPECIFIED_DIR;
 	}
 }
@@ -3834,8 +3454,7 @@ void CRecorderView::OnToolsSwfproducer()
 	CString launchPath;
 	CString exefileName("\\Producer.exe ");
 	launchPath = AppDir + exefileName;
-
-	if (31 < WinExec(launchPath, SW_SHOW)) {
+	if (WinExec(launchPath, SW_SHOW) < HINSTANCE_ERROR) {
 		//MessageBox("Error launching SWF Producer!","Note",MB_OK | MB_ICONEXCLAMATION);
 		MessageOut(m_hWnd, IDS_ERRPPRODUCER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 	}
@@ -4248,7 +3867,7 @@ UINT CRecorderView::RecordVideo()
 	TRACE("CRecorderView::RecordAVIThread\n");
 	// Test the validity of writing to the file
 	// Make sure the file to be created is currently not used by another application
-	CString csTempFolder(GetTempFolder(cProgramOpts.m_iTempPathAccess, specifieddir));
+	CString csTempFolder(GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir));
 	strTempFilePath.Format("%s\\temp.avi", (LPCSTR)csTempFolder);
 
 	srand((unsigned)time(NULL));
@@ -4884,13 +4503,32 @@ error:
 
 void CRecorderView::SaveProducerCommand()
 {
-	//********************************************
-	//Saving CamProducer.ini for storing text data
-	//********************************************
+	// TODO: Why the artificial long file name here???
+	// How about "Producer.ini" ?
+	//Saving CamStudio.Producer.command.ini for storing text data
 
+	CString strProfile;
+	strProfile.Format(_T("%s\\CamStudio.Producer.command"), GetProgPath());
+	CString strSection;
+	strSection.Format(_T("[ CamStudio Flash Producer Commands ver%.2f ]"), 1.0);
+	CString strKey = _T("bLaunchPropPrompt");
+	CString strValue;
+	strValue.Format(_T("%d"), cProducerOpts.m_bLaunchPropPrompt);
+	::WritePrivateProfileString(strSection, strKey, strValue, strProfile);
+	
+	strKey = _T("bLaunchHTMLPlayer");
+	strValue.Format(_T("%d"), cProducerOpts.m_bLaunchHTMLPlayer);
+	::WritePrivateProfileString(strSection, strKey, strValue, strProfile);
+
+	strKey = _T("bDeleteAVIAfterUse");
+	strValue.Format(_T("%d"), cProducerOpts.m_bDeleteAVIAfterUse);
+	::WritePrivateProfileString(strSection, strKey, strValue, strProfile);
+
+#ifdef OBSOLETE_CODE
 	CString fileName = "\\CamStudio.Producer.command";
 	CString setDir = GetProgPath();
 	CString setPath = setDir + fileName;
+
 	FILE * sFile = fopen((LPCTSTR)(setPath), "wt");
 	if (sFile == NULL) {
 		return;
@@ -4908,11 +4546,58 @@ void CRecorderView::SaveProducerCommand()
 	fprintf(sFile, "bLaunchHTMLPlayer=%d \n", cProducerOpts.m_bLaunchHTMLPlayer);
 	fprintf(sFile, "bDeleteAVIAfterUse=%d \n", cProducerOpts.m_bDeleteAVIAfterUse);
 
-	//ErrMsg( "\nvscap\n");
-	//ErrMsg( "bLaunchPropPrompt = %d \n",bLaunchPropPrompt);
-	//ErrMsg( "bLaunchHTMLPlayer = %d \n",bLaunchHTMLPlayer);
-	//ErrMsg( "bDeleteAVIAfterUse = %d \n",bDeleteAVIAfterUse);
-
-	//fflush(sFile);
 	fclose(sFile);
+#endif
+}
+
+bool CRecorderView::RunViewer(const CString& strNewFile)
+{
+	//Launch the player
+	if (cProgramOpts.m_iLaunchPlayer == CAM1_PLAYER) {
+		CString AppDir = GetProgPath();
+		CString exefileName("\\player.exe ");
+		CString launchPath = AppDir + exefileName + strNewFile;
+		if (WinExec(launchPath, SW_SHOW) < HINSTANCE_ERROR) {
+			//MessageBox("Error launching avi player!","Note",MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(m_hWnd,IDS_STRING_ERRPLAYER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		}
+	} else if (cProgramOpts.m_iLaunchPlayer == DEFAULT_PLAYER) {
+		if (Openlink(strNewFile)) {
+		} else {
+			//MessageBox("Error launching avi player!","Note",MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(m_hWnd,IDS_STRING_ERRDEFAULTPLAYER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		}
+	} else if (cProgramOpts.m_iLaunchPlayer == CAM2_PLAYER) {
+		CString AppDir = GetProgPath();
+		CString launchPath;
+		CString exefileName("\\Playplus.exe ");
+		launchPath = AppDir + exefileName + strNewFile;
+		if (WinExec(launchPath,SW_SHOW) < HINSTANCE_ERROR) {
+			//MessageBox("Error launching avi player!","Note",MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(m_hWnd,IDS_STRING_ERRPLAYER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		}
+	}
+	return true;
+}
+
+bool CRecorderView::RunProducer(const CString& strNewFile)
+{
+	//ver 2.26
+	SaveProducerCommand();
+
+	//Sleep(2000);
+
+	CString AppDir = GetProgPath();
+	CString exefileName("\\producer.exe -x ");
+	//CString exefileName("\\producer.exe -b ");
+	CString launchPath = AppDir + exefileName + strNewFile;
+
+	TRACE("CRecorderView::OnUserGeneric: %s\n", (LPCTSTR)launchPath);
+
+	if (WinExec(launchPath, SW_SHOW) < HINSTANCE_ERROR) {
+		//if (WinExec(launchPath, SW_MINIMIZE) < HINSTANCE_ERROR) {
+		MessageBox("Error launching SWF Producer!","Note",MB_OK | MB_ICONEXCLAMATION);
+		//MessageOut(m_hWnd,IDS_STRING_ERRPRODUCER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+	}
+	return true;
 }

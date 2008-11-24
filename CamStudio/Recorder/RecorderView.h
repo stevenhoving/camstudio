@@ -204,6 +204,8 @@ private:
 	bool RecordVideo(CRect rectFrame, int fps, const char *szFileName);
 	UINT RecordVideo();
 	static UINT RecordThread(LPVOID pParam);
+	bool RunViewer(const CString& strNewFile);
+	bool RunProducer(const CString& strNewFile);
 };
 
 #ifndef _DEBUG  // debug version in vscapView.cpp
