@@ -689,8 +689,6 @@ private:
 
 // legacy settings values.
 
-#define NUMSTREAMS		2
-
 // video options
 enum eSynchType
 {
@@ -1298,6 +1296,7 @@ struct sProgramOpts
 		, m_iCursorLen(0)
 		, m_iShapeNameInt(0)
 		, m_iLayoutNameInt(0)
+		, m_strSpecifiedDir("")
 	{
 	}
 	sProgramOpts(const sProgramOpts& rhs)
@@ -1320,7 +1319,6 @@ struct sProgramOpts
 		m_iMaxPan				= rhs.m_iMaxPan;
 		m_iRecordingMode		= rhs.m_iRecordingMode;
 		m_iLaunchPlayer			= rhs.m_bSaveSettings;
-		m_iSpecifiedDirLength	= rhs.m_iSpecifiedDirLength;
 		m_iTempPathAccess		= rhs.m_iTempPathAccess;
 		m_iThreadPriority		= rhs.m_iThreadPriority;
 		m_iViewType				= rhs.m_iViewType;
@@ -1328,6 +1326,11 @@ struct sProgramOpts
 		m_iCursorLen			= rhs.m_iCursorLen;
 		m_iShapeNameInt			= rhs.m_iShapeNameInt;
 		m_iLayoutNameInt		= rhs.m_iLayoutNameInt;
+		m_iSpecifiedDirLength	= rhs.m_iSpecifiedDirLength;
+		m_strSpecifiedDir		= rhs.m_strSpecifiedDir;
+		if (m_strSpecifiedDir.GetLength() != m_iSpecifiedDirLength) {
+			m_iSpecifiedDirLength = m_strSpecifiedDir.GetLength();
+		}
 		return *this;
 	}
 	bool Read(CProfile& cProfile)
@@ -1340,7 +1343,7 @@ struct sProgramOpts
 		VERIFY(cProfile.Read(PRESETTIME, m_iPresetTime));
 		VERIFY(cProfile.Read(RECORDINGMODE, m_iRecordingMode));
 		VERIFY(cProfile.Read(LAUNCHPLAYER, m_iLaunchPlayer));
-		VERIFY(cProfile.Read(SPECIFIEDDIR, m_iLaunchPlayer));
+		VERIFY(cProfile.Read(SPECIFIEDDIR, m_strSpecifiedDir));
 		VERIFY(cProfile.Read(TEMPPATH_ACCESS, m_iTempPathAccess));
 		VERIFY(cProfile.Read(THREADPRIORITY, m_iThreadPriority));
 		VERIFY(cProfile.Read(AUTOPAN, m_bAutoPan));
@@ -1363,7 +1366,7 @@ struct sProgramOpts
 		VERIFY(cProfile.Write(PRESETTIME, m_iPresetTime));
 		VERIFY(cProfile.Write(RECORDINGMODE, m_iRecordingMode));
 		VERIFY(cProfile.Write(LAUNCHPLAYER, m_iLaunchPlayer));
-		VERIFY(cProfile.Write(SPECIFIEDDIR, m_iLaunchPlayer));
+		VERIFY(cProfile.Write(SPECIFIEDDIR, m_strSpecifiedDir));
 		VERIFY(cProfile.Write(TEMPPATH_ACCESS, m_iTempPathAccess));
 		VERIFY(cProfile.Write(THREADPRIORITY, m_iThreadPriority));
 		VERIFY(cProfile.Write(AUTOPAN, m_bAutoPan));
@@ -1388,7 +1391,6 @@ struct sProgramOpts
 	int m_iMaxPan;
 	int m_iRecordingMode;
 	int m_iLaunchPlayer;
-	int m_iSpecifiedDirLength;
 	int m_iTempPathAccess;
 	int m_iThreadPriority;
 	int m_iViewType;	
@@ -1396,6 +1398,9 @@ struct sProgramOpts
 	int m_iCursorLen;
 	int m_iShapeNameInt;
 	int m_iLayoutNameInt;
+	CString m_strSpecifiedDir;
+private:
+	int m_iSpecifiedDirLength;
 };
 extern sProgramOpts cProgramOpts;
 
