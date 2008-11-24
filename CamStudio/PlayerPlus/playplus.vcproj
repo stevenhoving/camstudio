@@ -4,7 +4,7 @@
 	Version="9.00"
 	Name="PlayerPlus"
 	ProjectGUID="{76FA275B-EEF6-420B-A7C1-61CEDEE5EF0E}"
-	RootNamespace="playplus"
+	RootNamespace="PlayerPlus"
 	Keyword="MFCProj"
 	TargetFrameworkVersion="131072"
 	>
@@ -506,11 +506,11 @@
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
 			<File
-				RelativePath=".\Player.ico"
+				RelativePath="..\GlobalResources\Player.ico"
 				>
 			</File>
 			<File
-				RelativePath="..\GlobalResources\Player.ico"
+				RelativePath=".\Player.ico"
 				>
 			</File>
 			<File
@@ -522,11 +522,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Player_logo.bmp"
+				RelativePath="..\GlobalResources\Player_logo.bmp"
 				>
 			</File>
 			<File
-				RelativePath="..\GlobalResources\Player_logo.bmp"
+				RelativePath=".\Player_logo.bmp"
 				>
 			</File>
 			<File
@@ -542,11 +542,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\GlobalResources\Producer_logo.bmp"
+				RelativePath=".\Producer_logo.bmp"
 				>
 			</File>
 			<File
-				RelativePath=".\Producer_logo.bmp"
+				RelativePath="..\GlobalResources\Producer_logo.bmp"
 				>
 			</File>
 			<File
