@@ -162,7 +162,6 @@
 		File "PlayerPlus.exe"
 		File "Producer.exe"
 		File "Recorder.exe"
-		File "stlport_vc645.dll"
 		File "testsnd.wav"
 		File "..\GlobalResources\Web.ico"
 		SetOutPath "$INSTDIR\controller"
@@ -281,7 +280,6 @@
 		Delete "$INSTDIR\PlayerPlus.exe"
 		Delete "$INSTDIR\Producer.exe"
 		Delete "$INSTDIR\Recorder.exe"
-		Delete "$INSTDIR\stlport_vc645.dll"
 		Delete "$INSTDIR\testsnd.wav"
 		Delete "$INSTDIR\Web.ico"
 		# Not removing INSTDIR here because the finalizer does that

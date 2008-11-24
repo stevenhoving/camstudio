@@ -7012,97 +7012,51 @@ void cleanTempFile()
 		DeleteFile(tempfile2);
 }
 
+// Produces a 100% Valid XHTML Strict document to display the flash file, which works in all browsers (even IE 4)
 void produceFlashHTML(CString htmlfilename, CString flashfilename, CString flashfilepath, int onlyflashtag, int width, int height,int bk_red, int bk_green, int bk_blue)
 {
-	COLORREF bkcolor = RGB(bk_blue,bk_green,bk_red);
+	COLORREF bkcolor = RGB(bk_blue, bk_green, bk_red);
 
 	FILE * htmlfile = NULL;
 
-	htmlfile = fopen(LPCTSTR(htmlfilename),"wt");
-	if (!htmlfile) return;
-
-	fprintf(htmlfile,"<HTML> \n");
+	htmlfile = fopen(LPCTSTR(htmlfilename), "wt");
+	if (!htmlfile)
+	{
+		return;
+	}
 
 	if (!onlyflashtag)
 	{
-		fprintf(htmlfile,"<HEAD> \n");
-		fprintf(htmlfile,"<TITLE> %s </TITLE> \n",LPCTSTR(flashfilename));
-		fprintf(htmlfile,"</HEAD> \n");
-		fprintf(htmlfile,"<BODY> \n");
+		fprintf(htmlfile, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+		fprintf(htmlfile, "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n");
+		fprintf(htmlfile, " \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
+		fprintf(htmlfile, "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
+		fprintf(htmlfile, "<head>\n");
+		fprintf(htmlfile, "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />\n");
+		fprintf(htmlfile, "<title>%s</title>\n", LPCTSTR(flashfilename));
+		fprintf(htmlfile, "<style type=\"text/css\">\n");
+		fprintf(htmlfile, "#movie\n{\n", LPCTSTR(flashfilename));
+		fprintf(htmlfile, "\twidth: %dpx;\n", width);
+		fprintf(htmlfile, "\theight: %dpx;\n", height);
+		fprintf(htmlfile, "}\n</style>\n");
+		fprintf(htmlfile, "</head>\n");
+		fprintf(htmlfile, "<body>\n");
+		fprintf(htmlfile, "<div>\n");
 	}
-	//#define SLAB_CUSTOM_SWF
-
-#ifndef SLAB_CUSTOM_SWF
-	fprintf(htmlfile,"<!-- Flash movie tag--> \n");
-	fprintf(htmlfile,"<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" ");
-	fprintf(htmlfile,"codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0\" ");
-	fprintf(htmlfile,"WIDTH=\"%d\" HEIGHT=\"%d\" id=\"",width,height);
-	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));
-	fprintf(htmlfile,"\" ALIGN=\"\"> \n");
-	fprintf(htmlfile," <PARAM NAME=\"movie\" VALUE=\"");
-	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));
-	fprintf(htmlfile,"\"/> \n <PARAM NAME=\"quality\" VALUE=\"high\"/> ");
-	fprintf(htmlfile,"\n <PARAM NAME=\"bgcolor\" VALUE=\"#%x\"/> \n <EMBED src=\"",bkcolor);
-	if (!onlyflashtag)
-		fprintf(htmlfile,"%s",LPCTSTR(flashfilename));
-	else
-		fprintf(htmlfile,"video/%s",LPCTSTR(flashfilename));
-
-	fprintf(htmlfile,"\" quality=\"high\" bgcolor=\"#%x\"  WIDTH=\"%d\" HEIGHT=\"%d\" ",bkcolor, width, height);
-	fprintf(htmlfile,"NAME=\"");
-	fprintf(htmlfile,"%s",LPCTSTR(flashfilename));
-	fprintf(htmlfile,"\" ALIGN=\"\" TYPE=\"application/x-shockwave-flash\" ");
-	fprintf(htmlfile,"PLUGINSPAGE=\"http://www.macromedia.com/go/getflashplayer\"/> \n");
-	fprintf(htmlfile,"</OBJECT>\n");
-#else
-	CString moviename = flashfilename.Left(flashfilename.GetLength()-4);
-	fprintf(htmlfile, "<DIV style=\"width: %dpx; padding: 0px 0px 0px 0px; margin-left: 15px; margin-bottom: -15px; border: 1px solid #ffffff;\">\n", width);
-	fprintf(htmlfile, "<OBJECT id=\"%s\" xmlns=\"\" classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0\" WIDTH=\"%d\" HEIGHT=\"%d\" ALIGN=\"\">\n", LPCTSTR(moviename), width, height);
-	fprintf(htmlfile, "<PARAM NAME=\"movie\" VALUE=\"%s\"/>\n", LPCTSTR(flashfilename));
-	fprintf(htmlfile, "<PARAM NAME=\"quality\" VALUE=\"high\"/>\n");
-	fprintf(htmlfile, "<PARAM NAME=\"bgcolor\" VALUE=\"#%x\"/>\n", bkcolor);
+	
+	fprintf(htmlfile, "<object id=\"movie\" type=\"application/x-shockwave-flash\" data=\"%s\">\n", LPCTSTR(flashfilename));
+	fprintf(htmlfile, "\t<param name=\"movie\" value=\"%s\" />\n", LPCTSTR(flashfilename));
+	fprintf(htmlfile, "\t<param name=\"quality\" value=\"high\" />\n");
+	fprintf(htmlfile, "\t<param name=\"bgcolor\" value=\"#%x\" />\n", bkcolor);
+	fprintf(htmlfile, "\t<p>You do not have the latest version of Flash installed. Please visit this link to download it: <a href=\"http://www.adobe.com/products/flashplayer/\">http://www.adobe.com/products/flashplayer/</a></p>\n");
+	fprintf(htmlfile, "</object>\n");
 
 	if (!onlyflashtag)
 	{
-		fprintf(htmlfile, "<EMBED swliveconnect=\"true\" name=\"%s\" src=\"%s\" quality=\"high\" bgcolor=\"#%x\" WIDTH=\"%d\" HEIGHT=\"%d\" ALIGN=\"\" TYPE=\"application/x-shockwave-flash\" PLUGINSPAGE=\"http://www.macromedia.com/go/getflashplayer\"/>\n",
-			LPCTSTR(moviename), LPCTSTR(flashfilename), bkcolor, width, height);
+		fprintf(htmlfile, "</div>\n");
+		fprintf(htmlfile, "</body>\n");
+		fprintf(htmlfile, "</html>\n");
 	}
-	else
-	{
-		fprintf(htmlfile, "<EMBED swliveconnect=\"true\" name=\"%s\" src=\"video/%s\" quality=\"high\" bgcolor=\"#%x\" WIDTH=\"%d\" HEIGHT=\"%d\" ALIGN=\"\" TYPE=\"application/x-shockwave-flash\" PLUGINSPAGE=\"http://www.macromedia.com/go/getflashplayer\"/>\n",
-			LPCTSTR(moviename), LPCTSTR(flashfilename), bkcolor, width, height);
-	}
-	fprintf(htmlfile, "</OBJECT>\n");
-	fprintf(htmlfile, "</DIV>\n");
-
-	fprintf(htmlfile, "\n");
-
-	/*	fprintf(htmlfile, "<script>\n");
-	fprintf(htmlfile, "function init_%s()\n", LPCTSTR(moviename));
-	fprintf(htmlfile, "{\n");
-	fprintf(htmlfile, "\tEndFlashMovie('%s')\n", LPCTSTR(moviename));
-	fprintf(htmlfile, "}\n");
-	fprintf(htmlfile, "window.onload = init_%s\n", LPCTSTR(moviename));
-	fprintf(htmlfile, "</script>\n");*/
-
-	fprintf(htmlfile, "<br/>\n");
-
-	fprintf(htmlfile, "<DIV style=\"margin-left: 15px; margin-bottom: 2px;\">\n");
-	fprintf(htmlfile, "<input class=\"button\" id=\"start\" name=\"Start\" title=\"Va all'inizio del filmato\" onClick=\"RewindFlashMovie('%s');\"/>\n", LPCTSTR(moviename));
-	fprintf(htmlfile, "<input class=\"button\" id=\"prev\" name=\"Previous\" title=\"Indietro di un fotogramma\" onClick=\"PrevFrameFlashMovie('%s');\"/>\n", LPCTSTR(moviename));
-	fprintf(htmlfile, "<input class=\"button\" id=\"play\" name=\"Play\" title=\"Esegue il filmato\" onClick=\"PlayFlashMovie('%s');\"/>\n", LPCTSTR(moviename));
-	fprintf(htmlfile, "<input class=\"button\" id=\"stop\" name=\"Stop\" title=\"Interrompe il filmato\" onClick=\"StopFlashMovie('%s');\"/>\n", LPCTSTR(moviename));
-	fprintf(htmlfile, "<input class=\"button\" id=\"next\" name=\"Next\" title=\"Avanti di un fotogramma\" onClick=\"NextFrameFlashMovie('%s');\"/>\n", LPCTSTR(moviename));
-	fprintf(htmlfile, "<input class=\"button\" id=\"end\"  name=\"End\" title=\"Va alla fine del filmato\" onClick=\"EndFlashMovie('%s');\"/>\n", LPCTSTR(moviename));
-	fprintf(htmlfile, "</DIV>\n");
-
-#endif // SLAB_CUSTOM_SWF
-
-	if (!onlyflashtag)
-	{
-		fprintf(htmlfile,"</BODY> \n");
-	}
-	fprintf(htmlfile,"</HTML> \n");
 
 	fclose(htmlfile);
 }
