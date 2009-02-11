@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="CamCommandLine"
 	ProjectGUID="{5AF4A6BD-43EF-4703-A79E-6047A9D2F1BE}"
-	RootNamespace="camstudio_cl"
+	RootNamespace="CamStudioCommandLine"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
