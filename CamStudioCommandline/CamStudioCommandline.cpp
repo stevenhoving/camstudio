@@ -10,7 +10,7 @@
 // 
 // License: GPL
 // 
-// Command line author: dimator@google.com
+// Command line author: dimator(AT)google(DOT)com
 //
 
 #define CAMSTUDIO_CL_VERSION "0.1"
