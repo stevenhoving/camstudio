@@ -16,6 +16,8 @@ extern bool bRecordState;	// in RecorderView
 
 int maxxScreen;
 int maxyScreen;
+int minxScreen;
+int minyScreen;
 
 static HMENU hMenu = NULL;
 
@@ -87,8 +89,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	HDC hScreenDC = ::GetDC(NULL);
 	int numbits = ::GetDeviceCaps(hScreenDC, BITSPIXEL );
-	maxxScreen = ::GetDeviceCaps(hScreenDC, HORZRES);
-	maxyScreen = ::GetDeviceCaps(hScreenDC, VERTRES);
+	//maxxScreen = ::GetDeviceCaps(hScreenDC, HORZRES);
+	maxxScreen = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
+	//maxyScreen = ::GetDeviceCaps(hScreenDC, VERTRES);
+	maxyScreen = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
+	minxScreen = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
+	minyScreen = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
 	::ReleaseDC(NULL,hScreenDC);
 
 	if (numbits>8) {

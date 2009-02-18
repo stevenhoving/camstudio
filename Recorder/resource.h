@@ -440,6 +440,9 @@
 #define ID_TOOLS_CAMSTUDIOMOVIEPLAYER2  32921
 #define ID_TOOLS_PLAYER                 32922
 #define ID_TOOLS_PLAYER2                32923
+#define ID_REGION_ALLSCREENS            32924
+#define ID_FULLSCREEN_SELECT            32925
+#define ID_REGION_FULLSCREEN32926       32926
 #define IDS_STRING_NOTE                 61446
 #define IDS_STRING_INTERLEAVE1          61447
 #define IDS_STRING_NOINPUT1             61448
@@ -578,7 +581,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        201
-#define _APS_NEXT_COMMAND_VALUE         32924
+#define _APS_NEXT_COMMAND_VALUE         32927
 #define _APS_NEXT_CONTROL_VALUE         1067
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
