@@ -70,7 +70,6 @@ void CTroubleShootDlg::OnOK()
 	}
 
 	int check2 = m_ctrlButtonBehavior2.GetCheck();
-	int ret2 = IDNO;
 	cVideoOpts.m_bRestrictVideoCodecs = (check2) ? true : false;
 
 	CDialog::OnOK();

@@ -17,6 +17,8 @@
 #pragma message("UNICODE NOT defined")
 #endif
 
+#define _CRT_SECURE_NO_WARNINGS //tell the compiler not to warn about using sprintf, fopen instead of *_s
+
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 //#define _AFX_SECURE_NO_WARNINGS
 // replacing calls to deprecated functions with calls to the new secure versions of those functions.

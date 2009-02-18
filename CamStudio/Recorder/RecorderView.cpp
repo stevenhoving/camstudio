@@ -478,7 +478,7 @@ int InitDrawShiftWindow()
 {
 	HDC hScreenDC = ::GetDC(hMouseCaptureWnd);
 
-	FixRectSizePos(&rc, maxxScreen, maxyScreen);
+	FixRectSizePos(&rc, maxxScreen, maxyScreen, minxScreen, minyScreen);
 
 	rcClip.left = rc.left;
 	rcClip.top = rc.top;
@@ -1074,6 +1074,8 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_COMMAND(ID_OPTIONS_ATUOPANSPEED, OnOptionsAtuopanspeed)
 	ON_COMMAND(ID_REGION_FULLSCREEN, OnRegionFullscreen)
 	ON_UPDATE_COMMAND_UI(ID_REGION_FULLSCREEN, OnUpdateRegionFullscreen)
+	ON_COMMAND(ID_REGION_ALLSCREENS, OnRegionAllScreens)
+	ON_UPDATE_COMMAND_UI(ID_REGION_ALLSCREENS, OnUpdateRegionAllScreens)
 	ON_COMMAND(ID_HELP_WEBSITE, OnHelpWebsite)
 	ON_COMMAND(ID_HELP_HELP, OnHelpHelp)
 	ON_COMMAND(ID_PAUSE, OnPause)
@@ -1403,7 +1405,7 @@ LRESULT CRecorderView::OnRecordStart(UINT wParam, LONG lParam)
 		::PostMessage(AfxGetMainWnd()->m_hWnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
 
 	//Check validity of rc and fix it
-	FixRectSizePos(&rc, maxxScreen, maxyScreen);
+	FixRectSizePos(&rc, maxxScreen, maxyScreen, minxScreen, minyScreen);
 
 	InstallMyHook(hWndGlobal,WM_USER_SAVECURSOR);
 
@@ -1490,6 +1492,24 @@ void CRecorderView::OnRegionFullscreen()
 void CRecorderView::OnUpdateRegionFullscreen(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_FULLSCREEN));
+}
+
+void CRecorderView::OnRegionAllScreens()
+{
+	cRegionOpts.m_iMouseCaptureMode = CAPTURE_ALLSCREENS;
+}
+
+void CRecorderView::OnUpdateRegionAllScreens(CCmdUI* pCmdUI)
+{
+	if (::GetSystemMetrics(SM_CMONITORS) == 1)
+	{
+		pCmdUI->Enable(FALSE);
+		pCmdUI->SetCheck(FALSE);
+	}
+	else
+	{
+		pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_ALLSCREENS));
+	}
 }
 
 //This function is called when the avi saving is completed
@@ -1738,7 +1758,7 @@ void CRecorderView::OnRecord()
 			rc.left = cRegionOpts.m_iCaptureLeft;
 			rc.right = cRegionOpts.m_iCaptureLeft + cRegionOpts.m_iCaptureWidth - 1;
 			rc.bottom = cRegionOpts.m_iCaptureTop + cRegionOpts.m_iCaptureHeight - 1;
-
+//TODOMON 0s are no good anymore .. compare to minx / miny 
 			if (rc.top < 0)
 				rc.top = 0;
 			if (rc.left < 0)
@@ -1770,7 +1790,15 @@ void CRecorderView::OnRecord()
 		InitSelectRegionWindow(); //will affect rc implicity
 		break;
 	case CAPTURE_FULLSCREEN:
-		rcUse = CRect(0, 0, maxxScreen, maxyScreen);
+		AfxMessageBox("Click on monitor to be captured");
+		//TODOMON Add function that gets a point and finds which monitor its on (MonitorFromPoint(...))
+	//	rcUse = CRect(0, 0, maxxScreen, maxyScreen);
+	//	rcUse.right--;
+	//	rcUse.bottom--;
+	//	::PostMessage(hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM) 0);
+		break;
+	case CAPTURE_ALLSCREENS:
+		rcUse = CRect(minxScreen, minyScreen, maxxScreen, maxyScreen);
 		rcUse.right--;
 		rcUse.bottom--;
 		::PostMessage(hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM) 0);
@@ -3916,8 +3944,8 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 
 	sVideoOpts SaveVideoOpts = cVideoOpts;
 
-	m_iFrameWidth = rectFrame.Width();
-	m_iFrameHeight = rectFrame.Height();
+	m_iFrameWidth = rectFrame.Width() + 1;
+	m_iFrameHeight = rectFrame.Height() + 1;
 
 	////////////////////////////////////////////////
 	// CAPTURE FIRST FRAME

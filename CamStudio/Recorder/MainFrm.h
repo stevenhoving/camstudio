@@ -74,5 +74,7 @@ private:
 
 extern int maxxScreen;
 extern int maxyScreen;
+extern int minxScreen;
+extern int minyScreen;
 
 #endif // !defined(AFX_MAINFRM_H__DBFD9E21_C771_4321_8322_1F45ED8D4A66__INCLUDED_)
