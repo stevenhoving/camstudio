@@ -26,40 +26,42 @@ void NormalizeRect(LPRECT prc)
 	::CopyRect(prc, rectSrc);
 }
 
-void FixRectSizePos(LPRECT prc, int maxxScreen, int maxyScreen)
+void FixRectSizePos(LPRECT prc, int maxxScreen, int maxyScreen, int minxScreen, int minyScreen)
 {
 	NormalizeRect(prc);
 
 	int width = prc->right - prc->left + 1;
 	int height = prc->bottom - prc->top + 1;
 
-	if (width>maxxScreen) {
-		prc->left = 0;
+	//check that rectangle isn't too wide
+	if (width > abs(maxxScreen-minxScreen)) {
+		prc->left = minxScreen;
 		prc->right = maxxScreen - 1;
 	}
+	else
+	{
+		//adjust left and right to make sure its on the screen
+		if (prc->left < minxScreen) {
+			prc->left = minxScreen;
+		}
+		if (prc->right > maxxScreen - 1) {
+			prc->right = maxxScreen - 1;
+		}
+	}
 
-	if (height > maxyScreen) {
-		prc->top = 0;
+	//check that rectangle isn't too tall
+	if (height > abs(maxyScreen-minyScreen)) {
+		prc->top = minyScreen;
 		prc->bottom = maxyScreen - 1;
 	}
-
-	if (prc->left < 0) {
-		prc->left = 0;
-		prc->right = width - 1;
-	}
-
-	if (prc->top < 0) {
-		prc->top = 0;
-		prc->bottom = height - 1;
-	}
-
-	if (prc->right > maxxScreen - 1) {
-		prc->right = maxxScreen - 1;
-		prc->left = maxxScreen - width;
-	}
-
-	if (prc->bottom > maxyScreen - 1) {
-		prc->bottom = maxyScreen - 1;
-		prc->top= maxyScreen - height;
+	else
+	{
+		//adjust top and bottom to make sure its on the screen
+		if (prc->top < minyScreen) {
+			prc->top = minyScreen;
+		}
+		if (prc->bottom > maxyScreen - 1) {
+			prc->bottom = maxyScreen - 1;
+		}
 	}
 }
