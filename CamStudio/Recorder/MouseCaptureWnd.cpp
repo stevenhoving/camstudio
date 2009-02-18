@@ -12,6 +12,17 @@
 HWND hMouseCaptureWnd;
 // MouseCaptureWndProc referenced functions
 
+//TODO / BUG: when using this code the rectangle can leave reminants on the windows below it until they refresh
+// I think its because the callback is now multithreaded and not guarenteed to call erase before each draw
+// Update this to pass the old and new recntangles in the same call so this doesn't happen.
+// Until then I'm disalbing this so when selecting a fixed area it must be on one screen.
+/*BOOL CALLBACK DrawSelectMultiMonitorCallback(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
+{
+	DrawSelect(hdcMonitor, (dwData != (DWORD)0), lprcMonitor);
+
+	return TRUE; //continue enumerating screens
+}*/
+
 /////////////////////////////////////////////////////////////////////////////
 // DrawSelect
 // Draws the selected clip rectangle with its dimensions on the DC
@@ -23,6 +34,11 @@ void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip)
 		return;
 	}
 	CRect rectDraw(lprClip);
+
+	//Debug code to verify drawing to multiple monitors correctly
+//	CString strTrace;
+//	strTrace.Format("DrawSelect : hdc = %X\n", hdc);
+//	TRACE(strTrace);
 
 	// If a rectangular clip region has been selected, draw it
 	HBRUSH newbrush = (HBRUSH) CreateHatchBrush(HS_BDIAGONAL, RGB(0,0,100));
@@ -130,6 +146,12 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 				}
 
 				if (!isRectEqual(old_rcClip,rcClip)) {
+					/* Multimonitor code -- will need to combine both EnumDisplays ... see comment above DrawSelectMultiMonitorCallback
+					HDC hCurMonitorDC = GetDC(NULL);
+					EnumDisplayMonitors(hCurMonitorDC, &old_rcClip, DrawSelectMultiMonitorCallback, 0); //0 indicates erase old rubber-band
+					EnumDisplayMonitors(hCurMonitorDC, &rcClip, DrawSelectMultiMonitorCallback, 1); //1 indicates draw new rubber-band
+					ReleaseDC(hWnd,hCurMonitorDC);*/
+					//single monitor code
 					HDC hScreenDC = GetDC(hWnd);
 					DrawSelect(hScreenDC, FALSE, &old_rcClip); // erase old rubber-band
 					DrawSelect(hScreenDC, TRUE, &rcClip); // new rubber-band
@@ -143,8 +165,10 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 					GetCursorPos(&pt);
 
 					HDC hScreenDC = GetDC(hWnd);
+					//HDC hCurMonitorDC = GetDC(NULL);
 
 					DrawSelect(hScreenDC, FALSE, &rcClip); // erase old rubber-band
+					//EnumDisplayMonitors(hCurMonitorDC, &rcClip, DrawSelectMultiMonitorCallback, 0); // erase old rubber-band
 
 					rcClip.left = ptOrigin.x;
 					rcClip.top = ptOrigin.y;
@@ -153,9 +177,10 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 
 					NormalizeRect(&rcClip);
 					DrawSelect(hScreenDC, TRUE, &rcClip); // new rubber-band
-					//TextOut(hScreenDC,pt.x,pt.y,"Lolo",4);
+					//EnumDisplayMonitors(hCurMonitorDC, &rcClip, DrawSelectMultiMonitorCallback, 1); // draw new rubber-band
 
 					ReleaseDC(hWnd,hScreenDC);
+					//ReleaseDC(hWnd,hCurMonitorDC);
 				}
 			}
 		}
@@ -296,12 +321,17 @@ bool CreateShiftWindow()
 	if (!RegisterClass(&wndclass))
 		return false;
 
-	HDC hScreenDC = ::GetDC(NULL);
-	maxxScreen = ::GetDeviceCaps(hScreenDC, HORZRES);
-	maxyScreen = ::GetDeviceCaps(hScreenDC, VERTRES);
-	::ReleaseDC(NULL,hScreenDC);
+	//HDC hScreenDC = ::GetDC(NULL);
+	//maxxScreen = ::GetDeviceCaps(hScreenDC, HORZRES);
+	maxxScreen = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
+	//maxyScreen = ::GetDeviceCaps(hScreenDC, VERTRES);
+	maxyScreen = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
+	minxScreen = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
+	minyScreen = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
+	//::ReleaseDC(NULL,hScreenDC);
 
-	hMouseCaptureWnd = ::CreateWindowEx(WS_EX_TOPMOST, _T("ShiftRegionWindow"), _T("Title"), WS_POPUP, 0, 0, maxxScreen, maxyScreen, NULL, NULL, hInstance, NULL);
+	hMouseCaptureWnd = ::CreateWindowEx(WS_EX_TOPMOST, _T("ShiftRegionWindow"), _T("Title"), WS_POPUP, 
+			minxScreen, minyScreen, maxxScreen, maxyScreen, NULL, NULL, hInstance, NULL);
 
 	TRACE(_T("CreateShiftWindow : %s\n"), ::IsWindow(hMouseCaptureWnd) ? _T("SUCCEEDED") : _T("FAIL"));
 	return ::IsWindow(hMouseCaptureWnd) ? true : false;

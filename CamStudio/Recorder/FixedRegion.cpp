@@ -51,13 +51,13 @@ void CFixedRegionDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_FIXEDTOPLEFT, m_ctrlButtonFixTopLeft);
 	//}}AFX_DATA_MAP
 	DDX_Text(pDX, IDC_X, m_iLeft);
-	DDV_MinMaxInt(pDX, m_iLeft, 0, maxxScreen);
+	DDV_MinMaxInt(pDX, m_iLeft, minxScreen, maxxScreen);
 	DDX_Text(pDX, IDC_Y, m_iTop);
-	DDV_MinMaxInt(pDX, m_iTop, 0, maxyScreen);
+	DDV_MinMaxInt(pDX, m_iTop, minyScreen, maxyScreen);
 	DDX_Text(pDX, IDC_WIDTH, m_iWidth);
-	DDV_MinMaxInt(pDX, m_iWidth, 0, maxxScreen);
+	DDV_MinMaxInt(pDX, m_iWidth, 0, abs(maxxScreen-minxScreen));
 	DDX_Text(pDX, IDC_HEIGHT, m_iHeight);
-	DDV_MinMaxInt(pDX, m_iHeight, 0, maxyScreen);
+	DDV_MinMaxInt(pDX, m_iHeight, 0, abs(maxyScreen-minyScreen));
 }
 
 BEGIN_MESSAGE_MAP(CFixedRegionDlg, CDialog)
@@ -66,6 +66,7 @@ BEGIN_MESSAGE_MAP(CFixedRegionDlg, CDialog)
 	ON_BN_CLICKED(IDC_FIXEDTOPLEFT, OnFixedtopleft)
 	//}}AFX_MSG_MAP
 	ON_MESSAGE(WM_APP_REGIONUPDATE, OnRegionUpdate)
+	ON_MESSAGE(WM_DISPLAYCHANGE, OnDisplayChange)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -77,38 +78,29 @@ void CFixedRegionDlg::OnOK()
 		return;
 	}
 
-	if (m_iWidth <= 0)
+	int maxWidth = abs(maxxScreen - minxScreen);
+	int maxHeight = abs(maxyScreen - minyScreen);
+
+	if (m_iWidth < 0)
 	{
-		//CString msgstr;
-		//msgstr.Format("The width must be greater than 0");
-		//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 		MessageOut(m_hWnd, IDS_STRING_WIDTHGREATER, IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 		return;
 	}
 
-	if (maxxScreen < m_iWidth)
+	if (maxWidth < m_iWidth)
 	{
-		//CString msgstr;
-		//msgstr.Format("The width must be smaller than the screen width (%d)",maxxScreen);
-		//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 		MessageOut(m_hWnd, IDS_STRING_WIDTHSMALLER, IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION, maxxScreen);
 		return;
 	}
 
-	if (m_iHeight <= 0)
+	if (m_iHeight < 0)
 	{
-		//CString msgstr;
-		//msgstr.Format("The height must be greater than 0");
-		//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 		MessageOut(m_hWnd,IDS_STRING_HEIGHTGREATER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 		return;
 	}
 
-	if (maxyScreen < m_iHeight)
+	if (maxHeight < m_iHeight)
 	{
-		//CString msgstr;
-		//msgstr.Format("The height must be smaller than the screen height (%d)",maxyScreen);
-		//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 		MessageOut(m_hWnd,IDS_STRING_HEIGHTSMALLER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,maxyScreen);
 		return;
 	}
@@ -117,70 +109,51 @@ void CFixedRegionDlg::OnOK()
 	int fval = m_ctrlButtonFixTopLeft.GetCheck();
 	if (fval)
 	{
-		if (m_iLeft <= 0)
+		if (m_iLeft < minxScreen)
 		{
-			//CString msgstr;
-			//msgstr.Format("The left value must be greater than 0");
-			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 			MessageOut(m_hWnd,IDS_STRING_LEFTGREATER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			return;
 		}
 
 		if (maxxScreen < m_iLeft)
 		{
-			//CString msgstr;
-			//msgstr.Format("The left value must be smaller than the screen width (%d)",maxxScreen);
-			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 			MessageOut(this->m_hWnd,IDS_STRING_LEFTSMALLER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,maxxScreen);
 			return;
 		}
 
-		if (m_iTop <= 0)
+		if (m_iTop < minyScreen)
 		{
-			//CString msgstr;
-			//msgstr.Format("The top value must be greater than 0");
-			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 			MessageOut(m_hWnd,IDS_STRING_TOPGREATER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			return;
 		}
 
 		if (maxyScreen < m_iTop)
 		{
-			//CString msgstr;
-			//msgstr.Format("The top value must be smaller than the screen height (%d)",maxyScreen);
-			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 			MessageOut(m_hWnd,IDS_STRING_TOPSMALLER ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,maxyScreen);
 			return;
 		}
 
-		if (maxxScreen < (m_iLeft + m_iWidth))
+		if (maxWidth < (m_iLeft + m_iWidth))
 		{
 			m_iWidth = maxxScreen - m_iLeft;
 			if (m_iWidth <= 0)
 			{
-				m_iLeft = 100;
+				//TODO -- where did these constants come from? Get rid of 'em, put 'em in an ini or #define them somewhere
+				m_iLeft = minxScreen + 100;
 				m_iWidth = 320;
 			}
-
-			//CString msgstr;
-			//msgstr.Format("Value exceed screen width. The width is adjusted to %d",width);
-			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 			MessageOut(m_hWnd, IDS_STRING_VALUEEXCEEDWIDTH, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, m_iWidth);
 		}
 
-		if (maxyScreen < (m_iTop + m_iHeight))
+		if (maxHeight < (m_iTop + m_iHeight))
 		{
 			m_iHeight = maxyScreen - m_iTop;
 			if (m_iHeight <= 0)
 			{
-				m_iTop = 100;
+				//TODO -- where did these constants come from? Get rid of 'em, put 'em in an ini or #define them somewhere
+				m_iTop = minyScreen + 100;
 				m_iHeight = 240;
 			}
-
-			//CString msgstr;
-			//msgstr.Format("Value exceed screen height. The height is adjusted to %d",height);
-			//MessageBox(msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-
 			MessageOut(m_hWnd,IDS_STRING_VALUEEXCEEDHEIGHT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, m_iHeight);
 		}
 	}
@@ -234,7 +207,7 @@ void CFixedRegionDlg::OnSelect()
 LRESULT CFixedRegionDlg::OnRegionUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	CRect rectUse(rcUse);
-	if (m_ctrlButtonFixTopLeft.GetCheck()) {
+	if (!m_ctrlButtonFixTopLeft.GetCheck()) {
 		m_iLeft		= rectUse.left;
 		m_iTop		= rectUse.top;
 	}
@@ -252,4 +225,13 @@ void CFixedRegionDlg::OnFixedtopleft()
 	int fixtl = m_ctrlButtonFixTopLeft.GetCheck();
 	m_ctrlEditPosX.EnableWindow(fixtl);
 	m_ctrlEditPosY.EnableWindow(fixtl);
+}
+
+LRESULT CFixedRegionDlg::OnDisplayChange(WPARAM /*wParam*/, LPARAM /*lParam*/)
+{
+	//TODO: add handling if a display is turned on / off while trying to select region
+	// -- this probably isn't as important as catching this same message when recording but
+	//it should eventually be handled.
+
+	return 0;
 }

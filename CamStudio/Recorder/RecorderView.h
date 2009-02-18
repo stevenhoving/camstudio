@@ -80,6 +80,8 @@ protected:
 	afx_msg void OnUpdateRecord(CCmdUI* pCmdUI);
 	afx_msg void OnRegionFullscreen();
 	afx_msg void OnUpdateRegionFullscreen(CCmdUI* pCmdUI);
+	afx_msg void OnRegionAllScreens();
+	afx_msg void OnUpdateRegionAllScreens(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsMinimizeonstart();
 	afx_msg void OnUpdateOptionsMinimizeonstart(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsHideflashing();
