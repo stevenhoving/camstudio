@@ -871,6 +871,7 @@ enum eCaptureType
 	, CAPTURE_VARIABLE
 	, CAPTURE_FULLSCREEN
 	, CAPTURE_WINDOW
+	, CAPTURE_ALLSCREENS
 };
 
 // miscellaneous options

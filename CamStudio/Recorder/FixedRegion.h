@@ -44,6 +44,7 @@ protected:
 	afx_msg void OnFixedtopleft();
 	//}}AFX_MSG
 	afx_msg LRESULT OnRegionUpdate (WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnDisplayChange (WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 private:
 	CStatic m_ctrlStaticMsg;
