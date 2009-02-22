@@ -264,9 +264,9 @@ void CCamera::InsertHighLight(CDC *pDC, CPoint pt)
 	dcBits.SelectObject(&brushHL);
 
 	if ((highlightshape == 0) || (highlightshape == 1)) {
-		dcBits.Ellipse(x1, y1, x2, y2);
+		dcBits.Ellipse((int)x1, (int)y1, (int)x2, (int)y2);
 	} else if ((highlightshape == 2) || (highlightshape == 3)) {
-		dcBits.Rectangle(x1, y1, x2, y2);
+		dcBits.Rectangle((int)x1, (int)y1, (int)x2, (int)y2);
 	}
 
 	dcBits.SelectObject(pOldBrush);

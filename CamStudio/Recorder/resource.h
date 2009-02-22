@@ -99,6 +99,7 @@
 #define IDD_NEWSHAPE                    200
 #define IDD_EDITIMAGE                   201
 #define IDD_DIALOG_MAIN_EFFECTS_OPTIONS 202
+#define IDD_BASICMESSAGE                203
 #define IDC_CURSORDROPPER               205
 #define IDC_CURSORDRAG                  207
 #define IDC_CURSOR4                     208
@@ -230,6 +231,7 @@
 #define IDC_RADIO_TOP_CENTER            1067
 #define IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS 1067
 #define IDC_SHIFT4                      1067
+#define IDC_MESSAGE                     1067
 #define IDC_COLORSTATIC2                1068
 #define IDC_EDIT_CAPTION_TEXT           1068
 #define IDC_RADIO_TOP_RIGHT             1068
@@ -443,6 +445,11 @@
 #define ID_REGION_ALLSCREENS            32924
 #define ID_FULLSCREEN_SELECT            32925
 #define ID_REGION_FULLSCREEN32926       32926
+#define ID_FULLSCREEN_TEST              32927
+#define ID_REGION_SCREENS               32928
+#define ID_SCREENS_ALLSCREENS           32929
+#define ID_SCREENS_CHOOSESCREEN         32930
+#define ID_SCREENS_SELECTSCREEN         32931
 #define IDS_STRING_NOTE                 61446
 #define IDS_STRING_INTERLEAVE1          61447
 #define IDS_STRING_NOINPUT1             61448
@@ -580,9 +587,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        201
-#define _APS_NEXT_COMMAND_VALUE         32927
-#define _APS_NEXT_CONTROL_VALUE         1067
+#define _APS_NEXT_RESOURCE_VALUE        204
+#define _APS_NEXT_COMMAND_VALUE         32932
+#define _APS_NEXT_CONTROL_VALUE         1068
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

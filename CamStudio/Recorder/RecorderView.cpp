@@ -1074,8 +1074,10 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_COMMAND(ID_OPTIONS_ATUOPANSPEED, OnOptionsAtuopanspeed)
 	ON_COMMAND(ID_REGION_FULLSCREEN, OnRegionFullscreen)
 	ON_UPDATE_COMMAND_UI(ID_REGION_FULLSCREEN, OnUpdateRegionFullscreen)
-	ON_COMMAND(ID_REGION_ALLSCREENS, OnRegionAllScreens)
-	ON_UPDATE_COMMAND_UI(ID_REGION_ALLSCREENS, OnUpdateRegionAllScreens)
+	ON_COMMAND(ID_SCREENS_SELECTSCREEN, OnRegionSelectScreen)
+	ON_UPDATE_COMMAND_UI(ID_SCREENS_SELECTSCREEN, OnUpdateRegionSelectScreen)
+	ON_COMMAND(ID_SCREENS_ALLSCREENS, OnRegionAllScreens)
+	ON_UPDATE_COMMAND_UI(ID_SCREENS_ALLSCREENS, OnUpdateRegionAllScreens)
 	ON_COMMAND(ID_HELP_WEBSITE, OnHelpWebsite)
 	ON_COMMAND(ID_HELP_HELP, OnHelpHelp)
 	ON_COMMAND(ID_PAUSE, OnPause)
@@ -1184,10 +1186,17 @@ END_EVENTSINK_MAP()
 CRecorderView::CRecorderView()
 {
 	// TODO: add construction code here
+	m_basicMsg = NULL;
 }
 
 CRecorderView::~CRecorderView()
 {
+	if (m_basicMsg != NULL)
+	{
+		m_basicMsg->CloseWindow();
+		delete m_basicMsg;
+		m_basicMsg = NULL;
+	}
 }
 
 BOOL CRecorderView::PreCreateWindow(CREATESTRUCT& cs)
@@ -1484,14 +1493,33 @@ void CRecorderView::OnUpdateRegionPanregion(CCmdUI* pCmdUI)
 	pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_FIXED));
 }
 
+void CRecorderView::OnRegionSelectScreen()
+{
+	cRegionOpts.m_iMouseCaptureMode =  CAPTURE_FULLSCREEN;
+}
+
+void CRecorderView::OnUpdateRegionSelectScreen(CCmdUI* pCmdUI)
+{
+	pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_FULLSCREEN));
+}
+
 void CRecorderView::OnRegionFullscreen()
 {
-	cRegionOpts.m_iMouseCaptureMode = CAPTURE_FULLSCREEN;
+	cRegionOpts.m_iMouseCaptureMode = CAPTURE_ALLSCREENS;
 }
 
 void CRecorderView::OnUpdateRegionFullscreen(CCmdUI* pCmdUI)
 {
-	pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_FULLSCREEN));
+	if (::GetSystemMetrics(SM_CMONITORS) == 1)
+	{
+		//Capture all screens has the same effect as full screen for
+		//a system with only one monitor.
+		pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_ALLSCREENS));
+	}
+	else
+	{
+		pCmdUI->m_pMenu->RemoveMenu(ID_REGION_FULLSCREEN, MF_BYCOMMAND);
+	}
 }
 
 void CRecorderView::OnRegionAllScreens()
@@ -1503,8 +1531,15 @@ void CRecorderView::OnUpdateRegionAllScreens(CCmdUI* pCmdUI)
 {
 	if (::GetSystemMetrics(SM_CMONITORS) == 1)
 	{
-		pCmdUI->Enable(FALSE);
-		pCmdUI->SetCheck(FALSE);
+		//If pSubMenu exists then this is actually the Screens-> menu, which is the
+		//one we want but there is no ID we can access it directly by. Note that if
+		//somebody changes the order of the submenus so AllScreens isn't first it will
+		//call the new first submenu with mSubMenu activated and this needs to be moved
+		//there.  This seems to be a quirk with MFC and I didn't find an easy fix.
+		if (pCmdUI->m_pSubMenu)
+		{
+			pCmdUI->m_pMenu->RemoveMenu(pCmdUI->m_nIndex, MF_BYPOSITION);
+		}
 	}
 	else
 	{
@@ -1790,12 +1825,12 @@ void CRecorderView::OnRecord()
 		InitSelectRegionWindow(); //will affect rc implicity
 		break;
 	case CAPTURE_FULLSCREEN:
-		AfxMessageBox("Click on monitor to be captured");
-		//TODOMON Add function that gets a point and finds which monitor its on (MonitorFromPoint(...))
-	//	rcUse = CRect(0, 0, maxxScreen, maxyScreen);
-	//	rcUse.right--;
-	//	rcUse.bottom--;
-	//	::PostMessage(hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM) 0);
+		m_basicMsg = new CBasicMessage();
+		m_basicMsg->Create(CBasicMessage::IDD);
+		m_basicMsg->SetText(_T("Click on monitor to be captured."));
+		m_basicMsg->ShowWindow(SW_SHOW);
+		SetCapture();
+	//	m_basicMsg.DoModal();
 		break;
 	case CAPTURE_ALLSCREENS:
 		rcUse = CRect(minxScreen, minyScreen, maxxScreen, maxyScreen);
@@ -1804,8 +1839,11 @@ void CRecorderView::OnRecord()
 		::PostMessage(hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM) 0);
 		break;
 	case CAPTURE_WINDOW:
-		// window
-		AfxMessageBox("Click on Window to be captured");
+		m_basicMsg = new CBasicMessage();
+		m_basicMsg->Create(CBasicMessage::IDD);
+		m_basicMsg->SetText(_T("Slick on window to be captured."));
+		m_basicMsg->ShowWindow(SW_SHOW);	
+		//m_basicMsg.DoModal();
 		SetCapture();
 		break;
 	}
@@ -3614,41 +3652,55 @@ void CRecorderView::OnUpdateRegionWindow(CCmdUI *pCmdUI)
 
 void CRecorderView::OnCaptureChanged(CWnd *pWnd)
 {
-	CPoint point;
-	VERIFY(GetCursorPos(&point));
-	ScreenToClient(&point);
-	ClientToScreen(&point);
-	CWnd* wnd = WindowFromPoint(point);
-	HWND hWnd = NULL;
-	CWnd* wnd2 = NULL;
-	if (wnd)
+	CPoint ptMouse;
+	VERIFY(GetCursorPos(&ptMouse));
+
+	if (cRegionOpts.isCaptureMode(CAPTURE_WINDOW))
 	{
-		hWnd = wnd->m_hWnd;
-		wnd2 = wnd;
+		CWnd* pWnd = WindowFromPoint(ptMouse);
+		if (pWnd)
+		{
+			//tell windows we don't need capture change events anymore
+			ReleaseCapture();
 
-		//HWND desktop = ::GetDesktopWindow();
-		//if ((wnd->GetParent() == NULL) || (wnd->GetParent()->m_hWnd == desktop)){
-		//	hWnd = wnd->m_hWnd;
-		//	wnd2 = wnd;
-		//}
-		//else{
-		//	hWnd = wnd->GetTopLevelParent()->m_hWnd;
-		//	wnd2 = wnd->GetTopLevelParent();
-		//}
+			//store the windows rect into the rect used for capturing
+			::GetWindowRect(pWnd->m_hWnd, &rcUse);
 
-		ReleaseCapture();
+			//close the window to show user selection was successful
+			m_basicMsg->CloseWindow();
+			delete m_basicMsg;
+			m_basicMsg = NULL;
 
-		CView::OnCaptureChanged(pWnd);
-
-		//::GetClientRect(hWnd, &rcUse);
-		::GetWindowRect(hWnd, &rcUse);
-		//::ClientToScreen(&rcUse);
-
-		::PostMessage (hWndGlobal,WM_USER_RECORDSTART,0,(LPARAM) 0);
-	} else {
-		ReleaseCapture();
-		CView::OnCaptureChanged(pWnd);
+			//post message to start recording
+			::PostMessage (hWndGlobal,WM_USER_RECORDSTART,0,(LPARAM) 0);
+		}
 	}
+	else if (cRegionOpts.isCaptureMode(CAPTURE_FULLSCREEN))
+	{
+		HMONITOR hMonitor = NULL;
+		MONITORINFO mi;
+
+		// get the nearest monitor to the mouse point 
+		hMonitor = MonitorFromPoint(ptMouse, MONITOR_DEFAULTTONEAREST);
+		mi.cbSize = sizeof(mi);
+		GetMonitorInfo(hMonitor, &mi);
+
+		//set the rectangle used for recording to the monitor's 
+		CopyRect(rcUse, &mi.rcMonitor);
+
+		//close the window to show user selection was successful
+		m_basicMsg->CloseWindow();
+		delete m_basicMsg;
+		m_basicMsg = NULL;
+
+		//tell windows we don't need capture change events anymore
+		ReleaseCapture();
+		
+		//post message to start recording
+		::PostMessage (hWndGlobal,WM_USER_RECORDSTART,0,(LPARAM) 0);
+	}
+
+	CView::OnCaptureChanged(pWnd);
 }
 
 void CRecorderView::OnAnnotationAddsystemtimestamp()

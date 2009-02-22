@@ -444,7 +444,7 @@ BOOL finalRestoreMMMode()
 	if (!bResult)
 		return bResult;
 
-	BOOL bRetVal = FALSE;
+//	BOOL bRetVal = FALSE;
 
 	// get all the values first
 	MIXERCONTROLDETAILS_BOOLEAN *pmxcdSelectValue = pmcdbSelectArrayInitialState;
@@ -679,7 +679,7 @@ BOOL configWaveOutManual()
 	//CString anstr;
 	//anstr.Format("You will now be asked several questions. A tone may or may not be heard after you click 'OK'. Please listen carefully before answering the questions.");
 	//int ret = ::MessageBox(hWndGlobal,anstr,"Analyzing",MB_OK | MB_ICONEXCLAMATION);
-	int ret = MessageOut(hWndGlobal,IDS_STRING_ASKQUESTIONS ,IDS_STRING_ANALYZE,MB_OK | MB_ICONEXCLAMATION);
+	MessageOut(hWndGlobal,IDS_STRING_ASKQUESTIONS ,IDS_STRING_ANALYZE,MB_OK | MB_ICONEXCLAMATION);
 
 	for (DWORD dwi = 0; dwi < m_dwMultipleItems; dwi++) {
 		//testfile=GetProgPath()+"\\testsnd.wav";
@@ -701,7 +701,7 @@ BOOL configWaveOutManual()
 		if (ret == IDYES) {
 			//anstr.Format("Line %d set for recording sound from speakers !",dwi+1);
 			//int ret = ::MessageBox(hWndGlobal,anstr,"Analyzing",MB_OK | MB_ICONEXCLAMATION);
-			int ret = MessageOut(hWndGlobal,IDS_STRING_SETTINGLINE, IDS_STRING_ANALYZE, MB_OK | MB_ICONEXCLAMATION, dwi+1);
+			MessageOut(hWndGlobal,IDS_STRING_SETTINGLINE, IDS_STRING_ANALYZE, MB_OK | MB_ICONEXCLAMATION, dwi+1);
 
 			cAudioFormat.m_iFeedbackLine = dwi;
 			cAudioFormat.m_iFeedbackLineInfo = storedID[cAudioFormat.m_iFeedbackLine]; //storedID s crated in the manual mode of useWaveout/useWave
@@ -710,7 +710,7 @@ BOOL configWaveOutManual()
 	}
 
 	//Clean up
-	for (int dwi = 0; dwi < m_dwMultipleItems; ++dwi) {
+	for (DWORD dwi = 0; dwi < m_dwMultipleItems; ++dwi) {
 		CString testfile("");
 		testfile.Format("%s\testrec%d.wav", GetProgPath(), dwi);
 
@@ -747,7 +747,7 @@ BOOL ManualSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToSear
 		if (m_dwIndex>m_dwMultipleItems) { //if still not found
 			//Assume searching for MIXERLINE_COMPONENTTYPE_SRC_ANALOG means searching for speaker source line
 			//int ret = ::MessageBox(NULL,"We will now proceed with the manual search for the line used for recording speakers output. Not all soundcards support this function. CamStudio will play several tones and then ask you a series of questions. Please turn on your speakers now. \n\nIt is strongly recommended that you detach your microphone from your soundcard, or at least make sure that there is no background noise around your microphone. When you are ready, click 'OK'.","Manual Search",MB_OK | MB_ICONEXCLAMATION | MB_OK);
-			int ret = MessageOut(NULL,IDS_STRING_MANUALSEARCH ,IDS_STRING_MANUAL,MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(NULL,IDS_STRING_MANUALSEARCH ,IDS_STRING_MANUAL,MB_OK | MB_ICONEXCLAMATION);
 
 			//if (ret==IDNO) return FALSE;
 
@@ -1162,7 +1162,7 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 		if (m_dwIndex>m_dwMultipleItems) { //if still not found
 			//Assume searching for MIXERLINE_COMPONENTTYPE_SRC_ANALOG means searching for speaker source line
 			//int ret = ::MessageBox(NULL,"Not all soundcards support the recording of sound from your speakers. CamStudio will attempt to find the appropriate line on your system. \n\nIt is strongly recommended that you detach your microphone from your soundcard, or at least make sure that there is no background noise around your microphone. When you are ready, click 'OK'.","Note",MB_OK | MB_ICONEXCLAMATION | MB_OK);
-			int ret = MessageOut(NULL,IDS_STRING_NOTALL ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(NULL,IDS_STRING_NOTALL ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			//if (ret==IDNO) return FALSE;
 
 			SearchDlg.ShowWindow(SW_RESTORE);
@@ -1210,7 +1210,7 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 				if (pFile->GetMode()==FILE_ERROR)
 					MessageOut(NULL,IDS_STRING_ERRSND ,IDS_STRING_ANALYZE,MB_OK | MB_ICONEXCLAMATION);
 
-				int BasicBufSize = 32768;
+//				int BasicBufSize = 32768;
 
 				if (pFile->BitsPerSample()==16)
 					analyze_threshold=300.0;

@@ -147,13 +147,13 @@ void CCursorOptionsDlg::RefreshHighlight()
 		if (tmpShort != 0 && tmpShort != 1)
 		{
 			usecolor = m_clrHighlightClickLeft;
-			highlightsizehalf *= 1.5;
+			highlightsizehalf = (int)(highlightsizehalf * 1.5);
 		}
 		tmpShort = GetKeyState(VK_RBUTTON);
 		if (tmpShort != 0 && tmpShort != 1)
 		{
 			usecolor = m_clrHighlightClickRight;
-			highlightsizehalf *= 1.5;
+			highlightsizehalf = (int)(highlightsizehalf * 1.5);
 		}
 	}
 

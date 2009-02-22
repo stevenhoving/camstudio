@@ -431,7 +431,7 @@ bool CamAVIFile::CompressionOpts(AVICOMPRESSOPTIONS& rOptions, CAVIStream& raviS
 		rOptions.dwInterleaveEvery = m_sAudioFormat.m_iInterleaveFactor;;
 		if (m_sAudioFormat.m_iInterleavePeriod == MILLISECONDS) {
 			double interfloat = (((double) m_sAudioFormat.m_iInterleaveFactor) * ((double) m_sVideoOpts.m_iFramesPerSecond))/1000.0;
-			rOptions.dwInterleaveEvery = (interfloat < 0.0) ? 1 : interfloat;
+			rOptions.dwInterleaveEvery = (DWORD)((interfloat < 0.0) ? 1 : interfloat);
 		}
 	} else {
 		ASSERT(bAudioStream);
@@ -448,7 +448,7 @@ bool CamAVIFile::CompressionOpts(AVICOMPRESSOPTIONS& rOptions, CAVIStream& raviS
 		rOptions.dwInterleaveEvery = m_sAudioFormat.m_iInterleaveFactor;;
 		if (m_sAudioFormat.m_iInterleavePeriod == MILLISECONDS) {
 			double interfloat = (((double) m_sAudioFormat.m_iInterleaveFactor) * ((double) m_sVideoOpts.m_iFramesPerSecond))/1000.0;
-			rOptions.dwInterleaveEvery = (interfloat < 0.0) ? 1 : interfloat;
+			rOptions.dwInterleaveEvery = (DWORD)((interfloat < 0.0) ? 1 : interfloat);
 		}
 		LONG lSize = 0;
 		raviStream.ReadFormat(raviStream.Start(), 0, &lSize);
@@ -656,7 +656,7 @@ bool CamAVIFile::FadeOut(const CString& strAVIIn, const CString& strAVIOut)
 		bResult = bResult && (0 != lpBitmap);
 		bResult = bResult && cxImage.Decode((LPBYTE)lpImage, lpBitmap->biSizeImage, CXIMAGE_FORMAT_UNKNOWN);
 		dBrightness -= dIncr;
-		long lBrightness = (MIN_BRIGHTNESS < dBrightness) ? dBrightness : MIN_BRIGHTNESS;
+		long lBrightness = (long)((MIN_BRIGHTNESS < dBrightness) ? dBrightness : MIN_BRIGHTNESS);
 		bResult = bResult && cxImage.Light(lBrightness);
 		hResult = bResult && aviCompressedStreamOut.Write(lPos, 1L, (LPBYTE)cxImage.GetDIB() + lOffsetImage, lpBitmap->biSizeImage, 0, 0, 0);
 		CAVI::OnError(hResult);
