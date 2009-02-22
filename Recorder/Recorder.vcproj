@@ -150,13 +150,14 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)$(ProjectName)\fister&quot;;&quot;$(SolutionDir)CxImage\CxImage&quot;;&quot;$(SolutionDir)CamLib&quot;;&quot;$(SolutionDir)hook&quot;;&quot;$(SolutionDir)hookkey&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				MinimalRebuild="true"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug/vscap.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
-				WarningLevel="4"
+				WarningLevel="2"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				ShowIncludes="false"
@@ -304,6 +305,10 @@
 			</File>
 			<File
 				RelativePath=".\AVI.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\BasicMessage.cpp"
 				>
 			</File>
 			<File
@@ -1096,6 +1101,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\BasicMessage.h"
+				>
+			</File>
+			<File
 				RelativePath="fister\Buffer.h"
 				>
 			</File>
@@ -1469,11 +1478,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Recorder.ico"
+				RelativePath="..\GlobalResources\Recorder.ico"
 				>
 			</File>
 			<File
-				RelativePath="..\GlobalResources\Recorder.ico"
+				RelativePath=".\Recorder.ico"
 				>
 			</File>
 			<File
@@ -1489,11 +1498,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\GlobalResources\Recorder_logo.bmp"
+				RelativePath=".\Recorder_logo.bmp"
 				>
 			</File>
 			<File
-				RelativePath=".\Recorder_logo.bmp"
+				RelativePath="..\GlobalResources\Recorder_logo.bmp"
 				>
 			</File>
 			<File

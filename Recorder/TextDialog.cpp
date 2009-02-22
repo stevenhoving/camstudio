@@ -222,7 +222,7 @@ void CTextDlg::OnFont2()
 	if (pApp->VersionOp() < 5)
 	{
 		//int ret = MessageBox("This feature works only in Win 2000/ XP." ,"Note",MB_OK | MB_ICONEXCLAMATION);
-		int ret = MessageOut(m_hWnd,IDS_STRING_WORKSWINXP,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		MessageOut(m_hWnd,IDS_STRING_WORKSWINXP,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 		msgShown = 1;
 		m_ctrlButtonLanguage.EnableWindow(FALSE);
 		return;
