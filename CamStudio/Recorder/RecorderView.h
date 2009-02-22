@@ -10,6 +10,7 @@
 
 #include "VideoWnd.h"		// for CVideoWnd
 #include "FlashingWnd.h"	// for CFlashingWnd
+#include "BasicMessage.h"	// for CBasicMessage
 #include "screen.h"
 
 // forward declaration
@@ -80,6 +81,8 @@ protected:
 	afx_msg void OnUpdateRecord(CCmdUI* pCmdUI);
 	afx_msg void OnRegionFullscreen();
 	afx_msg void OnUpdateRegionFullscreen(CCmdUI* pCmdUI);
+	afx_msg void OnRegionSelectScreen();
+	afx_msg void OnUpdateRegionSelectScreen(CCmdUI* pCmdUI);
 	afx_msg void OnRegionAllScreens();
 	afx_msg void OnUpdateRegionAllScreens(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsMinimizeonstart();
@@ -191,6 +194,7 @@ private:
 	CFlashingWnd m_FlashingWnd;
 	CVideoWnd m_vanWnd;
 	CCamera m_cCamera;
+	CBasicMessage *m_basicMsg;
 	int m_iFrameWidth;
 	int m_iFrameHeight;
 

@@ -36,7 +36,7 @@ o	Code layout needs to be standardized.
 	-	fewer blank lines
 	-	white space around operators
 	-	variable declarations at the closest scope to useage.
-	-	variable declarationa and intialization on one line
+	-	variable declarations and intialization on one line
 	-	use the global scope operator
 	-	reduce 
 			gratuitous
@@ -66,6 +66,7 @@ o	Code layout needs to be standardized.
 	-	DO NOT ASSERT valid error states.
 	-	Use Trace statements liberally.
 	-	Debug new code and step through every line.
+	-	Use unnamed parameter convention to prevent warnings when compiling verbosity 4
 	
 	I'm sure there's more here.
 

@@ -188,7 +188,11 @@ BEGIN
         MENUITEM "&Fixed Region...",            ID_REGION_PANREGION
         MENUITEM "&Window",                     ID_REGION_WINDOW
         MENUITEM "Full &Screen",                ID_REGION_FULLSCREEN
-        MENUITEM "All Screens",                 ID_REGION_ALLSCREENS
+        POPUP "&Screens"
+        BEGIN
+            MENUITEM "&All Screens",                ID_SCREENS_ALLSCREENS
+            MENUITEM "Select Screen",               ID_SCREENS_SELECTSCREEN
+        END
     END
     POPUP "&Options"
     BEGIN
@@ -998,6 +1002,14 @@ BEGIN
     CONTROL         "",IDC_SLIDER_CONTRAST,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,122,104,69,12
 END
 
+IDD_BASICMESSAGE DIALOGEX 0, 0, 272, 98
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP
+EXSTYLE WS_EX_TOOLWINDOW | WS_EX_WINDOWEDGE
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_MESSAGE,15,18,239,61,ES_MULTILINE | ES_AUTOHSCROLL | ES_OEMCONVERT | ES_READONLY | NOT WS_BORDER
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1025,7 +1037,7 @@ BEGIN
             VALUE "CompanyName", "CamStudio Group"
             VALUE "FileDescription", "CamStudio Recorder"
             VALUE "FileVersion", "2.6.0.0"
-            VALUE "LegalCopyright", "Copyright © 2001 RenderSoft Software and Web Publishing, Copyright © 2008 CamStudio Group & Contributors"
+            VALUE "LegalCopyright", "Copyright © 2001 RenderSoft Software and Web Publishing, Copyright © 2009 CamStudio Group & Contributors"
             VALUE "ProductName", "CamStudio Recorder"
             VALUE "ProductVersion", "2.6.0.0"
         END
@@ -1193,6 +1205,14 @@ BEGIN
     IDD_EFFECTS_OPTIONS2, DIALOG
     BEGIN
         BOTTOMMARGIN, 145
+    END
+
+    IDD_BASICMESSAGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 265
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 91
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2459,6 +2479,12 @@ BEGIN
     ID_TOOLS_PLAYER         "Launch CamStudio Movie Player"
     ID_TOOLS_PLAYER2        "Launch CamStudio Movie Player 2.0"
     ID_REGION_ALLSCREENS    "Capture all monitors"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_SCREENS_ALLSCREENS   "Capture all screens"
+    ID_SCREENS_CHOOSESCREEN "Choose which screen to capture"
 END
 
 #endif    // English (U.S.) resources
