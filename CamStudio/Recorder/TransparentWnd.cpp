@@ -160,7 +160,7 @@ BEGIN_MESSAGE_MAP(CTransparentWnd, CWnd)
 	ON_COMMAND(ID_CONTEXT_EDITIMAGE, OnContextEditImage)
 	ON_COMMAND(ID_CONTEXT_CLONE, OnContextClone)
 	//}}AFX_MSG_MAP
-	ON_REGISTERED_MESSAGE (WM_USER_INVALIDATEWND, OnInvalidateWnd)
+//	ON_REGISTERED_MESSAGE (WM_USER_INVALIDATEWND, OnInvalidateWnd)
 END_MESSAGE_MAP()
 
 //********************************************************************************
@@ -388,7 +388,7 @@ void CTransparentWnd::SetupRegionByTransColor(CDC *pDC, COLORREF transColor)
 //* CTransparentWnd message handlers
 //********************************************************************************
 
-BOOL CTransparentWnd::OnEraseBkgnd(CDC* pDC)
+BOOL CTransparentWnd::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	return TRUE;
 }
@@ -409,8 +409,8 @@ void CTransparentWnd::OnPaint()
 	clrect.left = 0;
 	clrect.top = 0;
 
-	int width = clrect.right - clrect.left;
-	int height = clrect.bottom - clrect.top;
+//	int width = clrect.right - clrect.left;
+//	int height = clrect.bottom - clrect.top;
 
 	//BitBlt Background
 	CRect rect;
@@ -482,7 +482,7 @@ void CTransparentWnd::OnPaint()
 		//LPBITMAPINFO pbmiText = GetTextBitmap(pDC, &CRect(clrect),m_factor,&m_tracker.m_rect, &m_textfont, m_textstring, NULL, NULL, rgb, m_horzalign);
 		//HBITMAP newbm = DrawResampleRGB(pDC, &CRect(clrect), m_factor, (LPBITMAPINFOHEADER) pbmiText);
 		LPBITMAPINFO pbmiText = GetTextBitmap(pDC, &clrect, m_factor, &m_tracker.m_rect, &m_textfont, m_textstring, NULL, NULL, rgb, m_horzalign);
-		HBITMAP newbm = DrawResampleRGB(pDC, &clrect, m_factor, (LPBITMAPINFOHEADER) pbmiText);
+//		HBITMAP newbm = DrawResampleRGB(pDC, &clrect, m_factor, (LPBITMAPINFOHEADER) pbmiText);
 
 		if (pbmiText) {
 			GlobalFreePtr(pbmiText);
@@ -495,7 +495,7 @@ void CTransparentWnd::OnPaint()
 	}
 }
 
-void CTransparentWnd::OnContextMenu(CWnd* pWnd, CPoint point)
+void CTransparentWnd::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 {
 	//not very stable when editing is on
 	EnsureOnTopList(this);
@@ -567,8 +567,8 @@ void CTransparentWnd::EditText()
 
 LPBITMAPINFO CTransparentWnd::GetDCBitmap(CDC *thisDC, CRect* caprect)
 {
-	int left =caprect->left;
-	int top = caprect->top;
+ //	int left =caprect->left;
+//	int top = caprect->top;
 	int width = caprect->Width();
 	int height = caprect->Height();
 
@@ -742,7 +742,7 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect* caprect,int fact
 
 //AntiAlias 24 Bit Image
 //valid factors : 1, 2, 3
-HBITMAP CTransparentWnd::DrawResampleRGB(CDC *thisDC, CRect* caprect,int factor, LPBITMAPINFOHEADER expanded_bmi)
+HBITMAP CTransparentWnd::DrawResampleRGB(CDC* /*thisDC*/, CRect* /*caprect*/,int factor, LPBITMAPINFOHEADER expanded_bmi)
 {
 	int iBits = 24;
 
@@ -856,7 +856,7 @@ HBITMAP CTransparentWnd::DrawResampleRGB(CDC *thisDC, CRect* caprect,int factor,
 		Rowptr += Row_incr;
 	} // for y
 
-	int ret = StretchDIBits ( thisDC->m_hDC, 0, 0,reduced_width,reduced_height, 0, 0,reduced_width,reduced_height, lpBits, (LPBITMAPINFO)smallbi, DIB_RGB_COLORS,SRCCOPY);
+//	int ret = StretchDIBits ( thisDC->m_hDC, 0, 0,reduced_width,reduced_height, 0, 0,reduced_width,reduced_height, lpBits, (LPBITMAPINFO)smallbi, DIB_RGB_COLORS,SRCCOPY);
 
 	if (smallbi) {
 		GlobalFreePtr(smallbi);
@@ -896,7 +896,7 @@ HANDLE AllocMakeDib( int reduced_width, int reduced_height, UINT iBits )
 	lpbi->biClrImportant = 0;
 
 	// Get the iBits from the bitmap and stuff them after the LPBI
-	LPBYTE lpBits = (LPBYTE)(lpbi+1)+wColSize;
+//	LPBYTE lpBits = (LPBYTE)(lpbi+1)+wColSize;
 	lpbi->biClrUsed = (iBits <= 8) ? 1<<iBits : 0;
 
 	GlobalUnlock(hdib);
@@ -904,11 +904,11 @@ HANDLE AllocMakeDib( int reduced_width, int reduced_height, UINT iBits )
 	return hdib;
 }
 
-LRESULT CTransparentWnd::OnInvalidateWnd(WPARAM p1, LPARAM p2)
+/*LRESULT CTransparentWnd::OnInvalidateWnd(WPARAM p1, LPARAM p2)
 {
 	//Invalidate();
 	return 0;
-}
+}*/
 
 BOOL CTransparentWnd::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 {
@@ -965,7 +965,7 @@ void CTransparentWnd::EditTransparency()
 	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();	
 	if (pApp->VersionOp() < 5) {
 		//int ret = MessageBox("This feature is only available in Win 2000/ XP." ,"Note",MB_OK | MB_ICONEXCLAMATION);
-		int ret = MessageOut(this->m_hWnd,IDS_STRING_AVAILXP ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		MessageOut(this->m_hWnd,IDS_STRING_AVAILXP ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 		return;
 	}
 
@@ -1110,8 +1110,8 @@ void CTransparentWnd::OnMouseMove(UINT nFlags, CPoint point)
 		POINT currpoint;
 		GetCursorPos(&currpoint);
 
-		int nWidth = m_rectWnd.right - m_rectWnd.left + 1;
-		int nHeight = m_rectWnd.bottom - m_rectWnd.top + 1;
+//		int nWidth = m_rectWnd.right - m_rectWnd.left + 1;
+//		int nHeight = m_rectWnd.bottom - m_rectWnd.top + 1;
 
 		m_rectWnd.left += currpoint.x - m_movepoint.x;
 		m_rectWnd.top += currpoint.y - m_movepoint.y;

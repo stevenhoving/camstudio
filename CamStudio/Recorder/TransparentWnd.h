@@ -105,7 +105,7 @@ protected:
 	afx_msg void OnContextEditImage();
 	afx_msg void OnContextClone();
 	//}}AFX_MSG
-	afx_msg LRESULT OnInvalidateWnd(WPARAM p1, LPARAM p2);
+	//afx_msg LRESULT OnInvalidateWnd(WPARAM p1, LPARAM p2);
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 
