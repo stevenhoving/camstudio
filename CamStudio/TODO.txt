@@ -1,13 +1,13 @@
 TODO.txt (There had to be one, right?)
 In no particular order:
-[Scratch that. Add to the top [the nail that sticks out gets the hammmer.] ;)]
+[Scratch that. Add to the top [the nail that sticks out gets the hammer.] ;)]
 
 o	Combine various option and settings into a single configure dialog.
 o	Delete legacy profile section when fully converted.
 o	CamStudio needs to use the OpenDML (AVI 2.0) extensions so files with size > 2 GB
 	can be created.
 	
-o	Move global variables into classes (doc, mainframe and view) and use teh profile
+o	Move global variables into classes (doc, mainframe and view) and use the profile
 	class to read and set them through the App interface to the profile class
 
 o	Rename profile setting strings to remove programming artifacts. Color values are
@@ -19,7 +19,7 @@ o	Rename profile setting strings to remove programming artifacts. Color values a
 o	Scan code for "TODO" to find what to do.
 
 o	Code layout needs to be standardized. 
-	-	hungarian notiation for variable names (please!)
+	-	Hungarian notation for variable names (please!)
 		int				iValue;
 		char			chChar;
 		long			lValue;
@@ -30,13 +30,13 @@ o	Code layout needs to be standardized.
 		struct X		sxValue;
 		X *				pxValue;
 		
-	-	No underscores.		
-	-	First letter capitalized, e.g. iTextAttribute				
+	-	No underscores.
+	-	First letter capitalized, e.g. iTextAttribute
 	-	Generally tighten up the code
 	-	fewer blank lines
 	-	white space around operators
-	-	variable declarations at the closest scope to useage.
-	-	variable declarations and intialization on one line
+	-	variable declarations at the closest scope to usage.
+	-	variable declarations and initialization on one line
 	-	use the global scope operator
 	-	reduce 
 			gratuitous
@@ -71,24 +71,24 @@ o	Code layout needs to be standardized.
 	I'm sure there's more here.
 
 o	Error handling. Use OnError() [see RecorderApp.cpp] for Windows errors (the others
-	functions are depreciated and wil be removed.) Create an overloaded OnError for
+	functions are depreciated and will be removed.) Create an overloaded OnError for
 	class or library specific errors.
 
-o	Look for header reduction. Class implementations files should have the class header
+o	Look for header reduction. Class implementation files should have the class header
 	immediately following the standard project headers:
 	
 		#include "stdafx.h"
 		#include "project.h"	// Recorder.h, Producer.h, etc.
 		#include "class.h"
-		#include "other.h"		// headers required ONLY by the class impleentation
+		#include "other.h"		// headers required ONLY by the class implementation
 		
-	-	Prefer forward delcarations in class headers to inclusion.
+	-	Prefer forward declarations in class headers to inclusion.
 	-	Angle brackets (i.e. #include <header.h>) for MS windows and MS library files.
 		All other use quoted names.
 
 o	Warning level 4 ONLY!
 
-o	Move global varaibles and functions into classes		
+o	Move global variables and functions into classes		
 
 o	Remove hard coded paths in include files, resources, etc. Use project settings instead.
 
@@ -103,7 +103,7 @@ o	Prefer string Format to piecewise construction, e.g.,
 		CString strFullName;
 		strFullName.Fromat("%s\\Recorder\\MyFile.txt", ::GetProgPath());
 		
-	And if later we do folder api's:
+	And if later we do folder APIs:
 	
 		strFullName.Fromat("%s%s\\MyFile.txt", ::GetProgPath(), ::TargetFolder());
 
@@ -111,7 +111,7 @@ o	Initialize all variables.
 
 o	Fix unreachable code; don't just remove it. It probably needs to be refactored.
 
-o	Don't turn off warnings with pragmas without a comment why.
+o	Don't turn off warnings with #pragma without a comment why.
 
 o	Drop "TODO" comments freely in the code.
 o	Remove "TODO" comments from completed tasks or the superfluous "TODO: Add your code here."
@@ -119,7 +119,7 @@ o	CEditTransparencyDlg and CTransparentWnd
 	The interaction between these 2 classes is artificially convoluted.
 	
 	In order allow the edit dialog to update the calling CTransparentWnd the dialog overloads
-	PreModal() to pass pointers to the CTransparentWnd windown and its members that control
+	PreModal() to pass pointers to the CTransparentWnd window and its members that control
 	transparency. Then as the user edits the values the dialog calls
 	CTransparentWnd::InvalidateTransparency to update the image. All this was done using
 	pointers and casts. Ugh.
@@ -140,4 +140,4 @@ o	warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance wa
 		int iTemp = 0;
 		f(itemp ? true : false);
 	
-	doesn't really deal with the fact that the type of iTemp should be bool. 
+	doesn't really deal with the fact that the type of iTemp should be bool.
