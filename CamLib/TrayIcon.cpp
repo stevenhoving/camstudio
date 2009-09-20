@@ -188,7 +188,6 @@ LRESULT CTrayIcon::OnTrayNotify(WPARAM wParam, LPARAM lParam)
 	UINT uMsg = (UINT) lParam;
 	CPoint pt;
 	GetCursorPos(&pt);
-	ClientToScreen(AfxGetMainWnd()->m_hWnd, &pt);
 
 	switch (uMsg)
 	{
