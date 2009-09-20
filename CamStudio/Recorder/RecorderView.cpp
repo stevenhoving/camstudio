@@ -1841,7 +1841,7 @@ void CRecorderView::OnRecord()
 	case CAPTURE_WINDOW:
 		m_basicMsg = new CBasicMessage();
 		m_basicMsg->Create(CBasicMessage::IDD);
-		m_basicMsg->SetText(_T("Slick on window to be captured."));
+		m_basicMsg->SetText(_T("Click on window to be captured."));
 		m_basicMsg->ShowWindow(SW_SHOW);	
 		//m_basicMsg.DoModal();
 		SetCapture();
