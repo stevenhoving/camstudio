@@ -132,21 +132,21 @@ BOOL CTrayIcon::TrayUpdate()
 	return bSuccess;
 }
 
-BOOL CTrayIcon::TraySetMenu(UINT nResourceID,UINT nDefaultPos)
+BOOL CTrayIcon::TraySetMenu(UINT nResourceID,UINT /*nDefaultPos*/)
 {
 	BOOL bSuccess;
 	bSuccess = m_TrayMenu.LoadMenu(nResourceID);
 	return bSuccess;
 }
 
-BOOL CTrayIcon::TraySetMenu(LPCTSTR lpszMenuName,UINT nDefaultPos)
+BOOL CTrayIcon::TraySetMenu(LPCTSTR lpszMenuName,UINT /*nDefaultPos*/)
 {
 	BOOL bSuccess;
 	bSuccess = m_TrayMenu.LoadMenu(lpszMenuName);
 	return bSuccess;
 }
 
-BOOL CTrayIcon::TraySetMenu(HMENU hMenu,UINT nDefaultPos)
+BOOL CTrayIcon::TraySetMenu(HMENU hMenu,UINT /*nDefaultPos*/)
 {
 	m_TrayMenu.Attach(hMenu);
 	return TRUE;
@@ -160,21 +160,21 @@ void CTrayIcon::OnTrayRButtonDown(CPoint pt)
 	PostMessage(AfxGetMainWnd()->m_hWnd,WM_NULL, 0, 0);
 }
 
-void CTrayIcon::OnTrayLButtonDown(CPoint pt)
+void CTrayIcon::OnTrayLButtonDown(CPoint /*pt*/)
 {
 }
 
-void CTrayIcon::OnTrayLButtonDblClk(CPoint pt)
+void CTrayIcon::OnTrayLButtonDblClk(CPoint /*pt*/)
 {
 	::SetForegroundWindow( AfxGetMainWnd()->m_hWnd);
 	AfxGetMainWnd()->ShowWindow(SW_RESTORE);
 }
 
-void CTrayIcon::OnTrayRButtonDblClk(CPoint pt)
+void CTrayIcon::OnTrayRButtonDblClk(CPoint /*pt*/)
 {
 }
 
-void CTrayIcon::OnTrayMouseMove(CPoint pt)
+void CTrayIcon::OnTrayMouseMove(CPoint /*pt*/)
 {
 }
 
