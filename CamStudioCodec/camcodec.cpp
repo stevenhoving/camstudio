@@ -115,9 +115,8 @@ static HEAP_ALLOC(wrkmem,LZO1X_1_MEM_COMPRESS);
 /********************************************************************
 ********************************************************************/
 
-void Msg(const char fmt[], ...)
+/*void Msg(const char fmt[], ...)
 {
-	/*	
 	DWORD written;
 	char buf[2000];
 	va_list val;
@@ -128,8 +127,7 @@ void Msg(const char fmt[], ...)
 	const COORD _80x50 = {80,50};
 	static BOOL startup = (AllocConsole(), SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), _80x50));
 	WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buf, lstrlen(buf), &written, 0);
-	*/
-}
+}*/
 
 int AppFlags()
 {
@@ -141,7 +139,7 @@ int AppFlags()
 		if (GetModuleFileName(NULL, apppath, MAX_PATH)) {
 			TCHAR* appname = strrchr(apppath, '\\');
 			appname = appname ? appname+1 : apppath;
-			Msg("App name is %s; ", appname);
+//			Msg("App name is %s; ", appname);
 			if (!lstrcmpi(appname, TEXT("premiere.exe")))
 				flags = 1;
 			if (!lstrcmpi(appname, TEXT("veditor.exe")))
@@ -152,7 +150,7 @@ int AppFlags()
 				flags = 1;
 			if (!lstrcmpi(appname, TEXT("afterfx.exe")))
 				flags = 2;
-			Msg("flags=%d\n", flags);
+//			Msg("flags=%d\n", flags);
 		}
 	}
 
@@ -202,7 +200,7 @@ DWORD Close(CodecInst* pinst)
 
 BOOL CodecInst::QueryAbout() { return TRUE; }
 
-static BOOL CALLBACK AboutDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+static BOOL CALLBACK AboutDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam*/)
 {
 	if (uMsg == WM_COMMAND)
 	{
@@ -338,9 +336,9 @@ DWORD CodecInst::Configure(HWND hwnd)
 
 // we have no state information which needs to be stored
 
-DWORD CodecInst::GetState(LPVOID pv, DWORD dwSize) { return 0; }
+DWORD CodecInst::GetState(LPVOID /*pv*/, DWORD /*dwSize*/) { return 0; }
 
-DWORD CodecInst::SetState(LPVOID pv, DWORD dwSize) { return 0; }
+//DWORD CodecInst::SetState(LPVOID pv, DWORD dwSize) { return 0; }
 
 DWORD CodecInst::GetInfo(ICINFO* icinfo, DWORD dwSize)
 {

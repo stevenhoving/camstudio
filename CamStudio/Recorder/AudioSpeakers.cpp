@@ -199,6 +199,22 @@ void CAudioSpeakersDlg::OnVolume()
 		}
 	}
 
+	// Sound mixer moved in Windows Vista! check new exe name only if windows version matches
+	OSVERSIONINFO osinfo;
+	osinfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+	if (GetVersionEx((LPOSVERSIONINFO) &osinfo))
+	{
+		if (osinfo.dwMajorVersion >= 6) //Vista
+		{
+			testLaunchPath = AppDir + SubDir + "\\SndVol.exe";
+			OFSTRUCT ofs;
+			HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
+			if (hdir != HFILE_ERROR) {
+				launchPath=testLaunchPath;
+			}
+		}
+	}
+
 	if (launchPath != "") { //launch Volume Control
 		//not sure
 		launchPath = launchPath + _T(" /d ");
