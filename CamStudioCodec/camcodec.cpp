@@ -338,7 +338,7 @@ DWORD CodecInst::Configure(HWND hwnd)
 
 DWORD CodecInst::GetState(LPVOID /*pv*/, DWORD /*dwSize*/) { return 0; }
 
-//DWORD CodecInst::SetState(LPVOID pv, DWORD dwSize) { return 0; }
+DWORD CodecInst::SetState(LPVOID /*pv*/, DWORD /*dwSize*/) { return 0; }
 
 DWORD CodecInst::GetInfo(ICINFO* icinfo, DWORD dwSize)
 {
