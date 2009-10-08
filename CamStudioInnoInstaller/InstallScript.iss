@@ -40,6 +40,18 @@ Source: "C:\Users\Jason\Documents\Visual Studio 2008\Projects\CamStudio\trunk\Ca
 Source: "C:\Users\Jason\Documents\Visual Studio 2008\Projects\CamStudio\trunk\CamStudio\Debug\Player.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Jason\Documents\Visual Studio 2008\Projects\CamStudio\trunk\CamStudio\Debug\PlayerPlus.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Jason\Documents\Visual Studio 2008\Projects\CamStudio\trunk\CamStudio\Debug\Producer.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Jason\Documents\Visual Studio 2008\Projects\CamStudio\trunk\CamStudio\Debug\controller\controller.ini"; DestDir: "{app}\controller"; Flags: ignoreversion
+Source: "C:\Users\Jason\Documents\Visual Studio 2008\Projects\CamStudio\trunk\CamStudio\Debug\controller\controller_backup.ini"; DestDir: "{app}\controller"; Flags: ignoreversion
+Source: "C:\Users\Jason\Documents\Visual Studio 2008\Projects\CamStudio\trunk\CamStudio\Debug\controller\leftpiece.bmp"; DestDir: "{app}\controller"; Flags: ignoreversion
+Source: "C:\Users\Jason\Documents\Visual Studio 2008\Projects\CamStudio\trunk\CamStudio\Debug\controller\loadnode.bmp"; DestDir: "{app}\controller"; Flags: ignoreversion
+Source: "C:\Users\Jason\Documents\Visual Studio 2008\Projects\CamStudio\trunk\CamStudio\Debug\controller\loadpiece.bmp"; DestDir: "{app}\controller"; Flags: ignoreversion
+Source: "C:\Users\Jason\Documents\Visual Studio 2008\Projects\CamStudio\trunk\CamStudio\Debug\controller\pausebutton.bmp"; DestDir: "{app}\controller"; Flags: ignoreversion
+Source: "C:\Users\Jason\Documents\Visual Studio 2008\Projects\CamStudio\trunk\CamStudio\Debug\controller\pausebutton2.bmp"; DestDir: "{app}\controller"; Flags: ignoreversion
+Source: "C:\Users\Jason\Documents\Visual Studio 2008\Projects\CamStudio\trunk\CamStudio\Debug\controller\playbutton.bmp"; DestDir: "{app}\controller"; Flags: ignoreversion
+Source: "C:\Users\Jason\Documents\Visual Studio 2008\Projects\CamStudio\trunk\CamStudio\Debug\controller\playbutton2.bmp"; DestDir: "{app}\controller"; Flags: ignoreversion
+Source: "C:\Users\Jason\Documents\Visual Studio 2008\Projects\CamStudio\trunk\CamStudio\Debug\controller\rightpiece.bmp"; DestDir: "{app}\controller"; Flags: ignoreversion
+Source: "C:\Users\Jason\Documents\Visual Studio 2008\Projects\CamStudio\trunk\CamStudio\Debug\controller\stopbutton.bmp"; DestDir: "{app}\controller"; Flags: ignoreversion
+Source: "C:\Users\Jason\Documents\Visual Studio 2008\Projects\CamStudio\trunk\CamStudio\Debug\controller\stopbutton2.bmp"; DestDir: "{app}\controller"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
