@@ -42,5 +42,7 @@ private:
 	afx_msg void OnBnClickedButtonCaptionOptions();
 	afx_msg void OnBnClickedButtonTimestampFormatOptions();
 	afx_msg void OnBnClickedButtonWatermarkOptions();
+public:
+	afx_msg void OnBnClickedOk();
 };
 #endif	// ANNOTATIONEFFECTSOPTIONS_H
