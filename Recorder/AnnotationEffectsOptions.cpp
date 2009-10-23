@@ -33,6 +33,7 @@ BEGIN_MESSAGE_MAP(CAnnotationEffectsOptionsDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_CAPTION_OPTIONS, OnBnClickedButtonCaptionOptions)
 	ON_BN_CLICKED(IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS, OnBnClickedButtonTimestampFormatOptions)
 	ON_BN_CLICKED(IDC_BUTTON_WATERMARK_OPTIONS, OnBnClickedButtonWatermarkOptions)
+	ON_BN_CLICKED(IDOK, &CAnnotationEffectsOptionsDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 // CAnnotationEffectsOptionsDlg message handlers
@@ -76,4 +77,20 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedButtonWatermarkOptions()
 	if (optDlg.DoModal() == IDOK){
 		m_image = optDlg.m_params;
 	}
+}
+
+void CAnnotationEffectsOptionsDlg::OnBnClickedOk()
+{
+	CString str;
+	char TimeBuff[256];
+	struct tm   *newTime;
+    time_t      szClock;
+    time( &szClock );
+    newTime = localtime( &szClock );
+	GetDlgItem(IDC_EDIT_TIMESTAMP_FORMAT)->GetWindowTextA(str);
+	strftime(TimeBuff, sizeof(TimeBuff), str, newTime);
+
+	//TODO: Show example of what time will look like?
+
+	OnOK();
 }
