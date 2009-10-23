@@ -15,10 +15,16 @@ CCamera::~CCamera()
 bool CCamera::AddTimestamp(CDC* pDC)
 {
 	if (m_sTimestamp.m_bAnnotation) {
-		SYSTEMTIME systime;
-		::GetLocalTime(&systime);
-		m_sTimestamp.m_taTimestamp.text.Format(TEXT("%s %02d:%02d:%02d:%03d"), TEXT("Recording"), systime.wHour, systime.wMinute, systime.wSecond, systime.wMilliseconds);
-		InsertText(pDC, m_rectFrame, m_sTimestamp.m_taTimestamp);
+		CString str;
+		TextAttributes tmp;
+		char TimeBuff[256];
+		struct tm   *newTime;
+		time_t      szClock;
+		time( &szClock );
+		newTime = localtime( &szClock );
+		tmp = m_sTimestamp.m_taTimestamp;
+		strftime(tmp.text.GetBuffer(256), 256, m_sTimestamp.m_taTimestamp.text, newTime);
+		InsertText(pDC, m_rectFrame, tmp);
 	}
 	return true;
 }
