@@ -188,11 +188,8 @@ BEGIN
         MENUITEM "&Fixed Region...",            ID_REGION_PANREGION
         MENUITEM "&Window",                     ID_REGION_WINDOW
         MENUITEM "Full &Screen",                ID_REGION_FULLSCREEN
-        POPUP "&Screens"
-        BEGIN
-            MENUITEM "&All Screens",                ID_SCREENS_ALLSCREENS
-            MENUITEM "Select Screen",               ID_SCREENS_SELECTSCREEN
-        END
+        MENUITEM "&All Screens",                ID_SCREENS_ALLSCREENS
+        MENUITEM "Select Screen",               ID_SCREENS_SELECTSCREEN
     END
     POPUP "&Options"
     BEGIN
