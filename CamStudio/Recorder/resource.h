@@ -255,6 +255,7 @@
 #define IDC_RADIO_BOTTOM_CENTER         1073
 #define IDC_STATICCHOOSE                1073
 #define IDC_SHIFT6                      1073
+#define IDC_FORMATPREVIEW               1073
 #define IDC_RADIO_BOTTOM_RIGHT          1074
 #define IDC_STATICWIDTH                 1074
 #define IDC_STATICHEIGHT                1075
@@ -588,7 +589,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        204
 #define _APS_NEXT_COMMAND_VALUE         32932
-#define _APS_NEXT_CONTROL_VALUE         1068
+#define _APS_NEXT_CONTROL_VALUE         1074
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
