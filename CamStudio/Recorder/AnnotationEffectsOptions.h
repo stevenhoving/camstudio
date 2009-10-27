@@ -8,6 +8,7 @@
 
 #include "EffectsOptions.h"
 #include "EffectsOptions2.h"
+#include "afxwin.h"
 
 // CAnnotationEffectsOptionsDlg dialog
 
@@ -43,6 +44,9 @@ private:
 	afx_msg void OnBnClickedButtonTimestampFormatOptions();
 	afx_msg void OnBnClickedButtonWatermarkOptions();
 public:
+	CEdit m_FormatPreview;
+	afx_msg void OnEnChangeEditTimestampFormat();
 	afx_msg void OnBnClickedOk();
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 };
 #endif	// ANNOTATIONEFFECTSOPTIONS_H
