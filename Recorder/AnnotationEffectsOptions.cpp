@@ -26,6 +26,7 @@ void CAnnotationEffectsOptionsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_IMAGE_PATH, m_ctlImagePath);
 	DDX_Text(pDX, IDC_EDIT_TIMESTAMP_FORMAT, m_timestamp.text);
 	DDX_Text(pDX, IDC_EDIT_CAPTION_TEXT, m_caption.text);
+	DDX_Control(pDX, IDC_FORMATPREVIEW, m_FormatPreview);
 }
 
 BEGIN_MESSAGE_MAP(CAnnotationEffectsOptionsDlg, CDialog)
@@ -33,7 +34,9 @@ BEGIN_MESSAGE_MAP(CAnnotationEffectsOptionsDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_CAPTION_OPTIONS, OnBnClickedButtonCaptionOptions)
 	ON_BN_CLICKED(IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS, OnBnClickedButtonTimestampFormatOptions)
 	ON_BN_CLICKED(IDC_BUTTON_WATERMARK_OPTIONS, OnBnClickedButtonWatermarkOptions)
+	ON_EN_CHANGE(IDC_EDIT_TIMESTAMP_FORMAT, &CAnnotationEffectsOptionsDlg::OnEnChangeEditTimestampFormat)
 	ON_BN_CLICKED(IDOK, &CAnnotationEffectsOptionsDlg::OnBnClickedOk)
+	ON_WM_CREATE()
 END_MESSAGE_MAP()
 
 // CAnnotationEffectsOptionsDlg message handlers
@@ -67,7 +70,7 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedButtonTimestampFormatOptions()
 	if (optDlg.DoModal() == IDOK){
 		m_timestamp = optDlg.m_params;
 	}
-}
+} 
 
 void CAnnotationEffectsOptionsDlg::OnBnClickedButtonWatermarkOptions()
 {
@@ -79,7 +82,42 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedButtonWatermarkOptions()
 	}
 }
 
-void CAnnotationEffectsOptionsDlg::OnBnClickedOk()
+BOOL IsStrftimeSafe(char *buffer)
+{
+	char *ptr = buffer, nxt;
+	int cur = 0;
+	while (ptr = strchr(ptr, '%'))
+	{
+		nxt = *(ptr+sizeof(char));
+		if (nxt != 'a' &&
+			nxt != 'A' &&
+			nxt != 'b' &&
+			nxt != 'B' &&
+			nxt != 'c' &&
+			nxt != 'd' &&
+			nxt != 'H' &&
+			nxt != 'I' &&
+			nxt != 'j' &&
+			nxt != 'm' &&
+			nxt != 'M' &&
+			nxt != 'p' &&
+			nxt != 'S' &&
+			nxt != 'U' &&
+			nxt != 'w' &&
+			nxt != 'W' &&
+			nxt != 'x' &&
+			nxt != 'X' &&
+			nxt != 'y' &&
+			nxt != 'Y' &&
+			nxt != 'Z' &&
+			nxt != '%')
+			return false;
+		ptr+=sizeof(char);
+	}
+	return true;
+}
+
+void CAnnotationEffectsOptionsDlg::OnEnChangeEditTimestampFormat()
 {
 	CString str;
 	char TimeBuff[256];
@@ -88,9 +126,44 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedOk()
     time( &szClock );
     newTime = localtime( &szClock );
 	GetDlgItem(IDC_EDIT_TIMESTAMP_FORMAT)->GetWindowTextA(str);
-	strftime(TimeBuff, sizeof(TimeBuff), str, newTime);
+	if (IsStrftimeSafe(str.GetBuffer()))
+	{
+		strftime(TimeBuff, sizeof(TimeBuff), str, newTime);
+		m_FormatPreview.SetWindowTextA(TimeBuff);
+	}
+	else
+	{
+		m_FormatPreview.SetWindowTextA("Error in timestamp format!");
+	}
+}
 
-	//TODO: Show example of what time will look like?
-
+void CAnnotationEffectsOptionsDlg::OnBnClickedOk()
+{
+	CString str;
+	GetDlgItem(IDC_EDIT_TIMESTAMP_FORMAT)->GetWindowTextA(str);
+	if (!IsStrftimeSafe(str.GetBuffer()))
+	{
+		MessageBox("There is an error in the timestamp format!", "Error!", MB_OK);
+		return;
+	}
 	OnOK();
+}
+
+int CAnnotationEffectsOptionsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CDialog::OnCreate(lpCreateStruct) == -1)
+		return -1;
+
+	/* TODO: Is this the most appropiate place to put defaults? Probably not ...
+	 * Also, theres probably a better check than if the text is zero weather
+	 * or not the data has been initialized.*/
+	if (strlen(m_timestamp.text) == 0)
+	{
+		m_timestamp.text = CString("Recording %H:%M:%S");
+		m_timestamp.backgroundColor = RGB(255,255,255);
+		m_timestamp.textColor = RGB(0,0,0);
+		m_timestamp.logfont.lfHeight = 12;
+	}
+
+	return 0;
 }
