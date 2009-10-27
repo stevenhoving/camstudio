@@ -49,6 +49,10 @@ Source: CamStudio\Release\CamCodec.dll; DestDir: {sys}; Flags:restartreplace 64b
 
 Source: CamStudio\Release\*.*; Excludes:CamStudio\Release\CamCodec.dll; DestDir: {app}; Flags:ignoreversion recursesubdirs  createallsubdirs
 Source: CamStudio\Release\controller\*.*; DestDir:{app}\controller; Flags: ignoreversion recursesubdirs
+Source: CamStudio\Release\CamShapes.ini; DestDir:{app}; Permissions: users-modify
+Source: CamStudio\Release\CamLayout.ini; DestDir:{app}; Permissions: users-modify
+Source: CamStudio\Release\CamStudio.ini; DestDir:{app}; Permissions: users-modify
+Source: CamStudio\Release\Camdata.ini; DestDir:{app}; Permissions: users-modify
 
 ;####################################################################
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files.
