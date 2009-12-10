@@ -1508,14 +1508,14 @@ void CRecorderView::OnRecord()
 			rc.right--;
 			rc.bottom--;
 
-			::ShowWindow(hMouseCaptureWnd,SW_MAXIMIZE);
+			::ShowWindow(hMouseCaptureWnd,SW_SHOW);
 			::UpdateWindow(hMouseCaptureWnd);
 
 			InitDrawShiftWindow(); //will affect rc implicity
 		}
 		break;
 	case CAPTURE_VARIABLE:
-		::ShowWindow(hMouseCaptureWnd, SW_MAXIMIZE);
+		::ShowWindow(hMouseCaptureWnd, SW_SHOW);
 		::UpdateWindow(hMouseCaptureWnd);
 		InitSelectRegionWindow(); //will affect rc implicity
 		break;
