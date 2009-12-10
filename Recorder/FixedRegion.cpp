@@ -196,7 +196,7 @@ void CFixedRegionDlg::OnSelect()
 	cRegionOpts.m_iMouseCaptureMode = CAPTURE_VARIABLE; //set temporarily to variable region
 	iDefineMode = 1;
 	hFixedRegionWnd = m_hWnd;
-	::ShowWindow(hMouseCaptureWnd, SW_MAXIMIZE);
+	::ShowWindow(hMouseCaptureWnd, SW_SHOW);
 	::UpdateWindow(hMouseCaptureWnd);
 	m_ctrlStaticMsg.SetWindowText(_T(""));
 }

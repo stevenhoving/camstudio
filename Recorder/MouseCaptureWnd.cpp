@@ -12,16 +12,12 @@
 HWND hMouseCaptureWnd;
 // MouseCaptureWndProc referenced functions
 
-//TODO / BUG: when using this code the rectangle can leave reminants on the windows below it until they refresh
-// I think its because the callback is now multithreaded and not guarenteed to call erase before each draw
-// Update this to pass the old and new recntangles in the same call so this doesn't happen.
-// Until then I'm disalbing this so when selecting a fixed area it must be on one screen.
-/*BOOL CALLBACK DrawSelectMultiMonitorCallback(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
+BOOL CALLBACK DrawSelectMultiMonitorCallback(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
 {
 	DrawSelect(hdcMonitor, (dwData != (DWORD)0), lprcMonitor);
 
 	return TRUE; //continue enumerating screens
-}*/
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // DrawSelect
@@ -37,7 +33,7 @@ void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip)
 
 	//Debug code to verify drawing to multiple monitors correctly
 //	CString strTrace;
-//	strTrace.Format("DrawSelect : hdc = %X\n", hdc);
+//	strTrace.Format("DrawSelect : (%d) - %X\n", fDraw, hdc);
 //	TRACE(strTrace);
 
 	// If a rectangular clip region has been selected, draw it
@@ -77,26 +73,29 @@ void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip)
 		//Text
 		COLORREF oldtextcolor = SetTextColor(hdc,RGB(0,0,0));
 		COLORREF oldbkcolor = SetBkColor(hdc,RGB(255,255,255));
-		SetBkMode(hdc,TRANSPARENT);
+		int oldbkmode = SetBkMode(hdc,TRANSPARENT);
 		RoundRect(hdc, x - 4, y - 4, x + dx + 4, y + dy + 4, 10, 10);
 		SetBkMode(hdc,OPAQUE);
 
 		ExtTextOut(hdc, x, y, 0, NULL, (LPCTSTR)strSize, strSize.GetLength(), NULL);
+
+		//Icon
+		/* TODO: This creates a flicker when being draw to both screens
+		if ((35 < (rectDraw.Width() - 10)) && ((dy + 40) < (rectDraw.Height() - 10)))
+		{
+			HBITMAP hbv = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP1));
+			HBITMAP old_bitmap = (HBITMAP) SelectObject(hdcBits, hbv);
+			BitBlt(hdc, rectDraw.left + 10, rectDraw.bottom - 42, 30, 32, hdcBits, 0, 0, SRCINVERT);
+			SelectObject(hdcBits, old_bitmap);
+			DeleteObject(hbv);
+		}*/
+
 		SetBkColor(hdc,oldbkcolor);
 		SetTextColor(hdc,oldtextcolor);
+		SetBkMode(hdc,oldbkmode);
 		SelectObject(hdc, oldfont);
 	} else {
 		RestoreBitmapCopy(hSavedBitmap, hdc, hdcBits, x - 4, y - 4, dx + 8, dy + 8);
-	}
-
-	//Icon
-	if ((35 < (rectDraw.Width() - 10)) && ((dy + 40) < (rectDraw.Height() - 10)))
-	{
-		HBITMAP hbv = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP1));
-		HBITMAP old_bitmap = (HBITMAP) SelectObject(hdcBits, hbv);
-		BitBlt(hdc, rectDraw.left + 10, rectDraw.bottom - 42, 30, 32, hdcBits, 0, 0, SRCINVERT);
-		SelectObject(hdcBits, old_bitmap);
-		DeleteObject(hbv);
 	}
 
 	DeleteDC(hdcBits);
@@ -146,16 +145,16 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 				}
 
 				if (!isRectEqual(old_rcClip,rcClip)) {
-					/* Multimonitor code -- will need to combine both EnumDisplays ... see comment above DrawSelectMultiMonitorCallback
+					// Multimonitor code -- will need to combine both EnumDisplays ... see comment above DrawSelectMultiMonitorCallback
 					HDC hCurMonitorDC = GetDC(NULL);
 					EnumDisplayMonitors(hCurMonitorDC, &old_rcClip, DrawSelectMultiMonitorCallback, 0); //0 indicates erase old rubber-band
 					EnumDisplayMonitors(hCurMonitorDC, &rcClip, DrawSelectMultiMonitorCallback, 1); //1 indicates draw new rubber-band
-					ReleaseDC(hWnd,hCurMonitorDC);*/
+					ReleaseDC(hWnd,hCurMonitorDC);/*
 					//single monitor code
 					HDC hScreenDC = GetDC(hWnd);
 					DrawSelect(hScreenDC, FALSE, &old_rcClip); // erase old rubber-band
 					DrawSelect(hScreenDC, TRUE, &rcClip); // new rubber-band
-					ReleaseDC(hWnd,hScreenDC);
+					ReleaseDC(hWnd,hScreenDC);*/
 				} // if old
 
 				old_rcClip = rcClip;
@@ -165,10 +164,10 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 					GetCursorPos(&pt);
 
 					HDC hScreenDC = GetDC(hWnd);
-					//HDC hCurMonitorDC = GetDC(NULL);
+					HDC hCurMonitorDC = GetDC(NULL);
 
-					DrawSelect(hScreenDC, FALSE, &rcClip); // erase old rubber-band
-					//EnumDisplayMonitors(hCurMonitorDC, &rcClip, DrawSelectMultiMonitorCallback, 0); // erase old rubber-band
+					//DrawSelect(hScreenDC, FALSE, &rcClip); // erase old rubber-band
+					EnumDisplayMonitors(hCurMonitorDC, &rcClip, DrawSelectMultiMonitorCallback, 0); // erase old rubber-band
 
 					rcClip.left = ptOrigin.x;
 					rcClip.top = ptOrigin.y;
@@ -176,8 +175,8 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 					rcClip.bottom = pt.y;
 
 					NormalizeRect(&rcClip);
-					DrawSelect(hScreenDC, TRUE, &rcClip); // new rubber-band
-					//EnumDisplayMonitors(hCurMonitorDC, &rcClip, DrawSelectMultiMonitorCallback, 1); // draw new rubber-band
+					//DrawSelect(hScreenDC, TRUE, &rcClip); // new rubber-band
+					EnumDisplayMonitors(hCurMonitorDC, &rcClip, DrawSelectMultiMonitorCallback, 1); // draw new rubber-band
 
 					ReleaseDC(hWnd,hScreenDC);
 					//ReleaseDC(hWnd,hCurMonitorDC);
@@ -343,4 +342,3 @@ int DestroyShiftWindow()
 		::DestroyWindow(hMouseCaptureWnd);
 	return 0;
 }
-
