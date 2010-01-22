@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="gdi32.lib winmm.lib vfw32.lib msacm32.lib"
+				AdditionalDependencies="gdi32.lib  winmm.lib vfw32.lib msacm32.lib kernel32.lib user32.lib "
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -140,7 +140,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="true"
-				AdditionalDependencies="atls.lib libcpmt.lib libcmt.lib gdi32.lib  winmm.lib vfw32.lib msacm32.lib kernel32.lib user32.lib "
+				AdditionalDependencies="libcpmt.lib libcmt.lib gdi32.lib  winmm.lib vfw32.lib msacm32.lib kernel32.lib user32.lib "
 				OutputFile="$(OutDir)\camstudio_cl.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(OutDir)"
