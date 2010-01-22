@@ -25,8 +25,8 @@
 #include <windowsx.h>
 #include <windef.h>
 #include <vfw.h>
-#include <atltypes.h>
-#include <atlstr.h>
+//#include <atltypes.h>
+//#include <atlstr.h>
 
 #include <time.h>
 
@@ -127,7 +127,8 @@ float fRate=0.0;
 float fActualRate=0.0;
 float fTimeLength=0.0;
 int nColors=24;
-CString strCodec("MS Video 1");
+char strCodec[512] = "MS Video 1";
+//CString strCodec("MS Video 1");
 int actualwidth=0;
 int actualheight=0;
 
@@ -153,7 +154,7 @@ RECT panrect_dest;
 
 
 //Path to temporary wav file
-CString tempaudiopath;
+//char tempaudiopath[_MAX_PATH];
 int recordaudio=0;
 
 //Audio Recording Variables
@@ -198,13 +199,11 @@ string GetCodecDescription(long fccHandler);
 #define USE_USER_SPECIFIED_DIR 2
 
 int tempPath_Access  = USE_WINDOWS_TEMP_DIR;
-CString specifieddir;
+//CString specifieddir;
 
 int captureTrans=1;
 int versionOp = 0;
 
-
-int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 
 //ver 2.26 Vscap Interface
 #define ModeAVI 0
@@ -230,6 +229,12 @@ int recordpreset = 0;
 ///////////////////////// //////////////////
 /////////////// Functions //////////////////
 ///////////////////////// //////////////////
+CHAR wide_to_narrow(WCHAR w)
+{
+	// simple typecast
+	// works because UNICODE incorporates ASCII into itself
+	return CHAR(w);
+}
 
 HANDLE  Bitmap2Dib( HBITMAP hbitmap, UINT bits )
 {
@@ -293,7 +298,7 @@ HANDLE  Bitmap2Dib( HBITMAP hbitmap, UINT bits )
 }
 
 
-UINT RecordAVIThread(LPVOID pParam) {
+UINT RecordAVIThread(LPVOID /*pParam*/) {
   SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_NORMAL);
 
   int top=rcUse.top;
@@ -350,11 +355,8 @@ int RecordVideo(int top,int left,int width,int height,int fps,
   actualheight=height;
 
   wVer = HIWORD(VideoForWindowsVersion());
-  if (wVer < 0x010a){
-
-    //MessageBox(NULL, "Error! Video for Windows version too old!", "Error" , MB_OK|MB_ICONSTOP);
-    //MessageOut(NULL,IDS_STRING_VERSIONOLD ,IDS_STRING_NOTE,MB_OK | MB_ICONSTOP);
-
+  if (wVer < 0x010a)
+  {
     return FALSE;
   }
 
@@ -430,14 +432,14 @@ int RecordVideo(int top,int left,int width,int height,int fps,
       }
       else {
           compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-          strCodec = CString("MS Video 1");
+		  strcpy(strCodec, "MS Video 1");
       }
 
       ICClose(hic);
     }
     else {
       compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-      strCodec = CString("MS Video 1");
+	  strcpy(strCodec, "MS Video 1");
       //MessageBox(NULL,"hic default","note",MB_OK);
     }
 
@@ -448,7 +450,7 @@ int RecordVideo(int top,int left,int width,int height,int fps,
   {
     //Still Can't Handle Indeo 5.04
     compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-    strCodec = CString("MS Video 1");
+	strcpy(strCodec, "MS Video 1");
   }
 
   ////////////////////////////////////////////////
@@ -500,7 +502,7 @@ int RecordVideo(int top,int left,int width,int height,int fps,
   {
     //Internally adjust codec to MSVC 100 Quality
     aopts[0]->fccHandler = mmioFOURCC('M', 'S', 'V', 'C');   //msvc
-    strCodec = CString("MS Video 1");
+	strcpy(strCodec, "MS Video 1");
     aopts[0]->dwQuality = 10000;
 
   }
@@ -709,10 +711,10 @@ int RecordVideo(int top,int left,int width,int height,int fps,
 
     fTimeLength = ((float) timeexpended) /((float) 1000.0);
 
-    if (recordpreset)
-    {
-      if (int(fTimeLength) >= presettime)
-        ;
+    //if (recordpreset)
+    //{
+      //if (int(fTimeLength) >= presettime)
+       // ;
         //gRecordState = 0;
         //PostMessage(hWndGlobal,WM_USER_RECORDINTERRUPTED,0,0);
 
@@ -723,7 +725,7 @@ int RecordVideo(int top,int left,int width,int height,int fps,
 
 
         //or should we post messages
-    }
+    //}
 
 
     if ((frametime==0) || (frametime>oldframetime)) {
@@ -1005,23 +1007,10 @@ string GetCodecDescription(long fccHandler) {
     ICClose(hic);
   }
 
-  // TODO(dimator): How do I avoid this ghetto-ness? szDescription is a
-  // WCHAR[128] so I don't know how to get that into a string.
-  return string(CString(compinfo.szDescription).GetBuffer());
+  char tmp[128];
+  std::transform(compinfo.szDescription, compinfo.szDescription + 128, tmp, wide_to_narrow);
+  return string(tmp);
 }
-
-
-int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus)
-{
-  CString tstr("");
-  CString mstr("");
-  tstr.LoadString( strTitle );
-  mstr.LoadString( strMsg );
-
-  return ::MessageBox(hWnd,mstr,tstr,mbstatus);
-}
-
-
 
 
 void VideoCodecOptions()
@@ -1106,7 +1095,7 @@ void PrintRecordInformation(){
     printf("Theoretical Frame Rate  : %.2f fps\n", fRate);
     printf("Time Elasped  : %.2f sec\n", fTimeLength);
     printf("Number of Colors  : %d bits\n", nColors);
-    printf("Codec  : %s\n", LPCTSTR(strCodec));
+    printf("Codec  : %s\n", strCodec);
     printf("Actual Input Rate  : %.2f fps\n", fActualRate);
     printf("Dimension  : %d X %d\n", actualwidth,actualheight);
   }
@@ -1239,7 +1228,7 @@ int ChooseBestCodec(){
 }
 
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
   DWORD tid = 0;
   DWORD exitcode = 0;
@@ -1276,9 +1265,9 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   compfccHandler = compressor_info[selected_compressor].fccHandler;
-  strCodec = CString(compressor_info[selected_compressor].szDescription);
+  std::transform(compressor_info[selected_compressor].szDescription, compressor_info[selected_compressor].szDescription + 128, strCodec, wide_to_narrow);
 
-  cout << "Using codec: " << strCodec.GetBuffer() << endl;
+  cout << "Using codec: " << strCodec << endl;
 
   // Screen metrics:
   hScreenDC = ::GetDC(NULL);
