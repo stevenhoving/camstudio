@@ -138,6 +138,7 @@ UINT interruptkey = 0;
 DWORD dwInitialTime = 0;
 bool bInitCapture = false;
 int irsmallcount = 0;
+long long nTotalBytesWrittenSoFar = 0;
 
 // Messaging
 HWND hWndGlobal = NULL;
@@ -3489,6 +3490,13 @@ void CRecorderView::DisplayRecordingStatistics(CDC & srcDC)
 //	srcDC.Rectangle(&rectText);
 	srcDC.TextOut(xoffset, yoffset, csMsg);
 
+	csMsg.Format("Current File Size : %.2f KB", (double)nTotalBytesWrittenSoFar/1024.f);
+	sizeExtent = srcDC.GetTextExtent(csMsg);
+	yoffset += sizeExtent.cy + 10;
+	rectText.top = yoffset - 2;
+	rectText.bottom = yoffset + sizeExtent.cy + 4;
+	srcDC.TextOut(xoffset, yoffset, csMsg);
+
 	csMsg.Format("Actual Input Rate : %.2f fps",  fActualRate);
 	sizeExtent = srcDC.GetTextExtent(csMsg);
 	yoffset += sizeExtent.cy + 10;
@@ -3693,6 +3701,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 
 	m_iFrameWidth = rectFrame.Width() + 1;
 	m_iFrameHeight = rectFrame.Height() + 1;
+	nTotalBytesWrittenSoFar = 0;
 
 	////////////////////////////////////////////////
 	// CAPTURE FIRST FRAME
@@ -4103,6 +4112,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 				break;
 			}
 
+			nTotalBytesWrittenSoFar += alpbi->biSizeImage;
 			nActualFrame++;
 			nCurrFrame = frametime;
 			fRate = ((float) nCurrFrame)/fTimeLength;
