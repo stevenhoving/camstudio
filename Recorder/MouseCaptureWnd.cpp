@@ -12,7 +12,7 @@
 HWND hMouseCaptureWnd;
 // MouseCaptureWndProc referenced functions
 
-BOOL CALLBACK DrawSelectMultiMonitorCallback(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
+BOOL CALLBACK DrawSelectMultiMonitorCallback(HMONITOR /*hMonitor*/, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
 {
 	DrawSelect(hdcMonitor, (dwData != (DWORD)0), lprcMonitor);
 

@@ -294,11 +294,11 @@ BOOL CRecorderApp::InitInstance()
 	}
 
 #if (WINVER < 0x600)	// Windows Vista
-#ifdef _AFXDLL
-	Enable3dControls();			// Call this when using MFC in a shared DLL
-#else
-	Enable3dControlsStatic();	// Call this when linking to MFC statically
-#endif
+//#ifdef _AFXDLL
+//	Enable3dControls();			// Call this when using MFC in a shared DLL
+//#else
+//	Enable3dControlsStatic();	// Call this when linking to MFC statically
+//#endif
 #endif	// Windows Vista
 
 	// Change the registry key under which our settings are stored.

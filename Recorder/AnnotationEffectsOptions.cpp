@@ -82,54 +82,17 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedButtonWatermarkOptions()
 	}
 }
 
-BOOL IsStrftimeSafe(char *buffer)
-{
-	char *ptr = buffer, nxt;
-	int cur = 0;
-	while (ptr = strchr(ptr, '%'))
-	{
-		nxt = *(ptr+sizeof(char));
-		if (nxt != 'a' &&
-			nxt != 'A' &&
-			nxt != 'b' &&
-			nxt != 'B' &&
-			nxt != 'c' &&
-			nxt != 'd' &&
-			nxt != 'H' &&
-			nxt != 'I' &&
-			nxt != 'j' &&
-			nxt != 'm' &&
-			nxt != 'M' &&
-			nxt != 'p' &&
-			nxt != 'S' &&
-			nxt != 'U' &&
-			nxt != 'w' &&
-			nxt != 'W' &&
-			nxt != 'x' &&
-			nxt != 'X' &&
-			nxt != 'y' &&
-			nxt != 'Y' &&
-			nxt != 'Z' &&
-			nxt != '%')
-			return false;
-		ptr+=sizeof(char);
-	}
-	return true;
-}
-
 void CAnnotationEffectsOptionsDlg::OnEnChangeEditTimestampFormat()
 {
 	CString str;
-	char TimeBuff[256];
-	struct tm   *newTime;
-    time_t      szClock;
-    time( &szClock );
-    newTime = localtime( &szClock );
-	GetDlgItem(IDC_EDIT_TIMESTAMP_FORMAT)->GetWindowTextA(str);
-	if (IsStrftimeSafe(str.GetBuffer()))
-	{
+	GetDlgItem(IDC_EDIT_TIMESTAMP_FORMAT)->GetWindowText(str);
+	if (IsStrftimeSafe(str.GetBuffer())) {
+		time_t szClock;
+		time(&szClock);
+		struct tm *newTime = localtime(&szClock);
+		char TimeBuff[256];
 		strftime(TimeBuff, sizeof(TimeBuff), str, newTime);
-		m_FormatPreview.SetWindowTextA(TimeBuff);
+		m_FormatPreview.SetWindowText(TimeBuff);
 	}
 	else
 	{
@@ -166,4 +129,40 @@ int CAnnotationEffectsOptionsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 
 	return 0;
+}
+
+bool CAnnotationEffectsOptionsDlg::IsStrftimeSafe(char * pbuffer)
+{
+	pbuffer = ::strchr(pbuffer, '%');
+	while (pbuffer)
+	{
+		char nxt = *(++pbuffer);
+		if (nxt != 'a' &&
+			nxt != 'A' &&
+			nxt != 'b' &&
+			nxt != 'B' &&
+			nxt != 'c' &&
+			nxt != 'd' &&
+			nxt != 'H' &&
+			nxt != 'I' &&
+			nxt != 'j' &&
+			nxt != 'm' &&
+			nxt != 'M' &&
+			nxt != 'p' &&
+			nxt != 'S' &&
+			nxt != 'U' &&
+			nxt != 'w' &&
+			nxt != 'W' &&
+			nxt != 'x' &&
+			nxt != 'X' &&
+			nxt != 'y' &&
+			nxt != 'Y' &&
+			nxt != 'Z' &&
+			nxt != '%')
+			return false;
+
+		pbuffer = ::strchr(++pbuffer, '%');
+	}
+
+	return true;
 }

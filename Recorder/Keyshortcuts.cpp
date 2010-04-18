@@ -267,29 +267,29 @@ void CKeyshortcutsDlg::OnOK()
 	cHotKeyOpts.m_Prev.m_vKey = m_keyPrev;
 	cHotKeyOpts.m_ShowLayout.m_vKey = m_keyShowLayout;
 
-	cHotKeyOpts.m_RecordStart.m_bCtrl = m_keyRecordStartCtrl;
-	cHotKeyOpts.m_RecordEnd.m_bCtrl = m_keyRecordEndCtrl;
-	cHotKeyOpts.m_RecordCancel.m_bCtrl = m_keyRecordCancelCtrl;
+	cHotKeyOpts.m_RecordStart.m_bCtrl = m_keyRecordStartCtrl ? true : false;
+	cHotKeyOpts.m_RecordEnd.m_bCtrl = m_keyRecordEndCtrl ? true : false;
+	cHotKeyOpts.m_RecordCancel.m_bCtrl = m_keyRecordCancelCtrl ? true : false;
 
-	cHotKeyOpts.m_Next.m_bCtrl = m_keyNextCtrl;
-	cHotKeyOpts.m_Prev.m_bCtrl = m_keyPrevCtrl;
-	cHotKeyOpts.m_ShowLayout.m_bCtrl = m_keyShowLayoutCtrl;
+	cHotKeyOpts.m_Next.m_bCtrl = m_keyNextCtrl ? true : false;
+	cHotKeyOpts.m_Prev.m_bCtrl = m_keyPrevCtrl ? true : false;
+	cHotKeyOpts.m_ShowLayout.m_bCtrl = m_keyShowLayoutCtrl ? true : false;
 
-	cHotKeyOpts.m_RecordStart.m_bAlt = m_keyRecordStartAlt;
-	cHotKeyOpts.m_RecordEnd.m_bAlt = m_keyRecordEndAlt;
-	cHotKeyOpts.m_RecordCancel.m_bAlt = m_keyRecordCancelAlt;
+	cHotKeyOpts.m_RecordStart.m_bAlt = m_keyRecordStartAlt ? true : false;
+	cHotKeyOpts.m_RecordEnd.m_bAlt = m_keyRecordEndAlt ? true : false;
+	cHotKeyOpts.m_RecordCancel.m_bAlt = m_keyRecordCancelAlt ? true : false;
 
-	cHotKeyOpts.m_Next.m_bAlt = m_keyNextAlt;
-	cHotKeyOpts.m_Prev.m_bAlt = m_keyPrevAlt;
-	cHotKeyOpts.m_ShowLayout.m_bAlt = m_keyShowLayoutAlt;
+	cHotKeyOpts.m_Next.m_bAlt = m_keyNextAlt ? true : false;
+	cHotKeyOpts.m_Prev.m_bAlt = m_keyPrevAlt ? true : false;
+	cHotKeyOpts.m_ShowLayout.m_bAlt = m_keyShowLayoutAlt ? true : false;
 
-	cHotKeyOpts.m_RecordStart.m_bShift = m_keyRecordStartShift;
-	cHotKeyOpts.m_RecordEnd.m_bShift = m_keyRecordEndShift;
-	cHotKeyOpts.m_RecordCancel.m_bShift = m_keyRecordCancelShift;
+	cHotKeyOpts.m_RecordStart.m_bShift = m_keyRecordStartShift ? true : false;
+	cHotKeyOpts.m_RecordEnd.m_bShift = m_keyRecordEndShift ? true : false;
+	cHotKeyOpts.m_RecordCancel.m_bShift = m_keyRecordCancelShift ? true : false;
 
-	cHotKeyOpts.m_Next.m_bShift = m_keyNextShift;
-	cHotKeyOpts.m_Prev.m_bShift = m_keyPrevShift;
-	cHotKeyOpts.m_ShowLayout.m_bShift = m_keyShowLayoutShift;
+	cHotKeyOpts.m_Next.m_bShift = m_keyNextShift ? true : false;
+	cHotKeyOpts.m_Prev.m_bShift = m_keyPrevShift ? true : false;
+	cHotKeyOpts.m_ShowLayout.m_bShift = m_keyShowLayoutShift ? true : false;
 
 	CDialog::OnOK();
 }

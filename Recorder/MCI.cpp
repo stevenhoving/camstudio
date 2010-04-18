@@ -59,7 +59,7 @@ void mciRecordStop(HWND hWndCallback, const CString& strFile)
 	cMCIDevice.Stop(*pWnd, strFile);
 }
 
-void mciRecordPause(HWND hWndCallback, const CString& strFile)
+void mciRecordPause(HWND /*hWndCallback*/, const CString& /*strFile*/)
 {
 	////can call this only in the same thread as the one opening the device?
 	//if (isMciRecordOpen == 0)
@@ -77,7 +77,7 @@ void mciRecordPause(HWND hWndCallback, const CString& strFile)
 	cMCIDevice.Pause();
 }
 
-void mciRecordResume(HWND hWndCallback, const CString& strFile)
+void mciRecordResume(HWND /*hWndCallback*/, const CString& /*strFile*/)
 {
 	//can call this only in the same thread as the one opening the device?
 	//msp.dwCallback = (DWORD)hWndCallback;

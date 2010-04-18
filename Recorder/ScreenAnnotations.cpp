@@ -199,12 +199,12 @@ BOOL CScreenAnnotationsDlg::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CScreenAnnotationsDlg::OnContextMenu(CWnd* pWnd, CPoint point)
+void CScreenAnnotationsDlg::OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/)
 {
 	// TODO: Add your message handler code here
 }
 
-void CScreenAnnotationsDlg::OnRclickList1(NMHDR* pNMHDR, LRESULT* pResult)
+void CScreenAnnotationsDlg::OnRclickList1(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	int nItem = -1;
 	int numitems = m_ctrlList.GetItemCount();
@@ -781,7 +781,7 @@ void CScreenAnnotationsDlg::OnEndlabeleditList1(NMHDR* pNMHDR, LRESULT* pResult)
 	}
 }
 
-void CScreenAnnotationsDlg::OnDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
+void CScreenAnnotationsDlg::OnDblclkList1(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	if (tabMode == modeShape)
 	{
@@ -1113,7 +1113,7 @@ void CScreenAnnotationsDlg::TabSelectLayoutMode(int updateTab)
 	}
 }
 
-void CScreenAnnotationsDlg::OnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult)
+void CScreenAnnotationsDlg::OnSelchangeTab1(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	int sel = m_ctrlTab.GetCurSel( );
 	UpdateTabCtrl(sel);
@@ -1608,7 +1608,7 @@ BOOL CScreenAnnotationsDlg::OpenUsingRegisteredClass (CString link)
 }
 
 //partial
-void CScreenAnnotationsDlg::InstantiateLayout(int nItem, int makeselect)
+void CScreenAnnotationsDlg::InstantiateLayout(int nItem, int /*makeselect*/)
 {
 	TabSelectLayoutMode(1);
 

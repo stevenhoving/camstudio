@@ -48,5 +48,7 @@ public:
 	afx_msg void OnEnChangeEditTimestampFormat();
 	afx_msg void OnBnClickedOk();
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+private:
+	bool IsStrftimeSafe(char * buffer);
 };
 #endif	// ANNOTATIONEFFECTSOPTIONS_H
