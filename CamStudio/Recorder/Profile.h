@@ -1141,7 +1141,7 @@ public:
 		VERIFY(cProfile.Read(NUMDEV, m_iMixerDevices));		
 		VERIFY(cProfile.Read(SELECTEDDEV, m_iSelectedMixer));
 		VERIFY(cProfile.Read(COMPRESSFORMATTAG, m_wFormatTag));
-		AudioFormat().wFormatTag = m_wFormatTag;
+		AudioFormat().wFormatTag = static_cast<WORD>(m_wFormatTag);
 		VERIFY(cProfile.Read(FEEDBACK_LINE, m_iFeedbackLine));
 		VERIFY(cProfile.Read(FEEDBACK_LINE_INFO, m_iFeedbackLineInfo));		
 		VERIFY(cProfile.Read(INTERLEAVEFRAMES, m_bInterleaveFrames));
