@@ -232,7 +232,7 @@ void CFrameGrabber::update_buffer_size()
 }
 
 //////////////////////////////////////////////////////////////////
-LRESULT PASCAL _grabber_CallbackProc(HWND hWnd, LPVIDEOHDR lpVHdr)
+LRESULT PASCAL _grabber_CallbackProc(HWND /*hWnd*/, LPVIDEOHDR lpVHdr)
 {
 	ASSERT_VALID(theOnlyOneGrabber);
 	validCallHint = TRUE;

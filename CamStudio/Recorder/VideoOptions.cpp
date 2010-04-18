@@ -349,7 +349,7 @@ void CVideoOptionsDlg::OnOK()
 	m_cOpts.m_iFramesPerSecond = m_iPlaybackRate;
 	m_cOpts.m_iKeyFramesEvery = m_iKeyFrameInterval;
 	m_cOpts.m_iTimeLapse = m_iCaptureInterval;
-	m_cOpts.m_bAutoAdjust = m_ctrlButtonAutoAdjust.GetCheck();
+	m_cOpts.m_bAutoAdjust = m_ctrlButtonAutoAdjust.GetCheck() ? true : false;
 	m_cOpts.m_iValueAdjust = m_iAdjust;
 	m_cOpts.m_iSelectedCompressor = -1;
 	int sel = m_ctrlCBCompressor.GetCurSel();
@@ -440,7 +440,7 @@ void CVideoOptionsDlg::OnCancel()
 void CVideoOptionsDlg::OnAuto()
 {
 	// TODO: Add your control notification handler code here
-	m_cOpts.m_bAutoAdjust = m_ctrlButtonAutoAdjust.GetCheck();
+	m_cOpts.m_bAutoAdjust = m_ctrlButtonAutoAdjust.GetCheck() ? true : false;
 
 	RefreshAutoOptions();
 }

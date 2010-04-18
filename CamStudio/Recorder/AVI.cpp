@@ -49,7 +49,7 @@ BOOL CALLBACK VideoCompressCallBack(int iProgress)
 // If recompress audio is set to FALSE, both audio_recompress_format and
 // audio_format_size can be NULL
 // ========================================
-int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, BOOL bAudioRecompress, sAudioFormat& rAudioFormat)
+int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, BOOL /*bAudioRecompress*/, sAudioFormat& rAudioFormat)
 {
 #define EXPERIMENTAL_CODE
 #ifdef EXPERIMENTAL_CODE
@@ -344,9 +344,8 @@ int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, B
 
 	// Set Title Bar
 	::AfxGetMainWnd()->SetWindowText(_T("CamStudio - Custom Build"));
-#endif	// EXPERIMENTAL_CODE
-
 	return 0;
+#endif	// EXPERIMENTAL_CODE
 }
 
 CAVIStream::CAVIStream()

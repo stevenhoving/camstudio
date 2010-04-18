@@ -330,7 +330,7 @@ void CAudioFormatDlg::UpdateCompressFormatInterface()
 //
 // If the third parameter (compressed format) is not null,
 // we assume it is compatibile with the 2nd parameter (recording format)
-void CAudioFormatDlg::UpdateDeviceData(UINT deviceID, DWORD dwFormat, const WAVEFORMATEX& rwfx)
+void CAudioFormatDlg::UpdateDeviceData(UINT /*deviceID*/, DWORD dwFormat, const WAVEFORMATEX& rwfx)
 {
 	//WAVEINCAPS wic;
 	//MMRESULT mmr = ::waveInGetDevCaps(deviceID , &wic, sizeof(WAVEINCAPS));
@@ -508,6 +508,10 @@ BOOL CAudioFormatDlg::OnInitDialog()
 	//Ver 1.2
 	WAVEINCAPS pwic;
 	MMRESULT mmr = ::waveInGetDevCaps(m_cFmt.m_uDeviceID , &pwic, sizeof(pwic));
+	if (MMSYSERR_NOERROR != mmr) {
+		// TODO: handle error
+	}
+
 	// This code works on the assumption (when filling in values for the user - interfaces)
 	// that the m_Format and pwfx formats (external variables) are already chosen correctly
 	// and compatibile with each other
@@ -529,7 +533,7 @@ void CAudioFormatDlg::OnOK()
 {
 	UpdateData();
 	m_cFmt.m_iInterleaveFactor = m_iInterleavePeriod;
-	m_cFmt.m_bInterleaveFrames = m_ctrlButtonInterleave.GetCheck();
+	m_cFmt.m_bInterleaveFrames = m_ctrlButtonInterleave.GetCheck() ? true : false;
 	m_cFmt.m_iInterleavePeriod = (m_ctrlButtonInterleaveFrames.GetCheck()) ? FRAMES : MILLISECONDS;
 
 	//The Recording format, Compressed format and device must be valid before
@@ -544,7 +548,7 @@ void CAudioFormatDlg::OnOK()
 					if (m_cbwfx <= m_cFmt.m_dwCbwFX) { //All checks cleared, update external values
 						// Updating to external variables
 						m_cFmt.m_uDeviceID			= m_devicemap[getdevice];
-						m_cFmt.m_bCompression		= m_bAudioCompression;
+						m_cFmt.m_bCompression		= m_bAudioCompression ? true : false;
 						m_cFmt.m_iBitsPerSample		= m_iAudioBitsPerSample;
 						m_cFmt.m_iNumChannels		= m_iAudioNumChannels;
 						m_cFmt.m_iSamplesPerSeconds = m_iAudioSamplesPerSeconds;
