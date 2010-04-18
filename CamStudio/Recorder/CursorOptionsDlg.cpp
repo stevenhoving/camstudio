@@ -473,7 +473,7 @@ void CCursorOptionsDlg::OnHighlightcolor()
 
 void CCursorOptionsDlg::OnHighlightcursor()
 {
-	m_bHighlightCursor = m_ctrlButtonHighlightCursor.GetCheck();
+	m_bHighlightCursor = m_ctrlButtonHighlightCursor.GetCheck() ? true : false;
 	m_ctrlSliderHighlightSize.EnableWindow(m_bHighlightCursor);
 	m_ctrlCBHightlightShape.EnableWindow(m_bHighlightCursor);
 	m_ctrlButtonHightlightColor.EnableWindow(m_bHighlightCursor);
@@ -531,7 +531,7 @@ void CCursorOptionsDlg::OnHighlightColorRight()
 
 void CCursorOptionsDlg::OnEnableVisualClickFeedback()
 {
-	m_bHighlightClick = m_ctrlButtonHighlightClick.GetCheck();
+	m_bHighlightClick = m_ctrlButtonHighlightClick.GetCheck() ? true : false;
 	m_ctrlButtonHighlightLB.EnableWindow(m_bHighlightClick);
 	m_ctrlButtonHighlightRB.EnableWindow(m_bHighlightClick);
 

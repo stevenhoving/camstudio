@@ -160,12 +160,12 @@ void CFlashingWnd::PaintBorder(bool bInvert, bool bDraw)
 
 
 //ver 1.8
-BOOL CFlashingWnd::OnEraseBkgnd(CDC* pDC)
+BOOL CFlashingWnd::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	return TRUE;
 }
 
-void CFlashingWnd::OnLButtonDown(UINT nFlags, CPoint point)
+void CFlashingWnd::OnLButtonDown(UINT /*nFlags*/, CPoint /*point*/)
 {
 	if (!cRegionOpts.m_bSupportMouseDrag) {
 		return;
@@ -178,7 +178,7 @@ void CFlashingWnd::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 }
 
-void CFlashingWnd::OnLButtonUp(UINT nFlags, CPoint point)
+void CFlashingWnd::OnLButtonUp(UINT /*nFlags*/, CPoint /*point*/)
 {
 	if (!cRegionOpts.m_bSupportMouseDrag) {
 		return;

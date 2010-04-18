@@ -495,7 +495,8 @@ HANDLE _dibFromBitmap(HBITMAP hBitmap)
 
 	// if you have plans to use DDE or clipboard, you have
 	// to allocate memory with GMEM_DDESHARE flag
-	if (!(hDIB = GlobalAlloc(GMEM_DDESHARE|GMEM_MOVEABLE,dwLen)))
+	hDIB = GlobalAlloc(GMEM_DDESHARE|GMEM_MOVEABLE,dwLen);
+	if (!hDIB)
 	{
 		SelectPalette(hDC,hPal,FALSE);
 		ReleaseDC(NULL,hDC);

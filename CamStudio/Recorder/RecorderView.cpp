@@ -912,7 +912,7 @@ BOOL CRecorderView::PreCreateWindow(CREATESTRUCT& cs)
 /////////////////////////////////////////////////////////////////////////////
 // CRecorderView drawing
 
-void CRecorderView::OnDraw(CDC* pDC)
+void CRecorderView::OnDraw(CDC* /*pDC*/)
 {
 	CRecorderDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
@@ -1100,7 +1100,7 @@ void CRecorderView::OnDestroy()
 	ListManager.FreeLayoutArray();
 }
 
-LRESULT CRecorderView::OnRecordStart(UINT wParam, LONG lParam)
+LRESULT CRecorderView::OnRecordStart(UINT /*wParam*/, LONG /*lParam*/)
 {
 	TRACE("CRecorderView::OnRecordStart\n");
 	CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
@@ -1135,7 +1135,7 @@ LRESULT CRecorderView::OnRecordStart(UINT wParam, LONG lParam)
 	return 0;
 }
 
-LRESULT CRecorderView::OnRecordInterrupted (UINT wParam, LONG lParam)
+LRESULT CRecorderView::OnRecordInterrupted (UINT wParam, LONG /*lParam*/)
 {
 	UninstallMyHook(hWndGlobal);
 
@@ -1162,7 +1162,7 @@ LRESULT CRecorderView::OnRecordInterrupted (UINT wParam, LONG lParam)
 	return 0;
 }
 
-LRESULT CRecorderView::OnSaveCursor (UINT wParam, LONG lParam)
+LRESULT CRecorderView::OnSaveCursor (UINT wParam, LONG /*lParam*/)
 {
 	//TRACE("CRecorderView::OnSaveCursor\n");
 	CamCursor.Save(reinterpret_cast<HCURSOR>(wParam));
@@ -1244,7 +1244,7 @@ void CRecorderView::OnUpdateRegionAllScreens(CCmdUI* pCmdUI)
 }
 
 //This function is called when the avi saving is completed
-LRESULT CRecorderView::OnUserGeneric (UINT wParam, LONG lParam)
+LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 {
 	//ver 1.2
 	::SetForegroundWindow( AfxGetMainWnd()->m_hWnd);
@@ -1841,7 +1841,7 @@ void CRecorderView::OnUpdatePause(CCmdUI* pCmdUI)
 	pCmdUI->Enable(!recordpaused);
 }
 
-void CRecorderView::OnUpdateStop(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateStop(CCmdUI* /*pCmdUI*/)
 {
 	//Version 1.1
 	//pCmdUI->Enable(bRecordState);
@@ -2680,7 +2680,7 @@ void CRecorderView::LoadSettings()
 	CString setPath("");
 	char sdata[1000];
 	char tdata[1000];
-	char specdata[1000];
+	//char specdata[1000];
 	int shapeNameLen = 0;
 	int layoutNameLen = 0;
 	float ver = 2.5;
@@ -3027,7 +3027,7 @@ void CRecorderView::OnViewScreenannotations()
 		sadlg.ShowWindow(SW_RESTORE);
 }
 
-void CRecorderView::OnUpdateViewScreenannotations(CCmdUI* pCmdUI)
+void CRecorderView::OnUpdateViewScreenannotations(CCmdUI* /*pCmdUI*/)
 {
 }
 
@@ -3083,7 +3083,7 @@ void CRecorderView::OnSetFocus(CWnd* pOldWnd)
 //	MOD_WIN - Either WINDOWS key was held down. 
 // The high-order word specifies the virtual key code of the hot key. 
 /////////////////////////////////////////////////////////////////////////////
-LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM lParam)
+LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 {
 	switch (wParam)
 	{
