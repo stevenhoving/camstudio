@@ -52,7 +52,7 @@ public:
 	}
 private:
 	// callback with object access 
-	BOOL FormatEnumCallback(HACMDRIVERID hadid, LPACMFORMATDETAILS pafd, DWORD fdwSupport)
+	BOOL FormatEnumCallback(HACMDRIVERID /*hadid*/, LPACMFORMATDETAILS /*pafd*/, DWORD /*fdwSupport*/)
 	{
 		return TRUE;
 	}
@@ -61,7 +61,10 @@ private:
 	static BOOL CALLBACK FormatEnumCallback(HACMDRIVERID hadid, LPACMFORMATDETAILS pafd, DWORD_PTR dwInstance, DWORD fdwSupport)
 	{
 		CACMFormat * pxACMFormat = reinterpret_cast<CACMFormat *>(dwInstance);
-		BOOL bResult = (pxACMFormat) ? FALSE : pxACMFormat->FormatEnumCallback(hadid, pafd, fdwSupport);
+		BOOL bResult = (pxACMFormat)
+			? pxACMFormat->FormatEnumCallback(hadid, pafd, fdwSupport)
+			: FALSE;
+		return bResult;
 	}
 };
 
