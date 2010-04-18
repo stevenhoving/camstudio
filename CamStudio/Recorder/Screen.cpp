@@ -17,7 +17,7 @@ bool CCamera::AddTimestamp(CDC* pDC)
 	if (m_sTimestamp.m_bAnnotation) {
 		CString str;
 		TextAttributes tmp;
-		char TimeBuff[256];
+		//char TimeBuff[256];
 		struct tm   *newTime;
 		time_t      szClock;
 		time( &szClock );
@@ -214,7 +214,7 @@ void CCamera::InsertHighLight(CDC *pDC, CPoint pt)
 	if (m_cCursor.HighlightClick()) {
 		// update color
 		SHORT iKeyState = ::GetKeyState(VK_LBUTTON);
-		bool bDown = (iKeyState & 0xF000);
+		bool bDown = (iKeyState & 0xF000) ? true : false;
 		bool bToggle = (iKeyState & 0x0001);
 		//if (iKeyState != 0 && iKeyState != 1) {
 		if (bDown && !bToggle) {
@@ -223,7 +223,7 @@ void CCamera::InsertHighLight(CDC *pDC, CPoint pt)
 			highlightsize = (3 * highlightsize)/2;
 		}
 		iKeyState = ::GetKeyState(VK_RBUTTON);
-		bDown = (iKeyState & 0xF000);
+		bDown = (iKeyState & 0xF000) ? true : false;
 		bToggle = (iKeyState & 0x0001);
 		//if (iKeyState != 0 && iKeyState != 1) {
 		if (bDown && !bToggle) {
