@@ -25,17 +25,16 @@ void SuggestCompressFormat()
 		//Then try ADPCM
 		//BuildRecordingFormat();
 		//pwfx->wFormatTag = WAVE_FORMAT_ADPCM;
-		//MMRESULT mmr = acmFormatSuggest(NULL, &m_Format, pwfx, dwCbwFX, ACM_FORMATSUGGESTF_WFORMATTAG);
-
-		if (mmr != 0) {
+		//MMRESULT mmr = ::acmFormatSuggest(NULL, &m_Format, pwfx, dwCbwFX, ACM_FORMATSUGGESTF_WFORMATTAG);
+		//if (0 != mmr) {
 			//Use the PCM as default
 			cAudioFormat.BuildRecordingFormat();
 			cAudioFormat.AudioFormat().wFormatTag = WAVE_FORMAT_PCM;
-			MMRESULT mmr = acmFormatSuggest(NULL, &(cAudioFormat.AudioFormat()), &(cAudioFormat.AudioFormat()), cAudioFormat.m_dwCbwFX, ACM_FORMATSUGGESTF_WFORMATTAG);
-			if (mmr != 0) {
+			mmr = ::acmFormatSuggest(NULL, &(cAudioFormat.AudioFormat()), &(cAudioFormat.AudioFormat()), cAudioFormat.m_dwCbwFX, ACM_FORMATSUGGESTF_WFORMATTAG);
+			if (0 != mmr) {
 				cAudioFormat.m_bCompression = FALSE;
 			}
-		}
+		//}
 	}
 }
 

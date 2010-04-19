@@ -108,159 +108,137 @@ BOOL CBitmapEx::CreateFromDib(LPBITMAPINFO lpBi)
 
 BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
 {
-
-	if (GetSafeHandle( ))
+	if (GetSafeHandle())
 		return FALSE;
-	CString Path;
 
-	if (!filename)
-	{
-		CFileDialog openAs( TRUE,sext,
-			smask, OFN_NOCHANGEDIR|OFN_FILEMUSTEXIST|
-			OFN_PATHMUSTEXIST,
-			sfiltr);
+	CString Path(filename);
+	if (!filename) {
+		CFileDialog openAs( TRUE,sext, smask, OFN_NOCHANGEDIR|OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST, sfiltr);
 
 		//substitude dialog title
-		if (DialogTitle)
-			openAs.m_ofn.lpstrTitle=DialogTitle;
+		if (DialogTitle) {
+			openAs.m_ofn.lpstrTitle = DialogTitle;
+		}
 
-		if (openAs.DoModal()==IDOK)
-
-			Path=openAs.GetPathName( );
-
-		else return FALSE;
+		if (IDOK != openAs.DoModal()) {
+			return FALSE;
+		}
+		Path = openAs.GetPathName();
 	}
-	else Path= filename;
 
 	CFile file;
-
 	if (!file.Open(Path,CFile::modeRead|CFile::typeBinary))
 		return FALSE;
 
-	BITMAPFILEHEADER bmfHeader;
-	LPBITMAPINFOHEADER lpbi;
-	DWORD dwBitsSize;
-	//ULONGLONG dwBitsSize;
-	HANDLE hDIB;
-
 	// get length of DIB in bytes for use when reading
-	dwBitsSize = file.GetLength();
+	DWORD dwBitsSize = file.GetLength();
 
-	BOOL ret=TRUE;
+	BITMAPFILEHEADER bmfHeader;
+	BOOL ret = TRUE;
 	TRY
 	{
-
-		if ( file.Read(&bmfHeader, sizeof (BITMAPFILEHEADER))!=
-			sizeof (BITMAPFILEHEADER)||
-			bmfHeader.bfType!=((WORD) ('M' << 8) | 'B')) ret=FALSE;
-
+		if (file.Read(&bmfHeader, sizeof (BITMAPFILEHEADER)) != sizeof (BITMAPFILEHEADER)
+			|| bmfHeader.bfType != ((WORD) ('M' << 8) | 'B'))
+			ret = FALSE;
 	}
 	CATCH (CFileException, e)
 	{
-		ret=FALSE;
-
+		ret = FALSE;
 	}
 	END_CATCH
 
-		if (!ret) return FALSE;
+	if (!ret)
+		return FALSE;
 
 	// Allocate memory for DIB
 	dwBitsSize -= sizeof(BITMAPFILEHEADER);
 
-	hDIB = GlobalAlloc (GMEM_MOVEABLE | GMEM_ZEROINIT, dwBitsSize);
+	HANDLE hDIB = GlobalAlloc (GMEM_MOVEABLE | GMEM_ZEROINIT, dwBitsSize);
+	if (!hDIB)
+		return FALSE;
 
-	if (!hDIB) return FALSE;
-
-	lpbi = (LPBITMAPINFOHEADER)GlobalLock(hDIB);
+	LPBITMAPINFOHEADER lpbi = (LPBITMAPINFOHEADER)GlobalLock(hDIB);
 	TRY
 	{
 		//if (file.ReadHuge((LPVOID)lpbi, dwBitsSize)!=dwBitsSize)
-		if (file.Read((LPVOID)lpbi, dwBitsSize)!=dwBitsSize)
-			ret=FALSE;
+		if (file.Read((LPVOID)lpbi, dwBitsSize) != dwBitsSize)
+			ret = FALSE;
 	}
 	CATCH (CFileException, e)
 	{
-		ret=FALSE;
-
+		ret = FALSE;
 	}
 	END_CATCH
-		file.Close();
 
-	if (!ret)
-	{GlobalUnlock (hDIB); GlobalFree (hDIB); return FALSE;}
+	file.Close();
 
-	HDC hdc;
-	HBITMAP hbm;
+	if (!ret) {
+		GlobalUnlock (hDIB);
+		GlobalFree (hDIB);
+		return FALSE;
+	}
+
 
 	//Create DDB
-	hdc = ::GetDC(NULL);
-	hbm = CreateDIBitmap(hdc,(LPBITMAPINFOHEADER)lpbi,(LONG)CBM_INIT,
-		DIBPTR(lpbi),(LPBITMAPINFO)lpbi,DIB_RGB_COLORS );
-
+	HDC hdc = ::GetDC(NULL);
+	HBITMAP hbm = CreateDIBitmap(hdc, (LPBITMAPINFOHEADER)lpbi,(LONG)CBM_INIT, DIBPTR(lpbi),(LPBITMAPINFO)lpbi,DIB_RGB_COLORS);
 	::ReleaseDC(NULL,hdc);
 
 	GlobalUnlock (hDIB);
 	GlobalFree (hDIB);
 
-	if (!hbm)
-	{return FALSE;}
+	if (!hbm) {
+		return FALSE;
+	}
 
-	if (GetSafeHandle( ))
+	if (GetSafeHandle()) {
 		DeleteObject();
+	}
 
-	if (!Attach( (HGDIOBJ) hbm ))
-	{::DeleteObject((HGDIOBJ)hbm); return FALSE;}
+	if (!Attach( (HGDIOBJ) hbm )) {
+		::DeleteObject((HGDIOBJ)hbm);
+		return FALSE;
+	}
 
 	return ret;
 }
 
 BOOL CBitmapEx::Save(LPCSTR filename, LPCSTR DialogTitle)
 {
-
 	if (!GetSafeHandle( ))
 		return FALSE;
-	CString Path;
 
-	if (!filename)
-	{
-
-		CFileDialog saveAs( FALSE,sext,
-			smask, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-			sfiltr);
-
+	CString Path(filename);
+	if (!filename) {
+		CFileDialog saveAs(FALSE, sext, smask, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, sfiltr);
 		if (DialogTitle)
-			saveAs.m_ofn.lpstrTitle=DialogTitle;
+			saveAs.m_ofn.lpstrTitle = DialogTitle;
 
-		if (saveAs.DoModal()==IDOK)
-			Path=saveAs.GetPathName( );
+		if (IDOK != saveAs.DoModal())
+			return FALSE;
 
-		else return FALSE;
+		Path = saveAs.GetPathName();
 	}
-	else Path=filename;
 
 	CFile file;
-
 	if (!file.Open((LPCSTR)Path,CFile::modeCreate|CFile::modeWrite|CFile::typeBinary))
 		return FALSE;
 
-	HANDLE hdib=_dibFromBitmap((HBITMAP)GetSafeHandle( ));
+	HANDLE hdib = _dibFromBitmap((HBITMAP)GetSafeHandle());
+	if (!hdib)
+		return FALSE;
 
-	if (!hdib) return FALSE;
-
-	BITMAPFILEHEADER hdr;
-	LPBITMAPINFOHEADER lpbi;
-
-	lpbi = (LPBITMAPINFOHEADER)GlobalLock (hdib);
+	LPBITMAPINFOHEADER lpbi = (LPBITMAPINFOHEADER)::GlobalLock (hdib);
 
 	// Fill in the fields of the file header
+	BITMAPFILEHEADER hdr;
 	hdr.bfType = ((WORD) ('M' << 8) | 'B'); // "BM"
 	hdr.bfSize = GlobalSize (hdib) + sizeof (BITMAPFILEHEADER);
 	hdr.bfReserved1 = 0;
 	hdr.bfReserved2 = 0;
-	hdr.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + lpbi->biSize +
-		PALETTESIZE((LPSTR)lpbi);
+	hdr.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + lpbi->biSize + PALETTESIZE((LPSTR)lpbi);
 
-	BOOL ret=TRUE;
+	BOOL ret = TRUE;
 	TRY
 	{
 		file.Write((LPSTR)&hdr, sizeof (BITMAPFILEHEADER));
@@ -269,12 +247,11 @@ BOOL CBitmapEx::Save(LPCSTR filename, LPCSTR DialogTitle)
 	}
 	CATCH (CFileException, e)
 	{
-		ret=FALSE;
-
+		ret = FALSE;
 	}
 	END_CATCH
 
-		file.Close();
+	file.Close();
 	GlobalUnlock (hdib);
 	GlobalFree (hdib);
 
@@ -284,8 +261,8 @@ BOOL CBitmapEx::Save(LPCSTR filename, LPCSTR DialogTitle)
 // Get DC for "in-memory" drawing
 CDC *CBitmapEx::BegingModify()
 {
-	CWnd* dtw= CWnd::GetDesktopWindow( );
-	CDC *dc=dtw->GetDC();
+	CWnd* dtw = CWnd::GetDesktopWindow( );
+	CDC *dc = dtw->GetDC();
 
 	if (_modDC.m_hDC)
 		_modDC.DeleteDC( );
@@ -296,8 +273,17 @@ CDC *CBitmapEx::BegingModify()
 
 	dtw->ReleaseDC(dc);
 	return &_modDC;
-
 }
+
+void CBitmapEx::EndModify()
+{
+	if (_modDC.m_hDC && _modBMP)
+		_modDC.SelectObject(_modBMP);
+	if (_modDC.m_hDC)
+		_modDC.DeleteDC( );
+	_modBMP = NULL;
+}
+
 // Create color bitmap
 BOOL CBitmapEx::CreateColor(int dx, int dy)
 {
@@ -346,49 +332,29 @@ void CBitmapEx::BitBlt(CDC *dc_to, POINT at, DWORD rop)
 
 void CBitmapEx::StretchBlt(CDC *dc_to, CRect to, DWORD rop)
 {
-	CSize sz=GetSize();
-	dc_to->StretchBlt(to.left, to.top,
-		to.Width(), to.Height(),
-		BegingModify(),//source context
-		0,0,
-		sz.cx, sz.cy,
-		rop);
+	CSize sz = GetSize();
+	dc_to->StretchBlt(to.left, to.top, to.Width(), to.Height(), BegingModify(), 0, 0, sz.cx, sz.cy, rop);
 	EndModify();
-}
-
-void CBitmapEx::EndModify()
-{
-	if (_modDC.m_hDC && _modBMP)
-		_modDC.SelectObject(_modBMP);
-	if (_modDC.m_hDC)
-		_modDC.DeleteDC( );
-	_modBMP = NULL;
 }
 
 //Copy the other bitmap to this
 BOOL CBitmapEx::CopyRect(CBitmap& bmp, CRect& rc)
 {
-
-	CWnd* dtw= CWnd::GetDesktopWindow( );
-	CDC *dc=dtw->GetDC();
+	CWnd* dtw = CWnd::GetDesktopWindow();
+	CDC *dc = dtw->GetDC();
 
 	CDC cdc;
 	CDC cdc2;
-
 	cdc2.CreateCompatibleDC(dc);
 	cdc.CreateCompatibleDC(dc);
 
 	bmp.CreateCompatibleBitmap( dc, rc.Width(), rc.Height());
 
-	CBitmap *ob2=cdc2.SelectObject(&bmp);
+	CBitmap *ob2 = cdc2.SelectObject(&bmp);
+	CBitmap *ob = cdc.SelectObject(this);
 
-	CBitmap *ob=cdc.SelectObject(this);
-
-	cdc2.BitBlt( 0, 0, rc.Width(), rc.Height(),
-		&cdc, rc.left, rc.top, SRCCOPY );
-
+	cdc2.BitBlt( 0, 0, rc.Width(), rc.Height(), &cdc, rc.left, rc.top, SRCCOPY );
 	cdc2.SelectObject(ob2);
-
 	cdc.SelectObject(ob);
 
 	dtw->ReleaseDC(dc);
@@ -408,22 +374,15 @@ DWORD CBitmapEx::DibImageSize(HANDLE hDIB)
 // DDB->DIB
 HANDLE _dibFromBitmap(HBITMAP hBitmap)
 {
-	HDC hDC;
-	WORD wBits;
-	HPALETTE hPal=NULL;
-	BITMAP bm;
-	BITMAPINFOHEADER bi;
-	BITMAPINFOHEADER *lpbi;
-	DWORD dwLen;
-	HANDLE hDIB;
-
 	if (!hBitmap)
 		return NULL;
 
+	BITMAP bm;
 	::GetObject (hBitmap, sizeof (bm), (LPSTR)&bm);
 
-	wBits = bm.bmBitsPixel;
+	WORD wBits = bm.bmBitsPixel;
 
+	BITMAPINFOHEADER bi;
 	bi.biSize = sizeof (BITMAPINFOHEADER);
 	bi.biWidth = bm.bmWidth;
 	bi.biHeight = bm.bmHeight;
@@ -436,26 +395,25 @@ HANDLE _dibFromBitmap(HBITMAP hBitmap)
 	bi.biClrUsed = 0;
 	bi.biClrImportant = 0;
 
-	dwLen = bi.biSize + PALETTESIZE ((LPSTR) &bi);
-	hDIB = GlobalAlloc(GMEM_DDESHARE|GMEM_MOVEABLE,dwLen);
-
-	if (!hDIB)
+	DWORD dwLen = bi.biSize + PALETTESIZE ((LPSTR) &bi);
+	HANDLE hDIB = ::GlobalAlloc(GMEM_DDESHARE|GMEM_MOVEABLE,dwLen);
+	if (!hDIB) {
 		return NULL;
+	}
 
-	lpbi = (LPBITMAPINFOHEADER)GlobalLock(hDIB);
+	BITMAPINFOHEADER *lpbi = (LPBITMAPINFOHEADER)::GlobalLock(hDIB);
 	*lpbi = bi;
 
-	HWND hWnd= GetFocus();
-
-	if (!hWnd)
-	{//load default system palette
+	HDC hDC = 0;
+	HPALETTE hPal = NULL;
+	HWND hWnd = GetFocus();
+	if (!hWnd) {
+		//load default system palette
 		hPal = (HPALETTE)GetStockObject (DEFAULT_PALETTE);
 		hDC = GetDC (NULL);
 		hPal = SelectPalette (hDC, hPal, FALSE);
 		RealizePalette(hDC);
-	}
-	else
-	{
+	} else {
 		//or get palette from focused window
 		HDC hDCw = GetDC (hWnd);
 		hPal = SelectPalette (hDCw, (HPALETTE)GetStockObject (DEFAULT_PALETTE), FALSE);
@@ -467,41 +425,33 @@ HANDLE _dibFromBitmap(HBITMAP hBitmap)
 	}
 
 	// calculate the biSizeImage
-	GetDIBits (hDC,
-		hBitmap,
-		0,
-		(WORD) bi.biHeight,
-		NULL,
-		(LPBITMAPINFO) lpbi,
-		DIB_RGB_COLORS);
-
+	GetDIBits (hDC, hBitmap, 0, (WORD) bi.biHeight, NULL, (LPBITMAPINFO) lpbi, DIB_RGB_COLORS);
 	bi = *lpbi;
 	GlobalUnlock(hDIB);
 
 	// If the driver did not fill in the biSizeImage field,
 	// make one up
 
-	if (bi.biSizeImage == 0)
-	{
+	if (bi.biSizeImage == 0) {
 		bi.biSizeImage = WIDTHBYTES((DWORD)bm.bmWidth * wBits) * bm.bmHeight;
 
 		if (bi.biCompression != BI_RGB)
 			bi.biSizeImage = (bi.biSizeImage * 3) / 2;
 	}
 
-	DWORD sl =dwLen;
-	HGLOBAL hPtr =hDIB;
+	DWORD sl = dwLen;
+	HGLOBAL hPtr = hDIB;
 	dwLen = bi.biSize + PALETTESIZE((LPSTR)&bi) + bi.biSizeImage;
 
 	// if you have plans to use DDE or clipboard, you have
 	// to allocate memory with GMEM_DDESHARE flag
 	hDIB = GlobalAlloc(GMEM_DDESHARE|GMEM_MOVEABLE,dwLen);
-	if (!hDIB)
-	{
+	if (!hDIB) {
 		SelectPalette(hDC,hPal,FALSE);
 		ReleaseDC(NULL,hDC);
 		GlobalFree(hPtr);
-		return NULL;}
+		return NULL;
+	}
 
 	lpbi = (LPBITMAPINFOHEADER)GlobalLock(hDIB);
 	LPBITMAPINFOHEADER lpS=(LPBITMAPINFOHEADER)GlobalLock(hPtr);
@@ -511,13 +461,7 @@ HANDLE _dibFromBitmap(HBITMAP hBitmap)
 	GlobalFree(hPtr);
 
 	// actually fill lpBits
-	if (GetDIBits( hDC,
-		hBitmap,
-		0,
-		(WORD) bi.biHeight,
-		(LPSTR) lpbi + (WORD) lpbi->biSize + PALETTESIZE((LPSTR) lpbi),
-		(LPBITMAPINFO) lpbi, DIB_RGB_COLORS) == 0)
-	{
+	if (GetDIBits(hDC, hBitmap, 0, (WORD) bi.biHeight, (LPSTR) lpbi + (WORD) lpbi->biSize + PALETTESIZE((LPSTR) lpbi), (LPBITMAPINFO) lpbi, DIB_RGB_COLORS) == 0) {
 		GlobalUnlock (hDIB);
 		hDIB = NULL;
 		SelectPalette (hDC, hPal, FALSE);
@@ -537,6 +481,7 @@ int _DIBNumColors (LPBITMAPINFOHEADER lpbi)
 {
 	if (lpbi->biClrUsed)
 		return (int)lpbi->biClrUsed;
+
 	switch (lpbi->biBitCount)
 	{
 	case 1:

@@ -399,10 +399,15 @@ void CVideoWnd::OnContextvideoEdittransparencyrefreshrate()
 
 void CVideoWnd::OnContextvideoEdittransparency()
 {
-	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();	
+	CRecorderApp *pApp = reinterpret_cast<CRecorderApp *>(AfxGetApp());
+	if (!pApp) {
+		// TODO: report FATAL error.
+		return;
+	}
 	if (pApp->VersionOp() < 5) {
 		//int ret = MessageBox("This feature is only available in Win 2000/ XP." ,"Note",MB_OK | MB_ICONEXCLAMATION);
-		int ret = MessageOut(this->m_hWnd,IDS_STRING_AVAILXP ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		/*int ret = */
+		MessageOut(m_hWnd, IDS_STRING_AVAILXP, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 		return;
 	}
 
