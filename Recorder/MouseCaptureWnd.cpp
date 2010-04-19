@@ -58,6 +58,7 @@ void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip)
 	strSize.Format(_T("Left : %d Top : %d Width : %d Height : %d"), rectDraw.left, rectDraw.top, rectDraw.Width() + 1, rectDraw.Height() + 1);
 	SIZE sExtent;
 	DWORD dw = GetTextExtentPoint(hdc, (LPCTSTR)strSize, strSize.GetLength(), &sExtent);
+	VERIFY(0 != dw);
 
 	int dx = sExtent.cx;
 	int dy = sExtent.cy;
@@ -268,7 +269,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
 		{
 			//TRACE(_T("MouseCaptureWndProc : WM_KEYDOWN\n"));
 			int nVirtKey = (int) wParam; // virtual-key code
-			int lKeyData = lParam; // key data
+			//int lKeyData = lParam; // key data
 
 			//ver 1.2
 			if (nVirtKey == (int) cHotKeyOpts.m_RecordCancel.m_vKey) { //Cancel the operation

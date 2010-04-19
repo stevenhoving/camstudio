@@ -421,6 +421,7 @@ void CScreenAnnotationsDlg::OnEditobjNewobject()
 
 				CString insstr = cloneWnd->m_shapeStr;
 				int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(insstr), 0, 0, nItemMod, newWnd->uniqueID );
+				VERIFY(-1 != ins);	// TODO: Handle error
 			}
 		}
 	}
@@ -477,6 +478,7 @@ void CScreenAnnotationsDlg::SaveLayoutNew()
 			int nItemMod = modeLayout; //refering to layout images
 			CString insstr = newLayout->layoutName;
 			int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(insstr), 0, 0, nItemMod, newLayout->uniqueID );
+			VERIFY(-1 != ins);	// TODO: Handle error
 
 			m_ctrlList.EnsureVisible( nItem, FALSE );
 			m_ctrlList.SetItemState( nItem, LVIS_SELECTED, LVIS_SELECTED);
@@ -518,6 +520,7 @@ void CScreenAnnotationsDlg::SaveShapeNew(CTransparentWnd *newWnd)
 		}
 		cloneWnd->m_shapeStr = insstr;
 		int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM , nItem, LPCTSTR(insstr), 0, 0, nItemMod, cloneWnd->uniqueID );
+		VERIFY(-1 != ins);	// TODO: Handle error
 
 		m_ctrlList.EnsureVisible( nItem, FALSE );
 		m_ctrlList.SetItemState( nItem, LVIS_SELECTED, LVIS_SELECTED);
@@ -618,6 +621,7 @@ void CScreenAnnotationsDlg::OnEditobjPaste()
 		int nItem = m_ctrlList.GetItemCount();
 		int nItemMod = modeShape;
 		int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(cloneWnd->m_shapeStr), 0, 0, nItemMod, cloneWnd->uniqueID );
+		VERIFY(-1 != ins);	// TODO: Handle error
 		m_ctrlList.EnsureVisible( nItem, FALSE );
 		m_ctrlList.SetItemState( nItem, LVIS_SELECTED, LVIS_SELECTED);
 	} else if ((tabMode == modeLayout) && (layoutIsCopied) && (layoutCopied)) {
@@ -628,6 +632,7 @@ void CScreenAnnotationsDlg::OnEditobjPaste()
 			int nItem = m_ctrlList.GetItemCount();
 			int nItemMod = modeLayout;
 			int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(cloneLayout->layoutName), 0, 0, nItemMod, cloneLayout->uniqueID );
+			VERIFY(-1 != ins);	// TODO: Handle error
 			m_ctrlList.EnsureVisible( nItem, FALSE );
 			m_ctrlList.SetItemState( nItem, LVIS_SELECTED, LVIS_SELECTED);
 		}
@@ -976,7 +981,7 @@ void CScreenAnnotationsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 					if (( targetItem >= 0) && (targetItem !=nItem))
 					{
-						int nItemMod = modeShape;
+						//int nItemMod = modeShape;
 
 						LV_ITEM swapItem, swapItem2;
 						swapItem.mask = LVIF_PARAM;
@@ -1025,7 +1030,7 @@ void CScreenAnnotationsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 					int targetItem = m_ctrlList.HitTest( ptx, &lvFlags );
 					if ((0 <= targetItem) && (targetItem != nItem))
 					{
-						int nItemMod = modeLayout;
+						//int nItemMod = modeLayout;
 
 						LV_ITEM swapItem, swapItem2;
 						swapItem.mask = LVIF_PARAM;
@@ -1061,6 +1066,7 @@ void CScreenAnnotationsDlg::RefreshShapeList()
 			int nItemMod = modeShape; //refering to shape images
 			CString insstr = pItemWnd->m_shapeStr;
 			int ins = m_ctrlList.InsertItem(LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(insstr), 0, 0, nItemMod, pItemWnd->uniqueID);
+			VERIFY(-1 != ins);	// TODO: Handle error
 		}
 	}
 }
@@ -1080,6 +1086,7 @@ void CScreenAnnotationsDlg::RefreshLayoutList()
 			int nItemMod = modeLayout; //refering to layout images
 			CString insstr = itemLayout->layoutName;
 			int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(insstr), 0, 0, nItemMod, itemLayout->uniqueID );
+			VERIFY(-1 != ins);	// TODO: Handle error
 		}
 	}
 }
