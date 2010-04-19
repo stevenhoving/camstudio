@@ -653,7 +653,7 @@ BOOL CPicture::SaveToFile(FILE* fptr)
 
 	}
 
-	BOOL bResult = FALSE;
+	//BOOL bResult = FALSE;
 	ILockBytes *Buffer = 0;
 	IStorage *pStorage = 0;
 	IStream *FileStream = 0;
@@ -763,7 +763,7 @@ BOOL CPicture::LoadFromFile(FILE* fptr)
 	{
 		TCHAR szCause[255];
 		e.GetErrorMessage(szCause, 255, NULL);
-		HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
+		//HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
 		MessageBoxEx(NULL, szCause, ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
 		bResult = FALSE;
 	}

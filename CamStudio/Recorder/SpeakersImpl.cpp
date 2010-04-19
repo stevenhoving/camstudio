@@ -1218,10 +1218,10 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 				dAnalyzeTotal = 0;
 				dAnalyzeAggregate = 0;
 				dAnalyzeCount = 0;
-				CBuffer* buf;
-				while (buf = pFile->Read())
-				{
+				CBuffer* buf = pFile->Read();
+				while (buf) {
 					AnalyzeData(*buf, pFile->BitsPerSample());
+					buf = pFile->Read();
 				}
 				dAnalyzeAggregate /= dAnalyzeCount;
 

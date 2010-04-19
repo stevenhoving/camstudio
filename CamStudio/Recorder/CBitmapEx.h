@@ -10,32 +10,33 @@
 class CBitmapEx : public CBitmap
 {
 public:
-		CBitmapEx();
-		~CBitmapEx();
-		//load&save DDB
-		BOOL	Open(LPCSTR filename, LPCSTR DialogTitle=NULL);
-		BOOL	Save(LPCSTR filename, LPCSTR DialogTitle=NULL);
+	CBitmapEx();
+	~CBitmapEx();
 
-		void	BitBlt(CDC *dc_to, POINT at, DWORD rop=SRCCOPY);
-		void	StretchBlt(CDC *dc_to, CRect to, DWORD rop=SRCCOPY);
-		CSize 	GetSize();
+	//load&save DDB
+	BOOL	Open(LPCSTR filename, LPCSTR DialogTitle=NULL);
+	BOOL	Save(LPCSTR filename, LPCSTR DialogTitle=NULL);
 
-		BOOL 	CreateMono(int dx, int dy);
-		BOOL 	CreateColor(int dx, int dy);
-		BOOL	CreateFromDib(LPBITMAPINFO lpBi);
+	void	BitBlt(CDC *dc_to, POINT at, DWORD rop=SRCCOPY);
+	void	StretchBlt(CDC *dc_to, CRect to, DWORD rop=SRCCOPY);
+	CSize 	GetSize();
 
-		BOOL	CopyRect(CBitmap& bmp, CRect& rc);
-		HANDLE	DibFromBitmap();
+	BOOL 	CreateMono(int dx, int dy);
+	BOOL 	CreateColor(int dx, int dy);
+	BOOL	CreateFromDib(LPBITMAPINFO lpBi);
 
-		CDC		*BegingModify();
-		void	EndModify();
+	BOOL	CopyRect(CBitmap& bmp, CRect& rc);
+	HANDLE	DibFromBitmap();
 
-static	HANDLE	DibFromBitmap(HBITMAP);
-static	DWORD	DibImageSize(HANDLE hDIB);
+	CDC		*BegingModify();
+	void	EndModify();
+
+	static	HANDLE	DibFromBitmap(HBITMAP);
+	static	DWORD	DibImageSize(HANDLE hDIB);
 
 protected:
-		CDC		_modDC;
-		CBitmap *_modBMP;
+	CDC		_modDC;
+	CBitmap *_modBMP;
 };
 
 #endif //_RBITMAP_INCL

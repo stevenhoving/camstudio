@@ -225,7 +225,7 @@ void CCursorOptionsDlg::RefreshPreviewCursor()
 	m_hPreviewCursor = NULL;
 	if (m_bRecordCursor)
 	{
-		switch(m_iCursorType)
+		switch (m_iCursorType)
 		{
 		case 0:
 			m_hPreviewCursor = GetCursor();
@@ -233,7 +233,11 @@ void CCursorOptionsDlg::RefreshPreviewCursor()
 		case 1:
 			{
 				m_iCustomSel = m_ctrlCBCustomCursor.GetCurSel();
-				DWORD customicon = (m_iCustomSel < 0) ? 0 : m_cCursor.GetID(m_iCustomSel);
+				if (m_iCustomSel < 0) {
+					// TODO: handle error
+					return;
+				}
+				DWORD customicon = m_cCursor.GetID(m_iCustomSel);
 				m_hPreviewCursor = ::LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(customicon));
 				m_hCustomCursor = m_hPreviewCursor;
 			}
