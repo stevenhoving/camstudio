@@ -26,7 +26,12 @@ public:
 	int BufferSize() const								{return iBufferSize;}
 	int BufferSize(int NumberOfSamples)					{return iBufferSize = NumberOfSamples;}
 	int NumberOfChannels() const						{return m_Format.nChannels;}
-	int NumberOfChannels(int nchan)						{m_Format.nChannels = nchan; Update(); return m_Format.nChannels;}
+	int NumberOfChannels(int nchan)
+	{
+		m_Format.nChannels = nchan;
+		Update();
+		return m_Format.nChannels;
+	}
 	int SamplesPerSecond() const						{return m_Format.nSamplesPerSec;}
 	int SamplesPerSecond(int sps)
 	{
@@ -36,7 +41,12 @@ public:
 		//return m_Format.nSamplesPerSec;
 	}
 	int BitsPerSample() const							{return m_Format.wBitsPerSample;}
-	int BitsPerSample(int bps)							{m_Format.wBitsPerSample = bps; Update(); return m_Format.wBitsPerSample;}
+	int BitsPerSample(int bps)
+	{
+		m_Format.wBitsPerSample = bps;
+		Update();
+		return m_Format.wBitsPerSample;
+	}
 
 protected:
 	WAVEFORMATEX m_Format;
