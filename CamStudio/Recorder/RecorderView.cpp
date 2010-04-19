@@ -79,14 +79,6 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-// external variables
-/////////////////////////////////////////////////////////////////////////////
-extern CListManager ListManager;
-extern int iRrefreshRate;
-extern CString shapeName;
-extern CString strLayoutName;
-
-/////////////////////////////////////////////////////////////////////////////
 // external functions
 /////////////////////////////////////////////////////////////////////////////
 extern void FreeWaveoutResouces();
@@ -100,6 +92,12 @@ extern BOOL finalRestoreMMMode();
 extern BOOL onLoadSettings(int iRecordAudio);
 
 /////////////////////////////////////////////////////////////////////////////
+// external variables
+/////////////////////////////////////////////////////////////////////////////
+extern CListManager ListManager;
+extern int iRrefreshRate;
+extern CString shapeName;
+extern CString strLayoutName;
 
 /////////////////////////////////////////////////////////////////////////////
 // unused variables
@@ -165,7 +163,6 @@ int nColors = 24;
 //Path to temporary avi file
 CString strTempFilePath;
 
-
 // Ver 1.1
 /////////////////////////////////////////////////////////////////////////////
 // Audio Functions and Variables
@@ -204,7 +201,6 @@ int TroubleShootVal = 0;
 CScreenAnnotationsDlg sadlg;
 int bCreatedSADlg = false;
 
-
 //ver 1.8
 int vanWndCreated = 0;
 
@@ -227,178 +223,56 @@ sCaptionOpts cCaptionOpts;
 sTimestampOpts cTimestampOpts;
 sWatermarkOpts cWatermarkOpts;
 
-/////////////////////////////////////////////////////////////////////////////
-//Function prototypes
-/////////////////////////////////////////////////////////////////////////////
-
-//Region Display Functions
-void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip);
-
-//Region Select Functions
-int InitDrawShiftWindow();
-int InitSelectRegionWindow();
-
-//Misc Functions
-
-void GetVideoCompressState (HIC hic, DWORD fccHandler);
-void SetVideoCompressState (HIC hic, DWORD fccHandler);
 CString strCodec("MS Video 1");
 //Files Directory
 CString savedir("");
 
-void waveInErrorMsg(MMRESULT result, const char *);
-int AddInputBufferToQueue();
-void SetBufferSize(int NumberOfSamples);
-void CALLBACK OnMM_WIM_DATA(UINT parm1, LONG parm2);
-void DataFromSoundIn(CBuffer* buffer);
-void StopAudioRecording();
-BOOL InitAudioRecording();
-void ClearAudioFile();
-void GetTempWavePath();
-BOOL CALLBACK SaveCallback(int iProgress);
+HBITMAP hSavedBitmap = NULL;
+
+/////////////////////////////////////////////////////////////////////////////
+//Function prototypes
+/////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////
+int SetAdjustHotKeys();
+
+//Region Display Functions
+void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip);
+
+//Misc Functions
+void SetVideoCompressState (HIC hic, DWORD fccHandler);
+
+//void CALLBACK OnMM_WIM_DATA(UINT parm1, LONG parm2);
+//BOOL CALLBACK SaveCallback(int iProgress);
+
+namespace {	// annonymous
+
+	void ClearAudioFile();
+	BOOL InitAudioRecording();
+	void GetTempWavePath();
+	void SetBufferSize(int NumberOfSamples);
+	//BOOL StartAudioRecording(WAVEFORMATEX* format);
+	BOOL StartAudioRecording();
+	void StopAudioRecording();
+
+	//Region Select Functions
+	int InitDrawShiftWindow();
+
+	int InitSelectRegionWindow();
+	void waveInErrorMsg(MMRESULT result, const char *);
+	int AddInputBufferToQueue();
+	void DataFromSoundIn(CBuffer* buffer);
+
+	bool UnSetHotKeys(HWND hWnd);
+	int SetHotKeys(int succ[]);
+
+}	// namespace annonymous
+
 //Functions that select audio options based on settings read
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 //ver 1.8
-bool UnSetHotKeys(HWND hWnd);
-bool UnSetHotKeys(HWND hWnd)
-{
-	if (!::UnregisterHotKey(hWnd, 0)) {
-		::OnError(_T("UnSetHotKeys"));
-	}
-	if (!::UnregisterHotKey(hWnd, 2)) {
-		::OnError(_T("UnSetHotKeys"));
-	}
-	if (!::UnregisterHotKey(hWnd, 3)) {
-		::OnError(_T("UnSetHotKeys"));
-	}
-	if (!::UnregisterHotKey(hWnd, 4)) {
-		::OnError(_T("UnSetHotKeys"));
-	}
-	if (!::UnregisterHotKey(hWnd, 5)) {
-		::OnError(_T("UnSetHotKeys"));
-	}
-	return 0;
-}
-
-int SetHotKeys(int succ[]);
-int SetHotKeys(int succ[])
-{
-//#pragma message("Disable SetHotKeys")
-//	return 0;
-
-	UnSetHotKeys(hWndGlobal);
-
-	for (int i = 0; i < 6; i++)
-		succ[i] = 0;
-
-	int nid = 0;
-	UINT modf = 0;
-	if (cHotKeyOpts.m_RecordStart.m_bCtrl)
-		modf |= MOD_CONTROL;
-
-	if (cHotKeyOpts.m_RecordStart.m_bShift)
-		modf |= MOD_SHIFT;
-
-	if (cHotKeyOpts.m_RecordStart.m_bAlt)
-		modf |= MOD_ALT;
-
-	if (cHotKeyOpts.m_RecordStart.m_vKey != VK_UNDEFINED) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_RecordStart.m_vKey);
-		if (!ret)
-			succ[0] = 1;
-	}
-
-	nid++;
-	modf = 0;
-	if (cHotKeyOpts.m_RecordEnd.m_bCtrl)
-		modf |= MOD_CONTROL;
-
-	if (cHotKeyOpts.m_RecordEnd.m_bShift)
-		modf |= MOD_SHIFT;
-
-	if (cHotKeyOpts.m_RecordEnd.m_bAlt)
-		modf |= MOD_ALT;
-
-	if (cHotKeyOpts.m_RecordEnd.m_vKey != VK_UNDEFINED) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_RecordEnd.m_vKey);
-		if (!ret)
-			succ[1] = 1;
-	}
-
-	nid++;
-	modf = 0;
-	if (cHotKeyOpts.m_RecordCancel.m_bCtrl)
-		modf |= MOD_CONTROL;
-
-	if (cHotKeyOpts.m_RecordCancel.m_bShift)
-		modf |= MOD_SHIFT;
-
-	if (cHotKeyOpts.m_RecordCancel.m_bAlt)
-		modf |= MOD_ALT;
-
-	if (cHotKeyOpts.m_RecordCancel.m_vKey != VK_UNDEFINED) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_RecordCancel.m_vKey);
-		if (!ret)
-			succ[2] = 1;
-	}
-
-	nid++;
-	modf = 0;
-	if (cHotKeyOpts.m_Next.m_bCtrl)
-		modf |= MOD_CONTROL;
-
-	if (cHotKeyOpts.m_Next.m_bShift)
-		modf |= MOD_SHIFT;
-
-	if (cHotKeyOpts.m_Next.m_bAlt)
-		modf |= MOD_ALT;
-
-	if (cHotKeyOpts.m_Next.m_vKey != VK_UNDEFINED) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_Next.m_vKey);
-		if (!ret)
-			succ[3] = 1;
-	}
-
-	nid++;
-	modf = 0;
-	if (cHotKeyOpts.m_Prev.m_bCtrl)
-		modf |= MOD_CONTROL;
-
-	if (cHotKeyOpts.m_Prev.m_bShift)
-		modf |= MOD_SHIFT;
-
-	if (cHotKeyOpts.m_Prev.m_bAlt)
-		modf |= MOD_ALT;
-
-	if (cHotKeyOpts.m_Prev.m_vKey != VK_UNDEFINED) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_Prev.m_vKey);
-		if (!ret)
-			succ[4] = 1;
-	}
-
-	nid++;
-	modf = 0;
-	if (cHotKeyOpts.m_ShowLayout.m_bCtrl)
-		modf |= MOD_CONTROL;
-
-	if (cHotKeyOpts.m_ShowLayout.m_bShift)
-		modf |= MOD_SHIFT;
-
-	if (cHotKeyOpts.m_ShowLayout.m_bAlt)
-		modf |= MOD_ALT;
-
-	if (cHotKeyOpts.m_ShowLayout.m_vKey != VK_UNDEFINED) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_ShowLayout.m_vKey);
-		if (!ret)
-			succ[5] = 1;
-	}
-
-	return nid;
-}
-
-int SetAdjustHotKeys();
 int SetAdjustHotKeys()
 {
 	int succ[6];
@@ -462,272 +336,6 @@ int SetAdjustHotKeys()
 	}
 
 	return ret;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// Utility()
-/////////////////////////////////////////////////////////////////////////////
-
-HBITMAP hSavedBitmap = NULL;
-
-int InitSelectRegionWindow()
-{
-	return 0;
-}
-
-int InitDrawShiftWindow()
-{
-	HDC hScreenDC = ::GetDC(hMouseCaptureWnd);
-
-	FixRectSizePos(&rc, maxxScreen, maxyScreen, minxScreen, minyScreen);
-
-	rcClip.left = rc.left;
-	rcClip.top = rc.top;
-	rcClip.right = rc.right;
-	rcClip.bottom = rc.bottom;
-	DrawSelect(hScreenDC, TRUE, &rcClip);
-
-	old_rcClip = rcClip;
-
-	//Set Curosr at the centre of the clip rectangle
-	POINT ptOrigin;
-	ptOrigin.x = (rcClip.right + rcClip.left)/2;
-	ptOrigin.y = (rcClip.top + rcClip.bottom)/2;
-
-	rcOffset.left	= rcClip.left - ptOrigin.x;
-	rcOffset.top	= rcClip.top - ptOrigin.y;
-	rcOffset.right	= rcClip.right - ptOrigin.x;
-	rcOffset.bottom	= rcClip.bottom - ptOrigin.y;
-
-	::ReleaseDC(hMouseCaptureWnd,hScreenDC);
-
-	return 0;
-}
-
-///////////////////////// //////////////////
-/////////////// Functions //////////////////
-///////////////////////// //////////////////
-
-//===============================================
-// AUDIO CODE
-//===============================================
-// Ver 1.1
-//===============================================
-
-void waveInErrorMsg(MMRESULT result, const char * addstr)
-{
-	// say error message
-	char errorbuffer[500];
-	waveInGetErrorText(result, errorbuffer,500);
-	CString msgstr;
-	msgstr.Format("%s %s", errorbuffer, addstr);
-
-	CString tstr;
-	tstr.LoadString(IDS_STRING_WAVEINERR);
-	MessageBox(NULL, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
-}
-
-//Delete the pSoundFile variable and close existing audio file
-void ClearAudioFile()
-{
-	if (pSoundFile) {
-		delete pSoundFile;	// will close output file
-		pSoundFile = NULL;
-	}
-}
-
-BOOL InitAudioRecording()
-{
-	m_ThreadID = ::GetCurrentThreadId();
-	m_QueuedBuffers = 0;
-	m_hRecord = NULL;
-
-	iBufferSize = 1000; // samples per callback
-
-	cAudioFormat.BuildRecordingFormat();
-
-	ClearAudioFile();
-
-	//Create temporary wav file for audio recording
-	GetTempWavePath();
-	pSoundFile = new CSoundFile(tempaudiopath, &(cAudioFormat.AudioFormat()));
-
-	if (!(pSoundFile && pSoundFile->IsOK()))
-		//MessageBox(NULL,"Error Creating Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
-		MessageOut(NULL,IDS_STRING_ERRSOUND,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-
-	return TRUE;
-}
-
-//Initialize the tempaudiopath variable with a valid temporary path
-void GetTempWavePath()
-{
-	CString fileName("\\~temp001.wav");
-	tempaudiopath = GetTempFolder (cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir) + fileName;
-
-	//Test the validity of writing to the file
-	int fileverified = 0;
-	while (!fileverified)
-	{
-		OFSTRUCT ofstruct;
-		HFILE fhandle = OpenFile( tempaudiopath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE | OF_CREATE);
-		if (fhandle != HFILE_ERROR) {
-			fileverified = 1;
-			CloseHandle( (HANDLE) fhandle);
-			DeleteFile(tempaudiopath);
-		} else {
-			srand( (unsigned)time( NULL));
-			int randnum = rand();
-			char numstr[50];
-			sprintf(numstr,"%d",randnum);
-
-			CString cnumstr(numstr);
-			CString fxstr("\\~temp");
-			CString exstr(".wav");
-			tempaudiopath = GetTempFolder (cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir) + fxstr + cnumstr + exstr;
-
-			//MessageBox(NULL,tempaudiopath,"Uses Temp File",MB_OK);
-			//fileverified = 1;
-			//Try choosing another temporary filename
-		}
-	}
-}
-
-void SetBufferSize(int NumberOfSamples)
-{
-	iBufferSize = NumberOfSamples;
-}
-
-//BOOL StartAudioRecording(WAVEFORMATEX* format);
-BOOL StartAudioRecording()
-{
-	TRACE(_T("StartAudioRecording\n"));
-
-	// open wavein device
-	// use on message to map.....
-	MMRESULT mmReturn = ::waveInOpen(&m_hRecord, cAudioFormat.m_uDeviceID, &(cAudioFormat.AudioFormat()),(DWORD) hWndGlobal, NULL, CALLBACK_WINDOW);
-	if (mmReturn) {
-		waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
-		return FALSE;
-	}
-
-	// make several input buffers and add them to the input queue
-	for (int i = 0; i < 3; i++) {
-		AddInputBufferToQueue();
-	}
-
-	// start recording
-	mmReturn = ::waveInStart(m_hRecord);
-	if (mmReturn) {
-		waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
-		return FALSE;
-	}
-
-	iAudioTimeInitiated = 1;
-	sdwSamplesPerSec = cAudioFormat.AudioFormat().nSamplesPerSec;
-	sdwBytesPerSec = cAudioFormat.AudioFormat().nAvgBytesPerSec;
-
-	return TRUE;
-}
-
-int AddInputBufferToQueue()
-{
-	// create the header
-	LPWAVEHDR pHdr = new WAVEHDR;
-	if (pHdr == NULL) {
-		return NULL;
-	}
-	ZeroMemory(pHdr, sizeof(WAVEHDR));
-
-	// new a buffer
-	CBuffer buf(cAudioFormat.AudioFormat().nBlockAlign * iBufferSize, false);
-	pHdr->lpData = buf.ptr.c;
-	pHdr->dwBufferLength = buf.ByteLen;
-
-	// prepare it
-	MMRESULT mmReturn = ::waveInPrepareHeader(m_hRecord, pHdr, sizeof(WAVEHDR));
-	if (mmReturn) {
-		waveInErrorMsg(mmReturn, "in AddInputBufferToQueue()");
-		// todo: leak? did pHdr get deleted?
-		return m_QueuedBuffers;
-	}
-
-	// add the input buffer to the queue
-	mmReturn = ::waveInAddBuffer(m_hRecord, pHdr, sizeof(WAVEHDR));
-	if (mmReturn) {
-		waveInErrorMsg(mmReturn, "Error in AddInputBufferToQueue()");
-		// todo: leak? did pHdr get deleted?
-		return m_QueuedBuffers;
-	}
-
-	// no error
-	// increment the number of waiting buffers
-	return m_QueuedBuffers++;
-}
-
-void StopAudioRecording()
-{
-	MMRESULT mmReturn = ::waveInReset(m_hRecord);
-	if (mmReturn) {
-		waveInErrorMsg(mmReturn, "in Stop()");
-		return;
-	}
-	Sleep(500);
-
-	mmReturn = ::waveInStop(m_hRecord);
-	if (mmReturn) {
-		waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinStop)");
-	}
-
-	mmReturn = ::waveInClose(m_hRecord);
-	if (mmReturn) {
-		waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinClose)");
-	}
-
-	//if (m_QueuedBuffers != 0) ErrorMsg("Still %d buffers in waveIn queue!", m_QueuedBuffers);
-	if (m_QueuedBuffers != 0) {
-		//MessageBox(NULL,"Audio buffers still in queue!","note", MB_OK);
-		MessageOut(NULL,IDS_STRING_AUDIOBUF,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-	}
-
-	iAudioTimeInitiated = 0;
-}
-
-void DataFromSoundIn(CBuffer* buffer)
-{
-	if (pSoundFile) {
-		if (!pSoundFile->Write(buffer)) {
-			//m_SoundIn.Stop();
-			StopAudioRecording();
-			ClearAudioFile();
-
-			//MessageBox(NULL,"Error Writing Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(NULL,IDS_STRING_ERRSOUND2,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-		}
-	}
-}
-
-void GetVideoCompressState (HIC hic, DWORD fccHandler)
-{
-	DWORD statesize = ICGetStateSize(hic);
-	if (statesize < 1L) {
-		return;
-	}
-
-	if (cVideoOpts.State(statesize)) {
-		//ICGetState returns statesize even if pVideoCompressParams is not NULL ??
-		DWORD ret = ICGetState(hic, cVideoOpts.State(), cVideoOpts.StateSize());
-		if (ret < 0) {
-			//CString reportstr;
-			//reportstr.Format("Failure in getting compressor state ! Error Value = %d", ret);
-			//MessageBox(NULL,reportstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(NULL,IDS_STRING_COMPRESSORSTATE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,ret);
-		} else {
-			//we store only the state for one compressor in pVideoCompressParams
-			//So we need to indicate which compressor the state is referring to
-			cVideoOpts.m_dwCompressorStateIsFor = fccHandler;
-		}
-	}
 }
 
 void SetVideoCompressState (HIC hic, DWORD fccHandler)
@@ -4386,3 +3994,395 @@ bool CRecorderView::RunProducer(const CString& strNewFile)
 	}
 	return true;
 }
+
+namespace {	// annonymous
+
+void DataFromSoundIn(CBuffer* buffer)
+{
+	if (pSoundFile) {
+		if (!pSoundFile->Write(buffer)) {
+			//m_SoundIn.Stop();
+			StopAudioRecording();
+			ClearAudioFile();
+
+			//MessageBox(NULL,"Error Writing Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(NULL,IDS_STRING_ERRSOUND2,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		}
+	}
+}
+
+int AddInputBufferToQueue()
+{
+	// create the header
+	LPWAVEHDR pHdr = new WAVEHDR;
+	if (pHdr == NULL) {
+		return NULL;
+	}
+	ZeroMemory(pHdr, sizeof(WAVEHDR));
+
+	// new a buffer
+	CBuffer buf(cAudioFormat.AudioFormat().nBlockAlign * iBufferSize, false);
+	pHdr->lpData = buf.ptr.c;
+	pHdr->dwBufferLength = buf.ByteLen;
+
+	// prepare it
+	MMRESULT mmReturn = ::waveInPrepareHeader(m_hRecord, pHdr, sizeof(WAVEHDR));
+	if (mmReturn) {
+		waveInErrorMsg(mmReturn, "in AddInputBufferToQueue()");
+		// todo: leak? did pHdr get deleted?
+		return m_QueuedBuffers;
+	}
+
+	// add the input buffer to the queue
+	mmReturn = ::waveInAddBuffer(m_hRecord, pHdr, sizeof(WAVEHDR));
+	if (mmReturn) {
+		waveInErrorMsg(mmReturn, "Error in AddInputBufferToQueue()");
+		// todo: leak? did pHdr get deleted?
+		return m_QueuedBuffers;
+	}
+
+	// no error
+	// increment the number of waiting buffers
+	return m_QueuedBuffers++;
+}
+
+//===============================================
+// AUDIO CODE
+//===============================================
+void waveInErrorMsg(MMRESULT result, const char * addstr)
+{
+	// say error message
+	char errorbuffer[500];
+	waveInGetErrorText(result, errorbuffer,500);
+	CString msgstr;
+	msgstr.Format("%s %s", errorbuffer, addstr);
+
+	CString tstr;
+	tstr.LoadString(IDS_STRING_WAVEINERR);
+	MessageBox(NULL, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
+}
+
+int InitSelectRegionWindow()
+{
+	return 0;
+}
+
+int InitDrawShiftWindow()
+{
+	HDC hScreenDC = ::GetDC(hMouseCaptureWnd);
+
+	FixRectSizePos(&rc, maxxScreen, maxyScreen, minxScreen, minyScreen);
+
+	rcClip.left = rc.left;
+	rcClip.top = rc.top;
+	rcClip.right = rc.right;
+	rcClip.bottom = rc.bottom;
+	DrawSelect(hScreenDC, TRUE, &rcClip);
+
+	old_rcClip = rcClip;
+
+	//Set Curosr at the centre of the clip rectangle
+	POINT ptOrigin;
+	ptOrigin.x = (rcClip.right + rcClip.left)/2;
+	ptOrigin.y = (rcClip.top + rcClip.bottom)/2;
+
+	rcOffset.left	= rcClip.left - ptOrigin.x;
+	rcOffset.top	= rcClip.top - ptOrigin.y;
+	rcOffset.right	= rcClip.right - ptOrigin.x;
+	rcOffset.bottom	= rcClip.bottom - ptOrigin.y;
+
+	::ReleaseDC(hMouseCaptureWnd,hScreenDC);
+
+	return 0;
+}
+
+bool UnSetHotKeys(HWND hWnd)
+{
+	if (!::UnregisterHotKey(hWnd, 0)) {
+		::OnError(_T("UnSetHotKeys"));
+	}
+	if (!::UnregisterHotKey(hWnd, 2)) {
+		::OnError(_T("UnSetHotKeys"));
+	}
+	if (!::UnregisterHotKey(hWnd, 3)) {
+		::OnError(_T("UnSetHotKeys"));
+	}
+	if (!::UnregisterHotKey(hWnd, 4)) {
+		::OnError(_T("UnSetHotKeys"));
+	}
+	if (!::UnregisterHotKey(hWnd, 5)) {
+		::OnError(_T("UnSetHotKeys"));
+	}
+	return 0;
+}
+
+int SetHotKeys(int succ[])
+{
+//#pragma message("Disable SetHotKeys")
+//	return 0;
+
+	UnSetHotKeys(hWndGlobal);
+
+	for (int i = 0; i < 6; i++)
+		succ[i] = 0;
+
+	int nid = 0;
+	UINT modf = 0;
+	if (cHotKeyOpts.m_RecordStart.m_bCtrl)
+		modf |= MOD_CONTROL;
+
+	if (cHotKeyOpts.m_RecordStart.m_bShift)
+		modf |= MOD_SHIFT;
+
+	if (cHotKeyOpts.m_RecordStart.m_bAlt)
+		modf |= MOD_ALT;
+
+	if (cHotKeyOpts.m_RecordStart.m_vKey != VK_UNDEFINED) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_RecordStart.m_vKey);
+		if (!ret)
+			succ[0] = 1;
+	}
+
+	nid++;
+	modf = 0;
+	if (cHotKeyOpts.m_RecordEnd.m_bCtrl)
+		modf |= MOD_CONTROL;
+
+	if (cHotKeyOpts.m_RecordEnd.m_bShift)
+		modf |= MOD_SHIFT;
+
+	if (cHotKeyOpts.m_RecordEnd.m_bAlt)
+		modf |= MOD_ALT;
+
+	if (cHotKeyOpts.m_RecordEnd.m_vKey != VK_UNDEFINED) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_RecordEnd.m_vKey);
+		if (!ret)
+			succ[1] = 1;
+	}
+
+	nid++;
+	modf = 0;
+	if (cHotKeyOpts.m_RecordCancel.m_bCtrl)
+		modf |= MOD_CONTROL;
+
+	if (cHotKeyOpts.m_RecordCancel.m_bShift)
+		modf |= MOD_SHIFT;
+
+	if (cHotKeyOpts.m_RecordCancel.m_bAlt)
+		modf |= MOD_ALT;
+
+	if (cHotKeyOpts.m_RecordCancel.m_vKey != VK_UNDEFINED) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_RecordCancel.m_vKey);
+		if (!ret)
+			succ[2] = 1;
+	}
+
+	nid++;
+	modf = 0;
+	if (cHotKeyOpts.m_Next.m_bCtrl)
+		modf |= MOD_CONTROL;
+
+	if (cHotKeyOpts.m_Next.m_bShift)
+		modf |= MOD_SHIFT;
+
+	if (cHotKeyOpts.m_Next.m_bAlt)
+		modf |= MOD_ALT;
+
+	if (cHotKeyOpts.m_Next.m_vKey != VK_UNDEFINED) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_Next.m_vKey);
+		if (!ret)
+			succ[3] = 1;
+	}
+
+	nid++;
+	modf = 0;
+	if (cHotKeyOpts.m_Prev.m_bCtrl)
+		modf |= MOD_CONTROL;
+
+	if (cHotKeyOpts.m_Prev.m_bShift)
+		modf |= MOD_SHIFT;
+
+	if (cHotKeyOpts.m_Prev.m_bAlt)
+		modf |= MOD_ALT;
+
+	if (cHotKeyOpts.m_Prev.m_vKey != VK_UNDEFINED) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_Prev.m_vKey);
+		if (!ret)
+			succ[4] = 1;
+	}
+
+	nid++;
+	modf = 0;
+	if (cHotKeyOpts.m_ShowLayout.m_bCtrl)
+		modf |= MOD_CONTROL;
+
+	if (cHotKeyOpts.m_ShowLayout.m_bShift)
+		modf |= MOD_SHIFT;
+
+	if (cHotKeyOpts.m_ShowLayout.m_bAlt)
+		modf |= MOD_ALT;
+
+	if (cHotKeyOpts.m_ShowLayout.m_vKey != VK_UNDEFINED) {
+		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_ShowLayout.m_vKey);
+		if (!ret)
+			succ[5] = 1;
+	}
+
+	return nid;
+}
+
+//Delete the pSoundFile variable and close existing audio file
+void ClearAudioFile()
+{
+	if (pSoundFile) {
+		delete pSoundFile;	// will close output file
+		pSoundFile = NULL;
+	}
+}
+
+BOOL InitAudioRecording()
+{
+	m_ThreadID = ::GetCurrentThreadId();
+	m_QueuedBuffers = 0;
+	m_hRecord = NULL;
+
+	iBufferSize = 1000; // samples per callback
+
+	cAudioFormat.BuildRecordingFormat();
+
+	ClearAudioFile();
+
+	//Create temporary wav file for audio recording
+	GetTempWavePath();
+	pSoundFile = new CSoundFile(tempaudiopath, &(cAudioFormat.AudioFormat()));
+
+	if (!(pSoundFile && pSoundFile->IsOK()))
+		//MessageBox(NULL,"Error Creating Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
+		MessageOut(NULL,IDS_STRING_ERRSOUND,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+
+	return TRUE;
+}
+
+//Initialize the tempaudiopath variable with a valid temporary path
+void GetTempWavePath()
+{
+	CString fileName("\\~temp001.wav");
+	tempaudiopath = GetTempFolder (cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir) + fileName;
+
+	//Test the validity of writing to the file
+	int fileverified = 0;
+	while (!fileverified)
+	{
+		OFSTRUCT ofstruct;
+		HFILE fhandle = OpenFile( tempaudiopath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE | OF_CREATE);
+		if (fhandle != HFILE_ERROR) {
+			fileverified = 1;
+			CloseHandle( (HANDLE) fhandle);
+			DeleteFile(tempaudiopath);
+		} else {
+			srand( (unsigned)time( NULL));
+			int randnum = rand();
+			char numstr[50];
+			sprintf(numstr,"%d",randnum);
+
+			CString cnumstr(numstr);
+			CString fxstr("\\~temp");
+			CString exstr(".wav");
+			tempaudiopath = GetTempFolder (cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir) + fxstr + cnumstr + exstr;
+
+			//MessageBox(NULL,tempaudiopath,"Uses Temp File",MB_OK);
+			//fileverified = 1;
+			//Try choosing another temporary filename
+		}
+	}
+}
+
+void SetBufferSize(int NumberOfSamples)
+{
+	iBufferSize = NumberOfSamples;
+}
+
+BOOL StartAudioRecording()
+{
+	TRACE(_T("StartAudioRecording\n"));
+
+	// open wavein device
+	// use on message to map.....
+	MMRESULT mmReturn = ::waveInOpen(&m_hRecord, cAudioFormat.m_uDeviceID, &(cAudioFormat.AudioFormat()),(DWORD) hWndGlobal, NULL, CALLBACK_WINDOW);
+	if (mmReturn) {
+		waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
+		return FALSE;
+	}
+
+	// make several input buffers and add them to the input queue
+	for (int i = 0; i < 3; i++) {
+		AddInputBufferToQueue();
+	}
+
+	// start recording
+	mmReturn = ::waveInStart(m_hRecord);
+	if (mmReturn) {
+		waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
+		return FALSE;
+	}
+
+	iAudioTimeInitiated = 1;
+	sdwSamplesPerSec = cAudioFormat.AudioFormat().nSamplesPerSec;
+	sdwBytesPerSec = cAudioFormat.AudioFormat().nAvgBytesPerSec;
+
+	return TRUE;
+}
+
+void StopAudioRecording()
+{
+	MMRESULT mmReturn = ::waveInReset(m_hRecord);
+	if (mmReturn) {
+		waveInErrorMsg(mmReturn, "in Stop()");
+		return;
+	}
+	Sleep(500);
+
+	mmReturn = ::waveInStop(m_hRecord);
+	if (mmReturn) {
+		waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinStop)");
+	}
+
+	mmReturn = ::waveInClose(m_hRecord);
+	if (mmReturn) {
+		waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinClose)");
+	}
+
+	//if (m_QueuedBuffers != 0) ErrorMsg("Still %d buffers in waveIn queue!", m_QueuedBuffers);
+	if (m_QueuedBuffers != 0) {
+		//MessageBox(NULL,"Audio buffers still in queue!","note", MB_OK);
+		MessageOut(NULL,IDS_STRING_AUDIOBUF,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+	}
+
+	iAudioTimeInitiated = 0;
+}
+
+void GetVideoCompressState (HIC hic, DWORD fccHandler);
+void GetVideoCompressState (HIC hic, DWORD fccHandler)
+{
+	DWORD statesize = ICGetStateSize(hic);
+	if (statesize < 1L) {
+		return;
+	}
+
+	if (cVideoOpts.State(statesize)) {
+		//ICGetState returns statesize even if pVideoCompressParams is not NULL ??
+		DWORD ret = ICGetState(hic, cVideoOpts.State(), cVideoOpts.StateSize());
+		if (ret < 0) {
+			//CString reportstr;
+			//reportstr.Format("Failure in getting compressor state ! Error Value = %d", ret);
+			//MessageBox(NULL,reportstr,"Note",MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(NULL,IDS_STRING_COMPRESSORSTATE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION,ret);
+		} else {
+			//we store only the state for one compressor in pVideoCompressParams
+			//So we need to indicate which compressor the state is referring to
+			cVideoOpts.m_dwCompressorStateIsFor = fccHandler;
+		}
+	}
+}
+
+}	// namespace annonymous
