@@ -37,6 +37,11 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
+	unsigned int FrameWidth() const					{return m_uFrameWidth;}
+	unsigned int FrameWidth(unsigned int uWidth)	{return m_uFrameWidth = uWidth;}
+	unsigned int FrameHeight() const				{return m_uFrameHeight;}
+	unsigned int FrameHeight(unsigned int uHeight)	{return m_uFrameHeight = uHeight;}
+	
 protected:
 
 // Generated message map functions
@@ -46,6 +51,9 @@ protected:
 		//    DO NOT EDIT what you see in these blocks of generated code !
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+private:
+	unsigned int m_uFrameWidth;		// Capture frame width
+	unsigned int m_uFrameHeight;	// capture frame height
 };
 
 /////////////////////////////////////////////////////////////////////////////
