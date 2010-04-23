@@ -33,6 +33,8 @@ END_MESSAGE_MAP()
 // CRecorderDoc construction/destruction
 
 CRecorderDoc::CRecorderDoc()
+: m_uFrameWidth(0)
+, m_uFrameHeight(0)
 {
 	// TODO: add one-time construction code here
 

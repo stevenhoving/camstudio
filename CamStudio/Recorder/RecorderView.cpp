@@ -136,7 +136,7 @@ UINT interruptkey = 0;
 DWORD dwInitialTime = 0;
 bool bInitCapture = false;
 int irsmallcount = 0;
-long long nTotalBytesWrittenSoFar = 0;
+unsigned long nTotalBytesWrittenSoFar = 0UL;
 
 // Messaging
 HWND hWndGlobal = NULL;
@@ -379,7 +379,7 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_UPDATE_COMMAND_UI(ID_REGION_PANREGION, OnUpdateRegionPanregion)
 	ON_COMMAND(ID_OPTIONS_AUTOPAN, OnOptionsAutopan)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_AUTOPAN, OnUpdateOptionsAutopan)
-	ON_COMMAND(ID_FILE_VIDEOOPTIONS, OnFileVideooptions)
+	ON_COMMAND(ID_OPTIONS_VIDEOOPTIONS, OnFileVideooptions)
 	ON_COMMAND(ID_OPTIONS_CURSOROPTIONS, OnOptionsCursoroptions)	
 	ON_COMMAND(ID_OPTIONS_ATUOPANSPEED, OnOptionsAtuopanspeed)
 	ON_COMMAND(ID_REGION_FULLSCREEN, OnRegionFullscreen)
@@ -432,7 +432,6 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDWATERMARK, OnUpdateAnnotationAddwatermark)
 	ON_COMMAND(ID_EFFECTS_OPTIONS, OnEffectsOptions)
 	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_PRESETTIME, OnOptionsProgramoptionsPresettime)
-
 	ON_COMMAND(ID_OPTIONS_MINIMIZEONSTART, OnOptionsMinimizeonstart)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_MINIMIZEONSTART, OnUpdateOptionsMinimizeonstart)
 	ON_COMMAND(ID_OPTIONS_HIDEFLASHING, OnOptionsHideflashing)
@@ -3083,12 +3082,11 @@ void CRecorderView::DisplayRecordingStatistics(CDC & srcDC)
 	CString csMsg;
 	csMsg.Format("Current Frame : %d",  nCurrFrame);
 	CSize sizeExtent = srcDC.GetTextExtent(csMsg);
-
 	CRect rectText;
 	GetClientRect(&rectText);
 	int xoffset = 40;
 	int yoffset = 10;
-	int iLines = 6;
+	int iLines = 7;
 	int iStartPosY = rectText.bottom;
 	iStartPosY -= (iLines * (sizeExtent.cy + 10));
 	yoffset = iStartPosY;
@@ -3098,7 +3096,10 @@ void CRecorderView::DisplayRecordingStatistics(CDC & srcDC)
 //	srcDC.Rectangle(&rectText);
 	srcDC.TextOut(xoffset, yoffset, csMsg);
 
-	csMsg.Format("Current File Size : %.2f KB", (double)nTotalBytesWrittenSoFar/1024.f);
+	const unsigned long MEGABYTE = (1024UL * 1024UL);
+	double dMegaBtyes = nTotalBytesWrittenSoFar;
+	dMegaBtyes /= MEGABYTE;
+	csMsg.Format("Current File Size : %.2f Mb", dMegaBtyes);
 	sizeExtent = srcDC.GetTextExtent(csMsg);
 	yoffset += sizeExtent.cy + 10;
 	rectText.top = yoffset - 2;
@@ -3137,7 +3138,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC & srcDC)
 //	srcDC.Rectangle(&rectText);
 	srcDC.TextOut(xoffset, yoffset, csMsg);
 
-	csMsg.Format("Dimension : %d X %d",  m_iFrameWidth, m_iFrameHeight);
+	csMsg.Format("Dimension : %u X %d",  GetDocument()->FrameWidth(), GetDocument()->FrameHeight());
 	sizeExtent = srcDC.GetTextExtent(csMsg);
 	yoffset += sizeExtent.cy + 10;
 	rectText.top = yoffset - 2;
@@ -3307,8 +3308,8 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 
 	sVideoOpts SaveVideoOpts = cVideoOpts;
 
-	m_iFrameWidth = rectFrame.Width() + 1;
-	m_iFrameHeight = rectFrame.Height() + 1;
+	GetDocument()->FrameWidth(rectFrame.Width() + 1);
+	GetDocument()->FrameHeight(rectFrame.Height() + 1);
 	nTotalBytesWrittenSoFar = 0;
 
 	////////////////////////////////////////////////
@@ -3368,8 +3369,8 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 				
 				// Compressor can work if the dimensions is adjusted slightly
 				rectFrame = CRect(newleft, newtop, newleft + newwidth, newtop + newheight);
-				m_iFrameWidth = rectFrame.Width();
-				m_iFrameHeight = rectFrame.Height();
+				GetDocument()->FrameWidth(rectFrame.Width());
+				GetDocument()->FrameHeight(rectFrame.Height());
 			} else {
 				cVideoOpts.m_dwCompfccHandler = ICHANDLER_MSVC;
 				strCodec = CString("MS Video 1");
@@ -3712,7 +3713,9 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 
 			// if frametime repeats (frametime == oldframetime)
 			// ...the avistreamwrite will cause an error
-			hr = AVIStreamWrite(psCompressed, frametime, 1, (LPBYTE) alpbi + alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD), alpbi->biSizeImage, 0, NULL, NULL);
+			LONG lSampWritten = 0L;
+			LONG lBytesWritten = 0L; 
+			hr = AVIStreamWrite(psCompressed, frametime, 1, (LPBYTE) alpbi + alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD), alpbi->biSizeImage, 0, &lSampWritten, &lBytesWritten);
 			//}
 			if (hr != AVIERR_OK) {
 				TRACE("CRecorderView::RecordVideo: AVIStreamWrite error\n");
@@ -3720,7 +3723,8 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 				break;
 			}
 
-			nTotalBytesWrittenSoFar += alpbi->biSizeImage;
+			//nTotalBytesWrittenSoFar += alpbi->biSizeImage;
+			nTotalBytesWrittenSoFar += lBytesWritten;			
 			nActualFrame++;
 			nCurrFrame = frametime;
 			fRate = ((float) nCurrFrame)/fTimeLength;

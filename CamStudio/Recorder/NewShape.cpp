@@ -141,38 +141,33 @@ void CNewShapeDlg::OnOK()
 
 	int val = m_ctrlButtoBlankImage.GetCheck();
 	iImageType = (val) ? 0 : 1;
-	if (!iImageType)
-	{
+	if (!iImageType) {
 		UpdateData();
 		iNewShapeWidth = m_uImageWidth;
 		iNewShapeHeight = m_uImageHeight;
 
 		// TODO: numeric validation should be redundant due to DDV macros
-		if (iNewShapeWidth < 20)
-		{
+		if (iNewShapeWidth < 20) {
 			MessageOut(NULL,IDS_STRINGWIDTHLESS20,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			iNewShapeWidth = oldWidth;
 			return;
 		}
 
-		if (maxxScreen < iNewShapeWidth)
-		{
+		if (maxxScreen < iNewShapeWidth) {
 			// "Width cannot be larger than maxxScreen"
 			MessageOut(NULL,IDS_STRINGWIDTHLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, maxxScreen);
 			iNewShapeWidth = oldWidth;
 			return;
 		}
 
-		if (iNewShapeHeight < 20)
-		{
+		if (iNewShapeHeight < 20) {
 			// "Height cannot be less than 20"
 			MessageOut(NULL,IDS_STRINGHEIGHTLESS20,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			iNewShapeHeight = oldHeight;
 			return;
 		}
 
-		if (maxyScreen < iNewShapeHeight)
-		{
+		if (maxyScreen < iNewShapeHeight) {
 			// "Height cannot be larger than maxyScreen
 			MessageOut(NULL,IDS_STRINGHEIGHTLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,maxyScreen);
 			iNewShapeHeight = oldHeight;
@@ -183,10 +178,8 @@ void CNewShapeDlg::OnOK()
 	m_ctrlTextFileText.GetWindowText(strImageFilename);
 	strImageFilename.TrimLeft();
 	strImageFilename.TrimRight();
-	if (1 == iImageType)
-	{
-		if (strImageFilename == "")
-		{
+	if (1 == iImageType) {
+		if (strImageFilename == "") {
 			MessageOut(NULL,IDS_STRINGINVIMGFILE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			return;
 		}
@@ -195,17 +188,14 @@ void CNewShapeDlg::OnOK()
 	m_ctrlEditShaepText.GetWindowText(strNewShapeText);
 	m_ctrlEditName.GetWindowText(shapeStr);
 
-	if (proposedShapeStr != shapeStr)
-	{
+	if (proposedShapeStr != shapeStr) {
 		//shape name has been changed, reset counter to 1
 		shapeName = shapeStr;
 
 		//a better method is to extract the trailing number from shapestr and use it as number for iShapeNameInt
 		//iShapeNameInt = 1;
 		AdjustShapeName(shapeName);
-	}
-	else
-	{
+	} else {
 		// do not exceed range.
 		iShapeNameInt = (iShapeNameInt < (INT_MAX - 1))
 			? iShapeNameInt++
