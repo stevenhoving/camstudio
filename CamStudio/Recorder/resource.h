@@ -289,7 +289,6 @@
 #define ID_STOP                         32774
 #define ID_PLAY                         32775
 #define ID_REGION_TEST                  32776
-#define ID_FILE_VIDEOOPTIONS            32777
 #define ID_OPTIONS_CURSOROPTIONS        32778
 #define ID_OPTIONS_AUTOPAN              32779
 #define ID_OPTIONS_ATUOPANSPEED         32780
@@ -450,6 +449,7 @@
 #define ID_SCREENS_ALLSCREENS           32929
 #define ID_SCREENS_CHOOSESCREEN         32930
 #define ID_SCREENS_SELECTSCREEN         32931
+#define ID_OPTIONS_VIDEOOPTIONS         32932
 #define IDS_STRING_NOTE                 61446
 #define IDS_STRING_INTERLEAVE1          61447
 #define IDS_STRING_NOINPUT1             61448
@@ -588,7 +588,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        204
-#define _APS_NEXT_COMMAND_VALUE         32932
+#define _APS_NEXT_COMMAND_VALUE         32933
 #define _APS_NEXT_CONTROL_VALUE         1074
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

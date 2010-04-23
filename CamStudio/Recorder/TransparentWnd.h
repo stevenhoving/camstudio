@@ -23,17 +23,20 @@
 #include "LayeredWindowHelperST.h"
 #include "Picture.h"
 
-#define regionNULL 0
-#define regionTRANSPARENTCOLOR 1
-#define regionSHAPE 2
+#define regionNULL				0
+#define regionTRANSPARENTCOLOR	1
+#define regionSHAPE				2
 
-#define regionROUNDRECT 0
-#define regionELLIPSE 1
-#define regionRECTANGLE 2
+#define regionROUNDRECT			0
+#define regionELLIPSE			1
+#define regionRECTANGLE			2
 
-#define saveMethodNew 0
-#define saveMethodReplace 1
+#define saveMethodNew			0
+#define saveMethodReplace		1
 
+/////////////////////////////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////////////////////////////
 class CTransparentWnd : public CWnd
 {
 public:
@@ -80,6 +83,9 @@ public:
 // Implementation
 public:
 	void InvalidateRegion();
+
+private:
+	HANDLE AllocMakeDib(int reduced_width, int reduced_height, UINT iBits);
 
 	// Generated message map functions
 protected:

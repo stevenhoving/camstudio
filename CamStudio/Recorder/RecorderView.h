@@ -159,12 +159,6 @@ protected:
 	afx_msg void OnUpdateOptionsLanguageGerman(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsLanguageEnglish();
 	afx_msg void OnOptionsLanguageGerman();
-	afx_msg LRESULT OnRecordStart (UINT wParam, LONG lParam);
-	afx_msg LRESULT OnRecordInterrupted (UINT wParam, LONG lParam);
-	afx_msg LRESULT OnSaveCursor (UINT wParam, LONG lParam);
-	afx_msg LRESULT OnUserGeneric (UINT wParam, LONG lParam);
-	afx_msg LRESULT OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2);
-	afx_msg LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnRegionWindow();
 	afx_msg void OnUpdateRegionWindow(CCmdUI *pCmdUI);
 	afx_msg void OnCaptureChanged(CWnd *pWnd);
@@ -179,6 +173,12 @@ protected:
 	afx_msg void OnBnClickedButtonlink();
 	afx_msg void OnUpdateOptionsAudiooptionsAudiovideosynchronization(CCmdUI *pCmdUI);
 	//}}AFX_MSG
+	afx_msg LRESULT OnRecordStart (UINT wParam, LONG lParam);
+	afx_msg LRESULT OnRecordInterrupted (UINT wParam, LONG lParam);
+	afx_msg LRESULT OnSaveCursor (UINT wParam, LONG lParam);
+	afx_msg LRESULT OnUserGeneric (UINT wParam, LONG lParam);
+	afx_msg LRESULT OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2);
+	afx_msg LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 public:
 	DECLARE_EVENTSINK_MAP()
@@ -195,8 +195,6 @@ private:
 	CVideoWnd m_vanWnd;
 	CCamera m_cCamera;
 	CBasicMessage *m_basicMsg;
-	int m_iFrameWidth;
-	int m_iFrameHeight;
 
 	// CamStudio.ini settings
 

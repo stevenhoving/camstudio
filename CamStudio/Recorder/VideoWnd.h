@@ -20,6 +20,7 @@ class CVideoWnd : public CTransparentWnd
 // Construction
 public:
 	CVideoWnd();
+	virtual ~CVideoWnd();
 
 // Attributes
 public:
@@ -35,8 +36,6 @@ public:
 // Implementation
 private:
 public:
-	virtual ~CVideoWnd();
-
 	UINT			m_ProcessorMode;
 	CFrameGrabber	m_FrameGrabber;
 	CBitmapEx		m_ImageBitmap;

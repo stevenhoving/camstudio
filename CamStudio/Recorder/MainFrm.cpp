@@ -367,3 +367,4 @@ LRESULT CMainFrame::OnTrayNotify(WPARAM wParam, LPARAM lParam)
 {
 	return m_TrayIcon.OnTrayNotify(wParam, lParam);
 }
+

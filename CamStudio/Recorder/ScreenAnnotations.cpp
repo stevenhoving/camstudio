@@ -35,8 +35,6 @@ extern int SetAdjustHotKeys();
 #define modeShape 0
 #define modeLayout 1
 
-int AreWindowsEdited();
-
 int objectIsCopied = 0;
 int layoutIsCopied = 0;
 int tabMode = modeShape;
@@ -49,9 +47,6 @@ LV_ITEM itemCopied;
 CTransparentWnd* wndCopied = NULL;
 CLayoutList* layoutCopied = NULL;
 
-void AdjustShapeName(CString& shapeName);
-void AdjustLayoutName(CString& layoutName);
-
 int draggingOn = 0;
 int iDragIndex = -1;
 
@@ -59,6 +54,10 @@ CImageList saImageList;
 int saImageListLoaded = 0;
 
 CListManager ListManager;
+
+int AreWindowsEdited();
+void AdjustShapeName(CString& shapeName);
+void AdjustLayoutName(CString& layoutName);
 
 /////////////////////////////////////////////////////////////////////////////
 // CScreenAnnotationsDlg dialog
@@ -226,29 +225,23 @@ void CScreenAnnotationsDlg::OnRclickList1(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	if (tabMode == modeLayout) {
 		menuToLoad = IDR_CONTEXTEDITLAYOUT;
 
-		if (menu.LoadMenu(menuToLoad))
-		{
+		if (menu.LoadMenu(menuToLoad)) {
 			CMenu* pPopup = menu.GetSubMenu(0);
 			ASSERT(pPopup != NULL);
 
-			if (layoutIsCopied)
-			{
+			if (layoutIsCopied) {
 				pPopup->EnableMenuItem(ID_EDITOBJ_PASTE,MF_ENABLED|MF_BYCOMMAND);
-			}
-			else
-			{
+			} else {
 				pPopup->EnableMenuItem(ID_EDITOBJ_PASTE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 			}
 
-			if (nItem < 0) //item not selected
-			{
+			if (nItem < 0) {
+				//item not selected
 				pPopup->EnableMenuItem(ID_EDITLAYOUT_OPENLAYOUT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 				pPopup->EnableMenuItem(ID_EDITOBJ_REMOVE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 				pPopup->EnableMenuItem(ID_EDITOBJ_COPY,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 				pPopup->EnableMenuItem(ID_EDITOBJ_TESTEDIT, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
-			}
-			else
-			{
+			} else {
 				pPopup->EnableMenuItem(ID_EDITLAYOUT_OPENLAYOUT,MF_ENABLED|MF_BYCOMMAND);
 				pPopup->EnableMenuItem(ID_EDITOBJ_REMOVE,MF_ENABLED|MF_BYCOMMAND);
 				pPopup->EnableMenuItem(ID_EDITOBJ_COPY, MF_ENABLED|MF_BYCOMMAND);
@@ -256,18 +249,13 @@ void CScreenAnnotationsDlg::OnRclickList1(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 			}
 			int max = ListManager.displayArray.GetSize();
 			int isEdited = AreWindowsEdited();
-
-			if ((isEdited) || (max <= 0))
-			{
+			if ((isEdited) || (max <= 0)) {
 				pPopup->EnableMenuItem(ID_EDITLAYOUT_SAVELAYOUT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
-			}
-			else
-			{
+			} else {
 				pPopup->EnableMenuItem(ID_EDITLAYOUT_SAVELAYOUT,MF_ENABLED|MF_BYCOMMAND);
 			}
 			
-			if (isEdited)
-			{
+			if (isEdited) {
 				pPopup->EnableMenuItem(ID_EDITLAYOUT_OPENLAYOUT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 			}
 
@@ -280,51 +268,40 @@ void CScreenAnnotationsDlg::OnRclickList1(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	} //End Layout Mode
 
 	//Shape Mode
-	if (menu.LoadMenu(menuToLoad))
-	{
+	if (menu.LoadMenu(menuToLoad)) {
 		CMenu* pPopup = menu.GetSubMenu(0);
 		ASSERT(pPopup != NULL);
 
-		if ((tabMode == modeLayout) || (nItem < 0) || (newObjectOn))
-		{
+		if ((tabMode == modeLayout) || (nItem < 0) || (newObjectOn)) {
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITIMAGE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITTEXT, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITTRANSPARENCY, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_TESTEDIT, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
-		}
-		else
-		{
+		} else {
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITIMAGE,MF_ENABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITTEXT, MF_ENABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITTRANSPARENCY, MF_ENABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_TESTEDIT, MF_ENABLED|MF_BYCOMMAND);
 		}
 
-		if ((objectIsCopied) && (tabMode == modeShape))
-		{
+		if ((objectIsCopied) && (tabMode == modeShape)) {
 			pPopup->EnableMenuItem(ID_EDITOBJ_PASTE,MF_ENABLED|MF_BYCOMMAND);
-		}
-		else if ((layoutIsCopied) && (tabMode == modeLayout))
-		{
+		} else if ((layoutIsCopied) && (tabMode == modeLayout)) {
 			pPopup->EnableMenuItem(ID_EDITOBJ_PASTE,MF_ENABLED|MF_BYCOMMAND);
-		}
-		else
-		{
+		} else {
 			pPopup->EnableMenuItem(ID_EDITOBJ_PASTE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 		}
-		if (nItem<0) //item not selected
-		{
+		
+		if (nItem < 0) {
+			//item not selected
 			pPopup->EnableMenuItem(ID_EDITOBJ_REMOVE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_COPY,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
-		}
-		else
-		{
+		} else {
 			pPopup->EnableMenuItem(ID_EDITOBJ_REMOVE,MF_ENABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_COPY, MF_ENABLED|MF_BYCOMMAND);
 		}
 
-		if (newObjectOn)
-		{
+		if (newObjectOn) {
 			pPopup->EnableMenuItem(ID_EDITOBJ_NEWOBJECT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 
 			pPopup->EnableMenuItem(ID_EDITOBJ_REMOVE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
@@ -334,9 +311,7 @@ void CScreenAnnotationsDlg::OnRclickList1(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITIMAGE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITTEXT, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 			pPopup->EnableMenuItem(ID_EDITOBJ_EDITTRANSPARENCY, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
-		}
-		else
-		{
+		} else {
 			pPopup->EnableMenuItem(ID_EDITOBJ_NEWOBJECT,MF_ENABLED|MF_BYCOMMAND);
 
 			//pPopup->EnableMenuItem(ID_EDITOBJ_LIBRARY_NEWLIBRARY,MF_ENABLED|MF_BYCOMMAND);
@@ -1169,35 +1144,6 @@ void CScreenAnnotationsDlg::OnEditlayoutLayoutshortcuts()
 		VERIFY(6 == SetAdjustHotKeys());
 	}
 }
-// tod: this should be: bool AreWindowsEdited()
-// terminate early on first edited window
-
-int AreWindowsEdited()
-{
-	bool bisEdited = false;
-	int max = ListManager.displayArray.GetSize();
-	for (int i = max - 1; 0 <= i; --i) {
-		CTransparentWnd* itemWnd = ListManager.displayArray[i];
-		if (itemWnd) {
-			bisEdited = ((itemWnd->trackingOn) || (itemWnd->editTransOn) || (itemWnd->editImageOn));
-			if (bisEdited) {
-				return bisEdited ? 1 : 0;
-			}
-		}
-	}
-	max = ListManager.shapeArray.GetSize();
-	for (int i = max - 1; 0 <= i; --i) {
-		CTransparentWnd* itemWnd = ListManager.shapeArray[i];
-		if (itemWnd) {
-			bisEdited = ((itemWnd->trackingOn) || (itemWnd->editTransOn) || (itemWnd->editImageOn));
-			if (bisEdited) {
-				return bisEdited ? 1 : 0;
-			}
-		}
-	}
-	return bisEdited ? 1 : 0;
-}
-
 CLayoutList* CScreenAnnotationsDlg::LocateLayoutFromItem(int nItem)
 {
 	CLayoutList* returnLayout = NULL;
@@ -1273,86 +1219,6 @@ void CScreenAnnotationsDlg::InstantiateLayout()
 					}
 				}
 			}
-		}
-	}
-}
-
-void AdjustShapeName(CString& shapeName)
-{
-	CString reconstructNum("");
-	int numchar = shapeName.GetLength();
-	for (int i=numchar-1; i>=0; i--)
-	{
-		int txchar = shapeName[i];
-		if ((txchar >= '0') && (txchar <= '9'))
-			reconstructNum = reconstructNum + shapeName[i];
-		else
-			break;
-	}
-	reconstructNum.MakeReverse();
-	int xchar = reconstructNum.GetLength();
-	if (xchar <= 0)
-		iShapeNameInt = 1;
-	else {
-		for (int j=0; j<xchar; j++)
-		{
-			if (reconstructNum[j]=='0')
-				xchar--;
-			else
-				break;
-
-		}
-		if ((xchar>=0) && (xchar<=numchar))
-		{
-			int val;
-			sscanf_s(LPCTSTR(reconstructNum),"%d",&val);
-			if ((val>=0) && (val<100000)) {
-				iShapeNameInt = val + 1;
-				shapeName = shapeName.Left(numchar- xchar);
-			}
-			else
-				iShapeNameInt = 1;
-		}
-		else
-			iShapeNameInt = 1;
-	}
-}
-
-void AdjustLayoutName(CString& layoutName)
-{
-	CString reconstructNum("");
-	int numchar = layoutName.GetLength();
-	for (int i = numchar - 1; i >= 0; i--) {
-		int txchar = layoutName[i];
-		if ((txchar >= '0') && (txchar <= '9')) {
-			reconstructNum = reconstructNum + layoutName[i];
-		} else {
-			break;
-		}
-	}
-	reconstructNum.MakeReverse();
-	int xchar = reconstructNum.GetLength();
-	if (xchar <= 0) {
-		iLayoutNameInt = 1;
-	} else {
-		for (int j=0; j<xchar; j++) {
-			if (reconstructNum[j]=='0') {
-				xchar--;
-			} else {
-				break;
-			}
-		}
-		if ((xchar>=0) && (xchar<=numchar)) {
-			int val;
-			sscanf_s(LPCTSTR(reconstructNum),"%d",&val);
-			if ((val>=0) && (val<100000)) {
-				iLayoutNameInt = val + 1;
-				layoutName = layoutName.Left(numchar- xchar);
-			} else {
-				iLayoutNameInt = 1;
-			}
-		} else {
-			iLayoutNameInt = 1;
 		}
 	}
 }
@@ -2052,3 +1918,113 @@ void CScreenAnnotationsDlg::MoveItem(int direction)
 		}
 	}
 }
+
+// tod: this should be: bool AreWindowsEdited()
+// terminate early on first edited window
+int AreWindowsEdited()
+{
+	bool bisEdited = false;
+	int max = ListManager.displayArray.GetSize();
+	for (int i = max - 1; 0 <= i; --i) {
+		CTransparentWnd* itemWnd = ListManager.displayArray[i];
+		if (itemWnd) {
+			bisEdited = ((itemWnd->trackingOn) || (itemWnd->editTransOn) || (itemWnd->editImageOn));
+			if (bisEdited) {
+				return bisEdited ? 1 : 0;
+			}
+		}
+	}
+	max = ListManager.shapeArray.GetSize();
+	for (int i = max - 1; 0 <= i; --i) {
+		CTransparentWnd* itemWnd = ListManager.shapeArray[i];
+		if (itemWnd) {
+			bisEdited = ((itemWnd->trackingOn) || (itemWnd->editTransOn) || (itemWnd->editImageOn));
+			if (bisEdited) {
+				return bisEdited ? 1 : 0;
+			}
+		}
+	}
+	return bisEdited ? 1 : 0;
+}
+
+void AdjustShapeName(CString& shapeName)
+{
+	CString reconstructNum("");
+	int numchar = shapeName.GetLength();
+	for (int i = numchar - 1; 0 <= i; --i)
+	{
+		int txchar = shapeName[i];
+		if (('0' <= txchar) && (txchar <= '9')) {
+			reconstructNum = reconstructNum + shapeName[i];
+		} else {
+			break;
+		}
+	}
+	reconstructNum.MakeReverse();
+	int xchar = reconstructNum.GetLength();
+	if (xchar <= 0) {
+		iShapeNameInt = 1;
+	} else {
+		for (int j=0; j<xchar; j++)
+		{
+			if (reconstructNum[j]=='0') {
+				xchar--;
+			} else {
+				break;
+			}
+		}
+		if ((xchar>=0) && (xchar<=numchar))
+		{
+			int val;
+			sscanf_s(LPCTSTR(reconstructNum),"%d",&val);
+			if ((val>=0) && (val<100000)) {
+				iShapeNameInt = val + 1;
+				shapeName = shapeName.Left(numchar- xchar);
+			} else {
+				iShapeNameInt = 1;
+			}
+		} else {
+			iShapeNameInt = 1;
+		}
+	}
+}
+
+void AdjustLayoutName(CString& layoutName)
+{
+	CString reconstructNum("");
+	int numchar = layoutName.GetLength();
+	for (int i = numchar - 1; i >= 0; i--) {
+		int txchar = layoutName[i];
+		if ((txchar >= '0') && (txchar <= '9')) {
+			reconstructNum = reconstructNum + layoutName[i];
+		} else {
+			break;
+		}
+	}
+	reconstructNum.MakeReverse();
+	int xchar = reconstructNum.GetLength();
+	if (xchar <= 0) {
+		iLayoutNameInt = 1;
+	} else {
+		for (int j=0; j<xchar; j++) {
+			if (reconstructNum[j]=='0') {
+				xchar--;
+			} else {
+				break;
+			}
+		}
+		if ((xchar>=0) && (xchar<=numchar)) {
+			int val;
+			sscanf_s(LPCTSTR(reconstructNum),"%d",&val);
+			if ((val>=0) && (val<100000)) {
+				iLayoutNameInt = val + 1;
+				layoutName = layoutName.Left(numchar- xchar);
+			} else {
+				iLayoutNameInt = 1;
+			}
+		} else {
+			iLayoutNameInt = 1;
+		}
+	}
+}
+
