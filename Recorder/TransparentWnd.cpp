@@ -39,19 +39,18 @@ extern CScreenAnnotationsDlg sadlg;
 //extern CString specifieddir;
 
 extern HANDLE Bitmap2Dib(HBITMAP, UINT);
-
 extern int AreWindowsEdited();
-HANDLE AllocMakeDib( int reduced_width, int reduced_height, UINT iBits );
+
 
 long lCurrentWndID = 0;
-
-//important: this window does not create or delete the m_hbitmap passed to it
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
+//important: this window does not create or delete the m_hbitmap passed to it
 
 //********************************************************************************
 //* Constructor
@@ -868,7 +867,7 @@ HBITMAP CTransparentWnd::DrawResampleRGB(CDC* /*thisDC*/, CRect* /*caprect*/,int
 
 //need to unlock to use it and then
 //use GlobalFreePtr to free it
-HANDLE AllocMakeDib( int reduced_width, int reduced_height, UINT iBits )
+HANDLE CTransparentWnd::AllocMakeDib( int reduced_width, int reduced_height, UINT iBits )
 {
 	// DWORD align the width of the DIB
 	// Figure out the size of the colour table

@@ -193,7 +193,7 @@ BEGIN
     END
     POPUP "&Options"
     BEGIN
-        MENUITEM "&Video Options...",           ID_FILE_VIDEOOPTIONS
+        MENUITEM "&Video Options...",           ID_OPTIONS_VIDEOOPTIONS
         MENUITEM "&Cursor Options...",          ID_OPTIONS_CURSOROPTIONS
         POPUP "&Audio Options"
         BEGIN
@@ -2174,11 +2174,17 @@ BEGIN
     ID_REGION_PANREGION     "Capture a fixed size region"
     ID_RECORD               "Record video from the screen"
     ID_STOP                 "Stop recording video from screen"
-    ID_FILE_VIDEOOPTIONS    "Set video options"
     ID_OPTIONS_CURSOROPTIONS "Set cursor effects and options"
     ID_OPTIONS_AUTOPAN      "Make capture area follow cursor"
     ID_OPTIONS_ATUOPANSPEED "Set autopan speed"
     ID_REGION_FULLSCREEN    "Capture the entire desktop"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_SCREENS_ALLSCREENS   "Capture all screens"
+    ID_SCREENS_CHOOSESCREEN "Choose which screen to capture"
+    ID_OPTIONS_VIDEOOPTIONS "Set video options"
 END
 
 STRINGTABLE 
@@ -2478,12 +2484,6 @@ BEGIN
     ID_TOOLS_PLAYER         "Launch CamStudio Movie Player"
     ID_TOOLS_PLAYER2        "Launch CamStudio Movie Player 2.0"
     ID_REGION_ALLSCREENS    "Capture all monitors"
-END
-
-STRINGTABLE 
-BEGIN
-    ID_SCREENS_ALLSCREENS   "Capture all screens"
-    ID_SCREENS_CHOOSESCREEN "Choose which screen to capture"
 END
 
 #endif    // English (U.S.) resources
