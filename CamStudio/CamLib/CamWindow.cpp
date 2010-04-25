@@ -4,6 +4,7 @@
 #include "CamWindow.h"
 
 // TODO: should be in mainframe class
+#pragma message("SetTitleBar depreciated; use MainFrame class")
 void SetTitleBar(CString title)
 {
 	CWinApp* app = AfxGetApp();
@@ -19,6 +20,7 @@ void SetTitleBar(CString title)
 // FrameWindow()
 // Highlight the window frame
 /////////////////////////////////////////////////////////////////////////////
+#pragma message("FrameWindow obsolete")
 RECT FrameWindow(HWND hWnd, int maxxScreen, int maxyScreen, RECT rcClip)
 {
 	RECT rectWin;
