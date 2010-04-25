@@ -81,7 +81,7 @@ private:
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
 // general error handler
-void OnError(LPTSTR lpszFunction);
+void OnError(LPCSTR lpszFunction);
 extern void ErrMsg(char format[], ...);
 extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val);

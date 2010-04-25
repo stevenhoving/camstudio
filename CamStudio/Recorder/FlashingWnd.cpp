@@ -23,11 +23,6 @@ const int SIDELEN2			= 24;
 
 }	// namespace annonymous
 
-CRect newRect;
-bool bNewRegionUsed = false;
-bool bReadingRegion = false;
-bool bWritingRegion = false;
-
 //********************************************************************************
 //* Constructor
 //********************************************************************************
@@ -36,10 +31,9 @@ CFlashingWnd::CFlashingWnd()
 : m_clrBorderON(RGB(255, 255, 180))
 , m_clrBorderOFF(RGB(0, 255, 80))
 , m_hCursorMove(::LoadCursor(NULL, IDC_SIZEALL))
-, m_iType(0)
 , m_bStartDrag(false)
+, m_bNewRegionUsed(false)
 {
-	m_rgnOld.CreateRectRgn(0,0,0,0);
 }
 
 //********************************************************************************
@@ -117,10 +111,7 @@ void CFlashingWnd::SetUpRegion(const CRect& cRect, int type)
 		wndRgn.OffsetRgn(m_cRect.left - SMALLTHICKNESS, m_cRect.top - SMALLTHICKNESS);
 	}
 
-	// HRGN newregion = (HRGN) wndRgn.Detach();
-	m_rgnOld.CopyRgn(&wndRgn);	// save region
 	SetWindowRgn(wndRgn, TRUE);
-	//m_rgnOld.FromHandle((HRGN)(wndRgn.Detach()));	// BUG: SetWindowRgnloses region control
 }
 
 //********************************************************************************
@@ -129,33 +120,31 @@ void CFlashingWnd::SetUpRegion(const CRect& cRect, int type)
 
 void CFlashingWnd::PaintBorder(bool bInvert, bool bDraw)
 {
-	if ((m_cRect.right>m_cRect.left) && (m_cRect.bottom>m_cRect.top)) {
-		COLORREF clrColor = 
-			(bInvert)
-				? m_clrBorderOFF			
-				: (bDraw) 
-					? m_clrBorderON
-					: m_clrBorderOFF;
-
-		CWindowDC cWindowDC(CWnd::FromHandle(m_hWnd));
-		CBrush newbrush;
-		newbrush.CreateSolidBrush(clrColor);
-		CPen newpen;
-		newpen.CreatePen(PS_SOLID, 1, clrColor);
-		CBrush * pOldBrush = cWindowDC.SelectObject(&newbrush);
-		CPen * pOldPen = cWindowDC.SelectObject(&newpen);
-		
-		if (bInvert) {
-			cWindowDC.PatBlt(0, 0, maxxScreen, maxyScreen, PATINVERT);
-		} else {
-			CRect rectNew(m_cRect);
-			rectNew.InflateRect(THICKNESS, THICKNESS);
-			cWindowDC.Rectangle(&rectNew);
-		}
-
-		cWindowDC.SelectObject(pOldPen);
-		cWindowDC.SelectObject(pOldBrush);
+	if ((m_cRect.right <= m_cRect.left) || (m_cRect.bottom <= m_cRect.top)) {
+		return;
 	}
+	COLORREF clrColor = (bDraw & !bInvert)
+		? m_clrBorderON
+		: m_clrBorderOFF;
+
+	CWindowDC cWindowDC(CWnd::FromHandle(m_hWnd));
+	CBrush newbrush;
+	newbrush.CreateSolidBrush(clrColor);
+	CPen newpen;
+	newpen.CreatePen(PS_SOLID, 1, clrColor);
+	CBrush * pOldBrush = cWindowDC.SelectObject(&newbrush);
+	CPen * pOldPen = cWindowDC.SelectObject(&newpen);
+
+	if (bInvert) {
+		cWindowDC.PatBlt(0, 0, maxxScreen, maxyScreen, PATINVERT);
+	} else {
+		CRect rectNew(m_cRect);
+		rectNew.InflateRect(THICKNESS, THICKNESS);
+		cWindowDC.Rectangle(&rectNew);
+	}
+
+	cWindowDC.SelectObject(pOldPen);
+	cWindowDC.SelectObject(pOldBrush);
 }
 
 
@@ -171,7 +160,7 @@ void CFlashingWnd::OnLButtonDown(UINT /*nFlags*/, CPoint /*point*/)
 		return;
 	}
 
-	if ((0 == m_iType) && !m_bStartDrag) {
+	if (!m_bStartDrag) {
 		GetCursorPos(&m_ptStart);
 		m_bStartDrag = true;
 		SetCapture();
@@ -184,7 +173,7 @@ void CFlashingWnd::OnLButtonUp(UINT /*nFlags*/, CPoint /*point*/)
 		return;
 	}
 
-	if ((0 == m_iType) && m_bStartDrag) {
+	if (m_bStartDrag) {
 		CPoint pt;
 		GetCursorPos(&pt);
 		ReleaseCapture();
@@ -200,18 +189,7 @@ void CFlashingWnd::OnLButtonUp(UINT /*nFlags*/, CPoint /*point*/)
 void CFlashingWnd::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if (cRegionOpts.m_bSupportMouseDrag) {
-		//if (0 == m_iType) {
-		if ((0 == m_iType) && m_bStartDrag) {
-			//if (m_iStartDrag)
-			//{				
-			//	POINT currPoint;
-			//	GetCursorPos( &currPoint );
-			//	int diffx = currPoint.x-m_ptStart.x;
-			//	int diffy = currPoint.y-m_ptStart.y;
-			//	MoveRegion(diffx, diffy);
-			//	m_ptStart = currPoint;
-			//}
-
+		if (m_bStartDrag) {
 			if (m_hCursorMove) {
 				SetCursor(m_hCursorMove);
 			}
@@ -251,16 +229,12 @@ void CFlashingWnd::CheckRect(int diffx, int diffy)
 
 void CFlashingWnd::MoveRegion(int diffx, int diffy)
 {
-	if (m_iType)
-		return;
-
 	CheckRect(diffx, diffy);
 	CRgn wndRgn;
 	CRgn rgnTemp;
 	CRgn rgnTemp2;
 	CRgn rgnTemp3;
 	MakeFixedRegion(wndRgn, rgnTemp, rgnTemp2, rgnTemp3);
-	VERIFY(ERROR != m_rgnOld.CopyRgn(&wndRgn));
 	if (SetWindowRgn(wndRgn, TRUE)) {
 		UpdateRegionMove();
 	}
@@ -268,14 +242,7 @@ void CFlashingWnd::MoveRegion(int diffx, int diffy)
 
 void CFlashingWnd::UpdateRegionMove()
 {
-	// TODO: what is this???? primative read/write locking?
-	bWritingRegion = false;
-	while (bReadingRegion) {
-	}
-	bWritingRegion = true;
-	newRect = m_cRect;
-	bNewRegionUsed = true;
-	bWritingRegion = false;
+	m_bNewRegionUsed = true;
 }
 
 // Create the "4 corner" region surrounding cRect

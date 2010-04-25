@@ -15,8 +15,6 @@ static char THIS_FILE[] = __FILE__;
 #define DEFAULT_PERIOD 30
 int iRrefreshRate = DEFAULT_PERIOD;
 
-extern int AreWindowsEdited();
-
 /////////////////////////////////////////////////////////////////////////////
 // CVideoWnd
 CVideoWnd::CVideoWnd()

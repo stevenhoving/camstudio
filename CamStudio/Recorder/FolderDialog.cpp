@@ -14,19 +14,6 @@ static char THIS_FILE[]=__FILE__;
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-static int CALLBACK BrowseDirectoryCallback(
-	HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
-{
-	// Context was pointer to CFolderDialog instance
-	CFolderDialog* pFd = (CFolderDialog*)lpData;
-
-	// Let the class handle it
-	pFd->CallbackFunction(hWnd, uMsg, lParam);
-
-	// Always return 0 as per SHBrowseFolder spec
-	return 0;
-}
-
 CFolderDialog::CFolderDialog(LPCTSTR lpszFolderName, DWORD dwFlags, CWnd* pParentWnd)
 {
 	// Use the supplied initial folder if non-null.
@@ -37,19 +24,17 @@ CFolderDialog::CFolderDialog(LPCTSTR lpszFolderName, DWORD dwFlags, CWnd* pParen
 
 	memset(&m_bi, '\0', sizeof(BROWSEINFO));
 
-	if (pParentWnd == NULL)
-		m_bi.hwndOwner = 0;
-	else
-		m_bi.hwndOwner = pParentWnd->GetSafeHwnd();
+	m_bi.hwndOwner = pParentWnd
+		? pParentWnd->GetSafeHwnd()
+		: 0;
 
 	// Fill in the rest of the structure
-	m_bi.pidlRoot = NULL;
+	m_bi.pidlRoot = 0;
 	m_bi.pszDisplayName = m_szDisplayName;
 	m_bi.lpszTitle = _T("Current Selection");
 	m_bi.ulFlags = dwFlags | BIF_STATUSTEXT;
-	m_bi.lpfn = BrowseDirectoryCallback;
-	m_bi.lParam = (LPARAM)this;
-
+	m_bi.lpfn = BrowseDirectory;
+	m_bi.lParam = reinterpret_cast<LPARAM>(this);
 }
 
 CFolderDialog::~CFolderDialog()
@@ -57,7 +42,19 @@ CFolderDialog::~CFolderDialog()
 
 }
 
-void CFolderDialog::CallbackFunction(HWND hWnd, UINT uMsg, LPARAM lParam)
+int CFolderDialog::BrowseDirectory(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
+{
+	// Context was pointer to CFolderDialog instance
+	CFolderDialog* pFd = reinterpret_cast<CFolderDialog*>(lpData);
+
+	// Let the class handle it
+	pFd->BrowseDirectory(hWnd, uMsg, lParam);
+
+	// Always return 0 as per SHBrowseFolder spec
+	return 0;
+}
+
+void CFolderDialog::BrowseDirectory(HWND hWnd, UINT uMsg, LPARAM lParam)
 {
 	// Save the window handle. The Set* functions need it and they may
 	// be called by the virtual funtions.
@@ -70,7 +67,7 @@ void CFolderDialog::CallbackFunction(HWND hWnd, UINT uMsg, LPARAM lParam)
 		OnInitDialog();
 		break;
 	case BFFM_SELCHANGED:
-		OnSelChanged((ITEMIDLIST*) lParam);
+		OnSelChanged(reinterpret_cast<ITEMIDLIST*>(lParam));
 		break;
 	}
 }
@@ -88,19 +85,15 @@ int CFolderDialog::DoModal()
 	piid = ::SHBrowseForFolder(&m_bi);
 
 	// process the result
-	if (piid && ::SHGetPathFromIDList(piid, m_szPath))
-	{
+	if (piid && ::SHGetPathFromIDList(piid, m_szPath)) {
 		m_strFinalFolderName = m_szPath;
 		nReturn = IDOK;
-	}
-	else
-	{
+	} else {
 		nReturn = IDCANCEL;
 	}
 
 	// Release the ITEMIDLIST if we got one
-	if (piid)
-	{
+	if (piid) {
 		LPMALLOC lpMalloc;
 		VERIFY(::SHGetMalloc(&lpMalloc) == NOERROR);
 		lpMalloc->Free(piid);

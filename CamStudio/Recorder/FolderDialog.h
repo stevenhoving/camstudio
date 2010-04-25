@@ -9,18 +9,17 @@
 
 class CFolderDialog  
 {
-friend static int CALLBACK BrowseDirectoryCallback(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData);
-
 public:
 	CFolderDialog(	LPCTSTR lpszFolderName = NULL, DWORD dwFlags = NULL, CWnd* pParentWnd = NULL);
 	virtual ~CFolderDialog();
+	
 	virtual int DoModal();
 	CString GetPathName() const;
 
 protected:
 	virtual void OnInitDialog();
 	virtual void OnSelChanged(ITEMIDLIST* pIdl);
-	virtual void CallbackFunction(HWND hWnd, UINT uMsg,	LPARAM lParam);
+	virtual void BrowseDirectory(HWND hWnd, UINT uMsg,	LPARAM lParam);
 
 	void EnableOK(BOOL bEnable = TRUE);
 	void SetSelection(LPCTSTR pszSelection);
@@ -28,6 +27,9 @@ protected:
 	void SetStatusText(LPCTSTR pszStatusText);
 	CString ShortName(const CString& strName);
 
+private:
+	// Callback function
+	static int CALLBACK BrowseDirectory(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData);
 public:
 	BROWSEINFO m_bi;
 
