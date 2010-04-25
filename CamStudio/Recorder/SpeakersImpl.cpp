@@ -2,13 +2,14 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Recorder.h"
-#include "resource.h"
+
 #include "AutoSearchDialog.h"
 #include "soundfile.h"
 #include "Buffer.h"
 #include "AudioMixer.h"
 #include "MCI.h"
 #include "CStudioLib.h"
+#include "resource.h"
 
 #include <mmsystem.h>
 
@@ -269,7 +270,7 @@ BOOL initialSaveMMMode()
 		mxl.dwComponentType = MIXERLINE_COMPONENTTYPE_DST_WAVEIN;
 		MMRESULT mmResult = AudioMixer.GetLineInfo(&mxl, (MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_COMPONENTTYPE));
 		if (MMSYSERR_NOERROR != mmResult) {
-			OnError("initialSaveMMMode: mixerGetLineInfo");
+			::OnError("initialSaveMMMode: mixerGetLineInfo");
 			return bResult;
 		}
 
