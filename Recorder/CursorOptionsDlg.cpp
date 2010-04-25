@@ -394,7 +394,7 @@ void CCursorOptionsDlg::OnBnClickedFileCursor()
 		m_pIconFileDlg = new CFileDialog(TRUE,"*.ico;*.cur","*.ico;*.cur",NULL,filt,this);
 		if (!m_pIconFileDlg)
 		{
-			OnError(_T("CCursorOptionsDlg::OnFilecursor"));
+			::OnError(_T("CCursorOptionsDlg::OnFilecursor"));
 			return;
 		}
 	}
