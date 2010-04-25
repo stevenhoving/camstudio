@@ -5,7 +5,6 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "LayoutList.h"
-//#include "ListManager.h"
 #include "ScreenAnnotations.h"
 
 #ifdef _DEBUG

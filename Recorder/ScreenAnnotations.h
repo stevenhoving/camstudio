@@ -121,6 +121,8 @@ private:
 	bool m_bEditingLabelOn;
 	HCURSOR m_hCursorDrag;
 	HCURSOR m_hCursorArrow;
+	CListCtrl m_ctrlList;
+	CTabCtrl m_ctrlTab;
 
 	CTransparentWnd* LocateWndFromItem(int nItem);
 	CTransparentWnd* LocateWndFromShapeList();
@@ -139,14 +141,13 @@ private:
 	BOOL OpenUsingRegisteredClass (CString);
 
 	void MoveItem(int direction);
-	CListCtrl m_ctrlList;
-	CTabCtrl m_ctrlTab;
+	void AdjustLayoutName(CString& layoutName);
 };
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
-extern CListManager ListManager;
+extern bool AreWindowsEdited();
 
 #endif // !defined(AFX_SCREENANNOTATIONS_H__BD963A1F_33E6_424C_AEC5_4A3A78700C29__INCLUDED_)
 

@@ -94,7 +94,6 @@ extern BOOL onLoadSettings(int iRecordAudio);
 /////////////////////////////////////////////////////////////////////////////
 // external variables
 /////////////////////////////////////////////////////////////////////////////
-extern CListManager ListManager;
 extern int iRrefreshRate;
 extern CString shapeName;
 extern CString strLayoutName;
@@ -131,7 +130,7 @@ HBITMAP hLogoBM = NULL;
 //Misc Vars
 bool bAlreadyMCIPause = false;
 bool bRecordState = false;
-int recordpaused = 0;
+bool bRecordPaused = false;
 UINT interruptkey = 0;
 DWORD dwInitialTime = 0;
 bool bInitCapture = false;
@@ -658,8 +657,6 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CRecorderView::OnDestroy()
 {
-	CView::OnDestroy();
-
 	DecideSaveSettings();
 
 	UnSetHotKeys(hWndGlobal);
@@ -705,6 +702,8 @@ void CRecorderView::OnDestroy()
 	ListManager.FreeDisplayArray();
 	ListManager.FreeShapeArray();
 	ListManager.FreeLayoutArray();
+
+	CView::OnDestroy();
 }
 
 LRESULT CRecorderView::OnRecordStart(UINT /*wParam*/, LONG /*lParam*/)
@@ -747,9 +746,9 @@ LRESULT CRecorderView::OnRecordInterrupted (UINT wParam, LONG /*lParam*/)
 	UninstallMyHook(hWndGlobal);
 
 	//Ver 1.1
-	if (recordpaused) {
-		recordpaused = 0;
-		SetTitleBar("CamStudio");
+	if (bRecordPaused) {
+		CMainFrame * pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
+		pFrame->SetTitle(_T("CamStudio"));
 	}
 
 	bRecordState = false;
@@ -1069,18 +1068,19 @@ void CRecorderView::OnRecord()
 	pStatus->SetPaneText(0,"Press the Stop Button to stop recording");
 
 	//Version 1.1
-	if (recordpaused) {
-		recordpaused = 0;
+	if (bRecordPaused) {
+		bRecordPaused = false;
 		//ver 1.8
 		//if (iRecordAudio==2)
 		// mciRecordResume(tempaudiopath);
 
 		//Set Title Bar
-		SetTitleBar("CamStudio");
+		CMainFrame * pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
+		pFrame->SetTitle(_T("CamStudio"));
 
 		return;
 	}
-	recordpaused = 0;
+	bRecordPaused = false;
 
 	nActualFrame = 0;
 	nCurrFrame = 0;
@@ -1096,7 +1096,7 @@ void CRecorderView::OnRecord()
 			rc.left = cRegionOpts.m_iCaptureLeft;
 			rc.right = cRegionOpts.m_iCaptureLeft + cRegionOpts.m_iCaptureWidth - 1;
 			rc.bottom = cRegionOpts.m_iCaptureTop + cRegionOpts.m_iCaptureHeight - 1;
-//TODOMON 0s are no good anymore .. compare to minx / miny 
+			// TODOMON 0s are no good anymore .. compare to minx / miny 
 			if (rc.top < 0)
 				rc.top = 0;
 			if (rc.left < 0)
@@ -1159,11 +1159,12 @@ void CRecorderView::OnStop()
 		return;
 	}
 
-	if (recordpaused) {
-		recordpaused = 0;
+	if (bRecordPaused) {
+		bRecordPaused = false;
 
 		//Set Title Bar
-		SetTitleBar(_T("CamStudio"));
+		CMainFrame * pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
+		pFrame->SetTitle(_T("CamStudio"));
 	}
 
 	OnRecordInterrupted (0, 0);
@@ -1425,10 +1426,10 @@ void CRecorderView::OnHelpHelp()
 void CRecorderView::OnPause()
 {
 	//return if not current recording or already in paused state
-	if (!bRecordState || (recordpaused==1))
+	if (!bRecordState || bRecordPaused)
 		return;
 
-	recordpaused=1;
+	bRecordPaused = true;
 
 	//ver 1.8
 	//if (iRecordAudio==2)
@@ -1438,14 +1439,15 @@ void CRecorderView::OnPause()
 	pStatus->SetPaneText(0,"Recording Paused");
 
 	//Set Title Bar
-	SetTitleBar("Paused");
+	CMainFrame * pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
+	pFrame->SetTitle(_T("Paused"));
 }
 
 void CRecorderView::OnUpdatePause(CCmdUI* pCmdUI)
 {
 	//Version 1.1
-	//pCmdUI->Enable(bRecordState && (!recordpaused));
-	pCmdUI->Enable(!recordpaused);
+	//pCmdUI->Enable(bRecordState && (!bRecordPaused));
+	pCmdUI->Enable(!bRecordPaused);
 }
 
 void CRecorderView::OnUpdateStop(CCmdUI* /*pCmdUI*/)
@@ -1457,7 +1459,7 @@ void CRecorderView::OnUpdateStop(CCmdUI* /*pCmdUI*/)
 void CRecorderView::OnUpdateRecord(CCmdUI* pCmdUI)
 {
 	//Version 1.1
-	pCmdUI->Enable(!bRecordState || recordpaused);
+	pCmdUI->Enable(!bRecordState || bRecordPaused);
 }
 
 void CRecorderView::OnHelpFaq()
@@ -1481,7 +1483,7 @@ LRESULT CRecorderView::OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2)
 
 	if (bRecordState) {
 		CBuffer buf(pHdr->lpData, pHdr->dwBufferLength);
-		if (!recordpaused) {
+		if (!bRecordPaused) {
 			//write only if not paused
 			//Write Data to file
 			DataFromSoundIn(&buf);
@@ -2680,6 +2682,7 @@ void CRecorderView::OnSetFocus(CWnd* pOldWnd)
 // OnHotKey WM_HOTKEY message handler
 // The WM_HOTKEY message is posted when the user presses a hot key registered
 // by the RegisterHotKey function.
+//
 // wParam - Specifies the identifier of the hot key that generated the message. 
 // lParam - The low-order word specifies the keys that were to be pressed in
 // combination with the key specified by the high-order word to generate the
@@ -2694,18 +2697,19 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 {
 	switch (wParam)
 	{
-	case 0:
-		if (!bRecordState) {
-			if (bAllowNewRecordStartKey) {
-				//prevent the case which CamStudio presents more than one region for the user to select
-				bAllowNewRecordStartKey = FALSE;
-				OnRecord();
-			}
-		} else if (bRecordState) {
+	case 0:	// start recording
+		if (bRecordState) {
 			// pause if currently recording
-			if (recordpaused == 0) {
+			if (!bRecordPaused) {
 				OnPause();
 			} else {
+				OnRecord();
+			}
+		} else {
+			if (bAllowNewRecordStartKey) {
+				// prevent the case which CamStudio presents more than one region
+				// for the user to select
+				bAllowNewRecordStartKey = FALSE;
 				OnRecord();
 			}
 		}
@@ -2737,7 +2741,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 			// Get Current selected
 			int cursel = sadlg.GetLayoutListSelection();
 			iCurrentLayout = (cursel < 0) ? 0 : cursel + 1;
-			if (iCurrentLayout >= max)
+			if (max <= iCurrentLayout)
 				iCurrentLayout = 0;
 
 			sadlg.InstantiateLayout(iCurrentLayout,1);
@@ -3627,25 +3631,19 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 		} else {
 			//ver 1.8
 			//moving region
-			bReadingRegion = false;
-			while (bWritingRegion)
-			{
-			}
-			bReadingRegion = true;
 
-			if (bNewRegionUsed) {
-				TRACE(_T("rectFrame != newRect %s\n"), (rectFrame != newRect) ? _T("TRUE") : _T("FALSE"));
-				TRACE(_T("rectFrame.Width: %d\nNewRect.Width: %d\n"), rectFrame.Width(), newRect.Width());
-				//rectFrame.left = newRect.left;
-				//rectFrame.top = newRect.top;
-				rectFrame = newRect;
+			if (m_FlashingWnd.NewRegionUsed()) {
+				//TRACE(_T("rectFrame != newRect %s\n"), (rectFrame != newRect) ? _T("TRUE") : _T("FALSE"));
+				//TRACE(_T("rectFrame.Width: %d\nNewRect.Width: %d\n"), rectFrame.Width(), newRect.Width());
+				TRACE(_T("rectFrame != newRect %s\n"), (rectFrame != m_FlashingWnd.Rect()) ? _T("TRUE") : _T("FALSE"));
+				TRACE(_T("rectFrame.Width: %d\nNewRect.Width: %d\n"), rectFrame.Width(), m_FlashingWnd.Rect().Width());
+				//rectFrame = newRect;
+				rectFrame = m_FlashingWnd.Rect();
 				rectFrame.bottom++;
 				rectFrame.right++;
-				bNewRegionUsed = false;
+				m_FlashingWnd.NewRegionUsed(false);
 				//width and height unchanged
 			}
-
-			bReadingRegion = false;
 
 			//rectFrame = CRect(left, top, left + width, top + height);
 			alpbi = captureScreenFrame(rectFrame, false) ? m_cCamera.Image() : 0;
@@ -3715,7 +3713,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 			// ...the avistreamwrite will cause an error
 			LONG lSampWritten = 0L;
 			LONG lBytesWritten = 0L; 
-			hr = AVIStreamWrite(psCompressed, frametime, 1, (LPBYTE) alpbi + alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD), alpbi->biSizeImage, 0, &lSampWritten, &lBytesWritten);
+			hr = ::AVIStreamWrite(psCompressed, frametime, 1, (LPBYTE) alpbi + alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD), alpbi->biSizeImage, 0, &lSampWritten, &lBytesWritten);
 			//}
 			if (hr != AVIERR_OK) {
 				TRACE("CRecorderView::RecordVideo: AVIStreamWrite error\n");
@@ -3752,7 +3750,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 		DWORD timestartpause;
 		DWORD timeendpause;
 		DWORD timedurationpause;
-		while (recordpaused) {
+		while (bRecordPaused) {
 			if (!haveslept) {
 				timestartpause = timeGetTime();
 			}
@@ -3761,11 +3759,12 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 			pausecounter++;
 			if ((pausecounter % 8) == 0) {
 				//if after every 400 milliseconds (8 * 50)
+				CMainFrame * pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
 				if (pauseindicator) {
-					SetTitleBar("");
+					pFrame->SetTitle(_T(""));
 					pauseindicator = 0;
 				} else {
-					SetTitleBar("Paused");
+					pFrame->SetTitle(_T("Paused"));
 					pauseindicator = 1;
 				}
 			}
@@ -4102,22 +4101,18 @@ int InitDrawShiftWindow()
 
 bool UnSetHotKeys(HWND hWnd)
 {
-	if (!::UnregisterHotKey(hWnd, 0)) {
-		::OnError(_T("UnSetHotKeys"));
+	bool bResult = false;
+	for (int iID = 0; iID < 6; ++iID) {
+		if (iID == 1)
+			continue;
+		bResult = (TRUE == ::UnregisterHotKey(hWnd, iID));
+		if (!bResult) {
+			//::OnError(_T("UnSetHotKeys"));
+			//std::string strMsg("UnSetHotKeys ");
+			::OnError(std::string("UnSetHotKeys").c_str());
+		}
 	}
-	if (!::UnregisterHotKey(hWnd, 2)) {
-		::OnError(_T("UnSetHotKeys"));
-	}
-	if (!::UnregisterHotKey(hWnd, 3)) {
-		::OnError(_T("UnSetHotKeys"));
-	}
-	if (!::UnregisterHotKey(hWnd, 4)) {
-		::OnError(_T("UnSetHotKeys"));
-	}
-	if (!::UnregisterHotKey(hWnd, 5)) {
-		::OnError(_T("UnSetHotKeys"));
-	}
-	return 0;
+	return bResult;
 }
 
 int SetHotKeys(int succ[])

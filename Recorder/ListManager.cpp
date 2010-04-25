@@ -12,6 +12,7 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
+CListManager ListManager;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -359,7 +360,6 @@ CLayoutList * CListManager::CloneLayout(CLayoutList * itemLayout)
 			newLayout = new CLayoutList;
 			if (newLayout) {
 				newLayout->layoutArrayPtr = cloneArray;
-				//ListManager.AddLayoutArray(newLayout);
 				newLayout->layoutName = itemLayout->layoutName;
 			}
 		}
