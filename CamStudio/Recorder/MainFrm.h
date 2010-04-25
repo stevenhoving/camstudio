@@ -55,8 +55,8 @@ protected:
 	afx_msg void OnViewCompactview();
 	afx_msg void OnUpdateViewCompactview(CCmdUI* pCmdUI);
 	afx_msg void OnViewButtonsview();
-	afx_msg void OnViewNormalview();
 	afx_msg void OnUpdateViewButtonsview(CCmdUI* pCmdUI);
+	afx_msg void OnViewNormalview();
 	afx_msg void OnUpdateViewNormalview(CCmdUI* pCmdUI);
 	afx_msg void OnViewtype();
 	//}}AFX_MSG

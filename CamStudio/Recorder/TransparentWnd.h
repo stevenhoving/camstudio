@@ -18,7 +18,7 @@
 #pragma once
 #endif
 
-#pragma message("TransparentWnd included")
+//#pragma message("TransparentWnd included")
 
 #include "LayeredWindowHelperST.h"
 #include "Picture.h"
