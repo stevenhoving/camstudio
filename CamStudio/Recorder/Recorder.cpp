@@ -34,7 +34,7 @@ static BOOL bClassRegistered = FALSE;
 // Gets the last windows error and then resets the error; gets the string
 // associated with the error and displays a messagebox of the error
 /////////////////////////////////////////////////////////////////////////////
-void OnError(LPTSTR lpszFunction)
+void OnError(LPCSTR lpszFunction)
 {
 	// Retrieve the system error message for the last-error code
 	DWORD dwError = ::GetLastError();
@@ -252,7 +252,7 @@ CRecorderApp theApp;
 
 BOOL CRecorderApp::InitInstance()
 {
-	OnError("CRecorderApp::InitInstance");
+	::OnError("CRecorderApp::InitInstance");
 	AfxEnableControlContainer();
 
 	// Standard initialization
@@ -388,14 +388,14 @@ BOOL CRecorderApp::FirstInstance()
 	m_hAppMutex = ::CreateMutex(0, TRUE, CAMSTUDIO_MUTEX);
 	bPrevInstance = (0 != m_hAppMutex);
 	if (!bPrevInstance) {
-		OnError(_T("CRecorderApp::FirstInstance"));
+		::OnError(_T("CRecorderApp::FirstInstance"));
 		return bPrevInstance;	// unable to check mutext, assume previous instance and quit.
 	}
 	// check last error to see if mutex existed
 	bPrevInstance = (ERROR_ALREADY_EXISTS == ::GetLastError());
 	if (bPrevInstance) {
 		// previous instance exists
-		OnError(_T("CRecorderApp::FirstInstance fails"));
+		::OnError(_T("CRecorderApp::FirstInstance fails"));
 		// todo: activate running instance
 		return !bPrevInstance;
 	}

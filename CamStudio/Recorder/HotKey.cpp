@@ -15,8 +15,7 @@ CHotKey::CHotKey(int iID, UINT uModifier, UINT uVirtualKey)
 
 CHotKey::~CHotKey()
 {
-	if (m_bRegistered)
-	{
+	if (m_bRegistered) {
 		Unregister();
 	}
 }
@@ -24,16 +23,14 @@ CHotKey::~CHotKey()
 BOOL CHotKey::Register(HWND hWnd)
 {
 	BOOL bResult = m_bRegistered;	// already registered?
-	if (bResult)
-	{
+	if (bResult) {
 		return !bResult;	// fail
 	}
 	ASSERT(hWnd);
 	bResult = ::RegisterHotKey(hWnd, m_iID, m_uModifier, m_uVirtualKey);
 	m_bRegistered = bResult ? true : false; 
-	if (!m_bRegistered)
-	{
-		OnError(_T("CHotKey::Register"));
+	if (!m_bRegistered) {
+		::OnError(_T("CHotKey::Register"));
 	}
 	m_hWnd = m_bRegistered ? hWnd : 0;
 
@@ -43,16 +40,14 @@ BOOL CHotKey::Register(HWND hWnd)
 BOOL CHotKey::Unregister()
 {
 	BOOL bResult = m_bRegistered;	// already registered?
-	if (!bResult)
-	{
+	if (!bResult) {
 		return bResult;	// fail
 	}
 	ASSERT(m_hWnd);
 	bResult = ::UnregisterHotKey(m_hWnd, m_iID);
 	m_bRegistered = bResult ? false : true; 
-	if (m_bRegistered)
-	{
-		OnError(_T("CHotKey::Unregister"));
+	if (m_bRegistered) {
+		::OnError(_T("CHotKey::Unregister"));
 	}
 	m_hWnd = m_bRegistered ? m_hWnd : 0;
 
@@ -61,8 +56,7 @@ BOOL CHotKey::Unregister()
 
 int CHotKey::ID(int iID)
 {
-	if (m_bRegistered)
-	{
+	if (m_bRegistered) {
 		HWND hWndOld = m_hWnd;
 		Unregister();
 		m_iID = iID;
@@ -74,8 +68,7 @@ int CHotKey::ID(int iID)
 
 UINT CHotKey::SetModifier(UINT uModifier)
 {
-	if (m_bRegistered)
-	{
+	if (m_bRegistered) {
 		HWND hWndOld = m_hWnd;
 		Unregister();
 		m_uModifier |= uModifier;
@@ -87,8 +80,7 @@ UINT CHotKey::SetModifier(UINT uModifier)
 
 UINT CHotKey::ClearModifier(UINT uModifier)
 {
-	if (m_bRegistered)
-	{
+	if (m_bRegistered) {
 		HWND hWndOld = m_hWnd;
 		Unregister();
 		m_uModifier ^= ~uModifier;
@@ -100,8 +92,7 @@ UINT CHotKey::ClearModifier(UINT uModifier)
 
 UINT CHotKey::VirtualKey(UINT uVirtualKey)
 {
-	if (m_bRegistered)
-	{
+	if (m_bRegistered) {
 		HWND hWndOld = m_hWnd;
 		Unregister();
 		m_uVirtualKey = uVirtualKey;
@@ -129,8 +120,7 @@ void CHotKeyList::AddKey(CHotKey & HotKey)
 bool CHotKeyList::Register(HWND hWnd)
 {
 	bool bResult = (0 != hWnd);
-	if (!bResult)
-	{
+	if (!bResult) {
 		return bResult;
 	}
 

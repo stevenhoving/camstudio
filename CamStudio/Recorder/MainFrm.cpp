@@ -3,7 +3,6 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Recorder.h"
-
 #include "MainFrm.h"
 
 #ifdef _DEBUG
@@ -44,8 +43,7 @@ END_MESSAGE_MAP()
 
 static UINT indicators[] =
 {
-	ID_SEPARATOR, // status line indicator
-
+	ID_SEPARATOR	// status line indicator
 };
 
 /////////////////////////////////////////////////////////////////////////////

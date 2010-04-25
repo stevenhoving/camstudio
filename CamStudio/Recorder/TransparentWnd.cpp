@@ -28,19 +28,13 @@
 #include "ListManager.h"
 #include "ScreenAnnotations.h"
 #include "ResizeDialog.h"
-
 #include "CStudioLib.h"
 
 #include <windowsx.h>
 
-extern CListManager ListManager;
 extern CScreenAnnotationsDlg sadlg;
 
-//extern CString specifieddir;
-
 extern HANDLE Bitmap2Dib(HBITMAP, UINT);
-extern int AreWindowsEdited();
-
 
 long lCurrentWndID = 0;
 
@@ -499,10 +493,7 @@ void CTransparentWnd::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	//not very stable when editing is on
 	EnsureOnTopList(this);
 
-	int isEdited = AreWindowsEdited();
-
-	CPoint local = point;
-	ScreenToClient(&local);
+	bool bIsEdited = AreWindowsEdited();
 
 	if (menuLoaded == 0) {
 		menu.LoadMenu(IDR_CONTEXTMENU);
@@ -511,7 +502,7 @@ void CTransparentWnd::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 	CMenu* pPopup = menu.GetSubMenu(0);
 	ASSERT(pPopup != NULL);
-	if (isEdited) {
+	if (bIsEdited) {
 		DisableContextMenu();
 	} else {
 		OnUpdateContextMenu();

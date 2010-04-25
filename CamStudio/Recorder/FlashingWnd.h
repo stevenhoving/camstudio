@@ -13,6 +13,7 @@ class CFlashingWnd : public CWnd
 {
 public:
 	CFlashingWnd();
+	virtual ~CFlashingWnd();
 
 	static const UINT WM_FLASH_WINDOW = (WM_APP + 200);	// wparm = invert; lparam = draw
 
@@ -23,7 +24,10 @@ public:
 	}
 
 	void SetUpRegion(const CRect& cRect, int type);
-
+	
+	CRect Rect() const				{return m_cRect;}
+	bool NewRegionUsed() const		{return m_bNewRegionUsed;}
+	bool NewRegionUsed(bool bUsed)	{return m_bNewRegionUsed = bUsed;}
 private:
 	void PaintBorder(bool bInvert, bool bDraw = true);
 	//void SetUpRect(int x, int y, int width, int height);
@@ -42,10 +46,6 @@ private:
 	//}}AFX_VIRTUAL
 
 // Implementation
-public:
-	virtual ~CFlashingWnd();
-
-protected:
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CFlashingWnd)
@@ -58,27 +58,18 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	COLORREF m_clrBorderON;
-	COLORREF m_clrBorderOFF;
-
-	CRect m_cRect;	
-	CRgn m_rgnOld;
-	HCURSOR m_hCursorMove;
-	CPoint m_ptStart;
-	//int m_iSettingRegion;	// unused
-	int m_iType;
-	bool m_bStartDrag;
+	COLORREF	m_clrBorderON;		// border ON color
+	COLORREF	m_clrBorderOFF;		// border OFF color
+	CRect		m_cRect;			// border region rectangle
+	HCURSOR		m_hCursorMove;
+	CPoint		m_ptStart;
+	bool		m_bStartDrag;
+	bool		m_bNewRegionUsed;
 };
 
 /////////////////////////////////////////////////////////////////////////////
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-//Region Movement
-extern CRect newRect;
-extern bool bNewRegionUsed;
-extern bool bReadingRegion;
-extern bool bWritingRegion;
 
 #endif
