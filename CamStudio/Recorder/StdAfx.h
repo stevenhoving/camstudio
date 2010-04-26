@@ -35,15 +35,10 @@
 #include <afxcmn.h>			// MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
+#include <vfw.h>
+
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
-
-//#include <stdio.h>
-//#include <memory.h>
-//#include <setjmp.h>
-//#include <mmsystem.h>
-#include <vfw.h>
-//#include <windowsx.h>
 
 #endif // !defined(AFX_STDAFX_H__EB5B2A10_2312_4984_8371_6DE5181F903F__INCLUDED_)
 

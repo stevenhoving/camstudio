@@ -12,6 +12,7 @@
 	#error include 'stdafx.h' before including this file for PCH
 #endif
 
+#include "CamError.h"
 #include "CamStudioCommandLineInfo.h"
 #include "Profile.h"
 #include "resource.h"       // main symbols
@@ -79,12 +80,5 @@ private:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
-
-// general error handler
-void OnError(LPCSTR lpszFunction);
-extern void ErrMsg(char format[], ...);
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val);
-extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val1,long val2);
 
 #endif // !defined(AFX_VSCAP_H__CAB648E2_684F_4FF1_B574_9714ACAC6D57__INCLUDED_)
