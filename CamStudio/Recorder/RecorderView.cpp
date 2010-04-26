@@ -280,7 +280,7 @@ int SetAdjustHotKeys()
 	CString keystr;
 	CString msgstr;
 	CString outstr;
-	if (succ[0]) {		
+	if (succ[0]) {
 		cHotKeyOpts.m_RecordStart = sHotKeyDef(VK_UNDEFINED);
 		keystr.LoadString(IDS_STRINGSPRKEY);
 		msgstr.LoadString(IDS_STRING_UNSSC);
@@ -379,7 +379,7 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_COMMAND(ID_OPTIONS_AUTOPAN, OnOptionsAutopan)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_AUTOPAN, OnUpdateOptionsAutopan)
 	ON_COMMAND(ID_OPTIONS_VIDEOOPTIONS, OnFileVideooptions)
-	ON_COMMAND(ID_OPTIONS_CURSOROPTIONS, OnOptionsCursoroptions)	
+	ON_COMMAND(ID_OPTIONS_CURSOROPTIONS, OnOptionsCursoroptions)
 	ON_COMMAND(ID_OPTIONS_ATUOPANSPEED, OnOptionsAtuopanspeed)
 	ON_COMMAND(ID_REGION_FULLSCREEN, OnRegionFullscreen)
 	ON_UPDATE_COMMAND_UI(ID_REGION_FULLSCREEN, OnUpdateRegionFullscreen)
@@ -715,7 +715,7 @@ LRESULT CRecorderView::OnRecordStart(UINT /*wParam*/, LONG /*lParam*/)
 	m_cCamera.Set(cCaptionOpts);
 	m_cCamera.Set(cTimestampOpts);
 	m_cCamera.Set(cWatermarkOpts);
-	m_cCamera.Set(CamCursor);	
+	m_cCamera.Set(CamCursor);
 
 	//ver 1.2
 	if (cProgramOpts.m_bMinimizeOnStart)
@@ -839,7 +839,7 @@ void CRecorderView::OnUpdateRegionAllScreens(CCmdUI* pCmdUI)
 {
 	if (::GetSystemMetrics(SM_CMONITORS) == 1)
 	{
-		pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_ALLSCREENS));	
+		pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_ALLSCREENS));
 		pCmdUI->m_pMenu->RemoveMenu(ID_SCREENS_SELECTSCREEN, MF_BYCOMMAND);
 		pCmdUI->m_pMenu->RemoveMenu(ID_SCREENS_ALLSCREENS, MF_BYCOMMAND);
 	}
@@ -1096,7 +1096,7 @@ void CRecorderView::OnRecord()
 			rc.left = cRegionOpts.m_iCaptureLeft;
 			rc.right = cRegionOpts.m_iCaptureLeft + cRegionOpts.m_iCaptureWidth - 1;
 			rc.bottom = cRegionOpts.m_iCaptureTop + cRegionOpts.m_iCaptureHeight - 1;
-			// TODOMON 0s are no good anymore .. compare to minx / miny 
+			// TODOMON 0s are no good anymore .. compare to minx / miny
 			if (rc.top < 0)
 				rc.top = 0;
 			if (rc.left < 0)
@@ -1145,7 +1145,7 @@ void CRecorderView::OnRecord()
 		m_basicMsg = new CBasicMessage();
 		m_basicMsg->Create(CBasicMessage::IDD);
 		m_basicMsg->SetText(_T("Click on window to be captured."));
-		m_basicMsg->ShowWindow(SW_SHOW);	
+		m_basicMsg->ShowWindow(SW_SHOW);
 		//m_basicMsg.DoModal();
 		SetCapture();
 		break;
@@ -1232,7 +1232,7 @@ void CRecorderView::OnOptionsCursoroptions()
 {
 	CCursorOptionsDlg cod(CamCursor, this);
 	if (IDOK == cod.DoModal()) {
-		CamCursor = cod.GetOptions(); 
+		CamCursor = cod.GetOptions();
 	}
 }
 
@@ -2683,15 +2683,15 @@ void CRecorderView::OnSetFocus(CWnd* pOldWnd)
 // The WM_HOTKEY message is posted when the user presses a hot key registered
 // by the RegisterHotKey function.
 //
-// wParam - Specifies the identifier of the hot key that generated the message. 
+// wParam - Specifies the identifier of the hot key that generated the message.
 // lParam - The low-order word specifies the keys that were to be pressed in
 // combination with the key specified by the high-order word to generate the
 // WM_HOTKEY message. This word can be one or more of the following values.
 //	MOD_ALT - Either ALT key was held down.
 //	MOD_CONTROL - Either CTRL key was held down.
 //	MOD_SHIFT - Either SHIFT key was held down.
-//	MOD_WIN - Either WINDOWS key was held down. 
-// The high-order word specifies the virtual key code of the hot key. 
+//	MOD_WIN - Either WINDOWS key was held down.
+// The high-order word specifies the virtual key code of the hot key.
 /////////////////////////////////////////////////////////////////////////////
 LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 {
@@ -2798,7 +2798,6 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 
 	return 1;
 }
-
 
 void CRecorderView::OnUpdateOptionsAudiooptionsAudiovideosynchronization(CCmdUI *pCmdUI)
 {
@@ -2987,12 +2986,12 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
 		HMONITOR hMonitor = NULL;
 		MONITORINFO mi;
 
-		// get the nearest monitor to the mouse point 
+		// get the nearest monitor to the mouse point
 		hMonitor = MonitorFromPoint(ptMouse, MONITOR_DEFAULTTONEAREST);
 		mi.cbSize = sizeof(mi);
 		GetMonitorInfo(hMonitor, &mi);
 
-		//set the rectangle used for recording to the monitor's 
+		//set the rectangle used for recording to the monitor's
 		CopyRect(rcUse, &mi.rcMonitor);
 
 		//close the window to show user selection was successful
@@ -3002,7 +3001,7 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
 
 		//tell windows we don't need capture change events anymore
 		ReleaseCapture();
-		
+
 		//post message to start recording
 		::PostMessage (hWndGlobal,WM_USER_RECORDSTART,0,(LPARAM) 0);
 	}
@@ -3358,7 +3357,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 				CRect rectNewFrame(newleft, newtop, newleft + newwidth, newtop + newheight);
 				alpbi = captureScreenFrame(rectNewFrame) ? m_cCamera.Image() : 0;
 			}
-			
+
 			lResult = ::ICCompressQuery(hic, alpbi, NULL);
 			ASSERT(ICERR_OK == lResult);
 			ICClose(hic);
@@ -3370,7 +3369,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 				// do nothing here
 				TRACE("CRecorderView::RecordVideo : no problem with the current dimensions\n");
 			} else if (align <= 8) {
-				
+
 				// Compressor can work if the dimensions is adjusted slightly
 				rectFrame = CRect(newleft, newtop, newleft + newwidth, newtop + newheight);
 				GetDocument()->FrameWidth(rectFrame.Width());
@@ -3622,7 +3621,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 			rectPanCurrent.right = rectPanCurrent.left + rectFrame.Width() - 1;
 			rectPanCurrent.bottom =  rectPanCurrent.top + rectFrame.Height() - 1;
 
-			CRect rectPanFrame(rectPanCurrent);			
+			CRect rectPanFrame(rectPanCurrent);
 			rectPanFrame.right++;
 			rectPanFrame.bottom++;
 			alpbi = captureScreenFrame(rectPanFrame, false)
@@ -3712,7 +3711,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 			// if frametime repeats (frametime == oldframetime)
 			// ...the avistreamwrite will cause an error
 			LONG lSampWritten = 0L;
-			LONG lBytesWritten = 0L; 
+			LONG lBytesWritten = 0L;
 			hr = ::AVIStreamWrite(psCompressed, frametime, 1, (LPBYTE) alpbi + alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD), alpbi->biSizeImage, 0, &lSampWritten, &lBytesWritten);
 			//}
 			if (hr != AVIERR_OK) {
@@ -3722,7 +3721,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 			}
 
 			//nTotalBytesWrittenSoFar += alpbi->biSizeImage;
-			nTotalBytesWrittenSoFar += lBytesWritten;			
+			nTotalBytesWrittenSoFar += lBytesWritten;
 			nActualFrame++;
 			nCurrFrame = frametime;
 			fRate = ((float) nCurrFrame)/fTimeLength;
@@ -3911,7 +3910,7 @@ void CRecorderView::SaveProducerCommand()
 	CString strValue;
 	strValue.Format(_T("%d"), cProducerOpts.m_bLaunchPropPrompt);
 	::WritePrivateProfileString(strSection, strKey, strValue, strProfile);
-	
+
 	strKey = _T("bLaunchHTMLPlayer");
 	strValue.Format(_T("%d"), cProducerOpts.m_bLaunchHTMLPlayer);
 	::WritePrivateProfileString(strSection, strKey, strValue, strProfile);

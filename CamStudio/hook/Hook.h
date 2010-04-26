@@ -18,12 +18,10 @@ extern "C" {
 }
 #endif // __cplusplus
 
-
 #define WM_USER_RECORDINTERRUPTED_MSG	_T("WM_USER_RECORDINTERRUPTED_MSG")
 #define WM_USER_SAVECURSOR_MSG			_T("WM_USER_SAVECURSOR_MSG")
 #define WM_USER_GENERIC_MSG				_T("WM_USER_GENERIC_MSG")
 #define WM_USER_RECORDSTART_MSG			_T("WM_USER_RECORDSTART_MSG")
-
 
 // These declarations are because the latest SDK isn't installed...
 #ifndef GET_X_LPARAM

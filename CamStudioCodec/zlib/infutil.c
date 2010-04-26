@@ -18,7 +18,6 @@ uInt inflate_mask[17] = {
     0x01ff, 0x03ff, 0x07ff, 0x0fff, 0x1fff, 0x3fff, 0x7fff, 0xffff
 };
 
-
 /* copy as much as possible from the sliding window to the output area */
 int inflate_flush(s, z, r)
 inflate_blocks_statef *s;

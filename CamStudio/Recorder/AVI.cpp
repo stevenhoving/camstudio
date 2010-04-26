@@ -391,7 +391,6 @@ CamAVIFile::~CamAVIFile()
 {
 }
 
-
 // set compressor options according to the stream
 bool CamAVIFile::CompressionOpts(AVICOMPRESSOPTIONS& rOptions, CAVIStream& raviStream)
 {
@@ -454,7 +453,7 @@ bool CamAVIFile::CompressionOpts(AVICOMPRESSOPTIONS& rOptions, CAVIStream& raviS
 		rOptions.cbFormat = lSize;
 		if (rOptions.cbFormat) {
 			//rOptions.lpFormat = new char[rOptions.cbFormat];
-			rOptions.lpFormat = GlobalAllocPtr(GHND, rOptions.cbFormat);			
+			rOptions.lpFormat = GlobalAllocPtr(GHND, rOptions.cbFormat);
 			// Use existing format as compress format
 			if (rOptions.lpFormat) {
 				raviStream.ReadFormat(raviStream.Start(), rOptions.lpFormat, &lSize);
@@ -574,7 +573,7 @@ bool CamAVIFile::FadeOut(const CString& strAVIIn, const CString& strAVIOut)
 	if (!bResult) {
 		return bResult;
 	}
-	
+
 	// create the AVI output file
 	CAVIFile aviOutput;
 	hResult = aviOutput.Open(strAVIOut, OF_WRITE | OF_CREATE, 0);
@@ -617,7 +616,7 @@ bool CamAVIFile::FadeOut(const CString& strAVIIn, const CString& strAVIOut)
 	saviCompressorOpts.cbFormat				= m_sVideoOpts.StateSize();
 	saviCompressorOpts.dwInterleaveEvery	= 0;	// for non-video streams only
 
-	// create compressed output stream from output stream 
+	// create compressed output stream from output stream
 	CAVIStream aviCompressedStreamOut;
 	hResult = aviStreamOut.MakeCompressedStream(aviCompressedStreamOut, &saviCompressorOpts, 0);
 	CAVI::OnError(hResult);

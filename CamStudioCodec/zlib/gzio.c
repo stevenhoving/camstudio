@@ -52,7 +52,6 @@ typedef struct gz_stream {
     long     startpos; /* start of compressed data in file (header skipped) */
 } gz_stream;
 
-
 local gzFile gz_open      OF((const char *path, const char *mode, int  fd));
 local int do_flush        OF((gzFile file, int flush));
 local int    get_byte     OF((gz_stream *s));
@@ -441,7 +440,6 @@ int ZEXPORT gzread (file, buf, len)
     return (int)(len - s->stream.avail_out);
 }
 
-
 /* ===========================================================================
       Reads one byte from the compressed file. gzgetc returns this byte
    or -1 in case of end of file or error.
@@ -453,7 +451,6 @@ int ZEXPORT gzgetc(file)
 
     return gzread(file, &c, 1) == 1 ? c : -1;
 }
-
 
 /* ===========================================================================
       Reads bytes from the compressed file until len-1 characters are
@@ -476,7 +473,6 @@ char * ZEXPORT gzgets(file, buf, len)
     *buf = '\0';
     return b == buf && len > 0 ? Z_NULL : b;
 }
-
 
 #ifndef NO_DEFLATE
 /* ===========================================================================
@@ -579,7 +575,6 @@ int ZEXPORT gzputc(file, c)
     return gzwrite(file, &cc, 1) == 1 ? (int)cc : -1;
 }
 
-
 /* ===========================================================================
       Writes the given null-terminated string to the compressed file, excluding
    the terminating null character.
@@ -591,7 +586,6 @@ int ZEXPORT gzputs(file, s)
 {
     return gzwrite(file, (char*)s, (unsigned)strlen(s));
 }
-
 
 /* ===========================================================================
      Flushes all pending output into the compressed file. The parameter

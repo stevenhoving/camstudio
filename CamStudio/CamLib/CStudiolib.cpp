@@ -76,4 +76,3 @@ long rounddouble(double dVal)
 	return num;
 }
 
-

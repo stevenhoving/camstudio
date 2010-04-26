@@ -178,7 +178,6 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
 		return FALSE;
 	}
 
-
 	//Create DDB
 	HDC hdc = ::GetDC(NULL);
 	HBITMAP hbm = CreateDIBitmap(hdc, (LPBITMAPINFOHEADER)lpbi,(LONG)CBM_INIT, DIBPTR(lpbi),(LPBITMAPINFO)lpbi,DIB_RGB_COLORS);

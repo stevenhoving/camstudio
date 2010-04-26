@@ -132,7 +132,6 @@ char strCodec[512] = "MS Video 1";
 int actualwidth=0;
 int actualheight=0;
 
-
 //Cursor variables
 int g_customsel = 0;
 //TODO(dimator): add command line flag for g_recordcursor
@@ -145,13 +144,11 @@ int g_highlightclick=0;
 COLORREF g_highlightclickcolorleft = RGB(255,0,0);
 COLORREF g_highlightclickcolorright = RGB(0,0,255);
 
-
 //Autopan
 int autopan=0;
 int maxpan = 20;
 RECT panrect_current;
 RECT panrect_dest;
-
 
 //Path to temporary wav file
 //char tempaudiopath[_MAX_PATH];
@@ -178,7 +175,6 @@ int audio_num_channels = 2;
 int audio_samples_per_seconds = 22050 ;
 BOOL bAudioCompression = TRUE;
 
-
 #define  MILLISECONDS 0
 #define  FRAMES 1
 BOOL interleaveFrames = TRUE;
@@ -192,7 +188,6 @@ int  interleaveUnit = MILLISECONDS;
 
 string GetCodecDescription(long fccHandler);
 
-
 //version 1.6
 #define USE_WINDOWS_TEMP_DIR 0
 #define USE_INSTALLED_DIR 1
@@ -203,7 +198,6 @@ int tempPath_Access  = USE_WINDOWS_TEMP_DIR;
 
 int captureTrans=1;
 int versionOp = 0;
-
 
 //ver 2.26 Vscap Interface
 #define ModeAVI 0
@@ -224,7 +218,6 @@ int recordpreset = 0;
 #ifndef CAPTUREBLT
   #define CAPTUREBLT (DWORD)0x40000000
 #endif
-
 
 ///////////////////////// //////////////////
 /////////////// Functions //////////////////
@@ -297,7 +290,6 @@ HANDLE  Bitmap2Dib( HBITMAP hbitmap, UINT bits )
   return hdib ;
 }
 
-
 UINT RecordAVIThread(LPVOID /*pParam*/) {
   SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_NORMAL);
 
@@ -331,7 +323,6 @@ UINT RecordAVIThread(LPVOID /*pParam*/) {
 
   ExitThread(0);
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RecordVideo
@@ -367,7 +358,6 @@ int RecordVideo(int top,int left,int width,int height,int fps,
   ////////////////////////////////////////////////
   alpbi = captureScreenFrame(left,top,width, height);
 
-
   ////////////////////////////////////////////////
   // TEST VALIDITY OF COMPRESSOR
   //////////////////////////////////////////////////
@@ -379,7 +369,6 @@ int RecordVideo(int top,int left,int width,int height,int fps,
         compressor_info[selected_compressor].fccHandler, ICMODE_QUERY);
     if (hic) {
 
-
       int newleft,newtop,newwidth,newheight;
       int align = 1;
       while   (ICERR_OK!=ICCompressQuery(hic, alpbi, NULL))
@@ -387,7 +376,6 @@ int RecordVideo(int top,int left,int width,int height,int fps,
         //Try adjusting width/height a little bit
         align = align * 2 ;
         if (align>8) break;
-
 
         newleft=left;
         newtop=top;
@@ -398,7 +386,6 @@ int RecordVideo(int top,int left,int width,int height,int fps,
             newwidth = width - wm;
         }
 
-
         int hm = (height % align);
         if (hm > 0) {
           newheight = height + (align - hm);
@@ -406,11 +393,9 @@ int RecordVideo(int top,int left,int width,int height,int fps,
             newwidth = height - hm;
         }
 
-
         if (alpbi)
           FreeFrame(alpbi);
         alpbi = captureScreenFrame(newleft,newtop,newwidth, newheight);
-
 
       }
 
@@ -496,7 +481,6 @@ int RecordVideo(int top,int left,int width,int height,int fps,
   aopts[0]->cbFormat       = 0;
   aopts[0]->dwInterleaveEvery = 0;      // for non-video streams only
 
-
   //ver 2.26
   if (RecordingMode == ModeFlash)
   {
@@ -524,13 +508,9 @@ int RecordVideo(int top,int left,int width,int height,int fps,
 
   }
 
-
-
-
   //The 1 here indicates only 1 stream
   //if (!AVISaveOptions(NULL, 0, 1, &ps, (LPAVICOMPRESSOPTIONS *) &aopts))
   //        goto error;
-
 
   hr = AVIMakeCompressedStream(&psCompressed, ps, &opts, NULL);
   if (hr != AVIERR_OK)    goto error;
@@ -540,7 +520,6 @@ int RecordVideo(int top,int left,int width,int height,int fps,
              alpbi->biSize +   // format size
              alpbi->biClrUsed * sizeof(RGBQUAD));
   if (hr != AVIERR_OK) goto error;
-
 
   FreeFrame(alpbi);
   alpbi=NULL;
@@ -590,7 +569,6 @@ int RecordVideo(int top,int left,int width,int height,int fps,
           int exttop = ((panrect_current.bottom - panrect_current.top)*1)/4 + panrect_current.top;
           int extbottom = ((panrect_current.bottom - panrect_current.top)*3)/4 + panrect_current.top;
 
-
           if (xPoint.x  < extleft ) { //need to pan left
 
             panrect_dest.left = xPoint.x - width/2;
@@ -602,7 +580,6 @@ int RecordVideo(int top,int left,int width,int height,int fps,
 
           }
           else if (xPoint.x  > extright ) { //need to pan right
-
 
             panrect_dest.left = xPoint.x - width/2;
             panrect_dest.right = panrect_dest.left +  width - 1;
@@ -619,10 +596,7 @@ int RecordVideo(int top,int left,int width,int height,int fps,
 
           }
 
-
-
           if (xPoint.y  < exttop ) { //need to pan up
-
 
             panrect_dest.top = xPoint.y - height/2;
             panrect_dest.bottom = panrect_dest.top +  height - 1;
@@ -648,13 +622,10 @@ int RecordVideo(int top,int left,int width,int height,int fps,
 
           }
 
-
           //Determine Pan Values
           int xdiff,ydiff;
           xdiff = panrect_dest.left - panrect_current.left;
           ydiff = panrect_dest.top - panrect_current.top;
-
-
 
           if (abs(xdiff) < maxpan) {
             panrect_current.left += xdiff;
@@ -680,7 +651,6 @@ int RecordVideo(int top,int left,int width,int height,int fps,
 
           }
 
-
           panrect_current.right = panrect_current.left + width - 1;
           panrect_current.bottom =  panrect_current.top + height - 1;
 
@@ -693,8 +663,6 @@ int RecordVideo(int top,int left,int width,int height,int fps,
       alpbi = captureScreenFrame(left,top,width, height);
 
     }
-
-
 
     if (initcapture==0) {
 
@@ -718,15 +686,12 @@ int RecordVideo(int top,int left,int width,int height,int fps,
         //gRecordState = 0;
         //PostMessage(hWndGlobal,WM_USER_RECORDINTERRUPTED,0,0);
 
-
       //CString msgStr;
       //msgStr.Format("%.2f %d",fTimeLength,presettime);
       //MessageBox(NULL,msgStr,"N",MB_OK);
 
-
         //or should we post messages
     //}
-
 
     if ((frametime==0) || (frametime>oldframetime)) {
       //if frametime repeats (frametime == oldframetime) ...the avistreamwrite will cause an error
@@ -786,9 +751,7 @@ error:
 
   }
 
-
   AVISaveOptionsFree(1,(LPAVICOMPRESSOPTIONS FAR *) &aopts);
-
 
   if (pfile)
     AVIFileClose(pfile);
@@ -815,7 +778,6 @@ error:
     //MessageBox(NULL,reportstr,"Note",MB_OK | MB_ICONEXCLAMATION);
     */
 
-
     if (compfccHandler != mmioFOURCC('M', 'S', 'V', 'C')) {
       //if (IDYES == MessageBox(NULL, "Error recording AVI file using current compressor. Use default compressor ? ", "Note", MB_YESNO | MB_ICONEXCLAMATION)) {
       /*
@@ -839,9 +801,6 @@ error:
   cout << "Recording finished" << endl;
   return 0;
 }
-
-
-
 
 LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height)
 {
@@ -882,7 +841,6 @@ LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height)
   HCURSOR hcur = FetchCursorHandle();
   xPoint.x -= left;
   xPoint.y -= top;
-
 
   //Draw the Cursor
   if (g_recordcursor == 1) {
@@ -938,18 +896,14 @@ HCURSOR FetchCursorHandle() {
   return hSavedCursor;
 }
 
-
 //ver 1.6
 #define MAXCOMPRESSORS 50
-
 
 //===============================================
 // AUDIO CODE
 //===============================================
 // Ver 1.1
 //===============================================
-
-
 
 /*
 MMRESULT IsFormatSupported(LPWAVEFORMATEX pwfx, UINT uDeviceID);
@@ -965,10 +919,6 @@ MMRESULT IsFormatSupported(LPWAVEFORMATEX pwfx, UINT uDeviceID)
     WAVE_FORMAT_QUERY));  // query only, do not open device
 }
 */
-
-
-
-
 
 void FreeParamsUse() {
   if (pParamsUse) {
@@ -996,7 +946,6 @@ BOOL MakeCompressParamsCopy(DWORD paramsSize, LPVOID pOrg) {
   return TRUE;
 }
 
-
 string GetCodecDescription(long fccHandler) {
   ICINFO compinfo;
 
@@ -1011,7 +960,6 @@ string GetCodecDescription(long fccHandler) {
   std::transform(compinfo.szDescription, compinfo.szDescription + 128, tmp, wide_to_narrow);
   return string(tmp);
 }
-
 
 void VideoCodecOptions()
 {
@@ -1040,7 +988,6 @@ void VideoCodecOptions()
     compressor_info = (ICINFO *) calloc(MAXCOMPRESSORS,sizeof(ICINFO));
 
   }
-
 
   for(int i=0; ICInfo(ICTYPE_VIDEO, i, &compressor_info[num_compressor]); i++) {
     if (num_compressor >= MAXCOMPRESSORS)
@@ -1169,7 +1116,6 @@ int ParseOptions(int argc, char *argv[]){
   return 1;
 }
 
-
 void PrintUsage(bool showCodecs = FALSE){
   cout << "Usage:" << endl << endl;
   cout << "-codec: which codec to use" << endl
@@ -1188,7 +1134,6 @@ void PrintUsage(bool showCodecs = FALSE){
     cout << i << ": " << s << endl;
   }
 }
-
 
 int ChooseBestCodec(){
   // TODO(dimator): Pick a codec by ourselves.  The best codecs in terms of
@@ -1226,7 +1171,6 @@ int ChooseBestCodec(){
   // None of the best codecs were found
   return -1;
 }
-
 
 int main(int argc, char* argv[])
 {

@@ -133,7 +133,7 @@ LRESULT CHIC::Close()
 BOOL CHIC::Info(DWORD fccType, DWORD fccHandler, ICINFO& icinfo)
 {
 	BOOL bResult = ::ICInfo(fccType, fccHandler, &icinfo);
-	if (bResult) {			
+	if (bResult) {
 		// n.b TRACE won't display szDriver properly; ???
 		TRACE("CGIC::Info:\nDescription: %s\nName: %s\nDriver: %s\n", icinfo.szDescription, icinfo.szName, (LPCTSTR)CString(icinfo.szDriver));
 	}
@@ -162,7 +162,7 @@ HIC CHIC::Open(FOURCC dwfccType, FOURCC dwfccHandler, UINT uMode)
 HIC CHIC::OpenFunction(FOURCC dwfccType, FOURCC dwfccHandler, UINT wMode, FARPROC lpfnHandler)
 {
 	ASSERT(!isOpen());
-	m_hIC = ::ICOpenFunction(dwfccType, dwfccHandler, wMode, lpfnHandler); 
+	m_hIC = ::ICOpenFunction(dwfccType, dwfccHandler, wMode, lpfnHandler);
 	if (isOpen()) {
 		m_dwfccType = dwfccType;
 		m_dwfccHandler = dwfccHandler;

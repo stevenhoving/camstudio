@@ -96,7 +96,7 @@ BOOL CEditImageDlg::OnInitDialog()
 	m_ctrlSpinBorderSize.SetBuddy(&m_ctrlEditBorderSize);
 
 	if (m_transWnd)
-	{		
+	{
 		////CDC *tempDC = m_ctrlStaticColor.GetDC();
 		//CDC *tempDC = GetWindowDC();
 		//CRect winRect(100,100,400,300);

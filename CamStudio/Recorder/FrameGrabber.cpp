@@ -166,7 +166,7 @@ BOOL validCallHint = FALSE;
 void CFrameGrabber::SetImageData(LPVOID data)
 {
 	ASSERT(validCallHint);
-	
+
 	// do not call this method indirectly!
 	if (!(validCallHint && imageData))
 		return;

@@ -49,7 +49,6 @@ struct internal_state {
 
 };
 
-
 int ZEXPORT inflateReset(z)
 z_streamp z;
 {
@@ -63,7 +62,6 @@ z_streamp z;
   return Z_OK;
 }
 
-
 int ZEXPORT inflateEnd(z)
 z_streamp z;
 {
@@ -76,7 +74,6 @@ z_streamp z;
   Tracev((stderr, "inflate: end\n"));
   return Z_OK;
 }
-
 
 int ZEXPORT inflateInit2_(z, w, version, stream_size)
 z_streamp z;
@@ -134,7 +131,6 @@ int stream_size;
   return Z_OK;
 }
 
-
 int ZEXPORT inflateInit_(z, version, stream_size)
 z_streamp z;
 const char *version;
@@ -142,7 +138,6 @@ int stream_size;
 {
   return inflateInit2_(z, DEF_WBITS, version, stream_size);
 }
-
 
 #define NEEDBYTE {if(z->avail_in==0)return r;r=f;}
 #define NEXTBYTE (z->avail_in--,z->total_in++,*z->next_in++)
@@ -274,7 +269,6 @@ int f;
 #endif
 }
 
-
 int ZEXPORT inflateSetDictionary(z, dictionary, dictLength)
 z_streamp z;
 const Bytef *dictionary;
@@ -297,7 +291,6 @@ uInt  dictLength;
   z->state->mode = BLOCKS;
   return Z_OK;
 }
-
 
 int ZEXPORT inflateSync(z)
 z_streamp z;
@@ -348,7 +341,6 @@ z_streamp z;
   z->state->mode = BLOCKS;
   return Z_OK;
 }
-
 
 /* Returns true if inflate is currently at the end of a block generated
  * by Z_SYNC_FLUSH or Z_FULL_FLUSH. This function is used by one PPP

@@ -225,7 +225,7 @@ void CVideoOptionsDlg::UpdateAdjustSliderVal()
 }
 
 // LoadICList
-// Load the Compressor ComboBox with available compressors 
+// Load the Compressor ComboBox with available compressors
 int CVideoOptionsDlg::LoadICList()
 {
 	m_ctrlCBCompressor.ResetContent();

@@ -70,7 +70,7 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedButtonTimestampFormatOptions()
 	if (optDlg.DoModal() == IDOK){
 		m_timestamp = optDlg.m_params;
 	}
-} 
+}
 
 void CAnnotationEffectsOptionsDlg::OnBnClickedButtonWatermarkOptions()
 {

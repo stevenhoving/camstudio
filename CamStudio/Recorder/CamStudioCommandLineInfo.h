@@ -9,8 +9,7 @@
 
 #pragma once
 
-class CCamStudioCommandLineInfo :
-	public CCommandLineInfo
+class CCamStudioCommandLineInfo : public CCommandLineInfo
 {
 public:
 	CCamStudioCommandLineInfo(void);
