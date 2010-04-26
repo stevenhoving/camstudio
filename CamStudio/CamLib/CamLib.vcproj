@@ -175,6 +175,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CBitmapEx.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CStudiolib.cpp"
 				>
 			</File>
@@ -238,6 +242,10 @@
 			</File>
 			<File
 				RelativePath=".\CamWindow.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CBitmapEx.h"
 				>
 			</File>
 			<File
