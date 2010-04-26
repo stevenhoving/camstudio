@@ -95,8 +95,7 @@ BOOL CEditImageDlg::OnInitDialog()
 
 	m_ctrlSpinBorderSize.SetBuddy(&m_ctrlEditBorderSize);
 
-	if (m_transWnd)
-	{
+	if (m_transWnd) {
 		////CDC *tempDC = m_ctrlStaticColor.GetDC();
 		//CDC *tempDC = GetWindowDC();
 		//CRect winRect(100,100,400,300);
@@ -105,27 +104,24 @@ BOOL CEditImageDlg::OnInitDialog()
 		//tempDC->Rectangle(&winRect);
 		//ReleaseDC(tempDC);
 
-		m_ctrlButtonBKColor.EnableWindow(0 != m_transWnd->m_hbitmap);
+		m_ctrlButtonBKColor.EnableWindow(0 != m_transWnd->BitMap());
 		m_ctrlSpinBorderSize.SetRange(1,15);
-		m_ctrlSpinBorderSize.SetPos(m_transWnd->m_borderSize);
+		m_ctrlSpinBorderSize.SetPos(m_transWnd->BorderSize());
 
 		//m_ctrlStaticColor.SetTextColor(m_transWnd->m_transparentColor);
-		if ((0 <= m_transWnd->m_regionPredefinedShape) && (m_transWnd->m_regionPredefinedShape <= 2))
-		{
-			m_ctrlCBPredefinedShape.SetCurSel(m_transWnd->m_regionPredefinedShape);
+		if ((0 <= m_transWnd->RegionPredefinedShape()) && (m_transWnd->RegionPredefinedShape() <= 2)) {
+			m_ctrlCBPredefinedShape.SetCurSel(m_transWnd->RegionPredefinedShape());
 		}
 
-		m_ctrlButtonAddBorder.SetCheck(m_transWnd->m_borderYes);
+		m_ctrlButtonAddBorder.SetCheck(m_transWnd->BorderYes());
 	}
 
 	UpdateGUI();
 
 	m_dialogInitialized = 1;
 
-	if (m_transWnd)
-	{
-		if (m_transWnd->baseType == 1)
-		{
+	if (m_transWnd) {
+		if (m_transWnd->BaseType() == 1) {
 			m_ctrlButtonBKColor.EnableWindow(FALSE);
 			m_ctrlButtonLoadNewImage.EnableWindow(FALSE);
 		}
@@ -148,7 +144,7 @@ void CEditImageDlg::OnNoCutout()
 		return;
 	}
 
-	m_transWnd->m_regionType = regionNULL;
+	m_transWnd->RegionType(regionNULL);
 	UpdateGUI();
 
 	m_transWnd->Invalidate();
@@ -163,7 +159,7 @@ void CEditImageDlg::OnCutoutTrans()
 		return;
 	}
 
-	m_transWnd->m_regionType = regionTRANSPARENTCOLOR;
+	m_transWnd->RegionType(regionTRANSPARENTCOLOR);
 	UpdateGUI();
 
 	m_transWnd->Invalidate();
@@ -178,7 +174,7 @@ void CEditImageDlg::OnCutoutPredefined()
 		return;
 	}
 
-	m_transWnd->m_regionType = regionSHAPE;
+	m_transWnd->RegionType(regionSHAPE);
 	UpdateGUI();
 
 	m_transWnd->Invalidate();
@@ -187,13 +183,11 @@ void CEditImageDlg::OnCutoutPredefined()
 
 void CEditImageDlg::UpdateGUI()
 {
-	if (!m_transWnd)
-	{
+	if (!m_transWnd) {
 		return;
 	}
 
-	if (m_transWnd->m_regionType == regionNULL)
-	{
+	if (m_transWnd->RegionType() == regionNULL) {
 		m_ctrlButtonNoBKColor.SetCheck(TRUE);
 		m_ctrlButtonTransparent.SetCheck(FALSE);
 		m_ctrlButtonPreDefined.SetCheck(FALSE);
@@ -211,9 +205,7 @@ void CEditImageDlg::UpdateGUI()
 		m_ctrlEditBorderSize.EnableWindow(FALSE);
 		m_ctrlSpinBorderSize.EnableWindow(FALSE);
 		m_ctrlStaticBorderGroup.EnableWindow(FALSE);
-	}
-	else if (m_transWnd->m_regionType == regionTRANSPARENTCOLOR)
-	{
+	} else if (m_transWnd->RegionType() == regionTRANSPARENTCOLOR) {
 		m_ctrlButtonTransparent.SetCheck(TRUE);
 		m_ctrlButtonNoBKColor.SetCheck(FALSE);
 		m_ctrlButtonPreDefined.SetCheck(FALSE);
@@ -231,9 +223,7 @@ void CEditImageDlg::UpdateGUI()
 		m_ctrlEditBorderSize.EnableWindow(FALSE);
 		m_ctrlSpinBorderSize.EnableWindow(FALSE);
 		m_ctrlStaticBorderGroup.EnableWindow(FALSE);
-	}
-	else if (m_transWnd->m_regionType == regionSHAPE)
-	{
+	} else if (m_transWnd->RegionType() == regionSHAPE) {
 		m_ctrlButtonPreDefined.SetCheck(TRUE);
 		m_ctrlButtonTransparent.SetCheck(FALSE);
 		m_ctrlButtonNoBKColor.SetCheck(FALSE);
@@ -253,54 +243,34 @@ void CEditImageDlg::UpdateGUI()
 		m_ctrlStaticBorderGroup.EnableWindow(TRUE);
 	}
 
-	if (!(m_transWnd->m_hbitmap))
-	{
+	if (!(m_transWnd->BitMap())) {
 		m_ctrlButtonTransparent.EnableWindow(FALSE);
-
 		m_ctrlButtonColor.EnableWindow(FALSE);
 		m_ctrlButtonPickScreenColor.EnableWindow(FALSE);
 		m_ctrlStaticColor.EnableWindow(FALSE);
 		m_ctrlStaticChoose.EnableWindow(FALSE);
-	}
-	else
-	{
+	} else {
 		m_ctrlButtonTransparent.EnableWindow(TRUE);
 	}
-
-	//#define regionROUNDRECT 0
-	//#define regionELLIPSE 1
-	//#define regionRECTANGLE 2
 }
 
 void CEditImageDlg::OnAddBorder()
 {
-	// TODO: Add your control notification handler code here
-	if (m_transWnd->m_borderYes)
-	{
-		m_transWnd->m_borderYes = 0;
-		m_ctrlButtonAddBorder.SetCheck(FALSE);
-	}
-	else
-	{
-		m_transWnd->m_borderYes = 1;
-		m_ctrlButtonAddBorder.SetCheck(TRUE);
-	}
-
+	m_transWnd->BorderYes(!m_transWnd->BorderYes());
+	m_ctrlButtonAddBorder.SetCheck(m_transWnd->BorderYes());
 	m_transWnd->Invalidate();
 }
 
 void CEditImageDlg::OnBorderColor()
 {
 	// TODO: Add your control notification handler code here
-	if (!m_transWnd)
-	{
+	if (!m_transWnd) {
 		return;
 	}
 
-	CColorDialog colordlg(m_transWnd->m_borderColor,CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT,this);
-	if (colordlg.DoModal()==IDOK)
-	{
-		m_transWnd->m_borderColor = colordlg.GetColor();
+	CColorDialog colordlg(m_transWnd->BorderColor(), CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT,this);
+	if (IDOK == colordlg.DoModal()) {
+		m_transWnd->BorderColor(colordlg.GetColor());
 	}
 
 	m_transWnd->Invalidate();
@@ -309,18 +279,16 @@ void CEditImageDlg::OnBorderColor()
 void CEditImageDlg::OnColor()
 {
 	// TODO: Add your control notification handler code here
-	if (!m_transWnd)
-	{
+	if (!m_transWnd) {
 		return;
 	}
 
-	CColorDialog colordlg(m_transWnd->m_transparentColor,CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT,this);
-	if (colordlg.DoModal()==IDOK)
-	{
-		m_transWnd->m_transparentColor = colordlg.GetColor();
+	CColorDialog colordlg(m_transWnd->TransparentColor(), CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT,this);
+	if (IDOK == colordlg.DoModal()) {
+		m_transWnd->TransparentColor(colordlg.GetColor());
 	}
 
-	m_transWnd->m_regionCreated = 0;
+	m_transWnd->RegionCreated(0);
 	m_transWnd->InvalidateRegion();
 	m_transWnd->Invalidate();
 }
@@ -332,7 +300,7 @@ void CEditImageDlg::OnSelchangePredefinedshape()
 		return;
 	}
 	// TODO: Add your control notification handler code here
-	m_transWnd->m_regionPredefinedShape = m_ctrlCBPredefinedShape.GetCurSel();
+	m_transWnd->RegionPredefinedShape(m_ctrlCBPredefinedShape.GetCurSel());
 
 	m_transWnd->Invalidate();
 	m_transWnd->InvalidateRegion();
@@ -357,7 +325,7 @@ void CEditImageDlg::OnChangeBordersize()
 		return;
 	}
 
-	m_transWnd->m_borderSize = m_ctrlSpinBorderSize.GetPos();
+	m_transWnd->BorderSize(m_ctrlSpinBorderSize.GetPos());
 	m_transWnd->Invalidate();
 }
 
@@ -386,9 +354,9 @@ void CEditImageDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		ReleaseCapture();
 		SetCursor(m_hCursorArrow);
 
-		m_transWnd->m_transparentColor = val;
+		m_transWnd->TransparentColor(val);
 
-		m_transWnd->m_regionCreated = 0;
+		m_transWnd->RegionCreated(0);
 		m_transWnd->InvalidateRegion();
 		m_transWnd->Invalidate();
 
@@ -414,15 +382,13 @@ void CEditImageDlg::OnMouseMove(UINT nFlags, CPoint point)
 void CEditImageDlg::OnBkcolor()
 {
 	// TODO: Add your control notification handler code here
-	if (!m_transWnd)
-	{
+	if (!m_transWnd) {
 		return;
 	}
 
-	CColorDialog colordlg(m_transWnd->m_backgroundColor,CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT,this);
-	if (colordlg.DoModal()==IDOK)
-	{
-		m_transWnd->m_backgroundColor = colordlg.GetColor();
+	CColorDialog colordlg(m_transWnd->BackgroundColor(), CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT,this);
+	if (IDOK == colordlg.DoModal()) {
+		m_transWnd->BackgroundColor(colordlg.GetColor());
 	}
 
 	m_transWnd->Invalidate();

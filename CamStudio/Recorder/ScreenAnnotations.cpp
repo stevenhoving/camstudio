@@ -321,7 +321,7 @@ void CScreenAnnotationsDlg::CloseAllWindows(int wantDelete)
 		itemWnd = ListManager.displayArray[i];
 		if (itemWnd)
 		{
-			if ((itemWnd->trackingOn) || (itemWnd->editTransOn) || (itemWnd->editImageOn))
+			if (itemWnd->TrackingOn() || itemWnd->EditTransOn() || itemWnd->EditImageOn())
 			{
 				//Do not remove, the item is undergoing editing
 			}
@@ -353,16 +353,16 @@ void CScreenAnnotationsDlg::OnEditobjNewobject()
 			rect.top = y;
 			rect.right = rect.left + iNewShapeWidth - 1;
 			rect.bottom = rect.top + iNewShapeHeight - 1;
-			newWnd->m_textstring = strNewShapeText;
-			newWnd->m_shapeStr = shapeStr;
+			newWnd->TextString(strNewShapeText);
+			newWnd->ShapeString(shapeStr);
 			newWnd->CreateTransparent(shapeStr,rect,NULL);
 		} else {
 			rect.left = x;
 			rect.top = y;
 			rect.right = x + 100;
 			rect.bottom = y + 100;
-			newWnd->m_textstring = strNewShapeText;
-			newWnd->m_shapeStr = shapeStr;
+			newWnd->TextString(strNewShapeText);
+			newWnd->ShapeString(shapeStr);
 			newWnd->CreateTransparent(shapeStr,rect,strImageFilename,1);
 		}
 
@@ -383,8 +383,8 @@ void CScreenAnnotationsDlg::OnEditobjNewobject()
 				int nItem = m_ctrlList.GetItemCount();
 				int nItemMod = modeShape;
 
-				CString insstr = cloneWnd->m_shapeStr;
-				int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(insstr), 0, 0, nItemMod, newWnd->uniqueID );
+				CString insstr = cloneWnd->ShapeString();
+				int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(insstr), 0, 0, nItemMod, newWnd->UniqueID());
 				VERIFY(-1 != ins);	// TODO: Handle error
 			}
 		}
@@ -395,24 +395,24 @@ void CScreenAnnotationsDlg::OnEditobjNewobject()
 void CScreenAnnotationsDlg::OnEditobjEditimage()
 {
 	CTransparentWnd * editWnd = LocateWndFromShapeList();
-	editWnd->saveMethod = saveMethodReplace;
+	editWnd->SaveMethod(saveMethodReplace);
 	editWnd->ShowWindow(SW_RESTORE);
 
 	editWnd->EditImage();
 
-	editWnd->saveMethod = saveMethodNew;
+	editWnd->SaveMethod(saveMethodNew);
 	SaveShapeReplace(editWnd);
 }
 
 void CScreenAnnotationsDlg::OnEditobjEdittext()
 {
 	CTransparentWnd * editWnd = LocateWndFromShapeList();
-	editWnd->saveMethod = saveMethodReplace;
+	editWnd->SaveMethod(saveMethodReplace);
 	editWnd->ShowWindow(SW_RESTORE);
 
 	editWnd->EditText();
 
-	editWnd->saveMethod = saveMethodNew;
+	editWnd->SaveMethod(saveMethodNew);
 	SaveShapeReplace(editWnd);
 }
 
@@ -474,7 +474,7 @@ void CScreenAnnotationsDlg::SaveShapeNew(CTransparentWnd *newWnd)
 		insstr.TrimLeft();
 		insstr.TrimRight();
 		if (insstr == "") {
-			insstr = cloneWnd->m_shapeStr;
+			insstr = cloneWnd->ShapeString();
 		} else {
 			int val = insstr.Find( '\n' );
 			if (val > 0) {
@@ -482,8 +482,8 @@ void CScreenAnnotationsDlg::SaveShapeNew(CTransparentWnd *newWnd)
 				insstr = insstr + " ...";
 			}
 		}
-		cloneWnd->m_shapeStr = insstr;
-		int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM , nItem, LPCTSTR(insstr), 0, 0, nItemMod, cloneWnd->uniqueID );
+		cloneWnd->ShapeString(insstr);
+		int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM , nItem, LPCTSTR(insstr), 0, 0, nItemMod, cloneWnd->UniqueID());
 		VERIFY(-1 != ins);	// TODO: Handle error
 
 		m_ctrlList.EnsureVisible( nItem, FALSE );
@@ -506,12 +506,12 @@ void CScreenAnnotationsDlg::SaveShapeReplace(CTransparentWnd *newWnd)
 void CScreenAnnotationsDlg::OnEditobjEdittransparency()
 {
 	CTransparentWnd * editWnd = LocateWndFromShapeList();
-	editWnd->saveMethod = saveMethodReplace;
+	editWnd->SaveMethod(saveMethodReplace);
 	editWnd->ShowWindow(SW_RESTORE);
 
 	editWnd->EditTransparency();
 
-	editWnd->saveMethod = saveMethodNew;
+	editWnd->SaveMethod(saveMethodNew);
 	SaveShapeReplace(editWnd);
 }
 
@@ -584,7 +584,7 @@ void CScreenAnnotationsDlg::OnEditobjPaste()
 
 		int nItem = m_ctrlList.GetItemCount();
 		int nItemMod = modeShape;
-		int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(cloneWnd->m_shapeStr), 0, 0, nItemMod, cloneWnd->uniqueID );
+		int ins = m_ctrlList.InsertItem( LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(cloneWnd->ShapeString()), 0, 0, nItemMod, cloneWnd->UniqueID());
 		VERIFY(-1 != ins);	// TODO: Handle error
 		m_ctrlList.EnsureVisible( nItem, FALSE );
 		m_ctrlList.SetItemState( nItem, LVIS_SELECTED, LVIS_SELECTED);
@@ -688,11 +688,11 @@ void CScreenAnnotationsDlg::OnEndlabeleditList1(NMHDR* pNMHDR, LRESULT* pResult)
 
 		if (newWnd)
 		{
-			newWnd->m_shapeStr = (pDispInfo->item).pszText;
-			if (newWnd->m_shapeStr != shapeStr)
+			newWnd->ShapeString((pDispInfo->item).pszText);
+			if (newWnd->ShapeString() != shapeStr)
 			{
 				//shape name has been changed, reset counter to 1
-				shapeName = newWnd->m_shapeStr;
+				shapeName = newWnd->ShapeString();
 
 				//a better method is to extract the trailing number from shapestr and use it as number for iShapeNameInt
 				AdjustShapeName(shapeName);
@@ -823,7 +823,7 @@ CTransparentWnd* CScreenAnnotationsDlg::LocateWndFromItem(int nItem)
 		itemWnd = ListManager.shapeArray[i];
 		if (itemWnd)
 		{
-			if (itemWnd->uniqueID == WndID)
+			if (itemWnd->UniqueID() == WndID)
 			{
 				newWnd = itemWnd;
 				found = 1;
@@ -908,8 +908,8 @@ void CScreenAnnotationsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 				if (newWnd) {
 					GetCursorPos(&pt);
 
-					int wx = (newWnd->m_rectWnd.Width()) / 2;
-					int hx = (newWnd->m_rectWnd.Height()) / 2;
+					int wx = (newWnd->RectWnd().Width()) / 2;
+					int hx = (newWnd->RectWnd().Height()) / 2;
 					CTransparentWnd *cloneWnd = newWnd->CloneByPos(pt.x - wx, pt.y - hx);
 					ListManager.AddDisplayArray(cloneWnd);
 
@@ -1028,8 +1028,8 @@ void CScreenAnnotationsDlg::RefreshShapeList()
 		{
 			int nItem = m_ctrlList.GetItemCount();
 			int nItemMod = modeShape; //refering to shape images
-			CString insstr = pItemWnd->m_shapeStr;
-			int ins = m_ctrlList.InsertItem(LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(insstr), 0, 0, nItemMod, pItemWnd->uniqueID);
+			CString insstr = pItemWnd->ShapeString();
+			int ins = m_ctrlList.InsertItem(LVIF_TEXT | LVIF_PARAM | LVIF_IMAGE, nItem, LPCTSTR(insstr), 0, 0, nItemMod, pItemWnd->UniqueID());
 			VERIFY(-1 != ins);	// TODO: Handle error
 		}
 	}
@@ -1997,7 +1997,7 @@ bool AreWindowsEdited()
 	for (int i = max - 1; 0 <= i; --i) {
 		CTransparentWnd* itemWnd = ListManager.displayArray[i];
 		if (itemWnd) {
-			bisEdited = ((itemWnd->trackingOn) || (itemWnd->editTransOn) || (itemWnd->editImageOn));
+			bisEdited = (itemWnd->TrackingOn() || itemWnd->EditTransOn() || itemWnd->EditImageOn());
 			if (bisEdited) {
 				return bisEdited;
 			}
@@ -2007,7 +2007,7 @@ bool AreWindowsEdited()
 	for (int i = max - 1; 0 <= i; --i) {
 		CTransparentWnd* itemWnd = ListManager.shapeArray[i];
 		if (itemWnd) {
-			bisEdited = ((itemWnd->trackingOn) || (itemWnd->editTransOn) || (itemWnd->editImageOn));
+			bisEdited = (itemWnd->TrackingOn() || itemWnd->EditTransOn() || itemWnd->EditImageOn());
 			if (bisEdited) {
 				return bisEdited;
 			}
