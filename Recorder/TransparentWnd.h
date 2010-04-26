@@ -65,56 +65,10 @@ public:
 	BOOL SaveShape(FILE* fptr);
 	BOOL LoadShape(FILE* fptr);
 
-	//WidthHeight
 	void RefreshWindowSize();
 	void EnsureOnTopList(CTransparentWnd* transWnd);
-protected:
-	void CopyMembers(const CTransparentWnd& rhsWnd);
 
-public:
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CTransparentWnd)
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-	//}}AFX_VIRTUAL
-
-// Implementation
-public:
-	void InvalidateRegion();
-
-private:
-	HANDLE AllocMakeDib(int reduced_width, int reduced_height, UINT iBits);
-
-	// Generated message map functions
-protected:
-	//{{AFX_MSG(CTransparentWnd)
-	afx_msg void OnPaint();
-	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
-	afx_msg void OnContextCloseall();
-	afx_msg void OnContextClose();
-	afx_msg void OnContextSaveLayout();
-	afx_msg void OnContextResize();
-	afx_msg void OnContextRefresh();
-	afx_msg void OnContextEditText();
-	afx_msg void OnContextSave();
-	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
-	afx_msg void OnContextEditTransparency();
-	afx_msg void OnContextNoAntiAlias();
-	afx_msg void OnContextAntiAlias2();
-	afx_msg void OnContextAntiAlias3();
-	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg void OnContextEditImage();
-	afx_msg void OnContextClone();
-	//}}AFX_MSG
-	//afx_msg LRESULT OnInvalidateWnd(WPARAM p1, LPARAM p2);
-	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
-	DECLARE_MESSAGE_MAP()
-
-	//Data to be saved
-public:
+	// accessor/mutators
 	bool EditImageOn() const					{return m_bEditImageOn;}
 	bool EditTransOn() const					{return m_bEditTransOn;}
 	bool TrackingOn() const						{return m_bTrackingOn;}
@@ -148,6 +102,53 @@ public:
 	COLORREF BackgroundColor() const			{return m_backgroundColor;}
 	COLORREF BackgroundColor(COLORREF color)	{return m_backgroundColor = color;}
 	HBITMAP BitMap() const						{return m_hbitmap;}
+
+public:
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CTransparentWnd)
+	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	//}}AFX_VIRTUAL
+
+// Implementation
+public:
+	void InvalidateRegion();
+
+protected:
+	void CopyMembers(const CTransparentWnd& rhsWnd);
+
+private:
+	HANDLE AllocMakeDib(int reduced_width, int reduced_height, UINT iBits);
+
+	// Generated message map functions
+protected:
+	//{{AFX_MSG(CTransparentWnd)
+	afx_msg void OnPaint();
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+	afx_msg void OnContextCloseall();
+	afx_msg void OnContextClose();
+	afx_msg void OnContextSaveLayout();
+	afx_msg void OnContextResize();
+	afx_msg void OnContextRefresh();
+	afx_msg void OnContextEditText();
+	afx_msg void OnContextSave();
+	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
+	afx_msg void OnContextEditTransparency();
+	afx_msg void OnContextNoAntiAlias();
+	afx_msg void OnContextAntiAlias2();
+	afx_msg void OnContextAntiAlias3();
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnContextEditImage();
+	afx_msg void OnContextClone();
+	//}}AFX_MSG
+	//afx_msg LRESULT OnInvalidateWnd(WPARAM p1, LPARAM p2);
+	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
+	DECLARE_MESSAGE_MAP()
+
+	//Data to be saved
 protected:
 	bool m_bEditImageOn;
 	bool m_bEditTransOn;

@@ -334,8 +334,7 @@ void CVideoWnd::OnContextvideoEdittransparencyrefreshrate()
 	//}
 	//editTransOn = 1;
 
-	CTransRateDlg etDlg;
-	etDlg.PreModal(this);
+	CTransRateDlg etDlg(this);
 	etDlg.DoModal();
 
 	//editTransOn = 0;
