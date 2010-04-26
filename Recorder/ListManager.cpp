@@ -114,8 +114,8 @@ int CListManager::LoadShapeArray(CString loadDir, int freeExisting)
 					ret = FALSE;
 					break;
 				} else {
-					CString pTitle(itemWnd->m_shapeStr);
-					itemWnd->CreateEx( WS_EX_TOPMOST, AfxRegisterWndClass(0), LPCTSTR(pTitle), WS_POPUP | WS_SYSMENU, itemWnd->m_rectWnd, NULL, NULL, NULL);
+					CString pTitle(itemWnd->ShapeString());
+					itemWnd->CreateEx(WS_EX_TOPMOST, AfxRegisterWndClass(0), LPCTSTR(pTitle), WS_POPUP | WS_SYSMENU, itemWnd->RectWnd(), NULL, NULL, NULL);
 
 					AddShapeArray(itemWnd);
 				}
@@ -266,8 +266,7 @@ int CListManager::DestroyArrayItems(CArray<CTransparentWnd *,CTransparentWnd *> 
 	{
 		itemWnd = (*removeArray)[i];
 		if (itemWnd) {
-			if ((itemWnd->trackingOn) || (itemWnd->editTransOn) || (itemWnd->editImageOn))
-			{
+			if (itemWnd->TrackingOn() || itemWnd->EditTransOn() || itemWnd->EditImageOn()) {
 				//Do not remove, the item is undergoing editing
 			} else {
 				itemWnd->ShowWindow(SW_HIDE);
@@ -379,9 +378,9 @@ int CListManager::SwapShapeArray(long uniqueID1, long uniqueID2)
 	{
 		CTransparentWnd * itemWnd = shapeArray[i];
 		if (itemWnd) {
-			if (itemWnd->uniqueID == uniqueID1) {
+			if (itemWnd->UniqueID() == uniqueID1) {
 				swapItem1 = i;
-			} else if (itemWnd->uniqueID == uniqueID2) {
+			} else if (itemWnd->UniqueID() == uniqueID2) {
 				swapItem2 = i;
 			}
 		}
@@ -595,8 +594,8 @@ int CListManager::LoadLayoutArrayFromFile(CArray<CTransparentWnd *,CTransparentW
 					ret = FALSE;
 					break;
 				} else {
-					CString pTitle(itemWnd->m_shapeStr);
-					itemWnd->CreateEx( WS_EX_TOPMOST, AfxRegisterWndClass(0), LPCTSTR(pTitle), WS_POPUP | WS_SYSMENU, itemWnd->m_rectWnd, NULL, NULL, NULL);
+					CString pTitle(itemWnd->ShapeString());
+					itemWnd->CreateEx( WS_EX_TOPMOST, AfxRegisterWndClass(0), LPCTSTR(pTitle), WS_POPUP | WS_SYSMENU, itemWnd->RectWnd(), NULL, NULL, NULL);
 
 					if (layoutArrayPtr) {
 						layoutArrayPtr->Add(itemWnd);
