@@ -78,7 +78,7 @@ void SuggestRecordingFormat()
 	{
 		// report error
 		TRACE("SuggestRecordingFormat: waveInGetDevCaps failed %d\n", mmResult);
-		return; 
+		return;
 	}
 
 	//Ordered in preference of choice

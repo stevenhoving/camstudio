@@ -9,7 +9,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-
 class CPlayplusView : public CView
 {
 protected: // create from serialization only
@@ -20,11 +19,8 @@ protected: // create from serialization only
 public:
 	CPlayplusDoc* GetDocument();
 
-
-
 // Operations
 public:
-
 
 // Overrides
 	// ClassWizard generated virtual function overrides

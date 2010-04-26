@@ -147,7 +147,6 @@ void CFlashingWnd::PaintBorder(bool bInvert, bool bDraw)
 	cWindowDC.SelectObject(pOldBrush);
 }
 
-
 //ver 1.8
 BOOL CFlashingWnd::OnEraseBkgnd(CDC* /*pDC*/)
 {

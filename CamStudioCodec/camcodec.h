@@ -10,21 +10,16 @@
 // You may notice formatting oddities if you use a monospaced font.
 //
 
-
 #include <windows.h>
 #include <vfw.h>
 #pragma hdrstop
-
-
 
 static const DWORD FOURCC_CSCD = mmioFOURCC('C','S','C','D');   // our compressed format
 static const DWORD FOURCC_YUY2 = mmioFOURCC('Y','U','Y','2');   // uncompressed YUY2
 static const DWORD FOURCC_UYVY = mmioFOURCC('U','Y','V','Y');   // uncompressed UYVY
 static const DWORD FOURCC_VYUY = mmioFOURCC('V','Y','U','Y');   // an alias for YUY2 used by ATI cards
 
-
 extern HMODULE hmoduleCamcodec;
-
 
 struct CodecInst {
   
@@ -78,10 +73,8 @@ struct CodecInst {
   DWORD FreeResources();
   
 
-
 };
 
 CodecInst* Open(ICOPEN* icinfo);
 DWORD Close(CodecInst* pinst);
-
 

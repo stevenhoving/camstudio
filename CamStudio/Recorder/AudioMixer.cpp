@@ -135,7 +135,7 @@ MMRESULT CAudioMixer::SetControlDetails(LPMIXERCONTROLDETAILS pmxcd, DWORD fdwDe
 }
 
 MMRESULT CAudioMixer::GetID(UINT * puMxId, DWORD fdwId)
-{	
+{
 	MMRESULT uResult = ::mixerGetID(reinterpret_cast<HMIXEROBJ>(m_hMixer), puMxId, fdwId);
 	OnError(uResult, _T("CAudioMixer::GetID"));
 	return uResult;

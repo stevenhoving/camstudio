@@ -52,10 +52,7 @@
 //
 // ***********************************************************************
 
-
-
 #include "camcodec.h"
-
 
 extern void Msg(const char fmt[], ...);
 /***************************************************************************
@@ -212,7 +209,6 @@ LRESULT PASCAL DriverProc(DWORD dwDriverID, HDRVR hDriver, UINT uiMessage, LPARA
 		}
 		*/
 
-
     case ICM_DECOMPRESS_QUERY:
       return pi->DecompressQuery((LPBITMAPINFOHEADER)lParam1, (LPBITMAPINFOHEADER)lParam2);
 
@@ -251,7 +247,6 @@ LRESULT PASCAL DriverProc(DWORD dwDriverID, HDRVR hDriver, UINT uiMessage, LPARA
   else
     return ICERR_UNSUPPORTED;
 }
-
 
 HMODULE hmoduleCamcodec=0;
 

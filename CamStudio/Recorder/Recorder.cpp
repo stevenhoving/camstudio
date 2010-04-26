@@ -17,15 +17,12 @@
 #include "HotKey.h"
 #include "CStudioLib.h"
 
-//#include <strsafe.h>		// for StringCchPrintf
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern HWND hWndGlobal;
 static BOOL bClassRegistered = FALSE;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -211,13 +208,13 @@ BOOL CRecorderApp::InitInstance()
 
 	VERIFY(cAudioFormat.Read(m_cmSettings));
 	VERIFY(cVideoOpts.Read(m_cmSettings));
-	VERIFY(CamCursor.Read(m_cmSettings));	
+	VERIFY(CamCursor.Read(m_cmSettings));
 	VERIFY(cProgramOpts.Read(m_cmSettings));
-	VERIFY(cHotKeyOpts.Read(m_cmSettings));	
+	VERIFY(cHotKeyOpts.Read(m_cmSettings));
 	VERIFY(cRegionOpts.Read(m_cmSettings));
 	VERIFY(cCaptionOpts.Read(m_cmSettings));
 	VERIFY(cTimestampOpts.Read(m_cmSettings));
-	VERIFY(cWatermarkOpts.Read(m_cmSettings));	
+	VERIFY(cWatermarkOpts.Read(m_cmSettings));
 	VERIFY(cProducerOpts.Read(m_cmSettings));
 
 	// Register the application's document templates. Document templates
@@ -250,12 +247,12 @@ int CRecorderApp::ExitInstance()
 {
 	VERIFY(cAudioFormat.Write(m_cmSettings));
 	VERIFY(cVideoOpts.Write(m_cmSettings));
-	VERIFY(CamCursor.Write(m_cmSettings));	
+	VERIFY(CamCursor.Write(m_cmSettings));
 	VERIFY(cProgramOpts.Write(m_cmSettings));
-	VERIFY(cHotKeyOpts.Write(m_cmSettings));	
-	VERIFY(cRegionOpts.Write(m_cmSettings));		
+	VERIFY(cHotKeyOpts.Write(m_cmSettings));
+	VERIFY(cRegionOpts.Write(m_cmSettings));
 	VERIFY(cCaptionOpts.Write(m_cmSettings));
-	VERIFY(cTimestampOpts.Write(m_cmSettings));	
+	VERIFY(cTimestampOpts.Write(m_cmSettings));
 	VERIFY(cWatermarkOpts.Write(m_cmSettings));
 	VERIFY(cProducerOpts.Write(m_cmSettings));
 

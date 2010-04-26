@@ -71,7 +71,6 @@ BOOL CPlayplusApp::InitInstance()
     DWORD Size=sizeof(DWORD);
     returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
 
-
 	//create default LanguageID no exists
 	if (returnStatus != ERROR_SUCCESS)
 	{
@@ -180,11 +179,9 @@ BOOL CPlayplusApp::InitInstance()
 	}
 	*/
 
-
 	// Dispatch commands specified on the command line
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
-
 
 	// The one and only window has been initialized, so show and update it.
 	m_pMainWnd->ShowWindow(SW_SHOW);
@@ -200,7 +197,6 @@ BOOL CPlayplusApp::LoadLangIDDLL(LANGID LangID)
 
 	//if ( LangID == STANDARD_LANGID )	// integrated language is the right one
 	//	return true;
-
 
 	strLangIDDLL.Format( _T("PlayPlusLANG%.2x.dll"), LangID );
 
@@ -278,7 +274,6 @@ void CPlayplusApp::OnAppAbout()
 /////////////////////////////////////////////////////////////////////////////
 // CPlayplusApp message handlers
 
-
 BOOL CAboutDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
@@ -288,7 +283,6 @@ BOOL CAboutDlg::OnInitDialog()
 		((CStatic *) (GetDlgItem(IDC_TITLE)))->SetWindowText("RenderSoft CamStudio Player 2.1");
 	else if (pmode == DUBBER)
 		((CStatic *) (GetDlgItem(IDC_TITLE)))->SetWindowText("RenderSoft CamStudio Dubber 1.0");
-
 
 	if ((pmode == PLAYER) || (pmode == DUBBER))  {
 		if (hAboutBM)

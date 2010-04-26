@@ -42,9 +42,9 @@ void CFixedRegionDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CFixedRegionDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
-	DDX_Control(pDX, IDC_MSG, m_ctrlStaticMsg);	
-	DDX_Control(pDX, IDC_WIDTH, m_ctrlEditWidth);	
-	DDX_Control(pDX, IDC_HEIGHT, m_ctrlEditHeight);	
+	DDX_Control(pDX, IDC_MSG, m_ctrlStaticMsg);
+	DDX_Control(pDX, IDC_WIDTH, m_ctrlEditWidth);
+	DDX_Control(pDX, IDC_HEIGHT, m_ctrlEditHeight);
 	DDX_Control(pDX, IDC_X, m_ctrlEditPosX);
 	DDX_Control(pDX, IDC_Y, m_ctrlEditPosY);
 	DDX_Control(pDX, IDC_SUPPORTMOUSEDRAG, m_ctrlButtonMouseDrag);

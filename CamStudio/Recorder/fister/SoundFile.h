@@ -23,15 +23,15 @@ class CBuffer;
 class CSoundFile : public CSoundBase
 {
 public:
+	CSoundFile(CString FileName, WAVEFORMATEX* format = NULL);
+	virtual ~CSoundFile();
+
 	bool IsOK();
 	void Close();
 	EREADWRITE GetMode();
 	bool Read(CBuffer* buffer);
 	CBuffer* Read();
 	bool Write(CBuffer* buffer);
-	CSoundFile(CString FileName, WAVEFORMATEX* format = NULL);
-	virtual ~CSoundFile();
-
 
 protected:
 	bool OpenWaveFile();

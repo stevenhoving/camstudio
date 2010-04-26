@@ -35,7 +35,7 @@ CEditTransparencyDlg::CEditTransparencyDlg(CWnd* pParent /*=NULL*/)
 // The original version used pointers in order to provide feedback through
 // the the variables and InvalidateTransparency(). The proper way to have
 // done this would have been to pass the values in InvalidateTransparency
-// call. 
+// call.
 /////////////////////////////////////////////////////////////////////////////
 CEditTransparencyDlg::CEditTransparencyDlg(int& bEnable, int& iLevel, CTransparentWnd* pParent)
 : CDialog(CEditTransparencyDlg::IDD, pParent)

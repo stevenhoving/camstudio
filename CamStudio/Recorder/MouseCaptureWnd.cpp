@@ -330,7 +330,7 @@ bool CreateShiftWindow()
 	minyScreen = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
 	//::ReleaseDC(NULL,hScreenDC);
 
-	hMouseCaptureWnd = ::CreateWindowEx(WS_EX_TOPMOST, _T("ShiftRegionWindow"), _T("Title"), WS_POPUP, 
+	hMouseCaptureWnd = ::CreateWindowEx(WS_EX_TOPMOST, _T("ShiftRegionWindow"), _T("Title"), WS_POPUP,
 			minxScreen, minyScreen, maxxScreen, maxyScreen, NULL, NULL, hInstance, NULL);
 
 	TRACE(_T("CreateShiftWindow : %s\n"), ::IsWindow(hMouseCaptureWnd) ? _T("SUCCEEDED") : _T("FAIL"));

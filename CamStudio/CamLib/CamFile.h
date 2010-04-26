@@ -14,5 +14,4 @@ CString GetTempFolder(int iAccess, const CString strFolder = _T(""));
 CString GetProgPath();
 CString FindExtension(const CString& name);
 
-
 #endif	// CAMFILE_H

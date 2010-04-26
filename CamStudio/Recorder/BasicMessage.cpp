@@ -5,7 +5,6 @@
 #include "Recorder.h"
 #include "BasicMessage.h"
 
-
 // CBasicMessage dialog
 
 IMPLEMENT_DYNAMIC(CBasicMessage, CDialog)
@@ -26,11 +25,9 @@ void CBasicMessage::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_MESSAGE, m_MessageText);
 }
 
-
 BEGIN_MESSAGE_MAP(CBasicMessage, CDialog)
 	ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
-
 
 // CBasicMessage message handlers
 void CBasicMessage::SetText(LPCTSTR lpString)

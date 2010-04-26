@@ -64,7 +64,6 @@ local const uInt border[] = { /* Order of the bit length code lengths */
       the two sets of lengths.
  */
 
-
 void inflate_blocks_reset(s, z, c)
 inflate_blocks_statef *s;
 z_streamp z;
@@ -84,7 +83,6 @@ uLongf *c;
     z->adler = s->check = (*s->checkfn)(0L, (const Bytef *)Z_NULL, 0);
   Tracev((stderr, "inflate:   blocks reset\n"));
 }
-
 
 inflate_blocks_statef *inflate_blocks_new(z, c, w)
 z_streamp z;
@@ -115,7 +113,6 @@ uInt w;
   inflate_blocks_reset(s, z, Z_NULL);
   return s;
 }
-
 
 int inflate_blocks(s, z, r)
 inflate_blocks_statef *s;
@@ -368,7 +365,6 @@ int r;
   }
 }
 
-
 int inflate_blocks_free(s, z)
 inflate_blocks_statef *s;
 z_streamp z;
@@ -381,7 +377,6 @@ z_streamp z;
   return Z_OK;
 }
 
-
 void inflate_set_dictionary(s, d, n)
 inflate_blocks_statef *s;
 const Bytef *d;
@@ -390,7 +385,6 @@ uInt  n;
   zmemcpy(s->window, d, n);
   s->read = s->write = s->window + n;
 }
-
 
 /* Returns true if inflate is currently at the end of a block generated
  * by Z_SYNC_FLUSH or Z_FULL_FLUSH. 

@@ -65,9 +65,8 @@ void AdjustShapeName(CString& shapeName);
 CScreenAnnotationsDlg::CScreenAnnotationsDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CScreenAnnotationsDlg::IDD, pParent)
 , m_bEditingLabelOn(false)
-//, m_hCursorDrag(::LoadCursor(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDC_CURSORDRAG)))
-, m_hCursorDrag(::LoadCursor(0, MAKEINTRESOURCE(IDC_CURSORDRAG)))
-, m_hCursorArrow(::LoadCursor(0, IDC_ARROW))
+, m_hCursorDrag(0)
+, m_hCursorArrow(0)
 {
 	//{{AFX_DATA_INIT(CScreenAnnotationsDlg)
 	// NOTE: the ClassWizard will add member initialization here
@@ -156,19 +155,16 @@ END_MESSAGE_MAP()
 
 void CScreenAnnotationsDlg::OnOK()
 {
-	// TODO: Add extra validation here
 	ShowWindow(SW_HIDE);
-
 	//CDialog::OnOK();
 }
 
 BOOL CScreenAnnotationsDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+	BOOL bResult = CDialog::OnInitDialog();
 
-	// TODO: Add extra initialization here
 	m_hCursorDrag = ::LoadCursor(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDC_CURSORDRAG));
-	m_hCursorArrow = ::LoadCursor(NULL,IDC_ARROW);
+	m_hCursorArrow = ::LoadCursor(NULL, IDC_ARROW);
 
 	CString shapesStr;
 	CString layoutStr;
@@ -177,24 +173,17 @@ BOOL CScreenAnnotationsDlg::OnInitDialog()
 
 	m_ctrlTab.InsertItem(0, shapesStr);
 	m_ctrlTab.InsertItem(1, layoutStr);
+	m_ctrlTab.SetCurSel(tabMode);
 
-	m_bEditingLabelOn = false;
 	draggingOn = 0;
 
-	m_ctrlTab.SetCurSel(tabMode);
-	//UpdateTabCtrl(tabMode);
-
-	if (!saImageListLoaded)
-	{
-		//saBitmap.LoadBitmap(IDB_SCREENANNOTATIONS_SMALL);
-		//saImageList.Create(15,15, ILC_COLOR8 | ILC_MASK, 8, 8);
-		//saImageList.Create( IDB_SCREENANNOTATIONS_SMALL, 16, 10, RGB(255,0, 255) );
+	if (!saImageListLoaded) {
 		saImageList.Create(IDB_SCREENANNOTATIONS_SMALL, 16, 10, RGB(255,255, 255));
 		saImageListLoaded = 1;
 		m_ctrlList.SetImageList(&saImageList, LVSIL_SMALL);
 	}
 
-	return TRUE; // return TRUE unless you set the focus to a control
+	return bResult; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
@@ -254,7 +243,7 @@ void CScreenAnnotationsDlg::OnRclickList1(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 			} else {
 				pPopup->EnableMenuItem(ID_EDITLAYOUT_SAVELAYOUT,MF_ENABLED|MF_BYCOMMAND);
 			}
-			
+
 			if (bIsEdited) {
 				pPopup->EnableMenuItem(ID_EDITLAYOUT_OPENLAYOUT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 			}
@@ -291,7 +280,7 @@ void CScreenAnnotationsDlg::OnRclickList1(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 		} else {
 			pPopup->EnableMenuItem(ID_EDITOBJ_PASTE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 		}
-		
+
 		if (nItem < 0) {
 			//item not selected
 			pPopup->EnableMenuItem(ID_EDITOBJ_REMOVE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
@@ -376,7 +365,7 @@ void CScreenAnnotationsDlg::OnEditobjNewobject()
 			newWnd->m_shapeStr = shapeStr;
 			newWnd->CreateTransparent(shapeStr,rect,strImageFilename,1);
 		}
-		
+
 		if (newWnd)
 		{
 			CTransparentWnd *cloneWnd = newWnd->Clone(0,0);
@@ -690,7 +679,7 @@ void CScreenAnnotationsDlg::OnEndlabeleditList1(NMHDR* pNMHDR, LRESULT* pResult)
 		pResult = FALSE;
 		return;
 	}
-	
+
 	if (tabMode == modeShape)
 	{
 		//Get Transparent Window
@@ -1405,7 +1394,7 @@ BOOL CScreenAnnotationsDlg::OpenUsingRegisteredClass (CString link)
 		*pos = _T ('\0'); // Remove the parameter
 	}
 	else	// No quotes found
-	{		
+	{
 		// Check for %1, without quotes
 		pos = strstr (key, _T ("%1"));
 		if (pos)

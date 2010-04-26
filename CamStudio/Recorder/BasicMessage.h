@@ -1,7 +1,6 @@
 #pragma once
 #include "afxwin.h"
 
-
 // CBasicMessage dialog
 
 class CBasicMessage : public CDialog

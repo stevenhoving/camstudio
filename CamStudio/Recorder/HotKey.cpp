@@ -28,7 +28,7 @@ BOOL CHotKey::Register(HWND hWnd)
 	}
 	ASSERT(hWnd);
 	bResult = ::RegisterHotKey(hWnd, m_iID, m_uModifier, m_uVirtualKey);
-	m_bRegistered = bResult ? true : false; 
+	m_bRegistered = bResult ? true : false;
 	if (!m_bRegistered) {
 		::OnError(_T("CHotKey::Register"));
 	}
@@ -45,7 +45,7 @@ BOOL CHotKey::Unregister()
 	}
 	ASSERT(m_hWnd);
 	bResult = ::UnregisterHotKey(m_hWnd, m_iID);
-	m_bRegistered = bResult ? false : true; 
+	m_bRegistered = bResult ? false : true;
 	if (m_bRegistered) {
 		::OnError(_T("CHotKey::Unregister"));
 	}

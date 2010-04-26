@@ -108,7 +108,7 @@ BOOL CTextDlg::OnInitDialog()
 		//tempFont.DeleteObject();
 	}
 
-	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();	
+	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();
 	m_ctrlButtonLanguage.EnableWindow(((pApp->VersionOp() >= 5) && (msgShown)));
 
 	return TRUE; // return TRUE unless you set the focus to a control
@@ -218,7 +218,7 @@ void CTextDlg::ChooseScriptFont()
 
 void CTextDlg::OnFont2()
 {
-	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();	
+	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();
 	if (pApp->VersionOp() < 5)
 	{
 		//int ret = MessageBox("This feature works only in Win 2000/ XP." ,"Note",MB_OK | MB_ICONEXCLAMATION);

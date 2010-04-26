@@ -637,7 +637,7 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect* caprect,int fact
 	//DrawTextEx(hMemDC, (char *)LPCTSTR(textstr), textlength, LPRECT(usetextRect), horzalign | DT_VCENTER | DT_WORDBREAK | DT_EDITCONTROL , NULL);
 
 	//use adaptive antialias...if size< than maxxScreen maxyScreen
-	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();	
+	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();
 	if ((pApp->VersionOp() >= 5) && ((usetextRect.Width() > maxxScreen) || (usetextRect.Height() > maxyScreen))) {
 		//use stroke path method, less buggy
 
@@ -952,7 +952,7 @@ void CTransparentWnd::OnContextEditTransparency()
 
 void CTransparentWnd::EditTransparency()
 {
-	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();	
+	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();
 	if (pApp->VersionOp() < 5) {
 		//int ret = MessageBox("This feature is only available in Win 2000/ XP." ,"Note",MB_OK | MB_ICONEXCLAMATION);
 		MessageOut(this->m_hWnd,IDS_STRING_AVAILXP ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);

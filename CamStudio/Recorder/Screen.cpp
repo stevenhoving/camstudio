@@ -340,7 +340,7 @@ void CCamera::InsertImage(CDC *pDC, CRect& rectFrame, const ImageAttributes& rIm
 
 bool CCamera::CaptureFrame(const CRect& rectView)
 {
-	m_rectView = rectView;	
+	m_rectView = rectView;
 	m_rectFrame = CRect(0, 0, m_rectView.Width(), m_rectView.Height());
 	// setup DC's
 	CDC* pScreenDC = CDC::FromHandle(::GetDC(0));
@@ -360,7 +360,7 @@ bool CCamera::CaptureFrame(const CRect& rectView)
 
 	// restore old bitmap
 	cMemDC.SelectObject(pOldBitmap);
-	
+
 	// convert cBitmap to Image
 	m_cImage.CreateFromHBITMAP(cBitmap);
 	// TEST/TODO: shrink the output!
