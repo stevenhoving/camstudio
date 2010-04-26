@@ -2653,9 +2653,9 @@ void CRecorderView::OnViewVideoannotations()
 		rect.top = y;
 		rect.right = rect.left + 160 - 1;
 		rect.bottom = rect.top + 120 - 1;
-		m_vanWnd.m_textstring = m_newShapeText;
-		m_vanWnd.m_shapeStr = vastr;
-		m_vanWnd.CreateTransparent(m_vanWnd.m_shapeStr,rect,NULL);
+		m_vanWnd.TextString(m_newShapeText);
+		m_vanWnd.ShapeString(vastr);
+		m_vanWnd.CreateTransparent(m_vanWnd.ShapeString(), rect,NULL);
 		vanWndCreated = 1;
 
 	}

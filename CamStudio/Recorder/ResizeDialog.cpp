@@ -51,12 +51,11 @@ void CResizeDlg::OnOK()
 
 void CResizeDlg::OnReset()
 {
-	if (m_transWnd)
-	{
-		m_transWnd->widthPos = 32; //100%
-		m_transWnd->heightPos = 32;
-		m_ctrlSliderWidth.SetPos(m_transWnd->widthPos);
-		m_ctrlSliderHeight.SetPos(m_transWnd->heightPos);
+	if (m_transWnd) {
+		m_transWnd->WidthPos(32); //100%
+		m_transWnd->HeightPos(32);
+		m_ctrlSliderWidth.SetPos(m_transWnd->WidthPos());
+		m_ctrlSliderHeight.SetPos(m_transWnd->HeightPos());
 
 		m_transWnd->RefreshWindowSize();
 	}
@@ -66,8 +65,8 @@ void CResizeDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	if (m_transWnd)
 	{
-		m_transWnd->widthPos = m_ctrlSliderWidth.GetPos();
-		m_transWnd->heightPos = m_ctrlSliderHeight.GetPos();
+		m_transWnd->WidthPos(m_ctrlSliderWidth.GetPos());
+		m_transWnd->HeightPos(m_ctrlSliderHeight.GetPos());
 		m_transWnd->RefreshWindowSize();
 	}
 
@@ -88,8 +87,8 @@ BOOL CResizeDlg::OnInitDialog()
 	{
 		m_ctrlSliderWidth.SetRange(0,200);
 		m_ctrlSliderHeight.SetRange(0,200);
-		m_ctrlSliderWidth.SetPos(m_transWnd->widthPos);
-		m_ctrlSliderHeight.SetPos(m_transWnd->heightPos);
+		m_ctrlSliderWidth.SetPos(m_transWnd->WidthPos());
+		m_ctrlSliderHeight.SetPos(m_transWnd->HeightPos());
 	}
 
 	return TRUE; // return TRUE unless you set the focus to a control
