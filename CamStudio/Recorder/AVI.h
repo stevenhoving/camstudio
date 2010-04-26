@@ -18,66 +18,26 @@ public:
 		{
 		case AVIERR_OK:
 			break;
-		case AVIERR_UNSUPPORTED:
-			TRACE("CAVI::Error: AVIERR_UNSUPPORTED\n");
-			break;
-		case AVIERR_BADFORMAT:
-			TRACE("CAVI::Error: AVIERR_BADFORMAT\n");
-			break;
-		case AVIERR_MEMORY:
-			TRACE("CAVI::Error: AVIERR_MEMORY\n");
-			break;
-		case AVIERR_INTERNAL:
-			TRACE("CAVI::Error: AVIERR_INTERNAL\n");
-			break;
-		case AVIERR_BADFLAGS:
-			TRACE("CAVI::Error: AVIERR_BADFLAGS\n");
-			break;
-		case AVIERR_BADPARAM:
-			TRACE("CAVI::Error: AVIERR_BADPARAM\n");
-			break;
-		case AVIERR_BADSIZE:
-			TRACE("CAVI::Error: AVIERR_BADSIZE\n");
-			break;
-		case AVIERR_BADHANDLE:
-			TRACE("CAVI::Error: AVIERR_BADHANDLE\n");
-			break;
-		case AVIERR_FILEREAD:
-			TRACE("CAVI::Error: AVIERR_FILEREAD\n");
-			break;
-		case AVIERR_FILEWRITE:
-			TRACE("CAVI::Error: AVIERR_FILEWRITE\n");
-			break;
-		case AVIERR_FILEOPEN:
-			TRACE("CAVI::Error: AVIERR_FILEOPEN\n");
-			break;
-		case AVIERR_COMPRESSOR:
-			TRACE("CAVI::Error: AVIERR_COMPRESSOR\n");
-			break;
-		case AVIERR_NOCOMPRESSOR:
-			TRACE("CAVI::Error: AVIERR_NOCOMPRESSOR\n");
-			break;
-		case AVIERR_READONLY:
-			TRACE("CAVI::Error: AVIERR_READONLY\n");
-			break;
-		case AVIERR_NODATA:
-			TRACE("CAVI::Error: AVIERR_NODATA\n");
-			break;
-		case AVIERR_BUFFERTOOSMALL:
-			TRACE("CAVI::Error: AVIERR_BUFFERTOOSMALL\n");
-			break;
-		case AVIERR_CANTCOMPRESS:
-			TRACE("CAVI::Error: AVIERR_CANTCOMPRESS\n");
-			break;
-		case AVIERR_USERABORT:
-			TRACE("CAVI::Error: AVIERR_USERABORT\n");
-			break;
-		case AVIERR_ERROR:
-			TRACE("CAVI::Error: AVIERR_ERROR\n");
-			break;
-		default:
-			TRACE("CAVI::Error: Unknown\n");
-			break;
+		default:					TRACE("CAVI::Error: Unknown\n"); break;
+		case AVIERR_UNSUPPORTED:	TRACE("CAVI::Error: AVIERR_UNSUPPORTED\n"); break;
+		case AVIERR_BADFORMAT:		TRACE("CAVI::Error: AVIERR_BADFORMAT\n"); break;
+		case AVIERR_MEMORY:			TRACE("CAVI::Error: AVIERR_MEMORY\n"); break;
+		case AVIERR_INTERNAL:		TRACE("CAVI::Error: AVIERR_INTERNAL\n"); break;
+		case AVIERR_BADFLAGS:		TRACE("CAVI::Error: AVIERR_BADFLAGS\n"); break;
+		case AVIERR_BADPARAM:		TRACE("CAVI::Error: AVIERR_BADPARAM\n"); break;
+		case AVIERR_BADSIZE:		TRACE("CAVI::Error: AVIERR_BADSIZE\n"); break;
+		case AVIERR_BADHANDLE:		TRACE("CAVI::Error: AVIERR_BADHANDLE\n"); break;
+		case AVIERR_FILEREAD:		TRACE("CAVI::Error: AVIERR_FILEREAD\n"); break;
+		case AVIERR_FILEWRITE:		TRACE("CAVI::Error: AVIERR_FILEWRITE\n"); break;
+		case AVIERR_FILEOPEN:		TRACE("CAVI::Error: AVIERR_FILEOPEN\n"); break;
+		case AVIERR_COMPRESSOR:		TRACE("CAVI::Error: AVIERR_COMPRESSOR\n"); break;
+		case AVIERR_NOCOMPRESSOR:	TRACE("CAVI::Error: AVIERR_NOCOMPRESSOR\n"); break;
+		case AVIERR_READONLY:		TRACE("CAVI::Error: AVIERR_READONLY\n"); break;
+		case AVIERR_NODATA:			TRACE("CAVI::Error: AVIERR_NODATA\n"); break;
+		case AVIERR_BUFFERTOOSMALL:	TRACE("CAVI::Error: AVIERR_BUFFERTOOSMALL\n"); break;
+		case AVIERR_CANTCOMPRESS:	TRACE("CAVI::Error: AVIERR_CANTCOMPRESS\n"); break;
+		case AVIERR_USERABORT:		TRACE("CAVI::Error: AVIERR_USERABORT\n"); break;
+		case AVIERR_ERROR:			TRACE("CAVI::Error: AVIERR_ERROR\n"); break;
 		}
 	}
 

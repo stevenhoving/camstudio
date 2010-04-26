@@ -223,6 +223,7 @@ inline CRecorderDoc* CRecorderView::GetDocument()
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
 //External Variables
+extern HWND hWndGlobal;
 extern bool bRecordState;
 extern CRect rc;
 extern CRect rcUse;

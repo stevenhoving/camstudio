@@ -81,7 +81,6 @@ static char THIS_FILE[] = __FILE__;
 #define HIMETRIC_INCH	2540
 #define ERROR_TITLE		TEXT("CPicture Error") // Error Title (Related To This Class)...
 
-
 //-----------------------------------------------------------------------------
 // Does: Constructor - Create a New CPicture Object To Hold Picture Data
 // ~~~~

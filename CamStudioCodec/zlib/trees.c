@@ -229,7 +229,6 @@ local void send_bits(s, value, length)
 }
 #endif /* DEBUG */
 
-
 #define MAX(a,b) (a >= b ? a : b)
 /* the arguments must not have side effects */
 
@@ -426,7 +425,6 @@ local void init_block(s)
 
 #define SMALLEST 1
 /* Index within the heap array of least frequent node in the Huffman tree */
-
 
 /* ===========================================================================
  * Remove the smallest element from the heap and recreate the heap with

@@ -345,7 +345,6 @@ namespace baseprofile {
 
 }	// namespace baseprofile
 
-
 // CGroupType
 // template class for group items.
 // CGroupType connects the key ID with both a string and a value.

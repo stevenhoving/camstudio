@@ -49,7 +49,7 @@ void CNewShapeDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_NAME, m_ctrlEditName);
 	DDX_Control(pDX, IDC_IMAGEFILETEXT, m_ctrlTextFileText);
 	DDX_Control(pDX, IDC_RADIO1, m_ctrlButtoBlankImage);
-	DDX_Control(pDX, IDC_RADIO2, m_ctrlButtoImageFile);	
+	DDX_Control(pDX, IDC_RADIO2, m_ctrlButtoImageFile);
 	DDX_Control(pDX, IDC_BUTTON1, m_ctrlButtonImageFile);
 	DDX_Control(pDX, IDC_STATICWIDTH, m_ctrlStaticWidth);
 	DDX_Control(pDX, IDC_STATICHEIGHT, m_ctrlStaticHeight);
@@ -94,7 +94,7 @@ BOOL CNewShapeDlg::OnInitDialog()
 
 	m_ctrlButtoBlankImage.SetCheck((0 == iImageType) ? BST_CHECKED : BST_UNCHECKED);
 	//m_ctrlButtoImageFile.SetCheck((0 == iImageType) ? BST_UNCHECKED : BST_CHECKED);	// redundant
-	
+
 	m_ctrlStaticWidth.EnableWindow((0 == iImageType));
 	m_ctrlStaticHeight.EnableWindow((0 == iImageType));
 	m_ctrlEditWidth.EnableWindow((0 == iImageType));

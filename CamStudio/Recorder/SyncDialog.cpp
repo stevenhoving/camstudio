@@ -31,7 +31,7 @@ void CSyncDlg::DoDataExchange(CDataExchange* pDX)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 	DDX_Control(pDX, IDC_RADIO4, m_ctrlButtonNoSync);
-	DDX_Control(pDX, IDC_RADIO3, m_ctrlButtonAudioFirst);	
+	DDX_Control(pDX, IDC_RADIO3, m_ctrlButtonAudioFirst);
 	DDX_Control(pDX, IDC_RADIO1, m_ctrlButtonInvalid);
 	DDX_Control(pDX, IDC_SPIN1, m_ctrlSpinTimeShift);
 	DDX_Control(pDX, IDC_EDIT1, m_ctrlEditTimeShift);

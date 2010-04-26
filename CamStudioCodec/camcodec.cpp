@@ -41,7 +41,6 @@
 //  http://wildsau.idv.uni-linz.ac.at/mfx/lzo.htm
 // ***********************************************************************
 
-
 // ***********************************************************************
 /* zlib.h -- interface of the 'zlib' general purpose compression library
 version 1.1.4, March 11th, 2002
@@ -67,13 +66,11 @@ misrepresented as being the original software.
 Jean-loup Gailly        Mark Adler
 jloup@gzip.org          madler@alumni.caltech.edu
 
-
 The data format used by the zlib library is described by RFCs (Request for
 Comments) 1950 to 1952 in the files ftp://ds.internic.net/rfc/rfc1950.txt
 (zlib format), rfc1951.txt (deflate format) and rfc1952.txt (gzip format).
 */
 // ***********************************************************************
-
 
 // ***********************************************************************
 //
@@ -402,7 +399,6 @@ static int GetBitmapType(LPBITMAPINFOHEADER lpbi)
 	return 0;
 }
 
-
 static bool CanCompress(LPBITMAPINFOHEADER lpbiIn)
 {
 	int intype = GetBitmapType(lpbiIn);
@@ -412,7 +408,6 @@ static bool CanCompress(LPBITMAPINFOHEADER lpbiIn)
 	//return (intype == 2 || intype == 3 || (intype == 4 && ((AppFlags()!=1) )));
 	return (intype == 2 || intype == 3 || intype == 4);
 }
-
 
 static bool CanCompress(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER lpbiOut) 
 {
@@ -985,7 +980,6 @@ DWORD CodecInst::CompressBegin(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER lpb
 
 	return CanCompress(lpbiIn, lpbiOut) ? ICERR_OK : ICERR_BADFORMAT;
 }
-
 
 DWORD CodecInst::DecompressBegin(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER lpbiOut)
 {

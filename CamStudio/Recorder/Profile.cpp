@@ -39,7 +39,7 @@ sAudioFormat& sAudioFormat::operator=(const sAudioFormat& rhs)
 	m_iFeedbackLineInfo		= rhs.m_iFeedbackLineInfo;
 	m_dwWaveinSelected		= rhs.m_dwWaveinSelected;
 	m_wFormatTag			= rhs.m_wFormatTag;
-	
+
 	DeleteAudio();
 	if (rhs.m_pwfx && rhs.m_dwCbwFX) {
 		if (NewAudio()) {
@@ -55,7 +55,6 @@ sAudioFormat& sAudioFormat::operator=(const sAudioFormat& rhs)
 	}
 	return *this;
 }
-	
 
 // special memory allocator for sAudioFormat
 bool sAudioFormat::DeleteAudio()
@@ -85,7 +84,7 @@ bool sAudioFormat::NewAudio()
 		m_dwCbwFX = 0;
 	} else {
 		::ZeroMemory(m_pwfx, m_dwCbwFX);
-		m_pwfx->cbSize = m_dwCbwFX - sizeof(WAVEFORMATEX); 
+		m_pwfx->cbSize = m_dwCbwFX - sizeof(WAVEFORMATEX);
 	}
 	return bResult;
 }
@@ -296,7 +295,7 @@ template <>
 LANGID ReadEntry(CString strFilename, CString strSection, CString strKeyName, const LANGID& DefValue)
 {
 	//TRACE("ReadEntry(LANGID): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
-	int iDefValue = DefValue;	
+	int iDefValue = DefValue;
 	return LANGID(ReadEntry(strFilename, strSection, strKeyName, iDefValue));
 }
 
@@ -552,7 +551,7 @@ bool CProfileSection::Read(const CString strFile)
 	bool bResult = m_grpStrings.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpIntegers.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpBools.Read(strFile, m_strSectionName);
-	bResult = bResult && m_grpUINT.Read(strFile, m_strSectionName);	
+	bResult = bResult && m_grpUINT.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpLongs.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpDWORD.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpDoubles.Read(strFile, m_strSectionName);
@@ -567,15 +566,15 @@ bool CProfileSection::Write(const CString strFile)
 {
 	bool bResult = m_grpStrings.Write(strFile, m_strSectionName);
 	bResult = bResult && m_grpIntegers.Write(strFile, m_strSectionName);
-	bResult = bResult && m_grpUINT.Write(strFile, m_strSectionName);	
+	bResult = bResult && m_grpUINT.Write(strFile, m_strSectionName);
 	bResult = bResult && m_grpBools.Write(strFile, m_strSectionName);
 	bResult = bResult && m_grpLongs.Write(strFile, m_strSectionName);
-	bResult = bResult && m_grpDWORD.Write(strFile, m_strSectionName);	
+	bResult = bResult && m_grpDWORD.Write(strFile, m_strSectionName);
 	bResult = bResult && m_grpDoubles.Write(strFile, m_strSectionName);
-	bResult = bResult && m_grpLANGID.Write(strFile, m_strSectionName);	
+	bResult = bResult && m_grpLANGID.Write(strFile, m_strSectionName);
 	bResult = bResult && m_grpLogFont.Write(strFile, m_strSectionName);
-	bResult = bResult && m_grpTextAttribs.Write(strFile, m_strSectionName);		
-	bResult = bResult && m_grpImageAttribs.Write(strFile, m_strSectionName);		
+	bResult = bResult && m_grpTextAttribs.Write(strFile, m_strSectionName);
+	bResult = bResult && m_grpImageAttribs.Write(strFile, m_strSectionName);
 	return bResult;
 }
 
@@ -624,7 +623,7 @@ CProfile::CProfile(const CString strFileName)
 	m_vAllSections.push_back(m_SectionRegion);
 	m_vAllSections.push_back(m_SectionTimeStamp);
 	m_vAllSections.push_back(m_SectionCaption);
-	m_vAllSections.push_back(m_SectionWatermark);	
+	m_vAllSections.push_back(m_SectionWatermark);
 }
 
 CProfile::~CProfile()
@@ -652,7 +651,7 @@ void CProfile::InitSections()
 	Add(m_SectionAudio, USEMCI, "useMCI", false);
 	Add(m_SectionAudio, NUMDEV, "NumDev", 0);
 	Add(m_SectionAudio, SELECTEDDEV, "SelectedDev", 0);
-	Add(m_SectionAudio, COMPRESSFORMATTAG, "CompressionFormatTag", 0);	
+	Add(m_SectionAudio, COMPRESSFORMATTAG, "CompressionFormatTag", 0);
 	Add(m_SectionAudio, FEEDBACK_LINE, "feedback_line", 0);
 	Add(m_SectionAudio, FEEDBACK_LINE_INFO, "feedback_line_info", 0);
 	Add(m_SectionAudio, BAUDIOCOMPRESSION, "bAudioCompression", true);
@@ -982,7 +981,7 @@ bool CProfile::Convert()
 	VERIFY(Convert(m_SectionLegacy, PRESETTIME, 0));
 	VERIFY(Convert(m_SectionLegacy, RECORDPRESET, false));
 	VERIFY(Convert(m_SectionLegacy, LANGUAGE, LANGID(STANDARD_LANGID)));
-	
+
 	// custom conversions
 	// Red, Green, Blue entries => COLORREF
 	{
@@ -1042,7 +1041,7 @@ bool CProfile::Convert()
 		sWatermarkOpts cWatermark;
 		VERIFY(Convert(m_SectionLegacy, WATERMARKANNOTATION, cWatermark.m_bAnnotation));
 	}
-	
+
 	return false;
 }
 

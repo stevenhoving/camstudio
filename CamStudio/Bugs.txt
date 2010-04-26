@@ -2,6 +2,11 @@ Bugs.txt
 =======================================
 	
 - Recorder:
+	4/26/2010
+	o	clean up files: remove extraneous whitespace
+	o	ScreenAnnotationDlg ctor now initializes cursor handles to null and loads them
+		in OnInitDialog.	
+	
 	2/20/09
 **	o	Recorder shortcuts completely block the keys from being heard by another application
 		This is a big problem since the default F7-F10 are extremely useful when debugging with
@@ -38,10 +43,11 @@ Bugs.txt
 Resolved Issues:
 	o	(fixed 2/22/09 - Jason) Record window capture mode seems to be broken.
 	o	(fixed 2/20/09 - Jason) menu "Help" on second row.
-	o	(fixed 2/18/09 - Jason) From Windows Explorer: Right Button + "Open With..." + select Player
-		Classic or PlayerPlus will not play video; must use the player File-Open.
+	o	(fixed 2/18/09 - Jason) From Windows Explorer:
+		Right Button + "Open With..." + select Player Classic or PlayerPlus will not
+		play video; must use the player File-Open.
 	o	(fixed ? - ?) the global ScreenAnnotationDlg (sad) ctor attempts to access the
 		instance handle from the AFX lib too early. The handle is now taken from
-		the system and tehn the varibles are reinitialized during the InitDialog
+		the system and then the varibles are reinitialized during the InitDialog
 		member function
 	o	(fixed ? - ?) Vista blocks install to "Program Files" and "system32" folders

@@ -98,13 +98,13 @@ void mciRecordResume(HWND /*hWndCallback*/, const CString& /*strFile*/)
 
 // The setting/suggesting of format for recording Speakers is deferred until recording starts
 // Default is to use best settings avalable.
-// TODO: 
+// TODO:
 void mciSetWaveFormat()
 {
 	//char buffer[128];
 
 	//// Suggest 10 formats
-	//// TODO: wrap the mci api. 
+	//// TODO: wrap the mci api.
 	//MCI_WAVE_SET_PARMS set_parms;
 	//DWORD dwReturn = -1;
 	//for (int i = 0; ((i < 10) && (dwReturn != 0)); i++)
