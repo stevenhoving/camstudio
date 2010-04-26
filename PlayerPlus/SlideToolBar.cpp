@@ -44,7 +44,6 @@ CSlideToolBar::~CSlideToolBar()
 {
 }
 
-
 BEGIN_MESSAGE_MAP(CSlideToolBar, CToolBar)
 	//{{AFX_MSG_MAP(CSlideToolBar)
 	ON_WM_CREATE()
@@ -66,8 +65,6 @@ int CSlideToolBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
     if (!LoadToolBar (IDR_MAINFRAME))
         return -1;
 
-
-
 	CRect rect;
 
 	int sliderheight = 22;
@@ -86,11 +83,9 @@ int CSlideToolBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	rect.top = rect.top + offset ;
 	rect.bottom = rect.bottom - offset ;
 
-
 	//CString msx;
 	//msx.Format("offset %d, recttop %d, rectbottom %d, rectleft %d, rectright %d", offset, rect.top, rect.bottom, rect.left, rect.right);
 	//MessageBox(msx,"note",MB_OK);
-
 
 	if (!m_wndSliderCtrl.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP |// dwStyle
 						TBS_HORZ |
@@ -104,10 +99,6 @@ int CSlideToolBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	}
 
-
-
-
-
 	SetPositions();
 
 	sliderCtrlPtr = &m_wndSliderCtrl;
@@ -116,14 +107,12 @@ int CSlideToolBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 }
 
-
 void CSlideToolBar::SetPositions()
 {
 	m_wndSliderCtrl.SetRange(0, MAXTIMERANGE);
 	m_wndSliderCtrl.SetPos(m_slidevalue);
 	//m_wndSliderCtrl.SetPageSize(100);
 	//m_wndSliderCtrl.SetLineSize(1);
-
 
 }
 
@@ -133,7 +122,6 @@ void CSlideToolBar::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 	//accept scrolling only if non playing ?
 	//accept only if a file exists ?
-
 
 	if (!gfPlaying) {
 
@@ -148,7 +136,6 @@ void CSlideToolBar::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 			value  = timeStart + timeLength - 1;
 
 		playtime = value;
-
 
 		if (timeLength > 0) {
 
@@ -170,16 +157,12 @@ void CSlideToolBar::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 	}
 
-
 }
 
 void CSlideToolBar::UpdateValues()
 {
 
-
 }
-
-
 
 void CSlideToolBar::AdjustTimeBar(CRect clientrect)
 {
@@ -206,7 +189,6 @@ void CSlideToolBar::AdjustTimeBar(CRect clientrect)
 
 }
 
-
 void CSlideToolBar::EnableButton(BOOL setToOn, int nIndex)
 {
 	//m_bEnableChanged = TRUE;
@@ -222,6 +204,5 @@ void CSlideToolBar::EnableButton(BOOL setToOn, int nIndex)
 	}
 	SetButtonStyle(nIndex, nNewStyle);
 	*/
-
 
 }

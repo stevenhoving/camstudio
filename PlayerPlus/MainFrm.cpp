@@ -19,7 +19,6 @@ extern HDRAWDIB*  ghdd;
 extern int  giFirstVideo;
 extern HWND viewWnd;
 
-
 extern int maxxScreen;
 extern int maxyScreen;
 
@@ -103,7 +102,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	statusbarCtrl = &m_wndStatusBar;
 
-
 	/*
 	CRect rect;
 
@@ -122,7 +120,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CString msx;
 	msx.Format("offset %d, recttop %d, rectbottom %d, rectleft %d, rectright %d", offset, rect.top, rect.bottom, rect.left, rect.right);
 	MessageBox(msx,"note",MB_OK);
-
 
 	if (!m_wndSliderCtrl.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP |// dwStyle
 	TBS_HORZ |
@@ -191,7 +188,6 @@ void CMainFrame::Dump(CDumpContext& dc) const
 
 /////////////////////////////////////////////////////////////////////////////
 // CMainFrame message handlers
-
 
 BOOL CMainFrame::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext)
 {	// TODO: Add your specialized code here and/or call the base class

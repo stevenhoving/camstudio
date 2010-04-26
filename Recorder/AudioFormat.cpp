@@ -66,7 +66,7 @@ void CAudioFormatDlg::DoDataExchange(CDataExchange* pDX)
 	//}}AFX_DATA_MAP
 	DDX_Control(pDX, IDC_IFACTOR, m_ctrlEditFactor);
 	DDX_Control(pDX, IDC_INTERLEAVE, m_ctrlButtonInterleave);
-	DDX_Control(pDX, IDC_INTERLEAVEFRAMES, m_ctrlButtonInterleaveFrames);	
+	DDX_Control(pDX, IDC_INTERLEAVEFRAMES, m_ctrlButtonInterleaveFrames);
 	DDX_Control(pDX, IDC_INTERLEAVESECONDS, m_ctrlButtonInterleaveSeconds);
 	DDX_Control(pDX, IDC_RECORDFORMAT, m_ctrlCBRecordFormat);
 	DDX_Control(pDX, IDC_INPUTDEVICE, m_ctrlCBInputDevice);

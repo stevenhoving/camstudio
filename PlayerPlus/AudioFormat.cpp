@@ -54,7 +54,6 @@ void AllocLocalCompressFormat();
 void SuggestLocalCompressFormat();
 void BuildLocalRecordingFormat();
 
-
 // Get Textual Description of WAVEFORMAT
 BOOL GetFormatDescription ( LPWAVEFORMATEX  pwformat,  LPTSTR  pszFormatTag,  LPTSTR  pszFormat) ;
 DWORD formatmap[15];
@@ -70,10 +69,8 @@ int numdevice=0;
 #define  WAVE_FORMAT_MPEGLAYER3 0x0055
 #endif
 
-
 /////////////////////////////////////////////////////////////////////////////
 // AudioFormat dialog
-
 
 AudioFormat::AudioFormat(CWnd* pParent /*=NULL*/)
 	: CDialog(AudioFormat::IDD, pParent)
@@ -83,7 +80,6 @@ AudioFormat::AudioFormat(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 }
 
-
 void AudioFormat::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -91,7 +87,6 @@ void AudioFormat::DoDataExchange(CDataExchange* pDX)
 		// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
-
 
 BEGIN_MESSAGE_MAP(AudioFormat, CDialog)
 	//{{AFX_MSG_MAP(AudioFormat)
@@ -138,13 +133,11 @@ void AudioFormat::OnOK()
 	else
 		interleaveFrames = FALSE;
 
-
 	BOOL interleave_unit= ((CButton *) (GetDlgItem(IDC_INTERLEAVEFRAMES)))->GetCheck();
 	if (interleave_unit)
 		interleaveUnit = FRAMES;
 	else
 		interleaveUnit = MILLISECONDS;
-
 
 	//The Recording format, Compressed format and device must be valid before
 	//data from the Audio Options Dialog can be updated to the external variables
@@ -165,7 +158,6 @@ void AudioFormat::OnOK()
 
 					if (cbwfx >= cbwfxLocal) { //All checks cleared, update external values
 
-
 						//Updating to external variables
 
 						AudioDeviceID = devicemap[getdevice];
@@ -175,7 +167,6 @@ void AudioFormat::OnOK()
 						//Update the external pwfx (compressed format) ;
 						cbwfx = cbwfxLocal;
 						memcpy( (void *) pwfx, (void *) pwfxLocal, cbwfxLocal );
-
 
 						//Update the external m_Format (Recording format) and related variables;
 						waveinselected = formatmap[sel];
@@ -187,16 +178,12 @@ void AudioFormat::OnOK()
 
 					}
 
-
 				}
 
 			}
 
-
 		}
 	}
-
-
 
 	if (pwfxLocal) {
 
@@ -205,10 +192,8 @@ void AudioFormat::OnOK()
 
 	}
 
-
 	CDialog::OnOK();
 }
-
 
 BOOL AudioFormat::OnInitDialog()
 {
@@ -235,7 +220,6 @@ BOOL AudioFormat::OnInitDialog()
 
 	}
 
-
 	if (interleaveUnit == FRAMES) {
 		((CButton *) (GetDlgItem(IDC_INTERLEAVEFRAMES)))->SetCheck(TRUE);
 		((CButton *) (GetDlgItem(IDC_INTERLEAVESECONDS)))->SetCheck(FALSE);
@@ -245,13 +229,11 @@ BOOL AudioFormat::OnInitDialog()
 		((CButton *) (GetDlgItem(IDC_INTERLEAVESECONDS)))->SetCheck(TRUE);
 	}
 
-
 	audio_bits_per_sampleLocal = audio_bits_per_sample;
 	audio_num_channelsLocal = audio_num_channels;
 	audio_samples_per_secondsLocal = audio_samples_per_seconds;
 
 	bAudioCompressionLocal = bAudioCompression;
-
 
 	//Ver 1.2
 
@@ -297,14 +279,12 @@ BOOL AudioFormat::OnInitDialog()
 
 	}
 
-
 	//Ver 1.2
 	WAVEINCAPS pwic;
 	MMRESULT mmr = waveInGetDevCaps( AudioDeviceID ,  &pwic, sizeof(pwic) );
 
 	int selected_cindex=-1; //selected index of combo box
 	numformat=0; //counter, number of format
-
 
 	//This code works on the assumption (when filling in values for the user - interfaces)
 	//that the  m_Format and pwfx formats (external variables) are already chosen correctly and compatibile with each other
@@ -316,11 +296,9 @@ BOOL AudioFormat::OnInitDialog()
 
 	}
 
-
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
-
 
 void AudioFormat::OnChoose()
 {
@@ -339,7 +317,6 @@ void AudioFormat::OnChoose()
     acmfc.cbStruct        = sizeof(acmfc);
 	acmfc.hwndOwner       = m_hWnd;
 	acmfc.pwfx            = pwfxLocal;
-
 
 	//if (initial_audiosetup)
 	//	acmfc.fdwStyle        = 0;
@@ -384,7 +361,6 @@ void AudioFormat::OnChoose()
         return ;
     }
 
-
 	TRACE("\nWAVEFORMAT:");
 	TRACE("\nwFormatTag = %d",pwfxLocal->wFormatTag);
 	TRACE("\nnChannels = %d",pwfxLocal->nChannels);
@@ -393,16 +369,11 @@ void AudioFormat::OnChoose()
 	TRACE("\nnBlockAlign = %d",pwfxLocal->nBlockAlign);
 	TRACE("\ncbSize = %d",pwfxLocal->cbSize);
 
-
 	UpdateLocalCompressFormatInterface();
-
-
 
 }
 
-
 void AudioFormat::UpdateLocalCompressFormatInterface() {
-
 
 	if (bAudioCompressionLocal==0) {
 
@@ -433,13 +404,11 @@ BOOL GetFormatDescription ( LPWAVEFORMATEX  pwformat,  LPTSTR  pszFormatTag,  LP
     if (NULL != pszFormatTag) {
         ACMFORMATTAGDETAILS aftd;
 
-
         memset(&aftd, 0, sizeof(aftd));
 
         // Fill in the required members FormatTAG query.
         aftd.cbStruct = sizeof(aftd);
         aftd.dwFormatTag = pwformat->wFormatTag;
-
 
         // Ask ACM to find first available driver that supports the specified Format tag.
         mmr = acmFormatTagDetails(NULL, &aftd,
@@ -473,11 +442,8 @@ BOOL GetFormatDescription ( LPWAVEFORMATEX  pwformat,  LPTSTR  pszFormatTag,  LP
 	formatstr = formatstr + str_nchannels + "      " + str_avg_bytes_per_second;
 	lstrcpy(pszFormat, LPCTSTR(formatstr));
 
-
     return (TRUE);
 }
-
-
 
 void AudioFormat::OnSelchangeRecordformat()
 {
@@ -487,7 +453,6 @@ void AudioFormat::OnSelchangeRecordformat()
 
 	int sel =((CComboBox *) (GetDlgItem(IDC_RECORDFORMAT)))->GetCurSel();
 	if (sel<0) return;
-
 
 	if (formatmap[sel] == WAVE_FORMAT_1M08) {
 
@@ -510,7 +475,6 @@ void AudioFormat::OnSelchangeRecordformat()
 		audio_bits_per_sampleLocal = 8;
 		audio_num_channelsLocal = 2;
 		audio_samples_per_secondsLocal = 11025;
-
 
 	}
 
@@ -552,7 +516,6 @@ void AudioFormat::OnSelchangeRecordformat()
 		audio_num_channelsLocal = 2;
 		audio_samples_per_secondsLocal = 22050;
 
-
 	}
 
 	if (formatmap[sel] ==  WAVE_FORMAT_4M08) {
@@ -577,7 +540,6 @@ void AudioFormat::OnSelchangeRecordformat()
 		audio_num_channelsLocal = 2;
 		audio_samples_per_secondsLocal = 44100;
 
-
 	}
 
 	if (formatmap[sel] ==  WAVE_FORMAT_4S16) {
@@ -586,13 +548,11 @@ void AudioFormat::OnSelchangeRecordformat()
 		audio_num_channelsLocal = 2;
 		audio_samples_per_secondsLocal = 44100;
 
-
 	}
 
 	BuildLocalRecordingFormat();
 	SuggestLocalCompressFormat();
 	UpdateLocalCompressFormatInterface();
-
 
 }
 
@@ -615,9 +575,7 @@ void AudioFormat::OnInterleave()
 
 	}
 
-
 }
-
 
 void BuildLocalRecordingFormat() {
 
@@ -630,7 +588,6 @@ void BuildLocalRecordingFormat() {
 	m_FormatLocal.cbSize = 0;
 
 }
-
 
 void SuggestLocalCompressFormat() {
 
@@ -650,12 +607,10 @@ void SuggestLocalCompressFormat() {
 
 	//if (mmr!=0) {
 
-
 		//Then try ADPCM
 		//BuildLocalRecordingFormat();
 		//pwfxLocal->wFormatTag = WAVE_FORMAT_ADPCM;
 		//MMRESULT mmr = acmFormatSuggest(NULL, &m_FormatLocal,  pwfxLocal, cbwfxLocal, ACM_FORMATSUGGESTF_WFORMATTAG);
-
 
 		if (mmr!=0) {
 
@@ -664,14 +619,11 @@ void SuggestLocalCompressFormat() {
 			pwfxLocal->wFormatTag = WAVE_FORMAT_PCM;
 			MMRESULT mmr = acmFormatSuggest(NULL, &m_FormatLocal,  pwfxLocal, cbwfxLocal, ACM_FORMATSUGGESTF_WFORMATTAG);
 
-
 			if (mmr!=0) {
 
 				bAudioCompressionLocal = FALSE;
 
-
 			}
-
 
 		//}
 
@@ -679,9 +631,7 @@ void SuggestLocalCompressFormat() {
 
 }
 
-
 void AllocLocalCompressFormat() {
-
 
 	if (pwfxLocal) {
 
@@ -702,7 +652,6 @@ void AllocLocalCompressFormat() {
 
 		if (cbwfxLocal < cbwfx) cbwfxLocal = cbwfx;
 
-
 		pwfxLocal = (LPWAVEFORMATEX)GlobalAllocPtr(GHND, cbwfxLocal);
 		if (NULL == pwfxLocal)
 		{
@@ -713,12 +662,9 @@ void AllocLocalCompressFormat() {
 			return ;
 		}
 
-
 	}
 
 }
-
-
 
 void AudioFormat::OnCancel()
 {
@@ -755,7 +701,6 @@ void AudioFormat::OnVolume()
 	CString Windir(dirx);
 	CString AppDir;
 	CString SubDir;
-
 
 	//Test Windows\sndvol32.exe
 	AppDir = Windir;
@@ -795,7 +740,6 @@ void AudioFormat::OnVolume()
 
 	}
 
-
 	//Test Windows\system\sndvol32.exe
 	AppDir = Windir;
 	SubDir = "\\system32";
@@ -813,14 +757,12 @@ void AudioFormat::OnVolume()
 
 	}
 
-
 	if (launchPath!="") { //launch Volume Control
 
 		//not sure
 		launchPath = launchPath + " /r /rec /record";
 
 		if (WinExec(launchPath,SW_SHOW)!=0) {
-
 
 		}
 		else {
@@ -836,7 +778,6 @@ void AudioFormat::OnSelchangeInputdevice()
 {
 	// TODO: Add your control notification handler code here
 
-
 	int devID;
 	devID = ((CComboBox *) (GetDlgItem(IDC_INPUTDEVICE)))->GetCurSel();
 	if (devID < numdevice) {
@@ -846,7 +787,6 @@ void AudioFormat::OnSelchangeInputdevice()
 	}
 
 }
-
 
 // ver 1.2
 // =====================================
@@ -859,25 +799,21 @@ void AudioFormat::OnSelchangeInputdevice()
 // =====================================
 void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPWAVEFORMATEX curr_sel_pwfx) {
 
-
 	WAVEINCAPS pwic;
 	MMRESULT mmr = waveInGetDevCaps( deviceID ,  &pwic, sizeof(pwic) );
 
 	int selected_cindex=-1; //selected index of combo box
 	numformat=0; //counter, number of format
 
-
 	//Reset Recording Format Combo Box and format map
 	((CComboBox *) (GetDlgItem(IDC_RECORDFORMAT)))->ResetContent();
 	numformat = 0;
-
 
 	//This code works on the assumption (when filling in values for the interfaces)
 	//that the  m_Format and pwfx formats (external variables) are already chosen correctly and compatibile with each other
 	if ((pwic.dwFormats) & WAVE_FORMAT_1M08) {
 
 		((CComboBox *) (GetDlgItem(IDC_RECORDFORMAT)))->AddString("11.025 kHz, mono, 8-bit");
-
 
 		formatmap[numformat]=WAVE_FORMAT_1M08;
 		numformat++;
@@ -888,17 +824,14 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
 
 		((CComboBox *) (GetDlgItem(IDC_RECORDFORMAT)))->AddString("11.025 kHz, mono, 16-bit");
 
-
 		formatmap[numformat]=WAVE_FORMAT_1M16;
 		numformat++;
-
 
 	}
 
 	if ((pwic.dwFormats) & WAVE_FORMAT_1S08) {
 
 		((CComboBox *) (GetDlgItem(IDC_RECORDFORMAT)))->AddString("11.025 kHz, stereo, 8-bit");
-
 
 		formatmap[numformat]=WAVE_FORMAT_1S08;
 		numformat++;
@@ -912,9 +845,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
 		formatmap[numformat]=WAVE_FORMAT_1S16;
 		numformat++;
 
-
 	}
-
 
 	if ((pwic.dwFormats) & WAVE_FORMAT_2M08) {
 
@@ -929,29 +860,23 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
 
 		((CComboBox *) (GetDlgItem(IDC_RECORDFORMAT)))->AddString("22.05 kHz, mono, 16-bit");
 
-
 		formatmap[numformat]=WAVE_FORMAT_2M16;
 		numformat++;
 
 	}
 
-
 	if ((pwic.dwFormats) & WAVE_FORMAT_2S08)  {
-
 
 		((CComboBox *) (GetDlgItem(IDC_RECORDFORMAT)))->AddString("22.05 kHz, stereo, 8-bit");
 
-
 		formatmap[numformat]=WAVE_FORMAT_2S08;
 		numformat++;
-
 
 	}
 
 	if ((pwic.dwFormats) & WAVE_FORMAT_2S16) {
 
 		((CComboBox *) (GetDlgItem(IDC_RECORDFORMAT)))->AddString("22.05 kHz, stereo, 16-bit");
-
 
 		formatmap[numformat]=WAVE_FORMAT_2S16;
 		numformat++;
@@ -962,17 +887,14 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
 
 		((CComboBox *) (GetDlgItem(IDC_RECORDFORMAT)))->AddString("44.1 kHz, mono, 8-bit");
 
-
 		formatmap[numformat]=WAVE_FORMAT_4M08;
 		numformat++;
-
 
 	}
 
 	if ((pwic.dwFormats) & WAVE_FORMAT_4M16) {
 
 		((CComboBox *) (GetDlgItem(IDC_RECORDFORMAT)))->AddString("44.1 kHz, mono, 16-bit");
-
 
 		formatmap[numformat]=WAVE_FORMAT_4M16;
 		numformat++;
@@ -997,12 +919,10 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
 
 	}
 
-
 	if (numformat<=0) {
 
 		((CComboBox *) (GetDlgItem(IDC_RECORDFORMAT)))->AddString("None Available");
 		((CComboBox *) (GetDlgItem(IDC_RECORDFORMAT)))->SetCurSel(0);
-
 
 		((CEdit *) (GetDlgItem(IDC_COMPRESSEDFORMATTAG)))->SetWindowText("None Available");
 		((CEdit *) (GetDlgItem(IDC_COMPRESSEDFORMAT)))->SetWindowText(" ");
@@ -1020,14 +940,12 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
 
 	}
 
-
 	for (int k=0;k<numformat;k++) {
 
 		if (curr_sel_rec_format == formatmap[k])
 			selected_cindex=k;
 
 	}
-
 
 	//If can reach here ==> numformat > 0
 	if ((selected_cindex==-1) && (numformat>0)) {	//selected recording format not found
@@ -1039,7 +957,6 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
 
 		//force selection of compress format
 		OnSelchangeRecordformat() ;
-
 
 	}
 	else {
@@ -1061,11 +978,9 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
 		if (selected_cindex>=0)
 			((CComboBox *) (GetDlgItem(IDC_RECORDFORMAT)))->SetCurSel(selected_cindex);
 
-
 	}
 
 }
-
 
 void AudioFormat::OnInterleaveframes()
 {
