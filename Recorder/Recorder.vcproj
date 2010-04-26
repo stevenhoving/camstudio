@@ -340,28 +340,6 @@
 				>
 			</File>
 			<File
-				RelativePath="CBitmapEx.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="CursorOptionsDlg.cpp"
 				>
 				<FileConfiguration
@@ -1035,10 +1013,6 @@
 				>
 			</File>
 			<File
-				RelativePath="CBitmapEx.h"
-				>
-			</File>
-			<File
 				RelativePath="CursorOptionsDlg.h"
 				>
 			</File>
@@ -1392,11 +1366,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Recorder.ico"
+				RelativePath="..\GlobalResources\Recorder.ico"
 				>
 			</File>
 			<File
-				RelativePath="..\GlobalResources\Recorder.ico"
+				RelativePath=".\Recorder.ico"
 				>
 			</File>
 			<File
@@ -1412,11 +1386,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\GlobalResources\Recorder_logo.bmp"
+				RelativePath=".\Recorder_logo.bmp"
 				>
 			</File>
 			<File
-				RelativePath=".\Recorder_logo.bmp"
+				RelativePath="..\GlobalResources\Recorder_logo.bmp"
 				>
 			</File>
 			<File
