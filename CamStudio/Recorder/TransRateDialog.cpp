@@ -18,11 +18,11 @@ extern int iRrefreshRate;
 
 CTransRateDlg::CTransRateDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CTransRateDlg::IDD, pParent)
+, m_myparent(dynamic_cast<CVideoWnd *>(pParent))
 {
 	//{{AFX_DATA_INIT(CTransRateDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
-	m_myparent = NULL;
 }
 
 void CTransRateDlg::DoDataExchange(CDataExchange* pDX)
@@ -44,35 +44,6 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CTransRateDlg message handlers
 
-void CTransRateDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
-{
-	// TODO: Add your message handler code here and/or call default
-
-	int valRate = m_ctrlSliderTransRate.GetPos();
-
-	CString valstr;
-	valstr.Format(TEXT("%d fps"), valRate);
-	m_ctrlStaticFrameRate.SetWindowText(valstr);
-
-	if (m_myparent) {
-
-		m_myparent->AdjustRefreshRate(valRate);
-
-		//this line should not be put before m_myparent->AdjustRefreshRate(valRate);
-		m_myparent->m_iRefreshRate = valRate;
-		iRrefreshRate = valRate;
-
-	}
-
-	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
-}
-
-void CTransRateDlg::PreModal( CVideoWnd * parent)
-{
-	m_myparent = parent;
-
-}
-
 BOOL CTransRateDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
@@ -80,7 +51,6 @@ BOOL CTransRateDlg::OnInitDialog()
 	if (!m_myparent)
 		return TRUE;
 
-	// TODO: Add extra initialization here
 	m_ctrlSliderTransRate.EnableWindow(TRUE);
 	m_ctrlSliderTransRate.SetRange(1,60);
 	m_ctrlSliderTransRate.SetPos(m_myparent->m_iRefreshRate);
@@ -95,15 +65,29 @@ BOOL CTransRateDlg::OnInitDialog()
 
 void CTransRateDlg::OnCancel()
 {
-	// TODO: Add extra cleanup here
-
 	CDialog::OnCancel();
 }
 
 void CTransRateDlg::OnOK()
 {
-	// TODO: Add extra cleanup here
-
 	CDialog::OnOK();
+}
+
+void CTransRateDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+{
+	int valRate = m_ctrlSliderTransRate.GetPos();
+
+	CString valstr;
+	valstr.Format(TEXT("%d fps"), valRate);
+	m_ctrlStaticFrameRate.SetWindowText(valstr);
+
+	if (m_myparent) {
+		m_myparent->AdjustRefreshRate(valRate);
+		//this line should not be put before m_myparent->AdjustRefreshRate(valRate);
+		m_myparent->m_iRefreshRate = valRate;
+		iRrefreshRate = valRate;
+	}
+
+	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 

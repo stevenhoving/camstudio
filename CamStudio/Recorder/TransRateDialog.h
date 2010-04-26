@@ -18,8 +18,6 @@ class CTransRateDlg : public CDialog
 // Construction
 public:
 	CTransRateDlg(CWnd* pParent = NULL);   // standard constructor
-	CVideoWnd* m_myparent;
-	void PreModal( CVideoWnd * parent);
 
 // Dialog Data
 	//{{AFX_DATA(CTransRateDlg)
@@ -46,6 +44,7 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 private:
+	CVideoWnd* m_myparent;
 	CSliderCtrl m_ctrlSliderTransRate;
 	CStatic m_ctrlStaticFrameRate;
 };
