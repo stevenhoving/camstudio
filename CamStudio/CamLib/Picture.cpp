@@ -430,10 +430,10 @@ BOOL CPicture::SaveAsBitmap(CString sFilePathName)
 	ILockBytes *Buffer = 0;
 	IStorage *pStorage = 0;
 	IStream *FileStream = 0;
-	BYTE *BufferBytes;
+	BYTE *BufferBytes = 0;
 	STATSTG BytesStatistics;
-	DWORD OutData;
-	long OutStream;
+	DWORD OutData = 0;
+	long OutStream = 0L;
 	CFile BitmapFile; CFileException e;
 	double SkipFloat = 0;
 	DWORD ByteSkip = 0;
