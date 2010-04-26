@@ -51,21 +51,43 @@ static char THIS_FILE[] = __FILE__;
 //********************************************************************************
 
 CTransparentWnd::CTransparentWnd()
+:	m_uniqueID(lCurrentWndID++)
+	, m_saveMethod(saveMethodNew)
+	, m_textstring("Right Click to Edit Text")
+	, m_rgb(RGB(0,0,0))
+	, m_factor(2)
+	, m_horzalign(DT_CENTER)
+	, m_charset(ANSI_CHARSET)
+	, m_bTrackingOn(false)
+	, m_bEditTransOn(false)
+	, m_bEditImageOn(false)
+	, m_enableTransparency(0)
+	, m_valueTransparency(50)
+	, m_menuLoaded(0)
+	, m_movewindow(0)
+	, m_regionCreated(0)
+	, m_transparentColor(RGB(0,0,0))
+	, m_regionType(regionNULL)
+	, m_hbitmap(0)
+	, m_regionPredefinedShape(regionROUNDRECT)
+	, m_roundrectFactor(0.2)
+	, m_bBorderYes(false)
+	, m_borderColor(RGB(0,0,128))
+	, m_borderSize(5)
+	, m_backgroundColor(RGB(255,255,255))
+	, m_shapeStr("Label")
+	, m_baseType(0)
+	, m_widthPos(32)
+	, m_heightPos(32)
+	, m_rectOriginalWnd(m_rectWnd)
 {
-	uniqueID = lCurrentWndID;
-	lCurrentWndID++;
 	if (lCurrentWndID > 2147483647)
 		lCurrentWndID = 0;
-
-	saveMethod = saveMethodNew;
-
-	m_textstring = "Right Click to Edit Text";
 
 	ZeroMemory(&m_textfont, sizeof(LOGFONT));
 	m_textfont.lfHeight = 12;
 	m_textfont.lfWidth = 8;
 	strcpy_s(m_textfont.lfFaceName,"Arial");
-	rgb = RGB(0,0,0);
 
 	m_tracker.m_rect.left = 20;
 	m_tracker.m_rect.top = 20;
@@ -76,50 +98,10 @@ CTransparentWnd::CTransparentWnd()
 	m_tracker.m_sizeMin.cx = 64;
 	m_tracker.m_sizeMin.cx = 48;
 
-	m_factor = 2;
-
-	m_horzalign = DT_CENTER;
-
-	m_charset = ANSI_CHARSET;
-
 	m_rectWnd.left =0;
 	m_rectWnd.top = 0;
 	m_rectWnd.right =180;
 	m_rectWnd.bottom = 160;
-
-	trackingOn = 0;
-	editTransOn = 0;
-	editImageOn = 0;
-
-	enableTransparency = 0;
-	valueTransparency = 50;
-
-	menuLoaded = 0;
-	m_movewindow = 0;
-
-	m_regionCreated = 0;
-	m_transparentColor = RGB(0,0,0);
-	//m_regionType = regionTRANSPARENTCOLOR;
-	m_regionType = regionNULL;
-	m_hbitmap = NULL;
-
-	m_regionPredefinedShape = regionROUNDRECT;
-	m_roundrectFactor = 0.2;
-
-	m_borderYes = 0;
-	m_borderColor = RGB(0,0,128);
-	m_borderSize = 5;
-
-	m_backgroundColor = RGB(255,255,255);
-
-	m_shapeStr = "Label";
-
-	baseType = 0;
-
-	//WidthHeight
-	widthPos = 32;
-	heightPos = 32;
-	m_rectOriginalWnd = m_rectWnd;
 }
 
 //********************************************************************************
@@ -134,7 +116,10 @@ BEGIN_MESSAGE_MAP(CTransparentWnd, CWnd)
 	//{{AFX_MSG_MAP(CTransparentWnd)
 	ON_WM_PAINT()
 	ON_WM_ERASEBKGND()
+	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
+	ON_WM_SETCURSOR()
 	ON_WM_CONTEXTMENU()
 	ON_COMMAND(ID_CONTEXT_CLOSEALL, OnContextCloseall)
 	ON_COMMAND(ID_CONTEXT_CLOSE, OnContextClose)
@@ -143,13 +128,10 @@ BEGIN_MESSAGE_MAP(CTransparentWnd, CWnd)
 	ON_COMMAND(ID_CONTEXT_REFRESH, OnContextRefresh)
 	ON_COMMAND(ID_CONTEXT_EDITTEXT, OnContextEditText)
 	ON_COMMAND(ID_CONTEXT_SAVE, OnContextSave)
-	ON_WM_SETCURSOR()
 	ON_COMMAND(ID_CONTEXT_EDITTRANSPARENCY, OnContextEditTransparency)
 	ON_COMMAND(ID_CONTEXT_ANTIALIAS_NOANTIALIAS, OnContextNoAntiAlias)
 	ON_COMMAND(ID_CONTEXT_ANTIALIAS_ANTIALIASX2, OnContextAntiAlias2)
 	ON_COMMAND(ID_CONTEXT_ANTIALIAS_ANTIALIASX3SLOWEST, OnContextAntiAlias3)
-	ON_WM_LBUTTONUP()
-	ON_WM_MOUSEMOVE()
 	ON_COMMAND(ID_CONTEXT_EDITIMAGE, OnContextEditImage)
 	ON_COMMAND(ID_CONTEXT_CLONE, OnContextClone)
 	//}}AFX_MSG_MAP
@@ -209,14 +191,14 @@ void CTransparentWnd::CreateTransparent(LPCTSTR pTitle, RECT rect, HBITMAP Bitma
 
 void CTransparentWnd::CreateTransparent(LPCTSTR pTitle, RECT rect, CString bitmapFile, int fitBitmapSize)
 {
-	if (picture.Load(bitmapFile)) {
+	if (m_picture.Load(bitmapFile)) {
 		HBITMAP testtrans;
-		if (picture.m_IPicture->get_Handle( (unsigned int *) &testtrans ) == S_OK ) {
+		if (m_picture.IPicturePtr()->get_Handle( (unsigned int *) &testtrans ) == S_OK ) {
 			m_hbitmap = testtrans;
 
 			if (fitBitmapSize) {
-				rect.right = rect.left + picture.m_Width -1;
-				rect.bottom = rect.top + picture.m_Height -1;
+				rect.right = rect.left + m_picture.Width() - 1;
+				rect.bottom = rect.top + m_picture.Height() - 1;
 			}
 		}
 	}
@@ -256,8 +238,8 @@ void CTransparentWnd::SetupRegion(CDC *pDC)
 		CRect cRect;
 		cRect = m_rectWnd;
 
-		if (wndRgn.m_hObject) {
-			wndRgn.DeleteObject();
+		if (m_wndRgn.m_hObject) {
+			m_wndRgn.DeleteObject();
 		}
 
 		//trace rectwnd
@@ -267,13 +249,13 @@ void CTransparentWnd::SetupRegion(CDC *pDC)
 		double rval = (rx > ry) ? ry : rx;
 
 		if (m_regionPredefinedShape == regionROUNDRECT)
-			wndRgn.CreateRoundRectRgn(0, 0, cRect.Width()-1, cRect.Height()-1, (int) rval, (int) rval);
+			m_wndRgn.CreateRoundRectRgn(0, 0, cRect.Width()-1, cRect.Height()-1, (int) rval, (int) rval);
 		else if (m_regionPredefinedShape == regionELLIPSE)
-			wndRgn.CreateEllipticRgn( 0, 0, cRect.Width()-1, cRect.Height()-1);
+			m_wndRgn.CreateEllipticRgn( 0, 0, cRect.Width()-1, cRect.Height()-1);
 		else
-			wndRgn.CreateRectRgn(0, 0, cRect.Width()-1, cRect.Height()-1);
+			m_wndRgn.CreateRectRgn(0, 0, cRect.Width()-1, cRect.Height()-1);
 
-		SetWindowRgn((HRGN)wndRgn, TRUE);
+		SetWindowRgn((HRGN)m_wndRgn, TRUE);
 	}
 }
 
@@ -296,7 +278,7 @@ void CTransparentWnd::SetupRegionByTransColor(CDC *pDC, COLORREF transColor)
 
 	CBitmap cBitmap;
 	CBitmap zoomBitmap;
-	CBitmap * old_zoomBitmap;
+	CBitmap * old_zoomBitmap = 0;
 	HBITMAP pOldMemBmp = NULL;
 	COLORREF col;
 
@@ -329,10 +311,10 @@ void CTransparentWnd::SetupRegionByTransColor(CDC *pDC, COLORREF transColor)
 		pOldMemBmp = (HBITMAP) ::SelectObject(memDC.m_hDC, m_hbitmap);
 	}
 
-	if (wndRgn.m_hObject) {
-		wndRgn.DeleteObject();
+	if (m_wndRgn.m_hObject) {
+		m_wndRgn.DeleteObject();
 	}
-	wndRgn.CreateRectRgn(0, 0, cRect.Width(), cRect.Height());
+	m_wndRgn.CreateRectRgn(0, 0, cRect.Width(), cRect.Height());
 
 	BOOL bStart = FALSE;
 	int yStart = 0;
@@ -348,7 +330,7 @@ void CTransparentWnd::SetupRegionByTransColor(CDC *pDC, COLORREF transColor)
 			} else {
 				if (bStart) {
 					rgnTemp.CreateRectRgn(x, yStart, x+1, y);
-					wndRgn.CombineRgn(&wndRgn, &rgnTemp, RGN_DIFF);
+					m_wndRgn.CombineRgn(&m_wndRgn, &rgnTemp, RGN_DIFF);
 					rgnTemp.DeleteObject();
 				}
 				bStart = FALSE;
@@ -357,7 +339,7 @@ void CTransparentWnd::SetupRegionByTransColor(CDC *pDC, COLORREF transColor)
 		// End of column
 		if (bStart) {
 			rgnTemp.CreateRectRgn(x, yStart, x+1, y);
-			wndRgn.CombineRgn(&wndRgn, &rgnTemp, RGN_XOR);
+			m_wndRgn.CombineRgn(&m_wndRgn, &rgnTemp, RGN_XOR);
 			rgnTemp.DeleteObject();
 			bStart=FALSE;
 		}
@@ -372,7 +354,7 @@ void CTransparentWnd::SetupRegionByTransColor(CDC *pDC, COLORREF transColor)
 
 	memDC.DeleteDC();
 
-	SetWindowRgn((HRGN)wndRgn, TRUE);
+	SetWindowRgn((HRGN)m_wndRgn, TRUE);
 
 	m_regionCreated = 1;
 }
@@ -426,7 +408,7 @@ void CTransparentWnd::OnPaint()
 		pDC->FillSolidRect(0,0,rect.Width(),rect.Height(),m_backgroundColor);
 	}
 
-	if ((m_factor == 1) || (trackingOn)) {
+	if ((m_factor == 1) || m_bTrackingOn) {
 		CFont dxfont;
 		dxfont.CreateFontIndirect(&m_textfont);
 		CFont* oldfont = (CFont *) pDC->SelectObject(&dxfont);
@@ -435,14 +417,14 @@ void CTransparentWnd::OnPaint()
 
 		//Draw Text
 		pDC->SetBkMode(TRANSPARENT);
-		pDC->SetTextColor(rgb);
+		pDC->SetTextColor(m_rgb);
 		pDC->DrawText((char *)LPCTSTR(m_textstring), textlength, &m_tracker.m_rect, m_horzalign | DT_VCENTER | DT_WORDBREAK );
 		//DrawTextW(pDC->m_hDC, (unsigned short *)LPCTSTR(m_textstring), textlength, &m_tracker.m_rect, m_horzalign | DT_VCENTER | DT_WORDBREAK );
 
 		//if (oldfont)
 		pDC->SelectObject(oldfont);
 
-		if ((m_borderYes) && (m_regionType==regionSHAPE)) {
+		if ((m_bBorderYes) && (regionSHAPE == m_regionType)) {
 			double rx = cRect.Width() * m_roundrectFactor;
 			double ry = cRect.Height() * m_roundrectFactor;
 			double rval = (rx>ry) ? ry : rx;
@@ -474,7 +456,7 @@ void CTransparentWnd::OnPaint()
 	} else {
 		//LPBITMAPINFO pbmiText = GetTextBitmap(pDC, &CRect(clrect),m_factor,&m_tracker.m_rect, &m_textfont, m_textstring, NULL, NULL, rgb, m_horzalign);
 		//HBITMAP newbm = DrawResampleRGB(pDC, &CRect(clrect), m_factor, (LPBITMAPINFOHEADER) pbmiText);
-		LPBITMAPINFO pbmiText = GetTextBitmap(pDC, &clrect, m_factor, &m_tracker.m_rect, &m_textfont, m_textstring, NULL, NULL, rgb, m_horzalign);
+		LPBITMAPINFO pbmiText = GetTextBitmap(pDC, &clrect, m_factor, &m_tracker.m_rect, &m_textfont, m_textstring, NULL, NULL, m_rgb, m_horzalign);
 //		HBITMAP newbm = DrawResampleRGB(pDC, &clrect, m_factor, (LPBITMAPINFOHEADER) pbmiText);
 
 		if (pbmiText) {
@@ -483,7 +465,7 @@ void CTransparentWnd::OnPaint()
 		}
 	}
 
-	if (trackingOn) {
+	if (m_bTrackingOn) {
 		m_tracker.Draw(pDC);
 	}
 }
@@ -495,12 +477,12 @@ void CTransparentWnd::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 	bool bIsEdited = AreWindowsEdited();
 
-	if (menuLoaded == 0) {
-		menu.LoadMenu(IDR_CONTEXTMENU);
-		menuLoaded = 1;
+	if (m_menuLoaded == 0) {
+		m_menu.LoadMenu(IDR_CONTEXTMENU);
+		m_menuLoaded = 1;
 	}
 
-	CMenu* pPopup = menu.GetSubMenu(0);
+	CMenu* pPopup = m_menu.GetSubMenu(0);
 	ASSERT(pPopup != NULL);
 	if (bIsEdited) {
 		DisableContextMenu();
@@ -519,7 +501,7 @@ void CTransparentWnd::OnContextSaveLayout()
 
 void CTransparentWnd::OnContextSave()
 {
-	if (saveMethod == saveMethodNew) {
+	if (m_saveMethod == saveMethodNew) {
 		sadlg.SaveShapeNew(this);
 	} else {
 		sadlg.SaveShapeReplace(this);
@@ -533,7 +515,7 @@ void CTransparentWnd::OnContextEditText()
 
 void CTransparentWnd::EditText()
 {
-	trackingOn = 1;
+	m_bTrackingOn = true;
 
 	//WidthHeight
 	SetWindowRgn((HRGN)NULL, TRUE);
@@ -541,10 +523,10 @@ void CTransparentWnd::EditText()
 	Invalidate();
 
 	CTextDlg txdlg;
-	txdlg.PreModal(&m_textstring, &m_textfont, &rgb, this, &m_horzalign);
+	txdlg.PreModal(&m_textstring, &m_textfont, &m_rgb, this, &m_horzalign);
 	txdlg.DoModal();
 
-	trackingOn = 0;
+	m_bTrackingOn = false;
 
 	OnUpdateContextMenu();
 
@@ -663,7 +645,7 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect* caprect,int fact
 		DrawTextEx(hMemDC, (char *)LPCTSTR(textstr), textlength, LPRECT(usetextRect), horzalign | DT_VCENTER | DT_WORDBREAK , NULL);
 	}
 
-	if ((m_borderYes) && (m_regionType==regionSHAPE)) {
+	if ((m_bBorderYes) && (regionSHAPE == m_regionType)) {
 		CRect cRect;
 		cRect.left = left;
 		cRect.top = top;
@@ -904,7 +886,7 @@ BOOL CTransparentWnd::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 {
 	// forward to tracker
 
-	if (trackingOn) {
+	if (m_bTrackingOn) {
 		if (pWnd == this && m_tracker.SetCursor(this, nHitTest))
 			return TRUE;
 	}
@@ -914,7 +896,7 @@ BOOL CTransparentWnd::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 
 void CTransparentWnd::EnsureOnTopList(CTransparentWnd* transWnd )
 {
-	if (baseType>0)
+	if (m_baseType > 0)
 		return; //if not screen annotation...skip
 
 	ListManager.EnsureOnTopList(transWnd);
@@ -927,14 +909,14 @@ void CTransparentWnd::OnLButtonDown(UINT nFlags, CPoint point)
 	CRect truerect;
 	m_tracker.GetTrueRect( &truerect);
 
-	if (trackingOn) {
+	if (m_bTrackingOn) {
 		m_tracker.Track( this, point, FALSE,NULL);
 		Invalidate();
 	}
 
 	CWnd::OnLButtonDown(nFlags, point);
 
-	if ((trackingOn) && (truerect.PtInRect(point))) {
+	if (m_bTrackingOn && truerect.PtInRect(point)) {
 	} else {
 		if (m_movewindow == 0) {
 			m_movewindow = 1;
@@ -959,20 +941,20 @@ void CTransparentWnd::EditTransparency()
 		return;
 	}
 
-	editTransOn = 1;
+	m_bEditTransOn = true;
 
-	CEditTransparencyDlg etDlg(enableTransparency, valueTransparency, this);
+	CEditTransparencyDlg etDlg(m_enableTransparency, m_valueTransparency, this);
 	etDlg.DoModal();
 
-	editTransOn = 0;
+	m_bEditTransOn = false;
 	OnUpdateContextMenu();
 }
 
 void CTransparentWnd::InvalidateTransparency()
 {
-	if (enableTransparency) {
+	if (m_enableTransparency) {
 		G_Layered.AddLayeredStyle(m_hWnd);
-		G_Layered.SetTransparentPercentage(m_hWnd, valueTransparency);
+		G_Layered.SetTransparentPercentage(m_hWnd, m_valueTransparency);
 	} else {
 		::SetWindowLong(m_hWnd, GWL_EXSTYLE, ::GetWindowLong(m_hWnd, GWL_EXSTYLE) & ~WS_EX_LAYERED);
 	}
@@ -1001,12 +983,12 @@ void CTransparentWnd::OnContextAntiAlias3()
 
 void CTransparentWnd::DisableContextMenu()
 {
-	if (menuLoaded == 0) {
-		menu.LoadMenu(IDR_CONTEXTMENU);
-		menuLoaded = 1;
+	if (m_menuLoaded == 0) {
+		m_menu.LoadMenu(IDR_CONTEXTMENU);
+		m_menuLoaded = 1;
 	}
 
-	CMenu* pPopup = menu.GetSubMenu(0);
+	CMenu* pPopup = m_menu.GetSubMenu(0);
 	ASSERT(pPopup != NULL);
 
 	pPopup->EnableMenuItem(ID_CONTEXT_EDITTEXT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
@@ -1025,19 +1007,19 @@ void CTransparentWnd::DisableContextMenu()
 
 void CTransparentWnd::OnUpdateContextMenu()
 {
-	if (menuLoaded == 0) {
-		menu.LoadMenu(IDR_CONTEXTMENU);
-		menuLoaded = 1;
+	if (m_menuLoaded == 0) {
+		m_menu.LoadMenu(IDR_CONTEXTMENU);
+		m_menuLoaded = 1;
 	}
 
-	CMenu* pPopup = menu.GetSubMenu(0);
+	CMenu* pPopup = m_menu.GetSubMenu(0);
 	ASSERT(pPopup != NULL);
 
 	pPopup->CheckMenuItem(ID_CONTEXT_ANTIALIAS_NOANTIALIAS, m_factor == 1 ? MF_CHECKED : MF_UNCHECKED );
 	pPopup->CheckMenuItem(ID_CONTEXT_ANTIALIAS_ANTIALIASX2, m_factor == 2 ? MF_CHECKED : MF_UNCHECKED );
 	pPopup->CheckMenuItem(ID_CONTEXT_ANTIALIAS_ANTIALIASX3SLOWEST, m_factor == 3 ? MF_CHECKED : MF_UNCHECKED );
 
-	if (saveMethod == saveMethodReplace) {
+	if (m_saveMethod == saveMethodReplace) {
 		pPopup->EnableMenuItem(ID_CONTEXT_EDITTEXT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_CLOSEALL, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_CLOSE, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
@@ -1053,7 +1035,7 @@ void CTransparentWnd::OnUpdateContextMenu()
 		return;
 	}
 
-	if ((trackingOn) || (editImageOn)) {
+	if (m_bTrackingOn || m_bEditImageOn) {
 		pPopup->EnableMenuItem(ID_CONTEXT_EDITTEXT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_CLOSEALL, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_CLOSE, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
@@ -1077,7 +1059,7 @@ void CTransparentWnd::OnUpdateContextMenu()
 		pPopup->EnableMenuItem(ID_CONTEXT_CLONE, MF_ENABLED|MF_BYCOMMAND);
 	}
 
-	if (editTransOn) {
+	if (m_bEditTransOn) {
 		pPopup->EnableMenuItem(ID_CONTEXT_EDITTRANSPARENCY,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 	} else {
 		pPopup->EnableMenuItem(ID_CONTEXT_EDITTRANSPARENCY, MF_ENABLED|MF_BYCOMMAND);
@@ -1122,13 +1104,13 @@ void CTransparentWnd::OnContextEditImage()
 
 void CTransparentWnd::EditImage()
 {
-	editImageOn = 1;
+	m_bEditImageOn = true;
 
 	CEditImageDlg editDlg;
 	editDlg.PreModal(this);	// TODO: What is this doing?
 	editDlg.DoModal();
 
-	editImageOn = 0;
+	m_bEditImageOn = false;
 
 	OnUpdateContextMenu();
 	Invalidate();
@@ -1157,16 +1139,16 @@ void CTransparentWnd::ReloadPic(CString filename)
 	RECT rect;
 	rect = m_rectWnd;
 
-	if (picture.Load(filename)) {
+	if (m_picture.Load(filename)) {
 		HBITMAP testtrans = NULL;
-		if (picture.m_IPicture->get_Handle( (unsigned int *) &testtrans ) == S_OK ) {
+		if (m_picture.IPicturePtr()->get_Handle( (unsigned int *) &testtrans ) == S_OK ) {
 			m_hbitmap = testtrans;
 
 			//Autofit
 			//if (fitBitmapSize) {
 
-			rect.right = rect.left + picture.m_Width -1;
-			rect.bottom = rect.top + picture.m_Height -1;
+			rect.right = rect.left + m_picture.Width() - 1;
+			rect.bottom = rect.top + m_picture.Height() - 1;
 
 			//}
 
@@ -1227,13 +1209,13 @@ CTransparentWnd* CTransparentWnd::Clone(int offsetx, int offsety)
 		//CString tempFile = GetTempFolder(iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
 		CString tempFile;
 		tempFile.Format("%s\\~txPic%d.bmp", GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir), rand());
-		int ret = picture.CopyToPicture(&newWnd->picture,tempFile);
+		int ret = m_picture.CopyToPicture(&newWnd->m_picture,tempFile);
 		if (!ret) {
 			//randnum = rand();
 			//sprintf(numstr, "%d", randnum);
 			//tempFile = GetTempFolder(iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
 			tempFile.Format("%s\\~txPic%d.bmp", GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir), rand());
-			ret = picture.CopyToPicture(&newWnd->picture,tempFile);
+			ret = m_picture.CopyToPicture(&newWnd->m_picture,tempFile);
 			if (!ret) {
 				//if 2nd try fails
 				newWnd->m_hbitmap = NULL;
@@ -1242,7 +1224,7 @@ CTransparentWnd* CTransparentWnd::Clone(int offsetx, int offsety)
 		}
 
 		HBITMAP testtrans = NULL;
-		if (newWnd->picture.m_IPicture->get_Handle((unsigned int *) &testtrans) == S_OK) {
+		if (newWnd->m_picture.IPicturePtr()->get_Handle((unsigned int *) &testtrans) == S_OK) {
 			newWnd->m_hbitmap = testtrans;
 			newWnd->SetupRegion();
 		} else {
@@ -1269,25 +1251,25 @@ void CTransparentWnd::CopyMembers(const CTransparentWnd& rhsWnd)
 	m_vertalign				= rhsWnd.m_vertalign;
 	m_horzalign				= rhsWnd.m_horzalign;
 	m_textfont				= rhsWnd.m_textfont;
-	rgb						= rhsWnd.rgb;
+	m_rgb					= rhsWnd.m_rgb;
 	m_factor				= rhsWnd.m_factor;
 	m_charset				= rhsWnd.m_charset;
 	m_rectWnd				= rhsWnd.m_rectWnd;
-	enableTransparency		= rhsWnd.enableTransparency;
-	valueTransparency		= rhsWnd.valueTransparency;
+	m_enableTransparency	= rhsWnd.m_enableTransparency;
+	m_valueTransparency		= rhsWnd.m_valueTransparency;
 	m_transparentColor		= rhsWnd.m_transparentColor;
 	m_regionType			= rhsWnd.m_regionType;
 	m_regionPredefinedShape = rhsWnd.m_regionPredefinedShape;
 	m_roundrectFactor		= rhsWnd.m_roundrectFactor;
-	m_borderYes				= rhsWnd.m_borderYes;
+	m_bBorderYes			= rhsWnd.m_bBorderYes;
 	m_borderSize			= rhsWnd.m_borderSize;
 	m_borderColor			= rhsWnd.m_borderColor;
 	m_backgroundColor		= rhsWnd.m_backgroundColor;
 
 	//WidthHeight
 	m_rectOriginalWnd		= rhsWnd.m_rectOriginalWnd;
-	widthPos				= rhsWnd.widthPos;
-	heightPos				= rhsWnd.heightPos;
+	m_widthPos				= rhsWnd.m_widthPos;
+	m_heightPos				= rhsWnd.m_heightPos;
 
 	//uniqueID is not copied
 }
@@ -1354,7 +1336,7 @@ BOOL CTransparentWnd::SaveShape(FILE* fptr)
 	fwrite(&m_horzalign, sizeof(int), 1, fptr);
 
 	fwrite(&m_textfont, sizeof(LOGFONT), 1, fptr);
-	fwrite(&rgb, sizeof(COLORREF), 1, fptr);
+	fwrite(&m_rgb, sizeof(COLORREF), 1, fptr);
 
 	fwrite(&m_factor, sizeof(int), 1, fptr);
 	fwrite(&m_charset, sizeof(int), 1, fptr);
@@ -1364,8 +1346,8 @@ BOOL CTransparentWnd::SaveShape(FILE* fptr)
 	fwrite(&m_rectWnd.right, sizeof(long), 1, fptr);
 	fwrite(&m_rectWnd.bottom, sizeof(long), 1, fptr);
 
-	fwrite(&enableTransparency, sizeof(int), 1, fptr);
-	fwrite(&valueTransparency, sizeof(int), 1, fptr);
+	fwrite(&m_enableTransparency, sizeof(int), 1, fptr);
+	fwrite(&m_valueTransparency, sizeof(int), 1, fptr);
 	fwrite(&m_transparentColor, sizeof(COLORREF), 1, fptr);
 
 	fwrite(&m_regionCreated, sizeof(int), 1, fptr);
@@ -1373,7 +1355,7 @@ BOOL CTransparentWnd::SaveShape(FILE* fptr)
 	fwrite(&m_regionPredefinedShape, sizeof(int), 1, fptr);
 	fwrite(&m_roundrectFactor, sizeof(double), 1, fptr);
 
-	fwrite(&m_borderYes, sizeof(int), 1, fptr);
+	fwrite(&m_bBorderYes, sizeof(int), 1, fptr);
 	fwrite(&m_borderSize, sizeof(int), 1, fptr);
 
 	fwrite(&m_borderColor, sizeof(COLORREF), 1, fptr);
@@ -1384,12 +1366,12 @@ BOOL CTransparentWnd::SaveShape(FILE* fptr)
 	fwrite(&m_rectOriginalWnd.right, sizeof(long), 1, fptr);
 	fwrite(&m_rectOriginalWnd.bottom, sizeof(long), 1, fptr);
 
-	fwrite(&widthPos, sizeof(int), 1, fptr);
-	fwrite(&heightPos, sizeof(int), 1, fptr);
+	fwrite(&m_widthPos, sizeof(int), 1, fptr);
+	fwrite(&m_heightPos, sizeof(int), 1, fptr);
 
 	BOOL ret = TRUE;
 	if (m_hbitmap) {
-		ret = picture.SaveToFile(fptr);
+		ret = m_picture.SaveToFile(fptr);
 	} else {
 		DWORD sizefile = 0;
 		fwrite(&sizefile, sizeof(DWORD), 1, fptr);
@@ -1442,7 +1424,7 @@ BOOL CTransparentWnd::LoadShape(FILE* fptr)
 	fread( (void *) &m_horzalign, sizeof(int), 1, fptr );
 
 	fread( (void *) &m_textfont, sizeof(LOGFONT), 1, fptr );
-	fread( (void *) &rgb, sizeof(COLORREF), 1, fptr );
+	fread( (void *) &m_rgb, sizeof(COLORREF), 1, fptr );
 
 	fread( (void *) &m_factor, sizeof(int), 1, fptr );
 	fread( (void *) &m_charset, sizeof(int), 1, fptr );
@@ -1452,8 +1434,8 @@ BOOL CTransparentWnd::LoadShape(FILE* fptr)
 	fread( (void *) &m_rectWnd.right, sizeof(long), 1, fptr );
 	fread( (void *) &m_rectWnd.bottom, sizeof(long), 1, fptr );
 
-	fread( (void *) &enableTransparency, sizeof(int), 1, fptr );
-	fread( (void *) &valueTransparency, sizeof(int), 1, fptr );
+	fread( (void *) &m_enableTransparency, sizeof(int), 1, fptr );
+	fread( (void *) &m_valueTransparency, sizeof(int), 1, fptr );
 	fread( (void *) &m_transparentColor, sizeof(COLORREF), 1, fptr );
 
 	fread( (void *) &m_regionCreated, sizeof(int), 1, fptr );
@@ -1461,7 +1443,7 @@ BOOL CTransparentWnd::LoadShape(FILE* fptr)
 	fread( (void *) &m_regionPredefinedShape, sizeof(int), 1, fptr );
 	fread( (void *) &m_roundrectFactor, sizeof(double), 1, fptr );
 
-	fread( (void *) &m_borderYes, sizeof(int), 1, fptr );
+	fread( (void *) &m_bBorderYes, sizeof(int), 1, fptr );
 	fread( (void *) &m_borderSize, sizeof(int), 1, fptr );
 
 	fread( (void *) &m_borderColor, sizeof(COLORREF), 1, fptr );
@@ -1472,18 +1454,18 @@ BOOL CTransparentWnd::LoadShape(FILE* fptr)
 	fread( (void *) &m_rectOriginalWnd.right, sizeof(long), 1, fptr );
 	fread( (void *) &m_rectOriginalWnd.bottom, sizeof(long), 1, fptr );
 
-	fread( (void *) &widthPos, sizeof(int), 1, fptr );
-	fread( (void *) &heightPos, sizeof(int), 1, fptr );
+	fread( (void *) &m_widthPos, sizeof(int), 1, fptr );
+	fread( (void *) &m_heightPos, sizeof(int), 1, fptr );
 
 	ret = TRUE;
-	if (picture.LoadFromFile(fptr)) {
-		if (picture.m_IPicture == NULL) {
+	if (m_picture.LoadFromFile(fptr)) {
+		if (m_picture.IPicturePtr() == NULL) {
 			//Case : No image
 			m_hbitmap = NULL;
 		} else {
 			//Case : Has image
 			HBITMAP testtrans = NULL;
-			if (picture.m_IPicture->get_Handle( (unsigned int *) &testtrans ) == S_OK ) {
+			if (m_picture.IPicturePtr()->get_Handle( (unsigned int *) &testtrans ) == S_OK ) {
 				m_hbitmap = testtrans;
 				SetupRegion();
 			} else {
@@ -1509,8 +1491,8 @@ BOOL CTransparentWnd::LoadShape(FILE* fptr)
 //WidthHeight
 void CTransparentWnd::RefreshWindowSize()
 {
-	double widthfract = widthPos*0.025 + 0.2;
-	double heightfract = heightPos*0.025 + 0.2;
+	double widthfract = m_widthPos * 0.025 + 0.2;
+	double heightfract = m_heightPos*0.025 + 0.2;
 
 	m_rectWnd.right = m_rectWnd.left + (long) ((double) (m_rectOriginalWnd.Width()) * widthfract);
 	m_rectWnd.bottom = m_rectWnd.top + (long) ((double) (m_rectOriginalWnd.Height()) * heightfract);
@@ -1539,7 +1521,7 @@ void CTransparentWnd::RefreshWindowSize()
 void CTransparentWnd::OnContextResize()
 {
 	// TODO: Add your command handler code here
-	trackingOn = 1;
+	m_bTrackingOn = true;
 
 	//WidthHeight
 	SetWindowRgn((HRGN)NULL, TRUE);
@@ -1551,7 +1533,7 @@ void CTransparentWnd::OnContextResize()
 	if (rsDlg.DoModal() == IDOK) {
 	}
 
-	trackingOn = 0;
+	m_bTrackingOn = false;
 
 	OnUpdateContextMenu();
 

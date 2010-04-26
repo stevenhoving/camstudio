@@ -18,21 +18,19 @@
 #pragma once
 #endif
 
-//#pragma message("TransparentWnd included")
-
 #include "LayeredWindowHelperST.h"
 #include "Picture.h"
 
-#define regionNULL				0
-#define regionTRANSPARENTCOLOR	1
-#define regionSHAPE				2
+const int regionNULL			 = 0;
+const int regionTRANSPARENTCOLOR = 1;
+const int regionSHAPE			 = 2;
 
-#define regionROUNDRECT			0
-#define regionELLIPSE			1
-#define regionRECTANGLE			2
+const int regionROUNDRECT	= 0;
+const int regionELLIPSE		= 1;
+const int regionRECTANGLE	= 2;
 
-#define saveMethodNew			0
-#define saveMethodReplace		1
+const int saveMethodNew		= 0;
+const int saveMethodReplace	= 1;
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -117,19 +115,53 @@ protected:
 
 	//Data to be saved
 public:
-	int editImageOn;
-	int editTransOn;
-	int trackingOn;
-	int m_borderYes;
+	bool EditImageOn() const					{return m_bEditImageOn;}
+	bool EditTransOn() const					{return m_bEditTransOn;}
+	bool TrackingOn() const						{return m_bTrackingOn;}
+	bool BorderYes(bool bBorder)				{return m_bBorderYes = bBorder;}
+	bool BorderYes() const						{return m_bBorderYes;}
+	int BorderSize(int iSize)					{return m_borderSize = iSize;}
+	int BorderSize() const						{return m_borderSize;}
+	int RegionPredefinedShape(int iShape)		{return m_regionPredefinedShape = iShape;}
+	int RegionPredefinedShape() const			{return m_regionPredefinedShape;}
+	int RegionCreated(int iCreated)				{return m_regionCreated = iCreated;}
+	int RegionCreated() const					{return m_regionCreated;}
+	int BaseType() const						{return m_baseType;}
+	int RegionType(int iType)					{return m_regionType = iType;}
+	int RegionType() const						{return m_regionType;}
+	int SaveMethod(int iMethod)					{return m_saveMethod = iMethod;}
+	int SaveMethod() const						{return m_saveMethod;}
+	int WidthPos(int iWidth)					{return m_widthPos = iWidth;}
+	int WidthPos() const						{return m_widthPos;}
+	int HeightPos(int iHeight)					{return m_heightPos = iHeight;}
+	int HeightPos() const						{return m_heightPos;}
+	long UniqueID() const						{return m_uniqueID;}
+	CString ShapeString(CString str)			{return m_shapeStr = str;}
+	CString ShapeString() const					{return m_shapeStr;}
+	CString TextString() const					{return m_textstring;}
+	CString TextString(CString str)				{return m_textstring = str;}
+	CRect RectWnd() const						{return m_rectWnd;}
+	COLORREF BorderColor(COLORREF color)		{return m_borderColor = color;}
+	COLORREF BorderColor() const				{return m_borderColor;}
+	COLORREF TransparentColor() const			{return m_transparentColor;}
+	COLORREF TransparentColor(COLORREF color)	{return m_transparentColor = color;}
+	COLORREF BackgroundColor() const			{return m_backgroundColor;}
+	COLORREF BackgroundColor(COLORREF color)	{return m_backgroundColor = color;}
+	HBITMAP BitMap() const						{return m_hbitmap;}
+protected:
+	bool m_bEditImageOn;
+	bool m_bEditTransOn;
+	bool m_bTrackingOn;
+	bool m_bBorderYes;
 	int m_borderSize;
 	int m_regionPredefinedShape;	// region for pre-defined shape, var applicable only to regiontype -- predefined shape
 	int m_regionCreated;			// region for transparent color already created, var applicable only to regiontype  -- transparent color
-	int baseType;
+	int m_baseType;
 	int m_regionType;
-	int saveMethod;
-	int widthPos;					// Width-Height (Formula): faction of original =  widthPos*0.025 + 0.2 ... form 0.2 to 5.2
-	int heightPos;
-	long uniqueID;
+	int m_saveMethod;
+	int m_widthPos;					// Width-Height (Formula): faction of original =  widthPos*0.025 + 0.2 ... form 0.2 to 5.2
+	int m_heightPos;
+	long m_uniqueID;
 	CString m_shapeStr;				// name of the shape
 	CString m_textstring;
 	CRect m_rectWnd;
@@ -137,29 +169,29 @@ public:
 	COLORREF m_transparentColor;	// region for pre-defined shape, var applicable only to regiontype  -- transparent color
 	COLORREF m_backgroundColor;
 	HBITMAP m_hbitmap;
-protected:
+
 	unsigned short m_BitmapID;
-	int menuLoaded;
+	int m_menuLoaded;
 	int m_horzalign;
 	double m_roundrectFactor;
 	CRectTracker m_tracker;
-	CMenu menu;
+	CMenu m_menu;
 	LOGFONT m_textfont;
-	COLORREF rgb;					// textcolor
+	COLORREF m_rgb;					// textcolor
 private:
 	int m_vertalign;
 	int m_factor;
 	int m_charset;
-	int enableTransparency;
-	int valueTransparency;
-	CPicture picture;
+	int m_enableTransparency;
+	int m_valueTransparency;
+	CPicture m_picture;
 	CRect m_rectOriginalWnd;
 
-	//Temporary state variables
+	// Temporary state variables
 	CLayeredWindowHelperST G_Layered;
 	int m_movewindow;
 	POINT m_movepoint;
-	CRgn wndRgn;
+	CRgn m_wndRgn;
 };
 
 /////////////////////////////////////////////////////////////////////////////

@@ -59,7 +59,7 @@ public:
 private:
 	typedef BOOL (WINAPI* lpfnSetLayeredWindowAttributes)(HWND hWnd, COLORREF crKey, BYTE bAlpha, DWORD dwFlags);
 
-	HMODULE		m_hDll;
+	HMODULE m_hDll;
 };
 
 #endif

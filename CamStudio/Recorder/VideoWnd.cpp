@@ -20,7 +20,7 @@ int iRrefreshRate = DEFAULT_PERIOD;
 CVideoWnd::CVideoWnd()
 {
 	m_iStatus = 0;
-	baseType = 1;
+	m_baseType = 1;
 	m_iRefreshRate = iRrefreshRate;
 }
 
@@ -99,7 +99,7 @@ void CVideoWnd::OnTimer(UINT /*nIDEvent*/)
 		return;
 	}
 
-	if ((trackingOn) || (editImageOn) || (editTransOn)) {
+	if (m_bTrackingOn || m_bEditImageOn || m_bEditTransOn) {
 		return;
 	}
 
@@ -110,16 +110,10 @@ void CVideoWnd::OnTimer(UINT /*nIDEvent*/)
 
 void CVideoWnd::OnPaint()
 {
-
 	CPaintDC dc(this);
 
-	// Add your drawing code here!
-	CDC *pDC = &dc;
-
 	//WIDTHHEIGHT
-	CRect clrect;
-	//GetClientRect(&clrect);
-	clrect = m_rectWnd;
+	CRect clrect(m_rectWnd);
 	clrect.right -= clrect.left;
 	clrect.bottom -= clrect.top;
 	clrect.left = 0;
@@ -128,120 +122,73 @@ void CVideoWnd::OnPaint()
 	int width = clrect.right - clrect.left;
 	int height = clrect.bottom - clrect.top;
 
-	CRect cRect;
-	cRect = clrect;
-
-	/*
-	if (m_ImageBitmap.GetSafeHandle())
-	{
-	//old_pDC = pDC;
-	//pDC = m_ImageBitmap.BegingModify();
-
-	m_ImageBitmap.BitBlt(pDC,CPoint(0,0));
-	//pDoc->m_ImageBitmap.BitBlt(pDC,CPoint(200,0));
-	//HDC screenDC = ::GetDC(NULL);
-	//pDoc->m_ImageBitmap.BitBlt(CDC::FromHandle(screenDC),CPoint(0,0));
-	//::ReleaseDC(NULL,screenDC);
-	}
-	*/
-
+	CRect cRect(clrect);
 	CDC memDC;
-
-	CBitmap* pOldMemBmp = NULL;
-	CBitmap NewMemBmp;
 	memDC.CreateCompatibleDC(&dc);
-
-	pDC = &memDC;
-
-	NewMemBmp.CreateCompatibleBitmap(&dc,width,height);
-	pOldMemBmp = pDC->SelectObject(&NewMemBmp);
-	if (!m_iStatus)
-	{
-		pDC->FillSolidRect(0,0,clrect.Width(),clrect.Height(),RGB(255,255,255));
-
-	}
-	else if (m_ImageBitmap.GetSafeHandle())
-	{
-		//NewMemBmp.CreateCompatibleBitmap(&dc,width,height);
-		//pOldMemBmp = pDC->SelectObject(&NewMemBmp);
-		m_ImageBitmap.BitBlt(pDC,CPoint(0,0));
-
+	CDC *pDC = &memDC;
+	CBitmap NewMemBmp;
+	NewMemBmp.CreateCompatibleBitmap(&dc, width, height);
+	CBitmap* pOldMemBmp = pDC->SelectObject(&NewMemBmp);
+	if (!m_iStatus) {
+		pDC->FillSolidRect(0, 0, clrect.Width(), clrect.Height(), RGB(255,255,255));
+	} else if (m_ImageBitmap.GetSafeHandle()) {
+		m_ImageBitmap.BitBlt(pDC, CPoint(0,0));
 	}
 
-	CFont* oldfont;
 	CFont dxfont;
-
 	dxfont.CreateFontIndirect(&m_textfont);
-	oldfont = (CFont *) pDC->SelectObject(&dxfont);
-
-	int textlength = m_textstring.GetLength(); //get number of bytes
+	CFont* oldfont = (CFont *) pDC->SelectObject(&dxfont);
 
 	//Draw Text
+	int textlength = m_textstring.GetLength(); //get number of bytes
 	pDC->SetBkMode(TRANSPARENT);
-	pDC->SetTextColor(rgb);
+	pDC->SetTextColor(m_rgb);
 	pDC->DrawText((char *)LPCTSTR(m_textstring), textlength, &m_tracker.m_rect, m_horzalign | DT_VCENTER | DT_WORDBREAK );
-	//DrawTextW(pDC->m_hDC, (unsigned short *)LPCTSTR(m_textstring), textlength, &m_tracker.m_rect, m_horzalign | DT_VCENTER | DT_WORDBREAK );
 
-	//if (oldfont)
 	pDC->SelectObject(oldfont);
 
-	if ((m_borderYes) && (m_regionType==regionSHAPE)) {
-
-		double rx,ry,rval;
-		rx= cRect.Width() * m_roundrectFactor;
-		ry= cRect.Height() * m_roundrectFactor;
-		if (rx>ry)
-			rval = ry;
-		else
-			rval = rx;
+	if ((m_bBorderYes) && (regionSHAPE == m_regionType)) {
+		double rx = cRect.Width() * m_roundrectFactor;
+		double ry = cRect.Height() * m_roundrectFactor;
+		double rval = (rx > ry) ? ry : rx;
 
 		CPen borderPen;
-		CPen* oldPen;
 		borderPen.CreatePen( PS_SOLID , m_borderSize, m_borderColor );
-		oldPen = (CPen *) pDC->SelectObject(&borderPen);
+		CPen* oldPen = (CPen *) pDC->SelectObject(&borderPen);
 
 		LOGBRUSH logbrush;
-		CBrush borderBrush;
-		CBrush* oldBrush;
 		logbrush.lbStyle = BS_HOLLOW;
+		CBrush borderBrush;
 		borderBrush.CreateBrushIndirect(&logbrush);
-
-		oldBrush = (CBrush *) pDC->SelectObject(&borderBrush);
+		CBrush* oldBrush = (CBrush *) pDC->SelectObject(&borderBrush);
 
 		int drawOffset = m_borderSize/2;
 
-		if (m_regionPredefinedShape == regionROUNDRECT)
-		{
+		if (m_regionPredefinedShape == regionROUNDRECT) {
 			pDC->RoundRect(drawOffset-1, drawOffset-1, cRect.Width()-1-drawOffset, cRect.Height()-1-drawOffset, (int) rval, (int) rval);
 
-		}
-		else if (m_regionPredefinedShape == regionELLIPSE)
-		{
+		} else if (m_regionPredefinedShape == regionELLIPSE) {
 			pDC->Ellipse(drawOffset-1,drawOffset-1, cRect.Width()-1-drawOffset, cRect.Height()-1-drawOffset);
-		}
-		else if (m_regionPredefinedShape == regionRECTANGLE)
-		{
+		} else if (m_regionPredefinedShape == regionRECTANGLE) {
 			pDC->Rectangle(drawOffset-1, drawOffset-1, cRect.Width()-1-drawOffset, cRect.Height()-1-drawOffset);
-
 		}
 
 		pDC->SelectObject(oldBrush);
 		pDC->SelectObject(oldPen);
 		borderPen.DeleteObject();
 		borderBrush.DeleteObject();
-
 	}
 
-	CDC *winDC = &dc;
-	winDC->BitBlt(0,0,clrect.Width(),clrect.Height(),pDC,0,0,SRCCOPY);
+	CDC *pWinDC = &dc;
+	pWinDC->BitBlt(0,0,clrect.Width(),clrect.Height(),pDC,0,0,SRCCOPY);
 
 	pDC->SelectObject(pOldMemBmp);
 	NewMemBmp.DeleteObject();
 	memDC.DeleteDC();
 
-	if (trackingOn)
-		m_tracker.Draw(winDC);
-
+	if (m_bTrackingOn) {
+		m_tracker.Draw(pWinDC);
+	}
 }
 
 void CVideoWnd::OnContextvideoSourceformat()
@@ -274,12 +221,12 @@ void CVideoWnd::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	CPoint local = point;
 	ScreenToClient(&local);
 
-	if (menuLoaded == 0) {
-		menu.LoadMenu(IDR_CONTEXTVIDEO);
-		menuLoaded = 1;
+	if (m_menuLoaded == 0) {
+		m_menu.LoadMenu(IDR_CONTEXTVIDEO);
+		m_menuLoaded = 1;
 	}
 
-	CMenu* pPopup = menu.GetSubMenu(0);
+	CMenu* pPopup = m_menu.GetSubMenu(0);
 	ASSERT(pPopup != NULL);
 
 	//if (isEdited)
@@ -296,12 +243,12 @@ void CVideoWnd::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 void CVideoWnd::OnUpdateContextMenu()
 {
-	if (menuLoaded == 0) {
-		menu.LoadMenu(IDR_CONTEXTVIDEO);
-		menuLoaded = 1;
+	if (m_menuLoaded == 0) {
+		m_menu.LoadMenu(IDR_CONTEXTVIDEO);
+		m_menuLoaded = 1;
 	}
 
-	CMenu* pPopup = menu.GetSubMenu(0);
+	CMenu* pPopup = m_menu.GetSubMenu(0);
 	ASSERT(pPopup != NULL);
 
 	if ((m_FrameGrabber.GetSafeHwnd()) && (m_iStatus))
@@ -314,7 +261,7 @@ void CVideoWnd::OnUpdateContextMenu()
 		pPopup->EnableMenuItem(ID_CONTEXTVIDEO_VIDEOSOURCE,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 	}
 
-	if ((trackingOn) || (editImageOn) || (editTransOn)) {
+	if (m_bTrackingOn || m_bEditImageOn || m_bEditTransOn) {
 		pPopup->EnableMenuItem(ID_CONTEXT_EDITTEXT,MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_CLOSE, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
 		pPopup->EnableMenuItem(ID_CONTEXT_RESIZE, MF_GRAYED|MF_DISABLED|MF_BYCOMMAND);
