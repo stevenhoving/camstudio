@@ -8,6 +8,7 @@
 //___________________________________________________________________________________________
 
 #include "stdafx.h"
+#include "afxdlgs.h"
 #include "CBitmapEx.h"
 
 #define WIDTHBYTES(iBits) (((iBits) + 31) / 32 * 4)
