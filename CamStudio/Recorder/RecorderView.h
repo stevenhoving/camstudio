@@ -53,6 +53,7 @@ public:
 	BOOL OpenUsingShellExecute (CString);
 	LONG GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata);
 	BOOL OpenUsingRegisteredClass (CString);
+	VOID XNote(int iAction);
 
 #ifdef _DEBUG
 	virtual void AssertValid() const;
