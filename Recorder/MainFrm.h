@@ -62,9 +62,11 @@ protected:
 	//}}AFX_MSG
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg LRESULT OnTrayNotify(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnXNote(UINT wParam, LONG lParam);
 	DECLARE_MESSAGE_MAP()
 private:
 	CTrayIcon m_TrayIcon;
+	static const UINT WM_USER_XNOTE;
 public:
 };
 
