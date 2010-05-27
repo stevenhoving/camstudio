@@ -903,7 +903,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 
 		CString filestr;
 		//filestr.Format("%d%d%d_%d%d",day,month,year,hour,minutes);
-		filestr.Format("%d%d%d_%d%d_%d",day, month, year, hour, minutes, second);
+		filestr.Format("%04d%02d%02d_%02d%02d_%02d",year, month, day, hour, minutes, second); //jaho, changed dateformating yyyymmdd_hhmm_ss
 
 		fdlg.m_ofn.lpstrInitialDir = savedir;
 
@@ -3996,6 +3996,29 @@ bool CRecorderView::RunProducer(const CString& strNewFile)
 	}
 	return true;
 }
+
+/////////////////////////////////////////////////////////////////////////////
+// CRecorderView
+// Processes actions innitiated by XNote WindowsMessages. (Xnote is a stopwatch application. http://www.xnotestopwatch.com/)
+// Allows that external program can work with Camstudio and can instruct CamStudio when to start recording, to pause and to terminate recording.
+VOID CRecorderView::XNote(int iAction)
+{
+  switch (iAction)
+  {
+    case 1:
+      OnRecord();
+      break;
+
+    case 2:
+      OnPause();
+      break;
+
+    case 4:
+      OnStop();
+      break;
+  }
+}
+
 
 namespace {	// annonymous
 
