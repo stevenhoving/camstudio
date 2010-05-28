@@ -5,6 +5,7 @@
 #include "Recorder.h"
 #include "MainFrm.h"
 #include "RecorderView.h"
+#include "Camstudio4XNote.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -51,11 +52,16 @@ END_MESSAGE_MAP()
 // CMainFrame::OnXNote
 // Handles XNote WindowsMessages. Xnote is a stopwatch application.  (http://www.xnotestopwatch.com/)
 // Allows that external program can work with Camstudio and can instruct CamStudio when to start recording, to pause and to terminate recording.
+//
+// wParam: loword: id (in  xnote.ini under [General] "id=" key)
+//         hiword: action (1 - start, 2 - stop, 3 - snap, 4 - reset)
+// lParam: time in ms
+//////////////////////////////////////////////////////////
 LRESULT CMainFrame::OnXNote(UINT wParam, LONG lParam)
 {
-	lParam = lParam;  // prevent warning, till we start using it (passed time identifier from Xnote Stopwatch application);
 
-	dynamic_cast<CRecorderView *>(m_pViewActive)->XNote(HIWORD(wParam));
+	dynamic_cast<CRecorderView *>(m_pViewActive)->XNoteProcessWinMessage( HIWORD(wParam), (ULONG)lParam );
+
 	return 0;
 }
 
@@ -148,8 +154,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_TrayIcon.TraySetMenu(IDR_TRAYMENU);
 	m_TrayIcon.TrayShow();
 
+#ifdef CAMSTUDIO4XNOTE 
+	SetWindowText("CamStudio4Xnote by Janhgm - Custom Build");
+#else
 	SetWindowText("CamStudio - Custom Build");
-
+#endif
 	return 0;
 }
 

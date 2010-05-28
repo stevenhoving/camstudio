@@ -7,10 +7,15 @@ class CCamera
 {
 public:
 	CCamera();
-	CCamera(const CCamCursor& rCursor, const sCaptionOpts& rCaption, const sTimestampOpts& rTimestamp, const sWatermarkOpts& rWatermark)
+	CCamera( const CCamCursor& rCursor, 
+				const sCaptionOpts& rCaption, 
+				const sTimestampOpts& rTimestamp, 
+				const sXNoteOpts& rXNote,  
+				const sWatermarkOpts& rWatermark)
 		: m_cCursor(rCursor)
 		, m_sCaption(rCaption)
 		, m_sTimestamp(rTimestamp)
+		, m_sXNote(rXNote)
 		, m_sWatermark(rWatermark)
 		, m_uFrameCount(0)
 	{
@@ -22,6 +27,8 @@ public:
 	void Set(const CCamCursor& rCursor)			{m_cCursor = rCursor;}
 	void Set(const sCaptionOpts& rCaption)		{m_sCaption = rCaption;}
 	void Set(const sTimestampOpts& rTimestamp)	{m_sTimestamp = rTimestamp;}
+	void Set(const sXNoteOpts& rXNote)	        {m_sXNote = rXNote;}   
+	
 	void Set(const sWatermarkOpts& rWatermark)	
 	{
 		// if name changed, or brightness or contrast
@@ -34,6 +41,7 @@ public:
 			LoadWatermark();
 		}
 	}
+	
 	void SetView(const CRect& rView)
 	{
 		m_rectView = rView;
@@ -49,6 +57,7 @@ public:
 protected:
 	void InsertCaption(CDC *pDC)				{VERIFY(AddCaption(pDC));}
 	void InsertTimeStamp(CDC *pDC)				{VERIFY(AddTimestamp(pDC));}
+	void InsertXNote(CDC *pDC)				    {VERIFY(AddXNote(pDC));}
 	void InsertWatermark(CDC *pDC)				{VERIFY(AddWatermark(pDC));}
 	void InsertCursor(CDC *pDC)					{VERIFY(AddCursor(pDC));}
 	void InsertText(CDC* pDC, const CRect& rRect, TextAttributes& rTextAttrs);
@@ -64,11 +73,13 @@ private:
 	CCamCursor m_cCursor;
 	sCaptionOpts m_sCaption;
 	sTimestampOpts m_sTimestamp;
+	sXNoteOpts m_sXNote;
 	sWatermarkOpts m_sWatermark;
 
 	void InsertHighLight(CDC *pDC, CPoint pt);
 	bool LoadWatermark();
 	bool AddTimestamp(CDC* pDC);
+	bool AddXNote(CDC* pDC);
 	bool AddCaption(CDC* pDC);
 	bool AddWatermark(CDC* pDC);
 	bool AddCursor(CDC* pDC);

@@ -35,6 +35,7 @@
 #include "TextAttributes.h"
 #include "ImageAttributes.h"
 #include "CStudioLib.h"
+#include "Camstudio4XNote.h"
 
 #include <vector>
 
@@ -196,6 +197,21 @@ enum eLegacySettings
 	, WATERMARKANNOTATION
 	, WATERMARKIMAGEATTRIBUTES
 	
+	// XNote
+	, XNOTEANNOTATION
+	, XNOTECAMERADELAYINMILLISEC
+	, XNOTEDISPLAYCAMERADELAY
+	, XNOTEDISPLAYFORMATSTRING
+	, XNOTETEXTATTRIBUTES
+	, XNOTEBACKCOLOR
+	, XNOTESELECTED
+	, XNOTEPOSITION
+	, XNOTETEXTCOLOR
+	, XNOTETEXTFONT
+	, XNOTETEXTWEIGHT
+	, XNOTETEXTHEIGHT
+	, XNOTETEXTWIDTH
+
 	, MAX_LEGACT_ID
 };
 #if 0
@@ -651,6 +667,7 @@ protected:
 	CProfileSection m_SectionHotkeys;		// Cursor highlight settings
 	CProfileSection m_SectionRegion;		// Region settings
 	CProfileSection m_SectionTimeStamp;		// timestamp settings
+	CProfileSection m_SectionXNote;			// XNote timestamp settings
 	CProfileSection m_SectionCaption;		// caption annotation settings
 	CProfileSection m_SectionWatermark;		// watermark annotation settings
 	CProfileSection m_SectionLegacy;		// legacy (v2.50) section values
@@ -1017,6 +1034,109 @@ struct sTimestampOpts
 };
 extern sTimestampOpts cTimestampOpts;
 
+//  == Xnote Stopwatch  - Begin  ======================================================================
+struct sXNoteOpts
+{
+	// settings here are the ones that are initially used for dialog screen..!
+	sXNoteOpts()
+#ifdef CAMSTUDIO4XNOTE
+	: m_bAnnotation(true)							// True, because I did not managed to read info from config	
+#else
+		: m_bAnnotation(false)						// False, default as it should be with stand Camstudio
+#endif
+		, m_taXNote(BOTTOM_LEFT)
+		, m_ulXnoteCameraDelayInMilliSec(175)		// Average delay, default 175 ms
+		, m_bXnoteDisplayCameraDelay(true)			// Default On: Show used delay in capture
+		, m_cXnoteDisplayFormatString("(0000) 00:00:00.000")	// Default. Not really a format but the layout if no time can be showed
+		, m_ulStartXnoteTickCounter(0)				// A non persistent member
+	{
+	}
+	sXNoteOpts(const sXNoteOpts& rhs)
+	{
+		*this = rhs;
+	}
+	sXNoteOpts& operator=(const sXNoteOpts& rhs)
+	{
+		if (this == &rhs)
+			return *this;
+
+		m_bAnnotation = rhs.m_bAnnotation;
+		m_taXNote = rhs.m_taXNote;
+		m_ulXnoteCameraDelayInMilliSec = rhs.m_ulXnoteCameraDelayInMilliSec;
+		m_bXnoteDisplayCameraDelay = rhs.m_bXnoteDisplayCameraDelay;
+		m_cXnoteDisplayFormatString = rhs.m_cXnoteDisplayFormatString;
+
+		// Assign Xnote format string to 'Text atribute'.text (Required to get a time displayed on the capture without pressing OK first in AnnotationEffects dialog.)
+		m_taXNote.text = m_cXnoteDisplayFormatString;
+
+		// Apply default colors if back and foreground are the same
+		if ( m_taXNote.backgroundColor == m_taXNote.textColor )
+		{
+			m_taXNote.backgroundColor = RGB(255,255,255);
+			m_taXNote.textColor = RGB(0,0,0);
+			m_taXNote.logfont.lfHeight = 12;
+		}
+
+		return *this;
+	}
+	bool Read(CProfile& cProfile)
+	{
+		VERIFY(cProfile.Read(XNOTEANNOTATION, m_bAnnotation));
+		VERIFY(cProfile.Read(XNOTETEXTATTRIBUTES, m_taXNote));
+		VERIFY(cProfile.Read(XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec));
+		VERIFY(cProfile.Read(XNOTEDISPLAYCAMERADELAY, m_bXnoteDisplayCameraDelay));
+		VERIFY(cProfile.Read(XNOTEDISPLAYFORMATSTRING, m_cXnoteDisplayFormatString));
+		// m_ulStartXnoteTickCounter is a non persistent member
+
+		// Assign Xnote format string to 'Text atribute'.text (Required to get a time displayed on the capture without pressing OK first in AnnotationEffects dialog.)
+		m_taXNote.text = m_cXnoteDisplayFormatString;
+
+		// Apply default colors if back and foreground are the same
+		if ( m_taXNote.backgroundColor == m_taXNote.textColor )
+		{
+			m_taXNote.backgroundColor = RGB(255,255,255);
+			m_taXNote.textColor = RGB(0,0,0);
+			m_taXNote.logfont.lfHeight = 12;
+		}
+
+		return true;
+	}
+	bool Write(CProfile& cProfile)
+	{
+		// Assign Xnote format string to .text because we need this to get a formatted print on the capture without pressing OK first in AnnotationEffects dialog.
+		m_taXNote.text = m_cXnoteDisplayFormatString;
+
+		// Apply default colors if back and foreground are the same
+		if ( m_taXNote.backgroundColor == m_taXNote.textColor )
+		{
+			m_taXNote.backgroundColor = RGB(255,255,255);
+			m_taXNote.textColor = RGB(0,0,0);
+			m_taXNote.logfont.lfHeight = 12;
+		}
+
+		VERIFY(cProfile.Write(XNOTEANNOTATION, m_bAnnotation));
+		VERIFY(cProfile.Write(XNOTETEXTATTRIBUTES, m_taXNote));
+		VERIFY(cProfile.Write(XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec));
+		VERIFY(cProfile.Write(XNOTEDISPLAYCAMERADELAY, m_bXnoteDisplayCameraDelay));
+		VERIFY(cProfile.Write(XNOTEDISPLAYFORMATSTRING, m_cXnoteDisplayFormatString));
+		// m_ulStartXnoteTickCounter is a non persistent member
+		return true;
+	}
+
+	bool	m_bAnnotation;
+	TextAttributes m_taXNote;
+	ULONG	m_ulXnoteCameraDelayInMilliSec;
+	bool	m_bXnoteDisplayCameraDelay;
+	CButton m_CheckBoxXnoteDisplayCameraDelay;
+	CString	m_cXnoteDisplayFormatString;
+	ULONG	m_ulStartXnoteTickCounter;
+
+};
+extern sXNoteOpts cXNoteOpts;
+
+//  == Xnote Stopwatch - End  ======================================================================
+
+
 struct sWatermarkOpts
 {
 	sWatermarkOpts()
@@ -1054,6 +1174,7 @@ struct sWatermarkOpts
 	ImageAttributes m_iaWatermark;
 };
 extern sWatermarkOpts cWatermarkOpts;
+
 
 // Audio format values
 // POD to hold them
