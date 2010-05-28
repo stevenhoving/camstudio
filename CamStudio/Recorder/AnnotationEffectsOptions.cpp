@@ -3,6 +3,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Recorder.h"
+#include "XnoteStopwatchFormat.h"
 #include "AnnotationEffectsOptions.h"
 
 // CAnnotationEffectsOptionsDlg dialog
@@ -25,16 +26,30 @@ void CAnnotationEffectsOptionsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_IMAGE_PATH, m_image.text);
 	DDX_Control(pDX, IDC_EDIT_IMAGE_PATH, m_ctlImagePath);
 	DDX_Text(pDX, IDC_EDIT_TIMESTAMP_FORMAT, m_timestamp.text);
+
+	DDX_Text(pDX, IDC_EDIT_XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec  );
+	DDX_Control(pDX, IDC_XNOTEDISPLAYCAMERADELAY, m_CheckBoxXnoteDisplayCameraDelay);
+	DDX_Text(pDX, IDC_EDIT_XNOTE_FORMAT, m_xnote.text);
+
 	DDX_Text(pDX, IDC_EDIT_CAPTION_TEXT, m_caption.text);
-	DDX_Control(pDX, IDC_FORMATPREVIEW, m_FormatPreview);
+	DDX_Control(pDX, IDC_FORMATPREVIEW,m_FormatPreview );
+	DDX_Control(pDX, IDC_FORMAT_XNOTEPREVIEW, m_FormatXNotePreview);
 }
 
 BEGIN_MESSAGE_MAP(CAnnotationEffectsOptionsDlg, CDialog)
-	ON_BN_CLICKED(IDC_BUTTON_IMAGE_PATH, OnBnClickedButtonImagePath)
-	ON_BN_CLICKED(IDC_BUTTON_CAPTION_OPTIONS, OnBnClickedButtonCaptionOptions)
-	ON_BN_CLICKED(IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS, OnBnClickedButtonTimestampFormatOptions)
-	ON_BN_CLICKED(IDC_BUTTON_WATERMARK_OPTIONS, OnBnClickedButtonWatermarkOptions)
+
 	ON_EN_CHANGE(IDC_EDIT_TIMESTAMP_FORMAT, &CAnnotationEffectsOptionsDlg::OnEnChangeEditTimestampFormat)
+	ON_BN_CLICKED(IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS, OnBnClickedButtonTimestampFormatOptions)
+	
+	ON_EN_CHANGE(IDC_EDIT_XNOTECAMERADELAYINMILLISEC, &CAnnotationEffectsOptionsDlg::OnEnChangeEditXNoteFormat)
+	ON_BN_CLICKED(IDC_BUTTON_XNOTE_FORMAT_OPTIONS, OnBnClickedButtonXNoteFormatOptions)
+	ON_BN_CLICKED(IDC_XNOTEDISPLAYCAMERADELAY, &CAnnotationEffectsOptionsDlg::OnEnChangeEditXNoteFormat)
+	
+	ON_BN_CLICKED(IDC_BUTTON_CAPTION_OPTIONS, OnBnClickedButtonCaptionOptions)
+
+	ON_BN_CLICKED(IDC_BUTTON_WATERMARK_OPTIONS, OnBnClickedButtonWatermarkOptions)
+
+	ON_BN_CLICKED(IDC_BUTTON_IMAGE_PATH, OnBnClickedButtonImagePath)
 	ON_BN_CLICKED(IDOK, &CAnnotationEffectsOptionsDlg::OnBnClickedOk)
 	ON_WM_CREATE()
 END_MESSAGE_MAP()
@@ -72,6 +87,17 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedButtonTimestampFormatOptions()
 	}
 }
 
+void CAnnotationEffectsOptionsDlg::OnBnClickedButtonXNoteFormatOptions()
+{
+	// TODO: Add your control notification handler code here
+	CEffectsOptionsDlg optDlg;
+	optDlg.m_params = m_xnote;
+	if (optDlg.DoModal() == IDOK){
+		m_xnote = optDlg.m_params;
+	}
+}
+
+
 void CAnnotationEffectsOptionsDlg::OnBnClickedButtonWatermarkOptions()
 {
 	// TODO: Add your control notification handler code here
@@ -100,6 +126,25 @@ void CAnnotationEffectsOptionsDlg::OnEnChangeEditTimestampFormat()
 	}
 }
 
+
+// Function show layout of output in preview field on dialog.
+void CAnnotationEffectsOptionsDlg::OnEnChangeEditXNoteFormat()
+{
+	CString str;
+	char cTmpBuff[64];
+
+	GetDlgItem(IDC_EDIT_XNOTECAMERADELAYINMILLISEC)->GetWindowText(str);
+	ULONG ul_DelayTimeInMilliSec = atol(str);
+
+	bool bDisplayCameraDelay = m_CheckBoxXnoteDisplayCameraDelay.GetCheck()? true : false;
+	
+	// format (delay) hh:mm:ss.ttt"
+	(void) CXnoteStopwatchFormat::FormatXnoteSampleString ( cTmpBuff, ul_DelayTimeInMilliSec, bDisplayCameraDelay);
+
+	m_FormatXNotePreview.SetWindowText(cTmpBuff); 
+}
+
+
 void CAnnotationEffectsOptionsDlg::OnBnClickedOk()
 {
 	CString str;
@@ -122,10 +167,40 @@ int CAnnotationEffectsOptionsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	 * or not the data has been initialized.*/
 	if (strlen(m_timestamp.text) == 0)
 	{
-		m_timestamp.text = CString("Recording %H:%M:%S");
+		m_timestamp.text = CString("Time: %H:%M:%S");
 		m_timestamp.backgroundColor = RGB(255,255,255);
 		m_timestamp.textColor = RGB(0,0,0);
 		m_timestamp.logfont.lfHeight = 12;
+	}
+
+	if ( m_ulXnoteCameraDelayInMilliSec == 0)
+	{
+		// We need format to display time in milli seconds here.... (E.g. Time from xNote)
+		m_ulXnoteCameraDelayInMilliSec = 149;
+	}
+
+    // m_cXnoteDisplayFormatString, had zo te zien geen toegevoegde waarde is alleen maar tekst?
+	// maar dit blijkt de layout van de overlay te bepalen ..!
+	// onderstaande bepaalt in elk geval de lengte van het te gebriken veld.
+
+	//TRACE("## CAnnotationEffectsOptionsDlg::OnCreate   m_cXnoteDisplayFormatString=[%s](%d)  m_ulXnoteCameraDelayInMilliSec:[%d]\n",m_cXnoteDisplayFormatString, strlen(m_cXnoteDisplayFormatString), m_ulXnoteCameraDelayInMilliSec );
+	if ( strlen( m_cXnoteDisplayFormatString ) == 0) 
+	{
+		//TRACE("## CAnnotationEffectsOptionsDlg::OnCreate   Change m_cXnoteDisplayFormatString now\n");
+
+		// Format (delay) hh:mm:ss.ttt"
+		char cTmpBuff[64];
+		(void) CXnoteStopwatchFormat::FormatXnoteSampleString(cTmpBuff, m_ulXnoteCameraDelayInMilliSec, m_bXnoteDisplayCameraDelay );
+		m_cXnoteDisplayFormatString = CString( cTmpBuff );
+	}
+
+	// Check if options are defined. Apply defaults, otherwise nothing will be seen.
+	if ( m_xnote.textColor == m_xnote.backgroundColor )
+	{
+		m_xnote.backgroundColor = RGB(255,255,255);
+		m_xnote.textColor = RGB(0,0,0);
+		m_xnote.logfont.lfHeight = 12;
+		m_xnote.text = m_cXnoteDisplayFormatString;
 	}
 
 	return 0;

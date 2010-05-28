@@ -32,6 +32,13 @@ public:
 public:
 	// The input and output values
 	TextAttributes	m_timestamp;
+	
+	TextAttributes	m_xnote;
+	ULONG	m_ulXnoteCameraDelayInMilliSec;
+	bool	m_bXnoteDisplayCameraDelay;  // A bool but dialog requires that checkbox is a CButton.
+	CButton m_CheckBoxXnoteDisplayCameraDelay;
+	CString m_cXnoteDisplayFormatString;
+
 	TextAttributes	m_caption;
 	ImageAttributes	m_image;
 protected:
@@ -42,13 +49,16 @@ private:
 	afx_msg void OnBnClickedButtonImagePath();
 	afx_msg void OnBnClickedButtonCaptionOptions();
 	afx_msg void OnBnClickedButtonTimestampFormatOptions();
+	afx_msg void OnBnClickedButtonXNoteFormatOptions();
 	afx_msg void OnBnClickedButtonWatermarkOptions();
 public:
-	CEdit m_FormatPreview;
+	CEdit m_FormatPreview;				// Fields to preview calculated output
+	CEdit m_FormatXNotePreview;			// Fields to preview calculated output
 	afx_msg void OnEnChangeEditTimestampFormat();
+	afx_msg void OnEnChangeEditXNoteFormat();
 	afx_msg void OnBnClickedOk();
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 private:
-	bool IsStrftimeSafe(char * buffer);
+	bool IsStrftimeSafe(char * buffer);	// For user defined date/time layouts
 };
 #endif	// ANNOTATIONEFFECTSOPTIONS_H

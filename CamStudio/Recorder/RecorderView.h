@@ -53,7 +53,9 @@ public:
 	BOOL OpenUsingShellExecute (CString);
 	LONG GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata);
 	BOOL OpenUsingRegisteredClass (CString);
-	VOID XNote(int iAction);
+	VOID XNoteProcessWinMessage(int iAction, ULONG lXnoteTimeInMilliSeconds);
+	bool GetRecordState();
+	bool GetPausedState();
 
 #ifdef _DEBUG
 	virtual void AssertValid() const;
@@ -165,6 +167,12 @@ protected:
 	afx_msg void OnCaptureChanged(CWnd *pWnd);
 	afx_msg void OnAnnotationAddsystemtimestamp();
 	afx_msg void OnUpdateAnnotationAddsystemtimestamp(CCmdUI *pCmdUI);
+
+	afx_msg void OnAnnotationAddXNote();
+	afx_msg void OnUpdateCameraDelayInMilliSec(CCmdUI *pCmdUI);
+	afx_msg void OnCameraDelayInMilliSec();
+	afx_msg void OnUpdateAnnotationAddXNote(CCmdUI *pCmdUI);
+
 	afx_msg void OnAnnotationAddcaption();
 	afx_msg void OnUpdateAnnotationAddcaption(CCmdUI *pCmdUI);
 	afx_msg void OnAnnotationAddwatermark();

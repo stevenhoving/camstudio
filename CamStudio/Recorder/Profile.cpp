@@ -7,6 +7,7 @@
 #include "ImageAttributes.h"
 #include "HotKey.h"
 #include "CStudioLib.h"
+#include "Camstudio4XNote.h"
 
 bool bRecordPreset = false;
 
@@ -591,6 +592,7 @@ const TCHAR * const CURSOR_SECTION = _T("Cursor");
 const TCHAR * const HOTKEY_SECTION = _T("HotKeys");
 const TCHAR * const REGION_SECTION = _T("Region");
 const TCHAR * const TIMESTAMP_SECTION = _T("TimeStamp");
+const TCHAR * const XNOTE_SECTION = _T("XNote");
 const TCHAR * const CAPTION_SECTION = _T("Caption");
 const TCHAR * const WATERMARK_SECTION = _T("Watermark");
 
@@ -607,6 +609,7 @@ CProfile::CProfile(const CString strFileName)
 , m_SectionRegion(REGION_SECTION)
 , m_SectionProgram(PROGRAMOPTIONS_SECTION)
 , m_SectionTimeStamp(TIMESTAMP_SECTION)
+, m_SectionXNote(XNOTE_SECTION)
 , m_SectionCaption(CAPTION_SECTION)
 , m_SectionWatermark(WATERMARK_SECTION)
 {
@@ -622,6 +625,7 @@ CProfile::CProfile(const CString strFileName)
 	m_vAllSections.push_back(m_SectionCursor);
 	m_vAllSections.push_back(m_SectionRegion);
 	m_vAllSections.push_back(m_SectionTimeStamp);
+	m_vAllSections.push_back(m_SectionXNote);
 	m_vAllSections.push_back(m_SectionCaption);
 	m_vAllSections.push_back(m_SectionWatermark);
 }
@@ -752,6 +756,17 @@ void CProfile::InitSections()
 	Add(m_SectionTimeStamp, TIMESTAMPANNOTATION, "Annotation", false);
 	Add(m_SectionTimeStamp, TIMESTAMPTEXTATTRIBUTES, "TextAttributes", TextAttributes(TOP_LEFT));
 
+	// Xnote Stopwatch 
+#ifdef CAMSTUDIO4XNOTE
+	Add(m_SectionXNote, XNOTEANNOTATION, "xnoteAnnotation", true);
+#else
+	Add(m_SectionXNote, XNOTEANNOTATION, "xnoteAnnotation", false);
+#endif
+	Add(m_SectionXNote, XNOTETEXTATTRIBUTES, "TextAttributes", TextAttributes(BOTTOM_LEFT));
+	Add(m_SectionXNote, XNOTECAMERADELAYINMILLISEC, "xnoteCameraDelayInMilliSec", 175);
+	Add(m_SectionXNote, XNOTEDISPLAYCAMERADELAY, "xnoteDisplayCameraDelay", true);
+	Add(m_SectionXNote, XNOTEDISPLAYFORMATSTRING, "xnoteDisplayFormatString", CString(_T("(0000) 00:00:00.000")) );
+
 	Add(m_SectionCaption, CAPTIONANNOTATION, "Annotation", false);
 	Add(m_SectionCaption, CAPTIONTEXTATTRIBUTES, "TextAttributes", TextAttributes(TOP_LEFT));
 
@@ -873,6 +888,26 @@ void CProfile::InitLegacySection()
 	VERIFY(Add(m_SectionLegacy, TIMESTAMPTEXTWIDTH, "timestampTextWidth", 0));
 	//VERIFY(Add(m_SectionLegacy, TIMESTAMPTEXTFONT, CString(_T("timestampTextFont")), CString(_T("Arial"))));
 	VERIFY(Add(m_SectionLegacy, TIMESTAMPTEXTFONT, "timestampTextFont", CString(_T("Arial"))));
+
+	// Xnote is new stuff. As far as I understand Camstudio there should not be any reason to put it here I would say although I noticed it was  required.
+	if (1) {
+#ifdef XNOTEANNOTATION
+	VERIFY(Add(m_SectionLegacy, XNOTEANNOTATION, "xnoteAnnotation", true));
+#else
+	VERIFY(Add(m_SectionLegacy, XNOTEANNOTATION, "xnoteAnnotation", false));
+#endif
+	VERIFY(Add(m_SectionLegacy, XNOTEBACKCOLOR, "xnoteBackColor", 0));
+	VERIFY(Add(m_SectionLegacy, XNOTESELECTED, "xnoteSelected", 0));
+	VERIFY(Add(m_SectionLegacy, XNOTEPOSITION, "xnotePosition", 0));
+	VERIFY(Add(m_SectionLegacy, XNOTETEXTCOLOR, "xnoteTextColor", (COLORREF)(16777215)));
+	VERIFY(Add(m_SectionLegacy, XNOTETEXTWEIGHT, "xnoteTextWeight", 0));
+	VERIFY(Add(m_SectionLegacy, XNOTETEXTHEIGHT, "xnoteTextHeight", 0));
+	VERIFY(Add(m_SectionLegacy, XNOTETEXTWIDTH, "xnoteTextWidth", 0));
+	VERIFY(Add(m_SectionLegacy, XNOTETEXTFONT, "xnoteTextFont", CString(_T("Arial"))));
+	VERIFY(Add(m_SectionLegacy, XNOTECAMERADELAYINMILLISEC, "xnoteCameraDelayInMilliSec", 165));
+	VERIFY(Add(m_SectionLegacy, XNOTEDISPLAYCAMERADELAY, "xnoteDisplayCameraDelay", true));
+	VERIFY(Add(m_SectionLegacy, XNOTEDISPLAYFORMATSTRING, "xnoteDisplayFormatString", CString(_T("(0000) 00:00:00.000")) ));
+	}
 	VERIFY(Add(m_SectionLegacy, CAPTIONANNOTATION, "captionAnnotation", false));
 	VERIFY(Add(m_SectionLegacy, CAPTIONBACKCOLOR, "captionBackColor", 0));
 	VERIFY(Add(m_SectionLegacy, CAPTIONSELECTED, "captionSelected", 0));
@@ -883,6 +918,7 @@ void CProfile::InitLegacySection()
 	VERIFY(Add(m_SectionLegacy, CAPTIONTEXTWIDTH, "captionTextWidth", 0));
 	//VERIFY(Add(m_SectionLegacy, CAPTIONTEXTFONT, CString(_T("captionTextFont")), CString(_T("Arial"))));
 	VERIFY(Add(m_SectionLegacy, CAPTIONTEXTFONT, "captionTextFont", CString(_T("Arial"))));
+	
 	VERIFY(Add(m_SectionLegacy, WATERMARKANNOTATION, "watermarkAnnotation", false));
 }
 
@@ -1008,7 +1044,10 @@ bool CProfile::Convert()
 	}
 
 	// combined entries
-	// Caption, TimeStampe, Watermark
+	// Caption, TimeStamp, XNote, Watermark
+	
+	CString strFaceName;
+
 	if (0)
 	{
 		sTimestampOpts cTimestamp;
@@ -1020,11 +1059,33 @@ bool CProfile::Convert()
 		VERIFY(m_SectionLegacy.Read(TIMESTAMPTEXTWEIGHT, cTimestamp.m_taTimestamp.logfont.lfWeight));
 		VERIFY(m_SectionLegacy.Read(TIMESTAMPTEXTHEIGHT, cTimestamp.m_taTimestamp.logfont.lfHeight));
 		VERIFY(m_SectionLegacy.Read(TIMESTAMPTEXTWIDTH, cTimestamp.m_taTimestamp.logfont.lfWidth));
-		CString strFaceName;
 		VERIFY(m_SectionLegacy.Read(TIMESTAMPTEXTFONT, strFaceName));
 		::strncpy_s(cTimestamp.m_taTimestamp.logfont.lfFaceName, LF_FACESIZE, strFaceName, LF_FACESIZE);
 		//wcscpy_s(cTimestamp.m_taTimestamp.logfont.lfFaceName, LF_FACESIZE, strFaceName);
-
+	}
+	
+	if (0)
+	{		
+		// 20200528 / janhgm/ Although Lecagy and never used we just applied applicable code for xnote stopwatch here.  
+		sXNoteOpts cXNote;
+		VERIFY(m_SectionLegacy.Read(XNOTEANNOTATION, cXNote.m_bAnnotation));
+		VERIFY(m_SectionLegacy.Read(XNOTECAMERADELAYINMILLISEC, cXNote.m_ulXnoteCameraDelayInMilliSec));  // delaytime in ms, default 175.
+		VERIFY(m_SectionLegacy.Read(XNOTEDISPLAYCAMERADELAY, cXNote.m_bXnoteDisplayCameraDelay));  // Print camera delaytime in ms onm screen
+		VERIFY(m_SectionLegacy.Read(XNOTEDISPLAYFORMATSTRING, cXNote.m_cXnoteDisplayFormatString ));          // Format example output 
+		VERIFY(m_SectionLegacy.Read(XNOTETEXTATTRIBUTES, cXNote.m_taXNote));                         // Formatting for image overlay
+		VERIFY(m_SectionLegacy.Read(XNOTEBACKCOLOR, cXNote.m_taXNote.backgroundColor));
+		VERIFY(m_SectionLegacy.Read(XNOTESELECTED, cXNote.m_taXNote.isFontSelected));
+		VERIFY(m_SectionLegacy.Read(XNOTEPOSITION, cXNote.m_taXNote.position));
+		VERIFY(m_SectionLegacy.Read(XNOTETEXTCOLOR, cXNote.m_taXNote.textColor));
+		VERIFY(m_SectionLegacy.Read(XNOTETEXTWEIGHT, cXNote.m_taXNote.logfont.lfWeight));
+		VERIFY(m_SectionLegacy.Read(XNOTETEXTHEIGHT, cXNote.m_taXNote.logfont.lfHeight));
+		VERIFY(m_SectionLegacy.Read(XNOTETEXTWIDTH, cXNote.m_taXNote.logfont.lfWidth));
+		VERIFY(m_SectionLegacy.Read(XNOTETEXTFONT, strFaceName));
+		::strncpy_s(cXNote.m_taXNote.logfont.lfFaceName, LF_FACESIZE, strFaceName, LF_FACESIZE);
+	}
+	
+	if (0)
+	{
 		sCaptionOpts cCaption;
 		VERIFY(m_SectionLegacy.Read(CAPTIONANNOTATION, cCaption.m_bAnnotation));
 		VERIFY(m_SectionLegacy.Read(CAPTIONBACKCOLOR, cCaption.m_taCaption.backgroundColor));
@@ -1037,7 +1098,10 @@ bool CProfile::Convert()
 		VERIFY(m_SectionLegacy.Read(CAPTIONTEXTFONT, strFaceName));
 		::strncpy_s(cCaption.m_taCaption.logfont.lfFaceName, LF_FACESIZE, strFaceName, LF_FACESIZE);
 		//wcscpy_s(cCaption.m_taCaption.logfont.lfFaceName, LF_FACESIZE, strFaceName);
-
+	}
+	
+	if (0)
+	{
 		sWatermarkOpts cWatermark;
 		VERIFY(Convert(m_SectionLegacy, WATERMARKANNOTATION, cWatermark.m_bAnnotation));
 	}
