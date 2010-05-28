@@ -963,6 +963,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\XnoteStopwatchFormat.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -1006,6 +1010,10 @@
 			</File>
 			<File
 				RelativePath=".\CamCursor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Camstudio4XNote.h"
 				>
 			</File>
 			<File
@@ -1170,6 +1178,10 @@
 			</File>
 			<File
 				RelativePath="VideoWnd.h"
+				>
+			</File>
+			<File
+				RelativePath=".\XnoteStopwatchFormat.h"
 				>
 			</File>
 		</Filter>
@@ -1410,6 +1422,14 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\ClassDiagram1.cd"
+			>
+		</File>
+		<File
+			RelativePath=".\ClassDiagram2.cd"
+			>
+		</File>
 	</Files>
 	<Globals>
 		<Global
