@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Screen.h"
 #include "ximage.h"
+#include "XnoteStopwatchFormat.h"
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -16,18 +17,41 @@ bool CCamera::AddTimestamp(CDC* pDC)
 {
 	if (m_sTimestamp.m_bAnnotation) {
 		CString str;
-		TextAttributes tmp;
+		TextAttributes tmpTimestamp;
 		//char TimeBuff[256];
 		struct tm   *newTime;
 		time_t      szClock;
 		time( &szClock );
 		newTime = localtime( &szClock );
-		tmp = m_sTimestamp.m_taTimestamp;
-		strftime(tmp.text.GetBuffer(256), 256, m_sTimestamp.m_taTimestamp.text, newTime);
-		InsertText(pDC, m_rectFrame, tmp);
+		tmpTimestamp = m_sTimestamp.m_taTimestamp;
+		strftime(tmpTimestamp.text.GetBuffer(256), 256, m_sTimestamp.m_taTimestamp.text, newTime);
+		InsertText(pDC, m_rectFrame, tmpTimestamp);
 	}
 	return true;
 }
+
+bool CCamera::AddXNote(CDC* pDC)
+{
+	if (m_sXNote.m_bAnnotation) {
+
+		CString str;
+		TextAttributes taTmpXNote;		
+
+		DWORD dwCurrTickCount =  GetTickCount();
+		char cTmpBuffXNoteTimeStamp[64] = {0};
+
+		CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmpBuffXNoteTimeStamp, cXNoteOpts.m_ulStartXnoteTickCounter, dwCurrTickCount ,m_sXNote.m_ulXnoteCameraDelayInMilliSec, cXNoteOpts.m_bXnoteDisplayCameraDelay );
+
+		taTmpXNote = m_sXNote.m_taXNote;
+		strcpy(taTmpXNote.text.GetBuffer(64),cTmpBuffXNoteTimeStamp);
+
+		InsertText(pDC, m_rectFrame, taTmpXNote);
+	}
+	return true;
+}
+
+
+
 bool CCamera::AddCaption(CDC* pDC)
 {
 	if (m_sCaption.m_bAnnotation){
@@ -109,6 +133,7 @@ bool CCamera::AddCursor(CDC* pDC)
 bool CCamera::Annotate(CDC* pDC)
 {
 	AddTimestamp(pDC);
+	AddXNote(pDC);
 	AddCaption(pDC);
 	AddWatermark(pDC);
 	AddCursor(pDC);
