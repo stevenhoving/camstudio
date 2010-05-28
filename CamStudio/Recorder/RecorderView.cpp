@@ -47,6 +47,7 @@
 #include "AVI.h"
 #include "MCI.h"
 #include "ACM.h"
+#include "Camstudio4XNote.h"
 
 #include <windowsx.h>
 
@@ -137,6 +138,9 @@ bool bInitCapture = false;
 int irsmallcount = 0;
 unsigned long nTotalBytesWrittenSoFar = 0UL;
 
+// Xnote timing support. Show timing from start of recording
+ULONG ulXNoteStartTime = 0UL;
+
 // Messaging
 HWND hWndGlobal = NULL;
 
@@ -220,6 +224,7 @@ sRegionOpts cRegionOpts;
 CCamCursor CamCursor;
 sCaptionOpts cCaptionOpts;
 sTimestampOpts cTimestampOpts;
+sXNoteOpts cXNoteOpts;
 sWatermarkOpts cWatermarkOpts;
 
 CString strCodec("MS Video 1");
@@ -423,8 +428,13 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_COMMAND(ID_OPTIONS_LANGUAGE_GERMAN, OnOptionsLanguageGerman)
 	ON_COMMAND(ID_REGION_WINDOW, OnRegionWindow)
 	ON_UPDATE_COMMAND_UI(ID_REGION_WINDOW, OnUpdateRegionWindow)
+
 	ON_COMMAND(ID_ANNOTATION_ADDSYSTEMTIMESTAMP, OnAnnotationAddsystemtimestamp)
 	ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDSYSTEMTIMESTAMP, OnUpdateAnnotationAddsystemtimestamp)
+	
+	ON_COMMAND(ID_ANNOTATION_ADDXNOTE, OnAnnotationAddXNote)
+	ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDXNOTE, OnUpdateAnnotationAddXNote)
+	
 	ON_COMMAND(ID_ANNOTATION_ADDCAPTION, OnAnnotationAddcaption)
 	ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDCAPTION, OnUpdateAnnotationAddcaption)
 	ON_COMMAND(ID_ANNOTATION_ADDWATERMARK, OnAnnotationAddwatermark)
@@ -714,6 +724,7 @@ LRESULT CRecorderView::OnRecordStart(UINT /*wParam*/, LONG /*lParam*/)
 
 	m_cCamera.Set(cCaptionOpts);
 	m_cCamera.Set(cTimestampOpts);
+	m_cCamera.Set(cXNoteOpts);
 	m_cCamera.Set(cWatermarkOpts);
 	m_cCamera.Set(CamCursor);
 
@@ -867,6 +878,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 
 	}
 
+	//TODO, let auto filename match with time recording started
 	//Normal thread exit
 	//Prompt the user for the filename
 	CString strFilter(_T("AVI Movie Files (*.avi)|*.avi||"));
@@ -903,7 +915,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 
 		CString filestr;
 		//filestr.Format("%d%d%d_%d%d",day,month,year,hour,minutes);
-		filestr.Format("%04d%02d%02d_%02d%02d_%02d",year, month, day, hour, minutes, second); //jaho, changed dateformating yyyymmdd_hhmm_ss
+		filestr.Format("%04d%02d%02d_%02d%02d_%02d",year, month, day, hour, minutes, second); // 20100528, changed dateformating to yyyymmdd_hhmm_ss
 
 		fdlg.m_ofn.lpstrInitialDir = savedir;
 
@@ -957,7 +969,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 			}
 		}
 
-		int result;
+		int result = -1;
 		//Mergefile video with audio
 		//if (iRecordAudio==2) {
 		//if ((iRecordAudio==2) || (bUseMCI)) {
@@ -1801,6 +1813,17 @@ void CRecorderView::SaveSettings()
 
 	fprintf(sFile, "bWatermarkAnnotation=%d \n",cWatermarkOpts.m_bAnnotation);
 	fprintf(sFile, "bWatermarkAnnotation=%d \n",cWatermarkOpts.m_iaWatermark.position);
+
+	fprintf(sFile, "bXNoteAnnotation=%d \n",cXNoteOpts.m_bAnnotation);
+	fprintf(sFile, "xnoteBackColor=%d \n", cXNoteOpts.m_taXNote.backgroundColor);
+	fprintf(sFile, "xnoteSelected=%d \n", cXNoteOpts.m_taXNote.isFontSelected);
+	fprintf(sFile, "xnotePosition=%d \n", cXNoteOpts.m_taXNote.position);
+	fprintf(sFile, "xnoteTextColor=%d \n", cXNoteOpts.m_taXNote.textColor);
+	fprintf(sFile, "xnoteTextFont=%s \n", cXNoteOpts.m_taXNote.logfont.lfFaceName);
+	fprintf(sFile, "xnoteTextWeight=%d \n", cXNoteOpts.m_taXNote.logfont.lfWeight);
+	fprintf(sFile, "xnoteTextHeight=%d \n", cXNoteOpts.m_taXNote.logfont.lfHeight);
+	fprintf(sFile, "xnoteTextWidth=%d \n", cXNoteOpts.m_taXNote.logfont.lfWidth);
+
 
 	fclose(sFile);
 #endif	// LEGACY_PROFILE_DISABLE
@@ -3011,13 +3034,42 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
 
 void CRecorderView::OnAnnotationAddsystemtimestamp()
 {
+	// Why do we use a .not. here? Because we clicked the button and need to toggle checkbox now
 	cTimestampOpts.m_bAnnotation = !cTimestampOpts.m_bAnnotation;
 }
 
 void CRecorderView::OnUpdateAnnotationAddsystemtimestamp(CCmdUI *pCmdUI)
 {
+	// Show current selection on screen
 	pCmdUI->SetCheck(cTimestampOpts.m_bAnnotation);
 }
+
+
+void CRecorderView::OnAnnotationAddXNote()
+{
+	// Why do we use a .not. here? Because we clicked the button and need to toggle checkbox now
+	cXNoteOpts.m_bAnnotation = !cXNoteOpts.m_bAnnotation;
+}
+
+void CRecorderView::OnUpdateAnnotationAddXNote(CCmdUI *pCmdUI)
+{
+	// Show current selection on screen
+	pCmdUI->SetCheck(cXNoteOpts.m_bAnnotation);
+}
+//////////
+
+void CRecorderView::OnCameraDelayInMilliSec()
+{
+	// Update CameraDelayInMilliSec value
+	cXNoteOpts.m_ulXnoteCameraDelayInMilliSec = cXNoteOpts.m_ulXnoteCameraDelayInMilliSec;
+}
+
+void CRecorderView::OnUpdateCameraDelayInMilliSec(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(cXNoteOpts.m_ulXnoteCameraDelayInMilliSec );
+}
+//////////////
+
 
 void CRecorderView::OnAnnotationAddcaption()
 {
@@ -3042,12 +3094,26 @@ void CRecorderView::OnUpdateAnnotationAddwatermark(CCmdUI *pCmdUI)
 void CRecorderView::OnEffectsOptions()
 {
 	CAnnotationEffectsOptionsDlg dlg(this);
+	
 	dlg.m_timestamp = cTimestampOpts.m_taTimestamp;
+
+	dlg.m_xnote = cXNoteOpts.m_taXNote;  
+	dlg.m_ulXnoteCameraDelayInMilliSec = cXNoteOpts.m_ulXnoteCameraDelayInMilliSec; 
+	dlg.m_bXnoteDisplayCameraDelay = cXNoteOpts.m_bXnoteDisplayCameraDelay; 
+
 	dlg.m_caption = cCaptionOpts.m_taCaption;
 	dlg.m_image = cWatermarkOpts.m_iaWatermark;
+
 	if (IDOK == dlg.DoModal()){
+		// timestamp
 		cTimestampOpts.m_taTimestamp = dlg.m_timestamp;
+		// xnote stopwatch
+		cXNoteOpts.m_taXNote = dlg.m_xnote;
+		cXNoteOpts.m_ulXnoteCameraDelayInMilliSec = dlg.m_ulXnoteCameraDelayInMilliSec;
+		cXNoteOpts.m_bXnoteDisplayCameraDelay =  dlg.m_bXnoteDisplayCameraDelay;
+		// Caption
 		cCaptionOpts.m_taCaption = dlg.m_caption;
+		// Watermark
 		cWatermarkOpts.m_iaWatermark = dlg.m_image;
 	}
 }
@@ -3746,9 +3812,9 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 		// local variable is initialized but not referenced
 		//int pauseremainder = 0;
 		int pauseindicator = 1;
-		DWORD timestartpause;
-		DWORD timeendpause;
-		DWORD timedurationpause;
+		DWORD timestartpause = 0;
+		DWORD timeendpause	= 0;
+		DWORD timedurationpause = 0;
 		while (bRecordPaused) {
 			if (!haveslept) {
 				timestartpause = timeGetTime();
@@ -3759,11 +3825,20 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 			if ((pausecounter % 8) == 0) {
 				//if after every 400 milliseconds (8 * 50)
 				CMainFrame * pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
+
+// TODO - Found this crash behaviour while I developed CAMSTUDIO4XNOTE but it looks like to be something that was still in previously releases. (before r245)
+// TRACE("CRecorderView: if Pause selected, statement skippped, pFrame->SetTitle(_T("")), causes error\n");
 				if (pauseindicator) {
-					pFrame->SetTitle(_T(""));
+#define CAMSTUDIO_IGNORE_THIS
+#ifndef CAMSTUDIO_IGNORE_THIS
+					pFrame->SetTitle(_T(""));     // This still gives an error before r245 (when build using vs2008)...!				
+#endif
 					pauseindicator = 0;
 				} else {
+#ifndef CAMSTUDIO_IGNORE_THIS
 					pFrame->SetTitle(_T("Paused"));
+#endif
+#undef CAMSTUDIO_IGNORE_THIS
 					pauseindicator = 1;
 				}
 			}
@@ -3997,26 +4072,79 @@ bool CRecorderView::RunProducer(const CString& strNewFile)
 	return true;
 }
 
+
+bool CRecorderView::GetRecordState()
+{
+	return bRecordState;
+}
+
+bool CRecorderView::GetPausedState()
+{
+	return bRecordPaused;
+}
+
+
 /////////////////////////////////////////////////////////////////////////////
 // CRecorderView
 // Processes actions innitiated by XNote WindowsMessages. (Xnote is a stopwatch application. http://www.xnotestopwatch.com/)
 // Allows that external program can work with Camstudio and can instruct CamStudio when to start recording, to pause and to terminate recording.
-VOID CRecorderView::XNote(int iAction)
+VOID CRecorderView::XNoteProcessWinMessage(int iAction, ULONG lXnoteTimeInMilliSeconds)
 {
-  switch (iAction)
-  {
-    case 1:
-      OnRecord();
-      break;
+	DWORD dwCurrTickCount =  GetTickCount();
 
-    case 2:
-      OnPause();
-      break;
+	switch (iAction)
+	{
+	case 1:
+		// Start, (Clock is counting)
+		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iAction:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iAction, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
 
-    case 4:
-      OnStop();
-      break;
-  }
+		if ( ulXNoteStartTime == 0UL) {
+			ulXNoteStartTime = dwCurrTickCount;
+			cXNoteOpts.m_ulStartXnoteTickCounter = ULONG(dwCurrTickCount); 
+		}
+
+		// Don't call OnRecord if CamStudio is still recording unless it is paused
+		if ( !GetRecordState() ||
+			 ( GetRecordState() && GetPausedState()	) ){
+			//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iAction:[%d], Call OnRecord()..\n"), iAction);
+			OnRecord();
+		}
+		break;
+
+	case 2:
+		// Stop, 
+		// Xnote Stopwatch Clock is on hold but here we do our own counting)
+		// So Camstudio counting will continues and show different times than Xnote Stopwatch..! 
+
+		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iAction:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iAction, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
+		
+		// OnPause will first check that recording is active, no extra checks required here
+		
+		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iAction:[%d], Call OnPause()..\n"), iAction);
+		OnPause();
+		break;
+
+	case 3:
+		// Snap, 
+		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iAction:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iAction, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
+
+		// Any snap should be recorded. This are the events that are important and must be registrated
+		
+		// If recording but paused onRecord must called for release
+		if ( GetRecordState() && GetPausedState() ) {
+			//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iAction:[%d], Call OnRecord()..\n"), iAction);
+			OnRecord();
+		}
+		break;
+
+	case 4:
+		// Reset, (Clock is reset, CamStudio recording session can terminate)
+		ulXNoteStartTime = 0UL;
+		cXNoteOpts.m_ulStartXnoteTickCounter = 0UL;
+
+		OnStop();
+		break;
+	}
 }
 
 
