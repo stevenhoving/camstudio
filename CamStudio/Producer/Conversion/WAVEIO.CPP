@@ -47,7 +47,7 @@
 WIOERR WIOAPI wioFileClose
 (
     LPWAVEIOCB      pwio,
-    DWORD           fdwClose
+    DWORD           /*fdwClose*/
 )
 {
     //

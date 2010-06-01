@@ -361,7 +361,7 @@ UWORD FlashFontFactory::WriteText(std::ostream &out, const char *fontname, const
 	return dt.GetID();
 }
 
-UWORD FlashFontFactory::GetBounds(std::ostream &out, const char *fontname, const char *text, int x, int y, FlashRGB color, int pointsize, int depth, FlashRect& textBounds, int extraspacing, bool bold, bool italic, bool uLine)
+UWORD FlashFontFactory::GetBounds(std::ostream &out, const char *fontname, const char *text, int x, int y, FlashRGB color, int pointsize, int /*depth*/, FlashRect& textBounds, int extraspacing, bool bold, bool italic, bool uLine)
 {
 	stdext::hash_map<int,FlashShape> shapes;
 	stdext::hash_map<int,int> shapes_lookup;

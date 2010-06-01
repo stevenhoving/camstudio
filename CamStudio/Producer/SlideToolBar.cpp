@@ -179,7 +179,8 @@ void CSlideToolBar::AdjustTimeBar(CRect clientrect)
 	m_wndSliderCtrl.MoveWindow( rect.left, rect.top, rect.right - rect.left, rect.Height(),TRUE );
 }
 
-void CSlideToolBar::EnableButton(BOOL setToOn, int nIndex)
+// Dead code here...
+void CSlideToolBar::EnableButton(BOOL /*setToOn*/, int /*nIndex*/)
 {
 	//m_bEnableChanged = TRUE;
 	//nIndex = CommandToIndex( nIndex );

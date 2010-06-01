@@ -190,7 +190,7 @@ void CTransparentWnd::CreateTransparent(LPCTSTR pTitle, RECT rect,  HBITMAP Bitm
 	SetupRegion();
 }
 
-void CTransparentWnd::CreateTransparent(LPCTSTR pTitle, RECT rect,  CString bitmapFile, int fitBitmapSize)
+void CTransparentWnd::CreateTransparent(LPCTSTR pTitle, RECT rect,  CString bitmapFile, int /*fitBitmapSize*/)
 {
 
 	m_rectWnd = rect;
@@ -331,7 +331,7 @@ void CTransparentWnd::SetupRegionByTransColor(CDC *pDC, COLORREF transColor)
 		wndRgn.DeleteObject();
 	wndRgn.CreateRectRgn(0, 0, cRect.Width(), cRect.Height());
 
-	int     yStart;
+	int     yStart=0;
     BOOL    bStart=FALSE;
     for(x=0; x<=cRect.Width(); x++)
     {
@@ -387,7 +387,7 @@ void CTransparentWnd::SetupRegionByTransColor(CDC *pDC, COLORREF transColor)
 //* CTransparentWnd message handlers
 //********************************************************************************
 
-BOOL CTransparentWnd::OnEraseBkgnd(CDC* pDC)
+BOOL CTransparentWnd::OnEraseBkgnd(CDC* /*pDC*/)
 {
 
 	return TRUE;
@@ -409,8 +409,8 @@ void CTransparentWnd::DrawStuff(CDC* dc)
 	clrect.left =  0;
 	clrect.top =  0;
 
-    int width = clrect.right - clrect.left;
-    int height = clrect.bottom - clrect.top;
+//    int width = clrect.right - clrect.left;
+//    int height = clrect.bottom - clrect.top;
 
 	//BitBlt Background
 	CRect	rect,cRect;
@@ -541,8 +541,8 @@ void CTransparentWnd::UpdateNoWait()
 LPBITMAPINFO CTransparentWnd::GetDCBitmap(CDC *thisDC, CRect* caprect)
 {
 
-	int left =caprect->left;
-	int top = caprect->top;
+	// int left =caprect->left;
+	// int top = caprect->top;
 	int width = caprect->Width();
 	int height = caprect->Height();
 
@@ -738,7 +738,7 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect* caprect,int fact
 
 //AntiAlias 24 Bit Image
 //valid factors : 1, 2, 3
-HBITMAP CTransparentWnd::DrawResampleRGB(CDC *thisDC, CRect* caprect,int factor, LPBITMAPINFOHEADER expanded_bmi)
+HBITMAP CTransparentWnd::DrawResampleRGB(CDC *thisDC, CRect* /*caprect*/ ,int factor, LPBITMAPINFOHEADER expanded_bmi)
 {
 
 	int bits = 24;

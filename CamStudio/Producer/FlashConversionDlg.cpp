@@ -77,7 +77,7 @@ BEGIN_MESSAGE_MAP(FlashConversionDlg, CPropertyPage)
 	ON_BN_CLICKED(IDC_RAW, OnRaw)
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_LOOP, OnBnClickedLoop)
-	ON_BN_CLICKED(IDC_CHECK1, OnBnClickedCheck1)
+	// ON_BN_CLICKED(IDC_CHECK1, OnBnClickedCheck1)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
