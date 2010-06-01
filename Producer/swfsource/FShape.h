@@ -27,8 +27,11 @@ public:
 
 	DEFINE_FLASHCOPY_INTERFACE( FlashFillStyle, FlashFillStyle );
 
+#pragma warning ( push )
+#pragma warning ( disable : 4100 )
 	virtual void Write(N_STD::ostream &out) {}
 	virtual void Read(N_STD::istream &in) {}
+#pragma warning ( pop )
 	
 	UBYTE GetType() const { return type; }
 

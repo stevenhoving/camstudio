@@ -434,7 +434,7 @@ public:
             unsigned char val = GetBit(data, (bitsize)-1-i);        
             unsigned char set = 0x01 << (offset);
 
-			int size = (int)v.size();
+			// int size = (int)v.size();    //Prevent C4189, init but not used
 
             v[pos] = (v[pos] & ~set) | (val << (offset));
             displace++;         
@@ -843,7 +843,10 @@ private:
 class FlashIDEnabled
 {
 public:
+#pragma warning( push )
+#pragma warning ( disable : 4100 )
     FlashIDEnabled(bool count=true) { charID = idFactory.GetCharacterID(); }
+#pragma warning( pop )
     
     void SetID(UWORD i) { charID=i; }
     UWORD GetID(void) const { return (charID); }

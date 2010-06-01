@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+
 // NOT COMPLETE
 
 void FlashMyImporter::PrintMatrix(const FlashMatrix &m)
@@ -44,6 +45,8 @@ void FlashMyImporter::PrintRect(const FlashRect &r)
 
 void FlashMyImporter::Import(FlashHeader &data)
 {
+	data = data;  // No efficient but it works to prevent C4100 warnings
+
 	std::cout << "\n<FLASH FILE HEADER>\n";
 	std::cout << "File Version: "<< (int)data.GetVersion() << "\n";
 	std::cout << "Frame Size (x): "  << (data.GetScreenSize().GetX2()) << "\n";

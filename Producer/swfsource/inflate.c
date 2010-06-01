@@ -48,8 +48,9 @@ struct internal_state {
     *blocks;            /* current inflate_blocks state */
 };
 
-int ZEXPORT inflateReset(z)
-z_streamp z;
+// 31may2010, Removed Warning C4132, old style declarator
+int ZEXPORT inflateReset(
+z_streamp z )
 {
   if (z == Z_NULL || z->state == Z_NULL)
     return Z_STREAM_ERROR;
@@ -61,8 +62,9 @@ z_streamp z;
   return Z_OK;
 }
 
-int ZEXPORT inflateEnd(z)
-z_streamp z;
+// 31may2010, Removed Warning C4132, old style declarator
+int ZEXPORT inflateEnd(
+z_streamp z)
 {
   if (z == Z_NULL || z->state == Z_NULL || z->zfree == Z_NULL)
     return Z_STREAM_ERROR;
@@ -74,11 +76,12 @@ z_streamp z;
   return Z_OK;
 }
 
-int ZEXPORT inflateInit2_(z, w, version, stream_size)
-z_streamp z;
-int w;
-const char *version;
-int stream_size;
+// 31may2010, Removed Warning C4132, old style declarator
+int ZEXPORT inflateInit2_(
+z_streamp z,
+int w,
+const char *version,
+int stream_size)
 {
   if (version == Z_NULL || version[0] != ZLIB_VERSION[0] ||
       stream_size != sizeof(z_stream))
@@ -130,10 +133,11 @@ int stream_size;
   return Z_OK;
 }
 
-int ZEXPORT inflateInit_(z, version, stream_size)
-z_streamp z;
-const char *version;
-int stream_size;
+// 31may2010, Removed Warning C4132, old style declarator
+int ZEXPORT inflateInit_(
+z_streamp z,
+const char *version,
+int stream_size)
 {
   return inflateInit2_(z, DEF_WBITS, version, stream_size);
 }
@@ -141,9 +145,10 @@ int stream_size;
 #define NEEDBYTE {if (z->avail_in==0)return r;r=f;}
 #define NEXTBYTE (z->avail_in--,z->total_in++,*z->next_in++)
 
-int ZEXPORT inflate(z, f)
-z_streamp z;
-int f;
+// 31may2010, Removed Warning C4132, old style declarator
+int ZEXPORT inflate(
+z_streamp z,
+int f)
 {
   int r;
   uInt b;
@@ -152,7 +157,10 @@ int f;
     return Z_STREAM_ERROR;
   f = f == Z_FINISH ? Z_BUF_ERROR : Z_OK;
   r = Z_BUF_ERROR;
-  while (1) switch (z->state->mode)
+
+  for ( ; ;) 
+  {
+  switch (z->state->mode)
   {
     case METHOD:
       NEEDBYTE
@@ -262,16 +270,18 @@ int f;
       return Z_DATA_ERROR;
     default:
       return Z_STREAM_ERROR;
-  }
+  } /* end switch */
+  } /* end for */
 #ifdef NEED_DUMMY_RETURN
   return Z_STREAM_ERROR;  /* Some dumb compilers complain without this */
 #endif
 }
 
-int ZEXPORT inflateSetDictionary(z, dictionary, dictLength)
-z_streamp z;
-const Bytef *dictionary;
-uInt  dictLength;
+// 31may2010, Removed Warning C4132, old style declarator
+int ZEXPORT inflateSetDictionary(
+z_streamp z,
+const Bytef *dictionary,
+uInt  dictLength)
 {
   uInt length = dictLength;
 
@@ -291,8 +301,9 @@ uInt  dictLength;
   return Z_OK;
 }
 
-int ZEXPORT inflateSync(z)
-z_streamp z;
+// 31may2010, Removed Warning C4132, old style declarator
+int ZEXPORT inflateSync(
+z_streamp z)
 {
   uInt n;       /* number of bytes to look at */
   Bytef *p;     /* pointer to bytes */
@@ -348,8 +359,9 @@ z_streamp z;
  * decompressing, PPP checks that at the end of input packet, inflate is
  * waiting for these length bytes.
  */
-int ZEXPORT inflateSyncPoint(z)
-z_streamp z;
+// 31may2010, Removed Warning C4132, old style declarator
+int ZEXPORT inflateSyncPoint(
+z_streamp z)
 {
   if (z == Z_NULL || z->state == Z_NULL || z->state->blocks == Z_NULL)
     return Z_STREAM_ERROR;

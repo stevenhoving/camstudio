@@ -18,7 +18,7 @@ public:
 	{		
 		out.write(data, len);
 	}
-	void Read(std::istream &in)
+	void Read(std::istream /*&in*/)
 	{
 
 	}

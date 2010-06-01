@@ -139,10 +139,11 @@ const uLongf * ZEXPORT get_crc_table()
 #define DO8(buf)  DO4(buf); DO4(buf);
 
 /* ========================================================================= */
-uLong ZEXPORT crc32(crc, buf, len)
-    uLong crc;
-    const Bytef *buf;
-    uInt len;
+// 31may2010, Removed Warning C4132, old style declarator
+uLong ZEXPORT crc32(
+    uLong crc,
+    const Bytef *buf,
+    uInt len)
 {
     if (buf == Z_NULL) return 0L;
 #ifdef DYNAMIC_CRC_TABLE

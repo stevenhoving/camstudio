@@ -654,7 +654,7 @@ BOOL CPicture::SaveToFile(FILE* fptr)
 
 	}
 
-	BOOL bResult = FALSE;
+	// BOOL bResult = FALSE;
 	ILockBytes *Buffer = 0;
 	IStorage   *pStorage = 0;
 	IStream    *FileStream = 0;

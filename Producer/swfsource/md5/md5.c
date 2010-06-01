@@ -260,6 +260,8 @@ char* crypt_md5(const char* pw, const char* salt)
 
 	MD5Init(&ctx);
 
+    // void MD5Update(struct MD5Context *ctx, unsigned char const *buf, unsigned len)
+
 	/* The password first, since that is what is most unknown */
 	MD5Update(&ctx,pw,strlen(pw));
 
