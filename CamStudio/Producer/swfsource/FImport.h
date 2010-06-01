@@ -13,9 +13,13 @@
 
 #include <iostream>
 
+#pragma warning( push )
+#pragma warning (disable: 4100)
+
 class FlashImportHandler
 {
 public:
+
 	FlashImportHandler() {}
 
 	virtual void Import(FlashHeader &data) {}
@@ -157,7 +161,7 @@ public:
 	}
 
 };
-
+#pragma warning( pop )  // Restore C4100 warning
 
 #define SWFSOURCE_ADD_TO_SPRITE_TAGLIST( data )             \
    {                                                        \

@@ -64,10 +64,11 @@ local const uInt border[] = { /* Order of the bit length code lengths */
       the two sets of lengths.
  */
 
-void inflate_blocks_reset(s, z, c)
-inflate_blocks_statef *s;
-z_streamp z;
-uLongf *c;
+// 31may2010, Removed Warning C4132, old style declarator
+void inflate_blocks_reset(
+inflate_blocks_statef *s,
+z_streamp z,
+uLongf *c)
 {
   if (c != Z_NULL)
     *c = s->check;
@@ -84,10 +85,11 @@ uLongf *c;
   Tracev((stderr, "inflate:   blocks reset\n"));
 }
 
-inflate_blocks_statef *inflate_blocks_new(z, c, w)
-z_streamp z;
-check_func c;
-uInt w;
+// 31may2010, Removed Warning C4132, old style declarator
+inflate_blocks_statef *inflate_blocks_new(
+z_streamp z,
+check_func c,
+uInt w)
 {
   inflate_blocks_statef *s;
 
@@ -114,10 +116,11 @@ uInt w;
   return s;
 }
 
-int inflate_blocks(s, z, r)
-inflate_blocks_statef *s;
-z_streamp z;
-int r;
+// 31may2010, Removed Warning C4132, old style declarator
+int inflate_blocks(
+inflate_blocks_statef *s,
+z_streamp z,
+int r)
 {
   uInt t;               /* temporary storage */
   uLong b;              /* bit buffer */
@@ -131,7 +134,9 @@ int r;
   LOAD
 
   /* process input based on current state */
-  while (1) switch (s->mode)
+  for ( ; ; )
+  {
+  switch (s->mode)
   {
     case TYPE:
       NEEDBITS(3)
@@ -357,12 +362,14 @@ int r;
     default:
       r = Z_STREAM_ERROR;
       LEAVE
-  }
+  } /* end switch */
+  } /* end for */
 }
 
-int inflate_blocks_free(s, z)
-inflate_blocks_statef *s;
-z_streamp z;
+// 31may2010, Removed Warning C4132, old style declarator
+int inflate_blocks_free(
+inflate_blocks_statef *s,
+z_streamp z)
 {
   inflate_blocks_reset(s, z, Z_NULL);
   ZFREE(z, s->window);
@@ -372,10 +379,11 @@ z_streamp z;
   return Z_OK;
 }
 
-void inflate_set_dictionary(s, d, n)
-inflate_blocks_statef *s;
-const Bytef *d;
-uInt  n;
+// 31may2010, Removed Warning C4132, old style declarator
+void inflate_set_dictionary(
+inflate_blocks_statef *s,
+const Bytef *d,
+uInt  n)
 {
   zmemcpy(s->window, d, n);
   s->read = s->write = s->window + n;
@@ -385,8 +393,9 @@ uInt  n;
  * by Z_SYNC_FLUSH or Z_FULL_FLUSH.
  * IN assertion: s != Z_NULL
  */
-int inflate_blocks_sync_point(s)
-inflate_blocks_statef *s;
+// 31may2010, Removed Warning C4132, old style declarator
+int inflate_blocks_sync_point(
+inflate_blocks_statef *s)
 {
   return s->mode == LENS;
 }

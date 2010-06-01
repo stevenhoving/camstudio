@@ -166,15 +166,17 @@ void bufferCheckSize(Buffer out, int sbytes)
 
     if ((char *)newbuf != (char *)out->buffer)
     {
-      int pushd;
+      int pushd = 0;
 
-      if (out->pushloc)
-	pushd = out->pos - out->pushloc;
+	  if (out->pushloc) {
+		pushd = out->pos - out->pushloc;
+	  }
 
       out->pos = (char *)newbuf+num;
 
-      if (out->pushloc)
-	out->pushloc = out->pos - pushd;
+	  if (out->pushloc){
+		out->pushloc = out->pos - pushd;
+	  }
     }
 
     out->buffer = (char *)newbuf;
@@ -244,7 +246,7 @@ int bufferWriteDataAndPush(Buffer a, Buffer b)
 
 int bufferConcat(Buffer a, Buffer b)
 {
-  int len;
+  int len=0;
 
   if (!a)
     return 0;
