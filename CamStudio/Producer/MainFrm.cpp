@@ -273,7 +273,7 @@ void CMainFrame::ResizeToMovie(RECT movierect){
 void CMainFrame::OffsetRectZero(CRect& winrect)
 {
 	int x = winrect.left;
-	int y = winrect.top;
+//	int y = winrect.top;
 
 	winrect.left = 0;
 	winrect.top = 0;

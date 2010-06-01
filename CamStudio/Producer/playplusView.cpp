@@ -777,7 +777,7 @@ BOOL CPlayplusView::PreCreateWindow(CREATESTRUCT& cs)
 /////////////////////////////////////////////////////////////////////////////
 // CPlayplusView drawing
 
-void CPlayplusView::OnDraw(CDC* pDC)
+void CPlayplusView::OnDraw(CDC* /*pDC*/)
 {
 	CPlayplusDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
@@ -1094,7 +1094,7 @@ int PaintStuff(HDC hdc, HWND hwnd, BOOL fDrawEverything)
 
 //Separation of init streams into 1)avioptions preparation 2)timestart, timeend, time length finding  3)reseting counter components
 //Pre-condition : Init streams is called only in InserAVIfile..if it needed to be called in other places, make sure the relevant and only the revlant components are included
-void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile,long starttime, int keepcounter, int overwriteaudio,int resetslider)
+void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile,long starttime, int /*keepcounter*/, int overwriteaudio,int resetslider)
 {
 	//Note: the keepcounter variable is not used
 	//It's function is taken by the resetslider
@@ -1202,7 +1202,7 @@ void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile,long starttime, int keepcounte
 
 	//At this point, the gifirstaudio should be succesfully set
 	if ((needshift) && (giFirstAudio>=0)) {
-		int value = 0;
+		// int value = 0;
 		long startsample = 0;
 
 		startsample = SafeStreamTimeToSample( gapavi[giFirstAudio], starttime );
@@ -1275,7 +1275,7 @@ void InitAvi(LPSTR szFile, int nMenu, long starttime, int keepcounter, int overw
 	InsertAVIFile(pfile, szFile, starttime,  keepcounter,  overwriteaudio,resetslider);
 }
 
-UINT PlayAVIThread(LPVOID pParam) {
+UINT PlayAVIThread(LPVOID /*pParam*/) {
 	while (playerAlive) {
 		if (!gfRecording && initAudioRecording) {
 			initAudioRecording = FALSE;
@@ -1571,11 +1571,17 @@ default:
 //pavi : stream to convert
 //paviConverted  :ptr to converted straam
 //paviDstFormat  :if not null and in PCM, convert to this format, esle convert to recoring format
-int TestConvert(PAVISTREAM pavi,PAVISTREAM* paviConverted, PAVISTREAM paviDstFormat)
+int TestConvert(PAVISTREAM pavi, PAVISTREAM* paviConverted, PAVISTREAM paviDstFormat )
 {
+	// take _THIS_GIVES_OTHERWISE_WARNING_C4702_IS_UNREACHABLE_CODE_ in account when preventing warnings
+	pavi=pavi;
+	paviConverted= paviConverted;	//Eliminates C4100 warning
+	paviDstFormat= paviDstFormat;	//Eliminates C4100 warning
 	//restore
 	return 0;
 
+// #define _THIS_GIVES_OTHERWISE_WARNING_C4702_IS_UNREACHABLE_CODE_
+#ifdef _THIS_GIVES_OTHERWISE_WARNING_C4702_IS_UNREACHABLE_CODE_
 	if (pmode == PLAYER) return 0;
 
 	//0 :No Error, No Conversion Needed
@@ -1826,6 +1832,7 @@ int TestConvert(PAVISTREAM pavi,PAVISTREAM* paviConverted, PAVISTREAM paviDstFor
 
 	}
 	return ret;
+#endif _THIS_GIVES_OTHERWISE_WARNING_C4702_IS_UNREACHABLE_CODE_
 }
 
 //Assume Stream is an audio stream
@@ -2220,7 +2227,7 @@ void CPlayplusView::OnSize(UINT nType, int cx, int cy)
 
 	int MinPos;
 	int MaxPos;
-	int IncYVal = 0;
+	// int IncYVal = 0;
 
 	int origbottom=0;
 	int origright=0;
@@ -2909,7 +2916,7 @@ BOOL WinYield(void)
 // Output File Module
 // This function is called when the avi saving is completed
 //////////////////////////////////////////////////////////////////
-LRESULT CPlayplusView::OnUserGeneric	(UINT wParam, LONG lParam)
+LRESULT CPlayplusView::OnUserGeneric	(UINT /*wParam*/, LONG /*lParam*/)
 {
 	//AddAudioWaveFile((char *) LPCTSTR(tempaudiopath));
 	//::MessageBox(NULL,tempaudiopath,"User Generic",MB_OK | MB_ICONEXCLAMATION);
@@ -3275,7 +3282,7 @@ void StopAudioRecording()
 	}
 }
 
-LRESULT CPlayplusView::OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2)
+LRESULT CPlayplusView::OnMM_WIM_DATA(WPARAM /*parm1*/, LPARAM parm2)
 {
 	MMRESULT mmReturn = 0;
 
@@ -3472,7 +3479,7 @@ void SuggestCompressFormat()
 	bAudioCompression = TRUE;
 
 	AllocCompressFormat();
-	MMRESULT mmr;
+	MMRESULT mmr = (MMRESULT)0;
 
 	//1st try MPEGLAYER3
 	BuildRecordingFormat();
@@ -3585,7 +3592,7 @@ void NukeAVIStream(int i)
 	}
 	gcpavi--;
 }
-LRESULT CPlayplusView::OnMM_WOM_DONE(WPARAM parm1, LPARAM parm2)
+LRESULT CPlayplusView::OnMM_WOM_DONE(WPARAM /*parm1*/, LPARAM /*parm2*/)
 {
 	aviaudioMessage(viewWnd, MM_WOM_DONE, 0, 0);
 
@@ -3907,11 +3914,14 @@ int EditStreamReplace(PAVISTREAM pavi, LONG * plPos,  LONG * plLength, PAVISTREA
 	//Add Silence if start point is larger than existing stream length
 	long startPos = *plPos;
 	long silenceLengthPasted = *plLength;
-	if (value = EditStreamPadSilence( pavi,  &startPos,  &silenceLengthPasted))
+	value = EditStreamPadSilence( pavi,  &startPos,  &silenceLengthPasted);
+	if (value)
 		return value;
 
 	//ErrMsg("pavi %ld, *plPos %ld, *plLength %ld, pstream %ld, lStart %ld,lLength %ld",pavi, *plPos, *plLength, pstream, lStart,lLength);
-	if (value = EditStreamPaste(pavi, plPos, plLength, pstream, lStart,lLength) !=  AVIERR_OK)
+	/* ??? if (value = EditStreamPaste(pavi, plPos, plLength, pstream, lStart,lLength) !=  AVIERR_OK) */
+	value = EditStreamPaste(pavi, plPos, plLength, pstream, lStart,lLength);
+	if (value !=  AVIERR_OK)
 	{
 		ErrMsg("Unable to add audio at insertion point (Stream Replace)");
 	}
@@ -3937,7 +3947,9 @@ int EditStreamReplace(PAVISTREAM pavi, LONG * plPos,  LONG * plLength, PAVISTREA
 	//restore
 
 	if  (*plLength>0) {
-		if (value = EditStreamCut(pavi, &cutStartPoint, plLength,  &tempStream ) !=  AVIERR_OK)
+		/* ??? if (value = EditStreamCut(pavi, &cutStartPoint, plLength,  &tempStream ) !=  AVIERR_OK) */
+		value = EditStreamCut(pavi, &cutStartPoint, plLength,  &tempStream) ;
+		if (value !=  AVIERR_OK)
 		{
 			ErrMsg("Unable to remove audio at replace point (Stream Replace)");
 		}
@@ -3975,7 +3987,8 @@ int EditStreamPadSilence(PAVISTREAM pavi, LONG * plPos,  LONG * plLength)
 				ErrMsg("Unable to open silence file");
 				return hr;
 			}
-			if (hr = AVIFileGetStream(pfileSilence, &paviSilence, streamtypeAUDIO , 0) != AVIERR_OK)
+			hr = AVIFileGetStream(pfileSilence, &paviSilence, streamtypeAUDIO , 0);
+			if (hr != AVIERR_OK)
 			{
 				ErrMsg("Unable to load silence stream");
 				return hr;
@@ -3997,7 +4010,8 @@ int EditStreamPadSilence(PAVISTREAM pavi, LONG * plPos,  LONG * plLength)
 				//msgstr.Format("initialStreamEnd %ld lengthToPaste %ld SilenceStreamLength %ld totalPastedLength %ld,SilencePasteLength %ld",initialStreamEnd, lengthToPaste, SilenceStreamLength,totalPastedLength,SilencePasteLength);
 				//MessageBox(NULL,msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 
-				if (hr = EditStreamPaste(pavi, &initialStreamEnd, &PastedLength, paviSilence, 0,lengthToPaste) !=  AVIERR_OK)
+				hr = EditStreamPaste(pavi, &initialStreamEnd, &PastedLength, paviSilence, 0,lengthToPaste);
+				if (hr !=  AVIERR_OK)
 				{
 					ErrMsg("Unable to pad silence to existing stream at position %ld (Stream Replace)",initialStreamEnd);
 					return hr;
@@ -4048,7 +4062,8 @@ int EditStreamSilenceShift(PAVISTREAM pavi, LONG * plPos, LONG * plLength)
 				ErrMsg("Unable to open silence file (2) ");
 				return hr;
 			}
-			if (hr = AVIFileGetStream(pfileSilence, &paviSilence, streamtypeAUDIO , 0) != AVIERR_OK)
+			hr = AVIFileGetStream(pfileSilence, &paviSilence, streamtypeAUDIO , 0);
+			if (hr != AVIERR_OK)
 			{
 				ErrMsg("Unable to load silence stream (2)");
 				return hr;
@@ -4070,7 +4085,8 @@ int EditStreamSilenceShift(PAVISTREAM pavi, LONG * plPos, LONG * plLength)
 				//MessageBox(NULL,msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 
 				PastedLength = 0;
-				if (hr = EditStreamPaste(pavi, &StreamPastePoint, &PastedLength, paviSilence, 0,lengthToPaste) !=  AVIERR_OK)
+				hr = EditStreamPaste(pavi, &StreamPastePoint, &PastedLength, paviSilence, 0,lengthToPaste);
+				if (hr !=  AVIERR_OK)
 				{
 					ErrMsg("Unable to pad silence to existing stream at position %ld (2)",StreamPastePoint);
 					return hr;
@@ -4653,7 +4669,7 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
 			AVIStreamReadFormat(gapavi[giFirstAudio], AVIStreamStart(gapavi[giFirstAudio]), lpFormat, &cbFormat);
 
 			int SamplesPerSec = ((LPWAVEFORMATEX) lpFormat)->nSamplesPerSec;
-			int BytesPerSec = ((LPWAVEFORMATEX) lpFormat)->nAvgBytesPerSec;
+			//int BytesPerSec = ((LPWAVEFORMATEX) lpFormat)->nAvgBytesPerSec;
 			int BitsPerSample = ((LPWAVEFORMATEX) lpFormat)->wBitsPerSample;
 			int nChannels = ((LPWAVEFORMATEX) lpFormat)->nChannels;
 			DWORD wFormatTag = ((LPWAVEFORMATEX) lpFormat)->wFormatTag;
@@ -5311,10 +5327,10 @@ void CPlayplusView::OnUpdateFileConverttoswf(CCmdUI* pCmdUI)
 
 void CreateBackgroundBar(std::ostringstream &f, int controlsWidth, int controlsHeight,int FrameOffsetX,int FrameOffsetY,int BITMAP_X, int BITMAP_Y)
 {
-	int buttonRadius = controlsHeight;
+	// int buttonRadius = controlsHeight;
 	int barDepth = ObjectDepth + 1;
 	int ButtonSpaceY = 5;
-	int lineThickness = 3;
+	// int lineThickness = 3;
 
 	//FlashRGB colorBar1(0xc0,0xc0,0xff);
 	//FlashRGB colorBar1(0x00,0x00,0xff);
@@ -5367,7 +5383,7 @@ void CreateBackgroundBar(std::ostringstream &f, int controlsWidth, int controlsH
 	f << po;
 }
 
-void CreatePlayButton(std::ostringstream &f, int controlsWidth, int controlsHeight,int FrameOffsetX,int FrameOffsetY,int BITMAP_X, int BITMAP_Y)
+void CreatePlayButton(std::ostringstream &f, int /*controlsWidth*/, int controlsHeight,int FrameOffsetX,int FrameOffsetY,int BITMAP_X, int BITMAP_Y)
 {
 	int buttonRadius = controlsHeight;
 	int playButtonDepth = ObjectDepth + 2;
@@ -5506,7 +5522,7 @@ void CreatePlayButton(std::ostringstream &f, int controlsWidth, int controlsHeig
 	f << po;
 }
 
-void CreatePauseButton(std::ostringstream &f, int controlsWidth, int controlsHeight,int FrameOffsetX,int FrameOffsetY,int BITMAP_X, int BITMAP_Y)
+void CreatePauseButton(std::ostringstream &f, int /*controlsWidth*/, int controlsHeight,int FrameOffsetX,int FrameOffsetY,int BITMAP_X, int BITMAP_Y)
 {
 	int buttonRadius = controlsHeight;
 	int pauseButtonDepth = ObjectDepth + 2;
@@ -5648,7 +5664,7 @@ void CreatePauseButton(std::ostringstream &f, int controlsWidth, int controlsHei
 	f << po;
 }
 
-void CreateStopButton(std::ostringstream &f, int controlsWidth, int controlsHeight,int FrameOffsetX,int FrameOffsetY, int BITMAP_X, int BITMAP_Y)
+void CreateStopButton(std::ostringstream &f, int /*controlsWidth*/, int controlsHeight,int FrameOffsetX,int FrameOffsetY, int BITMAP_X, int BITMAP_Y)
 {
 	int buttonRadius = controlsHeight;
 	int stopButtonDepth = ObjectDepth + 2;
@@ -5792,8 +5808,8 @@ void PaintSwfFrame(HDC hdc, HBITMAP hbm, RECT rcFrame, LPBITMAPINFOHEADER lpbi, 
 	if (lpbi) {
 		int offsetx = 0;
 		int offsety = 0;
-		int bitmapwidth = rcFrame.right-rcFrame.left+1;
-		int bitmapheight = rcFrame.bottom-rcFrame.top+1;
+		//int bitmapwidth = rcFrame.right-rcFrame.left+1;
+		//int bitmapheight = rcFrame.bottom-rcFrame.top+1;
 
 		//Draw the Frame
 		DrawDibDraw(ghdd[iStream], hdc,
@@ -5823,7 +5839,7 @@ void PaintSwfFrame(HDC hdc, HBITMAP hbm, RECT rcFrame, LPBITMAPINFOHEADER lpbi, 
 	return;
 }
 
-LPBYTE makeReverse32(int width, int height,int bitPlanes, LPBITMAPINFOHEADER alpbi)
+LPBYTE makeReverse32(int width, int height,int /*bitPlanes*/, LPBITMAPINFOHEADER alpbi)
 {
 	LPBYTE bitsOrg = (LPBYTE) alpbi + // pointer to data
 		alpbi->biSize +
@@ -5849,7 +5865,7 @@ LPBYTE makeReverse16(int width, int height,int bitPlanes, LPBITMAPINFOHEADER alp
 	return bitsOrg;
 }
 
-LPBYTE swapPixelBytes16(int width, int height,int bitPlanes,LPBYTE bits16)
+LPBYTE swapPixelBytes16(int width, int height,int /*bitPlanes*/,LPBYTE bits16)
 {
 	BYTE *tmp;
 	tmp=bits16;
@@ -6037,7 +6053,7 @@ void FreeFrame(LPBITMAPINFOHEADER alpbi)
 // Create a new bitmap of the same width and height of alpbi
 // Fill it with zeros,
 // Then fill up the changeArray areas with alpbi data
-LPBYTE MakeFullRect(LPBITMAPINFOHEADER alpbi,LPBYTE bitmap, int BITMAP_X, int BITMAP_Y, int format, int max)
+LPBYTE MakeFullRect(LPBITMAPINFOHEADER /*alpbi*/, LPBYTE bitmap, int BITMAP_X, int BITMAP_Y, int format, int max)
 {
 	int imageLineLen, pixelbytes;
 	CChangeRectSwf * itemRect = NULL;
@@ -6095,7 +6111,7 @@ LPBYTE MakeFullRect(LPBITMAPINFOHEADER alpbi,LPBYTE bitmap, int BITMAP_X, int BI
 
 			}
 			int length = right - left + 1;
-			int height = bottom - top + 1;
+			//int height = bottom - top + 1;
 			int wLineLen;
 			if (format==4)
 				wLineLen = ((length)*16+31)/32 * 4;
@@ -6105,7 +6121,7 @@ LPBYTE MakeFullRect(LPBITMAPINFOHEADER alpbi,LPBYTE bitmap, int BITMAP_X, int BI
 			int imageStart = (top * imageLineLen) + left * pixelbytes;
 			int imageRow = imageStart;
 
-			int rectStart = 0;
+			//int rectStart = 0;
 			for (int y=top; y<=bottom; y++)
 			{
 				imageStart = imageRow;
@@ -6185,7 +6201,7 @@ void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitma
 			return;
 
 		//Set BitsLossless
-		int wLineLen;
+		int wLineLen=0;
 		if (format==4)
 			wLineLen = ((BITMAP_X)*16+31)/32 * 4;
 		else if (format==5)
@@ -6273,7 +6289,7 @@ void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitma
 			if (freecharacter)
 				gcFlash(f);
 
-			int wLineLen;
+			int wLineLen=0;
 			if (format==4)
 				wLineLen = ((alpbi->biWidth)*16+31)/32 * 4;
 			else if (format==5)
@@ -6700,7 +6716,7 @@ void AddExpandBlock(int BITMAP_X,int BITMAP_Y,int x,int y,int format)
 }
 
 //Assuming the itemRect is correctly chosen
-void ExpandBlock(CChangeRectSwf *itemRect, int BITMAP_X,int BITMAP_Y,int x,int y,int format)
+void ExpandBlock(CChangeRectSwf *itemRect, int BITMAP_X,int BITMAP_Y,int x,int y,int /*format*/)
 {
 	if (itemRect)
 	{
@@ -6729,7 +6745,7 @@ void ExpandBlock(CChangeRectSwf *itemRect, int BITMAP_X,int BITMAP_Y,int x,int y
 	}
 }
 
-void AddNewBlock(int BITMAP_X,int BITMAP_Y,int x,int y,int format)
+void AddNewBlock(int BITMAP_X,int BITMAP_Y,int x,int y,int /*format*/)
 {
 	CChangeRectSwf *itemRect = new CChangeRectSwf;
 
@@ -7317,9 +7333,9 @@ void SaveSettings()
 
 	fprintf(sFile, "[ CamStudio Flash Producer Settings ver%.2f -- Please do not edit ] \n\n",ver);
 
-	int swfnameLen = 0;
-	int swfhtmlnameLen = 0;
-	int swfbasenameLen = 0;
+	//int swfnameLen = 0;
+	//int swfhtmlnameLen = 0;
+	//int swfbasenameLen = 0;
 
 	//Ver 1.0
 	//if (ver>=0.99999)
@@ -7574,7 +7590,7 @@ LPBITMAPINFOHEADER LoadBitmapFile(CString bitmapFile)
 	return alpbi;
 }
 
-int CreateFlashBitmapPlayButton(std::ostringstream &f,int imagewidth, int imageheight, CString subdir,int imageoffset)
+int CreateFlashBitmapPlayButton(std::ostringstream &f,int /*imagewidth*/, int imageheight, CString subdir,int imageoffset)
 {
 	LPBITMAPINFOHEADER alpbi = NULL;
 	LPBITMAPINFOHEADER alpbi2 = NULL;
@@ -7586,7 +7602,7 @@ int CreateFlashBitmapPlayButton(std::ostringstream &f,int imagewidth, int imageh
 	alpbi = LoadBitmapFile(bitmapFile);
 	alpbi2 = LoadBitmapFile(bitmapFile2);
 
-	int right;
+	int right=0;
 
 	if ((alpbi) && (alpbi2))
 	{
@@ -7732,7 +7748,7 @@ int CreateFlashBitmapPlayButton(std::ostringstream &f,int imagewidth, int imageh
 	return right;
 }
 
-int CreateFlashBitmapPauseButton(std::ostringstream &f,int imagewidth, int imageheight, CString subdir,int imageoffset)
+int CreateFlashBitmapPauseButton(std::ostringstream &f,int /*imagewidth*/, int imageheight, CString subdir,int imageoffset)
 {
 	LPBITMAPINFOHEADER alpbi = NULL;
 	LPBITMAPINFOHEADER alpbi2 = NULL;
@@ -7744,13 +7760,13 @@ int CreateFlashBitmapPauseButton(std::ostringstream &f,int imagewidth, int image
 	alpbi = LoadBitmapFile(bitmapFile);
 	alpbi2 = LoadBitmapFile(bitmapFile2);
 
-	int right;
+	int right=0;
 
 	if ((alpbi) && (alpbi2))
 	{
 		int ButtonDepth = ObjectDepth + 2;
 
-		int buttonWidth = alpbi->biWidth;
+		//	int buttonWidth = alpbi->biWidth;
 
 		int shapeUP_ID, shapeOVER_ID;
 
@@ -7890,7 +7906,7 @@ int CreateFlashBitmapPauseButton(std::ostringstream &f,int imagewidth, int image
 	return right;
 }
 
-int CreateFlashBitmapStopButton(std::ostringstream &f,int imagewidth, int imageheight,  CString subdir,int imageoffset)
+int CreateFlashBitmapStopButton(std::ostringstream &f,int /*imagewidth*/, int imageheight,  CString subdir,int imageoffset)
 {
 	LPBITMAPINFOHEADER alpbi = NULL;
 	LPBITMAPINFOHEADER alpbi2 = NULL;
@@ -7902,13 +7918,13 @@ int CreateFlashBitmapStopButton(std::ostringstream &f,int imagewidth, int imageh
 	alpbi = LoadBitmapFile(bitmapFile);
 	alpbi2 = LoadBitmapFile(bitmapFile2);
 
-	int right;
+	int right=0;
 
 	if ((alpbi) && (alpbi2))
 	{
 		int ButtonDepth = ObjectDepth + 2;
 
-		int buttonWidth = alpbi->biWidth;
+		// int buttonWidth = alpbi->biWidth;
 
 		int shapeUP_ID, shapeOVER_ID;
 
@@ -8063,7 +8079,7 @@ int DrawRightPiece(std::ostringstream &f,int imagewidth, int imageheight,  CStri
 
 	alpbi = LoadBitmapFile(bitmapFile);
 
-	int right;
+	int right=0;
 
 	if (alpbi)
 	{
@@ -8126,7 +8142,7 @@ int DrawRightPiece(std::ostringstream &f,int imagewidth, int imageheight,  CStri
 	return right;
 }
 
-int DrawLeftPiece(std::ostringstream &f,int imagewidth, int imageheight,  CString subdir, int imageoffset,int yoffset)
+int DrawLeftPiece(std::ostringstream &f,int /*imagewidth*/, int imageheight,  CString subdir, int imageoffset,int yoffset)
 {
 	LPBITMAPINFOHEADER alpbi = NULL;
 
@@ -8135,13 +8151,13 @@ int DrawLeftPiece(std::ostringstream &f,int imagewidth, int imageheight,  CStrin
 
 	alpbi = LoadBitmapFile(bitmapFile);
 
-	int right;
+	int right=0;
 
 	if (alpbi)
 	{
 		int ButtonDepth = ObjectDepth + 2;
 
-		int buttonWidth = alpbi->biWidth;
+		//int buttonWidth = alpbi->biWidth;
 
 		int BITMAP_X, BITMAP_Y;
 
@@ -8231,10 +8247,10 @@ int CreateProgressBar(std::ostringstream &f, int controlsWidth, int controlsHeig
 {
 	controlsHeight = 2;
 
-	int buttonRadius = controlsHeight;
+	// int buttonRadius = controlsHeight;
 	int barDepth = ObjectDepth + 5;
-	int ButtonSpaceY = 5;
-	int lineThickness = 3;
+	// int ButtonSpaceY = 5;
+	// int lineThickness = 3;
 	int downOffset = ProgressOffsetY;
 
 	//Todo :
@@ -8378,10 +8394,10 @@ void WriteTextOut(std::ostringstream &f, int width, int height, CString Loadstr,
 //because the flash dimension is not large enough!!!!
 //percent = 1 becuase 1 is max! (100%)
 
-void Preloader(std::ostringstream &f, int widthBar, int bmWidth, int bmHeight, int progressOffset)
+void Preloader(std::ostringstream &f, int widthBar, int /*bmWidth*/, int /*bmHeight*/, int /*progressOffset*/)
 {
 	char actionScript[1000];
-	char actionScriptal[1000];
+	//char actionScriptal[1000];
 	char actionScript2[1000];
 
 	FlashActionGetPropertyVar(f,"",_totalframes, "tframes" );
@@ -8491,7 +8507,7 @@ void GetBounds(const char *font, CString textstr, int pointsize, CSize& retExten
 	retExtent = Extent;
 }
 
-int DrawLoading(std::ostringstream &f,int imagewidth, int imageheight,  CString subdir, int imageoffset,int yoffset)
+int DrawLoading(std::ostringstream &f,int imagewidth, int imageheight,  CString subdir, int /*imageoffset*/, int /*yoffset*/)
 {
 	LPBITMAPINFOHEADER alpbi = NULL;
 	int LoadingDepth = ObjectDepth + 6;
@@ -8501,13 +8517,13 @@ int DrawLoading(std::ostringstream &f,int imagewidth, int imageheight,  CString 
 
 	alpbi = LoadBitmapFile(bitmapFile);
 
-	int right;
+	int right=0;
 
 	if (alpbi)
 	{
-		int ButtonDepth = ObjectDepth + 2;
+		//int ButtonDepth = ObjectDepth + 2;
 
-		int buttonWidth = alpbi->biWidth;
+		//int buttonWidth = alpbi->biWidth;
 
 		int BITMAP_X, BITMAP_Y;
 
@@ -8575,7 +8591,7 @@ int DrawLoading(std::ostringstream &f,int imagewidth, int imageheight,  CString 
 
 //ver 2.29
 //this version some slight instability..somethimes the converted html/swf is not launched
-int DrawNodes(std::ostringstream &f,int widthBar,int imagewidth, int imageheight,  CString subdir, int imageoffset,int yoffset, int additionalOffsetX,int additionalOffsetY)
+int DrawNodes(std::ostringstream &f,int widthBar,int /*imagewidth*/ , int imageheight,  CString subdir, int /*imageoffset*/, int /*yoffset*/, int additionalOffsetX,int additionalOffsetY)
 {
 	//int downOffset = 2;
 	int downOffset = ProgressOffsetY;
@@ -8587,12 +8603,12 @@ int DrawNodes(std::ostringstream &f,int widthBar,int imagewidth, int imageheight
 
 	alpbi = LoadBitmapFile(bitmapFile);
 
-	int right;
+	int right=0;
 
 	if (alpbi)
 	{
 		int ButtonDepth = ObjectDepth + 3;
-		int buttonWidth = alpbi->biWidth;
+		//int buttonWidth = alpbi->biWidth;
 
 		int BITMAP_X, BITMAP_Y;
 

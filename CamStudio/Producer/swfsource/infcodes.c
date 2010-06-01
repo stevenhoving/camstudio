@@ -54,11 +54,12 @@ struct inflate_codes_state {
   inflate_huft *dtree;          /* distance tree */
 };
 
-inflate_codes_statef *inflate_codes_new(bl, bd, tl, td, z)
-uInt bl, bd;
-inflate_huft *tl;
-inflate_huft *td; /* need separate declaration for Borland C++ */
-z_streamp z;
+// 31may2010, Removed Warning C4132, old style declarator
+inflate_codes_statef *inflate_codes_new(
+uInt bl, uInt bd,
+inflate_huft *tl,
+inflate_huft *td, /* need separate declaration for Borland C++ */
+z_streamp z)
 {
   inflate_codes_statef *c;
 
@@ -75,10 +76,11 @@ z_streamp z;
   return c;
 }
 
-int inflate_codes(s, z, r)
-inflate_blocks_statef *s;
-z_streamp z;
-int r;
+// 31may2010, Removed Warning C4132, old style declarator
+int inflate_codes(
+inflate_blocks_statef *s,
+z_streamp z,
+int r)
 {
   uInt j;               /* temporary storage */
   inflate_huft *t;      /* temporary pointer */
@@ -96,7 +98,10 @@ int r;
   LOAD
 
   /* process input and output based on current state */
-  while (1) switch (c->mode)
+  /* while (1) */
+  for ( ; ; ) 
+  {
+  switch (c->mode)
   {             /* waiting for "i:"=input, "o:"=output, "x:"=nothing */
     case START:         /* x: set up for LEN */
 #ifndef SLOW
@@ -238,15 +243,17 @@ int r;
     default:
       r = Z_STREAM_ERROR;
       LEAVE
-  }
+  } /* end switch */
+  } /* end for */
 #ifdef NEED_DUMMY_RETURN
   return Z_STREAM_ERROR;  /* Some dumb compilers complain without this */
 #endif
 }
 
-void inflate_codes_free(c, z)
-inflate_codes_statef *c;
-z_streamp z;
+// 31may2010, Removed Warning C4132, old style declarator
+void inflate_codes_free(
+inflate_codes_statef *c,
+z_streamp z)
 {
   ZFREE(z, c);
   Tracev((stderr, "inflate:       codes free\n"));

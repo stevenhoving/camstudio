@@ -598,7 +598,7 @@ void SuggestLocalCompressFormat() {
 
 	//1st try MPEGLAYER3
 	BuildLocalRecordingFormat();
-	MMRESULT mmr;
+	MMRESULT mmr = (MMRESULT)0;;
 	if ((m_FormatLocal.nSamplesPerSec == 22050) && (m_FormatLocal.nChannels==2) && (m_FormatLocal.wBitsPerSample <= 16)) {
 
 		pwfxLocal->wFormatTag = WAVE_FORMAT_MPEGLAYER3;

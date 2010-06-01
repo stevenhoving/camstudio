@@ -25,12 +25,13 @@ struct inflate_codes_state {int dummy;}; /* for buggy compilers */
    at least ten.  The ten bytes are six bytes for the longest length/
    distance pair plus four bytes for overloading the bit buffer. */
 
-int inflate_fast(bl, bd, tl, td, s, z)
-uInt bl, bd;
-inflate_huft *tl;
-inflate_huft *td; /* need separate declaration for Borland C++ */
-inflate_blocks_statef *s;
-z_streamp z;
+// 31may2010, Removed Warning C4132, old style declarator
+int inflate_fast(
+uInt bl, uInt bd,
+inflate_huft *tl,
+inflate_huft *td, /* need separate declaration for Borland C++ */
+inflate_blocks_statef *s,
+z_streamp z)
 {
   inflate_huft *t;      /* temporary pointer */
   uInt e;               /* extra bits or operation */
@@ -67,7 +68,10 @@ z_streamp z;
       m--;
       continue;
     }
-    do {
+	/* replaced  do {} while (1); by  for (ever){} */	
+	/* do { */
+	for ( ; ; )  /* forever loop no.1 */
+	{
       DUMPBITS(t->bits)
       if (e & 16)
       {
@@ -80,7 +84,9 @@ z_streamp z;
         /* decode distance base of block to copy */
         GRABBITS(15);           /* max bits for distance code */
         e = (t = td + ((uInt)b & md))->exop;
-        do {
+		/* replaced  do {} while (1); by  for (ever){} */	
+		for ( ; ; )  /* forever loop no.2 */
+		{
           DUMPBITS(t->bits)
           if (e & 16)
           {
@@ -129,7 +135,8 @@ z_streamp z;
             UPDATE
             return Z_DATA_ERROR;
           }
-        } while (1);
+			/* replaced  do {} while (1); by  for (ever){} */	
+        }   /* end forever loop no.2 */ /*while (1);*/	/*jahoma while 1*/
         break;
       }
       if ((e & 64) == 0)
@@ -160,7 +167,9 @@ z_streamp z;
         UPDATE
         return Z_DATA_ERROR;
       }
-    } while (1);
+	  /* replaced  do {} while (1); by  for (ever){} */	
+      } /* end forever loop no.1 */ 
+
   } while (m >= 258 && n >= 10);
 
   /* not enough input or output--restore pointers and return */

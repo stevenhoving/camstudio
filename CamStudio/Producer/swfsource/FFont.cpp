@@ -153,7 +153,7 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineFont &data)
 	return in;
 }
 
-void FlashTextRecordStyle::Write(N_STD::ostream &out, unsigned char bitsGlyph, unsigned char bitsAdvance)
+void FlashTextRecordStyle::Write(N_STD::ostream &out, unsigned char /*bitsGlyph*/, unsigned char /*bitsAdvance*/)
 {
 	out.put((char)((char)(1 << 7)  | (char)(mhasFont << 3) | (char)(mhasFlashRGB << 2) | (char)(mhasOffsetx << 1) | (char)(mhasOffsety)));
 	if (mhasFont)
@@ -179,7 +179,7 @@ void FlashTextRecordStyle::Write(N_STD::ostream &out, unsigned char bitsGlyph, u
 	}
 }
 
-void FlashTextRecordStyle::Read(N_STD::istream &in, unsigned char bitsGlyph, unsigned char bitsAdvance)
+void FlashTextRecordStyle::Read(N_STD::istream &in, unsigned char /*bitsGlyph*/, unsigned char /*bitsAdvance*/)
 {
 	int c = in.get();
 
@@ -591,7 +591,7 @@ N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineFont2 &data)
 	return out;
 }
 
-N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineFont2 &data)
+N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineFont2 /*&data*/)
 {
 	return in;
 }
