@@ -56,6 +56,7 @@ public:
 	VOID XNoteProcessWinMessage(int iAction, ULONG lXnoteTimeInMilliSeconds);
 	bool GetRecordState();
 	bool GetPausedState();
+	static VOID XNoteSetRecordingInPauseMode(void);
 
 #ifdef _DEBUG
 	virtual void AssertValid() const;
