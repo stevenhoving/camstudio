@@ -28,7 +28,7 @@ public:
 	int NumberOfChannels() const						{return m_Format.nChannels;}
 	int NumberOfChannels(int nchan)
 	{
-		m_Format.nChannels = nchan;
+		m_Format.nChannels = WORD(nchan);	// Cast, eliminate L4 warning
 		Update();
 		return m_Format.nChannels;
 	}
@@ -43,7 +43,7 @@ public:
 	int BitsPerSample() const							{return m_Format.wBitsPerSample;}
 	int BitsPerSample(int bps)
 	{
-		m_Format.wBitsPerSample = bps;
+		m_Format.wBitsPerSample = WORD(bps);
 		Update();
 		return m_Format.wBitsPerSample;
 	}
