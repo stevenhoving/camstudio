@@ -16,13 +16,8 @@ CXnoteStopwatchFormat::~CXnoteStopwatchFormat(void)
 
 void CXnoteStopwatchFormat::FormatXnoteSampleString(char *cBuf64, long lDelayTimeInMilliSec, bool bDisplayCameraDelay )
 {
-	// TODO: Add your control notification handler code here
-
-	if ( bDisplayCameraDelay ) {
-		sprintf( cBuf64, "(%04d) hh:mm:ss.ttt", lDelayTimeInMilliSec);
-	} else {
-		strcpy( cBuf64, "hh:mm:ss.ttt");
-	}
+	// Format (delay) hh:mm:ss.ttt	
+	FormatXnoteDelayedTimeString( cBuf64, 0, 0 ,lDelayTimeInMilliSec, bDisplayCameraDelay );
 }
 
 
@@ -72,8 +67,9 @@ void CXnoteStopwatchFormat::FormatXnoteDelayedTimeString(
 		ulTickTimeSeconds = ulTickTimeRest;
 	}
 		
+	// Format (delay) hh:mm:ss.ttt	
 	if ( bDisplayCameraDelay ){
-		(void) sprintf( cBuf64, "(%04lu) %02lu:%02lu:%02lu.%03lu", 
+		(void) sprintf( cBuf64, "(%04lu)  %02lu:%02lu:%02lu.%03lu",   
 			lDelayTimeInMillisSec, 
 			ulTickTimeHour, ulTickMinutes, ulTickTimeSeconds, ulTickTimeThousands);
 	} else {

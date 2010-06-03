@@ -2,6 +2,7 @@
 #include "Screen.h"
 #include "ximage.h"
 #include "XnoteStopwatchFormat.h"
+#include "RecorderView.h"
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -43,9 +44,17 @@ bool CCamera::AddXNote(CDC* pDC)
 		CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmpBuffXNoteTimeStamp, cXNoteOpts.m_ulStartXnoteTickCounter, dwCurrTickCount ,m_sXNote.m_ulXnoteCameraDelayInMilliSec, cXNoteOpts.m_bXnoteDisplayCameraDelay );
 
 		taTmpXNote = m_sXNote.m_taXNote;
-		strcpy(taTmpXNote.text.GetBuffer(64),cTmpBuffXNoteTimeStamp);
+		// Show on second line recent (xnote) snaptimes
+		(void) sprintf( taTmpXNote.text.GetBuffer(64), "%s\n%s", cTmpBuffXNoteTimeStamp, cXNoteOpts.m_cSnapXnoteTimesString); 
 
 		InsertText(pDC, m_rectFrame, taTmpXNote);
+
+		// Determine if we want to switch from recording to pause mode.
+		// automatically now just 3 seconds after last snap occurred.
+		if ( dwCurrTickCount > (cXNoteOpts.m_ulSnapXnoteTickCounter + 3000) ) {
+			CRecorderView::XNoteSetRecordingInPauseMode();
+		}
+
 	}
 	return true;
 }
@@ -154,10 +163,53 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 		? dcBits.SelectObject(&font)
 		: 0;
 
+	/*
+	CString GetLength returns the length that you passed to it in the constructor and 
+	not the length of the string. This can be confusing if you copy the string and loop 
+	through the length. It can also be the cause of bugs is you get the length and use 
+	CString.GetBuffer() and loop through the buffer for the length.
+	It looks like CString.GetLength() is the size of the internal buffer and nothing more. 
+	*/
 	size_t length = rTextAttrs.text.GetLength();
-	CSize sizeText = dcBits.GetTextExtent(rTextAttrs.text, length);
-	CSize sizeFull(sizeText.cx + 10, sizeText.cy + 10);
-	CRect rectFull(0, 0, sizeFull.cx, sizeFull.cy);
+	
+	//jahoma, Second text line support
+	size_t nMaxLength= length;
+	size_t nBlockLength= length;
+	size_t nNrOfLine = 1;
+	size_t nNewLinePos = rTextAttrs.text.FindOneOf("\n");
+	if ( nNewLinePos ) {
+		/*
+		CString GetLength returns the length that you passed to it in the constructor and 
+		not the length of the string. This can be confusing if you copy the string and loop 
+		through the length. It can also be the cause of bugs is you get the length and use 
+		CString.GetBuffer() and loop through the buffer for the length.
+		It looks like CString.GetLength() is the size of the internal buffer and nothing more. 
+		Therefore we must determine length again using GetString()
+		*/
+		CString cText = rTextAttrs.text.GetString();
+		//nMaxLength = strlen(rTextAttrs.text.GetString());
+		nMaxLength = strlen(cText);
+		UINT n = 0;
+		for ( n=0 ; n < nMaxLength ; n++ ) {
+			if  ( cText[n] == '\n' ) {
+				nNrOfLine++;
+			}
+		}
+	}
+
+	//UINT uFormat = DT_CENTER | DT_SINGLELINE | DT_VCENTER;
+	/* 
+	 * uFormat; Specifies the method of formatting the text (see DrawText).
+	 */
+	UINT uFormat = DT_CENTER | DT_VCENTER;
+	if ( nNrOfLine == 1 ){
+		uFormat = uFormat | DT_SINGLELINE;
+	}
+
+
+	CSize sizeText = dcBits.GetTextExtent(rTextAttrs.text, length);			// length is blocklength
+	CSize sizeFull(sizeText.cx + 10, nNrOfLine*sizeText.cy + 10);			// defines the height of the area
+	CRect rectFull(0, 0, sizeFull.cx, sizeFull.cy);	// Define  size of the printable area, not the exact location  + 50=testje
 	CRect rectPos(0, 0, 0, 0);
 	switch (rTextAttrs.position)
 	{
@@ -165,42 +217,60 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 	default:
 		rectPos.left = 0;
 		rectPos.top = 0;
+		//uFormat = uFormat | DT_LEFT;
 		break;
 	case TOP_CENTER:
 		rectPos.left = (rectBase.Width() - sizeFull.cx) / 2;
 		rectPos.top = 0;
+		//uFormat = uFormat | DT_CENTER;
 		break;
 	case TOP_RIGHT:
 		rectPos.left = rectBase.right - sizeFull.cx;
 		rectPos.top = 0;
+		//uFormat = uFormat | DT_RIGHT;
 		break;
 	case CENTER_LEFT:
 		rectPos.left = 0;
 		rectPos.top = (rectBase.Height() - sizeFull.cy) / 2;
+		//uFormat = uFormat | DT_LEFT;
 		break;
 	case CENTER_CENTER:
 		rectPos.left = (rectBase.Width() - sizeFull.cx) / 2;
 		rectPos.top = (rectBase.Height() - sizeFull.cy) / 2;
+		//uFormat = uFormat | DT_CENTER;
 		break;
 	case CENTER_RIGHT:
 		rectPos.left = rectBase.right - sizeFull.cx;
 		rectPos.top = (rectBase.Height() - sizeFull.cy) / 2;
+		//uFormat = uFormat | DT_RIGHT;
 		break;
 	case BOTTOM_LEFT:
 		rectPos.left = 0;
 		rectPos.top = rectBase.bottom - sizeFull.cy;
+		//uFormat = uFormat | DT_LEFT;
 		break;
 	case BOTTOM_CENTER:
 		rectPos.left = (rectBase.Width() - sizeFull.cx) / 2;
 		rectPos.top = rectBase.bottom - sizeFull.cy;
+		//uFormat = uFormat | DT_CENTER;
 		break;
 	case BOTTOM_RIGHT:
 		rectPos.left = rectBase.right - sizeFull.cx;
 		rectPos.top = rectBase.bottom - sizeFull.cy;
+		//uFormat = uFormat | DT_RIGHT;
 		break;
 	}
 	rectPos.right = rectPos.left + sizeFull.cx;
 	rectPos.bottom = rectPos.top + sizeFull.cy;
+
+	/*
+	TRACE("##  Camera::InsertText lines=[%i]    l-bl-ml=[%d,%d,%d]    tlbr:[%i,%i,%i,%i]   tekst[%s]\n", 
+		nNrOfLine, 
+		length, nBlockLength, nMaxLength,
+		rectPos.top, rectPos.left, rectPos.bottom, rectPos.right,
+		rTextAttrs.text 
+		);
+	*/
 
 	CBitmap bm;
 	bm.CreateCompatibleBitmap(pDC, sizeFull.cx, sizeFull.cy);
@@ -212,12 +282,13 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 	//dcBits.Rectangle(&rectPos);
 	dcBits.SelectObject(pOldBrush);
 
-	UINT uFormat = DT_CENTER | DT_SINGLELINE | DT_VCENTER;
+	
 	COLORREF old_bk_color = dcBits.GetBkColor();
 	COLORREF old_txt_color = dcBits.GetTextColor();
 	dcBits.SetBkColor(rTextAttrs.backgroundColor);
 	dcBits.SetTextColor(rTextAttrs.textColor);
-	dcBits.DrawTextEx( (LPTSTR)(LPCTSTR)rTextAttrs.text, length, &rectFull, uFormat, 0);
+//	dcBits.DrawTextEx( (LPTSTR)(LPCTSTR)rTextAttrs.text, length, &rectFull, uFormat, 0);
+	dcBits.DrawTextEx( (LPTSTR)(LPCTSTR)rTextAttrs.text, nMaxLength, &rectFull, uFormat, 0);
 	dcBits.SetTextColor(old_txt_color);
 	dcBits.SetBkColor(old_bk_color);
 

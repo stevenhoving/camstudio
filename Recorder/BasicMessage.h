@@ -1,5 +1,12 @@
+// BasicMessage.h : interface of the CBasicMessage class
+//
+/////////////////////////////////////////////////////////////////////////////
+#if !defined(_BASICMESSAGE_H__DCC4865E_3B37_402E_AC1B_C8ABF4519F51__INCLUDED_)
+#define _BASICMESSAGE_H__DCC4865E_3B37_402E_AC1B_C8ABF4519F51__INCLUDED_
+
 #pragma once
 #include "afxwin.h"
+#include "resource.h"			//Added by janhgm, otherwise IDD_BASICMESSAGE is undeclared identifier
 
 // CBasicMessage dialog
 
@@ -25,3 +32,5 @@ public:
 	CEdit m_MessageText;
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 };
+
+#endif // !defined(_BASICMESSAGE_H__DCC4865E_3B37_402E_AC1B_C8ABF4519F51__INCLUDED_)
