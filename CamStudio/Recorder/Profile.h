@@ -1047,8 +1047,10 @@ struct sXNoteOpts
 		, m_taXNote(BOTTOM_LEFT)
 		, m_ulXnoteCameraDelayInMilliSec(175)		// Average delay, default 175 ms
 		, m_bXnoteDisplayCameraDelay(true)			// Default On: Show used delay in capture
-		, m_cXnoteDisplayFormatString("(0000) 00:00:00.000")	// Default. Not really a format but the layout if no time can be showed
+		, m_cXnoteDisplayFormatString("(0000)  00:00:00.000")	// Default hh:mm:ss.ttt, Not really a format. As long as the timer is not running this will be showed
 		, m_ulStartXnoteTickCounter(0)				// A non persistent member
+		, m_ulSnapXnoteTickCounter(0)				// A non persistent member
+		, m_cSnapXnoteTimesString("")				// A non persistent member
 	{
 	}
 	sXNoteOpts(const sXNoteOpts& rhs)
@@ -1130,6 +1132,8 @@ struct sXNoteOpts
 	CButton m_CheckBoxXnoteDisplayCameraDelay;
 	CString	m_cXnoteDisplayFormatString;
 	ULONG	m_ulStartXnoteTickCounter;
+	ULONG	m_ulSnapXnoteTickCounter;
+	CString	m_cSnapXnoteTimesString;
 
 };
 extern sXNoteOpts cXNoteOpts;
