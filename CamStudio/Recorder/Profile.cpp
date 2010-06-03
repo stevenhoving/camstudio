@@ -765,7 +765,7 @@ void CProfile::InitSections()
 	Add(m_SectionXNote, XNOTETEXTATTRIBUTES, "TextAttributes", TextAttributes(BOTTOM_LEFT));
 	Add(m_SectionXNote, XNOTECAMERADELAYINMILLISEC, "xnoteCameraDelayInMilliSec", 175);
 	Add(m_SectionXNote, XNOTEDISPLAYCAMERADELAY, "xnoteDisplayCameraDelay", true);
-	Add(m_SectionXNote, XNOTEDISPLAYFORMATSTRING, "xnoteDisplayFormatString", CString(_T("(0000) 00:00:00.000")) );
+	Add(m_SectionXNote, XNOTEDISPLAYFORMATSTRING, "xnoteDisplayFormatString", CString(_T("(0000)  00:00:00.000")) );   // hh:mm:ss.ttt
 
 	Add(m_SectionCaption, CAPTIONANNOTATION, "Annotation", false);
 	Add(m_SectionCaption, CAPTIONTEXTATTRIBUTES, "TextAttributes", TextAttributes(TOP_LEFT));
@@ -906,7 +906,7 @@ void CProfile::InitLegacySection()
 	VERIFY(Add(m_SectionLegacy, XNOTETEXTFONT, "xnoteTextFont", CString(_T("Arial"))));
 	VERIFY(Add(m_SectionLegacy, XNOTECAMERADELAYINMILLISEC, "xnoteCameraDelayInMilliSec", 165));
 	VERIFY(Add(m_SectionLegacy, XNOTEDISPLAYCAMERADELAY, "xnoteDisplayCameraDelay", true));
-	VERIFY(Add(m_SectionLegacy, XNOTEDISPLAYFORMATSTRING, "xnoteDisplayFormatString", CString(_T("(0000) 00:00:00.000")) ));
+	VERIFY(Add(m_SectionLegacy, XNOTEDISPLAYFORMATSTRING, "xnoteDisplayFormatString", CString(_T("(0000)  00:00:00.000")) ));	// hh:mm:ss.ttt
 	}
 	VERIFY(Add(m_SectionLegacy, CAPTIONANNOTATION, "captionAnnotation", false));
 	VERIFY(Add(m_SectionLegacy, CAPTIONBACKCOLOR, "captionBackColor", 0));
