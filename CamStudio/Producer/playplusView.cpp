@@ -1013,7 +1013,8 @@ int PaintStuff(HDC hdc, HWND hwnd, BOOL fDrawEverything)
 	LONG        l;
 	LONG        lTime;
 	LONG        lSize = 0;
-	RECT        rcFrame, rcC;
+	RECT        rcFrame = {'\0'};	// Init whole struct to prevent Warning C4701: potentially uninitialized local variable 
+	RECT		rcC;
 	int         i;
 
 	GetClientRect(hwnd, &rcC);
@@ -2022,7 +2023,7 @@ int CPlayplusView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		hLogoBM = LoadBitmap( AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_LOGO_DUBBER));
 
 	int tdata=0;
-	CWinThread * pThread = AfxBeginThread(PlayAVIThread, &tdata);
+	/*CWinThread * pThread = */ (void)AfxBeginThread(PlayAVIThread, &tdata);
 
 	audioPlayable = waveOutGetNumDevs ();
 
@@ -3365,9 +3366,9 @@ void DataFromSoundIn(CBuffer* buffer)
 void BuildRecordingFormat()
 {
 	m_Format.wFormatTag	= WAVE_FORMAT_PCM;
-	m_Format.wBitsPerSample = audio_bits_per_sample;
+	m_Format.wBitsPerSample = static_cast<WORD>( audio_bits_per_sample );
 	m_Format.nSamplesPerSec = audio_samples_per_seconds;
-	m_Format.nChannels = audio_num_channels;
+	m_Format.nChannels = static_cast<WORD>( audio_num_channels  );
 	m_Format.nBlockAlign = m_Format.nChannels * (m_Format.wBitsPerSample/8);
 	m_Format.nAvgBytesPerSec = m_Format.nSamplesPerSec * m_Format.nBlockAlign;
 	m_Format.cbSize = 0;
@@ -3376,7 +3377,7 @@ void BuildRecordingFormat()
 //Suggest Save/Compress Format to pwfx
 void SuggestRecordingFormat() {
 	WAVEINCAPS pwic;
-	MMRESULT mmr = waveInGetDevCaps( AudioDeviceID ,  &pwic, sizeof(pwic) );
+	/* MMRESULT mmr = */ (void) waveInGetDevCaps( AudioDeviceID ,  &pwic, sizeof(pwic) );
 
 	//Ordered in preference of choice
 	if ((pwic.dwFormats) & WAVE_FORMAT_2S16) {
@@ -3818,7 +3819,7 @@ void AuditAudio(PAVISTREAM pavi,long startsample) {
 
 	while (slCurrent<slEnd) {
 		//ErrMsg("slCurrent %ld, lSamplesToPlay %ld, toplay %ld",slCurrent, lSamplesToPlay, slEnd - slCurrent);
-		long retval = AVIStreamRead(pavi, slCurrent, lSamplesToPlay,
+		/*long retval = */ (void) AVIStreamRead(pavi, slCurrent, lSamplesToPlay,
 			buffer,
 			AUDIO_BUFFER_SIZE,
 			&retlen,
@@ -4044,7 +4045,7 @@ int EditStreamSilenceShift(PAVISTREAM pavi, LONG * plPos, LONG * plLength)
 {
 	HRESULT   hr;
 
-	long lz = AVIStreamLength(pavi);
+	/* long lz = */ (void) AVIStreamLength(pavi);
 	long ShiftToLocation = *plPos;
 	long ShiftFromLocation = AVIStreamStart(pavi);
 
@@ -4652,7 +4653,7 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
 	std::ofstream fileout(LPCTSTR(modname),std::ios::binary);
 	std::ostringstream f(std::ios::binary);
 
-	f << FlashTagBackgroundColor(swfbk_red,swfbk_green,swfbk_blue); //white
+	f << FlashTagBackgroundColor( (UBYTE)swfbk_red, (UBYTE)swfbk_green, (UBYTE)swfbk_blue); //white
 
 	if ((giFirstAudio>=0) && (useAudio))
 	{
@@ -4709,9 +4710,9 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
 				// Convert Audio to PCM ,  16 bit sample
 				WAVEFORMATEX WaveFormat;
 				WaveFormat.wFormatTag	= WAVE_FORMAT_PCM;
-				WaveFormat.wBitsPerSample = swf_bits_per_sample;
+				WaveFormat.wBitsPerSample = static_cast<WORD>( swf_bits_per_sample );
 				WaveFormat.nSamplesPerSec = swf_samples_per_seconds;
-				WaveFormat.nChannels = swf_num_channels;
+				WaveFormat.nChannels = static_cast<WORD>( swf_num_channels );
 				WaveFormat.nBlockAlign = WaveFormat.nChannels * (WaveFormat.wBitsPerSample/8);
 				WaveFormat.nAvgBytesPerSec = WaveFormat.nSamplesPerSec * WaveFormat.nBlockAlign;
 				WaveFormat.cbSize = 0;
@@ -4841,11 +4842,11 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
 		else if (controlsType == 2)
 		{
 			bitmapBarHeight = 25;
-			int offset;
+			int offset = 0 ;
 
-			if (ControllerAlignment == 0)
+			/*if (ControllerAlignment == 0)
 				offset = 0;
-			else if (ControllerAlignment == 1)
+			else */ if (ControllerAlignment == 1)
 				offset = (bmWidth - ControllerWidth)/2 + FrameOffsetX; //centering .. 296 is the hard code lenght of the bar...
 			if (yes_drawLeftPiece)
 				offset = DrawLeftPiece(f,bmWidth, bmHeight, "\\controller", offset, PieceOffsetY);
@@ -8085,7 +8086,7 @@ int DrawRightPiece(std::ostringstream &f,int imagewidth, int imageheight,  CStri
 	{
 		int ButtonDepth = ObjectDepth + 2;
 
-		int buttonWidth = alpbi->biWidth;
+		// int buttonWidth = alpbi->biWidth;
 
 		int BITMAP_X, BITMAP_Y;
 
@@ -8375,7 +8376,7 @@ void FlashActionSetPropertyFloatVar(std::ostringstream &f,CString SpriteTarget,i
 void WriteTextOut(std::ostringstream &f, int width, int height, CString Loadstr, CString fontstr, int red,int green, int blue, int pointsize, bool bold, bool italic, bool uLine)
 {
 	FlashRect bounds;
-	UWORD depth = ObjectDepth;
+	UWORD depth = static_cast<UWORD>(ObjectDepth);
 	FlashFontFactory fff;
 
 	//centering
@@ -8409,7 +8410,7 @@ void Preloader(std::ostringstream &f, int widthBar, int /*bmWidth*/, int /*bmHei
 	//sprintf(actionScript,"", );
 
 	ActionCompiler acom(5);
-	bool success = acom.Compile(actionScript,f);
+	/*bool success = */ (void) acom.Compile(actionScript,f);
 
 	/*
 	// me

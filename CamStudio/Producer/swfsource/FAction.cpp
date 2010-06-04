@@ -271,7 +271,7 @@ void FlashActionVectorImporter::Import(N_STD::istream &in, N_STD::vector<FlashAc
 
 	for(i = in.get(); i != 0; i=in.get())
 	{
-		in.putback(i);
+		in.putback( (char)i);
 		IMPORT_ACTION_IF(FlashActionNextFrame,0x04)
 		IMPORT_ACTION_ELSE_IF(FlashActionPreviousFrame,0x05)
 		IMPORT_ACTION_ELSE_IF(FlashActionPlay,0x06)
@@ -386,7 +386,7 @@ void FlashActionVectorImporter::Import(N_STD::istream &in, N_STD::vector<FlashAc
 	while( (actionsBlockSize + start) > (UDWORD)in.tellg() )
 	{
 		i = in.get();
-		in.putback(i);
+		in.putback( (char)i);
 		IMPORT_ACTION_IF(FlashActionNextFrame,0x04)
 		IMPORT_ACTION_ELSE_IF(FlashActionPreviousFrame,0x05)
 		IMPORT_ACTION_ELSE_IF(FlashActionPlay,0x06)

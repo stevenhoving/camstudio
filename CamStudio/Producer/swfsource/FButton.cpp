@@ -119,7 +119,7 @@ N_STD::ostream &operator<< (N_STD::ostream &out, FlashTagDefineButton2 &data)
 		}
 		tmp.put((char)0);
 
-	UWORD offset = tmp.pcount();
+	UWORD offset = (UWORD)tmp.pcount();
 
 	for(N_STD::vector<flash_pair<N_STD::vector<FlashActionRecord *>,UWORD> >::iterator ir
 			= data.actionrecords.begin();

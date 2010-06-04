@@ -120,8 +120,7 @@ N_STD::ostream &operator << (N_STD::ostream &out, FlashTagExportAssets &data)
 	{
 		for(UWORD i=0; i < (UWORD)data.assets_str.size(); i++)
 		{
-			len+=2;
-			len+=strlen(data.assets_str[i])+1;
+			len = len + static_cast<UWORD>( strlen(data.assets_str[i]) ) +1+2;	// add 2, and  cast to prevent warning
 		}
 	}
 	out << FlashTagHeader(56,len);
@@ -154,7 +153,7 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagExportAssets &data)
 			N_STD::vector<char> tmp;
 			while((c = in.get()) != 0)
 			{
-				tmp.push_back(c);
+				tmp.push_back( static_cast<const char>(c) );
 			}
 			char * tmpp = ((char*)malloc(tmp.size()+1));
 			data.assets_str.push_back(tmpp);

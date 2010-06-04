@@ -170,11 +170,11 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 	CString.GetBuffer() and loop through the buffer for the length.
 	It looks like CString.GetLength() is the size of the internal buffer and nothing more. 
 	*/
-	size_t length = rTextAttrs.text.GetLength();
+//	size_t length = rTextAttrs.text.GetLength();
 	
-	//jahoma, Second text line support
-	size_t nMaxLength= length;
-	size_t nBlockLength= length;
+	// Prepare multiple lines text support
+	size_t nBlockLength= rTextAttrs.text.GetLength();
+	size_t nMaxLength= nBlockLength;   // For now we assume that Max and BlockLength are equal (as is with singleline strings)
 	size_t nNrOfLine = 1;
 	size_t nNewLinePos = rTextAttrs.text.FindOneOf("\n");
 	if ( nNewLinePos ) {
@@ -207,7 +207,7 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 	}
 
 
-	CSize sizeText = dcBits.GetTextExtent(rTextAttrs.text, length);			// length is blocklength
+	CSize sizeText = dcBits.GetTextExtent(rTextAttrs.text, nBlockLength);	// Blocklength can be smaller then 
 	CSize sizeFull(sizeText.cx + 10, nNrOfLine*sizeText.cy + 10);			// defines the height of the area
 	CRect rectFull(0, 0, sizeFull.cx, sizeFull.cy);	// Define  size of the printable area, not the exact location  + 50=testje
 	CRect rectPos(0, 0, 0, 0);

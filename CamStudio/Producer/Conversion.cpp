@@ -151,7 +151,7 @@ int ConvertFile(const char* filename, const char* SaveFile, LPWAVEFORMATEX dstFo
 	return 0;
 }
 
-BOOL GetTitle( const char* pszFilePath, PTSTR pszFileTitle, int bufsize)
+BOOL GetTitle( const char* pszFilePath, PTSTR pszFileTitle, int /*bufsize*/ )
 {
 
 	//GetFileTitle( pszFilePath, pszFileTitle, bufsize);
@@ -185,7 +185,7 @@ BOOL GetTitle( const char* pszFilePath, PTSTR pszFileTitle, int bufsize)
     return (TRUE);
 }
 
-BOOL PerformConversion(PACMAPPFILEDESC paafd, const char* SaveFile, int ConversionType, LPWAVEFORMATEX dstFormat, int sizeDstFormat)
+BOOL PerformConversion(PACMAPPFILEDESC paafd, const char* SaveFile, int /*ConversionType*/, LPWAVEFORMATEX dstFormat, int /*sizeDstFormat*/)
 {
     //BOOL                f;
     DWORD               nAvgBytesPerSec;
@@ -331,7 +331,7 @@ BOOL PerformConversion(PACMAPPFILEDESC paafd, const char* SaveFile, int Conversi
     return (0);
 } // AcmAppFileConvert()
 
-BOOL AcmAppFileOpen(HWND hwnd, PACMAPPFILEDESC paafd)
+BOOL AcmAppFileOpen(HWND /*hwnd*/, PACMAPPFILEDESC paafd)
 {
     WAVEIOCB    wio;
     WIOERR      werr;
@@ -481,11 +481,7 @@ BOOL AppGetFileTitle
     return (TRUE);
 } // AppGetFileTitle()
 
-BOOL AcmAppConvertEnd
-(
-    HWND                hdlg,
-    PAACONVERTDESC      paacd
-)
+BOOL AcmAppConvertEnd( HWND /*hdlg*/, PAACONVERTDESC paacd )
 {
     MMRESULT            mmr;
     LPACMSTREAMHEADER   pash;
