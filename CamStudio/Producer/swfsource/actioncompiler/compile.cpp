@@ -212,7 +212,8 @@ int bufferWriteBuffer(Buffer a, Buffer b)
 
 int bufferWriteDataAndPush(Buffer a, Buffer b)
 {
-  int i, pushd;
+  int i=0;
+  int pushd =0;
 
   sbyte *data = b->buffer;
   int length = b->pos - b->buffer;
@@ -278,7 +279,7 @@ int bufferWritePushOp(Buffer out)
 int bufferWriteU8(Buffer out, int data)
 {
   bufferCheckSize(out, 1);
-  *(out->pos) = data;
+  *(out->pos) = (sbyte) data;
   out->pos++;
   out->free--;
 
@@ -500,7 +501,7 @@ void lower(char *s)
 {
   while(*s)
   {
-    *s = tolower(*s);
+    *s = static_cast<char>(tolower(*s));
     ++s;
   }
 }

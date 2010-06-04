@@ -163,7 +163,7 @@ void CSlideToolBar::AdjustTimeBar(CRect clientrect)
 
 	int sliderheight = 22;
 	int offset = 0;
-	int initialwidth = 200;
+	//int initialwidth = 200;		//Prevent C4189, init but not used
 
 	if (rect.Height() - 2  < sliderheight )
 		sliderheight = rect.Height() - 2;

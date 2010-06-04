@@ -269,7 +269,7 @@ N_STD::ostream &operator<< (N_STD::ostream &out, FlashLineStyleArray &data)
 }
 N_STD::istream &operator>> (N_STD::istream &in,  FlashLineStyleArray &data)
 {
-	SWORD c = in.get();
+	SWORD c = static_cast<SWORD>( in.get() );
 	if ((c == 0xff) && (data.GetTagVersion() > 1))
 	{
 		READ_SWORD(c);

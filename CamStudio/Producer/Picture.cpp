@@ -763,7 +763,10 @@ BOOL CPicture::LoadFromFile(FILE* fptr)
 	{
 		TCHAR szCause[255];
 		e.GetErrorMessage(szCause, 255, NULL);
-		HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
+
+		// HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;	//Cause: C4189, init but not used
+		(void) AfxGetApp()->GetMainWnd()->m_hWnd;			//Solution to prevent C4189, init but not used
+
 		MessageBoxEx(NULL, szCause, ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
 		bResult = FALSE;
 	}
