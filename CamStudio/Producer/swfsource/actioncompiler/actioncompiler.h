@@ -40,7 +40,7 @@ public:
 
 	bool Compile(char *script, std::ostream &outputStream)
 	{
-		Buffer outputBuffer;
+		Buffer outputBuffer = {'\0'};	// otherwise C4071 warning
 
 		int success = 0;
 

@@ -287,9 +287,9 @@ BOOL AudioFormat::OnInitDialog()
 
 	//Ver 1.2
 	WAVEINCAPS pwic;
-	MMRESULT mmr = waveInGetDevCaps( AudioDeviceID, &pwic, sizeof(pwic));
+	/*MMRESULT mmr = */ (void) waveInGetDevCaps( AudioDeviceID, &pwic, sizeof(pwic));
 
-	int selected_cindex = -1; //selected index of combo box
+	// int selected_cindex = -1; //selected index of combo box
 	numformat = 0; //counter, number of format
 
 	//This code works on the assumption (when filling in values for the user - interfaces)
@@ -582,9 +582,9 @@ void AudioFormat::OnInterleave()
 void BuildLocalRecordingFormat() {
 
 	m_FormatLocal.wFormatTag	= WAVE_FORMAT_PCM;
-	m_FormatLocal.wBitsPerSample = audio_bits_per_sampleLocal;
+	m_FormatLocal.wBitsPerSample = static_cast<WORD>(audio_bits_per_sampleLocal);
 	m_FormatLocal.nSamplesPerSec = audio_samples_per_secondsLocal;
-	m_FormatLocal.nChannels = audio_num_channelsLocal;
+	m_FormatLocal.nChannels = static_cast<WORD>(audio_num_channelsLocal);
 	m_FormatLocal.nBlockAlign = m_FormatLocal.nChannels * (m_FormatLocal.wBitsPerSample/8);
 	m_FormatLocal.nAvgBytesPerSec = m_FormatLocal.nSamplesPerSec * m_FormatLocal.nBlockAlign;
 	m_FormatLocal.cbSize = 0;
@@ -806,7 +806,7 @@ void AudioFormat::OnSelchangeInputdevice()
 void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPWAVEFORMATEX curr_sel_pwfx) {
 
 	WAVEINCAPS pwic;
-	MMRESULT mmr = waveInGetDevCaps( deviceID ,  &pwic, sizeof(pwic) );
+	/* MMRESULT mmr = */ (void) waveInGetDevCaps( deviceID ,  &pwic, sizeof(pwic) );
 
 	int selected_cindex=-1; //selected index of combo box
 	numformat=0; //counter, number of format

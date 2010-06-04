@@ -383,7 +383,7 @@ N_STD::ostream &operator << (N_STD::ostream &out, const FlashTagHeader &data)
 {
     if (data.length < 63)
     {
-        UWORD write = ((data.tagID << 6) | data.length);
+        UWORD write = ((data.tagID << 6) | (UWORD)data.length);
         out.put(write & 0xff);
         out.put(write >> 8);
     }
@@ -398,8 +398,8 @@ N_STD::ostream &operator << (N_STD::ostream &out, const FlashTagHeader &data)
 }
 N_STD::istream &operator >> (N_STD::istream &in,  FlashTagHeader &data)
 {
-    UWORD c  = in.get();
-    UWORD c2 = in.get();
+    UWORD c  = (UWORD) in.get();
+    UWORD c2 = (UWORD) in.get();
 
     UWORD read = (c2 << 8) | c;
 

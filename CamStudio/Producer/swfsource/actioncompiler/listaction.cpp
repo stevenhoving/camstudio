@@ -62,14 +62,14 @@ double readDouble(Buffer f)
   double d;
   unsigned char *p = (unsigned char *)&d;
 
-  p[4] = readUInt8(f);
-  p[5] = readUInt8(f);
-  p[6] = readUInt8(f);
-  p[7] = readUInt8(f);
-  p[0] = readUInt8(f);
-  p[1] = readUInt8(f);
-  p[2] = readUInt8(f);
-  p[3] = readUInt8(f);
+  p[4] = static_cast<unsigned char>( readUInt8(f) );
+  p[5] = static_cast<unsigned char>( readUInt8(f) );
+  p[6] = static_cast<unsigned char>( readUInt8(f) );
+  p[7] = static_cast<unsigned char>( readUInt8(f) );
+  p[0] = static_cast<unsigned char>( readUInt8(f) );
+  p[1] = static_cast<unsigned char>( readUInt8(f) );
+  p[2] = static_cast<unsigned char>( readUInt8(f) );
+  p[3] = static_cast<unsigned char>( readUInt8(f) );
 
   return d;
 }
