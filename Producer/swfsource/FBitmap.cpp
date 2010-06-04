@@ -143,7 +143,7 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineBitsJPEG3 &data)
 	return in;
 }
 
-void FlashZLibBitmapData::Write(N_STD::ostream &out, char format)
+void FlashZLibBitmapData::Write(N_STD::ostream &out, char /*format*/)
 {
 	N_STD::ostringstream tmp;
 

@@ -234,16 +234,18 @@ void CMainFrame::ResizeToMovie(RECT movierect){
 	//pStatus->GetWindowRect(&statusbarrect);
 	m_wndStatusBar.GetWindowRect(&statusbarrect);
 
-	int borderHeight = GetSystemMetrics(SM_CYBORDER);
-	int borderWidth = GetSystemMetrics(SM_CXBORDER);
-	int captionHeight = GetSystemMetrics(SM_CYCAPTION);
+	// (void) insteas of int var ..//Solution to prevent C4189, init but not used
+	/* int borderHeight = */	(void) GetSystemMetrics(SM_CYBORDER);
+	/* int borderWidth = */		(void) GetSystemMetrics(SM_CXBORDER);
+	/* int captionHeight = */	(void)GetSystemMetrics(SM_CYCAPTION);
 
 	//Dock Toolbar
 	// @FIXME[Carlo Lanzotti]: No need to call this unless the tool bar are set to be dockable.
 //	DockControlBar(&m_wndToolBar);
 
 	//Menu Height
-	int menuY = GetSystemMetrics(SM_CYMENU);
+	//	int menuY = GetSystemMetrics(SM_CYMENU);	//Cause: C4189, init but not used
+	(void) GetSystemMetrics(SM_CYMENU);				//Solution to prevent C4189, init but not used
 
 	CWnd* mainWindow = AfxGetMainWnd();
 	AdjustWindowRectEx(&movierect, GetWindowLong(mainWindow->m_hWnd, GWL_STYLE), TRUE, GetWindowLong(mainWindow->m_hWnd, GWL_EXSTYLE));

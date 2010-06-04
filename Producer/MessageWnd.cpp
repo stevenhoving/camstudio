@@ -289,7 +289,7 @@ void CTransparentWnd::SetupRegionByTransColor(CDC *pDC, COLORREF transColor)
 
 	CDC				memDC;
 	CBitmap			cBitmap, zoomBitmap;
-	CBitmap			*old_zoomBitmap;
+	CBitmap			*old_zoomBitmap = (CBitmap*)0;
 	HBITMAP		     pOldMemBmp = NULL;
 	COLORREF		col;
 	CRect			cRect;
@@ -509,7 +509,8 @@ void CTransparentWnd::DrawStuff(CDC* dc)
 	else {
 
 		LPBITMAPINFO pbmiText = GetTextBitmap(pDC, &CRect(clrect),m_factor,&m_tracker.m_rect, &m_textfont, m_textstring, NULL, NULL, rgb, m_horzalign);
-		HBITMAP newbm = DrawResampleRGB(pDC, &CRect(clrect),m_factor, (LPBITMAPINFOHEADER) pbmiText);
+		// HBITMAP newbm = DrawResampleRGB(pDC, &CRect(clrect),m_factor, (LPBITMAPINFOHEADER) pbmiText);	//Cause: C4189, init but not used
+		(void) DrawResampleRGB(pDC, &CRect(clrect),m_factor, (LPBITMAPINFOHEADER) pbmiText);				//Solution to prevent C4189, init but not used
 
 		if (pbmiText) {
 			GlobalFreePtr(pbmiText);
@@ -596,9 +597,10 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect* caprect,int fact
 	//Get Background
 	::StretchBlt(hMemDC, 0, 0, width, height, thisDC->m_hDC, left, top, orig_width,orig_height,SRCCOPY);
 
-	CPen* oldPen;
-	CBrush* oldBrush;
-	CFont dxfont, *oldfont;
+	CPen* oldPen = (CPen*)0;
+	CBrush* oldBrush = (CBrush*)0;
+	CFont dxfont; 
+	CFont* oldfont = (CFont*)0;
 
 	if (drawfont) {
 
@@ -859,7 +861,10 @@ HBITMAP CTransparentWnd::DrawResampleRGB(CDC *thisDC, CRect* /*caprect*/ ,int fa
 
 	}	// for y
 
-	int ret = StretchDIBits ( thisDC->m_hDC,
+
+	// int ret = StretchDIBits ( thisDC		....>	//Cause: C4189, init but not used
+	// (void)    StretchDIBits ( thisDC		....>	//Solution to prevent C4189, init but not used
+	(void) StretchDIBits ( thisDC->m_hDC,
 								0, 0,reduced_width,reduced_height,
 								0, 0,reduced_width,reduced_height,
 								lpBits, (LPBITMAPINFO)smallbi,

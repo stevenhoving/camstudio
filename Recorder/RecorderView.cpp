@@ -4114,7 +4114,7 @@ VOID CRecorderView::XNoteSetRecordingInPauseMode(void)
 VOID CRecorderView::XNoteProcessWinMessage(int iAction, ULONG /*lXnoteTimeInMilliSeconds*/ )
 {
 	DWORD dwCurrTickCount =  GetTickCount();
-	int nStrLength = 0;
+//	int nStrLength = 0;
 	int nStrLengthNew = 0;
 	int nStrLengthSnaps = 0;
 
