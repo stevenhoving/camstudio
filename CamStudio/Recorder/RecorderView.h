@@ -174,6 +174,10 @@ protected:
 	afx_msg void OnCameraDelayInMilliSec();
 	afx_msg void OnUpdateAnnotationAddXNote(CCmdUI *pCmdUI);
 
+	afx_msg void OnUpdateRecordDurationLimitInMilliSec(CCmdUI *pCmdUI);
+	afx_msg void OnRecordDurationLimitInMilliSec();
+	afx_msg void OnXnoteRecordDurationLimitMode();
+
 	afx_msg void OnAnnotationAddcaption();
 	afx_msg void OnUpdateAnnotationAddcaption(CCmdUI *pCmdUI);
 	afx_msg void OnAnnotationAddwatermark();
@@ -185,6 +189,7 @@ protected:
 	//}}AFX_MSG
 	afx_msg LRESULT OnRecordStart (UINT wParam, LONG lParam);
 	afx_msg LRESULT OnRecordInterrupted (UINT wParam, LONG lParam);
+	afx_msg LRESULT OnRecordPaused (UINT wParam, LONG lParam);
 	afx_msg LRESULT OnSaveCursor (UINT wParam, LONG lParam);
 	afx_msg LRESULT OnUserGeneric (UINT wParam, LONG lParam);
 	afx_msg LRESULT OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2);
@@ -196,6 +201,7 @@ public:
 public:
 	// TODO: should be private
 	static UINT WM_USER_RECORDINTERRUPTED;
+	static UINT WM_USER_RECORDPAUSED;
 	static UINT WM_USER_SAVECURSOR;
 	static UINT WM_USER_GENERIC;
 	static UINT WM_USER_RECORDSTART;

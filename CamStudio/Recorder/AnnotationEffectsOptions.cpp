@@ -29,6 +29,8 @@ void CAnnotationEffectsOptionsDlg::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Text(pDX, IDC_EDIT_XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec  );
 	DDX_Control(pDX, IDC_XNOTEDISPLAYCAMERADELAY, m_CheckBoxXnoteDisplayCameraDelay);
+	DDX_Text(pDX, IDC_EDIT_XNOTEAUTORECORDPAUSEDINMILLISEC, m_ulXnoteRecordDurationLimitInMilliSec  );
+	DDX_Control(pDX, IDC_BUTTON_XNOTEAUTORECORDPAUSED, m_CheckBoxXnoteRecordDurationLimitMode);
 	DDX_Text(pDX, IDC_EDIT_XNOTE_FORMAT, m_xnote.text);
 
 	DDX_Text(pDX, IDC_EDIT_CAPTION_TEXT, m_caption.text);
@@ -52,6 +54,9 @@ BEGIN_MESSAGE_MAP(CAnnotationEffectsOptionsDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_IMAGE_PATH, OnBnClickedButtonImagePath)
 	ON_BN_CLICKED(IDOK, &CAnnotationEffectsOptionsDlg::OnBnClickedOk)
 	ON_WM_CREATE()
+
+	ON_BN_CLICKED(IDC_BUTTON_XNOTEAUTORECORDPAUSED, &CAnnotationEffectsOptionsDlg::OnBnClickedXnoteRecordPausedInMilliSec)
+	ON_EN_CHANGE(IDC_EDIT_XNOTEAUTORECORDPAUSEDINMILLISEC, &CAnnotationEffectsOptionsDlg::OnEnChangeEditXnotecRecordPausedInMilliSec)
 END_MESSAGE_MAP()
 
 // CAnnotationEffectsOptionsDlg message handlers
@@ -173,15 +178,9 @@ int CAnnotationEffectsOptionsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		m_timestamp.logfont.lfHeight = 12;
 	}
 
-	if ( m_ulXnoteCameraDelayInMilliSec == 0)
-	{
-		// We need format to display time in milli seconds here.... (E.g. Time from xNote)
-		m_ulXnoteCameraDelayInMilliSec = 149;
-	}
-
-    // m_cXnoteDisplayFormatString, had zo te zien geen toegevoegde waarde is alleen maar tekst?
-	// maar dit blijkt de layout van de overlay te bepalen ..!
-	// onderstaande bepaalt in elk geval de lengte van het te gebriken veld.
+    // At first I believed that m_cXnoteDisplayFormatString had not any added value here.
+	// But it appeared that the length of this filed determines the visible tect in annotation.
+	// Code below determine the string length of the filed to use.
 
 	//TRACE("## CAnnotationEffectsOptionsDlg::OnCreate   m_cXnoteDisplayFormatString=[%s](%d)  m_ulXnoteCameraDelayInMilliSec:[%d]\n",m_cXnoteDisplayFormatString, strlen(m_cXnoteDisplayFormatString), m_ulXnoteCameraDelayInMilliSec );
 	if ( strlen( m_cXnoteDisplayFormatString ) == 0) 
@@ -241,3 +240,20 @@ bool CAnnotationEffectsOptionsDlg::IsStrftimeSafe(char * pbuffer)
 
 	return true;
 }
+
+void CAnnotationEffectsOptionsDlg::OnBnClickedXnoteRecordPausedInMilliSec()
+{
+	// TODO: Add your control notification handler code here
+}
+
+void CAnnotationEffectsOptionsDlg::OnEnChangeEditXnotecRecordPausedInMilliSec()
+{
+	// TODO:  If this is a RICHEDIT control, the control will not
+	// send this notification unless you override the CDialog::OnInitDialog()
+	// function and call CRichEditCtrl().SetEventMask()
+	// with the ENM_CHANGE flag ORed into the mask.
+
+	// TODO:  Add your control notification handler code here
+}
+
+
