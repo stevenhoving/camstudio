@@ -31,6 +31,14 @@ bool CCamera::AddTimestamp(CDC* pDC)
 	return true;
 }
 
+/////////////////////////////////////
+// AddXNote
+//
+// Write stopwatchinfo to screen
+// First line: Show stopwatch running digits
+// Second line: extended info about the last (three) stopwatch snaps.
+//
+/////////////////////////////////////
 bool CCamera::AddXNote(CDC* pDC)
 {
 	if (m_sXNote.m_bAnnotation) {
@@ -44,16 +52,13 @@ bool CCamera::AddXNote(CDC* pDC)
 		CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmpBuffXNoteTimeStamp, cXNoteOpts.m_ulStartXnoteTickCounter, dwCurrTickCount ,m_sXNote.m_ulXnoteCameraDelayInMilliSec, cXNoteOpts.m_bXnoteDisplayCameraDelay );
 
 		taTmpXNote = m_sXNote.m_taXNote;
-		// Show on second line recent (xnote) snaptimes
+		// Extend stopwatch info by adding on the second line the last (three here) xnote stopwatch snaptimes
 		(void) sprintf( taTmpXNote.text.GetBuffer(64), "%s\n%s", cTmpBuffXNoteTimeStamp, cXNoteOpts.m_cSnapXnoteTimesString); 
 
 		InsertText(pDC, m_rectFrame, taTmpXNote);
 
-		// Determine if we want to switch from recording to pause mode.
-		// automatically now just 3 seconds after last snap occurred.
-		if ( dwCurrTickCount > (cXNoteOpts.m_ulSnapXnoteTickCounter + 3000) ) {
-			CRecorderView::XNoteSetRecordingInPauseMode();
-		}
+		// Determine if we must switch from recording to pause mode.
+		CRecorderView::XNoteSetRecordingInPauseMode();
 
 	}
 	return true;
@@ -164,19 +169,24 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 		: 0;
 
 	/*
-	CString GetLength returns the length that you passed to it in the constructor and 
-	not the length of the string. This can be confusing if you copy the string and loop 
-	through the length. It can also be the cause of bugs is you get the length and use 
-	CString.GetBuffer() and loop through the buffer for the length.
-	It looks like CString.GetLength() is the size of the internal buffer and nothing more. 
+	*  Some info for multiple line blocks
+	* -------------------------------------
+	*  CString GetLength returns the length that you passed to it in the constructor and 
+	*  not the length of the string. This can be confusing if you copy the string and loop 
+	*  through the length. It can also be the cause of bugs is you get the length and use 
+	*  CString.GetBuffer() and loop through the buffer for the length.
+	*  It looks like CString.GetLength() is the size of the internal buffer and nothing more. 
 	*/
-//	size_t length = rTextAttrs.text.GetLength();
-	
+
 	// Prepare multiple lines text support
 	size_t nBlockLength= rTextAttrs.text.GetLength();
 	size_t nMaxLength= nBlockLength;   // For now we assume that Max and BlockLength are equal (as is with singleline strings)
 	size_t nNrOfLine = 1;
 	size_t nNewLinePos = rTextAttrs.text.FindOneOf("\n");
+
+	// Define thickness of the border
+	int nBorderLineThickness = 10;
+
 	if ( nNewLinePos ) {
 		/*
 		CString GetLength returns the length that you passed to it in the constructor and 
@@ -202,14 +212,16 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 	 * uFormat; Specifies the method of formatting the text (see DrawText).
 	 */
 	UINT uFormat = DT_CENTER | DT_VCENTER;
+	int nMultiLineSpacing = 0;
 	if ( nNrOfLine == 1 ){
 		uFormat = uFormat | DT_SINGLELINE;
+	} else {
+		nMultiLineSpacing = ( nNrOfLine - 1 ) * nBorderLineThickness;
 	}
 
-
-	CSize sizeText = dcBits.GetTextExtent(rTextAttrs.text, nBlockLength);	// Blocklength can be smaller then 
-	CSize sizeFull(sizeText.cx + 10, nNrOfLine*sizeText.cy + 10);			// defines the height of the area
-	CRect rectFull(0, 0, sizeFull.cx, sizeFull.cy);	// Define  size of the printable area, not the exact location  + 50=testje
+	CSize sizeText = dcBits.GetTextExtent(rTextAttrs.text, nBlockLength);						// Use Blocklength because with multiple lines this will be less than textlength.
+	CSize sizeFull(sizeText.cx, nNrOfLine*sizeText.cy - nMultiLineSpacing);						// Defines the height of the area required for the text only
+	CRect rectFull(0, 0, sizeFull.cx + nBorderLineThickness, sizeFull.cy +nBorderLineThickness );	// Define  size of the printable area, not the exact location  +N for border left and border top
 	CRect rectPos(0, 0, 0, 0);
 	switch (rTextAttrs.position)
 	{
@@ -220,12 +232,12 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 		//uFormat = uFormat | DT_LEFT;
 		break;
 	case TOP_CENTER:
-		rectPos.left = (rectBase.Width() - sizeFull.cx) / 2;
+		rectPos.left = (rectBase.Width() - sizeFull.cx - nBorderLineThickness) / 2 ;
 		rectPos.top = 0;
 		//uFormat = uFormat | DT_CENTER;
 		break;
 	case TOP_RIGHT:
-		rectPos.left = rectBase.right - sizeFull.cx;
+		rectPos.left = rectBase.right - sizeFull.cx - nBorderLineThickness;
 		rectPos.top = 0;
 		//uFormat = uFormat | DT_RIGHT;
 		break;
@@ -235,45 +247,38 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 		//uFormat = uFormat | DT_LEFT;
 		break;
 	case CENTER_CENTER:
-		rectPos.left = (rectBase.Width() - sizeFull.cx) / 2;
-		rectPos.top = (rectBase.Height() - sizeFull.cy) / 2;
+		rectPos.left = (rectBase.Width() - sizeFull.cx - nBorderLineThickness) / 2 ;
+		rectPos.top = (rectBase.Height() - sizeFull.cy - nBorderLineThickness) / 2 ;
 		//uFormat = uFormat | DT_CENTER;
 		break;
 	case CENTER_RIGHT:
-		rectPos.left = rectBase.right - sizeFull.cx;
-		rectPos.top = (rectBase.Height() - sizeFull.cy) / 2;
+		rectPos.left = rectBase.right - sizeFull.cx - nBorderLineThickness;
+		rectPos.top = (rectBase.Height() - sizeFull.cy - nBorderLineThickness) / 2;
 		//uFormat = uFormat | DT_RIGHT;
 		break;
 	case BOTTOM_LEFT:
 		rectPos.left = 0;
-		rectPos.top = rectBase.bottom - sizeFull.cy;
+		rectPos.top = rectBase.bottom - sizeFull.cy - nBorderLineThickness;
 		//uFormat = uFormat | DT_LEFT;
 		break;
 	case BOTTOM_CENTER:
-		rectPos.left = (rectBase.Width() - sizeFull.cx) / 2;
-		rectPos.top = rectBase.bottom - sizeFull.cy;
+		rectPos.left = (rectBase.Width() - sizeFull.cx - nBorderLineThickness) / 2;
+		rectPos.top = rectBase.bottom - sizeFull.cy - nBorderLineThickness;
 		//uFormat = uFormat | DT_CENTER;
 		break;
 	case BOTTOM_RIGHT:
-		rectPos.left = rectBase.right - sizeFull.cx;
-		rectPos.top = rectBase.bottom - sizeFull.cy;
+		rectPos.left = rectBase.right - sizeFull.cx - nBorderLineThickness;
+		rectPos.top = rectBase.bottom - sizeFull.cy - nBorderLineThickness;
 		//uFormat = uFormat | DT_RIGHT;
 		break;
 	}
-	rectPos.right = rectPos.left + sizeFull.cx;
-	rectPos.bottom = rectPos.top + sizeFull.cy;
+	rectPos.right = rectPos.left + sizeFull.cx + nBorderLineThickness;		// +N for the border at the left
+	rectPos.bottom = rectPos.top + sizeFull.cy + nBorderLineThickness;		// +N for the border at the top
 
-	/*
-	TRACE("##  Camera::InsertText lines=[%i]    l-bl-ml=[%d,%d,%d]    tlbr:[%i,%i,%i,%i]   tekst[%s]\n", 
-		nNrOfLine, 
-		length, nBlockLength, nMaxLength,
-		rectPos.top, rectPos.left, rectPos.bottom, rectPos.right,
-		rTextAttrs.text 
-		);
-	*/
+	//TRACE("##  Camera::InsertText no.of.lines=[%i]    len-blen-mlen=[%d,%d,%d]    RectPos top:[%i], left:[%i], bot:[%i], right:[%i]]   tekst[%s]\n",   nNrOfLine,   rTextAttrs.text.GetLength(), nBlockLength, nMaxLength,   rectPos.top, rectPos.left, rectPos.bottom, rectPos.right,   rTextAttrs.text );
 
 	CBitmap bm;
-	bm.CreateCompatibleBitmap(pDC, sizeFull.cx, sizeFull.cy);
+	bm.CreateCompatibleBitmap(pDC, sizeFull.cx + 2*nBorderLineThickness , sizeFull.cy + 2*nBorderLineThickness); 
 	CBitmap * pOldBM = dcBits.SelectObject(&bm);
 
 	CBrush brush;
@@ -287,12 +292,11 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 	COLORREF old_txt_color = dcBits.GetTextColor();
 	dcBits.SetBkColor(rTextAttrs.backgroundColor);
 	dcBits.SetTextColor(rTextAttrs.textColor);
-//	dcBits.DrawTextEx( (LPTSTR)(LPCTSTR)rTextAttrs.text, length, &rectFull, uFormat, 0);
 	dcBits.DrawTextEx( (LPTSTR)(LPCTSTR)rTextAttrs.text, nMaxLength, &rectFull, uFormat, 0);
 	dcBits.SetTextColor(old_txt_color);
 	dcBits.SetBkColor(old_bk_color);
 
-	pDC->BitBlt(rectPos.left, rectPos.top, sizeFull.cx, sizeFull.cy, &dcBits, 0, 0, SRCCOPY);
+	pDC->BitBlt(rectPos.left, rectPos.top, sizeFull.cx + nBorderLineThickness, sizeFull.cy + nBorderLineThickness, &dcBits, 0, 0, SRCCOPY);
 	dcBits.SelectObject(pOldBM);
 	if (pOldFont){
 		dcBits.SelectObject(pOldFont);
@@ -445,6 +449,12 @@ bool CCamera::CaptureFrame(const CRect& rectView)
 	CBitmap cBitmap;
 	cBitmap.CreateCompatibleBitmap(pScreenDC, m_rectView.Width(), m_rectView.Height());
 	CBitmap* pOldBitmap = cMemDC.SelectObject(&cBitmap);
+
+	///////////////////////////////////////////
+	// Jun 2010, Todo, option.
+	// If we put recording on pause we can put screen copy on a stack.
+	// Doing so we can recall saved frames when pause gets released
+	///////////////////////////////////////////
 
 	// copy screen image to bitmap
 	DWORD dwRop = SRCCOPY;

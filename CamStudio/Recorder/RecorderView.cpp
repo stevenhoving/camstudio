@@ -142,6 +142,7 @@ unsigned long nTotalBytesWrittenSoFar = 0UL;
 // Xnote timing support. Show timing from start of recording
 ULONG ulXNoteStartTime = 0UL;
 ULONG ulXNoteLastSnapTime = 0UL;
+bool bXNoteSnapRecordingState = false;		// This settings defines if recording is triggered by xnote. if trggered by xnote it will stop automattically is this option is set by user.
 char  cXNoteLastSnapTimes[64] /*= {'\0'} */;
 
 // Messaging
@@ -363,6 +364,7 @@ void SetVideoCompressState (HIC hic, DWORD fccHandler)
 // CRecorderView
 
 UINT CRecorderView::WM_USER_RECORDINTERRUPTED = ::RegisterWindowMessage(WM_USER_RECORDINTERRUPTED_MSG);
+UINT CRecorderView::WM_USER_RECORDPAUSED = ::RegisterWindowMessage(WM_USER_RECORDPAUSED_MSG);
 UINT CRecorderView::WM_USER_SAVECURSOR = ::RegisterWindowMessage(WM_USER_SAVECURSOR_MSG);
 UINT CRecorderView::WM_USER_GENERIC = ::RegisterWindowMessage(WM_USER_GENERIC_MSG);
 UINT CRecorderView::WM_USER_RECORDSTART = ::RegisterWindowMessage(WM_USER_RECORDSTART_MSG);
@@ -437,7 +439,9 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	
 	ON_COMMAND(ID_ANNOTATION_ADDXNOTE, OnAnnotationAddXNote)
 	ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDXNOTE, OnUpdateAnnotationAddXNote)
-	
+
+	ON_COMMAND(ID_XNOTE_RECORDDURATIONLIMITMODE, OnXnoteRecordDurationLimitMode)
+
 	ON_COMMAND(ID_ANNOTATION_ADDCAPTION, OnAnnotationAddcaption)
 	ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDCAPTION, OnUpdateAnnotationAddcaption)
 	ON_COMMAND(ID_ANNOTATION_ADDWATERMARK, OnAnnotationAddwatermark)
@@ -487,6 +491,7 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, CView::OnFilePrintPreview)
 	ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDSTART, OnRecordStart)
 	ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDINTERRUPTED, OnRecordInterrupted)
+	ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDPAUSED, OnRecordPaused)
 	ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_SAVECURSOR, OnSaveCursor)
 	ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_GENERIC, OnUserGeneric)
 	ON_MESSAGE(MM_WIM_DATA, OnMM_WIM_DATA)
@@ -731,6 +736,8 @@ LRESULT CRecorderView::OnRecordStart(UINT /*wParam*/, LONG /*lParam*/)
 	m_cCamera.Set(cWatermarkOpts);
 	m_cCamera.Set(CamCursor);
 
+	//TRACE("## CRecorderView::OnRecordStart  m_cCamera.m_sXNote.m_ulXnoteRecordDurationLimitInMilliSec[%d]\n", m_cCamera.m_sXNote.m_ulXnoteRecordDurationLimitInMilliSec  );
+
 	//ver 1.2
 	if (cProgramOpts.m_bMinimizeOnStart)
 		::PostMessage(AfxGetMainWnd()->m_hWnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
@@ -754,6 +761,20 @@ LRESULT CRecorderView::OnRecordStart(UINT /*wParam*/, LONG /*lParam*/)
 
 	return 0;
 }
+
+
+LRESULT CRecorderView::OnRecordPaused (UINT /*wParam*/, LONG /*lParam*/)
+{
+	// TRACE("## CRecorderView::OnRecordPaused\n");
+	if (bRecordPaused) {
+		return 0;
+	}
+	//TRACE("## CRecorderView::OnRecordPaused Tick:[%ul] Call OnPause() now\n", GetTickCount() );
+	OnPause();
+
+	return 0;
+}
+
 
 LRESULT CRecorderView::OnRecordInterrupted (UINT wParam, LONG /*lParam*/)
 {
@@ -1440,11 +1461,17 @@ void CRecorderView::OnHelpHelp()
 
 void CRecorderView::OnPause()
 {
+	//TRACE ("## CRecorderView::OnPause BEGIN RecordState:[%d] RecordPaused:[%d]\n", bRecordState, bRecordPaused);
+
 	//return if not current recording or already in paused state
 	if (!bRecordState || bRecordPaused)
 		return;
 
 	bRecordPaused = true;
+	//TRACE ("## CRecorderView::OnPause  STATE SWITCHED RecordPaused:[%d]\n", bRecordPaused);
+
+	// TODO: Set flag that will switch from recording to pause to off if nothing is happening for al very long time.
+
 
 	//ver 1.8
 	//if (iRecordAudio==2)
@@ -3063,7 +3090,7 @@ void CRecorderView::OnUpdateAnnotationAddXNote(CCmdUI *pCmdUI)
 
 void CRecorderView::OnCameraDelayInMilliSec()
 {
-	// Update CameraDelayInMilliSec value
+	// Update CameraDelayInMilliSec value  (BTW. Nothing is actual changed here)
 	cXNoteOpts.m_ulXnoteCameraDelayInMilliSec = cXNoteOpts.m_ulXnoteCameraDelayInMilliSec;
 }
 
@@ -3072,6 +3099,55 @@ void CRecorderView::OnUpdateCameraDelayInMilliSec(CCmdUI *pCmdUI)
 	pCmdUI->SetCheck(cXNoteOpts.m_ulXnoteCameraDelayInMilliSec );
 }
 //////////////
+
+void CRecorderView::OnRecordDurationLimitInMilliSec()
+{
+	// Update RecordDurationLimitInMilliSec value  (BTW. Nothing is actual changed here)
+	cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec = cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec;
+
+}
+
+void CRecorderView::OnUpdateRecordDurationLimitInMilliSec(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec );
+}
+
+//////////////
+
+// Toggle mode
+void CRecorderView::OnXnoteRecordDurationLimitMode()
+{
+	//TRACE ("## CRecorderView::OnXnoteRecordDurationLimitMode  SWITCH States\n");
+
+	// Toggle, settings for the running program are changed
+	cXNoteOpts.m_bXnoteRecordDurationLimitMode = !cXNoteOpts.m_bXnoteRecordDurationLimitMode;
+	
+	// If we set bXNoteSnapRecordingState to FALSE the autopause check will be ignored for the current 
+	// recording but only if recording is activated by a xnote start message.
+	bXNoteSnapRecordingState = cXNoteOpts.m_bXnoteRecordDurationLimitMode;
+
+	// If bXNoteSnapRecordingState is set to TRUE here an applicable reference time for autopause is required. 
+	// (Otherwise recording will stop immidiatelly).
+	if ( bXNoteSnapRecordingState ) {
+		ulXNoteLastSnapTime = GetTickCount();
+	}
+
+	// Prepare info to show
+	CString csXnoteAutoPauseMsg;
+	csXnoteAutoPauseMsg.Format("Xnote auto pause mode : %s, duration %d ms",  
+		(cXNoteOpts.m_bXnoteRecordDurationLimitMode) ? "On" : "Off" ,
+		(cXNoteOpts.m_bXnoteRecordDurationLimitMode) ? cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec : 0 );
+
+	CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
+	pStatus->SetPaneText(0, _T( csXnoteAutoPauseMsg.GetString() ) );
+
+	//Set Title Bar
+	CMainFrame * pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
+	pFrame->SetTitle(_T( csXnoteAutoPauseMsg.GetString() ));
+
+	// To be sure that all info on screen will be updated
+	Invalidate();
+}
 
 
 void CRecorderView::OnAnnotationAddcaption()
@@ -3101,8 +3177,12 @@ void CRecorderView::OnEffectsOptions()
 	dlg.m_timestamp = cTimestampOpts.m_taTimestamp;
 
 	dlg.m_xnote = cXNoteOpts.m_taXNote;  
-	dlg.m_ulXnoteCameraDelayInMilliSec = cXNoteOpts.m_ulXnoteCameraDelayInMilliSec; 
+
 	dlg.m_bXnoteDisplayCameraDelay = cXNoteOpts.m_bXnoteDisplayCameraDelay; 
+	dlg.m_ulXnoteCameraDelayInMilliSec = cXNoteOpts.m_ulXnoteCameraDelayInMilliSec; 
+
+	dlg.m_bXnoteRecordDurationLimitMode = cXNoteOpts.m_bXnoteRecordDurationLimitMode; 
+	dlg.m_ulXnoteRecordDurationLimitInMilliSec = cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec; 
 
 	dlg.m_caption = cCaptionOpts.m_taCaption;
 	dlg.m_image = cWatermarkOpts.m_iaWatermark;
@@ -3114,6 +3194,13 @@ void CRecorderView::OnEffectsOptions()
 		cXNoteOpts.m_taXNote = dlg.m_xnote;
 		cXNoteOpts.m_ulXnoteCameraDelayInMilliSec = dlg.m_ulXnoteCameraDelayInMilliSec;
 		cXNoteOpts.m_bXnoteDisplayCameraDelay =  dlg.m_bXnoteDisplayCameraDelay;
+
+		cXNoteOpts.m_bXnoteRecordDurationLimitMode =  dlg.m_bXnoteRecordDurationLimitMode;
+		cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec = dlg.m_ulXnoteRecordDurationLimitInMilliSec;
+
+		//TRACE( "## CRecorderView::OnEffectsOptions  dlg.m_bXnoteRecordDurationLimitMode       =[%d)\n", dlg.m_bXnoteRecordDurationLimitMode); 
+		//TRACE( "## CRecorderView::OnEffectsOptions  dlg.m_ulXnoteRecordDurationLimitInMilliSec=[%d)\n", dlg.m_ulXnoteRecordDurationLimitInMilliSec); 
+
 		// Caption
 		cCaptionOpts.m_taCaption = dlg.m_caption;
 		// Watermark
@@ -3269,13 +3356,12 @@ void CRecorderView::DisplayRecordingMsg(CDC & srcDC)
 
 	CString msgRecMode;
 	msgRecMode.LoadString((cProgramOpts.m_iRecordingMode == ModeAVI) ? IDS_RECAVI : IDS_RECSWF);
-
 	CSize sizeExtent = srcDC.GetTextExtent(msgRecMode);
 
 	CRect rectClient;
 	GetClientRect(&rectClient);
 	int xoffset = 12;
-	int yoffset = 12;
+	int yoffset = 6;
 	int xmove = rectClient.Width() - sizeExtent.cx - xoffset;
 	int ymove = yoffset;
 
@@ -3284,6 +3370,22 @@ void CRecorderView::DisplayRecordingMsg(CDC & srcDC)
 	srcDC.Rectangle(rectMode.left - 3, rectMode.top - 3, rectMode.right + 3, rectMode.bottom + 3);
 	srcDC.TextOut(rectMode.left, rectMode.top,  msgRecMode);
 
+	//TRACE("## CRecorderView::DisplayRecordingMsg  CAMSTUDIO4XNOTE Effect:[%d]  Option:[%d]\n", cXNoteOpts.m_bAnnotation , cXNoteOpts.m_bXnoteRecordDurationLimitMode);
+	// Show informational text only if Xnote stopwatch is also activated as an effect option  XNOTEANNOTATION = On
+	if (cXNoteOpts.m_bAnnotation) {
+		CString msgXnoteMode;
+		msgXnoteMode.LoadString( (cXNoteOpts.m_bXnoteRecordDurationLimitMode == true) ? IDS_XNOTE_RECORDING_DURATION_ON : IDS_XNOTE_RECORDING_DURATION_OFF );
+		CSize sizeXnoteExtent = srcDC.GetTextExtent(msgXnoteMode);
+
+		CRect rectClientXnoteMsg;
+		GetClientRect(&rectClientXnoteMsg);
+
+		CRect rectXnoteMode(xoffset, yoffset, xoffset + sizeXnoteExtent.cx, yoffset + sizeXnoteExtent.cy);
+		srcDC.Rectangle(&rectXnoteMode);
+		srcDC.Rectangle(rectXnoteMode.left - 3, rectXnoteMode.top - 3, rectXnoteMode.right + 3, rectXnoteMode.bottom + 3);
+		srcDC.TextOut(rectXnoteMode.left, rectXnoteMode.top,  msgXnoteMode);
+	}
+
 	srcDC.SelectObject(pOldPen);
 	srcDC.SelectObject(pOldBrush);
 	srcDC.SelectObject(pOldFont);
@@ -3291,6 +3393,12 @@ void CRecorderView::DisplayRecordingMsg(CDC & srcDC)
 	srcDC.SetBkColor(oldBkColor);
 }
 
+
+/////////////////////////
+// TODO janhgm
+// If recording is on pause it would be nice if we can recover a few records from the bin.
+// Gives us a better overview about the conditions when we (or a device) decided that we should start recording again.
+/////////////////////////
 bool CRecorderView::captureScreenFrame(const CRect& rectView, bool bDisableRect)
 {
 	//TRACE("CRecorderView::captureScreenFrame\n");
@@ -3331,6 +3439,12 @@ UINT CRecorderView::RecordVideo()
 	TRACE("CRecorderView::RecordAVIThread\n");
 	// Test the validity of writing to the file
 	// Make sure the file to be created is currently not used by another application
+
+	// TODO,
+	// writing to temp.avi file while file still exist results in a crash when old temp.avi exist.
+	// Make file Camstudio is wrintg to unique, just by applying the standard date-timestamp  (ccyymmdd-hhuu-ss.avi)
+	// Another benefit is that we don't always have to copy from temp tro realname once recording is finished.
+
 	CString csTempFolder(GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir));
 	strTempFilePath.Format("%s\\temp.avi", (LPCSTR)csTempFolder);
 
@@ -3487,7 +3601,13 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 	char szTitle[BUFSIZE];
 	strcpy_s(szTitle, "AVI Movie");
 
-	PAVIFILE pfile = 0;
+	// There are a few routine in this code that use a 'goto error' routine for exception handling.
+	// All var's that are checked in this error handling block must be innitialisated before to prevent warning and, worse case, abnormal endings.
+	PAVIFILE 	pfile = 0;
+	PAVISTREAM 	ps = NULL;
+	PAVISTREAM 	psCompressed = NULL;
+	
+	
 	HRESULT hr = ::AVIFileOpen(&pfile, szFileName, OF_WRITE | OF_CREATE, NULL);
 	if (hr != AVIERR_OK) {
 		TRACE("CRecorderView::RecordVideo: AVIFileOpen error\n");
@@ -3509,7 +3629,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 	SetRect(&strhdr.rcFrame, 0, 0, (int) alpbi->biWidth, (int) alpbi->biHeight);
 
 	// And create the stream;
-	PAVISTREAM ps = NULL;
+	/*PAVISTREAM*/ ps = NULL;
 	hr = AVIFileCreateStream(pfile, &ps, &strhdr);
 	if (hr != AVIERR_OK) {
 		TRACE("CRecorderView::RecordVideo: AVIFileCreateStream error\n");
@@ -3551,7 +3671,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 	//if (!AVISaveOptions(NULL, 0, 1, &ps, (LPAVICOMPRESSOPTIONS *) &aopts))
 	//        goto error;
 
-	PAVISTREAM psCompressed = NULL;
+	/*PAVISTREAM*/ psCompressed = NULL;
 	hr = AVIMakeCompressedStream(&psCompressed, ps, &opts, NULL);
 	if (AVIERR_OK != hr) {
 		TRACE("CRecorderView::RecordVideo: AVIMakeCompressedStream error\n");
@@ -4088,21 +4208,28 @@ bool CRecorderView::GetPausedState()
 
 VOID CRecorderView::XNoteSetRecordingInPauseMode(void)
 {
+	//TRACE("## XNoteSetRecordingInPauseMode / BEGIN ##\n" );
+	
 	//return if not current recording or already in paused state
 	if (!bRecordState || bRecordPaused)
 		return;
-
-	// TRACE ( "## XNoteSetRecordingInPauseMode ##\n" );
-
-	// Pity but we can not call OnPause straight...
-	// OnPause();    // Error C2352
-
-
-	// Hence, we have to push a message to get job done
-	if (0) {
-	::PostMessage(hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);		// hier_ben_ik
+  
+	// RecordDurationLimitMode applicable
+	if ( cXNoteOpts.m_bXnoteRecordDurationLimitMode ) {
+		if ( bXNoteSnapRecordingState == true ) {
+			if ( (GetTickCount() - ulXNoteLastSnapTime) > (ULONG) cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec ){
+				bXNoteSnapRecordingState = false;
+				
+				/* TRACE("## CRecorderView::XNoteSetRecordingInPauseMode / PostMessage WM_USER_RECORDPAUSED bool:[%d] difftime[%d][%d] ##\n",
+					cXNoteOpts.m_bXnoteRecordDurationLimitMode,
+					cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec ,
+					GetTickCount() - ulXNoteLastSnapTime ); */
+					
+				// Post message that will put recording on hold with the next incoming frame
+				::PostMessage(hWndGlobal, WM_USER_RECORDPAUSED, 0, 0);
+			}
+		}
 	}
-
 	return;
 }
 
@@ -4111,7 +4238,7 @@ VOID CRecorderView::XNoteSetRecordingInPauseMode(void)
 // CRecorderView
 // Processes actions innitiated by XNote WindowsMessages. (Xnote is a stopwatch application. http://www.xnotestopwatch.com/)
 // Allows that external program can work with Camstudio and can instruct CamStudio when to start recording, to pause and to terminate recording.
-VOID CRecorderView::XNoteProcessWinMessage(int iAction, ULONG /*lXnoteTimeInMilliSeconds*/ )
+VOID CRecorderView::XNoteProcessWinMessage(int iAction, ULONG lXnoteTimeInMilliSeconds )
 {
 	DWORD dwCurrTickCount =  GetTickCount();
 //	int nStrLength = 0;
@@ -4123,8 +4250,10 @@ VOID CRecorderView::XNoteProcessWinMessage(int iAction, ULONG /*lXnoteTimeInMill
 	case 1:
 		// Start, (Clock is counting)
 		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iAction:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iAction, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
+		//TRACE("## CRecorderView::XNoteProcessWinMessage START Tick:[%ul] XNote:[%ul]\n", GetTickCount(), lXnoteTimeInMilliSeconds);
 
 		if ( ulXNoteStartTime == 0UL) {
+			bXNoteSnapRecordingState = true;
 			ulXNoteStartTime = dwCurrTickCount;
 			ulXNoteLastSnapTime = dwCurrTickCount;
 			cXNoteOpts.m_ulStartXnoteTickCounter = ULONG(dwCurrTickCount); 
@@ -4156,20 +4285,30 @@ VOID CRecorderView::XNoteProcessWinMessage(int iAction, ULONG /*lXnoteTimeInMill
 	case 3:
 		// Snap, 
 		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iAction:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iAction, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
+		//TRACE("## CRecorderView::XNoteProcessWinMessage SNAP Tick:[%ul] XNote:[%ul]\n", GetTickCount(), lXnoteTimeInMilliSeconds);
 
 		// Any snap should be recorded. This are the events that are important and must be registrated.
 		// Because we don't have the correct Xnote time yet (todo) we shall use the current TickCount. 
 		// Penalty is a minor difference in snaptime as registrated by xnote and our snaptime ( 15-20 ms)
 
+		bXNoteSnapRecordingState = true;
 		ulXNoteLastSnapTime = dwCurrTickCount;
 		cXNoteOpts.m_ulSnapXnoteTickCounter = dwCurrTickCount;
 
 		// Make string to display in recording until next snap occurs.
 		char cTmp[64] ;
 		char cTmpBuffXNoteTimeStamp[64] ;
-		CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmp, cXNoteOpts.m_ulStartXnoteTickCounter, dwCurrTickCount ,0 , false );
+		// CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmp, cXNoteOpts.m_ulStartXnoteTickCounter, dwCurrTickCount ,0 , false );
+		// Show Xnote values instead of own calcuated value
+		CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmp, 0, lXnoteTimeInMilliSeconds ,0 , false );
 
-		// We only need info about the last seconds  (00.000).
+		// TODO janhgm, write snaptime to file related to current recording.
+		// ------------------
+		// Save snaptime to camstudio4xnote.log to be able to reuse these milestone values.
+		//    Some new code is required here 
+		// -------------------
+
+		// For onScreen reporting of snaptime we only need info about the last seconds  (00.000).
 		nStrLengthNew = max (0, strlen(cTmp)-6 );
 		// And previous snaps can be truncated
 		nStrLengthSnaps = max (0, strlen(cXNoteLastSnapTimes)- min(2,strlen(cXNoteLastSnapTimes)/7)*7 );
@@ -4190,6 +4329,7 @@ VOID CRecorderView::XNoteProcessWinMessage(int iAction, ULONG /*lXnoteTimeInMill
 		// Reset, (Clock is reset, CamStudio recording session can terminate)
 		ulXNoteStartTime = 0UL;
 		ulXNoteLastSnapTime = 0UL;
+		bXNoteSnapRecordingState = false;
 		strcpy(cXNoteLastSnapTimes,"");
 
 		cXNoteOpts.m_ulStartXnoteTickCounter = 0UL;

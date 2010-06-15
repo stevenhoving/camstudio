@@ -39,6 +39,10 @@ public:
 	CButton m_CheckBoxXnoteDisplayCameraDelay;
 	CString m_cXnoteDisplayFormatString;
 
+	ULONG	m_ulXnoteRecordDurationLimitInMilliSec;
+	bool	m_bXnoteRecordDurationLimitMode;  // A bool but dialog requires that checkbox is a CButton.
+	CButton m_CheckBoxXnoteRecordDurationLimitMode;
+
 	TextAttributes	m_caption;
 	ImageAttributes	m_image;
 protected:
@@ -60,5 +64,8 @@ public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 private:
 	bool IsStrftimeSafe(char * buffer);	// For user defined date/time layouts
+public:
+	afx_msg void OnBnClickedXnoteRecordPausedInMilliSec();
+	afx_msg void OnEnChangeEditXnotecRecordPausedInMilliSec();
 };
 #endif	// ANNOTATIONEFFECTSOPTIONS_H

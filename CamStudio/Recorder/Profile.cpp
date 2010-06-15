@@ -549,6 +549,7 @@ bool CProfileSection::Add<>(const int iID, const CString strName, const UINT& Va
 // read items from section groups
 bool CProfileSection::Read(const CString strFile)
 {
+	//TRACE("## CProfileSection::Read\n");
 	bool bResult = m_grpStrings.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpIntegers.Read(strFile, m_strSectionName);
 	bResult = bResult && m_grpBools.Read(strFile, m_strSectionName);
@@ -639,6 +640,7 @@ CProfile::~CProfile()
 
 void CProfile::InitSections()
 {
+	//TRACE("## CProfile::InitSections()\n");
 	Add(LANGUAGE, "language", LANGID(STANDARD_LANGID));
 	Add(FRAMESHIFT, "frameshift", 0);	// TODO: obsolete
 
@@ -766,6 +768,8 @@ void CProfile::InitSections()
 	Add(m_SectionXNote, XNOTECAMERADELAYINMILLISEC, "xnoteCameraDelayInMilliSec", 175);
 	Add(m_SectionXNote, XNOTEDISPLAYCAMERADELAY, "xnoteDisplayCameraDelay", true);
 	Add(m_SectionXNote, XNOTEDISPLAYFORMATSTRING, "xnoteDisplayFormatString", CString(_T("(0000)  00:00:00.000")) );   // hh:mm:ss.ttt
+	Add(m_SectionXNote, XNOTERECORDDURATIONLIMITMODE, "xnoteRecordDurationLimitMode", true );
+	Add(m_SectionXNote, XNOTERECORDDURATIONLIMITINMILLISEC, "xnoteRecordDurationLimitInMilliSec", 1750  );		// Default tme required, otherwise recording stops direct when it is started
 
 	Add(m_SectionCaption, CAPTIONANNOTATION, "Annotation", false);
 	Add(m_SectionCaption, CAPTIONTEXTATTRIBUTES, "TextAttributes", TextAttributes(TOP_LEFT));
@@ -889,8 +893,8 @@ void CProfile::InitLegacySection()
 	//VERIFY(Add(m_SectionLegacy, TIMESTAMPTEXTFONT, CString(_T("timestampTextFont")), CString(_T("Arial"))));
 	VERIFY(Add(m_SectionLegacy, TIMESTAMPTEXTFONT, "timestampTextFont", CString(_T("Arial"))));
 
-	// Xnote is new stuff. As far as I understand Camstudio there should not be any reason to put it here I would say although I noticed it was  required.
-	if (1) {
+	// Xnote is new stuff. As far as I understand Camstudio there should not be any reason why to put it here. Although I don't know how to do it using the new approach I decided not to use lecagy features.
+	if (0) {
 #ifdef XNOTEANNOTATION
 	VERIFY(Add(m_SectionLegacy, XNOTEANNOTATION, "xnoteAnnotation", true));
 #else
@@ -924,6 +928,7 @@ void CProfile::InitLegacySection()
 
 bool CProfile::Convert()
 {
+	//TRACE("## CProfile::Convert\n");
 	// copy conversion
 	VERIFY(Convert(m_SectionLegacy, FLASHINGRECT, false));
 	VERIFY(Convert(m_SectionLegacy, LAUNCHPLAYER, 0));
@@ -1072,6 +1077,10 @@ bool CProfile::Convert()
 		VERIFY(m_SectionLegacy.Read(XNOTECAMERADELAYINMILLISEC, cXNote.m_ulXnoteCameraDelayInMilliSec));  // delaytime in ms, default 175.
 		VERIFY(m_SectionLegacy.Read(XNOTEDISPLAYCAMERADELAY, cXNote.m_bXnoteDisplayCameraDelay));  // Print camera delaytime in ms onm screen
 		VERIFY(m_SectionLegacy.Read(XNOTEDISPLAYFORMATSTRING, cXNote.m_cXnoteDisplayFormatString ));          // Format example output 
+
+		VERIFY(m_SectionLegacy.Read(XNOTERECORDDURATIONLIMITINMILLISEC, cXNote.m_ulXnoteRecordDurationLimitInMilliSec));  // delaytime in ms, default 175.
+		VERIFY(m_SectionLegacy.Read(XNOTERECORDDURATIONLIMITMODE, cXNote.m_bXnoteRecordDurationLimitMode));  // Stops Camera recording after N ms if xNote triggered recording
+
 		VERIFY(m_SectionLegacy.Read(XNOTETEXTATTRIBUTES, cXNote.m_taXNote));                         // Formatting for image overlay
 		VERIFY(m_SectionLegacy.Read(XNOTEBACKCOLOR, cXNote.m_taXNote.backgroundColor));
 		VERIFY(m_SectionLegacy.Read(XNOTESELECTED, cXNote.m_taXNote.isFontSelected));
@@ -1112,6 +1121,7 @@ bool CProfile::Convert()
 // read the entire file
 bool CProfile::Read()
 {
+	//TRACE("## CProfile::Read\n");
 	bool bResult = false;
 	// Read and convert legacy section
 	//VERIFY(m_SectionLegacy.Read(m_strFileName));
@@ -1126,6 +1136,7 @@ bool CProfile::Read()
 // write the entire file
 bool CProfile::Write()
 {
+	//TRACE("## CProfile::Write\n");
 	bool bResult = false;
 	for (std::vector <CProfileSection>::iterator iter = m_vAllSections.begin(); iter != m_vAllSections.end(); ++iter)
 	{
