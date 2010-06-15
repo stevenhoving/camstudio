@@ -201,6 +201,8 @@ enum eLegacySettings
 	, XNOTEANNOTATION
 	, XNOTECAMERADELAYINMILLISEC
 	, XNOTEDISPLAYCAMERADELAY
+	, XNOTERECORDDURATIONLIMITINMILLISEC
+	, XNOTERECORDDURATIONLIMITMODE
 	, XNOTEDISPLAYFORMATSTRING
 	, XNOTETEXTATTRIBUTES
 	, XNOTEBACKCOLOR
@@ -1040,14 +1042,16 @@ struct sXNoteOpts
 	// settings here are the ones that are initially used for dialog screen..!
 	sXNoteOpts()
 #ifdef CAMSTUDIO4XNOTE
-	: m_bAnnotation(true)							// True, because I did not managed to read info from config	
+		: m_bAnnotation(true)						// True, because I did not managed to read info from config	
 #else
 		: m_bAnnotation(false)						// False, default as it should be with stand Camstudio
 #endif
 		, m_taXNote(BOTTOM_LEFT)
-		, m_ulXnoteCameraDelayInMilliSec(175)		// Average delay, default 175 ms
 		, m_bXnoteDisplayCameraDelay(true)			// Default On: Show used delay in capture
+		, m_ulXnoteCameraDelayInMilliSec(175)		// Average delay, default 175 ms
 		, m_cXnoteDisplayFormatString("(0000)  00:00:00.000")	// Default hh:mm:ss.ttt, Not really a format. As long as the timer is not running this will be showed
+		, m_bXnoteRecordDurationLimitMode(true)			// Default On: Show used delay in capture
+		, m_ulXnoteRecordDurationLimitInMilliSec(1750)		// Average recordin duration, default 1750 ms
 		, m_ulStartXnoteTickCounter(0)				// A non persistent member
 		, m_ulSnapXnoteTickCounter(0)				// A non persistent member
 		, m_cSnapXnoteTimesString("")				// A non persistent member
@@ -1064,9 +1068,13 @@ struct sXNoteOpts
 
 		m_bAnnotation = rhs.m_bAnnotation;
 		m_taXNote = rhs.m_taXNote;
-		m_ulXnoteCameraDelayInMilliSec = rhs.m_ulXnoteCameraDelayInMilliSec;
+
 		m_bXnoteDisplayCameraDelay = rhs.m_bXnoteDisplayCameraDelay;
+		m_ulXnoteCameraDelayInMilliSec = rhs.m_ulXnoteCameraDelayInMilliSec;
 		m_cXnoteDisplayFormatString = rhs.m_cXnoteDisplayFormatString;
+
+		m_bXnoteRecordDurationLimitMode = rhs.m_bXnoteRecordDurationLimitMode;
+		m_ulXnoteRecordDurationLimitInMilliSec = rhs.m_ulXnoteRecordDurationLimitInMilliSec;
 
 		// Assign Xnote format string to 'Text atribute'.text (Required to get a time displayed on the capture without pressing OK first in AnnotationEffects dialog.)
 		m_taXNote.text = m_cXnoteDisplayFormatString;
@@ -1083,11 +1091,16 @@ struct sXNoteOpts
 	}
 	bool Read(CProfile& cProfile)
 	{
+		//TRACE("## bool Read(CProfile& cProfile\n");																				
 		VERIFY(cProfile.Read(XNOTEANNOTATION, m_bAnnotation));
 		VERIFY(cProfile.Read(XNOTETEXTATTRIBUTES, m_taXNote));
-		VERIFY(cProfile.Read(XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec));
+		
 		VERIFY(cProfile.Read(XNOTEDISPLAYCAMERADELAY, m_bXnoteDisplayCameraDelay));
+		VERIFY(cProfile.Read(XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec));
 		VERIFY(cProfile.Read(XNOTEDISPLAYFORMATSTRING, m_cXnoteDisplayFormatString));
+		
+		VERIFY(cProfile.Read(XNOTERECORDDURATIONLIMITMODE, m_bXnoteRecordDurationLimitMode));
+		VERIFY(cProfile.Read(XNOTERECORDDURATIONLIMITINMILLISEC, m_ulXnoteRecordDurationLimitInMilliSec));
 		// m_ulStartXnoteTickCounter is a non persistent member
 
 		// Assign Xnote format string to 'Text atribute'.text (Required to get a time displayed on the capture without pressing OK first in AnnotationEffects dialog.)
@@ -1100,11 +1113,34 @@ struct sXNoteOpts
 			m_taXNote.textColor = RGB(0,0,0);
 			m_taXNote.logfont.lfHeight = 12;
 		}
-
+/*
+		TRACE("## ----------------------------------------------------------------------------\n");			
+		TRACE("## m_bAnnotation : [%d]\n", m_bAnnotation   );
+		TRACE("## m_taXNote.text : [%s]\n", m_taXNote.text.GetString()   );
+		TRACE("## m_bXnoteDisplayCameraDelay : [%d]\n", m_bXnoteDisplayCameraDelay   );
+		TRACE("## m_ulXnoteCameraDelayInMilliSec : [%ul]\n", m_ulXnoteCameraDelayInMilliSec   );
+		TRACE("## m_cXnoteDisplayFormatString : [%s]\n", m_cXnoteDisplayFormatString   );
+		TRACE("## m_bXnoteRecordDurationLimitMode : [%d]\n", m_bXnoteRecordDurationLimitMode   );
+		TRACE("## m_ulXnoteRecordDurationLimitInMilliSec : [%ul]\n", m_ulXnoteRecordDurationLimitInMilliSec   );
+		TRACE("## ----------------------------------------------------------------------------\n");			
+*/
 		return true;
 	}
 	bool Write(CProfile& cProfile)
 	{
+/*
+		TRACE("## bool Write(CProfile& cProfile\n");			
+		TRACE("## ----------------------------------------------------------------------------\n");			
+		TRACE("## m_bAnnotation : [%d]\n", m_bAnnotation   );
+		TRACE("## m_taXNote.text : [%s]\n", m_taXNote.text.GetString()   );
+		TRACE("## m_bXnoteDisplayCameraDelay : [%d]\n", m_bXnoteDisplayCameraDelay   );
+		TRACE("## m_ulXnoteCameraDelayInMilliSec : [%ul]\n", m_ulXnoteCameraDelayInMilliSec   );
+		TRACE("## m_cXnoteDisplayFormatString : [%s]\n", m_cXnoteDisplayFormatString   );
+		TRACE("## m_bXnoteRecordDurationLimitMode : [%d]\n", m_bXnoteRecordDurationLimitMode   );
+		TRACE("## m_ulXnoteRecordDurationLimitInMilliSec : [%ul]\n", m_ulXnoteRecordDurationLimitInMilliSec   );
+		TRACE("## ----------------------------------------------------------------------------\n");			
+*/
+
 		// Assign Xnote format string to .text because we need this to get a formatted print on the capture without pressing OK first in AnnotationEffects dialog.
 		m_taXNote.text = m_cXnoteDisplayFormatString;
 
@@ -1118,18 +1154,29 @@ struct sXNoteOpts
 
 		VERIFY(cProfile.Write(XNOTEANNOTATION, m_bAnnotation));
 		VERIFY(cProfile.Write(XNOTETEXTATTRIBUTES, m_taXNote));
-		VERIFY(cProfile.Write(XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec));
+
 		VERIFY(cProfile.Write(XNOTEDISPLAYCAMERADELAY, m_bXnoteDisplayCameraDelay));
+		VERIFY(cProfile.Write(XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec));
 		VERIFY(cProfile.Write(XNOTEDISPLAYFORMATSTRING, m_cXnoteDisplayFormatString));
+
+		VERIFY(cProfile.Write(XNOTERECORDDURATIONLIMITMODE, m_bXnoteRecordDurationLimitMode));
+		VERIFY(cProfile.Write(XNOTERECORDDURATIONLIMITINMILLISEC, m_ulXnoteRecordDurationLimitInMilliSec));
+
 		// m_ulStartXnoteTickCounter is a non persistent member
 		return true;
 	}
 
 	bool	m_bAnnotation;
 	TextAttributes m_taXNote;
-	ULONG	m_ulXnoteCameraDelayInMilliSec;
+
 	bool	m_bXnoteDisplayCameraDelay;
+	ULONG	m_ulXnoteCameraDelayInMilliSec;
 	CButton m_CheckBoxXnoteDisplayCameraDelay;
+
+	bool	m_bXnoteRecordDurationLimitMode;
+	ULONG	m_ulXnoteRecordDurationLimitInMilliSec;
+	CButton m_CheckBoxXnoteRecordDurationLimitMode;
+
 	CString	m_cXnoteDisplayFormatString;
 	ULONG	m_ulStartXnoteTickCounter;
 	ULONG	m_ulSnapXnoteTickCounter;

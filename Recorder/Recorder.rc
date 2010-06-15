@@ -154,6 +154,8 @@ BEGIN
     BUTTON      ID_VIEWTYPE
     BUTTON      ID_VIEW_SCREENANNOTATIONS
     BUTTON      ID_AVISWF
+    BUTTON      ID_BUTTON32936
+    BUTTON      ID_XNOTE_RECORDDURATIONLIMITMODE
 END
 
 IDR_MAINFRAME1 TOOLBAR  21, 21
@@ -965,26 +967,29 @@ BEGIN
     PUSHBUTTON      "Options...",IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS,186,38,50,14
     LTEXT           "Preview:",IDC_STATIC,20,59,29,8
     EDITTEXT        IDC_FORMATPREVIEW,55,57,176,14,ES_AUTOHSCROLL | ES_READONLY
-    GROUPBOX        "Stopwatch timestamp",IDC_STATIC,7,81,239,94
-    EDITTEXT        IDC_EDIT_XNOTE_FORMAT,15,157,223,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_VISIBLE
+    GROUPBOX        "Stopwatch timestamp",IDC_STATIC,7,81,239,113
+    EDITTEXT        IDC_EDIT_XNOTE_FORMAT,190,178,50,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_VISIBLE
     PUSHBUTTON      "Options...",IDC_BUTTON_XNOTE_FORMAT_OPTIONS,189,140,50,14
-    LTEXT           "Format preview:",IDC_STATIC,18,130,59,8
     EDITTEXT        IDC_FORMAT_XNOTEPREVIEW,15,139,108,14,ES_AUTOHSCROLL | ES_READONLY
-    GROUPBOX        "Caption",IDC_STATIC,7,178,240,45
-    LTEXT           "Text",IDC_STATIC,17,191,16,8
-    EDITTEXT        IDC_EDIT_CAPTION_TEXT,17,202,160,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "Options...",IDC_BUTTON_CAPTION_OPTIONS,189,201,50,14
-    GROUPBOX        "Water mark",IDC_STATIC,7,229,240,65
-    LTEXT           "Image Path",IDC_STATIC,17,243,38,8
-    EDITTEXT        IDC_EDIT_IMAGE_PATH,17,253,195,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "...",IDC_BUTTON_IMAGE_PATH,216,251,23,17
-    PUSHBUTTON      "Options...",IDC_BUTTON_WATERMARK_OPTIONS,189,274,50,14
-    DEFPUSHBUTTON   "OK",IDOK,141,306,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,197,306,50,14
+    GROUPBOX        "Caption",IDC_STATIC,7,196,240,45
+    LTEXT           "Text",IDC_STATIC,17,206,16,8
+    EDITTEXT        IDC_EDIT_CAPTION_TEXT,17,216,160,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Options...",IDC_BUTTON_CAPTION_OPTIONS,189,215,50,14
+    GROUPBOX        "Water mark",IDC_STATIC,7,246,240,58
+    LTEXT           "Image Path",IDC_STATIC,17,256,38,8
+    EDITTEXT        IDC_EDIT_IMAGE_PATH,17,266,195,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BUTTON_IMAGE_PATH,216,264,23,17
+    PUSHBUTTON      "Options...",IDC_BUTTON_WATERMARK_OPTIONS,189,284,50,14
+    DEFPUSHBUTTON   "OK",IDOK,141,315,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,197,315,50,14
     EDITTEXT        IDC_EDIT_XNOTECAMERADELAYINMILLISEC,16,111,39,14,ES_AUTOHSCROLL | ES_NUMBER
     LTEXT           "Stopwatch function is triggered by Xnote Windows message.\nDisplays (delayed) stopwatch time in milliseconds in recording.",IDC_STATIC,18,91,210,17
-    CONTROL         "Display delay in capture with ( ... )",IDC_XNOTEDISPLAYCAMERADELAY,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,58,114,127,10
+    CONTROL         "Display delay",IDC_XNOTEDISPLAYCAMERADELAY,"Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,58,114,58,10
+    CONTROL         "Use Auto pause ",IDC_BUTTON_XNOTEAUTORECORDPAUSED,
+                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_GROUP | WS_TABSTOP,57,177,69,10
+    EDITTEXT        IDC_EDIT_XNOTEAUTORECORDPAUSEDINMILLISEC,15,175,39,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Pause recording N milli secs after Xnote event",IDC_STATIC,17,165,210,8
+    LTEXT           "Format preview:",IDC_STATIC,18,130,59,8
 END
 
 IDD_EFFECTS_OPTIONS2 DIALOGEX 0, 0, 206, 154
@@ -2200,7 +2205,6 @@ BEGIN
     ID_SCREENS_ALLSCREENS   "Capture all screens"
     ID_SCREENS_CHOOSESCREEN "Choose which screen to capture"
     ID_OPTIONS_VIDEOOPTIONS "Set video options"
-    ID_ANNOTATION_ADDXNOTE  "Add a XNotestamp to the recording"
 END
 
 STRINGTABLE 
@@ -2466,6 +2470,8 @@ BEGIN
     IDS_ERROR_PLAYER        "Error launching CamStudio Player!"
     IDS_ERROR_PLAYER2       "Error launching CamStudio Player 2.0!"
     IDS_STRING_LINEUNDETECTED "Line undetected"
+    IDS_XNOTE_RECORDING_DURATION_ON "Xnote recording, limited."
+    IDS_XNOTE_RECORDING_DURATION_OFF "Xnote recording, continously"
 END
 
 STRINGTABLE 
@@ -2478,7 +2484,8 @@ BEGIN
     ID_OPTIONS_SWF_DISPLAYPARAMETERS 
                             "Display conversion options before generating SWF"
     ID_AVISWF               "Toggle mode to record AVI or Flash"
-    ID_OPTIONS_NAMING_ASK   "Ask for filename when recording stops"
+    ID_XNOTE_RECORDDURATIONLIMITMODE 
+                            "Ignore autostop if recording is triggered with Xnote stopwatch"
     ID_OPTIONS_PROGRAMOPTIONS_NAMINGOFFILES_AUTOMATICFILENAMINGUSEDATETIME 
                             "Automatically use today's date and time to name the file"
     ID_OPTIONS_PROGRAMOPTIONS_SAVINGOFAVINAMING_AUTOMATICFILENAMINGFIXEDNAME 
@@ -2493,6 +2500,7 @@ END
 STRINGTABLE 
 BEGIN
     ID_ANNOTATION_ADDSYSTEMTIMESTAMP "Add a system timestamp to the recording"
+    ID_ANNOTATION_ADDXNOTE  "Add a Xnote stopwatch timestamp to the recording"
     ID_ANNOTATION_ADDCAPTION "Add a caption to the recording"
     ID_ANNOTATION_ADDWATERMARK "Add a watermark to the recording"
     ID_EFFECTS_OPTIONS      "Set effects options"
