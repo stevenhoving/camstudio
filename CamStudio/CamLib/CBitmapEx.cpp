@@ -132,7 +132,15 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
 		return FALSE;
 
 	// get length of DIB in bytes for use when reading
-	DWORD dwBitsSize = file.GetLength();
+	// DWORD dwBitsSize = file.GetLength();  	-> Cause C4244 warning
+
+	// Prevent dwBitsSize C4244 warning and take some predictions for unwanted truncations
+	ULONGLONG tmpUlongSize = file.GetLength();
+	if ( tmpUlongSize != static_cast<WORD>(tmpUlongSize) ) {
+		TRACE("Error: dwBitsSize, Casted value [%i] is not the same as original [%l] ..!\n", static_cast<WORD>(tmpUlongSize),tmpUlongSize);
+	}
+	// Now assigned tested casted value to dest value (Functional nothing is changed but we have a marker in the tracelog if truncated)
+	DWORD dwBitsSize = static_cast<WORD>(tmpUlongSize);			
 
 	BITMAPFILEHEADER bmfHeader;
 	BOOL ret = TRUE;
