@@ -62,7 +62,8 @@ void ErrMsg(char frmt[], ...)
 	va_list val;
 
 	va_start(val, frmt);
-	wvsprintf(buf, frmt, val);
+	// wvsprintf(buf, frmt, val);   // C4995 warning, function marked as deprecated once
+	_vstprintf_s(buf, frmt, val);	// Save replacement
 
 	const COORD _80x50 = {80,50};
 	static BOOL startup = (AllocConsole(), SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), _80x50));

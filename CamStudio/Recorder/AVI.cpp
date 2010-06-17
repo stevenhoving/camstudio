@@ -636,10 +636,12 @@ bool CamAVIFile::FadeOut(const CString& strAVIIn, const CString& strAVIOut)
 		return bResult;
 	}
 
-	// count the keyframe
+	// count the keyframe.
+	// Todo: GetInfo and NextKeyFrame are both memberfunction of CAVISTREAM and dwLength is indeed DWORD but NextKeyFrame expect long instead of unsigned long
 	DWORD dwLength = streamIn.getInfo().dwLength;
 	int iKeyFrames = 0;
-	for (long lPos = 0L; lPos < dwLength; lPos = streamIn.NextKeyFrame(lPos)) {
+	// Cast dwLength to (long) to prevent C4018 warning
+	for (long lPos = 0L; lPos < (long)dwLength; lPos = streamIn.NextKeyFrame(lPos)) {
 		++iKeyFrames;
 	}
 	// for each image in the AVI input stream
@@ -648,7 +650,8 @@ bool CamAVIFile::FadeOut(const CString& strAVIIn, const CString& strAVIOut)
 	double dIncr = DMAX_BRIGHTNESS/(iKeyFrames - 2);
 	double dBrightness = 0.0;
 	CxImage cxImage;
-	for (long lPos = 0L; bResult && (lPos < dwLength); lPos = streamIn.NextSample(lPos)) {
+	// Cast dwLength to (long) to prevent C4018 warning
+	for (long lPos = 0L; bResult && (lPos < (long)dwLength ); lPos = streamIn.NextSample(lPos)) {
 		lpImage = streamIn.GetFrame(pGetFrame, lPos);
 		lpBitmap = static_cast<LPBITMAPINFOHEADER>(lpImage);
 		bResult = bResult && (0 != lpBitmap);
