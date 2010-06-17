@@ -219,16 +219,24 @@ void CAudioFormatDlg::AllocCompressFormat()
 		::MessageBox(NULL,msgstr,tstr, MB_OK | MB_ICONEXCLAMATION);
 		return;
 	}
-	m_pwfx->cbSize = (m_cbwfx - sizeof(WAVEFORMATEX));
+	
+	// Prevent C4244 warning and take some predictions for unwanted truncations
+	// m_pwfx->cbSize = (m_cbwfx - sizeof(WAVEFORMATEX));		-> C4244
+	DWORD tmpDWord = (m_cbwfx - sizeof(WAVEFORMATEX));
+	if ( tmpDWord > static_cast<WORD>(tmpDWord) ) {
+		TRACE("Casted value [%i] is not the same as original [%l] ..!\n", static_cast<WORD>(tmpDWord),tmpDWord);
+	}
+	m_pwfx->cbSize = static_cast<WORD>(tmpDWord);
+
 	ASSERT(m_pwfx->cbSize <= (m_cbwfx - sizeof(WAVEFORMATEX)));
 }
 
 void CAudioFormatDlg::BuildLocalRecordingFormat(WAVEFORMATEX& rsWaveFormat)
 {
 	rsWaveFormat.wFormatTag = WAVE_FORMAT_PCM;
-	rsWaveFormat.wBitsPerSample = m_iAudioBitsPerSample;
+	rsWaveFormat.wBitsPerSample = static_cast<WORD>(m_iAudioBitsPerSample);
 	rsWaveFormat.nSamplesPerSec = m_iAudioSamplesPerSeconds;
-	rsWaveFormat.nChannels = m_iAudioNumChannels;
+	rsWaveFormat.nChannels = static_cast<WORD>(m_iAudioNumChannels);
 	rsWaveFormat.nBlockAlign = rsWaveFormat.nChannels * (rsWaveFormat.wBitsPerSample/8);
 	rsWaveFormat.nAvgBytesPerSec = rsWaveFormat.nSamplesPerSec * rsWaveFormat.nBlockAlign;
 	rsWaveFormat.cbSize = 0;
@@ -406,7 +414,8 @@ bool CAudioFormatDlg::LoadDeviceList()
 		if (MMSYSERR_NOERROR == mmr) {
 			iIdx = m_ctrlCBInputDevice.AddString(wicaps.szPname);
 			m_ctrlCBInputDevice.SetItemData(iIdx, i);
-			if (m_cFmt.m_uDeviceID == i) {
+			// As i is always a possitive value we can cast to UINT
+			if (m_cFmt.m_uDeviceID == (UINT)i ) {
 				m_ctrlCBInputDevice.SetCurSel(iIdx);
 			}
 			// TODO: should be obsolete

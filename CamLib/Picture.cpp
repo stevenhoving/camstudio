@@ -231,7 +231,16 @@ BOOL CPicture::Load(CString sFilePathName)
 		FreePictureData(); // Important - Avoid Leaks...
 
 	if (PictureFile.Open(sFilePathName, CFile::modeRead | CFile::typeBinary, &e)) {
-		nSize = PictureFile.GetLength();
+
+		// Prevent C4244 warning and take some predictions for unwanted truncations
+		// nSize = PictureFile.GetLength();		-> Cause C4244 warning
+		ULONGLONG tmpUlongSize = PictureFile.GetLength();
+		if ( tmpUlongSize != static_cast<int>(tmpUlongSize) ) {
+			TRACE("Error: nSize, Casted value [%i] is not the same as uncasted [%l] ..!\n", static_cast<int>(tmpUlongSize),tmpUlongSize);
+		}
+		// Now assigned tested casted value to dest value (Functional nothing is changed but we have a marker in the tracelog if truncated)
+		nSize = static_cast<int>(tmpUlongSize);			
+
 		BYTE* pBuffer = new BYTE[nSize];
 
 		if (PictureFile.Read(pBuffer, nSize) > 0) {

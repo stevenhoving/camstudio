@@ -406,7 +406,10 @@ void CVideoOptionsDlg::OnConfigure()
 			// variable pVideoCompressParams will be changed even if user press "Cancel")
 			DWORD dwSize = chic.GetStateSize();
 			LRESULT lResult = chic.GetState(m_cOpts.State(dwSize), dwSize);
-			if (lResult != dwSize) {
+
+			// if (lResult != dwSize)  ==> C4244 Warning, type mismatch
+			if ( lResult - dwSize != 0 ) // Save
+			{
 				m_cOpts.State(0L);
 			}
 		}

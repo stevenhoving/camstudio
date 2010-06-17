@@ -48,7 +48,7 @@ sAudioFormat& sAudioFormat::operator=(const sAudioFormat& rhs)
 			ASSERT(m_dwCbwFX == (sizeof(WAVEFORMATEX) + m_pwfx->cbSize));
 			::CopyMemory(m_pwfx, rhs.m_pwfx, m_dwCbwFX);
 			if (m_pwfx->wFormatTag != m_wFormatTag) {
-				m_pwfx->wFormatTag = m_wFormatTag;
+				m_pwfx->wFormatTag = static_cast<WORD>(m_wFormatTag);
 			}
 		}
 	} else {
@@ -85,7 +85,14 @@ bool sAudioFormat::NewAudio()
 		m_dwCbwFX = 0;
 	} else {
 		::ZeroMemory(m_pwfx, m_dwCbwFX);
-		m_pwfx->cbSize = m_dwCbwFX - sizeof(WAVEFORMATEX);
+
+		// Prevent C4244 warning and take some predictions for unwanted truncations
+	    // m_pwfx->cbSize = m_dwCbwFX - sizeof(WAVEFORMATEX);  -> C4244
+		DWORD tmpDWord = m_dwCbwFX - sizeof(WAVEFORMATEX);
+		if ( tmpDWord > static_cast<WORD>(tmpDWord) ) {
+			TRACE("Error: Casted value [%i] is not the same as uncasted [%l] ..!\n", static_cast<WORD>(tmpDWord),tmpDWord);
+		}
+		m_pwfx->cbSize = static_cast<WORD>(tmpDWord);
 	}
 	return bResult;
 }
@@ -126,9 +133,9 @@ void sAudioFormat::BuildRecordingFormat()
 	WAVEFORMATEX& rFormat = AudioFormat();
 
 	rFormat.wFormatTag		= WAVE_FORMAT_PCM;
-	rFormat.wBitsPerSample	= m_iBitsPerSample;
+	rFormat.wBitsPerSample	= static_cast<WORD>(m_iBitsPerSample);
 	rFormat.nSamplesPerSec	= m_iSamplesPerSeconds;
-	rFormat.nChannels		= m_iNumChannels;
+	rFormat.nChannels		= static_cast<WORD>(m_iNumChannels);
 
 	rFormat.nBlockAlign		= rFormat.nChannels * (rFormat.wBitsPerSample/8);
 	rFormat.nAvgBytesPerSec	= rFormat.nSamplesPerSec * rFormat.nBlockAlign;
@@ -262,7 +269,18 @@ template <>
 BYTE ReadEntry(CString strFilename, CString strSection, CString strKeyName, const BYTE& DefValue)
 {
 	//TRACE("ReadEntry(BYTE): %s,\nSection: %s\nKey: %s\nValue: %u\n", strFilename, strSection, strKeyName, DefValue);
-	BYTE iVal = ::GetPrivateProfileInt(strSection, strKeyName, DefValue, strFilename);
+
+	// Prevent C4244 warning and take some predictions for unwanted truncations
+	// BYTE iVal = ::GetPrivateProfileInt(strSection, strKeyName, DefValue, strFilename); // C4244 Warning
+
+	UINT tmpUINTValue = ::GetPrivateProfileInt(strSection, strKeyName, DefValue, strFilename);
+	// Check if data is losted (Test only)
+	if ( tmpUINTValue > static_cast<BYTE>(tmpUINTValue) ) {
+		TRACE("Error: iVal, Casted value [%i] is not the same as uncasted [%l] ..!\n", static_cast<BYTE>(tmpUINTValue),tmpUINTValue);
+	}
+	// Assign casted value (check tracelog to validate if cast is aleways allowed)
+	BYTE iVal = static_cast<BYTE>(tmpUINTValue);
+
 	return iVal;
 }
 template <>
