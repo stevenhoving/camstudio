@@ -199,7 +199,10 @@ void CTextDlg::ChooseScriptFont()
 	// TODO: Add your control notification handler code here
 	//ZeroMemory(logFont, sizeof(LOGFONT));
 
-	logFont->lfCharSet = mycharset;
+	// OEM_CHARSET (255) is currently the one with the highest number. 
+	// Cast to elimimate C4244 warning. (Assume that other charset will be always less than 255)
+	logFont->lfCharSet = static_cast<BYTE>(mycharset);	
+
 	CFontDialog fontdlg(logFont, CF_SELECTSCRIPT | CF_EFFECTS | CF_SCREENFONTS);
 	fontdlg.m_cf.rgbColors = *colorrgb;
 

@@ -591,7 +591,7 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect* caprect,int fact
 	::StretchBlt(hMemDC, 0, 0, width, height, thisDC->m_hDC, left, top, orig_width,orig_height,SRCCOPY);
 
 	CFont dxfont;
-	CFont *oldfont;
+	CFont *oldfont	= (CFont*)0;
 	if (drawfont) {
 		LOGFONT newlogFont = *drawfont;
 		newlogFont.lfWidth *= factor;
@@ -602,11 +602,11 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect* caprect,int fact
 		oldfont = (CFont *) pMemDC->SelectObject(&dxfont);
 	}
 	//if no default font is selected, can cause errors
-	CPen* oldPen;
+	CPen* oldPen = (CPen*)0;
 	if (pPen)
 		oldPen = pMemDC->SelectObject(pPen);
 
-	CBrush* oldBrush;
+	CBrush* oldBrush = (CBrush*)0;
 	if (pBrush)
 		oldBrush = pMemDC->SelectObject(pBrush);
 
@@ -954,7 +954,8 @@ void CTransparentWnd::InvalidateTransparency()
 {
 	if (m_enableTransparency) {
 		G_Layered.AddLayeredStyle(m_hWnd);
-		G_Layered.SetTransparentPercentage(m_hWnd, m_valueTransparency);
+		// As transparency is defined and limited in dialogWindow we can cast from int to BYTE without loosing any info 
+		G_Layered.SetTransparentPercentage(m_hWnd, static_cast<BYTE>(m_valueTransparency) );
 	} else {
 		::SetWindowLong(m_hWnd, GWL_EXSTYLE, ::GetWindowLong(m_hWnd, GWL_EXSTYLE) & ~WS_EX_LAYERED);
 	}

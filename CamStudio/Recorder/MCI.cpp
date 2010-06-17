@@ -140,7 +140,11 @@ void mciSetWaveFormat()
 	//}
 
 	// Suggest 10 formats
-	DWORD dwReturn = -1;
+#pragma warning ( push )
+#pragma warning ( disable : 4245 )
+	DWORD dwReturn = -1;	// Cause C4245 because we want an unexpected value here  -1 = FFFF
+#pragma warning ( pop )
+
 	for (int i = 0; ((i < 10) && (dwReturn != 0)); i++) {
 		SuggestSpeakerRecordingFormat(i);
 		BuildSpeakerRecordingFormat();
@@ -251,9 +255,9 @@ void SuggestSpeakerRecordingFormat(int i)
 void BuildSpeakerRecordingFormat()
 {
 	m_FormatSpeaker.wFormatTag		= WAVE_FORMAT_PCM;
-	m_FormatSpeaker.wBitsPerSample	= iAudioBitsPerSampleSpeaker;
+	m_FormatSpeaker.wBitsPerSample	= static_cast<WORD>(iAudioBitsPerSampleSpeaker);
 	m_FormatSpeaker.nSamplesPerSec	= iAudioSamplesPerSecondsSpeaker;
-	m_FormatSpeaker.nChannels		= iAudioNumChannelsSpeaker;
+	m_FormatSpeaker.nChannels		= static_cast<WORD>(iAudioNumChannelsSpeaker);
 	m_FormatSpeaker.nBlockAlign		= m_FormatSpeaker.nChannels * (m_FormatSpeaker.wBitsPerSample/8);
 	m_FormatSpeaker.nAvgBytesPerSec	= m_FormatSpeaker.nSamplesPerSec * m_FormatSpeaker.nBlockAlign;
 	m_FormatSpeaker.cbSize			= 0;
