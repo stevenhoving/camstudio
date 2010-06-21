@@ -926,26 +926,16 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	CString strNewFileTitle;
 	if ((cProgramOpts.m_iRecordingMode == ModeAVI) && cProgramOpts.m_bAutoNaming) {
 		savedir = GetProgPath();
-		time_t osBinaryTime; // C run-time time (defined in <time.h>)
-		time(&osBinaryTime);
-		CTime ctime(osBinaryTime);
 
-		int day = ctime.GetDay();
-		int month = ctime.GetMonth();
-		int year = ctime.GetYear();
-		int hour = ctime.GetHour();
-		int minutes = ctime.GetMinute();
-		int second = ctime.GetSecond();
-
+		// Local copy of the timestamp string created when recording was started
 		CString filestr;
-		//filestr.Format("%d%d%d_%d%d",day,month,year,hour,minutes);
-		filestr.Format("%04d%02d%02d_%02d%02d_%02d",year, month, day, hour, minutes, second); // 20100528, changed dateformating to yyyymmdd_hhmm_ss
+		filestr.SetString( cVideoOpts.m_cStartRecordingString.GetString() );
 
 		fdlg.m_ofn.lpstrInitialDir = savedir;
 
 		strNewFile = savedir + "\\" + filestr + ".avi";
 		strNewFileTitle = savedir + "\\" + filestr + ".avi";
-		strNewFileTitle = strNewFileTitle.Left(strNewFileTitle.ReverseFind('\\'));
+		strNewFileTitle = strNewFileTitle.Left(strNewFileTitle.ReverseFind('\\'));  // basename function
 	} else if (fdlg.DoModal() == IDOK) {
 		strNewFile = fdlg.GetPathName();
 		strNewFileTitle = fdlg.GetPathName();
@@ -991,6 +981,13 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 				//Otherwise, will slow down the merging significantly
 				m_vanWnd.ShowWindow(SW_HIDE);
 			}
+		}
+
+// Hier_ben_ik.
+// If video only (Do not record audio) there is no reason to merge video with audio and video.avi file could be used without further processing.
+
+		if ( cAudioFormat.m_iRecordAudio == NONE ) {
+			TRACE("## CRecorderView::OnUserGeneric  NO Audio defined, no merge required. .\n"); 
 		}
 
 		int result = -1;
@@ -1061,6 +1058,10 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		}
 	} else {
 		//no audio, just do a plain copy of temp avi to final avi
+
+		//hier_ben_ik
+		// TODO:  Check if we could prevent plain copy/deleted action and if a rename only would be possible
+		
 		if (!CopyFile(strTempFilePath,strNewFile,FALSE)) {
 			//Ver 1.1
 			// "File Creation Error.
@@ -3090,8 +3091,8 @@ void CRecorderView::OnUpdateAnnotationAddXNote(CCmdUI *pCmdUI)
 
 void CRecorderView::OnCameraDelayInMilliSec()
 {
-	// Update CameraDelayInMilliSec value  (BTW. Nothing is actual changed here)
-	cXNoteOpts.m_ulXnoteCameraDelayInMilliSec = cXNoteOpts.m_ulXnoteCameraDelayInMilliSec;
+	TRACE ("## CRecorderView::OnCameraDelayInMilliSec\n");
+	// Nothing is actual changed here.
 }
 
 void CRecorderView::OnUpdateCameraDelayInMilliSec(CCmdUI *pCmdUI)
@@ -3102,9 +3103,8 @@ void CRecorderView::OnUpdateCameraDelayInMilliSec(CCmdUI *pCmdUI)
 
 void CRecorderView::OnRecordDurationLimitInMilliSec()
 {
-	// Update RecordDurationLimitInMilliSec value  (BTW. Nothing is actual changed here)
-	cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec = cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec;
-
+	TRACE ("## CRecorderView::OnRecordDurationLimitInMilliSec\n");
+	// Nothing is actual changed here.
 }
 
 void CRecorderView::OnUpdateRecordDurationLimitInMilliSec(CCmdUI *pCmdUI)
@@ -3134,10 +3134,13 @@ void CRecorderView::OnXnoteRecordDurationLimitMode()
 
 	// Prepare info to show
 	CString csXnoteAutoPauseMsg;
-	csXnoteAutoPauseMsg.Format("Xnote auto pause mode : %s, duration %d ms",  
-		(cXNoteOpts.m_bXnoteRecordDurationLimitMode) ? "On" : "Off" ,
+	if ( cXNoteOpts.m_bXnoteRecordDurationLimitMode ) {
+	csXnoteAutoPauseMsg.Format("Xnote Limited recording mode : On, duration %d ms",  
 		(cXNoteOpts.m_bXnoteRecordDurationLimitMode) ? cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec : 0 );
-
+	} else {
+		csXnoteAutoPauseMsg.SetString( _T("Xnote Limited recording mode : Off") );
+	}
+	
 	CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
 	pStatus->SetPaneText(0, _T( csXnoteAutoPauseMsg.GetString() ) );
 
@@ -3172,13 +3175,19 @@ void CRecorderView::OnUpdateAnnotationAddwatermark(CCmdUI *pCmdUI)
 
 void CRecorderView::OnEffectsOptions()
 {
+	//TRACE("## CRecorderView::OnEffectsOptions() \n");
 	CAnnotationEffectsOptionsDlg dlg(this);
 	
 	dlg.m_timestamp = cTimestampOpts.m_taTimestamp;
 
 	dlg.m_xnote = cXNoteOpts.m_taXNote;  
 
-	dlg.m_bXnoteDisplayCameraDelay = cXNoteOpts.m_bXnoteDisplayCameraDelay; 
+	/*
+	* The assigned var m_bXnoteDisplayCameraDelayMode and m_bXnoteRecordDurationLimitMode are booleans and must be assigned to a 
+	* Checkbox (Button) element in the dialog. When dialog is closed (OK) checkbox state must be assigned to the bool vars again
+	* This all will be done in CAnnotationEffectsOptionsDlg::DoDataExchange and CAnnotationEffectsOptionsDlg::OnBnClickedOk() 
+	*/
+	dlg.m_bXnoteDisplayCameraDelayMode = cXNoteOpts.m_bXnoteDisplayCameraDelayMode; 
 	dlg.m_ulXnoteCameraDelayInMilliSec = cXNoteOpts.m_ulXnoteCameraDelayInMilliSec; 
 
 	dlg.m_bXnoteRecordDurationLimitMode = cXNoteOpts.m_bXnoteRecordDurationLimitMode; 
@@ -3190,19 +3199,21 @@ void CRecorderView::OnEffectsOptions()
 	if (IDOK == dlg.DoModal()){
 		// timestamp
 		cTimestampOpts.m_taTimestamp = dlg.m_timestamp;
+
 		// xnote stopwatch
 		cXNoteOpts.m_taXNote = dlg.m_xnote;
+		cXNoteOpts.m_bXnoteDisplayCameraDelayMode =  dlg.m_bXnoteDisplayCameraDelayMode;
 		cXNoteOpts.m_ulXnoteCameraDelayInMilliSec = dlg.m_ulXnoteCameraDelayInMilliSec;
-		cXNoteOpts.m_bXnoteDisplayCameraDelay =  dlg.m_bXnoteDisplayCameraDelay;
-
-		cXNoteOpts.m_bXnoteRecordDurationLimitMode =  dlg.m_bXnoteRecordDurationLimitMode;
+		
+		cXNoteOpts.m_bXnoteRecordDurationLimitMode = dlg.m_bXnoteRecordDurationLimitMode;
 		cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec = dlg.m_ulXnoteRecordDurationLimitInMilliSec;
 
-		//TRACE( "## CRecorderView::OnEffectsOptions  dlg.m_bXnoteRecordDurationLimitMode       =[%d)\n", dlg.m_bXnoteRecordDurationLimitMode); 
-		//TRACE( "## CRecorderView::OnEffectsOptions  dlg.m_ulXnoteRecordDurationLimitInMilliSec=[%d)\n", dlg.m_ulXnoteRecordDurationLimitInMilliSec); 
+		//TRACE( "## CRecorderView::OnEffectsOptions  dlg.m_bXnoteRecordDurationLimitMode       =[%d]\n", dlg.m_bXnoteRecordDurationLimitMode); 
+		//TRACE( "## CRecorderView::OnEffectsOptions  dlg.m_ulXnoteRecordDurationLimitInMilliSec=[%lu]\n", dlg.m_ulXnoteRecordDurationLimitInMilliSec); 
 
 		// Caption
 		cCaptionOpts.m_taCaption = dlg.m_caption;
+
 		// Watermark
 		cWatermarkOpts.m_iaWatermark = dlg.m_image;
 	}
@@ -3238,73 +3249,107 @@ void CRecorderView::DisplayRecordingStatistics(CDC & srcDC)
 	COLORREF oldBkColor = srcDC.SetBkColor(rectcolor);
 	int iOldBkMode = srcDC.SetBkMode(TRANSPARENT);
 
-	CString csMsg;
-	csMsg.Format("Current Frame : %d",  nCurrFrame);
-	CSize sizeExtent = srcDC.GetTextExtent(csMsg);
 	CRect rectText;
 	GetClientRect(&rectText);
-	int xoffset = 40;
-	int yoffset = 10;
-	int iLines = 7;
-	int iStartPosY = rectText.bottom;
-	iStartPosY -= (iLines * (sizeExtent.cy + 10));
-	yoffset = iStartPosY;
+	CSize sizeExtent = (CSize)0;
 
+	CString csMsg;
+	int xoffset = 16;
+	int yoffset = 10;
+	int iLines = 9;				// Number of lines of information to display
+	int iLineSpacing = 6;		// Distance between two lines
+	int iStartPosY = rectText.bottom;
+
+	//////////////////////////////////
+	// Prepare information lines
+	//////////////////////////////////
+
+	// First line: Start recording 
+	csMsg.Format("Start recording : %s",  cVideoOpts.m_cStartRecordingString.GetString() );
+	sizeExtent = srcDC.GetTextExtent(csMsg);
+	iStartPosY -= (iLines * (sizeExtent.cy + iLineSpacing));
+	yoffset = iStartPosY;
 	rectText.top = yoffset - 2;
 	rectText.bottom = yoffset + sizeExtent.cy + 4;
-//	srcDC.Rectangle(&rectText);
+//	srcDC.Rectangle(&rectText);						// Do we want to draw a fancy border around text?
 	srcDC.TextOut(xoffset, yoffset, csMsg);
 
+	// Second line: Limited recording 
+	csMsg.SetString ( _T( "Limited recording : " ) );
+	if ( cXNoteOpts.m_bXnoteRecordDurationLimitMode ) {
+		csMsg.AppendFormat("On, %lu ms.",  cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec );
+	} else {
+		csMsg.Append ("Off." );
+	}
+	sizeExtent = srcDC.GetTextExtent(csMsg);
+	yoffset += sizeExtent.cy + iLineSpacing;
+	rectText.top = yoffset - 2;
+	rectText.bottom = yoffset + sizeExtent.cy + 4;
+	srcDC.TextOut(xoffset, yoffset, csMsg);
+
+	// Line: Current frame 
+	csMsg.Format("Current Frame : %d",  nCurrFrame);
+	sizeExtent = srcDC.GetTextExtent(csMsg);
+	yoffset += sizeExtent.cy + iLineSpacing;
+	rectText.top = yoffset - 2;
+	rectText.bottom = yoffset + sizeExtent.cy + 4;
+	srcDC.TextOut(xoffset, yoffset, csMsg);
+
+	// Line: Current file sizing
 	const unsigned long MEGABYTE = (1024UL * 1024UL);
 	double dMegaBtyes = nTotalBytesWrittenSoFar;
 	dMegaBtyes /= MEGABYTE;
+
 	csMsg.Format("Current File Size : %.2f Mb", dMegaBtyes);
 	sizeExtent = srcDC.GetTextExtent(csMsg);
-	yoffset += sizeExtent.cy + 10;
+	yoffset += sizeExtent.cy + iLineSpacing;
 	rectText.top = yoffset - 2;
 	rectText.bottom = yoffset + sizeExtent.cy + 4;
 	srcDC.TextOut(xoffset, yoffset, csMsg);
 
+	// Line : Input rate
 	csMsg.Format("Actual Input Rate : %.2f fps",  fActualRate);
 	sizeExtent = srcDC.GetTextExtent(csMsg);
-	yoffset += sizeExtent.cy + 10;
+	yoffset += sizeExtent.cy + iLineSpacing;
 	rectText.top = yoffset - 2;
 	rectText.bottom = yoffset + sizeExtent.cy + 4;
-//	srcDC.Rectangle(&rectText);
 	srcDC.TextOut(xoffset, yoffset, csMsg);
 
+	// Line : Elapsed time
 	csMsg.Format("Time Elasped : %.2f sec",  fTimeLength);
 	sizeExtent = srcDC.GetTextExtent(csMsg);
-	yoffset += sizeExtent.cy + 10;
+	yoffset += sizeExtent.cy + iLineSpacing;
 	rectText.top = yoffset - 2;
 	rectText.bottom = yoffset + sizeExtent.cy + 4;
-//	srcDC.Rectangle(&rectText);
 	srcDC.TextOut(xoffset, yoffset, csMsg);
 
+	// Line : Colors info
 	csMsg.Format("Number of Colors : %d iBits",  nColors);
 	sizeExtent = srcDC.GetTextExtent(csMsg);
-	yoffset += sizeExtent.cy + 10;
+	yoffset += sizeExtent.cy + iLineSpacing;
 	rectText.top = yoffset - 2;
 	rectText.bottom = yoffset + sizeExtent.cy + 4;
-//	srcDC.Rectangle(&rectText);
 	srcDC.TextOut(xoffset, yoffset, csMsg);
 
+	// Line : Codex
 	csMsg.Format("Codec : %s",  LPCTSTR(strCodec));
 	sizeExtent = srcDC.GetTextExtent(csMsg);
-	yoffset += sizeExtent.cy + 10;
+	yoffset += sizeExtent.cy + iLineSpacing;
 	rectText.top = yoffset - 2;
 	rectText.bottom = yoffset + sizeExtent.cy + 4;
-//	srcDC.Rectangle(&rectText);
 	srcDC.TextOut(xoffset, yoffset, csMsg);
 
+	// Line 9 : Dimension,sizing
 	csMsg.Format("Dimension : %u X %d",  GetDocument()->FrameWidth(), GetDocument()->FrameHeight());
 	sizeExtent = srcDC.GetTextExtent(csMsg);
-	yoffset += sizeExtent.cy + 10;
+	yoffset += sizeExtent.cy + iLineSpacing;
 	rectText.top = yoffset - 2;
 	rectText.bottom = yoffset + sizeExtent.cy + 4;
-//	srcDC.Rectangle(&rectText);
 	srcDC.TextOut(xoffset, yoffset, csMsg);
 
+	//////////////////////////////////
+	// Print information lines
+	//////////////////////////////////
 	srcDC.SelectObject(pOldFont);
 	srcDC.SelectObject(pOldBrush);
 	srcDC.SetTextColor(oldTextColor);
@@ -3374,7 +3419,12 @@ void CRecorderView::DisplayRecordingMsg(CDC & srcDC)
 	// Show informational text only if Xnote stopwatch is also activated as an effect option  XNOTEANNOTATION = On
 	if (cXNoteOpts.m_bAnnotation) {
 		CString msgXnoteMode;
-		msgXnoteMode.LoadString( (cXNoteOpts.m_bXnoteRecordDurationLimitMode == true) ? IDS_XNOTE_RECORDING_DURATION_ON : IDS_XNOTE_RECORDING_DURATION_OFF );
+		if ( cXNoteOpts.m_bXnoteRecordDurationLimitMode ) {
+			msgXnoteMode.LoadString( IDS_XNOTE_RECORDING_DURATION_ON );
+			msgXnoteMode.AppendFormat( " %lu ms.", cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec );
+		} else {
+			msgXnoteMode.LoadString( IDS_XNOTE_RECORDING_DURATION_OFF );
+		}
 		CSize sizeXnoteExtent = srcDC.GetTextExtent(msgXnoteMode);
 
 		CRect rectClientXnoteMsg;
@@ -3440,13 +3490,33 @@ UINT CRecorderView::RecordVideo()
 	// Test the validity of writing to the file
 	// Make sure the file to be created is currently not used by another application
 
-	// TODO,
-	// writing to temp.avi file while file still exist results in a crash when old temp.avi exist.
-	// Make file Camstudio is wrintg to unique, just by applying the standard date-timestamp  (ccyymmdd-hhuu-ss.avi)
-	// Another benefit is that we don't always have to copy from temp tro realname once recording is finished.
+	// Attempt to write to temp.avi file while file still exist results in a crash when old temp.avi is still in use or locked (or not freed).
+	// Can be prevented if Camstudio always write to an unique file. We decided to use the standard date-timestamp (~temp-ccyymmdd-hhuu-ss.avi) to make the file unique
+	// Another benefit of using this filename is that we don't always have to copy from temp to realname once recording is finished and we always new when a recording was created.
 
-	CString csTempFolder(GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir));
-	strTempFilePath.Format("%s\\temp.avi", (LPCSTR)csTempFolder);
+	CString csTempFolder(GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir));	
+
+	// Define a date-time tag "ccyymmdd_uumm_ss" to add to the temp.avi file.
+	// (New recordings can start just after previously recording ended.)
+	time_t osBinaryTime; // C run-time time (defined in <time.h>)
+	time(&osBinaryTime);
+	CTime ctime(osBinaryTime);
+
+	int day = ctime.GetDay();
+	int month = ctime.GetMonth();
+	int year = ctime.GetYear();
+	int hour = ctime.GetHour();
+	int minutes = ctime.GetMinute();
+	int second = ctime.GetSecond();
+	// Create timestamp tag
+	CString csStartTime = "";
+	csStartTime.Format("%04d%02d%02d_%02d%02d_%02d",year, month, day, hour, minutes, second); // 20100528, changed dateformating to yyyymmdd_hhmm_ss
+	// We will keep this info about when the recording started for later usage. (Renaming this and other created files to UDF filesnames)
+	cVideoOpts.m_cStartRecordingString.SetString(csStartTime);
+
+	strTempFilePath.Format("%s\\temp-%s.avi", (LPCSTR)csTempFolder, (LPCSTR)csStartTime );
+
+	//TRACE("## CRecorderView::RecordAVIThread First  Temp.Avi file=[%s]\n", strTempFilePath.GetString()  );
 
 	srand((unsigned)time(NULL));
 	bool fileverified = false;
@@ -3459,9 +3529,10 @@ UINT CRecorderView::RecordVideo()
 			CloseHandle((HANDLE)hFile);
 			DeleteFile(strTempFilePath);
 		} else {
-			strTempFilePath.Format("%s\\temp%d.avi", (LPCSTR)csTempFolder, rand());
+			strTempFilePath.Format("%s\\temp-%s-%d.avi", (LPCSTR)csTempFolder, (LPCSTR)csStartTime, rand());
 		}
 	}
+	//TRACE("## CRecorderView::RecordAVIThread  Final Temp.Avi file=[%s]\n", strTempFilePath.GetString()  );
 
 	//int top = rcUse.top;
 	//int left = rcUse.left;
@@ -3483,7 +3554,7 @@ UINT CRecorderView::RecordVideo()
 //bool CRecorderView::RecordVideo(int top, int left, int width, int height, int fps, const char *szFileName)
 bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName)
 {
-	TRACE("CRecorderView::RecordVideo\n");
+	TRACE("CRecorderView::RecordVideo (.....) \n");
 
 	WORD wVer = HIWORD(VideoForWindowsVersion());
 	if (wVer < 0x010a) {

@@ -13,12 +13,18 @@ IMPLEMENT_DYNAMIC(CAnnotationEffectsOptionsDlg, CDialog)
 CAnnotationEffectsOptionsDlg::CAnnotationEffectsOptionsDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CAnnotationEffectsOptionsDlg::IDD, pParent)
 {
+	//TRACE("## CAnnotationEffectsOptionsDlg::CAnnotationEffectsOptionsDlg() \n");
+	// Todo: Update preview fields.
 }
 
 CAnnotationEffectsOptionsDlg::~CAnnotationEffectsOptionsDlg()
 {
+	//TRACE("## CAnnotationEffectsOptionsDlg::~CAnnotationEffectsOptionsDlg() \n");
 }
 
+///////////////////////////////////////////////////
+// Connencted (passed) value are defined and set with CRecorderView::OnEffectsOptions()
+///////////////////////////////////////////////////
 void CAnnotationEffectsOptionsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -28,14 +34,38 @@ void CAnnotationEffectsOptionsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_TIMESTAMP_FORMAT, m_timestamp.text);
 
 	DDX_Text(pDX, IDC_EDIT_XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec  );
-	DDX_Control(pDX, IDC_XNOTEDISPLAYCAMERADELAY, m_CheckBoxXnoteDisplayCameraDelay);
-	DDX_Text(pDX, IDC_EDIT_XNOTEAUTORECORDPAUSEDINMILLISEC, m_ulXnoteRecordDurationLimitInMilliSec  );
-	DDX_Control(pDX, IDC_BUTTON_XNOTEAUTORECORDPAUSED, m_CheckBoxXnoteRecordDurationLimitMode);
-	DDX_Text(pDX, IDC_EDIT_XNOTE_FORMAT, m_xnote.text);
+	DDX_Control(pDX, IDC_BUTTON_XNOTEDISPLAYCAMERADELAYMODE, m_CheckBoxXnoteDisplayCameraDelayMode );
+
+	DDX_Text(pDX, IDC_EDIT_XNOTERECORDDURATIONLIMITINMILLISEC, m_ulXnoteRecordDurationLimitInMilliSec  );
+	DDX_Control(pDX, IDC_BUTTON_XNOTERECORDDURATIONLIMITMODE, m_CheckBoxXnoteRecordDurationLimitMode );
+
+	DDX_Text(pDX, IDC_EDIT_XNOTE_FORMAT, m_xnote.text);		// Used for locationpositioning and layout formatting definitions, do not deleted..!
 
 	DDX_Text(pDX, IDC_EDIT_CAPTION_TEXT, m_caption.text);
-	DDX_Control(pDX, IDC_FORMATPREVIEW,m_FormatPreview );
+	DDX_Control(pDX, IDC_FORMATTIMESTAMPPREVIEW,m_FormatTimestampPreview );
 	DDX_Control(pDX, IDC_FORMAT_XNOTEPREVIEW, m_FormatXNotePreview);
+/*
+	TRACE("## CAnnotationEffectsOptionsDlg::DoDataExchange\n" );
+	TRACE("## -----------------------------------------------\n" );
+	TRACE("## m_CheckBoxXnoteDisplayCameraDelayMode=[%d]\n", m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() );
+	TRACE("## m_bXnoteDisplayCameraDelayMode=[%d]\n", m_bXnoteDisplayCameraDelayMode);
+	TRACE("## m_ulXnoteRecordDurationLimitInMilliSec=[%d]\n", m_ulXnoteRecordDurationLimitInMilliSec);
+	TRACE("## -----------------------------------------------\n" );
+	TRACE("## m_CheckBoxXnoteRecordDurationLimitMode=[%d]\n", m_CheckBoxXnoteRecordDurationLimitMode.GetCheck()  );
+	TRACE("## m_bXnoteRecordDurationLimitMode=[%d]\n", m_bXnoteRecordDurationLimitMode);
+	TRACE("## m_ulXnoteCameraDelayInMilliSec=[%d]\n", m_ulXnoteCameraDelayInMilliSec);
+	TRACE("## -----------------------------------------------\n" );
+*/
+	// Init Checkboxes according the correct state
+	m_CheckBoxXnoteDisplayCameraDelayMode.SetCheck( m_bXnoteDisplayCameraDelayMode ? 1 : 0 );
+	m_CheckBoxXnoteRecordDurationLimitMode.SetCheck( m_bXnoteRecordDurationLimitMode ? 1 : 0 ); 
+
+/*
+	TRACE("## m_CheckBoxXnoteDisplayCameraDelayMode=[%d]\n", m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() );
+	TRACE("## m_CheckBoxXnoteRecordDurationLimitMode=[%d]\n", m_CheckBoxXnoteRecordDurationLimitMode.GetCheck()  );
+	TRACE("## -----------------------------------------------\n" );
+*/
+
 }
 
 BEGIN_MESSAGE_MAP(CAnnotationEffectsOptionsDlg, CDialog)
@@ -43,10 +73,14 @@ BEGIN_MESSAGE_MAP(CAnnotationEffectsOptionsDlg, CDialog)
 	ON_EN_CHANGE(IDC_EDIT_TIMESTAMP_FORMAT, &CAnnotationEffectsOptionsDlg::OnEnChangeEditTimestampFormat)
 	ON_BN_CLICKED(IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS, OnBnClickedButtonTimestampFormatOptions)
 	
-	ON_EN_CHANGE(IDC_EDIT_XNOTECAMERADELAYINMILLISEC, &CAnnotationEffectsOptionsDlg::OnEnChangeEditXNoteFormat)
-	ON_BN_CLICKED(IDC_BUTTON_XNOTE_FORMAT_OPTIONS, OnBnClickedButtonXNoteFormatOptions)
-	ON_BN_CLICKED(IDC_XNOTEDISPLAYCAMERADELAY, &CAnnotationEffectsOptionsDlg::OnEnChangeEditXNoteFormat)
-	
+	ON_EN_CHANGE(IDC_EDIT_XNOTECAMERADELAYINMILLISEC, &CAnnotationEffectsOptionsDlg::OnEnChangeEditXNoteCameraDelayInMilliSec)
+	ON_BN_CLICKED(IDC_BUTTON_XNOTEDISPLAYCAMERADELAYMODE, &CAnnotationEffectsOptionsDlg::OnBnClickedXNoteDisplayCameraDelayMode)
+
+	ON_BN_CLICKED(IDC_BUTTON_XNOTECAMERADELAYMODE, OnBnClickedButtonXNoteFormatOptions)
+
+	ON_EN_CHANGE(IDC_EDIT_XNOTERECORDDURATIONLIMITINMILLISEC, &CAnnotationEffectsOptionsDlg::OnEnChangeEditXnoteRecordDurationLimitInMilliSec)
+	ON_BN_CLICKED(IDC_BUTTON_XNOTERECORDDURATIONLIMITMODE, &CAnnotationEffectsOptionsDlg::OnBnClickedXnoteRecordDurationLimitMode)
+
 	ON_BN_CLICKED(IDC_BUTTON_CAPTION_OPTIONS, OnBnClickedButtonCaptionOptions)
 
 	ON_BN_CLICKED(IDC_BUTTON_WATERMARK_OPTIONS, OnBnClickedButtonWatermarkOptions)
@@ -55,8 +89,8 @@ BEGIN_MESSAGE_MAP(CAnnotationEffectsOptionsDlg, CDialog)
 	ON_BN_CLICKED(IDOK, &CAnnotationEffectsOptionsDlg::OnBnClickedOk)
 	ON_WM_CREATE()
 
-	ON_BN_CLICKED(IDC_BUTTON_XNOTEAUTORECORDPAUSED, &CAnnotationEffectsOptionsDlg::OnBnClickedXnoteRecordPausedInMilliSec)
-	ON_EN_CHANGE(IDC_EDIT_XNOTEAUTORECORDPAUSEDINMILLISEC, &CAnnotationEffectsOptionsDlg::OnEnChangeEditXnotecRecordPausedInMilliSec)
+	ON_EN_CHANGE(IDC_FORMAT_XNOTEPREVIEW, &CAnnotationEffectsOptionsDlg::OnEnChangeFormatXnotepreview)
+	ON_EN_CHANGE(IDC_FORMATTIMESTAMPPREVIEW, &CAnnotationEffectsOptionsDlg::OnEnChangeFormatpreview)
 END_MESSAGE_MAP()
 
 // CAnnotationEffectsOptionsDlg message handlers
@@ -82,6 +116,7 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedButtonCaptionOptions()
 	}
 }
 
+
 void CAnnotationEffectsOptionsDlg::OnBnClickedButtonTimestampFormatOptions()
 {
 	// TODO: Add your control notification handler code here
@@ -95,6 +130,7 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedButtonTimestampFormatOptions()
 void CAnnotationEffectsOptionsDlg::OnBnClickedButtonXNoteFormatOptions()
 {
 	// TODO: Add your control notification handler code here
+	//TRACE("## CAnnotationEffectsOptionsDlg::OnBnClickedButtonXNoteFormatOptions \n");
 	CEffectsOptionsDlg optDlg;
 	optDlg.m_params = m_xnote;
 	if (optDlg.DoModal() == IDOK){
@@ -115,38 +151,29 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedButtonWatermarkOptions()
 
 void CAnnotationEffectsOptionsDlg::OnEnChangeEditTimestampFormat()
 {
-	CString str;
-	GetDlgItem(IDC_EDIT_TIMESTAMP_FORMAT)->GetWindowText(str);
-	if (IsStrftimeSafe(str.GetBuffer())) {
-		time_t szClock;
-		time(&szClock);
-		struct tm *newTime = localtime(&szClock);
-		char TimeBuff[256];
-		strftime(TimeBuff, sizeof(TimeBuff), str, newTime);
-		m_FormatPreview.SetWindowText(TimeBuff);
-	}
-	else
-	{
-		m_FormatPreview.SetWindowTextA("Error in timestamp format!");
-	}
+	// Update Timestamp formatted preview presentation field
+	CAnnotationEffectsOptionsDlg::OnEnChangeFormatpreview();
 }
 
 
 // Function show layout of output in preview field on dialog.
-void CAnnotationEffectsOptionsDlg::OnEnChangeEditXNoteFormat()
+// This opens when checkbox is clicked but also when the value in the text field is changed
+void CAnnotationEffectsOptionsDlg::OnEnChangeEditXNoteCameraDelayInMilliSec()
 {
-	CString str;
-	char cTmpBuff[64];
+	//TRACE("## CAnnotationEffectsOptionsDlg::OnEnChangeEditXNoteCameraDelayInMilliSec()\n");
 
-	GetDlgItem(IDC_EDIT_XNOTECAMERADELAYINMILLISEC)->GetWindowText(str);
-	ULONG ul_DelayTimeInMilliSec = atol(str);
+	// Update Xnote formatted preview presentation field
+	CAnnotationEffectsOptionsDlg::OnEnChangeFormatXnotepreview();
+}
 
-	bool bDisplayCameraDelay = m_CheckBoxXnoteDisplayCameraDelay.GetCheck()? true : false;
-	
-	// format (delay) hh:mm:ss.ttt"
-	(void) CXnoteStopwatchFormat::FormatXnoteSampleString ( cTmpBuff, ul_DelayTimeInMilliSec, bDisplayCameraDelay);
+							    								   
+void CAnnotationEffectsOptionsDlg::OnBnClickedXNoteDisplayCameraDelayMode()
+{
+	//TRACE("## CAnnotationEffectsOptionsDlg::OnBnClickedXnoteCameraDelayMode()\n");
+	// bool bBool = m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck()? true : false;
 
-	m_FormatXNotePreview.SetWindowText(cTmpBuff); 
+	// Update presentationfield
+	CAnnotationEffectsOptionsDlg::OnEnChangeFormatXnotepreview();
 }
 
 
@@ -159,6 +186,11 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedOk()
 		MessageBox("There is an error in the timestamp format!", "Error!", MB_OK);
 		return;
 	}
+
+	// Convert values that are defined by buttons again to bools or other values.
+	m_bXnoteDisplayCameraDelayMode = m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() ? true : false ;
+	m_bXnoteRecordDurationLimitMode = m_CheckBoxXnoteRecordDurationLimitMode.GetCheck() ? true : false ;
+
 	OnOK();
 }
 
@@ -170,6 +202,12 @@ int CAnnotationEffectsOptionsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	/* TODO: Is this the most appropiate place to put defaults? Probably not ...
 	 * Also, theres probably a better check than if the text is zero weather
 	 * or not the data has been initialized.*/
+
+	/*
+	 * Comment Jun2010: Indeed there is a better place for initialisation. 
+	 * Connected (passed) value are defined and set with CRecorderView::OnEffectsOptions()
+	 */
+
 	if (strlen(m_timestamp.text) == 0)
 	{
 		m_timestamp.text = CString("Time: %H:%M:%S");
@@ -189,7 +227,7 @@ int CAnnotationEffectsOptionsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 		// Format (delay) hh:mm:ss.ttt"
 		char cTmpBuff[64];
-		(void) CXnoteStopwatchFormat::FormatXnoteSampleString(cTmpBuff, m_ulXnoteCameraDelayInMilliSec, m_bXnoteDisplayCameraDelay );
+		(void) CXnoteStopwatchFormat::FormatXnoteSampleString(cTmpBuff, m_ulXnoteCameraDelayInMilliSec, m_bXnoteDisplayCameraDelayMode );
 		m_cXnoteDisplayFormatString = CString( cTmpBuff );
 	}
 
@@ -201,6 +239,12 @@ int CAnnotationEffectsOptionsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		m_xnote.logfont.lfHeight = 12;
 		m_xnote.text = m_cXnoteDisplayFormatString;
 	}
+
+	// Todo
+	// Set here al the values and action you want to msut be doen before windows are launched.
+	// Update text in Formatpreview(Timestamp) and FormatXnotepreview
+	//CAnnotationEffectsOptionsDlg::OnEnChangeFormatpreview();
+	//CAnnotationEffectsOptionsDlg::OnEnChangeFormatXnotepreview();
 
 	return 0;
 }
@@ -241,13 +285,17 @@ bool CAnnotationEffectsOptionsDlg::IsStrftimeSafe(char * pbuffer)
 	return true;
 }
 
-void CAnnotationEffectsOptionsDlg::OnBnClickedXnoteRecordPausedInMilliSec()
+							     
+void CAnnotationEffectsOptionsDlg::OnBnClickedXnoteRecordDurationLimitMode()
 {
-	// TODO: Add your control notification handler code here
+	// TODO: Add your control notification handler code here	
+	//TRACE("## CAnnotationEffectsOptionsDlg::OnBnClickedXnoteRecordDurationLimitMode() State=[%d] \n", m_CheckBoxXnoteRecordDurationLimitMode.GetCheck() ? true : false );
+
 }
 
-void CAnnotationEffectsOptionsDlg::OnEnChangeEditXnotecRecordPausedInMilliSec()
+void CAnnotationEffectsOptionsDlg::OnEnChangeEditXnoteRecordDurationLimitInMilliSec()
 {
+	//TRACE("## CAnnotationEffectsOptionsDlg::OnEnChangeEditXnoteRecordDurationLimitInMilliSec()\n");
 	// TODO:  If this is a RICHEDIT control, the control will not
 	// send this notification unless you override the CDialog::OnInitDialog()
 	// function and call CRichEditCtrl().SetEventMask()
@@ -257,3 +305,49 @@ void CAnnotationEffectsOptionsDlg::OnEnChangeEditXnotecRecordPausedInMilliSec()
 }
 
 
+
+void CAnnotationEffectsOptionsDlg::OnEnChangeFormatXnotepreview()
+{
+	// TRACE("## CAnnotationEffectsOptionsDlg::OnEnChangeFormatXnotepreview()\n");
+	CString str;
+	char cTmpBuff[64];
+
+	GetDlgItem(IDC_EDIT_XNOTECAMERADELAYINMILLISEC)->GetWindowText(str);
+	ULONG ul_DelayTimeInMilliSec = atol(str);
+
+	bool bDisplayCameraDelay = m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() ? true : false ;
+	
+	// format (delay) hh:mm:ss.ttt"
+	(void) CXnoteStopwatchFormat::FormatXnoteSampleString ( cTmpBuff, ul_DelayTimeInMilliSec, bDisplayCameraDelay );
+
+	m_FormatXNotePreview.SetWindowText(cTmpBuff); 
+}
+
+
+	// Zoek CAnnotationEffectsOptionsDlg::OnEnChangeFormatXnotepreview
+
+void CAnnotationEffectsOptionsDlg::OnEnChangeFormatpreview()
+{
+	// TODO:  If this is a RICHEDIT control, the control will not
+	// send this notification unless you override the CDialog::OnInitDialog()
+	// function and call CRichEditCtrl().SetEventMask()
+	// with the ENM_CHANGE flag ORed into the mask.
+
+	// TRACE("CAnnotationEffectsOptionsDlg::OnEnChangeFormatpreview() \n");
+	CString str;
+	GetDlgItem(IDC_EDIT_TIMESTAMP_FORMAT)->GetWindowText(str);
+
+	if (IsStrftimeSafe(str.GetBuffer())) {
+		time_t szClock;
+		time(&szClock);
+		struct tm *newTime = localtime(&szClock);
+		char TimeBuff[256];
+		strftime(TimeBuff, sizeof(TimeBuff), str, newTime);
+		m_FormatTimestampPreview.SetWindowText(TimeBuff);
+	}
+	else
+	{
+		m_FormatTimestampPreview.SetWindowTextA("Error in timestamp format!");
+	}
+
+}

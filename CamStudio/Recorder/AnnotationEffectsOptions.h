@@ -35,13 +35,16 @@ public:
 	
 	TextAttributes	m_xnote;
 	ULONG	m_ulXnoteCameraDelayInMilliSec;
-	bool	m_bXnoteDisplayCameraDelay;  // A bool but dialog requires that checkbox is a CButton.
-	CButton m_CheckBoxXnoteDisplayCameraDelay;
+
+	CButton m_CheckBoxXnoteDisplayCameraDelayMode;
+	bool	m_bXnoteDisplayCameraDelayMode;			// A bool but dialog requires that checkbox is a CButton.
+
 	CString m_cXnoteDisplayFormatString;
 
 	ULONG	m_ulXnoteRecordDurationLimitInMilliSec;
-	bool	m_bXnoteRecordDurationLimitMode;  // A bool but dialog requires that checkbox is a CButton.
+
 	CButton m_CheckBoxXnoteRecordDurationLimitMode;
+	bool	m_bXnoteRecordDurationLimitMode;	// A bool but dialog requires that checkbox is a CButton.
 
 	TextAttributes	m_caption;
 	ImageAttributes	m_image;
@@ -51,21 +54,31 @@ private:
 	CEdit m_ctlImagePath;
 
 	afx_msg void OnBnClickedButtonImagePath();
+	
 	afx_msg void OnBnClickedButtonCaptionOptions();
 	afx_msg void OnBnClickedButtonTimestampFormatOptions();
 	afx_msg void OnBnClickedButtonXNoteFormatOptions();
 	afx_msg void OnBnClickedButtonWatermarkOptions();
 public:
-	CEdit m_FormatPreview;				// Fields to preview calculated output
+	CEdit m_FormatTimestampPreview;				// Fields to preview calculated output
 	CEdit m_FormatXNotePreview;			// Fields to preview calculated output
 	afx_msg void OnEnChangeEditTimestampFormat();
-	afx_msg void OnEnChangeEditXNoteFormat();
+	
+	afx_msg void OnEnChangeFormatpreview();
+	
+	afx_msg void OnEnChangeEditXNoteCameraDelayInMilliSec();
+	afx_msg void OnBnClickedXNoteDisplayCameraDelayMode();
+
+	afx_msg void OnEnChangeEditXnoteRecordDurationLimitInMilliSec();
+	afx_msg void OnBnClickedXnoteRecordDurationLimitMode();
+
 	afx_msg void OnBnClickedOk();
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 private:
 	bool IsStrftimeSafe(char * buffer);	// For user defined date/time layouts
+
 public:
-	afx_msg void OnBnClickedXnoteRecordPausedInMilliSec();
-	afx_msg void OnEnChangeEditXnotecRecordPausedInMilliSec();
+	afx_msg void OnEnChangeFormatXnotepreview();	// The preview field used to display delay and xnote combination in the settings dialog
+	afx_msg void OnEnChangeEditXnoteFormat();
 };
 #endif	// ANNOTATIONEFFECTSOPTIONS_H
