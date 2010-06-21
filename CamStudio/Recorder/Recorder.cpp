@@ -214,6 +214,7 @@ BOOL CRecorderApp::InitInstance()
 	VERIFY(cRegionOpts.Read(m_cmSettings));
 	VERIFY(cCaptionOpts.Read(m_cmSettings));
 	VERIFY(cTimestampOpts.Read(m_cmSettings));
+	VERIFY(cXNoteOpts.Read(m_cmSettings));
 	VERIFY(cWatermarkOpts.Read(m_cmSettings));
 	VERIFY(cProducerOpts.Read(m_cmSettings));
 
@@ -253,6 +254,7 @@ int CRecorderApp::ExitInstance()
 	VERIFY(cRegionOpts.Write(m_cmSettings));
 	VERIFY(cCaptionOpts.Write(m_cmSettings));
 	VERIFY(cTimestampOpts.Write(m_cmSettings));
+	VERIFY(cXNoteOpts.Write(m_cmSettings));
 	VERIFY(cWatermarkOpts.Write(m_cmSettings));
 	VERIFY(cProducerOpts.Write(m_cmSettings));
 
