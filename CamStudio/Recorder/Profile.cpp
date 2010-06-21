@@ -207,7 +207,9 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
 }
 
+////////////////////////////////////////////////////////////////////////////
 // long Read/Write
+////////////////////////////////////////////////////////////////////////////
 template <>
 long ReadEntry(CString strFilename, CString strSection, CString strKeyName, const long& DefValue)
 {
@@ -226,7 +228,9 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
 }
 
+////////////////////////////////////////////////////////////////////////////
 // DWORD Read/Write
+////////////////////////////////////////////////////////////////////////////
 template <>
 DWORD ReadEntry(CString strFilename, CString strSection, CString strKeyName, const DWORD& DefValue)
 {
@@ -245,7 +249,9 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
 }
 
+////////////////////////////////////////////////////////////////////////////
 // double Read/Write
+////////////////////////////////////////////////////////////////////////////
 template <>
 double ReadEntry(CString strFilename, CString strSection, CString strKeyName, const double& DefValue)
 {
@@ -264,7 +270,9 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
 }
 
+////////////////////////////////////////////////////////////////////////////
 // BYTE Read/Write
+////////////////////////////////////////////////////////////////////////////
 template <>
 BYTE ReadEntry(CString strFilename, CString strSection, CString strKeyName, const BYTE& DefValue)
 {
@@ -292,7 +300,9 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
 }
 
+////////////////////////////////////////////////////////////////////////////
 // UINT Read/Write
+////////////////////////////////////////////////////////////////////////////
 template <>
 UINT ReadEntry(CString strFilename, CString strSection, CString strKeyName, const UINT& DefValue)
 {
@@ -309,7 +319,9 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 	return WriteEntry(strFilename, strSection, strKeyName, strValue);
 }
 
+////////////////////////////////////////////////////////////////////////////
 // LANGID Read/Write
+////////////////////////////////////////////////////////////////////////////
 template <>
 LANGID ReadEntry(CString strFilename, CString strSection, CString strKeyName, const LANGID& DefValue)
 {
@@ -326,7 +338,9 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 	return WriteEntry(strFilename, strSection, strKeyName, iDefValue);
 }
 
+////////////////////////////////////////////////////////////////////////////
 // ePosition Read/Write
+////////////////////////////////////////////////////////////////////////////
 template <>
 ePosition ReadEntry(CString strFilename, CString strSection, CString strKeyName, const ePosition& DefValue)
 {
@@ -343,7 +357,9 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 	return WriteEntry(strFilename, strSection, strKeyName, iDefValue);
 }
 
+////////////////////////////////////////////////////////////////////////////
 // LOGFONT Read/Write
+////////////////////////////////////////////////////////////////////////////
 template <>
 LOGFONT ReadEntry(CString strFilename, CString strSection, CString strKeyName, const LOGFONT& DefValue)
 {
@@ -424,7 +440,9 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 	return bResult;
 }
 
+////////////////////////////////////////////////////////////////////////////
 // TextAttributes Read/Write
+////////////////////////////////////////////////////////////////////////////
 template <>
 TextAttributes ReadEntry(CString strFilename, CString strSection, CString strKeyName, const TextAttributes& DefValue)
 {
@@ -466,7 +484,9 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 	return bResult;
 }
 
+////////////////////////////////////////////////////////////////////////////
 // ImageAttributes Read/Write
+////////////////////////////////////////////////////////////////////////////
 template <>
 ImageAttributes ReadEntry(CString strFilename, CString strSection, CString strKeyName, const ImageAttributes& DefValue)
 {
@@ -635,6 +655,7 @@ CProfile::CProfile(const CString strFileName)
 	InitSections();
 	InitLegacySection();
 
+	//This push the current settings to the init file
 	m_vAllSections.push_back(m_SectionLegacy);
 	m_vAllSections.push_back(m_SectionApp);
 	m_vAllSections.push_back(m_SectionProgram);
@@ -782,12 +803,12 @@ void CProfile::InitSections()
 #else
 	Add(m_SectionXNote, XNOTEANNOTATION, "xnoteAnnotation", false);
 #endif
+	Add(m_SectionXNote, XNOTEDISPLAYCAMERADELAY, "xnoteDisplayCameraDelay", true);		
+	Add(m_SectionXNote, XNOTECAMERADELAYINMILLISEC, "xnoteCameraDelayInMilliSec", 175UL);		
+	Add(m_SectionXNote, XNOTEDISPLAYFORMATSTRING, "xnoteDisplayFormatString", CString(_T("(0000)  00:00:00.000")) );   //String required, defines length printable area. Empty String is No Annotationbox   // hh:mm:ss.ttt
+	Add(m_SectionXNote, XNOTERECORDDURATIONLIMITMODE, "xnoteRecordDurationLimitMode", true );		
+	Add(m_SectionXNote, XNOTERECORDDURATIONLIMITINMILLISEC, "xnoteRecordDurationLimitInMilliSec", 1750UL  ); // Default timevalue required, otherwise recording stops direct when it is started
 	Add(m_SectionXNote, XNOTETEXTATTRIBUTES, "TextAttributes", TextAttributes(BOTTOM_LEFT));
-	Add(m_SectionXNote, XNOTECAMERADELAYINMILLISEC, "xnoteCameraDelayInMilliSec", 175);
-	Add(m_SectionXNote, XNOTEDISPLAYCAMERADELAY, "xnoteDisplayCameraDelay", true);
-	Add(m_SectionXNote, XNOTEDISPLAYFORMATSTRING, "xnoteDisplayFormatString", CString(_T("(0000)  00:00:00.000")) );   // hh:mm:ss.ttt
-	Add(m_SectionXNote, XNOTERECORDDURATIONLIMITMODE, "xnoteRecordDurationLimitMode", true );
-	Add(m_SectionXNote, XNOTERECORDDURATIONLIMITINMILLISEC, "xnoteRecordDurationLimitInMilliSec", 1750  );		// Default tme required, otherwise recording stops direct when it is started
 
 	Add(m_SectionCaption, CAPTIONANNOTATION, "Annotation", false);
 	Add(m_SectionCaption, CAPTIONTEXTATTRIBUTES, "TextAttributes", TextAttributes(TOP_LEFT));
@@ -911,25 +932,6 @@ void CProfile::InitLegacySection()
 	//VERIFY(Add(m_SectionLegacy, TIMESTAMPTEXTFONT, CString(_T("timestampTextFont")), CString(_T("Arial"))));
 	VERIFY(Add(m_SectionLegacy, TIMESTAMPTEXTFONT, "timestampTextFont", CString(_T("Arial"))));
 
-	// Xnote is new stuff. As far as I understand Camstudio there should not be any reason why to put it here. Although I don't know how to do it using the new approach I decided not to use lecagy features.
-	if (0) {
-#ifdef XNOTEANNOTATION
-	VERIFY(Add(m_SectionLegacy, XNOTEANNOTATION, "xnoteAnnotation", true));
-#else
-	VERIFY(Add(m_SectionLegacy, XNOTEANNOTATION, "xnoteAnnotation", false));
-#endif
-	VERIFY(Add(m_SectionLegacy, XNOTEBACKCOLOR, "xnoteBackColor", 0));
-	VERIFY(Add(m_SectionLegacy, XNOTESELECTED, "xnoteSelected", 0));
-	VERIFY(Add(m_SectionLegacy, XNOTEPOSITION, "xnotePosition", 0));
-	VERIFY(Add(m_SectionLegacy, XNOTETEXTCOLOR, "xnoteTextColor", (COLORREF)(16777215)));
-	VERIFY(Add(m_SectionLegacy, XNOTETEXTWEIGHT, "xnoteTextWeight", 0));
-	VERIFY(Add(m_SectionLegacy, XNOTETEXTHEIGHT, "xnoteTextHeight", 0));
-	VERIFY(Add(m_SectionLegacy, XNOTETEXTWIDTH, "xnoteTextWidth", 0));
-	VERIFY(Add(m_SectionLegacy, XNOTETEXTFONT, "xnoteTextFont", CString(_T("Arial"))));
-	VERIFY(Add(m_SectionLegacy, XNOTECAMERADELAYINMILLISEC, "xnoteCameraDelayInMilliSec", 165));
-	VERIFY(Add(m_SectionLegacy, XNOTEDISPLAYCAMERADELAY, "xnoteDisplayCameraDelay", true));
-	VERIFY(Add(m_SectionLegacy, XNOTEDISPLAYFORMATSTRING, "xnoteDisplayFormatString", CString(_T("(0000)  00:00:00.000")) ));	// hh:mm:ss.ttt
-	}
 	VERIFY(Add(m_SectionLegacy, CAPTIONANNOTATION, "captionAnnotation", false));
 	VERIFY(Add(m_SectionLegacy, CAPTIONBACKCOLOR, "captionBackColor", 0));
 	VERIFY(Add(m_SectionLegacy, CAPTIONSELECTED, "captionSelected", 0));
@@ -1085,30 +1087,6 @@ bool CProfile::Convert()
 		VERIFY(m_SectionLegacy.Read(TIMESTAMPTEXTFONT, strFaceName));
 		::strncpy_s(cTimestamp.m_taTimestamp.logfont.lfFaceName, LF_FACESIZE, strFaceName, LF_FACESIZE);
 		//wcscpy_s(cTimestamp.m_taTimestamp.logfont.lfFaceName, LF_FACESIZE, strFaceName);
-	}
-	
-	if (0)
-	{		
-		// 20200528 / janhgm/ Although Lecagy and never used we just applied applicable code for xnote stopwatch here.  
-		sXNoteOpts cXNote;
-		VERIFY(m_SectionLegacy.Read(XNOTEANNOTATION, cXNote.m_bAnnotation));
-		VERIFY(m_SectionLegacy.Read(XNOTECAMERADELAYINMILLISEC, cXNote.m_ulXnoteCameraDelayInMilliSec));  // delaytime in ms, default 175.
-		VERIFY(m_SectionLegacy.Read(XNOTEDISPLAYCAMERADELAY, cXNote.m_bXnoteDisplayCameraDelay));  // Print camera delaytime in ms onm screen
-		VERIFY(m_SectionLegacy.Read(XNOTEDISPLAYFORMATSTRING, cXNote.m_cXnoteDisplayFormatString ));          // Format example output 
-
-		VERIFY(m_SectionLegacy.Read(XNOTERECORDDURATIONLIMITINMILLISEC, cXNote.m_ulXnoteRecordDurationLimitInMilliSec));  // delaytime in ms, default 175.
-		VERIFY(m_SectionLegacy.Read(XNOTERECORDDURATIONLIMITMODE, cXNote.m_bXnoteRecordDurationLimitMode));  // Stops Camera recording after N ms if xNote triggered recording
-
-		VERIFY(m_SectionLegacy.Read(XNOTETEXTATTRIBUTES, cXNote.m_taXNote));                         // Formatting for image overlay
-		VERIFY(m_SectionLegacy.Read(XNOTEBACKCOLOR, cXNote.m_taXNote.backgroundColor));
-		VERIFY(m_SectionLegacy.Read(XNOTESELECTED, cXNote.m_taXNote.isFontSelected));
-		VERIFY(m_SectionLegacy.Read(XNOTEPOSITION, cXNote.m_taXNote.position));
-		VERIFY(m_SectionLegacy.Read(XNOTETEXTCOLOR, cXNote.m_taXNote.textColor));
-		VERIFY(m_SectionLegacy.Read(XNOTETEXTWEIGHT, cXNote.m_taXNote.logfont.lfWeight));
-		VERIFY(m_SectionLegacy.Read(XNOTETEXTHEIGHT, cXNote.m_taXNote.logfont.lfHeight));
-		VERIFY(m_SectionLegacy.Read(XNOTETEXTWIDTH, cXNote.m_taXNote.logfont.lfWidth));
-		VERIFY(m_SectionLegacy.Read(XNOTETEXTFONT, strFaceName));
-		::strncpy_s(cXNote.m_taXNote.logfont.lfFaceName, LF_FACESIZE, strFaceName, LF_FACESIZE);
 	}
 	
 	if (0)

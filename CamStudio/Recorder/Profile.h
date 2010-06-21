@@ -715,7 +715,7 @@ enum eSynchType
 	, AUDIOFIRST
 };
 
-// POD to hold them
+// POD to hold them      // hier_ben_ik
 struct sVideoOpts
 {
 	sVideoOpts()
@@ -733,6 +733,7 @@ struct sVideoOpts
 		, m_dwCompressorStateIsFor(0UL)
 		, m_dwCompressorStateSize(0UL)
 		, m_pState(0)
+		, m_cStartRecordingString("")
 	{
 	}
 	sVideoOpts(const sVideoOpts& rhs)
@@ -750,6 +751,7 @@ struct sVideoOpts
 		, m_dwCompressorStateIsFor(0UL)
 		, m_dwCompressorStateSize(0UL)
 		, m_pState(0)
+		, m_cStartRecordingString("")
 	{
 		*this = rhs;
 	}
@@ -778,6 +780,7 @@ struct sVideoOpts
 		m_dwCompressorStateIsFor	= rhs.m_dwCompressorStateIsFor;
 
 		State(rhs.m_pState, rhs.m_dwCompressorStateSize);
+		m_cStartRecordingString		= rhs.m_cStartRecordingString;
 
 		return *this;
 	}
@@ -844,6 +847,7 @@ struct sVideoOpts
 		DWORD dwSize = 0UL;
 		VERIFY(cProfile.Read(COMPRESSORSTATESIZE, dwSize));
 		State(dwSize);
+		CString  m_cStartRecordingString = "";
 		// m_iSelectedCompressor
 		return true;
 	}
@@ -862,6 +866,7 @@ struct sVideoOpts
 		VERIFY(cProfile.Write(COMPRESSORSTATEISFOR, m_dwCompressorStateIsFor));
 		VERIFY(cProfile.Write(COMPRESSORSTATESIZE, m_dwCompressorStateSize));		
 		// m_iSelectedCompressor
+		// m_cStartRecordingString
 		return true;
 	}
 
@@ -877,6 +882,7 @@ struct sVideoOpts
 	int m_iTimeShift;
 	FOURCC m_dwCompfccHandler;
 	FOURCC m_dwCompressorStateIsFor;
+	CString m_cStartRecordingString;
 protected:
 	LPVOID m_pState;
 	DWORD m_dwCompressorStateSize;
@@ -1047,17 +1053,32 @@ struct sXNoteOpts
 		: m_bAnnotation(false)						// False, default as it should be with stand Camstudio
 #endif
 		, m_taXNote(BOTTOM_LEFT)
-		, m_bXnoteDisplayCameraDelay(true)			// Default On: Show used delay in capture
-		, m_ulXnoteCameraDelayInMilliSec(175)		// Average delay, default 175 ms
-		, m_cXnoteDisplayFormatString("(0000)  00:00:00.000")	// Default hh:mm:ss.ttt, Not really a format. As long as the timer is not running this will be showed
+		, m_bXnoteDisplayCameraDelayMode(true)			// Default On: Show used delay in capture
+		, m_ulXnoteCameraDelayInMilliSec(175UL)		// Average delay, default 175 ms
+		, m_cXnoteDisplayFormatString("(0000)..00:00:00.000")	// Default (Delay) hh:mm:ss.ttt, Not really a format. As long as the timer is not running this will be showed
 		, m_bXnoteRecordDurationLimitMode(true)			// Default On: Show used delay in capture
-		, m_ulXnoteRecordDurationLimitInMilliSec(1750)		// Average recordin duration, default 1750 ms
+		, m_ulXnoteRecordDurationLimitInMilliSec(1750UL)		// Average recording duration, default 1750 ms. Required otherwise recording lenght is zero
 		, m_ulStartXnoteTickCounter(0)				// A non persistent member
 		, m_ulSnapXnoteTickCounter(0)				// A non persistent member
 		, m_cSnapXnoteTimesString("")				// A non persistent member
 	{
 	}
 	sXNoteOpts(const sXNoteOpts& rhs)
+// copy ala sVideoOpts
+#ifdef CAMSTUDIO4XNOTE
+		: m_bAnnotation(true)							// True, because I did not managed to read info from config	
+#else
+		: m_bAnnotation(false)							// False, default as it should be with stand Camstudio
+#endif
+		, m_taXNote(BOTTOM_LEFT)
+		, m_bXnoteDisplayCameraDelayMode(true)				// Default On: Show used delay in capture
+		, m_ulXnoteCameraDelayInMilliSec(175UL)			// Average delay, default 175 ms
+		, m_cXnoteDisplayFormatString("(0000)..00:00:00.000")	// Default hh:mm:ss.ttt, Not really a format. As long as the timer is not running this will be showed
+		, m_bXnoteRecordDurationLimitMode(true)			// Default On: Show used delay in capture
+		, m_ulXnoteRecordDurationLimitInMilliSec(1750UL)		// Average recordin duration, default 1750 ms
+		, m_ulStartXnoteTickCounter(0UL)				// A non persistent member
+		, m_ulSnapXnoteTickCounter(0UL)					// A non persistent member
+		, m_cSnapXnoteTimesString("")					// A non persistent member
 	{
 		*this = rhs;
 	}
@@ -1069,7 +1090,7 @@ struct sXNoteOpts
 		m_bAnnotation = rhs.m_bAnnotation;
 		m_taXNote = rhs.m_taXNote;
 
-		m_bXnoteDisplayCameraDelay = rhs.m_bXnoteDisplayCameraDelay;
+		m_bXnoteDisplayCameraDelayMode = rhs.m_bXnoteDisplayCameraDelayMode;
 		m_ulXnoteCameraDelayInMilliSec = rhs.m_ulXnoteCameraDelayInMilliSec;
 		m_cXnoteDisplayFormatString = rhs.m_cXnoteDisplayFormatString;
 
@@ -1095,7 +1116,7 @@ struct sXNoteOpts
 		VERIFY(cProfile.Read(XNOTEANNOTATION, m_bAnnotation));
 		VERIFY(cProfile.Read(XNOTETEXTATTRIBUTES, m_taXNote));
 		
-		VERIFY(cProfile.Read(XNOTEDISPLAYCAMERADELAY, m_bXnoteDisplayCameraDelay));
+		VERIFY(cProfile.Read(XNOTEDISPLAYCAMERADELAY, m_bXnoteDisplayCameraDelayMode));
 		VERIFY(cProfile.Read(XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec));
 		VERIFY(cProfile.Read(XNOTEDISPLAYFORMATSTRING, m_cXnoteDisplayFormatString));
 		
@@ -1117,11 +1138,11 @@ struct sXNoteOpts
 		TRACE("## ----------------------------------------------------------------------------\n");			
 		TRACE("## m_bAnnotation : [%d]\n", m_bAnnotation   );
 		TRACE("## m_taXNote.text : [%s]\n", m_taXNote.text.GetString()   );
-		TRACE("## m_bXnoteDisplayCameraDelay : [%d]\n", m_bXnoteDisplayCameraDelay   );
-		TRACE("## m_ulXnoteCameraDelayInMilliSec : [%ul]\n", m_ulXnoteCameraDelayInMilliSec   );
+		TRACE("## m_bXnoteDisplayCameraDelayMode : [%d]\n", m_bXnoteDisplayCameraDelayMode   );
+		TRACE("## m_ulXnoteCameraDelayInMilliSec : [%lu]\n", m_ulXnoteCameraDelayInMilliSec   );
 		TRACE("## m_cXnoteDisplayFormatString : [%s]\n", m_cXnoteDisplayFormatString   );
 		TRACE("## m_bXnoteRecordDurationLimitMode : [%d]\n", m_bXnoteRecordDurationLimitMode   );
-		TRACE("## m_ulXnoteRecordDurationLimitInMilliSec : [%ul]\n", m_ulXnoteRecordDurationLimitInMilliSec   );
+		TRACE("## m_ulXnoteRecordDurationLimitInMilliSec : [%lu]\n", m_ulXnoteRecordDurationLimitInMilliSec   );
 		TRACE("## ----------------------------------------------------------------------------\n");			
 */
 		return true;
@@ -1133,11 +1154,12 @@ struct sXNoteOpts
 		TRACE("## ----------------------------------------------------------------------------\n");			
 		TRACE("## m_bAnnotation : [%d]\n", m_bAnnotation   );
 		TRACE("## m_taXNote.text : [%s]\n", m_taXNote.text.GetString()   );
-		TRACE("## m_bXnoteDisplayCameraDelay : [%d]\n", m_bXnoteDisplayCameraDelay   );
-		TRACE("## m_ulXnoteCameraDelayInMilliSec : [%ul]\n", m_ulXnoteCameraDelayInMilliSec   );
+		TRACE("## m_bXnoteDisplayCameraDelayMode : [%d]\n", m_bXnoteDisplayCameraDelayMode   );
+		TRACE("## m_ulXnoteCameraDelayInMilliSec : [%lu]\n", m_ulXnoteCameraDelayInMilliSec   );
 		TRACE("## m_cXnoteDisplayFormatString : [%s]\n", m_cXnoteDisplayFormatString   );
 		TRACE("## m_bXnoteRecordDurationLimitMode : [%d]\n", m_bXnoteRecordDurationLimitMode   );
-		TRACE("## m_ulXnoteRecordDurationLimitInMilliSec : [%ul]\n", m_ulXnoteRecordDurationLimitInMilliSec   );
+		TRACE("## m_ulXnoteRecordDurationLimitInMilliSec : [%lu]\n", m_ulXnoteRecordDurationLimitInMilliSec   );
+		TRACE("## m_ulXnoteRecordDurationLimitInMilliSec : [%lu]\n", m_ulXnoteRecordDurationLimitInMilliSec   );
 		TRACE("## ----------------------------------------------------------------------------\n");			
 */
 
@@ -1155,7 +1177,7 @@ struct sXNoteOpts
 		VERIFY(cProfile.Write(XNOTEANNOTATION, m_bAnnotation));
 		VERIFY(cProfile.Write(XNOTETEXTATTRIBUTES, m_taXNote));
 
-		VERIFY(cProfile.Write(XNOTEDISPLAYCAMERADELAY, m_bXnoteDisplayCameraDelay));
+		VERIFY(cProfile.Write(XNOTEDISPLAYCAMERADELAY, m_bXnoteDisplayCameraDelayMode));
 		VERIFY(cProfile.Write(XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec));
 		VERIFY(cProfile.Write(XNOTEDISPLAYFORMATSTRING, m_cXnoteDisplayFormatString));
 
@@ -1169,9 +1191,9 @@ struct sXNoteOpts
 	bool	m_bAnnotation;
 	TextAttributes m_taXNote;
 
-	bool	m_bXnoteDisplayCameraDelay;
+	bool	m_bXnoteDisplayCameraDelayMode;
 	ULONG	m_ulXnoteCameraDelayInMilliSec;
-	CButton m_CheckBoxXnoteDisplayCameraDelay;
+	CButton m_CheckBoxXnoteDisplayCameraDelayMode;
 
 	bool	m_bXnoteRecordDurationLimitMode;
 	ULONG	m_ulXnoteRecordDurationLimitInMilliSec;

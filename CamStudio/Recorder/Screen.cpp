@@ -49,7 +49,7 @@ bool CCamera::AddXNote(CDC* pDC)
 		DWORD dwCurrTickCount =  GetTickCount();
 		char cTmpBuffXNoteTimeStamp[64] = {0};
 
-		CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmpBuffXNoteTimeStamp, cXNoteOpts.m_ulStartXnoteTickCounter, dwCurrTickCount ,m_sXNote.m_ulXnoteCameraDelayInMilliSec, cXNoteOpts.m_bXnoteDisplayCameraDelay );
+		CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmpBuffXNoteTimeStamp, cXNoteOpts.m_ulStartXnoteTickCounter, dwCurrTickCount ,m_sXNote.m_ulXnoteCameraDelayInMilliSec, cXNoteOpts.m_bXnoteDisplayCameraDelayMode );
 
 		taTmpXNote = m_sXNote.m_taXNote;
 		// Extend stopwatch info by adding on the second line the last (three here) xnote stopwatch snaptimes

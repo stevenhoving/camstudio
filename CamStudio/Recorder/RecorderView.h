@@ -226,6 +226,11 @@ private:
 	static UINT RecordThread(LPVOID pParam);
 	bool RunViewer(const CString& strNewFile);
 	bool RunProducer(const CString& strNewFile);
+
+	// dialog controls
+	// TEST a la AudioFormat.cpp
+	CButton m_ctrlButtonOnXnoteRecordDurationLimitMode;
+
 };
 
 #ifndef _DEBUG  // debug version in vscapView.cpp
