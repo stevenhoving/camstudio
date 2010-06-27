@@ -15,14 +15,24 @@ public:
 	~CXnoteStopwatchFormat(void);
 
 public:
-	static void CXnoteStopwatchFormat::FormatXnoteSampleString(char *cBuf64, long lDelayTimeInMilliSec, bool bDisplayCameraDelay );
+	static void CXnoteStopwatchFormat::FormatXnoteSampleString(char *cBuf128, long lDelayTimeInMilliSec, bool bDisplayCameraDelay );
 
 	static void CXnoteStopwatchFormat::FormatXnoteDelayedTimeString(
-		char *cBuf64, 
+		char *cBuf128, 
 		DWORD dwStartXnoteTickCounter, 
 		DWORD dwCurrTickCount, 
 		long lDelayTimeInMillisSec, 
-		bool bDisplayCameraDelay );
+		bool bDisplayCameraDelay);
+
+	static void CXnoteStopwatchFormat::FormatXnoteInfoSourceSensor(
+		char *cBuf128, 
+		int  iSourceInfo,
+		int  iSensorInfo);
+
+	static void CXnoteStopwatchFormat::FormatXnoteExtendedInfoSourceSensor(
+		char *cBuf128, 
+		int  iSourceInfo,
+		int  iSensorInfo);
 
 };
 #endif	// XNOTESTOPWATCHFORMAT_H

@@ -53,7 +53,7 @@ public:
 	BOOL OpenUsingShellExecute (CString);
 	LONG GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata);
 	BOOL OpenUsingRegisteredClass (CString);
-	VOID XNoteProcessWinMessage(int iAction, ULONG lXnoteTimeInMilliSeconds);
+	VOID XNoteProcessWinMessage(int iActionID, int iSensorID, int iSourceID, ULONG lXnoteTimeInMilliSeconds);
 	bool GetRecordState();
 	bool GetPausedState();
 	static VOID XNoteSetRecordingInPauseMode(void);
@@ -229,7 +229,7 @@ private:
 
 	// dialog controls
 	// TEST a la AudioFormat.cpp
-	CButton m_ctrlButtonOnXnoteRecordDurationLimitMode;
+	// CButton m_ctrlButtonOnXnoteRecordDurationLimitMode;
 
 };
 

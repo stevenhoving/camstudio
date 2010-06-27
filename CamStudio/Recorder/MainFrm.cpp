@@ -7,6 +7,16 @@
 #include "RecorderView.h"
 #include "Camstudio4XNote.h"
 
+
+/*
+using namespace std;
+
+// For Marshalling memory
+// compile with: /clr
+using namespace System;
+using namespace System::Runtime::InteropServices;
+*/
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -26,6 +36,7 @@ static HMENU hMenu = NULL;
 // CMainFrame
 
 const UINT CMainFrame::WM_USER_XNOTE = ::RegisterWindowMessage("XNote");
+const UINT CMainFrame::WM_USER_MOTIONDETECTOR = ::RegisterWindowMessage("MotionDetector");
 
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
@@ -43,9 +54,17 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	//}}AFX_MSG_MAP
 	ON_MESSAGE(CTrayIcon::m_WM_TRAY_ICON_NOTIFY_MESSAGE,OnTrayNotify)
 	ON_REGISTERED_MESSAGE(CMainFrame::WM_USER_XNOTE, OnXNote)
+	ON_REGISTERED_MESSAGE(CMainFrame::WM_USER_MOTIONDETECTOR, OnMotionDetector)
 	ON_WM_SYSCOMMAND()
 END_MESSAGE_MAP()
 
+LRESULT CMainFrame::OnMotionDetector(UINT wParam, LONG /*lParam*/ )
+{
+	//TRACE("## CMainFrame::OnMotionDetector (d)    wParam=[%d] HI[%d], LO[%d]\n",wParam, HIWORD(wParam), LOWORD(wParam) );
+	dynamic_cast<CRecorderView *>(m_pViewActive)->XNoteProcessWinMessage( wParam, XNOTE_TRIGGER_MOTIONDETECTOR , XNOTE_SOURCE_MOTIONDETECTOR , NULL );
+
+	return 0;
+}
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -59,8 +78,8 @@ END_MESSAGE_MAP()
 //////////////////////////////////////////////////////////
 LRESULT CMainFrame::OnXNote(UINT wParam, LONG lParam)
 {
-
-	dynamic_cast<CRecorderView *>(m_pViewActive)->XNoteProcessWinMessage( HIWORD(wParam), (ULONG)lParam );
+	// Xnote sends source and action info with wParam
+	dynamic_cast<CRecorderView *>(m_pViewActive)->XNoteProcessWinMessage( HIWORD(wParam), XNOTE_TRIGGER_UNDEFINED, XNOTE_SOURCE_XNOTESTOPWATCH , (ULONG)lParam );
 
 	return 0;
 }
