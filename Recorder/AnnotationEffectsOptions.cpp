@@ -226,7 +226,7 @@ int CAnnotationEffectsOptionsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		//TRACE("## CAnnotationEffectsOptionsDlg::OnCreate   Change m_cXnoteDisplayFormatString now\n");
 
 		// Format (delay) hh:mm:ss.ttt"
-		char cTmpBuff[64];
+		char cTmpBuff[128] = "";
 		(void) CXnoteStopwatchFormat::FormatXnoteSampleString(cTmpBuff, m_ulXnoteCameraDelayInMilliSec, m_bXnoteDisplayCameraDelayMode );
 		m_cXnoteDisplayFormatString = CString( cTmpBuff );
 	}
@@ -310,7 +310,7 @@ void CAnnotationEffectsOptionsDlg::OnEnChangeFormatXnotepreview()
 {
 	// TRACE("## CAnnotationEffectsOptionsDlg::OnEnChangeFormatXnotepreview()\n");
 	CString str;
-	char cTmpBuff[64];
+	char cTmpBuff[128] = "";
 
 	GetDlgItem(IDC_EDIT_XNOTECAMERADELAYINMILLISEC)->GetWindowText(str);
 	ULONG ul_DelayTimeInMilliSec = atol(str);

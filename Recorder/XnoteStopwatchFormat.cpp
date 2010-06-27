@@ -14,20 +14,20 @@ CXnoteStopwatchFormat::~CXnoteStopwatchFormat(void)
 }
 */
 
-void CXnoteStopwatchFormat::FormatXnoteSampleString(char *cBuf64, long lDelayTimeInMilliSec, bool bDisplayCameraDelay )
+void CXnoteStopwatchFormat::FormatXnoteSampleString(char *cBuf128, long lDelayTimeInMilliSec, bool bDisplayCameraDelay )
 {
 	// Format (delay) hh:mm:ss.ttt	
-	FormatXnoteDelayedTimeString( cBuf64, 0, 0 ,lDelayTimeInMilliSec, bDisplayCameraDelay );
+	FormatXnoteDelayedTimeString( cBuf128, 0, 0 ,lDelayTimeInMilliSec, bDisplayCameraDelay );
 }
 
 
 // Formatting relative time since start to hh:mm:ss.ttt with or without delay information
 void CXnoteStopwatchFormat::FormatXnoteDelayedTimeString(
-		char *cBuf64, 
+		char *cBuf128, 
 		DWORD dwStartXnoteTickCounter, 
 		DWORD dwCurrTickCount, 
 		long lDelayTimeInMillisSec, 
-		bool bDisplayCameraDelay )
+		bool bDisplayCameraDelay)
 {
 	// Formatting hh:mm:ss.ttt with or without delay information
 	//TRACE("## FormatXnoteDelayedTimeString  lDelayTimeInMillisSec :[%d] bShowDelayTimeWithMarker[%d]\n", lDelayTimeInMillisSec, bShowDelayTimeWithMarker );
@@ -69,12 +69,101 @@ void CXnoteStopwatchFormat::FormatXnoteDelayedTimeString(
 		
 	// Format (delay) hh:mm:ss.ttt	
 	if ( bDisplayCameraDelay ){
-		(void) sprintf( cBuf64, "(%04lu)  %02lu:%02lu:%02lu.%03lu",   
+		(void) sprintf( cBuf128, "(%04lu)  %02lu:%02lu:%02lu.%03lu",   
 			lDelayTimeInMillisSec, 
 			ulTickTimeHour, ulTickMinutes, ulTickTimeSeconds, ulTickTimeThousands);
 	} else {
-		(void) sprintf( cBuf64, "%02lu:%02lu:%02lu.%03lu", 
+		(void) sprintf( cBuf128, "%02lu:%02lu:%02lu.%03lu", 
 			ulTickTimeHour, ulTickMinutes, ulTickTimeSeconds, ulTickTimeThousands);
 	}
-	////TRACE("## FormatXnoteDelayedTimeString  Formatted relative time:[%s]\n", cBuf64);
+	////TRACE("## FormatXnoteDelayedTimeString  Formatted relative time:[%s]\n", cBuf128);
 }
+
+// Attach info about source and sensor after the buf string
+void CXnoteStopwatchFormat::FormatXnoteInfoSourceSensor(
+		char *cBuf128, 
+		int  iSourceInfo,
+		int  iSensorInfo)
+{
+	char cSourceTag = '.';
+	char cSensorTag = '.';
+
+	switch ( iSourceInfo )
+	{
+		case XNOTE_SOURCE_UNDEFINED:
+			cSourceTag = '-';
+			break;
+		case XNOTE_SOURCE_XNOTESTOPWATCH:
+			cSourceTag = 'x';
+			break;
+		case XNOTE_SOURCE_MOTIONDETECTOR:			
+			cSourceTag = 'v';
+			break;
+	}
+
+	switch ( iSensorInfo )
+	{
+		case XNOTE_TRIGGER_UNDEFINED	:
+		case XNOTE_TRIGGER_STOPWATCH_UNDEFINED	:
+			cSensorTag = '-';
+			break;
+		case XNOTE_TRIGGER_STOPWATCH_MANUAL	:
+			cSensorTag = 'm';
+			break;
+		case XNOTE_TRIGGER_STOPWATCH_DEVICE	:
+		case XNOTE_TRIGGER_MOTIONDETECTOR	:
+			cSensorTag = 'a';
+			break;
+	}
+
+	(void) sprintf( cBuf128, "%s%c%c", cBuf128, cSourceTag, cSensorTag);
+}
+
+// Attach info about source and sensor after the buf string
+void CXnoteStopwatchFormat::FormatXnoteExtendedInfoSourceSensor(
+		char *cBuf128, 
+		int  iSourceInfo,
+		int  iSensorInfo)
+{
+	CString cSourceTag = _T("");
+	CString cSensorTag = _T("");
+
+	switch ( iSourceInfo )
+	{
+						   //123456789012345
+		case XNOTE_SOURCE_UNDEFINED:
+			cSourceTag = _T("UndefinedSource");
+			break;
+		case XNOTE_SOURCE_XNOTESTOPWATCH:
+			cSourceTag = _T("XNote-Stopwatch");
+			break;
+		case XNOTE_SOURCE_MOTIONDETECTOR:			
+			cSourceTag = _T("Motion-Detector");
+			break;
+		default:
+			cSourceTag = _T("---------------");
+			break;
+	}
+
+	switch ( iSensorInfo )
+	{
+						   //1234567
+		case XNOTE_TRIGGER_UNDEFINED	:
+		case XNOTE_TRIGGER_STOPWATCH_UNDEFINED	:
+			cSensorTag = _T("Undef.");
+			break;
+		case XNOTE_TRIGGER_STOPWATCH_MANUAL	:
+			cSensorTag = _T("Manual");
+			break;
+		case XNOTE_TRIGGER_STOPWATCH_DEVICE	:
+		case XNOTE_TRIGGER_MOTIONDETECTOR	:
+			cSensorTag = _T("Sensor");
+			break;
+		default:
+			cSourceTag = _T("------");
+			break;
+	}
+
+	(void) sprintf( cBuf128, "%s%s %s", cBuf128, cSourceTag, cSensorTag);
+}
+

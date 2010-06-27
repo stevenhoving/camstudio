@@ -35,8 +35,9 @@ bool CCamera::AddTimestamp(CDC* pDC)
 // AddXNote
 //
 // Write stopwatchinfo to screen
-// First line: Show stopwatch running digits
-// Second line: extended info about the last (three) stopwatch snaps.
+// Firts line : Activation info. Which appliaction started and was this manually of automatic started.
+// Second line: Show stopwatch running digits
+// Third line : Extended info about the last (three) stopwatch snaps.
 //
 /////////////////////////////////////
 bool CCamera::AddXNote(CDC* pDC)
@@ -44,16 +45,17 @@ bool CCamera::AddXNote(CDC* pDC)
 	if (m_sXNote.m_bAnnotation) {
 
 		CString str;
-		TextAttributes taTmpXNote;		
+		TextAttributes taTmpXNote;
 
 		DWORD dwCurrTickCount =  GetTickCount();
-		char cTmpBuffXNoteTimeStamp[64] = {0};
+		char cTmpBuffXNoteTimeStamp[128]= "" ;
 
+		// strcpy( cTmpBuffXNoteTimeStamp, cXNoteOpts.m_cXnoteStartEntendedInfo);
 		CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmpBuffXNoteTimeStamp, cXNoteOpts.m_ulStartXnoteTickCounter, dwCurrTickCount ,m_sXNote.m_ulXnoteCameraDelayInMilliSec, cXNoteOpts.m_bXnoteDisplayCameraDelayMode );
 
 		taTmpXNote = m_sXNote.m_taXNote;
-		// Extend stopwatch info by adding on the second line the last (three here) xnote stopwatch snaptimes
-		(void) sprintf( taTmpXNote.text.GetBuffer(64), "%s\n%s", cTmpBuffXNoteTimeStamp, cXNoteOpts.m_cSnapXnoteTimesString); 
+		// Extend stopwatch info by adding on the last line the (three last) xnote stopwatch snaptimes
+		(void) sprintf( taTmpXNote.text.GetBuffer(128), "%s\n%s\n%s", cXNoteOpts.m_cXnoteStartEntendedInfo,cTmpBuffXNoteTimeStamp, cXNoteOpts.m_cSnapXnoteTimesString); 
 
 		InsertText(pDC, m_rectFrame, taTmpXNote);
 
@@ -185,8 +187,9 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 	size_t nNewLinePos = rTextAttrs.text.FindOneOf("\n");
 
 	// Define thickness of the border
-	int nBorderLineThickness = 10;
+	int nBorderLineThickness = 2;
 
+	// Multiple lines text requires that we determine the longest string to print
 	if ( nNewLinePos ) {
 		/*
 		CString GetLength returns the length that you passed to it in the constructor and 
@@ -199,86 +202,111 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 		CString cText = rTextAttrs.text.GetString();
 		//nMaxLength = strlen(rTextAttrs.text.GetString());
 		nMaxLength = strlen(cText);
-		UINT n = 0;
-		for ( n=0 ; n < nMaxLength ; n++ ) {
+		UINT n = 0, m = 0;
+		for ( n=0, m=0 ; n < nMaxLength ; n++, m++ ) {
 			if  ( cText[n] == '\n' ) {
 				nNrOfLine++;
+				nBlockLength = max(nBlockLength, m);
+				m = 0;
 			}
 		}
+		// (Because \n will not always terminate a string we have to check one time more.)
+		// Now we know the real required blocklength to be able to draw all text.
+		nBlockLength = max(nBlockLength, m);
 	}
 
-	//UINT uFormat = DT_CENTER | DT_SINGLELINE | DT_VCENTER;
+
 	/* 
 	 * uFormat; Specifies the method of formatting the text (see DrawText).
 	 */
 	UINT uFormat = DT_CENTER | DT_VCENTER;
-	int nMultiLineSpacing = 0;
 	if ( nNrOfLine == 1 ){
 		uFormat = uFormat | DT_SINGLELINE;
-	} else {
-		nMultiLineSpacing = ( nNrOfLine - 1 ) * nBorderLineThickness;
 	}
 
-	CSize sizeText = dcBits.GetTextExtent(rTextAttrs.text, nBlockLength);						// Use Blocklength because with multiple lines this will be less than textlength.
-	CSize sizeFull(sizeText.cx, nNrOfLine*sizeText.cy - nMultiLineSpacing);						// Defines the height of the area required for the text only
-	CRect rectFull(0, 0, sizeFull.cx + nBorderLineThickness, sizeFull.cy +nBorderLineThickness );	// Define  size of the printable area, not the exact location  +N for border left and border top
-	CRect rectPos(0, 0, 0, 0);
+
+	CSize sizeText = dcBits.GetTextExtent(rTextAttrs.text, nBlockLength);		// Use Blocklength because with multiple lines this will be less than textlength.
+	
+	// Required area's and offset pointers.
+	CSize innerRectDimensions( sizeText.cx , nNrOfLine * sizeText.cy ); 		// Used for drawing text
+	CSize outerRectDimensions( sizeText.cx + 2*nBorderLineThickness, nNrOfLine * sizeText.cy + 2*nBorderLineThickness); 	// Text and border
+	CRect innerRectRelativePositons( nBorderLineThickness, nBorderLineThickness, sizeText.cx + nBorderLineThickness, nNrOfLine*sizeText.cy + nBorderLineThickness); 
+	CSize outerRectOffset (0,0);
+	CSize innerRectOffset (0,0);
+	CRect outerRectAbsolutePositions(0, 0, 0, 0);
+	CRect innerRectAbsolutePositions(0, 0, 0, 0);
+	
 	switch (rTextAttrs.position)
 	{
 	case TOP_LEFT:
 	default:
-		rectPos.left = 0;
-		rectPos.top = 0;
+		outerRectOffset.cx = 0;
+		outerRectOffset.cy = 0;
 		//uFormat = uFormat | DT_LEFT;
 		break;
 	case TOP_CENTER:
-		rectPos.left = (rectBase.Width() - sizeFull.cx - nBorderLineThickness) / 2 ;
-		rectPos.top = 0;
+		outerRectOffset.cx = (rectBase.Width() - outerRectDimensions.cx ) / 2 ;
+		outerRectOffset.cy = 0;
 		//uFormat = uFormat | DT_CENTER;
 		break;
 	case TOP_RIGHT:
-		rectPos.left = rectBase.right - sizeFull.cx - nBorderLineThickness;
-		rectPos.top = 0;
+		outerRectOffset.cx = (rectBase.Width() - outerRectDimensions.cx ) ;
+		outerRectOffset.cy = 0;
 		//uFormat = uFormat | DT_RIGHT;
 		break;
 	case CENTER_LEFT:
-		rectPos.left = 0;
-		rectPos.top = (rectBase.Height() - sizeFull.cy) / 2;
+		outerRectOffset.cx = 0;
+		outerRectOffset.cy = (rectBase.Height() - outerRectDimensions.cy ) / 2;
 		//uFormat = uFormat | DT_LEFT;
 		break;
 	case CENTER_CENTER:
-		rectPos.left = (rectBase.Width() - sizeFull.cx - nBorderLineThickness) / 2 ;
-		rectPos.top = (rectBase.Height() - sizeFull.cy - nBorderLineThickness) / 2 ;
+		outerRectOffset.cx = (rectBase.Width() - outerRectDimensions.cx ) / 2;
+		outerRectOffset.cy = (rectBase.Height() - outerRectDimensions.cy ) / 2;
 		//uFormat = uFormat | DT_CENTER;
 		break;
 	case CENTER_RIGHT:
-		rectPos.left = rectBase.right - sizeFull.cx - nBorderLineThickness;
-		rectPos.top = (rectBase.Height() - sizeFull.cy - nBorderLineThickness) / 2;
+		outerRectOffset.cx = (rectBase.Width() - outerRectDimensions.cx );
+		outerRectOffset.cy = (rectBase.Height() - outerRectDimensions.cy ) / 2;
 		//uFormat = uFormat | DT_RIGHT;
 		break;
 	case BOTTOM_LEFT:
-		rectPos.left = 0;
-		rectPos.top = rectBase.bottom - sizeFull.cy - nBorderLineThickness;
+		outerRectOffset.cx = 0;
+		outerRectOffset.cy = (rectBase.Height() - outerRectDimensions.cy );
 		//uFormat = uFormat | DT_LEFT;
 		break;
 	case BOTTOM_CENTER:
-		rectPos.left = (rectBase.Width() - sizeFull.cx - nBorderLineThickness) / 2;
-		rectPos.top = rectBase.bottom - sizeFull.cy - nBorderLineThickness;
+		outerRectOffset.cx = (rectBase.Width() - outerRectDimensions.cx ) / 2;
+		outerRectOffset.cy = (rectBase.Height() - outerRectDimensions.cy );
 		//uFormat = uFormat | DT_CENTER;
 		break;
 	case BOTTOM_RIGHT:
-		rectPos.left = rectBase.right - sizeFull.cx - nBorderLineThickness;
-		rectPos.top = rectBase.bottom - sizeFull.cy - nBorderLineThickness;
+		outerRectOffset.cx = (rectBase.Width() - outerRectDimensions.cx );
+		outerRectOffset.cy = (rectBase.Height() - outerRectDimensions.cy );
 		//uFormat = uFormat | DT_RIGHT;
 		break;
 	}
-	rectPos.right = rectPos.left + sizeFull.cx + nBorderLineThickness;		// +N for the border at the left
-	rectPos.bottom = rectPos.top + sizeFull.cy + nBorderLineThickness;		// +N for the border at the top
 
-	//TRACE("##  Camera::InsertText no.of.lines=[%i]    len-blen-mlen=[%d,%d,%d]    RectPos top:[%i], left:[%i], bot:[%i], right:[%i]]   tekst[%s]\n",   nNrOfLine,   rTextAttrs.text.GetLength(), nBlockLength, nMaxLength,   rectPos.top, rectPos.left, rectPos.bottom, rectPos.right,   rTextAttrs.text );
+	innerRectOffset.cx = outerRectOffset.cx + nBorderLineThickness;
+	innerRectOffset.cy  = outerRectOffset.cy  + nBorderLineThickness;
 
+	// OuterRect : top, left, bottom, right	
+	outerRectAbsolutePositions.top    = outerRectOffset.cy; 
+	outerRectAbsolutePositions.left   = outerRectOffset.cx;
+	outerRectAbsolutePositions.bottom = outerRectOffset.cy + outerRectDimensions.cy;
+	outerRectAbsolutePositions.right  = outerRectOffset.cx + outerRectDimensions.cx;
+		
+	// InnerRect : top, left, bottom, right	
+	innerRectAbsolutePositions.top    = innerRectOffset.cy; 
+	innerRectAbsolutePositions.left   = innerRectOffset.cx;
+	innerRectAbsolutePositions.bottom = innerRectOffset.cy + innerRectDimensions.cy;
+	innerRectAbsolutePositions.right  = innerRectOffset.cx + innerRectDimensions.cx;
+
+	
+	//TRACE("##  Camera::InsertText nol=[%i]  len-blen-mlen=[%d,%d,%d]  sizeFull cxy:[%i,%i]  RectPos.tlbr[%i,%i,%i,%i]  rectFull.tlbr[%i,%i,%i,%i]  nBorderLine:[%i] tekst:[%s]\n",   nNrOfLine, /**/  rTextAttrs.text.GetLength(), nBlockLength, nMaxLength, /**/ sizeFull.cx,sizeFull.cy, /**/  rectPos.top,rectPos.left,rectPos.bottom,rectPos.right, /**/ rectFull.top,rectFull.left,rectFull.bottom,rectFull.right, /**/ nBorderLineThickness,  rTextAttrs.text );
+	
+	// Define the area including borderline ???
 	CBitmap bm;
-	bm.CreateCompatibleBitmap(pDC, sizeFull.cx + 2*nBorderLineThickness , sizeFull.cy + 2*nBorderLineThickness); 
+	bm.CreateCompatibleBitmap(pDC, outerRectDimensions.cx , outerRectDimensions.cy); 
 	CBitmap * pOldBM = dcBits.SelectObject(&bm);
 
 	CBrush brush;
@@ -287,16 +315,17 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 	//dcBits.Rectangle(&rectPos);
 	dcBits.SelectObject(pOldBrush);
 
-	
+	// Write the message in the innerRect
 	COLORREF old_bk_color = dcBits.GetBkColor();
 	COLORREF old_txt_color = dcBits.GetTextColor();
 	dcBits.SetBkColor(rTextAttrs.backgroundColor);
 	dcBits.SetTextColor(rTextAttrs.textColor);
-	dcBits.DrawTextEx( (LPTSTR)(LPCTSTR)rTextAttrs.text, nMaxLength, &rectFull, uFormat, 0);
+	dcBits.DrawTextEx( (LPTSTR)(LPCTSTR)rTextAttrs.text, nMaxLength, &innerRectRelativePositons, uFormat, 0);
 	dcBits.SetTextColor(old_txt_color);
 	dcBits.SetBkColor(old_bk_color);
 
-	pDC->BitBlt(rectPos.left, rectPos.top, sizeFull.cx + nBorderLineThickness, sizeFull.cy + nBorderLineThickness, &dcBits, 0, 0, SRCCOPY);
+	// Maybe someone can explain waht we are doing here.
+	pDC->BitBlt( outerRectOffset.cx , outerRectOffset.cy, outerRectDimensions.cx , outerRectDimensions.cy, &dcBits, 0, 0, SRCCOPY);
 	dcBits.SelectObject(pOldBM);
 	if (pOldFont){
 		dcBits.SelectObject(pOldFont);
