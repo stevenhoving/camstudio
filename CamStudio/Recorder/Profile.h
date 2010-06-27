@@ -1203,6 +1203,7 @@ struct sXNoteOpts
 	ULONG	m_ulStartXnoteTickCounter;
 	ULONG	m_ulSnapXnoteTickCounter;
 	CString	m_cSnapXnoteTimesString;
+	CString m_cXnoteStartEntendedInfo;
 
 };
 extern sXNoteOpts cXNoteOpts;

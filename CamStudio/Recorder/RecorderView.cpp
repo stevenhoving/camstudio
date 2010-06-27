@@ -140,10 +140,16 @@ int irsmallcount = 0;
 unsigned long nTotalBytesWrittenSoFar = 0UL;
 
 // Xnote timing support. Show timing from start of recording
-ULONG ulXNoteStartTime = 0UL;
-ULONG ulXNoteLastSnapTime = 0UL;
-bool bXNoteSnapRecordingState = false;		// This settings defines if recording is triggered by xnote. if trggered by xnote it will stop automattically is this option is set by user.
-char  cXNoteLastSnapTimes[64] /*= {'\0'} */;
+// Todo , All these global/local vars should become an enum and member of class
+bool bXNoteSnapRecordingState	= false;		// This settings defines if video recording is triggered by xnote. if trggered by xnote it will stop automattically is this option is set by user.
+ULONG ulXNoteStartTime			= 0UL;
+ULONG ulXNoteLastSnapTime		= 0UL;
+int iXNoteStartSource			= XNOTE_SOURCE_UNDEFINED;		
+int iXNoteLastSnapSource		= XNOTE_SOURCE_UNDEFINED;		
+int iXNoteStartWithSensor		= XNOTE_TRIGGER_UNDEFINED;		// Defines if event is manual (with key or mouse) or automatic generated (by means of RS232 sensored device or Video Motion Detection)
+int iXNoteLastSnapWithSensor	= XNOTE_TRIGGER_UNDEFINED;		// Defines if event is manual (with key or mouse) or automatic generated (by means of RS232 sensored device or Video Motion Detection)
+// char cXNoteStartExtendedInfo[128] /*= {'\0'} */;
+char cXNoteLastSnapTimes[128] /*= {'\0'} */;
 
 // Messaging
 HWND hWndGlobal = NULL;
@@ -4309,53 +4315,68 @@ VOID CRecorderView::XNoteSetRecordingInPauseMode(void)
 // CRecorderView
 // Processes actions innitiated by XNote WindowsMessages. (Xnote is a stopwatch application. http://www.xnotestopwatch.com/)
 // Allows that external program can work with Camstudio and can instruct CamStudio when to start recording, to pause and to terminate recording.
-VOID CRecorderView::XNoteProcessWinMessage(int iAction, ULONG lXnoteTimeInMilliSeconds )
+
+VOID CRecorderView::XNoteProcessWinMessage(int iActionID , int iSensorID , int iSourceID , ULONG lXnoteTimeInMilliSeconds )
 {
 	DWORD dwCurrTickCount =  GetTickCount();
 //	int nStrLength = 0;
 	int nStrLengthNew = 0;
 	int nStrLengthSnaps = 0;
 
-	switch (iAction)
+	// Stringc to create output to display in recording until next snap occurs.
+	//  (Declaration outside switch due to C2360
+	char cTmp[128] = "";
+	char cTmpBuffXNoteTimeStamp[128] = "";
+
+	// Todo, replace magic numbers is switch with defined names
+	switch (iActionID)
 	{
-	case 1:
+	case XNOTE_ACTION_STOPWATCH_START:
 		// Start, (Clock is counting)
-		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iAction:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iAction, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
+		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
 		//TRACE("## CRecorderView::XNoteProcessWinMessage START Tick:[%ul] XNote:[%ul]\n", GetTickCount(), lXnoteTimeInMilliSeconds);
 
 		if ( ulXNoteStartTime == 0UL) {
 			bXNoteSnapRecordingState = true;
+
+			iXNoteStartWithSensor = iSensorID;
+			iXNoteStartSource	  = iSourceID;		
+
 			ulXNoteStartTime = dwCurrTickCount;
 			ulXNoteLastSnapTime = dwCurrTickCount;
 			cXNoteOpts.m_ulStartXnoteTickCounter = ULONG(dwCurrTickCount); 
 			cXNoteOpts.m_ulSnapXnoteTickCounter = ULONG(dwCurrTickCount); ;
 			cXNoteOpts.m_cSnapXnoteTimesString.SetString( "" );
+
+			// Create first info line what and how is start triggered
+			CXnoteStopwatchFormat::FormatXnoteExtendedInfoSourceSensor( cTmp, iSourceID, iSensorID );
+			cXNoteOpts.m_cXnoteStartEntendedInfo.SetString( cTmp );
 		}
 
 		// Don't call OnRecord if CamStudio is still recording unless it is paused
 		if ( !GetRecordState() ||
 			 ( GetRecordState() && GetPausedState()	) ){
-			//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iAction:[%d], Call OnRecord()..\n"), iAction);
+			//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], Call OnRecord()..\n"), iActionID);
 			OnRecord();
 		}
 		break;
 
-	case 2:
+	case XNOTE_ACTION_STOPWATCH_STOP:
 		// Stop, 
 		// Xnote Stopwatch Clock is on hold but here we do our own counting)
 		// So Camstudio counting will continues and show different times than Xnote Stopwatch..! 
 
-		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iAction:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iAction, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
+		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
 		
 		// OnPause will first check that recording is active, no extra checks required here
 		
-		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iAction:[%d], Call OnPause()..\n"), iAction);
+		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], Call OnPause()..\n"), iActionID);
 		OnPause();
 		break;
 
-	case 3:
+	case XNOTE_ACTION_STOPWATCH_SNAP:
 		// Snap, 
-		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iAction:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iAction, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
+		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
 		//TRACE("## CRecorderView::XNoteProcessWinMessage SNAP Tick:[%ul] XNote:[%ul]\n", GetTickCount(), lXnoteTimeInMilliSeconds);
 
 		// Any snap should be recorded. This are the events that are important and must be registrated.
@@ -4363,15 +4384,20 @@ VOID CRecorderView::XNoteProcessWinMessage(int iAction, ULONG lXnoteTimeInMilliS
 		// Penalty is a minor difference in snaptime as registrated by xnote and our snaptime ( 15-20 ms)
 
 		bXNoteSnapRecordingState = true;
+
+		iXNoteStartWithSensor	= iSensorID;
+		iXNoteLastSnapSource	= iSourceID;
+
 		ulXNoteLastSnapTime = dwCurrTickCount;
 		cXNoteOpts.m_ulSnapXnoteTickCounter = dwCurrTickCount;
 
-		// Make string to display in recording until next snap occurs.
-		char cTmp[64] ;
-		char cTmpBuffXNoteTimeStamp[64] ;
 		// CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmp, cXNoteOpts.m_ulStartXnoteTickCounter, dwCurrTickCount ,0 , false );
+
+		sprintf( cTmp, "%s\n", cXNoteOpts.m_cXnoteStartEntendedInfo );
 		// Show Xnote values instead of own calcuated value
 		CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmp, 0, lXnoteTimeInMilliSeconds ,0 , false );
+		// Add info about how the snap is created.
+		CXnoteStopwatchFormat::FormatXnoteInfoSourceSensor( cTmp, iSourceID, iSensorID );
 
 		// TODO janhgm, write snaptime to file related to current recording.
 		// ------------------
@@ -4379,10 +4405,10 @@ VOID CRecorderView::XNoteProcessWinMessage(int iAction, ULONG lXnoteTimeInMilliS
 		//    Some new code is required here 
 		// -------------------
 
-		// For onScreen reporting of snaptime we only need info about the last seconds  (00.000).
-		nStrLengthNew = max (0, strlen(cTmp)-6 );
+		// For onScreen reporting of snaptime we only need info about the last seconds  (00.000aa).
+		nStrLengthNew = max (0, strlen(cTmp)-(6+2) );
 		// And previous snaps can be truncated
-		nStrLengthSnaps = max (0, strlen(cXNoteLastSnapTimes)- min(2,strlen(cXNoteLastSnapTimes)/7)*7 );
+		nStrLengthSnaps = max (0, strlen(cXNoteLastSnapTimes)- min(2,strlen(cXNoteLastSnapTimes)/(6+2+1))*(6+2+1) );
 		
 		sprintf( cTmpBuffXNoteTimeStamp, "%s%s ", &cXNoteLastSnapTimes[nStrLengthSnaps], &cTmp[nStrLengthNew] );
 		strcpy(cXNoteLastSnapTimes,cTmpBuffXNoteTimeStamp);
@@ -4391,22 +4417,48 @@ VOID CRecorderView::XNoteProcessWinMessage(int iAction, ULONG lXnoteTimeInMilliS
 
 		// If recording but paused onRecord must called for release
 		if ( GetRecordState() && GetPausedState() ) {
-			//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iAction:[%d], Call OnRecord()..\n"), iAction);
+			//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], Call OnRecord()..\n"), iActionID);
 			OnRecord();
 		}
 		break;
 
-	case 4:
+	case XNOTE_ACTION_STOPWATCH_RESET:
 		// Reset, (Clock is reset, CamStudio recording session can terminate)
 		ulXNoteStartTime = 0UL;
 		ulXNoteLastSnapTime = 0UL;
+
+		iXNoteStartSource			= XNOTE_SOURCE_UNDEFINED;		
+		iXNoteLastSnapSource		= XNOTE_SOURCE_UNDEFINED;		
+		iXNoteStartWithSensor		= XNOTE_TRIGGER_UNDEFINED;
+		iXNoteLastSnapWithSensor	= XNOTE_TRIGGER_UNDEFINED;
+
 		bXNoteSnapRecordingState = false;
 		strcpy(cXNoteLastSnapTimes,"");
 
 		cXNoteOpts.m_ulStartXnoteTickCounter = 0UL;
 		cXNoteOpts.m_ulSnapXnoteTickCounter = 0UL;
+		cXNoteOpts.m_cXnoteStartEntendedInfo.SetString("");
 
 		OnStop();
+		break;
+
+	case XNOTE_ACTION_MOTIONDETECTOR_ALERT:
+		// Initiated not by Xnote but by MotionDetection application
+		// Call OnRecord if CamStudio is still recording but currently in pause mode
+		if ( GetRecordState() && GetPausedState() ){
+
+			// Reset some values to make sure that recording is start again it shall if duration times out.
+			bXNoteSnapRecordingState = true;
+			ulXNoteLastSnapTime = dwCurrTickCount;
+			cXNoteOpts.m_ulSnapXnoteTickCounter = dwCurrTickCount;
+
+			// TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], Motion detected, call OnRecord()..\n"), iActionID);
+			OnRecord();
+		}
+		break;
+
+	default:
+		TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d]. Xnote or MotionDetector action not assigned.\n"), iActionID);
 		break;
 	}
 }
