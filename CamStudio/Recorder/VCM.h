@@ -56,8 +56,8 @@ public:
 		TRACE(TEXT("%s"), (LPCTSTR)strSupport);
 	}
 #else
-	static void TRACEFOURCC(FOURCC dwfcc, const LPCTSTR pName = 0){}
-	static void TRACEINFO(const ICINFO& cInfo) {}
+	static void TRACEFOURCC(FOURCC /*dwfcc*/, const LPCTSTR /*pName*/ = 0){}
+	static void TRACEINFO(const ICINFO& /*cInfo*/) {}
 #endif
 
 private:
