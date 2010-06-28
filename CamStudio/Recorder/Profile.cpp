@@ -358,6 +358,25 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 }
 
 ////////////////////////////////////////////////////////////////////////////
+// ePosType Read/Write
+////////////////////////////////////////////////////////////////////////////
+template <>
+ePosType ReadEntry(CString strFilename, CString strSection, CString strKeyName, const ePosType& DefValue)
+{
+	//TRACE("ReadEntry(ePosType): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, DefValue);
+	int iDefValue = DefValue;
+	return ePosType(ReadEntry(strFilename, strSection, strKeyName, iDefValue));
+}
+
+template <>
+bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const ePosType& Value)
+{
+	//TRACE("WriteEntry(ePosType): %s\nSection: %s\nKey: %s\nValue: %ld\n", strFilename, strSection, strKeyName, Value);
+	int iDefValue = Value;
+	return WriteEntry(strFilename, strSection, strKeyName, iDefValue);
+}
+
+////////////////////////////////////////////////////////////////////////////
 // LOGFONT Read/Write
 ////////////////////////////////////////////////////////////////////////////
 template <>
@@ -451,6 +470,14 @@ TextAttributes ReadEntry(CString strFilename, CString strSection, CString strKey
 	CString strKeyNameEx;
 	strKeyNameEx = strKeyName + "position";
 	taResult.position = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.position);
+
+	strKeyNameEx = strKeyName + "posType";
+	taResult.posType = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.posType);
+	strKeyNameEx = strKeyName + "xPosRatio";
+	taResult.xPosRatio = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.xPosRatio);
+	strKeyNameEx = strKeyName + "yPosratio";
+	taResult.yPosRatio = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.yPosRatio);
+
 	strKeyNameEx = strKeyName + "text";
 	taResult.text = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.text);
 	strKeyNameEx = strKeyName + "backgroundColor";
@@ -471,6 +498,14 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 	CString strKeyNameEx;
 	strKeyNameEx = strKeyName + "position";
 	bool bResult = WriteEntry(strFilename, strSection, strKeyNameEx, Value.position);
+
+	strKeyNameEx = strKeyName + "posType";
+	bResult &= WriteEntry(strFilename, strSection, strKeyNameEx, Value.posType);
+	strKeyNameEx = strKeyName + "xPosRatio";
+	bResult &= WriteEntry(strFilename, strSection, strKeyNameEx, Value.xPosRatio);
+	strKeyNameEx = strKeyName + "yPosRatio";
+	bResult &= WriteEntry(strFilename, strSection, strKeyNameEx, Value.yPosRatio);
+
 	strKeyNameEx = strKeyName + "text";
 	bResult &= WriteEntry(strFilename, strSection, strKeyNameEx, Value.text);
 	strKeyNameEx = strKeyName + "backgroundColor";
@@ -495,6 +530,14 @@ ImageAttributes ReadEntry(CString strFilename, CString strSection, CString strKe
 	CString strKeyNameEx;
 	strKeyNameEx = strKeyName + "position";
 	iaResult.position = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.position);
+
+	strKeyNameEx = strKeyName + "posType";
+	iaResult.posType = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.posType);
+	strKeyNameEx = strKeyName + "xPosRatio";
+	iaResult.xPosRatio = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.xPosRatio);
+	strKeyNameEx = strKeyName + "yPosratio";
+	iaResult.yPosRatio = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.yPosRatio);
+
 	strKeyNameEx = strKeyName + "text";
 	iaResult.text = ReadEntry(strFilename, strSection, strKeyNameEx, DefValue.text);
 	return iaResult;
@@ -506,6 +549,14 @@ bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, con
 	CString strKeyNameEx;
 	strKeyNameEx = strKeyName + "position";
 	bool bResult = WriteEntry(strFilename, strSection, strKeyNameEx, Value.position);
+
+	strKeyNameEx = strKeyName + "posType";
+	bResult &= WriteEntry(strFilename, strSection, strKeyNameEx, Value.posType);
+	strKeyNameEx = strKeyName + "xPosRatio";
+	bResult &= WriteEntry(strFilename, strSection, strKeyNameEx, Value.xPosRatio);
+	strKeyNameEx = strKeyName + "yPosRatio";
+	bResult &= WriteEntry(strFilename, strSection, strKeyNameEx, Value.yPosRatio);
+
 	strKeyNameEx = strKeyName + "text";
 	bResult &= WriteEntry(strFilename, strSection, strKeyNameEx, Value.text);
 	return bResult;
