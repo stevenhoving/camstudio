@@ -41,6 +41,7 @@ BEGIN_MESSAGE_MAP(CEffectsOptions2Dlg, CDialog)
 	ON_WM_PAINT()
 	ON_WM_HSCROLL()
 	//}}AFX_MSG_MAP
+	ON_BN_CLICKED(IDOK, &CEffectsOptions2Dlg::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 // CEffectsOptions2Dlg message handlers
@@ -106,4 +107,80 @@ void CEffectsOptions2Dlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScroll
 		InvalidateRect(&rectFrame);
 	}
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
+}
+
+void CEffectsOptions2Dlg::OnBnClickedOk()
+{
+	// TODO: Add your control notification handler code here
+	// Free floating position not yet support in this dialog. but still used in other modules
+	m_params.posType   = PREDEFINED_POSITION;
+	m_params.xPosRatio = EffectsOptions2SetXPosRatio( m_params.position );
+	m_params.yPosRatio = EffectsOptions2SetYPosRatio( m_params.position );
+
+	// TRACE("CEffectsOptionsDlg::EffectsOptionsSetXPosRatio  nPosition=[%i], xRatio=[%i], yRatio=[%i]\n",  m_params.position, m_params.xPosRatio, m_params.yPosRatio );
+
+	OnOK();
+}
+
+
+// Define Position X Ratio
+// Scale  LEFT=0, CENTER= 50, RIGHT= 100
+int CEffectsOptions2Dlg::EffectsOptions2SetXPosRatio( int nPosition ){
+
+	int nRatio = 0;
+
+	// Define X ratio
+	switch (nPosition)
+	{
+	case TOP_LEFT:
+	case CENTER_LEFT:
+	case BOTTOM_LEFT:
+		nRatio = 0;
+		break;
+	case TOP_CENTER:
+	case CENTER_CENTER:
+	case BOTTOM_CENTER:
+		nRatio = 50;
+		break;
+	case TOP_RIGHT:
+	case CENTER_RIGHT:
+	case BOTTOM_RIGHT:
+		nRatio = 100;
+		break;
+	default:
+		nRatio = 0;
+		break;
+	}
+	return ( nRatio );
+}
+
+// Define Position Y Ratio
+// Scale  TOP=0,  CENTER= 50, BOTTOM= 100			
+int CEffectsOptions2Dlg::EffectsOptions2SetYPosRatio( int nPosition )
+{
+	int nRatio = 0;
+
+	// Define outer Y offset
+	switch (nPosition)
+	{
+	case TOP_LEFT:
+	case TOP_CENTER:
+	case TOP_RIGHT:
+		nRatio = 0;
+		break;
+	case CENTER_LEFT:
+	case CENTER_CENTER:
+	case CENTER_RIGHT:
+		nRatio = 50;
+		break;
+	case BOTTOM_LEFT:
+	case BOTTOM_CENTER:
+	case BOTTOM_RIGHT:
+		nRatio = 100;
+		break;
+	default:
+		nRatio = 0;
+		break;
+	}
+	return ( nRatio );
 }
