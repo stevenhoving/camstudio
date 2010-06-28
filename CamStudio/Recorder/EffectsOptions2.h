@@ -42,6 +42,8 @@ protected:
 	virtual void OnOK();
 	afx_msg void OnPaint();
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	int CEffectsOptions2Dlg::EffectsOptions2SetXPosRatio( int nPosition );
+	int CEffectsOptions2Dlg::EffectsOptions2SetYPosRatio( int nPosition );
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 public:
@@ -58,6 +60,8 @@ private:
 public:
 	virtual BOOL OnInitDialog();
 private:
+public:
+	afx_msg void OnBnClickedOk();
 };
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.

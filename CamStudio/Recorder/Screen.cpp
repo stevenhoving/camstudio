@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+//#include "EffectsOptions.h"		Cause C1189
 #include "Screen.h"
 #include "ximage.h"
 #include "XnoteStopwatchFormat.h"
@@ -187,7 +188,7 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 	size_t nNewLinePos = rTextAttrs.text.FindOneOf("\n");
 
 	// Define thickness of the border
-	int nBorderLineThickness = 2;
+	int nBorderLineThickness = 3;
 
 	// Multiple lines text requires that we determine the longest string to print
 	if ( nNewLinePos ) {
@@ -235,75 +236,87 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 	CSize innerRectOffset (0,0);
 	CRect outerRectAbsolutePositions(0, 0, 0, 0);
 	CRect innerRectAbsolutePositions(0, 0, 0, 0);
-	
-	switch (rTextAttrs.position)
-	{
-	case TOP_LEFT:
-	default:
-		outerRectOffset.cx = 0;
-		outerRectOffset.cy = 0;
-		//uFormat = uFormat | DT_LEFT;
-		break;
-	case TOP_CENTER:
-		outerRectOffset.cx = (rectBase.Width() - outerRectDimensions.cx ) / 2 ;
-		outerRectOffset.cy = 0;
-		//uFormat = uFormat | DT_CENTER;
-		break;
-	case TOP_RIGHT:
-		outerRectOffset.cx = (rectBase.Width() - outerRectDimensions.cx ) ;
-		outerRectOffset.cy = 0;
-		//uFormat = uFormat | DT_RIGHT;
-		break;
-	case CENTER_LEFT:
-		outerRectOffset.cx = 0;
-		outerRectOffset.cy = (rectBase.Height() - outerRectDimensions.cy ) / 2;
-		//uFormat = uFormat | DT_LEFT;
-		break;
-	case CENTER_CENTER:
-		outerRectOffset.cx = (rectBase.Width() - outerRectDimensions.cx ) / 2;
-		outerRectOffset.cy = (rectBase.Height() - outerRectDimensions.cy ) / 2;
-		//uFormat = uFormat | DT_CENTER;
-		break;
-	case CENTER_RIGHT:
-		outerRectOffset.cx = (rectBase.Width() - outerRectDimensions.cx );
-		outerRectOffset.cy = (rectBase.Height() - outerRectDimensions.cy ) / 2;
-		//uFormat = uFormat | DT_RIGHT;
-		break;
-	case BOTTOM_LEFT:
-		outerRectOffset.cx = 0;
-		outerRectOffset.cy = (rectBase.Height() - outerRectDimensions.cy );
-		//uFormat = uFormat | DT_LEFT;
-		break;
-	case BOTTOM_CENTER:
-		outerRectOffset.cx = (rectBase.Width() - outerRectDimensions.cx ) / 2;
-		outerRectOffset.cy = (rectBase.Height() - outerRectDimensions.cy );
-		//uFormat = uFormat | DT_CENTER;
-		break;
-	case BOTTOM_RIGHT:
-		outerRectOffset.cx = (rectBase.Width() - outerRectDimensions.cx );
-		outerRectOffset.cy = (rectBase.Height() - outerRectDimensions.cy );
-		//uFormat = uFormat | DT_RIGHT;
-		break;
+
+	// Ratio's for floating offset of retangle instead of fixed positions.
+	int xPosRatio = 0;
+	int yPosRatio = 0;
+
+	// Instead of 9 fixed position we can now use any location on screen to display an annotation
+	if ( rTextAttrs.posType != UNDEFINED ) {
+		xPosRatio = rTextAttrs.xPosRatio;
+		yPosRatio = rTextAttrs.yPosRatio;
+	} else {
+
+		// But, If user annoatation setting are not yet updated we have to reconstruct xPos and yPos ratio
+
+		// Define outer X offset ratio
+		switch (rTextAttrs.position)
+		{
+		case TOP_LEFT:
+		case CENTER_LEFT:
+		case BOTTOM_LEFT:
+		default:
+			xPosRatio = 0 ;
+			//uFormat = uFormat | DT_LEFT;
+			break;
+		case TOP_CENTER:
+		case CENTER_CENTER:
+		case BOTTOM_CENTER:
+			xPosRatio = 50;
+			//uFormat = uFormat | DT_CENTER;
+			break;
+		case TOP_RIGHT:
+		case CENTER_RIGHT:
+		case BOTTOM_RIGHT:
+			xPosRatio = 100;
+			//uFormat = uFormat | DT_RIGHT;
+			break;
+		}
+
+		// Define outer Y offset ratio
+		switch (rTextAttrs.position)
+		{
+		case TOP_LEFT:
+		case TOP_CENTER:
+		case TOP_RIGHT:
+		default:
+			yPosRatio = 0;
+			break;
+		case CENTER_LEFT:
+		case CENTER_CENTER:
+		case CENTER_RIGHT:
+			yPosRatio = 50;
+			break;
+		case BOTTOM_LEFT:
+		case BOTTOM_CENTER:
+		case BOTTOM_RIGHT:
+			yPosRatio = 100;
+			break;
+		}
 	}
 
+
+	// Define outerRect offset based on ratio defined by user
+	outerRectOffset.cx = (rectBase.Width() - outerRectDimensions.cx ) * xPosRatio / 100 ;
+	outerRectOffset.cy = (rectBase.Height() - outerRectDimensions.cy ) * yPosRatio / 100 ;
+
+	// Define Inner offsets
 	innerRectOffset.cx = outerRectOffset.cx + nBorderLineThickness;
 	innerRectOffset.cy  = outerRectOffset.cy  + nBorderLineThickness;
 
-	// OuterRect : top, left, bottom, right	
+	// Absolute OuterRect : top, left, bottom, right	
 	outerRectAbsolutePositions.top    = outerRectOffset.cy; 
 	outerRectAbsolutePositions.left   = outerRectOffset.cx;
 	outerRectAbsolutePositions.bottom = outerRectOffset.cy + outerRectDimensions.cy;
 	outerRectAbsolutePositions.right  = outerRectOffset.cx + outerRectDimensions.cx;
 		
-	// InnerRect : top, left, bottom, right	
+	// Absolute InnerRect : top, left, bottom, right	
 	innerRectAbsolutePositions.top    = innerRectOffset.cy; 
 	innerRectAbsolutePositions.left   = innerRectOffset.cx;
 	innerRectAbsolutePositions.bottom = innerRectOffset.cy + innerRectDimensions.cy;
 	innerRectAbsolutePositions.right  = innerRectOffset.cx + innerRectDimensions.cx;
 
-	
-	//TRACE("##  Camera::InsertText nol=[%i]  len-blen-mlen=[%d,%d,%d]  sizeFull cxy:[%i,%i]  RectPos.tlbr[%i,%i,%i,%i]  rectFull.tlbr[%i,%i,%i,%i]  nBorderLine:[%i] tekst:[%s]\n",   nNrOfLine, /**/  rTextAttrs.text.GetLength(), nBlockLength, nMaxLength, /**/ sizeFull.cx,sizeFull.cy, /**/  rectPos.top,rectPos.left,rectPos.bottom,rectPos.right, /**/ rectFull.top,rectFull.left,rectFull.bottom,rectFull.right, /**/ nBorderLineThickness,  rTextAttrs.text );
-	
+		
 	// Define the area including borderline ???
 	CBitmap bm;
 	bm.CreateCompatibleBitmap(pDC, outerRectDimensions.cx , outerRectDimensions.cy); 
@@ -324,7 +337,7 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 	dcBits.SetTextColor(old_txt_color);
 	dcBits.SetBkColor(old_bk_color);
 
-	// Maybe someone can explain waht we are doing here.
+	// Bit-block transfer of the color data (Copies the source rectangle directly to the destination rectangle)
 	pDC->BitBlt( outerRectOffset.cx , outerRectOffset.cy, outerRectDimensions.cx , outerRectDimensions.cy, &dcBits, 0, 0, SRCCOPY);
 	dcBits.SelectObject(pOldBM);
 	if (pOldFont){

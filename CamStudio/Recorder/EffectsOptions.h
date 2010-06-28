@@ -25,8 +25,11 @@ public:
 // Dialog Data
 	enum { IDD = IDD_EFFECTS_OPTIONS };
 
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual int EffectsOptionsSetXPosRatio( int nPosition );
+	virtual int EffectsOptionsSetYPosRatio( int nPosition );
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -35,6 +38,7 @@ public:
 	afx_msg void OnBnClickedButtonFont();
 	//int m_Position;
 	TextAttributes m_params;
+	afx_msg void OnBnClickedOk();
 };
 
 #endif	// EFFECTSOPTIONS_H
