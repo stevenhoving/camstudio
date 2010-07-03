@@ -944,7 +944,6 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	CString strTargetXnoteLogFile = "";			// Xnote log filename initial without path but with extension
 	CString strTargetVideoExtension = ".avi";
 
-
 	//ver 1.2
 	::SetForegroundWindow( AfxGetMainWnd()->m_hWnd);
 	AfxGetMainWnd()->ShowWindow(SW_RESTORE);
@@ -988,42 +987,13 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	//TRACE("## CRecorderView::OnUserGeneric , GetProgPath= [%s]\n", GetProgPath() );
 	//TRACE("## CRecorderView::OnUserGeneric , savedir = GetProgPath [%s]\n", (GetProgPath()==savedir) ? "EQUAL" : "DIFFERENT"  );
 
-
-/*
-	// OLD
-	CString strNewFile = "";
-//	CString strNewFileTitleBaseName = "";		// Basedir
-	CString strNewFileTitle = "";				// This is the name of the targer directory
-*/		
-
 	if ((cProgramOpts.m_iRecordingMode == ModeAVI) && cProgramOpts.m_bAutoNaming) {
-/*
-		// OLD
-		// TODO, This line below cause that when autonaming is applicable the files are always stored in the dierctory where Camstudio installed all application files...!
-		// And because savedir is gloval var this settings is permanent
-		savedir = GetProgPath();
-
-		fdlg.m_ofn.lpstrInitialDir = savedir;
-		strNewFile = savedir + "\\" + strTargetVideoFile;			// = extended TargetVideo
-
-		strNewFileTitle = strNewFile;
-		strNewFileTitle = strNewFileTitle.Left(strNewFileTitle.ReverseFind('\\'));  // = basedir again
-*/
-		// NEW....
 		strTargetDir = GetProgPath();
 		// Use local copy of the timestamp string created when recording was started for autonaming.
 		strTargetBareFileName.SetString( cVideoOpts.m_cStartRecordingString.GetString() );		// "ccyymmdd-hhmm-ss" , Timestamp still used for default temp.avi output "temp-ccyymmdd-hhmm-ss.avi"
 		strTargetVideoExtension = ".avi";
 
 	} else if (fdlg.DoModal() == IDOK) {
-/*
-		// OLD
-		strNewFile = fdlg.GetPathName();
-		strNewFileTitle = fdlg.GetPathName();
-		strNewFileTitle = strNewFileTitle.Left(strNewFileTitle.ReverseFind('\\'));
-		savedir = strNewFileTitle;
-*/
-		// NEW
 		strTmp = fdlg.GetPathName();
 		strTargetDir = strTmp.Left(strTmp.ReverseFind('\\'));
 
@@ -1048,27 +1018,6 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		}
 		return 0;
 	}
-/*	
-	//OLD
-	TRACE("## 1a  # strNewFile             :[%s]\n", strNewFile);
-	//ver 2.26
-	if (cProgramOpts.m_iRecordingMode == ModeFlash) {
-		int iPos = strNewFile.Find(_T("."));
-		if (0 < iPos) {		
-			// if the target extension is .swf it must be changed to the current input file type .avi.  (wat happens if extension is not avi and not swf ???
-			if (strNewFile.Right(strNewFile.GetLength() - iPos).MakeUpper() == _T(".SWF")) {
-				CString strLeft = strNewFile.Left(iPos);
-				strNewFile = strLeft + _T(".avi");
-			}
-	// ToDo. savedir is a global var and will always be set before. (Mostly as GetProgPath()) Better solution required.
-		} else {  
-			// if other extension is used (not .avi or .swf) we just add .avi as extension type.
-			strNewFile += _T(".avi");
-		}
-	}
-	TRACE("## 1b  # strNewFile             :[%s]\n", strNewFile);
-*/
-	// NEW
 	// append always .avi as filetype when record to flash is applicable because SWF convertor expects as input an AVI file
 	if (cProgramOpts.m_iRecordingMode == ModeFlash) {
 		strTargetVideoExtension = ".avi";
@@ -1091,13 +1040,11 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	// Savedir is a global var and was always be set. (Mostly as GetProgPath()) 
 	// Todo: Better solution required. Doubt that we need to set or require a global savedir always 
 	/////////////////////////////////////////////////////////
-	// NEW
 	savedir = strTargetDir;
 
 	//Ver 1.1
 	if (cAudioFormat.m_iRecordAudio) {
 		// Check if video(!) file exists and if so, does it allow overwite
-		// HANDLE hfile = CreateFile(strNewFile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 		HANDLE hfile = CreateFile( strTargetVideoFile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 		if (hfile == INVALID_HANDLE_VALUE) {
 			//::MessageBox(NULL,"Unable to create new file. The file may be opened by another application. Please use another filename.","Note",MB_OK | MB_ICONEXCLAMATION);
@@ -1106,7 +1053,6 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 			return 0;
 		}
 		CloseHandle(hfile);
-		//DeleteFile(strNewFile);
 		DeleteFile(strTargetVideoFile);
 
 		//ver 1.8
@@ -1129,10 +1075,8 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		//if ((iRecordAudio==2) || (bUseMCI)) {
 		//ver 2.26 ...overwrite audio settings for Flash Moe recording ... no compression used...
 		if ((cAudioFormat.isInput(SPEAKERS)) || (cAudioFormat.m_bUseMCI) || (cProgramOpts.m_iRecordingMode == ModeFlash)) {
-			//result = MergeVideoAudio(strTempVideoAviFilePath, strTempAudioWavFilePath, strNewFile, FALSE, cAudioFormat);
 			result = MergeVideoAudio(strTempVideoAviFilePath, strTempAudioWavFilePath, strTargetVideoFile, FALSE, cAudioFormat);
 		} else if (cAudioFormat.isInput(MICROPHONE)) {
-			// result = MergeVideoAudio(strTempVideoAviFilePath, strTempAudioWavFilePath, strNewFile, cAudioFormat.m_bCompression, cAudioFormat);
 			result = MergeVideoAudio(strTempVideoAviFilePath, strTempAudioWavFilePath, strTargetVideoFile, cAudioFormat.m_bCompression, cAudioFormat);
 		}
 
@@ -1150,7 +1094,6 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		case 4:		// recover video file
 			// video file is ok, but not audio file
 			// so Move the video file as avi and ignore the audio  (Move = More or Copy+Delete)
-			//if (!MoveFile( strTempVideoAviFilePath,strNewFile)) {
 			if (!MoveFile( strTempVideoAviFilePath, strTargetVideoFile)) {
 				//Although there is error copying, the temp file still remains in the temp directory and is not deleted, in case user wants a manual recover
 				//MessageBox("File Creation Error. Unable to rename/copy file.","Note",MB_OK | MB_ICONEXCLAMATION);
@@ -1170,9 +1113,6 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 			break;
 		case 5:		// recover both files, but as separate files
 			{
-				// CString m_audioext(".wav");
-				// CString m_audiofile = strNewFile + m_audioext;
-				// if (!MoveFile( strTempVideoAviFilePath,strNewFile)) {
 				if (!MoveFile( strTempVideoAviFilePath, strTargetAudioFile)) {
 					//MessageBox("File Creation Error. Unable to rename/copy video file.","Note",MB_OK | MB_ICONEXCLAMATION);
 					MessageOut(m_hWnd,IDS_STRING_MOVEFILEFAILURE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
@@ -1185,7 +1125,6 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 					// No reason to quit because we got the recording and we can continue and beacuse XnoteLog file use the same name structure as Video file the risk that logfile will fail is very small.
 				}
 
-				// if (!MoveFile(strTempAudioWavFilePath,m_audiofile)) {
 				if (!MoveFile(strTempAudioWavFilePath,strTargetAudioFile)) {
 					//MessageBox("File Creation Error. Unable to rename/copy audio file.","Note",MB_OK | MB_ICONEXCLAMATION);
 					MessageOut(m_hWnd,IDS_STRING_FILECREATION3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
@@ -1199,12 +1138,8 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 				msgstr.LoadString(IDS_STRING_NOMERGE);
 				//CString msgstr("CamStudio is unable to merge the video with audio files. Your video, audio and log files are saved separately as \n\n");
 
-				// msgstr = msgstr + strNewFile + "\n";
 				msgstr = msgstr + strTargetVideoFile + "\n";
-
-				// msgstr = msgstr + m_audiofile + "\n";
 				msgstr = msgstr + strTargetAudioFile + "\n";
-
 				msgstr = msgstr + strTargetXnoteLogFile;
 
 				::MessageBox(NULL, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
@@ -1217,7 +1152,6 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		// No audio, just do a plain copy of temp avi to final avi will do the job
 		// MoveFile behaviour. First it will try to rename file. If not possible it will do a copy and a delete.
 		//////////////////////////////////////////////////
-		// if (!MoveFile(strTempVideoAviFilePath, strNewFile)) 
 		if ( !MoveFile(strTempVideoAviFilePath, strTargetVideoFile) ) 
 		{
 			// Unable to rename/copy file.
@@ -1246,17 +1180,14 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		CString strAVIOut;
 		strAVIOut.Format(_T("%s\\FadeOut.avi"), GetProgPath());
 		CamAVIFile aviFile(cVideoOpts, cAudioFormat);
-		//aviFile.FadeOut(strNewFile, strAVIOut);
 		aviFile.FadeOut(strTargetVideoFile, strAVIOut);
 	}
 	// TEST
 
 	//ver 2.26
 	if (cProgramOpts.m_iRecordingMode == ModeAVI) {
-//		RunViewer(strNewFile);
 		RunViewer(strTargetVideoFile);
 	} else {
-//		RunProducer(strNewFile);
 		RunProducer(strTargetVideoFile);
 	}
 
@@ -2571,6 +2502,7 @@ void CRecorderView::LoadSettings()
 			//ver 1.6
 			if (ver > 1.55)
 			{
+// TODO, delete
 #ifdef OBSOLETE_CODE
 				// if upgrade from older file versions,
 				// iSpecifiedDirLength == 0 and the following code will not run
