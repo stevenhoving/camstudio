@@ -715,7 +715,7 @@ enum eSynchType
 	, AUDIOFIRST
 };
 
-// POD to hold them      // hier_ben_ik
+// POD to hold them
 struct sVideoOpts
 {
 	sVideoOpts()
@@ -1134,34 +1134,31 @@ struct sXNoteOpts
 			m_taXNote.textColor = RGB(0,0,0);
 			m_taXNote.logfont.lfHeight = 12;
 		}
-/*
-		TRACE("## ----------------------------------------------------------------------------\n");			
-		TRACE("## m_bAnnotation : [%d]\n", m_bAnnotation   );
-		TRACE("## m_taXNote.text : [%s]\n", m_taXNote.text.GetString()   );
-		TRACE("## m_bXnoteDisplayCameraDelayMode : [%d]\n", m_bXnoteDisplayCameraDelayMode   );
-		TRACE("## m_ulXnoteCameraDelayInMilliSec : [%lu]\n", m_ulXnoteCameraDelayInMilliSec   );
-		TRACE("## m_cXnoteDisplayFormatString : [%s]\n", m_cXnoteDisplayFormatString   );
-		TRACE("## m_bXnoteRecordDurationLimitMode : [%d]\n", m_bXnoteRecordDurationLimitMode   );
-		TRACE("## m_ulXnoteRecordDurationLimitInMilliSec : [%lu]\n", m_ulXnoteRecordDurationLimitInMilliSec   );
-		TRACE("## ----------------------------------------------------------------------------\n");			
-*/
+		//TRACE("## ----------------------------------------------------------------------------\n");			
+		//TRACE("## m_bAnnotation : [%d]\n", m_bAnnotation   );
+		//TRACE("## m_taXNote.text : [%s]\n", m_taXNote.text.GetString()   );
+		//TRACE("## m_bXnoteDisplayCameraDelayMode : [%d]\n", m_bXnoteDisplayCameraDelayMode   );
+		//TRACE("## m_ulXnoteCameraDelayInMilliSec : [%lu]\n", m_ulXnoteCameraDelayInMilliSec   );
+		//TRACE("## m_cXnoteDisplayFormatString : [%s]\n", m_cXnoteDisplayFormatString   );
+		//TRACE("## m_bXnoteRecordDurationLimitMode : [%d]\n", m_bXnoteRecordDurationLimitMode   );
+		//TRACE("## m_ulXnoteRecordDurationLimitInMilliSec : [%lu]\n", m_ulXnoteRecordDurationLimitInMilliSec   );
+		//TRACE("## ----------------------------------------------------------------------------\n");			
+
 		return true;
 	}
 	bool Write(CProfile& cProfile)
 	{
-/*
-		TRACE("## bool Write(CProfile& cProfile\n");			
-		TRACE("## ----------------------------------------------------------------------------\n");			
-		TRACE("## m_bAnnotation : [%d]\n", m_bAnnotation   );
-		TRACE("## m_taXNote.text : [%s]\n", m_taXNote.text.GetString()   );
-		TRACE("## m_bXnoteDisplayCameraDelayMode : [%d]\n", m_bXnoteDisplayCameraDelayMode   );
-		TRACE("## m_ulXnoteCameraDelayInMilliSec : [%lu]\n", m_ulXnoteCameraDelayInMilliSec   );
-		TRACE("## m_cXnoteDisplayFormatString : [%s]\n", m_cXnoteDisplayFormatString   );
-		TRACE("## m_bXnoteRecordDurationLimitMode : [%d]\n", m_bXnoteRecordDurationLimitMode   );
-		TRACE("## m_ulXnoteRecordDurationLimitInMilliSec : [%lu]\n", m_ulXnoteRecordDurationLimitInMilliSec   );
-		TRACE("## m_ulXnoteRecordDurationLimitInMilliSec : [%lu]\n", m_ulXnoteRecordDurationLimitInMilliSec   );
-		TRACE("## ----------------------------------------------------------------------------\n");			
-*/
+		//TRACE("## bool Write(CProfile& cProfile\n");			
+		//TRACE("## ----------------------------------------------------------------------------\n");			
+		//TRACE("## m_bAnnotation : [%d]\n", m_bAnnotation   );
+		//TRACE("## m_taXNote.text : [%s]\n", m_taXNote.text.GetString()   );
+		//TRACE("## m_bXnoteDisplayCameraDelayMode : [%d]\n", m_bXnoteDisplayCameraDelayMode   );
+		//TRACE("## m_ulXnoteCameraDelayInMilliSec : [%lu]\n", m_ulXnoteCameraDelayInMilliSec   );
+		//TRACE("## m_cXnoteDisplayFormatString : [%s]\n", m_cXnoteDisplayFormatString   );
+		//TRACE("## m_bXnoteRecordDurationLimitMode : [%d]\n", m_bXnoteRecordDurationLimitMode   );
+		//TRACE("## m_ulXnoteRecordDurationLimitInMilliSec : [%lu]\n", m_ulXnoteRecordDurationLimitInMilliSec   );
+		//TRACE("## m_ulXnoteRecordDurationLimitInMilliSec : [%lu]\n", m_ulXnoteRecordDurationLimitInMilliSec   );
+		//TRACE("## ----------------------------------------------------------------------------\n");			
 
 		// Assign Xnote format string to .text because we need this to get a formatted print on the capture without pressing OK first in AnnotationEffects dialog.
 		m_taXNote.text = m_cXnoteDisplayFormatString;

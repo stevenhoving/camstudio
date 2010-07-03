@@ -5,7 +5,7 @@
 
 // Define CAMSTUDIO4XNOTE if this is a custom build release for Xnote Stopwatch users (2010/05/28, Janhgm)
 // Setting this defines will preconfigure a few innitial settings
-// #define CAMSTUDIO4XNOTE
+#define CAMSTUDIO4XNOTE
 
 
 // Stopwatch sources applications
@@ -14,11 +14,11 @@
 #define XNOTE_SOURCE_MOTIONDETECTOR				2  
 
 // How stopwatch trigger occured 
-#define XNOTE_TRIGGER_UNDEFINED					0
-#define XNOTE_TRIGGER_STOPWATCH_UNDEFINED		1
-#define XNOTE_TRIGGER_STOPWATCH_MANUAL			2
-#define XNOTE_TRIGGER_STOPWATCH_DEVICE			3  
-#define XNOTE_TRIGGER_MOTIONDETECTOR			4
+#define XNOTE_TRIGGER_UNDEFINED					-1
+#define XNOTE_TRIGGER_STOPWATCH_UNDEFINED		0
+#define XNOTE_TRIGGER_STOPWATCH_MANUAL			1
+#define XNOTE_TRIGGER_STOPWATCH_DEVICE			2
+#define XNOTE_TRIGGER_MOTIONDETECTOR			3
 
 // Action events 
 // XNote stopwatch : hiword: action (1 - start, 2 - stop, 3 - snap, 4 - reset)

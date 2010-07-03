@@ -51,6 +51,9 @@
 #include "Camstudio4XNote.h"
 
 #include <windowsx.h>
+#include <fstream>
+#include <iostream>
+using namespace std;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -140,7 +143,7 @@ int irsmallcount = 0;
 unsigned long nTotalBytesWrittenSoFar = 0UL;
 
 // Xnote timing support. Show timing from start of recording
-// Todo , All these global/local vars should become an enum and member of class
+// Todo , All these global/local vars should become an struct or class
 bool bXNoteSnapRecordingState	= false;		// This settings defines if video recording is triggered by xnote. if trggered by xnote it will stop automattically is this option is set by user.
 ULONG ulXNoteStartTime			= 0UL;
 ULONG ulXNoteLastSnapTime		= 0UL;
@@ -148,8 +151,11 @@ int iXNoteStartSource			= XNOTE_SOURCE_UNDEFINED;
 int iXNoteLastSnapSource		= XNOTE_SOURCE_UNDEFINED;		
 int iXNoteStartWithSensor		= XNOTE_TRIGGER_UNDEFINED;		// Defines if event is manual (with key or mouse) or automatic generated (by means of RS232 sensored device or Video Motion Detection)
 int iXNoteLastSnapWithSensor	= XNOTE_TRIGGER_UNDEFINED;		// Defines if event is manual (with key or mouse) or automatic generated (by means of RS232 sensored device or Video Motion Detection)
-// char cXNoteStartExtendedInfo[128] /*= {'\0'} */;
+
 char cXNoteLastSnapTimes[128] /*= {'\0'} */;
+HFILE hXnoteLogFile = NULL;
+ofstream ioXnoteLogFile;
+ofstream * pioXnoteLogFile = (ofstream*)0;
 
 // Messaging
 HWND hWndGlobal = NULL;
@@ -173,8 +179,15 @@ float fActualRate = 0.0;
 float fTimeLength = 0.0;
 int nColors = 24;
 
-//Path to temporary avi file
-CString strTempFilePath;
+//Path to temporary video avi file
+CString strTempVideoAviFilePath;
+
+//Path to temporary audio wav file
+CString strTempAudioWavFilePath;
+
+//Path to temporary xnote log fiel  (xnote=stopwatch appl. File will be used to record snaps and offsets to video file)
+CString strTempXnoteLogFilePath;
+
 
 // Ver 1.1
 /////////////////////////////////////////////////////////////////////////////
@@ -185,10 +198,8 @@ CString strTempFilePath;
 // using the Merge_Video_And_Sound_File function
 /////////////////////////////////////////////////////////////////////////////
 
-//Path to temporary wav file
-CString tempaudiopath;
 
-HWAVEIN m_hRecord;
+HWAVEIN m_hWaveRecord;
 DWORD m_ThreadID;
 int m_QueuedBuffers = 0;
 int iBufferSize = 1000; // number of samples
@@ -261,24 +272,51 @@ void SetVideoCompressState (HIC hic, DWORD fccHandler);
 
 namespace {	// annonymous
 
+	////////////////////////////////
+	// AUDIO_CODE
+	////////////////////////////////
 	void ClearAudioFile();
 	BOOL InitAudioRecording();
-	void GetTempWavePath();
-	void SetBufferSize(int NumberOfSamples);
+	void GetTempAudioWavPath();
 	//BOOL StartAudioRecording(WAVEFORMATEX* format);
 	BOOL StartAudioRecording();
 	void StopAudioRecording();
-
-	//Region Select Functions
-	int InitDrawShiftWindow();
-
-	int InitSelectRegionWindow();
 	void waveInErrorMsg(MMRESULT result, const char *);
-	int AddInputBufferToQueue();
 	void DataFromSoundIn(CBuffer* buffer);
+	int AddInputBufferToQueue();
 
+	////////////////////////////////
+	// XNOTE_CODE
+	////////////////////////////////
+	void GetTempXnoteLogPath();
+	BOOL OpenStreamXnoteLogFile();
+	void CloseStreamXnoteLogFile();
+	void WriteLineToXnoteLogFile( char* pStr);
+
+	////////////////////////////////
+	//Region Select Functions
+	////////////////////////////////
+	int InitDrawShiftWindow();
+	int InitSelectRegionWindow();
+
+	////////////////////////////////
+	// HOTKEYS_CODE
+	////////////////////////////////
 	bool UnSetHotKeys(HWND hWnd);
 	int SetHotKeys(int succ[]);
+
+	//===============================================
+	// EXPERIMENTAL CODE
+	//===============================================
+
+	////////////////////////////////
+	// OBSOLETE_CODE
+	////////////////////////////////
+#define THIS_COULD_BE_OBSOLETE_CODE
+#ifndef THIS_COULD_BE_OBSOLETE_CODE
+	void SetBufferSize(int NumberOfSamples);		//  TODO Might be obsolete...!
+	void GetVideoCompressState (HIC hic, DWORD fccHandler);
+#endif  // THIS_COULD_BE_OBSOLETE_CODE
 
 }	// namespace annonymous
 
@@ -668,6 +706,7 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	//savedir default
 	savedir = GetProgPath();
+	//TRACE("## CRecorderView::OnCreate: initialSaveMMMode Default savedir=GetProgPath()=[%s]!\n", savedir);
 
 	if (!initialSaveMMMode()) {
 		TRACE("CRecorderView::OnCreate: initialSaveMMMode FAILED!\n");
@@ -793,6 +832,10 @@ LRESULT CRecorderView::OnRecordInterrupted (UINT wParam, LONG /*lParam*/)
 	}
 
 	bRecordState = false;
+	
+	// Reset others states (XNote) that should be reset if recirdings ends.
+	//TRACE("## CRecorderView::OnRecordInterrupted , Call XNoteActionStopwatchResetParams()\n");
+	XNoteActionStopwatchResetParams();
 
 	//Store the interrupt key in case this function is triggered by a keypress
 	interruptkey = wParam;
@@ -893,6 +936,15 @@ void CRecorderView::OnUpdateRegionAllScreens(CCmdUI* pCmdUI)
 //This function is called when the avi saving is completed
 LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 {
+	CString strTmp = "";					
+	CString strTargetDir = "";					// Path to target location
+	CString strTargetBareFileName = "";			// Target filename without path and without extension
+	CString strTargetVideoFile = "";			// Video filename initial without path but with extension
+	CString strTargetAudioFile = "";			// Audio filename initial without path but with extension
+	CString strTargetXnoteLogFile = "";			// Xnote log filename initial without path but with extension
+	CString strTargetVideoExtension = ".avi";
+
+
 	//ver 1.2
 	::SetForegroundWindow( AfxGetMainWnd()->m_hWnd);
 	AfxGetMainWnd()->ShowWindow(SW_RESTORE);
@@ -901,16 +953,18 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	if (interruptkey == cHotKeyOpts.m_RecordCancel.m_vKey) {
 		//if (interruptkey==VK_ESCAPE) {
 		//Perform processing for cancel operation
-		DeleteFile(strTempFilePath);
+		DeleteFile(strTempVideoAviFilePath);
+		DeleteFile(strTempXnoteLogFilePath);
 		if (!cAudioFormat.isInput(NONE))
-			DeleteFile(tempaudiopath);
+			DeleteFile(strTempAudioWavFilePath);
 		return 0;
 
 	}
 
-	//TODO, let auto filename match with time recording started
-	//Normal thread exit
-	//Prompt the user for the filename
+	////////////////////////////////////
+	// Prepare Dialog (but do not use it here)
+	////////////////////////////////////
+	// To ask user for the filename, Normal thread exit
 	CString strFilter(_T("AVI Movie Files (*.avi)|*.avi||"));
 	CString strTitle(_T("Save AVI File"));
 	CString strExtFilter(_T("*.avi"));
@@ -919,59 +973,132 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		strTitle = _T("Save SWF File");
 		strExtFilter = _T("*.swf");
 	}
-
 	CFileDialog fdlg(FALSE, strExtFilter, strExtFilter, OFN_LONGNAMES, strFilter, this);
 	fdlg.m_ofn.lpstrTitle = strTitle;
 
-	if (savedir == "")
+	// Savedir is a global var and therefor mostly set before.
+	if (savedir == "") {
 		savedir = GetProgPath();
-
+	}
 	fdlg.m_ofn.lpstrInitialDir = savedir;
 
-	CString strNewFile;
-	CString strNewFileTitle;
+	// I believed that savedir would always be GetProgPath(). 
+	// But this test below proved that that is not alway the case
+	//TRACE("## CRecorderView::OnUserGeneric , savedir    = [%s]\n", savedir );
+	//TRACE("## CRecorderView::OnUserGeneric , GetProgPath= [%s]\n", GetProgPath() );
+	//TRACE("## CRecorderView::OnUserGeneric , savedir = GetProgPath [%s]\n", (GetProgPath()==savedir) ? "EQUAL" : "DIFFERENT"  );
+
+
+/*
+	// OLD
+	CString strNewFile = "";
+//	CString strNewFileTitleBaseName = "";		// Basedir
+	CString strNewFileTitle = "";				// This is the name of the targer directory
+*/		
+
 	if ((cProgramOpts.m_iRecordingMode == ModeAVI) && cProgramOpts.m_bAutoNaming) {
+/*
+		// OLD
+		// TODO, This line below cause that when autonaming is applicable the files are always stored in the dierctory where Camstudio installed all application files...!
+		// And because savedir is gloval var this settings is permanent
 		savedir = GetProgPath();
 
-		// Local copy of the timestamp string created when recording was started
-		CString filestr;
-		filestr.SetString( cVideoOpts.m_cStartRecordingString.GetString() );
-
 		fdlg.m_ofn.lpstrInitialDir = savedir;
+		strNewFile = savedir + "\\" + strTargetVideoFile;			// = extended TargetVideo
 
-		strNewFile = savedir + "\\" + filestr + ".avi";
-		strNewFileTitle = savedir + "\\" + filestr + ".avi";
-		strNewFileTitle = strNewFileTitle.Left(strNewFileTitle.ReverseFind('\\'));  // basename function
+		strNewFileTitle = strNewFile;
+		strNewFileTitle = strNewFileTitle.Left(strNewFileTitle.ReverseFind('\\'));  // = basedir again
+*/
+		// NEW....
+		strTargetDir = GetProgPath();
+		// Use local copy of the timestamp string created when recording was started for autonaming.
+		strTargetBareFileName.SetString( cVideoOpts.m_cStartRecordingString.GetString() );		// "ccyymmdd-hhmm-ss" , Timestamp still used for default temp.avi output "temp-ccyymmdd-hhmm-ss.avi"
+		strTargetVideoExtension = ".avi";
+
 	} else if (fdlg.DoModal() == IDOK) {
+/*
+		// OLD
 		strNewFile = fdlg.GetPathName();
 		strNewFileTitle = fdlg.GetPathName();
 		strNewFileTitle = strNewFileTitle.Left(strNewFileTitle.ReverseFind('\\'));
 		savedir = strNewFileTitle;
+*/
+		// NEW
+		strTmp = fdlg.GetPathName();
+		strTargetDir = strTmp.Left(strTmp.ReverseFind('\\'));
+
+		// remove path info, we now have the udf defined filename
+		strTmp = strTmp.Mid(strTmp.ReverseFind('\\')+1);
+
+		// Split filename in base and extension
+		int iPos = strTmp.ReverseFind('.');
+		if ( iPos > 0 ) {
+			strTargetBareFileName = strTmp.Left(iPos);
+			strTargetVideoExtension = strTmp.Mid(iPos);	// Extension with dot included
+		} else {
+			strTargetBareFileName = strTmp;
+			// append always .avi if no extension is given.
+			strTargetVideoExtension = ".avi";
+		}
 	} else {
-		DeleteFile(strTempFilePath);
+		DeleteFile(strTempVideoAviFilePath);
+		DeleteFile(strTempXnoteLogFilePath);
 		if (!cAudioFormat.isInput(NONE)) {
-			DeleteFile(tempaudiopath);
+			DeleteFile(strTempAudioWavFilePath);
 		}
 		return 0;
 	}
-
+/*	
+	//OLD
+	TRACE("## 1a  # strNewFile             :[%s]\n", strNewFile);
 	//ver 2.26
 	if (cProgramOpts.m_iRecordingMode == ModeFlash) {
 		int iPos = strNewFile.Find(_T("."));
-		if (0 < iPos) {
+		if (0 < iPos) {		
+			// if the target extension is .swf it must be changed to the current input file type .avi.  (wat happens if extension is not avi and not swf ???
 			if (strNewFile.Right(strNewFile.GetLength() - iPos).MakeUpper() == _T(".SWF")) {
 				CString strLeft = strNewFile.Left(iPos);
 				strNewFile = strLeft + _T(".avi");
 			}
-		} else {
+	// ToDo. savedir is a global var and will always be set before. (Mostly as GetProgPath()) Better solution required.
+		} else {  
+			// if other extension is used (not .avi or .swf) we just add .avi as extension type.
 			strNewFile += _T(".avi");
 		}
 	}
+	TRACE("## 1b  # strNewFile             :[%s]\n", strNewFile);
+*/
+	// NEW
+	// append always .avi as filetype when record to flash is applicable because SWF convertor expects as input an AVI file
+	if (cProgramOpts.m_iRecordingMode == ModeFlash) {
+		strTargetVideoExtension = ".avi";
+	}
+
+	// Create all the applicable targetfile names
+	strTargetVideoFile    = strTargetDir + "\\" + strTargetBareFileName + strTargetVideoExtension;		// strTargetVideoFile is the same string as strNewFile in previuosly approach
+	strTargetAudioFile    = strTargetDir + "\\" + strTargetBareFileName + ".wav";
+	strTargetXnoteLogFile = strTargetDir + "\\" + strTargetBareFileName + ".xnote.txt";
+
+	//TRACE("## 2a # strTargetDir            :[%s]\n", strTargetDir);
+	//TRACE("## 2b # strTargetBareFileName   :[%s]\n", strTargetBareFileName );
+	//TRACE("## 2c # strTargetVideoExtension :[%s]\n", strTargetVideoExtension );
+	//TRACE("## 3a # strTargetVideoFile      :[%s]\n", strTargetVideoFile );
+	//TRACE("## 3b # strTargetAudioFile      :[%s]\n", strTargetAudioFile );
+	//TRACE("## 3c # strTargetXnoteLogFile   :[%s]\n", strTargetXnoteLogFile );
+
+	/////////////////////////////////////////////////////////
+	// To be compatible with old previously solution.
+	// Savedir is a global var and was always be set. (Mostly as GetProgPath()) 
+	// Todo: Better solution required. Doubt that we need to set or require a global savedir always 
+	/////////////////////////////////////////////////////////
+	// NEW
+	savedir = strTargetDir;
 
 	//Ver 1.1
 	if (cAudioFormat.m_iRecordAudio) {
-		// Check if file exists and if so, does it allow overwite
-		HANDLE hfile = CreateFile(strNewFile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+		// Check if video(!) file exists and if so, does it allow overwite
+		// HANDLE hfile = CreateFile(strNewFile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+		HANDLE hfile = CreateFile( strTargetVideoFile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 		if (hfile == INVALID_HANDLE_VALUE) {
 			//::MessageBox(NULL,"Unable to create new file. The file may be opened by another application. Please use another filename.","Note",MB_OK | MB_ICONEXCLAMATION);
 			MessageOut(m_hWnd,IDS_STRING_NOCREATEWFILE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
@@ -979,7 +1106,8 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 			return 0;
 		}
 		CloseHandle(hfile);
-		DeleteFile(strNewFile);
+		//DeleteFile(strNewFile);
+		DeleteFile(strTargetVideoFile);
 
 		//ver 1.8
 		if (vanWndCreated) {
@@ -989,9 +1117,8 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 			}
 		}
 
-// Hier_ben_ik.
-// If video only (Do not record audio) there is no reason to merge video with audio and video.avi file could be used without further processing.
-
+		
+		// If video only (Do not record audio) there is no reason to merge video with audio and video.avi file could be used without further processing.
 		if ( cAudioFormat.m_iRecordAudio == NONE ) {
 			TRACE("## CRecorderView::OnUserGeneric  NO Audio defined, no merge required. .\n"); 
 		}
@@ -1002,9 +1129,11 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		//if ((iRecordAudio==2) || (bUseMCI)) {
 		//ver 2.26 ...overwrite audio settings for Flash Moe recording ... no compression used...
 		if ((cAudioFormat.isInput(SPEAKERS)) || (cAudioFormat.m_bUseMCI) || (cProgramOpts.m_iRecordingMode == ModeFlash)) {
-			result = MergeVideoAudio(strTempFilePath, tempaudiopath, strNewFile, FALSE, cAudioFormat);
+			//result = MergeVideoAudio(strTempVideoAviFilePath, strTempAudioWavFilePath, strNewFile, FALSE, cAudioFormat);
+			result = MergeVideoAudio(strTempVideoAviFilePath, strTempAudioWavFilePath, strTargetVideoFile, FALSE, cAudioFormat);
 		} else if (cAudioFormat.isInput(MICROPHONE)) {
-			result = MergeVideoAudio(strTempFilePath, tempaudiopath, strNewFile, cAudioFormat.m_bCompression, cAudioFormat);
+			// result = MergeVideoAudio(strTempVideoAviFilePath, strTempAudioWavFilePath, strNewFile, cAudioFormat.m_bCompression, cAudioFormat);
+			result = MergeVideoAudio(strTempVideoAviFilePath, strTempAudioWavFilePath, strTargetVideoFile, cAudioFormat.m_bCompression, cAudioFormat);
 		}
 
 		//Check Results : Attempt Recovery on error
@@ -1013,75 +1142,101 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		case 0:		// Successful
 		case 1:		// video file broken; Unable to recover
 		case 3:		// this case is rare; Unable to recover
-			DeleteFile(strTempFilePath);
-			DeleteFile(tempaudiopath);
+			DeleteFile(strTempVideoAviFilePath);
+			DeleteFile(strTempXnoteLogFilePath);
+			DeleteFile(strTempAudioWavFilePath);
 			break;
 		case 2:
 		case 4:		// recover video file
 			// video file is ok, but not audio file
-			// so copy the video file as avi and ignore the audio
-			if (!CopyFile( strTempFilePath,strNewFile,FALSE)) {
+			// so Move the video file as avi and ignore the audio  (Move = More or Copy+Delete)
+			//if (!MoveFile( strTempVideoAviFilePath,strNewFile)) {
+			if (!MoveFile( strTempVideoAviFilePath, strTargetVideoFile)) {
 				//Although there is error copying, the temp file still remains in the temp directory and is not deleted, in case user wants a manual recover
 				//MessageBox("File Creation Error. Unable to rename/copy file.","Note",MB_OK | MB_ICONEXCLAMATION);
-				MessageOut(m_hWnd,IDS_STRING_FILECREATIONERROR,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+				MessageOut(m_hWnd,IDS_STRING_MOVEFILEFAILURE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 				return 0;
 			}
-			DeleteFile(strTempFilePath);
-			DeleteFile(tempaudiopath);
+
+			if (!MoveFile( strTempXnoteLogFilePath, strTargetXnoteLogFile) ) {
+				TRACE("## CRecorderView::OnUserGeneric MoveFile strTempXnoteLogFilePath failed\n");
+				// No reason to quit because we got the recording and we can continue and beacuse XnoteLog file use the same name structure as Video file the risk that logfile will fail is very small.
+			}
+
+			DeleteFile(strTempAudioWavFilePath);
 
 			//::MessageBox(NULL,"Your AVI movie will not contain a soundtrack. CamStudio is unable to merge the video with audio.","Note",MB_OK | MB_ICONEXCLAMATION);
 			MessageOut(m_hWnd, IDS_STRING_NOSOUNDTRACK, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 			break;
 		case 5:		// recover both files, but as separate files
 			{
-				CString m_audioext(".wav");
-				CString m_audiofile = strNewFile + m_audioext;
-				if (!CopyFile( strTempFilePath,strNewFile,FALSE)) {
+				// CString m_audioext(".wav");
+				// CString m_audiofile = strNewFile + m_audioext;
+				// if (!MoveFile( strTempVideoAviFilePath,strNewFile)) {
+				if (!MoveFile( strTempVideoAviFilePath, strTargetAudioFile)) {
 					//MessageBox("File Creation Error. Unable to rename/copy video file.","Note",MB_OK | MB_ICONEXCLAMATION);
-					MessageOut(m_hWnd,IDS_STRINGFILECREATION2,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+					MessageOut(m_hWnd,IDS_STRING_MOVEFILEFAILURE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 					return 0;
 				}
-				DeleteFile(strTempFilePath);
+	
+				if (!MoveFile( strTempXnoteLogFilePath, strTargetXnoteLogFile) ) {
+					TRACE("## CRecorderView::OnUserGeneric MoveFile strTempXnoteLogFilePath failed\n");
+					// MessageOut(m_hWnd,IDS_STRING_MOVEFILEFAILURE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+					// No reason to quit because we got the recording and we can continue and beacuse XnoteLog file use the same name structure as Video file the risk that logfile will fail is very small.
+				}
 
-				if (!CopyFile(tempaudiopath,m_audiofile,FALSE)) {
+				// if (!MoveFile(strTempAudioWavFilePath,m_audiofile)) {
+				if (!MoveFile(strTempAudioWavFilePath,strTargetAudioFile)) {
 					//MessageBox("File Creation Error. Unable to rename/copy audio file.","Note",MB_OK | MB_ICONEXCLAMATION);
 					MessageOut(m_hWnd,IDS_STRING_FILECREATION3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 					return 0;
 				}
-				DeleteFile(tempaudiopath);
+
 
 				CString tstr;
 				tstr.LoadString(IDS_STRING_NOTE);
 				CString msgstr;
 				msgstr.LoadString(IDS_STRING_NOMERGE);
-				//CString msgstr("CamStudio is unable to merge the video with audio files. Your video and audio files are saved separately as \n\n");
+				//CString msgstr("CamStudio is unable to merge the video with audio files. Your video, audio and log files are saved separately as \n\n");
 
-				msgstr = msgstr + strNewFile + "\n";
-				msgstr = msgstr + m_audiofile;
+				// msgstr = msgstr + strNewFile + "\n";
+				msgstr = msgstr + strTargetVideoFile + "\n";
+
+				// msgstr = msgstr + m_audiofile + "\n";
+				msgstr = msgstr + strTargetAudioFile + "\n";
+
+				msgstr = msgstr + strTargetXnoteLogFile;
+
 				::MessageBox(NULL, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
 			}
 			break;
 		}
 	} else {
-		//no audio, just do a plain copy of temp avi to final avi
-
-		//hier_ben_ik
-		// TODO:  Check if we could prevent plain copy/deleted action and if a rename only would be possible
-		
-		if (!CopyFile(strTempFilePath,strNewFile,FALSE)) {
-			//Ver 1.1
-			// "File Creation Error.
+		// TRACE("## CRecorderView::OnUserGeneric  NO Audio, just do a plain copy of temp avi to final avi\n");
+		//////////////////////////////////////////////////
+		// No audio, just do a plain copy of temp avi to final avi will do the job
+		// MoveFile behaviour. First it will try to rename file. If not possible it will do a copy and a delete.
+		//////////////////////////////////////////////////
+		// if (!MoveFile(strTempVideoAviFilePath, strNewFile)) 
+		if ( !MoveFile(strTempVideoAviFilePath, strTargetVideoFile) ) 
+		{
 			// Unable to rename/copy file.
+			// In case of an move problem we do nothing. Source has an unique name and not to delete the source file don't cause problems anylonger
 			// The file may be opened by another application.
 			// Please use another filename."
-			MessageOut(m_hWnd, IDS_STRING_FILECREATION4, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(m_hWnd, IDS_STRING_MOVEFILEFAILURE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 			//Repeat this function until success
 			::PostMessage(hWndGlobal, WM_USER_GENERIC, 0, 0);
 			return 0;
 		}
-		DeleteFile(strTempFilePath);
+		
+		if (!MoveFile( strTempXnoteLogFilePath, strTargetXnoteLogFile) ) {
+			MessageOut(m_hWnd,IDS_STRING_MOVEFILEFAILURE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+			// No issue to quit because we got the recording and we can continue
+		}
+
 		if (!cAudioFormat.isInput(NONE)) {
-			DeleteFile(tempaudiopath);
+			DeleteFile(strTempAudioWavFilePath);
 		}
 	}
 
@@ -1091,15 +1246,18 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		CString strAVIOut;
 		strAVIOut.Format(_T("%s\\FadeOut.avi"), GetProgPath());
 		CamAVIFile aviFile(cVideoOpts, cAudioFormat);
-		aviFile.FadeOut(strNewFile, strAVIOut);
+		//aviFile.FadeOut(strNewFile, strAVIOut);
+		aviFile.FadeOut(strTargetVideoFile, strAVIOut);
 	}
 	// TEST
 
 	//ver 2.26
 	if (cProgramOpts.m_iRecordingMode == ModeAVI) {
-		RunViewer(strNewFile);
+//		RunViewer(strNewFile);
+		RunViewer(strTargetVideoFile);
 	} else {
-		RunProducer(strNewFile);
+//		RunProducer(strNewFile);
+		RunProducer(strTargetVideoFile);
 	}
 
 	return 0;
@@ -1115,7 +1273,7 @@ void CRecorderView::OnRecord()
 		bRecordPaused = false;
 		//ver 1.8
 		//if (iRecordAudio==2)
-		// mciRecordResume(tempaudiopath);
+		// mciRecordResume(strTempAudioWavFilePath);
 
 		//Set Title Bar
 		CMainFrame * pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
@@ -1210,7 +1368,12 @@ void CRecorderView::OnStop()
 		pFrame->SetTitle(_T("CamStudio"));
 	}
 
+	// Reset Xnote Stopwatch params to defaults. Required if recording is terminated in Camstudio instead of Xnote.
+	XNoteActionStopwatchResetParams();
+
+	// Broadcast.
 	OnRecordInterrupted (0, 0);
+
 }
 
 //ver 1.6
@@ -1482,7 +1645,7 @@ void CRecorderView::OnPause()
 
 	//ver 1.8
 	//if (iRecordAudio==2)
-	// mciRecordPause(tempaudiopath);
+	// mciRecordPause(strTempAudioWavFilePath);
 
 	CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
 	pStatus->SetPaneText(0,"Recording Paused");
@@ -1520,9 +1683,9 @@ void CRecorderView::OnHelpFaq()
 LRESULT CRecorderView::OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2)
 {
 	HANDLE hInputDev = (HANDLE) parm1;
-	ASSERT(hInputDev == m_hRecord);
+	ASSERT(hInputDev == m_hWaveRecord);
 	LPWAVEHDR pHdr = (LPWAVEHDR) parm2;
-	MMRESULT mmReturn = ::waveInUnprepareHeader(m_hRecord, pHdr, sizeof(WAVEHDR));
+	MMRESULT mmReturn = ::waveInUnprepareHeader(m_hWaveRecord, pHdr, sizeof(WAVEHDR));
 	if (mmReturn) {
 		waveInErrorMsg(mmReturn, "in OnWIM_DATA()");
 		return 0;
@@ -1540,13 +1703,13 @@ LRESULT CRecorderView::OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2)
 
 		// reuse the buffer:
 		// prepare it again
-		mmReturn = ::waveInPrepareHeader(m_hRecord,pHdr, sizeof(WAVEHDR));
+		mmReturn = ::waveInPrepareHeader(m_hWaveRecord,pHdr, sizeof(WAVEHDR));
 		if (mmReturn) {
 			waveInErrorMsg(mmReturn, "in OnWIM_DATA()");
 		} else {
 			// no error
 			// add the input buffer to the queue again
-			mmReturn = ::waveInAddBuffer(m_hRecord, pHdr, sizeof(WAVEHDR));
+			mmReturn = ::waveInAddBuffer(m_hWaveRecord, pHdr, sizeof(WAVEHDR));
 			if (mmReturn) {
 				waveInErrorMsg(mmReturn, "in OnWIM_DATA()");
 			} else {
@@ -1654,7 +1817,7 @@ void CRecorderView::SaveSettings()
 	// otherwise, the datafile will not be upward compatible with future versions
 
 	CString fileName("\\CamStudio.ini");
-	CString setDir = GetProgPath();
+	CString setDir = GetProgPath();					// TODO : Check use of setDir .. NOT savedir ???
 	CString setPath;
 	setPath.Format("%s\\CamStudio.ini", (LPCSTR)GetProgPath());
 
@@ -2752,12 +2915,20 @@ void CRecorderView::OnSetFocus(CWnd* pOldWnd)
 //	MOD_SHIFT - Either SHIFT key was held down.
 //	MOD_WIN - Either WINDOWS key was held down.
 // The high-order word specifies the virtual key code of the hot key.
+//
+// HOTKEY_RECORD_START_OR_PAUSE		0
+// HOTKEY_RECORD_STOP				1
+// HOTKEY_RECORD_CANCELSTOP			2
+// HOTKEY_LAYOUT_KEY_NEXT			3
+// HOTKEY_LAYOUT_KEY_PREVIOUS		4
+// HOTKEY_LAYOUT_SHOW_HIDE_KEY		5
+//
 /////////////////////////////////////////////////////////////////////////////
 LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 {
 	switch (wParam)
 	{
-	case 0:	// start recording
+	case HOTKEY_RECORD_START_OR_PAUSE:	// 0 = start recording
 		if (bRecordState) {
 			// pause if currently recording
 			if (!bRecordPaused) {
@@ -2774,7 +2945,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 			}
 		}
 		break;
-	case 1:
+	case HOTKEY_RECORD_STOP:			// 1
 		if (bRecordState) {
 			if (cHotKeyOpts.m_RecordEnd.m_vKey != cHotKeyOpts.m_RecordCancel.m_vKey) {
 				OnRecordInterrupted(cHotKeyOpts.m_RecordEnd.m_vKey, 0);
@@ -2783,12 +2954,12 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 			}
 		}
 		break;
-	case 2:
+	case HOTKEY_RECORD_CANCELSTOP:		// 2:
 		if (bRecordState) {
 			OnRecordInterrupted(cHotKeyOpts.m_RecordCancel.m_vKey, 0);
 		}
 		break;
-	case 3:
+	case HOTKEY_LAYOUT_KEY_NEXT :		// 3
 		{
 			if (!bCreatedSADlg) {
 				sadlg.Create(IDD_SCREENANNOTATIONS2, NULL);
@@ -2807,7 +2978,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 			sadlg.InstantiateLayout(iCurrentLayout,1);
 		}
 		break;
-	case 4:
+	case HOTKEY_LAYOUT_KEY_PREVIOUS :  // 4
 		{
 			if (!bCreatedSADlg) {
 				sadlg.Create(IDD_SCREENANNOTATIONS2, NULL);
@@ -2828,7 +2999,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 			sadlg.InstantiateLayout(iCurrentLayout,1);
 		}
 		break;
-	case 5:
+	case HOTKEY_LAYOUT_SHOW_HIDE_KEY :  //5
 		{
 			if (!bCreatedSADlg) {
 				sadlg.Create(IDD_SCREENANNOTATIONS2,NULL);
@@ -2952,6 +3123,7 @@ BOOL CRecorderView::OnEraseBkgnd(CDC* pDC)
 
 void CRecorderView::OnOptionsNamingAutodate()
 {
+	// Toggle between NamingAsk and AutoUpdate
 	cProgramOpts.m_bAutoNaming = true;
 }
 
@@ -2960,8 +3132,12 @@ void CRecorderView::OnUpdateOptionsNamingAutodate(CCmdUI* pCmdUI)
 	pCmdUI->SetCheck(cProgramOpts.m_bAutoNaming);
 }
 
+///////////////////////////
+// Option, user shall define filename
+///////////////////////////
 void CRecorderView::OnOptionsNamingAsk()
 {
+	// Toggle between NamingAsk and AutoUpdate
 	cProgramOpts.m_bAutoNaming = false;
 }
 
@@ -2969,6 +3145,7 @@ void CRecorderView::OnUpdateOptionsNamingAsk(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetCheck(!cProgramOpts.m_bAutoNaming);
 }
+////////////////////////////
 
 void CRecorderView::OnOptionsProgramoptionsPresettime()
 {
@@ -3097,7 +3274,7 @@ void CRecorderView::OnUpdateAnnotationAddXNote(CCmdUI *pCmdUI)
 
 void CRecorderView::OnCameraDelayInMilliSec()
 {
-	TRACE ("## CRecorderView::OnCameraDelayInMilliSec\n");
+	//TRACE ("## CRecorderView::OnCameraDelayInMilliSec\n");
 	// Nothing is actual changed here.
 }
 
@@ -3109,7 +3286,7 @@ void CRecorderView::OnUpdateCameraDelayInMilliSec(CCmdUI *pCmdUI)
 
 void CRecorderView::OnRecordDurationLimitInMilliSec()
 {
-	TRACE ("## CRecorderView::OnRecordDurationLimitInMilliSec\n");
+	//TRACE ("## CRecorderView::OnRecordDurationLimitInMilliSec\n");
 	// Nothing is actual changed here.
 }
 
@@ -3492,7 +3669,8 @@ UINT CRecorderView::RecordThread(LPVOID pParam)
 
 UINT CRecorderView::RecordVideo()
 {
-	TRACE("CRecorderView::RecordAVIThread\n");
+	//TRACE("CRecorderView::RecordAVIThread\n");
+
 	// Test the validity of writing to the file
 	// Make sure the file to be created is currently not used by another application
 
@@ -3501,6 +3679,10 @@ UINT CRecorderView::RecordVideo()
 	// Another benefit of using this filename is that we don't always have to copy from temp to realname once recording is finished and we always new when a recording was created.
 
 	CString csTempFolder(GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir));	
+
+	// Location where we are creating our files
+	//TRACE("## CRecorderView::RecordVideo()  cProgramOpts.m_strSpecifiedDir=[%s]\n", cProgramOpts.m_strSpecifiedDir );
+	//TRACE("## CRecorderView::RecordVideo()  csTempFolder=[%s]\n", csTempFolder );
 
 	// Define a date-time tag "ccyymmdd_uumm_ss" to add to the temp.avi file.
 	// (New recordings can start just after previously recording ended.)
@@ -3517,28 +3699,29 @@ UINT CRecorderView::RecordVideo()
 	// Create timestamp tag
 	CString csStartTime = "";
 	csStartTime.Format("%04d%02d%02d_%02d%02d_%02d",year, month, day, hour, minutes, second); // 20100528, changed dateformating to yyyymmdd_hhmm_ss
-	// We will keep this info about when the recording started for later usage. (Renaming this and other created files to UDF filesnames)
+	// We will keep this tag info that tell us when the recording started for later usage. 
 	cVideoOpts.m_cStartRecordingString.SetString(csStartTime);
 
-	strTempFilePath.Format("%s\\temp-%s.avi", (LPCSTR)csTempFolder, (LPCSTR)csStartTime );
+	strTempVideoAviFilePath.Format("%s\\%s-%s.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR, (LPCSTR)csStartTime, "avi" );
+	// strTempXnoteLogFilePath.Format("%s\\%s-%s.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR, (LPCSTR)csStartTime, "xnote.txt" );
 
-	//TRACE("## CRecorderView::RecordAVIThread First  Temp.Avi file=[%s]\n", strTempFilePath.GetString()  );
+	//TRACE("## CRecorderView::RecordAVIThread First  Temp.Avi file=[%s]\n", strTempVideoAviFilePath.GetString()  );
 
 	srand((unsigned)time(NULL));
 	bool fileverified = false;
 	while (!fileverified)
 	{
 		OFSTRUCT ofstruct;
-		HFILE hFile = OpenFile(strTempFilePath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE | OF_CREATE);
+		HFILE hFile = OpenFile(strTempVideoAviFilePath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE | OF_CREATE);
 		fileverified = (hFile != HFILE_ERROR);
 		if (fileverified) {
 			CloseHandle((HANDLE)hFile);
-			DeleteFile(strTempFilePath);
+			DeleteFile(strTempVideoAviFilePath);
 		} else {
-			strTempFilePath.Format("%s\\temp-%s-%d.avi", (LPCSTR)csTempFolder, (LPCSTR)csStartTime, rand());
+			strTempVideoAviFilePath.Format("%s\\%s-%s-%d.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR, (LPCSTR)csStartTime, rand(), "avi" );
 		}
 	}
-	//TRACE("## CRecorderView::RecordAVIThread  Final Temp.Avi file=[%s]\n", strTempFilePath.GetString()  );
+	//TRACE("## CRecorderView::RecordAVIThread  Final Temp.Avi file=[%s]\n", strTempVideoAviFilePath.GetString()  );
 
 	//int top = rcUse.top;
 	//int left = rcUse.left;
@@ -3546,8 +3729,8 @@ UINT CRecorderView::RecordVideo()
 	//int height = rcUse.bottom - rcUse.top + 1;
 	//int fps = cVideoOpts.m_iFramesPerSecond;
 
-	return RecordVideo(rcUse, cVideoOpts.m_iFramesPerSecond, strTempFilePath) ? 0UL : 1UL;
-	//return RecordVideo(top, left, width, height, fps, strTempFilePath) ? 0UL : 1UL;
+	return RecordVideo(rcUse, cVideoOpts.m_iFramesPerSecond, strTempVideoAviFilePath) ? 0UL : 1UL;
+	//return RecordVideo(top, left, width, height, fps, strTempVideoAviFilePath) ? 0UL : 1UL;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -3557,10 +3740,10 @@ UINT CRecorderView::RecordVideo()
 // Includes opening/closing avi file, initializing avi settings, capturing
 // frames, applying cursor effects etc.
 /////////////////////////////////////////////////////////////////////////////
-//bool CRecorderView::RecordVideo(int top, int left, int width, int height, int fps, const char *szFileName)
-bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName)
+//bool CRecorderView::RecordVideo(int top, int left, int width, int height, int fps, const char *szVideoFileName)
+bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFileName)
 {
-	TRACE("CRecorderView::RecordVideo (.....) \n");
+	//TRACE("CRecorderView::RecordVideo (.....) \n");
 
 	WORD wVer = HIWORD(VideoForWindowsVersion());
 	if (wVer < 0x010a) {
@@ -3685,9 +3868,9 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 	PAVISTREAM 	psCompressed = NULL;
 	
 	
-	HRESULT hr = ::AVIFileOpen(&pfile, szFileName, OF_WRITE | OF_CREATE, NULL);
+	HRESULT hr = ::AVIFileOpen(&pfile, szVideoFileName, OF_WRITE | OF_CREATE, NULL);
 	if (hr != AVIERR_OK) {
-		TRACE("CRecorderView::RecordVideo: AVIFileOpen error\n");
+		TRACE("CRecorderView::RecordVideo: VideoAviFileOpen error\n");
 		CAVI::OnError(hr);
 		goto error;
 	}
@@ -3780,13 +3963,20 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 
 		//if (iShiftType == 1)
 		//{
-		//	mci::mciRecordPause(tempaudiopath);
+		//	mci::mciRecordPause(strTempAudioWavFilePath);
 		//	unshifted = 1;
 		//}
 	} else if (!cAudioFormat.isInput(NONE)) {
 		InitAudioRecording();
 		StartAudioRecording();
 	}
+
+	//////////////////////////////////////////////
+	// Xnote or MotionDetection log file
+	//////////////////////////////////////////////
+	OpenStreamXnoteLogFile();
+
+
 
 	if (cVideoOpts.m_iShiftType == AUDIOFIRST) {
 		Sleep(cVideoOpts.m_iTimeShift);
@@ -3947,7 +4137,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 		//		ErrMsg("cc %d diffInTime %d", cc-1, diffInTime);
 		//		if ((iRecordAudio == 2) || (bUseMCI))
 		//		{
-		//			mci::mciRecordResume(tempaudiopath);
+		//			mci::mciRecordResume(strTempAudioWavFilePath);
 		//			unshifted = 0;
 		//		}
 		//	}
@@ -4045,7 +4235,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 
 			if (cAudioFormat.isInput(SPEAKERS) || cAudioFormat.m_bUseMCI) {
 				if (bAlreadyMCIPause == 0) {
-					mciRecordPause(hWndGlobal, tempaudiopath);
+					mciRecordPause(hWndGlobal, strTempAudioWavFilePath);
 					bAlreadyMCIPause = true;
 				}
 			}
@@ -4060,7 +4250,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szFileName
 		if (haveslept) {
 			if (cAudioFormat.isInput(SPEAKERS) || cAudioFormat.m_bUseMCI) {
 				if (bAlreadyMCIPause) {
-					mciRecordResume(hWndGlobal, tempaudiopath);
+					mciRecordResume(hWndGlobal, strTempAudioWavFilePath);
 					bAlreadyMCIPause = false;
 				}
 			}
@@ -4113,14 +4303,20 @@ error:
 	// Recording Audio
 	//////////////////////////////////////////////
 	if (cAudioFormat.isInput(SPEAKERS) || cAudioFormat.m_bUseMCI) {
-		GetTempWavePath();
-		mciRecordStop(hWndGlobal, tempaudiopath);
+		GetTempAudioWavPath();
+		mciRecordStop(hWndGlobal, strTempAudioWavFilePath);
 		mciRecordClose();
 		//restoreWave();
 	} else if (!cAudioFormat.isInput(NONE)) {
 		StopAudioRecording();
 		ClearAudioFile();
 	}
+
+	//////////////////////////////////////////////
+	// Close XNote or MotionDetection log file
+	//////////////////////////////////////////////
+	CloseStreamXnoteLogFile();		
+
 
 	if (pfile) {
 		::AVIFileClose(pfile);
@@ -4312,6 +4508,32 @@ VOID CRecorderView::XNoteSetRecordingInPauseMode(void)
 
 
 /////////////////////////////////////////////////////////////////////////////
+// XNoteActionStopwatchResetParams
+// Reset all used params for Xnote that nust be reset after a recording is or should terminate.
+//
+void CRecorderView::XNoteActionStopwatchResetParams(void)
+{
+		// Reset
+		// Once CamStudio recording session shall terminate, Xnote stopwatch params must be reset. 
+		// TODO, put all gelobal params in stuct or class.
+		ulXNoteStartTime = 0UL;
+		ulXNoteLastSnapTime = 0UL;
+
+		iXNoteStartSource			= XNOTE_SOURCE_UNDEFINED;		
+		iXNoteLastSnapSource		= XNOTE_SOURCE_UNDEFINED;		
+		iXNoteStartWithSensor		= XNOTE_TRIGGER_UNDEFINED;
+		iXNoteLastSnapWithSensor	= XNOTE_TRIGGER_UNDEFINED;
+
+		bXNoteSnapRecordingState = false;
+		strcpy(cXNoteLastSnapTimes,"");
+
+		cXNoteOpts.m_ulStartXnoteTickCounter = 0UL;
+		cXNoteOpts.m_ulSnapXnoteTickCounter = 0UL;
+		cXNoteOpts.m_cXnoteStartEntendedInfo.SetString("");
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
 // CRecorderView
 // Processes actions innitiated by XNote WindowsMessages. (Xnote is a stopwatch application. http://www.xnotestopwatch.com/)
 // Allows that external program can work with Camstudio and can instruct CamStudio when to start recording, to pause and to terminate recording.
@@ -4333,7 +4555,7 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID , int iSensorID , int i
 	{
 	case XNOTE_ACTION_STOPWATCH_START:
 		// Start, (Clock is counting)
-		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
+		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], iSensorID:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, iSensorID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
 		//TRACE("## CRecorderView::XNoteProcessWinMessage START Tick:[%ul] XNote:[%ul]\n", GetTickCount(), lXnoteTimeInMilliSeconds);
 
 		if ( ulXNoteStartTime == 0UL) {
@@ -4356,7 +4578,7 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID , int iSensorID , int i
 		// Don't call OnRecord if CamStudio is still recording unless it is paused
 		if ( !GetRecordState() ||
 			 ( GetRecordState() && GetPausedState()	) ){
-			//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], Call OnRecord()..\n"), iActionID);
+			//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], iSensorID:[%d], Call OnRecord()..\n"), iActionID, iSensorID);
 			OnRecord();
 		}
 		break;
@@ -4366,17 +4588,17 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID , int iSensorID , int i
 		// Xnote Stopwatch Clock is on hold but here we do our own counting)
 		// So Camstudio counting will continues and show different times than Xnote Stopwatch..! 
 
-		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
+		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], iSensorID:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, iSensorID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
 		
 		// OnPause will first check that recording is active, no extra checks required here
 		
-		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], Call OnPause()..\n"), iActionID);
+		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], iSensorID:[%d], Call OnPause()..\n"), iActionID, iSensorID);
 		OnPause();
 		break;
 
 	case XNOTE_ACTION_STOPWATCH_SNAP:
 		// Snap, 
-		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
+		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d] iSensorID:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, iSensorID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
 		//TRACE("## CRecorderView::XNoteProcessWinMessage SNAP Tick:[%ul] XNote:[%ul]\n", GetTickCount(), lXnoteTimeInMilliSeconds);
 
 		// Any snap should be recorded. This are the events that are important and must be registrated.
@@ -4399,15 +4621,9 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID , int iSensorID , int i
 		// Add info about how the snap is created.
 		CXnoteStopwatchFormat::FormatXnoteInfoSourceSensor( cTmp, iSourceID, iSensorID );
 
-		// TODO janhgm, write snaptime to file related to current recording.
-		// ------------------
-		// Save snaptime to camstudio4xnote.log to be able to reuse these milestone values.
-		//    Some new code is required here 
-		// -------------------
-
 		// For onScreen reporting of snaptime we only need info about the last seconds  (00.000aa).
 		nStrLengthNew = max (0, strlen(cTmp)-(6+2) );
-		// And previous snaps can be truncated
+		// And previous snaps can be truncated. How much snasps to show should be a user option (TODO)
 		nStrLengthSnaps = max (0, strlen(cXNoteLastSnapTimes)- min(2,strlen(cXNoteLastSnapTimes)/(6+2+1))*(6+2+1) );
 		
 		sprintf( cTmpBuffXNoteTimeStamp, "%s%s ", &cXNoteLastSnapTimes[nStrLengthSnaps], &cTmp[nStrLengthNew] );
@@ -4415,30 +4631,22 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID , int iSensorID , int i
 
 		cXNoteOpts.m_cSnapXnoteTimesString.SetString( cXNoteLastSnapTimes );
 
+		// Write snap timevalue (in ms) to the with the video recording started log file.
+		// Use XML tags because others logs might be written is files in the near future.
+		sprintf( cTmp, "<xnote> <snap> %09lu <\\snap> <frame> <\\frame> <\\xnote>\n", lXnoteTimeInMilliSeconds );
+		WriteLineToXnoteLogFile( cTmp );
+
 		// If recording but paused onRecord must called for release
 		if ( GetRecordState() && GetPausedState() ) {
-			//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], Call OnRecord()..\n"), iActionID);
+			//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d] iSensorID:[%d], Call OnRecord()..\n"), iActionID, iSensorID);
 			OnRecord();
 		}
 		break;
 
 	case XNOTE_ACTION_STOPWATCH_RESET:
-		// Reset, (Clock is reset, CamStudio recording session can terminate)
-		ulXNoteStartTime = 0UL;
-		ulXNoteLastSnapTime = 0UL;
 
-		iXNoteStartSource			= XNOTE_SOURCE_UNDEFINED;		
-		iXNoteLastSnapSource		= XNOTE_SOURCE_UNDEFINED;		
-		iXNoteStartWithSensor		= XNOTE_TRIGGER_UNDEFINED;
-		iXNoteLastSnapWithSensor	= XNOTE_TRIGGER_UNDEFINED;
-
-		bXNoteSnapRecordingState = false;
-		strcpy(cXNoteLastSnapTimes,"");
-
-		cXNoteOpts.m_ulStartXnoteTickCounter = 0UL;
-		cXNoteOpts.m_ulSnapXnoteTickCounter = 0UL;
-		cXNoteOpts.m_cXnoteStartEntendedInfo.SetString("");
-
+		// Call OnStop. OnStop checks is Camstudio is still in recording mode first.
+		XNoteActionStopwatchResetParams();		// Also Include in OnStop buit only if recording is still active
 		OnStop();
 		break;
 
@@ -4447,18 +4655,18 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID , int iSensorID , int i
 		// Call OnRecord if CamStudio is still recording but currently in pause mode
 		if ( GetRecordState() && GetPausedState() ){
 
-			// Reset some values to make sure that recording is start again it shall if duration times out.
+			// Reset some values to make sure that recording will start again it and stops if duration times out.
 			bXNoteSnapRecordingState = true;
 			ulXNoteLastSnapTime = dwCurrTickCount;
 			cXNoteOpts.m_ulSnapXnoteTickCounter = dwCurrTickCount;
 
-			// TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], Motion detected, call OnRecord()..\n"), iActionID);
+			//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d] iSensorID:[%d], Motion detected, call OnRecord()..\n"), iActionID, iSensorID);
 			OnRecord();
 		}
 		break;
 
 	default:
-		TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d]. Xnote or MotionDetector action not assigned.\n"), iActionID);
+		TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d] iSensorID:[%d]. Xnote or MotionDetector action not assigned.\n"), iActionID, iSensorID);
 		break;
 	}
 }
@@ -4495,7 +4703,7 @@ int AddInputBufferToQueue()
 	pHdr->dwBufferLength = buf.ByteLen;
 
 	// prepare it
-	MMRESULT mmReturn = ::waveInPrepareHeader(m_hRecord, pHdr, sizeof(WAVEHDR));
+	MMRESULT mmReturn = ::waveInPrepareHeader(m_hWaveRecord, pHdr, sizeof(WAVEHDR));
 	if (mmReturn) {
 		waveInErrorMsg(mmReturn, "in AddInputBufferToQueue()");
 		// todo: leak? did pHdr get deleted?
@@ -4503,7 +4711,7 @@ int AddInputBufferToQueue()
 	}
 
 	// add the input buffer to the queue
-	mmReturn = ::waveInAddBuffer(m_hRecord, pHdr, sizeof(WAVEHDR));
+	mmReturn = ::waveInAddBuffer(m_hWaveRecord, pHdr, sizeof(WAVEHDR));
 	if (mmReturn) {
 		waveInErrorMsg(mmReturn, "Error in AddInputBufferToQueue()");
 		// todo: leak? did pHdr get deleted?
@@ -4518,6 +4726,7 @@ int AddInputBufferToQueue()
 //===============================================
 // AUDIO CODE
 //===============================================
+
 void waveInErrorMsg(MMRESULT result, const char * addstr)
 {
 	// say error message
@@ -4530,6 +4739,143 @@ void waveInErrorMsg(MMRESULT result, const char * addstr)
 	tstr.LoadString(IDS_STRING_WAVEINERR);
 	MessageBox(NULL, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
 }
+
+//Delete the pSoundFile variable and close existing audio file
+void ClearAudioFile()
+{
+	if (pSoundFile) {
+		delete pSoundFile;	// will close output file
+		pSoundFile = NULL;
+	}
+}
+
+BOOL InitAudioRecording()
+{
+	m_ThreadID = ::GetCurrentThreadId();
+	m_QueuedBuffers = 0;
+	m_hWaveRecord = NULL;
+
+	iBufferSize = 1000; // samples per callback
+
+	cAudioFormat.BuildRecordingFormat();
+
+	ClearAudioFile();
+
+	//Create temporary wav file for audio recording
+	GetTempAudioWavPath();
+	pSoundFile = new CSoundFile(strTempAudioWavFilePath, &(cAudioFormat.AudioFormat()));
+
+	if (!(pSoundFile && pSoundFile->IsOK()))
+		//MessageBox(NULL,"Error Creating Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
+		MessageOut(NULL,IDS_STRING_ERRSOUND,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+
+	return TRUE;
+}
+
+//Initialize the strTempAudioWavFilePath variable with a valid temporary path
+void GetTempAudioWavPath()
+{
+	CString csTempFolder(GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir));	
+
+	//CString fileName;
+	//fileName.Format("\\%s001.wav", TEMPFILETAGINDICATOR );
+	//strTempAudioWavFilePath = GetTempFolder (cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir) + fileName;
+
+	strTempAudioWavFilePath.Format("%s\\%s-%s.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR, (LPCSTR)cVideoOpts.m_cStartRecordingString , "wav" );
+
+	//Test the validity of writing to the file
+	int fileverified = 0;
+	while (!fileverified)
+	{
+		OFSTRUCT ofstruct;
+		HFILE fhandle = OpenFile( strTempAudioWavFilePath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE | OF_CREATE);
+		if (fhandle != HFILE_ERROR) {
+			fileverified = 1;
+			CloseHandle( (HANDLE) fhandle);
+			DeleteFile(strTempAudioWavFilePath);
+		} else {
+			srand( (unsigned)time( NULL));
+			int randnum = rand();
+			char numstr[50];
+			sprintf(numstr,"%d",randnum);
+
+			CString cnumstr(numstr);
+			// CString fxstr;  
+			// fxstr.Format("\\%s", TEMPFILETAGINDICATOR );
+			// CString exstr(".wav");
+			// strTempAudioWavFilePath = GetTempFolder (cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir) + fxstr + cnumstr + exstr;
+			strTempAudioWavFilePath.Format("%s\\%s-%s-%s.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR, (LPCSTR)cVideoOpts.m_cStartRecordingString , cnumstr , "wav" );
+
+			//MessageBox(NULL,strTempAudioWavFilePath,"Uses Temp File",MB_OK);
+			//fileverified = 1;
+			//Try choosing another temporary filename
+		}
+	}
+}
+
+BOOL StartAudioRecording()
+{
+	TRACE(_T("StartAudioRecording\n"));
+
+	// open wavein device
+	// use on message to map.....
+	MMRESULT mmReturn = ::waveInOpen(&m_hWaveRecord, cAudioFormat.m_uDeviceID, &(cAudioFormat.AudioFormat()),(DWORD) hWndGlobal, NULL, CALLBACK_WINDOW);
+	if (mmReturn) {
+		waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
+		return FALSE;
+	}
+
+	// make several input buffers and add them to the input queue
+	for (int i = 0; i < 3; i++) {
+		AddInputBufferToQueue();
+	}
+
+	// start recording
+	mmReturn = ::waveInStart(m_hWaveRecord);
+	if (mmReturn) {
+		waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
+		return FALSE;
+	}
+
+	iAudioTimeInitiated = 1;
+	sdwSamplesPerSec = cAudioFormat.AudioFormat().nSamplesPerSec;
+	sdwBytesPerSec = cAudioFormat.AudioFormat().nAvgBytesPerSec;
+
+	return TRUE;
+}
+
+void StopAudioRecording()
+{
+	MMRESULT mmReturn = ::waveInReset(m_hWaveRecord);
+	if (mmReturn) {
+		waveInErrorMsg(mmReturn, "in Stop()");
+		return;
+	}
+	Sleep(500);
+
+	mmReturn = ::waveInStop(m_hWaveRecord);
+	if (mmReturn) {
+		waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinStop)");
+	}
+
+	mmReturn = ::waveInClose(m_hWaveRecord);
+	if (mmReturn) {
+		waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinClose)");
+	}
+
+	//if (m_QueuedBuffers != 0) ErrorMsg("Still %d buffers in waveIn queue!", m_QueuedBuffers);
+	if (m_QueuedBuffers != 0) {
+		//MessageBox(NULL,"Audio buffers still in queue!","note", MB_OK);
+		MessageOut(NULL,IDS_STRING_AUDIOBUF,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+	}
+
+	iAudioTimeInitiated = 0;
+}
+
+
+//===============================================
+// REGION CODE
+//===============================================
 
 int InitSelectRegionWindow()
 {
@@ -4564,6 +4910,11 @@ int InitDrawShiftWindow()
 
 	return 0;
 }
+
+
+//===============================================
+// HOTKEYS CODE
+//===============================================
 
 bool UnSetHotKeys(HWND hWnd)
 {
@@ -4696,137 +5047,96 @@ int SetHotKeys(int succ[])
 	return nid;
 }
 
-//Delete the pSoundFile variable and close existing audio file
-void ClearAudioFile()
+
+//===============================================
+// XNOTE or MOTION DETECTOR stopwatch supporting CODE
+//===============================================
+
+
+//Delete the hXnoteLogFile variable and close existing log file
+void CloseStreamXnoteLogFile()
 {
-	if (pSoundFile) {
-		delete pSoundFile;	// will close output file
-		pSoundFile = NULL;
+	if ( ioXnoteLogFile.is_open() ) {
+		ioXnoteLogFile.close();
+		pioXnoteLogFile = NULL;
 	}
+
 }
 
-BOOL InitAudioRecording()
+BOOL OpenStreamXnoteLogFile()
 {
-	m_ThreadID = ::GetCurrentThreadId();
-	m_QueuedBuffers = 0;
-	m_hRecord = NULL;
+	CloseStreamXnoteLogFile();
 
-	iBufferSize = 1000; // samples per callback
-
-	cAudioFormat.BuildRecordingFormat();
-
-	ClearAudioFile();
-
-	//Create temporary wav file for audio recording
-	GetTempWavePath();
-	pSoundFile = new CSoundFile(tempaudiopath, &(cAudioFormat.AudioFormat()));
-
-	if (!(pSoundFile && pSoundFile->IsOK()))
-		//MessageBox(NULL,"Error Creating Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
-		MessageOut(NULL,IDS_STRING_ERRSOUND,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+	//Create temporary Xnote Log file for event and log recording
+	GetTempXnoteLogPath();
+	
+	// If file exist is will be overwritten and re created.
+	ioXnoteLogFile.open( strTempXnoteLogFilePath, ios::out );
+	if ( ! ioXnoteLogFile.is_open() )
+	{
+		TRACE("## Opening strTempXnoteLogFilePath failed..!\n");
+	}
 
 	return TRUE;
 }
 
-//Initialize the tempaudiopath variable with a valid temporary path
-void GetTempWavePath()
+void WriteLineToXnoteLogFile( char* pStr )
 {
-	CString fileName("\\~temp001.wav");
-	tempaudiopath = GetTempFolder (cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir) + fileName;
+	//TRACE("## WriteLineToXnoteLogFile pStr=[%s]\n",pStr);
+	if ( ioXnoteLogFile.is_open() ) {
+		ioXnoteLogFile << pStr ;
+	}
+}
 
-	//Test the validity of writing to the file
+
+
+//Initialize the strTempXnoteLogFilePath variable with a valid temporary path
+void GetTempXnoteLogPath()
+{
+	CString csTempFolder(GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir));	
+	strTempXnoteLogFilePath.Format("%s\\%s-%s.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR, (LPCSTR)cVideoOpts.m_cStartRecordingString , "xnote.txt" );
+
+	//Test the validity of writing to this file  (Using the old way with FILE instead of ofstream)
 	int fileverified = 0;
 	while (!fileverified)
 	{
 		OFSTRUCT ofstruct;
-		HFILE fhandle = OpenFile( tempaudiopath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE | OF_CREATE);
+		HFILE fhandle = OpenFile( strTempXnoteLogFilePath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE | OF_CREATE);
 		if (fhandle != HFILE_ERROR) {
 			fileverified = 1;
 			CloseHandle( (HANDLE) fhandle);
-			DeleteFile(tempaudiopath);
+			DeleteFile(strTempXnoteLogFilePath);
 		} else {
+			// Try to open a file with a random number attached till we got a file that can be used.
 			srand( (unsigned)time( NULL));
 			int randnum = rand();
 			char numstr[50];
 			sprintf(numstr,"%d",randnum);
 
 			CString cnumstr(numstr);
-			CString fxstr("\\~temp");
-			CString exstr(".wav");
-			tempaudiopath = GetTempFolder (cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir) + fxstr + cnumstr + exstr;
-
-			//MessageBox(NULL,tempaudiopath,"Uses Temp File",MB_OK);
-			//fileverified = 1;
-			//Try choosing another temporary filename
+			strTempXnoteLogFilePath.Format("%s\\%s-%s-%s.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR, (LPCSTR)cVideoOpts.m_cStartRecordingString , cnumstr , "xnote.txt" );
 		}
 	}
 }
 
+
+//===============================================
+// EXPERIMENTAL CODE
+//===============================================
+
+	// Nothing currently...!
+
+//===============================================
+// OBSOLETE CODE
+// Not used or used and called from dead code branches only
+//===============================================
+
+#ifndef THIS_COULD_BE_OBSOLETE_CODE
 void SetBufferSize(int NumberOfSamples)
 {
 	iBufferSize = NumberOfSamples;
 }
 
-BOOL StartAudioRecording()
-{
-	TRACE(_T("StartAudioRecording\n"));
-
-	// open wavein device
-	// use on message to map.....
-	MMRESULT mmReturn = ::waveInOpen(&m_hRecord, cAudioFormat.m_uDeviceID, &(cAudioFormat.AudioFormat()),(DWORD) hWndGlobal, NULL, CALLBACK_WINDOW);
-	if (mmReturn) {
-		waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
-		return FALSE;
-	}
-
-	// make several input buffers and add them to the input queue
-	for (int i = 0; i < 3; i++) {
-		AddInputBufferToQueue();
-	}
-
-	// start recording
-	mmReturn = ::waveInStart(m_hRecord);
-	if (mmReturn) {
-		waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
-		return FALSE;
-	}
-
-	iAudioTimeInitiated = 1;
-	sdwSamplesPerSec = cAudioFormat.AudioFormat().nSamplesPerSec;
-	sdwBytesPerSec = cAudioFormat.AudioFormat().nAvgBytesPerSec;
-
-	return TRUE;
-}
-
-void StopAudioRecording()
-{
-	MMRESULT mmReturn = ::waveInReset(m_hRecord);
-	if (mmReturn) {
-		waveInErrorMsg(mmReturn, "in Stop()");
-		return;
-	}
-	Sleep(500);
-
-	mmReturn = ::waveInStop(m_hRecord);
-	if (mmReturn) {
-		waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinStop)");
-	}
-
-	mmReturn = ::waveInClose(m_hRecord);
-	if (mmReturn) {
-		waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinClose)");
-	}
-
-	//if (m_QueuedBuffers != 0) ErrorMsg("Still %d buffers in waveIn queue!", m_QueuedBuffers);
-	if (m_QueuedBuffers != 0) {
-		//MessageBox(NULL,"Audio buffers still in queue!","note", MB_OK);
-		MessageOut(NULL,IDS_STRING_AUDIOBUF,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-	}
-
-	iAudioTimeInitiated = 0;
-}
-
-void GetVideoCompressState (HIC hic, DWORD fccHandler);
 void GetVideoCompressState (HIC hic, DWORD fccHandler)
 {
 	DWORD statesize = ICGetStateSize(hic);
@@ -4849,5 +5159,9 @@ void GetVideoCompressState (HIC hic, DWORD fccHandler)
 		}
 	}
 }
+
+#endif  //THIS_COULD_BE_OBSOLETE_CODE
+
+
 
 }	// namespace annonymous

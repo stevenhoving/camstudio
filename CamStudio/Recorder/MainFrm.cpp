@@ -79,7 +79,11 @@ LRESULT CMainFrame::OnMotionDetector(UINT wParam, LONG /*lParam*/ )
 LRESULT CMainFrame::OnXNote(UINT wParam, LONG lParam)
 {
 	// Xnote sends source and action info with wParam
-	dynamic_cast<CRecorderView *>(m_pViewActive)->XNoteProcessWinMessage( HIWORD(wParam), XNOTE_TRIGGER_UNDEFINED, XNOTE_SOURCE_XNOTESTOPWATCH , (ULONG)lParam );
+	//TRACE("##(1) CMainFrame::OnXNote (d)    wParam=[%d] HI[%d], LO[%d]\n",wParam, HIWORD(wParam), LOWORD(wParam) );
+	//TRACE("##(2) CMainFrame::OnXNote (u)    wParam=[%u] HI[%u], LO[%u]\n",wParam, HIWORD(wParam), LOWORD(wParam) );
+	int nHiMod256 = HIWORD(wParam) % 256 ;
+	//TRACE("##(3) CMainFrame::OnXNote (u)    wParam=[%u] HI[%u], LO[%u] nHiMod256=[%d]\n",wParam, HIWORD(wParam), LOWORD(wParam), nHiMod256 );
+	dynamic_cast<CRecorderView *>(m_pViewActive)->XNoteProcessWinMessage( nHiMod256, LOWORD(wParam), XNOTE_SOURCE_XNOTESTOPWATCH , (ULONG)lParam );
 
 	return 0;
 }
