@@ -4,7 +4,7 @@
 
 const int MCI_MAXSTRINGLEN = 128;
 
-int isMciRecordOpen = 0;		// TODO: replace with cMCIDevice.IsOpen()
+int isMciRecordOpen = 0;		// TODO: replace with cMCIDevice.IsOpen().  Looks like that isMciRecordOpen is only assigned and never used anymore.
 
 WAVEFORMATEX m_FormatSpeaker;
 int iAudioBitsPerSampleSpeaker = 16;
