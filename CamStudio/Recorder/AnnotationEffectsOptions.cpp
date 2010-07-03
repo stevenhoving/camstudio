@@ -44,28 +44,25 @@ void CAnnotationEffectsOptionsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_CAPTION_TEXT, m_caption.text);
 	DDX_Control(pDX, IDC_FORMATTIMESTAMPPREVIEW,m_FormatTimestampPreview );
 	DDX_Control(pDX, IDC_FORMAT_XNOTEPREVIEW, m_FormatXNotePreview);
-/*
-	TRACE("## CAnnotationEffectsOptionsDlg::DoDataExchange\n" );
-	TRACE("## -----------------------------------------------\n" );
-	TRACE("## m_CheckBoxXnoteDisplayCameraDelayMode=[%d]\n", m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() );
-	TRACE("## m_bXnoteDisplayCameraDelayMode=[%d]\n", m_bXnoteDisplayCameraDelayMode);
-	TRACE("## m_ulXnoteRecordDurationLimitInMilliSec=[%d]\n", m_ulXnoteRecordDurationLimitInMilliSec);
-	TRACE("## -----------------------------------------------\n" );
-	TRACE("## m_CheckBoxXnoteRecordDurationLimitMode=[%d]\n", m_CheckBoxXnoteRecordDurationLimitMode.GetCheck()  );
-	TRACE("## m_bXnoteRecordDurationLimitMode=[%d]\n", m_bXnoteRecordDurationLimitMode);
-	TRACE("## m_ulXnoteCameraDelayInMilliSec=[%d]\n", m_ulXnoteCameraDelayInMilliSec);
-	TRACE("## -----------------------------------------------\n" );
-*/
+
+	//TRACE("## CAnnotationEffectsOptionsDlg::DoDataExchange\n" );
+	//TRACE("## -----------------------------------------------\n" );
+	//TRACE("## m_CheckBoxXnoteDisplayCameraDelayMode=[%d]\n", m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() );
+	//TRACE("## m_bXnoteDisplayCameraDelayMode=[%d]\n", m_bXnoteDisplayCameraDelayMode);
+	//TRACE("## m_ulXnoteRecordDurationLimitInMilliSec=[%d]\n", m_ulXnoteRecordDurationLimitInMilliSec);
+	//TRACE("## -----------------------------------------------\n" );
+	//TRACE("## m_CheckBoxXnoteRecordDurationLimitMode=[%d]\n", m_CheckBoxXnoteRecordDurationLimitMode.GetCheck()  );
+	//TRACE("## m_bXnoteRecordDurationLimitMode=[%d]\n", m_bXnoteRecordDurationLimitMode);
+	//TRACE("## m_ulXnoteCameraDelayInMilliSec=[%d]\n", m_ulXnoteCameraDelayInMilliSec);
+	//TRACE("## -----------------------------------------------\n" );
+
 	// Init Checkboxes according the correct state
 	m_CheckBoxXnoteDisplayCameraDelayMode.SetCheck( m_bXnoteDisplayCameraDelayMode ? 1 : 0 );
 	m_CheckBoxXnoteRecordDurationLimitMode.SetCheck( m_bXnoteRecordDurationLimitMode ? 1 : 0 ); 
 
-/*
-	TRACE("## m_CheckBoxXnoteDisplayCameraDelayMode=[%d]\n", m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() );
-	TRACE("## m_CheckBoxXnoteRecordDurationLimitMode=[%d]\n", m_CheckBoxXnoteRecordDurationLimitMode.GetCheck()  );
-	TRACE("## -----------------------------------------------\n" );
-*/
-
+	//TRACE("## m_CheckBoxXnoteDisplayCameraDelayMode=[%d]\n", m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() );
+	//TRACE("## m_CheckBoxXnoteRecordDurationLimitMode=[%d]\n", m_CheckBoxXnoteRecordDurationLimitMode.GetCheck()  );
+	//TRACE("## -----------------------------------------------\n" );
 }
 
 BEGIN_MESSAGE_MAP(CAnnotationEffectsOptionsDlg, CDialog)
@@ -231,6 +228,8 @@ int CAnnotationEffectsOptionsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		m_cXnoteDisplayFormatString = CString( cTmpBuff );
 	}
 
+/*
+	// janhgm ..  this code is now obsolete....
 	// Check if options are defined. Apply defaults, otherwise nothing will be seen.
 	if ( m_xnote.textColor == m_xnote.backgroundColor )
 	{
@@ -245,7 +244,7 @@ int CAnnotationEffectsOptionsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// Update text in Formatpreview(Timestamp) and FormatXnotepreview
 	//CAnnotationEffectsOptionsDlg::OnEnChangeFormatpreview();
 	//CAnnotationEffectsOptionsDlg::OnEnChangeFormatXnotepreview();
-
+*/
 	return 0;
 }
 

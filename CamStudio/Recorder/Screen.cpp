@@ -45,18 +45,28 @@ bool CCamera::AddXNote(CDC* pDC)
 {
 	if (m_sXNote.m_bAnnotation) {
 
-		CString str;
+		// CString str;
 		TextAttributes taTmpXNote;
-
-		DWORD dwCurrTickCount =  GetTickCount();
 		char cTmpBuffXNoteTimeStamp[128]= "" ;
+		DWORD dwCurrTickCount =  GetTickCount();
 
-		// strcpy( cTmpBuffXNoteTimeStamp, cXNoteOpts.m_cXnoteStartEntendedInfo);
-		CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmpBuffXNoteTimeStamp, cXNoteOpts.m_ulStartXnoteTickCounter, dwCurrTickCount ,m_sXNote.m_ulXnoteCameraDelayInMilliSec, cXNoteOpts.m_bXnoteDisplayCameraDelayMode );
+		// Determine is Xnote Stopwatch is still running. If not just show regular time.
+		CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( 
+				cTmpBuffXNoteTimeStamp, 
+				cXNoteOpts.m_ulStartXnoteTickCounter, 
+				cXNoteOpts.m_ulStartXnoteTickCounter == 0 ? 0 : dwCurrTickCount,	// Determine is Xnote Stopwatch is still running. If not, show only zero's
+				m_sXNote.m_ulXnoteCameraDelayInMilliSec, 
+				cXNoteOpts.m_bXnoteDisplayCameraDelayMode );
 
+		// Load info how and where user defined to dispaly the annotation
 		taTmpXNote = m_sXNote.m_taXNote;
+
 		// Extend stopwatch info by adding on the last line the (three last) xnote stopwatch snaptimes
-		(void) sprintf( taTmpXNote.text.GetBuffer(128), "%s\n%s\n%s", cXNoteOpts.m_cXnoteStartEntendedInfo,cTmpBuffXNoteTimeStamp, cXNoteOpts.m_cSnapXnoteTimesString); 
+		(void) sprintf( taTmpXNote.text.GetBuffer(128), "%s\n%s\n%s", 
+				cXNoteOpts.m_ulStartXnoteTickCounter == 0 ? "No stopwatch running" : cXNoteOpts.m_cXnoteStartEntendedInfo ,
+				cTmpBuffXNoteTimeStamp, 
+				cXNoteOpts.m_ulStartXnoteTickCounter == 0 ? "Waiting..." : cXNoteOpts.m_cSnapXnoteTimesString ); 
+		
 
 		InsertText(pDC, m_rectFrame, taTmpXNote);
 
@@ -248,6 +258,7 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 	} else {
 
 		// But, If user annoatation setting are not yet updated we have to reconstruct xPos and yPos ratio
+		// Other option is that we just delete this block of code and let user redefine his/her settings.
 
 		// Define outer X offset ratio
 		switch (rTextAttrs.position)
@@ -343,7 +354,43 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 	if (pOldFont){
 		dcBits.SelectObject(pOldFont);
 	}
+
+/*	
+	// Copy of code that could be used as example to rotate an image.
+	// BTW Before we can use it within Camstudio we do a few changes her first
+
+	// BitBlt the starting Bitmap into a memory HDC
+	hdcNew = CreateCompatibleDC(hdc);
+	hBmp = CreateCompatibleBitmap(hdc, 200,200);
+	SelectObject(hdcNew, hBmp);
+	BitBlt(hdcNew, 0, 0, 200, 200, hdc, (rt.right - rt.left - 200) / 2, 0, SRCCOPY);
+
+	// Rotate that memory HDC
+	RotateMemoryDC(hBmp, hdcNew, 200, 200, g_angle, hdcMem, dstX, dstY);
+	DeleteObject(hBmp);
+	DeleteDC(hdcNew);
+
+	// Create the output HDC
+	hdcNew = CreateCompatibleDC(hdc);
+	hBmp = CreateCompatibleBitmap(hdc, 400,400);
+	SelectObject(hdcNew, hBmp);
+	rtmp.left = rtmp.top = 0;
+	rtmp.right = rtmp.bottom = 400;
+
+	// Fill the output HDC with the window background color and BitBlt the rotated bitmap into it
+	FillRect(hdcNew, &rtmp, GetSysColorBrush(COLOR_WINDOW));
+	BitBlt(hdcNew, (400 - dstX) / 2, (400-dstY) / 2, dstX, dstY, hdcMem, 0, 0, SRCCOPY);
+	DeleteDC(hdcMem);
+	BitBlt(hdc, (rt.left + rt.right - 400) / 2, rt.bottom - 400, 400, 400, hdcNew, 0, 0, SRCCOPY);
+	DeleteObject(hBmp);
+	DeleteDC(hdcNew);
+	EndPaint(hWnd, &ps);
+*/
+
+
+
 }
+
 
 void CCamera::InsertHighLight(CDC *pDC, CPoint pt)
 {

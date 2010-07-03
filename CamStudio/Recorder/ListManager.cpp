@@ -53,8 +53,17 @@ int CListManager::RemoveShapeArray(CTransparentWnd * removeWnd, int wantDestroy)
 		}
 	}
 
+	
 	if ((found) && (wantDestroy)) {
 		if (removeWnd) {
+
+			// TODO ???	
+			// OnDestroy issue in cpp.
+			// Output monitor reports: "OnDestroy or PostNcDestroy in derived class will not be called"
+			// To destroy a C++ Windows object, use DestroyWindow, not "delete".
+			// Ref: http://msdn.microsoft.com/en-us/library/5zba4hah%28VS.80%29.aspx
+			//TRACE("## CListManager::RemoveShapeArray - DestroyWindow and delete.\n");
+			
 			removeWnd->DestroyWindow();
 			delete removeWnd;
 		}
@@ -195,6 +204,14 @@ int CListManager::RemoveDisplayArray(CTransparentWnd *removeWnd, int wantDestroy
 
 	if ((found) && (wantDestroy)) {
 		if (removeWnd) {
+		
+			// TODO ???	
+			// OnDestroy issue in cpp.
+			// Output monitor reports: "OnDestroy or PostNcDestroy in derived class will not be called"
+			// To destroy a C++ Windows object, use DestroyWindow, not "delete".
+			// Ref: http://msdn.microsoft.com/en-us/library/5zba4hah%28VS.80%29.aspx
+			//TRACE("## CListManager::RemoveDisplayArray - DestroyWindow and delete.\n");
+				
 			removeWnd->DestroyWindow();
 			delete removeWnd;
 		}

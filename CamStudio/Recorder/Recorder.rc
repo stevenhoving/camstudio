@@ -227,10 +227,10 @@ BEGIN
                 MENUITEM "Use CamStudio Player 1.0",    ID_OPTIONS_PROGRAMOPTIONS_CAMSTUDIOPLAY
                 MENUITEM "Use CamStudio Player 2.0",    ID_OPTIONS_PROGRAMOPTIONS_PLAYAVIFILEWHENRECORDINGSTOPS_USECAMSTUDIOPLAYER20
             END
-            POPUP "Temporary directory for recording"
+            POPUP "Directory for recording"
             BEGIN
                 MENUITEM "Use Windows temporary directory", ID_OPTIONS_TEMPDIR_WINDOWS
-                MENUITEM "Use installed directory",     ID_OPTIONS_TEMPDIR_INSTALLED
+                MENUITEM "Use application installed directory",     ID_OPTIONS_TEMPDIR_INSTALLED
                 MENUITEM "Use user specified directory...", ID_OPTIONS_TEMPDIR_USER
             END
             POPUP "Recording thread priority"
@@ -2206,6 +2206,7 @@ BEGIN
     ID_SCREENS_ALLSCREENS   "Capture all screens"
     ID_SCREENS_CHOOSESCREEN "Choose which screen to capture"
     ID_OPTIONS_VIDEOOPTIONS "Set video options"
+    ID_OPTIONS_NAMING_ASK   "User defined filename"
 END
 
 STRINGTABLE 
@@ -2248,7 +2249,7 @@ BEGIN
                             "Set recording thread priority to time critical"
     ID_OPTIONS_CAPTURETRANS "Allow capture of translucent or layered windows"
     ID_OPTIONS_TEMPDIR_WINDOWS 
-                            "Use Window temporary directory as recording directory"
+                            "Use Window temporary directory (TEMP) as recording directory"
     ID_OPTIONS_TEMPDIR_INSTALLED 
                             "Use CamStudio's installed directory as recording directory"
     ID_OPTIONS_TEMPDIR_USER "Use user specified directory as recording directory"
@@ -2306,7 +2307,8 @@ BEGIN
     IDS_STRING_FILECREATIONERROR 
                             "File Creation Error. Unable to rename/copy file."
     IDS_STRING_NOSOUNDTRACK "Your AVI movie will not contain a soundtrack. CamStudio is unable to merge the video with audio."
-    IDS_STRINGFILECREATION2 "File Creation Error. Unable to rename/copy video file."
+    IDS_STRING_FILECREATION2 
+                            "File Creation Error. Unable to rename/copy video file."
     IDS_STRING_FILECREATION3 
                             "File Creation Error. Unable to rename/copy audio file."
     IDS_STRING_NOMERGE      "CamStudio is unable to merge the video with audio files. Your video and audio files are saved separately as \n\n"
@@ -2322,6 +2324,22 @@ BEGIN
     IDS_STRING_ERRSOUND     "Error creating sound file"
     IDS_STRING_AUDIOBUF     "Audio buffers still in queue!"
     IDS_STRING_ERRSOUND2    "Error Writing Sound File"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING_UNSSC        "Unable to set shortcuts for %s"
+    IDS_ERRPPRODUCER        "Error launching SWF Producer!"
+    IDS_RECAVI              "Record to AVI"
+    IDS_RECSWF              "Record to SWF"
+    IDS_RESTARTAPP          "Application must be restarted to apply the changes!"
+    IDS_ERROR_PLAYER        "Error launching CamStudio Player!"
+    IDS_ERROR_PLAYER2       "Error launching CamStudio Player 2.0!"
+    IDS_STRING_LINEUNDETECTED "Line undetected"
+    IDS_XNOTE_RECORDING_DURATION_ON "Xnote recording: Limited,"
+    IDS_XNOTE_RECORDING_DURATION_OFF "Xnote recording: Continously."
+    IDS_STRING_MOVEFILEFAILURE 
+                            "File Move Error. Unable to move or to rename/copy file. The source file may be opened by another application or destination file stilll exist. Please use another filename."
 END
 
 STRINGTABLE 
@@ -2459,20 +2477,6 @@ BEGIN
                             "Enabling Transparency at a high refresh rate will cause dialog boxes to freeze. If this happens, you will have to close the Video Annotation window to make the dialog boxes appear. Reduce the refresh rate?"
     IDS_STRING_NOWEBCAM     "CamStudio was unable to detect a webcam or video source."
     IDS_STRINGSAVECLLA      "Save Current Layout Library"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_STRING_UNSSC        "Unable to set shortcuts for %s"
-    IDS_ERRPPRODUCER        "Error launching SWF Producer!"
-    IDS_RECAVI              "Record to AVI"
-    IDS_RECSWF              "Record to SWF"
-    IDS_RESTARTAPP          "Application must be restarted to apply the changes!"
-    IDS_ERROR_PLAYER        "Error launching CamStudio Player!"
-    IDS_ERROR_PLAYER2       "Error launching CamStudio Player 2.0!"
-    IDS_STRING_LINEUNDETECTED "Line undetected"
-    IDS_XNOTE_RECORDING_DURATION_ON "Xnote recording: Limited,"
-    IDS_XNOTE_RECORDING_DURATION_OFF "Xnote recording: Continously."
 END
 
 STRINGTABLE 

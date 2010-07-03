@@ -391,6 +391,8 @@ void CVideoOptionsDlg::OnConfigure()
 		// Still unable to handle DIVX state (results in error)
 		//if (pCompressorInfo[sel].fccHandler == mmioFOURCC('D', 'I', 'V', 'X'))
 		//	return;
+
+//TODO, How long is this code stil experimental and soo in use ???
 #define EXPERIMENTAL_CODE
 #ifdef EXPERIMENTAL_CODE
 		CHIC chic;

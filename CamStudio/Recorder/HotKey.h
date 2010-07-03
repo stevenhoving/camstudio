@@ -3,6 +3,14 @@
 /////////////////////////////////////////////////////////////////////////////
 #pragma once
 
+// Values used with Hotkey in program.
+#define HOTKEY_RECORD_START_OR_PAUSE	0
+#define HOTKEY_RECORD_STOP				1
+#define HOTKEY_RECORD_CANCELSTOP		2
+#define HOTKEY_LAYOUT_KEY_NEXT			3
+#define HOTKEY_LAYOUT_KEY_PREVIOUS		4
+#define HOTKEY_LAYOUT_SHOW_HIDE_KEY		5
+
 #include <vector>
 
 const UINT VK_UNDEFINED = 100000;
