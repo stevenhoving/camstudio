@@ -13,6 +13,9 @@
 #include "BasicMessage.h"	// for CBasicMessage
 #include "screen.h"
 
+#define  TEMPFILETAGINDICATOR "~temp"	
+
+
 // forward declaration
 class CRecorderDoc;
 
@@ -57,6 +60,7 @@ public:
 	bool GetRecordState();
 	bool GetPausedState();
 	static VOID XNoteSetRecordingInPauseMode(void);
+	static void XNoteActionStopwatchResetParams(void);
 
 #ifdef _DEBUG
 	virtual void AssertValid() const;

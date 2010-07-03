@@ -65,7 +65,7 @@ CString GetTempFolder(int iAccess, const CString strFolder)
 
 CString GetProgPath()
 {
-	// get root
+	// get root of Camstudio application
 	TCHAR szTemp[300];
 	::GetModuleFileName(NULL, szTemp, 300);
 	CString path = szTemp;
