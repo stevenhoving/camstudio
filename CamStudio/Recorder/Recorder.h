@@ -16,6 +16,7 @@
 #include "CamStudioCommandLineInfo.h"
 #include "Profile.h"
 #include "resource.h"       // main symbols
+#include "RecorderVersionReleaseInfo.h"   // Contains version and SVN release number
 
 //#define WM_APP_REGIONUPDATE	0x00500	// TODO: Should this be a WM_USER/WM_APP message?
 //#define WM_APP_REGIONUPDATE	WM_USER + 0x00100
