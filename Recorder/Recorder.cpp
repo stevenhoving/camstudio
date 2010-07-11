@@ -91,8 +91,14 @@ BOOL CAboutDlg::OnInitDialog()
 
 	// only needs to be done once.
 	CString strBuffer;
+	CString strVersionInfo;
+	strVersionInfo.Format("v%s", CURRENT_VERSION_NUMBER );
+	CString strReleaseInfo;
+	strReleaseInfo.Format("\nBuild on SVN release: r%s", CURRENT_SVN_RELEASE_NUMBER );
+
 	m_ctrlStaticVersion.GetWindowText(strBuffer);
-	strBuffer.Replace("<VERSION>", "2.6");
+	strBuffer.Replace("<VERSION>", _T(strVersionInfo) );
+	strBuffer.Replace("<RELEASE>", _T(strReleaseInfo) );
 	m_ctrlStaticVersion.SetWindowText(strBuffer);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
