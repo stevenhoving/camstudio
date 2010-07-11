@@ -58,10 +58,22 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_SYSCOMMAND()
 END_MESSAGE_MAP()
 
+
+/////////////////////////////////////////////////////////////////////////////
+// CMainFrame::OnMotionDetector
+// Handles XNote supporing WindowsMessages. Xnote is a stopwatch application.  (http://www.xnotestopwatch.com/)
+// MotionDetector is based on the MotionDetection example from Andrew ....
+// Allows that external program can work with Camstudio and can instruct CamStudio when to start recording, to pause and to terminate recording.
+//
+// wParam: loword: id (in  xnote.ini under [General] "id=" key)
+//         hiword: action (1 - start, 2 - stop, 3 - snap, 4 - reset, 5 - release pause)
+// lParam: time in ms  (Near future, as we are able to use camera as timer. Gige Camera required)
+// BTW. Curently only action 5 (release pause, restart recording) is supported
+//////////////////////////////////////////////////////////
 LRESULT CMainFrame::OnMotionDetector(UINT wParam, LONG /*lParam*/ )
 {
 	//TRACE("## CMainFrame::OnMotionDetector (d)    wParam=[%d] HI[%d], LO[%d]\n",wParam, HIWORD(wParam), LOWORD(wParam) );
-	dynamic_cast<CRecorderView *>(m_pViewActive)->XNoteProcessWinMessage( wParam, XNOTE_TRIGGER_MOTIONDETECTOR , XNOTE_SOURCE_MOTIONDETECTOR , NULL );
+	dynamic_cast<CRecorderView *>(m_pViewActive)->XNoteProcessWinMessage( HIWORD(wParam), XNOTE_TRIGGER_MOTIONDETECTOR , XNOTE_SOURCE_MOTIONDETECTOR , NULL );
 
 	return 0;
 }
