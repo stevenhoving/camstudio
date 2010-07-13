@@ -199,6 +199,7 @@ enum eLegacySettings
 	
 	// XNote
 	, XNOTEANNOTATION
+	, XNOTEREMOTECONTROL
 	, XNOTECAMERADELAYINMILLISEC
 	, XNOTEDISPLAYCAMERADELAY
 	, XNOTERECORDDURATIONLIMITINMILLISEC
@@ -1048,34 +1049,38 @@ struct sXNoteOpts
 	// settings here are the ones that are initially used for dialog screen..!
 	sXNoteOpts()
 #ifdef CAMSTUDIO4XNOTE
-		: m_bAnnotation(true)						// True, because I did not managed to read info from config	
+		: m_bAnnotation(true)							// True, because I did not managed to read info from config	
+		, m_bXnoteRemoteControlMode(true)				// Default On: We want that externals as Xnote and Video motion alerts are recognoized by Camstudio.
 #else
-		: m_bAnnotation(false)						// False, default as it should be with stand Camstudio
+		: m_bAnnotation(false)							// False, default as it should be with stand Camstudio
+		, m_bXnoteRemoteControlMode(false)				// Default Off: Minimize the Xnote effects in standard Camstudio
 #endif
 		, m_taXNote(BOTTOM_LEFT)
 		, m_bXnoteDisplayCameraDelayMode(true)			// Default On: Show used delay in capture
-		, m_ulXnoteCameraDelayInMilliSec(175UL)		// Average delay, default 175 ms
+		, m_ulXnoteCameraDelayInMilliSec(175UL)			// Average delay, default 175 ms
 		, m_cXnoteDisplayFormatString("(0000)..00:00:00.000")	// Default (Delay) hh:mm:ss.ttt, Not really a format. As long as the timer is not running this will be showed
 		, m_bXnoteRecordDurationLimitMode(true)			// Default On: Show used delay in capture
 		, m_ulXnoteRecordDurationLimitInMilliSec(1750UL)		// Average recording duration, default 1750 ms. Required otherwise recording lenght is zero
-		, m_ulStartXnoteTickCounter(0)				// A non persistent member
-		, m_ulSnapXnoteTickCounter(0)				// A non persistent member
-		, m_cSnapXnoteTimesString("")				// A non persistent member
+		, m_ulStartXnoteTickCounter(0)					// A non persistent member
+		, m_ulSnapXnoteTickCounter(0)					// A non persistent member
+		, m_cSnapXnoteTimesString("")					// A non persistent member
 	{
 	}
 	sXNoteOpts(const sXNoteOpts& rhs)
 // copy ala sVideoOpts
 #ifdef CAMSTUDIO4XNOTE
 		: m_bAnnotation(true)							// True, because I did not managed to read info from config	
+		, m_bXnoteRemoteControlMode(true)			// Default On: We want that externals as Xnote and Video motion alerts are recognoized by Camstudio.
 #else
 		: m_bAnnotation(false)							// False, default as it should be with stand Camstudio
+		, m_bXnoteRemoteControlMode(false)		// Default Off: Minimize the Xnote effects in standard Camstudio
 #endif
 		, m_taXNote(BOTTOM_LEFT)
-		, m_bXnoteDisplayCameraDelayMode(true)				// Default On: Show used delay in capture
+		, m_bXnoteDisplayCameraDelayMode(true)			// Default On: Show used delay in capture
 		, m_ulXnoteCameraDelayInMilliSec(175UL)			// Average delay, default 175 ms
 		, m_cXnoteDisplayFormatString("(0000)..00:00:00.000")	// Default hh:mm:ss.ttt, Not really a format. As long as the timer is not running this will be showed
 		, m_bXnoteRecordDurationLimitMode(true)			// Default On: Show used delay in capture
-		, m_ulXnoteRecordDurationLimitInMilliSec(1750UL)		// Average recordin duration, default 1750 ms
+		, m_ulXnoteRecordDurationLimitInMilliSec(1750UL)	// Average recordin duration, default 1750 ms
 		, m_ulStartXnoteTickCounter(0UL)				// A non persistent member
 		, m_ulSnapXnoteTickCounter(0UL)					// A non persistent member
 		, m_cSnapXnoteTimesString("")					// A non persistent member
@@ -1090,6 +1095,7 @@ struct sXNoteOpts
 		m_bAnnotation = rhs.m_bAnnotation;
 		m_taXNote = rhs.m_taXNote;
 
+		m_bXnoteRemoteControlMode= rhs.m_bXnoteRemoteControlMode;
 		m_bXnoteDisplayCameraDelayMode = rhs.m_bXnoteDisplayCameraDelayMode;
 		m_ulXnoteCameraDelayInMilliSec = rhs.m_ulXnoteCameraDelayInMilliSec;
 		m_cXnoteDisplayFormatString = rhs.m_cXnoteDisplayFormatString;
@@ -1116,6 +1122,7 @@ struct sXNoteOpts
 		VERIFY(cProfile.Read(XNOTEANNOTATION, m_bAnnotation));
 		VERIFY(cProfile.Read(XNOTETEXTATTRIBUTES, m_taXNote));
 		
+		VERIFY(cProfile.Read(XNOTEREMOTECONTROL, m_bXnoteRemoteControlMode));
 		VERIFY(cProfile.Read(XNOTEDISPLAYCAMERADELAY, m_bXnoteDisplayCameraDelayMode));
 		VERIFY(cProfile.Read(XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec));
 		VERIFY(cProfile.Read(XNOTEDISPLAYFORMATSTRING, m_cXnoteDisplayFormatString));
@@ -1137,6 +1144,7 @@ struct sXNoteOpts
 		//TRACE("## ----------------------------------------------------------------------------\n");			
 		//TRACE("## m_bAnnotation : [%d]\n", m_bAnnotation   );
 		//TRACE("## m_taXNote.text : [%s]\n", m_taXNote.text.GetString()   );
+		//TRACE("## m_bXnoteRemoteControlMode: [%d]\n", m_bXnoteRemoteControlMode  );
 		//TRACE("## m_bXnoteDisplayCameraDelayMode : [%d]\n", m_bXnoteDisplayCameraDelayMode   );
 		//TRACE("## m_ulXnoteCameraDelayInMilliSec : [%lu]\n", m_ulXnoteCameraDelayInMilliSec   );
 		//TRACE("## m_cXnoteDisplayFormatString : [%s]\n", m_cXnoteDisplayFormatString   );
@@ -1152,6 +1160,7 @@ struct sXNoteOpts
 		//TRACE("## ----------------------------------------------------------------------------\n");			
 		//TRACE("## m_bAnnotation : [%d]\n", m_bAnnotation   );
 		//TRACE("## m_taXNote.text : [%s]\n", m_taXNote.text.GetString()   );
+		//TRACE("## m_bXnoteRemoteControlMode: [%d]\n", m_bXnoteRemoteControlMode  );
 		//TRACE("## m_bXnoteDisplayCameraDelayMode : [%d]\n", m_bXnoteDisplayCameraDelayMode   );
 		//TRACE("## m_ulXnoteCameraDelayInMilliSec : [%lu]\n", m_ulXnoteCameraDelayInMilliSec   );
 		//TRACE("## m_cXnoteDisplayFormatString : [%s]\n", m_cXnoteDisplayFormatString   );
@@ -1174,6 +1183,7 @@ struct sXNoteOpts
 		VERIFY(cProfile.Write(XNOTEANNOTATION, m_bAnnotation));
 		VERIFY(cProfile.Write(XNOTETEXTATTRIBUTES, m_taXNote));
 
+		VERIFY(cProfile.Write(XNOTEREMOTECONTROL, m_bXnoteRemoteControlMode));
 		VERIFY(cProfile.Write(XNOTEDISPLAYCAMERADELAY, m_bXnoteDisplayCameraDelayMode));
 		VERIFY(cProfile.Write(XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec));
 		VERIFY(cProfile.Write(XNOTEDISPLAYFORMATSTRING, m_cXnoteDisplayFormatString));
@@ -1187,6 +1197,9 @@ struct sXNoteOpts
 
 	bool	m_bAnnotation;
 	TextAttributes m_taXNote;
+
+	bool	m_bXnoteRemoteControlMode;
+	CButton m_CheckBoxXnoteRemoteControlMode;
 
 	bool	m_bXnoteDisplayCameraDelayMode;
 	ULONG	m_ulXnoteCameraDelayInMilliSec;
