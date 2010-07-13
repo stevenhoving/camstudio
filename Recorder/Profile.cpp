@@ -851,8 +851,10 @@ void CProfile::InitSections()
 	// Xnote Stopwatch 
 #ifdef CAMSTUDIO4XNOTE
 	Add(m_SectionXNote, XNOTEANNOTATION, "xnoteAnnotation", true);
+	Add(m_SectionXNote, XNOTEREMOTECONTROL, "xnoteRemoteControl", true);		
 #else
 	Add(m_SectionXNote, XNOTEANNOTATION, "xnoteAnnotation", false);
+	Add(m_SectionXNote, XNOTEREMOTECONTROL, "xnoteRemoteControl", false);		
 #endif
 	Add(m_SectionXNote, XNOTEDISPLAYCAMERADELAY, "xnoteDisplayCameraDelay", true);		
 	Add(m_SectionXNote, XNOTECAMERADELAYINMILLISEC, "xnoteCameraDelayInMilliSec", 175UL);		
