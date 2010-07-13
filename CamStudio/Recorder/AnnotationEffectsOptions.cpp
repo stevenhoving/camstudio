@@ -33,6 +33,8 @@ void CAnnotationEffectsOptionsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_IMAGE_PATH, m_ctlImagePath);
 	DDX_Text(pDX, IDC_EDIT_TIMESTAMP_FORMAT, m_timestamp.text);
 
+	DDX_Control(pDX, IDC_BUTTON_XNOTEREMOTECONTROLMODE, m_CheckBoxXnoteRemoteControlMode );
+
 	DDX_Text(pDX, IDC_EDIT_XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec  );
 	DDX_Control(pDX, IDC_BUTTON_XNOTEDISPLAYCAMERADELAYMODE, m_CheckBoxXnoteDisplayCameraDelayMode );
 
@@ -57,6 +59,7 @@ void CAnnotationEffectsOptionsDlg::DoDataExchange(CDataExchange* pDX)
 	//TRACE("## -----------------------------------------------\n" );
 
 	// Init Checkboxes according the correct state
+	m_CheckBoxXnoteRemoteControlMode.SetCheck( m_bXnoteRemoteControlMode ? 1 : 0 );
 	m_CheckBoxXnoteDisplayCameraDelayMode.SetCheck( m_bXnoteDisplayCameraDelayMode ? 1 : 0 );
 	m_CheckBoxXnoteRecordDurationLimitMode.SetCheck( m_bXnoteRecordDurationLimitMode ? 1 : 0 ); 
 
@@ -69,7 +72,9 @@ BEGIN_MESSAGE_MAP(CAnnotationEffectsOptionsDlg, CDialog)
 
 	ON_EN_CHANGE(IDC_EDIT_TIMESTAMP_FORMAT, &CAnnotationEffectsOptionsDlg::OnEnChangeEditTimestampFormat)
 	ON_BN_CLICKED(IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS, OnBnClickedButtonTimestampFormatOptions)
-	
+
+	ON_BN_CLICKED(IDC_BUTTON_XNOTEREMOTECONTROLMODE, &CAnnotationEffectsOptionsDlg::OnBnClickedButtonXnoteRemoteControlMode)
+
 	ON_EN_CHANGE(IDC_EDIT_XNOTECAMERADELAYINMILLISEC, &CAnnotationEffectsOptionsDlg::OnEnChangeEditXNoteCameraDelayInMilliSec)
 	ON_BN_CLICKED(IDC_BUTTON_XNOTEDISPLAYCAMERADELAYMODE, &CAnnotationEffectsOptionsDlg::OnBnClickedXNoteDisplayCameraDelayMode)
 
@@ -185,9 +190,11 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedOk()
 	}
 
 	// Convert values that are defined by buttons again to bools or other values.
+	m_bXnoteRemoteControlMode = m_CheckBoxXnoteRemoteControlMode.GetCheck() ? true : false ;
 	m_bXnoteDisplayCameraDelayMode = m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() ? true : false ;
 	m_bXnoteRecordDurationLimitMode = m_CheckBoxXnoteRecordDurationLimitMode.GetCheck() ? true : false ;
 
+	Invalidate();
 	OnOK();
 }
 
@@ -228,23 +235,6 @@ int CAnnotationEffectsOptionsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		m_cXnoteDisplayFormatString = CString( cTmpBuff );
 	}
 
-/*
-	// janhgm ..  this code is now obsolete....
-	// Check if options are defined. Apply defaults, otherwise nothing will be seen.
-	if ( m_xnote.textColor == m_xnote.backgroundColor )
-	{
-		m_xnote.backgroundColor = RGB(255,255,255);
-		m_xnote.textColor = RGB(0,0,0);
-		m_xnote.logfont.lfHeight = 12;
-		m_xnote.text = m_cXnoteDisplayFormatString;
-	}
-
-	// Todo
-	// Set here al the values and action you want to msut be doen before windows are launched.
-	// Update text in Formatpreview(Timestamp) and FormatXnotepreview
-	//CAnnotationEffectsOptionsDlg::OnEnChangeFormatpreview();
-	//CAnnotationEffectsOptionsDlg::OnEnChangeFormatXnotepreview();
-*/
 	return 0;
 }
 
@@ -349,4 +339,9 @@ void CAnnotationEffectsOptionsDlg::OnEnChangeFormatpreview()
 		m_FormatTimestampPreview.SetWindowTextA("Error in timestamp format!");
 	}
 
+}
+
+void CAnnotationEffectsOptionsDlg::OnBnClickedButtonXnoteRemoteControlMode()
+{
+	// TODO: Add your control notification handler code here
 }

@@ -518,11 +518,12 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About CamStudio Recorder"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    CONTROL         189,IDC_STATIC,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_REALSIZEIMAGE,55,6,171,58,WS_EX_DLGMODALFRAME
-    DEFPUSHBUTTON   "OK",IDOK,111,73,60,15,WS_GROUP
-    CTEXT           "CamStudio Recorder <VERSION><RELEASE>\n\nCopyright © 2001 RenderSoft Software and Web Publishing\nCopyright © 2008 CamStudio Group && Contributors\n\nBugfixes and additional features added by Nick the Geek and others.",IDC_STATIC_VERSION,7,97,267,56
-    PUSHBUTTON      "Visit the CamStudio website",IDC_BUTTONLINK,36,162,102,33,BS_FLAT
-    PUSHBUTTON      "Please donate to support Camstudio's development",IDC_BUTTONLINK2,144,162,102,33,BS_MULTILINE | BS_FLAT
+    CONTROL         189,IDC_STATIC,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_REALSIZEIMAGE,55,6,166,42,WS_EX_DLGMODALFRAME
+    DEFPUSHBUTTON   "OK",IDOK,111,53,60,15,WS_GROUP
+    CTEXT           "CamStudio Recorder <VERSION> <RELEASE> <XNOTESTOPWATCHSUPPORT> <BUGFIXES> <COPYRIGHT-1> <COPYRIGHT-2>",IDC_STATIC_VERSION,7,72,267,71
+    PUSHBUTTON      "Visit the \nCamStudio website",IDC_BUTTONLINK3,20,145,102,28,BS_MULTILINE | BS_FLAT
+    PUSHBUTTON      "Visit the \nXnoteCamstudio website",IDC_BUTTONLINK,156,145,102,28,BS_MULTILINE | BS_FLAT
+    PUSHBUTTON      "Please donate to support Camstudio's development",IDC_BUTTONLINK2,19,177,238,22,BS_MULTILINE | BS_FLAT
 END
 
 IDD_VIDEOOPTIONS DIALOGEX 0, 0, 303, 258
@@ -961,36 +962,39 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Effects options"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Time stamp",IDC_STATIC,7,14,240,61,WS_GROUP
-    EDITTEXT        IDC_EDIT_XNOTE_FORMAT,195,153,50,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_VISIBLE | NOT WS_TABSTOP
-    EDITTEXT        IDC_EDIT_XNOTECAMERADELAYINMILLISEC,16,111,39,14,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "Format",IDC_STATIC,17,29,24,8
-    EDITTEXT        IDC_EDIT_TIMESTAMP_FORMAT,17,38,157,14,ES_AUTOHSCROLL | WS_GROUP
-    PUSHBUTTON      "Options...",IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS,186,38,50,14,WS_GROUP
-    LTEXT           "Preview:",IDC_STATIC,20,59,29,8
-    EDITTEXT        IDC_FORMATTIMESTAMPPREVIEW,55,57,176,14,ES_AUTOHSCROLL | ES_READONLY | WS_GROUP
-    GROUPBOX        "Stopwatch timestamp",IDC_STATIC,7,81,239,113
-    PUSHBUTTON      "Options...",IDC_BUTTON_XNOTECAMERADELAYMODE,189,140,50,14
-    EDITTEXT        IDC_FORMAT_XNOTEPREVIEW,15,139,108,14,ES_AUTOHSCROLL | ES_READONLY
-    GROUPBOX        "Caption",IDC_STATIC,7,196,240,45
-    LTEXT           "Text",IDC_STATIC,17,206,16,8
-    EDITTEXT        IDC_EDIT_CAPTION_TEXT,17,216,160,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "Options...",IDC_BUTTON_CAPTION_OPTIONS,189,215,50,14
-    GROUPBOX        "Water mark",IDC_STATIC,7,246,240,58
-    LTEXT           "Image Path",IDC_STATIC,17,256,38,8
-    EDITTEXT        IDC_EDIT_IMAGE_PATH,17,266,195,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "...",IDC_BUTTON_IMAGE_PATH,216,264,23,17
-    PUSHBUTTON      "Options...",IDC_BUTTON_WATERMARK_OPTIONS,189,284,50,14
+    GROUPBOX        "Time stamp",IDC_STATIC,7,10,240,55,WS_GROUP
+    LTEXT           "Format",IDC_STATIC,17,20,24,8
+    EDITTEXT        IDC_EDIT_TIMESTAMP_FORMAT,17,29,157,14,ES_AUTOHSCROLL | WS_GROUP
+    PUSHBUTTON      "Options...",IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS,186,29,50,14,WS_GROUP
+    LTEXT           "Preview:",IDC_STATIC,20,50,29,8
+    EDITTEXT        IDC_FORMATTIMESTAMPPREVIEW,55,48,176,14,ES_AUTOHSCROLL | ES_READONLY | WS_GROUP
+    GROUPBOX        "Stopwatch timestamp",IDC_STATIC,7,71,239,126
+    LTEXT           "Stopwatch functions are triggered by external applications as Xnote Stopwatch or Motion Alerter.",IDC_STATIC,18,80,218,19
+    LTEXT           "Set stopwatch delay time in milliseconds to sync with recording.",IDC_STATIC,17,110,218,11
+    EDITTEXT        IDC_EDIT_XNOTECAMERADELAYINMILLISEC,16,120,39,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Show display delay in annotation",IDC_BUTTON_XNOTEDISPLAYCAMERADELAYMODE,
+                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,58,123,121,10
+    LTEXT           "Format preview:",IDC_STATIC,18,136,59,8
+    EDITTEXT        IDC_FORMAT_XNOTEPREVIEW,15,145,108,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "Options...",IDC_BUTTON_XNOTECAMERADELAYMODE,189,146,50,14
+    LTEXT           "Switch to Pause mode N milli seconds after a Xnote event occured.",IDC_STATIC,17,168,221,8
+    EDITTEXT        IDC_EDIT_XNOTERECORDDURATIONLIMITINMILLISEC,15,178,39,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Enable Xnote auto pause functionality",IDC_BUTTON_XNOTERECORDDURATIONLIMITMODE,
+                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_GROUP | WS_TABSTOP,57,180,137,10
+    EDITTEXT        IDC_EDIT_XNOTE_FORMAT,196,182,50,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_VISIBLE | NOT WS_TABSTOP
+    GROUPBOX        "Caption",IDC_STATIC,7,202,240,41
+    LTEXT           "Text",IDC_STATIC,17,212,16,8
+    EDITTEXT        IDC_EDIT_CAPTION_TEXT,17,222,160,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Options...",IDC_BUTTON_CAPTION_OPTIONS,189,221,50,14
+    GROUPBOX        "Water mark",IDC_STATIC,7,248,240,57
+    LTEXT           "Image Path",IDC_STATIC,17,259,38,8
+    EDITTEXT        IDC_EDIT_IMAGE_PATH,17,269,195,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BUTTON_IMAGE_PATH,216,267,23,17
+    PUSHBUTTON      "Options...",IDC_BUTTON_WATERMARK_OPTIONS,189,287,50,14
     DEFPUSHBUTTON   "OK",IDOK,141,315,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,197,315,50,14
-    LTEXT           "Stopwatch function is triggered by Xnote Windows message.\nDisplays (delayed) stopwatch time in milliseconds in recording.",IDC_STATIC,18,91,210,17
-    CONTROL         "Display delay",IDC_BUTTON_XNOTEDISPLAYCAMERADELAYMODE,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,58,114,58,10
-    CONTROL         "Use Auto pause ",IDC_BUTTON_XNOTERECORDDURATIONLIMITMODE,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_GROUP | WS_TABSTOP,57,177,69,10
-    EDITTEXT        IDC_EDIT_XNOTERECORDDURATIONLIMITINMILLISEC,15,175,39,14,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "Pause recording N milli secs after Xnote event",IDC_STATIC,17,165,210,8
-    LTEXT           "Format preview:",IDC_STATIC,18,130,59,8
+    CONTROL         "Enable external control",IDC_BUTTON_XNOTEREMOTECONTROLMODE,
+                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,17,97,90,10
 END
 
 IDD_EFFECTS_OPTIONS2 DIALOGEX 0, 0, 206, 154
@@ -2220,7 +2224,7 @@ BEGIN
     ID_AVISWF               "Toggle mode to record AVI or Flash"
     ID_OPTIONS_NAMING_ASK   "User defined filename"
     ID_XNOTE_RECORDDURATIONLIMITMODE 
-                            "Ignore autostop if recording is triggered with Xnote stopwatch"
+                            "Requires Xnote Stopwatch to enable auto pause functionality."
     ID_OPTIONS_PROGRAMOPTIONS_NAMINGOFFILES_AUTOMATICFILENAMINGUSEDATETIME 
                             "Automatically use today's date and time to name the file"
     ID_OPTIONS_PROGRAMOPTIONS_SAVINGOFAVINAMING_AUTOMATICFILENAMINGFIXEDNAME 
@@ -2359,8 +2363,8 @@ BEGIN
     IDS_ERROR_PLAYER        "Error launching CamStudio Player!"
     IDS_ERROR_PLAYER2       "Error launching CamStudio Player 2.0!"
     IDS_STRING_LINEUNDETECTED "Line undetected"
-    IDS_XNOTE_RECORDING_DURATION_ON "Xnote recording: Limited,"
-    IDS_XNOTE_RECORDING_DURATION_OFF "Xnote recording: Continously."
+	IDS_XNOTE_RECORDING_DURATION_ON "Xnote:<X> Stamp:<S> Rec:Limited,"
+	IDS_XNOTE_RECORDING_DURATION_OFF "Xnote:<X> Stamp:<S> Rec:Continuously."
     IDS_STRING_MOVEFILEFAILURE 
                             "File Move Error. Unable to move or to rename/copy file. The source file may be opened by another application or destination file stilll exist. Please use another filename."
 END

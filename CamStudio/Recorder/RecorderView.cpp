@@ -528,6 +528,7 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_NAMING_ASK, OnUpdateOptionsNamingAsk)
 	ON_COMMAND(ID_OPTIONS_KEYBOARDSHORTCUTS, OnOptionsKeyboardshortcuts)
 	ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_TROUBLESHOOT, OnOptionsProgramoptionsTroubleshoot)
+	ON_COMMAND(ID_CAMSTUDIO4XNOTE_WEBSITE, OnCamstudio4XnoteWebsite)
 	//}}AFX_MSG_MAP
 	// Standard printing commands
 	ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
@@ -1549,6 +1550,24 @@ void CRecorderView::OnHelpWebsite()
 	//Openlink("http://www.rendersoftware.com");
 	Openlink("http://www.camstudio.org");
 }
+
+
+void CRecorderView::OnCamstudio4XnoteWebsite()
+{
+	/*
+	Hi Jan
+	I'll be happy to publish new beta releases regularly when my new team (in the future ;o) compiles the code into binaries.
+	Feel free to increase the size of the About box to allow you to put your text and link into it.
+	XNote Reference check: that would be great.
+	Maybe only show the XNote settings info in the CamStudio Recorder display area if XNote/MotionControl are connected? The less people have to try and figure out, the better ;o)
+	Cheers
+	Nick :o)
+	*/
+
+	//Openlink("http://www.xnotestopwatch.com");
+	Openlink("http://www.jahoma.nl/timereg");
+}
+
 
 void CRecorderView::OnHelpHelp()
 {
@@ -3195,12 +3214,14 @@ void CRecorderView::OnAnnotationAddXNote()
 {
 	// Why do we use a .not. here? Because we clicked the button and need to toggle checkbox now
 	cXNoteOpts.m_bAnnotation = !cXNoteOpts.m_bAnnotation;
+	Invalidate();
 }
 
 void CRecorderView::OnUpdateAnnotationAddXNote(CCmdUI *pCmdUI)
 {
 	// Show current selection on screen
 	pCmdUI->SetCheck(cXNoteOpts.m_bAnnotation);
+	Invalidate();
 }
 //////////
 
@@ -3234,6 +3255,17 @@ void CRecorderView::OnXnoteRecordDurationLimitMode()
 {
 	//TRACE ("## CRecorderView::OnXnoteRecordDurationLimitMode  SWITCH States\n");
 
+#ifndef CAMSTUDIO4XNOTE
+	// For the regular Camstudio Nick asked not to show to much info 
+	// To prevent that normal users might get puzzeled too much about why Xnote info string is updated we quite here.
+	if ( !cXNoteOpts.m_bXnoteRemoteControlMode ) {
+		// To be sure that all info on screen will be updated
+		Invalidate();
+		return;
+	}
+#endif
+
+
 	// Toggle, settings for the running program are changed
 	cXNoteOpts.m_bXnoteRecordDurationLimitMode = !cXNoteOpts.m_bXnoteRecordDurationLimitMode;
 	
@@ -3247,7 +3279,7 @@ void CRecorderView::OnXnoteRecordDurationLimitMode()
 		ulXNoteLastSnapTime = GetTickCount();
 	}
 
-	// Prepare info to show
+	// Prepare info to show.
 	CString csXnoteAutoPauseMsg;
 	if ( cXNoteOpts.m_bXnoteRecordDurationLimitMode ) {
 	csXnoteAutoPauseMsg.Format("Xnote Limited recording mode : On, duration %d ms",  
@@ -3255,7 +3287,7 @@ void CRecorderView::OnXnoteRecordDurationLimitMode()
 	} else {
 		csXnoteAutoPauseMsg.SetString( _T("Xnote Limited recording mode : Off") );
 	}
-	
+
 	CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
 	pStatus->SetPaneText(0, _T( csXnoteAutoPauseMsg.GetString() ) );
 
@@ -3302,6 +3334,7 @@ void CRecorderView::OnEffectsOptions()
 	* Checkbox (Button) element in the dialog. When dialog is closed (OK) checkbox state must be assigned to the bool vars again
 	* This all will be done in CAnnotationEffectsOptionsDlg::DoDataExchange and CAnnotationEffectsOptionsDlg::OnBnClickedOk() 
 	*/
+	dlg.m_bXnoteRemoteControlMode      = cXNoteOpts.m_bXnoteRemoteControlMode; 
 	dlg.m_bXnoteDisplayCameraDelayMode = cXNoteOpts.m_bXnoteDisplayCameraDelayMode; 
 	dlg.m_ulXnoteCameraDelayInMilliSec = cXNoteOpts.m_ulXnoteCameraDelayInMilliSec; 
 
@@ -3317,6 +3350,7 @@ void CRecorderView::OnEffectsOptions()
 
 		// xnote stopwatch
 		cXNoteOpts.m_taXNote = dlg.m_xnote;
+		cXNoteOpts.m_bXnoteRemoteControlMode      =  dlg.m_bXnoteRemoteControlMode;
 		cXNoteOpts.m_bXnoteDisplayCameraDelayMode =  dlg.m_bXnoteDisplayCameraDelayMode;
 		cXNoteOpts.m_ulXnoteCameraDelayInMilliSec = dlg.m_ulXnoteCameraDelayInMilliSec;
 		
@@ -3532,14 +3566,29 @@ void CRecorderView::DisplayRecordingMsg(CDC & srcDC)
 
 	//TRACE("## CRecorderView::DisplayRecordingMsg  CAMSTUDIO4XNOTE Effect:[%d]  Option:[%d]\n", cXNoteOpts.m_bAnnotation , cXNoteOpts.m_bXnoteRecordDurationLimitMode);
 	// Show informational text only if Xnote stopwatch is also activated as an effect option  XNOTEANNOTATION = On
-	if (cXNoteOpts.m_bAnnotation) {
+
+//	if (cXNoteOpts.m_bAnnotation) {
 		CString msgXnoteMode;
-		if ( cXNoteOpts.m_bXnoteRecordDurationLimitMode ) {
-			msgXnoteMode.LoadString( IDS_XNOTE_RECORDING_DURATION_ON );
-			msgXnoteMode.AppendFormat( " %lu ms.", cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec );
+
+#ifndef CAMSTUDIO4XNOTE
+		if ( cXNoteOpts.m_bXnoteRemoteControlMode ) {
+#endif
+			if ( cXNoteOpts.m_bXnoteRecordDurationLimitMode ) {
+				// IDS_XNOTE_RECORDING_DURATION_ON "Xnote:<X> Stamp:<S> Rec:Limited,"
+				msgXnoteMode.LoadString( IDS_XNOTE_RECORDING_DURATION_ON );
+				msgXnoteMode.AppendFormat( " %lu ms.", cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec );
+			} else {
+				// IDS_XNOTE_RECORDING_DURATION_OFF "Xnote:<X> Stamp:<S> Rec:Continuously."
+				msgXnoteMode.LoadString( IDS_XNOTE_RECORDING_DURATION_OFF );
+			}
+			msgXnoteMode.Replace("<X>", _T(cXNoteOpts.m_bXnoteRemoteControlMode ? "On" : "Off" ) );
+			msgXnoteMode.Replace("<S>", _T(cXNoteOpts.m_bAnnotation ? "On" : "Off" ) );
+
+#ifndef CAMSTUDIO4XNOTE
 		} else {
-			msgXnoteMode.LoadString( IDS_XNOTE_RECORDING_DURATION_OFF );
+			msgXnoteMode.SetString("");
 		}
+#endif
 		CSize sizeXnoteExtent = srcDC.GetTextExtent(msgXnoteMode);
 
 		CRect rectClientXnoteMsg;
@@ -3549,7 +3598,7 @@ void CRecorderView::DisplayRecordingMsg(CDC & srcDC)
 		srcDC.Rectangle(&rectXnoteMode);
 		srcDC.Rectangle(rectXnoteMode.left - 3, rectXnoteMode.top - 3, rectXnoteMode.right + 3, rectXnoteMode.bottom + 3);
 		srcDC.TextOut(rectXnoteMode.left, rectXnoteMode.top,  msgXnoteMode);
-	}
+//	}
 
 	srcDC.SelectObject(pOldPen);
 	srcDC.SelectObject(pOldBrush);
@@ -4472,6 +4521,11 @@ void CRecorderView::XNoteActionStopwatchResetParams(void)
 
 VOID CRecorderView::XNoteProcessWinMessage(int iActionID , int iSensorID , int iSourceID , ULONG lXnoteTimeInMilliSeconds )
 {
+	if ( !cXNoteOpts.m_bXnoteRemoteControlMode ) {
+		TRACE(_T("## CRecorderView::XNoteProcessWinMessage RemoteControl OFF : iActionID:[%d], iSensorID:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, iSensorID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
+		return;
+	}
+
 	DWORD dwCurrTickCount =  GetTickCount();
 //	int nStrLength = 0;
 	int nStrLengthNew = 0;

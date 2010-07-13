@@ -190,6 +190,8 @@ protected:
 	afx_msg void OnHelpCamstudioblog();
 	afx_msg void OnBnClickedButtonlink();
 	afx_msg void OnUpdateOptionsAudiooptionsAudiovideosynchronization(CCmdUI *pCmdUI);
+
+	afx_msg void OnCamstudio4XnoteWebsite();  // OnHelpWebsite
 	//}}AFX_MSG
 	afx_msg LRESULT OnRecordStart (UINT wParam, LONG lParam);
 	afx_msg LRESULT OnRecordInterrupted (UINT wParam, LONG lParam);

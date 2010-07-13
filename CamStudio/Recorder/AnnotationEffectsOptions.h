@@ -36,6 +36,9 @@ public:
 	TextAttributes	m_xnote;
 	ULONG	m_ulXnoteCameraDelayInMilliSec;
 
+	CButton m_CheckBoxXnoteRemoteControlMode;
+	bool	m_bXnoteRemoteControlMode;		// A bool but says if exteral conttol functions as Xnote Stopwatch and Video Motion Alerter are enabled.
+
 	CButton m_CheckBoxXnoteDisplayCameraDelayMode;
 	bool	m_bXnoteDisplayCameraDelayMode;			// A bool but dialog requires that checkbox is a CButton.
 
@@ -67,6 +70,7 @@ public:
 	afx_msg void OnEnChangeFormatpreview();
 	
 	afx_msg void OnEnChangeEditXNoteCameraDelayInMilliSec();
+	afx_msg void OnBnClickedButtonXnoteRemoteControlMode();
 	afx_msg void OnBnClickedXNoteDisplayCameraDelayMode();
 
 	afx_msg void OnEnChangeEditXnoteRecordDurationLimitInMilliSec();

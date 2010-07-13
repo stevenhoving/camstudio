@@ -5,7 +5,7 @@
 
 // Define CAMSTUDIO4XNOTE if this is a custom build release for Xnote Stopwatch users (2010/05/28, Janhgm)
 // Setting this defines will preconfigure a few innitial settings
-#define CAMSTUDIO4XNOTE
+// #define CAMSTUDIO4XNOTE
 
 
 // Stopwatch sources applications

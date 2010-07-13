@@ -58,6 +58,9 @@ public:
 	virtual BOOL OnInitDialog();
 private:
 	CStatic m_ctrlStaticVersion;
+public:
+	afx_msg void OnStnClickedStaticVersion();
+	afx_msg void OnBnClickedButtonlink3();
 };
 
 CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
@@ -79,6 +82,8 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTONLINK, OnButtonlink)
 	ON_BN_CLICKED(IDC_BUTTONLINK2, OnBnClickedButtonlink2)
 	//}}AFX_MSG_MAP
+	ON_STN_CLICKED(IDC_STATIC_VERSION, &CAboutDlg::OnStnClickedStaticVersion)
+	ON_BN_CLICKED(IDC_BUTTONLINK3, &CAboutDlg::OnBnClickedButtonlink3)
 END_MESSAGE_MAP()
 
 BEGIN_EVENTSINK_MAP(CAboutDlg, CDialog)
@@ -92,13 +97,19 @@ BOOL CAboutDlg::OnInitDialog()
 	// only needs to be done once.
 	CString strBuffer;
 	CString strVersionInfo;
-	strVersionInfo.Format("v%s", CURRENT_VERSION_NUMBER );
+	strVersionInfo.Format("v%s\n", CURRENT_VERSION_NUMBER );
 	CString strReleaseInfo;
-	strReleaseInfo.Format("\nBuild on SVN release: r%s", CURRENT_SVN_RELEASE_NUMBER );
+	strReleaseInfo.Format("Build on SVN release: r%s\n", CURRENT_SVN_RELEASE_NUMBER );
 
+    // CamStudio Recorder <VERSION><RELEASE><XNOTESTOPWATCHSUPPORT><BUGFIXES><COPYRIGHT-1><COPYRIGHT-2>
 	m_ctrlStaticVersion.GetWindowText(strBuffer);
 	strBuffer.Replace("<VERSION>", _T(strVersionInfo) );
 	strBuffer.Replace("<RELEASE>", _T(strReleaseInfo) );
+	strBuffer.Replace("<XNOTESTOPWATCHSUPPORT>", "\nXNoteStopwatch support coded by JanHgm (www.jahoma.nl/timereg)\n" );
+	strBuffer.Replace("<BUGFIXES>", "Bugfixes and additional features added by Nick the Geek and others.\n" );
+	strBuffer.Replace("<COPYRIGHT-1>", "\nCopyright © 2001 RenderSoft Software and Web Publishing\n" );
+	strBuffer.Replace("<COPYRIGHT-2>", "Copyright © 2008 CamStudio Group && Contributors\n" );
+
 	m_ctrlStaticVersion.SetWindowText(strBuffer);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -114,7 +125,7 @@ void CAboutDlg::OnBnClickedButtonlink2()
 void CAboutDlg::OnButtonlink()
 {
 	// TODO: Add your control notification handler code here
-	::PostMessage(hWndGlobal,WM_COMMAND,ID_HELP_WEBSITE,0);
+	::PostMessage(hWndGlobal,WM_COMMAND,ID_CAMSTUDIO4XNOTE_WEBSITE,0);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -369,3 +380,14 @@ bool CRecorderApp::RegisterWindowClass()
 	return true;
 }
 
+
+void CAboutDlg::OnStnClickedStaticVersion()
+{
+	// TODO: Add your control notification handler code here
+}
+
+void CAboutDlg::OnBnClickedButtonlink3()
+{
+	// TODO: Add your control notification handler code here
+	::PostMessage(hWndGlobal,WM_COMMAND,ID_HELP_WEBSITE,0);
+}
