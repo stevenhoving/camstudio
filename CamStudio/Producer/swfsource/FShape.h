@@ -4,6 +4,13 @@
 #include <vector>
 #include "FBase.h"
 
+/*
+With revision Rev 249 we adde a file fshape.h (all lowercase) instead of an update of FShape.h (Some uppercase, this was before Rev.25)
+With revision 264+ we are correcting this.
+With and update of all changes as FShape.h  
+With removing obsolete file fshape.h
+*/
+
 class FlashShapeCommon
 {
 public:
@@ -27,8 +34,11 @@ public:
 
 	DEFINE_FLASHCOPY_INTERFACE( FlashFillStyle, FlashFillStyle );
 
+#pragma warning ( push )
+#pragma warning ( disable : 4100 )
 	virtual void Write(N_STD::ostream &out) {}
 	virtual void Read(N_STD::istream &in) {}
+#pragma warning ( pop )
 	
 	UBYTE GetType() const { return type; }
 
