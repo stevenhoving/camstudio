@@ -1,6 +1,14 @@
 #ifndef FLASH_IMPORT_H_FILE
 #define FLASH_IMPORT_H_FILE
 
+/*
+With revision Rev 249 we adde a file fimport.h (all lowercase) instead of an update of FImport.h (Some uppercase, this was before Rev.25)
+With revision 264+ we are correcting this.
+With and update of all changes as FImport.h  
+With removing obsolete file fimport.h
+*/
+
+
 #include "FBase.h"
 #include "FDisplay.h"
 #include "FControl.h"
@@ -13,9 +21,13 @@
 
 #include <iostream>
 
+#pragma warning( push )
+#pragma warning (disable: 4100)
+
 class FlashImportHandler
 {
 public:
+
 	FlashImportHandler() {}
 
 	virtual void Import(FlashHeader &data) {}
@@ -157,7 +169,7 @@ public:
 	}
 
 };
-
+#pragma warning( pop )  // Restore C4100 warning
 
 #define SWFSOURCE_ADD_TO_SPRITE_TAGLIST( data )             \
    {                                                        \
