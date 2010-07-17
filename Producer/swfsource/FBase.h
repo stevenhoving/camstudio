@@ -1,6 +1,16 @@
 #ifndef FBASE_H_FILE
 #define FBASE_H_FILE
 
+/*
+With revision Rev 249 we adde a file fbase.h (all lowercase) instead of an update of FBase.h (Some uppercase, this was before Rev.25)
+With revision 264+ we are correcting this.
+With and update of all changes as FBase.h  
+With removing obsolete file fbase.h
+
+Special note for FBase.h
+It seems that fbase.h (rev 249) was based on FBase.h  (Rev. 177 instead of Rev. 178) we must correct this either.
+*/
+
 //
 // Platform-dependent namespaces:
 //
@@ -434,7 +444,7 @@ public:
             unsigned char val = GetBit(data, (bitsize)-1-i);        
             unsigned char set = 0x01 << (offset);
 
-			int size = (int)v.size();
+			// int size = (int)v.size();    //Prevent C4189, init but not used
 
             v[pos] = (v[pos] & ~set) | (val << (offset));
             displace++;         
@@ -726,10 +736,10 @@ public:
       y2 = _y2;
     }
     
-    SWORD GetX1() const { return x1; }
-    SWORD GetX2() const { return x2; }
-    SWORD GetY1() const { return y1; }
-    SWORD GetY2() const { return y2; }
+    SWORD GetX1() const { return static_cast<SWORD>( x1 ); }
+    SWORD GetX2() const { return static_cast<SWORD>( x2 ); }
+    SWORD GetY1() const { return static_cast<SWORD>( y1 ); }
+    SWORD GetY2() const { return static_cast<SWORD>( y2 ); }
 
     void BoundWith(const FlashRect &r) { x1 = fbase_min(x1,r.x1); x2 = fbase_max(x2, r.x2); y1 = fbase_min(y1,r.y1); y2 = fbase_max(y2, r.y2); };
 private:
@@ -843,7 +853,10 @@ private:
 class FlashIDEnabled
 {
 public:
+#pragma warning( push )
+#pragma warning ( disable : 4100 )
     FlashIDEnabled(bool count=true) { charID = idFactory.GetCharacterID(); }
+#pragma warning( pop )
     
     void SetID(UWORD i) { charID=i; }
     UWORD GetID(void) const { return (charID); }
@@ -863,6 +876,8 @@ public:
     friend N_STD::istream &operator >> (N_STD::istream &in,  FlashTagRawData &data);
 };
 
+#pragma warning( push ) 
+#pragma warning( disable : 4100 )    /* Data unreferenced formal parameter */
 #define DEFINE_SIMPLE_TAG(x, n) \
 N_STD::ostream &operator << (N_STD::ostream &out, const x &data) \
 { \
@@ -872,6 +887,7 @@ N_STD::istream &operator >> (N_STD::istream &in,  x &data) \
 { \
     return in; \
 }
+#pragma warning( pop ) 
 
 #define DECLARE_SIMPLE_TAG(x) \
 class x : public FlashTag \
