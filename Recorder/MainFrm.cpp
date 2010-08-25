@@ -7,6 +7,48 @@
 #include "RecorderView.h"
 #include "Camstudio4XNote.h"
 
+/*
+TODO: Break AVI 2 GB boundary
+================================
+AVI File Size Limits
+http://neuron2.net/LVG/filesize.html
+Extended AVI recording with OpenDML 
+This is an extension to the AVI file format that allows AVI files to be of any size. 
+To create and work with OpenDML AVIs, you need software that supports the OpenDML standard (such as VirtualDub).
+
+http://www.the-labs.com/Video/odmlff2-avidef.pdf
+
+Google:  +msdn +AVI +2.0
+
+MSDN: Avi 2.0
+
+See also AviSynth
+
+AVI overview:   http://www.jmcgowan.com/avi.html
+
+
+avi.h declarec Class CAVI
+CAVI use PAVISTREAM
+
+
+PAVISTREAM is defines in vfw.h
+typedef       IAVIStream FAR* PAVISTREAM;
+
+DECLARE_INTERFACE_(IAVIStream, IUnknown)
+
+http://vjforums.com/archive/index.php/t-13937.html
+* The source file to write the opendml avi's is located in VirtualDub/source/AVIOutputFile.cpp and 
+its all custom code that follows the openDML spec, without using any VFW methods for opening the file, 
+writing chunks, etc.
+* The VFW api has methods like AVIStreamWrite / AVIStreamWriteHeader / AVIStreamCreate for writing avi 
+streams, and none of this is used by the virtualdub code, although I did find that it does use VFW and 
+the AVIStreamRead method for opening some .avi's.
+
+Avi writing using directshow: http://www.codeguru.com/forum/archive/index.php/t-372248.html
+
+
+*/
+
 
 /*
 using namespace std;
@@ -35,8 +77,9 @@ static HMENU hMenu = NULL;
 /////////////////////////////////////////////////////////////////////////////
 // CMainFrame
 
+// Do not change applied RegisterWindowMessage names because otherwise the communication link between sender and receiver application is broken.
 const UINT CMainFrame::WM_USER_XNOTE = ::RegisterWindowMessage("XNote");
-const UINT CMainFrame::WM_USER_MOTIONDETECTOR = ::RegisterWindowMessage("MotionDetector");
+const UINT CMainFrame::WM_USER_MOTIONDETECTOR = ::RegisterWindowMessage("MotionAlerter");
 
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
@@ -60,6 +103,8 @@ END_MESSAGE_MAP()
 
 
 /////////////////////////////////////////////////////////////////////////////
+// String send by MotionAlerter as message identifier is : "MotionAlerter"
+//
 // CMainFrame::OnMotionDetector
 // Handles XNote supporing WindowsMessages. Xnote is a stopwatch application.  (http://www.xnotestopwatch.com/)
 // MotionDetector is based on the MotionDetection example from Andrew ....
@@ -70,7 +115,7 @@ END_MESSAGE_MAP()
 // lParam: time in ms  (Near future, as we are able to use camera as timer. Gige Camera required)
 // BTW. Curently only action 5 (release pause, restart recording) is supported
 //////////////////////////////////////////////////////////
-LRESULT CMainFrame::OnMotionDetector(UINT wParam, LONG /*lParam*/ )
+LRESULT CMainFrame::OnMotionDetector(UINT wParam, LONG lParam )
 {
 	//TRACE("## CMainFrame::OnMotionDetector (d)    wParam=[%d] HI[%d], LO[%d]\n",wParam, HIWORD(wParam), LOWORD(wParam) );
 	dynamic_cast<CRecorderView *>(m_pViewActive)->XNoteProcessWinMessage( HIWORD(wParam), XNOTE_TRIGGER_MOTIONDETECTOR , XNOTE_SOURCE_MOTIONDETECTOR , NULL );
@@ -91,10 +136,8 @@ LRESULT CMainFrame::OnMotionDetector(UINT wParam, LONG /*lParam*/ )
 LRESULT CMainFrame::OnXNote(UINT wParam, LONG lParam)
 {
 	// Xnote sends source and action info with wParam
-	//TRACE("##(1) CMainFrame::OnXNote (d)    wParam=[%d] HI[%d], LO[%d]\n",wParam, HIWORD(wParam), LOWORD(wParam) );
-	//TRACE("##(2) CMainFrame::OnXNote (u)    wParam=[%u] HI[%u], LO[%u]\n",wParam, HIWORD(wParam), LOWORD(wParam) );
 	int nHiMod256 = HIWORD(wParam) % 256 ;
-	//TRACE("##(3) CMainFrame::OnXNote (u)    wParam=[%u] HI[%u], LO[%u] nHiMod256=[%d]\n",wParam, HIWORD(wParam), LOWORD(wParam), nHiMod256 );
+	//TRACE("## CMainFrame::OnXNote (u)    wParam=[%u] HI[%u], LO[%u] nHiMod256=[%d]\n",wParam, HIWORD(wParam), LOWORD(wParam), nHiMod256 );
 	dynamic_cast<CRecorderView *>(m_pViewActive)->XNoteProcessWinMessage( nHiMod256, LOWORD(wParam), XNOTE_SOURCE_XNOTESTOPWATCH , (ULONG)lParam );
 
 	return 0;
