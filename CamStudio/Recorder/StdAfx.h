@@ -26,6 +26,11 @@
 //#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES		1
 //#define _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES		1
 
+////////////////////////////
+// Use MS Private Assemblies to prevent side by side configuration errors as reported by users.
+// Based on info http://www.codeproject.com/KB/cpp/PrivateAssemblyProjects.aspx
+// #include "UseMSPrivateAssemblies.h"  
+
 #include "targetver.h"		// define WINVER
 
 #include <afxwin.h>         // MFC core and standard components
