@@ -37,6 +37,7 @@ void CAnnotationEffectsOptionsDlg::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Text(pDX, IDC_EDIT_XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec  );
 	DDX_Control(pDX, IDC_BUTTON_XNOTEDISPLAYCAMERADELAYMODE, m_CheckBoxXnoteDisplayCameraDelayMode );
+	DDX_Control(pDX, IDC_BUTTON_XNOTEDISPLAYCAMERADELAYDIRECTION, m_CheckBoxXnoteDisplayCameraDelayDirection );
 
 	DDX_Text(pDX, IDC_EDIT_XNOTERECORDDURATIONLIMITINMILLISEC, m_ulXnoteRecordDurationLimitInMilliSec  );
 	DDX_Control(pDX, IDC_BUTTON_XNOTERECORDDURATIONLIMITMODE, m_CheckBoxXnoteRecordDurationLimitMode );
@@ -55,12 +56,13 @@ void CAnnotationEffectsOptionsDlg::DoDataExchange(CDataExchange* pDX)
 	//TRACE("## -----------------------------------------------\n" );
 	//TRACE("## m_CheckBoxXnoteRecordDurationLimitMode=[%d]\n", m_CheckBoxXnoteRecordDurationLimitMode.GetCheck()  );
 	//TRACE("## m_bXnoteRecordDurationLimitMode=[%d]\n", m_bXnoteRecordDurationLimitMode);
-	//TRACE("## m_ulXnoteCameraDelayInMilliSec=[%d]\n", m_ulXnoteCameraDelayInMilliSec);
+	//TRACE("## m_ulXnoteCameraDelayInMilliSec=[%lu]\n", m_ulXnoteCameraDelayInMilliSec);
 	//TRACE("## -----------------------------------------------\n" );
 
 	// Init Checkboxes according the correct state
 	m_CheckBoxXnoteRemoteControlMode.SetCheck( m_bXnoteRemoteControlMode ? 1 : 0 );
 	m_CheckBoxXnoteDisplayCameraDelayMode.SetCheck( m_bXnoteDisplayCameraDelayMode ? 1 : 0 );
+	m_CheckBoxXnoteDisplayCameraDelayDirection.SetCheck( m_bXnoteDisplayCameraDelayDirection ? 1 : 0 );
 	m_CheckBoxXnoteRecordDurationLimitMode.SetCheck( m_bXnoteRecordDurationLimitMode ? 1 : 0 ); 
 
 	//TRACE("## m_CheckBoxXnoteDisplayCameraDelayMode=[%d]\n", m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() );
@@ -77,7 +79,9 @@ BEGIN_MESSAGE_MAP(CAnnotationEffectsOptionsDlg, CDialog)
 
 	ON_EN_CHANGE(IDC_EDIT_XNOTECAMERADELAYINMILLISEC, &CAnnotationEffectsOptionsDlg::OnEnChangeEditXNoteCameraDelayInMilliSec)
 	ON_BN_CLICKED(IDC_BUTTON_XNOTEDISPLAYCAMERADELAYMODE, &CAnnotationEffectsOptionsDlg::OnBnClickedXNoteDisplayCameraDelayMode)
+	ON_BN_CLICKED(IDC_BUTTON_XNOTEDISPLAYCAMERADELAYDIRECTION, &CAnnotationEffectsOptionsDlg::OnBnClickedXNoteDisplayCameraDelayDirection)
 
+	
 	ON_BN_CLICKED(IDC_BUTTON_XNOTECAMERADELAYMODE, OnBnClickedButtonXNoteFormatOptions)
 
 	ON_EN_CHANGE(IDC_EDIT_XNOTERECORDDURATIONLIMITINMILLISEC, &CAnnotationEffectsOptionsDlg::OnEnChangeEditXnoteRecordDurationLimitInMilliSec)
@@ -178,6 +182,16 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedXNoteDisplayCameraDelayMode()
 	CAnnotationEffectsOptionsDlg::OnEnChangeFormatXnotepreview();
 }
 
+void CAnnotationEffectsOptionsDlg::OnBnClickedXNoteDisplayCameraDelayDirection()
+{
+	//TRACE("## CAnnotationEffectsOptionsDlg::OnBnClickedXnoteCameraDelayMode()\n");
+	// bool bBool = m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck()? true : false;
+
+	// Update presentationfield
+	CAnnotationEffectsOptionsDlg::OnEnChangeFormatXnotepreview();
+}
+
+
 
 void CAnnotationEffectsOptionsDlg::OnBnClickedOk()
 {
@@ -192,6 +206,7 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedOk()
 	// Convert values that are defined by buttons again to bools or other values.
 	m_bXnoteRemoteControlMode = m_CheckBoxXnoteRemoteControlMode.GetCheck() ? true : false ;
 	m_bXnoteDisplayCameraDelayMode = m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() ? true : false ;
+	m_bXnoteDisplayCameraDelayDirection = m_CheckBoxXnoteDisplayCameraDelayDirection.GetCheck() ? true : false ;
 	m_bXnoteRecordDurationLimitMode = m_CheckBoxXnoteRecordDurationLimitMode.GetCheck() ? true : false ;
 
 	Invalidate();
@@ -231,7 +246,7 @@ int CAnnotationEffectsOptionsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 		// Format (delay) hh:mm:ss.ttt"
 		char cTmpBuff[128] = "";
-		(void) CXnoteStopwatchFormat::FormatXnoteSampleString(cTmpBuff, m_ulXnoteCameraDelayInMilliSec, m_bXnoteDisplayCameraDelayMode );
+		(void) CXnoteStopwatchFormat::FormatXnoteSampleString(cTmpBuff, m_ulXnoteCameraDelayInMilliSec, m_bXnoteDisplayCameraDelayMode, m_bXnoteDisplayCameraDelayDirection );
 		m_cXnoteDisplayFormatString = CString( cTmpBuff );
 	}
 
@@ -305,9 +320,10 @@ void CAnnotationEffectsOptionsDlg::OnEnChangeFormatXnotepreview()
 	ULONG ul_DelayTimeInMilliSec = atol(str);
 
 	bool bDisplayCameraDelay = m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() ? true : false ;
+	bool bDisplayCameraDelay2 = m_CheckBoxXnoteDisplayCameraDelayDirection.GetCheck() ? true : false ;
 	
 	// format (delay) hh:mm:ss.ttt"
-	(void) CXnoteStopwatchFormat::FormatXnoteSampleString ( cTmpBuff, ul_DelayTimeInMilliSec, bDisplayCameraDelay );
+	(void) CXnoteStopwatchFormat::FormatXnoteSampleString ( cTmpBuff, ul_DelayTimeInMilliSec, bDisplayCameraDelay, bDisplayCameraDelay2 );
 
 	m_FormatXNotePreview.SetWindowText(cTmpBuff); 
 }

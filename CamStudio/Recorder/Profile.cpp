@@ -857,6 +857,7 @@ void CProfile::InitSections()
 	Add(m_SectionXNote, XNOTEREMOTECONTROL, "xnoteRemoteControl", false);		
 #endif
 	Add(m_SectionXNote, XNOTEDISPLAYCAMERADELAY, "xnoteDisplayCameraDelay", true);		
+	Add(m_SectionXNote, XNOTEDISPLAYCAMERADELAY2, "xnoteDisplayCameraDelayForwards", true);		
 	Add(m_SectionXNote, XNOTECAMERADELAYINMILLISEC, "xnoteCameraDelayInMilliSec", 175UL);		
 	Add(m_SectionXNote, XNOTEDISPLAYFORMATSTRING, "xnoteDisplayFormatString", CString(_T("(0000)  00:00:00.000")) );   //String required, defines length printable area. Empty String is No Annotationbox   // hh:mm:ss.ttt
 	Add(m_SectionXNote, XNOTERECORDDURATIONLIMITMODE, "xnoteRecordDurationLimitMode", true );		

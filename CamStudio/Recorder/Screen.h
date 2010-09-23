@@ -3,6 +3,14 @@
 #include "profile.h"
 #include "ximage.h"
 
+////////////////////////////////////////////////////////
+// What is used for what...
+//
+// rectView  : This is the screen view to capture, BTW TopLeft=1,1
+//
+// rectFrame :
+//
+////////////////////////////////////////////////////////
 class CCamera
 {
 public:
@@ -67,8 +75,8 @@ private:
 	CxImage m_cImage;				// result of CaptureFrame
 	CxImage m_imageWatermark;		// Watermark Image
 	CString m_strWatermarkName;		// Watermark filename
-	CRect m_rectView;				// screen view to capture
-	CRect m_rectFrame;				// logical frame to capture
+	CRect m_rectView;				// screen view to capture, BTW TopLeft=1,1
+	CRect m_rectFrame;				// logical frame to capture BTW TopLeft=0,0
 	// annotation objects
 	CCamCursor m_cCursor;
 	sCaptionOpts m_sCaption;

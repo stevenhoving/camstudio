@@ -15,6 +15,7 @@ public:
 	CFlashingWnd();
 	virtual ~CFlashingWnd();
 
+	// TODO: magic number 200 here, why?  Explain
 	static const UINT WM_FLASH_WINDOW = (WM_APP + 200);	// wparm = invert; lparam = draw
 
 	BOOL CreateFlashing(LPCTSTR pTitle, RECT &rect);
