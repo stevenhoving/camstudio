@@ -67,6 +67,9 @@ BEGIN_MESSAGE_MAP(CFixedRegionDlg, CDialog)
 	//}}AFX_MSG_MAP
 	ON_MESSAGE(WM_APP_REGIONUPDATE, OnRegionUpdate)
 	ON_MESSAGE(WM_DISPLAYCHANGE, OnDisplayChange)
+	ON_EN_CHANGE(IDC_Y, &CFixedRegionDlg::OnEnChangeY)
+	ON_EN_CHANGE(IDC_HEIGHT, &CFixedRegionDlg::OnEnChangeHeight)
+	ON_BN_CLICKED(IDOK, &CFixedRegionDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -78,7 +81,8 @@ void CFixedRegionDlg::OnOK()
 		return;
 	}
 
-	int maxWidth = abs(maxxScreen - minxScreen);
+	// Not Correct, one to high because MinXY is zero an MaxXY is width/height no of pixels.
+	int maxWidth = abs(maxxScreen - minxScreen);   // Assuming number first pixel is one not zero.
 	int maxHeight = abs(maxyScreen - minyScreen);
 
 	if (m_iWidth < 0)
@@ -138,7 +142,8 @@ void CFixedRegionDlg::OnOK()
 			m_iWidth = maxxScreen - m_iLeft;
 			if (m_iWidth <= 0)
 			{
-				//TODO -- where did these constants come from? Get rid of 'em, put 'em in an ini or #define them somewhere
+				//TODO -- where did these constants came from? Get rid of 'em, put 'em in an ini or #define them somewhere
+				//Answer: See struct sRegionOpts in Profile.h
 				m_iLeft = minxScreen + 100;
 				m_iWidth = 320;
 			}
@@ -151,6 +156,7 @@ void CFixedRegionDlg::OnOK()
 			if (m_iHeight <= 0)
 			{
 				//TODO -- where did these constants come from? Get rid of 'em, put 'em in an ini or #define them somewhere
+				//Answer: See struct sRegionOpts in Profile.h
 				m_iTop = minyScreen + 100;
 				m_iHeight = 240;
 			}
@@ -158,11 +164,26 @@ void CFixedRegionDlg::OnOK()
 		}
 	}
 
+/*************************
+
+	// First thing we will do nist to get it coorect with the technical region measurements guidelines before we will apply the user viewpoint/
+    // TOP-LEFT = 0.0 ; BOTTOM-RIGHT= HScrSize-1:HScrSize-1 ; Width= Diff Right-Left =>  200-50=150  (Area is 151 pixels but 'our' width is 150)
+
+	// Check that if start values are not set by user they should be one not zero
+	if ( m_iLeft == 0 ) {
+		m_iLeft = 1 ;
+	}
+	if ( m_iTop == 0 ) {
+		m_iTop = 1 ;
+	}
+*/
+	TRACE(_T("## CFixedRegionDlg::OnOK / L=%d, T=%d, W=%d, H=%d\n"), m_iLeft, m_iTop, m_iWidth, m_iHeight );
+
 	cRegionOpts.m_iCaptureLeft = m_iLeft;
 	cRegionOpts.m_iCaptureTop = m_iTop;
 	cRegionOpts.m_bFixedCapture = fval ? true : false;
-	cRegionOpts.m_iCaptureWidth = m_iWidth;
-	cRegionOpts.m_iCaptureHeight = m_iHeight;
+	cRegionOpts.m_iCaptureWidth = m_iWidth ;
+	cRegionOpts.m_iCaptureHeight = m_iHeight ;
 	cRegionOpts.m_bSupportMouseDrag = m_ctrlButtonMouseDrag.GetCheck() ? true : false;
 
 	CDialog::OnOK();
@@ -177,6 +198,8 @@ BOOL CFixedRegionDlg::OnInitDialog()
 	m_iWidth = cRegionOpts.m_iCaptureWidth;
 	m_iHeight = cRegionOpts.m_iCaptureHeight;
 	UpdateData(FALSE);
+
+	TRACE(_T("## CFixedRegionDlg::OnInitDialog / L=%d, T=%d, W=%d, H=%d\n"), m_iLeft, m_iTop, m_iWidth, m_iHeight );
 
 	m_ctrlEditPosX.EnableWindow(TRUE);
 	m_ctrlEditPosY.EnableWindow(TRUE);
@@ -214,6 +237,8 @@ LRESULT CFixedRegionDlg::OnRegionUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	m_iWidth	= rectUse.Width();
 	m_iHeight	= rectUse.Height();
 
+	TRACE(_T("## CFixedRegionDlg::OnRegionUpdate / L=%d, T=%d, W=%d, H=%d\n"), m_iLeft, m_iTop, m_iWidth, m_iHeight );
+
 	UpdateData(FALSE);
 
 	return 0;
@@ -234,4 +259,31 @@ LRESULT CFixedRegionDlg::OnDisplayChange(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	//it should eventually be handled.
 
 	return 0;
+}
+
+void CFixedRegionDlg::OnEnChangeY()
+{
+	// TODO:  If this is a RICHEDIT control, the control will not
+	// send this notification unless you override the CDialog::OnInitDialog()
+	// function and call CRichEditCtrl().SetEventMask()
+	// with the ENM_CHANGE flag ORed into the mask.
+
+	// TODO:  Add your control notification handler code here
+}
+
+void CFixedRegionDlg::OnEnChangeHeight()
+{
+	// TODO:  If this is a RICHEDIT control, the control will not
+	// send this notification unless you override the CDialog::OnInitDialog()
+	// function and call CRichEditCtrl().SetEventMask()
+	// with the ENM_CHANGE flag ORed into the mask.
+
+	// TODO:  Add your control notification handler code here
+}
+
+void CFixedRegionDlg::OnBnClickedOk()
+{
+	// TODO: Add your control notification handler code here
+
+	OnOK();
 }

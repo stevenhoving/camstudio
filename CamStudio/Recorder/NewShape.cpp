@@ -13,6 +13,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+// TODO : Some Magic numbers here, put them in a haeder file or explain 200 and 150
 int iNewShapeWidth = 200;
 int iNewShapeHeight = 150;
 CString strNewShapeText("Right Click to Edit Text");

@@ -56,7 +56,8 @@ bool CCamera::AddXNote(CDC* pDC)
 				cXNoteOpts.m_ulStartXnoteTickCounter, 
 				cXNoteOpts.m_ulStartXnoteTickCounter == 0 ? 0 : dwCurrTickCount,	// Determine is Xnote Stopwatch is still running. If not, show only zero's
 				m_sXNote.m_ulXnoteCameraDelayInMilliSec, 
-				cXNoteOpts.m_bXnoteDisplayCameraDelayMode );
+				cXNoteOpts.m_bXnoteDisplayCameraDelayMode,
+				cXNoteOpts.m_bXnoteDisplayCameraDelayDirection);
 
 		// Load info how and where user defined to dispaly the annotation
 		taTmpXNote = m_sXNote.m_taXNote;
@@ -530,6 +531,20 @@ void CCamera::InsertImage(CDC *pDC, CRect& rectFrame, const ImageAttributes& rIm
 bool CCamera::CaptureFrame(const CRect& rectView)
 {
 	m_rectView = rectView;
+
+	// HIER_BEN_IK
+
+	// == REMEMBER ======================================
+	// Topleft position on screen is 0:0 not 1:1
+	// Hence, Maxscreen size is logical size (e.g. 1650). Last pos is than 1650 minus 1
+	// Width = right - left + 1 
+	// Height = bottom - top - 1
+	// ==================================================
+	// Conclusion (for our Camstudio application) Weight and Height are one to low here..!
+	// But where is the cause ???
+	/////////////////////////////////////////////
+	TRACE( _T("## CCamera::CaptureFrame  m_rectView.Width()=%d\n"), m_rectView.Width() );
+
 	m_rectFrame = CRect(0, 0, m_rectView.Width(), m_rectView.Height());
 	// setup DC's
 	CDC* pScreenDC = CDC::FromHandle(::GetDC(0));

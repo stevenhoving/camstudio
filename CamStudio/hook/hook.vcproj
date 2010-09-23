@@ -81,6 +81,7 @@
 				OutputFile="..\$(ConfigurationName)\$(ProjectName).dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				ManifestFile="$(SolutionDir)$(ConfigurationName)\$(TargetFileName).intermediate.manifest"
 				ProgramDatabaseFile=".\Release/hook.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"

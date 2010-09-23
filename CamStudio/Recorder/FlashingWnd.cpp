@@ -76,16 +76,50 @@ BOOL CFlashingWnd::CreateFlashing(LPCTSTR pTitle, RECT &rect)
 //* SetupRegion()
 //*
 //* Set the Window Region for transparancy outside the mask region
+//*
+//* cRect : The area are that should be recorded
+//*
 //********************************************************************************
 
 void CFlashingWnd::SetUpRegion(const CRect& cRect, int type)
 {
-	CRgn wndRgn;
+	///////////////////////////////////////////////////
+	//
+	// Under construction ...!
+	// (Just to get an idea how it works now and what previously developers had in mind)
+	//
+	// There is currently a pixel fault in defined region and recorded region
+	// Right pixel column and Top pixel row are not recorded.  E.g. Area 200x200 becone 199x199
+	// Don't know if this is only with manual setup region the case or with other screen copies as well
+	// 
+	//
+	//    +--- wndRgn --------------------+
+	//    |  +--- rgnTemp--------------+  |
+    //
+	// wndRgn defines a new rect with the size of the requested area but something bigger because the border lines are included either.
+	// rgnTemp relative points to the area with the size of the area off interrest but inside wndRgn
+	// rgnTemp2 ??
+	// rgnTemp3 ??
+	//
+	///////////////////////////////////////////////////
+	CRgn wndRgn;	
 
 	m_cRect = cRect;
+
+	// The Width shown here is one to less. Not good.
+	TRACE( _T("## CFlashingWnd::SetUpRegion / m_cRect before / L=%d R=%d T=%d B=%d / W=%d H=%d\n"), m_cRect.left , m_cRect.right , m_cRect.top , m_cRect.bottom, m_cRect.Width(), m_cRect.Height() );
+	// Jaho. Why do we reduce the frame here, because the Width and Height are set wrong ???
+	// HIER_BEN_IK
+//#define JAHO_TEST_CRECT_RIGHT_VALUES
+#ifndef JAHO_TEST_CRECT_RIGHT_VALUES
+	// As it was before
 	m_cRect.right--;
 	m_cRect.bottom--;
-
+#else
+	m_cRect.left--;
+	m_cRect.top--;
+#endif
+	TRACE( _T("## CFlashingWnd::SetUpRegion / m_cRect after  / L=%d R=%d T=%d B=%d / W=%d H=%d\n"), m_cRect.left , m_cRect.right , m_cRect.top , m_cRect.bottom, m_cRect.Width(), m_cRect.Height() );
 	if (type == 0) {
 		wndRgn.CreateRectRgn(0, 0, m_cRect.Width() + THICKNESS + THICKNESS, m_cRect.Height() + THICKNESS + THICKNESS);
 
