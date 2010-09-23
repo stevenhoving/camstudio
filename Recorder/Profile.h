@@ -202,6 +202,7 @@ enum eLegacySettings
 	, XNOTEREMOTECONTROL
 	, XNOTECAMERADELAYINMILLISEC
 	, XNOTEDISPLAYCAMERADELAY
+	, XNOTEDISPLAYCAMERADELAY2
 	, XNOTERECORDDURATIONLIMITINMILLISEC
 	, XNOTERECORDDURATIONLIMITMODE
 	, XNOTEDISPLAYFORMATSTRING
@@ -1057,6 +1058,7 @@ struct sXNoteOpts
 #endif
 		, m_taXNote(BOTTOM_LEFT)
 		, m_bXnoteDisplayCameraDelayMode(true)			// Default On: Show used delay in capture
+		, m_bXnoteDisplayCameraDelayDirection(true)			// Default On: Show used delay in capture
 		, m_ulXnoteCameraDelayInMilliSec(175UL)			// Average delay, default 175 ms
 		, m_cXnoteDisplayFormatString("(0000)..00:00:00.000")	// Default (Delay) hh:mm:ss.ttt, Not really a format. As long as the timer is not running this will be showed
 		, m_bXnoteRecordDurationLimitMode(true)			// Default On: Show used delay in capture
@@ -1077,6 +1079,7 @@ struct sXNoteOpts
 #endif
 		, m_taXNote(BOTTOM_LEFT)
 		, m_bXnoteDisplayCameraDelayMode(true)			// Default On: Show used delay in capture
+		, m_bXnoteDisplayCameraDelayDirection(true)			// Default On: Show used delay in capture
 		, m_ulXnoteCameraDelayInMilliSec(175UL)			// Average delay, default 175 ms
 		, m_cXnoteDisplayFormatString("(0000)..00:00:00.000")	// Default hh:mm:ss.ttt, Not really a format. As long as the timer is not running this will be showed
 		, m_bXnoteRecordDurationLimitMode(true)			// Default On: Show used delay in capture
@@ -1097,6 +1100,7 @@ struct sXNoteOpts
 
 		m_bXnoteRemoteControlMode= rhs.m_bXnoteRemoteControlMode;
 		m_bXnoteDisplayCameraDelayMode = rhs.m_bXnoteDisplayCameraDelayMode;
+		m_bXnoteDisplayCameraDelayDirection = rhs.m_bXnoteDisplayCameraDelayDirection;
 		m_ulXnoteCameraDelayInMilliSec = rhs.m_ulXnoteCameraDelayInMilliSec;
 		m_cXnoteDisplayFormatString = rhs.m_cXnoteDisplayFormatString;
 
@@ -1124,6 +1128,7 @@ struct sXNoteOpts
 		
 		VERIFY(cProfile.Read(XNOTEREMOTECONTROL, m_bXnoteRemoteControlMode));
 		VERIFY(cProfile.Read(XNOTEDISPLAYCAMERADELAY, m_bXnoteDisplayCameraDelayMode));
+		VERIFY(cProfile.Read(XNOTEDISPLAYCAMERADELAY2, m_bXnoteDisplayCameraDelayDirection));
 		VERIFY(cProfile.Read(XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec));
 		VERIFY(cProfile.Read(XNOTEDISPLAYFORMATSTRING, m_cXnoteDisplayFormatString));
 		
@@ -1185,6 +1190,7 @@ struct sXNoteOpts
 
 		VERIFY(cProfile.Write(XNOTEREMOTECONTROL, m_bXnoteRemoteControlMode));
 		VERIFY(cProfile.Write(XNOTEDISPLAYCAMERADELAY, m_bXnoteDisplayCameraDelayMode));
+		VERIFY(cProfile.Write(XNOTEDISPLAYCAMERADELAY2, m_bXnoteDisplayCameraDelayDirection));
 		VERIFY(cProfile.Write(XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec));
 		VERIFY(cProfile.Write(XNOTEDISPLAYFORMATSTRING, m_cXnoteDisplayFormatString));
 
@@ -1202,8 +1208,10 @@ struct sXNoteOpts
 	CButton m_CheckBoxXnoteRemoteControlMode;
 
 	bool	m_bXnoteDisplayCameraDelayMode;
+	bool	m_bXnoteDisplayCameraDelayDirection;
 	ULONG	m_ulXnoteCameraDelayInMilliSec;
 	CButton m_CheckBoxXnoteDisplayCameraDelayMode;
+	CButton m_CheckBoxXnoteDisplayCameraDelayDirection;
 
 	bool	m_bXnoteRecordDurationLimitMode;
 	ULONG	m_ulXnoteRecordDurationLimitInMilliSec;

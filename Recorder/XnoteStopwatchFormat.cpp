@@ -14,10 +14,10 @@ CXnoteStopwatchFormat::~CXnoteStopwatchFormat(void)
 }
 */
 
-void CXnoteStopwatchFormat::FormatXnoteSampleString(char *cBuf128, long lDelayTimeInMilliSec, bool bDisplayCameraDelay )
+void CXnoteStopwatchFormat::FormatXnoteSampleString(char *cBuf128, long lDelayTimeInMilliSec, bool bDisplayCameraDelay, bool bDisplayCameraDelay2 )
 {
 	// Format (delay) hh:mm:ss.ttt	
-	FormatXnoteDelayedTimeString( cBuf128, 0, 0 ,lDelayTimeInMilliSec, bDisplayCameraDelay );
+	FormatXnoteDelayedTimeString( cBuf128, 0, 0 ,lDelayTimeInMilliSec, bDisplayCameraDelay, bDisplayCameraDelay2 );
 }
 
 
@@ -27,12 +27,17 @@ void CXnoteStopwatchFormat::FormatXnoteDelayedTimeString(
 		DWORD dwStartXnoteTickCounter, 
 		DWORD dwCurrTickCount, 
 		long lDelayTimeInMillisSec, 
-		bool bDisplayCameraDelay)
+		bool bDisplayCameraDelay,
+		bool bDisplayCameraDelay2)
 {
 	// Formatting hh:mm:ss.ttt with or without delay information
 	//TRACE("## FormatXnoteDelayedTimeString  lDelayTimeInMillisSec :[%d] bShowDelayTimeWithMarker[%d]\n", lDelayTimeInMillisSec, bShowDelayTimeWithMarker );
 
-	DWORD dwSubstractCorrTime = dwStartXnoteTickCounter + lDelayTimeInMillisSec;
+//HIER_BEN_IK
+
+	// JaHo: It appears that time event information from Xnote is delayed and Xnote time we have to write in the frame should be added instead of subtracted.
+	// And to allow that we can define delaytime in two directions it must become a long instead of an ulong in all code.
+	// (This is wrong direction) DWORD dwSubstractCorrTime = dwStartXnoteTickCounter + lDelayTimeInMillisSec;
 	
 	ULONG ulPassedTime = 0;
 	ULONG ulTickTimeWholeSeconds = 0;
@@ -44,6 +49,15 @@ void CXnoteStopwatchFormat::FormatXnoteDelayedTimeString(
 	ULONG ulTickTimeSeconds = 0;
 	//ULONG ulTickTimeHunderds = 0;
 	ULONG ulTickTimeThousands = 0;
+
+	DWORD dwSubstractCorrTime = 0;
+
+	// Define Delay derection, forward or backwards
+	if ( bDisplayCameraDelay2 ) {
+		dwSubstractCorrTime = dwStartXnoteTickCounter + lDelayTimeInMillisSec;
+	} else {
+		dwSubstractCorrTime = dwStartXnoteTickCounter - lDelayTimeInMillisSec;
+	}
 
 	if ( dwSubstractCorrTime <= dwCurrTickCount ) 
 	{
@@ -69,7 +83,8 @@ void CXnoteStopwatchFormat::FormatXnoteDelayedTimeString(
 		
 	// Format (delay) hh:mm:ss.ttt	
 	if ( bDisplayCameraDelay ){
-		(void) sprintf( cBuf128, "(%04lu)  %02lu:%02lu:%02lu.%03lu",   
+		(void) sprintf( cBuf128, "(%c%04lu)  %02lu:%02lu:%02lu.%03lu",   
+			bDisplayCameraDelay2 ? '-' : '+' ,
 			lDelayTimeInMillisSec, 
 			ulTickTimeHour, ulTickMinutes, ulTickTimeSeconds, ulTickTimeThousands);
 	} else {

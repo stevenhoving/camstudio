@@ -115,10 +115,10 @@ CTransparentWnd* transWnd;
 /////////////////////////////////////////////////////////////////////////////
 
 //Vars used for selecting fixed /variableregion
-CRect rc;
-CRect rcUse;
-CRect rcClip;
-CRect old_rcClip;
+CRect rc;			// Size:  0 .. MaxScreenSize-1
+CRect rcUse;		// Size:  0 .. MaxScreenSize-1
+CRect rcClip;		// Size:  0 .. MaxScreenSize-1
+CRect old_rcClip;	// Size:  0 .. MaxScreenSize-1
 CRect rcOffset;
 CPoint ptOrigin;
 
@@ -650,6 +650,9 @@ void CRecorderView::OnPaint()
 		CDC dcBits;
 		dcBits.CreateCompatibleDC(&dc);
 		CBitmap bitmap;
+
+		TRACE( _T("## CRecorderView::OnPaint / rectClient.Width()=%d\n") , rectClient.Width() );
+
 		bitmap.CreateCompatibleBitmap(&dc, rectClient.Width(), rectClient.Height());
 		CBitmap *pOldBitmap = dcBits.SelectObject(&bitmap);
 
@@ -815,7 +818,7 @@ LRESULT CRecorderView::OnRecordPaused (UINT /*wParam*/, LONG /*lParam*/)
 	if (bRecordPaused) {
 		return 0;
 	}
-	//TRACE("## CRecorderView::OnRecordPaused Tick:[%ul] Call OnPause() now\n", GetTickCount() );
+	//TRACE("## CRecorderView::OnRecordPaused Tick:[%lu] Call OnPause() now\n", GetTickCount() );
 	OnPause();
 
 	return 0;
@@ -1221,11 +1224,16 @@ void CRecorderView::OnRecord()
 	fActualRate = 0.0;
 	fTimeLength = 0.0;
 
+// HIER_BEN_IK
+// Todo: Sizing van rc checked. One pixel gets dropped:  100x100 => 99x99
+	TRACE("## Here it possible goed wrong with the sizing\n");
+
 	switch (cRegionOpts.m_iMouseCaptureMode)
 	{
 	case CAPTURE_FIXED:
 		if (cRegionOpts.m_bFixedCapture) {
-			rc.top = cRegionOpts.m_iCaptureTop;
+			// Full screan area :  0:0 to MaxX-1:MaxY-1
+			rc.top = cRegionOpts.m_iCaptureTop;	
 			rc.left = cRegionOpts.m_iCaptureLeft;
 			rc.right = cRegionOpts.m_iCaptureLeft + cRegionOpts.m_iCaptureWidth - 1;
 			rc.bottom = cRegionOpts.m_iCaptureTop + cRegionOpts.m_iCaptureHeight - 1;
@@ -1244,6 +1252,10 @@ void CRecorderView::OnRecord()
 			old_rcClip.NormalizeRect();
 			rcUse = old_rcClip;
 			::PostMessage (hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM) 0);
+				
+				TRACE( _T("## CRecorderView::OnRecord /0001/ T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
+				TRACE( _T("## CRecorderView::OnRecord /0001/ MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
+
 		} else {
 			rc = CRect(0, 0, cRegionOpts.m_iCaptureWidth, cRegionOpts.m_iCaptureHeight);
 			rc.right--;
@@ -1253,12 +1265,16 @@ void CRecorderView::OnRecord()
 			::UpdateWindow(hMouseCaptureWnd);
 
 			InitDrawShiftWindow(); //will affect rc implicity
+				TRACE(_T("## CRecorderView::OnRecord /0002/ T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
+				TRACE(_T("## CRecorderView::OnRecord /0002/ MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
 		}
 		break;
 	case CAPTURE_VARIABLE:
 		::ShowWindow(hMouseCaptureWnd, SW_SHOW);
 		::UpdateWindow(hMouseCaptureWnd);
 		InitSelectRegionWindow(); //will affect rc implicity
+				TRACE(_T("## CRecorderView::OnRecord /0003/ T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
+				TRACE(_T("## CRecorderView::OnRecord /0003/ MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
 		break;
 	case CAPTURE_FULLSCREEN:
 		m_basicMsg = new CBasicMessage();
@@ -1267,12 +1283,16 @@ void CRecorderView::OnRecord()
 		m_basicMsg->ShowWindow(SW_SHOW);
 		SetCapture();
 	//	m_basicMsg.DoModal();
+				TRACE(_T("## CRecorderView::OnRecord /0004/ T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
+				TRACE(_T("## CRecorderView::OnRecord /0004/ MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
 		break;
 	case CAPTURE_ALLSCREENS:
 		rcUse = CRect(minxScreen, minyScreen, maxxScreen, maxyScreen);
 		rcUse.right--;
 		rcUse.bottom--;
 		::PostMessage(hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM) 0);
+				TRACE(_T("## CRecorderView::OnRecord /0005/ T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
+				TRACE(_T("## CRecorderView::OnRecord /0005/ MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
 		break;
 	case CAPTURE_WINDOW:
 		m_basicMsg = new CBasicMessage();
@@ -1281,6 +1301,8 @@ void CRecorderView::OnRecord()
 		m_basicMsg->ShowWindow(SW_SHOW);
 		//m_basicMsg.DoModal();
 		SetCapture();
+				TRACE(_T("## CRecorderView::OnRecord /0006/ T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
+				TRACE(_T("## CRecorderView::OnRecord /0006/ MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
 		break;
 	}
 }
@@ -2465,7 +2487,7 @@ void CRecorderView::LoadSettings()
 	//char specdata[1000];
 	int shapeNameLen = 0;
 	int layoutNameLen = 0;
-	float ver = 2.5;
+	float ver = 2.5;       // What kind of var is this?  (Value for version?)
 
 #endif
 	//********************************************
@@ -3330,12 +3352,13 @@ void CRecorderView::OnEffectsOptions()
 	dlg.m_xnote = cXNoteOpts.m_taXNote;  
 
 	/*
-	* The assigned var m_bXnoteDisplayCameraDelayMode and m_bXnoteRecordDurationLimitMode are booleans and must be assigned to a 
+	* The assigned var m_bXnoteDisplayCameraDelayMode, m_bXnoteDisplayCameraDelayDirection  and m_bXnoteRecordDurationLimitMode are booleans and must be assigned to a 
 	* Checkbox (Button) element in the dialog. When dialog is closed (OK) checkbox state must be assigned to the bool vars again
 	* This all will be done in CAnnotationEffectsOptionsDlg::DoDataExchange and CAnnotationEffectsOptionsDlg::OnBnClickedOk() 
 	*/
 	dlg.m_bXnoteRemoteControlMode      = cXNoteOpts.m_bXnoteRemoteControlMode; 
 	dlg.m_bXnoteDisplayCameraDelayMode = cXNoteOpts.m_bXnoteDisplayCameraDelayMode; 
+	dlg.m_bXnoteDisplayCameraDelayDirection = cXNoteOpts.m_bXnoteDisplayCameraDelayDirection; 
 	dlg.m_ulXnoteCameraDelayInMilliSec = cXNoteOpts.m_ulXnoteCameraDelayInMilliSec; 
 
 	dlg.m_bXnoteRecordDurationLimitMode = cXNoteOpts.m_bXnoteRecordDurationLimitMode; 
@@ -3352,6 +3375,7 @@ void CRecorderView::OnEffectsOptions()
 		cXNoteOpts.m_taXNote = dlg.m_xnote;
 		cXNoteOpts.m_bXnoteRemoteControlMode      =  dlg.m_bXnoteRemoteControlMode;
 		cXNoteOpts.m_bXnoteDisplayCameraDelayMode =  dlg.m_bXnoteDisplayCameraDelayMode;
+		cXNoteOpts.m_bXnoteDisplayCameraDelayDirection =  dlg.m_bXnoteDisplayCameraDelayDirection;
 		cXNoteOpts.m_ulXnoteCameraDelayInMilliSec = dlg.m_ulXnoteCameraDelayInMilliSec;
 		
 		cXNoteOpts.m_bXnoteRecordDurationLimitMode = dlg.m_bXnoteRecordDurationLimitMode;
@@ -3957,8 +3981,6 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 	//////////////////////////////////////////////
 	OpenStreamXnoteLogFile();
 
-
-
 	if (cVideoOpts.m_iShiftType == AUDIOFIRST) {
 		Sleep(cVideoOpts.m_iTimeShift);
 	}
@@ -4522,7 +4544,7 @@ void CRecorderView::XNoteActionStopwatchResetParams(void)
 VOID CRecorderView::XNoteProcessWinMessage(int iActionID , int iSensorID , int iSourceID , ULONG lXnoteTimeInMilliSeconds )
 {
 	if ( !cXNoteOpts.m_bXnoteRemoteControlMode ) {
-		TRACE(_T("## CRecorderView::XNoteProcessWinMessage RemoteControl OFF : iActionID:[%d], iSensorID:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, iSensorID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
+		TRACE(_T("## CRecorderView::XNoteProcessWinMessage RemoteControl OFF : iActionID:[%d], iSensorID:[%d], time:[%lu], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, iSensorID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
 		return;
 	}
 
@@ -4541,8 +4563,8 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID , int iSensorID , int i
 	{
 	case XNOTE_ACTION_STOPWATCH_START:
 		// Start, (Clock is counting)
-		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], iSensorID:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, iSensorID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
-		//TRACE("## CRecorderView::XNoteProcessWinMessage START Tick:[%ul] XNote:[%ul]\n", GetTickCount(), lXnoteTimeInMilliSeconds);
+		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], iSensorID:[%d], time:[%lu], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, iSensorID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
+		//TRACE("## CRecorderView::XNoteProcessWinMessage START Tick:[%lu] XNote:[%lu]\n", GetTickCount(), lXnoteTimeInMilliSeconds);
 
 		if ( ulXNoteStartTime == 0UL) {
 			bXNoteSnapRecordingState = true;
@@ -4574,7 +4596,7 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID , int iSensorID , int i
 		// Xnote Stopwatch Clock is on hold but here we do our own counting)
 		// So Camstudio counting will continues and show different times than Xnote Stopwatch..! 
 
-		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], iSensorID:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, iSensorID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
+		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d], iSensorID:[%d], time:[%lu], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, iSensorID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
 		
 		// OnPause will first check that recording is active, no extra checks required here
 		
@@ -4584,8 +4606,8 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID , int iSensorID , int i
 
 	case XNOTE_ACTION_STOPWATCH_SNAP:
 		// Snap, 
-		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d] iSensorID:[%d], time:[%ul], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, iSensorID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
-		//TRACE("## CRecorderView::XNoteProcessWinMessage SNAP Tick:[%ul] XNote:[%ul]\n", GetTickCount(), lXnoteTimeInMilliSeconds);
+		//TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d] iSensorID:[%d], time:[%lu], GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, iSensorID, lXnoteTimeInMilliSeconds, GetRecordState(), GetPausedState() );
+		//TRACE("## CRecorderView::XNoteProcessWinMessage SNAP Tick:[%lu] XNote:[%lu]\n", GetTickCount(), lXnoteTimeInMilliSeconds);
 
 		// Any snap should be recorded. This are the events that are important and must be registrated.
 		// Because we don't have the correct Xnote time yet (todo) we shall use the current TickCount. 
@@ -4603,7 +4625,7 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID , int iSensorID , int i
 
 		sprintf( cTmp, "%s\n", cXNoteOpts.m_cXnoteStartEntendedInfo );
 		// Show Xnote values instead of own calcuated value
-		CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmp, 0, lXnoteTimeInMilliSeconds ,0 , false );
+		CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmp, 0, lXnoteTimeInMilliSeconds ,0 , false, false );
 		// Add info about how the snap is created.
 		CXnoteStopwatchFormat::FormatXnoteInfoSourceSensor( cTmp, iSourceID, iSensorID );
 
