@@ -42,6 +42,9 @@ public:
 	CButton m_CheckBoxXnoteDisplayCameraDelayMode;
 	bool	m_bXnoteDisplayCameraDelayMode;			// A bool but dialog requires that checkbox is a CButton.
 
+	CButton m_CheckBoxXnoteDisplayCameraDelayDirection;
+	bool	m_bXnoteDisplayCameraDelayDirection;			// A bool but dialog requires that checkbox is a CButton.
+
 	CString m_cXnoteDisplayFormatString;
 
 	ULONG	m_ulXnoteRecordDurationLimitInMilliSec;
@@ -72,6 +75,7 @@ public:
 	afx_msg void OnEnChangeEditXNoteCameraDelayInMilliSec();
 	afx_msg void OnBnClickedButtonXnoteRemoteControlMode();
 	afx_msg void OnBnClickedXNoteDisplayCameraDelayMode();
+	afx_msg void OnBnClickedXNoteDisplayCameraDelayDirection();
 
 	afx_msg void OnEnChangeEditXnoteRecordDurationLimitInMilliSec();
 	afx_msg void OnBnClickedXnoteRecordDurationLimitMode();

@@ -57,6 +57,10 @@ private:
 	int m_iTop;
 	int m_iWidth;
 	int m_iHeight;
+public:
+	afx_msg void OnEnChangeY();
+	afx_msg void OnEnChangeHeight();
+	afx_msg void OnBnClickedOk();
 };
 
 //{{AFX_INSERT_LOCATION}}

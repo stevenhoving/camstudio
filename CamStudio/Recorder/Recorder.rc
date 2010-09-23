@@ -608,15 +608,15 @@ FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,23,151,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,89,151,50,14
-    LTEXT           "Width",IDC_STATIC,17,96,20,8
-    LTEXT           "Height",IDC_STATIC,93,96,22,8
+    LTEXT           "Width (Max-1)",IDC_STATIC,17,96,45,8
+    LTEXT           "Height (Max-1)",IDC_STATIC,93,96,47,8
     EDITTEXT        IDC_WIDTH,17,107,43,15,ES_AUTOHSCROLL | ES_NUMBER
     EDITTEXT        IDC_HEIGHT,91,107,43,15,ES_AUTOHSCROLL | ES_NUMBER
     GROUPBOX        "Fixed Region",IDC_STATIC,7,7,148,139
     PUSHBUTTON      "Select",IDSELECT,90,21,47,14
-    LTEXT           "Msg",IDC_MSG,19,23,63,20
-    LTEXT           "Left",IDC_STATIC,17,65,13,8
-    LTEXT           "Top",IDC_STATIC,91,65,14,8
+    LTEXT           ".",IDC_MSG,19,23,63,20
+    LTEXT           "Left (0 .. HScr-1)",IDC_STATIC,17,65,71,8
+    LTEXT           "Top (0 .. VScr-1)",IDC_STATIC,91,65,64,8
     EDITTEXT        IDC_X,17,76,43,15,ES_AUTOHSCROLL | ES_NUMBER
     EDITTEXT        IDC_Y,91,76,43,15,ES_AUTOHSCROLL | ES_NUMBER
     CONTROL         "Fixed Top-Left Corner",IDC_FIXEDTOPLEFT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,50,84,10
@@ -962,18 +962,18 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Effects options"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Time stamp",IDC_STATIC,7,10,240,55,WS_GROUP
-    LTEXT           "Format",IDC_STATIC,17,20,24,8
-    EDITTEXT        IDC_EDIT_TIMESTAMP_FORMAT,17,29,157,14,ES_AUTOHSCROLL | WS_GROUP
-    PUSHBUTTON      "Options...",IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS,186,29,50,14,WS_GROUP
-    LTEXT           "Preview:",IDC_STATIC,20,50,29,8
-    EDITTEXT        IDC_FORMATTIMESTAMPPREVIEW,55,48,176,14,ES_AUTOHSCROLL | ES_READONLY | WS_GROUP
-    GROUPBOX        "Stopwatch timestamp",IDC_STATIC,7,71,239,126
-    LTEXT           "Stopwatch functions are triggered by external applications as Xnote Stopwatch or Motion Alerter.",IDC_STATIC,18,80,218,19
-    LTEXT           "Set stopwatch delay time in milliseconds to sync with recording.",IDC_STATIC,17,110,218,11
-    EDITTEXT        IDC_EDIT_XNOTECAMERADELAYINMILLISEC,16,120,39,14,ES_AUTOHSCROLL | ES_NUMBER
-    CONTROL         "Show display delay in annotation",IDC_BUTTON_XNOTEDISPLAYCAMERADELAYMODE,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,58,123,121,10
+    GROUPBOX        "Time stamp",IDC_STATIC,7,4,240,55,WS_GROUP
+    LTEXT           "Format",IDC_STATIC,17,14,24,8
+    EDITTEXT        IDC_EDIT_TIMESTAMP_FORMAT,17,23,157,14,ES_AUTOHSCROLL | WS_GROUP
+    PUSHBUTTON      "Options...",IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS,186,23,50,14,WS_GROUP
+    LTEXT           "Preview:",IDC_STATIC,20,43,29,8
+    EDITTEXT        IDC_FORMATTIMESTAMPPREVIEW,55,40,176,14,ES_AUTOHSCROLL | ES_READONLY | WS_GROUP
+    GROUPBOX        "Stopwatch timestamp",IDC_STATIC,7,65,239,132
+    LTEXT           "Stopwatch functions are triggered by external applications as Xnote Stopwatch or Motion Alerter.",IDC_STATIC,18,75,218,19
+    LTEXT           "Set stopwatch compensatiom time (in ms) to sync with recording.",IDC_STATIC,17,108,218,12
+    EDITTEXT        IDC_EDIT_XNOTECAMERADELAYINMILLISEC,16,119,39,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Show applied compensation in annotation",IDC_BUTTON_XNOTEDISPLAYCAMERADELAYMODE,
+                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,59,127,148,10
     LTEXT           "Format preview:",IDC_STATIC,18,136,59,8
     EDITTEXT        IDC_FORMAT_XNOTEPREVIEW,15,145,108,14,ES_AUTOHSCROLL | ES_READONLY
     PUSHBUTTON      "Options...",IDC_BUTTON_XNOTECAMERADELAYMODE,189,146,50,14
@@ -994,7 +994,9 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,141,315,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,197,315,50,14
     CONTROL         "Enable external control",IDC_BUTTON_XNOTEREMOTECONTROLMODE,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,17,97,90,10
+                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,17,93,90,10
+    CONTROL         "Hold back (delay)",IDC_BUTTON_XNOTEDISPLAYCAMERADELAYDIRECTION,
+                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,59,117,71,10
 END
 
 IDD_EFFECTS_OPTIONS2 DIALOGEX 0, 0, 206, 154
@@ -2363,8 +2365,8 @@ BEGIN
     IDS_ERROR_PLAYER        "Error launching CamStudio Player!"
     IDS_ERROR_PLAYER2       "Error launching CamStudio Player 2.0!"
     IDS_STRING_LINEUNDETECTED "Line undetected"
-	IDS_XNOTE_RECORDING_DURATION_ON "Xnote:<X> Stamp:<S> Rec:Limited,"
-	IDS_XNOTE_RECORDING_DURATION_OFF "Xnote:<X> Stamp:<S> Rec:Continuously."
+    IDS_XNOTE_RECORDING_DURATION_ON "Xnote:<X> Stamp:<S> Rec:Limited,"
+    IDS_XNOTE_RECORDING_DURATION_OFF "Xnote:<X> Stamp:<S> Rec:Continuously."
     IDS_STRING_MOVEFILEFAILURE 
                             "File Move Error. Unable to move or to rename/copy file. The source file may be opened by another application or destination file stilll exist. Please use another filename."
 END
