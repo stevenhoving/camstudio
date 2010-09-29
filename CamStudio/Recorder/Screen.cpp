@@ -534,6 +534,7 @@ bool CCamera::CaptureFrame(const CRect& rectView)
 
 	// HIER_BEN_IK
 
+	// UNDER CONSTRUCTION...
 	// == REMEMBER ======================================
 	// Topleft position on screen is 0:0 not 1:1
 	// Hence, Maxscreen size is logical size (e.g. 1650). Last pos is than 1650 minus 1
@@ -541,13 +542,18 @@ bool CCamera::CaptureFrame(const CRect& rectView)
 	// Height = bottom - top - 1
 	// ==================================================
 	// Conclusion (for our Camstudio application) Weight and Height are one to low here..!
-	// But where is the cause ???
+	// But where is this caused ???
 	/////////////////////////////////////////////
 	TRACE( _T("## CCamera::CaptureFrame  m_rectView.Width()=%d\n"), m_rectView.Width() );
 
 	m_rectFrame = CRect(0, 0, m_rectView.Width(), m_rectView.Height());
 	// setup DC's
-	CDC* pScreenDC = CDC::FromHandle(::GetDC(0));
+	// CDC* pScreenDC = CDC::FromHandle(::GetDC(0));
+	
+	// Applied bug fix, tracker  ID: 3075791 / memory leak, reported and solved by mlt_msk, hScreenDC is released afterwards.
+	HDC hScreenDC = ::GetDC(0);
+	CDC* pScreenDC = CDC::FromHandle(hScreenDC);
+
 	CDC cMemDC;
 	cMemDC.CreateCompatibleDC(pScreenDC);
 	CBitmap cBitmap;
@@ -579,6 +585,7 @@ bool CCamera::CaptureFrame(const CRect& rectView)
 	//m_cImage.GrayScale();
 
 	++m_uFrameCount;
+	ReleaseDC(0,hScreenDC);
 
 	return true;
 }
