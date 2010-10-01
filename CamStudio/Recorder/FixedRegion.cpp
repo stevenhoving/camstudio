@@ -32,6 +32,8 @@ CFixedRegionDlg::CFixedRegionDlg(CWnd* pParent /*=NULL*/)
 , m_iWidth(1)
 , m_iHeight(1)
 {
+	// TRACE ( _T("## Why are m_itop and m_ileft defined here as 1,1 instead of 0,0. Not correct I beieve\n") );
+
 	//{{AFX_DATA_INIT(CFixedRegionDlg)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
@@ -84,7 +86,8 @@ void CFixedRegionDlg::OnOK()
 	// Not Correct, one to high because MinXY is zero an MaxXY is width/height no of pixels.
 	int maxWidth = abs(maxxScreen - minxScreen);   // Assuming number first pixel is one not zero.
 	int maxHeight = abs(maxyScreen - minyScreen);
-
+	// TRACE(_T("## CFixedRegionDlg::OnOK / maxWidth=[%d], maxHeight=[%d]\n"), maxWidth, maxHeight );
+	
 	if (m_iWidth < 0)
 	{
 		MessageOut(m_hWnd, IDS_STRING_WIDTHGREATER, IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
@@ -143,7 +146,7 @@ void CFixedRegionDlg::OnOK()
 			if (m_iWidth <= 0)
 			{
 				//TODO -- where did these constants came from? Get rid of 'em, put 'em in an ini or #define them somewhere
-				//Answer: See struct sRegionOpts in Profile.h
+				//Answer: See struct sRegionOpts in Profile.h. An area of 240x320 is defined there.
 				m_iLeft = minxScreen + 100;
 				m_iWidth = 320;
 			}
@@ -156,7 +159,7 @@ void CFixedRegionDlg::OnOK()
 			if (m_iHeight <= 0)
 			{
 				//TODO -- where did these constants come from? Get rid of 'em, put 'em in an ini or #define them somewhere
-				//Answer: See struct sRegionOpts in Profile.h
+				//Answer: See struct sRegionOpts in Profile.h. An area of 240x320 is defined there.
 				m_iTop = minyScreen + 100;
 				m_iHeight = 240;
 			}
@@ -164,20 +167,8 @@ void CFixedRegionDlg::OnOK()
 		}
 	}
 
-/*************************
-
-	// First thing we will do nist to get it coorect with the technical region measurements guidelines before we will apply the user viewpoint/
-    // TOP-LEFT = 0.0 ; BOTTOM-RIGHT= HScrSize-1:HScrSize-1 ; Width= Diff Right-Left =>  200-50=150  (Area is 151 pixels but 'our' width is 150)
-
-	// Check that if start values are not set by user they should be one not zero
-	if ( m_iLeft == 0 ) {
-		m_iLeft = 1 ;
-	}
-	if ( m_iTop == 0 ) {
-		m_iTop = 1 ;
-	}
-*/
-	TRACE(_T("## CFixedRegionDlg::OnOK / L=%d, T=%d, W=%d, H=%d\n"), m_iLeft, m_iTop, m_iWidth, m_iHeight );
+	// Technical pixel coordinates are applicable.  Top-Left = 0:0 not 1:1 What user often think it is.
+	// TRACE(_T("## CFixedRegionDlg::OnOK / L=%d, T=%d, W=%d, H=%d\n"), m_iLeft, m_iTop, m_iWidth, m_iHeight );
 
 	cRegionOpts.m_iCaptureLeft = m_iLeft;
 	cRegionOpts.m_iCaptureTop = m_iTop;
@@ -199,7 +190,7 @@ BOOL CFixedRegionDlg::OnInitDialog()
 	m_iHeight = cRegionOpts.m_iCaptureHeight;
 	UpdateData(FALSE);
 
-	TRACE(_T("## CFixedRegionDlg::OnInitDialog / L=%d, T=%d, W=%d, H=%d\n"), m_iLeft, m_iTop, m_iWidth, m_iHeight );
+	// TRACE(_T("## CFixedRegionDlg::OnInitDialog / L=%d, T=%d, W=%d, H=%d\n"), m_iLeft, m_iTop, m_iWidth, m_iHeight );
 
 	m_ctrlEditPosX.EnableWindow(TRUE);
 	m_ctrlEditPosY.EnableWindow(TRUE);
@@ -237,7 +228,7 @@ LRESULT CFixedRegionDlg::OnRegionUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	m_iWidth	= rectUse.Width();
 	m_iHeight	= rectUse.Height();
 
-	TRACE(_T("## CFixedRegionDlg::OnRegionUpdate / L=%d, T=%d, W=%d, H=%d\n"), m_iLeft, m_iTop, m_iWidth, m_iHeight );
+	//TRACE(_T("## CFixedRegionDlg::OnRegionUpdate / L=%d, T=%d, W=%d, H=%d\n"), m_iLeft, m_iTop, m_iWidth, m_iHeight );
 
 	UpdateData(FALSE);
 

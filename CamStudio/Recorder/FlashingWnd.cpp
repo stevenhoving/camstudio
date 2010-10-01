@@ -16,8 +16,12 @@ static char THIS_FILE[] = __FILE__;
 
 namespace {	// annonymous
 
-const int THICKNESS			= 8;
 const int SMALLTHICKNESS	= 4;
+const int THICKNESS			= 8;
+
+const int DOUBLESMALLTHICKNESS	= 8;
+const int DOUBLETHICKNESS	= 16;
+
 const int SIDELEN			= 12;
 const int SIDELEN2			= 24;
 
@@ -103,42 +107,32 @@ void CFlashingWnd::SetUpRegion(const CRect& cRect, int type)
 	//
 	///////////////////////////////////////////////////
 	CRgn wndRgn;	
+	CRgn rgnTemp;
 
 	m_cRect = cRect;
+	// TRACE( _T("## CFlashingWnd::SetUpRegion / m_cRect before / L=%d R=%d T=%d B=%d / W=%d H=%d\n"), m_cRect.left , m_cRect.right , m_cRect.top , m_cRect.bottom, m_cRect.Width(), m_cRect.Height() );
 
-	// The Width shown here is one to less. Not good.
-	TRACE( _T("## CFlashingWnd::SetUpRegion / m_cRect before / L=%d R=%d T=%d B=%d / W=%d H=%d\n"), m_cRect.left , m_cRect.right , m_cRect.top , m_cRect.bottom, m_cRect.Width(), m_cRect.Height() );
-	// Jaho. Why do we reduce the frame here, because the Width and Height are set wrong ???
-	// HIER_BEN_IK
-//#define JAHO_TEST_CRECT_RIGHT_VALUES
-#ifndef JAHO_TEST_CRECT_RIGHT_VALUES
-	// As it was before
-	m_cRect.right--;
-	m_cRect.bottom--;
-#else
-	m_cRect.left--;
-	m_cRect.top--;
-#endif
-	TRACE( _T("## CFlashingWnd::SetUpRegion / m_cRect after  / L=%d R=%d T=%d B=%d / W=%d H=%d\n"), m_cRect.left , m_cRect.right , m_cRect.top , m_cRect.bottom, m_cRect.Width(), m_cRect.Height() );
+	// Type=0 stands for ...
 	if (type == 0) {
-		wndRgn.CreateRectRgn(0, 0, m_cRect.Width() + THICKNESS + THICKNESS, m_cRect.Height() + THICKNESS + THICKNESS);
 
-		CRgn rgnTemp;
 		CRgn rgnTemp2;
 		CRgn rgnTemp3;
-		rgnTemp.CreateRectRgn(THICKNESS, THICKNESS, m_cRect.Width() + THICKNESS + 1, m_cRect.Height() + THICKNESS + 1);
-		rgnTemp2.CreateRectRgn(0, SIDELEN2, m_cRect.Width()+THICKNESS+THICKNESS, m_cRect.Height() - SIDELEN + 1);
-		rgnTemp3.CreateRectRgn(SIDELEN2,0, m_cRect.Width() - SIDELEN + 1, m_cRect.Height() + THICKNESS + THICKNESS);
+		// ToDo: Check if all +1 are applied correctly. Parameters in function below are not checked.
+        // Check if we have forgotten to apply a few or don't we need them (the +1's) at all.?
+		wndRgn.CreateRectRgn(   0         , 0         , m_cRect.Width() + DOUBLETHICKNESS , m_cRect.Height() + DOUBLETHICKNESS  );
+		rgnTemp.CreateRectRgn(  THICKNESS , THICKNESS , m_cRect.Width() + THICKNESS + 1   , m_cRect.Height() + THICKNESS + 1    );
+		rgnTemp2.CreateRectRgn( 0         , SIDELEN2  , m_cRect.Width() + DOUBLETHICKNESS , m_cRect.Height() - SIDELEN + 1      );
+		rgnTemp3.CreateRectRgn( SIDELEN2  , 0         , m_cRect.Width() - SIDELEN + 1     , m_cRect.Height() + DOUBLETHICKNESS  );
 
 		wndRgn.CombineRgn(&wndRgn,&rgnTemp,RGN_DIFF);
 		wndRgn.CombineRgn(&wndRgn,&rgnTemp2,RGN_DIFF);
 		wndRgn.CombineRgn(&wndRgn,&rgnTemp3,RGN_DIFF);
 
-		wndRgn.OffsetRgn( m_cRect.left-THICKNESS, m_cRect.top-THICKNESS );
+		wndRgn.OffsetRgn( m_cRect.left - THICKNESS   , m_cRect.top - THICKNESS );
 	} else {
-		wndRgn.CreateRectRgn(0, 0, m_cRect.Width() + SMALLTHICKNESS + SMALLTHICKNESS, m_cRect.Height() + SMALLTHICKNESS + SMALLTHICKNESS);
-		CRgn rgnTemp;
-		rgnTemp.CreateRectRgn(SMALLTHICKNESS, SMALLTHICKNESS, m_cRect.Width()+SMALLTHICKNESS+1, m_cRect.Height() + SMALLTHICKNESS + 1);
+		
+		wndRgn.CreateRectRgn(  0             , 0             , m_cRect.Width() + DOUBLESMALLTHICKNESS , m_cRect.Height() + DOUBLESMALLTHICKNESS);
+		rgnTemp.CreateRectRgn( SMALLTHICKNESS, SMALLTHICKNESS, m_cRect.Width() + SMALLTHICKNESS + 1   , m_cRect.Height() + SMALLTHICKNESS + 1);
 
 		wndRgn.CombineRgn(&wndRgn, &rgnTemp, RGN_DIFF);
 
