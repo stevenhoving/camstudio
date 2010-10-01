@@ -28,12 +28,12 @@ void NormalizeRect(LPRECT prc)
 
 void FixRectSizePos(LPRECT prc, int maxxScreen, int maxyScreen, int minxScreen, int minyScreen)
 {
-	TRACE( _T("## FixRectSizePos # PRE  # prc: top=%d bottom=%d left=%d right=%d\n"), prc->top, prc->bottom, prc->left, prc->right );
+	// TRACE( _T("## FixRectSizePos # PRE  # prc: top=%d bottom=%d left=%d right=%d\n"), prc->top, prc->bottom, prc->left, prc->right );
 	NormalizeRect(prc);
 
 	int width = prc->right - prc->left + 1;
 	int height = prc->bottom - prc->top + 1;
-	TRACE( _T("## FixRectSizePos #      # prc: width=%d height=%d \n"), width, height );
+	// TRACE( _T("## FixRectSizePos #      # prc: width=%d height=%d \n"), width, height );
 
 	//check that rectangle isn't too wide
 	if (width > abs(maxxScreen-minxScreen)) {
@@ -68,5 +68,5 @@ void FixRectSizePos(LPRECT prc, int maxxScreen, int maxyScreen, int minxScreen, 
 			prc->bottom = maxyScreen - 1;
 		}
 	}
-	TRACE( _T("## FixRectSizePos # POST # prc: top=%d bottom=%d left=%d right=%d\n"), prc->top, prc->bottom, prc->left, prc->right );
+	//TRACE( _T("## FixRectSizePos # POST # prc: top=%d bottom=%d left=%d right=%d\n"), prc->top, prc->bottom, prc->left, prc->right );
 }
