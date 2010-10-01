@@ -532,24 +532,38 @@ bool CCamera::CaptureFrame(const CRect& rectView)
 {
 	m_rectView = rectView;
 
-	// HIER_BEN_IK
-
-	// UNDER CONSTRUCTION...
+	/////////////////////////////////////////////
+	// 
 	// == REMEMBER ======================================
 	// Topleft position on screen is 0:0 not 1:1
-	// Hence, Maxscreen size is logical size (e.g. 1650). Last pos is than 1650 minus 1
-	// Width = right - left + 1 
-	// Height = bottom - top - 1
+	// Hence, Maxscreen size is logical size (e.g. 1050 x 1680). Last pos is than 1650 minus 1
+	// Left value = right + width() - 1 = 0 + 1680 - 1 = 1679  (because first column = 0 )
+	// Right value = bottom - top - 1 = 1050 - 0 -1 = 1049 (because first row = 0 )
+	// Logical Width() = right - left + 1 = 1679 - 0 + 1 = 1680
+	// Logical Height = bottomt - top + 1 = 1049 - 0 + 1 = 1050
+	// But Crect Width() = right - left = 1679 - 0 = 1679
+	// But Crect Height() = bottom - top = 1049 - 0 = 1049
 	// ==================================================
 	// Conclusion (for our Camstudio application) Weight and Height are one to low here..!
 	// But where is this caused ???
+	// ==================================================
+	// Problem found...!
+	// This function expect a param from class CRect.
+	// But in some occassions this function is called with a rcUse structure (also a CRect) 
+	//   but rcUse is build with Top,Left,Bottom,Right info only.
+	// It appears that CRect calculate  Width() as Right - Left  without adding the required one additional pixel by default....!
+	// Soo, on different locations one could find some add and subtracts to get pixel size correct.
+	// 
 	/////////////////////////////////////////////
-	TRACE( _T("## CCamera::CaptureFrame  m_rectView.Width()=%d\n"), m_rectView.Width() );
+	//TRACE( _T("## *** CCamera::CaptureFrame  m_rectView.  TLBR=/%d/%d/%d/%d/  WH=/%d/%d/\n"), m_rectView.top, m_rectView.left, m_rectView.bottom, m_rectView.right,  m_rectView.Width(), m_rectView.Height() );
 
-	m_rectFrame = CRect(0, 0, m_rectView.Width(), m_rectView.Height());
+	// And now we know why we have to add one additional picture here...!
+	// Because in this function not the Weight/Hight are expected but Bottom anf Left value....!
+	m_rectFrame = CRect(0, 0, m_rectView.Width() + 1, m_rectView.Height() + 1 );
+
+	//TRACE( _T("## *** CCamera::CaptureFrame  m_rectFrame.  TLBR=/%d/%d/%d/%d/  WH=/%d/%d/\n"), m_rectFrame.top, m_rectFrame.left, m_rectFrame.bottom, m_rectFrame.right,  m_rectFrame.Width(), m_rectFrame.Height() );
+
 	// setup DC's
-	// CDC* pScreenDC = CDC::FromHandle(::GetDC(0));
-	
 	// Applied bug fix, tracker  ID: 3075791 / memory leak, reported and solved by mlt_msk, hScreenDC is released afterwards.
 	HDC hScreenDC = ::GetDC(0);
 	CDC* pScreenDC = CDC::FromHandle(hScreenDC);
@@ -557,7 +571,7 @@ bool CCamera::CaptureFrame(const CRect& rectView)
 	CDC cMemDC;
 	cMemDC.CreateCompatibleDC(pScreenDC);
 	CBitmap cBitmap;
-	cBitmap.CreateCompatibleBitmap(pScreenDC, m_rectView.Width(), m_rectView.Height());
+	cBitmap.CreateCompatibleBitmap(pScreenDC, m_rectView.Width() + 1, m_rectView.Height() + 1);
 	CBitmap* pOldBitmap = cMemDC.SelectObject(&cBitmap);
 
 	///////////////////////////////////////////
@@ -570,7 +584,7 @@ bool CCamera::CaptureFrame(const CRect& rectView)
 	DWORD dwRop = SRCCOPY;
 	// TODO: assume transparency and OS version
 	dwRop |= CAPTUREBLT;
-	cMemDC.BitBlt(0, 0, m_rectView.Width(), m_rectView.Height(), pScreenDC, m_rectView.left, m_rectView.top, dwRop);
+	cMemDC.BitBlt(0, 0, m_rectView.Width() + 1, m_rectView.Height() + 1, pScreenDC, m_rectView.left, m_rectView.top, dwRop);
 
 	Annotate(&cMemDC);
 
@@ -580,7 +594,7 @@ bool CCamera::CaptureFrame(const CRect& rectView)
 	// convert cBitmap to Image
 	m_cImage.CreateFromHBITMAP(cBitmap);
 	// TEST/TODO: shrink the output!
-	//m_cImage.QIShrink((rectView.Width() * 3)/8, (rectView.Height() * 3)/8, 0, false);
+	//m_cImage.QIShrink( (rectView.Width() +1 )* 3/8, (rectView.Height() + 1) * 3/8, 0, false);
 	// TEST/TODO: convert to GrayScale!
 	//m_cImage.GrayScale();
 
