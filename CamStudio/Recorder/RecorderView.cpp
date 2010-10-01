@@ -651,8 +651,6 @@ void CRecorderView::OnPaint()
 		dcBits.CreateCompatibleDC(&dc);
 		CBitmap bitmap;
 
-		TRACE( _T("## CRecorderView::OnPaint / rectClient.Width()=%d\n") , rectClient.Width() );
-
 		bitmap.CreateCompatibleBitmap(&dc, rectClient.Width(), rectClient.Height());
 		CBitmap *pOldBitmap = dcBits.SelectObject(&bitmap);
 
@@ -1224,28 +1222,45 @@ void CRecorderView::OnRecord()
 	fActualRate = 0.0;
 	fTimeLength = 0.0;
 
-// HIER_BEN_IK
-// Todo: Sizing van rc checked. One pixel gets dropped:  100x100 => 99x99
-	TRACE("## Here it possible goed wrong with the sizing\n");
+	// r272: How we define rect cshecked and changed because some pixel gots dropped:  100x100 => 99x99
+	// rcUse is the rect that will be used in the end to define the size of the recording. 
+	// BTW. rcUse is also used to store previous values.
+	// A Full screen area is 0, 0 to MaxX-1, MaxY-1
 
+	// TRACE( _T("## CRecorderView::OnRecord /CAPTURE_FIXED/ before / cRegionOpts / T=%d, L=%d, B=.. , R=.. , W=%d, H=%d \n"), cRegionOpts.m_iCaptureTop, cRegionOpts.m_iCaptureLeft, cRegionOpts.m_iCaptureWidth, cRegionOpts.m_iCaptureHeight );
 	switch (cRegionOpts.m_iMouseCaptureMode)
 	{
 	case CAPTURE_FIXED:
+		// Applicable when Option region is set as 'Fixed Region'
+
+
+		rc = CRect(cRegionOpts.m_iCaptureTop,
+			       cRegionOpts.m_iCaptureLeft, 
+				   cRegionOpts.m_iCaptureLeft + cRegionOpts.m_iCaptureWidth  - 1 , 
+				   cRegionOpts.m_iCaptureTop  + cRegionOpts.m_iCaptureHeight - 1 );  
+
+		// TRACE( _T("## CRecorderView::OnRecord /CAPTURE_FIXED/ before / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
+
 		if (cRegionOpts.m_bFixedCapture) {
-			// Full screan area :  0:0 to MaxX-1:MaxY-1
-			rc.top = cRegionOpts.m_iCaptureTop;	
-			rc.left = cRegionOpts.m_iCaptureLeft;
-			rc.right = cRegionOpts.m_iCaptureLeft + cRegionOpts.m_iCaptureWidth - 1;
-			rc.bottom = cRegionOpts.m_iCaptureTop + cRegionOpts.m_iCaptureHeight - 1;
-			// TODOMON 0s are no good anymore .. compare to minx / miny
-			if (rc.top < 0)
+			// Applicable when Option region is set as 'Fixed Region' and retangle offset is fixed either.
+			
+			// I don't expect that code below is ever invoked...! Hence, dead code
+			if (rc.top < 0) {
+				TRACE( _T("## CRecorderView::OnRecord rc.top<0  [%d]\n"), rc.top);
 				rc.top = 0;
-			if (rc.left < 0)
+			}
+			if (rc.left < 0) {
+				TRACE( _T("## CRecorderView::OnRecord rc.left<0  [%d]\n"), rc.left);
 				rc.left = 0;
-			if (maxxScreen <= rc.right)
-				rc.right = maxxScreen - 1;
-			if (maxyScreen <= rc.bottom)
-				rc.bottom = maxyScreen - 1;
+			}
+			if (maxxScreen <= rc.right) {
+				TRACE( _T("## CRecorderView::OnRecord maxxScreen<rc.right  [%d]\n"), rc.right);
+				rc.right = maxxScreen - 1;  //ok
+			}
+			if (maxyScreen <= rc.bottom) {
+				TRACE( _T("## CRecorderView::OnRecord maxyScreen<rc.bottom<0  [%d]\n"), rc.bottom);
+				rc.bottom = maxyScreen - 1; //ok
+			}
 
 			//using protocols for iMouseCaptureMode==0
 			old_rcClip = rcClip = rc;
@@ -1253,58 +1268,42 @@ void CRecorderView::OnRecord()
 			rcUse = old_rcClip;
 			::PostMessage (hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM) 0);
 				
-				TRACE( _T("## CRecorderView::OnRecord /0001/ T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
-				TRACE( _T("## CRecorderView::OnRecord /0001/ MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
-
-		} else {
-			rc = CRect(0, 0, cRegionOpts.m_iCaptureWidth, cRegionOpts.m_iCaptureHeight);
-			rc.right--;
-			rc.bottom--;
+		} else { 
+			// Applicable when Option region is set as 'Fixed Region' but retangle offset is floating.
+			// Floating Retangle. Drag the retangle first to its position...
 
 			::ShowWindow(hMouseCaptureWnd,SW_SHOW);
 			::UpdateWindow(hMouseCaptureWnd);
 
 			InitDrawShiftWindow(); //will affect rc implicity
-				TRACE(_T("## CRecorderView::OnRecord /0002/ T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
-				TRACE(_T("## CRecorderView::OnRecord /0002/ MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
 		}
 		break;
-	case CAPTURE_VARIABLE:
+	case CAPTURE_VARIABLE: 
+		// Applicable when Option region is set as 'Region'
 		::ShowWindow(hMouseCaptureWnd, SW_SHOW);
 		::UpdateWindow(hMouseCaptureWnd);
 		InitSelectRegionWindow(); //will affect rc implicity
-				TRACE(_T("## CRecorderView::OnRecord /0003/ T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
-				TRACE(_T("## CRecorderView::OnRecord /0003/ MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
 		break;
-	case CAPTURE_FULLSCREEN:
-		m_basicMsg = new CBasicMessage();
-		m_basicMsg->Create(CBasicMessage::IDD);
-		m_basicMsg->SetText(_T("Click on monitor to be captured."));
-		m_basicMsg->ShowWindow(SW_SHOW);
-		SetCapture();
-	//	m_basicMsg.DoModal();
-				TRACE(_T("## CRecorderView::OnRecord /0004/ T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
-				TRACE(_T("## CRecorderView::OnRecord /0004/ MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
-		break;
-	case CAPTURE_ALLSCREENS:
-		rcUse = CRect(minxScreen, minyScreen, maxxScreen, maxyScreen);
-		rcUse.right--;
-		rcUse.bottom--;
+
+	case CAPTURE_ALLSCREENS: 
+		// Applicable when Option region is set as 'Full Screen'
+		rcUse = CRect(minxScreen, minyScreen, maxxScreen - 1 , maxyScreen - 1);
 		::PostMessage(hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM) 0);
-				TRACE(_T("## CRecorderView::OnRecord /0005/ T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
-				TRACE(_T("## CRecorderView::OnRecord /0005/ MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
 		break;
+
 	case CAPTURE_WINDOW:
+	case CAPTURE_FULLSCREEN:
+		// Applicable when Option region is set as 'Window' and as 'Full Screen'
 		m_basicMsg = new CBasicMessage();
 		m_basicMsg->Create(CBasicMessage::IDD);
 		m_basicMsg->SetText(_T("Click on window to be captured."));
 		m_basicMsg->ShowWindow(SW_SHOW);
 		//m_basicMsg.DoModal();
 		SetCapture();
-				TRACE(_T("## CRecorderView::OnRecord /0006/ T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
-				TRACE(_T("## CRecorderView::OnRecord /0006/ MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
 		break;
 	}
+	// TRACE(_T("## CRecorderView::OnRecord / after / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
+	// TRACE(_T("## CRecorderView::OnRecord / after / MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
 }
 
 void CRecorderView::OnStop()
@@ -3726,16 +3725,10 @@ UINT CRecorderView::RecordVideo()
 			strTempVideoAviFilePath.Format("%s\\%s-%s-%d.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR, (LPCSTR)csStartTime, rand(), "avi" );
 		}
 	}
-	//TRACE("## CRecorderView::RecordAVIThread  Final Temp.Avi file=[%s]\n", strTempVideoAviFilePath.GetString()  );
-
-	//int top = rcUse.top;
-	//int left = rcUse.left;
-	//int width = rcUse.right - rcUse.left + 1;
-	//int height = rcUse.bottom - rcUse.top + 1;
-	//int fps = cVideoOpts.m_iFramesPerSecond;
+	//TRACE(_T("## CRecorderView::RecordAVIThread  Final Temp.Avi file=[%s]\n"), strTempVideoAviFilePath.GetString()  );
+	//TRACE(_T("## CRecorderView::RecordVideo rcUse / T=%d, L=%d, B=%d, R=%d \n"), rcUse.top, rcUse.left, rcUse.bottom, rcUse.right );
 
 	return RecordVideo(rcUse, cVideoOpts.m_iFramesPerSecond, strTempVideoAviFilePath) ? 0UL : 1UL;
-	//return RecordVideo(top, left, width, height, fps, strTempVideoAviFilePath) ? 0UL : 1UL;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -4146,7 +4139,8 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 		//	}
 		//}
 
-		if ((0 == frametime) || (oldframetime < frametime)) {
+	
+		if ( ( frametime == 0 ) || ( oldframetime < frametime ) ) {
 			//ver 1.8
 			//if (iShiftType == 1) {
 			//	if (frametime == 0) {
