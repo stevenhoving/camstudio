@@ -77,6 +77,7 @@ bool CHIC::getState()
 			return bResult;
 		}
 
+		// TODO, Possible memory leak, where is the delete operation of the new below done although there is a delete in catch
 		m_pState = new char[m_ulStateSize];
 		LRESULT lResult = ::ICGetState(m_hIC, m_pState, m_ulStateSize);
 		// bResult = (lResult == m_ulStateSize );  ==> C4389 Warning, type mismatch

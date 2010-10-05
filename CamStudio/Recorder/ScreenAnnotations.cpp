@@ -343,6 +343,8 @@ void CScreenAnnotationsDlg::OnEditobjNewobject()
 	CNewShapeDlg newshapeDlg;
 	if (newshapeDlg.DoModal() == IDOK) {
 		CTransparentWnd *newWnd;
+		
+		// TODO, Possible memory leak, where is the delete operation of the new below done?
 		newWnd = new CTransparentWnd;
 
 		int x = (rand() % 100) + 100;
@@ -425,6 +427,8 @@ void CScreenAnnotationsDlg::SaveLayoutNew()
 	if (cloneArray)
 	{
 		CLayoutList * newLayout = NULL;
+		
+		// TODO, Possible memory leak, where is the delete operation of the new below done?		
 		newLayout = new CLayoutList;
 		if (newLayout)
 		{

@@ -1400,7 +1400,7 @@ BOOL CTransparentWnd::LoadShape(FILE* fptr)
 	fread( (void *) &len, sizeof(int), 1, fptr );
 	if ((0 < len) && (len < 100000)) {
 		//char *buf = (char *) malloc(len + 2);
-		char *buf = new char[len + 2];
+		char *buf = new char[len + 2];			// No memory leak here, buf is deleted in this block of code too
 		fread(buf, len, 1, fptr );
 		buf[len] = 0;
 		buf[len+1] = 0;
@@ -1412,7 +1412,7 @@ BOOL CTransparentWnd::LoadShape(FILE* fptr)
 	fread( (void *) &len, sizeof(int), 1, fptr );
 	if ((len>0) && (len<100000)) {
 		//char *buf = (char *) malloc(len + 2);
-		char *buf = new char[len + 2];
+		char *buf = new char[len + 2];			// No memory leak here, buf is deleted in this block of code too
 		fread( (void *) buf, len, 1, fptr );
 		buf[len] = 0;
 		buf[len+1] = 0;

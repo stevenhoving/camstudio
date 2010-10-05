@@ -79,6 +79,7 @@ bool sAudioFormat::NewAudio()
 		return bResult;
 	}
 
+	// TODO, Possible memory leak, where is the delete operation of the new below done?
 	m_pwfx = (LPWAVEFORMATEX)new char[m_dwCbwFX];
 	bResult = (0 != m_pwfx);
 	if (!bResult) {

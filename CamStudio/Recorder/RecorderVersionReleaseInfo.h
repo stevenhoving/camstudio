@@ -8,6 +8,6 @@
 #define  CURRENT_VERSION_NUMBER  "2.6"
 // Add ++ to releasenumber to indicate that executable is from revision xxx or higher
 // Update versionnumber and remove ++ when official Camstudio release will be created
-#define  CURRENT_SVN_RELEASE_NUMBER  "272"
+#define  CURRENT_SVN_RELEASE_NUMBER  "273"
 
 #endif // !defined(_RECORDERVERSIONRELEASEINFO__INCLUDED_)

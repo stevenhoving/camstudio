@@ -50,6 +50,10 @@
 #include "XnoteStopwatchFormat.h"
 #include "Camstudio4XNote.h"
 
+#ifdef _DEBUG
+// #include <vld.h>		// Visual Leak Detector utility (In debug mode)
+#endif
+
 #include <windowsx.h>
 #include <fstream>
 #include <iostream>
@@ -1234,10 +1238,10 @@ void CRecorderView::OnRecord()
 		// Applicable when Option region is set as 'Fixed Region'
 
 
-		rc = CRect(cRegionOpts.m_iCaptureTop,
-			       cRegionOpts.m_iCaptureLeft, 
-				   cRegionOpts.m_iCaptureLeft + cRegionOpts.m_iCaptureWidth  - 1 , 
-				   cRegionOpts.m_iCaptureTop  + cRegionOpts.m_iCaptureHeight - 1 );  
+		rc = CRect(cRegionOpts.m_iCaptureLeft,										 // X = Left
+			       cRegionOpts.m_iCaptureTop,										 // Y = Top
+				   cRegionOpts.m_iCaptureLeft + cRegionOpts.m_iCaptureWidth  - 1 ,   // X = Width
+				   cRegionOpts.m_iCaptureTop  + cRegionOpts.m_iCaptureHeight - 1 );  // Y = Height
 
 		// TRACE( _T("## CRecorderView::OnRecord /CAPTURE_FIXED/ before / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
 
@@ -1294,6 +1298,8 @@ void CRecorderView::OnRecord()
 	case CAPTURE_WINDOW:
 	case CAPTURE_FULLSCREEN:
 		// Applicable when Option region is set as 'Window' and as 'Full Screen'
+		
+		// TODO, Possible memory leak, where is the delete operation of the new below done?
 		m_basicMsg = new CBasicMessage();
 		m_basicMsg->Create(CBasicMessage::IDD);
 		m_basicMsg->SetText(_T("Click on window to be captured."));
@@ -1338,8 +1344,11 @@ void CRecorderView::OnFileVideooptions()
 	LPBITMAPINFOHEADER first_alpbi = captureScreenFrame(rect) ? m_cCamera.Image() : 0;
 
 	num_compressor = 0;
-	if (pCompressorInfo)
+	if (pCompressorInfo) {
 		delete [] pCompressorInfo;
+	}
+	
+	// TODO, Possible memory leak, where is the delete operation of the new below done?
 	pCompressorInfo = new ICINFO[MAXCOMPRESSORS];
 
 	//for (int i = 0; ICInfo(ICTYPE_VIDEO, i, &pCompressorInfo[num_compressor]); i++) {
@@ -2846,6 +2855,7 @@ void CRecorderView::OnViewVideoannotations()
 
 		rect.left = x;
 		rect.top = y;
+		// TODO, Magic values here again 160,120
 		rect.right = rect.left + 160 - 1;
 		rect.bottom = rect.top + 120 - 1;
 		m_vanWnd.TextString(m_newShapeText);
@@ -4693,6 +4703,7 @@ void DataFromSoundIn(CBuffer* buffer)
 int AddInputBufferToQueue()
 {
 	// create the header
+	// TODO, Possible memory leak, where is the delete operation of the new below done?
 	LPWAVEHDR pHdr = new WAVEHDR;
 	if (pHdr == NULL) {
 		return NULL;
@@ -4765,6 +4776,7 @@ BOOL InitAudioRecording()
 
 	//Create temporary wav file for audio recording
 	GetTempAudioWavPath();
+	// TODO, Possible memory leak, where is the delete operation of the new below done?
 	pSoundFile = new CSoundFile(strTempAudioWavFilePath, &(cAudioFormat.AudioFormat()));
 
 	if (!(pSoundFile && pSoundFile->IsOK()))
