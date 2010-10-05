@@ -81,8 +81,10 @@ BOOL CLayoutList::LoadLayoutFromFile(FILE *fptr)
 
 	}
 
-	if (layoutArrayPtr==NULL)
+	if (layoutArrayPtr==NULL) {
+		// TODO, Possible memory leak, where is the delete operation of the new below done?
 		layoutArrayPtr = new CArray<CTransparentWnd *,CTransparentWnd *>;
+	}
 	ListManager.LoadLayoutArrayFromFile(layoutArrayPtr , fptr);
 
 	if (layoutversion>1)
