@@ -804,6 +804,7 @@ struct sVideoOpts
 			return m_pState;
 		}
 		m_dwCompressorStateSize = dwStateSize;
+		// TODO, Possible memory leak, where is the delete operation of the new below done?
 		m_pState = new char[m_dwCompressorStateSize];
 		return m_pState;
 	}

@@ -117,6 +117,7 @@ int CListManager::LoadShapeArray(CString loadDir, int freeExisting)
 			FreeShapeArray();
 		}
 		for (int i = 0; i < max; i++) {
+			// TODO, Possible memory leak, where is the delete operation of the new below done?
 			CTransparentWnd * itemWnd = new CTransparentWnd;
 			if (itemWnd) {
 				if (!itemWnd->LoadShape(fptr)) {
@@ -301,6 +302,7 @@ int CListManager::DestroyArrayItems(CArray<CTransparentWnd *,CTransparentWnd *> 
 
 CArray<CTransparentWnd *,CTransparentWnd *> * CListManager::CloneDisplayArray()
 {
+	// TODO, Possible memory leak, where is the delete operation of the new below done?
 	CArray<CTransparentWnd *,CTransparentWnd *> *cloneArray = new CArray<CTransparentWnd *,CTransparentWnd *>;
 
 	int max = displayArray.GetSize();
@@ -349,6 +351,7 @@ int CListManager::FreeLayoutArray()
 CArray<CTransparentWnd *,CTransparentWnd *> * CListManager::CloneLayoutArrayPtr(CLayoutList* itemLayout)
 {
 	CArray<CTransparentWnd *,CTransparentWnd *> * layoutArrayPtr = itemLayout->layoutArrayPtr;
+	// TODO, Possible memory leak, where is the delete operation of the new below done?
 	CArray<CTransparentWnd *,CTransparentWnd *> *cloneArray = new CArray<CTransparentWnd *,CTransparentWnd *>;
 
 	int max = layoutArrayPtr->GetSize();
@@ -373,6 +376,7 @@ CLayoutList * CListManager::CloneLayout(CLayoutList * itemLayout)
 	if (itemLayout) {
 		CArray<CTransparentWnd *,CTransparentWnd *> *cloneArray = CloneLayoutArrayPtr(itemLayout);
 		if (cloneArray) {
+			// TODO, Possible memory leak, where is the delete operation of the new below done?
 			newLayout = new CLayoutList;
 			if (newLayout) {
 				newLayout->layoutArrayPtr = cloneArray;
@@ -482,6 +486,7 @@ int CListManager::LoadLayout(CString loadDir)
 			FreeLayoutArray();
 			for (int i=0; i<max; i++)
 			{
+				// TODO, Possible memory leak, where is the delete operation of the new below done?
 				CLayoutList * itemLayout = new CLayoutList;
 				if (itemLayout) {
 					if (!itemLayout->LoadLayoutFromFile(fptr)) {
@@ -605,6 +610,7 @@ int CListManager::LoadLayoutArrayFromFile(CArray<CTransparentWnd *,CTransparentW
 	if ((max > 0) && (max<10000)) {
 		for (int i=0; i<max; i++)
 		{
+			// TODO, Possible memory leak, where is the delete operation of the new below done?
 			CTransparentWnd * itemWnd = new CTransparentWnd;
 			if (itemWnd) {
 				if (!itemWnd->LoadShape(fptr)) {

@@ -239,6 +239,7 @@ BOOL CRecorderApp::InitInstance()
 	// serve as the connection between documents, frame windows and views.
 
 	CSingleDocTemplate* pDocTemplate;
+	// TODO, Possible memory leak, where is the delete operation of the new below done?
 	pDocTemplate = new CSingleDocTemplate(
 		IDR_MAINFRAME,
 		RUNTIME_CLASS(CRecorderDoc),
