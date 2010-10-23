@@ -8,6 +8,7 @@
 // n.b. Overloads DWORD GetTempPath(DWORD nBufferLength, LPTSTR lpBuffer)
 // There is a conversion from LPTSTR to CString
 // TODO: Rename; this is needlessly dangerous
+// TODO GetTempFolder does not contain the temp folder but returns the udf target folder. Hence the function name is not correct..!
 /////////////////////////////////////////////////////////////////////////////
 CString GetTempFolder(int iAccess, const CString strFolder)
 {
