@@ -989,12 +989,17 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 
 	// I believed that savedir would always be GetProgPath(). 
 	// But this test below proved that that is not alway the case
+	//TRACE("## CRecorderView::OnUserGeneric() cProgramOpts.m_strSpecifiedDir=[%s]\n",cProgramOpts.m_strSpecifiedDir );
 	//TRACE("## CRecorderView::OnUserGeneric , savedir    = [%s]\n", savedir );
 	//TRACE("## CRecorderView::OnUserGeneric , GetProgPath= [%s]\n", GetProgPath() );
 	//TRACE("## CRecorderView::OnUserGeneric , savedir = GetProgPath [%s]\n", (GetProgPath()==savedir) ? "EQUAL" : "DIFFERENT"  );
 
 	if ((cProgramOpts.m_iRecordingMode == ModeAVI) && cProgramOpts.m_bAutoNaming) {
-		strTargetDir = GetProgPath();
+
+		// Janhgm. Target dir where we want to get our final files is not always the location where we stored our Camstudio application..!
+		// strTargetDir = GetProgPath();
+		strTargetDir = GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir);	
+
 		// Use local copy of the timestamp string created when recording was started for autonaming.
 		strTargetBareFileName.SetString( cVideoOpts.m_cStartRecordingString.GetString() );		// "ccyymmdd-hhmm-ss" , Timestamp still used for default temp.avi output "temp-ccyymmdd-hhmm-ss.avi"
 		strTargetVideoExtension = ".avi";
@@ -1032,9 +1037,9 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	// Create all the applicable targetfile names
 	strTargetVideoFile    = strTargetDir + "\\" + strTargetBareFileName + strTargetVideoExtension;		// strTargetVideoFile is the same string as strNewFile in previuosly approach
 	strTargetAudioFile    = strTargetDir + "\\" + strTargetBareFileName + ".wav";
-	strTargetXnoteLogFile = strTargetDir + "\\" + strTargetBareFileName + ".xnote.txt";
+	strTargetXnoteLogFile = strTargetDir + "\\" + strTargetBareFileName + ".txt";
 
-	//TRACE("## 2a # strTargetDir            :[%s]\n", strTargetDir);
+	//TRACE("## CRecorderView::OnUserGeneric 2a # strTargetDir            :[%s]\n", strTargetDir);
 	//TRACE("## 2b # strTargetBareFileName   :[%s]\n", strTargetBareFileName );
 	//TRACE("## 2c # strTargetVideoExtension :[%s]\n", strTargetVideoExtension );
 	//TRACE("## 3a # strTargetVideoFile      :[%s]\n", strTargetVideoFile );
@@ -1302,10 +1307,17 @@ void CRecorderView::OnRecord()
 		// TODO, Possible memory leak, where is the delete operation of the new below done?
 		m_basicMsg = new CBasicMessage();
 		m_basicMsg->Create(CBasicMessage::IDD);
-		m_basicMsg->SetText(_T("Click on window to be captured."));
+		if ( cRegionOpts.m_iMouseCaptureMode == CAPTURE_WINDOW ) {
+			m_basicMsg->SetText(_T("Click on window to be captured."));
+		} else {
+			m_basicMsg->SetText(_T("Click on screen to be captured."));
+		}
 		m_basicMsg->ShowWindow(SW_SHOW);
 		//m_basicMsg.DoModal();
 		SetCapture();
+		//TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
+		//TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
+
 		break;
 	}
 	// TRACE(_T("## CRecorderView::OnRecord / after / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
@@ -3717,7 +3729,7 @@ UINT CRecorderView::RecordVideo()
 	cVideoOpts.m_cStartRecordingString.SetString(csStartTime);
 
 	strTempVideoAviFilePath.Format("%s\\%s-%s.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR, (LPCSTR)csStartTime, "avi" );
-	// strTempXnoteLogFilePath.Format("%s\\%s-%s.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR, (LPCSTR)csStartTime, "xnote.txt" );
+	// strTempXnoteLogFilePath.Format("%s\\%s-%s.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR, (LPCSTR)csStartTime, "txt" );
 
 	//TRACE("## CRecorderView::RecordAVIThread First  Temp.Avi file=[%s]\n", strTempVideoAviFilePath.GetString()  );
 
@@ -3762,8 +3774,29 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 
 	sVideoOpts SaveVideoOpts = cVideoOpts;
 
-	GetDocument()->FrameWidth(rectFrame.Width() + 1);
-	GetDocument()->FrameHeight(rectFrame.Height() + 1);
+	// And again CS is doing a recalculation to determine width and height.
+	// If sizing is determined with SetCapture() the dimensions are different as we getwith CRect(Top,Left,Bottom,Right)
+	// HIER_BEN_IK
+	// TRACE(_T("## CRecorderView::RecordVideo / cRegionOpts.m_iMouseCaptureMode =%d\n"), cRegionOpts.m_iMouseCaptureMode );
+	switch (cRegionOpts.m_iMouseCaptureMode)
+	{
+	case CAPTURE_WINDOW:
+	case CAPTURE_FULLSCREEN:
+		// For rects captured with SetCapture
+		//TRACE(_T("## CRecorderView::RecordVideo / cRegionOpts.m_iMouseCaptureMode =%d  (Do nothing) \n"), cRegionOpts.m_iMouseCaptureMode );
+		GetDocument()->FrameWidth(rectFrame.Width() );
+		GetDocument()->FrameHeight(rectFrame.Height() );
+		break;
+	default:
+		// For rects defined with Rect(top,left,bottom,right)
+		//TRACE(_T("## CRecorderView::RecordVideo / cRegionOpts.m_iMouseCaptureMode =%d  (increase width anf height with one) \n"), cRegionOpts.m_iMouseCaptureMode );
+		GetDocument()->FrameWidth(rectFrame.Width() + 1);
+		GetDocument()->FrameHeight(rectFrame.Height() + 1);
+		break;
+	}
+	//TRACE(_T("## CRecorderView::RecordVideo / rectFrame / T=%d, L=%d, B=%d, R=%d / W=%d, H=%d\n"), rectFrame.top, rectFrame.left, rectFrame.bottom, rectFrame.right , rectFrame.Width(), rectFrame.Height() );
+	//TRACE(_T("## CRecorderView::RecordVideo / GetDocument / W=%d, H=%d\n"), GetDocument()->FrameWidth(), GetDocument()->FrameHeight() );
+
 	nTotalBytesWrittenSoFar = 0;
 
 	////////////////////////////////////////////////
@@ -3981,8 +4014,14 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 
 	//////////////////////////////////////////////
 	// Xnote or MotionDetection log file
+	// Store some Camstudio info as well.
 	//////////////////////////////////////////////
 	OpenStreamXnoteLogFile();
+
+	// Document which version and release of Camstudio is used.
+	char cTmp[128] = "";
+	sprintf( cTmp, "<recorder><version>%s<\\version><release>%s<\\release><\\recorder>\n", CURRENT_VERSION_NUMBER, CURRENT_SVN_RELEASE_NUMBER );
+	WriteLineToXnoteLogFile( cTmp );
 
 	if (cVideoOpts.m_iShiftType == AUDIOFIRST) {
 		Sleep(cVideoOpts.m_iTimeShift);
@@ -4320,7 +4359,7 @@ error:
 	}
 
 	//////////////////////////////////////////////
-	// Close XNote or MotionDetection log file
+	// Close Camstudio, XNote or MotionDetection log file
 	//////////////////////////////////////////////
 	CloseStreamXnoteLogFile();		
 
@@ -4443,7 +4482,7 @@ bool CRecorderView::RunViewer(const CString& strNewFile)
 	} else if (cProgramOpts.m_iLaunchPlayer == CAM2_PLAYER) {
 		CString AppDir = GetProgPath();
 		CString launchPath;
-		CString exefileName("\\Playplus.exe ");
+		CString exefileName("\\Playerplus.exe ");		// Changed from Playplus.exe to Playerplus.exe
 		launchPath = AppDir + exefileName + strNewFile;
 		if (WinExec(launchPath,SW_SHOW) < HINSTANCE_ERROR) {
 			//MessageBox("Error launching avi player!","Note",MB_OK | MB_ICONEXCLAMATION);
@@ -5108,7 +5147,11 @@ void WriteLineToXnoteLogFile( char* pStr )
 void GetTempXnoteLogPath()
 {
 	CString csTempFolder(GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir));	
-	strTempXnoteLogFilePath.Format("%s\\%s-%s.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR, (LPCSTR)cVideoOpts.m_cStartRecordingString , "xnote.txt" );
+	// TODO csTempFolder does not contain the temp folder but returns the target folder. Hence the function name is not correct..!
+	// TRACE( _T("## RecorderView.cpp GetTempXnoteLogPath() / m_iTempPathAccess=[%d]  m_strSpecifiedDir=[%s] csTempFolder=[%s]\n"),cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir, csTempFolder );
+
+	strTempXnoteLogFilePath.Format("%s\\%s-%s.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR, (LPCSTR)cVideoOpts.m_cStartRecordingString , "txt" );
+	// TRACE( _T("## GetTempXnoteLogPath() / strTempXnoteLogFilePath=[%s] \n"), strTempXnoteLogFilePath.GetString() );
 
 	//Test the validity of writing to this file  (Using the old way with FILE instead of ofstream)
 	int fileverified = 0;
@@ -5128,7 +5171,7 @@ void GetTempXnoteLogPath()
 			sprintf(numstr,"%d",randnum);
 
 			CString cnumstr(numstr);
-			strTempXnoteLogFilePath.Format("%s\\%s-%s-%s.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR, (LPCSTR)cVideoOpts.m_cStartRecordingString , cnumstr , "xnote.txt" );
+			strTempXnoteLogFilePath.Format("%s\\%s-%s-%s.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR, (LPCSTR)cVideoOpts.m_cStartRecordingString , cnumstr , "txt" );
 		}
 	}
 }
