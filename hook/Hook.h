@@ -30,6 +30,7 @@
 __declspec(dllexport) HotKeyMap& getHotKeyMap();
 __declspec(dllexport) void setHotKeyWindow(HWND hWnd);
 __declspec(dllexport) void setPassThrough(bool pass);
+__declspec(dllexport) HCURSOR getCursor();
 
 #ifdef __cplusplus
 extern "C" {

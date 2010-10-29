@@ -103,19 +103,7 @@ public:
 		{
 		default:
 		case ACTIVE:
-			POINT pt;
-			if (GetCursorPos(&pt)) { // may need to profile this. dunno how long does it take
-				HWND h = WindowFromPoint(pt);
-				DWORD id = GetWindowThreadProcessId(h, NULL);
-				DWORD cid = GetCurrentThreadId();
-				if (id != cid) {
-					if (AttachThreadInput(cid, id, TRUE)) {
-						m_hSavedCursor = GetCursor();
-						AttachThreadInput(cid, id, FALSE);
-					}
-				} else
-					m_hSavedCursor = GetCursor();
-			}
+			m_hSavedCursor = getCursor();
 			return m_hSavedCursor;
 		case CUSTOM:
 			return m_hCustomCursor;

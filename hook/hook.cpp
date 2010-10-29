@@ -28,6 +28,12 @@ __declspec(dllexport) HotKeyMap& getHotKeyMap() { return hkm; }
 __declspec(dllexport) void setHotKeyWindow(HWND hWnd) { hotkeyWnd = hWnd; }
 __declspec(dllexport) void setPassThrough(bool pass) { PassThrough = pass; }
 
+// all that stuff is only here in mouse handler since it brakes double clicks when in the main app
+// I guess it is because of stealing thread
+HCURSOR m_hSavedCursor = NULL;
+__declspec(dllexport) HCURSOR getCursor() { return m_hSavedCursor; }
+
+
 // DONE: few thing to consider:
 // This way we get an attack by window messages which loads the system. We can
 // 1) simply use some function to pull data from the dll / I don't like to export data
@@ -40,8 +46,21 @@ __declspec(dllexport) void setPassThrough(bool pass) { PassThrough = pass; }
 LRESULT CALLBACK LowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	if (nCode >= 0) {
-//		GetCursorInfo(&ci);
-//		hCursor = ::GetCursor();
+		if (WM_LBUTTONDOWN != wParam && WM_LBUTTONUP != wParam) {
+			POINT pt;
+			if (GetCursorPos(&pt)) { // may need to profile this. dunno how long does it take
+				HWND h = WindowFromPoint(pt);
+				DWORD id = GetWindowThreadProcessId(h, NULL);
+				DWORD cid = GetCurrentThreadId();
+				if (id != cid) {
+					if (AttachThreadInput(cid, id, TRUE)) {
+						m_hSavedCursor = GetCursor();
+						AttachThreadInput(cid, id, FALSE);
+					}
+				} else
+					m_hSavedCursor = GetCursor();
+			}
+		}
 		MSLLHOOKSTRUCT mhs = *(LPMSLLHOOKSTRUCT) lParam;
 		mhs.flags = wParam;
 		if (WM_LBUTTONDOWN <= wParam && wParam <= WM_MOUSEHWHEEL)
