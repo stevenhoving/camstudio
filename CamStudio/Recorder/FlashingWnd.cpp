@@ -112,7 +112,7 @@ void CFlashingWnd::SetUpRegion(const CRect& cRect, int type)
 	m_cRect = cRect;
 	// TRACE( _T("## CFlashingWnd::SetUpRegion / m_cRect before / L=%d R=%d T=%d B=%d / W=%d H=%d\n"), m_cRect.left , m_cRect.right , m_cRect.top , m_cRect.bottom, m_cRect.Width(), m_cRect.Height() );
 
-	// Type=0 stands for ...
+	// Type=0 stands for ... cProgramOpts.m_bAutoPan == false
 	if (type == 0) {
 
 		CRgn rgnTemp2;
@@ -155,7 +155,9 @@ void CFlashingWnd::PaintBorder(bool bInvert, bool bDraw)
 		? m_clrBorderON
 		: m_clrBorderOFF;
 
+	clrColor = m_clrBorderON;
 	CWindowDC cWindowDC(CWnd::FromHandle(m_hWnd));
+	cWindowDC.SetROP2(R2_XORPEN);
 	CBrush newbrush;
 	newbrush.CreateSolidBrush(clrColor);
 	CPen newpen;

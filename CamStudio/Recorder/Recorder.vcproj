@@ -50,7 +50,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)$(ProjectName)\fister&quot;;&quot;$(SolutionDir)CxImage\CxImage&quot;;&quot;$(SolutionDir)CamLib&quot;;&quot;$(SolutionDir)hook&quot;;&quot;$(SolutionDir)hookkey&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)$(ProjectName)\fister&quot;;&quot;$(SolutionDir)CxImage\CxImage&quot;;&quot;$(SolutionDir)CamLib&quot;;&quot;$(SolutionDir)hook&quot;;&quot;$(SolutionDir)hookkey&quot;;&quot;$(SolutionDir)libconfig/lib&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -81,10 +81,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib vfw32.lib msacm32.lib"
+				AdditionalDependencies="winmm.lib vfw32.lib msacm32.lib libconfig++.lib"
 				OutputFile="..\$(ConfigurationName)\$(ProjectName).exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)libconfig/Release&quot;"
 				ManifestFile="$(SolutionDir)$(ConfigurationName)\$(TargetFileName).intermediate.manifest"
 				ProgramDatabaseFile=".\Release/Recorder.pdb"
 				SubSystem="2"
@@ -151,10 +152,10 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)$(ProjectName)\fister&quot;;&quot;$(SolutionDir)CxImage\CxImage&quot;;&quot;$(SolutionDir)CamLib&quot;;&quot;$(SolutionDir)hook&quot;;&quot;$(SolutionDir)hookkey&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)$(ProjectName)\fister&quot;;&quot;$(SolutionDir)CxImage\CxImage&quot;;&quot;$(SolutionDir)CamLib&quot;;&quot;$(SolutionDir)hook&quot;;&quot;$(SolutionDir)hookkey&quot;;&quot;$(SolutionDir)libconfig/lib&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS"
 				MinimalRebuild="true"
-				RuntimeLibrary="3"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug/recorder.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -180,10 +181,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib vfw32.lib msacm32.lib"
+				AdditionalDependencies="winmm.lib vfw32.lib msacm32.lib libconfig++.lib"
 				OutputFile="..\$(ConfigurationName)\$(ProjectName).exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(SolutionDir)libconfig/Release"
 				ManifestFile="$(SolutionDir)$(ConfigurationName)\$(TargetFileName).intermediate.manifest"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
@@ -639,11 +641,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Recorder.ico"
+				RelativePath="..\GlobalResources\Recorder.ico"
 				>
 			</File>
 			<File
-				RelativePath="..\GlobalResources\Recorder.ico"
+				RelativePath=".\Recorder.ico"
 				>
 			</File>
 			<File
@@ -659,11 +661,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\GlobalResources\Recorder_logo.bmp"
+				RelativePath=".\Recorder_logo.bmp"
 				>
 			</File>
 			<File
-				RelativePath=".\Recorder_logo.bmp"
+				RelativePath="..\GlobalResources\Recorder_logo.bmp"
 				>
 			</File>
 			<File

@@ -145,8 +145,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
-				RuntimeLibrary="1"
+				PreprocessorDefinitions="WIN32;_WINDOWS"
+				RuntimeLibrary="0"
 				PrecompiledHeaderFile=".\Debug/hook.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
@@ -207,6 +207,10 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\ClickQueue.cpp"
+			>
+		</File>
+		<File
 			RelativePath="hook.cpp"
 			>
 			<FileConfiguration
@@ -224,7 +228,6 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
-					PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;$(NoInherit)"
 				/>
 			</FileConfiguration>
 		</File>

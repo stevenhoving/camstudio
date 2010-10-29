@@ -4,6 +4,9 @@
 #include "ximage.h"
 #include "XnoteStopwatchFormat.h"
 #include "RecorderView.h"
+#include "../hook/ClickQueue.hpp"
+#include <gdiplus.h>
+using namespace Gdiplus;
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -122,18 +125,17 @@ bool CCamera::AddWatermark(CDC* pDC)
 }
 bool CCamera::AddCursor(CDC* pDC)
 {
-	if (!m_cCursor.Record()) {
-		return true;
-	}
-
 	CPoint ptCursor;
 	VERIFY(::GetCursorPos(&ptCursor));
-	ptCursor.x -= m_rectView.left;
-	ptCursor.y -= m_rectView.top;
+	ptCursor.x -= _zoomFrame.left;
+	ptCursor.y -= _zoomFrame.top;
+	double zoom = m_rectView.Width()/(double)_zoomFrame.Width(); // TODO: need access to zoom in this class badly
+	ptCursor.x *= zoom;
+	ptCursor.y *= zoom;
 
 	// TODO: This shift left and up is kind of bogus.
 	// The values are half the width and height of the higlight area.
-	InsertHighLight(pDC, CPoint(ptCursor.x - 64, ptCursor.y - 64));
+	InsertHighLight(pDC, ptCursor);
 
 	// Draw the Cursor
 	HCURSOR hcur = m_cCursor.Cursor();
@@ -146,6 +148,8 @@ bool CCamera::AddCursor(CDC* pDC)
 		// need to delete the hbmMask and hbmColor bitmaps
 		// otherwise the program will crash after a while
 		// after running out of resource
+		// TODO: can we cache it and don't use GetIconInfo every frame?
+		// We make several shots per second it will save us some resources if cursor is not changed
 		if (iconinfo.hbmMask) {
 			::DeleteObject(iconinfo.hbmMask);
 		}
@@ -158,13 +162,108 @@ bool CCamera::AddCursor(CDC* pDC)
 	return true;
 }
 
+// visualize mouse events queue
+bool CCamera::AddClicks(CDC* pDC)
+{
+	Graphics g(pDC->GetSafeHdc());
+	g.SetSmoothingMode(SmoothingModeAntiAlias);
+	g.SetInterpolationMode(InterpolationModeHighQualityBicubic);
+	Color c;
+	c.SetValue(m_cCursor.ClickLeftColor());
+	Pen penLeft(c, m_cCursor.m_fRingWidth);
+	c.SetValue(m_cCursor.ClickRightColor());
+	Pen penRight(c, m_cCursor.m_fRingWidth);
+	Pen penMiddle(m_cCursor.m_clrClickMiddle, m_cCursor.m_fRingWidth); // TODO: Create an option for me
+
+	DWORD now = GetTickCount();
+	DWORD threshold = m_cCursor.m_iRingThreshold;
+
+	DWORD ago;
+
+	ClickQueue& cc = ClickQueue::getInstance();
+	cc.Lock(); // different thread of the same process puts events in queue
+	ClickQueue::QueueType& queue = cc.getQueue();
+	ClickQueue::Iterator iter, iter2; // iter2 is used to clean up "down" events when "up" happend
+	int maxsize = m_cCursor.m_iRingSize;
+	// Remove expired events
+	iter=queue.begin();
+	while ((iter != queue.end()) && ((now - iter->time) > threshold)) // how to deal with integer overflow?
+		++iter;
+	if (iter != queue.begin()) // TODO: good place to dump events to log file before discarding them
+		queue.erase(queue.begin(), iter);
+
+	for(iter = queue.begin(); iter != queue.end(); ++iter)
+	{
+		ago = now - iter->time;
+		int size = maxsize * ago / threshold;
+		bool found = false;
+		switch(iter->flags) // holds MW_ for mouse
+		{	// once button is released we should remove all previous down events
+		case 0xFFFFFFFF: continue; // <= WM_xBUTTONDOWN special case when button was released. Let it expire
+		case WM_LBUTTONUP:
+		case WM_MBUTTONUP:
+		case WM_RBUTTONUP:
+			iter2 = iter;
+			while(iter2 != queue.begin() && !found) {
+				--iter2;
+				if(iter2->flags == iter->flags-1) { // DOWN and UP are 1 apart
+					iter2->flags = 0xFFFFFFFF; // there should be no other down's actually
+					found = true;
+				}
+			}
+			break;
+		case WM_LBUTTONDOWN:
+		case WM_MBUTTONDOWN:
+		case WM_RBUTTONDOWN:
+			size = maxsize - size;//maxsize * (threshold - ago) / threshold;
+			break;
+		}
+		Pen * pen;
+		switch(iter->flags) // color {
+		{
+		case WM_RBUTTONDOWN:
+		case WM_RBUTTONUP:
+			pen = &penRight;
+			break;
+		case WM_MBUTTONDOWN:
+		case WM_MBUTTONUP:
+		case WM_MOUSEWHEEL:
+			pen = &penMiddle;
+			break;
+		default:
+			pen = &penLeft;
+		} // } color
+		CPoint pt = CPoint(iter->pt);
+		pt.x -= _zoomFrame.left;
+		pt.y -= _zoomFrame.top;
+		double zoom = m_rectView.Width()/(double)_zoomFrame.Width();
+		pt.x *= zoom;
+		pt.y *= zoom;
+
+		if (iter->flags == WM_MOUSEWHEEL)
+		{
+			int delta = iter->mouseData;
+			delta >>= 16; // high word has delta
+			g.DrawLine(pen, pt.x - size, pt.y, pt.x, pt.y - size * delta / 120);
+			g.DrawLine(pen, pt.x + size, pt.y, pt.x, pt.y - size * delta / 120);
+		}
+		else
+			g.DrawEllipse(pen, pt.x - size, pt.y - size, 2*size, 2*size);
+	}
+	cc.Unlock();
+	return true;
+}
+
 bool CCamera::Annotate(CDC* pDC)
 {
 	AddTimestamp(pDC);
 	AddXNote(pDC);
 	AddCaption(pDC);
 	AddWatermark(pDC);
-	AddCursor(pDC);
+	if (m_cCursor.Record())
+		AddCursor(pDC);
+	if (m_cCursor.HighlightClick())
+		AddClicks(pDC);
 	return true;
 }
 
@@ -398,82 +497,22 @@ void CCamera::InsertHighLight(CDC *pDC, CPoint pt)
 	if (!(m_cCursor.Record() && m_cCursor.Highlight()))
 		return;
 
-	CSize fullsize(128, 128);
-	int highlightsize = m_cCursor.HighlightSize();
-	COLORREF highlightcolor = m_cCursor.HighlightColor();
-	if (m_cCursor.HighlightClick()) {
-		// update color
-		SHORT iKeyState = ::GetKeyState(VK_LBUTTON);
-		bool bDown = (iKeyState & 0xF000) ? true : false;
-		bool bToggle = (iKeyState & 0x0001);
-		//if (iKeyState != 0 && iKeyState != 1) {
-		if (bDown && !bToggle) {
-			highlightcolor = m_cCursor.ClickLeftColor();
-			// click highlights are 1.5 larger
-			highlightsize = (3 * highlightsize)/2;
-		}
-		iKeyState = ::GetKeyState(VK_RBUTTON);
-		bDown = (iKeyState & 0xF000) ? true : false;
-		bToggle = (iKeyState & 0x0001);
-		//if (iKeyState != 0 && iKeyState != 1) {
-		if (bDown && !bToggle) {
-			highlightcolor = m_cCursor.ClickRightColor();
-			// click highlights are 1.5 larger
-			highlightsize = (3 * highlightsize)/2;
-		}
-	}
+	Graphics g(pDC->GetSafeHdc());
+	Color c(m_cCursor.HighlightColor());
+	SolidBrush brush(c);
+
+	float highlightsize = m_cCursor.HighlightSize() / 2.f;
 
 	int highlightshape = m_cCursor.HighlightShape();
-	//OffScreen Buffer
-	CDC dcBits;
-	dcBits.CreateCompatibleDC(pDC);
-	CBitmap cBitmap;
-	cBitmap.CreateCompatibleBitmap(pDC, fullsize.cx, fullsize.cy);
-	CBitmap *pOldBitmap = dcBits.SelectObject(&cBitmap);
-
-	// assume circle and square
-	double x1 = ::floor((fullsize.cx - highlightsize)/2.0);
-	double x2 = ::floor((fullsize.cx + highlightsize)/2.0);
-	double y1 = ::floor((fullsize.cy - highlightsize)/2.0);
-	double y2 = ::floor((fullsize.cy + highlightsize)/2.0);
-
-	if ((highlightshape == 1) || (highlightshape == 3)) {
-		//ellipse and rectangle
-		x1 = ::floor((fullsize.cx - highlightsize)/2.0);
-		x2 = ::floor((fullsize.cx + highlightsize)/2.0);
-		y1 = ::floor((fullsize.cy - highlightsize/2.0)/2.0);
-		y2 = ::floor((fullsize.cy + highlightsize/2.0)/2.0);
-	}
-
-	CBrush brush;
-	brush.CreateSolidBrush(RGB(255, 255, 255));
-	CBrush brushHL;
-	brushHL.CreateSolidBrush(highlightcolor);
-	CPen penNull;
-	penNull.CreatePen(PS_NULL, 0, COLORREF(0));
-
-	CBrush * pOldBrush = dcBits.SelectObject(&brush);
-	CPen * pOldPen = dcBits.SelectObject(&penNull);
-	dcBits.Rectangle(0, 0, fullsize.cx + 1, fullsize.cy + 1);
-
-	//Draw the highlight
-	dcBits.SelectObject(&brushHL);
 
 	if ((highlightshape == 0) || (highlightshape == 1)) {
-		dcBits.Ellipse((int)x1, (int)y1, (int)x2, (int)y2);
+		g.FillEllipse(&brush, pt.x - highlightsize, pt.y - highlightsize, 2.f*highlightsize, 2.f*highlightsize);
 	} else if ((highlightshape == 2) || (highlightshape == 3)) {
-		dcBits.Rectangle((int)x1, (int)y1, (int)x2, (int)y2);
+		g.FillRectangle(&brush, pt.x - highlightsize, pt.y - highlightsize, 2.f*highlightsize, 2.f*highlightsize);
 	}
-
-	dcBits.SelectObject(pOldBrush);
-	dcBits.SelectObject(pOldPen);
-
-	// OffScreen Buffer
-	pDC->BitBlt(pt.x, pt.y, fullsize.cx, fullsize.cy, &dcBits, 0, 0, SRCAND);
-	dcBits.SelectObject(pOldBitmap);
 }
 
-void CCamera::InsertImage(CDC *pDC, CRect& rectFrame, const ImageAttributes& rImgAttr)
+void CCamera::InsertImage(CDC *pDC, CRect& rectFrame, const ::ImageAttributes& rImgAttr)
 {
 	CRect rect;
 	CSize size(m_imageWatermark.GetWidth(), m_imageWatermark.GetHeight());
@@ -530,7 +569,10 @@ void CCamera::InsertImage(CDC *pDC, CRect& rectFrame, const ImageAttributes& rIm
 
 bool CCamera::CaptureFrame(const CRect& rectView)
 {
-	m_rectView = rectView;
+	_zoomFrame = rectView; // we need it for cursor correction :(
+	//m_rectView = rectView; // this is already done in SetView()
+	// Severe change: rectView now is to be captured and scaled to m_rectView
+	// this would easily allow to zoom in
 
 	/////////////////////////////////////////////
 	// 
@@ -559,7 +601,7 @@ bool CCamera::CaptureFrame(const CRect& rectView)
 
 	// And now we know why we have to add one additional picture here...!
 	// Because in this function not the Weight/Hight are expected but Bottom anf Left value....!
-	m_rectFrame = CRect(0, 0, m_rectView.Width() + 1, m_rectView.Height() + 1 );
+	m_rectFrame = CRect(CPoint(0, 0), m_rectView.Size());
 
 	//TRACE( _T("## *** CCamera::CaptureFrame  m_rectFrame.  TLBR=/%d/%d/%d/%d/  WH=/%d/%d/\n"), m_rectFrame.top, m_rectFrame.left, m_rectFrame.bottom, m_rectFrame.right,  m_rectFrame.Width(), m_rectFrame.Height() );
 
@@ -571,7 +613,7 @@ bool CCamera::CaptureFrame(const CRect& rectView)
 	CDC cMemDC;
 	cMemDC.CreateCompatibleDC(pScreenDC);
 	CBitmap cBitmap;
-	cBitmap.CreateCompatibleBitmap(pScreenDC, m_rectView.Width() + 1, m_rectView.Height() + 1);
+	cBitmap.CreateCompatibleBitmap(pScreenDC, m_rectView.Width(), m_rectView.Height());
 	CBitmap* pOldBitmap = cMemDC.SelectObject(&cBitmap);
 
 	///////////////////////////////////////////
@@ -584,8 +626,26 @@ bool CCamera::CaptureFrame(const CRect& rectView)
 	DWORD dwRop = SRCCOPY;
 	// TODO: assume transparency and OS version
 	dwRop |= CAPTUREBLT;
-	cMemDC.BitBlt(0, 0, m_rectView.Width() + 1, m_rectView.Height() + 1, pScreenDC, m_rectView.left, m_rectView.top, dwRop);
 
+	// this is to estimate penalty for extra image creation & GDI+
+	// some caching may be usefull since don't change zoom level often
+	// thus makes sense to store `orig` & `g` as class members
+	// SEVERE FPS drop noticed 40 fps -> 17 fps
+	if (m_rectView.Width() == _zoomFrame.Width()) {
+		cMemDC.BitBlt(0, 0, m_rectView.Width() + 1, m_rectView.Height() + 1, pScreenDC, m_rectView.left, m_rectView.top, dwRop);
+	} else {
+		Bitmap orig(rectView.Width(), rectView.Height());
+		Graphics g(&orig);
+		HDC origDC = g.GetHDC();
+
+		::BitBlt(origDC, 0, 0, rectView.Width(), rectView.Height(), hScreenDC, rectView.left, rectView.top, dwRop);
+
+		g.ReleaseHDC(origDC);
+
+		Graphics g2( cMemDC.GetSafeHdc());
+
+		Status s = g2.DrawImage(&orig,0,0,m_rectView.Width(),m_rectView.Height());
+	}
 	Annotate(&cMemDC);
 
 	// restore old bitmap
