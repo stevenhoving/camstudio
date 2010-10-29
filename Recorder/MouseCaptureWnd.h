@@ -18,9 +18,9 @@ extern HWND hWndGlobal;
 extern HWND hMouseCaptureWnd;
 extern HWND hFixedRegionWnd;
 
-extern long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam);
-extern bool CreateShiftWindow();
-extern int DestroyShiftWindow();
+long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam);
+bool CreateShiftWindow();
+int DestroyShiftWindow();
 
 void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip);
 

@@ -1,5 +1,14 @@
 // Profile.h
 // include file for windows profile (*ini file) classes
+/*****
+NEWS NEWS NEWS 10/17/2010
+Config* cfg is defined in StdAfx.h . While it is disputable about it's location,
+meanwhile all new neccesary settings can be accesed directly
+cfg->getRoot()["MySection"]["MySubsection"]["MyValue"]
+see http://www.hyperrealm.com/libconfig/libconfig_manual.html
+CProfile is obsolete
+****/
+
 //
 // NOTA BENE: To a degree, modifications to a profile are messy. The profile
 // classes help standardize the process of adding new values amd simplify
@@ -39,675 +48,23 @@
 
 #include <vector>
 
-// define LEGACY_PROFILE_DISABLE to disable CRecordView::LoadSettings()
-// and CRecorderView::SaveSettings() from changing CamStudio.ini file
+void ReadFont(Setting& s, LOGFONT& f);
+void ReadIA(Setting& s, ImageAttributes& iaResult);
+void ReadTA(Setting& s, TextAttributes& taResult);
+
+void WriteFont(Setting& s, LOGFONT& f);
+void WriteIA(Setting& s, ImageAttributes& iaResult);
+void WriteTA(Setting& s, TextAttributes& taResult);
+
+template <class T>
+void UpdateSetting(Setting& s, const char* name, T& value, Setting::Type t) {
+	if (s.exists(name))
+		s[name] = value;
+	else
+		s.add(name, t) = value;
+}
+
 #define LEGACY_PROFILE_DISABLE
-
-enum eLegacySettings
-{
-	// Application
-	LANGUAGE
-	// legacy, obsolete
-	, FRAMESHIFT
-
-	// program options
-	, AUTONAMING
-	, CAPTURETRANS
-	, FLASHINGRECT
-	, MINIMIZEONSTART
-	, RECORDINGMODE
-	, LAUNCHPLAYER
-	, SPECIFIEDDIR
-	, TEMPPATH_ACCESS
-	, THREADPRIORITY
-	, AUTOPAN
-	, MAXPAN
-	, PRESETTIME
-	, RECORDPRESET
-	, VIEWTYPE
-	// Shapes
-	, SHAPENAMEINT
-	, SHAPENAMELEN
-	// layout
-	, LAYOUTNAMEINT
-	, LAYOUTNAMELEN
-
-	// Producer options
-	, LAUNCHPROPPROMPT
-	, LAUNCHHTMLPLAYER
-	, DELETEAVIAFTERUSE
-
-	// region
-	, FIXEDCAPTURE
-	, SUPPORTMOUSEDRAG
-	, MOUSECAPTUREMODE
-	, CAPTURETOP
-	, CAPTURELEFT
-	, CAPTUREWIDTH
-	, CAPTUREHEIGHT
-
-	// hotkeys
-	, KEYRECORDSTART
-	, KEYRECORDSTARTCTRL
-	, KEYRECORDSTARTALT
-	, KEYRECORDSTARTSHIFT
-	, KEYRECORDEND
-	, KEYRECORDENDCTRL
-	, KEYRECORDENDALT
-	, KEYRECORDENDSHIFT
-	, KEYRECORDCANCEL
-	, KEYRECORDCANCELCTRL
-	, KEYRECORDCANCELALT
-	, KEYRECORDCANCELSHIFT
-	, KEYNEXT
-	, KEYNEXTCTRL
-	, KEYNEXTALT
-	, KEYNEXTSHIFT
-	, KEYPREV
-	, KEYPREVCTRL
-	, KEYPREVALT
-	, KEYPREVSHIFT
-	, KEYSHOWLAYOUT
-	, KEYSHOWLAYOUTCTRL
-	, KEYSHOWLAYOUTALT
-	, KEYSHOWLAYOUTSHIFT
-
-	// Video options
-	, RESTRICTVIDEOCODECS
-	, AUTOADJUST
-	, VALUEADJUST
-	, TIMELAPSE
-	, FRAMES_PER_SECOND
-	, KEYFRAMEINTERVAL
-	, COMPQUALITY
-	, SHIFTTYPE
-	, TIMESHIFT
-	, COMPFCCHANDLER
-	, COMPRESSORSTATEISFOR
-	, COMPRESSORSTATESIZE
-	, CBWFX
-
-	// cursor settings
-	, RECORDCURSOR
-	, SAVEDIR
-	, CURSORDIR
-	, CURSORTYPE
-	, CUSTOMSEL
-	, HIGHLIGHTCURSOR
-	, HIGHLIGHTSIZE
-	, HIGHLIGHTSHAPE
-	, HIGHLIGHTCLICK
-	, HIGHLIGHTCOLOR
-	, HIGHLIGHTCOLORR
-	, HIGHLIGHTCOLORG
-	, HIGHLIGHTCOLORB
-	, HIGHLIGHTCLICKCOLORLEFT
-	, HIGHLIGHTCLICKCOLORLEFTR
-	, HIGHLIGHTCLICKCOLORLEFTG
-	, HIGHLIGHTCLICKCOLORLEFTB
-	, HIGHLIGHTCLICKCOLORRIGHT
-	, HIGHLIGHTCLICKCOLORRIGHTR
-	, HIGHLIGHTCLICKCOLORRIGHTG
-	, HIGHLIGHTCLICKCOLORRIGHTB
-	
-	// audio
-	, RECORDAUDIO
-	, AUDIODEVICEID
-	, USEMCI
-	, PERFORMAUTOSEARCH
-	, WAVEINSELECTED
-	, AUDIO_BITS_PER_SAMPLE
-	, AUDIO_NUM_CHANNELS
-	, AUDIO_SAMPLES_PER_SECONDS
-	, BAUDIOCOMPRESSION
-	, INTERLEAVEFRAMES
-	, INTERLEAVEFACTOR
-	, INTERLEAVEUNIT
-	, NUMDEV
-	, SELECTEDDEV
-	, COMPRESSFORMATTAG
-	, FEEDBACK_LINE
-	, FEEDBACK_LINE_INFO
-
-	// Timestamp
-	, TIMESTAMPANNOTATION
-	, TIMESTAMPTEXTATTRIBUTES
-	, TIMESTAMPBACKCOLOR
-	, TIMESTAMPSELECTED
-	, TIMESTAMPPOSITION
-	, TIMESTAMPTEXTCOLOR
-	, TIMESTAMPTEXTFONT
-	, TIMESTAMPTEXTWEIGHT
-	, TIMESTAMPTEXTHEIGHT
-	, TIMESTAMPTEXTWIDTH
-	
-	// Caption
-	, CAPTIONANNOTATION
-	, CAPTIONTEXTATTRIBUTES
-	, CAPTIONBACKCOLOR
-	, CAPTIONSELECTED
-	, CAPTIONPOSITION
-	, CAPTIONTEXTCOLOR
-	, CAPTIONTEXTFONT
-	, CAPTIONTEXTWEIGHT
-	, CAPTIONTEXTHEIGHT
-	, CAPTIONTEXTWIDTH
-	
-	// Watermark
-	, WATERMARKANNOTATION
-	, WATERMARKIMAGEATTRIBUTES
-	
-	// XNote
-	, XNOTEANNOTATION
-	, XNOTEREMOTECONTROL
-	, XNOTECAMERADELAYINMILLISEC
-	, XNOTEDISPLAYCAMERADELAY
-	, XNOTEDISPLAYCAMERADELAY2
-	, XNOTERECORDDURATIONLIMITINMILLISEC
-	, XNOTERECORDDURATIONLIMITMODE
-	, XNOTEDISPLAYFORMATSTRING
-	, XNOTETEXTATTRIBUTES
-	, XNOTEBACKCOLOR
-	, XNOTESELECTED
-	, XNOTEPOSITION
-	, XNOTETEXTCOLOR
-	, XNOTETEXTFONT
-	, XNOTETEXTWEIGHT
-	, XNOTETEXTHEIGHT
-	, XNOTETEXTWIDTH
-
-	, MAX_LEGACT_ID
-};
-#if 0
-enum eProfileID
-{
-	FLASHINGRECT
-	, LAUNCHPLAYER
-	, MINIMIZEONSTART
-	, MOUSECAPTUREMODE
-	, CAPTUREWIDTH
-	, CAPTUREHEIGHT
-	, TIMELAPSE
-	, FRAMES_PER_SECOND
-	, KEYFRAMEINTERVAL
-	, COMPQUALITY
-	, COMPFCCHANDLER
-	, COMPRESSORSTATEISFOR
-	, COMPRESSORSTATESIZE
-	, G_RECORDCURSOR
-	, G_CUSTOMSEL
-	, G_CURSORTYPE
-	, G_HIGHLIGHTCURSOR
-	, G_HIGHLIGHTSIZE
-	, G_HIGHLIGHTSHAPE
-	, G_HIGHLIGHTCLICK
-	, G_HIGHLIGHTCOLORR
-	, G_HIGHLIGHTCOLORG
-	, G_HIGHLIGHTCOLORB
-	, G_HIGHLIGHTCLICKCOLORLEFTR
-	, G_HIGHLIGHTCLICKCOLORLEFTG
-	, G_HIGHLIGHTCLICKCOLORLEFTB
-	, G_HIGHLIGHTCLICKCOLORRIGHTR
-	, G_HIGHLIGHTCLICKCOLORRIGHTG
-	, G_HIGHLIGHTCLICKCOLORRIGHTB
-	, AUTOPAN
-	, MAXPAN
-	, AUDIODEVICEID
-	, CBWFX
-	, RECORDAUDIO
-	, WAVEINSELECTED
-	, AUDIO_BITS_PER_SAMPLE
-	, AUDIO_NUM_CHANNELS
-	, AUDIO_SAMPLES_PER_SECONDS
-	, BAUDIOCOMPRESSION
-	, INTERLEAVEFRAMES
-	, INTERLEAVEFACTOR
-	, KEYRECORDSTART
-	, KEYRECORDEND
-	, KEYRECORDCANCEL
-	, VIEWTYPE
-	, G_AUTOADJUST
-	, G_VALUEADJUST
-	, SAVEDIR
-	, CURSORDIR
-	, THREADPRIORITY
-	, CAPTURELEFT
-	, CAPTURETOP
-	, FIXEDCAPTURE
-	, INTERLEAVEUNIT
-	, TEMPPATH_ACCESS
-	, CAPTURETRANS
-	, SPECIFIEDDIR
-	, NUMDEV
-	, SELECTEDDEV
-	, FEEDBACK_LINE
-	, FEEDBACK_LINE_INFO
-	, PERFORMAUTOSEARCH
-	, SUPPORTMOUSEDRAG
-	, KEYRECORDSTARTCTRL
-	, KEYRECORDENDCTRL
-	, KEYRECORDCANCELCTRL
-	, KEYRECORDSTARTALT
-	, KEYRECORDENDALT
-	, KEYRECORDCANCELALT
-	, KEYRECORDSTARTSHIFT
-	, KEYRECORDENDSHIFT
-	, KEYRECORDCANCELSHIFT
-	, KEYNEXT
-	, KEYPREV
-	, KEYSHOWLAYOUT
-	, KEYNEXTCTRL
-	, KEYPREVCTRL
-	, KEYSHOWLAYOUTCTRL
-	, KEYNEXTALT
-	, KEYPREVALT
-	, KEYSHOWLAYOUTALT
-	, KEYNEXTSHIFT
-	, KEYPREVSHIFT
-	, KEYSHOWLAYOUTSHIFT
-	, SHAPENAMEINT
-	, SHAPENAMELEN
-	, LAYOUTNAMEINT
-	, G_LAYOUTNAMELEN
-	, USEMCI
-	, SHIFTTYPE
-	, TIMESHIFT
-	, FRAMESHIFT
-	, LAUNCHPROPPROMPT
-	, LAUNCHHTMLPLAYER
-	, DELETEAVIAFTERUSE
-	, RECORDINGMODE
-	, AUTONAMING
-	, RESTRICTVIDEOCODECS
-	, PRESETTIME
-	, RECORDPRESET
-	, LANGUAGE
-	
-	, TIMESTAMPANNOTATION
-	, TIMESTAMPTEXTATTRIBUTES
-	, TIMESTAMPBACKCOLOR
-	, TIMESTAMPSELECTED
-	, TIMESTAMPPOSITION
-	, TIMESTAMPTEXTCOLOR
-	, TIMESTAMPTEXTFONT
-	, TIMESTAMPTEXTWEIGHT
-	, TIMESTAMPTEXTHEIGHT
-	, TIMESTAMPTEXTWIDTH
-	
-	, CAPTIONANNOTATION
-	, CAPTIONTEXTATTRIBUTES
-	, CAPTIONBACKCOLOR
-	, CAPTIONSELECTED
-	, CAPTIONPOSITION
-	, CAPTIONTEXTCOLOR
-	, CAPTIONTEXTFONT
-	, CAPTIONTEXTWEIGHT
-	, CAPTIONTEXTHEIGHT
-	, CAPTIONTEXTWIDTH
-	
-	, WATERMARKANNOTATION
-	, WATERMARKIMAGEATTRIBUTES
-	
-	, MAX_PROFILE_ID
-};
-#endif
-
-/////////////////////////////////////////////////////////////////////////////
-//
-namespace baseprofile {
-
-	// declarations for type specific template fuctions for low level read
-	// and write of profile values. see profile.cpp for implementation
-	template <typename T>
-	T ReadEntry(CString strFilename, CString strSection, CString strKeyName, const T& DefValue);
-	template <typename T>
-	bool WriteEntry(CString strFilename, CString strSection, CString strKeyName, const T& Value);
-
-}	// namespace baseprofile
-
-// CGroupType
-// template class for group items.
-// CGroupType connects the key ID with both a string and a value.
-/////////////////////////////////////////////////////////////////////////////
-template <typename T>
-class CGroupType
-{
-	CGroupType(); // not implemented
-public:
-	CGroupType(int iID, CString strName, T Value)
-	{
-		m_vIDValue.push_back(IDValuePair(iID, ValuePair(strName, Value)));
-	}
-	virtual ~CGroupType() {}
-
-	bool Read(const CString strFile, const CString strSection)
-	{
-		// iterate over the group items
-		for (IDVALUE_ITER iter = m_vIDValue.begin(); iter != m_vIDValue.end(); ++iter)
-		{
-			iter->second.second = Read(strFile, strSection, iter->second.first, iter->second.second);
-		}
-		return true;
-	}
-	bool Write(const CString strFile, const CString strSection)
-	{
-		bool bResult = true;
-		for (IDVALUE_ITER iter = m_vIDValue.begin(); iter != m_vIDValue.end(); ++iter)
-		{
-			bResult = bResult && Write(strFile, strSection, iter->second.first, iter->second.second);
-		}
-		return bResult;
-	}
-
-	// read and copy an item by ID and type.
-	bool Read(const int iID, T& Value)
-	{
-		bool bFound = false;
-		for (IDVALUE_ITER iter = m_vIDValue.begin(); iter != m_vIDValue.end(); ++iter)
-		{
-			bFound = (iID == iter->first);		// matching ID
-			if (bFound) {
-				Value = iter->second.second;	// copy value
-				break;
-			}
-		}
-		return bFound;
-	}
-
-	bool Write(const int iID, T& Value)
-	{
-		bool bFound = false;
-		for (IDVALUE_ITER iter = m_vIDValue.begin(); iter != m_vIDValue.end(); ++iter)
-		{
-			bFound = (iID == iter->first);		// matching ID
-			if (bFound) {
-				iter->second.second = Value;	// write value
-				break;
-			}
-		}
-		return bFound;
-	}
-
-protected:
-	// connect key ID with both key string and value
-	typename typedef std::pair <CString, T> ValuePair;
-	typename typedef std::pair <int, ValuePair> IDValuePair;
-	typename typedef std::vector <IDValuePair>::iterator IDVALUE_ITER;
-	
-	std::vector <IDValuePair> m_vIDValue;
-
-	// read the entry by type from the file
-	T Read(CString strFilename, CString strSection, CString strKeyName, const T& DefValue)
-	{
-		return baseprofile::ReadEntry(strFilename, strSection, strKeyName, DefValue);
-	}
-
-	// write the entry by type to the file
-	bool Write(CString strFilename, CString strSection, CString strKeyName, const T& Value)
-	{
-		return baseprofile::WriteEntry(strFilename, strSection, strKeyName, Value);
-	}
-};
-
-// CSectionGroup
-// template class for section items of same type
-/////////////////////////////////////////////////////////////////////////////
-template <typename V>
-class CSectionGroup
-{
-public:
-	CSectionGroup() {}
-	virtual ~CSectionGroup() {}
-
-	// add value to group if not already there.
-	bool Add(const int iID, const CString strName, const V Value)
-	{
-		V NewValue = Value;
-		bool bResult = Read(iID, NewValue);
-		if (!bResult) {
-			m_vValue.push_back(CGroupType<V>(iID, strName, Value));
-			bResult = true;
-		}
-		return bResult;
-	}
-	// write group values
-	bool Read(const CString strFile, const CString strSection)
-	{
-		for (GRPITEM_ITER iter = m_vValue.begin(); iter != m_vValue.end(); ++iter)
-		{
-			iter->Read(strFile, strSection);
-		}
-		return true;
-	}
-	// write group values
-	bool Write(const CString strFile, const CString strSection)
-	{
-		for (GRPITEM_ITER iter = m_vValue.begin(); iter != m_vValue.end(); ++iter)
-		{
-			iter->Write(strFile, strSection);
-		}
-		return true;
-	}
-	
-	// default read item by ID always fails
-	template <typename T>
-	bool Read(const int /*iID*/, T& /*Value*/)	{return false;}
-	
-	// specialized read item by ID for group type searchs the group values
-	template <>
-	bool Read(const int iID, V& Value)
-	{
-		bool bFound = false;
-		for (GRPITEM_ITER iter = m_vValue.begin(); !bFound && (iter != m_vValue.end()); ++iter)
-		{
-			bFound = iter->Read(iID, Value);
-		}
-		return bFound;
-	}
-
-	// default write item by ID always fails
-	template <typename T>
-	bool Write(const int /*iID*/, T& /*Value*/)	{return false;}
-
-	// specialized find item by ID for group type searchs the group values
-	template <>
-	bool Write(const int iID, V& Value)
-	{
-		bool bFound = false;
-		for (GRPITEM_ITER iter = m_vValue.begin(); !bFound && (iter != m_vValue.end()); ++iter)
-		{
-			bFound = iter->Write(iID, Value);
-		}
-		return bFound;
-	}
-
-protected:
-	typename typedef std::vector <CGroupType<V>>::iterator GRPITEM_ITER;
-	std::vector <CGroupType<V>> m_vValue;
-};
-
-// class CProfileSection
-// CProfileSection encapsulates a profile section behavior.
-// CProfileSection have a section name string and a set of entries grouped
-// by type.
-/////////////////////////////////////////////////////////////////////////////
-class CProfileSection
-{
-	CProfileSection();	// not implemented
-public:
-	CProfileSection(const CString strSectionName);
-	virtual ~CProfileSection();
-
-	bool isSection(const CString & strName)
-	{
-		return strName == m_strSectionName;
-	}
-
-	// add item to specific section group
-	template <typename T>
-	bool Add(const int iID, const CString strName, const T& Value);
-
-	// read items from section groups
-	bool Read(const CString strFile);
-	// write items from section groups
-	bool Write(const CString strFile);
-
-	// delete the section
-	bool Delete(const CString strFile)
-	{
-		::WritePrivateProfileString(m_strSectionName, 0, 0, strFile);
-		return true;
-	}
-
-	// find item by id specialized for item type
-	template <typename T>
-	bool Read(const int iID, T& Value)
-	{
-		// search each group for ID
-		// TODO: order of evaluation is undefined for logical OR
-		// but it should not matter.
-		bool bResult = m_grpLANGID.Read(iID, Value);
-		bResult = bResult || m_grpStrings.Read(iID, Value);
-		bResult = bResult || m_grpIntegers.Read(iID, Value);
-		bResult = bResult || m_grpUINT.Read(iID, Value);
-		bResult = bResult || m_grpBools.Read(iID, Value);
-		bResult = bResult || m_grpLongs.Read(iID, Value);
-		bResult = bResult || m_grpDWORD.Read(iID, Value);
-		bResult = bResult || m_grpDoubles.Read(iID, Value);
-		bResult = bResult || m_grpLogFont.Read(iID, Value);
-		bResult = bResult || m_grpTextAttribs.Read(iID, Value);
-		bResult = bResult || m_grpImageAttribs.Read(iID, Value);
-		return bResult;
-	}
-	template <typename T>
-	bool Write(const int iID, T& Value)
-	{
-		// search each group for ID
-		// TODO: order of evaluation is undefined for logical OR
-		// but it should not matter.
-		bool bResult = m_grpLANGID.Write(iID, Value);
-		bResult = bResult || m_grpStrings.Write(iID, Value);
-		bResult = bResult || m_grpIntegers.Write(iID, Value);
-		bResult = bResult || m_grpUINT.Write(iID, Value);
-		bResult = bResult || m_grpBools.Write(iID, Value);
-		bResult = bResult || m_grpLongs.Write(iID, Value);
-		bResult = bResult || m_grpDWORD.Write(iID, Value);
-		bResult = bResult || m_grpDoubles.Write(iID, Value);
-		bResult = bResult || m_grpLogFont.Write(iID, Value);
-		bResult = bResult || m_grpTextAttribs.Write(iID, Value);
-		bResult = bResult || m_grpImageAttribs.Write(iID, Value);
-		return bResult;
-	}
-
-protected:
-	CString m_strSectionName;	// section name
-	
-	// COLORREF == DWORD
-	// supported group types
-	CSectionGroup<CString>			m_grpStrings;
-	CSectionGroup<int>				m_grpIntegers;
-	CSectionGroup<UINT>				m_grpUINT;
-	CSectionGroup<bool>				m_grpBools;
-	CSectionGroup<long>				m_grpLongs;
-	CSectionGroup<DWORD>			m_grpDWORD;		// unsigned long
-	CSectionGroup<double>			m_grpDoubles;
-	CSectionGroup<LANGID>			m_grpLANGID;
-	CSectionGroup<LOGFONT>			m_grpLogFont;
-	CSectionGroup<TextAttributes>	m_grpTextAttribs;
-	CSectionGroup<ImageAttributes>	m_grpImageAttribs;
-};
-
-// class CProfile
-// The CProfile encapsulates the reading and writing of an application
-// settings file (profile) on Windows. CProfile has a filename and a set
-// of CProfileSection items it manages. The public interface allows reading
-// and writing of the file as a whole and reading a entry by key ID.
-/////////////////////////////////////////////////////////////////////////////
-class CProfile
-{
-	CProfile();	// not implemented
-public:
-	CProfile(const CString strFileName);
-	virtual ~CProfile();
-
-public:
-	bool Read();	// read the entire file
-	bool Write();	// write the entire file
-
-	// read a key value by ID + type
-	template <typename T>
-	bool Read(const int iID, T& Value)
-	{
-		// search all sections
-		typedef std::vector <CProfileSection>::iterator sect_iter;
-		bool bResult = false;
-		for (sect_iter iter = m_vAllSections.begin(); !bResult && (iter != m_vAllSections.end()); ++iter)
-		{
-			bResult = iter->Read(iID, Value);
-		}
-		return bResult;
-	}
-	// write a key value by ID + type
-	template <typename T>
-	bool Write(const int iID, T& Value)
-	{
-		// search all sections
-		typedef std::vector <CProfileSection>::iterator sect_iter;
-		bool bResult = false;
-		for (sect_iter iter = m_vAllSections.begin(); !bResult && (iter != m_vAllSections.end()); ++iter)
-		{
-			bResult = iter->Write(iID, Value);
-		}
-		return bResult;
-	}
-
-protected:
-	CString m_strFileName;					// name of the *.ini file
-	CProfileSection m_SectionApp;			// Application wide settings
-	CProfileSection m_SectionProgram;		// Program/recording options
-	CProfileSection m_SectionVideo;			// Video options
-	CProfileSection m_SectionAudio;			// Audio options
-	CProfileSection m_SectionCursor;		// Cursor highlight settings
-	CProfileSection m_SectionHotkeys;		// Cursor highlight settings
-	CProfileSection m_SectionRegion;		// Region settings
-	CProfileSection m_SectionTimeStamp;		// timestamp settings
-	CProfileSection m_SectionXNote;			// XNote timestamp settings
-	CProfileSection m_SectionCaption;		// caption annotation settings
-	CProfileSection m_SectionWatermark;		// watermark annotation settings
-	CProfileSection m_SectionLegacy;		// legacy (v2.50) section values
-
-	std::vector <CProfileSection> m_vAllSections;
-
-	// add item to section
-	template <typename T>
-	bool Add(CProfileSection& section, const int iID, const CString strName, const T& Value)
-	{
-		bool bResult = section.Add(iID, strName, Value);
-		return bResult;
-	}
-	// add item to app section (default)
-	template <typename T>
-	bool Add(const int iID, const CString strName, const T& Value)
-	{
-		return Add(m_SectionApp, iID, strName, Value);
-	}
-
-private:
-	template <typename T>
-	bool Convert(CProfileSection& section, const int iID, const T& /*Value*/)
-	{
-		T OldValue;
-		bool bResult = section.Read(iID, OldValue);
-		bResult = bResult && Write(iID, OldValue);
-		return bResult;
-	}
-	bool Convert();
-
-	void InitLegacySection();
-	void InitSections();
-};
-
-// legacy settings values.
 
 // video options
 enum eSynchType
@@ -834,42 +191,40 @@ struct sVideoOpts
 	//	return lpOldState;
 	//}
 
-	bool Read(CProfile& cProfile)
+	bool Read(Setting& cProfile)
 	{
-		VERIFY(cProfile.Read(RESTRICTVIDEOCODECS, m_bRestrictVideoCodecs));		
-		VERIFY(cProfile.Read(AUTOADJUST, m_bAutoAdjust));
-		VERIFY(cProfile.Read(VALUEADJUST, m_iValueAdjust));
-		VERIFY(cProfile.Read(TIMELAPSE, m_iTimeLapse));
-		VERIFY(cProfile.Read(FRAMES_PER_SECOND, m_iFramesPerSecond));
-		VERIFY(cProfile.Read(KEYFRAMEINTERVAL, m_iKeyFramesEvery));
-		VERIFY(cProfile.Read(COMPQUALITY, m_iCompQuality));
-		VERIFY(cProfile.Read(SHIFTTYPE, m_iShiftType));
-		VERIFY(cProfile.Read(TIMESHIFT, m_iTimeShift));
-		VERIFY(cProfile.Read(COMPFCCHANDLER, m_dwCompfccHandler));
-		VERIFY(cProfile.Read(COMPRESSORSTATEISFOR, m_dwCompressorStateIsFor));
+		cProfile.lookupValue("restrictVideoCodecs", m_bRestrictVideoCodecs);
+		cProfile.lookupValue("AutoAdjust", m_bAutoAdjust);
+		cProfile.lookupValue("ValueAdjust", m_iValueAdjust);
+		cProfile.lookupValue("TimeLapse", m_iTimeLapse);
+		cProfile.lookupValue("fps", m_iFramesPerSecond);
+		cProfile.lookupValue("KeyFramesEvery", m_iKeyFramesEvery);
+		cProfile.lookupValue("CompQuality", m_iCompQuality);
+		cProfile.lookupValue("shiftType", m_iShiftType);
+		cProfile.lookupValue("timeshift", m_iTimeShift);
+		cProfile.lookupValue("CompFCCHandler", (unsigned&)m_dwCompfccHandler);
+		cProfile.lookupValue("CompressorStateIsFor", (unsigned&)m_dwCompressorStateIsFor);
 		DWORD dwSize = 0UL;
-		VERIFY(cProfile.Read(COMPRESSORSTATESIZE, dwSize));
+		cProfile.lookupValue("CompressorStateSize", (unsigned&)dwSize);
 		State(dwSize);
 		CString  m_cStartRecordingString = "";
 		// m_iSelectedCompressor
 		return true;
 	}
-	bool Write(CProfile& cProfile)
+	bool Write(Setting& cProfile)
 	{
-		VERIFY(cProfile.Write(RESTRICTVIDEOCODECS, m_bRestrictVideoCodecs));		
-		VERIFY(cProfile.Write(AUTOADJUST, m_bAutoAdjust));
-		VERIFY(cProfile.Write(VALUEADJUST, m_iValueAdjust));
-		VERIFY(cProfile.Write(TIMELAPSE, m_iTimeLapse));
-		VERIFY(cProfile.Write(FRAMES_PER_SECOND, m_iFramesPerSecond));
-		VERIFY(cProfile.Write(KEYFRAMEINTERVAL, m_iKeyFramesEvery));
-		VERIFY(cProfile.Write(COMPQUALITY, m_iCompQuality));
-		VERIFY(cProfile.Write(SHIFTTYPE, m_iShiftType));
-		VERIFY(cProfile.Write(TIMESHIFT, m_iTimeShift));
-		VERIFY(cProfile.Write(COMPFCCHANDLER, m_dwCompfccHandler));
-		VERIFY(cProfile.Write(COMPRESSORSTATEISFOR, m_dwCompressorStateIsFor));
-		VERIFY(cProfile.Write(COMPRESSORSTATESIZE, m_dwCompressorStateSize));		
-		// m_iSelectedCompressor
-		// m_cStartRecordingString
+		UpdateSetting(cProfile,"restrictVideoCodecs", m_bRestrictVideoCodecs, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"AutoAdjust", m_bAutoAdjust, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"ValueAdjust", m_iValueAdjust, Setting::TypeInt);
+		UpdateSetting(cProfile,"TimeLapse", m_iTimeLapse, Setting::TypeInt);
+		UpdateSetting(cProfile,"fps", m_iFramesPerSecond, Setting::TypeInt);
+		UpdateSetting(cProfile,"KeyFramesEvery", m_iKeyFramesEvery, Setting::TypeInt);
+		UpdateSetting(cProfile,"CompQuality", m_iCompQuality, Setting::TypeInt);
+		UpdateSetting(cProfile,"shiftType", m_iShiftType, Setting::TypeInt);
+		UpdateSetting(cProfile,"timeshift", m_iTimeShift, Setting::TypeInt);
+		UpdateSetting(cProfile,"CompFCCHandler", (long&)m_dwCompfccHandler, Setting::TypeInt);
+		UpdateSetting(cProfile,"CompressorStateIsFor", (long&)m_dwCompressorStateIsFor, Setting::TypeInt);
+		UpdateSetting(cProfile,"CompressorStateSize", (long&)m_dwCompressorStateSize, Setting::TypeInt);
 		return true;
 	}
 
@@ -932,27 +287,27 @@ struct sRegionOpts
 		m_iCaptureHeight	= rhs.m_iCaptureHeight;
 		return *this;
 	}
-	bool Read(CProfile& cProfile)
+	bool Read(Setting& cProfile)
 	{
-		VERIFY(cProfile.Read(FIXEDCAPTURE, m_bFixedCapture));
-		VERIFY(cProfile.Read(SUPPORTMOUSEDRAG, m_bSupportMouseDrag));
-		VERIFY(cProfile.Read(MOUSECAPTUREMODE, m_iMouseCaptureMode));		
-		VERIFY(cProfile.Read(CAPTURETOP, m_iCaptureLeft));
-		VERIFY(cProfile.Read(CAPTURELEFT, m_iCaptureTop));
-		VERIFY(cProfile.Read(CAPTUREWIDTH, m_iCaptureWidth));
-		VERIFY(cProfile.Read(CAPTUREHEIGHT, m_iCaptureHeight));
+		cProfile.lookupValue("FixedCapture", m_bFixedCapture);
+		cProfile.lookupValue("SupportMouseDrag", m_bSupportMouseDrag);
+		cProfile.lookupValue("MouseCaptureMode", m_iMouseCaptureMode);		
+		cProfile.lookupValue("Left", m_iCaptureLeft);
+		cProfile.lookupValue("Top", m_iCaptureTop);
+		cProfile.lookupValue("Width", m_iCaptureWidth);
+		cProfile.lookupValue("Height", m_iCaptureHeight);
 
 		return true;
 	}
-	bool Write(CProfile& cProfile)
+	bool Write(Setting& cProfile)
 	{
-		VERIFY(cProfile.Write(FIXEDCAPTURE, m_bFixedCapture));
-		VERIFY(cProfile.Write(SUPPORTMOUSEDRAG, m_bSupportMouseDrag));
-		VERIFY(cProfile.Write(MOUSECAPTUREMODE, m_iMouseCaptureMode));		
-		VERIFY(cProfile.Write(CAPTURETOP, m_iCaptureLeft));
-		VERIFY(cProfile.Write(CAPTURELEFT, m_iCaptureTop));
-		VERIFY(cProfile.Write(CAPTUREWIDTH, m_iCaptureWidth));
-		VERIFY(cProfile.Write(CAPTUREHEIGHT, m_iCaptureHeight));
+		UpdateSetting(cProfile,"FixedCapture", m_bFixedCapture, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"SupportMouseDrag", m_bSupportMouseDrag, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"MouseCaptureMode", m_iMouseCaptureMode, Setting::TypeInt);		
+		UpdateSetting(cProfile,"Left", m_iCaptureLeft, Setting::TypeInt);
+		UpdateSetting(cProfile,"Top", m_iCaptureTop, Setting::TypeInt);
+		UpdateSetting(cProfile,"Width", m_iCaptureWidth, Setting::TypeInt);
+		UpdateSetting(cProfile,"Height", m_iCaptureHeight, Setting::TypeInt);
 		return true;
 	}
 
@@ -989,16 +344,22 @@ struct sCaptionOpts
 		m_taCaption		= rhs.m_taCaption;
 		return *this;
 	}
-	bool Read(CProfile& cProfile)
-	{
-		VERIFY(cProfile.Read(CAPTIONANNOTATION, m_bAnnotation));
-		VERIFY(cProfile.Read(CAPTIONTEXTATTRIBUTES, m_taCaption));
+	bool Read(Setting& cProfile)
+	{ // from Caption group
+		cProfile.lookupValue("Annotation", m_bAnnotation);
+		if (cProfile.exists("TextAttributes"))
+			ReadTA(cProfile["TextAttributes"],m_taCaption);
 		return true;
 	}
-	bool Write(CProfile& cProfile)
+	bool Write(Setting& cProfile)
 	{
-		VERIFY(cProfile.Write(CAPTIONANNOTATION, m_bAnnotation));
-		VERIFY(cProfile.Write(CAPTIONTEXTATTRIBUTES, m_taCaption));
+		UpdateSetting(cProfile,"Annotation", m_bAnnotation,Setting::TypeBoolean);
+		Setting* s;
+		if (cProfile.exists("TextAttributes"))
+			s = &(cProfile["TextAttributes"]);
+		else
+			s = &(cProfile.add("TextAttributes", Setting::TypeGroup));
+		WriteTA(*s, m_taCaption);
 		return true;
 	}
 
@@ -1027,16 +388,22 @@ struct sTimestampOpts
 		m_taTimestamp	= rhs.m_taTimestamp;
 		return *this;
 	}
-	bool Read(CProfile& cProfile)
-	{
-		VERIFY(cProfile.Read(TIMESTAMPANNOTATION, m_bAnnotation));
-		VERIFY(cProfile.Read(TIMESTAMPTEXTATTRIBUTES, m_taTimestamp));
+	bool Read(Setting& cProfile)
+	{// TimeStamp
+		cProfile.lookupValue("Annotation", m_bAnnotation);
+		if(cProfile.exists("TextAttributes"))
+			ReadTA(cProfile["TextAttributes"],m_taTimestamp);
 		return true;
 	}
-	bool Write(CProfile& cProfile)
+	bool Write(Setting& cProfile)
 	{
-		VERIFY(cProfile.Write(TIMESTAMPANNOTATION, m_bAnnotation));
-		VERIFY(cProfile.Write(TIMESTAMPTEXTATTRIBUTES, m_taTimestamp));
+		UpdateSetting(cProfile,"Annotation", m_bAnnotation, Setting::TypeBoolean);
+		Setting* s;
+		if (cProfile.exists("TextAttributes"))
+			s = &(cProfile["TextAttributes"]);
+		else
+			s = &(cProfile.add("TextAttributes", Setting::TypeGroup));
+		WriteTA(*s, m_taTimestamp);
 		return true;
 	}
 
@@ -1121,20 +488,26 @@ struct sXNoteOpts
 
 		return *this;
 	}
-	bool Read(CProfile& cProfile)
-	{
-		//TRACE("## bool Read(CProfile& cProfile\n");																				
-		VERIFY(cProfile.Read(XNOTEANNOTATION, m_bAnnotation));
-		VERIFY(cProfile.Read(XNOTETEXTATTRIBUTES, m_taXNote));
+	bool Read(Setting& cProfile)
+	{ // XNote
+		//TRACE("## bool Read(Setting& cProfile\n");																				
+		cProfile.lookupValue("Annotation", m_bAnnotation);
+		if (cProfile.exists("TextAttributes"))
+			ReadTA(cProfile["TextAttributes"], m_taXNote);
+
+		if (cProfile.exists("font"))
+			ReadFont(cProfile["font"], m_taXNote.logfont);
 		
-		VERIFY(cProfile.Read(XNOTEREMOTECONTROL, m_bXnoteRemoteControlMode));
-		VERIFY(cProfile.Read(XNOTEDISPLAYCAMERADELAY, m_bXnoteDisplayCameraDelayMode));
-		VERIFY(cProfile.Read(XNOTEDISPLAYCAMERADELAY2, m_bXnoteDisplayCameraDelayDirection));
-		VERIFY(cProfile.Read(XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec));
-		VERIFY(cProfile.Read(XNOTEDISPLAYFORMATSTRING, m_cXnoteDisplayFormatString));
+		cProfile.lookupValue("RemoteControl", m_bXnoteRemoteControlMode);
+		cProfile.lookupValue("DisplayCameraDelay", m_bXnoteDisplayCameraDelayMode);
+		cProfile.lookupValue("DisplayCameraDelayForwards", m_bXnoteDisplayCameraDelayDirection);
+		cProfile.lookupValue("CameraDelayInMilliSec", (unsigned&) m_ulXnoteCameraDelayInMilliSec);
+		std::string text;
+		cProfile.lookupValue("DisplayFormatString", text);
+		m_cXnoteDisplayFormatString = text.c_str();
 		
-		VERIFY(cProfile.Read(XNOTERECORDDURATIONLIMITMODE, m_bXnoteRecordDurationLimitMode));
-		VERIFY(cProfile.Read(XNOTERECORDDURATIONLIMITINMILLISEC, m_ulXnoteRecordDurationLimitInMilliSec));
+		cProfile.lookupValue("RecordDurationLimitMode", m_bXnoteRecordDurationLimitMode);
+		cProfile.lookupValue("RecordDurationLimitInMilliSec", (unsigned&) m_ulXnoteRecordDurationLimitInMilliSec);
 		// m_ulStartXnoteTickCounter is a non persistent member
 
 		// Assign Xnote format string to 'Text atribute'.text (Required to get a time displayed on the capture without pressing OK first in AnnotationEffects dialog.)
@@ -1160,9 +533,9 @@ struct sXNoteOpts
 
 		return true;
 	}
-	bool Write(CProfile& cProfile)
+	bool Write(Setting& cProfile)
 	{
-		//TRACE("## bool Write(CProfile& cProfile\n");			
+		//TRACE("## bool Write(Setting& cProfile\n");			
 		//TRACE("## ----------------------------------------------------------------------------\n");			
 		//TRACE("## m_bAnnotation : [%d]\n", m_bAnnotation   );
 		//TRACE("## m_taXNote.text : [%s]\n", m_taXNote.text.GetString()   );
@@ -1186,17 +559,23 @@ struct sXNoteOpts
 			m_taXNote.logfont.lfHeight = 12;
 		}
 
-		VERIFY(cProfile.Write(XNOTEANNOTATION, m_bAnnotation));
-		VERIFY(cProfile.Write(XNOTETEXTATTRIBUTES, m_taXNote));
+		UpdateSetting(cProfile,"Annotation", m_bAnnotation, Setting::TypeBoolean);
+		Setting* s;
+		if (cProfile.exists("TextAttributes"))
+			s = &(cProfile["TextAttributes"]);
+		else
+			s = &(cProfile.add("TextAttributes", Setting::TypeGroup));
+		WriteTA(*s, m_taXNote);
 
-		VERIFY(cProfile.Write(XNOTEREMOTECONTROL, m_bXnoteRemoteControlMode));
-		VERIFY(cProfile.Write(XNOTEDISPLAYCAMERADELAY, m_bXnoteDisplayCameraDelayMode));
-		VERIFY(cProfile.Write(XNOTEDISPLAYCAMERADELAY2, m_bXnoteDisplayCameraDelayDirection));
-		VERIFY(cProfile.Write(XNOTECAMERADELAYINMILLISEC, m_ulXnoteCameraDelayInMilliSec));
-		VERIFY(cProfile.Write(XNOTEDISPLAYFORMATSTRING, m_cXnoteDisplayFormatString));
+		UpdateSetting(cProfile,"RemoteControl", m_bXnoteRemoteControlMode, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"DisplayCameraDelay", m_bXnoteDisplayCameraDelayMode, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"DisplayCameraDelayForwards", m_bXnoteDisplayCameraDelayDirection, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"CameraDelayInMilliSec", (long&)m_ulXnoteCameraDelayInMilliSec, Setting::TypeInt);
+		std::string text(m_cXnoteDisplayFormatString);
+		UpdateSetting(cProfile,"DisplayFormatString", text, Setting::TypeString);
 
-		VERIFY(cProfile.Write(XNOTERECORDDURATIONLIMITMODE, m_bXnoteRecordDurationLimitMode));
-		VERIFY(cProfile.Write(XNOTERECORDDURATIONLIMITINMILLISEC, m_ulXnoteRecordDurationLimitInMilliSec));
+		UpdateSetting(cProfile,"RecordDurationLimitMode", m_bXnoteRecordDurationLimitMode, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"RecordDurationLimitInMilliSec", (long&) m_ulXnoteRecordDurationLimitInMilliSec, Setting::TypeInt);
 
 		// m_ulStartXnoteTickCounter is a non persistent member
 		return true;
@@ -1250,16 +629,22 @@ struct sWatermarkOpts
 		m_iaWatermark	= rhs.m_iaWatermark;
 		return *this;
 	}
-	bool Read(CProfile& cProfile)
+	bool Read(Setting& cProfile)
 	{
-		VERIFY(cProfile.Read(WATERMARKANNOTATION, m_bAnnotation));
-		VERIFY(cProfile.Read(WATERMARKIMAGEATTRIBUTES, m_iaWatermark));
+		cProfile.lookupValue("Annotation", m_bAnnotation);
+		if (cProfile.exists("ImageAttributes"))
+			ReadIA(cProfile["ImageAttributes"], m_iaWatermark);
 		return true;
 	}
-	bool Write(CProfile& cProfile)
+	bool Write(Setting& cProfile)
 	{
-		VERIFY(cProfile.Write(WATERMARKANNOTATION, m_bAnnotation));
-		VERIFY(cProfile.Write(WATERMARKIMAGEATTRIBUTES, m_iaWatermark));
+		UpdateSetting(cProfile,"Annotation", m_bAnnotation, Setting::TypeBoolean);
+		Setting* s;
+		if (cProfile.exists("ImageAttributes"))
+			s = &(cProfile["ImageAttributes"]);
+		else
+			s = &(cProfile.add("ImageAttributes", Setting::TypeGroup));
+		WriteIA(*s, m_iaWatermark);
 		return true;
 	}
 
@@ -1339,50 +724,50 @@ public:
 	// TODO: need pimple idom
 	////////////////////////////
 
-	bool Read(CProfile& cProfile)
+	bool Read(Setting& cProfile)
 	{
-		VERIFY(cProfile.Read(AUDIODEVICEID, m_uDeviceID));
-		VERIFY(cProfile.Read(BAUDIOCOMPRESSION, m_bCompression));
-		VERIFY(cProfile.Read(USEMCI, m_bUseMCI));
-		VERIFY(cProfile.Read(PERFORMAUTOSEARCH, m_bPerformAutoSearch));		
-		VERIFY(cProfile.Read(RECORDAUDIO, m_iRecordAudio));		
-		VERIFY(cProfile.Read(CBWFX, m_dwCbwFX));
-		VERIFY(cProfile.Read(WAVEINSELECTED, m_dwWaveinSelected));
-		VERIFY(cProfile.Read(AUDIO_BITS_PER_SAMPLE, m_iBitsPerSample));
-		VERIFY(cProfile.Read(AUDIO_NUM_CHANNELS, m_iNumChannels));
-		VERIFY(cProfile.Read(AUDIO_SAMPLES_PER_SECONDS, m_iSamplesPerSeconds));
-		VERIFY(cProfile.Read(NUMDEV, m_iMixerDevices));		
-		VERIFY(cProfile.Read(SELECTEDDEV, m_iSelectedMixer));
-		VERIFY(cProfile.Read(COMPRESSFORMATTAG, m_wFormatTag));
+		cProfile.lookupValue("AudioDeviceID", m_uDeviceID);
+		cProfile.lookupValue("AudioCompression", m_bCompression);
+		cProfile.lookupValue("useMCI", m_bUseMCI);
+		cProfile.lookupValue("performAutoSearch", m_bPerformAutoSearch);		
+		cProfile.lookupValue("RecordAudio", m_iRecordAudio);		
+		cProfile.lookupValue("cbwfx", (unsigned&)m_dwCbwFX);
+		cProfile.lookupValue("waveinselected", (unsigned&)m_dwWaveinSelected);
+		cProfile.lookupValue("audio_bits_per_sample", m_iBitsPerSample);
+		cProfile.lookupValue("audio_num_channels", m_iNumChannels);
+		cProfile.lookupValue("audio_samples_per_seconds", m_iSamplesPerSeconds);
+		cProfile.lookupValue("NumDev", m_iMixerDevices);		
+		cProfile.lookupValue("SelectedDev", m_iSelectedMixer);
+		cProfile.lookupValue("CompressionFormatTag", m_wFormatTag);
 		AudioFormat().wFormatTag = static_cast<WORD>(m_wFormatTag);
-		VERIFY(cProfile.Read(FEEDBACK_LINE, m_iFeedbackLine));
-		VERIFY(cProfile.Read(FEEDBACK_LINE_INFO, m_iFeedbackLineInfo));		
-		VERIFY(cProfile.Read(INTERLEAVEFRAMES, m_bInterleaveFrames));
-		VERIFY(cProfile.Read(INTERLEAVEFACTOR, m_iInterleaveFactor));
-		VERIFY(cProfile.Read(INTERLEAVEUNIT, m_iInterleavePeriod));
+		cProfile.lookupValue("feedback_line", m_iFeedbackLine);
+		cProfile.lookupValue("feedback_line_info", m_iFeedbackLineInfo);		
+		cProfile.lookupValue("InterleaveFrames", m_bInterleaveFrames);
+		cProfile.lookupValue("InterleaveFactor", m_iInterleaveFactor);
+		cProfile.lookupValue("InterleaveUnit", m_iInterleavePeriod);
 		return true;
 	}
-	bool Write(CProfile& cProfile)
+	bool Write(Setting& cProfile)
 	{
-		VERIFY(cProfile.Write(AUDIODEVICEID, m_uDeviceID));
-		VERIFY(cProfile.Write(BAUDIOCOMPRESSION, m_bCompression));
-		VERIFY(cProfile.Write(USEMCI, m_bUseMCI));
-		VERIFY(cProfile.Write(PERFORMAUTOSEARCH, m_bPerformAutoSearch));
-		VERIFY(cProfile.Write(RECORDAUDIO, m_iRecordAudio));		
-		VERIFY(cProfile.Write(CBWFX, m_dwCbwFX));
-		VERIFY(cProfile.Write(WAVEINSELECTED, m_dwWaveinSelected));
-		VERIFY(cProfile.Write(AUDIO_BITS_PER_SAMPLE, m_iBitsPerSample));
-		VERIFY(cProfile.Write(AUDIO_NUM_CHANNELS, m_iNumChannels));
-		VERIFY(cProfile.Write(AUDIO_SAMPLES_PER_SECONDS, m_iSamplesPerSeconds));
-		VERIFY(cProfile.Write(NUMDEV, m_iMixerDevices));		
-		VERIFY(cProfile.Write(SELECTEDDEV, m_iSelectedMixer));
+		UpdateSetting(cProfile,"AudioDeviceID", (long&)m_uDeviceID,Setting::TypeInt);
+		UpdateSetting(cProfile,"AudioCompression", m_bCompression,Setting::TypeBoolean);
+		UpdateSetting(cProfile,"useMCI", m_bUseMCI,Setting::TypeBoolean);
+		UpdateSetting(cProfile,"performAutoSearch", m_bPerformAutoSearch,Setting::TypeBoolean);
+		UpdateSetting(cProfile,"RecordAudio", m_iRecordAudio,Setting::TypeInt);	
+		UpdateSetting(cProfile,"cbwfx", (long&)m_dwCbwFX,Setting::TypeInt);
+		UpdateSetting(cProfile,"waveinselected", (long&)m_dwWaveinSelected,Setting::TypeInt);
+		UpdateSetting(cProfile,"audio_bits_per_sample", m_iBitsPerSample,Setting::TypeInt);
+		UpdateSetting(cProfile,"audio_num_channels", m_iNumChannels,Setting::TypeInt);
+		UpdateSetting(cProfile,"audio_samples_per_seconds", m_iSamplesPerSeconds,Setting::TypeInt);
+		UpdateSetting(cProfile,"NumDev", m_iMixerDevices,Setting::TypeInt);		
+		UpdateSetting(cProfile,"SelectedDev", m_iSelectedMixer,Setting::TypeInt);
 		m_wFormatTag = AudioFormat().wFormatTag;
-		VERIFY(cProfile.Write(COMPRESSFORMATTAG, m_wFormatTag));
-		VERIFY(cProfile.Write(FEEDBACK_LINE, m_iFeedbackLine));
-		VERIFY(cProfile.Write(FEEDBACK_LINE_INFO, m_iFeedbackLineInfo));		
-		VERIFY(cProfile.Write(INTERLEAVEFRAMES, m_bInterleaveFrames));
-		VERIFY(cProfile.Write(INTERLEAVEFACTOR, m_iInterleaveFactor));
-		VERIFY(cProfile.Write(INTERLEAVEUNIT, m_iInterleavePeriod));
+		UpdateSetting(cProfile,"CompressionFormatTag", m_wFormatTag,Setting::TypeInt);
+		UpdateSetting(cProfile,"feedback_line", m_iFeedbackLine,Setting::TypeInt);
+		UpdateSetting(cProfile,"feedback_line_info", m_iFeedbackLineInfo,Setting::TypeInt);		
+		UpdateSetting(cProfile,"InterleaveFrames", m_bInterleaveFrames,Setting::TypeBoolean);
+		UpdateSetting(cProfile,"InterleaveFactor", m_iInterleaveFactor,Setting::TypeInt);
+		UpdateSetting(cProfile,"InterleaveUnit", m_iInterleavePeriod,Setting::TypeInt);
 		return true;
 	}
 	bool isInput(eAudioInput eInput) const	{return eInput == m_iRecordAudio;}
@@ -1447,18 +832,18 @@ struct sProducerOpts
 
 		return *this;
 	}
-	bool Read(CProfile& cProfile)
+	bool Read(Setting& cProfile)
 	{
-		VERIFY(cProfile.Read(LAUNCHPROPPROMPT, m_bLaunchPropPrompt));
-		VERIFY(cProfile.Read(LAUNCHHTMLPLAYER, m_bLaunchHTMLPlayer));
-		VERIFY(cProfile.Read(DELETEAVIAFTERUSE, m_bDeleteAVIAfterUse));
+		cProfile.lookupValue("launchPropPrompt", m_bLaunchPropPrompt);
+		cProfile.lookupValue("launchHTMLPlayer", m_bLaunchHTMLPlayer);
+		cProfile.lookupValue("deleteAVIAfterUse", m_bDeleteAVIAfterUse);
 		return true;
 	}
-	bool Write(CProfile& cProfile)
+	bool Write(Setting& cProfile)
 	{
-		VERIFY(cProfile.Write(LAUNCHPROPPROMPT, m_bLaunchPropPrompt));
-		VERIFY(cProfile.Write(LAUNCHHTMLPLAYER, m_bLaunchHTMLPlayer));
-		VERIFY(cProfile.Write(DELETEAVIAFTERUSE, m_bDeleteAVIAfterUse));
+		UpdateSetting(cProfile,"launchPropPrompt", m_bLaunchPropPrompt,Setting::TypeBoolean);
+		UpdateSetting(cProfile,"launchHTMLPlayer", m_bLaunchHTMLPlayer,Setting::TypeBoolean);
+		UpdateSetting(cProfile,"deleteAVIAfterUse", m_bDeleteAVIAfterUse,Setting::TypeBoolean);
 		return true;
 	}
 
@@ -1547,50 +932,54 @@ struct sProgramOpts
 		}
 		return *this;
 	}
-	bool Read(CProfile& cProfile)
+	bool Read(Setting& cProfile)
 	{
-		VERIFY(cProfile.Read(AUTONAMING, m_bAutoNaming));
-		VERIFY(cProfile.Read(CAPTURETRANS, m_bCaptureTrans));
-		VERIFY(cProfile.Read(FLASHINGRECT, m_bFlashingRect));
-		VERIFY(cProfile.Read(MINIMIZEONSTART, m_bMinimizeOnStart));
-		VERIFY(cProfile.Read(RECORDPRESET, m_bRecordPreset));
-		VERIFY(cProfile.Read(PRESETTIME, m_iPresetTime));
-		VERIFY(cProfile.Read(RECORDINGMODE, m_iRecordingMode));
-		VERIFY(cProfile.Read(LAUNCHPLAYER, m_iLaunchPlayer));
-		VERIFY(cProfile.Read(SPECIFIEDDIR, m_strSpecifiedDir));
-		VERIFY(cProfile.Read(TEMPPATH_ACCESS, m_iTempPathAccess));
-		VERIFY(cProfile.Read(THREADPRIORITY, m_iThreadPriority));
-		VERIFY(cProfile.Read(AUTOPAN, m_bAutoPan));
-		VERIFY(cProfile.Read(MAXPAN, m_iMaxPan));
-		VERIFY(cProfile.Read(VIEWTYPE, m_iViewType));		
-		VERIFY(cProfile.Read(SHAPENAMEINT, m_iShapeNameInt));		
-		VERIFY(cProfile.Read(LAYOUTNAMEINT, m_iLayoutNameInt));
+		cProfile.lookupValue("AutoNaming", m_bAutoNaming);
+		cProfile.lookupValue("CaptureTrans", m_bCaptureTrans);
+		cProfile.lookupValue("FlashingRect", m_bFlashingRect);
+		cProfile.lookupValue("MinimizeOnStart", m_bMinimizeOnStart);
+		cProfile.lookupValue("RecordPreset", m_bRecordPreset);
+		cProfile.lookupValue("PresetTime", m_iPresetTime);
+		cProfile.lookupValue("RecordingMode", m_iRecordingMode);
+		cProfile.lookupValue("LaunchPlayer", m_iLaunchPlayer);
+		std::string text;
+		if (cProfile.lookupValue("SaveDir", text))
+			m_strSpecifiedDir = text.c_str();
+		cProfile.lookupValue("TempPathAccess", m_iTempPathAccess);
+		cProfile.lookupValue("ThreadPriority", m_iThreadPriority);
+		cProfile.lookupValue("AutoPan", m_bAutoPan);
+		cProfile.lookupValue("MaxPan", m_iMaxPan);
+		cProfile.lookupValue("ViewType", m_iViewType);		
+		// TODO: libconfig supports arrays, so the following should be removed in the future
+		cProfile.lookupValue("ShapeNameInt", m_iShapeNameInt);		
+		cProfile.lookupValue("LayoutNameInt", m_iLayoutNameInt);
 		// TODO: check these two
-		VERIFY(cProfile.Read(LAYOUTNAMELEN, m_iSaveLen));		
-		VERIFY(cProfile.Read(SHAPENAMELEN, m_iCursorLen));
+		cProfile.lookupValue("LayoutNameLen", m_iSaveLen);		
+		cProfile.lookupValue("ShapeNameLen", m_iCursorLen);
 		return true;
 	}
-	bool Write(CProfile& cProfile)
+	bool Write(Setting& cProfile)
 	{
-		VERIFY(cProfile.Write(AUTONAMING, m_bAutoNaming));
-		VERIFY(cProfile.Write(CAPTURETRANS, m_bCaptureTrans));
-		VERIFY(cProfile.Write(FLASHINGRECT, m_bFlashingRect));
-		VERIFY(cProfile.Write(MINIMIZEONSTART, m_bMinimizeOnStart));
-		VERIFY(cProfile.Write(RECORDPRESET, m_bRecordPreset));
-		VERIFY(cProfile.Write(PRESETTIME, m_iPresetTime));
-		VERIFY(cProfile.Write(RECORDINGMODE, m_iRecordingMode));
-		VERIFY(cProfile.Write(LAUNCHPLAYER, m_iLaunchPlayer));
-		VERIFY(cProfile.Write(SPECIFIEDDIR, m_strSpecifiedDir));
-		VERIFY(cProfile.Write(TEMPPATH_ACCESS, m_iTempPathAccess));
-		VERIFY(cProfile.Write(THREADPRIORITY, m_iThreadPriority));
-		VERIFY(cProfile.Write(AUTOPAN, m_bAutoPan));
-		VERIFY(cProfile.Write(MAXPAN, m_iMaxPan));
-		VERIFY(cProfile.Write(VIEWTYPE, m_iViewType));		
-		VERIFY(cProfile.Write(SHAPENAMEINT, m_iShapeNameInt));		
-		VERIFY(cProfile.Write(LAYOUTNAMEINT, m_iLayoutNameInt));
+		UpdateSetting(cProfile,"AutoNaming", m_bAutoNaming, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"CaptureTrans", m_bCaptureTrans, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"FlashingRect", m_bFlashingRect, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"MinimizeOnStart", m_bMinimizeOnStart, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"RecordPreset", m_bRecordPreset, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"PresetTime", m_iPresetTime, Setting::TypeInt);
+		UpdateSetting(cProfile,"RecordingMode", m_iRecordingMode, Setting::TypeInt);
+		UpdateSetting(cProfile,"LaunchPlayer", m_iLaunchPlayer, Setting::TypeInt);
+		std::string text(m_strSpecifiedDir);
+		UpdateSetting(cProfile,"SaveDir", text, Setting::TypeString);
+		UpdateSetting(cProfile,"TempPathAccess", m_iTempPathAccess, Setting::TypeInt);
+		UpdateSetting(cProfile,"ThreadPriority", m_iThreadPriority, Setting::TypeInt);
+		UpdateSetting(cProfile,"AutoPan", m_bAutoPan, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"MaxPan", m_iMaxPan, Setting::TypeInt);
+		UpdateSetting(cProfile,"ViewType", m_iViewType, Setting::TypeInt);		
+		UpdateSetting(cProfile,"ShapeNameInt", m_iShapeNameInt, Setting::TypeInt);		
+		UpdateSetting(cProfile,"LayoutNameInt", m_iLayoutNameInt, Setting::TypeInt);
 		// TODO: check these two
-		VERIFY(cProfile.Write(LAYOUTNAMELEN, m_iSaveLen));		
-		VERIFY(cProfile.Write(SHAPENAMELEN, m_iCursorLen));
+		UpdateSetting(cProfile,"LayoutNameLen", m_iSaveLen, Setting::TypeInt);		
+		UpdateSetting(cProfile,"ShapeNameLen", m_iCursorLen, Setting::TypeInt);
 		return true;
 	}
 

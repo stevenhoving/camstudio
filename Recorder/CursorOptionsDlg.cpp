@@ -17,6 +17,21 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+// WTF???! Can this life be easier?
+// works both ways
+// TODO: move it somewhere
+__inline __declspec(naked) DWORD COLORREFtoARGB(COLORREF, BYTE)
+{
+	__asm
+	{
+		mov eax, DWORD PTR 4[esp]
+		bswap eax
+		mov al, BYTE PTR 8[esp]
+		rcr eax, 8
+		ret
+	}
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // CCursorOptionsDlg dialog
 
@@ -34,9 +49,9 @@ CCursorOptionsDlg::CCursorOptionsDlg(CWnd* pParent /*=NULL*/)
 , m_iHighlightSize(CamCursor.HighlightSize())
 , m_iHighlightShape(CamCursor.HighlightShape())
 , m_bHighlightClick(CamCursor.HighlightClick())
-, m_clrHighlight(CamCursor.HighlightColor())
-, m_clrHighlightClickLeft(CamCursor.ClickLeftColor())
-, m_clrHighlightClickRight(CamCursor.ClickRightColor())
+, m_clrHighlight(COLORREFtoARGB(CamCursor.HighlightColor(),0)) // plain GDI doesn't support transparency
+, m_clrHighlightClickLeft(COLORREFtoARGB(CamCursor.ClickLeftColor(),0))
+, m_clrHighlightClickRight(COLORREFtoARGB(CamCursor.ClickRightColor(),0))
 , m_bInitPaint(true)
 , m_bSliding(false)
 {
@@ -61,9 +76,9 @@ CCursorOptionsDlg::CCursorOptionsDlg(const CCamCursor& cCursor, CWnd* pParent)
 , m_iHighlightSize(cCursor.HighlightSize())
 , m_iHighlightShape(cCursor.HighlightShape())
 , m_bHighlightClick(cCursor.HighlightClick())
-, m_clrHighlight(cCursor.HighlightColor())
-, m_clrHighlightClickLeft(cCursor.ClickLeftColor())
-, m_clrHighlightClickRight(cCursor.ClickRightColor())
+, m_clrHighlight(COLORREFtoARGB(cCursor.HighlightColor(),0))
+, m_clrHighlightClickLeft(COLORREFtoARGB(cCursor.ClickLeftColor(),0))
+, m_clrHighlightClickRight(COLORREFtoARGB(cCursor.ClickRightColor(),0))
 , m_bInitPaint(true)
 , m_bSliding(false)
 {
@@ -450,12 +465,12 @@ void CCursorOptionsDlg::OnOK()
 	m_cCursor.Highlight(m_bHighlightCursor);
 	m_cCursor.HighlightSize(m_iHighlightSize);
 	m_cCursor.HighlightShape(m_iHighlightShape);
-	m_cCursor.HighlightColor(m_clrHighlight);
+	m_cCursor.HighlightColor(COLORREFtoARGB(m_clrHighlight, m_cCursor.HighlightColor() >> 24)); // preserve transparency level
 	m_cCursor.HighlightClick(m_bHighlightClick);
-	m_cCursor.ClickLeftColor(m_clrHighlightClickLeft);
-	m_cCursor.ClickRightColor(m_clrHighlightClickRight);
+	m_cCursor.ClickLeftColor(COLORREFtoARGB(m_clrHighlightClickLeft, m_cCursor.ClickLeftColor() >> 24));
+	m_cCursor.ClickRightColor(COLORREFtoARGB(m_clrHighlightClickRight, m_cCursor.ClickRightColor() >> 24));
 
-	CDialog::OnOK();
+	CDialog::OnOK(); // TODO: usually should go first since calls UpdateData to update m_xx stuff
 }
 
 void CCursorOptionsDlg::OnSelchangeHighlightshape()
@@ -507,7 +522,7 @@ void CCursorOptionsDlg::OnPaint()
 }
 
 void CCursorOptionsDlg::OnBnClickedOk()
-{
+{ // what is this?
 	OnOK();
 }
 

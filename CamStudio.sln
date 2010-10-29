@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Player", "Player\Player.vcproj", "{ACD5AE20-F9EA-4FAB-9765-9093200C719D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Producer", "Producer\Producer.vcproj", "{FCB1A63A-8DE2-4DA9-AE48-B96DC640C716}"
@@ -68,7 +68,6 @@ Global
 		{ACD5AE20-F9EA-4FAB-9765-9093200C719D}.Debug|Win32.ActiveCfg = Debug|Win32
 		{ACD5AE20-F9EA-4FAB-9765-9093200C719D}.Debug|Win32.Build.0 = Debug|Win32
 		{ACD5AE20-F9EA-4FAB-9765-9093200C719D}.Release|Win32.ActiveCfg = Release|Win32
-		{ACD5AE20-F9EA-4FAB-9765-9093200C719D}.Release|Win32.Build.0 = Release|Win32
 		{ACD5AE20-F9EA-4FAB-9765-9093200C719D}.Unicode Debug|Win32.ActiveCfg = Debug|Win32
 		{ACD5AE20-F9EA-4FAB-9765-9093200C719D}.Unicode Debug|Win32.Build.0 = Debug|Win32
 		{ACD5AE20-F9EA-4FAB-9765-9093200C719D}.Unicode Release|Win32.ActiveCfg = Release|Win32
@@ -76,7 +75,6 @@ Global
 		{FCB1A63A-8DE2-4DA9-AE48-B96DC640C716}.Debug|Win32.ActiveCfg = Debug|Win32
 		{FCB1A63A-8DE2-4DA9-AE48-B96DC640C716}.Debug|Win32.Build.0 = Debug|Win32
 		{FCB1A63A-8DE2-4DA9-AE48-B96DC640C716}.Release|Win32.ActiveCfg = Release|Win32
-		{FCB1A63A-8DE2-4DA9-AE48-B96DC640C716}.Release|Win32.Build.0 = Release|Win32
 		{FCB1A63A-8DE2-4DA9-AE48-B96DC640C716}.Unicode Debug|Win32.ActiveCfg = Debug|Win32
 		{FCB1A63A-8DE2-4DA9-AE48-B96DC640C716}.Unicode Debug|Win32.Build.0 = Debug|Win32
 		{FCB1A63A-8DE2-4DA9-AE48-B96DC640C716}.Unicode Release|Win32.ActiveCfg = Release|Win32
@@ -92,7 +90,6 @@ Global
 		{76FA275B-EEF6-420B-A7C1-61CEDEE5EF0E}.Debug|Win32.ActiveCfg = Debug|Win32
 		{76FA275B-EEF6-420B-A7C1-61CEDEE5EF0E}.Debug|Win32.Build.0 = Debug|Win32
 		{76FA275B-EEF6-420B-A7C1-61CEDEE5EF0E}.Release|Win32.ActiveCfg = Release|Win32
-		{76FA275B-EEF6-420B-A7C1-61CEDEE5EF0E}.Release|Win32.Build.0 = Release|Win32
 		{76FA275B-EEF6-420B-A7C1-61CEDEE5EF0E}.Unicode Debug|Win32.ActiveCfg = Debug|Win32
 		{76FA275B-EEF6-420B-A7C1-61CEDEE5EF0E}.Unicode Debug|Win32.Build.0 = Debug|Win32
 		{76FA275B-EEF6-420B-A7C1-61CEDEE5EF0E}.Unicode Release|Win32.ActiveCfg = Release|Win32

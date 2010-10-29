@@ -9,6 +9,8 @@
 
 #include <vector>
 #include <algorithm>
+// TODO: reorganize code and move bodies to cpp. Even better to merge CamCursor with CursorOptionsDlg class.
+#include "../hook/hook.h" // for getCursor
 
 /////////////////////////////////////////////////////////////////////////////
 // CCamCursor
@@ -28,9 +30,13 @@ public:
 		, m_iSelect(ACTIVE)
 		, m_iHighlightSize(64)
 		, m_bHighlightClick(false)
-		, m_clrHighlight(RGB(255,255,125))
-		, m_clrClickLeft(RGB(255,0,0))
-		, m_clrClickRight(RGB(0,0,255))
+		, m_clrHighlight(0xa0ffff80)
+		, m_clrClickLeft(0xa0ff0000)
+		, m_clrClickRight(0xa00000ff)
+		, m_clrClickMiddle(0xa000ff00)
+		, m_fRingWidth(1.5)
+		, m_iRingSize(20)
+		, m_iRingThreshold(1000)
 	{
 	}
 	CCamCursor(const CCamCursor& rhs)
@@ -41,6 +47,8 @@ public:
 	{
 	}
 
+	// TODO: can't we just use default copy constructor???
+	/*
 	CCamCursor& operator=(const CCamCursor& rhs)
 	{
 		if (this == &rhs)
@@ -65,13 +73,13 @@ public:
 		m_clrClickRight		= rhs.m_clrClickRight;
 
 		return *this;
-	}
+	}*/
 
 	HCURSOR Load() const					{return m_hLoadCursor;}
 	HCURSOR Load(HCURSOR hCursor)			{return m_hLoadCursor = hCursor;}
 	HCURSOR Save() const					{return m_hSavedCursor;}
 	HCURSOR Save(HCURSOR hCursor)
-	{
+	{	// mlt_msk: what are we saving on? int assignment?
 		return (m_hSavedCursor == hCursor)
 			? m_hSavedCursor
 			: (m_hSavedCursor = hCursor);
@@ -95,9 +103,20 @@ public:
 		{
 		default:
 		case ACTIVE:
-			return (m_hSavedCursor)
-				? m_hSavedCursor
-				: (m_hSavedCursor = ::GetCursor());
+			POINT pt;
+			if (GetCursorPos(&pt)) { // may need to profile this. dunno how long does it take
+				HWND h = WindowFromPoint(pt);
+				DWORD id = GetWindowThreadProcessId(h, NULL);
+				DWORD cid = GetCurrentThreadId();
+				if (id != cid) {
+					if (AttachThreadInput(cid, id, TRUE)) {
+						m_hSavedCursor = GetCursor();
+						AttachThreadInput(cid, id, FALSE);
+					}
+				} else
+					m_hSavedCursor = GetCursor();
+			}
+			return m_hSavedCursor;
 		case CUSTOM:
 			return m_hCustomCursor;
 		case CUSTOMFILE:
@@ -137,47 +156,55 @@ public:
 	COLORREF ClickRightColor() const		{return m_clrClickRight;}
 	COLORREF ClickRightColor(COLORREF clr)	{return m_clrClickRight = clr;}
 
-	bool Read(CProfile& cProfile)
+	bool Read(Setting& cProfile)
 	{
-		VERIFY(cProfile.Read(RECORDCURSOR, m_bRecord));
-		VERIFY(cProfile.Read(CURSORTYPE, m_iCustomSel));
-		VERIFY(cProfile.Read(CUSTOMSEL, m_iSelect));
-		VERIFY(cProfile.Read(HIGHLIGHTCURSOR, m_bHighlight));
-		VERIFY(cProfile.Read(HIGHLIGHTSIZE, m_iHighlightSize));
-		VERIFY(cProfile.Read(HIGHLIGHTSHAPE, m_iHighlightShape));
-		VERIFY(cProfile.Read(HIGHLIGHTCOLOR, m_clrHighlight));	// todo: constant
-		VERIFY(cProfile.Read(HIGHLIGHTCLICK, m_bHighlightClick));
-		VERIFY(cProfile.Read(HIGHLIGHTCLICKCOLORLEFT, m_clrClickLeft));
-		VERIFY(cProfile.Read(HIGHLIGHTCLICKCOLORRIGHT, m_clrClickRight));
-		//VERIFY(cProfile.Read(CURSORDIR, m_strFileName));	// what it should be
-		int iLen = m_strFileName.GetLength();
-		VERIFY(cProfile.Read(CURSORDIR, iLen));
-		//VERIFY(cProfile.Write(SAVEDIR, m_strDir));		// what it should be
-		iLen = m_strDir.GetLength();
-		VERIFY(cProfile.Read(SAVEDIR, iLen));
+		cProfile.lookupValue("RecordCursor", m_bRecord);
+		cProfile.lookupValue("CursorType", m_iCustomSel);
+		cProfile.lookupValue("CursorSel", m_iSelect);
+		cProfile.lookupValue("Highlight", m_bHighlight);
+		cProfile.lookupValue("HighlightSize", m_iHighlightSize);
+		cProfile.lookupValue("HighlightShape", m_iHighlightShape);
+		cProfile.lookupValue("HighlightColor", (int&)m_clrHighlight);
+		cProfile.lookupValue("HighlightClick", m_bHighlightClick);
+		cProfile.lookupValue("RingThreshold", m_iRingThreshold);
+		cProfile.lookupValue("RingSize", m_iRingSize);
+		cProfile.lookupValue("RingWidth", m_fRingWidth);
+		cProfile.lookupValue("ClickColorLeft", (int&)m_clrClickLeft);
+		cProfile.lookupValue("ClickColorMiddle", (int&)m_clrClickMiddle);
+		cProfile.lookupValue("ClickColorRight", (int&)m_clrClickRight);
+		std::string text;
+		if (cProfile.lookupValue("CursorDir", text))
+			m_strFileName = text.c_str();
 		return true;
 	}
 
-	bool Write(CProfile& cProfile)
+	bool Write(Setting& cProfile)
 	{
-		VERIFY(cProfile.Write(RECORDCURSOR, m_bRecord));
-		VERIFY(cProfile.Write(CURSORTYPE, m_iCustomSel));
-		VERIFY(cProfile.Write(CUSTOMSEL, m_iSelect));
-		VERIFY(cProfile.Write(HIGHLIGHTCURSOR, m_bHighlight));
-		VERIFY(cProfile.Write(HIGHLIGHTSIZE, m_iHighlightSize));
-		VERIFY(cProfile.Write(HIGHLIGHTSHAPE, m_iHighlightShape));
-		VERIFY(cProfile.Write(HIGHLIGHTCOLOR, m_clrHighlight));	// todo: constant
-		VERIFY(cProfile.Write(HIGHLIGHTCLICK, m_bHighlightClick));
-		VERIFY(cProfile.Write(HIGHLIGHTCLICKCOLORLEFT, m_clrClickLeft));
-		VERIFY(cProfile.Write(HIGHLIGHTCLICKCOLORRIGHT, m_clrClickRight));
-		//VERIFY(cProfile.Write(CURSORDIR, m_strFileName));	// what it should be
-		int iLen = m_strFileName.GetLength();
-		VERIFY(cProfile.Write(CURSORDIR, iLen));
-		//VERIFY(cProfile.Write(SAVEDIR, m_strDir));		// what it should be
-		iLen = m_strDir.GetLength();
-		VERIFY(cProfile.Write(SAVEDIR, iLen));
+		UpdateSetting(cProfile,"RecordCursor", m_bRecord, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"CursorType", m_iCustomSel, Setting::TypeInt);
+		UpdateSetting(cProfile,"CursorSel", m_iSelect,Setting::TypeInt);
+		UpdateSetting(cProfile,"Highlight", m_bHighlight, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"HighlightSize", m_iHighlightSize, Setting::TypeInt);
+		UpdateSetting(cProfile,"HighlightShape", m_iHighlightShape, Setting::TypeInt);
+		UpdateSetting(cProfile,"HighlightColor", (long&)m_clrHighlight, Setting::TypeInt);
+		UpdateSetting(cProfile,"RingThreshold", m_iRingThreshold, Setting::TypeInt);
+		UpdateSetting(cProfile,"RingSize", m_iRingSize, Setting::TypeInt);
+		UpdateSetting(cProfile,"RingWidth", m_fRingWidth, Setting::TypeFloat);
+		UpdateSetting(cProfile,"HighlightClick", m_bHighlightClick, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"ClickColorLeft", (long&)m_clrClickLeft, Setting::TypeInt);
+		UpdateSetting(cProfile,"ClickColorMiddle", (long&)m_clrClickMiddle, Setting::TypeInt);
+		UpdateSetting(cProfile,"ClickColorRight", (long&)m_clrClickRight, Setting::TypeInt);
+		std::string text(m_strFileName);
+		UpdateSetting(cProfile,"CursorDir", text, Setting::TypeString);
 		return true;
 	}
+
+	// why do we ever want to make everything private and use getter/setter even for plain types with no onchange events???
+	// let's keep it simple
+	DWORD	m_clrClickMiddle;	// wheel click color ARGB
+	float		m_fRingWidth;	// ring width for click events, Gdiplus::REAL
+	int			m_iRingThreshold;	// time in ms for ring to grow till m_iRingSize
+	int			m_iRingSize;	// maximum ring size
 
 private:
 	// Cursor variables
