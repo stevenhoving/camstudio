@@ -76,6 +76,11 @@ private:
 	CxImage m_imageWatermark;		// Watermark Image
 	CString m_strWatermarkName;		// Watermark filename
 	CRect m_rectView;				// screen view to capture, BTW TopLeft=1,1
+	// zoom should be within rectView boundaries
+	// camera can pan and follow pointer
+	// zoom level. kind of m_rectFrame.Size() == zoom * <stuff on screen>.Size()
+//	double _zoom;
+	CRect _zoomFrame; // m prefix is only for public stuff !!!
 	CRect m_rectFrame;				// logical frame to capture BTW TopLeft=0,0
 	// annotation objects
 	CCamCursor m_cCursor;
@@ -91,6 +96,7 @@ private:
 	bool AddCaption(CDC* pDC);
 	bool AddWatermark(CDC* pDC);
 	bool AddCursor(CDC* pDC);
+	bool AddClicks(CDC* pDC);
 	bool Annotate(CDC* pDC);
 };
 

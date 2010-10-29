@@ -3,6 +3,34 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif
+
+#include <windows.h>
+#include <map>
+
+   struct HotKey {
+	   DWORD key;
+	   DWORD mod;
+	   HotKey(const HotKey& rhs) {
+		   key = rhs.key;
+		   mod = rhs.mod;
+	   }
+	   HotKey(DWORD k, DWORD m)
+		   :key(k), mod(m)
+	   {}
+	   bool operator < (const HotKey& rhs) const {
+		   if (key < rhs.key)
+			   return true;
+		   if (key == rhs.key && mod < rhs.mod)
+			   return true;
+		   return false;
+	   }
+   };
+
+   typedef std::map<HotKey, DWORD> HotKeyMap; // key & mod => WM_HOTKEY code
+__declspec(dllexport) HotKeyMap& getHotKeyMap();
+__declspec(dllexport) void setHotKeyWindow(HWND hWnd);
+__declspec(dllexport) void setPassThrough(bool pass);
+
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
@@ -16,6 +44,7 @@ extern "C" {
 #undef LIBSPEC
 #ifdef __cplusplus
 }
+
 #endif // __cplusplus
 
 #define WM_USER_RECORDINTERRUPTED_MSG	_T("WM_USER_RECORDINTERRUPTED_MSG")

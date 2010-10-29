@@ -217,6 +217,10 @@ private:
 	CVideoWnd m_vanWnd;
 	CCamera m_cCamera;
 	CBasicMessage *m_basicMsg;
+	double _zoom;
+	CPoint _zoomedAt;
+	DWORD _zoomWhen;
+	int _zoomDirection;
 
 	// CamStudio.ini settings
 

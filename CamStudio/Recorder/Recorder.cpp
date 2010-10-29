@@ -24,6 +24,10 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 static BOOL bClassRegistered = FALSE;
+// this global variable is mentioned in StdAfx.h
+// thus everyone has an access
+// not the best solution though
+Config *cfg;
 
 /////////////////////////////////////////////////////////////////////////////
 // CAboutDlg dialog used for App About
@@ -149,7 +153,6 @@ END_MESSAGE_MAP()
 // CRecorderApp construction
 
 CRecorderApp::CRecorderApp()
-: m_cmSettings(CString(GetProgPath() + _T("\\CamStudio.ini")))
 {
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
@@ -164,7 +167,10 @@ CRecorderApp theApp;
 // CRecorderApp initialization
 
 BOOL CRecorderApp::InitInstance()
-{
+{	
+	// Initialize GDI+.
+	Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
 	::OnError("CRecorderApp::InitInstance");
 	AfxEnableControlContainer();
 
@@ -180,13 +186,32 @@ BOOL CRecorderApp::InitInstance()
 	// Change the name of the .INI file.
 	// The CWinApp destructor will free the memory.
 	CString strProfile;
-	strProfile.Format("%s\\CamStudio.ini", (LPCSTR)(GetProgPath()));
+	strProfile.Format("%s\\CamStudio.cfg", (LPCSTR)(GetProgPath()));
 	m_pszProfileName = _tcsdup(strProfile);
 
 	// TODO: re-enable when class complete
-	m_cmSettings.Read();
+	  // Read the file. If there is an error, report it and exit.
+	cfg = new Config();
+	try
+	{
+		cfg->readFile(strProfile);
+	}
+	catch(const FileIOException)
+	{// TODO: move me to resource
+		MessageBox(NULL, "Config file was not found. I'm going to use defaults.", "Error", MB_OK);
+//		return(EXIT_FAILURE);
+	}
+	catch(const ParseException &pex)
+	{
+		char buf[1024];
+		_snprintf_s(buf, 1024, _TRUNCATE, "Config file parse error at %s:%d - %s", pex.getFile(), pex.getLine(), pex.getError());
+		MessageBox(NULL, buf, "Error", MB_OK);
+//		return(EXIT_FAILURE);
+	}
+
+//	m_cmSettings.Read();
 	// initialize global values
-	VERIFY(m_cmSettings.Read(LANGUAGE, m_wCurLangID));
+//	VERIFY(m_cmSettings.Read(LANGUAGE, m_wCurLangID));
 
 //	m_wCurLangID = static_cast<LANGID>(GetProfileInt(SEC_SETTINGS, ENT_LANGID, STANDARD_LANGID));
 	if (!LoadLanguage(m_wCurLangID)) {
@@ -195,7 +220,7 @@ BOOL CRecorderApp::InitInstance()
 		}
 	}
 	//WriteProfileInt(SEC_SETTINGS, ENT_LANGID, m_wCurLangID);
-	VERIFY(m_cmSettings.Write(LANGUAGE, m_wCurLangID));
+//	VERIFY(m_cmSettings.Write(LANGUAGE, m_wCurLangID));
 
 	if (!FirstInstance())
 		return FALSE;
@@ -223,17 +248,28 @@ BOOL CRecorderApp::InitInstance()
 
 	m_iVersionOp = GetOperatingSystem();
 
-	VERIFY(cAudioFormat.Read(m_cmSettings));
-	VERIFY(cVideoOpts.Read(m_cmSettings));
-	VERIFY(CamCursor.Read(m_cmSettings));
-	VERIFY(cProgramOpts.Read(m_cmSettings));
-	VERIFY(cHotKeyOpts.Read(m_cmSettings));
-	VERIFY(cRegionOpts.Read(m_cmSettings));
-	VERIFY(cCaptionOpts.Read(m_cmSettings));
-	VERIFY(cTimestampOpts.Read(m_cmSettings));
-	VERIFY(cXNoteOpts.Read(m_cmSettings));
-	VERIFY(cWatermarkOpts.Read(m_cmSettings));
-	VERIFY(cProducerOpts.Read(m_cmSettings));
+	if(cfg->exists("Audio"))
+		cAudioFormat.Read(cfg->lookup("Audio"));
+	if(cfg->exists("Video"))
+		cVideoOpts.Read(cfg->lookup("Video"));
+	if(cfg->exists("Cursor"))
+		CamCursor.Read(cfg->lookup("Cursor"));
+	if(cfg->exists("Program"))
+		cProgramOpts.Read(cfg->lookup("Program"));
+	if(cfg->exists("HotKeys"))
+		cHotKeyOpts.Read(cfg->lookup("HotKeys"));
+	if(cfg->exists("Region"))
+		cRegionOpts.Read(cfg->lookup("Region"));
+	if(cfg->exists("Caption"))
+		cCaptionOpts.Read(cfg->lookup("Caption"));
+	if(cfg->exists("TimeStamp"))
+		cTimestampOpts.Read(cfg->lookup("TimeStamp"));
+	if(cfg->exists("XNote"))
+		cXNoteOpts.Read(cfg->lookup("XNote"));
+	if(cfg->exists("Watermark"))
+		cWatermarkOpts.Read(cfg->lookup("Watermark"));
+	if(cfg->exists("Producer"))
+		cProducerOpts.Read(cfg->lookup("Producer"));
 
 	// Register the application's document templates. Document templates
 	// serve as the connection between documents, frame windows and views.
@@ -264,17 +300,82 @@ BOOL CRecorderApp::InitInstance()
 
 int CRecorderApp::ExitInstance()
 {
-	VERIFY(cAudioFormat.Write(m_cmSettings));
-	VERIFY(cVideoOpts.Write(m_cmSettings));
-	VERIFY(CamCursor.Write(m_cmSettings));
-	VERIFY(cProgramOpts.Write(m_cmSettings));
-	VERIFY(cHotKeyOpts.Write(m_cmSettings));
-	VERIFY(cRegionOpts.Write(m_cmSettings));
-	VERIFY(cCaptionOpts.Write(m_cmSettings));
-	VERIFY(cTimestampOpts.Write(m_cmSettings));
-	VERIFY(cXNoteOpts.Write(m_cmSettings));
-	VERIFY(cWatermarkOpts.Write(m_cmSettings));
-	VERIFY(cProducerOpts.Write(m_cmSettings));
+	Setting* s;
+	try {
+		if (!cfg->exists("Audio"))
+			s=&cfg->getRoot().add("Audio", Setting::TypeGroup);
+		else
+			s=&cfg->lookup("Audio");
+		cAudioFormat.Write(*s);
+
+		if (!cfg->exists("Video"))
+			s=&cfg->getRoot().add("Video", Setting::TypeGroup);
+		else
+			s=&cfg->lookup("Video");
+		cVideoOpts.Write(*s);
+
+		if (!cfg->exists("Cursor"))
+			s=&cfg->getRoot().add("Cursor", Setting::TypeGroup);
+		else
+			s=&cfg->lookup("Cursor");
+		CamCursor.Write(*s);
+
+		if (!cfg->exists("Program"))
+			s=&cfg->getRoot().add("Program", Setting::TypeGroup);
+		else
+			s=&cfg->lookup("Program");
+		cProgramOpts.Write(*s);
+
+		if (!cfg->exists("HotKeys"))
+			s=&cfg->getRoot().add("HotKeys", Setting::TypeGroup);
+		else
+			s=&cfg->lookup("HotKeys");
+		cHotKeyOpts.Write(*s);
+
+		if (!cfg->exists("Region"))
+			s=&cfg->getRoot().add("Region", Setting::TypeGroup);
+		else
+			s=&cfg->lookup("Region");
+		cRegionOpts.Write(*s);
+
+		if (!cfg->exists("Caption"))
+			s=&cfg->getRoot().add("Caption", Setting::TypeGroup);
+		else
+			s=&cfg->lookup("Caption");
+		cCaptionOpts.Write(*s);
+
+		if (!cfg->exists("TimeStamp"))
+			s=&cfg->getRoot().add("TimeStamp", Setting::TypeGroup);
+		else
+			s=&cfg->lookup("TimeStamp");
+		cTimestampOpts.Write(*s);
+
+		if (!cfg->exists("XNote"))
+			s=&cfg->getRoot().add("XNote", Setting::TypeGroup);
+		else
+			s=&cfg->lookup("XNote");
+		cXNoteOpts.Write(*s);
+
+		if (!cfg->exists("Watermark"))
+			s=&cfg->getRoot().add("Watermark", Setting::TypeGroup);
+		else
+			s=&cfg->lookup("Watermark");
+		cWatermarkOpts.Write(*s);
+
+		if (!cfg->exists("Producer"))
+			s=&cfg->getRoot().add("Producer", Setting::TypeGroup);
+		else
+			s=&cfg->lookup("Producer");
+		cProducerOpts.Write(*s);
+	}
+	catch(SettingTypeException& e) {
+		MessageBox(NULL, e.getPath(), e.what(), MB_OK);
+	}
+
+	CString strProfile;
+	strProfile.Format("%s\\CamStudio.cfg", (LPCSTR)(GetProgPath()));
+	cfg->writeFile(strProfile);
+	delete cfg;
 
 	//Multilanguage
 	if (m_wCurLangID != STANDARD_LANGID)
@@ -282,6 +383,8 @@ int CRecorderApp::ExitInstance()
 
 	if (bClassRegistered)
 		::UnregisterClass(_T("CamStudio"), AfxGetInstanceHandle());
+
+	Gdiplus::GdiplusShutdown(gdiplusToken);
 
 	return CWinApp::ExitInstance();
 }

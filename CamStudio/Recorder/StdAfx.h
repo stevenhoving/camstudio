@@ -42,6 +42,15 @@
 
 #include <vfw.h>
 
+#pragma warning( disable : 4290)
+#include "libconfig.h++"
+using namespace libconfig;
+
+extern Config *cfg;
+#pragma warning( default : 4290)
+
+//#include "constants.h"
+
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
