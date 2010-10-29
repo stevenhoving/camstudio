@@ -8,6 +8,8 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
+#include "stdafx.h"
+
 #ifndef __AFXWIN_H__
 	#error include 'stdafx.h' before including this file for PCH
 #endif
@@ -34,6 +36,8 @@
 #include "Profile.h"
 #include "resource.h"       // main symbols
 #include "RecorderVersionReleaseInfo.h"   // Contains version and SVN release number
+#include <gdiplus.h>
+#pragma comment (lib,"Gdiplus.lib")
 
 //#define WM_APP_REGIONUPDATE	0x00500	// TODO: Should this be a WM_USER/WM_APP message?
 //#define WM_APP_REGIONUPDATE	WM_USER + 0x00100
@@ -59,11 +63,10 @@ public:
 	LANGID LanguageID(LANGID wLangID)
 	{
 		m_wCurLangID = wLangID;
-		VERIFY(m_cmSettings.Write(LANGUAGE, m_wCurLangID));
+// FIXME:		VERIFY(m_cmSettings.Write(LANGUAGE, m_wCurLangID));
 		return m_wCurLangID;
 	}
 	int VersionOp() const				{return m_iVersionOp;}
-	CProfile& GetProfile()				{return m_cmSettings;}
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -87,7 +90,9 @@ private:
 	LANGID m_wCurLangID;
 	int m_iVersionOp;
 	CCamStudioCommandLineInfo m_cmdInfo;
-	CProfile m_cmSettings;
+
+	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+	ULONG_PTR           gdiplusToken;
 
 	bool RegisterWindowClass();
 	BOOL FirstInstance();

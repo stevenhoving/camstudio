@@ -36,30 +36,6 @@ protected:
 	//{{AFX_MSG(CKeyshortcutsDlg)
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
-	afx_msg void OnSelchangeStopkey();
-	afx_msg void OnSelchangeCancelkey();
-	afx_msg void OnSelchangeRecordkey();
-	afx_msg void OnSelchangeNextkey();
-	afx_msg void OnSelchangePrevkey();
-	afx_msg void OnSelchangeShowkey();
-	afx_msg void OnCtrl1();
-	afx_msg void OnCtrl2();
-	afx_msg void OnCtrl3();
-	afx_msg void OnCtrl4();
-	afx_msg void OnCtrl5();
-	afx_msg void OnCtrl6();
-	afx_msg void OnShift1();
-	afx_msg void OnShift2();
-	afx_msg void OnShift3();
-	afx_msg void OnShift4();
-	afx_msg void OnShift5();
-	afx_msg void OnShift6();
-	afx_msg void OnAlt1();
-	afx_msg void OnAlt2();
-	afx_msg void OnAlt3();
-	afx_msg void OnAlt4();
-	afx_msg void OnAlt5();
-	afx_msg void OnAlt6();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
@@ -67,47 +43,7 @@ private:
 	int GetIndex(UINT keyShortCut);
 	UINT GetCode(size_t index);
 
-	int TestKeysOverlap(int& o1, int& o2);
-
 	std::vector <UINT> m_vKeyCode;
-
-	UINT m_keyNext;
-	UINT m_keyPrev;
-	UINT m_keyShowLayout;
-
-	UINT m_keyNextCtrl;
-	UINT m_keyPrevCtrl;
-	UINT m_keyShowLayoutCtrl;
-
-	UINT m_keyNextAlt;
-	UINT m_keyPrevAlt;
-	UINT m_keyShowLayoutAlt;
-
-	UINT m_keyNextShift;
-	UINT m_keyPrevShift;
-	UINT m_keyShowLayoutShift;
-
-	UINT m_keyRecordStart;
-	UINT m_keyRecordEnd;
-	UINT m_keyRecordCancel;
-
-	UINT m_keyRecordStartCtrl;
-	UINT m_keyRecordEndCtrl;
-	UINT m_keyRecordCancelCtrl;
-
-	UINT m_keyRecordStartAlt;
-	UINT m_keyRecordEndAlt;
-	UINT m_keyRecordCancelAlt;
-
-	UINT m_keyRecordStartShift;
-	UINT m_keyRecordEndShift;
-	UINT m_keyRecordCancelShift;
-
-	int m_iNumKeys;
-	int m_iNumSpecial;
-	int m_iKey[6];
-	int m_iKeySpecial[6][3];
-	CString keyName[6];
 	CButton m_ctrlButtonRecordCTRL;
 	CButton m_ctrlButtonRecordALT;
 	CButton m_ctrlButtonRecordSHFT;

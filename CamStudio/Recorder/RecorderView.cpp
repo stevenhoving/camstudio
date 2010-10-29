@@ -331,67 +331,18 @@ namespace {	// annonymous
 //ver 1.8
 int SetAdjustHotKeys()
 {
-	int succ[6];
-	int ret = SetHotKeys(succ);
+	// FIXME: move it somewhere
+	HotKeyMap& hkm = getHotKeyMap();
+	hkm.clear();
+	hkm[HotKey(cHotKeyOpts.m_RecordStart.m_vKey, cHotKeyOpts.m_RecordStart.m_fsMod)] = HOTKEY_RECORD_START_OR_PAUSE;
+	hkm[HotKey(cHotKeyOpts.m_RecordEnd.m_vKey, cHotKeyOpts.m_RecordEnd.m_fsMod)] = HOTKEY_RECORD_STOP;
+	hkm[HotKey(cHotKeyOpts.m_RecordCancel.m_vKey, cHotKeyOpts.m_RecordCancel.m_fsMod)] = HOTKEY_RECORD_CANCELSTOP;
+	hkm[HotKey(cHotKeyOpts.m_Next.m_vKey, cHotKeyOpts.m_Next.m_fsMod)] = HOTKEY_LAYOUT_KEY_NEXT;
+	hkm[HotKey(cHotKeyOpts.m_Prev.m_vKey, cHotKeyOpts.m_Prev.m_fsMod)] = HOTKEY_LAYOUT_KEY_PREVIOUS;
+	hkm[HotKey(cHotKeyOpts.m_ShowLayout.m_vKey, cHotKeyOpts.m_ShowLayout.m_fsMod)] = HOTKEY_LAYOUT_SHOW_HIDE_KEY;
+	hkm[HotKey(cHotKeyOpts.m_Zoom.m_vKey, cHotKeyOpts.m_Zoom.m_fsMod)] = HOTKEY_ZOOM;
 
-	CString keystr;
-	CString msgstr;
-	CString outstr;
-	if (succ[0]) {
-		cHotKeyOpts.m_RecordStart = sHotKeyDef(VK_UNDEFINED);
-		keystr.LoadString(IDS_STRINGSPRKEY);
-		msgstr.LoadString(IDS_STRING_UNSSC);
-		outstr.Format(msgstr,keystr);
-		//keystr = "Unable to set shortcuts for %d" + keystr;
-		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
-	}
-
-	if (succ[1]) {
-		cHotKeyOpts.m_RecordEnd = sHotKeyDef(VK_UNDEFINED);
-		keystr.LoadString(IDS_STRINGSRKEY);
-		msgstr.LoadString(IDS_STRING_UNSSC);
-		outstr.Format(msgstr,keystr);
-		//keystr = "Unable to set shortcuts for %d" + keystr;
-		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
-	}
-
-	if (succ[2]) {
-		cHotKeyOpts.m_RecordCancel = sHotKeyDef(VK_UNDEFINED);
-		keystr.LoadString(IDS_STRINGCRKEY);
-		msgstr.LoadString(IDS_STRING_UNSSC);
-		outstr.Format(msgstr,keystr);
-		//keystr = "Unable to set shortcuts for %d" + keystr;
-		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
-	}
-
-	if (succ[3]) {
-		cHotKeyOpts.m_Next = sHotKeyDef(VK_UNDEFINED);
-		keystr.LoadString(IDS_STRINGNLKEY);
-		msgstr.LoadString(IDS_STRING_UNSSC);
-		outstr.Format(msgstr,keystr);
-		//keystr = "Unable to set shortcuts for %d" + keystr;
-		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
-	}
-
-	if (succ[4]) {
-		cHotKeyOpts.m_Prev = sHotKeyDef(VK_UNDEFINED);
-		keystr.LoadString(IDS_STRINGPLKEY);
-		msgstr.LoadString(IDS_STRING_UNSSC);
-		outstr.Format(msgstr,keystr);
-		//keystr = "Unable to set shortcuts for %d" + keystr;
-		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
-	}
-
-	if (succ[5]) {
-		cHotKeyOpts.m_ShowLayout = sHotKeyDef(VK_UNDEFINED);
-		keystr.LoadString(IDS_STRINGSHLKEY);
-		msgstr.LoadString(IDS_STRING_UNSSC);
-		outstr.Format(msgstr,keystr);
-		//keystr = "Unable to set shortcuts for %d" + keystr;
-		MessageBox(NULL, outstr, "Note", MB_OK | MB_ICONEXCLAMATION);
-	}
-
-	return ret;
+	return 6; // ???
 }
 
 void SetVideoCompressState (HIC hic, DWORD fccHandler)
@@ -562,6 +513,10 @@ CRecorderView::CRecorderView()
 {
 	// TODO: add construction code here
 	m_basicMsg = NULL;
+	_zoom = 1;
+	_zoomDirection = -1; // zoomed out
+	_zoomWhen = 0; // FIXME: I hope it is unlikely zoom start at 47 day boundary ever happen by accident
+	_zoomedAt = CPoint(10,10);
 }
 
 CRecorderView::~CRecorderView()
@@ -682,6 +637,8 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	hWndGlobal = m_hWnd;
+	setHotKeyWindow(m_hWnd);
+
 //#pragma message("CRecorderView::LoadSettings skipped")
 	LoadSettings();
 	VERIFY(0 < SetAdjustHotKeys());
@@ -728,7 +685,8 @@ void CRecorderView::OnDestroy()
 {
 	DecideSaveSettings();
 
-	UnSetHotKeys(hWndGlobal);
+//	UnSetHotKeys(hWndGlobal);
+	getHotKeyMap().clear(); // who actually cares?
 
 	DestroyShiftWindow();
 
@@ -796,10 +754,18 @@ LRESULT CRecorderView::OnRecordStart(UINT /*wParam*/, LONG /*lParam*/)
 	//Check validity of rc and fix it
 	FixRectSizePos(&rc, maxxScreen, maxyScreen, minxScreen, minyScreen);
 
+	// TODO: mouse events handler should be installed only if we are interested in highlighting
+	// Shall we empty the click queue? if we stop & start again we have a chance to see previous stuff
+	// may be no relevant since will likely expire in normal circumstances.
+	// Though if we dump events in file, it is better to clean up
+	// FIXME: second parameter is never used
+	// We shall wrap all that stuff in class so it is created in constructor and guaranteed to be destroed in destructor
 	InstallMyHook(hWndGlobal,WM_USER_SAVECURSOR);
 
 	bRecordState = true;
 	interruptkey = 0;
+	
+	strCodec = GetCodecDescription(cVideoOpts.m_dwCompfccHandler);
 
 	CWinThread * pThread = AfxBeginThread(RecordThread, this);
 
@@ -955,6 +921,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	AfxGetMainWnd()->ShowWindow(SW_RESTORE);
 
 	//ver 1.2
+	// FIXME: this is not quite right. Shall be bCancelled or something
 	if (interruptkey == cHotKeyOpts.m_RecordCancel.m_vKey) {
 		//if (interruptkey==VK_ESCAPE) {
 		//Perform processing for cancel operation
@@ -1314,7 +1281,10 @@ void CRecorderView::OnRecord()
 		}
 		m_basicMsg->ShowWindow(SW_SHOW);
 		//m_basicMsg.DoModal();
-		SetCapture();
+		SetCapture(); // what is this for?
+		//TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
+		//TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
+
 		//TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
 		//TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
 
@@ -1342,7 +1312,7 @@ void CRecorderView::OnStop()
 	// Reset Xnote Stopwatch params to defaults. Required if recording is terminated in Camstudio instead of Xnote.
 	XNoteActionStopwatchResetParams();
 
-	// Broadcast.
+	// Broadcast. // mlt_msk: WTF? it is not a broadcasting
 	OnRecordInterrupted (0, 0);
 
 }
@@ -2495,8 +2465,9 @@ void CRecorderView::LoadSettings()
 #else
 	AttemptRecordingFormat();
 	//set default audio recording format and compress format
-	SuggestRecordingFormat();
-	SuggestCompressFormat();
+	// This prevents reading profile settings
+	//SuggestRecordingFormat();
+	//SuggestCompressFormat();
 	onLoadSettings(cAudioFormat.m_iRecordAudio);
 
 	CString fileName("");
@@ -2916,6 +2887,7 @@ void CRecorderView::OnSetFocus(CWnd* pOldWnd)
 // HOTKEY_LAYOUT_KEY_NEXT			3
 // HOTKEY_LAYOUT_KEY_PREVIOUS		4
 // HOTKEY_LAYOUT_SHOW_HIDE_KEY		5
+// HOTKEY_ZOOM 6
 //
 /////////////////////////////////////////////////////////////////////////////
 LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
@@ -2943,7 +2915,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 		if (bRecordState) {
 			if (cHotKeyOpts.m_RecordEnd.m_vKey != cHotKeyOpts.m_RecordCancel.m_vKey) {
 				OnRecordInterrupted(cHotKeyOpts.m_RecordEnd.m_vKey, 0);
-			} else {
+			} else { // FIXME: something is not quite right here
 				OnRecordInterrupted(cHotKeyOpts.m_RecordCancel.m_vKey + 1, 0);
 			}
 		}
@@ -3019,6 +2991,16 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 
 			sadlg.InstantiateLayout(iCurrentLayout,1);
 		}
+		break;
+	case HOTKEY_ZOOM: // FIXME: make yet another constant
+		if (_zoomWhen == 0)
+		{
+			if (_zoom <= 1.) // noone needs zoom < 1?? safe for float comparison though
+				VERIFY(::GetCursorPos(&_zoomedAt));
+			_zoomWhen = ::GetTickCount();
+		}
+		_zoomDirection *= -1;
+		break;
 	}
 
 	return 1;
@@ -3526,7 +3508,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC & srcDC)
 	srcDC.TextOut(xoffset, yoffset, csMsg);
 
 	// Line : Codex
-	csMsg.Format("Codec : %s",  LPCTSTR(strCodec));
+	csMsg.Format("Codec : %s", LPCTSTR(strCodec));
 	sizeExtent = srcDC.GetTextExtent(csMsg);
 	yoffset += sizeExtent.cy + iLineSpacing;
 	rectText.top = yoffset - 2;
@@ -3663,18 +3645,57 @@ bool CRecorderView::captureScreenFrame(const CRect& rectView, bool bDisableRect)
 	//TRACE("CRecorderView::captureScreenFrame\n");
 	//CRect rectView(left, top, left + width, top + height);
 
+	int width = (int)rectView.Width()/_zoom; // width of being captured screen stuff
+	int height = (int)rectView.Height()/_zoom; // width of being captured screen stuff
+	CRect zr = _zoom==1. ? rectView : CRect(CPoint(
+		min(max(rectView.left, _zoomedAt.x - width/2), rectView.right - width),
+		min(max(rectView.top, _zoomedAt.y - height/2), rectView.bottom - height)),
+		CSize(width, height));
+
+	// FIXME: can be move into UpdateZoom() function
+	if (_zoomWhen) // should zoom in/out
+	{
+		DWORD threshold = 1000; // 1 sec
+		DWORD now = ::GetTickCount();
+		DWORD ago = now - _zoomWhen;
+		if (ago>threshold)
+		{
+			_zoomWhen = 0;
+		} else
+		{	// FIXME: change zoom from current state in case use changed mind zooming
+			_zoom = 1.5 - cos(ago*3.141592/threshold)/1.9*_zoomDirection;
+			if (_zoom>2.) _zoom = 2.;
+			if (_zoom<1.) _zoom = 1.;
+		}
+	}
+
+	CPoint pt;
+	VERIFY(::GetCursorPos(&pt));
+	double dist = sqrt((double)(pt.x-_zoomedAt.x)*(pt.x-_zoomedAt.x) + (pt.y-_zoomedAt.y)*(pt.y-_zoomedAt.y));
+
+	if (cProgramOpts.m_bAutoPan)
+	{	// always cursor centered
+		VERIFY(::GetCursorPos(&_zoomedAt));
+	} else {
+		if (abs(pt.x-_zoomedAt.x) > .4*width)
+			_zoomedAt.x += (pt.x - _zoomedAt.x)*cProgramOpts.m_iMaxPan/width;
+		if (abs(pt.y-_zoomedAt.y) > .4*height)
+			_zoomedAt.y += (pt.y - _zoomedAt.y)*cProgramOpts.m_iMaxPan/height;
+	}
+
 	// if flashing rect
 	if (!bDisableRect && (cProgramOpts.m_bFlashingRect)) {
 		//if (cProgramOpts.m_bAutoPan) {
 		//	m_FlashingWnd.SetUpRegion(rectView, 1);
 		//}
-		m_FlashingWnd.SetUpRegion(rectView, cProgramOpts.m_bAutoPan);
+		m_FlashingWnd.SetUpRegion(zr, cProgramOpts.m_bAutoPan);
 		m_FlashingWnd.DrawFlashingRect(cProgramOpts.m_bAutoPan);
 		//m_FlashingWnd.PostMessage(CFlashingWnd::WM_FLASH_WINDOW, cProgramOpts.m_bAutoPan, 1L);
 	}
 
-	m_cCamera.SetView(rectView);
-	bool bResult = m_cCamera.CaptureFrame(rectView);
+	m_cCamera.SetView(rectView); // this set m_rectView & m_rectFrame
+	// severe changes where made to CaptureFrame
+	bool bResult = m_cCamera.CaptureFrame(zr);
 
 	// if flashing rect
 	if (!bDisableRect && (cProgramOpts.m_bFlashingRect)) {
@@ -4133,6 +4154,8 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 			//moving region
 
 			if (m_FlashingWnd.NewRegionUsed()) {
+				// Happens when flashing region was moved
+				// it seems unlikely will be called when setting new region explicitly in the code. good for zoom!
 				//TRACE(_T("rectFrame != newRect %s\n"), (rectFrame != newRect) ? _T("TRUE") : _T("FALSE"));
 				//TRACE(_T("rectFrame.Width: %d\nNewRect.Width: %d\n"), rectFrame.Width(), newRect.Width());
 				TRACE(_T("rectFrame != newRect %s\n"), (rectFrame != m_FlashingWnd.Rect()) ? _T("TRUE") : _T("FALSE"));
@@ -4964,141 +4987,6 @@ int InitDrawShiftWindow()
 	return 0;
 }
 
-
-//===============================================
-// HOTKEYS CODE
-//===============================================
-
-bool UnSetHotKeys(HWND hWnd)
-{
-	bool bResult = false;
-	for (int iID = 0; iID < 6; ++iID) {
-		if (iID == 1)
-			continue;
-		bResult = (TRUE == ::UnregisterHotKey(hWnd, iID));
-		if (!bResult) {
-			//::OnError(_T("UnSetHotKeys"));
-			//std::string strMsg("UnSetHotKeys ");
-			::OnError(std::string("UnSetHotKeys").c_str());
-		}
-	}
-	return bResult;
-}
-
-int SetHotKeys(int succ[])
-{
-//#pragma message("Disable SetHotKeys")
-//	return 0;
-
-	UnSetHotKeys(hWndGlobal);
-
-	for (int i = 0; i < 6; i++)
-		succ[i] = 0;
-
-	int nid = 0;
-	UINT modf = 0;
-	if (cHotKeyOpts.m_RecordStart.m_bCtrl)
-		modf |= MOD_CONTROL;
-
-	if (cHotKeyOpts.m_RecordStart.m_bShift)
-		modf |= MOD_SHIFT;
-
-	if (cHotKeyOpts.m_RecordStart.m_bAlt)
-		modf |= MOD_ALT;
-
-	if (cHotKeyOpts.m_RecordStart.m_vKey != VK_UNDEFINED) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_RecordStart.m_vKey);
-		if (!ret)
-			succ[0] = 1;
-	}
-
-	nid++;
-	modf = 0;
-	if (cHotKeyOpts.m_RecordEnd.m_bCtrl)
-		modf |= MOD_CONTROL;
-
-	if (cHotKeyOpts.m_RecordEnd.m_bShift)
-		modf |= MOD_SHIFT;
-
-	if (cHotKeyOpts.m_RecordEnd.m_bAlt)
-		modf |= MOD_ALT;
-
-	if (cHotKeyOpts.m_RecordEnd.m_vKey != VK_UNDEFINED) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_RecordEnd.m_vKey);
-		if (!ret)
-			succ[1] = 1;
-	}
-
-	nid++;
-	modf = 0;
-	if (cHotKeyOpts.m_RecordCancel.m_bCtrl)
-		modf |= MOD_CONTROL;
-
-	if (cHotKeyOpts.m_RecordCancel.m_bShift)
-		modf |= MOD_SHIFT;
-
-	if (cHotKeyOpts.m_RecordCancel.m_bAlt)
-		modf |= MOD_ALT;
-
-	if (cHotKeyOpts.m_RecordCancel.m_vKey != VK_UNDEFINED) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_RecordCancel.m_vKey);
-		if (!ret)
-			succ[2] = 1;
-	}
-
-	nid++;
-	modf = 0;
-	if (cHotKeyOpts.m_Next.m_bCtrl)
-		modf |= MOD_CONTROL;
-
-	if (cHotKeyOpts.m_Next.m_bShift)
-		modf |= MOD_SHIFT;
-
-	if (cHotKeyOpts.m_Next.m_bAlt)
-		modf |= MOD_ALT;
-
-	if (cHotKeyOpts.m_Next.m_vKey != VK_UNDEFINED) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_Next.m_vKey);
-		if (!ret)
-			succ[3] = 1;
-	}
-
-	nid++;
-	modf = 0;
-	if (cHotKeyOpts.m_Prev.m_bCtrl)
-		modf |= MOD_CONTROL;
-
-	if (cHotKeyOpts.m_Prev.m_bShift)
-		modf |= MOD_SHIFT;
-
-	if (cHotKeyOpts.m_Prev.m_bAlt)
-		modf |= MOD_ALT;
-
-	if (cHotKeyOpts.m_Prev.m_vKey != VK_UNDEFINED) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_Prev.m_vKey);
-		if (!ret)
-			succ[4] = 1;
-	}
-
-	nid++;
-	modf = 0;
-	if (cHotKeyOpts.m_ShowLayout.m_bCtrl)
-		modf |= MOD_CONTROL;
-
-	if (cHotKeyOpts.m_ShowLayout.m_bShift)
-		modf |= MOD_SHIFT;
-
-	if (cHotKeyOpts.m_ShowLayout.m_bAlt)
-		modf |= MOD_ALT;
-
-	if (cHotKeyOpts.m_ShowLayout.m_vKey != VK_UNDEFINED) {
-		BOOL ret = RegisterHotKey(hWndGlobal, nid, modf, cHotKeyOpts.m_ShowLayout.m_vKey);
-		if (!ret)
-			succ[5] = 1;
-	}
-
-	return nid;
-}
 
 
 //===============================================
