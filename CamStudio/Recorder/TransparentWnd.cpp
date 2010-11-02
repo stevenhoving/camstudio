@@ -31,6 +31,23 @@
 #include "CStudioLib.h"
 
 #include <windowsx.h>
+#include <Gdiplus.h>
+using namespace Gdiplus;
+
+// WTF???! Can this life be easier?
+// works both ways
+// TODO: move it somewhere
+__inline __declspec(naked) DWORD COLORREFtoARGB(COLORREF, BYTE)
+{
+	__asm
+	{
+		mov eax, DWORD PTR 4[esp]
+		bswap eax
+		mov al, BYTE PTR 8[esp]
+		rcr eax, 8
+		ret
+	}
+}
 
 extern CScreenAnnotationsDlg sadlg;
 
@@ -408,7 +425,8 @@ void CTransparentWnd::OnPaint()
 		pDC->FillSolidRect(0,0,rect.Width(),rect.Height(),m_backgroundColor);
 	}
 
-	if ((m_factor == 1) || m_bTrackingOn) {
+	//if ((m_factor == 1) || m_bTrackingOn) {
+	if (true) {
 		CFont dxfont;
 		dxfont.CreateFontIndirect(&m_textfont);
 		CFont* oldfont = (CFont *) pDC->SelectObject(&dxfont);
@@ -418,7 +436,36 @@ void CTransparentWnd::OnPaint()
 		//Draw Text
 		pDC->SetBkMode(TRANSPARENT);
 		pDC->SetTextColor(m_rgb);
-		pDC->DrawText((char *)LPCTSTR(m_textstring), textlength, &m_tracker.m_rect, m_horzalign | DT_VCENTER | DT_WORDBREAK );
+		//pDC->DrawText((char *)LPCTSTR(m_textstring), textlength, &m_tracker.m_rect, m_horzalign | DT_VCENTER | DT_WORDBREAK );
+
+		// TODO: this is just a dirty fix to use GDI+
+		HDC hdc = pDC->GetSafeHdc();
+		Graphics g(hdc);
+		switch(m_factor) {
+			case 1:
+				g.SetTextRenderingHint(TextRenderingHintSystemDefault);
+				break;
+			case 2:
+				g.SetTextRenderingHint(TextRenderingHintAntiAlias);
+				break;
+			case 3:
+				g.SetTextRenderingHint(TextRenderingHintClearTypeGridFit);
+				break;
+		}
+		Font f(hdc);
+		StringFormat sf;
+		sf.SetAlignment((Gdiplus::StringAlignment)m_horzalign); // happen to coincide with left, center, right
+		sf.SetLineAlignment(StringAlignmentCenter); // for DT_VCENTER
+		size_t size = 0;
+		wchar_t wstr[1024];
+		mbstowcs_s(&size,wstr,1023,m_textstring,_TRUNCATE);
+		size_t wlen = wcsnlen_s(wstr,1023);
+		RectF r(m_tracker.m_rect.left,m_tracker.m_rect.top,m_tracker.m_rect.Width(),m_tracker.m_rect.Height());
+		Color c((ARGB)COLORREFtoARGB(pDC->GetTextColor(),255));
+		SolidBrush b(c);
+		g.DrawString(wstr, wlen, &f, r, &sf, &b);
+		// end of GDI+ fix
+
 		//DrawTextW(pDC->m_hDC, (unsigned short *)LPCTSTR(m_textstring), textlength, &m_tracker.m_rect, m_horzalign | DT_VCENTER | DT_WORDBREAK );
 
 		//if (oldfont)
