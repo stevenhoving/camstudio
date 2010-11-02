@@ -173,7 +173,7 @@ bool CCamera::AddClicks(CDC* pDC)
 	Pen penLeft(c, m_cCursor.m_fRingWidth);
 	c.SetValue(m_cCursor.ClickRightColor());
 	Pen penRight(c, m_cCursor.m_fRingWidth);
-	Pen penMiddle(m_cCursor.m_clrClickMiddle, m_cCursor.m_fRingWidth); // TODO: Create an option for me
+	Pen penMiddle(m_cCursor.m_clrClickMiddle, m_cCursor.m_fRingWidth);
 
 	DWORD now = GetTickCount();
 	DWORD threshold = m_cCursor.m_iRingThreshold;
