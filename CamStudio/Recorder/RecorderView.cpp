@@ -1048,6 +1048,12 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		}
 
 		int result = -1;
+
+		// do we ever want to merge AV?
+		bool wantMerge = true;
+		cfg->lookupValue("Program.MergeAV", wantMerge);
+		if (wantMerge) {
+
 		//Mergefile video with audio
 		//if (iRecordAudio==2) {
 		//if ((iRecordAudio==2) || (bUseMCI)) {
@@ -1056,6 +1062,8 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 			result = MergeVideoAudio(strTempVideoAviFilePath, strTempAudioWavFilePath, strTargetVideoFile, FALSE, cAudioFormat);
 		} else if (cAudioFormat.isInput(MICROPHONE)) {
 			result = MergeVideoAudio(strTempVideoAviFilePath, strTempAudioWavFilePath, strTargetVideoFile, cAudioFormat.m_bCompression, cAudioFormat);
+		}
+
 		}
 
 		//Check Results : Attempt Recovery on error
