@@ -1,114 +1,35 @@
-========================================================================
-       MICROSOFT FOUNDATION CLASS LIBRARY : vscap
-========================================================================
+                H O W   T O   B U I L D   C A M S T U D I O
 
-AppWizard has created this vscap application for you.  This application
-not only demonstrates the basics of using the Microsoft Foundation classes
-but is also a starting point for writing your application.
+To build CamStudio you'll need few 3rd party projects, namely libconfig and CxImage
 
-This file contains a summary of what you will find in each of the files that
-make up your vscap application.
+Grab libconfig from http://www.hyperrealm.com/libconfig/
+and CxImage from http://www.xdp.it/cximage.htm
 
-Recorder.h
-    This is the main header file for the application.  It includes other
-    project specific headers (including Resource.h) and declares the
-    CRecorderApp application class.
+Unpack both such that each reside in its own folder inside of camstudio main folder
 
-vscap.cpp
-    This is the main application source file that contains the application
-    class CRecorderApp.
+CamStudio-T-CamLib
+          +-CxImage-T-CxImage
+          |         +-demo
+          |         +-demo2
+          |         +-doc
+          |         +-jasper
+          |         L-...
+          +-Debug
+          +-GlobalResources
+          +-hook
+          +-hookkey
+          +-libconfig-T-debian
+          |           +-doc
+          |           +-examples
+          |           L-lib
+          +-Player
+          +-PlayerPlus
+          +-Producer
+          +-Recorder
+          L-Release
 
-vscap.rc
-    This is a listing of all of the Microsoft Windows resources that the
-    program uses.  It includes the icons, bitmaps, and cursors that are stored
-    in the RES subdirectory.  This file can be directly edited in Microsoft
-	Developer Studio.
 
-res\vscap.ico
-    This is an icon file, which is used as the application's icon.  This
-    icon is included by the main resource file vscap.rc.
-
-res\vscap.rc2
-    This file contains resources that are not edited by Microsoft
-	Developer Studio.  You should place all resources not
-	editable by the resource editor in this file.
-
-vscap.clw
-    This file contains information used by ClassWizard to edit existing
-    classes or add new classes.  ClassWizard also uses this file to store
-    information needed to create and edit message maps and dialog data
-    maps and to create prototype member functions.
-
-/////////////////////////////////////////////////////////////////////////////
-
-For the main frame window:
-
-MainFrm.h, MainFrm.cpp
-    These files contain the frame class CMainFrame, which is derived from
-    CFrameWnd and controls all SDI frame features.
-
-res\Toolbar.bmp
-    This bitmap file is used to create tiled images for the toolbar.
-    The initial toolbar and status bar are constructed in the
-    CMainFrame class.  Edit this toolbar bitmap along with the
-    array in MainFrm.cpp to add more toolbar buttons.
-
-/////////////////////////////////////////////////////////////////////////////
-
-AppWizard creates one document type and one view:
-
-RecorderDoc.h, vscapDoc.cpp - the document
-    These files contain your CRecorderDoc class.  Edit these files to
-    add your special document data and to implement file saving and loading
-    (via CRecorderDoc::Serialize).
-
-RecorderView.h, vscapView.cpp - the view of the document
-    These files contain your CRecorderView class.
-    CRecorderView objects are used to view CRecorderDoc objects.
-
-/////////////////////////////////////////////////////////////////////////////
-Other standard files:
-
-StdAfx.h, StdAfx.cpp
-    These files are used to build a precompiled header (PCH) file
-    named vscap.pch and a precompiled types file named StdAfx.obj.
-
-Resource.h
-    This is the standard header file, which defines new resource IDs.
-    Microsoft Developer Studio reads and updates this file.
-
-/////////////////////////////////////////////////////////////////////////////
-Other notes:
-
-AppWizard uses "TODO:" to indicate parts of the source code you
-should add to or customize.
-
-If your application uses MFC in a shared DLL, and your application is
-in a language other than the operating system's current language, you
-will need to copy the corresponding localized resources MFC40XXX.DLL
-from the Microsoft Visual C++ CD-ROM onto the system or system32 directory,
-and rename it to be MFCLOC.DLL.  ("XXX" stands for the language abbreviation.
-For example, MFC40DEU.DLL contains resources translated to German.)  If you
-don't do this, some of the UI elements of your application will remain in the
-language of the operating system.
-
-/////////////////////////////////////////////////////////////////////////////
-10/8/08
-Project build
-o	Renamed vscap project to "Recorder" and changed output file.
-o	Renamed play projects
-o	Include files should not contain a path. The project settings manage this;
-	(see project settings "Additional include directories".) There should not be
-	conflicts between "StdAfx.h" headers due to the standard search for include
-	files. Cross project includes imply a project and include dependency. An
-	advantage of this is the ability to freely move/rename project folders.
-o	change codec project debug output to debug folder; writing to the Windows
-	system32 folder is prohibited; developers make local change.
-o	fix cstudiolib release build precompiled header usage.
-
-Code changes:
-o	removed unused hookkey header and message handler.
-o	removed unused global transparent window variable "CTransparentWnd* transWnd"
-o	moved general functions MessageOutXXX functions to WinApp; changed declarations
-	to common overload name.
-o	added/repair resource symbols and strings for CamStudio movie menu item (jard_y_dooku)
+For each 3rd party project:
+1. Open solution
+2. Using Configuration Manager change configuration to Release
+3. Press F7 and wait
