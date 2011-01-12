@@ -2,6 +2,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "StdAfx.h"
 #include "CamFile.h"
+#include "shlobj.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // GetTempPath
@@ -12,32 +13,6 @@
 /////////////////////////////////////////////////////////////////////////////
 CString GetTempFolder(int iAccess, const CString strFolder)
 {
-	if (iAccess == USE_WINDOWS_TEMP_DIR) {
-		TCHAR dirx[_MAX_PATH];
-		::GetWindowsDirectory(dirx, _MAX_PATH);
-		CString tempdir;
-		tempdir.Format(_T("%s\\temp"), dirx);
-
-		// Verify the chosen temp path is valid
-
-		WIN32_FIND_DATA wfd;
-		::ZeroMemory(&wfd, sizeof (wfd));
-		HANDLE hdir = ::FindFirstFile(LPCTSTR(tempdir), &wfd);
-		if (!hdir) {
-			return GetProgPath();
-		}
-		::FindClose(hdir);
-
-		// If valid directory, return Windows\temp as temp directory
-		if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-			return tempdir;
-		}
-
-		//else return program path as temp directory
-		//iAccess = USE_INSTALLED_DIR;	// TODO: nonsense; iAccess is NOT an output
-		return GetProgPath();
-	}
-	
 	if (iAccess == USE_USER_SPECIFIED_DIR) {
 		CString tempdir = strFolder;
 
@@ -54,14 +29,43 @@ CString GetTempFolder(int iAccess, const CString strFolder)
 		if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 			return tempdir;
 		}
+   }
 
-		//set temp path to installed directory
-		//iAccess = USE_INSTALLED_DIR;	// TODO: nonsense; iAccess is NOT an output
+   char tempPath[_MAX_PATH+1] = { '\0' };
+   if (GetTempPath(_MAX_PATH, tempPath))
+      {
+	   CString tempdir;
+      tempdir = tempPath;
+      if (0 < tempdir.ReverseFind('\\'))
+	      tempdir = tempdir.Left(tempdir.ReverseFind('\\'));
+      return tempdir;
+      }
+
+   //This code looks for an old style temp directory. NOT standard windows.
+	TCHAR dirx[_MAX_PATH];
+	::GetWindowsDirectory(dirx, _MAX_PATH);
+	CString tempdir;
+	tempdir.Format(_T("%s\\temp"), dirx);
+
+	// Verify the chosen temp path is valid
+
+	WIN32_FIND_DATA wfd;
+	::ZeroMemory(&wfd, sizeof (wfd));
+	HANDLE hdir = ::FindFirstFile(LPCTSTR(tempdir), &wfd);
+	if (!hdir) {
 		return GetProgPath();
 	}
+	::FindClose(hdir);
 
-	// default returns program folder
+	// If valid directory, return Windows\temp as temp directory
+	if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+		return tempdir;
+	}
+
+	//else return program path as temp directory
+	//iAccess = USE_INSTALLED_DIR;	// TODO: nonsense; iAccess is NOT an output
 	return GetProgPath();
+	
 }
 
 CString GetProgPath()
@@ -75,6 +79,53 @@ CString GetProgPath()
 	}
 	return path;
 }
+
+#ifndef CSIDL_MYVIDEO
+#define CSIDL_MYVIDEO                   0x000e        // "My Videos" folder
+#endif
+
+CString GetMyVideoPath()
+{
+   //Get the user's video path
+   int folder = CSIDL_MYVIDEO;
+
+   char szPath[MAX_PATH+100]; szPath[0]=0;
+	CString path = szPath;
+
+   if (SUCCEEDED(SHGetFolderPath(NULL, folder, 0, 0, szPath)))
+      {
+      path = szPath;
+      }
+   else if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, 0, 0, szPath)))
+      {
+      path = szPath;
+      }
+	return path;
+}
+
+CString GetAppDataPath()
+   {
+   int folder = CSIDL_APPDATA;
+
+   char szPath[MAX_PATH+100]; szPath[0]=0;
+	CString path = szPath;
+
+   if (SUCCEEDED(SHGetFolderPath(NULL, folder, 0, 0, szPath)))
+      {
+      path = szPath;
+      }
+   else if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, 0, 0, szPath)))
+      {
+      path = szPath;
+      }
+	return path;
+   }
+
+bool DoesFileExist(const CString& name)
+   {
+   return (GetFileAttributes(name.GetString()) == 0xffffffff) ? false : true;
+   }
+
 
 CString FindExtension(const CString& name)
 {

@@ -183,12 +183,14 @@ bool CCamera::AddClicks(CDC* pDC)
 	ClickQueue& cc = ClickQueue::getInstance();
 	cc.Lock(); // different thread of the same process puts events in queue
 	ClickQueue::QueueType& queue = cc.getQueue();
+
 	ClickQueue::Iterator iter, iter2; // iter2 is used to clean up "down" events when "up" happend
 	int maxsize = m_cCursor.m_iRingSize;
 	// Remove expired events
 	iter=queue.begin();
 	while ((iter != queue.end()) && ((now - iter->time) > threshold)) // how to deal with integer overflow?
 		++iter;
+   //_ASSERTE(_CrtCheckMemory());
 	if (iter != queue.begin()) // TODO: good place to dump events to log file before discarding them
 		queue.erase(queue.begin(), iter);
 
@@ -315,7 +317,8 @@ void CCamera::InsertText(CDC* pDC, const CRect& rectBase, TextAttributes& rTextA
 		nMaxLength = strlen(cText);
 		UINT n = 0, m = 0;
 		for ( n=0, m=0 ; n < nMaxLength ; n++, m++ ) {
-			if  ( cText[n] == '\n' ) {
+         wchar_t cTextn = cText.GetString()[n];
+			if  ( cTextn == '\n' ) {
 				nNrOfLine++;
 				nBlockLength = max(nBlockLength, m);
 				m = 0;

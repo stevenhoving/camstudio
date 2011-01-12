@@ -26,6 +26,7 @@
 #include <sstream>
 #include <vector>
 #include <afxtempl.h>
+#include "shlobj.h"
 
 #include "./swfsource/FButton.h"
 #include "./swfsource/FBase.h"
@@ -2984,6 +2985,24 @@ CString GetProgPath()
 	path=path.Left(path.ReverseFind('\\'));
 	return path;
 }
+
+CString GetAppDataPath()
+   {
+   int folder = CSIDL_APPDATA;
+
+   char szPath[MAX_PATH+100]; szPath[0]=0;
+	CString path = szPath;
+
+   if (SUCCEEDED(SHGetFolderPath(NULL, folder, 0, 0, szPath)))
+      {
+      path = szPath;
+      }
+   else if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, 0, 0, szPath)))
+      {
+      path = szPath;
+      }
+	return path;
+   }
 
 CString GetTempPath()
 {
@@ -6522,17 +6541,115 @@ int ProcessSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitm
 	else
 	{
 		//Intermediate Frame
+      //----------
+		//for (int y=0;y<BITMAP_Y;y++)
+		//{
+		//	for (int x=0;x<BITMAP_X;x++)
+		//	{
+		//		if (IsDifferent(alpbi,BITMAP_X,BITMAP_Y,  x,y, format))
+		//		{
+		//			//MsgC(" ID");
+		//			AddExpandBlock(BITMAP_X,BITMAP_Y,x,y, format);
+		//		}
+		//	}
+		//}
+      //The code here is an alternative to the above loop, it does exactly the same thing
+      //except combines the loop and IsDifferent code more efficiently. Faster.
+      //We take any logic we can from inside the loop and move it outside. Also use memcmp
+      //to quickly check if it is worth scanning through an entire row.
+      //if (false)
+      {
+	   unsigned long widthBytes = 0;
+      unsigned long pixbytes = 0;
+	   if (format==4)
+         {
+		   pixbytes = 2;
+		   widthBytes = (BITMAP_X*16+31)/32 * 4;
+	      }
+	   else if (format==5)
+	      {
+		   pixbytes = 4;
+		   widthBytes = (BITMAP_X*32+31)/32 * 4;
+	      }
+	   else
+         {
+         //NEED TO FIX OR ASSERT HERE!
+         }
+
+	   LPBYTE bitsFrame = (LPBYTE) alpbi + // pointer to data
+		   alpbi->biSize +
+		   alpbi->biClrUsed * sizeof(RGBQUAD);
+
+	   LPBYTE bitsKey = (LPBYTE) currentKey_lpbi + // pointer to data
+		   currentKey_lpbi->biSize +
+		   currentKey_lpbi->biClrUsed * sizeof(RGBQUAD);
+
+      unsigned long nBytesRow = BITMAP_X * pixbytes;
+
+      unsigned long accessy = 0;
 		for (int y=0;y<BITMAP_Y;y++)
-		{
-			for (int x=0;x<BITMAP_X;x++)
-			{
-				if (IsDifferent(alpbi,BITMAP_X,BITMAP_Y,  x,y, format))
-				{
-					//MsgC(" ID");
-					AddExpandBlock(BITMAP_X,BITMAP_Y,x,y, format);
-				}
-			}
-		}
+		   {
+         unsigned long access = accessy;
+
+         //See if we can compare the entire row in one go:
+         bool checkPixels = true;
+         LPBYTE t1 = bitsFrame+access;
+         LPBYTE t2 = bitsKey+access;
+         if (memcmp(t1, t2, nBytesRow)==0)
+            {
+            //The entire row of pixels is the same
+            checkPixels = false;
+            }
+
+         if (checkPixels)
+            {
+		      for (int x=0;x<BITMAP_X;x++)
+		   	   {
+	            int diff = FALSE;
+
+	            if (format==4)
+   	            {
+                  LPBYTE t = bitsFrame+access;
+		            int val1 = *t++;
+		            int val2 = *t;
+
+                  t = bitsKey+access;
+		            int valKey1 = *t++;
+		            int valKey2 = *t;
+
+		            if ((val1-valKey1) || (val2-valKey2))
+			            diff = TRUE;
+   	            }
+	            else if (format==5)
+	               {
+                  LPBYTE t = bitsFrame+access;
+		            int Blue = *t++;
+		            int Green = *t++;
+		            int Red = *t++;
+		            int Alpha = *t++;
+
+                  t = bitsKey+access;
+		            int BlueKey = *t++;
+		            int GreenKey = *t++;
+		            int RedKey = *t++;
+		            int AlphaKey = *t++;
+
+		            if ((Blue-BlueKey) || (Green-GreenKey) || (Red-RedKey) || (Alpha-AlphaKey))
+			            diff = TRUE;
+
+	               }
+               if (diff)
+                  {
+					   AddExpandBlock(BITMAP_X,BITMAP_Y,x,y, format);
+                  }
+         	   access += pixbytes;
+               }
+            }
+         accessy += widthBytes;
+         }
+      //----------
+      }
+
 		ret = FRAME_INTERMEDIATE;
 
 		if (useHalfKey)
@@ -6623,7 +6740,7 @@ int ProcessSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitm
 
 int IsDifferent(LPBITMAPINFOHEADER alpbi, int BITMAP_X,int BITMAP_Y, int x, int y, int format)
 {
-	int widthBytes, pixbytes;
+	unsigned long widthBytes, pixbytes;
 	if (format==4)
 	{
 		pixbytes = 2;
@@ -6638,7 +6755,7 @@ int IsDifferent(LPBITMAPINFOHEADER alpbi, int BITMAP_X,int BITMAP_Y, int x, int 
 	else
 		return FALSE;
 
-	int access = y * widthBytes + x * pixbytes;
+	unsigned long access = y * widthBytes + x * pixbytes;
 
 	LPBYTE bitsFrame = (LPBYTE) alpbi + // pointer to data
 		alpbi->biSize +
@@ -7069,12 +7186,18 @@ void LoadSettings()
 	if (runmode == 0 || runmode == 1)
 		fileName="\\CamStudio.Producer.ini";
 
-	setDir=GetProgPath();
+	setDir=GetAppDataPath();
 	setPath=setDir+fileName;
 
 	sFile = fopen(LPCTSTR(setPath),"rt");
 	if (sFile == NULL) {
-		return;
+	   setDir=GetProgPath();
+	   setPath=setDir+fileName;
+
+	   sFile = fopen(LPCTSTR(setPath),"rt");
+	   if (sFile == NULL) {
+   		return;
+      }
 	}
 	// ****************************
 	// Read Variables
@@ -7181,7 +7304,7 @@ void LoadSettings()
 		fileName="\\CamStudio.Producer.Data.ini";
 	else
 		fileName="\\CamStudio.Producer.Data.command"; //command line mode
-	setDir=GetProgPath();
+	setDir=GetAppDataPath();
 	setPath=setDir+fileName;
 
 	tFile = fopen(LPCTSTR(setPath),"rb");
@@ -7234,7 +7357,7 @@ void SaveController()
 	CString fileName;
 
 	fileName="\\controller\\controller.ini";
-	setDir=GetProgPath();
+	setDir=GetAppDataPath();
 	setPath=setDir+fileName;
 
 	sFile = fopen(LPCTSTR(setPath),"wt");
@@ -7274,7 +7397,7 @@ void LoadController()
 	CString fileName;
 
 	fileName="\\controller\\controller.ini";
-	setDir=GetProgPath();
+	setDir=GetAppDataPath();
 	setPath=setDir+fileName;
 
 	sFile = fopen(LPCTSTR(setPath),"rt");
@@ -7319,7 +7442,7 @@ void SaveSettings()
 	//********************************************
 
 	fileName="\\CamStudio.Producer.ini";
-	setDir=GetProgPath();
+	setDir=GetAppDataPath();
 	setPath=setDir+fileName;
 
 	sFile = fopen(LPCTSTR(setPath),"wt");
@@ -7425,7 +7548,7 @@ void SaveSettings()
 	FILE * tFile;
 	fileName="\\CamStudio.Producer.Data.ini";
 
-	setDir=GetProgPath();
+	setDir=GetAppDataPath();
 	setPath=setDir+fileName;
 
 	tFile = fopen(LPCTSTR(setPath),"wb");
@@ -7548,11 +7671,16 @@ void AdjustOutName(CString avioutpath)
 void LoadCommand()
 {
 	CString fileName = "\\CamStudio.Producer.command";	//command line mode
-	CString setDir = GetProgPath();
+	CString setDir = GetAppDataPath();
 	CString setPath = setDir + fileName;
 	FILE * sFile = fopen(LPCTSTR(setPath), "rt");
 	if (sFile == NULL) {
-		return;
+      setDir = GetProgPath();
+   	setPath = setDir + fileName;
+	   sFile = fopen(LPCTSTR(setPath), "rt");
+   	if (sFile == NULL) {
+	   	return;
+   	}
 	}
 	// ****************************
 	// Read Variables
@@ -7562,12 +7690,34 @@ void LoadCommand()
 
 	//Debugging info
 	//The use of scanf("%.2f") instead of scanf("%f") results in hard-to-detect bugs
-	fscanf(sFile,"[ CamStudio Flash Producer Commands ver%f ] \n\n",&ver);
-	fscanf(sFile,"launchPropPrompt=%d \n",&launchPropPrompt);
-	fscanf(sFile,"launchHTMLPlayer=%d \n",&launchHTMLPlayer);
-	fscanf(sFile,"deleteAVIAfterUse=%d \n",&deleteAVIAfterUse);
-
+   //This is iffy and fails on some OSs. THe profile API is used to write stuff out, it should also
+   //be used to read it back.
+	//fscanf(sFile,"[CamStudio Flash Producer Commands ver%f]",&ver);
+	//fscanf(sFile,"LaunchPropPrompt=%d",&launchPropPrompt);
+	//fscanf(sFile,"LaunchHTMLPlayer=%d",&launchHTMLPlayer);
+	//fscanf(sFile,"DeleteAVIAfterUse=%d",&deleteAVIAfterUse);
 	fclose(sFile);
+
+ 	CString strSection = _T("CamStudio Flash Producer Commands");
+   const int retStringSize = 300;
+   _TCHAR retString[retStringSize]; retString[0] = 0;
+	CString strValue;
+
+	CString strKey = _T("LaunchPropPrompt");
+   ::GetPrivateProfileString(strSection, strKey, 0, retString, retStringSize, setPath);
+   strValue = retString;
+	launchPropPrompt = _ttoi(strValue);
+
+	strKey = _T("LaunchHTMLPlayer");
+   ::GetPrivateProfileString(strSection, strKey, 0, retString, retStringSize, setPath);
+   strValue = retString;
+	launchHTMLPlayer = _ttoi(strValue);
+
+	strKey = _T("DeleteAVIAfterUse");
+   ::GetPrivateProfileString(strSection, strKey, 0, retString, retStringSize, setPath);
+   strValue = retString;
+	deleteAVIAfterUse = _ttoi(strValue);
+
 }
 
 LPBITMAPINFOHEADER LoadBitmapFile(CString bitmapFile)
