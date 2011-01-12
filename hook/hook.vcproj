@@ -145,7 +145,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_WINDOWS"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
 				RuntimeLibrary="0"
 				PrecompiledHeaderFile=".\Debug/hook.pch"
 				AssemblerListingLocation=".\Debug/"

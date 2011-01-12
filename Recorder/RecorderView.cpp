@@ -341,7 +341,6 @@ int SetAdjustHotKeys()
 	hkm[HotKey(cHotKeyOpts.m_Prev.m_vKey, cHotKeyOpts.m_Prev.m_fsMod)] = HOTKEY_LAYOUT_KEY_PREVIOUS;
 	hkm[HotKey(cHotKeyOpts.m_ShowLayout.m_vKey, cHotKeyOpts.m_ShowLayout.m_fsMod)] = HOTKEY_LAYOUT_SHOW_HIDE_KEY;
 	hkm[HotKey(cHotKeyOpts.m_Zoom.m_vKey, cHotKeyOpts.m_Zoom.m_fsMod)] = HOTKEY_ZOOM;
-
 	return 6; // ???
 }
 
@@ -668,7 +667,9 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CamCursor.Dir(windir);
 
 	//savedir default
-	savedir = GetProgPath();
+   //We by default save to to user's configured my videos directory.
+   //Using GetProgPath instead is not compatible with Vista/Win7 since we have no write permission.
+	savedir = GetMyVideoPath();
 	//TRACE("## CRecorderView::OnCreate: initialSaveMMMode Default savedir=GetProgPath()=[%s]!\n", savedir);
 
 	if (!initialSaveMMMode()) {
@@ -950,7 +951,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 
 	// Savedir is a global var and therefor mostly set before.
 	if (savedir == "") {
-		savedir = GetProgPath();
+		savedir = GetMyVideoPath();
 	}
 	fdlg.m_ofn.lpstrInitialDir = savedir;
 
@@ -1999,10 +2000,10 @@ void CRecorderView::SaveSettings()
 #endif	// LEGACY_PROFILE_DISABLE
 
 	//ver 1.8,
-	CString m_newfile = GetProgPath() + "\\CamShapes.ini";
+	CString m_newfile = GetAppDataPath() + "\\CamShapes.ini";
 	ListManager.SaveShapeArray(m_newfile);
 
-	m_newfile = GetProgPath() + "\\CamLayout.ini";
+	m_newfile = GetAppDataPath() + "\\CamLayout.ini";
 	ListManager.SaveLayout(m_newfile);
 
 	if (CamCursor.Select() == 2) {
@@ -2019,7 +2020,7 @@ void CRecorderView::SaveSettings()
 	//Creating Camdata.ini for storing binary data
 	//********************************************
 	fileName = "\\Camdata.ini";
-	setDir = GetProgPath();
+	setDir = GetAppDataPath();
 	setPath = setDir+fileName;
 
 	FILE * tFile = fopen((LPCTSTR)setPath, "wb");
@@ -2033,7 +2034,16 @@ void CRecorderView::SaveSettings()
 	// ****************************
 	//Saving Directories, put here
 	if (savedir.GetLength()>0)
-		fwrite((LPCTSTR)savedir, savedir.GetLength(), 1, tFile);
+      {
+      if (savedir == GetMyVideoPath())
+         {
+		   fwrite((LPCTSTR)"%CSIDL_MYVIDEO%", 15, 1, tFile);
+         }
+      else
+         {
+		   fwrite((LPCTSTR)savedir, savedir.GetLength(), 1, tFile);
+         }
+      }
 
 	if (!CamCursor.Dir().IsEmpty())
 		fwrite((LPCTSTR)(CamCursor.Dir()), CamCursor.Dir().GetLength(), 1, tFile);
@@ -2067,10 +2077,18 @@ void CRecorderView::LoadSettings()
 	{
 		//attempt to load the shapes and layouts ...never mind the version
 		CString m_newfile;
-		m_newfile = GetProgPath() + "\\CamShapes.ini";
+		m_newfile = GetAppDataPath() + "\\CamShapes.ini";
+      if (!DoesFileExist(m_newfile))
+         {
+   		m_newfile = GetProgPath() + "\\CamShapes.ini";
+         }
 		ListManager.LoadShapeArray(m_newfile);
 
-		m_newfile = GetProgPath() + "\\CamLayout.ini";
+		m_newfile = GetAppDataPath() + "\\CamLayout.ini";
+      if (!DoesFileExist(m_newfile))
+         {
+   		m_newfile = GetProgPath() + "\\CamLayout.ini";
+         }
 		ListManager.LoadLayout(m_newfile);
 	}
 
@@ -2493,10 +2511,17 @@ void CRecorderView::LoadSettings()
 	//Loading Camdata.ini binary data
 	//********************************************
 	fileName = "\\Camdata.ini";
-	setDir = GetProgPath();
+	setDir = GetAppDataPath();
 	setPath = setDir + fileName;
 	FILE * tFile = fopen(LPCTSTR(setPath),"rb");
-	if (tFile == NULL) {
+
+   if (tFile == NULL) {
+   	setDir = GetProgPath();
+	   setPath = setDir + fileName;
+	   tFile = fopen(LPCTSTR(setPath),"rb");
+	}
+   
+   if (tFile == NULL) {
 		//Error creating file
 		cAudioFormat.m_dwCbwFX = 0;
 		SuggestCompressFormat();
@@ -2591,7 +2616,7 @@ void CRecorderView::OnUpdateOptionsProgramoptionsSavesettingsonexit(CCmdUI* pCmd
 void CRecorderView::DecideSaveSettings()
 {
 	CString nosaveName("\\NoSave.ini");
-	CString nosaveDir = GetProgPath();
+	CString nosaveDir = GetAppDataPath();
 	CString nosavePath = nosaveDir + nosaveName;
 
 	if (cProgramOpts.m_bSaveSettings) {
@@ -2608,7 +2633,7 @@ void CRecorderView::DecideSaveSettings()
 		CString setDir;
 		CString setPath;
 		CString fileName("\\CamStudio.ini ");
-		setDir = GetProgPath();
+		setDir = GetAppDataPath();
 		setPath = setDir+fileName;
 
 		DeleteFile(setPath);
@@ -4451,19 +4476,20 @@ void CRecorderView::SaveProducerCommand()
 	//Saving CamStudio.Producer.command.ini for storing text data
 
 	CString strProfile;
-	strProfile.Format(_T("%s\\CamStudio.Producer.command"), GetProgPath());
-	CString strSection;
-	strSection.Format(_T("[ CamStudio Flash Producer Commands ver%.2f ]"), 1.0);
-	CString strKey = _T("bLaunchPropPrompt");
+	strProfile.Format(_T("%s\\CamStudio.Producer.command"), GetAppDataPath());
+
+	CString strSection = _T("CamStudio Flash Producer Commands");
 	CString strValue;
+
+   CString strKey = _T("LaunchPropPrompt");
 	strValue.Format(_T("%d"), cProducerOpts.m_bLaunchPropPrompt);
 	::WritePrivateProfileString(strSection, strKey, strValue, strProfile);
 
-	strKey = _T("bLaunchHTMLPlayer");
+	strKey = _T("LaunchHTMLPlayer");
 	strValue.Format(_T("%d"), cProducerOpts.m_bLaunchHTMLPlayer);
 	::WritePrivateProfileString(strSection, strKey, strValue, strProfile);
 
-	strKey = _T("bDeleteAVIAfterUse");
+	strKey = _T("DeleteAVIAfterUse");
 	strValue.Format(_T("%d"), cProducerOpts.m_bDeleteAVIAfterUse);
 	::WritePrivateProfileString(strSection, strKey, strValue, strProfile);
 
@@ -4531,9 +4557,11 @@ bool CRecorderView::RunProducer(const CString& strNewFile)
 	//Sleep(2000);
 
 	CString AppDir = GetProgPath();
-	CString exefileName("\\producer.exe -x ");
+	CString exefileName("\\producer.exe\" -x ");
 	//CString exefileName("\\producer.exe -b ");
-	CString launchPath = AppDir + exefileName + strNewFile;
+   CString quote = "\"";
+	//CString launchPath = AppDir + exefileName + strNewFile;
+	CString launchPath = quote + AppDir + exefileName + quote + strNewFile + quote;
 
 	TRACE("CRecorderView::OnUserGeneric: %s\n", (LPCTSTR)launchPath);
 

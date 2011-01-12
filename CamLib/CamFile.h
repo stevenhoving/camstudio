@@ -13,5 +13,8 @@ const int USE_USER_SPECIFIED_DIR	= 2;
 CString GetTempFolder(int iAccess, const CString strFolder = _T(""));
 CString GetProgPath();
 CString FindExtension(const CString& name);
+CString GetMyVideoPath();
+CString GetAppDataPath();
+bool    DoesFileExist(const CString& name);
 
 #endif	// CAMFILE_H

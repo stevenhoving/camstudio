@@ -1320,7 +1320,7 @@ void CScreenAnnotationsDlg::OnEditlayoutLibraryCloselibrary()
 	{
 		m_newfile = fdlg.GetPathName();
 
-		CString compareStr = GetProgPath() + "\\CamLayout.ini";
+		CString compareStr = GetAppDataPath() + "\\CamLayout.ini";
 		CString teststr = m_newfile;
 		compareStr.MakeLower();
 		teststr.MakeLower();
