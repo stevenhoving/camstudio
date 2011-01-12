@@ -143,7 +143,15 @@ BOOL CPlayplusApp::InitInstance()
 			}
 
 			if (lenx > 4) {
+            //Name may be quoted if, it contains spaces, so:
+            if (m_lpCmdLine[i]=='\"') i++;
 				strcpy(playfiledir, &m_lpCmdLine[i]);
+            //Name may also end in a quote:
+            int len = strlen(playfiledir);
+            if (len && playfiledir[len-1]=='\"')
+               {
+               playfiledir[len-1] = 0;
+               }
 				//::MessageBox(NULL,playfiledir,"Note",MB_OK);
 			}
 
