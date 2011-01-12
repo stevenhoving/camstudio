@@ -52,7 +52,7 @@ It seems that fbase.h (rev 249) was based on FBase.h  (Rev. 177 instead of Rev. 
 class FlashImporter;
 
 typedef unsigned char UBYTE;
-typedef char SBYTE;
+typedef signed char SBYTE;
 
 typedef unsigned short UWORD;
 typedef short SWORD;

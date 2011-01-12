@@ -32,7 +32,7 @@ extern void AdjustShapeName(CString& shapeName);
 
 CNewShapeDlg::CNewShapeDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CNewShapeDlg::IDD, pParent)
-, m_imageDir(GetProgPath())
+, m_imageDir(GetMyVideoPath())
 , m_uImageWidth(iNewShapeWidth)
 , m_uImageHeight(iNewShapeHeight)
 {

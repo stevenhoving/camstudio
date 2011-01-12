@@ -382,7 +382,7 @@ BOOL configWaveOutManual()
 		//}
 
 		CString testfile("");
-		testfile.Format("%s\testrec%d.wav", GetProgPath(), dwi);
+		testfile.Format("%s\testrec%d.wav", GetMyVideoPath(), dwi);
 		sndPlaySound(testfile, SND_SYNC);
 
 		//anstr.Format("Testing line %d of %d. Did you hear a tone?",dwi+1,dwMultipleItems);
@@ -403,7 +403,7 @@ BOOL configWaveOutManual()
 	//Clean up
 	for (DWORD dwi = 0; dwi < dwMultipleItems; ++dwi) {
 		CString testfile("");
-		testfile.Format("%s\testrec%d.wav", GetProgPath(), dwi);
+		testfile.Format("%s\testrec%d.wav", GetMyVideoPath(), dwi);
 
 		DeleteFile(testfile);
 	}
@@ -654,13 +654,13 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToS
 				CString fnum;
 				fnum.Format("%d",dwi);
 				CString testfile;
-				testfile=GetProgPath()+"\\testrec" + fnum + ".wav";
+				testfile=GetMyVideoPath()+"\\testrec" + fnum + ".wav";
 
 				mciRecordOpen(hWndGlobal);
 				mciSetWaveFormat();
 				mciRecordStart();
 
-				CString soundpath=GetProgPath()+"\\testsnd.wav";
+				CString soundpath=GetMyVideoPath()+"\\testsnd.wav";
 				sndPlaySound(soundpath, SND_SYNC);
 
 				mciRecordStop(hWndGlobal, testfile);
@@ -786,7 +786,7 @@ BOOL ManualSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToSear
 				//fnum.Format("%d", dwi);
 				CString testfile;
 				//testfile = GetProgPath() + "\\testrec" + fnum + ".wav";
-				testfile.Format("%s\\testrec%d.wav", GetProgPath(), dwi);
+				testfile.Format("%s\\testrec%d.wav", GetMyVideoPath(), dwi);
 
 				// TODO: How is testfile used here?
 				mciRecordOpen(hWndGlobal);
@@ -794,7 +794,7 @@ BOOL ManualSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText,DWORD lineToSear
 				mciRecordStart();
 
 				// TODO: Isn't testfile the file we want to play?
-				CString soundpath = GetProgPath() + "\\testsnd.wav";
+				CString soundpath = GetMyVideoPath() + "\\testsnd.wav";
 				sndPlaySound(soundpath, SND_SYNC);
 
 				mciRecordStop(hWndGlobal, testfile);

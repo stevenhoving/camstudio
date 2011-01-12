@@ -153,7 +153,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)$(ProjectName)\fister&quot;;&quot;$(SolutionDir)CxImage\CxImage&quot;;&quot;$(SolutionDir)CamLib&quot;;&quot;$(SolutionDir)hook&quot;;&quot;$(SolutionDir)hookkey&quot;;&quot;$(SolutionDir)libconfig/lib&quot;"
-				PreprocessorDefinitions="WIN32;_WINDOWS"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
 				MinimalRebuild="true"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -181,11 +181,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib vfw32.lib msacm32.lib libconfig++.lib"
+				AdditionalDependencies="winmm.lib vfw32.lib msacm32.lib libconfig++_d.lib shfolder.lib"
 				OutputFile="..\$(ConfigurationName)\$(ProjectName).exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(SolutionDir)libconfig/Release"
+				AdditionalLibraryDirectories="$(SolutionDir)libconfig/Debug"
 				ManifestFile="$(SolutionDir)$(ConfigurationName)\$(TargetFileName).intermediate.manifest"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"

@@ -186,7 +186,12 @@ BOOL CRecorderApp::InitInstance()
 	// Change the name of the .INI file.
 	// The CWinApp destructor will free the memory.
 	CString strProfile;
-	strProfile.Format("%s\\CamStudio.cfg", (LPCSTR)(GetProgPath()));
+	strProfile.Format("%s\\CamStudio.cfg", (LPCSTR)(GetAppDataPath()));
+   if (!DoesFileExist(strProfile))
+      {
+      //Only reading, if the user has no file yet, see if a starter file was provided:
+	   strProfile.Format("%s\\CamStudio.cfg", (LPCSTR)(GetProgPath()));
+      }
 	m_pszProfileName = _tcsdup(strProfile);
 
 	// TODO: re-enable when class complete
@@ -198,7 +203,7 @@ BOOL CRecorderApp::InitInstance()
 	}
 	catch(const FileIOException)
 	{// TODO: move me to resource
-		MessageBox(NULL, "Config file was not found. I'm going to use defaults.", "Error", MB_OK);
+		MessageBox(NULL, "CamStudio.cfg Config file was not found. Using defaults.", "Error", MB_OK);
 //		return(EXIT_FAILURE);
 	}
 	catch(const ParseException &pex)
@@ -295,6 +300,12 @@ BOOL CRecorderApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 
+	if (cProgramOpts.m_iViewType != VIEW_NORMAL)
+      {
+      CMainFrame* cwind = (CMainFrame*)AfxGetMainWnd();
+      cwind->UpdateViewtype();
+      }
+
 	return TRUE;
 }
 
@@ -372,8 +383,9 @@ int CRecorderApp::ExitInstance()
 		MessageBox(NULL, e.getPath(), e.what(), MB_OK);
 	}
 
+   //Save the configuration file out to the user appdata directory.
 	CString strProfile;
-	strProfile.Format("%s\\CamStudio.cfg", (LPCSTR)(GetProgPath()));
+	strProfile.Format("%s\\CamStudio.cfg", (LPCSTR)(GetAppDataPath()));
 	cfg->writeFile(strProfile);
 	delete cfg;
 
