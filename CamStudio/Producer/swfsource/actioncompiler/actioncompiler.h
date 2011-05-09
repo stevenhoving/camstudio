@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdio.h>
+#include <Windows.h>
 
 #include "../fbase.h"
 #include "../faction.h"
@@ -53,8 +54,9 @@ public:
 		} else {
 			//throw Exception("Unsupported flash version");
 		}
-
-		char *logFile = ".\\asoutput.log";
+		char logFile[MAX_PATH];
+		strcpy(logFile,getenv("TEMP"));
+		strcat(logFile,".\\asoutput.log");
 		error_fp = fopen(logFile, "w");
 
 		CompiledActions actions(outputBuffer->buffer, bufferLength(outputBuffer));
