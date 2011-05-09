@@ -91,13 +91,13 @@ static UINT WM_USER_RECORDINTERRUPTED = ::RegisterWindowMessage(WM_USER_RECORDIN
 int bits = 24;
 
 //Video Options and Compressions
-//int timelapse=40;
-//int frames_per_second = 25;
-//int keyFramesEvery = 25;
+int timelapse=40;
+int frames_per_second = 25;
+int keyFramesEvery = 25;
 
-int timelapse=5;
-int frames_per_second = 200;
-int keyFramesEvery = 200;
+//int timelapse=5;
+//int frames_per_second = 200;
+//int keyFramesEvery = 200;
 
 int compquality = 7000;
 //int compquality = 10000;
@@ -546,10 +546,14 @@ int RecordVideo(int top,int left,int width,int height,int fps,
   long divx, oldsec;
   divx=0;
   oldsec=0;
+  
+  // Time when the next frame will be taken
+  DWORD nextFrameAt = timeGetTime();
+  DWORD frameNumber = 0, nextFrameNumber = 0;
 
   while (gRecordState) {  //repeatedly loop
-    // TODO(dimator): Enable this via a command line argument:
-    //PrintRecordInformation();
+	// TODO(dimator): Enable this via a command line argument:
+	//PrintRecordInformation();
 
     if (initcapture==0) {
       timeexpended = timeGetTime() - initialtime;
@@ -559,6 +563,25 @@ int RecordVideo(int top,int left,int width,int height,int fps,
       timeexpended = 0;
     }
 
+	// Wait for next frame
+	int toNextFrame = nextFrameAt - timeGetTime();
+	printf("nextFrameAt: %d, timeGetTime: %d, toNextFrame: %d\n", nextFrameAt, timeGetTime(), toNextFrame);
+	if(toNextFrame > 0) {
+		printf("Sleeping for %d msec (%d - ", toNextFrame, timeGetTime());
+		Sleep(toNextFrame);
+		printf("%d)\n", timeGetTime());
+	}
+	// todo add dropped frame handling
+	
+	DWORD now = timeGetTime();
+	// nextFrameAt will be incremented at least once to account for
+	// sleep inaccuracy.
+	do {
+		nextFrameAt += timelapse;
+		nextFrameNumber++;
+	} while((int)nextFrameAt - (int)now < 0);
+
+	// Record frame
     //Autopan
     if ((autopan) && (width < maxxScreen) && (height < maxyScreen)) {
           POINT xPoint;
@@ -693,10 +716,11 @@ int RecordVideo(int top,int left,int width,int height,int fps,
         //or should we post messages
     //}
 
-    if ((frametime==0) || (frametime>oldframetime)) {
+    //if ((frametime==0) || (frametime>oldframetime)) {
       //if frametime repeats (frametime == oldframetime) ...the avistreamwrite will cause an error
+
       hr = AVIStreamWrite(psCompressed, // stream pointer
-        frametime,        // time of this frame
+        frameNumber,        // time of this frame
         1,        // number to write
         (LPBYTE) alpbi +    // pointer to data
           alpbi->biSize +
@@ -711,7 +735,7 @@ int RecordVideo(int top,int left,int width,int height,int fps,
         break;
 
       nActualFrame ++ ;
-      nCurrFrame = frametime;
+      nCurrFrame = frameNumber;
       fRate = ((float) nCurrFrame)/fTimeLength;
       fActualRate = ((float) nActualFrame)/fTimeLength;
 
@@ -729,7 +753,9 @@ int RecordVideo(int top,int left,int width,int height,int fps,
       FreeFrame(alpbi);
       alpbi=NULL;
       oldframetime = frametime;
-    } // if frametime is different
+    //} // if frametime is different
+
+	frameNumber = nextFrameNumber;
   } //for loop
 
 error:
@@ -858,8 +884,8 @@ LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height)
       if (iconinfo.hbmColor)
         DeleteObject(iconinfo.hbmColor);
     }
-
-    ::DrawIcon( hMemDC,  xPoint.x,  xPoint.y, hcur);
+	
+	::DrawIconEx( hMemDC, xPoint.x, xPoint.y, hcur, 0, 0, 0, NULL, DI_NORMAL);
   }
 
   SelectObject(hMemDC,oldbm);
@@ -1107,7 +1133,22 @@ int ParseOptions(int argc, char *argv[]){
         cout << "Expected valid number of seconds to record: " << *it << endl;
         return 0;
       }
-    } else if(!OptionNameEqual("help", *it)){
+    } else if(!OptionNameEqual("fps", *it)){
+	  if(++it == args.end()){
+        cout << "Expected framerate" << endl;
+        return 0;
+      }
+      frames_per_second = atoi((*it).c_str());
+	  // Set to one key frame per second
+	  keyFramesEvery = frames_per_second;
+	  timelapse = 1000 / frames_per_second;
+
+      // framerate should be positive
+	  if(frames_per_second <= 0){
+        cout << "Framerate should be positive: " << *it << endl;
+        return 0;
+      }
+	} else if(!OptionNameEqual("help", *it)){
       PrintUsage(TRUE);
       return 0;
     }
@@ -1122,6 +1163,7 @@ void PrintUsage(bool showCodecs = FALSE){
        << "-outfile: .avi file to write to" << endl
        << "-seconds: how many seconds to record for ('0' means to record until "
        << "a key is pressed)" << endl
+	   << "-fps: framerate to record with" << endl
        << "-help: this screen" << endl;
 
   if(!showCodecs)
