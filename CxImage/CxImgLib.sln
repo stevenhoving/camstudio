@@ -1,23 +1,23 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CxImage", "CxImage\cximage.vcproj", "{03179307-E3E6-40EE-815D-5B6B305DBD09}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cximage", "CxImage\cximage.vcxproj", "{03179307-E3E6-40EE-815D-5B6B305DBD09}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jasper", "jasper\jasper.vcproj", "{0535A451-CA13-4BCD-B974-7624CCDFA682}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jasper", "jasper\jasper.vcxproj", "{0535A451-CA13-4BCD-B974-7624CCDFA682}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jbig", "jbig\jbig.vcproj", "{6F31FBB5-3DD5-404F-B0F3-D080933EEA98}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jbig", "jbig\jbig.vcxproj", "{6F31FBB5-3DD5-404F-B0F3-D080933EEA98}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeg", "jpeg\Jpeg.vcproj", "{41891257-F1BE-4865-8A00-9EEC999769C7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Jpeg", "jpeg\Jpeg.vcxproj", "{41891257-F1BE-4865-8A00-9EEC999769C7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libdcr", "raw\libdcr.vcproj", "{EB5DAE08-55A0-413D-95C2-76AB86303B72}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libdcr", "raw\libdcr.vcxproj", "{EB5DAE08-55A0-413D-95C2-76AB86303B72}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mng", "mng\mng.vcproj", "{E60D7946-8A49-4B0C-BEC4-E95D8F390101}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mng", "mng\mng.vcxproj", "{E60D7946-8A49-4B0C-BEC4-E95D8F390101}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "png", "png\png.vcproj", "{A180DBB2-D4A2-474A-A162-7DF47BCF86D6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "png", "png\png.vcxproj", "{A180DBB2-D4A2-474A-A162-7DF47BCF86D6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tiff", "tiff\Tiff.vcproj", "{A3A78BD9-84A6-4015-937A-34435C310F2B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tiff", "tiff\Tiff.vcxproj", "{A3A78BD9-84A6-4015-937A-34435C310F2B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "zlib\zlib.vcproj", "{0A8C55AD-4341-42D9-89D1-9ADF33175FD1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "zlib\zlib.vcxproj", "{0A8C55AD-4341-42D9-89D1-9ADF33175FD1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
