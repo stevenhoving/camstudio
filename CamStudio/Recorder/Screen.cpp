@@ -157,7 +157,10 @@ bool CCamera::AddCursor(CDC* pDC)
 			::DeleteObject(iconinfo.hbmColor);
 		}
 	}
-
+	// TODO: Rewrite to handle better
+	// HDC hScreenDC = ::GetDC(NULL);
+	// HDC hMemDC = ::CreateCompatibleDC(hScreenDC);
+	// ::DrawIconEx( hMemDC, ptCursor.x, ptCursor.y, hcur, 0, 0, 0, NULL, DI_NORMAL);
 	pDC->DrawIcon(ptCursor.x, ptCursor.y, hcur);
 	return true;
 }
