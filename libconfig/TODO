@@ -1,0 +1,33 @@
+TO-DOs:
+
+These are features that have been requested, and have been considered,
+but are not yet implemented, because I'm undecided about how they
+should be implemented, and/or because they are difficult and/or time-consuming
+to implement.
+
+
+* Add an option for safe type conversions; that is, report an error
+  rather than silently truncating out-of-range values to 0 (namely int64 ->
+  int).
+
+
+* Add support for copying settings from one configuration to another. Need a
+  recursive function to copy a setting and call itself on all child settings.
+
+
+* Add a += operator, so that additional elements can be appended to a list or
+  array. The issue with this is defining a consistent syntax. For example:
+
+  x = ( 1, 2, 3 );
+  x += ( 4, 5 );
+
+  Should this result in ( 1, 2, 3, 4, 5 ), or ( 1, 2, 3, ( 4, 5 ))? I believe
+  it should be the latter. However, only the former makes sense for arrays.
+
+
+* Add limited support for preserving comments?
+
+
+* Add support for unicode strings? A bit problematic, since flex doesn't
+  support unicode input, AFAICT. But maybe supply convenience functions to
+  convert between parsed UTF-8 strings and std::wstring.
