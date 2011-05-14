@@ -1,0 +1,5 @@
+syntax: glob
+.vcxproj.user
+.suo
+.sdf
+ResolveAssemblyReference.cache
