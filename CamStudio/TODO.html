@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" dir="ltr">
+<head>
+    <title>CamStudio TODO List</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta name="copyright" content="Copyright &copy; 2009 CamStudio Group &amp; Contributors. All Rights Reserved." />
+    <meta name="creator" content="CamStudio Group, Tim McCarthy, Jake P." />
+    <meta name="description" content="This is the internal TODO list for the open source CamStudio project" />
+    <meta name="keywords" content="CamStudio TODO list" />
+    <meta name="language" content="en-us" />
+	<style type="text/css">
+	body
+	{
+		background-color: white;
+		color: black;
+		margin: 0;
+		padding: 2em;
+	}
+	
+	h1#title
+	{
+		text-align: center;
+	}
+	
+	h2
+	{
+		text-decoration: underline;
+	}
+	
+	samp, pre
+	{
+		color: inherit;
+		background-color: #DDDDDD;
+	}
+	
+	span.section-note
+	{
+		font-size: small;
+		font-style: italic;
+		position: relative;
+		top: -1.5em;
+	}
+	
+	.data-table
+	{
+		border: thin solid black;
+		border-collapse: collapse;
+	}
+	
+	.data-table td, .data-table th
+	{
+		border: thin solid black;
+		padding: 0.25em;
+	}
+	
+	.data-table th
+	{
+		color: inherit;
+		background-color: #DDDDDD;
+	}
+	
+	.note
+	{
+		border: thin solid red;
+		padding: 1em;
+		margin: 1em;
+	}
+	
+	#intro
+	{
+		text-align: center;
+	}
+	
+	#toc
+	{
+		border: thin solid black;
+		background-color: white;
+		color: inherit;
+		width: 25%;
+	}
+	
+	#w3c
+	{
+		margin-top: 2em;
+		text-align: center;
+	}
+	
+	#w3c img
+	{
+		border: 0;
+		width: 88px;
+		height: 31px
+	}
+	
+	#wrapper
+	{
+		border: thin dashed gray;
+		color: inherit;
+		background-color: #EEEEEE;
+		padding: 2em;
+	}
+	</style>
+</head>
+<body>
+	<div id="wrapper">
+		<h1 id="title">CamStudio TODO List</h1>
+			<p id="intro">There had to be one, right? <del>In no particular order:</del> Scratch that. Add to the top - the nail that sticks out gets the hammer. ;)</p>
+			
+		<h2>Table of Contents</h2>
+		<div id="toc">
+			<ol>
+				<li><a href="#sec1">Sub-projects</a></li>
+				<li><a href="#sec2">Coding Conventions</a>
+					<ol>
+						<li><a href="#sec2.1">Naming Conventions</a></li>
+						<li><a href="#sec2.2">Brace Layout du jour</a></li>
+					</ol>
+				</li>
+				<li><a href="#sec3">Projects &amp; Solutions</a></li>
+				<li><a href="#sec4">Notes</a></li>
+			</ol>
+		</div>
+
+		<h2 id="sec1">Sub-projects</h2>
+		<span class="section-note">Remember to look for TODOs to find what to do!</span>
+			<ul>
+				<li>Combine various option and settings into a single configure dialog.</li>
+				<li>Delete legacy profile section when fully converted.</li>
+				<li>CamStudio needs to use the OpenDML (AVI 2.0) extensions so files with size greater than 2 GB can be created.</li>
+				<li>Move global variables into classes (doc, mainframe and view) and use the profile class to read and set them through the App interface to the profile class.</li>
+				<li>Rename profile setting strings to remove programming artifacts. Color values are always single values (DWORD). Cursor folder and file name should be strings not integer lengths.</li>
+			</ul>
+			
+		<h2 id="sec2">Coding Conventions</h2>
+		<span class="section-note">Code layout needs to be standardized.</span>
+			<ul>
+				<li>No underscores</li>
+				<li>Use Camel casing, e.g. iTextAttribute, dwMyLongNumber</li>
+				<li>Generally tighten up the code</li>
+				<li>No more than one blank line in a row</li>
+				<li>White space around operators</li>
+				<li>Variable declarations at the closest scope to usage</li>
+				<li>Variable declarations and initialization on one line</li>
+				<li>Use the global scope operator</li>
+				<li>Reduce gratuitous code drift across the page</li>
+				<li>ASSERT only what should never be FALSE</li>
+				<li><strong>DO NOT</strong> ASSERT valid error states</li>
+				<li>Use Trace statements liberally</li>
+				<li>Debug new code and step through every line</li>
+				<li>Use unnamed parameter convention to prevent warnings when compiling verbosity 4</li>
+				<li>Initialize all variables</li>
+				<li><em>I'm sure there's more here...</em></li>
+			</ul>
+			
+			<h3 id="sec2.1">Naming Conventions</h3>
+			<span class="section-note">Use Hungarian notation for variable names, please!</span>
+				<table class="data-table">
+					<tr>
+						<th>Data type</th>
+						<th>Naming example</th>
+					</tr>
+					<tr>
+						<td>int</td>
+						<td>iValue</td>
+					</tr>
+					<tr>
+						<td>char</td>
+						<td>chChar</td>
+					</tr>
+					<tr>
+						<td>long</td>
+						<td>lValue</td>
+					</tr>
+					<tr>
+						<td>unsigned int</td>
+						<td>uValue</td>
+					</tr>
+					<tr>
+						<td>WORD</td>
+						<td>wValue</td>
+					</tr>
+					<tr>
+						<td>DWORD</td>
+						<td>dwValue</td>
+					</tr>
+					<tr>
+						<td>CString</td>
+						<td>strValue<br />csValue (if STL string)</td>
+					</tr>
+					<tr>
+						<td>struct X</td>
+						<td>sxValue</td>
+					</tr>
+					<tr>
+						<td>X *</td>
+						<td>pxValue</td>
+					</tr>
+				</table>
+			
+			<h3 id="sec2.2">Brace Layout du jour</h3>
+				<div id="braces">			
+<pre><samp>if (&lt;exp&gt;)
+{
+	&lt;stmt list&gt;
+}
+else
+{
+	&lt;stmt list&gt;
+}</samp></pre>
+
+Early exit in if statements is fine, but only if they have no "else"
+
+<pre><samp>if (&lt;exp&gt;)
+{
+	&lt;stmt list&gt;
+	return;
+}
+// there is no else here!</samp></pre>
+				</div>
+			
+		<h2 id="sec3">Projects &amp; Solutions</h2>
+			<ul>
+				<li>Error handling. Use OnError() [see RecorderApp.cpp] for Windows errors (the other functions are depreciated and will be removed). Create an overloaded OnError for class or library specific errors.</li>
+				<li>Look for header reduction. Class implementation files should have the class header immediately following the standard project headers:
+<pre><samp>#include "stdafx.h"
+#include "project.h"	// Recorder.h, Producer.h, etc.
+#include "class.h"
+#include "other.h"	// headers required ONLY by the class implementation
+</samp></pre>
+				
+				Prefer forward declarations in class headers to inclusion.
+				Angle brackets (i.e. <samp>#include &lt;header.h&gt;</samp>) for MS windows and MS library files.
+				All other use quoted names.</li>
+
+			<li>Warning level 4 ONLY!</li>
+			<li>Move global variables and functions into classes</li>
+			<li>Remove hard coded paths in include files, resources, etc. - use project settings instead</li>
+			<li>Prefer string format to piecewise construction, e.g.,
+<pre><samp>CString strFileName = "MyFile.txt";
+CString strProgPath = "\\Recorder\\";
+CString strFullName = ::GetProgPath() + strProgPath + strFileName;
+</samp></pre>
+
+			can be done as,
+
+<pre><samp>CString strFullName;
+strFullName.Format("%s\\Recorder\\MyFile.txt", ::GetProgPath());
+</samp></pre>
+
+			And if later we do folder APIs:
+
+<pre><samp>strFullName.Format("%s%s\\MyFile.txt", ::GetProgPath(), ::TargetFolder());
+</samp></pre>
+			</li>
+			<li>Fix unreachable code; don't just remove it - it probably needs to be refactored</li>
+			<li>Don't turn off warnings with #pragma without a comment why</li>
+			<li>Drop "TODO" comments freely in the code</li>
+			<li>Remove "TODO" comments from completed tasks or the superfluous "TODO: Add your code here."</li>
+		</ul>
+		
+		<h2 id="sec4">Notes</h2>
+		
+		<div class="note">
+			<span><samp>CEditTransparencyDlg and CTransparentWnd</samp></span>
+			
+			<p>The interaction between these 2 classes is artificially convoluted.</p>
+				
+			<p>In order allow the edit dialog to update the calling CTransparentWnd the dialog overloads <samp>PreModal()</samp> to pass pointers to the CTransparentWnd window and its members that control transparency. Then as the user edits the values the dialog calls CTransparentWnd::InvalidateTransparency to update the image. All this was done using pointers and casts. Ugh. The dialog class has been changed to force the caller to use the constructor to pass in references to the control values it uses and a pointer to itself. As before, the dialog will call CTransparentWnd::InvalidateTransparency when the values change.</p>
+
+			<p>What should be done is to pass the new values as arguments to CTransparentWnd::InvalidateTransparency(bool bEnable, int iLevel) and let it deal with its own internal state. The call to the edit dialog should simply pass in the current state values and copy the new state after the dialog completes. Note that the dialog still retains the old values and restores them on cancel.</p>
+		</div>
+		
+		<div class="note">
+			<span><samp>warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)</samp></span>
+			
+			<p>Here is the quick fix, but it doesn't really deal with the fact that the type of <samp>iTemp</samp> should be bool.</p>
+
+<pre><samp>int iTemp = 0;
+f(iTemp ? true : false);</samp></pre>
+		</div>
+	</div>
+	
+	<div id="w3c">
+		<a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml11-blue" alt="Valid XHTML 1.1" /></a>
+		<a href="http://jigsaw.w3.org/css-validator/check/referer"><img src="http://jigsaw.w3.org/css-validator/images/vcss-blue" alt="Valid CSS!" /></a>
+	</div>
+
+</body>
+</html>

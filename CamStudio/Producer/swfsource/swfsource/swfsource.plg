@@ -1,0 +1,242 @@
+--------------------Configuration: swfsource - Win32 Release--------------------
+Begining build with project "C:\vc\swfsource-0.9\swfsource\swfsource.dsp", at root.
+Active configuration is Win32 (x86) Static Library (based on Win32 (x86) Static Library)
+
+Project's tools are:
+			" (rc.exe)" with flags "/l 0x409 /d "NDEBUG" "
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /Fp"Release/swfsource.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c "
+			"Browser Database Maker" with flags "/nologo /o"Release/swfsource.bsc" "
+			"Library Manager" with flags "/nologo /out:"Release\swfsource.lib" "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\WINDOWS\TEMP\RSP121.TMP" with contents </nologo /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /Fp"Release/swfsource.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\vc\swfsource-0.9\actioncompiler\assembler.cpp"
+"C:\vc\swfsource-0.9\actioncompiler\common.cpp"
+"C:\vc\swfsource-0.9\actioncompiler\compile.cpp"
+"C:\vc\swfsource-0.9\actioncompiler\compileaction.cpp"
+"C:\vc\swfsource-0.9\compress.c"
+"C:\vc\swfsource-0.9\crc32.c"
+"C:\vc\swfsource-0.9\deflate.c"
+"C:\vc\swfsource-0.9\FAction.cpp"
+"C:\vc\swfsource-0.9\FBase.cpp"
+"C:\vc\swfsource-0.9\FBitmap.cpp"
+"C:\vc\swfsource-0.9\FButton.cpp"
+"C:\vc\swfsource-0.9\FControl.cpp"
+"C:\vc\swfsource-0.9\FDisplay.cpp"
+"C:\vc\swfsource-0.9\FFont.cpp"
+"C:\vc\swfsource-0.9\FImport.cpp"
+"C:\vc\swfsource-0.9\FlashMP3Encoder.cpp"
+"C:\vc\swfsource-0.9\FMorph.cpp"
+"C:\vc\swfsource-0.9\FShape.cpp"
+"C:\vc\swfsource-0.9\FSound.cpp"
+"C:\vc\swfsource-0.9\FSprite.cpp"
+"C:\vc\swfsource-0.9\FTarga.cpp"
+"C:\vc\swfsource-0.9\gzio.c"
+"C:\vc\swfsource-0.9\infblock.c"
+"C:\vc\swfsource-0.9\infcodes.c"
+"C:\vc\swfsource-0.9\inffast.c"
+"C:\vc\swfsource-0.9\inflate.c"
+"C:\vc\swfsource-0.9\inftrees.c"
+"C:\vc\swfsource-0.9\infutil.c"
+"C:\vc\swfsource-0.9\actioncompiler\lex.swf4.cpp"
+"C:\vc\swfsource-0.9\actioncompiler\lex.swf5.cpp"
+"C:\vc\swfsource-0.9\actioncompiler\listaction.cpp"
+"C:\vc\swfsource-0.9\actioncompiler\main.cpp"
+"C:\vc\swfsource-0.9\maketree.c"
+"C:\vc\swfsource-0.9\md5\md5.c"
+"C:\vc\swfsource-0.9\actioncompiler\swf4compiler.tab.cpp"
+"C:\vc\swfsource-0.9\actioncompiler\swf5compiler.tab.cpp"
+"C:\vc\swfsource-0.9\trees.c"
+"C:\vc\swfsource-0.9\uncompr.c"
+"C:\vc\swfsource-0.9\zutil.c"
+>
+Creating command line "cl.exe @C:\WINDOWS\TEMP\RSP121.TMP" 
+Creating temp file "C:\WINDOWS\TEMP\RSP122.TMP" with contents </nologo /out:"Release\swfsource.lib" 
+".\Release\assembler.obj"
+".\Release\common.obj"
+".\Release\compile.obj"
+".\Release\compileaction.obj"
+".\Release\compress.obj"
+".\Release\crc32.obj"
+".\Release\deflate.obj"
+".\Release\FAction.obj"
+".\Release\FBase.obj"
+".\Release\FBitmap.obj"
+".\Release\FButton.obj"
+".\Release\FControl.obj"
+".\Release\FDisplay.obj"
+".\Release\FFont.obj"
+".\Release\FImport.obj"
+".\Release\FlashMP3Encoder.obj"
+".\Release\FMorph.obj"
+".\Release\FShape.obj"
+".\Release\FSound.obj"
+".\Release\FSprite.obj"
+".\Release\FTarga.obj"
+".\Release\gzio.obj"
+".\Release\infblock.obj"
+".\Release\infcodes.obj"
+".\Release\inffast.obj"
+".\Release\inflate.obj"
+".\Release\inftrees.obj"
+".\Release\infutil.obj"
+".\Release\lex.swf4.obj"
+".\Release\lex.swf5.obj"
+".\Release\listaction.obj"
+".\Release\main.obj"
+".\Release\maketree.obj"
+".\Release\md5.obj"
+".\Release\swf4compiler.tab.obj"
+".\Release\swf5compiler.tab.obj"
+".\Release\trees.obj"
+".\Release\uncompr.obj"
+".\Release\zutil.obj">
+Creating command line "link.exe -lib @C:\WINDOWS\TEMP\RSP122.TMP" 
+Compiling...
+assembler.cpp
+common.cpp
+compile.cpp
+compileaction.cpp
+compress.c
+crc32.c
+deflate.c
+FAction.cpp
+FBase.cpp
+FBitmap.cpp
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\xutility(45) : error C2784: 'bool __cdecl std::operator <(const class std::basic_string<`template-parameter-1',`template-parameter-2',`template-parameter-3'> &,const template-parameter-1 *)' : could not deduce template argument for 'const class std::basic_string<`template-parameter-1',`template-parameter-2',`template-parameter-3'> &' from 'const class FlashRGB'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\xutility(45) : error C2784: 'bool __cdecl std::operator <(const template-parameter-1 *,const class std::basic_string<`template-parameter-1',`template-parameter-2',`template-parameter-3'> &)' : could not deduce template argument for 'const template-parameter-1 *' from 'const class FlashRGB'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\xutility(45) : error C2784: 'bool __cdecl std::operator <(const class std::basic_string<`template-parameter-1',`template-parameter-2',`template-parameter-3'> &,const class std::basic_string<`template-parameter-1',`template-parameter-2',`template-parameter-3'> &)' : could not deduce template argument for 'const class std::basic_string<`template-parameter-1',`template-parameter-2',`template-parameter-3'> &' from 'const class FlashRGB'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\xutility(45) : error C2784: 'bool __cdecl std::operator <(const class std::reverse_iterator<`template-parameter-1',`template-parameter-2',`template-parameter-3',`template-parameter-4',`template-parameter-5'> &,const class std::reverse_iterator<`template-parameter-1',`template-parameter-2',`template-parameter-3',`template-parameter-4',`template-parameter-5'> &)' : could not deduce template argument for 'const class std::reverse_iterator<`template-parameter-1',`template-parameter-2',`template-parameter-3',`template-parameter-4',`template-parameter-5'> &' from 'const class FlashRGB'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\xutility(45) : error C2784: 'bool __cdecl std::operator <(const struct std::pair<`template-parameter-1',`template-parameter-2'> &,const struct std::pair<`template-parameter-1',`template-parameter-2'> &)' : could not deduce template argument for 'const struct std::pair<`template-parameter-1',`template-parameter-2'> &' from 'const class FlashRGB'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\xutility(45) : error C2676: binary '<' : 'const class FlashRGB' does not define this operator or a conversion to a type acceptable to the predefined operator
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\xutility(47) : error C2784: 'bool __cdecl std::operator <(const class std::basic_string<`template-parameter-1',`template-parameter-2',`template-parameter-3'> &,const template-parameter-1 *)' : could not deduce template argument for 'const class std::basic_string<`template-parameter-1',`template-parameter-2',`template-parameter-3'> &' from 'const class FlashRGB'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\xutility(47) : error C2784: 'bool __cdecl std::operator <(const template-parameter-1 *,const class std::basic_string<`template-parameter-1',`template-parameter-2',`template-parameter-3'> &)' : could not deduce template argument for 'const template-parameter-1 *' from 'const class FlashRGB'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\xutility(47) : error C2784: 'bool __cdecl std::operator <(const class std::basic_string<`template-parameter-1',`template-parameter-2',`template-parameter-3'> &,const class std::basic_string<`template-parameter-1',`template-parameter-2',`template-parameter-3'> &)' : could not deduce template argument for 'const class std::basic_string<`template-parameter-1',`template-parameter-2',`template-parameter-3'> &' from 'const class FlashRGB'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\xutility(47) : error C2784: 'bool __cdecl std::operator <(const class std::reverse_iterator<`template-parameter-1',`template-parameter-2',`template-parameter-3',`template-parameter-4',`template-parameter-5'> &,const class std::reverse_iterator<`template-parameter-1',`template-parameter-2',`template-parameter-3',`template-parameter-4',`template-parameter-5'> &)' : could not deduce template argument for 'const class std::reverse_iterator<`template-parameter-1',`template-parameter-2',`template-parameter-3',`template-parameter-4',`template-parameter-5'> &' from 'const class FlashRGB'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\xutility(47) : error C2784: 'bool __cdecl std::operator <(const struct std::pair<`template-parameter-1',`template-parameter-2'> &,const struct std::pair<`template-parameter-1',`template-parameter-2'> &)' : could not deduce template argument for 'const struct std::pair<`template-parameter-1',`template-parameter-2'> &' from 'const class FlashRGB'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\xutility(47) : error C2676: binary '<' : 'const class FlashRGB' does not define this operator or a conversion to a type acceptable to the predefined operator
+FButton.cpp
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2512: 'FlashSoundEnvelope::FlashSoundEnvelope' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2512: 'FlashSoundEnvelope::FlashSoundEnvelope' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2512: 'FlashSoundEnvelope::FlashSoundEnvelope' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2512: 'FlashSoundEnvelope::FlashSoundEnvelope' : no appropriate default constructor available
+FControl.cpp
+FDisplay.cpp
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+FFont.cpp
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+C:\vc\swfsource-0.9\FFont.h(8) : fatal error C1083: Cannot open include file: 'hash_map': No such file or directory
+FImport.cpp
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2512: 'FlashSoundEnvelope::FlashSoundEnvelope' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2512: 'FlashSoundEnvelope::FlashSoundEnvelope' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2512: 'FlashSoundEnvelope::FlashSoundEnvelope' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2512: 'FlashSoundEnvelope::FlashSoundEnvelope' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2512: 'FlashMorphGradientRecord::FlashMorphGradientRecord' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2512: 'FlashMorphGradientRecord::FlashMorphGradientRecord' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2512: 'FlashMorphGradientRecord::FlashMorphGradientRecord' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2512: 'FlashMorphGradientRecord::FlashMorphGradientRecord' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2512: 'FlashMorphLineStyle::FlashMorphLineStyle' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2512: 'FlashMorphLineStyle::FlashMorphLineStyle' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2512: 'FlashMorphLineStyle::FlashMorphLineStyle' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2512: 'FlashMorphLineStyle::FlashMorphLineStyle' : no appropriate default constructor available
+FlashMP3Encoder.cpp
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2512: 'FlashSoundEnvelope::FlashSoundEnvelope' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2512: 'FlashSoundEnvelope::FlashSoundEnvelope' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2512: 'FlashSoundEnvelope::FlashSoundEnvelope' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2512: 'FlashSoundEnvelope::FlashSoundEnvelope' : no appropriate default constructor available
+FMorph.cpp
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2512: 'FlashMorphGradientRecord::FlashMorphGradientRecord' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2512: 'FlashMorphGradientRecord::FlashMorphGradientRecord' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2512: 'FlashMorphGradientRecord::FlashMorphGradientRecord' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2512: 'FlashMorphGradientRecord::FlashMorphGradientRecord' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2512: 'FlashMorphLineStyle::FlashMorphLineStyle' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2512: 'FlashMorphLineStyle::FlashMorphLineStyle' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2512: 'FlashMorphLineStyle::FlashMorphLineStyle' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2512: 'FlashMorphLineStyle::FlashMorphLineStyle' : no appropriate default constructor available
+FShape.cpp
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+FSound.cpp
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2512: 'FlashSoundEnvelope::FlashSoundEnvelope' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2512: 'FlashSoundEnvelope::FlashSoundEnvelope' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2512: 'FlashSoundEnvelope::FlashSoundEnvelope' : no appropriate default constructor available
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2512: 'FlashSoundEnvelope::FlashSoundEnvelope' : no appropriate default constructor available
+FSprite.cpp
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2248: 'FlashShapeRecordStraight::FlashShapeRecordStraight' : cannot access private member declared in class 'FlashShapeRecordStraight'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(36) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(103) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(143) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+c:\PROGRAM FILES\DEVSTUDIO\VC\INCLUDE\vector(146) : error C2248: 'FlashShapeRecordCurved::FlashShapeRecordCurved' : cannot access private member declared in class 'FlashShapeRecordCurved'
+FTarga.cpp
+gzio.c
+infblock.c
+infcodes.c
+inffast.c
+inflate.c
+inftrees.c
+infutil.c
+lex.swf4.cpp
+lex.swf5.cpp
+listaction.cpp
+main.cpp
+C:\vc\swfsource-0.9\actioncompiler\main.cpp(121) : warning C4508: 'main' : function should return a value; 'void' return type assumed
+maketree.c
+md5.c
+swf4compiler.tab.cpp
+swf5compiler.tab.cpp
+trees.c
+uncompr.c
+zutil.c
+Error executing cl.exe.
+
+
+
+swfsource.lib - 101 error(s), 1 warning(s)
