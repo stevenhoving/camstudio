@@ -1,0 +1,17 @@
+syntax: glob
+.vcxproj.user
+.suo
+.sdf
+ResolveAssemblyReference.cache
+CamStudio/CamStudio.sdf
+CamStudio/CamStudio.suo
+CamStudio/CxImage/CxImage/cximage.vcxproj.user
+CamStudio/CxImage/jasper/jasper.vcxproj.user
+CamStudio/CxImage/jbig/jbig.vcxproj.user
+CamStudio/CxImage/jpeg/Jpeg.vcxproj.user
+CamStudio/CxImage/libpsd/libpsd.vcxproj.user
+CamStudio/CxImage/mng/mng.vcxproj.user
+CamStudio/CxImage/raw/libdcr.vcxproj.user
+CamStudio/CxImage/png/png.vcxproj.user
+CamStudio/CxImage/tiff/Tiff.vcxproj.user
+CamStudio/CxImage/zlib/zlib.vcxproj.user
