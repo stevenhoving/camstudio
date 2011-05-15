@@ -1,0 +1,53 @@
+Bugs.txt
+=======================================
+	
+- Recorder:
+	4/26/2010
+	o	clean up files: remove extraneous whitespace
+	o	ScreenAnnotationDlg ctor now initializes cursor handles to null and loads them
+		in OnInitDialog.	
+	
+	2/20/09
+**	o	Recorder shortcuts completely block the keys from being heard by another application
+		This is a big problem since the default F7-F10 are extremely useful when debugging with
+		VS. Also, it doesn't let you save multiple shortcuts as NONE. Also the GUI for shortcuts
+		is pretty terrible, look at the shortcuts menu in VS for a better concept.
+	o	audio/video sync problems when recording long videos -- theories on how to fix this?
+	o	On some systems CamStudio doesn't correctly detect all installed codecs -- replicate?
+	
+	1/1/09
+**	o	Options-Record audio from speakers causes WaveoutgetSelectedContron (Vista) **
+	o	Under audio options dialog device names are truncated. (Vista)
+	
+	10/19/08
+	o	Video Options - Compressor: Codec 1.5 - Configure GZZP partially visible.
+	o	All settings not saved restored; Selected compressor reverts to MS Video 1
+		(or first compressor list item?)
+	o	Audio is choppy with no interleave on all compressors other than MCI.
+		-	Microsoft's MP3 codec
+		-	The latest LAME ACM 3.98
+		-	Microsoft's ADPCM codec
+		-	PCM (no compression)	
+	o	Keyboard shortcuts are saved but not restored.
+	o	Recorder didn't switch to German language when configured.
+	
+	10/25/08
+	o The CSyncDlg if causing a non-fatal exception during initalization in wincore. 
+	
+	
+- Installation:
+	1/20/09
+	o	The codec doesn't install properly during the studio installation. The user has to
+		manually install with right-click on the INF.
+		
+Resolved Issues:
+	o	(fixed 2/22/09 - Jason) Record window capture mode seems to be broken.
+	o	(fixed 2/20/09 - Jason) menu "Help" on second row.
+	o	(fixed 2/18/09 - Jason) From Windows Explorer:
+		Right Button + "Open With..." + select Player Classic or PlayerPlus will not
+		play video; must use the player File-Open.
+	o	(fixed ? - ?) the global ScreenAnnotationDlg (sad) ctor attempts to access the
+		instance handle from the AFX lib too early. The handle is now taken from
+		the system and then the varibles are reinitialized during the InitDialog
+		member function
+	o	(fixed ? - ?) Vista blocks install to "Program Files" and "system32" folders

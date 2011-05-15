@@ -1,0 +1,51 @@
+[OPTIONS]
+Binary TOC=Yes
+Compatibility=1.1 or later
+Compiled file=help.chm
+Default Window=CamStudio Help Window
+Default topic=index.html
+Display compile progress=Yes
+Enhanced decompilation=Yes
+Error log file=help.log
+Full-text search=Yes
+Language=0x409 English (United States)
+Title=CamStudio Help
+
+[WINDOWS]
+CamStudio Help Window="CamStudio Help",,,"index.html","index.html",,,,,0x22420,,0x207e,,0x1000000,,,,2,,0
+
+
+[FILES]
+contents.html
+index.html
+recorder\video_annotations.html
+recorder\audio_video_sync.html
+recorder\autopan.html
+recorder\getting_started.html
+recorder\keyboard_shortcuts.html
+recorder\producing_flash_files.html
+recorder\program_options.html
+recorder\recording_audio_microphone.html
+recorder\recording_audio_speakers.html
+recorder\screen_annotations.html
+recorder\setting_cursor_options.html
+recorder\setting_regions.html
+recorder\setting_video_options.html
+producer\operation_modes.html
+producer\further_editing.html
+producer\getting_started.html
+producer\limitations.html
+global\whats_new.html
+global\command_line_options.html
+global\credits.html
+global\donations.html
+global\index.html
+global\introduction.html
+global\links.html
+global\logo.html
+global\notes.html
+global\system_requirements.html
+global\video_basics.html
+
+[INFOTYPES]
+

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="2000"
+   height="700"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="Producer_logo.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.0"
+   inkscape:export-filename="C:\Documents and Settings\Owner\My Documents\Producer_logo.png"
+   inkscape:export-xdpi="11.25"
+   inkscape:export-ydpi="11.25">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient4187">
+      <stop
+         style="stop-color:#9999bb;stop-opacity:1;"
+         offset="0"
+         id="stop4189" />
+      <stop
+         style="stop-color:#9999bb;stop-opacity:0.60000002;"
+         offset="1"
+         id="stop4191" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4187"
+       id="linearGradient4205"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(100.00015,-602.36234)"
+       x1="-0.00014925003"
+       y1="917.36218"
+       x2="270.00015"
+       y2="917.36218" />
+    <filter
+       inkscape:collect="always"
+       id="filter4461">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="9.072"
+         id="feGaussianBlur4463" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.5"
+     inkscape:cx="978.62222"
+     inkscape:cy="415.1753"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer_text"
+     showgrid="false" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>CamStudio SWF Producer Logo</dc:title>
+        <dc:date>2008-10-13</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Jake P.</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>CamStudio Group</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:description>The logo for the CamStudio SWF Producer</dc:description>
+        <dc:language>en-GB</dc:language>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>CamStudio Group</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>CamStudio</rdf:li>
+            <rdf:li>SWF</rdf:li>
+            <rdf:li>Producer</rdf:li>
+            <rdf:li>Flash</rdf:li>
+            <rdf:li>logo</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer_icon"
+     inkscape:label="Icon">
+    <g
+       inkscape:groupmode="layer"
+       id="layer_border"
+       inkscape:label="Border">
+      <rect
+         id="background_blur"
+         width="270"
+         height="270"
+         x="100.00014"
+         y="180"
+         rx="0"
+         ry="0"
+         style="fill:#000000;fill-opacity:1;filter:url(#filter4461)" />
+      <rect
+         style="opacity:1;fill:url(#linearGradient4205);fill-opacity:1;stroke:#ffffff;stroke-width:8.06000042;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="border_and_background"
+         width="261.94031"
+         height="261.94031"
+         x="104.03"
+         y="184.02969" />
+    </g>
+    <g
+       inkscape:label="Camera"
+       inkscape:groupmode="layer"
+       id="layer_camera"
+       transform="matrix(0.9213819,0,0,1.0003841,29.043353,-29.062605)">
+      <path
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2.03183627;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
+         d="M 273.52128,448.91483 L 263.52305,433.43075 L 153.54251,433.43075 L 143.54427,448.91483 L 118.5487,448.91483 L 138.54516,417.94667 L 278.5204,417.94667 L 298.51686,448.91483 L 273.52128,448.91483 z"
+         id="camera_stand"
+         sodipodi:nodetypes="ccccccccc" />
+      <path
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.99996078;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="M 321.03278,299.94353 C 309.16477,299.94353 299.53278,319.65551 299.53278,343.94353 C 299.53278,368.23163 309.16477,387.94353 321.03278,387.94353 C 321.37197,387.94353 321.69742,387.91283 322.03278,387.88103 L 322.03278,387.94353 L 337.53278,387.94353 L 337.53278,299.94353 L 322.03278,299.94353 L 322.03278,299.97478 C 321.69749,299.94295 321.37189,299.94353 321.03278,299.94353 z"
+         id="camera_lens"
+         sodipodi:nodetypes="cssccccccc" />
+      <rect
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2.24814987;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="camera_body"
+         width="197.75186"
+         height="147.75185"
+         x="109.65685"
+         y="270.05481"
+         rx="27.348658"
+         ry="31.2321" />
+      <path
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         d="M 208.53278,283.93072 L 168.53278,283.93072 L 138.53278,298.93091 L 138.53278,238.9309 L 168.53278,253.93072 L 208.53278,253.93072 L 208.53278,283.93072 z"
+         id="camera_viewport"
+         sodipodi:nodetypes="ccccccc" />
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer_text"
+     inkscape:label="Text">
+    <text
+       xml:space="preserve"
+       style="font-size:250.00027466px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="442.00046"
+       y="404.47729"
+       id="camstudio"
+       transform="scale(0.9999989,1.0000011)"><tspan
+         sodipodi:role="line"
+         id="camstudio_text"
+         x="442.00046"
+         y="404.47729">CamStudio</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:100px;font-style:normal;font-weight:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="1734.6191"
+       y="508.7793"
+       id="open_source"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="open_source_text"
+         x="1734.6191"
+         y="508.7793">SWF PRODUCER</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:60px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="1678.5938"
+       y="285"
+       id="tm"><tspan
+         sodipodi:role="line"
+         id="tm_text"
+         x="1678.5938"
+         y="285">TM</tspan></text>
+  </g>
+</svg>
