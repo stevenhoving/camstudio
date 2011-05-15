@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="270"
+   height="270"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="Player.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.0"
+   inkscape:export-filename="C:\Documents and Settings\Owner\My Documents\CamStudioIcon16.png"
+   inkscape:export-xdpi="5.3333335"
+   inkscape:export-ydpi="5.3333335">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient4187">
+      <stop
+         style="stop-color:#9999bb;stop-opacity:1;"
+         offset="0"
+         id="stop4189" />
+      <stop
+         style="stop-color:#9999bb;stop-opacity:0.60000002;"
+         offset="1"
+         id="stop4191" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4187"
+       id="linearGradient4205"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(1.4852316e-4,-782.36234)"
+       x1="-0.00014925003"
+       y1="917.36218"
+       x2="270.00015"
+       y2="917.36218" />
+    <filter
+       inkscape:collect="always"
+       id="filter4461">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="9.072"
+         id="feGaussianBlur4463" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="73.815678"
+     inkscape:cy="133.7381"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer_symbol"
+     showgrid="false" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>CamStudio Player Icon</dc:title>
+        <dc:date>2008-10-12</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Jake P.</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>CamStudio Group</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:description>The icon for the CamStudio players</dc:description>
+        <dc:language>en-GB</dc:language>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>CamStudio Group</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>CamStudio</rdf:li>
+            <rdf:li>Player</rdf:li>
+            <rdf:li>icon</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer_border"
+     inkscape:label="Border">
+    <rect
+       id="background_blur"
+       width="270"
+       height="270"
+       x="0.00014829636"
+       y="-1.4305115e-06"
+       rx="0"
+       ry="0"
+       style="fill:#000000;fill-opacity:1;filter:url(#filter4461)" />
+    <rect
+       style="opacity:1;fill:url(#linearGradient4205);fill-opacity:1;stroke:#ffffff;stroke-width:8.06000042;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="border_and_background"
+       width="261.94031"
+       height="261.94031"
+       x="4.0300002"
+       y="4.0296922" />
+  </g>
+  <g
+     inkscape:label="Camera"
+     inkscape:groupmode="layer"
+     id="layer_symbol"
+     transform="matrix(0.9213819,0,0,1.0003841,29.043353,-29.062605)">
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00755715;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 114.47123,163.99961 L 6.9898379,248.4835 L 7.4641323,79.515724 L 114.47123,163.99961 z"
+       id="symbol_left"
+       sodipodi:nodetypes="cccc" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00755715;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 223.00523,163.99961 L 115.52401,248.4835 L 115.99803,79.515724 L 223.00523,163.99961 z"
+       id="symbol_right"
+       sodipodi:nodetypes="cccc" />
+  </g>
+</svg>

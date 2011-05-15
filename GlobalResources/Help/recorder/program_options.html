@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="copyright" content="Copyright &copy; 2001 RenderSoft Software and Web Publishing, Copyright &copy; 2008 CamStudio Group &amp; Contributors." />
+<meta name="creator" content="RenderSoft Software and Web Publishing, CamStudio Group &amp; Contributors." />
+<meta name="language" content="en-us" />
+<link href="../help.css" rel="stylesheet" type="text/css" />
+<title>Program Options</title>
+</head>
+<body>
+<h1>Program Options</h1>
+<p class="getting_there">(From the main menu, choose Options->Program Options)</p>
+<p>Use the program options to customize the way the program behave when it starts/stops recording. A tick beside the menu item indicates that option is enabled.</p>
+<p><img src="images/program_options.png" alt="Program Options" /></p>
+<ul>
+	<li>Save Settings on Exit<p>The Save Settings on Exit option allows you to save the program settings when you exit. These settings will be loaded the next time you launch CamStudio.</p><p>If you run CamStudio and find that it does not work as well as in previous sessions, most likely your saved settings is not tuned very well or is corrupted. You may want to reset your settings by turning off the Save Settings on Exit option, exit CamStudio, and launch CamStudio again.</p></li>
+	<li>Minimizing CamStudio<p>CamStudio is minimized to the system tray instead of the taskbar. To restore CamStudio, double click its icon in the system tray.</p><p><img src="images/tray_icon.png" alt="CamStudio's system tray icon" /></p></li>
+	<li>Play AVI file when recording stops<p>In here, you can choose to:</p>
+		<ul>
+			<li><p>Do nothing when the recording stops.</p></li>
+			<li><p>Play the AVI file when the recording stops (using CamStudio Player).</p></li>
+			<li><p>Play the AVI file when the recording stops (using your system's default player).</p></li>
+		</ul>
+	</li>
+	<li>Capture translucent/layered windows<p>In Windows 2000 or XP, there are certain windows that are translucent/layered and cannot be captured without turning this option on. An example is the Office Assistant in Office 2000.</p></li>
+	<li>Temporary directory for recording<p>CamStudio creates temporary files while it is performing recording. These temporary files can become very large and crash your system if your system runs out of disk space.</p><p>You can set the directory for placing your temporary files by selecting one of these:</p>
+		<ul>
+			<li>Windows Temporary Directory (Usually C:\Windows\Temp)</li>
+			<li>Installed Directory of CamStudio (Usually C:\Program Files\CamStudio)</li>
+			<li>User Specified Directory</li>
+		</ul>
+	<p>If you are using the User Specified Directory, you should always choose a directory that resides in the drive with the largest free space.</p></li>
+	<li>Recording Thread Priority<p>Some programs, when set as the active window, use the system resources so heavily that they cause CamStudio to be unusable. The frame rate in these cases drop to 0 - 5 frames per second (even if only a small region is being captured). Examples include some DirectX games or CPU intensive simulations.</p><p>To improve the performance of CamStudio at the expense of these programs, you can set the recording priority of CamStudio to Highest or Time Critical. However, doing this may also affect the performance of your whole system (For example, Windows may not respond to some mouse clicks on your Desktop). Therefore, for most cases, this option is best left at Normal.</p></li>
+	<li>Name of AVI<p>With auto-naming, you can now avoid giving a name to every AVI you record. The name of the file will have the following format 1422003_1520_26.avi and is saved in CamStudio's installed directory.</p><p>The name is formed using the system's date and time of the recording.</p><p><span class="standout">1422003_1520_26.avi</span> means the file is saved on 14<sup>th</sup> of February, 2003, 3.20 p.m (1520), at the 26<sup>th</sup> second.</p></li>
+	<li>Troubleshoot<p>This dialog allows you to diagnose and resolve some problems. Currently, it can handle the following:</p>
+		<ul>
+			<li>If you find that many of your multimedia applications record from the speakers instead of the microphone after CamStudio exits, you can select the checkbox to reset the settings.</li>
+		</ul>
+	</li>
+</ul>
+<p>For other problems please refer to our FAQ at: <a href="http://www.camstudio.org/faq.htm" onclick="target='_blank';">http://www.camstudio.org/faq.htm</a>.</p>
+</body>
+</html>
