@@ -2,15 +2,15 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{22ee2ccb-582d-4b6f-b68c-59684b81e233}</UniqueIdentifier>
+      <UniqueIdentifier>{8d11b5e1-8052-42e0-b737-46f8eea90b5d}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
     <Filter Include="Resource Files">
-      <UniqueIdentifier>{5241e997-9ae1-4d34-b76f-90426e6d1aa3}</UniqueIdentifier>
+      <UniqueIdentifier>{3c93d08a-bd68-41aa-838b-a91855b32fea}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
     <Filter Include="Resource Files\Source Files">
-      <UniqueIdentifier>{d5deed1d-27d4-4205-b6e5-aedb8c32d1c2}</UniqueIdentifier>
+      <UniqueIdentifier>{3cf414ac-ef4e-4a2e-b6cd-bacdbd2bc384}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
   </ItemGroup>
@@ -178,12 +178,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="XnoteStopwatchFormat.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\CxImage\tiff\t4.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\CxImage\tiff\uvcode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
