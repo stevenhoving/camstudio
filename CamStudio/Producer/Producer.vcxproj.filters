@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="swfsource\adler32.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AdvProperty.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,16 +39,7 @@
     <ClCompile Include="swfsource\actioncompiler\compileaction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="swfsource\compress.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Conversion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="swfsource\crc32.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="swfsource\deflate.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="swfsource\FAction.cpp">
@@ -108,27 +96,6 @@
     <ClCompile Include="swfsource\FTarga.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="swfsource\gzio.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="swfsource\infblock.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="swfsource\infcodes.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="swfsource\inffast.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="swfsource\inflate.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="swfsource\inftrees.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="swfsource\infutil.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="swfsource\actioncompiler\lex.swf4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -183,16 +150,7 @@
     <ClCompile Include="SWFPropertySheet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="swfsource\trees.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="swfsource\uncompr.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Conversion\WAVEIO.CPP">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="swfsource\zutil.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
