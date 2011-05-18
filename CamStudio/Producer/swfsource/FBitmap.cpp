@@ -1,5 +1,5 @@
 #include "FBitmap.h"
-#include "zlib.h"
+#include "../../CxImage/zlib/zlib.h"
 #include <sstream>
 N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineBitsJPEG1 &data)
 {
