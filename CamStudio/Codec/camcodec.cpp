@@ -96,7 +96,7 @@ Comments) 1950 to 1952 in the files ftp://ds.internic.net/rfc/rfc1950.txt
 #include "camcodec.h"
 #include "resource.h"
 #include "minilzo/minilzo.h"
-#include "../CamStudio/CxImage/zlib/zlib.h"
+#include "../CxImage/zlib/zlib.h"
 #include <stdio.h>
 
 TCHAR szDescription[] = TEXT("CamStudio Lossless Codec v1.5");
