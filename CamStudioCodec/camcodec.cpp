@@ -221,7 +221,7 @@ static BOOL CALLBACK AboutDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPA
 DWORD CodecInst::About(HWND hwnd)
 {
 	//VC++ 6
-	DialogBox(hmoduleCamcodec, MAKEINTRESOURCE(IDD_ABOUT), hwnd,  AboutDialogProc);  
+	//DialogBox(hmoduleCamcodec, MAKEINTRESOURCE(IDD_ABOUT), hwnd,  AboutDialogProc);  
 
 	//VC++ 5
 	//DialogBox(hmoduleCamcodec, MAKEINTRESOURCE(IDD_ABOUT), hwnd, (int (__stdcall *)(void)) AboutDialogProc);  
@@ -323,7 +323,7 @@ BOOL CodecInst::QueryConfigure() { return TRUE; }
 DWORD CodecInst::Configure(HWND hwnd)
 {
 	//VC++ 6
-	DialogBox(hmoduleCamcodec, MAKEINTRESOURCE(IDD_CONFIGURE), hwnd,  ConfigureDialogProc);
+	//DialogBox(hmoduleCamcodec, MAKEINTRESOURCE(IDD_CONFIGURE), hwnd,  ConfigureDialogProc);
 
 	//VC++ 5
 	//DialogBox(hmoduleCamcodec, MAKEINTRESOURCE(IDD_CONFIGURE), hwnd, (int (__stdcall *)(void)) ConfigureDialogProc);
