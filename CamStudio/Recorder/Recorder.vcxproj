@@ -78,7 +78,7 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\Release\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Configuration)\</OutDir>
@@ -331,7 +331,6 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ACM.h" />
     <ClInclude Include="AnnotationEffectsOptions.h" />
     <ClInclude Include="AudioFormat.h" />
     <ClInclude Include="AudioSpeakers.h" />
@@ -382,7 +381,8 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <ClInclude Include="TransRateDialog.h" />
     <ClInclude Include="TroubleShoot.h" />
     <ClInclude Include="UseMSPrivateAssemblies.h" />
-    <ClInclude Include="VCM.h" />
+    <ClInclude Include="vfw\ACM.h" />
+    <ClInclude Include="vfw\VCM.h" />
     <ClInclude Include="VideoOptions.h" />
     <ClInclude Include="VideoWnd.h" />
     <ClInclude Include="XnoteStopwatchFormat.h" />
@@ -451,7 +451,6 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <None Include="ClassDiagram3.cd" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ACM.cpp" />
     <ClCompile Include="AnnotationEffectsOptions.cpp" />
     <ClCompile Include="AudioFormat.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
@@ -756,7 +755,8 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="VCM.cpp" />
+    <ClCompile Include="vfw\ACM.cpp" />
+    <ClCompile Include="vfw\VCM.cpp" />
     <ClCompile Include="VideoOptions.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>

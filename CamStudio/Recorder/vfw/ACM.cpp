@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "ACM.h"
-#include "Profile.h"	// TODO: remove; for cAudioFormat
+#include "../Profile.h"	// TODO: remove; for cAudioFormat
 
 void SuggestCompressFormat()
 {
