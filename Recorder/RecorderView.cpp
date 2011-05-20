@@ -43,10 +43,11 @@
 #include "AudioSpeakers.h"
 #include "HotKey.h"
 #include "Screen.h"
-#include "VCM.h"
+#include "vfw/VCM.h"
+#include "vfw/ACM.h"
 #include "AVI.h"
 #include "MCI.h"
-#include "ACM.h"
+
 #include "XnoteStopwatchFormat.h"
 #include "Camstudio4XNote.h"
 

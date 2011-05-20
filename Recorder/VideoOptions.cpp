@@ -10,7 +10,7 @@
 #include "Recorder.h"
 #include "VideoOptions.h"
 #include "RecorderView.h"
-#include "VCM.h"
+#include "vfw/VCM.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
