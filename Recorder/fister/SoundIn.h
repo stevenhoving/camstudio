@@ -10,6 +10,8 @@
 #endif // _MSC_VER > 1000
 
 #include "soundbase.h"
+#include "Buffer.h"
+#include <MMSystem.h>
 
 				// CWinThread must be before CSoundBase -> and it's very difficult to debug!
 				// Trust me!   Thomas.Holme@openmpeg4.org

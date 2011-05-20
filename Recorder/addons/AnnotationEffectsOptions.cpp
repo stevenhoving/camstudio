@@ -2,7 +2,7 @@
 // Modifies Timestamp, Caption, and Watermark
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include "Recorder.h"
+#include "../Recorder.h"
 #include "XnoteStopwatchFormat.h"
 #include "AnnotationEffectsOptions.h"
 
