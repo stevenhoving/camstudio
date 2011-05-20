@@ -13,11 +13,14 @@
       <UniqueIdentifier>{3cf414ac-ef4e-4a2e-b6cd-bacdbd2bc384}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
+    <Filter Include="Resource Files\Source Files\vfw">
+      <UniqueIdentifier>{01d01931-07d2-4e82-baf4-048373cb207f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\vfw">
+      <UniqueIdentifier>{1b75801a-9131-4b11-a1dc-a407bd183734}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ACM.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AnnotationEffectsOptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -168,9 +171,6 @@
     <ClInclude Include="UseMSPrivateAssemblies.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VCM.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="VideoOptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -179,6 +179,12 @@
     </ClInclude>
     <ClInclude Include="XnoteStopwatchFormat.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vfw\ACM.h">
+      <Filter>Header Files\vfw</Filter>
+    </ClInclude>
+    <ClInclude Include="vfw\VCM.h">
+      <Filter>Header Files\vfw</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -361,9 +367,6 @@
     <None Include="ClassDiagram3.cd" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ACM.cpp">
-      <Filter>Resource Files\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AnnotationEffectsOptions.cpp">
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
@@ -496,9 +499,6 @@
     <ClCompile Include="TroubleShoot.cpp">
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VCM.cpp">
-      <Filter>Resource Files\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="VideoOptions.cpp">
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
@@ -507,6 +507,12 @@
     </ClCompile>
     <ClCompile Include="XnoteStopwatchFormat.cpp">
       <Filter>Resource Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vfw\ACM.cpp">
+      <Filter>Resource Files\Source Files\vfw</Filter>
+    </ClCompile>
+    <ClCompile Include="vfw\VCM.cpp">
+      <Filter>Resource Files\Source Files\vfw</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
