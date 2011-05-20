@@ -3,11 +3,12 @@
 #include "StdAfx.h"
 #include "Recorder.h"
 #include "Profile.h"
-#include "TextAttributes.h"	// for position
-#include "ImageAttributes.h"
 #include "HotKey.h"
 #include "CStudioLib.h"
-#include "Camstudio4XNote.h"
+#include "addons\TextAttributes.h"	// for position
+#include "addons\ImageAttributes.h"
+#include "addons\Camstudio4XNote.h"
+
 
 bool bRecordPreset = false;
 

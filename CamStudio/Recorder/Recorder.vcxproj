@@ -135,6 +135,8 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
+      <Version>3.1a1</Version>
+      <ShowProgress>NotSet</ShowProgress>
     </Link>
     <PostBuildEvent>
       <Message>Moving files that don%27t belong in output and copying other files (help docs, etc) to output directory</Message>
@@ -331,27 +333,32 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AnnotationEffectsOptions.h" />
+    <ClInclude Include="addons\AnnotationEffectsOptions.h" />
+    <ClInclude Include="addons\Camstudio4XNote.h" />
+    <ClInclude Include="addons\EffectsOptions.h" />
+    <ClInclude Include="addons\EffectsOptions2.h" />
+    <ClInclude Include="addons\ImageAttributes.h" />
+    <ClInclude Include="addons\TextAttributes.h" />
+    <ClInclude Include="addons\XnoteStopwatchFormat.h" />
     <ClInclude Include="AudioFormat.h" />
     <ClInclude Include="AudioSpeakers.h" />
     <ClInclude Include="AutopanSpeed.h" />
     <ClInclude Include="AutoSearchDialog.h" />
     <ClInclude Include="AVI.h" />
     <ClInclude Include="BasicMessage.h" />
-    <ClInclude Include="fister\Buffer.h" />
     <ClInclude Include="CamCursor.h" />
-    <ClInclude Include="Camstudio4XNote.h" />
     <ClInclude Include="CamStudioCommandLineInfo.h" />
     <ClInclude Include="CursorOptionsDlg.h" />
     <ClInclude Include="EditImage.h" />
     <ClInclude Include="EditTransparency.h" />
-    <ClInclude Include="EffectsOptions.h" />
-    <ClInclude Include="EffectsOptions2.h" />
+    <ClInclude Include="fister\Buffer.h" />
+    <ClInclude Include="fister\SoundBase.h" />
+    <ClInclude Include="fister\SoundFile.h" />
+    <ClInclude Include="fister\SoundIn.h" />
     <ClInclude Include="FixedRegion.h" />
     <ClInclude Include="FlashingWnd.h" />
     <ClInclude Include="FrameGrabber.h" />
     <ClInclude Include="HotKey.h" />
-    <ClInclude Include="ImageAttributes.h" />
     <ClInclude Include="Keyshortcuts.h" />
     <ClInclude Include="LayeredWindowHelperST.h" />
     <ClInclude Include="LayoutList.h" />
@@ -370,12 +377,9 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="ScreenAnnotations.h" />
-    <ClInclude Include="fister\SoundBase.h" />
-    <ClInclude Include="fister\SoundFile.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="SyncDialog.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TextAttributes.h" />
     <ClInclude Include="TextDialog.h" />
     <ClInclude Include="TransparentWnd.h" />
     <ClInclude Include="TransRateDialog.h" />
@@ -385,7 +389,6 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <ClInclude Include="vfw\VCM.h" />
     <ClInclude Include="VideoOptions.h" />
     <ClInclude Include="VideoWnd.h" />
-    <ClInclude Include="XnoteStopwatchFormat.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\bitmap1.bmp" />
@@ -451,7 +454,10 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <None Include="ClassDiagram3.cd" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AnnotationEffectsOptions.cpp" />
+    <ClCompile Include="addons\AnnotationEffectsOptions.cpp" />
+    <ClCompile Include="addons\EffectsOptions.cpp" />
+    <ClCompile Include="addons\EffectsOptions2.cpp" />
+    <ClCompile Include="addons\XnoteStopwatchFormat.cpp" />
     <ClCompile Include="AudioFormat.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
@@ -486,16 +492,6 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     </ClCompile>
     <ClCompile Include="AVI.cpp" />
     <ClCompile Include="BasicMessage.cpp" />
-    <ClCompile Include="fister\Buffer.cpp">
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MaxSpeed</Optimization>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MaxSpeed</Optimization>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
     <ClCompile Include="CamStudioCommandLineInfo.cpp" />
     <ClCompile Include="CursorOptionsDlg.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
@@ -527,8 +523,10 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="EffectsOptions.cpp" />
-    <ClCompile Include="EffectsOptions2.cpp" />
+    <ClCompile Include="fister\Buffer.cpp" />
+    <ClCompile Include="fister\SoundBase.cpp" />
+    <ClCompile Include="fister\SoundFile.cpp" />
+    <ClCompile Include="fister\SoundIn.cpp" />
     <ClCompile Include="FixedRegion.cpp" />
     <ClCompile Include="FlashingWnd.cpp" />
     <ClCompile Include="FolderDialog.cpp">
@@ -657,26 +655,6 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="fister\SoundBase.cpp">
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MaxSpeed</Optimization>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MaxSpeed</Optimization>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="fister\SoundFile.cpp">
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MaxSpeed</Optimization>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MaxSpeed</Optimization>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
     <ClCompile Include="SpeakersImpl.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
@@ -777,7 +755,6 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="XnoteStopwatchFormat.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Recorder.rc" />

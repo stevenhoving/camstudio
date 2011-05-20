@@ -1,10 +1,10 @@
 #include "StdAfx.h"
-//#include "EffectsOptions.h"		Cause C1189
 #include "Screen.h"
 #include "ximage.h"
-#include "XnoteStopwatchFormat.h"
 #include "RecorderView.h"
 #include "../hook/ClickQueue.hpp"
+#include "addons/EffectsOptions.h"
+#include "addons/XnoteStopwatchFormat.h"
 #include <gdiplus.h>
 using namespace Gdiplus;
 

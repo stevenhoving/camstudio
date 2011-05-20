@@ -19,10 +19,7 @@
 #include "AutopanSpeed.h"
 #include "AudioFormat.h"
 #include "AutoSearchDialog.h"
-#include "AnnotationEffectsOptions.h"
 #include "CursorOptionsDlg.h"
-#include "EffectsOptions.h"
-#include "EffectsOptions2.h"
 #include "FolderDialog.h"
 #include "FixedRegion.h"
 #include "Keyshortcuts.h"
@@ -48,8 +45,11 @@
 #include "AVI.h"
 #include "MCI.h"
 
-#include "XnoteStopwatchFormat.h"
-#include "Camstudio4XNote.h"
+#include "addons/XnoteStopwatchFormat.h"
+#include "addons/Camstudio4XNote.h"
+#include "addons/AnnotationEffectsOptions.h"
+#include "addons/EffectsOptions.h"
+#include "addons/EffectsOptions2.h"
 
 #ifdef _DEBUG
 // #include <vld.h>		// Visual Leak Detector utility (In debug mode)
