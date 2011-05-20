@@ -73,7 +73,7 @@ bool CSoundFile::Write(CBuffer *buffer)
 CBuffer* CSoundFile::Read()
 {
 	// create a new buffer
-	CBuffer* buf = new CBuffer(m_Format.nBlockAlign*iBufferSize);
+	CBuffer* buf = new CBuffer(m_Format.nBlockAlign*m_Format.wBitsPerSample);
 	if (buf == NULL)
 		return NULL;
 

@@ -19,11 +19,20 @@
     <Filter Include="Header Files\vfw">
       <UniqueIdentifier>{1b75801a-9131-4b11-a1dc-a407bd183734}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\addons">
+      <UniqueIdentifier>{598f2f75-d9e2-41d8-8212-a73c2f505693}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Source Files\addons">
+      <UniqueIdentifier>{97d6e21f-bae8-4121-8ccf-01328c16fa3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\fister">
+      <UniqueIdentifier>{20ff7f57-b603-4a78-90a0-20e7722eedab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Source Files\fister">
+      <UniqueIdentifier>{6f52de0c-63d8-4b98-a8d5-7d1e7fb7b121}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AnnotationEffectsOptions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AudioFormat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -42,13 +51,7 @@
     <ClInclude Include="BasicMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="fister\Buffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CamCursor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Camstudio4XNote.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CamStudioCommandLineInfo.h">
@@ -63,12 +66,6 @@
     <ClInclude Include="EditTransparency.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EffectsOptions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EffectsOptions2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FixedRegion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -79,9 +76,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HotKey.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageAttributes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Keyshortcuts.h">
@@ -138,12 +132,6 @@
     <ClInclude Include="ScreenAnnotations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="fister\SoundBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fister\SoundFile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="StdAfx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -151,9 +139,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextAttributes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TextDialog.h">
@@ -177,14 +162,44 @@
     <ClInclude Include="VideoWnd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="XnoteStopwatchFormat.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="vfw\ACM.h">
       <Filter>Header Files\vfw</Filter>
     </ClInclude>
     <ClInclude Include="vfw\VCM.h">
       <Filter>Header Files\vfw</Filter>
+    </ClInclude>
+    <ClInclude Include="addons\AnnotationEffectsOptions.h">
+      <Filter>Header Files\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="addons\XnoteStopwatchFormat.h">
+      <Filter>Header Files\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="addons\EffectsOptions.h">
+      <Filter>Header Files\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="addons\EffectsOptions2.h">
+      <Filter>Header Files\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="addons\Camstudio4XNote.h">
+      <Filter>Header Files\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="addons\ImageAttributes.h">
+      <Filter>Header Files\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="addons\TextAttributes.h">
+      <Filter>Header Files\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="fister\SoundBase.h">
+      <Filter>Header Files\fister</Filter>
+    </ClInclude>
+    <ClInclude Include="fister\SoundFile.h">
+      <Filter>Header Files\fister</Filter>
+    </ClInclude>
+    <ClInclude Include="fister\SoundIn.h">
+      <Filter>Header Files\fister</Filter>
+    </ClInclude>
+    <ClInclude Include="fister\Buffer.h">
+      <Filter>Header Files\fister</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -367,9 +382,6 @@
     <None Include="ClassDiagram3.cd" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AnnotationEffectsOptions.cpp">
-      <Filter>Resource Files\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AudioFormat.cpp">
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
@@ -391,9 +403,6 @@
     <ClCompile Include="BasicMessage.cpp">
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="fister\Buffer.cpp">
-      <Filter>Resource Files\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CamStudioCommandLineInfo.cpp">
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
@@ -404,12 +413,6 @@
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EditTransparency.cpp">
-      <Filter>Resource Files\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EffectsOptions.cpp">
-      <Filter>Resource Files\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EffectsOptions2.cpp">
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FixedRegion.cpp">
@@ -472,12 +475,6 @@
     <ClCompile Include="ScreenAnnotations.cpp">
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="fister\SoundBase.cpp">
-      <Filter>Resource Files\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\SoundFile.cpp">
-      <Filter>Resource Files\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SpeakersImpl.cpp">
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
@@ -505,14 +502,35 @@
     <ClCompile Include="VideoWnd.cpp">
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="XnoteStopwatchFormat.cpp">
-      <Filter>Resource Files\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="vfw\ACM.cpp">
       <Filter>Resource Files\Source Files\vfw</Filter>
     </ClCompile>
     <ClCompile Include="vfw\VCM.cpp">
       <Filter>Resource Files\Source Files\vfw</Filter>
+    </ClCompile>
+    <ClCompile Include="addons\AnnotationEffectsOptions.cpp">
+      <Filter>Resource Files\Source Files\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="addons\XnoteStopwatchFormat.cpp">
+      <Filter>Resource Files\Source Files\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="addons\EffectsOptions.cpp">
+      <Filter>Resource Files\Source Files\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="addons\EffectsOptions2.cpp">
+      <Filter>Resource Files\Source Files\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\Buffer.cpp">
+      <Filter>Resource Files\Source Files\fister</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\SoundBase.cpp">
+      <Filter>Resource Files\Source Files\fister</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\SoundFile.cpp">
+      <Filter>Resource Files\Source Files\fister</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\SoundIn.cpp">
+      <Filter>Resource Files\Source Files\fister</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

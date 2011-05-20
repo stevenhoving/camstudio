@@ -5,7 +5,7 @@
 #include "Recorder.h"
 #include "MainFrm.h"
 #include "RecorderView.h"
-#include "Camstudio4XNote.h"
+#include "addons\Camstudio4XNote.h"
 
 /*
 TODO: Break AVI 2 GB boundary

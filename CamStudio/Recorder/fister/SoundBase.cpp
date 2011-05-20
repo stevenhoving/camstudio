@@ -21,7 +21,7 @@ CSoundBase::CSoundBase()
 {
 	m_Format.wFormatTag = WAVE_FORMAT_PCM;
 	m_Format.cbSize = 0;
-	iBufferSize = 1000; // samples per callback
+	m_Format.wBitsPerSample = 1024; // Buffer Size 1024 bits
 
 	BitsPerSample(16);
 	SamplesPerSecond(22050);

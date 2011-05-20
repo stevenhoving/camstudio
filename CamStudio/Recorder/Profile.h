@@ -41,10 +41,10 @@ CProfile is obsolete
 #define PROFILE_H
 #pragma once
 
-#include "TextAttributes.h"
-#include "ImageAttributes.h"
 #include "CStudioLib.h"
-#include "Camstudio4XNote.h"
+#include "addons\Camstudio4XNote.h"
+#include "addons\TextAttributes.h"
+#include "addons\ImageAttributes.h"
 
 #include <vector>
 
