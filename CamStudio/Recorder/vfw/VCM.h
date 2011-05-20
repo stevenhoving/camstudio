@@ -5,6 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include <vector>
+#include <VFW.h>
 
 // known video handlers
 const FOURCC ICHANDLER_MSVC = mmioFOURCC('M', 'S', 'V', 'C');

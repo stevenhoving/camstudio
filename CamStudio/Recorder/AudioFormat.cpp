@@ -5,7 +5,7 @@
 #include "Recorder.h"
 #include "AudioFormat.h"
 #include "RecorderView.h"
-#include "ACM.h"
+#include "vfw/ACM.h"
 #include "CStudioLib.h"
 
 #ifdef _DEBUG

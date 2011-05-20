@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "Recorder.h"
 #include "AVI.h"
-#include "VCM.h"
+#include "vfw/VCM.h"
 #include "ximage.h"
 #include <windowsx.h>	// for memory operations
 
