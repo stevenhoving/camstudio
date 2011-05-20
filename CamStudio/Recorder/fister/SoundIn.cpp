@@ -116,7 +116,7 @@ void CSoundIn::Stop()
 			mmReturn = ::waveInClose(m_hRecord);
 			if(mmReturn) waveInErrorMsg(mmReturn, "in Stop()");
 		}
-		if(m_QueuedBuffers != 0) ErrorMsg("Still %d buffers in waveIn queue!", m_QueuedBuffers);
+		if(m_QueuedBuffers != 0) printf("Still %d buffers in waveIn queue!", m_QueuedBuffers);
 	}
 }
 
@@ -177,7 +177,7 @@ int CSoundIn::AddInputBufferToQueue()
 	ZeroMemory(pHdr, sizeof(WAVEHDR));
 
 	// new a buffer
-	CBuffer buf(m_Format.nBlockAlign*m_BufferSize, false);
+	CBuffer buf(m_Format.nBlockAlign*m_Format.wBitsPerSample, false);
 	pHdr->lpData = buf.ptr.c;
 	pHdr->dwBufferLength = buf.ByteLen;
 	
@@ -207,7 +207,7 @@ void CSoundIn::waveInErrorMsg(MMRESULT result, LPCTSTR addstr)
 	// say error message
 	char errorbuffer[100];
 	waveInGetErrorText(result, errorbuffer,100);
-	ErrorMsg("WAVEIN:%x:%s %s", result, errorbuffer, addstr);
+	printf("WAVEIN:%x:%s %s", result, errorbuffer, addstr);
 }
 
 

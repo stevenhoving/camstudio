@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "Recorder.h"
+#include "../Recorder.h"
 #include "EffectsOptions2.h"
 
 // CEffectsOptions2Dlg dialog
