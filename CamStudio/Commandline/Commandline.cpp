@@ -11,24 +11,27 @@
 // License: GPL
 // 
 // Command line author: dimator(AT)google(DOT)com
-//
+// Multi screen support: karol(dot)toth(at)gmail(dot)com
 
-#define CAMSTUDIO_CL_VERSION "0.1"
+#define CAMSTUDIO_CL_VERSION "0.2"
 
 #include <algorithm>
 #include <string>
+#include <cstring>
 #include <vector>
 #include <iostream>
 #include <iterator>
+#include <objbase.h>
 
 #include <windows.h>
 #include <windowsx.h>
 #include <windef.h>
 #include <vfw.h>
-//#include <atltypes.h>
-//#include <atlstr.h>
+#include <atltypes.h>
+#include <atlstr.h>
 
 #include <time.h>
+#include "Commandline.hpp"
 
 using namespace std;
 
@@ -42,6 +45,9 @@ static char THIS_FILE[] = __FILE__;
 //Function prototypes
 //////////////////////////////////////
 
+//Screen Detection Functions
+BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor,HDC hdcMonitor,LPRECT lprcMonitor,LPARAM dwData);
+
 //Mouse Capture functions
 HCURSOR FetchCursorHandle();
 HCURSOR hSavedCursor = NULL;
@@ -54,7 +60,7 @@ HCURSOR hSavedCursor = NULL;
 #define TEXT_HEIGHT 20
 
 HANDLE Bitmap2Dib(HBITMAP, UINT);
-int RecordVideo(int top,int left,int width,int height,int numframes,const char *szFileName);
+int RecordVideo(int top,int left,int width,int height,int numframes,const char *szFileName/*, screen* pscreen*/);
 UINT RecordAVIThread(LPVOID pParam);
 
 //Use these 2 functions to create frames and free frames
@@ -88,6 +94,8 @@ static UINT WM_USER_RECORDINTERRUPTED = ::RegisterWindowMessage(WM_USER_RECORDIN
 /////////////////////////////////////////////////////////
 //Variables/Options requiring interface
 /////////////////////////////////////////////////////////
+int static mon_current = -1;
+int mon_count = 0; // number of physical screens, not virtual
 int bits = 24;
 
 //Video Options and Compressions
@@ -95,12 +103,8 @@ int timelapse=40;
 int frames_per_second = 25;
 int keyFramesEvery = 25;
 
-//int timelapse=5;
-//int frames_per_second = 200;
-//int keyFramesEvery = 200;
 
 int compquality = 7000;
-//int compquality = 10000;
 DWORD compfccHandler = 0;
 ICINFO *compressor_info = NULL;
 int num_compressor = 0;
@@ -109,7 +113,10 @@ int num_compressor = 0;
 int seconds_to_record = -1;
 int selected_compressor = -1;
 string output_file;
-
+int offset_left = 0;
+int offset_right;
+int offset_bottom;
+int offset_top = 0;
 //Ver 1.2
 //Video Compress Parameters
 LPVOID pVideoCompressParams = NULL;
@@ -127,8 +134,8 @@ float fRate=0.0;
 float fActualRate=0.0;
 float fTimeLength=0.0;
 int nColors=24;
-char strCodec[512] = "MS Video 1";
-//CString strCodec("MS Video 1");
+
+CString strCodec("MS Video 1");
 int actualwidth=0;
 int actualheight=0;
 
@@ -151,7 +158,7 @@ RECT panrect_current;
 RECT panrect_dest;
 
 //Path to temporary wav file
-//char tempaudiopath[_MAX_PATH];
+char tempaudiopath[MAX_PATH];
 int recordaudio=0;
 
 //Audio Recording Variables
@@ -194,7 +201,7 @@ string GetCodecDescription(long fccHandler);
 #define USE_USER_SPECIFIED_DIR 2
 
 int tempPath_Access  = USE_WINDOWS_TEMP_DIR;
-//CString specifieddir;
+CString specifieddir;
 
 int captureTrans=1;
 int versionOp = 0;
@@ -222,6 +229,28 @@ int recordpreset = 0;
 ///////////////////////// //////////////////
 /////////////// Functions //////////////////
 ///////////////////////// //////////////////
+BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor,HDC hdcMonitor,LPRECT lprcMonitor,LPARAM dwData)
+{
+			
+			lprcMonitor;hdcMonitor;
+			screen *obr;
+			obr = (screen*) dwData;
+			mon_current = mon_current + 1;
+			MONITORINFOEX mo;
+			mo.cbSize = sizeof(MONITORINFOEX);
+			if(GetMonitorInfo(hMonitor,&mo)){
+			}
+			else{
+				cout << "Error in detecting monitors" << endl;
+				return false;
+			}
+			obr[mon_current].SetDimensions(mo.rcMonitor.left, mo.rcMonitor.right, mo.rcMonitor.top, mo.rcMonitor.bottom);
+			strcpy_s(obr[mon_current].dispName, sizeof(obr[mon_current].dispName),mo.szDevice);
+			cout << "Screen: " << obr[mon_current].dispName;
+			cout << " resolution:" << obr[mon_current].width << " x " << obr[mon_current].height << endl;
+			
+			return true;
+}
 CHAR wide_to_narrow(WCHAR w)
 {
 	// simple typecast
@@ -290,13 +319,16 @@ HANDLE  Bitmap2Dib( HBITMAP hbitmap, UINT bits )
   return hdib ;
 }
 
-UINT RecordAVIThread(LPVOID /*pParam*/) {
+UINT RecordAVIThread(LPVOID lParam) {
+  CoInitialize(NULL);
   SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_NORMAL);
+  screen* pscreen = (screen*) lParam; // pointer to current screen
+ // const char *filepath = pscreen->outFile;
 
-  int top=rcUse.top;
-  int left=rcUse.left;
-  int width=rcUse.right-rcUse.left+1;
-  int height=rcUse.bottom - rcUse.top + 1;
+  int top=pscreen->top;
+  int left=pscreen->left;
+  int width=pscreen->width;
+  int height=pscreen->height;
   int fps = frames_per_second;
 
   const char *filepath = output_file.c_str();
@@ -331,7 +363,7 @@ UINT RecordAVIThread(LPVOID /*pParam*/) {
 // Includes opening/closing avi file, initializing avi settings, capturing frames, applying cursor effects etc.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int RecordVideo(int top,int left,int width,int height,int fps,
-    const char *szFileName){
+    const char *szFileName /*screen *pscreen*/){
 
   LPBITMAPINFOHEADER alpbi;
   AVISTREAMINFO strhdr;
@@ -376,7 +408,6 @@ int RecordVideo(int top,int left,int width,int height,int fps,
         //Try adjusting width/height a little bit
         align = align * 2 ;
         if (align>8) break;
-
         newleft=left;
         newtop=top;
         int wm = (width % align);
@@ -385,18 +416,15 @@ int RecordVideo(int top,int left,int width,int height,int fps,
           if (newwidth>maxxScreen)
             newwidth = width - wm;
         }
-
         int hm = (height % align);
         if (hm > 0) {
           newheight = height + (align - hm);
           if (newheight>maxyScreen)
             newwidth = height - hm;
         }
-
         if (alpbi)
           FreeFrame(alpbi);
         alpbi = captureScreenFrame(newleft,newtop,newwidth, newheight);
-
       }
 
       //if succeed with new width/height, use the new width and height
@@ -417,14 +445,14 @@ int RecordVideo(int top,int left,int width,int height,int fps,
       }
       else {
           compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-		  strcpy(strCodec, "MS Video 1");
+		  strCodec = CString("MS Video 1");
       }
 
       ICClose(hic);
     }
     else {
       compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-	  strcpy(strCodec, "MS Video 1");
+	  strCodec = CString("MS Video 1");
       //MessageBox(NULL,"hic default","note",MB_OK);
     }
 
@@ -435,7 +463,7 @@ int RecordVideo(int top,int left,int width,int height,int fps,
   {
     //Still Can't Handle Indeo 5.04
     compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-	strcpy(strCodec, "MS Video 1");
+	strCodec = CString("MS Video 1");
   }
 
   ////////////////////////////////////////////////
@@ -486,7 +514,7 @@ int RecordVideo(int top,int left,int width,int height,int fps,
   {
     //Internally adjust codec to MSVC 100 Quality
     aopts[0]->fccHandler = mmioFOURCC('M', 'S', 'V', 'C');   //msvc
-	strcpy(strCodec, "MS Video 1");
+	strCodec = CString("MS Video 1");
     aopts[0]->dwQuality = 10000;
 
   }
@@ -549,7 +577,7 @@ int RecordVideo(int top,int left,int width,int height,int fps,
   
   // Time when the next frame will be taken
   DWORD nextFrameAt = timeGetTime();
-  DWORD frameNumber = 0, nextFrameNumber = 0;
+  DWORD nextFrameNumber = 0;
 
   while (gRecordState) {  //repeatedly loop
 	// TODO(dimator): Enable this via a command line argument:
@@ -702,8 +730,8 @@ int RecordVideo(int top,int left,int width,int height,int fps,
 
     fTimeLength = ((float) timeexpended) /((float) 1000.0);
 
-    //if (recordpreset)
-    //{
+    if (recordpreset)
+    {
       //if (int(fTimeLength) >= presettime)
        // ;
         //gRecordState = 0;
@@ -714,13 +742,13 @@ int RecordVideo(int top,int left,int width,int height,int fps,
       //MessageBox(NULL,msgStr,"N",MB_OK);
 
         //or should we post messages
-    //}
+    }
 
-    //if ((frametime==0) || (frametime>oldframetime)) {
+    if ((frametime==0) || (frametime>oldframetime)) {
       //if frametime repeats (frametime == oldframetime) ...the avistreamwrite will cause an error
 
       hr = AVIStreamWrite(psCompressed, // stream pointer
-        frameNumber,        // time of this frame
+        frametime,        // time of this frame
         1,        // number to write
         (LPBYTE) alpbi +    // pointer to data
           alpbi->biSize +
@@ -735,7 +763,7 @@ int RecordVideo(int top,int left,int width,int height,int fps,
         break;
 
       nActualFrame ++ ;
-      nCurrFrame = frameNumber;
+      nCurrFrame = frametime;
       fRate = ((float) nCurrFrame)/fTimeLength;
       fActualRate = ((float) nActualFrame)/fTimeLength;
 
@@ -753,9 +781,9 @@ int RecordVideo(int top,int left,int width,int height,int fps,
       FreeFrame(alpbi);
       alpbi=NULL;
       oldframetime = frametime;
-    //} // if frametime is different
+    } // if frametime is different
 
-	frameNumber = nextFrameNumber;
+	frametime = nextFrameNumber;
   } //for loop
 
 error:
@@ -830,6 +858,7 @@ error:
 
 LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height)
 {
+//EnumDisplayMonitors(NULL, NULL, MyInfoEnumProc, 0);
   HDC hScreenDC = ::GetDC(NULL);
 
   HDC hMemDC = ::CreateCompatibleDC(hScreenDC);
@@ -858,7 +887,7 @@ LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height)
     ::GetLocalTime(&systime);
     //::GetSystemTime(&systime);
     TCHAR msg[0x100];
-    ::sprintf(msg, "%s %02d:%02d:%02d:%03d", "Recording", systime.wHour, systime.wMinute, systime.wSecond, systime.wMilliseconds);
+    ::sprintf_s(msg, "%s %02d:%02d:%02d:%03d", "Recording", systime.wHour, systime.wMinute, systime.wSecond, systime.wMilliseconds);
   }
 
   //Get Cursor Pos
@@ -1068,7 +1097,7 @@ void PrintRecordInformation(){
     printf("Theoretical Frame Rate  : %.2f fps\n", fRate);
     printf("Time Elasped  : %.2f sec\n", fTimeLength);
     printf("Number of Colors  : %d bits\n", nColors);
-    printf("Codec  : %s\n", strCodec);
+    printf("Codec  : %s\n", LPCTSTR(strCodec));
     printf("Actual Input Rate  : %.2f fps\n", fActualRate);
     printf("Dimension  : %d X %d\n", actualwidth,actualheight);
   }
@@ -1157,7 +1186,7 @@ int ParseOptions(int argc, char *argv[]){
   return 1;
 }
 
-void PrintUsage(bool showCodecs = FALSE){
+void PrintUsage(bool showCodecs = 1){
   cout << "Usage:" << endl << endl;
   cout << "-codec: which codec to use" << endl
        << "-outfile: .avi file to write to" << endl
@@ -1219,7 +1248,10 @@ int main(int argc, char* argv[])
   DWORD tid = 0;
   DWORD exitcode = 0;
   HDC hScreenDC;
-  HANDLE th;
+  int mon_count = GetSystemMetrics(SM_CMONITORS); // get nubmer of monitors
+
+  HANDLE* th = (HANDLE *) malloc(sizeof(HANDLE) * mon_count);
+  //PAVIFILE* pfile = (PAVIFILE *) malloc(sizeof(PAVIFILE) * mon_count);
 
   cout << "camstudio_cl: Command line screen recording" << endl;
   cout << "v" << CAMSTUDIO_CL_VERSION << endl << endl;
@@ -1229,7 +1261,7 @@ int main(int argc, char* argv[])
   if(!ParseOptions(argc, argv)){
     return 1;
   }
-
+  
   if(!output_file.length()){
     cout << "Error: Need a valid output file, -outfile" << endl;
     PrintUsage();
@@ -1251,51 +1283,118 @@ int main(int argc, char* argv[])
   }
 
   compfccHandler = compressor_info[selected_compressor].fccHandler;
-  std::transform(compressor_info[selected_compressor].szDescription, compressor_info[selected_compressor].szDescription + 128, strCodec, wide_to_narrow);
+  strCodec = CString(compressor_info[selected_compressor].szDescription);
 
-  cout << "Using codec: " << strCodec << endl;
+  cout << "Using codec: " << strCodec.GetBuffer() << endl;
 
   // Screen metrics:
   hScreenDC = ::GetDC(NULL);
   maxxScreen = GetDeviceCaps(hScreenDC,HORZRES);
   maxyScreen = GetDeviceCaps(hScreenDC,VERTRES);
+  
+  screen* obr = (screen *) malloc(sizeof(screen) * mon_count);// new screen[mon_count];//array of screens(objects)
+  screen* pscreen = obr;
 
-  rcUse.left = 0;
-  rcUse.top = 0;
-  rcUse.right = 300;
-  rcUse.bottom = 400;
-  rcUse.right = maxxScreen - 1;
-  rcUse.bottom = maxyScreen - 1;
+  //Detection of screens
+  cout << "Detected displays:" << endl;
+  EnumDisplayMonitors(NULL, NULL, MonitorEnumProc,(LPARAM) pscreen);
 
-  gRecordState = 1;
+  int i=0;
+  char buffer[2];
+  string recordHere = output_file;
 
-  cout << "Creating recording thread..." << endl;
-  cout << "Recording to: " << output_file << endl;
-  th = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)RecordAVIThread,
-      0, 0, &tid);
+	for(i=0; i<=mon_count-1; i++){
+		
+		// whole recording stuff goes BELOW this line.
+		maxxScreen = pscreen[i].width;
+		maxyScreen = pscreen[i].height;
+		rcUse.left = pscreen[i].left;
+		rcUse.top = pscreen[i].top;
+		rcUse.right = pscreen[i].right - 1;
+		rcUse.bottom = pscreen[i].bottom - 1;
+		// Write AVI file.
+		output_file = recordHere + "_" + (_itoa_s(i,buffer,2,10) + ".avi");// _itoa(i,buffer,10)+".avi";
+		strcpy_s(pscreen[i].outFile, output_file.c_str());
+		pscreen[i].index = i;
 
-  if(seconds_to_record > 0){
-    cout << "Recording for " << seconds_to_record << " seconds" << endl;
-    ::Sleep(seconds_to_record * 1000);
-  } else {
-    cout << "Enter any key to stop recording..." << endl;
-    cout.flush();
-    getchar();
-  }
+		gRecordState = 1;
 
-  // Set gRecordState to 0, to end the while loop inside the recording thread.
-  // TODO(dimator): Maybe some better IPC, other than a global variable???
-  gRecordState = 0;
+		cout << "Creating recording thread for screen no.:" << i <<"..." << endl;
+		cout << "Recording to: " << output_file << endl;
+
+
+		th[i] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)RecordAVIThread, (LPVOID) &pscreen[i], 0, &tid);
+
+  
+
+		// whole recording stuff goes ABOVE this line.
+		//cout<<"Sirka:" << p_obr[i].width << endl; // just some line for testing.
+	}
+	if(seconds_to_record > 0){
+		cout << "Recording for " << seconds_to_record << " seconds" << endl;
+		::Sleep(seconds_to_record * 1000);
+	} else {
+		cout << "Enter any key to stop recording..." << endl;
+		cout.flush();
+		getchar();
+	}
+	// Set gRecordState to 0, to end the while loop inside the recording thread.
+	// TODO(dimator): Maybe some better IPC, other than a global variable???
+	gRecordState = 0;
+	
+	free(obr);
+	Sleep(1000);
+ 
+
+   
+  //rcUse.left = offset_left;
+  //rcUse.top = offset_top;
+  //rcUse.right = 300;
+  //rcUse.bottom = 400;
+  //if(offset_bottom){
+	 // rcUse.bottom = offset_bottom - 1;
+  //}
+  //else{
+	 // rcUse.bottom = maxyScreen - 1;
+  //}
+  //if(offset_right){
+	 // rcUse.right = offset_right - 1;
+  //}
+  //else{
+	 // rcUse.right = maxxScreen - 1;
+  //}
+  ////cout << "Offset L:" << rcUse.left << endl;
+  ////cout << "Offset T:" << rcUse.top << endl;
+  ////cout << "Offset R:" << rcUse.right << endl; 
+  ////cout << "Offset B:" << rcUse.bottom << endl;
+  //
+  //gRecordState = 1;
+
+  //cout << "Creating recording thread..." << endl;
+  //cout << "Recording to: " << output_file << endl;
+
+  //if(seconds_to_record > 0){
+  //   cout << "Recording for " << seconds_to_record << " seconds" << endl;
+  //  ::Sleep(seconds_to_record * 1000);
+  //} else {
+  //  cout << "Enter any key to stop recording..." << endl;
+  //  cout.flush();
+  //  getchar();
+  //}
+
+  //// Set gRecordState to 0, to end the while loop inside the recording thread.
+  //// TODO(dimator): Maybe some better IPC, other than a global variable???
+  //gRecordState = 0;
 
   cout << "Waiting for recording thread to exit..." << endl;
-  if(WaitForSingleObject(th, 5000) == WAIT_TIMEOUT){
+  if(WaitForSingleObject(th[0], 5000) == WAIT_TIMEOUT){
     cout << "Error: Timed out!  The recorded video might have errors." << endl;
     cout << "Killing thread..." << endl;
-    TerminateThread(th, -1);
+    TerminateThread(th[0], exitcode);
   }
 
   // Make sure the thread ended gracefully
-  GetExitCodeThread(th, &exitcode);
+  GetExitCodeThread(th[0], &exitcode);
   if(exitcode){
     cout << "Error: Recording thread ended abnormally" << endl;
     return exitcode;
