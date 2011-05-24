@@ -139,7 +139,7 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <Link>
-      <AdditionalDependencies>libcpmt.lib;libcmt.lib;gdi32.lib;winmm.lib;vfw32.lib;msacm32.lib;kernel32.lib;user32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ole32.lib;atls.lib;libcpmt.lib;libcmt.lib;gdi32.lib;winmm.lib;vfw32.lib;msacm32.lib;kernel32.lib;user32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
@@ -181,7 +181,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CamStudioCommandline.cpp" />
+    <ClInclude Include="Commandline.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Commandline.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
