@@ -15,7 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CamStudioCommandline.cpp">
+    <ClInclude Include="Commandline.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Commandline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
