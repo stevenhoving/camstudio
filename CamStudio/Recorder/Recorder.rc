@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Russian resources
+// Russian (Russia) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
-#ifdef _WIN32
 LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 #pragma code_page(1251)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -27,18 +25,16 @@ LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 //
 
 IDB_BITMAP5             BITMAP                  "res\\bitmap5.bmp"
-#endif    // Russian resources
+#endif    // Russian (Russia) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -145,7 +141,7 @@ IDI_ICONJUSTIFYRIGHT    ICON                    "res\\ico00035.ico"
 // Toolbar
 //
 
-IDR_MAINFRAME TOOLBAR  22, 22
+IDR_MAINFRAME TOOLBAR 22, 22
 BEGIN
     BUTTON      ID_RECORD
     BUTTON      ID_PAUSE
@@ -158,7 +154,7 @@ BEGIN
     BUTTON      ID_XNOTE_RECORDDURATIONLIMITMODE
 END
 
-IDR_MAINFRAME1 TOOLBAR  21, 21
+IDR_MAINFRAME1 TOOLBAR 21, 21
 BEGIN
     BUTTON      ID_RECORD
     BUTTON      ID_PAUSE
@@ -174,7 +170,7 @@ END
 // Menu
 //
 
-IDR_MAINFRAME MENU 
+IDR_MAINFRAME MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -299,7 +295,7 @@ BEGIN
     END
 END
 
-IDR_TRAYMENU MENU 
+IDR_TRAYMENU MENU
 BEGIN
     POPUP "Menu"
     BEGIN
@@ -311,7 +307,7 @@ BEGIN
     END
 END
 
-IDR_CONTEXTMENU MENU 
+IDR_CONTEXTMENU MENU
 BEGIN
     POPUP "Context"
     BEGIN
@@ -339,7 +335,7 @@ BEGIN
     END
 END
 
-IDR_CONTEXTLANGUAGE MENU 
+IDR_CONTEXTLANGUAGE MENU
 BEGIN
     POPUP "Script"
     BEGIN
@@ -364,7 +360,7 @@ BEGIN
     END
 END
 
-IDR_CONTEXTEDITOBJ MENU 
+IDR_CONTEXTEDITOBJ MENU
 BEGIN
     POPUP "EditObj"
     BEGIN
@@ -388,7 +384,7 @@ BEGIN
     END
 END
 
-IDR_CONTEXTEDITLAYOUT MENU 
+IDR_CONTEXTEDITLAYOUT MENU
 BEGIN
     POPUP "EditLayout"
     BEGIN
@@ -413,7 +409,7 @@ BEGIN
     END
 END
 
-IDR_CONTEXTVIDEO MENU 
+IDR_CONTEXTVIDEO MENU
 BEGIN
     POPUP "ContextVideo"
     BEGIN
@@ -429,7 +425,7 @@ BEGIN
     END
 END
 
-IDR_ANNOTATIONMENU MENU 
+IDR_ANNOTATIONMENU MENU
 BEGIN
     POPUP "Library"
     BEGIN
@@ -489,7 +485,7 @@ END
 // Accelerator
 //
 
-IDR_MAINFRAME ACCELERATORS 
+IDR_MAINFRAME ACCELERATORS
 BEGIN
     "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
@@ -589,7 +585,7 @@ BEGIN
     CONTROL         "",IDC_STATIC_HIGHLIGHT_PREVIEW,"Static",SS_BLACKFRAME | NOT WS_VISIBLE,189,132,51,42
 END
 
-IDD_AUTOPANSPEED DIALOG  0, 0, 186, 66
+IDD_AUTOPANSPEED DIALOG 0, 0, 186, 66
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Autopan Speed"
 FONT 8, "MS Sans Serif"
@@ -649,7 +645,7 @@ BEGIN
     PUSHBUTTON      "Help",IDC_BUTTON1,132,211,51,15
 END
 
-IDD_KEYSHORTCUTS DIALOG  0, 0, 311, 170
+IDD_KEYSHORTCUTS DIALOG 0, 0, 311, 170
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Keyboard Shortcuts"
 FONT 8, "MS Sans Serif"
@@ -706,7 +702,7 @@ BEGIN
     LTEXT           "SHIFT",IDC_STATIC,223,112,22,10
 END
 
-IDD_ANNOTATION DIALOG  0, 0, 222, 239
+IDD_ANNOTATION DIALOG 0, 0, 222, 239
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Annotation"
 FONT 8, "MS Sans Serif"
@@ -729,7 +725,7 @@ BEGIN
     PUSHBUTTON      "..",IDC_FILEIMAGE,182,170,16,14,BS_ICON | BS_LEFT | BS_TOP
 END
 
-IDD_AUTOSEARCH DIALOG  0, 0, 181, 121
+IDD_AUTOSEARCH DIALOG 0, 0, 181, 121
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Searching"
 FONT 8, "MS Sans Serif"
@@ -859,7 +855,7 @@ BEGIN
     PUSHBUTTON      "Load New Image",IDC_LOAD,108,230,77,14
 END
 
-IDD_RESIZE DIALOG  0, 0, 207, 81
+IDD_RESIZE DIALOG 0, 0, 207, 81
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Resize"
 FONT 8, "MS Sans Serif"
@@ -1038,8 +1034,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,6,0,0
- PRODUCTVERSION 2,6,0,0
+ FILEVERSION 3,1,0,0
+ PRODUCTVERSION 3,1,0,0
  FILEFLAGSMASK 0x1fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1057,10 +1053,11 @@ BEGIN
             VALUE "Comments", "CamStudio Recorder"
             VALUE "CompanyName", "CamStudio Group"
             VALUE "FileDescription", "CamStudio Recorder"
-            VALUE "FileVersion", "2.6.0.0"
+            VALUE "FileVersion", "3.1.0.0"
+            VALUE "InternalName", "Camstudio Open Source"
             VALUE "LegalCopyright", "Copyright © 2001 RenderSoft Software and Web Publishing, Copyright © 2009 CamStudio Group & Contributors"
             VALUE "ProductName", "CamStudio Recorder"
-            VALUE "ProductVersion", "2.6.0.0"
+            VALUE "ProductVersion", "3.1.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -1076,7 +1073,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
@@ -2153,35 +2150,35 @@ IDC_CURSORDRAG          CURSOR                  "res\\cur00001.cur"
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Recorder\n\nRecorder\n\n\nRecorder.Document\nRecorder Document"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_APP_TITLE       "CamStudio Recorder"
     AFX_IDS_IDLEMESSAGE     "Ready"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_APP_ABOUT            "Display program information and copyright"
     ID_APP_EXIT             "Quit the application"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
     ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_NOTE         "Note"
     IDS_STRING_INTERLEAVE1  "Interleave factor must greater than 0."
@@ -2195,7 +2192,7 @@ BEGIN
     IDS_STRING_HEIGHTGREATER "The height must be greater than 0"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_REGION_RUBBER        "Capture a selected region"
     ID_REGION_PANREGION     "Capture a fixed size region"
@@ -2207,14 +2204,14 @@ BEGIN
     ID_REGION_FULLSCREEN    "Capture the entire desktop"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_SCREENS_ALLSCREENS   "Capture all screens"
     ID_SCREENS_CHOOSESCREEN "Choose which screen to capture"
     ID_OPTIONS_VIDEOOPTIONS "Set video options"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_TOOLS_SWFPRODUCER    "Launch SWF Producer"
     ID_OPTIONS_SWF_LAUNCHHTML 
@@ -2238,7 +2235,7 @@ BEGIN
     ID_OPTIONS_LANGUAGE_GERMAN "Set program language to German"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_REGION_WINDOW        "Capture a window"
     ID_OPTIONS_MINIMIZEPROGRAMONSTARTRECORDING 
@@ -2259,7 +2256,7 @@ BEGIN
     ID_OPTIONS_AUDIOOPTIONS "Audio Options"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_OPTIONS_AUDIOFORMAT  "Set audio options for microphone"
     ID_HELP_FAQ             "Visit the frequently asked questions webpage "
@@ -2284,7 +2281,7 @@ BEGIN
     ID_OPTIONS_TEMPDIR_USER "Use user specified directory as recording directory"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_OPTIONS_RECORDAUDIO_DONOTRECORDAUDIO "Do not record audio"
     ID_OPTIONS_RECORDAUDIO_RECORDFROMSPEAKERS "Record audio from speakers"
@@ -2303,7 +2300,7 @@ BEGIN
     ID_VIEW_SCREENANNOTATIONS "Display screen annotations dialog"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_HEIGHTSMALLER 
                             "The height must be smaller than the screen height (%d)"
@@ -2329,7 +2326,7 @@ BEGIN
     IDS_STRING_PLAYBACKRATE "Playback Rate cannot be set to %d frames per second. Please enter a value in the range 1 to 200."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_NOCREATEWFILE 
                             "Unable to create new file. The file may be opened by another application. Please use another filename."
@@ -2355,7 +2352,7 @@ BEGIN
     IDS_STRING_ERRSOUND2    "Error Writing Sound File"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_UNSSC        "Unable to set shortcuts for %s"
     IDS_ERRPPRODUCER        "Error launching SWF Producer!"
@@ -2371,7 +2368,7 @@ BEGIN
                             "File Move Error. Unable to move or to rename/copy file. The source file may be opened by another application or destination file stilll exist. Please use another filename."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_NOINPUT3     "Unable to detect audio input device. You need a sound card with microphone input."
     IDS_STRING_METRICSFAILED "Metrics failed mmresult=%u!"
@@ -2393,7 +2390,7 @@ BEGIN
                             "Failure in getting compressor state! Error Value = %d"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_SETCOMPRESSOR "Failure in setting compressor state!"
     IDS_STRING_UNNECESSARY  "Please note: This step is unecessary if the auto search function already managed to detect the line for recording speakers output. You should use this only if the auto search function fails. Proceed?"
@@ -2413,7 +2410,7 @@ BEGIN
     IDS_STRING_HEARSEARCH   "You will hear several tones while CamStudio is searching your system. Please wait..."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_ANALINE      "Analyzing line %d of %d"
     IDS_STRING_LINEDETECTED "Line %d detected for recording sound from speakers! You may now close this dialog box."
@@ -2435,7 +2432,7 @@ BEGIN
     IDS_STRING_WGETVOLCTRL  "WaveoutGetVolumeControl() failed."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_WVOLINIT     "WaveoutVolumeInitialize() failed."
     IDS_STRING_OUTOFMEM     "Out of memory for audio buffer!"
@@ -2456,7 +2453,7 @@ BEGIN
     IDS_STRINGINVLAYOUTFILE "Invalid layout file"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_EDITOBJ_TESTEDIT     "Edit the name of the shape or layout"
     ID_EDITLAYOUT_OPENLAYOUT "Instantiate a layout"
@@ -2465,7 +2462,7 @@ BEGIN
     ID_EDITLAYOUT_LAYOUTSHORTCUTS "Display Layout Shortcuts"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_EDITOBJ_EDITIMAGE    "Edit the image of current shape"
     ID_EDITOBJ_EDITTEXT     "Edit the text of current shape"
@@ -2477,7 +2474,7 @@ BEGIN
                             "Edit the transparency of current shape (only applicable for Windows 2000 and XP)"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_EDITLAYOUT_LIBRARY_NEWLIBRARY "Create a new layout library"
     ID_EDITLAYOUT_LIBRARY_OPENLIBRARY "Open an existing layout library"
@@ -2487,7 +2484,7 @@ BEGIN
                             "Delay recording of audio or video stream to synchronize"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_EOLFS        "Error opening layout file for saving"
     IDS_STRINGWIDTHLESS20   "Width cannot be less than 20"
@@ -2508,7 +2505,7 @@ BEGIN
     IDS_STRINGSAVECLLA      "Save Current Layout Library"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_ANNOTATION_ADDSYSTEMTIMESTAMP "Add a system timestamp to the recording"
     ID_ANNOTATION_ADDXNOTE  "Add a Xnote stopwatch timestamp to the recording"
@@ -2521,7 +2518,7 @@ BEGIN
     ID_REGION_ALLSCREENS    "Capture all monitors"
 END
 
-#endif    // English (U.S.) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
