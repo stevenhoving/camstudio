@@ -4075,7 +4075,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 
 	// Document which version and release of Camstudio is used.
 	char cTmp[128] = "";
-	sprintf( cTmp, "<recorder><version>%s<\\version><release>%s<\\release><\\recorder>\n", CURRENT_VERSION_NUMBER, CURRENT_SVN_RELEASE_NUMBER );
+	sprintf( cTmp, "<recorder><version>%s<\\version><release>%s<\\release><\\recorder>\n", CURRENT_VERSION_NUMBER, CURRENT_HG_RELEASE_NUMBER );
 	WriteLineToXnoteLogFile( cTmp );
 
 	if (cVideoOpts.m_iShiftType == AUDIOFIRST) {
