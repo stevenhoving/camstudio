@@ -15,3 +15,5 @@ CamStudio/CxImage/raw/libdcr.vcxproj.user
 CamStudio/CxImage/png/png.vcxproj.user
 CamStudio/CxImage/tiff/Tiff.vcxproj.user
 CamStudio/CxImage/zlib/zlib.vcxproj.user
+CamStudio/Recorder/Recorder.aps
+CamStudio/CamStudio.opensdf
