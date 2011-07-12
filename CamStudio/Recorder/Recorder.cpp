@@ -169,6 +169,28 @@ CRecorderApp theApp;
 
 BOOL CRecorderApp::InitInstance()
 {	
+	// Parse command line for standard shell commands, DDE, file open
+ 	//CCamStudioCommandLineInfo cmdInfo;
+ 	ParseCommandLine(m_cmdInfo);
+ 
+ 	if (m_cmdInfo.hasLoadCodec()) {
+ 		// auto install codec here
+ 	}
+ 
+ 	if (m_cmdInfo.isStart()) {
+ 		m_iExitValue = 1; 
+ 	} else if(m_cmdInfo.isCodecs()) {
+ 		CString codecs=VideoCodecsInfo();
+ 		if(m_cmdInfo.hasOutFile()) {
+ 			CFile codecsFile(m_cmdInfo.OutFile(), CFile::modeCreate|CFile::modeWrite);
+ 			codecsFile.Write(codecs, codecs.GetLength());
+ 			codecsFile.Close();
+ 		} else {
+ 			AfxMessageBox(codecs);
+ 		}
+ 		return FALSE;
+ 	}
+	
 	// Initialize GDI+.
 	Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
@@ -188,15 +210,14 @@ BOOL CRecorderApp::InitInstance()
 	// The CWinApp destructor will free the memory.
 	CString strProfile;
 	strProfile.Format("%s\\CamStudio.cfg", (LPCSTR)(GetAppDataPath()));
-   if (!DoesFileExist(strProfile))
-      {
-      //Only reading, if the user has no file yet, see if a starter file was provided:
+	if (!DoesFileExist(strProfile)) {
+       //Only reading, if the user has no file yet, see if a starter file was provided:
 	   strProfile.Format("%s\\CamStudio.cfg", (LPCSTR)(GetProgPath()));
-      }
+	}
 	m_pszProfileName = _tcsdup(strProfile);
 
 	// TODO: re-enable when class complete
-	  // Read the file. If there is an error, report it and exit.
+	// Read the file. If there is an error, report it and exit.
 	cfg = new Config();
 	try
 	{
@@ -204,14 +225,12 @@ BOOL CRecorderApp::InitInstance()
 	}
 	catch(const FileIOException)
 	{// TODO: move me to resource
-		MessageBox(NULL, "CamStudio.cfg Config file was not found. Using defaults.", "Error", MB_OK);
 //		return(EXIT_FAILURE);
 	}
 	catch(const ParseException &pex)
 	{
 		char buf[1024];
 		_snprintf_s(buf, 1024, _TRUNCATE, "Config file parse error at %s:%d - %s", pex.getFile(), pex.getLine(), pex.getError());
-		MessageBox(NULL, buf, "Error", MB_OK);
 //		return(EXIT_FAILURE);
 	}
 
@@ -227,6 +246,18 @@ BOOL CRecorderApp::InitInstance()
 	}
 	//WriteProfileInt(SEC_SETTINGS, ENT_LANGID, m_wCurLangID);
 //	VERIFY(m_cmSettings.Write(LANGUAGE, m_wCurLangID));
+
+	// If stop command has been requested, try to exit the previous instance
+ 	if (m_cmdInfo.isStop()) {
+ 		CWnd *pWnd=PreviousInstance();
+ 		if(pWnd) {
+ 			((CMainFrame*)pWnd)->PostMessage(CMainFrame::WM_USER_STOPRECORD,0,0);
+ 			return TRUE;
+ 		} else {
+ 			MessageBox(NULL,"Previous instance not found","From Exe",MB_OK);
+ 			return FALSE;
+ 		}
+ 	}
 
 	if (!FirstInstance())
 		return FALSE;
@@ -289,10 +320,6 @@ BOOL CRecorderApp::InitInstance()
 		RUNTIME_CLASS(CRecorderView));
 	AddDocTemplate(pDocTemplate);
 
-	// Parse command line for standard shell commands, DDE, file open
-	//CCamStudioCommandLineInfo cmdInfo;
-	ParseCommandLine(m_cmdInfo);
-
 	// Dispatch commands specified on the command line
 	if (!ProcessShellCommand(m_cmdInfo))
 		return FALSE;
@@ -301,17 +328,35 @@ BOOL CRecorderApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 
-	if (cProgramOpts.m_iViewType != VIEW_NORMAL)
-      {
+	if (cProgramOpts.m_iViewType != VIEW_NORMAL) {
       CMainFrame* cwind = (CMainFrame*)AfxGetMainWnd();
       cwind->UpdateViewtype();
-      }
+	}
+
+	// Set property to find previous instance if needed
+ 	if (m_cmdInfo.isStart()) {
+		::SetProp(m_pMainWnd->GetSafeHwnd(),CAMSTUDIO_MUTEX,(HANDLE)1);
+ 		cRegionOpts.m_iMouseCaptureMode=CAPTURE_FIXED;
+ 		if(m_cmdInfo.X()>=0)
+ 			cRegionOpts.m_iCaptureLeft=m_cmdInfo.X();
+ 		if(m_cmdInfo.Y()>=0)
+ 			cRegionOpts.m_iCaptureTop=m_cmdInfo.Y();
+ 		if(m_cmdInfo.Width()>=0)
+ 			cRegionOpts.m_iCaptureWidth=m_cmdInfo.Width();
+ 		if(m_cmdInfo.Height()>=0)
+ 			cRegionOpts.m_iCaptureHeight=m_cmdInfo.Height();
+ 		((CMainFrame*)m_pMainWnd)->GetViewActive()->PostMessage(CRecorderView::WM_USER_RECORDAUTO,0,0);
+ 	}
 
 	return TRUE;
 }
 
 int CRecorderApp::ExitInstance()
 {
+	if(m_cmdInfo.isCodecs()) {
+ 		return 0;
+ 	}
+
 	Setting* s;
 	try {
 		if (!cfg->exists("Audio"))
@@ -386,7 +431,11 @@ int CRecorderApp::ExitInstance()
 
    //Save the configuration file out to the user appdata directory.
 	CString strProfile;
-	strProfile.Format("%s\\CamStudio.cfg", (LPCSTR)(GetAppDataPath()));
+	if(m_cmdInfo.hasCfgFile()) {
+ 		strProfile.Format("%s", m_cmdInfo.CfgFile());
+ 	} else {
+ 		strProfile.Format("%s\\CamStudio.cfg", (LPCSTR)(GetAppDataPath()));
+ 	}
 	cfg->writeFile(strProfile);
 	delete cfg;
 
@@ -412,11 +461,53 @@ void CRecorderApp::OnAppAbout()
 	aboutDlg.DoModal();
 }
 
+CString CRecorderApp::VideoCodecsInfo()
+{
+ 	CString str="";
+ 	ICINFO icinfo;
+ 	for (int i=0; ICInfo(0x63646976, i, &icinfo); i++) {
+ 		HIC hic = ICOpen(icinfo.fccType, icinfo.fccHandler, ICMODE_QUERY);
+ 		if (hic) {
+ 			ICGetInfo(hic, &icinfo, sizeof(ICINFO));
+ 			CString icstr;
+ 			icstr.Format("%d^%s^%s^%s\n",
+ 				icinfo.fccHandler,
+ 				(LPCTSTR)CString(icinfo.szName),
+ 				(LPCTSTR)CString(icinfo.szDescription),
+ 				(LPCTSTR)CString(icinfo.szDriver));
+ 			str += icstr;
+ 			ICClose(hic);
+ 		}
+ 	}
+ 	return str;
+}
+
+// Get the handle of a previous application instance
+CWnd *CRecorderApp::PreviousInstance()
+{
+ 	HANDLE hMutex = ::OpenMutex(MUTEX_ALL_ACCESS,FALSE, CAMSTUDIO_MUTEX);
+ 	if(hMutex == NULL) { // no such mutex there must be no existing instance
+ 		MessageBox(NULL,"Cannot open mutex","From Exe",MB_OK);
+ 		return NULL;
+ 	}
+ 	CWnd *pPrevWnd = CWnd::GetDesktopWindow()->GetWindow(GW_CHILD);
+ 	while (pPrevWnd) {
+ 		HWND hWnd = pPrevWnd->GetSafeHwnd();
+ 		if (::GetProp(hWnd,CAMSTUDIO_MUTEX)) {
+ 			return pPrevWnd;
+ 		}
+ 		pPrevWnd = pPrevWnd->GetWindow(GW_HWNDNEXT);
+ 	}
+ 	MessageBox(NULL,"No instance found","From Exe",MB_OK);
+ 	return NULL;
+}
+ 
+
 // Determine if another window with our class name exists...
 // return TRUE if no previous instance running;	FALSE otherwise
-BOOL CRecorderApp::FirstInstance()
+bool CRecorderApp::FirstInstance()
 {
-	BOOL bPrevInstance = FALSE;
+	bool bPrevInstance = FALSE;
 	m_hAppMutex = ::CreateMutex(0, TRUE, CAMSTUDIO_MUTEX);
 	bPrevInstance = (0 != m_hAppMutex);
 	if (!bPrevInstance) {

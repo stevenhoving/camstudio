@@ -23,7 +23,7 @@ public:
 // Operations
 public:
 	void UpdateViewtype();
-
+	CView *GetViewActive();
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CMainFrame)
@@ -64,12 +64,14 @@ protected:
 	afx_msg LRESULT OnTrayNotify(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnXNote(UINT wParam, LONG lParam);
 	afx_msg LRESULT OnMotionDetector(UINT wParam, LONG lParam);
+	afx_msg LRESULT OnStopRecord(UINT wParam, LONG lParam);
 	DECLARE_MESSAGE_MAP()
 private:
 	CTrayIcon m_TrayIcon;
 	static const UINT WM_USER_XNOTE;
 	static const UINT WM_USER_MOTIONDETECTOR;
 public:
+	static const UINT WM_USER_STOPRECORD;
 };
 
 /////////////////////////////////////////////////////////////////////////////

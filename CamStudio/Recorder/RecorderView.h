@@ -59,6 +59,7 @@ public:
 	VOID XNoteProcessWinMessage(int iActionID, int iSensorID, int iSourceID, ULONG lXnoteTimeInMilliSeconds);
 	bool GetRecordState();
 	bool GetPausedState();
+	void RecordStart();
 	static VOID XNoteSetRecordingInPauseMode(void);
 	static void XNoteActionStopwatchResetParams(void);
 
@@ -194,6 +195,7 @@ protected:
 	afx_msg void OnCamstudio4XnoteWebsite();  // OnHelpWebsite
 	//}}AFX_MSG
 	afx_msg LRESULT OnRecordStart (UINT wParam, LONG lParam);
+	afx_msg LRESULT OnRecordAuto (UINT wParam, LONG lParam);
 	afx_msg LRESULT OnRecordInterrupted (UINT wParam, LONG lParam);
 	afx_msg LRESULT OnRecordPaused (UINT wParam, LONG lParam);
 	afx_msg LRESULT OnSaveCursor (UINT wParam, LONG lParam);
@@ -211,6 +213,7 @@ public:
 	static UINT WM_USER_SAVECURSOR;
 	static UINT WM_USER_GENERIC;
 	static UINT WM_USER_RECORDSTART;
+	static UINT WM_USER_RECORDAUTO;
 
 private:
 	CFlashingWnd m_FlashingWnd;
@@ -236,6 +239,8 @@ private:
 	static UINT RecordThread(LPVOID pParam);
 	bool RunViewer(const CString& strNewFile);
 	bool RunProducer(const CString& strNewFile);
+	bool HandleAutoMode(bool aSuccess);
+ 	bool IsStealthMode();
 
 	// dialog controls
 	// TEST a la AudioFormat.cpp
