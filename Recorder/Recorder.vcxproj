@@ -391,6 +391,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <ClInclude Include="VideoWnd.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram4.cd" />
     <None Include="res\bitmap1.bmp" />
     <None Include="res\bitmap2.bmp" />
     <None Include="res\bitmap5.bmp" />

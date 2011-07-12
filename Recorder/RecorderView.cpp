@@ -367,6 +367,7 @@ UINT CRecorderView::WM_USER_RECORDPAUSED = ::RegisterWindowMessage(WM_USER_RECOR
 UINT CRecorderView::WM_USER_SAVECURSOR = ::RegisterWindowMessage(WM_USER_SAVECURSOR_MSG);
 UINT CRecorderView::WM_USER_GENERIC = ::RegisterWindowMessage(WM_USER_GENERIC_MSG);
 UINT CRecorderView::WM_USER_RECORDSTART = ::RegisterWindowMessage(WM_USER_RECORDSTART_MSG);
+UINT CRecorderView::WM_USER_RECORDAUTO = ::RegisterWindowMessage(WM_USER_RECORDAUTO_MSG);
 
 IMPLEMENT_DYNCREATE(CRecorderView, CView)
 
@@ -494,6 +495,7 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDPAUSED, OnRecordPaused)
 	ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_SAVECURSOR, OnSaveCursor)
 	ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_GENERIC, OnUserGeneric)
+	ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDAUTO, OnRecordAuto)
 	ON_MESSAGE(MM_WIM_DATA, OnMM_WIM_DATA)
 	ON_MESSAGE(WM_HOTKEY, OnHotKey)
 	ON_COMMAND(ID_HELP_CAMSTUDIOBLOG, OnHelpCamstudioblog)
@@ -735,6 +737,22 @@ void CRecorderView::OnDestroy()
 	CView::OnDestroy();
 }
 
+void CRecorderView::RecordStart() {
+ 	OnRecordStart(NULL,NULL);
+}
+ 
+LRESULT CRecorderView::OnRecordAuto(UINT /*wParam*/, LONG /*lParam*/)
+{
+ 	CRect rc = CRect(cRegionOpts.m_iCaptureLeft,							// X = Left
+ 			    cRegionOpts.m_iCaptureTop,									// Y = Top
+ 				cRegionOpts.m_iCaptureLeft + cRegionOpts.m_iCaptureWidth,   // X = Width
+ 				cRegionOpts.m_iCaptureTop  + cRegionOpts.m_iCaptureHeight); // Y = Height
+ 	rc.NormalizeRect();
+ 	rcUse = rc;
+ 	OnRecordStart(NULL,NULL);
+ 	return 0;
+}
+
 LRESULT CRecorderView::OnRecordStart(UINT /*wParam*/, LONG /*lParam*/)
 {
 	TRACE("CRecorderView::OnRecordStart\n");
@@ -771,6 +789,8 @@ LRESULT CRecorderView::OnRecordStart(UINT /*wParam*/, LONG /*lParam*/)
 
 	CWinThread * pThread = AfxBeginThread(RecordThread, this);
 
+	printf("%dx%d\n",rcUse.Width(),rcUse.Height());
+
 	//Ver 1.3
 	if (pThread)
 		pThread->SetThreadPriority(cProgramOpts.m_iThreadPriority);
@@ -780,7 +800,6 @@ LRESULT CRecorderView::OnRecordStart(UINT /*wParam*/, LONG /*lParam*/)
 
 	return 0;
 }
-
 
 LRESULT CRecorderView::OnRecordPaused (UINT /*wParam*/, LONG /*lParam*/)
 {
@@ -793,7 +812,6 @@ LRESULT CRecorderView::OnRecordPaused (UINT /*wParam*/, LONG /*lParam*/)
 
 	return 0;
 }
-
 
 LRESULT CRecorderView::OnRecordInterrupted (UINT wParam, LONG /*lParam*/)
 {
@@ -819,10 +837,12 @@ LRESULT CRecorderView::OnRecordInterrupted (UINT wParam, LONG /*lParam*/)
 
 	Invalidate();
 
+	CCamStudioCommandLineInfo *cmdInfo=static_cast<CRecorderApp*>(AfxGetApp())->CommandLineInfo();
+	if(!cmdInfo->isStealth()) {
 	//ver 1.2
 	::SetForegroundWindow(AfxGetMainWnd()->m_hWnd);
 	AfxGetMainWnd()->ShowWindow(SW_RESTORE);
-
+	}
 	return 0;
 }
 
@@ -918,9 +938,14 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	CString strTargetXnoteLogFile = "";			// Xnote log filename initial without path but with extension
 	CString strTargetVideoExtension = ".avi";
 
-	//ver 1.2
-	::SetForegroundWindow( AfxGetMainWnd()->m_hWnd);
-	AfxGetMainWnd()->ShowWindow(SW_RESTORE);
+
+ 	CCamStudioCommandLineInfo *cmdInfo=static_cast<CRecorderApp*>(AfxGetApp())->CommandLineInfo();
+ 	
+ 	if(!cmdInfo->isStealth()) {
+ 		//ver 1.2
+ 		::SetForegroundWindow( AfxGetMainWnd()->m_hWnd);
+		AfxGetMainWnd()->ShowWindow(SW_RESTORE);
+ 	}
 
 	//ver 1.2
 	// FIXME: this is not quite right. Shall be bCancelled or something
@@ -931,8 +956,8 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		DeleteFile(strTempXnoteLogFilePath);
 		if (!cAudioFormat.isInput(NONE))
 			DeleteFile(strTempAudioWavFilePath);
+		HandleAutoMode(false);
 		return 0;
-
 	}
 
 	////////////////////////////////////
@@ -1082,10 +1107,11 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		case 4:		// recover video file
 			// video file is ok, but not audio file
 			// so Move the video file as avi and ignore the audio  (Move = More or Copy+Delete)
-			if (!MoveFile( strTempVideoAviFilePath, strTargetVideoFile)) {
+			if (!DoesFileExist && !MoveFile(strTempVideoAviFilePath, strTargetVideoFile)) {
 				//Although there is error copying, the temp file still remains in the temp directory and is not deleted, in case user wants a manual recover
 				//MessageBox("File Creation Error. Unable to rename/copy file.","Note",MB_OK | MB_ICONEXCLAMATION);
 				MessageOut(m_hWnd,IDS_STRING_MOVEFILEFAILURE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+				HandleAutoMode(false);
 				return 0;
 			}
 
@@ -1104,6 +1130,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 				if (!MoveFile( strTempVideoAviFilePath, strTargetAudioFile)) {
 					//MessageBox("File Creation Error. Unable to rename/copy video file.","Note",MB_OK | MB_ICONEXCLAMATION);
 					MessageOut(m_hWnd,IDS_STRING_MOVEFILEFAILURE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+					HandleAutoMode(false);
 					return 0;
 				}
 	
@@ -1116,6 +1143,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 				if (!MoveFile(strTempAudioWavFilePath,strTargetAudioFile)) {
 					//MessageBox("File Creation Error. Unable to rename/copy audio file.","Note",MB_OK | MB_ICONEXCLAMATION);
 					MessageOut(m_hWnd,IDS_STRING_FILECREATION3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+					HandleAutoMode(false);
 					return 0;
 				}
 
@@ -1140,8 +1168,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		// No audio, just do a plain copy of temp avi to final avi will do the job
 		// MoveFile behaviour. First it will try to rename file. If not possible it will do a copy and a delete.
 		//////////////////////////////////////////////////
-		if ( !MoveFile(strTempVideoAviFilePath, strTargetVideoFile) ) 
-		{
+		if (!MoveFile(strTempVideoAviFilePath, strTargetVideoFile)) {
 			// Unable to rename/copy file.
 			// In case of an move problem we do nothing. Source has an unique name and not to delete the source file don't cause problems anylonger
 			// The file may be opened by another application.
@@ -1152,7 +1179,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 			return 0;
 		}
 		
-		if (!MoveFile( strTempXnoteLogFilePath, strTargetXnoteLogFile) ) {
+		if (!MoveFile(strTempXnoteLogFilePath, strTargetXnoteLogFile)) {
 			MessageOut(m_hWnd,IDS_STRING_MOVEFILEFAILURE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			// No issue to quit because we got the recording and we can continue
 		}
@@ -1172,15 +1199,35 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	}
 	// TEST
 
-	//ver 2.26
-	if (cProgramOpts.m_iRecordingMode == ModeAVI) {
-		RunViewer(strTargetVideoFile);
-	} else {
-		RunProducer(strTargetVideoFile);
+	if(HandleAutoMode(false)) {
+		//ver 2.26
+		if (cProgramOpts.m_iRecordingMode == ModeAVI) {
+			RunViewer(strTargetVideoFile);
+		} else {
+			RunProducer(strTargetVideoFile);
+		}
 	}
-
 	return 0;
 }
+
+
+// ensure the application exits if run in auto mode
+bool CRecorderView::HandleAutoMode(bool aSuccess) {
+	CRecorderApp * pApp = static_cast<CRecorderApp*>(AfxGetApp());
+	CCamStudioCommandLineInfo *cmdInfo=pApp->CommandLineInfo();
+	if(cmdInfo->isStart()) {
+ 		pApp->SetExitValue(aSuccess ? 0 : 1);
+		::PostMessage(AfxGetMainWnd()->GetSafeHwnd(),WM_CLOSE,0,0);
+ 		return true;
+	}
+	return false;
+}
+
+// tell whether the program has been laucnhed in stealth mode
+bool CRecorderView::IsStealthMode() {
+	return static_cast<CRecorderApp*>(AfxGetApp())->CommandLineInfo()->isStealth();
+}
+
 
 void CRecorderView::OnRecord()
 {
@@ -1222,8 +1269,8 @@ void CRecorderView::OnRecord()
 
 		rc = CRect(cRegionOpts.m_iCaptureLeft,										 // X = Left
 			       cRegionOpts.m_iCaptureTop,										 // Y = Top
-				   cRegionOpts.m_iCaptureLeft + cRegionOpts.m_iCaptureWidth  - 1 ,   // X = Width
-				   cRegionOpts.m_iCaptureTop  + cRegionOpts.m_iCaptureHeight - 1 );  // Y = Height
+				   cRegionOpts.m_iCaptureLeft + cRegionOpts.m_iCaptureWidth  - 1,   // X = Width
+				   cRegionOpts.m_iCaptureTop  + cRegionOpts.m_iCaptureHeight - 1);  // Y = Height
 
 		// TRACE( _T("## CRecorderView::OnRecord /CAPTURE_FIXED/ before / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
 
@@ -1343,8 +1390,7 @@ void CRecorderView::OnFileVideooptions()
 	// TODO, Possible memory leak, where is the delete operation of the new below done?
 	pCompressorInfo = new ICINFO[MAXCOMPRESSORS];
 
-	//for (int i = 0; ICInfo(ICTYPE_VIDEO, i, &pCompressorInfo[num_compressor]); i++) {
-	for (int i = 0; ICInfo(0, i, &pCompressorInfo[num_compressor]); i++) {
+	for (int i = 0; ICInfo(ICTYPE_VIDEO, i, &pCompressorInfo[num_compressor]); i++) {
 		if (MAXCOMPRESSORS <= num_compressor) {
 			break; //maximum allows 30 compressors
 		}
@@ -3963,7 +4009,6 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 	PAVISTREAM 	ps = NULL;
 	PAVISTREAM 	psCompressed = NULL;
 	
-	
 	HRESULT hr = ::AVIFileOpen(&pfile, szVideoFileName, OF_WRITE | OF_CREATE, NULL);
 	if (hr != AVIERR_OK) {
 		TRACE("CRecorderView::RecordVideo: VideoAviFileOpen error\n");
@@ -5143,7 +5188,5 @@ void GetVideoCompressState (HIC hic, DWORD fccHandler)
 }
 
 #endif  //THIS_COULD_BE_OBSOLETE_CODE
-
-
 
 }	// namespace annonymous
