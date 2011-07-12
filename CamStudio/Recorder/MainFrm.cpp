@@ -80,6 +80,7 @@ static HMENU hMenu = NULL;
 // Do not change applied RegisterWindowMessage names because otherwise the communication link between sender and receiver application is broken.
 const UINT CMainFrame::WM_USER_XNOTE = ::RegisterWindowMessage("XNote");
 const UINT CMainFrame::WM_USER_MOTIONDETECTOR = ::RegisterWindowMessage("MotionAlerter");
+const UINT CMainFrame::WM_USER_STOPRECORD = ::RegisterWindowMessage("StopRecord");
 
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
@@ -98,6 +99,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(CTrayIcon::m_WM_TRAY_ICON_NOTIFY_MESSAGE,OnTrayNotify)
 	ON_REGISTERED_MESSAGE(CMainFrame::WM_USER_XNOTE, OnXNote)
 	ON_REGISTERED_MESSAGE(CMainFrame::WM_USER_MOTIONDETECTOR, OnMotionDetector)
+	ON_REGISTERED_MESSAGE(CMainFrame::WM_USER_STOPRECORD, OnStopRecord)
 	ON_WM_SYSCOMMAND()
 END_MESSAGE_MAP()
 
@@ -140,6 +142,20 @@ LRESULT CMainFrame::OnXNote(UINT wParam, LONG lParam)
 	//TRACE("## CMainFrame::OnXNote (u)    wParam=[%u] HI[%u], LO[%u] nHiMod256=[%d]\n",wParam, HIWORD(wParam), LOWORD(wParam), nHiMod256 );
 	dynamic_cast<CRecorderView *>(m_pViewActive)->XNoteProcessWinMessage( nHiMod256, LOWORD(wParam), XNOTE_SOURCE_XNOTESTOPWATCH , (ULONG)lParam );
 
+	return 0;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// Initiates recording stop from the recorder view
+//
+// CMainFrame::OnStopRecord
+// wParam: unused
+// lParam: unsued
+//////////////////////////////////////////////////////////
+LRESULT CMainFrame::OnStopRecord(UINT /*wParam*/, LONG /*lParam*/ )
+{
+ 	dynamic_cast<CRecorderView *>(m_pViewActive)->PostMessage(CRecorderView::WM_USER_RECORDINTERRUPTED,0,0);
+ 
 	return 0;
 }
 
@@ -471,3 +487,7 @@ LRESULT CMainFrame::OnTrayNotify(WPARAM wParam, LPARAM lParam)
 	return m_TrayIcon.OnTrayNotify(wParam, lParam);
 }
 
+CView *CMainFrame::GetViewActive()
+{
+ 	return dynamic_cast<CRecorderView *>(m_pViewActive);
+}

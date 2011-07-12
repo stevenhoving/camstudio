@@ -67,6 +67,10 @@ public:
 		return m_wCurLangID;
 	}
 	int VersionOp() const				{return m_iVersionOp;}
+	CCamStudioCommandLineInfo *CommandLineInfo() {return &m_cmdInfo;}
+ 	void SetExitValue(int iExitValue) {
+ 		m_iExitValue = iExitValue;
+ 	}
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -89,13 +93,15 @@ private:
 	HANDLE m_hAppMutex;
 	LANGID m_wCurLangID;
 	int m_iVersionOp;
+	int m_iExitValue;
 	CCamStudioCommandLineInfo m_cmdInfo;
-
+	CWnd *PreviousInstance();
+	CString VideoCodecsInfo();
 	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 	ULONG_PTR           gdiplusToken;
 
 	bool RegisterWindowClass();
-	BOOL FirstInstance();
+	bool FirstInstance();
 	bool LoadLanguage(LANGID LangID);
 };
 

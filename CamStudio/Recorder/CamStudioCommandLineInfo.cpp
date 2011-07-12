@@ -10,6 +10,14 @@ CCamStudioCommandLineInfo::CCamStudioCommandLineInfo(void)
 , m_csOutfile(_T(""))
 , m_iSeconds(0)
 , m_bHelp(false)
+, m_bStealth(false)
+, m_bStart(false)
+, m_bStop(false)
+, m_bCodecs(false)
+, m_iX(-1)
+, m_iY(-1)
+, m_iWidth(-1)
+, m_iHeight(-1)
 {
 }
 
@@ -44,6 +52,40 @@ void CCamStudioCommandLineInfo::ParseParam(const TCHAR* pszParam, BOOL bFlag, BO
 		} else if (csArg == _T("seconds")) {
 			TRACE("CCamStudioCommandLineInfo::ParseParam: -seconds\n");
 			nArgIndex = 3;
+ 		} else if (csArg == _T("x")) {
+ 			TRACE("CCamStudioCommandLineInfo::ParseParam: -x\n");
+ 			nArgIndex = 4;
+ 		} else if (csArg == _T("y")) {
+ 			TRACE("CCamStudioCommandLineInfo::ParseParam: -y\n");
+ 			nArgIndex = 5;
+ 		} else if (csArg == _T("width")) {
+ 			TRACE("CCamStudioCommandLineInfo::ParseParam: -width\n");
+ 			nArgIndex = 6;
+ 		} else if (csArg == _T("height")) {
+ 			TRACE("CCamStudioCommandLineInfo::ParseParam: -height\n");
+ 			nArgIndex = 7;
+ 		} else if (csArg == _T("stealth")) {
+ 			TRACE("CCamStudioCommandLineInfo::ParseParam: -stealth\n");
+ 			m_bStealth = true;
+ 			nArgIndex = 0;	// takes no arguments
+ 		} else if (csArg == _T("start")) {
+ 			TRACE("CCamStudioCommandLineInfo::ParseParam: -start\n");
+ 			m_bStart = true;
+ 			nArgIndex = 0;	// takes no arguments
+ 		} else if (csArg == _T("stop")) {
+ 			TRACE("CCamStudioCommandLineInfo::ParseParam: -stop\n");
+ 			m_bStop = true;
+ 			nArgIndex = 0;	// takes no arguments
+ 		} else if (csArg == _T("codecs")) {
+ 			TRACE("CCamStudioCommandLineInfo::ParseParam: -codecs\n");
+ 			m_bCodecs = true;
+ 			nArgIndex = 0;	// takes no arguments
+ 		} else if (csArg == _T("cfgfile")) {
+ 			TRACE("CCamStudioCommandLineInfo::ParseParam: -cfgfile\n");
+ 			nArgIndex = 8;
+ 		} else if (csArg == _T("loadcodec")) {
+ 			TRACE("CCamStudioCommandLineInfo::ParseParam: -loadcodec\n");
+ 			nArgIndex = 9;
 		} else if (csArg == _T("help")) {
 			TRACE("CCamStudioCommandLineInfo::ParseParam: -help\n");
 			m_bHelp = true;
@@ -73,6 +115,30 @@ void CCamStudioCommandLineInfo::ParseParam(const TCHAR* pszParam, BOOL bFlag, BO
 			// integer argument
 			m_iSeconds = ::_tstoi(pszParam);
 			break;
+		case 4:
+ 			// integer argument
+ 			m_iX = ::_tstoi(pszParam);
+ 			break;
+ 		case 5:
+ 			// integer argument
+ 			m_iY = ::_tstoi(pszParam);
+ 			break;
+ 		case 6:
+ 			// integer argument
+ 			m_iWidth = ::_tstoi(pszParam);
+ 			break;
+ 		case 7:
+ 			// integer argument
+ 			m_iHeight = ::_tstoi(pszParam);
+ 			break;
+ 		case 8:	// [-cfgfile <config file>]
+ 			// string argument
+ 			m_csCfgfile = pszParam;
+ 			break;
+ 		case 9:	// [-loadcodec <codec dll>]
+ 			// string argument
+ 			m_csLoadcodec = pszParam;
+ 			break;
 		}
 	}
 }
