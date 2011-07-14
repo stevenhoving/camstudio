@@ -391,7 +391,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <ClInclude Include="VideoWnd.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram4.cd" />
+    <None Include="ClassDiagram.cd" />
     <None Include="res\bitmap1.bmp" />
     <None Include="res\bitmap2.bmp" />
     <None Include="res\bitmap5.bmp" />
@@ -450,9 +450,6 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <None Include="res\Toolbar256.bmp" />
     <None Include="res\ToolbarMask.bmp" />
     <None Include="res\ToolbarPalette256.bmp" />
-    <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
-    <None Include="ClassDiagram3.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="addons\AnnotationEffectsOptions.cpp" />
