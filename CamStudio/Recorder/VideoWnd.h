@@ -45,6 +45,9 @@ public:
 	virtual void CreateTransparent(LPCTSTR pTitle, RECT rect,  HBITMAP BitmapID);
 	virtual void OnUpdateContextMenu();
 	void OnUpdateSize();
+
+	void ImagePos( CSize &sz );
+
 	void AdjustRefreshRate(int rate);
 
 	// Generated message map functions
