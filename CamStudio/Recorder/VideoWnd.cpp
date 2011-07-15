@@ -283,19 +283,13 @@ void CVideoWnd::OnUpdateSize()
 {
 	if (!m_iStatus) {
 		CSize sz(180,160);
-		SetWindowPos(NULL,0,0, sz.cx-1, sz.cy-1, SWP_NOMOVE|SWP_NOZORDER);
-
-		m_rectWnd.right = m_rectWnd.left + sz.cx - 1;
-		m_rectWnd.bottom = m_rectWnd.top + sz.cy - 1;
-
+		ImagePos(sz);
 		SetupRegion();
 		Invalidate();
 	} else if (m_FrameGrabber.GetSafeHwnd()) {
 		CSize sz = m_FrameGrabber.GetImageSize();
-		SetWindowPos(NULL,0,0, sz.cx-1, sz.cy-1, SWP_NOMOVE|SWP_NOZORDER);
+		ImagePos(sz);
 
-		m_rectWnd.right = m_rectWnd.left + sz.cx - 1;
-		m_rectWnd.bottom = m_rectWnd.top + sz.cy - 1;
 
 		//CRect rcc;
 		//CRect rcw;
@@ -370,4 +364,12 @@ void CVideoWnd::OnContextvideoEdittransparency()
 	}
 
 	CTransparentWnd::EditTransparency();
+}
+
+void CVideoWnd::ImagePos( CSize &sz )
+{
+	SetWindowPos(NULL,0,0, sz.cx-1, sz.cy-1, SWP_NOMOVE|SWP_NOZORDER);
+
+	m_rectWnd.right = m_rectWnd.left + sz.cx - 1;
+	m_rectWnd.bottom = m_rectWnd.top + sz.cy - 1;
 }
