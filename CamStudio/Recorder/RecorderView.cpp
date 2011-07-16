@@ -3744,8 +3744,8 @@ bool CRecorderView::captureScreenFrame(const CRect& rectView, bool bDisableRect)
         } else
         {	// FIXME: change zoom from current state in case use changed mind zooming
             _zoom = 1.5 - cos(ago*3.141592/threshold)/1.9*_zoomDirection;
-            if (_zoom>2.) _zoom = 2.;
-            if (_zoom<1.) _zoom = 1.;
+            if (_zoom>2) _zoom = 2;
+            if (_zoom<1) _zoom = 1;
         }
     }
 

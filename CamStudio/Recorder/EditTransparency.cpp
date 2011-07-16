@@ -53,7 +53,7 @@ void CEditTransparencyDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CEditTransparencyDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
-	DDX_Control(pDX, IDC_CHECK1, m_ctrlButtonEnableTranparency);
+	DDX_Control(pDX, IDC_CHECK1, m_bEnableTranparency);
 	DDX_Control(pDX, IDC_TRANSSLIDER, m_ctrlSliderTransparency);
 	DDX_Control(pDX, IDC_TRANSTEXT, m_ctrlStaticTransparency);
 }
@@ -71,7 +71,7 @@ END_MESSAGE_MAP()
 void CEditTransparencyDlg::OnCheck1()
 {
 	// TODO: Add your control notification handler code here
-	m_rbEnableTrans = m_ctrlButtonEnableTranparency.GetCheck();
+	m_rbEnableTrans = m_bEnableTranparency.GetCheck();
 
 	m_ctrlSliderTransparency.EnableWindow(m_rbEnableTrans);
 	m_pTransparentWnd->InvalidateTransparency();
@@ -100,7 +100,7 @@ BOOL CEditTransparencyDlg::OnInitDialog()
 	m_ctrlSliderTransparency.SetRange(0, 100);
 	m_ctrlSliderTransparency.SetPos(m_riLevel);
 
-	m_ctrlButtonEnableTranparency.SetCheck(m_rbEnableTrans);
+	m_bEnableTranparency.SetCheck(m_rbEnableTrans);
 
 	CString valstr;
 	valstr.Format("%d", m_riLevel);
