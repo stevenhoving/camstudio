@@ -185,7 +185,7 @@ BOOL CFlashingWnd::OnEraseBkgnd(CDC* /*pDC*/)
 
 void CFlashingWnd::OnLButtonDown(UINT /*nFlags*/, CPoint /*point*/)
 {
-	if (!cRegionOpts.m_bSupportMouseDrag) {
+	if (!cRegionOpts.m_bMouseDrag) {
 		return;
 	}
 
@@ -198,7 +198,7 @@ void CFlashingWnd::OnLButtonDown(UINT /*nFlags*/, CPoint /*point*/)
 
 void CFlashingWnd::OnLButtonUp(UINT /*nFlags*/, CPoint /*point*/)
 {
-	if (!cRegionOpts.m_bSupportMouseDrag) {
+	if (!cRegionOpts.m_bMouseDrag) {
 		return;
 	}
 
@@ -217,7 +217,7 @@ void CFlashingWnd::OnLButtonUp(UINT /*nFlags*/, CPoint /*point*/)
 
 void CFlashingWnd::OnMouseMove(UINT nFlags, CPoint point)
 {
-	if (cRegionOpts.m_bSupportMouseDrag) {
+	if (cRegionOpts.m_bMouseDrag) {
 		if (m_bStartDrag) {
 			if (m_hCursorMove) {
 				SetCursor(m_hCursorMove);
