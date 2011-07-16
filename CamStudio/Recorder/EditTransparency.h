@@ -18,7 +18,7 @@ class CEditTransparencyDlg : public CDialog
 // Construction
 	CEditTransparencyDlg(CWnd* pParent = NULL);   // standard constructor; not used
 public:
-	CEditTransparencyDlg(int& bEnable, int& iLevel, CTransparentWnd* pParent);
+	CEditTransparencyDlg(bool& bEnable, int& iLevel, CTransparentWnd* pParent);
 
 // Dialog Data
 	//{{AFX_DATA(CEditTransparencyDlg)
@@ -47,10 +47,10 @@ protected:
 public:
 
 private:
-	int& m_rbEnableTrans;	// TODO: should be bool&
-	int& m_riLevel;
-	int m_bEnableTransOld;	// TODO: should be bool
 	int m_iLevelOld;
+	int& m_riLevel;
+	bool& m_rbEnableTrans;
+	bool m_bEnableTransOld;
 	CTransparentWnd* m_pTransparentWnd;
 
 	CButton m_ctrlButtonEnableTranparency;

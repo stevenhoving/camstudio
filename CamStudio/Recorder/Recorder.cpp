@@ -336,15 +336,15 @@ BOOL CRecorderApp::InitInstance()
 	// Set property to find previous instance if needed
  	if (m_cmdInfo.isStart()) {
 		::SetProp(m_pMainWnd->GetSafeHwnd(),CAMSTUDIO_MUTEX,(HANDLE)1);
- 		cRegionOpts.m_iMouseCaptureMode=CAPTURE_FIXED;
+ 		cRegionOpts.m_iCaptureMode=CAPTURE_FIXED;
  		if(m_cmdInfo.X()>=0)
- 			cRegionOpts.m_iCaptureLeft=m_cmdInfo.X();
+ 			cRegionOpts.m_iLeft=m_cmdInfo.X();
  		if(m_cmdInfo.Y()>=0)
- 			cRegionOpts.m_iCaptureTop=m_cmdInfo.Y();
+ 			cRegionOpts.m_iTop=m_cmdInfo.Y();
  		if(m_cmdInfo.Width()>=0)
- 			cRegionOpts.m_iCaptureWidth=m_cmdInfo.Width();
+ 			cRegionOpts.m_iWidth=m_cmdInfo.Width();
  		if(m_cmdInfo.Height()>=0)
- 			cRegionOpts.m_iCaptureHeight=m_cmdInfo.Height();
+ 			cRegionOpts.m_iHeight=m_cmdInfo.Height();
  		((CMainFrame*)m_pMainWnd)->GetViewActive()->PostMessage(CRecorderView::WM_USER_RECORDAUTO,0,0);
  	}
 

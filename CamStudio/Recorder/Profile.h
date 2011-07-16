@@ -260,13 +260,13 @@ enum eCaptureType
 struct sRegionOpts
 {
 	sRegionOpts()
-		: m_bFixedCapture(false)
-		, m_bSupportMouseDrag(false)
-		, m_iMouseCaptureMode(CAPTURE_FIXED)
-		, m_iCaptureLeft(100)
-		, m_iCaptureTop(100)
-		, m_iCaptureWidth(320)
-		, m_iCaptureHeight(240)
+		: m_bFixed(false)
+		, m_bMouseDrag(false)
+		, m_iCaptureMode(CAPTURE_FIXED)
+		, m_iLeft(100)
+		, m_iTop(100)
+		, m_iWidth(320)
+		, m_iHeight(240)
 	{
 	}
 	sRegionOpts(const sRegionOpts& rhs)
@@ -278,49 +278,49 @@ struct sRegionOpts
 		if (this == &rhs)
 			return *this;
 
-		m_bFixedCapture		= rhs.m_bFixedCapture;
-		m_bSupportMouseDrag	= rhs.m_bSupportMouseDrag;
-		m_iMouseCaptureMode	= rhs.m_iMouseCaptureMode;
-		m_iCaptureLeft		= rhs.m_iCaptureLeft;
-		m_iCaptureTop		= rhs.m_iCaptureTop;
-		m_iCaptureWidth		= rhs.m_iCaptureWidth;
-		m_iCaptureHeight	= rhs.m_iCaptureHeight;
+		m_bFixed		= rhs.m_bFixed;
+		m_bMouseDrag	= rhs.m_bMouseDrag;
+		m_iCaptureMode	= rhs.m_iCaptureMode;
+		m_iLeft		= rhs.m_iLeft;
+		m_iTop		= rhs.m_iTop;
+		m_iWidth		= rhs.m_iWidth;
+		m_iHeight	= rhs.m_iHeight;
 		return *this;
 	}
 	bool Read(Setting& cProfile)
 	{
-		cProfile.lookupValue("FixedCapture", m_bFixedCapture);
-		cProfile.lookupValue("SupportMouseDrag", m_bSupportMouseDrag);
-		cProfile.lookupValue("MouseCaptureMode", m_iMouseCaptureMode);		
-		cProfile.lookupValue("Left", m_iCaptureLeft);
-		cProfile.lookupValue("Top", m_iCaptureTop);
-		cProfile.lookupValue("Width", m_iCaptureWidth);
-		cProfile.lookupValue("Height", m_iCaptureHeight);
+		cProfile.lookupValue("FixedCapture", m_bFixed);
+		cProfile.lookupValue("SupportMouseDrag", m_bMouseDrag);
+		cProfile.lookupValue("MouseCaptureMode", m_iCaptureMode);		
+		cProfile.lookupValue("Left", m_iLeft);
+		cProfile.lookupValue("Top", m_iTop);
+		cProfile.lookupValue("Width", m_iWidth);
+		cProfile.lookupValue("Height", m_iHeight);
 
 		return true;
 	}
 	bool Write(Setting& cProfile)
 	{
-		UpdateSetting(cProfile,"FixedCapture", m_bFixedCapture, Setting::TypeBoolean);
-		UpdateSetting(cProfile,"SupportMouseDrag", m_bSupportMouseDrag, Setting::TypeBoolean);
-		UpdateSetting(cProfile,"MouseCaptureMode", m_iMouseCaptureMode, Setting::TypeInt);		
-		UpdateSetting(cProfile,"Left", m_iCaptureLeft, Setting::TypeInt);
-		UpdateSetting(cProfile,"Top", m_iCaptureTop, Setting::TypeInt);
-		UpdateSetting(cProfile,"Width", m_iCaptureWidth, Setting::TypeInt);
-		UpdateSetting(cProfile,"Height", m_iCaptureHeight, Setting::TypeInt);
+		UpdateSetting(cProfile,"FixedCapture", m_bFixed, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"SupportMouseDrag", m_bMouseDrag, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"MouseCaptureMode", m_iCaptureMode, Setting::TypeInt);		
+		UpdateSetting(cProfile,"Left", m_iLeft, Setting::TypeInt);
+		UpdateSetting(cProfile,"Top", m_iTop, Setting::TypeInt);
+		UpdateSetting(cProfile,"Width", m_iWidth, Setting::TypeInt);
+		UpdateSetting(cProfile,"Height", m_iHeight, Setting::TypeInt);
 		return true;
 	}
 
-	bool isCaptureMode(const eCaptureType eType) const {return eType == m_iMouseCaptureMode;}
+	bool isCaptureMode(const eCaptureType eType) const {return eType == m_iCaptureMode;}
 
-	bool m_bFixedCapture;		// TODO: should be m_bFixed
-	bool m_bSupportMouseDrag;	// TODO: should be m_bMouseDrag
-	int m_iMouseCaptureMode;	// TODO: Mouse??? Just CaptureMode.
+	bool m_bFixed;
+	bool m_bMouseDrag;
+	int m_iCaptureMode;
 	// TODO: should be a CRect
-	int m_iCaptureLeft;			// TODO: should be m_iLeft (if not CRect)
-	int m_iCaptureTop;			// TODO: should be m_iTop (if not CRect)
-	int m_iCaptureWidth;		// TODO: should be m_iWidth (if not CRect)
-	int m_iCaptureHeight;		// TODO: should be m_iHeight (if not CRect)
+	int m_iLeft;			// TODO: (if not CRect)
+	int m_iTop;				// TODO: (if not CRect)
+	int m_iWidth;			// TODO: (if not CRect)
+	int m_iHeight;			// TODO: (if not CRect)
 };
 extern sRegionOpts cRegionOpts;
 

@@ -743,10 +743,10 @@ void CRecorderView::RecordStart() {
  
 LRESULT CRecorderView::OnRecordAuto(UINT /*wParam*/, LONG /*lParam*/)
 {
-    CRect rc = CRect(cRegionOpts.m_iCaptureLeft,							// X = Left
-                cRegionOpts.m_iCaptureTop,									// Y = Top
-                cRegionOpts.m_iCaptureLeft + cRegionOpts.m_iCaptureWidth,   // X = Width
-                cRegionOpts.m_iCaptureTop  + cRegionOpts.m_iCaptureHeight); // Y = Height
+    CRect rc = CRect(cRegionOpts.m_iLeft,							// X = Left
+                cRegionOpts.m_iTop,									// Y = Top
+                cRegionOpts.m_iLeft + cRegionOpts.m_iWidth,   // X = Width
+                cRegionOpts.m_iTop  + cRegionOpts.m_iHeight); // Y = Height
     rc.NormalizeRect();
     rcUse = rc;
     OnRecordStart(NULL,NULL);
@@ -856,7 +856,7 @@ LRESULT CRecorderView::OnSaveCursor (UINT wParam, LONG /*lParam*/)
 
 void CRecorderView::OnRegionRubber()
 {
-    cRegionOpts.m_iMouseCaptureMode = CAPTURE_VARIABLE;
+    cRegionOpts.m_iCaptureMode = CAPTURE_VARIABLE;
 }
 
 void CRecorderView::OnUpdateRegionRubber(CCmdUI* pCmdUI)
@@ -869,7 +869,7 @@ void CRecorderView::OnRegionPanregion()
     iDefineMode = 0;
     CFixedRegionDlg cfrdlg(this);
     if (IDOK == cfrdlg.DoModal()) {
-        cRegionOpts.m_iMouseCaptureMode = CAPTURE_FIXED;
+        cRegionOpts.m_iCaptureMode = CAPTURE_FIXED;
     }
     iDefineMode = 0;
 }
@@ -881,7 +881,7 @@ void CRecorderView::OnUpdateRegionPanregion(CCmdUI* pCmdUI)
 
 void CRecorderView::OnRegionSelectScreen()
 {
-    cRegionOpts.m_iMouseCaptureMode =  CAPTURE_FULLSCREEN;
+    cRegionOpts.m_iCaptureMode =  CAPTURE_FULLSCREEN;
 }
 
 void CRecorderView::OnUpdateRegionSelectScreen(CCmdUI* pCmdUI)
@@ -891,7 +891,7 @@ void CRecorderView::OnUpdateRegionSelectScreen(CCmdUI* pCmdUI)
 
 void CRecorderView::OnRegionFullscreen()
 {
-    cRegionOpts.m_iMouseCaptureMode = CAPTURE_ALLSCREENS;
+    cRegionOpts.m_iCaptureMode = CAPTURE_ALLSCREENS;
 }
 
 void CRecorderView::OnUpdateRegionFullscreen(CCmdUI* pCmdUI)
@@ -910,7 +910,7 @@ void CRecorderView::OnUpdateRegionFullscreen(CCmdUI* pCmdUI)
 
 void CRecorderView::OnRegionAllScreens()
 {
-    cRegionOpts.m_iMouseCaptureMode = CAPTURE_ALLSCREENS;
+    cRegionOpts.m_iCaptureMode = CAPTURE_ALLSCREENS;
 }
 
 void CRecorderView::OnUpdateRegionAllScreens(CCmdUI* pCmdUI)
@@ -1260,21 +1260,21 @@ void CRecorderView::OnRecord()
     // BTW. rcUse is also used to store previous values.
     // A Full screen area is 0, 0 to MaxX-1, MaxY-1
 
-    // TRACE( _T("## CRecorderView::OnRecord /CAPTURE_FIXED/ before / cRegionOpts / T=%d, L=%d, B=.. , R=.. , W=%d, H=%d \n"), cRegionOpts.m_iCaptureTop, cRegionOpts.m_iCaptureLeft, cRegionOpts.m_iCaptureWidth, cRegionOpts.m_iCaptureHeight );
-    switch (cRegionOpts.m_iMouseCaptureMode)
+    // TRACE( _T("## CRecorderView::OnRecord /CAPTURE_FIXED/ before / cRegionOpts / T=%d, L=%d, B=.. , R=.. , W=%d, H=%d \n"), cRegionOpts.m_iTop, cRegionOpts.m_iLeft, cRegionOpts.m_iWidth, cRegionOpts.m_iHeight );
+    switch (cRegionOpts.m_iCaptureMode)
     {
     case CAPTURE_FIXED:
         // Applicable when Option region is set as 'Fixed Region'
 
 
-        rc = CRect(cRegionOpts.m_iCaptureLeft,										 // X = Left
-                   cRegionOpts.m_iCaptureTop,										 // Y = Top
-                   cRegionOpts.m_iCaptureLeft + cRegionOpts.m_iCaptureWidth  - 1,   // X = Width
-                   cRegionOpts.m_iCaptureTop  + cRegionOpts.m_iCaptureHeight - 1);  // Y = Height
+        rc = CRect(cRegionOpts.m_iLeft,										 // X = Left
+                   cRegionOpts.m_iTop,										 // Y = Top
+                   cRegionOpts.m_iLeft + cRegionOpts.m_iWidth  - 1,   // X = Width
+                   cRegionOpts.m_iTop  + cRegionOpts.m_iHeight - 1);  // Y = Height
 
         // TRACE( _T("## CRecorderView::OnRecord /CAPTURE_FIXED/ before / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
 
-        if (cRegionOpts.m_bFixedCapture) {
+        if (cRegionOpts.m_bFixed) {
             // Applicable when Option region is set as 'Fixed Region' and retangle offset is fixed either.
             
             // I don't expect that code below is ever invoked...! Hence, dead code
@@ -1331,7 +1331,7 @@ void CRecorderView::OnRecord()
         // TODO, Possible memory leak, where is the delete operation of the new below done?
         m_basicMsg = new CBasicMessage();
         m_basicMsg->Create(CBasicMessage::IDD);
-        if ( cRegionOpts.m_iMouseCaptureMode == CAPTURE_WINDOW ) {
+        if ( cRegionOpts.m_iCaptureMode == CAPTURE_WINDOW ) {
             m_basicMsg->SetText(_T("Click on window to be captured."));
         } else {
             m_basicMsg->SetText(_T("Click on screen to be captured."));
@@ -1855,9 +1855,9 @@ void CRecorderView::SaveSettings()
     fprintf(sFile, "bFlashingRect=%d \n",cProgramOpts.m_bFlashingRect);
     fprintf(sFile, "iLaunchPlayer=%d \n",cProgramOpts.m_iLaunchPlayer);
     fprintf(sFile, "bMinimizeOnStart=%d \n",cProgramOpts.m_bMinimizeOnStart);
-    fprintf(sFile, "iMouseCaptureMode= %d \n",cRegionOpts.m_iMouseCaptureMode);
-    fprintf(sFile, "iCaptureWidth=%d \n",cRegionOpts.m_iCaptureWidth);
-    fprintf(sFile, "iCaptureHeight=%d \n",cRegionOpts.m_iCaptureHeight);
+    fprintf(sFile, "iMouseCaptureMode= %d \n",cRegionOpts.m_iCaptureMode);
+    fprintf(sFile, "iCaptureWidth=%d \n",cRegionOpts.m_iWidth);
+    fprintf(sFile, "iCaptureHeight=%d \n",cRegionOpts.m_iHeight);
 
     fprintf(sFile, "iTimeLapse=%d \n",cVideoOpts.m_iTimeLapse);
     fprintf(sFile, "iFramesPerSecond= %d \n",cVideoOpts.m_iFramesPerSecond);
@@ -1933,9 +1933,9 @@ void CRecorderView::SaveSettings()
     fprintf(sFile, "iThreadPriority=%d \n",cProgramOpts.m_iThreadPriority);
 
     //Ver 1.5
-    fprintf(sFile, "iCaptureLeft= %d \n",cRegionOpts.m_iCaptureLeft);
-    fprintf(sFile, "iCaptureTop= %d \n",cRegionOpts.m_iCaptureTop);
-    fprintf(sFile, "bFixedCapture=%d \n",cRegionOpts.m_bFixedCapture);
+    fprintf(sFile, "iCaptureLeft= %d \n",cRegionOpts.m_iLeft);
+    fprintf(sFile, "iCaptureTop= %d \n",cRegionOpts.m_iTop);
+    fprintf(sFile, "bFixedCapture=%d \n",cRegionOpts.m_bFixed);
     fprintf(sFile, "iInterleaveUnit= %d \n", cAudioFormat.m_iInterleavePeriod);
 
     //Ver 1.6
@@ -1950,7 +1950,7 @@ void CRecorderView::SaveSettings()
     fprintf(sFile, "bPerformAutoSearch=%d \n",cAudioFormat.m_bPerformAutoSearch);
 
     //Ver 1.8
-    fprintf(sFile, "bSupportMouseDrag=%d \n",cRegionOpts.m_bSupportMouseDrag);
+    fprintf(sFile, "bSupportMouseDrag=%d \n",cRegionOpts.m_bMouseDrag);
 
     //New variables, add here
     fprintf(sFile, "keyRecordStartCtrl=%d \n",cHotKeyOpts.m_RecordStart.m_bCtrl);
@@ -2192,9 +2192,9 @@ void CRecorderView::LoadSettings()
 
         fscanf_s(sFile, "iLaunchPlayer=%d \n", &cProgramOpts.m_iLaunchPlayer);
         fscanf_s(sFile, "bMinimizeOnStart=%d \n", &cProgramOpts.m_bMinimizeOnStart);
-        fscanf_s(sFile, "iMouseCaptureMode= %d \n", &cRegionOpts.m_iMouseCaptureMode);
-        fscanf_s(sFile, "iCaptureWidth=%d \n", &cRegionOpts.m_iCaptureWidth);
-        fscanf_s(sFile, "iCaptureHeight=%d \n", &cRegionOpts.m_iCaptureHeight);
+        fscanf_s(sFile, "iMouseCaptureMode= %d \n", &cRegionOpts.m_iCaptureMode);
+        fscanf_s(sFile, "iCaptureWidth=%d \n", &cRegionOpts.m_iWidth);
+        fscanf_s(sFile, "iCaptureHeight=%d \n", &cRegionOpts.m_iHeight);
 
         fscanf_s(sFile, "iTimeLapse=%d \n", &cVideoOpts.m_iTimeLapse);
         fscanf_s(sFile, "iFramesPerSecond= %d \n", &cVideoOpts.m_iFramesPerSecond);
@@ -2362,9 +2362,9 @@ void CRecorderView::LoadSettings()
     //Ver 1.5
     if (ver >= 1.499999)
     {
-        fscanf_s(sFile, "iCaptureLeft= %d \n",&cRegionOpts.m_iCaptureLeft);
-        fscanf_s(sFile, "iCaptureTop= %d \n",&cRegionOpts.m_iCaptureTop);
-        fscanf_s(sFile, "bFixedCapture=%d \n",&cRegionOpts.m_bFixedCapture);
+        fscanf_s(sFile, "iCaptureLeft= %d \n",&cRegionOpts.m_iLeft);
+        fscanf_s(sFile, "iCaptureTop= %d \n",&cRegionOpts.m_iTop);
+        fscanf_s(sFile, "bFixedCapture=%d \n",&cRegionOpts.m_bFixed);
         fscanf_s(sFile, "iInterleaveUnit= %d \n", &cAudioFormat.m_iInterleavePeriod);
     } else {
         //force interleve settings
@@ -2445,7 +2445,7 @@ void CRecorderView::LoadSettings()
     int layoutNameLen = 0;
     if (ver >= 1.799999)
     {
-        fscanf_s(sFile, "bSupportMouseDrag=%d \n",&cRegionOpts.m_bSupportMouseDrag);
+        fscanf_s(sFile, "bSupportMouseDrag=%d \n",&cRegionOpts.m_bMouseDrag);
 
         fscanf_s(sFile, "keyRecordStartCtrl=%d \n",&cHotKeyOpts.m_RecordStart.m_bCtrl);
         fscanf_s(sFile, "keyRecordEndCtrl=%d \n",&cHotKeyOpts.m_RecordEnd.m_bCtrl);
@@ -3241,7 +3241,7 @@ void CRecorderView::OnOptionsLanguageGerman()
 
 void CRecorderView::OnRegionWindow()
 {
-    cRegionOpts.m_iMouseCaptureMode = CAPTURE_WINDOW;
+    cRegionOpts.m_iCaptureMode = CAPTURE_WINDOW;
 }
 
 void CRecorderView::OnUpdateRegionWindow(CCmdUI *pCmdUI)
@@ -3878,19 +3878,19 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     // And again CS is doing a recalculation to determine width and height.
     // If sizing is determined with SetCapture() the dimensions are different as we getwith CRect(Top,Left,Bottom,Right)
     // HIER_BEN_IK
-    // TRACE(_T("## CRecorderView::RecordVideo / cRegionOpts.m_iMouseCaptureMode =%d\n"), cRegionOpts.m_iMouseCaptureMode );
-    switch (cRegionOpts.m_iMouseCaptureMode)
+    // TRACE(_T("## CRecorderView::RecordVideo / cRegionOpts.m_iCaptureMode =%d\n"), cRegionOpts.m_iCaptureMode );
+    switch (cRegionOpts.m_iCaptureMode)
     {
     case CAPTURE_WINDOW:
     case CAPTURE_FULLSCREEN:
         // For rects captured with SetCapture
-        //TRACE(_T("## CRecorderView::RecordVideo / cRegionOpts.m_iMouseCaptureMode =%d  (Do nothing) \n"), cRegionOpts.m_iMouseCaptureMode );
+        //TRACE(_T("## CRecorderView::RecordVideo / cRegionOpts.m_iCaptureMode =%d  (Do nothing) \n"), cRegionOpts.m_iCaptureMode );
         GetDocument()->FrameWidth(rectFrame.Width() );
         GetDocument()->FrameHeight(rectFrame.Height() );
         break;
     default:
         // For rects defined with Rect(top,left,bottom,right)
-        //TRACE(_T("## CRecorderView::RecordVideo / cRegionOpts.m_iMouseCaptureMode =%d  (increase width anf height with one) \n"), cRegionOpts.m_iMouseCaptureMode );
+        //TRACE(_T("## CRecorderView::RecordVideo / cRegionOpts.m_iCaptureMode =%d  (increase width anf height with one) \n"), cRegionOpts.m_iCaptureMode );
         GetDocument()->FrameWidth(rectFrame.Width() + 1);
         GetDocument()->FrameHeight(rectFrame.Height() + 1);
         break;
