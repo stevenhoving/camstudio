@@ -53,7 +53,7 @@ private:
 	bool m_bEnableTransOld;
 	CTransparentWnd* m_pTransparentWnd;
 
-	CButton m_ctrlButtonEnableTranparency;
+	CButton m_bEnableTranparency;
 	CSliderCtrl m_ctrlSliderTransparency;
 	CStatic m_ctrlStaticTransparency;
 protected:

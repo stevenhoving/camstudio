@@ -78,7 +78,7 @@ public:
 	int BorderSize() const						{return m_borderSize;}
 	int RegionPredefinedShape(int iShape)		{return m_regionPredefinedShape = iShape;}
 	int RegionPredefinedShape() const			{return m_regionPredefinedShape;}
-	int RegionCreated(int iCreated)				{return m_regionCreated = iCreated;}
+	int RegionCreated(bool iCreated)			{return m_regionCreated = iCreated;}
 	int RegionCreated() const					{return m_regionCreated;}
 	int BaseType() const						{return m_baseType;}
 	int RegionType(int iType)					{return m_regionType = iType;}
@@ -156,7 +156,7 @@ protected:
 	bool m_bBorderYes;
 	int m_borderSize;
 	int m_regionPredefinedShape;	// region for pre-defined shape, var applicable only to regiontype -- predefined shape
-	int m_regionCreated;			// region for transparent color already created, var applicable only to regiontype  -- transparent color
+	bool m_regionCreated;			// region for transparent color already created, var applicable only to regiontype  -- transparent color
 	int m_baseType;
 	int m_regionType;
 	int m_saveMethod;
