@@ -183,8 +183,8 @@ private:
 	int m_vertalign;
 	int m_factor;
 	int m_charset;
-	int m_enableTransparency;
 	int m_valueTransparency;
+	bool m_benable;
 	CPicture m_picture;
 	CRect m_rectOriginalWnd;
 

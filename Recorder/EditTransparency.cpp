@@ -37,7 +37,7 @@ CEditTransparencyDlg::CEditTransparencyDlg(CWnd* pParent /*=NULL*/)
 // done this would have been to pass the values in InvalidateTransparency
 // call.
 /////////////////////////////////////////////////////////////////////////////
-CEditTransparencyDlg::CEditTransparencyDlg(int& bEnable, int& iLevel, CTransparentWnd* pParent)
+CEditTransparencyDlg::CEditTransparencyDlg(bool& bEnable, int& iLevel, CTransparentWnd* pParent)
 : CDialog(CEditTransparencyDlg::IDD, pParent)
 , m_rbEnableTrans(bEnable)
 , m_bEnableTransOld(bEnable)

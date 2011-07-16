@@ -78,7 +78,7 @@ CTransparentWnd::CTransparentWnd()
 	, m_bTrackingOn(false)
 	, m_bEditTransOn(false)
 	, m_bEditImageOn(false)
-	, m_enableTransparency(0)
+	, m_benable(0)
 	, m_valueTransparency(50)
 	, m_menuLoaded(0)
 	, m_movewindow(0)
@@ -990,7 +990,7 @@ void CTransparentWnd::EditTransparency()
 
 	m_bEditTransOn = true;
 
-	CEditTransparencyDlg etDlg(m_enableTransparency, m_valueTransparency, this);
+	CEditTransparencyDlg etDlg(m_benable, m_valueTransparency, this);
 	etDlg.DoModal();
 
 	m_bEditTransOn = false;
@@ -999,7 +999,7 @@ void CTransparentWnd::EditTransparency()
 
 void CTransparentWnd::InvalidateTransparency()
 {
-	if (m_enableTransparency) {
+	if (m_benable) {
 		G_Layered.AddLayeredStyle(m_hWnd);
 		// As transparency is defined and limited in dialogWindow we can cast from int to BYTE without loosing any info 
 		G_Layered.SetTransparentPercentage(m_hWnd, static_cast<BYTE>(m_valueTransparency) );
@@ -1303,7 +1303,7 @@ void CTransparentWnd::CopyMembers(const CTransparentWnd& rhsWnd)
 	m_factor				= rhsWnd.m_factor;
 	m_charset				= rhsWnd.m_charset;
 	m_rectWnd				= rhsWnd.m_rectWnd;
-	m_enableTransparency	= rhsWnd.m_enableTransparency;
+	m_benable	= rhsWnd.m_benable;
 	m_valueTransparency		= rhsWnd.m_valueTransparency;
 	m_transparentColor		= rhsWnd.m_transparentColor;
 	m_regionType			= rhsWnd.m_regionType;
@@ -1394,7 +1394,7 @@ BOOL CTransparentWnd::SaveShape(FILE* fptr)
 	fwrite(&m_rectWnd.right, sizeof(long), 1, fptr);
 	fwrite(&m_rectWnd.bottom, sizeof(long), 1, fptr);
 
-	fwrite(&m_enableTransparency, sizeof(int), 1, fptr);
+	fwrite(&m_benable, sizeof(int), 1, fptr);
 	fwrite(&m_valueTransparency, sizeof(int), 1, fptr);
 	fwrite(&m_transparentColor, sizeof(COLORREF), 1, fptr);
 
@@ -1482,7 +1482,7 @@ BOOL CTransparentWnd::LoadShape(FILE* fptr)
 	fread( (void *) &m_rectWnd.right, sizeof(long), 1, fptr );
 	fread( (void *) &m_rectWnd.bottom, sizeof(long), 1, fptr );
 
-	fread( (void *) &m_enableTransparency, sizeof(int), 1, fptr );
+	fread( (void *) &m_benable, sizeof(int), 1, fptr );
 	fread( (void *) &m_valueTransparency, sizeof(int), 1, fptr );
 	fread( (void *) &m_transparentColor, sizeof(COLORREF), 1, fptr );
 

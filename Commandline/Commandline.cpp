@@ -401,30 +401,28 @@ int RecordVideo(int top,int left,int width,int height,int fps,
         compressor_info[selected_compressor].fccHandler, ICMODE_QUERY);
     if (hic) {
 
-      int newleft,newtop,newwidth,newheight;
+      int left,top,width,height;
       int align = 1;
       while   (ICERR_OK!=ICCompressQuery(hic, alpbi, NULL))
       {
         //Try adjusting width/height a little bit
         align = align * 2 ;
         if (align>8) break;
-        newleft=left;
-        newtop=top;
         int wm = (width % align);
         if (wm > 0) {
-          newwidth = width + (align - wm);
-          if (newwidth>maxxScreen)
-            newwidth = width - wm;
+          width = width + (align - wm);
+          if (width>maxxScreen)
+            width = width - wm;
         }
         int hm = (height % align);
         if (hm > 0) {
-          newheight = height + (align - hm);
-          if (newheight>maxyScreen)
-            newwidth = height - hm;
+          height = height + (align - hm);
+          if (height>maxyScreen)
+            width = height - hm;
         }
         if (alpbi)
           FreeFrame(alpbi);
-        alpbi = captureScreenFrame(newleft,newtop,newwidth, newheight);
+        alpbi = captureScreenFrame(left,top,width, height);
       }
 
       //if succeed with new width/height, use the new width and height
@@ -435,13 +433,11 @@ int RecordVideo(int top,int left,int width,int height,int fps,
       }
       else if (align <= 8) {
           //Compressor can work if the dimensions is adjusted slightly
-          left=newleft;
-          top=newtop;
-          width=newwidth;
-          height=newheight;
+          width=width;
+          height=height;
 
-          actualwidth=newwidth;
-          actualheight=newheight;
+          actualwidth=width;
+          actualheight=height;
       }
       else {
           compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');

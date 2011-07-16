@@ -170,12 +170,12 @@ void CFixedRegionDlg::OnOK()
 	// Technical pixel coordinates are applicable.  Top-Left = 0:0 not 1:1 What user often think it is.
 	// TRACE(_T("## CFixedRegionDlg::OnOK / L=%d, T=%d, W=%d, H=%d\n"), m_iLeft, m_iTop, m_iWidth, m_iHeight );
 
-	cRegionOpts.m_iCaptureLeft = m_iLeft;
-	cRegionOpts.m_iCaptureTop = m_iTop;
-	cRegionOpts.m_bFixedCapture = fval ? true : false;
-	cRegionOpts.m_iCaptureWidth = m_iWidth ;
-	cRegionOpts.m_iCaptureHeight = m_iHeight ;
-	cRegionOpts.m_bSupportMouseDrag = m_ctrlButtonMouseDrag.GetCheck() ? true : false;
+	cRegionOpts.m_iLeft = m_iLeft;
+	cRegionOpts.m_iTop = m_iTop;
+	cRegionOpts.m_bFixed = fval ? true : false;
+	cRegionOpts.m_iWidth = m_iWidth ;
+	cRegionOpts.m_iHeight = m_iHeight ;
+	cRegionOpts.m_bMouseDrag = m_ctrlButtonMouseDrag.GetCheck() ? true : false;
 
 	CDialog::OnOK();
 }
@@ -184,20 +184,20 @@ BOOL CFixedRegionDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	m_iLeft = cRegionOpts.m_iCaptureLeft;
-	m_iTop = cRegionOpts.m_iCaptureTop;
-	m_iWidth = cRegionOpts.m_iCaptureWidth;
-	m_iHeight = cRegionOpts.m_iCaptureHeight;
+	m_iLeft = cRegionOpts.m_iLeft;
+	m_iTop = cRegionOpts.m_iTop;
+	m_iWidth = cRegionOpts.m_iWidth;
+	m_iHeight = cRegionOpts.m_iHeight;
 	UpdateData(FALSE);
 
 	// TRACE(_T("## CFixedRegionDlg::OnInitDialog / L=%d, T=%d, W=%d, H=%d\n"), m_iLeft, m_iTop, m_iWidth, m_iHeight );
 
 	m_ctrlEditPosX.EnableWindow(TRUE);
 	m_ctrlEditPosY.EnableWindow(TRUE);
-	m_ctrlButtonFixTopLeft.SetCheck(cRegionOpts.m_bFixedCapture);
-	m_ctrlEditPosX.EnableWindow(cRegionOpts.m_bFixedCapture);
-	m_ctrlEditPosY.EnableWindow(cRegionOpts.m_bFixedCapture);
-	m_ctrlButtonMouseDrag.SetCheck(cRegionOpts.m_bSupportMouseDrag);
+	m_ctrlButtonFixTopLeft.SetCheck(cRegionOpts.m_bFixed);
+	m_ctrlEditPosX.EnableWindow(cRegionOpts.m_bFixed);
+	m_ctrlEditPosY.EnableWindow(cRegionOpts.m_bFixed);
+	m_ctrlButtonMouseDrag.SetCheck(cRegionOpts.m_bMouseDrag);
 
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -207,7 +207,7 @@ void CFixedRegionDlg::OnSelect()
 {
 	m_ctrlStaticMsg.SetWindowText(_T("Click and drag to define a rectangle"));
 
-	cRegionOpts.m_iMouseCaptureMode = CAPTURE_VARIABLE; //set temporarily to variable region
+	cRegionOpts.m_iCaptureMode = CAPTURE_VARIABLE; //set temporarily to variable region
 	iDefineMode = 1;
 	hFixedRegionWnd = m_hWnd;
 	::ShowWindow(hMouseCaptureWnd, SW_SHOW);
