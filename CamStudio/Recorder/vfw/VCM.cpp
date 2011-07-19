@@ -81,7 +81,7 @@ bool CHIC::getState()
 		m_pState = new char[m_ulStateSize];
 		LRESULT lResult = ::ICGetState(m_hIC, m_pState, m_ulStateSize);
 		// bResult = (lResult == m_ulStateSize );  ==> C4389 Warning, type mismatch
-		bResult = ( lResult - m_ulStateSize == 0 );  // Save 
+		bResult = ( lResult == ICERR_OK );  // Save 
 		if (!bResult)
 			throw "ICGetState failed";
 	}
