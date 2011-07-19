@@ -241,7 +241,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(SolutionDir)\$(Configuration)\"
       <AdditionalIncludeDirectories>$(SolutionDir)GlobalResources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>winmm.lib;vfw32.lib;msacm32.lib;libconfig++_d.lib;shfolder.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;vfw32.lib;msacm32.lib;$(OutDir)libconfig++.lib;shfolder.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(SolutionDir)libconfig/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
