@@ -179,6 +179,6 @@ void CXnoteStopwatchFormat::FormatXnoteExtendedInfoSourceSensor(
 			break;
 	}
 
-	(void) sprintf( cBuf128, "%s%s %s", cBuf128, cSourceTag, cSensorTag);
+	(void) sprintf( cBuf128, "%s%s %s", cBuf128, cSourceTag.GetBuffer(), cSensorTag.GetBuffer());
 }
 

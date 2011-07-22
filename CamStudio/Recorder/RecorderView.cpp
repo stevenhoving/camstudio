@@ -1107,7 +1107,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
         case 4:		// recover video file
             // video file is ok, but not audio file
             // so Move the video file as avi and ignore the audio  (Move = More or Copy+Delete)
-            if (!DoesFileExist && !MoveFile(strTempVideoAviFilePath, strTargetVideoFile)) {
+            if (!DoesFileExist(strTargetVideoFile) && !MoveFile(strTempVideoAviFilePath, strTargetVideoFile)) {
                 //Although there is error copying, the temp file still remains in the temp directory and is not deleted, in case user wants a manual recover
                 //MessageBox("File Creation Error. Unable to rename/copy file.","Note",MB_OK | MB_ICONEXCLAMATION);
                 MessageOut(m_hWnd,IDS_STRING_MOVEFILEFAILURE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
@@ -4771,7 +4771,7 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID , int iSensorID , int i
 
         // CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmp, cXNoteOpts.m_ulStartXnoteTickCounter, dwCurrTickCount ,0 , false );
 
-        sprintf( cTmp, "%s\n", cXNoteOpts.m_cXnoteStartEntendedInfo );
+        sprintf( cTmp, "%s\n", cXNoteOpts.m_cXnoteStartEntendedInfo.GetBuffer() );
         // Show Xnote values instead of own calcuated value
         CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmp, 0, lXnoteTimeInMilliSeconds ,0 , false, false );
         // Add info about how the snap is created.
