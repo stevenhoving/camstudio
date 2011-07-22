@@ -330,7 +330,7 @@ BOOL initialSaveMMMode()
 			mxcd.cMultipleItems = dwMultipleItems;
 			mxcd.cbDetails = sizeof(MIXERCONTROLDETAILS_BOOLEAN);
 			mxcd.paDetails = pmxcdSelectValue;
-			MMRESULT mmResult = AudioMixer.GetControlDetails(&mxcd, MIXER_OBJECTF_HMIXER | MIXER_GETCONTROLDETAILSF_VALUE);
+			mmResult = AudioMixer.GetControlDetails(&mxcd, MIXER_OBJECTF_HMIXER | MIXER_GETCONTROLDETAILSF_VALUE);
 			if (MMSYSERR_NOERROR == mmResult)
 			{
 				if (pmcdbSelectArrayInitialState)
@@ -573,8 +573,7 @@ BOOL WaveoutInternalAdjustVolume(long lineID)
 		if (fraction<volumeThresholdPercent) { //if volume less than 7% of maximum
 			targetVal = (long) (volumeThresholdPercent/100.0 * (dwMaximum - dwMinimum)) + dwMinimum;
 
-			MIXERCONTROLDETAILS_UNSIGNED mxcdVolume = { targetVal };
-			MIXERCONTROLDETAILS mxcd;
+			mxcdVolume.dwValue = targetVal;
 			mxcd.cbStruct = sizeof(MIXERCONTROLDETAILS);
 			mxcd.dwControlID = dwVolumeControlID;
 			mxcd.cChannels = 1;
