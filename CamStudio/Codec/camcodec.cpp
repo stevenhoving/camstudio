@@ -186,11 +186,17 @@ CodecInst* Open(ICOPEN* icinfo)
 	return pinst;
 }
 
+#pragma warning ( push )
+#pragma warning ( disable : 4100 )		// Hide C4100 warning
+// #pragma warning ( push )
 DWORD Close(CodecInst* pinst)
 {
+	// pinst = pinst;   // Prevent C4100 warnings
+
 	//    delete pinst;       // this caused problems when deleting at app close time
 	return 1;
 }
+#pragma warning ( pop )
 
 /********************************************************************
 ********************************************************************/
@@ -218,8 +224,13 @@ static BOOL CALLBACK AboutDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPA
 	return FALSE;
 }
 
+#pragma warning ( push )
+#pragma warning ( disable : 4100 )		// Hide C4100 warning
+// #pragma warning ( push )
 DWORD CodecInst::About(HWND hwnd)
 {
+	// hwnd = hwnd;   // Prevent C4100 warnings
+
 	//VC++ 6
 	//DialogBox(hmoduleCamcodec, MAKEINTRESOURCE(IDD_ABOUT), hwnd,  AboutDialogProc);  
 
@@ -228,6 +239,7 @@ DWORD CodecInst::About(HWND hwnd)
 
 	return ICERR_OK;
 }
+#pragma warning ( pop)
 
 #define UDM_SETRANGE            (WM_USER+101)
 #define UDM_SETPOS              (WM_USER+103)
@@ -320,8 +332,13 @@ static BOOL CALLBACK ConfigureDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam,
 
 BOOL CodecInst::QueryConfigure() { return TRUE; }
 
+#pragma warning ( push )
+#pragma warning ( disable : 4100 )		// Hide C4100 warning
+// #pragma warning ( push )
 DWORD CodecInst::Configure(HWND hwnd)
 {
+	// hwnd = hwnd;   // Prevent C4100 warnings
+
 	//VC++ 6
 	//DialogBox(hmoduleCamcodec, MAKEINTRESOURCE(IDD_CONFIGURE), hwnd,  ConfigureDialogProc);
 
@@ -330,6 +347,7 @@ DWORD CodecInst::Configure(HWND hwnd)
 
 	return ICERR_OK;
 }
+#pragma warning ( pop )
 
 // we have no state information which needs to be stored
 
@@ -460,8 +478,13 @@ DWORD CodecInst::CompressGetFormat(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER
 	return ICERR_OK;
 }
 
+#pragma warning ( push )
+#pragma warning ( disable : 4100 )		// Hide C4100 warning
+// #pragma warning ( push )
 DWORD CodecInst::CompressGetSize(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER lpbiOut)
 {
+	// lpbiOut = lpbiOut;   // Prevent C4100 warnings
+
 	// Assume 24 bpp worst-case for YUY2 input, 40 bpp for RGB.
 	// The actual worst case is 43/51 bpp currently, but this is exceedingly improbable
 	// (probably impossible with real captured video)
@@ -469,14 +492,22 @@ DWORD CodecInst::CompressGetSize(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER l
 	//return lpbiIn->biWidth * lpbiIn->biHeight * ((GetBitmapType(lpbiIn) <= 2) ? 3 : 5);
 	return lpbiIn->biWidth * lpbiIn->biHeight * (GetBitmapType(lpbiIn)+1) ;
 }
+#pragma warning ( pop )
 
+#pragma warning ( push )
+#pragma warning ( disable : 4100 )		// Hide C4100 warning
+// #pragma warning ( push )
 DWORD CodecInst::Compress(ICCOMPRESS* icinfo, DWORD dwSize)
 {
+	//dwSize = dwSize;   // Prevent C4100 warnings
+
 	//int intype = GetBitmapType(icinfo->lpbiInput);
 	//int outtype = GetBitmapType(icinfo->lpbiOutput);
 
+
 	return CompressRGB(icinfo);
 }
+#pragma warning ( pop )
 
 /********************************************************************
 ********************************************************************/
@@ -561,6 +592,10 @@ DWORD CodecInst::DecompressGetFormat(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEAD
 	return ICERR_OK;
 }
 
+
+#pragma warning ( push )
+#pragma warning ( disable : 4100 )		// Hide C4100 warning
+// #pragma warning ( push )
 DWORD CodecInst::Decompress(ICDECOMPRESS* icinfo, DWORD dwSize)
 {
 	//int intype = GetBitmapType(icinfo->lpbiInput);
@@ -568,12 +603,17 @@ DWORD CodecInst::Decompress(ICDECOMPRESS* icinfo, DWORD dwSize)
 
 	return DecompressRGB(icinfo);
 }
+#pragma warning ( pop )
 
 // palette-mapped output only
+#pragma warning ( push )
+#pragma warning ( disable : 4100 )		// Hide C4100 warning
+// #pragma warning ( push )
 DWORD CodecInst::DecompressGetPalette(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER lpbiOut)
 {
 	return ICERR_BADFORMAT;
 }
+#pragma warning ( pop )
 
 #define ORIG_RGBIGNORE 0
 #define ORIG_RGB15 1

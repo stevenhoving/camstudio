@@ -401,7 +401,10 @@ int RecordVideo(int top,int left,int width,int height,int fps,
         compressor_info[selected_compressor].fccHandler, ICMODE_QUERY);
     if (hic) {
 
-      int left,top,width,height;
+      int left =0;
+	  int top=0;
+	  int width=0;
+	  int height=0;
       int align = 1;
       while   (ICERR_OK!=ICCompressQuery(hic, alpbi, NULL))
       {
