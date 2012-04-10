@@ -110,7 +110,7 @@ void AudioFormat::OnOK()
 	int ifactornum;
 
 	((CEdit *) (GetDlgItem(IDC_IFACTOR)))->GetWindowText(interleaveFactorStr);
-	sscanf(LPCTSTR(interleaveFactorStr),"%d",&ifactornum);
+	sscanf_s(LPCTSTR(interleaveFactorStr),"%d",&ifactornum);
 	if (ifactornum<=0) {
 
 		MessageBox("Interleave factor must greater than 0","Note",MB_OK | MB_ICONEXCLAMATION);

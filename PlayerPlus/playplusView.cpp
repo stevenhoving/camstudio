@@ -2408,7 +2408,7 @@ void GetTempWavePath() {
 			srand( (unsigned)time( NULL ) );
 			int randnum = rand();
 			char numstr[50];
-			sprintf(numstr,"%d",randnum);
+			sprintf_s(numstr,"%d",randnum);
 
 			CString cnumstr(numstr);
 			CString fxstr("\\~temp");
@@ -2486,7 +2486,7 @@ void GetSilenceWavePath() {
 			srand( (unsigned)time( NULL ) );
 			int randnum = rand();
 			char numstr[50];
-			sprintf(numstr,"%d",randnum);
+			sprintf_s(numstr,"%d",randnum);
 
 			CString cnumstr(numstr);
 			CString fxstr("\\~tsil");

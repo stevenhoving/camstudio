@@ -120,6 +120,9 @@ void CSoundIn::Stop()
 	}
 }
 
+#pragma warning ( push )
+#pragma warning ( disable : 4100 )		// Hide C4100 warning
+// #pragma warning ( pop )
 void CSoundIn::OnMM_WIM_DATA(UINT parm1, LONG parm2)
 {
 	MMRESULT mmReturn = 0;
@@ -166,6 +169,7 @@ void CSoundIn::OnMM_WIM_DATA(UINT parm1, LONG parm2)
 	delete pHdr;
 	m_QueuedBuffers--;
 }
+#pragma warning ( pop )
 
 int CSoundIn::AddInputBufferToQueue()
 {

@@ -156,17 +156,17 @@ BOOL CPlayplusApp::InitInstance()
 
 			if (lenx>4)
 			{
-				strcpy(playfiledir,&m_lpCmdLine[i]);
+				strcpy_s(playfiledir,&m_lpCmdLine[i]);
 			}
 
 		}
 		else
-			strcpy(playfiledir,m_lpCmdLine);
+			strcpy_s(playfiledir,m_lpCmdLine);
 
 		//Fix to open long filename or filename with quotes on launch
 		CString strCleanCmdLineFileName(playfiledir);
 		strCleanCmdLineFileName.Replace("\"", "");
-		strcpy(playfiledir,strCleanCmdLineFileName.GetBuffer());
+		strcpy_s(playfiledir,strCleanCmdLineFileName.GetBuffer());
 		cmdInfo.m_strFileName = playfiledir;
 	}
 	/*

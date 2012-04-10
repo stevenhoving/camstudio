@@ -104,7 +104,12 @@ BOOL CAboutDlg::OnInitDialog()
 	CString strVersionInfo;
 	strVersionInfo.Format("v%s\n", CURRENT_VERSION_NUMBER );
 	CString strReleaseInfo;
-	strReleaseInfo.Format("Build on Mercurial release: r%s\n", CURRENT_HG_RELEASE_NUMBER );
+#if _DEBUG 
+	strReleaseInfo.Format("Build on Mercurial release: r%s%s\n", CURRENT_HG_RELEASE_NUMBER, "+ (For testers only..!)" );
+#else
+	strReleaseInfo.Format("Build on Mercurial release: r%s%s\n", CURRENT_HG_RELEASE_NUMBER, "" );
+#endif
+
 
     // CamStudio Recorder <VERSION><RELEASE><XNOTESTOPWATCHSUPPORT><BUGFIXES><COPYRIGHT-1><COPYRIGHT-2>
 	m_ctrlStaticVersion.GetWindowText(strBuffer);

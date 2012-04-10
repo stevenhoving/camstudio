@@ -122,6 +122,10 @@ N_STD::ostream &operator<< (N_STD::ostream &out, FlashTagDefineMorphShape &data)
 	return out;
 }
 
+#pragma warning ( push )
+#pragma warning ( disable : 4100 )	// Hide warning C4100: 'xxx' : unreferenced formal parameter
+// #pragma warning ( push )
+
 N_STD::istream &operator>> (N_STD::istream &in,  FlashTagDefineMorphShape &data)
 {
 #if 0
@@ -133,4 +137,6 @@ N_STD::istream &operator>> (N_STD::istream &in,  FlashTagDefineMorphShape &data)
 
 	return in;
 }
+#pragma warning ( pop )
+
 

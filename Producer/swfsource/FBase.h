@@ -923,11 +923,19 @@ public:                         \
     friend N_STD::istream &operator >> (N_STD::istream &in,  x &data); \
 };
 
+
 template<class T> class gc_vector: public N_STD::vector<T>
 {
 public:	
 	gc_vector() {}
+
+#pragma warning ( push )
+#pragma warning ( disable : 4100 )	// Hide warning C4100: 'xxx' : unreferenced formal parameter
+	// &c causes an unreferenced formal parameter warning
 	gc_vector(const gc_vector &c) {}
+
+#pragma warning ( pop )
+
 	~gc_vector() { for(N_STD::vector<T>::iterator i = begin(); i != end(); i++) { delete *i; }}
 };
 

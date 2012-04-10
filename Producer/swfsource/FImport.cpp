@@ -116,6 +116,7 @@ void FlashMyImporter::Import(FlashTagPlaceObject2 &data)
 }
 void FlashMyImporter::Import(FlashTagShowFrame &data)
 {
+	// data;  // No efficient but it works to prevent W4 C4100 warnings
 	std::cout << "\n<FlashTagShowFrame>\n";
 }
 
@@ -158,6 +159,7 @@ void FlashMyImporter::Import(FlashTagDefineBitsPtr &data)
 
 void FlashMyImporter::Import(FlashTagEnd &data)
 {
+	// data;  // No efficient but it works to prevent W4 C4100 warnings
 	std::cout << "\n<FlashTagEnd>\n";
 }
 void FlashMyImporter::Import(FlashTagExportAssets &data)
@@ -194,6 +196,7 @@ void FlashMyImporter::Import(FlashTagDefineBitsJPEG1 &data)
 }
 void FlashMyImporter::Import(FlashTagJPEGTables &data)
 {
+	// data;  // No efficient but it works to prevent W4 C4100 warnings
 	std::cout << "\n<FlashTagJPEGTables>\n";
 }
 void FlashMyImporter::Import(FlashTagDefineBitsJPEG2 &data)
@@ -317,6 +320,7 @@ void FlashMyImporter::Import(FlashTagSoundStreamBlock &data)
 
 void FlashMyImporter::Import( FlashTagDefineButton &data )
 {
+	// data;  // No efficient but it works to prevent W4 C4100 warnings
 	std::cout << "\n<FlashTagDefineButton>\n";
 
 // To be completed
@@ -324,6 +328,7 @@ void FlashMyImporter::Import( FlashTagDefineButton &data )
 
 void FlashMyImporter::Import( FlashTagDefineButton2 &data )
 {
+	// data;  // No efficient but it works to prevent W4 C4100 warnings
 	std::cout << "\n<FlashTagDefineButton2>\n";
 
 // To be completed
@@ -331,6 +336,7 @@ void FlashMyImporter::Import( FlashTagDefineButton2 &data )
 
 void FlashMyImporter::Import( FlashTagDefineButtonSound &data )
 {
+	// data;  // No efficient but it works to prevent W4 C4100 warnings
 	std::cout << "\n<FlashTagDefineButtonSound>\n";
 
 // To be completed

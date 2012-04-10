@@ -157,9 +157,11 @@ N_STD::ostream& operator<<(N_STD::ostream& out, FlashTagRemoveObject2 &data)
 	WRITE_UWORD(data.depth);
 	return out;
 }
+
 N_STD::istream& operator>>(N_STD::istream& in, FlashTagRemoveObject2 &data)
 {
 	READ_UWORD(data.depth);
 	return in;
 }
+
 DEFINE_SIMPLE_TAG(FlashTagShowFrame,0x01)
