@@ -79,6 +79,11 @@ N_STD::ostream &operator << (N_STD::ostream &out, FlashTagLabelFrame &data)
 		out.put((char)1);
 	return out;
 }
+
+//#pragma warning ( push )
+//#pragma warning ( disable : 4100 )	// Hide warning C4100: 'xxx' : unreferenced formal parameter
+// 'data' : unreferenced formal parameter
+
 N_STD::istream &operator >> (N_STD::istream &in,  FlashTagLabelFrame &data)
 {
 	N_STD::streampos start = in.tellg();
@@ -105,6 +110,7 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagLabelFrame &data)
 	}
 	return in;
 }
+//#pragma warning ( pop )
 
 DEFINE_SIMPLE_TAG(FlashTagEnd,0x00)
 

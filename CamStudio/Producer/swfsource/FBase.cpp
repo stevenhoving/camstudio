@@ -279,6 +279,7 @@ N_STD::ostream &operator<< (N_STD::ostream &out, BitBuffer &data)
 
 N_STD::istream &operator>> (N_STD::istream &in,  BitBuffer &data)
 {
+	// data = data ; // Hide Warning 4, C4100, unreferenced formal parameter 
     return in;
 }
 
@@ -483,6 +484,7 @@ N_STD::ostream &operator << (N_STD::ostream &out, const FlashTagRawData &data)
 	out.write(data.ptrData, data.lenData);
 	return out;
 }
+
 N_STD::istream &operator >> (N_STD::istream &in, FlashTagRawData &data)
 {
 	throw std::exception();

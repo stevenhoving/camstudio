@@ -139,20 +139,37 @@ BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD  Reason, LPVOID /*Reserved*/)
 // Installs hookproc into the hook chain for all desktop threads, sets
 // the notification window to hWnd using message_to_call. 
 /////////////////////////////////////////////////////////////////////////////
+#pragma warning ( push )
+#pragma warning ( disable : 4100 )		// Hide C4100 warning
 __declspec(dllexport) BOOL InstallMyHook(HWND hWnd, UINT message_to_call)
 {
+//#if _DEBUG
+//	hWnd;				//Eliminates C4100 warning
+//	message_to_call;	//Eliminates C4100 warning
+//#endif
+
 	if (mouseHookLL == NULL)
 		SetWindowsHookEx(WH_MOUSE_LL, (HOOKPROC)LowLevelMouseProc, hInst, 0);
+
+
 	return TRUE;
 }
+#pragma warning ( pop )
 
 /////////////////////////////////////////////////////////////////////////////
 // UninstallMyHook
 // Removes hookproc fromn hook chain for window hWnd
 /////////////////////////////////////////////////////////////////////////////
+#pragma warning ( push )
+#pragma warning ( disable : 4100 )		// Hide C4100 warning
 __declspec(dllexport) BOOL UninstallMyHook(HWND hWnd)
 {
+//#if _DEBUG
+//	hWnd;				//Eliminates C4100 warning
+//#endif
+
 	if (mouseHookLL && UnhookWindowsHookEx(mouseHookLL)) mouseHookLL = NULL;
 	return TRUE;
 }
+#pragma warning ( pop )
 

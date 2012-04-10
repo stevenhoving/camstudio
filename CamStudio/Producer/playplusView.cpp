@@ -5544,6 +5544,8 @@ void CreatePlayButton(std::ostringstream &f, int /*controlsWidth*/, int controls
 
 void CreatePauseButton(std::ostringstream &f, int /*controlsWidth*/, int controlsHeight,int FrameOffsetX,int FrameOffsetY,int BITMAP_X, int BITMAP_Y)
 {
+	BITMAP_X = BITMAP_X; // Hide C4100 warning  (or use else #pragma pusg, disable 4100, pop )
+
 	int buttonRadius = controlsHeight;
 	int pauseButtonDepth = ObjectDepth + 2;
 	int ButtonSpaceY = 5;
@@ -6503,6 +6505,10 @@ void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitma
 //Determine if the frame is intermediate or key frame
 int ProcessSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitmap, int BITMAP_X, int BITMAP_Y, int format)
 {
+	f = f; // Hide C4100 warning  (or use else #pragma pusg, disable 4100, pop )
+	bitmap = bitmap; // Hide C4100 warning
+
+
 	cleanChangeArray(); //need to clean it for each frame
 
 	int ret = 0;
@@ -6741,6 +6747,9 @@ int ProcessSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitm
 int IsDifferent(LPBITMAPINFOHEADER alpbi, int BITMAP_X,int BITMAP_Y, int x, int y, int format)
 {
 	unsigned long widthBytes, pixbytes;
+
+	BITMAP_Y = BITMAP_Y; // Hide C4100 warning
+
 	if (format==4)
 	{
 		pixbytes = 2;
@@ -6836,6 +6845,9 @@ void AddExpandBlock(int BITMAP_X,int BITMAP_Y,int x,int y,int format)
 //Assuming the itemRect is correctly chosen
 void ExpandBlock(CChangeRectSwf *itemRect, int BITMAP_X,int BITMAP_Y,int x,int y,int /*format*/)
 {
+	BITMAP_X = BITMAP_X; // Hide C4100 warning
+	BITMAP_Y = BITMAP_Y; // Hide C4100 warning
+
 	if (itemRect)
 	{
 		//Expand left bounds

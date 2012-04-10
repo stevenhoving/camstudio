@@ -119,6 +119,7 @@ END_MESSAGE_MAP()
 //////////////////////////////////////////////////////////
 LRESULT CMainFrame::OnMotionDetector(UINT wParam, LONG lParam )
 {
+	wParam = wParam ; // Hide Warning 4, C4100, unreferenced formal parameter 
 	//TRACE("## CMainFrame::OnMotionDetector (d)    wParam=[%d] HI[%d], LO[%d]\n",wParam, HIWORD(wParam), LOWORD(wParam) );
 	dynamic_cast<CRecorderView *>(m_pViewActive)->XNoteProcessWinMessage( HIWORD(wParam), XNOTE_TRIGGER_MOTIONDETECTOR , XNOTE_SOURCE_MOTIONDETECTOR , NULL );
 

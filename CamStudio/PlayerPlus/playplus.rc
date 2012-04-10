@@ -259,7 +259,7 @@ CAPTION "About CamStudio PlayerPlus"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     CONTROL         139,IDC_IMAGE,"Static",SS_BITMAP | SS_REALSIZEIMAGE,55,7,171,58,WS_EX_DLGMODALFRAME
-    CTEXT           "CamStudio PlayerPlus 2.1\n\nCopyright © 2001 - 2002 RenderSoft Software and Web Publishing\nCopyright © 2008 CamStudio Group && Contributors\n\nBugfixes and additional features added by Nick the Geek\nMore bug fixes and support for Visual Studio 2005 added by Carlo Lanzotti",IDC_TITLE,6,96,268,56,NOT WS_GROUP
+    CTEXT           "CamStudio PlayerPlus 2.1\n\nCopyright © 2001 - 2002 RenderSoft Software and Web publishing\nCopyright © 2008 CamStudio Group && Contributors\n",IDC_TITLE,6,96,268,56,NOT WS_GROUP
     DEFPUSHBUTTON   "OK",IDOK,110,71,60,15,WS_GROUP
     PUSHBUTTON      "Visit the CamStudio website",IDC_BUTTONLINK1,90,162,102,33,BS_FLAT
 END
