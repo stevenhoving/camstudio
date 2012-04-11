@@ -18,6 +18,19 @@ http://camstudio.hg.sourceforge.net:8000/hgroot/camstudio/camstudio
 
 Decide what you want to download regular (HEAD) or defined by an named revision.
 
+===
+
+BTW.
+If you are a developer and want to be able to upload your worjk to Camstudio 
+you should not use the above http reference.
+You need to use a ssh URL to be able to write to the repository:
+
+ssh://janhgm@camstudio.hg.sourceforge.net/hgroot/camstudio/camstudio  
+
+(Replace janhgm with your own sourceforge userename)
+
+
+
 
 
 
