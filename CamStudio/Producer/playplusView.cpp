@@ -6502,11 +6502,13 @@ void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitma
 	}
 }
 
+#pragma warning ( push )
+#pragma warning ( disable : 4100 )
 //Determine if the frame is intermediate or key frame
 int ProcessSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitmap, int BITMAP_X, int BITMAP_Y, int format)
 {
-	f = f; // Hide C4100 warning  (or use else #pragma pusg, disable 4100, pop )
-	bitmap = bitmap; // Hide C4100 warning
+	//f = f; // Hide C4100 warning  (or use else #pragma pusg, disable 4100, pop )
+	//bitmap = bitmap; // Hide C4100 warning
 
 
 	cleanChangeArray(); //need to clean it for each frame
@@ -6743,6 +6745,7 @@ int ProcessSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitm
 	}
 	return ret;
 }
+#pragma warning ( pop )
 
 int IsDifferent(LPBITMAPINFOHEADER alpbi, int BITMAP_X,int BITMAP_Y, int x, int y, int format)
 {
