@@ -1,0 +1,57 @@
+﻿Build started 1/10/2013 7:26:47 PM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Codec\camcodec.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Release\camcodec.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I. /Zi /nologo /W4 /WX- /O2 /Ob2 /Oy- /D NDEBUG /D WIN32 /D _WINDOWS /D _USRDLL /D CAMCODEC_EXPORTS /D _CRT_SECURE_NO_WARNINGS /D _VC80_UPGRADE=0x0600 /D _WINDLL /GF /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Release/" /Fd".\Release/vc100.pdb" /Gd /TP /analyze- /errorReport:prompt camcodec.cpp drvproc.cpp
+         camcodec.cpp
+     1>camcodec.cpp(189): warning C4100: 'pinst' : unreferenced formal parameter
+     1>camcodec.cpp(221): warning C4100: 'hwnd' : unreferenced formal parameter
+     1>camcodec.cpp(323): warning C4100: 'hwnd' : unreferenced formal parameter
+     1>camcodec.cpp(448): warning C4245: 'return' : conversion from 'long' to 'DWORD', signed/unsigned mismatch
+     1>camcodec.cpp(463): warning C4100: 'lpbiOut' : unreferenced formal parameter
+     1>camcodec.cpp(473): warning C4100: 'dwSize' : unreferenced formal parameter
+     1>camcodec.cpp(531): warning C4245: 'return' : conversion from 'long' to 'DWORD', signed/unsigned mismatch
+     1>camcodec.cpp(564): warning C4100: 'dwSize' : unreferenced formal parameter
+     1>camcodec.cpp(575): warning C4245: 'return' : conversion from 'long' to 'DWORD', signed/unsigned mismatch
+     1>camcodec.cpp(573): warning C4100: 'lpbiOut' : unreferenced formal parameter
+     1>camcodec.cpp(573): warning C4100: 'lpbiIn' : unreferenced formal parameter
+     1>camcodec.cpp(600): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>camcodec.cpp(670): warning C4244: 'initializing' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>camcodec.cpp(678): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>camcodec.cpp(736): warning C4244: 'initializing' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>camcodec.cpp(742): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>camcodec.cpp(647): warning C4189: 'output' : local variable is initialized but not referenced
+     1>camcodec.cpp(816): warning C4189: 'in' : local variable is initialized but not referenced
+     1>camcodec.cpp(836): warning C4189: 'val' : local variable is initialized but not referenced
+     1>camcodec.cpp(242): warning C4505: 'ConfigureDialogProc' : unreferenced local function has been removed
+         drvproc.cpp
+         Generating Code...
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\codec\camcodec.cpp(760): warning C4701: potentially uninitialized local variable 'r' used
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\codec\camcodec.cpp(752): warning C4701: potentially uninitialized local variable 'out_len' used
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\codec\camcodec.cpp(910): warning C4701: potentially uninitialized local variable 'out_len' used
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I. /Zi /nologo /W4 /WX- /O2 /Ob2 /Oy- /D NDEBUG /D WIN32 /D _WINDOWS /D _USRDLL /D CAMCODEC_EXPORTS /D _CRT_SECURE_NO_WARNINGS /D _VC80_UPGRADE=0x0600 /D _WINDLL /GF /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Release/" /Fd".\Release/vc100.pdb" /Gd /TC /analyze- /errorReport:prompt minilzo\minilzo.c minilzo\testmini.c
+         minilzo.c
+         testmini.c
+         Generating Code...
+       ResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D NDEBUG /D _VC80_UPGRADE=0x0600 /l"0x0409" /nologo /fo"Release\camcodec.res" camcodec.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\camcodec.dll" /INCREMENTAL:NO /NOLOGO winmm.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /DEF:".\camcodec.def" /MANIFEST /ManifestFile:"Release\camcodec.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /PDB:".\Release/camcodec.pdb" /TLBID:1 /DYNAMICBASE:NO /IMPLIB:".\Release/camcodec.lib" /MACHINE:X86 /DLL Release\camcodec.res
+         .\Release/camcodec.obj
+         .\Release/drvproc.obj
+         .\Release/minilzo.obj
+         .\Release/testmini.obj
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\zlib\Release\zlib.lib"
+            Creating library .\Release/camcodec.lib and object .\Release/camcodec.exp
+         camcodec.vcxproj -> C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\camcodec.dll
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\camcodec.dll;#2" /manifest Release\camcodec.dll.intermediate.manifest
+       FinalizeBuildStatus:
+         Deleting file "Release\camcodec.unsuccessfulbuild".
+         Touching "Release\camcodec.lastbuildstate".
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Codec\camcodec.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:08.70

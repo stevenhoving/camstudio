@@ -1,0 +1,121 @@
+﻿Build started 1/16/2013 3:04:05 AM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jasper\jasper.vcxproj" on node 3 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating ".\Release\jasper.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.\include /Zi /nologo /W2 /WX- /O2 /Ob1 /Oy- /D NDEBUG /D WIN32 /D _LIB /D JAS_WIN_MSVC_BUILD /D _CRT_SECURE_NO_DEPRECATE /D EXCLUDE_JPG_SUPPORT /D _VC80_UPGRADE=0x0600 /GF /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Release/" /Fd".\Release/vc100.pdb" /Gd /TC /analyze- /errorReport:prompt bmp\bmp_cod.c bmp\bmp_dec.c bmp\bmp_enc.c base\jas_cm.c base\jas_debug.c base\jas_getopt.c base\jas_icc.c base\jas_iccdata.c base\jas_image.c base\jas_init.c base\jas_malloc.c base\jas_seq.c base\jas_stream.c base\jas_string.c base\jas_tvp.c base\jas_version.c jp2\jp2_cod.c jp2\jp2_dec.c jp2\jp2_enc.c jpc\jpc_bs.c jpc\jpc_cs.c jpc\jpc_dec.c jpc\jpc_enc.c jpc\jpc_math.c jpc\jpc_mct.c jpc\jpc_mqcod.c jpc\jpc_mqdec.c jpc\jpc_mqenc.c jpc\jpc_qmfb.c jpc\jpc_t1cod.c jpc\jpc_t1dec.c jpc\jpc_t1enc.c jpc\jpc_t2cod.c jpc\jpc_t2dec.c jpc\jpc_t2enc.c jpc\jpc_tagtree.c jpc\jpc_tsfb.c jpc\jpc_util.c jpg\jpg_dummy.c jpg\jpg_val.c mif\mif_cod.c pgx\pgx_cod.c pgx\pgx_dec.c pgx\pgx_enc.c pnm\pnm_cod.c pnm\pnm_dec.c pnm\pnm_enc.c ras\ras_cod.c ras\ras_dec.c ras\ras_enc.c
+         bmp_cod.c
+         bmp_dec.c
+         bmp_enc.c
+         jas_cm.c
+         jas_debug.c
+         jas_getopt.c
+         jas_icc.c
+         jas_iccdata.c
+         jas_image.c
+         jas_init.c
+         jas_malloc.c
+         jas_seq.c
+         jas_stream.c
+         jas_string.c
+         jas_tvp.c
+         jas_version.c
+         jp2_cod.c
+         jp2_dec.c
+         jp2_enc.c
+         jpc_bs.c
+         Generating Code...
+         Compiling...
+         jpc_cs.c
+         jpc_dec.c
+         jpc_enc.c
+         jpc_math.c
+         jpc_mct.c
+         jpc_mqcod.c
+         jpc_mqdec.c
+         jpc_mqenc.c
+         jpc_qmfb.c
+         jpc_t1cod.c
+         jpc_t1dec.c
+         jpc_t1enc.c
+         jpc_t2cod.c
+         jpc_t2dec.c
+         jpc_t2enc.c
+         jpc_tagtree.c
+         jpc_tsfb.c
+         jpc_util.c
+         jpg_dummy.c
+         jpg_val.c
+         Generating Code...
+         Compiling...
+         mif_cod.c
+         pgx_cod.c
+         pgx_dec.c
+         pgx_enc.c
+         pnm_cod.c
+         pnm_dec.c
+         pnm_enc.c
+         ras_cod.c
+         ras_dec.c
+         ras_enc.c
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:".\Release\jasper.lib" /NOLOGO .\Release/bmp_cod.obj
+         .\Release/bmp_dec.obj
+         .\Release/bmp_enc.obj
+         .\Release/jas_cm.obj
+         .\Release/jas_debug.obj
+         .\Release/jas_getopt.obj
+         .\Release/jas_icc.obj
+         .\Release/jas_iccdata.obj
+         .\Release/jas_image.obj
+         .\Release/jas_init.obj
+         .\Release/jas_malloc.obj
+         .\Release/jas_seq.obj
+         .\Release/jas_stream.obj
+         .\Release/jas_string.obj
+         .\Release/jas_tvp.obj
+         .\Release/jas_version.obj
+         .\Release/jp2_cod.obj
+         .\Release/jp2_dec.obj
+         .\Release/jp2_enc.obj
+         .\Release/jpc_bs.obj
+         .\Release/jpc_cs.obj
+         .\Release/jpc_dec.obj
+         .\Release/jpc_enc.obj
+         .\Release/jpc_math.obj
+         .\Release/jpc_mct.obj
+         .\Release/jpc_mqcod.obj
+         .\Release/jpc_mqdec.obj
+         .\Release/jpc_mqenc.obj
+         .\Release/jpc_qmfb.obj
+         .\Release/jpc_t1cod.obj
+         .\Release/jpc_t1dec.obj
+         .\Release/jpc_t1enc.obj
+         .\Release/jpc_t2cod.obj
+         .\Release/jpc_t2dec.obj
+         .\Release/jpc_t2enc.obj
+         .\Release/jpc_tagtree.obj
+         .\Release/jpc_tsfb.obj
+         .\Release/jpc_util.obj
+         .\Release/jpg_dummy.obj
+         .\Release/jpg_val.obj
+         .\Release/mif_cod.obj
+         .\Release/pgx_cod.obj
+         .\Release/pgx_dec.obj
+         .\Release/pgx_enc.obj
+         .\Release/pnm_cod.obj
+         .\Release/pnm_dec.obj
+         .\Release/pnm_enc.obj
+         .\Release/ras_cod.obj
+         .\Release/ras_dec.obj
+         .\Release/ras_enc.obj
+         jasper.vcxproj -> C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jasper\.\Release\jasper.lib
+       FinalizeBuildStatus:
+         Deleting file ".\Release\jasper.unsuccessfulbuild".
+         Touching ".\Release\jasper.lastbuildstate".
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jasper\jasper.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:37.67

@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="copyright" content="Copyright &copy; 2001 RenderSoft Software and Web Publishing, Copyright &copy; 2008 CamStudio Group &amp; Contributors." />
+<meta name="creator" content="RenderSoft Software and Web Publishing, CamStudio Group &amp; Contributors." />
+<meta name="language" content="en-us" />
+<link href="../help.css" rel="stylesheet" type="text/css" />
+<title>What's New / Program History</title>
+</head>
+<body>
+<h1>What's New / Program History</h1>
+<h3>Version 2.6</h3>
+<ol>
+	<li>Record from speakers feature returned</li>
+	<li>Tons of minor GUI improvements</li>
+	<li>Major code refactoring</li>
+</ol>
+
+<h3>Version 2.5</h3>
+<ul>
+	<li><p>Recorder</p>
+		<ol>
+			<li>Added recording region by window</li>
+			<li>Added left and right mouse button visual feedback when clicked</li>
+			<li>Added true multi-language support for Recorder, SWF Producer and Player</li>
+			<li><b>REMOVED recording audio from speakers due to lack of source code</b></li>
+			<li>Added recording for a preset amount of time</li>
+			<li>New Effects menu added with:
+				<ul>
+					<li>Add system time stamp to video</li>
+					<li>Add caption to video</li>
+					<li>Add watermark to video (transparency not supported, yet!)</li>
+				</ul>
+			</li>
+		</ol>
+	</li>
+	<li><p>SWF Producer</p>
+		<ol>
+			<li>Added redirect URL function so viewers can be taken to another URL immediately after the video has finished playing.</li>
+			<li>Added a cancel button to the "Converting to SWF" dialog so you can cancel an SWF conversion at any time. You don't have to wait until it's finished or force it to close with CTRL, ALT, DEL.</li>
+			<li>Fixed Firefox bug when playing a Flash SWF file (caused due to incorrect HTML)</li>
+		</ol>
+	</li>
+	<li><p>Outstanding stuff</p>
+		<ul>
+			<li>When using another language, some menus and options are either missing or still in English.</li>
+			<li>Native Vista compatibility not supported, but workaround listed on the blog using XP Compatibility Mode.</li>
+			<li>Documentation not complete (still working on it)</li>
+		</ul>
+	</li>
+</ul>
+
+<h3>Version 2.0</h3>
+<ol>
+	<li><p>Flash (.swf) output - you can now produce small, stream-able Flash files with lossless compression (in perfect quality) with CamStudio. This is made possible with the introduction of a new module - the SWF Producer - that is distributed with the CamStudio package. What the SWF Producer basically does is to convert AVI files to Flash (.swf) files. It can convert almost all AVI files to Flash, including those not produced with CamStudio. The SWF Producer can operate in 3 modes:</p>
+		<ol>
+			<li><p class="standout">Standalone mode</p><p>The SWF Producer runs like a normal program. You can launch it by selecting the Tools -&gt; SWF Producer command inside the CamStudio Screen Recorder, or by simply double clicking the Producer.exe file in the installed directory.</p></li>
+			<li><p class="standout">Record Directly to Flash</p><p>You can set the CamStudio Recorder to record directly to Flash.</p></li>
+			<li><p class="standout">Command-line mode (silence mode)</p><p>The Producer can also be launched on the command line (in DOS Prompt) by typing <code>Producer.exe -b filename.avi</code> When Producer is launched this way, it opens the file "filename.avi" when it starts, automatically converts the AVI movie to Flash, and then exits. It will not issue any error messages during conversion. You can convert multiple AVI files this way.</p></li>
+		</ol>
+	</li>
+	<li><p>With the auto-naming feature you can now avoid giving a name to every AVI you record. (Options -&gt; Program Options -&gt; Name of AVI file) The name of the file is automatically formed using the system's date and time of recording and is saved in CamStudio's installed directory.</p></li>
+	<li>Improvements to CamStudio Player 2.0 (playplus.exe); the following options are now available when running playplus.exe in the command line mode:
+		<ul>
+			<li><p><code>playplus -a filename.avi</code></p><p>This will launch the AVI file (filename.avi) and play it automatically.</p></li>
+			<li><p><code>playplus -x filename.avi</code></p><p>This will launch the AVI file (filename.avi) and play it automatically. The player will exit when the playback is completed.</p></li>
+		</ul>
+	</li>
+</ol>
+
+<h3>Version 1.8</h3>
+<ol>
+	<li><p class="standout">Screen Annotation</p><p>Allows you to display screen captions on your desktop while recording. These captions are anti-aliased, high quality images that can display text in multiple languages. You can also make a caption transparent and create a cutout region for it.</p></li>
+	<li><p class="standout">Video Annotation</p><p>Allows you to stream the contents of your web-cam onto your desktop. With this feature, you can add a personal touch to your recordings by including a movie of yourself into the AVI. The video annotations window, like the screen annotations, can be made transparent (Win XP) and assigned a cutout region.</p></li>
+	<li><p>You can now pan the fixed region of recording by dragging any of the four corners around it.</p></li>
+	<li><p>With the new Audio and Video Synchronization feature, you can now shift the video stream slightly to make the audio and video streams be in phase.</p></li>
+	<li><p>Bugs are fixed for keyboard shortcuts that may not function properly in previous versions.</p></li>
+</ol>
+
+<h3>Version 1.6</h3>
+<ol>
+	<li>Recording of sound from your speakers (for sound cards that support this feature).</li>
+	<li>Capturing of translucent/layered windows (for Windows 2000/XP).</li>
+	<li>Update of the controls to Win XP look (for Windows XP users only).</li>
+	<li>Ability to customize the temporary directory for recording. Setting this to an appropriate drive can reduce crashes due to lack of free space.</li>
+	<li>Some bug fixes (filtering out certain codecs that crash CamStudio).</li>
+</ol>
+
+<h3>Version 1.25</h3>
+<ol>
+	<li>Added support for the DivX Codec (for certain image dimensions).</li>
+	<li>Recording with audio in default settings will no longer give a huge file size.</li>
+	<li>You may now specify the interleave factor of audio of video in milliseconds instead of frames.</li>
+	<li>You may now specify the X and Y coordinates of a fixed region <i>before</i> the recording starts.</li>
+</ol>
+
+<h3>Version 1.2</h3>
+<ol>
+	<li>Saving of user settings on exit.</li>
+	<li>Support for user-customizable shortcuts to start/stop the recorder.</li>
+	<li>An improved video options panel.</li>
+	<li>A new button for toggling between different views.</li>
+	<li>CamStudio now minimizes to the system tray. Double click its icon in the system tray to restore CamStudio.</li>
+</ol>
+</body>
+</html>

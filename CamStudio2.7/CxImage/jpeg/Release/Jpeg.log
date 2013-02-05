@@ -1,0 +1,113 @@
+﻿Build started 1/16/2013 3:04:05 AM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jpeg\Jpeg.vcxproj" on node 4 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating ".\Release\Jpeg.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Ob1 /Oy- /D WIN32 /D NDEBUG /D _WINDOWS /D _CRT_SECURE_NO_DEPRECATE /GF /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Release/" /Fd".\Release/vc100.pdb" /Gd /TC /analyze- /errorReport:prompt jaricom.c Jcapimin.c Jcapistd.c jcarith.c Jccoefct.c Jccolor.c Jcdctmgr.c Jchuff.c Jcinit.c Jcmainct.c Jcmarker.c Jcmaster.c Jcomapi.c Jcparam.c Jcprepct.c Jcsample.c Jctrans.c Jdapimin.c Jdapistd.c jdarith.c Jdatadst.c Jdatasrc.c Jdcoefct.c Jdcolor.c Jddctmgr.c Jdhuff.c Jdinput.c Jdmainct.c Jdmarker.c Jdmaster.c Jdmerge.c Jdpostct.c Jdsample.c Jdtrans.c Jerror.c Jfdctflt.c Jfdctfst.c Jfdctint.c Jidctflt.c Jidctfst.c Jidctint.c Jmemmgr.c Jmemnobs.c Jquant1.c Jquant2.c Jutils.c
+         jaricom.c
+         Jcapimin.c
+         Jcapistd.c
+         jcarith.c
+         Jccoefct.c
+         Jccolor.c
+         Jcdctmgr.c
+         Jchuff.c
+         Jcinit.c
+         Jcmainct.c
+         Jcmarker.c
+         Jcmaster.c
+         Jcomapi.c
+         Jcparam.c
+         Jcprepct.c
+         Jcsample.c
+         Jctrans.c
+         Jdapimin.c
+         Jdapistd.c
+         jdarith.c
+         Generating Code...
+         Compiling...
+         Jdatadst.c
+         Jdatasrc.c
+         Jdcoefct.c
+         Jdcolor.c
+         Jddctmgr.c
+         Jdhuff.c
+         Jdinput.c
+         Jdmainct.c
+         Jdmarker.c
+         Jdmaster.c
+         Jdmerge.c
+         Jdpostct.c
+         Jdsample.c
+         Jdtrans.c
+         Jerror.c
+         Jfdctflt.c
+         Jfdctfst.c
+         Jfdctint.c
+         Jidctflt.c
+         Jidctfst.c
+         Generating Code...
+         Compiling...
+         Jidctint.c
+         Jmemmgr.c
+         Jmemnobs.c
+         Jquant1.c
+         Jquant2.c
+         Jutils.c
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:".\Release\Jpeg.lib" /NOLOGO .\Release/jaricom.obj
+         .\Release/Jcapimin.obj
+         .\Release/Jcapistd.obj
+         .\Release/jcarith.obj
+         .\Release/Jccoefct.obj
+         .\Release/Jccolor.obj
+         .\Release/Jcdctmgr.obj
+         .\Release/Jchuff.obj
+         .\Release/Jcinit.obj
+         .\Release/Jcmainct.obj
+         .\Release/Jcmarker.obj
+         .\Release/Jcmaster.obj
+         .\Release/Jcomapi.obj
+         .\Release/Jcparam.obj
+         .\Release/Jcprepct.obj
+         .\Release/Jcsample.obj
+         .\Release/Jctrans.obj
+         .\Release/Jdapimin.obj
+         .\Release/Jdapistd.obj
+         .\Release/jdarith.obj
+         .\Release/Jdatadst.obj
+         .\Release/Jdatasrc.obj
+         .\Release/Jdcoefct.obj
+         .\Release/Jdcolor.obj
+         .\Release/Jddctmgr.obj
+         .\Release/Jdhuff.obj
+         .\Release/Jdinput.obj
+         .\Release/Jdmainct.obj
+         .\Release/Jdmarker.obj
+         .\Release/Jdmaster.obj
+         .\Release/Jdmerge.obj
+         .\Release/Jdpostct.obj
+         .\Release/Jdsample.obj
+         .\Release/Jdtrans.obj
+         .\Release/Jerror.obj
+         .\Release/Jfdctflt.obj
+         .\Release/Jfdctfst.obj
+         .\Release/Jfdctint.obj
+         .\Release/Jidctflt.obj
+         .\Release/Jidctfst.obj
+         .\Release/Jidctint.obj
+         .\Release/Jmemmgr.obj
+         .\Release/Jmemnobs.obj
+         .\Release/Jquant1.obj
+         .\Release/Jquant2.obj
+         .\Release/Jutils.obj
+         Jpeg.vcxproj -> C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jpeg\.\Release\Jpeg.lib
+       FinalizeBuildStatus:
+         Deleting file ".\Release\Jpeg.unsuccessfulbuild".
+         Touching ".\Release\Jpeg.lastbuildstate".
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jpeg\Jpeg.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:09.98

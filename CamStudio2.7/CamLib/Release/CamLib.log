@@ -1,0 +1,46 @@
+﻿Build started 1/16/2013 3:04:38 AM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CamLib\CamLib.vcxproj" on node 3 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Release\CamLib.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W4 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _LIB /D _AFXDLL /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yc"StdAfx.h" /Fp"Release\CamLib.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W4 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _LIB /D _AFXDLL /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Release\CamLib.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt CamError.cpp CamFile.cpp CamImage.cpp CamRect.cpp CamSys.cpp CamWindow.cpp CBitmapEx.cpp CStudiolib.cpp ..\Recorder\FrameGrabber.cpp Picture.cpp TrayIcon.cpp
+         CamError.cpp
+         CamFile.cpp
+         CamImage.cpp
+         CamRect.cpp
+         CamSys.cpp
+         CamWindow.cpp
+         SetTitleBar depreciated; use MainFrame class
+         FrameWindow obsolete
+         CBitmapEx.cpp
+         CStudiolib.cpp
+         FrameGrabber.cpp
+         Picture.cpp
+         TrayIcon.cpp
+       ResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D _AFXDLL /l"0x0409" /nologo /fo"Release\hook.res" ..\hook\hook.rc 
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\CamLib.lib" /NOLOGO /MACHINE:X86 /LTCG Release\hook.res
+         Release\CamError.obj
+         Release\CamFile.obj
+         Release\CamImage.obj
+         Release\CamRect.obj
+         Release\CamSys.obj
+         Release\CamWindow.obj
+         Release\CBitmapEx.obj
+         Release\CStudiolib.obj
+         Release\FrameGrabber.obj
+         Release\Picture.obj
+         Release\stdafx.obj
+         Release\TrayIcon.obj
+         CamLib.vcxproj -> C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\CamLib.lib
+       FinalizeBuildStatus:
+         Deleting file "Release\CamLib.unsuccessfulbuild".
+         Touching "Release\CamLib.lastbuildstate".
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CamLib\CamLib.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:05.80

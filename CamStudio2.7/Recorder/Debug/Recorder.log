@@ -1,0 +1,281 @@
+﻿Build started 1/3/2013 11:11:16 PM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\Recorder.vcxproj" on node 3 (build target(s)).
+     1>InitializeBuildStatus:
+         Touching "Debug\Recorder.unsuccessfulbuild".
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\\" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\fister" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\CxImage" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CamLib" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\hook" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\hookkey" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\libconfig/lib" /ZI /nologo /W4 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _VC80_UPGRADE=0x0710 /D _AFXDLL /Gm /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp".\Debug/recorder.pch" /Fo".\Debug/" /Fd".\Debug/vc100.pdb" /Gd /TP /analyze- /errorReport:prompt StdAfx.cpp
+         StdAfx.cpp
+         Recorder: stdafx.h
+         UNICODE NOT defined
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\\" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\fister" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\CxImage" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CamLib" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\hook" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\hookkey" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\libconfig/lib" /ZI /nologo /W4 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _VC80_UPGRADE=0x0710 /D _AFXDLL /Gm /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp".\Debug/recorder.pch" /Fo".\Debug/" /Fd".\Debug/vc100.pdb" /Gd /TP /analyze- /errorReport:prompt addons\AnnotationEffectsOptions.cpp addons\EffectsOptions.cpp addons\EffectsOptions2.cpp addons\XnoteStopwatchFormat.cpp AudioFormat.cpp AudioMixer.cpp AudioSpeakers.cpp AutopanSpeed.cpp AutoSearchDialog.cpp AVI.cpp BasicMessage.cpp CamStudioCommandLineInfo.cpp CursorOptionsDlg.cpp EditImage.cpp EditTransparency.cpp fister\Buffer.cpp fister\SoundBase.cpp fister\SoundFile.cpp fister\SoundIn.cpp FixedRegion.cpp FlashingWnd.cpp FolderDialog.cpp HotKey.cpp Keyshortcuts.cpp LayeredWindowHelperST.cpp LayoutList.cpp ListManager.cpp MainFrm.cpp MCI.cpp MouseCaptureWnd.cpp NewShape.cpp PresetTime.cpp Profile.cpp Recorder.cpp RecorderDoc.cpp RecorderView.cpp ResizeDialog.cpp Screen.cpp ScreenAnnotations.cpp SpeakersImpl.cpp SyncDialog.cpp TextDialog.cpp TransparentWnd.cpp TransRateDialog.cpp TroubleShoot.cpp vfw\ACM.cpp vfw\VCM.cpp VideoOptions.cpp VideoWnd.cpp
+         VideoWnd.cpp
+         VideoOptions.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(25): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(117): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+         VCM.cpp
+         ACM.cpp
+         TroubleShoot.cpp
+         TransRateDialog.cpp
+         TransparentWnd.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(25): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(117): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\transparentwnd.cpp(463): warning C4244: 'argument' : conversion from 'int' to 'Gdiplus::REAL', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\transparentwnd.cpp(463): warning C4244: 'argument' : conversion from 'int' to 'Gdiplus::REAL', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\transparentwnd.cpp(463): warning C4244: 'argument' : conversion from 'LONG' to 'Gdiplus::REAL', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\transparentwnd.cpp(463): warning C4244: 'argument' : conversion from 'LONG' to 'Gdiplus::REAL', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\transparentwnd.cpp(434): warning C4189: 'textlength' : local variable is initialized but not referenced
+         TextDialog.cpp
+         SyncDialog.cpp
+         SpeakersImpl.cpp
+         CamStudio\fister\SoundBase.h
+         ScreenAnnotations.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\screenannotations.cpp(1389): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\screenannotations.cpp(1415): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\screenannotations.cpp(1416): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+         Screen.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(25): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(117): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\screen.cpp(30): warning C4996: 'localtime': This function or variable may be unsafe. Consider using localtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\time.inl(112) : see declaration of 'localtime'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\screen.cpp(72): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\screen.cpp(133): warning C4244: '*=' : conversion from 'double' to 'LONG', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\screen.cpp(134): warning C4244: '*=' : conversion from 'double' to 'LONG', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\screen.cpp(245): warning C4244: '*=' : conversion from 'double' to 'LONG', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\screen.cpp(246): warning C4244: '*=' : conversion from 'double' to 'LONG', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\screen.cpp(653): warning C4189: 's' : local variable is initialized but not referenced
+         ResizeDialog.cpp
+         RecorderView.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(25): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(117): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+         CamStudio\fister\SoundBase.h
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(1481): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(1498): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(1499): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(1565): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(105) : see declaration of 'strcpy'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(2030): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(2520): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(2525): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+         CRecorderView::SaveSettings skipped
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(2632): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(3687): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(3688): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(3713): warning C4189: 'dist' : local variable is initialized but not referenced
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(4323): warning C4189: 'pFrame' : local variable is initialized but not referenced
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(4637): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(105) : see declaration of 'strcpy'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(4732): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(4743): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(4744): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(105) : see declaration of 'strcpy'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(4750): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(4916): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\recorderview.cpp(5100): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+         RecorderDoc.cpp
+         Recorder.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(25): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(117): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+         Profile.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\profile.cpp(213): warning C4244: '=' : conversion from 'unsigned int' to 'BYTE', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\profile.cpp(215): warning C4244: '=' : conversion from 'unsigned int' to 'BYTE', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\profile.cpp(219): warning C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(188) : see declaration of 'strncpy'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\profile.cpp(222): warning C4244: '=' : conversion from 'unsigned int' to 'BYTE', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\profile.cpp(225): warning C4244: '=' : conversion from 'unsigned int' to 'BYTE', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\profile.cpp(227): warning C4244: '=' : conversion from 'unsigned int' to 'BYTE', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\profile.cpp(229): warning C4244: '=' : conversion from 'unsigned int' to 'BYTE', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\profile.cpp(231): warning C4244: '=' : conversion from 'unsigned int' to 'BYTE', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\profile.cpp(233): warning C4244: '=' : conversion from 'unsigned int' to 'BYTE', possible loss of data
+         PresetTime.cpp
+         NewShape.cpp
+         MouseCaptureWnd.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(25): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(117): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+         Generating Code...
+         Compiling...
+         MCI.cpp
+         MainFrm.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(25): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(117): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\mainfrm.cpp(118): warning C4100: 'lParam' : unreferenced formal parameter
+         ListManager.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\listmanager.cpp(83): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\listmanager.cpp(144): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\listmanager.cpp(455): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\listmanager.cpp(515): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+         LayoutList.cpp
+         LayeredWindowHelperST.cpp
+         Keyshortcuts.cpp
+         HotKey.cpp
+         FolderDialog.cpp
+         FlashingWnd.cpp
+         FixedRegion.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(25): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(117): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+         SoundIn.cpp
+         CamStudio\fister\SoundBase.h
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\fister\soundin.cpp(123): warning C4100: 'parm1' : unreferenced formal parameter
+         SoundFile.cpp
+         CamStudio\fister\SoundBase.h
+         SoundBase.cpp
+         CamStudio\fister\SoundBase.h
+         CamStudio\fister\SoundBase.cpp
+         Buffer.cpp
+         EditTransparency.cpp
+         EditImage.cpp
+         CursorOptionsDlg.cpp
+         CamStudioCommandLineInfo.cpp
+         BasicMessage.cpp
+         AVI.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(25): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(117): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+         Generating Code...
+         Compiling...
+         AutoSearchDialog.cpp
+         AutopanSpeed.cpp
+         AudioSpeakers.cpp
+         AudioMixer.cpp
+         AudioFormat.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(25): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(117): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\audioformat.cpp(101): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+         XnoteStopwatchFormat.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\addons\xnotestopwatchformat.cpp(89): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\addons\xnotestopwatchformat.cpp(92): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\addons\xnotestopwatchformat.cpp(134): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\addons\xnotestopwatchformat.cpp(182): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+         EffectsOptions2.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(25): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(117): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+         EffectsOptions.cpp
+         AnnotationEffectsOptions.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(25): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\cximage\cximage\xiofile.h(117): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\addons\annotationeffectsoptions.cpp(348): warning C4996: 'localtime': This function or variable may be unsafe. Consider using localtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\time.inl(112) : see declaration of 'localtime'
+         Generating Code...
+       ResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D _DEBUG /D _VC80_UPGRADE=0x0710 /D _AFXDLL /l"0x0409" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\GlobalResources" /nologo /fo"Debug\Recorder.res" Recorder.rc 
+       ManifestResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\Recorder.exe.embed.manifest.res" Debug\Recorder_manifest.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Debug\Recorder.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\libconfig/Debug" winmm.lib vfw32.lib msacm32.lib libconfig++.lib shfolder.lib /MANIFEST /ManifestFile:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Debug\Recorder.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:".\Debug/recorder.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Debug\Recorder.lib" /MACHINE:X86 Debug\Recorder.res
+         Debug\Recorder.exe.embed.manifest.res
+         .\Debug/AnnotationEffectsOptions.obj
+         .\Debug/EffectsOptions.obj
+         .\Debug/EffectsOptions2.obj
+         .\Debug/XnoteStopwatchFormat.obj
+         .\Debug/AudioFormat.obj
+         .\Debug/AudioMixer.obj
+         .\Debug/AudioSpeakers.obj
+         .\Debug/AutopanSpeed.obj
+         .\Debug/AutoSearchDialog.obj
+         .\Debug/AVI.obj
+         .\Debug/BasicMessage.obj
+         .\Debug/CamStudioCommandLineInfo.obj
+         .\Debug/CursorOptionsDlg.obj
+         .\Debug/EditImage.obj
+         .\Debug/EditTransparency.obj
+         .\Debug/Buffer.obj
+         .\Debug/SoundBase.obj
+         .\Debug/SoundFile.obj
+         .\Debug/SoundIn.obj
+         .\Debug/FixedRegion.obj
+         .\Debug/FlashingWnd.obj
+         .\Debug/FolderDialog.obj
+         .\Debug/HotKey.obj
+         .\Debug/Keyshortcuts.obj
+         .\Debug/LayeredWindowHelperST.obj
+         .\Debug/LayoutList.obj
+         .\Debug/ListManager.obj
+         .\Debug/MainFrm.obj
+         .\Debug/MCI.obj
+         .\Debug/MouseCaptureWnd.obj
+         .\Debug/NewShape.obj
+         .\Debug/PresetTime.obj
+         .\Debug/Profile.obj
+         .\Debug/Recorder.obj
+         .\Debug/RecorderDoc.obj
+         .\Debug/RecorderView.obj
+         .\Debug/ResizeDialog.obj
+         .\Debug/Screen.obj
+         .\Debug/ScreenAnnotations.obj
+         .\Debug/SpeakersImpl.obj
+         .\Debug/StdAfx.obj
+         .\Debug/SyncDialog.obj
+         .\Debug/TextDialog.obj
+         .\Debug/TransparentWnd.obj
+         .\Debug/TransRateDialog.obj
+         .\Debug/TroubleShoot.obj
+         .\Debug/ACM.obj
+         .\Debug/VCM.obj
+         .\Debug/VideoOptions.obj
+         .\Debug/VideoWnd.obj
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Debug\CamLib.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jasper\Debug\jasper.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jbig\Debug\jbig.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jpeg\Debug\Jpeg.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\libpsd\Debug\libpsd.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\mng\Debug\mng.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\png\Debug\png.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\raw\Debug\libdcr.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\tiff\Debug\Tiff.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\zlib\Debug\zlib.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\CxImage\Debug\cximage.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\hook\Debug\hook.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Debug\libconfig++.lib"
+     1>LINK : fatal error LNK1104: cannot open file 'libconfig++.lib'
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\Recorder.vcxproj" (build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:44.64

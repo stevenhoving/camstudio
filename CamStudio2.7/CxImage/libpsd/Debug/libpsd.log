@@ -1,0 +1,121 @@
+﻿Build started 1/3/2013 11:09:58 PM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\libpsd\libpsd.vcxproj" on node 4 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating ".\Debug\libpsd.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D _CRT_SECURE_NO_DEPRECATE /D _VC80_UPGRADE=0x0600 /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug/" /Fd".\Debug/vc100.pdb" /Gd /TC /analyze- /errorReport:prompt adjustment.c bevel_emboss.c bitmap.c blend.c boundary.c brightness_contrast.c channel_image.c channel_mixer.c color.c color_balance.c color_mode.c color_overlay.c curves.c descriptor.c drop_shadow.c effects.c file_header.c fixed.c gaussian_blur.c gradient_blend.c gradient_fill.c gradient_map.c gradient_overlay.c hue_saturation.c image_data.c image_resource.c inner_glow.c inner_shadow.c invert.c layer_mask.c levels.c outer_glow.c path.c pattern.c pattern_fill.c pattern_overlay.c photo_filter.c posterize.c psd.c psd_system.c psd_zip.c rect.c satin.c selective_color.c solid_color.c stream.c stroke.c threshold.c thumbnail.c type_tool.c
+         type_tool.c
+         thumbnail.c
+         threshold.c
+         stroke.c
+         stream.c
+         solid_color.c
+         selective_color.c
+         satin.c
+         rect.c
+         psd_zip.c
+         psd_system.c
+         psd.c
+         posterize.c
+         photo_filter.c
+         pattern_overlay.c
+         pattern_fill.c
+         pattern.c
+         path.c
+         outer_glow.c
+         levels.c
+         Generating Code...
+         Compiling...
+         layer_mask.c
+         invert.c
+         inner_shadow.c
+         inner_glow.c
+         image_resource.c
+         image_data.c
+         hue_saturation.c
+         gradient_overlay.c
+         gradient_map.c
+         gradient_fill.c
+         gradient_blend.c
+         gaussian_blur.c
+         fixed.c
+         file_header.c
+         effects.c
+         drop_shadow.c
+         descriptor.c
+         curves.c
+         color_overlay.c
+         color_mode.c
+         Generating Code...
+         Compiling...
+         color_balance.c
+         color.c
+         channel_mixer.c
+         channel_image.c
+         brightness_contrast.c
+         boundary.c
+         blend.c
+         bitmap.c
+         bevel_emboss.c
+         adjustment.c
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:".\Debug\libpsd.lib" /NOLOGO .\Debug/adjustment.obj
+         .\Debug/bevel_emboss.obj
+         .\Debug/bitmap.obj
+         .\Debug/blend.obj
+         .\Debug/boundary.obj
+         .\Debug/brightness_contrast.obj
+         .\Debug/channel_image.obj
+         .\Debug/channel_mixer.obj
+         .\Debug/color.obj
+         .\Debug/color_balance.obj
+         .\Debug/color_mode.obj
+         .\Debug/color_overlay.obj
+         .\Debug/curves.obj
+         .\Debug/descriptor.obj
+         .\Debug/drop_shadow.obj
+         .\Debug/effects.obj
+         .\Debug/file_header.obj
+         .\Debug/fixed.obj
+         .\Debug/gaussian_blur.obj
+         .\Debug/gradient_blend.obj
+         .\Debug/gradient_fill.obj
+         .\Debug/gradient_map.obj
+         .\Debug/gradient_overlay.obj
+         .\Debug/hue_saturation.obj
+         .\Debug/image_data.obj
+         .\Debug/image_resource.obj
+         .\Debug/inner_glow.obj
+         .\Debug/inner_shadow.obj
+         .\Debug/invert.obj
+         .\Debug/layer_mask.obj
+         .\Debug/levels.obj
+         .\Debug/outer_glow.obj
+         .\Debug/path.obj
+         .\Debug/pattern.obj
+         .\Debug/pattern_fill.obj
+         .\Debug/pattern_overlay.obj
+         .\Debug/photo_filter.obj
+         .\Debug/posterize.obj
+         .\Debug/psd.obj
+         .\Debug/psd_system.obj
+         .\Debug/psd_zip.obj
+         .\Debug/rect.obj
+         .\Debug/satin.obj
+         .\Debug/selective_color.obj
+         .\Debug/solid_color.obj
+         .\Debug/stream.obj
+         .\Debug/stroke.obj
+         .\Debug/threshold.obj
+         .\Debug/thumbnail.obj
+         .\Debug/type_tool.obj
+         libpsd.vcxproj -> C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\libpsd\.\Debug\libpsd.lib
+       FinalizeBuildStatus:
+         Deleting file ".\Debug\libpsd.unsuccessfulbuild".
+         Touching ".\Debug\libpsd.lastbuildstate".
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\libpsd\libpsd.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:06.14

@@ -1,0 +1,18 @@
+﻿Build started 1/3/2013 11:09:40 PM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\raw\libdcr.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating ".\Debug\libdcr.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D _CRT_SECURE_NO_DEPRECATE /D _VC80_UPGRADE=0x0600 /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug/" /Fd".\Debug/vc100.pdb" /Gd /TC /analyze- /errorReport:prompt libdcr.c
+         libdcr.c
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:".\Debug\libdcr.lib" /NOLOGO .\Debug/libdcr.obj
+         libdcr.vcxproj -> C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\raw\.\Debug\libdcr.lib
+       FinalizeBuildStatus:
+         Deleting file ".\Debug\libdcr.unsuccessfulbuild".
+         Touching ".\Debug\libdcr.lastbuildstate".
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\raw\libdcr.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.90

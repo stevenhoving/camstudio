@@ -1,0 +1,47 @@
+﻿Build started 1/3/2013 11:09:46 PM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\png\png.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating ".\Debug\png.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\zlib /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _CRT_SECURE_NO_DEPRECATE /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug/" /Fd".\Debug/vc100.pdb" /Gd /TC /analyze- /errorReport:prompt png.c pngerror.c pngget.c pngmem.c pngpread.c pngread.c pngrio.c pngrtran.c pngrutil.c pngset.c pngtrans.c pngwio.c pngwrite.c pngwtran.c pngwutil.c
+         png.c
+         pngerror.c
+         pngget.c
+         pngmem.c
+         pngpread.c
+         pngread.c
+         pngrio.c
+         pngrtran.c
+         pngrutil.c
+         pngset.c
+         pngtrans.c
+         pngwio.c
+         pngwrite.c
+         pngwtran.c
+         pngwutil.c
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:".\Debug\png.lib" /NOLOGO .\Debug/png.obj
+         .\Debug/pngerror.obj
+         .\Debug/pngget.obj
+         .\Debug/pngmem.obj
+         .\Debug/pngpread.obj
+         .\Debug/pngread.obj
+         .\Debug/pngrio.obj
+         .\Debug/pngrtran.obj
+         .\Debug/pngrutil.obj
+         .\Debug/pngset.obj
+         .\Debug/pngtrans.obj
+         .\Debug/pngwio.obj
+         .\Debug/pngwrite.obj
+         .\Debug/pngwtran.obj
+         .\Debug/pngwutil.obj
+         png.vcxproj -> C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\png\.\Debug\png.lib
+       FinalizeBuildStatus:
+         Deleting file ".\Debug\png.unsuccessfulbuild".
+         Touching ".\Debug\png.lastbuildstate".
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\png\png.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:13.81

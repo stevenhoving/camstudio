@@ -1,0 +1,47 @@
+﻿Build started 1/10/2013 7:26:47 PM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\PlayerPlus\playplus.vcxproj" on node 4 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Release\PlayerPlus.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Ob1 /Oy- /D WIN32 /D NDEBUG /D _WINDOWS /D _CRT_SECURE_NO_WARNINGS /D _VC80_UPGRADE=0x0710 /D _MBCS /D _AFXDLL /GF /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t- /Zc:forScope- /Yc"stdafx.h" /Fp".\Release/playplus.pch" /Fo".\Release/" /Fd".\Release/vc100.pdb" /Gd /TP /analyze- /errorReport:prompt StdAfx.cpp
+         StdAfx.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Ob1 /Oy- /D WIN32 /D NDEBUG /D _WINDOWS /D _CRT_SECURE_NO_WARNINGS /D _VC80_UPGRADE=0x0710 /D _MBCS /D _AFXDLL /GF /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t- /Zc:forScope- /Fo".\Release/" /Fd".\Release/vc100.pdb" /Gd /TP /analyze- /errorReport:prompt audio.cpp AudioFormat.cpp fister\Buffer.cpp MainFrm.cpp playplus.cpp playplusDoc.cpp playplusView.cpp SlideToolBar.cpp fister\SoundBase.cpp fister\SoundFile.cpp
+         audio.cpp
+         AudioFormat.cpp
+         Buffer.cpp
+         MainFrm.cpp
+         playplus.cpp
+         playplusDoc.cpp
+         playplusView.cpp
+         SlideToolBar.cpp
+         SoundBase.cpp
+         SoundFile.cpp
+         Generating Code...
+       ResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D NDEBUG /D _VC80_UPGRADE=0x0710 /D _AFXDLL /l"0x0409" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\GlobalResources" /nologo /fo"Release\playplus.res" playplus.rc 
+     1>playplus.rc(262): warning RC4206: title string too long; truncated at 256
+         
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\PlayerPlus.exe" /INCREMENTAL:NO /NOLOGO vfw32.lib winmm.lib msacm32.lib /MANIFEST /ManifestFile:"Release\PlayerPlus.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /PDB:".\Release/Playplus.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\PlayerPlus.lib" /MACHINE:X86 Release\playplus.res
+         .\Release/audio.obj
+         .\Release/AudioFormat.obj
+         .\Release/Buffer.obj
+         .\Release/MainFrm.obj
+         .\Release/playplus.obj
+         .\Release/playplusDoc.obj
+         .\Release/playplusView.obj
+         .\Release/SlideToolBar.obj
+         .\Release/SoundBase.obj
+         .\Release/SoundFile.obj
+         .\Release/StdAfx.obj
+         playplus.vcxproj -> C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\PlayerPlus.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\PlayerPlus.exe;#1" /manifest Release\PlayerPlus.exe.intermediate.manifest "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\Include\Manifest\dpiaware.manifest"
+       FinalizeBuildStatus:
+         Deleting file "Release\PlayerPlus.unsuccessfulbuild".
+         Touching "Release\PlayerPlus.lastbuildstate".
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\PlayerPlus\playplus.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:32.02

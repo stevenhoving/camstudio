@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="CamStudio">
+</Property><Property Name="Solution File" Value="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CamStudio.sln">
+</Property><Property Name="Date" Value="Friday, December 28, 2012">
+</Property><Property Name="Time" Value="23:08:28 PM">
+</Property><Property Name="Log Number" Value="3">
+</Property></Properties><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\libconfig\lib\libconfig++.vcxproj" Source="libconfig++" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="libconfig++" Source="libconfig\lib\libconfig++.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="libconfig++" Source="libconfig\lib\libconfig++.vcxproj" Description="Not Converted">
+</Event></UpgradeLog>

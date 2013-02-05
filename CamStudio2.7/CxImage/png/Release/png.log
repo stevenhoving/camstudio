@@ -1,0 +1,47 @@
+﻿Build started 1/16/2013 3:04:17 AM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\png\png.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating ".\Release\png.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\zlib /Zi /nologo /W3 /WX- /O2 /Ob1 /Oy- /D WIN32 /D NDEBUG /D _WINDOWS /D _CRT_SECURE_NO_DEPRECATE /GF /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Release/" /Fd".\Release/vc100.pdb" /Gd /TC /analyze- /errorReport:prompt png.c pngerror.c pngget.c pngmem.c pngpread.c pngread.c pngrio.c pngrtran.c pngrutil.c pngset.c pngtrans.c pngwio.c pngwrite.c pngwtran.c pngwutil.c
+         png.c
+         pngerror.c
+         pngget.c
+         pngmem.c
+         pngpread.c
+         pngread.c
+         pngrio.c
+         pngrtran.c
+         pngrutil.c
+         pngset.c
+         pngtrans.c
+         pngwio.c
+         pngwrite.c
+         pngwtran.c
+         pngwutil.c
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:".\Release\png.lib" /NOLOGO .\Release/png.obj
+         .\Release/pngerror.obj
+         .\Release/pngget.obj
+         .\Release/pngmem.obj
+         .\Release/pngpread.obj
+         .\Release/pngread.obj
+         .\Release/pngrio.obj
+         .\Release/pngrtran.obj
+         .\Release/pngrutil.obj
+         .\Release/pngset.obj
+         .\Release/pngtrans.obj
+         .\Release/pngwio.obj
+         .\Release/pngwrite.obj
+         .\Release/pngwtran.obj
+         .\Release/pngwutil.obj
+         png.vcxproj -> C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\png\.\Release\png.lib
+       FinalizeBuildStatus:
+         Deleting file ".\Release\png.unsuccessfulbuild".
+         Touching ".\Release\png.lastbuildstate".
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\png\png.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:11.78

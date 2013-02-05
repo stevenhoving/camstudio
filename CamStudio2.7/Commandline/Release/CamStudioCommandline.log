@@ -1,0 +1,27 @@
+﻿Build started 1/10/2013 7:26:49 PM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Commandline\CamStudioCommandline.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Release\CamCommandLine.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W4 /WX- /O2 /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /Gm- /EHsc /MT /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Commandline.cpp
+         Commandline.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\CamCommandLine.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\\" ole32.lib atls.lib libcpmt.lib libcmt.lib gdi32.lib winmm.lib vfw32.lib msacm32.lib kernel32.lib user32.lib /NODEFAULTLIB /MANIFEST /ManifestFile:"Release\CamCommandLine.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /PDB:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\CamCommandLine.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\CamCommandLine.lib" /MACHINE:X86 Release\Commandline.obj
+         Generating code
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\commandline\commandline.cpp(438): warning C4701: potentially uninitialized local variable 'newleft' used
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\commandline\commandline.cpp(439): warning C4701: potentially uninitialized local variable 'newtop' used
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\commandline\commandline.cpp(440): warning C4701: potentially uninitialized local variable 'newwidth' used
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\commandline\commandline.cpp(441): warning C4701: potentially uninitialized local variable 'newheight' used
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\commandline\commandline.cpp(721): warning C4701: potentially uninitialized local variable 'frametime' used
+         Finished generating code
+         CamStudioCommandline.vcxproj -> C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\CamCommandLine.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\CamCommandLine.exe;#1" /manifest Release\CamCommandLine.exe.intermediate.manifest "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\Include\Manifest\dpiaware.manifest"
+       FinalizeBuildStatus:
+         Deleting file "Release\CamCommandLine.unsuccessfulbuild".
+         Touching "Release\CamCommandLine.lastbuildstate".
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Commandline\CamStudioCommandline.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:06.28

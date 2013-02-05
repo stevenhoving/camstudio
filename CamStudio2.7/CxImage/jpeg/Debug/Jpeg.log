@@ -1,0 +1,113 @@
+﻿Build started 1/3/2013 11:09:39 PM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jpeg\Jpeg.vcxproj" on node 4 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating ".\Debug\Jpeg.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _CRT_SECURE_NO_DEPRECATE /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug/" /Fd".\Debug/vc100.pdb" /Gd /TC /analyze- /errorReport:prompt jaricom.c Jcapimin.c Jcapistd.c jcarith.c Jccoefct.c Jccolor.c Jcdctmgr.c Jchuff.c Jcinit.c Jcmainct.c Jcmarker.c Jcmaster.c Jcomapi.c Jcparam.c Jcprepct.c Jcsample.c Jctrans.c Jdapimin.c Jdapistd.c jdarith.c Jdatadst.c Jdatasrc.c Jdcoefct.c Jdcolor.c Jddctmgr.c Jdhuff.c Jdinput.c Jdmainct.c Jdmarker.c Jdmaster.c Jdmerge.c Jdpostct.c Jdsample.c Jdtrans.c Jerror.c Jfdctflt.c Jfdctfst.c Jfdctint.c Jidctflt.c Jidctfst.c Jidctint.c Jmemmgr.c Jmemnobs.c Jquant1.c Jquant2.c Jutils.c
+         jaricom.c
+         Jcapimin.c
+         Jcapistd.c
+         jcarith.c
+         Jccoefct.c
+         Jccolor.c
+         Jcdctmgr.c
+         Jchuff.c
+         Jcinit.c
+         Jcmainct.c
+         Jcmarker.c
+         Jcmaster.c
+         Jcomapi.c
+         Jcparam.c
+         Jcprepct.c
+         Jcsample.c
+         Jctrans.c
+         Jdapimin.c
+         Jdapistd.c
+         jdarith.c
+         Generating Code...
+         Compiling...
+         Jdatadst.c
+         Jdatasrc.c
+         Jdcoefct.c
+         Jdcolor.c
+         Jddctmgr.c
+         Jdhuff.c
+         Jdinput.c
+         Jdmainct.c
+         Jdmarker.c
+         Jdmaster.c
+         Jdmerge.c
+         Jdpostct.c
+         Jdsample.c
+         Jdtrans.c
+         Jerror.c
+         Jfdctflt.c
+         Jfdctfst.c
+         Jfdctint.c
+         Jidctflt.c
+         Jidctfst.c
+         Generating Code...
+         Compiling...
+         Jidctint.c
+         Jmemmgr.c
+         Jmemnobs.c
+         Jquant1.c
+         Jquant2.c
+         Jutils.c
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:".\Debug\Jpeg.lib" /NOLOGO .\Debug/jaricom.obj
+         .\Debug/Jcapimin.obj
+         .\Debug/Jcapistd.obj
+         .\Debug/jcarith.obj
+         .\Debug/Jccoefct.obj
+         .\Debug/Jccolor.obj
+         .\Debug/Jcdctmgr.obj
+         .\Debug/Jchuff.obj
+         .\Debug/Jcinit.obj
+         .\Debug/Jcmainct.obj
+         .\Debug/Jcmarker.obj
+         .\Debug/Jcmaster.obj
+         .\Debug/Jcomapi.obj
+         .\Debug/Jcparam.obj
+         .\Debug/Jcprepct.obj
+         .\Debug/Jcsample.obj
+         .\Debug/Jctrans.obj
+         .\Debug/Jdapimin.obj
+         .\Debug/Jdapistd.obj
+         .\Debug/jdarith.obj
+         .\Debug/Jdatadst.obj
+         .\Debug/Jdatasrc.obj
+         .\Debug/Jdcoefct.obj
+         .\Debug/Jdcolor.obj
+         .\Debug/Jddctmgr.obj
+         .\Debug/Jdhuff.obj
+         .\Debug/Jdinput.obj
+         .\Debug/Jdmainct.obj
+         .\Debug/Jdmarker.obj
+         .\Debug/Jdmaster.obj
+         .\Debug/Jdmerge.obj
+         .\Debug/Jdpostct.obj
+         .\Debug/Jdsample.obj
+         .\Debug/Jdtrans.obj
+         .\Debug/Jerror.obj
+         .\Debug/Jfdctflt.obj
+         .\Debug/Jfdctfst.obj
+         .\Debug/Jfdctint.obj
+         .\Debug/Jidctflt.obj
+         .\Debug/Jidctfst.obj
+         .\Debug/Jidctint.obj
+         .\Debug/Jmemmgr.obj
+         .\Debug/Jmemnobs.obj
+         .\Debug/Jquant1.obj
+         .\Debug/Jquant2.obj
+         .\Debug/Jutils.obj
+         Jpeg.vcxproj -> C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jpeg\.\Debug\Jpeg.lib
+       FinalizeBuildStatus:
+         Deleting file ".\Debug\Jpeg.unsuccessfulbuild".
+         Touching ".\Debug\Jpeg.lastbuildstate".
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jpeg\Jpeg.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:05.84

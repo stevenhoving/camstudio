@@ -1,0 +1,214 @@
+﻿Build started 1/16/2013 3:05:24 AM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\Recorder.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Release\Recorder.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\\" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\fister" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\CxImage" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CamLib" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\hook" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\hookkey" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\libconfig/lib" /nologo /W4 /WX- /O2 /Ob1 /Oy- /D WIN32 /D NDEBUG /D _WINDOWS /D _CRT_SECURE_NO_WARNINGS /D _VC80_UPGRADE=0x0710 /D _AFXDLL /GF /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t- /Zc:forScope- /Yc"stdafx.h" /Fp".\Release/vscap.pch" /Fo".\Release/" /Fd".\Release/" /Gd /TP /analyze- /errorReport:prompt StdAfx.cpp
+         StdAfx.cpp
+         Recorder: stdafx.h
+         UNICODE NOT defined
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\\" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\fister" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\CxImage" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CamLib" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\hook" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\hookkey" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\libconfig/lib" /nologo /W4 /WX- /O2 /Ob1 /Oy- /D WIN32 /D NDEBUG /D _WINDOWS /D _CRT_SECURE_NO_WARNINGS /D _VC80_UPGRADE=0x0710 /D _AFXDLL /GF /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t- /Zc:forScope- /Yu"StdAfx.h" /Fp".\Release/vscap.pch" /Fo".\Release/" /Fd".\Release/" /Gd /TP /analyze- /errorReport:prompt addons\AnnotationEffectsOptions.cpp addons\EffectsOptions.cpp addons\EffectsOptions2.cpp addons\XnoteStopwatchFormat.cpp AudioFormat.cpp AudioMixer.cpp AudioSpeakers.cpp AutopanSpeed.cpp AutoSearchDialog.cpp AVI.cpp BasicMessage.cpp CamStudioCommandLineInfo.cpp CursorOptionsDlg.cpp EditImage.cpp EditTransparency.cpp fister\Buffer.cpp fister\SoundBase.cpp fister\SoundFile.cpp fister\SoundIn.cpp FixedRegion.cpp FlashingWnd.cpp FolderDialog.cpp HotKey.cpp InternetConn.cpp Keyshortcuts.cpp LayeredWindowHelperST.cpp LayoutList.cpp ListManager.cpp MainFrm.cpp MCI.cpp MouseCaptureWnd.cpp NewShape.cpp PresetTime.cpp Profile.cpp Recorder.cpp RecorderDoc.cpp RecorderView.cpp ResizeDialog.cpp Screen.cpp ScreenAnnotations.cpp SpeakersImpl.cpp SyncDialog.cpp TextDialog.cpp TransparentWnd.cpp TransRateDialog.cpp TroubleShoot.cpp UpdateDialog.cpp vfw\ACM.cpp vfw\VCM.cpp VideoOptions.cpp VideoWnd.cpp
+         AnnotationEffectsOptions.cpp
+         EffectsOptions.cpp
+         EffectsOptions2.cpp
+         XnoteStopwatchFormat.cpp
+         AudioFormat.cpp
+         AudioMixer.cpp
+         AudioSpeakers.cpp
+         AutopanSpeed.cpp
+         AutoSearchDialog.cpp
+         AVI.cpp
+         BasicMessage.cpp
+         CamStudioCommandLineInfo.cpp
+         CursorOptionsDlg.cpp
+         EditImage.cpp
+         EditTransparency.cpp
+         Buffer.cpp
+         SoundBase.cpp
+         CamStudio\fister\SoundBase.h
+         CamStudio\fister\SoundBase.cpp
+         SoundFile.cpp
+         CamStudio\fister\SoundBase.h
+         SoundIn.cpp
+         CamStudio\fister\SoundBase.h
+     1>fister\SoundIn.cpp(123): warning C4100: 'parm1' : unreferenced formal parameter
+         FixedRegion.cpp
+         Generating Code...
+         Compiling...
+         FlashingWnd.cpp
+         FolderDialog.cpp
+         HotKey.cpp
+         InternetConn.cpp
+         Keyshortcuts.cpp
+         LayeredWindowHelperST.cpp
+         LayoutList.cpp
+         ListManager.cpp
+         MainFrm.cpp
+     1>MainFrm.cpp(118): warning C4100: 'lParam' : unreferenced formal parameter
+         MCI.cpp
+         MouseCaptureWnd.cpp
+         NewShape.cpp
+         PresetTime.cpp
+         Profile.cpp
+     1>Profile.cpp(213): warning C4244: '=' : conversion from 'unsigned int' to 'BYTE', possible loss of data
+     1>Profile.cpp(215): warning C4244: '=' : conversion from 'unsigned int' to 'BYTE', possible loss of data
+     1>Profile.cpp(222): warning C4244: '=' : conversion from 'unsigned int' to 'BYTE', possible loss of data
+     1>Profile.cpp(225): warning C4244: '=' : conversion from 'unsigned int' to 'BYTE', possible loss of data
+     1>Profile.cpp(227): warning C4244: '=' : conversion from 'unsigned int' to 'BYTE', possible loss of data
+     1>Profile.cpp(229): warning C4244: '=' : conversion from 'unsigned int' to 'BYTE', possible loss of data
+     1>Profile.cpp(231): warning C4244: '=' : conversion from 'unsigned int' to 'BYTE', possible loss of data
+     1>Profile.cpp(233): warning C4244: '=' : conversion from 'unsigned int' to 'BYTE', possible loss of data
+         Recorder.cpp
+         RecorderDoc.cpp
+         RecorderView.cpp
+         CamStudio\fister\SoundBase.h
+         CRecorderView::SaveSettings skipped
+     1>RecorderView.cpp(3695): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>RecorderView.cpp(3696): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+         ResizeDialog.cpp
+         Screen.cpp
+     1>Screen.cpp(133): warning C4244: '*=' : conversion from 'double' to 'LONG', possible loss of data
+     1>Screen.cpp(134): warning C4244: '*=' : conversion from 'double' to 'LONG', possible loss of data
+     1>Screen.cpp(245): warning C4244: '*=' : conversion from 'double' to 'LONG', possible loss of data
+     1>Screen.cpp(246): warning C4244: '*=' : conversion from 'double' to 'LONG', possible loss of data
+         ScreenAnnotations.cpp
+         Generating Code...
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\recorder\internetconn.cpp(36): warning C4706: assignment within conditional expression
+         Compiling...
+         SpeakersImpl.cpp
+         CamStudio\fister\SoundBase.h
+         SyncDialog.cpp
+         TextDialog.cpp
+         TransparentWnd.cpp
+     1>TransparentWnd.cpp(463): warning C4244: 'argument' : conversion from 'int' to 'Gdiplus::REAL', possible loss of data
+     1>TransparentWnd.cpp(463): warning C4244: 'argument' : conversion from 'int' to 'Gdiplus::REAL', possible loss of data
+     1>TransparentWnd.cpp(463): warning C4244: 'argument' : conversion from 'LONG' to 'Gdiplus::REAL', possible loss of data
+     1>TransparentWnd.cpp(463): warning C4244: 'argument' : conversion from 'LONG' to 'Gdiplus::REAL', possible loss of data
+         TransRateDialog.cpp
+         TroubleShoot.cpp
+         UpdateDialog.cpp
+         ACM.cpp
+         VCM.cpp
+         VideoOptions.cpp
+     1>VideoOptions.cpp(549): warning C4805: '==' : unsafe mix of type 'int' and type 'bool' in operation
+     1>VideoOptions.cpp(685): warning C4129: ' ' : unrecognized character escape sequence
+     1>VideoOptions.cpp(685): warning C4129: ' ' : unrecognized character escape sequence
+         VideoWnd.cpp
+         Generating Code...
+       ResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D NDEBUG /D _VC80_UPGRADE=0x0710 /D _AFXDLL /l"0x0409" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\GlobalResources" /nologo /fo"Release\Recorder.res" Recorder.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\Recorder.exe" /VERSION:"3.1a1" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\libconfig/Release" winmm.lib vfw32.lib msacm32.lib "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\libconfig++.lib" /MANIFEST /ManifestFile:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\Recorder.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /PDB:".\Release/Recorder.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\Recorder.lib" /MACHINE:X86 Release\Recorder.res
+         .\Release/AnnotationEffectsOptions.obj
+         .\Release/EffectsOptions.obj
+         .\Release/EffectsOptions2.obj
+         .\Release/XnoteStopwatchFormat.obj
+         .\Release/AudioFormat.obj
+         .\Release/AudioMixer.obj
+         .\Release/AudioSpeakers.obj
+         .\Release/AutopanSpeed.obj
+         .\Release/AutoSearchDialog.obj
+         .\Release/AVI.obj
+         .\Release/BasicMessage.obj
+         .\Release/CamStudioCommandLineInfo.obj
+         .\Release/CursorOptionsDlg.obj
+         .\Release/EditImage.obj
+         .\Release/EditTransparency.obj
+         .\Release/Buffer.obj
+         .\Release/SoundBase.obj
+         .\Release/SoundFile.obj
+         .\Release/SoundIn.obj
+         .\Release/FixedRegion.obj
+         .\Release/FlashingWnd.obj
+         .\Release/FolderDialog.obj
+         .\Release/HotKey.obj
+         .\Release/InternetConn.obj
+         .\Release/Keyshortcuts.obj
+         .\Release/LayeredWindowHelperST.obj
+         .\Release/LayoutList.obj
+         .\Release/ListManager.obj
+         .\Release/MainFrm.obj
+         .\Release/MCI.obj
+         .\Release/MouseCaptureWnd.obj
+         .\Release/NewShape.obj
+         .\Release/PresetTime.obj
+         .\Release/Profile.obj
+         .\Release/Recorder.obj
+         .\Release/RecorderDoc.obj
+         .\Release/RecorderView.obj
+         .\Release/ResizeDialog.obj
+         .\Release/Screen.obj
+         .\Release/ScreenAnnotations.obj
+         .\Release/SpeakersImpl.obj
+         .\Release/StdAfx.obj
+         .\Release/SyncDialog.obj
+         .\Release/TextDialog.obj
+         .\Release/TransparentWnd.obj
+         .\Release/TransRateDialog.obj
+         .\Release/TroubleShoot.obj
+         .\Release/UpdateDialog.obj
+         .\Release/ACM.obj
+         .\Release/VCM.obj
+         .\Release/VideoOptions.obj
+         .\Release/VideoWnd.obj
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\CamLib.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jasper\Release\jasper.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jbig\Release\jbig.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jpeg\Release\Jpeg.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\libpsd\Release\libpsd.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\mng\Release\mng.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\png\Release\png.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\raw\Release\libdcr.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\tiff\Release\Tiff.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\zlib\Release\zlib.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\cximage.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\hook\Release\hook.lib"
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\libconfig++.lib"
+         CamLib.lib(CamError.obj) : MSIL .netmodule or module compiled with /GL found; restarting link with /LTCG; add /LTCG to the link command line to improve linker performance
+            Creating library C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\Recorder.lib and object C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\Recorder.exp
+         Generating code
+         Finished generating code
+         Recorder.vcxproj -> C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\Recorder.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\Recorder.exe;#1" /manifest "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\Recorder.exe.intermediate.manifest" "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\Include\Manifest\dpiaware.manifest"
+       PostBuildEvent:
+         Description: Moving files that don't belong in output and copying other files (help docs, etc) to output directory
+         copy "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\\Release\Recorder.exp" "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\Release\Recorder.exp"
+         copy "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\\Release\Recorder.lib" "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\Release\Recorder.lib"
+         copy "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\\Release\Recorder.ilk" "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\Release\Recorder.ilk"
+         del "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\\Release\Recorder.exp"
+         del "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\\Release\Recorder.lib"
+         del "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\\Release\Recorder.ilk"
+         xcopy /s /y "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\*.*" "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\\Release\"
+         
+         :VCEnd
+                 1 file(s) copied.
+                 1 file(s) copied.
+         The system cannot find the file specified.
+         Could Not Find C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\Recorder.ilk
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\CamStudio.nsi
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\default.shapes
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\dialog.bmp
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\help.chm
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\testsnd.wav
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\controller\controller.ini
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\controller\controller_backup.ini
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\controller\leftpiece.bmp
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\controller\loadnode.bmp
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\controller\loadpiece.bmp
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\controller\pausebutton.bmp
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\controller\pausebutton2.bmp
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\controller\playbutton.bmp
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\controller\playbutton2.bmp
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\controller\rightpiece.bmp
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\controller\stopbutton.bmp
+         C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\\output\controller\stopbutton2.bmp
+         17 File(s) copied
+       FinalizeBuildStatus:
+         Deleting file "Release\Recorder.unsuccessfulbuild".
+         Touching "Release\Recorder.lastbuildstate".
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\Recorder.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:23.42

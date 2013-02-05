@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="CamStudio">
+</Property><Property Name="Solution File" Value="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CamStudio.sln">
+</Property><Property Name="Date" Value="Friday, December 28, 2012">
+</Property><Property Name="Time" Value="23:06 PM">
+</Property></Properties><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Player\Player.vcxproj" Source="Player" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="Player" Source="Player\Player.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="Player" Source="Player\Player.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Producer\Producer.vcxproj" Source="Producer" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="Producer" Source="Producer\Producer.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="Producer" Source="Producer\Producer.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\hook\hook.vcxproj" Source="hook" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="hook" Source="hook\hook.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="hook" Source="hook\hook.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\PlayerPlus\playplus.vcxproj" Source="playplus" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="playplus" Source="PlayerPlus\playplus.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="playplus" Source="PlayerPlus\playplus.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Recorder\Recorder.vcxproj" Source="Recorder" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="Recorder" Source="Recorder\Recorder.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="Recorder" Source="Recorder\Recorder.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CamLib\CamLib.vcxproj" Source="CamLib" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="CamLib" Source="CamLib\CamLib.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="CamLib" Source="CamLib\CamLib.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\libconfig\lib\libconfig++.vcxproj" Source="libconfig++" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="libconfig++" Source="libconfig\lib\libconfig++.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="libconfig++" Source="libconfig\lib\libconfig++.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jasper\jasper.vcxproj" Source="jasper" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="jasper" Source="CxImage\jasper\jasper.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="jasper" Source="CxImage\jasper\jasper.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jbig\jbig.vcxproj" Source="jbig" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="jbig" Source="CxImage\jbig\jbig.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="jbig" Source="CxImage\jbig\jbig.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jpeg\Jpeg.vcxproj" Source="Jpeg" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="Jpeg" Source="CxImage\jpeg\Jpeg.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="Jpeg" Source="CxImage\jpeg\Jpeg.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\raw\libdcr.vcxproj" Source="libdcr" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="libdcr" Source="CxImage\raw\libdcr.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="libdcr" Source="CxImage\raw\libdcr.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\libpsd\libpsd.vcxproj" Source="libpsd" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="libpsd" Source="CxImage\libpsd\libpsd.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="libpsd" Source="CxImage\libpsd\libpsd.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\mng\mng.vcxproj" Source="mng" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="mng" Source="CxImage\mng\mng.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="mng" Source="CxImage\mng\mng.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\png\png.vcxproj" Source="png" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="png" Source="CxImage\png\png.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="png" Source="CxImage\png\png.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\tiff\Tiff.vcxproj" Source="Tiff" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="Tiff" Source="CxImage\tiff\Tiff.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="Tiff" Source="CxImage\tiff\Tiff.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\zlib\zlib.vcxproj" Source="zlib" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="zlib" Source="CxImage\zlib\zlib.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="zlib" Source="CxImage\zlib\zlib.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\CxImage\cximage.vcxproj" Source="cximage" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="cximage" Source="CxImage\CxImage\cximage.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="cximage" Source="CxImage\CxImage\cximage.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Codec\camcodec.vcxproj" Source="camcodec" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="camcodec" Source="Codec\camcodec.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="camcodec" Source="Codec\camcodec.vcxproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Commandline\CamStudioCommandline.vcxproj" Source="CamStudioCommandline" Description="Cannot load the project due to a corrupt project file.">
+</Event><Event ErrorLevel="2" Project="CamStudioCommandline" Source="Commandline\CamStudioCommandline.vcxproj" Description="Project upgrade failed.">
+</Event><Event ErrorLevel="3" Project="CamStudioCommandline" Source="Commandline\CamStudioCommandline.vcxproj" Description="Not Converted">
+</Event></UpgradeLog>

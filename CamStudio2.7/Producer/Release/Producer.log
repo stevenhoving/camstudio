@@ -1,0 +1,816 @@
+﻿Build started 1/10/2013 7:27:19 PM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Producer\Producer.vcxproj" on node 4 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Release\Producer.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W4 /WX- /O2 /Ob1 /Oy- /D WIN32 /D NDEBUG /D _WINDOWS /D _CRT_SECURE_NO_WARNINGS /D _VC80_UPGRADE=0x0710 /D _AFXDLL /GF /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t- /Zc:forScope- /Yc"stdafx.h" /Fp".\Release/Producer.pch" /Fo".\Release/" /Fd".\Release/vc100.pdb" /Gd /TP /analyze- /errorReport:prompt StdAfx.cpp
+         StdAfx.cpp
+         Producer: stdafx.h
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W4 /WX- /O2 /Ob1 /Oy- /D WIN32 /D NDEBUG /D _WINDOWS /D _CRT_SECURE_NO_WARNINGS /D _VC80_UPGRADE=0x0710 /D _AFXDLL /GF /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t- /Zc:forScope- /Fo".\Release/" /Fd".\Release/vc100.pdb" /Gd /TP /analyze- /errorReport:prompt AdvProperty.cpp swfsource\actioncompiler\assembler.cpp audio.cpp AudioFormat.cpp fister\Buffer.cpp swfsource\actioncompiler\common.cpp swfsource\actioncompiler\compile.cpp swfsource\actioncompiler\compileaction.cpp Conversion.cpp swfsource\FAction.cpp swfsource\FBase.cpp swfsource\FBitmap.cpp swfsource\FButton.cpp swfsource\FControl.cpp swfsource\FDisplay.cpp swfsource\FFont.cpp swfsource\FImport.cpp FlashConversionDlg.cpp swfsource\FlashFontObj.cpp FlashInterface.cpp swfsource\FlashMP3Encoder.cpp swfsource\FMorph.cpp swfsource\FShape.cpp swfsource\FSound.cpp flashsdk\FSoundSDK.cpp swfsource\FSprite.cpp swfsource\FTarga.cpp swfsource\actioncompiler\lex.swf4.cpp swfsource\actioncompiler\lex.swf5.cpp swfsource\actioncompiler\listaction.cpp MainFrm.cpp MessageWnd.cpp Picture.cpp playplus.cpp playplusDoc.cpp playplusView.cpp ProgressDlg.cpp SlideToolBar.cpp fister\SoundBase.cpp fister\SoundFile.cpp swfsource\actioncompiler\swf4compiler.tab.cpp swfsource\actioncompiler\swf5compiler.tab.cpp SWFPropertySheet.cpp Conversion\WAVEIO.CPP
+         AdvProperty.cpp
+         Producer: stdafx.h
+         assembler.cpp
+         audio.cpp
+         Producer: stdafx.h
+         AudioFormat.cpp
+         Producer: stdafx.h
+         Buffer.cpp
+         Producer: stdafx.h
+         common.cpp
+         compile.cpp
+         compileaction.cpp
+         Conversion.cpp
+         Producer: stdafx.h
+         FAction.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(38): warning C4244: 'return' : conversion from 'std::streamsize' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(47): warning C4244: '=' : conversion from 'int' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(156): warning C4244: 'argument' : conversion from 'size_t' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(212): warning C4244: '=' : conversion from 'int' to 'char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(258): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(260): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(263): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(322): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(341): warning C4244: 'return' : conversion from 'unsigned int' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(396): warning C4244: 'return' : conversion from 'unsigned int' to 'UWORD', possible loss of data
+     1>swfsource\FAction.cpp(26): warning C4244: '=' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FAction.cpp(49): warning C4244: '=' : conversion from 'unsigned int' to 'UWORD', possible loss of data
+     1>swfsource\FAction.cpp(64): warning C4310: cast truncates constant value
+     1>swfsource\FAction.cpp(72): warning C4244: 'initializing' : conversion from 'size_t' to 'UWORD', possible loss of data
+     1>swfsource\FAction.cpp(89): warning C4244: 'initializing' : conversion from 'std::streamsize' to 'UWORD', possible loss of data
+     1>swfsource\FAction.cpp(165): warning C4310: cast truncates constant value
+     1>swfsource\FAction.cpp(166): warning C4244: 'initializing' : conversion from 'int' to 'UWORD', possible loss of data
+     1>swfsource\FAction.cpp(167): warning C4244: 'initializing' : conversion from 'unsigned int' to 'UWORD', possible loss of data
+     1>swfsource\FAction.cpp(213): warning C4310: cast truncates constant value
+     1>swfsource\FAction.cpp(219): warning C4244: 'initializing' : conversion from 'std::streamsize' to 'UWORD', possible loss of data
+     1>swfsource\FAction.cpp(243): warning C4244: 'argument' : conversion from 'std::streamsize' to 'UDWORD', possible loss of data
+         FBase.cpp
+     1>swfsource\FBase.cpp(135): warning C4244: '=' : conversion from 'SDWORD' to 'SWORD', possible loss of data
+     1>swfsource\FBase.cpp(136): warning C4244: '=' : conversion from 'SDWORD' to 'SWORD', possible loss of data
+     1>swfsource\FBase.cpp(241): warning C4310: cast truncates constant value
+     1>swfsource\FBase.cpp(242): warning C4310: cast truncates constant value
+     1>swfsource\FBase.cpp(243): warning C4310: cast truncates constant value
+     1>swfsource\FBase.cpp(244): warning C4310: cast truncates constant value
+     1>swfsource\FBase.cpp(249): warning C4244: '=' : conversion from 'int' to 'SWORD', possible loss of data
+     1>swfsource\FBase.cpp(250): warning C4244: '=' : conversion from 'int' to 'SWORD', possible loss of data
+     1>swfsource\FBase.cpp(251): warning C4244: '=' : conversion from 'int' to 'SWORD', possible loss of data
+     1>swfsource\FBase.cpp(252): warning C4244: '=' : conversion from 'int' to 'SWORD', possible loss of data
+     1>swfsource\FBase.cpp(280): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FBase.cpp(323): warning C4244: 'initializing' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FBase.cpp(369): warning C4244: '=' : conversion from 'int' to 'UBYTE', possible loss of data
+     1>swfsource\FBase.cpp(420): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FBase.cpp(421): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FBase.cpp(478): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>swfsource\FBase.cpp(478): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>swfsource\FBase.cpp(486): warning C4100: 'data' : unreferenced formal parameter
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(214): warning C4244: 'return' : conversion from 'UDWORD' to 'SWORD', possible loss of data
+                 swfsource\FBase.cpp(85) : see reference to function template instantiation 'T PackBitsSigned<SWORD>(T)' being compiled
+                 with
+                 [
+                     T=SWORD
+                 ]
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(338): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+                 swfsource\FBase.cpp(97) : see reference to function template instantiation 'void BitStreamIn::Read<unsigned char>(T &,int)' being compiled
+                 with
+                 [
+                     T=unsigned char
+                 ]
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(338): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+                 swfsource\FBase.cpp(102) : see reference to function template instantiation 'void BitStreamIn::Read<unsigned int>(T &,int)' being compiled
+                 with
+                 [
+                     T=unsigned int
+                 ]
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(338): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+                 swfsource\FBase.cpp(105) : see reference to function template instantiation 'void BitStreamIn::Read<SDWORD>(T &,int)' being compiled
+                 with
+                 [
+                     T=SDWORD
+                 ]
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(338): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+                 swfsource\FBase.cpp(221) : see reference to function template instantiation 'void BitStreamIn::Read<SWORD>(T &,int)' being compiled
+                 with
+                 [
+                     T=SWORD
+                 ]
+         FBitmap.cpp
+     1>swfsource\FBitmap.cpp(28): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FBitmap.cpp(53): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FBitmap.cpp(172): warning C4245: 'initializing' : conversion from 'int' to 'UDWORD', signed/unsigned mismatch
+     1>swfsource\FBitmap.cpp(256): warning C4244: '=' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FBitmap.cpp(292): warning C4244: '=' : conversion from 'int' to 'char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(930): warning C4100: 'c' : unreferenced formal parameter
+                 c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(930) : while compiling class template member function 'gc_vector<T>::gc_vector(const gc_vector<T> &)'
+                 with
+                 [
+                     T=unsigned char *
+                 ]
+                 c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBitmap.h(22) : see reference to class template instantiation 'gc_vector<T>' being compiled
+                 with
+                 [
+                     T=unsigned char *
+                 ]
+         FButton.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(38): warning C4244: 'return' : conversion from 'std::streamsize' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(47): warning C4244: '=' : conversion from 'int' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(156): warning C4244: 'argument' : conversion from 'size_t' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(212): warning C4244: '=' : conversion from 'int' to 'char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(258): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(260): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(263): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(322): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(341): warning C4244: 'return' : conversion from 'unsigned int' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(396): warning C4244: 'return' : conversion from 'unsigned int' to 'UWORD', possible loss of data
+     1>swfsource\FButton.cpp(28): warning C4244: '=' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FButton.cpp(66): warning C4244: 'argument' : conversion from 'std::streamsize' to 'UDWORD', possible loss of data
+     1>swfsource\FButton.cpp(85): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FButton.cpp(143): warning C4244: 'initializing' : conversion from 'std::streamsize' to 'UWORD', possible loss of data
+     1>swfsource\FButton.cpp(151): warning C4244: 'argument' : conversion from 'std::streamsize' to 'UDWORD', possible loss of data
+     1>swfsource\FButton.cpp(173): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FButton.cpp(205): warning C4100: 'data' : unreferenced formal parameter
+         FControl.cpp
+     1>swfsource\FControl.cpp(29): warning C4244: '=' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FControl.cpp(50): warning C4244: '=' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FControl.cpp(68): warning C4244: '=' : conversion from 'int' to 'UBYTE', possible loss of data
+     1>swfsource\FControl.cpp(69): warning C4244: '=' : conversion from 'int' to 'UBYTE', possible loss of data
+     1>swfsource\FControl.cpp(70): warning C4244: '=' : conversion from 'int' to 'UBYTE', possible loss of data
+     1>swfsource\FControl.cpp(109): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FControl.cpp(109): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FControl.cpp(128): warning C4244: 'initializing' : conversion from 'unsigned int' to 'UWORD', possible loss of data
+     1>swfsource\FControl.cpp(185): warning C4244: '+=' : conversion from 'size_t' to 'UWORD', possible loss of data
+     1>swfsource\FControl.cpp(188): warning C4244: '+=' : conversion from 'size_t' to 'UWORD', possible loss of data
+     1>swfsource\FControl.cpp(194): warning C4244: 'initializing' : conversion from 'unsigned int' to 'UWORD', possible loss of data
+     1>swfsource\FControl.cpp(213): warning C4244: 'argument' : conversion from 'int' to 'const char', possible loss of data
+     1>swfsource\FControl.cpp(236): warning C4244: 'argument' : conversion from 'int' to 'const char', possible loss of data
+     1>swfsource\FControl.cpp(262): warning C4244: 'initializing' : conversion from 'UDWORD' to 'UWORD', possible loss of data
+         FDisplay.cpp
+     1>swfsource\FDisplay.cpp(27): warning C4244: 'argument' : conversion from 'std::streamsize' to 'UDWORD', possible loss of data
+     1>swfsource\FDisplay.cpp(82): warning C4244: 'argument' : conversion from 'std::streamsize' to 'UDWORD', possible loss of data
+     1>swfsource\FDisplay.cpp(165): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FDisplay.cpp(165): warning C4100: 'data' : unreferenced formal parameter
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(338): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+                 swfsource\FDisplay.cpp(91) : see reference to function template instantiation 'void BitStreamIn::Read<unsigned char>(T &,int)' being compiled
+                 with
+                 [
+                     T=unsigned char
+                 ]
+         FFont.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FFont.h(239): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FFont.h(243): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>swfsource\FFont.cpp(46): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FFont.cpp(51): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FFont.cpp(53): warning C4244: 'initializing' : conversion from 'UDWORD' to 'UWORD', possible loss of data
+     1>swfsource\FFont.cpp(70): warning C4244: 'argument' : conversion from 'int' to 'const UWORD', possible loss of data
+     1>swfsource\FFont.cpp(109): warning C4244: 'argument' : conversion from 'std::streamsize' to 'UWORD', possible loss of data
+     1>swfsource\FFont.cpp(113): warning C4244: 'argument' : conversion from 'std::streamsize' to 'UDWORD', possible loss of data
+     1>swfsource\FFont.cpp(158): warning C4310: cast truncates constant value
+     1>swfsource\FFont.cpp(294): warning C4244: 'argument' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FFont.cpp(294): warning C4244: 'argument' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FFont.cpp(299): warning C4244: 'argument' : conversion from 'std::streamsize' to 'UDWORD', possible loss of data
+     1>swfsource\FFont.cpp(332): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FFont.cpp(334): warning C4244: 'argument' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FFont.cpp(334): warning C4244: 'argument' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FFont.cpp(341): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FFont.cpp(343): warning C4244: 'argument' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FFont.cpp(343): warning C4244: 'argument' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FFont.cpp(379): warning C4244: 'argument' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FFont.cpp(379): warning C4244: 'argument' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FFont.cpp(384): warning C4244: 'argument' : conversion from 'std::streamsize' to 'UDWORD', possible loss of data
+     1>swfsource\FFont.cpp(417): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FFont.cpp(420): warning C4244: 'argument' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FFont.cpp(420): warning C4244: 'argument' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FFont.cpp(427): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FFont.cpp(429): warning C4244: 'argument' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FFont.cpp(429): warning C4244: 'argument' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FFont.cpp(463): warning C4244: '=' : conversion from 'int' to 'UWORD', possible loss of data
+     1>swfsource\FFont.cpp(464): warning C4244: '=' : conversion from 'int' to 'UWORD', possible loss of data
+     1>swfsource\FFont.cpp(636): warning C4244: 'argument' : conversion from 'std::streamsize' to 'UDWORD', possible loss of data
+     1>swfsource\FFont.cpp(672): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FFont.cpp(694): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FFont.cpp(715): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(214): warning C4244: 'return' : conversion from 'UDWORD' to 'SWORD', possible loss of data
+                 swfsource\FFont.cpp(226) : see reference to function template instantiation 'T PackBitsSigned<U>(T)' being compiled
+                 with
+                 [
+                     T=SWORD,
+                     U=SWORD
+                 ]
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(338): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+                 swfsource\FFont.cpp(239) : see reference to function template instantiation 'void BitStreamIn::Read<T>(T &,int)' being compiled
+                 with
+                 [
+                     T=UWORD
+                 ]
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(338): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+                 swfsource\FFont.cpp(240) : see reference to function template instantiation 'void BitStreamIn::Read<U>(T &,int)' being compiled
+                 with
+                 [
+                     U=SWORD,
+                     T=SWORD
+                 ]
+         FImport.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(38): warning C4244: 'return' : conversion from 'std::streamsize' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(47): warning C4244: '=' : conversion from 'int' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(156): warning C4244: 'argument' : conversion from 'size_t' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(212): warning C4244: '=' : conversion from 'int' to 'char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(258): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(260): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(263): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(322): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(341): warning C4244: 'return' : conversion from 'unsigned int' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(396): warning C4244: 'return' : conversion from 'unsigned int' to 'UWORD', possible loss of data
+     1>swfsource\FImport.cpp(117): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FImport.cpp(159): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FImport.cpp(195): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FImport.cpp(318): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FImport.cpp(325): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FImport.cpp(332): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FImport.cpp(422): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FImport.cpp(488): warning C4244: 'initializing' : conversion from 'std::streamoff' to 'UDWORD', possible loss of data
+     1>swfsource\FImport.cpp(565): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FImport.cpp(631): warning C4244: 'initializing' : conversion from 'std::streamoff' to 'UDWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(930): warning C4100: 'c' : unreferenced formal parameter
+                 c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(930) : while compiling class template member function 'gc_vector<T>::gc_vector(const gc_vector<T> &)'
+                 with
+                 [
+                     T=unsigned char *
+                 ]
+                 c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBitmap.h(22) : see reference to class template instantiation 'gc_vector<T>' being compiled
+                 with
+                 [
+                     T=unsigned char *
+                 ]
+         FlashConversionDlg.cpp
+         Producer: stdafx.h
+         FlashFontObj.cpp
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FFont.h(239): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FFont.h(243): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(81): warning C4244: 'argument' : conversion from 'INT' to 'SWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(83): warning C4244: 'argument' : conversion from 'INT' to 'SWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(213): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(213): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(213): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(245): warning C4244: 'argument' : conversion from 'int' to 'const SWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(245): warning C4244: 'argument' : conversion from 'int' to 'const UWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(245): warning C4239: nonstandard extension used : 'argument' : conversion from 'flash_pair<T,U>' to 'FlashGlyphEntry &'
+                 with
+                 [
+                     T=UWORD,
+                     U=SWORD
+                 ]
+                 A non-const reference may only be bound to an lvalue
+     1>swfsource\FlashFontObj.cpp(269): warning C4239: nonstandard extension used : 'argument' : conversion from 'FlashMatrix' to 'FlashMatrix &'
+                 A non-const reference may only be bound to an lvalue
+     1>swfsource\FlashFontObj.cpp(280): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(292): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(292): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(292): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(324): warning C4244: 'argument' : conversion from 'int' to 'const SWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(324): warning C4244: 'argument' : conversion from 'int' to 'const UWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(324): warning C4239: nonstandard extension used : 'argument' : conversion from 'flash_pair<T,U>' to 'FlashGlyphEntry &'
+                 with
+                 [
+                     T=UWORD,
+                     U=SWORD
+                 ]
+                 A non-const reference may only be bound to an lvalue
+     1>swfsource\FlashFontObj.cpp(348): warning C4239: nonstandard extension used : 'argument' : conversion from 'FlashMatrix' to 'FlashMatrix &'
+                 A non-const reference may only be bound to an lvalue
+     1>swfsource\FlashFontObj.cpp(359): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(371): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(371): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(371): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(403): warning C4244: 'argument' : conversion from 'int' to 'const SWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(403): warning C4244: 'argument' : conversion from 'int' to 'const UWORD', possible loss of data
+     1>swfsource\FlashFontObj.cpp(403): warning C4239: nonstandard extension used : 'argument' : conversion from 'flash_pair<T,U>' to 'FlashGlyphEntry &'
+                 with
+                 [
+                     T=UWORD,
+                     U=SWORD
+                 ]
+                 A non-const reference may only be bound to an lvalue
+     1>swfsource\FlashFontObj.cpp(364): warning C4100: 'out' : unreferenced formal parameter
+         FlashInterface.cpp
+         Producer: stdafx.h
+     1>FlashInterface.cpp(83): warning C4244: 'argument' : conversion from 'int' to 'LANGID', possible loss of data
+         Generating Code...
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\fbase.cpp(489): warning C4702: unreachable code
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\audio.cpp(130): warning C4706: assignment within conditional expression
+         Compiling...
+         FlashMP3Encoder.cpp
+     1>swfsource\FlashMP3Encoder.cpp(256): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FlashMP3Encoder.cpp(297): warning C4244: 'argument' : conversion from 'unsigned int' to 'UWORD', possible loss of data
+     1>swfsource\FlashMP3Encoder.cpp(333): warning C4244: 'argument' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FlashMP3Encoder.cpp(336): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+         FMorph.cpp
+     1>swfsource\FMorph.cpp(55): warning C4310: cast truncates constant value
+     1>swfsource\FMorph.cpp(83): warning C4310: cast truncates constant value
+     1>swfsource\FMorph.cpp(115): warning C4244: 'initializing' : conversion from 'std::streamsize' to 'UDWORD', possible loss of data
+     1>swfsource\FMorph.cpp(120): warning C4244: 'argument' : conversion from 'std::streamsize' to 'UDWORD', possible loss of data
+     1>swfsource\FMorph.cpp(125): warning C4100: 'data' : unreferenced formal parameter
+         FShape.cpp
+     1>swfsource\FShape.cpp(92): warning C4244: 'argument' : conversion from 'int' to 'const UBYTE', possible loss of data
+     1>swfsource\FShape.cpp(117): warning C4244: '=' : conversion from 'int' to 'UBYTE', possible loss of data
+     1>swfsource\FShape.cpp(153): warning C4244: 'initializing' : conversion from 'unsigned int' to 'SWORD', possible loss of data
+     1>swfsource\FShape.cpp(168): warning C4244: 'initializing' : conversion from 'int' to 'SWORD', possible loss of data
+     1>swfsource\FShape.cpp(188): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FShape.cpp(198): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FShape.cpp(207): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>swfsource\FShape.cpp(259): warning C4244: 'initializing' : conversion from 'unsigned int' to 'SWORD', possible loss of data
+     1>swfsource\FShape.cpp(289): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FShape.cpp(318): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FShape.cpp(354): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FShape.cpp(372): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FShape.cpp(477): warning C4244: 'argument' : conversion from 'std::streamsize' to 'int', possible loss of data
+     1>swfsource\FShape.cpp(529): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FShape.cpp(535): warning C4100: 'data' : unreferenced formal parameter
+     1>swfsource\FShape.cpp(535): warning C4100: 'in' : unreferenced formal parameter
+     1>swfsource\FShape.cpp(773): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(214): warning C4244: 'return' : conversion from 'UDWORD' to 'SWORD', possible loss of data
+                 swfsource\FShape.cpp(303) : see reference to function template instantiation 'T PackBitsSigned<SWORD>(T)' being compiled
+                 with
+                 [
+                     T=SWORD
+                 ]
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(338): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+                 swfsource\FShape.cpp(321) : see reference to function template instantiation 'void BitStreamIn::Read<int>(T &,int)' being compiled
+                 with
+                 [
+                     T=int
+                 ]
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(338): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+                 swfsource\FShape.cpp(334) : see reference to function template instantiation 'void BitStreamIn::Read<SWORD>(T &,int)' being compiled
+                 with
+                 [
+                     T=SWORD
+                 ]
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBase.h(338): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+                 swfsource\FShape.cpp(504) : see reference to function template instantiation 'void BitStreamIn::Read<UWORD>(T &,int)' being compiled
+                 with
+                 [
+                     T=UWORD
+                 ]
+         FSound.cpp
+     1>swfsource\FSound.cpp(23): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FSound.cpp(54): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FSound.cpp(102): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>swfsource\FSound.cpp(126): warning C4244: 'argument' : conversion from 'std::streamsize' to 'UDWORD', possible loss of data
+         FSoundSDK.cpp
+     1>flashsdk\FSoundSDK.cpp(24): warning C4244: '=' : conversion from 'int' to 'U16', possible loss of data
+     1>flashsdk\FSoundSDK.cpp(25): warning C4244: '=' : conversion from 'int' to 'U16', possible loss of data
+         FSprite.cpp
+     1>swfsource\FSprite.cpp(20): warning C4244: 'argument' : conversion from 'std::streamsize' to 'UDWORD', possible loss of data
+         FTarga.cpp
+         lex.swf4.cpp
+     1>lex.swf4.c(889): warning C4127: conditional expression is constant
+     1>lex.swf4.c(905): warning C4244: 'initializing' : conversion from 'const int' to 'YY_CHAR', possible loss of data
+     1>lex.swf4.c(915): warning C4244: '=' : conversion from 'const int' to 'YY_CHAR', possible loss of data
+     1>swf4compiler.flex(220): warning C4127: conditional expression is constant
+     1>lex.swf4.c(1734): warning C4244: 'initializing' : conversion from 'int' to 'YY_CHAR', possible loss of data
+     1>lex.swf4.c(1744): warning C4244: '=' : conversion from 'const int' to 'YY_CHAR', possible loss of data
+     1>lex.swf4.c(1778): warning C4244: '=' : conversion from 'const int' to 'YY_CHAR', possible loss of data
+     1>lex.swf4.c(2030): warning C4996: 'fileno': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _fileno. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(723) : see declaration of 'fileno'
+     1>swf4compiler.flex(265): warning C4244: '=' : conversion from 'int' to 'char', possible loss of data
+     1>swf4compiler.flex(283): warning C4244: '=' : conversion from 'int' to 'char', possible loss of data
+     1>swf4compiler.flex(306): warning C4244: '=' : conversion from 'int' to 'char', possible loss of data
+         lex.swf5.cpp
+     1>lex.swf5.c(972): warning C4127: conditional expression is constant
+     1>lex.swf5.c(988): warning C4244: 'initializing' : conversion from 'const int' to 'YY_CHAR', possible loss of data
+     1>lex.swf5.c(998): warning C4244: '=' : conversion from 'const int' to 'YY_CHAR', possible loss of data
+     1>swf5compiler.flex(272): warning C4127: conditional expression is constant
+     1>lex.swf5.c(2130): warning C4244: 'initializing' : conversion from 'int' to 'YY_CHAR', possible loss of data
+     1>lex.swf5.c(2140): warning C4244: '=' : conversion from 'const int' to 'YY_CHAR', possible loss of data
+     1>lex.swf5.c(2174): warning C4244: '=' : conversion from 'const int' to 'YY_CHAR', possible loss of data
+     1>lex.swf5.c(2426): warning C4996: 'fileno': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _fileno. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(723) : see declaration of 'fileno'
+     1>swf5compiler.flex(317): warning C4244: '=' : conversion from 'int' to 'char', possible loss of data
+     1>swf5compiler.flex(335): warning C4244: '=' : conversion from 'int' to 'char', possible loss of data
+     1>swf5compiler.flex(358): warning C4244: '=' : conversion from 'int' to 'char', possible loss of data
+         listaction.cpp
+     1>swfsource\actioncompiler\listaction.cpp(115): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+         MainFrm.cpp
+         Producer: stdafx.h
+         MessageWnd.cpp
+         Producer: stdafx.h
+     1>MessageWnd.cpp(511): warning C4238: nonstandard extension used : class rvalue used as lvalue
+     1>MessageWnd.cpp(513): warning C4238: nonstandard extension used : class rvalue used as lvalue
+         Picture.cpp
+         Producer: stdafx.h
+     1>Picture.cpp(233): warning C4244: '=' : conversion from 'ULONGLONG' to 'int', possible loss of data
+         playplus.cpp
+         Producer: stdafx.h
+     1>playplus.cpp(84): warning C4244: 'argument' : conversion from 'int' to 'LANGID', possible loss of data
+         playplusDoc.cpp
+         Producer: stdafx.h
+         playplusView.cpp
+         Producer: stdafx.h
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\fister\soundbase.h(23): warning C4244: '=' : conversion from 'int' to 'WORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\fister\soundbase.h(27): warning C4244: '=' : conversion from 'int' to 'WORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(38): warning C4244: 'return' : conversion from 'std::streamsize' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(47): warning C4244: '=' : conversion from 'int' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(156): warning C4244: 'argument' : conversion from 'size_t' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(212): warning C4244: '=' : conversion from 'int' to 'char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(258): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(260): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(263): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(322): warning C4244: '=' : conversion from 'int' to 'unsigned char', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(341): warning C4244: 'return' : conversion from 'unsigned int' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FAction.h(396): warning C4244: 'return' : conversion from 'unsigned int' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\./swfsource/FFont.h(239): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\./swfsource/FFont.h(243): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(969): warning C4100: 'lPos' : unreferenced formal parameter
+     1>playplusView.cpp(969): warning C4100: 'lCurSamp' : unreferenced formal parameter
+     1>playplusView.cpp(4788): warning C4244: '=' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(4798): warning C4244: '=' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5120): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5142): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5149): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5155): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5357): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5357): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5357): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5391): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5392): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5393): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5394): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5402): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5348): warning C4100: 'BITMAP_X' : unreferenced formal parameter
+     1>playplusView.cpp(5428): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5442): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5443): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5444): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5445): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5451): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5452): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5452): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5453): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5453): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5474): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5488): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5489): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5490): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5491): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5497): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5498): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5498): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5499): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5499): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5520): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5520): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5521): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5521): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5522): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5522): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5541): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5406): warning C4100: 'BITMAP_X' : unreferenced formal parameter
+     1>playplusView.cpp(5566): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5580): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5581): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5582): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5583): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5589): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5590): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5591): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5592): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5595): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5596): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5597): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5598): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5618): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5632): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5633): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5634): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5635): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5641): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5642): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5643): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5644): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5647): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5648): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5649): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5650): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5667): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5667): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5668): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5668): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5669): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5669): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5683): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5545): warning C4100: 'BITMAP_X' : unreferenced formal parameter
+     1>playplusView.cpp(5708): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5722): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5723): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5724): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5725): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5731): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5732): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5733): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5734): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5754): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5768): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5769): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5770): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5771): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5777): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5778): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5779): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5780): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5797): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5797): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5798): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5798): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5799): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5799): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5809): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(5821): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(5687): warning C4100: 'BITMAP_X' : unreferenced formal parameter
+     1>playplusView.cpp(6233): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(6233): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(6233): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>playplusView.cpp(6243): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(6243): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(6267): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(6268): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(6269): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(6270): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(6281): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(6289): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(6296): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(6321): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(6321): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(6321): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>playplusView.cpp(6326): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(6326): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(6343): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(6344): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(6345): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(6346): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(6358): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(6367): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(6375): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(6380): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(6397): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(6440): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(6440): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(6441): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(6441): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(6504): warning C4100: 'bitmap' : unreferenced formal parameter
+     1>playplusView.cpp(6504): warning C4100: 'f' : unreferenced formal parameter
+     1>playplusView.cpp(6741): warning C4100: 'BITMAP_Y' : unreferenced formal parameter
+     1>playplusView.cpp(6837): warning C4100: 'BITMAP_Y' : unreferenced formal parameter
+     1>playplusView.cpp(6837): warning C4100: 'BITMAP_X' : unreferenced formal parameter
+     1>playplusView.cpp(7778): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(7778): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(7778): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>playplusView.cpp(7787): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7787): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7799): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7800): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7801): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7802): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7824): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(7824): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(7824): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>playplusView.cpp(7836): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7836): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7848): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7849): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7850): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7851): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7868): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(7868): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(7869): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(7869): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(7870): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(7870): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(7889): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(7938): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(7938): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(7938): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>playplusView.cpp(7950): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7950): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7962): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7963): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7964): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7965): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7987): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(7987): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(7987): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>playplusView.cpp(7996): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(7996): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8007): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8008): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8009): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8010): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8026): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8026): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8027): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8027): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8028): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8028): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8047): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8096): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8096): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8096): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>playplusView.cpp(8105): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8105): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8117): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8118): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8119): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8120): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8142): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8142): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8142): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>playplusView.cpp(8151): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8151): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8162): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8163): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8164): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8165): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8181): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8181): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8182): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8182): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8183): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8183): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8194): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8211): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8255): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8255): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8255): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>playplusView.cpp(8264): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8264): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8275): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8276): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8277): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8278): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8285): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8224): warning C4100: 'imagewidth' : unreferenced formal parameter
+     1>playplusView.cpp(8327): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8327): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8327): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>playplusView.cpp(8336): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8336): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8348): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8349): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8350): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8351): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8358): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8381): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8433): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8434): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8435): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8436): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8450): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8451): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8397): warning C4100: 'BITMAP_X' : unreferenced formal parameter
+     1>playplusView.cpp(8462): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8463): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8464): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8487): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8489): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8510): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8512): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8541): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8541): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8541): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8603): warning C4244: 'argument' : conversion from 'size_t' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8620): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8693): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8693): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8693): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>playplusView.cpp(8703): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8703): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8715): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8716): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8717): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8718): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8732): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8778): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8778): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8778): warning C4244: 'argument' : conversion from 'int' to 'char', possible loss of data
+     1>playplusView.cpp(8788): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8788): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8799): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8800): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8801): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8802): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8809): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>playplusView.cpp(8813): warning C4244: 'argument' : conversion from 'int' to 'SWORD', possible loss of data
+     1>playplusView.cpp(8814): warning C4244: 'argument' : conversion from 'int' to 'UWORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\actioncompiler\../fbase.h(930): warning C4100: 'c' : unreferenced formal parameter
+                 c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\actioncompiler\../fbase.h(930) : while compiling class template member function 'gc_vector<T>::gc_vector(const gc_vector<T> &)'
+                 with
+                 [
+                     T=unsigned char *
+                 ]
+                 c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swfsource\FBitmap.h(22) : see reference to class template instantiation 'gc_vector<T>' being compiled
+                 with
+                 [
+                     T=unsigned char *
+                 ]
+         ProgressDlg.cpp
+         Producer: stdafx.h
+     1>ProgressDlg.cpp(99): warning C4244: 'argument' : conversion from 'int' to 'short', possible loss of data
+     1>ProgressDlg.cpp(99): warning C4244: 'argument' : conversion from 'int' to 'short', possible loss of data
+     1>ProgressDlg.cpp(202): warning C4244: 'argument' : conversion from 'int' to 'short', possible loss of data
+     1>ProgressDlg.cpp(202): warning C4244: 'argument' : conversion from 'int' to 'short', possible loss of data
+         SlideToolBar.cpp
+         Producer: stdafx.h
+         SoundBase.cpp
+         Producer: stdafx.h
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\fister\SoundBase.h(23): warning C4244: '=' : conversion from 'int' to 'WORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\fister\SoundBase.h(27): warning C4244: '=' : conversion from 'int' to 'WORD', possible loss of data
+         SoundFile.cpp
+         Producer: stdafx.h
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\fister\soundbase.h(23): warning C4244: '=' : conversion from 'int' to 'WORD', possible loss of data
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\fister\soundbase.h(27): warning C4244: '=' : conversion from 'int' to 'WORD', possible loss of data
+         Generating Code...
+         Compiling...
+         swf4compiler.tab.cpp
+     1>/usr/share/bison.simple(317): warning C4244: '=' : conversion from 'int' to 'short', possible loss of data
+         swf5compiler.tab.cpp
+     1>/usr/share/bison.simple(317): warning C4244: '=' : conversion from 'int' to 'short', possible loss of data
+         SWFPropertySheet.cpp
+         Producer: stdafx.h
+         WAVEIO.CPP
+         Generating Code...
+     1>c:\users\bertoso\desktop\camstudio-clone-master\camstudio\camstudio\producer\swf5compiler.y(240): warning C4701: potentially uninitialized local variable 'yyval' used
+     1>c:\usr\share\bison.simple(561): warning C4701: potentially uninitialized local variable 'yyval' used
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W4 /WX- /O2 /Ob1 /Oy- /D WIN32 /D NDEBUG /D _WINDOWS /D _CRT_SECURE_NO_WARNINGS /D _VC80_UPGRADE=0x0710 /D _AFXDLL /GF /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t- /Zc:forScope- /Fo".\Release/" /Fd".\Release/vc100.pdb" /Gd /TC /analyze- /errorReport:prompt swfsource\md5\md5.c
+         md5.c
+     1>swfsource\md5\md5.c(266): warning C4057: 'function' : 'const unsigned char *' differs in indirection to slightly different base types from 'const char *'
+     1>swfsource\md5\md5.c(269): warning C4057: 'function' : 'const unsigned char *' differs in indirection to slightly different base types from 'char *'
+     1>swfsource\md5\md5.c(272): warning C4057: 'function' : 'const unsigned char *' differs in indirection to slightly different base types from 'const char *'
+     1>swfsource\md5\md5.c(276): warning C4057: 'function' : 'const unsigned char *' differs in indirection to slightly different base types from 'const char *'
+     1>swfsource\md5\md5.c(277): warning C4057: 'function' : 'const unsigned char *' differs in indirection to slightly different base types from 'const char *'
+     1>swfsource\md5\md5.c(278): warning C4057: 'function' : 'const unsigned char *' differs in indirection to slightly different base types from 'const char *'
+     1>swfsource\md5\md5.c(291): warning C4057: 'function' : 'const unsigned char *' differs in indirection to slightly different base types from 'const char *'
+     1>swfsource\md5\md5.c(308): warning C4057: 'function' : 'const unsigned char *' differs in indirection to slightly different base types from 'const char *'
+     1>swfsource\md5\md5.c(313): warning C4057: 'function' : 'const unsigned char *' differs in indirection to slightly different base types from 'const char *'
+     1>swfsource\md5\md5.c(316): warning C4057: 'function' : 'const unsigned char *' differs in indirection to slightly different base types from 'const char *'
+     1>swfsource\md5\md5.c(321): warning C4057: 'function' : 'const unsigned char *' differs in indirection to slightly different base types from 'const char *'
+       ResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D NDEBUG /D _VC80_UPGRADE=0x0710 /D _AFXDLL /l"0x0409" /I"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\GlobalResources" /nologo /fo"Release\Producer.res" Producer.rc 
+     1>Producer.rc(303): warning RC4206: title string too long; truncated at 256
+         
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\Producer.exe" /INCREMENTAL:NO /NOLOGO vfw32.lib winmm.lib msacm32.lib /MANIFEST /ManifestFile:"Release\Producer.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /PDB:".\Release/Producer.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\Producer.lib" /MACHINE:X86 Release\Producer.res
+         .\Release/AdvProperty.obj
+         .\Release/assembler.obj
+         .\Release/audio.obj
+         .\Release/AudioFormat.obj
+         .\Release/Buffer.obj
+         .\Release/common.obj
+         .\Release/compile.obj
+         .\Release/compileaction.obj
+         .\Release/Conversion.obj
+         .\Release/FAction.obj
+         .\Release/FBase.obj
+         .\Release/FBitmap.obj
+         .\Release/FButton.obj
+         .\Release/FControl.obj
+         .\Release/FDisplay.obj
+         .\Release/FFont.obj
+         .\Release/FImport.obj
+         .\Release/FlashConversionDlg.obj
+         .\Release/FlashFontObj.obj
+         .\Release/FlashInterface.obj
+         .\Release/FlashMP3Encoder.obj
+         .\Release/FMorph.obj
+         .\Release/FShape.obj
+         .\Release/FSound.obj
+         .\Release/FSoundSDK.obj
+         .\Release/FSprite.obj
+         .\Release/FTarga.obj
+         .\Release/lex.swf4.obj
+         .\Release/lex.swf5.obj
+         .\Release/listaction.obj
+         .\Release/MainFrm.obj
+         .\Release/md5.obj
+         .\Release/MessageWnd.obj
+         .\Release/Picture.obj
+         .\Release/playplus.obj
+         .\Release/playplusDoc.obj
+         .\Release/playplusView.obj
+         .\Release/ProgressDlg.obj
+         .\Release/SlideToolBar.obj
+         .\Release/SoundBase.obj
+         .\Release/SoundFile.obj
+         .\Release/StdAfx.obj
+         .\Release/swf4compiler.tab.obj
+         .\Release/swf5compiler.tab.obj
+         .\Release/SWFPropertySheet.obj
+         .\Release/WAVEIO.obj
+         "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\zlib\Release\zlib.lib"
+         Producer.vcxproj -> C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\Producer.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\Producer.exe;#1" /manifest Release\Producer.exe.intermediate.manifest "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\Include\Manifest\dpiaware.manifest"
+       FinalizeBuildStatus:
+         Deleting file "Release\Producer.unsuccessfulbuild".
+         Touching "Release\Producer.lastbuildstate".
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Producer\Producer.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:01:36.21

@@ -1,0 +1,55 @@
+﻿Build started 1/3/2013 11:09:51 PM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\mng\mng.vcxproj" on node 3 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating ".\Debug\mng.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D MNG_SUPPORT_DISPLAY /D MNG_SUPPORT_READ /D MNG_SUPPORT_WRITE /D MNG_ACCESS_CHUNKS /D MNG_STORE_CHUNKS /D _CRT_SECURE_NO_DEPRECATE /D MNG_ERROR_TELLTALE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug/" /Fd".\Debug/vc100.pdb" /Gd /TC /analyze- /errorReport:prompt libmng_callback_xs.c libmng_chunk_descr.c libmng_chunk_io.c libmng_chunk_prc.c libmng_chunk_xs.c libmng_cms.c libmng_display.c libmng_dither.c libmng_error.c libmng_filter.c libmng_hlapi.c libmng_jpeg.c libmng_object_prc.c libmng_pixels.c libmng_prop_xs.c libmng_read.c libmng_trace.c libmng_write.c libmng_zlib.c
+         libmng_zlib.c
+         libmng_write.c
+         libmng_trace.c
+         libmng_read.c
+         libmng_prop_xs.c
+         libmng_pixels.c
+         libmng_object_prc.c
+         libmng_jpeg.c
+         libmng_hlapi.c
+         libmng_filter.c
+         libmng_error.c
+         libmng_dither.c
+         libmng_display.c
+         libmng_cms.c
+         libmng_chunk_xs.c
+         libmng_chunk_prc.c
+         libmng_chunk_io.c
+         libmng_chunk_descr.c
+         libmng_callback_xs.c
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:".\Debug\mng.lib" /NOLOGO .\Debug/libmng_callback_xs.obj
+         .\Debug/libmng_chunk_descr.obj
+         .\Debug/libmng_chunk_io.obj
+         .\Debug/libmng_chunk_prc.obj
+         .\Debug/libmng_chunk_xs.obj
+         .\Debug/libmng_cms.obj
+         .\Debug/libmng_display.obj
+         .\Debug/libmng_dither.obj
+         .\Debug/libmng_error.obj
+         .\Debug/libmng_filter.obj
+         .\Debug/libmng_hlapi.obj
+         .\Debug/libmng_jpeg.obj
+         .\Debug/libmng_object_prc.obj
+         .\Debug/libmng_pixels.obj
+         .\Debug/libmng_prop_xs.obj
+         .\Debug/libmng_read.obj
+         .\Debug/libmng_trace.obj
+         .\Debug/libmng_write.obj
+         .\Debug/libmng_zlib.obj
+         mng.vcxproj -> C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\mng\.\Debug\mng.lib
+       FinalizeBuildStatus:
+         Deleting file ".\Debug\mng.unsuccessfulbuild".
+         Touching ".\Debug\mng.lastbuildstate".
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\mng\mng.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:06.41

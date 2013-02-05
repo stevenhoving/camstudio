@@ -1,0 +1,21 @@
+﻿Build started 1/3/2013 11:09:39 PM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jbig\jbig.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating ".\Debug\jbig.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D _VC80_UPGRADE=0x0600 /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug/" /Fd".\Debug/vc100.pdb" /Gd /TC /analyze- /errorReport:prompt jbig.c jbig_tab.c
+         jbig_tab.c
+         jbig.c
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:".\Debug\jbig.lib" /NOLOGO .\Debug/jbig.obj
+         .\Debug/jbig_tab.obj
+         jbig.vcxproj -> C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jbig\.\Debug\jbig.lib
+       FinalizeBuildStatus:
+         Deleting file ".\Debug\jbig.unsuccessfulbuild".
+         Touching ".\Debug\jbig.lastbuildstate".
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\jbig\jbig.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.72
