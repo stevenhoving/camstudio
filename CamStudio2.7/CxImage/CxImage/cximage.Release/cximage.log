@@ -1,0 +1,83 @@
+﻿Build started 1/16/2013 3:04:43 AM.
+     1>Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\CxImage\cximage.vcxproj" on node 4 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "cximage.Release\cximage.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\jpeg /I..\png /I..\zlib /I..\mng /I..\tiff /I..\j2k /I..\jasper\include /Zi /nologo /W3 /WX- /O2 /Ob1 /Oy- /D WIN32 /D NDEBUG /D _LIB /D JAS_WIN_MSVC_BUILD /D _CRT_SECURE_NO_DEPRECATE /GF /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Release/" /Fd".\Release/vc100.pdb" /Gd /TP /analyze- /errorReport:prompt tif_xfile.cpp ximabmp.cpp ximadsp.cpp ximaenc.cpp ximaexif.cpp xImage.cpp ximagif.cpp ximahist.cpp ximaico.cpp ximainfo.cpp ximaint.cpp ximajas.cpp ximajbg.cpp ximajpg.cpp ximalpha.cpp ximalyr.cpp ximamng.cpp ximapal.cpp ximapcx.cpp ximapng.cpp ximapsd.cpp ximaraw.cpp ximasel.cpp ximaska.cpp ximatga.cpp ximath.cpp ximatif.cpp ximatran.cpp ximawbmp.cpp ximawmf.cpp ximawnd.cpp xmemfile.cpp
+         tif_xfile.cpp
+         ximabmp.cpp
+         ximadsp.cpp
+         ximaenc.cpp
+         ximaexif.cpp
+         xImage.cpp
+         ximagif.cpp
+         ximahist.cpp
+         ximaico.cpp
+         ximainfo.cpp
+         ximaint.cpp
+         ximajas.cpp
+         ximajbg.cpp
+         ximajpg.cpp
+         ximalpha.cpp
+         ximalyr.cpp
+         ximamng.cpp
+         ximapal.cpp
+         ximapcx.cpp
+         ximapng.cpp
+         Generating Code...
+         Compiling...
+         ximapsd.cpp
+         ximaraw.cpp
+         ximasel.cpp
+         ximaska.cpp
+         ximatga.cpp
+         ximath.cpp
+         ximatif.cpp
+         ximatran.cpp
+         ximawbmp.cpp
+         ximawmf.cpp
+         ximawnd.cpp
+         xmemfile.cpp
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\cximage.lib" /NOLOGO .\Release/tif_xfile.obj
+         .\Release/ximabmp.obj
+         .\Release/ximadsp.obj
+         .\Release/ximaenc.obj
+         .\Release/ximaexif.obj
+         .\Release/xImage.obj
+         .\Release/ximagif.obj
+         .\Release/ximahist.obj
+         .\Release/ximaico.obj
+         .\Release/ximainfo.obj
+         .\Release/ximaint.obj
+         .\Release/ximajas.obj
+         .\Release/ximajbg.obj
+         .\Release/ximajpg.obj
+         .\Release/ximalpha.obj
+         .\Release/ximalyr.obj
+         .\Release/ximamng.obj
+         .\Release/ximapal.obj
+         .\Release/ximapcx.obj
+         .\Release/ximapng.obj
+         .\Release/ximapsd.obj
+         .\Release/ximaraw.obj
+         .\Release/ximasel.obj
+         .\Release/ximaska.obj
+         .\Release/ximatga.obj
+         .\Release/ximath.obj
+         .\Release/ximatif.obj
+         .\Release/ximatran.obj
+         .\Release/ximawbmp.obj
+         .\Release/ximawmf.obj
+         .\Release/ximawnd.obj
+         .\Release/xmemfile.obj
+         cximage.vcxproj -> C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\Release\cximage.lib
+       FinalizeBuildStatus:
+         Deleting file "cximage.Release\cximage.unsuccessfulbuild".
+         Touching "cximage.Release\cximage.lastbuildstate".
+     1>Done Building Project "C:\Users\Bertoso\Desktop\camstudio-clone-master\camstudio\CamStudio\CxImage\CxImage\cximage.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:41.03
