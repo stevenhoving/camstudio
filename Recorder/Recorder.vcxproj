@@ -47,6 +47,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -124,7 +125,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)GlobalResources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>winmm.lib;vfw32.lib;msacm32.lib;$(OutDir)libconfig++.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;vfw32.lib;msacm32.lib;$(OutDir)libconfig++.lib;$(OutDir)tinyxml.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(SolutionDir)libconfig/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -395,8 +396,11 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
   <ItemGroup>
     <None Include="..\..\..\..\CamStudioPanel.bmp" />
     <None Include="..\..\..\images\info-icon.bmp" />
+    <None Include="..\..\..\images\info-icon.png" />
+    <None Include="Recorder_banner1.bmp" />
     <None Include="resource.hm" />
     <None Include="res\bitmap1.bmp" />
+    <None Include="res\bitmap11.bmp" />
     <None Include="res\bitmap2.bmp" />
     <None Include="res\bitmap5.bmp" />
     <None Include="res\bitmap6.bmp" />
@@ -446,6 +450,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <None Include="res\icon1.ico" />
     <None Include="res\icon2.ico" />
     <None Include="res\icon3.ico" />
+    <None Include="res\info-icon.bmp" />
     <None Include="res\mainfram.bmp" />
     <None Include="..\GlobalResources\Recorder.ico" />
     <None Include="Recorder.ico" />

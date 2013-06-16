@@ -59,6 +59,7 @@ class CRecorderApp : public CWinApp
 public:
 	CRecorderApp();
 
+
 	LANGID LanguageID() const			{return m_wCurLangID;}
 	LANGID LanguageID(LANGID wLangID)
 	{
@@ -98,6 +99,7 @@ private:
 	BOOL FirstInstance();
 	bool LoadLanguage(LANGID LangID);
 };
+
 
 /////////////////////////////////////////////////////////////////////////////
 

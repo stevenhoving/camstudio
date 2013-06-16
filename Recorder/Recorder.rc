@@ -53,7 +53,7 @@ IDB_BITMAP6             BITMAP                  "res\\bitmap6.bmp"
 IDB_BITMAP7             BITMAP                  "res\\bitmap7.bmp"
 IDB_BITMAP8             BITMAP                  "res\\bitmap8.bmp"
 IDB_BITMAP9             BITMAP                  "res\\bitmap9.bmp"
-IDB_BITMAP10            BITMAP                  "C:\\Users\\Bertoso\\Desktop\\camstudio-clone-master\\images\\info-icon.bmp"
+IDB_BITMAP10            BITMAP                  "res\\info-icon.bmp"
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -228,11 +228,17 @@ BEGIN
                 MENUITEM "Use CamStudio Player 1.0",    ID_OPTIONS_PROGRAMOPTIONS_CAMSTUDIOPLAY
                 MENUITEM "Use CamStudio Player 2.0",    ID_OPTIONS_PROGRAMOPTIONS_PLAYAVIFILEWHENRECORDINGSTOPS_USECAMSTUDIOPLAYER20
             END
-            POPUP "Directory for recording"
+            POPUP "Temporary recording directory"
             BEGIN
                 MENUITEM "Use Windows temporary directory", ID_OPTIONS_TEMPDIR_WINDOWS
-                MENUITEM "Use application installed directory", ID_OPTIONS_TEMPDIR_INSTALLED
+                MENUITEM "Use CamStudio Temp Files directory", ID_OPTIONS_TEMPDIR_INSTALLED
                 MENUITEM "Use user specified directory...", ID_OPTIONS_TEMPDIR_USER
+            END
+            POPUP "Output directory"
+            BEGIN
+                MENUITEM "Use Windows temporary directory", ID_OUTPUTDIRECTORY_USEWINDOWSTEMPORARYDIRECTORY
+                MENUITEM "Use My CamStudio Recordings directory", ID_OUTPUTDIRECTORY_USEMYCAMSTUDIORECORDINGSDIRECTORY
+                MENUITEM "Use user specified  directory...", ID_OUTPUTDIRECTORY_USEUSERSPECIFIEDDIRECTORY
             END
             POPUP "Recording thread priority"
             BEGIN
@@ -260,6 +266,7 @@ BEGIN
         BEGIN
             MENUITEM "English",                     ID_OPTIONS_LANGUAGE_ENGLISH
             MENUITEM "German",                      ID_OPTIONS_LANGUAGE_GERMAN
+            MENUITEM "Filipino",                    ID_OPTIONS_LANGUAGE_FILIPINO
         END
     END
     POPUP "&Tools"
@@ -2314,6 +2321,13 @@ IDC_CURSORDRAG          CURSOR                  "res\\cur00001.cur"
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// PNG
+//
+
+IDB_PNG1                PNG                     "C:\\Users\\Bertoso\\Desktop\\camstudio-clone-master\\images\\info-icon.png"
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
 
@@ -2444,7 +2458,7 @@ BEGIN
     ID_OPTIONS_TEMPDIR_WINDOWS 
                             "Use Window temporary directory (TEMP) as recording directory"
     ID_OPTIONS_TEMPDIR_INSTALLED 
-                            "Use CamStudio's installed directory as recording directory"
+                            "Use My CamStudio Recordings as recording directory"
     ID_OPTIONS_TEMPDIR_USER "Use user specified directory as recording directory"
 END
 

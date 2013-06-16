@@ -407,6 +407,16 @@
     <None Include="..\..\..\images\info-icon.bmp">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Recorder_banner1.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\images\info-icon.png" />
+    <None Include="res\bitmap11.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\info-icon.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InternetConn.cpp">

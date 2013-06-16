@@ -5,3 +5,4 @@
 
 #include "stdafx.h"
 
+#include "Localization\Localization.cpp"
