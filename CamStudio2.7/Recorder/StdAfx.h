@@ -45,6 +45,8 @@
 #pragma warning( disable : 4290)
 #include "libconfig.h++"
 #include <afxcontrolbars.h>
+
+#include "Localization\Localization.h"
 using namespace libconfig;
 
 extern Config *cfg;

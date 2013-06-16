@@ -183,6 +183,7 @@ float fRate = 0.0;
 float fActualRate = 0.0;
 float fTimeLength = 0.0;
 int nColors = 24;
+CString sTimeLength;
 
 //Path to temporary video avi file
 CString strTempVideoAviFilePath;
@@ -264,8 +265,47 @@ HBITMAP hSavedBitmap = NULL;
 /////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////
-int SetAdjustHotKeys();
+// ===========================================================================
+//ver 1.2 
+// ===========================================================================
+//Key short-cuts variables
+// ===========================================================================
 
+UINT keyRecordStart = VK_F8;
+UINT keyRecordEnd = VK_F9;
+UINT keyRecordCancel = VK_F10;
+//ver 1.8 key shortcuts
+UINT keyRecordStartCtrl = 0;
+UINT keyRecordEndCtrl = 0;
+UINT keyRecordCancelCtrl = 0;
+
+UINT keyRecordStartAlt = 0;
+UINT keyRecordEndAlt = 0;
+UINT keyRecordCancelAlt = 0;
+
+UINT keyRecordStartShift = 0;
+UINT keyRecordEndShift = 0;
+UINT keyRecordCancelShift = 0;
+
+UINT keyNext = VK_F11; 
+UINT keyPrev = VK_F12;
+UINT keyShowLayout = 100000; //none
+
+UINT keyNextCtrl = 1;
+UINT keyPrevCtrl = 1;
+UINT keyShowLayoutCtrl = 0;
+
+UINT keyNextAlt = 0;
+UINT keyPrevAlt = 0;
+UINT keyShowLayoutAlt = 0;
+
+UINT keyNextShift = 0;
+UINT keyPrevShift = 0;
+UINT keyShowLayoutShift = 0;
+
+int UnSetHotKeys();
+int SetAdjustHotKeys();
+int SetHotKeys(int succ[]);
 //Region Display Functions
 void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip);
 
@@ -307,8 +347,8 @@ namespace {	// annonymous
 	////////////////////////////////
 	// HOTKEYS_CODE
 	////////////////////////////////
-	bool UnSetHotKeys(HWND hWnd);
-	int SetHotKeys(int succ[]);
+	//bool UnSetHotKeys(HWND hWnd);
+	//int SetHotKeys(int succ[]);
 
 	//===============================================
 	// EXPERIMENTAL CODE
@@ -330,20 +370,108 @@ namespace {	// annonymous
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 //ver 1.8
+int UnSetHotKeys()
+{
+
+	
+	UnregisterHotKey(hWndGlobal,HOTKEY_RECORD_START_OR_PAUSE);
+	UnregisterHotKey(hWndGlobal,HOTKEY_RECORD_STOP);
+	UnregisterHotKey(hWndGlobal,HOTKEY_RECORD_CANCELSTOP);
+	UnregisterHotKey(hWndGlobal,HOTKEY_LAYOUT_KEY_NEXT);
+	UnregisterHotKey(hWndGlobal,HOTKEY_LAYOUT_KEY_PREVIOUS);
+	UnregisterHotKey(hWndGlobal,HOTKEY_LAYOUT_SHOW_HIDE_KEY);
+	UnregisterHotKey(hWndGlobal,HOTKEY_ZOOM);
+	UnregisterHotKey(hWndGlobal,HOTKEY_AUTOPAN_SHOW_HIDE_KEY);
+
+	return 0;
+
+}
 int SetAdjustHotKeys()
 {
-	// FIXME: move it somewhere
-	HotKeyMap& hkm = getHotKeyMap();
-	hkm.clear();
-	hkm[HotKey(cHotKeyOpts.m_RecordStart.m_vKey, cHotKeyOpts.m_RecordStart.m_fsMod)] = HOTKEY_RECORD_START_OR_PAUSE;
-	hkm[HotKey(cHotKeyOpts.m_RecordEnd.m_vKey, cHotKeyOpts.m_RecordEnd.m_fsMod)] = HOTKEY_RECORD_STOP;
-	hkm[HotKey(cHotKeyOpts.m_RecordCancel.m_vKey, cHotKeyOpts.m_RecordCancel.m_fsMod)] = HOTKEY_RECORD_CANCELSTOP;
-	hkm[HotKey(cHotKeyOpts.m_Next.m_vKey, cHotKeyOpts.m_Next.m_fsMod)] = HOTKEY_LAYOUT_KEY_NEXT;
-	hkm[HotKey(cHotKeyOpts.m_Prev.m_vKey, cHotKeyOpts.m_Prev.m_fsMod)] = HOTKEY_LAYOUT_KEY_PREVIOUS;
-	hkm[HotKey(cHotKeyOpts.m_ShowLayout.m_vKey, cHotKeyOpts.m_ShowLayout.m_fsMod)] = HOTKEY_LAYOUT_SHOW_HIDE_KEY;
-	hkm[HotKey(cHotKeyOpts.m_Zoom.m_vKey, cHotKeyOpts.m_Zoom.m_fsMod)] = HOTKEY_ZOOM;
-	hkm[HotKey(cHotKeyOpts.m_Autopan.m_vKey, cHotKeyOpts.m_Autopan.m_fsMod)] = HOTKEY_AUTOPAN_SHOW_HIDE_KEY;
+
+	int succ[8];
+	int ret = SetHotKeys(succ);
+
 	return 7; // return the max value of #define for Hotkey in program???
+}
+int SetHotKeys(int succ[])
+{
+
+	UnSetHotKeys();
+	
+	
+	for (int i =0 ;i<6 ;i++)
+		succ[i]=0;
+
+	int tstatus = 0;
+
+	BOOL ret;
+	int nid = 0;
+	if (cHotKeyOpts.m_RecordStart.m_vKey != VK_UNDEFINED) {
+		ret = RegisterHotKey(hWndGlobal,nid, cHotKeyOpts.m_RecordStart.m_fsMod, cHotKeyOpts.m_RecordStart.m_vKey);
+		if (!ret) 
+			succ[0] = 1;
+	}
+
+	nid++;
+	
+	if (cHotKeyOpts.m_RecordEnd.m_vKey != VK_UNDEFINED) {
+		ret = RegisterHotKey(hWndGlobal,nid,cHotKeyOpts.m_RecordEnd.m_fsMod,cHotKeyOpts.m_RecordEnd.m_vKey);
+		if (!ret) 
+			succ[1] = 1;
+	}
+
+	nid++;
+
+	if (cHotKeyOpts.m_RecordCancel.m_vKey != VK_UNDEFINED) {
+		ret = RegisterHotKey(hWndGlobal,nid,cHotKeyOpts.m_RecordCancel.m_fsMod, cHotKeyOpts.m_RecordCancel.m_vKey);
+		if (!ret) 
+			succ[2] = 1;
+	}
+
+
+	nid++;
+
+	if (cHotKeyOpts.m_Next.m_vKey != VK_UNDEFINED) {	
+		ret = RegisterHotKey(hWndGlobal,nid,cHotKeyOpts.m_Next.m_fsMod,cHotKeyOpts.m_Next.m_vKey);
+		if (!ret) 
+			succ[3] = 1;
+	}
+
+	nid++;
+
+	if (cHotKeyOpts.m_Prev.m_vKey != VK_UNDEFINED) {	
+		ret = RegisterHotKey(hWndGlobal,nid,cHotKeyOpts.m_Prev.m_fsMod, cHotKeyOpts.m_Next.m_vKey);
+		if (!ret) 
+			succ[4] = 1;
+
+	}
+
+	nid++;
+
+	if (cHotKeyOpts.m_ShowLayout.m_vKey != VK_UNDEFINED) {
+		ret = RegisterHotKey(hWndGlobal,nid,cHotKeyOpts.m_ShowLayout.m_fsMod, cHotKeyOpts.m_ShowLayout.m_vKey);
+		if (!ret) 			
+			succ[5] = 1;
+	}
+
+	nid++;
+	
+	if(cHotKeyOpts.m_Zoom.m_vKey != VK_UNDEFINED) {
+		ret = RegisterHotKey(hWndGlobal, nid, cHotKeyOpts.m_Zoom.m_fsMod, cHotKeyOpts.m_Zoom.m_vKey);
+		if(!ret)
+			succ[6] = 1;
+	}
+	
+	nid++;
+
+	if(cHotKeyOpts.m_Autopan.m_vKey != VK_UNDEFINED) {
+		ret = RegisterHotKey(hWndGlobal, nid, cHotKeyOpts.m_Autopan.m_fsMod, cHotKeyOpts.m_Autopan.m_vKey);
+		if(!ret)
+			succ[7] = 1;
+	}
+	return tstatus;
+
 }
 
 void SetVideoCompressState (HIC hic, DWORD fccHandler)
@@ -429,8 +557,10 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_NAMING_AUTODATE, OnUpdateOptionsNamingAutodate)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_LANGUAGE_ENGLISH, OnUpdateOptionsLanguageEnglish)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_LANGUAGE_GERMAN, OnUpdateOptionsLanguageGerman)
+	ON_UPDATE_COMMAND_UI(ID_OPTIONS_LANGUAGE_FILIPINO, OnUpdateOptionsLanguageFilipino)
 	ON_COMMAND(ID_OPTIONS_LANGUAGE_ENGLISH, OnOptionsLanguageEnglish)
-	ON_COMMAND(ID_OPTIONS_LANGUAGE_GERMAN, OnOptionsLanguageGerman)
+	ON_COMMAND(ID_OPTIONS_LANGUAGE_GERMAN, OnOptionsLanguageFilipino)
+	ON_COMMAND(ID_OPTIONS_LANGUAGE_FILIPINO, OnOptionsLanguageFilipino)
 	ON_COMMAND(ID_REGION_WINDOW, OnRegionWindow)
 	ON_UPDATE_COMMAND_UI(ID_REGION_WINDOW, OnUpdateRegionWindow)
 
@@ -472,6 +602,16 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_TEMPDIR_INSTALLED, OnUpdateOptionsTempdirInstalled)
 	ON_COMMAND(ID_OPTIONS_TEMPDIR_USER, OnOptionsTempdirUser)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_TEMPDIR_USER, OnUpdateOptionsTempdirUser)
+
+	ON_COMMAND(ID_OUTPUTDIRECTORY_USEWINDOWSTEMPORARYDIRECTORY, OnOptionsOutputDirWindows)
+	ON_UPDATE_COMMAND_UI(ID_OUTPUTDIRECTORY_USEWINDOWSTEMPORARYDIRECTORY, OnUpdateOptionsOutputDirWindows)
+
+	ON_COMMAND(ID_OUTPUTDIRECTORY_USEMYCAMSTUDIORECORDINGSDIRECTORY, OnOptionsOutputDirInstalled)
+	ON_UPDATE_COMMAND_UI(ID_OUTPUTDIRECTORY_USEMYCAMSTUDIORECORDINGSDIRECTORY, OnUpdateOptionsOutputDirInstalled)
+
+	ON_COMMAND(ID_OUTPUTDIRECTORY_USEUSERSPECIFIEDDIRECTORY, OnOptionsOutputDirUser)
+	ON_UPDATE_COMMAND_UI(ID_OUTPUTDIRECTORY_USEUSERSPECIFIEDDIRECTORY, OnUpdateOptionsUser)
+
 	ON_COMMAND(ID_OPTIONS_RECORDINGTHREADPRIORITY_NORMAL, OnOptionsRecordingthreadpriorityNormal)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDINGTHREADPRIORITY_NORMAL, OnUpdateOptionsRecordingthreadpriorityNormal)
 	ON_COMMAND(ID_OPTIONS_RECORDINGTHREADPRIORITY_HIGHEST, OnOptionsRecordingthreadpriorityHighest)
@@ -690,8 +830,8 @@ void CRecorderView::OnDestroy()
 {
 	DecideSaveSettings();
 
-//	UnSetHotKeys(hWndGlobal);
-	getHotKeyMap().clear(); // who actually cares?
+	//UnSetHotKeys(hWndGlobal);
+	//getHotKeyMap().clear(); // who actually cares?
 
 	DestroyShiftWindow();
 
@@ -950,6 +1090,15 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		strTitle = _T("Save SWF File");
 		strExtFilter = _T("*.swf");
 	}
+	if(DoesDefaultOutDirExist(cProgramOpts.m_strDefaultOutDir))
+	{
+			strTargetDir = cProgramOpts.m_strDefaultOutDir;
+	}
+	else
+	{
+		strTargetDir = GetTempFolder(cProgramOpts.m_iOutputPathAccess, cProgramOpts.m_strSpecifiedDir, true);
+
+	}
 	CFileDialog fdlg(FALSE, strExtFilter, strExtFilter, OFN_LONGNAMES, strFilter, this);
 	fdlg.m_ofn.lpstrTitle = strTitle;
 
@@ -957,7 +1106,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	if (savedir == "") {
 		savedir = GetMyVideoPath();
 	}
-	fdlg.m_ofn.lpstrInitialDir = savedir;
+	fdlg.m_ofn.lpstrInitialDir = strTargetDir;
 
 	// I believed that savedir would always be GetProgPath(). 
 	// But this test below proved that that is not alway the case
@@ -970,21 +1119,22 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 
 		// Janhgm. Target dir where we want to get our final files is not always the location where we stored our Camstudio application..!
 		// strTargetDir = GetProgPath();
-		if(DoesDefaultOutDirExist(cProgramOpts.m_strDefaultOutDir))
+		
+		/*if(DoesDefaultOutDirExist(cProgramOpts.m_strDefaultOutDir))
 		{
 			strTargetDir = cProgramOpts.m_strDefaultOutDir;
 		}
 		else
 		{
-			strTargetDir = GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir);
-		}
+			strTargetDir = GetTempFolder(cProgramOpts.m_iOutputPathAccess, cProgramOpts.m_strSpecifiedDir, true);
+			
+		}*/
 		// Use local copy of the timestamp string created when recording was started for autonaming.
 		strTargetBareFileName.SetString( cVideoOpts.m_cStartRecordingString.GetString() );		// "ccyymmdd-hhmm-ss" , Timestamp still used for default temp.avi output "temp-ccyymmdd-hhmm-ss.avi"
 		strTargetVideoExtension = ".avi";
 	} else if (fdlg.DoModal() == IDOK) {
 		strTmp = fdlg.GetPathName();
 		strTargetDir = strTmp.Left(strTmp.ReverseFind('\\'));
-
 		// remove path info, we now have the udf defined filename
 		strTmp = strTmp.Mid(strTmp.ReverseFind('\\')+1);
 
@@ -1196,6 +1346,15 @@ void CRecorderView::OnRecord()
 	CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
 	pStatus->SetPaneText(0,"Press the Stop Button to stop recording");
 
+	CMenu oMenu;
+	recorderApp.m_Loc.Select(2);
+	//oMenu.LoadMenu( ID_RECORD );
+	//CString s;
+	//s.Format("%d",recorderApp.m_Loc.GetLang());
+	//MessageBox(s, "", 0);
+	
+	recorderApp.m_Loc.Translate( oMenu.GetSafeHmenu(), ID_RECORD );
+	oMenu.LoadMenu(ID_RECORD);
 	//Version 1.1
 	if (bRecordPaused) {
 		bRecordPaused = false;
@@ -2740,7 +2899,34 @@ void CRecorderView::OnUpdateOptionsTempdirUser(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetCheck(cProgramOpts.m_iTempPathAccess == USE_USER_SPECIFIED_DIR);
 }
-
+void CRecorderView::OnOptionsOutputDirWindows()
+{
+	cProgramOpts.m_iOutputPathAccess = USE_WINDOWS_TEMP_DIR;
+}
+void CRecorderView::OnUpdateOptionsOutputDirWindows(CCmdUI* pCmdUI)
+{
+	pCmdUI->SetCheck(cProgramOpts.m_iOutputPathAccess == USE_WINDOWS_TEMP_DIR);
+}
+void CRecorderView::OnOptionsOutputDirInstalled()
+{
+	cProgramOpts.m_iOutputPathAccess = USE_INSTALLED_DIR;
+}
+void CRecorderView::OnUpdateOptionsOutputDirInstalled(CCmdUI* pCmdUI)
+{
+	pCmdUI->SetCheck(cProgramOpts.m_iOutputPathAccess == USE_INSTALLED_DIR);
+}
+void CRecorderView::OnOptionsOutputDirUser()
+{
+	CFolderDialog cfg(cProgramOpts.m_strSpecifiedDir);
+	if (IDOK == cfg.DoModal()) {
+		cProgramOpts.m_strSpecifiedDir = cfg.GetPathName();
+		cProgramOpts.m_iOutputPathAccess = USE_USER_SPECIFIED_DIR;
+	}
+}
+void CRecorderView::OnUpdateOptionsUser(CCmdUI* pCmdUI)
+{
+	pCmdUI->SetCheck(cProgramOpts.m_iOutputPathAccess == USE_USER_SPECIFIED_DIR);
+}
 void CRecorderView::OnOptionsRecordaudioDonotrecordaudio()
 {
 	cAudioFormat.m_iRecordAudio = NONE;
@@ -2932,6 +3118,9 @@ void CRecorderView::OnSetFocus(CWnd* pOldWnd)
 /////////////////////////////////////////////////////////////////////////////
 LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 {
+	CString s;
+	s.Format("%d", wParam);
+	MessageBox(s, "", 0);
 	switch (wParam)
 	{
 	case HOTKEY_RECORD_START_OR_PAUSE:	// 0 = start recording
@@ -2969,6 +3158,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 		{
 			if (!bCreatedSADlg) {
 				sadlg.Create(IDD_SCREENANNOTATIONS2, NULL);
+				//sadlg.ShowWindow(SW_SHOW);
 				bCreatedSADlg = true;
 			}
 			int max = ListManager.layoutArray.GetSize();
@@ -3009,6 +3199,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 		{
 			if (!bCreatedSADlg) {
 				sadlg.Create(IDD_SCREENANNOTATIONS2,NULL);
+				sadlg.ShowWindow(SW_SHOW);
 				bCreatedSADlg = true;
 			}
 
@@ -3190,6 +3381,12 @@ void CRecorderView::OnUpdateOptionsLanguageGerman(CCmdUI* pCmdUI)
 	pCmdUI->SetCheck(pApp->LanguageID() == 7);
 }
 
+void CRecorderView::OnUpdateOptionsLanguageFilipino(CCmdUI* pCmdUI)
+{
+	CRecorderApp * pApp = static_cast<CRecorderApp*>(AfxGetApp());
+	pCmdUI->SetCheck(pApp->LanguageID() == 2);
+}
+
 void CRecorderView::OnOptionsLanguageEnglish()
 {
 	CRecorderApp * pApp = static_cast<CRecorderApp*>(AfxGetApp());
@@ -3198,6 +3395,14 @@ void CRecorderView::OnOptionsLanguageEnglish()
 	AfxMessageBox(IDS_RESTARTAPP);
 }
 
+void CRecorderView::OnOptionsLanguageFilipino()
+{
+	CRecorderApp * pApp = static_cast<CRecorderApp*>(AfxGetApp());
+	pApp->LanguageID(2);
+	//AfxGetApp()->WriteProfileInt(SEC_SETTINGS, ENT_LANGID, 9);
+	AfxMessageBox(IDS_RESTARTAPP);
+
+}
 void CRecorderView::OnOptionsLanguageGerman()
 {
 	CRecorderApp * pApp = static_cast<CRecorderApp*>(AfxGetApp());
@@ -3539,7 +3744,8 @@ void CRecorderView::DisplayRecordingStatistics(CDC & srcDC)
 	srcDC.TextOut(xoffset, yoffset, csMsg);
 
 	// Line : Elapsed time
-	csMsg.Format("Time Elasped : %.2f sec",  fTimeLength);
+	//csMsg.Format("Time Elapsed : %.2f sec",  fTimeLength);
+	csMsg = "Time Elapsed : " + sTimeLength;
 	sizeExtent = srcDC.GetTextExtent(csMsg);
 	yoffset += sizeExtent.cy + iLineSpacing;
 	rectText.top = yoffset - 2;
@@ -4232,9 +4438,14 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 		} else {
 			bInitCapture = false;
 		}
-
+		int seconds = 0.0;
+		int minutes = 0;
+		int hours = 0;
+		hours = timeexpended / 1000 / 60 / 60 % 60;
+		minutes = timeexpended / 1000 / 60 % 60;
+		seconds = timeexpended / 1000 % 60; 
+		sTimeLength.Format("%d hrs %d mins %d secs", hours, minutes, seconds);
 		fTimeLength = ((float) timeexpended) /((float) 1000.0);
-
 		if (cProgramOpts.m_bRecordPreset) {
 			if (cProgramOpts.m_iPresetTime <= int(fTimeLength)) {
 				::PostMessage(hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
@@ -4812,6 +5023,7 @@ void CRecorderView::DisplayAutopanInfo(CRect rc)
 		HFONT oldfont = (HFONT) SelectObject(hdc, newfont);
 		CString strmessage;
 		strmessage.LoadString((cProgramOpts.m_bAutoPan == true ) ? IDS_STRING_AUTOPAN_ENABLED : IDS_STRING_AUTOPAN_DISABLED );
+		//m_Loc.LoadString((cProgramOpts.m_bAutoPan == true ) ? IDS_STRING_AUTOPAN_ENABLED : IDS_STRING_AUTOPAN_DISABLED );
 		//strmessage.Format("%d - %d -%d - %d", rectDraw.left, rectDraw.top, rectDraw.right, rectDraw.bottom);
 		SIZE sExtent;
 		DWORD dw = GetTextExtentPoint(hdc, (LPCTSTR)strmessage, strmessage.GetLength(), &sExtent);

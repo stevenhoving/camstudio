@@ -677,13 +677,13 @@ public:
 	sAudioFormat()
 		: m_uDeviceID(WAVE_MAPPER)
 		, m_bCompression(true)
-		, m_bInterleaveFrames(true)
-		, m_bUseMCI(false)
+		, m_bInterleaveFrames(false)
+		, m_bUseMCI(true)
 		, m_bPerformAutoSearch(true)
 		, m_iRecordAudio(NONE)
 		, m_iNumChannels(2)
 		, m_iBitsPerSample(16)
-		, m_iSamplesPerSeconds(22050)
+		, m_iSamplesPerSeconds(44100)
 		, m_iInterleaveFactor(100)
 		, m_iInterleavePeriod(MILLISECONDS)
 		, m_iMixerDevices(0)
@@ -691,7 +691,7 @@ public:
 		, m_iFeedbackLine(0)
 		, m_iFeedbackLineInfo(0)
 		, m_dwCbwFX(0)
-		, m_dwWaveinSelected(WAVE_FORMAT_2S16)
+		, m_dwWaveinSelected(WAVE_FORMAT_4M16)
 		, m_pwfx(0)
 		, m_wFormatTag(0)
 	{
@@ -699,13 +699,13 @@ public:
 	sAudioFormat(const sAudioFormat& rhs)
 		: m_uDeviceID(WAVE_MAPPER)
 		, m_bCompression(true)
-		, m_bInterleaveFrames(true)
-		, m_bUseMCI(false)
+		, m_bInterleaveFrames(false)
+		, m_bUseMCI(true)
 		, m_bPerformAutoSearch(true)
 		, m_iRecordAudio(NONE)
 		, m_iNumChannels(2)
 		, m_iBitsPerSample(16)
-		, m_iSamplesPerSeconds(22050)
+		, m_iSamplesPerSeconds(44100)
 		, m_iInterleaveFactor(100)
 		, m_iInterleavePeriod(MILLISECONDS)
 		, m_iMixerDevices(0)
@@ -713,7 +713,7 @@ public:
 		, m_iFeedbackLine(0)
 		, m_iFeedbackLineInfo(0)
 		, m_dwCbwFX(0)
-		, m_dwWaveinSelected(WAVE_FORMAT_2S16)
+		, m_dwWaveinSelected(WAVE_FORMAT_4M16)
 		, m_pwfx(0)
 		, m_wFormatTag(0)
 	{
@@ -895,6 +895,7 @@ struct sProgramOpts
 		, m_iLaunchPlayer(CAM2_PLAYER)
 		, m_iSpecifiedDirLength(0)
 		, m_iTempPathAccess(USE_INSTALLED_DIR)
+		, m_iOutputPathAccess(USE_INSTALLED_DIR)
 		, m_iThreadPriority(THREAD_PRIORITY_NORMAL)
 		, m_iViewType(VIEW_NORMAL)
 		, m_iSaveLen(0)
@@ -926,6 +927,7 @@ struct sProgramOpts
 		m_iRecordingMode		= rhs.m_iRecordingMode;
 		m_iLaunchPlayer			= rhs.m_bSaveSettings;
 		m_iTempPathAccess		= rhs.m_iTempPathAccess;
+		m_iOutputPathAccess		= rhs.m_iOutputPathAccess;
 		m_iThreadPriority		= rhs.m_iThreadPriority;
 		m_iViewType				= rhs.m_iViewType;
 		m_iSaveLen				= rhs.m_iSaveLen;
@@ -954,6 +956,7 @@ struct sProgramOpts
 		if (cProfile.lookupValue("SaveDir", text))
 			m_strSpecifiedDir = text.c_str();
 		cProfile.lookupValue("TempPathAccess", m_iTempPathAccess);
+		cProfile.lookupValue("OutputPathAccess", m_iOutputPathAccess);
 		cProfile.lookupValue("ThreadPriority", m_iThreadPriority);
 		cProfile.lookupValue("AutoPan", m_bAutoPan);
 		cProfile.lookupValue("MaxPan", m_iMaxPan);
@@ -983,6 +986,7 @@ struct sProgramOpts
 		std::string text(m_strSpecifiedDir);
 		UpdateSetting(cProfile,"SaveDir", text, Setting::TypeString);
 		UpdateSetting(cProfile,"TempPathAccess", m_iTempPathAccess, Setting::TypeInt);
+		UpdateSetting(cProfile, "OutputPathAccess", m_iOutputPathAccess , Setting::TypeInt);
 		UpdateSetting(cProfile,"ThreadPriority", m_iThreadPriority, Setting::TypeInt);
 		UpdateSetting(cProfile,"AutoPan", m_bAutoPan, Setting::TypeBoolean);
 		UpdateSetting(cProfile,"MaxPan", m_iMaxPan, Setting::TypeInt);
@@ -1007,6 +1011,7 @@ struct sProgramOpts
 	int m_iRecordingMode;
 	int m_iLaunchPlayer;
 	int m_iTempPathAccess;
+	int m_iOutputPathAccess;
 	int m_iThreadPriority;
 	int m_iViewType;	
 	int m_iSaveLen;

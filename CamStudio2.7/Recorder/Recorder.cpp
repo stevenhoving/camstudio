@@ -157,6 +157,7 @@ CRecorderApp::CRecorderApp()
 {
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -203,7 +204,7 @@ BOOL CRecorderApp::InitInstance()
 	}
 	catch(const FileIOException)
 	{// TODO: move me to resource
-		MessageBox(NULL, "CamStudio.cfg Config file was not found. Using defaults.", "Error", MB_OK);
+		//MessageBox(NULL, "CamStudio.cfg Config file was not found. Using defaults.", "Error", MB_OK);
 //		return(EXIT_FAILURE);
 	}
 	catch(const ParseException &pex)
@@ -224,6 +225,7 @@ BOOL CRecorderApp::InitInstance()
 			LoadLanguage(::GetSystemDefaultLangID());
 		}
 	}
+
 	//WriteProfileInt(SEC_SETTINGS, ENT_LANGID, m_wCurLangID);
 //	VERIFY(m_cmSettings.Write(LANGUAGE, m_wCurLangID));
 
@@ -305,7 +307,6 @@ BOOL CRecorderApp::InitInstance()
       CMainFrame* cwind = (CMainFrame*)AfxGetMainWnd();
       cwind->UpdateViewtype();
       }
-
 	return TRUE;
 }
 

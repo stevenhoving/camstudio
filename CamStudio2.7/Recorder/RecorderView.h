@@ -128,6 +128,15 @@ protected:
 	afx_msg void OnUpdateOptionsTempdirInstalled(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsTempdirUser();
 	afx_msg void OnUpdateOptionsTempdirUser(CCmdUI* pCmdUI);
+
+
+	afx_msg void OnOptionsOutputDirWindows();
+	afx_msg void OnUpdateOptionsOutputDirWindows(CCmdUI* pCmdUI);
+	afx_msg void OnOptionsOutputDirInstalled();
+	afx_msg void OnUpdateOptionsOutputDirInstalled(CCmdUI* pCmdUI);
+	afx_msg void OnOptionsOutputDirUser();
+	afx_msg void OnUpdateOptionsUser(CCmdUI* pCmdUI);
+
 	afx_msg void OnOptionsRecordaudioDonotrecordaudio();
 	afx_msg void OnUpdateOptionsRecordaudioDonotrecordaudio(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsRecordaudioRecordfromspeakers();
@@ -165,8 +174,10 @@ protected:
 	afx_msg void OnOptionsProgramoptionsPresettime();
 	afx_msg void OnUpdateOptionsLanguageEnglish(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateOptionsLanguageGerman(CCmdUI* pCmdUI);
+	afx_msg void OnUpdateOptionsLanguageFilipino(CCmdUI* pCmdUI);
 	afx_msg void OnOptionsLanguageEnglish();
 	afx_msg void OnOptionsLanguageGerman();
+	afx_msg void OnOptionsLanguageFilipino();
 	afx_msg void OnRegionWindow();
 	afx_msg void OnUpdateRegionWindow(CCmdUI *pCmdUI);
 	afx_msg void OnCaptureChanged(CWnd *pWnd);

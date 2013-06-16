@@ -10,6 +10,9 @@
 #endif // _MSC_VER >= 1000
 #include "TrayIcon.h"
 #include "UpdateDialog.h"
+#include <iostream>
+#include <sstream>
+#include <string>
 class CMainFrame : public CFrameWnd
 {
 protected: // create from serialization only
@@ -73,6 +76,8 @@ private:
 	static const UINT WM_USER_XNOTE;
 	static const UINT WM_USER_MOTIONDETECTOR;
 	void CheckForNewVersion();
+	void Parse(int result[3], const std::string& input);
+	bool LessThanVersion(const std::string& a,const std::string& b);
 public:
 };
 
