@@ -1345,16 +1345,7 @@ void CRecorderView::OnRecord()
 {
 	CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
 	pStatus->SetPaneText(0,"Press the Stop Button to stop recording");
-
-	CMenu oMenu;
-	recorderApp.m_Loc.Select(2);
-	//oMenu.LoadMenu( ID_RECORD );
-	//CString s;
-	//s.Format("%d",recorderApp.m_Loc.GetLang());
-	//MessageBox(s, "", 0);
 	
-	recorderApp.m_Loc.Translate( oMenu.GetSafeHmenu(), ID_RECORD );
-	oMenu.LoadMenu(ID_RECORD);
 	//Version 1.1
 	if (bRecordPaused) {
 		bRecordPaused = false;
