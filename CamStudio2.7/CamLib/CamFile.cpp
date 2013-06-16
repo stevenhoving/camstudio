@@ -11,7 +11,7 @@
 // TODO: Rename; this is needlessly dangerous
 // TODO GetTempFolder does not contain the temp folder but returns the udf target folder. Hence the function name is not correct..!
 /////////////////////////////////////////////////////////////////////////////
-CString GetTempFolder(int iAccess, const CString strFolder)
+CString GetTempFolder(int iAccess, const CString strFolder, bool bOut)
 {
 	if (iAccess == USE_USER_SPECIFIED_DIR) {
 		CString tempdir = strFolder;
@@ -35,7 +35,15 @@ CString GetTempFolder(int iAccess, const CString strFolder)
 	// if failed to create just return CamStudio root dir
 	if(iAccess == USE_INSTALLED_DIR) {
 		CString tempdir;
-		tempdir.Format("%s\\Videos", GetProgPath());
+		//tempdir.Format("%s\\Videos", GetProgPath());
+		if(bOut)
+		{
+			tempdir.Format("%s\\My CamStudio Videos", GetMyDocumentsPath());
+		}
+		else
+		{
+			tempdir.Format("%s\\My CamStudio Temp Files", GetMyDocumentsPath());
+		}
 		if(!CreateDirectory(tempdir, NULL))
 		{
 			DWORD err = GetLastError();
@@ -45,7 +53,7 @@ CString GetTempFolder(int iAccess, const CString strFolder)
 			}
 			else if(ERROR_PATH_NOT_FOUND == err)
 			{
-				return GetProgPath();
+				return GetMyDocumentsPath();
 			}
 		}
 		else
@@ -124,7 +132,24 @@ CString GetMyVideoPath()
 	}
 	return path;
 }
+CString GetMyDocumentsPath()
+{
+	//Get the user's video path
+	int folder = CSIDL_PERSONAL;
 
+	char szPath[MAX_PATH+100]; szPath[0]=0;
+	CString path = szPath;
+
+	if (SUCCEEDED(SHGetFolderPath(NULL, folder, 0, 0, szPath)))
+	{
+		path = szPath;
+	}
+	/*else if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, 0, 0, szPath)))
+	{
+		path = szPath;
+	}*/
+	return path;
+}
 CString GetAppDataPath()
 {
 	int folder = CSIDL_APPDATA;

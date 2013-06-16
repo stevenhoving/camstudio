@@ -54,7 +54,7 @@ extern "C" {
 #define WM_USER_SAVECURSOR_MSG			_T("WM_USER_SAVECURSOR_MSG")
 #define WM_USER_GENERIC_MSG				_T("WM_USER_GENERIC_MSG")
 #define WM_USER_RECORDSTART_MSG			_T("WM_USER_RECORDSTART_MSG")
-
+#define WM_USER_RECORDAUTO_MSG			_T("WM_USER_RECORDAUTO_MSG")
 // These declarations are because the latest SDK isn't installed...
 #ifndef GET_X_LPARAM
 #define GET_X_LPARAM(p) ((int)(short)LOWORD(p))

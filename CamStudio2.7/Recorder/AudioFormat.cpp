@@ -41,6 +41,7 @@ CAudioFormatDlg::CAudioFormatDlg(CWnd* pParent /*=NULL*/)
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 	AllocCompressFormat();
+	UpdateCompressFormatInterface();
 }
 
 CAudioFormatDlg::CAudioFormatDlg(const sAudioFormat& cFmt, CWnd* pParent)
@@ -386,7 +387,7 @@ void CAudioFormatDlg::UpdateDeviceData(UINT /*deviceID*/, DWORD dwFormat, const 
 				::CopyMemory(m_pwfx, &rwfx, m_cFmt.m_dwCbwFX);
 			//}
 		//}
-
+		OnSelchangeRecordformat();
 		UpdateCompressFormatInterface();
 
 		//will this following line call OnSelchangeRecordformat() ?
@@ -424,9 +425,9 @@ bool CAudioFormatDlg::LoadDeviceList()
 		}
 	}
 
-	if (CB_ERR == m_ctrlCBInputDevice.GetCurSel()) {
+	//if (CB_ERR == m_ctrlCBInputDevice.GetCurSel()) {
 		m_ctrlCBInputDevice.SetCurSel(0);
-	}
+	//}
 
 	return true;
 }
@@ -458,7 +459,7 @@ bool CAudioFormatDlg::LoadFormatList()
 	for (std::vector<pairIDFormat>::iterator iter = m_vFormat.begin(); iter != m_vFormat.end(); ++iter) {
 		int iIdx = m_ctrlCBRecordFormat.AddString(iter->second);
 		m_ctrlCBRecordFormat.SetItemData(iIdx, iter->first);
-		if (iter->first == m_cFmt.m_uDeviceID) {
+		if (iter->first == m_cFmt.m_dwWaveinSelected) {
 			m_ctrlCBRecordFormat.SetCurSel(iIdx);
 		}
 	}
@@ -531,7 +532,7 @@ BOOL CAudioFormatDlg::OnInitDialog()
 
 	//ver 1.8
 	m_ctrlButtonSystemRecord.SetCheck(m_cFmt.m_bUseMCI);
-
+	//UpdateCompressFormatInterface();
 	UpdateData(FALSE);
 
 	return TRUE; // return TRUE unless you set the focus to a control
@@ -673,7 +674,7 @@ void CAudioFormatDlg::OnSelectCompression()
 	TRACE(_T("\nnAvgBytesPerSec = %d"),m_pwfx->nAvgBytesPerSec);
 	TRACE(_T("\nnBlockAlign = %d"),m_pwfx->nBlockAlign);
 	TRACE(_T("\ncbSize = %d\n"),m_pwfx->cbSize);
-
+	SuggestLocalCompressFormat();
 	UpdateCompressFormatInterface();
 }
 
@@ -687,7 +688,6 @@ void CAudioFormatDlg::OnSelchangeRecordformat()
 	if (sel < 0) {
 		return;
 	}
-
 	switch (m_vFormat[sel].first)
 	{
 	case WAVE_FORMAT_1M08:
@@ -802,6 +802,7 @@ void CAudioFormatDlg::OnVolume()
 	CString AppDir = Windir;
 	CString SubDir = "";
 	CString testLaunchPath = AppDir + SubDir + exeFileName;
+
 	CString launchPath("");
 	if (launchPath == "") {
 		//Verify sndvol32.exe exists
@@ -810,6 +811,7 @@ void CAudioFormatDlg::OnVolume()
 		if (hdir != HFILE_ERROR) {
 			launchPath=testLaunchPath;
 		}
+		CloseHandle((HANDLE)hdir);
 	}
 
 	if (launchPath == "") {
@@ -821,11 +823,8 @@ void CAudioFormatDlg::OnVolume()
 		HFILE hdir = OpenFile(testLaunchPath, &ofs,OF_EXIST);
 		if (hdir != HFILE_ERROR) {
 			launchPath = testLaunchPath;
-
-			//need CloseHandle ?
-			//BOOL ret = CloseHandle((HANDLE) hdir);
-			//if (!ret) MessageBox("Close handle Fails","Note",MB_OK | MB_ICONEXCLAMATION);
 		}
+		CloseHandle((HANDLE)hdir);
 	}
 
 	if (launchPath == "") {
@@ -838,9 +837,36 @@ void CAudioFormatDlg::OnVolume()
 		if (hdir != HFILE_ERROR) {
 			launchPath = testLaunchPath;
 		}
+		CloseHandle((HANDLE)hdir);
 	}
 
 	if (launchPath != "") { //launch Volume Control
+		//not sure
+		launchPath = launchPath + " /r /rec /record";
+
+		if (WinExec(launchPath,SW_SHOW) != 0) {
+		} else {
+			//MessageBox("Error launching Volume Control!","Note",MB_OK | MB_ICONEXCLAMATION);
+			MessageOut(this->m_hWnd,IDS_STRING_ERRVOLCTRL1 ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		}
+	}
+	// Sound mixer moved in Windows Vista! check new exe name only if windows version matches
+	OSVERSIONINFO osinfo;
+	osinfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+	if (GetVersionEx((LPOSVERSIONINFO) &osinfo))
+	{
+		if (osinfo.dwMajorVersion >= 6) //Vista
+		{
+			testLaunchPath = AppDir + SubDir + "\\SndVol.exe";
+			OFSTRUCT ofs;
+			HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
+			if (hdir != HFILE_ERROR) {
+				launchPath=testLaunchPath;
+			}
+		}
+	}
+
+		if (launchPath != "") { //launch Volume Control
 		//not sure
 		launchPath = launchPath + " /r /rec /record";
 

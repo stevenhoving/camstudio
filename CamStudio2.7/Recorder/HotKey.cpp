@@ -57,7 +57,7 @@ bool sHotKeyOpts::Read(Setting& cProfile)
 	}
 	bool pass = false;
 	cProfile.lookupValue("PassThrough", pass);
-	setPassThrough(pass); // see hook.cpp
+	//setPassThrough(pass); // see hook.cpp
 	return true;
 }
 

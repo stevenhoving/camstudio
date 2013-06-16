@@ -7,6 +7,7 @@
 #include "RecorderView.h"
 #include "addons\Camstudio4XNote.h"
 #include "InternetConn.h"
+#include "tinyxml\tinyxml.h"
 /*
 TODO: Break AVI 2 GB boundary
 ================================
@@ -218,7 +219,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		| CBRS_TOOLTIPS
 		| CBRS_FLYBY
 		| CBRS_SIZE_DYNAMIC);
-
 	//m_wndToolBar.SetButtonText(1,"Record");
 	// TODO: Delete these three lines if you don't want the toolbar to
 	// be dockable
@@ -249,24 +249,21 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	// the CREATESTRUCT cs
 	cs.x = 200;
 	cs.y = 200;
-	cs.cx = 280 - 10;
-	cs.cy = 292 + 19;
-
-	// use logo to set widht and heights
+	
+	// use logo to set width and heights
 	BITMAP bitmap;
 	m_bmLogo.GetBitmap(&bitmap);
-	cs.cx = bitmap.bmWidth - 10; // Otherwise size won't be correct
-	cs.cy = bitmap.bmHeight + 19; // Otherwise size won't be correct
+
+	cs.cx = bitmap.bmWidth - 25; // Otherwise size won't be correct
+	cs.cy = bitmap.bmHeight + 34; // Otherwise size won't be correct
 	// add width of borders
 	cs.cx += (::GetSystemMetrics(SM_CXFRAME) * 2)
-		+ ::GetSystemMetrics(SM_CXMENUSIZE)
-;
+		+ ::GetSystemMetrics(SM_CXMENUSIZE);
 	// add height of Caption + menu + toolbar + status + borders
 	cs.cy += ::GetSystemMetrics(SM_CYCAPTION)
 		+ (::GetSystemMetrics(SM_CYMENU) * 2)	// assume statusbar same hieght
 		+ ::GetSystemMetrics(SM_CXMENUSIZE)
-		+ (::GetSystemMetrics(SM_CYFRAME) * 2)
-;
+		+ (::GetSystemMetrics(SM_CYFRAME) * 2);
 
 	cs.style &= ~FWS_ADDTOTITLE;
 	cs.style &= ~WS_THICKFRAME;
@@ -407,13 +404,13 @@ void CMainFrame::OnViewNormalview()
 	// use logo to set widht and heights
 	BITMAP bitmap;
 	m_bmLogo.GetBitmap(&bitmap);
-	int compactcx = bitmap.bmWidth - 10;
+	int compactcx = bitmap.bmWidth - 25;
 	// add width of borders
 	compactcx += (::GetSystemMetrics(SM_CXFRAME) * 2)
 		+ ::GetSystemMetrics(SM_CXMENUSIZE)
 ;
 
-	int compactcy = bitmap.bmHeight;
+	int compactcy = bitmap.bmHeight + 17;
 	// add height of Caption + menu + status + borders
 	compactcy += ::GetSystemMetrics(SM_CYCAPTION)
 		+ ::GetSystemMetrics(SM_CYMENU)
@@ -477,40 +474,72 @@ void CMainFrame::CheckForNewVersion()
 {
 	try
 	{
+		CString sFile = "version2.xml";
+		CString sError;
 		HRESULT hr;
 		CString strBuffer;
 		CInternetConn myConnection;
-		BOOL isOK = myConnection.ReadFile("http://camstudio.org/checkdaversion/version.xml" , strBuffer);
+		BOOL isOK = myConnection.ReadFile("http://camstudio.org/checkdaversion/version2.xml" , strBuffer);
 		if(!isOK)
+		{
+			sError.Format("%s %s", "Failed to read", sFile);
+			MessageBox(sError);
 			return;
-		CString line;
-		CComPtr<IXMLDOMDocument> iXMLDoc;
-		hr = iXMLDoc.CoCreateInstance(__uuidof(DOMDocument));
-		if(S_OK != hr)
+		}
+		TiXmlDocument doc(sFile);
+		doc.Parse( strBuffer );
+		
+		if ( doc.Error() )
+		{
+			sError.Format("%s. File: \"%s\"", doc.ErrorDesc(), sFile);
+			MessageBox(doc.ErrorDesc());
 			return;
-		// Load the file. 
-		VARIANT_BOOL bSuccess=false;
-		hr = iXMLDoc->loadXML(CComBSTR(strBuffer),&bSuccess);
-		if(S_OK != hr)
+		}
+		CString strPath;
+		strPath.Format("%s\\version2.xml", (LPCSTR)(GetAppDataPath()));
+		doc.SaveFile(strPath);
+		const char* version = strBuffer;
+		strPath.Format("%s\\version2.xml", (LPCSTR)(GetAppDataPath()));
+		bool loadOkay = doc.LoadFile(strPath);
+		if ( !loadOkay )
+		{
+			sError.Format("%s. File: \"%s\"", doc.ErrorDesc(), sFile);
+			MessageBox(sError);
 			return;
-		// Get a pointer to the root
-		CComPtr<IXMLDOMNode> spXMLNode;
-		hr = iXMLDoc->selectSingleNode(CComBSTR("recorder/version"),&spXMLNode);
-		if(S_OK != hr)
-			return;
-		BSTR bstrVal;
-		spXMLNode->get_text(&bstrVal);
-		CString svalue(bstrVal);
-		double remoteversion = atof(svalue);
-		double localversion = atof(CURRENT_VERSION_NUMBER);
-		if(remoteversion > localversion)
+		}
+		TiXmlNode* node = 0;
+		TiXmlElement* todoElement = 0;
+		TiXmlElement* itemElement = 0;
+		node = doc.RootElement();
+		node = node->FirstChild();
+		node = node->FirstChild();
+		std::string input = node->Value();
+		if(LessThanVersion(CURRENT_VERSION_NUMBER, input))
 		{
 				m_bDialog.Create(IDD_DIALOGUPDCS, this);
 				m_bDialog.ShowWindow(SW_SHOW);
 		}
-		iXMLDoc.Release();
 	}
 	catch(...)
 	{
+		MessageBox("Unknown Error occurred while checking for updates");
 	}
+}
+void CMainFrame::Parse(int result[3], const std::string& input)
+{
+	std::istringstream parser(input);
+	parser >> result[0];
+	for(int idx = 1; idx < 3; idx++)
+	{
+		parser.get(); //Skip period
+		parser >> result[idx];
+	}
+}
+
+bool CMainFrame::LessThanVersion(const std::string& a,const std::string& b)
+{
+	int parsedA[3], parsedB[3];
+	Parse(parsedA, a);
+	Parse(parsedB, b);
+	return std::lexicographical_compare(parsedA, parsedA + 3, parsedB, parsedB + 3);
 }

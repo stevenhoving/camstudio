@@ -18,15 +18,15 @@ HWND hotkeyWnd = NULL;
 HINSTANCE hInst = 0;
 
 // Keyboard stuff
-HotKeyMap hkm; // write only during key's update, problem is unlikely
-typedef std::map<DWORD,DWORD> ModMap; // write at the beginning only, thread safe
-ModMap modMap; // VK -> Modifier for WM_HOTKEY
-DWORD mod; // current state
-bool PassThrough = false; // pass hotkey to other application
+//HotKeyMap hkm; // write only during key's update, problem is unlikely
+//typedef std::map<DWORD,DWORD> ModMap; // write at the beginning only, thread safe
+//ModMap modMap; // VK -> Modifier for WM_HOTKEY
+//DWORD mod; // current state
+//bool PassThrough = false; // pass hotkey to other application
 
-__declspec(dllexport) HotKeyMap& getHotKeyMap() { return hkm; }
+//__declspec(dllexport) HotKeyMap& getHotKeyMap() { return hkm; }
 __declspec(dllexport) void setHotKeyWindow(HWND hWnd) { hotkeyWnd = hWnd; }
-__declspec(dllexport) void setPassThrough(bool pass) { PassThrough = pass; }
+//__declspec(dllexport) void setPassThrough(bool pass) { PassThrough = pass; }
 
 // all that stuff is only here in mouse handler since it brakes double clicks when in the main app
 // I guess it is because of stealing thread
@@ -68,37 +68,37 @@ LRESULT CALLBACK LowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 	}
 	return ::CallNextHookEx(mouseHookLL, nCode, wParam, lParam);
 }
-
-LRESULT CALLBACK KeyboardProc(
-  __in  int code,
-  __in  WPARAM wParam,
-  __in  LPARAM lParam
-)
-{
-	if (code >= 0) {
-		if (hotkeyWnd) {
-			LPKBDLLHOOKSTRUCT khs = (LPKBDLLHOOKSTRUCT)lParam;
-			DWORD down = (wParam == WM_KEYDOWN) || (wParam == WM_SYSKEYDOWN);
-			ModMap::iterator iter = modMap.find(khs->vkCode);
-			if (iter != modMap.end()) {
-				if (down)
-					mod |= iter->second; // can't use xor :(
-				else
-					mod &= ~ iter->second;
-			}
-			if (down) { // some key is pressed ... no "else" to make like 'ctrl' itself as a hotkey
-				HotKeyMap::iterator it = hkm.find(HotKey(khs->vkCode, mod));
-				if(it != hkm.end()) {
-					DWORD id = it->second;
-					::SendNotifyMessage(hotkeyWnd, WM_HOTKEY, id, mod);
-					if (!PassThrough)
-						return 1;
-				}
-			}
-		}
-	}
-	return ::CallNextHookEx(keyHook, code, wParam, lParam);
-}
+// 2.7
+//LRESULT CALLBACK KeyboardProc(
+//  __in  int code,
+//  __in  WPARAM wParam,
+//  __in  LPARAM lParam
+//)
+//{
+//	if (code >= 0) {
+//		if (hotkeyWnd) {
+//			LPKBDLLHOOKSTRUCT khs = (LPKBDLLHOOKSTRUCT)lParam;
+//			DWORD down = (wParam == WM_KEYDOWN) || (wParam == WM_SYSKEYDOWN);
+//			ModMap::iterator iter = modMap.find(khs->vkCode);
+//			if (iter != modMap.end()) {
+//				if (down)
+//					mod |= iter->second; // can't use xor :(
+//				else
+//					mod &= ~ iter->second;
+//			}
+//			if (down) { // some key is pressed ... no "else" to make like 'ctrl' itself as a hotkey
+//				HotKeyMap::iterator it = hkm.find(HotKey(khs->vkCode, mod));
+//				if(it != hkm.end()) {
+//					DWORD id = it->second;
+//					::SendNotifyMessage(hotkeyWnd, WM_HOTKEY, id, mod);
+//					if (!PassThrough)
+//						return 1;
+//				}
+//			}
+//		}
+//	}
+//	return ::CallNextHookEx(keyHook, code, wParam, lParam);
+//}
 
 
 //}	// namespace annonymous
@@ -113,17 +113,18 @@ BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD  Reason, LPVOID /*Reserved*/)
 	{
 	case DLL_PROCESS_ATTACH:
 		hInst = hInstance;
-		modMap[VK_SHIFT] = MOD_SHIFT;
-		modMap[VK_LSHIFT] = MOD_SHIFT;
-		modMap[VK_RSHIFT] = MOD_SHIFT;
-		modMap[VK_MENU] = MOD_ALT;
-		modMap[VK_LMENU] = MOD_ALT;
-		modMap[VK_RMENU] = MOD_ALT;
-		modMap[VK_CONTROL] = MOD_CONTROL;
-		modMap[VK_LCONTROL] = MOD_CONTROL; // shall we distinguish left & right?
-		modMap[VK_RCONTROL] = MOD_CONTROL;
-		// We are always interested in keyboard shortcuts
-		keyHook = ::SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, hInst, 0);
+		// 2.7
+		//modMap[VK_SHIFT] = MOD_SHIFT;
+		//modMap[VK_LSHIFT] = MOD_SHIFT;
+		//modMap[VK_RSHIFT] = MOD_SHIFT;
+		//modMap[VK_MENU] = MOD_ALT;
+		//modMap[VK_LMENU] = MOD_ALT;
+		//modMap[VK_RMENU] = MOD_ALT;
+		//modMap[VK_CONTROL] = MOD_CONTROL;
+		//modMap[VK_LCONTROL] = MOD_CONTROL; // shall we distinguish left & right?
+		//modMap[VK_RCONTROL] = MOD_CONTROL;
+		//// We are always interested in keyboard shortcuts
+		//keyHook = ::SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, hInst, 0);
 		break;
 	case DLL_PROCESS_DETACH:
 		UnhookWindowsHookEx(keyHook);
