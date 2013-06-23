@@ -394,6 +394,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <ClInclude Include="VideoWnd.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\camstudio-clone-master\images\info-icon.png" />
     <None Include="..\..\..\..\CamStudioPanel.bmp" />
     <None Include="..\..\..\images\info-icon.bmp" />
     <None Include="..\..\..\images\info-icon.png" />

@@ -266,7 +266,6 @@ BEGIN
         BEGIN
             MENUITEM "English",                     ID_OPTIONS_LANGUAGE_ENGLISH
             MENUITEM "German",                      ID_OPTIONS_LANGUAGE_GERMAN
-            MENUITEM "Filipino",                    ID_OPTIONS_LANGUAGE_FILIPINO
         END
     END
     POPUP "&Tools"
