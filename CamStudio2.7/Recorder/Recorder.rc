@@ -2323,7 +2323,7 @@ IDC_CURSORDRAG          CURSOR                  "res\\cur00001.cur"
 // PNG
 //
 
-IDB_PNG1                PNG                     "C:\\Users\\Bertoso\\Desktop\\camstudio-clone-master\\images\\info-icon.png"
+IDB_PNG1                PNG                     "res\\info-icon.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
