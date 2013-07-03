@@ -71,7 +71,6 @@
 #define IDD_AUTOPANSPEED                172
 #define IDD_FIXEDREGION                 173
 #define IDI_ICONCROSSHAIR               174
-#define IDB_BITMAP3                     175
 #define IDD_AUDIODIALOG                 176
 #define IDD_KEYSHORTCUTS                177
 #define IDD_ANNOTATION                  179
@@ -111,6 +110,8 @@
 #define IDB_BITMAP9                     213
 #define IDB_BITMAP10                    214
 #define IDB_PNG1                        217
+#define IDB_BITMAP11                    220
+#define IDB_BITMAP3                     220
 #define IDC_RADIO1                      1000
 #define IDC_COMPRESSORS                 1000
 #define IDC_INTERLEAVESECONDS           1001
@@ -642,7 +643,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        220
+#define _APS_NEXT_RESOURCE_VALUE        221
 #define _APS_NEXT_COMMAND_VALUE         32950
 #define _APS_NEXT_CONTROL_VALUE         1081
 #define _APS_NEXT_SYMED_VALUE           102
