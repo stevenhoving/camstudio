@@ -47,13 +47,13 @@ IDB_TOOLBAR256          BITMAP                  "res\\ToolbarPalette256.bmp"
 IDB_TOOLBARMASK         BITMAP                  "res\\ToolbarMask.bmp"
 IDB_SCREENANNOTATIONS_SMALL BITMAP                  "res\\bmp00001.bmp"
 IDR_MAINFRAME1          BITMAP                  "res\\mainfram.bmp"
-IDB_BITMAP3             BITMAP                  "Recorder_banner.bmp"
 IDB_BITMAP4             BITMAP                  "Recorder_logo.bmp"
 IDB_BITMAP6             BITMAP                  "res\\bitmap6.bmp"
 IDB_BITMAP7             BITMAP                  "res\\bitmap7.bmp"
 IDB_BITMAP8             BITMAP                  "res\\bitmap8.bmp"
 IDB_BITMAP9             BITMAP                  "res\\bitmap9.bmp"
 IDB_BITMAP10            BITMAP                  "res\\info-icon.bmp"
+IDB_BITMAP3             BITMAP                  "res\\CamStudioPanel2.bmp"
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

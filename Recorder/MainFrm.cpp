@@ -254,8 +254,8 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	BITMAP bitmap;
 	m_bmLogo.GetBitmap(&bitmap);
 
-	cs.cx = bitmap.bmWidth - 25; // Otherwise size won't be correct
-	cs.cy = bitmap.bmHeight + 34; // Otherwise size won't be correct
+	cs.cx = bitmap.bmWidth - 26; // Otherwise size won't be correct
+	cs.cy = bitmap.bmHeight + 10; // Otherwise size won't be correct
 	// add width of borders
 	cs.cx += (::GetSystemMetrics(SM_CXFRAME) * 2)
 		+ ::GetSystemMetrics(SM_CXMENUSIZE);
@@ -268,7 +268,6 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	cs.style &= ~FWS_ADDTOTITLE;
 	cs.style &= ~WS_THICKFRAME;
 	cs.style &= ~WS_MAXIMIZEBOX;
-
 	cs.lpszClass = _T("CamStudio");
 
 	return CFrameWnd::PreCreateWindow(cs);
