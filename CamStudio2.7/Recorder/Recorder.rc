@@ -155,7 +155,7 @@ BEGIN
     BUTTON      ID_VIEWTYPE
     BUTTON      ID_VIEW_SCREENANNOTATIONS
     BUTTON      ID_AVISWF
-    BUTTON      ID_BUTTON32936
+    BUTTON      ID_MP4
     BUTTON      ID_XNOTE_RECORDDURATIONLIMITMODE
 END
 
@@ -2320,10 +2320,10 @@ IDC_CURSORDRAG          CURSOR                  "res\\cur00001.cur"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// PNG
+// Converter
 //
 
-IDB_PNG1                PNG                     "res\\info-icon.bmp"
+IDR_CONVERTER1          Converter               "res\\ffmpeg.exe"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2389,6 +2389,7 @@ BEGIN
     ID_SCREENS_ALLSCREENS   "Capture all screens"
     ID_SCREENS_CHOOSESCREEN "Choose which screen to capture"
     ID_OPTIONS_VIDEOOPTIONS "Set video options"
+    ID_BUTTON32936          "Record MP4"
 END
 
 STRINGTABLE
@@ -2698,6 +2699,11 @@ BEGIN
     ID_TOOLS_PLAYER         "Launch CamStudio Movie Player"
     ID_TOOLS_PLAYER2        "Launch CamStudio Movie Player 2.0"
     ID_REGION_ALLSCREENS    "Capture all monitors"
+END
+
+STRINGTABLE
+BEGIN
+    ID_MP4                  "Record to MP4"
 END
 
 #endif    // English (United States) resources
