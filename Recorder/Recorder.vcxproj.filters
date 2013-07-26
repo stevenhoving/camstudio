@@ -365,16 +365,10 @@
     <None Include="..\GlobalResources\Recorder_banner.bmp">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Recorder_logo.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\GlobalResources\Recorder_logo.bmp">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="res\Toolbar.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\Toolbar256.bmp">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="res\ToolbarMask.bmp">
@@ -383,9 +377,6 @@
     <None Include="res\ToolbarPalette256.bmp">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
-    <None Include="ClassDiagram3.cd" />
     <None Include="res\bitmap6.bmp">
       <Filter>Resource Files</Filter>
     </None>
@@ -398,22 +389,16 @@
     <None Include="res\bitmap9.bmp">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\..\..\CamStudioPanel.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="resource.hm">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="..\..\..\images\info-icon.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Recorder_banner1.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\bitmap11.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="res\info-icon.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\CamStudioPanel2.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Recorder_logo.bmp">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
