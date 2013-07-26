@@ -638,6 +638,7 @@
 #define ID_VALUE_XNOTEDISPLAYCAMERADELAYDIRECTION 61583
 #define IDS_STRING_AUTOSPAN_DISABLED    61583
 #define IDS_STRING_AUTOPAN_DISABLED     61583
+#define IDS_RECMP4                      61584
 
 // Next default values for new objects
 // 

@@ -1330,14 +1330,24 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		CamAVIFile aviFile(cVideoOpts, cAudioFormat);
 		aviFile.FadeOut(strTargetVideoFile, strAVIOut);
 	}
-	// TEST
 
-	//ver 2.26
-	if (cProgramOpts.m_iRecordingMode == ModeAVI) {
+	switch(cProgramOpts.m_iRecordingMode)
+	{
+	case ModeAVI:
 		RunViewer(strTargetVideoFile);
-	} else {
+		break;
+	case ModeFlash:
 		RunProducer(strTargetVideoFile);
+		break;
+	case ModeMP4:
+		ConvertToMP4(strTargetVideoFile);
+		break;
 	}
+	//if (cProgramOpts.m_iRecordingMode == ModeAVI) {
+	//	RunViewer(strTargetVideoFile);
+	//} else {
+	//	RunProducer(strTargetVideoFile);
+	//}
 
 	return 0;
 }
@@ -3305,6 +3315,8 @@ void CRecorderView::OnAviswf()
 
 void CRecorderView::OnMP4()
 {
+	cProgramOpts.m_iRecordingMode = ModeMP4;
+	Invalidate();
 }
 
 BOOL CRecorderView::OnEraseBkgnd(CDC* pDC)
@@ -3825,7 +3837,19 @@ void CRecorderView::DisplayRecordingMsg(CDC & srcDC)
 	COLORREF oldBkColor = srcDC.SetBkColor(RGB(0, 0, 0));
 
 	CString msgRecMode;
-	msgRecMode.LoadString((cProgramOpts.m_iRecordingMode == ModeAVI) ? IDS_RECAVI : IDS_RECSWF);
+	switch(cProgramOpts.m_iRecordingMode)
+	{
+	case ModeAVI:
+		msgRecMode.LoadString(IDS_RECAVI);
+		break;
+	case ModeFlash:
+		msgRecMode.LoadString(IDS_RECSWF);
+		break;
+	case ModeMP4:
+		msgRecMode.LoadString(IDS_RECMP4);
+		break;
+	}
+	//msgRecMode.LoadString((cProgramOpts.m_iRecordingMode == ModeAVI) ? IDS_RECAVI : IDS_RECSWF);
 	CSize sizeExtent = srcDC.GetTextExtent(msgRecMode);
 
 	CRect rectClient;
@@ -4799,6 +4823,34 @@ bool CRecorderView::RunProducer(const CString& strNewFile)
 	return true;
 }
 
+void CRecorderView::ConvertToMP4(const CString& strNewFile)
+{
+	CString AppDir = GetProgPath();
+	CString exefileName;
+	
+	STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+
+    ZeroMemory( &si, sizeof(si) );
+    si.cb = sizeof(si);
+    ZeroMemory( &pi, sizeof(pi) );
+	exefileName.Format("cmd.exe /c D:\\CS\\mercurial\\CamStudio2.7\\Release\\ffmpeg.exe -i %s -c:v libx246 -preset slow -crf 22 -c:a libaac -b:a 128k C:\\Users\\ah185072\\Desktop\\vid\\output.mp4", strNewFile);
+	//CString exefileName("\\producer.exe -b ");
+	CString quote = "\"";
+	//CString launchPath = AppDir + exefileName + strNewFile;
+	CString launchPath = quote + AppDir + exefileName;// + quote + strNewFile + quote;
+	MessageBox(exefileName, "", 0);
+	TRACE("CRecorderView::OnUserGeneric: %s\n", (LPCTSTR)launchPath);
+	int ret = CreateProcess(NULL, (LPSTR)&exefileName, NULL,NULL,FALSE, 0, NULL, NULL, &si, &pi);
+	//if (WinExec(launchPath, SW_HIDE) < HINSTANCE_ERROR) {
+		//if (WinExec(launchPath, SW_MINIMIZE) < HINSTANCE_ERROR) {
+		//MessageBox("Error launching SWF Producer!","Note",MB_OK | MB_ICONEXCLAMATION);
+		//MessageOut(m_hWnd,IDS_STRING_ERRPRODUCER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+	//}
+	CString s;
+	s.Format("%d", GetLastError());
+	MessageBox(s, "", 0);
+}
 
 bool CRecorderView::GetRecordState()
 {
