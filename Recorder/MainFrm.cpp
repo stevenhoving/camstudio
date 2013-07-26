@@ -481,8 +481,6 @@ void CMainFrame::CheckForNewVersion()
 		BOOL isOK = myConnection.ReadFile("http://camstudio.org/checkdaversion/version2.xml" , strBuffer);
 		if(!isOK)
 		{
-			sError.Format("%s %s", "Failed to read", sFile);
-			MessageBox(sError);
 			return;
 		}
 		TiXmlDocument doc(sFile);
@@ -490,8 +488,6 @@ void CMainFrame::CheckForNewVersion()
 		
 		if ( doc.Error() )
 		{
-			sError.Format("%s. File: \"%s\"", doc.ErrorDesc(), sFile);
-			MessageBox(doc.ErrorDesc());
 			return;
 		}
 		CString strPath;
@@ -502,8 +498,6 @@ void CMainFrame::CheckForNewVersion()
 		bool loadOkay = doc.LoadFile(strPath);
 		if ( !loadOkay )
 		{
-			sError.Format("%s. File: \"%s\"", doc.ErrorDesc(), sFile);
-			MessageBox(sError);
 			return;
 		}
 		TiXmlNode* node = 0;
@@ -521,7 +515,7 @@ void CMainFrame::CheckForNewVersion()
 	}
 	catch(...)
 	{
-		MessageBox("Unknown Error occurred while checking for updates");
+		//MessageBox("Unknown Error occurred while checking for updates");
 	}
 }
 void CMainFrame::Parse(int result[3], const std::string& input)
