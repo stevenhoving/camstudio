@@ -863,6 +863,7 @@ enum eVideoFormat
 {
 	ModeAVI
 	, ModeFlash
+	, ModeMP4
 };
 enum eAVIPlay
 {

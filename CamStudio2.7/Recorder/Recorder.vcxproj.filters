@@ -401,6 +401,7 @@
     <None Include="Recorder_logo.bmp">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="res\ffmpeg.exe" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InternetConn.cpp">
