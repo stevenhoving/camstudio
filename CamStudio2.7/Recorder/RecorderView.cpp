@@ -553,6 +553,7 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_SWF_DISPLAYPARAMETERS, OnUpdateOptionsSwfDisplayparameters)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_SWF_DELETEAVIFILE, OnUpdateOptionsSwfDeleteavifile)
 	ON_COMMAND(ID_AVISWF, OnAviswf)
+	ON_COMMAND(ID_MP4, OnMP4)
 	ON_COMMAND(ID_OPTIONS_NAMING_AUTODATE, OnOptionsNamingAutodate)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_NAMING_AUTODATE, OnUpdateOptionsNamingAutodate)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_LANGUAGE_ENGLISH, OnUpdateOptionsLanguageEnglish)
@@ -3302,6 +3303,10 @@ void CRecorderView::OnAviswf()
 	Invalidate();
 }
 
+void CRecorderView::OnMP4()
+{
+}
+
 BOOL CRecorderView::OnEraseBkgnd(CDC* pDC)
 {
 	CMainFrame * pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
@@ -3854,21 +3859,22 @@ void CRecorderView::DisplayRecordingMsg(CDC & srcDC)
 			}
 			msgXnoteMode.Replace("<X>", _T(cXNoteOpts.m_bXnoteRemoteControlMode ? "On" : "Off" ) );
 			msgXnoteMode.Replace("<S>", _T(cXNoteOpts.m_bAnnotation ? "On" : "Off" ) );
+			CSize sizeXnoteExtent = srcDC.GetTextExtent(msgXnoteMode);
+
+			CRect rectClientXnoteMsg;
+			GetClientRect(&rectClientXnoteMsg);
+
+			CRect rectXnoteMode(xoffset, yoffset, xoffset + sizeXnoteExtent.cx, yoffset + sizeXnoteExtent.cy);
+			srcDC.Rectangle(&rectXnoteMode);
+			srcDC.Rectangle(rectXnoteMode.left - 3, rectXnoteMode.top - 3, rectXnoteMode.right + 3, rectXnoteMode.bottom + 3);
+			srcDC.TextOut(rectXnoteMode.left, rectXnoteMode.top,  msgXnoteMode);
 
 #ifndef CAMSTUDIO4XNOTE
 		} else {
 			msgXnoteMode.SetString("");
 		}
 #endif
-		CSize sizeXnoteExtent = srcDC.GetTextExtent(msgXnoteMode);
 
-		CRect rectClientXnoteMsg;
-		GetClientRect(&rectClientXnoteMsg);
-
-		CRect rectXnoteMode(xoffset, yoffset, xoffset + sizeXnoteExtent.cx, yoffset + sizeXnoteExtent.cy);
-		srcDC.Rectangle(&rectXnoteMode);
-		srcDC.Rectangle(rectXnoteMode.left - 3, rectXnoteMode.top - 3, rectXnoteMode.right + 3, rectXnoteMode.bottom + 3);
-		srcDC.TextOut(rectXnoteMode.left, rectXnoteMode.top,  msgXnoteMode);
 //	}
 
 	srcDC.SelectObject(pOldPen);

@@ -394,12 +394,9 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <ClInclude Include="VideoWnd.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\CamStudioPanel.bmp" />
-    <None Include="..\..\..\images\info-icon.bmp" />
-    <None Include="Recorder_banner1.bmp" />
+    <None Include="Recorder_logo.bmp" />
     <None Include="resource.hm" />
     <None Include="res\bitmap1.bmp" />
-    <None Include="res\bitmap11.bmp" />
     <None Include="res\bitmap2.bmp" />
     <None Include="res\bitmap5.bmp" />
     <None Include="res\bitmap6.bmp" />
@@ -407,6 +404,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <None Include="res\bitmap8.bmp" />
     <None Include="res\bitmap9.bmp" />
     <None Include="res\bmp00001.bmp" />
+    <None Include="res\CamStudioPanel2.bmp" />
     <None Include="res\cur00001.cur" />
     <None Include="res\cur00002.cur" />
     <None Include="res\cursor4.cur" />
@@ -456,15 +454,10 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <None Include="res\Recorder.rc2" />
     <None Include="Recorder_banner.bmp" />
     <None Include="..\GlobalResources\Recorder_banner.bmp" />
-    <None Include="Recorder_logo.bmp" />
     <None Include="..\GlobalResources\Recorder_logo.bmp" />
     <None Include="res\Toolbar.bmp" />
-    <None Include="res\Toolbar256.bmp" />
     <None Include="res\ToolbarMask.bmp" />
     <None Include="res\ToolbarPalette256.bmp" />
-    <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
-    <None Include="ClassDiagram3.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="addons\AnnotationEffectsOptions.cpp" />

@@ -166,6 +166,7 @@ protected:
 	afx_msg void OnUpdateOptionsSwfDisplayparameters(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateOptionsSwfDeleteavifile(CCmdUI* pCmdUI);
 	afx_msg void OnAviswf();
+	afx_msg void OnMP4();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnOptionsNamingAutodate();
 	afx_msg void OnUpdateOptionsNamingAutodate(CCmdUI* pCmdUI);
