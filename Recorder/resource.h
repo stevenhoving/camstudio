@@ -109,9 +109,9 @@
 #define IDD_DIALOGUPDCS                 208
 #define IDB_BITMAP9                     213
 #define IDB_BITMAP10                    214
-#define IDB_PNG1                        217
 #define IDB_BITMAP11                    220
 #define IDB_BITMAP3                     220
+#define IDR_CONVERTER1                  224
 #define IDC_RADIO1                      1000
 #define IDC_COMPRESSORS                 1000
 #define IDC_INTERLEAVESECONDS           1001
@@ -496,6 +496,7 @@
 #define ID_LANGUAGE_FILIPINO            32947
 #define ID_OPTIONSLANGUAGE_FILIPINO     32948
 #define ID_OPTIONS_LANGUAGE_FILIPINO    32949
+#define ID_MP4                          32950
 #define IDS_STRING_NOTE                 61446
 #define IDS_STRING_INTERLEAVE1          61447
 #define IDS_STRING_NOINPUT1             61448
@@ -643,8 +644,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        221
-#define _APS_NEXT_COMMAND_VALUE         32950
+#define _APS_NEXT_RESOURCE_VALUE        225
+#define _APS_NEXT_COMMAND_VALUE         32951
 #define _APS_NEXT_CONTROL_VALUE         1081
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
