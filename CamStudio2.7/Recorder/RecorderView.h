@@ -249,6 +249,7 @@ private:
 	bool RunViewer(const CString& strNewFile);
 	bool RunProducer(const CString& strNewFile);
 	void DisplayAutopanInfo(CRect rc);
+	void ConvertToMP4(const CString& strNewFile);
 	// dialog controls
 	// TEST a la AudioFormat.cpp
 	// CButton m_ctrlButtonOnXnoteRecordDurationLimitMode;

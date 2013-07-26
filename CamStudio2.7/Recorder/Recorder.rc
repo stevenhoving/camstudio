@@ -2320,10 +2320,10 @@ IDC_CURSORDRAG          CURSOR                  "res\\cur00001.cur"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Converter
+// CONVERTER
 //
 
-IDR_CONVERTER1          Converter               "res\\ffmpeg.exe"
+IDR_CONVERTER1          CONVERTER               "res\\ffmpeg.exe"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2704,6 +2704,11 @@ END
 STRINGTABLE
 BEGIN
     ID_MP4                  "Record to MP4"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_RECMP4              "Record to MP4"
 END
 
 #endif    // English (United States) resources
