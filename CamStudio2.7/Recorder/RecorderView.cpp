@@ -1061,14 +1061,15 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	CString strTargetAudioFile = "";			// Audio filename initial without path but with extension
 	CString strTargetXnoteLogFile = "";			// Xnote log filename initial without path but with extension
 	CString strTargetVideoExtension = ".avi";
-
+	CString strTargetMP4VideoFile = "";
 	//ver 1.2
 	::SetForegroundWindow( AfxGetMainWnd()->m_hWnd);
 	AfxGetMainWnd()->ShowWindow(SW_RESTORE);
 
 	//ver 1.2
 	// FIXME: this is not quite right. Shall be bCancelled or something
-	if (interruptkey == cHotKeyOpts.m_RecordCancel.m_vKey) {
+	if (interruptkey == cHotKeyOpts.m_RecordCancel.m_vKey) 
+	{
 		//if (interruptkey==VK_ESCAPE) {
 		//Perform processing for cancel operation
 		DeleteFile(strTempVideoAviFilePath);
@@ -1083,14 +1084,30 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	// Prepare Dialog (but do not use it here)
 	////////////////////////////////////
 	// To ask user for the filename, Normal thread exit
-	CString strFilter(_T("AVI Movie Files (*.avi)|*.avi||"));
-	CString strTitle(_T("Save AVI File"));
-	CString strExtFilter(_T("*.avi"));
-	if (cProgramOpts.m_iRecordingMode == ModeFlash) {
+
+	CString strFilter;
+	CString strTitle;
+	CString strExtFilter;
+
+	switch(cProgramOpts.m_iRecordingMode)
+	{
+	case ModeAVI:
+		strExtFilter = _T("AVI Movie Files (*.avi)|*.avi||");
+		strTitle = _T("Save AVI File");
+		strExtFilter = _T("*.avi");
+		break;
+	case ModeFlash:
 		strFilter = _T("FLASH Movie Files (*.swf)|*.swf||");
 		strTitle = _T("Save SWF File");
 		strExtFilter = _T("*.swf");
+		break;
+	case ModeMP4:
+		strFilter = _T("MPEG Movie Files (*.mp4)|*.mp4||");
+		strTitle = _T("Save MPEG File");
+		strExtFilter = _T("*.mp4");
+		break;
 	}
+
 	if(DoesDefaultOutDirExist(cProgramOpts.m_strDefaultOutDir))
 	{
 			strTargetDir = cProgramOpts.m_strDefaultOutDir;
@@ -1116,24 +1133,16 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	//TRACE("## CRecorderView::OnUserGeneric , GetProgPath= [%s]\n", GetProgPath() );
 	//TRACE("## CRecorderView::OnUserGeneric , savedir = GetProgPath [%s]\n", (GetProgPath()==savedir) ? "EQUAL" : "DIFFERENT"  );
 
-	if ((cProgramOpts.m_iRecordingMode == ModeAVI) && cProgramOpts.m_bAutoNaming) {
+	if (/*(cProgramOpts.m_iRecordingMode == ModeAVI || cProgramOpts.m_iRecordingMode == ModeMP4) &&*/ cProgramOpts.m_bAutoNaming)
+	{
 
-		// Janhgm. Target dir where we want to get our final files is not always the location where we stored our Camstudio application..!
-		// strTargetDir = GetProgPath();
-		
-		/*if(DoesDefaultOutDirExist(cProgramOpts.m_strDefaultOutDir))
-		{
-			strTargetDir = cProgramOpts.m_strDefaultOutDir;
-		}
-		else
-		{
-			strTargetDir = GetTempFolder(cProgramOpts.m_iOutputPathAccess, cProgramOpts.m_strSpecifiedDir, true);
-			
-		}*/
 		// Use local copy of the timestamp string created when recording was started for autonaming.
-		strTargetBareFileName.SetString( cVideoOpts.m_cStartRecordingString.GetString() );		// "ccyymmdd-hhmm-ss" , Timestamp still used for default temp.avi output "temp-ccyymmdd-hhmm-ss.avi"
+		// "ccyymmdd-hhmm-ss" , Timestamp still used for default temp.avi output "temp-ccyymmdd-hhmm-ss.avi"
+		strTargetBareFileName.SetString( cVideoOpts.m_cStartRecordingString.GetString());
 		strTargetVideoExtension = ".avi";
-	} else if (fdlg.DoModal() == IDOK) {
+	} 
+	else if (fdlg.DoModal() == IDOK) 
+	{	
 		strTmp = fdlg.GetPathName();
 		strTargetDir = strTmp.Left(strTmp.ReverseFind('\\'));
 		// remove path info, we now have the udf defined filename
@@ -1141,26 +1150,43 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 
 		// Split filename in base and extension
 		int iPos = strTmp.ReverseFind('.');
-		if ( iPos > 0 ) {
+		if ( iPos > 0 ) 
+		{
 			strTargetBareFileName = strTmp.Left(iPos);
 			strTargetVideoExtension = strTmp.Mid(iPos);	// Extension with dot included
-		} else {
+		} 
+		else 
+		{
 			strTargetBareFileName = strTmp;
 			// append always .avi if no extension is given.
 			strTargetVideoExtension = ".avi";
 		}
-	} else {
+	} 
+	else 
+	{
 		DeleteFile(strTempVideoAviFilePath);
 		DeleteFile(strTempXnoteLogFilePath);
-		if (!cAudioFormat.isInput(NONE)) {
+		if (!cAudioFormat.isInput(NONE)) 
+		{
 			DeleteFile(strTempAudioWavFilePath);
 		}
 		return 0;
 	}
-	// append always .avi as filetype when record to flash is applicable because SWF convertor expects as input an AVI file
-	if (cProgramOpts.m_iRecordingMode == ModeFlash) {
+	// append always .avi as filetype when record to flash or mp4 is applicable because SWF and MP4 convertor expects as input an AVI file
+	switch (cProgramOpts.m_iRecordingMode)
+	{
+	case ModeFlash:
 		strTargetVideoExtension = ".avi";
+		break;
+	case ModeMP4:
+		strTargetVideoExtension = ".avi";
+		strTargetMP4VideoFile.Format("%s\\%s.mp4", strTargetDir, strTargetBareFileName);
+		break;
 	}
+	//if (cProgramOpts.m_iRecordingMode == ModeFlash || cProgramOpts.m_iRecordingMode == ModeMP4) 
+	//{
+	//	strTargetVideoExtension = ".avi";
+	//}
 
 	// Create all the applicable targetfile names
 	strTargetVideoFile    = strTargetDir + "\\" + strTargetBareFileName + strTargetVideoExtension;		// strTargetVideoFile is the same string as strNewFile in previuosly approach
@@ -1182,10 +1208,12 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	savedir = strTargetDir;
 
 	//Ver 1.1
-	if (cAudioFormat.m_iRecordAudio) {
+	if (cAudioFormat.m_iRecordAudio) 
+	{
 		// Check if video(!) file exists and if so, does it allow overwite
 		HANDLE hfile = CreateFile( strTargetVideoFile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-		if (hfile == INVALID_HANDLE_VALUE) {
+		if (hfile == INVALID_HANDLE_VALUE)
+		{
 			//::MessageBox(NULL,"Unable to create new file. The file may be opened by another application. Please use another filename.","Note",MB_OK | MB_ICONEXCLAMATION);
 			MessageOut(m_hWnd,IDS_STRING_NOCREATEWFILE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			::PostMessage(hWndGlobal,WM_USER_GENERIC,0,0);
@@ -1195,8 +1223,10 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		DeleteFile(strTargetVideoFile);
 
 		//ver 1.8
-		if (vanWndCreated) {
-			if (m_vanWnd.IsWindowVisible()) {
+		if (vanWndCreated)
+		{
+			if (m_vanWnd.IsWindowVisible()) 
+			{
 				//Otherwise, will slow down the merging significantly
 				m_vanWnd.ShowWindow(SW_HIDE);
 			}
@@ -1204,7 +1234,8 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 
 		
 		// If video only (Do not record audio) there is no reason to merge video with audio and video.avi file could be used without further processing.
-		if ( cAudioFormat.m_iRecordAudio == NONE ) {
+		if ( cAudioFormat.m_iRecordAudio == NONE )
+		{
 			TRACE("## CRecorderView::OnUserGeneric  NO Audio defined, no merge required. .\n"); 
 		}
 
@@ -1213,17 +1244,19 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		// do we ever want to merge AV?
 		bool wantMerge = true;
 		cfg->lookupValue("Program.MergeAV", wantMerge);
-		if (wantMerge) {
+		if (wantMerge) 
+		{
 
-		//Mergefile video with audio
-		//if (iRecordAudio==2) {
-		//if ((iRecordAudio==2) || (bUseMCI)) {
-		//ver 2.26 ...overwrite audio settings for Flash Moe recording ... no compression used...
-		if ((cAudioFormat.isInput(SPEAKERS)) || (cAudioFormat.m_bUseMCI) || (cProgramOpts.m_iRecordingMode == ModeFlash)) {
-			result = MergeVideoAudio(strTempVideoAviFilePath, strTempAudioWavFilePath, strTargetVideoFile, FALSE, cAudioFormat);
-		} else if (cAudioFormat.isInput(MICROPHONE)) {
-			result = MergeVideoAudio(strTempVideoAviFilePath, strTempAudioWavFilePath, strTargetVideoFile, cAudioFormat.m_bCompression, cAudioFormat);
-		}
+			//Mergefile video with audio
+			//ver 2.26 ...overwrite audio settings for Flash Mode recording ... no compression used...
+			if ((cAudioFormat.isInput(SPEAKERS)) || (cAudioFormat.m_bUseMCI) || (cProgramOpts.m_iRecordingMode == ModeFlash)) 
+			{
+				result = MergeVideoAudio(strTempVideoAviFilePath, strTempAudioWavFilePath, strTargetVideoFile, FALSE, cAudioFormat);
+			} 
+			else if (cAudioFormat.isInput(MICROPHONE))
+			{
+				result = MergeVideoAudio(strTempVideoAviFilePath, strTempAudioWavFilePath, strTargetVideoFile, cAudioFormat.m_bCompression, cAudioFormat);
+			}
 
 		}
 
@@ -1242,14 +1275,16 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 			// video file is ok, but not audio file
 			// so Move the video file as avi and ignore the audio  (Move = More or Copy+Delete)
 			
-			if (!MoveFile( strTempVideoAviFilePath, strTargetVideoFile)) {
+			if (!MoveFile( strTempVideoAviFilePath, strTargetVideoFile))
+			{
 				//Although there is error copying, the temp file still remains in the temp directory and is not deleted, in case user wants a manual recover
 				//MessageBox("File Creation Error. Unable to rename/copy file.","Note",MB_OK | MB_ICONEXCLAMATION);
 				MessageOut(m_hWnd,IDS_STRING_MOVEFILEFAILURE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 				return 0;
 			}
 
-			if (!MoveFile( strTempXnoteLogFilePath, strTargetXnoteLogFile) ) {
+			if (!MoveFile( strTempXnoteLogFilePath, strTargetXnoteLogFile) ) 
+			{
 				TRACE("## CRecorderView::OnUserGeneric MoveFile strTempXnoteLogFilePath failed\n");
 				// No reason to quit because we got the recording and we can continue and beacuse XnoteLog file use the same name structure as Video file the risk that logfile will fail is very small.
 			}
@@ -1261,19 +1296,22 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 			break;
 		case 5:		// recover both files, but as separate files
 			{
-				if (!MoveFile( strTempVideoAviFilePath, strTargetAudioFile)) {
+				if (!MoveFile( strTempVideoAviFilePath, strTargetAudioFile)) 
+				{
 					//MessageBox("File Creation Error. Unable to rename/copy video file.","Note",MB_OK | MB_ICONEXCLAMATION);
 					MessageOut(m_hWnd,IDS_STRING_MOVEFILEFAILURE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 					return 0;
 				}
 	
-				if (!MoveFile( strTempXnoteLogFilePath, strTargetXnoteLogFile) ) {
+				if (!MoveFile( strTempXnoteLogFilePath, strTargetXnoteLogFile) ) 
+				{
 					TRACE("## CRecorderView::OnUserGeneric MoveFile strTempXnoteLogFilePath failed\n");
 					// MessageOut(m_hWnd,IDS_STRING_MOVEFILEFAILURE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 					// No reason to quit because we got the recording and we can continue and beacuse XnoteLog file use the same name structure as Video file the risk that logfile will fail is very small.
 				}
 
-				if (!MoveFile(strTempAudioWavFilePath,strTargetAudioFile)) {
+				if (!MoveFile(strTempAudioWavFilePath,strTargetAudioFile)) 
+				{
 					//MessageBox("File Creation Error. Unable to rename/copy audio file.","Note",MB_OK | MB_ICONEXCLAMATION);
 					MessageOut(m_hWnd,IDS_STRING_FILECREATION3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 					return 0;
@@ -1294,7 +1332,9 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 			}
 			break;
 		}
-	} else {
+	} 
+	else 
+	{
 		// TRACE("## CRecorderView::OnUserGeneric  NO Audio, just do a plain copy of temp avi to final avi\n");
 		//////////////////////////////////////////////////
 		// No audio, just do a plain copy of temp avi to final avi will do the job
@@ -1312,12 +1352,14 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 			return 0;
 		}
 		
-		if (!MoveFile( strTempXnoteLogFilePath, strTargetXnoteLogFile) ) {
+		if (!MoveFile( strTempXnoteLogFilePath, strTargetXnoteLogFile) ) 
+		{
 			//MessageOut(m_hWnd,IDS_STRING_MOVEFILEFAILURE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 			// No issue to quit because we got the recording and we can continue
 		}
 
-		if (!cAudioFormat.isInput(NONE)) {
+		if (!cAudioFormat.isInput(NONE)) 
+		{
 			DeleteFile(strTempAudioWavFilePath);
 		}
 	}
@@ -1340,15 +1382,9 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		RunProducer(strTargetVideoFile);
 		break;
 	case ModeMP4:
-		ConvertToMP4(strTargetVideoFile);
+		ConvertToMP4(strTargetVideoFile, strTargetMP4VideoFile);
 		break;
 	}
-	//if (cProgramOpts.m_iRecordingMode == ModeAVI) {
-	//	RunViewer(strTargetVideoFile);
-	//} else {
-	//	RunProducer(strTargetVideoFile);
-	//}
-
 	return 0;
 }
 
@@ -4805,11 +4841,17 @@ bool CRecorderView::RunProducer(const CString& strNewFile)
 	SaveProducerCommand();
 
 	//Sleep(2000);
+	STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+
+    ZeroMemory( &si, sizeof(si) );
+    si.cb = sizeof(si);
+    ZeroMemory( &pi, sizeof(pi) );
 
 	CString AppDir = GetProgPath();
 	CString exefileName("\\producer.exe\" -x ");
 	//CString exefileName("\\producer.exe -b ");
-   CString quote = "\"";
+	CString quote = "\"";
 	//CString launchPath = AppDir + exefileName + strNewFile;
 	CString launchPath = quote + AppDir + exefileName + quote + strNewFile + quote;
 
@@ -4820,38 +4862,77 @@ bool CRecorderView::RunProducer(const CString& strNewFile)
 		MessageBox("Error launching SWF Producer!","Note",MB_OK | MB_ICONEXCLAMATION);
 		//MessageOut(m_hWnd,IDS_STRING_ERRPRODUCER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 	}
+
 	return true;
 }
 
-void CRecorderView::ConvertToMP4(const CString& strNewFile)
+void CRecorderView::ConvertToMP4(const CString& strInputAVI, const CString& strOutputMP4)
 {
 	CString AppDir = GetProgPath();
-	CString exefileName;
+	CString strCommandLine;
 	
+	strCommandLine.Format(" -i %s -c:v libx264 -preset slow -crf 22 -c:a mp2 -b:a 128k %s", strInputAVI, strOutputMP4);
 	STARTUPINFO si;
-    PROCESS_INFORMATION pi;
+	PROCESS_INFORMATION pi;
 
-    ZeroMemory( &si, sizeof(si) );
-    si.cb = sizeof(si);
-    ZeroMemory( &pi, sizeof(pi) );
-	exefileName.Format("cmd.exe /c D:\\CS\\mercurial\\CamStudio2.7\\Release\\ffmpeg.exe -i %s -c:v libx246 -preset slow -crf 22 -c:a libaac -b:a 128k C:\\Users\\ah185072\\Desktop\\vid\\output.mp4", strNewFile);
-	//CString exefileName("\\producer.exe -b ");
-	CString quote = "\"";
-	//CString launchPath = AppDir + exefileName + strNewFile;
-	CString launchPath = quote + AppDir + exefileName;// + quote + strNewFile + quote;
-	MessageBox(exefileName, "", 0);
-	TRACE("CRecorderView::OnUserGeneric: %s\n", (LPCTSTR)launchPath);
-	int ret = CreateProcess(NULL, (LPSTR)&exefileName, NULL,NULL,FALSE, 0, NULL, NULL, &si, &pi);
-	//if (WinExec(launchPath, SW_HIDE) < HINSTANCE_ERROR) {
-		//if (WinExec(launchPath, SW_MINIMIZE) < HINSTANCE_ERROR) {
-		//MessageBox("Error launching SWF Producer!","Note",MB_OK | MB_ICONEXCLAMATION);
-		//MessageOut(m_hWnd,IDS_STRING_ERRPRODUCER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-	//}
-	CString s;
-	s.Format("%d", GetLastError());
-	MessageBox(s, "", 0);
+	ZeroMemory( &si, sizeof(si) );
+	si.cb = sizeof(si);
+	ZeroMemory( &pi, sizeof(pi) );
+	// Start the FFMpeg process. 
+	if( !CreateProcess(
+		AppDir + "\\ffmpeg.exe",	//module name (use command line)
+		strCommandLine.GetBuffer(),	// Command line
+		NULL,						// Process handle not inheritable
+		NULL,						// Thread handle not inheritable
+		FALSE,						// Set handle inheritance to FALSE
+		CREATE_NO_WINDOW,			// Hide console
+		NULL,						// Use parent's environment block
+		NULL,						// Use parent's starting directory 
+		&si,						// Pointer to STARTUPINFO structure
+		&pi )						// Pointer to PROCESS_INFORMATION structure
+		) 
+	{
+		MessageBox("Error launching MP4 converter!","Note",MB_OK | MB_ICONEXCLAMATION);
+		return;
+	}
+	// Wait until FFMpeg process exits.
+	WaitForSingleObject( pi.hProcess, INFINITE );
+	// Close process and thread handles. 
+	CloseHandle( pi.hProcess );
+	CloseHandle( pi.hThread );
 }
+void CRecorderView::LoadConverterFromResource()
+{
+	HRSRC hrsrc = NULL;
+    HGLOBAL hGlbl = NULL;
+    BYTE *pExeResource = NULL;
+    HANDLE hFile = INVALID_HANDLE_VALUE;
+    DWORD size = 7168;//hardcoding the size of the exe resource (in bytes)
 
+    hrsrc = FindResource(NULL, (LPCSTR)IDR_CONVERTER1, RT_RCDATA);
+    if (hrsrc == NULL)
+        return;
+
+    hGlbl = LoadResource(NULL, hrsrc);
+    if (hGlbl == NULL)
+        return;
+
+    pExeResource = (BYTE*)LockResource(hGlbl);
+    if (pExeResource == NULL)
+        return;
+    
+    hFile = CreateFile("\\FFMpeg.exe", GENERIC_WRITE|GENERIC_READ, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+    if (hFile != INVALID_HANDLE_VALUE)
+    {
+        DWORD bytesWritten = 0;
+        WriteFile(hFile, pExeResource, size, &bytesWritten, NULL);
+         CloseHandle(hFile);
+    }
+
+
+    int ret = CreateProcess("\\FFMpeg.exe", NULL, NULL, NULL, FALSE, 0, NULL, NULL, NULL, &pi);
+}
 bool CRecorderView::GetRecordState()
 {
 	return bRecordState;
