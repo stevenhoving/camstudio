@@ -4931,7 +4931,7 @@ void CRecorderView::LoadConverterFromResource()
     }
 
 
-    int ret = CreateProcess("\\FFMpeg.exe", NULL, NULL, NULL, FALSE, 0, NULL, NULL, NULL, &pi);
+    //int ret = CreateProcess("\\FFMpeg.exe", NULL, NULL, NULL, FALSE, 0, NULL, NULL, NULL, &pi);
 }
 bool CRecorderView::GetRecordState()
 {
