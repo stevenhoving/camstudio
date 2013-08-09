@@ -409,7 +409,6 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <None Include="res\cur00002.cur" />
     <None Include="res\cursor4.cur" />
     <None Include="res\customic.ico" />
-    <None Include="res\ffmpeg.exe" />
     <None Include="res\ico00001.ico" />
     <None Include="res\ico00002.ico" />
     <None Include="res\ico00003.ico" />
