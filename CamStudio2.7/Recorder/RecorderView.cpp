@@ -4888,7 +4888,7 @@ bool CRecorderView::ConvertToMP4(const CString& strInputAVI, const CString& strO
 	CString AppDir = GetProgPath();
 	CString strCommandLine;
 	
-	strCommandLine.Format(" -i %s -c:v libx264 -preset slow -crf 22 -c:a mp2 -b:a 128k %s", strInputAVI, strOutputMP4);
+	strCommandLine.Format(" -i \"%s\" -c:v libx264 -preset slow -crf 22 -c:a mp2 -b:a 128k \"%s\"", strInputAVI, strOutputMP4);
 
 	PROCESS_INFORMATION pi;
 	ZeroMemory( &pi, sizeof(pi) );
