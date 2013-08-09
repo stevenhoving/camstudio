@@ -76,6 +76,8 @@ static char THIS_FILE[] = __FILE__;
 
 #define LPLPBI			LPBITMAPINFOHEADER *
 
+#define BUF_SIZE 4096
+
 //version 1.6
 
 #if !defined(WAVE_FORMAT_MPEGLAYER3)
@@ -4858,34 +4860,51 @@ bool CRecorderView::RunProducer(const CString& strNewFile)
 	TRACE("CRecorderView::OnUserGeneric: %s\n", (LPCTSTR)launchPath);
 
 	if (WinExec(launchPath, SW_SHOW) < HINSTANCE_ERROR) {
-		//if (WinExec(launchPath, SW_MINIMIZE) < HINSTANCE_ERROR) {
 		MessageBox("Error launching SWF Producer!","Note",MB_OK | MB_ICONEXCLAMATION);
-		//MessageOut(m_hWnd,IDS_STRING_ERRPRODUCER,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 	}
 
 	return true;
 }
 
-void CRecorderView::ConvertToMP4(const CString& strInputAVI, const CString& strOutputMP4)
+bool CRecorderView::ConvertToMP4(const CString& strInputAVI, const CString& strOutputMP4)
 {
+	void *rdstdout = 0;
+	void *wrstdout = 0;
+
+	// Create a pipe for the child process's STDOUT. 
+	SECURITY_ATTRIBUTES sa;
+
+	// Set up the security attributes struct.
+	sa.nLength= sizeof(SECURITY_ATTRIBUTES);
+	sa.lpSecurityDescriptor = NULL;
+	sa.bInheritHandle = TRUE;
+
+	if ( ! CreatePipe(&rdstdout, &wrstdout, &sa, 1048576) ) 
+		MessageBox("CreatePipe failed", "Warning", MB_ICONEXCLAMATION); 
+
 	CString AppDir = GetProgPath();
 	CString strCommandLine;
 	
 	strCommandLine.Format(" -i %s -c:v libx264 -preset slow -crf 22 -c:a mp2 -b:a 128k %s", strInputAVI, strOutputMP4);
-	STARTUPINFO si;
-	PROCESS_INFORMATION pi;
 
+	PROCESS_INFORMATION pi;
+	ZeroMemory( &pi, sizeof(pi) );
+	
+	STARTUPINFO si;
 	ZeroMemory( &si, sizeof(si) );
 	si.cb = sizeof(si);
-	ZeroMemory( &pi, sizeof(pi) );
-	// Start the FFMpeg process. 
+	si.hStdInput  = wrstdout;
+	si.hStdOutput = wrstdout;
+	si.hStdError  = wrstdout;
+	si.dwFlags |= STARTF_USESTDHANDLES;
+ 	// Start the FFMpeg process. 
 	if( !CreateProcess(
 		AppDir + "\\ffmpeg.exe",	//module name (use command line)
 		strCommandLine.GetBuffer(),	// Command line
 		NULL,						// Process handle not inheritable
 		NULL,						// Thread handle not inheritable
-		FALSE,						// Set handle inheritance to FALSE
-		CREATE_NO_WINDOW,			// Hide console
+		TRUE,						// Set handle inheritance to FALSE
+		CREATE_NEW_CONSOLE,			// console
 		NULL,						// Use parent's environment block
 		NULL,						// Use parent's starting directory 
 		&si,						// Pointer to STARTUPINFO structure
@@ -4893,46 +4912,48 @@ void CRecorderView::ConvertToMP4(const CString& strInputAVI, const CString& strO
 		) 
 	{
 		MessageBox("Error launching MP4 converter!","Note",MB_OK | MB_ICONEXCLAMATION);
-		return;
+		return 0;
 	}
+	DWORD dwRead; 
+	CHAR buffer[BUF_SIZE];
+	BOOL bSuccess = FALSE;
+ 
+	BOOL bFlag;
 	// Wait until FFMpeg process exits.
 	WaitForSingleObject( pi.hProcess, INFINITE );
-	// Close process and thread handles. 
+	{
+		FILE *fp;
+		int nSize = BUF_SIZE-1;
+
+		fopen_s(&fp, AppDir + "\\ffmpeglog.txt", "w");
+
+		if (!CloseHandle(wrstdout))
+			MessageBox("Failed to close the write stdout pipe");
+
+		for(;;)
+		{
+			bFlag = ReadFile (rdstdout, buffer, nSize, &dwRead, NULL);
+
+			if (bFlag == FALSE) 
+			{
+				break;
+			}
+			else
+			{
+			buffer[dwRead] = 0;
+			fwrite(buffer, 1, dwRead, fp);
+			}
+		}
+		fclose(fp);
+	}
+
 	CloseHandle( pi.hProcess );
 	CloseHandle( pi.hThread );
+	CloseHandle( rdstdout);
+	
+	return 1;
 }
-void CRecorderView::LoadConverterFromResource()
-{
-	HRSRC hrsrc = NULL;
-    HGLOBAL hGlbl = NULL;
-    BYTE *pExeResource = NULL;
-    HANDLE hFile = INVALID_HANDLE_VALUE;
-    DWORD size = 7168;//hardcoding the size of the exe resource (in bytes)
 
-    hrsrc = FindResource(NULL, (LPCSTR)IDR_CONVERTER1, RT_RCDATA);
-    if (hrsrc == NULL)
-        return;
-
-    hGlbl = LoadResource(NULL, hrsrc);
-    if (hGlbl == NULL)
-        return;
-
-    pExeResource = (BYTE*)LockResource(hGlbl);
-    if (pExeResource == NULL)
-        return;
-    
-    hFile = CreateFile("\\FFMpeg.exe", GENERIC_WRITE|GENERIC_READ, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-
-    if (hFile != INVALID_HANDLE_VALUE)
-    {
-        DWORD bytesWritten = 0;
-        WriteFile(hFile, pExeResource, size, &bytesWritten, NULL);
-         CloseHandle(hFile);
-    }
-
-
-    //int ret = CreateProcess("\\FFMpeg.exe", NULL, NULL, NULL, FALSE, 0, NULL, NULL, NULL, &pi);
-}
 bool CRecorderView::GetRecordState()
 {
 	return bRecordState;

@@ -2318,12 +2318,6 @@ IDC_CURSOR4             CURSOR                  "res\\cur00002.cur"
 IDC_CURSORDROPPER       CURSOR                  "res\\cursor4.cur"
 IDC_CURSORDRAG          CURSOR                  "res\\cur00001.cur"
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// Converter
-//
-
-IDR_CONVERTER           Converter               "res\\ffmpeg.exe"
 
 /////////////////////////////////////////////////////////////////////////////
 //
