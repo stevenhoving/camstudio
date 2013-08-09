@@ -1384,7 +1384,10 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		RunProducer(strTargetVideoFile);
 		break;
 	case ModeMP4:
-		ConvertToMP4(strTargetVideoFile, strTargetMP4VideoFile);
+		if(ConvertToMP4(strTargetVideoFile, strTargetMP4VideoFile))
+		{
+			DeleteFile(strTargetVideoFile);
+		}
 		break;
 	}
 	return 0;
