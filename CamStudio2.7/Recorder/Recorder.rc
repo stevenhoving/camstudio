@@ -1056,6 +1056,18 @@ BEGIN
     DEFPUSHBUTTON   "Update CamStudio",ID_UPDATE,67,55,78,15
 END
 
+IDD_CONV_DIALOG DIALOGEX 0, 0, 183, 118
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Please Wait - Converting to MP4"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Cancel",ID_PROGRESS_CANCEL,66,87,50,14
+    CONTROL         "",CG_IDC_PROGDLG_PROGRESS,"msctls_progress32",WS_BORDER,15,65,154,13
+    LTEXT           " 0 %",CG_IDC_PROGDLG_PERCENT,83,50,18,8
+    CTEXT           "Percent Completed",IDC_STATIC,27,32,122,11
+    CTEXT           "Generating ..",IDC_CONVERSIONTEXT,14,11,149,12
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1277,6 +1289,14 @@ BEGIN
         RIGHTMARGIN, 200
         TOPMARGIN, 7
         BOTTOMMARGIN, 86
+    END
+
+    IDD_CONV_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 176
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 111
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2317,7 +2337,6 @@ END
 IDC_CURSOR4             CURSOR                  "res\\cur00002.cur"
 IDC_CURSORDROPPER       CURSOR                  "res\\cursor4.cur"
 IDC_CURSORDRAG          CURSOR                  "res\\cur00001.cur"
-
 
 /////////////////////////////////////////////////////////////////////////////
 //

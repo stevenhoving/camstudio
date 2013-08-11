@@ -368,9 +368,11 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MCI.h" />
     <ClInclude Include="MouseCaptureWnd.h" />
+    <ClInclude Include="MP4Converter.h" />
     <ClInclude Include="NewShape.h" />
     <ClInclude Include="PresetTime.h" />
     <ClInclude Include="Profile.h" />
+    <ClInclude Include="ProgressDlg.h" />
     <ClInclude Include="Recorder.h" />
     <ClInclude Include="RecorderDoc.h" />
     <ClInclude Include="RecorderVersionReleaseInfo.h" />
@@ -590,6 +592,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     </ClCompile>
     <ClCompile Include="MCI.cpp" />
     <ClCompile Include="MouseCaptureWnd.cpp" />
+    <ClCompile Include="MP4Converter.cpp" />
     <ClCompile Include="NewShape.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
@@ -611,6 +614,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="Profile.cpp" />
+    <ClCompile Include="ProgressDlg.cpp" />
     <ClCompile Include="Recorder.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
