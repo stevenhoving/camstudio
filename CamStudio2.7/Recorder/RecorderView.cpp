@@ -29,10 +29,11 @@
 #include "SyncDialog.h"
 #include "TroubleShoot.h"
 #include "VideoOptions.h"
-
+#include "ProgressDlg.h"
 #include "ximage.h"
 #include "soundfile.h"
 #include "hook.h"		// for WM_USER_RECORDSTART_MSG
+#include "MP4Converter.h"
 
 #include "Buffer.h"
 #include "CStudioLib.h"
@@ -1386,7 +1387,6 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	case ModeMP4:
 		if(ConvertToMP4(strTargetVideoFile, strTargetMP4VideoFile))
 		{
-			DeleteFile(strTargetVideoFile);
 		}
 		break;
 	}
@@ -4871,89 +4871,24 @@ bool CRecorderView::RunProducer(const CString& strNewFile)
 
 bool CRecorderView::ConvertToMP4(const CString& strInputAVI, const CString& strOutputMP4)
 {
-	void *rdstdout = 0;
-	void *wrstdout = 0;
-
-	// Create a pipe for the child process's STDOUT. 
-	SECURITY_ATTRIBUTES sa;
-
-	// Set up the security attributes struct.
-	sa.nLength= sizeof(SECURITY_ATTRIBUTES);
-	sa.lpSecurityDescriptor = NULL;
-	sa.bInheritHandle = TRUE;
-
-	if ( ! CreatePipe(&rdstdout, &wrstdout, &sa, 1048576) ) 
-		MessageBox("CreatePipe failed", "Warning", MB_ICONEXCLAMATION); 
-
-	CString AppDir = GetProgPath();
-	CString strCommandLine;
-	
-	strCommandLine.Format(" -i \"%s\" -c:v libx264 -preset slow -crf 22 -c:a mp2 -b:a 128k \"%s\"", strInputAVI, strOutputMP4);
-
-	PROCESS_INFORMATION pi;
-	ZeroMemory( &pi, sizeof(pi) );
-	
-	STARTUPINFO si;
-	ZeroMemory( &si, sizeof(si) );
-	si.cb = sizeof(si);
-	si.hStdInput  = wrstdout;
-	si.hStdOutput = wrstdout;
-	si.hStdError  = wrstdout;
-	si.dwFlags |= STARTF_USESTDHANDLES;
- 	// Start the FFMpeg process. 
-	if( !CreateProcess(
-		AppDir + "\\ffmpeg.exe",	//module name (use command line)
-		strCommandLine.GetBuffer(),	// Command line
-		NULL,						// Process handle not inheritable
-		NULL,						// Thread handle not inheritable
-		TRUE,						// Set handle inheritance to FALSE
-		CREATE_NEW_CONSOLE,			// console
-		NULL,						// Use parent's environment block
-		NULL,						// Use parent's starting directory 
-		&si,						// Pointer to STARTUPINFO structure
-		&pi )						// Pointer to PROCESS_INFORMATION structure
-		) 
+	CMP4Converter *pConv = new CMP4Converter();
+	if(pConv)
 	{
-		MessageBox("Error launching MP4 converter!","Note",MB_OK | MB_ICONEXCLAMATION);
-		return 0;
-	}
-	DWORD dwRead; 
-	CHAR buffer[BUF_SIZE];
-	BOOL bSuccess = FALSE;
- 
-	BOOL bFlag;
-	// Wait until FFMpeg process exits.
-	WaitForSingleObject( pi.hProcess, INFINITE );
-	{
-		FILE *fp;
-		int nSize = BUF_SIZE-1;
-
-		fopen_s(&fp, AppDir + "\\ffmpeglog.txt", "w");
-
-		if (!CloseHandle(wrstdout))
-			MessageBox("Failed to close the write stdout pipe");
-
-		for(;;)
+		CString sAppDir = GetProgPath();
+		pConv->ConvertAVItoMP4(strInputAVI, strOutputMP4);
+		CProgressDlg *pProgDlg = new CProgressDlg();
+		pProgDlg->Create(this);
+		pProgDlg->ShowWindow(SW_SHOW);
+		pProgDlg->SetStep(1);
+		int nProgress = 0;
+		while(pConv->Converting())
 		{
-			bFlag = ReadFile (rdstdout, buffer, nSize, &dwRead, NULL);
-
-			if (bFlag == FALSE) 
-			{
-				break;
-			}
-			else
-			{
-			buffer[dwRead] = 0;
-			fwrite(buffer, 1, dwRead, fp);
-			}
+			nProgress++;
+			pProgDlg->SetPos(nProgress);
 		}
-		fclose(fp);
+		pProgDlg->SetPos(100);
+		delete(pProgDlg);
 	}
-
-	CloseHandle( pi.hProcess );
-	CloseHandle( pi.hThread );
-	CloseHandle( rdstdout);
-	
 	return 1;
 }
 
