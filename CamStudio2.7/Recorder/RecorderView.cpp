@@ -555,8 +555,7 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_SWF_LAUNCHHTML, OnUpdateOptionsSwfLaunchhtml)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_SWF_DISPLAYPARAMETERS, OnUpdateOptionsSwfDisplayparameters)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_SWF_DELETEAVIFILE, OnUpdateOptionsSwfDeleteavifile)
-	ON_COMMAND(ID_AVISWF, OnAviswf)
-	ON_COMMAND(ID_MP4, OnMP4)
+	ON_COMMAND(ID_AVISWF, OnAVISWFMP4)
 	ON_COMMAND(ID_OPTIONS_NAMING_AUTODATE, OnOptionsNamingAutodate)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_NAMING_AUTODATE, OnUpdateOptionsNamingAutodate)
 	ON_UPDATE_COMMAND_UI(ID_OPTIONS_LANGUAGE_ENGLISH, OnUpdateOptionsLanguageEnglish)
@@ -3348,15 +3347,12 @@ void CRecorderView::OnUpdateOptionsSwfDeleteavifile(CCmdUI* pCmdUI)
 	pCmdUI->SetCheck(cProducerOpts.m_bDeleteAVIAfterUse);
 }
 
-void CRecorderView::OnAviswf()
+void CRecorderView::OnAVISWFMP4()
 {
-	cProgramOpts.m_iRecordingMode = (cProgramOpts.m_iRecordingMode == ModeAVI) ? ModeFlash : ModeAVI;
-	Invalidate();
-}
-
-void CRecorderView::OnMP4()
-{
-	cProgramOpts.m_iRecordingMode = ModeMP4;
+	if(cProgramOpts.m_iRecordingMode < ModeMP4)
+		cProgramOpts.m_iRecordingMode++;
+	else
+		cProgramOpts.m_iRecordingMode = ModeAVI;
 	Invalidate();
 }
 
@@ -4879,17 +4875,27 @@ bool CRecorderView::ConvertToMP4(const CString& strInputAVI, const CString& strO
 		CProgressDlg *pProgDlg = new CProgressDlg();
 		pProgDlg->Create(this);
 		pProgDlg->ShowWindow(SW_SHOW);
+		pProgDlg->SetRange(1, 10000);
 		pProgDlg->SetStep(1);
 		int nProgress = 0;
 		while(pConv->Converting())
 		{
+			if(pProgDlg->CheckCancelButton())
+			{
+				pConv->CancelConversion();
+				break;
+			}
 			nProgress++;
 			pProgDlg->SetPos(nProgress);
 		}
-		pProgDlg->SetPos(100);
+		//while(nProgress < 10000)
+		//{
+		//	nProgress++;
+		//	pProgDlg->SetPos(nProgress);
+		//}
 		delete(pProgDlg);
 	}
-	return 1;
+	return true;
 }
 
 bool CRecorderView::GetRecordState()

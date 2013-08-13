@@ -4,12 +4,19 @@
 
 #define BUF_SIZE 4096
 
+HANDLE m_gHandles[2];
+
 CMP4Converter::CMP4Converter(void) :
 m_pData(NULL),
 m_bSuccess(false),
 m_bConverting(true),
 m_hThread(INVALID_HANDLE_VALUE)
 {
+	m_gHandles[0] = CreateEvent( 
+		NULL,   // default security attributes
+		FALSE,  // auto-reset event object
+		FALSE,  // initial state is nonsignaled
+		NULL);  // unnamed object
 
 }
 
@@ -114,40 +121,52 @@ bool CMP4Converter::ConvertAVItoMP4(
 	BOOL bSuccess = FALSE;
  
 	BOOL bFlag;
-	// Wait until FFMpeg process exits.
 
-	WaitForSingleObject( pi.hProcess, INFINITE );
+	m_gHandles[1] = pi.hProcess;
+	// Wait until FFMpeg process exits or cancel event is fired
+	
+	DWORD dWIndex = WaitForMultipleObjects(sizeof(m_gHandles) / sizeof(m_gHandles[0]), m_gHandles, FALSE, INFINITE );
+
+	switch (dWIndex) 
 	{
-		FILE *fp;
-		int nSize = BUF_SIZE-1;
 
-		fopen_s(&fp, *m_pData->psLogFile, "w");
+		case WAIT_OBJECT_0 + 0:
+			DeleteFile(*m_pData->psInputFile);
+			DeleteFile(*m_pData->psInputFile);
+			ExitThread(0);
+			break; 
 
-		if (!CloseHandle(wrstdout))
-			MessageBox(NULL,"Failed to close the write stdout pipe", "Warning", 0);
-
-		//CString msgx,msgout;
-
-		//int nReads = 0;
-		for(;;)
-		{
-			bFlag = ReadFile (rdstdout, buffer, nSize, &dwRead, NULL);
-			if (bFlag == FALSE) 
+		case WAIT_OBJECT_0 + 1:
 			{
-				break;
-			}
-			else
-			{
-				//nReads++;
-				buffer[dwRead] = 0;
-				fwrite(buffer, 1, dwRead, fp);
-			}
-		}
-		fclose(fp);
+				FILE *fp;
+				int nSize = BUF_SIZE-1;
 
+				fopen_s(&fp, *m_pData->psLogFile, "w");
+
+				if (!CloseHandle(wrstdout))
+					MessageBox(NULL,"Failed to close the write stdout pipe", "Warning", 0);
+				bool bContinue = true;
+				while(bContinue)
+				{
+					bFlag = ReadFile (rdstdout, buffer, nSize, &dwRead, NULL);
+					if (bFlag == FALSE) 
+					{
+						bContinue = false;
+					}
+					else
+					{
+						buffer[dwRead] = 0;
+						fwrite(buffer, 1, dwRead, fp);
+					}
+				}
+				fclose(fp);
+				DeleteFile(*m_pData->psInputFile);
+			}
+			break;
+			// Return value is invalid.
+		default: 
+			ExitThread(0);
 	}
-	DeleteFile(*m_pData->psInputFile);
-
 	CloseHandle( pi.hProcess );
 	CloseHandle( pi.hThread );
 	CloseHandle( rdstdout);
@@ -162,4 +181,9 @@ bool CMP4Converter::ConvertAVItoMP4(
 		 return true;
 	 else
 		 return false;
+ }
+
+ void CMP4Converter::CancelConversion()
+ {
+	 SetEvent(m_gHandles[0]);
  }

@@ -205,7 +205,6 @@ BOOL CProgressDlg::OnInitDialog()
 
 void CProgressDlg::OnBnClickedProgressCancel()
 {
-//	MessageBox("Hi");
 	m_bCancel=TRUE;
 }
 
