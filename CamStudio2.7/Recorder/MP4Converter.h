@@ -9,10 +9,11 @@ public:
 		const CString& sOutputMP4);
 	bool Sucess();
 	bool Converting();
+	void CancelConversion();
+
 private:
 
 	static DWORD WINAPI ThreadProc(LPVOID lpParam);
-
 	typedef struct ConverterData
 	{
 		CString *psInputFile;
@@ -27,6 +28,5 @@ private:
 	HANDLE m_hThread;
 	bool m_bSuccess;
 	bool m_bConverting;
-
 };
 

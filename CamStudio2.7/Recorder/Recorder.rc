@@ -146,7 +146,7 @@ IDI_ICONJUSTIFYRIGHT    ICON                    "res\\ico00035.ico"
 // Toolbar
 //
 
-IDR_MAINFRAME TOOLBAR 22, 22
+IDR_MAINFRAME TOOLBAR 24, 24
 BEGIN
     BUTTON      ID_RECORD
     BUTTON      ID_PAUSE
@@ -155,8 +155,8 @@ BEGIN
     BUTTON      ID_VIEWTYPE
     BUTTON      ID_VIEW_SCREENANNOTATIONS
     BUTTON      ID_AVISWF
-    BUTTON      ID_MP4
     BUTTON      ID_XNOTE_RECORDDURATIONLIMITMODE
+    BUTTON      ID_MP4
 END
 
 IDR_MAINFRAME1 TOOLBAR 21, 21
@@ -2414,7 +2414,7 @@ BEGIN
                             "Delete the intermediate AVI file upon completion"
     ID_OPTIONS_SWF_DISPLAYPARAMETERS 
                             "Display conversion options before generating SWF"
-    ID_AVISWF               "Toggle mode to record AVI or Flash"
+    ID_AVISWF               "Toggle mode to record AVI, MP4 or Flash"
     ID_OPTIONS_NAMING_ASK   "User defined filename"
     ID_XNOTE_RECORDDURATIONLIMITMODE 
                             "Requires Xnote Stopwatch to enable auto pause functionality."
@@ -2712,11 +2712,6 @@ BEGIN
     ID_TOOLS_PLAYER         "Launch CamStudio Movie Player"
     ID_TOOLS_PLAYER2        "Launch CamStudio Movie Player 2.0"
     ID_REGION_ALLSCREENS    "Capture all monitors"
-END
-
-STRINGTABLE
-BEGIN
-    ID_MP4                  "Record to MP4"
 END
 
 STRINGTABLE
