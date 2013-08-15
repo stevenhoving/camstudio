@@ -5,6 +5,7 @@
 #define BUF_SIZE 4096
 
 HANDLE m_gHandles[2];
+ConversionResult CMP4Converter::m_ConvRes;
 
 CMP4Converter::CMP4Converter(void) :
 m_pData(NULL),
@@ -84,7 +85,7 @@ bool CMP4Converter::ConvertAVItoMP4(
 	sa.lpSecurityDescriptor = NULL;
 	sa.bInheritHandle = TRUE;
 
-	if ( ! CreatePipe(&rdstdout, &wrstdout, &sa, *m_pData->pdwPipeSize))//1048576) ) 
+	if ( ! CreatePipe(&rdstdout, &wrstdout, &sa, *m_pData->pdwPipeSize)) 
 		MessageBox(NULL,"CreatePipe failed", "Warning", MB_ICONEXCLAMATION); 
 
 	PROCESS_INFORMATION pi;
@@ -111,7 +112,9 @@ bool CMP4Converter::ConvertAVItoMP4(
 		&pi )							// Pointer to PROCESS_INFORMATION structure
 		) 
 	{
-		MessageBox(NULL,"Error launching MP4 converter!","Note",MB_OK | MB_ICONEXCLAMATION);
+		CString sMsg;
+		sMsg.LoadString(IDS_CONVERTER_FAILED);
+		MessageBox(NULL, sMsg ,"Note",MB_OK | MB_ICONEXCLAMATION);
 		return 0;
 	}
 	DWORD dwRead; 
@@ -133,11 +136,12 @@ bool CMP4Converter::ConvertAVItoMP4(
 				HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, TRUE, pi.dwProcessId);
 				if(hProcess)
 				{
-					TerminateProcess(hProcess, 0);
-					DeleteFile(*m_pData->psInputFile);
-					DeleteFile(*m_pData->psInputFile);
+					if(!TerminateProcess(hProcess, 0))
+					{
+
+					}
+					m_ConvRes = CANCELLED;
 				}
-			//ExitThread(0);
 			}
 			break; 
 
@@ -166,12 +170,12 @@ bool CMP4Converter::ConvertAVItoMP4(
 					}
 				}
 				fclose(fp);
-				DeleteFile(*m_pData->psInputFile);
+				m_ConvRes = SUCCESS;
 			}
 			break;
-			// Return value is invalid.
-		default: 
-			ExitThread(0);
+		default:
+			m_ConvRes = FAILED;
+			break;
 	}
 	CloseHandle( pi.hProcess );
 	CloseHandle( pi.hThread );
@@ -192,5 +196,10 @@ bool CMP4Converter::ConvertAVItoMP4(
  void CMP4Converter::CancelConversion()
  {
 	 SetEvent(m_gHandles[0]);
+ }
+
+ ConversionResult CMP4Converter::Status()
+ {
+	 return m_ConvRes;
  }
 

@@ -16,7 +16,13 @@ CProgressDlg::CProgressDlg(CWnd* pParent /*=NULL*/)
 	m_bCancel(FALSE),
 	m_nLower(0),
 	m_nUpper(100),
-	m_nStep(10),
+	m_nStep(1),
+	m_nMaxSecProgress(10),
+	m_nMinSecProgress(1),
+	m_nMinProg(1),
+	m_nMaxProg(5),
+	m_nFakeMax(95),
+	m_nFakeMin(80),
 	m_bParentDisabled(FALSE)
 {
 
@@ -28,6 +34,30 @@ CProgressDlg::~CProgressDlg()
 		DestroyWindow();
 }
 
+short CProgressDlg::RealMax()
+{
+	return m_nUpper;
+}
+short CProgressDlg::FakeMax()
+{
+	return rand() % m_nFakeMax + m_nFakeMin;
+}
+short CProgressDlg::MinSecProgress()
+{
+	return m_nMinSecProgress;
+}
+short CProgressDlg::MaxSecProgress()
+{
+	return m_nMaxSecProgress;
+}
+short CProgressDlg::MinProg()
+{
+	return m_nMinProg;
+}
+short CProgressDlg::MaxProg()
+{
+	return m_nMaxProg;
+}
 BOOL CProgressDlg::DestroyWindow()
 {
 	ReEnableParent();

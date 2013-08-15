@@ -1,6 +1,6 @@
 #pragma once
 
-enum ConvRes
+enum ConversionResult
 {
 	SUCCESS = 0,
 	CANCELLED = 1,
@@ -17,6 +17,7 @@ public:
 	bool Success();
 	bool Converting();
 	void CancelConversion();
+	ConversionResult Status();
 
 private:
 
@@ -35,6 +36,6 @@ private:
 	HANDLE m_hThread;
 	//static bool m_bSuccess;
 	bool m_bConverting;
-	static ConvRes m_ConvRes;
+	static ConversionResult m_ConvRes;
 };
 
