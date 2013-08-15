@@ -21,7 +21,12 @@ public:
 	int  SetPos(int nPos);
 	int  OffsetPos(int nPos);
 	int  StepIt();
-
+	short RealMax();
+	short FakeMax();
+	short MinSecProgress();
+	short MaxSecProgress();
+	short MinProg();
+	short MaxProg();
 // Dialog Data
 	enum { IDD = IDD_CONV_DIALOG };
 	CProgressCtrl	m_Progress;
@@ -35,7 +40,12 @@ protected:
 	short m_nLower;
 	short m_nUpper;
 	short m_nStep;
-
+	short m_nMaxSecProgress;
+	short m_nMinSecProgress;
+	short m_nMinProg;
+	short m_nMaxProg;
+	short m_nFakeMax;
+	short m_nFakeMin;
 	BOOL m_bCancel;
 	BOOL m_bParentDisabled;
 

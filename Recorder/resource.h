@@ -646,6 +646,9 @@
 #define IDS_STRING_AUTOSPAN_DISABLED    61583
 #define IDS_STRING_AUTOPAN_DISABLED     61583
 #define IDS_RECMP4                      61584
+#define IDS_CONVERTER_FAILED            61585
+#define ID_STRING_DELETE_FAILED         61586
+#define IDS_STRING_DELETE_FAILED        61586
 
 // Next default values for new objects
 // 

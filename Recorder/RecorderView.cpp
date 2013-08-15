@@ -1385,11 +1385,34 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		RunProducer(strTargetVideoFile);
 		break;
 	case ModeMP4:
-
-		if(ConvertToMP4(strTargetVideoFile, strTargetMP4VideoFile))
 		{
+			CString sMsg;
+			CString sRes;
+			if(ConvertToMP4(strTargetVideoFile, strTargetMP4VideoFile))
+			{
+				if(!DeleteFile(strTargetVideoFile))
+				{
+					sRes.LoadString(IDS_STRING_DELETE_FAILED);
+					sMsg.Format(sRes, strTargetMP4VideoFile);
+					MessageBox(sMsg, "Warning", 0);
+				}
+			}
+			else
+			{
+				if(!DeleteFile(strTargetVideoFile))
+				{
+					sRes.LoadString(IDS_STRING_DELETE_FAILED);
+					sMsg.Format(sRes, strTargetVideoFile);
+					MessageBox(sMsg, "Warning", 0);
+				}
+				if(!DeleteFile(strTargetMP4VideoFile))
+				{
+					sRes.LoadString(IDS_STRING_DELETE_FAILED);
+					sMsg.Format(sRes, strTargetMP4VideoFile);
+					MessageBox(sMsg, "Warning", 0);
+				}
+			}
 		}
-		//DeleteFile(strTargetVideoFile);
 
 		break;
 	}
@@ -4888,59 +4911,61 @@ long CRecorderView::GetAVILengthTime(const CString & sAVIFile)
 }
 bool CRecorderView::ConvertToMP4(const CString& sInputAVI, const CString& sOutputMP4)
 {
-	ConvRes ret;
+	ConversionResult res;
 
 	CMP4Converter *pConv = new CMP4Converter();
 	if(pConv)
 	{
-		CString sAppDir = GetProgPath();
 		pConv->ConvertAVItoMP4(sInputAVI, sOutputMP4);
 		CProgressDlg *pProgDlg = new CProgressDlg();
-		pProgDlg->Create(this);
-		pProgDlg->ShowWindow(SW_SHOW);
-		pProgDlg->SetRange(1, 100);
-		pProgDlg->SetStep(1);
-		int nProgress = 0;
-		time_t timer;
-		long lTimeStart = time(&timer);
-		long lCurrentTime = 0;
-
-		long lAviLengthTime = GetAVILengthTime(sInputAVI);
-		if(lAviLengthTime > 0)
+		if(pProgDlg)
 		{
-			nProgress = 80 / ((int) lAviLengthTime / 1000);
-		}
+			pProgDlg->Create(this);
+			pProgDlg->ShowWindow(SW_SHOW);
 
-		while(pConv->Converting())
-		{
-			lCurrentTime = time(&timer);
-			if(pProgDlg->CheckCancelButton())
-			{
-				pConv->CancelConversion();
-				break;
-			}
-			if(lCurrentTime-lTimeStart >= 1 && nProgress < 95)
-			{
-				nProgress = nProgress + rand() % 5 + 1;
-				pProgDlg->SetPos(nProgress);
-				lTimeStart = time(&timer);
-			}
-		}
-		while(nProgress < 100)
-		{
-			lCurrentTime = time(&timer);
-			if(lCurrentTime-lTimeStart >=1)
-			{
-				nProgress++;
-				pProgDlg->SetPos(nProgress);
-				lTimeStart = time(&timer);
-			}
+			int nProgress = 0;
+			time_t timer;
+			long lTimeStart = time(&timer);
+			long lCurrentTime = 0;
 
+			while(pConv->Converting())
+			{
+				lCurrentTime = time(&timer);
+				if(pProgDlg->CheckCancelButton())
+				{
+					pConv->CancelConversion();
+					break;
+				}
+				if(lCurrentTime-lTimeStart >= rand() % pProgDlg->MaxProg() + pProgDlg->MinProg() && nProgress < pProgDlg->FakeMax())
+				{
+					nProgress = nProgress + rand() % pProgDlg->MaxProg() + pProgDlg->MinProg();
+					pProgDlg->SetPos(nProgress);
+					lTimeStart = time(&timer);
+				}
+			}
+			while(nProgress < pProgDlg->RealMax())
+			{
+				lCurrentTime = time(&timer);
+				if(pProgDlg->CheckCancelButton())
+				{
+					res = CANCELLED;
+					break;
+				}
+				if(lCurrentTime-lTimeStart >= pProgDlg->MinSecProgress())
+				{
+					nProgress++;
+					pProgDlg->SetPos(nProgress);
+					lTimeStart = time(&timer);
+				}
+
+			}
+			res = pConv->Status();
+			delete(pProgDlg);
 		}
-		delete(pProgDlg);
+		delete pConv;
 	}
 
-	return true;
+	return (res == SUCCESS) ? true : false;
 }
 
 bool CRecorderView::GetRecordState()
