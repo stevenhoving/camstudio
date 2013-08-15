@@ -12,7 +12,7 @@
 #include "FlashingWnd.h"	// for CFlashingWnd
 #include "BasicMessage.h"	// for CBasicMessage
 #include "screen.h"
-
+#include "MP4Converter.h"
 #define  TEMPFILETAGINDICATOR "~temp"	
 
 
@@ -248,7 +248,8 @@ private:
 	bool RunViewer(const CString& strNewFile);
 	bool RunProducer(const CString& strNewFile);
 	void DisplayAutopanInfo(CRect rc);
-	bool ConvertToMP4(const CString& strInputAVI, const CString& strOutputMP4);
+	bool ConvertToMP4(const CString& sInputAVI, const CString& sOutputMP4);
+	long GetAVILengthTime(const CString & sAVIFile);
 	// dialog controls
 	// TEST a la AudioFormat.cpp
 	// CButton m_ctrlButtonOnXnoteRecordDurationLimitMode;
