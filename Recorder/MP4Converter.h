@@ -1,4 +1,11 @@
 #pragma once
+
+enum ConvRes
+{
+	SUCCESS = 0,
+	CANCELLED = 1,
+	FAILED = 2
+};
 class CMP4Converter
 {
 public:
@@ -7,7 +14,7 @@ public:
 	bool ConvertAVItoMP4(
 		const CString& sInputAVI, 
 		const CString& sOutputMP4);
-	bool Sucess();
+	bool Success();
 	bool Converting();
 	void CancelConversion();
 
@@ -26,7 +33,8 @@ private:
 
 	PCONVERTERDATA m_pData;
 	HANDLE m_hThread;
-	bool m_bSuccess;
+	//static bool m_bSuccess;
 	bool m_bConverting;
+	static ConvRes m_ConvRes;
 };
 

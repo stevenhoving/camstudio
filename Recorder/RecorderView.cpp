@@ -59,6 +59,7 @@
 #include <windowsx.h>
 #include <fstream>
 #include <iostream>
+#include <time.h>
 using namespace std;
 
 #ifdef _DEBUG
@@ -1384,9 +1385,12 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		RunProducer(strTargetVideoFile);
 		break;
 	case ModeMP4:
+
 		if(ConvertToMP4(strTargetVideoFile, strTargetMP4VideoFile))
 		{
 		}
+		//DeleteFile(strTargetVideoFile);
+
 		break;
 	}
 	return 0;
@@ -4865,36 +4869,77 @@ bool CRecorderView::RunProducer(const CString& strNewFile)
 	return true;
 }
 
-bool CRecorderView::ConvertToMP4(const CString& strInputAVI, const CString& strOutputMP4)
+long CRecorderView::GetAVILengthTime(const CString & sAVIFile)
 {
+	long lRet = 0;
+	HRESULT hr;
+	PAVIFILE pFile;
+	hr = AVIFileOpen(&pFile, sAVIFile, 0, 0L);
+	if(hr == AVIERR_OK)
+	{
+		PAVISTREAM  pavi;
+		if(AVIFileGetStream(pFile, &pavi, streamtypeAUDIO , 0) == AVIERR_OK)
+		{
+			lRet = AVIStreamLengthTime(pavi);
+		}
+		AVIFileRelease(pFile);
+	}
+	return lRet;
+}
+bool CRecorderView::ConvertToMP4(const CString& sInputAVI, const CString& sOutputMP4)
+{
+	ConvRes ret;
+
 	CMP4Converter *pConv = new CMP4Converter();
 	if(pConv)
 	{
 		CString sAppDir = GetProgPath();
-		pConv->ConvertAVItoMP4(strInputAVI, strOutputMP4);
+		pConv->ConvertAVItoMP4(sInputAVI, sOutputMP4);
 		CProgressDlg *pProgDlg = new CProgressDlg();
 		pProgDlg->Create(this);
 		pProgDlg->ShowWindow(SW_SHOW);
-		pProgDlg->SetRange(1, 10000);
+		pProgDlg->SetRange(1, 100);
 		pProgDlg->SetStep(1);
 		int nProgress = 0;
+		time_t timer;
+		long lTimeStart = time(&timer);
+		long lCurrentTime = 0;
+
+		long lAviLengthTime = GetAVILengthTime(sInputAVI);
+		if(lAviLengthTime > 0)
+		{
+			nProgress = 80 / ((int) lAviLengthTime / 1000);
+		}
+
 		while(pConv->Converting())
 		{
+			lCurrentTime = time(&timer);
 			if(pProgDlg->CheckCancelButton())
 			{
 				pConv->CancelConversion();
 				break;
 			}
-			nProgress++;
-			pProgDlg->SetPos(nProgress);
+			if(lCurrentTime-lTimeStart >= 1 && nProgress < 95)
+			{
+				nProgress = nProgress + rand() % 5 + 1;
+				pProgDlg->SetPos(nProgress);
+				lTimeStart = time(&timer);
+			}
 		}
-		//while(nProgress < 10000)
-		//{
-		//	nProgress++;
-		//	pProgDlg->SetPos(nProgress);
-		//}
+		while(nProgress < 100)
+		{
+			lCurrentTime = time(&timer);
+			if(lCurrentTime-lTimeStart >=1)
+			{
+				nProgress++;
+				pProgDlg->SetPos(nProgress);
+				lTimeStart = time(&timer);
+			}
+
+		}
 		delete(pProgDlg);
 	}
+
 	return true;
 }
 

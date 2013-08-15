@@ -8,7 +8,6 @@ HANDLE m_gHandles[2];
 
 CMP4Converter::CMP4Converter(void) :
 m_pData(NULL),
-m_bSuccess(false),
 m_bConverting(true),
 m_hThread(INVALID_HANDLE_VALUE)
 {
@@ -19,7 +18,6 @@ m_hThread(INVALID_HANDLE_VALUE)
 		NULL);  // unnamed object
 
 }
-
 
 CMP4Converter::~CMP4Converter(void)
 {
@@ -101,12 +99,12 @@ bool CMP4Converter::ConvertAVItoMP4(
 	si.dwFlags |= STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
  	// Start the FFMpeg process. 
 	if( !CreateProcess(
-		*m_pData->psExePath,				//module name
-		m_pData->psCmdLine->GetBuffer(),	// Command line
+		*m_pData->psExePath,			//module name
+		m_pData->psCmdLine->GetBuffer(),// Command line
 		NULL,							// Process handle not inheritable
 		NULL,							// Thread handle not inheritable
 		TRUE,							// Set handle inheritance to FALSE
-		NULL,							// Noconsole
+		NULL,							// No console
 		NULL,							// Use parent's environment block
 		NULL,							// Use parent's starting directory 
 		&si,							// Pointer to STARTUPINFO structure
@@ -131,9 +129,16 @@ bool CMP4Converter::ConvertAVItoMP4(
 	{
 
 		case WAIT_OBJECT_0 + 0:
-			DeleteFile(*m_pData->psInputFile);
-			DeleteFile(*m_pData->psInputFile);
-			ExitThread(0);
+			{
+				HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, TRUE, pi.dwProcessId);
+				if(hProcess)
+				{
+					TerminateProcess(hProcess, 0);
+					DeleteFile(*m_pData->psInputFile);
+					DeleteFile(*m_pData->psInputFile);
+				}
+			//ExitThread(0);
+			}
 			break; 
 
 		case WAIT_OBJECT_0 + 1:
@@ -145,6 +150,7 @@ bool CMP4Converter::ConvertAVItoMP4(
 
 				if (!CloseHandle(wrstdout))
 					MessageBox(NULL,"Failed to close the write stdout pipe", "Warning", 0);
+
 				bool bContinue = true;
 				while(bContinue)
 				{
@@ -187,3 +193,4 @@ bool CMP4Converter::ConvertAVItoMP4(
  {
 	 SetEvent(m_gHandles[0]);
  }
+
