@@ -1057,9 +1057,9 @@ BEGIN
 END
 
 IDD_CONV_DIALOG DIALOGEX 0, 0, 183, 118
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_POPUP | WS_VISIBLE | WS_CAPTION
 CAPTION "Please Wait - Converting to MP4"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "Cancel",ID_PROGRESS_CANCEL,66,87,50,14
     CONTROL         "",CG_IDC_PROGDLG_PROGRESS,"msctls_progress32",WS_BORDER,15,65,154,13
@@ -2346,6 +2346,7 @@ IDC_CURSORDRAG          CURSOR                  "res\\cur00001.cur"
 STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Recorder\n\nRecorder\n\n\nRecorder.Document\nRecorder Document"
+    IDS_STRING_CONV_ERR     "Error launching MP4 converter!"
 END
 
 STRINGTABLE
@@ -2717,8 +2718,9 @@ END
 STRINGTABLE
 BEGIN
     IDS_RECMP4              "Record to MP4"
-    IDS_CONVERTER_FAILED    "Error launching MP4 converter!"
     IDS_STRING_DELETE_FAILED "Failed to delete %s"
+    IDS_STRING_CONV_DLG_CAP "Please Wait - Converting to MP4"
+    IDS_STRING_GENERATING   "Generating : %s"
 END
 
 #endif    // English (United States) resources
