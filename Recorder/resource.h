@@ -29,6 +29,7 @@
 #define IDR_MAINFRAME                   128
 #define IDS_STRING_VERSION              129
 #define IDS_STRING_DISABLE_LOCK_WARNING 129
+#define IDS_STRING_CONV_ERR             129
 #define IDB_BITMAP1                     130
 #define IDD_CURSOROPTIONS               132
 #define IDB_BITMAP2                     134
@@ -649,6 +650,10 @@
 #define IDS_CONVERTER_FAILED            61585
 #define ID_STRING_DELETE_FAILED         61586
 #define IDS_STRING_DELETE_FAILED        61586
+#define IDS_STRING130                   61587
+#define IDS_STRING_CONV_DLG_CAP         61587
+#define IDS_STRING131                   61588
+#define IDS_STRING_GENERATING           61588
 
 // Next default values for new objects
 // 

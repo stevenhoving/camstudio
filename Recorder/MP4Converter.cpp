@@ -112,9 +112,7 @@ bool CMP4Converter::ConvertAVItoMP4(
 		&pi )							// Pointer to PROCESS_INFORMATION structure
 		) 
 	{
-		CString sMsg;
-		sMsg.LoadString(IDS_CONVERTER_FAILED);
-		MessageBox(NULL, sMsg ,"Note",MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(NULL, "Failed to start MP4 Converter" ,"Note",MB_OK | MB_ICONEXCLAMATION);
 		return 0;
 	}
 	DWORD dwRead; 
