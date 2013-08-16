@@ -22,7 +22,6 @@ CProgressDlg::CProgressDlg(CWnd* pParent /*=NULL*/)
 	m_nMinProg(1),
 	m_nMaxProg(5),
 	m_nFakeMax(95),
-	m_nFakeMin(80),
 	m_bParentDisabled(FALSE)
 {
 
@@ -40,7 +39,8 @@ short CProgressDlg::RealMax()
 }
 short CProgressDlg::FakeMax()
 {
-	return rand() % m_nFakeMax + m_nFakeMin;
+	short nRet =  m_nFakeMax - (rand() % 15 + 1);
+	return nRet;
 }
 short CProgressDlg::MinSecProgress()
 {
@@ -227,7 +227,7 @@ BOOL CProgressDlg::OnInitDialog()
     m_Progress.SetPos(m_nLower);
 
 	CString strCaption;
-	VERIFY(strCaption.LoadString(m_nCaptionID));
+	VERIFY(strCaption.LoadString(IDS_STRING_CONV_DLG_CAP));
     SetWindowText(strCaption);
 
     return TRUE;

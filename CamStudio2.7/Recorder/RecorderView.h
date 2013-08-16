@@ -248,7 +248,7 @@ private:
 	bool RunViewer(const CString& strNewFile);
 	bool RunProducer(const CString& strNewFile);
 	void DisplayAutopanInfo(CRect rc);
-	bool ConvertToMP4(const CString& sInputAVI, const CString& sOutputMP4);
+	bool ConvertToMP4(const CString& sInputAVI, const CString& sOutputMP4, const CString& sOutBareName);
 	long GetAVILengthTime(const CString & sAVIFile);
 	// dialog controls
 	// TEST a la AudioFormat.cpp

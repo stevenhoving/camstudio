@@ -44,7 +44,6 @@ protected:
 	short m_nMinSecProgress;
 	short m_nMinProg;
 	short m_nMaxProg;
-	short m_nFakeMax;
 	short m_nFakeMin;
 	BOOL m_bCancel;
 	BOOL m_bParentDisabled;

@@ -1388,7 +1388,9 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		{
 			CString sMsg;
 			CString sRes;
-			if(ConvertToMP4(strTargetVideoFile, strTargetMP4VideoFile))
+			CString sOutBareName;
+			sOutBareName.Format("%s.mp4", strTargetBareFileName);
+			if(ConvertToMP4(strTargetVideoFile, strTargetMP4VideoFile, sOutBareName))
 			{
 				if(!DeleteFile(strTargetVideoFile))
 				{
@@ -4909,7 +4911,7 @@ long CRecorderView::GetAVILengthTime(const CString & sAVIFile)
 	}
 	return lRet;
 }
-bool CRecorderView::ConvertToMP4(const CString& sInputAVI, const CString& sOutputMP4)
+bool CRecorderView::ConvertToMP4(const CString& sInputAVI, const CString& sOutputMP4, const CString& sOutBareName)
 {
 	ConversionResult res;
 
@@ -4921,13 +4923,20 @@ bool CRecorderView::ConvertToMP4(const CString& sInputAVI, const CString& sOutpu
 		if(pProgDlg)
 		{
 			pProgDlg->Create(this);
-			pProgDlg->ShowWindow(SW_SHOW);
+			CString msgx,msgout;
+			msgx.LoadString(IDS_STRING_GENERATING);
+			msgout.Format(msgx,sOutBareName);
+			((CStatic *) pProgDlg->GetDlgItem(IDC_CONVERSIONTEXT))->SetWindowText(msgout);
 
 			int nProgress = 0;
 			time_t timer;
 			long lTimeStart = time(&timer);
 			long lCurrentTime = 0;
 
+			int nFakeMax = pProgDlg->FakeMax();
+			CString s;
+			s.Format("%d", nFakeMax);
+			MessageBox(s, "", 0);
 			while(pConv->Converting())
 			{
 				lCurrentTime = time(&timer);
@@ -4951,13 +4960,9 @@ bool CRecorderView::ConvertToMP4(const CString& sInputAVI, const CString& sOutpu
 					res = CANCELLED;
 					break;
 				}
-				if(lCurrentTime-lTimeStart >= pProgDlg->MinSecProgress())
-				{
-					nProgress++;
-					pProgDlg->SetPos(nProgress);
-					lTimeStart = time(&timer);
-				}
-
+				nProgress++;
+				pProgDlg->SetPos(nProgress);
+				lTimeStart = time(&timer);
 			}
 			res = pConv->Status();
 			delete(pProgDlg);
