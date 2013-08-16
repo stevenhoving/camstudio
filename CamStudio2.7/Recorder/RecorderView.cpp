@@ -4932,11 +4932,6 @@ bool CRecorderView::ConvertToMP4(const CString& sInputAVI, const CString& sOutpu
 			time_t timer;
 			long lTimeStart = time(&timer);
 			long lCurrentTime = 0;
-
-			int nFakeMax = pProgDlg->FakeMax();
-			CString s;
-			s.Format("%d", nFakeMax);
-			MessageBox(s, "", 0);
 			while(pConv->Converting())
 			{
 				lCurrentTime = time(&timer);
