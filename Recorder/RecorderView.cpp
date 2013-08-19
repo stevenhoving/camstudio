@@ -4400,14 +4400,18 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 	long oldsec = 0L;
 	while (bRecordState)
 	{
-		if (!bInitCapture) {
+		if (!bInitCapture)
+		{
 			timeexpended = timeGetTime() - dwInitialTime;
-		} else {
+		} 
+		else 
+		{
 			frametime = 0;
 			timeexpended = 0;
 		}
 		// Autopan
-		if (cProgramOpts.m_bAutoPan && (rectFrame.Width() < maxxScreen) && (rectFrame.Height() < maxyScreen)) {
+		if (cProgramOpts.m_bAutoPan && (rectFrame.Width() < maxxScreen) && (rectFrame.Height() < maxyScreen))
+		{
 			CPoint xPoint;
 			GetCursorPos(&xPoint);
 
@@ -4489,11 +4493,14 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 				DisplayAutopanInfo(rectPanFrame);
 				showmessage = false;
 			}
-		} else {
+		} 
+		else 
+		{
 			//ver 1.8
 			//moving region
 
-			if (m_FlashingWnd.NewRegionUsed()) {
+			if (m_FlashingWnd.NewRegionUsed()) 
+			{
 				// Happens when flashing region was moved
 				// it seems unlikely will be called when setting new region explicitly in the code. good for zoom!
 				//TRACE(_T("rectFrame != newRect %s\n"), (rectFrame != newRect) ? _T("TRUE") : _T("FALSE"));
@@ -4516,13 +4523,19 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 			}
 		}
 
-		if (!bInitCapture) {
-			if (1000 < cVideoOpts.m_iTimeLapse) {
+		if (!bInitCapture) 
+		{
+			if (1000 < cVideoOpts.m_iTimeLapse)
+			{
 				frametime++;
-			} else {
+			} 
+			else 
+			{
 				frametime = (DWORD) (((double) timeexpended /1000.0 ) * (double) (1000.0/cVideoOpts.m_iTimeLapse));
 			}
-		} else {
+		} 
+		else 
+		{
 			bInitCapture = false;
 		}
 		int seconds = 0.0;
@@ -4533,8 +4546,11 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 		seconds = timeexpended / 1000 % 60; 
 		sTimeLength.Format("%d hrs %d mins %d secs", hours, minutes, seconds);
 		fTimeLength = ((float) timeexpended) /((float) 1000.0);
-		if (cProgramOpts.m_bRecordPreset) {
-			if (cProgramOpts.m_iPresetTime <= int(fTimeLength)) {
+
+		if (cProgramOpts.m_bRecordPreset) 
+		{
+			if (cProgramOpts.m_iPresetTime <= int(fTimeLength)) 
+			{
 				::PostMessage(hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
 			}
 
@@ -4561,7 +4577,8 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 		//}
 
 	
-		if ( ( frametime == 0 ) || ( oldframetime < frametime ) ) {
+		if ( ( frametime == 0 ) || ( oldframetime < frametime ) ) 
+		{
 			//ver 1.8
 			//if (iShiftType == 1) {
 			//	if (frametime == 0) {
@@ -4588,7 +4605,8 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 			LONG lBytesWritten = 0L;
 			hr = ::AVIStreamWrite(psCompressed, frametime, 1, (LPBYTE) alpbi + alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD), alpbi->biSizeImage, 0, &lSampWritten, &lBytesWritten);
 			//}
-			if (hr != AVIERR_OK) {
+			if (hr != AVIERR_OK) 
+			{
 				TRACE("CRecorderView::RecordVideo: AVIStreamWrite error\n");
 				CAVI::OnError(hr);
 				break;
@@ -4603,7 +4621,8 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 
 			// Update recording stats every half a second
 			divx = timeexpended / 500;
-			if (divx != oldsec) {
+			if (divx != oldsec) 
+			{
 				oldsec = divx;
 				::InvalidateRect(hWndGlobal, NULL, FALSE);
 			}
@@ -4623,20 +4642,24 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 		DWORD timestartpause = 0;
 		DWORD timeendpause	= 0;
 		DWORD timedurationpause = 0;
-		while (bRecordPaused) {
-			if (!haveslept) {
+		while (bRecordPaused) 
+		{
+			if (!haveslept) 
+			{
 				timestartpause = timeGetTime();
 			}
 
 			//Flash Pause Indicator in Title Bar
 			pausecounter++;
-			if ((pausecounter % 8) == 0) {
+			if ((pausecounter % 8) == 0) 
+			{
 				//if after every 400 milliseconds (8 * 50)
 				CMainFrame * pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
 
 // TODO - Found this crash behaviour while I developed CAMSTUDIO4XNOTE but it looks like to be something that was still in previously releases. (before r245)
 // TRACE("CRecorderView: if Pause selected, statement skippped, pFrame->SetTitle(_T("")), causes error\n");
-				if (pauseindicator) {
+				if (pauseindicator) 
+				{
 #define CAMSTUDIO_IGNORE_THIS
 #ifndef CAMSTUDIO_IGNORE_THIS
 					pFrame->SetTitle(_T(""));     // This still gives an error before r245 (when build using vs2008)...!				
@@ -4651,8 +4674,10 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 				}
 			}
 
-			if (cAudioFormat.isInput(SPEAKERS) || cAudioFormat.m_bUseMCI) {
-				if (bAlreadyMCIPause == 0) {
+			if (cAudioFormat.isInput(SPEAKERS) || cAudioFormat.m_bUseMCI) 
+			{
+				if (bAlreadyMCIPause == 0) 
+				{
 					mciRecordPause(hWndGlobal, strTempAudioWavFilePath);
 					bAlreadyMCIPause = true;
 				}
@@ -4665,23 +4690,23 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 		}
 
 		//Version 1.1
-		if (haveslept) {
-			if (cAudioFormat.isInput(SPEAKERS) || cAudioFormat.m_bUseMCI) {
-				if (bAlreadyMCIPause) {
-					mciRecordResume(hWndGlobal, strTempAudioWavFilePath);
+		if (haveslept) 
+		{
+			if (cAudioFormat.isInput(SPEAKERS) || cAudioFormat.m_bUseMCI)
+			{
+				if (bAlreadyMCIPause) 
+				{
 					bAlreadyMCIPause = false;
+					mciRecordResume(hWndGlobal, strTempAudioWavFilePath);
 				}
+					timeendpause = timeGetTime();
+					timedurationpause =  timeendpause - timestartpause;
+					dwInitialTime = dwInitialTime + timedurationpause;
+					continue;
 			}
-
-			timeendpause = timeGetTime();
-			timedurationpause =  timeendpause - timestartpause;
-
-			//CString msgstr;
-			//msgstr.Format("timestartpause %ld\ntimeendpause %ld\ntimedurationpause %ld", timeendpause, timeendpause, timedurationpause);
-			//MessageBox(NULL, msgstr, "Note", MB_OK);
-
-			dwInitialTime = dwInitialTime + timedurationpause;
-		} else {
+		}
+		else 
+		{
 			//introduce time lapse
 			//maximum lapse when bRecordState changes will be less than 100 milliseconds
 			int no_iteration = cVideoOpts.m_iTimeLapse/50;
@@ -4692,7 +4717,8 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 					break;
 				}
 			}
-			if (bRecordState) {
+			if (bRecordState) 
+			{
 				::Sleep(remainlapse);
 			}
 		}
