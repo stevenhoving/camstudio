@@ -290,6 +290,8 @@
 #define IDC_LOCK                        1078
 #define IDC_CFE_INFO                    1080
 #define IDC_CFE_INFO2                   1081
+#define IDC_BUTTON                      1081
+#define IDC_LANG_ENC                    1081
 #define IDC_KEYFRAMES                   1153
 #define IDC_KEYFRAMES2                  1154
 #define IDC_STATIC_KEYFRAMES            1277
@@ -662,7 +664,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        227
 #define _APS_NEXT_COMMAND_VALUE         32951
-#define _APS_NEXT_CONTROL_VALUE         1081
+#define _APS_NEXT_CONTROL_VALUE         1082
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

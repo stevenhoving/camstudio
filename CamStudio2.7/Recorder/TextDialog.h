@@ -85,6 +85,8 @@ private:
 	CButton m_ctrlButtonJustifyRight;
 	CEdit m_ctrlEditText;
 	CButton m_ctrlButtonLanguage;
+public:
+	afx_msg void OnBnClickedLangEnc();
 };
 
 //{{AFX_INSERT_LOCATION}}
