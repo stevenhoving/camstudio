@@ -110,7 +110,6 @@ BOOL CTextDlg::OnInitDialog()
 	}
 
 	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();
-	m_ctrlButtonLanguage.EnableWindow(((pApp->VersionOp() >= 5) && (msgShown)));
 
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
