@@ -36,7 +36,7 @@ void CTextDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, ID_JUSTCENTER, m_ctrlButtonJustifyCenter);
 	DDX_Control(pDX, ID_JUSTRIGHT, m_ctrlButtonJustifyRight);
 	DDX_Control(pDX, IDC_EDIT1, m_ctrlEditText);
-	DDX_Control(pDX, ID_FONT2, m_ctrlButtonLanguage);
+	DDX_Control(pDX, IDC_LANG_ENC, m_ctrlButtonLanguage);
 }
 
 BEGIN_MESSAGE_MAP(CTextDlg, CDialog)
@@ -46,7 +46,7 @@ BEGIN_MESSAGE_MAP(CTextDlg, CDialog)
 	ON_BN_CLICKED(ID_JUSTLEFT, OnJustleft)
 	ON_BN_CLICKED(ID_JUSTCENTER, OnJustcenter)
 	ON_BN_CLICKED(ID_JUSTRIGHT, OnJustright)
-	ON_BN_CLICKED(ID_FONT2, OnFont2)
+	//ON_BN_CLICKED(ID_FONT2, OnFont2)
 	ON_COMMAND(ID_SCRIPT_WESTERN, OnScriptWestern)
 	ON_COMMAND(ID_SCRIPT_ARABIC, OnScriptArabic)
 	ON_COMMAND(ID_SCRIPT_BALTIC, OnScriptBaltic)
@@ -67,6 +67,7 @@ BEGIN_MESSAGE_MAP(CTextDlg, CDialog)
 	ON_COMMAND(ID_SCRIPT_TURKISH, OnScriptTurkish)
 	ON_WM_KILLFOCUS()
 	//}}AFX_MSG_MAP
+	ON_BN_CLICKED(IDC_LANG_ENC, OnBnClickedLangEnc)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -219,36 +220,6 @@ void CTextDlg::ChooseScriptFont()
 	}
 }
 
-void CTextDlg::OnFont2()
-{
-	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();
-	if (pApp->VersionOp() < 5)
-	{
-		//int ret = MessageBox("This feature works only in Win 2000/ XP." ,"Note",MB_OK | MB_ICONEXCLAMATION);
-		MessageOut(m_hWnd,IDS_STRING_WORKSWINXP,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-		msgShown = 1;
-		m_ctrlButtonLanguage.EnableWindow(FALSE);
-		return;
-	}
-
-	POINT point;
-	GetCursorPos(&point);
-	CPoint local = point;
-	ScreenToClient(&local);
-
-	CMenu menu;
-
-	int menuToLoad = IDR_CONTEXTLANGUAGE;
-	if (menu.LoadMenu(menuToLoad))
-	{
-		CMenu* pPopup = menu.GetSubMenu(0);
-		ASSERT(pPopup != NULL);
-
-		// route commands through main window
-		pPopup->TrackPopupMenu(TPM_RIGHTBUTTON | TPM_LEFTALIGN, point.x, point.y, this);
-	}
-}
-
 void CTextDlg::OnScriptWestern()
 {
 	// TODO: Add your command handler code here
@@ -380,4 +351,36 @@ void CTextDlg::OnScriptTurkish()
 void CTextDlg::OnKillFocus(CWnd* pNewWnd)
 {
 	CDialog::OnKillFocus(pNewWnd);
+}
+
+
+void CTextDlg::OnBnClickedLangEnc()
+{
+	CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();
+	if (pApp->VersionOp() < 5)
+	{
+		//int ret = MessageBox("This feature works only in Win 2000/ XP." ,"Note",MB_OK | MB_ICONEXCLAMATION);
+		MessageOut(m_hWnd,IDS_STRING_WORKSWINXP,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+		msgShown = 1;
+		m_ctrlButtonLanguage.EnableWindow(FALSE);
+		return;
+	}
+
+	POINT point;
+	GetCursorPos(&point);
+	CPoint local = point;
+	ScreenToClient(&local);
+
+	CMenu menu;
+
+	int menuToLoad = IDR_CONTEXTLANGUAGE;
+	if (menu.LoadMenu(menuToLoad))
+	{
+		CMenu* pPopup = menu.GetSubMenu(0);
+		ASSERT(pPopup != NULL);
+
+		// route commands through main window
+		pPopup->TrackPopupMenu(TPM_RIGHTBUTTON | TPM_LEFTALIGN, point.x, point.y, this);
+	}
+
 }
