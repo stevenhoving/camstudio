@@ -106,7 +106,7 @@ STDAPI RegisterFilters( BOOL bRegister )
     hr = CoInitialize(0);
     if(bRegister)
     { 
-        hr = AMovieSetupRegisterServer(CLSID_PushSourceDesktop, L"screen-capture-recorder", achFileName, L"Both", L"InprocServer32");
+        hr = AMovieSetupRegisterServer(CLSID_PushSourceDesktop, L"Screen Capture", achFileName, L"Both", L"InprocServer32");
     }
 
     if( SUCCEEDED(hr) )
@@ -124,7 +124,7 @@ STDAPI RegisterFilters( BOOL bRegister )
                 rf2.cPins = 1;
                 rf2.rgPins = &sudOutputPinDesktop;
 				// this is the name that actually shows up in VLC et al. weird
-                hr = fm->RegisterFilter(CLSID_PushSourceDesktop, L"screen-capture-recorder", &pMoniker, &CLSID_VideoInputDeviceCategory, NULL, &rf2);
+                hr = fm->RegisterFilter(CLSID_PushSourceDesktop, L"Screen Capture", &pMoniker, &CLSID_VideoInputDeviceCategory, NULL, &rf2);
             }
             else
             {
