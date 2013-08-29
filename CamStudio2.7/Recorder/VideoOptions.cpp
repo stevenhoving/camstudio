@@ -11,7 +11,7 @@
 #include "VideoOptions.h"
 #include "RecorderView.h"
 #include "vfw/VCM.h"
-
+#include "AVICompressorFilter.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -371,23 +371,38 @@ void CVideoOptionsDlg::UpdateAdjustSliderVal()
 int CVideoOptionsDlg::LoadICList()
 {
 	m_ctrlCBCompressor.ResetContent();
-	CHIC::TRACEFOURCC(m_cOpts.m_dwCompfccHandler);
-	if (0 < num_compressor) {
-		int sel = -1;
-		for (int i = 0; i < num_compressor; i++) {
-			m_ctrlCBCompressor.AddString(CString(pCompressorInfo[i].szDescription));
-			CHIC::TRACEFOURCC(pCompressorInfo[i].fccHandler, CString(pCompressorInfo[i].szDescription));
-			if (m_cOpts.m_dwCompfccHandler == pCompressorInfo[i].fccHandler) {
-				sel = i;
+	// version 2.7
+	AVICompressorFilter filter;
+	std::list<CString> filterList;
+	filter.EnumerateCompressors(filterList);
+	if(filterList.size() > 0)
+	{
+		for (std::list<CString>::iterator it = filterList.begin(); it != filterList.end(); it++)
+		{
+			CString s(*it);
+			m_ctrlCBCompressor.AddString(s);
+		}
+	}
+	else
+	{
+		CHIC::TRACEFOURCC(m_cOpts.m_dwCompfccHandler);
+		if (0 < num_compressor) {
+			int sel = -1;
+			for (int i = 0; i < num_compressor; i++) {
+				m_ctrlCBCompressor.AddString(CString(pCompressorInfo[i].szDescription));
+				CHIC::TRACEFOURCC(pCompressorInfo[i].fccHandler, CString(pCompressorInfo[i].szDescription));
+				if (m_cOpts.m_dwCompfccHandler == pCompressorInfo[i].fccHandler) {
+					sel = i;
+				}
 			}
-		}
 
-		if (sel == -1) {
-			sel = 0;
-			m_cOpts.m_dwCompfccHandler = pCompressorInfo[sel].fccHandler;
-		}
+			if (sel == -1) {
+				sel = 0;
+				m_cOpts.m_dwCompfccHandler = pCompressorInfo[sel].fccHandler;
+			}
 
-		m_ctrlCBCompressor.SetCurSel(sel);
+			m_ctrlCBCompressor.SetCurSel(sel);
+		}
 	}
 
 	return num_compressor;
