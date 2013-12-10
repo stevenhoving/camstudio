@@ -53,14 +53,22 @@ private:
 	CEdit m_ctrlEditPosY;
 	CButton m_ctrlButtonMouseDrag;
 	CButton m_ctrlButtonFixTopLeft;
+	CButton m_ctrlButtonRoundDown;
 	int m_iLeft;
 	int m_iTop;
 	int m_iWidth;
 	int m_iHeight;
+	int m_iRNDWidth;
+	int m_nRNDHeight;
+	void RoundDownWidth();
+	void RoundDownHeight();
 public:
 	afx_msg void OnEnChangeY();
 	afx_msg void OnEnChangeHeight();
 	afx_msg void OnBnClickedOk();
+	afx_msg void OnBnClickedSupportrounddown();
+	afx_msg void OnEnKillfocusWidth();
+	afx_msg void OnEnKillfocusHeight();
 };
 
 //{{AFX_INSERT_LOCATION}}

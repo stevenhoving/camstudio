@@ -50,8 +50,7 @@ bool CMP4Converter::ConvertAVItoMP4(
 		m_pData->psInputFile = new CString(sInputAVI);
 		m_pData->psOutputFile = new CString(sOutputMP4);
 		CString sCmd;
-		sCmd.Format(" -i \"%s\" -c:v libx264 -preset slow -crf 22 -c:a mp2 -b:a 128k \"%s\"", sInputAVI, sOutputMP4);
-
+		sCmd.Format(" -i \"%s\" -c:v libx264 -preset slow -crf 22 -c:a mp2 -b:a 128k -y \"%s\" -loglevel quiet", sInputAVI, sOutputMP4);
 		m_pData->psCmdLine = new CString(sCmd);
 		m_pData->pdwPipeSize = new DWORD(1048576); // 1mb
 		m_pData->psExePath = new CString(GetProgPath() + "\\ffmpeg.exe");
@@ -61,7 +60,7 @@ bool CMP4Converter::ConvertAVItoMP4(
 				NULL,					// default security attributes
 				0,						// use default stack size  
 				ThreadProc,				// thread function name
-				m_pData,					// argument to thread function 
+				m_pData,				// argument to thread function 
 				0,						// use default creation flags 
 				&dwThreadId);			// returns the thread identifier 
 		if(m_hThread)

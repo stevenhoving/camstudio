@@ -11,8 +11,8 @@ IMPLEMENT_DYNAMIC(CBasicMessage, CDialog)
 
 CBasicMessage::CBasicMessage(CWnd* pParent /*=NULL*/)
 	: CDialog(CBasicMessage::IDD, pParent)
+	, m_bCancelled(false)
 {
-
 }
 
 CBasicMessage::~CBasicMessage()
@@ -43,3 +43,15 @@ void CBasicMessage::OnShowWindow(BOOL bShow, UINT nStatus)
 	m_MessageText.SetWindowText(strText);
 	m_MessageText.HideCaret();
 }
+
+void CBasicMessage::OnCancel()
+{
+	m_bCancelled = true;
+	ReleaseCapture();
+	this->ShowWindow(SW_HIDE);
+}
+bool CBasicMessage::Cancelled()
+{
+	return m_bCancelled;
+}
+

@@ -19,7 +19,8 @@ public:
 	virtual ~CBasicMessage();
 	void SetText(LPCTSTR lpString);
 	void SetTitle(LPCTSTR lpString);
-
+	virtual void OnCancel();
+	bool Cancelled();
 // Dialog Data
 	enum { IDD = IDD_BASICMESSAGE };
 
@@ -31,6 +32,8 @@ protected:
 public:
 	CEdit m_MessageText;
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
+private:
+	bool m_bCancelled;
 };
 
 #endif // !defined(_BASICMESSAGE_H__DCC4865E_3B37_402E_AC1B_C8ABF4519F51__INCLUDED_)
