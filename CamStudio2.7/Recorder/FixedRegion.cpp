@@ -51,6 +51,7 @@ void CFixedRegionDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_Y, m_ctrlEditPosY);
 	DDX_Control(pDX, IDC_SUPPORTMOUSEDRAG, m_ctrlButtonMouseDrag);
 	DDX_Control(pDX, IDC_FIXEDTOPLEFT, m_ctrlButtonFixTopLeft);
+	DDX_Control(pDX, IDC_SUPPORTROUNDDOWN, m_ctrlButtonRoundDown);
 	//}}AFX_DATA_MAP
 	DDX_Text(pDX, IDC_X, m_iLeft);
 	DDV_MinMaxInt(pDX, m_iLeft, minxScreen, maxxScreen);
@@ -72,6 +73,9 @@ BEGIN_MESSAGE_MAP(CFixedRegionDlg, CDialog)
 	ON_EN_CHANGE(IDC_Y, &CFixedRegionDlg::OnEnChangeY)
 	ON_EN_CHANGE(IDC_HEIGHT, &CFixedRegionDlg::OnEnChangeHeight)
 	ON_BN_CLICKED(IDOK, &CFixedRegionDlg::OnBnClickedOk)
+	ON_BN_CLICKED(IDC_SUPPORTROUNDDOWN, &CFixedRegionDlg::OnBnClickedSupportrounddown)
+	ON_EN_KILLFOCUS(IDC_WIDTH, &CFixedRegionDlg::OnEnKillfocusWidth)
+	ON_EN_KILLFOCUS(IDC_HEIGHT, &CFixedRegionDlg::OnEnKillfocusHeight)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -176,7 +180,6 @@ void CFixedRegionDlg::OnOK()
 	cRegionOpts.m_iCaptureWidth = m_iWidth ;
 	cRegionOpts.m_iCaptureHeight = m_iHeight ;
 	cRegionOpts.m_bSupportMouseDrag = m_ctrlButtonMouseDrag.GetCheck() ? true : false;
-
 	CDialog::OnOK();
 }
 
@@ -277,4 +280,55 @@ void CFixedRegionDlg::OnBnClickedOk()
 	// TODO: Add your control notification handler code here
 
 	OnOK();
+}
+
+
+void CFixedRegionDlg::OnBnClickedSupportrounddown()
+{
+	if(m_ctrlButtonRoundDown.GetCheck())
+	{
+		RoundDownHeight();
+		RoundDownWidth();
+	}
+}
+
+
+void CFixedRegionDlg::OnEnKillfocusWidth()
+{
+	if(m_ctrlButtonRoundDown.GetCheck())
+	{
+		RoundDownWidth();
+	}
+}
+void CFixedRegionDlg::OnEnKillfocusHeight()
+{
+	if(m_ctrlButtonRoundDown.GetCheck())
+	{
+		RoundDownHeight();
+	}
+}
+
+void CFixedRegionDlg::RoundDownHeight()
+{
+	CString sVal;
+	m_ctrlEditHeight.GetWindowTextA(sVal);
+	int nHeight = atoi(sVal);
+	if((nHeight % 2) != 0)
+	{
+		nHeight = nHeight-1;
+		sVal.Format("%d", nHeight);
+		m_ctrlEditHeight.SetWindowTextA(sVal);
+	}
+}
+void CFixedRegionDlg::RoundDownWidth()
+{
+	CString sVal;
+	m_ctrlEditWidth.GetWindowTextA(sVal);
+	int nWidth = atoi(sVal);
+	if((nWidth % 2) != 0)
+	{
+		nWidth = nWidth -1;
+		sVal.Format("%d", nWidth);
+		m_ctrlEditWidth.SetWindowTextA(sVal);
+	}
 }

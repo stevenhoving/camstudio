@@ -31,6 +31,7 @@
 #define IDS_STRING_DISABLE_LOCK_WARNING 129
 #define IDS_STRING_CONV_ERR             129
 #define IDB_BITMAP1                     130
+#define IDS_STRING_REC_CAN              130
 #define IDD_CURSOROPTIONS               132
 #define IDB_BITMAP2                     134
 #define IDB_SCREENANNOTATIONS_SMALL     134
@@ -200,6 +201,8 @@
 #define IDC_SUPPORTMOUSEDRAG            1048
 #define IDC_INTERLEAVEFRAMES            1049
 #define IDC_CLOSE                       1049
+#define IDC_SUPPORTMOUSEDRAG2           1049
+#define IDC_SUPPORTROUNDDOWN            1049
 #define IDC_SOUNDDEVICE                 1050
 #define IDC_STATICVOLUME                1051
 #define IDC_STATICINFO                  1052
@@ -662,9 +665,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        227
+#define _APS_NEXT_RESOURCE_VALUE        228
 #define _APS_NEXT_COMMAND_VALUE         32951
-#define _APS_NEXT_CONTROL_VALUE         1082
+#define _APS_NEXT_CONTROL_VALUE         1084
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

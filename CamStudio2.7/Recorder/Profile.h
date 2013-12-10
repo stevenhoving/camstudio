@@ -820,7 +820,7 @@ struct sProducerOpts
 	sProducerOpts()
 		: m_bLaunchPropPrompt(false)
 		, m_bLaunchHTMLPlayer(true)
-		, m_bDeleteAVIAfterUse(true)
+		, m_bDeleteAVIAfterUse(false)
 	{
 	}
 	sProducerOpts(const sProducerOpts& rhs)

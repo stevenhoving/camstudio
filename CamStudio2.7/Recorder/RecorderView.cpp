@@ -924,7 +924,6 @@ LRESULT CRecorderView::OnRecordStart(UINT /*wParam*/, LONG /*lParam*/)
 
 	//Ver 1.2
 	bAllowNewRecordStartKey = TRUE; //allow this only after bRecordState is set to 1
-
 	return 0;
 }
 
@@ -1065,6 +1064,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	CString strTargetXnoteLogFile = "";			// Xnote log filename initial without path but with extension
 	CString strTargetVideoExtension = ".avi";
 	CString strTargetMP4VideoFile = "";
+
 	//ver 1.2
 	::SetForegroundWindow( AfxGetMainWnd()->m_hWnd);
 	AfxGetMainWnd()->ShowWindow(SW_RESTORE);
@@ -1095,7 +1095,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 	switch(cProgramOpts.m_iRecordingMode)
 	{
 	case ModeAVI:
-		strExtFilter = _T("AVI Movie Files (*.avi)|*.avi||");
+		strFilter = _T("AVI Movie Files (*.avi)|*.avi||");
 		strTitle = _T("Save AVI File");
 		strExtFilter = _T("*.avi");
 		break;
@@ -1120,7 +1120,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		strTargetDir = GetTempFolder(cProgramOpts.m_iOutputPathAccess, cProgramOpts.m_strSpecifiedDir, true);
 
 	}
-	CFileDialog fdlg(FALSE, strExtFilter, strExtFilter, OFN_LONGNAMES, strFilter, this);
+	CFileDialog fdlg(FALSE, strExtFilter, strExtFilter, OFN_LONGNAMES | OFN_OVERWRITEPROMPT, strFilter, this);
 	fdlg.m_ofn.lpstrTitle = strTitle;
 
 	// Savedir is a global var and therefor mostly set before.
@@ -1145,7 +1145,7 @@ LRESULT CRecorderView::OnUserGeneric (UINT /*wParam*/, LONG /*lParam*/)
 		strTargetVideoExtension = ".avi";
 	} 
 	else if (fdlg.DoModal() == IDOK) 
-	{	
+	{
 		strTmp = fdlg.GetPathName();
 		strTargetDir = strTmp.Left(strTmp.ReverseFind('\\'));
 		// remove path info, we now have the udf defined filename
@@ -1518,6 +1518,12 @@ void CRecorderView::OnRecord()
 		// Applicable when Option region is set as 'Window' and as 'Full Screen'
 		
 		// TODO, Possible memory leak, where is the delete operation of the new below done?
+		if(m_basicMsg)
+		{
+			delete m_basicMsg;
+			m_basicMsg = NULL;
+		}
+
 		m_basicMsg = new CBasicMessage();
 		m_basicMsg->Create(CBasicMessage::IDD);
 		if ( cRegionOpts.m_iMouseCaptureMode == CAPTURE_WINDOW ) {
@@ -1526,7 +1532,6 @@ void CRecorderView::OnRecord()
 			m_basicMsg->SetText(_T("Click on screen to be captured."));
 		}
 		m_basicMsg->ShowWindow(SW_SHOW);
-		//m_basicMsg.DoModal();
 		SetCapture(); // what is this for?
 		//TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom, rc.right );
 		//TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
@@ -3189,9 +3194,6 @@ void CRecorderView::OnSetFocus(CWnd* pOldWnd)
 /////////////////////////////////////////////////////////////////////////////
 LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 {
-	CString s;
-	s.Format("%d", wParam);
-	MessageBox(s, "", 0);
 	switch (wParam)
 	{
 	case HOTKEY_RECORD_START_OR_PAUSE:	// 0 = start recording
@@ -3499,7 +3501,6 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
 {
 	CPoint ptMouse;
 	VERIFY(GetCursorPos(&ptMouse));
-
 	if (cRegionOpts.isCaptureMode(CAPTURE_WINDOW))
 	{
 		CWnd* pWnd = WindowFromPoint(ptMouse);
@@ -3512,12 +3513,9 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
 			::GetWindowRect(pWnd->m_hWnd, &rcUse);
 
 			//close the window to show user selection was successful
-			m_basicMsg->CloseWindow();
-			delete m_basicMsg;
-			m_basicMsg = NULL;
-
 			//post message to start recording
-			::PostMessage (hWndGlobal,WM_USER_RECORDSTART,0,(LPARAM) 0);
+			if(pWnd->m_hWnd != m_basicMsg->m_hWnd)
+				::PostMessage (hWndGlobal,WM_USER_RECORDSTART,0,(LPARAM) 0);
 		}
 	}
 	else if (cRegionOpts.isCaptureMode(CAPTURE_FULLSCREEN))
@@ -3533,18 +3531,13 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
 		//set the rectangle used for recording to the monitor's
 		CopyRect(rcUse, &mi.rcMonitor);
 
-		//close the window to show user selection was successful
-		m_basicMsg->CloseWindow();
-		delete m_basicMsg;
-		m_basicMsg = NULL;
-
 		//tell windows we don't need capture change events anymore
 		ReleaseCapture();
 
 		//post message to start recording
-		::PostMessage (hWndGlobal,WM_USER_RECORDSTART,0,(LPARAM) 0);
+		if(pWnd->m_hWnd != m_basicMsg->m_hWnd)
+			::PostMessage (hWndGlobal,WM_USER_RECORDSTART,0,(LPARAM) 0);
 	}
-
 	CView::OnCaptureChanged(pWnd);
 }
 
@@ -4123,7 +4116,6 @@ UINT CRecorderView::RecordVideo()
 bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFileName)
 {
 	//TRACE("CRecorderView::RecordVideo (.....) \n");
-
 	WORD wVer = HIWORD(VideoForWindowsVersion());
 	if (wVer < 0x010a) {
 		TRACE("CRecorderView::RecordVideo: Wrong VideoForWindowsVersion\n");
@@ -4141,6 +4133,16 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 	{
 	case CAPTURE_WINDOW:
 	case CAPTURE_FULLSCREEN:
+		if(m_basicMsg)
+		{
+			if(m_basicMsg->Cancelled())
+			{
+				bRecordState = false;
+				return false;
+			}
+			else
+				m_basicMsg->ShowWindow(SW_HIDE);
+		}
 		// For rects captured with SetCapture
 		//TRACE(_T("## CRecorderView::RecordVideo / cRegionOpts.m_iMouseCaptureMode =%d  (Do nothing) \n"), cRegionOpts.m_iMouseCaptureMode );
 		GetDocument()->FrameWidth(rectFrame.Width() );
@@ -4161,8 +4163,8 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 	////////////////////////////////////////////////
 	// CAPTURE FIRST FRAME
 	////////////////////////////////////////////////
-	LPBITMAPINFOHEADER alpbi = captureScreenFrame(rectFrame) ? m_cCamera.Image() : 0;
 
+	LPBITMAPINFOHEADER alpbi = captureScreenFrame(rectFrame) ? m_cCamera.Image() : 0;
 	// TEST VALIDITY OF COMPRESSOR
 	if (cVideoOpts.m_iSelectedCompressor > 0) {
 		HIC hic = ::ICOpen(pCompressorInfo[cVideoOpts.m_iSelectedCompressor].fccType, pCompressorInfo[cVideoOpts.m_iSelectedCompressor].fccHandler, ICMODE_QUERY);
@@ -4173,12 +4175,10 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 			int newheight = 0;
 			int align = 1;
 			LRESULT lResult = ::ICCompressQuery(hic, alpbi, NULL);
-			while (ICERR_OK != (lResult = ::ICCompressQuery(hic, alpbi, NULL))) {
+			/*if (ICERR_OK != (lResult = ::ICCompressQuery(hic, alpbi, NULL))) {
 				// Try adjusting width/height a little bit
 				align = align * 2;
 				if (8 < align)
-					break;
-
 				newleft = rectFrame.left;
 				newtop = rectFrame.top;
 				int wm = (rectFrame.Width() % align);
@@ -4199,7 +4199,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 
 				CRect rectNewFrame(newleft, newtop, newleft + newwidth, newtop + newheight);
 				alpbi = captureScreenFrame(rectNewFrame) ? m_cCamera.Image() : 0;
-			}
+			}*/
 
 			lResult = ::ICCompressQuery(hic, alpbi, NULL);
 			ASSERT(ICERR_OK == lResult);
@@ -4225,7 +4225,6 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 			TRACE("CRecorderView::RecordVideo - ICOpen failed\n");
 			cVideoOpts.m_dwCompfccHandler = ICHANDLER_MSVC;
 			strCodec = CString("MS Video 1");
-			//MessageBox(NULL, "hic default", "note", MB_OK);
 		}
 	} //selected_compressor
 

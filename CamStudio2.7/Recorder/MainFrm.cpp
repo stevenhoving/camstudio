@@ -403,13 +403,13 @@ void CMainFrame::OnViewNormalview()
 	// use logo to set widht and heights
 	BITMAP bitmap;
 	m_bmLogo.GetBitmap(&bitmap);
-	int compactcx = bitmap.bmWidth - 25;
+	int compactcx = bitmap.bmWidth - 26;
 	// add width of borders
 	compactcx += (::GetSystemMetrics(SM_CXFRAME) * 2)
 		+ ::GetSystemMetrics(SM_CXMENUSIZE)
 ;
 
-	int compactcy = bitmap.bmHeight + 17;
+	int compactcy = bitmap.bmHeight - 9;
 	// add height of Caption + menu + status + borders
 	compactcy += ::GetSystemMetrics(SM_CYCAPTION)
 		+ ::GetSystemMetrics(SM_CYMENU)
