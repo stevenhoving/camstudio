@@ -51,7 +51,6 @@ void CFixedRegionDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_Y, m_ctrlEditPosY);
 	DDX_Control(pDX, IDC_SUPPORTMOUSEDRAG, m_ctrlButtonMouseDrag);
 	DDX_Control(pDX, IDC_FIXEDTOPLEFT, m_ctrlButtonFixTopLeft);
-	DDX_Control(pDX, IDC_SUPPORTROUNDDOWN, m_ctrlButtonRoundDown);
 	//}}AFX_DATA_MAP
 	DDX_Text(pDX, IDC_X, m_iLeft);
 	DDV_MinMaxInt(pDX, m_iLeft, minxScreen, maxxScreen);
@@ -201,7 +200,6 @@ BOOL CFixedRegionDlg::OnInitDialog()
 	m_ctrlEditPosX.EnableWindow(cRegionOpts.m_bFixedCapture);
 	m_ctrlEditPosY.EnableWindow(cRegionOpts.m_bFixedCapture);
 	m_ctrlButtonMouseDrag.SetCheck(cRegionOpts.m_bSupportMouseDrag);
-
 	return TRUE; // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -230,6 +228,13 @@ LRESULT CFixedRegionDlg::OnRegionUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	}
 	m_iWidth	= rectUse.Width();
 	m_iHeight	= rectUse.Height();
+	if(cVideoOpts.m_bRoundDown)
+	{
+		if(m_iWidth % 2 != 0)
+			m_iWidth-=1;
+		if(m_iHeight % 2 != 0)
+			m_iHeight-=1;
+	}
 
 	//TRACE(_T("## CFixedRegionDlg::OnRegionUpdate / L=%d, T=%d, W=%d, H=%d\n"), m_iLeft, m_iTop, m_iWidth, m_iHeight );
 
@@ -267,12 +272,10 @@ void CFixedRegionDlg::OnEnChangeY()
 
 void CFixedRegionDlg::OnEnChangeHeight()
 {
-	// TODO:  If this is a RICHEDIT control, the control will not
-	// send this notification unless you override the CDialog::OnInitDialog()
-	// function and call CRichEditCtrl().SetEventMask()
-	// with the ENM_CHANGE flag ORed into the mask.
-
-	// TODO:  Add your control notification handler code here
+	if(cVideoOpts.m_bRoundDown)
+	{
+		RoundDownWidth();
+	}
 }
 
 void CFixedRegionDlg::OnBnClickedOk()
@@ -285,7 +288,7 @@ void CFixedRegionDlg::OnBnClickedOk()
 
 void CFixedRegionDlg::OnBnClickedSupportrounddown()
 {
-	if(m_ctrlButtonRoundDown.GetCheck())
+	if(cVideoOpts.m_bRoundDown)
 	{
 		RoundDownHeight();
 		RoundDownWidth();
@@ -295,14 +298,14 @@ void CFixedRegionDlg::OnBnClickedSupportrounddown()
 
 void CFixedRegionDlg::OnEnKillfocusWidth()
 {
-	if(m_ctrlButtonRoundDown.GetCheck())
+	if(cVideoOpts.m_bRoundDown)
 	{
 		RoundDownWidth();
 	}
 }
 void CFixedRegionDlg::OnEnKillfocusHeight()
 {
-	if(m_ctrlButtonRoundDown.GetCheck())
+	if(cVideoOpts.m_bRoundDown)
 	{
 		RoundDownHeight();
 	}

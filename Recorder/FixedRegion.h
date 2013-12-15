@@ -53,7 +53,7 @@ private:
 	CEdit m_ctrlEditPosY;
 	CButton m_ctrlButtonMouseDrag;
 	CButton m_ctrlButtonFixTopLeft;
-	CButton m_ctrlButtonRoundDown;
+	//CButton m_ctrlButtonRoundDown;
 	int m_iLeft;
 	int m_iTop;
 	int m_iWidth;
