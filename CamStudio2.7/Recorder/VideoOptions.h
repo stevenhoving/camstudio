@@ -73,6 +73,7 @@ private:
 	CButton m_ctrlButtonConfigure;
 	CButton m_ctrlButtonInfo;
 	CBitmap m_bInfo	;
+	CButton m_ctrlButtonRoundDown;
 	int m_iQuality;
 	int m_iKeyFrameInterval;
 	int m_iCaptureInterval;
@@ -90,6 +91,9 @@ private:
 	int CurrentAutoAdjustPosition();
 	void InitAutoAdjustArray();
 	void GetCurrentSliderPos();
+public:
+	afx_msg void OnBnClickedSupportrounddown();
+	afx_msg void OnBnClickedOk();
 };
 
 //{{AFX_INSERT_LOCATION}}

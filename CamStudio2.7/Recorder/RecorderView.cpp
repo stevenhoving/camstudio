@@ -4175,9 +4175,9 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 			int newheight = 0;
 			int align = 1;
 			LRESULT lResult = ::ICCompressQuery(hic, alpbi, NULL);
-			/*if (ICERR_OK != (lResult = ::ICCompressQuery(hic, alpbi, NULL))) {
+			if (ICERR_OK != (lResult = ::ICCompressQuery(hic, alpbi, NULL))) {
 				// Try adjusting width/height a little bit
-				align = align * 2;
+				/*align = align * 2;
 				if (8 < align)
 				newleft = rectFrame.left;
 				newtop = rectFrame.top;
@@ -4196,10 +4196,18 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 						newwidth = rectFrame.Height() - hm;
 					}
 				}
+				*/
+				if(cVideoOpts.m_bRoundDown)
+				{
+					newwidth = (rectFrame.Width() % 2 != 0) ? rectFrame.Width() -1 : rectFrame.Width();
+					newheight = (rectFrame.Height() % 2 != 0) ? rectFrame.Height() -1 : rectFrame.Height();
+					CRect rectNewFrame(rectFrame.left, rectFrame.top, rectFrame.left + newwidth, rectFrame.top + newheight);
 
-				CRect rectNewFrame(newleft, newtop, newleft + newwidth, newtop + newheight);
-				alpbi = captureScreenFrame(rectNewFrame) ? m_cCamera.Image() : 0;
-			}*/
+					alpbi = captureScreenFrame(rectNewFrame) ? m_cCamera.Image() : 0;
+					rectFrame = rectNewFrame;
+				}
+			}
+
 
 			lResult = ::ICCompressQuery(hic, alpbi, NULL);
 			ASSERT(ICERR_OK == lResult);
@@ -4207,7 +4215,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 
 			// if succeed with new width/height, use the new width and height
 			// else if still fails == > default to MS Video 1 (MSVC)
-			if (align == 1) {
+			/*if (align == 1) {
 				// Compressor has no problem with the current dimensions...so proceed
 				// do nothing here
 				TRACE("CRecorderView::RecordVideo : no problem with the current dimensions\n");
@@ -4220,22 +4228,15 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 			} else {
 				cVideoOpts.m_dwCompfccHandler = ICHANDLER_MSVC;
 				strCodec = CString("MS Video 1");
-			}
+			}*/
+
 		} else {
-			TRACE("CRecorderView::RecordVideo - ICOpen failed\n");
+			//TRACE("CRecorderView::RecordVideo - ICOpen failed\n");
 			cVideoOpts.m_dwCompfccHandler = ICHANDLER_MSVC;
 			strCodec = CString("MS Video 1");
 		}
 	} //selected_compressor
 
-	//rectFrame = CRect(left, top, left + width, top + height);
-
-	//Special Cases
-	//DIVX
-	//if (dwCompfccHandler == mmioFOURCC('D', 'I', 'V', 'X')) { //Still Can't Handle DIVX
-	//	dwCompfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-	//	strCodec = CString("MS Video 1");
-	//}
 
 	// IV50
 	if (cVideoOpts.m_dwCompfccHandler == ICHANDLER_IV50) { //Still Can't Handle Indeo 5.04

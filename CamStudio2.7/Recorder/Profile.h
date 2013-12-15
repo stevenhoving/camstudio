@@ -81,6 +81,7 @@ struct sVideoOpts
 		: m_bRestrictVideoCodecs(false)
 		, m_bAutoAdjust(true)
 		, m_bLock(true)
+		, m_bRoundDown(false)
 		, m_iValueAdjust(1)
 		, m_iTimeLapse(50)
 		, m_iFramesPerSecond(20)
@@ -100,6 +101,7 @@ struct sVideoOpts
 		: m_bRestrictVideoCodecs(false)
 		, m_bAutoAdjust(true)
 		, m_bLock(true)
+		, m_bRoundDown(false)
 		, m_iValueAdjust(1)
 		, m_iTimeLapse(50)
 		, m_iFramesPerSecond(20)
@@ -130,6 +132,7 @@ struct sVideoOpts
 		m_bRestrictVideoCodecs		= rhs.m_bRestrictVideoCodecs;
 		m_bAutoAdjust				= rhs.m_bAutoAdjust;
 		m_bLock						= rhs.m_bLock;
+		m_bRoundDown				= rhs.m_bRoundDown;
 		m_iValueAdjust				= rhs.m_iValueAdjust;
 		m_iTimeLapse				= rhs.m_iTimeLapse;
 		m_iFramesPerSecond			= rhs.m_iFramesPerSecond;
@@ -199,6 +202,7 @@ struct sVideoOpts
 		cProfile.lookupValue("restrictVideoCodecs", m_bRestrictVideoCodecs);
 		cProfile.lookupValue("AutoAdjust", m_bAutoAdjust);
 		cProfile.lookupValue("LockCaptureAndPlayback", m_bLock);
+		cProfile.lookupValue("RoundDown", m_bRoundDown);
 		cProfile.lookupValue("ValueAdjust", m_iValueAdjust);
 		cProfile.lookupValue("TimeLapse", m_iTimeLapse);
 		cProfile.lookupValue("fps", m_iFramesPerSecond);
@@ -212,7 +216,6 @@ struct sVideoOpts
 		cProfile.lookupValue("CompressorStateSize", (unsigned&)dwSize);
 		State(dwSize);
 		CString  m_cStartRecordingString = "";
-		// m_iSelectedCompressor
 		return true;
 	}
 	bool Write(Setting& cProfile)
@@ -220,6 +223,7 @@ struct sVideoOpts
 		UpdateSetting(cProfile,"restrictVideoCodecs", m_bRestrictVideoCodecs, Setting::TypeBoolean);
 		UpdateSetting(cProfile,"AutoAdjust", m_bAutoAdjust, Setting::TypeBoolean);
 		UpdateSetting(cProfile, "LockCaptureAndPlayback", m_bLock, Setting::TypeBoolean);
+		UpdateSetting(cProfile,"RoundDown", m_bRoundDown, Setting::TypeBoolean);
 		UpdateSetting(cProfile,"ValueAdjust", m_iValueAdjust, Setting::TypeInt);
 		UpdateSetting(cProfile,"TimeLapse", m_iTimeLapse, Setting::TypeInt);
 		UpdateSetting(cProfile,"fps", m_iFramesPerSecond, Setting::TypeInt);
@@ -236,6 +240,7 @@ struct sVideoOpts
 	bool m_bRestrictVideoCodecs;
 	bool m_bAutoAdjust;
 	bool m_bLock;
+	bool m_bRoundDown;
 	int m_iValueAdjust;
 	int m_iTimeLapse;
 	int m_iFramesPerSecond;
