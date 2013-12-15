@@ -133,6 +133,7 @@ void CVideoOptionsDlg::DoDataExchange(CDataExchange* pDX)
 	::DDV_PlaybackRate(pDX, m_iPlaybackRate, 1, 1000);//200);
 	DDX_Slider(pDX, IDC_ADJUST, m_iAdjust);
 	DDX_Text(pDX, IDC_QUALITY, m_iStaticQuality);
+	DDX_Control(pDX, IDC_SUPPORTROUNDDOWN, m_ctrlButtonRoundDown);
 }
 
 BEGIN_MESSAGE_MAP(CVideoOptionsDlg, CDialog)
@@ -145,6 +146,8 @@ BEGIN_MESSAGE_MAP(CVideoOptionsDlg, CDialog)
 	ON_BN_CLICKED(IDC_LOCK, OnLock)
 	ON_BN_CLICKED(IDC_CFE_INFO, OnCaptureFrameRateInfo)
 	//}}AFX_MSG_MAP
+	ON_BN_CLICKED(IDC_SUPPORTROUNDDOWN, &CVideoOptionsDlg::OnBnClickedSupportrounddown)
+	ON_BN_CLICKED(IDOK, &CVideoOptionsDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 void CVideoOptionsDlg::RefreshCompressorButtons()
@@ -462,6 +465,7 @@ BOOL CVideoOptionsDlg::OnInitDialog()
 	GetCurrentSliderPos();
 	m_ctrlButtonAutoAdjust.SetCheck(m_cOpts.m_bAutoAdjust);
 	m_ctrlButtonLock.SetCheck(m_cOpts.m_bLock);
+	m_ctrlButtonRoundDown.SetCheck(m_cOpts.m_bRoundDown);
 	m_bInfo.LoadBitmap(IDB_BITMAP10);
 	HBITMAP hBitmap= (HBITMAP) m_bInfo.GetSafeHandle();
 	m_ctrlButtonInfo.SetBitmap(hBitmap);
@@ -569,6 +573,7 @@ void CVideoOptionsDlg::OnOK()
 		strCodec = CString(pCompressorInfo[sel].szDescription);
 		m_cOpts.m_iSelectedCompressor = sel;
 	}
+	m_cOpts.m_bRoundDown = m_ctrlButtonRoundDown.GetCheck() ? true : false;
 	CDialog::OnOK();	// call base;
 
 }
@@ -686,3 +691,16 @@ void CVideoOptionsDlg::OnCaptureFrameRateInfo()
 		"CamStudio",MB_OK | MB_ICONEXCLAMATION);
 }
 
+
+
+void CVideoOptionsDlg::OnBnClickedSupportrounddown()
+{
+}
+
+
+void CVideoOptionsDlg::OnBnClickedOk()
+{
+	// TODO: Add your control notification handler code here
+	OnOK();
+
+}
