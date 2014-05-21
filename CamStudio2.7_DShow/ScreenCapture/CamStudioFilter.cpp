@@ -75,7 +75,6 @@ STDMETHODIMP CCamStudioFilter::Stop() {
 
 	CAutoLock filterLock(m_pLock);
 	//Default implementation
-	Sleep(INFINITE);
 	HRESULT hr = CSource::Stop();
 	//Reset pin resources
 	m_pPin->m_iFrameNumber = 0;

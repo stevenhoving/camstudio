@@ -137,7 +137,7 @@ void AudioFormat::OnOK()
 	if (interleave_unit)
 		interleaveUnit = FRAMES;
 	else
-		interleaveUnit = MILLISECONDS;
+		interleaveUnit = CS_MILLISECONDS;
 
 	//The Recording format, Compressed format and device must be valid before
 	//data from the Audio Options Dialog can be updated to the external variables
