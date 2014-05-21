@@ -1,0 +1,23 @@
+First step:
+
+Install ToirtoiseHG on your system.
+
+Logon in Camstudio Sourceforge.
+
+Open file explorer and go to your development environment.
+Keep top of your development stack.
+
+Open HG repository browser:
+
+Right click with mouse + ToirtoiseHG + Clone
+
+Set the Source URL location to:
+http://camstudio.hg.sourceforge.net:8000/hgroot/camstudio/camstudio
+
+<ENTER>
+
+Decide what you want to download regular (HEAD) or defined by an named revision.
+
+
+
+
