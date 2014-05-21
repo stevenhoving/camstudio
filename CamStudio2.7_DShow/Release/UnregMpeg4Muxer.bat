@@ -1,0 +1,1 @@
+regsvr32 /u "%~dp0\Mpeg4Muxer.dll"
