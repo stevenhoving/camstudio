@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="copyright" content="Copyright &copy; 2001 RenderSoft Software and Web Publishing, Copyright &copy; 2008 CamStudio Group &amp; Contributors." />
+<meta name="creator" content="RenderSoft Software and Web Publishing, CamStudio Group &amp; Contributors." />
+<meta name="language" content="en-us" />
+<link href="../help.css" rel="stylesheet" type="text/css" />
+<title>Recording Audio From Microphone</title>
+</head>
+<body>
+<h1>Recording Audio From Microphone</h1>
+<p class="getting_there">(From the main menu, choose Options->Record audio from microphone)</p>
+<p>You can add a soundtrack to your movie by selecting this option. When enabled, CamStudio will record your voice input from the microphone while it is capturing video. You need a sound card with an attached microphone to use this option.</p>
+<h2 id="options">Setting Options</h2>
+<p class="getting_there">(From the main menu, choose Options->Audio Options->Audio Options for Microphone)</p>
+<p><img src="images/microphone_options_dialog.png" alt="Microphone options dialog" class="inline_image_r" /></p>
+<p>Use this dialog box to set the recording format and compressed format of your audio.</p>
+<ul>
+	<li>Recording Format<p>The recording format is the format your soundcard use to record your voice from the microphone. Its main attributes are samples per second (measured in kHz), mono/stereo input, and bits per sample (usually 8 or 16 bit). Larger values for samples per second and bits per sample will result in better recording quality, but at the expense of the movie file size.</p></li>
+	<li>Compressed Format<p>This is the format that will be saved with your movie file. You can click on the 'Choose Compressed Format' button to select another compressed format. After recording your movie, CamStudio will attempt to convert your audio from the recording format to the compressed one.</p><p>Your choices for the compressed format are determined by the recording format. If you change your recording format, the compressed format will also change automatically.</p></li>
+	<li>Interleave Video and Audio<p>Interleave your audio and video for smoother playback on a slow device such as CD-ROM. This will also allow better synchronization of your video and sound content. The interleave factor determines the amount of interleaving in your movie. Normally, this value is specified in number of frames. A value of 1 frame will mean full interleave. Larger values will mean less interleaving.</p><p>You can also specify the Interleave factor in milliseconds. If you choose to Interleave a movie every 100ms for a movie with a capture rate of 200 frames per second (Capture Frames Every 5 milliseconds), the Interleave factor will be equivalent to Interleave every 20 frames.</p></li>
+	<li>Volume<p>Use this to adjust the input volume of your microphone if your recorded audio is barely audible. If CamStudio is unable to locate your volume control, you will need to adjust the volume manually through Start : Programs : Accessories: Entertainment : Volume Control.</p></li>
+</ul>
+<p class="emphasize">Please note that some configurations of the Recording and Compressed format will result in the audio recording becoming choppy or inaudible.</p><p class="emphasize">Some sound card disallows your system to record while another application is playing sound. In this case CamStudio will issue an error when you attempt to record with the 'Record Audio' option being enabled.</p>
+<h2>Use System Method For Audio Recording</h2>
+<p>If you set this checkbox, CamStudio will use certain system commands (MCI commands) to perform the recording of audio from your microphone. This method is more stable and may give better sound quality in some systems.</p><p>If you experience low audio quality when recording from CamStudio, but managed to obtain high quality recordings from your system's Sound Recorder, you may want to consider setting this option.</p>
+<p class="standout">Important</p>
+<ul>
+	<li><p>CamStudio will ignore all other settings in the Options for Microphone dialog box (except for the Audio Video Interleave setting) if you choose this setting.</p></li>
+	<li><p>Instead, to adjust the recording source, you will need to set it externally in the Control Panel->Sounds and Audio Device->(Audio Tab)->Default Recording Device (for Windows XP).</p></li>
+	<li><p>If you set the external recording source to a non-soundcard device (e.g webcam microphone), you will need to set it back to your soundcard when you want to record sound from speakers.</p></li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,123 @@
+﻿Build started 2/18/2014 10:20:36 PM.
+     1>Project "C:\Users\BERTOSO\Desktop\CS_2.7_Dev\CamStudio2.7 - Dev\CxImage\jasper\jasper.vcxproj" on node 3 (rebuild target(s)).
+     1>_PrepareForClean:
+         Deleting file ".\Debug\jasper.lastbuildstate".
+       InitializeBuildStatus:
+         Creating ".\Debug\jasper.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.\include /ZI /nologo /W2 /WX- /Od /Oy- /D _DEBUG /D WIN32 /D _LIB /D JAS_WIN_MSVC_BUILD /D _CRT_SECURE_NO_DEPRECATE /D EXCLUDE_JPG_SUPPORT /D _VC80_UPGRADE=0x0600 /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug/" /Fd".\Debug/vc100.pdb" /Gd /TC /analyze- /errorReport:prompt bmp\bmp_cod.c bmp\bmp_dec.c bmp\bmp_enc.c base\jas_cm.c base\jas_debug.c base\jas_getopt.c base\jas_icc.c base\jas_iccdata.c base\jas_image.c base\jas_init.c base\jas_malloc.c base\jas_seq.c base\jas_stream.c base\jas_string.c base\jas_tvp.c base\jas_version.c jp2\jp2_cod.c jp2\jp2_dec.c jp2\jp2_enc.c jpc\jpc_bs.c jpc\jpc_cs.c jpc\jpc_dec.c jpc\jpc_enc.c jpc\jpc_math.c jpc\jpc_mct.c jpc\jpc_mqcod.c jpc\jpc_mqdec.c jpc\jpc_mqenc.c jpc\jpc_qmfb.c jpc\jpc_t1cod.c jpc\jpc_t1dec.c jpc\jpc_t1enc.c jpc\jpc_t2cod.c jpc\jpc_t2dec.c jpc\jpc_t2enc.c jpc\jpc_tagtree.c jpc\jpc_tsfb.c jpc\jpc_util.c jpg\jpg_dummy.c jpg\jpg_val.c mif\mif_cod.c pgx\pgx_cod.c pgx\pgx_dec.c pgx\pgx_enc.c pnm\pnm_cod.c pnm\pnm_dec.c pnm\pnm_enc.c ras\ras_cod.c ras\ras_dec.c ras\ras_enc.c
+         ras_enc.c
+         ras_dec.c
+         ras_cod.c
+         pnm_enc.c
+         pnm_dec.c
+         pnm_cod.c
+         pgx_enc.c
+         pgx_dec.c
+         pgx_cod.c
+         mif_cod.c
+         jpg_val.c
+         jpg_dummy.c
+         jpc_util.c
+         jpc_tsfb.c
+         jpc_tagtree.c
+         jpc_t2enc.c
+         jpc_t2dec.c
+         jpc_t2cod.c
+         jpc_t1enc.c
+         jpc_t1dec.c
+         Generating Code...
+         Compiling...
+         jpc_t1cod.c
+         jpc_qmfb.c
+         jpc_mqenc.c
+         jpc_mqdec.c
+         jpc_mqcod.c
+         jpc_mct.c
+         jpc_math.c
+         jpc_enc.c
+         jpc_dec.c
+         jpc_cs.c
+         jpc_bs.c
+         jp2_enc.c
+         jp2_dec.c
+         jp2_cod.c
+         jas_version.c
+         jas_tvp.c
+         jas_string.c
+         jas_stream.c
+         jas_seq.c
+         jas_malloc.c
+         Generating Code...
+         Compiling...
+         jas_init.c
+         jas_image.c
+         jas_iccdata.c
+         jas_icc.c
+         jas_getopt.c
+         jas_debug.c
+         jas_cm.c
+         bmp_enc.c
+         bmp_dec.c
+         bmp_cod.c
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:".\Debug\jasper.lib" /NOLOGO .\Debug/bmp_cod.obj
+         .\Debug/bmp_dec.obj
+         .\Debug/bmp_enc.obj
+         .\Debug/jas_cm.obj
+         .\Debug/jas_debug.obj
+         .\Debug/jas_getopt.obj
+         .\Debug/jas_icc.obj
+         .\Debug/jas_iccdata.obj
+         .\Debug/jas_image.obj
+         .\Debug/jas_init.obj
+         .\Debug/jas_malloc.obj
+         .\Debug/jas_seq.obj
+         .\Debug/jas_stream.obj
+         .\Debug/jas_string.obj
+         .\Debug/jas_tvp.obj
+         .\Debug/jas_version.obj
+         .\Debug/jp2_cod.obj
+         .\Debug/jp2_dec.obj
+         .\Debug/jp2_enc.obj
+         .\Debug/jpc_bs.obj
+         .\Debug/jpc_cs.obj
+         .\Debug/jpc_dec.obj
+         .\Debug/jpc_enc.obj
+         .\Debug/jpc_math.obj
+         .\Debug/jpc_mct.obj
+         .\Debug/jpc_mqcod.obj
+         .\Debug/jpc_mqdec.obj
+         .\Debug/jpc_mqenc.obj
+         .\Debug/jpc_qmfb.obj
+         .\Debug/jpc_t1cod.obj
+         .\Debug/jpc_t1dec.obj
+         .\Debug/jpc_t1enc.obj
+         .\Debug/jpc_t2cod.obj
+         .\Debug/jpc_t2dec.obj
+         .\Debug/jpc_t2enc.obj
+         .\Debug/jpc_tagtree.obj
+         .\Debug/jpc_tsfb.obj
+         .\Debug/jpc_util.obj
+         .\Debug/jpg_dummy.obj
+         .\Debug/jpg_val.obj
+         .\Debug/mif_cod.obj
+         .\Debug/pgx_cod.obj
+         .\Debug/pgx_dec.obj
+         .\Debug/pgx_enc.obj
+         .\Debug/pnm_cod.obj
+         .\Debug/pnm_dec.obj
+         .\Debug/pnm_enc.obj
+         .\Debug/ras_cod.obj
+         .\Debug/ras_dec.obj
+         .\Debug/ras_enc.obj
+         jasper.vcxproj -> C:\Users\BERTOSO\Desktop\CS_2.7_Dev\CamStudio2.7 - Dev\CxImage\jasper\.\Debug\jasper.lib
+       FinalizeBuildStatus:
+         Deleting file ".\Debug\jasper.unsuccessfulbuild".
+         Touching ".\Debug\jasper.lastbuildstate".
+     1>Done Building Project "C:\Users\BERTOSO\Desktop\CS_2.7_Dev\CamStudio2.7 - Dev\CxImage\jasper\jasper.vcxproj" (rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:15.70
