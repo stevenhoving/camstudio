@@ -122,7 +122,6 @@
 #define IDR_CONVERTER1                  225
 #define IDR_CONVERTER                   225
 #define IDD_DIALOG1                     226
-#define IDD_CONV_DIALOG                 226
 #define IDD_COMP_FORMATS                227
 #define IDD_DIALOG2                     228
 #define IDD_VIDEOSOURCE                 228
@@ -135,9 +134,7 @@
 #define IDC_RADIO2                      1002
 #define IDC_CURSOR1                     1003
 #define IDC_RADIO4                      1003
-#define CG_IDC_PROGDLG_PROGRESS         1003
 #define IDC_CURSOR2                     1004
-#define CG_IDC_PROGDLG_PERCENT          1004
 #define IDC_CURSOR3                     1005
 #define IDC_HIGHLIGHTCURSOR             1006
 #define IDC_SLIDER1                     1007
@@ -160,7 +157,6 @@
 #define IDC_PREVKEY                     1011
 #define IDC_ICONCURSOR                  1012
 #define IDC_CANCELKEY                   1012
-#define IDC_CONVERSIONTEXT              1012
 #define IDC_GROUPBOX                    1013
 #define IDC_WIDTH                       1013
 #define IDC_SHOWKEY                     1013
@@ -184,7 +180,6 @@
 #define IDC_AUTO                        1026
 #define IDC_NEXTKEY                     1026
 #define IDC_ADJUST                      1027
-#define ID_PROGRESS_CANCEL              1027
 #define IDC_EDITCAPTION                 1029
 #define IDC_DATE                        1030
 #define IDC_CAPTION                     1031
