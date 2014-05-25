@@ -29,10 +29,10 @@
 #include "SyncDialog.h"
 #include "TroubleShoot.h"
 #include "VideoOptions.h"
-#include "ProgressDlg.h"
+//#include "ProgressDlg.h"
 #include "ximage.h"
 #include "soundfile.h"
-#include "hook.h"		// for WM_USER_RECORDSTART_MSG
+//#include "hook.h"		// for WM_USER_RECORDSTART_MSG
 
 #include "Buffer.h"
 #include "CStudioLib.h"
@@ -799,7 +799,7 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	hWndGlobal = m_hWnd;
-	setHotKeyWindow(m_hWnd);
+	//setHotKeyWindow(m_hWnd);
 
 //#pragma message("CRecorderView::LoadSettings skipped")
 	LoadSettings();
@@ -903,11 +903,11 @@ LRESULT CRecorderView::OnRecordStart(UINT /*wParam*/, LONG /*lParam*/)
 	CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
 	pStatus->SetPaneText(0,"Press the Stop Button to stop recording");
 
-	m_cCamera.Set(cCaptionOpts);
-	m_cCamera.Set(cTimestampOpts);
-	m_cCamera.Set(cXNoteOpts);
-	m_cCamera.Set(cWatermarkOpts);
-	m_cCamera.Set(CamCursor);
+	//m_cCamera.Set(cCaptionOpts);
+	//m_cCamera.Set(cTimestampOpts);
+	//m_cCamera.Set(cXNoteOpts);
+	//m_cCamera.Set(cWatermarkOpts);
+	//m_cCamera.Set(CamCursor);
 
 	//TRACE("## CRecorderView::OnRecordStart  m_cCamera.m_sXNote.m_ulXnoteRecordDurationLimitInMilliSec[%d]\n", m_cCamera.m_sXNote.m_ulXnoteRecordDurationLimitInMilliSec  );
 
@@ -948,7 +948,7 @@ LRESULT CRecorderView::OnRecordPaused (UINT /*wParam*/, LONG /*lParam*/)
 
 LRESULT CRecorderView::OnRecordInterrupted (UINT wParam, LONG /*lParam*/)
 {
-	UninstallMyHook(hWndGlobal);
+	//UninstallMyHook(hWndGlobal);
 	//Ver 1.1
 	if (bRecordPaused) {
 		CMainFrame * pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
@@ -981,7 +981,7 @@ LRESULT CRecorderView::OnSaveCursor (UINT wParam, LONG /*lParam*/)
 {
 	//TRACE("CRecorderView::OnSaveCursor\n");
 	CamCursor.Save(reinterpret_cast<HCURSOR>(wParam));
-	m_cCamera.Save(reinterpret_cast<HCURSOR>(wParam));
+	//m_cCamera.Save(reinterpret_cast<HCURSOR>(wParam));
 	return 0;
 }
 

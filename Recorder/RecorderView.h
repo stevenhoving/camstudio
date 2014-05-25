@@ -20,6 +20,12 @@
 #include "AudioCompressorFilter.h"
 #define  TEMPFILETAGINDICATOR "~temp"	
 
+#define WM_USER_RECORDINTERRUPTED_MSG	_T("WM_USER_RECORDINTERRUPTED_MSG")
+#define WM_USER_RECORDPAUSED_MSG		_T("WM_USER_RECORDPAUSED_MSG")
+#define WM_USER_SAVECURSOR_MSG			_T("WM_USER_SAVECURSOR_MSG")
+#define WM_USER_GENERIC_MSG				_T("WM_USER_GENERIC_MSG")
+#define WM_USER_RECORDSTART_MSG			_T("WM_USER_RECORDSTART_MSG")
+#define WM_USER_RECORDAUTO_MSG			_T("WM_USER_RECORDAUTO_MSG")
 
 // forward declaration
 class CRecorderDoc;
@@ -229,7 +235,7 @@ private:
 	HWND m_hCapWnd;
 	CFlashingWnd m_FlashingWnd;
 	CVideoWnd m_vanWnd;
-	CCamera m_cCamera;
+	//CCamera m_cCamera;
 	CBasicMessage *m_basicMsg;
 	double _zoom;
 	CPoint _zoomedAt;

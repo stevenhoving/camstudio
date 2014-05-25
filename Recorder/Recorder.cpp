@@ -171,7 +171,7 @@ CRecorderApp theApp;
 BOOL CRecorderApp::InitInstance()
 {	
 	// Initialize GDI+.
-	//Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+	Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
 	::OnError("CRecorderApp::InitInstance");
 	AfxEnableControlContainer();
@@ -397,7 +397,7 @@ int CRecorderApp::ExitInstance()
 	if (bClassRegistered)
 		::UnregisterClass(_T("CamStudio"), AfxGetInstanceHandle());
 
-	//Gdiplus::GdiplusShutdown(gdiplusToken);
+	Gdiplus::GdiplusShutdown(gdiplusToken);
 
 	return CWinApp::ExitInstance();
 }
