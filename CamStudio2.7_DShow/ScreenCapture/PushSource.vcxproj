@@ -93,8 +93,8 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <AdditionalIncludeDirectories>C:\Program Files\Microsoft SDKs\Windows\v7.1\Samples\multimedia\directshow\baseclasses;$(SolutionDir)$(ProjectName)\fister;$(SolutionDir)CxImage\CxImage;$(SolutionDir)CamLib;$(SolutionDir)hook;$(SolutionDir)hookkey;$(SolutionDir)libconfig/lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PUSHSOURCE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PUSHSOURCE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -115,7 +115,8 @@
       <Command>regsvr32 /u "C:\Users\BERTOSO\Desktop\CS_2.7_Dev\CamStudio2.7 - Dev\Release\ScreenCapture.ax"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>regsvr32 "C:\Users\BERTOSO\Desktop\CS_2.7_Dev\CamStudio2.7 - Dev\$(Configuration)\ScreenCapture.ax"</Command>
+      <Command>regsvr32 "$(SolutionDir)$(Configuration)\ScreenCapture.ax" 
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

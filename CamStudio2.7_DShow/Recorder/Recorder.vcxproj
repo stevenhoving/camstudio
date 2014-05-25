@@ -224,10 +224,10 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(SolutionDir)\$(Configuration)\"
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)$(ProjectName)\fister;$(SolutionDir)CxImage\CxImage;$(SolutionDir)CamLib;$(SolutionDir)hook;$(SolutionDir)hookkey;$(SolutionDir)libconfig/lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)$(ProjectName)\fister;$(SolutionDir)CxImage\CxImage;$(SolutionDir)CamLib;$(SolutionDir)hookkey;$(SolutionDir)libconfig/lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>.\Debug/recorder.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
@@ -245,7 +245,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(SolutionDir)\$(Configuration)\"
       <AdditionalIncludeDirectories>$(SolutionDir)GlobalResources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>winmm.lib;vfw32.lib;msacm32.lib;libconfig++.lib;shfolder.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vfw32.lib;msacm32.lib;$(OutDir)libconfig++.lib;$(OutDir)tinyxml.lib;$(OutDir)strmbase.lib;$(OutDir)Mpeg4Muxer.lib;winmm.lib;Quartz.lib;shfolder.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(SolutionDir)libconfig/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -382,14 +382,12 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <ClInclude Include="NewShape.h" />
     <ClInclude Include="PresetTime.h" />
     <ClInclude Include="Profile.h" />
-    <ClInclude Include="ProgressDlg.h" />
     <ClInclude Include="Recorder.h" />
     <ClInclude Include="RecorderDoc.h" />
     <ClInclude Include="RecorderVersionReleaseInfo.h" />
     <ClInclude Include="RecorderView.h" />
     <ClInclude Include="ResizeDialog.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="Screen.h" />
     <ClInclude Include="ScreenAnnotations.h" />
     <ClInclude Include="CamStudioCaptureGraph.h" />
     <ClInclude Include="StdAfx.h" />
@@ -635,7 +633,6 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="Profile.cpp" />
-    <ClCompile Include="ProgressDlg.cpp" />
     <ClCompile Include="Recorder.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
@@ -676,7 +673,6 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="Screen.cpp" />
     <ClCompile Include="ScreenAnnotations.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
@@ -830,9 +826,6 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     </ProjectReference>
     <ProjectReference Include="..\CxImage\zlib\zlib.vcxproj">
       <Project>{7b53d2c7-1b4a-4a53-a7d3-e25b92470b81}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\hook\hook.vcxproj">
-      <Project>{f4c904b3-2f94-404b-9555-2a3eaa1e5ea6}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libconfig\lib\libconfig++.vcxproj">
       <Project>{a0c36ce7-d908-4573-8b69-249eeeb7d2be}</Project>

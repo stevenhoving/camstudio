@@ -36,8 +36,8 @@
 #include "Profile.h"
 #include "resource.h"       // main symbols
 #include "RecorderVersionReleaseInfo.h"   // Contains version and SVN release number
-//#include <gdiplus.h>
-//#pragma comment (lib,"Gdiplus.lib")
+#include <gdiplus.h>
+#pragma comment (lib,"Gdiplus.lib")
 
 //#define WM_APP_REGIONUPDATE	0x00500	// TODO: Should this be a WM_USER/WM_APP message?
 //#define WM_APP_REGIONUPDATE	WM_USER + 0x00100
@@ -91,8 +91,9 @@ private:
 	LANGID m_wCurLangID;
 	int m_iVersionOp;
 	CCamStudioCommandLineInfo m_cmdInfo;
-
-	//Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+	CWnd *PreviousInstance();
+	CString VideoCodecsInfo();
+	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 	ULONG_PTR           gdiplusToken;
 
 	bool RegisterWindowClass();

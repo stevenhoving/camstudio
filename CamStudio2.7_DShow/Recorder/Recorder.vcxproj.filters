@@ -123,9 +123,6 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Screen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ScreenAnnotations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -199,9 +196,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UpdateDialog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ProgressDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SystemDeviceEnumerator.h">
@@ -556,9 +550,6 @@
     <ClCompile Include="ResizeDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Screen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ScreenAnnotations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -596,9 +587,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UpdateDialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ProgressDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SystemDeviceEnumerator.cpp">

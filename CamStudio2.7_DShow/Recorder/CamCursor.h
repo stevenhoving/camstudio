@@ -10,7 +10,7 @@
 #include <vector>
 #include <algorithm>
 // TODO: reorganize code and move bodies to cpp. Even better to merge CamCursor with CursorOptionsDlg class.
-#include "../hook/hook.h" // for getCursor
+//#include "../hook/hook.h" // for getCursor
 
 /////////////////////////////////////////////////////////////////////////////
 // CCamCursor
@@ -103,7 +103,7 @@ public:
 		{
 		default:
 		case ACTIVE:
-			m_hSavedCursor = getCursor();
+			//m_hSavedCursor = getCursor();
 			return m_hSavedCursor;
 		case CUSTOM:
 			return m_hCustomCursor;
