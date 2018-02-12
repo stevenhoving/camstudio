@@ -1,0 +1,9 @@
+Release
+Debug
+
+*.suo
+*.ncb
+*.aps
+*.obj
+*.pdb
+*.idb
