@@ -24,6 +24,7 @@ https://sourceforge.net/p/camstudio
 Official: https://github.com/hyperrealm/libconfig
 Official: http://www.oberhumer.com/opensource/lzo/
 Official: https://github.com/madler/zlib
+Official: https://github.com/leethomason/tinyxml2
 Fork: https://github.com/movableink/cximage
 
 ## Credits
