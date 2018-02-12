@@ -30,4 +30,4 @@ Official| tinyxml2 | https://github.com/leethomason/tinyxml2
 Fork| CxImage | https://github.com/movableink/cximage
 
 ## Credits
-https://github.com/bestlily/Camstudio
+A big thanks goes out to the original CamStudio developers. And to bestlily who had a initial port of CamStudio (https://github.com/bestlily/Camstudio), thanks.
