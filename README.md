@@ -21,11 +21,13 @@ Besides creating a clean installer for camstudio I have found myself a couple of
 https://sourceforge.net/p/camstudio
 
 ## Dependencies
-Official: https://github.com/hyperrealm/libconfig
-Official: http://www.oberhumer.com/opensource/lzo/
-Official: https://github.com/madler/zlib
-Official: https://github.com/leethomason/tinyxml2
-Fork: https://github.com/movableink/cximage
+State | Name | Project
+----- | -----|--------
+Official| libconfig | https://github.com/hyperrealm/libconfig
+Official| minilzo | http://www.oberhumer.com/opensource/lzo/
+Official| zlib | https://github.com/madler/zlib
+Official| tinyxml2 | https://github.com/leethomason/tinyxml2
+Fork| CxImage | https://github.com/movableink/cximage
 
 ## Credits
 https://github.com/bestlily/Camstudio
