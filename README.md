@@ -4,7 +4,7 @@
 This is a personal fork of the camstudio source code found in the mecurial repository on sourceforge.net.
 I have forked this project because:
 * The installers that are availible on the web are not kosher.
-* No mp4/mkv support out of the box.
+* No mkv support out of the box.
 * Flash based products are insecure.
 
 ## Goals
@@ -13,7 +13,7 @@ Besides creating a clean installer for camstudio I have found myself a couple of
 * Remove swf support.
 * Upgrade project dependencies (CxImage, zlib, minilzo, libconfig++).
 * Introduce unit test.
-* Add support for mp4 of mkv.
+* Add support for mkv.
 * Replace UI framework with Qt.
 * Improve settings screen.
 
