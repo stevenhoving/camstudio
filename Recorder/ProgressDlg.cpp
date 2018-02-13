@@ -12,161 +12,161 @@
 IMPLEMENT_DYNAMIC(CProgressDlg, CDialogEx)
 
 CProgressDlg::CProgressDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CProgressDlg::IDD, pParent),
-	m_bCancel(FALSE),
-	m_nLower(0),
-	m_nUpper(100),
-	m_nStep(1),
-	m_nMaxSecProgress(10),
-	m_nMinSecProgress(1),
-	m_nMinProg(1),
-	m_nMaxProg(5),
-	m_nFakeMax(95),
-	m_bParentDisabled(FALSE)
+    : CDialogEx(CProgressDlg::IDD, pParent),
+    m_bCancel(FALSE),
+    m_nLower(0),
+    m_nUpper(100),
+    m_nStep(1),
+    m_nMaxSecProgress(10),
+    m_nMinSecProgress(1),
+    m_nMinProg(1),
+    m_nMaxProg(5),
+    m_nFakeMax(95),
+    m_bParentDisabled(FALSE)
 {
 
 }
 
 CProgressDlg::~CProgressDlg()
 {
-	if (m_hWnd!=NULL)
-		DestroyWindow();
+    if (m_hWnd!=NULL)
+        DestroyWindow();
 }
 
 short CProgressDlg::RealMax()
 {
-	return m_nUpper;
+    return m_nUpper;
 }
 short CProgressDlg::FakeMax()
 {
-	short nRet =  m_nFakeMax - (rand() % 15 + 1);
-	return nRet;
+    short nRet =  m_nFakeMax - (rand() % 15 + 1);
+    return nRet;
 }
 short CProgressDlg::MinSecProgress()
 {
-	return m_nMinSecProgress;
+    return m_nMinSecProgress;
 }
 short CProgressDlg::MaxSecProgress()
 {
-	return m_nMaxSecProgress;
+    return m_nMaxSecProgress;
 }
 short CProgressDlg::MinProg()
 {
-	return m_nMinProg;
+    return m_nMinProg;
 }
 short CProgressDlg::MaxProg()
 {
-	return m_nMaxProg;
+    return m_nMaxProg;
 }
 BOOL CProgressDlg::DestroyWindow()
 {
-	ReEnableParent();
-	return CDialog::DestroyWindow();
+    ReEnableParent();
+    return CDialog::DestroyWindow();
 }
 
 void CProgressDlg::ReEnableParent()
 {
-	if (m_bParentDisabled && (m_pParentWnd!=NULL))
-		m_pParentWnd->EnableWindow(TRUE);
-	m_bParentDisabled=FALSE;
+    if (m_bParentDisabled && (m_pParentWnd!=NULL))
+        m_pParentWnd->EnableWindow(TRUE);
+    m_bParentDisabled=FALSE;
 }
 
 BOOL CProgressDlg::Create(CWnd *pParent)
 {
-	// Get the true parent of the dialog
-	m_pParentWnd = CWnd::GetSafeOwner(pParent);
+    // Get the true parent of the dialog
+    m_pParentWnd = CWnd::GetSafeOwner(pParent);
 
-	// m_bParentDisabled is used to re-enable the parent window
-	// when the dialog is destroyed. So we don't want to set\
-	// it to TRUE unless the parent was already enabled.
+    // m_bParentDisabled is used to re-enable the parent window
+    // when the dialog is destroyed. So we don't want to set\
+    // it to TRUE unless the parent was already enabled.
 
-	if ((m_pParentWnd!=NULL) && m_pParentWnd->IsWindowEnabled())
-	{
-		m_pParentWnd->EnableWindow(FALSE);
-		m_bParentDisabled = TRUE;
-	}
+    if ((m_pParentWnd!=NULL) && m_pParentWnd->IsWindowEnabled())
+    {
+        m_pParentWnd->EnableWindow(FALSE);
+        m_bParentDisabled = TRUE;
+    }
 
-	if (!CDialog::Create(CProgressDlg::IDD,pParent))
-	{
-		ReEnableParent();
-		return FALSE;
-	}
+    if (!CDialog::Create(CProgressDlg::IDD,pParent))
+    {
+        ReEnableParent();
+        return FALSE;
+    }
 
-	return TRUE;
+    return TRUE;
 }
 
 void CProgressDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CProgressDlg)
-	DDX_Control(pDX, CG_IDC_PROGDLG_PROGRESS, m_Progress);
-	//}}AFX_DATA_MAP
+    CDialog::DoDataExchange(pDX);
+    //{{AFX_DATA_MAP(CProgressDlg)
+    DDX_Control(pDX, CG_IDC_PROGDLG_PROGRESS, m_Progress);
+    //}}AFX_DATA_MAP
 }
 
 BEGIN_MESSAGE_MAP(CProgressDlg, CDialog)
-	//{{AFX_MSG_MAP(CProgressDlg)
-	//}}AFX_MSG_MAP
-	ON_BN_CLICKED(ID_PROGRESS_CANCEL, OnBnClickedProgressCancel)
-	ON_STN_CLICKED(IDC_CONVERSIONTEXT, &CProgressDlg::OnStnClickedConversiontext)
+    //{{AFX_MSG_MAP(CProgressDlg)
+    //}}AFX_MSG_MAP
+    ON_BN_CLICKED(ID_PROGRESS_CANCEL, OnBnClickedProgressCancel)
+    ON_STN_CLICKED(IDC_CONVERSIONTEXT, &CProgressDlg::OnStnClickedConversiontext)
 END_MESSAGE_MAP()
 
 void CProgressDlg::OnCancel()
 {
-	m_bCancel=TRUE;
+    m_bCancel=TRUE;
 }
 
 void CProgressDlg::SetRange(short nLower,short nUpper)
 {
-	m_nLower = nLower;
-	m_nUpper = nUpper;
-	m_Progress.SetRange(nLower,nUpper);
+    m_nLower = nLower;
+    m_nUpper = nUpper;
+    m_Progress.SetRange(nLower,nUpper);
 }
 
 int CProgressDlg::SetPos(int nPos)
 {
-	PumpMessages();
-	int iResult = m_Progress.SetPos(nPos);
-	UpdatePercent(nPos);
-	return iResult;
+    PumpMessages();
+    int iResult = m_Progress.SetPos(nPos);
+    UpdatePercent(nPos);
+    return iResult;
 }
 
 int CProgressDlg::SetStep(short nStep)
 {
-	m_nStep = nStep; // Store for later use in calculating percentage
-	return m_Progress.SetStep(nStep);
+    m_nStep = nStep; // Store for later use in calculating percentage
+    return m_Progress.SetStep(nStep);
 }
 
 int CProgressDlg::OffsetPos(int nPos)
 {
-	PumpMessages();
-	int iResult = m_Progress.OffsetPos(nPos);
-	UpdatePercent(iResult+nPos);
-	return iResult;
+    PumpMessages();
+    int iResult = m_Progress.OffsetPos(nPos);
+    UpdatePercent(iResult+nPos);
+    return iResult;
 }
 
 int CProgressDlg::StepIt()
 {
-	PumpMessages();
-	int iResult = m_Progress.StepIt();
-	UpdatePercent(iResult+m_nStep);
-	return iResult;
+    PumpMessages();
+    int iResult = m_Progress.StepIt();
+    UpdatePercent(iResult+m_nStep);
+    return iResult;
 }
 
 void CProgressDlg::PumpMessages()
 {
-	// Must call Create() before using the dialog
-	ASSERT(m_hWnd!=NULL);
+    // Must call Create() before using the dialog
+    ASSERT(m_hWnd!=NULL);
 
-	MSG msg;
-	// Handle dialog messages
-	while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-	{
-	  if (!IsDialogMessage(&msg))
-	  {
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	  }
-	}
+    MSG msg;
+    // Handle dialog messages
+    while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+    {
+      if (!IsDialogMessage(&msg))
+      {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+      }
+    }
 }
 
 BOOL CProgressDlg::CheckCancelButton()
@@ -209,11 +209,11 @@ void CProgressDlg::UpdatePercent(int nNewPos)
     CString strBuf;
     strBuf.Format(_T("%d%c"),nPercent,_T('%'));
 
-	CString strCur; // get current percentage
+    CString strCur; // get current percentage
     pWndPercent->GetWindowText(strCur);
 
-	if (strCur != strBuf)
-		pWndPercent->SetWindowText(strBuf);
+    if (strCur != strBuf)
+        pWndPercent->SetWindowText(strBuf);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -226,8 +226,8 @@ BOOL CProgressDlg::OnInitDialog()
     m_Progress.SetStep(m_nStep);
     m_Progress.SetPos(m_nLower);
 
-	CString strCaption;
-	VERIFY(strCaption.LoadString(IDS_STRING_CONV_DLG_CAP));
+    CString strCaption;
+    VERIFY(strCaption.LoadString(IDS_STRING_CONV_DLG_CAP));
     SetWindowText(strCaption);
 
     return TRUE;
@@ -235,13 +235,13 @@ BOOL CProgressDlg::OnInitDialog()
 
 void CProgressDlg::OnBnClickedProgressCancel()
 {
-	m_bCancel=TRUE;
+    m_bCancel=TRUE;
 }
 
 
 void CProgressDlg::OnStnClickedConversiontext()
 {
-	// TODO: Add your control notification handler code here
+    // TODO: Add your control notification handler code here
 }
 
 

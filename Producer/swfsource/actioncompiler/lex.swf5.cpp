@@ -50,15 +50,15 @@
 /* The "const" storage-class-modifier is valid. */
 #define YY_USE_CONST
 
-#else	/* ! __cplusplus */
+#else    /* ! __cplusplus */
 
 #if __STDC__
 
 #define YY_USE_PROTOS
 #define YY_USE_CONST
 
-#endif	/* __STDC__ */
-#endif	/* ! __cplusplus */
+#endif    /* __STDC__ */
+#endif    /* ! __cplusplus */
 
 #ifdef __TURBOC__
  #pragma warn -rch
@@ -128,10 +128,10 @@ extern FILE *yyin, *yyout;
  * int a single C statement (which needs a semi-colon terminator).  This
  * avoids problems with code like:
  *
- * 	if ( condition_holds )
- *		yyless( 5 );
- *	else
- *		do_something_else();
+ *     if ( condition_holds )
+ *        yyless( 5 );
+ *    else
+ *        do_something_else();
  *
  * Prior to using the do-while the compiler would get upset at the
  * "else" because it interpreted the "if" statement as being all
@@ -141,15 +141,15 @@ extern FILE *yyin, *yyout;
 /* Return all but the first 'n' matched characters back to the input stream. */
 
 #define yyless(n) \
-	do \
-		{ \
-		/* Undo effects of setting up yytext. */ \
-		*yy_cp = yy_hold_char; \
-		YY_RESTORE_YY_MORE_OFFSET \
-		yy_c_buf_p = yy_cp = yy_bp + n - YY_MORE_ADJ; \
-		YY_DO_BEFORE_ACTION; /* set up yytext again */ \
-		} \
-	while ( 0 )
+    do \
+        { \
+        /* Undo effects of setting up yytext. */ \
+        *yy_cp = yy_hold_char; \
+        YY_RESTORE_YY_MORE_OFFSET \
+        yy_c_buf_p = yy_cp = yy_bp + n - YY_MORE_ADJ; \
+        YY_DO_BEFORE_ACTION; /* set up yytext again */ \
+        } \
+    while ( 0 )
 
 #define unput(c) yyunput( c, yytext_ptr )
 
@@ -160,61 +160,61 @@ extern FILE *yyin, *yyout;
 typedef unsigned int yy_size_t;
 
 struct yy_buffer_state
-	{
-	FILE *yy_input_file;
+    {
+    FILE *yy_input_file;
 
-	char *yy_ch_buf;		/* input buffer */
-	char *yy_buf_pos;		/* current position in input buffer */
+    char *yy_ch_buf;        /* input buffer */
+    char *yy_buf_pos;        /* current position in input buffer */
 
-	/* Size of input buffer in sbytes, not including room for EOB
-	 * characters.
-	 */
-	yy_size_t yy_buf_size;
+    /* Size of input buffer in sbytes, not including room for EOB
+     * characters.
+     */
+    yy_size_t yy_buf_size;
 
-	/* Number of characters read into yy_ch_buf, not including EOB
-	 * characters.
-	 */
-	int yy_n_chars;
+    /* Number of characters read into yy_ch_buf, not including EOB
+     * characters.
+     */
+    int yy_n_chars;
 
-	/* Whether we "own" the buffer - i.e., we know we created it,
-	 * and can realloc() it to grow it, and should free() it to
-	 * delete it.
-	 */
-	int yy_is_our_buffer;
+    /* Whether we "own" the buffer - i.e., we know we created it,
+     * and can realloc() it to grow it, and should free() it to
+     * delete it.
+     */
+    int yy_is_our_buffer;
 
-	/* Whether this is an "interactive" input source; if so, and
-	 * if we're using stdio for input, then we want to use getc()
-	 * instead of fread(), to make sure we stop fetching input after
-	 * each newline.
-	 */
-	int yy_is_interactive;
+    /* Whether this is an "interactive" input source; if so, and
+     * if we're using stdio for input, then we want to use getc()
+     * instead of fread(), to make sure we stop fetching input after
+     * each newline.
+     */
+    int yy_is_interactive;
 
-	/* Whether we're considered to be at the beginning of a line.
-	 * If so, '^' rules will be active on the next match, otherwise
-	 * not.
-	 */
-	int yy_at_bol;
+    /* Whether we're considered to be at the beginning of a line.
+     * If so, '^' rules will be active on the next match, otherwise
+     * not.
+     */
+    int yy_at_bol;
 
-	/* Whether to try to fill the input buffer when we reach the
-	 * end of it.
-	 */
-	int yy_fill_buffer;
+    /* Whether to try to fill the input buffer when we reach the
+     * end of it.
+     */
+    int yy_fill_buffer;
 
-	int yy_buffer_status;
+    int yy_buffer_status;
 #define YY_BUFFER_NEW 0
 #define YY_BUFFER_NORMAL 1
-	/* When an EOF's been seen but there's still some text to process
-	 * then we mark the buffer as YY_EOF_PENDING, to indicate that we
-	 * shouldn't try reading from the input source any more.  We might
-	 * still have a bunch of tokens to match, though, because of
-	 * possible backing-up.
-	 *
-	 * When we actually see the EOF, we change the status to "new"
-	 * (via yyrestart()), so that the user can continue scanning by
-	 * just pointing yyin at a new input file.
-	 */
+    /* When an EOF's been seen but there's still some text to process
+     * then we mark the buffer as YY_EOF_PENDING, to indicate that we
+     * shouldn't try reading from the input source any more.  We might
+     * still have a bunch of tokens to match, though, because of
+     * possible backing-up.
+     *
+     * When we actually see the EOF, we change the status to "new"
+     * (via yyrestart()), so that the user can continue scanning by
+     * just pointing yyin at a new input file.
+     */
 #define YY_BUFFER_EOF_PENDING 2
-	};
+    };
 
 static YY_BUFFER_STATE yy_current_buffer = 0;
 
@@ -227,14 +227,14 @@ static YY_BUFFER_STATE yy_current_buffer = 0;
 /* yy_hold_char holds the character lost when yytext is formed. */
 static char yy_hold_char;
 
-static int yy_n_chars;		/* number of characters read into yy_ch_buf */
+static int yy_n_chars;        /* number of characters read into yy_ch_buf */
 
 int yyleng;
 
 /* Points to current character in buffer. */
 static char *yy_c_buf_p = (char *) 0;
-static int yy_init = 1;		/* whether we need to initialize */
-static int yy_start = 0;	/* start state number */
+static int yy_init = 1;        /* whether we need to initialize */
+static int yy_start = 0;    /* start state number */
 
 /* Flag which is used to allow yywrap()'s to do buffer switches
  * instead of setting up a fresh yyin.  A bit of a hack ...
@@ -262,18 +262,18 @@ static void yy_flex_free YY_PROTO(( void * ));
 #define yy_new_buffer yy_create_buffer
 
 #define yy_set_interactive(is_interactive) \
-	{ \
-	if ( ! yy_current_buffer ) \
-		yy_current_buffer = yy_create_buffer( yyin, YY_BUF_SIZE ); \
-	yy_current_buffer->yy_is_interactive = is_interactive; \
-	}
+    { \
+    if ( ! yy_current_buffer ) \
+        yy_current_buffer = yy_create_buffer( yyin, YY_BUF_SIZE ); \
+    yy_current_buffer->yy_is_interactive = is_interactive; \
+    }
 
 #define yy_set_bol(at_bol) \
-	{ \
-	if ( ! yy_current_buffer ) \
-		yy_current_buffer = yy_create_buffer( yyin, YY_BUF_SIZE ); \
-	yy_current_buffer->yy_at_bol = at_bol; \
-	}
+    { \
+    if ( ! yy_current_buffer ) \
+        yy_current_buffer = yy_create_buffer( yyin, YY_BUF_SIZE ); \
+    yy_current_buffer->yy_at_bol = at_bol; \
+    }
 
 #define YY_AT_BOL() (yy_current_buffer->yy_at_bol)
 
@@ -292,11 +292,11 @@ static void yy_fatal_error YY_PROTO(( yyconst char msg[] ));
  * corresponding action - sets up yytext.
  */
 #define YY_DO_BEFORE_ACTION \
-	yytext_ptr = yy_bp; \
-	yyleng = (int) (yy_cp - yy_bp); \
-	yy_hold_char = *yy_cp; \
-	*yy_cp = '\0'; \
-	yy_c_buf_p = yy_cp;
+    yytext_ptr = yy_bp; \
+    yyleng = (int) (yy_cp - yy_bp); \
+    yy_hold_char = *yy_cp; \
+    *yy_cp = '\0'; \
+    yy_c_buf_p = yy_cp;
 
 #define YY_NUM_RULES 159
 #define YY_END_OF_BUFFER 160
@@ -875,21 +875,21 @@ YY_MALLOC_DECL
  */
 #ifndef YY_INPUT
 #define YY_INPUT(buf,result,max_size) \
-	if ( yy_current_buffer->yy_is_interactive ) \
-		{ \
-		int c = '*', n; \
-		for ( n = 0; n < max_size && \
-			     (c = getc( yyin )) != EOF && c != '\n'; ++n ) \
-			buf[n] = (char) c; \
-		if ( c == '\n' ) \
-			buf[n++] = (char) c; \
-		if ( c == EOF && ferror( yyin ) ) \
-			YY_FATAL_ERROR( "input in flex scanner failed" ); \
-		result = n; \
-		} \
-	else if ( ((result = fread( buf, 1, max_size, yyin )) == 0) \
-		  && ferror( yyin ) ) \
-		YY_FATAL_ERROR( "input in flex scanner failed" );
+    if ( yy_current_buffer->yy_is_interactive ) \
+        { \
+        int c = '*', n; \
+        for ( n = 0; n < max_size && \
+                 (c = getc( yyin )) != EOF && c != '\n'; ++n ) \
+            buf[n] = (char) c; \
+        if ( c == '\n' ) \
+            buf[n++] = (char) c; \
+        if ( c == EOF && ferror( yyin ) ) \
+            YY_FATAL_ERROR( "input in flex scanner failed" ); \
+        result = n; \
+        } \
+    else if ( ((result = fread( buf, 1, max_size, yyin )) == 0) \
+          && ferror( yyin ) ) \
+        YY_FATAL_ERROR( "input in flex scanner failed" );
 #endif
 
 /* No semi-colon after return; correct usage is to write "yyterminate();" -
@@ -930,1220 +930,1220 @@ YY_MALLOC_DECL
 #endif
 
 #define YY_RULE_SETUP \
-	YY_USER_ACTION
+    YY_USER_ACTION
 
 YY_DECL
-	{
-	register yy_state_type yy_current_state;
-	register char *yy_cp, *yy_bp;
-	register int yy_act;
+    {
+    register yy_state_type yy_current_state;
+    register char *yy_cp, *yy_bp;
+    register int yy_act;
 
 #line 81 "swf5compiler.flex"
 
 #line 947 "lex.swf5.c"
 
-	if ( yy_init )
-		{
-		yy_init = 0;
+    if ( yy_init )
+        {
+        yy_init = 0;
 
 #ifdef YY_USER_INIT
-		YY_USER_INIT;
+        YY_USER_INIT;
 #endif
 
-		if ( ! yy_start )
-			yy_start = 1;	/* first start state */
+        if ( ! yy_start )
+            yy_start = 1;    /* first start state */
 
-		if ( ! yyin )
-			yyin = stdin;
+        if ( ! yyin )
+            yyin = stdin;
 
-		if ( ! yyout )
-			yyout = stdout;
+        if ( ! yyout )
+            yyout = stdout;
 
-		if ( ! yy_current_buffer )
-			yy_current_buffer =
-				yy_create_buffer( yyin, YY_BUF_SIZE );
+        if ( ! yy_current_buffer )
+            yy_current_buffer =
+                yy_create_buffer( yyin, YY_BUF_SIZE );
 
-		yy_load_buffer_state();
-		}
+        yy_load_buffer_state();
+        }
 
-	while ( 1 )		/* loops until end-of-file is reached */
-		{
-		yy_cp = yy_c_buf_p;
+    while ( 1 )        /* loops until end-of-file is reached */
+        {
+        yy_cp = yy_c_buf_p;
 
-		/* Support of yytext. */
-		*yy_cp = yy_hold_char;
+        /* Support of yytext. */
+        *yy_cp = yy_hold_char;
 
-		/* yy_bp points to the position in yy_ch_buf of the start of
-		 * the current run.
-		 */
-		yy_bp = yy_cp;
+        /* yy_bp points to the position in yy_ch_buf of the start of
+         * the current run.
+         */
+        yy_bp = yy_cp;
 
-		yy_current_state = yy_start;
+        yy_current_state = yy_start;
 yy_match:
-		do
-			{
-			register YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)];
-			if ( yy_accept[yy_current_state] )
-				{
-				yy_last_accepting_state = yy_current_state;
-				yy_last_accepting_cpos = yy_cp;
-				}
-			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
-				{
-				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 578 )
-					yy_c = yy_meta[(unsigned int) yy_c];
-				}
-			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-			++yy_cp;
-			}
-		while ( yy_base[yy_current_state] != 616 );
+        do
+            {
+            register YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)];
+            if ( yy_accept[yy_current_state] )
+                {
+                yy_last_accepting_state = yy_current_state;
+                yy_last_accepting_cpos = yy_cp;
+                }
+            while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
+                {
+                yy_current_state = (int) yy_def[yy_current_state];
+                if ( yy_current_state >= 578 )
+                    yy_c = yy_meta[(unsigned int) yy_c];
+                }
+            yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+            ++yy_cp;
+            }
+        while ( yy_base[yy_current_state] != 616 );
 
 yy_find_action:
-		yy_act = yy_accept[yy_current_state];
-		if ( yy_act == 0 )
-			{ /* have to back up */
-			yy_cp = yy_last_accepting_cpos;
-			yy_current_state = yy_last_accepting_state;
-			yy_act = yy_accept[yy_current_state];
-			}
+        yy_act = yy_accept[yy_current_state];
+        if ( yy_act == 0 )
+            { /* have to back up */
+            yy_cp = yy_last_accepting_cpos;
+            yy_current_state = yy_last_accepting_state;
+            yy_act = yy_accept[yy_current_state];
+            }
 
-		YY_DO_BEFORE_ACTION;
+        YY_DO_BEFORE_ACTION;
 
-do_action:	/* This label is used only to access EOF actions. */
+do_action:    /* This label is used only to access EOF actions. */
 
-		switch ( yy_act )
-	{ /* beginning of action switch */
-			case 0: /* must back up */
-			/* undo the effects of YY_DO_BEFORE_ACTION */
-			*yy_cp = yy_hold_char;
-			yy_cp = yy_last_accepting_cpos;
-			yy_current_state = yy_last_accepting_state;
-			goto yy_find_action;
+        switch ( yy_act )
+    { /* beginning of action switch */
+            case 0: /* must back up */
+            /* undo the effects of YY_DO_BEFORE_ACTION */
+            *yy_cp = yy_hold_char;
+            yy_cp = yy_last_accepting_cpos;
+            yy_current_state = yy_last_accepting_state;
+            goto yy_find_action;
 
 case 1:
 YY_RULE_SETUP
 #line 83 "swf5compiler.flex"
-{ count();	swf5lval.intVal = atoi(yytext);
-					return INTEGER;		}
-	YY_BREAK
+{ count();    swf5lval.intVal = atoi(yytext);
+                    return INTEGER;        }
+    YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 85 "swf5compiler.flex"
-{ count();	swf5lval.doubleVal = atof(yytext);
-					return DOUBLE; 		}
-	YY_BREAK
+{ count();    swf5lval.doubleVal = atof(yytext);
+                    return DOUBLE;         }
+    YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 87 "swf5compiler.flex"
-{ count();	swf5lval.intVal = 1;
-					return BOOLEAN;		}
-	YY_BREAK
+{ count();    swf5lval.intVal = 1;
+                    return BOOLEAN;        }
+    YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 89 "swf5compiler.flex"
-{ count();	swf5lval.intVal = 0;
-					return BOOLEAN;		}
-	YY_BREAK
+{ count();    swf5lval.intVal = 0;
+                    return BOOLEAN;        }
+    YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 91 "swf5compiler.flex"
-{ count();	return NULLVAL;		}
-	YY_BREAK
+{ count();    return NULLVAL;        }
+    YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 92 "swf5compiler.flex"
-{ count();	return BREAK;		}
-	YY_BREAK
+{ count();    return BREAK;        }
+    YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 93 "swf5compiler.flex"
-{ count();	return CONTINUE;	}
-	YY_BREAK
+{ count();    return CONTINUE;    }
+    YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 94 "swf5compiler.flex"
-{ count();	return FUNCTION;	}
-	YY_BREAK
+{ count();    return FUNCTION;    }
+    YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 95 "swf5compiler.flex"
-{ count();	return ELSE;		}
-	YY_BREAK
+{ count();    return ELSE;        }
+    YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 96 "swf5compiler.flex"
-{ count();	return SWITCH;		}
-	YY_BREAK
+{ count();    return SWITCH;        }
+    YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 97 "swf5compiler.flex"
-{ count();	return CASE;		}
-	YY_BREAK
+{ count();    return CASE;        }
+    YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 98 "swf5compiler.flex"
-{ count();	return FOR;		}
-	YY_BREAK
+{ count();    return FOR;        }
+    YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 99 "swf5compiler.flex"
-{ count();	return IN;		}
-	YY_BREAK
+{ count();    return IN;        }
+    YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 100 "swf5compiler.flex"
-{ count();	return IF;		}
-	YY_BREAK
+{ count();    return IF;        }
+    YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 101 "swf5compiler.flex"
-{ count();	return WHILE;		}
-	YY_BREAK
+{ count();    return WHILE;        }
+    YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 102 "swf5compiler.flex"
-{ count();	return DO;		}
-	YY_BREAK
+{ count();    return DO;        }
+    YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 103 "swf5compiler.flex"
-{ count();	return VAR;		}
-	YY_BREAK
+{ count();    return VAR;        }
+    YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 104 "swf5compiler.flex"
-{ count();	return NEW;		}
-	YY_BREAK
+{ count();    return NEW;        }
+    YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 105 "swf5compiler.flex"
-{ count();	return DELETE;		}
-	YY_BREAK
+{ count();    return DELETE;        }
+    YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 106 "swf5compiler.flex"
-{ count();	return RETURN;		}
-	YY_BREAK
+{ count();    return RETURN;        }
+    YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 107 "swf5compiler.flex"
-{ count();	return END;		}
-	YY_BREAK
+{ count();    return END;        }
+    YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 108 "swf5compiler.flex"
-{ count();	return WITH;		}
-	YY_BREAK
+{ count();    return WITH;        }
+    YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 109 "swf5compiler.flex"
-{ count();	return ASM;		}
-	YY_BREAK
+{ count();    return ASM;        }
+    YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 110 "swf5compiler.flex"
-{ count();	return EVAL;		}
-	YY_BREAK
+{ count();    return EVAL;        }
+    YY_BREAK
 /* legacy functions */
 case 25:
 YY_RULE_SETUP
 #line 113 "swf5compiler.flex"
-{ count();	return RANDOM;	}
-	YY_BREAK
+{ count();    return RANDOM;    }
+    YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 114 "swf5compiler.flex"
-{ count();	return GETTIMER;	}
-	YY_BREAK
+{ count();    return GETTIMER;    }
+    YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 115 "swf5compiler.flex"
-{ count();	return LENGTH;	}
-	YY_BREAK
+{ count();    return LENGTH;    }
+    YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 116 "swf5compiler.flex"
-{ count();	return CONCAT;	}
-	YY_BREAK
+{ count();    return CONCAT;    }
+    YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 117 "swf5compiler.flex"
-{ count();	return SUBSTR;	}
-	YY_BREAK
+{ count();    return SUBSTR;    }
+    YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 118 "swf5compiler.flex"
-{ count();	return TRACE;	}
-	YY_BREAK
+{ count();    return TRACE;    }
+    YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 119 "swf5compiler.flex"
-{ count();	return INT;	}
-	YY_BREAK
+{ count();    return INT;    }
+    YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 120 "swf5compiler.flex"
-{ count();	return ORD;	}
-	YY_BREAK
+{ count();    return ORD;    }
+    YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 121 "swf5compiler.flex"
-{ count();	return CHR;	}
-	YY_BREAK
+{ count();    return CHR;    }
+    YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 122 "swf5compiler.flex"
-{ count();	return GETURL;	}
-	YY_BREAK
+{ count();    return GETURL;    }
+    YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 123 "swf5compiler.flex"
-{ count();	return GETURL1;	}
-	YY_BREAK
+{ count();    return GETURL1;    }
+    YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 124 "swf5compiler.flex"
-{ count();	return NEXTFRAME;	}
-	YY_BREAK
+{ count();    return NEXTFRAME;    }
+    YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 125 "swf5compiler.flex"
-{ count();	return PREVFRAME;	}
-	YY_BREAK
+{ count();    return PREVFRAME;    }
+    YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 126 "swf5compiler.flex"
-{ count();	return PLAY;		}
-	YY_BREAK
+{ count();    return PLAY;        }
+    YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 127 "swf5compiler.flex"
-{ count();	return STOP;		}
-	YY_BREAK
+{ count();    return STOP;        }
+    YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 128 "swf5compiler.flex"
-{ count();	return TOGGLEQUALITY;	}
-	YY_BREAK
+{ count();    return TOGGLEQUALITY;    }
+    YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 129 "swf5compiler.flex"
-{ count();	return STOPSOUNDS;	}
-	YY_BREAK
+{ count();    return STOPSOUNDS;    }
+    YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 130 "swf5compiler.flex"
-{ count();	return CALLFRAME;	}
-	YY_BREAK
+{ count();    return CALLFRAME;    }
+    YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 131 "swf5compiler.flex"
-{ count();	return GOTOFRAME;	}
-	YY_BREAK
+{ count();    return GOTOFRAME;    }
+    YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 132 "swf5compiler.flex"
-{ count();	return SETTARGET;	}
-	YY_BREAK
+{ count();    return SETTARGET;    }
+    YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 133 "swf5compiler.flex"
-{ count();	return LOADVARIABLES;	}
-	YY_BREAK
+{ count();    return LOADVARIABLES;    }
+    YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 134 "swf5compiler.flex"
-{ count();	return LOADMOVIE;	}
-	YY_BREAK
+{ count();    return LOADMOVIE;    }
+    YY_BREAK
 case 47:
 YY_RULE_SETUP
 #line 135 "swf5compiler.flex"
-{ count();	return LOADVARIABLESNUM;	}
-	YY_BREAK
+{ count();    return LOADVARIABLESNUM;    }
+    YY_BREAK
 case 48:
 YY_RULE_SETUP
 #line 136 "swf5compiler.flex"
-{ count();	return LOADMOVIENUM;	}
-	YY_BREAK
+{ count();    return LOADMOVIENUM;    }
+    YY_BREAK
 case 49:
 YY_RULE_SETUP
 #line 137 "swf5compiler.flex"
-{ count();	return DUPLICATEMOVIECLIP; }
-	YY_BREAK
+{ count();    return DUPLICATEMOVIECLIP; }
+    YY_BREAK
 case 50:
 YY_RULE_SETUP
 #line 138 "swf5compiler.flex"
-{ count();	return REMOVEMOVIECLIP; }
-	YY_BREAK
+{ count();    return REMOVEMOVIECLIP; }
+    YY_BREAK
 /* assembler ops */
 case 51:
 YY_RULE_SETUP
 #line 141 "swf5compiler.flex"
-{ count();	return DUP; }
-	YY_BREAK
+{ count();    return DUP; }
+    YY_BREAK
 case 52:
 YY_RULE_SETUP
 #line 142 "swf5compiler.flex"
-{ count();	return SWAP; }
-	YY_BREAK
+{ count();    return SWAP; }
+    YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 143 "swf5compiler.flex"
-{ count();	return POP; }
-	YY_BREAK
+{ count();    return POP; }
+    YY_BREAK
 case 54:
 YY_RULE_SETUP
 #line 144 "swf5compiler.flex"
-{ count();	return PUSH; }
-	YY_BREAK
+{ count();    return PUSH; }
+    YY_BREAK
 case 55:
 YY_RULE_SETUP
 #line 145 "swf5compiler.flex"
-{ count();	return SETREGISTER; }
-	YY_BREAK
+{ count();    return SETREGISTER; }
+    YY_BREAK
 case 56:
 YY_RULE_SETUP
 #line 146 "swf5compiler.flex"
-{ count();	return CALLFUNCTION; }
-	YY_BREAK
+{ count();    return CALLFUNCTION; }
+    YY_BREAK
 case 57:
 YY_RULE_SETUP
 #line 147 "swf5compiler.flex"
-{ count();	return CALLMETHOD; }
-	YY_BREAK
+{ count();    return CALLMETHOD; }
+    YY_BREAK
 case 58:
 YY_RULE_SETUP
 #line 148 "swf5compiler.flex"
-{ count();	return AND; }
-	YY_BREAK
+{ count();    return AND; }
+    YY_BREAK
 case 59:
 YY_RULE_SETUP
 #line 149 "swf5compiler.flex"
-{ count();	return OR; }
-	YY_BREAK
+{ count();    return OR; }
+    YY_BREAK
 case 60:
 YY_RULE_SETUP
 #line 150 "swf5compiler.flex"
-{ count();	return XOR; }
-	YY_BREAK
+{ count();    return XOR; }
+    YY_BREAK
 case 61:
 YY_RULE_SETUP
 #line 151 "swf5compiler.flex"
-{ count();	return MODULO; }
-	YY_BREAK
+{ count();    return MODULO; }
+    YY_BREAK
 case 62:
 YY_RULE_SETUP
 #line 152 "swf5compiler.flex"
-{ count();	return ADD; }
-	YY_BREAK
+{ count();    return ADD; }
+    YY_BREAK
 case 63:
 YY_RULE_SETUP
 #line 153 "swf5compiler.flex"
-{ count();	return ADD; }
-	YY_BREAK
+{ count();    return ADD; }
+    YY_BREAK
 case 64:
 YY_RULE_SETUP
 #line 154 "swf5compiler.flex"
-{ count();	return LESSTHAN; }
-	YY_BREAK
+{ count();    return LESSTHAN; }
+    YY_BREAK
 case 65:
 YY_RULE_SETUP
 #line 155 "swf5compiler.flex"
-{ count();	return LESSTHAN; }
-	YY_BREAK
+{ count();    return LESSTHAN; }
+    YY_BREAK
 case 66:
 YY_RULE_SETUP
 #line 156 "swf5compiler.flex"
-{ count();	return EQUALS; }
-	YY_BREAK
+{ count();    return EQUALS; }
+    YY_BREAK
 case 67:
 YY_RULE_SETUP
 #line 157 "swf5compiler.flex"
-{ count();	return EQUALS; }
-	YY_BREAK
+{ count();    return EQUALS; }
+    YY_BREAK
 case 68:
 YY_RULE_SETUP
 #line 158 "swf5compiler.flex"
-{ count();	return INC; }
-	YY_BREAK
+{ count();    return INC; }
+    YY_BREAK
 case 69:
 YY_RULE_SETUP
 #line 159 "swf5compiler.flex"
-{ count();	return DEC; }
-	YY_BREAK
+{ count();    return DEC; }
+    YY_BREAK
 case 70:
 YY_RULE_SETUP
 #line 160 "swf5compiler.flex"
-{ count();	return TYPEOF; }
-	YY_BREAK
+{ count();    return TYPEOF; }
+    YY_BREAK
 case 71:
 YY_RULE_SETUP
 #line 161 "swf5compiler.flex"
-{ count();	return ENUMERATE; }
-	YY_BREAK
+{ count();    return ENUMERATE; }
+    YY_BREAK
 case 72:
 YY_RULE_SETUP
 #line 162 "swf5compiler.flex"
-{ count();	return INITOBJECT; }
-	YY_BREAK
+{ count();    return INITOBJECT; }
+    YY_BREAK
 case 73:
 YY_RULE_SETUP
 #line 163 "swf5compiler.flex"
-{ count();	return INITARRAY; }
-	YY_BREAK
+{ count();    return INITARRAY; }
+    YY_BREAK
 case 74:
 YY_RULE_SETUP
 #line 164 "swf5compiler.flex"
-{ count();	return GETMEMBER; }
-	YY_BREAK
+{ count();    return GETMEMBER; }
+    YY_BREAK
 case 75:
 YY_RULE_SETUP
 #line 165 "swf5compiler.flex"
-{ count();	return SETMEMBER; }
-	YY_BREAK
+{ count();    return SETMEMBER; }
+    YY_BREAK
 case 76:
 YY_RULE_SETUP
 #line 166 "swf5compiler.flex"
-{ count();	return SHIFTLEFT; }
-	YY_BREAK
+{ count();    return SHIFTLEFT; }
+    YY_BREAK
 case 77:
 YY_RULE_SETUP
 #line 167 "swf5compiler.flex"
-{ count();	return SHIFTRIGHT; }
-	YY_BREAK
+{ count();    return SHIFTRIGHT; }
+    YY_BREAK
 case 78:
 YY_RULE_SETUP
 #line 168 "swf5compiler.flex"
-{ count();	return SHIFTRIGHT2; }
-	YY_BREAK
+{ count();    return SHIFTRIGHT2; }
+    YY_BREAK
 case 79:
 YY_RULE_SETUP
 #line 169 "swf5compiler.flex"
-{ count();	return VAREQUALS; }
-	YY_BREAK
+{ count();    return VAREQUALS; }
+    YY_BREAK
 case 80:
 YY_RULE_SETUP
 #line 170 "swf5compiler.flex"
-{ count();	return OLDADD; }
-	YY_BREAK
+{ count();    return OLDADD; }
+    YY_BREAK
 case 81:
 YY_RULE_SETUP
 #line 171 "swf5compiler.flex"
-{ count();	return SUBTRACT; }
-	YY_BREAK
+{ count();    return SUBTRACT; }
+    YY_BREAK
 case 82:
 YY_RULE_SETUP
 #line 172 "swf5compiler.flex"
-{ count();	return MULTIPLY; }
-	YY_BREAK
+{ count();    return MULTIPLY; }
+    YY_BREAK
 case 83:
 YY_RULE_SETUP
 #line 173 "swf5compiler.flex"
-{ count();	return DIVIDE; }
-	YY_BREAK
+{ count();    return DIVIDE; }
+    YY_BREAK
 case 84:
 YY_RULE_SETUP
 #line 174 "swf5compiler.flex"
-{ count();	return OLDEQUALS; }
-	YY_BREAK
+{ count();    return OLDEQUALS; }
+    YY_BREAK
 case 85:
 YY_RULE_SETUP
 #line 175 "swf5compiler.flex"
-{ count();	return OLDLESSTHAN; }
-	YY_BREAK
+{ count();    return OLDLESSTHAN; }
+    YY_BREAK
 case 86:
 YY_RULE_SETUP
 #line 176 "swf5compiler.flex"
-{ count();	return LOGICALAND; }
-	YY_BREAK
+{ count();    return LOGICALAND; }
+    YY_BREAK
 case 87:
 YY_RULE_SETUP
 #line 177 "swf5compiler.flex"
-{ count();	return LOGICALOR; }
-	YY_BREAK
+{ count();    return LOGICALOR; }
+    YY_BREAK
 case 88:
 YY_RULE_SETUP
 #line 178 "swf5compiler.flex"
-{ count();	return NOT; }
-	YY_BREAK
+{ count();    return NOT; }
+    YY_BREAK
 case 89:
 YY_RULE_SETUP
 #line 179 "swf5compiler.flex"
-{ count();	return STRINGEQ; }
-	YY_BREAK
+{ count();    return STRINGEQ; }
+    YY_BREAK
 case 90:
 YY_RULE_SETUP
 #line 180 "swf5compiler.flex"
-{ count();	return STRINGLENGTH; }
-	YY_BREAK
+{ count();    return STRINGLENGTH; }
+    YY_BREAK
 case 91:
 YY_RULE_SETUP
 #line 181 "swf5compiler.flex"
-{ count();	return SUBSTRING; }
-	YY_BREAK
+{ count();    return SUBSTRING; }
+    YY_BREAK
 case 92:
 YY_RULE_SETUP
 #line 182 "swf5compiler.flex"
-{ count();	return GETVARIABLE; }
-	YY_BREAK
+{ count();    return GETVARIABLE; }
+    YY_BREAK
 case 93:
 YY_RULE_SETUP
 #line 183 "swf5compiler.flex"
-{ count();	return SETVARIABLE; }
-	YY_BREAK
+{ count();    return SETVARIABLE; }
+    YY_BREAK
 case 94:
 YY_RULE_SETUP
 #line 184 "swf5compiler.flex"
-{ count();	return SETTARGETEXPRESSION; }
-	YY_BREAK
+{ count();    return SETTARGETEXPRESSION; }
+    YY_BREAK
 case 95:
 YY_RULE_SETUP
 #line 185 "swf5compiler.flex"
-{ count();	return STARTDRAG; }
-	YY_BREAK
+{ count();    return STARTDRAG; }
+    YY_BREAK
 case 96:
 YY_RULE_SETUP
 #line 186 "swf5compiler.flex"
-{ count();	return STOPDRAG; }
-	YY_BREAK
+{ count();    return STOPDRAG; }
+    YY_BREAK
 case 97:
 YY_RULE_SETUP
 #line 187 "swf5compiler.flex"
-{ count();	return STRINGLESSTHAN; }
-	YY_BREAK
+{ count();    return STRINGLESSTHAN; }
+    YY_BREAK
 case 98:
 YY_RULE_SETUP
 #line 188 "swf5compiler.flex"
-{ count();	return MBLENGTH; }
-	YY_BREAK
+{ count();    return MBLENGTH; }
+    YY_BREAK
 case 99:
 YY_RULE_SETUP
 #line 189 "swf5compiler.flex"
-{ count();	return MBSUBSTRING; }
-	YY_BREAK
+{ count();    return MBSUBSTRING; }
+    YY_BREAK
 case 100:
 YY_RULE_SETUP
 #line 190 "swf5compiler.flex"
-{ count();	return MBORD; }
-	YY_BREAK
+{ count();    return MBORD; }
+    YY_BREAK
 case 101:
 YY_RULE_SETUP
 #line 191 "swf5compiler.flex"
-{ count();	return MBCHR; }
-	YY_BREAK
+{ count();    return MBCHR; }
+    YY_BREAK
 case 102:
 YY_RULE_SETUP
 #line 192 "swf5compiler.flex"
-{ count();	return BRANCHALWAYS; }
-	YY_BREAK
+{ count();    return BRANCHALWAYS; }
+    YY_BREAK
 case 103:
 YY_RULE_SETUP
 #line 193 "swf5compiler.flex"
-{ count();	return BRANCHALWAYS; }
-	YY_BREAK
+{ count();    return BRANCHALWAYS; }
+    YY_BREAK
 case 104:
 YY_RULE_SETUP
 #line 194 "swf5compiler.flex"
-{ count();	return BRANCHIFTRUE; }
-	YY_BREAK
+{ count();    return BRANCHIFTRUE; }
+    YY_BREAK
 case 105:
 YY_RULE_SETUP
 #line 195 "swf5compiler.flex"
-{ count();	return POST; }
-	YY_BREAK
+{ count();    return POST; }
+    YY_BREAK
 case 106:
 YY_RULE_SETUP
 #line 196 "swf5compiler.flex"
-{ count();	return GET; }
-	YY_BREAK
+{ count();    return GET; }
+    YY_BREAK
 case 107:
 YY_RULE_SETUP
 #line 199 "swf5compiler.flex"
-{ count();	swf5lval.str = _strdup(yytext+2);
-					return REGISTER;	}
-	YY_BREAK
+{ count();    swf5lval.str = _strdup(yytext+2);
+                    return REGISTER;    }
+    YY_BREAK
 case 108:
 YY_RULE_SETUP
 #line 203 "swf5compiler.flex"
-{ count();	swf5lval.str = _strdup(yytext);
-					return IDENTIFIER;	}
-	YY_BREAK
+{ count();    swf5lval.str = _strdup(yytext);
+                    return IDENTIFIER;    }
+    YY_BREAK
 case 109:
 YY_RULE_SETUP
 #line 206 "swf5compiler.flex"
-{ count();	swf5lval.str = _strdup(yytext+1);
-					swf5lval.str[strlen(swf5lval.str)-1]=0;
+{ count();    swf5lval.str = _strdup(yytext+1);
+                    swf5lval.str[strlen(swf5lval.str)-1]=0;
                                         unescape(swf5lval.str);
-					return STRING;		}
-	YY_BREAK
+                    return STRING;        }
+    YY_BREAK
 case 110:
 YY_RULE_SETUP
 #line 211 "swf5compiler.flex"
-{ count();	swf5lval.str = _strdup(yytext+1);
-					swf5lval.str[strlen(swf5lval.str)-1]=0;
+{ count();    swf5lval.str = _strdup(yytext+1);
+                    swf5lval.str[strlen(swf5lval.str)-1]=0;
                                         unescape(swf5lval.str);
-					return STRING; 		}
-	YY_BREAK
+                    return STRING;         }
+    YY_BREAK
 case 111:
 *yy_cp = yy_hold_char; /* undo effects of setting up yytext */
 yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 #line 216 "swf5compiler.flex"
-{ count();	swf5lval.str = _strdup("");
-					warning("Unterminated string!");
-					return STRING;		}
-	YY_BREAK
+{ count();    swf5lval.str = _strdup("");
+                    warning("Unterminated string!");
+                    return STRING;        }
+    YY_BREAK
 case 112:
 *yy_cp = yy_hold_char; /* undo effects of setting up yytext */
 yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 #line 220 "swf5compiler.flex"
-{ count();	swf5lval.str = _strdup("");
-					warning("Unterminated string!");
-					return STRING;		}
-	YY_BREAK
+{ count();    swf5lval.str = _strdup("");
+                    warning("Unterminated string!");
+                    return STRING;        }
+    YY_BREAK
 case 113:
 YY_RULE_SETUP
 #line 224 "swf5compiler.flex"
-{ count();	comment();		}
-	YY_BREAK
+{ count();    comment();        }
+    YY_BREAK
 case 114:
 YY_RULE_SETUP
 #line 225 "swf5compiler.flex"
-{ count();	comment1();		}
-	YY_BREAK
+{ count();    comment1();        }
+    YY_BREAK
 case 115:
 YY_RULE_SETUP
 #line 226 "swf5compiler.flex"
 { count(); }
-	YY_BREAK
+    YY_BREAK
 case 116:
 YY_RULE_SETUP
 #line 228 "swf5compiler.flex"
-{ count();	return INCR; }
-	YY_BREAK
+{ count();    return INCR; }
+    YY_BREAK
 case 117:
 YY_RULE_SETUP
 #line 229 "swf5compiler.flex"
-{ count();	return DECR; }
-	YY_BREAK
+{ count();    return DECR; }
+    YY_BREAK
 case 118:
 YY_RULE_SETUP
 #line 230 "swf5compiler.flex"
-{ count();	return LE; }
-	YY_BREAK
+{ count();    return LE; }
+    YY_BREAK
 case 119:
 YY_RULE_SETUP
 #line 231 "swf5compiler.flex"
-{ count();	return GE; }
-	YY_BREAK
+{ count();    return GE; }
+    YY_BREAK
 case 120:
 YY_RULE_SETUP
 #line 232 "swf5compiler.flex"
-{ count();	return EQ; }
-	YY_BREAK
+{ count();    return EQ; }
+    YY_BREAK
 case 121:
 YY_RULE_SETUP
 #line 233 "swf5compiler.flex"
-{ count();	return NE; }
-	YY_BREAK
+{ count();    return NE; }
+    YY_BREAK
 case 122:
 YY_RULE_SETUP
 #line 234 "swf5compiler.flex"
-{ count();	return LAN; }
-	YY_BREAK
+{ count();    return LAN; }
+    YY_BREAK
 case 123:
 YY_RULE_SETUP
 #line 235 "swf5compiler.flex"
-{ count();	return LOR; }
-	YY_BREAK
+{ count();    return LOR; }
+    YY_BREAK
 case 124:
 YY_RULE_SETUP
 #line 236 "swf5compiler.flex"
-{ count();	return MEQ; }
-	YY_BREAK
+{ count();    return MEQ; }
+    YY_BREAK
 case 125:
 YY_RULE_SETUP
 #line 237 "swf5compiler.flex"
-{ count();	return DEQ; }
-	YY_BREAK
+{ count();    return DEQ; }
+    YY_BREAK
 case 126:
 YY_RULE_SETUP
 #line 238 "swf5compiler.flex"
-{ count();	return IEQ; }
-	YY_BREAK
+{ count();    return IEQ; }
+    YY_BREAK
 case 127:
 YY_RULE_SETUP
 #line 239 "swf5compiler.flex"
-{ count();	return SEQ; }
-	YY_BREAK
+{ count();    return SEQ; }
+    YY_BREAK
 case 128:
 YY_RULE_SETUP
 #line 240 "swf5compiler.flex"
-{ count();	return SHL; }
-	YY_BREAK
+{ count();    return SHL; }
+    YY_BREAK
 case 129:
 YY_RULE_SETUP
 #line 241 "swf5compiler.flex"
-{ count();	return SHR; }
-	YY_BREAK
+{ count();    return SHR; }
+    YY_BREAK
 case 130:
 YY_RULE_SETUP
 #line 242 "swf5compiler.flex"
-{ count();	return SHR2; }
-	YY_BREAK
+{ count();    return SHR2; }
+    YY_BREAK
 case 131:
 YY_RULE_SETUP
 #line 243 "swf5compiler.flex"
-{ count();	return SHLEQ; }
-	YY_BREAK
+{ count();    return SHLEQ; }
+    YY_BREAK
 case 132:
 YY_RULE_SETUP
 #line 244 "swf5compiler.flex"
-{ count();	return SHREQ; }
-	YY_BREAK
+{ count();    return SHREQ; }
+    YY_BREAK
 case 133:
 YY_RULE_SETUP
 #line 245 "swf5compiler.flex"
-{ count();	return SHR2EQ; }
-	YY_BREAK
+{ count();    return SHR2EQ; }
+    YY_BREAK
 case 134:
 YY_RULE_SETUP
 #line 247 "swf5compiler.flex"
-{ count();	return '<'; }
-	YY_BREAK
+{ count();    return '<'; }
+    YY_BREAK
 case 135:
 YY_RULE_SETUP
 #line 248 "swf5compiler.flex"
-{ count();	return '>'; }
-	YY_BREAK
+{ count();    return '>'; }
+    YY_BREAK
 case 136:
 YY_RULE_SETUP
 #line 249 "swf5compiler.flex"
-{ count();	return ';'; }
-	YY_BREAK
+{ count();    return ';'; }
+    YY_BREAK
 case 137:
 YY_RULE_SETUP
 #line 250 "swf5compiler.flex"
-{ count();	return '='; }
-	YY_BREAK
+{ count();    return '='; }
+    YY_BREAK
 case 138:
 YY_RULE_SETUP
 #line 251 "swf5compiler.flex"
-{ count();	return '+'; }
-	YY_BREAK
+{ count();    return '+'; }
+    YY_BREAK
 case 139:
 YY_RULE_SETUP
 #line 252 "swf5compiler.flex"
-{ count();	return '-'; }
-	YY_BREAK
+{ count();    return '-'; }
+    YY_BREAK
 case 140:
 YY_RULE_SETUP
 #line 253 "swf5compiler.flex"
-{ count();	return '&'; }
-	YY_BREAK
+{ count();    return '&'; }
+    YY_BREAK
 case 141:
 YY_RULE_SETUP
 #line 254 "swf5compiler.flex"
-{ count();	return '|'; }
-	YY_BREAK
+{ count();    return '|'; }
+    YY_BREAK
 case 142:
 YY_RULE_SETUP
 #line 255 "swf5compiler.flex"
-{ count();	return '^'; }
-	YY_BREAK
+{ count();    return '^'; }
+    YY_BREAK
 case 143:
 YY_RULE_SETUP
 #line 256 "swf5compiler.flex"
-{ count();	return '*'; }
-	YY_BREAK
+{ count();    return '*'; }
+    YY_BREAK
 case 144:
 YY_RULE_SETUP
 #line 257 "swf5compiler.flex"
-{ count();	return '/'; }
-	YY_BREAK
+{ count();    return '/'; }
+    YY_BREAK
 case 145:
 YY_RULE_SETUP
 #line 258 "swf5compiler.flex"
-{ count();	return '%'; }
-	YY_BREAK
+{ count();    return '%'; }
+    YY_BREAK
 case 146:
 YY_RULE_SETUP
 #line 259 "swf5compiler.flex"
-{ count();	return '!'; }
-	YY_BREAK
+{ count();    return '!'; }
+    YY_BREAK
 case 147:
 YY_RULE_SETUP
 #line 260 "swf5compiler.flex"
-{ count();	return '('; }
-	YY_BREAK
+{ count();    return '('; }
+    YY_BREAK
 case 148:
 YY_RULE_SETUP
 #line 261 "swf5compiler.flex"
-{ count();	return ')'; }
-	YY_BREAK
+{ count();    return ')'; }
+    YY_BREAK
 case 149:
 YY_RULE_SETUP
 #line 262 "swf5compiler.flex"
-{ count();	return '['; }
-	YY_BREAK
+{ count();    return '['; }
+    YY_BREAK
 case 150:
 YY_RULE_SETUP
 #line 263 "swf5compiler.flex"
-{ count();	return ']'; }
-	YY_BREAK
+{ count();    return ']'; }
+    YY_BREAK
 case 151:
 YY_RULE_SETUP
 #line 264 "swf5compiler.flex"
-{ count();	return '{'; }
-	YY_BREAK
+{ count();    return '{'; }
+    YY_BREAK
 case 152:
 YY_RULE_SETUP
 #line 265 "swf5compiler.flex"
-{ count();	return '}'; }
-	YY_BREAK
+{ count();    return '}'; }
+    YY_BREAK
 case 153:
 YY_RULE_SETUP
 #line 266 "swf5compiler.flex"
-{ count();	return ','; }
-	YY_BREAK
+{ count();    return ','; }
+    YY_BREAK
 case 154:
 YY_RULE_SETUP
 #line 267 "swf5compiler.flex"
-{ count();	return '.'; }
-	YY_BREAK
+{ count();    return '.'; }
+    YY_BREAK
 case 155:
 YY_RULE_SETUP
 #line 268 "swf5compiler.flex"
-{ count();	return '?'; }
-	YY_BREAK
+{ count();    return '?'; }
+    YY_BREAK
 case 156:
 YY_RULE_SETUP
 #line 269 "swf5compiler.flex"
-{ count();	return ':'; }
-	YY_BREAK
+{ count();    return ':'; }
+    YY_BREAK
 case 157:
 YY_RULE_SETUP
 #line 271 "swf5compiler.flex"
-{ count();	strcpy(szLine, yytext + 1);
-					countline();	yyless(1);	}
-	YY_BREAK
+{ count();    strcpy(szLine, yytext + 1);
+                    countline();    yyless(1);    }
+    YY_BREAK
 case 158:
 YY_RULE_SETUP
 #line 274 "swf5compiler.flex"
 SWF_error(error_fp,"Unrecognized character: %s\n", yytext);
-	YY_BREAK
+    YY_BREAK
 case 159:
 YY_RULE_SETUP
 #line 276 "swf5compiler.flex"
 ECHO;
-	YY_BREAK
+    YY_BREAK
 #line 1850 "lex.swf5.c"
 case YY_STATE_EOF(INITIAL):
-	yyterminate();
+    yyterminate();
 
-	case YY_END_OF_BUFFER:
-		{
-		/* Amount of text matched not including the EOB char. */
-		int yy_amount_of_matched_text = (int) (yy_cp - yytext_ptr) - 1;
+    case YY_END_OF_BUFFER:
+        {
+        /* Amount of text matched not including the EOB char. */
+        int yy_amount_of_matched_text = (int) (yy_cp - yytext_ptr) - 1;
 
-		/* Undo the effects of YY_DO_BEFORE_ACTION. */
-		*yy_cp = yy_hold_char;
-		YY_RESTORE_YY_MORE_OFFSET
+        /* Undo the effects of YY_DO_BEFORE_ACTION. */
+        *yy_cp = yy_hold_char;
+        YY_RESTORE_YY_MORE_OFFSET
 
-		if ( yy_current_buffer->yy_buffer_status == YY_BUFFER_NEW )
-			{
-			/* We're scanning a new file or input source.  It's
-			 * possible that this happened because the user
-			 * just pointed yyin at a new source and called
-			 * yylex().  If so, then we have to assure
-			 * consistency between yy_current_buffer and our
-			 * globals.  Here is the right place to do so, because
-			 * this is the first action (other than possibly a
-			 * back-up) that will match for the new input source.
-			 */
-			yy_n_chars = yy_current_buffer->yy_n_chars;
-			yy_current_buffer->yy_input_file = yyin;
-			yy_current_buffer->yy_buffer_status = YY_BUFFER_NORMAL;
-			}
+        if ( yy_current_buffer->yy_buffer_status == YY_BUFFER_NEW )
+            {
+            /* We're scanning a new file or input source.  It's
+             * possible that this happened because the user
+             * just pointed yyin at a new source and called
+             * yylex().  If so, then we have to assure
+             * consistency between yy_current_buffer and our
+             * globals.  Here is the right place to do so, because
+             * this is the first action (other than possibly a
+             * back-up) that will match for the new input source.
+             */
+            yy_n_chars = yy_current_buffer->yy_n_chars;
+            yy_current_buffer->yy_input_file = yyin;
+            yy_current_buffer->yy_buffer_status = YY_BUFFER_NORMAL;
+            }
 
-		/* Note that here we test for yy_c_buf_p "<=" to the position
-		 * of the first EOB in the buffer, since yy_c_buf_p will
-		 * already have been incremented past the NUL character
-		 * (since all states make transitions on EOB to the
-		 * end-of-buffer state).  Contrast this with the test
-		 * in input().
-		 */
-		if ( yy_c_buf_p <= &yy_current_buffer->yy_ch_buf[yy_n_chars] )
-			{ /* This was really a NUL. */
-			yy_state_type yy_next_state;
+        /* Note that here we test for yy_c_buf_p "<=" to the position
+         * of the first EOB in the buffer, since yy_c_buf_p will
+         * already have been incremented past the NUL character
+         * (since all states make transitions on EOB to the
+         * end-of-buffer state).  Contrast this with the test
+         * in input().
+         */
+        if ( yy_c_buf_p <= &yy_current_buffer->yy_ch_buf[yy_n_chars] )
+            { /* This was really a NUL. */
+            yy_state_type yy_next_state;
 
-			yy_c_buf_p = yytext_ptr + yy_amount_of_matched_text;
+            yy_c_buf_p = yytext_ptr + yy_amount_of_matched_text;
 
-			yy_current_state = yy_get_previous_state();
+            yy_current_state = yy_get_previous_state();
 
-			/* Okay, we're now positioned to make the NUL
-			 * transition.  We couldn't have
-			 * yy_get_previous_state() go ahead and do it
-			 * for us because it doesn't know how to deal
-			 * with the possibility of jamming (and we don't
-			 * want to build jamming into it because then it
-			 * will run more slowly).
-			 */
+            /* Okay, we're now positioned to make the NUL
+             * transition.  We couldn't have
+             * yy_get_previous_state() go ahead and do it
+             * for us because it doesn't know how to deal
+             * with the possibility of jamming (and we don't
+             * want to build jamming into it because then it
+             * will run more slowly).
+             */
 
-			yy_next_state = yy_try_NUL_trans( yy_current_state );
+            yy_next_state = yy_try_NUL_trans( yy_current_state );
 
-			yy_bp = yytext_ptr + YY_MORE_ADJ;
+            yy_bp = yytext_ptr + YY_MORE_ADJ;
 
-			if ( yy_next_state )
-				{
-				/* Consume the NUL. */
-				yy_cp = ++yy_c_buf_p;
-				yy_current_state = yy_next_state;
-				goto yy_match;
-				}
+            if ( yy_next_state )
+                {
+                /* Consume the NUL. */
+                yy_cp = ++yy_c_buf_p;
+                yy_current_state = yy_next_state;
+                goto yy_match;
+                }
 
-			else
-				{
-				yy_cp = yy_c_buf_p;
-				goto yy_find_action;
-				}
-			}
+            else
+                {
+                yy_cp = yy_c_buf_p;
+                goto yy_find_action;
+                }
+            }
 
-		else switch ( yy_get_next_buffer() )
-			{
-			case EOB_ACT_END_OF_FILE:
-				{
-				yy_did_buffer_switch_on_eof = 0;
+        else switch ( yy_get_next_buffer() )
+            {
+            case EOB_ACT_END_OF_FILE:
+                {
+                yy_did_buffer_switch_on_eof = 0;
 
-				if ( yywrap() )
-					{
-					/* Note: because we've taken care in
-					 * yy_get_next_buffer() to have set up
-					 * yytext, we can now set up
-					 * yy_c_buf_p so that if some total
-					 * hoser (like flex itself) wants to
-					 * call the scanner after we return the
-					 * YY_NULL, it'll still work - another
-					 * YY_NULL will get returned.
-					 */
-					yy_c_buf_p = yytext_ptr + YY_MORE_ADJ;
+                if ( yywrap() )
+                    {
+                    /* Note: because we've taken care in
+                     * yy_get_next_buffer() to have set up
+                     * yytext, we can now set up
+                     * yy_c_buf_p so that if some total
+                     * hoser (like flex itself) wants to
+                     * call the scanner after we return the
+                     * YY_NULL, it'll still work - another
+                     * YY_NULL will get returned.
+                     */
+                    yy_c_buf_p = yytext_ptr + YY_MORE_ADJ;
 
-					yy_act = YY_STATE_EOF(YY_START);
-					goto do_action;
-					}
+                    yy_act = YY_STATE_EOF(YY_START);
+                    goto do_action;
+                    }
 
-				else
-					{
-					if ( ! yy_did_buffer_switch_on_eof )
-						YY_NEW_FILE;
-					}
-				break;
-				}
+                else
+                    {
+                    if ( ! yy_did_buffer_switch_on_eof )
+                        YY_NEW_FILE;
+                    }
+                break;
+                }
 
-			case EOB_ACT_CONTINUE_SCAN:
-				yy_c_buf_p =
-					yytext_ptr + yy_amount_of_matched_text;
+            case EOB_ACT_CONTINUE_SCAN:
+                yy_c_buf_p =
+                    yytext_ptr + yy_amount_of_matched_text;
 
-				yy_current_state = yy_get_previous_state();
+                yy_current_state = yy_get_previous_state();
 
-				yy_cp = yy_c_buf_p;
-				yy_bp = yytext_ptr + YY_MORE_ADJ;
-				goto yy_match;
+                yy_cp = yy_c_buf_p;
+                yy_bp = yytext_ptr + YY_MORE_ADJ;
+                goto yy_match;
 
-			case EOB_ACT_LAST_MATCH:
-				yy_c_buf_p =
-				&yy_current_buffer->yy_ch_buf[yy_n_chars];
+            case EOB_ACT_LAST_MATCH:
+                yy_c_buf_p =
+                &yy_current_buffer->yy_ch_buf[yy_n_chars];
 
-				yy_current_state = yy_get_previous_state();
+                yy_current_state = yy_get_previous_state();
 
-				yy_cp = yy_c_buf_p;
-				yy_bp = yytext_ptr + YY_MORE_ADJ;
-				goto yy_find_action;
-			}
-		break;
-		}
+                yy_cp = yy_c_buf_p;
+                yy_bp = yytext_ptr + YY_MORE_ADJ;
+                goto yy_find_action;
+            }
+        break;
+        }
 
-	default:
-		YY_FATAL_ERROR(
-			"fatal flex scanner internal error--no action found" );
-	} /* end of action switch */
-		} /* end of scanning one token */
-	} /* end of yylex */
+    default:
+        YY_FATAL_ERROR(
+            "fatal flex scanner internal error--no action found" );
+    } /* end of action switch */
+        } /* end of scanning one token */
+    } /* end of yylex */
 
 /* yy_get_next_buffer - try to read in a new buffer
  *
  * Returns a code representing an action:
- *	EOB_ACT_LAST_MATCH -
- *	EOB_ACT_CONTINUE_SCAN - continue scanning from current position
- *	EOB_ACT_END_OF_FILE - end of file
+ *    EOB_ACT_LAST_MATCH -
+ *    EOB_ACT_CONTINUE_SCAN - continue scanning from current position
+ *    EOB_ACT_END_OF_FILE - end of file
  */
 
 static int yy_get_next_buffer()
-	{
-	register char *dest = yy_current_buffer->yy_ch_buf;
-	register char *source = yytext_ptr;
-	register int number_to_move, i;
-	int ret_val;
+    {
+    register char *dest = yy_current_buffer->yy_ch_buf;
+    register char *source = yytext_ptr;
+    register int number_to_move, i;
+    int ret_val;
 
-	if ( yy_c_buf_p > &yy_current_buffer->yy_ch_buf[yy_n_chars + 1] )
-		YY_FATAL_ERROR(
-		"fatal flex scanner internal error--end of buffer missed" );
+    if ( yy_c_buf_p > &yy_current_buffer->yy_ch_buf[yy_n_chars + 1] )
+        YY_FATAL_ERROR(
+        "fatal flex scanner internal error--end of buffer missed" );
 
-	if ( yy_current_buffer->yy_fill_buffer == 0 )
-		{ /* Don't try to fill the buffer, so this is an EOF. */
-		if ( yy_c_buf_p - yytext_ptr - YY_MORE_ADJ == 1 )
-			{
-			/* We matched a single character, the EOB, so
-			 * treat this as a final EOF.
-			 */
-			return EOB_ACT_END_OF_FILE;
-			}
+    if ( yy_current_buffer->yy_fill_buffer == 0 )
+        { /* Don't try to fill the buffer, so this is an EOF. */
+        if ( yy_c_buf_p - yytext_ptr - YY_MORE_ADJ == 1 )
+            {
+            /* We matched a single character, the EOB, so
+             * treat this as a final EOF.
+             */
+            return EOB_ACT_END_OF_FILE;
+            }
 
-		else
-			{
-			/* We matched some text prior to the EOB, first
-			 * process it.
-			 */
-			return EOB_ACT_LAST_MATCH;
-			}
-		}
+        else
+            {
+            /* We matched some text prior to the EOB, first
+             * process it.
+             */
+            return EOB_ACT_LAST_MATCH;
+            }
+        }
 
-	/* Try to read more data. */
+    /* Try to read more data. */
 
-	/* First move last chars to start of buffer. */
-	number_to_move = (int) (yy_c_buf_p - yytext_ptr) - 1;
+    /* First move last chars to start of buffer. */
+    number_to_move = (int) (yy_c_buf_p - yytext_ptr) - 1;
 
-	for ( i = 0; i < number_to_move; ++i )
-		*(dest++) = *(source++);
+    for ( i = 0; i < number_to_move; ++i )
+        *(dest++) = *(source++);
 
-	if ( yy_current_buffer->yy_buffer_status == YY_BUFFER_EOF_PENDING )
-		/* don't do the read, it's not guaranteed to return an EOF,
-		 * just force an EOF
-		 */
-		yy_current_buffer->yy_n_chars = yy_n_chars = 0;
+    if ( yy_current_buffer->yy_buffer_status == YY_BUFFER_EOF_PENDING )
+        /* don't do the read, it's not guaranteed to return an EOF,
+         * just force an EOF
+         */
+        yy_current_buffer->yy_n_chars = yy_n_chars = 0;
 
-	else
-		{
-		int num_to_read =
-			yy_current_buffer->yy_buf_size - number_to_move - 1;
+    else
+        {
+        int num_to_read =
+            yy_current_buffer->yy_buf_size - number_to_move - 1;
 
-		while ( num_to_read <= 0 )
-			{ /* Not enough room in the buffer - grow it. */
+        while ( num_to_read <= 0 )
+            { /* Not enough room in the buffer - grow it. */
 #ifdef YY_USES_REJECT
-			YY_FATAL_ERROR(
+            YY_FATAL_ERROR(
 "input buffer overflow, can't enlarge buffer because scanner uses REJECT" );
 #else
 
-			/* just a shorter name for the current buffer */
-			YY_BUFFER_STATE b = yy_current_buffer;
+            /* just a shorter name for the current buffer */
+            YY_BUFFER_STATE b = yy_current_buffer;
 
-			int yy_c_buf_p_offset =
-				(int) (yy_c_buf_p - b->yy_ch_buf);
+            int yy_c_buf_p_offset =
+                (int) (yy_c_buf_p - b->yy_ch_buf);
 
-			if ( b->yy_is_our_buffer )
-				{
-				int new_size = b->yy_buf_size * 2;
+            if ( b->yy_is_our_buffer )
+                {
+                int new_size = b->yy_buf_size * 2;
 
-				if ( new_size <= 0 )
-					b->yy_buf_size += b->yy_buf_size / 8;
-				else
-					b->yy_buf_size *= 2;
+                if ( new_size <= 0 )
+                    b->yy_buf_size += b->yy_buf_size / 8;
+                else
+                    b->yy_buf_size *= 2;
 
-				b->yy_ch_buf = (char *)
-					/* Include room in for 2 EOB chars. */
-					yy_flex_realloc( (void *) b->yy_ch_buf,
-							 b->yy_buf_size + 2 );
-				}
-			else
-				/* Can't grow it, we don't own it. */
-				b->yy_ch_buf = 0;
+                b->yy_ch_buf = (char *)
+                    /* Include room in for 2 EOB chars. */
+                    yy_flex_realloc( (void *) b->yy_ch_buf,
+                             b->yy_buf_size + 2 );
+                }
+            else
+                /* Can't grow it, we don't own it. */
+                b->yy_ch_buf = 0;
 
-			if ( ! b->yy_ch_buf )
-				YY_FATAL_ERROR(
-				"fatal error - scanner input buffer overflow" );
+            if ( ! b->yy_ch_buf )
+                YY_FATAL_ERROR(
+                "fatal error - scanner input buffer overflow" );
 
-			yy_c_buf_p = &b->yy_ch_buf[yy_c_buf_p_offset];
+            yy_c_buf_p = &b->yy_ch_buf[yy_c_buf_p_offset];
 
-			num_to_read = yy_current_buffer->yy_buf_size -
-						number_to_move - 1;
+            num_to_read = yy_current_buffer->yy_buf_size -
+                        number_to_move - 1;
 #endif
-			}
+            }
 
-		if ( num_to_read > YY_READ_BUF_SIZE )
-			num_to_read = YY_READ_BUF_SIZE;
+        if ( num_to_read > YY_READ_BUF_SIZE )
+            num_to_read = YY_READ_BUF_SIZE;
 
-		/* Read in more data. */
-		YY_INPUT( (&yy_current_buffer->yy_ch_buf[number_to_move]),
-			yy_n_chars, num_to_read );
+        /* Read in more data. */
+        YY_INPUT( (&yy_current_buffer->yy_ch_buf[number_to_move]),
+            yy_n_chars, num_to_read );
 
-		yy_current_buffer->yy_n_chars = yy_n_chars;
-		}
+        yy_current_buffer->yy_n_chars = yy_n_chars;
+        }
 
-	if ( yy_n_chars == 0 )
-		{
-		if ( number_to_move == YY_MORE_ADJ )
-			{
-			ret_val = EOB_ACT_END_OF_FILE;
-			yyrestart( yyin );
-			}
+    if ( yy_n_chars == 0 )
+        {
+        if ( number_to_move == YY_MORE_ADJ )
+            {
+            ret_val = EOB_ACT_END_OF_FILE;
+            yyrestart( yyin );
+            }
 
-		else
-			{
-			ret_val = EOB_ACT_LAST_MATCH;
-			yy_current_buffer->yy_buffer_status =
-				YY_BUFFER_EOF_PENDING;
-			}
-		}
+        else
+            {
+            ret_val = EOB_ACT_LAST_MATCH;
+            yy_current_buffer->yy_buffer_status =
+                YY_BUFFER_EOF_PENDING;
+            }
+        }
 
-	else
-		ret_val = EOB_ACT_CONTINUE_SCAN;
+    else
+        ret_val = EOB_ACT_CONTINUE_SCAN;
 
-	yy_n_chars += number_to_move;
-	yy_current_buffer->yy_ch_buf[yy_n_chars] = YY_END_OF_BUFFER_CHAR;
-	yy_current_buffer->yy_ch_buf[yy_n_chars + 1] = YY_END_OF_BUFFER_CHAR;
+    yy_n_chars += number_to_move;
+    yy_current_buffer->yy_ch_buf[yy_n_chars] = YY_END_OF_BUFFER_CHAR;
+    yy_current_buffer->yy_ch_buf[yy_n_chars + 1] = YY_END_OF_BUFFER_CHAR;
 
-	yytext_ptr = &yy_current_buffer->yy_ch_buf[0];
+    yytext_ptr = &yy_current_buffer->yy_ch_buf[0];
 
-	return ret_val;
-	}
+    return ret_val;
+    }
 
 /* yy_get_previous_state - get the state just before the EOB char was reached */
 
 static yy_state_type yy_get_previous_state()
-	{
-	register yy_state_type yy_current_state;
-	register char *yy_cp;
+    {
+    register yy_state_type yy_current_state;
+    register char *yy_cp;
 
-	yy_current_state = yy_start;
+    yy_current_state = yy_start;
 
-	for ( yy_cp = yytext_ptr + YY_MORE_ADJ; yy_cp < yy_c_buf_p; ++yy_cp )
-		{
-		register YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 1);
-		if ( yy_accept[yy_current_state] )
-			{
-			yy_last_accepting_state = yy_current_state;
-			yy_last_accepting_cpos = yy_cp;
-			}
-		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
-			{
-			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 578 )
-				yy_c = yy_meta[(unsigned int) yy_c];
-			}
-		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-		}
+    for ( yy_cp = yytext_ptr + YY_MORE_ADJ; yy_cp < yy_c_buf_p; ++yy_cp )
+        {
+        register YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 1);
+        if ( yy_accept[yy_current_state] )
+            {
+            yy_last_accepting_state = yy_current_state;
+            yy_last_accepting_cpos = yy_cp;
+            }
+        while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
+            {
+            yy_current_state = (int) yy_def[yy_current_state];
+            if ( yy_current_state >= 578 )
+                yy_c = yy_meta[(unsigned int) yy_c];
+            }
+        yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+        }
 
-	return yy_current_state;
-	}
+    return yy_current_state;
+    }
 
 /* yy_try_NUL_trans - try to make a transition on the NUL character
  *
  * synopsis
- *	next_state = yy_try_NUL_trans( current_state );
+ *    next_state = yy_try_NUL_trans( current_state );
  */
 
 #ifdef YY_USE_PROTOS
@@ -2152,27 +2152,27 @@ static yy_state_type yy_try_NUL_trans( yy_state_type yy_current_state )
 static yy_state_type yy_try_NUL_trans( yy_current_state )
 yy_state_type yy_current_state;
 #endif
-	{
-	register int yy_is_jam;
-	register char *yy_cp = yy_c_buf_p;
+    {
+    register int yy_is_jam;
+    register char *yy_cp = yy_c_buf_p;
 
-	register YY_CHAR yy_c = 1;
-	if ( yy_accept[yy_current_state] )
-		{
-		yy_last_accepting_state = yy_current_state;
-		yy_last_accepting_cpos = yy_cp;
-		}
-	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
-		{
-		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 578 )
-			yy_c = yy_meta[(unsigned int) yy_c];
-		}
-	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 577);
+    register YY_CHAR yy_c = 1;
+    if ( yy_accept[yy_current_state] )
+        {
+        yy_last_accepting_state = yy_current_state;
+        yy_last_accepting_cpos = yy_cp;
+        }
+    while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
+        {
+        yy_current_state = (int) yy_def[yy_current_state];
+        if ( yy_current_state >= 578 )
+            yy_c = yy_meta[(unsigned int) yy_c];
+        }
+    yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+    yy_is_jam = (yy_current_state == 577);
 
-	return yy_is_jam ? 0 : yy_current_state;
-	}
+    return yy_is_jam ? 0 : yy_current_state;
+    }
 
 #ifndef YY_NO_UNPUT
 #ifdef YY_USE_PROTOS
@@ -2182,111 +2182,111 @@ static void yyunput( c, yy_bp )
 int c;
 register char *yy_bp;
 #endif
-	{
-	register char *yy_cp = yy_c_buf_p;
+    {
+    register char *yy_cp = yy_c_buf_p;
 
-	/* undo effects of setting up yytext */
-	*yy_cp = yy_hold_char;
+    /* undo effects of setting up yytext */
+    *yy_cp = yy_hold_char;
 
-	if ( yy_cp < yy_current_buffer->yy_ch_buf + 2 )
-		{ /* need to shift things up to make room */
-		/* +2 for EOB chars. */
-		register int number_to_move = yy_n_chars + 2;
-		register char *dest = &yy_current_buffer->yy_ch_buf[
-					yy_current_buffer->yy_buf_size + 2];
-		register char *source =
-				&yy_current_buffer->yy_ch_buf[number_to_move];
+    if ( yy_cp < yy_current_buffer->yy_ch_buf + 2 )
+        { /* need to shift things up to make room */
+        /* +2 for EOB chars. */
+        register int number_to_move = yy_n_chars + 2;
+        register char *dest = &yy_current_buffer->yy_ch_buf[
+                    yy_current_buffer->yy_buf_size + 2];
+        register char *source =
+                &yy_current_buffer->yy_ch_buf[number_to_move];
 
-		while ( source > yy_current_buffer->yy_ch_buf )
-			*--dest = *--source;
+        while ( source > yy_current_buffer->yy_ch_buf )
+            *--dest = *--source;
 
-		yy_cp += (int) (dest - source);
-		yy_bp += (int) (dest - source);
-		yy_current_buffer->yy_n_chars =
-			yy_n_chars = yy_current_buffer->yy_buf_size;
+        yy_cp += (int) (dest - source);
+        yy_bp += (int) (dest - source);
+        yy_current_buffer->yy_n_chars =
+            yy_n_chars = yy_current_buffer->yy_buf_size;
 
-		if ( yy_cp < yy_current_buffer->yy_ch_buf + 2 )
-			YY_FATAL_ERROR( "flex scanner push-back overflow" );
-		}
+        if ( yy_cp < yy_current_buffer->yy_ch_buf + 2 )
+            YY_FATAL_ERROR( "flex scanner push-back overflow" );
+        }
 
-	*--yy_cp = (char) c;
+    *--yy_cp = (char) c;
 
-	yytext_ptr = yy_bp;
-	yy_hold_char = *yy_cp;
-	yy_c_buf_p = yy_cp;
-	}
-#endif	/* ifndef YY_NO_UNPUT */
+    yytext_ptr = yy_bp;
+    yy_hold_char = *yy_cp;
+    yy_c_buf_p = yy_cp;
+    }
+#endif    /* ifndef YY_NO_UNPUT */
 
 #ifdef __cplusplus
 static int yyinput()
 #else
 static int input()
 #endif
-	{
-	int c;
+    {
+    int c;
 
-	*yy_c_buf_p = yy_hold_char;
+    *yy_c_buf_p = yy_hold_char;
 
-	if ( *yy_c_buf_p == YY_END_OF_BUFFER_CHAR )
-		{
-		/* yy_c_buf_p now points to the character we want to return.
-		 * If this occurs *before* the EOB characters, then it's a
-		 * valid NUL; if not, then we've hit the end of the buffer.
-		 */
-		if ( yy_c_buf_p < &yy_current_buffer->yy_ch_buf[yy_n_chars] )
-			/* This was really a NUL. */
-			*yy_c_buf_p = '\0';
+    if ( *yy_c_buf_p == YY_END_OF_BUFFER_CHAR )
+        {
+        /* yy_c_buf_p now points to the character we want to return.
+         * If this occurs *before* the EOB characters, then it's a
+         * valid NUL; if not, then we've hit the end of the buffer.
+         */
+        if ( yy_c_buf_p < &yy_current_buffer->yy_ch_buf[yy_n_chars] )
+            /* This was really a NUL. */
+            *yy_c_buf_p = '\0';
 
-		else
-			{ /* need more input */
-			int offset = yy_c_buf_p - yytext_ptr;
-			++yy_c_buf_p;
+        else
+            { /* need more input */
+            int offset = yy_c_buf_p - yytext_ptr;
+            ++yy_c_buf_p;
 
-			switch ( yy_get_next_buffer() )
-				{
-				case EOB_ACT_LAST_MATCH:
-					/* This happens because yy_g_n_b()
-					 * sees that we've accumulated a
-					 * token and flags that we need to
-					 * try matching the token before
-					 * proceeding.  But for input(),
-					 * there's no matching to consider.
-					 * So convert the EOB_ACT_LAST_MATCH
-					 * to EOB_ACT_END_OF_FILE.
-					 */
+            switch ( yy_get_next_buffer() )
+                {
+                case EOB_ACT_LAST_MATCH:
+                    /* This happens because yy_g_n_b()
+                     * sees that we've accumulated a
+                     * token and flags that we need to
+                     * try matching the token before
+                     * proceeding.  But for input(),
+                     * there's no matching to consider.
+                     * So convert the EOB_ACT_LAST_MATCH
+                     * to EOB_ACT_END_OF_FILE.
+                     */
 
-					/* Reset buffer status. */
-					yyrestart( yyin );
+                    /* Reset buffer status. */
+                    yyrestart( yyin );
 
-					/* fall through */
+                    /* fall through */
 
-				case EOB_ACT_END_OF_FILE:
-					{
-					if ( yywrap() )
-						return EOF;
+                case EOB_ACT_END_OF_FILE:
+                    {
+                    if ( yywrap() )
+                        return EOF;
 
-					if ( ! yy_did_buffer_switch_on_eof )
-						YY_NEW_FILE;
+                    if ( ! yy_did_buffer_switch_on_eof )
+                        YY_NEW_FILE;
 #ifdef __cplusplus
-					return yyinput();
+                    return yyinput();
 #else
-					return input();
+                    return input();
 #endif
-					}
+                    }
 
-				case EOB_ACT_CONTINUE_SCAN:
-					yy_c_buf_p = yytext_ptr + offset;
-					break;
-				}
-			}
-		}
+                case EOB_ACT_CONTINUE_SCAN:
+                    yy_c_buf_p = yytext_ptr + offset;
+                    break;
+                }
+            }
+        }
 
-	c = *(unsigned char *) yy_c_buf_p;	/* cast for 8-bit char's */
-	*yy_c_buf_p = '\0';	/* preserve yytext */
-	yy_hold_char = *++yy_c_buf_p;
+    c = *(unsigned char *) yy_c_buf_p;    /* cast for 8-bit char's */
+    *yy_c_buf_p = '\0';    /* preserve yytext */
+    yy_hold_char = *++yy_c_buf_p;
 
-	return c;
-	}
+    return c;
+    }
 
 #ifdef YY_USE_PROTOS
 void yyrestart( FILE *input_file )
@@ -2294,13 +2294,13 @@ void yyrestart( FILE *input_file )
 void yyrestart( input_file )
 FILE *input_file;
 #endif
-	{
-	if ( ! yy_current_buffer )
-		yy_current_buffer = yy_create_buffer( yyin, YY_BUF_SIZE );
+    {
+    if ( ! yy_current_buffer )
+        yy_current_buffer = yy_create_buffer( yyin, YY_BUF_SIZE );
 
-	yy_init_buffer( yy_current_buffer, input_file );
-	yy_load_buffer_state();
-	}
+    yy_init_buffer( yy_current_buffer, input_file );
+    yy_load_buffer_state();
+    }
 
 #ifdef YY_USE_PROTOS
 void yy_switch_to_buffer( YY_BUFFER_STATE new_buffer )
@@ -2308,40 +2308,40 @@ void yy_switch_to_buffer( YY_BUFFER_STATE new_buffer )
 void yy_switch_to_buffer( new_buffer )
 YY_BUFFER_STATE new_buffer;
 #endif
-	{
-	if ( yy_current_buffer == new_buffer )
-		return;
+    {
+    if ( yy_current_buffer == new_buffer )
+        return;
 
-	if ( yy_current_buffer )
-		{
-		/* Flush out information for old buffer. */
-		*yy_c_buf_p = yy_hold_char;
-		yy_current_buffer->yy_buf_pos = yy_c_buf_p;
-		yy_current_buffer->yy_n_chars = yy_n_chars;
-		}
+    if ( yy_current_buffer )
+        {
+        /* Flush out information for old buffer. */
+        *yy_c_buf_p = yy_hold_char;
+        yy_current_buffer->yy_buf_pos = yy_c_buf_p;
+        yy_current_buffer->yy_n_chars = yy_n_chars;
+        }
 
-	yy_current_buffer = new_buffer;
-	yy_load_buffer_state();
+    yy_current_buffer = new_buffer;
+    yy_load_buffer_state();
 
-	/* We don't actually know whether we did this switch during
-	 * EOF (yywrap()) processing, but the only time this flag
-	 * is looked at is after yywrap() is called, so it's safe
-	 * to go ahead and always set it.
-	 */
-	yy_did_buffer_switch_on_eof = 1;
-	}
+    /* We don't actually know whether we did this switch during
+     * EOF (yywrap()) processing, but the only time this flag
+     * is looked at is after yywrap() is called, so it's safe
+     * to go ahead and always set it.
+     */
+    yy_did_buffer_switch_on_eof = 1;
+    }
 
 #ifdef YY_USE_PROTOS
 void yy_load_buffer_state( void )
 #else
 void yy_load_buffer_state()
 #endif
-	{
-	yy_n_chars = yy_current_buffer->yy_n_chars;
-	yytext_ptr = yy_c_buf_p = yy_current_buffer->yy_buf_pos;
-	yyin = yy_current_buffer->yy_input_file;
-	yy_hold_char = *yy_c_buf_p;
-	}
+    {
+    yy_n_chars = yy_current_buffer->yy_n_chars;
+    yytext_ptr = yy_c_buf_p = yy_current_buffer->yy_buf_pos;
+    yyin = yy_current_buffer->yy_input_file;
+    yy_hold_char = *yy_c_buf_p;
+    }
 
 #ifdef YY_USE_PROTOS
 YY_BUFFER_STATE yy_create_buffer( FILE *file, int size )
@@ -2350,28 +2350,28 @@ YY_BUFFER_STATE yy_create_buffer( file, size )
 FILE *file;
 int size;
 #endif
-	{
-	YY_BUFFER_STATE b;
+    {
+    YY_BUFFER_STATE b;
 
-	b = (YY_BUFFER_STATE) yy_flex_alloc( sizeof( struct yy_buffer_state ) );
-	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
+    b = (YY_BUFFER_STATE) yy_flex_alloc( sizeof( struct yy_buffer_state ) );
+    if ( ! b )
+        YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
 
-	b->yy_buf_size = size;
+    b->yy_buf_size = size;
 
-	/* yy_ch_buf has to be 2 characters longer than the size given because
-	 * we need to put in 2 end-of-buffer characters.
-	 */
-	b->yy_ch_buf = (char *) yy_flex_alloc( b->yy_buf_size + 2 );
-	if ( ! b->yy_ch_buf )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
+    /* yy_ch_buf has to be 2 characters longer than the size given because
+     * we need to put in 2 end-of-buffer characters.
+     */
+    b->yy_ch_buf = (char *) yy_flex_alloc( b->yy_buf_size + 2 );
+    if ( ! b->yy_ch_buf )
+        YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
 
-	b->yy_is_our_buffer = 1;
+    b->yy_is_our_buffer = 1;
 
-	yy_init_buffer( b, file );
+    yy_init_buffer( b, file );
 
-	return b;
-	}
+    return b;
+    }
 
 #ifdef YY_USE_PROTOS
 void yy_delete_buffer( YY_BUFFER_STATE b )
@@ -2379,18 +2379,18 @@ void yy_delete_buffer( YY_BUFFER_STATE b )
 void yy_delete_buffer( b )
 YY_BUFFER_STATE b;
 #endif
-	{
-	if ( ! b )
-		return;
+    {
+    if ( ! b )
+        return;
 
-	if ( b == yy_current_buffer )
-		yy_current_buffer = (YY_BUFFER_STATE) 0;
+    if ( b == yy_current_buffer )
+        yy_current_buffer = (YY_BUFFER_STATE) 0;
 
-	if ( b->yy_is_our_buffer )
-		yy_flex_free( (void *) b->yy_ch_buf );
+    if ( b->yy_is_our_buffer )
+        yy_flex_free( (void *) b->yy_ch_buf );
 
-	yy_flex_free( (void *) b );
-	}
+    yy_flex_free( (void *) b );
+    }
 
 #ifndef YY_ALWAYS_INTERACTIVE
 #ifndef YY_NEVER_INTERACTIVE
@@ -2406,22 +2406,22 @@ YY_BUFFER_STATE b;
 FILE *file;
 #endif
 
-	{
-	yy_flush_buffer( b );
+    {
+    yy_flush_buffer( b );
 
-	b->yy_input_file = file;
-	b->yy_fill_buffer = 1;
+    b->yy_input_file = file;
+    b->yy_fill_buffer = 1;
 
 #if YY_ALWAYS_INTERACTIVE
-	b->yy_is_interactive = 1;
+    b->yy_is_interactive = 1;
 #else
 #if YY_NEVER_INTERACTIVE
-	b->yy_is_interactive = 0;
+    b->yy_is_interactive = 0;
 #else
-	b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
+    b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
 #endif
 #endif
-	}
+    }
 
 #ifdef YY_USE_PROTOS
 void yy_flush_buffer( YY_BUFFER_STATE b )
@@ -2430,27 +2430,27 @@ void yy_flush_buffer( b )
 YY_BUFFER_STATE b;
 #endif
 
-	{
-	if ( ! b )
-		return;
+    {
+    if ( ! b )
+        return;
 
-	b->yy_n_chars = 0;
+    b->yy_n_chars = 0;
 
-	/* We always need two end-of-buffer characters.  The first causes
-	 * a transition to the end-of-buffer state.  The second causes
-	 * a jam in that state.
-	 */
-	b->yy_ch_buf[0] = YY_END_OF_BUFFER_CHAR;
-	b->yy_ch_buf[1] = YY_END_OF_BUFFER_CHAR;
+    /* We always need two end-of-buffer characters.  The first causes
+     * a transition to the end-of-buffer state.  The second causes
+     * a jam in that state.
+     */
+    b->yy_ch_buf[0] = YY_END_OF_BUFFER_CHAR;
+    b->yy_ch_buf[1] = YY_END_OF_BUFFER_CHAR;
 
-	b->yy_buf_pos = &b->yy_ch_buf[0];
+    b->yy_buf_pos = &b->yy_ch_buf[0];
 
-	b->yy_at_bol = 1;
-	b->yy_buffer_status = YY_BUFFER_NEW;
+    b->yy_at_bol = 1;
+    b->yy_buffer_status = YY_BUFFER_NEW;
 
-	if ( b == yy_current_buffer )
-		yy_load_buffer_state();
-	}
+    if ( b == yy_current_buffer )
+        yy_load_buffer_state();
+    }
 
 #ifndef YY_NO_SCAN_BUFFER
 #ifdef YY_USE_PROTOS
@@ -2460,33 +2460,33 @@ YY_BUFFER_STATE yy_scan_buffer( base, size )
 char *base;
 yy_size_t size;
 #endif
-	{
-	YY_BUFFER_STATE b;
+    {
+    YY_BUFFER_STATE b;
 
-	if ( size < 2 ||
-	     base[size-2] != YY_END_OF_BUFFER_CHAR ||
-	     base[size-1] != YY_END_OF_BUFFER_CHAR )
-		/* They forgot to leave room for the EOB's. */
-		return 0;
+    if ( size < 2 ||
+         base[size-2] != YY_END_OF_BUFFER_CHAR ||
+         base[size-1] != YY_END_OF_BUFFER_CHAR )
+        /* They forgot to leave room for the EOB's. */
+        return 0;
 
-	b = (YY_BUFFER_STATE) yy_flex_alloc( sizeof( struct yy_buffer_state ) );
-	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_buffer()" );
+    b = (YY_BUFFER_STATE) yy_flex_alloc( sizeof( struct yy_buffer_state ) );
+    if ( ! b )
+        YY_FATAL_ERROR( "out of dynamic memory in yy_scan_buffer()" );
 
-	b->yy_buf_size = size - 2;	/* "- 2" to take care of EOB's */
-	b->yy_buf_pos = b->yy_ch_buf = base;
-	b->yy_is_our_buffer = 0;
-	b->yy_input_file = 0;
-	b->yy_n_chars = b->yy_buf_size;
-	b->yy_is_interactive = 0;
-	b->yy_at_bol = 1;
-	b->yy_fill_buffer = 0;
-	b->yy_buffer_status = YY_BUFFER_NEW;
+    b->yy_buf_size = size - 2;    /* "- 2" to take care of EOB's */
+    b->yy_buf_pos = b->yy_ch_buf = base;
+    b->yy_is_our_buffer = 0;
+    b->yy_input_file = 0;
+    b->yy_n_chars = b->yy_buf_size;
+    b->yy_is_interactive = 0;
+    b->yy_at_bol = 1;
+    b->yy_fill_buffer = 0;
+    b->yy_buffer_status = YY_BUFFER_NEW;
 
-	yy_switch_to_buffer( b );
+    yy_switch_to_buffer( b );
 
-	return b;
-	}
+    return b;
+    }
 #endif
 
 #ifndef YY_NO_SCAN_STRING
@@ -2496,13 +2496,13 @@ YY_BUFFER_STATE yy_scan_string( yyconst char *yy_str )
 YY_BUFFER_STATE yy_scan_string( yy_str )
 yyconst char *yy_str;
 #endif
-	{
-	int len;
-	for ( len = 0; yy_str[len]; ++len )
-		;
+    {
+    int len;
+    for ( len = 0; yy_str[len]; ++len )
+        ;
 
-	return yy_scan_sbytes( yy_str, len );
-	}
+    return yy_scan_sbytes( yy_str, len );
+    }
 #endif
 
 #ifndef YY_NO_SCAN_sbyteS
@@ -2513,34 +2513,34 @@ YY_BUFFER_STATE yy_scan_sbytes( sbytes, len )
 yyconst char *sbytes;
 int len;
 #endif
-	{
-	YY_BUFFER_STATE b;
-	char *buf;
-	yy_size_t n;
-	int i;
+    {
+    YY_BUFFER_STATE b;
+    char *buf;
+    yy_size_t n;
+    int i;
 
-	/* Get memory for full buffer, including space for trailing EOB's. */
-	n = len + 2;
-	buf = (char *) yy_flex_alloc( n );
-	if ( ! buf )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_sbytes()" );
+    /* Get memory for full buffer, including space for trailing EOB's. */
+    n = len + 2;
+    buf = (char *) yy_flex_alloc( n );
+    if ( ! buf )
+        YY_FATAL_ERROR( "out of dynamic memory in yy_scan_sbytes()" );
 
-	for ( i = 0; i < len; ++i )
-		buf[i] = sbytes[i];
+    for ( i = 0; i < len; ++i )
+        buf[i] = sbytes[i];
 
-	buf[len] = buf[len+1] = YY_END_OF_BUFFER_CHAR;
+    buf[len] = buf[len+1] = YY_END_OF_BUFFER_CHAR;
 
-	b = yy_scan_buffer( buf, n );
-	if ( ! b )
-		YY_FATAL_ERROR( "bad buffer in yy_scan_sbytes()" );
+    b = yy_scan_buffer( buf, n );
+    if ( ! b )
+        YY_FATAL_ERROR( "bad buffer in yy_scan_sbytes()" );
 
-	/* It's okay to grow etc. this buffer, and we should throw it
-	 * away when we're done.
-	 */
-	b->yy_is_our_buffer = 1;
+    /* It's okay to grow etc. this buffer, and we should throw it
+     * away when we're done.
+     */
+    b->yy_is_our_buffer = 1;
 
-	return b;
-	}
+    return b;
+    }
 #endif
 
 #ifndef YY_NO_PUSH_STATE
@@ -2550,47 +2550,47 @@ static void yy_push_state( int new_state )
 static void yy_push_state( new_state )
 int new_state;
 #endif
-	{
-	if ( yy_start_stack_ptr >= yy_start_stack_depth )
-		{
-		yy_size_t new_size;
+    {
+    if ( yy_start_stack_ptr >= yy_start_stack_depth )
+        {
+        yy_size_t new_size;
 
-		yy_start_stack_depth += YY_START_STACK_INCR;
-		new_size = yy_start_stack_depth * sizeof( int );
+        yy_start_stack_depth += YY_START_STACK_INCR;
+        new_size = yy_start_stack_depth * sizeof( int );
 
-		if ( ! yy_start_stack )
-			yy_start_stack = (int *) yy_flex_alloc( new_size );
+        if ( ! yy_start_stack )
+            yy_start_stack = (int *) yy_flex_alloc( new_size );
 
-		else
-			yy_start_stack = (int *) yy_flex_realloc(
-					(void *) yy_start_stack, new_size );
+        else
+            yy_start_stack = (int *) yy_flex_realloc(
+                    (void *) yy_start_stack, new_size );
 
-		if ( ! yy_start_stack )
-			YY_FATAL_ERROR(
-			"out of memory expanding start-condition stack" );
-		}
+        if ( ! yy_start_stack )
+            YY_FATAL_ERROR(
+            "out of memory expanding start-condition stack" );
+        }
 
-	yy_start_stack[yy_start_stack_ptr++] = YY_START;
+    yy_start_stack[yy_start_stack_ptr++] = YY_START;
 
-	BEGIN(new_state);
-	}
+    BEGIN(new_state);
+    }
 #endif
 
 #ifndef YY_NO_POP_STATE
 static void yy_pop_state()
-	{
-	if ( --yy_start_stack_ptr < 0 )
-		YY_FATAL_ERROR( "start-condition stack underflow" );
+    {
+    if ( --yy_start_stack_ptr < 0 )
+        YY_FATAL_ERROR( "start-condition stack underflow" );
 
-	BEGIN(yy_start_stack[yy_start_stack_ptr]);
-	}
+    BEGIN(yy_start_stack[yy_start_stack_ptr]);
+    }
 #endif
 
 #ifndef YY_NO_TOP_STATE
 static int yy_top_state()
-	{
-	return yy_start_stack[yy_start_stack_ptr - 1];
-	}
+    {
+    return yy_start_stack[yy_start_stack_ptr - 1];
+    }
 #endif
 
 #ifndef YY_EXIT_FAILURE
@@ -2603,25 +2603,25 @@ static void yy_fatal_error( yyconst char msg[] )
 static void yy_fatal_error( msg )
 char msg[];
 #endif
-	{
-	(void) fprintf( stderr, "%s\n", msg );
-	exit( YY_EXIT_FAILURE );
-	}
+    {
+    (void) fprintf( stderr, "%s\n", msg );
+    exit( YY_EXIT_FAILURE );
+    }
 
 /* Redefine yyless() so it works in section 3 code. */
 
 #undef yyless
 #define yyless(n) \
-	do \
-		{ \
-		/* Undo effects of setting up yytext. */ \
-		yytext[yyleng] = yy_hold_char; \
-		yy_c_buf_p = yytext + n; \
-		yy_hold_char = *yy_c_buf_p; \
-		*yy_c_buf_p = '\0'; \
-		yyleng = n; \
-		} \
-	while ( 0 )
+    do \
+        { \
+        /* Undo effects of setting up yytext. */ \
+        yytext[yyleng] = yy_hold_char; \
+        yy_c_buf_p = yytext + n; \
+        yy_hold_char = *yy_c_buf_p; \
+        *yy_c_buf_p = '\0'; \
+        yyleng = n; \
+        } \
+    while ( 0 )
 
 /* Internal utility routines. */
 
@@ -2634,11 +2634,11 @@ char *s1;
 yyconst char *s2;
 int n;
 #endif
-	{
-	register int i;
-	for ( i = 0; i < n; ++i )
-		s1[i] = s2[i];
-	}
+    {
+    register int i;
+    for ( i = 0; i < n; ++i )
+        s1[i] = s2[i];
+    }
 #endif
 
 #ifdef YY_NEED_STRLEN
@@ -2648,13 +2648,13 @@ static int yy_flex_strlen( yyconst char *s )
 static int yy_flex_strlen( s )
 yyconst char *s;
 #endif
-	{
-	register int n;
-	for ( n = 0; s[n]; ++n )
-		;
+    {
+    register int n;
+    for ( n = 0; s[n]; ++n )
+        ;
 
-	return n;
-	}
+    return n;
+    }
 #endif
 
 #ifdef YY_USE_PROTOS
@@ -2663,9 +2663,9 @@ static void *yy_flex_alloc( yy_size_t size )
 static void *yy_flex_alloc( size )
 yy_size_t size;
 #endif
-	{
-	return (void *) malloc( size );
-	}
+    {
+    return (void *) malloc( size );
+    }
 
 #ifdef YY_USE_PROTOS
 static void *yy_flex_realloc( void *ptr, yy_size_t size )
@@ -2674,16 +2674,16 @@ static void *yy_flex_realloc( ptr, size )
 void *ptr;
 yy_size_t size;
 #endif
-	{
-	/* The cast to (char *) in the following accommodates both
-	 * implementations that use char* generic pointers, and those
-	 * that use void* generic pointers.  It works with the latter
-	 * because both ANSI C and C++ allow castless assignment from
-	 * any pointer type to void*, and deal with argument conversions
-	 * as though doing an assignment.
-	 */
-	return (void *) realloc( (char *) ptr, size );
-	}
+    {
+    /* The cast to (char *) in the following accommodates both
+     * implementations that use char* generic pointers, and those
+     * that use void* generic pointers.  It works with the latter
+     * because both ANSI C and C++ allow castless assignment from
+     * any pointer type to void*, and deal with argument conversions
+     * as though doing an assignment.
+     */
+    return (void *) realloc( (char *) ptr, size );
+    }
 
 #ifdef YY_USE_PROTOS
 static void yy_flex_free( void *ptr )
@@ -2691,16 +2691,16 @@ static void yy_flex_free( void *ptr )
 static void yy_flex_free( ptr )
 void *ptr;
 #endif
-	{
-	free( ptr );
-	}
+    {
+    free( ptr );
+    }
 
 #if YY_MAIN
 int main()
-	{
-	yylex();
-	return 0;
-	}
+    {
+    yylex();
+    return 0;
+    }
 #endif
 #line 276 "swf5compiler.flex"
 
@@ -2755,7 +2755,7 @@ loop:
       if (c == '\n')
       {
          // start the output (matches the algorithim in the lexx above)
-	 countline();
+     countline();
       }
 
       if (swf5debug) putchar(c);
@@ -2819,8 +2819,8 @@ static void count(void)
 
       for(n=0; n<yyleng; ++n, ++column)
       {
-	if (column < 1023)
-	  msgline[column] = yytext[n];
+    if (column < 1023)
+      msgline[column] = yytext[n];
       }
 
       //-- keep writing the stuff to standard output
@@ -2853,7 +2853,7 @@ void swf5error(char *msg)
   if (strlen(yytext))
   {
     SWF_error(error_fp,"\n%s\n%*s\nLine %i:  Reason: '%s'\n",
-	      LineText(), ColumnNumber(), "^", LineNumber(), msg);
+          LineText(), ColumnNumber(), "^", LineNumber(), msg);
   }
   else
   {

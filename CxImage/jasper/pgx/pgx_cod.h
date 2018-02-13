@@ -80,8 +80,8 @@
 * Constants.
 \******************************************************************************/
 
-#define PGX_MAGIC	0x5047
-#define PGX_MAGICLEN	2
+#define PGX_MAGIC    0x5047
+#define PGX_MAGICLEN    2
 
 /******************************************************************************\
 * Types.
@@ -89,23 +89,23 @@
 
 typedef struct {
 
-	uint_fast16_t magic;
-	/* The signature. */
+    uint_fast16_t magic;
+    /* The signature. */
 
-	bool bigendian;
-	/* The byte ordering used. */
+    bool bigendian;
+    /* The byte ordering used. */
 
-	bool sgnd;
-	/* The signedness of the samples. */
+    bool sgnd;
+    /* The signedness of the samples. */
 
-	uint_fast32_t prec;
-	/* The precision of the samples. */
+    uint_fast32_t prec;
+    /* The precision of the samples. */
 
-	uint_fast32_t width;
-	/* The width of the component. */
+    uint_fast32_t width;
+    /* The width of the component. */
 
-	uint_fast32_t height;
-	/* The height of the component. */
+    uint_fast32_t height;
+    /* The height of the component. */
 
 } pgx_hdr_t;
 

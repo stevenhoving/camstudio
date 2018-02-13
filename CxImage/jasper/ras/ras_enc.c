@@ -97,222 +97,222 @@ static int ras_putdatastd(jas_stream_t *out, ras_hdr_t *hdr, jas_image_t *image,
 
 int ras_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 {
-	int_fast32_t width;
-	int_fast32_t height;
-	int_fast32_t depth;
-	int cmptno;
+    int_fast32_t width;
+    int_fast32_t height;
+    int_fast32_t depth;
+    int cmptno;
 #if 0
-	uint_fast16_t numcmpts;
+    uint_fast16_t numcmpts;
 #endif
-	int i;
-	ras_hdr_t hdr;
-	int rowsize;
-	ras_enc_t encbuf;
-	ras_enc_t *enc = &encbuf;
+    int i;
+    ras_hdr_t hdr;
+    int rowsize;
+    ras_enc_t encbuf;
+    ras_enc_t *enc = &encbuf;
 
-	if (optstr) {
-		jas_eprintf("warning: ignoring RAS encoder options\n");
-	}
+    if (optstr) {
+        jas_eprintf("warning: ignoring RAS encoder options\n");
+    }
 
-	switch (jas_clrspc_fam(jas_image_clrspc(image))) {
-	case JAS_CLRSPC_FAM_RGB:
-		if (jas_image_clrspc(image) != JAS_CLRSPC_SRGB)
-			jas_eprintf("warning: inaccurate color\n");
-		enc->numcmpts = 3;
-		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R))) < 0 ||
-		  (enc->cmpts[1] = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G))) < 0 ||
-		  (enc->cmpts[2] = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B))) < 0) {
-			jas_eprintf("error: missing color component\n");
-			return -1;
-		}
-		break;
-	case JAS_CLRSPC_FAM_GRAY:
-		if (jas_image_clrspc(image) != JAS_CLRSPC_SGRAY)
-			jas_eprintf("warning: inaccurate color\n");
-		enc->numcmpts = 1;
-		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
-		  JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y))) < 0) {
-			jas_eprintf("error: missing color component\n");
-			return -1;
-		}
-		break;
-	default:
-		jas_eprintf("error: unsupported color space\n");
-		return -1;
-		break;
-	}
+    switch (jas_clrspc_fam(jas_image_clrspc(image))) {
+    case JAS_CLRSPC_FAM_RGB:
+        if (jas_image_clrspc(image) != JAS_CLRSPC_SRGB)
+            jas_eprintf("warning: inaccurate color\n");
+        enc->numcmpts = 3;
+        if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
+          JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_R))) < 0 ||
+          (enc->cmpts[1] = jas_image_getcmptbytype(image,
+          JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_G))) < 0 ||
+          (enc->cmpts[2] = jas_image_getcmptbytype(image,
+          JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B))) < 0) {
+            jas_eprintf("error: missing color component\n");
+            return -1;
+        }
+        break;
+    case JAS_CLRSPC_FAM_GRAY:
+        if (jas_image_clrspc(image) != JAS_CLRSPC_SGRAY)
+            jas_eprintf("warning: inaccurate color\n");
+        enc->numcmpts = 1;
+        if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
+          JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y))) < 0) {
+            jas_eprintf("error: missing color component\n");
+            return -1;
+        }
+        break;
+    default:
+        jas_eprintf("error: unsupported color space\n");
+        return -1;
+        break;
+    }
 
-	width = jas_image_cmptwidth(image, enc->cmpts[0]);
-	height = jas_image_cmptheight(image, enc->cmpts[0]);
-	depth = jas_image_cmptprec(image, enc->cmpts[0]);
+    width = jas_image_cmptwidth(image, enc->cmpts[0]);
+    height = jas_image_cmptheight(image, enc->cmpts[0]);
+    depth = jas_image_cmptprec(image, enc->cmpts[0]);
 
-	for (cmptno = 0; cmptno < enc->numcmpts; ++cmptno) {
-		if (jas_image_cmptwidth(image, enc->cmpts[cmptno]) != width ||
-		  jas_image_cmptheight(image, enc->cmpts[cmptno]) != height ||
-		  jas_image_cmptprec(image, enc->cmpts[cmptno]) != depth ||
-		  jas_image_cmptsgnd(image, enc->cmpts[cmptno]) != false ||
-		  jas_image_cmpttlx(image, enc->cmpts[cmptno]) != 0 ||
-		  jas_image_cmpttly(image, enc->cmpts[cmptno]) != 0) {
-			jas_eprintf("The RAS format cannot be used to represent an image with this geometry.\n");
-			return -1;
-		}
-	}
+    for (cmptno = 0; cmptno < enc->numcmpts; ++cmptno) {
+        if (jas_image_cmptwidth(image, enc->cmpts[cmptno]) != width ||
+          jas_image_cmptheight(image, enc->cmpts[cmptno]) != height ||
+          jas_image_cmptprec(image, enc->cmpts[cmptno]) != depth ||
+          jas_image_cmptsgnd(image, enc->cmpts[cmptno]) != false ||
+          jas_image_cmpttlx(image, enc->cmpts[cmptno]) != 0 ||
+          jas_image_cmpttly(image, enc->cmpts[cmptno]) != 0) {
+            jas_eprintf("The RAS format cannot be used to represent an image with this geometry.\n");
+            return -1;
+        }
+    }
 
-	/* Ensure that the image can be encoded in the desired format. */
-	if (enc->numcmpts == 3) {
+    /* Ensure that the image can be encoded in the desired format. */
+    if (enc->numcmpts == 3) {
 
-		/* All three components must have the same subsampling
-		  factor and have a precision of eight bits. */
-		if (enc->numcmpts > 1) {
-			for (i = 0; i < enc->numcmpts; ++i) {
-				if (jas_image_cmptprec(image, enc->cmpts[i]) != 8) {
-					return -1;
-				}
-			}
-		}
-	} else if (enc->numcmpts == 1) {
-		/* NOP */
-	} else {
-		return -1;
-	}
+        /* All three components must have the same subsampling
+          factor and have a precision of eight bits. */
+        if (enc->numcmpts > 1) {
+            for (i = 0; i < enc->numcmpts; ++i) {
+                if (jas_image_cmptprec(image, enc->cmpts[i]) != 8) {
+                    return -1;
+                }
+            }
+        }
+    } else if (enc->numcmpts == 1) {
+        /* NOP */
+    } else {
+        return -1;
+    }
 
-	hdr.magic = RAS_MAGIC;
-	hdr.width = width;
-	hdr.height = height;
-	hdr.depth = (enc->numcmpts == 3) ? 24 : depth;
+    hdr.magic = RAS_MAGIC;
+    hdr.width = width;
+    hdr.height = height;
+    hdr.depth = (enc->numcmpts == 3) ? 24 : depth;
 
-	rowsize = RAS_ROWSIZE(&hdr);
-	hdr.length = rowsize * hdr.height;
-	hdr.type = RAS_TYPE_STD;
+    rowsize = RAS_ROWSIZE(&hdr);
+    hdr.length = rowsize * hdr.height;
+    hdr.type = RAS_TYPE_STD;
 
-	hdr.maptype = RAS_MT_NONE;
-	hdr.maplength = 0;
+    hdr.maptype = RAS_MT_NONE;
+    hdr.maplength = 0;
 
-	if (ras_puthdr(out, &hdr)) {
-		return -1;
-	}
+    if (ras_puthdr(out, &hdr)) {
+        return -1;
+    }
 
-	if (ras_putdata(out, &hdr, image, enc->numcmpts, enc->cmpts)) {
-		return -1;
-	}
+    if (ras_putdata(out, &hdr, image, enc->numcmpts, enc->cmpts)) {
+        return -1;
+    }
 
-	return 0;
+    return 0;
 }
 
 static int ras_putdata(jas_stream_t *out, ras_hdr_t *hdr, jas_image_t *image, int numcmpts, int *cmpts)
 {
-	int ret;
+    int ret;
 
-	switch (hdr->type) {
-	case RAS_TYPE_STD:
-		ret = ras_putdatastd(out, hdr, image, numcmpts, cmpts);
-		break;
-	default:
-		ret = -1;
-		break;
-	}
-	return ret;
+    switch (hdr->type) {
+    case RAS_TYPE_STD:
+        ret = ras_putdatastd(out, hdr, image, numcmpts, cmpts);
+        break;
+    default:
+        ret = -1;
+        break;
+    }
+    return ret;
 }
 
 static int ras_putdatastd(jas_stream_t *out, ras_hdr_t *hdr, jas_image_t *image,  int numcmpts, int *cmpts)
 {
-	int rowsize;
-	int pad;
-	unsigned int z;
-	int nz;
-	int c;
-	int x;
-	int y;
-	int v;
-	jas_matrix_t *data[3];
-	int i;
+    int rowsize;
+    int pad;
+    unsigned int z;
+    int nz;
+    int c;
+    int x;
+    int y;
+    int v;
+    jas_matrix_t *data[3];
+    int i;
 
-	for (i = 0; i < numcmpts; ++i) {
-		data[i] = jas_matrix_create(jas_image_height(image), jas_image_width(image));
-		assert(data[i]);
-	}
+    for (i = 0; i < numcmpts; ++i) {
+        data[i] = jas_matrix_create(jas_image_height(image), jas_image_width(image));
+        assert(data[i]);
+    }
 
-	rowsize = RAS_ROWSIZE(hdr);
-	pad = rowsize - (hdr->width * hdr->depth + 7) / 8;
+    rowsize = RAS_ROWSIZE(hdr);
+    pad = rowsize - (hdr->width * hdr->depth + 7) / 8;
 
-	hdr->length = hdr->height * rowsize;
+    hdr->length = hdr->height * rowsize;
 
-	for (y = 0; y < hdr->height; y++) {
-		for (i = 0; i < numcmpts; ++i) {
-			jas_image_readcmpt(image, cmpts[i], 0, y, jas_image_width(image),
-			  1, data[i]);
-		}
-		z = 0;
-		nz = 0;
-		for (x = 0; x < hdr->width; x++) {
-			z <<= hdr->depth;
-			if (RAS_ISRGB(hdr)) {
-				v = RAS_RED((jas_matrix_getv(data[0], x))) |
-				  RAS_GREEN((jas_matrix_getv(data[1], x))) |
-				  RAS_BLUE((jas_matrix_getv(data[2], x)));
-			} else {
-				v = (jas_matrix_getv(data[0], x));
-			}
-			z |= v & RAS_ONES(hdr->depth);
-			nz += hdr->depth;
-			while (nz >= 8) {
-				c = (z >> (nz - 8)) & 0xff;
-				if (jas_stream_putc(out, c) == EOF) {
-					return -1;
-				}
-				nz -= 8;
-				z &= RAS_ONES(nz);
-			}
-		}
-		if (nz > 0) {
-			c = (z >> (8 - nz)) & RAS_ONES(nz);
-			if (jas_stream_putc(out, c) == EOF) {
-				return -1;
-			}
-		}
-		if (pad % 2) {
-			if (jas_stream_putc(out, 0) == EOF) {
-				return -1;
-			}
-		}
-	}
+    for (y = 0; y < hdr->height; y++) {
+        for (i = 0; i < numcmpts; ++i) {
+            jas_image_readcmpt(image, cmpts[i], 0, y, jas_image_width(image),
+              1, data[i]);
+        }
+        z = 0;
+        nz = 0;
+        for (x = 0; x < hdr->width; x++) {
+            z <<= hdr->depth;
+            if (RAS_ISRGB(hdr)) {
+                v = RAS_RED((jas_matrix_getv(data[0], x))) |
+                  RAS_GREEN((jas_matrix_getv(data[1], x))) |
+                  RAS_BLUE((jas_matrix_getv(data[2], x)));
+            } else {
+                v = (jas_matrix_getv(data[0], x));
+            }
+            z |= v & RAS_ONES(hdr->depth);
+            nz += hdr->depth;
+            while (nz >= 8) {
+                c = (z >> (nz - 8)) & 0xff;
+                if (jas_stream_putc(out, c) == EOF) {
+                    return -1;
+                }
+                nz -= 8;
+                z &= RAS_ONES(nz);
+            }
+        }
+        if (nz > 0) {
+            c = (z >> (8 - nz)) & RAS_ONES(nz);
+            if (jas_stream_putc(out, c) == EOF) {
+                return -1;
+            }
+        }
+        if (pad % 2) {
+            if (jas_stream_putc(out, 0) == EOF) {
+                return -1;
+            }
+        }
+    }
 
-	for (i = 0; i < numcmpts; ++i) {
-		jas_matrix_destroy(data[i]);
-	}
+    for (i = 0; i < numcmpts; ++i) {
+        jas_matrix_destroy(data[i]);
+    }
 
-	return 0;
+    return 0;
 }
 
 static int ras_puthdr(jas_stream_t *out, ras_hdr_t *hdr)
 {
-	if (ras_putint(out, RAS_MAGIC) || ras_putint(out, hdr->width) ||
-	  ras_putint(out, hdr->height) || ras_putint(out, hdr->depth) ||
-	  ras_putint(out, hdr->length) || ras_putint(out, hdr->type) ||
-	  ras_putint(out, hdr->maptype) || ras_putint(out, hdr->maplength)) {
-		return -1;
-	}
+    if (ras_putint(out, RAS_MAGIC) || ras_putint(out, hdr->width) ||
+      ras_putint(out, hdr->height) || ras_putint(out, hdr->depth) ||
+      ras_putint(out, hdr->length) || ras_putint(out, hdr->type) ||
+      ras_putint(out, hdr->maptype) || ras_putint(out, hdr->maplength)) {
+        return -1;
+    }
 
-	return 0;
+    return 0;
 }
 
 static int ras_putint(jas_stream_t *out, int val)
 {
-	int x;
-	int i;
-	int c;
+    int x;
+    int i;
+    int c;
 
-	x = val;
-	for (i = 0; i < 4; i++) {
-		c = (x >> 24) & 0xff;
-		if (jas_stream_putc(out, c) == EOF) {
-			return -1;
-		}
-		x <<= 8;
-	}
+    x = val;
+    for (i = 0; i < 4; i++) {
+        c = (x >> 24) & 0xff;
+        if (jas_stream_putc(out, c) == EOF) {
+            return -1;
+        }
+        x <<= 8;
+    }
 
-	return 0;
+    return 0;
 }

@@ -128,12 +128,12 @@ RGBQUAD CxImage::GetPixelColorWithOverflow(int32_t x, int32_t y, OverflowMethod 
 #endif //CXIMAGE_SUPPORT_ALPHA
         return color;
       case OM_BACKGROUND:
-		  //return background color (if it exists, otherwise input value)
-		  if (info.nBkgndIndex >= 0) {
-			  if (head.biBitCount<24) color = GetPaletteColor((uint8_t)info.nBkgndIndex);
-			  else color = info.nBkgndColor;
-		  }//if
-		  return color;
+          //return background color (if it exists, otherwise input value)
+          if (info.nBkgndIndex >= 0) {
+              if (head.biBitCount<24) color = GetPaletteColor((uint8_t)info.nBkgndIndex);
+              else color = info.nBkgndColor;
+          }//if
+          return color;
       case OM_REPEAT:
       case OM_WRAP:
       case OM_MIRROR:
@@ -238,9 +238,9 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
           color.rgbReserved=(uint8_t) (waa>>8);
         } else
 #endif
-		{ //Alpha not supported or no alpha at all
-			color.rgbReserved = 0;
-		}
+        { //Alpha not supported or no alpha at all
+            color.rgbReserved = 0;
+        }
         return color;
       } else {
         //default (slower) way to get pixels (not RGB24 or some pixels out of borders)
@@ -259,9 +259,9 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
         color.rgbGreen=(uint8_t) (a*rgb11.rgbGreen+b*rgb21.rgbGreen+c*rgb12.rgbGreen+d*rgb22.rgbGreen);
         color.rgbBlue=(uint8_t) (a*rgb11.rgbBlue+b*rgb21.rgbBlue+c*rgb12.rgbBlue+d*rgb22.rgbBlue);
 #if CXIMAGE_SUPPORT_ALPHA
-		color.rgbReserved=(uint8_t) (a*rgb11.rgbReserved+b*rgb21.rgbReserved+c*rgb12.rgbReserved+d*rgb22.rgbReserved);
+        color.rgbReserved=(uint8_t) (a*rgb11.rgbReserved+b*rgb21.rgbReserved+c*rgb12.rgbReserved+d*rgb22.rgbReserved);
 #else
-		color.rgbReserved = 0;
+        color.rgbReserved = 0;
 #endif
         return color;
       }//if
@@ -269,18 +269,18 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
     case IM_BICUBIC: 
     case IM_BICUBIC2:
     case IM_BSPLINE:
-	case IM_BOX:
-	case IM_HERMITE:
-	case IM_HAMMING:
-	case IM_SINC:
-	case IM_BLACKMAN:
-	case IM_BESSEL:
-	case IM_GAUSSIAN:
-	case IM_QUADRATIC:
-	case IM_MITCHELL:
-	case IM_CATROM:
-	case IM_HANNING:
-	case IM_POWER:
+    case IM_BOX:
+    case IM_HERMITE:
+    case IM_HAMMING:
+    case IM_SINC:
+    case IM_BLACKMAN:
+    case IM_BESSEL:
+    case IM_GAUSSIAN:
+    case IM_QUADRATIC:
+    case IM_MITCHELL:
+    case IM_CATROM:
+    case IM_HANNING:
+    case IM_POWER:
       //bicubic interpolation(s)
       if (((xi+2)<0) || ((xi-1)>=head.biWidth) || ((yi+2)<0) || ((yi-1)>=head.biHeight)) { //all points are outside bounds?:
         switch (ofMethod) {
@@ -302,7 +302,7 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
       float kernelx[12], kernely[4];    //precalculated kernel values
       float rr,gg,bb,aa;                //accumulated color values
       //calculate multiplication factors for all pixels
-	  int32_t i;
+      int32_t i;
       switch (inMethod) {
         case IM_BICUBIC:
           for (i=0; i<4; i++) {
@@ -451,7 +451,7 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
 #if CXIMAGE_SUPPORT_ALPHA
       if (aa>255) aa=255; if (aa<0) aa=0; color.rgbReserved=(uint8_t) aa;
 #else
-	  color.rgbReserved = 0;
+      color.rgbReserved = 0;
 #endif
       return color;
     case IM_LANCZOS:
@@ -521,7 +521,7 @@ RGBQUAD CxImage::GetPixelColorInterpolated(
 #if CXIMAGE_SUPPORT_ALPHA
       if (aa>255) aa=255; if (aa<0) aa=0; color.rgbReserved=(uint8_t) aa;   
 #else
-	  color.rgbReserved = 0;
+      color.rgbReserved = 0;
 #endif
       return color;
   }//switch
@@ -571,126 +571,126 @@ RGBQUAD CxImage::GetAreaColorInterpolated(
   OverflowMethod const ofMethod, 
   RGBQUAD* const rplColor)
 {
-	RGBQUAD color;      //calculated colour
-	
-	if (h<=1 && w<=1) {
-		//both width and height are less than one... we will use interpolation of center point
-		return GetPixelColorInterpolated(xc, yc, inMethod, ofMethod, rplColor);
-	} else {
-		//area is wider and/or taller than one pixel:
-		CxRect2 area(xc-w/2.0f, yc-h/2.0f, xc+w/2.0f, yc+h/2.0f);   //area
-		int32_t xi1=(int32_t)(area.botLeft.x+0.49999999f);                //low x
-		int32_t yi1=(int32_t)(area.botLeft.y+0.49999999f);                //low y
-		
-		
-		int32_t xi2=(int32_t)(area.topRight.x+0.5f);                      //top x
-		int32_t yi2=(int32_t)(area.topRight.y+0.5f);                      //top y (for loops)
-		
-		float rr,gg,bb,aa;                                        //red, green, blue and alpha components
-		rr=gg=bb=aa=0;
-		int32_t x,y;                                                  //loop counters
-		float s=0;                                                //surface of all pixels
-		float cps;                                                //surface of current crosssection
-		if (h>1 && w>1) {
-			//width and height of area are greater than one pixel, so we can employ "ordinary" averaging
-			CxRect2 intBL, intTR;     //bottom left and top right intersection
-			intBL=area.CrossSection(CxRect2(((float)xi1)-0.5f, ((float)yi1)-0.5f, ((float)xi1)+0.5f, ((float)yi1)+0.5f));
-			intTR=area.CrossSection(CxRect2(((float)xi2)-0.5f, ((float)yi2)-0.5f, ((float)xi2)+0.5f, ((float)yi2)+0.5f));
-			float wBL, wTR, hBL, hTR;
-			wBL=intBL.Width();            //width of bottom left pixel-area intersection
-			hBL=intBL.Height();           //height of bottom left...
-			wTR=intTR.Width();            //width of top right...
-			hTR=intTR.Height();           //height of top right...
-			
-			AddAveragingCont(GetPixelColorWithOverflow(xi1,yi1,ofMethod,rplColor), wBL*hBL, rr, gg, bb, aa);    //bottom left pixel
-			AddAveragingCont(GetPixelColorWithOverflow(xi2,yi1,ofMethod,rplColor), wTR*hBL, rr, gg, bb, aa);    //bottom right pixel
-			AddAveragingCont(GetPixelColorWithOverflow(xi1,yi2,ofMethod,rplColor), wBL*hTR, rr, gg, bb, aa);    //top left pixel
-			AddAveragingCont(GetPixelColorWithOverflow(xi2,yi2,ofMethod,rplColor), wTR*hTR, rr, gg, bb, aa);    //top right pixel
-			//bottom and top row
-			for (x=xi1+1; x<xi2; x++) {
-				AddAveragingCont(GetPixelColorWithOverflow(x,yi1,ofMethod,rplColor), hBL, rr, gg, bb, aa);    //bottom row
-				AddAveragingCont(GetPixelColorWithOverflow(x,yi2,ofMethod,rplColor), hTR, rr, gg, bb, aa);    //top row
-			}
-			//leftmost and rightmost column
-			for (y=yi1+1; y<yi2; y++) {
-				AddAveragingCont(GetPixelColorWithOverflow(xi1,y,ofMethod,rplColor), wBL, rr, gg, bb, aa);    //left column
-				AddAveragingCont(GetPixelColorWithOverflow(xi2,y,ofMethod,rplColor), wTR, rr, gg, bb, aa);    //right column
-			}
-			for (y=yi1+1; y<yi2; y++) {
-				for (x=xi1+1; x<xi2; x++) { 
-					color=GetPixelColorWithOverflow(x,y,ofMethod,rplColor);
-					rr+=color.rgbRed;
-					gg+=color.rgbGreen;
-					bb+=color.rgbBlue;
+    RGBQUAD color;      //calculated colour
+    
+    if (h<=1 && w<=1) {
+        //both width and height are less than one... we will use interpolation of center point
+        return GetPixelColorInterpolated(xc, yc, inMethod, ofMethod, rplColor);
+    } else {
+        //area is wider and/or taller than one pixel:
+        CxRect2 area(xc-w/2.0f, yc-h/2.0f, xc+w/2.0f, yc+h/2.0f);   //area
+        int32_t xi1=(int32_t)(area.botLeft.x+0.49999999f);                //low x
+        int32_t yi1=(int32_t)(area.botLeft.y+0.49999999f);                //low y
+        
+        
+        int32_t xi2=(int32_t)(area.topRight.x+0.5f);                      //top x
+        int32_t yi2=(int32_t)(area.topRight.y+0.5f);                      //top y (for loops)
+        
+        float rr,gg,bb,aa;                                        //red, green, blue and alpha components
+        rr=gg=bb=aa=0;
+        int32_t x,y;                                                  //loop counters
+        float s=0;                                                //surface of all pixels
+        float cps;                                                //surface of current crosssection
+        if (h>1 && w>1) {
+            //width and height of area are greater than one pixel, so we can employ "ordinary" averaging
+            CxRect2 intBL, intTR;     //bottom left and top right intersection
+            intBL=area.CrossSection(CxRect2(((float)xi1)-0.5f, ((float)yi1)-0.5f, ((float)xi1)+0.5f, ((float)yi1)+0.5f));
+            intTR=area.CrossSection(CxRect2(((float)xi2)-0.5f, ((float)yi2)-0.5f, ((float)xi2)+0.5f, ((float)yi2)+0.5f));
+            float wBL, wTR, hBL, hTR;
+            wBL=intBL.Width();            //width of bottom left pixel-area intersection
+            hBL=intBL.Height();           //height of bottom left...
+            wTR=intTR.Width();            //width of top right...
+            hTR=intTR.Height();           //height of top right...
+            
+            AddAveragingCont(GetPixelColorWithOverflow(xi1,yi1,ofMethod,rplColor), wBL*hBL, rr, gg, bb, aa);    //bottom left pixel
+            AddAveragingCont(GetPixelColorWithOverflow(xi2,yi1,ofMethod,rplColor), wTR*hBL, rr, gg, bb, aa);    //bottom right pixel
+            AddAveragingCont(GetPixelColorWithOverflow(xi1,yi2,ofMethod,rplColor), wBL*hTR, rr, gg, bb, aa);    //top left pixel
+            AddAveragingCont(GetPixelColorWithOverflow(xi2,yi2,ofMethod,rplColor), wTR*hTR, rr, gg, bb, aa);    //top right pixel
+            //bottom and top row
+            for (x=xi1+1; x<xi2; x++) {
+                AddAveragingCont(GetPixelColorWithOverflow(x,yi1,ofMethod,rplColor), hBL, rr, gg, bb, aa);    //bottom row
+                AddAveragingCont(GetPixelColorWithOverflow(x,yi2,ofMethod,rplColor), hTR, rr, gg, bb, aa);    //top row
+            }
+            //leftmost and rightmost column
+            for (y=yi1+1; y<yi2; y++) {
+                AddAveragingCont(GetPixelColorWithOverflow(xi1,y,ofMethod,rplColor), wBL, rr, gg, bb, aa);    //left column
+                AddAveragingCont(GetPixelColorWithOverflow(xi2,y,ofMethod,rplColor), wTR, rr, gg, bb, aa);    //right column
+            }
+            for (y=yi1+1; y<yi2; y++) {
+                for (x=xi1+1; x<xi2; x++) { 
+                    color=GetPixelColorWithOverflow(x,y,ofMethod,rplColor);
+                    rr+=color.rgbRed;
+                    gg+=color.rgbGreen;
+                    bb+=color.rgbBlue;
 #if CXIMAGE_SUPPORT_ALPHA
-					aa+=color.rgbReserved;
+                    aa+=color.rgbReserved;
 #endif
-				}//for x
-			}//for y
-		} else {
-			//width or height greater than one:
-			CxRect2 intersect;                                          //intersection with current pixel
-			CxPoint2 center;
-			for (y=yi1; y<=yi2; y++) {
-				for (x=xi1; x<=xi2; x++) {
-					intersect=area.CrossSection(CxRect2(((float)x)-0.5f, ((float)y)-0.5f, ((float)x)+0.5f, ((float)y)+0.5f));
-					center=intersect.Center();
-					color=GetPixelColorInterpolated(center.x, center.y, inMethod, ofMethod, rplColor);
-					cps=intersect.Surface();
-					rr+=color.rgbRed*cps;
-					gg+=color.rgbGreen*cps;
-					bb+=color.rgbBlue*cps;
+                }//for x
+            }//for y
+        } else {
+            //width or height greater than one:
+            CxRect2 intersect;                                          //intersection with current pixel
+            CxPoint2 center;
+            for (y=yi1; y<=yi2; y++) {
+                for (x=xi1; x<=xi2; x++) {
+                    intersect=area.CrossSection(CxRect2(((float)x)-0.5f, ((float)y)-0.5f, ((float)x)+0.5f, ((float)y)+0.5f));
+                    center=intersect.Center();
+                    color=GetPixelColorInterpolated(center.x, center.y, inMethod, ofMethod, rplColor);
+                    cps=intersect.Surface();
+                    rr+=color.rgbRed*cps;
+                    gg+=color.rgbGreen*cps;
+                    bb+=color.rgbBlue*cps;
 #if CXIMAGE_SUPPORT_ALPHA
-					aa+=color.rgbReserved*cps;
+                    aa+=color.rgbReserved*cps;
 #endif
-				}//for x
-			}//for y      
-		}//if
-		
-		s=area.Surface();
-		rr/=s; gg/=s; bb/=s; aa/=s;
-		if (rr>255) rr=255; if (rr<0) rr=0; color.rgbRed=(uint8_t) rr;
-		if (gg>255) gg=255; if (gg<0) gg=0; color.rgbGreen=(uint8_t) gg;
-		if (bb>255) bb=255; if (bb<0) bb=0; color.rgbBlue=(uint8_t) bb;
+                }//for x
+            }//for y      
+        }//if
+        
+        s=area.Surface();
+        rr/=s; gg/=s; bb/=s; aa/=s;
+        if (rr>255) rr=255; if (rr<0) rr=0; color.rgbRed=(uint8_t) rr;
+        if (gg>255) gg=255; if (gg<0) gg=0; color.rgbGreen=(uint8_t) gg;
+        if (bb>255) bb=255; if (bb<0) bb=0; color.rgbBlue=(uint8_t) bb;
 #if CXIMAGE_SUPPORT_ALPHA
-		if (aa>255) aa=255; if (aa<0) aa=0; color.rgbReserved=(uint8_t) aa;
+        if (aa>255) aa=255; if (aa<0) aa=0; color.rgbReserved=(uint8_t) aa;
 #else
-		color.rgbReserved = 0;
+        color.rgbReserved = 0;
 #endif
-	}//if
-	return color;
+    }//if
+    return color;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelBSpline(const float x)
 {
-	if (x>2.0f) return 0.0f;
-	// thanks to Kristian Kratzenstein
-	float a, b, c, d;
-	float xm1 = x - 1.0f; // Was calculatet anyway cause the "if((x-1.0f) < 0)"
-	float xp1 = x + 1.0f;
-	float xp2 = x + 2.0f;
+    if (x>2.0f) return 0.0f;
+    // thanks to Kristian Kratzenstein
+    float a, b, c, d;
+    float xm1 = x - 1.0f; // Was calculatet anyway cause the "if((x-1.0f) < 0)"
+    float xp1 = x + 1.0f;
+    float xp2 = x + 2.0f;
 
-	if ((xp2) <= 0.0f) a = 0.0f; else a = xp2*xp2*xp2; // Only float, not float -> double -> float
-	if ((xp1) <= 0.0f) b = 0.0f; else b = xp1*xp1*xp1;
-	if (x <= 0) c = 0.0f; else c = x*x*x;  
-	if ((xm1) <= 0.0f) d = 0.0f; else d = xm1*xm1*xm1;
+    if ((xp2) <= 0.0f) a = 0.0f; else a = xp2*xp2*xp2; // Only float, not float -> double -> float
+    if ((xp1) <= 0.0f) b = 0.0f; else b = xp1*xp1*xp1;
+    if (x <= 0) c = 0.0f; else c = x*x*x;  
+    if ((xm1) <= 0.0f) d = 0.0f; else d = xm1*xm1*xm1;
 
-	return (0.16666666666666666667f * (a - (4.0f * b) + (6.0f * c) - (4.0f * d)));
+    return (0.16666666666666666667f * (a - (4.0f * b) + (6.0f * c) - (4.0f * d)));
 
-	/* equivalent <Vladimír Kloucek>
-	if (x < -2.0)
-		return(0.0f);
-	if (x < -1.0)
-		return((2.0f+x)*(2.0f+x)*(2.0f+x)*0.16666666666666666667f);
-	if (x < 0.0)
-		return((4.0f+x*x*(-6.0f-3.0f*x))*0.16666666666666666667f);
-	if (x < 1.0)
-		return((4.0f+x*x*(-6.0f+3.0f*x))*0.16666666666666666667f);
-	if (x < 2.0)
-		return((2.0f-x)*(2.0f-x)*(2.0f-x)*0.16666666666666666667f);
-	return(0.0f);
-	*/
+    /* equivalent <Vladimír Kloucek>
+    if (x < -2.0)
+        return(0.0f);
+    if (x < -1.0)
+        return((2.0f+x)*(2.0f+x)*(2.0f+x)*0.16666666666666666667f);
+    if (x < 0.0)
+        return((4.0f+x*x*(-6.0f-3.0f*x))*0.16666666666666666667f);
+    if (x < 1.0)
+        return((4.0f+x*x*(-6.0f+3.0f*x))*0.16666666666666666667f);
+    if (x < 2.0)
+        return((2.0f-x)*(2.0f-x)*(2.0f-x)*0.16666666666666666667f);
+    return(0.0f);
+    */
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -710,15 +710,15 @@ float CxImage::KernelLinear(const float t)
 //  if (0<=t && t<=1) return 1-t;
 //  if (-1<=t && t<0) return 1+t;
 //  return 0;
-	
-	//<Vladimír Kloucek>
-	if (t < -1.0f)
-		return 0.0f;
-	if (t < 0.0f)
-		return 1.0f+t;
-	if (t < 1.0f)
-		return 1.0f-t;
-	return 0.0f;
+    
+    //<Vladimír Kloucek>
+    if (t < -1.0f)
+        return 0.0f;
+    if (t < 0.0f)
+        return 1.0f+t;
+    if (t < 1.0f)
+        return 1.0f-t;
+    return 0.0f;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -786,213 +786,213 @@ float CxImage::KernelLanczosSinc(const float t, const float r)
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelBox(const float x)
 {
-	if (x < -0.5f)
-		return 0.0f;
-	if (x < 0.5f)
-		return 1.0f;
-	return 0.0f;
+    if (x < -0.5f)
+        return 0.0f;
+    if (x < 0.5f)
+        return 1.0f;
+    return 0.0f;
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelHermite(const float x)
 {
-	if (x < -1.0f)
-		return 0.0f;
-	if (x < 0.0f)
-		return (-2.0f*x-3.0f)*x*x+1.0f;
-	if (x < 1.0f)
-		return (2.0f*x-3.0f)*x*x+1.0f;
-	return 0.0f;
-//	if (fabs(x)>1) return 0.0f;
-//	return(0.5f+0.5f*(float)cos(PI*x));
+    if (x < -1.0f)
+        return 0.0f;
+    if (x < 0.0f)
+        return (-2.0f*x-3.0f)*x*x+1.0f;
+    if (x < 1.0f)
+        return (2.0f*x-3.0f)*x*x+1.0f;
+    return 0.0f;
+//    if (fabs(x)>1) return 0.0f;
+//    return(0.5f+0.5f*(float)cos(PI*x));
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelHanning(const float x)
 {
-	if (fabs(x)>1) return 0.0f;
-	return (0.5f+0.5f*(float)cos(PI*x))*((float)sin(PI*x)/(PI*x));
+    if (fabs(x)>1) return 0.0f;
+    return (0.5f+0.5f*(float)cos(PI*x))*((float)sin(PI*x)/(PI*x));
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelHamming(const float x)
 {
-	if (x < -1.0f)
-		return 0.0f;
-	if (x < 0.0f)
-		return 0.92f*(-2.0f*x-3.0f)*x*x+1.0f;
-	if (x < 1.0f)
-		return 0.92f*(2.0f*x-3.0f)*x*x+1.0f;
-	return 0.0f;
-//	if (fabs(x)>1) return 0.0f;
-//	return(0.54f+0.46f*(float)cos(PI*x));
+    if (x < -1.0f)
+        return 0.0f;
+    if (x < 0.0f)
+        return 0.92f*(-2.0f*x-3.0f)*x*x+1.0f;
+    if (x < 1.0f)
+        return 0.92f*(2.0f*x-3.0f)*x*x+1.0f;
+    return 0.0f;
+//    if (fabs(x)>1) return 0.0f;
+//    return(0.54f+0.46f*(float)cos(PI*x));
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelSinc(const float x)
 {
-	if (x == 0.0)
-		return(1.0);
-	return((float)sin(PI*x)/(PI*x));
+    if (x == 0.0)
+        return(1.0);
+    return((float)sin(PI*x)/(PI*x));
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelBlackman(const float x)
 {
-	//if (fabs(x)>1) return 0.0f;
-	return (0.42f+0.5f*(float)cos(PI*x)+0.08f*(float)cos(2.0f*PI*x));
+    //if (fabs(x)>1) return 0.0f;
+    return (0.42f+0.5f*(float)cos(PI*x)+0.08f*(float)cos(2.0f*PI*x));
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelBessel_J1(const float x)
 {
-	double p, q;
-	
-	register int32_t i;
-	
-	static const double
-	Pone[] =
-	{
-		0.581199354001606143928050809e+21,
-		-0.6672106568924916298020941484e+20,
-		0.2316433580634002297931815435e+19,
-		-0.3588817569910106050743641413e+17,
-		0.2908795263834775409737601689e+15,
-		-0.1322983480332126453125473247e+13,
-		0.3413234182301700539091292655e+10,
-		-0.4695753530642995859767162166e+7,
-		0.270112271089232341485679099e+4
-	},
-	Qone[] =
-	{
-		0.11623987080032122878585294e+22,
-		0.1185770712190320999837113348e+20,
-		0.6092061398917521746105196863e+17,
-		0.2081661221307607351240184229e+15,
-		0.5243710262167649715406728642e+12,
-		0.1013863514358673989967045588e+10,
-		0.1501793594998585505921097578e+7,
-		0.1606931573481487801970916749e+4,
-		0.1e+1
-	};
-		
-	p = Pone[8];
-	q = Qone[8];
-	for (i=7; i >= 0; i--)
-	{
-		p = p*x*x+Pone[i];
-		q = q*x*x+Qone[i];
-	}
-	return (float)(p/q);
+    double p, q;
+    
+    register int32_t i;
+    
+    static const double
+    Pone[] =
+    {
+        0.581199354001606143928050809e+21,
+        -0.6672106568924916298020941484e+20,
+        0.2316433580634002297931815435e+19,
+        -0.3588817569910106050743641413e+17,
+        0.2908795263834775409737601689e+15,
+        -0.1322983480332126453125473247e+13,
+        0.3413234182301700539091292655e+10,
+        -0.4695753530642995859767162166e+7,
+        0.270112271089232341485679099e+4
+    },
+    Qone[] =
+    {
+        0.11623987080032122878585294e+22,
+        0.1185770712190320999837113348e+20,
+        0.6092061398917521746105196863e+17,
+        0.2081661221307607351240184229e+15,
+        0.5243710262167649715406728642e+12,
+        0.1013863514358673989967045588e+10,
+        0.1501793594998585505921097578e+7,
+        0.1606931573481487801970916749e+4,
+        0.1e+1
+    };
+        
+    p = Pone[8];
+    q = Qone[8];
+    for (i=7; i >= 0; i--)
+    {
+        p = p*x*x+Pone[i];
+        q = q*x*x+Qone[i];
+    }
+    return (float)(p/q);
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelBessel_P1(const float x)
 {
-	double p, q;
-	
-	register int32_t i;
-	
-	static const double
-	Pone[] =
-	{
-		0.352246649133679798341724373e+5,
-		0.62758845247161281269005675e+5,
-		0.313539631109159574238669888e+5,
-		0.49854832060594338434500455e+4,
-		0.2111529182853962382105718e+3,
-		0.12571716929145341558495e+1
-	},
-	Qone[] =
-	{
-		0.352246649133679798068390431e+5,
-		0.626943469593560511888833731e+5,
-		0.312404063819041039923015703e+5,
-		0.4930396490181088979386097e+4,
-		0.2030775189134759322293574e+3,
-		0.1e+1
-	};
-		
-	p = Pone[5];
-	q = Qone[5];
-	for (i=4; i >= 0; i--)
-	{
-		p = p*(8.0/x)*(8.0/x)+Pone[i];
-		q = q*(8.0/x)*(8.0/x)+Qone[i];
-	}
-	return (float)(p/q);
+    double p, q;
+    
+    register int32_t i;
+    
+    static const double
+    Pone[] =
+    {
+        0.352246649133679798341724373e+5,
+        0.62758845247161281269005675e+5,
+        0.313539631109159574238669888e+5,
+        0.49854832060594338434500455e+4,
+        0.2111529182853962382105718e+3,
+        0.12571716929145341558495e+1
+    },
+    Qone[] =
+    {
+        0.352246649133679798068390431e+5,
+        0.626943469593560511888833731e+5,
+        0.312404063819041039923015703e+5,
+        0.4930396490181088979386097e+4,
+        0.2030775189134759322293574e+3,
+        0.1e+1
+    };
+        
+    p = Pone[5];
+    q = Qone[5];
+    for (i=4; i >= 0; i--)
+    {
+        p = p*(8.0/x)*(8.0/x)+Pone[i];
+        q = q*(8.0/x)*(8.0/x)+Qone[i];
+    }
+    return (float)(p/q);
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelBessel_Q1(const float x)
 {
-	double p, q;
-	
-	register int32_t i;
-	
-	static const double
-	Pone[] =
-	{
-		0.3511751914303552822533318e+3,
-		0.7210391804904475039280863e+3,
-		0.4259873011654442389886993e+3,
-		0.831898957673850827325226e+2,
-		0.45681716295512267064405e+1,
-		0.3532840052740123642735e-1
-	},
-	Qone[] =
-	{
-		0.74917374171809127714519505e+4,
-		0.154141773392650970499848051e+5,
-		0.91522317015169922705904727e+4,
-		0.18111867005523513506724158e+4,
-		0.1038187585462133728776636e+3,
-		0.1e+1
-	};
-		
-	p = Pone[5];
-	q = Qone[5];
-	for (i=4; i >= 0; i--)
-	{
-		p = p*(8.0/x)*(8.0/x)+Pone[i];
-		q = q*(8.0/x)*(8.0/x)+Qone[i];
-	}
-	return (float)(p/q);
+    double p, q;
+    
+    register int32_t i;
+    
+    static const double
+    Pone[] =
+    {
+        0.3511751914303552822533318e+3,
+        0.7210391804904475039280863e+3,
+        0.4259873011654442389886993e+3,
+        0.831898957673850827325226e+2,
+        0.45681716295512267064405e+1,
+        0.3532840052740123642735e-1
+    },
+    Qone[] =
+    {
+        0.74917374171809127714519505e+4,
+        0.154141773392650970499848051e+5,
+        0.91522317015169922705904727e+4,
+        0.18111867005523513506724158e+4,
+        0.1038187585462133728776636e+3,
+        0.1e+1
+    };
+        
+    p = Pone[5];
+    q = Qone[5];
+    for (i=4; i >= 0; i--)
+    {
+        p = p*(8.0/x)*(8.0/x)+Pone[i];
+        q = q*(8.0/x)*(8.0/x)+Qone[i];
+    }
+    return (float)(p/q);
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelBessel_Order1(float x)
 {
-	float p, q;
-	
-	if (x == 0.0)
-		return (0.0f);
-	p = x;
-	if (x < 0.0)
-		x=(-x);
-	if (x < 8.0)
-		return(p*KernelBessel_J1(x));
-	q = (float)sqrt(2.0f/(PI*x))*(float)(KernelBessel_P1(x)*(1.0f/sqrt(2.0f)*(sin(x)-cos(x)))-8.0f/x*KernelBessel_Q1(x)*
-		(-1.0f/sqrt(2.0f)*(sin(x)+cos(x))));
-	if (p < 0.0f)
-		q = (-q);
-	return (q);
+    float p, q;
+    
+    if (x == 0.0)
+        return (0.0f);
+    p = x;
+    if (x < 0.0)
+        x=(-x);
+    if (x < 8.0)
+        return(p*KernelBessel_J1(x));
+    q = (float)sqrt(2.0f/(PI*x))*(float)(KernelBessel_P1(x)*(1.0f/sqrt(2.0f)*(sin(x)-cos(x)))-8.0f/x*KernelBessel_Q1(x)*
+        (-1.0f/sqrt(2.0f)*(sin(x)+cos(x))));
+    if (p < 0.0f)
+        q = (-q);
+    return (q);
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelBessel(const float x)
 {
-	if (x == 0.0f)
-		return(PI/4.0f);
-	return(KernelBessel_Order1(PI*x)/(2.0f*x));
+    if (x == 0.0f)
+        return(PI/4.0f);
+    return(KernelBessel_Order1(PI*x)/(2.0f*x));
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelGaussian(const float x)
 {
-	return (float)(exp(-2.0f*x*x)*0.79788456080287f/*sqrt(2.0f/PI)*/);
+    return (float)(exp(-2.0f*x*x)*0.79788456080287f/*sqrt(2.0f/PI)*/);
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelQuadratic(const float x)
 {
-	if (x < -1.5f)
-		return(0.0f);
-	if (x < -0.5f)
-		return(0.5f*(x+1.5f)*(x+1.5f));
-	if (x < 0.5f)
-		return(0.75f-x*x);
-	if (x < 1.5f)
-		return(0.5f*(x-1.5f)*(x-1.5f));
-	return(0.0f);
+    if (x < -1.5f)
+        return(0.0f);
+    if (x < -0.5f)
+        return(0.5f*(x+1.5f)*(x+1.5f));
+    if (x < 0.5f)
+        return(0.75f-x*x);
+    if (x < 1.5f)
+        return(0.5f*(x-1.5f)*(x-1.5f));
+    return(0.0f);
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelMitchell(const float x)
@@ -1006,39 +1006,39 @@ float CxImage::KernelMitchell(const float x)
 #define KM_Q1 ((-12.0f * KM_B - 48.0f * KM_C) / 6.0f)
 #define KM_Q2 ((  6.0f * KM_B + 30.0f * KM_C) / 6.0f)
 #define KM_Q3 (( -1.0f * KM_B -  6.0f * KM_C) / 6.0f)
-	
-	if (x < -2.0)
-		return(0.0f);
-	if (x < -1.0)
-		return(KM_Q0-x*(KM_Q1-x*(KM_Q2-x*KM_Q3)));
-	if (x < 0.0f)
-		return(KM_P0+x*x*(KM_P2-x*KM_P3));
-	if (x < 1.0f)
-		return(KM_P0+x*x*(KM_P2+x*KM_P3));
-	if (x < 2.0f)
-		return(KM_Q0+x*(KM_Q1+x*(KM_Q2+x*KM_Q3)));
-	return(0.0f);
+    
+    if (x < -2.0)
+        return(0.0f);
+    if (x < -1.0)
+        return(KM_Q0-x*(KM_Q1-x*(KM_Q2-x*KM_Q3)));
+    if (x < 0.0f)
+        return(KM_P0+x*x*(KM_P2-x*KM_P3));
+    if (x < 1.0f)
+        return(KM_P0+x*x*(KM_P2+x*KM_P3));
+    if (x < 2.0f)
+        return(KM_Q0+x*(KM_Q1+x*(KM_Q2+x*KM_Q3)));
+    return(0.0f);
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelCatrom(const float x)
 {
-	if (x < -2.0)
-		return(0.0f);
-	if (x < -1.0)
-		return(0.5f*(4.0f+x*(8.0f+x*(5.0f+x))));
-	if (x < 0.0)
-		return(0.5f*(2.0f+x*x*(-5.0f-3.0f*x)));
-	if (x < 1.0)
-		return(0.5f*(2.0f+x*x*(-5.0f+3.0f*x)));
-	if (x < 2.0)
-		return(0.5f*(4.0f+x*(-8.0f+x*(5.0f-x))));
-	return(0.0f);
+    if (x < -2.0)
+        return(0.0f);
+    if (x < -1.0)
+        return(0.5f*(4.0f+x*(8.0f+x*(5.0f+x))));
+    if (x < 0.0)
+        return(0.5f*(2.0f+x*x*(-5.0f-3.0f*x)));
+    if (x < 1.0)
+        return(0.5f*(2.0f+x*x*(-5.0f+3.0f*x)));
+    if (x < 2.0)
+        return(0.5f*(4.0f+x*(-8.0f+x*(5.0f-x))));
+    return(0.0f);
 }
 ////////////////////////////////////////////////////////////////////////////////
 float CxImage::KernelPower(const float x, const float a)
 {
-	if (fabs(x)>1) return 0.0f;
-	return (1.0f - (float)fabs(pow(x,a)));
+    if (fabs(x)>1) return 0.0f;
+    return (1.0f - (float)fabs(pow(x,a)));
 }
 ////////////////////////////////////////////////////////////////////////////////
 

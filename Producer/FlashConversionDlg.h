@@ -9,8 +9,8 @@
 #define ENT_LANGID _T("LanguageID")
 #define ENT_LANGINI _T("LangINI")
 #define SEC_SETTINGS _T("Language")
-#define STANDARD_LANGID 0x09	// English
-//#define STANDARD_LANGID 0x07	// German
+#define STANDARD_LANGID 0x09    // English
+//#define STANDARD_LANGID 0x07    // German
 
 // FlashConversionDlg.h : header file
 //
@@ -20,48 +20,48 @@
 
 class FlashConversionDlg : public CPropertyPage
 {
-	DECLARE_DYNCREATE(FlashConversionDlg)
+    DECLARE_DYNCREATE(FlashConversionDlg)
 
 // Construction
 public:
-	FlashConversionDlg();
-	~FlashConversionDlg();
-	void UpdateBehavior(int val);
+    FlashConversionDlg();
+    ~FlashConversionDlg();
+    void UpdateBehavior(int val);
 
 // Dialog Data
-	//{{AFX_DATA(FlashConversionDlg)
-	enum { IDD = IDD_FLASHCONVERSION };
-		// NOTE - ClassWizard will add data members here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
-	//}}AFX_DATA
+    //{{AFX_DATA(FlashConversionDlg)
+    enum { IDD = IDD_FLASHCONVERSION };
+        // NOTE - ClassWizard will add data members here.
+        //    DO NOT EDIT what you see in these blocks of generated code !
+    //}}AFX_DATA
 
 // Overrides
-	// ClassWizard generate virtual function overrides
-	//{{AFX_VIRTUAL(FlashConversionDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // ClassWizard generate virtual function overrides
+    //{{AFX_VIRTUAL(FlashConversionDlg)
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
 // Implementation
 protected:
-	// Generated message map functions
-	//{{AFX_MSG(FlashConversionDlg)
-	virtual BOOL OnInitDialog();
-	virtual void OnOK();
-	afx_msg void OnSelectflash();
-	afx_msg void OnSelecthtml();
-	afx_msg void OnRadio2();
-	afx_msg void OnRadio1();
-	afx_msg void OnRaw();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    // Generated message map functions
+    //{{AFX_MSG(FlashConversionDlg)
+    virtual BOOL OnInitDialog();
+    virtual void OnOK();
+    afx_msg void OnSelectflash();
+    afx_msg void OnSelecthtml();
+    afx_msg void OnRadio2();
+    afx_msg void OnRadio1();
+    afx_msg void OnRaw();
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 
 public:
-	afx_msg void OnBnClickedLoop();
-	afx_msg void OnBnClickedCheck1();
+    afx_msg void OnBnClickedLoop();
+    afx_msg void OnBnClickedCheck1();
 
 private:
-	LANGID CurLangID;
+    LANGID CurLangID;
     BOOL LoadLangIDDLL(LANGID LangID);
 };
 

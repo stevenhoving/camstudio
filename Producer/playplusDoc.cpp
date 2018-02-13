@@ -18,10 +18,10 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNCREATE(CPlayplusDoc, CDocument)
 
 BEGIN_MESSAGE_MAP(CPlayplusDoc, CDocument)
-	//{{AFX_MSG_MAP(CPlayplusDoc)
-		// NOTE - the ClassWizard will add and remove mapping macros here.
-		//    DO NOT EDIT what you see in these blocks of generated code!
-	//}}AFX_MSG_MAP
+    //{{AFX_MSG_MAP(CPlayplusDoc)
+        // NOTE - the ClassWizard will add and remove mapping macros here.
+        //    DO NOT EDIT what you see in these blocks of generated code!
+    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@ END_MESSAGE_MAP()
 
 CPlayplusDoc::CPlayplusDoc()
 {
-	// TODO: add one-time construction code here
+    // TODO: add one-time construction code here
 }
 
 CPlayplusDoc::~CPlayplusDoc()
@@ -38,13 +38,13 @@ CPlayplusDoc::~CPlayplusDoc()
 
 BOOL CPlayplusDoc::OnNewDocument()
 {
-	if (!CDocument::OnNewDocument())
-		return FALSE;
+    if (!CDocument::OnNewDocument())
+        return FALSE;
 
-	// TODO: add reinitialization code here
-	// (SDI documents will reuse this document)
+    // TODO: add reinitialization code here
+    // (SDI documents will reuse this document)
 
-	return TRUE;
+    return TRUE;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -52,14 +52,14 @@ BOOL CPlayplusDoc::OnNewDocument()
 
 void CPlayplusDoc::Serialize(CArchive& ar)
 {
-	if (ar.IsStoring())
-	{
-		// TODO: add storing code here
-	}
-	else
-	{
-		// TODO: add loading code here
-	}
+    if (ar.IsStoring())
+    {
+        // TODO: add storing code here
+    }
+    else
+    {
+        // TODO: add loading code here
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -68,12 +68,12 @@ void CPlayplusDoc::Serialize(CArchive& ar)
 #ifdef _DEBUG
 void CPlayplusDoc::AssertValid() const
 {
-	CDocument::AssertValid();
+    CDocument::AssertValid();
 }
 
 void CPlayplusDoc::Dump(CDumpContext& dc) const
 {
-	CDocument::Dump(dc);
+    CDocument::Dump(dc);
 }
 #endif //_DEBUG
 

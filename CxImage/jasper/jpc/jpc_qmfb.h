@@ -81,8 +81,8 @@
 \******************************************************************************/
 
 /* QMFB IDs. */
-#define	JPC_QMFB1D_FT	1	/* 5/3 */
-#define	JPC_QMFB1D_NS	2	/* 9/7 */
+#define    JPC_QMFB1D_FT    1    /* 5/3 */
+#define    JPC_QMFB1D_NS    2    /* 9/7 */
 
 /******************************************************************************\
 * Types.
@@ -97,14 +97,14 @@
 stage of the wavelet transform. */
 /* The default value for this parameter is probably not optimal for
 any particular platform.  Hopefully, it is not too unreasonable, however. */
-#define JPC_QMFB_COLGRPSIZE	16
+#define JPC_QMFB_COLGRPSIZE    16
 #endif
 
 typedef struct {
-	int (*analyze)(int *, int, int, int, int, int);
-	int (*synthesize)(int *, int, int, int, int, int);
-	double *lpenergywts;
-	double *hpenergywts;
+    int (*analyze)(int *, int, int, int, int, int);
+    int (*synthesize)(int *, int, int, int, int, int);
+    double *lpenergywts;
+    double *hpenergywts;
 } jpc_qmfb2d_t;
 
 extern jpc_qmfb2d_t jpc_ft_qmfb2d;

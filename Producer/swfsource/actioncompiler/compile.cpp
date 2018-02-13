@@ -168,15 +168,15 @@ void bufferCheckSize(Buffer out, int sbytes)
     {
       int pushd = 0;
 
-	  if (out->pushloc) {
-		pushd = out->pos - out->pushloc;
-	  }
+      if (out->pushloc) {
+        pushd = out->pos - out->pushloc;
+      }
 
       out->pos = (char *)newbuf+num;
 
-	  if (out->pushloc){
-		out->pushloc = out->pos - pushd;
-	  }
+      if (out->pushloc){
+        out->pushloc = out->pos - pushd;
+      }
     }
 
     out->buffer = (char *)newbuf;
@@ -522,34 +522,34 @@ void bufferResolveJumps(Buffer out)
     {
       if (*p == SWFACTION_BRANCHALWAYS)
       {
-	p += 3; /* plus instruction plus two-sbyte length */
+    p += 3; /* plus instruction plus two-sbyte length */
 
-	if (*p == MAGIC_CONTINUE_NUMBER_LO &&
-	   *(p+1) == MAGIC_CONTINUE_NUMBER_HI)
-	{
-	  target = out->buffer - (p+2);
-	  *p = target & 0xff;
-	  *(p+1) = (target>>8) & 0xff;
-	}
-	else if (*p == MAGIC_BREAK_NUMBER_LO &&
-		*(p+1) == MAGIC_BREAK_NUMBER_HI)
-	{
-	  target = out->pos - (p+2);
-	  *p = target & 0xff;
-	  *(p+1) = (target>>8) & 0xff;
-	}
+    if (*p == MAGIC_CONTINUE_NUMBER_LO &&
+       *(p+1) == MAGIC_CONTINUE_NUMBER_HI)
+    {
+      target = out->buffer - (p+2);
+      *p = target & 0xff;
+      *(p+1) = (target>>8) & 0xff;
+    }
+    else if (*p == MAGIC_BREAK_NUMBER_LO &&
+        *(p+1) == MAGIC_BREAK_NUMBER_HI)
+    {
+      target = out->pos - (p+2);
+      *p = target & 0xff;
+      *(p+1) = (target>>8) & 0xff;
+    }
 
-	p += 2;
+    p += 2;
       }
       else
       {
-	++p;
-	l = *p;
-	++p;
-	l += *p<<8;
-	++p;
+    ++p;
+    l = *p;
+    ++p;
+    l += *p<<8;
+    ++p;
 
-	p += l;
+    p += l;
       }
     }
     else
@@ -561,17 +561,17 @@ int lookupSetProperty(char *string)
 {
   lower(string);
 
-  if (strcmp(string,"x")==0)		return 0x0000;
-  if (strcmp(string,"y")==0)		return 0x3f80;
-  if (strcmp(string,"xscale")==0)	return 0x4000;
-  if (strcmp(string,"yscale")==0)	return 0x4040;
-  if (strcmp(string,"alpha")==0)		return 0x40c0;
-  if (strcmp(string,"visible")==0)	return 0x40e0;
-  if (strcmp(string,"rotation")==0)	return 0x4120;
-  if (strcmp(string,"name")==0)		return 0x4140;
-  if (strcmp(string,"quality")==0)	return 0x4180;
-  if (strcmp(string,"focusrect")==0)	return 0x4188;
-  if (strcmp(string,"soundbuftime")==0)	return 0x4190;
+  if (strcmp(string,"x")==0)        return 0x0000;
+  if (strcmp(string,"y")==0)        return 0x3f80;
+  if (strcmp(string,"xscale")==0)    return 0x4000;
+  if (strcmp(string,"yscale")==0)    return 0x4040;
+  if (strcmp(string,"alpha")==0)        return 0x40c0;
+  if (strcmp(string,"visible")==0)    return 0x40e0;
+  if (strcmp(string,"rotation")==0)    return 0x4120;
+  if (strcmp(string,"name")==0)        return 0x4140;
+  if (strcmp(string,"quality")==0)    return 0x4180;
+  if (strcmp(string,"focusrect")==0)    return 0x4188;
+  if (strcmp(string,"soundbuftime")==0)    return 0x4190;
 
   SWF_error(error_fp,"No such property: %s\n", string);
   return -1;
@@ -605,25 +605,25 @@ char *lookupGetProperty(char *string)
 {
   lower(string);
 
-  if (strcmp(string,"x")==0)		return "0";
-  if (strcmp(string,"y")==0)		return "1";
-  if (strcmp(string,"xscale")==0)	return "2";
-  if (strcmp(string,"yscale")==0)	return "3";
-  if (strcmp(string,"currentframe")==0)	return "4";
-  if (strcmp(string,"totalframes")==0)	return "5";
-  if (strcmp(string,"alpha")==0)		return "6";
-  if (strcmp(string,"visible")==0)	return "7";
-  if (strcmp(string,"width")==0)		return "8";
-  if (strcmp(string,"height")==0)	return "9";
-  if (strcmp(string,"rotation")==0)	return "10";
-  if (strcmp(string,"target")==0)	return "11";
-  if (strcmp(string,"framesloaded")==0)	return "12";
-  if (strcmp(string,"name")==0)		return "13";
-  if (strcmp(string,"droptarget")==0)	return "14";
-  if (strcmp(string,"url")==0)		return "15";
-  if (strcmp(string,"quality")==0)	return "16";
-  if (strcmp(string,"focusrect")==0)	return "17";
-  if (strcmp(string,"soundbuftime")==0)	return "18";
+  if (strcmp(string,"x")==0)        return "0";
+  if (strcmp(string,"y")==0)        return "1";
+  if (strcmp(string,"xscale")==0)    return "2";
+  if (strcmp(string,"yscale")==0)    return "3";
+  if (strcmp(string,"currentframe")==0)    return "4";
+  if (strcmp(string,"totalframes")==0)    return "5";
+  if (strcmp(string,"alpha")==0)        return "6";
+  if (strcmp(string,"visible")==0)    return "7";
+  if (strcmp(string,"width")==0)        return "8";
+  if (strcmp(string,"height")==0)    return "9";
+  if (strcmp(string,"rotation")==0)    return "10";
+  if (strcmp(string,"target")==0)    return "11";
+  if (strcmp(string,"framesloaded")==0)    return "12";
+  if (strcmp(string,"name")==0)        return "13";
+  if (strcmp(string,"droptarget")==0)    return "14";
+  if (strcmp(string,"url")==0)        return "15";
+  if (strcmp(string,"quality")==0)    return "16";
+  if (strcmp(string,"focusrect")==0)    return "17";
+  if (strcmp(string,"soundbuftime")==0)    return "18";
 
   SWF_error(error_fp,"No such property: %s\n", string);
   return "";

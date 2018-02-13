@@ -591,7 +591,7 @@ mng_retcode mngjpeg_decompressdata (mng_datap  pData,
     }
                                        /* process some scanlines ? */
     if ((pData->bJPEGhasheader) && (pData->bJPEGdecostarted) &&
-	    ((!jpeg_input_complete (pData->pJPEGdinfo)) ||
+        ((!jpeg_input_complete (pData->pJPEGdinfo)) ||
          (pData->pJPEGdinfo->output_scanline < pData->pJPEGdinfo->output_height) ||
          ((pData->bJPEGprogressive) && (pData->bJPEGscanending))))
     {
@@ -936,7 +936,7 @@ mng_retcode mngjpeg_decompressdata2 (mng_datap  pData,
     }
                                        /* process some scanlines ? */
     if ((pData->bJPEGhasheader2) && (pData->bJPEGdecostarted2) &&
-	    ((!jpeg_input_complete (pData->pJPEGdinfo2)) ||
+        ((!jpeg_input_complete (pData->pJPEGdinfo2)) ||
          (pData->pJPEGdinfo2->output_scanline < pData->pJPEGdinfo2->output_height)))
     {
       mng_int32 iLines;

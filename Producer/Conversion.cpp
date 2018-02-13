@@ -19,80 +19,80 @@ int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 int MultiStepConvertToPCM(CString filename, CString SaveFile, LPWAVEFORMATEX dstFormat, int sizeDstFormat)
 {
 
-	CString intermediatePath;
-	int retval = 0;
-	LPWAVEFORMATEX intermediateFormat = NULL;
+    CString intermediatePath;
+    int retval = 0;
+    LPWAVEFORMATEX intermediateFormat = NULL;
 
-	if (dstFormat) {
-		if ((dstFormat->wFormatTag)!=WAVE_FORMAT_PCM) {
+    if (dstFormat) {
+        if ((dstFormat->wFormatTag)!=WAVE_FORMAT_PCM) {
 
-			if ((runmode==0) || (runmode==1))
-				//MessageBox(NULL,"Destination Format not PCM","Note",MB_OK | MB_ICONEXCLAMATION);
-				MessageOut(NULL,IDS_DESTNOTPCM, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            if ((runmode==0) || (runmode==1))
+                //MessageBox(NULL,"Destination Format not PCM","Note",MB_OK | MB_ICONEXCLAMATION);
+                MessageOut(NULL,IDS_DESTNOTPCM, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
 
-			return -1;
-		}
+            return -1;
+        }
 
-	}
+    }
 
-	//First step conversion,
-	intermediateFormat = (LPWAVEFORMATEX) malloc(sizeDstFormat);
-	memcpy( intermediateFormat, dstFormat, sizeDstFormat);
+    //First step conversion,
+    intermediateFormat = (LPWAVEFORMATEX) malloc(sizeDstFormat);
+    memcpy( intermediateFormat, dstFormat, sizeDstFormat);
 
-	//warning : Convert File will change the intermediateFormat (to a format compatible with original) after conversion
-	retval = ConvertFile(LPCTSTR(filename), LPCTSTR(SaveFile), intermediateFormat, sizeDstFormat);
+    //warning : Convert File will change the intermediateFormat (to a format compatible with original) after conversion
+    retval = ConvertFile(LPCTSTR(filename), LPCTSTR(SaveFile), intermediateFormat, sizeDstFormat);
 
-	if (intermediateFormat) free(intermediateFormat);
+    if (intermediateFormat) free(intermediateFormat);
 
-	if (retval == 0) {
+    if (retval == 0) {
 
-		//MessageBox(NULL, "0","Note",MB_OK | MB_ICONEXCLAMATION);
-		return 0;
-	}
-	else if (retval == 2)
-	{
-		//MessageBox(NULL, "2","Note",MB_OK | MB_ICONEXCLAMATION);
-		return 2;
-	}
-	else if (retval == 1) {
+        //MessageBox(NULL, "0","Note",MB_OK | MB_ICONEXCLAMATION);
+        return 0;
+    }
+    else if (retval == 2)
+    {
+        //MessageBox(NULL, "2","Note",MB_OK | MB_ICONEXCLAMATION);
+        return 2;
+    }
+    else if (retval == 1) {
 
-		//need 2nd Step Conversion
-		//intermediatePath= GetTempIntermediatePath();
-		intermediatePath =  GetTempPathEx("\\~intermediate001.wav", "\\~intermediate", ".wav");
+        //need 2nd Step Conversion
+        //intermediatePath= GetTempIntermediatePath();
+        intermediatePath =  GetTempPathEx("\\~intermediate001.wav", "\\~intermediate", ".wav");
 
-		//rename
-		if (!MoveFile( SaveFile,intermediatePath)) {
+        //rename
+        if (!MoveFile( SaveFile,intermediatePath)) {
 
-				//Although there is error copying, the temp file still remains in the temp directory and is not deleted, in case user wants a manual recover
-				if ((runmode==0) || (runmode==1))
-					//MessageBox(NULL, "File Creation Error. Unable to rename/copy file.","Note",MB_OK | MB_ICONEXCLAMATION);
-					MessageOut(NULL,IDS_FILECRERR, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-				return -1;
+                //Although there is error copying, the temp file still remains in the temp directory and is not deleted, in case user wants a manual recover
+                if ((runmode==0) || (runmode==1))
+                    //MessageBox(NULL, "File Creation Error. Unable to rename/copy file.","Note",MB_OK | MB_ICONEXCLAMATION);
+                    MessageOut(NULL,IDS_FILECRERR, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+                return -1;
 
-		}
+        }
 
-		retval = ConvertFile(LPCTSTR(intermediatePath), LPCTSTR(SaveFile), dstFormat, sizeDstFormat);
+        retval = ConvertFile(LPCTSTR(intermediatePath), LPCTSTR(SaveFile), dstFormat, sizeDstFormat);
 
-		if (retval == 0)
-		{
-			//actually no 2nd step conversion is performed
-			//but a new file SaveFile is created in the 1st step conversion
+        if (retval == 0)
+        {
+            //actually no 2nd step conversion is performed
+            //but a new file SaveFile is created in the 1st step conversion
 
-			//move back
-			MoveFile( intermediatePath, SaveFile);
-			return 1;
+            //move back
+            MoveFile( intermediatePath, SaveFile);
+            return 1;
 
-		}
+        }
 
-		if (retval>=0)
-			DeleteFile(intermediatePath);
+        if (retval>=0)
+            DeleteFile(intermediatePath);
 
-		//retval = ConvertFile(SaveFile,intermediatePath, dstFormat, sizeDstFormat);
-		return retval;
+        //retval = ConvertFile(SaveFile,intermediatePath, dstFormat, sizeDstFormat);
+        return retval;
 
-	}
+    }
 
-	return 0;
+    return 0;
 }
 
 //return -1 if error
@@ -105,61 +105,61 @@ int ConvertFile(const char* filename, const char* SaveFile, LPWAVEFORMATEX dstFo
     ACMAPPFILEDESC  gaafd;
     TCHAR               fileTitle[APP_MAX_FILE_TITLE_CHARS];
     BOOL                f;
-	MMRESULT mmr;
+    MMRESULT mmr;
 
-	GetTitle( filename,  fileTitle, APP_MAX_FILE_TITLE_CHARS);
+    GetTitle( filename,  fileTitle, APP_MAX_FILE_TITLE_CHARS);
 
-	lstrcpy(gaafd.szFilePath, filename);
+    lstrcpy(gaafd.szFilePath, filename);
     lstrcpy(gaafd.szFileTitle, fileTitle);
 
-	//get info into gaafd
-	f = AcmAppFileOpen(NULL,  &gaafd);
+    //get info into gaafd
+    f = AcmAppFileOpen(NULL,  &gaafd);
     if (!f)
     {
-		//MessageBox(NULL,"Error Opening File","Note",MB_OK | MB_ICONEXCLAMATION);
-		if ((runmode==0) || (runmode==1))
-			//MessageBox(NULL,"Error Opening Audio File for Conversion","Note",MB_OK | MB_ICONEXCLAMATION);
-			MessageOut(NULL,IDS_ERROPAFIC, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-		return -1;
+        //MessageBox(NULL,"Error Opening File","Note",MB_OK | MB_ICONEXCLAMATION);
+        if ((runmode==0) || (runmode==1))
+            //MessageBox(NULL,"Error Opening Audio File for Conversion","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(NULL,IDS_ERROPAFIC, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+        return -1;
     }
 
-	if (((gaafd.pwfx)->wFormatTag)!=WAVE_FORMAT_PCM) {
-		dstFormat->wFormatTag = WAVE_FORMAT_PCM;
-		mmr = acmFormatSuggest(NULL, gaafd.pwfx, dstFormat, sizeDstFormat, ACM_FORMATSUGGESTF_WFORMATTAG);
-		PerformConversion(&gaafd, SaveFile, NONPCM_TO_PCM_TYPE , dstFormat, sizeDstFormat);
-		return 1;
-	}
+    if (((gaafd.pwfx)->wFormatTag)!=WAVE_FORMAT_PCM) {
+        dstFormat->wFormatTag = WAVE_FORMAT_PCM;
+        mmr = acmFormatSuggest(NULL, gaafd.pwfx, dstFormat, sizeDstFormat, ACM_FORMATSUGGESTF_WFORMATTAG);
+        PerformConversion(&gaafd, SaveFile, NONPCM_TO_PCM_TYPE , dstFormat, sizeDstFormat);
+        return 1;
+    }
 
-	//if (gaafd.pwfx)->wFormatTag) ==WAVE_FORMAT_PCM
-	if ((dstFormat->wFormatTag)==WAVE_FORMAT_PCM) {
+    //if (gaafd.pwfx)->wFormatTag) ==WAVE_FORMAT_PCM
+    if ((dstFormat->wFormatTag)==WAVE_FORMAT_PCM) {
 
-		//if PCM rates not similar
-		if ((gaafd.pwfx->nChannels != dstFormat->nChannels) ||
-			(gaafd.pwfx->nSamplesPerSec != dstFormat->nSamplesPerSec) ||
-			(gaafd.pwfx->nAvgBytesPerSec != dstFormat->nAvgBytesPerSec) ||
-			(gaafd.pwfx->nBlockAlign != dstFormat->nBlockAlign) ||
-			(gaafd.pwfx->wBitsPerSample != dstFormat->wBitsPerSample) ||
-			(gaafd.pwfx->cbSize != dstFormat->cbSize))
-		{
-			mmr = acmFormatSuggest(NULL, gaafd.pwfx, dstFormat, sizeDstFormat, ACM_FORMATSUGGESTF_NCHANNELS  | ACM_FORMATSUGGESTF_NSAMPLESPERSEC | ACM_FORMATSUGGESTF_WBITSPERSAMPLE | ACM_FORMATSUGGESTF_WFORMATTAG);
-			PerformConversion(&gaafd, SaveFile, PCM_TO_PCM_TYPE , dstFormat, sizeDstFormat);
-			return 2;
-		}
+        //if PCM rates not similar
+        if ((gaafd.pwfx->nChannels != dstFormat->nChannels) ||
+            (gaafd.pwfx->nSamplesPerSec != dstFormat->nSamplesPerSec) ||
+            (gaafd.pwfx->nAvgBytesPerSec != dstFormat->nAvgBytesPerSec) ||
+            (gaafd.pwfx->nBlockAlign != dstFormat->nBlockAlign) ||
+            (gaafd.pwfx->wBitsPerSample != dstFormat->wBitsPerSample) ||
+            (gaafd.pwfx->cbSize != dstFormat->cbSize))
+        {
+            mmr = acmFormatSuggest(NULL, gaafd.pwfx, dstFormat, sizeDstFormat, ACM_FORMATSUGGESTF_NCHANNELS  | ACM_FORMATSUGGESTF_NSAMPLESPERSEC | ACM_FORMATSUGGESTF_WBITSPERSAMPLE | ACM_FORMATSUGGESTF_WFORMATTAG);
+            PerformConversion(&gaafd, SaveFile, PCM_TO_PCM_TYPE , dstFormat, sizeDstFormat);
+            return 2;
+        }
 
-	}
+    }
 
-	return 0;
+    return 0;
 }
 
 BOOL GetTitle( const char* pszFilePath, PTSTR pszFileTitle, int /*bufsize*/ )
 {
 
-	//GetFileTitle( pszFilePath, pszFileTitle, bufsize);
+    //GetFileTitle( pszFilePath, pszFileTitle, bufsize);
 
     #define IS_SLASH(c)     ('/' == (c) || '\\' == (c))
 
     //PTSTR       pch;
-	const char * pch;
+    const char * pch;
 
     //
     //  scan to the end of the file path string..
@@ -222,7 +222,7 @@ BOOL PerformConversion(PACMAPPFILEDESC paafd, const char* SaveFile, int /*Conver
 
     paacd->cbDstBufSize  = 0L;
     //paacd->fdwOpen       = 0L;
-	paacd->fdwOpen       = ACM_STREAMOPENF_NONREALTIME;
+    paacd->fdwOpen       = ACM_STREAMOPENF_NONREALTIME;
 
     lstrcpy(paacd->szFilePathSrc, paafd->szFilePath);
     paacd->pwfxSrc       = paafd->pwfx;
@@ -250,8 +250,8 @@ BOOL PerformConversion(PACMAPPFILEDESC paafd, const char* SaveFile, int /*Conver
     //                   AcmAppDlgProcChooser,
     //                  (LPARAM)(UINT)paacd);
 
-	//Not sure
-	paacd->pwfxDst = dstFormat;
+    //Not sure
+    paacd->pwfxDst = dstFormat;
 
     if (AcmAppConvertBegin(NULL, paacd))
     {
@@ -260,9 +260,9 @@ BOOL PerformConversion(PACMAPPFILEDESC paafd, const char* SaveFile, int /*Conver
 
     AcmAppConvertEnd(NULL, paacd);
 
-	//if (f)
+    //if (f)
     {
-		//this is needed only if a dialog appears
+        //this is needed only if a dialog appears
         //lstrcpy(SaveFile, paacd->szFilePathDst);
 
         //
@@ -291,7 +291,7 @@ BOOL PerformConversion(PACMAPPFILEDESC paafd, const char* SaveFile, int /*Conver
             dwTimeAverage = paacd->dwTimeTotal;
         }
 
-		/*
+        /*
         AppMsgBox(hwnd, MB_OK | MB_ICONEXCLAMATION,
                     TEXT("Conversion Statistics:\n\nTotal Time:\t%lu ms\nTotal Converts:\t%lu\nShortest Time:\t%lu ms (on %lu)\nLongest Time:\t%lu ms (on %lu)\n\nAverage Time:\t%lu ms"),
                     paacd->dwTimeTotal,
@@ -301,7 +301,7 @@ BOOL PerformConversion(PACMAPPFILEDESC paafd, const char* SaveFile, int /*Conver
                     paacd->dwTimeLongest,
                     paacd->dwLongestConvert,
                     dwTimeAverage);
-					*/
+                    */
 
         //if (f)
         //{

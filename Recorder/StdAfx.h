@@ -19,25 +19,25 @@
 
 //#define _CRT_SECURE_NO_WARNINGS //tell the compiler not to warn about using sprintf, fopen instead of *_s
 
-#define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
+#define VC_EXTRALEAN        // Exclude rarely-used stuff from Windows headers
 //#define _AFX_SECURE_NO_WARNINGS
 // replacing calls to deprecated functions with calls to the new secure versions of those functions.
 
-//#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES		1
-//#define _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES		1
+//#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES        1
+//#define _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES        1
 
 ////////////////////////////
 // Use MS Private Assemblies to prevent side by side configuration errors as reported by users.
 // Based on info http://www.codeproject.com/KB/cpp/PrivateAssemblyProjects.aspx
 // #include "UseMSPrivateAssemblies.h"  
 
-#include "targetver.h"		// define WINVER
+#include "targetver.h"        // define WINVER
 
 #include <afxwin.h>         // MFC core and standard components
 #include <afxext.h>         // MFC extensions
 #include <afxdisp.h>        // MFC OLE automation classes
 #ifndef _AFX_NO_AFXCMN_SUPPORT
-#include <afxcmn.h>			// MFC support for Windows Common Controls
+#include <afxcmn.h>            // MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
 #include <vfw.h>

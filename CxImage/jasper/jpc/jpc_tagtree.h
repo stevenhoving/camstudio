@@ -84,7 +84,7 @@
 \******************************************************************************/
 
 /* The maximum allowable depth for a tag tree. */
-#define JPC_TAGTREE_MAXDEPTH	32
+#define JPC_TAGTREE_MAXDEPTH    32
 
 /******************************************************************************\
 * Types
@@ -96,17 +96,17 @@
 
 typedef struct jpc_tagtreenode_ {
 
-	/* The parent of this node. */
-	struct jpc_tagtreenode_ *parent_;
+    /* The parent of this node. */
+    struct jpc_tagtreenode_ *parent_;
 
-	/* The value associated with this node. */
-	int value_;
+    /* The value associated with this node. */
+    int value_;
 
-	/* The lower bound on the value associated with this node. */
-	int low_;
+    /* The lower bound on the value associated with this node. */
+    int low_;
 
-	/* A flag indicating if the value is known exactly. */
-	int known_;
+    /* A flag indicating if the value is known exactly. */
+    int known_;
 
 } jpc_tagtreenode_t;
 
@@ -116,17 +116,17 @@ typedef struct jpc_tagtreenode_ {
 
 typedef struct {
 
-	/* The number of leaves in the horizontal direction. */
-	int numleafsh_;
+    /* The number of leaves in the horizontal direction. */
+    int numleafsh_;
 
-	/* The number of leaves in the vertical direction. */
-	int numleafsv_;
+    /* The number of leaves in the vertical direction. */
+    int numleafsv_;
 
-	/* The total number of nodes in the tree. */
-	int numnodes_;
+    /* The total number of nodes in the tree. */
+    int numnodes_;
 
-	/* The nodes. */
-	jpc_tagtreenode_t *nodes_;
+    /* The nodes. */
+    jpc_tagtreenode_t *nodes_;
 
 } jpc_tagtree_t;
 

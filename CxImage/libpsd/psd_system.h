@@ -11,11 +11,11 @@ extern "C" {
 
 
 #if 1
-#define psd_assert(x)			assert(x)
+#define psd_assert(x)            assert(x)
 #else
-#define psd_assert(x)			do {} while(0)
+#define psd_assert(x)            do {} while(0)
 // or
-// #define psd_assert(x)		return psd_status_unkown_error
+// #define psd_assert(x)        return psd_status_unkown_error
 #endif
 
 

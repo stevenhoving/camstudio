@@ -72,10 +72,10 @@
 * Constants.
 \******************************************************************************/
 
-#define	MIF_MAGIC		0x4d49460a
+#define    MIF_MAGIC        0x4d49460a
 /* signature */
 
-#define	MIF_MAGICLEN	4
+#define    MIF_MAGICLEN    4
 /* length of signature in bytes */
 
 /******************************************************************************\
@@ -86,23 +86,23 @@
 
 typedef struct {
 
-	int_fast32_t tlx;
+    int_fast32_t tlx;
 
-	int_fast32_t tly;
+    int_fast32_t tly;
 
-	int_fast32_t width;
+    int_fast32_t width;
 
-	int_fast32_t height;
+    int_fast32_t height;
 
-	int_fast32_t sampperx;
+    int_fast32_t sampperx;
 
-	int_fast32_t samppery;
+    int_fast32_t samppery;
 
-	int_fast16_t prec;
+    int_fast16_t prec;
 
-	int_fast16_t sgnd;
+    int_fast16_t sgnd;
 
-	char *data;
+    char *data;
 
 } mif_cmpt_t;
 
@@ -110,13 +110,13 @@ typedef struct {
 
 typedef struct {
 
-	uint_fast32_t magic;
+    uint_fast32_t magic;
 
-	int numcmpts;
+    int numcmpts;
 
-	int maxcmpts;
+    int maxcmpts;
 
-	mif_cmpt_t **cmpts;
+    mif_cmpt_t **cmpts;
 
 } mif_hdr_t;
 

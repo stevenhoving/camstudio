@@ -1,6 +1,6 @@
 /*
- * File:	ximajpg.h
- * Purpose:	JPG Image Class Loader and Writer
+ * File:    ximajpg.h
+ * Purpose:    JPG Image Class Loader and Writer
  */
 /* ==========================================================
  * CxImageJPG (c) 07/Aug/2001 Davide Pizzolato - www.xdp.it
@@ -13,7 +13,7 @@
  * EXIF support based on jhead-1.8 by Matthias Wandel <mwandel(at)rim(dot)net>
  *
  * original CImageJPG  and CImageIterator implementation are:
- * Copyright:	(c) 1995, Alejandro Aguilar Sierra <asierra(at)servidor(dot)unam(dot)mx>
+ * Copyright:    (c) 1995, Alejandro Aguilar Sierra <asierra(at)servidor(dot)unam(dot)mx>
  *
  * This software is based in part on the work of the Independent JPEG Group.
  * Copyright (C) 1991-1998, Thomas G. Lane.
@@ -41,17 +41,17 @@ extern "C" {
 class DLL_EXP CxImageJPG: public CxImage
 {
 public:
-	CxImageJPG();
-	~CxImageJPG();
+    CxImageJPG();
+    ~CxImageJPG();
 
-//	bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_JPG);}
-//	bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_JPG);}
-	bool Decode(CxFile * hFile);
-	bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
+//    bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_JPG);}
+//    bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_JPG);}
+    bool Decode(CxFile * hFile);
+    bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
 
 #if CXIMAGE_SUPPORT_ENCODE
-	bool Encode(CxFile * hFile);
-	bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
+    bool Encode(CxFile * hFile);
+    bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
 #endif // CXIMAGE_SUPPORT_ENCODE
 
 /*
@@ -102,35 +102,35 @@ typedef struct tag_Section_t{
 } Section_t;
 
 public:
-	EXIFINFO* m_exifinfo;
-	char m_szLastError[256];
-	CxExifInfo(EXIFINFO* info = NULL);
-	~CxExifInfo();
-	bool DecodeExif(CxFile * hFile, int32_t nReadMode = EXIF_READ_EXIF);
-	bool EncodeExif(CxFile * hFile);
-	void DiscardAllButExif();
+    EXIFINFO* m_exifinfo;
+    char m_szLastError[256];
+    CxExifInfo(EXIFINFO* info = NULL);
+    ~CxExifInfo();
+    bool DecodeExif(CxFile * hFile, int32_t nReadMode = EXIF_READ_EXIF);
+    bool EncodeExif(CxFile * hFile);
+    void DiscardAllButExif();
 protected:
-	bool process_EXIF(uint8_t * CharBuf, uint32_t length);
-	void process_COM (const uint8_t * Data, int32_t length);
-	void process_SOFn (const uint8_t * Data, int32_t marker);
-	int32_t Get16u(void * Short);
-	int32_t Get16m(void * Short);
-	int32_t Get32s(void * Long);
-	uint32_t Get32u(void * Long);
-	double ConvertAnyFormat(void * ValuePtr, int32_t Format);
-	void* FindSection(int32_t SectionType);
-	bool ProcessExifDir(uint8_t * DirStart, uint8_t * OffsetBase, unsigned ExifLength,
+    bool process_EXIF(uint8_t * CharBuf, uint32_t length);
+    void process_COM (const uint8_t * Data, int32_t length);
+    void process_SOFn (const uint8_t * Data, int32_t marker);
+    int32_t Get16u(void * Short);
+    int32_t Get16m(void * Short);
+    int32_t Get32s(void * Long);
+    uint32_t Get32u(void * Long);
+    double ConvertAnyFormat(void * ValuePtr, int32_t Format);
+    void* FindSection(int32_t SectionType);
+    bool ProcessExifDir(uint8_t * DirStart, uint8_t * OffsetBase, unsigned ExifLength,
                            EXIFINFO * const pInfo, uint8_t ** const LastExifRefdP, int32_t NestingLevel=0);
-	int32_t ExifImageWidth;
-	int32_t MotorolaOrder;
-	Section_t Sections[MAX_SECTIONS];
-	int32_t SectionsRead;
-	bool freeinfo;
+    int32_t ExifImageWidth;
+    int32_t MotorolaOrder;
+    Section_t Sections[MAX_SECTIONS];
+    int32_t SectionsRead;
+    bool freeinfo;
 };
 
-	CxExifInfo* m_exif;
-	bool DecodeExif(CxFile * hFile);
-	bool DecodeExif(FILE * hFile) { CxIOFile file(hFile); return DecodeExif(&file); }
+    CxExifInfo* m_exif;
+    bool DecodeExif(CxFile * hFile);
+    bool DecodeExif(FILE * hFile) { CxIOFile file(hFile); return DecodeExif(&file); }
     bool GetExifThumbnail(const TCHAR *filename, const TCHAR *outname, int32_t type);
 
 #endif //CXIMAGEJPG_SUPPORT_EXIF
@@ -141,140 +141,140 @@ protected:
 
 // thanks to Chris Shearer Cooper <cscooper(at)frii(dot)com>
 class CxFileJpg : public jpeg_destination_mgr, public jpeg_source_mgr
-	{
+    {
 public:
-	enum { eBufSize = 4096 };
+    enum { eBufSize = 4096 };
 
-	CxFileJpg(CxFile* pFile)
-	{
+    CxFileJpg(CxFile* pFile)
+    {
         m_pFile = pFile;
 
-		init_destination = InitDestination;
-		empty_output_buffer = EmptyOutputBuffer;
-		term_destination = TermDestination;
+        init_destination = InitDestination;
+        empty_output_buffer = EmptyOutputBuffer;
+        term_destination = TermDestination;
 
-		init_source = InitSource;
-		fill_input_buffer = FillInputBuffer;
-		skip_input_data = SkipInputData;
-		resync_to_restart = jpeg_resync_to_restart; // use default method
-		term_source = TermSource;
-		next_input_byte = NULL; //* => next byte to read from buffer 
-		bytes_in_buffer = 0;	//* # of bytes remaining in buffer 
+        init_source = InitSource;
+        fill_input_buffer = FillInputBuffer;
+        skip_input_data = SkipInputData;
+        resync_to_restart = jpeg_resync_to_restart; // use default method
+        term_source = TermSource;
+        next_input_byte = NULL; //* => next byte to read from buffer 
+        bytes_in_buffer = 0;    //* # of bytes remaining in buffer 
 
-		m_pBuffer = new uint8_t[eBufSize];
-	}
-	~CxFileJpg()
-	{
-		delete [] m_pBuffer;
-	}
+        m_pBuffer = new uint8_t[eBufSize];
+    }
+    ~CxFileJpg()
+    {
+        delete [] m_pBuffer;
+    }
 
-	static void InitDestination(j_compress_ptr cinfo)
-	{
-		CxFileJpg* pDest = (CxFileJpg*)cinfo->dest;
-		pDest->next_output_byte = pDest->m_pBuffer;
-		pDest->free_in_buffer = eBufSize;
-	}
+    static void InitDestination(j_compress_ptr cinfo)
+    {
+        CxFileJpg* pDest = (CxFileJpg*)cinfo->dest;
+        pDest->next_output_byte = pDest->m_pBuffer;
+        pDest->free_in_buffer = eBufSize;
+    }
 
-	static boolean EmptyOutputBuffer(j_compress_ptr cinfo)
-	{
-		CxFileJpg* pDest = (CxFileJpg*)cinfo->dest;
-		if (pDest->m_pFile->Write(pDest->m_pBuffer,1,eBufSize)!=(size_t)eBufSize)
-			ERREXIT(cinfo, JERR_FILE_WRITE);
-		pDest->next_output_byte = pDest->m_pBuffer;
-		pDest->free_in_buffer = eBufSize;
-		return TRUE;
-	}
+    static boolean EmptyOutputBuffer(j_compress_ptr cinfo)
+    {
+        CxFileJpg* pDest = (CxFileJpg*)cinfo->dest;
+        if (pDest->m_pFile->Write(pDest->m_pBuffer,1,eBufSize)!=(size_t)eBufSize)
+            ERREXIT(cinfo, JERR_FILE_WRITE);
+        pDest->next_output_byte = pDest->m_pBuffer;
+        pDest->free_in_buffer = eBufSize;
+        return TRUE;
+    }
 
-	static void TermDestination(j_compress_ptr cinfo)
-	{
-		CxFileJpg* pDest = (CxFileJpg*)cinfo->dest;
-		size_t datacount = eBufSize - pDest->free_in_buffer;
-		/* Write any data remaining in the buffer */
-		if (datacount > 0) {
-			if (!pDest->m_pFile->Write(pDest->m_pBuffer,1,datacount))
-				ERREXIT(cinfo, JERR_FILE_WRITE);
-		}
-		pDest->m_pFile->Flush();
-		/* Make sure we wrote the output file OK */
-		if (pDest->m_pFile->Error()) ERREXIT(cinfo, JERR_FILE_WRITE);
-		return;
-	}
+    static void TermDestination(j_compress_ptr cinfo)
+    {
+        CxFileJpg* pDest = (CxFileJpg*)cinfo->dest;
+        size_t datacount = eBufSize - pDest->free_in_buffer;
+        /* Write any data remaining in the buffer */
+        if (datacount > 0) {
+            if (!pDest->m_pFile->Write(pDest->m_pBuffer,1,datacount))
+                ERREXIT(cinfo, JERR_FILE_WRITE);
+        }
+        pDest->m_pFile->Flush();
+        /* Make sure we wrote the output file OK */
+        if (pDest->m_pFile->Error()) ERREXIT(cinfo, JERR_FILE_WRITE);
+        return;
+    }
 
-	static void InitSource(j_decompress_ptr cinfo)
-	{
-		CxFileJpg* pSource = (CxFileJpg*)cinfo->src;
-		pSource->m_bStartOfFile = TRUE;
-	}
+    static void InitSource(j_decompress_ptr cinfo)
+    {
+        CxFileJpg* pSource = (CxFileJpg*)cinfo->src;
+        pSource->m_bStartOfFile = TRUE;
+    }
 
-	static boolean FillInputBuffer(j_decompress_ptr cinfo)
-	{
-		size_t nbytes;
-		CxFileJpg* pSource = (CxFileJpg*)cinfo->src;
-		nbytes = pSource->m_pFile->Read(pSource->m_pBuffer,1,eBufSize);
-		if (nbytes <= 0){
-			if (pSource->m_bStartOfFile)	//* Treat empty input file as fatal error 
-				ERREXIT(cinfo, JERR_INPUT_EMPTY);
-			WARNMS(cinfo, JWRN_JPEG_EOF);
-			// Insert a fake EOI marker 
-			pSource->m_pBuffer[0] = (JOCTET) 0xFF;
-			pSource->m_pBuffer[1] = (JOCTET) JPEG_EOI;
-			nbytes = 2;
-		}
-		pSource->next_input_byte = pSource->m_pBuffer;
-		pSource->bytes_in_buffer = nbytes;
-		pSource->m_bStartOfFile = FALSE;
-		return TRUE;
-	}
+    static boolean FillInputBuffer(j_decompress_ptr cinfo)
+    {
+        size_t nbytes;
+        CxFileJpg* pSource = (CxFileJpg*)cinfo->src;
+        nbytes = pSource->m_pFile->Read(pSource->m_pBuffer,1,eBufSize);
+        if (nbytes <= 0){
+            if (pSource->m_bStartOfFile)    //* Treat empty input file as fatal error 
+                ERREXIT(cinfo, JERR_INPUT_EMPTY);
+            WARNMS(cinfo, JWRN_JPEG_EOF);
+            // Insert a fake EOI marker 
+            pSource->m_pBuffer[0] = (JOCTET) 0xFF;
+            pSource->m_pBuffer[1] = (JOCTET) JPEG_EOI;
+            nbytes = 2;
+        }
+        pSource->next_input_byte = pSource->m_pBuffer;
+        pSource->bytes_in_buffer = nbytes;
+        pSource->m_bStartOfFile = FALSE;
+        return TRUE;
+    }
 
-	static void SkipInputData(j_decompress_ptr cinfo, long num_bytes)
-	{
-		CxFileJpg* pSource = (CxFileJpg*)cinfo->src;
-		if (num_bytes > 0){
-			while (num_bytes > (int32_t)pSource->bytes_in_buffer){
-				num_bytes -= (int32_t)pSource->bytes_in_buffer;
-				FillInputBuffer(cinfo);
-				// note we assume that fill_input_buffer will never return FALSE,
-				// so suspension need not be handled.
-			}
-			pSource->next_input_byte += (size_t) num_bytes;
-			pSource->bytes_in_buffer -= (size_t) num_bytes;
-		}
-	}
+    static void SkipInputData(j_decompress_ptr cinfo, long num_bytes)
+    {
+        CxFileJpg* pSource = (CxFileJpg*)cinfo->src;
+        if (num_bytes > 0){
+            while (num_bytes > (int32_t)pSource->bytes_in_buffer){
+                num_bytes -= (int32_t)pSource->bytes_in_buffer;
+                FillInputBuffer(cinfo);
+                // note we assume that fill_input_buffer will never return FALSE,
+                // so suspension need not be handled.
+            }
+            pSource->next_input_byte += (size_t) num_bytes;
+            pSource->bytes_in_buffer -= (size_t) num_bytes;
+        }
+    }
 
-	static void TermSource(j_decompress_ptr /*cinfo*/)
-	{
-		return;
-	}
+    static void TermSource(j_decompress_ptr /*cinfo*/)
+    {
+        return;
+    }
 protected:
     CxFile  *m_pFile;
-	uint8_t *m_pBuffer;
-	bool m_bStartOfFile;
+    uint8_t *m_pBuffer;
+    bool m_bStartOfFile;
 };
 
 public:
-	enum CODEC_OPTION
-	{
-		ENCODE_BASELINE = 0x1,
-		ENCODE_ARITHMETIC = 0x2,
-		ENCODE_GRAYSCALE = 0x4,
-		ENCODE_OPTIMIZE = 0x8,
-		ENCODE_PROGRESSIVE = 0x10,
-		ENCODE_LOSSLESS = 0x20,
-		ENCODE_SMOOTHING = 0x40,
-		DECODE_GRAYSCALE = 0x80,
-		DECODE_QUANTIZE = 0x100,
-		DECODE_DITHER = 0x200,
-		DECODE_ONEPASS = 0x400,
-		DECODE_NOSMOOTH = 0x800,
-		ENCODE_SUBSAMPLE_422 = 0x1000,
-		ENCODE_SUBSAMPLE_444 = 0x2000
-	}; 
+    enum CODEC_OPTION
+    {
+        ENCODE_BASELINE = 0x1,
+        ENCODE_ARITHMETIC = 0x2,
+        ENCODE_GRAYSCALE = 0x4,
+        ENCODE_OPTIMIZE = 0x8,
+        ENCODE_PROGRESSIVE = 0x10,
+        ENCODE_LOSSLESS = 0x20,
+        ENCODE_SMOOTHING = 0x40,
+        DECODE_GRAYSCALE = 0x80,
+        DECODE_QUANTIZE = 0x100,
+        DECODE_DITHER = 0x200,
+        DECODE_ONEPASS = 0x400,
+        DECODE_NOSMOOTH = 0x800,
+        ENCODE_SUBSAMPLE_422 = 0x1000,
+        ENCODE_SUBSAMPLE_444 = 0x2000
+    }; 
 
-	int32_t m_nPredictor;
-	int32_t m_nPointTransform;
-	int32_t m_nSmoothing;
-	int32_t m_nQuantize;
-	J_DITHER_MODE m_nDither;
+    int32_t m_nPredictor;
+    int32_t m_nPointTransform;
+    int32_t m_nSmoothing;
+    int32_t m_nQuantize;
+    J_DITHER_MODE m_nDither;
 
 };
 

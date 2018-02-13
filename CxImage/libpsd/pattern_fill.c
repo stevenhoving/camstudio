@@ -32,81 +32,81 @@
 // Pattern fill setting (Photoshop 6.0)
 psd_status psd_get_layer_pattern_fill(psd_context * context, psd_layer_record * layer)
 {
-	psd_layer_pattern_fill * data;
-	psd_int length;
-	psd_int number_items;
-	psd_uint type, key, rootkey;
-	psd_uchar keychar[256];
-	
-	layer->layer_info_type[layer->layer_info_count] = psd_layer_info_type_pattern_fill;
-	layer->layer_type = psd_layer_info_type_pattern_fill;
+    psd_layer_pattern_fill * data;
+    psd_int length;
+    psd_int number_items;
+    psd_uint type, key, rootkey;
+    psd_uchar keychar[256];
+    
+    layer->layer_info_type[layer->layer_info_count] = psd_layer_info_type_pattern_fill;
+    layer->layer_type = psd_layer_info_type_pattern_fill;
 
-	data = (psd_layer_pattern_fill *)psd_malloc(sizeof(psd_layer_pattern_fill));
-	if(data == NULL)
-		return psd_status_malloc_failed;
-	memset(data, 0, sizeof(psd_layer_pattern_fill));
-	layer->layer_info_data[layer->layer_info_count] = (psd_uint)data;
-	layer->layer_info_count ++;
+    data = (psd_layer_pattern_fill *)psd_malloc(sizeof(psd_layer_pattern_fill));
+    if(data == NULL)
+        return psd_status_malloc_failed;
+    memset(data, 0, sizeof(psd_layer_pattern_fill));
+    layer->layer_info_data[layer->layer_info_count] = (psd_uint)data;
+    layer->layer_info_count ++;
 
-	// Version ( = 16 for Photoshop 6.0)
-	if(psd_stream_get_int(context) != 16)
-		return psd_status_pattern_fill_unsupport_version;
+    // Version ( = 16 for Photoshop 6.0)
+    if(psd_stream_get_int(context) != 16)
+        return psd_status_pattern_fill_unsupport_version;
 
-	// Unicode string: name from classID
-	length = psd_stream_get_int(context) * 2;
-	psd_stream_get_null(context, length);
+    // Unicode string: name from classID
+    length = psd_stream_get_int(context) * 2;
+    psd_stream_get_null(context, length);
 
-	// classID: 4 bytes (length), followed either by string or (if length is zero) 4-
-	// byte classID
-	length = psd_stream_get_int(context);
-	if(length == 0)
-		data->id = psd_stream_get_int(context);
-	else
-		psd_stream_get_null(context, length);
+    // classID: 4 bytes (length), followed either by string or (if length is zero) 4-
+    // byte classID
+    length = psd_stream_get_int(context);
+    if(length == 0)
+        data->id = psd_stream_get_int(context);
+    else
+        psd_stream_get_null(context, length);
 
-	// Number of items in descriptor
-	number_items = psd_stream_get_int(context);
+    // Number of items in descriptor
+    number_items = psd_stream_get_int(context);
 
-	/***************************************************************************/
-	while(number_items--)
-	{
-		length = psd_stream_get_int(context);
-		psd_assert(length == 0);
-		if(length == 0)
-			rootkey = psd_stream_get_int(context);
-		else
-		{
-			rootkey = 0;
-			psd_stream_get(context, keychar, length);
-			keychar[length] = 0;
-		}
-		// Type: OSType key
-		type = psd_stream_get_int(context);
+    /***************************************************************************/
+    while(number_items--)
+    {
+        length = psd_stream_get_int(context);
+        psd_assert(length == 0);
+        if(length == 0)
+            rootkey = psd_stream_get_int(context);
+        else
+        {
+            rootkey = 0;
+            psd_stream_get(context, keychar, length);
+            keychar[length] = 0;
+        }
+        // Type: OSType key
+        type = psd_stream_get_int(context);
 
-		switch(rootkey)
-		{
-			case 'Scl ':
-				psd_assert(type == 'UntF');
-				
-				// '#Prc' = percent:
-				key = psd_stream_get_int(context);
-				psd_assert(key == '#Prc');
-								
-				// Actual value (double)
-				data->scale = (psd_int)psd_stream_get_double(context);
-				break;
+        switch(rootkey)
+        {
+            case 'Scl ':
+                psd_assert(type == 'UntF');
+                
+                // '#Prc' = percent:
+                key = psd_stream_get_int(context);
+                psd_assert(key == '#Prc');
+                                
+                // Actual value (double)
+                data->scale = (psd_int)psd_stream_get_double(context);
+                break;
 
-			case 'Ptrn':
-				psd_assert(type == 'Objc');
-				psd_stream_get_object_pattern_info(&data->pattern_info, context);
-				break;
+            case 'Ptrn':
+                psd_assert(type == 'Objc');
+                psd_stream_get_object_pattern_info(&data->pattern_info, context);
+                break;
 
-			default:
-				psd_assert(0);
-				psd_stream_get_object_null(type, context);
-				break;
-		}
-	}
+            default:
+                psd_assert(0);
+                psd_stream_get_object_null(type, context);
+                break;
+        }
+    }
 
-	return psd_status_done;
+    return psd_status_done;
 }

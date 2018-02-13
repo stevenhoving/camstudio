@@ -45,28 +45,28 @@ __declspec(dllexport) HCURSOR getCursor() { return m_hSavedCursor; }
 
 LRESULT CALLBACK LowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-	if (nCode >= 0) {
-		if (WM_LBUTTONDOWN != wParam && WM_LBUTTONUP != wParam) {
-			POINT pt;
-			if (GetCursorPos(&pt)) { // may need to profile this. dunno how long does it take
-				HWND h = WindowFromPoint(pt);
-				DWORD id = GetWindowThreadProcessId(h, NULL);
-				DWORD cid = GetCurrentThreadId();
-				if (id != cid) {
-					if (AttachThreadInput(cid, id, TRUE)) {
-						m_hSavedCursor = GetCursor();
-						AttachThreadInput(cid, id, FALSE);
-					}
-				} else
-					m_hSavedCursor = GetCursor();
-			}
-		}
-		MSLLHOOKSTRUCT mhs = *(LPMSLLHOOKSTRUCT) lParam;
-		mhs.flags = wParam;
-		if (WM_LBUTTONDOWN <= wParam && wParam <= WM_MOUSEHWHEEL)
-			ClickQueue::getInstance().Enqueue(&mhs); // message, pt, time
-	}
-	return ::CallNextHookEx(mouseHookLL, nCode, wParam, lParam);
+    if (nCode >= 0) {
+        if (WM_LBUTTONDOWN != wParam && WM_LBUTTONUP != wParam) {
+            POINT pt;
+            if (GetCursorPos(&pt)) { // may need to profile this. dunno how long does it take
+                HWND h = WindowFromPoint(pt);
+                DWORD id = GetWindowThreadProcessId(h, NULL);
+                DWORD cid = GetCurrentThreadId();
+                if (id != cid) {
+                    if (AttachThreadInput(cid, id, TRUE)) {
+                        m_hSavedCursor = GetCursor();
+                        AttachThreadInput(cid, id, FALSE);
+                    }
+                } else
+                    m_hSavedCursor = GetCursor();
+            }
+        }
+        MSLLHOOKSTRUCT mhs = *(LPMSLLHOOKSTRUCT) lParam;
+        mhs.flags = wParam;
+        if (WM_LBUTTONDOWN <= wParam && wParam <= WM_MOUSEHWHEEL)
+            ClickQueue::getInstance().Enqueue(&mhs); // message, pt, time
+    }
+    return ::CallNextHookEx(mouseHookLL, nCode, wParam, lParam);
 }
 // 2.7
 //LRESULT CALLBACK KeyboardProc(
@@ -75,33 +75,33 @@ LRESULT CALLBACK LowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 //  __in  LPARAM lParam
 //)
 //{
-//	if (code >= 0) {
-//		if (hotkeyWnd) {
-//			LPKBDLLHOOKSTRUCT khs = (LPKBDLLHOOKSTRUCT)lParam;
-//			DWORD down = (wParam == WM_KEYDOWN) || (wParam == WM_SYSKEYDOWN);
-//			ModMap::iterator iter = modMap.find(khs->vkCode);
-//			if (iter != modMap.end()) {
-//				if (down)
-//					mod |= iter->second; // can't use xor :(
-//				else
-//					mod &= ~ iter->second;
-//			}
-//			if (down) { // some key is pressed ... no "else" to make like 'ctrl' itself as a hotkey
-//				HotKeyMap::iterator it = hkm.find(HotKey(khs->vkCode, mod));
-//				if(it != hkm.end()) {
-//					DWORD id = it->second;
-//					::SendNotifyMessage(hotkeyWnd, WM_HOTKEY, id, mod);
-//					if (!PassThrough)
-//						return 1;
-//				}
-//			}
-//		}
-//	}
-//	return ::CallNextHookEx(keyHook, code, wParam, lParam);
+//    if (code >= 0) {
+//        if (hotkeyWnd) {
+//            LPKBDLLHOOKSTRUCT khs = (LPKBDLLHOOKSTRUCT)lParam;
+//            DWORD down = (wParam == WM_KEYDOWN) || (wParam == WM_SYSKEYDOWN);
+//            ModMap::iterator iter = modMap.find(khs->vkCode);
+//            if (iter != modMap.end()) {
+//                if (down)
+//                    mod |= iter->second; // can't use xor :(
+//                else
+//                    mod &= ~ iter->second;
+//            }
+//            if (down) { // some key is pressed ... no "else" to make like 'ctrl' itself as a hotkey
+//                HotKeyMap::iterator it = hkm.find(HotKey(khs->vkCode, mod));
+//                if(it != hkm.end()) {
+//                    DWORD id = it->second;
+//                    ::SendNotifyMessage(hotkeyWnd, WM_HOTKEY, id, mod);
+//                    if (!PassThrough)
+//                        return 1;
+//                }
+//            }
+//        }
+//    }
+//    return ::CallNextHookEx(keyHook, code, wParam, lParam);
 //}
 
 
-//}	// namespace annonymous
+//}    // namespace annonymous
 
 /////////////////////////////////////////////////////////////////////////////
 // DllMain
@@ -109,30 +109,30 @@ LRESULT CALLBACK LowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 /////////////////////////////////////////////////////////////////////////////
 BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD  Reason, LPVOID /*Reserved*/)
 {
-	switch (Reason)
-	{
-	case DLL_PROCESS_ATTACH:
-		hInst = hInstance;
-		// 2.7
-		//modMap[VK_SHIFT] = MOD_SHIFT;
-		//modMap[VK_LSHIFT] = MOD_SHIFT;
-		//modMap[VK_RSHIFT] = MOD_SHIFT;
-		//modMap[VK_MENU] = MOD_ALT;
-		//modMap[VK_LMENU] = MOD_ALT;
-		//modMap[VK_RMENU] = MOD_ALT;
-		//modMap[VK_CONTROL] = MOD_CONTROL;
-		//modMap[VK_LCONTROL] = MOD_CONTROL; // shall we distinguish left & right?
-		//modMap[VK_RCONTROL] = MOD_CONTROL;
-		//// We are always interested in keyboard shortcuts
-		//keyHook = ::SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, hInst, 0);
-		break;
-	case DLL_PROCESS_DETACH:
-		UnhookWindowsHookEx(keyHook);
-		UninstallMyHook(NULL);
-		break;
-	}
+    switch (Reason)
+    {
+    case DLL_PROCESS_ATTACH:
+        hInst = hInstance;
+        // 2.7
+        //modMap[VK_SHIFT] = MOD_SHIFT;
+        //modMap[VK_LSHIFT] = MOD_SHIFT;
+        //modMap[VK_RSHIFT] = MOD_SHIFT;
+        //modMap[VK_MENU] = MOD_ALT;
+        //modMap[VK_LMENU] = MOD_ALT;
+        //modMap[VK_RMENU] = MOD_ALT;
+        //modMap[VK_CONTROL] = MOD_CONTROL;
+        //modMap[VK_LCONTROL] = MOD_CONTROL; // shall we distinguish left & right?
+        //modMap[VK_RCONTROL] = MOD_CONTROL;
+        //// We are always interested in keyboard shortcuts
+        //keyHook = ::SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, hInst, 0);
+        break;
+    case DLL_PROCESS_DETACH:
+        UnhookWindowsHookEx(keyHook);
+        UninstallMyHook(NULL);
+        break;
+    }
 
-	return TRUE;
+    return TRUE;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -142,9 +142,9 @@ BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD  Reason, LPVOID /*Reserved*/)
 /////////////////////////////////////////////////////////////////////////////
 __declspec(dllexport) BOOL InstallMyHook(HWND hWnd, UINT message_to_call)
 {
-	if (mouseHookLL == NULL)
-		SetWindowsHookEx(WH_MOUSE_LL, (HOOKPROC)LowLevelMouseProc, hInst, 0);
-	return TRUE;
+    if (mouseHookLL == NULL)
+        SetWindowsHookEx(WH_MOUSE_LL, (HOOKPROC)LowLevelMouseProc, hInst, 0);
+    return TRUE;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -153,7 +153,7 @@ __declspec(dllexport) BOOL InstallMyHook(HWND hWnd, UINT message_to_call)
 /////////////////////////////////////////////////////////////////////////////
 __declspec(dllexport) BOOL UninstallMyHook(HWND hWnd)
 {
-	if (mouseHookLL && UnhookWindowsHookEx(mouseHookLL)) mouseHookLL = NULL;
-	return TRUE;
+    if (mouseHookLL && UnhookWindowsHookEx(mouseHookLL)) mouseHookLL = NULL;
+    return TRUE;
 }
 

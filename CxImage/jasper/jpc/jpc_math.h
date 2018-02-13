@@ -59,30 +59,30 @@
  * __END_OF_JASPER_LICENSE__
  */
 
-#ifndef	JPC_MATH_H
-#define	JPC_MATH_H
+#ifndef    JPC_MATH_H
+#define    JPC_MATH_H
 
 /******************************************************************************\
 * Includes
 \******************************************************************************/
 
-#include	<assert.h>
+#include    <assert.h>
 
 /******************************************************************************\
 * Macros
 \******************************************************************************/
 
 /* Compute the floor of the quotient of two integers. */
-#define	JPC_FLOORDIV(x, y)	((x) / (y))
+#define    JPC_FLOORDIV(x, y)    ((x) / (y))
 
 /* Compute the ceiling of the quotient of two integers. */
-#define	JPC_CEILDIV(x, y)	(((x) + (y) - 1) / (y))
+#define    JPC_CEILDIV(x, y)    (((x) + (y) - 1) / (y))
 
 /* Compute the floor of (x / 2^y). */
-#define	JPC_FLOORDIVPOW2(x, y)	((x) >> (y))
+#define    JPC_FLOORDIVPOW2(x, y)    ((x) >> (y))
 
 /* Compute the ceiling of (x / 2^y). */
-#define	JPC_CEILDIVPOW2(x, y)	(((x) + (1 << (y)) - 1) >> (y))
+#define    JPC_CEILDIVPOW2(x, y)    (((x) + (1 << (y)) - 1) >> (y))
 
 /******************************************************************************\
 * Functions.

@@ -9,7 +9,7 @@
 #endif // _MSC_VER > 1000
 
 #ifndef __AFXWIN_H__
-	#error include 'stdafx.h' before including this file for PCH
+    #error include 'stdafx.h' before including this file for PCH
 #endif
 
 #include "resource.h"       // main symbols
@@ -18,7 +18,7 @@
 #define ENT_LANGID _T("LanguageID")
 #define ENT_LANGINI _T("LangINI")
 #define SEC_SETTINGS _T("Language")
-#define STANDARD_LANGID 0x09	// English
+#define STANDARD_LANGID 0x09    // English
 
 /////////////////////////////////////////////////////////////////////////////
 // CPlayplusApp:
@@ -28,26 +28,26 @@
 class CPlayplusApp : public CWinApp
 {
 public:
-	CPlayplusApp();
+    CPlayplusApp();
 
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CPlayplusApp)
-	public:
-	virtual BOOL InitInstance();
-	virtual int ExitInstance();
-	//}}AFX_VIRTUAL
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CPlayplusApp)
+    public:
+    virtual BOOL InitInstance();
+    virtual int ExitInstance();
+    //}}AFX_VIRTUAL
 
 // Implementation
-	//{{AFX_MSG(CPlayplusApp)
-	afx_msg void OnAppAbout();
-		// NOTE - the ClassWizard will add and remove member functions here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CPlayplusApp)
+    afx_msg void OnAppAbout();
+        // NOTE - the ClassWizard will add and remove member functions here.
+        //    DO NOT EDIT what you see in these blocks of generated code !
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 
 private:
-	LANGID CurLangID;
+    LANGID CurLangID;
     BOOL LoadLangIDDLL(LANGID LangID);
 };
 

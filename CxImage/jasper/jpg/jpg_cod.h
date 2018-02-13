@@ -76,7 +76,7 @@
 * Constants.
 \******************************************************************************/
 
-#define	JPG_MAGIC	0xffd8
+#define    JPG_MAGIC    0xffd8
 #define JPG_MAGICLEN 2
 
 #endif

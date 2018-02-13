@@ -19,34 +19,34 @@
 class CPicture
 {
 public:
-	CPicture();
-	virtual ~CPicture();
+    CPicture();
+    virtual ~CPicture();
 
-	BOOL Load(CString sFilePathName);
-	BOOL LoadFromFile(FILE* fptr);
-	BOOL SaveToFile(FILE* fptr);
-	BOOL CopyToPicture(CPicture* dstPic, CString exchangeFile);
+    BOOL Load(CString sFilePathName);
+    BOOL LoadFromFile(FILE* fptr);
+    BOOL SaveToFile(FILE* fptr);
+    BOOL CopyToPicture(CPicture* dstPic, CString exchangeFile);
 
-	IPicture* IPicturePtr()		{return m_IPicture;}
-	LONG Height() const			{return m_Height;}
-	LONG Width() const			{return m_Width;}
-
-protected:
-	void FreePictureData();
-	BOOL Load(UINT ResourceName, LPCTSTR ResourceType);
-	BOOL LoadPictureData(BYTE* pBuffer, int nSize);
-	BOOL SaveAsBitmap(CString sFilePathName);
-	BOOL Show(CDC* pDC, CPoint LeftTop, CPoint WidthHeight, int MagnifyX, int MagnifyY);
-	BOOL Show(CDC* pDC, CRect DrawRect);
-	BOOL ShowBitmapResource(CDC* pDC, const int BMPResource, CPoint LeftTop);
-	BOOL UpdateSizeOnDC(CDC* pDC);
+    IPicture* IPicturePtr()        {return m_IPicture;}
+    LONG Height() const            {return m_Height;}
+    LONG Width() const            {return m_Width;}
 
 protected:
-	IPicture* m_IPicture; // Same As LPPICTURE (typedef IPicture __RPC_FAR *LPPICTURE)
+    void FreePictureData();
+    BOOL Load(UINT ResourceName, LPCTSTR ResourceType);
+    BOOL LoadPictureData(BYTE* pBuffer, int nSize);
+    BOOL SaveAsBitmap(CString sFilePathName);
+    BOOL Show(CDC* pDC, CPoint LeftTop, CPoint WidthHeight, int MagnifyX, int MagnifyY);
+    BOOL Show(CDC* pDC, CRect DrawRect);
+    BOOL ShowBitmapResource(CDC* pDC, const int BMPResource, CPoint LeftTop);
+    BOOL UpdateSizeOnDC(CDC* pDC);
 
-	LONG      m_Height; // Height (In Pixels Ignor What Current Device Context Uses)
-	LONG      m_Width;  // Width (In Pixels Ignor What Current Device Context Uses)
-	LONG      m_Weight; // Size Of The Image Object In Bytes (File OR Resource)
+protected:
+    IPicture* m_IPicture; // Same As LPPICTURE (typedef IPicture __RPC_FAR *LPPICTURE)
+
+    LONG      m_Height; // Height (In Pixels Ignor What Current Device Context Uses)
+    LONG      m_Width;  // Width (In Pixels Ignor What Current Device Context Uses)
+    LONG      m_Weight; // Size Of The Image Object In Bytes (File OR Resource)
 };
 
 #endif // !defined(AFX_PICTURE_H__COPYFREE_BY_YOVAV_GAD__SOURCES_AT_SUPERMAIN_DOT_COM__INCLUDED_)

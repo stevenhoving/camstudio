@@ -15,37 +15,37 @@ class CAutoSearchDlg : public CDialog
 {
 // Construction
 public:
-	CAutoSearchDlg(CWnd* pParent = NULL);   // standard constructor
-	void SetVarText(CString textstr);
-	void SetVarTextLine2(CString textstr);
-	void SetButtonEnable(BOOL enable);
+    CAutoSearchDlg(CWnd* pParent = NULL);   // standard constructor
+    void SetVarText(CString textstr);
+    void SetVarTextLine2(CString textstr);
+    void SetButtonEnable(BOOL enable);
 
 // Dialog Data
-	//{{AFX_DATA(CAutoSearchDlg)
-	enum { IDD = IDD_AUTOSEARCH };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+    //{{AFX_DATA(CAutoSearchDlg)
+    enum { IDD = IDD_AUTOSEARCH };
+        // NOTE: the ClassWizard will add data members here
+    //}}AFX_DATA
 
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CAutoSearchDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CAutoSearchDlg)
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
 // Implementation
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CAutoSearchDlg)
-	afx_msg void OnCloseDialog();
-	afx_msg void OnClose();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    // Generated message map functions
+    //{{AFX_MSG(CAutoSearchDlg)
+    afx_msg void OnCloseDialog();
+    afx_msg void OnClose();
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 private:
-	CStatic m_ctrlStaticText1;
-	CStatic m_ctrlStaticText2;
-	CButton m_ctrlButtonClose;
+    CStatic m_ctrlStaticText1;
+    CStatic m_ctrlStaticText2;
+    CButton m_ctrlButtonClose;
 };
 
 //{{AFX_INSERT_LOCATION}}

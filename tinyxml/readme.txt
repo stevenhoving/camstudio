@@ -6,7 +6,7 @@ TinyXML is a simple, small, C++ XML parser that can be easily
 integrated into other programs.
 
 <h2> What it does. </h2>
-	
+    
 In brief, TinyXML parses an XML document, and builds from that a 
 Document Object Model (DOM) that can be read, modified, and saved.
 
@@ -59,9 +59,9 @@ complete XML needs, TinyXML is not the parser for you.
 The following DTD syntax will not parse at this time in TinyXML:
 
 @verbatim
-	<!DOCTYPE Archiv [
-	 <!ELEMENT Comment (#PCDATA)>
-	]>
+    <!DOCTYPE Archiv [
+     <!ELEMENT Comment (#PCDATA)>
+    ]>
 @endverbatim
 
 because TinyXML sees this as a !DOCTYPE node with an illegally 
@@ -93,7 +93,7 @@ TinyXML projects you may find useful! (Descriptions provided by the projects.)
      XPath syntax decoder, written in C++.</li>
 <li> <b>TinyXML++</b> (http://code.google.com/p/ticpp/). TinyXML++ is a completely new 
      interface to TinyXML that uses MANY of the C++ strengths. Templates, 
-	 exceptions, and much better error handling.</li>
+     exceptions, and much better error handling.</li>
 </ul>
 
 <h2> Features </h2>
@@ -111,7 +111,7 @@ all use the 'const char*' form for input.
 
 Use the compile time #define:
 
-	TIXML_USE_STL
+    TIXML_USE_STL
 
 to compile one version or the other. This can be passed by the compiler,
 or set as the first line of "tinyxml.h".
@@ -134,16 +134,16 @@ can be forced to always use one encoding.
 
 TinyXML will assume Legacy Mode until one of the following occurs:
 <ol>
-	<li> If the non-standard but common "UTF-8 lead bytes" (0xef 0xbb 0xbf)
-		 begin the file or data stream, TinyXML will read it as UTF-8. </li>
-	<li> If the declaration tag is read, and it has an encoding="UTF-8", then
-		 TinyXML will read it as UTF-8. </li>
-	<li> If the declaration tag is read, and it has no encoding specified, then TinyXML will 
-		 read it as UTF-8. </li>
-	<li> If the declaration tag is read, and it has an encoding="something else", then TinyXML 
-		 will read it as Legacy Mode. In legacy mode, TinyXML will work as it did before. It's 
-		 not clear what that mode does exactly, but old content should keep working.</li>
-	<li> Until one of the above criteria is met, TinyXML runs in Legacy Mode.</li>
+    <li> If the non-standard but common "UTF-8 lead bytes" (0xef 0xbb 0xbf)
+         begin the file or data stream, TinyXML will read it as UTF-8. </li>
+    <li> If the declaration tag is read, and it has an encoding="UTF-8", then
+         TinyXML will read it as UTF-8. </li>
+    <li> If the declaration tag is read, and it has no encoding specified, then TinyXML will 
+         read it as UTF-8. </li>
+    <li> If the declaration tag is read, and it has an encoding="something else", then TinyXML 
+         will read it as Legacy Mode. In legacy mode, TinyXML will work as it did before. It's 
+         not clear what that mode does exactly, but old content should keep working.</li>
+    <li> Until one of the above criteria is met, TinyXML runs in Legacy Mode.</li>
 </ol>
 
 What happens if the encoding is incorrectly set or detected? TinyXML will try
@@ -194,18 +194,18 @@ TinyXML recognizes the pre-defined "character entities", meaning special
 characters. Namely:
 
 @verbatim
-	&amp;	&
-	&lt;	<
-	&gt;	>
-	&quot;	"
-	&apos;	'
+    &amp;    &
+    &lt;    <
+    &gt;    >
+    &quot;    "
+    &apos;    '
 @endverbatim
 
 These are recognized when the XML document is read, and translated to there
 UTF-8 equivalents. For instance, text with the XML of:
 
 @verbatim
-	Far &amp; Away
+    Far &amp; Away
 @endverbatim
 
 will have the Value() of "Far & Away" when queried from the TiXmlText object,
@@ -220,61 +220,61 @@ The syntax "&#xA0;" or "&#160;" are both to the non-breaking space characher.
 TinyXML can print output in several different ways that all have strengths and limitations.
 
 - Print( FILE* ). Output to a std-C stream, which includes all C files as well as stdout.
-	- "Pretty prints", but you don't have control over printing options.
-	- The output is streamed directly to the FILE object, so there is no memory overhead
-	  in the TinyXML code.
-	- used by Print() and SaveFile()
+    - "Pretty prints", but you don't have control over printing options.
+    - The output is streamed directly to the FILE object, so there is no memory overhead
+      in the TinyXML code.
+    - used by Print() and SaveFile()
 
 - operator<<. Output to a c++ stream.
-	- Integrates with standart C++ iostreams.
-	- Outputs in "network printing" mode without line breaks. Good for network transmission
-	  and moving XML between C++ objects, but hard for a human to read.
+    - Integrates with standart C++ iostreams.
+    - Outputs in "network printing" mode without line breaks. Good for network transmission
+      and moving XML between C++ objects, but hard for a human to read.
 
 - TiXmlPrinter. Output to a std::string or memory buffer.
-	- API is less concise
-	- Future printing options will be put here.
-	- Printing may change slightly in future versions as it is refined and expanded.
+    - API is less concise
+    - Future printing options will be put here.
+    - Printing may change slightly in future versions as it is refined and expanded.
 
 <h3> Streams </h3>
 With TIXML_USE_STL on TinyXML supports C++ streams (operator <<,>>) streams as well
 as C (FILE*) streams. There are some differences that you may need to be aware of.
 
 C style output:
-	- based on FILE*
-	- the Print() and SaveFile() methods
+    - based on FILE*
+    - the Print() and SaveFile() methods
 
-	Generates formatted output, with plenty of white space, intended to be as 
-	human-readable as possible. They are very fast, and tolerant of ill formed 
-	XML documents. For example, an XML document that contains 2 root elements 
-	and 2 declarations, will still print.
+    Generates formatted output, with plenty of white space, intended to be as 
+    human-readable as possible. They are very fast, and tolerant of ill formed 
+    XML documents. For example, an XML document that contains 2 root elements 
+    and 2 declarations, will still print.
 
 C style input:
-	- based on FILE*
-	- the Parse() and LoadFile() methods
+    - based on FILE*
+    - the Parse() and LoadFile() methods
 
-	A fast, tolerant read. Use whenever you don't need the C++ streams.
+    A fast, tolerant read. Use whenever you don't need the C++ streams.
 
 C++ style output:
-	- based on std::ostream
-	- operator<<
+    - based on std::ostream
+    - operator<<
 
-	Generates condensed output, intended for network transmission rather than
-	readability. Depending on your system's implementation of the ostream class,
-	these may be somewhat slower. (Or may not.) Not tolerant of ill formed XML:
-	a document should contain the correct one root element. Additional root level
-	elements will not be streamed out.
+    Generates condensed output, intended for network transmission rather than
+    readability. Depending on your system's implementation of the ostream class,
+    these may be somewhat slower. (Or may not.) Not tolerant of ill formed XML:
+    a document should contain the correct one root element. Additional root level
+    elements will not be streamed out.
 
 C++ style input:
-	- based on std::istream
-	- operator>>
+    - based on std::istream
+    - operator>>
 
-	Reads XML from a stream, making it useful for network transmission. The tricky
-	part is knowing when the XML document is complete, since there will almost
-	certainly be other data in the stream. TinyXML will assume the XML data is
-	complete after it reads the root element. Put another way, documents that
-	are ill-constructed with more than one root element will not read correctly.
-	Also note that operator>> is somewhat slower than Parse, due to both 
-	implementation of the STL and limitations of TinyXML.
+    Reads XML from a stream, making it useful for network transmission. The tricky
+    part is knowing when the XML document is complete, since there will almost
+    certainly be other data in the stream. TinyXML will assume the XML data is
+    complete after it reads the root element. Put another way, documents that
+    are ill-constructed with more than one root element will not read correctly.
+    Also note that operator>> is somewhat slower than Parse, due to both 
+    implementation of the STL and limitations of TinyXML.
 
 <h3> White space </h3>
 The world simply does not agree on whether white space should be kept, or condensed.
@@ -303,16 +303,16 @@ generate a lot of code like:
 TiXmlElement* root = document.FirstChildElement( "Document" );
 if ( root )
 {
-	TiXmlElement* element = root->FirstChildElement( "Element" );
-	if ( element )
-	{
-		TiXmlElement* child = element->FirstChildElement( "Child" );
-		if ( child )
-		{
-			TiXmlElement* child2 = child->NextSiblingElement( "Child" );
-			if ( child2 )
-			{
-				// Finally do something useful.
+    TiXmlElement* element = root->FirstChildElement( "Element" );
+    if ( element )
+    {
+        TiXmlElement* child = element->FirstChildElement( "Child" );
+        if ( child )
+        {
+            TiXmlElement* child2 = child->NextSiblingElement( "Child" );
+            if ( child2 )
+            {
+                // Finally do something useful.
 @endverbatim
 
 Handles have been introduced to clean this up. Using the TiXmlHandle class,
@@ -323,7 +323,7 @@ TiXmlHandle docHandle( &document );
 TiXmlElement* child2 = docHandle.FirstChild( "Document" ).FirstChild( "Element" ).Child( "Child", 1 ).ToElement();
 if ( child2 )
 {
-	// do something useful
+    // do something useful
 @endverbatim
 
 Which is much easier to deal with. See TiXmlHandle for more information.
@@ -358,9 +358,9 @@ hard coded.
 
 <h3>Windows project file for VC6</h3>
 <ul>
-<li>tinyxml:		tinyxml library, non-STL </li>
-<li>tinyxmlSTL:		tinyxml library, STL </li>
-<li>tinyXmlTest:	test app, non-STL </li>
+<li>tinyxml:        tinyxml library, non-STL </li>
+<li>tinyxmlSTL:        tinyxml library, STL </li>
+<li>tinyXmlTest:    test app, non-STL </li>
 <li>tinyXmlTestSTL: test app, STL </li>
 </ul>
 
@@ -387,19 +387,19 @@ RTTI for TinyXML.
 
 An example is probably the best way to go. Take:
 @verbatim
-	<?xml version="1.0" standalone=no>
-	<!-- Our to do list data -->
-	<ToDo>
-		<Item priority="1"> Go to the <bold>Toy store!</bold></Item>
-		<Item priority="2"> Do bills</Item>
-	</ToDo>
+    <?xml version="1.0" standalone=no>
+    <!-- Our to do list data -->
+    <ToDo>
+        <Item priority="1"> Go to the <bold>Toy store!</bold></Item>
+        <Item priority="2"> Do bills</Item>
+    </ToDo>
 @endverbatim
 
 Its not much of a To Do list, but it will do. To read this file 
 (say "demo.xml") you would create a document, and parse it in:
 @verbatim
-	TiXmlDocument doc( "demo.xml" );
-	doc.LoadFile();
+    TiXmlDocument doc( "demo.xml" );
+    doc.LoadFile();
 @endverbatim
 
 And its ready to go. Now lets look at some lines and how they 
@@ -409,63 +409,63 @@ relate to the DOM.
 <?xml version="1.0" standalone=no>
 @endverbatim
 
-	The first line is a declaration, and gets turned into the
-	TiXmlDeclaration class. It will be the first child of the
-	document node.
-	
-	This is the only directive/special tag parsed by TinyXML.
-	Generally directive tags are stored in TiXmlUnknown so the 
-	commands wont be lost when it is saved back to disk.
+    The first line is a declaration, and gets turned into the
+    TiXmlDeclaration class. It will be the first child of the
+    document node.
+    
+    This is the only directive/special tag parsed by TinyXML.
+    Generally directive tags are stored in TiXmlUnknown so the 
+    commands wont be lost when it is saved back to disk.
 
 @verbatim
 <!-- Our to do list data -->
 @endverbatim
 
-	A comment. Will become a TiXmlComment object.
+    A comment. Will become a TiXmlComment object.
 
 @verbatim
 <ToDo>
 @endverbatim
 
-	The "ToDo" tag defines a TiXmlElement object. This one does not have 
-	any attributes, but does contain 2 other elements.
+    The "ToDo" tag defines a TiXmlElement object. This one does not have 
+    any attributes, but does contain 2 other elements.
 
 @verbatim
 <Item priority="1"> 
 @endverbatim
 
-	Creates another TiXmlElement which is a child of the "ToDo" element. 
-	This element has 1 attribute, with the name "priority" and the value 
-	"1".
+    Creates another TiXmlElement which is a child of the "ToDo" element. 
+    This element has 1 attribute, with the name "priority" and the value 
+    "1".
 
 @verbatim
 Go to the
 @endverbatim 
 
-	A TiXmlText. This is a leaf node and cannot contain other nodes. 
-	It is a child of the "Item" TiXmlElement.
+    A TiXmlText. This is a leaf node and cannot contain other nodes. 
+    It is a child of the "Item" TiXmlElement.
 
 @verbatim
 <bold>
 @endverbatim
 
-	
-	Another TiXmlElement, this one a child of the "Item" element.
+    
+    Another TiXmlElement, this one a child of the "Item" element.
 
 Etc.
 
 Looking at the entire object tree, you end up with:
 @verbatim
-TiXmlDocument					"demo.xml"
-	TiXmlDeclaration			"version='1.0'" "standalone=no"
-	TiXmlComment				" Our to do list data"
-	TiXmlElement				"ToDo"
-		TiXmlElement			"Item" Attribtutes: priority = 1
-			TiXmlText			"Go to the "
-			TiXmlElement		"bold"
-				TiXmlText		"Toy store!"
-		TiXmlElement			"Item" Attributes: priority=2
-			TiXmlText			"Do bills"
+TiXmlDocument                    "demo.xml"
+    TiXmlDeclaration            "version='1.0'" "standalone=no"
+    TiXmlComment                " Our to do list data"
+    TiXmlElement                "ToDo"
+        TiXmlElement            "Item" Attribtutes: priority = 1
+            TiXmlText            "Go to the "
+            TiXmlElement        "bold"
+                TiXmlText        "Toy store!"
+        TiXmlElement            "Item" Attributes: priority=2
+            TiXmlText            "Do bills"
 @endverbatim
 
 <h2> Documentation </h2>

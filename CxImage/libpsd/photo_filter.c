@@ -32,43 +32,43 @@
 
 psd_status psd_get_layer_photo_filter(psd_context * context, psd_layer_record * layer)
 {
-	psd_layer_photo_filter * data;
-	
-	layer->layer_info_type[layer->layer_info_count] = psd_layer_info_type_photo_filter;
-	layer->layer_type = psd_layer_type_photo_filter;
+    psd_layer_photo_filter * data;
+    
+    layer->layer_info_type[layer->layer_info_count] = psd_layer_info_type_photo_filter;
+    layer->layer_type = psd_layer_type_photo_filter;
 
-	data = (psd_layer_photo_filter *)psd_malloc(sizeof(psd_layer_photo_filter));
-	if(data == NULL)
-		return psd_status_malloc_failed;
-	memset(data, 0, sizeof(psd_layer_photo_filter));
-	layer->layer_info_data[layer->layer_info_count] = (psd_uint)data;
-	layer->layer_info_count ++;
+    data = (psd_layer_photo_filter *)psd_malloc(sizeof(psd_layer_photo_filter));
+    if(data == NULL)
+        return psd_status_malloc_failed;
+    memset(data, 0, sizeof(psd_layer_photo_filter));
+    layer->layer_info_data[layer->layer_info_count] = (psd_uint)data;
+    layer->layer_info_count ++;
 
-	// Version ( = 3)
-	if(psd_stream_get_short(context) != 3)
-		return psd_status_photo_filter_unsupport_version;
+    // Version ( = 3)
+    if(psd_stream_get_short(context) != 3)
+        return psd_status_photo_filter_unsupport_version;
 
-	// 4 bytes each for XYZ color
-	data->x_color = psd_stream_get_int(context) >> 8;
-	data->y_color = psd_stream_get_int(context) >> 8;
-	data->z_color = psd_stream_get_int(context) >> 8;
+    // 4 bytes each for XYZ color
+    data->x_color = psd_stream_get_int(context) >> 8;
+    data->y_color = psd_stream_get_int(context) >> 8;
+    data->z_color = psd_stream_get_int(context) >> 8;
 
-	// Density
-	data->density = psd_stream_get_int(context);
+    // Density
+    data->density = psd_stream_get_int(context);
 
-	// Preserve Luminosity
-	data->preserve_luminosity = psd_stream_get_bool(context);
+    // Preserve Luminosity
+    data->preserve_luminosity = psd_stream_get_bool(context);
 
-	// for padding
-	psd_stream_get_char(context);
+    // for padding
+    psd_stream_get_char(context);
 
-	layer->adjustment_valid = psd_true;
+    layer->adjustment_valid = psd_true;
 
-	return psd_status_done;
+    return psd_status_done;
 }
 
 psd_bool psd_layer_blend_photo_filter(psd_context * context, psd_layer_record * layer, psd_rect * dst_rect)
 {
-	return psd_false;
+    return psd_false;
 }
 

@@ -86,11 +86,11 @@
 
 typedef struct {
 
-	/* The most probable symbol (MPS). */
-	int mps;
+    /* The most probable symbol (MPS). */
+    int mps;
 
-	/* The state index. */
-	int_fast16_t ind;
+    /* The state index. */
+    int_fast16_t ind;
 
 } jpc_mqctx_t;
 
@@ -100,17 +100,17 @@ typedef struct {
 
 typedef struct jpc_mqstate_s {
 
-	/* The Qe value. */
-	uint_fast16_t qeval;
+    /* The Qe value. */
+    uint_fast16_t qeval;
 
-	/* The MPS. */
-	int mps;
+    /* The MPS. */
+    int mps;
 
-	/* The NMPS state. */
-	struct jpc_mqstate_s *nmps;
+    /* The NMPS state. */
+    struct jpc_mqstate_s *nmps;
 
-	/* The NLPS state. */
-	struct jpc_mqstate_s *nlps;
+    /* The NLPS state. */
+    struct jpc_mqstate_s *nlps;
 
 } jpc_mqstate_t;
 

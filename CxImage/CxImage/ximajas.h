@@ -1,6 +1,6 @@
 /*
- * File:	ximajas.h
- * Purpose:	Jasper Image Class Loader and Writer
+ * File:    ximajas.h
+ * Purpose:    Jasper Image Class Loader and Writer
  */
 /* ==========================================================
  * CxImageJAS (c) 12/Apr/2003 Davide Pizzolato - www.xdp.it
@@ -25,61 +25,61 @@
 class CxImageJAS: public CxImage
 {
 public:
-	CxImageJAS(): CxImage((uint32_t)0) {}	// <vho> cast to uint32_t
+    CxImageJAS(): CxImage((uint32_t)0) {}    // <vho> cast to uint32_t
 
-//	bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,0);}
-//	bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,0);}
-	bool Decode(CxFile * hFile, uint32_t imagetype = 0);
-	bool Decode(FILE *hFile, uint32_t imagetype = 0) { CxIOFile file(hFile); return Decode(&file,imagetype); }
+//    bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,0);}
+//    bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,0);}
+    bool Decode(CxFile * hFile, uint32_t imagetype = 0);
+    bool Decode(FILE *hFile, uint32_t imagetype = 0) { CxIOFile file(hFile); return Decode(&file,imagetype); }
 
 #if CXIMAGE_SUPPORT_ENCODE
-	bool Encode(CxFile * hFile, uint32_t imagetype = 0);
-	bool Encode(FILE *hFile, uint32_t imagetype = 0) { CxIOFile file(hFile); return Encode(&file,imagetype); }
+    bool Encode(CxFile * hFile, uint32_t imagetype = 0);
+    bool Encode(FILE *hFile, uint32_t imagetype = 0) { CxIOFile file(hFile); return Encode(&file,imagetype); }
 #endif // CXIMAGE_SUPPORT_ENCODE
 protected:
 
-	class CxFileJas
-	{
-	public:
-		CxFileJas(CxFile* pFile,jas_stream_t *stream)
-		{
-			if (stream->obj_) jas_free(stream->obj_);
-			stream->obj_ = pFile;
+    class CxFileJas
+    {
+    public:
+        CxFileJas(CxFile* pFile,jas_stream_t *stream)
+        {
+            if (stream->obj_) jas_free(stream->obj_);
+            stream->obj_ = pFile;
 
-			// <vho> - cannot set the stream->ops_->functions here,
-			// because this overwrites a static structure in the Jasper library.
-			// This structure is used by Jasper for internal operations too, e.g. tempfile.
-			// However the ops_ pointer in the stream can be overwritten.
+            // <vho> - cannot set the stream->ops_->functions here,
+            // because this overwrites a static structure in the Jasper library.
+            // This structure is used by Jasper for internal operations too, e.g. tempfile.
+            // However the ops_ pointer in the stream can be overwritten.
 
-			//stream->ops_->close_ = JasClose;
-			//stream->ops_->read_  = JasRead;
-			//stream->ops_->seek_  = JasSeek;
-			//stream->ops_->write_ = JasWrite;
+            //stream->ops_->close_ = JasClose;
+            //stream->ops_->read_  = JasRead;
+            //stream->ops_->seek_  = JasSeek;
+            //stream->ops_->write_ = JasWrite;
 
-			jas_stream_CxFile.close_ = JasClose;
-			jas_stream_CxFile.read_  = JasRead;
-			jas_stream_CxFile.seek_  = JasSeek;
-			jas_stream_CxFile.write_ = JasWrite;
+            jas_stream_CxFile.close_ = JasClose;
+            jas_stream_CxFile.read_  = JasRead;
+            jas_stream_CxFile.seek_  = JasSeek;
+            jas_stream_CxFile.write_ = JasWrite;
 
-			stream->ops_ = &jas_stream_CxFile;
+            stream->ops_ = &jas_stream_CxFile;
 
-			// <vho> - end
-		}
-		static int32_t JasRead(jas_stream_obj_t *obj, char *buf, int32_t cnt)
-		{		return ((CxFile*)obj)->Read(buf,1,cnt); }
-		static int32_t JasWrite(jas_stream_obj_t *obj, char *buf, int32_t cnt)
-		{		return ((CxFile*)obj)->Write(buf,1,cnt); }
-		static long JasSeek(jas_stream_obj_t *obj, long offset, int32_t origin)
-		{		return ((CxFile*)obj)->Seek(offset,origin); }
-		static int32_t JasClose(jas_stream_obj_t * /*obj*/)
-		{		return 1; }
+            // <vho> - end
+        }
+        static int32_t JasRead(jas_stream_obj_t *obj, char *buf, int32_t cnt)
+        {        return ((CxFile*)obj)->Read(buf,1,cnt); }
+        static int32_t JasWrite(jas_stream_obj_t *obj, char *buf, int32_t cnt)
+        {        return ((CxFile*)obj)->Write(buf,1,cnt); }
+        static long JasSeek(jas_stream_obj_t *obj, long offset, int32_t origin)
+        {        return ((CxFile*)obj)->Seek(offset,origin); }
+        static int32_t JasClose(jas_stream_obj_t * /*obj*/)
+        {        return 1; }
 
-	// <vho>
+    // <vho>
 private:
-		jas_stream_ops_t jas_stream_CxFile;
-	// <vho> - end
+        jas_stream_ops_t jas_stream_CxFile;
+    // <vho> - end
 
-	};
+    };
 
 };
 

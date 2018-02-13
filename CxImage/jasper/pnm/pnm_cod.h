@@ -81,31 +81,31 @@
 \******************************************************************************/
 
 /* Magic numbers. */
-#define PNM_MAGIC_TXTPBM	0x5031 /* Text Portable BitMap (P1) */
-#define PNM_MAGIC_TXTPGM	0x5032 /* Text Portable GrayMap (P2) */
-#define PNM_MAGIC_TXTPPM	0x5033 /* Text Portable PixMap (P3) */
-#define PNM_MAGIC_BINPBM	0x5034 /* Binary Portable BitMap (P4) */
-#define PNM_MAGIC_BINPGM	0x5035 /* Binary Portable GrayMap (P5) */
-#define PNM_MAGIC_BINPPM	0x5036 /* Binary Portable PixMap (P6) */
-#define	PNM_MAGIC_PAM		0x5037 /* PAM (P7) */
+#define PNM_MAGIC_TXTPBM    0x5031 /* Text Portable BitMap (P1) */
+#define PNM_MAGIC_TXTPGM    0x5032 /* Text Portable GrayMap (P2) */
+#define PNM_MAGIC_TXTPPM    0x5033 /* Text Portable PixMap (P3) */
+#define PNM_MAGIC_BINPBM    0x5034 /* Binary Portable BitMap (P4) */
+#define PNM_MAGIC_BINPGM    0x5035 /* Binary Portable GrayMap (P5) */
+#define PNM_MAGIC_BINPPM    0x5036 /* Binary Portable PixMap (P6) */
+#define    PNM_MAGIC_PAM        0x5037 /* PAM (P7) */
 
 /* Type of image data. */
-#define PNM_TYPE_PPM	0 /* PixMap */
-#define PNM_TYPE_PGM	1 /* GrayMap */
-#define PNM_TYPE_PBM	2 /* BitMap */
+#define PNM_TYPE_PPM    0 /* PixMap */
+#define PNM_TYPE_PGM    1 /* GrayMap */
+#define PNM_TYPE_PBM    2 /* BitMap */
 
 /* Format of image data. */
-#define PNM_FMT_TXT	0 /* Text */
-#define PNM_FMT_BIN	1 /* Binary */
+#define PNM_FMT_TXT    0 /* Text */
+#define PNM_FMT_BIN    1 /* Binary */
 
-#define	PNM_MAXLINELEN	79
+#define    PNM_MAXLINELEN    79
 
-#define	PNM_TUPLETYPE_UNKNOWN	0
-#define	PNM_TUPLETYPE_MONO	1
-#define	PNM_TUPLETYPE_GRAY	2
-#define	PNM_TUPLETYPE_GRAYA	3
-#define	PNM_TUPLETYPE_RGB	4
-#define	PNM_TUPLETYPE_RGBA	5
+#define    PNM_TUPLETYPE_UNKNOWN    0
+#define    PNM_TUPLETYPE_MONO    1
+#define    PNM_TUPLETYPE_GRAY    2
+#define    PNM_TUPLETYPE_GRAYA    3
+#define    PNM_TUPLETYPE_RGB    4
+#define    PNM_TUPLETYPE_RGBA    5
 
 /******************************************************************************\
 * Types.
@@ -115,26 +115,26 @@
 
 typedef struct {
 
-	int magic;
-	/* The magic number. */
+    int magic;
+    /* The magic number. */
 
-	int width;
-	/* The image width. */
+    int width;
+    /* The image width. */
 
-	int height;
-	/* The image height. */
+    int height;
+    /* The image height. */
 
-	int numcmpts;
+    int numcmpts;
 
-	int maxval;
-	/* The maximum allowable sample value. */
+    int maxval;
+    /* The maximum allowable sample value. */
 
 #if 0
-	int tupletype;
+    int tupletype;
 #endif
 
-	bool sgnd;
-	/* The sample data is signed. */
+    bool sgnd;
+    /* The sample data is signed. */
 
 } pnm_hdr_t;
 
@@ -151,6 +151,6 @@ int pnm_fmt(uint_fast16_t magic);
 int pnm_maxvaltodepth(uint_fast32_t maxval);
 /* Determine depth (i.e., precision) from maximum value. */
 
-#define	PNM_ONES(n) \
-	(((n) < 32) ? ((1UL << (n)) - 1) : 0xffffffffUL)
+#define    PNM_ONES(n) \
+    (((n) < 32) ? ((1UL << (n)) - 1) : 0xffffffffUL)
 #endif

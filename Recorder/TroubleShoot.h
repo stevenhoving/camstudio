@@ -15,33 +15,33 @@ class CTroubleShootDlg : public CDialog
 {
 // Construction
 public:
-	CTroubleShootDlg(CWnd* pParent = NULL);   // standard constructor
+    CTroubleShootDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
-	//{{AFX_DATA(CTroubleShootDlg)
-	enum { IDD = IDD_TROUBLESHOOT };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+    //{{AFX_DATA(CTroubleShootDlg)
+    enum { IDD = IDD_TROUBLESHOOT };
+        // NOTE: the ClassWizard will add data members here
+    //}}AFX_DATA
 
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CTroubleShootDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CTroubleShootDlg)
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
 // Implementation
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CTroubleShootDlg)
-	virtual void OnOK();
-	virtual BOOL OnInitDialog();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    // Generated message map functions
+    //{{AFX_MSG(CTroubleShootDlg)
+    virtual void OnOK();
+    virtual BOOL OnInitDialog();
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 private:
-	CButton m_ctrlButtonBehavior1;
-	CButton m_ctrlButtonBehavior2;
+    CButton m_ctrlButtonBehavior1;
+    CButton m_ctrlButtonBehavior2;
 };
 
 //{{AFX_INSERT_LOCATION}}

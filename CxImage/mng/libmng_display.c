@@ -848,7 +848,7 @@ MNG_LOCAL mng_retcode load_bkgdlayer (mng_datap pData)
 
               case  4 : { 
 #ifndef MNG_NO_16BIT_SUPPORT
-			if (pImage->pImgbuf->iBitdepth > 8)
+            if (pImage->pImgbuf->iBitdepth > 8)
                             pData->fRetrieverow = (mng_fptr)mng_retrieve_ga16;
                           else
 #endif

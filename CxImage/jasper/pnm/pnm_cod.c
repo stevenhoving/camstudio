@@ -87,60 +87,60 @@
 /* Determine the PNM type (i.e., PGM or PPM) from the magic number. */
 int pnm_type(uint_fast16_t magic)
 {
-	int type;
-	switch (magic) {
-	case PNM_MAGIC_TXTPPM:
-	case PNM_MAGIC_BINPPM:
-		type = PNM_TYPE_PPM;
-		break;
-	case PNM_MAGIC_TXTPGM:
-	case PNM_MAGIC_BINPGM:
-		type = PNM_TYPE_PGM;
-		break;
-	case PNM_MAGIC_TXTPBM:
-	case PNM_MAGIC_BINPBM:
-		type = PNM_TYPE_PBM;
-		break;
-	default:
-		/* This should not happen. */
-		abort();
-		break;
-	}
-	return type;
+    int type;
+    switch (magic) {
+    case PNM_MAGIC_TXTPPM:
+    case PNM_MAGIC_BINPPM:
+        type = PNM_TYPE_PPM;
+        break;
+    case PNM_MAGIC_TXTPGM:
+    case PNM_MAGIC_BINPGM:
+        type = PNM_TYPE_PGM;
+        break;
+    case PNM_MAGIC_TXTPBM:
+    case PNM_MAGIC_BINPBM:
+        type = PNM_TYPE_PBM;
+        break;
+    default:
+        /* This should not happen. */
+        abort();
+        break;
+    }
+    return type;
 }
 
 /* Determine the PNM format (i.e., text or binary) from the magic number. */
 int pnm_fmt(uint_fast16_t magic)
 {
-	int fmt;
-	switch (magic) {
-	case PNM_MAGIC_TXTPBM:
-	case PNM_MAGIC_TXTPGM:
-	case PNM_MAGIC_TXTPPM:
-		fmt = PNM_FMT_TXT;
-		break;
-	case PNM_MAGIC_BINPBM:
-	case PNM_MAGIC_BINPGM:
-	case PNM_MAGIC_BINPPM:
-		fmt = PNM_FMT_BIN;
-		break;
-	default:
-		/* This should not happen. */
-		abort();
-		break;
-	}
-	return fmt;
+    int fmt;
+    switch (magic) {
+    case PNM_MAGIC_TXTPBM:
+    case PNM_MAGIC_TXTPGM:
+    case PNM_MAGIC_TXTPPM:
+        fmt = PNM_FMT_TXT;
+        break;
+    case PNM_MAGIC_BINPBM:
+    case PNM_MAGIC_BINPGM:
+    case PNM_MAGIC_BINPPM:
+        fmt = PNM_FMT_BIN;
+        break;
+    default:
+        /* This should not happen. */
+        abort();
+        break;
+    }
+    return fmt;
 }
 
 /* Determine the depth (i.e., precision) from the maximum value. */
 int pnm_maxvaltodepth(uint_fast32_t maxval)
 {
-	int n;
+    int n;
 
-	n = 0;
-	while (maxval > 0) {
-		maxval >>= 1;
-		++n;
-	}
-	return n;
+    n = 0;
+    while (maxval > 0) {
+        maxval >>= 1;
+        ++n;
+    }
+    return n;
 }

@@ -68,7 +68,7 @@
  */
 
 #ifndef JPC_T2COD_H
-#define	JPC_T2COD_H
+#define    JPC_T2COD_H
 
 /******************************************************************************\
 * Includes.
@@ -84,15 +84,15 @@
 
 typedef struct {
 
-	/* The number of progression changes. */
-	int numpchgs;
+    /* The number of progression changes. */
+    int numpchgs;
 
-	/* The maximum number of progression changes that can be accomodated
-	  without growing the progression change array. */
-	int maxpchgs;
+    /* The maximum number of progression changes that can be accomodated
+      without growing the progression change array. */
+    int maxpchgs;
 
-	/* The progression changes. */
-	jpc_pchg_t **pchgs;
+    /* The progression changes. */
+    jpc_pchg_t **pchgs;
 
 } jpc_pchglist_t;
 
@@ -100,21 +100,21 @@ typedef struct {
 
 typedef struct {
 
-	/* The number of precincts. */
-	int numprcs;
+    /* The number of precincts. */
+    int numprcs;
 
-	/* The last layer processed for each precinct. */
-	int *prclyrnos;
+    /* The last layer processed for each precinct. */
+    int *prclyrnos;
 
-	/* The precinct width exponent. */
-	int prcwidthexpn;
+    /* The precinct width exponent. */
+    int prcwidthexpn;
 
-	/* The precinct height exponent. */
-	int prcheightexpn;
+    /* The precinct height exponent. */
+    int prcheightexpn;
 
-	/* The number of precincts spanning the resolution level in the horizontal
-	  direction. */
-	int numhprcs;
+    /* The number of precincts spanning the resolution level in the horizontal
+      direction. */
+    int numhprcs;
 
 } jpc_pirlvl_t;
 
@@ -122,17 +122,17 @@ typedef struct {
 
 typedef struct {
 
-	/* The number of resolution levels. */
-	int numrlvls;
+    /* The number of resolution levels. */
+    int numrlvls;
 
-	/* The per-resolution-level information. */
-	jpc_pirlvl_t *pirlvls;
+    /* The per-resolution-level information. */
+    jpc_pirlvl_t *pirlvls;
 
-	/* The horizontal sampling period. */
-	int hsamp;
+    /* The horizontal sampling period. */
+    int hsamp;
 
-	/* The vertical sampling period. */
-	int vsamp;
+    /* The vertical sampling period. */
+    int vsamp;
 
 } jpc_picomp_t;
 
@@ -140,84 +140,84 @@ typedef struct {
 
 typedef struct {
 
-	/* The number of layers. */
-	int numlyrs;
+    /* The number of layers. */
+    int numlyrs;
 
-	/* The number of resolution levels. */
-	int maxrlvls;
+    /* The number of resolution levels. */
+    int maxrlvls;
 
-	/* The number of components. */
-	int numcomps;
+    /* The number of components. */
+    int numcomps;
 
-	/* The per-component information. */
-	jpc_picomp_t *picomps;
+    /* The per-component information. */
+    jpc_picomp_t *picomps;
 
-	/* The current component. */
-	jpc_picomp_t *picomp;
+    /* The current component. */
+    jpc_picomp_t *picomp;
 
-	/* The current resolution level. */
-	jpc_pirlvl_t *pirlvl;
+    /* The current resolution level. */
+    jpc_pirlvl_t *pirlvl;
 
-	/* The number of the current component. */
-	int compno;
+    /* The number of the current component. */
+    int compno;
 
-	/* The number of the current resolution level. */
-	int rlvlno;
+    /* The number of the current resolution level. */
+    int rlvlno;
 
-	/* The number of the current precinct. */
-	int prcno;
+    /* The number of the current precinct. */
+    int prcno;
 
-	/* The number of the current layer. */
-	int lyrno;
+    /* The number of the current layer. */
+    int lyrno;
 
-	/* The x-coordinate of the current position. */
-	int x;
+    /* The x-coordinate of the current position. */
+    int x;
 
-	/* The y-coordinate of the current position. */
-	int y;
+    /* The y-coordinate of the current position. */
+    int y;
 
-	/* The horizontal step size. */
-	int xstep;
+    /* The horizontal step size. */
+    int xstep;
 
-	/* The vertical step size. */
-	int ystep;
+    /* The vertical step size. */
+    int ystep;
 
-	/* The x-coordinate of the top-left corner of the tile on the reference
-	  grid. */
-	int xstart;
+    /* The x-coordinate of the top-left corner of the tile on the reference
+      grid. */
+    int xstart;
 
-	/* The y-coordinate of the top-left corner of the tile on the reference
-	  grid. */
-	int ystart;
+    /* The y-coordinate of the top-left corner of the tile on the reference
+      grid. */
+    int ystart;
 
-	/* The x-coordinate of the bottom-right corner of the tile on the
-	  reference grid (plus one). */
-	int xend;
+    /* The x-coordinate of the bottom-right corner of the tile on the
+      reference grid (plus one). */
+    int xend;
 
-	/* The y-coordinate of the bottom-right corner of the tile on the
-	  reference grid (plus one). */
-	int yend;
+    /* The y-coordinate of the bottom-right corner of the tile on the
+      reference grid (plus one). */
+    int yend;
 
-	/* The current progression change. */
-	jpc_pchg_t *pchg;
+    /* The current progression change. */
+    jpc_pchg_t *pchg;
 
-	/* The progression change list. */
-	jpc_pchglist_t *pchglist;
+    /* The progression change list. */
+    jpc_pchglist_t *pchglist;
 
-	/* The progression to use in the absense of explicit specification. */
-	jpc_pchg_t defaultpchg;
+    /* The progression to use in the absense of explicit specification. */
+    jpc_pchg_t defaultpchg;
 
-	/* The current progression change number. */
-	int pchgno;
+    /* The current progression change number. */
+    int pchgno;
 
-	/* Is this the first time in the current progression volume? */
-	bool prgvolfirst;
+    /* Is this the first time in the current progression volume? */
+    bool prgvolfirst;
 
-	/* Is the current iterator value valid? */
-	bool valid;
+    /* Is the current iterator value valid? */
+    bool valid;
 
-	/* The current packet number. */
-	int pktno;
+    /* The current packet number. */
+    int pktno;
 
 } jpc_pi_t;
 
@@ -244,22 +244,22 @@ int jpc_pi_begin(jpc_pi_t *pi);
 int jpc_pi_next(jpc_pi_t *pi);
 
 /* Get the index of the current packet. */
-#define	jpc_pi_getind(pi)	((pi)->pktno)
+#define    jpc_pi_getind(pi)    ((pi)->pktno)
 
 /* Get the component number of the current packet. */
-#define jpc_pi_cmptno(pi)	(assert(pi->valid), (pi)->compno)
+#define jpc_pi_cmptno(pi)    (assert(pi->valid), (pi)->compno)
 
 /* Get the resolution level of the current packet. */
-#define jpc_pi_rlvlno(pi)	(assert(pi->valid), (pi)->rlvlno)
+#define jpc_pi_rlvlno(pi)    (assert(pi->valid), (pi)->rlvlno)
 
 /* Get the layer number of the current packet. */
-#define jpc_pi_lyrno(pi)	(assert(pi->valid), (pi)->lyrno)
+#define jpc_pi_lyrno(pi)    (assert(pi->valid), (pi)->lyrno)
 
 /* Get the precinct number of the current packet. */
-#define jpc_pi_prcno(pi)	(assert(pi->valid), (pi)->prcno)
+#define jpc_pi_prcno(pi)    (assert(pi->valid), (pi)->prcno)
 
 /* Get the progression order for the current packet. */
-#define jpc_pi_prg(pi)	(assert(pi->valid), (pi)->pchg->prgord)
+#define jpc_pi_prg(pi)    (assert(pi->valid), (pi)->pchg->prgord)
 
 /******************************************************************************\
 * Functions/macros for progression change lists.

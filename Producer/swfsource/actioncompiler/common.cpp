@@ -7,5 +7,5 @@ FILE *error_fp;
 
 int isatty(int /*i*/)
 {
-	return 0;
+    return 0;
 }

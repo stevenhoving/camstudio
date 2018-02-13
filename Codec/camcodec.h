@@ -62,7 +62,7 @@ struct CodecInst {
 
   DWORD CompressRGB(ICCOMPRESS* icinfo);
     
-  DWORD	DecompressRGB(ICDECOMPRESS* icinfo);
+  DWORD    DecompressRGB(ICDECOMPRESS* icinfo);
   DWORD DecompressQuery(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER lpbiOut);
   DWORD DecompressGetFormat(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER lpbiOut);
   DWORD DecompressBegin(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER lpbiOut);

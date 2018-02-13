@@ -10,10 +10,10 @@ extern "C" {
 
 typedef struct _psd_rect
 {
-	psd_int 			left;
-	psd_int 			top;
-	psd_int 			right;
-	psd_int 			bottom;
+    psd_int             left;
+    psd_int             top;
+    psd_int             right;
+    psd_int             bottom;
 } psd_rect;
 
 

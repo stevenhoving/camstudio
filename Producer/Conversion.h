@@ -22,7 +22,7 @@ typedef struct tAACONVERTDESC
     TCHAR               szFilePathSrc[APP_MAX_FILE_PATH_CHARS];
     LPWAVEFORMATEX      pwfxSrc;
     LPBYTE            pbSrc;
-	//char *              pbSrc;
+    //char *              pbSrc;
     DWORD               dwSrcSamples;
     DWORD               cbSrcData;
     DWORD               cbSrcReadSize;
@@ -32,7 +32,7 @@ typedef struct tAACONVERTDESC
     TCHAR               szFilePathDst[APP_MAX_FILE_PATH_CHARS];
     LPWAVEFORMATEX      pwfxDst;
     LPBYTE            pbDst;
-	//char *				pbDst;
+    //char *                pbDst;
     DWORD               cbDstBufSize;
     TCHAR               szDstFormatTag[ACMFORMATTAGDETAILS_FORMATTAG_CHARS];
     TCHAR               szDstFormat[ACMFORMATDETAILS_FORMAT_CHARS];

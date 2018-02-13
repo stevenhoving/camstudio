@@ -42,23 +42,23 @@ extern int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
-	//{{AFX_MSG_MAP(CMainFrame)
-	ON_WM_CREATE()
-	ON_WM_CLOSE()
-	ON_WM_QUERYNEWPALETTE()
-	ON_WM_SIZE()
-	ON_WM_INITMENU()
-	//}}AFX_MSG_MAP
+    //{{AFX_MSG_MAP(CMainFrame)
+    ON_WM_CREATE()
+    ON_WM_CLOSE()
+    ON_WM_QUERYNEWPALETTE()
+    ON_WM_SIZE()
+    ON_WM_INITMENU()
+    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
 {
-	ID_SEPARATOR,           // status line indicator
-	ID_SEPARATOR,           // playing , recording or stopped
-	ID_SEPARATOR,			// time indicator
-	//ID_INDICATOR_CAPS,
-	//ID_INDICATOR_NUM,
-	//ID_INDICATOR_SCRL,
+    ID_SEPARATOR,           // status line indicator
+    ID_SEPARATOR,           // playing , recording or stopped
+    ID_SEPARATOR,            // time indicator
+    //ID_INDICATOR_CAPS,
+    //ID_INDICATOR_NUM,
+    //ID_INDICATOR_SCRL,
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ static UINT indicators[] =
 
 CMainFrame::CMainFrame()
 {
-	// TODO: add member initialization code here
+    // TODO: add member initialization code here
 }
 
 CMainFrame::~CMainFrame()
@@ -75,97 +75,97 @@ CMainFrame::~CMainFrame()
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-	if (CFrameWnd::OnCreate(lpCreateStruct) == -1) {
-		return -1;
-	}
+    if (CFrameWnd::OnCreate(lpCreateStruct) == -1) {
+        return -1;
+    }
 
-	if (pmode==DUBBER) {
-		if (!m_wndToolBar.Create(this)
-			|| !m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
-		{
-			TRACE0("Failed to create toolbar\n");
-			return -1;      // fail to create
-		}
-	} else if (pmode==PLAYER) {
-		if (!m_wndToolBar.Create(this)
-			|| !m_wndToolBar.LoadToolBar(IDR_PLAYERTOOLBAR))
-		{
-			TRACE0("Failed to create toolbar\n");
-			return -1;      // fail to create
-		}
-	}
+    if (pmode==DUBBER) {
+        if (!m_wndToolBar.Create(this)
+            || !m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
+        {
+            TRACE0("Failed to create toolbar\n");
+            return -1;      // fail to create
+        }
+    } else if (pmode==PLAYER) {
+        if (!m_wndToolBar.Create(this)
+            || !m_wndToolBar.LoadToolBar(IDR_PLAYERTOOLBAR))
+        {
+            TRACE0("Failed to create toolbar\n");
+            return -1;      // fail to create
+        }
+    }
 
-	if (!m_wndStatusBar.Create(this)
-		|| !m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT)))
-	{
-		TRACE0("Failed to create status bar\n");
-		return -1;      // fail to create
-	}
+    if (!m_wndStatusBar.Create(this)
+        || !m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT)))
+    {
+        TRACE0("Failed to create status bar\n");
+        return -1;      // fail to create
+    }
 
-	statusbarCtrl = &m_wndStatusBar;
-	
-	//m_wndToolBar.SetButtonInfo (6, ID_SLIDER, TBBS_SEPARATOR, 200);
+    statusbarCtrl = &m_wndStatusBar;
+    
+    //m_wndToolBar.SetButtonInfo (6, ID_SLIDER, TBBS_SEPARATOR, 200);
 
-	CRect rect;
-	m_wndToolBar.GetItemRect (6, &rect);
-	int sliderheight = 20;
-	int offset = rect.Height() - sliderheight;
-	offset /=2;
+    CRect rect;
+    m_wndToolBar.GetItemRect (6, &rect);
+    int sliderheight = 20;
+    int offset = rect.Height() - sliderheight;
+    offset /=2;
 
-	rect.top = rect.top + offset ;
-	rect.bottom = rect.bottom - offset ;
+    rect.top = rect.top + offset ;
+    rect.bottom = rect.bottom - offset ;
 
-	//CString msx;
-	//msx.Format("offset %d, recttop %d, rectbottom %d, rectleft %d, rectright %d", offset, rect.top, rect.bottom, rect.left, rect.right);
-	//MessageBox(msx,"note",MB_OK);
-	//if (!m_wndSliderCtrl.Create(
-	//	WS_CHILD
-	//	| WS_VISIBLE
-	//	| WS_TABSTOP
-	//	| TBS_HORZ
-	//	| TBS_NOTICKS
-	//	| TBS_BOTH, 
-	//	rect, 
-	//	&m_wndToolBar,
-	//	ID_SLIDER))
-	//{
-	//	return -1;
-	//}
+    //CString msx;
+    //msx.Format("offset %d, recttop %d, rectbottom %d, rectleft %d, rectright %d", offset, rect.top, rect.bottom, rect.left, rect.right);
+    //MessageBox(msx,"note",MB_OK);
+    //if (!m_wndSliderCtrl.Create(
+    //    WS_CHILD
+    //    | WS_VISIBLE
+    //    | WS_TABSTOP
+    //    | TBS_HORZ
+    //    | TBS_NOTICKS
+    //    | TBS_BOTH, 
+    //    rect, 
+    //    &m_wndToolBar,
+    //    ID_SLIDER))
+    //{
+    //    return -1;
+    //}
 
-	m_wndToolBar.ModifyStyle(0, TBSTYLE_FLAT);
+    m_wndToolBar.ModifyStyle(0, TBSTYLE_FLAT);
 
-	// TODO: Remove this if you don't want tool tips or a resizeable toolbar
-	m_wndToolBar.SetBarStyle(m_wndToolBar.GetBarStyle() | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
+    // TODO: Remove this if you don't want tool tips or a resizeable toolbar
+    m_wndToolBar.SetBarStyle(m_wndToolBar.GetBarStyle() | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
 
-	//Disable Floating
-	// TODO: Delete these three lines if you don't want the toolbar to be dockable
-	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
-	EnableDocking(CBRS_ALIGN_ANY);
+    //Disable Floating
+    // TODO: Delete these three lines if you don't want the toolbar to be dockable
+    m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
+    EnableDocking(CBRS_ALIGN_ANY);
 
-	//DockControlBar(&m_wndToolBar);
+    //DockControlBar(&m_wndToolBar);
 
-	if (pmode == PLAYER) {
-		SetWindowText("CamStudio Player - Custom Build");
-	} else {
-		SetWindowText("CamStudio SWF Producer - Custom Build");
-	}
+    if (pmode == PLAYER) {
+        SetWindowText("CamStudio Player - Custom Build");
+    } else {
+        SetWindowText("CamStudio SWF Producer - Custom Build");
+    }
 
-	return 0;
+    return 0;
 }
 
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
-	cs.x = 100;
-	cs.y = 100;
-	cs.cx=350;
-	cs.cy=320;
+    cs.x = 100;
+    cs.y = 100;
+    cs.cx=350;
+    cs.cy=320;
 
-	cs.style &= ~FWS_ADDTOTITLE;
+    cs.style &= ~FWS_ADDTOTITLE;
 
-	//if (runmode==1)
-	//	cs.style |= ~WS_MINIMIZE;
+    //if (runmode==1)
+    //    cs.style |= ~WS_MINIMIZE;
 
-	return CFrameWnd::PreCreateWindow(cs);
+    return CFrameWnd::PreCreateWindow(cs);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -174,12 +174,12 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 #ifdef _DEBUG
 void CMainFrame::AssertValid() const
 {
-	CFrameWnd::AssertValid();
+    CFrameWnd::AssertValid();
 }
 
 void CMainFrame::Dump(CDumpContext& dc) const
 {
-	CFrameWnd::Dump(dc);
+    CFrameWnd::Dump(dc);
 }
 
 #endif //_DEBUG
@@ -189,158 +189,158 @@ void CMainFrame::Dump(CDumpContext& dc) const
 
 BOOL CMainFrame::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext)
 {
-	// TODO: Add your specialized code here and/or call the base class
-	BOOL retval = CWnd::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
-	mainWnd = m_hWnd;
+    // TODO: Add your specialized code here and/or call the base class
+    BOOL retval = CWnd::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
+    mainWnd = m_hWnd;
 
-	//::SetWindowPos(mainWnd, NULL, 0, 0, 100, 100,0 );
-	//SetWindowPos( &wndTop, 0, 0, 100, 100, SWP_SHOWWINDOW);
+    //::SetWindowPos(mainWnd, NULL, 0, 0, 100, 100,0 );
+    //SetWindowPos( &wndTop, 0, 0, 100, 100, SWP_SHOWWINDOW);
 
-	return retval;
+    return retval;
 }
 
 void CMainFrame::OnClose()
 {
-	// TODO: Add your message handler code here and/or call default
-	playerAlive = FALSE;
+    // TODO: Add your message handler code here and/or call default
+    playerAlive = FALSE;
 
-	if ((fileModified == 1) && (pmode == DUBBER)) {
-		//int ret = MessageBox("Do you want to save changes ?","Note",MB_YESNOCANCEL | MB_ICONQUESTION);
-		int ret = MessageOut(this->m_hWnd,IDS_DOYOUWSC, IDS_NOTE, MB_YESNOCANCEL | MB_ICONQUESTION);
-		if (ret == IDYES) {
-			SendMessage(WM_COMMAND,ID_FILE_SAVEAS,0);
-			return;
-		} else if (ret == IDCANCEL) {
-			return;
-		}
-	}
+    if ((fileModified == 1) && (pmode == DUBBER)) {
+        //int ret = MessageBox("Do you want to save changes ?","Note",MB_YESNOCANCEL | MB_ICONQUESTION);
+        int ret = MessageOut(this->m_hWnd,IDS_DOYOUWSC, IDS_NOTE, MB_YESNOCANCEL | MB_ICONQUESTION);
+        if (ret == IDYES) {
+            SendMessage(WM_COMMAND,ID_FILE_SAVEAS,0);
+            return;
+        } else if (ret == IDCANCEL) {
+            return;
+        }
+    }
 
-	CFrameWnd::OnClose();
+    CFrameWnd::OnClose();
 }
 
 void CMainFrame::ResizeToMovie(RECT movierect){
 
-	// TODO: Add your command handler code here
+    // TODO: Add your command handler code here
 
-	CRect windowrect;
-	GetWindowRect( &windowrect);
-	CRect clientrect;
-	GetClientRect( &clientrect);
-	CRect toolbarrect;
-	m_wndToolBar.GetWindowRect(&toolbarrect);
+    CRect windowrect;
+    GetWindowRect( &windowrect);
+    CRect clientrect;
+    GetClientRect( &clientrect);
+    CRect toolbarrect;
+    m_wndToolBar.GetWindowRect(&toolbarrect);
 
-	CRect statusbarrect;
-	//CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
-	//pStatus->GetWindowRect(&statusbarrect);
-	m_wndStatusBar.GetWindowRect(&statusbarrect);
+    CRect statusbarrect;
+    //CStatusBar* pStatus = (CStatusBar*) AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
+    //pStatus->GetWindowRect(&statusbarrect);
+    m_wndStatusBar.GetWindowRect(&statusbarrect);
 
-	// (void) insteas of int var ..//Solution to prevent C4189, init but not used
-	/* int borderHeight = */	(void) GetSystemMetrics(SM_CYBORDER);
-	/* int borderWidth = */		(void) GetSystemMetrics(SM_CXBORDER);
-	/* int captionHeight = */	(void)GetSystemMetrics(SM_CYCAPTION);
+    // (void) insteas of int var ..//Solution to prevent C4189, init but not used
+    /* int borderHeight = */    (void) GetSystemMetrics(SM_CYBORDER);
+    /* int borderWidth = */        (void) GetSystemMetrics(SM_CXBORDER);
+    /* int captionHeight = */    (void)GetSystemMetrics(SM_CYCAPTION);
 
-	//Dock Toolbar
-	// @FIXME[Carlo Lanzotti]: No need to call this unless the tool bar are set to be dockable.
-//	DockControlBar(&m_wndToolBar);
+    //Dock Toolbar
+    // @FIXME[Carlo Lanzotti]: No need to call this unless the tool bar are set to be dockable.
+//    DockControlBar(&m_wndToolBar);
 
-	//Menu Height
-	//	int menuY = GetSystemMetrics(SM_CYMENU);	//Cause: C4189, init but not used
-	(void) GetSystemMetrics(SM_CYMENU);				//Solution to prevent C4189, init but not used
+    //Menu Height
+    //    int menuY = GetSystemMetrics(SM_CYMENU);    //Cause: C4189, init but not used
+    (void) GetSystemMetrics(SM_CYMENU);                //Solution to prevent C4189, init but not used
 
-	CWnd* mainWindow = AfxGetMainWnd();
-	AdjustWindowRectEx(&movierect, GetWindowLong(mainWindow->m_hWnd, GWL_STYLE), TRUE, GetWindowLong(mainWindow->m_hWnd, GWL_EXSTYLE));
-	int compactcx = movierect.right - movierect.left + 1 + 4;
-	int compactcy = movierect.bottom - movierect.top + 1 + toolbarrect.Height() + statusbarrect.Height() + 2;
+    CWnd* mainWindow = AfxGetMainWnd();
+    AdjustWindowRectEx(&movierect, GetWindowLong(mainWindow->m_hWnd, GWL_STYLE), TRUE, GetWindowLong(mainWindow->m_hWnd, GWL_EXSTYLE));
+    int compactcx = movierect.right - movierect.left + 1 + 4;
+    int compactcy = movierect.bottom - movierect.top + 1 + toolbarrect.Height() + statusbarrect.Height() + 2;
 
-	//compactcx += 2;
-	compactcy += 2;
+    //compactcx += 2;
+    compactcy += 2;
 
-	//if (compactcx > 600) compactcx=600;
-	//if (compactcy > 480) compactcy=480;
+    //if (compactcx > 600) compactcx=600;
+    //if (compactcy > 480) compactcy=480;
 
-	if (compactcx > maxxScreen  - windowrect.left)
-		windowrect.left = maxxScreen - compactcx;
+    if (compactcx > maxxScreen  - windowrect.left)
+        windowrect.left = maxxScreen - compactcx;
 
-	if (compactcy > maxyScreen  - windowrect.top)
-		windowrect.top = maxyScreen - compactcy - 20; //20 to compensate for taskbar height
+    if (compactcy > maxyScreen  - windowrect.top)
+        windowrect.top = maxyScreen - compactcy - 20; //20 to compensate for taskbar height
 
-	if (windowrect.left<=0)
-		windowrect.left = 1;
-	if (windowrect.top<=0)
-		windowrect.top = 1;
+    if (windowrect.left<=0)
+        windowrect.left = 1;
+    if (windowrect.top<=0)
+        windowrect.top = 1;
 
-	SetWindowPos( &wndTop, windowrect.left, windowrect.top, compactcx, compactcy, SWP_SHOWWINDOW);
+    SetWindowPos( &wndTop, windowrect.left, windowrect.top, compactcx, compactcy, SWP_SHOWWINDOW);
 }
 
 void CMainFrame::OffsetRectZero(CRect& winrect)
 {
-	int x = winrect.left;
-//	int y = winrect.top;
+    int x = winrect.left;
+//    int y = winrect.top;
 
-	winrect.left = 0;
-	winrect.top = 0;
-	winrect.right = winrect.right - x;
-	winrect.bottom = winrect.bottom - x;
+    winrect.left = 0;
+    winrect.top = 0;
+    winrect.right = winrect.right - x;
+    winrect.bottom = winrect.bottom - x;
 }
 
 void CMainFrame::AdjustTimeBar(CRect clientrect)
 {
-	m_wndToolBar.AdjustTimeBar(clientrect);
+    m_wndToolBar.AdjustTimeBar(clientrect);
 }
 
 BOOL CMainFrame::OnQueryNewPalette()
 {
-	// TODO: Add your message handler code here and/or call default
-	if (giFirstVideo >= 0) {
-		HDC hdc = ::GetDC(viewWnd);
-		// Realize the palette of the first video stream
-		BOOL val = DrawDibRealize(ghdd[giFirstVideo], hdc, FALSE);
-		if (val)
-			::InvalidateRect(viewWnd,NULL,TRUE);
+    // TODO: Add your message handler code here and/or call default
+    if (giFirstVideo >= 0) {
+        HDC hdc = ::GetDC(viewWnd);
+        // Realize the palette of the first video stream
+        BOOL val = DrawDibRealize(ghdd[giFirstVideo], hdc, FALSE);
+        if (val)
+            ::InvalidateRect(viewWnd,NULL,TRUE);
 
-		::ReleaseDC(viewWnd,hdc);
-		return val;
-	}
+        ::ReleaseDC(viewWnd,hdc);
+        return val;
+    }
 
-	return CFrameWnd::OnQueryNewPalette();
+    return CFrameWnd::OnQueryNewPalette();
 }
 
 void CMainFrame::OnSize(UINT nType, int cx, int cy)
 {
-	CFrameWnd::OnSize(nType, cx, cy);
+    CFrameWnd::OnSize(nType, cx, cy);
 
-	// TODO: Add your message handler code here
-	if (!::IsWindow(m_wndToolBar))
-		return;
+    // TODO: Add your message handler code here
+    if (!::IsWindow(m_wndToolBar))
+        return;
 
-	CRect clientrect;
-	GetClientRect( &clientrect);
+    CRect clientrect;
+    GetClientRect( &clientrect);
 
-	AdjustTimeBar(clientrect);
+    AdjustTimeBar(clientrect);
 
-	// TODO: Add your message handler code here
-	if (pmode==DUBBER) {
-	}
-	else if (pmode==PLAYER) {
-		if  (!menu_loaded) {
-			PlayerMenu.LoadMenu(IDR_MENUPLAYER);
-			menu_loaded = 1;
+    // TODO: Add your message handler code here
+    if (pmode==DUBBER) {
+    }
+    else if (pmode==PLAYER) {
+        if  (!menu_loaded) {
+            PlayerMenu.LoadMenu(IDR_MENUPLAYER);
+            menu_loaded = 1;
 
-			//HMENU hMenu = ::GetMenu(m_hWnd);
-			//::SetMenu( m_hWnd, PlayerMenu.m_hMenu );
-			SetMenu(&PlayerMenu);
-		}
-	}
+            //HMENU hMenu = ::GetMenu(m_hWnd);
+            //::SetMenu( m_hWnd, PlayerMenu.m_hMenu );
+            SetMenu(&PlayerMenu);
+        }
+    }
 }
 
 void CMainFrame::OnInitMenu(CMenu* pMenu)
 {
-	CFrameWnd::OnInitMenu(pMenu);
+    CFrameWnd::OnInitMenu(pMenu);
 }
 
 void CMainFrame::EnableSlideBarButton(BOOL setToOn, int nIndex)
 {
-	m_wndToolBar.EnableButton(setToOn, nIndex);
-	//m_wndToolBar.EnableButton(TRUE, ID_FILE_REWIND);
-	//m_wndToolBar.EnableButton(TRUE, 4);
+    m_wndToolBar.EnableButton(setToOn, nIndex);
+    //m_wndToolBar.EnableButton(TRUE, ID_FILE_REWIND);
+    //m_wndToolBar.EnableButton(TRUE, 4);
 }

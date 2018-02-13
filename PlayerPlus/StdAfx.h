@@ -10,14 +10,14 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
+#define VC_EXTRALEAN        // Exclude rarely-used stuff from Windows headers
 
-#include "targetver.h"		// define WINVER
+#include "targetver.h"        // define WINVER
 
 #include <afxwin.h>         // MFC core and standard components
 #include <afxext.h>         // MFC extensions
 #include <afxdisp.h>        // MFC Automation classes
-#include <afxcmn.h>			// MFC support for Windows Common Controls
+#include <afxcmn.h>            // MFC support for Windows Common Controls
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

@@ -9,6 +9,6 @@
  */
 
 
-#define JVERSION	"8b  16-May-2010"
+#define JVERSION    "8b  16-May-2010"
 
-#define JCOPYRIGHT	"Copyright (C) 2010, Thomas G. Lane, Guido Vollbeding"
+#define JCOPYRIGHT    "Copyright (C) 2010, Thomas G. Lane, Guido Vollbeding"

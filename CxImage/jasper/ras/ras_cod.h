@@ -71,8 +71,8 @@
 * Sun Rasterfile
 \******************************************************************************/
 
-#ifndef	RAS_COD_H
-#define	RAS_COD_H
+#ifndef    RAS_COD_H
+#define    RAS_COD_H
 
 /******************************************************************************\
 * Includes.
@@ -84,16 +84,16 @@
 * Constants.
 \******************************************************************************/
 
-#define	RAS_MAGIC	0x59a66a95
-#define	RAS_MAGICLEN	4
+#define    RAS_MAGIC    0x59a66a95
+#define    RAS_MAGICLEN    4
 
-#define	RAS_TYPE_OLD	0
-#define	RAS_TYPE_STD	1
-#define	RAS_TYPE_RLE	2
+#define    RAS_TYPE_OLD    0
+#define    RAS_TYPE_STD    1
+#define    RAS_TYPE_RLE    2
 
-#define	RAS_MT_NONE	0
-#define	RAS_MT_EQUALRGB	1
-#define	RAS_MT_RAW	2
+#define    RAS_MT_NONE    0
+#define    RAS_MT_EQUALRGB    1
+#define    RAS_MT_RAW    2
 
 /******************************************************************************\
 * Types.
@@ -102,42 +102,42 @@
 /* Sun Rasterfile header. */
 typedef struct {
 
-	int_fast32_t magic;
-	/* signature */
+    int_fast32_t magic;
+    /* signature */
 
-	int_fast32_t width;
-	/* width of image (in pixels) */
+    int_fast32_t width;
+    /* width of image (in pixels) */
 
-	int_fast32_t height;
-	/* height of image (in pixels) */
+    int_fast32_t height;
+    /* height of image (in pixels) */
 
-	int_fast32_t depth;
-	/* number of bits per pixel */
+    int_fast32_t depth;
+    /* number of bits per pixel */
 
-	int_fast32_t length;
-	/* length of image data (in bytes) */
+    int_fast32_t length;
+    /* length of image data (in bytes) */
 
-	int_fast32_t type;
-	/* format of image data */
+    int_fast32_t type;
+    /* format of image data */
 
-	int_fast32_t maptype;
-	/* colormap type */
+    int_fast32_t maptype;
+    /* colormap type */
 
-	int_fast32_t maplength;
-	/* length of colormap data (in bytes) */
+    int_fast32_t maplength;
+    /* length of colormap data (in bytes) */
 
 } ras_hdr_t;
 
-#define	RAS_CMAP_MAXSIZ	256
+#define    RAS_CMAP_MAXSIZ    256
 
 /* Color map. */
 typedef struct {
 
-	int len;
-	/* The number of entries in the color map. */
+    int len;
+    /* The number of entries in the color map. */
 
-	int data[RAS_CMAP_MAXSIZ];
-	/* The color map data. */
+    int data[RAS_CMAP_MAXSIZ];
+    /* The color map data. */
 
 } ras_cmap_t;
 
@@ -145,20 +145,20 @@ typedef struct {
 * Macros.
 \******************************************************************************/
 
-#define RAS_GETBLUE(x)	(((x) >> 16) & 0xff)
-#define	RAS_GETGREEN(x)	(((x) >> 8) & 0xff)
-#define RAS_GETRED(x)	((x) & 0xff)
+#define RAS_GETBLUE(x)    (((x) >> 16) & 0xff)
+#define    RAS_GETGREEN(x)    (((x) >> 8) & 0xff)
+#define RAS_GETRED(x)    ((x) & 0xff)
 
-#define RAS_BLUE(x)	(((x) & 0xff) << 16)
-#define RAS_GREEN(x)	(((x) & 0xff) << 8)
-#define	RAS_RED(x)	((x) & 0xff)
+#define RAS_BLUE(x)    (((x) & 0xff) << 16)
+#define RAS_GREEN(x)    (((x) & 0xff) << 8)
+#define    RAS_RED(x)    ((x) & 0xff)
 
 #define RAS_ROWSIZE(hdr) \
-	((((hdr)->width * (hdr)->depth + 15) / 16) * 2)
+    ((((hdr)->width * (hdr)->depth + 15) / 16) * 2)
 #define RAS_ISRGB(hdr) \
-	((hdr)->depth == 24 || (hdr)->depth == 32)
+    ((hdr)->depth == 24 || (hdr)->depth == 32)
 
-#define	RAS_ONES(n) \
-	(((n) == 32) ? 0xffffffffUL : ((1UL << (n)) - 1))
+#define    RAS_ONES(n) \
+    (((n) == 32) ? 0xffffffffUL : ((1UL << (n)) - 1))
 
 #endif

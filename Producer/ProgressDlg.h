@@ -28,7 +28,7 @@ public:
 // Dialog Data
     //{{AFX_DATA(CProgressDlg)
     enum { IDD = CG_IDD_PROGRESS };
-    CProgressCtrl	m_Progress;
+    CProgressCtrl    m_Progress;
     //}}AFX_DATA
 
 // Overrides
@@ -42,7 +42,7 @@ public:
 
 // Implementation
 protected:
-	UINT m_nCaptionID;
+    UINT m_nCaptionID;
     int m_nLower;
     int m_nUpper;
     int m_nStep;
@@ -63,7 +63,7 @@ protected:
     //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnBnClickedProgressCancel();
+    afx_msg void OnBnClickedProgressCancel();
 };
 
 #endif // __PROGRESSDLG_H__

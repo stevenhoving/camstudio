@@ -77,9 +77,9 @@
 *
 \******************************************************************************/
 
-#define	JPG_IJGINFO \
-	"The source code for the IJG JPEG library can be downloaded from:\n" \
-	"    http://www.ijg.org\n"
+#define    JPG_IJGINFO \
+    "The source code for the IJG JPEG library can be downloaded from:\n" \
+    "    http://www.ijg.org\n"
 
 /******************************************************************************\
 * Code for load operation.
@@ -89,10 +89,10 @@
 
 jas_image_t *jpg_decode(jas_stream_t *in, char *optstr)
 {
-	jas_eprintf("error: JPEG decoder not available\n");
-	jas_eprintf("The IJG JPEG library is required for JPEG decoding support.\n");
-	jas_eprintf("%s", JPG_IJGINFO);
-	return 0;
+    jas_eprintf("error: JPEG decoder not available\n");
+    jas_eprintf("The IJG JPEG library is required for JPEG decoding support.\n");
+    jas_eprintf("%s", JPG_IJGINFO);
+    return 0;
 }
 
 /******************************************************************************\
@@ -103,8 +103,8 @@ jas_image_t *jpg_decode(jas_stream_t *in, char *optstr)
 
 int jpg_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 {
-	jas_eprintf("error: JPEG encoder not available\n");
-	jas_eprintf("The IJG JPEG library is required for JPEG encoding support.\n");
-	jas_eprintf("%s", JPG_IJGINFO);
-	return -1;
+    jas_eprintf("error: JPEG encoder not available\n");
+    jas_eprintf("The IJG JPEG library is required for JPEG encoding support.\n");
+    jas_eprintf("%s", JPG_IJGINFO);
+    return -1;
 }

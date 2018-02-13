@@ -8,22 +8,22 @@
 #include <map>
 
    struct HotKey {
-	   DWORD key;
-	   DWORD mod;
-	   HotKey(const HotKey& rhs) {
-		   key = rhs.key;
-		   mod = rhs.mod;
-	   }
-	   HotKey(DWORD k, DWORD m)
-		   :key(k), mod(m)
-	   {}
-	   bool operator < (const HotKey& rhs) const {
-		   if (key < rhs.key)
-			   return true;
-		   if (key == rhs.key && mod < rhs.mod)
-			   return true;
-		   return false;
-	   }
+       DWORD key;
+       DWORD mod;
+       HotKey(const HotKey& rhs) {
+           key = rhs.key;
+           mod = rhs.mod;
+       }
+       HotKey(DWORD k, DWORD m)
+           :key(k), mod(m)
+       {}
+       bool operator < (const HotKey& rhs) const {
+           if (key < rhs.key)
+               return true;
+           if (key == rhs.key && mod < rhs.mod)
+               return true;
+           return false;
+       }
    };
 
    typedef std::map<HotKey, DWORD> HotKeyMap; // key & mod => WM_HOTKEY code
@@ -49,12 +49,12 @@ extern "C" {
 
 #endif // __cplusplus
 
-#define WM_USER_RECORDINTERRUPTED_MSG	_T("WM_USER_RECORDINTERRUPTED_MSG")
-#define WM_USER_RECORDPAUSED_MSG		_T("WM_USER_RECORDPAUSED_MSG")
-#define WM_USER_SAVECURSOR_MSG			_T("WM_USER_SAVECURSOR_MSG")
-#define WM_USER_GENERIC_MSG				_T("WM_USER_GENERIC_MSG")
-#define WM_USER_RECORDSTART_MSG			_T("WM_USER_RECORDSTART_MSG")
-#define WM_USER_RECORDAUTO_MSG			_T("WM_USER_RECORDAUTO_MSG")
+#define WM_USER_RECORDINTERRUPTED_MSG    _T("WM_USER_RECORDINTERRUPTED_MSG")
+#define WM_USER_RECORDPAUSED_MSG        _T("WM_USER_RECORDPAUSED_MSG")
+#define WM_USER_SAVECURSOR_MSG            _T("WM_USER_SAVECURSOR_MSG")
+#define WM_USER_GENERIC_MSG                _T("WM_USER_GENERIC_MSG")
+#define WM_USER_RECORDSTART_MSG            _T("WM_USER_RECORDSTART_MSG")
+#define WM_USER_RECORDAUTO_MSG            _T("WM_USER_RECORDAUTO_MSG")
 // These declarations are because the latest SDK isn't installed...
 #ifndef GET_X_LPARAM
 #define GET_X_LPARAM(p) ((int)(short)LOWORD(p))

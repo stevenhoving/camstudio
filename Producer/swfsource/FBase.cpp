@@ -17,8 +17,8 @@ FlashFixed::FlashFixed(double f) : upperval((UWORD)floor(f)), lowerval(UWORD((f-
 
 N_STD::ostream &operator<< (N_STD::ostream &out, const FlashFixed &data)
 {
-	WRITE_UWORD(data.upperval)
-	WRITE_UWORD(data.lowerval)
+    WRITE_UWORD(data.upperval)
+    WRITE_UWORD(data.lowerval)
     return out;
 }
 
@@ -44,15 +44,15 @@ FlashFixed16::FlashFixed16(double f) : upperval((UBYTE)floor(f)), lowerval(UBYTE
 N_STD::ostream &operator<< (N_STD::ostream &out, const FlashFixed16 &data)
 {
     WRITE_UBYTE(data.upperval)
-	WRITE_UBYTE(data.lowerval)
-	return out;
+    WRITE_UBYTE(data.lowerval)
+    return out;
 }
 
 N_STD::istream &operator>> (N_STD::istream &in,  FlashFixed16 &data)
 {
     READ_UBYTE(data.upperval)
-	READ_UBYTE(data.lowerval)
-	return in;
+    READ_UBYTE(data.lowerval)
+    return in;
 }
 
 N_STD::ostream &operator<< (N_STD::ostream &out, const FlashMatrix &data)
@@ -128,19 +128,19 @@ N_STD::istream &operator>> (N_STD::istream &in,  FlashMatrix &data)
     SDWORD transy;
 
     if (bits > 0)
-	{
-		i.Read(transx,bits);
-		i.Read(transy,bits);
+    {
+        i.Read(transx,bits);
+        i.Read(transy,bits);
 
-		data.translatex = UnPackBitsSigned(transx,bits);
-		data.translatey = UnPackBitsSigned(transy,bits);
-	}
-	else
-	{
-		data.translatex = 0;
-		data.translatey = 0;
+        data.translatex = UnPackBitsSigned(transx,bits);
+        data.translatey = UnPackBitsSigned(transy,bits);
+    }
+    else
+    {
+        data.translatex = 0;
+        data.translatey = 0;
 
-	}
+    }
     return in;
 }
 
@@ -342,21 +342,21 @@ N_STD::ostream &operator << (N_STD::ostream &out, const FlashHeader &data)
 {
     int minbits = (int)ceil(((fbase_max(GetBitSize(data.size.GetX2()), GetBitSize(data.size.GetY2())+1)) * 4 + 5) / 8.0);
 
-	UDWORD size_adjust = 12+minbits;
+    UDWORD size_adjust = 12+minbits;
 #if 0
 // TODO
    if (movieCompressed && data.version > 5)
-	   out << "CWS";
+       out << "CWS";
    else
-	   out << "FWS";
+       out << "FWS";
 #else
-	 out << "FWS";
+     out << "FWS";
 #endif
     out.put(data.version);
     WRITE_UDWORD(data.filesize+size_adjust)
     out << data.size;
 
-	WRITE_UWORD(data.frameRate.ConvertToRaw())
+    WRITE_UWORD(data.frameRate.ConvertToRaw())
     WRITE_UWORD(data.frameCount)
 
     return out;
@@ -364,7 +364,7 @@ N_STD::ostream &operator << (N_STD::ostream &out, const FlashHeader &data)
 N_STD::istream &operator >> (N_STD::istream &in,  FlashHeader &data)
 {
     char tmp[3];
-	SWORD tmp1;
+    SWORD tmp1;
     in.read(tmp,3); // TODO: SHOULD BE "FWS" or "CWS", add error handling
     data.version = in.get();
     if ( data.version > 5 && tmp[0] == 'C' )
@@ -374,7 +374,7 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashHeader &data)
     READ_UDWORD(data.filesize)
     in >> data.size;
     READ_UWORD(tmp1)
-	data.frameRate.GetFromRaw(tmp1);
+    data.frameRate.GetFromRaw(tmp1);
     READ_UWORD(data.frameCount)
     return in;
 }
@@ -424,67 +424,67 @@ UWORD FlashIDFactory::IDCharacter=1;
 
 FlashMatrix CreateMatrix(FlashRect bounds,float scaleX,float scaleY,float rotation,float translateX,float translateY,bool bScale, bool bRotate)
 {
-	const double DegToRad = 3.14159265358979323 / 180.0;	// pi/2
+    const double DegToRad = 3.14159265358979323 / 180.0;    // pi/2
 
-	int centerX = int( (bounds.GetX1()+bounds.GetX2())/2.0 );
-	int centerY = int( (bounds.GetY1()+bounds.GetY2())/2.0 );
-	float sX = scaleX ;
-	float sY =  scaleY ;
-	float rot = rotation;
+    int centerX = int( (bounds.GetX1()+bounds.GetX2())/2.0 );
+    int centerY = int( (bounds.GetY1()+bounds.GetY2())/2.0 );
+    float sX = scaleX ;
+    float sY =  scaleY ;
+    float rot = rotation;
 
-// 	float skewX = 1.0;
-// 	float skewY = 1.0;
+//     float skewX = 1.0;
+//     float skewY = 1.0;
 
-	// We want to rotate the matrix about its own center, not the origin. So it is necessary
-	// to move the object to the origin, rotate it, and move it back.
+    // We want to rotate the matrix about its own center, not the origin. So it is necessary
+    // to move the object to the origin, rotate it, and move it back.
 /*
-	float deltaX = centerX * cos( DegToRad * rot ) - centerY * sin(DegToRad*rot) - centerX;
-	float deltaY = centerX * sin( DegToRad * rot ) + centerY * cos(DegToRad*rot) - centerY;
+    float deltaX = centerX * cos( DegToRad * rot ) - centerY * sin(DegToRad*rot) - centerX;
+    float deltaY = centerX * sin( DegToRad * rot ) + centerY * cos(DegToRad*rot) - centerY;
 */
-	// This is the code from David Michie to make a swf matrix (no skew)
+    // This is the code from David Michie to make a swf matrix (no skew)
 
-	//   Assign(cos(rx)*sx,  sin(rx)*sx,  0.0,
-	//          cos(ry)*sy,  sin(ry)*sy,  0.0,
-	//          x,           y,           1.0);
+    //   Assign(cos(rx)*sx,  sin(rx)*sx,  0.0,
+    //          cos(ry)*sy,  sin(ry)*sy,  0.0,
+    //          x,           y,           1.0);
 
-	// lee: using the Folef and Van Damme gives a slightly different
-	// matrix (a matrix rotated from Flash's, actually). So converting the
-	// above given that cos(x+90) = -sin(x) & sin(x+90) = cos x,
-	// gives the matrix below.
+    // lee: using the Folef and Van Damme gives a slightly different
+    // matrix (a matrix rotated from Flash's, actually). So converting the
+    // above given that cos(x+90) = -sin(x) & sin(x+90) = cos x,
+    // gives the matrix below.
 
-	// make the matrix:
-	//	| a b tx|
-	//	| c d ty|
-	//
+    // make the matrix:
+    //    | a b tx|
+    //    | c d ty|
+    //
 
-	double a =  cos( DegToRad*rot ) * sX; //ScaleX
-	double b =  sin( DegToRad*rot ) * sX; //RotateSkew0
-	double c = -sin( DegToRad*rot ) * sY; //RotateSkew1
-	double d =  cos( DegToRad*rot ) * sY; //ScaleY
+    double a =  cos( DegToRad*rot ) * sX; //ScaleX
+    double b =  sin( DegToRad*rot ) * sX; //RotateSkew0
+    double c = -sin( DegToRad*rot ) * sY; //RotateSkew1
+    double d =  cos( DegToRad*rot ) * sY; //ScaleY
 
-	// By Yiyi
-	double deltaX = centerX * cos( DegToRad * rot ) - centerY * sin(DegToRad*rot);
-	double deltaY = centerX * sin( DegToRad * rot ) + centerY * cos(DegToRad*rot);
+    // By Yiyi
+    double deltaX = centerX * cos( DegToRad * rot ) - centerY * sin(DegToRad*rot);
+    double deltaY = centerX * sin( DegToRad * rot ) + centerY * cos(DegToRad*rot);
 
-	return FlashMatrix(bScale, FlashFixed( a ), FlashFixed( d ),
-						bRotate,FlashFixed( b ), FlashFixed( c ),
+    return FlashMatrix(bScale, FlashFixed( a ), FlashFixed( d ),
+                        bRotate,FlashFixed( b ), FlashFixed( c ),
 
-//						translateX - int( deltaX * sX ),
-//						translateY - int( deltaY * sY )
+//                        translateX - int( deltaX * sX ),
+//                        translateY - int( deltaY * sY )
 
-						// By Yiyi
-						(int)(translateX + centerX - int( deltaX * sX )),
-						(int)(translateY + centerY - int( deltaY * sY ))
-					  );
+                        // By Yiyi
+                        (int)(translateX + centerX - int( deltaX * sX )),
+                        (int)(translateY + centerY - int( deltaY * sY ))
+                      );
 }
 
 N_STD::ostream &operator << (N_STD::ostream &out, const FlashTagRawData &data)
 {
-	out.write(data.ptrData, data.lenData);
-	return out;
+    out.write(data.ptrData, data.lenData);
+    return out;
 }
 N_STD::istream &operator >> (N_STD::istream &in, FlashTagRawData &data)
 {
-	throw std::exception();
-	return in;
+    throw std::exception();
+    return in;
 }

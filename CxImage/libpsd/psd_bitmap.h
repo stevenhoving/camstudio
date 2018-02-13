@@ -12,9 +12,9 @@ extern "C" {
 
 typedef struct _psd_bitamp
 {
-	psd_argb_color *			image_data;
-	psd_int							width;
-	psd_int							height;
+    psd_argb_color *            image_data;
+    psd_int                            width;
+    psd_int                            height;
 } psd_bitmap;
 
 psd_status psd_get_bitmap(psd_bitmap * bitmap, psd_int width, psd_int height, psd_context * context);
@@ -32,7 +32,7 @@ psd_status psd_bitmap_copy_without_alpha_channel(psd_bitmap * dst_bmp, psd_bitma
 psd_status psd_bitmap_mix_alpha_channel(psd_bitmap * dst_bmp, psd_bitmap * src_bmp);
 psd_status psd_bitmap_blend_alpha_channel(psd_bitmap * dst_bmp, psd_bitmap * src_bmp);
 psd_status psd_bitmap_contour_alpha_channel(psd_bitmap * bitmap, psd_uchar * lookup_table, 
-	psd_bool anti_aliased, psd_bool edge_hidden);
+    psd_bool anti_aliased, psd_bool edge_hidden);
 psd_status psd_bitmap_fill_alpha_channel(psd_bitmap * bitmap, psd_color_component alpha);
 psd_status psd_bitmap_reverse_alpha_channel(psd_bitmap * bitmap);
 psd_status psd_bitmap_reverse_mixed_alpha_channel(psd_bitmap * bitmap);

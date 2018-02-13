@@ -13,7 +13,7 @@
  */
 CxImage* CxImage::GetParent() const
 {
-	return info.pParent;
+    return info.pParent;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -21,7 +21,7 @@ CxImage* CxImage::GetParent() const
  */
 int32_t CxImage::GetNumLayers() const
 {
-	return info.nNumLayers;
+    return info.nNumLayers;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -29,32 +29,32 @@ int32_t CxImage::GetNumLayers() const
  */
 bool CxImage::LayerCreate(int32_t position)
 {
-	if ( position < 0 || position > info.nNumLayers ) position = info.nNumLayers;
+    if ( position < 0 || position > info.nNumLayers ) position = info.nNumLayers;
 
-	CxImage** ptmp = new CxImage*[info.nNumLayers + 1];
-	if (ptmp==0) return false;
+    CxImage** ptmp = new CxImage*[info.nNumLayers + 1];
+    if (ptmp==0) return false;
 
-	int32_t i=0;
-	for (int32_t n=0; n<info.nNumLayers; n++){
-		if (position == n){
-			ptmp[n] = new CxImage();
-			i=1;
-		}
-		ptmp[n+i]=ppLayers[n];
-	}
-	if (i==0) ptmp[info.nNumLayers] = new CxImage();
+    int32_t i=0;
+    for (int32_t n=0; n<info.nNumLayers; n++){
+        if (position == n){
+            ptmp[n] = new CxImage();
+            i=1;
+        }
+        ptmp[n+i]=ppLayers[n];
+    }
+    if (i==0) ptmp[info.nNumLayers] = new CxImage();
 
-	if (ptmp[position]){
-		ptmp[position]->info.pParent = this;
-	} else {
-		free(ptmp);
-		return false;
-	}
+    if (ptmp[position]){
+        ptmp[position]->info.pParent = this;
+    } else {
+        free(ptmp);
+        return false;
+    }
 
-	info.nNumLayers++;
-	delete [] ppLayers;
-	ppLayers = ptmp;
-	return true;
+    info.nNumLayers++;
+    delete [] ppLayers;
+    ppLayers = ptmp;
+    return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -62,43 +62,43 @@ bool CxImage::LayerCreate(int32_t position)
  */
 bool CxImage::LayerDelete(int32_t position)
 {
-	if ( position >= info.nNumLayers ) return false;
-	if ( position < 0) position = info.nNumLayers - 1;
-	if ( position < 0) return false;
+    if ( position >= info.nNumLayers ) return false;
+    if ( position < 0) position = info.nNumLayers - 1;
+    if ( position < 0) return false;
 
-	if (info.nNumLayers>1){
+    if (info.nNumLayers>1){
 
-		CxImage** ptmp = new CxImage*[info.nNumLayers - 1];
-		if (ptmp==0) return false;
+        CxImage** ptmp = new CxImage*[info.nNumLayers - 1];
+        if (ptmp==0) return false;
 
-		int32_t i=0;
-		for (int32_t n=0; n<info.nNumLayers; n++){
-			if (position == n){
-				delete ppLayers[n];
-				i=1;
-			}
-			ptmp[n]=ppLayers[n+i];
-		}
+        int32_t i=0;
+        for (int32_t n=0; n<info.nNumLayers; n++){
+            if (position == n){
+                delete ppLayers[n];
+                i=1;
+            }
+            ptmp[n]=ppLayers[n+i];
+        }
 
-		info.nNumLayers--;
-		delete [] ppLayers;
-		ppLayers = ptmp;
+        info.nNumLayers--;
+        delete [] ppLayers;
+        ppLayers = ptmp;
 
-	} else {
-		delete ppLayers[0];
-		delete [] ppLayers;
-		ppLayers = 0;
-		info.nNumLayers = 0;
-	}
-	return true;
+    } else {
+        delete ppLayers[0];
+        delete [] ppLayers;
+        ppLayers = 0;
+        info.nNumLayers = 0;
+    }
+    return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
 void CxImage::LayerDeleteAll()
 {
-	if (ppLayers) { 
-		for(int32_t n=0; n<info.nNumLayers;n++){ delete ppLayers[n]; }
-		delete [] ppLayers; ppLayers=0; info.nNumLayers = 0;
-	}
+    if (ppLayers) { 
+        for(int32_t n=0; n<info.nNumLayers;n++){ delete ppLayers[n]; }
+        delete [] ppLayers; ppLayers=0; info.nNumLayers = 0;
+    }
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -106,11 +106,11 @@ void CxImage::LayerDeleteAll()
  */
 CxImage* CxImage::GetLayer(int32_t position)
 {
-	if ( ppLayers == NULL) return NULL;
-	if ( info.nNumLayers == 0) return NULL;
-	if ( position >= info.nNumLayers ) return NULL;
-	if ( position < 0) position = info.nNumLayers - 1;
-	return ppLayers[position];
+    if ( ppLayers == NULL) return NULL;
+    if ( info.nNumLayers == 0) return NULL;
+    if ( position >= info.nNumLayers ) return NULL;
+    if ( position < 0) position = info.nNumLayers - 1;
+    return ppLayers[position];
 }
 ////////////////////////////////////////////////////////////////////////////////
 #endif //CXIMAGE_SUPPORT_LAYERS

@@ -71,26 +71,26 @@ void bufferPatchTargets(Buffer buffer)
     if (output[i] & 0x80) /* then it's a multisbyte instruction */
     {
       if (output[i] == SWFACTION_BRANCHALWAYS ||
-	 output[i] == SWFACTION_BRANCHIFTRUE)
+     output[i] == SWFACTION_BRANCHIFTRUE)
       {
-	int target, offset;
+    int target, offset;
 
-	i += 3; /* plus instruction plus two-sbyte length */
+    i += 3; /* plus instruction plus two-sbyte length */
 
-	target = output[i];
-	offset = labels[target].offset - (i+2);
-	output[i] = offset & 0xff;
-	output[++i] = (offset>>8) & 0xff;
-	++i;
+    target = output[i];
+    offset = labels[target].offset - (i+2);
+    output[i] = offset & 0xff;
+    output[++i] = (offset>>8) & 0xff;
+    ++i;
       }
       else
       {
-	++i;
-	l = output[i];
-	++i;
-	l += output[i]<<8;
+    ++i;
+    l = output[i];
+    ++i;
+    l += output[i]<<8;
 
-	i += l+1;
+    i += l+1;
       }
     }
     else

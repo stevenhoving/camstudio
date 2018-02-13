@@ -6,10 +6,10 @@ extern "C" {
 #endif
 
 
-#define PSD_STREAM_MAX_READ_LENGTH		4096
+#define PSD_STREAM_MAX_READ_LENGTH        4096
 
-#define PSD_CHAR_TO_SHORT(str)			(short)((*(str) << 8) | *((str) + 1))
-#define PSD_CHAR_TO_INT(str)			(int)((*(str) << 24) | (*((str) + 1) << 16) | (*((str) + 2) << 8) | *((str) + 3))
+#define PSD_CHAR_TO_SHORT(str)            (short)((*(str) << 8) | *((str) + 1))
+#define PSD_CHAR_TO_INT(str)            (int)((*(str) << 24) | (*((str) + 1) << 16) | (*((str) + 2) << 8) | *((str) + 3))
 
 
 psd_int psd_stream_get(psd_context * context, psd_uchar * buffer, psd_int length);

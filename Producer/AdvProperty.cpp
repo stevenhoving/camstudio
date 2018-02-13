@@ -24,9 +24,9 @@ IMPLEMENT_DYNCREATE(CAdvProperty, CPropertyPage)
 
 CAdvProperty::CAdvProperty() : CPropertyPage(CAdvProperty::IDD)
 {
-	//{{AFX_DATA_INIT(CAdvProperty)
-		// NOTE: the ClassWizard will add member initialization here
-	//}}AFX_DATA_INIT
+    //{{AFX_DATA_INIT(CAdvProperty)
+        // NOTE: the ClassWizard will add member initialization here
+    //}}AFX_DATA_INIT
 }
 
 CAdvProperty::~CAdvProperty()
@@ -35,15 +35,15 @@ CAdvProperty::~CAdvProperty()
 
 void CAdvProperty::DoDataExchange(CDataExchange* pDX)
 {
-	CPropertyPage::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CAdvProperty)
-		// NOTE: the ClassWizard will add DDX and DDV calls here
-	//}}AFX_DATA_MAP
+    CPropertyPage::DoDataExchange(pDX);
+    //{{AFX_DATA_MAP(CAdvProperty)
+        // NOTE: the ClassWizard will add DDX and DDV calls here
+    //}}AFX_DATA_MAP
 }
 
 BEGIN_MESSAGE_MAP(CAdvProperty, CPropertyPage)
-	//{{AFX_MSG_MAP(CAdvProperty)
-	//}}AFX_MSG_MAP
+    //{{AFX_MSG_MAP(CAdvProperty)
+    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -52,30 +52,30 @@ END_MESSAGE_MAP()
 void CAdvProperty::OnOK()
 {
 
-	int val1 = ((CButton *) GetDlgItem(IDC_FREECHARACTER))->GetCheck();
-	int val2 = ((CButton *) GetDlgItem(IDC_ALLOWCHAINING))->GetCheck();
+    int val1 = ((CButton *) GetDlgItem(IDC_FREECHARACTER))->GetCheck();
+    int val2 = ((CButton *) GetDlgItem(IDC_ALLOWCHAINING))->GetCheck();
 
-	if (val1)
-		freecharacter = 1;
-	else
-		freecharacter = 0;
+    if (val1)
+        freecharacter = 1;
+    else
+        freecharacter = 0;
 
-	if (val2)
-		allowChaining = 1;
-	else
-		allowChaining = 0;
+    if (val2)
+        allowChaining = 1;
+    else
+        allowChaining = 0;
 
-	CPropertyPage::OnOK();
+    CPropertyPage::OnOK();
 }
 
 BOOL CAdvProperty::OnInitDialog()
 {
-	CPropertyPage::OnInitDialog();
+    CPropertyPage::OnInitDialog();
 
-	((CButton *) GetDlgItem(IDC_FREECHARACTER))->SetCheck(freecharacter != 0);
-	((CButton *) GetDlgItem(IDC_ALLOWCHAINING))->SetCheck(allowChaining != 0);
+    ((CButton *) GetDlgItem(IDC_FREECHARACTER))->SetCheck(freecharacter != 0);
+    ((CButton *) GetDlgItem(IDC_ALLOWCHAINING))->SetCheck(allowChaining != 0);
 
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
+    return TRUE;  // return TRUE unless you set the focus to a control
+                  // EXCEPTION: OCX Property Pages should return FALSE
 }
 

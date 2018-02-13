@@ -1,4 +1,4 @@
-// CamSys.h	- include file for CamStudio Library system api's
+// CamSys.h    - include file for CamStudio Library system api's
 /////////////////////////////////////////////////////////////////////////////
 #ifndef CAMSYS_H
 #define CAMSYS_H
@@ -9,4 +9,4 @@ int GetOperatingSystem();
 BOOL WinYield();
 LONG GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata);
 
-#endif	// CAMSYS_H
+#endif    // CAMSYS_H

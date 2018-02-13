@@ -1230,19 +1230,19 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
         for (iX = pData->iSourcel + pData->iCol; iX < pData->iSourcer;
              iX += pData->iColinc)
         {                              /* scale down by dropping the LSB */
-		  if ((s = pDataline[6]) == 0)
-			*(mng_uint32*) pScanline = 0; /* set all components = 0 */
-		  else
-		  {
-			if (s == 255)
-			{
+          if ((s = pDataline[6]) == 0)
+            *(mng_uint32*) pScanline = 0; /* set all components = 0 */
+          else
+          {
+            if (s == 255)
+            {
               pScanline[0] = pDataline[0];
               pScanline[1] = pDataline[2];
-		      pScanline[2] = pDataline[4];
+              pScanline[2] = pDataline[4];
               pScanline[3] = 255;
-			}
-			else
-			{
+            }
+            else
+            {
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               int i;
               for (i=2; i >= 0; i--)
@@ -1255,8 +1255,8 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
               pScanline[2] = DIV255B8(s * pDataline[4]);
 #endif
               pScanline[3] = (mng_uint8)s;
-			}
-		  }
+            }
+          }
           pScanline += (pData->iColinc << 2);
           pDataline += 8;
         }
@@ -1266,23 +1266,23 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
         for (iX = pData->iSourcel + pData->iCol; iX < pData->iSourcer;
              iX += pData->iColinc)
         {                              /* copy the values and premultiply */
-		  if ((s = pDataline[3]) == 0)
-			*(mng_uint32*) pScanline = 0; /* set all components = 0 */
-		  else
-		  {
-			if (s == 255)
-			{
+          if ((s = pDataline[3]) == 0)
+            *(mng_uint32*) pScanline = 0; /* set all components = 0 */
+          else
+          {
+            if (s == 255)
+            {
 #ifdef MNG_BIGENDIAN_SUPPORTED
               *(mng_uint32*)pScanline = (*(mng_uint32*)pDataline) | 0x000000FF;
 #else
               pScanline[0] = pDataline[0];
               pScanline[1] = pDataline[1];
-		      pScanline[2] = pDataline[2];
+              pScanline[2] = pDataline[2];
               pScanline[3] = 255;
 #endif
-			}
-			else
-			{
+            }
+            else
+            {
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               int i;
               for (i=2; i >= 0; i--)
@@ -1292,11 +1292,11 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
 #else
               pScanline[0] = DIV255B8(s * pDataline[0]);
               pScanline[1] = DIV255B8(s * pDataline[1]);
-		      pScanline[2] = DIV255B8(s * pDataline[2]);
+              pScanline[2] = DIV255B8(s * pDataline[2]);
 #endif
               pScanline[3] = (mng_uint8)s;
-			}
-		  }
+            }
+          }
 
           pScanline += (pData->iColinc << 2);
           pDataline += 4;
@@ -1321,7 +1321,7 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
             }
             else
             {                          /* now blend (premultiplied) */
-			  t = 255 - s;
+              t = 255 - s;
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
                 int i;
@@ -1334,7 +1334,7 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
 #else
               pScanline[0] = DIV255B8(s * pDataline[0] + t * pScanline[0]);
               pScanline[1] = DIV255B8(s * pDataline[2] + t * pScanline[1]);
-			  pScanline[2] = DIV255B8(s * pDataline[4] + t * pScanline[2]);
+              pScanline[2] = DIV255B8(s * pDataline[4] + t * pScanline[2]);
 #endif
               pScanline[3] = (mng_uint8)(255 - DIV255B8(t * (255 - pScanline[3])));
             }
@@ -1364,7 +1364,7 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
             }
             else
             {                          /* now blend (premultiplied) */
-			  t = 255 - s;
+              t = 255 - s;
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
                 int i;
@@ -1377,7 +1377,7 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
 #else
               pScanline[0] = DIV255B8(s * pDataline[0] + t * pScanline[0]);
               pScanline[1] = DIV255B8(s * pDataline[1] + t * pScanline[1]);
-			  pScanline[2] = DIV255B8(s * pDataline[2] + t * pScanline[2]);
+              pScanline[2] = DIV255B8(s * pDataline[2] + t * pScanline[2]);
 #endif
               pScanline[3] = (mng_uint8)(255 - DIV255B8(t * (255 - pScanline[3])));
             }
@@ -1432,19 +1432,19 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
         for (iX = pData->iSourcel + pData->iCol; iX < pData->iSourcer;
              iX += pData->iColinc)
         {                              /* scale down by dropping the LSB */
-		  if ((s = pDataline[6]) == 0)
-			*(mng_uint32*) pScanline = 0; /* set all components = 0 */
-		  else
-		  {
-			if (s == 255)
-			{
+          if ((s = pDataline[6]) == 0)
+            *(mng_uint32*) pScanline = 0; /* set all components = 0 */
+          else
+          {
+            if (s == 255)
+            {
               pScanline[0] = pDataline[0];
               pScanline[1] = pDataline[2];
-		      pScanline[2] = pDataline[4];
+              pScanline[2] = pDataline[4];
               pScanline[3] = 255;
-			}
-			else
-			{
+            }
+            else
+            {
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               int i;
               for (i=2; i >= 0; i--)
@@ -1457,8 +1457,8 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
               pScanline[2] = DIV255B8(s * pDataline[4]);
 #endif
               pScanline[3] = (mng_uint8)s;
-			}
-		  }
+            }
+          }
           pScanline += (pData->iColinc << 2);
           pDataline += 8;
         }
@@ -1468,23 +1468,23 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
         for (iX = pData->iSourcel + pData->iCol; iX < pData->iSourcer;
              iX += pData->iColinc)
         {                              /* copy the values and premultiply */
-		  if ((s = pDataline[3]) == 0)
-			*(mng_uint32*) pScanline = 0; /* set all components = 0 */
-		  else
-		  {
-			if (s == 255)
-			{
+          if ((s = pDataline[3]) == 0)
+            *(mng_uint32*) pScanline = 0; /* set all components = 0 */
+          else
+          {
+            if (s == 255)
+            {
 #ifdef MNG_BIGENDIAN_SUPPORTED
               *(mng_uint32*)pScanline = (*(mng_uint32*)pDataline) | 0x000000FF;
 #else
               pScanline[0] = pDataline[0];
               pScanline[1] = pDataline[1];
-		      pScanline[2] = pDataline[2];
+              pScanline[2] = pDataline[2];
               pScanline[3] = 255;
 #endif
-			}
-			else
-			{
+            }
+            else
+            {
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               int i;
               for (i=2; i >= 0; i--)
@@ -1494,11 +1494,11 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
 #else
               pScanline[0] = DIV255B8(s * pDataline[0]);
               pScanline[1] = DIV255B8(s * pDataline[1]);
-		      pScanline[2] = DIV255B8(s * pDataline[2]);
+              pScanline[2] = DIV255B8(s * pDataline[2]);
 #endif
               pScanline[3] = (mng_uint8)s;
-			}
-		  }
+            }
+          }
 
           pScanline += (pData->iColinc << 2);
           pDataline += 4;
@@ -1523,7 +1523,7 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
             }
             else
             {                          /* now blend (premultiplied) */
-			  t = 255 - s;
+              t = 255 - s;
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
                 int i;
@@ -1536,7 +1536,7 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
 #else
               pScanline[0] = DIV255B8(s * pDataline[0] + t * pScanline[0]);
               pScanline[1] = DIV255B8(s * pDataline[2] + t * pScanline[1]);
-			  pScanline[2] = DIV255B8(s * pDataline[4] + t * pScanline[2]);
+              pScanline[2] = DIV255B8(s * pDataline[4] + t * pScanline[2]);
 #endif
               pScanline[3] = (mng_uint8)(255 - DIV255B8(t * (255 - pScanline[3])));
             }
@@ -1566,7 +1566,7 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
             }
             else
             {                          /* now blend (premultiplied) */
-			  t = 255 - s;
+              t = 255 - s;
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
                 int i;
@@ -1579,7 +1579,7 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
 #else
               pScanline[0] = DIV255B8(s * pDataline[0] + t * pScanline[0]);
               pScanline[1] = DIV255B8(s * pDataline[1] + t * pScanline[1]);
-			  pScanline[2] = DIV255B8(s * pDataline[2] + t * pScanline[2]);
+              pScanline[2] = DIV255B8(s * pDataline[2] + t * pScanline[2]);
 #endif
               pScanline[3] = (mng_uint8)(255 - DIV255B8(t * (255 - pScanline[3])));
             }
@@ -1630,23 +1630,23 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
         for (iX = pData->iSourcel + pData->iCol; iX < pData->iSourcer;
              iX += pData->iColinc)
         {                              /* copy the values and premultiply */
-		  if ((s = pDataline[3]) == 0)
-			*(mng_uint32*) pScanline = 0; /* set all components = 0 */
-		  else
-		  {
-			if (s == 255)
-			{
+          if ((s = pDataline[3]) == 0)
+            *(mng_uint32*) pScanline = 0; /* set all components = 0 */
+          else
+          {
+            if (s == 255)
+            {
 #ifdef MNG_BIGENDIAN_SUPPORTED
               *(mng_uint32*)pScanline = (*(mng_uint32*)pDataline) | 0x000000FF;
 #else
               pScanline[0] = pDataline[0];
               pScanline[1] = pDataline[1];
-		      pScanline[2] = pDataline[2];
+              pScanline[2] = pDataline[2];
               pScanline[3] = 255;
 #endif
-			}
-			else
-			{
+            }
+            else
+            {
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               int i;
               for (i=2; i >= 0; i--)
@@ -1656,11 +1656,11 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
 #else
               pScanline[0] = DIV255B8(s * pDataline[0]);
               pScanline[1] = DIV255B8(s * pDataline[1]);
-		      pScanline[2] = DIV255B8(s * pDataline[2]);
+              pScanline[2] = DIV255B8(s * pDataline[2]);
 #endif
               pScanline[3] = (mng_uint8)s;
-			}
-		  }
+            }
+          }
 
           pScanline += (pData->iColinc << 2);
           pDataline += 4;
@@ -1688,7 +1688,7 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
             }
             else
             {                          /* now blend (premultiplied) */
-			  t = 255 - s;
+              t = 255 - s;
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
                 int i;
@@ -1701,7 +1701,7 @@ mng_retcode mng_display_rgba8_pm (mng_datap pData)
 #else
               pScanline[0] = DIV255B8(s * pDataline[0] + t * pScanline[0]);
               pScanline[1] = DIV255B8(s * pDataline[1] + t * pScanline[1]);
-			  pScanline[2] = DIV255B8(s * pDataline[2] + t * pScanline[2]);
+              pScanline[2] = DIV255B8(s * pDataline[2] + t * pScanline[2]);
 #endif
               pScanline[3] = (mng_uint8)(255 - DIV255B8(t * (255 - pScanline[3])));
             }
@@ -2229,19 +2229,19 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
         for (iX = pData->iSourcel + pData->iCol; iX < pData->iSourcer;
              iX += pData->iColinc)
         {                              /* scale down by dropping the LSB */
-		  if ((s = pDataline[6]) == 0)
-			*(mng_uint32*) pScanline = 0; /* set all components = 0 */
-		  else
-		  {
-			if (s == 255)
-			{
+          if ((s = pDataline[6]) == 0)
+            *(mng_uint32*) pScanline = 0; /* set all components = 0 */
+          else
+          {
+            if (s == 255)
+            {
               pScanline[0] = 255;
               pScanline[1] = pDataline[0];
               pScanline[2] = pDataline[2];
-		      pScanline[3] = pDataline[4];
-			}
-			else
-			{
+              pScanline[3] = pDataline[4];
+            }
+            else
+            {
               pScanline[0] = (mng_uint8)s;
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -2256,8 +2256,8 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
               pScanline[2] = DIV255B8(s * pDataline[2]);
               pScanline[3] = DIV255B8(s * pDataline[4]);
 #endif
-			}
-		  }
+            }
+          }
           pScanline += (pData->iColinc << 2);
           pDataline += 8;
         }
@@ -2267,19 +2267,19 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
         for (iX = pData->iSourcel + pData->iCol; iX < pData->iSourcer;
              iX += pData->iColinc)
         {                              /* copy the values and premultiply */
-		  if ((s = pDataline[3]) == 0)
-			*(mng_uint32*) pScanline = 0; /* set all components = 0 */
-		  else
-		  {
-			if (s == 255)
-			{
+          if ((s = pDataline[3]) == 0)
+            *(mng_uint32*) pScanline = 0; /* set all components = 0 */
+          else
+          {
+            if (s == 255)
+            {
               pScanline[0] = 255;
               pScanline[1] = pDataline[0];
               pScanline[2] = pDataline[1];
-		      pScanline[3] = pDataline[2];
-			}
-			else
-			{
+              pScanline[3] = pDataline[2];
+            }
+            else
+            {
               pScanline[0] = (mng_uint8)s;
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -2292,10 +2292,10 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
 #else
               pScanline[1] = DIV255B8(s * pDataline[0]);
               pScanline[2] = DIV255B8(s * pDataline[1]);
-		      pScanline[3] = DIV255B8(s * pDataline[2]);
+              pScanline[3] = DIV255B8(s * pDataline[2]);
 #endif
-			}
-		  }
+            }
+          }
 
           pScanline += (pData->iColinc << 2);
           pDataline += 4;
@@ -2320,7 +2320,7 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
             }
             else
             {                          /* now blend (premultiplied) */
-			  t = 255 - s;
+              t = 255 - s;
               pScanline[0] = (mng_uint8)(255 - DIV255B8(t * (255 - pScanline[0])));
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -2334,7 +2334,7 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
 #else
               pScanline[1] = DIV255B8(s * pDataline[0] + t * pScanline[1]);
               pScanline[2] = DIV255B8(s * pDataline[2] + t * pScanline[2]);
-			  pScanline[3] = DIV255B8(s * pDataline[4] + t * pScanline[3]);
+              pScanline[3] = DIV255B8(s * pDataline[4] + t * pScanline[3]);
 #endif
             }
           }
@@ -2359,7 +2359,7 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
             }
             else
             {                          /* now blend (premultiplied) */
-			  t = 255 - s;
+              t = 255 - s;
               pScanline[0] = (mng_uint8)(255 - DIV255B8(t * (255 - pScanline[0])));
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -2373,7 +2373,7 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
 #else
               pScanline[1] = DIV255B8(s * pDataline[0] + t * pScanline[1]);
               pScanline[2] = DIV255B8(s * pDataline[1] + t * pScanline[2]);
-			  pScanline[3] = DIV255B8(s * pDataline[2] + t * pScanline[3]);
+              pScanline[3] = DIV255B8(s * pDataline[2] + t * pScanline[3]);
 #endif
             }
           }
@@ -2427,19 +2427,19 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
         for (iX = pData->iSourcel + pData->iCol; iX < pData->iSourcer;
              iX += pData->iColinc)
         {                              /* scale down by dropping the LSB */
-		  if ((s = pDataline[6]) == 0)
-			*(mng_uint32*) pScanline = 0; /* set all components = 0 */
-		  else
-		  {
-			if (s == 255)
-			{
+          if ((s = pDataline[6]) == 0)
+            *(mng_uint32*) pScanline = 0; /* set all components = 0 */
+          else
+          {
+            if (s == 255)
+            {
               pScanline[0] = 255;
               pScanline[1] = pDataline[0];
               pScanline[2] = pDataline[2];
-		      pScanline[3] = pDataline[4];
-			}
-			else
-			{
+              pScanline[3] = pDataline[4];
+            }
+            else
+            {
               pScanline[0] = (mng_uint8)s;
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -2454,8 +2454,8 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
               pScanline[2] = DIV255B8(s * pDataline[2]);
               pScanline[3] = DIV255B8(s * pDataline[4]);
 #endif
-			}
-		  }
+            }
+          }
           pScanline += (pData->iColinc << 2);
           pDataline += 8;
         }
@@ -2465,19 +2465,19 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
         for (iX = pData->iSourcel + pData->iCol; iX < pData->iSourcer;
              iX += pData->iColinc)
         {                              /* copy the values and premultiply */
-		  if ((s = pDataline[3]) == 0)
-			*(mng_uint32*) pScanline = 0; /* set all components = 0 */
-		  else
-		  {
-			if (s == 255)
-			{
+          if ((s = pDataline[3]) == 0)
+            *(mng_uint32*) pScanline = 0; /* set all components = 0 */
+          else
+          {
+            if (s == 255)
+            {
               pScanline[0] = 255;
               pScanline[1] = pDataline[0];
               pScanline[2] = pDataline[1];
-		      pScanline[3] = pDataline[2];
-			}
-			else
-			{
+              pScanline[3] = pDataline[2];
+            }
+            else
+            {
               pScanline[0] = (mng_uint8)s;
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -2490,10 +2490,10 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
 #else
               pScanline[1] = DIV255B8(s * pDataline[0]);
               pScanline[2] = DIV255B8(s * pDataline[1]);
-		      pScanline[3] = DIV255B8(s * pDataline[2]);
+              pScanline[3] = DIV255B8(s * pDataline[2]);
 #endif
-			}
-		  }
+            }
+          }
 
           pScanline += (pData->iColinc << 2);
           pDataline += 4;
@@ -2518,7 +2518,7 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
             }
             else
             {                          /* now blend (premultiplied) */
-			  t = 255 - s;
+              t = 255 - s;
               pScanline[0] = (mng_uint8)(255 - DIV255B8(t * (255 - pScanline[0])));
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -2532,7 +2532,7 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
 #else
               pScanline[1] = DIV255B8(s * pDataline[0] + t * pScanline[1]);
               pScanline[2] = DIV255B8(s * pDataline[2] + t * pScanline[2]);
-			  pScanline[3] = DIV255B8(s * pDataline[4] + t * pScanline[3]);
+              pScanline[3] = DIV255B8(s * pDataline[4] + t * pScanline[3]);
 #endif
             }
           }
@@ -2557,7 +2557,7 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
             }
             else
             {                          /* now blend (premultiplied) */
-			  t = 255 - s;
+              t = 255 - s;
               pScanline[0] = (mng_uint8)(255 - DIV255B8(t * (255 - pScanline[0])));
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -2571,7 +2571,7 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
 #else
               pScanline[1] = DIV255B8(s * pDataline[0] + t * pScanline[1]);
               pScanline[2] = DIV255B8(s * pDataline[1] + t * pScanline[2]);
-			  pScanline[3] = DIV255B8(s * pDataline[2] + t * pScanline[3]);
+              pScanline[3] = DIV255B8(s * pDataline[2] + t * pScanline[3]);
 #endif
             }
           }
@@ -2621,19 +2621,19 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
         for (iX = pData->iSourcel + pData->iCol; iX < pData->iSourcer;
              iX += pData->iColinc)
         {                              /* copy the values and premultiply */
-		  if ((s = pDataline[3]) == 0)
-			*(mng_uint32*) pScanline = 0; /* set all components = 0 */
-		  else
-		  {
-			if (s == 255)
-			{
+          if ((s = pDataline[3]) == 0)
+            *(mng_uint32*) pScanline = 0; /* set all components = 0 */
+          else
+          {
+            if (s == 255)
+            {
               pScanline[0] = 255;
               pScanline[1] = pDataline[0];
               pScanline[2] = pDataline[1];
-		      pScanline[3] = pDataline[2];
-			}
-			else
-			{
+              pScanline[3] = pDataline[2];
+            }
+            else
+            {
               pScanline[0] = (mng_uint8)s;
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -2646,10 +2646,10 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
 #else
               pScanline[1] = DIV255B8(s * pDataline[0]);
               pScanline[2] = DIV255B8(s * pDataline[1]);
-		      pScanline[3] = DIV255B8(s * pDataline[2]);
+              pScanline[3] = DIV255B8(s * pDataline[2]);
 #endif
-			}
-		  }
+            }
+          }
 
           pScanline += (pData->iColinc << 2);
           pDataline += 4;
@@ -2673,7 +2673,7 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
             }
             else
             {                          /* now blend (premultiplied) */
-			  t = 255 - s;
+              t = 255 - s;
               pScanline[0] = (mng_uint8)(255 - DIV255B8(t * (255 - pScanline[0])));
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -2687,7 +2687,7 @@ mng_retcode mng_display_argb8_pm (mng_datap pData)
 #else
               pScanline[1] = DIV255B8(s * pDataline[0] + t * pScanline[1]);
               pScanline[2] = DIV255B8(s * pDataline[1] + t * pScanline[2]);
-			  pScanline[3] = DIV255B8(s * pDataline[2] + t * pScanline[3]);
+              pScanline[3] = DIV255B8(s * pDataline[2] + t * pScanline[3]);
 #endif
             }
           }
@@ -5392,19 +5392,19 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
         for (iX = pData->iSourcel + pData->iCol; iX < pData->iSourcer;
              iX += pData->iColinc)
         {                              /* scale down by dropping the LSB */
-		  if ((s = pDataline[6]) == 0)
-			*(mng_uint32*) pScanline = 0; /* set all components = 0 */
-		  else
-		  {
-			if (s == 255)
-			{
+          if ((s = pDataline[6]) == 0)
+            *(mng_uint32*) pScanline = 0; /* set all components = 0 */
+          else
+          {
+            if (s == 255)
+            {
               pScanline[0] = 255;
-		      pScanline[1] = pDataline[4];
+              pScanline[1] = pDataline[4];
               pScanline[2] = pDataline[2];
               pScanline[3] = pDataline[0];
-			}
-			else
-			{
+            }
+            else
+            {
               pScanline[0] = (mng_uint8)s;
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -5419,8 +5419,8 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
               pScanline[2] = DIV255B8(s * pDataline[2]);
               pScanline[3] = DIV255B8(s * pDataline[0]);
 #endif
-			}
-		  }
+            }
+          }
           pScanline += (pData->iColinc << 2);
           pDataline += 8;
         }
@@ -5430,19 +5430,19 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
         for (iX = pData->iSourcel + pData->iCol; iX < pData->iSourcer;
              iX += pData->iColinc)
         {                              /* copy the values and premultiply */
-		  if ((s = pDataline[3]) == 0)
-			*(mng_uint32*) pScanline = 0; /* set all components = 0 */
-		  else
-		  {
-			if (s == 255)
-			{
+          if ((s = pDataline[3]) == 0)
+            *(mng_uint32*) pScanline = 0; /* set all components = 0 */
+          else
+          {
+            if (s == 255)
+            {
               pScanline[0] = 255;
-		      pScanline[1] = pDataline[2];
+              pScanline[1] = pDataline[2];
               pScanline[2] = pDataline[1];
               pScanline[3] = pDataline[0];
-			}
-			else
-			{
+            }
+            else
+            {
               pScanline[0] = (mng_uint8)s;
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -5455,10 +5455,10 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
 #else
               pScanline[1] = DIV255B8(s * pDataline[2]);
               pScanline[2] = DIV255B8(s * pDataline[1]);
-		      pScanline[3] = DIV255B8(s * pDataline[0]);
+              pScanline[3] = DIV255B8(s * pDataline[0]);
 #endif
-			}
-		  }
+            }
+          }
 
           pScanline += (pData->iColinc << 2);
           pDataline += 4;
@@ -5483,7 +5483,7 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
             }
             else
             {                          /* now blend (premultiplied) */
-			  t = 255 - s;
+              t = 255 - s;
               pScanline[0] = (mng_uint8)(255 - DIV255B8(t * (255 - pScanline[0])));
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -5495,7 +5495,7 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
                 }
               }
 #else
-			  pScanline[1] = DIV255B8(s * pDataline[4] + t * pScanline[1]);
+              pScanline[1] = DIV255B8(s * pDataline[4] + t * pScanline[1]);
               pScanline[2] = DIV255B8(s * pDataline[2] + t * pScanline[2]);
               pScanline[3] = DIV255B8(s * pDataline[0] + t * pScanline[3]);
 #endif
@@ -5522,7 +5522,7 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
             }
             else
             {                          /* now blend (premultiplied) */
-			  t = 255 - s;
+              t = 255 - s;
               pScanline[0] = (mng_uint8)(255 - DIV255B8(t * (255 - pScanline[0])));
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -5534,7 +5534,7 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
                 }
               }
 #else
-			  pScanline[1] = DIV255B8(s * pDataline[2] + t * pScanline[1]);
+              pScanline[1] = DIV255B8(s * pDataline[2] + t * pScanline[1]);
               pScanline[2] = DIV255B8(s * pDataline[1] + t * pScanline[2]);
               pScanline[3] = DIV255B8(s * pDataline[0] + t * pScanline[3]);
 #endif
@@ -5590,19 +5590,19 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
         for (iX = pData->iSourcel + pData->iCol; iX < pData->iSourcer;
              iX += pData->iColinc)
         {                              /* scale down by dropping the LSB */
-		  if ((s = pDataline[6]) == 0)
-			*(mng_uint32*) pScanline = 0; /* set all components = 0 */
-		  else
-		  {
-			if (s == 255)
-			{
+          if ((s = pDataline[6]) == 0)
+            *(mng_uint32*) pScanline = 0; /* set all components = 0 */
+          else
+          {
+            if (s == 255)
+            {
               pScanline[0] = 255;
-		      pScanline[1] = pDataline[4];
+              pScanline[1] = pDataline[4];
               pScanline[2] = pDataline[2];
               pScanline[3] = pDataline[0];
-			}
-			else
-			{
+            }
+            else
+            {
               pScanline[0] = (mng_uint8)s;
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -5617,8 +5617,8 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
               pScanline[2] = DIV255B8(s * pDataline[2]);
               pScanline[3] = DIV255B8(s * pDataline[0]);
 #endif
-			}
-		  }
+            }
+          }
           pScanline += (pData->iColinc << 2);
           pDataline += 8;
         }
@@ -5628,19 +5628,19 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
         for (iX = pData->iSourcel + pData->iCol; iX < pData->iSourcer;
              iX += pData->iColinc)
         {                              /* copy the values and premultiply */
-		  if ((s = pDataline[3]) == 0)
-			*(mng_uint32*) pScanline = 0; /* set all components = 0 */
-		  else
-		  {
-			if (s == 255)
-			{
+          if ((s = pDataline[3]) == 0)
+            *(mng_uint32*) pScanline = 0; /* set all components = 0 */
+          else
+          {
+            if (s == 255)
+            {
               pScanline[0] = 255;
-		      pScanline[1] = pDataline[2];
+              pScanline[1] = pDataline[2];
               pScanline[2] = pDataline[1];
               pScanline[3] = pDataline[0];
-			}
-			else
-			{
+            }
+            else
+            {
               pScanline[0] = (mng_uint8)s;
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -5653,10 +5653,10 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
 #else
               pScanline[1] = DIV255B8(s * pDataline[2]);
               pScanline[2] = DIV255B8(s * pDataline[1]);
-		      pScanline[3] = DIV255B8(s * pDataline[0]);
+              pScanline[3] = DIV255B8(s * pDataline[0]);
 #endif
-			}
-		  }
+            }
+          }
 
           pScanline += (pData->iColinc << 2);
           pDataline += 4;
@@ -5681,7 +5681,7 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
             }
             else
             {                          /* now blend (premultiplied) */
-			  t = 255 - s;
+              t = 255 - s;
               pScanline[0] = (mng_uint8)(255 - DIV255B8(t * (255 - pScanline[0])));
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -5693,7 +5693,7 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
                 }
               }
 #else
-			  pScanline[1] = DIV255B8(s * pDataline[4] + t * pScanline[1]);
+              pScanline[1] = DIV255B8(s * pDataline[4] + t * pScanline[1]);
               pScanline[2] = DIV255B8(s * pDataline[2] + t * pScanline[2]);
               pScanline[3] = DIV255B8(s * pDataline[0] + t * pScanline[3]);
 #endif
@@ -5720,7 +5720,7 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
             }
             else
             {                          /* now blend (premultiplied) */
-			  t = 255 - s;
+              t = 255 - s;
               pScanline[0] = (mng_uint8)(255 - DIV255B8(t * (255 - pScanline[0])));
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -5732,7 +5732,7 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
                 }
               }
 #else
-			  pScanline[1] = DIV255B8(s * pDataline[2] + t * pScanline[1]);
+              pScanline[1] = DIV255B8(s * pDataline[2] + t * pScanline[1]);
               pScanline[2] = DIV255B8(s * pDataline[1] + t * pScanline[2]);
               pScanline[3] = DIV255B8(s * pDataline[0] + t * pScanline[3]);
 #endif
@@ -5784,19 +5784,19 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
         for (iX = pData->iSourcel + pData->iCol; iX < pData->iSourcer;
              iX += pData->iColinc)
         {                              /* copy the values and premultiply */
-		  if ((s = pDataline[3]) == 0)
-			*(mng_uint32*) pScanline = 0; /* set all components = 0 */
-		  else
-		  {
-			if (s == 255)
-			{
+          if ((s = pDataline[3]) == 0)
+            *(mng_uint32*) pScanline = 0; /* set all components = 0 */
+          else
+          {
+            if (s == 255)
+            {
               pScanline[0] = 255;
-		      pScanline[1] = pDataline[2];
+              pScanline[1] = pDataline[2];
               pScanline[2] = pDataline[1];
               pScanline[3] = pDataline[0];
-			}
-			else
-			{
+            }
+            else
+            {
               pScanline[0] = (mng_uint8)s;
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -5809,10 +5809,10 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
 #else
               pScanline[1] = DIV255B8(s * pDataline[2]);
               pScanline[2] = DIV255B8(s * pDataline[1]);
-		      pScanline[3] = DIV255B8(s * pDataline[0]);
+              pScanline[3] = DIV255B8(s * pDataline[0]);
 #endif
-			}
-		  }
+            }
+          }
 
           pScanline += (pData->iColinc << 2);
           pDataline += 4;
@@ -5836,7 +5836,7 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
             }
             else
             {                          /* now blend (premultiplied) */
-			  t = 255 - s;
+              t = 255 - s;
               pScanline[0] = (mng_uint8)(255 - DIV255B8(t * (255 - pScanline[0])));
 #ifdef MNG_OPTIMIZE_FOOTPRINT_DIV
               {
@@ -5848,7 +5848,7 @@ mng_retcode mng_display_abgr8_pm (mng_datap pData)
                 }
               }
 #else
-			  pScanline[1] = DIV255B8(s * pDataline[2] + t * pScanline[1]);
+              pScanline[1] = DIV255B8(s * pDataline[2] + t * pScanline[1]);
               pScanline[2] = DIV255B8(s * pDataline[1] + t * pScanline[2]);
               pScanline[3] = DIV255B8(s * pDataline[0] + t * pScanline[3]);
 #endif
@@ -6332,7 +6332,7 @@ mng_retcode mng_display_rgb565 (mng_datap pData)
               iFGg16 = mng_get_uint16 (pDataline+2);
               iFGb16 = mng_get_uint16 (pDataline+4);
 
-			                           /* scale background up */
+                                       /* scale background up */
               iBGr16 = (mng_uint8)(  *(pScanline+1) & 0xF8 );
               iBGg16 = (mng_uint8)( (*(pScanline+1) << 5)  |  ( ((*pScanline) & 0xE0) >> 3 ) );
               iBGb16 = (mng_uint8)(  *(pScanline  ) << 3   );
@@ -6467,7 +6467,7 @@ mng_retcode mng_display_rgb565 (mng_datap pData)
               iFGg16 = mng_get_uint16 (pDataline+2);
               iFGb16 = mng_get_uint16 (pDataline+4);
 
-			                           /* scale background up */
+                                       /* scale background up */
               iBGr16 = (mng_uint8)(  *(pScanline+1) & 0xF8 );
               iBGg16 = (mng_uint8)( (*(pScanline+1) << 5)  |  ( ((*pScanline) & 0xE0) >> 3 ) );
               iBGb16 = (mng_uint8)(  *(pScanline  ) << 3   );
@@ -6704,7 +6704,7 @@ mng_retcode mng_display_bgra565 (mng_datap pData)
             {                          /* plain copy it */
               *(pScanline+1) = (mng_uint8)( (*(pDataline))&0xF8 )  |  (mng_uint8)( (*(pDataline+2)>>5  )     );
               *pScanline     = (mng_uint8)( (*(pDataline+4)) >>3)  |  (mng_uint8)( (*(pDataline+2)&0xFC) << 3);
-			  *(pScanline+2) = *(pDataline+6);
+              *(pScanline+2) = *(pDataline+6);
             }
             else
             {
@@ -6718,7 +6718,7 @@ mng_retcode mng_display_bgra565 (mng_datap pData)
                 iBGg16 = (mng_uint16)( (*(pScanline+1) << 5)  |  (((*(pScanline  )) & 0xE0) >>3 ) );
                 iBGr16 = (mng_uint16)( (*(pScanline  )) << 3   );
 
-				iBGr16 = (mng_uint16)((mng_uint32)iBGr16 << 8) | iBGr16;
+                iBGr16 = (mng_uint16)((mng_uint32)iBGr16 << 8) | iBGr16;
                 iBGg16 = (mng_uint16)((mng_uint32)iBGg16 << 8) | iBGg16;
                 iBGb16 = (mng_uint16)((mng_uint32)iBGb16 << 8) | iBGb16;
 
@@ -6736,7 +6736,7 @@ mng_retcode mng_display_bgra565 (mng_datap pData)
                 iBGg16 = (mng_uint16)( (*(pScanline+1) << 5)  |  (((*(pScanline  )) & 0xE0) >>3 ) );
                 iBGr16 = (mng_uint16)( (*(pScanline  )) << 3   );
 
-				iBGr16 = (mng_uint16)((mng_uint32)iBGr16 << 8) | iBGr16;
+                iBGr16 = (mng_uint16)((mng_uint32)iBGr16 << 8) | iBGr16;
                 iBGg16 = (mng_uint16)((mng_uint32)iBGg16 << 8) | iBGg16;
                 iBGb16 = (mng_uint16)((mng_uint32)iBGb16 << 8) | iBGb16;
                                        /* let's blend */
@@ -6800,7 +6800,7 @@ mng_retcode mng_display_bgra565 (mng_datap pData)
 
                 *pScanline     = (mng_uint8) ( ( iCb8 >>  3  )  | ( (iCg8 & 0xFC) << 3) );
                 *(pScanline+1) = (mng_uint8) ( ( iCr8  & 0xF8 )  |   (iCg8>>5) );
-				*(pScanline+2) = (mng_uint8) iCa8;
+                *(pScanline+2) = (mng_uint8) iCa8;
               }
             }
           }
@@ -6884,7 +6884,7 @@ mng_retcode mng_display_bgra565 (mng_datap pData)
             {                          /* plain copy it */
               *(pScanline+1) = (mng_uint8)( (*(pDataline))&0xF8 )  |  (mng_uint8)( (*(pDataline+2)>>5  )     );
               *pScanline     = (mng_uint8)( (*(pDataline+4)) >>3)  |  (mng_uint8)( (*(pDataline+2)&0xFC) << 3);
-			  *(pScanline+2) = *(pDataline+6);
+              *(pScanline+2) = *(pDataline+6);
             }
             else
             {
@@ -6898,7 +6898,7 @@ mng_retcode mng_display_bgra565 (mng_datap pData)
                 iBGg16 = (mng_uint16)( (*(pScanline+1) << 5)  |  (((*(pScanline  )) & 0xE0) >>3 ) );
                 iBGr16 = (mng_uint16)( (*(pScanline  )) << 3   );
 
-				iBGr16 = (mng_uint16)((mng_uint32)iBGr16 << 8) | iBGr16;
+                iBGr16 = (mng_uint16)((mng_uint32)iBGr16 << 8) | iBGr16;
                 iBGg16 = (mng_uint16)((mng_uint32)iBGg16 << 8) | iBGg16;
                 iBGb16 = (mng_uint16)((mng_uint32)iBGb16 << 8) | iBGb16;
 
@@ -6916,7 +6916,7 @@ mng_retcode mng_display_bgra565 (mng_datap pData)
                 iBGg16 = (mng_uint16)( (*(pScanline+1) << 5)  |  (((*(pScanline  )) & 0xE0) >>3 ) );
                 iBGr16 = (mng_uint16)( (*(pScanline  )) << 3   );
 
-				iBGr16 = (mng_uint16)((mng_uint32)iBGr16 << 8) | iBGr16;
+                iBGr16 = (mng_uint16)((mng_uint32)iBGr16 << 8) | iBGr16;
                 iBGg16 = (mng_uint16)((mng_uint32)iBGg16 << 8) | iBGg16;
                 iBGb16 = (mng_uint16)((mng_uint32)iBGb16 << 8) | iBGb16;
                                        /* let's blend */
@@ -6980,7 +6980,7 @@ mng_retcode mng_display_bgra565 (mng_datap pData)
 
                 *pScanline     = (mng_uint8) ( ( iCb8 >>  3  )  | ( (iCg8 & 0xFC) << 3) );
                 *(pScanline+1) = (mng_uint8) ( ( iCr8  & 0xF8 )  |   (iCg8>>5) );
-				*(pScanline+2) = (mng_uint8) iCa8;
+                *(pScanline+2) = (mng_uint8) iCa8;
               }
             }
           }
@@ -7084,7 +7084,7 @@ mng_retcode mng_display_bgra565 (mng_datap pData)
 
                 *pScanline     = (mng_uint8) ( ( iCb8 >>  3  )  | ( (iCg8 & 0xFC) << 3) );
                 *(pScanline+1) = (mng_uint8) ( ( iCr8  & 0xF8 )  |   (iCg8>>5) );
-				*(pScanline+2) = (mng_uint8) iCa8;
+                *(pScanline+2) = (mng_uint8) iCa8;
               }
             }
           }
@@ -7188,7 +7188,7 @@ mng_retcode mng_display_rgba565 (mng_datap pData)
             {                          /* plain copy it */
               *(pScanline+1) = (mng_uint8)( (*(pDataline+4))&0xF8 )  |  (mng_uint8)( (*(pDataline+2)>>5  )     );
               *pScanline     = (mng_uint8)( (*(pDataline)) >>3)  |  (mng_uint8)( (*(pDataline+2)&0xFC) << 3);
-			  *(pScanline+2) = *(pDataline+6);
+              *(pScanline+2) = *(pDataline+6);
             }
             else
             {
@@ -7202,7 +7202,7 @@ mng_retcode mng_display_rgba565 (mng_datap pData)
                 iBGg16 = (mng_uint16)( (*(pScanline+1) << 5)  |  (((*(pScanline  )) & 0xE0) >>3 ) );
                 iBGb16 = (mng_uint16)( (*(pScanline  )) << 3   );
 
-				iBGr16 = (mng_uint16)((mng_uint32)iBGr16 << 8) | iBGr16;
+                iBGr16 = (mng_uint16)((mng_uint32)iBGr16 << 8) | iBGr16;
                 iBGg16 = (mng_uint16)((mng_uint32)iBGg16 << 8) | iBGg16;
                 iBGb16 = (mng_uint16)((mng_uint32)iBGb16 << 8) | iBGb16;
 
@@ -7220,7 +7220,7 @@ mng_retcode mng_display_rgba565 (mng_datap pData)
                 iBGg16 = (mng_uint16)( (*(pScanline+1) << 5)  |  (((*(pScanline  )) & 0xE0) >>3 ) );
                 iBGb16 = (mng_uint16)( (*(pScanline  )) << 3   );
 
-				iBGr16 = (mng_uint16)((mng_uint32)iBGr16 << 8) | iBGr16;
+                iBGr16 = (mng_uint16)((mng_uint32)iBGr16 << 8) | iBGr16;
                 iBGg16 = (mng_uint16)((mng_uint32)iBGg16 << 8) | iBGg16;
                 iBGb16 = (mng_uint16)((mng_uint32)iBGb16 << 8) | iBGb16;
                                        /* let's blend */
@@ -7284,7 +7284,7 @@ mng_retcode mng_display_rgba565 (mng_datap pData)
 
                 *pScanline     = (mng_uint8) ( ( iCr8 >>  3  )  | ( (iCg8 & 0xFC) << 3) );
                 *(pScanline+1) = (mng_uint8) ( ( iCb8  & 0xF8 )  |   (iCg8>>5) );
-				*(pScanline+2) = (mng_uint8) iCa8;
+                *(pScanline+2) = (mng_uint8) iCa8;
               }
             }
           }
@@ -7368,7 +7368,7 @@ mng_retcode mng_display_rgba565 (mng_datap pData)
             {                          /* plain copy it */
               *(pScanline+1) = (mng_uint8)( (*(pDataline+4))&0xF8 )  |  (mng_uint8)( (*(pDataline+2)>>5  )     );
               *pScanline     = (mng_uint8)( (*(pDataline)) >>3)  |  (mng_uint8)( (*(pDataline+2)&0xFC) << 3);
-			  *(pScanline+2) = *(pDataline+6);
+              *(pScanline+2) = *(pDataline+6);
             }
             else
             {
@@ -7382,7 +7382,7 @@ mng_retcode mng_display_rgba565 (mng_datap pData)
                 iBGg16 = (mng_uint16)( (*(pScanline+1) << 5)  |  (((*(pScanline  )) & 0xE0) >>3 ) );
                 iBGb16 = (mng_uint16)( (*(pScanline  )) << 3   );
 
-				iBGr16 = (mng_uint16)((mng_uint32)iBGr16 << 8) | iBGr16;
+                iBGr16 = (mng_uint16)((mng_uint32)iBGr16 << 8) | iBGr16;
                 iBGg16 = (mng_uint16)((mng_uint32)iBGg16 << 8) | iBGg16;
                 iBGb16 = (mng_uint16)((mng_uint32)iBGb16 << 8) | iBGb16;
 
@@ -7400,7 +7400,7 @@ mng_retcode mng_display_rgba565 (mng_datap pData)
                 iBGg16 = (mng_uint16)( (*(pScanline+1) << 5)  |  (((*(pScanline  )) & 0xE0) >>3 ) );
                 iBGb16 = (mng_uint16)( (*(pScanline  )) << 3   );
 
-				iBGr16 = (mng_uint16)((mng_uint32)iBGr16 << 8) | iBGr16;
+                iBGr16 = (mng_uint16)((mng_uint32)iBGr16 << 8) | iBGr16;
                 iBGg16 = (mng_uint16)((mng_uint32)iBGg16 << 8) | iBGg16;
                 iBGb16 = (mng_uint16)((mng_uint32)iBGb16 << 8) | iBGb16;
                                        /* let's blend */
@@ -7464,7 +7464,7 @@ mng_retcode mng_display_rgba565 (mng_datap pData)
 
                 *pScanline     = (mng_uint8) ( ( iCr8 >>  3  )  | ( (iCg8 & 0xFC) << 3) );
                 *(pScanline+1) = (mng_uint8) ( ( iCb8  & 0xF8 )  |   (iCg8>>5) );
-				*(pScanline+2) = (mng_uint8) iCa8;
+                *(pScanline+2) = (mng_uint8) iCa8;
               }
             }
           }
@@ -7568,7 +7568,7 @@ mng_retcode mng_display_rgba565 (mng_datap pData)
 
                 *pScanline     = (mng_uint8) ( ( iCr8 >>  3  )  | ( (iCg8 & 0xFC) << 3) );
                 *(pScanline+1) = (mng_uint8) ( ( iCb8  & 0xF8 )  |   (iCg8>>5) );
-				*(pScanline+2) = (mng_uint8) iCa8;
+                *(pScanline+2) = (mng_uint8) iCa8;
               }
             }
           }
@@ -8193,7 +8193,7 @@ mng_retcode mng_display_rgb555 (mng_datap pData)
               iFGg16 = mng_get_uint16 (pDataline+2);
               iFGb16 = mng_get_uint16 (pDataline+4);
 
-			                           /* scale background up */
+                                       /* scale background up */
               iBGr16 = (mng_uint8)( (*(pScanline+1) & 0xF8) << 1 );
               iBGg16 = (mng_uint8)( (*(pScanline+1)         << 6 )  |  ( ((*pScanline) & 0xE0) >> 2 ) );
               iBGb16 = (mng_uint8)(  *(pScanline  )         << 3 );
@@ -8326,7 +8326,7 @@ mng_retcode mng_display_rgb555 (mng_datap pData)
               iFGg16 = mng_get_uint16 (pDataline+2);
               iFGb16 = mng_get_uint16 (pDataline+4);
 
-			                           /* scale background up */
+                                       /* scale background up */
               iBGr16 = (mng_uint8)( (*(pScanline+1) & 0xF8) << 1 );
               iBGg16 = (mng_uint8)( (*(pScanline+1)         << 6 )  |  ( ((*pScanline) & 0xE0) >> 2 ) );
               iBGb16 = (mng_uint8)(  *(pScanline  )         << 3 );
@@ -8565,7 +8565,7 @@ mng_retcode mng_display_bgr555 (mng_datap pData)
               iFGg16 = mng_get_uint16 (pDataline+2);
               iFGb16 = mng_get_uint16 (pDataline+4);
 
-			                           /* scale background up */
+                                       /* scale background up */
               iBGb16 = (mng_uint8)( (*(pScanline+1) & 0xF8) << 1 );
               iBGg16 = (mng_uint8)( (*(pScanline+1)         << 6 )  |  ( ((*pScanline) & 0xE0) >> 2 ) );
               iBGr16 = (mng_uint8)(  *(pScanline  )         << 3 );
@@ -8698,7 +8698,7 @@ mng_retcode mng_display_bgr555 (mng_datap pData)
               iFGg16 = mng_get_uint16 (pDataline+2);
               iFGb16 = mng_get_uint16 (pDataline+4);
 
-			                           /* scale background up */
+                                       /* scale background up */
               iBGb16 = (mng_uint8)( (*(pScanline+1) & 0xF8) << 1 );
               iBGg16 = (mng_uint8)( (*(pScanline+1)         << 6 )  |  ( ((*pScanline) & 0xE0) >> 2 ) );
               iBGr16 = (mng_uint8)(  *(pScanline  )         << 3 );
@@ -8968,15 +8968,15 @@ mng_retcode mng_restore_bkgd_backcolor (mng_datap pData)
 #ifdef MNG_BIGENDIAN_SUPPORTED
   /* fast way for big endian */
   iWrite = (((mng_uint8)(pData->iBACKred   >> 8)) << 24) |
-		   (((mng_uint8)(pData->iBACKgreen >> 8)) << 16) |
-		   (((mng_uint8)(pData->iBACKblue  >> 8)) <<  8) |
+           (((mng_uint8)(pData->iBACKgreen >> 8)) << 16) |
+           (((mng_uint8)(pData->iBACKblue  >> 8)) <<  8) |
            ( 0xFF                                      );
 #elif defined(MNG_LITTLEENDIAN_SUPPORTED)
   /* fast way for little endian */
   iWrite = ( 0xFF                                 << 24) |
            (((mng_uint8)(pData->iBACKblue  >> 8)) << 16) |
-		   (((mng_uint8)(pData->iBACKgreen >> 8)) <<  8) |
-		   (((mng_uint8)(pData->iBACKred   >> 8))      );
+           (((mng_uint8)(pData->iBACKgreen >> 8)) <<  8) |
+           (((mng_uint8)(pData->iBACKred   >> 8))      );
 #else
   /* generic way, works on all platforms */
   /* put the data in memory in the correct order */
@@ -9080,13 +9080,13 @@ mng_retcode mng_restore_bkgd_bkgd (mng_datap pData)
 #ifdef MNG_BIGENDIAN_SUPPORTED
   /* fast way for big endian */
   iWrite = (iRed   << 24) |
-		   (iGreen << 16) |
-		   (iBlue  <<  8);
+           (iGreen << 16) |
+           (iBlue  <<  8);
 #elif defined(MNG_LITTLEENDIAN_SUPPORTED)
   /* fast way for little endian */
   iWrite = (iBlue  << 16) |
-		   (iGreen <<  8) |
-		   (iRed        );
+           (iGreen <<  8) |
+           (iRed        );
 #else
   /* generic way, works on all platforms */
   /* put the data in memory in the correct order */
@@ -9127,13 +9127,13 @@ mng_retcode mng_restore_bkgd_bgcolor (mng_datap pData)
 #ifdef MNG_BIGENDIAN_SUPPORTED
   /* fast way for big endian */
   iWrite = (((mng_uint8)(pData->iBGred   >> 8)) << 24) |
-		   (((mng_uint8)(pData->iBGgreen >> 8)) << 16) |
-		   (((mng_uint8)(pData->iBGblue  >> 8)) <<  8);
+           (((mng_uint8)(pData->iBGgreen >> 8)) << 16) |
+           (((mng_uint8)(pData->iBGblue  >> 8)) <<  8);
 #elif defined(MNG_LITTLEENDIAN_SUPPORTED)
   /* fast way for little endian */
   iWrite = (((mng_uint8)(pData->iBGblue  >> 8)) << 16) |
-		   (((mng_uint8)(pData->iBGgreen >> 8)) <<  8) |
-		   (((mng_uint8)(pData->iBGred   >> 8))      );
+           (((mng_uint8)(pData->iBGgreen >> 8)) <<  8) |
+           (((mng_uint8)(pData->iBGred   >> 8))      );
 #else
   /* generic way, works on all platforms */
   /* put the data in memory in the correct order */

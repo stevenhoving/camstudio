@@ -1,4 +1,4 @@
-// CamWindow.h	- include file for CamStudio Library window api's
+// CamWindow.h    - include file for CamStudio Library window api's
 /////////////////////////////////////////////////////////////////////////////
 #ifndef CAMWINDOW_H
 #define CAMWINDOW_H
@@ -10,4 +10,4 @@
 void SetTitleBar(CString title);
 RECT FrameWindow(HWND hWnd, int maxxScreen, int maxyScreen, RECT rcClip);
 
-#endif	// CAMWINDOW_H
+#endif    // CAMWINDOW_H

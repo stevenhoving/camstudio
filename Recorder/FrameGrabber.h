@@ -8,12 +8,12 @@
 //
 
 #if !defined(_INC_VFW)
-    #define	NODRAWDIB
-    #define	NOAVIFMT
-    #define	NOMMREG
-    #define	NOAVIFILE
-    #define	NOMCIWND
-    #define	NOMSACM
+    #define    NODRAWDIB
+    #define    NOAVIFMT
+    #define    NOMMREG
+    #define    NOAVIFILE
+    #define    NOMCIWND
+    #define    NOMSACM
     #include "vfw.h"
 #endif
 
@@ -24,45 +24,45 @@ class CFrameGrabber : public CWnd
 {
 // Construction
 public:
-	CFrameGrabber();
+    CFrameGrabber();
 
 // Attributes
 public:
-	LPBITMAPINFO GetDIB();
-	LPBYTE GetImageBitsBuffer();
+    LPBITMAPINFO GetDIB();
+    LPBYTE GetImageBitsBuffer();
 
-	CSize GetImageSize();
-	DWORD GetImageBitsResolution();
+    CSize GetImageSize();
+    DWORD GetImageBitsResolution();
 
-	BOOL VideoFormatDialog();
-	BOOL VideoSourceDialog();
+    BOOL VideoFormatDialog();
+    BOOL VideoSourceDialog();
 // Operations
 public:
 
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CFrameGrabber)
-	public:
-	virtual BOOL Create(int at_x, int at_y, CWnd *pParentWnd);
-	//}}AFX_VIRTUAL
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CFrameGrabber)
+    public:
+    virtual BOOL Create(int at_x, int at_y, CWnd *pParentWnd);
+    //}}AFX_VIRTUAL
 
 // Implementation
 public:
-	virtual ~CFrameGrabber();
+    virtual ~CFrameGrabber();
 
-	//must be a public method (for use with callbac)
-	void SetImageData(LPVOID data);
+    //must be a public method (for use with callbac)
+    void SetImageData(LPVOID data);
 
-	// Generated message map functions
+    // Generated message map functions
 protected:
-	//{{AFX_MSG(CFrameGrabber)
-	afx_msg void OnDestroy();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
-	void	update_buffer_size();
-	LPVOID	imageData;
-	DWORD	dwLastCallback;
-	int		vfs;
+    //{{AFX_MSG(CFrameGrabber)
+    afx_msg void OnDestroy();
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
+    void    update_buffer_size();
+    LPVOID    imageData;
+    DWORD    dwLastCallback;
+    int        vfs;
 };
 
 /////////////////////////////////////////////////////////////////////////////

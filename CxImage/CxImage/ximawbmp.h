@@ -1,6 +1,6 @@
 /*
- * File:	ximawbmp.h
- * Purpose:	WBMP Image Class Loader and Writer
+ * File:    ximawbmp.h
+ * Purpose:    WBMP Image Class Loader and Writer
  */
 /* ==========================================================
  * CxImageWBMP (c) 12/Jul/2002 Davide Pizzolato - www.xdp.it
@@ -26,21 +26,21 @@ typedef struct tagWbmpHeader
 } WBMPHEADER;
 #pragma pack()
 public:
-	CxImageWBMP(): CxImage(CXIMAGE_FORMAT_WBMP) {}
+    CxImageWBMP(): CxImage(CXIMAGE_FORMAT_WBMP) {}
 
-//	bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_WBMP);}
-//	bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_WBMP);}
-	bool Decode(CxFile * hFile);
-	bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
+//    bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_WBMP);}
+//    bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_WBMP);}
+    bool Decode(CxFile * hFile);
+    bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
 protected:
-	bool ReadOctet(CxFile * hFile, uint32_t *data);
+    bool ReadOctet(CxFile * hFile, uint32_t *data);
 
 public:
 #if CXIMAGE_SUPPORT_ENCODE
-	bool Encode(CxFile * hFile);
-	bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
+    bool Encode(CxFile * hFile);
+    bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
 protected:
-	bool WriteOctet(CxFile * hFile, const uint32_t data);
+    bool WriteOctet(CxFile * hFile, const uint32_t data);
 #endif // CXIMAGE_SUPPORT_ENCODE
 };
 

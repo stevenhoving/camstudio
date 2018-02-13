@@ -1,6 +1,6 @@
 /*
- * File:	ximatga.h
- * Purpose:	TARGA Image Class Loader and Writer
+ * File:    ximatga.h
+ * Purpose:    TARGA Image Class Loader and Writer
  */
 /* ==========================================================
  * CxImageTGA (c) 05/Jan/2002 Davide Pizzolato - www.xdp.it
@@ -39,21 +39,21 @@ typedef struct tagTgaHeader
 #pragma pack()
 
 public:
-	CxImageTGA(): CxImage(CXIMAGE_FORMAT_TGA) {}
+    CxImageTGA(): CxImage(CXIMAGE_FORMAT_TGA) {}
 
-//	bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_TGA);}
-//	bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_TGA);}
-	bool Decode(CxFile * hFile);
-	bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
+//    bool Load(const TCHAR * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_TGA);}
+//    bool Save(const TCHAR * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_TGA);}
+    bool Decode(CxFile * hFile);
+    bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
 
 #if CXIMAGE_SUPPORT_ENCODE
-	bool Encode(CxFile * hFile);
-	bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
+    bool Encode(CxFile * hFile);
+    bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
 #endif // CXIMAGE_SUPPORT_ENCODE
 protected:
-	uint8_t ExpandCompressedLine(uint8_t* pDest,TGAHEADER* ptgaHead,CxFile *hFile,int32_t width, int32_t y, uint8_t rleLeftover);
-	void ExpandUncompressedLine(uint8_t* pDest,TGAHEADER* ptgaHead,CxFile *hFile,int32_t width, int32_t y, int32_t xoffset);
-	void tga_toh(TGAHEADER* p);
+    uint8_t ExpandCompressedLine(uint8_t* pDest,TGAHEADER* ptgaHead,CxFile *hFile,int32_t width, int32_t y, uint8_t rleLeftover);
+    void ExpandUncompressedLine(uint8_t* pDest,TGAHEADER* ptgaHead,CxFile *hFile,int32_t width, int32_t y, int32_t xoffset);
+    void tga_toh(TGAHEADER* p);
 };
 
 #endif

@@ -9,15 +9,15 @@ static char THIS_FILE[]=__FILE__;
 
 CLayeredWindowHelperST::CLayeredWindowHelperST()
 {
-	// Load DLL.
-	m_hDll = ::LoadLibrary(_T("USER32.dll"));
+    // Load DLL.
+    m_hDll = ::LoadLibrary(_T("USER32.dll"));
 }
 
 CLayeredWindowHelperST::~CLayeredWindowHelperST()
 {
-	// Unload DLL (if any)
-	if (m_hDll) ::FreeLibrary(m_hDll);
-	m_hDll = NULL;
+    // Unload DLL (if any)
+    if (m_hDll) ::FreeLibrary(m_hDll);
+    m_hDll = NULL;
 }
 
 // This function add the WS_EX_LAYERED style to the specified window.
@@ -36,7 +36,7 @@ CLayeredWindowHelperST::~CLayeredWindowHelperST()
 //
 LONG CLayeredWindowHelperST::AddLayeredStyle(HWND hWnd)
 {
-	return ::SetWindowLong(hWnd, GWL_EXSTYLE, ::GetWindowLong(hWnd, GWL_EXSTYLE) | WS_EX_LAYERED);
+    return ::SetWindowLong(hWnd, GWL_EXSTYLE, ::GetWindowLong(hWnd, GWL_EXSTYLE) | WS_EX_LAYERED);
 } // End of AddLayeredStyle
 
 // This function sets the opacity and transparency color key of a layered window.
@@ -65,20 +65,20 @@ LONG CLayeredWindowHelperST::AddLayeredStyle(HWND hWnd)
 //
 BOOL CLayeredWindowHelperST::SetLayeredWindowAttributes(HWND hWnd, COLORREF crKey, BYTE bAlpha, DWORD dwFlags)
 {
-	BOOL bRetValue = TRUE;
+    BOOL bRetValue = TRUE;
 
-	if (m_hDll)
-	{
-		lpfnSetLayeredWindowAttributes pFn = NULL;
-		pFn = (lpfnSetLayeredWindowAttributes)GetProcAddress(m_hDll, "SetLayeredWindowAttributes");
-		if (pFn)
-		{
-			bRetValue = pFn(hWnd, crKey, bAlpha, dwFlags);
-		} // if
-		else bRetValue = FALSE;
-	} // if
+    if (m_hDll)
+    {
+        lpfnSetLayeredWindowAttributes pFn = NULL;
+        pFn = (lpfnSetLayeredWindowAttributes)GetProcAddress(m_hDll, "SetLayeredWindowAttributes");
+        if (pFn)
+        {
+            bRetValue = pFn(hWnd, crKey, bAlpha, dwFlags);
+        } // if
+        else bRetValue = FALSE;
+    } // if
 
-	return bRetValue;
+    return bRetValue;
 } // End of SetLayeredWindowAttributes
 
 // This function sets the percentage of opacity or transparency of a layered window.
@@ -97,8 +97,8 @@ BOOL CLayeredWindowHelperST::SetLayeredWindowAttributes(HWND hWnd, COLORREF crKe
 //
 BOOL CLayeredWindowHelperST::SetTransparentPercentage(HWND hWnd, BYTE byPercentage)
 {
-	// Do not accept values greater than 100%
-	if (byPercentage > 100) byPercentage = 100;
+    // Do not accept values greater than 100%
+    if (byPercentage > 100) byPercentage = 100;
 
-	return SetLayeredWindowAttributes(hWnd, 0, 255 * byPercentage/100, LWA_ALPHA);
+    return SetLayeredWindowAttributes(hWnd, 0, 255 * byPercentage/100, LWA_ALPHA);
 } // End of SetTransparentPercentage

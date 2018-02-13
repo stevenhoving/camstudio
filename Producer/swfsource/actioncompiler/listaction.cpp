@@ -5,7 +5,7 @@
 #include "action.h"
 #include "compile.h"
 
-#define print(x)	{fputs(x,stdout);}
+#define print(x)    {fputs(x,stdout);}
 
 int gIndent;
 #define INDENT_LEVEL 2
@@ -116,13 +116,13 @@ void dumpsbytes(Buffer f, int length)
       ++j;
 
       if (j==length)
-		break;
+        break;
     }
 
     if (j==length)
     {
       for(k=i+1; k<16; ++k)
-	print("   ");
+    print("   ");
 
       ++i;
     }
@@ -131,9 +131,9 @@ void dumpsbytes(Buffer f, int length)
 
     for(k=0; k<i; ++k)
       if ((buf[k] > 31) && (buf[k] < 128))
-	putchar(buf[k]);
+    putchar(buf[k]);
       else
-	putchar('.');
+    putchar('.');
 
     putchar('\n');
 
@@ -290,42 +290,42 @@ int printActionRecord(Buffer f)
 
       while(fileOffset < start+length)
       {
-	switch(type = readUInt8(f))
-	{
-	  case 0: /* string */
-	    println("Push String: %s", readString(f));
-	    break;
-	  case 1: /* property */
-	    readUInt16(f); /* always 0? */
-	    println("Push Property: %04x", readUInt16(f));
-	    break;
-	  case 2: /* null */
-	    println("Push NULL");
-	    break;
-	  case 3: /* ??? */
-	    println("Push type 3- ??");
-	    break;
-	  case 4:
-	    println("Push type 4 (%i)- ??", readUInt8(f));
-	    break;
-	  case 5:
-	    if (readUInt8(f))
-	      println("Push true");
-	    else
-	      println("Push false");
-	    break;
-	  case 6: /* double */
-	    println("Push %f", readDouble(f));
-	    break;
-	  case 7: /* int */
-	    println("Push %i", readSInt32(f));
-	    break;
-	  case 8: /* dictionary */
-	    println("Push \"%s\"", dictionary[readUInt8(f)]);
-	    break;
-	  default:
-	    println("unknown push type: %i", type);
-	}
+    switch(type = readUInt8(f))
+    {
+      case 0: /* string */
+        println("Push String: %s", readString(f));
+        break;
+      case 1: /* property */
+        readUInt16(f); /* always 0? */
+        println("Push Property: %04x", readUInt16(f));
+        break;
+      case 2: /* null */
+        println("Push NULL");
+        break;
+      case 3: /* ??? */
+        println("Push type 3- ??");
+        break;
+      case 4:
+        println("Push type 4 (%i)- ??", readUInt8(f));
+        break;
+      case 5:
+        if (readUInt8(f))
+          println("Push true");
+        else
+          println("Push false");
+        break;
+      case 6: /* double */
+        println("Push %f", readDouble(f));
+        break;
+      case 7: /* int */
+        println("Push %i", readSInt32(f));
+        break;
+      case 8: /* dictionary */
+        println("Push \"%s\"", dictionary[readUInt8(f)]);
+        break;
+      default:
+        println("unknown push type: %i", type);
+    }
       }
       break;
     }
@@ -346,17 +346,17 @@ int printActionRecord(Buffer f)
       break;
     case SWFACTION_GETURL2:
       {
-	int flags = readUInt8(f);
+    int flags = readUInt8(f);
 
-	char *op = (flags & 0x80) ? "Get URL2 (loadvariables)" : "Get URL2";
-	char *tgt = (flags & 0x40) ? " into target" : "";
+    char *op = (flags & 0x80) ? "Get URL2 (loadvariables)" : "Get URL2";
+    char *tgt = (flags & 0x40) ? " into target" : "";
 
-	switch(flags & 0x03)
-	{
+    switch(flags & 0x03)
+    {
           case 0: println("%s%s (Don't send)", op, tgt); break;
           case 1: println("%s%s (GET)", op, tgt); break;
           case 2: println("%s%s (POST)", op, tgt); break;
-	}
+    }
       }
       break;
     case SWFACTION_BRANCHIFTRUE:
@@ -369,9 +369,9 @@ int printActionRecord(Buffer f)
     case SWFACTION_GOTOEXPRESSION:
       print("Goto Expression");
       if (readUInt8(f) == 1)
-	printf(" and Play\n");
+    printf(" and Play\n");
       else
-	printf(" and Stop\n");
+    printf(" and Stop\n");
       break;
     case SWFACTION_WAITFORFRAME:
     {
@@ -473,7 +473,7 @@ int printActionRecord(Buffer f)
       print("declare dictionary:");
 
       for(i=0; i<n; ++i)
-	printf(" %s%c", dictionary[i]=readString(f), (i<n-1)?',':'\n');
+    printf(" %s%c", dictionary[i]=readString(f), (i<n-1)?',':'\n');
 
       break;
     }
@@ -498,12 +498,12 @@ int printActionRecord(Buffer f)
 
       if (n > 0)
       {
-	printf("%s", readString(f));
-	--n;
+    printf("%s", readString(f));
+    --n;
       }
 
       for(; n>0; --n)
-	printf(", %s", readString(f));
+    printf(", %s", readString(f));
 
       putchar(')');
       putchar('\n');

@@ -9,8 +9,8 @@
 #define ENT_LANGID _T("LanguageID")
 #define ENT_LANGINI _T("LangINI")
 #define SEC_SETTINGS _T("Language")
-#define STANDARD_LANGID 0x09	// English
-//#define STANDARD_LANGID 0x07	// German
+#define STANDARD_LANGID 0x09    // English
+//#define STANDARD_LANGID 0x07    // German
 
 // FlashInterface.h : header file
 //
@@ -20,40 +20,40 @@
 
 class CFlashInterface : public CPropertyPage
 {
-	DECLARE_DYNCREATE(CFlashInterface)
+    DECLARE_DYNCREATE(CFlashInterface)
 
 // Construction
 public:
-	CFlashInterface();
-	~CFlashInterface();
+    CFlashInterface();
+    ~CFlashInterface();
 
 // Dialog Data
-	//{{AFX_DATA(CFlashInterface)
-	enum { IDD = IDD_INTERFACE };
-		// NOTE - ClassWizard will add data members here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
-	//}}AFX_DATA
+    //{{AFX_DATA(CFlashInterface)
+    enum { IDD = IDD_INTERFACE };
+        // NOTE - ClassWizard will add data members here.
+        //    DO NOT EDIT what you see in these blocks of generated code !
+    //}}AFX_DATA
 
 // Overrides
-	// ClassWizard generate virtual function overrides
-	//{{AFX_VIRTUAL(CFlashInterface)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // ClassWizard generate virtual function overrides
+    //{{AFX_VIRTUAL(CFlashInterface)
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
 // Implementation
 protected:
-	// Generated message map functions
-	//{{AFX_MSG(CFlashInterface)
-	virtual BOOL OnInitDialog();
-	virtual void OnOK();
-	afx_msg void OnButton1();
-	afx_msg void OnButtonchoose();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    // Generated message map functions
+    //{{AFX_MSG(CFlashInterface)
+    virtual BOOL OnInitDialog();
+    virtual void OnOK();
+    afx_msg void OnButton1();
+    afx_msg void OnButtonchoose();
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 
 private:
-	LANGID CurLangID;
+    LANGID CurLangID;
     BOOL LoadLangIDDLL(LANGID LangID);
 };
 

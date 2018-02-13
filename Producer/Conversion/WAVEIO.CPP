@@ -316,9 +316,9 @@ WIOERR WIOAPI wioFileOpen
             //  people will start realizing that something is missing???
             //
 
-			//CamStudio v2.24
-			//By pass this message since some of the converted .wav files are like this
-			/*
+            //CamStudio v2.24
+            //By pass this message since some of the converted .wav files are like this
+            /*
             u = MessageBox(NULL, TEXT("This wave file does not have a 'fact' chunk and requires one! This is completely invalid and MUST be fixed! Attempt to load it anyway?"),
                             TEXT("wioFileOpen"), MB_YESNO | MB_ICONEXCLAMATION | MB_TASKMODAL);
             if (IDNO == u)
@@ -326,7 +326,7 @@ WIOERR WIOAPI wioFileOpen
                 werr = WIOERR_BADFILE;
                 goto wio_Open_Error;
             }
-			*/
+            */
 
             //
             //  !!! need to hack stuff in here !!!

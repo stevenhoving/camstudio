@@ -32,33 +32,33 @@
 
 
 extern void psd_adjustment_blend_image(psd_context * context, psd_layer_record * layer, psd_rect * dst_rect,
-	psd_uchar * lookup_table);
+    psd_uchar * lookup_table);
 
 
 psd_status psd_get_layer_invert(psd_context * context, psd_layer_record * layer)
 {
-	layer->layer_info_type[layer->layer_info_count] = psd_layer_info_type_invert;
-	layer->layer_type = psd_layer_type_invert;
-	layer->layer_info_count ++;
-	// there is no parameter in invert layer.
+    layer->layer_info_type[layer->layer_info_count] = psd_layer_info_type_invert;
+    layer->layer_type = psd_layer_type_invert;
+    layer->layer_info_count ++;
+    // there is no parameter in invert layer.
 
-	layer->adjustment_valid = psd_true;
+    layer->adjustment_valid = psd_true;
 
-	return psd_status_done;
+    return psd_status_done;
 }
 
 psd_bool psd_layer_blend_invert(psd_context * context, psd_layer_record * layer, psd_rect * dst_rect)
 {
-	psd_int i;
-	psd_uchar lookup_table[256];
+    psd_int i;
+    psd_uchar lookup_table[256];
 
-	for(i = 0; i < 256; i ++)
-		lookup_table[i] = 255 - i;
+    for(i = 0; i < 256; i ++)
+        lookup_table[i] = 255 - i;
 
-	psd_adjustment_blend_image(context, layer, dst_rect, lookup_table);
+    psd_adjustment_blend_image(context, layer, dst_rect, lookup_table);
 
-	layer->adjustment_valid = psd_false;
-	
-	return psd_true;
+    layer->adjustment_valid = psd_false;
+    
+    return psd_true;
 }
 

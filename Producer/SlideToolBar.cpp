@@ -31,11 +31,11 @@ extern void SetTimeIndicator(CString timestr);
 
 CSlideToolBar::CSlideToolBar()
 {
-	m_slidevalue=0;
-	if (pmode == DUBBER)
-		SliderPosition = 7;
-	else if (pmode == PLAYER)
-		SliderPosition = 6;
+    m_slidevalue=0;
+    if (pmode == DUBBER)
+        SliderPosition = 7;
+    else if (pmode == PLAYER)
+        SliderPosition = 6;
 }
 
 CSlideToolBar::~CSlideToolBar()
@@ -43,10 +43,10 @@ CSlideToolBar::~CSlideToolBar()
 }
 
 BEGIN_MESSAGE_MAP(CSlideToolBar, CToolBar)
-	//{{AFX_MSG_MAP(CSlideToolBar)
-	ON_WM_CREATE()
-	ON_WM_HSCROLL()
-	//}}AFX_MSG_MAP
+    //{{AFX_MSG_MAP(CSlideToolBar)
+    ON_WM_CREATE()
+    ON_WM_HSCROLL()
+    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -54,102 +54,102 @@ END_MESSAGE_MAP()
 
 int CSlideToolBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-	if (CToolBar::OnCreate(lpCreateStruct) == -1)
-		return -1;
+    if (CToolBar::OnCreate(lpCreateStruct) == -1)
+        return -1;
 
-	//##################################################//
+    //##################################################//
     // Load the dummy buttons toolbar.
-	//
+    //
     if (!LoadToolBar (IDR_MAINFRAME))
         return -1;
 
-	CRect rect;
+    CRect rect;
 
-	int sliderheight = 22;
-	int offset = 0;
-	int initialwidth = 200;
+    int sliderheight = 22;
+    int offset = 0;
+    int initialwidth = 200;
 
-	SetButtonInfo (SliderPosition, ID_SLIDER, TBBS_SEPARATOR, initialwidth);
-	GetItemRect (SliderPosition, &rect);
+    SetButtonInfo (SliderPosition, ID_SLIDER, TBBS_SEPARATOR, initialwidth);
+    GetItemRect (SliderPosition, &rect);
 
-	if (rect.Height() - 2  < sliderheight )
-		sliderheight = rect.Height() - 2;
+    if (rect.Height() - 2  < sliderheight )
+        sliderheight = rect.Height() - 2;
 
-	offset = rect.Height() - sliderheight;
-	offset /=2;
+    offset = rect.Height() - sliderheight;
+    offset /=2;
 
-	rect.top = rect.top + offset ;
-	rect.bottom = rect.bottom - offset ;
+    rect.top = rect.top + offset ;
+    rect.bottom = rect.bottom - offset ;
 
-	//CString msx;
-	//msx.Format("offset %d, recttop %d, rectbottom %d, rectleft %d, rectright %d", offset, rect.top, rect.bottom, rect.left, rect.right);
-	//MessageBox(msx,"note",MB_OK);
+    //CString msx;
+    //msx.Format("offset %d, recttop %d, rectbottom %d, rectleft %d, rectright %d", offset, rect.top, rect.bottom, rect.left, rect.right);
+    //MessageBox(msx,"note",MB_OK);
 
-	if (!m_wndSliderCtrl.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP |// dwStyle
-						TBS_HORZ |
-						//TBS_AUTOTICKS |
-						TBS_NOTICKS |
-						TBS_BOTH,
-						rect,					// rect
-						this,		// CWnd* pParentWnd
-						ID_SLIDER))		// UINT  nID
-	{
-		return -1;
-	}
+    if (!m_wndSliderCtrl.Create(WS_CHILD | WS_VISIBLE | WS_TABSTOP |// dwStyle
+                        TBS_HORZ |
+                        //TBS_AUTOTICKS |
+                        TBS_NOTICKS |
+                        TBS_BOTH,
+                        rect,                    // rect
+                        this,        // CWnd* pParentWnd
+                        ID_SLIDER))        // UINT  nID
+    {
+        return -1;
+    }
 
-	SetPositions();
+    SetPositions();
 
-	sliderCtrlPtr = &m_wndSliderCtrl;
+    sliderCtrlPtr = &m_wndSliderCtrl;
 
-	return 0;
+    return 0;
 }
 
 void CSlideToolBar::SetPositions()
 {
-	m_wndSliderCtrl.SetRange(0, MAXTIMERANGE);
-	m_wndSliderCtrl.SetPos(m_slidevalue);
-	//m_wndSliderCtrl.SetPageSize(100);
-	//m_wndSliderCtrl.SetLineSize(1);
+    m_wndSliderCtrl.SetRange(0, MAXTIMERANGE);
+    m_wndSliderCtrl.SetPos(m_slidevalue);
+    //m_wndSliderCtrl.SetPageSize(100);
+    //m_wndSliderCtrl.SetLineSize(1);
 }
 
 void CSlideToolBar::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
-	// TODO: Add your message handler code here and/or call default
+    // TODO: Add your message handler code here and/or call default
 
-	//accept scrolling only if non playing ?
-	//accept only if a file exists ?
+    //accept scrolling only if non playing ?
+    //accept only if a file exists ?
 
-	if (!gfPlaying) {
-		CSliderCtrl* m_wndSliderCtrl = (CSliderCtrl*) pScrollBar;
-		long value = m_wndSliderCtrl->GetPos();
-		value = timeStart + (value * timeLength) / MAXTIMERANGE;
+    if (!gfPlaying) {
+        CSliderCtrl* m_wndSliderCtrl = (CSliderCtrl*) pScrollBar;
+        long value = m_wndSliderCtrl->GetPos();
+        value = timeStart + (value * timeLength) / MAXTIMERANGE;
 
-		if (value < timeStart)
-			value  = timeStart;
+        if (value < timeStart)
+            value  = timeStart;
 
-		if (value > timeStart + timeLength - 1)
-			value  = timeStart + timeLength - 1;
+        if (value > timeStart + timeLength - 1)
+            value  = timeStart + timeLength - 1;
 
-		playtime = value;
+        playtime = value;
 
-		if (timeLength > 0) {
-			float durationPlayed = (float) ((playtime - timeStart)/1000.0);
-			CString durationStr;
-			durationStr.Format("%8.1f sec",durationPlayed);
-			SetTimeIndicator(durationStr);
+        if (timeLength > 0) {
+            float durationPlayed = (float) ((playtime - timeStart)/1000.0);
+            CString durationStr;
+            durationStr.Format("%8.1f sec",durationPlayed);
+            SetTimeIndicator(durationStr);
 
-		}
+        }
 
-		::InvalidateRect(viewWnd, NULL, FALSE);
+        ::InvalidateRect(viewWnd, NULL, FALSE);
 
-		UpdateValues();
+        UpdateValues();
 
-		//HCURSOR hCursor = AfxGetApp()->LoadCursor(IDC_CURSOR_SLIDER);
-		//::SetCursor(hCursor);
+        //HCURSOR hCursor = AfxGetApp()->LoadCursor(IDC_CURSOR_SLIDER);
+        //::SetCursor(hCursor);
 
-		CToolBar::OnHScroll(nSBCode, nPos, pScrollBar);
+        CToolBar::OnHScroll(nSBCode, nPos, pScrollBar);
 
-	}
+    }
 }
 
 void CSlideToolBar::UpdateValues()
@@ -158,37 +158,37 @@ void CSlideToolBar::UpdateValues()
 
 void CSlideToolBar::AdjustTimeBar(CRect clientrect)
 {
-	CRect rect;
-	GetItemRect (SliderPosition, &rect);
+    CRect rect;
+    GetItemRect (SliderPosition, &rect);
 
-	int sliderheight = 22;
-	int offset = 0;
-	//int initialwidth = 200;		//Prevent C4189, init but not used
+    int sliderheight = 22;
+    int offset = 0;
+    //int initialwidth = 200;        //Prevent C4189, init but not used
 
-	if (rect.Height() - 2  < sliderheight )
-		sliderheight = rect.Height() - 2;
+    if (rect.Height() - 2  < sliderheight )
+        sliderheight = rect.Height() - 2;
 
-	offset = rect.Height() - sliderheight;
-	offset /=2;
+    offset = rect.Height() - sliderheight;
+    offset /=2;
 
-	rect.top = rect.top + offset ;
-	rect.bottom = rect.bottom - offset ;
+    rect.top = rect.top + offset ;
+    rect.bottom = rect.bottom - offset ;
 
-	rect.right = clientrect.right - 10;
+    rect.right = clientrect.right - 10;
 
-	m_wndSliderCtrl.MoveWindow( rect.left, rect.top, rect.right - rect.left, rect.Height(),TRUE );
+    m_wndSliderCtrl.MoveWindow( rect.left, rect.top, rect.right - rect.left, rect.Height(),TRUE );
 }
 
 // Dead code here...
 void CSlideToolBar::EnableButton(BOOL /*setToOn*/, int /*nIndex*/)
 {
-	//m_bEnableChanged = TRUE;
-	//nIndex = CommandToIndex( nIndex );
-	//UINT nNewStyle = GetButtonStyle(nIndex) & ~TBBS_DISABLED;
-	//if (!setToOn) {
-	//	nNewStyle |= TBBS_DISABLED;
-	//	nNewStyle &= ~TBBS_PRESSED;
-	//}
-	//SetButtonStyle(nIndex, nNewStyle);
+    //m_bEnableChanged = TRUE;
+    //nIndex = CommandToIndex( nIndex );
+    //UINT nNewStyle = GetButtonStyle(nIndex) & ~TBBS_DISABLED;
+    //if (!setToOn) {
+    //    nNewStyle |= TBBS_DISABLED;
+    //    nNewStyle &= ~TBBS_PRESSED;
+    //}
+    //SetButtonStyle(nIndex, nNewStyle);
 }
 

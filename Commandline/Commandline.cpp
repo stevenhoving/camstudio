@@ -231,31 +231,31 @@ int recordpreset = 0;
 ///////////////////////// //////////////////
 BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor,HDC hdcMonitor,LPRECT lprcMonitor,LPARAM dwData)
 {
-			
-			lprcMonitor;hdcMonitor;
-			screen *obr;
-			obr = (screen*) dwData;
-			mon_current = mon_current + 1;
-			MONITORINFOEX mo;
-			mo.cbSize = sizeof(MONITORINFOEX);
-			if(GetMonitorInfo(hMonitor,&mo)){
-			}
-			else{
-				cout << "Error in detecting monitors" << endl;
-				return false;
-			}
-			obr[mon_current].SetDimensions(mo.rcMonitor.left, mo.rcMonitor.right, mo.rcMonitor.top, mo.rcMonitor.bottom);
-			strcpy_s(obr[mon_current].dispName, sizeof(obr[mon_current].dispName),mo.szDevice);
-			cout << "Screen: " << obr[mon_current].dispName;
-			cout << " resolution:" << obr[mon_current].width << " x " << obr[mon_current].height << endl;
-			
-			return true;
+            
+            lprcMonitor;hdcMonitor;
+            screen *obr;
+            obr = (screen*) dwData;
+            mon_current = mon_current + 1;
+            MONITORINFOEX mo;
+            mo.cbSize = sizeof(MONITORINFOEX);
+            if(GetMonitorInfo(hMonitor,&mo)){
+            }
+            else{
+                cout << "Error in detecting monitors" << endl;
+                return false;
+            }
+            obr[mon_current].SetDimensions(mo.rcMonitor.left, mo.rcMonitor.right, mo.rcMonitor.top, mo.rcMonitor.bottom);
+            strcpy_s(obr[mon_current].dispName, sizeof(obr[mon_current].dispName),mo.szDevice);
+            cout << "Screen: " << obr[mon_current].dispName;
+            cout << " resolution:" << obr[mon_current].width << " x " << obr[mon_current].height << endl;
+            
+            return true;
 }
 CHAR wide_to_narrow(WCHAR w)
 {
-	// simple typecast
-	// works because UNICODE incorporates ASCII into itself
-	return CHAR(w);
+    // simple typecast
+    // works because UNICODE incorporates ASCII into itself
+    return CHAR(w);
 }
 
 HANDLE  Bitmap2Dib( HBITMAP hbitmap, UINT bits )
@@ -445,14 +445,14 @@ int RecordVideo(int top,int left,int width,int height,int fps,
       }
       else {
           compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-		  strCodec = CString("MS Video 1");
+          strCodec = CString("MS Video 1");
       }
 
       ICClose(hic);
     }
     else {
       compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-	  strCodec = CString("MS Video 1");
+      strCodec = CString("MS Video 1");
       //MessageBox(NULL,"hic default","note",MB_OK);
     }
 
@@ -463,7 +463,7 @@ int RecordVideo(int top,int left,int width,int height,int fps,
   {
     //Still Can't Handle Indeo 5.04
     compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-	strCodec = CString("MS Video 1");
+    strCodec = CString("MS Video 1");
   }
 
   ////////////////////////////////////////////////
@@ -514,7 +514,7 @@ int RecordVideo(int top,int left,int width,int height,int fps,
   {
     //Internally adjust codec to MSVC 100 Quality
     aopts[0]->fccHandler = mmioFOURCC('M', 'S', 'V', 'C');   //msvc
-	strCodec = CString("MS Video 1");
+    strCodec = CString("MS Video 1");
     aopts[0]->dwQuality = 10000;
 
   }
@@ -580,8 +580,8 @@ int RecordVideo(int top,int left,int width,int height,int fps,
   DWORD nextFrameNumber = 0;
 
   while (gRecordState) {  //repeatedly loop
-	// TODO(dimator): Enable this via a command line argument:
-	//PrintRecordInformation();
+    // TODO(dimator): Enable this via a command line argument:
+    //PrintRecordInformation();
 
     if (initcapture==0) {
       timeexpended = timeGetTime() - initialtime;
@@ -591,25 +591,25 @@ int RecordVideo(int top,int left,int width,int height,int fps,
       timeexpended = 0;
     }
 
-	// Wait for next frame
-	int toNextFrame = nextFrameAt - timeGetTime();
-	printf("nextFrameAt: %d, timeGetTime: %d, toNextFrame: %d\n", nextFrameAt, timeGetTime(), toNextFrame);
-	if(toNextFrame > 0) {
-		printf("Sleeping for %d msec (%d - ", toNextFrame, timeGetTime());
-		Sleep(toNextFrame);
-		printf("%d)\n", timeGetTime());
-	}
-	// todo add dropped frame handling
-	
-	DWORD now = timeGetTime();
-	// nextFrameAt will be incremented at least once to account for
-	// sleep inaccuracy.
-	do {
-		nextFrameAt += timelapse;
-		nextFrameNumber++;
-	} while((int)nextFrameAt - (int)now < 0);
+    // Wait for next frame
+    int toNextFrame = nextFrameAt - timeGetTime();
+    printf("nextFrameAt: %d, timeGetTime: %d, toNextFrame: %d\n", nextFrameAt, timeGetTime(), toNextFrame);
+    if(toNextFrame > 0) {
+        printf("Sleeping for %d msec (%d - ", toNextFrame, timeGetTime());
+        Sleep(toNextFrame);
+        printf("%d)\n", timeGetTime());
+    }
+    // todo add dropped frame handling
+    
+    DWORD now = timeGetTime();
+    // nextFrameAt will be incremented at least once to account for
+    // sleep inaccuracy.
+    do {
+        nextFrameAt += timelapse;
+        nextFrameNumber++;
+    } while((int)nextFrameAt - (int)now < 0);
 
-	// Record frame
+    // Record frame
     //Autopan
     if ((autopan) && (width < maxxScreen) && (height < maxyScreen)) {
           POINT xPoint;
@@ -783,7 +783,7 @@ int RecordVideo(int top,int left,int width,int height,int fps,
       oldframetime = frametime;
     } // if frametime is different
 
-	frametime = nextFrameNumber;
+    frametime = nextFrameNumber;
   } //for loop
 
 error:
@@ -913,8 +913,8 @@ LPBITMAPINFOHEADER captureScreenFrame(int left,int top,int width, int height)
       if (iconinfo.hbmColor)
         DeleteObject(iconinfo.hbmColor);
     }
-	
-	::DrawIconEx( hMemDC, xPoint.x, xPoint.y, hcur, 0, 0, 0, NULL, DI_NORMAL);
+    
+    ::DrawIconEx( hMemDC, xPoint.x, xPoint.y, hcur, 0, 0, 0, NULL, DI_NORMAL);
   }
 
   SelectObject(hMemDC,oldbm);
@@ -1163,21 +1163,21 @@ int ParseOptions(int argc, char *argv[]){
         return 0;
       }
     } else if(!OptionNameEqual("fps", *it)){
-	  if(++it == args.end()){
+      if(++it == args.end()){
         cout << "Expected framerate" << endl;
         return 0;
       }
       frames_per_second = atoi((*it).c_str());
-	  // Set to one key frame per second
-	  keyFramesEvery = frames_per_second;
-	  timelapse = 1000 / frames_per_second;
+      // Set to one key frame per second
+      keyFramesEvery = frames_per_second;
+      timelapse = 1000 / frames_per_second;
 
       // framerate should be positive
-	  if(frames_per_second <= 0){
+      if(frames_per_second <= 0){
         cout << "Framerate should be positive: " << *it << endl;
         return 0;
       }
-	} else if(!OptionNameEqual("help", *it)){
+    } else if(!OptionNameEqual("help", *it)){
       PrintUsage(TRUE);
       return 0;
     }
@@ -1192,7 +1192,7 @@ void PrintUsage(bool showCodecs = 1){
        << "-outfile: .avi file to write to" << endl
        << "-seconds: how many seconds to record for ('0' means to record until "
        << "a key is pressed)" << endl
-	   << "-fps: framerate to record with" << endl
+       << "-fps: framerate to record with" << endl
        << "-help: this screen" << endl;
 
   if(!showCodecs)
@@ -1303,47 +1303,47 @@ int main(int argc, char* argv[])
   char buffer[2];
   string recordHere = output_file;
 
-	for(i=0; i<=mon_count-1; i++){
-		
-		// whole recording stuff goes BELOW this line.
-		maxxScreen = pscreen[i].width;
-		maxyScreen = pscreen[i].height;
-		rcUse.left = pscreen[i].left;
-		rcUse.top = pscreen[i].top;
-		rcUse.right = pscreen[i].right - 1;
-		rcUse.bottom = pscreen[i].bottom - 1;
-		// Write AVI file.
-		output_file = recordHere + "_" + (_itoa_s(i,buffer,2,10) + ".avi");// _itoa(i,buffer,10)+".avi";
-		strcpy_s(pscreen[i].outFile, output_file.c_str());
-		pscreen[i].index = i;
+    for(i=0; i<=mon_count-1; i++){
+        
+        // whole recording stuff goes BELOW this line.
+        maxxScreen = pscreen[i].width;
+        maxyScreen = pscreen[i].height;
+        rcUse.left = pscreen[i].left;
+        rcUse.top = pscreen[i].top;
+        rcUse.right = pscreen[i].right - 1;
+        rcUse.bottom = pscreen[i].bottom - 1;
+        // Write AVI file.
+        output_file = recordHere + "_" + (_itoa_s(i,buffer,2,10) + ".avi");// _itoa(i,buffer,10)+".avi";
+        strcpy_s(pscreen[i].outFile, output_file.c_str());
+        pscreen[i].index = i;
 
-		gRecordState = 1;
+        gRecordState = 1;
 
-		cout << "Creating recording thread for screen no.:" << i <<"..." << endl;
-		cout << "Recording to: " << output_file << endl;
+        cout << "Creating recording thread for screen no.:" << i <<"..." << endl;
+        cout << "Recording to: " << output_file << endl;
 
 
-		th[i] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)RecordAVIThread, (LPVOID) &pscreen[i], 0, &tid);
+        th[i] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)RecordAVIThread, (LPVOID) &pscreen[i], 0, &tid);
 
   
 
-		// whole recording stuff goes ABOVE this line.
-		//cout<<"Sirka:" << p_obr[i].width << endl; // just some line for testing.
-	}
-	if(seconds_to_record > 0){
-		cout << "Recording for " << seconds_to_record << " seconds" << endl;
-		::Sleep(seconds_to_record * 1000);
-	} else {
-		cout << "Enter any key to stop recording..." << endl;
-		cout.flush();
-		getchar();
-	}
-	// Set gRecordState to 0, to end the while loop inside the recording thread.
-	// TODO(dimator): Maybe some better IPC, other than a global variable???
-	gRecordState = 0;
-	
-	free(obr);
-	Sleep(1000);
+        // whole recording stuff goes ABOVE this line.
+        //cout<<"Sirka:" << p_obr[i].width << endl; // just some line for testing.
+    }
+    if(seconds_to_record > 0){
+        cout << "Recording for " << seconds_to_record << " seconds" << endl;
+        ::Sleep(seconds_to_record * 1000);
+    } else {
+        cout << "Enter any key to stop recording..." << endl;
+        cout.flush();
+        getchar();
+    }
+    // Set gRecordState to 0, to end the while loop inside the recording thread.
+    // TODO(dimator): Maybe some better IPC, other than a global variable???
+    gRecordState = 0;
+    
+    free(obr);
+    Sleep(1000);
  
 
    
@@ -1352,16 +1352,16 @@ int main(int argc, char* argv[])
   //rcUse.right = 300;
   //rcUse.bottom = 400;
   //if(offset_bottom){
-	 // rcUse.bottom = offset_bottom - 1;
+     // rcUse.bottom = offset_bottom - 1;
   //}
   //else{
-	 // rcUse.bottom = maxyScreen - 1;
+     // rcUse.bottom = maxyScreen - 1;
   //}
   //if(offset_right){
-	 // rcUse.right = offset_right - 1;
+     // rcUse.right = offset_right - 1;
   //}
   //else{
-	 // rcUse.right = maxxScreen - 1;
+     // rcUse.right = maxxScreen - 1;
   //}
   ////cout << "Offset L:" << rcUse.left << endl;
   ////cout << "Offset T:" << rcUse.top << endl;

@@ -33,51 +33,51 @@
 // Solid color sheet setting (Photoshop 6.0)
 psd_status psd_get_layer_solid_color(psd_context * context, psd_layer_record * layer)
 {
-	psd_layer_solid_color * data;
-	psd_int length, number_items;
-	psd_uint key;
-	
-	layer->layer_info_type[layer->layer_info_count] = psd_layer_info_type_solid_color;
-	layer->layer_type = psd_layer_type_solid_color;
+    psd_layer_solid_color * data;
+    psd_int length, number_items;
+    psd_uint key;
+    
+    layer->layer_info_type[layer->layer_info_count] = psd_layer_info_type_solid_color;
+    layer->layer_type = psd_layer_type_solid_color;
 
-	data = (psd_layer_solid_color *)psd_malloc(sizeof(psd_layer_solid_color));
-	if(data == NULL)
-		return psd_status_malloc_failed;
-	memset(data, 0, sizeof(psd_layer_solid_color));
-	layer->layer_info_data[layer->layer_info_count] = (psd_uint)data;
-	layer->layer_info_count ++;
+    data = (psd_layer_solid_color *)psd_malloc(sizeof(psd_layer_solid_color));
+    if(data == NULL)
+        return psd_status_malloc_failed;
+    memset(data, 0, sizeof(psd_layer_solid_color));
+    layer->layer_info_data[layer->layer_info_count] = (psd_uint)data;
+    layer->layer_info_count ++;
 
-	// Version ( = 16 for Photoshop 6.0)
-	if(psd_stream_get_int(context) != 16)
-		return psd_status_solid_color_unsupport_version;
+    // Version ( = 16 for Photoshop 6.0)
+    if(psd_stream_get_int(context) != 16)
+        return psd_status_solid_color_unsupport_version;
 
-	// Unicode string: name from classID
-	length = psd_stream_get_int(context) * 2;
-	psd_stream_get_null(context, length);
+    // Unicode string: name from classID
+    length = psd_stream_get_int(context) * 2;
+    psd_stream_get_null(context, length);
 
-	// classID: 4 bytes (length), followed either by string or (if length is zero) 4-
-	// byte classID
-	length = psd_stream_get_int(context);
-	psd_assert(length == 0);
-	data->id = psd_stream_get_int(context);
+    // classID: 4 bytes (length), followed either by string or (if length is zero) 4-
+    // byte classID
+    length = psd_stream_get_int(context);
+    psd_assert(length == 0);
+    data->id = psd_stream_get_int(context);
 
-	// Number of items in descriptor
-	number_items = psd_stream_get_int(context);
-	// should be 1
-	psd_assert(number_items == 1);
+    // Number of items in descriptor
+    number_items = psd_stream_get_int(context);
+    // should be 1
+    psd_assert(number_items == 1);
 
-	// The following is repeated for each item in descriptor
-	// Key: 4 bytes ( length) followed either by string or (if length is zero) 4-byte key
-	length = psd_stream_get_int(context);
-	psd_assert(length == 0);
-	key = psd_stream_get_int(context);
-	psd_assert(key == 'Clr ');
+    // The following is repeated for each item in descriptor
+    // Key: 4 bytes ( length) followed either by string or (if length is zero) 4-byte key
+    length = psd_stream_get_int(context);
+    psd_assert(length == 0);
+    key = psd_stream_get_int(context);
+    psd_assert(key == 'Clr ');
 
-	// Type: OSType key
-	key = psd_stream_get_int(context);
-	psd_assert(key == 'Objc');
+    // Type: OSType key
+    key = psd_stream_get_int(context);
+    psd_assert(key == 'Objc');
 
-	data->fill_color = psd_stream_get_object_color(context);
+    data->fill_color = psd_stream_get_object_color(context);
 
-	return psd_status_done;
+    return psd_status_done;
 }

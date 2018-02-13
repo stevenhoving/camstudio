@@ -83,35 +83,35 @@
 * Constants.
 \******************************************************************************/
 
-#define	JPC_TSFB_MAXBANDS	(JPC_TSFB_MAXDEPTH * 3 + 1)
-#define	JPC_TSFB_MAXDEPTH	32
-#define	JPC_TSFB_RITIMODE	JPC_QMFB1D_RITIMODE
+#define    JPC_TSFB_MAXBANDS    (JPC_TSFB_MAXDEPTH * 3 + 1)
+#define    JPC_TSFB_MAXDEPTH    32
+#define    JPC_TSFB_RITIMODE    JPC_QMFB1D_RITIMODE
 
-#define JPC_TSFB_LL	0
-#define JPC_TSFB_LH	1
-#define JPC_TSFB_HL	2
-#define JPC_TSFB_HH	3
+#define JPC_TSFB_LL    0
+#define JPC_TSFB_LH    1
+#define JPC_TSFB_HL    2
+#define JPC_TSFB_HH    3
 
 /******************************************************************************\
 * Types.
 \******************************************************************************/
 
 typedef struct {
-	int xstart;
-	int ystart;
-	int xend;
-	int yend;
-	int orient;
-	int locxstart;
-	int locystart;
-	int locxend;
-	int locyend;
-	jpc_fix_t synenergywt;
+    int xstart;
+    int ystart;
+    int xend;
+    int yend;
+    int orient;
+    int locxstart;
+    int locystart;
+    int locxend;
+    int locyend;
+    jpc_fix_t synenergywt;
 } jpc_tsfb_band_t;
 
 typedef struct {
-	int numlvls;
-	jpc_qmfb2d_t *qmfb;
+    int numlvls;
+    jpc_qmfb2d_t *qmfb;
 } jpc_tsfb_t;
 
 /******************************************************************************\

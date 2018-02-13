@@ -57,16 +57,16 @@ void aviaudioCloseDevice(void)
 {
     if (shWaveOut)
     {
-		while (swBuffers > 0)
-		{
-		--swBuffers;
-		waveOutUnprepareHeader(shWaveOut, salpAudioBuf[swBuffers],
-					sizeof(WAVEHDR));
-		GlobalFreePtr((LPSTR) salpAudioBuf[swBuffers]);
-		}
-	waveOutClose(shWaveOut);
+        while (swBuffers > 0)
+        {
+        --swBuffers;
+        waveOutUnprepareHeader(shWaveOut, salpAudioBuf[swBuffers],
+                    sizeof(WAVEHDR));
+        GlobalFreePtr((LPSTR) salpAudioBuf[swBuffers]);
+        }
+    waveOutClose(shWaveOut);
 
-	shWaveOut = NULL;
+    shWaveOut = NULL;
     }
 }
 
@@ -78,77 +78,77 @@ BOOL CALLBACK aviaudioOpenDevice(HWND hwnd, PAVISTREAM pavi)
     AVISTREAMINFO       strhdr;
 
     if (!pavi)          // no wave data to play
-		return FALSE;
+        return FALSE;
 
     if (shWaveOut)      // already something playing
-		return TRUE;
+        return TRUE;
 
     spavi = pavi;
 
-	recalc = 1;
+    recalc = 1;
 
     AVIStreamInfo(pavi, &strhdr, sizeof(strhdr));
 
     slSampleSize = (LONG) strhdr.dwSampleSize;
     if (slSampleSize <= 0 || slSampleSize > AUDIO_BUFFER_SIZE)
-		return FALSE;
+        return FALSE;
 
     //AVIStreamFormatSize(pavi, 0, &cbFormat);
-	AVIStreamFormatSize(pavi, AVIStreamStart(pavi), &cbFormat);
+    AVIStreamFormatSize(pavi, AVIStreamStart(pavi), &cbFormat);
 
     lpFormat = GlobalAllocPtr(GHND, cbFormat);
     if (!lpFormat)
-		return FALSE;
+        return FALSE;
 
     //AVIStreamReadFormat(pavi, 0, lpFormat, &cbFormat);
-	AVIStreamReadFormat(pavi, AVIStreamStart(pavi), lpFormat, &cbFormat);
+    AVIStreamReadFormat(pavi, AVIStreamStart(pavi), lpFormat, &cbFormat);
 
     sdwSamplesPerSec = ((LPWAVEFORMAT) lpFormat)->nSamplesPerSec;
     sdwBytesPerSec = ((LPWAVEFORMAT) lpFormat)->nAvgBytesPerSec;
 
     mmResult = waveOutOpen(&shWaveOut, (UINT)WAVE_MAPPER, (WAVEFORMATEX *) lpFormat,
-			(DWORD) (UINT) hwnd, 0L, CALLBACK_WINDOW);
+            (DWORD) (UINT) hwnd, 0L, CALLBACK_WINDOW);
 
     // Maybe we failed because someone is playing sound already.
     // Shut any sound off, and try once more before giving up.
     if (mmResult) {
-	sndPlaySound(NULL, 0);
-	mmResult = waveOutOpen(&shWaveOut, (UINT)WAVE_MAPPER, (WAVEFORMATEX *) lpFormat,
-			(DWORD) (UINT)hwnd, 0L, CALLBACK_WINDOW);
+    sndPlaySound(NULL, 0);
+    mmResult = waveOutOpen(&shWaveOut, (UINT)WAVE_MAPPER, (WAVEFORMATEX *) lpFormat,
+            (DWORD) (UINT)hwnd, 0L, CALLBACK_WINDOW);
     }
 
     if (mmResult != 0)
     {
 
-	return FALSE;
+    return FALSE;
     }
 
     for (swBuffers = 0; swBuffers < MAX_AUDIO_BUFFERS; swBuffers++)
     {
-		if (!(salpAudioBuf[swBuffers] =
-				(LPWAVEHDR)GlobalAllocPtr(GMEM_MOVEABLE | GMEM_SHARE,
-				(DWORD)(sizeof(WAVEHDR) + AUDIO_BUFFER_SIZE)))) {
+        if (!(salpAudioBuf[swBuffers] =
+                (LPWAVEHDR)GlobalAllocPtr(GMEM_MOVEABLE | GMEM_SHARE,
+                (DWORD)(sizeof(WAVEHDR) + AUDIO_BUFFER_SIZE)))) {
 
-				ErrMsg("Unable to allocate buffers");
-				break;
+                ErrMsg("Unable to allocate buffers");
+                break;
 
-		}
-		salpAudioBuf[swBuffers]->dwFlags = WHDR_DONE;
-		salpAudioBuf[swBuffers]->lpData = (LPSTR) salpAudioBuf[swBuffers]
-						    + sizeof(WAVEHDR);
-		salpAudioBuf[swBuffers]->dwBufferLength = AUDIO_BUFFER_SIZE;
-		if (!waveOutPrepareHeader(shWaveOut, salpAudioBuf[swBuffers], sizeof(WAVEHDR))) continue;
-		else
-			ErrMsg("Prepare Header failed !");
+        }
+        salpAudioBuf[swBuffers]->dwFlags = WHDR_DONE;
+        salpAudioBuf[swBuffers]->lpData = (LPSTR) salpAudioBuf[swBuffers]
+                            + sizeof(WAVEHDR);
+        salpAudioBuf[swBuffers]->dwBufferLength = AUDIO_BUFFER_SIZE;
+        if (!waveOutPrepareHeader(shWaveOut, salpAudioBuf[swBuffers], sizeof(WAVEHDR))) continue;
+        else
+            ErrMsg("Prepare Header failed !");
 
-		GlobalFreePtr((LPSTR) salpAudioBuf[swBuffers]);
-				break;
+        GlobalFreePtr((LPSTR) salpAudioBuf[swBuffers]);
+                break;
     }
 
     if (swBuffers < MIN_AUDIO_BUFFERS)
     {
-		aviaudioCloseDevice();
-		return FALSE;
+        aviaudioCloseDevice();
+        return FALSE;
     }
 
     swBuffersOut = 0;
@@ -164,177 +164,177 @@ LONG CALLBACK aviaudioTime(void)
 {
     MMTIME      mmtime;
 
-	if (audioPlayable<=0) return -1;
+    if (audioPlayable<=0) return -1;
 
     if (!sfPlaying)
-		return -1;
+        return -1;
 
-	//not sure
-	if (recalc) {
-		streamEnd = AVIStreamEnd(spavi);
-		streamStart = AVIStreamStart(spavi);
-		recalc = 0;
-		//ErrMsg("recalc");
-	}
+    //not sure
+    if (recalc) {
+        streamEnd = AVIStreamEnd(spavi);
+        streamStart = AVIStreamStart(spavi);
+        recalc = 0;
+        //ErrMsg("recalc");
+    }
 
-	if ((streamEnd<=streamStart) || (streamEnd<=0))
-		return -1;
+    if ((streamEnd<=streamStart) || (streamEnd<=0))
+        return -1;
 
     mmtime.wType = TIME_SAMPLES;
 
     waveOutGetPosition(shWaveOut, &mmtime, sizeof(mmtime));
 
     if (mmtime.wType == TIME_SAMPLES)
-		return AVIStreamSampleToTime(spavi, slBegin)
-				+ muldiv32(mmtime.u.sample, 1000, sdwSamplesPerSec);
+        return AVIStreamSampleToTime(spavi, slBegin)
+                + muldiv32(mmtime.u.sample, 1000, sdwSamplesPerSec);
     else if (mmtime.wType == TIME_BYTES)
-		return AVIStreamSampleToTime(spavi, slBegin)
-				+ muldiv32(mmtime.u.cb, 1000, sdwBytesPerSec);
+        return AVIStreamSampleToTime(spavi, slBegin)
+                + muldiv32(mmtime.u.cb, 1000, sdwBytesPerSec);
     else
-		return -1;
+        return -1;
 }
 
 // Fill up any empty audio buffers and ship them out to the  device.
 BOOL aviaudioiFillBuffers(void)
 {
     LONG            lRead;
-	MMRESULT        mmResult;
+    MMRESULT        mmResult;
     LONG            lSamplesToPlay;
 
     if (!sfPlaying)
-		return TRUE;
+        return TRUE;
 
     while (swBuffersOut < swBuffers)
     {
-		if (slCurrent >= slEnd)
-		{
-		if (sfLooping)
-		{
+        if (slCurrent >= slEnd)
+        {
+        if (sfLooping)
+        {
 
-			slCurrent = slBegin;
-		}
-	    else
-			break;
-		}
+            slCurrent = slBegin;
+        }
+        else
+            break;
+        }
 
-	lSamplesToPlay = slEnd - slCurrent;
-	if (lSamplesToPlay > AUDIO_BUFFER_SIZE / slSampleSize )
-	    lSamplesToPlay = AUDIO_BUFFER_SIZE / slSampleSize ;
+    lSamplesToPlay = slEnd - slCurrent;
+    if (lSamplesToPlay > AUDIO_BUFFER_SIZE / slSampleSize )
+        lSamplesToPlay = AUDIO_BUFFER_SIZE / slSampleSize ;
 
-	//ErrMsg("slCurrent %ld, lSamplesToPlay %ld, toplay %ld swBuffers %ld, swBuffersOut %d,swNextBuffer %d",slCurrent, lSamplesToPlay, slEnd - slCurrent,swBuffers,swBuffersOut,swNextBuffer);
-	/*
-	//this line cause the sond playing to crash...
-	{
+    //ErrMsg("slCurrent %ld, lSamplesToPlay %ld, toplay %ld swBuffers %ld, swBuffersOut %d,swNextBuffer %d",slCurrent, lSamplesToPlay, slEnd - slCurrent,swBuffers,swBuffersOut,swNextBuffer);
+    /*
+    //this line cause the sond playing to crash...
+    {
 
-			void* buffer = malloc(AUDIO_BUFFER_SIZE);
-			long retlen = 0;
+            void* buffer = malloc(AUDIO_BUFFER_SIZE);
+            long retlen = 0;
 
-			long retval = AVIStreamRead(spavi, slCurrent, lSamplesToPlay,
-				  buffer,
-				  AUDIO_BUFFER_SIZE,
-				  &retlen,
-				  &lRead);
+            long retval = AVIStreamRead(spavi, slCurrent, lSamplesToPlay,
+                  buffer,
+                  AUDIO_BUFFER_SIZE,
+                  &retlen,
+                  &lRead);
 
-			if (buffer) free(buffer);
+            if (buffer) free(buffer);
 
-	}
+    }
 
-	ErrMsg("before");
-	*/
+    ErrMsg("before");
+    */
 
-	//long retval;
-	//if ((swNextBuffer>=0) && (swNextBuffer<MAX_AUDIO_BUFFERS))
-	//{
+    //long retval;
+    //if ((swNextBuffer>=0) && (swNextBuffer<MAX_AUDIO_BUFFERS))
+    //{
 
-	//	if (salpAudioBuf[swNextBuffer]->lpData) {
+    //    if (salpAudioBuf[swNextBuffer]->lpData) {
 
-			//if (sizeof(salpAudioBuf[swNextBuffer]->lpData) >= AUDIO_BUFFER_SIZE)
-			//{
+            //if (sizeof(salpAudioBuf[swNextBuffer]->lpData) >= AUDIO_BUFFER_SIZE)
+            //{
 
-				//ErrMsg("Correct Size %ld",sizeof(*salpAudioBuf[swNextBuffer]->lpData));
+                //ErrMsg("Correct Size %ld",sizeof(*salpAudioBuf[swNextBuffer]->lpData));
 
-				long retval = AVIStreamRead(spavi, slCurrent, lSamplesToPlay,
-					  salpAudioBuf[swNextBuffer]->lpData,
-					  AUDIO_BUFFER_SIZE,
-					  (long *)&salpAudioBuf[swNextBuffer]->dwBufferLength,
-					  &lRead);
+                long retval = AVIStreamRead(spavi, slCurrent, lSamplesToPlay,
+                      salpAudioBuf[swNextBuffer]->lpData,
+                      AUDIO_BUFFER_SIZE,
+                      (long *)&salpAudioBuf[swNextBuffer]->dwBufferLength,
+                      &lRead);
 
-			//}
-			//else
-			//	ErrMsg("Size %ld",sizeof(*salpAudioBuf[swNextBuffer]->lpData));
+            //}
+            //else
+            //    ErrMsg("Size %ld",sizeof(*salpAudioBuf[swNextBuffer]->lpData));
 
-		//}
-		//else
-		//	ErrMsg("2");
+        //}
+        //else
+        //    ErrMsg("2");
 
-	//}
-	//else
-	//	ErrMsg("3");
+    //}
+    //else
+    //    ErrMsg("3");
 
-	//ErrMsg("after...");
+    //ErrMsg("after...");
 
-	//ErrMsg("slCurrent %ld, lSamplesToPlay %ld, toplay %ld",slCurrent, lSamplesToPlay, slEnd - slCurrent);
+    //ErrMsg("slCurrent %ld, lSamplesToPlay %ld, toplay %ld",slCurrent, lSamplesToPlay, slEnd - slCurrent);
 
-	//over here
-	//This seems to be the condition related to the non-stopping at end of movie
+    //over here
+    //This seems to be the condition related to the non-stopping at end of movie
 
-	if ((lRead <= 0) && (lSamplesToPlay>0)) {
+    if ((lRead <= 0) && (lSamplesToPlay>0)) {
 
-			//retry
+            //retry
 
-			retval = AVIStreamRead(spavi, slCurrent, lSamplesToPlay,
-		      salpAudioBuf[swNextBuffer]->lpData,
-		      AUDIO_BUFFER_SIZE,
-		      (long *)&salpAudioBuf[swNextBuffer]->dwBufferLength,
-		      &lRead);
+            retval = AVIStreamRead(spavi, slCurrent, lSamplesToPlay,
+              salpAudioBuf[swNextBuffer]->lpData,
+              AUDIO_BUFFER_SIZE,
+              (long *)&salpAudioBuf[swNextBuffer]->dwBufferLength,
+              &lRead);
 
-			if ((lRead <= 0) && (lSamplesToPlay>0)) {
+            if ((lRead <= 0) && (lSamplesToPlay>0)) {
 
-			//if (retval == AVIERR_FILEREAD) {
+            //if (retval == AVIERR_FILEREAD) {
 
-				slCurrent += lSamplesToPlay;
-				break;
+                slCurrent += lSamplesToPlay;
+                break;
 
-			//}
-			//else return FALSE;
+            //}
+            //else return FALSE;
 
-			}
+            }
 
-	}
+    }
 
-	if (lRead != lSamplesToPlay) {
+    if (lRead != lSamplesToPlay) {
 
-		if (lRead == lSamplesToPlay-1)
-		{
-			//do nothing...allow it to pass on
-		}
-		else {
-			return FALSE;
+        if (lRead == lSamplesToPlay-1)
+        {
+            //do nothing...allow it to pass on
+        }
+        else {
+            return FALSE;
 
-		}
-	}
+        }
+    }
 
-	slCurrent += lRead;
+    slCurrent += lRead;
 
-	mmResult = waveOutWrite(shWaveOut, salpAudioBuf[swNextBuffer],sizeof(WAVEHDR));
+    mmResult = waveOutWrite(shWaveOut, salpAudioBuf[swNextBuffer],sizeof(WAVEHDR));
 
-	if (mmResult != 0) {
+    if (mmResult != 0) {
 
-		//::MessageBox(NULL,"Waveoutwrite problem","note",MB_OK);
-		return FALSE;
+        //::MessageBox(NULL,"Waveoutwrite problem","note",MB_OK);
+        return FALSE;
 
-	}
+    }
 
-	++swBuffersOut;
-	++swNextBuffer;
-	if (swNextBuffer >= swBuffers)
-	    swNextBuffer = 0;
+    ++swBuffersOut;
+    ++swNextBuffer;
+    if (swNextBuffer >= swBuffers)
+        swNextBuffer = 0;
     }//while
 
-	if ((swBuffersOut == 0) && (slCurrent >= slEnd)) {
-			aviaudioStop();
+    if ((swBuffersOut == 0) && (slCurrent >= slEnd)) {
+            aviaudioStop();
 
-	}
+    }
 
     // All buffers Filled
     return TRUE;
@@ -343,62 +343,62 @@ BOOL aviaudioiFillBuffers(void)
 // Play audio, starting at a given frame/sample
 BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, BOOL fWait)
 {
-	if (audioPlayable <= 0)
-		return FALSE;
+    if (audioPlayable <= 0)
+        return FALSE;
 
-	//CString tx;
-	//tx.Format("audioPlayable %d",audioPlayable);
-	//MessageBox(NULL,tx,"Note",MB_OK);
+    //CString tx;
+    //tx.Format("audioPlayable %d",audioPlayable);
+    //MessageBox(NULL,tx,"Note",MB_OK);
 
-	recalc = 1;
+    recalc = 1;
 
-//	CString msx;
-	if (lStart < 0)
-		lStart = AVIStreamStart(pavi);
+//    CString msx;
+    if (lStart < 0)
+        lStart = AVIStreamStart(pavi);
 
     if (lEnd < 0)
-		lEnd = AVIStreamEnd(pavi);
+        lEnd = AVIStreamEnd(pavi);
 
     if (lEnd <= lStart) {
-		return FALSE;
-	}
-
-    if (!aviaudioOpenDevice(hwnd, pavi)) {
-		if ((runmode == 0) || (runmode == 1)) {
-			//MessageBox(NULL,"AudioOpen failed","Note",MB_OK | MB_ICONEXCLAMATION);
-			 MessageOut(NULL,IDS_AOF, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-		}
-
-		return FALSE;
-	}
-
-    if (!sfPlaying) {
-		// We're beginning play, so pause until we've filled the buffers
-		// for a seamless start
-		waveOutPause(shWaveOut);
-
-		slBegin = lStart;
-		slCurrent = lStart;
-		slEnd = lEnd;
-		sfPlaying = TRUE;
-    } else {
-		slEnd = lEnd;
+        return FALSE;
     }
 
-	//ErrMsg("playbegin");
+    if (!aviaudioOpenDevice(hwnd, pavi)) {
+        if ((runmode == 0) || (runmode == 1)) {
+            //MessageBox(NULL,"AudioOpen failed","Note",MB_OK | MB_ICONEXCLAMATION);
+             MessageOut(NULL,IDS_AOF, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+        }
 
-	//Error here -- program crash when play at non start time after steam is pasted
+        return FALSE;
+    }
+
+    if (!sfPlaying) {
+        // We're beginning play, so pause until we've filled the buffers
+        // for a seamless start
+        waveOutPause(shWaveOut);
+
+        slBegin = lStart;
+        slCurrent = lStart;
+        slEnd = lEnd;
+        sfPlaying = TRUE;
+    } else {
+        slEnd = lEnd;
+    }
+
+    //ErrMsg("playbegin");
+
+    //Error here -- program crash when play at non start time after steam is pasted
     aviaudioiFillBuffers();
 
-	//ErrMsg("play");
+    //ErrMsg("play");
 
     // Now unpause the audio and away it goes!
     waveOutRestart(shWaveOut);
 
     // Caller wants us not to return until play is finished
     if (fWait) {
-		while (swBuffersOut > 0)
-			Yield();
+        while (swBuffersOut > 0)
+            Yield();
     }
 
     return TRUE;
@@ -415,14 +415,14 @@ void CALLBACK aviaudioMessage(HWND /*hwnd*/, UINT msg, WPARAM /*wParam*/, LPARAM
 // Stop playing, close the device.
 void CALLBACK aviaudioStop(void)
 {
-	MMRESULT        mmResult;
+    MMRESULT        mmResult;
 
     if (shWaveOut != 0)
     {
 
-		sfPlaying = FALSE;
-		mmResult = waveOutReset(shWaveOut);
+        sfPlaying = FALSE;
+        mmResult = waveOutReset(shWaveOut);
 
-		aviaudioCloseDevice();
+        aviaudioCloseDevice();
     }
 }

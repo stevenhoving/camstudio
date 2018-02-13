@@ -28,7 +28,7 @@ struct jbg_buf {
   int len;                             /* length of the data in this block */
   struct jbg_buf *next;                           /* pointer to next block */
   struct jbg_buf *previous;                   /* pointer to previous block *
-					       * (unused in freelist)      */
+                           * (unused in freelist)      */
   struct jbg_buf *last;     /* only used in list head: final block of list */
   struct jbg_buf **free_list;   /* pointer to pointer to head of free list */
 };
@@ -57,8 +57,8 @@ struct jbg_buf {
 #define JBG_DPLAST     0x01
 
 #define JBG_DELAY_AT   0x100  /* delay ATMOVE until the first line of the next
-			       * stripe. Option available for compatibility
-			       * with conformance test example in clause 7.2.*/
+                   * stripe. Option available for compatibility
+                   * with conformance test example in clause 7.2.*/
 
 
 /*
@@ -108,7 +108,7 @@ struct jbg_arenc_state {
 enum jbg_ardec_result {
   JBG_OK,                          /* symbol has been successfully decoded */
   JBG_READY,               /* no more bytes of this PSCD required, marker  *
-			    * encountered, probably more symbols available */
+                * encountered, probably more symbols available */
   JBG_MORE,            /* more PSCD data bytes required to decode a symbol */
   JBG_MARKER     /* more PSCD data bytes required, ignored final 0xff byte */
 };
@@ -158,7 +158,7 @@ struct jbg_enc_state {
   char *dppriv;         /* optional private deterministic prediction table */
   char *res_tab;           /* table for the resolution reduction algorithm */
   struct jbg_buf ****sde;      /* array [stripe][layer][plane] pointers to *
-				* buffers for stored SDEs                  */
+                * buffers for stored SDEs                  */
   struct jbg_arenc_state *s;  /* array [planes] for arithm. encoder status */
   struct jbg_buf *free_list; /* list of currently unused SDE block buffers */
   void (*data_out)(unsigned char *start, size_t len, void *file);
@@ -179,7 +179,7 @@ struct jbg_dec_state {
   unsigned long xd, yd;     /* size of the full image (resolution layer d) */
   int planes;                         /* number of different bitmap planes */
   unsigned long l0;                /* number of lines per stripe at lowest *
-				    * resolution layer 0                   */
+                    * resolution layer 0                   */
   unsigned long stripes;    /* number of stripes required  (determ. by l0) */
   int order;                                    /* SDE ordering parameters */
   int options;                                      /* encoding parameters */
@@ -198,9 +198,9 @@ struct jbg_dec_state {
   /* status information */
   int **tx, **ty;   /* array [plane][layer-dl] with x,y-offset of AT pixel */
   struct jbg_ardec_state **s;    /* array [plane][layer-dl] for arithmetic *
-				  * decoder status */
+                  * decoder status */
   int **reset;     /* array [plane][layer-dl] remembers if previous stripe *
-		    * in that plane/resolution ended with SDRST.           */
+            * in that plane/resolution ended with SDRST.           */
   unsigned long bie_len;                    /* number of bytes read so far */
   unsigned char buffer[20]; /* used to store BIH or marker segments fragm. */
   int buf_len;                                /* number of bytes in buffer */
@@ -209,16 +209,16 @@ struct jbg_dec_state {
   unsigned long i; /* line in current SDE (first line of each stripe is 0) */ 
   int at_moves;                /* number of AT moves in the current stripe */
   unsigned long at_line[JBG_ATMOVES_MAX];           /* lines at which an   *
-					             * AT move will happen */
+                                 * AT move will happen */
   int at_tx[JBG_ATMOVES_MAX], at_ty[JBG_ATMOVES_MAX]; /* ATMOVE offsets in *
-						       * current stripe    */
+                               * current stripe    */
   unsigned long line_h1, line_h2, line_h3;     /* variables of decode_pscd */
   unsigned long line_l1, line_l2, line_l3;
   int pseudo;         /* flag for TPBON/TPDON:  next pixel is pseudo pixel */
   int **lntp;        /* flag [plane][layer-dl] for TP: line is not typical */
 
   unsigned long xmax, ymax;         /* if possible abort before image gets *
-				     * larger than this size */
+                     * larger than this size */
   int dmax;                                      /* abort after this layer */
 };
 
@@ -231,31 +231,31 @@ struct jbg_dec_state {
 /* function prototypes */
 
 void jbg_enc_init(struct jbg_enc_state *s, unsigned long x, unsigned long y,
-		  int planes, unsigned char **p,
-		  void (*data_out)(unsigned char *start, size_t len,
-				   void *file),
-		  void *file);
+          int planes, unsigned char **p,
+          void (*data_out)(unsigned char *start, size_t len,
+                   void *file),
+          void *file);
 int jbg_enc_lrlmax(struct jbg_enc_state *s, unsigned long mwidth,
-		   unsigned long mheight);
+           unsigned long mheight);
 void jbg_enc_layers(struct jbg_enc_state *s, int d);
 int  jbg_enc_lrange(struct jbg_enc_state *s, int dl, int dh);
 void jbg_enc_options(struct jbg_enc_state *s, int order, int options,
-		     unsigned long l0, int mx, int my);
+             unsigned long l0, int mx, int my);
 void jbg_enc_out(struct jbg_enc_state *s);
 void jbg_enc_free(struct jbg_enc_state *s);
 
 void jbg_dec_init(struct jbg_dec_state *s);
 void jbg_dec_maxsize(struct jbg_dec_state *s, unsigned long xmax,
-		     unsigned long ymax);
+             unsigned long ymax);
 int  jbg_dec_in(struct jbg_dec_state *s, unsigned char *data, size_t len,
-		size_t *cnt);
+        size_t *cnt);
 long jbg_dec_getwidth(const struct jbg_dec_state *s);
 long jbg_dec_getheight(const struct jbg_dec_state *s);
 unsigned char *jbg_dec_getimage(const struct jbg_dec_state *s, int plane);
 long jbg_dec_getsize(const struct jbg_dec_state *s);
 void jbg_dec_merge_planes(const struct jbg_dec_state *s, int use_graycode,
-			  void (*data_out)(unsigned char *start, size_t len,
-					   void *file), void *file);
+              void (*data_out)(unsigned char *start, size_t len,
+                       void *file), void *file);
 long jbg_dec_getsize_merged(const struct jbg_dec_state *s);
 void jbg_dec_free(struct jbg_dec_state *s);
 
@@ -264,9 +264,9 @@ void jbg_int2dppriv(unsigned char *dptable, const char *internal);
 void jbg_dppriv2int(char *internal, const unsigned char *dptable);
 unsigned long jbg_ceil_half(unsigned long x, int n);
 void jbg_split_planes(unsigned long x, unsigned long y, int has_planes,
-		      int encode_planes,
-		      const unsigned char *src, unsigned char **dest,
-		      int use_graycode);
+              int encode_planes,
+              const unsigned char *src, unsigned char **dest,
+              int use_graycode);
 int jbg_newlen(unsigned char *bie, size_t len);
 
 #endif /* JBG_H */

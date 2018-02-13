@@ -2280,8 +2280,8 @@ mng_retcode MNG_DECL mng_readdisplay (mng_handle hHandle)
     pData->bReading = MNG_FALSE;       /* then we're no longer reading */
     mng_drop_invalid_objects (pData);  /* drop invalidly stored objects */
   } else {
-	  if (pData->bEOF != MNG_FALSE)
-		  return MNG_UNEXPECTEDEOF;
+      if (pData->bEOF != MNG_FALSE)
+          return MNG_UNEXPECTEDEOF;
   }
   
   if (iRetcode)                        /* on error bail out */

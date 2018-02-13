@@ -19,13 +19,13 @@ static char THIS_FILE[]=__FILE__;
 
 CSoundBase::CSoundBase()
 {
-	m_Format.wFormatTag = WAVE_FORMAT_PCM;
-	m_Format.cbSize = 0;
-	m_Format.wBitsPerSample = 1024; // Buffer Size 1024 bits
+    m_Format.wFormatTag = WAVE_FORMAT_PCM;
+    m_Format.cbSize = 0;
+    m_Format.wBitsPerSample = 1024; // Buffer Size 1024 bits
 
-	BitsPerSample(16);
-	SamplesPerSecond(22050);
-	NumberOfChannels(1);
+    BitsPerSample(16);
+    SamplesPerSecond(22050);
+    NumberOfChannels(1);
 }
 
 CSoundBase::~CSoundBase()

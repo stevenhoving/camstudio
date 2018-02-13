@@ -63,5 +63,5 @@
 
 const char *jas_getversion()
 {
-	return JAS_VERSION;
+    return JAS_VERSION;
 }

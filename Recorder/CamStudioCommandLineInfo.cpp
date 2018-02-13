@@ -26,53 +26,53 @@ CCamStudioCommandLineInfo::~CCamStudioCommandLineInfo(void)
 //
 void CCamStudioCommandLineInfo::ParseParam(const TCHAR* pszParam, BOOL bFlag, BOOL bLast)
 {
-	static bool bIsArg = false;
-	static int nArgIndex = 0;
-	if (!bFlag && bIsArg) {
-		CCommandLineInfo::ParseParam(pszParam, bFlag, bLast);
-		return;
-	}
+    static bool bIsArg = false;
+    static int nArgIndex = 0;
+    if (!bFlag && bIsArg) {
+        CCommandLineInfo::ParseParam(pszParam, bFlag, bLast);
+        return;
+    }
 
-	if (bFlag) {
-		CString csArg(pszParam);
-		if (csArg == _T("codec")) {
-			TRACE("CCamStudioCommandLineInfo::ParseParam: -codec\n");
-			nArgIndex = 1;
-		} else if (csArg == _T("outfile")) {
-			TRACE("CCamStudioCommandLineInfo::ParseParam: -outfile\n");
-			nArgIndex = 2;
-		} else if (csArg == _T("seconds")) {
-			TRACE("CCamStudioCommandLineInfo::ParseParam: -seconds\n");
-			nArgIndex = 3;
-		} else if (csArg == _T("help")) {
-			TRACE("CCamStudioCommandLineInfo::ParseParam: -help\n");
-			m_bHelp = true;
-			nArgIndex = 0;	// takes no arguments
-		} else {
-			nArgIndex = 0;	// not our flag
-			CCommandLineInfo::ParseParam(pszParam, bFlag, bLast);
-		}
-	} else {
-		// process argument
-		// TODO: add validation where needed
-		switch (nArgIndex) {
-		default:
-		case 0:
-			// not our argument
-			CCommandLineInfo::ParseParam(pszParam, bFlag, bLast);
-			break;
-		case 1:	// [-codec <codec ID>]
-			// integer argument
-			m_iCodecID = ::_tstoi(pszParam);
-			break;
-		case 2:	// [-outfile <filename>]
-			// string argument
-			m_csOutfile = pszParam;
-			break;
-		case 3:	// [-seconds <seconds>]
-			// integer argument
-			m_iSeconds = ::_tstoi(pszParam);
-			break;
-		}
-	}
+    if (bFlag) {
+        CString csArg(pszParam);
+        if (csArg == _T("codec")) {
+            TRACE("CCamStudioCommandLineInfo::ParseParam: -codec\n");
+            nArgIndex = 1;
+        } else if (csArg == _T("outfile")) {
+            TRACE("CCamStudioCommandLineInfo::ParseParam: -outfile\n");
+            nArgIndex = 2;
+        } else if (csArg == _T("seconds")) {
+            TRACE("CCamStudioCommandLineInfo::ParseParam: -seconds\n");
+            nArgIndex = 3;
+        } else if (csArg == _T("help")) {
+            TRACE("CCamStudioCommandLineInfo::ParseParam: -help\n");
+            m_bHelp = true;
+            nArgIndex = 0;    // takes no arguments
+        } else {
+            nArgIndex = 0;    // not our flag
+            CCommandLineInfo::ParseParam(pszParam, bFlag, bLast);
+        }
+    } else {
+        // process argument
+        // TODO: add validation where needed
+        switch (nArgIndex) {
+        default:
+        case 0:
+            // not our argument
+            CCommandLineInfo::ParseParam(pszParam, bFlag, bLast);
+            break;
+        case 1:    // [-codec <codec ID>]
+            // integer argument
+            m_iCodecID = ::_tstoi(pszParam);
+            break;
+        case 2:    // [-outfile <filename>]
+            // string argument
+            m_csOutfile = pszParam;
+            break;
+        case 3:    // [-seconds <seconds>]
+            // integer argument
+            m_iSeconds = ::_tstoi(pszParam);
+            break;
+        }
+    }
 }

@@ -85,20 +85,20 @@
 
 bmp_info_t *bmp_info_create()
 {
-	bmp_info_t *info;
-	if (!(info = jas_malloc(sizeof(bmp_info_t)))) {
-		return 0;
-	}
-	info->palents = 0;
-	return info;
+    bmp_info_t *info;
+    if (!(info = jas_malloc(sizeof(bmp_info_t)))) {
+        return 0;
+    }
+    info->palents = 0;
+    return info;
 }
 
 void bmp_info_destroy(bmp_info_t *info)
 {
-	if (info->palents) {
-		jas_free(info->palents);
-	}
-	jas_free(info);
+    if (info->palents) {
+        jas_free(info->palents);
+    }
+    jas_free(info);
 }
 
 /******************************************************************************\
@@ -107,29 +107,29 @@ void bmp_info_destroy(bmp_info_t *info)
 
 int bmp_isgrayscalepal(bmp_palent_t *palents, int numpalents)
 {
-	bmp_palent_t *palent;
-	int i;
+    bmp_palent_t *palent;
+    int i;
 
-	for (i = numpalents, palent = palents; i > 0; --i, ++palent) {
-		if (palent->red != palent->grn || palent->red != palent->blu) {
-			return 0;
-		}
-	}
-	return 1;
+    for (i = numpalents, palent = palents; i > 0; --i, ++palent) {
+        if (palent->red != palent->grn || palent->red != palent->blu) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 int bmp_numcmpts(bmp_info_t *info)
 {
-	int numcmpts;
+    int numcmpts;
 
-	if (info->depth == 24) {
-		numcmpts = 3;
-	} else if (info->depth == 8) {
-		numcmpts = bmp_isgrayscalepal(info->palents, info->numcolors) ?
-		  1 : 3;
-	} else {
-		numcmpts = 0;
-		abort();
-	}
-	return numcmpts;
+    if (info->depth == 24) {
+        numcmpts = 3;
+    } else if (info->depth == 8) {
+        numcmpts = bmp_isgrayscalepal(info->palents, info->numcolors) ?
+          1 : 3;
+    } else {
+        numcmpts = 0;
+        abort();
+    }
+    return numcmpts;
 }

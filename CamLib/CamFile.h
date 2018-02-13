@@ -1,4 +1,4 @@
-// CamFile.h	- include file for CamStudio Library file api's
+// CamFile.h    - include file for CamStudio Library file api's
 /////////////////////////////////////////////////////////////////////////////
 #ifndef CAMFILE_H
 #define CAMFILE_H
@@ -6,9 +6,9 @@
 #pragma once
 
 // CamFile.cpp
-const int USE_WINDOWS_TEMP_DIR		= 0;
-const int USE_INSTALLED_DIR			= 1;
-const int USE_USER_SPECIFIED_DIR	= 2;
+const int USE_WINDOWS_TEMP_DIR        = 0;
+const int USE_INSTALLED_DIR            = 1;
+const int USE_USER_SPECIFIED_DIR    = 2;
 
 CString GetTempFolder(int iAccess, const CString strFolder = _T(""), bool bOut = false);
 CString GetProgPath();
@@ -17,6 +17,6 @@ CString GetMyVideoPath();
 CString GetAppDataPath();
 CString GetMyDocumentsPath();
 bool    DoesFileExist(const CString& name);
-bool	DoesDefaultOutDirExist(const CString& dir);
+bool    DoesDefaultOutDirExist(const CString& dir);
 
-#endif	// CAMFILE_H
+#endif    // CAMFILE_H

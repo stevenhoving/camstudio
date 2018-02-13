@@ -17,41 +17,41 @@ static char THIS_FILE[]=__FILE__;
 
 CBuffer::CBuffer(DWORD size, bool AutoDelete)
 {
-	m_bAutoDelete = AutoDelete;
-	try
-	{
-		ptr.b = new BYTE[size];
-		if (ptr.b) ByteLen = size;
-	}
-	catch(...)
-	{
-		//ErrorMsg("Out of memory!");
-		MessageBox(NULL,"Out of memory for audio buffer!","Note",MB_OK);
-	}
+    m_bAutoDelete = AutoDelete;
+    try
+    {
+        ptr.b = new BYTE[size];
+        if (ptr.b) ByteLen = size;
+    }
+    catch(...)
+    {
+        //ErrorMsg("Out of memory!");
+        MessageBox(NULL,"Out of memory for audio buffer!","Note",MB_OK);
+    }
 }
 
 CBuffer::CBuffer(void* buffer, DWORD length)
 {
-	m_bAutoDelete = false;
-	if (buffer)
-	{
-		ptr.v = buffer;
-		ByteLen = length;
-	}
-	else
-	{
-		ptr.b = NULL;
-		ByteLen = 0;
-	}
+    m_bAutoDelete = false;
+    if (buffer)
+    {
+        ptr.v = buffer;
+        ByteLen = length;
+    }
+    else
+    {
+        ptr.b = NULL;
+        ByteLen = 0;
+    }
 }
 
 CBuffer::~CBuffer()
 {
-	// remember to delete the memory
-	if (m_bAutoDelete && ptr.b)  delete [] ptr.b;
+    // remember to delete the memory
+    if (m_bAutoDelete && ptr.b)  delete [] ptr.b;
 }
 
 void CBuffer::Erase()
 {
-	if (ptr.b) ZeroMemory(ptr.b,ByteLen);
+    if (ptr.b) ZeroMemory(ptr.b,ByteLen);
 }

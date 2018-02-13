@@ -71,8 +71,8 @@
 
 void pgx_dumphdr(FILE *out, pgx_hdr_t *hdr)
 {
-	fprintf(out, "byteorder=%s sgnd=%s prec=%d width=%d height=%d\n",
-	  hdr->bigendian ? "bigendian" : "littleendian",
-	  hdr->sgnd ? "signed" : "unsigned",
-	  hdr->prec, hdr->width, hdr->height);
+    fprintf(out, "byteorder=%s sgnd=%s prec=%d width=%d height=%d\n",
+      hdr->bigendian ? "bigendian" : "littleendian",
+      hdr->sgnd ? "signed" : "unsigned",
+      hdr->prec, hdr->width, hdr->height);
 }

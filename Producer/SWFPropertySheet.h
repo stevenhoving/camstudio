@@ -12,12 +12,12 @@
 
 class SWFPropertySheet : public CPropertySheet
 {
-	DECLARE_DYNAMIC(SWFPropertySheet)
+    DECLARE_DYNAMIC(SWFPropertySheet)
 
 // Construction
 public:
-	SWFPropertySheet(UINT nIDCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
-	SWFPropertySheet(LPCTSTR pszCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
+    SWFPropertySheet(UINT nIDCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
+    SWFPropertySheet(LPCTSTR pszCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
 
 // Attributes
 public:
@@ -26,20 +26,20 @@ public:
 public:
 
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(SWFPropertySheet)
-	//}}AFX_VIRTUAL
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(SWFPropertySheet)
+    //}}AFX_VIRTUAL
 
 // Implementation
 public:
-	virtual ~SWFPropertySheet();
+    virtual ~SWFPropertySheet();
 
-	// Generated message map functions
+    // Generated message map functions
 protected:
-	//{{AFX_MSG(SWFPropertySheet)
-		// NOTE - the ClassWizard will add and remove member functions here.
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(SWFPropertySheet)
+        // NOTE - the ClassWizard will add and remove member functions here.
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 /////////////////////////////////////////////////////////////////////////////

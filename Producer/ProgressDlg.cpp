@@ -16,9 +16,9 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 
 CProgressDlg::CProgressDlg(UINT nCaptionID)
 {
-	m_nCaptionID = CG_IDS_PROGRESS_CAPTION;
-	if (nCaptionID != 0)
-		m_nCaptionID = nCaptionID;
+    m_nCaptionID = CG_IDS_PROGRESS_CAPTION;
+    if (nCaptionID != 0)
+        m_nCaptionID = nCaptionID;
 
     m_bCancel=FALSE;
     m_nLower=0;
@@ -84,7 +84,7 @@ void CProgressDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CProgressDlg, CDialog)
     //{{AFX_MSG_MAP(CProgressDlg)
     //}}AFX_MSG_MAP
-	ON_BN_CLICKED(ID_PROGRESS_CANCEL, OnBnClickedProgressCancel)
+    ON_BN_CLICKED(ID_PROGRESS_CANCEL, OnBnClickedProgressCancel)
 END_MESSAGE_MAP()
 
 void CProgressDlg::OnCancel()
@@ -186,11 +186,11 @@ void CProgressDlg::UpdatePercent(int nNewPos)
     CString strBuf;
     strBuf.Format(_T("%d%c"),nPercent,_T('%'));
 
-	CString strCur; // get current percentage
+    CString strCur; // get current percentage
     pWndPercent->GetWindowText(strCur);
 
-	if (strCur != strBuf)
-		pWndPercent->SetWindowText(strBuf);
+    if (strCur != strBuf)
+        pWndPercent->SetWindowText(strBuf);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -203,8 +203,8 @@ BOOL CProgressDlg::OnInitDialog()
     m_Progress.SetStep(m_nStep);
     m_Progress.SetPos(m_nLower);
 
-	CString strCaption;
-	VERIFY(strCaption.LoadString(m_nCaptionID));
+    CString strCaption;
+    VERIFY(strCaption.LoadString(m_nCaptionID));
     SetWindowText(strCaption);
 
     return TRUE;
@@ -212,6 +212,6 @@ BOOL CProgressDlg::OnInitDialog()
 
 void CProgressDlg::OnBnClickedProgressCancel()
 {
-//	MessageBox("Hi");
-	m_bCancel=TRUE;
+//    MessageBox("Hi");
+    m_bCancel=TRUE;
 }

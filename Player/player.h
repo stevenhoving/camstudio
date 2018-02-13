@@ -1,6 +1,6 @@
 // Constants
-#define BUFFER_LENGTH	256
-#define WM_USER_PLAY	0x00401
+#define BUFFER_LENGTH    256
+#define WM_USER_PLAY    0x00401
 
 // File menu items
 #define IDM_OPEN   1

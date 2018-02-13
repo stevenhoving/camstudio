@@ -11,71 +11,71 @@
 #define yychar swf4char
 #define yydebug swf4debug
 #define yynerrs swf4nerrs
-#define	BREAK	257
-#define	FOR	258
-#define	CONTINUE	259
-#define	IF	260
-#define	ELSE	261
-#define	DO	262
-#define	WHILE	263
-#define	THIS	264
-#define	EVAL	265
-#define	TIME	266
-#define	RANDOM	267
-#define	LENGTH	268
-#define	INT	269
-#define	CONCAT	270
-#define	DUPLICATECLIP	271
-#define	REMOVECLIP	272
-#define	TRACE	273
-#define	STARTDRAG	274
-#define	STOPDRAG	275
-#define	ORD	276
-#define	CHR	277
-#define	CALLFRAME	278
-#define	GETURL	279
-#define	GETURL1	280
-#define	LOADMOVIE	281
-#define	LOADVARIABLES	282
-#define	POSTURL	283
-#define	SUBSTR	284
-#define	GETPROPERTY	285
-#define	NEXTFRAME	286
-#define	PREVFRAME	287
-#define	PLAY	288
-#define	STOP	289
-#define	TOGGLEQUALITY	290
-#define	STOPSOUNDS	291
-#define	GOTOFRAME	292
-#define	GOTOANDPLAY	293
-#define	FRAMELOADED	294
-#define	SETTARGET	295
-#define	TELLTARGET	296
-#define	STRING	297
-#define	NUMBER	298
-#define	IDENTIFIER	299
-#define	PATH	300
-#define	GETURL_METHOD	301
-#define	EQ	302
-#define	LE	303
-#define	GE	304
-#define	NE	305
-#define	LAN	306
-#define	LOR	307
-#define	INC	308
-#define	DEC	309
-#define	IEQ	310
-#define	DEQ	311
-#define	MEQ	312
-#define	SEQ	313
-#define	STREQ	314
-#define	STRNE	315
-#define	STRCMP	316
-#define	PARENT	317
-#define	END	318
-#define	UMINUS	319
-#define	POSTFIX	320
-#define	NEGATE	321
+#define    BREAK    257
+#define    FOR    258
+#define    CONTINUE    259
+#define    IF    260
+#define    ELSE    261
+#define    DO    262
+#define    WHILE    263
+#define    THIS    264
+#define    EVAL    265
+#define    TIME    266
+#define    RANDOM    267
+#define    LENGTH    268
+#define    INT    269
+#define    CONCAT    270
+#define    DUPLICATECLIP    271
+#define    REMOVECLIP    272
+#define    TRACE    273
+#define    STARTDRAG    274
+#define    STOPDRAG    275
+#define    ORD    276
+#define    CHR    277
+#define    CALLFRAME    278
+#define    GETURL    279
+#define    GETURL1    280
+#define    LOADMOVIE    281
+#define    LOADVARIABLES    282
+#define    POSTURL    283
+#define    SUBSTR    284
+#define    GETPROPERTY    285
+#define    NEXTFRAME    286
+#define    PREVFRAME    287
+#define    PLAY    288
+#define    STOP    289
+#define    TOGGLEQUALITY    290
+#define    STOPSOUNDS    291
+#define    GOTOFRAME    292
+#define    GOTOANDPLAY    293
+#define    FRAMELOADED    294
+#define    SETTARGET    295
+#define    TELLTARGET    296
+#define    STRING    297
+#define    NUMBER    298
+#define    IDENTIFIER    299
+#define    PATH    300
+#define    GETURL_METHOD    301
+#define    EQ    302
+#define    LE    303
+#define    GE    304
+#define    NE    305
+#define    LAN    306
+#define    LOR    307
+#define    INC    308
+#define    DEC    309
+#define    IEQ    310
+#define    DEQ    311
+#define    MEQ    312
+#define    SEQ    313
+#define    STREQ    314
+#define    STRNE    315
+#define    STRCMP    316
+#define    PARENT    317
+#define    END    318
+#define    UMINUS    319
+#define    POSTFIX    320
+#define    NEGATE    321
 
 #line 3 "swf4compiler.y"
 
@@ -100,9 +100,9 @@ typedef union {
 #endif
 #endif
 
-#define	YYFINAL		369
-#define	YYFLAG		-32768
-#define	YYNTBASE	86
+#define    YYFINAL        369
+#define    YYFLAG        -32768
+#define    YYNTBASE    86
 
 #define YYTRANSLATE(x) ((unsigned)(x) <= 321 ? yytranslate[x] : 107)
 
@@ -389,7 +389,7 @@ static const short yypgoto[] = {-32768,
 -32768,-32768,-32768,-32768,   -21,     0,     6,    12,   -52,   222
 };
 
-#define	YYLAST		1293
+#define    YYLAST        1293
 
 static const short yytable[] = {    48,
    120,   177,   178,    52,    48,    49,   191,   192,    53,   312,
@@ -705,7 +705,7 @@ static const short yycheck[] = {     0,
    since that symbol is in the user namespace.  */
 #if (defined (_MSDOS) || defined (_MSDOS_)) && !defined (__TURBOC__)
 #if 0 /* No need for malloc.h, which pollutes the namespace;
-	 instead, just don't use alloca.  */
+     instead, just don't use alloca.  */
 #include <malloc.h>
 #endif
 #else /* not MSDOS, or __TURBOC__ */
@@ -718,7 +718,7 @@ static const short yycheck[] = {     0,
 #else /* not MSDOS, or __TURBOC__, or _AIX */
 #if 0
 #ifdef __hpux /* haible@ilog.fr says this works for HPUX 9.05 and up,
-		 and on HPUX 10.  Eventually we can turn this on.  */
+         and on HPUX 10.  Eventually we can turn this on.  */
 #define YYSTACK_USE_ALLOCA
 #define alloca __builtin_alloca
 #endif /* __hpux */
@@ -740,50 +740,50 @@ static const short yycheck[] = {     0,
    It is replaced by the list of actions, each action
    as one case of the switch.  */
 
-#define yyerrok		(yyerrstatus = 0)
-#define yyclearin	(yychar = YYEMPTY)
-#define YYEMPTY		-2
-#define YYEOF		0
-#define YYACCEPT	goto yyacceptlab
-#define YYABORT 	goto yyabortlab
-#define YYERROR		goto yyerrlab1
+#define yyerrok        (yyerrstatus = 0)
+#define yyclearin    (yychar = YYEMPTY)
+#define YYEMPTY        -2
+#define YYEOF        0
+#define YYACCEPT    goto yyacceptlab
+#define YYABORT     goto yyabortlab
+#define YYERROR        goto yyerrlab1
 /* Like YYERROR except do call yyerror.
    This remains here temporarily to ease the
    transition to the new meaning of YYERROR, for GCC.
    Once GCC version 2 has supplanted version 1, this can go.  */
-#define YYFAIL		goto yyerrlab
+#define YYFAIL        goto yyerrlab
 #define YYRECOVERING()  (!!yyerrstatus)
 #define YYBACKUP(token, value) \
-do								\
-  if (yychar == YYEMPTY && yylen == 1)				\
-    { yychar = (token), yylval = (value);			\
-      yychar1 = YYTRANSLATE (yychar);				\
-      YYPOPSTACK;						\
-      goto yybackup;						\
-    }								\
-  else								\
-    { yyerror ("syntax error: cannot back up"); YYERROR; }	\
+do                                \
+  if (yychar == YYEMPTY && yylen == 1)                \
+    { yychar = (token), yylval = (value);            \
+      yychar1 = YYTRANSLATE (yychar);                \
+      YYPOPSTACK;                        \
+      goto yybackup;                        \
+    }                                \
+  else                                \
+    { yyerror ("syntax error: cannot back up"); YYERROR; }    \
 while (0)
 
-#define YYTERROR	1
-#define YYERRCODE	256
+#define YYTERROR    1
+#define YYERRCODE    256
 
 #ifndef YYPURE
-#define YYLEX		yylex()
+#define YYLEX        yylex()
 #endif
 
 #ifdef YYPURE
 #ifdef YYLSP_NEEDED
 #ifdef YYLEX_PARAM
-#define YYLEX		yylex(&yylval, &yylloc, YYLEX_PARAM)
+#define YYLEX        yylex(&yylval, &yylloc, YYLEX_PARAM)
 #else
-#define YYLEX		yylex(&yylval, &yylloc)
+#define YYLEX        yylex(&yylval, &yylloc)
 #endif
 #else /* not YYLSP_NEEDED */
 #ifdef YYLEX_PARAM
-#define YYLEX		yylex(&yylval, YYLEX_PARAM)
+#define YYLEX        yylex(&yylval, YYLEX_PARAM)
 #else
-#define YYLEX		yylex(&yylval)
+#define YYLEX        yylex(&yylval)
 #endif
 #endif /* not YYLSP_NEEDED */
 #endif
@@ -792,27 +792,27 @@ while (0)
 
 #ifndef YYPURE
 
-int	yychar;			/*  the lookahead symbol		*/
-YYSTYPE	yylval;			/*  the semantic value of the		*/
-				/*  lookahead symbol			*/
+int    yychar;            /*  the lookahead symbol        */
+YYSTYPE    yylval;            /*  the semantic value of the        */
+                /*  lookahead symbol            */
 
 #ifdef YYLSP_NEEDED
-YYLTYPE yylloc;			/*  location data for the lookahead	*/
-				/*  symbol				*/
+YYLTYPE yylloc;            /*  location data for the lookahead    */
+                /*  symbol                */
 #endif
 
-int yynerrs;			/*  number of parse errors so far       */
+int yynerrs;            /*  number of parse errors so far       */
 #endif  /* not YYPURE */
 
 #if YYDEBUG != 0
-int yydebug;			/*  nonzero means print parse trace	*/
+int yydebug;            /*  nonzero means print parse trace    */
 /* Since this is uninitialized, it does not stop multiple parsers
    from coexisting.  */
 #endif
 
-/*  YYINITDEPTH indicates the initial size of the parser's stacks	*/
+/*  YYINITDEPTH indicates the initial size of the parser's stacks    */
 
-#ifndef	YYINITDEPTH
+#ifndef    YYINITDEPTH
 #define YYINITDEPTH 200
 #endif
 
@@ -832,9 +832,9 @@ int yydebug;			/*  nonzero means print parse trace	*/
    definitions require.  With GCC, __builtin_memcpy takes an arg
    of type size_t, but it can handle unsigned int.  */
 
-#if __GNUC__ > 1		/* GNU C and GNU C++ define this.  */
-#define __yy_memcpy(TO,FROM,COUNT)	__builtin_memcpy(TO,FROM,COUNT)
-#else				/* not GNU C or C++ */
+#if __GNUC__ > 1        /* GNU C and GNU C++ define this.  */
+#define __yy_memcpy(TO,FROM,COUNT)    __builtin_memcpy(TO,FROM,COUNT)
+#else                /* not GNU C or C++ */
 #ifndef __cplusplus
 
 /* This is the most reliable way to avoid incompatibilities
@@ -909,17 +909,17 @@ yyparse(YYPARSE_PARAM_ARG)
   register int yyn;
   register short *yyssp;
   register YYSTYPE *yyvsp;
-  int yyerrstatus;	/*  number of tokens to shift before error messages enabled */
-  int yychar1 = 0;		/*  lookahead token as an internal (translated) token number */
+  int yyerrstatus;    /*  number of tokens to shift before error messages enabled */
+  int yychar1 = 0;        /*  lookahead token as an internal (translated) token number */
 
-  short	yyssa[YYINITDEPTH];	/*  the state stack			*/
-  YYSTYPE yyvsa[YYINITDEPTH];	/*  the semantic value stack		*/
+  short    yyssa[YYINITDEPTH];    /*  the state stack            */
+  YYSTYPE yyvsa[YYINITDEPTH];    /*  the semantic value stack        */
 
-  short *yyss = yyssa;		/*  refer to the stacks thru separate pointers */
-  YYSTYPE *yyvs = yyvsa;	/*  to allow yyoverflow to reallocate them elsewhere */
+  short *yyss = yyssa;        /*  refer to the stacks thru separate pointers */
+  YYSTYPE *yyvs = yyvsa;    /*  to allow yyoverflow to reallocate them elsewhere */
 
 #ifdef YYLSP_NEEDED
-  YYLTYPE yylsa[YYINITDEPTH];	/*  the location stack			*/
+  YYLTYPE yylsa[YYINITDEPTH];    /*  the location stack            */
   YYLTYPE *yyls = yylsa;
   YYLTYPE *yylsp;
 
@@ -940,9 +940,9 @@ yyparse(YYPARSE_PARAM_ARG)
 #endif
 #endif
 
-  YYSTYPE yyval;		/*  the variable used to return		*/
-				/*  semantic values from the action	*/
-				/*  routines				*/
+  YYSTYPE yyval;        /*  the variable used to return        */
+                /*  semantic values from the action    */
+                /*  routines                */
 
   int yylen;
 
@@ -954,7 +954,7 @@ yyparse(YYPARSE_PARAM_ARG)
   yystate = 0;
   yyerrstatus = 0;
   yynerrs = 0;
-  yychar = YYEMPTY;		/* Cause a token to be read.  */
+  yychar = YYEMPTY;        /* Cause a token to be read.  */
 
   /* Initialize stack pointers.
      Waste one element of value and location stack
@@ -989,20 +989,20 @@ yynewstate:
 
 #ifdef yyoverflow
       /* Each stack pointer address is followed by the size of
-	 the data in use in that stack, in sbytes.  */
+     the data in use in that stack, in sbytes.  */
 #ifdef YYLSP_NEEDED
       /* This used to be a conditional around just the two extra args,
-	 but that might be undefined if yyoverflow is a macro.  */
+     but that might be undefined if yyoverflow is a macro.  */
       yyoverflow("parser stack overflow",
-		 &yyss1, size * sizeof (*yyssp),
-		 &yyvs1, size * sizeof (*yyvsp),
-		 &yyls1, size * sizeof (*yylsp),
-		 &yystacksize);
+         &yyss1, size * sizeof (*yyssp),
+         &yyvs1, size * sizeof (*yyvsp),
+         &yyls1, size * sizeof (*yylsp),
+         &yystacksize);
 #else
       yyoverflow("parser stack overflow",
-		 &yyss1, size * sizeof (*yyssp),
-		 &yyvs1, size * sizeof (*yyvsp),
-		 &yystacksize);
+         &yyss1, size * sizeof (*yyssp),
+         &yyvs1, size * sizeof (*yyvsp),
+         &yystacksize);
 #endif
 
       yyss = yyss1; yyvs = yyvs1;
@@ -1012,34 +1012,34 @@ yynewstate:
 #else /* no yyoverflow */
       /* Extend the stack our own way.  */
       if (yystacksize >= YYMAXDEPTH)
-	{
-	  yyerror("parser stack overflow");
-	  if (yyfree_stacks)
-	    {
-	      free (yyss);
-	      free (yyvs);
+    {
+      yyerror("parser stack overflow");
+      if (yyfree_stacks)
+        {
+          free (yyss);
+          free (yyvs);
 #ifdef YYLSP_NEEDED
-	      free (yyls);
+          free (yyls);
 #endif
-	    }
-	  return 2;
-	}
+        }
+      return 2;
+    }
       yystacksize *= 2;
       if (yystacksize > YYMAXDEPTH)
-	yystacksize = YYMAXDEPTH;
+    yystacksize = YYMAXDEPTH;
 #ifndef YYSTACK_USE_ALLOCA
       yyfree_stacks = 1;
 #endif
       yyss = (short *) YYSTACK_ALLOC (yystacksize * sizeof (*yyssp));
       __yy_memcpy ((char *)yyss, (char *)yyss1,
-		   size * (unsigned int) sizeof (*yyssp));
+           size * (unsigned int) sizeof (*yyssp));
       yyvs = (YYSTYPE *) YYSTACK_ALLOC (yystacksize * sizeof (*yyvsp));
       __yy_memcpy ((char *)yyvs, (char *)yyvs1,
-		   size * (unsigned int) sizeof (*yyvsp));
+           size * (unsigned int) sizeof (*yyvsp));
 #ifdef YYLSP_NEEDED
       yyls = (YYLTYPE *) YYSTACK_ALLOC (yystacksize * sizeof (*yylsp));
       __yy_memcpy ((char *)yyls, (char *)yyls1,
-		   size * (unsigned int) sizeof (*yylsp));
+           size * (unsigned int) sizeof (*yylsp));
 #endif
 #endif /* no yyoverflow */
 
@@ -1051,11 +1051,11 @@ yynewstate:
 
 #if YYDEBUG != 0
       if (yydebug)
-	fprintf(stderr, "Stack size increased to %d\n", yystacksize);
+    fprintf(stderr, "Stack size increased to %d\n", yystacksize);
 #endif
 
       if (yyssp >= yyss + yystacksize - 1)
-	YYABORT;
+    YYABORT;
     }
 
 #if YYDEBUG != 0
@@ -1085,21 +1085,21 @@ yynewstate:
     {
 #if YYDEBUG != 0
       if (yydebug)
-	fprintf(stderr, "Reading a token: ");
+    fprintf(stderr, "Reading a token: ");
 #endif
       yychar = YYLEX;
     }
 
   /* Convert token to internal form (in yychar1) for indexing tables with */
 
-  if (yychar <= 0)		/* This means end of input. */
+  if (yychar <= 0)        /* This means end of input. */
     {
       yychar1 = 0;
-      yychar = YYEOF;		/* Don't call YYLEX any more */
+      yychar = YYEOF;        /* Don't call YYLEX any more */
 
 #if YYDEBUG != 0
       if (yydebug)
-	fprintf(stderr, "Now at end of input.\n");
+    fprintf(stderr, "Now at end of input.\n");
 #endif
     }
   else
@@ -1108,15 +1108,15 @@ yynewstate:
 
 #if YYDEBUG != 0
       if (yydebug)
-	{
-	  fprintf (stderr, "Next token is %d (%s", yychar, yytname[yychar1]);
-	  /* Give the individual parser a way to print the precise meaning
-	     of a token, for further debugging info.  */
+    {
+      fprintf (stderr, "Next token is %d (%s", yychar, yytname[yychar1]);
+      /* Give the individual parser a way to print the precise meaning
+         of a token, for further debugging info.  */
 #ifdef YYPRINT
-	  YYPRINT (stderr, yychar, yylval);
+      YYPRINT (stderr, yychar, yylval);
 #endif
-	  fprintf (stderr, ")\n");
-	}
+      fprintf (stderr, ")\n");
+    }
 #endif
     }
 
@@ -1136,7 +1136,7 @@ yynewstate:
   if (yyn < 0)
     {
       if (yyn == YYFLAG)
-	goto yyerrlab;
+    goto yyerrlab;
       yyn = -yyn;
       goto yyreduce;
     }
@@ -1187,11 +1187,11 @@ yyreduce:
       int i;
 
       fprintf (stderr, "Reducing via rule %d (line %d), ",
-	       yyn, yyrline[yyn]);
+           yyn, yyrline[yyn]);
 
       /* Print the symbols being reduced, and their result.  */
       for (i = yyprhs[yyn]; yyrhs[i] > 0; i++)
-	fprintf (stderr, "%s ", yytname[yyrhs[i]]);
+    fprintf (stderr, "%s ", yytname[yyrhs[i]]);
       fprintf (stderr, " -> %s\n", yytname[yyr1[yyn]]);
     }
 #endif
@@ -1233,109 +1233,109 @@ case 17:
 case 18:
 #line 181 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_WAITFORFRAME);
-		  bufferWriteS16(yyval.action, 3);
-		  bufferWriteS16(yyval.action, atoi(yyvsp[-5].str));
-		  free(yyvsp[-5].str);
-		  bufferWriteU8(yyval.action, 1);		/* if not loaded, jump to.. */
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, bufferLength(yyvsp[0].action)+5);
-		  bufferConcat(yyval.action, yyvsp[0].action);			  /* ..here */
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, bufferLength(yyvsp[-2].action));
-		  bufferConcat(yyval.action, yyvsp[-2].action); ;
+          bufferWriteU8(yyval.action, SWFACTION_WAITFORFRAME);
+          bufferWriteS16(yyval.action, 3);
+          bufferWriteS16(yyval.action, atoi(yyvsp[-5].str));
+          free(yyvsp[-5].str);
+          bufferWriteU8(yyval.action, 1);        /* if not loaded, jump to.. */
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, bufferLength(yyvsp[0].action)+5);
+          bufferConcat(yyval.action, yyvsp[0].action);              /* ..here */
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, bufferLength(yyvsp[-2].action));
+          bufferConcat(yyval.action, yyvsp[-2].action); ;
     break;}
 case 19:
 #line 197 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_WAITFORFRAME);
-		  bufferWriteS16(yyval.action, 3);
-		  bufferWriteS16(yyval.action, atoi(yyvsp[-3].str));
-		  free(yyvsp[-3].str);
-		  bufferWriteU8(yyval.action, 1);		/* if not loaded, jump to.. */
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, 5);
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);	  /* ..here */
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, bufferLength(yyvsp[0].action));	  /* ..and then out */
-		  bufferConcat(yyval.action, yyvsp[0].action); ;
+          bufferWriteU8(yyval.action, SWFACTION_WAITFORFRAME);
+          bufferWriteS16(yyval.action, 3);
+          bufferWriteS16(yyval.action, atoi(yyvsp[-3].str));
+          free(yyvsp[-3].str);
+          bufferWriteU8(yyval.action, 1);        /* if not loaded, jump to.. */
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, 5);
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);      /* ..here */
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, bufferLength(yyvsp[0].action));      /* ..and then out */
+          bufferConcat(yyval.action, yyvsp[0].action); ;
     break;}
 case 20:
 #line 213 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_WAITFORFRAME);
-		  bufferWriteS16(yyval.action, 3);
-		  bufferWriteS16(yyval.action, atoi(yyvsp[-3].str));
-		  free(yyvsp[-3].str);
-		  bufferWriteU8(yyval.action, 1);		/* if not loaded, jump to.. */
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, bufferLength(yyvsp[0].action));
-		  bufferConcat(yyval.action, yyvsp[0].action); ;
+          bufferWriteU8(yyval.action, SWFACTION_WAITFORFRAME);
+          bufferWriteS16(yyval.action, 3);
+          bufferWriteS16(yyval.action, atoi(yyvsp[-3].str));
+          free(yyvsp[-3].str);
+          bufferWriteU8(yyval.action, 1);        /* if not loaded, jump to.. */
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, bufferLength(yyvsp[0].action));
+          bufferConcat(yyval.action, yyvsp[0].action); ;
     break;}
 case 21:
 #line 225 "swf4compiler.y"
 { yyval.action = yyvsp[-5].action;
-		  bufferWriteU8(yyval.action, SWFACTION_WAITFORFRAMEEXPRESSION);
-		  bufferWriteS16(yyval.action, 1);
-		  bufferWriteU8(yyval.action, 1);		/* if not loaded, jump to.. */
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, bufferLength(yyvsp[0].action)+5);
-		  bufferConcat(yyval.action, yyvsp[0].action);			  /* ..here */
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, bufferLength(yyvsp[-2].action));
-		  bufferConcat(yyval.action, yyvsp[-2].action); ;
+          bufferWriteU8(yyval.action, SWFACTION_WAITFORFRAMEEXPRESSION);
+          bufferWriteS16(yyval.action, 1);
+          bufferWriteU8(yyval.action, 1);        /* if not loaded, jump to.. */
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, bufferLength(yyvsp[0].action)+5);
+          bufferConcat(yyval.action, yyvsp[0].action);              /* ..here */
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, bufferLength(yyvsp[-2].action));
+          bufferConcat(yyval.action, yyvsp[-2].action); ;
     break;}
 case 22:
 #line 239 "swf4compiler.y"
 { yyval.action = yyvsp[-3].action;
-		  bufferWriteU8(yyval.action, SWFACTION_WAITFORFRAMEEXPRESSION);
-		  bufferWriteS16(yyval.action, 1);
-		  bufferWriteU8(yyval.action, 1);		/* if not loaded, jump to.. */
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, 5);
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);	  /* ..here */
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, bufferLength(yyvsp[0].action));	  /* ..and then out */
-		  bufferConcat(yyval.action, yyvsp[0].action); ;
+          bufferWriteU8(yyval.action, SWFACTION_WAITFORFRAMEEXPRESSION);
+          bufferWriteS16(yyval.action, 1);
+          bufferWriteU8(yyval.action, 1);        /* if not loaded, jump to.. */
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, 5);
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);      /* ..here */
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, bufferLength(yyvsp[0].action));      /* ..and then out */
+          bufferConcat(yyval.action, yyvsp[0].action); ;
     break;}
 case 23:
 #line 253 "swf4compiler.y"
 { yyval.action = yyvsp[-3].action;
-		  bufferWriteU8(yyval.action, SWFACTION_WAITFORFRAMEEXPRESSION);
-		  bufferWriteS16(yyval.action, 1);
-		  bufferWriteU8(yyval.action, 1);		/* if not loaded, jump to.. */
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, bufferLength(yyvsp[0].action));
-		  bufferConcat(yyval.action, yyvsp[0].action); ;
+          bufferWriteU8(yyval.action, SWFACTION_WAITFORFRAMEEXPRESSION);
+          bufferWriteS16(yyval.action, 1);
+          bufferWriteU8(yyval.action, 1);        /* if not loaded, jump to.. */
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, bufferLength(yyvsp[0].action));
+          bufferConcat(yyval.action, yyvsp[0].action); ;
     break;}
 case 24:
 #line 263 "swf4compiler.y"
 { bufferWriteU8(yyvsp[-4].action, SWFACTION_BRANCHIFTRUE);
-		  bufferWriteS16(yyvsp[-4].action, 2);
-		  bufferWriteS16(yyvsp[-4].action, bufferLength(yyvsp[0].action)+5);
-		  bufferConcat(yyvsp[-4].action, yyvsp[0].action);
-		  bufferWriteU8(yyvsp[-4].action, SWFACTION_BRANCHALWAYS);
-		  bufferWriteS16(yyvsp[-4].action, 2);
-		  bufferWriteS16(yyvsp[-4].action, bufferLength(yyvsp[-2].action));
-		  bufferConcat(yyvsp[-4].action, yyvsp[-2].action);
-		  yyval.action = yyvsp[-4].action; ;
+          bufferWriteS16(yyvsp[-4].action, 2);
+          bufferWriteS16(yyvsp[-4].action, bufferLength(yyvsp[0].action)+5);
+          bufferConcat(yyvsp[-4].action, yyvsp[0].action);
+          bufferWriteU8(yyvsp[-4].action, SWFACTION_BRANCHALWAYS);
+          bufferWriteS16(yyvsp[-4].action, 2);
+          bufferWriteS16(yyvsp[-4].action, bufferLength(yyvsp[-2].action));
+          bufferConcat(yyvsp[-4].action, yyvsp[-2].action);
+          yyval.action = yyvsp[-4].action; ;
     break;}
 case 25:
 #line 274 "swf4compiler.y"
 { bufferWriteU8(yyvsp[-2].action, SWFACTION_LOGICALNOT);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_BRANCHIFTRUE);
-		  bufferWriteS16(yyvsp[-2].action, 2);
-		  bufferWriteS16(yyvsp[-2].action, bufferLength(yyvsp[0].action));
-		  bufferConcat(yyvsp[-2].action, yyvsp[0].action);
-		  yyval.action = yyvsp[-2].action; ;
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_BRANCHIFTRUE);
+          bufferWriteS16(yyvsp[-2].action, 2);
+          bufferWriteS16(yyvsp[-2].action, bufferLength(yyvsp[0].action));
+          bufferConcat(yyvsp[-2].action, yyvsp[0].action);
+          yyval.action = yyvsp[-2].action; ;
     break;}
 case 26:
 #line 282 "swf4compiler.y"
@@ -1348,40 +1348,40 @@ case 27:
 case 28:
 #line 308 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_WAITFORFRAME);
-		  bufferWriteS16(yyval.action, 3);
-		  bufferWriteS16(yyval.action, atoi(yyvsp[-3].str));
-		  free(yyvsp[-3].str);
-		  bufferWriteU8(yyval.action, 1);		/* if not loaded, jump to.. */
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, bufferLength(yyvsp[0].action)+5);
-		  bufferConcat(yyval.action, yyvsp[0].action);				  /* ..here */
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, -(bufferLength(yyval.action)+2)); ;
+          bufferWriteU8(yyval.action, SWFACTION_WAITFORFRAME);
+          bufferWriteS16(yyval.action, 3);
+          bufferWriteS16(yyval.action, atoi(yyvsp[-3].str));
+          free(yyvsp[-3].str);
+          bufferWriteU8(yyval.action, 1);        /* if not loaded, jump to.. */
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, bufferLength(yyvsp[0].action)+5);
+          bufferConcat(yyval.action, yyvsp[0].action);                  /* ..here */
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, -(bufferLength(yyval.action)+2)); ;
     break;}
 case 29:
 #line 323 "swf4compiler.y"
 { yyval.action = yyvsp[-2].action;
-		  bufferWriteU8(yyval.action, SWFACTION_LOGICALNOT);
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHIFTRUE);
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, bufferLength(yyvsp[0].action)+5);
-		  bufferConcat(yyval.action, yyvsp[0].action);
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, -(bufferLength(yyval.action)+2));
-		  bufferResolveJumps(yyval.action); ;
+          bufferWriteU8(yyval.action, SWFACTION_LOGICALNOT);
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHIFTRUE);
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, bufferLength(yyvsp[0].action)+5);
+          bufferConcat(yyval.action, yyvsp[0].action);
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, -(bufferLength(yyval.action)+2));
+          bufferResolveJumps(yyval.action); ;
     break;}
 case 30:
 #line 335 "swf4compiler.y"
 { yyval.action = yyvsp[-4].action;
-		  bufferConcat(yyval.action, yyvsp[-1].action);
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHIFTRUE);
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, -(bufferLength(yyval.action)+2));
-		  bufferResolveJumps(yyval.action); ;
+          bufferConcat(yyval.action, yyvsp[-1].action);
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHIFTRUE);
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, -(bufferLength(yyval.action)+2));
+          bufferResolveJumps(yyval.action); ;
     break;}
 case 31:
 #line 343 "swf4compiler.y"
@@ -1411,314 +1411,314 @@ case 32:
 case 34:
 #line 370 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, MAGIC_CONTINUE_NUMBER); ;
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, MAGIC_CONTINUE_NUMBER); ;
     break;}
 case 35:
 #line 378 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, MAGIC_BREAK_NUMBER); ;
+          bufferWriteU8(yyval.action, SWFACTION_BRANCHALWAYS);
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, MAGIC_BREAK_NUMBER); ;
     break;}
 case 36:
 #line 386 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_STOPDRAGMOVIE); ;
+          bufferWriteU8(yyval.action, SWFACTION_STOPDRAGMOVIE); ;
     break;}
 case 37:
 #line 390 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[-1].str, strlen(yyvsp[-1].str)+1);
-		  bufferWriteU8(yyval.action, SWFACTION_CALLFRAME);
-		  bufferWriteS16(yyval.action, 0);
-		  free(yyvsp[-1].str); ;
+          bufferWriteString(yyval.action, yyvsp[-1].str, strlen(yyvsp[-1].str)+1);
+          bufferWriteU8(yyval.action, SWFACTION_CALLFRAME);
+          bufferWriteS16(yyval.action, 0);
+          free(yyvsp[-1].str); ;
     break;}
 case 38:
 #line 397 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[-1].str, strlen(yyvsp[-1].str)+1);
-		  bufferWriteU8(yyval.action, SWFACTION_CALLFRAME);
-		  bufferWriteS16(yyval.action, 0);
-		  free(yyvsp[-1].str); ;
+          bufferWriteString(yyval.action, yyvsp[-1].str, strlen(yyvsp[-1].str)+1);
+          bufferWriteU8(yyval.action, SWFACTION_CALLFRAME);
+          bufferWriteS16(yyval.action, 0);
+          free(yyvsp[-1].str); ;
     break;}
 case 39:
 #line 404 "swf4compiler.y"
 { yyval.action = yyvsp[-1].action;
-		  bufferWriteU8(yyval.action, SWFACTION_REMOVECLIP); ;
+          bufferWriteU8(yyval.action, SWFACTION_REMOVECLIP); ;
     break;}
 case 40:
 #line 408 "swf4compiler.y"
 { yyval.action = yyvsp[-1].action;
-		  bufferWriteU8(yyval.action, SWFACTION_TRACE); ;
+          bufferWriteU8(yyval.action, SWFACTION_TRACE); ;
     break;}
 case 41:
 #line 413 "swf4compiler.y"
 { yyval.action = yyvsp[-3].action;
-		  bufferConcat(yyval.action, yyvsp[-1].action);
-		  bufferWriteU8(yyval.action, SWFACTION_GETURL2);
-		  bufferWriteS16(yyval.action, 1);
-		  bufferWriteU8(yyval.action, GETURL_METHOD_NOSEND); ;
+          bufferConcat(yyval.action, yyvsp[-1].action);
+          bufferWriteU8(yyval.action, SWFACTION_GETURL2);
+          bufferWriteS16(yyval.action, 1);
+          bufferWriteU8(yyval.action, GETURL_METHOD_NOSEND); ;
     break;}
 case 42:
 #line 420 "swf4compiler.y"
 { yyval.action = yyvsp[-5].action;
-		  bufferConcat(yyval.action, yyvsp[-3].action);
-		  bufferWriteU8(yyval.action, SWFACTION_GETURL2);
-		  bufferWriteS16(yyval.action, 1);
-		  bufferWriteU8(yyval.action, yyvsp[-1].getURLMethod); ;
+          bufferConcat(yyval.action, yyvsp[-3].action);
+          bufferWriteU8(yyval.action, SWFACTION_GETURL2);
+          bufferWriteS16(yyval.action, 1);
+          bufferWriteU8(yyval.action, yyvsp[-1].getURLMethod); ;
     break;}
 case 43:
 #line 427 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_GETURL);
-		  bufferWriteS16(yyval.action, strlen(yyvsp[-3].str) + strlen(yyvsp[-1].str) + 2);
-		  bufferWriteHardString(yyval.action, yyvsp[-3].str, strlen(yyvsp[-3].str));
-		  bufferWriteU8(yyval.action, 0);
-		  bufferWriteHardString(yyval.action, yyvsp[-1].str, strlen(yyvsp[-1].str));
-		  bufferWriteU8(yyval.action, 0); ;
+          bufferWriteU8(yyval.action, SWFACTION_GETURL);
+          bufferWriteS16(yyval.action, strlen(yyvsp[-3].str) + strlen(yyvsp[-1].str) + 2);
+          bufferWriteHardString(yyval.action, yyvsp[-3].str, strlen(yyvsp[-3].str));
+          bufferWriteU8(yyval.action, 0);
+          bufferWriteHardString(yyval.action, yyvsp[-1].str, strlen(yyvsp[-1].str));
+          bufferWriteU8(yyval.action, 0); ;
     break;}
 case 44:
 #line 436 "swf4compiler.y"
 { yyval.action = yyvsp[-3].action;
-		  bufferConcat(yyval.action, yyvsp[-1].action);
-		  bufferWriteU8(yyval.action, SWFACTION_GETURL2);
-		  bufferWriteS16(yyval.action, 1);
-		  bufferWriteU8(yyval.action, GETURL_METHOD_NOSEND | GETURL_LOADMOVIE); ;
+          bufferConcat(yyval.action, yyvsp[-1].action);
+          bufferWriteU8(yyval.action, SWFACTION_GETURL2);
+          bufferWriteS16(yyval.action, 1);
+          bufferWriteU8(yyval.action, GETURL_METHOD_NOSEND | GETURL_LOADMOVIE); ;
     break;}
 case 45:
 #line 443 "swf4compiler.y"
 { yyval.action = yyvsp[-5].action;
-		  bufferConcat(yyval.action, yyvsp[-3].action);
-		  bufferWriteU8(yyval.action, SWFACTION_GETURL2);
-		  bufferWriteS16(yyval.action, 1);
-		  bufferWriteU8(yyval.action, yyvsp[-1].getURLMethod | GETURL_LOADMOVIE); ;
+          bufferConcat(yyval.action, yyvsp[-3].action);
+          bufferWriteU8(yyval.action, SWFACTION_GETURL2);
+          bufferWriteS16(yyval.action, 1);
+          bufferWriteU8(yyval.action, yyvsp[-1].getURLMethod | GETURL_LOADMOVIE); ;
     break;}
 case 46:
 #line 450 "swf4compiler.y"
 { yyval.action = yyvsp[-3].action;
-		  bufferConcat(yyval.action, yyvsp[-1].action);
-		  bufferWriteU8(yyval.action, SWFACTION_GETURL2);
-		  bufferWriteS16(yyval.action, 1);
-		  bufferWriteU8(yyval.action, GETURL_METHOD_NOSEND | GETURL_LOADVARIABLES); ;
+          bufferConcat(yyval.action, yyvsp[-1].action);
+          bufferWriteU8(yyval.action, SWFACTION_GETURL2);
+          bufferWriteS16(yyval.action, 1);
+          bufferWriteU8(yyval.action, GETURL_METHOD_NOSEND | GETURL_LOADVARIABLES); ;
     break;}
 case 47:
 #line 457 "swf4compiler.y"
 { yyval.action = yyvsp[-5].action;
-		  bufferConcat(yyval.action, yyvsp[-3].action);
-		  bufferWriteU8(yyval.action, SWFACTION_GETURL2);
-		  bufferWriteS16(yyval.action, 1);
-		  bufferWriteU8(yyval.action, yyvsp[-1].getURLMethod | GETURL_LOADVARIABLES); ;
+          bufferConcat(yyval.action, yyvsp[-3].action);
+          bufferWriteU8(yyval.action, SWFACTION_GETURL2);
+          bufferWriteS16(yyval.action, 1);
+          bufferWriteU8(yyval.action, yyvsp[-1].getURLMethod | GETURL_LOADVARIABLES); ;
     break;}
 case 48:
 #line 465 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, "0", 2); /* no constraint */
-		  bufferConcat(yyval.action, yyvsp[-1].action);
-		  bufferConcat(yyval.action, yyvsp[-3].action);
-		  bufferWriteU8(yyval.action, SWFACTION_STARTDRAGMOVIE); ;
+          bufferWriteString(yyval.action, "0", 2); /* no constraint */
+          bufferConcat(yyval.action, yyvsp[-1].action);
+          bufferConcat(yyval.action, yyvsp[-3].action);
+          bufferWriteU8(yyval.action, SWFACTION_STARTDRAGMOVIE); ;
     break;}
 case 49:
 #line 472 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferConcat(yyval.action, yyvsp[-7].action);
-		  bufferConcat(yyval.action, yyvsp[-3].action);
-		  bufferConcat(yyval.action, yyvsp[-5].action);
-		  bufferConcat(yyval.action, yyvsp[-1].action);
-		  bufferWriteString(yyval.action, "1", 2); /* has constraint */
-		  bufferConcat(yyval.action, yyvsp[-9].action);
-		  bufferConcat(yyval.action, yyvsp[-11].action);
-		  bufferWriteU8(yyval.action, SWFACTION_STARTDRAGMOVIE); ;
+          bufferConcat(yyval.action, yyvsp[-7].action);
+          bufferConcat(yyval.action, yyvsp[-3].action);
+          bufferConcat(yyval.action, yyvsp[-5].action);
+          bufferConcat(yyval.action, yyvsp[-1].action);
+          bufferWriteString(yyval.action, "1", 2); /* has constraint */
+          bufferConcat(yyval.action, yyvsp[-9].action);
+          bufferConcat(yyval.action, yyvsp[-11].action);
+          bufferWriteU8(yyval.action, SWFACTION_STARTDRAGMOVIE); ;
     break;}
 case 50:
 #line 484 "swf4compiler.y"
 { yyval.action = yyvsp[-5].action;
-		  bufferConcat(yyval.action, yyvsp[-3].action);
-		  bufferConcat(yyval.action, yyvsp[-1].action);
-		  bufferWriteWTHITProperty(yyval.action);
-		  bufferWriteU8(yyval.action, SWFACTION_ADD); /* see docs for explanation */
-		  bufferWriteU8(yyval.action, SWFACTION_DUPLICATECLIP); ;
+          bufferConcat(yyval.action, yyvsp[-3].action);
+          bufferConcat(yyval.action, yyvsp[-1].action);
+          bufferWriteWTHITProperty(yyval.action);
+          bufferWriteU8(yyval.action, SWFACTION_ADD); /* see docs for explanation */
+          bufferWriteU8(yyval.action, SWFACTION_DUPLICATECLIP); ;
     break;}
 case 51:
 #line 493 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_NEXTFRAME); ;
+          bufferWriteU8(yyval.action, SWFACTION_NEXTFRAME); ;
     break;}
 case 52:
 #line 497 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_PREVFRAME); ;
+          bufferWriteU8(yyval.action, SWFACTION_PREVFRAME); ;
     break;}
 case 53:
 #line 501 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_PLAY); ;
+          bufferWriteU8(yyval.action, SWFACTION_PLAY); ;
     break;}
 case 54:
 #line 505 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_STOP); ;
+          bufferWriteU8(yyval.action, SWFACTION_STOP); ;
     break;}
 case 55:
 #line 509 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_TOGGLEQUALITY); ;
+          bufferWriteU8(yyval.action, SWFACTION_TOGGLEQUALITY); ;
     break;}
 case 56:
 #line 513 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_STOPSOUNDS); ;
+          bufferWriteU8(yyval.action, SWFACTION_STOPSOUNDS); ;
     break;}
 case 57:
 #line 517 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_GOTOFRAME);
-		  bufferWriteS16(yyval.action, 2);
-		  bufferWriteS16(yyval.action, atoi(yyvsp[-1].str));
-		  free(yyvsp[-1].str); ;
+          bufferWriteU8(yyval.action, SWFACTION_GOTOFRAME);
+          bufferWriteS16(yyval.action, 2);
+          bufferWriteS16(yyval.action, atoi(yyvsp[-1].str));
+          free(yyvsp[-1].str); ;
     break;}
 case 58:
 #line 524 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_GOTOLABEL);
-		  bufferWriteS16(yyval.action, strlen(yyvsp[-1].str)+1);
-		  bufferWriteHardString(yyval.action, yyvsp[-1].str, strlen(yyvsp[-1].str)+1);
-		  free(yyvsp[-1].str); ;
+          bufferWriteU8(yyval.action, SWFACTION_GOTOLABEL);
+          bufferWriteS16(yyval.action, strlen(yyvsp[-1].str)+1);
+          bufferWriteHardString(yyval.action, yyvsp[-1].str, strlen(yyvsp[-1].str)+1);
+          free(yyvsp[-1].str); ;
     break;}
 case 59:
 #line 531 "swf4compiler.y"
 { yyval.action = yyvsp[-1].action;
-		  bufferWriteU8(yyval.action, SWFACTION_GOTOEXPRESSION);
-		  bufferWriteS16(yyval.action, 1);
-		  bufferWriteU8(yyval.action, 0); ;
+          bufferWriteU8(yyval.action, SWFACTION_GOTOEXPRESSION);
+          bufferWriteS16(yyval.action, 1);
+          bufferWriteU8(yyval.action, 0); ;
     break;}
 case 60:
 #line 537 "swf4compiler.y"
 { yyval.action = yyvsp[-1].action;
-		  bufferWriteU8(yyval.action, SWFACTION_GOTOEXPRESSION);
-		  bufferWriteS16(yyval.action, 1);
-		  bufferWriteU8(yyval.action, 1); ;
+          bufferWriteU8(yyval.action, SWFACTION_GOTOEXPRESSION);
+          bufferWriteS16(yyval.action, 1);
+          bufferWriteU8(yyval.action, 1); ;
     break;}
 case 61:
 #line 543 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_SETTARGET);
-		  bufferWriteS16(yyval.action, strlen(yyvsp[-1].str)+1);
-		  bufferWriteHardString(yyval.action, yyvsp[-1].str, strlen(yyvsp[-1].str)+1);
-		  free(yyvsp[-1].str); ;
+          bufferWriteU8(yyval.action, SWFACTION_SETTARGET);
+          bufferWriteS16(yyval.action, strlen(yyvsp[-1].str)+1);
+          bufferWriteHardString(yyval.action, yyvsp[-1].str, strlen(yyvsp[-1].str)+1);
+          free(yyvsp[-1].str); ;
     break;}
 case 62:
 #line 550 "swf4compiler.y"
 { yyval.action = yyvsp[-1].action;
-		  bufferWriteU8(yyval.action, SWFACTION_SETTARGETEXPRESSION); ;
+          bufferWriteU8(yyval.action, SWFACTION_SETTARGETEXPRESSION); ;
     break;}
 case 63:
 #line 554 "swf4compiler.y"
 { yyval.action = newBuffer();
-			/* SetTarget(STRING) */
-		  bufferWriteU8(yyval.action, SWFACTION_SETTARGET);
-		  bufferWriteS16(yyval.action, strlen(yyvsp[-2].str)+1);
-		  bufferWriteHardString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
-			/* stmt */
-		  bufferConcat(yyval.action, yyvsp[0].action);
-			/* SetTarget('') */
-		  bufferWriteU8(yyval.action, SWFACTION_SETTARGET);
-		  bufferWriteS16(yyval.action, 1);
-		  bufferWriteU8(yyval.action, 0);
-		  free(yyvsp[-2].str); ;
+            /* SetTarget(STRING) */
+          bufferWriteU8(yyval.action, SWFACTION_SETTARGET);
+          bufferWriteS16(yyval.action, strlen(yyvsp[-2].str)+1);
+          bufferWriteHardString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
+            /* stmt */
+          bufferConcat(yyval.action, yyvsp[0].action);
+            /* SetTarget('') */
+          bufferWriteU8(yyval.action, SWFACTION_SETTARGET);
+          bufferWriteS16(yyval.action, 1);
+          bufferWriteU8(yyval.action, 0);
+          free(yyvsp[-2].str); ;
     break;}
 case 64:
 #line 568 "swf4compiler.y"
 { yyval.action = yyvsp[-2].action;
-			/* SetTarget(expr) */
-		  bufferWriteU8(yyval.action, SWFACTION_SETTARGETEXPRESSION);
-			/* stmt */
-		  bufferConcat(yyval.action, yyvsp[0].action);
-			/* SetTarget('') */
-		  bufferWriteU8(yyval.action, SWFACTION_SETTARGET);
-		  bufferWriteS16(yyval.action, 1);
-		  bufferWriteU8(yyval.action, 0); ;
+            /* SetTarget(expr) */
+          bufferWriteU8(yyval.action, SWFACTION_SETTARGETEXPRESSION);
+            /* stmt */
+          bufferConcat(yyval.action, yyvsp[0].action);
+            /* SetTarget('') */
+          bufferWriteU8(yyval.action, SWFACTION_SETTARGET);
+          bufferWriteS16(yyval.action, 1);
+          bufferWriteU8(yyval.action, 0); ;
     break;}
 case 65:
 #line 581 "swf4compiler.y"
 { yyval.action = yyvsp[-1].action;
-		  bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE); ;
+          bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE); ;
     break;}
 case 66:
 #line 585 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteU8(yyval.action, SWFACTION_GETTIMER); ;
+          bufferWriteU8(yyval.action, SWFACTION_GETTIMER); ;
     break;}
 case 67:
 #line 589 "swf4compiler.y"
 { yyval.action = yyvsp[-1].action;
-		  bufferWriteU8(yyval.action, SWFACTION_RANDOM); ;
+          bufferWriteU8(yyval.action, SWFACTION_RANDOM); ;
     break;}
 case 68:
 #line 593 "swf4compiler.y"
 { yyval.action = yyvsp[-1].action;
-		  bufferWriteU8(yyval.action, SWFACTION_STRINGLENGTH); ;
+          bufferWriteU8(yyval.action, SWFACTION_STRINGLENGTH); ;
     break;}
 case 69:
 #line 597 "swf4compiler.y"
 { yyval.action = yyvsp[-1].action;
-		  bufferWriteU8(yyval.action, SWFACTION_INT); ;
+          bufferWriteU8(yyval.action, SWFACTION_INT); ;
     break;}
 case 70:
 #line 601 "swf4compiler.y"
 { yyval.action = yyvsp[-1].action;
-		  bufferWriteU8(yyval.action, SWFACTION_ORD); ;
+          bufferWriteU8(yyval.action, SWFACTION_ORD); ;
     break;}
 case 71:
 #line 605 "swf4compiler.y"
 { yyval.action = yyvsp[-1].action;
-		  bufferWriteU8(yyval.action, SWFACTION_CHR); ;
+          bufferWriteU8(yyval.action, SWFACTION_CHR); ;
     break;}
 case 72:
 #line 609 "swf4compiler.y"
 { yyval.action = yyvsp[-3].action;
-		  bufferConcat(yyval.action, yyvsp[-1].action);
-		  bufferWriteU8(yyval.action, SWFACTION_STRINGCONCAT); ;
+          bufferConcat(yyval.action, yyvsp[-1].action);
+          bufferWriteU8(yyval.action, SWFACTION_STRINGCONCAT); ;
     break;}
 case 73:
 #line 614 "swf4compiler.y"
 { yyval.action = yyvsp[-5].action;
-		  bufferConcat(yyval.action, yyvsp[-3].action);
-		  bufferConcat(yyval.action, yyvsp[-1].action);
-		  bufferWriteU8(yyval.action, SWFACTION_SUBSTRING); ;
+          bufferConcat(yyval.action, yyvsp[-3].action);
+          bufferConcat(yyval.action, yyvsp[-1].action);
+          bufferWriteU8(yyval.action, SWFACTION_SUBSTRING); ;
     break;}
 case 74:
 #line 620 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferConcat(yyval.action, yyvsp[-3].action);
-		  bufferWriteGetProperty(yyval.action, yyvsp[-1].str);
-		  bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
-		  free(yyvsp[-1].str); ;
+          bufferConcat(yyval.action, yyvsp[-3].action);
+          bufferWriteGetProperty(yyval.action, yyvsp[-1].str);
+          bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
+          free(yyvsp[-1].str); ;
     break;}
 case 75:
 #line 629 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteBuffer(yyval.action, yyvsp[-1].action);
-		  bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
-		  bufferWriteBuffer(yyval.action, yyvsp[-1].action);
-		  bufferConcat(yyval.action, yyvsp[-1].action);
-		  bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
-		  bufferWriteString(yyval.action, "1", 2);
-		  bufferWriteU8(yyval.action, SWFACTION_ADD);
-		  bufferWriteU8(yyval.action, SWFACTION_SETVARIABLE); ;
+          bufferWriteBuffer(yyval.action, yyvsp[-1].action);
+          bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
+          bufferWriteBuffer(yyval.action, yyvsp[-1].action);
+          bufferConcat(yyval.action, yyvsp[-1].action);
+          bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
+          bufferWriteString(yyval.action, "1", 2);
+          bufferWriteU8(yyval.action, SWFACTION_ADD);
+          bufferWriteU8(yyval.action, SWFACTION_SETVARIABLE); ;
     break;}
 case 76:
 #line 640 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteBuffer(yyval.action, yyvsp[-1].action);
-		  bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
-		  bufferWriteBuffer(yyval.action, yyvsp[-1].action);
-		  bufferConcat(yyval.action, yyvsp[-1].action);
-		  bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
-		  bufferWriteString(yyval.action, "1", 2);
-		  bufferWriteU8(yyval.action, SWFACTION_SUBTRACT);
-		  bufferWriteU8(yyval.action, SWFACTION_SETVARIABLE); ;
+          bufferWriteBuffer(yyval.action, yyvsp[-1].action);
+          bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
+          bufferWriteBuffer(yyval.action, yyvsp[-1].action);
+          bufferConcat(yyval.action, yyvsp[-1].action);
+          bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
+          bufferWriteString(yyval.action, "1", 2);
+          bufferWriteU8(yyval.action, SWFACTION_SUBTRACT);
+          bufferWriteU8(yyval.action, SWFACTION_SETVARIABLE); ;
     break;}
 case 78:
 #line 656 "swf4compiler.y"
@@ -1727,224 +1727,224 @@ case 78:
 case 79:
 #line 659 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[0].str, strlen(yyvsp[0].str)+1);
-		  free(yyvsp[0].str); ;
+          bufferWriteString(yyval.action, yyvsp[0].str, strlen(yyvsp[0].str)+1);
+          free(yyvsp[0].str); ;
     break;}
 case 80:
 #line 664 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, "-", 2);
-		  bufferWriteString(yyval.action, yyvsp[0].str, strlen(yyvsp[0].str)+1);
-		  free(yyvsp[0].str); ;
+          bufferWriteString(yyval.action, "-", 2);
+          bufferWriteString(yyval.action, yyvsp[0].str, strlen(yyvsp[0].str)+1);
+          free(yyvsp[0].str); ;
     break;}
 case 81:
 #line 670 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[0].str, strlen(yyvsp[0].str)+1);
-		  free(yyvsp[0].str); ;
+          bufferWriteString(yyval.action, yyvsp[0].str, strlen(yyvsp[0].str)+1);
+          free(yyvsp[0].str); ;
     break;}
 case 82:
 #line 675 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[0].str, strlen(yyvsp[0].str)+1);
-		  bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
-		  free(yyvsp[0].str); ;
+          bufferWriteString(yyval.action, yyvsp[0].str, strlen(yyvsp[0].str)+1);
+          bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
+          free(yyvsp[0].str); ;
     break;}
 case 83:
 #line 681 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[0].str, strlen(yyvsp[0].str)+1);
-		  free(yyvsp[0].str); ;
+          bufferWriteString(yyval.action, yyvsp[0].str, strlen(yyvsp[0].str)+1);
+          free(yyvsp[0].str); ;
     break;}
 case 84:
 #line 686 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
-		  bufferWriteGetProperty(yyval.action, yyvsp[0].str);
-		  bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
-		  free(yyvsp[0].str);
-		  free(yyvsp[-2].str); ;
+          bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
+          bufferWriteGetProperty(yyval.action, yyvsp[0].str);
+          bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
+          free(yyvsp[0].str);
+          free(yyvsp[-2].str); ;
     break;}
 case 85:
 #line 694 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
-		  bufferWriteGetProperty(yyval.action, yyvsp[0].str);
-		  bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
-		  bufferWriteSetProperty(yyval.action, yyvsp[0].str);
-		  bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
-		  bufferWriteGetProperty(yyval.action, yyvsp[0].str);
-		  bufferWriteString(yyval.action, "1", 2);
-		  bufferWriteU8(yyval.action, SWFACTION_ADD);
-		  bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
-		  bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
-		  free(yyvsp[-2].str);
-		  free(yyvsp[0].str); ;
+          bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
+          bufferWriteGetProperty(yyval.action, yyvsp[0].str);
+          bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
+          bufferWriteSetProperty(yyval.action, yyvsp[0].str);
+          bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
+          bufferWriteGetProperty(yyval.action, yyvsp[0].str);
+          bufferWriteString(yyval.action, "1", 2);
+          bufferWriteU8(yyval.action, SWFACTION_ADD);
+          bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
+          bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
+          free(yyvsp[-2].str);
+          free(yyvsp[0].str); ;
     break;}
 case 86:
 #line 709 "swf4compiler.y"
 { yyval.action = yyvsp[0].action;
-		  bufferWriteU8(yyval.action, SWFACTION_DUP);
-		  bufferWriteU8(yyval.action, SWFACTION_DUP);
-		  bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
-		  bufferWriteString(yyval.action, "1", 2);
-		  bufferWriteU8(yyval.action, SWFACTION_ADD);
-		  bufferWriteU8(yyval.action, SWFACTION_SETVARIABLE);
-		  bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE); ;
+          bufferWriteU8(yyval.action, SWFACTION_DUP);
+          bufferWriteU8(yyval.action, SWFACTION_DUP);
+          bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
+          bufferWriteString(yyval.action, "1", 2);
+          bufferWriteU8(yyval.action, SWFACTION_ADD);
+          bufferWriteU8(yyval.action, SWFACTION_SETVARIABLE);
+          bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE); ;
     break;}
 case 87:
 #line 719 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
-		  bufferWriteGetProperty(yyval.action, yyvsp[0].str);
-		  bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
-		  bufferWriteSetProperty(yyval.action, yyvsp[0].str);
-		  bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
-		  bufferWriteGetProperty(yyval.action, yyvsp[0].str);
-		  bufferWriteString(yyval.action, "1", 2);
-		  bufferWriteU8(yyval.action, SWFACTION_ADD);
-		  bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
-		  bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
-		  free(yyvsp[-2].str);
-		  free(yyvsp[0].str); ;
+          bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
+          bufferWriteGetProperty(yyval.action, yyvsp[0].str);
+          bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
+          bufferWriteSetProperty(yyval.action, yyvsp[0].str);
+          bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
+          bufferWriteGetProperty(yyval.action, yyvsp[0].str);
+          bufferWriteString(yyval.action, "1", 2);
+          bufferWriteU8(yyval.action, SWFACTION_ADD);
+          bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
+          bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
+          free(yyvsp[-2].str);
+          free(yyvsp[0].str); ;
     break;}
 case 88:
 #line 734 "swf4compiler.y"
 { yyval.action = yyvsp[0].action;
-		  bufferWriteU8(yyval.action, SWFACTION_DUP);
-		  bufferWriteU8(yyval.action, SWFACTION_DUP);
-		  bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
-		  bufferWriteString(yyval.action, "1", 2);
-		  bufferWriteU8(yyval.action, SWFACTION_SUBTRACT);
-		  bufferWriteU8(yyval.action, SWFACTION_SETVARIABLE);
-		  bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE); ;
+          bufferWriteU8(yyval.action, SWFACTION_DUP);
+          bufferWriteU8(yyval.action, SWFACTION_DUP);
+          bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
+          bufferWriteString(yyval.action, "1", 2);
+          bufferWriteU8(yyval.action, SWFACTION_SUBTRACT);
+          bufferWriteU8(yyval.action, SWFACTION_SETVARIABLE);
+          bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE); ;
     break;}
 case 89:
 #line 744 "swf4compiler.y"
 { yyval.action = yyvsp[0].action;
-		  bufferWriteString(yyvsp[0].action, "-1", 3);
-		  bufferWriteU8(yyvsp[0].action, SWFACTION_MULTIPLY); ;
+          bufferWriteString(yyvsp[0].action, "-1", 3);
+          bufferWriteU8(yyvsp[0].action, SWFACTION_MULTIPLY); ;
     break;}
 case 90:
 #line 749 "swf4compiler.y"
 { yyval.action = yyvsp[0].action;
-		  bufferWriteU8(yyvsp[0].action, SWFACTION_LOGICALNOT); ;
+          bufferWriteU8(yyvsp[0].action, SWFACTION_LOGICALNOT); ;
     break;}
 case 91:
 #line 753 "swf4compiler.y"
 { yyval.action = yyvsp[-2].action;
-		  bufferConcat(yyval.action, yyvsp[0].action);
-		  bufferWriteU8(yyval.action, SWFACTION_DUP);
-		  bufferWriteU8(yyval.action, SWFACTION_SETVARIABLE); ;
+          bufferConcat(yyval.action, yyvsp[0].action);
+          bufferWriteU8(yyval.action, SWFACTION_DUP);
+          bufferWriteU8(yyval.action, SWFACTION_SETVARIABLE); ;
     break;}
 case 92:
 #line 759 "swf4compiler.y"
 { yyval.action = yyvsp[-2].action;
-		  bufferConcat(yyval.action, yyvsp[0].action);
-		  bufferWriteU8(yyval.action, SWFACTION_MULTIPLY); ;
+          bufferConcat(yyval.action, yyvsp[0].action);
+          bufferWriteU8(yyval.action, SWFACTION_MULTIPLY); ;
     break;}
 case 93:
 #line 764 "swf4compiler.y"
 { yyval.action = yyvsp[-2].action;
-		  bufferConcat(yyval.action, yyvsp[0].action);
-		  bufferWriteU8(yyval.action, SWFACTION_DIVIDE); ;
+          bufferConcat(yyval.action, yyvsp[0].action);
+          bufferWriteU8(yyval.action, SWFACTION_DIVIDE); ;
     break;}
 case 94:
 #line 769 "swf4compiler.y"
 { yyval.action = yyvsp[-2].action;
-		  bufferConcat(yyval.action, yyvsp[0].action);
-		  bufferWriteU8(yyval.action, SWFACTION_ADD); ;
+          bufferConcat(yyval.action, yyvsp[0].action);
+          bufferWriteU8(yyval.action, SWFACTION_ADD); ;
     break;}
 case 95:
 #line 774 "swf4compiler.y"
 { yyval.action = yyvsp[-2].action;
-		  bufferConcat(yyval.action, yyvsp[0].action);
-		  bufferWriteU8(yyval.action, SWFACTION_SUBTRACT); ;
+          bufferConcat(yyval.action, yyvsp[0].action);
+          bufferWriteU8(yyval.action, SWFACTION_SUBTRACT); ;
     break;}
 case 96:
 #line 779 "swf4compiler.y"
 { yyval.action = yyvsp[-2].action;
-		  bufferConcat(yyval.action, yyvsp[0].action);
-		  bufferWriteU8(yyval.action, SWFACTION_STRINGCONCAT); ;
+          bufferConcat(yyval.action, yyvsp[0].action);
+          bufferWriteU8(yyval.action, SWFACTION_STRINGCONCAT); ;
     break;}
 case 97:
 #line 784 "swf4compiler.y"
 { yyval.action = yyvsp[-2].action;
-		  bufferConcat(yyval.action, yyvsp[0].action);
-		  bufferWriteU8(yyval.action, SWFACTION_LESSTHAN); ;
+          bufferConcat(yyval.action, yyvsp[0].action);
+          bufferWriteU8(yyval.action, SWFACTION_LESSTHAN); ;
     break;}
 case 98:
 #line 789 "swf4compiler.y"
 { yyval.action = yyvsp[0].action;
-		  bufferConcat(yyval.action, yyvsp[-2].action);
-		  bufferWriteU8(yyval.action, SWFACTION_LESSTHAN); ;
+          bufferConcat(yyval.action, yyvsp[-2].action);
+          bufferWriteU8(yyval.action, SWFACTION_LESSTHAN); ;
     break;}
 case 99:
 #line 794 "swf4compiler.y"
 { yyval.action = yyvsp[0].action;
-		  bufferConcat(yyval.action, yyvsp[-2].action);
-		  bufferWriteU8(yyval.action, SWFACTION_LESSTHAN);
-		  bufferWriteU8(yyval.action, SWFACTION_LOGICALNOT); ;
+          bufferConcat(yyval.action, yyvsp[-2].action);
+          bufferWriteU8(yyval.action, SWFACTION_LESSTHAN);
+          bufferWriteU8(yyval.action, SWFACTION_LOGICALNOT); ;
     break;}
 case 100:
 #line 800 "swf4compiler.y"
 { bufferConcat(yyvsp[-2].action, yyvsp[0].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_LESSTHAN);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_LOGICALNOT); ;
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_LESSTHAN);
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_LOGICALNOT); ;
     break;}
 case 101:
 #line 805 "swf4compiler.y"
 { bufferConcat(yyvsp[-2].action, yyvsp[0].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_STRINGEQ);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_LOGICALNOT); ;
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_STRINGEQ);
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_LOGICALNOT); ;
     break;}
 case 102:
 #line 810 "swf4compiler.y"
 { bufferConcat(yyvsp[-2].action, yyvsp[0].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_STRINGEQ); ;
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_STRINGEQ); ;
     break;}
 case 103:
 #line 814 "swf4compiler.y"
 { bufferConcat(yyvsp[-2].action, yyvsp[0].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_STRINGCOMPARE); ;
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_STRINGCOMPARE); ;
     break;}
 case 104:
 #line 818 "swf4compiler.y"
 { bufferConcat(yyvsp[-2].action, yyvsp[0].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_EQUAL); ;
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_EQUAL); ;
     break;}
 case 105:
 #line 822 "swf4compiler.y"
 { bufferConcat(yyvsp[-2].action, yyvsp[0].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_EQUAL);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_LOGICALNOT); ;
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_EQUAL);
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_LOGICALNOT); ;
     break;}
 case 106:
 #line 827 "swf4compiler.y"
 { bufferConcat(yyvsp[-2].action, yyvsp[0].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_LOGICALAND); ;
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_LOGICALAND); ;
     break;}
 case 107:
 #line 831 "swf4compiler.y"
 { bufferConcat(yyvsp[-2].action, yyvsp[0].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_LOGICALOR); ;
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_LOGICALOR); ;
     break;}
 case 108:
 #line 835 "swf4compiler.y"
 { bufferWriteU8(yyvsp[-4].action, SWFACTION_BRANCHIFTRUE);
-		  bufferWriteS16(yyvsp[-4].action, 2);
-		  bufferWriteS16(yyvsp[-4].action, bufferLength(yyvsp[0].action)+5);
-		  bufferConcat(yyvsp[-4].action, yyvsp[0].action);
-		  bufferWriteU8(yyvsp[-4].action, SWFACTION_BRANCHALWAYS);
-		  bufferWriteS16(yyvsp[-4].action, 2);
-		  bufferWriteS16(yyvsp[-4].action, bufferLength(yyvsp[-2].action));
-		  bufferConcat(yyvsp[-4].action, yyvsp[-2].action); ;
+          bufferWriteS16(yyvsp[-4].action, 2);
+          bufferWriteS16(yyvsp[-4].action, bufferLength(yyvsp[0].action)+5);
+          bufferConcat(yyvsp[-4].action, yyvsp[0].action);
+          bufferWriteU8(yyvsp[-4].action, SWFACTION_BRANCHALWAYS);
+          bufferWriteS16(yyvsp[-4].action, 2);
+          bufferWriteS16(yyvsp[-4].action, bufferLength(yyvsp[-2].action));
+          bufferConcat(yyvsp[-4].action, yyvsp[-2].action); ;
     break;}
 case 110:
 #line 849 "swf4compiler.y"
 { yyval.str = yyvsp[-2].str;
-		  yyval.str = stringConcat(yyval.str, _strdup(":"));
-		  yyval.str = stringConcat(yyval.str, yyvsp[0].str); ;
+          yyval.str = stringConcat(yyval.str, _strdup(":"));
+          yyval.str = stringConcat(yyval.str, yyvsp[0].str); ;
     break;}
 case 111:
 #line 856 "swf4compiler.y"
@@ -1973,14 +1973,14 @@ case 116:
 case 117:
 #line 876 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[0].str, strlen(yyvsp[0].str)+1);
-		  free(yyvsp[0].str); ;
+          bufferWriteString(yyval.action, yyvsp[0].str, strlen(yyvsp[0].str)+1);
+          free(yyvsp[0].str); ;
     break;}
 case 118:
 #line 881 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[0].str, strlen(yyvsp[0].str)+1);
-		  free(yyvsp[0].str); ;
+          bufferWriteString(yyval.action, yyvsp[0].str, strlen(yyvsp[0].str)+1);
+          free(yyvsp[0].str); ;
     break;}
 case 119:
 #line 885 "swf4compiler.y"
@@ -1989,151 +1989,151 @@ case 119:
 case 122:
 #line 894 "swf4compiler.y"
 { yyval.action = yyvsp[0].action;
-		  bufferWriteBuffer(yyval.action, yyvsp[0].action);
-		  bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
-		  bufferWriteString(yyval.action, "1", 2);
-		  bufferWriteU8(yyval.action, SWFACTION_ADD);
-		  bufferWriteU8(yyval.action, SWFACTION_SETVARIABLE); ;
+          bufferWriteBuffer(yyval.action, yyvsp[0].action);
+          bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
+          bufferWriteString(yyval.action, "1", 2);
+          bufferWriteU8(yyval.action, SWFACTION_ADD);
+          bufferWriteU8(yyval.action, SWFACTION_SETVARIABLE); ;
     break;}
 case 123:
 #line 902 "swf4compiler.y"
 { yyval.action = yyvsp[0].action;
-		  bufferWriteBuffer(yyval.action, yyvsp[0].action);
-		  bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
-		  bufferWriteString(yyval.action, "1", 2);
-		  bufferWriteU8(yyval.action, SWFACTION_SUBTRACT);
-		  bufferWriteU8(yyval.action, SWFACTION_SETVARIABLE); ;
+          bufferWriteBuffer(yyval.action, yyvsp[0].action);
+          bufferWriteU8(yyval.action, SWFACTION_GETVARIABLE);
+          bufferWriteString(yyval.action, "1", 2);
+          bufferWriteU8(yyval.action, SWFACTION_SUBTRACT);
+          bufferWriteU8(yyval.action, SWFACTION_SETVARIABLE); ;
     break;}
 case 124:
 #line 910 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
-		  bufferWriteGetProperty(yyval.action, yyvsp[0].str);
-		  bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
-		  bufferWriteString(yyval.action, "1", 2);
-		  bufferWriteU8(yyval.action, SWFACTION_ADD);
-		  bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
-		  bufferWriteSetProperty(yyval.action, yyvsp[0].str);
-		  bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
-		  free(yyvsp[-2].str);
-		  free(yyvsp[0].str); ;
+          bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
+          bufferWriteGetProperty(yyval.action, yyvsp[0].str);
+          bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
+          bufferWriteString(yyval.action, "1", 2);
+          bufferWriteU8(yyval.action, SWFACTION_ADD);
+          bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
+          bufferWriteSetProperty(yyval.action, yyvsp[0].str);
+          bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
+          free(yyvsp[-2].str);
+          free(yyvsp[0].str); ;
     break;}
 case 125:
 #line 923 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
-		  bufferWriteGetProperty(yyval.action, yyvsp[0].str);
-		  bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
-		  bufferWriteString(yyval.action, "1", 2);
-		  bufferWriteU8(yyval.action, SWFACTION_SUBTRACT);
-		  bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
-		  bufferWriteSetProperty(yyval.action, yyvsp[0].str);
-		  bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
-		  free(yyvsp[-2].str);
-		  free(yyvsp[0].str); ;
+          bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
+          bufferWriteGetProperty(yyval.action, yyvsp[0].str);
+          bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
+          bufferWriteString(yyval.action, "1", 2);
+          bufferWriteU8(yyval.action, SWFACTION_SUBTRACT);
+          bufferWriteString(yyval.action, yyvsp[-2].str, strlen(yyvsp[-2].str)+1);
+          bufferWriteSetProperty(yyval.action, yyvsp[0].str);
+          bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
+          free(yyvsp[-2].str);
+          free(yyvsp[0].str); ;
     break;}
 case 126:
 #line 936 "swf4compiler.y"
 { bufferConcat(yyvsp[-2].action, yyvsp[0].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_SETVARIABLE); ;
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_SETVARIABLE); ;
     break;}
 case 127:
 #line 940 "swf4compiler.y"
 { bufferWriteBuffer(yyvsp[-2].action, yyvsp[-2].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_GETVARIABLE);
-		  bufferConcat(yyvsp[-2].action, yyvsp[0].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_MULTIPLY);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_SETVARIABLE); ;
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_GETVARIABLE);
+          bufferConcat(yyvsp[-2].action, yyvsp[0].action);
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_MULTIPLY);
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_SETVARIABLE); ;
     break;}
 case 128:
 #line 947 "swf4compiler.y"
 { bufferWriteBuffer(yyvsp[-2].action, yyvsp[-2].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_GETVARIABLE);
-		  bufferConcat(yyvsp[-2].action, yyvsp[0].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_DIVIDE);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_SETVARIABLE); ;
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_GETVARIABLE);
+          bufferConcat(yyvsp[-2].action, yyvsp[0].action);
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_DIVIDE);
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_SETVARIABLE); ;
     break;}
 case 129:
 #line 954 "swf4compiler.y"
 { bufferWriteBuffer(yyvsp[-2].action, yyvsp[-2].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_GETVARIABLE);
-		  bufferConcat(yyvsp[-2].action, yyvsp[0].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_ADD);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_SETVARIABLE); ;
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_GETVARIABLE);
+          bufferConcat(yyvsp[-2].action, yyvsp[0].action);
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_ADD);
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_SETVARIABLE); ;
     break;}
 case 130:
 #line 961 "swf4compiler.y"
 { bufferWriteBuffer(yyvsp[-2].action, yyvsp[-2].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_GETVARIABLE);
-		  bufferConcat(yyvsp[-2].action, yyvsp[0].action);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_SUBTRACT);
-		  bufferWriteU8(yyvsp[-2].action, SWFACTION_SETVARIABLE); ;
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_GETVARIABLE);
+          bufferConcat(yyvsp[-2].action, yyvsp[0].action);
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_SUBTRACT);
+          bufferWriteU8(yyvsp[-2].action, SWFACTION_SETVARIABLE); ;
     break;}
 case 131:
 #line 968 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
-		  bufferWriteSetProperty(yyval.action, yyvsp[-2].str);
-		  bufferConcat(yyval.action,yyvsp[0].action);
-		  bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
-		  free(yyvsp[-4].str);
-		  free(yyvsp[-2].str); ;
+          bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
+          bufferWriteSetProperty(yyval.action, yyvsp[-2].str);
+          bufferConcat(yyval.action,yyvsp[0].action);
+          bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
+          free(yyvsp[-4].str);
+          free(yyvsp[-2].str); ;
     break;}
 case 132:
 #line 977 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
-		  bufferWriteSetProperty(yyval.action, yyvsp[-2].str);
-		  bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
-		  bufferWriteGetProperty(yyval.action, yyvsp[-2].str);
-		  bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
-		  bufferConcat(yyval.action, yyvsp[0].action);
-		  bufferWriteU8(yyval.action, SWFACTION_MULTIPLY);
-		  bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
-		  free(yyvsp[-4].str);
-		  free(yyvsp[-2].str); ;
+          bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
+          bufferWriteSetProperty(yyval.action, yyvsp[-2].str);
+          bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
+          bufferWriteGetProperty(yyval.action, yyvsp[-2].str);
+          bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
+          bufferConcat(yyval.action, yyvsp[0].action);
+          bufferWriteU8(yyval.action, SWFACTION_MULTIPLY);
+          bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
+          free(yyvsp[-4].str);
+          free(yyvsp[-2].str); ;
     break;}
 case 133:
 #line 990 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
-		  bufferWriteSetProperty(yyval.action, yyvsp[-2].str);
-		  bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
-		  bufferWriteGetProperty(yyval.action, yyvsp[-2].str);
-		  bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
-		  bufferConcat(yyval.action, yyvsp[0].action);
-		  bufferWriteU8(yyval.action, SWFACTION_DIVIDE);
-		  bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
-		  free(yyvsp[-4].str);
-		  free(yyvsp[-2].str); ;
+          bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
+          bufferWriteSetProperty(yyval.action, yyvsp[-2].str);
+          bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
+          bufferWriteGetProperty(yyval.action, yyvsp[-2].str);
+          bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
+          bufferConcat(yyval.action, yyvsp[0].action);
+          bufferWriteU8(yyval.action, SWFACTION_DIVIDE);
+          bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
+          free(yyvsp[-4].str);
+          free(yyvsp[-2].str); ;
     break;}
 case 134:
 #line 1003 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
-		  bufferWriteSetProperty(yyval.action, yyvsp[-2].str);
-		  bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
-		  bufferWriteGetProperty(yyval.action, yyvsp[-2].str);
-		  bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
-		  bufferConcat(yyval.action, yyvsp[0].action);
-		  bufferWriteU8(yyval.action, SWFACTION_ADD);
-		  bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
-		  free(yyvsp[-4].str);
-		  free(yyvsp[-2].str); ;
+          bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
+          bufferWriteSetProperty(yyval.action, yyvsp[-2].str);
+          bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
+          bufferWriteGetProperty(yyval.action, yyvsp[-2].str);
+          bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
+          bufferConcat(yyval.action, yyvsp[0].action);
+          bufferWriteU8(yyval.action, SWFACTION_ADD);
+          bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
+          free(yyvsp[-4].str);
+          free(yyvsp[-2].str); ;
     break;}
 case 135:
 #line 1016 "swf4compiler.y"
 { yyval.action = newBuffer();
-		  bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
-		  bufferWriteSetProperty(yyval.action, yyvsp[-2].str);
-		  bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
-		  bufferWriteGetProperty(yyval.action, yyvsp[-2].str);
-		  bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
-		  bufferConcat(yyval.action, yyvsp[0].action);
-		  bufferWriteU8(yyval.action, SWFACTION_SUBTRACT);
-		  bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
-		  free(yyvsp[-4].str);
-		  free(yyvsp[-2].str); ;
+          bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
+          bufferWriteSetProperty(yyval.action, yyvsp[-2].str);
+          bufferWriteString(yyval.action, yyvsp[-4].str, strlen(yyvsp[-4].str)+1);
+          bufferWriteGetProperty(yyval.action, yyvsp[-2].str);
+          bufferWriteU8(yyval.action, SWFACTION_GETPROPERTY);
+          bufferConcat(yyval.action, yyvsp[0].action);
+          bufferWriteU8(yyval.action, SWFACTION_SUBTRACT);
+          bufferWriteU8(yyval.action, SWFACTION_SETPROPERTY);
+          free(yyvsp[-4].str);
+          free(yyvsp[-2].str); ;
     break;}
 }
    /* the action file gets copied in in place of this dollarsign */
@@ -2151,7 +2151,7 @@ case 135:
       short *ssp1 = yyss - 1;
       fprintf (stderr, "state stack now");
       while (ssp1 != yyssp)
-	fprintf (stderr, " %d", *++ssp1);
+    fprintf (stderr, " %d", *++ssp1);
       fprintf (stderr, "\n");
     }
 #endif
@@ -2201,44 +2201,44 @@ yyerrlab:   /* here on detecting error */
       yyn = yypact[yystate];
 
       if (yyn > YYFLAG && yyn < YYLAST)
-	{
-	  int size = 0;
-	  char *msg;
-	  int x, count;
+    {
+      int size = 0;
+      char *msg;
+      int x, count;
 
-	  count = 0;
-	  /* Start X at -yyn if nec to avoid negative indexes in yycheck.  */
-	  for (x = (yyn < 0 ? -yyn : 0);
-	       x < (sizeof(yytname) / sizeof(char *)); x++)
-	    if (yycheck[x + yyn] == x)
-	      size += strlen(yytname[x]) + 15, count++;
-	  msg = (char *) malloc(size + 15);
-	  if (msg != 0)
-	    {
-	      strcpy(msg, "parse error");
+      count = 0;
+      /* Start X at -yyn if nec to avoid negative indexes in yycheck.  */
+      for (x = (yyn < 0 ? -yyn : 0);
+           x < (sizeof(yytname) / sizeof(char *)); x++)
+        if (yycheck[x + yyn] == x)
+          size += strlen(yytname[x]) + 15, count++;
+      msg = (char *) malloc(size + 15);
+      if (msg != 0)
+        {
+          strcpy(msg, "parse error");
 
-	      if (count < 5)
-		{
-		  count = 0;
-		  for (x = (yyn < 0 ? -yyn : 0);
-		       x < (sizeof(yytname) / sizeof(char *)); x++)
-		    if (yycheck[x + yyn] == x)
-		      {
-			strcat(msg, count == 0 ? ", expecting `" : " or `");
-			strcat(msg, yytname[x]);
-			strcat(msg, "'");
-			count++;
-		      }
-		}
-	      yyerror(msg);
-	      free(msg);
-	    }
-	  else
-	    yyerror ("parse error; also virtual memory exceeded");
-	}
+          if (count < 5)
+        {
+          count = 0;
+          for (x = (yyn < 0 ? -yyn : 0);
+               x < (sizeof(yytname) / sizeof(char *)); x++)
+            if (yycheck[x + yyn] == x)
+              {
+            strcat(msg, count == 0 ? ", expecting `" : " or `");
+            strcat(msg, yytname[x]);
+            strcat(msg, "'");
+            count++;
+              }
+        }
+          yyerror(msg);
+          free(msg);
+        }
+      else
+        yyerror ("parse error; also virtual memory exceeded");
+    }
       else
 #endif /* YYERROR_VERBOSE */
-	yyerror("parse error");
+    yyerror("parse error");
     }
 
   goto yyerrlab1;
@@ -2250,11 +2250,11 @@ yyerrlab1:   /* here on error raised explicitly by an action */
 
       /* return failure if at end of input */
       if (yychar == YYEOF)
-	YYABORT;
+    YYABORT;
 
 #if YYDEBUG != 0
       if (yydebug)
-	fprintf(stderr, "Discarding token %d (%s).\n", yychar, yytname[yychar1]);
+    fprintf(stderr, "Discarding token %d (%s).\n", yychar, yytname[yychar1]);
 #endif
 
       yychar = YYEMPTY;
@@ -2263,7 +2263,7 @@ yyerrlab1:   /* here on error raised explicitly by an action */
   /* Else will try to reuse lookahead token
      after shifting the error token.  */
 
-  yyerrstatus = 3;		/* Each real token shifted decrements this */
+  yyerrstatus = 3;        /* Each real token shifted decrements this */
 
   goto yyerrhandle;
 
@@ -2291,7 +2291,7 @@ yyerrpop:   /* pop the current state because it cannot handle the error token */
       short *ssp1 = yyss - 1;
       fprintf (stderr, "Error: state stack now");
       while (ssp1 != yyssp)
-	fprintf (stderr, " %d", *++ssp1);
+    fprintf (stderr, " %d", *++ssp1);
       fprintf (stderr, "\n");
     }
 #endif
@@ -2310,7 +2310,7 @@ yyerrhandle:
   if (yyn < 0)
     {
       if (yyn == YYFLAG)
-	goto yyerrpop;
+    goto yyerrpop;
       yyn = -yyn;
       goto yyreduce;
     }
