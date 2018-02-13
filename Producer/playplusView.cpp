@@ -3870,6 +3870,7 @@ void Msg(const char fmt[], ...)
 
     va_start(val, fmt);
     wvsprintf(buf, fmt, val);
+    va_end(val);
 
     const COORD _80x50 = {80,50};
     static BOOL startup = (AllocConsole(), SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), _80x50));
@@ -3884,6 +3885,7 @@ void MsgC(const char fmt[], ...)
 
     va_start(val, fmt);
     wvsprintf(buf, fmt, val);
+    va_end(val);
 
     const COORD _80x50 = {80,50};
     static BOOL startup = (AllocConsole(), SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), _80x50));

@@ -130,6 +130,7 @@ void ErrMsg(char frmt[], ...)
 
 	va_start(val, frmt);
 	wvsprintf(buf, frmt, val);
+    va_end(val);
 
 	const COORD _80x50 = {80,50};
 	static BOOL startup = (AllocConsole(), SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), _80x50));
