@@ -3826,6 +3826,7 @@ void AuditAudio(PAVISTREAM pavi,long startsample) {
     slSampleSize = (LONG) strhdr.dwSampleSize;
 
     if (slSampleSize <= 0 || slSampleSize > AUDIO_BUFFER_SIZE) {
+        free(buffer);
         ErrMsg("Not Pass");
         return;
 
@@ -7046,7 +7047,6 @@ int CopyStream(PAVIFILE pavi,PAVISTREAM pstm)
 
     }
     AVIStreamRelease(ptmp);
-    free(p);
     return 0;
 }
 
