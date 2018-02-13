@@ -744,6 +744,7 @@ BOOL CPicture::LoadFromFile(FILE* fptr)
     readcount = fread( (void *) BufferBytes, OutData, 1, fptr );
     if (readcount<1) {
         MessageBoxEx(NULL, TEXT("Unable to read image\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
+        free(BufferBytes);
         return FALSE;
     }
 
