@@ -201,7 +201,7 @@ void CFrameGrabber::update_buffer_size()
     ((LPBITMAPINFOHEADER)lpBmpInfo)->biSize= sizeof BITMAPINFOHEADER;
 
     if (!capGetVideoFormat(GetSafeHwnd(), lpBmpInfo, (WORD)vfs)) {
-        delete lpBmpInfo;
+        delete [] lpBmpInfo;
 
         if (imageData) {
             HGLOBAL hg = GlobalHandle(imageData);
@@ -228,7 +228,7 @@ void CFrameGrabber::update_buffer_size()
 
     memcpy(imageData, lpBmpInfo, vfs);
 
-    delete lpBmpInfo;
+    delete [] lpBmpInfo;
 }
 
 //////////////////////////////////////////////////////////////////
