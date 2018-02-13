@@ -1,0 +1,12 @@
+Debug
+Release
+
+.vs
+
+*.suo
+*.ncb
+*.aps
+*.obj
+*.pdb
+*.idb
+*.dsp
