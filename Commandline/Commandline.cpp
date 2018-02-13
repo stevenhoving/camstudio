@@ -1111,7 +1111,7 @@ int OptionNameEqual(string option_name, string parsed_name){
   if( (*start_iter) == '/'){
     parsed_name.erase(start_iter);
   } else if( (*start_iter) == '-'){
-    parsed_name.erase(start_iter);
+    start_iter = parsed_name.erase(start_iter);
     if( (*start_iter) == '-')
       parsed_name.erase(start_iter);
   }
