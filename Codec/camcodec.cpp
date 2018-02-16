@@ -85,9 +85,6 @@ Comments) 1950 to 1952 in the files ftp://ds.internic.net/rfc/rfc1950.txt
 // the terms of the GNU General Public License, v2 or later.  See
 // http://www.gnu.org/copyleft/gpl.html.
 //
-// I edit these files in 10-point Verdana, a proportionally-spaced font.
-// You may notice formatting oddities if you use a monospaced font.
-//
 // ***********************************************************************
 
 //this version is discarded because the color space does not introduce a huge amount of space saving and is difficult to implement

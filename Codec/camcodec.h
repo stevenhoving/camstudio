@@ -6,9 +6,6 @@
 // the terms of the GNU General Public License, v2 or later.  See
 // http://www.gnu.org/copyleft/gpl.html.
 //
-// I edit these files in 10-point Verdana, a proportionally-spaced font.
-// You may notice formatting oddities if you use a monospaced font.
-//
 
 #include <windows.h>
 #include <vfw.h>
