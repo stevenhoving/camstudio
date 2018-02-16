@@ -860,9 +860,11 @@ void CAudioFormatDlg::OnVolume()
             testLaunchPath = AppDir + SubDir + "\\SndVol.exe";
             OFSTRUCT ofs;
             HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
-            if (hdir != HFILE_ERROR) {
+            if (hdir != HFILE_ERROR)
+            {
                 launchPath=testLaunchPath;
             }
+            CloseHandle((HANDLE)hdir);
         }
     }
 

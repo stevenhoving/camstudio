@@ -716,6 +716,7 @@ void AudioFormat::OnVolume()
                 launchPath=testLaunchPath;
 
         }
+        CloseHandle((HANDLE)hdir);
 
     }
 
@@ -737,6 +738,7 @@ void AudioFormat::OnVolume()
                 //if (!ret) MessageBox("Close handle Fails","Note",MB_OK | MB_ICONEXCLAMATION);
 
         }
+        CloseHandle((HANDLE)hdir);
 
     }
 
@@ -754,6 +756,7 @@ void AudioFormat::OnVolume()
                 launchPath=testLaunchPath;
 
         }
+        CloseHandle((HANDLE)hdir);
 
     }
 

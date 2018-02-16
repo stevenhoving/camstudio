@@ -164,9 +164,11 @@ void CAudioSpeakersDlg::OnVolume()
         //Verify sndvol32.exe exists
         OFSTRUCT ofs;
         HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
-        if (hdir != HFILE_ERROR) {
+        if (hdir != HFILE_ERROR)
+        {
             launchPath = testLaunchPath;
         }
+        CloseHandle((HANDLE)hdir);
     }
 
     //Test Windows\system32\sndvol32.exe
@@ -177,13 +179,11 @@ void CAudioSpeakersDlg::OnVolume()
         //Verify sndvol32.exe exists
         OFSTRUCT ofs;
         HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
-        if (hdir != HFILE_ERROR) {
+        if (hdir != HFILE_ERROR)
+        {
             launchPath = testLaunchPath;
-
-            //need CloseHandle ?
-            //BOOL ret = CloseHandle((HANDLE) hdir);
-            //if (!ret) MessageBox("Close handle Fails","Note",MB_OK | MB_ICONEXCLAMATION);
         }
+        CloseHandle((HANDLE)hdir);
     }
 
     //Test Windows\system\sndvol32.exe
@@ -197,6 +197,7 @@ void CAudioSpeakersDlg::OnVolume()
         if (hdir != HFILE_ERROR) {
             launchPath=testLaunchPath;
         }
+        CloseHandle((HANDLE)hdir);
     }
 
     // Sound mixer moved in Windows Vista! check new exe name only if windows version matches
@@ -212,6 +213,7 @@ void CAudioSpeakersDlg::OnVolume()
             if (hdir != HFILE_ERROR) {
                 launchPath=testLaunchPath;
             }
+            CloseHandle((HANDLE)hdir);
         }
     }
 
