@@ -1,10 +1,12 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2026
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6818B205-44B7-491D-8B28-9A18A2F4FB88}"
 	ProjectSection(SolutionItems) = preProject
 		Bugs.txt = Bugs.txt
-		TODO.html = TODO.html
+		TODO.md = TODO.md
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Player", "Player\Player.vcxproj", "{ACD5AE20-F9EA-4FAB-9765-9093200C719D}"
@@ -373,5 +375,8 @@ Global
 		{0588563C-F05C-428C-B21A-DD74756628B3} = {E7E9AA66-25AE-4A9B-867D-C60C5000AA6B}
 		{7B53D2C7-1B4A-4A53-A7D3-E25B92470B81} = {E7E9AA66-25AE-4A9B-867D-C60C5000AA6B}
 		{C739151F-5384-41DF-A1A6-F089E2C1AD56} = {E7E9AA66-25AE-4A9B-867D-C60C5000AA6B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A6C87B66-FACC-499E-A091-F2236EB92853}
 	EndGlobalSection
 EndGlobal
