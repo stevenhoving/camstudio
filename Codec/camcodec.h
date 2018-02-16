@@ -7,14 +7,16 @@
 // http://www.gnu.org/copyleft/gpl.html.
 //
 
+#pragma once
+
 #include <windows.h>
 #include <vfw.h>
 #pragma hdrstop
 
-static const DWORD FOURCC_CSCD = mmioFOURCC('C','S','C','D');   // our compressed format
-static const DWORD FOURCC_YUY2 = mmioFOURCC('Y','U','Y','2');   // uncompressed YUY2
-static const DWORD FOURCC_UYVY = mmioFOURCC('U','Y','V','Y');   // uncompressed UYVY
-static const DWORD FOURCC_VYUY = mmioFOURCC('V','Y','U','Y');   // an alias for YUY2 used by ATI cards
+constexpr DWORD FOURCC_CSCD = mmioFOURCC('C','S','C','D');   // our compressed format
+constexpr DWORD FOURCC_YUY2 = mmioFOURCC('Y','U','Y','2');   // uncompressed YUY2
+constexpr DWORD FOURCC_UYVY = mmioFOURCC('U','Y','V','Y');   // uncompressed UYVY
+constexpr DWORD FOURCC_VYUY = mmioFOURCC('V','Y','U','Y');   // an alias for YUY2 used by ATI cards
 
 extern HMODULE hmoduleCamcodec;
 
@@ -59,7 +61,7 @@ struct CodecInst {
 
   DWORD CompressRGB(ICCOMPRESS* icinfo);
     
-  DWORD    DecompressRGB(ICDECOMPRESS* icinfo);
+  DWORD DecompressRGB(ICDECOMPRESS* icinfo);
   DWORD DecompressQuery(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER lpbiOut);
   DWORD DecompressGetFormat(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER lpbiOut);
   DWORD DecompressBegin(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER lpbiOut);
@@ -68,10 +70,7 @@ struct CodecInst {
   DWORD DecompressEnd();  
 
   DWORD FreeResources();
-  
-
 };
 
 CodecInst* Open(ICOPEN* icinfo);
 DWORD Close(CodecInst* pinst);
-

@@ -99,10 +99,9 @@ Comments) 1950 to 1952 in the files ftp://ds.internic.net/rfc/rfc1950.txt
 TCHAR szDescription[] = TEXT("CamStudio Lossless Codec v1.5");
 TCHAR szName[]        = TEXT("CamCodec");
 
-#define HEAP_ALLOC(var,size) \
-    long __LZO_MMODEL var [ ((size) + (sizeof(long) - 1)) / sizeof(long) ]
-
-static HEAP_ALLOC(wrkmem,LZO1X_1_MEM_COMPRESS);
+//#define HEAP_ALLOC(var,size) long __LZO_MMODEL var [ ((size) + (sizeof(long) - 1)) / sizeof(long) ]
+//static HEAP_ALLOC(wrkmem, LZO1X_1_MEM_COMPRESS);
+static long __LZO_MMODEL wrkmem[((LZO1X_1_MEM_COMPRESS)+(sizeof(long) - 1)) / sizeof(long)];
 
 #define VERSION         0x00010003      // 1.3
 
@@ -183,7 +182,7 @@ CodecInst* Open(ICOPEN* icinfo)
     return pinst;
 }
 
-DWORD Close(CodecInst* pinst)
+DWORD Close(CodecInst* /*pinst*/)
 {
     //    delete pinst;       // this caused problems when deleting at app close time
     return 1;
@@ -194,6 +193,7 @@ DWORD Close(CodecInst* pinst)
 
 BOOL CodecInst::QueryAbout() { return TRUE; }
 
+#if 0
 static BOOL CALLBACK AboutDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam*/)
 {
     if (uMsg == WM_COMMAND)
@@ -215,7 +215,9 @@ static BOOL CALLBACK AboutDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPA
     return FALSE;
 }
 
-DWORD CodecInst::About(HWND hwnd)
+#endif
+
+DWORD CodecInst::About(HWND /*hwnd*/)
 {
     //VC++ 6
     //DialogBox(hmoduleCamcodec, MAKEINTRESOURCE(IDD_ABOUT), hwnd,  AboutDialogProc);  
@@ -236,6 +238,7 @@ typedef struct _UDACCEL
 }
 UDACCEL, FAR *LPUDACCEL;
 
+#if 0
 static BOOL CALLBACK ConfigureDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if (uMsg == WM_INITDIALOG)
@@ -314,10 +317,11 @@ static BOOL CALLBACK ConfigureDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam,
     }
     return FALSE;
 }
+#endif
 
 BOOL CodecInst::QueryConfigure() { return TRUE; }
 
-DWORD CodecInst::Configure(HWND hwnd)
+DWORD CodecInst::Configure(HWND /*hwnd*/)
 {
     //VC++ 6
     //DialogBox(hmoduleCamcodec, MAKEINTRESOURCE(IDD_CONFIGURE), hwnd,  ConfigureDialogProc);
@@ -380,6 +384,18 @@ struct PrintBitmapType
 ********************************************************************/
 
 // 0=unknown, -1=compressed YUY2, -2=compressed RGB, -3=compressed RGBA, 1=YUY2, 2=UYVY, 3=RGB 24-bit, 4=RGB 32-bit
+enum class BitmapType
+{
+    compressed_RGBA = -3,
+    compressed_RGB = -2,
+    compressed_YUV2 = -1,
+    unknown = 0,
+    YUV2 = 1,
+    UYVY = 2,
+    RGB24 = 3,
+    RGB32 = 4
+};
+
 static int GetBitmapType(LPBITMAPINFOHEADER lpbi)
 {
     if (!lpbi)
@@ -389,10 +405,36 @@ static int GetBitmapType(LPBITMAPINFOHEADER lpbi)
     //if (lpbi->biCompression == FOURCC_UYVY)
     //  return 2;
     //if (lpbi->biCompression == 0 || lpbi->biCompression == ' BID')
-    if (lpbi->biCompression == BI_RGB)
-        return (lpbi->biBitCount == 16) ? 2  : (lpbi->biBitCount == 24) ? 3 : (lpbi->biBitCount == 32) ? 4 : 0;
-    if (lpbi->biCompression == FOURCC_CSCD)
-        return (lpbi->biBitCount == 16) ? -2 : (lpbi->biBitCount == 24) ? -3 : (lpbi->biBitCount == 32) ? -4 : 0;
+    switch (lpbi->biCompression)
+    {
+    //case FOURCC_VYUY:
+    //case FOURCC_YUY2:
+    //    return 1;
+    //case FOURCC_UYVY:
+    //    return 2;
+
+    case BI_RGB:
+        if (lpbi->biBitCount == 16)
+            return 2;
+        else if (lpbi->biBitCount == 24)
+            return 3;
+        else if (lpbi->biBitCount == 32)
+            return 4;
+        else
+            return 0;
+        break;
+
+    case FOURCC_CSCD:
+        if (lpbi->biBitCount == 16)
+            return -2;
+        else if (lpbi->biBitCount == 24)
+            return -3;
+        else if (lpbi->biBitCount == 32)
+            return -4;
+        else
+            return 0;
+        break;
+    }
     return 0;
 }
 
@@ -408,21 +450,21 @@ static bool CanCompress(LPBITMAPINFOHEADER lpbiIn)
 
 static bool CanCompress(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER lpbiOut) 
 {
-    if (!lpbiOut) return CanCompress(lpbiIn);  
+    if (!lpbiOut) return CanCompress(lpbiIn);
 
-    //must compress to the same bitcount ... compressed format must be biCompression == FOURCC_CSCD    
-    int intype = GetBitmapType(lpbiIn);
-    int outtype = GetBitmapType(lpbiOut);  
+    //must compress to the same bitcount ... compressed format must be biCompression == FOURCC_CSCD
+    int in_type = GetBitmapType(lpbiIn);
+    int out_type = GetBitmapType(lpbiOut);
 
     //Msg("intype2 =  %d",intype);
 
     //if (intype == 3 || (intype == 4 && ((AppFlags()!=1) )))
     //if (intype == 2 || intype == 3 || (intype == 4 && ((AppFlags()!=1) )))
-    if (intype == 2 || intype == 3 || intype == 4)
-    {  
-        if (intype == -outtype)
+    if (in_type == 2 || in_type == 3 || in_type == 4)
+    {
+        if (in_type == -out_type)
             return true;
-    }  
+    }
 
     return false;
 }
@@ -442,7 +484,10 @@ DWORD CodecInst::CompressGetFormat(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER
         return sizeof(BITMAPINFOHEADER);
 
     if (!CanCompress(lpbiIn))
-        return ICERR_BADFORMAT;
+    {
+        // \todo all these functions should return a long instead of a DWORD...
+        return static_cast<DWORD>(ICERR_BADFORMAT);
+    }
 
     *lpbiOut = *lpbiIn;
     lpbiOut->biCompression = FOURCC_CSCD;
@@ -457,7 +502,7 @@ DWORD CodecInst::CompressGetFormat(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER
     return ICERR_OK;
 }
 
-DWORD CodecInst::CompressGetSize(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER lpbiOut)
+DWORD CodecInst::CompressGetSize(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER /*lpbiOut*/)
 {
     // Assume 24 bpp worst-case for YUY2 input, 40 bpp for RGB.
     // The actual worst case is 43/51 bpp currently, but this is exceedingly improbable
@@ -467,7 +512,7 @@ DWORD CodecInst::CompressGetSize(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER l
     return lpbiIn->biWidth * lpbiIn->biHeight * (GetBitmapType(lpbiIn)+1) ;
 }
 
-DWORD CodecInst::Compress(ICCOMPRESS* icinfo, DWORD dwSize)
+DWORD CodecInst::Compress(ICCOMPRESS* icinfo, DWORD /*dwSize*/)
 {
     //int intype = GetBitmapType(icinfo->lpbiInput);
     //int outtype = GetBitmapType(icinfo->lpbiOutput);
@@ -525,7 +570,10 @@ DWORD CodecInst::DecompressGetFormat(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEAD
         return lpbiIn->biSize;
 
     if (!CanDecompress(lpbiIn))
-        return ICERR_BADFORMAT;
+    {
+        // \todo all these functions should return a long instead of a DWORD..
+        return static_cast<DWORD>(ICERR_BADFORMAT);
+    }
 
     // get default rgboutput value and allow the user to override
     //bool rgboutput = AppFlags() & 1;
@@ -558,7 +606,7 @@ DWORD CodecInst::DecompressGetFormat(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEAD
     return ICERR_OK;
 }
 
-DWORD CodecInst::Decompress(ICDECOMPRESS* icinfo, DWORD dwSize)
+DWORD CodecInst::Decompress(ICDECOMPRESS* icinfo, DWORD /*dwSize*/)
 {
     //int intype = GetBitmapType(icinfo->lpbiInput);
     //int outtype = GetBitmapType(icinfo->lpbiOutput);
@@ -567,9 +615,10 @@ DWORD CodecInst::Decompress(ICDECOMPRESS* icinfo, DWORD dwSize)
 }
 
 // palette-mapped output only
-DWORD CodecInst::DecompressGetPalette(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER lpbiOut)
+DWORD CodecInst::DecompressGetPalette(LPBITMAPINFOHEADER /*lpbiIn*/, LPBITMAPINFOHEADER /*lpbiOut*/)
 {
-    return ICERR_BADFORMAT;
+    // \todo all these functions should return a long instead of a DWORD
+    return static_cast<DWORD>(ICERR_BADFORMAT);
 }
 
 #define ORIG_RGBIGNORE 0
@@ -593,13 +642,13 @@ DWORD CodecInst::CompressRGB(ICCOMPRESS* icinfo)
         CompressBegin(icinfo->lpbiInput, icinfo->lpbiOutput);
 
     unsigned char convertmodebit = 0;
-    unsigned char originalRGBbit = 0; 
-    originalRGBbit = (GetBitmapType(icinfo->lpbiInput) - 1) << 2; //1, 2, 3
+
+    unsigned char originalRGBbit = (unsigned char)(GetBitmapType(icinfo->lpbiInput) - 1) << 2; //1, 2, 3
 
     //force auto keyframe
     unsigned char* input = NULL;
-    lzo_uint in_len;
-    lzo_uint out_len;
+    lzo_uint in_len = 0;
+    lzo_uint out_len = 0;
 
     int isKey = 0;   
     if (!m_autokeyframe)
@@ -641,10 +690,10 @@ DWORD CodecInst::CompressRGB(ICCOMPRESS* icinfo)
     }
     ////////////////// end v1.01
 
-    DWORD* output = (DWORD*)icinfo->lpOutput;
+    //DWORD* output = (DWORD*)icinfo->lpOutput;
     unsigned char* outputbyte = (unsigned char*)icinfo->lpOutput;
 
-    int r;
+    int r = LZO_E_ERROR;
     unsigned char byte1, byte2;
 
     if ((prevFrame==NULL) || (isKey))
@@ -655,16 +704,18 @@ DWORD CodecInst::CompressRGB(ICCOMPRESS* icinfo)
         memcpy(prevFrame, input, in_len);      
 
         if (m_algorithm == 0)
-            r = lzo1x_1_compress(input,in_len,(unsigned char *) outputbyte+2,&out_len,wrkmem);      
+        {
+            r = lzo1x_1_compress(input, in_len, (unsigned char *)outputbyte + 2, &out_len, wrkmem);
+        }
         else if (m_algorithm == 1)
         {
-            unsigned long destlen;          
+            unsigned long destlen;
             r = compress2 ((unsigned char *) outputbyte+2, &destlen, input, in_len,  m_gzip_level); 
             out_len = destlen;
         }
 
         unsigned char keybit = KEYFRAME_BIT;
-        unsigned char algo = m_algorithm;
+        unsigned char algo = (unsigned char)m_algorithm;
         unsigned char gzip_level_bits = 0;
 
         algo = algo << 1;      
@@ -672,7 +723,7 @@ DWORD CodecInst::CompressRGB(ICCOMPRESS* icinfo)
         if (m_algorithm == 1)
         {          
 
-            gzip_level_bits = m_gzip_level;
+            gzip_level_bits = (unsigned char)m_gzip_level;
             gzip_level_bits = gzip_level_bits << 4;
 
         }
@@ -730,13 +781,13 @@ DWORD CodecInst::CompressRGB(ICCOMPRESS* icinfo)
         *icinfo->lpdwFlags &= ~AVIIF_KEYFRAME;
 
         unsigned char keybit = NON_KEYFRAME_BIT;
-        unsigned char algo = m_algorithm;
+        unsigned char algo = (unsigned char)m_algorithm;
         unsigned char gzip_level_bits = 0;
         algo = algo << 1;      
 
         if (m_algorithm == 1)
         {
-            gzip_level_bits = m_gzip_level;
+            gzip_level_bits = (unsigned char)m_gzip_level;
             gzip_level_bits = gzip_level_bits << 4;
         }
 
@@ -754,7 +805,7 @@ DWORD CodecInst::CompressRGB(ICCOMPRESS* icinfo)
 
     if (m_algorithm == 0)
     {
-        if (r != LZO_E_OK)        
+        if (r != LZO_E_OK)
         {
             /* this should NEVER happen */
             printf("internal error - compression failed: %d\n", r);
@@ -810,13 +861,13 @@ DWORD CodecInst::DecompressRGB(ICDECOMPRESS* icinfo)
 
     icinfo->lpbiOutput->biSizeImage = size;
 
-    DWORD* in = (DWORD*)icinfo->lpInput;
+    //DWORD* in = (DWORD*)icinfo->lpInput;
     unsigned char* inbyte = (unsigned char *) icinfo->lpInput;
     unsigned char* out = (unsigned char*)icinfo->lpOutput;
     //unsigned char* const end = out + size;
 
-    lzo_uint in_len;
-    lzo_uint out_len;
+    lzo_uint in_len = 0;
+    lzo_uint out_len = 0;
 
     in_len=icinfo->lpbiInput->biSizeImage;
 
@@ -830,7 +881,7 @@ DWORD CodecInst::DecompressRGB(ICDECOMPRESS* icinfo)
     use_algo = (byte1 >> 1) & 7; // last three bits  
     use_gzip_level = (byte1 >> 4);
 
-    int val = byte1 & KEYFRAME_BIT;
+    //int val = byte1 & KEYFRAME_BIT;
 
     // Msg("Decompress %d %d",use_algo,byte1);    
 
