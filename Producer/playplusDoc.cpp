@@ -18,10 +18,10 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNCREATE(CPlayplusDoc, CDocument)
 
 BEGIN_MESSAGE_MAP(CPlayplusDoc, CDocument)
-    //{{AFX_MSG_MAP(CPlayplusDoc)
-        // NOTE - the ClassWizard will add and remove mapping macros here.
-        //    DO NOT EDIT what you see in these blocks of generated code!
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CPlayplusDoc)
+// NOTE - the ClassWizard will add and remove mapping macros here.
+//    DO NOT EDIT what you see in these blocks of generated code!
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ BOOL CPlayplusDoc::OnNewDocument()
 /////////////////////////////////////////////////////////////////////////////
 // CPlayplusDoc serialization
 
-void CPlayplusDoc::Serialize(CArchive& ar)
+void CPlayplusDoc::Serialize(CArchive &ar)
 {
     if (ar.IsStoring())
     {
@@ -71,7 +71,7 @@ void CPlayplusDoc::AssertValid() const
     CDocument::AssertValid();
 }
 
-void CPlayplusDoc::Dump(CDumpContext& dc) const
+void CPlayplusDoc::Dump(CDumpContext &dc) const
 {
     CDocument::Dump(dc);
 }

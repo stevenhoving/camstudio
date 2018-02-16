@@ -16,11 +16,10 @@ void FlashMorphGradientRecord::Write(N_STD::ostream &out)
 void FlashMorphGradient::Write(N_STD::ostream &out)
 {
     out.put((unsigned char)records.size());
-    for(N_STD::vector<FlashMorphGradientRecord>::iterator i=records.begin();
-        i != records.end(); i++)
-        {
-            (*i).Write(out);
-        }
+    for (N_STD::vector<FlashMorphGradientRecord>::iterator i = records.begin(); i != records.end(); i++)
+    {
+        (*i).Write(out);
+    }
 }
 
 void FlashMorphFillStyleSolid::Write(N_STD::ostream &out)
@@ -59,11 +58,10 @@ void FlashMorphFillStyles::Write(N_STD::ostream &out)
     {
         out.put((unsigned char)fillStyles.size());
     }
-    for(N_STD::vector<FlashMorphFillStyle *>::iterator i=fillStyles.begin();
-        i != fillStyles.end(); i++)
-        {
-            (*i)->Write(out);
-        }
+    for (N_STD::vector<FlashMorphFillStyle *>::iterator i = fillStyles.begin(); i != fillStyles.end(); i++)
+    {
+        (*i)->Write(out);
+    }
 }
 
 void FlashMorphLineStyle::Write(N_STD::ostream &out)
@@ -87,32 +85,31 @@ void FlashMorphLineStyles::Write(N_STD::ostream &out)
     {
         out.put((unsigned char)lineStyles.size());
     }
-    for(N_STD::vector<FlashMorphLineStyle>::iterator i=lineStyles.begin();
-        i != lineStyles.end(); i++)
-        {
-            (*i).Write(out);
-        }
+    for (N_STD::vector<FlashMorphLineStyle>::iterator i = lineStyles.begin(); i != lineStyles.end(); i++)
+    {
+        (*i).Write(out);
+    }
 }
 void FlashMorphFillStyleBitmap::Write(N_STD::ostream &out)
 {
-    out.put((char)(tiled ? 0x40  : 0x41));
+    out.put((char)(tiled ? 0x40 : 0x41));
     WRITE_UWORD(bitmapID);
     out << mstart;
     out << mend;
 }
 
-N_STD::ostream &operator<< (N_STD::ostream &out, FlashTagDefineMorphShape &data)
+N_STD::ostream &operator<<(N_STD::ostream &out, FlashTagDefineMorphShape &data)
 {
     N_STD::ostrstream tmp;
     N_STD::ostrstream tmp2;
-    WRITE_UWORD2(data.GetID(),tmp);
+    WRITE_UWORD2(data.GetID(), tmp);
     tmp << data.s1.GetBounds();
     tmp << data.s2.GetBounds();
 
     data.fs1.Write(tmp2);
     data.fs2.Write(tmp2);
     tmp2 << data.s1;
-    WRITE_UDWORD2(tmp2.pcount(),tmp);
+    WRITE_UDWORD2(tmp2.pcount(), tmp);
 
     tmp.write(tmp2.rdbuf()->str(), tmp2.pcount());
     tmp << data.s2;
@@ -122,7 +119,7 @@ N_STD::ostream &operator<< (N_STD::ostream &out, FlashTagDefineMorphShape &data)
     return out;
 }
 
-N_STD::istream &operator>> (N_STD::istream &in,  FlashTagDefineMorphShape &data)
+N_STD::istream &operator>>(N_STD::istream &in, FlashTagDefineMorphShape &data)
 {
 #if 0
 // TODO - to be completed...
@@ -133,4 +130,3 @@ N_STD::istream &operator>> (N_STD::istream &in,  FlashTagDefineMorphShape &data)
 
     return in;
 }
-

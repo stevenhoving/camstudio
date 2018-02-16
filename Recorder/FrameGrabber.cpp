@@ -10,7 +10,7 @@
 #include "stdafx.h"
 #include "FrameGrabber.h"
 
-#define DEFAULT_CAPTURE_DRIVER 0 //in most cases
+#define DEFAULT_CAPTURE_DRIVER 0 // in most cases
 
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "vfw32.lib")
@@ -21,7 +21,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-typedef LRESULT (CALLBACK *FRAMECALLBACK)(HWND , LPVIDEOHDR);
+typedef LRESULT(CALLBACK *FRAMECALLBACK)(HWND, LPVIDEOHDR);
 #define IMAGEWIDTH(lpd) ((LPBITMAPINFOHEADER)lpd)->biWidth
 #define IMAGEHEIGHT(lpd) ((LPBITMAPINFOHEADER)lpd)->biHeight
 #define IMAGEBITS(lpd) ((LPBITMAPINFOHEADER)lpd)->biBitCount
@@ -37,12 +37,13 @@ CFrameGrabber::CFrameGrabber()
 {
     dwLastCallback = NULL;
     imageData = NULL;
-    vfs = 0;//offset image buffer
+    vfs = 0; // offset image buffer
 }
 
 CFrameGrabber::~CFrameGrabber()
 {
-    if (imageData) {
+    if (imageData)
+    {
         HGLOBAL hg = GlobalHandle(imageData);
         GlobalUnlock(hg);
         GlobalFree(hg);
@@ -50,9 +51,9 @@ CFrameGrabber::~CFrameGrabber()
 }
 
 BEGIN_MESSAGE_MAP(CFrameGrabber, CWnd)
-    //{{AFX_MSG_MAP(CFrameGrabber)
-    ON_WM_DESTROY()
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CFrameGrabber)
+ON_WM_DESTROY()
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -65,41 +66,42 @@ BOOL CFrameGrabber::Create(int x, int y, CWnd *pParentWnd)
 
     ASSERT(!GetSafeHwnd());
 
-    if (GetSafeHwnd()) {
-        return FALSE; //already created
+    if (GetSafeHwnd())
+    {
+        return FALSE; // already created
     }
 
-    HWND hWnd = capCreateCaptureWindow(_T("AviCap_FrameGrabber_lite"),
-        WS_CHILD|WS_CLIPSIBLINGS, x, y, 160, 120,
-        pParentWnd ? pParentWnd->GetSafeHwnd() : NULL,
-        0xffff);
+    HWND hWnd = capCreateCaptureWindow(_T("AviCap_FrameGrabber_lite"), WS_CHILD | WS_CLIPSIBLINGS, x, y, 160, 120,
+                                       pParentWnd ? pParentWnd->GetSafeHwnd() : NULL, 0xffff);
     if (!hWnd)
         return FALSE;
 
-    //initial setup for capture
-    if (!capDriverConnect(hWnd, DEFAULT_CAPTURE_DRIVER)
-        || !capSetCallbackOnFrame(hWnd, _grabber_CallbackProc)
-        || !capPreview(hWnd, FALSE))
+    // initial setup for capture
+    if (!capDriverConnect(hWnd, DEFAULT_CAPTURE_DRIVER) || !capSetCallbackOnFrame(hWnd, _grabber_CallbackProc) ||
+        !capPreview(hWnd, FALSE))
 
     {
         ::DestroyWindow(hWnd);
         return FALSE;
     }
-    //subclass window
+    // subclass window
     SubclassWindow(hWnd);
 
     update_buffer_size();
     if (!imageData)
-    {::DestroyWindow(hWnd);
-    return FALSE;}
+    {
+        ::DestroyWindow(hWnd);
+        return FALSE;
+    }
     theOnlyOneGrabber = this;
     return TRUE;
 }
 
 void CFrameGrabber::OnDestroy()
 {
-    //disconnect from capture driver
-    if (theOnlyOneGrabber) {
+    // disconnect from capture driver
+    if (theOnlyOneGrabber)
+    {
         capSetCallbackOnFrame(GetSafeHwnd(), NULL);
         capDriverDisconnect(GetSafeHwnd());
     }
@@ -120,7 +122,7 @@ BOOL CFrameGrabber::VideoSourceDialog()
 {
     if (!GetSafeHwnd())
         return FALSE;
-    BOOL r =(BOOL)capDlgVideoSource(GetSafeHwnd());
+    BOOL r = (BOOL)capDlgVideoSource(GetSafeHwnd());
     update_buffer_size();
     return r;
 }
@@ -129,8 +131,8 @@ LPBITMAPINFO CFrameGrabber::GetDIB()
 {
     if (!imageData)
         return NULL;
-    //get the new one of more then 20 ms passed
-    if ((timeGetTime()-dwLastCallback)>20)
+    // get the new one of more then 20 ms passed
+    if ((timeGetTime() - dwLastCallback) > 20)
         capGrabFrameNoStop(GetSafeHwnd());
     return (LPBITMAPINFO)imageData;
 }
@@ -148,7 +150,7 @@ LPBYTE CFrameGrabber::GetImageBitsBuffer()
 CSize CFrameGrabber::GetImageSize()
 {
     if (!imageData)
-        return CSize(0,0);
+        return CSize(0, 0);
     else
         return CSize(IMAGEWIDTH(imageData), IMAGEHEIGHT(imageData));
 }
@@ -171,7 +173,8 @@ void CFrameGrabber::SetImageData(LPVOID data)
     if (!(validCallHint && imageData))
         return;
 
-    ::CopyMemory(((LPBYTE)imageData) + vfs, data, IMAGEWIDTH(imageData) * IMAGEHEIGHT(imageData) * IMAGEBITS(imageData)/8);
+    ::CopyMemory(((LPBYTE)imageData) + vfs, data,
+                 IMAGEWIDTH(imageData) * IMAGEHEIGHT(imageData) * IMAGEBITS(imageData) / 8);
     dwLastCallback = timeGetTime();
     if (IsWindowVisible())
         InvalidateRect(NULL);
@@ -180,8 +183,10 @@ void CFrameGrabber::SetImageData(LPVOID data)
 void CFrameGrabber::update_buffer_size()
 {
     vfs = capGetVideoFormatSize(GetSafeHwnd());
-    if (!vfs) {
-        if (imageData) {
+    if (!vfs)
+    {
+        if (imageData)
+        {
             HGLOBAL hg = GlobalHandle(imageData);
             GlobalUnlock(hg);
             GlobalFree(hg);
@@ -193,17 +198,19 @@ void CFrameGrabber::update_buffer_size()
 
     DWORD lastBufferSize = 0;
     if (imageData)
-        lastBufferSize = vfs + IMAGEWIDTH(imageData) * IMAGEHEIGHT(imageData) * IMAGEBITS(imageData)/8;
+        lastBufferSize = vfs + IMAGEWIDTH(imageData) * IMAGEHEIGHT(imageData) * IMAGEBITS(imageData) / 8;
 
     DWORD newBufferSize;
 
-    BITMAPINFO *lpBmpInfo =(BITMAPINFO *)( new char[vfs]);
-    ((LPBITMAPINFOHEADER)lpBmpInfo)->biSize= sizeof BITMAPINFOHEADER;
+    BITMAPINFO *lpBmpInfo = (BITMAPINFO *)(new char[vfs]);
+    ((LPBITMAPINFOHEADER)lpBmpInfo)->biSize = sizeof BITMAPINFOHEADER;
 
-    if (!capGetVideoFormat(GetSafeHwnd(), lpBmpInfo, (WORD)vfs)) {
-        delete [] lpBmpInfo;
+    if (!capGetVideoFormat(GetSafeHwnd(), lpBmpInfo, (WORD)vfs))
+    {
+        delete[] lpBmpInfo;
 
-        if (imageData) {
+        if (imageData)
+        {
             HGLOBAL hg = GlobalHandle(imageData);
             GlobalUnlock(hg);
             GlobalFree(hg);
@@ -213,22 +220,24 @@ void CFrameGrabber::update_buffer_size()
         return;
     }
 
-    newBufferSize = vfs + IMAGEWIDTH(lpBmpInfo) * IMAGEHEIGHT(lpBmpInfo) * IMAGEBITS(lpBmpInfo)/8;
-    SetWindowPos(NULL, 0, 0, IMAGEWIDTH(lpBmpInfo), IMAGEHEIGHT(lpBmpInfo), SWP_NOMOVE|SWP_NOZORDER);
-    if (newBufferSize > lastBufferSize) {
-        if (imageData) {
-            //reallocate
+    newBufferSize = vfs + IMAGEWIDTH(lpBmpInfo) * IMAGEHEIGHT(lpBmpInfo) * IMAGEBITS(lpBmpInfo) / 8;
+    SetWindowPos(NULL, 0, 0, IMAGEWIDTH(lpBmpInfo), IMAGEHEIGHT(lpBmpInfo), SWP_NOMOVE | SWP_NOZORDER);
+    if (newBufferSize > lastBufferSize)
+    {
+        if (imageData)
+        {
+            // reallocate
             HGLOBAL hg = GlobalHandle(imageData);
             GlobalUnlock(hg);
             GlobalFree(hg);
         }
 
-        imageData = GlobalLock(GlobalAlloc(GMEM_MOVEABLE, newBufferSize+256/*add 256 bytes, just in case...*/));
+        imageData = GlobalLock(GlobalAlloc(GMEM_MOVEABLE, newBufferSize + 256 /*add 256 bytes, just in case...*/));
     }
 
     memcpy(imageData, lpBmpInfo, vfs);
 
-    delete [] lpBmpInfo;
+    delete[] lpBmpInfo;
 }
 
 //////////////////////////////////////////////////////////////////

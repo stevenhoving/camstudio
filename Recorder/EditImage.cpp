@@ -14,10 +14,10 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CEditImageDlg dialog
 
-CEditImageDlg::CEditImageDlg(CWnd* pParent /*=NULL*/)
-: CDialog(CEditImageDlg::IDD, pParent)
-, m_hCursorCross(::LoadCursor(NULL,IDC_CROSS))
-, m_hCursorArrow(::LoadCursor(NULL,IDC_ARROW))
+CEditImageDlg::CEditImageDlg(CWnd *pParent /*=NULL*/)
+    : CDialog(CEditImageDlg::IDD, pParent)
+    , m_hCursorCross(::LoadCursor(NULL, IDC_CROSS))
+    , m_hCursorArrow(::LoadCursor(NULL, IDC_ARROW))
 {
     //{{AFX_DATA_INIT(CEditImageDlg)
     // NOTE: the ClassWizard will add member initialization here
@@ -26,7 +26,7 @@ CEditImageDlg::CEditImageDlg(CWnd* pParent /*=NULL*/)
     pickingColor = 0;
 }
 
-void CEditImageDlg::DoDataExchange(CDataExchange* pDX)
+void CEditImageDlg::DoDataExchange(CDataExchange *pDX)
 {
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CEditImageDlg)
@@ -53,21 +53,21 @@ void CEditImageDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CEditImageDlg, CDialog)
-    //{{AFX_MSG_MAP(CEditImageDlg)
-    ON_BN_CLICKED(IDC_RADIO2, OnNoCutout)
-    ON_BN_CLICKED(IDC_RADIO1, OnCutoutTrans)
-    ON_BN_CLICKED(IDC_RADIO3, OnCutoutPredefined)
-    ON_BN_CLICKED(IDC_CHECK1, OnAddBorder)
-    ON_BN_CLICKED(IDC_COLOR2, OnBorderColor)
-    ON_BN_CLICKED(IDC_COLOR, OnColor)
-    ON_CBN_SELCHANGE(IDC_PREDEFINEDSHAPE, OnSelchangePredefinedshape)
-    ON_EN_CHANGE(IDC_BORDERSIZE, OnChangeBordersize)
-    ON_BN_CLICKED(IDC_PICK_SCREEN_COLOR, OnColorPick)
-    ON_WM_LBUTTONDOWN()
-    ON_WM_MOUSEMOVE()
-    ON_BN_CLICKED(IDC_BKCOLOR, OnBkcolor)
-    ON_BN_CLICKED(IDC_LOAD, OnLoad)
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CEditImageDlg)
+ON_BN_CLICKED(IDC_RADIO2, OnNoCutout)
+ON_BN_CLICKED(IDC_RADIO1, OnCutoutTrans)
+ON_BN_CLICKED(IDC_RADIO3, OnCutoutPredefined)
+ON_BN_CLICKED(IDC_CHECK1, OnAddBorder)
+ON_BN_CLICKED(IDC_COLOR2, OnBorderColor)
+ON_BN_CLICKED(IDC_COLOR, OnColor)
+ON_CBN_SELCHANGE(IDC_PREDEFINEDSHAPE, OnSelchangePredefinedshape)
+ON_EN_CHANGE(IDC_BORDERSIZE, OnChangeBordersize)
+ON_BN_CLICKED(IDC_PICK_SCREEN_COLOR, OnColorPick)
+ON_WM_LBUTTONDOWN()
+ON_WM_MOUSEMOVE()
+ON_BN_CLICKED(IDC_BKCOLOR, OnBkcolor)
+ON_BN_CLICKED(IDC_LOAD, OnLoad)
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -95,21 +95,23 @@ BOOL CEditImageDlg::OnInitDialog()
 
     m_ctrlSpinBorderSize.SetBuddy(&m_ctrlEditBorderSize);
 
-    if (m_transWnd) {
+    if (m_transWnd)
+    {
         ////CDC *tempDC = m_ctrlStaticColor.GetDC();
-        //CDC *tempDC = GetWindowDC();
-        //CRect winRect(100,100,400,300);
+        // CDC *tempDC = GetWindowDC();
+        // CRect winRect(100,100,400,300);
         ////m_ctrlStaticColor.GetWindowRect(&winRect);
         ////tempDC->FillSolidRect(&winRect,m_transWnd->m_transparentColor);
-        //tempDC->Rectangle(&winRect);
-        //ReleaseDC(tempDC);
+        // tempDC->Rectangle(&winRect);
+        // ReleaseDC(tempDC);
 
         m_ctrlButtonBKColor.EnableWindow(0 != m_transWnd->BitMap());
-        m_ctrlSpinBorderSize.SetRange(1,15);
+        m_ctrlSpinBorderSize.SetRange(1, 15);
         m_ctrlSpinBorderSize.SetPos(m_transWnd->BorderSize());
 
-        //m_ctrlStaticColor.SetTextColor(m_transWnd->m_transparentColor);
-        if ((0 <= m_transWnd->RegionPredefinedShape()) && (m_transWnd->RegionPredefinedShape() <= 2)) {
+        // m_ctrlStaticColor.SetTextColor(m_transWnd->m_transparentColor);
+        if ((0 <= m_transWnd->RegionPredefinedShape()) && (m_transWnd->RegionPredefinedShape() <= 2))
+        {
             m_ctrlCBPredefinedShape.SetCurSel(m_transWnd->RegionPredefinedShape());
         }
 
@@ -120,8 +122,10 @@ BOOL CEditImageDlg::OnInitDialog()
 
     m_dialogInitialized = 1;
 
-    if (m_transWnd) {
-        if (m_transWnd->BaseType() == 1) {
+    if (m_transWnd)
+    {
+        if (m_transWnd->BaseType() == 1)
+        {
             m_ctrlButtonBKColor.EnableWindow(FALSE);
             m_ctrlButtonLoadNewImage.EnableWindow(FALSE);
         }
@@ -183,11 +187,13 @@ void CEditImageDlg::OnCutoutPredefined()
 
 void CEditImageDlg::UpdateGUI()
 {
-    if (!m_transWnd) {
+    if (!m_transWnd)
+    {
         return;
     }
 
-    if (m_transWnd->RegionType() == regionNULL) {
+    if (m_transWnd->RegionType() == regionNULL)
+    {
         m_ctrlButtonNoBKColor.SetCheck(TRUE);
         m_ctrlButtonTransparent.SetCheck(FALSE);
         m_ctrlButtonPreDefined.SetCheck(FALSE);
@@ -205,7 +211,9 @@ void CEditImageDlg::UpdateGUI()
         m_ctrlEditBorderSize.EnableWindow(FALSE);
         m_ctrlSpinBorderSize.EnableWindow(FALSE);
         m_ctrlStaticBorderGroup.EnableWindow(FALSE);
-    } else if (m_transWnd->RegionType() == regionTRANSPARENTCOLOR) {
+    }
+    else if (m_transWnd->RegionType() == regionTRANSPARENTCOLOR)
+    {
         m_ctrlButtonTransparent.SetCheck(TRUE);
         m_ctrlButtonNoBKColor.SetCheck(FALSE);
         m_ctrlButtonPreDefined.SetCheck(FALSE);
@@ -223,7 +231,9 @@ void CEditImageDlg::UpdateGUI()
         m_ctrlEditBorderSize.EnableWindow(FALSE);
         m_ctrlSpinBorderSize.EnableWindow(FALSE);
         m_ctrlStaticBorderGroup.EnableWindow(FALSE);
-    } else if (m_transWnd->RegionType() == regionSHAPE) {
+    }
+    else if (m_transWnd->RegionType() == regionSHAPE)
+    {
         m_ctrlButtonPreDefined.SetCheck(TRUE);
         m_ctrlButtonTransparent.SetCheck(FALSE);
         m_ctrlButtonNoBKColor.SetCheck(FALSE);
@@ -243,13 +253,16 @@ void CEditImageDlg::UpdateGUI()
         m_ctrlStaticBorderGroup.EnableWindow(TRUE);
     }
 
-    if (!(m_transWnd->BitMap())) {
+    if (!(m_transWnd->BitMap()))
+    {
         m_ctrlButtonTransparent.EnableWindow(FALSE);
         m_ctrlButtonColor.EnableWindow(FALSE);
         m_ctrlButtonPickScreenColor.EnableWindow(FALSE);
         m_ctrlStaticColor.EnableWindow(FALSE);
         m_ctrlStaticChoose.EnableWindow(FALSE);
-    } else {
+    }
+    else
+    {
         m_ctrlButtonTransparent.EnableWindow(TRUE);
     }
 }
@@ -264,12 +277,14 @@ void CEditImageDlg::OnAddBorder()
 void CEditImageDlg::OnBorderColor()
 {
     // TODO: Add your control notification handler code here
-    if (!m_transWnd) {
+    if (!m_transWnd)
+    {
         return;
     }
 
-    CColorDialog colordlg(m_transWnd->BorderColor(), CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT,this);
-    if (IDOK == colordlg.DoModal()) {
+    CColorDialog colordlg(m_transWnd->BorderColor(), CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT, this);
+    if (IDOK == colordlg.DoModal())
+    {
         m_transWnd->BorderColor(colordlg.GetColor());
     }
 
@@ -279,12 +294,14 @@ void CEditImageDlg::OnBorderColor()
 void CEditImageDlg::OnColor()
 {
     // TODO: Add your control notification handler code here
-    if (!m_transWnd) {
+    if (!m_transWnd)
+    {
         return;
     }
 
-    CColorDialog colordlg(m_transWnd->TransparentColor(), CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT,this);
-    if (IDOK == colordlg.DoModal()) {
+    CColorDialog colordlg(m_transWnd->TransparentColor(), CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT, this);
+    if (IDOK == colordlg.DoModal())
+    {
         m_transWnd->TransparentColor(colordlg.GetColor());
     }
 
@@ -348,8 +365,8 @@ void CEditImageDlg::OnLButtonDown(UINT nFlags, CPoint point)
         HDC hDC = ::GetDC(NULL);
         CPoint pt;
         GetCursorPos(&pt);
-        COLORREF val = GetPixel(hDC,pt.x,pt.y);
-        ::ReleaseDC(NULL,hDC);
+        COLORREF val = GetPixel(hDC, pt.x, pt.y);
+        ::ReleaseDC(NULL, hDC);
 
         ReleaseCapture();
         SetCursor(m_hCursorArrow);
@@ -382,12 +399,14 @@ void CEditImageDlg::OnMouseMove(UINT nFlags, CPoint point)
 void CEditImageDlg::OnBkcolor()
 {
     // TODO: Add your control notification handler code here
-    if (!m_transWnd) {
+    if (!m_transWnd)
+    {
         return;
     }
 
-    CColorDialog colordlg(m_transWnd->BackgroundColor(), CC_ANYCOLOR | CC_FULLOPEN |CC_RGBINIT,this);
-    if (IDOK == colordlg.DoModal()) {
+    CColorDialog colordlg(m_transWnd->BackgroundColor(), CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT, this);
+    if (IDOK == colordlg.DoModal())
+    {
         m_transWnd->BackgroundColor(colordlg.GetColor());
     }
 
@@ -405,9 +424,10 @@ void CEditImageDlg::OnLoad()
     CString filename;
 
     static char BASED_CODE szFilter[] = "Picture Files (*.bmp; *.jpg; *.gif)|*.bmp; *.jpg; *.gif||";
-    static char szTitle[]="Load Picture";
+    static char szTitle[] = "Load Picture";
 
-    CFileDialog fdlg(TRUE,"*.bmp; *.jpg; *.gif","*.bmp; *.jpg; *.gif",OFN_LONGNAMES | OFN_FILEMUSTEXIST ,szFilter,this);
+    CFileDialog fdlg(TRUE, "*.bmp; *.jpg; *.gif", "*.bmp; *.jpg; *.gif", OFN_LONGNAMES | OFN_FILEMUSTEXIST, szFilter,
+                     this);
     fdlg.m_ofn.lpstrTitle = szTitle;
 
     if (IDOK == fdlg.DoModal())

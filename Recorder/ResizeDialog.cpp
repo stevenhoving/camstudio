@@ -14,15 +14,15 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CResizeDlg dialog
 
-CResizeDlg::CResizeDlg(CWnd* pParent /*=NULL*/)
-: CDialog(CResizeDlg::IDD, pParent)
+CResizeDlg::CResizeDlg(CWnd *pParent /*=NULL*/)
+    : CDialog(CResizeDlg::IDD, pParent)
 {
     //{{AFX_DATA_INIT(CResizeDlg)
     // NOTE: the ClassWizard will add member initialization here
     //}}AFX_DATA_INIT
 }
 
-void CResizeDlg::DoDataExchange(CDataExchange* pDX)
+void CResizeDlg::DoDataExchange(CDataExchange *pDX)
 {
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CResizeDlg)
@@ -33,10 +33,10 @@ void CResizeDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CResizeDlg, CDialog)
-    //{{AFX_MSG_MAP(CResizeDlg)
-    ON_BN_CLICKED(IDRESET, OnReset)
-    ON_WM_HSCROLL()
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CResizeDlg)
+ON_BN_CLICKED(IDRESET, OnReset)
+ON_WM_HSCROLL()
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -51,8 +51,9 @@ void CResizeDlg::OnOK()
 
 void CResizeDlg::OnReset()
 {
-    if (m_transWnd) {
-        m_transWnd->WidthPos(32); //100%
+    if (m_transWnd)
+    {
+        m_transWnd->WidthPos(32); // 100%
         m_transWnd->HeightPos(32);
         m_ctrlSliderWidth.SetPos(m_transWnd->WidthPos());
         m_ctrlSliderHeight.SetPos(m_transWnd->HeightPos());
@@ -61,7 +62,7 @@ void CResizeDlg::OnReset()
     }
 }
 
-void CResizeDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+void CResizeDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
 {
     if (m_transWnd)
     {
@@ -82,11 +83,11 @@ BOOL CResizeDlg::OnInitDialog()
 {
     CDialog::OnInitDialog();
 
-    //WidthHeight
+    // WidthHeight
     if (m_transWnd)
     {
-        m_ctrlSliderWidth.SetRange(0,200);
-        m_ctrlSliderHeight.SetRange(0,200);
+        m_ctrlSliderWidth.SetRange(0, 200);
+        m_ctrlSliderHeight.SetRange(0, 200);
         m_ctrlSliderWidth.SetPos(m_transWnd->WidthPos());
         m_ctrlSliderHeight.SetPos(m_transWnd->HeightPos());
     }

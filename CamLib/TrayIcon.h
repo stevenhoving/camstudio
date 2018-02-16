@@ -7,7 +7,7 @@
 class CTrayIcon
 {
 public:
-    CTrayIcon();    // not implemented
+    CTrayIcon(); // not implemented
 
     virtual ~CTrayIcon();
 
@@ -22,9 +22,9 @@ public:
     void TraySetIcon(LPCTSTR lpszResourceName);
     void TraySetToolTip(LPCTSTR lpszToolTip);
     void TraySetMinimizeToTray(BOOL bMinimizeToTray = TRUE);
-    BOOL TraySetMenu(UINT nResourceID,UINT nDefaultPos=0);
-    BOOL TraySetMenu(HMENU hMenu,UINT nDefaultPos=0);
-    BOOL TraySetMenu(LPCTSTR lpszMenuName,UINT nDefaultPos=0);
+    BOOL TraySetMenu(UINT nResourceID, UINT nDefaultPos = 0);
+    BOOL TraySetMenu(HMENU hMenu, UINT nDefaultPos = 0);
+    BOOL TraySetMenu(LPCTSTR lpszMenuName, UINT nDefaultPos = 0);
     BOOL TrayUpdate();
     BOOL TrayShow();
     BOOL TrayHide();
@@ -34,7 +34,10 @@ public:
     void OnTrayRButtonDblClk(CPoint pt);
     void OnTrayMouseMove(CPoint pt);
 
-    BOOL MinimizeToTray() const    {return m_bMinimizeToTray;}
+    BOOL MinimizeToTray() const
+    {
+        return m_bMinimizeToTray;
+    }
 
     afx_msg LRESULT OnTrayNotify(WPARAM wParam, LPARAM lParam);
 
@@ -46,4 +49,3 @@ private:
     UINT m_nDefaultMenuItem;
     CMenu m_TrayMenu;
 };
-

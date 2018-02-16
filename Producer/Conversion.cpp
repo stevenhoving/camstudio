@@ -7,15 +7,15 @@
 
 extern CString GetTempPathEx(CString fileName, CString fxstr, CString exstr);
 
-//ver 2.25
+// ver 2.25
 #include "resource.h"
-extern int ErrMsg (LPSTR sz,...);
+extern int ErrMsg(LPSTR sz, ...);
 extern int runmode;
-BOOL        gfCancelConvert = FALSE;
-int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
+BOOL gfCancelConvert = FALSE;
+int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus);
 
-//if return -1, or 0, no new file is created
-//if return 1 or 2, the converted file is saved in SaveFile
+// if return -1, or 0, no new file is created
+// if return 1 or 2, the converted file is saved in SaveFile
 int MultiStepConvertToPCM(CString filename, CString SaveFile, LPWAVEFORMATEX dstFormat, int sizeDstFormat)
 {
 
@@ -23,143 +23,149 @@ int MultiStepConvertToPCM(CString filename, CString SaveFile, LPWAVEFORMATEX dst
     int retval = 0;
     LPWAVEFORMATEX intermediateFormat = NULL;
 
-    if (dstFormat) {
-        if ((dstFormat->wFormatTag)!=WAVE_FORMAT_PCM) {
+    if (dstFormat)
+    {
+        if ((dstFormat->wFormatTag) != WAVE_FORMAT_PCM)
+        {
 
-            if ((runmode==0) || (runmode==1))
-                //MessageBox(NULL,"Destination Format not PCM","Note",MB_OK | MB_ICONEXCLAMATION);
-                MessageOut(NULL,IDS_DESTNOTPCM, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            if ((runmode == 0) || (runmode == 1))
+                // MessageBox(NULL,"Destination Format not PCM","Note",MB_OK | MB_ICONEXCLAMATION);
+                MessageOut(NULL, IDS_DESTNOTPCM, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
 
             return -1;
         }
-
     }
 
-    //First step conversion,
-    intermediateFormat = (LPWAVEFORMATEX) malloc(sizeDstFormat);
-    memcpy( intermediateFormat, dstFormat, sizeDstFormat);
+    // First step conversion,
+    intermediateFormat = (LPWAVEFORMATEX)malloc(sizeDstFormat);
+    memcpy(intermediateFormat, dstFormat, sizeDstFormat);
 
-    //warning : Convert File will change the intermediateFormat (to a format compatible with original) after conversion
+    // warning : Convert File will change the intermediateFormat (to a format compatible with original) after conversion
     retval = ConvertFile(LPCTSTR(filename), LPCTSTR(SaveFile), intermediateFormat, sizeDstFormat);
 
-    if (intermediateFormat) free(intermediateFormat);
+    if (intermediateFormat)
+        free(intermediateFormat);
 
-    if (retval == 0) {
+    if (retval == 0)
+    {
 
-        //MessageBox(NULL, "0","Note",MB_OK | MB_ICONEXCLAMATION);
+        // MessageBox(NULL, "0","Note",MB_OK | MB_ICONEXCLAMATION);
         return 0;
     }
     else if (retval == 2)
     {
-        //MessageBox(NULL, "2","Note",MB_OK | MB_ICONEXCLAMATION);
+        // MessageBox(NULL, "2","Note",MB_OK | MB_ICONEXCLAMATION);
         return 2;
     }
-    else if (retval == 1) {
+    else if (retval == 1)
+    {
 
-        //need 2nd Step Conversion
-        //intermediatePath= GetTempIntermediatePath();
-        intermediatePath =  GetTempPathEx("\\~intermediate001.wav", "\\~intermediate", ".wav");
+        // need 2nd Step Conversion
+        // intermediatePath= GetTempIntermediatePath();
+        intermediatePath = GetTempPathEx("\\~intermediate001.wav", "\\~intermediate", ".wav");
 
-        //rename
-        if (!MoveFile( SaveFile,intermediatePath)) {
+        // rename
+        if (!MoveFile(SaveFile, intermediatePath))
+        {
 
-                //Although there is error copying, the temp file still remains in the temp directory and is not deleted, in case user wants a manual recover
-                if ((runmode==0) || (runmode==1))
-                    //MessageBox(NULL, "File Creation Error. Unable to rename/copy file.","Note",MB_OK | MB_ICONEXCLAMATION);
-                    MessageOut(NULL,IDS_FILECRERR, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-                return -1;
-
+            // Although there is error copying, the temp file still remains in the temp directory and is not deleted, in
+            // case user wants a manual recover
+            if ((runmode == 0) || (runmode == 1))
+                // MessageBox(NULL, "File Creation Error. Unable to rename/copy file.","Note",MB_OK |
+                // MB_ICONEXCLAMATION);
+                MessageOut(NULL, IDS_FILECRERR, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            return -1;
         }
 
         retval = ConvertFile(LPCTSTR(intermediatePath), LPCTSTR(SaveFile), dstFormat, sizeDstFormat);
 
         if (retval == 0)
         {
-            //actually no 2nd step conversion is performed
-            //but a new file SaveFile is created in the 1st step conversion
+            // actually no 2nd step conversion is performed
+            // but a new file SaveFile is created in the 1st step conversion
 
-            //move back
-            MoveFile( intermediatePath, SaveFile);
+            // move back
+            MoveFile(intermediatePath, SaveFile);
             return 1;
-
         }
 
-        if (retval>=0)
+        if (retval >= 0)
             DeleteFile(intermediatePath);
 
-        //retval = ConvertFile(SaveFile,intermediatePath, dstFormat, sizeDstFormat);
+        // retval = ConvertFile(SaveFile,intermediatePath, dstFormat, sizeDstFormat);
         return retval;
-
     }
 
     return 0;
 }
 
-//return -1 if error
-//return 0 if no conversion
-//return 1 if nonPCM to PCM conversion
-//return 2 if PCM to PCM conversion
-int ConvertFile(const char* filename, const char* SaveFile, LPWAVEFORMATEX dstFormat, int sizeDstFormat)
+// return -1 if error
+// return 0 if no conversion
+// return 1 if nonPCM to PCM conversion
+// return 2 if PCM to PCM conversion
+int ConvertFile(const char *filename, const char *SaveFile, LPWAVEFORMATEX dstFormat, int sizeDstFormat)
 {
 
-    ACMAPPFILEDESC  gaafd;
-    TCHAR               fileTitle[APP_MAX_FILE_TITLE_CHARS];
-    BOOL                f;
+    ACMAPPFILEDESC gaafd;
+    TCHAR fileTitle[APP_MAX_FILE_TITLE_CHARS];
+    BOOL f;
     MMRESULT mmr;
 
-    GetTitle( filename,  fileTitle, APP_MAX_FILE_TITLE_CHARS);
+    GetTitle(filename, fileTitle, APP_MAX_FILE_TITLE_CHARS);
 
     lstrcpy(gaafd.szFilePath, filename);
     lstrcpy(gaafd.szFileTitle, fileTitle);
 
-    //get info into gaafd
-    f = AcmAppFileOpen(NULL,  &gaafd);
+    // get info into gaafd
+    f = AcmAppFileOpen(NULL, &gaafd);
     if (!f)
     {
-        //MessageBox(NULL,"Error Opening File","Note",MB_OK | MB_ICONEXCLAMATION);
-        if ((runmode==0) || (runmode==1))
-            //MessageBox(NULL,"Error Opening Audio File for Conversion","Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(NULL,IDS_ERROPAFIC, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+        // MessageBox(NULL,"Error Opening File","Note",MB_OK | MB_ICONEXCLAMATION);
+        if ((runmode == 0) || (runmode == 1))
+            // MessageBox(NULL,"Error Opening Audio File for Conversion","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(NULL, IDS_ERROPAFIC, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
         return -1;
     }
 
-    if (((gaafd.pwfx)->wFormatTag)!=WAVE_FORMAT_PCM) {
+    if (((gaafd.pwfx)->wFormatTag) != WAVE_FORMAT_PCM)
+    {
         dstFormat->wFormatTag = WAVE_FORMAT_PCM;
         mmr = acmFormatSuggest(NULL, gaafd.pwfx, dstFormat, sizeDstFormat, ACM_FORMATSUGGESTF_WFORMATTAG);
-        PerformConversion(&gaafd, SaveFile, NONPCM_TO_PCM_TYPE , dstFormat, sizeDstFormat);
+        PerformConversion(&gaafd, SaveFile, NONPCM_TO_PCM_TYPE, dstFormat, sizeDstFormat);
         return 1;
     }
 
-    //if (gaafd.pwfx)->wFormatTag) ==WAVE_FORMAT_PCM
-    if ((dstFormat->wFormatTag)==WAVE_FORMAT_PCM) {
+    // if (gaafd.pwfx)->wFormatTag) ==WAVE_FORMAT_PCM
+    if ((dstFormat->wFormatTag) == WAVE_FORMAT_PCM)
+    {
 
-        //if PCM rates not similar
+        // if PCM rates not similar
         if ((gaafd.pwfx->nChannels != dstFormat->nChannels) ||
             (gaafd.pwfx->nSamplesPerSec != dstFormat->nSamplesPerSec) ||
             (gaafd.pwfx->nAvgBytesPerSec != dstFormat->nAvgBytesPerSec) ||
             (gaafd.pwfx->nBlockAlign != dstFormat->nBlockAlign) ||
-            (gaafd.pwfx->wBitsPerSample != dstFormat->wBitsPerSample) ||
-            (gaafd.pwfx->cbSize != dstFormat->cbSize))
+            (gaafd.pwfx->wBitsPerSample != dstFormat->wBitsPerSample) || (gaafd.pwfx->cbSize != dstFormat->cbSize))
         {
-            mmr = acmFormatSuggest(NULL, gaafd.pwfx, dstFormat, sizeDstFormat, ACM_FORMATSUGGESTF_NCHANNELS  | ACM_FORMATSUGGESTF_NSAMPLESPERSEC | ACM_FORMATSUGGESTF_WBITSPERSAMPLE | ACM_FORMATSUGGESTF_WFORMATTAG);
-            PerformConversion(&gaafd, SaveFile, PCM_TO_PCM_TYPE , dstFormat, sizeDstFormat);
+            mmr = acmFormatSuggest(NULL, gaafd.pwfx, dstFormat, sizeDstFormat,
+                                   ACM_FORMATSUGGESTF_NCHANNELS | ACM_FORMATSUGGESTF_NSAMPLESPERSEC |
+                                       ACM_FORMATSUGGESTF_WBITSPERSAMPLE | ACM_FORMATSUGGESTF_WFORMATTAG);
+            PerformConversion(&gaafd, SaveFile, PCM_TO_PCM_TYPE, dstFormat, sizeDstFormat);
             return 2;
         }
-
     }
 
     return 0;
 }
 
-BOOL GetTitle( const char* pszFilePath, PTSTR pszFileTitle, int /*bufsize*/ )
+BOOL GetTitle(const char *pszFilePath, PTSTR pszFileTitle, int /*bufsize*/)
 {
 
-    //GetFileTitle( pszFilePath, pszFileTitle, bufsize);
+    // GetFileTitle( pszFilePath, pszFileTitle, bufsize);
 
-    #define IS_SLASH(c)     ('/' == (c) || '\\' == (c))
+#define IS_SLASH(c) ('/' == (c) || '\\' == (c))
 
-    //PTSTR       pch;
-    const char * pch;
+    // PTSTR       pch;
+    const char *pch;
 
     //
     //  scan to the end of the file path string..
@@ -185,13 +191,14 @@ BOOL GetTitle( const char* pszFilePath, PTSTR pszFileTitle, int /*bufsize*/ )
     return (TRUE);
 }
 
-BOOL PerformConversion(PACMAPPFILEDESC paafd, const char* SaveFile, int /*ConversionType*/, LPWAVEFORMATEX dstFormat, int /*sizeDstFormat*/)
+BOOL PerformConversion(PACMAPPFILEDESC paafd, const char *SaveFile, int /*ConversionType*/, LPWAVEFORMATEX dstFormat,
+                       int /*sizeDstFormat*/)
 {
-    //BOOL                f;
-    DWORD               nAvgBytesPerSec;
-    DWORD               nBlockAlign;
-    DWORD               dwTimeAverage;
-    PAACONVERTDESC      paacd;
+    // BOOL                f;
+    DWORD nAvgBytesPerSec;
+    DWORD nBlockAlign;
+    DWORD dwTimeAverage;
+    PAACONVERTDESC paacd;
 
     paacd = (PAACONVERTDESC)LocalAlloc(LPTR, sizeof(*paacd));
     if (NULL == paacd)
@@ -202,55 +209,55 @@ BOOL PerformConversion(PACMAPPFILEDESC paafd, const char* SaveFile, int /*Conver
     //
     //
     //
-    paacd->hmmioSrc      = NULL;
-    paacd->hmmioDst      = NULL;
+    paacd->hmmioSrc = NULL;
+    paacd->hmmioDst = NULL;
 
     //
     //  default to 1 second per convert buffer..
     //
     paacd->uBufferTimePerConvert = 1000;
 
-    paacd->dwSrcSamples  = paafd->dwDataSamples;
+    paacd->dwSrcSamples = paafd->dwDataSamples;
 
     //
     //  compute source bytes to read (round down to nearest block for
     //  one second of data)
     //
-    nAvgBytesPerSec     = paafd->pwfx->nAvgBytesPerSec;
-    nBlockAlign         = paafd->pwfx->nBlockAlign;
+    nAvgBytesPerSec = paafd->pwfx->nAvgBytesPerSec;
+    nBlockAlign = paafd->pwfx->nBlockAlign;
     paacd->cbSrcReadSize = nAvgBytesPerSec - (nAvgBytesPerSec % nBlockAlign);
 
-    paacd->cbDstBufSize  = 0L;
-    //paacd->fdwOpen       = 0L;
-    paacd->fdwOpen       = ACM_STREAMOPENF_NONREALTIME;
+    paacd->cbDstBufSize = 0L;
+    // paacd->fdwOpen       = 0L;
+    paacd->fdwOpen = ACM_STREAMOPENF_NONREALTIME;
 
     lstrcpy(paacd->szFilePathSrc, paafd->szFilePath);
-    paacd->pwfxSrc       = paafd->pwfx;
-    paacd->pbSrc         = NULL;
+    paacd->pwfxSrc = paafd->pwfx;
+    paacd->pbSrc = NULL;
 
-    paacd->cbSrcData     = paafd->dwDataBytes;
+    paacd->cbSrcData = paafd->dwDataBytes;
 
     lstrcpy(paacd->szFilePathDst, SaveFile);
-    paacd->pwfxDst       = NULL;
-    paacd->pbDst         = NULL;
+    paacd->pwfxDst = NULL;
+    paacd->pbDst = NULL;
 
-    paacd->fApplyFilter  = FALSE;
-    paacd->pwfltr        = NULL;
+    paacd->fApplyFilter = FALSE;
+    paacd->pwfltr = NULL;
 
-    paacd->cTotalConverts     = 0L;
-    paacd->dwTimeTotal        = 0L;
-    paacd->dwTimeShortest     = (DWORD)-1L;
-    paacd->dwShortestConvert  = (DWORD)-1L;
-    paacd->dwTimeLongest      = 0L;
-    paacd->dwLongestConvert   = (DWORD)-1L;
+    paacd->cTotalConverts = 0L;
+    paacd->dwTimeTotal = 0L;
+    paacd->dwTimeShortest = (DWORD)-1L;
+    paacd->dwShortestConvert = (DWORD)-1L;
+    paacd->dwTimeLongest = 0L;
+    paacd->dwLongestConvert = (DWORD)-1L;
 
-    //f = DialogBoxParam(ghinst,
+    // f = DialogBoxParam(ghinst,
     //                   DLG_AACHOOSER,
     //                   hwnd,
     //                   AcmAppDlgProcChooser,
     //                  (LPARAM)(UINT)paacd);
 
-    //Not sure
+    // Not sure
     paacd->pwfxDst = dstFormat;
 
     if (AcmAppConvertBegin(NULL, paacd))
@@ -260,28 +267,28 @@ BOOL PerformConversion(PACMAPPFILEDESC paafd, const char* SaveFile, int /*Conver
 
     AcmAppConvertEnd(NULL, paacd);
 
-    //if (f)
+    // if (f)
     {
-        //this is needed only if a dialog appears
-        //lstrcpy(SaveFile, paacd->szFilePathDst);
+        // this is needed only if a dialog appears
+        // lstrcpy(SaveFile, paacd->szFilePathDst);
 
         //
         //
         //
-        //f = DialogBoxParam(ghinst,
+        // f = DialogBoxParam(ghinst,
         //                    DLG_AACONVERT,
         //                    hwnd,
         //                    AcmAppConvertDlgProc,
         //                   (LPARAM)(UINT)paacd);
-        //if (!f)
+        // if (!f)
         //{
-            //AppMsgBox(hwnd, MB_OK | MB_ICONEXCLAMATION,
-            //           TEXT("Conversion aborted--destination file is corrupt!"));
+        // AppMsgBox(hwnd, MB_OK | MB_ICONEXCLAMATION,
+        //           TEXT("Conversion aborted--destination file is corrupt!"));
         //}
 
         if (paacd->cTotalConverts > 1)
         {
-            dwTimeAverage  = paacd->dwTimeTotal;
+            dwTimeAverage = paacd->dwTimeTotal;
             dwTimeAverage -= paacd->dwTimeShortest;
 
             dwTimeAverage /= (paacd->cTotalConverts - 1);
@@ -293,9 +300,8 @@ BOOL PerformConversion(PACMAPPFILEDESC paafd, const char* SaveFile, int /*Conver
 
         /*
         AppMsgBox(hwnd, MB_OK | MB_ICONEXCLAMATION,
-                    TEXT("Conversion Statistics:\n\nTotal Time:\t%lu ms\nTotal Converts:\t%lu\nShortest Time:\t%lu ms (on %lu)\nLongest Time:\t%lu ms (on %lu)\n\nAverage Time:\t%lu ms"),
-                    paacd->dwTimeTotal,
-                    paacd->cTotalConverts,
+                    TEXT("Conversion Statistics:\n\nTotal Time:\t%lu ms\nTotal Converts:\t%lu\nShortest Time:\t%lu ms
+        (on %lu)\nLongest Time:\t%lu ms (on %lu)\n\nAverage Time:\t%lu ms"), paacd->dwTimeTotal, paacd->cTotalConverts,
                     paacd->dwTimeShortest,
                     paacd->dwShortestConvert,
                     paacd->dwTimeLongest,
@@ -303,9 +309,9 @@ BOOL PerformConversion(PACMAPPFILEDESC paafd, const char* SaveFile, int /*Conver
                     dwTimeAverage);
                     */
 
-        //if (f)
+        // if (f)
         //{
-            //AcmAppOpenInstance(hwnd, paacd->szFilePathDst, FALSE);
+        // AcmAppOpenInstance(hwnd, paacd->szFilePathDst, FALSE);
         //}
     }
 
@@ -333,13 +339,13 @@ BOOL PerformConversion(PACMAPPFILEDESC paafd, const char* SaveFile, int /*Conver
 
 BOOL AcmAppFileOpen(HWND /*hwnd*/, PACMAPPFILEDESC paafd)
 {
-    WAVEIOCB    wio;
-    WIOERR      werr;
+    WAVEIOCB wio;
+    WIOERR werr;
 
-    HANDLE      hf;
+    HANDLE hf;
 
-    DWORD       cbFileSize;
-    BOOL        fReturn;
+    DWORD cbFileSize;
+    BOOL fReturn;
 
     //
     //  blow previous stuff...
@@ -347,24 +353,23 @@ BOOL AcmAppFileOpen(HWND /*hwnd*/, PACMAPPFILEDESC paafd)
     if (NULL != paafd->pwfx)
     {
         GlobalFreePtr(paafd->pwfx);
-        paafd->pwfx  = NULL;
+        paafd->pwfx = NULL;
         paafd->cbwfx = 0;
     }
 
-    paafd->fdwState          = 0L;
-    paafd->cbFileSize        = 0L;
-    paafd->uDosChangeDate    = 0;
-    paafd->uDosChangeTime    = 0;
+    paafd->fdwState = 0L;
+    paafd->cbFileSize = 0L;
+    paafd->uDosChangeDate = 0;
+    paafd->uDosChangeTime = 0;
     paafd->fdwFileAttributes = 0L;
-    paafd->dwDataBytes       = 0L;
-    paafd->dwDataSamples     = 0L;
+    paafd->dwDataBytes = 0L;
+    paafd->dwDataSamples = 0L;
 
     //
     //  open the file for reading..
     //
 
-    hf = CreateFile(paafd->szFilePath, GENERIC_READ, FILE_SHARE_READ, NULL,
-                    OPEN_EXISTING, 0, 0);
+    hf = CreateFile(paafd->szFilePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, 0);
     if (INVALID_HANDLE_VALUE == hf)
         return (FALSE);
 
@@ -383,23 +388,22 @@ BOOL AcmAppFileOpen(HWND /*hwnd*/, PACMAPPFILEDESC paafd)
     //
     //
     //
-    paafd->cbFileSize        = cbFileSize;
+    paafd->cbFileSize = cbFileSize;
 
-{
-    BY_HANDLE_FILE_INFORMATION  bhfi;
-    WORD                        wDosChangeDate;
-    WORD                        wDosChangeTime;
+    {
+        BY_HANDLE_FILE_INFORMATION bhfi;
+        WORD wDosChangeDate;
+        WORD wDosChangeTime;
 
-    GetFileInformationByHandle(hf, &bhfi);
+        GetFileInformationByHandle(hf, &bhfi);
 
-    paafd->fdwFileAttributes = bhfi.dwFileAttributes;
+        paafd->fdwFileAttributes = bhfi.dwFileAttributes;
 
-    FileTimeToDosDateTime(&bhfi.ftLastWriteTime,
-                          &wDosChangeDate, &wDosChangeTime);
+        FileTimeToDosDateTime(&bhfi.ftLastWriteTime, &wDosChangeDate, &wDosChangeTime);
 
-    paafd->uDosChangeDate = (UINT)wDosChangeDate;
-    paafd->uDosChangeTime = (UINT)wDosChangeTime;
-}
+        paafd->uDosChangeDate = (UINT)wDosChangeDate;
+        paafd->uDosChangeTime = (UINT)wDosChangeTime;
+    }
 
     //
     //  now return the fully qualified path and title for the file
@@ -416,7 +420,7 @@ BOOL AcmAppFileOpen(HWND /*hwnd*/, PACMAPPFILEDESC paafd)
     werr = wioFileOpen(&wio, paafd->szFilePath, 0L);
     if (WIOERR_NOERROR == werr)
     {
-        UINT        cbwfx;
+        UINT cbwfx;
 
         cbwfx = SIZEOF_WAVEFORMATEX(wio.pwfx);
 
@@ -425,9 +429,9 @@ BOOL AcmAppFileOpen(HWND /*hwnd*/, PACMAPPFILEDESC paafd)
         {
             _fmemcpy(paafd->pwfx, wio.pwfx, cbwfx);
 
-            paafd->cbwfx         = cbwfx;
+            paafd->cbwfx = cbwfx;
 
-            paafd->dwDataBytes   = wio.dwDataBytes;
+            paafd->dwDataBytes = wio.dwDataBytes;
             paafd->dwDataSamples = wio.dwDataSamples;
 
             fReturn = TRUE;
@@ -437,7 +441,7 @@ BOOL AcmAppFileOpen(HWND /*hwnd*/, PACMAPPFILEDESC paafd)
     }
     else
     {
-        ErrMsg(TEXT("The file '%s' cannot be loaded as a wave file (wio error=%u)."),(LPTSTR)paafd->szFilePath, werr);
+        ErrMsg(TEXT("The file '%s' cannot be loaded as a wave file (wio error=%u)."), (LPTSTR)paafd->szFilePath, werr);
     }
 
     //
@@ -447,15 +451,11 @@ BOOL AcmAppFileOpen(HWND /*hwnd*/, PACMAPPFILEDESC paafd)
     return (fReturn);
 } // AcmAppFileOpen()
 
-BOOL AppGetFileTitle
-(
-    PTSTR                   pszFilePath,
-    PTSTR                   pszFileTitle
-)
+BOOL AppGetFileTitle(PTSTR pszFilePath, PTSTR pszFileTitle)
 {
-    #define IS_SLASH(c)     ('/' == (c) || '\\' == (c))
+#define IS_SLASH(c) ('/' == (c) || '\\' == (c))
 
-    PTSTR       pch;
+    PTSTR pch;
 
     //
     //  scan to the end of the file path string..
@@ -481,10 +481,10 @@ BOOL AppGetFileTitle
     return (TRUE);
 } // AppGetFileTitle()
 
-BOOL AcmAppConvertEnd( HWND /*hdlg*/, PAACONVERTDESC paacd )
+BOOL AcmAppConvertEnd(HWND /*hdlg*/, PAACONVERTDESC paacd)
 {
-    MMRESULT            mmr;
-    LPACMSTREAMHEADER   pash;
+    MMRESULT mmr;
+    LPACMSTREAMHEADER pash;
 
     //
     //
@@ -574,19 +574,15 @@ BOOL AcmAppConvertEnd( HWND /*hdlg*/, PAACONVERTDESC paacd )
 //
 //--------------------------------------------------------------------------;
 
-BOOL AcmAppConvertBegin
-(
-    HWND                    hdlg,
-    PAACONVERTDESC          paacd
-)
+BOOL AcmAppConvertBegin(HWND hdlg, PAACONVERTDESC paacd)
 {
-    TCHAR               ach[40];
-    MMRESULT            mmr;
-    MMCKINFO            ckSrcRIFF;
-    MMCKINFO            ck;
-    DWORD               dw;
-    LPACMSTREAMHEADER   pash;
-    LPWAVEFILTER        pwfltr;
+    TCHAR ach[40];
+    MMRESULT mmr;
+    MMCKINFO ckSrcRIFF;
+    MMCKINFO ck;
+    DWORD dw;
+    LPACMSTREAMHEADER pash;
+    LPWAVEFILTER pwfltr;
 
     //
     //
@@ -608,14 +604,7 @@ BOOL AcmAppConvertBegin
     //
     pwfltr = paacd->fApplyFilter ? paacd->pwfltr : (LPWAVEFILTER)NULL;
 
-    mmr = acmStreamOpen(&paacd->has,
-                        paacd->had,
-                        paacd->pwfxSrc,
-                        paacd->pwfxDst,
-                        pwfltr,
-                        0L,
-                        0L,
-                        paacd->fdwOpen);
+    mmr = acmStreamOpen(&paacd->has, paacd->had, paacd->pwfxSrc, paacd->pwfxDst, pwfltr, 0L, 0L, paacd->fdwOpen);
 
     if (MMSYSERR_NOERROR != mmr)
     {
@@ -627,10 +616,7 @@ BOOL AcmAppConvertBegin
     //
     //
     //
-    mmr = acmStreamSize(paacd->has,
-                        paacd->cbSrcReadSize,
-                        &paacd->cbDstBufSize,
-                        ACM_STREAMSIZEF_SOURCE);
+    mmr = acmStreamSize(paacd->has, paacd->cbSrcReadSize, &paacd->cbDstBufSize, ACM_STREAMSIZEF_SOURCE);
 
     if (MMSYSERR_NOERROR != mmr)
     {
@@ -643,18 +629,14 @@ BOOL AcmAppConvertBegin
     //  first try to open the file, etc.. open the given file for reading
     //  using buffered I/O
     //
-    paacd->hmmioSrc = mmioOpen(paacd->szFilePathSrc,
-                               NULL,
-                               MMIO_READ | MMIO_DENYWRITE | MMIO_ALLOCBUF);
+    paacd->hmmioSrc = mmioOpen(paacd->szFilePathSrc, NULL, MMIO_READ | MMIO_DENYWRITE | MMIO_ALLOCBUF);
     if (NULL == paacd->hmmioSrc)
         goto aacb_Error;
 
     //
     //
     //
-    paacd->hmmioDst = mmioOpen(paacd->szFilePathDst,
-                               NULL,
-                               MMIO_CREATE | MMIO_WRITE | MMIO_EXCLUSIVE | MMIO_ALLOCBUF);
+    paacd->hmmioDst = mmioOpen(paacd->szFilePathDst, NULL, MMIO_CREATE | MMIO_WRITE | MMIO_EXCLUSIVE | MMIO_ALLOCBUF);
     if (NULL == paacd->hmmioDst)
         goto aacb_Error;
 
@@ -680,17 +662,17 @@ BOOL AcmAppConvertBegin
     //
     //
     //
-    pash->cbStruct          = sizeof(*pash);
-    pash->fdwStatus         = 0L;
-    pash->dwUser            = 0L;
-    pash->pbSrc             = paacd->pbSrc;
-    pash->cbSrcLength       = paacd->cbSrcReadSize;
-    pash->cbSrcLengthUsed   = 0L;
-    pash->dwSrcUser         = paacd->cbSrcReadSize;
-    pash->pbDst             = paacd->pbDst;
-    pash->cbDstLength       = paacd->cbDstBufSize;
-    pash->cbDstLengthUsed   = 0L;
-    pash->dwDstUser         = paacd->cbDstBufSize;
+    pash->cbStruct = sizeof(*pash);
+    pash->fdwStatus = 0L;
+    pash->dwUser = 0L;
+    pash->pbSrc = paacd->pbSrc;
+    pash->cbSrcLength = paacd->cbSrcReadSize;
+    pash->cbSrcLengthUsed = 0L;
+    pash->dwSrcUser = paacd->cbSrcReadSize;
+    pash->pbDst = paacd->pbDst;
+    pash->cbDstLength = paacd->cbDstBufSize;
+    pash->cbDstLengthUsed = 0L;
+    pash->dwDstUser = paacd->cbDstBufSize;
 
     mmr = acmStreamPrepareHeader(paacd->has, pash, 0L);
     if (MMSYSERR_NOERROR != mmr)
@@ -704,7 +686,7 @@ BOOL AcmAppConvertBegin
     //
     //
     paacd->ckDstRIFF.fccType = mmioFOURCC('W', 'A', 'V', 'E');
-    paacd->ckDstRIFF.cksize  = 0L;
+    paacd->ckDstRIFF.cksize = 0L;
     if (mmioCreateChunk(paacd->hmmioDst, &paacd->ckDstRIFF, MMIO_CREATERIFF))
         goto aacb_Error;
 
@@ -810,7 +792,7 @@ BOOL AcmAppConvertBegin
     //
     dw = SIZEOF_WAVEFORMATEX(paacd->pwfxDst);
 
-    paacd->ckDst.ckid   = mmioFOURCC('f', 'm', 't', ' ');
+    paacd->ckDst.ckid = mmioFOURCC('f', 'm', 't', ' ');
     paacd->ckDst.cksize = dw;
     if (mmioCreateChunk(paacd->hmmioDst, &paacd->ckDst, 0))
         goto aacb_Error;
@@ -826,7 +808,7 @@ BOOL AcmAppConvertBegin
     //  since we are not writing any data to this file (yet), we set the
     //  samples contained in the file to 0..
     //
-    paacd->ckDst.ckid   = mmioFOURCC('f', 'a', 'c', 't');
+    paacd->ckDst.ckid = mmioFOURCC('f', 'a', 'c', 't');
     paacd->ckDst.cksize = 0L;
     if (mmioCreateChunk(paacd->hmmioDst, &paacd->ckDst, 0))
         goto aacb_Error;
@@ -841,7 +823,7 @@ BOOL AcmAppConvertBegin
     //  create the data chunk AND STAY DESCENDED... for reasons that will
     //  become apparent later..
     //
-    paacd->ckDst.ckid   = mmioFOURCC('d', 'a', 't', 'a');
+    paacd->ckDst.ckid = mmioFOURCC('d', 'a', 't', 'a');
     paacd->ckDst.cksize = 0L;
     if (mmioCreateChunk(paacd->hmmioDst, &paacd->ckDst, 0))
         goto aacb_Error;
@@ -881,43 +863,39 @@ aacb_Error:
 //
 //--------------------------------------------------------------------------;
 
-BOOL AcmAppConvertConvert
-(
-    HWND                hdlg,
-    PAACONVERTDESC     paacd
-)
+BOOL AcmAppConvertConvert(HWND hdlg, PAACONVERTDESC paacd)
 {
-    MMRESULT            mmr;
-    TCHAR               ach[40];
-    DWORD               dw;
-    WORD                w;
-    DWORD               dwCurrent;
-    WORD                wCurPercent;
-    LPACMSTREAMHEADER   pash;
-    DWORD               cbRead;
-    DWORD               dwTime;
+    MMRESULT mmr;
+    TCHAR ach[40];
+    DWORD dw;
+    WORD w;
+    DWORD dwCurrent;
+    WORD wCurPercent;
+    LPACMSTREAMHEADER pash;
+    DWORD cbRead;
+    DWORD dwTime;
 
     wCurPercent = (WORD)-1;
 
-    paacd->cTotalConverts    = 0L;
-    paacd->dwTimeTotal       = 0L;
-    paacd->dwTimeLongest     = 0L;
+    paacd->cTotalConverts = 0L;
+    paacd->dwTimeTotal = 0L;
+    paacd->dwTimeLongest = 0L;
     if (0 == paacd->cbSrcData)
     {
-        paacd->dwTimeShortest    = 0L;
+        paacd->dwTimeShortest = 0L;
         paacd->dwShortestConvert = 0L;
-        paacd->dwLongestConvert  = 0L;
+        paacd->dwLongestConvert = 0L;
     }
     else
     {
-        paacd->dwTimeShortest    = (DWORD)-1L;
+        paacd->dwTimeShortest = (DWORD)-1L;
         paacd->dwShortestConvert = (DWORD)-1L;
-        paacd->dwLongestConvert  = (DWORD)-1L;
+        paacd->dwLongestConvert = (DWORD)-1L;
     }
 
     pash = &paacd->ash;
 
-    for (dwCurrent = 0; dwCurrent < paacd->cbSrcData; )
+    for (dwCurrent = 0; dwCurrent < paacd->cbSrcData;)
     {
         w = (WORD)((dwCurrent * 100) / paacd->cbSrcData);
         if (w != wCurPercent)
@@ -925,7 +903,7 @@ BOOL AcmAppConvertConvert
             wCurPercent = w;
             wsprintf(ach, TEXT("%u%%"), wCurPercent);
 
-            //if (hdlg)
+            // if (hdlg)
             //    SetDlgItemText(hdlg, IDD_AACONVERT_TXT_STATUS, ach);
         }
 
@@ -938,7 +916,7 @@ BOOL AcmAppConvertConvert
         //
         //
         cbRead = min(paacd->cbSrcReadSize, paacd->cbSrcData - dwCurrent);
-        dw = mmioRead(paacd->hmmioSrc, (char *) paacd->pbSrc, cbRead);
+        dw = mmioRead(paacd->hmmioSrc, (char *)paacd->pbSrc, cbRead);
         if (0L == dw)
             break;
 
@@ -949,14 +927,12 @@ BOOL AcmAppConvertConvert
         //
         //
         //
-        pash->cbSrcLength     = dw;
+        pash->cbSrcLength = dw;
         pash->cbDstLengthUsed = 0L;
 
         dwTime = timeGetTime();
 
-        mmr = acmStreamConvert(paacd->has,
-                               &paacd->ash,
-                               ACM_STREAMCONVERTF_BLOCKALIGN);
+        mmr = acmStreamConvert(paacd->has, &paacd->ash, ACM_STREAMCONVERTF_BLOCKALIGN);
 
         if (MMSYSERR_NOERROR != mmr)
         {
@@ -973,14 +949,14 @@ BOOL AcmAppConvertConvert
 
         if (dwTime < paacd->dwTimeShortest)
         {
-            paacd->dwTimeShortest    = dwTime;
+            paacd->dwTimeShortest = dwTime;
             paacd->dwShortestConvert = paacd->cTotalConverts;
         }
 
         if (dwTime > paacd->dwTimeLongest)
         {
-            paacd->dwTimeLongest     = dwTime;
-            paacd->dwLongestConvert  = paacd->cTotalConverts;
+            paacd->dwTimeLongest = dwTime;
+            paacd->dwLongestConvert = paacd->cTotalConverts;
         }
 
         paacd->cTotalConverts++;
@@ -1007,7 +983,7 @@ BOOL AcmAppConvertConvert
         if (0L == dw)
             break;
 
-        if (mmioWrite(paacd->hmmioDst, (char *) paacd->pbDst, dw) != (LONG)dw)
+        if (mmioWrite(paacd->hmmioDst, (char *)paacd->pbDst, dw) != (LONG)dw)
             goto aacc_Error;
     }
 
@@ -1019,7 +995,7 @@ BOOL AcmAppConvertConvert
     //
     wCurPercent = (WORD)-1;
 
-    for (;paacd->cbSrcData;)
+    for (; paacd->cbSrcData;)
     {
         w = (WORD)((dwCurrent * 100) / paacd->cbSrcData);
         if (w != wCurPercent)
@@ -1027,7 +1003,7 @@ BOOL AcmAppConvertConvert
             wCurPercent = w;
             wsprintf(ach, TEXT("Cleanup Pass -- %u%%"), wCurPercent);
 
-            //if (hdlg)
+            // if (hdlg)
             //    SetDlgItemText(hdlg, IDD_AACONVERT_TXT_STATUS, ach);
         }
 
@@ -1042,7 +1018,7 @@ BOOL AcmAppConvertConvert
         cbRead = min(paacd->cbSrcReadSize, paacd->cbSrcData - dwCurrent);
         if (0L != cbRead)
         {
-            dw = mmioRead(paacd->hmmioSrc, (char *) paacd->pbSrc, cbRead);
+            dw = mmioRead(paacd->hmmioSrc, (char *)paacd->pbSrc, cbRead);
             if (0L == dw)
                 break;
         }
@@ -1054,15 +1030,12 @@ BOOL AcmAppConvertConvert
         //
         //
         //
-        pash->cbSrcLength     = dw;
+        pash->cbSrcLength = dw;
         pash->cbDstLengthUsed = 0L;
 
         dwTime = timeGetTime();
 
-        mmr = acmStreamConvert(paacd->has,
-                               &paacd->ash,
-                               ACM_STREAMCONVERTF_BLOCKALIGN |
-                               ACM_STREAMCONVERTF_END);
+        mmr = acmStreamConvert(paacd->has, &paacd->ash, ACM_STREAMCONVERTF_BLOCKALIGN | ACM_STREAMCONVERTF_END);
 
         if (MMSYSERR_NOERROR != mmr)
         {
@@ -1079,14 +1052,14 @@ BOOL AcmAppConvertConvert
 
         if (dwTime < paacd->dwTimeShortest)
         {
-            paacd->dwTimeShortest    = dwTime;
+            paacd->dwTimeShortest = dwTime;
             paacd->dwShortestConvert = paacd->cTotalConverts;
         }
 
         if (dwTime > paacd->dwTimeLongest)
         {
-            paacd->dwTimeLongest     = dwTime;
-            paacd->dwLongestConvert  = paacd->cTotalConverts;
+            paacd->dwTimeLongest = dwTime;
+            paacd->dwLongestConvert = paacd->cTotalConverts;
         }
 
         paacd->cTotalConverts++;
@@ -1112,9 +1085,7 @@ BOOL AcmAppConvertConvert
             //  to be decreased by cbSrcLengthUsed.  This probably wouldn't
             //  happen with most of our codecs though...?
             //
-            mmr = acmStreamConvert(paacd->has,
-                                   &paacd->ash,
-                                   ACM_STREAMCONVERTF_END);
+            mmr = acmStreamConvert(paacd->has, &paacd->ash, ACM_STREAMCONVERTF_END);
 
             if (MMSYSERR_NOERROR == mmr)
             {
@@ -1127,7 +1098,7 @@ BOOL AcmAppConvertConvert
                 break;
         }
 
-        if (mmioWrite(paacd->hmmioDst,(char *)  paacd->pbDst, dw) != (LONG)dw)
+        if (mmioWrite(paacd->hmmioDst, (char *)paacd->pbDst, dw) != (LONG)dw)
             goto aacc_Error;
 
         //
@@ -1145,22 +1116,22 @@ BOOL AcmAppConvertConvert
             break;
     }
 
-    //if (hdlg)
+    // if (hdlg)
     //    EndConvert(hdlg, !gfCancelConvert, paacd);
 
     return (!gfCancelConvert);
 
 aacc_Error:
 
-    //if (hdlg)
+    // if (hdlg)
     //    EndConvert(hdlg, FALSE, paacd);
 
     return (FALSE);
 } // AcmAppConvertConvert()
 
-BOOL AcmAppGetErrorString(MMRESULT   mmr, LPTSTR pszError)
+BOOL AcmAppGetErrorString(MMRESULT mmr, LPTSTR pszError)
 {
-    PTSTR               psz;
+    PTSTR psz;
 
     switch (mmr)
     {
@@ -1253,9 +1224,9 @@ BOOL AcmAppGetErrorString(MMRESULT   mmr, LPTSTR pszError)
     return (TRUE);
 } // AcmAppGetErrorString()
 
-void AppDlgYield(HWND  hdlg)
+void AppDlgYield(HWND hdlg)
 {
-    MSG     msg;
+    MSG msg;
 
     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
     {
@@ -1269,8 +1240,8 @@ void AppDlgYield(HWND  hdlg)
 
 BOOL RIFFAPI riffCopyChunk(HMMIO hmmioSrc, HMMIO hmmioDst, const LPMMCKINFO lpck)
 {
-    MMCKINFO    ck;
-    HPSTR       hpBuf;
+    MMCKINFO ck;
+    HPSTR hpBuf;
 
     //
     //
@@ -1279,7 +1250,7 @@ BOOL RIFFAPI riffCopyChunk(HMMIO hmmioSrc, HMMIO hmmioDst, const LPMMCKINFO lpck
     if (!hpBuf)
         return (FALSE);
 
-    ck.ckid   = lpck->ckid;
+    ck.ckid = lpck->ckid;
     ck.cksize = lpck->cksize;
     if (mmioCreateChunk(hmmioDst, &ck, 0))
         goto rscc_Error;
@@ -1305,4 +1276,3 @@ rscc_Error:
 
     return (FALSE);
 } /* RIFFSupCopyChunk() */
-

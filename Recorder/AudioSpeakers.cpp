@@ -29,7 +29,7 @@ extern DWORD dwIndex;
 #define GETVOLUME 1
 #define GETVOLUMEINFO 2
 
-extern BOOL useVolume(int operation,DWORD &dwVal,int silence_mode);
+extern BOOL useVolume(int operation, DWORD &dwVal, int silence_mode);
 
 extern BOOL configWaveOut();
 extern BOOL configWaveOutManual();
@@ -38,7 +38,7 @@ extern BOOL configWaveOutManual();
 // CAudioSpeakersDlg dialog
 
 CAudioSpeakersDlg::CAudioSpeakersDlg(CWnd *pParent /*=NULL*/)
-: CDialog(CAudioSpeakersDlg::IDD, pParent)
+    : CDialog(CAudioSpeakersDlg::IDD, pParent)
 {
     //{{AFX_DATA_INIT(CAudioSpeakersDlg)
     // NOTE: the ClassWizard will add member initialization here
@@ -58,13 +58,13 @@ void CAudioSpeakersDlg::DoDataExchange(CDataExchange *pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAudioSpeakersDlg, CDialog)
-    //{{AFX_MSG_MAP(CAudioSpeakersDlg)
-    ON_BN_CLICKED(IDVOLUME, OnVolume)
-    ON_BN_CLICKED(ID_AUTOCONFIG, OnAutoconfig)
-    ON_CBN_SELCHANGE(IDC_SOUNDDEVICE, OnSelchangeSounddevice)
-    ON_BN_CLICKED(ID_MANUALCONFIG, OnManualconfig)
-    ON_WM_HSCROLL()
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CAudioSpeakersDlg)
+ON_BN_CLICKED(IDVOLUME, OnVolume)
+ON_BN_CLICKED(ID_AUTOCONFIG, OnAutoconfig)
+ON_CBN_SELCHANGE(IDC_SOUNDDEVICE, OnSelchangeSounddevice)
+ON_BN_CLICKED(ID_MANUALCONFIG, OnManualconfig)
+ON_WM_HSCROLL()
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -90,14 +90,17 @@ BOOL CAudioSpeakersDlg::OnInitDialog()
     BOOL success = (0 <= cAudioFormat.m_iFeedbackLine);
     DWORD volume = 0;
     CString line;
-    if (success) {
+    if (success)
+    {
         line.Format(_T("%d"), cAudioFormat.m_iFeedbackLine + 1);
-        if (!useVolume(GETVOLUME, volume, TRUE)) {
+        if (!useVolume(GETVOLUME, volume, TRUE))
+        {
             success = false;
         }
     }
 
-    if (!success) {
+    if (!success)
+    {
         VERIFY(line.LoadString(IDS_STRING_LINEUNDETECTED));
     }
 
@@ -107,31 +110,37 @@ BOOL CAudioSpeakersDlg::OnInitDialog()
     m_ctrlStaticLineInfo.SetWindowText(line);
     // END Get the line index
 
-    //Generate device list
-    m_ctrlCBSoundDevice.ResetContent( );
+    // Generate device list
+    m_ctrlCBSoundDevice.ResetContent();
 
     cAudioFormat.m_iMixerDevices = waveOutGetNumDevs();
-    for (int i = 0; i < cAudioFormat.m_iMixerDevices; i++) {
+    for (int i = 0; i < cAudioFormat.m_iMixerDevices; i++)
+    {
         WAVEOUTCAPS wocaps;
-        MMRESULT mmr_s = waveOutGetDevCaps(i,&wocaps,sizeof(WAVEOUTCAPS));
-        if (mmr_s == MMSYSERR_NOERROR) {
+        MMRESULT mmr_s = waveOutGetDevCaps(i, &wocaps, sizeof(WAVEOUTCAPS));
+        if (mmr_s == MMSYSERR_NOERROR)
+        {
             m_ctrlCBSoundDevice.AddString(wocaps.szPname);
         }
     }
 
-    //Select the device combo box
+    // Select the device combo box
     int deviceIsSelected = 0;
     int selectedDevice = WAVE_MAPPER;
-    for (int i = 0; i < cAudioFormat.m_iMixerDevices; i++) {
-        if (cAudioFormat.m_iSelectedMixer == i) {
+    for (int i = 0; i < cAudioFormat.m_iMixerDevices; i++)
+    {
+        if (cAudioFormat.m_iSelectedMixer == i)
+        {
             m_ctrlCBSoundDevice.SetCurSel(i);
             selectedDevice = i;
             deviceIsSelected = 1;
         }
     }
 
-    if (!deviceIsSelected) {
-        if (cAudioFormat.m_iMixerDevices > 0) {
+    if (!deviceIsSelected)
+    {
+        if (cAudioFormat.m_iMixerDevices > 0)
+        {
             cAudioFormat.m_iSelectedMixer = 0;
         }
         m_ctrlCBSoundDevice.SetCurSel(0);
@@ -143,10 +152,11 @@ BOOL CAudioSpeakersDlg::OnInitDialog()
 void CAudioSpeakersDlg::OnVolume()
 {
     // Ver 1.1
-    if (waveInGetNumDevs() == 0) {
-        //CString msgstr;
-        //msgstr.Format("Unable to detect audio input device. You need a sound card with microphone input.");
-        //MessageBox(msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
+    if (waveInGetNumDevs() == 0)
+    {
+        // CString msgstr;
+        // msgstr.Format("Unable to detect audio input device. You need a sound card with microphone input.");
+        // MessageBox(msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
         MessageOut(m_hWnd, IDS_STRING_NOINPUT1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
         return;
     }
@@ -154,14 +164,15 @@ void CAudioSpeakersDlg::OnVolume()
     TCHAR dirx[_MAX_PATH];
     VERIFY(::GetWindowsDirectory(dirx, _MAX_PATH));
     CString Windir(dirx);
-    //Test Windows\sndvol32.exe
+    // Test Windows\sndvol32.exe
     CString AppDir = Windir;
     CString SubDir = "";
     CString exeFileName("\\sndvol32.exe");
     CString testLaunchPath = AppDir + SubDir + exeFileName;
     CString launchPath("");
-    if (launchPath == "") {
-        //Verify sndvol32.exe exists
+    if (launchPath == "")
+    {
+        // Verify sndvol32.exe exists
         OFSTRUCT ofs;
         HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
         if (hdir != HFILE_ERROR)
@@ -171,12 +182,13 @@ void CAudioSpeakersDlg::OnVolume()
         CloseHandle((HANDLE)hdir);
     }
 
-    //Test Windows\system32\sndvol32.exe
-    //AppDir = Windir;    // unmodified
+    // Test Windows\system32\sndvol32.exe
+    // AppDir = Windir;    // unmodified
     SubDir = "\\system32";
     testLaunchPath = AppDir + SubDir + exeFileName;
-    if (launchPath == "") {
-        //Verify sndvol32.exe exists
+    if (launchPath == "")
+    {
+        // Verify sndvol32.exe exists
         OFSTRUCT ofs;
         HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
         if (hdir != HFILE_ERROR)
@@ -186,16 +198,18 @@ void CAudioSpeakersDlg::OnVolume()
         CloseHandle((HANDLE)hdir);
     }
 
-    //Test Windows\system\sndvol32.exe
+    // Test Windows\system\sndvol32.exe
     // AppDir = Windir;            // unmodified
     // SubDir = "\\system32";    // unmodified
     testLaunchPath = AppDir + SubDir + exeFileName;
-    if (launchPath == "") {
-        //Verify sndvol32.exe exists
+    if (launchPath == "")
+    {
+        // Verify sndvol32.exe exists
         OFSTRUCT ofs;
-        HFILE hdir = OpenFile(testLaunchPath, &ofs,OF_EXIST);
-        if (hdir != HFILE_ERROR) {
-            launchPath=testLaunchPath;
+        HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
+        if (hdir != HFILE_ERROR)
+        {
+            launchPath = testLaunchPath;
         }
         CloseHandle((HANDLE)hdir);
     }
@@ -203,29 +217,34 @@ void CAudioSpeakersDlg::OnVolume()
     // Sound mixer moved in Windows Vista! check new exe name only if windows version matches
     OSVERSIONINFO osinfo;
     osinfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-    if (GetVersionEx((LPOSVERSIONINFO) &osinfo))
+    if (GetVersionEx((LPOSVERSIONINFO)&osinfo))
     {
-        if (osinfo.dwMajorVersion >= 6) //Vista
+        if (osinfo.dwMajorVersion >= 6) // Vista
         {
             testLaunchPath = AppDir + SubDir + "\\SndVol.exe";
             OFSTRUCT ofs;
             HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
-            if (hdir != HFILE_ERROR) {
-                launchPath=testLaunchPath;
+            if (hdir != HFILE_ERROR)
+            {
+                launchPath = testLaunchPath;
             }
             CloseHandle((HANDLE)hdir);
         }
     }
 
-    if (launchPath != "") { //launch Volume Control
-        //not sure
+    if (launchPath != "")
+    { // launch Volume Control
+        // not sure
         launchPath = launchPath + _T(" /d ");
         launchPath.AppendFormat(_T("%d"), m_ctrlCBSoundDevice.GetCurSel());
 
-        if (WinExec(launchPath, SW_SHOW) != 0) {
-        } else {
-            //MessageBox("Error launching Volume Control!","Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(m_hWnd,IDS_STRING_ERRVOLCTRL1 ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+        if (WinExec(launchPath, SW_SHOW) != 0)
+        {
+        }
+        else
+        {
+            // MessageBox("Error launching Volume Control!","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(m_hWnd, IDS_STRING_ERRVOLCTRL1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
         }
     }
 }
@@ -249,7 +268,7 @@ void CAudioSpeakersDlg::OnManualconfig()
     OnInitDialog();
 }
 
-void CAudioSpeakersDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+void CAudioSpeakersDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
 {
     CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }

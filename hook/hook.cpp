@@ -18,21 +18,26 @@ HWND hotkeyWnd = NULL;
 HINSTANCE hInst = 0;
 
 // Keyboard stuff
-//HotKeyMap hkm; // write only during key's update, problem is unlikely
-//typedef std::map<DWORD,DWORD> ModMap; // write at the beginning only, thread safe
-//ModMap modMap; // VK -> Modifier for WM_HOTKEY
-//DWORD mod; // current state
-//bool PassThrough = false; // pass hotkey to other application
+// HotKeyMap hkm; // write only during key's update, problem is unlikely
+// typedef std::map<DWORD,DWORD> ModMap; // write at the beginning only, thread safe
+// ModMap modMap; // VK -> Modifier for WM_HOTKEY
+// DWORD mod; // current state
+// bool PassThrough = false; // pass hotkey to other application
 
 //__declspec(dllexport) HotKeyMap& getHotKeyMap() { return hkm; }
-__declspec(dllexport) void setHotKeyWindow(HWND hWnd) { hotkeyWnd = hWnd; }
+__declspec(dllexport) void setHotKeyWindow(HWND hWnd)
+{
+    hotkeyWnd = hWnd;
+}
 //__declspec(dllexport) void setPassThrough(bool pass) { PassThrough = pass; }
 
 // all that stuff is only here in mouse handler since it brakes double clicks when in the main app
 // I guess it is because of stealing thread
 HCURSOR m_hSavedCursor = NULL;
-__declspec(dllexport) HCURSOR getCursor() { return m_hSavedCursor; }
-
+__declspec(dllexport) HCURSOR getCursor()
+{
+    return m_hSavedCursor;
+}
 
 // DONE: few thing to consider:
 // This way we get an attack by window messages which loads the system. We can
@@ -45,23 +50,29 @@ __declspec(dllexport) HCURSOR getCursor() { return m_hSavedCursor; }
 
 LRESULT CALLBACK LowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-    if (nCode >= 0) {
-        if (WM_LBUTTONDOWN != wParam && WM_LBUTTONUP != wParam) {
+    if (nCode >= 0)
+    {
+        if (WM_LBUTTONDOWN != wParam && WM_LBUTTONUP != wParam)
+        {
             POINT pt;
-            if (GetCursorPos(&pt)) { // may need to profile this. dunno how long does it take
+            if (GetCursorPos(&pt))
+            { // may need to profile this. dunno how long does it take
                 HWND h = WindowFromPoint(pt);
                 DWORD id = GetWindowThreadProcessId(h, NULL);
                 DWORD cid = GetCurrentThreadId();
-                if (id != cid) {
-                    if (AttachThreadInput(cid, id, TRUE)) {
+                if (id != cid)
+                {
+                    if (AttachThreadInput(cid, id, TRUE))
+                    {
                         m_hSavedCursor = GetCursor();
                         AttachThreadInput(cid, id, FALSE);
                     }
-                } else
+                }
+                else
                     m_hSavedCursor = GetCursor();
             }
         }
-        MSLLHOOKSTRUCT mhs = *(LPMSLLHOOKSTRUCT) lParam;
+        MSLLHOOKSTRUCT mhs = *(LPMSLLHOOKSTRUCT)lParam;
         mhs.flags = wParam;
         if (WM_LBUTTONDOWN <= wParam && wParam <= WM_MOUSEHWHEEL)
             ClickQueue::getInstance().Enqueue(&mhs); // message, pt, time
@@ -69,7 +80,7 @@ LRESULT CALLBACK LowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
     return ::CallNextHookEx(mouseHookLL, nCode, wParam, lParam);
 }
 // 2.7
-//LRESULT CALLBACK KeyboardProc(
+// LRESULT CALLBACK KeyboardProc(
 //  __in  int code,
 //  __in  WPARAM wParam,
 //  __in  LPARAM lParam
@@ -100,36 +111,35 @@ LRESULT CALLBACK LowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 //    return ::CallNextHookEx(keyHook, code, wParam, lParam);
 //}
 
-
 //}    // namespace annonymous
 
 /////////////////////////////////////////////////////////////////////////////
 // DllMain
 // Entry point for hook.dll.
 /////////////////////////////////////////////////////////////////////////////
-BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD  Reason, LPVOID /*Reserved*/)
+BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD Reason, LPVOID /*Reserved*/)
 {
     switch (Reason)
     {
-    case DLL_PROCESS_ATTACH:
-        hInst = hInstance;
-        // 2.7
-        //modMap[VK_SHIFT] = MOD_SHIFT;
-        //modMap[VK_LSHIFT] = MOD_SHIFT;
-        //modMap[VK_RSHIFT] = MOD_SHIFT;
-        //modMap[VK_MENU] = MOD_ALT;
-        //modMap[VK_LMENU] = MOD_ALT;
-        //modMap[VK_RMENU] = MOD_ALT;
-        //modMap[VK_CONTROL] = MOD_CONTROL;
-        //modMap[VK_LCONTROL] = MOD_CONTROL; // shall we distinguish left & right?
-        //modMap[VK_RCONTROL] = MOD_CONTROL;
-        //// We are always interested in keyboard shortcuts
-        //keyHook = ::SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, hInst, 0);
-        break;
-    case DLL_PROCESS_DETACH:
-        UnhookWindowsHookEx(keyHook);
-        UninstallMyHook(NULL);
-        break;
+        case DLL_PROCESS_ATTACH:
+            hInst = hInstance;
+            // 2.7
+            // modMap[VK_SHIFT] = MOD_SHIFT;
+            // modMap[VK_LSHIFT] = MOD_SHIFT;
+            // modMap[VK_RSHIFT] = MOD_SHIFT;
+            // modMap[VK_MENU] = MOD_ALT;
+            // modMap[VK_LMENU] = MOD_ALT;
+            // modMap[VK_RMENU] = MOD_ALT;
+            // modMap[VK_CONTROL] = MOD_CONTROL;
+            // modMap[VK_LCONTROL] = MOD_CONTROL; // shall we distinguish left & right?
+            // modMap[VK_RCONTROL] = MOD_CONTROL;
+            //// We are always interested in keyboard shortcuts
+            // keyHook = ::SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, hInst, 0);
+            break;
+        case DLL_PROCESS_DETACH:
+            UnhookWindowsHookEx(keyHook);
+            UninstallMyHook(NULL);
+            break;
     }
 
     return TRUE;
@@ -138,7 +148,7 @@ BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD  Reason, LPVOID /*Reserved*/)
 /////////////////////////////////////////////////////////////////////////////
 // InstallMyHook
 // Installs hookproc into the hook chain for all desktop threads, sets
-// the notification window to hWnd using message_to_call. 
+// the notification window to hWnd using message_to_call.
 /////////////////////////////////////////////////////////////////////////////
 __declspec(dllexport) BOOL InstallMyHook(HWND hWnd, UINT message_to_call)
 {
@@ -153,7 +163,7 @@ __declspec(dllexport) BOOL InstallMyHook(HWND hWnd, UINT message_to_call)
 /////////////////////////////////////////////////////////////////////////////
 __declspec(dllexport) BOOL UninstallMyHook(HWND hWnd)
 {
-    if (mouseHookLL && UnhookWindowsHookEx(mouseHookLL)) mouseHookLL = NULL;
+    if (mouseHookLL && UnhookWindowsHookEx(mouseHookLL))
+        mouseHookLL = NULL;
     return TRUE;
 }
-

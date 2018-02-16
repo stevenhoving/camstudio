@@ -84,8 +84,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-#define HIMETRIC_INCH    2540
-#define ERROR_TITLE        TEXT("CPicture Error") // Error Title (Related To This Class)...
+#define HIMETRIC_INCH 2540
+#define ERROR_TITLE TEXT("CPicture Error") // Error Title (Related To This Class)...
 
 //-----------------------------------------------------------------------------
 // Does: Constructor - Create a New CPicture Object To Hold Picture Data
@@ -94,10 +94,10 @@ static char THIS_FILE[] = __FILE__;
 //-----------------------------------------------------------------------------
 //=============================================================================
 CPicture::CPicture()
-: m_IPicture(0)
-, m_Height(0)
-, m_Weight(0)
-, m_Width(0)
+    : m_IPicture(0)
+    , m_Height(0)
+    , m_Weight(0)
+    , m_Width(0)
 {
 }
 
@@ -124,7 +124,8 @@ CPicture::~CPicture()
 //=============================================================================
 void CPicture::FreePictureData()
 {
-    if (m_IPicture != NULL) {
+    if (m_IPicture != NULL)
+    {
         m_IPicture->Release();
         m_IPicture = NULL;
         m_Height = 0;
@@ -163,50 +164,56 @@ BOOL CPicture::Load(UINT ResourceName, LPCTSTR ResourceType)
 
     hSource = FindResource(AfxGetResourceHandle(), MAKEINTRESOURCE(ResourceName), ResourceType);
 
-    if (hSource == NULL) {
+    if (hSource == NULL)
+    {
         HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
         MessageBoxEx(hWnd, TEXT("FindResource() Failed\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
-        return(FALSE);
+        return (FALSE);
     }
 
     hGlobal = LoadResource(AfxGetResourceHandle(), hSource);
-    if (hGlobal == NULL) {
+    if (hGlobal == NULL)
+    {
         HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
         MessageBoxEx(hWnd, TEXT("LoadResource() Failed\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
-        return(FALSE);
+        return (FALSE);
     }
 
     lpVoid = LockResource(hGlobal);
-    if (lpVoid == NULL) {
+    if (lpVoid == NULL)
+    {
         HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
         MessageBoxEx(hWnd, TEXT("LockResource() Failed\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
-        return(FALSE);
+        return (FALSE);
     }
 
     nSize = (UINT)SizeofResource(AfxGetResourceHandle(), hSource);
-    if (LoadPictureData((BYTE*)hGlobal, nSize))
+    if (LoadPictureData((BYTE *)hGlobal, nSize))
         bResult = TRUE;
 
     UnlockResource(hGlobal); // 16Bit Windows Needs This
-    FreeResource(hGlobal); // 16Bit Windows Needs This (32Bit - Automatic Release)
+    FreeResource(hGlobal);   // 16Bit Windows Needs This (32Bit - Automatic Release)
 
     m_Weight = nSize; // Update Picture Size Info...
 
     // Do Not Try To Read From Memory That Is Not Exist...
-    if (m_IPicture != NULL) {
+    if (m_IPicture != NULL)
+    {
         m_IPicture->get_Height(&m_Height);
         m_IPicture->get_Width(&m_Width);
         // Calculate Its Size On a "Standard" (96 DPI) Device Context
         m_Height = MulDiv(m_Height, 96, HIMETRIC_INCH);
         m_Width = MulDiv(m_Width, 96, HIMETRIC_INCH);
-    } else {
+    }
+    else
+    {
         // Picture Data Is Not a Known Picture Type
         m_Height = 0;
         m_Width = 0;
         bResult = FALSE;
     }
 
-    return(bResult);
+    return (bResult);
 }
 
 //-----------------------------------------------------------------------------
@@ -230,26 +237,34 @@ BOOL CPicture::Load(CString sFilePathName)
     if (m_IPicture != NULL)
         FreePictureData(); // Important - Avoid Leaks...
 
-    if (PictureFile.Open(sFilePathName, CFile::modeRead | CFile::typeBinary, &e)) {
+    if (PictureFile.Open(sFilePathName, CFile::modeRead | CFile::typeBinary, &e))
+    {
 
         // Prevent C4244 warning and take some predictions for unwanted truncations
         // nSize = PictureFile.GetLength();        -> Cause C4244 warning
         ULONGLONG tmpUlongSize = PictureFile.GetLength();
-        if ( tmpUlongSize != static_cast<int>(tmpUlongSize) ) {
-            TRACE("Error: nSize, Casted value [%i] is not the same as uncasted [%l] ..!\n", static_cast<int>(tmpUlongSize),tmpUlongSize);
+        if (tmpUlongSize != static_cast<int>(tmpUlongSize))
+        {
+            TRACE("Error: nSize, Casted value [%i] is not the same as uncasted [%l] ..!\n",
+                  static_cast<int>(tmpUlongSize), tmpUlongSize);
         }
-        // Now assigned tested casted value to dest value (Functional nothing is changed but we have a marker in the tracelog if truncated)
-        nSize = static_cast<int>(tmpUlongSize);            
+        // Now assigned tested casted value to dest value (Functional nothing is changed but we have a marker in the
+        // tracelog if truncated)
+        nSize = static_cast<int>(tmpUlongSize);
 
-        BYTE* pBuffer = new BYTE[nSize];
+        BYTE *pBuffer = new BYTE[nSize];
 
-        if (PictureFile.Read(pBuffer, nSize) > 0) {
-            if (LoadPictureData(pBuffer, nSize)) bResult = TRUE;
+        if (PictureFile.Read(pBuffer, nSize) > 0)
+        {
+            if (LoadPictureData(pBuffer, nSize))
+                bResult = TRUE;
         }
 
         PictureFile.Close();
-        delete [] pBuffer;
-    } else {
+        delete[] pBuffer;
+    }
+    else
+    {
         // Open Failed...
         TCHAR szCause[255];
         e.GetErrorMessage(szCause, 255, NULL);
@@ -261,20 +276,23 @@ BOOL CPicture::Load(CString sFilePathName)
     m_Weight = nSize; // Update Picture Size Info...
 
     // Do Not Try To Read From Memory That Is Not Exist...
-    if (m_IPicture != NULL) {
+    if (m_IPicture != NULL)
+    {
         m_IPicture->get_Height(&m_Height);
         m_IPicture->get_Width(&m_Width);
         // Calculate Its Size On a "Standard" (96 DPI) Device Context
         m_Height = MulDiv(m_Height, 96, HIMETRIC_INCH);
         m_Width = MulDiv(m_Width, 96, HIMETRIC_INCH);
-    } else {
+    }
+    else
+    {
         // Picture Data Is Not a Known Picture Type
         m_Height = 0;
         m_Width = 0;
         bResult = FALSE;
     }
 
-    return(bResult);
+    return (bResult);
 }
 
 //-----------------------------------------------------------------------------
@@ -295,25 +313,31 @@ BOOL CPicture::LoadPictureData(BYTE *pBuffer, int nSize)
 
     HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE, nSize);
 
-    if (hGlobal == NULL) {
+    if (hGlobal == NULL)
+    {
         HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
         MessageBoxEx(hWnd, TEXT("Can not allocate enough memory\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
-        return(FALSE);
+        return (FALSE);
     }
 
-    void* pData = GlobalLock(hGlobal);
+    void *pData = GlobalLock(hGlobal);
     memcpy(pData, pBuffer, nSize);
     GlobalUnlock(hGlobal);
 
-    IStream* pStream = NULL;
+    IStream *pStream = NULL;
 
-    if (CreateStreamOnHGlobal(hGlobal, TRUE, &pStream) == S_OK) {
+    if (CreateStreamOnHGlobal(hGlobal, TRUE, &pStream) == S_OK)
+    {
         HRESULT hr;
-        if ((hr = OleLoadPicture(pStream, nSize, FALSE, IID_IPicture, (LPVOID *)&m_IPicture)) == E_NOINTERFACE) {
+        if ((hr = OleLoadPicture(pStream, nSize, FALSE, IID_IPicture, (LPVOID *)&m_IPicture)) == E_NOINTERFACE)
+        {
             HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
-            MessageBoxEx(hWnd, TEXT("IPicture interface is not supported\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
-            return(FALSE);
-        } else {
+            MessageBoxEx(hWnd, TEXT("IPicture interface is not supported\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP,
+                         LANG_ENGLISH);
+            return (FALSE);
+        }
+        else
+        {
             // S_OK
             pStream->Release();
             pStream = NULL;
@@ -323,7 +347,7 @@ BOOL CPicture::LoadPictureData(BYTE *pBuffer, int nSize)
 
     FreeResource(hGlobal); // 16Bit Windows Needs This (32Bit - Automatic Release)
 
-    return(bResult);
+    return (bResult);
 }
 
 //-----------------------------------------------------------------------------
@@ -350,22 +374,14 @@ BOOL CPicture::Show(CDC *pDC, CRect DrawRect)
     m_IPicture->get_Width(&Width);
     m_IPicture->get_Height(&Height);
 
-    HRESULT hrP = m_IPicture->Render(pDC->m_hDC
-        , DrawRect.left
-        , DrawRect.top
-        , DrawRect.right - DrawRect.left
-        , DrawRect.bottom - DrawRect.top
-        , 0
-        , Height
-        , Width
-        , -Height
-        , &DrawRect);
+    HRESULT hrP = m_IPicture->Render(pDC->m_hDC, DrawRect.left, DrawRect.top, DrawRect.right - DrawRect.left,
+                                     DrawRect.bottom - DrawRect.top, 0, Height, Width, -Height, &DrawRect);
     if (SUCCEEDED(hrP))
-        return(TRUE);
+        return (TRUE);
 
     HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
     MessageBoxEx(hWnd, TEXT("Can not allocate enough memory\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
-    return(FALSE);
+    return (FALSE);
 }
 
 //-----------------------------------------------------------------------------
@@ -399,27 +415,19 @@ BOOL CPicture::Show(CDC *pDC, CPoint LeftTop, CPoint WidthHeight, int MagnifyX, 
     if (MagnifyY == NULL)
         MagnifyY = 0;
     MagnifyX = int(MulDiv(Width, pDC->GetDeviceCaps(LOGPIXELSX), HIMETRIC_INCH) * MagnifyX);
-    MagnifyY = int(MulDiv(Height,pDC->GetDeviceCaps(LOGPIXELSY), HIMETRIC_INCH) * MagnifyY);
+    MagnifyY = int(MulDiv(Height, pDC->GetDeviceCaps(LOGPIXELSY), HIMETRIC_INCH) * MagnifyY);
 
     CRect DrawRect(LeftTop.x, LeftTop.y, MagnifyX, MagnifyY);
 
-    HRESULT hrP = m_IPicture->Render(pDC->m_hDC
-        , LeftTop.x
-        , LeftTop.y
-        , WidthHeight.x + MagnifyX
-        , WidthHeight.y + MagnifyY
-        , 0
-        , Height
-        , Width
-        , -Height
-        , &DrawRect);
+    HRESULT hrP = m_IPicture->Render(pDC->m_hDC, LeftTop.x, LeftTop.y, WidthHeight.x + MagnifyX,
+                                     WidthHeight.y + MagnifyY, 0, Height, Width, -Height, &DrawRect);
 
     if (SUCCEEDED(hrP))
-        return(TRUE);
+        return (TRUE);
 
     HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
     MessageBoxEx(hWnd, TEXT("Can not allocate enough memory\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
-    return(FALSE);
+    return (FALSE);
 }
 
 //-----------------------------------------------------------------------------
@@ -443,14 +451,16 @@ BOOL CPicture::SaveAsBitmap(CString sFilePathName)
     STATSTG BytesStatistics;
     DWORD OutData = 0;
     long OutStream = 0L;
-    CFile BitmapFile; CFileException e;
+    CFile BitmapFile;
+    CFileException e;
     double SkipFloat = 0;
     DWORD ByteSkip = 0;
     _ULARGE_INTEGER RealData;
 
     CreateILockBytesOnHGlobal(NULL, TRUE, &Buffer); // Create ILockBytes Buffer
 
-    HRESULT hr = ::StgCreateDocfileOnILockBytes(Buffer, STGM_SHARE_EXCLUSIVE | STGM_CREATE | STGM_READWRITE, 0, &pStorage);
+    HRESULT hr =
+        ::StgCreateDocfileOnILockBytes(Buffer, STGM_SHARE_EXCLUSIVE | STGM_CREATE | STGM_READWRITE, 0, &pStorage);
     hr = pStorage->CreateStream(L"PICTURE", STGM_SHARE_EXCLUSIVE | STGM_CREATE | STGM_READWRITE, 0, 0, &FileStream);
 
     m_IPicture->SaveAsFile(FileStream, TRUE, &OutStream); // Copy Data Stream
@@ -476,8 +486,9 @@ BOOL CPicture::SaveAsBitmap(CString sFilePathName)
     RealData.LowPart = 0;
     RealData.HighPart = 0;
     RealData.QuadPart = ByteSkip;
-    BufferBytes = (BYTE*)malloc(OutStream);
-    if (BufferBytes == NULL) {
+    BufferBytes = (BYTE *)malloc(OutStream);
+    if (BufferBytes == NULL)
+    {
         Buffer->Release();
         HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
         MessageBoxEx(hWnd, TEXT("Can not allocate enough memory\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
@@ -485,11 +496,14 @@ BOOL CPicture::SaveAsBitmap(CString sFilePathName)
 
     Buffer->ReadAt(RealData, BufferBytes, OutStream, &OutData);
 
-    if (BitmapFile.Open(sFilePathName, CFile::typeBinary | CFile::modeCreate | CFile::modeWrite, &e)) {
+    if (BitmapFile.Open(sFilePathName, CFile::typeBinary | CFile::modeCreate | CFile::modeWrite, &e))
+    {
         BitmapFile.Write(BufferBytes, OutData);
         BitmapFile.Close();
         bResult = TRUE;
-    } else {
+    }
+    else
+    {
         // Write File Failed...
         TCHAR szCause[255];
         e.GetErrorMessage(szCause, 255, NULL);
@@ -501,7 +515,7 @@ BOOL CPicture::SaveAsBitmap(CString sFilePathName)
     Buffer->Release();
     free(BufferBytes);
 
-    return(bResult);
+    return (bResult);
 }
 
 //-----------------------------------------------------------------------------
@@ -524,10 +538,11 @@ BOOL CPicture::SaveAsBitmap(CString sFilePathName)
 BOOL CPicture::ShowBitmapResource(CDC *pDC, const int BMPResource, CPoint LeftTop)
 {
     if (pDC == NULL)
-        return(FALSE);
+        return (FALSE);
 
     CBitmap BMP;
-    if (BMP.LoadBitmap(BMPResource)) {
+    if (BMP.LoadBitmap(BMPResource))
+    {
         // Get Bitmap Details
         BITMAP BMPInfo;
         BMP.GetBitmap(&BMPInfo);
@@ -537,18 +552,20 @@ BOOL CPicture::ShowBitmapResource(CDC *pDC, const int BMPResource, CPoint LeftTo
         DCMemory.CreateCompatibleDC(pDC);
 
         // Select The Bitmap Into The In-Memory DC
-        CBitmap* pOldBitmap = DCMemory.SelectObject(&BMP);
+        CBitmap *pOldBitmap = DCMemory.SelectObject(&BMP);
 
         // Copy Bits From The In-Memory DC Into The On-Screen DC
         pDC->BitBlt(LeftTop.x, LeftTop.y, BMPInfo.bmWidth, BMPInfo.bmHeight, &DCMemory, 0, 0, SRCCOPY);
 
         DCMemory.SelectObject(pOldBitmap); // (As Shown In MSDN Example...)
-    } else {
+    }
+    else
+    {
         TRACE("ERROR: Can Not Find The Bitmap Resource\n");
-        return(FALSE);
+        return (FALSE);
     }
 
-    return(TRUE);
+    return (TRUE);
 }
 
 //-----------------------------------------------------------------------------
@@ -571,7 +588,7 @@ BOOL CPicture::UpdateSizeOnDC(CDC *pDC)
     {
         m_Height = 0;
         m_Width = 0;
-        return(FALSE);
+        return (FALSE);
     };
 
     m_IPicture->get_Height(&m_Height);
@@ -582,7 +599,8 @@ BOOL CPicture::UpdateSizeOnDC(CDC *pDC)
     int CurrentDPI_Y = pDC->GetDeviceCaps(LOGPIXELSY);
 
     // Use a "Standard" Print (When Printing)
-    if (pDC->IsPrinting()) {
+    if (pDC->IsPrinting())
+    {
         CurrentDPI_X = 96;
         CurrentDPI_Y = 96;
     }
@@ -590,14 +608,14 @@ BOOL CPicture::UpdateSizeOnDC(CDC *pDC)
     m_Height = MulDiv(m_Height, CurrentDPI_Y, HIMETRIC_INCH);
     m_Width = MulDiv(m_Width, CurrentDPI_X, HIMETRIC_INCH);
 
-    return(TRUE);
+    return (TRUE);
 }
 
 //=============================================================================
-BOOL CPicture::CopyToPicture(CPicture* dstPic,CString exchangeFile)
+BOOL CPicture::CopyToPicture(CPicture *dstPic, CString exchangeFile)
 {
 
-    if (m_IPicture==NULL)
+    if (m_IPicture == NULL)
         return TRUE;
 
     if (!SaveAsBitmap(exchangeFile))
@@ -622,7 +640,8 @@ BOOL CPicture::CopyToPicture(CPicture* dstPic,CString exchangeFile)
 
     m_IPicture->SaveAsFile(FileStream, TRUE, &OutStream); // Copy Data Stream
 
-    if ((hr = OleLoadPicture(FileStream, OutStream, FALSE, IID_IPicture, (LPVOID *)&dstPic->m_IPicture)) == E_NOINTERFACE)
+    if ((hr = OleLoadPicture(FileStream, OutStream, FALSE, IID_IPicture, (LPVOID *)&dstPic->m_IPicture)) ==
+    E_NOINTERFACE)
     {
     HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
     MessageBoxEx(hWnd, "IPicture interface is not supported\t", ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
@@ -638,22 +657,23 @@ BOOL CPicture::CopyToPicture(CPicture* dstPic,CString exchangeFile)
     Buffer->Flush();
     */
 
-    return(TRUE);
+    return (TRUE);
 }
 
 //=============================================================================
-BOOL CPicture::SaveToFile(FILE* fptr)
+BOOL CPicture::SaveToFile(FILE *fptr)
 {
     DWORD sizefile = 0;
     if (fptr == NULL)
         return FALSE;
 
-    if (m_IPicture==NULL) {
-        fwrite( (void *) &sizefile, sizeof(DWORD), 1, fptr );
+    if (m_IPicture == NULL)
+    {
+        fwrite((void *)&sizefile, sizeof(DWORD), 1, fptr);
         return TRUE;
     }
 
-    //BOOL bResult = FALSE;
+    // BOOL bResult = FALSE;
     ILockBytes *Buffer = 0;
     IStorage *pStorage = 0;
     IStream *FileStream = 0;
@@ -661,14 +681,16 @@ BOOL CPicture::SaveToFile(FILE* fptr)
     STATSTG BytesStatistics;
     DWORD OutData;
     long OutStream;
-    CFile BitmapFile; CFileException e;
+    CFile BitmapFile;
+    CFileException e;
     double SkipFloat = 0;
     DWORD ByteSkip = 0;
     _ULARGE_INTEGER RealData;
 
     CreateILockBytesOnHGlobal(NULL, TRUE, &Buffer); // Create ILockBytes Buffer
 
-    HRESULT hr = ::StgCreateDocfileOnILockBytes(Buffer, STGM_SHARE_EXCLUSIVE | STGM_CREATE | STGM_READWRITE, 0, &pStorage);
+    HRESULT hr =
+        ::StgCreateDocfileOnILockBytes(Buffer, STGM_SHARE_EXCLUSIVE | STGM_CREATE | STGM_READWRITE, 0, &pStorage);
     hr = pStorage->CreateStream(L"PICTURE", STGM_SHARE_EXCLUSIVE | STGM_CREATE | STGM_READWRITE, 0, 0, &FileStream);
 
     m_IPicture->SaveAsFile(FileStream, TRUE, &OutStream); // Copy Data Stream
@@ -694,8 +716,9 @@ BOOL CPicture::SaveToFile(FILE* fptr)
     RealData.LowPart = 0;
     RealData.HighPart = 0;
     RealData.QuadPart = ByteSkip;
-    BufferBytes = (BYTE*)malloc(OutStream);
-    if (BufferBytes == NULL) {
+    BufferBytes = (BYTE *)malloc(OutStream);
+    if (BufferBytes == NULL)
+    {
         Buffer->Release();
         HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
         MessageBoxEx(hWnd, TEXT("Can not allocate enough memory\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
@@ -703,14 +726,16 @@ BOOL CPicture::SaveToFile(FILE* fptr)
 
     Buffer->ReadAt(RealData, BufferBytes, OutStream, &OutData);
 
-    size_t written = fwrite( (void *) &OutData, sizeof(DWORD), 1, fptr );
-    if (written<1) {
+    size_t written = fwrite((void *)&OutData, sizeof(DWORD), 1, fptr);
+    if (written < 1)
+    {
         MessageBoxEx(NULL, TEXT("Unable to write image size\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
         return FALSE;
     }
 
-    written = fwrite( (void *) BufferBytes, OutData, 1, fptr );
-    if (written<1) {
+    written = fwrite((void *)BufferBytes, OutData, 1, fptr);
+    if (written < 1)
+    {
         MessageBoxEx(NULL, TEXT("Unable to write image\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
         return FALSE;
     }
@@ -723,16 +748,17 @@ BOOL CPicture::SaveToFile(FILE* fptr)
 }
 
 //=============================================================================
-BOOL CPicture::LoadFromFile(FILE* fptr)
+BOOL CPicture::LoadFromFile(FILE *fptr)
 {
     DWORD OutData;
-    BYTE* BufferBytes = NULL;
+    BYTE *BufferBytes = NULL;
 
     if (m_IPicture != NULL)
         FreePictureData(); // Important - Avoid Leaks...
 
-    size_t readcount = fread( (void *) &OutData, sizeof(DWORD), 1, fptr );
-    if (readcount<1) {
+    size_t readcount = fread((void *)&OutData, sizeof(DWORD), 1, fptr);
+    if (readcount < 1)
+    {
         MessageBoxEx(NULL, TEXT("Unable to read image size\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
         return FALSE;
     }
@@ -740,9 +766,10 @@ BOOL CPicture::LoadFromFile(FILE* fptr)
     if (OutData <= 0)
         return TRUE;
 
-    BufferBytes = (BYTE *) malloc(OutData+1);
-    readcount = fread( (void *) BufferBytes, OutData, 1, fptr );
-    if (readcount<1) {
+    BufferBytes = (BYTE *)malloc(OutData + 1);
+    readcount = fread((void *)BufferBytes, OutData, 1, fptr);
+    if (readcount < 1)
+    {
         MessageBoxEx(NULL, TEXT("Unable to read image\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
         free(BufferBytes);
         return FALSE;
@@ -751,13 +778,16 @@ BOOL CPicture::LoadFromFile(FILE* fptr)
     BOOL bResult = FALSE;
     CFileException e;
 
-    if (LoadPictureData(BufferBytes, OutData)) {
+    if (LoadPictureData(BufferBytes, OutData))
+    {
         bResult = TRUE;
-    } else {
+    }
+    else
+    {
         // Open Failed...
         TCHAR szCause[255];
         e.GetErrorMessage(szCause, 255, NULL);
-        //HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
+        // HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
         MessageBoxEx(NULL, szCause, ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
         bResult = FALSE;
     }
@@ -768,18 +798,21 @@ BOOL CPicture::LoadFromFile(FILE* fptr)
     m_Weight = OutData; // Update Picture Size Info...
 
     // Do Not Try To Read From Memory That Is Not Exist...
-    if (m_IPicture != NULL) {
+    if (m_IPicture != NULL)
+    {
         m_IPicture->get_Height(&m_Height);
         m_IPicture->get_Width(&m_Width);
         // Calculate Its Size On a "Standard" (96 DPI) Device Context
         m_Height = MulDiv(m_Height, 96, HIMETRIC_INCH);
         m_Width = MulDiv(m_Width, 96, HIMETRIC_INCH);
-    } else {
+    }
+    else
+    {
         // Picture Data Is Not a Known Picture Type
         m_Height = 0;
         m_Width = 0;
         bResult = FALSE;
     }
 
-    return(bResult);
+    return (bResult);
 }

@@ -26,7 +26,7 @@ int matchSpecial(int keyCtrl, int keyShift, int keyAlt, int ctrlDown, int shiftD
     if ((!keyAlt) && (altDown))
         ret = 0;
 
-    //if ((keyCtrl) && (ctrlDown)) {
+    // if ((keyCtrl) && (ctrlDown)) {
     //    if ((keyShift) && (shiftDown)) {
     //        if ((keyAlt) && (altDown)) {
     //        } else if ((!keyAlt) && (!altDown)) {
@@ -65,14 +65,13 @@ int matchSpecial(int keyCtrl, int keyShift, int keyAlt, int ctrlDown, int shiftD
     return ret;
 }
 
-//Round positive numbers
+// Round positive numbers
 long rounddouble(double dVal)
 {
-    long num = (long) dVal;
-    double diff = dVal - (double) num;
+    long num = (long)dVal;
+    double diff = dVal - (double)num;
     if (0.5 <= diff)
         num++;
 
     return num;
 }
-

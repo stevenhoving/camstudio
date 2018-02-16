@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "NewShape.h"
-#include "MainFrm.h"            // for maxxScreen, maxyScreen
+#include "MainFrm.h" // for maxxScreen, maxyScreen
 #include "CStudioLib.h"
 
 #ifdef _DEBUG
@@ -25,23 +25,23 @@ CString shapeStr;
 
 CString proposedShapeStr;
 
-extern void AdjustShapeName(CString& shapeName);
+extern void AdjustShapeName(CString &shapeName);
 
 /////////////////////////////////////////////////////////////////////////////
 // CNewShapeDlg dialog
 
-CNewShapeDlg::CNewShapeDlg(CWnd* pParent /*=NULL*/)
-: CDialog(CNewShapeDlg::IDD, pParent)
-, m_imageDir(GetMyVideoPath())
-, m_uImageWidth(iNewShapeWidth)
-, m_uImageHeight(iNewShapeHeight)
+CNewShapeDlg::CNewShapeDlg(CWnd *pParent /*=NULL*/)
+    : CDialog(CNewShapeDlg::IDD, pParent)
+    , m_imageDir(GetMyVideoPath())
+    , m_uImageWidth(iNewShapeWidth)
+    , m_uImageHeight(iNewShapeHeight)
 {
     //{{AFX_DATA_INIT(CNewShapeDlg)
     // NOTE: the ClassWizard will add member initialization here
     //}}AFX_DATA_INIT
 }
 
-void CNewShapeDlg::DoDataExchange(CDataExchange* pDX)
+void CNewShapeDlg::DoDataExchange(CDataExchange *pDX)
 {
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CNewShapeDlg)
@@ -59,16 +59,16 @@ void CNewShapeDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_EDIT3, m_ctrlEditShaepText);
     DDX_Text(pDX, IDC_WIDTH, m_uImageWidth);
     DDX_Text(pDX, IDC_HEIGHT, m_uImageHeight);
-    DDV_MinMaxUInt(pDX, m_uImageWidth, 20, maxxScreen-1);
-    DDV_MinMaxUInt(pDX, m_uImageHeight, 20, maxyScreen-1);
+    DDV_MinMaxUInt(pDX, m_uImageWidth, 20, maxxScreen - 1);
+    DDV_MinMaxUInt(pDX, m_uImageHeight, 20, maxyScreen - 1);
 }
 
 BEGIN_MESSAGE_MAP(CNewShapeDlg, CDialog)
-    //{{AFX_MSG_MAP(CNewShapeDlg)
-    ON_BN_CLICKED(IDC_RADIO1, OnClickBlankImage)
-    ON_BN_CLICKED(IDC_RADIO2, OnClickImageFile)
-    ON_BN_CLICKED(IDC_BUTTON1, OnFindImageFile)
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CNewShapeDlg)
+ON_BN_CLICKED(IDC_RADIO1, OnClickBlankImage)
+ON_BN_CLICKED(IDC_RADIO2, OnClickImageFile)
+ON_BN_CLICKED(IDC_BUTTON1, OnFindImageFile)
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -90,11 +90,11 @@ BOOL CNewShapeDlg::OnInitDialog()
     proposedShapeStr = shapeStr;
 
     // TODO: Add extra initialization here
-    HICON loadFileIcon= LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(IDI_ICON1));
+    HICON loadFileIcon = LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_ICON1));
     m_ctrlButtonImageFile.SetIcon(loadFileIcon);
 
     m_ctrlButtoBlankImage.SetCheck((0 == iImageType) ? BST_CHECKED : BST_UNCHECKED);
-    //m_ctrlButtoImageFile.SetCheck((0 == iImageType) ? BST_UNCHECKED : BST_CHECKED);    // redundant
+    // m_ctrlButtoImageFile.SetCheck((0 == iImageType) ? BST_UNCHECKED : BST_CHECKED);    // redundant
 
     m_ctrlStaticWidth.EnableWindow((0 == iImageType));
     m_ctrlStaticHeight.EnableWindow((0 == iImageType));
@@ -112,8 +112,8 @@ BOOL CNewShapeDlg::OnInitDialog()
 
 void CNewShapeDlg::OnClickBlankImage()
 {
-    //m_ctrlButtoBlankImage.SetCheck(BST_CHECKED);    // redundant
-    //m_ctrlButtoImageFile.SetCheck(BST_UNCHECKED);    // redundant
+    // m_ctrlButtoBlankImage.SetCheck(BST_CHECKED);    // redundant
+    // m_ctrlButtoImageFile.SetCheck(BST_UNCHECKED);    // redundant
 
     m_ctrlStaticWidth.EnableWindow(TRUE);
     m_ctrlStaticHeight.EnableWindow(TRUE);
@@ -142,35 +142,40 @@ void CNewShapeDlg::OnOK()
 
     int val = m_ctrlButtoBlankImage.GetCheck();
     iImageType = (val) ? 0 : 1;
-    if (!iImageType) {
+    if (!iImageType)
+    {
         UpdateData();
         iNewShapeWidth = m_uImageWidth;
         iNewShapeHeight = m_uImageHeight;
 
         // TODO: numeric validation should be redundant due to DDV macros
-        if (iNewShapeWidth < 20) {
-            MessageOut(NULL,IDS_STRINGWIDTHLESS20,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+        if (iNewShapeWidth < 20)
+        {
+            MessageOut(NULL, IDS_STRINGWIDTHLESS20, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             iNewShapeWidth = oldWidth;
             return;
         }
 
-        if (maxxScreen < iNewShapeWidth) {
+        if (maxxScreen < iNewShapeWidth)
+        {
             // "Width cannot be larger than maxxScreen"
-            MessageOut(NULL,IDS_STRINGWIDTHLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, maxxScreen);
+            MessageOut(NULL, IDS_STRINGWIDTHLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, maxxScreen);
             iNewShapeWidth = oldWidth;
             return;
         }
 
-        if (iNewShapeHeight < 20) {
+        if (iNewShapeHeight < 20)
+        {
             // "Height cannot be less than 20"
-            MessageOut(NULL,IDS_STRINGHEIGHTLESS20,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(NULL, IDS_STRINGHEIGHTLESS20, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             iNewShapeHeight = oldHeight;
             return;
         }
 
-        if (maxyScreen < iNewShapeHeight) {
+        if (maxyScreen < iNewShapeHeight)
+        {
             // "Height cannot be larger than maxyScreen
-            MessageOut(NULL,IDS_STRINGHEIGHTLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,maxyScreen);
+            MessageOut(NULL, IDS_STRINGHEIGHTLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, maxyScreen);
             iNewShapeHeight = oldHeight;
             return;
         }
@@ -179,9 +184,11 @@ void CNewShapeDlg::OnOK()
     m_ctrlTextFileText.GetWindowText(strImageFilename);
     strImageFilename.TrimLeft();
     strImageFilename.TrimRight();
-    if (1 == iImageType) {
-        if (strImageFilename == "") {
-            MessageOut(NULL,IDS_STRINGINVIMGFILE,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+    if (1 == iImageType)
+    {
+        if (strImageFilename == "")
+        {
+            MessageOut(NULL, IDS_STRINGINVIMGFILE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             return;
         }
     }
@@ -189,18 +196,19 @@ void CNewShapeDlg::OnOK()
     m_ctrlEditShaepText.GetWindowText(strNewShapeText);
     m_ctrlEditName.GetWindowText(shapeStr);
 
-    if (proposedShapeStr != shapeStr) {
-        //shape name has been changed, reset counter to 1
+    if (proposedShapeStr != shapeStr)
+    {
+        // shape name has been changed, reset counter to 1
         shapeName = shapeStr;
 
-        //a better method is to extract the trailing number from shapestr and use it as number for iShapeNameInt
-        //iShapeNameInt = 1;
+        // a better method is to extract the trailing number from shapestr and use it as number for iShapeNameInt
+        // iShapeNameInt = 1;
         AdjustShapeName(shapeName);
-    } else {
+    }
+    else
+    {
         // do not exceed range.
-        iShapeNameInt = (iShapeNameInt < (INT_MAX - 1))
-            ? iShapeNameInt++
-            : 1;
+        iShapeNameInt = (iShapeNameInt < (INT_MAX - 1)) ? iShapeNameInt++ : 1;
     }
 
     CDialog::OnOK();
@@ -208,10 +216,10 @@ void CNewShapeDlg::OnOK()
 
 void CNewShapeDlg::OnFindImageFile()
 {
-    const TCHAR * const pszTitle = _T("Load Picture");
-    const TCHAR * const pszDefExt = _T("*.bmp; *.jpg; *.gif");
-    const TCHAR * const pszFileName = _T("*.bmp; *.jpg; *.gif");
-    const TCHAR * const pszFilter = _T("Picture Files (*.bmp; *.jpg; *.gif)|*.bmp; *.jpg; *.gif||");
+    const TCHAR *const pszTitle = _T("Load Picture");
+    const TCHAR *const pszDefExt = _T("*.bmp; *.jpg; *.gif");
+    const TCHAR *const pszFileName = _T("*.bmp; *.jpg; *.gif");
+    const TCHAR *const pszFilter = _T("Picture Files (*.bmp; *.jpg; *.gif)|*.bmp; *.jpg; *.gif||");
     CFileDialog fdlg(TRUE, pszDefExt, pszFileName, OFN_LONGNAMES | OFN_FILEMUSTEXIST, pszFilter, this);
     fdlg.m_ofn.lpstrTitle = pszTitle;
     fdlg.m_ofn.lpstrInitialDir = m_imageDir;

@@ -29,22 +29,23 @@
 #include "resource.h"
 
 // Globals
-int defaultWidth = 800;            // Default width of the player window
-int defaultHeight = 600;        // Default height of the player window
-int miminumVfwVersion = 266;    // Minimum version of Video for Windows required by CSCP (266 = v1.1)
-BOOL bIsOpenMovie = FALSE;        // Whether a movie is open
-HWND hWndMCI;                    // Movie window handle
-HMENU hMenuBar = NULL;            // Menu bar handle
-HINSTANCE m_hInstance = NULL;    // Instance of the player
-char playfiledir[300];            // File that is currently being played
+int defaultWidth = 800;       // Default width of the player window
+int defaultHeight = 600;      // Default height of the player window
+int miminumVfwVersion = 266;  // Minimum version of Video for Windows required by CSCP (266 = v1.1)
+BOOL bIsOpenMovie = FALSE;    // Whether a movie is open
+HWND hWndMCI;                 // Movie window handle
+HMENU hMenuBar = NULL;        // Menu bar handle
+HINSTANCE m_hInstance = NULL; // Instance of the player
+char playfiledir[300];        // File that is currently being played
 
 /*
  * Initialize stuff.
  */
 HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
 {
-    // Window must be created with this title for the menu to initialize properly; use szAppName for the actual app title.
-    // This is due to the menu in the resources having the ID "PLAYER". If you are changing one of these values, make sure to change both to the same thing.
+    // Window must be created with this title for the menu to initialize properly; use szAppName for the actual app
+    // title. This is due to the menu in the resources having the ID "PLAYER". If you are changing one of these values,
+    // make sure to change both to the same thing.
     static char szAppNameInitial[] = "PLAYER";
 
     // First let's make sure we are running on 1.1
@@ -77,11 +78,13 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
         }
     }
 
-    int iWinHeight = GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYMENU) +    (GetSystemMetrics(SM_CYFRAME) * 2) + defaultHeight;
+    int iWinHeight = GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYMENU) + (GetSystemMetrics(SM_CYFRAME) * 2) +
+                     defaultHeight;
 
     // Create the main window for the application
     POINT location = GetCenterCoords(defaultWidth, defaultHeight);
-    HWND hWnd = CreateWindow(szAppNameInitial, szAppNameInitial, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, location.x, location.y, defaultWidth, iWinHeight, NULL, NULL, hInstance, NULL);
+    HWND hWnd = CreateWindow(szAppNameInitial, szAppNameInitial, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, location.x,
+                             location.y, defaultWidth, iWinHeight, NULL, NULL, hInstance, NULL);
 
     if (hWnd == NULL)
     {
@@ -90,15 +93,17 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
     }
 
     hMenuBar = GetMenu(hWnd); // Get the menu bar handle
-    UpdateMenubar(hWnd); // Update menu bar to disable Movie menu
-    UpdateTitle(hWnd, NULL); // Update title to show correct title
+    UpdateMenubar(hWnd);      // Update menu bar to disable Movie menu
+    UpdateTitle(hWnd, NULL);  // Update title to show correct title
 
     // Show the main window
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
 
     // Create the movie window using MCIWnd that has no file open initially
-    hWndMCI = MCIWndCreate(hWnd, hInstance, WS_CHILD | WS_VISIBLE | MCIWNDF_NOOPEN | MCIWNDF_NOERRORDLG | MCIWNDF_NOTIFYSIZE | MCIWNDF_SHOWMODE, NULL);
+    hWndMCI = MCIWndCreate(
+        hWnd, hInstance,
+        WS_CHILD | WS_VISIBLE | MCIWNDF_NOOPEN | MCIWNDF_NOERRORDLG | MCIWNDF_NOTIFYSIZE | MCIWNDF_SHOWMODE, NULL);
 
     if (!hWndMCI)
     {
@@ -126,7 +131,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
 
     m_hInstance = hInstance;
 
-    if ((hWnd = InitWindows(hInstance, hPrevInstance,nCmdShow)) == NULL)
+    if ((hWnd = InitWindows(hInstance, hPrevInstance, nCmdShow)) == NULL)
     {
         return 0; // Died initializing, bail out
     }
@@ -204,7 +209,7 @@ long FAR PASCAL WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     break;
                 case IDM_CLOSE:
                     bIsOpenMovie = FALSE;
-                    MCIWndClose(hWndMCI); // close the movie
+                    MCIWndClose(hWndMCI);         // close the movie
                     ShowWindow(hWndMCI, SW_HIDE); // hide the window
                     UpdateMenubar(hWnd);
                     UpdateTitle(hWnd, NULL); // title bar back to plain
@@ -246,15 +251,18 @@ long FAR PASCAL WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     GetWindowRect(hWndMCI, &rc);
                     AdjustWindowRect(&rc, GetWindowLong(hWnd, GWL_STYLE), TRUE);
                     POINT location = GetCenterCoords(rc.right - rc.left, rc.bottom - rc.top);
-                    SetWindowPos(hWnd, NULL, location.x, location.y, rc.right - rc.left, rc.bottom - rc.top, SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE);
+                    SetWindowPos(hWnd, NULL, location.x, location.y, rc.right - rc.left, rc.bottom - rc.top,
+                                 SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE);
                     MoveWindow(hWnd, location.x, location.y, rc.right - rc.left, rc.bottom - rc.top, true);
                 }
                 else
                 {
                     // Movie closed, adjust to the default size
-                    int iWinHeight = GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYMENU) + (GetSystemMetrics(SM_CYFRAME) * 2) + defaultHeight;
+                    int iWinHeight = GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYMENU) +
+                                     (GetSystemMetrics(SM_CYFRAME) * 2) + defaultHeight;
                     POINT location = GetCenterCoords(defaultWidth, iWinHeight);
-                    SetWindowPos(hWnd, NULL, location.x, location.y, defaultWidth, iWinHeight, SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE);
+                    SetWindowPos(hWnd, NULL, location.x, location.y, defaultWidth, iWinHeight,
+                                 SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE);
                     MoveWindow(hWnd, location.x, location.y, defaultWidth, iWinHeight, true);
                 }
             }
@@ -301,7 +309,7 @@ void UpdateMenubar(HWND hWnd)
  */
 void UpdateTitle(HWND hWnd, LPSTR lpstrMovie)
 {
-    char szAppName[BUFFER_LENGTH]; // space for the title
+    char szAppName[BUFFER_LENGTH];   // space for the title
     char achNewTitle[BUFFER_LENGTH]; // space for the title
     LoadString(m_hInstance, IDS_STRING_APPTITLE, szAppName, BUFFER_LENGTH);
 

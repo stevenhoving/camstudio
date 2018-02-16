@@ -16,17 +16,16 @@ static char THIS_FILE[] = __FILE__;
 // CEditTransparencyDlg dialog
 
 // The standard ctor is private and inaccessible by design
-CEditTransparencyDlg::CEditTransparencyDlg(CWnd* pParent /*=NULL*/)
-: CDialog(CEditTransparencyDlg::IDD, pParent)
-, m_rbEnableTrans(m_bEnableTransOld)
-, m_bEnableTransOld(false)
-, m_riLevel(m_iLevelOld)
-, m_iLevelOld(50)
+CEditTransparencyDlg::CEditTransparencyDlg(CWnd *pParent /*=NULL*/)
+    : CDialog(CEditTransparencyDlg::IDD, pParent)
+    , m_rbEnableTrans(m_bEnableTransOld)
+    , m_bEnableTransOld(false)
+    , m_riLevel(m_iLevelOld)
+    , m_iLevelOld(50)
 {
     //{{AFX_DATA_INIT(CEditTransparencyDlg)
     // NOTE: the ClassWizard will add member initialization here
     //}}AFX_DATA_INIT
-
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -37,17 +36,17 @@ CEditTransparencyDlg::CEditTransparencyDlg(CWnd* pParent /*=NULL*/)
 // done this would have been to pass the values in InvalidateTransparency
 // call.
 /////////////////////////////////////////////////////////////////////////////
-CEditTransparencyDlg::CEditTransparencyDlg(int& bEnable, int& iLevel, CTransparentWnd* pParent)
-: CDialog(CEditTransparencyDlg::IDD, pParent)
-, m_rbEnableTrans(bEnable)
-, m_bEnableTransOld(bEnable)
-, m_riLevel(iLevel)
-, m_iLevelOld(iLevel)
-, m_pTransparentWnd(pParent)
+CEditTransparencyDlg::CEditTransparencyDlg(int &bEnable, int &iLevel, CTransparentWnd *pParent)
+    : CDialog(CEditTransparencyDlg::IDD, pParent)
+    , m_rbEnableTrans(bEnable)
+    , m_bEnableTransOld(bEnable)
+    , m_riLevel(iLevel)
+    , m_iLevelOld(iLevel)
+    , m_pTransparentWnd(pParent)
 {
 }
 
-void CEditTransparencyDlg::DoDataExchange(CDataExchange* pDX)
+void CEditTransparencyDlg::DoDataExchange(CDataExchange *pDX)
 {
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CEditTransparencyDlg)
@@ -59,10 +58,10 @@ void CEditTransparencyDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CEditTransparencyDlg, CDialog)
-    //{{AFX_MSG_MAP(CEditTransparencyDlg)
-    ON_BN_CLICKED(IDC_CHECK1, OnCheck1)
-    ON_WM_HSCROLL()
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CEditTransparencyDlg)
+ON_BN_CLICKED(IDC_CHECK1, OnCheck1)
+ON_WM_HSCROLL()
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -77,7 +76,7 @@ void CEditTransparencyDlg::OnCheck1()
     m_pTransparentWnd->InvalidateTransparency();
 }
 
-void CEditTransparencyDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+void CEditTransparencyDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
 {
     // TODO: Add your message handler code here and/or call default
     m_riLevel = m_ctrlSliderTransparency.GetPos();

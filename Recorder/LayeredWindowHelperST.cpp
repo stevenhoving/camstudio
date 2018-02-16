@@ -3,7 +3,7 @@
 
 #ifdef _DEBUG
 #undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
+static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
 
@@ -16,7 +16,8 @@ CLayeredWindowHelperST::CLayeredWindowHelperST()
 CLayeredWindowHelperST::~CLayeredWindowHelperST()
 {
     // Unload DLL (if any)
-    if (m_hDll) ::FreeLibrary(m_hDll);
+    if (m_hDll)
+        ::FreeLibrary(m_hDll);
     m_hDll = NULL;
 }
 
@@ -75,7 +76,8 @@ BOOL CLayeredWindowHelperST::SetLayeredWindowAttributes(HWND hWnd, COLORREF crKe
         {
             bRetValue = pFn(hWnd, crKey, bAlpha, dwFlags);
         } // if
-        else bRetValue = FALSE;
+        else
+            bRetValue = FALSE;
     } // if
 
     return bRetValue;
@@ -98,7 +100,8 @@ BOOL CLayeredWindowHelperST::SetLayeredWindowAttributes(HWND hWnd, COLORREF crKe
 BOOL CLayeredWindowHelperST::SetTransparentPercentage(HWND hWnd, BYTE byPercentage)
 {
     // Do not accept values greater than 100%
-    if (byPercentage > 100) byPercentage = 100;
+    if (byPercentage > 100)
+        byPercentage = 100;
 
-    return SetLayeredWindowAttributes(hWnd, 0, 255 * byPercentage/100, LWA_ALPHA);
+    return SetLayeredWindowAttributes(hWnd, 0, 255 * byPercentage / 100, LWA_ALPHA);
 } // End of SetTransparentPercentage

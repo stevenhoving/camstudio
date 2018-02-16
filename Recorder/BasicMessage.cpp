@@ -9,7 +9,7 @@
 
 IMPLEMENT_DYNAMIC(CBasicMessage, CDialog)
 
-CBasicMessage::CBasicMessage(CWnd* pParent /*=NULL*/)
+CBasicMessage::CBasicMessage(CWnd *pParent /*=NULL*/)
     : CDialog(CBasicMessage::IDD, pParent)
     , m_bCancelled(false)
 {
@@ -19,14 +19,14 @@ CBasicMessage::~CBasicMessage()
 {
 }
 
-void CBasicMessage::DoDataExchange(CDataExchange* pDX)
+void CBasicMessage::DoDataExchange(CDataExchange *pDX)
 {
     CDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_MESSAGE, m_MessageText);
 }
 
 BEGIN_MESSAGE_MAP(CBasicMessage, CDialog)
-    ON_WM_SHOWWINDOW()
+ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
 
 // CBasicMessage message handlers
@@ -54,4 +54,3 @@ bool CBasicMessage::Cancelled()
 {
     return m_bCancelled;
 }
-

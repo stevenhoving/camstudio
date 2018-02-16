@@ -1,6 +1,7 @@
 // playplusView.cpp : implementation of the CPlayplusView class
 //
-//Warning : conversion of audio files does not delete the orginal and also possibly the converted file! So it is best to keep these files in temp directroy
+// Warning : conversion of audio files does not delete the orginal and also possibly the converted file! So it is best
+// to keep these files in temp directroy
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "playplus.h"
@@ -57,30 +58,30 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 // OBSOLETE: not referenced
-//CTransparentWnd transWnd;
-//int transCreated  = 0;
-//CProgressDlg progDlg;
-//int progressCreated  = 0;
+// CTransparentWnd transWnd;
+// int transCreated  = 0;
+// CProgressDlg progDlg;
+// int progressCreated  = 0;
 
 // Program Mode -- to be set at compile time
-#define PLAYER  0
-#define DUBBER  1
+#define PLAYER 0
+#define DUBBER 1
 int pmode = DUBBER;
-//int pmode = PLAYER;
+// int pmode = PLAYER;
 
-//Ver 1.0
-#define GlobalSizePtr(lp)   GlobalSize(GlobalPtrHandle(lp))
+// Ver 1.0
+#define GlobalSizePtr(lp) GlobalSize(GlobalPtrHandle(lp))
 #define LPPAVIFILE PAVIFILE *
-typedef BYTE * HPBYTE;
-typedef UNALIGNED short * HPSHORT;
+typedef BYTE *HPBYTE;
+typedef UNALIGNED short *HPSHORT;
 
 extern BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, BOOL fWait);
 extern void CALLBACK aviaudioMessage(HWND, UINT, WPARAM, LPARAM);
 extern void CALLBACK aviaudioStop(void);
 extern LONG CALLBACK aviaudioTime(void);
 
-BOOL CALLBACK DlgProc(HWND    hwnd,UINT    msg, WPARAM  wParam, LPARAM  lParam);
-static BOOL gfDefDlgEx = FALSE;         //the recursion flag for message crackers
+BOOL CALLBACK DlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+static BOOL gfDefDlgEx = FALSE; // the recursion flag for message crackers
 
 #define BUFSIZE 260
 static char gszBuffer[BUFSIZE];
@@ -89,78 +90,78 @@ static char gszFileName[BUFSIZE];
 static char gszSaveFileName[BUFSIZE];
 static char gszFileTitle[BUFSIZE];
 
-#define AVI_EDIT_CLASS  "edit"
+#define AVI_EDIT_CLASS "edit"
 static LPAVISTREAMINFO glpavisi;
 static int gnSel;
-int     gSelectedStream = -1;   // Highlight this text area when painting
-RECT    grcSelectedStream;      // where to highlight
+int gSelectedStream = -1; // Highlight this text area when painting
+RECT grcSelectedStream;   // where to highlight
 
-char    gszFilter[512];     // for AVIBuildFilter - more than one string!
-HINSTANCE   ghInstApp;
-static  HACCEL      ghAccel;
-static  WNDPROC     gOldEditProc;
-static  HWND        ghwndEdit;
+char gszFilter[512]; // for AVIBuildFilter - more than one string!
+HINSTANCE ghInstApp;
+static HACCEL ghAccel;
+static WNDPROC gOldEditProc;
+static HWND ghwndEdit;
 
-#define MAXTIMERANGE  30000
-#define MAXNUMSTREAMS   25
+#define MAXTIMERANGE 30000
+#define MAXNUMSTREAMS 25
 
-int                 gcpavi;                     // # of streams
-PAVISTREAM          gapavi[MAXNUMSTREAMS];      // the current streams
-int                 gcpaviSel;                  // num of edit streams
-PAVISTREAM          gapaviSel[MAXNUMSTREAMS];   // edit streams to put on clipbd
-int                 gStreamTop[MAXNUMSTREAMS+1];// y position of each stream
-AVICOMPRESSOPTIONS  gaAVIOptions[MAXNUMSTREAMS];// compression options
-LPAVICOMPRESSOPTIONS  galpAVIOptions[MAXNUMSTREAMS];
-PGETFRAME           gapgf[MAXNUMSTREAMS];       // data for decompressing video
-HDRAWDIB            ghdd[MAXNUMSTREAMS];        // drawdib handles
-LONG                galSelStart[MAXNUMSTREAMS];
-LONG                galSelLen[MAXNUMSTREAMS];
-int                 giFirstAudio = -1;          // 1st audio stream found
-int                 giFirstVideo = -1;          // 1st video stream found
+int gcpavi;                                     // # of streams
+PAVISTREAM gapavi[MAXNUMSTREAMS];               // the current streams
+int gcpaviSel;                                  // num of edit streams
+PAVISTREAM gapaviSel[MAXNUMSTREAMS];            // edit streams to put on clipbd
+int gStreamTop[MAXNUMSTREAMS + 1];              // y position of each stream
+AVICOMPRESSOPTIONS gaAVIOptions[MAXNUMSTREAMS]; // compression options
+LPAVICOMPRESSOPTIONS galpAVIOptions[MAXNUMSTREAMS];
+PGETFRAME gapgf[MAXNUMSTREAMS]; // data for decompressing video
+HDRAWDIB ghdd[MAXNUMSTREAMS];   // drawdib handles
+LONG galSelStart[MAXNUMSTREAMS];
+LONG galSelLen[MAXNUMSTREAMS];
+int giFirstAudio = -1; // 1st audio stream found
+int giFirstVideo = -1; // 1st video stream found
 
-#define             gfVideoFound (giFirstVideo >= 0)
-#define             gfAudioFound (giFirstAudio >= 0)
+#define gfVideoFound (giFirstVideo >= 0)
+#define gfAudioFound (giFirstAudio >= 0)
 
-BOOL                gfPlaying = FALSE;          // are we currently playing?
-LONG                glPlayStartTime;    // When did we start playing?
-LONG                glPlayStartPos;     // Where were we on the scrollbar?
-LONG                timeStart;          // cached start, end, length
-LONG                timeEnd;
-LONG                timeLength;
-LONG                timehscroll;        // how much arrows scroll HORZ bar
-int                 nVertSBLen;         // vertical scroll bar
-int                 nHorzSBLen;         // horizontal scroll bar
-int                 nVertHeight;
-int                 nHorzWidth;
-DWORD               gdwMicroSecPerPixel = 1000L;        // scale for video
-WORD                gwZoom = 4;         // one-half zoom (divide by 4)
-HWND                ghwndMCI;
+BOOL gfPlaying = FALSE; // are we currently playing?
+LONG glPlayStartTime;   // When did we start playing?
+LONG glPlayStartPos;    // Where were we on the scrollbar?
+LONG timeStart;         // cached start, end, length
+LONG timeEnd;
+LONG timeLength;
+LONG timehscroll; // how much arrows scroll HORZ bar
+int nVertSBLen;   // vertical scroll bar
+int nHorzSBLen;   // horizontal scroll bar
+int nVertHeight;
+int nHorzWidth;
+DWORD gdwMicroSecPerPixel = 1000L; // scale for video
+WORD gwZoom = 4;                   // one-half zoom (divide by 4)
+HWND ghwndMCI;
 
 // buffer for wave data
 LPVOID lpAudio;
 
 // constants for painting
-#define VSPACE  8       // some vertical spacing
+#define VSPACE 8       // some vertical spacing
 #define SELECTVSPACE 4 // height of selection line
-#define HSPACE  0       // space between frames for video stream
-#define TSPACE  10      // space for text area about each stream
-#define AUDIOVSPACE  64 // height of an audio stream at X1 zoom
-#define HIGHLIGHT       (GetSysColor(COLOR_HIGHLIGHT) ? GetSysColor(COLOR_HIGHLIGHT) : GetSysColor(COLOR_ACTIVECAPTION))
+#define HSPACE 0       // space between frames for video stream
+#define TSPACE 10      // space for text area about each stream
+#define AUDIOVSPACE 64 // height of an audio stream at X1 zoom
+#define HIGHLIGHT (GetSysColor(COLOR_HIGHLIGHT) ? GetSysColor(COLOR_HIGHLIGHT) : GetSysColor(COLOR_ACTIVECAPTION))
 
-void             FrameVideo(HDC hdc, RECT *rcFrame, HBRUSH hbr);
+void FrameVideo(HDC hdc, RECT *rcFrame, HBRUSH hbr);
 int gfWait = 0;
 
-//ver 1.1
-long playtime=0;
+// ver 1.1
+long playtime = 0;
 
 long GetScrollTime();
 void SetScrollTime(long time);
 
-//ver 1.1
+// ver 1.1
 #define WM_USER_PLAY 0x00401
-#define BUFFER_LENGTH  256
+#define BUFFER_LENGTH 256
 
-void GetImageDimension(RECT& rcFrame);
+void GetImageDimension(RECT &rcFrame);
 char playfiledir[300];
 char seps[] = "*";
 void OpenMovieFileInit(char *filename);
@@ -170,10 +171,10 @@ void SetTitleBar(CString title);
 BOOL playerAlive = TRUE;
 UINT PlayAVIThread(LPVOID pParam);
 
-#define MENU_OPEN           11
-#define MENU_MERGE          17
+#define MENU_OPEN 11
+#define MENU_MERGE 17
 
-int ErrMsg (LPSTR sz,...);
+int ErrMsg(LPSTR sz, ...);
 void FreeDrawStuff();
 void FileStop(int mode);
 void FixWindowTitle();
@@ -188,14 +189,14 @@ void StopPlayingRecording();
 int maxxScreen = 800;
 int maxyScreen = 600;
 
-int doneOnce=0;
+int doneOnce = 0;
 
 HWND viewWnd = NULL;
 HWND mainWnd = NULL;
 
 HBITMAP hLogoBM = NULL;
 
-int nColors=24;
+int nColors = 24;
 int gfRecording = 0;
 #define SOUND_MODE 0
 #define SILENT_MODE 1
@@ -211,72 +212,75 @@ int infoLineHeight = 20;
 /////////////////////////////////////////////
 
 void NukeAVIStream(int i);
-int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_path, CString output_avi_path, BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format, DWORD  audio_format_size, BOOL bInterleave, int interleave_factor);
+int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_path, CString output_avi_path,
+                               BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format, DWORD audio_format_size,
+                               BOOL bInterleave, int interleave_factor);
 BOOL CALLBACK SaveCallback(int iProgress);
 BOOL WinYield(void);
 CString GetProgPath();
 
-#define NUMSTREAMS   2
+#define NUMSTREAMS 2
 
 CString savedir("");
 CString cursordir("");
 CString videofilepath("");
 
-//Path to temporary wav file
+// Path to temporary wav file
 CString tempaudiopath;
 CString tempsilencepath;
-int recordaudio=1;
+int recordaudio = 1;
 
-//Audio Recording Variables
+// Audio Recording Variables
 UINT AudioDeviceID = WAVE_MAPPER;
 
 HWAVEIN m_hRecord;
 WAVEFORMATEX m_Format;
 DWORD m_ThreadID;
-int m_QueuedBuffers=0;
-int     m_BufferSize = 1000;    // number of samples
+int m_QueuedBuffers = 0;
+int m_BufferSize = 1000; // number of samples
 
-#define WM_USER_GENERIC  0x00401
+#define WM_USER_GENERIC 0x00401
 
-//Audio Options Dialog
-LPWAVEFORMATEX      pwfx = NULL;
-DWORD               cbwfx;
+// Audio Options Dialog
+LPWAVEFORMATEX pwfx = NULL;
+DWORD cbwfx;
 
-//Audio Formats Dialog
+// Audio Formats Dialog
 DWORD waveinselected = WAVE_FORMAT_2S16;
 int audio_bits_per_sample = 16;
 int audio_num_channels = 2;
-int audio_samples_per_seconds = 22050 ;
+int audio_samples_per_seconds = 22050;
 BOOL bAudioCompression = TRUE;
 
-#define  MILLISECONDS 0
-#define  FRAMES 1
+#define MILLISECONDS 0
+#define FRAMES 1
 BOOL interleaveFrames = TRUE;
-int  interleaveFactor = 100;
-int  interleaveUnit = MILLISECONDS;
+int interleaveFactor = 100;
+int interleaveUnit = MILLISECONDS;
 
 /////////////////////////////////////////////
 // Audio Recording Module
 /////////////////////////////////////////////
 
 #if !defined(WAVE_FORMAT_MPEGLAYER3)
-#define  WAVE_FORMAT_MPEGLAYER3 0x0055
+#define WAVE_FORMAT_MPEGLAYER3 0x0055
 #endif
 
-void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile,long starttime, int keepcounter, int overwriteaudio,int resetslider);
-void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile,long starttime, int keepcounter, int overwriteaudio);
+void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long starttime, int keepcounter, int overwriteaudio,
+                   int resetslider);
+void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long starttime, int keepcounter, int overwriteaudio);
 
 CSoundFile *m_pFile = NULL;
 CSoundFile *m_pSilenceFile = NULL;
 BOOL silenceFileValid = FALSE;
 
-BOOL StartAudioRecording(WAVEFORMATEX* format);
+BOOL StartAudioRecording(WAVEFORMATEX *format);
 void waveInErrorMsg(MMRESULT result, const char *);
 int AddInputBufferToQueue();
 void SetBufferSize(int NumberOfSamples);
 void CALLBACK OnMM_WIM_DATA(UINT parm1, LONG parm2);
 void CALLBACK OnMM_WOM_DATA(UINT parm1, LONG parm2);
-void DataFromSoundIn(CBuffer* buffer) ;
+void DataFromSoundIn(CBuffer *buffer);
 void StopAudioRecording();
 BOOL InitAudioRecording();
 void ClearAudioFile();
@@ -287,10 +291,10 @@ CString GetTempPath();
 BOOL CreateSilenceFile();
 void ClearAudioSilenceFile();
 void GetSilenceWavePath();
-void WriteSilenceFile(CBuffer* buffer);
+void WriteSilenceFile(CBuffer *buffer);
 
 void RemoveExistingAudioTracks();
-void AddAudioWaveFile(char  *FileName);
+void AddAudioWaveFile(char *FileName);
 
 void BuildRecordingFormat();
 void SuggestCompressFormat();
@@ -299,8 +303,8 @@ void AllocCompressFormat();
 
 void TimeDependentInsert(CString filename, long shiftTime);
 
-int recordstate=0;
-int recordpaused=0;
+int recordstate = 0;
+int recordpaused = 0;
 
 int audioRecordable = 0;
 int audioPlayable = 0;
@@ -320,20 +324,22 @@ long glRecordStartTimeValue = 0;
 #define RESET_TO_START 1
 #define RESET_TO_CURRENT 1
 
-int EditStreamReplace(PAVISTREAM pavi, LONG * plPos,  LONG * plLength, PAVISTREAM pstream, LONG lStart, LONG lLength);
-int EditStreamPadSilence(PAVISTREAM pavi, LONG * plPos,  LONG * plLength);
-long ExAVIStreamTimeToSample( PAVISTREAM pavi, LONG lTime);
-int EditStreamSilenceShift(PAVISTREAM pavi, LONG * plPos, LONG * plLength);
-long SafeStreamTimeToSample( PAVISTREAM pavi, LONG starttime );
-void RecomputeStreamsTime(int resetslider,long timeCurrent);
+int EditStreamReplace(PAVISTREAM pavi, LONG *plPos, LONG *plLength, PAVISTREAM pstream, LONG lStart, LONG lLength);
+int EditStreamPadSilence(PAVISTREAM pavi, LONG *plPos, LONG *plLength);
+long ExAVIStreamTimeToSample(PAVISTREAM pavi, LONG lTime);
+int EditStreamSilenceShift(PAVISTREAM pavi, LONG *plPos, LONG *plLength);
+long SafeStreamTimeToSample(PAVISTREAM pavi, LONG starttime);
+void RecomputeStreamsTime(int resetslider, long timeCurrent);
 
-void  TestConvertFirstAudio();
-void CloneAudioStream_ReplaceStreamPool(int i,PAVISTREAM pavi);
+void TestConvertFirstAudio();
+void CloneAudioStream_ReplaceStreamPool(int i, PAVISTREAM pavi);
 void ReInitAudioStream(int i);
 
-void SetAdditionalCompressSettings(BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format, DWORD  audio_format_size, BOOL bInterleave, int interleave_factor, int interleave_unit);
-int TestConvert(PAVISTREAM pavi,PAVISTREAM* paviConverted, PAVISTREAM paviDstFormat);
-LPWAVEFORMATEX  allocRetrieveAudioFormat(PAVISTREAM pavi);
+void SetAdditionalCompressSettings(BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format,
+                                   DWORD audio_format_size, BOOL bInterleave, int interleave_factor,
+                                   int interleave_unit);
+int TestConvert(PAVISTREAM pavi, PAVISTREAM *paviConverted, PAVISTREAM paviDstFormat);
+LPWAVEFORMATEX allocRetrieveAudioFormat(PAVISTREAM pavi);
 
 void SetDurationLine();
 void SetRPSLine();
@@ -343,7 +349,7 @@ int allowRecordExtension = 1;
 int fileModified = 0;
 
 void Msg(const char fmt[], ...);
-void DumpFormat(WAVEFORMATEX*  pwfx, const char* str );
+void DumpFormat(WAVEFORMATEX *pwfx, const char *str);
 
 CString GetTempPathEx(CString fileName, CString fxstr, CString exstr);
 CString ConvertFileToWorkingPCM(CString filename);
@@ -355,25 +361,31 @@ CString ConvertFileToWorkingPCM(CString filename);
 // Terminology
 // -----------
 // Keyframe -- a Full Frame is saved ;  all intermediate layers, and halfkey layers on top are cleared
-// Intermediate Frame - a frame at layer 100, on top of Keyframe and halfkeys. This frame is never used as a basis for comparison with the next frame
-// HalfKey  -- Frames that are saved as a difference to the previous frame, these frames are used as a comparison for the next frame, the difference are layered on top of the keyframe. Multiple layers are stacked ... up to a depth of Max_HalfkeyDepth
+// Intermediate Frame - a frame at layer 100, on top of Keyframe and halfkeys. This frame is never used as a basis for
+// comparison with the next frame HalfKey  -- Frames that are saved as a difference to the previous frame, these frames
+// are used as a comparison for the next frame, the difference are layered on top of the keyframe. Multiple layers are
+// stacked ... up to a depth of Max_HalfkeyDepth
 //
 // Usage :
-// 1) useHalfKey = 1, usePercent = 1, set HalfKeyThreshold to decide when  a frame is a keyframe and when it is a halfkey
+// 1) useHalfKey = 1, usePercent = 1, set HalfKeyThreshold to decide when  a frame is a keyframe and when it is a
+// halfkey
 //    in both cases, the frame returned is saved for comparison with the next frame
-//    The  HalfKeyThreshold is the percentage of change in the new frame that cause the program to decide the frame should be saved as a keyframe instead of halfkey
-//    No intermediate frames are used
+//    The  HalfKeyThreshold is the percentage of change in the new frame that cause the program to decide the frame
+//    should be saved as a keyframe instead of halfkey No intermediate frames are used
 //
-// 2) useHalfKey = 1, usePercent = 0, all frames are halfkey...until the Max_HalfKeyDepth is reached...then a key frame is stored
+// 2) useHalfKey = 1, usePercent = 0, all frames are halfkey...until the Max_HalfKeyDepth is reached...then a key frame
+// is stored
 //    the frame returned is saved for comparison with the next frame
 //    No intermediate frames are used
 //
 // 3) useHalfKey = 0, usePercent = 0, set sampleFPS
 //    No halfkey are used.  Key frames occurs at a fixed frequency ... e.g every 20 fps
-//    Otherwise, the frames are intermediate, i.e a single layer on top of the key...this layer is removed and a new layer added when the next intermediate frame is shown
+//    Otherwise, the frames are intermediate, i.e a single layer on top of the key...this layer is removed and a new
+//    layer added when the next intermediate frame is shown
 //
 // 4) useHalfKey = 0, usePercent = 1,  set PercentThreshold, sampleFPS
-//    Key frames usually occurs at a fixed frequency, but if the difference is too big in the current frame  (compared with the keyframe), the keyframe is updated
+//    Key frames usually occurs at a fixed frequency, but if the difference is too big in the current frame  (compared
+//    with the keyframe), the keyframe is updated
 //
 // I) The  expandArea switch affects all three modes above
 //    If expandArea==1, the difference blocks will be slightly enlarged (by expandThickness, measured in no. of pixels)
@@ -388,20 +400,22 @@ CString ConvertFileToWorkingPCM(CString filename);
 //
 // ********************
 
-void ConvertToFlash(long currentTime,HDC hdc, HBITMAP hbm, std::ostringstream &f);
+void ConvertToFlash(long currentTime, HDC hdc, HBITMAP hbm, std::ostringstream &f);
 void PaintSwfFrame(HDC hdc, HBITMAP hbm, RECT rcFrame, LPBITMAPINFOHEADER lpbi, int iStream, std::ostringstream &f);
-LPBYTE makeReverse16(int width, int height,int bitPlanes, LPBITMAPINFOHEADER alpbi);
-LPBYTE makeReverse32(int width, int height,int bitPlanes, LPBITMAPINFOHEADER alpbi);
-LPBITMAPINFOHEADER GetFrame(LPBYTE* bits,int& BITMAP_X,int& BITMAP_Y, int numbits);
+LPBYTE makeReverse16(int width, int height, int bitPlanes, LPBITMAPINFOHEADER alpbi);
+LPBYTE makeReverse32(int width, int height, int bitPlanes, LPBITMAPINFOHEADER alpbi);
+LPBITMAPINFOHEADER GetFrame(LPBYTE *bits, int &BITMAP_X, int &BITMAP_Y, int numbits);
 
-HANDLE  Bitmap2Dib( HBITMAP hbitmap, UINT bits);
-LPBITMAPINFOHEADER GetFrame(HBITMAP hbm, LPBYTE* bits,int& BITMAP_X,int& BITMAP_Y, int numbits);
+HANDLE Bitmap2Dib(HBITMAP hbitmap, UINT bits);
+LPBITMAPINFOHEADER GetFrame(HBITMAP hbm, LPBYTE *bits, int &BITMAP_X, int &BITMAP_Y, int numbits);
 void FreeFrame(LPBITMAPINFOHEADER alpbi);
-void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitmap, int BITMAP_X, int BITMAP_Y, int format);
-LPBYTE swapPixelBytes16(int width, int height,int bitPlanes,LPBYTE bits16);
+void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitmap, int BITMAP_X, int BITMAP_Y,
+                   int format);
+LPBYTE swapPixelBytes16(int width, int height, int bitPlanes, LPBYTE bits16);
 
 LPBITMAPINFOHEADER currentKey_lpbi = NULL;
-int ProcessSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitmap, int BITMAP_X, int BITMAP_Y, int format);
+int ProcessSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitmap, int BITMAP_X, int BITMAP_Y,
+                    int format);
 void finishTemporalCompress();
 void initTemporalCompress(int bmWidth, int bmHeight);
 void cleanChangeArray();
@@ -410,7 +424,7 @@ void cleanChangeArray();
 #define FRAME_INTERMEDIATE 1
 #define FRAME_HALFKEY 2
 
-int CopyStream(PAVIFILE pavi,PAVISTREAM pstm);
+int CopyStream(PAVIFILE pavi, PAVISTREAM pstm);
 PAVISTREAM ConvertFirstAudioStream(LPWAVEFORMATEX lpFormat);
 void cleanTempFile();
 #define WAVBUFFER 4096
@@ -421,22 +435,23 @@ public:
     CChangeRectSwf();
     virtual ~CChangeRectSwf();
 
-    int initialize(int blockx, int blocky, int blocksizex, int blocksizey,int blockwidth, int pixelwidth, int pixelheight, int x, int y);
+    int initialize(int blockx, int blocky, int blocksizex, int blocksizey, int blockwidth, int pixelwidth,
+                   int pixelheight, int x, int y);
 
 public:
-    int blockx;            //measured in blocks
-    int blocky;            //measured in blocks
-    int blockwidth;        //measured in blocks
+    int blockx;     // measured in blocks
+    int blocky;     // measured in blocks
+    int blockwidth; // measured in blocks
 
-    int pixelwidth;        //measured in pixels
-    int pixelheight;    //measured in pixels
-    int blocksizex;        //measured in pixels
-    int blocksizey;        //measured in pixels
-    CRect blockbounds;    //measured in pixels
-    int greatestLeft;    //measured in pixels
-    int greatestTop;    //measured in pixels
-    int smallestRight;    //measured in pixels
-    int smallestBottom;    //measured in pixels
+    int pixelwidth;     // measured in pixels
+    int pixelheight;    // measured in pixels
+    int blocksizex;     // measured in pixels
+    int blocksizey;     // measured in pixels
+    CRect blockbounds;  // measured in pixels
+    int greatestLeft;   // measured in pixels
+    int greatestTop;    // measured in pixels
+    int smallestRight;  // measured in pixels
+    int smallestBottom; // measured in pixels
 };
 
 CChangeRectSwf::CChangeRectSwf()
@@ -452,7 +467,7 @@ CChangeRectSwf::~CChangeRectSwf()
 // *********************************************************
 // Code Derived From Chris Losinger's JpegFile Class
 // *********************************************************
-BOOL VertFlipBuf(BYTE * inbuf, UINT widthBytes, UINT height);
+BOOL VertFlipBuf(BYTE *inbuf, UINT widthBytes, UINT height);
 
 BOOL ARGBFromBGRA(BYTE *buf, UINT widthPix, UINT height);
 
@@ -475,15 +490,15 @@ int framecount = 0;
 int framei = 0;
 int keyframerate = 20;
 
-int blocksize_x =64;
-int blocksize_y =64;
+int blocksize_x = 64;
+int blocksize_y = 64;
 int numblocks_x = 0;
 int numblocks_y = 0;
 
 int FrameOffsetX = 0;
 int FrameOffsetY = 0;
 
-//Using thse seems to give lesser errors..
+// Using thse seems to give lesser errors..
 int MatrixOffsetX = 0;
 int MatrixOffsetY = 0;
 int MoveOffsetX = 1;
@@ -497,24 +512,24 @@ int HalfKeyDepthInc = 0;
 int IFrameDepth = 300;
 int ObjectDepth = 0;
 
-//Some predefined depths
-//int LoadingDepth =  ObjectDepth + 6;
-//int ProgressbarDepth =  ObjectDepth + 5;
-//int playButtonDepth = ObjectDepth + 2;
-//int pauseButtonDepth = ObjectDepth + 2;
-//int stopButtonDepth = ObjectDepth + 2;
-//int BitmapplayButtonDepth = ObjectDepth + 2;
-//int BitmappauseButtonDepth = ObjectDepth + 2;
-//int BitmapstopButtonDepth = ObjectDepth + 2;
-//int BackgroundBarDepth = ObjectDepth + 1;
-//int writeTextDepth = ObjectDepth;
+// Some predefined depths
+// int LoadingDepth =  ObjectDepth + 6;
+// int ProgressbarDepth =  ObjectDepth + 5;
+// int playButtonDepth = ObjectDepth + 2;
+// int pauseButtonDepth = ObjectDepth + 2;
+// int stopButtonDepth = ObjectDepth + 2;
+// int BitmapplayButtonDepth = ObjectDepth + 2;
+// int BitmappauseButtonDepth = ObjectDepth + 2;
+// int BitmapstopButtonDepth = ObjectDepth + 2;
+// int BackgroundBarDepth = ObjectDepth + 1;
+// int writeTextDepth = ObjectDepth;
 
-int expandArea = 0;  //does not seems to expand the size too much
+int expandArea = 0; // does not seems to expand the size too much
 int expandThickness = 2;
 
 double PercentThreshold = 33;
 double HalfKeyThreshold = 45;
-int Max_HalfKeyDepth = 15; //maximum 90 .... playback will be SSSSSLOW for large values
+int Max_HalfKeyDepth = 15; // maximum 90 .... playback will be SSSSSLOW for large values
 int usePercent = 0;
 int useHalfKey = 1;
 
@@ -535,14 +550,15 @@ int swf_num_channels = 2;
 int usePCMConvertedStream = 0;
 
 PAVISTREAM PCMConvertedStream = NULL;
-PAVIFILE   PCMConvertedFile = NULL;
+PAVIFILE PCMConvertedFile = NULL;
 
 CString tempfile1("");
 CString tempfile2("");
 
 // ver 2.24
 // produce HTML preview
-void produceFlashHTML(CString htmlfilename, CString flashfilename, CString flashfilepath, int onlyflashtag, int width, int height,int bk_red, int bk_green, int bk_blue);
+void produceFlashHTML(CString htmlfilename, CString flashfilename, CString flashfilepath, int onlyflashtag, int width,
+                      int height, int bk_red, int bk_green, int bk_blue);
 
 // *****************************
 // Audio Compression
@@ -551,7 +567,7 @@ int useMP3 = 0;
 int useAudio = 1;
 int noAudioStream = 0;
 int useAudioCompression = 1; // 0 : not compression, 1 : ADPCM ,  2 : MP3 (not yet)
-//ADPCM conversion seems to work only on 16 bit PCM wave data .. 8 bit ....don't work
+// ADPCM conversion seems to work only on 16 bit PCM wave data .. 8 bit ....don't work
 
 char play_rate;
 bool play_16bit;
@@ -564,9 +580,10 @@ UWORD samplecountavg;
 
 long slCurrentSwf = 0;
 
-int adpcmBPS = 5; //2 to 5
-void MakeSoundStreamBlockADPCM(void* buffer, int buffersize, int numsamples, std::ostringstream &f);
-void *MakeFullBuffer(void* buffer, long &buffersize, long &numsamples, int avgsamplespersecond,bool streamstereo, bool stream16bit);
+int adpcmBPS = 5; // 2 to 5
+void MakeSoundStreamBlockADPCM(void *buffer, int buffersize, int numsamples, std::ostringstream &f);
+void *MakeFullBuffer(void *buffer, long &buffersize, long &numsamples, int avgsamplespersecond, bool streamstereo,
+                     bool stream16bit);
 
 int launchPropPrompt = 1;
 int launchHTMLPlayer = 1;
@@ -587,28 +604,32 @@ int swfbar_red = 0;
 int swfbar_green = 0;
 int swfbar_blue = 255;
 
-int runmode = 0; //0 -- window mode, 1 -- CamStudio recorder internal mode, 2 --  batch mode, silence
+int runmode = 0; // 0 -- window mode, 1 -- CamStudio recorder internal mode, 2 --  batch mode, silence
 int oldPercent = 0;
 
 void LoadSettings();
 void SaveSettings();
 void LoadCommand();
 
-//ver 2.25  Interfaces
+// ver 2.25  Interfaces
 int convertMode = 0;
 
-int MessageOutINT(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val);
-int MessageOutINT2(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val1,long val2);
-int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus);
+int MessageOutINT(HWND hWnd, long strMsg, long strTitle, UINT mbstatus, long val);
+int MessageOutINT2(HWND hWnd, long strMsg, long strTitle, UINT mbstatus, long val1, long val2);
+int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus);
 
-void AdjustOutName(CString avioutpath) ;
+void AdjustOutName(CString avioutpath);
 
-int CreateFlashBitmapPlayButton(std::ostringstream &f,int imagewidth, int imageheight, CString subdir,int imageoffset);
-int CreateFlashBitmapPauseButton(std::ostringstream &f,int imagewidth, int imageheight, CString subdir,int imageoffset);
-int CreateFlashBitmapStopButton(std::ostringstream &f,int imagewidth, int imageheight, CString subdir,int imageoffset);
-int DrawRightPiece(std::ostringstream &f,int imagewidth, int imageheight,  CString subdir, int imageoffset,int yoffset);
-int DrawLeftPiece(std::ostringstream &f,int imagewidth, int imageheight,  CString subdir, int imageoffset,int yoffset);
-int DrawLoading(std::ostringstream &f,int imagewidth, int imageheight,  CString subdir, int imageoffset,int yoffset);
+int CreateFlashBitmapPlayButton(std::ostringstream &f, int imagewidth, int imageheight, CString subdir,
+                                int imageoffset);
+int CreateFlashBitmapPauseButton(std::ostringstream &f, int imagewidth, int imageheight, CString subdir,
+                                 int imageoffset);
+int CreateFlashBitmapStopButton(std::ostringstream &f, int imagewidth, int imageheight, CString subdir,
+                                int imageoffset);
+int DrawRightPiece(std::ostringstream &f, int imagewidth, int imageheight, CString subdir, int imageoffset,
+                   int yoffset);
+int DrawLeftPiece(std::ostringstream &f, int imagewidth, int imageheight, CString subdir, int imageoffset, int yoffset);
+int DrawLoading(std::ostringstream &f, int imagewidth, int imageheight, CString subdir, int imageoffset, int yoffset);
 
 int ButtonSpaceX = 0;
 int ButtonSpaceY = 7;
@@ -623,20 +644,20 @@ int ControllerAlignment = 1;
 int controlsType = 2;
 int bitmapBarHeight = 19;
 
-//ver 2.27 free character
+// ver 2.27 free character
 CArray<int, int> freeCharacterArray;
 void gcFlash(std::ostringstream &f);
 
 #define MAXFLASHLIMIT 15600
 
-//intenral var
+// intenral var
 int needbreakapart = 0;
 int breakcycle = 0;
 int moreSWFsneeded = 0;
 int filesAreSplit = 0;
 int preloadFrames = 2;
 
-//external var
+// external var
 int allowChaining = 1;
 int freecharacter = 0;
 double percentLoadedThreshold = 0.7;
@@ -644,7 +665,7 @@ int addPreloader = 1;
 int applyPreloaderToSplitFiles = 1;
 int produceRaw = 0;
 
-//ver 2.28 preloader / actionscripts
+// ver 2.28 preloader / actionscripts
 #define _X 0
 #define _Y 1
 #define _xscale 2
@@ -668,17 +689,21 @@ int produceRaw = 0;
 #define _xmouse 20
 #define _ymouse 21
 
-int CreateProgressBar(std::ostringstream &f, int controlsWidth, int controlsHeight,int FrameOffsetX,int FrameOffsetY,int BITMAP_X, int BITMAP_Y, int additonalOffsetX, int additionalOffsetY);
-void FlashActionGetPropertyVar(std::ostringstream &f,CString SpriteTarget,int index, CString varname );
-void FlashActionSetPropertyFloat(std::ostringstream &f,CString SpriteTarget,int index, CString valuestr );
-void FlashActionSetPropertyFloatVar(std::ostringstream &f,CString SpriteTarget,int index, CString varstr );
-void WriteTextOut(std::ostringstream &f, int width, int height, CString Loadstr, CString fontstr, int red,int green, int blue, int pointsize, bool bold, bool italic, bool uLine);
+int CreateProgressBar(std::ostringstream &f, int controlsWidth, int controlsHeight, int FrameOffsetX, int FrameOffsetY,
+                      int BITMAP_X, int BITMAP_Y, int additonalOffsetX, int additionalOffsetY);
+void FlashActionGetPropertyVar(std::ostringstream &f, CString SpriteTarget, int index, CString varname);
+void FlashActionSetPropertyFloat(std::ostringstream &f, CString SpriteTarget, int index, CString valuestr);
+void FlashActionSetPropertyFloatVar(std::ostringstream &f, CString SpriteTarget, int index, CString varstr);
+void WriteTextOut(std::ostringstream &f, int width, int height, CString Loadstr, CString fontstr, int red, int green,
+                  int blue, int pointsize, bool bold, bool italic, bool uLine);
 void Preloader(std::ostringstream &f, int widthBar, int bmWidth, int bmHeight, int progressOffset);
 void actionLoadBaseMovie(std::ostringstream &f);
-void GetBounds(const char *fontname, CString textstr, int pointsize, CSize& retExtent, bool bold = false, bool italic = false, bool uLine = false);
-int DrawNodes(std::ostringstream &f,int widthBar,int imagewidth, int imageheight,  CString subdir, int imageoffset,int yoffset, int additionalOffsetX,int additionalOffsetY);
+void GetBounds(const char *fontname, CString textstr, int pointsize, CSize &retExtent, bool bold = false,
+               bool italic = false, bool uLine = false);
+int DrawNodes(std::ostringstream &f, int widthBar, int imagewidth, int imageheight, CString subdir, int imageoffset,
+              int yoffset, int additionalOffsetX, int additionalOffsetY);
 
-//CString fontname("Times New Roman");
+// CString fontname("Times New Roman");
 CString fontname("Arial");
 int font_red = 40;
 int font_green = 135;
@@ -699,60 +724,60 @@ void SaveController();
 IMPLEMENT_DYNCREATE(CPlayplusView, CView)
 
 BEGIN_MESSAGE_MAP(CPlayplusView, CView)
-    //{{AFX_MSG_MAP(CPlayplusView)
-    ON_COMMAND(ID_FILE_OPEN, OnFileOpen)
-    ON_COMMAND(ID_FILE_CLOSE, OnFileClose)
-    ON_COMMAND(ID_FILE_PLAY, OnFilePlay)
-    ON_COMMAND(ID_FILE_REWIND, OnFileRewind)
-    ON_COMMAND(ID_FILE_STOP, OnFileStop)
-    ON_WM_CREATE()
-    ON_WM_DESTROY()
-    ON_WM_PAINT()
-    ON_WM_SIZE()
-    ON_COMMAND(ID_FILE_LASTFRAME, OnFileLastframe)
-    ON_WM_ERASEBKGND()
-    ON_WM_HSCROLL()
-    ON_WM_VSCROLL()
-    ON_COMMAND(ID_ZOOM_RESIZETOMOVIESIZE, OnZoomResizetomoviesize)
-    ON_COMMAND(ID_ZOOM_QUARTER, OnZoomQuarter)
-    ON_COMMAND(ID_ZOOM_HALF, OnZoomHalf)
-    ON_COMMAND(ID_ZOOM_1, OnZoom1)
-    ON_COMMAND(ID_ZOOM_2, OnZoom2)
-    ON_COMMAND(ID_ZOOM_4, OnZoom4)
-    ON_UPDATE_COMMAND_UI(ID_ZOOM_1, OnUpdateZoom1)
-    ON_UPDATE_COMMAND_UI(ID_ZOOM_2, OnUpdateZoom2)
-    ON_UPDATE_COMMAND_UI(ID_ZOOM_4, OnUpdateZoom4)
-    ON_UPDATE_COMMAND_UI(ID_ZOOM_HALF, OnUpdateZoomHalf)
-    ON_UPDATE_COMMAND_UI(ID_ZOOM_QUARTER, OnUpdateZoomQuarter)
-    ON_UPDATE_COMMAND_UI(ID_ZOOM_RESIZETOMOVIESIZE, OnUpdateZoomResizetomoviesize)
-    ON_UPDATE_COMMAND_UI(ID_FILE_REWIND, OnUpdateFileRewind)
-    ON_UPDATE_COMMAND_UI(ID_FILE_LASTFRAME, OnUpdateFileLastframe)
-    ON_COMMAND(ID_BUTTON32785, OnButtonRecord)
-    ON_UPDATE_COMMAND_UI(ID_BUTTON32785, OnUpdateRecord)
-    ON_COMMAND(ID_AUDIO_REMOVEEXISTINGAUDIOTRACKS, OnAudioRemoveexistingaudiotracks)
-    ON_COMMAND(ID_AUDIO_ADDAUDIOFROMWAVEFILE, OnAudioAddaudiofromwavefile)
-    ON_UPDATE_COMMAND_UI(ID_AUDIO_REMOVEEXISTINGAUDIOTRACKS, OnUpdateAudioRemoveexistingaudiotracks)
-    ON_UPDATE_COMMAND_UI(ID_AUDIO_ADDAUDIOFROMWAVEFILE, OnUpdateAudioAddaudiofromwavefile)
-    ON_COMMAND(ID_FILE_SAVEAS, OnFileSaveas)
-    ON_COMMAND(ID_AUDIO_AUDIOOPTIONS, OnAudioAudiooptions)
-    ON_COMMAND(ID_ZOOM_TESTAUDIO, OnZoomTestaudio)
-    ON_UPDATE_COMMAND_UI(ID_FILE_SAVEAS, OnUpdateFileSaveas)
-    ON_UPDATE_COMMAND_UI(ID_FILE_PLAY, OnUpdateFilePlay)
-    ON_COMMAND(ID_AUDIO_EXTENSION, OnAudioExtension)
-    ON_UPDATE_COMMAND_UI(ID_AUDIO_EXTENSION, OnUpdateAudioExtension)
-    ON_COMMAND(ID_FILE_CONVERTTOSWF, OnFileConverttoswf)
-    ON_UPDATE_COMMAND_UI(ID_FILE_CONVERTTOSWF, OnUpdateFileConverttoswf)
-    ON_COMMAND(ID_CONVERT, OnConvert)
-    ON_COMMAND(ID_HELP_HELP, OnHelpHelp)
-    ON_COMMAND(ID_HELP_SWFPRODUCERFAQ, OnHelpSwfproducerfaq)
-    //}}AFX_MSG_MAP
-    // Standard printing commands
-    ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
-    ON_COMMAND(ID_FILE_PRINT_DIRECT, CView::OnFilePrint)
-    ON_COMMAND(ID_FILE_PRINT_PREVIEW, CView::OnFilePrintPreview)
-    //ON_MESSAGE (WM_USER_GENERIC, OnUserGeneric) C2440 error
-    ON_MESSAGE(MM_WIM_DATA, OnMM_WIM_DATA)
-    ON_MESSAGE(MM_WOM_DONE, OnMM_WOM_DONE)
+//{{AFX_MSG_MAP(CPlayplusView)
+ON_COMMAND(ID_FILE_OPEN, OnFileOpen)
+ON_COMMAND(ID_FILE_CLOSE, OnFileClose)
+ON_COMMAND(ID_FILE_PLAY, OnFilePlay)
+ON_COMMAND(ID_FILE_REWIND, OnFileRewind)
+ON_COMMAND(ID_FILE_STOP, OnFileStop)
+ON_WM_CREATE()
+ON_WM_DESTROY()
+ON_WM_PAINT()
+ON_WM_SIZE()
+ON_COMMAND(ID_FILE_LASTFRAME, OnFileLastframe)
+ON_WM_ERASEBKGND()
+ON_WM_HSCROLL()
+ON_WM_VSCROLL()
+ON_COMMAND(ID_ZOOM_RESIZETOMOVIESIZE, OnZoomResizetomoviesize)
+ON_COMMAND(ID_ZOOM_QUARTER, OnZoomQuarter)
+ON_COMMAND(ID_ZOOM_HALF, OnZoomHalf)
+ON_COMMAND(ID_ZOOM_1, OnZoom1)
+ON_COMMAND(ID_ZOOM_2, OnZoom2)
+ON_COMMAND(ID_ZOOM_4, OnZoom4)
+ON_UPDATE_COMMAND_UI(ID_ZOOM_1, OnUpdateZoom1)
+ON_UPDATE_COMMAND_UI(ID_ZOOM_2, OnUpdateZoom2)
+ON_UPDATE_COMMAND_UI(ID_ZOOM_4, OnUpdateZoom4)
+ON_UPDATE_COMMAND_UI(ID_ZOOM_HALF, OnUpdateZoomHalf)
+ON_UPDATE_COMMAND_UI(ID_ZOOM_QUARTER, OnUpdateZoomQuarter)
+ON_UPDATE_COMMAND_UI(ID_ZOOM_RESIZETOMOVIESIZE, OnUpdateZoomResizetomoviesize)
+ON_UPDATE_COMMAND_UI(ID_FILE_REWIND, OnUpdateFileRewind)
+ON_UPDATE_COMMAND_UI(ID_FILE_LASTFRAME, OnUpdateFileLastframe)
+ON_COMMAND(ID_BUTTON32785, OnButtonRecord)
+ON_UPDATE_COMMAND_UI(ID_BUTTON32785, OnUpdateRecord)
+ON_COMMAND(ID_AUDIO_REMOVEEXISTINGAUDIOTRACKS, OnAudioRemoveexistingaudiotracks)
+ON_COMMAND(ID_AUDIO_ADDAUDIOFROMWAVEFILE, OnAudioAddaudiofromwavefile)
+ON_UPDATE_COMMAND_UI(ID_AUDIO_REMOVEEXISTINGAUDIOTRACKS, OnUpdateAudioRemoveexistingaudiotracks)
+ON_UPDATE_COMMAND_UI(ID_AUDIO_ADDAUDIOFROMWAVEFILE, OnUpdateAudioAddaudiofromwavefile)
+ON_COMMAND(ID_FILE_SAVEAS, OnFileSaveas)
+ON_COMMAND(ID_AUDIO_AUDIOOPTIONS, OnAudioAudiooptions)
+ON_COMMAND(ID_ZOOM_TESTAUDIO, OnZoomTestaudio)
+ON_UPDATE_COMMAND_UI(ID_FILE_SAVEAS, OnUpdateFileSaveas)
+ON_UPDATE_COMMAND_UI(ID_FILE_PLAY, OnUpdateFilePlay)
+ON_COMMAND(ID_AUDIO_EXTENSION, OnAudioExtension)
+ON_UPDATE_COMMAND_UI(ID_AUDIO_EXTENSION, OnUpdateAudioExtension)
+ON_COMMAND(ID_FILE_CONVERTTOSWF, OnFileConverttoswf)
+ON_UPDATE_COMMAND_UI(ID_FILE_CONVERTTOSWF, OnUpdateFileConverttoswf)
+ON_COMMAND(ID_CONVERT, OnConvert)
+ON_COMMAND(ID_HELP_HELP, OnHelpHelp)
+ON_COMMAND(ID_HELP_SWFPRODUCERFAQ, OnHelpSwfproducerfaq)
+//}}AFX_MSG_MAP
+// Standard printing commands
+ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
+ON_COMMAND(ID_FILE_PRINT_DIRECT, CView::OnFilePrint)
+ON_COMMAND(ID_FILE_PRINT_PREVIEW, CView::OnFilePrintPreview)
+// ON_MESSAGE (WM_USER_GENERIC, OnUserGeneric) C2440 error
+ON_MESSAGE(MM_WIM_DATA, OnMM_WIM_DATA)
+ON_MESSAGE(MM_WOM_DONE, OnMM_WOM_DONE)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -767,7 +792,7 @@ CPlayplusView::~CPlayplusView()
 {
 }
 
-BOOL CPlayplusView::PreCreateWindow(CREATESTRUCT& cs)
+BOOL CPlayplusView::PreCreateWindow(CREATESTRUCT &cs)
 {
     // TODO: Modify the Window class or styles here by modifying
     //  the CREATESTRUCT cs
@@ -778,9 +803,9 @@ BOOL CPlayplusView::PreCreateWindow(CREATESTRUCT& cs)
 /////////////////////////////////////////////////////////////////////////////
 // CPlayplusView drawing
 
-void CPlayplusView::OnDraw(CDC* /*pDC*/)
+void CPlayplusView::OnDraw(CDC * /*pDC*/)
 {
-    CPlayplusDoc* pDoc = GetDocument();
+    CPlayplusDoc *pDoc = GetDocument();
     ASSERT_VALID(pDoc);
     // TODO: add draw code for native data here
 }
@@ -788,18 +813,18 @@ void CPlayplusView::OnDraw(CDC* /*pDC*/)
 /////////////////////////////////////////////////////////////////////////////
 // CPlayplusView printing
 
-BOOL CPlayplusView::OnPreparePrinting(CPrintInfo* pInfo)
+BOOL CPlayplusView::OnPreparePrinting(CPrintInfo *pInfo)
 {
     // default preparation
     return DoPreparePrinting(pInfo);
 }
 
-void CPlayplusView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
+void CPlayplusView::OnBeginPrinting(CDC * /*pDC*/, CPrintInfo * /*pInfo*/)
 {
     // TODO: add extra initialization before printing
 }
 
-void CPlayplusView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
+void CPlayplusView::OnEndPrinting(CDC * /*pDC*/, CPrintInfo * /*pInfo*/)
 {
     // TODO: add cleanup after printing
 }
@@ -813,15 +838,15 @@ void CPlayplusView::AssertValid() const
     CView::AssertValid();
 }
 
-void CPlayplusView::Dump(CDumpContext& dc) const
+void CPlayplusView::Dump(CDumpContext &dc) const
 {
     CView::Dump(dc);
 }
 
-CPlayplusDoc* CPlayplusView::GetDocument() // non-debug version is inline
+CPlayplusDoc *CPlayplusView::GetDocument() // non-debug version is inline
 {
     ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CPlayplusDoc)));
-    return (CPlayplusDoc*)m_pDocument;
+    return (CPlayplusDoc *)m_pDocument;
 }
 #endif //_DEBUG
 
@@ -835,9 +860,9 @@ void CPlayplusView::OnFileOpen()
     gszFileTitle[0] = 0;
 
     if (convertMode == 1)
-        LoadString( ghInstApp, IDS_OPENTITLE2, gszBuffer, BUFSIZE );
+        LoadString(ghInstApp, IDS_OPENTITLE2, gszBuffer, BUFSIZE);
     else
-        LoadString( ghInstApp, IDS_OPENTITLE, gszBuffer, BUFSIZE );
+        LoadString(ghInstApp, IDS_OPENTITLE, gszBuffer, BUFSIZE);
 
     memset(&ofn, 0, sizeof(ofn));
     ofn.lpstrTitle = gszBuffer;
@@ -851,7 +876,8 @@ void CPlayplusView::OnFileOpen()
     ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
     // If filename exists
-    if (GetOpenFileName(&ofn)) {
+    if (GetOpenFileName(&ofn))
+    {
         OnFileStop();
         gwZoom = 4;
         InitAvi(gszFileName, MENU_OPEN);
@@ -859,8 +885,8 @@ void CPlayplusView::OnFileOpen()
         AdjustOutName(gszFileName);
     }
     //...and not recording...
-    //CString msx;
-    //msx.Format("!gfPlaying %d  giFirstAudio %d  giFirstVideo %d",!gfPlaying,giFirstAudio,giFirstVideo);
+    // CString msx;
+    // msx.Format("!gfPlaying %d  giFirstAudio %d  giFirstVideo %d",!gfPlaying,giFirstAudio,giFirstVideo);
     //::MessageBox(NULL,msx,"note", MB_OK|MB_ICONEXCLAMATION|MB_TASKMODAL);
 
     Invalidate();
@@ -869,31 +895,38 @@ void CPlayplusView::OnFileOpen()
 void ResizeToMovie(BOOL useDefault)
 {
     RECT rc;
-    if (useDefault) {
+    if (useDefault)
+    {
         rc.left = 100;
         rc.top = 100;
-        rc.right=rc.left + 308-1;
-        rc.bottom=rc.top + 222-1;
-    } else {
+        rc.right = rc.left + 308 - 1;
+        rc.bottom = rc.top + 222 - 1;
+    }
+    else
+    {
         GetImageDimension(rc);
     }
     if (((rc.bottom - rc.top) < 20) && ((rc.right - rc.left) < 10))
         return;
 
-    CWnd* mainWindow = AfxGetMainWnd( );
-    ((CMainFrame*) mainWindow)->ResizeToMovie(rc);
+    CWnd *mainWindow = AfxGetMainWnd();
+    ((CMainFrame *)mainWindow)->ResizeToMovie(rc);
 }
 
 void CPlayplusView::OnFileClose()
 {
-    if ((fileModified == 1) && (pmode == DUBBER)) {
-        //int ret = MessageBox("Do you want to save changes ?","Note",MB_YESNOCANCEL | MB_ICONQUESTION);
-        int ret = MessageOut(this->m_hWnd,IDS_DOYOUWSC, IDS_NOTE, MB_YESNOCANCEL | MB_ICONQUESTION);
+    if ((fileModified == 1) && (pmode == DUBBER))
+    {
+        // int ret = MessageBox("Do you want to save changes ?","Note",MB_YESNOCANCEL | MB_ICONQUESTION);
+        int ret = MessageOut(this->m_hWnd, IDS_DOYOUWSC, IDS_NOTE, MB_YESNOCANCEL | MB_ICONQUESTION);
 
-        if (ret == IDYES) {
-            SendMessage(WM_COMMAND,ID_FILE_SAVEAS,0);
+        if (ret == IDYES)
+        {
+            SendMessage(WM_COMMAND, ID_FILE_SAVEAS, 0);
             return;
-        } else if (ret == IDCANCEL) {
+        }
+        else if (ret == IDCANCEL)
+        {
             return;
         }
     }
@@ -906,7 +939,7 @@ void CPlayplusView::OnFileClose()
 
     ResizeToMovie(TRUE);
 
-    //Invalidate();
+    // Invalidate();
 }
 
 void CPlayplusView::OnFilePlay()
@@ -919,24 +952,33 @@ void PlayMovie(int mode)
     glPlayStartTime = timeGetTime();
     glPlayStartPos = GetScrollTime();
 
-    //Recording sessions do not reset time
-    if ((allowRecordExtension) && (pmode == DUBBER) && (mode == SILENT_MODE)) {
-        //do not reset time if this is a recording session (mode == silent) at the end of the longest stream and extension is allowed
-    } else if ((!allowRecordExtension) && (pmode == DUBBER) && (mode == SILENT_MODE)) {
-        //do not reset time also if recording sesson even if  not allowRecordExtension
-    } else if (glPlayStartPos>=timeEnd) {
-        //resetting time for playing sessions
+    // Recording sessions do not reset time
+    if ((allowRecordExtension) && (pmode == DUBBER) && (mode == SILENT_MODE))
+    {
+        // do not reset time if this is a recording session (mode == silent) at the end of the longest stream and
+        // extension is allowed
+    }
+    else if ((!allowRecordExtension) && (pmode == DUBBER) && (mode == SILENT_MODE))
+    {
+        // do not reset time also if recording sesson even if  not allowRecordExtension
+    }
+    else if (glPlayStartPos >= timeEnd)
+    {
+        // resetting time for playing sessions
         SetScrollTime(timeStart);
         glPlayStartPos = GetScrollTime();
     }
-    if (mode == SOUND_MODE) {
-        //should this be put here since there is adjustment to the scroll time
-        if (gfAudioFound) {
-            aviaudioPlay(viewWnd, gapavi[giFirstAudio], AVIStreamTimeToSample(gapavi[giFirstAudio], GetScrollTime()), AVIStreamEnd(gapavi[giFirstAudio]), FALSE);
+    if (mode == SOUND_MODE)
+    {
+        // should this be put here since there is adjustment to the scroll time
+        if (gfAudioFound)
+        {
+            aviaudioPlay(viewWnd, gapavi[giFirstAudio], AVIStreamTimeToSample(gapavi[giFirstAudio], GetScrollTime()),
+                         AVIStreamEnd(gapavi[giFirstAudio]), FALSE);
         }
     }
-    //else {
-    //silent mode
+    // else {
+    // silent mode
     //}
     gfPlaying = TRUE;
 }
@@ -944,7 +986,7 @@ void PlayMovie(int mode)
 void CPlayplusView::OnFileRewind()
 {
     // TODO: Add your command handler code here
-    SetScrollTime( timeStart);
+    SetScrollTime(timeStart);
     ::InvalidateRect(viewWnd, NULL, FALSE);
     ::UpdateWindow(viewWnd);
 }
@@ -958,65 +1000,67 @@ void CPlayplusView::OnFileStop()
 
 void StopPlayingRecording()
 {
-    if (gfRecording) {
-        endAudioRecording  =TRUE;
+    if (gfRecording)
+    {
+        endAudioRecording = TRUE;
         FileStop(SILENT_MODE);
-    } else {
+    }
+    else
+    {
         FileStop(SOUND_MODE);
     }
 }
 
 void PaintVideo(HDC hdc, RECT rcFrame, int iStream, LPBITMAPINFOHEADER lpbi, LONG lCurSamp, LONG lPos)
 {
-    if (!lpbi) {
+    if (!lpbi)
+    {
         // Before or after the movie (or read error) draw GRAY
-        //do nothing
+        // do nothing
         return;
     }
-    //if lbpi is present, draw it
-    //Added code for centering
+    // if lbpi is present, draw it
+    // Added code for centering
     CRect rect;
-    ::GetClientRect( viewWnd,&rect);
+    ::GetClientRect(viewWnd, &rect);
 
     int offsetx = 0;
     int offsety = 0;
     int bitmapwidth = rcFrame.right - rcFrame.left + 1;
     int bitmapheight = rcFrame.bottom - rcFrame.top + 1;
 
-    if (rect.right> bitmapwidth) {
-        offsetx = (rect.right - bitmapwidth)/2;
+    if (rect.right > bitmapwidth)
+    {
+        offsetx = (rect.right - bitmapwidth) / 2;
     }
-    if (rect.bottom> bitmapheight) {
-        offsety = (rect.bottom - bitmapheight)/2;
+    if (rect.bottom > bitmapheight)
+    {
+        offsety = (rect.bottom - bitmapheight) / 2;
     }
-    DrawDibDraw(ghdd[iStream], hdc,
-        rcFrame.left + offsetx, rcFrame.top + offsety,
-        rcFrame.right - rcFrame.left - 1,
-        rcFrame.bottom - rcFrame.top - 1,
-        lpbi, NULL,
-        0, 0, -1, -1,
-        (iStream == giFirstVideo) ? 0 :DDF_BACKGROUNDPAL);
+    DrawDibDraw(ghdd[iStream], hdc, rcFrame.left + offsetx, rcFrame.top + offsety, rcFrame.right - rcFrame.left - 1,
+                rcFrame.bottom - rcFrame.top - 1, lpbi, NULL, 0, 0, -1, -1,
+                (iStream == giFirstVideo) ? 0 : DDF_BACKGROUNDPAL);
 
-    //char szText[BUFSIZE];
-    //int iLen = wsprintf(szText, "%ld %ld.%03lds", lCurSamp, lPos / 1000, lPos % 1000);
+    // char szText[BUFSIZE];
+    // int iLen = wsprintf(szText, "%ld %ld.%03lds", lCurSamp, lPos / 1000, lPos % 1000);
     TRACE("%ld %ld.%03lds\n", lCurSamp, lPos / 1000, lPos % 1000);
 }
 
 int PaintStuff(HDC hdc, HWND hwnd, BOOL fDrawEverything)
 {
-    int         xStreamLeft;
-    int         yStreamTop;
-    int         iFrameWidth;
-    LONG        lSamp, lCurSamp;
-    int         n;
-    int         nFrames;
+    int xStreamLeft;
+    int yStreamTop;
+    int iFrameWidth;
+    LONG lSamp, lCurSamp;
+    int n;
+    int nFrames;
     LPBITMAPINFOHEADER lpbi = NULL;
-    LONG        l;
-    LONG        lTime;
-    LONG        lSize = 0;
-    RECT        rcFrame = {'\0'};    // Init whole struct to prevent Warning C4701: potentially uninitialized local variable 
-    RECT        rcC;
-    int         i;
+    LONG l;
+    LONG lTime;
+    LONG lSize = 0;
+    RECT rcFrame = {'\0'}; // Init whole struct to prevent Warning C4701: potentially uninitialized local variable
+    RECT rcC;
+    int i;
 
     GetClientRect(hwnd, &rcC);
 
@@ -1025,67 +1069,80 @@ int PaintStuff(HDC hdc, HWND hwnd, BOOL fDrawEverything)
     xStreamLeft = -GetScrollPos(hwnd, SB_HORZ);
 
     // for all streams
-    for (i=0; i<gcpavi; i++) {
-        AVISTREAMINFO   avis;
-        LONG             lEndTime;
+    for (i = 0; i < gcpavi; i++)
+    {
+        AVISTREAMINFO avis;
+        LONG lEndTime;
 
         gStreamTop[i] = yStreamTop + GetScrollPos(hwnd, SB_VERT);
         AVIStreamInfo(gapavi[i], &avis, sizeof(avis));
 
-        if (avis.fccType == streamtypeVIDEO) {
+        if (avis.fccType == streamtypeVIDEO)
+        {
             if (gapgf[i] == NULL)
                 continue;
 
             // Which frame belongs at this time?
             lEndTime = AVIStreamEndTime(gapavi[i]);
-            if (lTime <= lEndTime) {
+            if (lTime <= lEndTime)
+            {
                 lSamp = AVIStreamTimeToSample(gapavi[i], lTime);
-            } else {
-                // we've scrolled past the end of this stream
-                //lSamp = AVIStreamTimeToSample(gapavi[i], AVIStreamStartTime(gapavi[i]));
-                lSamp = AVIStreamTimeToSample(gapavi[i], AVIStreamStartTime(gapavi[i])+timeLength-1);
             }
-            //ver 1.1
-            iFrameWidth = (avis.rcFrame.right - avis.rcFrame.left)  + HSPACE;
+            else
+            {
+                // we've scrolled past the end of this stream
+                // lSamp = AVIStreamTimeToSample(gapavi[i], AVIStreamStartTime(gapavi[i]));
+                lSamp = AVIStreamTimeToSample(gapavi[i], AVIStreamStartTime(gapavi[i]) + timeLength - 1);
+            }
+            // ver 1.1
+            iFrameWidth = (avis.rcFrame.right - avis.rcFrame.left) + HSPACE;
             nFrames = 0;
 
-            for (n = -nFrames; n <= nFrames; n++) {
-                if (i == giFirstVideo) {
+            for (n = -nFrames; n <= nFrames; n++)
+            {
+                if (i == giFirstVideo)
+                {
                     lCurSamp = lSamp + n;
                     l = AVIStreamSampleToTime(gapavi[i], lCurSamp);
-                } else {    // NOT the first video stream
-                    l = lTime + MulDiv32(n * (iFrameWidth+HSPACE), gdwMicroSecPerPixel, 1000);
+                }
+                else
+                { // NOT the first video stream
+                    l = lTime + MulDiv32(n * (iFrameWidth + HSPACE), gdwMicroSecPerPixel, 1000);
                     lCurSamp = AVIStreamTimeToSample(gapavi[i], l);
                     l = AVIStreamSampleToTime(gapavi[i], lCurSamp);
                 }
-                if (gapgf[i] && lCurSamp >= AVIStreamStart(gapavi[i])) {
-                    lpbi = (LPBITMAPINFOHEADER) AVIStreamGetFrame(gapgf[i], lCurSamp);
-                } else {
+                if (gapgf[i] && lCurSamp >= AVIStreamStart(gapavi[i]))
+                {
+                    lpbi = (LPBITMAPINFOHEADER)AVIStreamGetFrame(gapgf[i], lCurSamp);
+                }
+                else
+                {
                     lpbi = NULL;
                 }
                 // Figure out where to draw this frame
-                rcFrame.left    =xStreamLeft;
-                rcFrame.top    = yStreamTop ;
-                rcFrame.right  = rcFrame.left + (avis.rcFrame.right - avis.rcFrame.left) * gwZoom / 4;
+                rcFrame.left = xStreamLeft;
+                rcFrame.top = yStreamTop;
+                rcFrame.right = rcFrame.left + (avis.rcFrame.right - avis.rcFrame.left) * gwZoom / 4;
                 rcFrame.bottom = rcFrame.top + (avis.rcFrame.bottom - avis.rcFrame.top) * gwZoom / 4;
 
-                //Patch to prevent blank screen
-                if (lpbi == NULL) {
-                    lpbi = (LPBITMAPINFOHEADER) AVIStreamGetFrame(gapgf[i], AVIStreamEnd(gapavi[i])-1);
+                // Patch to prevent blank screen
+                if (lpbi == NULL)
+                {
+                    lpbi = (LPBITMAPINFOHEADER)AVIStreamGetFrame(gapgf[i], AVIStreamEnd(gapavi[i]) - 1);
                 }
                 PaintVideo(hdc, rcFrame, i, lpbi, lCurSamp, l);
             }
             if (lpbi)
                 AVIStreamSampleSize(gapavi[i], lSamp, &lSize);
 
-            //ver 1.1
-            yStreamTop +=   (rcFrame.bottom - rcFrame.top);
-        } //If Video Stream
+            // ver 1.1
+            yStreamTop += (rcFrame.bottom - rcFrame.top);
+        } // If Video Stream
 
         // Give up once we're painting below the bottom of the window
         if (!fDrawEverything && yStreamTop >= rcC.bottom)
             break;
-    } //for all streams
+    } // for all streams
 
     // The bottom of all the streams;
     gStreamTop[gcpavi] = yStreamTop + GetScrollPos(hwnd, SB_VERT);
@@ -1094,94 +1151,117 @@ int PaintStuff(HDC hdc, HWND hwnd, BOOL fDrawEverything)
     return yStreamTop + GetScrollPos(hwnd, SB_VERT);
 }
 
-//Separation of init streams into 1)avioptions preparation 2)timestart, timeend, time length finding  3)reseting counter components
-//Pre-condition : Init streams is called only in InserAVIfile..if it needed to be called in other places, make sure the relevant and only the revlant components are included
-void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile,long starttime, int /*keepcounter*/, int overwriteaudio,int resetslider)
+// Separation of init streams into 1)avioptions preparation 2)timestart, timeend, time length finding  3)reseting
+// counter components Pre-condition : Init streams is called only in InserAVIfile..if it needed to be called in other
+// places, make sure the relevant and only the revlant components are included
+void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long starttime, int /*keepcounter*/, int overwriteaudio,
+                   int resetslider)
 {
-    //Note: the keepcounter variable is not used
-    //It's function is taken by the resetslider
+    // Note: the keepcounter variable is not used
+    // It's function is taken by the resetslider
 
-    //Currently the resetslider is used only if the mode is not OVERWRITEAUDIO
-    //if it is FALSE, then we force the counter not to reset
-    //by default, for most cases, the reset silder is set to TRUE, especially when insertAviFile  is used to insert new streams into the current stream pool
+    // Currently the resetslider is used only if the mode is not OVERWRITEAUDIO
+    // if it is FALSE, then we force the counter not to reset
+    // by default, for most cases, the reset silder is set to TRUE, especially when insertAviFile  is used to insert new
+    // streams into the current stream pool
 
-    int         i;
-    PAVISTREAM  pavi;
+    int i;
+    PAVISTREAM pavi;
     int needshift = 0;
 
     long timeCurrent = GetScrollTime();
 
-    //ErrMsg("overover %d",overwriteaudio);
-    if (overwriteaudio) {
-        //Assume this case is only 1 audio track
-        if (giFirstAudio>=0) {
-            if (AVIFileGetStream(pfile, &pavi, streamtypeAUDIO , 0) != AVIERR_OK) {
+    // ErrMsg("overover %d",overwriteaudio);
+    if (overwriteaudio)
+    {
+        // Assume this case is only 1 audio track
+        if (giFirstAudio >= 0)
+        {
+            if (AVIFileGetStream(pfile, &pavi, streamtypeAUDIO, 0) != AVIERR_OK)
+            {
                 ErrMsg("Unable to load audio file");
                 return;
             }
-            //if not PCM, if not at same audio rate, then covert to working PCM format
-            //TestConvert(pavi);
+            // if not PCM, if not at same audio rate, then covert to working PCM format
+            // TestConvert(pavi);
 
-            //editreplace stream
+            // editreplace stream
 
-            long startsample = SafeStreamTimeToSample( gapavi[giFirstAudio], starttime );
-            //startsample = AVIStreamTimeToSample( gapavi[giFirstAudio], starttime );
-            //startsample=10000;
+            long startsample = SafeStreamTimeToSample(gapavi[giFirstAudio], starttime);
+            // startsample = AVIStreamTimeToSample( gapavi[giFirstAudio], starttime );
+            // startsample=10000;
 
             PAVISTREAM paviConverted = NULL;
-            if (startsample > -1) {
-                int retval = TestConvert(pavi, &paviConverted, gapavi[giFirstAudio] );
-                if (retval > 0) {
-                    //Conversion is performed
+            if (startsample > -1)
+            {
+                int retval = TestConvert(pavi, &paviConverted, gapavi[giFirstAudio]);
+                if (retval > 0)
+                {
+                    // Conversion is performed
                     AVIStreamRelease(pavi);
                     pavi = paviConverted;
-                } else if (retval == 0) {
-                    //No conversion is needed..proceed with the display
-                } else if (retval < 0) {
-                    //Error in the conversion, abort the Stream Replace
+                }
+                else if (retval == 0)
+                {
+                    // No conversion is needed..proceed with the display
+                }
+                else if (retval < 0)
+                {
+                    // Error in the conversion, abort the Stream Replace
                     AVIStreamRelease(pavi);
                     AVIFileRelease(pfile);
                 }
                 long lx = AVIStreamLength(pavi);
-                //if (EditStreamPaste(gapavi[giFirstAudio], &startsample, &lx, pavi, AVIStreamStart(pavi), AVIStreamLength(pavi)) !=  AVIERR_OK)
-                //ErrMsg("overwrite  %d",retval);
-                //ErrMsg("EditStreamReplace startsample %ld, lx %ld, pavi %ld, AVIStreamStart(pavi) %ld, AVIStreamLength(pavi) %ld",startsample, lx, pavi, AVIStreamStart(pavi), AVIStreamLength(pavi));
-                if (EditStreamReplace(gapavi[giFirstAudio], &startsample, &lx, pavi, AVIStreamStart(pavi), AVIStreamLength(pavi)) !=  AVIERR_OK) {
+                // if (EditStreamPaste(gapavi[giFirstAudio], &startsample, &lx, pavi, AVIStreamStart(pavi),
+                // AVIStreamLength(pavi)) !=  AVIERR_OK) ErrMsg("overwrite  %d",retval); ErrMsg("EditStreamReplace
+                // startsample %ld, lx %ld, pavi %ld, AVIStreamStart(pavi) %ld, AVIStreamLength(pavi) %ld",startsample,
+                // lx, pavi, AVIStreamStart(pavi), AVIStreamLength(pavi));
+                if (EditStreamReplace(gapavi[giFirstAudio], &startsample, &lx, pavi, AVIStreamStart(pavi),
+                                      AVIStreamLength(pavi)) != AVIERR_OK)
+                {
                     ErrMsg("Unable to add audio at insertion point");
                 }
             }
             AVIStreamRelease(pavi);
             AVIFileRelease(pfile);
 
-            ErrMsg("resetslider %d,timeCurrent %d",resetslider,timeCurrent);
-            RecomputeStreamsTime(resetslider,timeCurrent);
+            ErrMsg("resetslider %d,timeCurrent %d", resetslider, timeCurrent);
+            RecomputeStreamsTime(resetslider, timeCurrent);
 
             return;
         }
-    } else { //if no overwrite
-        //ErrMsg("giFirstAudio = %d, starttime = %d",giFirstAudio, starttime);
-        if ((giFirstAudio<0) && (starttime>0)) {
-            //Do nothing...consider this as normal insert with no overwrite  and startime == 0
-            //However need to shift time after insertion
+    }
+    else
+    { // if no overwrite
+        // ErrMsg("giFirstAudio = %d, starttime = %d",giFirstAudio, starttime);
+        if ((giFirstAudio < 0) && (starttime > 0))
+        {
+            // Do nothing...consider this as normal insert with no overwrite  and startime == 0
+            // However need to shift time after insertion
 
-            //Pass on
+            // Pass on
             needshift = 1;
-        } else {
-            //Do nothing...consider this as normal insert with no overwrite  and startime == 0
-            //Pass on
+        }
+        else
+        {
+            // Do nothing...consider this as normal insert with no overwrite  and startime == 0
+            // Pass on
         }
     }
-    for (i = gcpavi; i <= MAXNUMSTREAMS; i++) {
+    for (i = gcpavi; i <= MAXNUMSTREAMS; i++)
+    {
         if (AVIFileGetStream(pfile, &pavi, 0L, i - gcpavi) != AVIERR_OK)
             break;
 
-        if (i == MAXNUMSTREAMS) {
+        if (i == MAXNUMSTREAMS)
+        {
             AVIStreamRelease(pavi);
-            LoadString( ghInstApp, IDS_MAXSTREAMS, gszBuffer, BUFSIZE );
+            LoadString(ghInstApp, IDS_MAXSTREAMS, gszBuffer, BUFSIZE);
             ErrMsg(gszBuffer);
             break;
         }
-        if (CreateEditableStream(&gapavi[i], pavi) != AVIERR_OK) {
+        if (CreateEditableStream(&gapavi[i], pavi) != AVIERR_OK)
+        {
             AVIStreamRelease(pavi);
             break;
         }
@@ -1190,47 +1270,49 @@ void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile,long starttime, int /*keepcoun
     }
     AVIFileRelease(pfile);
 
-    if (gcpavi == i && i != MAXNUMSTREAMS) {
-        LoadString( ghInstApp, IDS_NOOPEN, gszBuffer, BUFSIZE );
+    if (gcpavi == i && i != MAXNUMSTREAMS)
+    {
+        LoadString(ghInstApp, IDS_NOOPEN, gszBuffer, BUFSIZE);
 
         ErrMsg(gszBuffer, lpszFile);
         return;
     }
     FreeDrawStuff();
     gcpavi = i;
-    InitStreams(); //This function inherent has a RecomputeStreamsTime component
+    InitStreams(); // This function inherent has a RecomputeStreamsTime component
 
     TestConvertFirstAudio();
 
-    //At this point, the gifirstaudio should be succesfully set
-    if ((needshift) && (giFirstAudio>=0)) {
+    // At this point, the gifirstaudio should be succesfully set
+    if ((needshift) && (giFirstAudio >= 0))
+    {
         // int value = 0;
         long startsample = 0;
 
-        startsample = SafeStreamTimeToSample( gapavi[giFirstAudio], starttime );
-        ErrMsg("giFirstAudio = %d,startsample = %d, starttime = %d",giFirstAudio,startsample, starttime);
+        startsample = SafeStreamTimeToSample(gapavi[giFirstAudio], starttime);
+        ErrMsg("giFirstAudio = %d,startsample = %d, starttime = %d", giFirstAudio, startsample, starttime);
 
-        if (startsample>0) {
+        if (startsample > 0)
+        {
             long startPos = startsample;
             long silenceLengthPasted = 0;
-            EditStreamSilenceShift( gapavi[giFirstAudio],  &startPos,  &silenceLengthPasted);
+            EditStreamSilenceShift(gapavi[giFirstAudio], &startPos, &silenceLengthPasted);
         }
     }
-    //This function is here mainly for the benefit of  needshift ==1
-    //however, for thecase where needshift == 0, the recomputation of Streams Time does not logically affect the original computation by InitStreams
-    //in this case, the recomputStreamsTime is basically for
-    //(a) setting the slider value
-    //or (b) for recomputing streamstime after a conversion
+    // This function is here mainly for the benefit of  needshift ==1
+    // however, for thecase where needshift == 0, the recomputation of Streams Time does not logically affect the
+    // original computation by InitStreams in this case, the recomputStreamsTime is basically for (a) setting the slider
+    // value or (b) for recomputing streamstime after a conversion
 
-    RecomputeStreamsTime(resetslider,timeCurrent);
+    RecomputeStreamsTime(resetslider, timeCurrent);
     FixScrollbars();
     FixWindowTitle();
 }
 
-void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile,long starttime, int keepcounter, int overwriteaudio)
+void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long starttime, int keepcounter, int overwriteaudio)
 {
-    //By default, if the resetslider is not specified, it is assumed to be TRUE
-    //I.e, the slider will be reset after each InsertAVIFile
+    // By default, if the resetslider is not specified, it is assumed to be TRUE
+    // I.e, the slider will be reset after each InsertAVIFile
     InsertAVIFile(pfile, lpszFile, starttime, keepcounter, overwriteaudio, TRUE);
 }
 
@@ -1240,7 +1322,8 @@ void FreeAvi()
 
     AVISaveOptionsFree(gcpavi, galpAVIOptions);
 
-    for (int i = 0; i < gcpavi; i++) {
+    for (int i = 0; i < gcpavi; i++)
+    {
         AVIStreamRelease(gapavi[i]);
     }
     // Good a place as any to make sure audio data gets freed
@@ -1258,74 +1341,90 @@ void InitAvi(LPSTR szFile, int nMenu)
 
 void InitAvi(LPSTR szFile, int nMenu, long starttime, int keepcounter, int overwriteaudio, int resetslider)
 {
-    HRESULT     hr;
-    PAVIFILE    pfile;
+    HRESULT hr;
+    PAVIFILE pfile;
 
     hr = AVIFileOpen(&pfile, szFile, 0, 0L);
 
-    if (hr != 0) {
+    if (hr != 0)
+    {
         ErrMsg("Unable to open file %s", szFile);
         return;
     }
     // If we're opening something new, close other open files, otherwise
     // just close the draw stuff so we'll merge streams with the new file
-    if (nMenu == MENU_OPEN) {
+    if (nMenu == MENU_OPEN)
+    {
         FreeAvi();
         fileModified = 0;
     }
-    //ErrMsg("overwite in initavi %d",overwriteaudio);
-    InsertAVIFile(pfile, szFile, starttime,  keepcounter,  overwriteaudio,resetslider);
+    // ErrMsg("overwite in initavi %d",overwriteaudio);
+    InsertAVIFile(pfile, szFile, starttime, keepcounter, overwriteaudio, resetslider);
 }
 
-UINT PlayAVIThread(LPVOID /*pParam*/) {
-    while (playerAlive) {
-        if (!gfRecording && initAudioRecording) {
+UINT PlayAVIThread(LPVOID /*pParam*/)
+{
+    while (playerAlive)
+    {
+        if (!gfRecording && initAudioRecording)
+        {
             initAudioRecording = FALSE;
             gfRecording = TRUE;
 
             InitAudioRecording();
             StartAudioRecording(&m_Format);
         }
-        if (gfRecording && endAudioRecording) {
+        if (gfRecording && endAudioRecording)
+        {
             endAudioRecording = FALSE;
             gfRecording = FALSE;
-            //gfPlaying = FALSE;
+            // gfPlaying = FALSE;
 
             StopAudioRecording();
             ClearAudioFile();
             CreateSilenceFile();
 
-            ::PostMessage(viewWnd,WM_USER_GENERIC,0,0);
+            ::PostMessage(viewWnd, WM_USER_GENERIC, 0, 0);
         }
-        if (gfPlaying) {
-            LONG l = aviaudioTime();         // returns -1 if no audio playing
+        if (gfPlaying)
+        {
+            LONG l = aviaudioTime(); // returns -1 if no audio playing
 
             // If we can't use the audio clock to tell us how long we've been
             // playing, calculate it ourself
             if (l == -1)
                 l = timeGetTime() - glPlayStartTime + glPlayStartPos;
 
-            if (l != (LONG)GetScrollTime()) {
-                if (l < timeStart) {
+            if (l != (LONG)GetScrollTime())
+            {
+                if (l < timeStart)
+                {
                     // make sure number isn't out of bounds
                     l = timeStart;
                 }
-                if (l > timeEnd) {
+                if (l > timeEnd)
+                {
                     // looks like we're all done!
                     if (pmode == PLAYER)
-                        PostMessage(viewWnd,WM_COMMAND,ID_FILE_STOP,0);
-                    else if (!allowRecordExtension) {
-                        //StopPlayingRecording();
-                        PostMessage(viewWnd,WM_COMMAND,ID_FILE_STOP,0);
-                    } else {
-                        //Allowing Recording Extension even if even if end of current file is reached
-                        if (gfRecording) {
-                            //Stop only the playing but not the recording
+                        PostMessage(viewWnd, WM_COMMAND, ID_FILE_STOP, 0);
+                    else if (!allowRecordExtension)
+                    {
+                        // StopPlayingRecording();
+                        PostMessage(viewWnd, WM_COMMAND, ID_FILE_STOP, 0);
+                    }
+                    else
+                    {
+                        // Allowing Recording Extension even if even if end of current file is reached
+                        if (gfRecording)
+                        {
+                            // Stop only the playing but not the recording
                             gfPlaying = FALSE;
-                            //l = timeEnd;
-                        } else {
-                            //playing mode...stop the playing
-                            PostMessage(viewWnd,WM_COMMAND,ID_FILE_STOP,0);
+                            // l = timeEnd;
+                        }
+                        else
+                        {
+                            // playing mode...stop the playing
+                            PostMessage(viewWnd, WM_COMMAND, ID_FILE_STOP, 0);
                         }
                     }
                 }
@@ -1342,18 +1441,18 @@ UINT PlayAVIThread(LPVOID /*pParam*/) {
     return 0;
 }
 
-int ErrMsg (LPSTR sz,...)
+int ErrMsg(LPSTR sz, ...)
 {
-    static char szOutput[4*BUFSIZE];
+    static char szOutput[4 * BUFSIZE];
 
     va_list va;
 
     va_start(va, sz);
-    wvsprintf (szOutput,sz,va);      /* Format the string */
+    wvsprintf(szOutput, sz, va); /* Format the string */
     va_end(va);
 
-    if ((runmode==0) || (runmode==1))
-        MessageBox(NULL,szOutput,NULL, MB_OK|MB_ICONEXCLAMATION|MB_TASKMODAL);
+    if ((runmode == 0) || (runmode == 1))
+        MessageBox(NULL, szOutput, NULL, MB_OK | MB_ICONEXCLAMATION | MB_TASKMODAL);
     return FALSE;
 }
 
@@ -1364,12 +1463,15 @@ void FreeDrawStuff()
     // Make sure we're not playing!
     aviaudioStop();
 
-    for (i = 0; i < gcpavi; i++) {
-        if (gapgf[i]) {
+    for (i = 0; i < gcpavi; i++)
+    {
+        if (gapgf[i])
+        {
             AVIStreamGetFrameClose(gapgf[i]);
             gapgf[i] = NULL;
         }
-        if (ghdd[i]) {
+        if (ghdd[i])
+        {
             DrawDibClose(ghdd[i]);
             ghdd[i] = 0;
         }
@@ -1382,61 +1484,65 @@ void FileStop(int mode)
 {
     if (mode == SOUND_MODE)
     {
-        if    (gfAudioFound)
+        if (gfAudioFound)
             aviaudioStop();
-
     }
-    //else {//silent mode
+    // else {//silent mode
     //}
     gfPlaying = FALSE;
 }
 
-void RecomputeStreamsTime(int resetslider,long timeCurrent)
+void RecomputeStreamsTime(int resetslider, long timeCurrent)
 {
     timeStart = 0x7FFFFFFF;
-    timeEnd   = 0;
+    timeEnd = 0;
 
     // Walk through and init all streams loaded
-    for (int i = 0; i < gcpavi; i++) {
+    for (int i = 0; i < gcpavi; i++)
+    {
         timeStart = min(timeStart, AVIStreamStartTime(gapavi[i]));
-        timeEnd   = max(timeEnd, AVIStreamEndTime(gapavi[i]));
+        timeEnd = max(timeEnd, AVIStreamEndTime(gapavi[i]));
     }
     timeLength = timeEnd - timeStart;
 
-    if (timeLength == 0) timeLength = 1;
+    if (timeLength == 0)
+        timeLength = 1;
 
     // Make sure HSCROLL scrolls enough to be noticeable.
     timehscroll = max(timehscroll, timeLength / MAXTIMERANGE + 2);
 
-    //Set the slider positiom after the timeLenght has been adjusted
-    if (resetslider == NO_RESET_SLIDER) {
-        //Do nothing
+    // Set the slider positiom after the timeLenght has been adjusted
+    if (resetslider == NO_RESET_SLIDER)
+    {
+        // Do nothing
     }
     else if (resetslider == RESET_TO_START)
-        SetScrollTime( timeStart);
-    else if (resetslider == RESET_TO_CURRENT) //This setting has not been tested, it is set to the position of the scrolltime where no stream functions has been previously altered
-        SetScrollTime( timeCurrent);
+        SetScrollTime(timeStart);
+    else if (resetslider == RESET_TO_CURRENT) // This setting has not been tested, it is set to the position of the
+                                              // scrolltime where no stream functions has been previously altered
+        SetScrollTime(timeCurrent);
 
     return;
 }
 
 void InitStreams()
 {
-    AVISTREAMINFO     avis;
-    LONG        lTemp;
-    int         i;
+    AVISTREAMINFO avis;
+    LONG lTemp;
+    int i;
     int needTestConvert = 0;
 
     //
     // Start with bogus times
     //
     timeStart = 0x7FFFFFFF;
-    timeEnd   = 0;
+    timeEnd = 0;
 
     //
     // Walk through and init all streams loaded
     //
-    for (i = 0; i < gcpavi; i++) {
+    for (i = 0; i < gcpavi; i++)
+    {
         AVIStreamInfo(gapavi[i], &avis, sizeof(avis));
 
         //
@@ -1455,49 +1561,44 @@ void InitStreams()
         //
         galpAVIOptions[i]->fccType = avis.fccType;
 
-        switch(avis.fccType) {
-case streamtypeVIDEO:
-    galpAVIOptions[i]->dwFlags = AVICOMPRESSF_VALID |
-        AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
-    galpAVIOptions[i]->fccHandler = 0;
-    galpAVIOptions[i]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
-    galpAVIOptions[i]->dwKeyFrameEvery = (DWORD)-1; // Default
-    galpAVIOptions[i]->dwBytesPerSecond = 0;
-    galpAVIOptions[i]->dwInterleaveEvery = 1;
-    break;
+        switch (avis.fccType)
+        {
+            case streamtypeVIDEO:
+                galpAVIOptions[i]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
+                galpAVIOptions[i]->fccHandler = 0;
+                galpAVIOptions[i]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
+                galpAVIOptions[i]->dwKeyFrameEvery = (DWORD)-1; // Default
+                galpAVIOptions[i]->dwBytesPerSecond = 0;
+                galpAVIOptions[i]->dwInterleaveEvery = 1;
+                break;
 
-case streamtypeAUDIO:
-    galpAVIOptions[i]->dwFlags |= AVICOMPRESSF_VALID;
-    galpAVIOptions[i]->dwInterleaveEvery = 1;
-    AVIStreamReadFormat(gapavi[i],
-        AVIStreamStart(gapavi[i]),
-        NULL,
-        &lTemp);
-    galpAVIOptions[i]->cbFormat = lTemp;
-    if (lTemp)
-        galpAVIOptions[i]->lpFormat = GlobalAllocPtr(GHND, lTemp);
-    // Use current format as default format
-    if (galpAVIOptions[i]->lpFormat)
-        AVIStreamReadFormat(gapavi[i],
-        AVIStreamStart(gapavi[i]),
-        galpAVIOptions[i]->lpFormat,
-        &lTemp);
-    break;
+            case streamtypeAUDIO:
+                galpAVIOptions[i]->dwFlags |= AVICOMPRESSF_VALID;
+                galpAVIOptions[i]->dwInterleaveEvery = 1;
+                AVIStreamReadFormat(gapavi[i], AVIStreamStart(gapavi[i]), NULL, &lTemp);
+                galpAVIOptions[i]->cbFormat = lTemp;
+                if (lTemp)
+                    galpAVIOptions[i]->lpFormat = GlobalAllocPtr(GHND, lTemp);
+                // Use current format as default format
+                if (galpAVIOptions[i]->lpFormat)
+                    AVIStreamReadFormat(gapavi[i], AVIStreamStart(gapavi[i]), galpAVIOptions[i]->lpFormat, &lTemp);
+                break;
 
-default:
-    break;
+            default:
+                break;
         }
         //
         // We're finding the earliest and latest start and end points for
         // our scrollbar.
         //
         timeStart = min(timeStart, AVIStreamStartTime(gapavi[i]));
-        timeEnd   = max(timeEnd, AVIStreamEndTime(gapavi[i]));
+        timeEnd = max(timeEnd, AVIStreamEndTime(gapavi[i]));
 
         //
         // Initialize video streams for getting decompressed frames to display
         //
-        if (avis.fccType == streamtypeVIDEO) {
+        if (avis.fccType == streamtypeVIDEO)
+        {
             gapgf[i] = AVIStreamGetFrameOpen(gapavi[i], NULL);
 
             if (gapgf[i] == NULL)
@@ -1506,8 +1607,9 @@ default:
             ghdd[i] = DrawDibOpen();
             // !!! DrawDibBegin?
 
-            if (!gfVideoFound) {
-                DWORD        dw;
+            if (!gfVideoFound)
+            {
+                DWORD dw;
 
                 //
                 // Remember the first video stream --- treat it specially
@@ -1520,27 +1622,26 @@ default:
                 //
                 dw = (avis.rcFrame.right - avis.rcFrame.left) * gwZoom / 4 + HSPACE;
 
-                gdwMicroSecPerPixel = muldiv32(1000000,
-                    avis.dwScale,
-                    dw * avis.dwRate);
+                gdwMicroSecPerPixel = muldiv32(1000000, avis.dwScale, dw * avis.dwRate);
                 // Move one frame on the top video screen for each HSCROLL
                 timehscroll = muldiv32(1000, avis.dwScale, avis.dwRate);
             }
-        } else if (avis.fccType == streamtypeAUDIO) {
+        }
+        else if (avis.fccType == streamtypeAUDIO)
+        {
             // These aren't used and better be NULL!
-            ghdd[i] =   NULL;
+            ghdd[i] = NULL;
             gapgf[i] = NULL;
-            //gapgf[i] =  ghdd[i] =   NULL;
+            // gapgf[i] =  ghdd[i] =   NULL;
 
             //
             // If there are no video streams, we base everything on this
             // audio stream.
             //
-            if (!gfAudioFound && !gfVideoFound) {
+            if (!gfAudioFound && !gfVideoFound)
+            {
                 // Show one sample per pixel
-                gdwMicroSecPerPixel = muldiv32(1000000,
-                    avis.dwScale,
-                    avis.dwRate);
+                gdwMicroSecPerPixel = muldiv32(1000000, avis.dwScale, avis.dwRate);
                 // Move one sample per HSCROLL
                 // Move at least enough to show movement
                 timehscroll = muldiv32(1000, avis.dwScale, avis.dwRate);
@@ -1548,11 +1649,11 @@ default:
             //
             // Remember the first audio stream --- treat it specially
             //
-            if (!gfAudioFound) {
-                //ErrMsg("reset");
+            if (!gfAudioFound)
+            {
+                // ErrMsg("reset");
                 giFirstAudio = i;
                 needTestConvert = 1;
-
             }
         }
     }
@@ -1565,49 +1666,51 @@ default:
     timehscroll = max(timehscroll, timeLength / MAXTIMERANGE + 2);
 }
 
-//if ret -1, pavi still valid, paviConverted if not null, is not valid
-//if ret 0, pavi, which is unconverted, remains the valid stream, paviConverted if not null, is not valid
-//if ret 1,2 or 3 , and paviConverted* is not null, both pavi and paviConverted is valid after returned
-//if ret 1,2 or 3 , and paviConverted* is null, only pavi is valid, paviConverted remains null
-//if paviDstFormat is NULL, convert to defaultRecordingFormat
-//pavi : stream to convert
-//paviConverted  :ptr to converted straam
-//paviDstFormat  :if not null and in PCM, convert to this format, esle convert to recoring format
-int TestConvert(PAVISTREAM pavi, PAVISTREAM* paviConverted, PAVISTREAM paviDstFormat )
+// if ret -1, pavi still valid, paviConverted if not null, is not valid
+// if ret 0, pavi, which is unconverted, remains the valid stream, paviConverted if not null, is not valid
+// if ret 1,2 or 3 , and paviConverted* is not null, both pavi and paviConverted is valid after returned
+// if ret 1,2 or 3 , and paviConverted* is null, only pavi is valid, paviConverted remains null
+// if paviDstFormat is NULL, convert to defaultRecordingFormat
+// pavi : stream to convert
+// paviConverted  :ptr to converted straam
+// paviDstFormat  :if not null and in PCM, convert to this format, esle convert to recoring format
+int TestConvert(PAVISTREAM pavi, PAVISTREAM *paviConverted, PAVISTREAM paviDstFormat)
 {
     // take _THIS_GIVES_OTHERWISE_WARNING_C4702_IS_UNREACHABLE_CODE_ in account when preventing warnings
-    pavi=pavi;
-    paviConverted= paviConverted;    //Eliminates C4100 warning
-    paviDstFormat= paviDstFormat;    //Eliminates C4100 warning
-    //restore
+    pavi = pavi;
+    paviConverted = paviConverted; // Eliminates C4100 warning
+    paviDstFormat = paviDstFormat; // Eliminates C4100 warning
+    // restore
     return 0;
 
 // #define _THIS_GIVES_OTHERWISE_WARNING_C4702_IS_UNREACHABLE_CODE_
 #ifdef _THIS_GIVES_OTHERWISE_WARNING_C4702_IS_UNREACHABLE_CODE_
-    if (pmode == PLAYER) return 0;
+    if (pmode == PLAYER)
+        return 0;
 
-    //0 :No Error, No Conversion Needed
+    // 0 :No Error, No Conversion Needed
     //-1 :Error
-    //1 : Conversion Succeed, Compressed to PCM Conversion performed
-    //2 : Conversion Succeed, PCM to PCM Rate Conversion performed
-    //3 : Conversion Succeed, Compressed to PCM *and* PCM Rate Conversion performed
+    // 1 : Conversion Succeed, Compressed to PCM Conversion performed
+    // 2 : Conversion Succeed, PCM to PCM Rate Conversion performed
+    // 3 : Conversion Succeed, Compressed to PCM *and* PCM Rate Conversion performed
     int ret = 0;
 
     AVISTREAMINFO avis;
     AVIStreamInfo(pavi, &avis, sizeof(avis));
 
-    if (avis.fccType == streamtypeAUDIO) {
+    if (avis.fccType == streamtypeAUDIO)
+    {
         WAVEFORMATEX PCMFormat;
         PAVISTREAM intermediatePCMStream = NULL;
         PAVISTREAM finalPCMStream = NULL;
 
         int nonPCM = 0;
         LPWAVEFORMATEX srcWaveFormat;
-        srcWaveFormat =allocRetrieveAudioFormat(pavi);
+        srcWaveFormat = allocRetrieveAudioFormat(pavi);
         if (srcWaveFormat == NULL)
             return -1;
 
-        if (srcWaveFormat->wFormatTag!=WAVE_FORMAT_PCM)
+        if (srcWaveFormat->wFormatTag != WAVE_FORMAT_PCM)
         {
             nonPCM = 1;
             // *****************************
@@ -1615,9 +1718,11 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM* paviConverted, PAVISTREAM paviDstFo
             // *****************************
 
             PCMFormat.wFormatTag = WAVE_FORMAT_PCM;
-            MMRESULT mmr = acmFormatSuggest(NULL, srcWaveFormat, &PCMFormat, sizeof(PCMFormat), ACM_FORMATSUGGESTF_WFORMATTAG);
+            MMRESULT mmr =
+                acmFormatSuggest(NULL, srcWaveFormat, &PCMFormat, sizeof(PCMFormat), ACM_FORMATSUGGESTF_WFORMATTAG);
 
-            if (mmr!=0) {
+            if (mmr != 0)
+            {
                 ErrMsg("Error suggesting PCM format for conversion !");
             }
             AVICOMPRESSOPTIONS compressOptions;
@@ -1628,27 +1733,29 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM* paviConverted, PAVISTREAM paviDstFo
             compressOptions.cbFormat = sizeof(PCMFormat);
             compressOptions.lpFormat = &PCMFormat;
 
-            //ErrMsg("Here is fine 0!");
-            if (AVIMakeCompressedStream(&intermediatePCMStream,pavi,&compressOptions,NULL)!=AVIERR_OK)
+            // ErrMsg("Here is fine 0!");
+            if (AVIMakeCompressedStream(&intermediatePCMStream, pavi, &compressOptions, NULL) != AVIERR_OK)
             {
                 ErrMsg("Error converting to PCM format!");
                 return -1;
             }
-            ret+=1;
-
+            ret += 1;
         }
-        if (nonPCM) {
-            //ReRead the audio format
-            if (srcWaveFormat)     free(srcWaveFormat);
+        if (nonPCM)
+        {
+            // ReRead the audio format
+            if (srcWaveFormat)
+                free(srcWaveFormat);
 
-            srcWaveFormat =allocRetrieveAudioFormat(intermediatePCMStream);
+            srcWaveFormat = allocRetrieveAudioFormat(intermediatePCMStream);
 
             if (srcWaveFormat == NULL)
             {
                 ErrMsg("Here is read 5!");
 
-                //release the intermediate stream only if the original stream for conversion is non PCM
-                if ((nonPCM) && (intermediatePCMStream)) AVIStreamRelease(intermediatePCMStream);
+                // release the intermediate stream only if the original stream for conversion is non PCM
+                if ((nonPCM) && (intermediatePCMStream))
+                    AVIStreamRelease(intermediatePCMStream);
                 return -1;
             }
         }
@@ -1659,12 +1766,13 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM* paviConverted, PAVISTREAM paviDstFo
 
         LPWAVEFORMATEX dstFormat = NULL;
         int needPhaseTwoConversion = 0;
-        if (paviDstFormat) {
-            dstFormat=allocRetrieveAudioFormat(paviDstFormat);
+        if (paviDstFormat)
+        {
+            dstFormat = allocRetrieveAudioFormat(paviDstFormat);
             needPhaseTwoConversion = 1;
-
         }
-        else {  // convert to recording format
+        else
+        { // convert to recording format
 
             if ((srcWaveFormat->nChannels != m_Format.nChannels) ||
                 (srcWaveFormat->nSamplesPerSec != m_Format.nSamplesPerSec) ||
@@ -1674,7 +1782,6 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM* paviConverted, PAVISTREAM paviDstFo
                 (srcWaveFormat->cbSize != m_Format.cbSize))
             {
                 needPhaseTwoConversion = 1;
-
             }
         }
         if (needPhaseTwoConversion)
@@ -1688,35 +1795,37 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM* paviConverted, PAVISTREAM paviDstFo
                 ErrMsg("Invalid Working Format!Working Format is non PCM !");
                 free(srcWaveFormat);
 
-                //release the intermediate stream only if the original stream for conversion is non PCM
-                if (nonPCM) AVIStreamRelease(intermediatePCMStream);
+                // release the intermediate stream only if the original stream for conversion is non PCM
+                if (nonPCM)
+                    AVIStreamRelease(intermediatePCMStream);
                 return -1;
-
             }
             if (srcWaveFormat->wFormatTag != WAVE_FORMAT_PCM)
             {
                 ErrMsg("Invalid Intermediate Format! Intermediate Format is non PCM !");
                 free(srcWaveFormat);
 
-                //release the intermediate stream only if the original stream for conversion is non PCM
-                if (nonPCM) AVIStreamRelease(intermediatePCMStream);
+                // release the intermediate stream only if the original stream for conversion is non PCM
+                if (nonPCM)
+                    AVIStreamRelease(intermediatePCMStream);
                 return -1;
-
             }
-            if (dstFormat) {
-                if (dstFormat->wFormatTag != WAVE_FORMAT_PCM) {
+            if (dstFormat)
+            {
+                if (dstFormat->wFormatTag != WAVE_FORMAT_PCM)
+                {
                     ErrMsg("Invalid Destination Format! Destination Format is non PCM !");
                     free(srcWaveFormat);
                     free(dstFormat);
 
-                    //release the intermediate stream only if the original stream for conversion is non PCM
-                    if (nonPCM) AVIStreamRelease(intermediatePCMStream);
+                    // release the intermediate stream only if the original stream for conversion is non PCM
+                    if (nonPCM)
+                        AVIStreamRelease(intermediatePCMStream);
 
                     return -1;
-
                 }
             }
-            //Setting Dest Format
+            // Setting Dest Format
             PCMFormat.wFormatTag = WAVE_FORMAT_PCM;
             PCMFormat.nChannels = m_Format.nChannels;
             PCMFormat.nSamplesPerSec = m_Format.nSamplesPerSec;
@@ -1725,36 +1834,41 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM* paviConverted, PAVISTREAM paviDstFo
             PCMFormat.wBitsPerSample = m_Format.wBitsPerSample;
             PCMFormat.cbSize = 0;
 
-            //ErrMsg("Here is fine 1!");
+            // ErrMsg("Here is fine 1!");
             MMRESULT mmr;
-            if (dstFormat) {
-                //By not sugessting, but using convert directly...we increase the chance of no crashing..
-                //mmr = acmFormatSuggest(NULL, srcWaveFormat, dstFormat, sizeof(PCMFormat), ACM_FORMATSUGGESTF_NCHANNELS  | ACM_FORMATSUGGESTF_NSAMPLESPERSEC | ACM_FORMATSUGGESTF_WBITSPERSAMPLE | ACM_FORMATSUGGESTF_WFORMATTAG);
-
+            if (dstFormat)
+            {
+                // By not sugessting, but using convert directly...we increase the chance of no crashing..
+                // mmr = acmFormatSuggest(NULL, srcWaveFormat, dstFormat, sizeof(PCMFormat),
+                // ACM_FORMATSUGGESTF_NCHANNELS  | ACM_FORMATSUGGESTF_NSAMPLESPERSEC | ACM_FORMATSUGGESTF_WBITSPERSAMPLE
+                // | ACM_FORMATSUGGESTF_WFORMATTAG);
             }
-            else {
-                mmr = acmFormatSuggest(NULL, srcWaveFormat, &PCMFormat, sizeof(PCMFormat), ACM_FORMATSUGGESTF_NCHANNELS  | ACM_FORMATSUGGESTF_NSAMPLESPERSEC | ACM_FORMATSUGGESTF_WBITSPERSAMPLE | ACM_FORMATSUGGESTF_WFORMATTAG );
-
+            else
+            {
+                mmr = acmFormatSuggest(NULL, srcWaveFormat, &PCMFormat, sizeof(PCMFormat),
+                                       ACM_FORMATSUGGESTF_NCHANNELS | ACM_FORMATSUGGESTF_NSAMPLESPERSEC |
+                                           ACM_FORMATSUGGESTF_WBITSPERSAMPLE | ACM_FORMATSUGGESTF_WFORMATTAG);
             }
-            if (mmr!=0) {
+            if (mmr != 0)
+            {
                 ErrMsg("Error suggesting compatible PCM working format for conversion !");
 
                 free(srcWaveFormat);
 
-                //release the intermediate stream only if the original stream for conversion is non PCM
-                if (nonPCM) AVIStreamRelease(intermediatePCMStream);
+                // release the intermediate stream only if the original stream for conversion is non PCM
+                if (nonPCM)
+                    AVIStreamRelease(intermediatePCMStream);
 
                 return -1;
             }
-            if ((PCMFormat.nAvgBytesPerSec != m_Format.nAvgBytesPerSec) || (PCMFormat.nBlockAlign != m_Format.nBlockAlign))
+            if ((PCMFormat.nAvgBytesPerSec != m_Format.nAvgBytesPerSec) ||
+                (PCMFormat.nBlockAlign != m_Format.nBlockAlign))
             {
                 ErrMsg("Note: The format suggested for conversion is not compatible with the working format !");
 
-                //free(srcWaveFormat);
-                //release the intermediate stream only if the intermediate stream is not a pointer to the original stream
-                //if (nonPCM) AVIStreamRelease(intermediatePCMStream);
-                //return -1;
-
+                // free(srcWaveFormat);
+                // release the intermediate stream only if the intermediate stream is not a pointer to the original
+                // stream if (nonPCM) AVIStreamRelease(intermediatePCMStream); return -1;
             }
             AVICOMPRESSOPTIONS compressOptionsFinal;
             _fmemset(&compressOptionsFinal, 0, sizeof(AVICOMPRESSOPTIONS));
@@ -1762,151 +1876,157 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM* paviConverted, PAVISTREAM paviDstFo
             compressOptionsFinal.dwFlags |= AVICOMPRESSF_VALID;
             compressOptionsFinal.dwInterleaveEvery = 1;
 
-            //LPWAVEFORMATEX xformat = allocRetrieveAudioFormat(gapavi[giFirstAudio]);
+            // LPWAVEFORMATEX xformat = allocRetrieveAudioFormat(gapavi[giFirstAudio]);
 
-            if (dstFormat) {
-                //ErrMsg("1");
+            if (dstFormat)
+            {
+                // ErrMsg("1");
                 compressOptionsFinal.cbFormat = sizeof(*dstFormat);
                 compressOptionsFinal.lpFormat = dstFormat;
             }
-            else {
+            else
+            {
                 compressOptionsFinal.cbFormat = sizeof(PCMFormat);
                 compressOptionsFinal.lpFormat = &PCMFormat;
             }
-            if (AVIMakeCompressedStream(&finalPCMStream,intermediatePCMStream,&compressOptionsFinal,NULL)!=AVIERR_OK)
+            if (AVIMakeCompressedStream(&finalPCMStream, intermediatePCMStream, &compressOptionsFinal, NULL) !=
+                AVIERR_OK)
             {
                 ErrMsg("Error converting PCM attributes !");
                 free(srcWaveFormat);
 
-                //release the intermediate stream only if the original stream for conversion is non PCM
-                if (nonPCM) AVIStreamRelease(intermediatePCMStream);
+                // release the intermediate stream only if the original stream for conversion is non PCM
+                if (nonPCM)
+                    AVIStreamRelease(intermediatePCMStream);
                 return -1;
-
             }
-            ret+=2;
-
+            ret += 2;
         }
-        if (srcWaveFormat)     free(srcWaveFormat);
+        if (srcWaveFormat)
+            free(srcWaveFormat);
 
-        if (ret==0) {//no conversion necessary
+        if (ret == 0)
+        { // no conversion necessary
 
-            if (paviConverted) //if paviConverted is not null
+            if (paviConverted) // if paviConverted is not null
                 *paviConverted = 0;
-
         }
-        else if (ret==1)  { // only Compressed to PCM Conversion performed
+        else if (ret == 1)
+        { // only Compressed to PCM Conversion performed
 
-            if (paviConverted) //if paviConverted is not null
+            if (paviConverted) // if paviConverted is not null
                 *paviConverted = intermediatePCMStream;
-            else {
+            else
+            {
                 if (intermediatePCMStream)
                     AVIStreamRelease(intermediatePCMStream);
-
             }
         }
-        else if (ret==2)  { // only PCM Rate Conversion performed
+        else if (ret == 2)
+        { // only PCM Rate Conversion performed
 
-            if (paviConverted) //if paviConverted is not null
+            if (paviConverted) // if paviConverted is not null
                 *paviConverted = finalPCMStream;
-            else {
+            else
+            {
                 if (finalPCMStream)
                     AVIStreamRelease(finalPCMStream);
-
             }
         }
-        else if (ret==3)  { // both Conversion performed
+        else if (ret == 3)
+        { // both Conversion performed
 
-            if (paviConverted) //if paviConverted is not null
+            if (paviConverted) // if paviConverted is not null
                 *paviConverted = finalPCMStream;
-            else {
+            else
+            {
                 if (finalPCMStream)
                     AVIStreamRelease(finalPCMStream);
-
             }
             if (intermediatePCMStream)
                 AVIStreamRelease(intermediatePCMStream);
-
         }
     }
-    else {
+    else
+    {
         ErrMsg("Error converting audio, (Streamtype not Audio)");
         return -1;
-
     }
     return ret;
 #endif _THIS_GIVES_OTHERWISE_WARNING_C4702_IS_UNREACHABLE_CODE_
 }
 
-//Assume Stream is an audio stream
-//Need to free the waveformat after using this function
-LPWAVEFORMATEX  allocRetrieveAudioFormat(PAVISTREAM pavi)
+// Assume Stream is an audio stream
+// Need to free the waveformat after using this function
+LPWAVEFORMATEX allocRetrieveAudioFormat(PAVISTREAM pavi)
 {
-    LONG lStart,lLength;
+    LONG lStart, lLength;
     LPVOID srcFormat;
 
-    lStart=AVIStreamStart(pavi);
+    lStart = AVIStreamStart(pavi);
 
-    if (AVIStreamReadFormat(pavi,lStart,NULL,&lLength)!=0) {
+    if (AVIStreamReadFormat(pavi, lStart, NULL, &lLength) != 0)
+    {
         ErrMsg("Error converting audio (1)");
         return 0;
-
     }
-    if ((srcFormat=malloc(lLength))==NULL) {
+    if ((srcFormat = malloc(lLength)) == NULL)
+    {
         ErrMsg("Error converting audio (2)");
         return 0;
     }
-    if (AVIStreamReadFormat(pavi,lStart,srcFormat,&lLength)!=0)
+    if (AVIStreamReadFormat(pavi, lStart, srcFormat, &lLength) != 0)
     {
         ErrMsg("Error converting audio (3)");
         free(srcFormat);
         return 0;
     }
-    return (LPWAVEFORMATEX) srcFormat;
+    return (LPWAVEFORMATEX)srcFormat;
 }
 
 void FixWindowTitle()
 {
     char szTitle[512];
 
-    if (pmode == PLAYER) {
+    if (pmode == PLAYER)
+    {
         if (gszFileTitle[0])
-            //wsprintf(szTitle, "Player - %s", (LPSTR)gszFileTitle);
+            // wsprintf(szTitle, "Player - %s", (LPSTR)gszFileTitle);
             wsprintf(szTitle, "Player :- %s", (LPSTR)gszFileTitle);
         else
             wsprintf(szTitle, "Player");
-
     }
-    else {
+    else
+    {
         if (gszFileTitle[0])
-            //wsprintf(szTitle, "Player - %s", (LPSTR)gszFileTitle);
+            // wsprintf(szTitle, "Player - %s", (LPSTR)gszFileTitle);
             wsprintf(szTitle, "SWF Producer :- %s", (LPSTR)gszFileTitle);
         else
             wsprintf(szTitle, "SWF Producer");
-
     }
     SetTitleBar(szTitle);
 }
 
 void SetTitleBar(CString title)
 {
-    CWinApp* app = NULL;
-    app    = AfxGetApp();
-    if (app) {
+    CWinApp *app = NULL;
+    app = AfxGetApp();
+    if (app)
+    {
         HWND mainwnd = NULL;
-        mainwnd= app->m_pMainWnd->m_hWnd;
+        mainwnd = app->m_pMainWnd->m_hWnd;
         if (mainwnd)
             ::SetWindowText(mainwnd, LPCTSTR(title));
-
     }
 }
 
 void FixScrollbars()
 {
-    int                 nHeight = 0;
-    int                 nWidth = 0;
-    RECT                rc;
-    HDC                 hdc;
-    HWND                hwnd;
+    int nHeight = 0;
+    int nWidth = 0;
+    RECT rc;
+    HDC hdc;
+    HWND hwnd;
 
     hwnd = viewWnd;
 
@@ -1914,7 +2034,7 @@ void FixScrollbars()
     // Determine how tall our window needs to be to display everything.
     //
     hdc = GetDC(NULL);
-    ExcludeClipRect(hdc, 0, 0, 32767, 32767);   // don't actually draw
+    ExcludeClipRect(hdc, 0, 0, 32767, 32767); // don't actually draw
     nHeight = PaintStuff(hdc, hwnd, TRUE);
     ReleaseDC(NULL, hdc);
 
@@ -1922,15 +2042,15 @@ void FixScrollbars()
     // Set vertical scrollbar for scrolling the visible area
     //
     GetClientRect(hwnd, &rc);
-    nVertHeight = nHeight;      // total height in pixels of entire display
+    nVertHeight = nHeight; // total height in pixels of entire display
 
     RECT rcImage;
     GetImageDimension(rcImage);
 
-    if (gwZoom>=4)
-        nHorzWidth = ((rcImage.right-rcImage.left+1)*gwZoom)/4;
+    if (gwZoom >= 4)
+        nHorzWidth = ((rcImage.right - rcImage.left + 1) * gwZoom) / 4;
     else
-        nHorzWidth = rcImage.right-rcImage.left+1;
+        nHorzWidth = rcImage.right - rcImage.left + 1;
 
     //
     // We won't fit in the window... need scrollbars
@@ -1971,30 +2091,30 @@ void FixScrollbars()
     return;
 }
 
-//Using this function assume that gcpavi, the number of streams
-//and gapavi[], the stream array is properly initialized
-//Return the Dimension of the first video stream
-void GetImageDimension(RECT& rcFrame)
+// Using this function assume that gcpavi, the number of streams
+// and gapavi[], the stream array is properly initialized
+// Return the Dimension of the first video stream
+void GetImageDimension(RECT &rcFrame)
 {
-    AVISTREAMINFO   avis;
+    AVISTREAMINFO avis;
 
-    avis.rcFrame.left=0;
-    avis.rcFrame.right=0;
-    avis.rcFrame.top=0;
-    avis.rcFrame.bottom=0;
+    avis.rcFrame.left = 0;
+    avis.rcFrame.right = 0;
+    avis.rcFrame.top = 0;
+    avis.rcFrame.bottom = 0;
 
     int j;
-    for (j=0; j<gcpavi; j++) {
+    for (j = 0; j < gcpavi; j++)
+    {
         AVIStreamInfo(gapavi[j], &avis, sizeof(avis));
 
         if (avis.fccType == streamtypeVIDEO)
         {
             if (gapgf[j] != NULL)
-                break; //break from for loop
-
+                break; // break from for loop
         }
     }
-    rcFrame=avis.rcFrame;
+    rcFrame = avis.rcFrame;
 }
 
 int CPlayplusView::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -2013,33 +2133,33 @@ int CPlayplusView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     AVIFileInit();
 
     HDC hScreenDC = ::GetDC(NULL);
-    nColors = ::GetDeviceCaps(hScreenDC, BITSPIXEL );
-    maxxScreen = GetDeviceCaps(hScreenDC,HORZRES);
-    maxyScreen = GetDeviceCaps(hScreenDC,VERTRES);
-    ::ReleaseDC(NULL,hScreenDC);
+    nColors = ::GetDeviceCaps(hScreenDC, BITSPIXEL);
+    maxxScreen = GetDeviceCaps(hScreenDC, HORZRES);
+    maxyScreen = GetDeviceCaps(hScreenDC, VERTRES);
+    ::ReleaseDC(NULL, hScreenDC);
 
     if (pmode == PLAYER)
-        hLogoBM = LoadBitmap( AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_LOGO_PLAYER));
+        hLogoBM = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_LOGO_PLAYER));
     else if (pmode == DUBBER)
-        hLogoBM = LoadBitmap( AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_LOGO_DUBBER));
+        hLogoBM = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_LOGO_DUBBER));
 
-    int tdata=0;
+    int tdata = 0;
     /*CWinThread * pThread = */ (void)AfxBeginThread(PlayAVIThread, &tdata);
 
-    audioPlayable = waveOutGetNumDevs ();
+    audioPlayable = waveOutGetNumDevs();
 
     audioRecordable = waveInGetNumDevs();
-    if (audioRecordable) {
+    if (audioRecordable)
+    {
         SuggestRecordingFormat();
         SuggestCompressFormat();
-
     }
     if (PLAYER == pmode)
         allowRecordExtension = 0;
     else if (DUBBER == pmode)
         allowRecordExtension = 1;
 
-    //ver 2.25
+    // ver 2.25
     CreatePropertySheet();
 
     return 0;
@@ -2050,89 +2170,92 @@ void CPlayplusView::OnDestroy()
     CView::OnDestroy();
 
     AVIClearClipboard();
-    FreeAvi();      // close all open streams
-    AVIFileExit();      // shuts down the AVIFile system
+    FreeAvi();     // close all open streams
+    AVIFileExit(); // shuts down the AVIFile system
 
-    if (hLogoBM) {
+    if (hLogoBM)
+    {
         DeleteObject(hLogoBM);
         hLogoBM = NULL;
     }
-    if (pwfx) {
+    if (pwfx)
+    {
         GlobalFreePtr(pwfx);
         pwfx = NULL;
-
     }
     if (runmode == 0 || runmode == 1)
-        SaveSettings() ;
+        SaveSettings();
 
-    //SaveController();
+    // SaveController();
 
-    //Multilanguage
-    if ( CurLangID != STANDARD_LANGID )
-        FreeLibrary( AfxGetResourceHandle() );
+    // Multilanguage
+    if (CurLangID != STANDARD_LANGID)
+        FreeLibrary(AfxGetResourceHandle());
 }
 
 void CPlayplusView::OnPaint()
 {
-    if (!doneOnce) {
-        if (strlen(playfiledir)!=0) {
+    if (!doneOnce)
+    {
+        if (strlen(playfiledir) != 0)
+        {
             OpenMovieFileInit(playfiledir);
             doneOnce = 1;
 
             if (0 < runmode)
             {
-                //Assign default output name
-                //swfname = playfiledir;
+                // Assign default output name
+                // swfname = playfiledir;
                 AdjustOutName(playfiledir);
 
-                //silence mode
+                // silence mode
                 if (runmode == 2)
                 {
-                    //these settings will override those in CamStudio.Producer.param file
-                    //becuase loadsettings is called first
+                    // these settings will override those in CamStudio.Producer.param file
+                    // becuase loadsettings is called first
                     launchHTMLPlayer = 0;
                     launchPropPrompt = 0;
                     deleteAVIAfterUse = 0;
-
                 }
-                //launchHTMLPlayer = 0;
-                //OnFileConverttoswf();
-                PostMessage(WM_COMMAND,ID_FILE_CONVERTTOSWF,0);
+                // launchHTMLPlayer = 0;
+                // OnFileConverttoswf();
+                PostMessage(WM_COMMAND, ID_FILE_CONVERTTOSWF, 0);
             }
         }
-        doneOnce=1;
-
+        doneOnce = 1;
     }
     CPaintDC dc(this); // device context for painting
 
     // TODO: Add your message handler code here
-    if (gcpavi<=0) {
-        if (nColors >= 8) {
+    if (gcpavi <= 0)
+    {
+        if (nColors >= 8)
+        {
             HDC hdcBits = CreateCompatibleDC(dc.m_hDC);
 
             CRect rect;
-            GetClientRect( &rect);
+            GetClientRect(&rect);
 
-            int offsetx=0;
-            int offsety=0;
+            int offsetx = 0;
+            int offsety = 0;
             int bitmapwidth = 300;
             int bitmapheight = 220;
 
-            if (rect.right> bitmapwidth)
-                offsetx = (rect.right - bitmapwidth)/2;
+            if (rect.right > bitmapwidth)
+                offsetx = (rect.right - bitmapwidth) / 2;
 
-            if (rect.bottom> bitmapheight)
-                offsety = (rect.bottom - bitmapheight)/2;
+            if (rect.bottom > bitmapheight)
+                offsety = (rect.bottom - bitmapheight) / 2;
 
-            HBITMAP old_bitmap =  (HBITMAP) ::SelectObject(hdcBits,hLogoBM);
+            HBITMAP old_bitmap = (HBITMAP)::SelectObject(hdcBits, hLogoBM);
 
-            //OffScreen Buffer
-            ::BitBlt(dc.m_hDC, offsetx, offsety, rect.right-rect.left+1, rect.bottom-rect.top+1, hdcBits, 0, 0, SRCCOPY);
+            // OffScreen Buffer
+            ::BitBlt(dc.m_hDC, offsetx, offsety, rect.right - rect.left + 1, rect.bottom - rect.top + 1, hdcBits, 0, 0,
+                     SRCCOPY);
 
             ::SelectObject(hdcBits, old_bitmap);
 
             DeleteDC(hdcBits);
-
         }
     }
     else
@@ -2147,15 +2270,15 @@ void CPlayplusView::OnPaint()
 void SetDurationLine()
 {
     CString durationStr(" 0.00 / 0.00 sec");
-    if (timeLength > 0) {
+    if (timeLength > 0)
+    {
         long timenow = GetScrollTime();
-        float durationPlayed = (float) ((timenow - timeStart)/1000.0);
-        float durationLength = (float) ((timeEnd - timeStart)/1000.0);
-        durationStr.Format(" %6.1f /%6.1f sec",durationPlayed,durationLength);
-
+        float durationPlayed = (float)((timenow - timeStart) / 1000.0);
+        float durationLength = (float)((timeEnd - timeStart) / 1000.0);
+        durationStr.Format(" %6.1f /%6.1f sec", durationPlayed, durationLength);
     }
     if (statusbarCtrl)
-        statusbarCtrl->SetPaneText(2,durationStr);
+        statusbarCtrl->SetPaneText(2, durationStr);
 }
 
 void SetRPSLine()
@@ -2168,13 +2291,14 @@ void SetRPSLine()
     else
         istr = "Stopped";
 
-    //istr += durationStr;
+    // istr += durationStr;
 
     if (statusbarCtrl)
-        statusbarCtrl->SetPaneText(1,istr);
+        statusbarCtrl->SetPaneText(1, istr);
 }
 
-BOOL CPlayplusView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext)
+BOOL CPlayplusView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect,
+                           CWnd *pParentWnd, UINT nID, CCreateContext *pContext)
 {
     // TODO: Add your specialized code here and/or call the base class
     BOOL retval = CWnd::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
@@ -2186,9 +2310,9 @@ BOOL CPlayplusView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD 
     swfbasename = "untitled.swf";
 
     if (1 == runmode)
-        LoadCommand(); //used internally by CamStudio Recorder
+        LoadCommand(); // used internally by CamStudio Recorder
 
-    //else if (runmode == 0 || runmode == 2)
+    // else if (runmode == 0 || runmode == 2)
     LoadSettings();
 
     loadingPath = GetProgPath() + "\\controller\\loadpiece.bmp";
@@ -2206,14 +2330,16 @@ void CPlayplusView::OnSize(UINT nType, int cx, int cy)
 
     hwnd = viewWnd;
 
-    if (gcpavi<=0) {
-        if (hwnd) {
+    if (gcpavi <= 0)
+    {
+        if (hwnd)
+        {
             ::SetScrollRange(hwnd, SB_VERT, 0, 0, TRUE);
             ::SetScrollRange(hwnd, SB_HORZ, 0, 0, TRUE);
         }
         return;
     }
-    //AdjustToolBar (hwnd);
+    // AdjustToolBar (hwnd);
 
     ::GetClientRect(hwnd, &rc);
 
@@ -2223,41 +2349,43 @@ void CPlayplusView::OnSize(UINT nType, int cx, int cy)
     // are required.
     //
 
-    //Added ver 1.0
+    // Added ver 1.0
     int ScrollVertWidth = GetSystemMetrics(SM_CXVSCROLL);
-    int ScrollHorzHeight = GetSystemMetrics(SM_CYHSCROLL );
+    int ScrollHorzHeight = GetSystemMetrics(SM_CYHSCROLL);
 
     int MinPos;
     int MaxPos;
     // int IncYVal = 0;
 
-    int origbottom=0;
-    int origright=0;
-    origbottom=rc.bottom;
-    origright=rc.right;
+    int origbottom = 0;
+    int origright = 0;
+    origbottom = rc.bottom;
+    origright = rc.right;
 
-    //Obtaining true client area including the scroll bars
+    // Obtaining true client area including the scroll bars
 
     MaxPos = 0;
-    ::GetScrollRange( hwnd, SB_HORZ, &MinPos , &MaxPos);
-    if (MaxPos>0)
+    ::GetScrollRange(hwnd, SB_HORZ, &MinPos, &MaxPos);
+    if (MaxPos > 0)
         rc.bottom += ScrollHorzHeight;
 
     MaxPos = 0;
-    ::GetScrollRange( hwnd, SB_VERT, &MinPos , &MaxPos);
-    if (MaxPos>0) {
+    ::GetScrollRange(hwnd, SB_VERT, &MinPos, &MaxPos);
+    if (MaxPos > 0)
+    {
         rc.right += ScrollVertWidth;
 
-        //This is a hack, as the above code GetScrollRange may sometimes detect the presence of a scroll bar even if it is absent
-        if (rc.right>rcWnd.right-rcWnd.left)
-            rc.right -= ScrollVertWidth;  //deduct back
-
+        // This is a hack, as the above code GetScrollRange may sometimes detect the presence of a scroll bar even if it
+        // is absent
+        if (rc.right > rcWnd.right - rcWnd.left)
+            rc.right -= ScrollVertWidth; // deduct back
     }
-    //rc.right and rc.bottom now refers to the true client area
-    if ((nVertHeight > rc.bottom  ) && (nHorzWidth > rc.right)) {
-        //Both Scroll Bars
+    // rc.right and rc.bottom now refers to the true client area
+    if ((nVertHeight > rc.bottom) && (nHorzWidth > rc.right))
+    {
+        // Both Scroll Bars
 
-        //Adjust the client client to reflect both scroll bars
+        // Adjust the client client to reflect both scroll bars
         rc.bottom -= ScrollHorzHeight;
         rc.right -= ScrollVertWidth;
 
@@ -2266,33 +2394,32 @@ void CPlayplusView::OnSize(UINT nType, int cx, int cy)
 
         nHorzSBLen = nHorzWidth - rc.right;
         ::SetScrollRange(hwnd, SB_HORZ, 0, nHorzSBLen, TRUE);
-
     }
-    else if ((nVertHeight <= rc.bottom  ) && (nHorzWidth <= rc.right))
+    else if ((nVertHeight <= rc.bottom) && (nHorzWidth <= rc.right))
     {
-        //No Scroll Bars
+        // No Scroll Bars
         nVertSBLen = 0;
         ::SetScrollRange(hwnd, SB_VERT, 0, 0, TRUE);
         nHorzSBLen = 0;
         ::SetScrollRange(hwnd, SB_HORZ, 0, 0, TRUE);
-
     }
-    else  if ((nVertHeight >rc.bottom  ) && (nHorzWidth <= rc.right))
+    else if ((nVertHeight > rc.bottom) && (nHorzWidth <= rc.right))
     {
-        if (nHorzWidth <= rc.right - ScrollVertWidth) { //if after the addition of vertical SCROLLBAR, the horizontal width is still larger than image
+        if (nHorzWidth <= rc.right - ScrollVertWidth)
+        { // if after the addition of vertical SCROLLBAR, the horizontal width is still larger than image
 
-            //Vert Scroll Bar Only
+            // Vert Scroll Bar Only
             nHorzSBLen = 0;
             ::SetScrollRange(hwnd, SB_HORZ, 0, 0, TRUE);
 
             nVertSBLen = nVertHeight - rc.bottom;
             ::SetScrollRange(hwnd, SB_VERT, 0, nVertSBLen, TRUE);
-
         }
-        else  {
-            //Activate Both ScrollBars
+        else
+        {
+            // Activate Both ScrollBars
 
-            //Adjust the client client to reflect both scroll bars
+            // Adjust the client client to reflect both scroll bars
             rc.bottom -= ScrollHorzHeight;
             rc.right -= ScrollVertWidth;
 
@@ -2301,25 +2428,25 @@ void CPlayplusView::OnSize(UINT nType, int cx, int cy)
 
             nHorzSBLen = nHorzWidth - rc.right;
             ::SetScrollRange(hwnd, SB_HORZ, 0, nHorzSBLen, TRUE);
-
         }
     }
-    else  if ((nVertHeight <= rc.bottom  ) && (nHorzWidth > rc.right))
+    else if ((nVertHeight <= rc.bottom) && (nHorzWidth > rc.right))
     {
-        if (nVertHeight <= rc.bottom - ScrollHorzHeight) { //if after the addition of horiz SCROLLBAR, the vertical height is still larger than image
+        if (nVertHeight <= rc.bottom - ScrollHorzHeight)
+        { // if after the addition of horiz SCROLLBAR, the vertical height is still larger than image
 
-            //Horiz Scroll Bar Only
+            // Horiz Scroll Bar Only
             nVertSBLen = 0;
             ::SetScrollRange(hwnd, SB_VERT, 0, 0, TRUE);
 
             nHorzSBLen = nHorzWidth - rc.right;
             ::SetScrollRange(hwnd, SB_HORZ, 0, nHorzSBLen, TRUE);
-
         }
-        else  {
-            //Activate Both ScrollBars
+        else
+        {
+            // Activate Both ScrollBars
 
-            //Adjust the client client to reflect both scroll bars
+            // Adjust the client client to reflect both scroll bars
             rc.bottom -= ScrollHorzHeight;
             rc.right -= ScrollVertWidth;
 
@@ -2328,7 +2455,6 @@ void CPlayplusView::OnSize(UINT nType, int cx, int cy)
 
             nHorzSBLen = nHorzWidth - rc.right;
             ::SetScrollRange(hwnd, SB_HORZ, 0, nHorzSBLen, TRUE);
-
         }
     }
 }
@@ -2341,24 +2467,23 @@ void CPlayplusView::OnFileLastframe()
     ::UpdateWindow(viewWnd);
 }
 
-BOOL CPlayplusView::OnEraseBkgnd(CDC* pDC)
+BOOL CPlayplusView::OnEraseBkgnd(CDC *pDC)
 {
     // Set brush to desired background color
     CBrush backBrush(RGB(0, 0, 0));
 
     // Save old brush
-    CBrush* pOldBrush = pDC->SelectObject(&backBrush);
+    CBrush *pOldBrush = pDC->SelectObject(&backBrush);
 
     CRect rect;
-    pDC->GetClipBox(&rect);     // Erase the area needed
+    pDC->GetClipBox(&rect); // Erase the area needed
 
-    pDC->PatBlt(rect.left, rect.top, rect.Width(), rect.Height(),
-        PATCOPY);
+    pDC->PatBlt(rect.left, rect.top, rect.Width(), rect.Height(), PATCOPY);
     pDC->SelectObject(pOldBrush);
     return TRUE;
 }
 
-void CPlayplusView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+void CPlayplusView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
 {
     // TODO: Add your message handler code here and/or call default
 
@@ -2374,22 +2499,22 @@ void CPlayplusView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
     switch (nSBCode)
     {
-    case SB_LINEDOWN:
-        nScrollPos += 10;
-        break;
-    case SB_LINEUP:
-        nScrollPos -= 10;
-        break;
-    case SB_PAGEDOWN:
-        nScrollPos += rc.right;
-        break;
-    case SB_PAGEUP:
-        nScrollPos -= rc.right;
-        break;
-    case SB_THUMBTRACK:
-    case SB_THUMBPOSITION:
-        nScrollPos = nPos;
-        break;
+        case SB_LINEDOWN:
+            nScrollPos += 10;
+            break;
+        case SB_LINEUP:
+            nScrollPos -= 10;
+            break;
+        case SB_PAGEDOWN:
+            nScrollPos += rc.right;
+            break;
+        case SB_PAGEUP:
+            nScrollPos -= rc.right;
+            break;
+        case SB_THUMBTRACK:
+        case SB_THUMBPOSITION:
+            nScrollPos = nPos;
+            break;
     }
     if (nScrollPos < 0)
         nScrollPos = 0;
@@ -2401,14 +2526,14 @@ void CPlayplusView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
         return;
 
     ::SetScrollPos(hwnd, SB_HORZ, nScrollPos, TRUE);
-    //InvalidateRect(hwnd, NULL, TRUE);
+    // InvalidateRect(hwnd, NULL, TRUE);
     ::InvalidateRect(hwnd, NULL, FALSE);
     ::UpdateWindow(hwnd);
 
     CView::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
-void CPlayplusView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+void CPlayplusView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
 {
     // TODO: Add your message handler code here and/or call default
     HWND hwnd;
@@ -2424,22 +2549,22 @@ void CPlayplusView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
     switch (nSBCode)
     {
-    case SB_LINEDOWN:
-        nScrollPos += 10;
-        break;
-    case SB_LINEUP:
-        nScrollPos -= 10;
-        break;
-    case SB_PAGEDOWN:
-        nScrollPos += rc.bottom;
-        break;
-    case SB_PAGEUP:
-        nScrollPos -= rc.bottom;
-        break;
-    case SB_THUMBTRACK:
-    case SB_THUMBPOSITION:
-        nScrollPos = nPos;
-        break;
+        case SB_LINEDOWN:
+            nScrollPos += 10;
+            break;
+        case SB_LINEUP:
+            nScrollPos -= 10;
+            break;
+        case SB_PAGEDOWN:
+            nScrollPos += rc.bottom;
+            break;
+        case SB_PAGEUP:
+            nScrollPos -= rc.bottom;
+            break;
+        case SB_THUMBTRACK:
+        case SB_THUMBPOSITION:
+            nScrollPos = nPos;
+            break;
     }
     if (nScrollPos < 0)
         nScrollPos = 0;
@@ -2451,7 +2576,7 @@ void CPlayplusView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
         return;
 
     ::SetScrollPos(hwnd, SB_VERT, nScrollPos, TRUE);
-    //InvalidateRect(hwnd, NULL, TRUE);
+    // InvalidateRect(hwnd, NULL, TRUE);
     ::InvalidateRect(hwnd, NULL, FALSE);
     ::UpdateWindow(hwnd);
 
@@ -2505,37 +2630,38 @@ void CPlayplusView::OnZoom4()
     ::InvalidateRect(viewWnd, NULL, TRUE);
 }
 
-void CPlayplusView::OnUpdateZoom1(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateZoom1(CCmdUI *pCmdUI)
 {
-    pCmdUI->SetCheck(gwZoom==4);
+    pCmdUI->SetCheck(gwZoom == 4);
 }
 
-void CPlayplusView::OnUpdateZoom2(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateZoom2(CCmdUI *pCmdUI)
 {
-    pCmdUI->SetCheck(gwZoom==8);
+    pCmdUI->SetCheck(gwZoom == 8);
 }
 
-void CPlayplusView::OnUpdateZoom4(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateZoom4(CCmdUI *pCmdUI)
 {
-    pCmdUI->SetCheck(gwZoom==16);
+    pCmdUI->SetCheck(gwZoom == 16);
 }
 
-void CPlayplusView::OnUpdateZoomHalf(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateZoomHalf(CCmdUI *pCmdUI)
 {
-    pCmdUI->SetCheck(gwZoom==2);
+    pCmdUI->SetCheck(gwZoom == 2);
 }
 
-void CPlayplusView::OnUpdateZoomQuarter(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateZoomQuarter(CCmdUI *pCmdUI)
 {
-    pCmdUI->SetCheck(gwZoom==1);
+    pCmdUI->SetCheck(gwZoom == 1);
 }
 
-void CPlayplusView::OnUpdateZoomResizetomoviesize(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateZoomResizetomoviesize(CCmdUI *pCmdUI)
 {
-    pCmdUI->Enable(gwZoom==4);
+    pCmdUI->Enable(gwZoom == 4);
 }
 
-long GetScrollTime() {
+long GetScrollTime()
+{
     return playtime;
 }
 
@@ -2543,36 +2669,36 @@ void SetScrollTime(long time)
 {
     playtime = time;
 
-    if (timeLength > 0) {
-        float durationPlayed = (float) ((time - timeStart)/1000.0);
+    if (timeLength > 0)
+    {
+        float durationPlayed = (float)((time - timeStart) / 1000.0);
         CString durationStr;
-        durationStr.Format("%8.1f sec",durationPlayed);
+        durationStr.Format("%8.1f sec", durationPlayed);
         SetTimeIndicator(durationStr);
-
     }
-    int x=0;
-    if (timeLength>0)
-        x =  ((time - timeStart) * MAXTIMERANGE) / timeLength;
+    int x = 0;
+    if (timeLength > 0)
+        x = ((time - timeStart) * MAXTIMERANGE) / timeLength;
     else
         x = 0;
 
-    if (x<0)
+    if (x < 0)
         x = 0;
 
-    if (x>MAXTIMERANGE)
+    if (x > MAXTIMERANGE)
         x = MAXTIMERANGE;
 
     if (sliderCtrlPtr)
         sliderCtrlPtr->SetPos(x);
 }
 
-void CPlayplusView::OnUpdateFileRewind(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateFileRewind(CCmdUI *pCmdUI)
 {
     BOOL enablebutton = (!gfPlaying) && (!gfRecording);
     pCmdUI->Enable(enablebutton);
 }
 
-void CPlayplusView::OnUpdateFileLastframe(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateFileLastframe(CCmdUI *pCmdUI)
 {
     // TODO: Add your command update UI handler code here
     BOOL enablebutton = (!gfPlaying) && (!gfRecording);
@@ -2581,23 +2707,23 @@ void CPlayplusView::OnUpdateFileLastframe(CCmdUI* pCmdUI)
 
 void CPlayplusView::OnButtonRecord()
 {
-    if (!gfRecording) {
-        initAudioRecording  =TRUE;
+    if (!gfRecording)
+    {
+        initAudioRecording = TRUE;
 
         glRecordStartTimeValue = GetScrollTime();
 
         PlayMovie(SILENT_MODE);
 
         fileModified = 1;
-
     }
 }
 
-void CPlayplusView::OnUpdateRecord(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateRecord(CCmdUI *pCmdUI)
 {
     // TODO: Add your command update UI handler code here
-    //BOOL enablebutton = (!gfPlaying) && (!gfRecording) && (giFirstAudio<0) && (giFirstVideo>=0) && (audioRecordable);
-    BOOL enablebutton = (!gfPlaying) && (!gfRecording) && (giFirstVideo>=0) && (audioRecordable);
+    // BOOL enablebutton = (!gfPlaying) && (!gfRecording) && (giFirstAudio<0) && (giFirstVideo>=0) && (audioRecordable);
+    BOOL enablebutton = (!gfPlaying) && (!gfRecording) && (giFirstVideo >= 0) && (audioRecordable);
     pCmdUI->Enable(enablebutton);
 }
 
@@ -2612,108 +2738,111 @@ void CPlayplusView::OnUpdateRecord(CCmdUI* pCmdUI)
 /////////////////////////////////////////////
 // Merge_Video_And_Sound_File
 /////////////////////////////////////////////
-int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_path, CString output_avi_path, BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format, DWORD  audio_format_size, BOOL bInterleave, int interleave_factor) {
-    PAVISTREAM            AviStream[NUMSTREAMS];      // the editable streams
-    AVICOMPRESSOPTIONS    gaAVIOptions[NUMSTREAMS];   // compression options
-    LPAVICOMPRESSOPTIONS  galpAVIOptions[NUMSTREAMS];
+int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_path, CString output_avi_path,
+                               BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format, DWORD audio_format_size,
+                               BOOL bInterleave, int interleave_factor)
+{
+    PAVISTREAM AviStream[NUMSTREAMS];            // the editable streams
+    AVICOMPRESSOPTIONS gaAVIOptions[NUMSTREAMS]; // compression options
+    LPAVICOMPRESSOPTIONS galpAVIOptions[NUMSTREAMS];
 
     PAVIFILE pfileVideo = NULL;
 
     AVIFileInit();
 
-    //Open Video and Audio Files
+    // Open Video and Audio Files
     HRESULT hr = AVIFileOpen(&pfileVideo, LPCTSTR(input_video_path), OF_READ | OF_SHARE_DENY_NONE, 0L);
     if (hr != 0)
     {
-        if ((runmode==0) || (runmode==1))
-            //MessageBox(NULL,"Unable to open video file.","Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(NULL,IDS_UTOVF, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+        if ((runmode == 0) || (runmode == 1))
+            // MessageBox(NULL,"Unable to open video file.","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(NULL, IDS_UTOVF, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
         return 1;
     }
-    //Get Video Stream from Video File and Audio Stream from Audio File
+    // Get Video Stream from Video File and Audio Stream from Audio File
 
     // ==========================================================
     // Important Assumption
     // Assume stream 0 is the correct stream in the files
     // ==========================================================
-    if (pfileVideo) {
-        PAVISTREAM  pavi;
-        if (AVIFileGetStream(pfileVideo, &pavi, streamtypeVIDEO , 0) != AVIERR_OK)
+    if (pfileVideo)
+    {
+        PAVISTREAM pavi;
+        if (AVIFileGetStream(pfileVideo, &pavi, streamtypeVIDEO, 0) != AVIERR_OK)
         {
             AVIFileRelease(pfileVideo);
-            if ((runmode==0) || (runmode==1))
-                MessageOut(NULL,IDS_UTOVS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            //MessageBox(NULL,"Unable to open video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+            if ((runmode == 0) || (runmode == 1))
+                MessageOut(NULL, IDS_UTOVS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            // MessageBox(NULL,"Unable to open video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
             return 1;
-
         }
-        //Set editable stream number as 0
-        if (CreateEditableStream(&AviStream[0], pavi) != AVIERR_OK) {
+        // Set editable stream number as 0
+        if (CreateEditableStream(&AviStream[0], pavi) != AVIERR_OK)
+        {
             AVIStreamRelease(pavi);
             AVIFileRelease(pfileVideo);
-            if ((runmode==0) || (runmode==1))
-                MessageOut(NULL,IDS_UTCEVS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            //MessageBox(NULL,"Unable to create editable video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+            if ((runmode == 0) || (runmode == 1))
+                MessageOut(NULL, IDS_UTCEVS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            // MessageBox(NULL,"Unable to create editable video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
             return 1;
-
         }
         AVIStreamRelease(pavi);
 
         AVIFileRelease(pfileVideo);
         pfileVideo = NULL;
-
     }
     // =============================
     // Getting Audio Stream
     // =============================
     {
-        PAVISTREAM  pavi;
-        if (AVIStreamOpenFromFile(&pavi,input_audio_path,streamtypeAUDIO,0,OF_READ | OF_SHARE_DENY_NONE,NULL)!=AVIERR_OK)
+        PAVISTREAM pavi;
+        if (AVIStreamOpenFromFile(&pavi, input_audio_path, streamtypeAUDIO, 0, OF_READ | OF_SHARE_DENY_NONE, NULL) !=
+            AVIERR_OK)
         {
             AVIStreamRelease(AviStream[0]);
-            if ((runmode==0) || (runmode==1))
-                MessageOut(NULL,IDS_UTOAS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            //MessageBox(NULL,"Unable to open audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+            if ((runmode == 0) || (runmode == 1))
+                MessageOut(NULL, IDS_UTOAS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            // MessageBox(NULL,"Unable to open audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
             return 2;
         }
-        //Set editable stream number as 1
-        if (CreateEditableStream(&AviStream[1], pavi) != AVIERR_OK) {
+        // Set editable stream number as 1
+        if (CreateEditableStream(&AviStream[1], pavi) != AVIERR_OK)
+        {
             AVIStreamRelease(pavi);
             AVIStreamRelease(AviStream[0]);
-            if ((runmode==0) || (runmode==1))
-                MessageOut(NULL,IDS_TOCEAS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            //MessageBox(NULL,"Unable to create editable audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+            if ((runmode == 0) || (runmode == 1))
+                MessageOut(NULL, IDS_TOCEAS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            // MessageBox(NULL,"Unable to create editable audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
             return 2;
         }
         AVIStreamRelease(pavi);
-
     }
-    //Verifying streams are of the correct type
-    AVISTREAMINFO     avis[NUMSTREAMS];
+    // Verifying streams are of the correct type
+    AVISTREAMINFO avis[NUMSTREAMS];
 
     AVIStreamInfo(AviStream[0], &avis[0], sizeof(avis[0]));
     AVIStreamInfo(AviStream[1], &avis[1], sizeof(avis[1]));
 
-    //Assert that the streams we are going to work with are correct in our assumption
-    //such that stream 0 is video and stream 1 is audio
+    // Assert that the streams we are going to work with are correct in our assumption
+    // such that stream 0 is video and stream 1 is audio
 
-    if (avis[0].fccType != streamtypeVIDEO) {
-        if ((runmode==0) || (runmode==1))
-            MessageOut(NULL,IDS_UTVVS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-        //MessageBox(NULL,"Unable to verify video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+    if (avis[0].fccType != streamtypeVIDEO)
+    {
+        if ((runmode == 0) || (runmode == 1))
+            MessageOut(NULL, IDS_UTVVS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+        // MessageBox(NULL,"Unable to verify video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
         AVIStreamRelease(AviStream[0]);
         AVIStreamRelease(AviStream[1]);
         return 3;
-
     }
-    if (avis[1].fccType != streamtypeAUDIO) {
-        if ((runmode==0) || (runmode==1))
-            MessageOut(NULL,IDS_UTVAS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-        //MessageBox(NULL,"Unable to verify audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+    if (avis[1].fccType != streamtypeAUDIO)
+    {
+        if ((runmode == 0) || (runmode == 1))
+            MessageOut(NULL, IDS_UTVAS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+        // MessageBox(NULL,"Unable to verify audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
         AVIStreamRelease(AviStream[0]);
         AVIStreamRelease(AviStream[1]);
         return 4;
-
     }
     //
     // AVISaveV code takes a pointer to compression opts
@@ -2728,27 +2857,27 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
     _fmemset(galpAVIOptions[1], 0, sizeof(AVICOMPRESSOPTIONS));
 
     //=========================================
-    //Set Video Stream Compress Options
+    // Set Video Stream Compress Options
     //=========================================
-    //No Recompression
+    // No Recompression
     galpAVIOptions[0]->fccType = streamtypeVIDEO;
     galpAVIOptions[0]->fccHandler = 0;
     galpAVIOptions[0]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
     if (bInterleave)
         galpAVIOptions[0]->dwFlags = galpAVIOptions[0]->dwFlags | AVICOMPRESSF_INTERLEAVE;
-    galpAVIOptions[0]->dwKeyFrameEvery = (DWORD) -1;
+    galpAVIOptions[0]->dwKeyFrameEvery = (DWORD)-1;
     galpAVIOptions[0]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
     galpAVIOptions[0]->dwBytesPerSecond = 0;
     galpAVIOptions[0]->dwInterleaveEvery = interleave_factor;
-    //galpAVIOptions[0]->cbParms = 0;
-    //galpAVIOptions[0]->cbFormat = 0;
+    // galpAVIOptions[0]->cbParms = 0;
+    // galpAVIOptions[0]->cbFormat = 0;
 
     //=========================================
-    //Set Audio Stream Compress Options
+    // Set Audio Stream Compress Options
     //=========================================
-    //Recompression may be applied
+    // Recompression may be applied
     //
-    //Audio Compress Options seems to be specified by the audio format in avicompressoptions
+    // Audio Compress Options seems to be specified by the audio format in avicompressoptions
     galpAVIOptions[1]->fccType = streamtypeAUDIO;
     galpAVIOptions[1]->fccHandler = 0;
     galpAVIOptions[1]->dwFlags = AVICOMPRESSF_VALID;
@@ -2758,45 +2887,48 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
     galpAVIOptions[1]->dwQuality = 0;
     galpAVIOptions[1]->dwBytesPerSecond = 0;
     galpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
-    //galpAVIOptions[1]->cbParms = 0;
+    // galpAVIOptions[1]->cbParms = 0;
 
-    if (recompress_audio) {
+    if (recompress_audio)
+    {
         galpAVIOptions[1]->cbFormat = audio_format_size;
         galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, audio_format_size);
-        memcpy( (void *) galpAVIOptions[1]->lpFormat,  (void *) audio_recompress_format, audio_format_size );
-
+        memcpy((void *)galpAVIOptions[1]->lpFormat, (void *)audio_recompress_format, audio_format_size);
     }
-    else {
+    else
+    {
         LONG lTemp;
         AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), NULL, &lTemp);
         galpAVIOptions[1]->cbFormat = lTemp;
 
-        if (lTemp)  galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
+        if (lTemp)
+            galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
         // Use existing format as compress format
         if (galpAVIOptions[1]->lpFormat)
-            AVIStreamReadFormat(AviStream[1],    AVIStreamStart(AviStream[1]),galpAVIOptions[1]->lpFormat, &lTemp);
-
+            AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), galpAVIOptions[1]->lpFormat, &lTemp);
     }
     // ============================
     // Do the work! Merging
     // ============================
 
-    //Save     fccHandlers
+    // Save     fccHandlers
     DWORD fccHandler[NUMSTREAMS];
     fccHandler[0] = galpAVIOptions[0]->fccHandler;
     fccHandler[1] = galpAVIOptions[1]->fccHandler;
 
-    hr = AVISaveV(LPCTSTR(output_avi_path),  NULL, (AVISAVECALLBACK) SaveCallback, NUMSTREAMS, AviStream, galpAVIOptions);
-    //hr = AVISaveV(LPCTSTR(output_avi_path),  NULL, (AVISAVECALLBACK) NULL, NUMSTREAMS, AviStream, galpAVIOptions);
-    if (hr != AVIERR_OK) {
-        //Error merging with audio compress options, retry merging with default audio options (no recompression)
-        if (recompress_audio) {
-            AVISaveOptionsFree(NUMSTREAMS,galpAVIOptions);
+    hr = AVISaveV(LPCTSTR(output_avi_path), NULL, (AVISAVECALLBACK)SaveCallback, NUMSTREAMS, AviStream, galpAVIOptions);
+    // hr = AVISaveV(LPCTSTR(output_avi_path),  NULL, (AVISAVECALLBACK) NULL, NUMSTREAMS, AviStream, galpAVIOptions);
+    if (hr != AVIERR_OK)
+    {
+        // Error merging with audio compress options, retry merging with default audio options (no recompression)
+        if (recompress_audio)
+        {
+            AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
 
             galpAVIOptions[0] = &gaAVIOptions[0];
             galpAVIOptions[1] = &gaAVIOptions[1];
 
-            //Resetting Compress Options
+            // Resetting Compress Options
             _fmemset(galpAVIOptions[0], 0, sizeof(AVICOMPRESSOPTIONS));
             _fmemset(galpAVIOptions[1], 0, sizeof(AVICOMPRESSOPTIONS));
 
@@ -2805,7 +2937,7 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
             galpAVIOptions[0]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
             if (bInterleave)
                 galpAVIOptions[0]->dwFlags = galpAVIOptions[0]->dwFlags | AVICOMPRESSF_INTERLEAVE;
-            galpAVIOptions[0]->dwKeyFrameEvery = (DWORD) -1;
+            galpAVIOptions[0]->dwKeyFrameEvery = (DWORD)-1;
             galpAVIOptions[0]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
             galpAVIOptions[0]->dwBytesPerSecond = 0;
             galpAVIOptions[0]->dwInterleaveEvery = interleave_factor;
@@ -2820,63 +2952,67 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
             galpAVIOptions[1]->dwBytesPerSecond = 0;
             galpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
 
-            //Use default audio format
+            // Use default audio format
             LONG lTemp;
             AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), NULL, &lTemp);
             galpAVIOptions[1]->cbFormat = lTemp;
-            if (lTemp)  galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
+            if (lTemp)
+                galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
             // Use existing format as compress format
             if (galpAVIOptions[1]->lpFormat)
-                AVIStreamReadFormat(AviStream[1],    AVIStreamStart(AviStream[1]),galpAVIOptions[1]->lpFormat, &lTemp);
+                AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), galpAVIOptions[1]->lpFormat, &lTemp);
 
-            //Do the Work .... Merging
-            hr = AVISaveV(LPCTSTR(output_avi_path),  NULL, (AVISAVECALLBACK) NULL, NUMSTREAMS, AviStream, galpAVIOptions);
+            // Do the Work .... Merging
+            hr = AVISaveV(LPCTSTR(output_avi_path), NULL, (AVISAVECALLBACK)NULL, NUMSTREAMS, AviStream, galpAVIOptions);
 
-            if (hr != AVIERR_OK) {
-                AVISaveOptionsFree(NUMSTREAMS,galpAVIOptions);
+            if (hr != AVIERR_OK)
+            {
+                AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
                 AVIStreamRelease(AviStream[0]);
                 AVIStreamRelease(AviStream[1]);
 
-                if ((runmode==0) || (runmode==1))
-                    MessageOut(NULL,IDS_UTMAVS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-                //MessageBox(NULL,"Unable to merge audio and video streams (1).","Note",MB_OK | MB_ICONEXCLAMATION);
+                if ((runmode == 0) || (runmode == 1))
+                    MessageOut(NULL, IDS_UTMAVS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+                // MessageBox(NULL,"Unable to merge audio and video streams (1).","Note",MB_OK | MB_ICONEXCLAMATION);
                 return 5;
-
             }
-            //Succesful Merging, but with no audio recompression
-            if ((runmode==0) || (runmode==1))
-                MessageOut(NULL,IDS_UAACSOYMIAC, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            //MessageBox(NULL,"Unable to apply audio compression with the selected options. Your movie is saved without audio compression.","Note",MB_OK | MB_ICONEXCLAMATION);
+            // Succesful Merging, but with no audio recompression
+            if ((runmode == 0) || (runmode == 1))
+                MessageOut(NULL, IDS_UAACSOYMIAC, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            // MessageBox(NULL,"Unable to apply audio compression with the selected options. Your movie is saved without
+            // audio compression.","Note",MB_OK | MB_ICONEXCLAMATION);
 
         } // if recompress audio retry
-        else {
-            AVISaveOptionsFree(NUMSTREAMS,galpAVIOptions);
+        else
+        {
+            AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
             AVIStreamRelease(AviStream[0]);
             AVIStreamRelease(AviStream[1]);
-            if ((runmode==0) || (runmode==1))
-                MessageOut(NULL,IDS_UTMAVS2, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            //MessageBox(NULL,"Unable to audio and video merge streams (2).","Note",MB_OK | MB_ICONEXCLAMATION);
+            if ((runmode == 0) || (runmode == 1))
+                MessageOut(NULL, IDS_UTMAVS2, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            // MessageBox(NULL,"Unable to audio and video merge streams (2).","Note",MB_OK | MB_ICONEXCLAMATION);
             return 5;
-
         }
     }
     // Restore fccHandlers
     galpAVIOptions[0]->fccHandler = fccHandler[0];
     galpAVIOptions[1]->fccHandler = fccHandler[1];
 
-    //Set Title Bar
+    // Set Title Bar
     HWND mainwnd = NULL;
     mainwnd = AfxGetApp()->m_pMainWnd->m_hWnd;
     if (mainwnd)
-        ::SetWindowText(mainwnd,"CamStudio");
+        ::SetWindowText(mainwnd, "CamStudio");
 
-    AVISaveOptionsFree(NUMSTREAMS,galpAVIOptions);
+    AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
 
     // Free Editable Avi Streams
-    for (int i=0;i<    NUMSTREAMS;i++) {
-        if (AviStream[i]) {
+    for (int i = 0; i < NUMSTREAMS; i++)
+    {
+        if (AviStream[i])
+        {
             AVIStreamRelease(AviStream[i]);
-            AviStream[i]=NULL;
+            AviStream[i] = NULL;
         }
     }
     AVIFileExit();
@@ -2886,9 +3022,9 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
 
 BOOL CALLBACK SaveCallback(int iProgress)
 {
-    //Set Progress in Title Bar
+    // Set Progress in Title Bar
 
-    char    szText[300];
+    char szText[300];
 
     wsprintf(szText, "Compressing Audio %d%%", iProgress);
 
@@ -2898,15 +3034,17 @@ BOOL CALLBACK SaveCallback(int iProgress)
         ::SetWindowText(mainwnd, szText);
 
     return WinYield();
-    //return FALSE;
+    // return FALSE;
 }
 
 BOOL WinYield(void)
 {
-    //Process 3 messages, then return false
+    // Process 3 messages, then return false
     MSG msg;
-    for (int i=0;i<3; i++) {
-        if (PeekMessage(&msg,NULL,0,0,PM_REMOVE)) {
+    for (int i = 0; i < 3; i++)
+    {
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
@@ -2918,21 +3056,21 @@ BOOL WinYield(void)
 // Output File Module
 // This function is called when the avi saving is completed
 //////////////////////////////////////////////////////////////////
-LRESULT CPlayplusView::OnUserGeneric    (UINT /*wParam*/, LONG /*lParam*/)
+LRESULT CPlayplusView::OnUserGeneric(UINT /*wParam*/, LONG /*lParam*/)
 {
-    //AddAudioWaveFile((char *) LPCTSTR(tempaudiopath));
+    // AddAudioWaveFile((char *) LPCTSTR(tempaudiopath));
     //::MessageBox(NULL,tempaudiopath,"User Generic",MB_OK | MB_ICONEXCLAMATION);
-    TimeDependentInsert(tempaudiopath,glRecordStartTimeValue);
+    TimeDependentInsert(tempaudiopath, glRecordStartTimeValue);
 
     SetRPSLine();
 
     return 0;
 }
 
-void TimeDependentInsert(CString filename,long shiftTime)
+void TimeDependentInsert(CString filename, long shiftTime)
 {
     int overwriteaudio = NEW_AUDIO_TRACK;
-    if (giFirstAudio>=0)
+    if (giFirstAudio >= 0)
         overwriteaudio = OVERWRITE_AUDIO;
     else
         overwriteaudio = NEW_AUDIO_TRACK;
@@ -2940,27 +3078,27 @@ void TimeDependentInsert(CString filename,long shiftTime)
     CString convertedPath;
     convertedPath = ConvertFileToWorkingPCM(filename);
 
-    //Only the NEW_AUDIO_TRACK selection will cause the resetslider var (FALSE) to have any effect
+    // Only the NEW_AUDIO_TRACK selection will cause the resetslider var (FALSE) to have any effect
     if (shiftTime > timeStart)
-        InitAvi((char *) LPCTSTR(convertedPath), MENU_MERGE, shiftTime, KEEPCOUNTER, overwriteaudio,RESET_TO_CURRENT);
+        InitAvi((char *)LPCTSTR(convertedPath), MENU_MERGE, shiftTime, KEEPCOUNTER, overwriteaudio, RESET_TO_CURRENT);
     else
-        InitAvi((char *) LPCTSTR(convertedPath), MENU_MERGE, -1, KEEPCOUNTER, overwriteaudio,RESET_TO_START);
+        InitAvi((char *)LPCTSTR(convertedPath), MENU_MERGE, -1, KEEPCOUNTER, overwriteaudio, RESET_TO_START);
 }
 
 CString ConvertFileToWorkingPCM(CString filename)
 {
     CString convertedPath = filename;
 
-    //ErrMsg("overwriteaudio %d",overwriteaudio);
-    //Only the NEW_AUDIO_TRACK selection will cause the resetslider var (FALSE) to have any effect
+    // ErrMsg("overwriteaudio %d",overwriteaudio);
+    // Only the NEW_AUDIO_TRACK selection will cause the resetslider var (FALSE) to have any effect
 
-    HCURSOR  hcur;
+    HCURSOR hcur;
     hcur = SetCursor(LoadCursor(NULL, IDC_WAIT));
     ShowCursor(TRUE);
 
     int retval = 0;
     BuildRecordingFormat();
-    convertedPath =  GetTempPathEx("\\~converted001.wav", "\\~converted", ".wav");
+    convertedPath = GetTempPathEx("\\~converted001.wav", "\\~converted", ".wav");
     retval = MultiStepConvertToPCM(filename, convertedPath, &m_Format, sizeof(m_Format));
     if (retval <= 0)
         convertedPath = filename;
@@ -2974,58 +3112,60 @@ CString ConvertFileToWorkingPCM(CString filename)
 CString GetProgPath()
 {
     // locals
-    TCHAR    szTemp[300];
+    TCHAR szTemp[300];
     CFile converter;
     CString result;
 
     // get root
-    GetModuleFileName( NULL, szTemp, 300 );
+    GetModuleFileName(NULL, szTemp, 300);
 
-    CString path=(CString)szTemp;
-    path=path.Left(path.ReverseFind('\\'));
+    CString path = (CString)szTemp;
+    path = path.Left(path.ReverseFind('\\'));
     return path;
 }
 
 CString GetAppDataPath()
-   {
-   int folder = CSIDL_APPDATA;
+{
+    int folder = CSIDL_APPDATA;
 
-   char szPath[MAX_PATH+100]; szPath[0]=0;
+    char szPath[MAX_PATH + 100];
+    szPath[0] = 0;
     CString path = szPath;
 
-   if (SUCCEEDED(SHGetFolderPath(NULL, folder, 0, 0, szPath)))
-      {
-      path = szPath;
-      }
-   else if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, 0, 0, szPath)))
-      {
-      path = szPath;
-      }
+    if (SUCCEEDED(SHGetFolderPath(NULL, folder, 0, 0, szPath)))
+    {
+        path = szPath;
+    }
+    else if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, 0, 0, szPath)))
+    {
+        path = szPath;
+    }
     return path;
-   }
+}
 
 CString GetTempPath()
 {
     char dirx[300];
-    GetWindowsDirectory(dirx,300);
+    GetWindowsDirectory(dirx, 300);
     CString tempdir(dirx);
     tempdir = tempdir + "\\temp";
 
-    //Verify the chosen temp path is valid
+    // Verify the chosen temp path is valid
 
     WIN32_FIND_DATA wfd;
-    memset(&wfd, 0, sizeof (wfd));
+    memset(&wfd, 0, sizeof(wfd));
     HANDLE hdir = FindFirstFile(LPCTSTR(tempdir), &wfd);
-    if (!hdir) {
+    if (!hdir)
+    {
         return GetProgPath();
     }
     FindClose(hdir);
 
-    //If valid directory, return Windows\temp as temp directory
+    // If valid directory, return Windows\temp as temp directory
     if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
         return tempdir;
 
-    //else return program path as temp directory
+    // else return program path as temp directory
     return GetProgPath();
 }
 
@@ -3035,20 +3175,19 @@ CString GetTempPath()
 // Ver 1.1
 //===============================================
 
-void waveInErrorMsg(MMRESULT result, const char * addstr)
+void waveInErrorMsg(MMRESULT result, const char *addstr)
 {
     // say error message
     char errorbuffer[300];
-    waveInGetErrorText(result, errorbuffer,300);
-    //ErrorMsg("WAVEIN:%x:%s %s", result, errorbuffer, addstr);
+    waveInGetErrorText(result, errorbuffer, 300);
+    // ErrorMsg("WAVEIN:%x:%s %s", result, errorbuffer, addstr);
     CString msgstr;
-    msgstr.Format("%s %s",errorbuffer, addstr);
-    if ((runmode==0) || (runmode==1))
+    msgstr.Format("%s %s", errorbuffer, addstr);
+    if ((runmode == 0) || (runmode == 1))
     {
         CString title;
         title.LoadString(IDS_WIERROR);
-        MessageBox(NULL,msgstr,title,MB_OK | MB_ICONEXCLAMATION);
-
+        MessageBox(NULL, msgstr, title, MB_OK | MB_ICONEXCLAMATION);
     }
 }
 
@@ -3058,65 +3197,66 @@ BOOL InitAudioRecording()
     m_QueuedBuffers = 0;
     m_hRecord = NULL;
 
-    m_BufferSize        = 1000;  // samples per callback
+    m_BufferSize = 1000; // samples per callback
 
     BuildRecordingFormat();
 
     ClearAudioFile();
 
-    //Create temporary wav file for audio recording
+    // Create temporary wav file for audio recording
     GetTempWavePath();
 
-    //look up here
+    // look up here
     m_pFile = new CSoundFile(tempaudiopath, &m_Format);
 
-    //even if we recording with firstaudio's format, we still get the unable to insert problem!
-    //m_pFile = new CSoundFile(tempaudiopath, (LPWAVEFORMATEX) galpAVIOptions[giFirstAudio]->lpFormat);
+    // even if we recording with firstaudio's format, we still get the unable to insert problem!
+    // m_pFile = new CSoundFile(tempaudiopath, (LPWAVEFORMATEX) galpAVIOptions[giFirstAudio]->lpFormat);
 
-    if  (!(m_pFile && m_pFile->IsOK()))
+    if (!(m_pFile && m_pFile->IsOK()))
     {
-        if ((runmode==0) || (runmode==1))
-            MessageOut(NULL,IDS_ECSF, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-
+        if ((runmode == 0) || (runmode == 1))
+            MessageOut(NULL, IDS_ECSF, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
     }
     return TRUE;
 }
 
-//Initialize the tempaudiopath variable with a valid temporary path
-void GetTempWavePath() {
+// Initialize the tempaudiopath variable with a valid temporary path
+void GetTempWavePath()
+{
     CString fileName("\\~twav001.wav");
-    tempaudiopath = GetTempPath () + fileName;
+    tempaudiopath = GetTempPath() + fileName;
 
-    //Test the validity of writing to the file
+    // Test the validity of writing to the file
     int fileverified = 0;
     while (!fileverified)
     {
         OFSTRUCT ofstruct;
-        HFILE fhandle = OpenFile( tempaudiopath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE  | OF_CREATE );
-        if (fhandle != HFILE_ERROR) {
+        HFILE fhandle = OpenFile(tempaudiopath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE | OF_CREATE);
+        if (fhandle != HFILE_ERROR)
+        {
             fileverified = 1;
-            CloseHandle( (HANDLE) fhandle );
+            CloseHandle((HANDLE)fhandle);
             DeleteFile(tempaudiopath);
         }
-        else {
-            srand( (unsigned)time( NULL ) );
+        else
+        {
+            srand((unsigned)time(NULL));
             int randnum = rand();
             char numstr[50];
-            sprintf(numstr,"%d",randnum);
+            sprintf(numstr, "%d", randnum);
 
             CString cnumstr(numstr);
             CString fxstr("\\~temp");
             CString exstr(".wav");
-            tempaudiopath = GetTempPath () + fxstr + cnumstr + exstr;
-
+            tempaudiopath = GetTempPath() + fxstr + cnumstr + exstr;
         }
     }
 }
 
-//Using this function affects the silenceFileValid variable
-//which may be set in a variety of places
+// Using this function affects the silenceFileValid variable
+// which may be set in a variety of places
 
-//The silenceFileValid, when TRUE, imply the tempsilencepath is pointing to a compatible silence sound file
+// The silenceFileValid, when TRUE, imply the tempsilencepath is pointing to a compatible silence sound file
 BOOL CreateSilenceFile()
 {
     silenceFileValid = FALSE;
@@ -3125,21 +3265,21 @@ BOOL CreateSilenceFile()
 
     ClearAudioSilenceFile();
 
-    //Create temporary wav file for audio recording
+    // Create temporary wav file for audio recording
     GetSilenceWavePath();
     m_pSilenceFile = new CSoundFile(tempsilencepath, &m_Format);
 
-    if  (!(m_pSilenceFile && m_pSilenceFile->IsOK())) {
-        if ((runmode==0) || (runmode==1))
-            MessageOut(NULL,IDS_ECSSF, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-        //MessageBox(NULL,"Error Creating Silence Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
+    if (!(m_pSilenceFile && m_pSilenceFile->IsOK()))
+    {
+        if ((runmode == 0) || (runmode == 1))
+            MessageOut(NULL, IDS_ECSSF, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+        // MessageBox(NULL,"Error Creating Silence Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
         silenceFileValid = FALSE;
         return silenceFileValid;
-
     }
     CBuffer buf(BasicBufSize, TRUE);
     buf.Erase();
-    WriteSilenceFile(&buf) ;
+    WriteSilenceFile(&buf);
 
     ClearAudioSilenceFile();
 
@@ -3150,48 +3290,52 @@ BOOL CreateSilenceFile()
 
 void ClearAudioSilenceFile()
 {
-    if (m_pSilenceFile) {
-        //will close output file
+    if (m_pSilenceFile)
+    {
+        // will close output file
         delete m_pSilenceFile;
         m_pSilenceFile = NULL;
     }
 }
 
-void GetSilenceWavePath() {
+void GetSilenceWavePath()
+{
     CString fileName("\\~tsil001.wav");
-    tempsilencepath = GetTempPath () + fileName;
+    tempsilencepath = GetTempPath() + fileName;
 
-    //Test the validity of writing to the file
+    // Test the validity of writing to the file
     int fileverified = 0;
     while (!fileverified)
     {
         OFSTRUCT ofstruct;
-        HFILE fhandle = OpenFile( tempsilencepath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE  | OF_CREATE );
-        if (fhandle != HFILE_ERROR) {
+        HFILE fhandle = OpenFile(tempsilencepath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE | OF_CREATE);
+        if (fhandle != HFILE_ERROR)
+        {
             fileverified = 1;
-            CloseHandle( (HANDLE) fhandle );
+            CloseHandle((HANDLE)fhandle);
             DeleteFile(tempsilencepath);
         }
-        else {
-            srand( (unsigned)time( NULL ) );
+        else
+        {
+            srand((unsigned)time(NULL));
             int randnum = rand();
             char numstr[50];
-            sprintf(numstr,"%d",randnum);
+            sprintf(numstr, "%d", randnum);
 
             CString cnumstr(numstr);
             CString fxstr("\\~tsil");
             CString exstr(".wav");
-            tempsilencepath = GetTempPath () + fxstr + cnumstr + exstr;
-
+            tempsilencepath = GetTempPath() + fxstr + cnumstr + exstr;
         }
     }
 }
 
-//Delete the m_pFile variable and close existing audio file
+// Delete the m_pFile variable and close existing audio file
 void ClearAudioFile()
 {
-    if (m_pFile) {
-        //will close output file
+    if (m_pFile)
+    {
+        // will close output file
         delete m_pFile;
         m_pFile = NULL;
     }
@@ -3202,7 +3346,7 @@ void SetBufferSize(int NumberOfSamples)
     m_BufferSize = NumberOfSamples;
 }
 
-BOOL StartAudioRecording(WAVEFORMATEX* format)
+BOOL StartAudioRecording(WAVEFORMATEX *format)
 {
     MMRESULT mmReturn = 0;
 
@@ -3210,7 +3354,8 @@ BOOL StartAudioRecording(WAVEFORMATEX* format)
         m_Format = *format;
 
     // open wavein device
-    mmReturn = ::waveInOpen( &m_hRecord, AudioDeviceID, &m_Format,(DWORD) viewWnd, NULL, CALLBACK_WINDOW  ); //use on message to map.....
+    mmReturn = ::waveInOpen(&m_hRecord, AudioDeviceID, &m_Format, (DWORD)viewWnd, NULL,
+                            CALLBACK_WINDOW); // use on message to map.....
 
     if (mmReturn)
     {
@@ -3220,13 +3365,13 @@ BOOL StartAudioRecording(WAVEFORMATEX* format)
     else
     {
         // make several input buffers and add them to the input queue
-        for(int i=0; i<3; i++)
+        for (int i = 0; i < 3; i++)
         {
             AddInputBufferToQueue();
         }
         // start recording
         mmReturn = ::waveInStart(m_hRecord);
-        if (mmReturn )
+        if (mmReturn)
         {
             waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
             return FALSE;
@@ -3241,16 +3386,17 @@ int AddInputBufferToQueue()
 
     // create the header
     LPWAVEHDR pHdr = new WAVEHDR;
-    if (pHdr == NULL) return NULL;
+    if (pHdr == NULL)
+        return NULL;
     ZeroMemory(pHdr, sizeof(WAVEHDR));
 
     // new a buffer
-    CBuffer buf(m_Format.nBlockAlign*m_BufferSize, false);
+    CBuffer buf(m_Format.nBlockAlign * m_BufferSize, false);
     pHdr->lpData = buf.ptr.c;
     pHdr->dwBufferLength = buf.ByteLen;
 
     // prepare it
-    mmReturn = ::waveInPrepareHeader(m_hRecord,pHdr, sizeof(WAVEHDR));
+    mmReturn = ::waveInPrepareHeader(m_hRecord, pHdr, sizeof(WAVEHDR));
     if (mmReturn)
     {
         waveInErrorMsg(mmReturn, "in AddInputBufferToQueue()");
@@ -3280,25 +3426,25 @@ void StopAudioRecording()
     }
     else
     {
-        //Sleep(100);
+        // Sleep(100);
 
         mmReturn = ::waveInStop(m_hRecord);
-        if (mmReturn) waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinStop)");
+        if (mmReturn)
+            waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinStop)");
 
-        //while (m_QueuedBuffers>0)
+        // while (m_QueuedBuffers>0)
         //    Sleep(50);
 
         mmReturn = ::waveInClose(m_hRecord);
-        if (mmReturn) waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinClose)");
-
+        if (mmReturn)
+            waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinClose)");
     }
-    //if (m_QueuedBuffers != 0) ErrorMsg("Still %d buffers in waveIn queue!", m_QueuedBuffers);
+    // if (m_QueuedBuffers != 0) ErrorMsg("Still %d buffers in waveIn queue!", m_QueuedBuffers);
     if (m_QueuedBuffers != 0)
     {
-        if ((runmode==0) || (runmode==1))
-            MessageOut(NULL,IDS_ABSIQ, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-        //MessageBox(NULL,"Audio buffers still in queue!","note", MB_OK);
-
+        if ((runmode == 0) || (runmode == 1))
+            MessageOut(NULL, IDS_ABSIQ, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+        // MessageBox(NULL,"Audio buffers still in queue!","note", MB_OK);
     }
 }
 
@@ -3306,7 +3452,7 @@ LRESULT CPlayplusView::OnMM_WIM_DATA(WPARAM /*parm1*/, LPARAM parm2)
 {
     MMRESULT mmReturn = 0;
 
-    LPWAVEHDR pHdr = (LPWAVEHDR) parm2;
+    LPWAVEHDR pHdr = (LPWAVEHDR)parm2;
 
     mmReturn = ::waveInUnprepareHeader(m_hRecord, pHdr, sizeof(WAVEHDR));
     if (mmReturn)
@@ -3320,15 +3466,15 @@ LRESULT CPlayplusView::OnMM_WIM_DATA(WPARAM /*parm1*/, LPARAM parm2)
     {
         CBuffer buf(pHdr->lpData, pHdr->dwBufferLength);
 
-        if (!recordpaused) { //write only if not paused
+        if (!recordpaused)
+        { // write only if not paused
 
-            //Write Data to file
+            // Write Data to file
             DataFromSoundIn(&buf);
-
         }
         // reuse the buffer:
         // prepare it again
-        mmReturn = ::waveInPrepareHeader(m_hRecord,pHdr, sizeof(WAVEHDR));
+        mmReturn = ::waveInPrepareHeader(m_hRecord, pHdr, sizeof(WAVEHDR));
         if (mmReturn)
         {
             waveInErrorMsg(mmReturn, "in OnWIM_DATA() Prepare Header");
@@ -3337,8 +3483,10 @@ LRESULT CPlayplusView::OnMM_WIM_DATA(WPARAM /*parm1*/, LPARAM parm2)
         {
             // add the input buffer to the queue again
             mmReturn = ::waveInAddBuffer(m_hRecord, pHdr, sizeof(WAVEHDR));
-            if (mmReturn) waveInErrorMsg(mmReturn, "in OnWIM_DATA() Add Buffer");
-            else return 0;  // no error
+            if (mmReturn)
+                waveInErrorMsg(mmReturn, "in OnWIM_DATA() Add Buffer");
+            else
+                return 0; // no error
         }
     }
     // we are closing the waveIn handle,
@@ -3351,146 +3499,148 @@ LRESULT CPlayplusView::OnMM_WIM_DATA(WPARAM /*parm1*/, LPARAM parm2)
     return 0;
 }
 
-void WriteSilenceFile(CBuffer* buffer)
+void WriteSilenceFile(CBuffer *buffer)
 {
     if (m_pSilenceFile)
     {
         if (!m_pSilenceFile->Write(buffer))
         {
             ClearAudioSilenceFile();
-            if ((runmode==0) || (runmode==1))
-                MessageOut(NULL,IDS_EWSSF, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            //MessageBox(NULL,"Error Writing Silence Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
+            if ((runmode == 0) || (runmode == 1))
+                MessageOut(NULL, IDS_EWSSF, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            // MessageBox(NULL,"Error Writing Silence Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
             silenceFileValid = FALSE;
         }
     }
 }
 
-void DataFromSoundIn(CBuffer* buffer)
+void DataFromSoundIn(CBuffer *buffer)
 {
     if (m_pFile)
     {
         if (!m_pFile->Write(buffer))
         {
-            //m_SoundIn.Stop();
+            // m_SoundIn.Stop();
             StopAudioRecording();
             ClearAudioFile();
-            if ((runmode==0) || (runmode==1))
-                MessageOut(NULL,IDS_EWSF, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            //MessageBox(NULL,"Error Writing Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
+            if ((runmode == 0) || (runmode == 1))
+                MessageOut(NULL, IDS_EWSF, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            // MessageBox(NULL,"Error Writing Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
         }
     }
 }
 
 void BuildRecordingFormat()
 {
-    m_Format.wFormatTag    = WAVE_FORMAT_PCM;
-    m_Format.wBitsPerSample = static_cast<WORD>( audio_bits_per_sample );
+    m_Format.wFormatTag = WAVE_FORMAT_PCM;
+    m_Format.wBitsPerSample = static_cast<WORD>(audio_bits_per_sample);
     m_Format.nSamplesPerSec = audio_samples_per_seconds;
-    m_Format.nChannels = static_cast<WORD>( audio_num_channels  );
-    m_Format.nBlockAlign = m_Format.nChannels * (m_Format.wBitsPerSample/8);
+    m_Format.nChannels = static_cast<WORD>(audio_num_channels);
+    m_Format.nBlockAlign = m_Format.nChannels * (m_Format.wBitsPerSample / 8);
     m_Format.nAvgBytesPerSec = m_Format.nSamplesPerSec * m_Format.nBlockAlign;
     m_Format.cbSize = 0;
 }
 
-//Suggest Save/Compress Format to pwfx
-void SuggestRecordingFormat() {
+// Suggest Save/Compress Format to pwfx
+void SuggestRecordingFormat()
+{
     WAVEINCAPS pwic;
-    /* MMRESULT mmr = */ (void) waveInGetDevCaps( AudioDeviceID ,  &pwic, sizeof(pwic) );
+    /* MMRESULT mmr = */ (void)waveInGetDevCaps(AudioDeviceID, &pwic, sizeof(pwic));
 
-    //Ordered in preference of choice
-    if ((pwic.dwFormats) & WAVE_FORMAT_2S16) {
+    // Ordered in preference of choice
+    if ((pwic.dwFormats) & WAVE_FORMAT_2S16)
+    {
         audio_bits_per_sample = 16;
         audio_num_channels = 2;
         audio_samples_per_seconds = 22050;
         waveinselected = WAVE_FORMAT_2S16;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_2M08) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_2M08)
+    {
         audio_bits_per_sample = 8;
         audio_num_channels = 1;
         audio_samples_per_seconds = 22050;
         waveinselected = WAVE_FORMAT_2M08;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_2S08)  {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_2S08)
+    {
         audio_bits_per_sample = 8;
         audio_num_channels = 2;
         audio_samples_per_seconds = 22050;
         waveinselected = WAVE_FORMAT_2S08;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_2M16) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_2M16)
+    {
         audio_bits_per_sample = 16;
         audio_num_channels = 1;
         audio_samples_per_seconds = 22050;
         waveinselected = WAVE_FORMAT_2M16;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_1M08) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_1M08)
+    {
         audio_bits_per_sample = 8;
         audio_num_channels = 1;
         audio_samples_per_seconds = 11025;
         waveinselected = WAVE_FORMAT_1M08;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_1M16) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_1M16)
+    {
         audio_bits_per_sample = 16;
         audio_num_channels = 1;
         audio_samples_per_seconds = 11025;
         waveinselected = WAVE_FORMAT_1M16;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_1S08) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_1S08)
+    {
         audio_bits_per_sample = 8;
         audio_num_channels = 2;
         audio_samples_per_seconds = 11025;
         waveinselected = WAVE_FORMAT_1S08;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_1S16) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_1S16)
+    {
         audio_bits_per_sample = 16;
         audio_num_channels = 2;
         audio_samples_per_seconds = 11025;
         waveinselected = WAVE_FORMAT_1S16;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_4M08) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_4M08)
+    {
         audio_bits_per_sample = 8;
         audio_num_channels = 1;
         audio_samples_per_seconds = 44100;
         waveinselected = WAVE_FORMAT_4M08;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_4M16) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_4M16)
+    {
         audio_bits_per_sample = 16;
         audio_num_channels = 1;
         audio_samples_per_seconds = 44100;
         waveinselected = WAVE_FORMAT_4M16;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_4S08) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_4S08)
+    {
         audio_bits_per_sample = 8;
         audio_num_channels = 2;
         audio_samples_per_seconds = 44100;
         waveinselected = WAVE_FORMAT_4S08;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_4S16) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_4S16)
+    {
         audio_bits_per_sample = 16;
         audio_num_channels = 2;
         audio_samples_per_seconds = 44100;
         waveinselected = WAVE_FORMAT_4S16;
     }
-    else {
-        //Arbitrarily choose one
+    else
+    {
+        // Arbitrarily choose one
         audio_bits_per_sample = 8;
         audio_num_channels = 1;
         audio_samples_per_seconds = 22050;
         waveinselected = WAVE_FORMAT_2M08;
-
     }
-    //Build m_Format
+    // Build m_Format
     BuildRecordingFormat();
 }
 
@@ -3501,49 +3651,50 @@ void SuggestCompressFormat()
     AllocCompressFormat();
     MMRESULT mmr = (MMRESULT)0;
 
-    //1st try MPEGLAYER3
+    // 1st try MPEGLAYER3
     BuildRecordingFormat();
-    if ((m_Format.nSamplesPerSec == 22050) && (m_Format.nChannels==2) && (m_Format.wBitsPerSample <= 16)) {
+    if ((m_Format.nSamplesPerSec == 22050) && (m_Format.nChannels == 2) && (m_Format.wBitsPerSample <= 16))
+    {
         pwfx->wFormatTag = WAVE_FORMAT_MPEGLAYER3;
-        mmr = acmFormatSuggest(NULL, &m_Format,  pwfx, cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
-
+        mmr = acmFormatSuggest(NULL, &m_Format, pwfx, cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
     }
-    if (mmr!=0) {
-        //Use PCM in order to handle most cases
+    if (mmr != 0)
+    {
+        // Use PCM in order to handle most cases
         BuildRecordingFormat();
         pwfx->wFormatTag = WAVE_FORMAT_PCM;
-        MMRESULT mmr = acmFormatSuggest(NULL, &m_Format,  pwfx, cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
+        MMRESULT mmr = acmFormatSuggest(NULL, &m_Format, pwfx, cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
 
-        if (mmr!=0) {
+        if (mmr != 0)
+        {
             bAudioCompression = FALSE;
-
         }
     }
 }
 
 void AllocCompressFormat()
 {
-    int initial_audiosetup=1;
+    int initial_audiosetup = 1;
 
-    if (pwfx) {
-        initial_audiosetup=0;
-        //Do nothing....already allocated
-
+    if (pwfx)
+    {
+        initial_audiosetup = 0;
+        // Do nothing....already allocated
     }
-    else {
+    else
+    {
         MMRESULT mmresult = acmMetrics(NULL, ACM_METRIC_MAX_SIZE_FORMAT, &cbwfx);
         if (MMSYSERR_NOERROR != mmresult)
         {
             CString msgstr;
             msgstr.Format("Metrics failed mmresult=%u!", mmresult);
-            if ((runmode==0) || (runmode==1))
+            if ((runmode == 0) || (runmode == 1))
             {
                 CString title;
                 title.LoadString(IDS_NOTE);
-                ::MessageBox(NULL,msgstr,title, MB_OK | MB_ICONEXCLAMATION);
-
+                ::MessageBox(NULL, msgstr, title, MB_OK | MB_ICONEXCLAMATION);
             }
-            return ;
+            return;
         }
         pwfx = (LPWAVEFORMATEX)GlobalAllocPtr(GHND, cbwfx);
         if (NULL == pwfx)
@@ -3551,28 +3702,26 @@ void AllocCompressFormat()
             CString msgstr;
             msgstr.Format("GlobalAllocPtr(%lu) failed!", cbwfx);
 
-            if ((runmode==0) || (runmode==1))
+            if ((runmode == 0) || (runmode == 1))
             {
                 CString title;
                 title.LoadString(IDS_NOTE);
-                ::MessageBox(NULL,msgstr,title, MB_OK | MB_ICONEXCLAMATION);
-
+                ::MessageBox(NULL, msgstr, title, MB_OK | MB_ICONEXCLAMATION);
             }
             //::MessageBox(NULL,msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
-            return ;
+            return;
         }
-        initial_audiosetup=1;
-
+        initial_audiosetup = 1;
     }
 }
 
 void SetTimeIndicator(CString timestr)
 {
-    //restore
-    //if (statusbarCtrl)
+    // restore
+    // if (statusbarCtrl)
     //    statusbarCtrl->SetPaneText(1,timestr);
 
-    //CWnd* mainWindow = AfxGetMainWnd( );
+    // CWnd* mainWindow = AfxGetMainWnd( );
     //((CMainFrame*) mainWindow)->SetTimeIndicator(timestr);
 }
 
@@ -3583,32 +3732,36 @@ void NukeAVIStream(int i)
     //
     // Make sure it's a real stream number
     //
-    if (i < 0 || i >=gcpavi)
+    if (i < 0 || i >= gcpavi)
         return;
 
     //
     // Free all the resources associated with this stream
     //
     AVIStreamRelease(gapavi[i]);
-    if (galpAVIOptions[i]->lpFormat) {
+    if (galpAVIOptions[i]->lpFormat)
+    {
         GlobalFreePtr(galpAVIOptions[i]->lpFormat);
     }
-    if (gapgf[i]) {
+    if (gapgf[i])
+    {
         AVIStreamGetFrameClose(gapgf[i]);
         gapgf[i] = NULL;
     }
-    if (ghdd[i]) {
+    if (ghdd[i])
+    {
         DrawDibClose(ghdd[i]);
         ghdd[i] = 0;
     }
     //
     // Compact the arrays of junk
     //
-    for (j = i; j < gcpavi - 1; j++) {
-        gapavi[j] = gapavi[j+1];
-        galpAVIOptions[j] = galpAVIOptions[j+1];
-        gapgf[j] = gapgf[j+1];
-        ghdd[j] = ghdd[j+1];
+    for (j = i; j < gcpavi - 1; j++)
+    {
+        gapavi[j] = gapavi[j + 1];
+        galpAVIOptions[j] = galpAVIOptions[j + 1];
+        gapgf[j] = gapgf[j + 1];
+        ghdd[j] = ghdd[j + 1];
     }
     gcpavi--;
 }
@@ -3635,7 +3788,7 @@ void CPlayplusView::OnAudioAddaudiofromwavefile()
     FileName[0] = 0;
     FileTitle[0] = 0;
 
-    LoadString( ghInstApp, IDS_OPENWAVE, Buffer, BUFSIZE );
+    LoadString(ghInstApp, IDS_OPENWAVE, Buffer, BUFSIZE);
 
     memset(&ofn, 0, sizeof(ofn));
     ofn.lpstrTitle = Buffer;
@@ -3649,70 +3802,74 @@ void CPlayplusView::OnAudioAddaudiofromwavefile()
     ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
     // If filename exists
-    if (GetOpenFileName(&ofn)) {
-        //AddAudioWaveFile(FileName);
-        //TimeDependentInsert(FileName);
+    if (GetOpenFileName(&ofn))
+    {
+        // AddAudioWaveFile(FileName);
+        // TimeDependentInsert(FileName);
 
-        if (giFirstAudio>=0)  {
-            //this case has no need to padd silence (except at the end)
-            //so the following code should be used with confidence
+        if (giFirstAudio >= 0)
+        {
+            // this case has no need to padd silence (except at the end)
+            // so the following code should be used with confidence
 
-            //The silence file is still unable to work...unless it is converted...??
+            // The silence file is still unable to work...unless it is converted...??
             CreateSilenceFile();
 
             long shiftTime = GetScrollTime();
-            if (shiftTime<0) shiftTime = 0;
-            if (shiftTime>timeEnd) shiftTime = timeEnd;
-            TimeDependentInsert(FileName,shiftTime);
-
+            if (shiftTime < 0)
+                shiftTime = 0;
+            if (shiftTime > timeEnd)
+                shiftTime = timeEnd;
+            TimeDependentInsert(FileName, shiftTime);
         }
-        else {
-            //Unable to measure startsample
-            TimeDependentInsert(FileName,-1);
-
+        else
+        {
+            // Unable to measure startsample
+            TimeDependentInsert(FileName, -1);
         }
-        //Unable to insert silence for wave files becuase no slience file has been created
-        //TimeDependentInsert(FileName,-1);
+        // Unable to insert silence for wave files becuase no slience file has been created
+        // TimeDependentInsert(FileName,-1);
 
         fileModified = 1;
-
     }
 }
 
 void RemoveExistingAudioTracks()
 {
-    AVISTREAMINFO     avis;
+    AVISTREAMINFO avis;
     int i;
-    for (i = gcpavi - 1; i >= 0; i--) {
+    for (i = gcpavi - 1; i >= 0; i--)
+    {
         AVIStreamInfo(gapavi[i], &avis, sizeof(avis));
-        if (avis.fccType==streamtypeAUDIO) {
+        if (avis.fccType == streamtypeAUDIO)
+        {
             NukeAVIStream(i);
         }
     }
     giFirstAudio = -1;
 
-    RecomputeStreamsTime(RESET_TO_START,0);
+    RecomputeStreamsTime(RESET_TO_START, 0);
 }
 
-void AddAudioWaveFile(char  *FileName)
+void AddAudioWaveFile(char *FileName)
 {
-    //if merging (ie audio exists).. then we do not use initavi..but overwrite existing...
+    // if merging (ie audio exists).. then we do not use initavi..but overwrite existing...
 
     InitAvi(FileName, MENU_MERGE);
 }
 
-void CPlayplusView::OnUpdateAudioRemoveexistingaudiotracks(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateAudioRemoveexistingaudiotracks(CCmdUI *pCmdUI)
 {
     // TODO: Add your command update UI handler code here
-    BOOL enablebutton = (!gfPlaying) && (giFirstAudio>=0) && (giFirstVideo>=0) && (!gfRecording);
+    BOOL enablebutton = (!gfPlaying) && (giFirstAudio >= 0) && (giFirstVideo >= 0) && (!gfRecording);
     pCmdUI->Enable(enablebutton);
 }
 
-void CPlayplusView::OnUpdateAudioAddaudiofromwavefile(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateAudioAddaudiofromwavefile(CCmdUI *pCmdUI)
 {
     // TODO: Add your command update UI handler code here
     BOOL enablebutton;
-    enablebutton = (!gfPlaying) && (giFirstVideo>=0) && (!gfRecording);
+    enablebutton = (!gfPlaying) && (giFirstVideo >= 0) && (!gfRecording);
 
     pCmdUI->Enable(enablebutton);
 }
@@ -3722,14 +3879,14 @@ void CPlayplusView::OnFileSaveas()
     OPENFILENAME openfilename;
     gszSaveFileName[0] = 0;
 
-    LoadString( ghInstApp, IDS_SAVETITLE, gszBuffer, BUFSIZE );
+    LoadString(ghInstApp, IDS_SAVETITLE, gszBuffer, BUFSIZE);
     openfilename.lStructSize = sizeof(OPENFILENAME);
     openfilename.lpstrTitle = gszBuffer;
     openfilename.hwndOwner = viewWnd;
     openfilename.hInstance = NULL;
 
-    //AVIBuildFilter(gszFilter, sizeof(gszFilter), TRUE);
-    //openfilename.lpstrFilter = gszFilter;
+    // AVIBuildFilter(gszFilter, sizeof(gszFilter), TRUE);
+    // openfilename.lpstrFilter = gszFilter;
     openfilename.lpstrFilter = "AVI Movie Files (*.avi)\0*.avi\0\0";
     openfilename.lpstrCustomFilter = NULL;
     openfilename.nMaxCustFilter = 0;
@@ -3739,12 +3896,11 @@ void CPlayplusView::OnFileSaveas()
     openfilename.lpstrFileTitle = NULL;
     openfilename.nMaxFileTitle = 0;
     openfilename.lpstrInitialDir = NULL;
-    openfilename.Flags = OFN_PATHMUSTEXIST | OFN_HIDEREADONLY |
-        OFN_OVERWRITEPROMPT ;
+    openfilename.Flags = OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
     openfilename.nFileOffset = 0;
     openfilename.nFileExtension = 0;
 
-    LoadString( ghInstApp, IDS_DEFEXT, gszExtBuffer, BUFSIZE );
+    LoadString(ghInstApp, IDS_DEFEXT, gszExtBuffer, BUFSIZE);
     openfilename.lpstrDefExt = gszExtBuffer;
     openfilename.lCustData = 0;
     openfilename.lpfnHook = NULL;
@@ -3753,33 +3909,31 @@ void CPlayplusView::OnFileSaveas()
     // If we get a filename, save it
     if (GetSaveFileName(&openfilename))
     {
-        DWORD       fccHandler[MAXNUMSTREAMS];
-        int         i;
-        HRESULT     hr;
+        DWORD fccHandler[MAXNUMSTREAMS];
+        int i;
+        HRESULT hr;
 
-        //StartWait();
+        // StartWait();
 
         for (i = 0; i < gcpavi; i++)
             fccHandler[i] = galpAVIOptions[i]->fccHandler;
 
-        SetAdditionalCompressSettings(bAudioCompression, pwfx, cbwfx,interleaveFrames,interleaveFactor, interleaveUnit);
+        SetAdditionalCompressSettings(bAudioCompression, pwfx, cbwfx, interleaveFrames, interleaveFactor,
+                                      interleaveUnit);
 
-        hr = AVISaveV(gszSaveFileName,
-            NULL,
-            (AVISAVECALLBACK) SaveCallback,
-            gcpavi,
-            gapavi,
-            galpAVIOptions);
+        hr = AVISaveV(gszSaveFileName, NULL, (AVISAVECALLBACK)SaveCallback, gcpavi, gapavi, galpAVIOptions);
 
-        if (hr != AVIERR_OK) {
-            switch (hr) {
-case AVIERR_FILEOPEN:
-    LoadString( ghInstApp, IDS_ERROVERWRITE, gszBuffer, BUFSIZE );
-    ErrMsg(gszBuffer);
-    break;
-default:
-    LoadString( ghInstApp, IDS_SAVEERROR, gszBuffer, BUFSIZE );
-    ErrMsg(gszBuffer);
+        if (hr != AVIERR_OK)
+        {
+            switch (hr)
+            {
+                case AVIERR_FILEOPEN:
+                    LoadString(ghInstApp, IDS_ERROVERWRITE, gszBuffer, BUFSIZE);
+                    ErrMsg(gszBuffer);
+                    break;
+                default:
+                    LoadString(ghInstApp, IDS_SAVEERROR, gszBuffer, BUFSIZE);
+                    ErrMsg(gszBuffer);
             }
         }
         else
@@ -3789,9 +3943,8 @@ default:
         for (i = 0; i < gcpavi; i++)
             galpAVIOptions[i]->fccHandler = fccHandler[i];
 
-        //EndWait();
+        // EndWait();
         FixWindowTitle();
-
     }
 }
 
@@ -3801,54 +3954,53 @@ void CPlayplusView::OnAudioAudiooptions()
     aod.DoModal();
 }
 
-//proven: after edit paste, the start playing at non zero can easiy crash!
-//this is due to the AVISTREAMREAD !!
-#define AUDIO_BUFFER_SIZE       16384
-void AuditAudio(PAVISTREAM pavi,long startsample) {
-    LONG            lRead;
-    LONG            lSamplesToPlay;
+// proven: after edit paste, the start playing at non zero can easiy crash!
+// this is due to the AVISTREAMREAD !!
+#define AUDIO_BUFFER_SIZE 16384
+void AuditAudio(PAVISTREAM pavi, long startsample)
+{
+    LONG lRead;
+    LONG lSamplesToPlay;
     long slSampleSize;
     long slEnd, slBegin, slCurrent;
 
     slBegin = AVIStreamStart(pavi);
     slEnd = AVIStreamEnd(pavi);
 
-    if (startsample>=0)
+    if (startsample >= 0)
         slBegin = startsample;
 
-    slCurrent  = slBegin;
+    slCurrent = slBegin;
 
-    void* buffer = malloc(AUDIO_BUFFER_SIZE);
+    void *buffer = malloc(AUDIO_BUFFER_SIZE);
     long retlen = 0;
 
-    AVISTREAMINFO       strhdr;
+    AVISTREAMINFO strhdr;
     AVIStreamInfo(pavi, &strhdr, sizeof(strhdr));
-    slSampleSize = (LONG) strhdr.dwSampleSize;
+    slSampleSize = (LONG)strhdr.dwSampleSize;
 
-    if (slSampleSize <= 0 || slSampleSize > AUDIO_BUFFER_SIZE) {
+    if (slSampleSize <= 0 || slSampleSize > AUDIO_BUFFER_SIZE)
+    {
         free(buffer);
         ErrMsg("Not Pass");
         return;
-
     }
     lSamplesToPlay = slEnd - slCurrent;
-    if (lSamplesToPlay > AUDIO_BUFFER_SIZE / slSampleSize )
-        lSamplesToPlay = AUDIO_BUFFER_SIZE / slSampleSize ;
+    if (lSamplesToPlay > AUDIO_BUFFER_SIZE / slSampleSize)
+        lSamplesToPlay = AUDIO_BUFFER_SIZE / slSampleSize;
 
-    ErrMsg("slCurrent %ld, slEnd %ld, lSamplesToPlay %ld",slCurrent, slEnd,lSamplesToPlay);
+    ErrMsg("slCurrent %ld, slEnd %ld, lSamplesToPlay %ld", slCurrent, slEnd, lSamplesToPlay);
 
-    while (slCurrent<slEnd) {
-        //ErrMsg("slCurrent %ld, lSamplesToPlay %ld, toplay %ld",slCurrent, lSamplesToPlay, slEnd - slCurrent);
-        /*long retval = */ (void) AVIStreamRead(pavi, slCurrent, lSamplesToPlay,
-            buffer,
-            AUDIO_BUFFER_SIZE,
-            &retlen,
-            &lRead);
+    while (slCurrent < slEnd)
+    {
+        // ErrMsg("slCurrent %ld, lSamplesToPlay %ld, toplay %ld",slCurrent, lSamplesToPlay, slEnd - slCurrent);
+        /*long retval = */ (void)AVIStreamRead(pavi, slCurrent, lSamplesToPlay, buffer, AUDIO_BUFFER_SIZE, &retlen,
+                                               &lRead);
 
         slCurrent += lRead;
-
     }
-    if (buffer) free(buffer);
+    if (buffer)
+        free(buffer);
 
     ErrMsg("Ok");
 }
@@ -3856,14 +4008,15 @@ void AuditAudio(PAVISTREAM pavi,long startsample) {
 void CPlayplusView::OnZoomTestaudio()
 {
     long sPos = GetScrollTime();
-    long samplepos = SafeStreamTimeToSample( gapavi[giFirstAudio], sPos  );
+    long samplepos = SafeStreamTimeToSample(gapavi[giFirstAudio], sPos);
     AuditAudio(gapavi[giFirstAudio], samplepos);
 }
 
 void Msg(const char fmt[], ...)
 {
     static int debug = GetPrivateProfileInt("debug", "log", 0, "huffyuv.ini");
-    if (!debug) return;
+    if (!debug)
+        return;
 
     DWORD written;
     char buf[2000];
@@ -3873,7 +4026,7 @@ void Msg(const char fmt[], ...)
     wvsprintf(buf, fmt, val);
     va_end(val);
 
-    const COORD _80x50 = {80,50};
+    const COORD _80x50 = {80, 50};
     static BOOL startup = (AllocConsole(), SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), _80x50));
     WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buf, lstrlen(buf), &written, 0);
 }
@@ -3888,14 +4041,17 @@ void MsgC(const char fmt[], ...)
     wvsprintf(buf, fmt, val);
     va_end(val);
 
-    const COORD _80x50 = {80,50};
+    const COORD _80x50 = {80, 50};
     static BOOL startup = (AllocConsole(), SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), _80x50));
     WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buf, lstrlen(buf), &written, 0);
 }
 
-void DumpFormat(WAVEFORMATEX*  pwfx,const char* str)
+void DumpFormat(WAVEFORMATEX *pwfx, const char *str)
 {
-    Msg("\n Str %s: wFormatTag %d channels %d nSamplesPerSec %d abytesPerSec %d blockalign %d wBitsPerSample %d cbSize  %d",str,pwfx->wFormatTag,pwfx->nChannels,pwfx->nSamplesPerSec,pwfx->nAvgBytesPerSec,pwfx->nBlockAlign,pwfx->wBitsPerSample,pwfx->cbSize );
+    Msg("\n Str %s: wFormatTag %d channels %d nSamplesPerSec %d abytesPerSec %d blockalign %d wBitsPerSample %d cbSize "
+        " %d",
+        str, pwfx->wFormatTag, pwfx->nChannels, pwfx->nSamplesPerSec, pwfx->nAvgBytesPerSec, pwfx->nBlockAlign,
+        pwfx->wBitsPerSample, pwfx->cbSize);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -3904,16 +4060,16 @@ void DumpFormat(WAVEFORMATEX*  pwfx,const char* str)
 
 //////////////////////////////
 
-//1)function fails (in streamcut) if stream length is smaller then stream start
-//2)editpaste : if pasting at point much further than the end of the stream, the pasting point is set to the end instead rathr than the specified point that is beyond
-//this may cause the cutting to fails...
+// 1)function fails (in streamcut) if stream length is smaller then stream start
+// 2)editpaste : if pasting at point much further than the end of the stream, the pasting point is set to the end
+// instead rathr than the specified point that is beyond this may cause the cutting to fails...
 
-//The plLength returns the number of bytes *removed* from the original streams
-//This value may be *different* from the number of bytes inserted into the stream
+// The plLength returns the number of bytes *removed* from the original streams
+// This value may be *different* from the number of bytes inserted into the stream
 
-//This function allows the lStart to be larger than the existing stream length
-//In this case, the stream will be padded with silence
-int EditStreamReplace(PAVISTREAM pavi, LONG * plPos,  LONG * plLength, PAVISTREAM pstream, LONG lStart, LONG lLength)
+// This function allows the lStart to be larger than the existing stream length
+// In this case, the stream will be padded with silence
+int EditStreamReplace(PAVISTREAM pavi, LONG *plPos, LONG *plLength, PAVISTREAM pstream, LONG lStart, LONG lLength)
 {
     // dumping of format indicates they are the same format
     long cbFormat;
@@ -3927,81 +4083,85 @@ int EditStreamReplace(PAVISTREAM pavi, LONG * plPos,  LONG * plLength, PAVISTREA
     orgFormat = (WAVEFORMATEX *)GlobalAllocPtr(GHND, cbFormat);
     AVIStreamReadFormat(pavi, 0, orgFormat, &cbFormat);
 
-    DumpFormat((WAVEFORMATEX *) galpAVIOptions[giFirstAudio]->lpFormat,"1stAud (Existing)");
-    DumpFormat((WAVEFORMATEX *) &m_Format,"Working    Format");
-    DumpFormat((WAVEFORMATEX *) lpFormat,"To  replace  with");
-    DumpFormat((WAVEFORMATEX *) orgFormat,"pavi(same as 1st)");
+    DumpFormat((WAVEFORMATEX *)galpAVIOptions[giFirstAudio]->lpFormat, "1stAud (Existing)");
+    DumpFormat((WAVEFORMATEX *)&m_Format, "Working    Format");
+    DumpFormat((WAVEFORMATEX *)lpFormat, "To  replace  with");
+    DumpFormat((WAVEFORMATEX *)orgFormat, "pavi(same as 1st)");
 
     int value = 0;
 
-    //Add Silence if start point is larger than existing stream length
+    // Add Silence if start point is larger than existing stream length
     long startPos = *plPos;
     long silenceLengthPasted = *plLength;
-    value = EditStreamPadSilence( pavi,  &startPos,  &silenceLengthPasted);
+    value = EditStreamPadSilence(pavi, &startPos, &silenceLengthPasted);
     if (value)
         return value;
 
-    //ErrMsg("pavi %ld, *plPos %ld, *plLength %ld, pstream %ld, lStart %ld,lLength %ld",pavi, *plPos, *plLength, pstream, lStart,lLength);
+    // ErrMsg("pavi %ld, *plPos %ld, *plLength %ld, pstream %ld, lStart %ld,lLength %ld",pavi, *plPos, *plLength,
+    // pstream, lStart,lLength);
     /* ??? if (value = EditStreamPaste(pavi, plPos, plLength, pstream, lStart,lLength) !=  AVIERR_OK) */
-    value = EditStreamPaste(pavi, plPos, plLength, pstream, lStart,lLength);
-    if (value !=  AVIERR_OK)
+    value = EditStreamPaste(pavi, plPos, plLength, pstream, lStart, lLength);
+    if (value != AVIERR_OK)
     {
         ErrMsg("Unable to add audio at insertion point (Stream Replace)");
     }
-    //ErrMsg("pavi %ld, *plPos %ld, *plLength %ld, pstream %ld, lStart %ld,lLength %ld",pavi, *plPos, *plLength, pstream, lStart,lLength);
+    // ErrMsg("pavi %ld, *plPos %ld, *plLength %ld, pstream %ld, lStart %ld,lLength %ld",pavi, *plPos, *plLength,
+    // pstream, lStart,lLength);
 
     PAVISTREAM tempStream;
     long cutStartPoint;
     cutStartPoint = *plPos + *plLength;
 
     long lx = AVIStreamLength(pavi);
-    if (lx >= (cutStartPoint + *plLength)) {
-        //if pavi is long enough to be cut
-        //do nothing...
-
+    if (lx >= (cutStartPoint + *plLength))
+    {
+        // if pavi is long enough to be cut
+        // do nothing...
     }
-    else {
-        //if not, try to cut from startpoint to
-        *plLength  = lx - cutStartPoint - 1;
-
+    else
+    {
+        // if not, try to cut from startpoint to
+        *plLength = lx - cutStartPoint - 1;
     }
-    //ErrMsg("toCut_length plength %ld cutStartPoint %ld AVIStreamLength %ld", (*plLength) ,cutStartPoint,lx);
+    // ErrMsg("toCut_length plength %ld cutStartPoint %ld AVIStreamLength %ld", (*plLength) ,cutStartPoint,lx);
 
-    //restore
+    // restore
 
-    if  (*plLength>0) {
+    if (*plLength > 0)
+    {
         /* ??? if (value = EditStreamCut(pavi, &cutStartPoint, plLength,  &tempStream ) !=  AVIERR_OK) */
-        value = EditStreamCut(pavi, &cutStartPoint, plLength,  &tempStream) ;
-        if (value !=  AVIERR_OK)
+        value = EditStreamCut(pavi, &cutStartPoint, plLength, &tempStream);
+        if (value != AVIERR_OK)
         {
             ErrMsg("Unable to remove audio at replace point (Stream Replace)");
         }
         AVIStreamRelease(tempStream);
-
     }
     return value;
 }
 
-//Will pad silence from end of stream to plPos if plPos>length(pavi)
+// Will pad silence from end of stream to plPos if plPos>length(pavi)
 //  before pad> |---org stream-----|                         plPos
 //  after  pad> |---org stream-----|_____silence_padded_____|plPos
-int EditStreamPadSilence(PAVISTREAM pavi, LONG * plPos,  LONG * plLength)
+int EditStreamPadSilence(PAVISTREAM pavi, LONG *plPos, LONG *plLength)
 {
-    HRESULT   hr;
+    HRESULT hr;
 
     long lz = AVIStreamLength(pavi);
     long startPasteLocation = *plPos;
 
-    //CString msgstr;
-    //msgstr.Format("lz %ld startPasteLocation %ld silenceFileValid %d",lz, startPasteLocation, silenceFileValid);
-    //MessageBox(NULL,msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
+    // CString msgstr;
+    // msgstr.Format("lz %ld startPasteLocation %ld silenceFileValid %d",lz, startPasteLocation, silenceFileValid);
+    // MessageBox(NULL,msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
 
-    if (startPasteLocation>=lz) {
-        if  (silenceFileValid) {
-            long SilencePasteLength = startPasteLocation - (lz-1);
+    if (startPasteLocation >= lz)
+    {
+        if (silenceFileValid)
+        {
+            long SilencePasteLength = startPasteLocation - (lz - 1);
 
             PAVISTREAM paviSilence;
-            PAVIFILE    pfileSilence;
+            PAVIFILE pfileSilence;
 
             hr = AVIFileOpen(&pfileSilence, tempsilencepath, 0, 0L);
 
@@ -4010,73 +4170,77 @@ int EditStreamPadSilence(PAVISTREAM pavi, LONG * plPos,  LONG * plLength)
                 ErrMsg("Unable to open silence file");
                 return hr;
             }
-            hr = AVIFileGetStream(pfileSilence, &paviSilence, streamtypeAUDIO , 0);
+            hr = AVIFileGetStream(pfileSilence, &paviSilence, streamtypeAUDIO, 0);
             if (hr != AVIERR_OK)
             {
                 ErrMsg("Unable to load silence stream");
                 return hr;
             }
             long SilenceStreamLength = AVIStreamLength(paviSilence);
-            //long initialStreamEnd = AVIStreamEnd(pavi)+1;
+            // long initialStreamEnd = AVIStreamEnd(pavi)+1;
             long initialStreamEnd = AVIStreamEnd(pavi);
             long totalPastedLength = 0;
-            while (SilencePasteLength>0) {
+            while (SilencePasteLength > 0)
+            {
                 LONG PastedLength;
                 LONG lengthToPaste;
 
-                if (SilencePasteLength>=SilenceStreamLength)
-                    lengthToPaste=SilenceStreamLength;   //restricting to ceiling of SilenceStreamLength
+                if (SilencePasteLength >= SilenceStreamLength)
+                    lengthToPaste = SilenceStreamLength; // restricting to ceiling of SilenceStreamLength
                 else
-                    lengthToPaste=SilencePasteLength;
+                    lengthToPaste = SilencePasteLength;
 
-                //CString msgstr;
-                //msgstr.Format("initialStreamEnd %ld lengthToPaste %ld SilenceStreamLength %ld totalPastedLength %ld,SilencePasteLength %ld",initialStreamEnd, lengthToPaste, SilenceStreamLength,totalPastedLength,SilencePasteLength);
-                //MessageBox(NULL,msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
+                // CString msgstr;
+                // msgstr.Format("initialStreamEnd %ld lengthToPaste %ld SilenceStreamLength %ld totalPastedLength
+                // %ld,SilencePasteLength %ld",initialStreamEnd, lengthToPaste,
+                // SilenceStreamLength,totalPastedLength,SilencePasteLength); MessageBox(NULL,msgstr,"Note",MB_OK |
+                // MB_ICONEXCLAMATION);
 
-                hr = EditStreamPaste(pavi, &initialStreamEnd, &PastedLength, paviSilence, 0,lengthToPaste);
-                if (hr !=  AVIERR_OK)
+                hr = EditStreamPaste(pavi, &initialStreamEnd, &PastedLength, paviSilence, 0, lengthToPaste);
+                if (hr != AVIERR_OK)
                 {
-                    ErrMsg("Unable to pad silence to existing stream at position %ld (Stream Replace)",initialStreamEnd);
+                    ErrMsg("Unable to pad silence to existing stream at position %ld (Stream Replace)",
+                           initialStreamEnd);
                     return hr;
                 }
                 totalPastedLength += PastedLength;
                 lz = AVIStreamLength(pavi);
-                SilencePasteLength = startPasteLocation - (lz-1);
-
+                SilencePasteLength = startPasteLocation - (lz - 1);
             }
             AVIStreamRelease(paviSilence);
             AVIFileRelease(pfileSilence);
 
             *plLength = totalPastedLength;
             *plPos = initialStreamEnd;
-
         }
-        else {
-            //no silence added
+        else
+        {
+            // no silence added
             ErrMsg("Invalid Silence File! No audio [silence] added");
 
-            //return -1;
-
+            // return -1;
         }
     }
     return 0;
 }
 
-//Will insert silence at begining of stream to shift the original stream to start sounding at a later time
-int EditStreamSilenceShift(PAVISTREAM pavi, LONG * plPos, LONG * plLength)
+// Will insert silence at begining of stream to shift the original stream to start sounding at a later time
+int EditStreamSilenceShift(PAVISTREAM pavi, LONG *plPos, LONG *plLength)
 {
-    HRESULT   hr;
+    HRESULT hr;
 
-    /* long lz = */ (void) AVIStreamLength(pavi);
+    /* long lz = */ (void)AVIStreamLength(pavi);
     long ShiftToLocation = *plPos;
     long ShiftFromLocation = AVIStreamStart(pavi);
 
-    if (ShiftToLocation>ShiftFromLocation) {
-        if  (silenceFileValid) {
+    if (ShiftToLocation > ShiftFromLocation)
+    {
+        if (silenceFileValid)
+        {
             long SilencePasteLength = ShiftToLocation - ShiftFromLocation;
 
             PAVISTREAM paviSilence;
-            PAVIFILE    pfileSilence;
+            PAVIFILE pfileSilence;
 
             hr = AVIFileOpen(&pfileSilence, tempsilencepath, 0, 0L);
 
@@ -4085,7 +4249,7 @@ int EditStreamSilenceShift(PAVISTREAM pavi, LONG * plPos, LONG * plLength)
                 ErrMsg("Unable to open silence file (2) ");
                 return hr;
             }
-            hr = AVIFileGetStream(pfileSilence, &paviSilence, streamtypeAUDIO , 0);
+            hr = AVIFileGetStream(pfileSilence, &paviSilence, streamtypeAUDIO, 0);
             if (hr != AVIERR_OK)
             {
                 ErrMsg("Unable to load silence stream (2)");
@@ -4094,55 +4258,57 @@ int EditStreamSilenceShift(PAVISTREAM pavi, LONG * plPos, LONG * plLength)
             long SilenceStreamLength = AVIStreamLength(paviSilence);
             long StreamPastePoint = ShiftFromLocation;
             long totalPastedLength = 0;
-            while (SilencePasteLength>0) {
+            while (SilencePasteLength > 0)
+            {
                 LONG PastedLength;
                 LONG lengthToPaste;
 
-                if (SilencePasteLength>=SilenceStreamLength)
-                    lengthToPaste=SilenceStreamLength;   //restricting to ceiling of SilenceStreamLength
+                if (SilencePasteLength >= SilenceStreamLength)
+                    lengthToPaste = SilenceStreamLength; // restricting to ceiling of SilenceStreamLength
                 else
-                    lengthToPaste=SilencePasteLength;
+                    lengthToPaste = SilencePasteLength;
 
-                //CString msgstr;
-                //msgstr.Format("initialStreamEnd %ld lengthToPaste %ld SilenceStreamLength %ld totalPastedLength %ld,SilencePasteLength %ld",initialStreamEnd, lengthToPaste, SilenceStreamLength,totalPastedLength,SilencePasteLength);
-                //MessageBox(NULL,msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
+                // CString msgstr;
+                // msgstr.Format("initialStreamEnd %ld lengthToPaste %ld SilenceStreamLength %ld totalPastedLength
+                // %ld,SilencePasteLength %ld",initialStreamEnd, lengthToPaste,
+                // SilenceStreamLength,totalPastedLength,SilencePasteLength); MessageBox(NULL,msgstr,"Note",MB_OK |
+                // MB_ICONEXCLAMATION);
 
                 PastedLength = 0;
-                hr = EditStreamPaste(pavi, &StreamPastePoint, &PastedLength, paviSilence, 0,lengthToPaste);
-                if (hr !=  AVIERR_OK)
+                hr = EditStreamPaste(pavi, &StreamPastePoint, &PastedLength, paviSilence, 0, lengthToPaste);
+                if (hr != AVIERR_OK)
                 {
-                    ErrMsg("Unable to pad silence to existing stream at position %ld (2)",StreamPastePoint);
+                    ErrMsg("Unable to pad silence to existing stream at position %ld (2)", StreamPastePoint);
                     return hr;
                 }
-                if (PastedLength<=0) {
+                if (PastedLength <= 0)
+                {
                     ErrMsg("Unable to pad silence ! Pad Length <= 0 ! (2)");
                     return -1;
                 }
                 totalPastedLength += PastedLength;
                 SilencePasteLength = SilencePasteLength - PastedLength;
-
             }
             AVIStreamRelease(paviSilence);
             AVIFileRelease(pfileSilence);
 
             *plLength = totalPastedLength;
             *plPos = StreamPastePoint;
-
         }
-        else {
-            //no silence added
+        else
+        {
+            // no silence added
             ErrMsg("Invalid Silence File! No audio [silence] added (2)");
 
-            //return -1;
-
+            // return -1;
         }
     }
     return 0;
 }
 
-//Returns a sample that correspond to the lTime of the stream
-//The lTime can be *larger* than  the length of the original pavi
-long ExAVIStreamTimeToSample( PAVISTREAM pavi, LONG lTime  )
+// Returns a sample that correspond to the lTime of the stream
+// The lTime can be *larger* than  the length of the original pavi
+long ExAVIStreamTimeToSample(PAVISTREAM pavi, LONG lTime)
 {
     AVISTREAMINFO avis;
     AVIStreamInfo(pavi, &avis, sizeof(avis));
@@ -4152,29 +4318,30 @@ long ExAVIStreamTimeToSample( PAVISTREAM pavi, LONG lTime  )
     long timeStreamStart;
     long timeStreamEnd;
 
-    sampleStreamStart = AVIStreamStart( pavi );
-    sampleStreamEnd = AVIStreamEnd( pavi );
-    timeStreamStart  = AVIStreamStartTime( pavi );
-    timeStreamEnd = AVIStreamEndTime( pavi );
+    sampleStreamStart = AVIStreamStart(pavi);
+    sampleStreamEnd = AVIStreamEnd(pavi);
+    timeStreamStart = AVIStreamStartTime(pavi);
+    timeStreamEnd = AVIStreamEndTime(pavi);
 
-    //double timefrac = ((double ) lTime-timeStreamStart)/((double) (timeStreamEnd -  timeStreamStart));
-    //timefrac =timefrac * ((double) (sampleStreamEnd - sampleStreamStart));
-    //long sampleAtTime =  ((long) timefrac) + sampleStreamStart;
-    //ErrMsg("lTime %ld sampletime %d sampleStreamStart %ld sampleStreamEnd %ld timeStreamStart %ld timeStreamEnd %ld",lTime,sampletime, sampleStreamStart,sampleStreamEnd,timeStreamStart,timeStreamEnd);
-    //return sampleAtTime;
+    // double timefrac = ((double ) lTime-timeStreamStart)/((double) (timeStreamEnd -  timeStreamStart));
+    // timefrac =timefrac * ((double) (sampleStreamEnd - sampleStreamStart));
+    // long sampleAtTime =  ((long) timefrac) + sampleStreamStart;
+    // ErrMsg("lTime %ld sampletime %d sampleStreamStart %ld sampleStreamEnd %ld timeStreamStart %ld timeStreamEnd
+    // %ld",lTime,sampletime, sampleStreamStart,sampleStreamEnd,timeStreamStart,timeStreamEnd); return sampleAtTime;
 
-    long sampleByAVIS = (long) (((double) (avis.dwRate/avis.dwScale)) * ((double) (lTime-timeStreamStart)/1000.0)) + sampleStreamStart;
-    //ErrMsg("lTime %ld sampleAttime %ld sampleByAVIS %ld",lTime, sampleAtTime, sampleByAVIS);
+    long sampleByAVIS = (long)(((double)(avis.dwRate / avis.dwScale)) * ((double)(lTime - timeStreamStart) / 1000.0)) +
+                        sampleStreamStart;
+    // ErrMsg("lTime %ld sampleAttime %ld sampleByAVIS %ld",lTime, sampleAtTime, sampleByAVIS);
     return sampleByAVIS;
 }
 
-long SafeStreamTimeToSample( PAVISTREAM pavi, LONG starttime  )
+long SafeStreamTimeToSample(PAVISTREAM pavi, LONG starttime)
 {
     long startsample = 0;
     if (starttime > AVIStreamLengthTime(pavi))
-        startsample = ExAVIStreamTimeToSample( pavi,  starttime);
+        startsample = ExAVIStreamTimeToSample(pavi, starttime);
     else
-        startsample = AVIStreamTimeToSample( pavi,  starttime);
+        startsample = AVIStreamTimeToSample(pavi, starttime);
 
     if (startsample <= -1)
         startsample = 0;
@@ -4182,151 +4349,184 @@ long SafeStreamTimeToSample( PAVISTREAM pavi, LONG starttime  )
     return startsample;
 }
 
-// The interleave factor is set * correctly * (i.e adjusted with respect to the interleaveUnit of MILLISECONDS or FRAMES for saving
-// on other occasations, it is assumed to be 1 (and is not used?)
-void SetAdditionalCompressSettings(BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format, DWORD  audio_format_size, BOOL bInterleave, int interleave_factor, int interleave_unit)
+// The interleave factor is set * correctly * (i.e adjusted with respect to the interleaveUnit of MILLISECONDS or FRAMES
+// for saving on other occasations, it is assumed to be 1 (and is not used?)
+void SetAdditionalCompressSettings(BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format,
+                                   DWORD audio_format_size, BOOL bInterleave, int interleave_factor,
+                                   int interleave_unit)
 {
-    int i=0;
+    int i = 0;
     int frames_per_second = -1;
 
-    for (i = 0; i < gcpavi; i++) {
-        //use the firstvideo to calculate the frames per seconds for use in interleave
-        if (bInterleave) {
-            if (i==giFirstVideo) {
+    for (i = 0; i < gcpavi; i++)
+    {
+        // use the firstvideo to calculate the frames per seconds for use in interleave
+        if (bInterleave)
+        {
+            if (i == giFirstVideo)
+            {
                 AVISTREAMINFO avis;
                 AVIStreamInfo(gapavi[giFirstVideo], &avis, sizeof(avis));
 
-                if (avis.dwScale>0)
-                    frames_per_second = avis.dwRate/avis.dwScale;
-            } else {
-                //Do nothing
+                if (avis.dwScale > 0)
+                    frames_per_second = avis.dwRate / avis.dwScale;
+            }
+            else
+            {
+                // Do nothing
             }
         }
     }
-    for (i = 0; i < gcpavi; i++) {
-        if (bInterleave) {
+    for (i = 0; i < gcpavi; i++)
+    {
+        if (bInterleave)
+        {
             galpAVIOptions[i]->dwFlags = galpAVIOptions[i]->dwFlags | AVICOMPRESSF_INTERLEAVE;
 
-            if (interleave_unit==FRAMES) {
+            if (interleave_unit == FRAMES)
+            {
                 galpAVIOptions[i]->dwInterleaveEvery = interleave_factor;
-            } else {
-                //Interleave by milliseconds
-                if (frames_per_second>0) {
-                    double interfloat = (((double) interleaveFactor) * ((double) frames_per_second))/1000.0;
-                    int interint = (int) interfloat;
-                    if (interint<=0) {
+            }
+            else
+            {
+                // Interleave by milliseconds
+                if (frames_per_second > 0)
+                {
+                    double interfloat = (((double)interleaveFactor) * ((double)frames_per_second)) / 1000.0;
+                    int interint = (int)interfloat;
+                    if (interint <= 0)
+                    {
                         interint = 1;
                     }
                     galpAVIOptions[i]->dwInterleaveEvery = interint;
-                } else {
+                }
+                else
+                {
                     galpAVIOptions[i]->dwInterleaveEvery = interleave_factor;
                 }
             }
-        } else {
+        }
+        else
+        {
             galpAVIOptions[i]->dwFlags = galpAVIOptions[i]->dwFlags & ~AVICOMPRESSF_INTERLEAVE;
             galpAVIOptions[i]->dwInterleaveEvery = 1;
         }
-        if (recompress_audio) {
-            if (i==giFirstAudio) {
-                if (galpAVIOptions[i]->lpFormat) {
+        if (recompress_audio)
+        {
+            if (i == giFirstAudio)
+            {
+                if (galpAVIOptions[i]->lpFormat)
+                {
                     GlobalFreePtr(galpAVIOptions[i]->lpFormat);
                 }
                 galpAVIOptions[i]->cbFormat = audio_format_size;
                 galpAVIOptions[i]->lpFormat = GlobalAllocPtr(GHND, audio_format_size);
-                memcpy( (void *) galpAVIOptions[i]->lpFormat,  (void *) audio_recompress_format, audio_format_size );
+                memcpy((void *)galpAVIOptions[i]->lpFormat, (void *)audio_recompress_format, audio_format_size);
             }
-        } else {
-            //Do nothing
+        }
+        else
+        {
+            // Do nothing
         }
     }
 }
 
-void CPlayplusView::OnUpdateFileSaveas(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateFileSaveas(CCmdUI *pCmdUI)
 {
-    pCmdUI->Enable(giFirstVideo>=0);
+    pCmdUI->Enable(giFirstVideo >= 0);
 }
 
 // * Only use this function to perform the conversion *
-//Put inside insertAVIFILE for NEW_AUDIO_TRACK case
-//The rest of the conversion helper functions (except TestConvert) should be protected from use in other functions/code
+// Put inside insertAVIFILE for NEW_AUDIO_TRACK case
+// The rest of the conversion helper functions (except TestConvert) should be protected from use in other functions/code
 
-//Important, need to call RecomputeStreamsTime after this function
-//RecomputeStreamsTime not called inside ReiInitStreams becuase thiss allow flexibility in setting the slider
-void  TestConvertFirstAudio()
+// Important, need to call RecomputeStreamsTime after this function
+// RecomputeStreamsTime not called inside ReiInitStreams becuase thiss allow flexibility in setting the slider
+void TestConvertFirstAudio()
 {
-    //restore
+    // restore
     return;
 
 #ifdef UNUSED_CODE
-    //if player mode..returns
+    // if player mode..returns
     if (pmode == PLAYER)
         return;
 
-    if (giFirstAudio>=0) {
+    if (giFirstAudio >= 0)
+    {
         PAVISTREAM paviConverted = NULL;
         int retval = TestConvert(gapavi[giFirstAudio], &paviConverted, NULL);
-        if (retval > 0) {
-            //Conversion is performed
-            CloneAudioStream_ReplaceStreamPool(giFirstAudio,paviConverted);
-            //no need to free the streams as ReplaceStreamPool already does that
-        } else if (retval == 0) {
-            //no conversion necessary
+        if (retval > 0)
+        {
+            // Conversion is performed
+            CloneAudioStream_ReplaceStreamPool(giFirstAudio, paviConverted);
+            // no need to free the streams as ReplaceStreamPool already does that
+        }
+        else if (retval == 0)
+        {
+            // no conversion necessary
             ErrMsg("No Conversion Performed");
-        } else {
-            //Error
+        }
+        else
+        {
+            // Error
             ErrMsg("Error in Conversion");
-            //no need to free resources as gapavi[giFirstAudio] remains valid and paviConverted has not been used
+            // no need to free resources as gapavi[giFirstAudio] remains valid and paviConverted has not been used
         }
     }
-#endif    // UNUSED_CODE
+#endif // UNUSED_CODE
 }
 
-//Note : Using test convert will affect the behavior of player
-//use an option that can turn test convert off
+// Note : Using test convert will affect the behavior of player
+// use an option that can turn test convert off
 
-//Creates an Editable copy of pavi and use it to replace the orignal stream i
-void CloneAudioStream_ReplaceStreamPool(int i,PAVISTREAM pavi)
+// Creates an Editable copy of pavi and use it to replace the orignal stream i
+void CloneAudioStream_ReplaceStreamPool(int i, PAVISTREAM pavi)
 {
-    if (i < 0 || i >=gcpavi)
+    if (i < 0 || i >= gcpavi)
         return;
 
-    //Creates an editable clone of pavi and set it to
+    // Creates an editable clone of pavi and set it to
     PAVISTREAM paviConverted;
-    if (CreateEditableStream(&paviConverted, pavi) != AVIERR_OK) {
-        //error
+    if (CreateEditableStream(&paviConverted, pavi) != AVIERR_OK)
+    {
+        // error
         ErrMsg("Unable to Create Editable Stream for Converted Audio");
 
-        //will not affect original stream
+        // will not affect original stream
 
         return;
-
     }
-    else {
+    else
+    {
         // Free all the resources associated with old stream
         AVIStreamRelease(gapavi[i]);
-        if (galpAVIOptions[i]->lpFormat) {
+        if (galpAVIOptions[i]->lpFormat)
+        {
             GlobalFreePtr(galpAVIOptions[i]->lpFormat);
         }
-        if (gapgf[i]) {
+        if (gapgf[i])
+        {
             AVIStreamGetFrameClose(gapgf[i]);
             gapgf[i] = NULL;
         }
-        if (ghdd[i]) {
+        if (ghdd[i])
+        {
             DrawDibClose(ghdd[i]);
             ghdd[i] = 0;
         }
-        gapavi[i]=paviConverted;
+        gapavi[i] = paviConverted;
         galSelStart[i] = galSelLen[i] = -1;
 
         ReInitAudioStream(i);
     }
 }
 
-//This function should be called inside initstreams before the line
-//timeLength = timeEnd - timeStart;
+// This function should be called inside initstreams before the line
+// timeLength = timeEnd - timeStart;
 void ReInitAudioStream(int i)
 {
-    //if (giFirstAudio>=0)
+    // if (giFirstAudio>=0)
     //    i=giFirstAudio;
 
     AVISTREAMINFO avis;
@@ -4335,30 +4535,31 @@ void ReInitAudioStream(int i)
     _fmemset(galpAVIOptions[i], 0, sizeof(AVICOMPRESSOPTIONS));
     galpAVIOptions[i]->fccType = avis.fccType;
 
-    //case streamtypeAUDIO:
-    LONG        lTemp;
+    // case streamtypeAUDIO:
+    LONG lTemp;
     galpAVIOptions[i]->dwFlags |= AVICOMPRESSF_VALID;
     galpAVIOptions[i]->dwInterleaveEvery = 1;
     AVIStreamReadFormat(gapavi[i], AVIStreamStart(gapavi[i]), NULL, &lTemp);
     galpAVIOptions[i]->cbFormat = lTemp;
-    if (lTemp)  galpAVIOptions[i]->lpFormat = GlobalAllocPtr(GHND, lTemp);
+    if (lTemp)
+        galpAVIOptions[i]->lpFormat = GlobalAllocPtr(GHND, lTemp);
 
     // Use current format as default format
     if (galpAVIOptions[i]->lpFormat)
-        AVIStreamReadFormat(gapavi[i], AVIStreamStart(gapavi[i]),galpAVIOptions[i]->lpFormat,&lTemp);
+        AVIStreamReadFormat(gapavi[i], AVIStreamStart(gapavi[i]), galpAVIOptions[i]->lpFormat, &lTemp);
 
     // We're finding the earliest and latest start and end points for
     // our scrollbar.
-    //timeStart = min(timeStart, AVIStreamStartTime(gapavi[i]));
-    //timeEnd   = max(timeEnd, AVIStreamEndTime(gapavi[i]));
+    // timeStart = min(timeStart, AVIStreamStartTime(gapavi[i]));
+    // timeEnd   = max(timeEnd, AVIStreamEndTime(gapavi[i]));
 
-    ghdd[i] =   NULL;
+    ghdd[i] = NULL;
     gapgf[i] = NULL;
 
-    //RecomputeStreamsTime(RESET_TO_START,0);
+    // RecomputeStreamsTime(RESET_TO_START,0);
 }
 
-void CPlayplusView::OnUpdateFilePlay(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateFilePlay(CCmdUI *pCmdUI)
 {
     // TODO: Add your command update UI handler code here
     BOOL ev = ((!gfPlaying) && (!gfRecording));
@@ -4374,7 +4575,7 @@ void CPlayplusView::OnAudioExtension()
         allowRecordExtension = 1;
 }
 
-void CPlayplusView::OnUpdateAudioExtension(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateAudioExtension(CCmdUI *pCmdUI)
 {
     // TODO: Add your command update UI handler code here
     pCmdUI->SetCheck(!allowRecordExtension);
@@ -4384,149 +4585,150 @@ void CPlayplusView::OnUpdateAudioExtension(CCmdUI* pCmdUI)
 // more stable methods / functions //
 /////////////////////////////////////
 
-CString GetTempPathEx(CString fileName, CString fxstr, CString exstr) {
-    CString tempPathEx = GetTempPath () + fileName;
+CString GetTempPathEx(CString fileName, CString fxstr, CString exstr)
+{
+    CString tempPathEx = GetTempPath() + fileName;
 
-    //Test the validity of writing to the file
+    // Test the validity of writing to the file
     int fileverified = 0;
     while (!fileverified)
     {
         OFSTRUCT ofstruct;
-        HFILE fhandle = OpenFile( tempPathEx, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE  | OF_CREATE );
-        if (fhandle != HFILE_ERROR) {
+        HFILE fhandle = OpenFile(tempPathEx, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE | OF_CREATE);
+        if (fhandle != HFILE_ERROR)
+        {
             fileverified = 1;
-            CloseHandle( (HANDLE) fhandle );
+            CloseHandle((HANDLE)fhandle);
 
             DeleteFile(tempPathEx);
-
         }
-        else {
-            srand( (unsigned)time( NULL ) );
+        else
+        {
+            srand((unsigned)time(NULL));
             int randnum = rand();
             char numstr[50];
-            sprintf(numstr,"%d",randnum);
+            sprintf(numstr, "%d", randnum);
 
             CString cnumstr(numstr);
 
-            tempPathEx = GetTempPath () + fxstr + cnumstr + exstr;
-
+            tempPathEx = GetTempPath() + fxstr + cnumstr + exstr;
         }
     }
     return tempPathEx;
 }
 
-//Code for open link
-BOOL CPlayplusView::Openlink (CString link)
+// Code for open link
+BOOL CPlayplusView::Openlink(CString link)
 {
     BOOL bSuccess = FALSE;
 
-    //As a last resort try ShellExecuting the URL, may
-    //even work on Navigator!
+    // As a last resort try ShellExecuting the URL, may
+    // even work on Navigator!
     if (!bSuccess)
-        bSuccess = OpenUsingShellExecute (link);
+        bSuccess = OpenUsingShellExecute(link);
 
     if (!bSuccess)
-        bSuccess = OpenUsingRegisteredClass (link);
+        bSuccess = OpenUsingRegisteredClass(link);
     return bSuccess;
 }
 
-BOOL CPlayplusView::OpenUsingShellExecute (CString link)
+BOOL CPlayplusView::OpenUsingShellExecute(CString link)
 {
     LPCTSTR mode;
     mode = _T ("open");
 
-    //HINSTANCE hRun = ShellExecute (GetParent ()->GetSafeHwnd (), mode, m_sActualLink, NULL, NULL, SW_SHOW);
-    HINSTANCE hRun = ShellExecute (GetSafeHwnd (), mode, link, NULL, NULL, SW_SHOW);
-    if ((int) hRun <= HINSTANCE_ERROR)
+    // HINSTANCE hRun = ShellExecute (GetParent ()->GetSafeHwnd (), mode, m_sActualLink, NULL, NULL, SW_SHOW);
+    HINSTANCE hRun = ShellExecute(GetSafeHwnd(), mode, link, NULL, NULL, SW_SHOW);
+    if ((int)hRun <= HINSTANCE_ERROR)
     {
-        TRACE ("Failed to invoke URL using ShellExecute\n");
+        TRACE("Failed to invoke URL using ShellExecute\n");
         return FALSE;
     }
     return TRUE;
 }
 
-BOOL CPlayplusView::OpenUsingRegisteredClass (CString link)
+BOOL CPlayplusView::OpenUsingRegisteredClass(CString link)
 {
     TCHAR key[MAX_PATH + MAX_PATH];
     HINSTANCE result;
 
-    if (GetRegKey (HKEY_CLASSES_ROOT, _T (".htm"), key) == ERROR_SUCCESS)
+    if (GetRegKey(HKEY_CLASSES_ROOT, _T (".htm"), key) == ERROR_SUCCESS)
     {
         LPCTSTR mode;
         mode = _T ("\\shell\\open\\command");
-        _tcscat (key, mode);
-        if (GetRegKey (HKEY_CLASSES_ROOT, key, key) == ERROR_SUCCESS)
+        _tcscat(key, mode);
+        if (GetRegKey(HKEY_CLASSES_ROOT, key, key) == ERROR_SUCCESS)
         {
             LPTSTR pos;
-            pos = _tcsstr (key, _T ("\"%1\""));
+            pos = _tcsstr(key, _T ("\"%1\""));
             if (pos == NULL)
-            {              // No quotes found
+            { // No quotes found
 
-                pos = strstr (key, _T ("%1"));   // Check for %1, without quotes
+                pos = strstr(key, _T ("%1")); // Check for %1, without quotes
 
-                if (pos == NULL)     // No parameter at all...
+                if (pos == NULL) // No parameter at all...
 
-                    pos = key + _tcslen (key) - 1;
+                    pos = key + _tcslen(key) - 1;
                 else
-                    *pos = _T ('\0');  // Remove the parameter
-
+                    *pos = _T('\0'); // Remove the parameter
             }
             else
-                *pos = _T ('\0');  // Remove the parameter
+                *pos = _T('\0'); // Remove the parameter
 
-            _tcscat (pos, _T (" "));
-            _tcscat (pos, link);
-            result = (HINSTANCE) WinExec (key, SW_SHOW);
-            if ((int) result <= HINSTANCE_ERROR)
+            _tcscat(pos, _T (" "));
+            _tcscat(pos, link);
+            result = (HINSTANCE)WinExec(key, SW_SHOW);
+            if ((int)result <= HINSTANCE_ERROR)
             {
                 CString str;
-                switch ((int) result)
+                switch ((int)result)
                 {
-                case 0:
-                    str = _T ("The operating system is out\nof memory or resources.");
-                    break;
-                case SE_ERR_PNF:
-                    str = _T ("The specified path was not found.");
-                    break;
-                case SE_ERR_FNF:
-                    str = _T ("The specified file was not found.");
-                    break;
-                case ERROR_BAD_FORMAT:
-                    str = _T ("The .EXE file is invalid\n(non-Win32 .EXE or error in .EXE image).");
-                    break;
-                case SE_ERR_ACCESSDENIED:
-                    str = _T ("The operating system denied\naccess to the specified file.");
-                    break;
-                case SE_ERR_ASSOCINCOMPLETE:
-                    str = _T ("The filename association is\nincomplete or invalid.");
-                    break;
-                case SE_ERR_DDEBUSY:
-                    str = _T ("The DDE transaction could not\nbe completed because other DDE transactions\nwere being processed.");
-                    break;
-                case SE_ERR_DDEFAIL:
-                    str = _T ("The DDE transaction failed.");
-                    break;
-                case SE_ERR_DDETIMEOUT:
-                    str = _T ("The DDE transaction could not\nbe completed because the request timed out.");
-                    break;
-                case SE_ERR_DLLNOTFOUND:
-                    str = _T ("The specified dynamic-link library was not found.");
-                    break;
-                case SE_ERR_NOASSOC:
-                    str = _T ("There is no application associated\nwith the given filename extension.");
-                    break;
-                case SE_ERR_OOM:
-                    str = _T ("There was not enough memory to complete the operation.");
-                    break;
-                case SE_ERR_SHARE:
-                    str = _T ("A sharing violation occurred.");
-                    break;
-                default:
-                    str.Format (_T ("Unknown Error (%d) occurred."), (int) result);
+                    case 0:
+                        str = _T ("The operating system is out\nof memory or resources.");
+                        break;
+                    case SE_ERR_PNF:
+                        str = _T ("The specified path was not found.");
+                        break;
+                    case SE_ERR_FNF:
+                        str = _T ("The specified file was not found.");
+                        break;
+                    case ERROR_BAD_FORMAT:
+                        str = _T ("The .EXE file is invalid\n(non-Win32 .EXE or error in .EXE image).");
+                        break;
+                    case SE_ERR_ACCESSDENIED:
+                        str = _T ("The operating system denied\naccess to the specified file.");
+                        break;
+                    case SE_ERR_ASSOCINCOMPLETE:
+                        str = _T ("The filename association is\nincomplete or invalid.");
+                        break;
+                    case SE_ERR_DDEBUSY:
+                        str =
+                            _T ("The DDE transaction could not\nbe completed because other DDE transactions\nwere being processed.");
+                        break;
+                    case SE_ERR_DDEFAIL:
+                        str = _T ("The DDE transaction failed.");
+                        break;
+                    case SE_ERR_DDETIMEOUT:
+                        str = _T ("The DDE transaction could not\nbe completed because the request timed out.");
+                        break;
+                    case SE_ERR_DLLNOTFOUND:
+                        str = _T ("The specified dynamic-link library was not found.");
+                        break;
+                    case SE_ERR_NOASSOC:
+                        str = _T ("There is no application associated\nwith the given filename extension.");
+                        break;
+                    case SE_ERR_OOM:
+                        str = _T ("There was not enough memory to complete the operation.");
+                        break;
+                    case SE_ERR_SHARE:
+                        str = _T ("A sharing violation occurred.");
+                        break;
+                    default:
+                        str.Format(_T ("Unknown Error (%d) occurred."), (int)result);
                 }
                 str = _T ("Unable to open hyperlink:\n\n") + str;
 
-                AfxMessageBox (str, MB_ICONEXCLAMATION | MB_OK);
+                AfxMessageBox(str, MB_ICONEXCLAMATION | MB_OK);
             }
             else
                 return TRUE;
@@ -4535,27 +4737,28 @@ BOOL CPlayplusView::OpenUsingRegisteredClass (CString link)
     return FALSE;
 }
 
-LONG CPlayplusView::GetRegKey (HKEY key, LPCTSTR subkey, LPTSTR retdata)
+LONG CPlayplusView::GetRegKey(HKEY key, LPCTSTR subkey, LPTSTR retdata)
 {
     HKEY hkey;
-    LONG retval = RegOpenKeyEx (key, subkey, 0, KEY_QUERY_VALUE, &hkey);
+    LONG retval = RegOpenKeyEx(key, subkey, 0, KEY_QUERY_VALUE, &hkey);
 
     if (retval == ERROR_SUCCESS)
     {
         long datasize = MAX_PATH;
         TCHAR data[MAX_PATH];
-        RegQueryValue (hkey, NULL, data, &datasize);
-        _tcscpy (retdata, data);
-        RegCloseKey (hkey);
+        RegQueryValue(hkey, NULL, data, &datasize);
+        _tcscpy(retdata, data);
+        RegCloseKey(hkey);
     }
     return retval;
 }
 
 //////////////////////////
-//ver 2.2
-//Flash Output
+// ver 2.2
+// Flash Output
 
-int CChangeRectSwf :: initialize(int _blockx, int _blocky , int _blocksizex, int _blocksizey,int _blockwidth, int _pixelwidth, int _pixelheight, int x, int y)
+int CChangeRectSwf ::initialize(int _blockx, int _blocky, int _blocksizex, int _blocksizey, int _blockwidth,
+                                int _pixelwidth, int _pixelheight, int x, int y)
 {
     blockx = _blockx;
     blocky = _blocky;
@@ -4566,10 +4769,10 @@ int CChangeRectSwf :: initialize(int _blockx, int _blocky , int _blocksizex, int
     pixelwidth = _pixelwidth;
     pixelheight = _pixelheight;
 
-    blockbounds.left  = blockx * blocksizex;
-    blockbounds.right = blockbounds.left + blocksizex-1;
-    blockbounds.top  = blocky * blocksizey;
-    blockbounds.bottom  = blockbounds.top + blocksizey-1;
+    blockbounds.left = blockx * blocksizex;
+    blockbounds.right = blockbounds.left + blocksizex - 1;
+    blockbounds.top = blocky * blocksizey;
+    blockbounds.bottom = blockbounds.top + blocksizey - 1;
 
     greatestLeft = x;
     greatestTop = y;
@@ -4602,28 +4805,33 @@ int CChangeRectSwf :: initialize(int _blockx, int _blocky , int _blocksizex, int
     return 0;
 }
 
-CArray<CChangeRectSwf*, CChangeRectSwf*> changeArray;
+CArray<CChangeRectSwf *, CChangeRectSwf *> changeArray;
 
-int IsDifferent(LPBITMAPINFOHEADER alpbi, int BITMAP_X,int BITMAP_Y, int x, int y, int format);
-void AddExpandBlock(int BITMAP_X,int BITMAP_Y,int x,int y,int format);
-void AddNewBlock(int BITMAP_X,int BITMAP_Y,int x,int y,int format);
-void ExpandBlock(CChangeRectSwf *itemRect, int BITMAP_X,int BITMAP_Y,int x,int y,int format);
-LPBYTE MakeFullRect(LPBITMAPINFOHEADER alpbi,LPBYTE bitmap, int BITMAP_X, int BITMAP_Y, int format, int max);
-double ComputePercentCovered(int BITMAP_X,int BITMAP_Y);
+int IsDifferent(LPBITMAPINFOHEADER alpbi, int BITMAP_X, int BITMAP_Y, int x, int y, int format);
+void AddExpandBlock(int BITMAP_X, int BITMAP_Y, int x, int y, int format);
+void AddNewBlock(int BITMAP_X, int BITMAP_Y, int x, int y, int format);
+void ExpandBlock(CChangeRectSwf *itemRect, int BITMAP_X, int BITMAP_Y, int x, int y, int format);
+LPBYTE MakeFullRect(LPBITMAPINFOHEADER alpbi, LPBYTE bitmap, int BITMAP_X, int BITMAP_Y, int format, int max);
+double ComputePercentCovered(int BITMAP_X, int BITMAP_Y);
 
-void CreatePlayButton(std::ostringstream &f, int controlsWidth, int controlsHeight,int FrameOffsetX,int FrameOffsetY,int BITMAP_X, int BITMAP_Y);
-void CreatePauseButton(std::ostringstream &f, int controlsWidth, int controlsHeight,int FrameOffsetX,int FrameOffsetY,int BITMAP_X, int BITMAP_Y);
-void CreateStopButton(std::ostringstream &f, int controlsWidth, int controlsHeight,int FrameOffsetX,int FrameOffsetY,int BITMAP_X, int BITMAP_Y);
-void CreateBackgroundBar(std::ostringstream &f, int controlsWidth, int controlsHeight,int FrameOffsetX,int FrameOffsetY,int BITMAP_X, int BITMAP_Y);
+void CreatePlayButton(std::ostringstream &f, int controlsWidth, int controlsHeight, int FrameOffsetX, int FrameOffsetY,
+                      int BITMAP_X, int BITMAP_Y);
+void CreatePauseButton(std::ostringstream &f, int controlsWidth, int controlsHeight, int FrameOffsetX, int FrameOffsetY,
+                       int BITMAP_X, int BITMAP_Y);
+void CreateStopButton(std::ostringstream &f, int controlsWidth, int controlsHeight, int FrameOffsetX, int FrameOffsetY,
+                      int BITMAP_X, int BITMAP_Y);
+void CreateBackgroundBar(std::ostringstream &f, int controlsWidth, int controlsHeight, int FrameOffsetX,
+                         int FrameOffsetY, int BITMAP_X, int BITMAP_Y);
 
-//LPBYTE MakeBitmapRect(LPBITMAPINFOHEADER alpbi, int BITMAP_X, int BITMAP_Y, int format, CChangeRectSwf * itemrect, int lenght, int height, int wLineLen, int dwSize);
+// LPBYTE MakeBitmapRect(LPBITMAPINFOHEADER alpbi, int BITMAP_X, int BITMAP_Y, int format, CChangeRectSwf * itemrect,
+// int lenght, int height, int wLineLen, int dwSize);
 
-bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
+bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG &currentTime)
 {
-    //Indirect lpbi
+    // Indirect lpbi
     bool result = true;
 
-    AVISTREAMINFO   avis;
+    AVISTREAMINFO avis;
     AVIStreamInfo(gapavi[giFirstVideo], &avis, sizeof(avis));
 
     // @FIXME[Carlo Lanzotti]: Why this +1 ?
@@ -4636,50 +4844,48 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
     screenDC = ::GetDC(NULL);
     hdc = CreateCompatibleDC(screenDC);
 
-    HBITMAP hbm = (HBITMAP) ::CreateCompatibleBitmap(screenDC,bmWidth, bmHeight);
-    HBITMAP old_bitmap = (HBITMAP) ::SelectObject(hdc,hbm);
+    HBITMAP hbm = (HBITMAP)::CreateCompatibleBitmap(screenDC, bmWidth, bmHeight);
+    HBITMAP old_bitmap = (HBITMAP)::SelectObject(hdc, hbm);
 
-    initTemporalCompress(bmWidth,bmHeight);
+    initTemporalCompress(bmWidth, bmHeight);
 
-    //CreateSwfHeader()
+    // CreateSwfHeader()
     CString modname, modbasename, modbasenextname;
     modname = swfname;
     modbasename = swfbasename;
 
-    if ((needbreakapart) &&  (breakcycle>0))
+    if ((needbreakapart) && (breakcycle > 0))
     {
-        //swfname
+        // swfname
         CString numstr;
-        numstr.Format("_%d",breakcycle);
-        CString xpath=swfname;
-        xpath=xpath.Left(xpath.ReverseFind('.'));
+        numstr.Format("_%d", breakcycle);
+        CString xpath = swfname;
+        xpath = xpath.Left(xpath.ReverseFind('.'));
         modname = xpath + numstr + ".swf";
 
-        xpath=swfbasename;
-        xpath=xpath.Left(xpath.ReverseFind('.'));
+        xpath = swfbasename;
+        xpath = xpath.Left(xpath.ReverseFind('.'));
         modbasename = xpath + numstr + ".swf";
-
     }
-    //need to next name even if breakcycle == 0
+    // need to next name even if breakcycle == 0
     if (needbreakapart)
     {
-        CString xpath=swfbasename;
-        xpath=xpath.Left(xpath.ReverseFind('.'));
+        CString xpath = swfbasename;
+        xpath = xpath.Left(xpath.ReverseFind('.'));
 
         CString numnextstr;
-        numnextstr.Format("_%d",breakcycle+1);
+        numnextstr.Format("_%d", breakcycle + 1);
 
         modbasenextname = xpath + numnextstr + ".swf";
-
     }
-    std::ofstream fileout(LPCTSTR(modname),std::ios::binary);
+    std::ofstream fileout(LPCTSTR(modname), std::ios::binary);
     std::ostringstream f(std::ios::binary);
 
-    f << FlashTagBackgroundColor( (UBYTE)swfbk_red, (UBYTE)swfbk_green, (UBYTE)swfbk_blue); //white
+    f << FlashTagBackgroundColor((UBYTE)swfbk_red, (UBYTE)swfbk_green, (UBYTE)swfbk_blue); // white
 
-    if ((giFirstAudio>=0) && (useAudio))
+    if ((giFirstAudio >= 0) && (useAudio))
     {
-        AVISTREAMINFO       strhdr;
+        AVISTREAMINFO strhdr;
         LONG cbFormat;
         LPVOID lpFormat;
 
@@ -4691,21 +4897,21 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
         {
             AVIStreamReadFormat(gapavi[giFirstAudio], AVIStreamStart(gapavi[giFirstAudio]), lpFormat, &cbFormat);
 
-            int SamplesPerSec = ((LPWAVEFORMATEX) lpFormat)->nSamplesPerSec;
-            //int BytesPerSec = ((LPWAVEFORMATEX) lpFormat)->nAvgBytesPerSec;
-            int BitsPerSample = ((LPWAVEFORMATEX) lpFormat)->wBitsPerSample;
-            int nChannels = ((LPWAVEFORMATEX) lpFormat)->nChannels;
-            DWORD wFormatTag = ((LPWAVEFORMATEX) lpFormat)->wFormatTag;
+            int SamplesPerSec = ((LPWAVEFORMATEX)lpFormat)->nSamplesPerSec;
+            // int BytesPerSec = ((LPWAVEFORMATEX) lpFormat)->nAvgBytesPerSec;
+            int BitsPerSample = ((LPWAVEFORMATEX)lpFormat)->wBitsPerSample;
+            int nChannels = ((LPWAVEFORMATEX)lpFormat)->nChannels;
+            DWORD wFormatTag = ((LPWAVEFORMATEX)lpFormat)->wFormatTag;
 
             GlobalFreePtr(lpFormat);
 
             if (SamplesPerSec < 6000)
                 play_rate = stream_rate = 0;
-            else if (SamplesPerSec==11025)
+            else if (SamplesPerSec == 11025)
                 play_rate = stream_rate = 1;
-            else if (SamplesPerSec==22050)
+            else if (SamplesPerSec == 22050)
                 play_rate = stream_rate = 2;
-            else if (SamplesPerSec==44100)
+            else if (SamplesPerSec == 44100)
                 play_rate = stream_rate = 3;
 
             if (BitsPerSample == 16)
@@ -4713,7 +4919,7 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
             else
                 play_16bit = stream_16bit = false;
 
-            if (nChannels==2)
+            if (nChannels == 2)
                 play_stereo = stream_stereo = true;
             else
                 play_stereo = stream_stereo = false;
@@ -4725,28 +4931,27 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
                 else if (useAudioCompression == 1)
                 {
                     compression = 1;
-
                 }
             }
-            else {
+            else
+            {
                 // Convert Audio to PCM ,  16 bit sample
                 WAVEFORMATEX WaveFormat;
-                WaveFormat.wFormatTag    = WAVE_FORMAT_PCM;
-                WaveFormat.wBitsPerSample = static_cast<WORD>( swf_bits_per_sample );
+                WaveFormat.wFormatTag = WAVE_FORMAT_PCM;
+                WaveFormat.wBitsPerSample = static_cast<WORD>(swf_bits_per_sample);
                 WaveFormat.nSamplesPerSec = swf_samples_per_seconds;
-                WaveFormat.nChannels = static_cast<WORD>( swf_num_channels );
-                WaveFormat.nBlockAlign = WaveFormat.nChannels * (WaveFormat.wBitsPerSample/8);
+                WaveFormat.nChannels = static_cast<WORD>(swf_num_channels);
+                WaveFormat.nBlockAlign = WaveFormat.nChannels * (WaveFormat.wBitsPerSample / 8);
                 WaveFormat.nAvgBytesPerSec = WaveFormat.nSamplesPerSec * WaveFormat.nBlockAlign;
                 WaveFormat.cbSize = 0;
 
-                //if single file ... will convert
-                //if multi-part file...will convert only on the first part
-                if ((!needbreakapart) || (breakcycle ==0))
+                // if single file ... will convert
+                // if multi-part file...will convert only on the first part
+                if ((!needbreakapart) || (breakcycle == 0))
                 {
                     BeginWaitCursor();
                     PCMConvertedStream = ConvertFirstAudioStream(&WaveFormat);
                     EndWaitCursor();
-
                 }
                 if (!PCMConvertedStream)
                 {
@@ -4757,14 +4962,14 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
                 {
                     usePCMConvertedStream = 1;
 
-                    //Reformat swf sound stream parameters to the converted stream
+                    // Reformat swf sound stream parameters to the converted stream
                     if (swf_samples_per_seconds < 6000)
                         play_rate = stream_rate = 0;
-                    else if (swf_samples_per_seconds==11025)
+                    else if (swf_samples_per_seconds == 11025)
                         play_rate = stream_rate = 1;
-                    else if (swf_samples_per_seconds==22050)
+                    else if (swf_samples_per_seconds == 22050)
                         play_rate = stream_rate = 2;
-                    else if (swf_samples_per_seconds==44100)
+                    else if (swf_samples_per_seconds == 44100)
                         play_rate = stream_rate = 3;
 
                     if (swf_bits_per_sample == 16)
@@ -4772,7 +4977,7 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
                     else
                         play_16bit = stream_16bit = false;
 
-                    if (swf_num_channels==2)
+                    if (swf_num_channels == 2)
                         play_stereo = stream_stereo = true;
                     else
                         play_stereo = stream_stereo = false;
@@ -4785,41 +4990,40 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
                     SamplesPerSec = swf_samples_per_seconds;
                     BitsPerSample = swf_bits_per_sample;
                     nChannels = swf_num_channels;
-
                 }
             }
             samplecountavg = SamplesPerSec / sampleFPS;
 
-            //need this ?
-            //added to ensure each sound stream block is less than 4096 samples
-            if ((!noAudioStream) && (useAudioCompression<2))
+            // need this ?
+            // added to ensure each sound stream block is less than 4096 samples
+            if ((!noAudioStream) && (useAudioCompression < 2))
             {
                 if (samplecountavg > 4096)
                 {
-                    //adjust sampleFPS
+                    // adjust sampleFPS
                     sampleFPS = 12;
                     samplecountavg = SamplesPerSec / sampleFPS;
-                    sampletimeInc = 1000/ sampleFPS;
-
+                    sampletimeInc = 1000 / sampleFPS;
                 }
             }
             long startsampleSwf = 0;
-            if ((needbreakapart) && (breakcycle>0))
+            if ((needbreakapart) && (breakcycle > 0))
             {
-                //can we just do nothing ...lets use the old value of startsampleSwf
-                //if (usePCMConvertedStream)
+                // can we just do nothing ...lets use the old value of startsampleSwf
+                // if (usePCMConvertedStream)
                 //    startsampleSwf = AVIStreamTimeToSample( PCMConvertedStream,  currentTime);
-                //else
+                // else
                 //    startsampleSwf = AVIStreamTimeToSample( gapavi[giFirstAudio],  currentTime);
 
-                //slCurrentSwf = startsampleSwf;
+                // slCurrentSwf = startsampleSwf;
             }
             else
             {
                 if (usePCMConvertedStream)
-                    startsampleSwf = AVIStreamTimeToSample( PCMConvertedStream,  AVIStreamStartTime(PCMConvertedStream));
+                    startsampleSwf = AVIStreamTimeToSample(PCMConvertedStream, AVIStreamStartTime(PCMConvertedStream));
                 else
-                    startsampleSwf = AVIStreamTimeToSample( gapavi[giFirstAudio],  AVIStreamStartTime(gapavi[giFirstAudio]));
+                    startsampleSwf =
+                        AVIStreamTimeToSample(gapavi[giFirstAudio], AVIStreamStartTime(gapavi[giFirstAudio]));
 
                 slCurrentSwf = startsampleSwf;
             }
@@ -4827,25 +5031,25 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
             {
                 if ((useAudioCompression == 1) && (!stream_16bit))
                 {
-                    //need to force 16 bit because internally, when compressing thru' ADPCM,
-                    //there is a conversion to 16 bit !
+                    // need to force 16 bit because internally, when compressing thru' ADPCM,
+                    // there is a conversion to 16 bit !
 
-                    FlashTagSoundStreamHead2 ssh( play_rate,  play_16bit, play_stereo,  compression,     stream_rate, true, stream_stereo, samplecountavg);
+                    FlashTagSoundStreamHead2 ssh(play_rate, play_16bit, play_stereo, compression, stream_rate, true,
+                                                 stream_stereo, samplecountavg);
                     f << ssh;
-
                 }
                 else
                 {
-                    FlashTagSoundStreamHead2 ssh( play_rate,  play_16bit, play_stereo,  compression,     stream_rate, stream_16bit, stream_stereo, samplecountavg);
+                    FlashTagSoundStreamHead2 ssh(play_rate, play_16bit, play_stereo, compression, stream_rate,
+                                                 stream_16bit, stream_stereo, samplecountavg);
                     f << ssh;
                 }
             }
         }
-        else  //if !lpFormat
+        else // if !lpFormat
             noAudioStream = 1;
-
     }
-    else //if (giFirstAudio<0)
+    else // if (giFirstAudio<0)
         noAudioStream = 1;
 
     if (addControls)
@@ -4855,45 +5059,44 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
         if (controlsType == 1)
         {
             bitmapBarHeight = 19;
-            CreateBackgroundBar(f, controlsWidth, bitmapBarHeight,FrameOffsetX,FrameOffsetY,bmWidth,bmHeight);
-            int offset = CreateFlashBitmapPlayButton(f,bmWidth,bmHeight,"\\playbar",FrameOffsetX);
-            offset = CreateFlashBitmapPauseButton(f,bmWidth,bmHeight,"\\playbar",offset);
-            offset = CreateFlashBitmapStopButton(f,bmWidth,bmHeight,"\\playbar",offset);
-
+            CreateBackgroundBar(f, controlsWidth, bitmapBarHeight, FrameOffsetX, FrameOffsetY, bmWidth, bmHeight);
+            int offset = CreateFlashBitmapPlayButton(f, bmWidth, bmHeight, "\\playbar", FrameOffsetX);
+            offset = CreateFlashBitmapPauseButton(f, bmWidth, bmHeight, "\\playbar", offset);
+            offset = CreateFlashBitmapStopButton(f, bmWidth, bmHeight, "\\playbar", offset);
         }
         else if (controlsType == 2)
         {
             bitmapBarHeight = 25;
-            int offset = 0 ;
+            int offset = 0;
 
             /*if (ControllerAlignment == 0)
                 offset = 0;
-            else */ if (ControllerAlignment == 1)
-                offset = (bmWidth - ControllerWidth)/2 + FrameOffsetX; //centering .. 296 is the hard code lenght of the bar...
+            else */
+            if (ControllerAlignment == 1)
+                offset = (bmWidth - ControllerWidth) / 2 +
+                         FrameOffsetX; // centering .. 296 is the hard code lenght of the bar...
             if (yes_drawLeftPiece)
-                offset = DrawLeftPiece(f,bmWidth, bmHeight, "\\controller", offset, PieceOffsetY);
-            offset = CreateFlashBitmapPlayButton(f,bmWidth,bmHeight,"\\controller",offset);
-            offset = CreateFlashBitmapPauseButton(f,bmWidth,bmHeight,"\\controller",offset);
+                offset = DrawLeftPiece(f, bmWidth, bmHeight, "\\controller", offset, PieceOffsetY);
+            offset = CreateFlashBitmapPlayButton(f, bmWidth, bmHeight, "\\controller", offset);
+            offset = CreateFlashBitmapPauseButton(f, bmWidth, bmHeight, "\\controller", offset);
             if (yes_drawStopButton)
-                offset = CreateFlashBitmapStopButton(f,bmWidth,bmHeight,"\\controller",offset);
+                offset = CreateFlashBitmapStopButton(f, bmWidth, bmHeight, "\\controller", offset);
             if (yes_drawRightPiece)
-                offset = DrawRightPiece(f,bmWidth, bmHeight, "\\controller", offset, PieceOffsetY);
-
+                offset = DrawRightPiece(f, bmWidth, bmHeight, "\\controller", offset, PieceOffsetY);
         }
         else
         {
             bitmapBarHeight = 25;
-            CreateBackgroundBar(f, controlsWidth, controlsHeight,FrameOffsetX,FrameOffsetY,bmWidth,bmHeight);
-            CreatePlayButton(f, controlsWidth, controlsHeight,FrameOffsetX,FrameOffsetY,bmWidth,bmHeight);
-            CreatePauseButton(f, controlsWidth, controlsHeight,FrameOffsetX,FrameOffsetY,bmWidth,bmHeight);
-            CreateStopButton(f, controlsWidth, controlsHeight,FrameOffsetX,FrameOffsetY,bmWidth,bmHeight);
-
+            CreateBackgroundBar(f, controlsWidth, controlsHeight, FrameOffsetX, FrameOffsetY, bmWidth, bmHeight);
+            CreatePlayButton(f, controlsWidth, controlsHeight, FrameOffsetX, FrameOffsetY, bmWidth, bmHeight);
+            CreatePauseButton(f, controlsWidth, controlsHeight, FrameOffsetX, FrameOffsetY, bmWidth, bmHeight);
+            CreateStopButton(f, controlsWidth, controlsHeight, FrameOffsetX, FrameOffsetY, bmWidth, bmHeight);
         }
     }
     controlsHeight = bitmapBarHeight;
 
-    //add after add controls
-    if ((breakcycle==0) && (addPreloader))
+    // add after add controls
+    if ((breakcycle == 0) && (addPreloader))
     {
         controlsWidth = bmWidth;
 
@@ -4901,14 +5104,15 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
         if (!addControls)
             additonalOffsetY = 3;
 
-        int widthBar = CreateProgressBar(f, controlsWidth, bitmapBarHeight,FrameOffsetX,FrameOffsetY,bmWidth,bmHeight,(int) (0.1*bmWidth)+FrameOffsetX,additonalOffsetY);
-        DrawLoading(f,  bmWidth, bmHeight,  loadingPath, 0,0);
-        DrawNodes(f,widthBar,bmWidth, bmHeight,  "\\controller", 0,0, int(0.1*bmWidth)+FrameOffsetX,additonalOffsetY);
-        Preloader(f, widthBar, bmWidth, bmHeight, int(0.1*bmWidth)+FrameOffsetX);
-        //Preloader(f, widthBar, bmWidth, bmHeight, 12);
-
+        int widthBar = CreateProgressBar(f, controlsWidth, bitmapBarHeight, FrameOffsetX, FrameOffsetY, bmWidth,
+                                         bmHeight, (int)(0.1 * bmWidth) + FrameOffsetX, additonalOffsetY);
+        DrawLoading(f, bmWidth, bmHeight, loadingPath, 0, 0);
+        DrawNodes(f, widthBar, bmWidth, bmHeight, "\\controller", 0, 0, int(0.1 * bmWidth) + FrameOffsetX,
+                  additonalOffsetY);
+        Preloader(f, widthBar, bmWidth, bmHeight, int(0.1 * bmWidth) + FrameOffsetX);
+        // Preloader(f, widthBar, bmWidth, bmHeight, 12);
     }
-    else if ((breakcycle>0) && (addPreloader) && (applyPreloaderToSplitFiles))
+    else if ((breakcycle > 0) && (addPreloader) && (applyPreloaderToSplitFiles))
     {
         controlsWidth = bmWidth;
 
@@ -4916,24 +5120,25 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
         if (!addControls)
             additonalOffsetY = 3;
 
-        int widthBar = CreateProgressBar(f, controlsWidth, bitmapBarHeight,FrameOffsetX,FrameOffsetY,bmWidth,bmHeight,(int) (0.1*bmWidth)+FrameOffsetX,additonalOffsetY);
-        DrawLoading(f,  bmWidth, bmHeight,  loadingPath, 0,0);
-        DrawNodes(f,widthBar,bmWidth, bmHeight,  "\\controller", 0,0, int(0.1*bmWidth)+FrameOffsetX,additonalOffsetY);
-        Preloader(f, widthBar, bmWidth, bmHeight, int(0.1*bmWidth)+FrameOffsetX);
-
+        int widthBar = CreateProgressBar(f, controlsWidth, bitmapBarHeight, FrameOffsetX, FrameOffsetY, bmWidth,
+                                         bmHeight, (int)(0.1 * bmWidth) + FrameOffsetX, additonalOffsetY);
+        DrawLoading(f, bmWidth, bmHeight, loadingPath, 0, 0);
+        DrawNodes(f, widthBar, bmWidth, bmHeight, "\\controller", 0, 0, int(0.1 * bmWidth) + FrameOffsetX,
+                  additonalOffsetY);
+        Preloader(f, widthBar, bmWidth, bmHeight, int(0.1 * bmWidth) + FrameOffsetX);
     }
-    //Progress Dialog
-    CProgressDlg* progressdlogptr= new CProgressDlg;
+    // Progress Dialog
+    CProgressDlg *progressdlogptr = new CProgressDlg;
     progressdlogptr->Create(this);
     progressdlogptr->SetStep(1);
 
-    CString msgx,msgout;
+    CString msgx, msgout;
     msgx.LoadString(IDS_GENERATING);
-    //msgout.Format(msgx,swfbasename);
-    msgout.Format(msgx,modbasename);
-    ((CStatic *) progressdlogptr->GetDlgItem(IDC_CONVERSIONTEXT))->SetWindowText(msgout);
+    // msgout.Format(msgx,swfbasename);
+    msgout.Format(msgx, modbasename);
+    ((CStatic *)progressdlogptr->GetDlgItem(IDC_CONVERSIONTEXT))->SetWindowText(msgout);
 
-    //Main Conversion Block
+    // Main Conversion Block
     int gfConverting = TRUE;
 
     while (gfConverting)
@@ -4945,48 +5150,49 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
             result = false;
             break;
         }
-        //Progress Dialog
+        // Progress Dialog
         int percentcompeleted;
-        if  ((timeEnd>1) && (currentTime <= timeEnd))
-            percentcompeleted    = (int) ((float) currentTime * 100.0 / (float) timeEnd);
+        if ((timeEnd > 1) && (currentTime <= timeEnd))
+            percentcompeleted = (int)((float)currentTime * 100.0 / (float)timeEnd);
         else
-            percentcompeleted    = 0;
+            percentcompeleted = 0;
 
         if ((percentcompeleted > oldPercent) || (percentcompeleted == 0))
         {
             progressdlogptr->SetPos(percentcompeleted);
             oldPercent = percentcompeleted;
-
         }
         if (currentTime < timeStart)
             currentTime = timeStart;
 
-        if (currentTime > timeEnd)     {
+        if (currentTime > timeEnd)
+        {
             moreSWFsneeded = 0;
             gfConverting = FALSE;
         }
         ConvertToFlash(currentTime, hdc, hbm, f);
 
-        //ConvertToFlash(currentTime, NULL);
+        // ConvertToFlash(currentTime, NULL);
 
         currentTime += sampletimeInc;
 
-        //the click sound that sometime occurs at the end of swf playback is due to the button-click sound record with "Record from Speakers" option
-        //if (framecount > 200)
+        // the click sound that sometime occurs at the end of swf playback is due to the button-click sound record with
+        // "Record from Speakers" option if (framecount > 200)
         //    break;
 
         if (framecount > MAXFLASHLIMIT)
         {
-            if (!needbreakapart) //this case is to cater to the case when user do not want to split even if the limit is reached
+            if (!needbreakapart) // this case is to cater to the case when user do not want to split even if the limit
+                                 // is reached
                 moreSWFsneeded = 0;
-            else  //normal case....split
+            else // normal case....split
                 moreSWFsneeded = 1;
             gfConverting = FALSE;
-
         }
     }
-    //Progress Dialog
-    if (progressdlogptr) delete progressdlogptr;
+    // Progress Dialog
+    if (progressdlogptr)
+        delete progressdlogptr;
     oldPercent = 0;
 
     if ((moreSWFsneeded) && (allowChaining))
@@ -4994,35 +5200,34 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
         char actionScript[1000];
         CString actionscriptFormat("loadMovie (\"%s\", \"\");");
         CString actionscriptStr;
-        actionscriptStr.Format(actionscriptFormat,modbasenextname);
-        strcpy(actionScript,LPCTSTR(actionscriptStr));
-        actionScript[actionscriptStr.GetLength()]=0;
+        actionscriptStr.Format(actionscriptFormat, modbasenextname);
+        strcpy(actionScript, LPCTSTR(actionscriptStr));
+        actionScript[actionscriptStr.GetLength()] = 0;
 
-        //MessageBox(actionscriptStr,"Note",MB_OK);
+        // MessageBox(actionscriptStr,"Note",MB_OK);
 
         ActionCompiler acom(5);
-        acom.Compile(actionScript,f);
+        acom.Compile(actionScript, f);
 
         f << FlashTagShowFrame();
         framecount++;
 
         filesAreSplit = 1;
-
     }
     else if ((moreSWFsneeded) && (!allowChaining))
     {
-        //we dont do anything...just let the use edit them
-
+        // we dont do anything...just let the use edit them
     }
-    else { //this is either final part of a split file or the only part of a single file
+    else
+    { // this is either final part of a split file or the only part of a single file
 
-        //if no loop
+        // if no loop
         if (noLoop)
         {
-            //if split file
-            if ((filesAreSplit) && (allowChaining)) //no more swfsneeded ... but already split
+            // if split file
+            if ((filesAreSplit) && (allowChaining)) // no more swfsneeded ... but already split
             {
-                //We jsut want to stop playing
+                // We jsut want to stop playing
 
                 FlashActionStop s;
                 FlashTagDoAction ftd;
@@ -5032,10 +5237,10 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
                 if (urlRedirect.GetLength() > 0)
                 {
                     char actionScriptal[1000];
-                    sprintf(actionScriptal,"getURL(\"%s\", \"_self\");", urlRedirect);
+                    sprintf(actionScriptal, "getURL(\"%s\", \"_self\");", urlRedirect);
 
                     ActionCompiler acomal(5);
-                    acomal.Compile(actionScriptal,f);
+                    acomal.Compile(actionScriptal, f);
                 }
                 // end me
                 f << ftd;
@@ -5054,7 +5259,6 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
 
                 f << FlashTagShowFrame();
                 framecount++;
-
             }
             else
             {
@@ -5071,48 +5275,45 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
                     if (urlRedirect.GetLength() > 0)
                     {
                         char actionScriptal[1000];
-                        sprintf(actionScriptal,"getURL(\"%s\", \"_self\");", urlRedirect);
+                        sprintf(actionScriptal, "getURL(\"%s\", \"_self\");", urlRedirect);
 
                         ActionCompiler acomal(5);
-                        acomal.Compile(actionScriptal,f);
+                        acomal.Compile(actionScriptal, f);
                     }
                     // end me
 
                     f << ftd;
                     f << FlashTagShowFrame();
                     framecount++;
-
                 }
             }
         }
-        else  //if looping
+        else // if looping
         {
-            //if split file
-            if ((filesAreSplit) && (allowChaining)) //no more swfsneeded ... but already split
+            // if split file
+            if ((filesAreSplit) && (allowChaining)) // no more swfsneeded ... but already split
             {
                 char actionScript[1000];
                 CString actionscriptFormat("loadMovie (\"%s\", \"\");");
                 CString actionscriptStr;
-                actionscriptStr.Format(actionscriptFormat,swfbasename);
-                strcpy(actionScript,LPCTSTR(actionscriptStr));
-                actionScript[actionscriptStr.GetLength()]=0;
+                actionscriptStr.Format(actionscriptFormat, swfbasename);
+                strcpy(actionScript, LPCTSTR(actionscriptStr));
+                actionScript[actionscriptStr.GetLength()] = 0;
 
-                //MessageBox(actionscriptStr,"Note",MB_OK);
+                // MessageBox(actionscriptStr,"Note",MB_OK);
 
                 ActionCompiler acom(5);
-                acom.Compile(actionScript,f);
+                acom.Compile(actionScript, f);
 
                 f << FlashTagShowFrame();
                 framecount++;
-
             }
             else if ((filesAreSplit) && (!allowChaining))
             {
-                //If we want to loop and yet does not allow chianing of a split file
-                //we just do nothing
+                // If we want to loop and yet does not allow chianing of a split file
+                // we just do nothing
 
                 //..let user edit the file themselves
-
             }
             else
             {
@@ -5132,39 +5333,43 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
             }
         }
     }
-    //CreateSwfEnd()
+    // CreateSwfEnd()
     f << FlashTagEnd();
-    //fileout << FlashHeader(5,f.str().size(),(bmWidth+2)*20,(bmHeight+2)*20,15.8,1);
+    // fileout << FlashHeader(5,f.str().size(),(bmWidth+2)*20,(bmHeight+2)*20,15.8,1);
 
-    //Currently, the framecount must be counted/incremented manually at each FlashTagShowFrame
-    //The value is used when the swf is imported
+    // Currently, the framecount must be counted/incremented manually at each FlashTagShowFrame
+    // The value is used when the swf is imported
 
-    if (addControls)  //may include Preloader
+    if (addControls) // may include Preloader
     {
-        //int ButtonSpaceY = 8;
-        fileout << FlashHeader(5,f.str().size(),(bmWidth+(FrameOffsetX*2))*20,(bmHeight+(FrameOffsetY*2)+controlsHeight+ButtonSpaceY+1)*20,(float) sampleFPS,framecount);
-        ww = (bmWidth+(FrameOffsetX*2));
-        hh = (bmHeight+(FrameOffsetY*2)+controlsHeight+ButtonSpaceY+1);
+        // int ButtonSpaceY = 8;
+        fileout << FlashHeader(5, f.str().size(), (bmWidth + (FrameOffsetX * 2)) * 20,
+                               (bmHeight + (FrameOffsetY * 2) + controlsHeight + ButtonSpaceY + 1) * 20,
+                               (float)sampleFPS, framecount);
+        ww = (bmWidth + (FrameOffsetX * 2));
+        hh = (bmHeight + (FrameOffsetY * 2) + controlsHeight + ButtonSpaceY + 1);
     }
     else if (addPreloader)
     {
-        //int ButtonSpaceY = 8;
-        fileout << FlashHeader(5,f.str().size(),(bmWidth+(FrameOffsetX*2))*20,(bmHeight+(FrameOffsetY*2)+controlsHeight+ButtonSpaceY+1)*20,(float) sampleFPS,framecount);
-        ww = (bmWidth+(FrameOffsetX*2));
-        hh = (bmHeight+(FrameOffsetY*2)+ButtonSpaceY+1);
+        // int ButtonSpaceY = 8;
+        fileout << FlashHeader(5, f.str().size(), (bmWidth + (FrameOffsetX * 2)) * 20,
+                               (bmHeight + (FrameOffsetY * 2) + controlsHeight + ButtonSpaceY + 1) * 20,
+                               (float)sampleFPS, framecount);
+        ww = (bmWidth + (FrameOffsetX * 2));
+        hh = (bmHeight + (FrameOffsetY * 2) + ButtonSpaceY + 1);
     }
     else
     {
-        fileout << FlashHeader(5,f.str().size(),(bmWidth+(FrameOffsetX*2))*20,(bmHeight+(FrameOffsetY*2))*20,(float) sampleFPS,framecount);
-        ww = (bmWidth+(FrameOffsetX*2));
-        hh = (bmHeight+(FrameOffsetY*2));
-
+        fileout << FlashHeader(5, f.str().size(), (bmWidth + (FrameOffsetX * 2)) * 20,
+                               (bmHeight + (FrameOffsetY * 2)) * 20, (float)sampleFPS, framecount);
+        ww = (bmWidth + (FrameOffsetX * 2));
+        hh = (bmHeight + (FrameOffsetY * 2));
     }
     fileout << f.str();
 
-    //MsgC("yes");
+    // MsgC("yes");
 
-    //Indirect lpbi
+    // Indirect lpbi
     ::SelectObject(hdc, old_bitmap);
     DeleteObject(hbm);
     DeleteDC(hdc);
@@ -5175,16 +5380,16 @@ bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG& currentTime)
     return result;
 }
 
-//CFlash
+// CFlash
 void CPlayplusView::OnFileConverttoswf()
 {
-    //CurLangID = STANDARD_LANGID;
-    //HKEY hKey;
-    //DWORD language;
-    //DWORD Type = REG_DWORD;
-    //DWORD Size = sizeof(DWORD);
-    //LONG returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
-    //if (returnStatus == ERROR_SUCCESS) {
+    // CurLangID = STANDARD_LANGID;
+    // HKEY hKey;
+    // DWORD language;
+    // DWORD Type = REG_DWORD;
+    // DWORD Size = sizeof(DWORD);
+    // LONG returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language",
+    // 0L, KEY_ALL_ACCESS, &hKey); if (returnStatus == ERROR_SUCCESS) {
     //    returnStatus = RegQueryValueEx(hKey, "LanguageID", NULL, &Type,(LPBYTE)&language, &Size);
 
     //    if (returnStatus == ERROR_SUCCESS) {
@@ -5193,15 +5398,16 @@ void CPlayplusView::OnFileConverttoswf()
     //                LoadLangIDDLL(GetSystemDefaultLangID());
     //    }
     //}
-    //RegCloseKey(hKey);
+    // RegCloseKey(hKey);
 
     LoadController();
 
-    if (launchPropPrompt && (IDOK != flashProp.DoModal())) {
+    if (launchPropPrompt && (IDOK != flashProp.DoModal()))
+    {
         return;
     }
-    int ww =0 ;
-    int hh =0 ;
+    int ww = 0;
+    int hh = 0;
     needbreakapart = 0;
     breakcycle = 0;
     filesAreSplit = 0;
@@ -5211,35 +5417,38 @@ void CPlayplusView::OnFileConverttoswf()
     PCMConvertedStream = NULL;
     PCMConvertedFile = NULL;
 
-    if (sampleFPS>0)
-        sampletimeInc = 1000/ sampleFPS;
+    if (sampleFPS > 0)
+        sampletimeInc = 1000 / sampleFPS;
     else
         return;
 
     int numframesTotal;
-    if (sampletimeInc>=1)
+    if (sampletimeInc >= 1)
     {
-        numframesTotal = timeEnd/sampletimeInc;
-        if (numframesTotal>=MAXFLASHLIMIT)
+        numframesTotal = timeEnd / sampletimeInc;
+        if (numframesTotal >= MAXFLASHLIMIT)
         {
             int ret = IDYES;
-            //MessageBox("Your Movie Exceeds the 16000 Frame Limit. Only 16000 Frames will be encoded into the SWF file.","Note",MB_OK | MB_ICONEXCLAMATION);
-            if ((runmode==0) || (runmode==1))
-                ret = MessageOut(NULL,IDS_MAXFRAME,IDS_NOTE,MB_YESNO | MB_ICONEXCLAMATION);
+            // MessageBox("Your Movie Exceeds the 16000 Frame Limit. Only 16000 Frames will be encoded into the SWF
+            // file.","Note",MB_OK | MB_ICONEXCLAMATION);
+            if ((runmode == 0) || (runmode == 1))
+                ret = MessageOut(NULL, IDS_MAXFRAME, IDS_NOTE, MB_YESNO | MB_ICONEXCLAMATION);
             if (ret == IDYES)
                 needbreakapart = 1;
             else
                 needbreakapart = 0;
-
         }
-        //MsgC("numframesTotal %d",numframesTotal);
+        // MsgC("numframesTotal %d",numframesTotal);
     }
-    LONG currentTime  = 0;
+    LONG currentTime = 0;
     moreSWFsneeded = 1;
     bool performResult = true;
-    if (!needbreakapart) {
+    if (!needbreakapart)
+    {
         performResult = PerformFlash(ww, hh, currentTime);
-    } else {
+    }
+    else
+    {
         while (moreSWFsneeded)
         {
             PerformFlash(ww, hh, currentTime);
@@ -5248,30 +5457,38 @@ void CPlayplusView::OnFileConverttoswf()
     }
     ///
 
-    produceFlashHTML(LPCTSTR(swfhtmlname),LPCTSTR(swfbasename),LPCTSTR(swfname), onlyflashtag, ww , hh ,swfbk_red, swfbk_green, swfbk_blue);
+    produceFlashHTML(LPCTSTR(swfhtmlname), LPCTSTR(swfbasename), LPCTSTR(swfname), onlyflashtag, ww, hh, swfbk_red,
+                     swfbk_green, swfbk_blue);
 
     BeginWaitCursor();
-    if (usePCMConvertedStream) {
+    if (usePCMConvertedStream)
+    {
         cleanTempFile();
     }
-    if (launchHTMLPlayer) {
-        if (performResult) {
+    if (launchHTMLPlayer)
+    {
+        if (performResult)
+        {
             Openlink(swfhtmlname);
         }
     }
     EndWaitCursor();
 
-    //allow this only in CamStudio internal mode
-    if (runmode == 1) {
-        if (deleteAVIAfterUse) {
-            if (strlen(playfiledir) > 0) {
+    // allow this only in CamStudio internal mode
+    if (runmode == 1)
+    {
+        if (deleteAVIAfterUse)
+        {
+            if (strlen(playfiledir) > 0)
+            {
                 OnFileClose();
                 DeleteFile(playfiledir);
             }
-            //MessageBox(playfiledir,"Delete",MB_OK);
+            // MessageBox(playfiledir,"Delete",MB_OK);
         }
     }
-    if (runmode) {
+    if (runmode)
+    {
         //::PostMessage(AfxGetMainWnd()->m_hWnd, WM_COMMAND, ID_APP_EXIT, 0);
         AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_APP_EXIT);
     }
@@ -5279,10 +5496,10 @@ void CPlayplusView::OnFileConverttoswf()
 
 void ConvertToFlash(long currentTime, HDC hdc, HBITMAP hbm, std::ostringstream &f)
 {
-    if (gcpavi<=0)
+    if (gcpavi <= 0)
         return;
 
-    //PaintStuff(dc.m_hDC, viewWnd, FALSE);
+    // PaintStuff(dc.m_hDC, viewWnd, FALSE);
     {
         long lTime = currentTime;
         long lSamp = 0;
@@ -5290,75 +5507,76 @@ void ConvertToFlash(long currentTime, HDC hdc, HBITMAP hbm, std::ostringstream &
         LPBITMAPINFOHEADER lpbi = NULL;
 
         // for all streams
-        for (int i=0; i<gcpavi; i++) {
-            AVISTREAMINFO   avis;
-            LONG             lEndTime;
+        for (int i = 0; i < gcpavi; i++)
+        {
+            AVISTREAMINFO avis;
+            LONG lEndTime;
             AVIStreamInfo(gapavi[i], &avis, sizeof(avis));
 
-            if (avis.fccType == streamtypeVIDEO) {
+            if (avis.fccType == streamtypeVIDEO)
+            {
                 if (gapgf[i] == NULL)
                     continue;
 
-                if (i == giFirstVideo) {
+                if (i == giFirstVideo)
+                {
                     //
                     // Which frame belongs at this time?
                     //
                     lEndTime = AVIStreamEndTime(gapavi[i]);
                     if (lTime <= lEndTime)
                         lSamp = AVIStreamTimeToSample(gapavi[i], lTime);
-                    else {      // we've scrolled past the end of this stream
-                        lSamp = AVIStreamTimeToSample(gapavi[i], AVIStreamStartTime(gapavi[i])+timeLength-1);
+                    else
+                    { // we've scrolled past the end of this stream
+                        lSamp = AVIStreamTimeToSample(gapavi[i], AVIStreamStartTime(gapavi[i]) + timeLength - 1);
                     }
                     if (gapgf[i] && lSamp >= AVIStreamStart(gapavi[i]))
-                        lpbi = (LPBITMAPINFOHEADER) AVIStreamGetFrame(gapgf[i], lSamp);
+                        lpbi = (LPBITMAPINFOHEADER)AVIStreamGetFrame(gapgf[i], lSamp);
                     else
                         lpbi = NULL;
 
                     // Figure out where to draw this frame
-                    rcFrame.left    =0;
-                    rcFrame.top    = 0 ;
-                    rcFrame.right  = rcFrame.left +
-                        (avis.rcFrame.right - avis.rcFrame.left);
-                    rcFrame.bottom = rcFrame.top +
-                        (avis.rcFrame.bottom - avis.rcFrame.top);
+                    rcFrame.left = 0;
+                    rcFrame.top = 0;
+                    rcFrame.right = rcFrame.left + (avis.rcFrame.right - avis.rcFrame.left);
+                    rcFrame.bottom = rcFrame.top + (avis.rcFrame.bottom - avis.rcFrame.top);
 
-                    //Patch to prevent blank screen
+                    // Patch to prevent blank screen
                     if (lpbi == NULL)
                     {
-                        lpbi = (LPBITMAPINFOHEADER) AVIStreamGetFrame(gapgf[i], AVIStreamEnd(gapavi[i])-1);
-
+                        lpbi = (LPBITMAPINFOHEADER)AVIStreamGetFrame(gapgf[i], AVIStreamEnd(gapavi[i]) - 1);
                     }
-                    //HDC hdc = GetDC(NULL);
-                    //PaintVideo(hdc, rcFrame, i, lpbi, lSamp, 0);
-                    //ReleaseDC(NULL,hdc);
+                    // HDC hdc = GetDC(NULL);
+                    // PaintVideo(hdc, rcFrame, i, lpbi, lSamp, 0);
+                    // ReleaseDC(NULL,hdc);
                     PaintSwfFrame(hdc, hbm, rcFrame, lpbi, i, f);
                 }
-            } //If Video Stream
+            } // If Video Stream
 
-        } //for all streams
-
+        } // for all streams
     }
     return;
 }
 
-void CPlayplusView::OnUpdateFileConverttoswf(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateFileConverttoswf(CCmdUI *pCmdUI)
 {
     // TODO: Add your command update UI handler code here
-    BOOL enablebutton = (!gfPlaying) && (!gfRecording) && (giFirstVideo>=0);
+    BOOL enablebutton = (!gfPlaying) && (!gfRecording) && (giFirstVideo >= 0);
     pCmdUI->Enable(enablebutton);
 }
 
-void CreateBackgroundBar(std::ostringstream &f, int controlsWidth, int controlsHeight,int FrameOffsetX,int FrameOffsetY,int BITMAP_X, int BITMAP_Y)
+void CreateBackgroundBar(std::ostringstream &f, int controlsWidth, int controlsHeight, int FrameOffsetX,
+                         int FrameOffsetY, int BITMAP_X, int BITMAP_Y)
 {
     // int buttonRadius = controlsHeight;
     int barDepth = ObjectDepth + 1;
     int ButtonSpaceY = 5;
     // int lineThickness = 3;
 
-    //FlashRGB colorBar1(0xc0,0xc0,0xff);
-    //FlashRGB colorBar1(0x00,0x00,0xff);
-    FlashRGB colorBar1(swfbar_red,swfbar_green,swfbar_blue);
-    FlashRGB colorBar2(0xcff,0xcff,0xff);
+    // FlashRGB colorBar1(0xc0,0xc0,0xff);
+    // FlashRGB colorBar1(0x00,0x00,0xff);
+    FlashRGB colorBar1(swfbar_red, swfbar_green, swfbar_blue);
+    FlashRGB colorBar2(0xcff, 0xcff, 0xff);
 
     FlashMatrix m;
     FlashGradientRecord gr;
@@ -5366,38 +5584,38 @@ void CreateBackgroundBar(std::ostringstream &f, int controlsWidth, int controlsH
     gr.AddGradient(128, colorBar2);
     gr.AddGradient(255, colorBar1);
 
-    //ffa.AddFillStyle(&ffc2);
+    // ffa.AddFillStyle(&ffc2);
 
-    //FlashLineStyleArray fla;
-    //FlashLineStyle ls(lineThickness*20,colorPlay);
-    //FlashLineStyle ls2(1*20,colorPlay);
-    //fla.AddLineStyle(&ls);
-    //fla.AddLineStyle(&ls2);
+    // FlashLineStyleArray fla;
+    // FlashLineStyle ls(lineThickness*20,colorPlay);
+    // FlashLineStyle ls2(1*20,colorPlay);
+    // fla.AddLineStyle(&ls);
+    // fla.AddLineStyle(&ls2);
 
     FlashShapeWithStyle s;
     int left = FrameOffsetX;
-    int top = (BITMAP_Y+FrameOffsetY+ButtonSpaceY/2);
+    int top = (BITMAP_Y + FrameOffsetY + ButtonSpaceY / 2);
     int widthBar = controlsWidth;
-    int heightBar = (controlsHeight + (ButtonSpaceY*2));
+    int heightBar = (controlsHeight + (ButtonSpaceY * 2));
 
-    //m.SetTranslate(left,top);
-    //m.SetScale((double) widthBar/32768.0 ,(double) heightBar/32768.0);
+    // m.SetTranslate(left,top);
+    // m.SetScale((double) widthBar/32768.0 ,(double) heightBar/32768.0);
     FlashFillStyleGradient ffg(m, gr);
     FlashFillStyleArray ffa;
     ffa.AddFillStyle(&ffg);
 
-    FlashShapeRecordChange changerec,changerec2 ;
+    FlashShapeRecordChange changerec, changerec2;
     changerec.ChangeFillStyle1(1);
-    //changerec.ChangeLineStyle(1);
+    // changerec.ChangeLineStyle(1);
     s.AddRecord(changerec);
-    s.AddRecord(FlashShapeRecordChange(left*20,top*20));
-    s.AddRecord(FlashShapeRecordStraight(widthBar*20,0*20));
-    s.AddRecord(FlashShapeRecordStraight(0*20,heightBar*20));
-    s.AddRecord(FlashShapeRecordStraight(-widthBar*20,0*20));
-    s.AddRecord(FlashShapeRecordStraight(0*20,-heightBar*20));
+    s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+    s.AddRecord(FlashShapeRecordStraight(widthBar * 20, 0 * 20));
+    s.AddRecord(FlashShapeRecordStraight(0 * 20, heightBar * 20));
+    s.AddRecord(FlashShapeRecordStraight(-widthBar * 20, 0 * 20));
+    s.AddRecord(FlashShapeRecordStraight(0 * 20, -heightBar * 20));
 
     s.SetFillStyleArray(ffa);
-    //s.SetLineStyleArray(fla);
+    // s.SetLineStyleArray(fla);
 
     FlashTagDefineShape3 fsws(s);
     f << fsws;
@@ -5406,20 +5624,21 @@ void CreateBackgroundBar(std::ostringstream &f, int controlsWidth, int controlsH
     f << po;
 }
 
-void CreatePlayButton(std::ostringstream &f, int /*controlsWidth*/, int controlsHeight,int FrameOffsetX,int FrameOffsetY,int BITMAP_X, int BITMAP_Y)
+void CreatePlayButton(std::ostringstream &f, int /*controlsWidth*/, int controlsHeight, int FrameOffsetX,
+                      int FrameOffsetY, int BITMAP_X, int BITMAP_Y)
 {
     int buttonRadius = controlsHeight;
     int playButtonDepth = ObjectDepth + 2;
     int ButtonSpaceY = 5;
     int lineThickness = 3;
-    FlashRGB white(0xff,0xff,0xff);
-    FlashRGB colorPlay(0x0,0x0,0xff);
-    FlashRGB colorPlayLight(0xe0,0xe0,0xff);
+    FlashRGB white(0xff, 0xff, 0xff);
+    FlashRGB colorPlay(0x0, 0x0, 0xff);
+    FlashRGB colorPlayLight(0xe0, 0xe0, 0xff);
 
     int shapeUP_ID, shapeDOWN_ID;
 
     {
-        //Shape Up, Over
+        // Shape Up, Over
         FlashFillStyleSolid ffc(white);
         FlashFillStyleSolid ffc2(colorPlay);
 
@@ -5428,32 +5647,33 @@ void CreatePlayButton(std::ostringstream &f, int /*controlsWidth*/, int controls
         ffa.AddFillStyle(&ffc2);
 
         FlashLineStyleArray fla;
-        FlashLineStyle ls(lineThickness*20,colorPlay);
-        FlashLineStyle ls2(1*20,colorPlay);
+        FlashLineStyle ls(lineThickness * 20, colorPlay);
+        FlashLineStyle ls2(1 * 20, colorPlay);
         fla.AddLineStyle(&ls);
         fla.AddLineStyle(&ls2);
 
         FlashShapeWithStyle s;
-        int left = (FrameOffsetX+(lineThickness+1)/2);
-        int top = (BITMAP_Y+FrameOffsetY+ButtonSpaceY);
+        int left = (FrameOffsetX + (lineThickness + 1) / 2);
+        int top = (BITMAP_Y + FrameOffsetY + ButtonSpaceY);
 
-        FlashShapeRecordChange changerec,changerec2 ;
+        FlashShapeRecordChange changerec, changerec2;
         changerec.ChangeFillStyle1(1);
         changerec.ChangeLineStyle(1);
         s.AddRecord(changerec);
-        s.AddRecord(FlashShapeRecordChange(left*20,top*20));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius*20,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,buttonRadius*20));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius*20,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,-buttonRadius*20));
+        s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20));
+        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20));
 
         changerec2.ChangeFillStyle1(2);
         changerec2.ChangeLineStyle(2);
         s.AddRecord(changerec2);
-        s.AddRecord(FlashShapeRecordChange(left*20+buttonRadius*20/4+20,top*20+buttonRadius*20/4+20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,buttonRadius*20*2/4));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius*20*2/4,-buttonRadius*20*1/4));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius*20*2/4,-buttonRadius*20*1/4));
+        s.AddRecord(
+            FlashShapeRecordChange(left * 20 + buttonRadius * 20 / 4 + 20, top * 20 + buttonRadius * 20 / 4 + 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20 * 2 / 4));
+        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20 * 2 / 4, -buttonRadius * 20 * 1 / 4));
+        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20 * 2 / 4, -buttonRadius * 20 * 1 / 4));
 
         s.SetFillStyleArray(ffa);
         s.SetLineStyleArray(fla);
@@ -5462,10 +5682,9 @@ void CreatePlayButton(std::ostringstream &f, int /*controlsWidth*/, int controls
         f << fsws;
 
         shapeUP_ID = fsws.GetID();
-
     }
     {
-        //Shape Down
+        // Shape Down
         FlashFillStyleSolid ffc(colorPlayLight);
         FlashFillStyleSolid ffc2(colorPlay);
 
@@ -5474,32 +5693,33 @@ void CreatePlayButton(std::ostringstream &f, int /*controlsWidth*/, int controls
         ffa.AddFillStyle(&ffc2);
 
         FlashLineStyleArray fla;
-        FlashLineStyle ls(lineThickness*20,colorPlay);
-        FlashLineStyle ls2(1*20,colorPlay);
+        FlashLineStyle ls(lineThickness * 20, colorPlay);
+        FlashLineStyle ls2(1 * 20, colorPlay);
         fla.AddLineStyle(&ls);
         fla.AddLineStyle(&ls2);
 
         FlashShapeWithStyle s;
-        int left = (FrameOffsetX+(lineThickness+1)/2);
-        int top = (BITMAP_Y+FrameOffsetY+ButtonSpaceY);
+        int left = (FrameOffsetX + (lineThickness + 1) / 2);
+        int top = (BITMAP_Y + FrameOffsetY + ButtonSpaceY);
 
-        FlashShapeRecordChange changerec,changerec2 ;
+        FlashShapeRecordChange changerec, changerec2;
         changerec.ChangeFillStyle1(1);
         changerec.ChangeLineStyle(1);
         s.AddRecord(changerec);
-        s.AddRecord(FlashShapeRecordChange(left*20,top*20));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius*20,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,buttonRadius*20));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius*20,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,-buttonRadius*20));
+        s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20));
+        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20));
 
         changerec2.ChangeFillStyle1(2);
         changerec2.ChangeLineStyle(2);
         s.AddRecord(changerec2);
-        s.AddRecord(FlashShapeRecordChange(left*20+buttonRadius*20/4+20,top*20+buttonRadius*20/4+20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,buttonRadius*20*2/4));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius*20*2/4,-buttonRadius*20*1/4));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius*20*2/4,-buttonRadius*20*1/4));
+        s.AddRecord(
+            FlashShapeRecordChange(left * 20 + buttonRadius * 20 / 4 + 20, top * 20 + buttonRadius * 20 / 4 + 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20 * 2 / 4));
+        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20 * 2 / 4, -buttonRadius * 20 * 1 / 4));
+        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20 * 2 / 4, -buttonRadius * 20 * 1 / 4));
 
         s.SetFillStyleArray(ffa);
         s.SetLineStyleArray(fla);
@@ -5508,21 +5728,20 @@ void CreatePlayButton(std::ostringstream &f, int /*controlsWidth*/, int controls
         f << fsws;
 
         shapeDOWN_ID = fsws.GetID();
-
     }
-    //FlashButtonRecord(UWORD _charID, UWORD _depth, char _validstates, FlashMatrix &_matrix,    FlashColorTransform &_cfx);
-    //FButtonRecord2 *bRec = new FButtonRecord2(false, false, false, true, buttonUpID, 1, mx, cxf);
+    // FlashButtonRecord(UWORD _charID, UWORD _depth, char _validstates, FlashMatrix &_matrix,    FlashColorTransform
+    // &_cfx); FButtonRecord2 *bRec = new FButtonRecord2(false, false, false, true, buttonUpID, 1, mx, cxf);
 
     FlashMatrix m;
-    //m.SetScale(20,20);
+    // m.SetScale(20,20);
 
-    FlashColorTransform cfxUp , cfxOver , cfxDown ;
-    cfxUp.SetMultRGB(FlashRGB(256,256,256,128));
-    cfxOver.SetMultRGB(FlashRGB(256,256,256,256));
-    cfxDown.SetMultRGB(FlashRGB(256,256,256,256));
-    FlashButtonRecord brecUp(shapeUP_ID , playButtonDepth, FBR_UP, m, cfxUp);
-    FlashButtonRecord brecOver(shapeUP_ID, playButtonDepth, FBR_OVER  | FBR_HIT_TEST, m, cfxOver);
-    FlashButtonRecord brecDown(shapeDOWN_ID, playButtonDepth, FBR_DOWN , m, cfxDown);
+    FlashColorTransform cfxUp, cfxOver, cfxDown;
+    cfxUp.SetMultRGB(FlashRGB(256, 256, 256, 128));
+    cfxOver.SetMultRGB(FlashRGB(256, 256, 256, 256));
+    cfxDown.SetMultRGB(FlashRGB(256, 256, 256, 256));
+    FlashButtonRecord brecUp(shapeUP_ID, playButtonDepth, FBR_UP, m, cfxUp);
+    FlashButtonRecord brecOver(shapeUP_ID, playButtonDepth, FBR_OVER | FBR_HIT_TEST, m, cfxOver);
+    FlashButtonRecord brecDown(shapeDOWN_ID, playButtonDepth, FBR_DOWN, m, cfxDown);
 
     FlashTagDefineButton2 buttonPlay;
     FlashActionPlay playAction;
@@ -5533,11 +5752,11 @@ void CreatePlayButton(std::ostringstream &f, int /*controlsWidth*/, int controls
     N_STD::vector<FlashActionRecord *> acrs;
     acrs.push_back(&playAction);
 
-    buttonPlay.AddActionRecords(acrs,SWFSOURCE_BST_OverUpToOverDown);
+    buttonPlay.AddActionRecords(acrs, SWFSOURCE_BST_OverUpToOverDown);
 
-    //FlashTagDefineButton buttonPlay;
-    //buttonPlay.AddButtonRecord(&brecUp);
-    //buttonPlay.AddButtonRecord(&brecOver);
+    // FlashTagDefineButton buttonPlay;
+    // buttonPlay.AddButtonRecord(&brecUp);
+    // buttonPlay.AddButtonRecord(&brecOver);
 
     f << buttonPlay;
 
@@ -5545,15 +5764,16 @@ void CreatePlayButton(std::ostringstream &f, int /*controlsWidth*/, int controls
     f << po;
 }
 
-void CreatePauseButton(std::ostringstream &f, int /*controlsWidth*/, int controlsHeight,int FrameOffsetX,int FrameOffsetY,int BITMAP_X, int BITMAP_Y)
+void CreatePauseButton(std::ostringstream &f, int /*controlsWidth*/, int controlsHeight, int FrameOffsetX,
+                       int FrameOffsetY, int BITMAP_X, int BITMAP_Y)
 {
     int buttonRadius = controlsHeight;
     int pauseButtonDepth = ObjectDepth + 2;
     int ButtonSpaceY = 5;
     int lineThickness = 3;
-    FlashRGB white(0xff,0xff,0xff);
-    FlashRGB colorPause(0x80,0x80,0x0);
-    FlashRGB colorPauseLight(0xff,0xff,0x80);
+    FlashRGB white(0xff, 0xff, 0xff);
+    FlashRGB colorPause(0x80, 0x80, 0x0);
+    FlashRGB colorPauseLight(0xff, 0xff, 0x80);
 
     int shapeUP_ID, shapeDOWN_ID;
 
@@ -5566,39 +5786,41 @@ void CreatePauseButton(std::ostringstream &f, int /*controlsWidth*/, int control
         ffa.AddFillStyle(&ffc2);
 
         FlashLineStyleArray fla;
-        FlashLineStyle ls(lineThickness*20,colorPause);
-        FlashLineStyle ls2(1*20,colorPause);
+        FlashLineStyle ls(lineThickness * 20, colorPause);
+        FlashLineStyle ls2(1 * 20, colorPause);
         fla.AddLineStyle(&ls);
         fla.AddLineStyle(&ls2);
 
         FlashShapeWithStyle s;
-        int left = (FrameOffsetX+(lineThickness+1)/2) + buttonRadius + ButtonSpaceY;
-        int top = (BITMAP_Y+FrameOffsetY+ButtonSpaceY);
+        int left = (FrameOffsetX + (lineThickness + 1) / 2) + buttonRadius + ButtonSpaceY;
+        int top = (BITMAP_Y + FrameOffsetY + ButtonSpaceY);
 
-        FlashShapeRecordChange changerec,changerec2 ;
+        FlashShapeRecordChange changerec, changerec2;
         changerec.ChangeFillStyle1(1);
         changerec.ChangeLineStyle(1);
         s.AddRecord(changerec);
-        s.AddRecord(FlashShapeRecordChange(left*20,top*20));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius*20,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,buttonRadius*20));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius*20,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,-buttonRadius*20));
+        s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20));
+        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20));
 
         changerec2.ChangeFillStyle1(2);
         changerec2.ChangeLineStyle(2);
         s.AddRecord(changerec2);
-        s.AddRecord(FlashShapeRecordChange(left*20+buttonRadius*20/5+buttonRadius/4,top*20+buttonRadius*20/4+20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,buttonRadius*20*2/4));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius*20*1/5,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,-buttonRadius*20*2/4));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius*20*1/5,0*20));
+        s.AddRecord(FlashShapeRecordChange(left * 20 + buttonRadius * 20 / 5 + buttonRadius / 4,
+                                           top * 20 + buttonRadius * 20 / 4 + 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20 * 2 / 4));
+        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20 * 1 / 5, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20 * 2 / 4));
+        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20 * 1 / 5, 0 * 20));
 
-        s.AddRecord(FlashShapeRecordChange(left*20+buttonRadius*20*3/5-buttonRadius/4,top*20+buttonRadius*20/4+20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,buttonRadius*20*2/4));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius*20*1/5,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,-buttonRadius*20*2/4));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius*20*1/5,0*20));
+        s.AddRecord(FlashShapeRecordChange(left * 20 + buttonRadius * 20 * 3 / 5 - buttonRadius / 4,
+                                           top * 20 + buttonRadius * 20 / 4 + 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20 * 2 / 4));
+        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20 * 1 / 5, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20 * 2 / 4));
+        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20 * 1 / 5, 0 * 20));
 
         s.SetFillStyleArray(ffa);
         s.SetLineStyleArray(fla);
@@ -5607,7 +5829,6 @@ void CreatePauseButton(std::ostringstream &f, int /*controlsWidth*/, int control
         f << fsws;
 
         shapeUP_ID = fsws.GetID();
-
     }
     {
         FlashFillStyleSolid ffc(colorPauseLight);
@@ -5618,39 +5839,41 @@ void CreatePauseButton(std::ostringstream &f, int /*controlsWidth*/, int control
         ffa.AddFillStyle(&ffc2);
 
         FlashLineStyleArray fla;
-        FlashLineStyle ls(lineThickness*20,colorPause);
-        FlashLineStyle ls2(1*20,colorPause);
+        FlashLineStyle ls(lineThickness * 20, colorPause);
+        FlashLineStyle ls2(1 * 20, colorPause);
         fla.AddLineStyle(&ls);
         fla.AddLineStyle(&ls2);
 
         FlashShapeWithStyle s;
-        int left = (FrameOffsetX+(lineThickness+1)/2) + buttonRadius + ButtonSpaceY;
-        int top = (BITMAP_Y+FrameOffsetY+ButtonSpaceY);
+        int left = (FrameOffsetX + (lineThickness + 1) / 2) + buttonRadius + ButtonSpaceY;
+        int top = (BITMAP_Y + FrameOffsetY + ButtonSpaceY);
 
-        FlashShapeRecordChange changerec,changerec2 ;
+        FlashShapeRecordChange changerec, changerec2;
         changerec.ChangeFillStyle1(1);
         changerec.ChangeLineStyle(1);
         s.AddRecord(changerec);
-        s.AddRecord(FlashShapeRecordChange(left*20,top*20));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius*20,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,buttonRadius*20));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius*20,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,-buttonRadius*20));
+        s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20));
+        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20));
 
         changerec2.ChangeFillStyle1(2);
         changerec2.ChangeLineStyle(2);
         s.AddRecord(changerec2);
-        s.AddRecord(FlashShapeRecordChange(left*20+buttonRadius*20/5+buttonRadius/4,top*20+buttonRadius*20/4+20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,buttonRadius*20*2/4));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius*20*1/5,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,-buttonRadius*20*2/4));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius*20*1/5,0*20));
+        s.AddRecord(FlashShapeRecordChange(left * 20 + buttonRadius * 20 / 5 + buttonRadius / 4,
+                                           top * 20 + buttonRadius * 20 / 4 + 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20 * 2 / 4));
+        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20 * 1 / 5, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20 * 2 / 4));
+        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20 * 1 / 5, 0 * 20));
 
-        s.AddRecord(FlashShapeRecordChange(left*20+buttonRadius*20*3/5-buttonRadius/4,top*20+buttonRadius*20/4+20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,buttonRadius*20*2/4));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius*20*1/5,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,-buttonRadius*20*2/4));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius*20*1/5,0*20));
+        s.AddRecord(FlashShapeRecordChange(left * 20 + buttonRadius * 20 * 3 / 5 - buttonRadius / 4,
+                                           top * 20 + buttonRadius * 20 / 4 + 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20 * 2 / 4));
+        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20 * 1 / 5, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20 * 2 / 4));
+        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20 * 1 / 5, 0 * 20));
 
         s.SetFillStyleArray(ffa);
         s.SetLineStyleArray(fla);
@@ -5659,17 +5882,16 @@ void CreatePauseButton(std::ostringstream &f, int /*controlsWidth*/, int control
         f << fsws;
 
         shapeDOWN_ID = fsws.GetID();
-
     }
     FlashMatrix m;
 
-    FlashColorTransform cfxUp , cfxOver , cfxDown ;
-    cfxUp.SetMultRGB(FlashRGB(256,256,256,128));
-    cfxOver.SetMultRGB(FlashRGB(256,256,256,256));
-    cfxDown.SetMultRGB(FlashRGB(256,256,256,256));
-    FlashButtonRecord brecUp(shapeUP_ID , pauseButtonDepth, FBR_UP, m, cfxUp);
-    FlashButtonRecord brecOver(shapeUP_ID, pauseButtonDepth, FBR_OVER  | FBR_HIT_TEST, m, cfxOver);
-    FlashButtonRecord brecDown(shapeDOWN_ID, pauseButtonDepth, FBR_DOWN , m, cfxDown);
+    FlashColorTransform cfxUp, cfxOver, cfxDown;
+    cfxUp.SetMultRGB(FlashRGB(256, 256, 256, 128));
+    cfxOver.SetMultRGB(FlashRGB(256, 256, 256, 256));
+    cfxDown.SetMultRGB(FlashRGB(256, 256, 256, 256));
+    FlashButtonRecord brecUp(shapeUP_ID, pauseButtonDepth, FBR_UP, m, cfxUp);
+    FlashButtonRecord brecOver(shapeUP_ID, pauseButtonDepth, FBR_OVER | FBR_HIT_TEST, m, cfxOver);
+    FlashButtonRecord brecDown(shapeDOWN_ID, pauseButtonDepth, FBR_DOWN, m, cfxDown);
 
     FlashTagDefineButton2 buttonPause;
     FlashActionStop stopAction;
@@ -5680,22 +5902,23 @@ void CreatePauseButton(std::ostringstream &f, int /*controlsWidth*/, int control
     N_STD::vector<FlashActionRecord *> acrs;
     acrs.push_back(&stopAction);
 
-    buttonPause.AddActionRecords(acrs,SWFSOURCE_BST_OverUpToOverDown);
+    buttonPause.AddActionRecords(acrs, SWFSOURCE_BST_OverUpToOverDown);
     f << buttonPause;
 
     FlashTagPlaceObject2 po(pauseButtonDepth, buttonPause.GetID());
     f << po;
 }
 
-void CreateStopButton(std::ostringstream &f, int /*controlsWidth*/, int controlsHeight,int FrameOffsetX,int FrameOffsetY, int BITMAP_X, int BITMAP_Y)
+void CreateStopButton(std::ostringstream &f, int /*controlsWidth*/, int controlsHeight, int FrameOffsetX,
+                      int FrameOffsetY, int BITMAP_X, int BITMAP_Y)
 {
     int buttonRadius = controlsHeight;
     int stopButtonDepth = ObjectDepth + 2;
     int ButtonSpaceY = 5;
     int lineThickness = 3;
-    FlashRGB white(0xff,0xff,0xff);
-    FlashRGB colorStop(0xff,0x0,0x0);
-    FlashRGB colorStopLight(0xff,0xe0,0xe0);
+    FlashRGB white(0xff, 0xff, 0xff);
+    FlashRGB colorStop(0xff, 0x0, 0x0);
+    FlashRGB colorStopLight(0xff, 0xe0, 0xe0);
 
     int shapeUP_ID, shapeDOWN_ID;
 
@@ -5708,33 +5931,34 @@ void CreateStopButton(std::ostringstream &f, int /*controlsWidth*/, int controls
         ffa.AddFillStyle(&ffc2);
 
         FlashLineStyleArray fla;
-        FlashLineStyle ls(lineThickness*20,colorStop);
-        FlashLineStyle ls2(1*20,colorStop);
+        FlashLineStyle ls(lineThickness * 20, colorStop);
+        FlashLineStyle ls2(1 * 20, colorStop);
         fla.AddLineStyle(&ls);
         fla.AddLineStyle(&ls2);
 
         FlashShapeWithStyle s;
-        int left = (FrameOffsetX+(lineThickness+1)/2) + (buttonRadius + ButtonSpaceY) * 2;
-        int top = (BITMAP_Y+FrameOffsetY+ButtonSpaceY);
+        int left = (FrameOffsetX + (lineThickness + 1) / 2) + (buttonRadius + ButtonSpaceY) * 2;
+        int top = (BITMAP_Y + FrameOffsetY + ButtonSpaceY);
 
-        FlashShapeRecordChange changerec,changerec2 ;
+        FlashShapeRecordChange changerec, changerec2;
         changerec.ChangeFillStyle1(1);
         changerec.ChangeLineStyle(1);
         s.AddRecord(changerec);
-        s.AddRecord(FlashShapeRecordChange(left*20,top*20));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius*20,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,buttonRadius*20));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius*20,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,-buttonRadius*20));
+        s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20));
+        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20));
 
         changerec2.ChangeFillStyle1(2);
         changerec2.ChangeLineStyle(2);
         s.AddRecord(changerec2);
-        s.AddRecord(FlashShapeRecordChange(left*20+buttonRadius*20/4+20,top*20+buttonRadius*20/4+20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,buttonRadius*20*2/4));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius*20*2/4,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,-buttonRadius*20*2/4));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius*20*2/4,0*20));
+        s.AddRecord(
+            FlashShapeRecordChange(left * 20 + buttonRadius * 20 / 4 + 20, top * 20 + buttonRadius * 20 / 4 + 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20 * 2 / 4));
+        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20 * 2 / 4, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20 * 2 / 4));
+        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20 * 2 / 4, 0 * 20));
 
         s.SetFillStyleArray(ffa);
         s.SetLineStyleArray(fla);
@@ -5743,7 +5967,6 @@ void CreateStopButton(std::ostringstream &f, int /*controlsWidth*/, int controls
         f << fsws;
 
         shapeUP_ID = fsws.GetID();
-
     }
     {
         FlashFillStyleSolid ffc(colorStopLight);
@@ -5754,33 +5977,34 @@ void CreateStopButton(std::ostringstream &f, int /*controlsWidth*/, int controls
         ffa.AddFillStyle(&ffc2);
 
         FlashLineStyleArray fla;
-        FlashLineStyle ls(lineThickness*20,colorStop);
-        FlashLineStyle ls2(1*20,colorStop);
+        FlashLineStyle ls(lineThickness * 20, colorStop);
+        FlashLineStyle ls2(1 * 20, colorStop);
         fla.AddLineStyle(&ls);
         fla.AddLineStyle(&ls2);
 
         FlashShapeWithStyle s;
-        int left = (FrameOffsetX+(lineThickness+1)/2) + (buttonRadius + ButtonSpaceY) * 2;
-        int top = (BITMAP_Y+FrameOffsetY+ButtonSpaceY);
+        int left = (FrameOffsetX + (lineThickness + 1) / 2) + (buttonRadius + ButtonSpaceY) * 2;
+        int top = (BITMAP_Y + FrameOffsetY + ButtonSpaceY);
 
-        FlashShapeRecordChange changerec,changerec2 ;
+        FlashShapeRecordChange changerec, changerec2;
         changerec.ChangeFillStyle1(1);
         changerec.ChangeLineStyle(1);
         s.AddRecord(changerec);
-        s.AddRecord(FlashShapeRecordChange(left*20,top*20));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius*20,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,buttonRadius*20));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius*20,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,-buttonRadius*20));
+        s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20));
+        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20));
 
         changerec2.ChangeFillStyle1(2);
         changerec2.ChangeLineStyle(2);
         s.AddRecord(changerec2);
-        s.AddRecord(FlashShapeRecordChange(left*20+buttonRadius*20/4+20,top*20+buttonRadius*20/4+20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,buttonRadius*20*2/4));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius*20*2/4,0*20));
-        s.AddRecord(FlashShapeRecordStraight(0*20,-buttonRadius*20*2/4));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius*20*2/4,0*20));
+        s.AddRecord(
+            FlashShapeRecordChange(left * 20 + buttonRadius * 20 / 4 + 20, top * 20 + buttonRadius * 20 / 4 + 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20 * 2 / 4));
+        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20 * 2 / 4, 0 * 20));
+        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20 * 2 / 4));
+        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20 * 2 / 4, 0 * 20));
 
         s.SetFillStyleArray(ffa);
         s.SetLineStyleArray(fla);
@@ -5789,22 +6013,21 @@ void CreateStopButton(std::ostringstream &f, int /*controlsWidth*/, int controls
         f << fsws;
 
         shapeDOWN_ID = fsws.GetID();
-
     }
     FlashMatrix m;
 
-    FlashColorTransform cfxUp , cfxOver , cfxDown ;
-    cfxUp.SetMultRGB(FlashRGB(256,256,256,128));
-    cfxOver.SetMultRGB(FlashRGB(256,256,256,256));
-    cfxDown.SetMultRGB(FlashRGB(256,256,256,256));
-    FlashButtonRecord brecUp(shapeUP_ID , stopButtonDepth, FBR_UP, m, cfxUp);
-    FlashButtonRecord brecOver(shapeUP_ID, stopButtonDepth, FBR_OVER  | FBR_HIT_TEST, m, cfxOver);
-    FlashButtonRecord brecDown(shapeDOWN_ID, stopButtonDepth, FBR_DOWN , m, cfxDown);
+    FlashColorTransform cfxUp, cfxOver, cfxDown;
+    cfxUp.SetMultRGB(FlashRGB(256, 256, 256, 128));
+    cfxOver.SetMultRGB(FlashRGB(256, 256, 256, 256));
+    cfxDown.SetMultRGB(FlashRGB(256, 256, 256, 256));
+    FlashButtonRecord brecUp(shapeUP_ID, stopButtonDepth, FBR_UP, m, cfxUp);
+    FlashButtonRecord brecOver(shapeUP_ID, stopButtonDepth, FBR_OVER | FBR_HIT_TEST, m, cfxOver);
+    FlashButtonRecord brecDown(shapeDOWN_ID, stopButtonDepth, FBR_DOWN, m, cfxDown);
 
     FlashTagDefineButton2 buttonStop;
     FlashActionStop stopAction;
 
-    //handle baseframe
+    // handle baseframe
     int baseframe = 0;
     if (addPreloader)
         baseframe = preloadFrames;
@@ -5818,7 +6041,7 @@ void CreateStopButton(std::ostringstream &f, int /*controlsWidth*/, int controls
     acrs.push_back(&stopAction);
     acrs.push_back(&gotoAction);
 
-    buttonStop.AddActionRecords(acrs,SWFSOURCE_BST_OverUpToOverDown);
+    buttonStop.AddActionRecords(acrs, SWFSOURCE_BST_OverUpToOverDown);
     f << buttonStop;
 
     FlashTagPlaceObject2 po(stopButtonDepth, buttonStop.GetID());
@@ -5827,23 +6050,20 @@ void CreateStopButton(std::ostringstream &f, int /*controlsWidth*/, int controls
 
 void PaintSwfFrame(HDC hdc, HBITMAP hbm, RECT rcFrame, LPBITMAPINFOHEADER lpbi, int iStream, std::ostringstream &f)
 {
-    //if lbpi is present, draw it
-    if (lpbi) {
+    // if lbpi is present, draw it
+    if (lpbi)
+    {
         int offsetx = 0;
         int offsety = 0;
-        //int bitmapwidth = rcFrame.right-rcFrame.left+1;
-        //int bitmapheight = rcFrame.bottom-rcFrame.top+1;
+        // int bitmapwidth = rcFrame.right-rcFrame.left+1;
+        // int bitmapheight = rcFrame.bottom-rcFrame.top+1;
 
-        //Draw the Frame
-        DrawDibDraw(ghdd[iStream], hdc,
-            rcFrame.left+offsetx, rcFrame.top+offsety,
-            rcFrame.right - rcFrame.left-1,
-            rcFrame.bottom - rcFrame.top-1,
-            lpbi, NULL,
-            0, 0, -1, -1,
-            (iStream == giFirstVideo) ? 0 :DDF_BACKGROUNDPAL);
+        // Draw the Frame
+        DrawDibDraw(ghdd[iStream], hdc, rcFrame.left + offsetx, rcFrame.top + offsety, rcFrame.right - rcFrame.left - 1,
+                    rcFrame.bottom - rcFrame.top - 1, lpbi, NULL, 0, 0, -1, -1,
+                    (iStream == giFirstVideo) ? 0 : DDF_BACKGROUNDPAL);
 
-        //Get it Back in RGB
+        // Get it Back in RGB
         int format = 5;
         int BITMAP_X = 0;
         int BITMAP_Y = 0;
@@ -5854,112 +6074,115 @@ void PaintSwfFrame(HDC hdc, HBITMAP hbm, RECT rcFrame, LPBITMAPINFOHEADER lpbi, 
         else if (convertBits == 32)
             format = 5;
 
-        if (alpbi) {
-            WriteSwfFrame(alpbi, f,  bitmap,  BITMAP_X, BITMAP_Y,  format);
+        if (alpbi)
+        {
+            WriteSwfFrame(alpbi, f, bitmap, BITMAP_X, BITMAP_Y, format);
             FreeFrame(alpbi);
         }
     }
     return;
 }
 
-LPBYTE makeReverse32(int width, int height,int /*bitPlanes*/, LPBITMAPINFOHEADER alpbi)
+LPBYTE makeReverse32(int width, int height, int /*bitPlanes*/, LPBITMAPINFOHEADER alpbi)
 {
-    LPBYTE bitsOrg = (LPBYTE) alpbi + // pointer to data
-        alpbi->biSize +
-        alpbi->biClrUsed * sizeof(RGBQUAD);
+    LPBYTE bitsOrg = (LPBYTE)alpbi + // pointer to data
+                     alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD);
 
-    UINT widthBytes = (width*32+31)/32 * 4;
+    UINT widthBytes = (width * 32 + 31) / 32 * 4;
     VertFlipBuf(bitsOrg, widthBytes, height);
     ARGBFromBGRA(bitsOrg, width, height);
 
     return bitsOrg;
 }
 
-LPBYTE makeReverse16(int width, int height,int bitPlanes, LPBITMAPINFOHEADER alpbi)
+LPBYTE makeReverse16(int width, int height, int bitPlanes, LPBITMAPINFOHEADER alpbi)
 {
-    LPBYTE bitsOrg = (LPBYTE) alpbi + // pointer to data
-        alpbi->biSize +
-        alpbi->biClrUsed * sizeof(RGBQUAD);
+    LPBYTE bitsOrg = (LPBYTE)alpbi + // pointer to data
+                     alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD);
 
-    UINT widthBytes = (width*16+31)/32 * 4;
+    UINT widthBytes = (width * 16 + 31) / 32 * 4;
     VertFlipBuf(bitsOrg, widthBytes, height);
-    swapPixelBytes16( width,  height, bitPlanes,bitsOrg);
+    swapPixelBytes16(width, height, bitPlanes, bitsOrg);
 
     return bitsOrg;
 }
 
-LPBYTE swapPixelBytes16(int width, int height,int /*bitPlanes*/,LPBYTE bits16)
+LPBYTE swapPixelBytes16(int width, int height, int /*bitPlanes*/, LPBYTE bits16)
 {
     BYTE *tmp;
-    tmp=bits16;
+    tmp = bits16;
 
     long counter16 = 0;
     long rowcounter16 = 0;
-    long widthBytes = (width*16+31)/32 * 4;
-    for (int h = 0; h< height; h++)
+    long widthBytes = (width * 16 + 31) / 32 * 4;
+    for (int h = 0; h < height; h++)
     {
         counter16 = rowcounter16;
-        for (int w = 0; w< width; w++)
+        for (int w = 0; w < width; w++)
         {
-            WORD  oldval;
-            oldval = *((WORD *) (tmp+counter16));
-            *((WORD *) (tmp+counter16)) = (oldval << 8) | (oldval >> 8);
-            counter16+=2;
-
+            WORD oldval;
+            oldval = *((WORD *)(tmp + counter16));
+            *((WORD *)(tmp + counter16)) = (oldval << 8) | (oldval >> 8);
+            counter16 += 2;
         }
         rowcounter16 += widthBytes;
     }
     return tmp;
 }
 
-BOOL VertFlipBuf(BYTE  * inbuf, UINT widthBytes, UINT height)
+BOOL VertFlipBuf(BYTE *inbuf, UINT widthBytes, UINT height)
 {
-    BYTE  *tb1;
-    BYTE  *tb2;
+    BYTE *tb1;
+    BYTE *tb2;
 
-    if (inbuf==NULL)
+    if (inbuf == NULL)
         return FALSE;
 
     UINT bufsize;
 
-    bufsize=widthBytes;
+    bufsize = widthBytes;
 
-    tb1= (BYTE *)new BYTE[bufsize];
-    if (tb1==NULL) {
+    tb1 = (BYTE *)new BYTE[bufsize];
+    if (tb1 == NULL)
+    {
         return FALSE;
     }
-    tb2= (BYTE *)new BYTE [bufsize];
-    if (tb2==NULL) {
-        delete [] tb1;
+    tb2 = (BYTE *)new BYTE[bufsize];
+    if (tb2 == NULL)
+    {
+        delete[] tb1;
         return FALSE;
     }
     UINT row_cnt;
-    ULONG off1=0;
-    ULONG off2=0;
+    ULONG off1 = 0;
+    ULONG off2 = 0;
 
-    for (row_cnt=0;row_cnt<(height+1)/2;row_cnt++) {
-        off1=row_cnt*bufsize;
-        off2=((height-1)-row_cnt)*bufsize;
+    for (row_cnt = 0; row_cnt < (height + 1) / 2; row_cnt++)
+    {
+        off1 = row_cnt * bufsize;
+        off2 = ((height - 1) - row_cnt) * bufsize;
 
-        memcpy(tb1,inbuf+off1,bufsize);
-        memcpy(tb2,inbuf+off2,bufsize);
-        memcpy(inbuf+off1,tb2,bufsize);
-        memcpy(inbuf+off2,tb1,bufsize);
+        memcpy(tb1, inbuf + off1, bufsize);
+        memcpy(tb2, inbuf + off2, bufsize);
+        memcpy(inbuf + off1, tb2, bufsize);
+        memcpy(inbuf + off2, tb1, bufsize);
     }
-    delete [] tb1;
-    delete [] tb2;
+    delete[] tb1;
+    delete[] tb2;
 
     return TRUE;
 }
 
 BOOL ARGBFromBGRA(BYTE *buf, UINT widthPix, UINT height)
 {
-    if (buf==NULL)
+    if (buf == NULL)
         return FALSE;
 
     UINT col, row;
-    for (row=0;row<height;row++) {
-        for (col=0;col<widthPix;col++) {
+    for (row = 0; row < height; row++)
+    {
+        for (col = 0; col < widthPix; col++)
+        {
             LPBYTE pRed, pGrn, pBlu, pRes;
             pRed = buf + row * widthPix * 4 + col * 4;
             pGrn = buf + row * widthPix * 4 + col * 4 + 1;
@@ -5973,13 +6196,13 @@ BOOL ARGBFromBGRA(BYTE *buf, UINT widthPix, UINT height)
             *pRes = *pRed;
             *pGrn = *pBlu;
             *pBlu = tmp;
-            *pRed = 255;  //alpha works for higer level ...code
+            *pRed = 255; // alpha works for higer level ...code
         }
     }
     return TRUE;
 }
 
-LPBITMAPINFOHEADER GetFrame(HBITMAP hbm, LPBYTE* bits,int& BITMAP_X,int& BITMAP_Y, int numbits)
+LPBITMAPINFOHEADER GetFrame(HBITMAP hbm, LPBYTE *bits, int &BITMAP_X, int &BITMAP_Y, int numbits)
 {
     if ((numbits == 16) || (numbits == 32))
     {
@@ -5991,85 +6214,82 @@ LPBITMAPINFOHEADER GetFrame(HBITMAP hbm, LPBYTE* bits,int& BITMAP_X,int& BITMAP_
             BITMAP_Y = alpbi->biHeight;
 
             if (numbits == 16)
-                *bits = makeReverse16(alpbi->biWidth, alpbi->biHeight,2, alpbi);
+                *bits = makeReverse16(alpbi->biWidth, alpbi->biHeight, 2, alpbi);
             else
-                *bits = makeReverse32(alpbi->biWidth, alpbi->biHeight,4, alpbi);
-
+                *bits = makeReverse32(alpbi->biWidth, alpbi->biHeight, 4, alpbi);
         }
         return alpbi;
-
     }
     return NULL;
 }
 
-HANDLE  Bitmap2Dib( HBITMAP hbitmap, UINT bits )
+HANDLE Bitmap2Dib(HBITMAP hbitmap, UINT bits)
 {
-    HANDLE               hdib ;
-    HDC                 hdc ;
-    BITMAP              bitmap ;
-    UINT                wLineLen ;
-    DWORD               dwSize ;
-    DWORD               wColSize ;
-    LPBITMAPINFOHEADER  lpbi ;
-    LPBYTE              lpBits ;
+    HANDLE hdib;
+    HDC hdc;
+    BITMAP bitmap;
+    UINT wLineLen;
+    DWORD dwSize;
+    DWORD wColSize;
+    LPBITMAPINFOHEADER lpbi;
+    LPBYTE lpBits;
 
-    GetObject(hbitmap,sizeof(BITMAP),&bitmap) ;
+    GetObject(hbitmap, sizeof(BITMAP), &bitmap);
 
     //
     // DWORD align the width of the DIB
     // Figure out the size of the colour table
     // Calculate the size of the DIB
     //
-    wLineLen = (bitmap.bmWidth*bits+31)/32 * 4;
-    wColSize = sizeof(RGBQUAD)*((bits <= 8) ? 1<<bits : 0);
-    dwSize = sizeof(BITMAPINFOHEADER) + wColSize +
-        (DWORD)(UINT)wLineLen*(DWORD)(UINT)bitmap.bmHeight;
+    wLineLen = (bitmap.bmWidth * bits + 31) / 32 * 4;
+    wColSize = sizeof(RGBQUAD) * ((bits <= 8) ? 1 << bits : 0);
+    dwSize = sizeof(BITMAPINFOHEADER) + wColSize + (DWORD)(UINT)wLineLen * (DWORD)(UINT)bitmap.bmHeight;
 
     //
     // Allocate room for a DIB and set the LPBI fields
     //
-    hdib = GlobalAlloc(GHND,dwSize);
+    hdib = GlobalAlloc(GHND, dwSize);
     if (!hdib)
-        return hdib ;
+        return hdib;
 
-    lpbi = (LPBITMAPINFOHEADER)GlobalLock(hdib) ;
+    lpbi = (LPBITMAPINFOHEADER)GlobalLock(hdib);
 
-    lpbi->biSize = sizeof(BITMAPINFOHEADER) ;
-    lpbi->biWidth = bitmap.bmWidth ;
-    lpbi->biHeight = bitmap.bmHeight ;
-    lpbi->biPlanes = 1 ;
-    lpbi->biBitCount = (WORD) bits ;
-    lpbi->biCompression = BI_RGB ;
-    lpbi->biSizeImage = dwSize - sizeof(BITMAPINFOHEADER) - wColSize ;
-    lpbi->biXPelsPerMeter = 0 ;
-    lpbi->biYPelsPerMeter = 0 ;
-    lpbi->biClrUsed = (bits <= 8) ? 1<<bits : 0;
-    lpbi->biClrImportant = 0 ;
+    lpbi->biSize = sizeof(BITMAPINFOHEADER);
+    lpbi->biWidth = bitmap.bmWidth;
+    lpbi->biHeight = bitmap.bmHeight;
+    lpbi->biPlanes = 1;
+    lpbi->biBitCount = (WORD)bits;
+    lpbi->biCompression = BI_RGB;
+    lpbi->biSizeImage = dwSize - sizeof(BITMAPINFOHEADER) - wColSize;
+    lpbi->biXPelsPerMeter = 0;
+    lpbi->biYPelsPerMeter = 0;
+    lpbi->biClrUsed = (bits <= 8) ? 1 << bits : 0;
+    lpbi->biClrImportant = 0;
 
     //
     // Get the bits from the bitmap and stuff them after the LPBI
     //
-    lpBits = (LPBYTE)(lpbi+1)+wColSize ;
+    lpBits = (LPBYTE)(lpbi + 1) + wColSize;
 
-    hdc = CreateCompatibleDC(NULL) ;
+    hdc = CreateCompatibleDC(NULL);
 
-    GetDIBits(hdc,hbitmap,0,bitmap.bmHeight,lpBits,(LPBITMAPINFO)lpbi, DIB_RGB_COLORS);
+    GetDIBits(hdc, hbitmap, 0, bitmap.bmHeight, lpBits, (LPBITMAPINFO)lpbi, DIB_RGB_COLORS);
 
-    lpbi->biClrUsed = (bits <= 8) ? 1<<bits : 0;
+    lpbi->biClrUsed = (bits <= 8) ? 1 << bits : 0;
 
-    DeleteDC(hdc) ;
+    DeleteDC(hdc);
     GlobalUnlock(hdib);
 
-    return hdib ;
+    return hdib;
 }
 
 void FreeFrame(LPBITMAPINFOHEADER alpbi)
 {
     if (!alpbi)
-        return ;
+        return;
 
     GlobalFreePtr(alpbi);
-    //GlobalFree(alpbi);
+    // GlobalFree(alpbi);
     alpbi = NULL;
 }
 
@@ -6079,91 +6299,89 @@ void FreeFrame(LPBITMAPINFOHEADER alpbi)
 LPBYTE MakeFullRect(LPBITMAPINFOHEADER /*alpbi*/, LPBYTE bitmap, int BITMAP_X, int BITMAP_Y, int format, int max)
 {
     int imageLineLen, pixelbytes;
-    CChangeRectSwf * itemRect = NULL;
+    CChangeRectSwf *itemRect = NULL;
 
-    if (format==4)
+    if (format == 4)
     {
-        imageLineLen = ((BITMAP_X)*16+31)/32 * 4;
+        imageLineLen = ((BITMAP_X)*16 + 31) / 32 * 4;
         pixelbytes = 2;
     }
-    else if (format==5)
+    else if (format == 5)
     {
-        imageLineLen = ((BITMAP_X)*32+31)/32 * 4;
+        imageLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
         pixelbytes = 4;
-
     }
     else
         return NULL;
 
     int dwSize = imageLineLen * BITMAP_Y;
     LPBYTE bitNew = NULL;
-    bitNew = (LPBYTE) malloc (dwSize);
+    bitNew = (LPBYTE)malloc(dwSize);
 
-    if (bitNew==NULL)
+    if (bitNew == NULL)
         return NULL;
 
-    memset(bitNew,0,dwSize);
+    memset(bitNew, 0, dwSize);
 
-    for (int i=0;i<max; i++)
+    for (int i = 0; i < max; i++)
     {
         itemRect = changeArray[i];
         if (itemRect)
         {
-            //MsgC(" Count %d",i);
+            // MsgC(" Count %d",i);
 
             int top = itemRect->greatestTop;
             int bottom = itemRect->smallestBottom;
             int left = itemRect->greatestLeft;
             int right = itemRect->smallestRight;
 
-            if (expandArea)  //try adding more information to allow zooming
+            if (expandArea) // try adding more information to allow zooming
             {
                 left = left - expandThickness;
-                if (left < 0) left = 0;
+                if (left < 0)
+                    left = 0;
 
                 right = right + expandThickness;
-                if (right > BITMAP_X-1)
-                    right = BITMAP_X-1;
+                if (right > BITMAP_X - 1)
+                    right = BITMAP_X - 1;
 
                 top = top - expandThickness;
-                if (top < 0) top = 0;
+                if (top < 0)
+                    top = 0;
 
                 bottom = bottom + expandThickness;
-                if (bottom > BITMAP_Y-1)
-                    bottom = BITMAP_Y-1;
-
+                if (bottom > BITMAP_Y - 1)
+                    bottom = BITMAP_Y - 1;
             }
             int length = right - left + 1;
-            //int height = bottom - top + 1;
+            // int height = bottom - top + 1;
             int wLineLen;
-            if (format==4)
-                wLineLen = ((length)*16+31)/32 * 4;
-            else if (format==5)
-                wLineLen = ((length)*32+31)/32 * 4;
+            if (format == 4)
+                wLineLen = ((length)*16 + 31) / 32 * 4;
+            else if (format == 5)
+                wLineLen = ((length)*32 + 31) / 32 * 4;
 
             int imageStart = (top * imageLineLen) + left * pixelbytes;
             int imageRow = imageStart;
 
-            //int rectStart = 0;
-            for (int y=top; y<=bottom; y++)
+            // int rectStart = 0;
+            for (int y = top; y <= bottom; y++)
             {
                 imageStart = imageRow;
 
-                for (int x=left; x<=right; x++)
+                for (int x = left; x <= right; x++)
                 {
-                    if (format==4)
+                    if (format == 4)
                     {
-                        *(bitNew+imageStart) =  *(bitmap+imageStart);
-                        *(bitNew+imageStart+1) =  *(bitmap+imageStart+1);
-
+                        *(bitNew + imageStart) = *(bitmap + imageStart);
+                        *(bitNew + imageStart + 1) = *(bitmap + imageStart + 1);
                     }
-                    else if (format==5)
+                    else if (format == 5)
                     {
-                        *(bitNew+imageStart) =  *(bitmap+imageStart);
-                        *(bitNew+imageStart+1) =  *(bitmap+imageStart+1);
-                        *(bitNew+imageStart+2) =  *(bitmap+imageStart+2);
-                        *(bitNew+imageStart+3) =  *(bitmap+imageStart+3);
-
+                        *(bitNew + imageStart) = *(bitmap + imageStart);
+                        *(bitNew + imageStart + 1) = *(bitmap + imageStart + 1);
+                        *(bitNew + imageStart + 2) = *(bitmap + imageStart + 2);
+                        *(bitNew + imageStart + 3) = *(bitmap + imageStart + 3);
                     }
                     imageStart += pixelbytes;
 
@@ -6171,27 +6389,27 @@ LPBYTE MakeFullRect(LPBITMAPINFOHEADER /*alpbi*/, LPBYTE bitmap, int BITMAP_X, i
 
                 imageRow += imageLineLen;
 
-            } //for y
+            } // for y
 
-        }  //if rect
+        } // if rect
 
-    } //for each rect
+    } // for each rect
 
     return bitNew;
 }
 
-//Can be used only after processswfframe / or inside processswfframe
-double ComputePercentCovered(int BITMAP_X,int BITMAP_Y)
+// Can be used only after processswfframe / or inside processswfframe
+double ComputePercentCovered(int BITMAP_X, int BITMAP_Y)
 {
     double percent = 0;
     double covered = 0;
-    double total =  BITMAP_X * BITMAP_Y;
+    double total = BITMAP_X * BITMAP_Y;
 
-    int max= changeArray.GetSize();
+    int max = changeArray.GetSize();
     if (max > 0)
     {
-        CChangeRectSwf * itemRect = NULL;
-        for (int i=0;i<max; i++)
+        CChangeRectSwf *itemRect = NULL;
+        for (int i = 0; i < max; i++)
         {
             itemRect = changeArray[i];
             if (itemRect)
@@ -6199,54 +6417,53 @@ double ComputePercentCovered(int BITMAP_X,int BITMAP_Y)
                 int length = itemRect->smallestRight - itemRect->greatestLeft + 1;
                 int height = itemRect->smallestBottom - itemRect->greatestTop + 1;
                 covered = covered + (length * height);
-
             }
         }
     }
-    if (total>0)
-        percent = (covered*100)/total ;
+    if (total > 0)
+        percent = (covered * 100) / total;
 
     return percent;
 }
 
-void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitmap, int BITMAP_X, int BITMAP_Y, int format)
+void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitmap, int BITMAP_X, int BITMAP_Y,
+                   int format)
 {
-    int frametype = ProcessSwfFrame( alpbi, f,  bitmap, BITMAP_X,  BITMAP_Y,  format);
+    int frametype = ProcessSwfFrame(alpbi, f, bitmap, BITMAP_X, BITMAP_Y, format);
 
-    int max= changeArray.GetSize();
+    int max = changeArray.GetSize();
 
     if (max > 0)
-        //if ((max > 0) && (determinant))
+    // if ((max > 0) && (determinant))
     {
-        LPBYTE bitRect = MakeFullRect( alpbi, bitmap, BITMAP_X, BITMAP_Y,  format,  max);
+        LPBYTE bitRect = MakeFullRect(alpbi, bitmap, BITMAP_X, BITMAP_Y, format, max);
 
         if (!bitRect)
             return;
 
-        //Set BitsLossless
-        int wLineLen=0;
-        if (format==4)
-            wLineLen = ((BITMAP_X)*16+31)/32 * 4;
-        else if (format==5)
-            wLineLen = ((BITMAP_X)*32+31)/32 * 4;
+        // Set BitsLossless
+        int wLineLen = 0;
+        if (format == 4)
+            wLineLen = ((BITMAP_X)*16 + 31) / 32 * 4;
+        else if (format == 5)
+            wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
 
         int dwSize = wLineLen * (BITMAP_Y);
 
-        FlashZLibBitmapData zdata((unsigned char *) bitRect,dwSize);
-        FlashTagDefineBitsLossless2 bll(format,BITMAP_X, BITMAP_Y, zdata);
+        FlashZLibBitmapData zdata((unsigned char *)bitRect, dwSize);
+        FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
         f << bll;
 
         if (bitRect)
         {
             free(bitRect);
-
         }
         FlashMatrix m;
-        m.SetScale(20,20);
-        m.SetTranslate((FrameOffsetX-MatrixOffsetX)*20,(FrameOffsetY-MatrixOffsetY)*20);
+        m.SetScale(20, 20);
+        m.SetTranslate((FrameOffsetX - MatrixOffsetX) * 20, (FrameOffsetY - MatrixOffsetY) * 20);
 
-        FlashFillStyleBitmap ffbm(bll.GetID(),m);
-        //to handle
+        FlashFillStyleBitmap ffbm(bll.GetID(), m);
+        // to handle
         if (freecharacter)
             freeCharacterArray.Add(bll.GetID());
 
@@ -6254,24 +6471,24 @@ void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitma
         ffa.AddFillStyle(&ffbm);
 
         FlashShapeWithStyle s;
-        CChangeRectSwf * itemRect = NULL;
-        for (int i=0;i<max; i++)
+        CChangeRectSwf *itemRect = NULL;
+        for (int i = 0; i < max; i++)
         {
             itemRect = changeArray[i];
             if (itemRect)
             {
-                int length = itemRect->smallestRight - itemRect->greatestLeft + 1 ;
-                int height = itemRect->smallestBottom - itemRect->greatestTop + 1 ;
+                int length = itemRect->smallestRight - itemRect->greatestLeft + 1;
+                int height = itemRect->smallestBottom - itemRect->greatestTop + 1;
 
                 FlashShapeRecordChange changerec;
                 changerec.ChangeFillStyle1(1);
                 s.AddRecord(changerec);
-                s.AddRecord(FlashShapeRecordChange((itemRect->greatestLeft+FrameOffsetX+MoveOffsetX)*20,(itemRect->greatestTop+FrameOffsetY+MoveOffsetY)*20));
-                s.AddRecord(FlashShapeRecordStraight(length*20,0*20));
-                s.AddRecord(FlashShapeRecordStraight(0*20,height*20));
-                s.AddRecord(FlashShapeRecordStraight(-length*20,0*20));
-                s.AddRecord(FlashShapeRecordStraight(0*20,-height*20));
-
+                s.AddRecord(FlashShapeRecordChange((itemRect->greatestLeft + FrameOffsetX + MoveOffsetX) * 20,
+                                                   (itemRect->greatestTop + FrameOffsetY + MoveOffsetY) * 20));
+                s.AddRecord(FlashShapeRecordStraight(length * 20, 0 * 20));
+                s.AddRecord(FlashShapeRecordStraight(0 * 20, height * 20));
+                s.AddRecord(FlashShapeRecordStraight(-length * 20, 0 * 20));
+                s.AddRecord(FlashShapeRecordStraight(0 * 20, -height * 20));
             }
         }
         s.SetFillStyleArray(ffa);
@@ -6284,53 +6501,51 @@ void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitma
             FlashTagRemoveObject2 ro(IFrameDepth);
             f << ro;
             hasIntermediateFrame = 0;
-
         }
-        if (frametype==FRAME_HALFKEY)
+        if (frametype == FRAME_HALFKEY)
         {
-            //Unlike Intermediate Frames, we do not remove the Halfkey object up to a certain depth
-            FlashTagPlaceObject2 po(HalfKeyDepthBase+HalfKeyDepthInc, fsws.GetID());
+            // Unlike Intermediate Frames, we do not remove the Halfkey object up to a certain depth
+            FlashTagPlaceObject2 po(HalfKeyDepthBase + HalfKeyDepthInc, fsws.GetID());
             f << po;
             HalfKeyDepthInc++;
-
         }
-        else { //if  frametype==FRAME_INTERMEDIATE
+        else
+        { // if  frametype==FRAME_INTERMEDIATE
 
             FlashTagPlaceObject2 po(IFrameDepth, fsws.GetID());
             f << po;
             hasIntermediateFrame = 1;
-
         }
         f << FlashTagShowFrame();
         framecount++;
 
-    }  //if (max > 0)
+    } // if (max > 0)
     else
     {
-        if (frametype==FRAME_KEYFRAME) //one reason for max == 0
+        if (frametype == FRAME_KEYFRAME) // one reason for max == 0
         {
             if (freecharacter)
                 gcFlash(f);
 
-            int wLineLen=0;
-            if (format==4)
-                wLineLen = ((alpbi->biWidth)*16+31)/32 * 4;
-            else if (format==5)
-                wLineLen = ((alpbi->biWidth)*32+31)/32 * 4;
+            int wLineLen = 0;
+            if (format == 4)
+                wLineLen = ((alpbi->biWidth) * 16 + 31) / 32 * 4;
+            else if (format == 5)
+                wLineLen = ((alpbi->biWidth) * 32 + 31) / 32 * 4;
 
             int dwSize = wLineLen * (alpbi->biHeight);
 
-            FlashZLibBitmapData zdata((unsigned char *) bitmap,dwSize); //need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format,BITMAP_X, BITMAP_Y, zdata);
+            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
+            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
             f << bll;
 
             FlashMatrix m;
-            m.SetScale(20,20);
-            m.SetTranslate((FrameOffsetX-MatrixOffsetX)*20,(FrameOffsetY-MatrixOffsetY)*20);
+            m.SetScale(20, 20);
+            m.SetTranslate((FrameOffsetX - MatrixOffsetX) * 20, (FrameOffsetY - MatrixOffsetY) * 20);
 
-            FlashFillStyleBitmap ffb(bll.GetID(),m);
+            FlashFillStyleBitmap ffb(bll.GetID(), m);
 
-            //to handle
+            // to handle
             if (freecharacter)
                 freeCharacterArray.Add(bll.GetID());
 
@@ -6339,74 +6554,69 @@ void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitma
 
             FlashShapeWithStyle s;
             FlashShapeRecordChange changerec;
-            changerec.ChangeFillStyle1(1); //must set to FillStyle1 to be imported
+            changerec.ChangeFillStyle1(1); // must set to FillStyle1 to be imported
 
             s.AddRecord(changerec);
-            s.AddRecord(FlashShapeRecordChange(FrameOffsetX*20,FrameOffsetY*20));
-            s.AddRecord(FlashShapeRecordStraight((BITMAP_X-MoveOffsetX)*20,0*20));
-            s.AddRecord(FlashShapeRecordStraight(0*20,(BITMAP_Y-MoveOffsetY)*20));
-            s.AddRecord(FlashShapeRecordStraight(-(BITMAP_X-MoveOffsetX)*20,0*20));
-            s.AddRecord(FlashShapeRecordStraight(0*20,-(BITMAP_Y-MoveOffsetY)*20));
+            s.AddRecord(FlashShapeRecordChange(FrameOffsetX * 20, FrameOffsetY * 20));
+            s.AddRecord(FlashShapeRecordStraight((BITMAP_X - MoveOffsetX) * 20, 0 * 20));
+            s.AddRecord(FlashShapeRecordStraight(0 * 20, (BITMAP_Y - MoveOffsetY) * 20));
+            s.AddRecord(FlashShapeRecordStraight(-(BITMAP_X - MoveOffsetX) * 20, 0 * 20));
+            s.AddRecord(FlashShapeRecordStraight(0 * 20, -(BITMAP_Y - MoveOffsetY) * 20));
 
             s.SetFillStyleArray(ffa);
             FlashTagDefineShape3 fsws(s);
 
             f << fsws;
 
-            //adding multiple depths greatly slow down,flash drawings..
-            //so we need the remove
-            //if (framei > 0) {
+            // adding multiple depths greatly slow down,flash drawings..
+            // so we need the remove
+            // if (framei > 0) {
             if (hasIntermediateFrame)
             {
                 FlashTagRemoveObject2 ro(IFrameDepth);
                 f << ro;
                 hasIntermediateFrame = 0;
-
             }
             if (HalfKeyDepthInc)
             {
-                for (int j=HalfKeyDepthInc;j>=0;j--)
+                for (int j = HalfKeyDepthInc; j >= 0; j--)
                 {
-                    FlashTagRemoveObject2 ro(HalfKeyDepthBase+j);
+                    FlashTagRemoveObject2 ro(HalfKeyDepthBase + j);
                     f << ro;
                 }
                 HalfKeyDepthInc = 0;
-
             }
             if (hasKeyFrame)
             {
                 FlashTagRemoveObject2 ro(KeyFrameDepth);
                 f << ro;
                 hasKeyFrame = 0;
-
             }
             FlashTagPlaceObject2 po(KeyFrameDepth, fsws.GetID());
 
             f << po;
             hasKeyFrame = 1;
-
         }
         else
         {
-            //This block here usually capture the case of frametype = halfkey,
-            //and yet changeblocks == 0
+            // This block here usually capture the case of frametype = halfkey,
+            // and yet changeblocks == 0
 
-            //else if not keyframe...do nothing..just show frame
+            // else if not keyframe...do nothing..just show frame
 
-            //We have to remove this if it is present because
-            //the comparision is made without the intermediate frame
+            // We have to remove this if it is present because
+            // the comparision is made without the intermediate frame
             if (hasIntermediateFrame)
             {
                 FlashTagRemoveObject2 ro(IFrameDepth);
                 f << ro;
                 hasIntermediateFrame = 0;
-
             }
         }
         if (noAutoPlay)
         {
-            if (firstvideoFrame) //this variable is set to 1 only at the beginning of the full conversion
-                //split parts will always have    firstvideoFrame = 0
+            if (firstvideoFrame) // this variable is set to 1 only at the beginning of the full conversion
+                                 // split parts will always have    firstvideoFrame = 0
             {
                 FlashActionStop s;
                 FlashTagDoAction ftd;
@@ -6419,12 +6629,10 @@ void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitma
                 ftdg.AddAction(&gt);
 
                 f << ftdg;*/
-
             }
         }
         f << FlashTagShowFrame();
         framecount++;
-
     }
     // mp3 background music
     // no synchronization
@@ -6435,7 +6643,7 @@ void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitma
         {
             if (mp3FileLoaded)
             {
-                FlashMP3Encoder MP3(LPCTSTR(mp3File),sampleFPS);
+                FlashMP3Encoder MP3(LPCTSTR(mp3File), sampleFPS);
 
                 UWORD MP3_id = MP3.WriteDefineTag(f);
 
@@ -6447,7 +6655,6 @@ void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitma
 
                 f << FlashTagShowFrame(); // this will be frame 0 if mp3 background music is used
                 framecount++;
-
             }
         }
     }
@@ -6455,31 +6662,24 @@ void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitma
 
     if (!noAudioStream)
     {
-        if (giFirstAudio>=0)
+        if (giFirstAudio >= 0)
         {
             int absize;
             absize = samplecountavg * 2 * 2;
-            void* buffer = malloc(absize);
+            void *buffer = malloc(absize);
             long retlenSwf = 0;
             long lReadSwf = 0;
             long retval;
 
             if (usePCMConvertedStream)
             {
-                retval = AVIStreamRead(PCMConvertedStream, slCurrentSwf, samplecountavg,
-                    buffer,
-                    absize,
-                    &retlenSwf,
-                    &lReadSwf);
+                retval = AVIStreamRead(PCMConvertedStream, slCurrentSwf, samplecountavg, buffer, absize, &retlenSwf,
+                                       &lReadSwf);
             }
             else
             {
-                retval = AVIStreamRead(gapavi[giFirstAudio], slCurrentSwf, samplecountavg,
-                    buffer,
-                    absize,
-                    &retlenSwf,
-                    &lReadSwf);
-
+                retval = AVIStreamRead(gapavi[giFirstAudio], slCurrentSwf, samplecountavg, buffer, absize, &retlenSwf,
+                                       &lReadSwf);
             }
             slCurrentSwf += lReadSwf;
 
@@ -6487,65 +6687,62 @@ void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitma
 
             if (useAudioCompression == 0)
             {
-                if (retlenSwf>0)
-                    f << FlashTagSoundStreamBlock((char *) buffer, retlenSwf);
-
+                if (retlenSwf > 0)
+                    f << FlashTagSoundStreamBlock((char *)buffer, retlenSwf);
             }
             else
             {
-                if ((retlenSwf>0) && (lReadSwf>0))
-                    MakeSoundStreamBlockADPCM( buffer, retlenSwf, lReadSwf, f);
-
+                if ((retlenSwf > 0) && (lReadSwf > 0))
+                    MakeSoundStreamBlockADPCM(buffer, retlenSwf, lReadSwf, f);
             }
-            if (buffer) free(buffer);
-
+            if (buffer)
+                free(buffer);
         }
     }
 }
 
-//Determine if the frame is intermediate or key frame
-int ProcessSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitmap, int BITMAP_X, int BITMAP_Y, int format)
+// Determine if the frame is intermediate or key frame
+int ProcessSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitmap, int BITMAP_X, int BITMAP_Y,
+                    int format)
 {
-    cleanChangeArray(); //need to clean it for each frame
+    cleanChangeArray(); // need to clean it for each frame
 
     int ret = 0;
     int wColSize = 0;
-    int dwSize = alpbi->biSizeImage + sizeof(BITMAPINFOHEADER) +  wColSize;
+    int dwSize = alpbi->biSizeImage + sizeof(BITMAPINFOHEADER) + wColSize;
 
     if (useHalfKey)
     {
-        //using halfkey will no longer rely on keyframerate variable
+        // using halfkey will no longer rely on keyframerate variable
         if (HalfKeyDepthInc > Max_HalfKeyDepth)
         {
             framei = 0;
-            //HalfKeyDepthInc = 0;
-
+            // HalfKeyDepthInc = 0;
         }
     }
-    if (framei ==0)
+    if (framei == 0)
     {
-        //KeyFrame;
+        // KeyFrame;
         if (currentKey_lpbi)
         {
             if ((currentKey_lpbi->biSizeImage != alpbi->biSizeImage))
             {
                 free(currentKey_lpbi);
-                currentKey_lpbi = (LPBITMAPINFOHEADER) malloc(dwSize);
+                currentKey_lpbi = (LPBITMAPINFOHEADER)malloc(dwSize);
             }
         }
         else
-            currentKey_lpbi = (LPBITMAPINFOHEADER) malloc(dwSize);
+            currentKey_lpbi = (LPBITMAPINFOHEADER)malloc(dwSize);
 
-        memcpy( (void *) currentKey_lpbi, (void *) alpbi, dwSize );
+        memcpy((void *)currentKey_lpbi, (void *)alpbi, dwSize);
 
         ret = FRAME_KEYFRAME;
-
     }
     else
     {
-        //Intermediate Frame
-      //----------
-        //for (int y=0;y<BITMAP_Y;y++)
+        // Intermediate Frame
+        //----------
+        // for (int y=0;y<BITMAP_Y;y++)
         //{
         //    for (int x=0;x<BITMAP_X;x++)
         //    {
@@ -6556,334 +6753,322 @@ int ProcessSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitm
         //        }
         //    }
         //}
-      //The code here is an alternative to the above loop, it does exactly the same thing
-      //except combines the loop and IsDifferent code more efficiently. Faster.
-      //We take any logic we can from inside the loop and move it outside. Also use memcmp
-      //to quickly check if it is worth scanning through an entire row.
-      //if (false)
-      {
-       unsigned long widthBytes = 0;
-      unsigned long pixbytes = 0;
-       if (format==4)
-         {
-           pixbytes = 2;
-           widthBytes = (BITMAP_X*16+31)/32 * 4;
-          }
-       else if (format==5)
-          {
-           pixbytes = 4;
-           widthBytes = (BITMAP_X*32+31)/32 * 4;
-          }
-       else
-         {
-         //NEED TO FIX OR ASSERT HERE!
-         }
-
-       LPBYTE bitsFrame = (LPBYTE) alpbi + // pointer to data
-           alpbi->biSize +
-           alpbi->biClrUsed * sizeof(RGBQUAD);
-
-       LPBYTE bitsKey = (LPBYTE) currentKey_lpbi + // pointer to data
-           currentKey_lpbi->biSize +
-           currentKey_lpbi->biClrUsed * sizeof(RGBQUAD);
-
-      unsigned long nBytesRow = BITMAP_X * pixbytes;
-
-      unsigned long accessy = 0;
-        for (int y=0;y<BITMAP_Y;y++)
-           {
-         unsigned long access = accessy;
-
-         //See if we can compare the entire row in one go:
-         bool checkPixels = true;
-         LPBYTE t1 = bitsFrame+access;
-         LPBYTE t2 = bitsKey+access;
-         if (memcmp(t1, t2, nBytesRow)==0)
+        // The code here is an alternative to the above loop, it does exactly the same thing
+        // except combines the loop and IsDifferent code more efficiently. Faster.
+        // We take any logic we can from inside the loop and move it outside. Also use memcmp
+        // to quickly check if it is worth scanning through an entire row.
+        // if (false)
+        {
+            unsigned long widthBytes = 0;
+            unsigned long pixbytes = 0;
+            if (format == 4)
             {
-            //The entire row of pixels is the same
-            checkPixels = false;
+                pixbytes = 2;
+                widthBytes = (BITMAP_X * 16 + 31) / 32 * 4;
+            }
+            else if (format == 5)
+            {
+                pixbytes = 4;
+                widthBytes = (BITMAP_X * 32 + 31) / 32 * 4;
+            }
+            else
+            {
+                // NEED TO FIX OR ASSERT HERE!
             }
 
-         if (checkPixels)
+            LPBYTE bitsFrame = (LPBYTE)alpbi + // pointer to data
+                               alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD);
+
+            LPBYTE bitsKey = (LPBYTE)currentKey_lpbi + // pointer to data
+                             currentKey_lpbi->biSize + currentKey_lpbi->biClrUsed * sizeof(RGBQUAD);
+
+            unsigned long nBytesRow = BITMAP_X * pixbytes;
+
+            unsigned long accessy = 0;
+            for (int y = 0; y < BITMAP_Y; y++)
             {
-              for (int x=0;x<BITMAP_X;x++)
-                  {
-                int diff = FALSE;
+                unsigned long access = accessy;
 
-                if (format==4)
-                   {
-                  LPBYTE t = bitsFrame+access;
-                    int val1 = *t++;
-                    int val2 = *t;
+                // See if we can compare the entire row in one go:
+                bool checkPixels = true;
+                LPBYTE t1 = bitsFrame + access;
+                LPBYTE t2 = bitsKey + access;
+                if (memcmp(t1, t2, nBytesRow) == 0)
+                {
+                    // The entire row of pixels is the same
+                    checkPixels = false;
+                }
 
-                  t = bitsKey+access;
-                    int valKey1 = *t++;
-                    int valKey2 = *t;
+                if (checkPixels)
+                {
+                    for (int x = 0; x < BITMAP_X; x++)
+                    {
+                        int diff = FALSE;
 
-                    if ((val1-valKey1) || (val2-valKey2))
-                        diff = TRUE;
-                   }
-                else if (format==5)
-                   {
-                  LPBYTE t = bitsFrame+access;
-                    int Blue = *t++;
-                    int Green = *t++;
-                    int Red = *t++;
-                    int Alpha = *t++;
+                        if (format == 4)
+                        {
+                            LPBYTE t = bitsFrame + access;
+                            int val1 = *t++;
+                            int val2 = *t;
 
-                  t = bitsKey+access;
-                    int BlueKey = *t++;
-                    int GreenKey = *t++;
-                    int RedKey = *t++;
-                    int AlphaKey = *t++;
+                            t = bitsKey + access;
+                            int valKey1 = *t++;
+                            int valKey2 = *t;
 
-                    if ((Blue-BlueKey) || (Green-GreenKey) || (Red-RedKey) || (Alpha-AlphaKey))
-                        diff = TRUE;
+                            if ((val1 - valKey1) || (val2 - valKey2))
+                                diff = TRUE;
+                        }
+                        else if (format == 5)
+                        {
+                            LPBYTE t = bitsFrame + access;
+                            int Blue = *t++;
+                            int Green = *t++;
+                            int Red = *t++;
+                            int Alpha = *t++;
 
-                   }
-               if (diff)
-                  {
-                       AddExpandBlock(BITMAP_X,BITMAP_Y,x,y, format);
-                  }
-                access += pixbytes;
-               }
+                            t = bitsKey + access;
+                            int BlueKey = *t++;
+                            int GreenKey = *t++;
+                            int RedKey = *t++;
+                            int AlphaKey = *t++;
+
+                            if ((Blue - BlueKey) || (Green - GreenKey) || (Red - RedKey) || (Alpha - AlphaKey))
+                                diff = TRUE;
+                        }
+                        if (diff)
+                        {
+                            AddExpandBlock(BITMAP_X, BITMAP_Y, x, y, format);
+                        }
+                        access += pixbytes;
+                    }
+                }
+                accessy += widthBytes;
             }
-         accessy += widthBytes;
-         }
-      //----------
-      }
+            //----------
+        }
 
         ret = FRAME_INTERMEDIATE;
 
         if (useHalfKey)
         {
-            //if using useHalfKey, then will definitely usePercent
+            // if using useHalfKey, then will definitely usePercent
 
-            //Force every frame as Halfkey, ==> every frame is compared to previous frame
-            //whether the number of change blocks is zero or greater, we just save this frame as halfkey
-            //and indicate it when returning
+            // Force every frame as Halfkey, ==> every frame is compared to previous frame
+            // whether the number of change blocks is zero or greater, we just save this frame as halfkey
+            // and indicate it when returning
 
-            //Whether this frame is going to be a Key Frame or Halfkey Frame
-            //We need to copy the current frame as a basis for comparison for the next frame
+            // Whether this frame is going to be a Key Frame or Halfkey Frame
+            // We need to copy the current frame as a basis for comparison for the next frame
             {
-                //Halfkey frame
-                //we must not clean up the array and must leave it be
-                //we will need it later on to update the keyframe
-                //cleanChangeArray();
+                // Halfkey frame
+                // we must not clean up the array and must leave it be
+                // we will need it later on to update the keyframe
+                // cleanChangeArray();
 
                 if (currentKey_lpbi)
                 {
                     if ((currentKey_lpbi->biSizeImage != alpbi->biSizeImage))
                     {
                         free(currentKey_lpbi);
-                        currentKey_lpbi = (LPBITMAPINFOHEADER) malloc(dwSize);
+                        currentKey_lpbi = (LPBITMAPINFOHEADER)malloc(dwSize);
                     }
                 }
                 else
-                    currentKey_lpbi = (LPBITMAPINFOHEADER) malloc(dwSize);
+                    currentKey_lpbi = (LPBITMAPINFOHEADER)malloc(dwSize);
 
-                memcpy( (void *) currentKey_lpbi, (void *) alpbi, dwSize );
+                memcpy((void *)currentKey_lpbi, (void *)alpbi, dwSize);
 
                 ret = FRAME_HALFKEY;
 
                 if (usePercent)
                 {
-                    double percent= ComputePercentCovered( BITMAP_X, BITMAP_Y);
+                    double percent = ComputePercentCovered(BITMAP_X, BITMAP_Y);
                     int determinant = (percent > HalfKeyThreshold);
                     if (determinant)
                     {
-                        //since we have decided this to be a keyframe
-                        //we do not need the chnageblocks anymore
+                        // since we have decided this to be a keyframe
+                        // we do not need the chnageblocks anymore
                         cleanChangeArray();
                         ret = FRAME_KEYFRAME;
-
                     }
                 }
             }
         }
         else if (usePercent)
         {
-            //The introduction of new keyframes seems to result in patches...
-            //The patches are a result of MS Video 1 -- not full 100% quality!
+            // The introduction of new keyframes seems to result in patches...
+            // The patches are a result of MS Video 1 -- not full 100% quality!
 
-            //If there are too much change in intermediate frame
-            double percent= ComputePercentCovered( BITMAP_X, BITMAP_Y);
+            // If there are too much change in intermediate frame
+            double percent = ComputePercentCovered(BITMAP_X, BITMAP_Y);
             int determinant = (percent > PercentThreshold);
 
-            if (determinant)  //Force keyframe
+            if (determinant) // Force keyframe
             {
-                cleanChangeArray(); //this will clean up changeArray and force ChangeArray.getSize()==0
+                cleanChangeArray(); // this will clean up changeArray and force ChangeArray.getSize()==0
 
                 if (currentKey_lpbi)
                 {
                     if ((currentKey_lpbi->biSizeImage != alpbi->biSizeImage))
                     {
                         free(currentKey_lpbi);
-                        currentKey_lpbi = (LPBITMAPINFOHEADER) malloc(dwSize);
+                        currentKey_lpbi = (LPBITMAPINFOHEADER)malloc(dwSize);
                     }
                 }
                 else
-                    currentKey_lpbi = (LPBITMAPINFOHEADER) malloc(dwSize);
+                    currentKey_lpbi = (LPBITMAPINFOHEADER)malloc(dwSize);
 
-                memcpy( (void *) currentKey_lpbi, (void *) alpbi, dwSize );
+                memcpy((void *)currentKey_lpbi, (void *)alpbi, dwSize);
 
                 ret = FRAME_KEYFRAME;
-
             }
         }
     }
     framei++;
     if (!useHalfKey)
     {
-        if (framei>=keyframerate)
+        if (framei >= keyframerate)
             framei = 0;
     }
     return ret;
 }
 
-int IsDifferent(LPBITMAPINFOHEADER alpbi, int BITMAP_X,int BITMAP_Y, int x, int y, int format)
+int IsDifferent(LPBITMAPINFOHEADER alpbi, int BITMAP_X, int BITMAP_Y, int x, int y, int format)
 {
     unsigned long widthBytes, pixbytes;
-    if (format==4)
+    if (format == 4)
     {
         pixbytes = 2;
-        widthBytes = (BITMAP_X*16+31)/32 * 4;
-
+        widthBytes = (BITMAP_X * 16 + 31) / 32 * 4;
     }
-    else if (format==5)
+    else if (format == 5)
     {
         pixbytes = 4;
-        widthBytes = (BITMAP_X*32+31)/32 * 4;
+        widthBytes = (BITMAP_X * 32 + 31) / 32 * 4;
     }
     else
         return FALSE;
 
     unsigned long access = y * widthBytes + x * pixbytes;
 
-    LPBYTE bitsFrame = (LPBYTE) alpbi + // pointer to data
-        alpbi->biSize +
-        alpbi->biClrUsed * sizeof(RGBQUAD);
+    LPBYTE bitsFrame = (LPBYTE)alpbi + // pointer to data
+                       alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD);
 
-    LPBYTE bitsKey = (LPBYTE) currentKey_lpbi + // pointer to data
-        currentKey_lpbi->biSize +
-        currentKey_lpbi->biClrUsed * sizeof(RGBQUAD);
+    LPBYTE bitsKey = (LPBYTE)currentKey_lpbi + // pointer to data
+                     currentKey_lpbi->biSize + currentKey_lpbi->biClrUsed * sizeof(RGBQUAD);
 
     int diff = FALSE;
 
-    if (format==4)
+    if (format == 4)
     {
-        int val1 = *(bitsFrame+access);
-        int val2 = *(bitsFrame+access+1);
+        int val1 = *(bitsFrame + access);
+        int val2 = *(bitsFrame + access + 1);
 
-        int valKey1 = *(bitsKey+access);
-        int valKey2 = *(bitsKey+access+1);
+        int valKey1 = *(bitsKey + access);
+        int valKey2 = *(bitsKey + access + 1);
 
-        if ((val1-valKey1) || (val2-valKey2))
+        if ((val1 - valKey1) || (val2 - valKey2))
             diff = TRUE;
-
     }
-    else if (format==5)
+    else if (format == 5)
     {
-        int Blue = *(bitsFrame+access);
-        int Green = *(bitsFrame+access+1);
-        int Red = *(bitsFrame+access+2);
-        int Alpha = *(bitsFrame+access+3);
+        int Blue = *(bitsFrame + access);
+        int Green = *(bitsFrame + access + 1);
+        int Red = *(bitsFrame + access + 2);
+        int Alpha = *(bitsFrame + access + 3);
 
-        int BlueKey = *(bitsKey+access);
-        int GreenKey = *(bitsKey+access+1);
-        int RedKey = *(bitsKey+access+2);
-        int AlphaKey = *(bitsKey+access+3);
+        int BlueKey = *(bitsKey + access);
+        int GreenKey = *(bitsKey + access + 1);
+        int RedKey = *(bitsKey + access + 2);
+        int AlphaKey = *(bitsKey + access + 3);
 
-        if ((Blue-BlueKey) || (Green-GreenKey) || (Red-RedKey) || (Alpha-AlphaKey))
+        if ((Blue - BlueKey) || (Green - GreenKey) || (Red - RedKey) || (Alpha - AlphaKey))
             diff = TRUE;
-
     }
     return diff;
 }
 
-void AddExpandBlock(int BITMAP_X,int BITMAP_Y,int x,int y,int format)
+void AddExpandBlock(int BITMAP_X, int BITMAP_Y, int x, int y, int format)
 {
-    int blockx = x/blocksize_x;
-    int blocky = y/blocksize_y;
+    int blockx = x / blocksize_x;
+    int blocky = y / blocksize_y;
 
-    int max= changeArray.GetSize();
-    if (max>0)
+    int max = changeArray.GetSize();
+    if (max > 0)
     {
         // SearchBlock
         int found = 0;
-        CChangeRectSwf * itemRect = NULL;
-        for (int i=0;i<max; i++)
+        CChangeRectSwf *itemRect = NULL;
+        for (int i = 0; i < max; i++)
         {
             itemRect = changeArray[i];
             if (itemRect)
             {
                 if ((itemRect->blockx == blockx) && (itemRect->blocky == blocky))
                 {
-                    found=1;
+                    found = 1;
                     break;
                 }
             }
         }
         if (found)
         {
-            ExpandBlock(itemRect,BITMAP_X,BITMAP_Y, x, y, format);
+            ExpandBlock(itemRect, BITMAP_X, BITMAP_Y, x, y, format);
         }
         else
-            AddNewBlock(BITMAP_X,BITMAP_Y, x, y, format);
-
+            AddNewBlock(BITMAP_X, BITMAP_Y, x, y, format);
     }
     else
-        AddNewBlock(BITMAP_X,BITMAP_Y, x, y, format);
+        AddNewBlock(BITMAP_X, BITMAP_Y, x, y, format);
 }
 
-//Assuming the itemRect is correctly chosen
-void ExpandBlock(CChangeRectSwf *itemRect, int BITMAP_X,int BITMAP_Y,int x,int y,int /*format*/)
+// Assuming the itemRect is correctly chosen
+void ExpandBlock(CChangeRectSwf *itemRect, int BITMAP_X, int BITMAP_Y, int x, int y, int /*format*/)
 {
     if (itemRect)
     {
-        //Expand left bounds
+        // Expand left bounds
         if (x < itemRect->greatestLeft)
         {
             itemRect->greatestLeft = x;
         }
-        //Expand top bounds
+        // Expand top bounds
         if (y < itemRect->greatestTop)
         {
             itemRect->greatestTop = y;
         }
-        //Expand right bounds
+        // Expand right bounds
         if (x > itemRect->smallestRight)
         {
             itemRect->smallestRight = x;
-
         }
-        //Expand bottom bounds
+        // Expand bottom bounds
         if (y > itemRect->smallestBottom)
         {
             itemRect->smallestBottom = y;
-
         }
     }
 }
 
-void AddNewBlock(int BITMAP_X,int BITMAP_Y,int x,int y,int /*format*/)
+void AddNewBlock(int BITMAP_X, int BITMAP_Y, int x, int y, int /*format*/)
 {
     CChangeRectSwf *itemRect = new CChangeRectSwf;
 
-    int blockx = x/ blocksize_x;
-    int blocky = y/ blocksize_y;
-    itemRect->initialize(blockx, blocky , blocksize_x, blocksize_y, numblocks_x, BITMAP_X, BITMAP_Y, x ,y);
+    int blockx = x / blocksize_x;
+    int blocky = y / blocksize_y;
+    itemRect->initialize(blockx, blocky, blocksize_x, blocksize_y, numblocks_x, BITMAP_X, BITMAP_Y, x, y);
     changeArray.Add(itemRect);
 }
 
 void finishTemporalCompress()
 {
-    initTemporalCompress(0,0);
+    initTemporalCompress(0, 0);
 }
 
 void initTemporalCompress(int bmWidth, int bmHeight)
 {
-    if (currentKey_lpbi) {
+    if (currentKey_lpbi)
+    {
         free(currentKey_lpbi);
         currentKey_lpbi = NULL;
     }
@@ -6895,13 +7080,13 @@ void initTemporalCompress(int bmWidth, int bmHeight)
     hasIntermediateFrame = 0;
     HalfKeyDepthInc = 0;
 
-    numblocks_x = bmWidth/blocksize_x;
-    numblocks_y = bmHeight/blocksize_y;
+    numblocks_x = bmWidth / blocksize_x;
+    numblocks_y = bmHeight / blocksize_y;
 
-    if ((bmWidth % blocksize_x)>0)
+    if ((bmWidth % blocksize_x) > 0)
         numblocks_x++;
 
-    if ((bmHeight % blocksize_y)>0)
+    if ((bmHeight % blocksize_y) > 0)
         numblocks_y++;
 
     freeCharacterArray.RemoveAll();
@@ -6910,20 +7095,20 @@ void initTemporalCompress(int bmWidth, int bmHeight)
 void cleanChangeArray()
 {
     int max = changeArray.GetSize();
-    CChangeRectSwf * itemRect = NULL;
-    for (int i=0;i<max; i++)
+    CChangeRectSwf *itemRect = NULL;
+    for (int i = 0; i < max; i++)
     {
         itemRect = changeArray[i];
         if (itemRect)
             delete itemRect;
-
     }
     changeArray.RemoveAll();
 }
 
-void *MakeFullBuffer(void* buffer, long &buffersize, long &numsamples, int avgsamplespersecond,bool streamstereo, bool stream16bit)
+void *MakeFullBuffer(void *buffer, long &buffersize, long &numsamples, int avgsamplespersecond, bool streamstereo,
+                     bool stream16bit)
 {
-    if (buffersize==0)
+    if (buffersize == 0)
         return buffer;
 
     if (numsamples >= (avgsamplespersecond))
@@ -6937,44 +7122,44 @@ void *MakeFullBuffer(void* buffer, long &buffersize, long &numsamples, int avgsa
     if (streamstereo)
         smul = 2;
 
-    bytespersample = 2; //only handle 16 bits per sample
+    bytespersample = 2; // only handle 16 bits per sample
 
     newsize = avgsamplespersecond * smul * bytespersample;
 
-    if (newsize<=buffersize)
+    if (newsize <= buffersize)
         return buffer;
 
-    void * newbuffer = realloc(buffer,newsize);
+    void *newbuffer = realloc(buffer, newsize);
     buffersize = newsize;
     numsamples = avgsamplespersecond;
     return newbuffer;
 }
 
-void MakeSoundStreamBlockADPCM(void* buffer, int buffersize, int numsamples, std::ostringstream &f)
+void MakeSoundStreamBlockADPCM(void *buffer, int buffersize, int numsamples, std::ostringstream &f)
 {
-    if (buffersize<=0)
+    if (buffersize <= 0)
         return;
 
     FSound sound;
     int streamsize = 0;
     int streamchannels = 0;
-    if (stream_16bit) //external var
+    if (stream_16bit) // external var
         streamsize = 1;
-    if (stream_stereo) //external var
+    if (stream_stereo) // external var
         streamchannels = 1;
-    sound.format =  4 * ( stream_rate ) + ( streamsize ) * 2 + ( streamchannels );
+    sound.format = 4 * (stream_rate) + (streamsize)*2 + (streamchannels);
     sound.nSamples = numsamples;
-    sound.samples  = (U8*)( buffer );
-    sound.dataLen  = buffersize;
-    sound.delay    = 0;
+    sound.samples = (U8 *)(buffer);
+    sound.dataLen = buffersize;
+    sound.delay = 0;
 
     std::vector<U8> adpcmData;
     adpcmData.clear();
-    FSoundComp compress( &sound, adpcmBPS );
-    compress.Compress( (U8*)( buffer ), numsamples, &adpcmData );
-    compress.Flush( &adpcmData );
+    FSoundComp compress(&sound, adpcmBPS);
+    compress.Compress((U8 *)(buffer), numsamples, &adpcmData);
+    compress.Flush(&adpcmData);
 
-    FlashTagSoundStreamBlock stb((char*)&adpcmData[0],adpcmData.size());
+    FlashTagSoundStreamBlock stb((char *)&adpcmData[0], adpcmData.size());
     f << stb;
 
     adpcmData.clear();
@@ -6987,9 +7172,9 @@ void MakeSoundStreamBlockADPCM(void* buffer, int buffersize, int numsamples, std
 int SaveFirstAudioToFile(CString filename)
 {
     PAVIFILE pavi;
-    if (AVIFileOpen(&pavi,LPCTSTR(filename),OF_CREATE | OF_WRITE | OF_SHARE_DENY_NONE,NULL)!=0)
+    if (AVIFileOpen(&pavi, LPCTSTR(filename), OF_CREATE | OF_WRITE | OF_SHARE_DENY_NONE, NULL) != 0)
         return 0;
-    if (CopyStream(pavi,gapavi[giFirstAudio])!=0)
+    if (CopyStream(pavi, gapavi[giFirstAudio]) != 0)
         return 0;
     AVIFileRelease(pavi);
     return 1;
@@ -6997,24 +7182,24 @@ int SaveFirstAudioToFile(CString filename)
 
 // Code Derived from article "Concerning Video for Windows API"
 // See credit links in help file for more info
-int CopyStream(PAVIFILE pavi,PAVISTREAM pstm)
+int CopyStream(PAVIFILE pavi, PAVISTREAM pstm)
 {
     AVISTREAMINFO si;
-    LONG st,ed,leng;
+    LONG st, ed, leng;
     BYTE p[20000];
     PAVISTREAM ptmp;
 
-    st=AVIStreamStart(pstm);
-    ed=st+AVIStreamLength(pstm)-1;
-    if (AVIStreamInfo(pstm,&si,sizeof(AVISTREAMINFO))!=0)
+    st = AVIStreamStart(pstm);
+    ed = st + AVIStreamLength(pstm) - 1;
+    if (AVIStreamInfo(pstm, &si, sizeof(AVISTREAMINFO)) != 0)
         return -1;
-    if (AVIFileCreateStream(pavi,&ptmp,&si)!=0)
+    if (AVIFileCreateStream(pavi, &ptmp, &si) != 0)
         return -1;
-    if (AVIStreamReadFormat(pstm,st,NULL,&leng)!=0)
+    if (AVIStreamReadFormat(pstm, st, NULL, &leng) != 0)
         return -1;
-    if (AVIStreamReadFormat(pstm,st,p,&leng)!=0)
+    if (AVIStreamReadFormat(pstm, st, p, &leng) != 0)
         return -1;
-    if (AVIStreamSetFormat(ptmp,st,p,leng)!=0)
+    if (AVIStreamSetFormat(ptmp, st, p, leng) != 0)
         return -1;
 
     long sampleread = 4096;
@@ -7025,35 +7210,25 @@ int CopyStream(PAVIFILE pavi,PAVISTREAM pstm)
     slCurrentWav = st;
     while (slCurrentWav <= ed)
     {
-        AVIStreamRead(pstm,slCurrentWav,WAVBUFFER,
-            p,
-            bufferlength,
-            &byteread,
-            &sampleread);
+        AVIStreamRead(pstm, slCurrentWav, WAVBUFFER, p, bufferlength, &byteread, &sampleread);
 
         if (sampleread > 0)
         {
-            AVIStreamWrite(ptmp,slCurrentWav,sampleread,p,
-                bufferlength,
-                AVIIF_KEYFRAME,
-                NULL,
-                NULL);
+            AVIStreamWrite(ptmp, slCurrentWav, sampleread, p, bufferlength, AVIIF_KEYFRAME, NULL, NULL);
 
-            slCurrentWav+=sampleread;
-
+            slCurrentWav += sampleread;
         }
         else
             break;
-
     }
     AVIStreamRelease(ptmp);
     return 0;
 }
 
-//return <=0 if fails / no conversion
+// return <=0 if fails / no conversion
 int ConvertFileToPCM(CString infilename, CString outfilename, LPWAVEFORMATEX lpFormat)
 {
-    HCURSOR  hcur;
+    HCURSOR hcur;
     hcur = SetCursor(LoadCursor(NULL, IDC_WAIT));
     ShowCursor(TRUE);
 
@@ -7066,10 +7241,10 @@ int ConvertFileToPCM(CString infilename, CString outfilename, LPWAVEFORMATEX lpF
     return retval;
 }
 
-//Using this function assumes we have checked giFirstAudio stream is non PCM
+// Using this function assumes we have checked giFirstAudio stream is non PCM
 PAVISTREAM ConvertFirstAudioStream(LPWAVEFORMATEX lpFormat)
 {
-    if (giFirstAudio<0)
+    if (giFirstAudio < 0)
         return NULL;
 
     tempfile1 = "";
@@ -7083,18 +7258,19 @@ PAVISTREAM ConvertFirstAudioStream(LPWAVEFORMATEX lpFormat)
 
     SaveFirstAudioToFile(infilename);
 
-    int retval = ConvertFileToPCM(infilename, outfilename,  lpFormat);
-    if (retval<=0) return NULL;
+    int retval = ConvertFileToPCM(infilename, outfilename, lpFormat);
+    if (retval <= 0)
+        return NULL;
 
     tempfile1 = infilename;
     tempfile2 = outfilename;
 
     PAVISTREAM pstm;
 
-    if (AVIFileOpen(&PCMConvertedFile,LPCTSTR(outfilename),OF_READ | OF_SHARE_DENY_NONE,NULL)!=0)
+    if (AVIFileOpen(&PCMConvertedFile, LPCTSTR(outfilename), OF_READ | OF_SHARE_DENY_NONE, NULL) != 0)
         return NULL;
 
-    if (AVIFileGetStream(PCMConvertedFile,&pstm,0,0)!=0)
+    if (AVIFileGetStream(PCMConvertedFile, &pstm, 0, 0) != 0)
         return NULL;
 
     return pstm;
@@ -7106,13 +7282,11 @@ void cleanTempFile()
     {
         AVIStreamRelease(PCMConvertedStream);
         PCMConvertedStream = NULL;
-
     }
     if (PCMConvertedFile)
     {
         AVIFileRelease(PCMConvertedFile);
         PCMConvertedFile = NULL;
-
     }
     if (tempfile1 != "")
         DeleteFile(tempfile1);
@@ -7122,11 +7296,12 @@ void cleanTempFile()
 }
 
 // Produces a 100% Valid XHTML Strict document to display the flash file, which works in all browsers (even IE 4)
-void produceFlashHTML(CString htmlfilename, CString flashfilename, CString flashfilepath, int onlyflashtag, int width, int height,int bk_red, int bk_green, int bk_blue)
+void produceFlashHTML(CString htmlfilename, CString flashfilename, CString flashfilepath, int onlyflashtag, int width,
+                      int height, int bk_red, int bk_green, int bk_blue)
 {
     COLORREF bkcolor = RGB(bk_blue, bk_green, bk_red);
 
-    FILE * htmlfile = NULL;
+    FILE *htmlfile = NULL;
 
     htmlfile = fopen(LPCTSTR(htmlfilename), "wt");
     if (!htmlfile)
@@ -7152,12 +7327,15 @@ void produceFlashHTML(CString htmlfilename, CString flashfilename, CString flash
         fprintf(htmlfile, "<body>\n");
         fprintf(htmlfile, "<div>\n");
     }
-    
-    fprintf(htmlfile, "<object id=\"movie\" type=\"application/x-shockwave-flash\" data=\"%s\">\n", LPCTSTR(flashfilename));
+
+    fprintf(htmlfile, "<object id=\"movie\" type=\"application/x-shockwave-flash\" data=\"%s\">\n",
+            LPCTSTR(flashfilename));
     fprintf(htmlfile, "\t<param name=\"movie\" value=\"%s\" />\n", LPCTSTR(flashfilename));
     fprintf(htmlfile, "\t<param name=\"quality\" value=\"high\" />\n");
     fprintf(htmlfile, "\t<param name=\"bgcolor\" value=\"#%x\" />\n", bkcolor);
-    fprintf(htmlfile, "\t<p>You do not have the latest version of Flash installed. Please visit this link to download it: <a href=\"http://www.adobe.com/products/flashplayer/\">http://www.adobe.com/products/flashplayer/</a></p>\n");
+    fprintf(htmlfile,
+            "\t<p>You do not have the latest version of Flash installed. Please visit this link to download it: <a "
+            "href=\"http://www.adobe.com/products/flashplayer/\">http://www.adobe.com/products/flashplayer/</a></p>\n");
     fprintf(htmlfile, "</object>\n");
 
     if (!onlyflashtag)
@@ -7172,148 +7350,152 @@ void produceFlashHTML(CString htmlfilename, CString flashfilename, CString flash
 
 void LoadSettings()
 {
-    //Do not load saved settings for now
+    // Do not load saved settings for now
     //    if (runmode==0)
     //        return;
 
-    //if runmode==2 (batch mode...attempt to load settings)
+    // if runmode==2 (batch mode...attempt to load settings)
 
-    FILE * sFile;
-    CString setDir,setPath;
+    FILE *sFile;
+    CString setDir, setPath;
     CString fileName;
 
     //********************************************
-    //Loading CamProducer.ini for storing text data
+    // Loading CamProducer.ini for storing text data
     //********************************************
     if (runmode == 0 || runmode == 1)
-        fileName="\\CamStudio.Producer.ini";
+        fileName = "\\CamStudio.Producer.ini";
 
-    setDir=GetAppDataPath();
-    setPath=setDir+fileName;
+    setDir = GetAppDataPath();
+    setPath = setDir + fileName;
 
-    sFile = fopen(LPCTSTR(setPath),"rt");
-    if (sFile == NULL) {
-       setDir=GetProgPath();
-       setPath=setDir+fileName;
+    sFile = fopen(LPCTSTR(setPath), "rt");
+    if (sFile == NULL)
+    {
+        setDir = GetProgPath();
+        setPath = setDir + fileName;
 
-       sFile = fopen(LPCTSTR(setPath),"rt");
-       if (sFile == NULL) {
-           return;
-      }
+        sFile = fopen(LPCTSTR(setPath), "rt");
+        if (sFile == NULL)
+        {
+            return;
+        }
     }
     // ****************************
     // Read Variables
     // ****************************
 
-    //char sdata[1000];
-    float ver=1.0;
+    // char sdata[1000];
+    float ver = 1.0;
 
-    fscanf(sFile, "[ CamStudio Flash Producer Settings ver%f -- Please do not edit ] \n\n",&ver);
+    fscanf(sFile, "[ CamStudio Flash Producer Settings ver%f -- Please do not edit ] \n\n", &ver);
 
     int swfnameLen = 0;
     int swfhtmlnameLen = 0;
     int swfbasenameLen = 0;
-    //int avifilenameLen = 0;
+    // int avifilenameLen = 0;
 
-    //Ver 1.0
-    if (ver>=0.99999)    {
-        //Important Variables
+    // Ver 1.0
+    if (ver >= 0.99999)
+    {
+        // Important Variables
 
-        //fscanf(sFile, "avifilenameLen = %d \n",&avifilenameLen);
+        // fscanf(sFile, "avifilenameLen = %d \n",&avifilenameLen);
 
-        fscanf(sFile, "usePercent = %d \n",&usePercent);
+        fscanf(sFile, "usePercent = %d \n", &usePercent);
 
-        fscanf(sFile, "useHalfKey = %d \n",&useHalfKey);
-        fscanf(sFile, "keyframerate = %d \n",&keyframerate);
-        fscanf(sFile, "Max_HalfKeyDepth = %d \n",&Max_HalfKeyDepth);
+        fscanf(sFile, "useHalfKey = %d \n", &useHalfKey);
+        fscanf(sFile, "keyframerate = %d \n", &keyframerate);
+        fscanf(sFile, "Max_HalfKeyDepth = %d \n", &Max_HalfKeyDepth);
 
-        fscanf(sFile, "FrameOffsetX = %d \n",&FrameOffsetX);
-        fscanf(sFile, "FrameOffsetY = %d \n",&FrameOffsetY);
+        fscanf(sFile, "FrameOffsetX = %d \n", &FrameOffsetX);
+        fscanf(sFile, "FrameOffsetY = %d \n", &FrameOffsetY);
 
-        fscanf(sFile, "useAudio = %d \n",&useAudio);
-        fscanf(sFile, "useAudioCompression = %d \n",&useAudioCompression);
-        fscanf(sFile, "useMP3 = %d \n",&useMP3);
-        fscanf(sFile, "mp3volume = %d \n",&mp3volume);
+        fscanf(sFile, "useAudio = %d \n", &useAudio);
+        fscanf(sFile, "useAudioCompression = %d \n", &useAudioCompression);
+        fscanf(sFile, "useMP3 = %d \n", &useMP3);
+        fscanf(sFile, "mp3volume = %d \n", &mp3volume);
 
-        fscanf(sFile, "sampleFPS = %d \n",&sampleFPS);
-        fscanf(sFile, "convertBits = %d \n",&convertBits);
+        fscanf(sFile, "sampleFPS = %d \n", &sampleFPS);
+        fscanf(sFile, "convertBits = %d \n", &convertBits);
 
-        fscanf(sFile, "noLoop = %d \n",&noLoop);
-        fscanf(sFile, "noAutoPlay = %d \n",&noAutoPlay);
-        fscanf(sFile, "addControls = %d \n",&addControls);
-        fscanf(sFile, "controlsWidth = %d \n",&controlsWidth);
-        fscanf(sFile, "controlsHeight = %d \n",&controlsHeight);
+        fscanf(sFile, "noLoop = %d \n", &noLoop);
+        fscanf(sFile, "noAutoPlay = %d \n", &noAutoPlay);
+        fscanf(sFile, "addControls = %d \n", &addControls);
+        fscanf(sFile, "controlsWidth = %d \n", &controlsWidth);
+        fscanf(sFile, "controlsHeight = %d \n", &controlsHeight);
 
-        fscanf(sFile, "adpcmBPS = %d \n",&adpcmBPS);
-        fscanf(sFile, "launchPropPrompt = %d \n",&launchPropPrompt);
-        fscanf(sFile, "launchHTMLPlayer = %d \n",&launchHTMLPlayer);
+        fscanf(sFile, "adpcmBPS = %d \n", &adpcmBPS);
+        fscanf(sFile, "launchPropPrompt = %d \n", &launchPropPrompt);
+        fscanf(sFile, "launchHTMLPlayer = %d \n", &launchHTMLPlayer);
 
-        fscanf(sFile, "swfnameLen = %d \n",&swfnameLen);
-        fscanf(sFile, "swfhtmlnameLen = %d \n",&swfhtmlnameLen);
-        fscanf(sFile, "swfbasenameLen = %d \n",&swfbasenameLen);
-        fscanf(sFile, "onlyflashtag = %d \n",&onlyflashtag);
+        fscanf(sFile, "swfnameLen = %d \n", &swfnameLen);
+        fscanf(sFile, "swfhtmlnameLen = %d \n", &swfhtmlnameLen);
+        fscanf(sFile, "swfbasenameLen = %d \n", &swfbasenameLen);
+        fscanf(sFile, "onlyflashtag = %d \n", &onlyflashtag);
 
-        //Lesser Variables
+        // Lesser Variables
 
-        fscanf(sFile, "PercentThreshold = %f \n",&PercentThreshold);
-        fscanf(sFile, "HalfKeyThreshold = %f \n",&HalfKeyThreshold);
+        fscanf(sFile, "PercentThreshold = %f \n", &PercentThreshold);
+        fscanf(sFile, "HalfKeyThreshold = %f \n", &HalfKeyThreshold);
 
-        fscanf(sFile, "blocksize_x = %d \n",&blocksize_x);
-        fscanf(sFile, "blocksize_y = %d \n",&blocksize_y);
-        fscanf(sFile, "numblocks_x = %d \n",&numblocks_x);
-        fscanf(sFile, "numblocks_y = %d \n",&numblocks_y);
-        fscanf(sFile, "expandArea = %d \n",&expandArea);
-        fscanf(sFile, "expandThickness = %d \n",&expandThickness);
+        fscanf(sFile, "blocksize_x = %d \n", &blocksize_x);
+        fscanf(sFile, "blocksize_y = %d \n", &blocksize_y);
+        fscanf(sFile, "numblocks_x = %d \n", &numblocks_x);
+        fscanf(sFile, "numblocks_y = %d \n", &numblocks_y);
+        fscanf(sFile, "expandArea = %d \n", &expandArea);
+        fscanf(sFile, "expandThickness = %d \n", &expandThickness);
 
-        fscanf(sFile, "MatrixOffsetX = %d \n",&MatrixOffsetX);
-        fscanf(sFile, "MatrixOffsetY = %d \n",&MatrixOffsetY);
-        fscanf(sFile, "MoveOffsetX = %d \n",&MoveOffsetX);
-        fscanf(sFile, "MoveOffsetY = %d \n",&MoveOffsetY);
+        fscanf(sFile, "MatrixOffsetX = %d \n", &MatrixOffsetX);
+        fscanf(sFile, "MatrixOffsetY = %d \n", &MatrixOffsetY);
+        fscanf(sFile, "MoveOffsetX = %d \n", &MoveOffsetX);
+        fscanf(sFile, "MoveOffsetY = %d \n", &MoveOffsetY);
 
-        fscanf(sFile, "KeyFrameDepth = %d \n",&KeyFrameDepth);
-        fscanf(sFile, "HalfKeyDepthBase = %d \n",&HalfKeyDepthBase);
-        fscanf(sFile, "IFrameDepth = %d \n",&IFrameDepth);
-        fscanf(sFile, "ObjectDepth = %d \n",&ObjectDepth);
+        fscanf(sFile, "KeyFrameDepth = %d \n", &KeyFrameDepth);
+        fscanf(sFile, "HalfKeyDepthBase = %d \n", &HalfKeyDepthBase);
+        fscanf(sFile, "IFrameDepth = %d \n", &IFrameDepth);
+        fscanf(sFile, "ObjectDepth = %d \n", &ObjectDepth);
 
-        fscanf(sFile, "swfbar_red = %d \n",&swfbar_red);
-        fscanf(sFile, "swfbar_green = %d \n",&swfbar_green);
-        fscanf(sFile, "swfbar_blue = %d \n",&swfbar_blue);
+        fscanf(sFile, "swfbar_red = %d \n", &swfbar_red);
+        fscanf(sFile, "swfbar_green = %d \n", &swfbar_green);
+        fscanf(sFile, "swfbar_blue = %d \n", &swfbar_blue);
 
-        fscanf(sFile, "swfbk_red = %d \n",&swfbk_red);
-        fscanf(sFile, "swfbk_green = %d \n",&swfbk_green);
-        fscanf(sFile, "swfbk_blue = %d \n",&swfbk_blue);
+        fscanf(sFile, "swfbk_red = %d \n", &swfbk_red);
+        fscanf(sFile, "swfbk_green = %d \n", &swfbk_green);
+        fscanf(sFile, "swfbk_blue = %d \n", &swfbk_blue);
 
-        fscanf(sFile, "swf_bits_per_sample = %d \n",&swf_bits_per_sample);
-        fscanf(sFile, "swf_samples_per_seconds = %d \n",&swf_samples_per_seconds);
-        fscanf(sFile, "swf_num_channels = %d \n",&swf_num_channels);
+        fscanf(sFile, "swf_bits_per_sample = %d \n", &swf_bits_per_sample);
+        fscanf(sFile, "swf_samples_per_seconds = %d \n", &swf_samples_per_seconds);
+        fscanf(sFile, "swf_num_channels = %d \n", &swf_num_channels);
 
-        fscanf(sFile, "allowChaining = %d \n",&allowChaining);
-        fscanf(sFile, "freecharacter = %d \n",&freecharacter);
-        fscanf(sFile, "percentLoadedThreshold = %f \n",&percentLoadedThreshold);
+        fscanf(sFile, "allowChaining = %d \n", &allowChaining);
+        fscanf(sFile, "freecharacter = %d \n", &freecharacter);
+        fscanf(sFile, "percentLoadedThreshold = %f \n", &percentLoadedThreshold);
 
-        fscanf(sFile, "addPreloader = %d \n",&addPreloader);
-        fscanf(sFile, "applyPreloaderToSplitFiles = %d \n",&applyPreloaderToSplitFiles);
-        fscanf(sFile, "produceRaw = %d \n",&produceRaw);
-
+        fscanf(sFile, "addPreloader = %d \n", &addPreloader);
+        fscanf(sFile, "applyPreloaderToSplitFiles = %d \n", &applyPreloaderToSplitFiles);
+        fscanf(sFile, "produceRaw = %d \n", &produceRaw);
     }
     fclose(sFile);
 
     //********************************************
-    //Loading Camdata.ini  binary data
+    // Loading Camdata.ini  binary data
     //********************************************
-    FILE * tFile;
-    if (runmode==0)
-        fileName="\\CamStudio.Producer.Data.ini";
+    FILE *tFile;
+    if (runmode == 0)
+        fileName = "\\CamStudio.Producer.Data.ini";
     else
-        fileName="\\CamStudio.Producer.Data.command"; //command line mode
-    setDir=GetAppDataPath();
-    setPath=setDir+fileName;
+        fileName = "\\CamStudio.Producer.Data.command"; // command line mode
+    setDir = GetAppDataPath();
+    setPath = setDir + fileName;
 
-    tFile = fopen(LPCTSTR(setPath),"rb");
-    if (tFile == NULL) {
+    tFile = fopen(LPCTSTR(setPath), "rb");
+    if (tFile == NULL)
+    {
         return;
     }
-    if (ver> 0.999999)    { //ver 1.0
+    if (ver > 0.999999)
+    { // ver 1.0
 
         // ****************************
         // Load Binary Data
@@ -7345,8 +7527,9 @@ void LoadSettings()
         }
         */
 
-        //ver 1.2
-        if (ver>1.199999) {
+        // ver 1.2
+        if (ver > 1.199999)
+        {
         }
     }
     fclose(tFile);
@@ -7354,211 +7537,212 @@ void LoadSettings()
 
 void SaveController()
 {
-    FILE * sFile;
-    CString setDir,setPath;
+    FILE *sFile;
+    CString setDir, setPath;
     CString fileName;
 
-    fileName="\\controller\\controller.ini";
-    setDir=GetAppDataPath();
-    setPath=setDir+fileName;
+    fileName = "\\controller\\controller.ini";
+    setDir = GetAppDataPath();
+    setPath = setDir + fileName;
 
-    sFile = fopen(LPCTSTR(setPath),"wt");
-    if (sFile == NULL) {
+    sFile = fopen(LPCTSTR(setPath), "wt");
+    if (sFile == NULL)
+    {
         return;
     }
     // ****************************
     // Write Variables
     // ****************************
 
-    float ver=1.0;
+    float ver = 1.0;
 
-    fprintf(sFile, "[ CamStudio Controller Settings ver%.2f ] \n\n",ver);
+    fprintf(sFile, "[ CamStudio Controller Settings ver%.2f ] \n\n", ver);
 
-    //Ver 1.0
+    // Ver 1.0
     {
-        fprintf(sFile, "Spacing_Between_Buttons_X = %d \n",ButtonSpaceX);
-        fprintf(sFile, "Spacing_Between_Controller_And_Movie_Y = %d \n",ButtonSpaceY);
-        fprintf(sFile, "Shift_LR_Pieces_Down_By_Y = %d \n",PieceOffsetY);
-        fprintf(sFile, "Spacing_Between_ProgressBar_And_Movie_Y = %d \n",ProgressOffsetY);
+        fprintf(sFile, "Spacing_Between_Buttons_X = %d \n", ButtonSpaceX);
+        fprintf(sFile, "Spacing_Between_Controller_And_Movie_Y = %d \n", ButtonSpaceY);
+        fprintf(sFile, "Shift_LR_Pieces_Down_By_Y = %d \n", PieceOffsetY);
+        fprintf(sFile, "Spacing_Between_ProgressBar_And_Movie_Y = %d \n", ProgressOffsetY);
 
-        fprintf(sFile, "Draw_Left_Piece = %d \n",yes_drawLeftPiece);
-        fprintf(sFile, "Draw_Right_Piece = %d \n",yes_drawRightPiece);
-        fprintf(sFile, "Draw_Stop_Button = %d \n",yes_drawStopButton);
+        fprintf(sFile, "Draw_Left_Piece = %d \n", yes_drawLeftPiece);
+        fprintf(sFile, "Draw_Right_Piece = %d \n", yes_drawRightPiece);
+        fprintf(sFile, "Draw_Stop_Button = %d \n", yes_drawStopButton);
 
-        fprintf(sFile, "Full_Controller_Width = %d \n",ControllerWidth);
-        fprintf(sFile, "Controller_Alignment = %d \n",ControllerAlignment);
-
+        fprintf(sFile, "Full_Controller_Width = %d \n", ControllerWidth);
+        fprintf(sFile, "Controller_Alignment = %d \n", ControllerAlignment);
     }
     fclose(sFile);
 }
 
 void LoadController()
 {
-    FILE * sFile;
-    CString setDir,setPath;
+    FILE *sFile;
+    CString setDir, setPath;
     CString fileName;
 
-    fileName="\\controller\\controller.ini";
-    setDir=GetAppDataPath();
-    setPath=setDir+fileName;
+    fileName = "\\controller\\controller.ini";
+    setDir = GetAppDataPath();
+    setPath = setDir + fileName;
 
-    sFile = fopen(LPCTSTR(setPath),"rt");
-    if (sFile == NULL) {
+    sFile = fopen(LPCTSTR(setPath), "rt");
+    if (sFile == NULL)
+    {
         return;
     }
     // ****************************
     // Write Variables
     // ****************************
 
-    float ver=1.0;
+    float ver = 1.0;
 
-    fscanf(sFile, "[ CamStudio Controller Settings ver%f ] \n\n",&ver);
+    fscanf(sFile, "[ CamStudio Controller Settings ver%f ] \n\n", &ver);
 
-    //Ver 1.0
+    // Ver 1.0
     if (ver > 0.99)
     {
-        fscanf(sFile, "Spacing_Between_Buttons_X = %d \n",&ButtonSpaceX);
-        fscanf(sFile, "Spacing_Between_Controller_And_Movie_Y = %d \n",&ButtonSpaceY);
-        fscanf(sFile, "Shift_LR_Pieces_Down_By_Y = %d \n",&PieceOffsetY);
-        fscanf(sFile, "Spacing_Between_ProgressBar_And_Movie_Y = %d \n",&ProgressOffsetY);
+        fscanf(sFile, "Spacing_Between_Buttons_X = %d \n", &ButtonSpaceX);
+        fscanf(sFile, "Spacing_Between_Controller_And_Movie_Y = %d \n", &ButtonSpaceY);
+        fscanf(sFile, "Shift_LR_Pieces_Down_By_Y = %d \n", &PieceOffsetY);
+        fscanf(sFile, "Spacing_Between_ProgressBar_And_Movie_Y = %d \n", &ProgressOffsetY);
 
-        fscanf(sFile, "Draw_Left_Piece = %d \n",&yes_drawLeftPiece);
-        fscanf(sFile, "Draw_Right_Piece = %d \n",&yes_drawRightPiece);
-        fscanf(sFile, "Draw_Stop_Button = %d \n",&yes_drawStopButton);
+        fscanf(sFile, "Draw_Left_Piece = %d \n", &yes_drawLeftPiece);
+        fscanf(sFile, "Draw_Right_Piece = %d \n", &yes_drawRightPiece);
+        fscanf(sFile, "Draw_Stop_Button = %d \n", &yes_drawStopButton);
 
-        fscanf(sFile, "Full_Controller_Width = %d \n",&ControllerWidth);
-        fscanf(sFile, "Controller_Alignment = %d \n",&ControllerAlignment);
-
+        fscanf(sFile, "Full_Controller_Width = %d \n", &ControllerWidth);
+        fscanf(sFile, "Controller_Alignment = %d \n", &ControllerAlignment);
     }
     fclose(sFile);
 }
 
 void SaveSettings()
 {
-    FILE * sFile;
-    CString setDir,setPath;
+    FILE *sFile;
+    CString setDir, setPath;
     CString fileName;
 
     //********************************************
-    //Saving CamProducer.ini for storing text data
+    // Saving CamProducer.ini for storing text data
     //********************************************
 
-    fileName="\\CamStudio.Producer.ini";
-    setDir=GetAppDataPath();
-    setPath=setDir+fileName;
+    fileName = "\\CamStudio.Producer.ini";
+    setDir = GetAppDataPath();
+    setPath = setDir + fileName;
 
-    sFile = fopen(LPCTSTR(setPath),"wt");
-    if (sFile == NULL) {
+    sFile = fopen(LPCTSTR(setPath), "wt");
+    if (sFile == NULL)
+    {
         return;
     }
     // ****************************
     // Write Variables
     // ****************************
 
-    float ver=1.0;
+    float ver = 1.0;
 
-    fprintf(sFile, "[ CamStudio Flash Producer Settings ver%.2f -- Please do not edit ] \n\n",ver);
+    fprintf(sFile, "[ CamStudio Flash Producer Settings ver%.2f -- Please do not edit ] \n\n", ver);
 
-    //int swfnameLen = 0;
-    //int swfhtmlnameLen = 0;
-    //int swfbasenameLen = 0;
+    // int swfnameLen = 0;
+    // int swfhtmlnameLen = 0;
+    // int swfbasenameLen = 0;
 
-    //Ver 1.0
-    //if (ver>=0.99999)
+    // Ver 1.0
+    // if (ver>=0.99999)
     {
-        //Important Variables
-        //fprintf(sFile, "avifilenameLen = %d \n",avifilename.GetLength());
+        // Important Variables
+        // fprintf(sFile, "avifilenameLen = %d \n",avifilename.GetLength());
 
-        fprintf(sFile, "usePercent = %d \n",usePercent);
-        fprintf(sFile, "useHalfKey = %d \n",useHalfKey);
-        fprintf(sFile, "keyframerate = %d \n",keyframerate);
-        fprintf(sFile, "Max_HalfKeyDepth = %d \n",Max_HalfKeyDepth);
+        fprintf(sFile, "usePercent = %d \n", usePercent);
+        fprintf(sFile, "useHalfKey = %d \n", useHalfKey);
+        fprintf(sFile, "keyframerate = %d \n", keyframerate);
+        fprintf(sFile, "Max_HalfKeyDepth = %d \n", Max_HalfKeyDepth);
 
-        fprintf(sFile, "FrameOffsetX = %d \n",FrameOffsetX);
-        fprintf(sFile, "FrameOffsetY = %d \n",FrameOffsetY);
+        fprintf(sFile, "FrameOffsetX = %d \n", FrameOffsetX);
+        fprintf(sFile, "FrameOffsetY = %d \n", FrameOffsetY);
 
-        fprintf(sFile, "useAudio = %d \n",useAudio);
-        fprintf(sFile, "useAudioCompression = %d \n",useAudioCompression);
-        fprintf(sFile, "useMP3 = %d \n",useMP3);
-        fprintf(sFile, "mp3volume = %d \n",mp3volume);
+        fprintf(sFile, "useAudio = %d \n", useAudio);
+        fprintf(sFile, "useAudioCompression = %d \n", useAudioCompression);
+        fprintf(sFile, "useMP3 = %d \n", useMP3);
+        fprintf(sFile, "mp3volume = %d \n", mp3volume);
 
-        fprintf(sFile, "sampleFPS = %d \n",sampleFPS);
-        fprintf(sFile, "convertBits = %d \n",convertBits);
+        fprintf(sFile, "sampleFPS = %d \n", sampleFPS);
+        fprintf(sFile, "convertBits = %d \n", convertBits);
 
-        fprintf(sFile, "noLoop = %d \n",noLoop);
-        fprintf(sFile, "noAutoPlay = %d \n",noAutoPlay);
-        fprintf(sFile, "addControls = %d \n",addControls);
-        fprintf(sFile, "controlsWidth = %d \n",controlsWidth);
-        fprintf(sFile, "controlsHeight = %d \n",controlsHeight);
+        fprintf(sFile, "noLoop = %d \n", noLoop);
+        fprintf(sFile, "noAutoPlay = %d \n", noAutoPlay);
+        fprintf(sFile, "addControls = %d \n", addControls);
+        fprintf(sFile, "controlsWidth = %d \n", controlsWidth);
+        fprintf(sFile, "controlsHeight = %d \n", controlsHeight);
 
-        fprintf(sFile, "adpcmBPS = %d \n",adpcmBPS);
-        fprintf(sFile, "launchPropPrompt = %d \n",launchPropPrompt);
-        fprintf(sFile, "launchHTMLPlayer = %d \n",launchHTMLPlayer);
+        fprintf(sFile, "adpcmBPS = %d \n", adpcmBPS);
+        fprintf(sFile, "launchPropPrompt = %d \n", launchPropPrompt);
+        fprintf(sFile, "launchHTMLPlayer = %d \n", launchHTMLPlayer);
 
-        fprintf(sFile, "swfnameLen = %d \n",swfname.GetLength());
-        fprintf(sFile, "swfhtmlnameLen = %d \n",swfhtmlname.GetLength());
-        fprintf(sFile, "swfbasenameLen = %d \n",swfbasename.GetLength());
+        fprintf(sFile, "swfnameLen = %d \n", swfname.GetLength());
+        fprintf(sFile, "swfhtmlnameLen = %d \n", swfhtmlname.GetLength());
+        fprintf(sFile, "swfbasenameLen = %d \n", swfbasename.GetLength());
         fprintf(sFile, "onlyflashtag = %d \n", onlyflashtag);
 
-        //Lesser Variables
-        fprintf(sFile, "PercentThreshold = %f \n",PercentThreshold);
-        fprintf(sFile, "HalfKeyThreshold = %f \n",HalfKeyThreshold);
+        // Lesser Variables
+        fprintf(sFile, "PercentThreshold = %f \n", PercentThreshold);
+        fprintf(sFile, "HalfKeyThreshold = %f \n", HalfKeyThreshold);
 
-        fprintf(sFile, "blocksize_x = %d \n",blocksize_x);
-        fprintf(sFile, "blocksize_y = %d \n",blocksize_y);
-        fprintf(sFile, "numblocks_x = %d \n",numblocks_x);
-        fprintf(sFile, "numblocks_y = %d \n",numblocks_y);
-        fprintf(sFile, "expandArea = %d \n",expandArea);
-        fprintf(sFile, "expandThickness = %d \n",expandThickness);
+        fprintf(sFile, "blocksize_x = %d \n", blocksize_x);
+        fprintf(sFile, "blocksize_y = %d \n", blocksize_y);
+        fprintf(sFile, "numblocks_x = %d \n", numblocks_x);
+        fprintf(sFile, "numblocks_y = %d \n", numblocks_y);
+        fprintf(sFile, "expandArea = %d \n", expandArea);
+        fprintf(sFile, "expandThickness = %d \n", expandThickness);
 
-        fprintf(sFile, "MatrixOffsetX = %d \n",MatrixOffsetX);
-        fprintf(sFile, "MatrixOffsetY = %d \n",MatrixOffsetY);
-        fprintf(sFile, "MoveOffsetX = %d \n",MoveOffsetX);
-        fprintf(sFile, "MoveOffsetY = %d \n",MoveOffsetY);
+        fprintf(sFile, "MatrixOffsetX = %d \n", MatrixOffsetX);
+        fprintf(sFile, "MatrixOffsetY = %d \n", MatrixOffsetY);
+        fprintf(sFile, "MoveOffsetX = %d \n", MoveOffsetX);
+        fprintf(sFile, "MoveOffsetY = %d \n", MoveOffsetY);
 
-        fprintf(sFile, "KeyFrameDepth = %d \n",KeyFrameDepth);
-        fprintf(sFile, "HalfKeyDepthBase = %d \n",HalfKeyDepthBase);
-        fprintf(sFile, "IFrameDepth = %d \n",IFrameDepth);
-        fprintf(sFile, "ObjectDepth = %d \n",ObjectDepth);
+        fprintf(sFile, "KeyFrameDepth = %d \n", KeyFrameDepth);
+        fprintf(sFile, "HalfKeyDepthBase = %d \n", HalfKeyDepthBase);
+        fprintf(sFile, "IFrameDepth = %d \n", IFrameDepth);
+        fprintf(sFile, "ObjectDepth = %d \n", ObjectDepth);
 
-        fprintf(sFile, "swfbar_red = %d \n",swfbar_red);
-        fprintf(sFile, "swfbar_green = %d \n",swfbar_green);
-        fprintf(sFile, "swfbar_blue = %d \n",swfbar_blue);
+        fprintf(sFile, "swfbar_red = %d \n", swfbar_red);
+        fprintf(sFile, "swfbar_green = %d \n", swfbar_green);
+        fprintf(sFile, "swfbar_blue = %d \n", swfbar_blue);
 
-        fprintf(sFile, "swfbk_red = %d \n",swfbk_red);
-        fprintf(sFile, "swfbk_green = %d \n",swfbk_green);
-        fprintf(sFile, "swfbk_blue = %d \n",swfbk_blue);
+        fprintf(sFile, "swfbk_red = %d \n", swfbk_red);
+        fprintf(sFile, "swfbk_green = %d \n", swfbk_green);
+        fprintf(sFile, "swfbk_blue = %d \n", swfbk_blue);
 
-        fprintf(sFile, "swf_bits_per_sample = %d \n",swf_bits_per_sample);
-        fprintf(sFile, "swf_samples_per_seconds = %d \n",swf_samples_per_seconds);
-        fprintf(sFile, "swf_num_channels = %d \n",swf_num_channels);
+        fprintf(sFile, "swf_bits_per_sample = %d \n", swf_bits_per_sample);
+        fprintf(sFile, "swf_samples_per_seconds = %d \n", swf_samples_per_seconds);
+        fprintf(sFile, "swf_num_channels = %d \n", swf_num_channels);
 
-        fprintf(sFile, "allowChaining = %d \n",allowChaining);
-        fprintf(sFile, "freecharacter = %d \n",freecharacter);
-        fprintf(sFile, "percentLoadedThreshold = %.2f \n",percentLoadedThreshold);
+        fprintf(sFile, "allowChaining = %d \n", allowChaining);
+        fprintf(sFile, "freecharacter = %d \n", freecharacter);
+        fprintf(sFile, "percentLoadedThreshold = %.2f \n", percentLoadedThreshold);
 
-        fprintf(sFile, "addPreloader = %d \n",addPreloader);
-        fprintf(sFile, "applyPreloaderToSplitFiles = %d \n",applyPreloaderToSplitFiles);
-        fprintf(sFile, "produceRaw = %d \n",produceRaw);
-
+        fprintf(sFile, "addPreloader = %d \n", addPreloader);
+        fprintf(sFile, "applyPreloaderToSplitFiles = %d \n", applyPreloaderToSplitFiles);
+        fprintf(sFile, "produceRaw = %d \n", produceRaw);
     }
     fclose(sFile);
 
     //********************************************
-    //Saving Camdata.ini  binary data
+    // Saving Camdata.ini  binary data
     //********************************************
-    FILE * tFile;
-    fileName="\\CamStudio.Producer.Data.ini";
+    FILE *tFile;
+    fileName = "\\CamStudio.Producer.Data.ini";
 
-    setDir=GetAppDataPath();
-    setPath=setDir+fileName;
+    setDir = GetAppDataPath();
+    setPath = setDir + fileName;
 
-    tFile = fopen(LPCTSTR(setPath),"wb");
-    if (tFile == NULL) {
+    tFile = fopen(LPCTSTR(setPath), "wb");
+    if (tFile == NULL)
+    {
         return;
     }
-    //if (ver> 0.999999)
-    { //ver 1.0
+    // if (ver> 0.999999)
+    { // ver 1.0
 
         // ****************************
         // Save Binary Data
@@ -7578,14 +7762,15 @@ void SaveSettings()
         }
         */
 
-        //ver 1.2
-        if (ver>1.199999) {
+        // ver 1.2
+        if (ver > 1.199999)
+        {
         }
     }
     fclose(tFile);
 }
 
-//ver 2.25
+// ver 2.25
 void CPlayplusView::OnConvert()
 {
     // TODO: Add your command handler code here
@@ -7603,38 +7788,38 @@ void CPlayplusView::OnConvert()
     convertMode = 0;
 }
 
-int MessageOut(HWND hWnd,long strMsg, long strTitle, UINT mbstatus)
+int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus)
 {
     CString tstr("");
     CString mstr("");
-    tstr.LoadString( strTitle );
-    mstr.LoadString( strMsg );
+    tstr.LoadString(strTitle);
+    mstr.LoadString(strMsg);
 
-    return ::MessageBox(hWnd,mstr,tstr,mbstatus);
+    return ::MessageBox(hWnd, mstr, tstr, mbstatus);
 }
 
-int MessageOutINT(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val)
+int MessageOutINT(HWND hWnd, long strMsg, long strTitle, UINT mbstatus, long val)
 {
     CString tstr("");
     CString mstr("");
     CString fstr("");
-    tstr.LoadString( strTitle );
-    mstr.LoadString( strMsg );
-    fstr.Format(mstr,val);
+    tstr.LoadString(strTitle);
+    mstr.LoadString(strMsg);
+    fstr.Format(mstr, val);
 
-    return ::MessageBox(hWnd,fstr,tstr,mbstatus);
+    return ::MessageBox(hWnd, fstr, tstr, mbstatus);
 }
 
-int MessageOutINT2(HWND hWnd,long strMsg, long strTitle, UINT mbstatus,long val1, long val2)
+int MessageOutINT2(HWND hWnd, long strMsg, long strTitle, UINT mbstatus, long val1, long val2)
 {
     CString tstr("");
     CString mstr("");
     CString fstr("");
-    tstr.LoadString( strTitle );
-    mstr.LoadString( strMsg );
-    fstr.Format(mstr,val1,val2);
+    tstr.LoadString(strTitle);
+    mstr.LoadString(strMsg);
+    fstr.Format(mstr, val1, val2);
 
-    return ::MessageBox(hWnd,fstr,tstr,mbstatus);
+    return ::MessageBox(hWnd, fstr, tstr, mbstatus);
 }
 
 void CPlayplusView::OnHelpHelp()
@@ -7650,20 +7835,20 @@ void AdjustOutName(CString avioutpath)
     swfname = avioutpath;
     int lenx = swfname.GetLength();
     //::MessageBox(NULL,swfname,"Adjust",MB_OK);
-    if ((5 <= lenx)
-        && ((swfname[lenx - 1] == 'i') || (swfname[lenx - 1] == 'I'))
-        && ((swfname[lenx - 2] == 'v') || (swfname[lenx - 2] == 'V'))
-        && ((swfname[lenx - 3] == 'a') || (swfname[lenx - 3] == 'A'))
-        && (swfname[lenx - 4] == '.'))
+    if ((5 <= lenx) && ((swfname[lenx - 1] == 'i') || (swfname[lenx - 1] == 'I')) &&
+        ((swfname[lenx - 2] == 'v') || (swfname[lenx - 2] == 'V')) &&
+        ((swfname[lenx - 3] == 'a') || (swfname[lenx - 3] == 'A')) && (swfname[lenx - 4] == '.'))
     {
-        swfname.SetAt(lenx - 1,'f');
-        swfname.SetAt(lenx - 2,'w');
-        swfname.SetAt(lenx - 3,'s');
-        swfname.SetAt(lenx - 4,'.');
+        swfname.SetAt(lenx - 1, 'f');
+        swfname.SetAt(lenx - 2, 'w');
+        swfname.SetAt(lenx - 3, 's');
+        swfname.SetAt(lenx - 4, '.');
 
-        swfbasename=swfname.Right(lenx - swfname.ReverseFind('\\') - 1);
+        swfbasename = swfname.Right(lenx - swfname.ReverseFind('\\') - 1);
         swfhtmlname = swfname + ".html";
-    } else {
+    }
+    else
+    {
         swfname += ".swf";
         swfhtmlname = swfname + ".html";
         swfbasename = swfname.Right(lenx - swfname.ReverseFind('\\') - 1);
@@ -7672,54 +7857,56 @@ void AdjustOutName(CString avioutpath)
 
 void LoadCommand()
 {
-    CString fileName = "\\CamStudio.Producer.command";    //command line mode
+    CString fileName = "\\CamStudio.Producer.command"; // command line mode
     CString setDir = GetAppDataPath();
     CString setPath = setDir + fileName;
-    FILE * sFile = fopen(LPCTSTR(setPath), "rt");
-    if (sFile == NULL) {
-      setDir = GetProgPath();
-       setPath = setDir + fileName;
-       sFile = fopen(LPCTSTR(setPath), "rt");
-       if (sFile == NULL) {
-           return;
-       }
+    FILE *sFile = fopen(LPCTSTR(setPath), "rt");
+    if (sFile == NULL)
+    {
+        setDir = GetProgPath();
+        setPath = setDir + fileName;
+        sFile = fopen(LPCTSTR(setPath), "rt");
+        if (sFile == NULL)
+        {
+            return;
+        }
     }
     // ****************************
     // Read Variables
     // ****************************
 
-    float ver=1.0;
+    float ver = 1.0;
 
-    //Debugging info
-    //The use of scanf("%.2f") instead of scanf("%f") results in hard-to-detect bugs
-   //This is iffy and fails on some OSs. THe profile API is used to write stuff out, it should also
-   //be used to read it back.
-    //fscanf(sFile,"[CamStudio Flash Producer Commands ver%f]",&ver);
-    //fscanf(sFile,"LaunchPropPrompt=%d",&launchPropPrompt);
-    //fscanf(sFile,"LaunchHTMLPlayer=%d",&launchHTMLPlayer);
-    //fscanf(sFile,"DeleteAVIAfterUse=%d",&deleteAVIAfterUse);
+    // Debugging info
+    // The use of scanf("%.2f") instead of scanf("%f") results in hard-to-detect bugs
+    // This is iffy and fails on some OSs. THe profile API is used to write stuff out, it should also
+    // be used to read it back.
+    // fscanf(sFile,"[CamStudio Flash Producer Commands ver%f]",&ver);
+    // fscanf(sFile,"LaunchPropPrompt=%d",&launchPropPrompt);
+    // fscanf(sFile,"LaunchHTMLPlayer=%d",&launchHTMLPlayer);
+    // fscanf(sFile,"DeleteAVIAfterUse=%d",&deleteAVIAfterUse);
     fclose(sFile);
 
-     CString strSection = _T("CamStudio Flash Producer Commands");
-   const int retStringSize = 300;
-   _TCHAR retString[retStringSize]; retString[0] = 0;
+    CString strSection = _T("CamStudio Flash Producer Commands");
+    const int retStringSize = 300;
+    _TCHAR retString[retStringSize];
+    retString[0] = 0;
     CString strValue;
 
     CString strKey = _T("LaunchPropPrompt");
-   ::GetPrivateProfileString(strSection, strKey, 0, retString, retStringSize, setPath);
-   strValue = retString;
+    ::GetPrivateProfileString(strSection, strKey, 0, retString, retStringSize, setPath);
+    strValue = retString;
     launchPropPrompt = _ttoi(strValue);
 
     strKey = _T("LaunchHTMLPlayer");
-   ::GetPrivateProfileString(strSection, strKey, 0, retString, retStringSize, setPath);
-   strValue = retString;
+    ::GetPrivateProfileString(strSection, strKey, 0, retString, retStringSize, setPath);
+    strValue = retString;
     launchHTMLPlayer = _ttoi(strValue);
 
     strKey = _T("DeleteAVIAfterUse");
-   ::GetPrivateProfileString(strSection, strKey, 0, retString, retStringSize, setPath);
-   strValue = retString;
+    ::GetPrivateProfileString(strSection, strKey, 0, retString, retStringSize, setPath);
+    strValue = retString;
     deleteAVIAfterUse = _ttoi(strValue);
-
 }
 
 LPBITMAPINFOHEADER LoadBitmapFile(CString bitmapFile)
@@ -7727,35 +7914,35 @@ LPBITMAPINFOHEADER LoadBitmapFile(CString bitmapFile)
     LPBITMAPINFOHEADER alpbi = NULL;
     CPicture picture;
 
-    if (picture.Load(bitmapFile)) {
+    if (picture.Load(bitmapFile))
+    {
         HBITMAP hbitmap = NULL;
-        if (picture.m_IPicture->get_Handle( (unsigned int *) &hbitmap ) == S_OK )
+        if (picture.m_IPicture->get_Handle((unsigned int *)&hbitmap) == S_OK)
         {
             alpbi = (LPBITMAPINFOHEADER)GlobalLock(Bitmap2Dib(hbitmap, 32));
-
         }
         else
         {
             alpbi = NULL;
-
         }
     }
     return alpbi;
 }
 
-int CreateFlashBitmapPlayButton(std::ostringstream &f,int /*imagewidth*/, int imageheight, CString subdir,int imageoffset)
+int CreateFlashBitmapPlayButton(std::ostringstream &f, int /*imagewidth*/, int imageheight, CString subdir,
+                                int imageoffset)
 {
     LPBITMAPINFOHEADER alpbi = NULL;
     LPBITMAPINFOHEADER alpbi2 = NULL;
 
-    CString bitmapFile,bitmapFile2;
+    CString bitmapFile, bitmapFile2;
     bitmapFile = GetProgPath() + subdir + "\\playbutton.bmp";
     bitmapFile2 = GetProgPath() + subdir + "\\playbutton2.bmp";
 
     alpbi = LoadBitmapFile(bitmapFile);
     alpbi2 = LoadBitmapFile(bitmapFile2);
 
-    int right=0;
+    int right = 0;
 
     if ((alpbi) && (alpbi2))
     {
@@ -7766,42 +7953,42 @@ int CreateFlashBitmapPlayButton(std::ostringstream &f,int /*imagewidth*/, int im
         int BITMAP_X, BITMAP_Y;
 
         {
-            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight,4, alpbi);
+            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight, 4, alpbi);
 
             BITMAP_X = alpbi->biWidth;
             BITMAP_Y = alpbi->biHeight;
 
-            //Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32+31)/32 * 4;
+            // Shape Up, Over
+            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
             int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; //32 bit
+            int format = 5; // 32 bit
 
-            FlashZLibBitmapData zdata((unsigned char *) bitmap,dwSize); //need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format,BITMAP_X, BITMAP_Y, zdata);
+            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
+            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
             f << bll;
 
             int left = imageoffset + ButtonSpaceX;
-            int top = imageheight+FrameOffsetY+ButtonSpaceY;
+            int top = imageheight + FrameOffsetY + ButtonSpaceY;
             right = left + BITMAP_X;
 
             FlashMatrix m;
-            m.SetScale(20,20);
-            m.SetTranslate((left-MatrixOffsetX)*20,(top-MatrixOffsetY)*20);
-            //m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
-            FlashFillStyleBitmap ffb(bll.GetID(),m);
+            m.SetScale(20, 20);
+            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
+            // m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
+            FlashFillStyleBitmap ffb(bll.GetID(), m);
 
             FlashFillStyleArray ffa;
             ffa.AddFillStyle(&ffb);
 
             FlashShapeWithStyle s;
-            FlashShapeRecordChange changerec,changerec2 ;
+            FlashShapeRecordChange changerec, changerec2;
             changerec.ChangeFillStyle1(1);
             s.AddRecord(changerec);
-            s.AddRecord(FlashShapeRecordChange(left*20,top*20));
-            s.AddRecord(FlashShapeRecordStraight(BITMAP_X*20,0*20));
-            s.AddRecord(FlashShapeRecordStraight(0*20,BITMAP_Y*20));
-            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X*20,0*20));
-            s.AddRecord(FlashShapeRecordStraight(0*20,-BITMAP_Y*20));
+            s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+            s.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
+            s.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
+            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
+            s.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
 
             s.SetFillStyleArray(ffa);
 
@@ -7809,48 +7996,47 @@ int CreateFlashBitmapPlayButton(std::ostringstream &f,int /*imagewidth*/, int im
             f << fsws;
 
             shapeUP_ID = fsws.GetID();
-
         }
         {
-            LPBYTE bitmap = makeReverse32(alpbi2->biWidth, alpbi2->biHeight,4, alpbi2);
+            LPBYTE bitmap = makeReverse32(alpbi2->biWidth, alpbi2->biHeight, 4, alpbi2);
 
             BITMAP_X = alpbi2->biWidth;
             BITMAP_Y = alpbi2->biHeight;
 
-            //Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32+31)/32 * 4;
+            // Shape Up, Over
+            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
             int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; //32 bit
+            int format = 5; // 32 bit
 
-            FlashZLibBitmapData zdata((unsigned char *) bitmap,dwSize); //need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format,BITMAP_X, BITMAP_Y, zdata);
+            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
+            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
             f << bll;
 
             int left = imageoffset + ButtonSpaceX;
-            int top = imageheight+FrameOffsetY+ButtonSpaceY;
+            int top = imageheight + FrameOffsetY + ButtonSpaceY;
             right = left + BITMAP_X;
 
-            //int left = 15;
-            //int top = 15;
+            // int left = 15;
+            // int top = 15;
 
             FlashMatrix m;
-            m.SetScale(20,20);
-            m.SetTranslate((left-MatrixOffsetX)*20,(top-MatrixOffsetY)*20);
-            //m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
-            FlashFillStyleBitmap ffb(bll.GetID(),m);
+            m.SetScale(20, 20);
+            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
+            // m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
+            FlashFillStyleBitmap ffb(bll.GetID(), m);
 
             FlashFillStyleArray ffa;
             ffa.AddFillStyle(&ffb);
 
             FlashShapeWithStyle s;
-            FlashShapeRecordChange changerec,changerec2 ;
+            FlashShapeRecordChange changerec, changerec2;
             changerec.ChangeFillStyle1(1);
             s.AddRecord(changerec);
-            s.AddRecord(FlashShapeRecordChange(left*20,top*20));
-            s.AddRecord(FlashShapeRecordStraight(BITMAP_X*20,0*20));
-            s.AddRecord(FlashShapeRecordStraight(0*20,BITMAP_Y*20));
-            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X*20,0*20));
-            s.AddRecord(FlashShapeRecordStraight(0*20,-BITMAP_Y*20));
+            s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+            s.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
+            s.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
+            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
+            s.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
 
             s.SetFillStyleArray(ffa);
 
@@ -7858,18 +8044,17 @@ int CreateFlashBitmapPlayButton(std::ostringstream &f,int /*imagewidth*/, int im
             f << fsws;
 
             shapeOVER_ID = fsws.GetID();
-
         }
         FlashMatrix m;
-        //m.SetScale(20,20);
+        // m.SetScale(20,20);
 
-        FlashColorTransform cfxUp , cfxOver , cfxDown ;
-        cfxUp.SetMultRGB(FlashRGB(256,256,256,200));
-        cfxOver.SetMultRGB(FlashRGB(256,256,256,256));
-        cfxDown.SetMultRGB(FlashRGB(256,256,256,256));
-        FlashButtonRecord brecUp(shapeUP_ID , playButtonDepth, FBR_UP, m, cfxUp);
-        FlashButtonRecord brecOver(shapeUP_ID, playButtonDepth, FBR_OVER  | FBR_HIT_TEST, m, cfxOver);
-        FlashButtonRecord brecDown(shapeOVER_ID, playButtonDepth, FBR_DOWN , m, cfxDown);
+        FlashColorTransform cfxUp, cfxOver, cfxDown;
+        cfxUp.SetMultRGB(FlashRGB(256, 256, 256, 200));
+        cfxOver.SetMultRGB(FlashRGB(256, 256, 256, 256));
+        cfxDown.SetMultRGB(FlashRGB(256, 256, 256, 256));
+        FlashButtonRecord brecUp(shapeUP_ID, playButtonDepth, FBR_UP, m, cfxUp);
+        FlashButtonRecord brecOver(shapeUP_ID, playButtonDepth, FBR_OVER | FBR_HIT_TEST, m, cfxOver);
+        FlashButtonRecord brecDown(shapeOVER_ID, playButtonDepth, FBR_DOWN, m, cfxDown);
 
         FlashTagDefineButton2 buttonPlay;
         FlashActionPlay playAction;
@@ -7880,17 +8065,16 @@ int CreateFlashBitmapPlayButton(std::ostringstream &f,int /*imagewidth*/, int im
         N_STD::vector<FlashActionRecord *> acrs;
         acrs.push_back(&playAction);
 
-        buttonPlay.AddActionRecords(acrs,SWFSOURCE_BST_OverUpToOverDown);
+        buttonPlay.AddActionRecords(acrs, SWFSOURCE_BST_OverUpToOverDown);
 
-        //FlashTagDefineButton buttonPlay;
-        //buttonPlay.AddButtonRecord(&brecUp);
-        //buttonPlay.AddButtonRecord(&brecOver);
+        // FlashTagDefineButton buttonPlay;
+        // buttonPlay.AddButtonRecord(&brecUp);
+        // buttonPlay.AddButtonRecord(&brecOver);
 
         f << buttonPlay;
 
         FlashTagPlaceObject2 po(playButtonDepth, buttonPlay.GetID());
         f << po;
-
     }
     if (alpbi)
         GlobalFreePtr(alpbi);
@@ -7901,19 +8085,20 @@ int CreateFlashBitmapPlayButton(std::ostringstream &f,int /*imagewidth*/, int im
     return right;
 }
 
-int CreateFlashBitmapPauseButton(std::ostringstream &f,int /*imagewidth*/, int imageheight, CString subdir,int imageoffset)
+int CreateFlashBitmapPauseButton(std::ostringstream &f, int /*imagewidth*/, int imageheight, CString subdir,
+                                 int imageoffset)
 {
     LPBITMAPINFOHEADER alpbi = NULL;
     LPBITMAPINFOHEADER alpbi2 = NULL;
 
-    CString bitmapFile,bitmapFile2;
+    CString bitmapFile, bitmapFile2;
     bitmapFile = GetProgPath() + subdir + "\\pausebutton.bmp";
     bitmapFile2 = GetProgPath() + subdir + "\\pausebutton2.bmp";
 
     alpbi = LoadBitmapFile(bitmapFile);
     alpbi2 = LoadBitmapFile(bitmapFile2);
 
-    int right=0;
+    int right = 0;
 
     if ((alpbi) && (alpbi2))
     {
@@ -7926,45 +8111,45 @@ int CreateFlashBitmapPauseButton(std::ostringstream &f,int /*imagewidth*/, int i
         int BITMAP_X, BITMAP_Y;
 
         {
-            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight,4, alpbi);
+            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight, 4, alpbi);
 
             BITMAP_X = alpbi->biWidth;
             BITMAP_Y = alpbi->biHeight;
 
-            //Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32+31)/32 * 4;
+            // Shape Up, Over
+            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
             int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; //32 bit
+            int format = 5; // 32 bit
 
-            FlashZLibBitmapData zdata((unsigned char *) bitmap,dwSize); //need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format,BITMAP_X, BITMAP_Y, zdata);
+            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
+            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
             f << bll;
 
             int left = imageoffset + ButtonSpaceX;
-            int top = imageheight+FrameOffsetY+ButtonSpaceY;
+            int top = imageheight + FrameOffsetY + ButtonSpaceY;
             right = left + BITMAP_X;
 
-            //int left = 15;
-            //int top = 15;
+            // int left = 15;
+            // int top = 15;
 
             FlashMatrix m;
-            m.SetScale(20,20);
-            m.SetTranslate((left-MatrixOffsetX)*20,(top-MatrixOffsetY)*20);
-            //m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
-            FlashFillStyleBitmap ffb(bll.GetID(),m);
+            m.SetScale(20, 20);
+            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
+            // m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
+            FlashFillStyleBitmap ffb(bll.GetID(), m);
 
             FlashFillStyleArray ffa;
             ffa.AddFillStyle(&ffb);
 
             FlashShapeWithStyle s;
-            FlashShapeRecordChange changerec,changerec2 ;
+            FlashShapeRecordChange changerec, changerec2;
             changerec.ChangeFillStyle1(1);
             s.AddRecord(changerec);
-            s.AddRecord(FlashShapeRecordChange(left*20,top*20));
-            s.AddRecord(FlashShapeRecordStraight(BITMAP_X*20,0*20));
-            s.AddRecord(FlashShapeRecordStraight(0*20,BITMAP_Y*20));
-            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X*20,0*20));
-            s.AddRecord(FlashShapeRecordStraight(0*20,-BITMAP_Y*20));
+            s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+            s.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
+            s.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
+            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
+            s.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
 
             s.SetFillStyleArray(ffa);
 
@@ -7972,44 +8157,43 @@ int CreateFlashBitmapPauseButton(std::ostringstream &f,int /*imagewidth*/, int i
             f << fsws;
 
             shapeUP_ID = fsws.GetID();
-
         }
         {
-            LPBYTE bitmap = makeReverse32(alpbi2->biWidth, alpbi2->biHeight,4, alpbi2);
+            LPBYTE bitmap = makeReverse32(alpbi2->biWidth, alpbi2->biHeight, 4, alpbi2);
 
             BITMAP_X = alpbi2->biWidth;
             BITMAP_Y = alpbi2->biHeight;
 
-            //Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32+31)/32 * 4;
+            // Shape Up, Over
+            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
             int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; //32 bit
+            int format = 5; // 32 bit
 
-            FlashZLibBitmapData zdata((unsigned char *) bitmap,dwSize); //need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format,BITMAP_X, BITMAP_Y, zdata);
+            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
+            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
             f << bll;
 
             int left = imageoffset + ButtonSpaceX;
-            int top = imageheight+FrameOffsetY+ButtonSpaceY;
+            int top = imageheight + FrameOffsetY + ButtonSpaceY;
             right = left + BITMAP_X;
 
             FlashMatrix m;
-            m.SetScale(20,20);
-            m.SetTranslate((left-MatrixOffsetX)*20,(top-MatrixOffsetY)*20);
-            FlashFillStyleBitmap ffb(bll.GetID(),m);
+            m.SetScale(20, 20);
+            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
+            FlashFillStyleBitmap ffb(bll.GetID(), m);
 
             FlashFillStyleArray ffa;
             ffa.AddFillStyle(&ffb);
 
             FlashShapeWithStyle s;
-            FlashShapeRecordChange changerec,changerec2 ;
+            FlashShapeRecordChange changerec, changerec2;
             changerec.ChangeFillStyle1(1);
             s.AddRecord(changerec);
-            s.AddRecord(FlashShapeRecordChange(left*20,top*20));
-            s.AddRecord(FlashShapeRecordStraight(BITMAP_X*20,0*20));
-            s.AddRecord(FlashShapeRecordStraight(0*20,BITMAP_Y*20));
-            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X*20,0*20));
-            s.AddRecord(FlashShapeRecordStraight(0*20,-BITMAP_Y*20));
+            s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+            s.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
+            s.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
+            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
+            s.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
 
             s.SetFillStyleArray(ffa);
 
@@ -8017,17 +8201,16 @@ int CreateFlashBitmapPauseButton(std::ostringstream &f,int /*imagewidth*/, int i
             f << fsws;
 
             shapeOVER_ID = fsws.GetID();
-
         }
         FlashMatrix m;
 
-        FlashColorTransform cfxUp , cfxOver , cfxDown ;
-        cfxUp.SetMultRGB(FlashRGB(256,256,256,200));
-        cfxOver.SetMultRGB(FlashRGB(256,256,256,256));
-        cfxDown.SetMultRGB(FlashRGB(256,256,256,256));
-        FlashButtonRecord brecUp(shapeUP_ID , ButtonDepth, FBR_UP, m, cfxUp);
-        FlashButtonRecord brecOver(shapeUP_ID, ButtonDepth, FBR_OVER  | FBR_HIT_TEST, m, cfxOver);
-        FlashButtonRecord brecDown(shapeOVER_ID, ButtonDepth, FBR_DOWN , m, cfxDown);
+        FlashColorTransform cfxUp, cfxOver, cfxDown;
+        cfxUp.SetMultRGB(FlashRGB(256, 256, 256, 200));
+        cfxOver.SetMultRGB(FlashRGB(256, 256, 256, 256));
+        cfxDown.SetMultRGB(FlashRGB(256, 256, 256, 256));
+        FlashButtonRecord brecUp(shapeUP_ID, ButtonDepth, FBR_UP, m, cfxUp);
+        FlashButtonRecord brecOver(shapeUP_ID, ButtonDepth, FBR_OVER | FBR_HIT_TEST, m, cfxOver);
+        FlashButtonRecord brecDown(shapeOVER_ID, ButtonDepth, FBR_DOWN, m, cfxDown);
 
         FlashTagDefineButton2 buttonPause;
         FlashActionStop stopAction;
@@ -8038,17 +8221,16 @@ int CreateFlashBitmapPauseButton(std::ostringstream &f,int /*imagewidth*/, int i
         N_STD::vector<FlashActionRecord *> acrs;
         acrs.push_back(&stopAction);
 
-        buttonPause.AddActionRecords(acrs,SWFSOURCE_BST_OverUpToOverDown);
+        buttonPause.AddActionRecords(acrs, SWFSOURCE_BST_OverUpToOverDown);
 
-        //FlashTagDefineButton buttonPlay;
-        //buttonPlay.AddButtonRecord(&brecUp);
-        //buttonPlay.AddButtonRecord(&brecOver);
+        // FlashTagDefineButton buttonPlay;
+        // buttonPlay.AddButtonRecord(&brecUp);
+        // buttonPlay.AddButtonRecord(&brecOver);
 
         f << buttonPause;
 
         FlashTagPlaceObject2 po(ButtonDepth, buttonPause.GetID());
         f << po;
-
     }
     if (alpbi)
         GlobalFreePtr(alpbi);
@@ -8059,19 +8241,20 @@ int CreateFlashBitmapPauseButton(std::ostringstream &f,int /*imagewidth*/, int i
     return right;
 }
 
-int CreateFlashBitmapStopButton(std::ostringstream &f,int /*imagewidth*/, int imageheight,  CString subdir,int imageoffset)
+int CreateFlashBitmapStopButton(std::ostringstream &f, int /*imagewidth*/, int imageheight, CString subdir,
+                                int imageoffset)
 {
     LPBITMAPINFOHEADER alpbi = NULL;
     LPBITMAPINFOHEADER alpbi2 = NULL;
 
-    CString bitmapFile,bitmapFile2;
+    CString bitmapFile, bitmapFile2;
     bitmapFile = GetProgPath() + subdir + "\\stopbutton.bmp";
     bitmapFile2 = GetProgPath() + subdir + "\\stopbutton2.bmp";
 
     alpbi = LoadBitmapFile(bitmapFile);
     alpbi2 = LoadBitmapFile(bitmapFile2);
 
-    int right=0;
+    int right = 0;
 
     if ((alpbi) && (alpbi2))
     {
@@ -8084,42 +8267,42 @@ int CreateFlashBitmapStopButton(std::ostringstream &f,int /*imagewidth*/, int im
         int BITMAP_X, BITMAP_Y;
 
         {
-            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight,4, alpbi);
+            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight, 4, alpbi);
 
             BITMAP_X = alpbi->biWidth;
             BITMAP_Y = alpbi->biHeight;
 
-            //Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32+31)/32 * 4;
+            // Shape Up, Over
+            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
             int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; //32 bit
+            int format = 5; // 32 bit
 
-            FlashZLibBitmapData zdata((unsigned char *) bitmap,dwSize); //need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format,BITMAP_X, BITMAP_Y, zdata);
+            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
+            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
             f << bll;
 
             int left = imageoffset + ButtonSpaceX;
-            int top = imageheight+FrameOffsetY+ButtonSpaceY;
+            int top = imageheight + FrameOffsetY + ButtonSpaceY;
             right = left + BITMAP_X;
 
             FlashMatrix m;
-            m.SetScale(20,20);
-            m.SetTranslate((left-MatrixOffsetX)*20,(top-MatrixOffsetY)*20);
-            //m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
-            FlashFillStyleBitmap ffb(bll.GetID(),m);
+            m.SetScale(20, 20);
+            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
+            // m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
+            FlashFillStyleBitmap ffb(bll.GetID(), m);
 
             FlashFillStyleArray ffa;
             ffa.AddFillStyle(&ffb);
 
             FlashShapeWithStyle s;
-            FlashShapeRecordChange changerec,changerec2 ;
+            FlashShapeRecordChange changerec, changerec2;
             changerec.ChangeFillStyle1(1);
             s.AddRecord(changerec);
-            s.AddRecord(FlashShapeRecordChange(left*20,top*20));
-            s.AddRecord(FlashShapeRecordStraight(BITMAP_X*20,0*20));
-            s.AddRecord(FlashShapeRecordStraight(0*20,BITMAP_Y*20));
-            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X*20,0*20));
-            s.AddRecord(FlashShapeRecordStraight(0*20,-BITMAP_Y*20));
+            s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+            s.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
+            s.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
+            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
+            s.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
 
             s.SetFillStyleArray(ffa);
 
@@ -8127,44 +8310,43 @@ int CreateFlashBitmapStopButton(std::ostringstream &f,int /*imagewidth*/, int im
             f << fsws;
 
             shapeUP_ID = fsws.GetID();
-
         }
         {
-            LPBYTE bitmap = makeReverse32(alpbi2->biWidth, alpbi2->biHeight,4, alpbi2);
+            LPBYTE bitmap = makeReverse32(alpbi2->biWidth, alpbi2->biHeight, 4, alpbi2);
 
             BITMAP_X = alpbi2->biWidth;
             BITMAP_Y = alpbi2->biHeight;
 
-            //Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32+31)/32 * 4;
+            // Shape Up, Over
+            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
             int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; //32 bit
+            int format = 5; // 32 bit
 
-            FlashZLibBitmapData zdata((unsigned char *) bitmap,dwSize); //need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format,BITMAP_X, BITMAP_Y, zdata);
+            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
+            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
             f << bll;
 
             int left = imageoffset + ButtonSpaceX;
-            int top = imageheight+FrameOffsetY+ButtonSpaceY;
+            int top = imageheight + FrameOffsetY + ButtonSpaceY;
             right = left + BITMAP_X;
 
             FlashMatrix m;
-            m.SetScale(20,20);
-            m.SetTranslate((left-MatrixOffsetX)*20,(top-MatrixOffsetY)*20);
-            FlashFillStyleBitmap ffb(bll.GetID(),m);
+            m.SetScale(20, 20);
+            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
+            FlashFillStyleBitmap ffb(bll.GetID(), m);
 
             FlashFillStyleArray ffa;
             ffa.AddFillStyle(&ffb);
 
             FlashShapeWithStyle s;
-            FlashShapeRecordChange changerec,changerec2 ;
+            FlashShapeRecordChange changerec, changerec2;
             changerec.ChangeFillStyle1(1);
             s.AddRecord(changerec);
-            s.AddRecord(FlashShapeRecordChange(left*20,top*20));
-            s.AddRecord(FlashShapeRecordStraight(BITMAP_X*20,0*20));
-            s.AddRecord(FlashShapeRecordStraight(0*20,BITMAP_Y*20));
-            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X*20,0*20));
-            s.AddRecord(FlashShapeRecordStraight(0*20,-BITMAP_Y*20));
+            s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+            s.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
+            s.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
+            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
+            s.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
 
             s.SetFillStyleArray(ffa);
 
@@ -8172,26 +8354,25 @@ int CreateFlashBitmapStopButton(std::ostringstream &f,int /*imagewidth*/, int im
             f << fsws;
 
             shapeOVER_ID = fsws.GetID();
-
         }
         FlashMatrix m;
 
-        FlashColorTransform cfxUp , cfxOver , cfxDown ;
-        cfxUp.SetMultRGB(FlashRGB(256,256,256,200));
-        cfxOver.SetMultRGB(FlashRGB(256,256,256,256));
-        cfxDown.SetMultRGB(FlashRGB(256,256,256,256));
-        FlashButtonRecord brecUp(shapeUP_ID , ButtonDepth, FBR_UP, m, cfxUp);
-        FlashButtonRecord brecOver(shapeUP_ID, ButtonDepth, FBR_OVER  | FBR_HIT_TEST, m, cfxOver);
-        FlashButtonRecord brecDown(shapeOVER_ID, ButtonDepth, FBR_DOWN , m, cfxDown);
+        FlashColorTransform cfxUp, cfxOver, cfxDown;
+        cfxUp.SetMultRGB(FlashRGB(256, 256, 256, 200));
+        cfxOver.SetMultRGB(FlashRGB(256, 256, 256, 256));
+        cfxDown.SetMultRGB(FlashRGB(256, 256, 256, 256));
+        FlashButtonRecord brecUp(shapeUP_ID, ButtonDepth, FBR_UP, m, cfxUp);
+        FlashButtonRecord brecOver(shapeUP_ID, ButtonDepth, FBR_OVER | FBR_HIT_TEST, m, cfxOver);
+        FlashButtonRecord brecDown(shapeOVER_ID, ButtonDepth, FBR_DOWN, m, cfxDown);
 
         FlashTagDefineButton2 buttonStop;
         FlashActionStop stopAction;
 
-        //handle baseframe
+        // handle baseframe
         int baseframe = 0;
         if (addPreloader)
             baseframe = preloadFrames;
-        //so that we will not get a blank screen when we click stop
+        // so that we will not get a blank screen when we click stop
 
         FlashActionGotoFrame gotoAction(baseframe);
         buttonStop.AddButtonRecord(&brecUp);
@@ -8202,17 +8383,16 @@ int CreateFlashBitmapStopButton(std::ostringstream &f,int /*imagewidth*/, int im
         acrs.push_back(&stopAction);
         acrs.push_back(&gotoAction);
 
-        buttonStop.AddActionRecords(acrs,SWFSOURCE_BST_OverUpToOverDown);
+        buttonStop.AddActionRecords(acrs, SWFSOURCE_BST_OverUpToOverDown);
 
-        //FlashTagDefineButton buttonPlay;
-        //buttonPlay.AddButtonRecord(&brecUp);
-        //buttonPlay.AddButtonRecord(&brecOver);
+        // FlashTagDefineButton buttonPlay;
+        // buttonPlay.AddButtonRecord(&brecUp);
+        // buttonPlay.AddButtonRecord(&brecOver);
 
         f << buttonStop;
 
         FlashTagPlaceObject2 po(ButtonDepth, buttonStop.GetID());
         f << po;
-
     }
     if (alpbi)
         GlobalFreePtr(alpbi);
@@ -8223,7 +8403,7 @@ int CreateFlashBitmapStopButton(std::ostringstream &f,int /*imagewidth*/, int im
     return right;
 }
 
-int DrawRightPiece(std::ostringstream &f,int imagewidth, int imageheight,  CString subdir, int imageoffset,int yoffset)
+int DrawRightPiece(std::ostringstream &f, int imagewidth, int imageheight, CString subdir, int imageoffset, int yoffset)
 {
     LPBITMAPINFOHEADER alpbi = NULL;
 
@@ -8232,7 +8412,7 @@ int DrawRightPiece(std::ostringstream &f,int imagewidth, int imageheight,  CStri
 
     alpbi = LoadBitmapFile(bitmapFile);
 
-    int right=0;
+    int right = 0;
 
     if (alpbi)
     {
@@ -8243,41 +8423,41 @@ int DrawRightPiece(std::ostringstream &f,int imagewidth, int imageheight,  CStri
         int BITMAP_X, BITMAP_Y;
 
         {
-            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight,4, alpbi);
+            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight, 4, alpbi);
 
             BITMAP_X = alpbi->biWidth;
             BITMAP_Y = alpbi->biHeight;
 
-            //Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32+31)/32 * 4;
+            // Shape Up, Over
+            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
             int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; //32 bit
+            int format = 5; // 32 bit
 
-            FlashZLibBitmapData zdata((unsigned char *) bitmap,dwSize); //need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format,BITMAP_X, BITMAP_Y, zdata);
+            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
+            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
             f << bll;
 
             int left = imageoffset;
-            int top = imageheight+FrameOffsetY+ButtonSpaceY-yoffset;
+            int top = imageheight + FrameOffsetY + ButtonSpaceY - yoffset;
             right = left + alpbi->biWidth;
 
             FlashMatrix m;
-            m.SetScale(20,20);
-            m.SetTranslate((left-MatrixOffsetX)*20,(top-MatrixOffsetY)*20);
-            FlashFillStyleBitmap ffb(bll.GetID(),m);
+            m.SetScale(20, 20);
+            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
+            FlashFillStyleBitmap ffb(bll.GetID(), m);
 
             FlashFillStyleArray ffa;
             ffa.AddFillStyle(&ffb);
 
             FlashShapeWithStyle rightPiece;
-            FlashShapeRecordChange changerec ;
+            FlashShapeRecordChange changerec;
             changerec.ChangeFillStyle1(1);
             rightPiece.AddRecord(changerec);
-            rightPiece.AddRecord(FlashShapeRecordChange(left*20,top*20));
-            rightPiece.AddRecord(FlashShapeRecordStraight(BITMAP_X*20,0*20));
-            rightPiece.AddRecord(FlashShapeRecordStraight(0*20,BITMAP_Y*20));
-            rightPiece.AddRecord(FlashShapeRecordStraight(-BITMAP_X*20,0*20));
-            rightPiece.AddRecord(FlashShapeRecordStraight(0*20,-BITMAP_Y*20));
+            rightPiece.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+            rightPiece.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
+            rightPiece.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
+            rightPiece.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
+            rightPiece.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
 
             rightPiece.SetFillStyleArray(ffa);
 
@@ -8286,7 +8466,6 @@ int DrawRightPiece(std::ostringstream &f,int imagewidth, int imageheight,  CStri
 
             FlashTagPlaceObject2 po(ButtonDepth, fsws.GetID());
             f << po;
-
         }
     }
     if (alpbi)
@@ -8295,7 +8474,8 @@ int DrawRightPiece(std::ostringstream &f,int imagewidth, int imageheight,  CStri
     return right;
 }
 
-int DrawLeftPiece(std::ostringstream &f,int /*imagewidth*/, int imageheight,  CString subdir, int imageoffset,int yoffset)
+int DrawLeftPiece(std::ostringstream &f, int /*imagewidth*/, int imageheight, CString subdir, int imageoffset,
+                  int yoffset)
 {
     LPBITMAPINFOHEADER alpbi = NULL;
 
@@ -8304,53 +8484,53 @@ int DrawLeftPiece(std::ostringstream &f,int /*imagewidth*/, int imageheight,  CS
 
     alpbi = LoadBitmapFile(bitmapFile);
 
-    int right=0;
+    int right = 0;
 
     if (alpbi)
     {
         int ButtonDepth = ObjectDepth + 2;
 
-        //int buttonWidth = alpbi->biWidth;
+        // int buttonWidth = alpbi->biWidth;
 
         int BITMAP_X, BITMAP_Y;
 
         {
-            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight,4, alpbi);
+            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight, 4, alpbi);
 
             BITMAP_X = alpbi->biWidth;
             BITMAP_Y = alpbi->biHeight;
 
-            //Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32+31)/32 * 4;
+            // Shape Up, Over
+            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
             int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; //32 bit
+            int format = 5; // 32 bit
 
-            FlashZLibBitmapData zdata((unsigned char *) bitmap,dwSize); //need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format,BITMAP_X, BITMAP_Y, zdata);
+            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
+            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
             f << bll;
 
             int left = imageoffset;
-            int top = imageheight+FrameOffsetY+ButtonSpaceY-yoffset;
+            int top = imageheight + FrameOffsetY + ButtonSpaceY - yoffset;
             right = left + alpbi->biWidth;
 
             FlashMatrix m;
-            m.SetScale(20,20);
-            m.SetTranslate((left-MatrixOffsetX)*20,(top-MatrixOffsetY)*20);
-            //m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
-            FlashFillStyleBitmap ffb(bll.GetID(),m);
+            m.SetScale(20, 20);
+            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
+            // m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
+            FlashFillStyleBitmap ffb(bll.GetID(), m);
 
             FlashFillStyleArray ffa;
             ffa.AddFillStyle(&ffb);
 
             FlashShapeWithStyle leftPiece;
-            FlashShapeRecordChange changerec ;
+            FlashShapeRecordChange changerec;
             changerec.ChangeFillStyle1(1);
             leftPiece.AddRecord(changerec);
-            leftPiece.AddRecord(FlashShapeRecordChange(left*20,top*20));
-            leftPiece.AddRecord(FlashShapeRecordStraight(BITMAP_X*20,0*20));
-            leftPiece.AddRecord(FlashShapeRecordStraight(0*20,BITMAP_Y*20));
-            leftPiece.AddRecord(FlashShapeRecordStraight(-BITMAP_X*20,0*20));
-            leftPiece.AddRecord(FlashShapeRecordStraight(0*20,-BITMAP_Y*20));
+            leftPiece.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+            leftPiece.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
+            leftPiece.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
+            leftPiece.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
+            leftPiece.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
 
             leftPiece.SetFillStyleArray(ffa);
 
@@ -8359,7 +8539,6 @@ int DrawLeftPiece(std::ostringstream &f,int /*imagewidth*/, int imageheight,  CS
 
             FlashTagPlaceObject2 po(ButtonDepth, fsws.GetID());
             f << po;
-
         }
     }
     if (alpbi)
@@ -8370,22 +8549,20 @@ int DrawLeftPiece(std::ostringstream &f,int /*imagewidth*/, int imageheight,  CS
 
 void gcFlash(std::ostringstream &f)
 {
-    int max= freeCharacterArray.GetSize();
+    int max = freeCharacterArray.GetSize();
     if (max > 0)
     {
         int valueObjectID;
-        for (int i=0;i<max; i++)
+        for (int i = 0; i < max; i++)
         {
             valueObjectID = freeCharacterArray[i];
 
-            //MsgC("valueObjectID = %d",valueObjectID);
+            // MsgC("valueObjectID = %d",valueObjectID);
 
-            FlashTagFreeCharacter  ftfc(valueObjectID);
+            FlashTagFreeCharacter ftfc(valueObjectID);
             f << ftfc;
-
         }
         freeCharacterArray.RemoveAll();
-
     }
 }
 
@@ -8394,9 +8571,10 @@ void CPlayplusView::OnHelpSwfproducerfaq()
     Openlink("http://www.camstudio.org/SWFProducerFAQ.htm");
 }
 
-//v 2.28
-//int sprID = 0;
-int CreateProgressBar(std::ostringstream &f, int controlsWidth, int controlsHeight,int FrameOffsetX,int FrameOffsetY,int BITMAP_X, int BITMAP_Y, int additonalOffsetX, int additionalOffsetY)
+// v 2.28
+// int sprID = 0;
+int CreateProgressBar(std::ostringstream &f, int controlsWidth, int controlsHeight, int FrameOffsetX, int FrameOffsetY,
+                      int BITMAP_X, int BITMAP_Y, int additonalOffsetX, int additionalOffsetY)
 {
     controlsHeight = 2;
 
@@ -8406,10 +8584,10 @@ int CreateProgressBar(std::ostringstream &f, int controlsWidth, int controlsHeig
     // int lineThickness = 3;
     int downOffset = ProgressOffsetY;
 
-    //Todo :
-    //make the fixed colors of progressBar into variables
-    FlashRGB colorBar1(38,133,172);
-    FlashRGB colorBar2(82,175,212);
+    // Todo :
+    // make the fixed colors of progressBar into variables
+    FlashRGB colorBar1(38, 133, 172);
+    FlashRGB colorBar2(82, 175, 212);
 
     FlashMatrix m;
     FlashGradientRecord gr;
@@ -8419,23 +8597,23 @@ int CreateProgressBar(std::ostringstream &f, int controlsWidth, int controlsHeig
 
     FlashShapeWithStyle s;
     int left = 0;
-    int top = (BITMAP_Y+FrameOffsetY + downOffset+additionalOffsetY) ;
+    int top = (BITMAP_Y + FrameOffsetY + downOffset + additionalOffsetY);
 
-    int widthBar = controlsWidth-additonalOffsetX-additonalOffsetX; //center
+    int widthBar = controlsWidth - additonalOffsetX - additonalOffsetX; // center
     int heightBar = controlsHeight;
 
     FlashFillStyleGradient ffg(m, gr);
     FlashFillStyleArray ffa;
     ffa.AddFillStyle(&ffg);
 
-    FlashShapeRecordChange changerec,changerec2 ;
+    FlashShapeRecordChange changerec, changerec2;
     changerec.ChangeFillStyle1(1);
     s.AddRecord(changerec);
-    s.AddRecord(FlashShapeRecordChange(left*20,top*20));
-    s.AddRecord(FlashShapeRecordStraight(widthBar*20,0*20));
-    s.AddRecord(FlashShapeRecordStraight(0*20,heightBar*20));
-    s.AddRecord(FlashShapeRecordStraight(-widthBar*20,0*20));
-    s.AddRecord(FlashShapeRecordStraight(0*20,-heightBar*20));
+    s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+    s.AddRecord(FlashShapeRecordStraight(widthBar * 20, 0 * 20));
+    s.AddRecord(FlashShapeRecordStraight(0 * 20, heightBar * 20));
+    s.AddRecord(FlashShapeRecordStraight(-widthBar * 20, 0 * 20));
+    s.AddRecord(FlashShapeRecordStraight(0 * 20, -heightBar * 20));
 
     s.SetFillStyleArray(ffa);
 
@@ -8449,21 +8627,22 @@ int CreateProgressBar(std::ostringstream &f, int controlsWidth, int controlsHeig
 
     N_STD::string nameX("Progress");
     FlashMatrix m2;
-    m2.SetTranslate((FrameOffsetX+additonalOffsetX)*20,200*20); //place somewhere invisible ...y supposed to be 0, but set to 200*20
-    FlashTagPlaceObject2 po(barDepth, fts.GetID(),m2);
+    m2.SetTranslate((FrameOffsetX + additonalOffsetX) * 20,
+                    200 * 20); // place somewhere invisible ...y supposed to be 0, but set to 200*20
+    FlashTagPlaceObject2 po(barDepth, fts.GetID(), m2);
     po.SetName(nameX);
     f << po;
 
     return widthBar;
 }
 
-void FlashActionGetPropertyVar(std::ostringstream &f,CString SpriteTarget,int index, CString varname )
+void FlashActionGetPropertyVar(std::ostringstream &f, CString SpriteTarget, int index, CString varname)
 {
     CString indexstr;
-    indexstr.Format("%d",index);
-    FlashActionPush param1(0, (char *) LPCTSTR(varname), varname.GetLength()+1);
-    FlashActionPush param2(0, (char *) LPCTSTR(SpriteTarget), SpriteTarget.GetLength()+1 );
-    FlashActionPush param3(0, (char *) LPCTSTR(indexstr), indexstr.GetLength()+1);
+    indexstr.Format("%d", index);
+    FlashActionPush param1(0, (char *)LPCTSTR(varname), varname.GetLength() + 1);
+    FlashActionPush param2(0, (char *)LPCTSTR(SpriteTarget), SpriteTarget.GetLength() + 1);
+    FlashActionPush param3(0, (char *)LPCTSTR(indexstr), indexstr.GetLength() + 1);
     FlashActionGetProperty fagp;
     FlashActionSetVariable fasv;
 
@@ -8477,18 +8656,18 @@ void FlashActionGetPropertyVar(std::ostringstream &f,CString SpriteTarget,int in
     f << ftd;
 }
 
-void FlashActionSetPropertyFloat(std::ostringstream &f,CString SpriteTarget,int index, CString valuestr )
+void FlashActionSetPropertyFloat(std::ostringstream &f, CString SpriteTarget, int index, CString valuestr)
 {
-    float fvalue = (float) index;  //property index
+    float fvalue = (float)index; // property index
     char fstr[5];
-    fstr[0] = *(((char *) (&fvalue)));
-    fstr[1] = *(((char *) (&fvalue))+1);
-    fstr[2] = *(((char *) (&fvalue))+2);
-    fstr[3] = *(((char *) (&fvalue))+3);
+    fstr[0] = *(((char *)(&fvalue)));
+    fstr[1] = *(((char *)(&fvalue)) + 1);
+    fstr[2] = *(((char *)(&fvalue)) + 2);
+    fstr[3] = *(((char *)(&fvalue)) + 3);
 
-    FlashActionPush param11(0, (char *) LPCTSTR(SpriteTarget), SpriteTarget.GetLength()+1);    //target
-    FlashActionPush param12(1, fstr, 4); //index
-    FlashActionPush param13(0, (char *) LPCTSTR(valuestr), valuestr.GetLength()+1);
+    FlashActionPush param11(0, (char *)LPCTSTR(SpriteTarget), SpriteTarget.GetLength() + 1); // target
+    FlashActionPush param12(1, fstr, 4);                                                     // index
+    FlashActionPush param13(0, (char *)LPCTSTR(valuestr), valuestr.GetLength() + 1);
     FlashActionSetProperty fasp;
 
     FlashTagDoAction ftd2;
@@ -8500,18 +8679,18 @@ void FlashActionSetPropertyFloat(std::ostringstream &f,CString SpriteTarget,int 
     f << ftd2;
 }
 
-void FlashActionSetPropertyFloatVar(std::ostringstream &f,CString SpriteTarget,int index, CString varstr )
+void FlashActionSetPropertyFloatVar(std::ostringstream &f, CString SpriteTarget, int index, CString varstr)
 {
-    float fvalue = (float) index;  //property index
+    float fvalue = (float)index; // property index
     char fstr[5];
-    fstr[0] = *(((char *) (&fvalue)));
-    fstr[1] = *(((char *) (&fvalue))+1);
-    fstr[2] = *(((char *) (&fvalue))+2);
-    fstr[3] = *(((char *) (&fvalue))+3);
+    fstr[0] = *(((char *)(&fvalue)));
+    fstr[1] = *(((char *)(&fvalue)) + 1);
+    fstr[2] = *(((char *)(&fvalue)) + 2);
+    fstr[3] = *(((char *)(&fvalue)) + 3);
 
-    FlashActionPush param11(0, (char *) LPCTSTR(SpriteTarget), SpriteTarget.GetLength()+1);    //target
-    FlashActionPush param12(1, fstr, 4); //index
-    FlashActionPush param13(0, (char *) LPCTSTR(varstr), varstr.GetLength()+1);
+    FlashActionPush param11(0, (char *)LPCTSTR(SpriteTarget), SpriteTarget.GetLength() + 1); // target
+    FlashActionPush param12(1, fstr, 4);                                                     // index
+    FlashActionPush param13(0, (char *)LPCTSTR(varstr), varstr.GetLength() + 1);
     FlashActionGetVariable fagv;
     FlashActionSetProperty fasp;
 
@@ -8525,48 +8704,56 @@ void FlashActionSetPropertyFloatVar(std::ostringstream &f,CString SpriteTarget,i
     f << ftd2;
 }
 
-void WriteTextOut(std::ostringstream &f, int width, int height, CString Loadstr, CString fontstr, int red,int green, int blue, int pointsize, bool bold, bool italic, bool uLine)
+void WriteTextOut(std::ostringstream &f, int width, int height, CString Loadstr, CString fontstr, int red, int green,
+                  int blue, int pointsize, bool bold, bool italic, bool uLine)
 {
     FlashRect bounds;
     UWORD depth = static_cast<UWORD>(ObjectDepth);
     FlashFontFactory fff;
 
-    //centering
+    // centering
     CSize Extent;
-    GetBounds(LPCTSTR(fontstr), LPCTSTR(Loadstr),pointsize, Extent, bold,  italic,  uLine);
+    GetBounds(LPCTSTR(fontstr), LPCTSTR(Loadstr), pointsize, Extent, bold, italic, uLine);
 
-    //int xpos = (width * 20 - Extent.cx * 20)/2 + FrameOffsetX;
-    //inaccurate Extent ==> so use 1.5 compensate factor
-    int xpos = (width * 20 - int(Extent.cx * 1.5 * 20))/2 + FrameOffsetX;
-    int ypos = (height * 20 - (bounds.GetY2() - bounds.GetY1()))/2 + + FrameOffsetY;
+    // int xpos = (width * 20 - Extent.cx * 20)/2 + FrameOffsetX;
+    // inaccurate Extent ==> so use 1.5 compensate factor
+    int xpos = (width * 20 - int(Extent.cx * 1.5 * 20)) / 2 + FrameOffsetX;
+    int ypos = (height * 20 - (bounds.GetY2() - bounds.GetY1())) / 2 + +FrameOffsetY;
 
-    fff.WriteText(f,LPCTSTR(fontstr),LPCTSTR(Loadstr), xpos, ypos, FlashRGB(red,green,blue),pointsize,depth,bounds, 0,bold, italic, uLine);
+    fff.WriteText(f, LPCTSTR(fontstr), LPCTSTR(Loadstr), xpos, ypos, FlashRGB(red, green, blue), pointsize, depth,
+                  bounds, 0, bold, italic, uLine);
 }
 
-//This preloading works only if addControls is turned on
-//because the flash dimension is not large enough!!!!
-//percent = 1 becuase 1 is max! (100%)
+// This preloading works only if addControls is turned on
+// because the flash dimension is not large enough!!!!
+// percent = 1 becuase 1 is max! (100%)
 
 void Preloader(std::ostringstream &f, int widthBar, int /*bmWidth*/, int /*bmHeight*/, int /*progressOffset*/)
 {
     char actionScript[1000];
-    //char actionScriptal[1000];
+    // char actionScriptal[1000];
     char actionScript2[1000];
 
-    FlashActionGetPropertyVar(f,"",_totalframes, "tframes" );
-    FlashActionGetPropertyVar(f,"",_framesloaded, "floaded" );
+    FlashActionGetPropertyVar(f, "", _totalframes, "tframes");
+    FlashActionGetPropertyVar(f, "", _framesloaded, "floaded");
 
-    //is this actionscript stable ?
-    //sprintf(actionScript,"FullWidth = %d;percent = floaded / tframes; adjustedPercent = percent / %.2f ; currentWidth = adjustedPercent * FullWidth; if (currentWidth > FullWidth) currentWidth = FullWidth;", widthBar, percentLoadedThreshold);
-    sprintf(actionScript,"FullWidth = %d;percent = floaded / tframes; adjustedPercent = percent / %.2f ; currentWidth = adjustedPercent * FullWidth; if (currentWidth > FullWidth) currentWidth = FullWidth;", widthBar, percentLoadedThreshold, "http://news.bbc.co.uk");
-    //sprintf(actionScript,"", );
+    // is this actionscript stable ?
+    // sprintf(actionScript,"FullWidth = %d;percent = floaded / tframes; adjustedPercent = percent / %.2f ; currentWidth
+    // = adjustedPercent * FullWidth; if (currentWidth > FullWidth) currentWidth = FullWidth;", widthBar,
+    // percentLoadedThreshold);
+    sprintf(actionScript,
+            "FullWidth = %d;percent = floaded / tframes; adjustedPercent = percent / %.2f ; currentWidth = "
+            "adjustedPercent * FullWidth; if (currentWidth > FullWidth) currentWidth = FullWidth;",
+            widthBar, percentLoadedThreshold, "http://news.bbc.co.uk");
+    // sprintf(actionScript,"", );
 
     ActionCompiler acom(5);
-    /*bool success = */ (void) acom.Compile(actionScript,f);
+    /*bool success = */ (void)acom.Compile(actionScript, f);
 
     /*
     // me
-    //sprintf(actionScriptal,"onEnterFrame = function(){if (_framesloaded> 4 && _currentframe >= _totalframes-2){stop();delete onEnterFrame;getURL(\"%s\", \"_self\");}}", "http://news.bbc.co.uk");
+    //sprintf(actionScriptal,"onEnterFrame = function(){if (_framesloaded> 4 && _currentframe >=
+    _totalframes-2){stop();delete onEnterFrame;getURL(\"%s\", \"_self\");}}", "http://news.bbc.co.uk");
     sprintf(actionScriptal,"trace(\"test\");");
     ::MessageBox(NULL,actionScriptal,"note", MB_OK|MB_ICONEXCLAMATION|MB_TASKMODAL);
 
@@ -8579,44 +8766,46 @@ void Preloader(std::ostringstream &f, int widthBar, int /*bmWidth*/, int /*bmHei
     // end me
     */
 
-    //is this stable ?
-    sprintf(actionScript2,"alphaVal = 150 - counter; if (dir==0) counter=counter+2;  if (dir==1) counter=counter-2; if (counter > 148) dir = 1; if (counter < 2) dir = 0;");
+    // is this stable ?
+    sprintf(actionScript2, "alphaVal = 150 - counter; if (dir==0) counter=counter+2;  if (dir==1) counter=counter-2; "
+                           "if (counter > 148) dir = 1; if (counter < 2) dir = 0;");
     ActionCompiler acom3(5);
-    acom3.Compile(actionScript2,f);
+    acom3.Compile(actionScript2, f);
 
-    FlashActionSetPropertyFloatVar(f,"Progress",_width, "currentWidth" );
-    FlashActionSetPropertyFloatVar(f,"Loading",_alpha, "alphaVal" );
-    FlashActionSetPropertyFloat(f,"Progress",_Y, "0" );
+    FlashActionSetPropertyFloatVar(f, "Progress", _width, "currentWidth");
+    FlashActionSetPropertyFloatVar(f, "Loading", _alpha, "alphaVal");
+    FlashActionSetPropertyFloat(f, "Progress", _Y, "0");
 
-    //Preloader Frame
+    // Preloader Frame
     f << FlashTagShowFrame();
     framecount++;
 
-    //WriteTextOut(f, bmWidth, bmHeight, "Loading ...", fontname, font_red + 10, font_green + 10, font_blue + 10, font_pointsize, font_bold,  font_italic, font_uLine);
+    // WriteTextOut(f, bmWidth, bmHeight, "Loading ...", fontname, font_red + 10, font_green + 10, font_blue + 10,
+    // font_pointsize, font_bold,  font_italic, font_uLine);
 
-    //added open
-    sprintf(actionScript,"condLoad = 0;if (percent >= %.2f) condLoad = 1;",percentLoadedThreshold);
+    // added open
+    sprintf(actionScript, "condLoad = 0;if (percent >= %.2f) condLoad = 1;", percentLoadedThreshold);
 
     ActionCompiler acom2(5);
-    acom2.Compile(actionScript,f);
+    acom2.Compile(actionScript, f);
 
     FlashTagDoAction ftd;
 
-    FlashActionPush paramVar(0,"condLoad" , strlen("condLoad")+1);
+    FlashActionPush paramVar(0, "condLoad", strlen("condLoad") + 1);
     FlashActionGetVariable fagv;
-    FlashActionGotoFrame gotoAction(0); //5 bytes
-    FlashActionPlay px;     //1 byte?
-    FlashActionIf faif (6);  //5+1 = 6 bytes
+    FlashActionGotoFrame gotoAction(0); // 5 bytes
+    FlashActionPlay px;                 // 1 byte?
+    FlashActionIf faif(6);              // 5+1 = 6 bytes
 
     ftd.AddAction(&paramVar);
     ftd.AddAction(&fagv);
 
-    ftd.AddAction(&faif);    //if true, jump 6 bytes
+    ftd.AddAction(&faif); // if true, jump 6 bytes
     ftd.AddAction(&gotoAction);
     ftd.AddAction(&px);
 
     f << ftd;
-    //added close
+    // added close
 
     int LoadingDepth = ObjectDepth + 6;
     FlashTagRemoveObject2 ro(LoadingDepth);
@@ -8631,36 +8820,40 @@ void actionLoadBaseMovie(std::ostringstream &f)
     char actionScript[1000];
     CString actionscriptFormat("loadMovie (\"%s\", \"\");");
     CString actionscriptStr;
-    actionscriptStr.Format(actionscriptFormat,swfbasename);
-    strcpy(actionScript,LPCTSTR(actionscriptStr));
-    actionScript[actionscriptStr.GetLength()]=0;
+    actionscriptStr.Format(actionscriptFormat, swfbasename);
+    strcpy(actionScript, LPCTSTR(actionscriptStr));
+    actionScript[actionscriptStr.GetLength()] = 0;
 
     ActionCompiler acom(5);
-    acom.Compile(actionScript,f);
+    acom.Compile(actionScript, f);
 }
 
-void GetBounds(const char *font, CString textstr, int pointsize, CSize& retExtent, bool bold, bool italic, bool uLine)
+void GetBounds(const char *font, CString textstr, int pointsize, CSize &retExtent, bool bold, bool italic, bool uLine)
 {
-    unsigned int fWeight=400;
-    if (bold==true)fWeight=700;
+    unsigned int fWeight = 400;
+    if (bold == true)
+        fWeight = 700;
 
     CSize Extent;
     HDC hdcBits = GetDC(NULL);
-    HFONT myfont = CreateFont(pointsize,0,0,0,fWeight,italic ? TRUE : FALSE,uLine ? TRUE : FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,PROOF_QUALITY,DEFAULT_PITCH,font);
-    HFONT oldFont = (HFONT) SelectObject(hdcBits,myfont);
+    HFONT myfont =
+        CreateFont(pointsize, 0, 0, 0, fWeight, italic ? TRUE : FALSE, uLine ? TRUE : FALSE, FALSE, DEFAULT_CHARSET,
+                   OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, font);
+    HFONT oldFont = (HFONT)SelectObject(hdcBits, myfont);
 
-    GetTextExtentPoint32( hdcBits, LPCTSTR(textstr),textstr.GetLength(), &Extent);
+    GetTextExtentPoint32(hdcBits, LPCTSTR(textstr), textstr.GetLength(), &Extent);
 
     if (oldFont)
-        SelectObject(hdcBits,oldFont);
-    ::ReleaseDC(NULL,hdcBits);
+        SelectObject(hdcBits, oldFont);
+    ::ReleaseDC(NULL, hdcBits);
 
     DeleteObject(myfont);
 
     retExtent = Extent;
 }
 
-int DrawLoading(std::ostringstream &f,int imagewidth, int imageheight,  CString subdir, int /*imageoffset*/, int /*yoffset*/)
+int DrawLoading(std::ostringstream &f, int imagewidth, int imageheight, CString subdir, int /*imageoffset*/,
+                int /*yoffset*/)
 {
     LPBITMAPINFOHEADER alpbi = NULL;
     int LoadingDepth = ObjectDepth + 6;
@@ -8670,54 +8863,54 @@ int DrawLoading(std::ostringstream &f,int imagewidth, int imageheight,  CString 
 
     alpbi = LoadBitmapFile(bitmapFile);
 
-    int right=0;
+    int right = 0;
 
     if (alpbi)
     {
-        //int ButtonDepth = ObjectDepth + 2;
+        // int ButtonDepth = ObjectDepth + 2;
 
-        //int buttonWidth = alpbi->biWidth;
+        // int buttonWidth = alpbi->biWidth;
 
         int BITMAP_X, BITMAP_Y;
 
         {
-            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight,4, alpbi);
+            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight, 4, alpbi);
 
             BITMAP_X = alpbi->biWidth;
             BITMAP_Y = alpbi->biHeight;
 
-            //Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32+31)/32 * 4;
+            // Shape Up, Over
+            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
             int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; //32 bit
+            int format = 5; // 32 bit
 
-            FlashZLibBitmapData zdata((unsigned char *) bitmap,dwSize); //need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format,BITMAP_X, BITMAP_Y, zdata);
+            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
+            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
             f << bll;
 
-            int left = (imagewidth - BITMAP_X)/2 + FrameOffsetX;
-            int top =  (imageheight - BITMAP_Y)/2 + FrameOffsetY;
+            int left = (imagewidth - BITMAP_X) / 2 + FrameOffsetX;
+            int top = (imageheight - BITMAP_Y) / 2 + FrameOffsetY;
 
             right = left + alpbi->biWidth;
 
             FlashMatrix m;
-            m.SetScale(20,20);
-            m.SetTranslate((left-MatrixOffsetX)*20,(top-MatrixOffsetY)*20);
-            //m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
-            FlashFillStyleBitmap ffb(bll.GetID(),m);
+            m.SetScale(20, 20);
+            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
+            // m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
+            FlashFillStyleBitmap ffb(bll.GetID(), m);
 
             FlashFillStyleArray ffa;
             ffa.AddFillStyle(&ffb);
 
             FlashShapeWithStyle leftPiece;
-            FlashShapeRecordChange changerec ;
+            FlashShapeRecordChange changerec;
             changerec.ChangeFillStyle1(1);
             leftPiece.AddRecord(changerec);
-            leftPiece.AddRecord(FlashShapeRecordChange(left*20,top*20));
-            leftPiece.AddRecord(FlashShapeRecordStraight(BITMAP_X*20,0*20));
-            leftPiece.AddRecord(FlashShapeRecordStraight(0*20,BITMAP_Y*20));
-            leftPiece.AddRecord(FlashShapeRecordStraight(-BITMAP_X*20,0*20));
-            leftPiece.AddRecord(FlashShapeRecordStraight(0*20,-BITMAP_Y*20));
+            leftPiece.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+            leftPiece.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
+            leftPiece.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
+            leftPiece.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
+            leftPiece.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
 
             leftPiece.SetFillStyleArray(ffa);
 
@@ -8730,7 +8923,7 @@ int DrawLoading(std::ostringstream &f,int imagewidth, int imageheight,  CString 
             f << fts;
 
             N_STD::string nameX("Loading");
-            //FlashTagPlaceObject2 po(10, fts.GetID());
+            // FlashTagPlaceObject2 po(10, fts.GetID());
             FlashTagPlaceObject2 po(LoadingDepth, fts.GetID());
             po.SetName(nameX);
             f << po;
@@ -8742,11 +8935,12 @@ int DrawLoading(std::ostringstream &f,int imagewidth, int imageheight,  CString 
     return right;
 }
 
-//ver 2.29
-//this version some slight instability..somethimes the converted html/swf is not launched
-int DrawNodes(std::ostringstream &f,int widthBar,int /*imagewidth*/ , int imageheight,  CString subdir, int /*imageoffset*/, int /*yoffset*/, int additionalOffsetX,int additionalOffsetY)
+// ver 2.29
+// this version some slight instability..somethimes the converted html/swf is not launched
+int DrawNodes(std::ostringstream &f, int widthBar, int /*imagewidth*/, int imageheight, CString subdir,
+              int /*imageoffset*/, int /*yoffset*/, int additionalOffsetX, int additionalOffsetY)
 {
-    //int downOffset = 2;
+    // int downOffset = 2;
     int downOffset = ProgressOffsetY;
 
     LPBITMAPINFOHEADER alpbi = NULL;
@@ -8756,52 +8950,52 @@ int DrawNodes(std::ostringstream &f,int widthBar,int /*imagewidth*/ , int imageh
 
     alpbi = LoadBitmapFile(bitmapFile);
 
-    int right=0;
+    int right = 0;
 
     if (alpbi)
     {
         int ButtonDepth = ObjectDepth + 3;
-        //int buttonWidth = alpbi->biWidth;
+        // int buttonWidth = alpbi->biWidth;
 
         int BITMAP_X, BITMAP_Y;
 
         {
-            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight,4, alpbi);
+            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight, 4, alpbi);
 
             BITMAP_X = alpbi->biWidth;
             BITMAP_Y = alpbi->biHeight;
 
-            //Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32+31)/32 * 4;
+            // Shape Up, Over
+            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
             int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; //32 bit
+            int format = 5; // 32 bit
 
-            FlashZLibBitmapData zdata((unsigned char *) bitmap,dwSize); //need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format,BITMAP_X, BITMAP_Y, zdata);
+            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
+            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
             f << bll;
 
-            int left = FrameOffsetX+additionalOffsetX - BITMAP_X - 1;
-            int top = (imageheight+FrameOffsetY + downOffset) - BITMAP_Y/2 +additionalOffsetY ;
+            int left = FrameOffsetX + additionalOffsetX - BITMAP_X - 1;
+            int top = (imageheight + FrameOffsetY + downOffset) - BITMAP_Y / 2 + additionalOffsetY;
 
             right = left + alpbi->biWidth;
 
             FlashMatrix m;
-            m.SetScale(20,20);
-            m.SetTranslate((left-MatrixOffsetX)*20,(top-MatrixOffsetY)*20);
-            FlashFillStyleBitmap ffb(bll.GetID(),m);
+            m.SetScale(20, 20);
+            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
+            FlashFillStyleBitmap ffb(bll.GetID(), m);
 
             FlashFillStyleArray ffa;
             ffa.AddFillStyle(&ffb);
 
             FlashShapeWithStyle nodePiece;
-            FlashShapeRecordChange changerec ;
+            FlashShapeRecordChange changerec;
             changerec.ChangeFillStyle1(1);
             nodePiece.AddRecord(changerec);
-            nodePiece.AddRecord(FlashShapeRecordChange(left*20,top*20));
-            nodePiece.AddRecord(FlashShapeRecordStraight((BITMAP_X+1)*20,0*20));
-            nodePiece.AddRecord(FlashShapeRecordStraight(0*20,(BITMAP_Y+1)*20));
-            nodePiece.AddRecord(FlashShapeRecordStraight(-(BITMAP_X+1)*20,0*20));
-            nodePiece.AddRecord(FlashShapeRecordStraight(0*20,-(BITMAP_Y+1)*20));
+            nodePiece.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
+            nodePiece.AddRecord(FlashShapeRecordStraight((BITMAP_X + 1) * 20, 0 * 20));
+            nodePiece.AddRecord(FlashShapeRecordStraight(0 * 20, (BITMAP_Y + 1) * 20));
+            nodePiece.AddRecord(FlashShapeRecordStraight(-(BITMAP_X + 1) * 20, 0 * 20));
+            nodePiece.AddRecord(FlashShapeRecordStraight(0 * 20, -(BITMAP_Y + 1) * 20));
 
             nodePiece.SetFillStyleArray(ffa);
 
@@ -8812,10 +9006,9 @@ int DrawNodes(std::ostringstream &f,int widthBar,int /*imagewidth*/ , int imageh
             f << po;
 
             FlashMatrix m2;
-            m2.SetTranslate((widthBar+1)*20,0);
-            FlashTagPlaceObject2 po2(ButtonDepth, fsws.GetID(),m2);
+            m2.SetTranslate((widthBar + 1) * 20, 0);
+            FlashTagPlaceObject2 po2(ButtonDepth, fsws.GetID(), m2);
             f << po2;
-
         }
     }
     if (alpbi)
@@ -8827,10 +9020,10 @@ int DrawNodes(std::ostringstream &f,int widthBar,int /*imagewidth*/ , int imageh
 void CPlayplusView::CreatePropertySheet()
 {
     CString dlgcaption("");
-    dlgcaption.LoadString (IDS_Conversion3);
+    dlgcaption.LoadString(IDS_Conversion3);
 
-    flashProp.Construct (dlgcaption);
-    flashProp.AddPage( &page1);
-    flashProp.AddPage( &page2);
-    flashProp.AddPage( &page3);
+    flashProp.Construct(dlgcaption);
+    flashProp.AddPage(&page1);
+    flashProp.AddPage(&page2);
+    flashProp.AddPage(&page3);
 }

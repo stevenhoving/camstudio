@@ -3,27 +3,26 @@
 #include "StdAfx.h"
 #include "VCM.h"
 
-ICINFO * pCompressorInfo = 0;
+ICINFO *pCompressorInfo = 0;
 int num_compressor = 0;
 
 CString GetCodecDescription(FOURCC fccHandler)
 {
-    //ICINFO compinfo;
+    // ICINFO compinfo;
     //::ZeroMemory(&compinfo, sizeof(compinfo));
-    //compinfo.dwSize = sizeof(ICINFO);
-    //HIC hic = ICOpen(ICTYPE_VIDEO, fccHandler, ICMODE_QUERY);
-    //if (hic) {
+    // compinfo.dwSize = sizeof(ICINFO);
+    // HIC hic = ICOpen(ICTYPE_VIDEO, fccHandler, ICMODE_QUERY);
+    // if (hic) {
     //    ICGetInfo(hic, &compinfo, sizeof(ICINFO));
     //    ICClose(hic);
     //}
     CHIC Hic;
-    if (Hic.Open(ICTYPE_VIDEO, fccHandler, ICMODE_QUERY)) {
+    if (Hic.Open(ICTYPE_VIDEO, fccHandler, ICMODE_QUERY))
+    {
         ICINFO sICInfo;
         LRESULT lResult = Hic.GetInfo(sICInfo, sizeof(ICINFO));
         Hic.Close();
-        return (0L < lResult)
-            ? CString(sICInfo.szDescription)
-            : CString(_T(""));
+        return (0L < lResult) ? CString(sICInfo.szDescription) : CString(_T(""));
     }
 
     return CString("");
@@ -32,11 +31,11 @@ CString GetCodecDescription(FOURCC fccHandler)
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 CHIC::CHIC()
-: m_hIC(0)
-, m_dwfccType(0UL)
-, m_dwfccHandler(0UL)
-, m_pState(0)
-, m_ulStateSize(0UL)
+    : m_hIC(0)
+    , m_dwfccType(0UL)
+    , m_dwfccHandler(0UL)
+    , m_pState(0)
+    , m_ulStateSize(0UL)
 {
     ::ZeroMemory(&m_icInfo, sizeof(m_icInfo));
     m_icInfo.dwSize = sizeof(ICINFO);
@@ -44,13 +43,15 @@ CHIC::CHIC()
 
 CHIC::~CHIC()
 {
-    if (isOpen()) {
+    if (isOpen())
+    {
         VERIFY(ICERR_OK == Close());
         VERIFY(!isOpen());
     }
-    if (m_pState) {
+    if (m_pState)
+    {
         ASSERT(0 < m_ulStateSize);
-        delete [] m_pState;
+        delete[] m_pState;
         m_ulStateSize = 0L;
     }
 }
@@ -58,39 +59,44 @@ CHIC::~CHIC()
 bool CHIC::getState()
 {
     bool bResult = isOpen();
-    if (!bResult) {
+    if (!bResult)
+    {
         TRACE("CHIC::getState: %s Not open\n", bResult ? "OK" : "FAIL");
         return bResult;
     }
     try
     {
-        if (m_pState) {
+        if (m_pState)
+        {
             ASSERT(0 < m_ulStateSize);
-            delete [] m_pState;
+            delete[] m_pState;
             m_ulStateSize = 0L;
         }
         ASSERT(0L == m_ulStateSize);
         m_ulStateSize = GetStateSize();
         bResult = (0 < m_ulStateSize);
-        if (!bResult) {
+        if (!bResult)
+        {
             TRACE("CHIC::getState: %s bad size\n", bResult ? "OK" : "FAIL");
             return bResult;
         }
 
-        // TODO, Possible memory leak, where is the delete operation of the new below done although there is a delete in catch
+        // TODO, Possible memory leak, where is the delete operation of the new below done although there is a delete in
+        // catch
         m_pState = new char[m_ulStateSize];
         LRESULT lResult = ::ICGetState(m_hIC, m_pState, m_ulStateSize);
         // bResult = (lResult == m_ulStateSize );  ==> C4389 Warning, type mismatch
-        bResult = ( lResult - m_ulStateSize == 0 );  // Save 
+        bResult = (lResult - m_ulStateSize == 0); // Save
         if (!bResult)
             throw "ICGetState failed";
     }
-    catch(...)
+    catch (...)
     {
         bResult = false;
-        if (m_pState) {
+        if (m_pState)
+        {
             ASSERT(0 < m_ulStateSize);
-            delete [] m_pState, m_pState = 0;
+            delete[] m_pState, m_pState = 0;
             m_ulStateSize = 0L;
         }
         ASSERT(0L == m_ulStateSize);
@@ -105,7 +111,7 @@ bool CHIC::getState()
 DWORD CHIC::QueryAbout()
 {
     DWORD dwResult = ICQueryAbout(m_hIC);
-    //TRACE("CHIC::QueryAbout : %s About\n", (ICERR_UNSUPPORTED == dwResult) ? "No" : "Have");
+    // TRACE("CHIC::QueryAbout : %s About\n", (ICERR_UNSUPPORTED == dwResult) ? "No" : "Have");
     TRACE("CHIC::QueryAbout : %s About\n", (dwResult) ? "Have" : "No");
     return dwResult;
 }
@@ -113,7 +119,7 @@ DWORD CHIC::QueryAbout()
 DWORD CHIC::About(HWND hWnd)
 {
     DWORD dwResult = QueryAbout();
-    //return (ICERR_UNSUPPORTED == dwResult) ? dwResult : ICAbout(m_hIC, hWnd);
+    // return (ICERR_UNSUPPORTED == dwResult) ? dwResult : ICAbout(m_hIC, hWnd);
     return (dwResult) ? ICAbout(m_hIC, hWnd) : dwResult;
 }
 
@@ -122,7 +128,8 @@ DWORD CHIC::About(HWND hWnd)
 LRESULT CHIC::Close()
 {
     LRESULT lResult = ::ICClose(m_hIC);
-    if (ICERR_OK == lResult) {
+    if (ICERR_OK == lResult)
+    {
         m_hIC = 0;
     }
     TRACE("CHIC::Close: %s\n", (ICERR_OK == lResult) ? "OK" : "FAIL");
@@ -132,12 +139,14 @@ LRESULT CHIC::Close()
 // retrieves information about specific installed compressors or enumerates the
 // installed compressors.
 // Returns TRUE if successful or an error otherwise.
-BOOL CHIC::Info(DWORD fccType, DWORD fccHandler, ICINFO& icinfo)
+BOOL CHIC::Info(DWORD fccType, DWORD fccHandler, ICINFO &icinfo)
 {
     BOOL bResult = ::ICInfo(fccType, fccHandler, &icinfo);
-    if (bResult) {
+    if (bResult)
+    {
         // n.b TRACE won't display szDriver properly; ???
-        TRACE("CGIC::Info:\nDescription: %s\nName: %s\nDriver: %s\n", icinfo.szDescription, icinfo.szName, (LPCTSTR)CString(icinfo.szDriver));
+        TRACE("CGIC::Info:\nDescription: %s\nName: %s\nDriver: %s\n", icinfo.szDescription, icinfo.szName,
+              (LPCTSTR)CString(icinfo.szDriver));
     }
     return bResult;
 }
@@ -148,7 +157,8 @@ HIC CHIC::Open(FOURCC dwfccType, FOURCC dwfccHandler, UINT uMode)
 {
     ASSERT(!isOpen());
     m_hIC = ::ICOpen(dwfccType, dwfccHandler, uMode);
-    if (isOpen()) {
+    if (isOpen())
+    {
         m_dwfccType = dwfccType;
         m_dwfccHandler = dwfccHandler;
         TRACEFOURCC(m_dwfccType, TEXT("Type"));
@@ -165,7 +175,8 @@ HIC CHIC::OpenFunction(FOURCC dwfccType, FOURCC dwfccHandler, UINT wMode, FARPRO
 {
     ASSERT(!isOpen());
     m_hIC = ::ICOpenFunction(dwfccType, dwfccHandler, wMode, lpfnHandler);
-    if (isOpen()) {
+    if (isOpen())
+    {
         m_dwfccType = dwfccType;
         m_dwfccHandler = dwfccHandler;
         TRACEFOURCC(m_dwfccType, TEXT("Type"));
@@ -183,7 +194,8 @@ HIC CHIC::DecompressOpen(FOURCC dwfccType, FOURCC dwfccHandler, LPBITMAPINFOHEAD
 {
     ASSERT(!isOpen());
     m_hIC = ICDecompressOpen(dwfccType, dwfccHandler, lpbiIn, lpbiOut);
-    if (isOpen()) {
+    if (isOpen())
+    {
         m_dwfccType = dwfccType;
         m_dwfccHandler = dwfccHandler;
         TRACEFOURCC(m_dwfccType, TEXT("Type"));
@@ -201,7 +213,8 @@ HIC CHIC::DrawOpen(FOURCC dwfccType, FOURCC dwfccHandler, LPBITMAPINFOHEADER lpb
 {
     ASSERT(!isOpen());
     m_hIC = ICDrawOpen(dwfccType, dwfccHandler, lpbiIn);
-    if (isOpen()) {
+    if (isOpen())
+    {
         m_dwfccType = dwfccType;
         m_dwfccHandler = dwfccHandler;
         TRACEFOURCC(m_dwfccType, TEXT("Type"));

@@ -14,15 +14,15 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CPresetTimeDlg dialog
 
-CPresetTimeDlg::CPresetTimeDlg(CWnd* pParent /*=NULL*/)
-: CDialog(CPresetTimeDlg::IDD, pParent)
+CPresetTimeDlg::CPresetTimeDlg(CWnd *pParent /*=NULL*/)
+    : CDialog(CPresetTimeDlg::IDD, pParent)
 {
     //{{AFX_DATA_INIT(CPresetTimeDlg)
     // NOTE: the ClassWizard will add member initialization here
     //}}AFX_DATA_INIT
 }
 
-void CPresetTimeDlg::DoDataExchange(CDataExchange* pDX)
+void CPresetTimeDlg::DoDataExchange(CDataExchange *pDX)
 {
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CPresetTimeDlg)
@@ -33,8 +33,8 @@ void CPresetTimeDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CPresetTimeDlg, CDialog)
-    //{{AFX_MSG_MAP(CPresetTimeDlg)
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CPresetTimeDlg)
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,7 @@ void CPresetTimeDlg::OnOK()
     int val2 = m_ctrlSpinTime.GetPos();
     cProgramOpts.m_iPresetTime = val2;
 
-    //ErrMsg("%d",iPresetTime);
+    // ErrMsg("%d",iPresetTime);
 
     CDialog::OnOK();
 }

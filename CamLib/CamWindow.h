@@ -10,4 +10,4 @@
 void SetTitleBar(CString title);
 RECT FrameWindow(HWND hWnd, int maxxScreen, int maxyScreen, RECT rcClip);
 
-#endif    // CAMWINDOW_H
+#endif // CAMWINDOW_H

@@ -17,8 +17,8 @@ static char THIS_FILE[] = __FILE__;
 extern char playfiledir[300];
 extern void OpenMovieFileInit(char *filename);
 
-#define PLAYER  0
-#define DUBBER  1
+#define PLAYER 0
+#define DUBBER 1
 extern int pmode;
 
 HBITMAP hAboutBM = NULL;
@@ -30,16 +30,16 @@ extern int autoexit;
 // CPlayplusApp
 
 BEGIN_MESSAGE_MAP(CPlayplusApp, CWinApp)
-    //{{AFX_MSG_MAP(CPlayplusApp)
-    ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
-        // NOTE - the ClassWizard will add and remove mapping macros here.
-        //    DO NOT EDIT what you see in these blocks of generated code!
-    //}}AFX_MSG_MAP
-    // Standard file based document commands
-    ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
-    ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
-    // Standard print setup command
-    ON_COMMAND(ID_FILE_PRINT_SETUP, CWinApp::OnFilePrintSetup)
+//{{AFX_MSG_MAP(CPlayplusApp)
+ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
+// NOTE - the ClassWizard will add and remove mapping macros here.
+//    DO NOT EDIT what you see in these blocks of generated code!
+//}}AFX_MSG_MAP
+// Standard file based document commands
+ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
+ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
+// Standard print setup command
+ON_COMMAND(ID_FILE_PRINT_SETUP, CWinApp::OnFilePrintSetup)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -62,40 +62,44 @@ CPlayplusApp theApp;
 BOOL CPlayplusApp::InitInstance()
 {
 
-    //Multilang
+    // Multilang
     CurLangID = STANDARD_LANGID;
     HKEY hKey;
-      DWORD language=7;
+    DWORD language = 7;
     LONG returnStatus;
-    DWORD Type=REG_DWORD;
-    DWORD Size=sizeof(DWORD);
-    returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
+    DWORD Type = REG_DWORD;
+    DWORD Size = sizeof(DWORD);
+    returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L,
+                                KEY_ALL_ACCESS, &hKey);
 
-    //create default LanguageID no exists
+    // create default LanguageID no exists
     if (returnStatus != ERROR_SUCCESS)
     {
-     returnStatus =RegCreateKeyEx(HKEY_CURRENT_USER,"Software\\CamStudioOpenSource for Nick",0,0,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&hKey,0);
-     returnStatus =RegCreateKeyEx(HKEY_CURRENT_USER,"Software\\CamStudioOpenSource for Nick\\vscap",0,0,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&hKey,0);
-     returnStatus =RegCreateKeyEx(HKEY_CURRENT_USER,"Software\\CamStudioOpenSource for Nick\\vscap\\Language",0,0,REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&hKey,0);
-     RegSetValueEx(hKey,"LanguageID",0,REG_DWORD,(BYTE*)&language,sizeof(DWORD));
-     returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
-
+        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick", 0, 0,
+                                      REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, 0);
+        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap", 0, 0,
+                                      REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, 0);
+        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0,
+                                      0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, 0);
+        RegSetValueEx(hKey, "LanguageID", 0, REG_DWORD, (BYTE *)&language, sizeof(DWORD));
+        returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L,
+                                    KEY_ALL_ACCESS, &hKey);
     }
 
-    //read LanguageID
+    // read LanguageID
     if (returnStatus == ERROR_SUCCESS)
     {
 
-        returnStatus = RegQueryValueEx(hKey, "LanguageID", NULL, &Type,(LPBYTE)&language, &Size);
+        returnStatus = RegQueryValueEx(hKey, "LanguageID", NULL, &Type, (LPBYTE)&language, &Size);
 
         if (returnStatus == ERROR_SUCCESS)
         {
-            //load ResDLL
-            if ( !LoadLangIDDLL((int) language) )
-             if ( !LoadLangIDDLL(GetUserDefaultLangID()) )
-                 LoadLangIDDLL(GetSystemDefaultLangID());
+            // load ResDLL
+            if (!LoadLangIDDLL((int)language))
+                if (!LoadLangIDDLL(GetUserDefaultLangID()))
+                    LoadLangIDDLL(GetSystemDefaultLangID());
         }
-     }
+    }
 
     RegCloseKey(hKey);
 
@@ -106,67 +110,64 @@ BOOL CPlayplusApp::InitInstance()
     //  of your final executable, you should remove from the following
     //  the specific initialization routines you do not need.
 
-/*
-#ifdef _AFXDLL
-    Enable3dControls();            // Call this when using MFC in a shared DLL
-#else
-    Enable3dControlsStatic();    // Call this when linking to MFC statically
-#endif
-*/
+    /*
+    #ifdef _AFXDLL
+        Enable3dControls();            // Call this when using MFC in a shared DLL
+    #else
+        Enable3dControlsStatic();    // Call this when linking to MFC statically
+    #endif
+    */
 
     // Change the registry key under which our settings are stored.
     // TODO: You should modify this string to be something appropriate
     // such as the name of your company or organization.
     SetRegistryKey(_T("CamStudioOpenSource for Nick"));
 
-    LoadStdProfileSettings();  // Load standard INI file options (including MRU)
+    LoadStdProfileSettings(); // Load standard INI file options (including MRU)
 
     // Register the application's document templates.  Document templates
     //  serve as the connection between documents, frame windows and views.
 
-    CSingleDocTemplate* pDocTemplate;
-    pDocTemplate = new CSingleDocTemplate(
-        IDR_MAINFRAME,
-        RUNTIME_CLASS(CPlayplusDoc),
-        RUNTIME_CLASS(CMainFrame),       // main SDI frame window
-        RUNTIME_CLASS(CPlayplusView));
+    CSingleDocTemplate *pDocTemplate;
+    pDocTemplate = new CSingleDocTemplate(IDR_MAINFRAME, RUNTIME_CLASS(CPlayplusDoc),
+                                          RUNTIME_CLASS(CMainFrame), // main SDI frame window
+                                          RUNTIME_CLASS(CPlayplusView));
     AddDocTemplate(pDocTemplate);
 
     // Parse command line for standard shell commands, DDE, file open
     CCommandLineInfo cmdInfo;
     ParseCommandLine(cmdInfo);
 
-    playfiledir[0]=0;
-    if (strlen(m_lpCmdLine)!=0) {
+    playfiledir[0] = 0;
+    if (strlen(m_lpCmdLine) != 0)
+    {
 
-        if ((m_lpCmdLine[0]=='-') && ((m_lpCmdLine[1]=='a') || (m_lpCmdLine[1]=='x')))
+        if ((m_lpCmdLine[0] == '-') && ((m_lpCmdLine[1] == 'a') || (m_lpCmdLine[1] == 'x')))
         {
             autoplay = 1;
-            if (m_lpCmdLine[1]=='x')
+            if (m_lpCmdLine[1] == 'x')
                 autoexit = 1;
 
             int i;
             int lenx = strlen(m_lpCmdLine);
-            for (i=2;i<lenx;i++)
+            for (i = 2; i < lenx; i++)
             {
-                if ((m_lpCmdLine[i]!=' ') && (m_lpCmdLine[i]!='\t'))
+                if ((m_lpCmdLine[i] != ' ') && (m_lpCmdLine[i] != '\t'))
                     break;
-
             }
 
-            if (lenx>4)
+            if (lenx > 4)
             {
-                strcpy(playfiledir,&m_lpCmdLine[i]);
+                strcpy(playfiledir, &m_lpCmdLine[i]);
             }
-
         }
         else
-            strcpy(playfiledir,m_lpCmdLine);
+            strcpy(playfiledir, m_lpCmdLine);
 
-        //Fix to open long filename or filename with quotes on launch
+        // Fix to open long filename or filename with quotes on launch
         CString strCleanCmdLineFileName(playfiledir);
         strCleanCmdLineFileName.Replace("\"", "");
-        strcpy(playfiledir,strCleanCmdLineFileName.GetBuffer());
+        strcpy(playfiledir, strCleanCmdLineFileName.GetBuffer());
         cmdInfo.m_strFileName = playfiledir;
     }
     /*
@@ -195,15 +196,15 @@ BOOL CPlayplusApp::LoadLangIDDLL(LANGID LangID)
     HINSTANCE hInstance;
     CString strLangIDDLL;
 
-    //if ( LangID == STANDARD_LANGID )    // integrated language is the right one
+    // if ( LangID == STANDARD_LANGID )    // integrated language is the right one
     //    return true;
 
-    strLangIDDLL.Format( _T("PlayPlusLANG%.2x.dll"), LangID );
+    strLangIDDLL.Format(_T("PlayPlusLANG%.2x.dll"), LangID);
 
-    hInstance = LoadLibrary( strLangIDDLL );
-    if ( hInstance )
+    hInstance = LoadLibrary(strLangIDDLL);
+    if (hInstance)
     {
-        AfxSetResourceHandle( hInstance );
+        AfxSetResourceHandle(hInstance);
         CurLangID = LangID;
         return true;
     }
@@ -218,18 +219,21 @@ class CAboutDlg : public CDialog
 public:
     CAboutDlg();
 
-// Dialog Data
+    // Dialog Data
     //{{AFX_DATA(CAboutDlg)
-    enum { IDD = IDD_ABOUTBOX };
+    enum
+    {
+        IDD = IDD_ABOUTBOX
+    };
     //}}AFX_DATA
 
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CAboutDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
     //{{AFX_MSG(CAboutDlg)
     virtual BOOL OnInitDialog();
@@ -239,18 +243,19 @@ protected:
     afx_msg void OnBnClickedButtonlink1();
 };
 
-CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
+CAboutDlg::CAboutDlg()
+    : CDialog(CAboutDlg::IDD)
 {
     //{{AFX_DATA_INIT(CAboutDlg)
     //}}AFX_DATA_INIT
 
     if (pmode == PLAYER)
-        hAboutBM = LoadBitmap( AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_ABOUT_PLAYER));
+        hAboutBM = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_ABOUT_PLAYER));
     else
-        hAboutBM = LoadBitmap( AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_ABOUT_DUBBER));
+        hAboutBM = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_ABOUT_DUBBER));
 }
 
-void CAboutDlg::DoDataExchange(CDataExchange* pDX)
+void CAboutDlg::DoDataExchange(CDataExchange *pDX)
 {
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CAboutDlg)
@@ -258,10 +263,10 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
-    //{{AFX_MSG_MAP(CAboutDlg)
-    ON_WM_DESTROY()
-    ON_BN_CLICKED(IDC_BUTTONLINK1, OnBnClickedButtonlink1)
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CAboutDlg)
+ON_WM_DESTROY()
+ON_BN_CLICKED(IDC_BUTTONLINK1, OnBnClickedButtonlink1)
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 // App command to run the dialog
@@ -280,18 +285,18 @@ BOOL CAboutDlg::OnInitDialog()
 
     // TODO: Add extra initialization here
     if (pmode == PLAYER)
-        ((CStatic *) (GetDlgItem(IDC_TITLE)))->SetWindowText("RenderSoft CamStudio Player 2.1");
+        ((CStatic *)(GetDlgItem(IDC_TITLE)))->SetWindowText("RenderSoft CamStudio Player 2.1");
     else if (pmode == DUBBER)
-        ((CStatic *) (GetDlgItem(IDC_TITLE)))->SetWindowText("RenderSoft CamStudio Dubber 1.0");
+        ((CStatic *)(GetDlgItem(IDC_TITLE)))->SetWindowText("RenderSoft CamStudio Dubber 1.0");
 
-    if ((pmode == PLAYER) || (pmode == DUBBER))  {
+    if ((pmode == PLAYER) || (pmode == DUBBER))
+    {
         if (hAboutBM)
-            ((CStatic *) (GetDlgItem(IDC_IMAGE)))->SetBitmap( hAboutBM );
-
+            ((CStatic *)(GetDlgItem(IDC_IMAGE)))->SetBitmap(hAboutBM);
     }
 
-    return TRUE;  // return TRUE unless you set the focus to a control
-                  // EXCEPTION: OCX Property Pages should return FALSE
+    return TRUE; // return TRUE unless you set the focus to a control
+                 // EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void CAboutDlg::OnDestroy()
@@ -301,28 +306,27 @@ void CAboutDlg::OnDestroy()
     //::MessageBox(NULL,"Note Destory","nn",MB_OK);
 
     // TODO: Add your message handler code here
-    if (hAboutBM) {
+    if (hAboutBM)
+    {
         DeleteObject(hAboutBM);
         hAboutBM = NULL;
     }
-
 }
 
 int CPlayplusApp::ExitInstance()
 {
     // TODO: Add your specialized code here and/or call the base class
-        //Multilanguage
-    if ( CurLangID != STANDARD_LANGID )
-    FreeLibrary( AfxGetResourceHandle() );
+    // Multilanguage
+    if (CurLangID != STANDARD_LANGID)
+        FreeLibrary(AfxGetResourceHandle());
 
     return CWinApp::ExitInstance();
 }
 
 void CAboutDlg::OnBnClickedButtonlink1()
 {
-  LPCTSTR mode;
-  mode = ("open");
+    LPCTSTR mode;
+    mode = ("open");
 
-  ShellExecute (GetSafeHwnd (), mode, "http://www.camstudio.org", NULL, NULL, SW_SHOW);
-
+    ShellExecute(GetSafeHwnd(), mode, "http://www.camstudio.org", NULL, NULL, SW_SHOW);
 }

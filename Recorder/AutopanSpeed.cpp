@@ -19,15 +19,15 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CAutopanSpeedDlg dialog
 
-CAutopanSpeedDlg::CAutopanSpeedDlg(CWnd* pParent /*=NULL*/)
-: CDialog(CAutopanSpeedDlg::IDD, pParent)
+CAutopanSpeedDlg::CAutopanSpeedDlg(CWnd *pParent /*=NULL*/)
+    : CDialog(CAutopanSpeedDlg::IDD, pParent)
 {
     //{{AFX_DATA_INIT(CAutopanSpeedDlg)
     // NOTE: the ClassWizard will add member initialization here
     //}}AFX_DATA_INIT
 }
 
-void CAutopanSpeedDlg::DoDataExchange(CDataExchange* pDX)
+void CAutopanSpeedDlg::DoDataExchange(CDataExchange *pDX)
 {
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CAutopanSpeedDlg)
@@ -38,9 +38,9 @@ void CAutopanSpeedDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAutopanSpeedDlg, CDialog)
-    //{{AFX_MSG_MAP(CAutopanSpeedDlg)
-    ON_WM_HSCROLL()
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CAutopanSpeedDlg)
+ON_WM_HSCROLL()
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -73,12 +73,13 @@ void CAutopanSpeedDlg::OnOK()
     CDialog::OnOK();
 }
 
-void CAutopanSpeedDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+void CAutopanSpeedDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
 {
     // update the text display
     // FIXME: how to check that we are scrolling our slider?
     // it looks like it is generic message is handled here
-    if (SB_THUMBTRACK == nSBCode) { // this (temporarily) fixes reset of the counter to 0 when slider is releazed
+    if (SB_THUMBTRACK == nSBCode)
+    { // this (temporarily) fixes reset of the counter to 0 when slider is releazed
         CString maxpanspeedstr;
         maxpanspeedstr.Format("%d", nPos);
         m_ctrlStaticMaxSpeed.SetWindowText(maxpanspeedstr);

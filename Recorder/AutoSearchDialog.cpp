@@ -14,15 +14,15 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CAutoSearchDlg dialog
 
-CAutoSearchDlg::CAutoSearchDlg(CWnd* pParent /*=NULL*/)
-: CDialog(CAutoSearchDlg::IDD, pParent)
+CAutoSearchDlg::CAutoSearchDlg(CWnd *pParent /*=NULL*/)
+    : CDialog(CAutoSearchDlg::IDD, pParent)
 {
     //{{AFX_DATA_INIT(CAutoSearchDlg)
     // NOTE: the ClassWizard will add member initialization here
     //}}AFX_DATA_INIT
 }
 
-void CAutoSearchDlg::DoDataExchange(CDataExchange* pDX)
+void CAutoSearchDlg::DoDataExchange(CDataExchange *pDX)
 {
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CAutoSearchDlg)
@@ -34,10 +34,10 @@ void CAutoSearchDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAutoSearchDlg, CDialog)
-    //{{AFX_MSG_MAP(CAutoSearchDlg)
-    ON_BN_CLICKED(IDC_CLOSE, OnCloseDialog)
-    ON_WM_CLOSE()
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CAutoSearchDlg)
+ON_BN_CLICKED(IDC_CLOSE, OnCloseDialog)
+ON_WM_CLOSE()
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -70,5 +70,5 @@ void CAutoSearchDlg::OnClose()
     // TODO: Add your message handler code here and/or call default
     ShowWindow(SW_HIDE);
 
-    //CDialog::OnClose();
+    // CDialog::OnClose();
 }

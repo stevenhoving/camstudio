@@ -3,28 +3,29 @@
 #include "FSprite.h"
 #include "FDisplay.h"
 
-void FlashTagSprite::Add(FlashSpriteEnabled *tag,bool addFrames /*= true*/)
+void FlashTagSprite::Add(FlashSpriteEnabled *tag, bool addFrames /*= true*/)
 {
     tags.push_back(tag);
-    if (tag->isFrame() && addFrames) frames++;
+    if (tag->isFrame() && addFrames)
+        frames++;
 }
 
-N_STD::ostream &operator << (N_STD::ostream &out, FlashTagSprite &data)
+N_STD::ostream &operator<<(N_STD::ostream &out, FlashTagSprite &data)
 {
     N_STD::ostrstream tmp;
-    for(N_STD::vector<FlashSpriteEnabled *>::iterator i=data.tags.begin(); i != data.tags.end(); i++)
+    for (N_STD::vector<FlashSpriteEnabled *>::iterator i = data.tags.begin(); i != data.tags.end(); i++)
     {
         (*i)->Write(tmp);
     }
     tmp << FlashTagEnd();
-    out << FlashTagHeader(39, 4+tmp.pcount());
+    out << FlashTagHeader(39, 4 + tmp.pcount());
     WRITE_UWORD(data.GetID());
     WRITE_UWORD(data.frames);
-    out.write(tmp.rdbuf()->str(),tmp.pcount());
+    out.write(tmp.rdbuf()->str(), tmp.pcount());
     return out;
 }
 
-N_STD::istream &operator >> (N_STD::istream &in,  FlashTagSprite &data)
+N_STD::istream &operator>>(N_STD::istream &in, FlashTagSprite &data)
 {
     UWORD id;
     READ_UWORD(id);
@@ -34,16 +35,16 @@ N_STD::istream &operator >> (N_STD::istream &in,  FlashTagSprite &data)
     return in;
 }
 
-N_STD::ostream &operator << (N_STD::ostream &out, FlashTagDefineMovie &data)
+N_STD::ostream &operator<<(N_STD::ostream &out, FlashTagDefineMovie &data)
 {
-    out << FlashTagHeader(38, (UDWORD)strlen(data.str)+3);
+    out << FlashTagHeader(38, (UDWORD)strlen(data.str) + 3);
     WRITE_UWORD(data.GetID());
     out << data.str;
     out.put((char)0);
     return out;
 }
 
-N_STD::istream &operator >> (N_STD::istream &in,  FlashTagDefineMovie &data)
+N_STD::istream &operator>>(N_STD::istream &in, FlashTagDefineMovie &data)
 {
     UWORD id;
     READ_UWORD(id);

@@ -23,23 +23,23 @@ static char THIS_FILE[] = __FILE__;
 #include ".\playplusview.h"
 
 // Program Mode -- to be set at compile time
-#define PLAYER  0
-#define DUBBER  1
+#define PLAYER 0
+#define DUBBER 1
 int pmode = PLAYER;
 
-//Ver 1.0
-#define GlobalSizePtr(lp)   GlobalSize(GlobalPtrHandle(lp))
+// Ver 1.0
+#define GlobalSizePtr(lp) GlobalSize(GlobalPtrHandle(lp))
 #define LPPAVIFILE PAVIFILE *
-typedef BYTE * HPBYTE;
-typedef UNALIGNED short * HPSHORT;
+typedef BYTE *HPBYTE;
+typedef UNALIGNED short *HPSHORT;
 
 extern BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, BOOL fWait);
 extern void CALLBACK aviaudioMessage(HWND, UINT, WPARAM, LPARAM);
 extern void CALLBACK aviaudioStop(void);
 extern LONG CALLBACK aviaudioTime(void);
 
-BOOL CALLBACK DlgProc(HWND    hwnd,UINT    msg, WPARAM  wParam, LPARAM  lParam);
-static BOOL gfDefDlgEx = FALSE;         //the recursion flag for message crackers
+BOOL CALLBACK DlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+static BOOL gfDefDlgEx = FALSE; // the recursion flag for message crackers
 
 #define BUFSIZE 260
 static char gszBuffer[BUFSIZE];
@@ -48,78 +48,78 @@ static char gszFileName[BUFSIZE];
 static char gszSaveFileName[BUFSIZE];
 static char gszFileTitle[BUFSIZE];
 
-#define AVI_EDIT_CLASS  "edit"
+#define AVI_EDIT_CLASS "edit"
 static LPAVISTREAMINFO glpavisi;
 static int gnSel;
-int     gSelectedStream = -1;   // Highlight this text area when painting
-RECT    grcSelectedStream;      // where to highlight
+int gSelectedStream = -1; // Highlight this text area when painting
+RECT grcSelectedStream;   // where to highlight
 
-char    gszFilter[512];     // for AVIBuildFilter - more than one string!
-static  HINSTANCE   ghInstApp;
-static  HACCEL      ghAccel;
-static  WNDPROC     gOldEditProc;
-static  HWND        ghwndEdit;
+char gszFilter[512]; // for AVIBuildFilter - more than one string!
+static HINSTANCE ghInstApp;
+static HACCEL ghAccel;
+static WNDPROC gOldEditProc;
+static HWND ghwndEdit;
 
-#define MAXTIMERANGE  30000
-#define MAXNUMSTREAMS   25
+#define MAXTIMERANGE 30000
+#define MAXNUMSTREAMS 25
 
-int                 gcpavi;                     // # of streams
-PAVISTREAM          gapavi[MAXNUMSTREAMS];      // the current streams
-int                 gcpaviSel;                  // num of edit streams
-PAVISTREAM          gapaviSel[MAXNUMSTREAMS];   // edit streams to put on clipbd
-int                 gStreamTop[MAXNUMSTREAMS+1];// y position of each stream
-AVICOMPRESSOPTIONS  gaAVIOptions[MAXNUMSTREAMS];// compression options
-LPAVICOMPRESSOPTIONS  galpAVIOptions[MAXNUMSTREAMS];
-PGETFRAME           gapgf[MAXNUMSTREAMS];       // data for decompressing video
-HDRAWDIB            ghdd[MAXNUMSTREAMS];        // drawdib handles
-LONG                galSelStart[MAXNUMSTREAMS];
-LONG                galSelLen[MAXNUMSTREAMS];
-int                 giFirstAudio = -1;          // 1st audio stream found
-int                 giFirstVideo = -1;          // 1st video stream found
+int gcpavi;                                     // # of streams
+PAVISTREAM gapavi[MAXNUMSTREAMS];               // the current streams
+int gcpaviSel;                                  // num of edit streams
+PAVISTREAM gapaviSel[MAXNUMSTREAMS];            // edit streams to put on clipbd
+int gStreamTop[MAXNUMSTREAMS + 1];              // y position of each stream
+AVICOMPRESSOPTIONS gaAVIOptions[MAXNUMSTREAMS]; // compression options
+LPAVICOMPRESSOPTIONS galpAVIOptions[MAXNUMSTREAMS];
+PGETFRAME gapgf[MAXNUMSTREAMS]; // data for decompressing video
+HDRAWDIB ghdd[MAXNUMSTREAMS];   // drawdib handles
+LONG galSelStart[MAXNUMSTREAMS];
+LONG galSelLen[MAXNUMSTREAMS];
+int giFirstAudio = -1; // 1st audio stream found
+int giFirstVideo = -1; // 1st video stream found
 
-#define             gfVideoFound (giFirstVideo >= 0)
-#define             gfAudioFound (giFirstAudio >= 0)
+#define gfVideoFound (giFirstVideo >= 0)
+#define gfAudioFound (giFirstAudio >= 0)
 
-BOOL                gfPlaying = FALSE;          // are we currently playing?
-LONG                glPlayStartTime;    // When did we start playing?
-LONG                glPlayStartPos;     // Where were we on the scrollbar?
-LONG                timeStart;          // cached start, end, length
-LONG                timeEnd;
-LONG                timeLength;
-LONG                timehscroll;        // how much arrows scroll HORZ bar
-int                 nVertSBLen;         // vertical scroll bar
-int                 nHorzSBLen;         // horizontal scroll bar
-int                 nVertHeight;
-int                 nHorzWidth;
-DWORD               gdwMicroSecPerPixel = 1000L;        // scale for video
-WORD                gwZoom = 4;         // one-half zoom (divide by 4)
-HWND                ghwndMCI;
+BOOL gfPlaying = FALSE; // are we currently playing?
+LONG glPlayStartTime;   // When did we start playing?
+LONG glPlayStartPos;    // Where were we on the scrollbar?
+LONG timeStart;         // cached start, end, length
+LONG timeEnd;
+LONG timeLength;
+LONG timehscroll; // how much arrows scroll HORZ bar
+int nVertSBLen;   // vertical scroll bar
+int nHorzSBLen;   // horizontal scroll bar
+int nVertHeight;
+int nHorzWidth;
+DWORD gdwMicroSecPerPixel = 1000L; // scale for video
+WORD gwZoom = 4;                   // one-half zoom (divide by 4)
+HWND ghwndMCI;
 
 // buffer for wave data
 LPVOID lpAudio;
 
 // constants for painting
-#define VSPACE  8       // some vertical spacing
+#define VSPACE 8       // some vertical spacing
 #define SELECTVSPACE 4 // height of selection line
-#define HSPACE  0       // space between frames for video stream
-#define TSPACE  10      // space for text area about each stream
-#define AUDIOVSPACE  64 // height of an audio stream at X1 zoom
-#define HIGHLIGHT       (GetSysColor(COLOR_HIGHLIGHT) ? GetSysColor(COLOR_HIGHLIGHT) : GetSysColor(COLOR_ACTIVECAPTION))
+#define HSPACE 0       // space between frames for video stream
+#define TSPACE 10      // space for text area about each stream
+#define AUDIOVSPACE 64 // height of an audio stream at X1 zoom
+#define HIGHLIGHT (GetSysColor(COLOR_HIGHLIGHT) ? GetSysColor(COLOR_HIGHLIGHT) : GetSysColor(COLOR_ACTIVECAPTION))
 
-void             FrameVideo(HDC hdc, RECT *rcFrame, HBRUSH hbr);
+void FrameVideo(HDC hdc, RECT *rcFrame, HBRUSH hbr);
 int gfWait = 0;
 
-//ver 1.1
-long playtime=0;
+// ver 1.1
+long playtime = 0;
 
 long GetScrollTime();
 void SetScrollTime(long time);
 
-//ver 1.1
+// ver 1.1
 #define WM_USER_PLAY 0x00401
-#define BUFFER_LENGTH  256
+#define BUFFER_LENGTH 256
 
-void GetImageDimension(RECT& rcFrame);
+void GetImageDimension(RECT &rcFrame);
 char playfiledir[300];
 char seps[] = "*";
 void OpenMovieFileInit(char *filename);
@@ -129,10 +129,10 @@ void SetTitleBar(CString title);
 BOOL playerAlive = TRUE;
 UINT PlayAVIThread(LPVOID pParam);
 
-#define MENU_OPEN           11
-#define MENU_MERGE          17
+#define MENU_OPEN 11
+#define MENU_MERGE 17
 
-int ErrMsg (LPSTR sz,...);
+int ErrMsg(LPSTR sz, ...);
 void FreeDrawStuff();
 void FileStop(int mode);
 void FixWindowTitle();
@@ -147,17 +147,17 @@ void StopPlayingRecording();
 int maxxScreen = 800;
 int maxyScreen = 600;
 
-int doneOnce=0;
+int doneOnce = 0;
 
 HWND viewWnd = NULL;
 HWND mainWnd = NULL;
 
 HBITMAP hLogoBM = NULL;
 
-int nColors=24;
+int nColors = 24;
 int gfRecording = 0;
 
-#define SOUND_MODE    0
+#define SOUND_MODE 0
 #define SILENT_MODE 1
 
 CSliderCtrl *sliderCtrlPtr;
@@ -171,72 +171,75 @@ int infoLineHeight = 20;
 /////////////////////////////////////////////
 
 void NukeAVIStream(int i);
-int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_path, CString output_avi_path, BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format, DWORD  audio_format_size, BOOL bInterleave, int interleave_factor);
+int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_path, CString output_avi_path,
+                               BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format, DWORD audio_format_size,
+                               BOOL bInterleave, int interleave_factor);
 BOOL CALLBACK SaveCallback(int iProgress);
 BOOL WinYield(void);
 CString GetProgPath();
 
-#define NUMSTREAMS   2
+#define NUMSTREAMS 2
 
 CString savedir("");
 CString cursordir("");
 CString videofilepath("");
 
-//Path to temporary wav file
+// Path to temporary wav file
 CString tempaudiopath;
 CString tempsilencepath;
-int recordaudio=1;
+int recordaudio = 1;
 
-//Audio Recording Variables
+// Audio Recording Variables
 UINT AudioDeviceID = WAVE_MAPPER;
 
 HWAVEIN m_hRecord;
 WAVEFORMATEX m_Format;
 DWORD m_ThreadID;
-int m_QueuedBuffers=0;
-int     m_BufferSize = 1000;    // number of samples
+int m_QueuedBuffers = 0;
+int m_BufferSize = 1000; // number of samples
 
-#define WM_USER_GENERIC  0x00401
+#define WM_USER_GENERIC 0x00401
 
-//Audio Options Dialog
-LPWAVEFORMATEX      pwfx = NULL;
-DWORD               cbwfx;
+// Audio Options Dialog
+LPWAVEFORMATEX pwfx = NULL;
+DWORD cbwfx;
 
-//Audio Formats Dialog
+// Audio Formats Dialog
 DWORD waveinselected = WAVE_FORMAT_2S16;
 int audio_bits_per_sample = 16;
 int audio_num_channels = 2;
-int audio_samples_per_seconds = 22050 ;
+int audio_samples_per_seconds = 22050;
 BOOL bAudioCompression = TRUE;
 
-#define  MILLISECONDS 0
-#define  FRAMES 1
+#define MILLISECONDS 0
+#define FRAMES 1
 BOOL interleaveFrames = TRUE;
-int  interleaveFactor = 100;
-int  interleaveUnit = MILLISECONDS;
+int interleaveFactor = 100;
+int interleaveUnit = MILLISECONDS;
 
 /////////////////////////////////////////////
 // Audio Recording Module
 /////////////////////////////////////////////
 
 #if !defined(WAVE_FORMAT_MPEGLAYER3)
-#define  WAVE_FORMAT_MPEGLAYER3 0x0055
+#define WAVE_FORMAT_MPEGLAYER3 0x0055
 #endif
 
-void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile,long starttime, int keepcounter, int overwriteaudio,int resetslider);
-void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile,long starttime, int keepcounter, int overwriteaudio);
+void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long starttime, int keepcounter, int overwriteaudio,
+                   int resetslider);
+void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long starttime, int keepcounter, int overwriteaudio);
 
 CSoundFile *m_pFile = NULL;
 CSoundFile *m_pSilenceFile = NULL;
 BOOL silenceFileValid = FALSE;
 
-BOOL StartAudioRecording(WAVEFORMATEX* format);
+BOOL StartAudioRecording(WAVEFORMATEX *format);
 void waveInErrorMsg(MMRESULT result, const char *);
 int AddInputBufferToQueue();
 void SetBufferSize(int NumberOfSamples);
 void CALLBACK OnMM_WIM_DATA(UINT parm1, LONG parm2);
 void CALLBACK OnMM_WOM_DATA(UINT parm1, LONG parm2);
-void DataFromSoundIn(CBuffer* buffer) ;
+void DataFromSoundIn(CBuffer *buffer);
 void StopAudioRecording();
 BOOL InitAudioRecording();
 void ClearAudioFile();
@@ -247,10 +250,10 @@ CString GetTempPath();
 BOOL CreateSilenceFile();
 void ClearAudioSilenceFile();
 void GetSilenceWavePath();
-void WriteSilenceFile(CBuffer* buffer);
+void WriteSilenceFile(CBuffer *buffer);
 
 void RemoveExistingAudioTracks();
-void AddAudioWaveFile(char  *FileName);
+void AddAudioWaveFile(char *FileName);
 
 void BuildRecordingFormat();
 void SuggestCompressFormat();
@@ -259,8 +262,8 @@ void AllocCompressFormat();
 
 void TimeDependentInsert(CString filename, long shiftTime);
 
-int recordstate=0;
-int recordpaused=0;
+int recordstate = 0;
+int recordpaused = 0;
 
 int audioRecordable = 0;
 int audioPlayable = 0;
@@ -280,18 +283,20 @@ long glRecordStartTimeValue = 0;
 #define RESET_TO_START 1
 #define RESET_TO_CURRENT 1
 
-int EditStreamReplace(PAVISTREAM pavi, LONG * plPos,  LONG * plLength, PAVISTREAM pstream, LONG lStart, LONG lLength);
-int EditStreamPadSilence(PAVISTREAM pavi, LONG * plPos,  LONG * plLength);
-long ExAVIStreamTimeToSample( PAVISTREAM pavi, LONG lTime);
-int EditStreamSilenceShift(PAVISTREAM pavi, LONG * plPos, LONG * plLength);
-long SafeStreamTimeToSample( PAVISTREAM pavi, LONG starttime );
-void RecomputeStreamsTime(int resetslider,long timeCurrent);
+int EditStreamReplace(PAVISTREAM pavi, LONG *plPos, LONG *plLength, PAVISTREAM pstream, LONG lStart, LONG lLength);
+int EditStreamPadSilence(PAVISTREAM pavi, LONG *plPos, LONG *plLength);
+long ExAVIStreamTimeToSample(PAVISTREAM pavi, LONG lTime);
+int EditStreamSilenceShift(PAVISTREAM pavi, LONG *plPos, LONG *plLength);
+long SafeStreamTimeToSample(PAVISTREAM pavi, LONG starttime);
+void RecomputeStreamsTime(int resetslider, long timeCurrent);
 
-void CloneAudioStream_ReplaceStreamPool(int i,PAVISTREAM pavi);
+void CloneAudioStream_ReplaceStreamPool(int i, PAVISTREAM pavi);
 void ReInitAudioStream(int i);
 
-void SetAdditionalCompressSettings(BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format, DWORD  audio_format_size, BOOL bInterleave, int interleave_factor, int interleave_unit);
-LPWAVEFORMATEX  allocRetrieveAudioFormat(PAVISTREAM pavi);
+void SetAdditionalCompressSettings(BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format,
+                                   DWORD audio_format_size, BOOL bInterleave, int interleave_factor,
+                                   int interleave_unit);
+LPWAVEFORMATEX allocRetrieveAudioFormat(PAVISTREAM pavi);
 
 void SetDurationLine();
 void SetRPSLine();
@@ -301,11 +306,12 @@ int allowRecordExtension = 1;
 int fileModified = 0;
 
 void Msg(const char fmt[], ...);
-void DumpFormat(WAVEFORMATEX*  pwfx, const char* str );
+void DumpFormat(WAVEFORMATEX *pwfx, const char *str);
 
-//ver 2.26
+// ver 2.26
 int autoplay = 0;
-int autoexit = 0;;
+int autoexit = 0;
+;
 int fullscreen = 0;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -314,55 +320,55 @@ int fullscreen = 0;
 IMPLEMENT_DYNCREATE(CPlayplusView, CView)
 
 BEGIN_MESSAGE_MAP(CPlayplusView, CView)
-    //{{AFX_MSG_MAP(CPlayplusView)
-    ON_COMMAND(ID_FILE_OPEN, OnFileOpen)
-    ON_COMMAND(ID_FILE_CLOSE, OnFileClose)
-    ON_COMMAND(ID_FILE_PLAY, OnFilePlay)
-    ON_COMMAND(ID_FILE_REWIND, OnFileRewind)
-    ON_COMMAND(ID_FILE_STOP, OnFileStop)
-    ON_WM_CREATE()
-    ON_WM_DESTROY()
-    ON_WM_PAINT()
-    ON_WM_SIZE()
-    ON_COMMAND(ID_FILE_LASTFRAME, OnFileLastframe)
-    ON_WM_ERASEBKGND()
-    ON_WM_HSCROLL()
-    ON_WM_VSCROLL()
-    ON_COMMAND(ID_ZOOM_RESIZETOMOVIESIZE, OnZoomResizetomoviesize)
-    ON_COMMAND(ID_ZOOM_QUARTER, OnZoomQuarter)
-    ON_COMMAND(ID_ZOOM_HALF, OnZoomHalf)
-    ON_COMMAND(ID_ZOOM_1, OnZoom1)
-    ON_COMMAND(ID_ZOOM_2, OnZoom2)
-    ON_COMMAND(ID_ZOOM_4, OnZoom4)
-    ON_UPDATE_COMMAND_UI(ID_ZOOM_1, OnUpdateZoom1)
-    ON_UPDATE_COMMAND_UI(ID_ZOOM_2, OnUpdateZoom2)
-    ON_UPDATE_COMMAND_UI(ID_ZOOM_4, OnUpdateZoom4)
-    ON_UPDATE_COMMAND_UI(ID_ZOOM_HALF, OnUpdateZoomHalf)
-    ON_UPDATE_COMMAND_UI(ID_ZOOM_QUARTER, OnUpdateZoomQuarter)
-    ON_UPDATE_COMMAND_UI(ID_ZOOM_RESIZETOMOVIESIZE, OnUpdateZoomResizetomoviesize)
-    ON_UPDATE_COMMAND_UI(ID_FILE_REWIND, OnUpdateFileRewind)
-    ON_UPDATE_COMMAND_UI(ID_FILE_LASTFRAME, OnUpdateFileLastframe)
-    ON_COMMAND(ID_BUTTON32785, OnButtonRecord)
-    ON_UPDATE_COMMAND_UI(ID_BUTTON32785, OnUpdateRecord)
-    ON_COMMAND(ID_AUDIO_REMOVEEXISTINGAUDIOTRACKS, OnAudioRemoveexistingaudiotracks)
-    ON_COMMAND(ID_AUDIO_ADDAUDIOFROMWAVEFILE, OnAudioAddaudiofromwavefile)
-    ON_UPDATE_COMMAND_UI(ID_AUDIO_REMOVEEXISTINGAUDIOTRACKS, OnUpdateAudioRemoveexistingaudiotracks)
-    ON_UPDATE_COMMAND_UI(ID_AUDIO_ADDAUDIOFROMWAVEFILE, OnUpdateAudioAddaudiofromwavefile)
-    ON_COMMAND(ID_FILE_SAVEAS, OnFileSaveas)
-    ON_COMMAND(ID_AUDIO_AUDIOOPTIONS, OnAudioAudiooptions)
-    ON_COMMAND(ID_ZOOM_TESTAUDIO, OnZoomTestaudio)
-    ON_UPDATE_COMMAND_UI(ID_FILE_SAVEAS, OnUpdateFileSaveas)
-    ON_UPDATE_COMMAND_UI(ID_FILE_PLAY, OnUpdateFilePlay)
-    ON_COMMAND(ID_AUDIO_EXTENSION, OnAudioExtension)
-    ON_UPDATE_COMMAND_UI(ID_AUDIO_EXTENSION, OnUpdateAudioExtension)
-    //}}AFX_MSG_MAP
-    // Standard printing commands
-    ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
-    ON_COMMAND(ID_FILE_PRINT_DIRECT, CView::OnFilePrint)
-    ON_COMMAND(ID_FILE_PRINT_PREVIEW, CView::OnFilePrintPreview)
-    //ON_MESSAGE (WM_USER_GENERIC, OnUserGeneric) C2440
-    ON_MESSAGE(MM_WIM_DATA, OnMM_WIM_DATA)
-    ON_MESSAGE(MM_WOM_DONE, OnMM_WOM_DONE)
+//{{AFX_MSG_MAP(CPlayplusView)
+ON_COMMAND(ID_FILE_OPEN, OnFileOpen)
+ON_COMMAND(ID_FILE_CLOSE, OnFileClose)
+ON_COMMAND(ID_FILE_PLAY, OnFilePlay)
+ON_COMMAND(ID_FILE_REWIND, OnFileRewind)
+ON_COMMAND(ID_FILE_STOP, OnFileStop)
+ON_WM_CREATE()
+ON_WM_DESTROY()
+ON_WM_PAINT()
+ON_WM_SIZE()
+ON_COMMAND(ID_FILE_LASTFRAME, OnFileLastframe)
+ON_WM_ERASEBKGND()
+ON_WM_HSCROLL()
+ON_WM_VSCROLL()
+ON_COMMAND(ID_ZOOM_RESIZETOMOVIESIZE, OnZoomResizetomoviesize)
+ON_COMMAND(ID_ZOOM_QUARTER, OnZoomQuarter)
+ON_COMMAND(ID_ZOOM_HALF, OnZoomHalf)
+ON_COMMAND(ID_ZOOM_1, OnZoom1)
+ON_COMMAND(ID_ZOOM_2, OnZoom2)
+ON_COMMAND(ID_ZOOM_4, OnZoom4)
+ON_UPDATE_COMMAND_UI(ID_ZOOM_1, OnUpdateZoom1)
+ON_UPDATE_COMMAND_UI(ID_ZOOM_2, OnUpdateZoom2)
+ON_UPDATE_COMMAND_UI(ID_ZOOM_4, OnUpdateZoom4)
+ON_UPDATE_COMMAND_UI(ID_ZOOM_HALF, OnUpdateZoomHalf)
+ON_UPDATE_COMMAND_UI(ID_ZOOM_QUARTER, OnUpdateZoomQuarter)
+ON_UPDATE_COMMAND_UI(ID_ZOOM_RESIZETOMOVIESIZE, OnUpdateZoomResizetomoviesize)
+ON_UPDATE_COMMAND_UI(ID_FILE_REWIND, OnUpdateFileRewind)
+ON_UPDATE_COMMAND_UI(ID_FILE_LASTFRAME, OnUpdateFileLastframe)
+ON_COMMAND(ID_BUTTON32785, OnButtonRecord)
+ON_UPDATE_COMMAND_UI(ID_BUTTON32785, OnUpdateRecord)
+ON_COMMAND(ID_AUDIO_REMOVEEXISTINGAUDIOTRACKS, OnAudioRemoveexistingaudiotracks)
+ON_COMMAND(ID_AUDIO_ADDAUDIOFROMWAVEFILE, OnAudioAddaudiofromwavefile)
+ON_UPDATE_COMMAND_UI(ID_AUDIO_REMOVEEXISTINGAUDIOTRACKS, OnUpdateAudioRemoveexistingaudiotracks)
+ON_UPDATE_COMMAND_UI(ID_AUDIO_ADDAUDIOFROMWAVEFILE, OnUpdateAudioAddaudiofromwavefile)
+ON_COMMAND(ID_FILE_SAVEAS, OnFileSaveas)
+ON_COMMAND(ID_AUDIO_AUDIOOPTIONS, OnAudioAudiooptions)
+ON_COMMAND(ID_ZOOM_TESTAUDIO, OnZoomTestaudio)
+ON_UPDATE_COMMAND_UI(ID_FILE_SAVEAS, OnUpdateFileSaveas)
+ON_UPDATE_COMMAND_UI(ID_FILE_PLAY, OnUpdateFilePlay)
+ON_COMMAND(ID_AUDIO_EXTENSION, OnAudioExtension)
+ON_UPDATE_COMMAND_UI(ID_AUDIO_EXTENSION, OnUpdateAudioExtension)
+//}}AFX_MSG_MAP
+// Standard printing commands
+ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
+ON_COMMAND(ID_FILE_PRINT_DIRECT, CView::OnFilePrint)
+ON_COMMAND(ID_FILE_PRINT_PREVIEW, CView::OnFilePrintPreview)
+// ON_MESSAGE (WM_USER_GENERIC, OnUserGeneric) C2440
+ON_MESSAGE(MM_WIM_DATA, OnMM_WIM_DATA)
+ON_MESSAGE(MM_WOM_DONE, OnMM_WOM_DONE)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -377,7 +383,7 @@ CPlayplusView::~CPlayplusView()
 {
 }
 
-BOOL CPlayplusView::PreCreateWindow(CREATESTRUCT& cs)
+BOOL CPlayplusView::PreCreateWindow(CREATESTRUCT &cs)
 {
     // TODO: Modify the Window class or styles here by modifying
     //  the CREATESTRUCT cs
@@ -388,9 +394,9 @@ BOOL CPlayplusView::PreCreateWindow(CREATESTRUCT& cs)
 /////////////////////////////////////////////////////////////////////////////
 // CPlayplusView drawing
 
-void CPlayplusView::OnDraw(CDC* /*pDC*/)
+void CPlayplusView::OnDraw(CDC * /*pDC*/)
 {
-    CPlayplusDoc* pDoc = GetDocument();
+    CPlayplusDoc *pDoc = GetDocument();
     ASSERT_VALID(pDoc);
     // TODO: add draw code for native data here
 }
@@ -398,18 +404,18 @@ void CPlayplusView::OnDraw(CDC* /*pDC*/)
 /////////////////////////////////////////////////////////////////////////////
 // CPlayplusView printing
 
-BOOL CPlayplusView::OnPreparePrinting(CPrintInfo* pInfo)
+BOOL CPlayplusView::OnPreparePrinting(CPrintInfo *pInfo)
 {
     // default preparation
     return DoPreparePrinting(pInfo);
 }
 
-void CPlayplusView::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
+void CPlayplusView::OnBeginPrinting(CDC * /*pDC*/, CPrintInfo * /*pInfo*/)
 {
     // TODO: add extra initialization before printing
 }
 
-void CPlayplusView::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
+void CPlayplusView::OnEndPrinting(CDC * /*pDC*/, CPrintInfo * /*pInfo*/)
 {
     // TODO: add cleanup after printing
 }
@@ -423,15 +429,15 @@ void CPlayplusView::AssertValid() const
     CView::AssertValid();
 }
 
-void CPlayplusView::Dump(CDumpContext& dc) const
+void CPlayplusView::Dump(CDumpContext &dc) const
 {
     CView::Dump(dc);
 }
 
-CPlayplusDoc* CPlayplusView::GetDocument() // non-debug version is inline
+CPlayplusDoc *CPlayplusView::GetDocument() // non-debug version is inline
 {
     ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CPlayplusDoc)));
-    return (CPlayplusDoc*)m_pDocument;
+    return (CPlayplusDoc *)m_pDocument;
 }
 #endif //_DEBUG
 
@@ -444,7 +450,7 @@ void CPlayplusView::OnFileOpen()
     gszFileName[0] = 0;
     gszFileTitle[0] = 0;
 
-    LoadString( ghInstApp, IDS_OPENTITLE, gszBuffer, BUFSIZE );
+    LoadString(ghInstApp, IDS_OPENTITLE, gszBuffer, BUFSIZE);
 
     memset(&ofn, 0, sizeof(ofn));
     ofn.lpstrTitle = gszBuffer;
@@ -458,7 +464,8 @@ void CPlayplusView::OnFileOpen()
     ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
     // If filename exists
-    if (GetOpenFileName(&ofn)) {
+    if (GetOpenFileName(&ofn))
+    {
         OnFileStop();
 
         gwZoom = 4;
@@ -473,31 +480,38 @@ void CPlayplusView::OnFileOpen()
 void ResizeToMovie(BOOL useDefault)
 {
     RECT rc;
-    if (useDefault) {
+    if (useDefault)
+    {
         rc.left = 100;
         rc.top = 100;
-        rc.right=rc.left + 308-1;
-        rc.bottom=rc.top + 222-1;
-    } else {
-        GetImageDimension(rc) ;
+        rc.right = rc.left + 308 - 1;
+        rc.bottom = rc.top + 222 - 1;
+    }
+    else
+    {
+        GetImageDimension(rc);
     }
 
-    CWnd* mainWindow = AfxGetMainWnd( );
+    CWnd *mainWindow = AfxGetMainWnd();
 
     if (((rc.bottom - rc.top) < 20) && ((rc.right - rc.left) < 10))
         return;
 
-    ((CMainFrame*) mainWindow)->ResizeToMovie(rc);
+    ((CMainFrame *)mainWindow)->ResizeToMovie(rc);
 }
 
 void CPlayplusView::OnFileClose()
 {
-    if ((fileModified == 1) && (pmode == DUBBER)) {
-        int ret = MessageBox("Do you want to save changes ?","Note",MB_YESNOCANCEL | MB_ICONQUESTION);
-        if (ret == IDYES) {
-            SendMessage(WM_COMMAND,ID_FILE_SAVEAS,0);
+    if ((fileModified == 1) && (pmode == DUBBER))
+    {
+        int ret = MessageBox("Do you want to save changes ?", "Note", MB_YESNOCANCEL | MB_ICONQUESTION);
+        if (ret == IDYES)
+        {
+            SendMessage(WM_COMMAND, ID_FILE_SAVEAS, 0);
             return;
-        } else if (ret == IDCANCEL) {
+        }
+        else if (ret == IDCANCEL)
+        {
             return;
         }
     }
@@ -511,7 +525,7 @@ void CPlayplusView::OnFileClose()
 
     ResizeToMovie(TRUE);
 
-    //Invalidate();
+    // Invalidate();
 }
 
 void CPlayplusView::OnFilePlay()
@@ -526,21 +540,30 @@ void PlayMovie(int mode)
     glPlayStartTime = timeGetTime();
     glPlayStartPos = GetScrollTime();
 
-    //Recording sessions do not reset time
-    if ((allowRecordExtension) && (pmode == DUBBER) && (mode == SILENT_MODE)) {
-        //do not reset time if this is a recording session (mode == silent) at the end of the longest stream and extension is allowed
-    } else if ((!allowRecordExtension) && (pmode == DUBBER) && (mode == SILENT_MODE)) {
-        //do not reset time also if recording sesson even if  not allowRecordExtension
-    } else if (timeEnd <= glPlayStartPos) {
-        //resetting time for playing sessions
+    // Recording sessions do not reset time
+    if ((allowRecordExtension) && (pmode == DUBBER) && (mode == SILENT_MODE))
+    {
+        // do not reset time if this is a recording session (mode == silent) at the end of the longest stream and
+        // extension is allowed
+    }
+    else if ((!allowRecordExtension) && (pmode == DUBBER) && (mode == SILENT_MODE))
+    {
+        // do not reset time also if recording sesson even if  not allowRecordExtension
+    }
+    else if (timeEnd <= glPlayStartPos)
+    {
+        // resetting time for playing sessions
         SetScrollTime(timeStart);
         glPlayStartPos = GetScrollTime();
     }
 
-    if (mode == SOUND_MODE) {
-        //should this be put here since there is adjustment to the scroll time
-        if (gfAudioFound) {
-            aviaudioPlay(viewWnd, gapavi[giFirstAudio], AVIStreamTimeToSample(gapavi[giFirstAudio], GetScrollTime()), AVIStreamEnd(gapavi[giFirstAudio]), FALSE);
+    if (mode == SOUND_MODE)
+    {
+        // should this be put here since there is adjustment to the scroll time
+        if (gfAudioFound)
+        {
+            aviaudioPlay(viewWnd, gapavi[giFirstAudio], AVIStreamTimeToSample(gapavi[giFirstAudio], GetScrollTime()),
+                         AVIStreamEnd(gapavi[giFirstAudio]), FALSE);
         }
     }
 
@@ -550,10 +573,9 @@ void PlayMovie(int mode)
 void CPlayplusView::OnFileRewind()
 {
     // TODO: Add your command handler code here
-    SetScrollTime( timeStart);
+    SetScrollTime(timeStart);
     ::InvalidateRect(viewWnd, NULL, FALSE);
     ::UpdateWindow(viewWnd);
-
 }
 
 void CPlayplusView::OnFileStop()
@@ -564,63 +586,58 @@ void CPlayplusView::OnFileStop()
 
     Sleep(50);
     if (autoexit)
-        ::PostMessage(AfxGetMainWnd()->m_hWnd,WM_COMMAND,ID_APP_EXIT,0);
-
+        ::PostMessage(AfxGetMainWnd()->m_hWnd, WM_COMMAND, ID_APP_EXIT, 0);
 }
 
 void StopPlayingRecording()
 {
 
-    if (gfRecording) {
+    if (gfRecording)
+    {
 
-        endAudioRecording  =TRUE;
+        endAudioRecording = TRUE;
         FileStop(SILENT_MODE);
-
     }
     else
         FileStop(SOUND_MODE);
-
 }
 
 void PaintVideo(HDC hdc, RECT rcFrame, int iStream, LPBITMAPINFOHEADER lpbi, LONG lCurSamp, LONG lPos)
 {
-    int         iLen;
-    char        szText[BUFSIZE];
+    int iLen;
+    char szText[BUFSIZE];
 
-    //if lbpi is present, draw it
-    if (lpbi) {
-        //Added code for centering
+    // if lbpi is present, draw it
+    if (lpbi)
+    {
+        // Added code for centering
         CRect rect;
-        ::GetClientRect( viewWnd,&rect);
+        ::GetClientRect(viewWnd, &rect);
 
-        int offsetx=0;
-        int offsety=0;
-        int bitmapwidth = rcFrame.right-rcFrame.left+1;
-        int bitmapheight = rcFrame.bottom-rcFrame.top+1;
+        int offsetx = 0;
+        int offsety = 0;
+        int bitmapwidth = rcFrame.right - rcFrame.left + 1;
+        int bitmapheight = rcFrame.bottom - rcFrame.top + 1;
 
-        if (rect.right> bitmapwidth)
-            offsetx = (rect.right - bitmapwidth)/2;
+        if (rect.right > bitmapwidth)
+            offsetx = (rect.right - bitmapwidth) / 2;
 
-        if (rect.bottom> bitmapheight)
-            offsety = (rect.bottom - bitmapheight)/2;
+        if (rect.bottom > bitmapheight)
+            offsety = (rect.bottom - bitmapheight) / 2;
 
-        DrawDibDraw(ghdd[iStream], hdc,
-            rcFrame.left+offsetx, rcFrame.top+offsety,
-            rcFrame.right - rcFrame.left - 1,
-            rcFrame.bottom - rcFrame.top - 1,
-            lpbi, NULL,
-            0, 0, -1, -1,
-            (iStream == giFirstVideo) ? 0 :DDF_BACKGROUNDPAL);
+        DrawDibDraw(ghdd[iStream], hdc, rcFrame.left + offsetx, rcFrame.top + offsety, rcFrame.right - rcFrame.left - 1,
+                    rcFrame.bottom - rcFrame.top - 1, lpbi, NULL, 0, 0, -1, -1,
+                    (iStream == giFirstVideo) ? 0 : DDF_BACKGROUNDPAL);
 
-        iLen = wsprintf(szText, "%ld %ld.%03lds",
-            lCurSamp, lPos / 1000, lPos % 1000);
+        iLen = wsprintf(szText, "%ld %ld.%03lds", lCurSamp, lPos / 1000, lPos % 1000);
     }
 
     //
     // Before or after the movie (or read error) draw GRAY
     //
-    else {
-        //do nothing
+    else
+    {
+        // do nothing
     }
 }
 
@@ -632,14 +649,12 @@ int PaintStuff(HDC hdc, HWND hwnd, BOOL fDrawEverything)
     int n;
     int nFrames;
     int i;
-    LONG lSamp
-        , lCurSamp;
+    LONG lSamp, lCurSamp;
     LPBITMAPINFOHEADER lpbi = NULL;
     LONG l;
     LONG lTime;
     LONG lSize = 0;
-    RECT rcFrame
-        , rcC;
+    RECT rcFrame, rcC;
 
     GetClientRect(hwnd, &rcC);
 
@@ -648,14 +663,16 @@ int PaintStuff(HDC hdc, HWND hwnd, BOOL fDrawEverything)
     xStreamLeft = -GetScrollPos(hwnd, SB_HORZ);
 
     // for all streams
-    for (i=0; i<gcpavi; i++) {
+    for (i = 0; i < gcpavi; i++)
+    {
         AVISTREAMINFO avis;
         LONG lEndTime;
 
         gStreamTop[i] = yStreamTop + GetScrollPos(hwnd, SB_VERT);
         AVIStreamInfo(gapavi[i], &avis, sizeof(avis));
 
-        if (avis.fccType == streamtypeVIDEO) {
+        if (avis.fccType == streamtypeVIDEO)
+        {
             if (gapgf[i] == NULL)
                 continue;
 
@@ -665,39 +682,45 @@ int PaintStuff(HDC hdc, HWND hwnd, BOOL fDrawEverything)
             lEndTime = AVIStreamEndTime(gapavi[i]);
             if (lTime <= lEndTime)
                 lSamp = AVIStreamTimeToSample(gapavi[i], lTime);
-            else {      // we've scrolled past the end of this stream
-                //lSamp = AVIStreamTimeToSample(gapavi[i], AVIStreamStartTime(gapavi[i]));
-                lSamp = AVIStreamTimeToSample(gapavi[i], AVIStreamStartTime(gapavi[i])+timeLength-1);
+            else
+            { // we've scrolled past the end of this stream
+                // lSamp = AVIStreamTimeToSample(gapavi[i], AVIStreamStartTime(gapavi[i]));
+                lSamp = AVIStreamTimeToSample(gapavi[i], AVIStreamStartTime(gapavi[i]) + timeLength - 1);
             }
 
-            //ver 1.1
-            iFrameWidth = (avis.rcFrame.right - avis.rcFrame.left)  + HSPACE;
+            // ver 1.1
+            iFrameWidth = (avis.rcFrame.right - avis.rcFrame.left) + HSPACE;
             nFrames = 0;
 
-            for (n = -nFrames; n <= nFrames; n++) {
-                if (i == giFirstVideo) {
+            for (n = -nFrames; n <= nFrames; n++)
+            {
+                if (i == giFirstVideo)
+                {
                     lCurSamp = lSamp + n;
                     l = AVIStreamSampleToTime(gapavi[i], lCurSamp);
-                } else {    // NOT the first video stream
-                    l = lTime + MulDiv32(n * (iFrameWidth+HSPACE), gdwMicroSecPerPixel, 1000);
+                }
+                else
+                { // NOT the first video stream
+                    l = lTime + MulDiv32(n * (iFrameWidth + HSPACE), gdwMicroSecPerPixel, 1000);
                     lCurSamp = AVIStreamTimeToSample(gapavi[i], l);
                     l = AVIStreamSampleToTime(gapavi[i], lCurSamp);
                 }
 
                 if (gapgf[i] && lCurSamp >= AVIStreamStart(gapavi[i]))
-                    lpbi = (LPBITMAPINFOHEADER) AVIStreamGetFrame(gapgf[i], lCurSamp);
+                    lpbi = (LPBITMAPINFOHEADER)AVIStreamGetFrame(gapgf[i], lCurSamp);
                 else
                     lpbi = NULL;
 
                 // Figure out where to draw this frame
-                rcFrame.left   = xStreamLeft;
-                rcFrame.top    = yStreamTop ;
-                rcFrame.right  = rcFrame.left + (avis.rcFrame.right - avis.rcFrame.left) * gwZoom / 4;
+                rcFrame.left = xStreamLeft;
+                rcFrame.top = yStreamTop;
+                rcFrame.right = rcFrame.left + (avis.rcFrame.right - avis.rcFrame.left) * gwZoom / 4;
                 rcFrame.bottom = rcFrame.top + (avis.rcFrame.bottom - avis.rcFrame.top) * gwZoom / 4;
 
-                //Patch to prevent blank screen
-                if (lpbi == NULL) {
-                    lpbi = (LPBITMAPINFOHEADER) AVIStreamGetFrame(gapgf[i], AVIStreamEnd(gapavi[i])-1);
+                // Patch to prevent blank screen
+                if (lpbi == NULL)
+                {
+                    lpbi = (LPBITMAPINFOHEADER)AVIStreamGetFrame(gapgf[i], AVIStreamEnd(gapavi[i]) - 1);
                 }
 
                 PaintVideo(hdc, rcFrame, i, lpbi, lCurSamp, l);
@@ -706,15 +729,15 @@ int PaintStuff(HDC hdc, HWND hwnd, BOOL fDrawEverything)
             if (lpbi)
                 AVIStreamSampleSize(gapavi[i], lSamp, &lSize);
 
-            //ver 1.1
+            // ver 1.1
             yStreamTop += (rcFrame.bottom - rcFrame.top);
 
-        } //If Video Stream
+        } // If Video Stream
 
         // Give up once we're painting below the bottom of the window
         if (!fDrawEverything && yStreamTop >= rcC.bottom)
             break;
-    } //for all streams
+    } // for all streams
 
     // The bottom of all the streams;
     gStreamTop[gcpavi] = yStreamTop + GetScrollPos(hwnd, SB_VERT);
@@ -730,28 +753,33 @@ int PaintStuff(HDC hdc, HWND hwnd, BOOL fDrawEverything)
 // Pre-condition : Init streams is called only in InserAVIfile...
 // if it needed to be called in other places, make sure the relevant
 // and only the revlant components are included
-void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long /*starttime*/, int /*keepcounter*/, int /*overwriteaudio*/,int resetslider)
+void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long /*starttime*/, int /*keepcounter*/, int /*overwriteaudio*/,
+                   int resetslider)
 {
-    //Note: the keepcounter variable is not used
-    //It's function is taken by the resetslider
+    // Note: the keepcounter variable is not used
+    // It's function is taken by the resetslider
 
-    //Currently the resetslider is used only if the mode is not OVERWRITEAUDIO
-    //if it is FALSE, then we force the counter not to reset
-    //by default, for most cases, the reset silder is set to TRUE, especially when insertAviFile  is used to insert new streams into the current stream pool
+    // Currently the resetslider is used only if the mode is not OVERWRITEAUDIO
+    // if it is FALSE, then we force the counter not to reset
+    // by default, for most cases, the reset silder is set to TRUE, especially when insertAviFile  is used to insert new
+    // streams into the current stream pool
 
     PAVISTREAM pavi;
     int i;
-    for (i = gcpavi; i <= MAXNUMSTREAMS; ++i) {
+    for (i = gcpavi; i <= MAXNUMSTREAMS; ++i)
+    {
         if (AVIERR_OK != ::AVIFileGetStream(pfile, &pavi, 0L, i - gcpavi))
             break;
 
-        if (i == MAXNUMSTREAMS) {
+        if (i == MAXNUMSTREAMS)
+        {
             ::AVIStreamRelease(pavi);
-            LoadString( ghInstApp, IDS_MAXSTREAMS, gszBuffer, BUFSIZE );
+            LoadString(ghInstApp, IDS_MAXSTREAMS, gszBuffer, BUFSIZE);
             ErrMsg(gszBuffer);
             break;
         }
-        if (AVIERR_OK != CreateEditableStream(&gapavi[i], pavi)) {
+        if (AVIERR_OK != CreateEditableStream(&gapavi[i], pavi))
+        {
             ::AVIStreamRelease(pavi);
             break;
         }
@@ -761,8 +789,9 @@ void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long /*starttime*/, int /*kee
 
     ::AVIFileRelease(pfile);
 
-    if ((gcpavi == i) && (i != MAXNUMSTREAMS)) {
-        LoadString( ghInstApp, IDS_NOOPEN, gszBuffer, BUFSIZE );
+    if ((gcpavi == i) && (i != MAXNUMSTREAMS))
+    {
+        LoadString(ghInstApp, IDS_NOOPEN, gszBuffer, BUFSIZE);
 
         ErrMsg(gszBuffer, lpszFile);
         return;
@@ -770,13 +799,12 @@ void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long /*starttime*/, int /*kee
 
     FreeDrawStuff();
     gcpavi = i;
-    InitStreams(); //This function inherent has a RecomputeStreamsTime component
+    InitStreams(); // This function inherent has a RecomputeStreamsTime component
 
     // This function is here mainly for the benefit of  needshift ==1
-    // however, for thecase where needshift == 0, the recomputation of Streams Time does not logically affect the original computation by InitStreams
-    // in this case, the recomputStreamsTime is basically for
-    // (a) setting the slider value
-    // or (b) for recomputing streamstime after a conversion
+    // however, for thecase where needshift == 0, the recomputation of Streams Time does not logically affect the
+    // original computation by InitStreams in this case, the recomputStreamsTime is basically for (a) setting the slider
+    // value or (b) for recomputing streamstime after a conversion
 
     long timeCurrent = GetScrollTime();
     RecomputeStreamsTime(resetslider, timeCurrent);
@@ -784,7 +812,7 @@ void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long /*starttime*/, int /*kee
     FixWindowTitle();
 }
 
-void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile,long starttime, int keepcounter, int overwriteaudio)
+void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long starttime, int keepcounter, int overwriteaudio)
 {
     // By default, if the resetslider is not specified, it is assumed to be TRUE
     // i.e, the slider will be reset after each InsertAVIFile
@@ -797,7 +825,8 @@ void FreeAvi()
 
     AVISaveOptionsFree(gcpavi, galpAVIOptions);
 
-    for (int i = 0; i < gcpavi; i++) {
+    for (int i = 0; i < gcpavi; i++)
+    {
         AVIStreamRelease(gapavi[i]);
     }
 
@@ -818,8 +847,9 @@ void InitAvi(LPSTR szFile, int nMenu, long starttime, int keepcounter, int overw
 {
     PAVIFILE pfile;
     HRESULT hr = ::AVIFileOpen(&pfile, szFile, 0, 0L);
-    if (AVIERR_OK != hr) {
-        //LoadString( ghInstApp, IDS_NOOPEN, gszBuffer, BUFSIZE );
+    if (AVIERR_OK != hr)
+    {
+        // LoadString( ghInstApp, IDS_NOOPEN, gszBuffer, BUFSIZE );
         ErrMsg("Unable to open file %s", szFile);
         return;
     }
@@ -828,13 +858,14 @@ void InitAvi(LPSTR szFile, int nMenu, long starttime, int keepcounter, int overw
     // If we're opening something new, close other open files, otherwise
     // just close the draw stuff so we'll merge streams with the new file
     //
-    if (MENU_OPEN == nMenu) {
+    if (MENU_OPEN == nMenu)
+    {
         FreeAvi();
         fileModified = 0;
     }
 
-    //ErrMsg("overwite in initavi %d",overwriteaudio);
-    InsertAVIFile(pfile, szFile, starttime,  keepcounter,  overwriteaudio,resetslider);
+    // ErrMsg("overwite in initavi %d",overwriteaudio);
+    InsertAVIFile(pfile, szFile, starttime, keepcounter, overwriteaudio, resetslider);
 }
 
 UINT PlayAVIThread(LPVOID /*pParam*/)
@@ -842,14 +873,14 @@ UINT PlayAVIThread(LPVOID /*pParam*/)
     while (playerAlive)
     {
 
-        if (!gfRecording && initAudioRecording) {
+        if (!gfRecording && initAudioRecording)
+        {
 
             initAudioRecording = FALSE;
             gfRecording = TRUE;
 
             InitAudioRecording();
             StartAudioRecording(&m_Format);
-
         }
 
         if (gfRecording && endAudioRecording)
@@ -857,22 +888,22 @@ UINT PlayAVIThread(LPVOID /*pParam*/)
 
             endAudioRecording = FALSE;
             gfRecording = FALSE;
-            //gfPlaying = FALSE;
+            // gfPlaying = FALSE;
 
             StopAudioRecording();
             ClearAudioFile();
 
             CreateSilenceFile();
 
-            ::PostMessage(viewWnd,WM_USER_GENERIC,0,0);
-            //OnUserGeneric(0,0);
-
+            ::PostMessage(viewWnd, WM_USER_GENERIC, 0, 0);
+            // OnUserGeneric(0,0);
         }
 
-        if (gfPlaying) {
+        if (gfPlaying)
+        {
 
-            LONG    l;
-            l = aviaudioTime();         // returns -1 if no audio playing
+            LONG l;
+            l = aviaudioTime(); // returns -1 if no audio playing
 
             //
             // If we can't use the audio clock to tell us how long we've been
@@ -881,36 +912,38 @@ UINT PlayAVIThread(LPVOID /*pParam*/)
             if (l == -1)
                 l = timeGetTime() - glPlayStartTime + glPlayStartPos;
 
-            if (l != (LONG)GetScrollTime()) {
+            if (l != (LONG)GetScrollTime())
+            {
 
-                if (l < timeStart)      // make sure number isn't out of bounds
+                if (l < timeStart) // make sure number isn't out of bounds
                     l = timeStart;
-                if (l > timeEnd)       { // looks like we're all done!
+                if (l > timeEnd)
+                { // looks like we're all done!
 
                     if (pmode == PLAYER)
-                        PostMessage(viewWnd,WM_COMMAND,ID_FILE_STOP,0);
-                    else if (!allowRecordExtension) {
-                        //StopPlayingRecording();
-                        PostMessage(viewWnd,WM_COMMAND,ID_FILE_STOP,0);
+                        PostMessage(viewWnd, WM_COMMAND, ID_FILE_STOP, 0);
+                    else if (!allowRecordExtension)
+                    {
+                        // StopPlayingRecording();
+                        PostMessage(viewWnd, WM_COMMAND, ID_FILE_STOP, 0);
                     }
-                    else {
+                    else
+                    {
 
-                        //Allowing Recording Extension even if even if end of current file is reached
-                        if (gfRecording) {
-                            //Stop only the playing but not the recording
+                        // Allowing Recording Extension even if even if end of current file is reached
+                        if (gfRecording)
+                        {
+                            // Stop only the playing but not the recording
                             gfPlaying = FALSE;
-                            //l = timeEnd;
-
+                            // l = timeEnd;
                         }
-                        else {
+                        else
+                        {
 
-                            //playing mode...stop the playing
-                            PostMessage(viewWnd,WM_COMMAND,ID_FILE_STOP,0);
-
+                            // playing mode...stop the playing
+                            PostMessage(viewWnd, WM_COMMAND, ID_FILE_STOP, 0);
                         }
-
                     }
-
                 }
 
                 SetScrollTime(l);
@@ -919,28 +952,25 @@ UINT PlayAVIThread(LPVOID /*pParam*/)
                 UpdateWindow(viewWnd);
 
                 continue;
-
             }
-
         }
 
         ::Sleep(50);
-
     }
 
     return 0;
 }
 
-int ErrMsg (LPSTR sz,...)
+int ErrMsg(LPSTR sz, ...)
 {
-    static char szOutput[4*BUFSIZE];
+    static char szOutput[4 * BUFSIZE];
 
     va_list va;
 
     va_start(va, sz);
-    wvsprintf (szOutput,sz,va);      /* Format the string */
+    wvsprintf(szOutput, sz, va); /* Format the string */
     va_end(va);
-    MessageBox(NULL,szOutput,NULL, MB_OK|MB_ICONEXCLAMATION|MB_TASKMODAL);
+    MessageBox(NULL, szOutput, NULL, MB_OK | MB_ICONEXCLAMATION | MB_TASKMODAL);
     return FALSE;
 }
 
@@ -951,12 +981,15 @@ void FreeDrawStuff()
     // Make sure we're not playing!
     aviaudioStop();
 
-    for (i = 0; i < gcpavi; i++) {
-        if (gapgf[i]) {
+    for (i = 0; i < gcpavi; i++)
+    {
+        if (gapgf[i])
+        {
             AVIStreamGetFrameClose(gapgf[i]);
             gapgf[i] = NULL;
         }
-        if (ghdd[i]) {
+        if (ghdd[i])
+        {
             DrawDibClose(ghdd[i]);
             ghdd[i] = 0;
         }
@@ -970,65 +1003,67 @@ void FileStop(int mode)
 {
     if (mode == SOUND_MODE)
     {
-        if    (gfAudioFound)
+        if (gfAudioFound)
             aviaudioStop();
-
     }
-    //else {//silent mode
+    // else {//silent mode
     //}
 
     gfPlaying = FALSE;
-
 }
 
-void RecomputeStreamsTime(int resetslider,long timeCurrent)
+void RecomputeStreamsTime(int resetslider, long timeCurrent)
 {
 
     timeStart = 0x7FFFFFFF;
-    timeEnd   = 0;
+    timeEnd = 0;
 
     // Walk through and init all streams loaded
-    for (int i = 0; i < gcpavi; i++) {
+    for (int i = 0; i < gcpavi; i++)
+    {
         timeStart = min(timeStart, AVIStreamStartTime(gapavi[i]));
-        timeEnd   = max(timeEnd, AVIStreamEndTime(gapavi[i]));
+        timeEnd = max(timeEnd, AVIStreamEndTime(gapavi[i]));
     }
 
     timeLength = timeEnd - timeStart;
 
-    if (timeLength == 0) timeLength = 1;
+    if (timeLength == 0)
+        timeLength = 1;
 
     // Make sure HSCROLL scrolls enough to be noticeable.
     timehscroll = max(timehscroll, timeLength / MAXTIMERANGE + 2);
 
-    //Set the slider positiom after the timeLenght has been adjusted
-    if (resetslider == NO_RESET_SLIDER) {
-        //Do nothing
+    // Set the slider positiom after the timeLenght has been adjusted
+    if (resetslider == NO_RESET_SLIDER)
+    {
+        // Do nothing
     }
     else if (resetslider == RESET_TO_START)
-        SetScrollTime( timeStart);
-    else if (resetslider == RESET_TO_CURRENT) //This setting has not been tested, it is set to the position of the scrolltime where no stream functions has been previously altered
-        SetScrollTime( timeCurrent);
+        SetScrollTime(timeStart);
+    else if (resetslider == RESET_TO_CURRENT) // This setting has not been tested, it is set to the position of the
+                                              // scrolltime where no stream functions has been previously altered
+        SetScrollTime(timeCurrent);
 
     return;
-
 }
 
 void InitStreams()
 {
-    AVISTREAMINFO     avis;
-    LONG        lTemp;
-    int         i;
+    AVISTREAMINFO avis;
+    LONG lTemp;
+    int i;
 
     //
     // Start with bogus times
     //
     timeStart = 0x7FFFFFFF;
-    timeEnd   = 0;
+    timeEnd = 0;
 
     //
     // Walk through and init all streams loaded
     //
-    for (i = 0; i < gcpavi; i++) {
+    for (i = 0; i < gcpavi; i++)
+    {
 
         AVIStreamInfo(gapavi[i], &avis, sizeof(avis));
 
@@ -1048,38 +1083,32 @@ void InitStreams()
         //
         galpAVIOptions[i]->fccType = avis.fccType;
 
-        switch(avis.fccType) {
+        switch (avis.fccType)
+        {
 
-        case streamtypeVIDEO:
-            galpAVIOptions[i]->dwFlags = AVICOMPRESSF_VALID |
-                AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
-            galpAVIOptions[i]->fccHandler = 0;
-            galpAVIOptions[i]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
-            galpAVIOptions[i]->dwKeyFrameEvery = (DWORD)-1; // Default
-            galpAVIOptions[i]->dwBytesPerSecond = 0;
-            galpAVIOptions[i]->dwInterleaveEvery = 1;
-            break;
+            case streamtypeVIDEO:
+                galpAVIOptions[i]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
+                galpAVIOptions[i]->fccHandler = 0;
+                galpAVIOptions[i]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
+                galpAVIOptions[i]->dwKeyFrameEvery = (DWORD)-1; // Default
+                galpAVIOptions[i]->dwBytesPerSecond = 0;
+                galpAVIOptions[i]->dwInterleaveEvery = 1;
+                break;
 
-        case streamtypeAUDIO:
-            galpAVIOptions[i]->dwFlags |= AVICOMPRESSF_VALID;
-            galpAVIOptions[i]->dwInterleaveEvery = 1;
-            AVIStreamReadFormat(gapavi[i],
-                AVIStreamStart(gapavi[i]),
-                NULL,
-                &lTemp);
-            galpAVIOptions[i]->cbFormat = lTemp;
-            if (lTemp)
-                galpAVIOptions[i]->lpFormat = GlobalAllocPtr(GHND, lTemp);
-            // Use current format as default format
-            if (galpAVIOptions[i]->lpFormat)
-                AVIStreamReadFormat(gapavi[i],
-                AVIStreamStart(gapavi[i]),
-                galpAVIOptions[i]->lpFormat,
-                &lTemp);
-            break;
+            case streamtypeAUDIO:
+                galpAVIOptions[i]->dwFlags |= AVICOMPRESSF_VALID;
+                galpAVIOptions[i]->dwInterleaveEvery = 1;
+                AVIStreamReadFormat(gapavi[i], AVIStreamStart(gapavi[i]), NULL, &lTemp);
+                galpAVIOptions[i]->cbFormat = lTemp;
+                if (lTemp)
+                    galpAVIOptions[i]->lpFormat = GlobalAllocPtr(GHND, lTemp);
+                // Use current format as default format
+                if (galpAVIOptions[i]->lpFormat)
+                    AVIStreamReadFormat(gapavi[i], AVIStreamStart(gapavi[i]), galpAVIOptions[i]->lpFormat, &lTemp);
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
 
         //
@@ -1087,12 +1116,13 @@ void InitStreams()
         // our scrollbar.
         //
         timeStart = min(timeStart, AVIStreamStartTime(gapavi[i]));
-        timeEnd   = max(timeEnd, AVIStreamEndTime(gapavi[i]));
+        timeEnd = max(timeEnd, AVIStreamEndTime(gapavi[i]));
 
         //
         // Initialize video streams for getting decompressed frames to display
         //
-        if (avis.fccType == streamtypeVIDEO) {
+        if (avis.fccType == streamtypeVIDEO)
+        {
 
             gapgf[i] = AVIStreamGetFrameOpen(gapavi[i], NULL);
 
@@ -1102,8 +1132,9 @@ void InitStreams()
             ghdd[i] = DrawDibOpen();
             // !!! DrawDibBegin?
 
-            if (!gfVideoFound) {
-                DWORD        dw;
+            if (!gfVideoFound)
+            {
+                DWORD dw;
 
                 //
                 // Remember the first video stream --- treat it specially
@@ -1116,29 +1147,27 @@ void InitStreams()
                 //
                 dw = (avis.rcFrame.right - avis.rcFrame.left) * gwZoom / 4 + HSPACE;
 
-                gdwMicroSecPerPixel = muldiv32(1000000,
-                    avis.dwScale,
-                    dw * avis.dwRate);
+                gdwMicroSecPerPixel = muldiv32(1000000, avis.dwScale, dw * avis.dwRate);
                 // Move one frame on the top video screen for each HSCROLL
                 timehscroll = muldiv32(1000, avis.dwScale, avis.dwRate);
             }
-
-        } else if (avis.fccType == streamtypeAUDIO) {
+        }
+        else if (avis.fccType == streamtypeAUDIO)
+        {
 
             // These aren't used and better be NULL!
-            ghdd[i] =   NULL;
+            ghdd[i] = NULL;
             gapgf[i] = NULL;
 
             //
             // If there are no video streams, we base everything on this
             // audio stream.
             //
-            if (!gfAudioFound && !gfVideoFound) {
+            if (!gfAudioFound && !gfVideoFound)
+            {
 
                 // Show one sample per pixel
-                gdwMicroSecPerPixel = muldiv32(1000000,
-                    avis.dwScale,
-                    avis.dwRate);
+                gdwMicroSecPerPixel = muldiv32(1000000, avis.dwScale, avis.dwRate);
                 // Move one sample per HSCROLL
                 // Move at least enough to show movement
                 timehscroll = muldiv32(1000, avis.dwScale, avis.dwRate);
@@ -1147,14 +1176,12 @@ void InitStreams()
             //
             // Remember the first audio stream --- treat it specially
             //
-            if (!gfAudioFound) {
-                //ErrMsg("reset");
+            if (!gfAudioFound)
+            {
+                // ErrMsg("reset");
                 giFirstAudio = i;
-
             }
-
         }
-
     }
 
     timeLength = timeEnd - timeStart;
@@ -1164,7 +1191,6 @@ void InitStreams()
 
     // Make sure HSCROLL scrolls enough to be noticeable.
     timehscroll = max(timehscroll, timeLength / MAXTIMERANGE + 2);
-
 }
 
 void FixWindowTitle()
@@ -1172,50 +1198,50 @@ void FixWindowTitle()
 
     char szTitle[512];
 
-    if (pmode == PLAYER) {
+    if (pmode == PLAYER)
+    {
 
         if (gszFileTitle[0])
-            //wsprintf(szTitle, "Player - %s", (LPSTR)gszFileTitle);
+            // wsprintf(szTitle, "Player - %s", (LPSTR)gszFileTitle);
             wsprintf(szTitle, "Player :- %s", (LPSTR)gszFileTitle);
         else
             wsprintf(szTitle, "Player");
-
     }
-    else {
+    else
+    {
 
         if (gszFileTitle[0])
             wsprintf(szTitle, "Dubber :- %s", (LPSTR)gszFileTitle);
         else
             wsprintf(szTitle, "Dubber");
-
     }
 
     SetTitleBar(szTitle);
-
 }
 
-void SetTitleBar(CString title) {
+void SetTitleBar(CString title)
+{
 
-    CWinApp* app = NULL;
-    app    = AfxGetApp();
-    if (app) {
+    CWinApp *app = NULL;
+    app = AfxGetApp();
+    if (app)
+    {
 
         HWND mainwnd = NULL;
-        mainwnd= app->m_pMainWnd->m_hWnd;
+        mainwnd = app->m_pMainWnd->m_hWnd;
         if (mainwnd)
             ::SetWindowText(mainwnd, LPCTSTR(title));
-
     }
 }
 
 void FixScrollbars()
 {
 
-    int                 nHeight = 0;
-    int                 nWidth = 0;
-    RECT                rc;
-    HDC                 hdc;
-    HWND                hwnd;
+    int nHeight = 0;
+    int nWidth = 0;
+    RECT rc;
+    HDC hdc;
+    HWND hwnd;
 
     hwnd = viewWnd;
 
@@ -1223,7 +1249,7 @@ void FixScrollbars()
     // Determine how tall our window needs to be to display everything.
     //
     hdc = GetDC(NULL);
-    ExcludeClipRect(hdc, 0, 0, 32767, 32767);   // don't actually draw
+    ExcludeClipRect(hdc, 0, 0, 32767, 32767); // don't actually draw
     nHeight = PaintStuff(hdc, hwnd, TRUE);
     ReleaseDC(NULL, hdc);
 
@@ -1231,15 +1257,15 @@ void FixScrollbars()
     // Set vertical scrollbar for scrolling the visible area
     //
     GetClientRect(hwnd, &rc);
-    nVertHeight = nHeight;      // total height in pixels of entire display
+    nVertHeight = nHeight; // total height in pixels of entire display
 
     RECT rcImage;
     GetImageDimension(rcImage);
 
-    if (gwZoom>=4)
-        nHorzWidth = ((rcImage.right-rcImage.left+1)*gwZoom)/4;
+    if (gwZoom >= 4)
+        nHorzWidth = ((rcImage.right - rcImage.left + 1) * gwZoom) / 4;
     else
-        nHorzWidth = rcImage.right-rcImage.left+1;
+        nHorzWidth = rcImage.right - rcImage.left + 1;
 
     //
     // We won't fit in the window... need scrollbars
@@ -1279,37 +1305,34 @@ void FixScrollbars()
         SetScrollRange(hwnd, SB_HORZ, 0, 0, TRUE);
     }
     return;
-
 }
 
-//Using this function assume that gcpavi, the number of streams
-//and gapavi[], the stream array is properly initialized
-//Return the Dimension of the first video stream
-void GetImageDimension(RECT& rcFrame)
+// Using this function assume that gcpavi, the number of streams
+// and gapavi[], the stream array is properly initialized
+// Return the Dimension of the first video stream
+void GetImageDimension(RECT &rcFrame)
 {
-    AVISTREAMINFO   avis;
+    AVISTREAMINFO avis;
 
-    avis.rcFrame.left=0;
-    avis.rcFrame.right=0;
-    avis.rcFrame.top=0;
-    avis.rcFrame.bottom=0;
+    avis.rcFrame.left = 0;
+    avis.rcFrame.right = 0;
+    avis.rcFrame.top = 0;
+    avis.rcFrame.bottom = 0;
 
     int j;
-    for (j=0; j<gcpavi; j++) {
+    for (j = 0; j < gcpavi; j++)
+    {
 
         AVIStreamInfo(gapavi[j], &avis, sizeof(avis));
 
         if (avis.fccType == streamtypeVIDEO)
         {
             if (gapgf[j] != NULL)
-                break; //break from for loop
-
+                break; // break from for loop
         }
-
     }
 
-    rcFrame=avis.rcFrame;
-
+    rcFrame = avis.rcFrame;
 }
 
 int CPlayplusView::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -1321,34 +1344,39 @@ int CPlayplusView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     WORD wVer = HIWORD(VideoForWindowsVersion());
     if (wVer < 0x010a)
     {
-        ::MessageBox(NULL, "This program requires Video For Windows 1.1", "Note", MB_OK|MB_ICONSTOP);
+        ::MessageBox(NULL, "This program requires Video For Windows 1.1", "Note", MB_OK | MB_ICONSTOP);
         return -1;
     }
 
     AVIFileInit();
 
     HDC hScreenDC = ::GetDC(NULL);
-    nColors = ::GetDeviceCaps(hScreenDC, BITSPIXEL );
-    maxxScreen = GetDeviceCaps(hScreenDC,HORZRES);
-    maxyScreen = GetDeviceCaps(hScreenDC,VERTRES);
-    ::ReleaseDC(NULL,hScreenDC);
+    nColors = ::GetDeviceCaps(hScreenDC, BITSPIXEL);
+    maxxScreen = GetDeviceCaps(hScreenDC, HORZRES);
+    maxyScreen = GetDeviceCaps(hScreenDC, VERTRES);
+    ::ReleaseDC(NULL, hScreenDC);
 
-    if (pmode == PLAYER) {
+    if (pmode == PLAYER)
+    {
         hLogoBM = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_LOGO_PLAYER));
-    } else if (pmode == DUBBER) {
+    }
+    else if (pmode == DUBBER)
+    {
         hLogoBM = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_LOGO_DUBBER));
     }
 
     int tdata = 0;
-    CWinThread * pThread = AfxBeginThread(PlayAVIThread, &tdata);
-    if (!pThread) {
+    CWinThread *pThread = AfxBeginThread(PlayAVIThread, &tdata);
+    if (!pThread)
+    {
         return -1;
     }
 
-    audioPlayable = waveOutGetNumDevs ();
+    audioPlayable = waveOutGetNumDevs();
 
     audioRecordable = waveInGetNumDevs();
-    if (audioRecordable) {
+    if (audioRecordable)
+    {
         SuggestRecordingFormat();
         SuggestCompressFormat();
     }
@@ -1367,15 +1395,17 @@ void CPlayplusView::OnDestroy()
 
     // TODO: Add your message handler code here
     AVIClearClipboard();
-    FreeAvi();      // close all open streams
-    AVIFileExit();      // shuts down the AVIFile system
+    FreeAvi();     // close all open streams
+    AVIFileExit(); // shuts down the AVIFile system
 
-    if (hLogoBM) {
+    if (hLogoBM)
+    {
         DeleteObject(hLogoBM);
         hLogoBM = NULL;
     }
 
-    if (pwfx) {
+    if (pwfx)
+    {
         GlobalFreePtr(pwfx);
         pwfx = NULL;
     }
@@ -1383,47 +1413,50 @@ void CPlayplusView::OnDestroy()
 
 void CPlayplusView::OnPaint()
 {
-    if (!doneOnce) {
-        if (strlen(playfiledir)!=0) {
+    if (!doneOnce)
+    {
+        if (strlen(playfiledir) != 0)
+        {
             OpenMovieFileInit(playfiledir);
         }
-        doneOnce=1;
+        doneOnce = 1;
     }
 
     CPaintDC dc(this); // device context for painting
 
     // TODO: Add your message handler code here
-    if (gcpavi<=0) {
+    if (gcpavi <= 0)
+    {
 
-        if (nColors >= 8) {
+        if (nColors >= 8)
+        {
 
             HDC hdcBits = CreateCompatibleDC(dc.m_hDC);
 
             CRect rect;
-            GetClientRect( &rect);
+            GetClientRect(&rect);
 
-            int offsetx=0;
-            int offsety=0;
+            int offsetx = 0;
+            int offsety = 0;
             int bitmapwidth = 300;
             int bitmapheight = 220;
 
-            if (rect.right> bitmapwidth)
-                offsetx = (rect.right - bitmapwidth)/2;
+            if (rect.right > bitmapwidth)
+                offsetx = (rect.right - bitmapwidth) / 2;
 
-            if (rect.bottom> bitmapheight)
-                offsety = (rect.bottom - bitmapheight)/2;
+            if (rect.bottom > bitmapheight)
+                offsety = (rect.bottom - bitmapheight) / 2;
 
-            HBITMAP old_bitmap =  (HBITMAP) ::SelectObject(hdcBits,hLogoBM);
+            HBITMAP old_bitmap = (HBITMAP)::SelectObject(hdcBits, hLogoBM);
 
-            //OffScreen Buffer
-            ::BitBlt(dc.m_hDC, offsetx, offsety, rect.right-rect.left+1, rect.bottom-rect.top+1, hdcBits, 0, 0, SRCCOPY);
+            // OffScreen Buffer
+            ::BitBlt(dc.m_hDC, offsetx, offsety, rect.right - rect.left + 1, rect.bottom - rect.top + 1, hdcBits, 0, 0,
+                     SRCCOPY);
 
             ::SelectObject(hdcBits, old_bitmap);
 
             DeleteDC(hdcBits);
-
         }
-
     }
     else
         PaintStuff(dc.m_hDC, viewWnd, FALSE);
@@ -1438,18 +1471,17 @@ void SetDurationLine()
 {
 
     CString durationStr(" 0.00 / 0.00 sec");
-    if (timeLength > 0) {
+    if (timeLength > 0)
+    {
 
         long timenow = GetScrollTime();
-        float durationPlayed = (float) ((timenow - timeStart)/1000.0);
-        float durationLength = (float) ((timeEnd - timeStart)/1000.0);
-        durationStr.Format(" %6.1f /%6.1f sec",durationPlayed,durationLength);
-
+        float durationPlayed = (float)((timenow - timeStart) / 1000.0);
+        float durationLength = (float)((timeEnd - timeStart) / 1000.0);
+        durationStr.Format(" %6.1f /%6.1f sec", durationPlayed, durationLength);
     }
 
     if (statusbarCtrl)
-        statusbarCtrl->SetPaneText(2,durationStr);
-
+        statusbarCtrl->SetPaneText(2, durationStr);
 }
 
 void SetRPSLine()
@@ -1464,11 +1496,11 @@ void SetRPSLine()
         istr = "Stopped";
 
     if (statusbarCtrl)
-        statusbarCtrl->SetPaneText(1,istr);
-
+        statusbarCtrl->SetPaneText(1, istr);
 }
 
-BOOL CPlayplusView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext)
+BOOL CPlayplusView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect,
+                           CWnd *pParentWnd, UINT nID, CCreateContext *pContext)
 {
 
     BOOL retval = CWnd::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
@@ -1488,9 +1520,11 @@ void CPlayplusView::OnSize(UINT nType, int cx, int cy)
 
     hwnd = viewWnd;
 
-    if (gcpavi<=0) {
+    if (gcpavi <= 0)
+    {
 
-        if (hwnd) {
+        if (hwnd)
+        {
             ::SetScrollRange(hwnd, SB_VERT, 0, 0, TRUE);
             ::SetScrollRange(hwnd, SB_HORZ, 0, 0, TRUE);
         }
@@ -1498,7 +1532,7 @@ void CPlayplusView::OnSize(UINT nType, int cx, int cy)
         return;
     }
 
-    //AdjustToolBar (hwnd);
+    // AdjustToolBar (hwnd);
 
     ::GetClientRect(hwnd, &rc);
 
@@ -1508,44 +1542,46 @@ void CPlayplusView::OnSize(UINT nType, int cx, int cy)
     // are required.
     //
 
-    //Added ver 1.0
+    // Added ver 1.0
     int ScrollVertWidth = GetSystemMetrics(SM_CXVSCROLL);
-    int ScrollHorzHeight = GetSystemMetrics(SM_CYHSCROLL );
+    int ScrollHorzHeight = GetSystemMetrics(SM_CYHSCROLL);
 
     int MinPos;
     int MaxPos;
-    //int IncYVal = 0;
+    // int IncYVal = 0;
 
-    int origbottom=0;
-    int origright=0;
-    origbottom=rc.bottom;
-    origright=rc.right;
+    int origbottom = 0;
+    int origright = 0;
+    origbottom = rc.bottom;
+    origright = rc.right;
 
-    //Obtaining true client area including the scroll bars
+    // Obtaining true client area including the scroll bars
 
     MaxPos = 0;
-    ::GetScrollRange( hwnd, SB_HORZ, &MinPos , &MaxPos);
-    if (MaxPos>0)
+    ::GetScrollRange(hwnd, SB_HORZ, &MinPos, &MaxPos);
+    if (MaxPos > 0)
         rc.bottom += ScrollHorzHeight;
 
     MaxPos = 0;
-    ::GetScrollRange( hwnd, SB_VERT, &MinPos , &MaxPos);
-    if (MaxPos>0) {
+    ::GetScrollRange(hwnd, SB_VERT, &MinPos, &MaxPos);
+    if (MaxPos > 0)
+    {
 
         rc.right += ScrollVertWidth;
 
-        //This is a hack, as the above code GetScrollRange may sometimes detect the presence of a scroll bar even if it is absent
-        if (rc.right>rcWnd.right-rcWnd.left)
-            rc.right -= ScrollVertWidth;  //deduct back
-
+        // This is a hack, as the above code GetScrollRange may sometimes detect the presence of a scroll bar even if it
+        // is absent
+        if (rc.right > rcWnd.right - rcWnd.left)
+            rc.right -= ScrollVertWidth; // deduct back
     }
 
-    //rc.right and rc.bottom now refers to the true client area
-    if ((nVertHeight > rc.bottom  ) && (nHorzWidth > rc.right)) {
+    // rc.right and rc.bottom now refers to the true client area
+    if ((nVertHeight > rc.bottom) && (nHorzWidth > rc.right))
+    {
 
-        //Both Scroll Bars
+        // Both Scroll Bars
 
-        //Adjust the client client to reflect both scroll bars
+        // Adjust the client client to reflect both scroll bars
         rc.bottom -= ScrollHorzHeight;
         rc.right -= ScrollVertWidth;
 
@@ -1554,36 +1590,35 @@ void CPlayplusView::OnSize(UINT nType, int cx, int cy)
 
         nHorzSBLen = nHorzWidth - rc.right;
         ::SetScrollRange(hwnd, SB_HORZ, 0, nHorzSBLen, TRUE);
-
     }
-    else if ((nVertHeight <= rc.bottom  ) && (nHorzWidth <= rc.right))
+    else if ((nVertHeight <= rc.bottom) && (nHorzWidth <= rc.right))
     {
 
-        //No Scroll Bars
+        // No Scroll Bars
         nVertSBLen = 0;
         ::SetScrollRange(hwnd, SB_VERT, 0, 0, TRUE);
         nHorzSBLen = 0;
         ::SetScrollRange(hwnd, SB_HORZ, 0, 0, TRUE);
-
     }
-    else  if ((nVertHeight >rc.bottom  ) && (nHorzWidth <= rc.right))
+    else if ((nVertHeight > rc.bottom) && (nHorzWidth <= rc.right))
     {
 
-        if (nHorzWidth <= rc.right - ScrollVertWidth) { //if after the addition of vertical SCROLLBAR, the horizontal width is still larger than image
+        if (nHorzWidth <= rc.right - ScrollVertWidth)
+        { // if after the addition of vertical SCROLLBAR, the horizontal width is still larger than image
 
-            //Vert Scroll Bar Only
+            // Vert Scroll Bar Only
             nHorzSBLen = 0;
             ::SetScrollRange(hwnd, SB_HORZ, 0, 0, TRUE);
 
             nVertSBLen = nVertHeight - rc.bottom;
             ::SetScrollRange(hwnd, SB_VERT, 0, nVertSBLen, TRUE);
-
         }
-        else  {
+        else
+        {
 
-            //Activate Both ScrollBars
+            // Activate Both ScrollBars
 
-            //Adjust the client client to reflect both scroll bars
+            // Adjust the client client to reflect both scroll bars
             rc.bottom -= ScrollHorzHeight;
             rc.right -= ScrollVertWidth;
 
@@ -1592,28 +1627,27 @@ void CPlayplusView::OnSize(UINT nType, int cx, int cy)
 
             nHorzSBLen = nHorzWidth - rc.right;
             ::SetScrollRange(hwnd, SB_HORZ, 0, nHorzSBLen, TRUE);
-
         }
-
     }
-    else  if ((nVertHeight <= rc.bottom  ) && (nHorzWidth > rc.right))
+    else if ((nVertHeight <= rc.bottom) && (nHorzWidth > rc.right))
     {
 
-        if (nVertHeight <= rc.bottom - ScrollHorzHeight) { //if after the addition of horiz SCROLLBAR, the vertical height is still larger than image
+        if (nVertHeight <= rc.bottom - ScrollHorzHeight)
+        { // if after the addition of horiz SCROLLBAR, the vertical height is still larger than image
 
-            //Horiz Scroll Bar Only
+            // Horiz Scroll Bar Only
             nVertSBLen = 0;
             ::SetScrollRange(hwnd, SB_VERT, 0, 0, TRUE);
 
             nHorzSBLen = nHorzWidth - rc.right;
             ::SetScrollRange(hwnd, SB_HORZ, 0, nHorzSBLen, TRUE);
-
         }
-        else  {
+        else
+        {
 
-            //Activate Both ScrollBars
+            // Activate Both ScrollBars
 
-            //Adjust the client client to reflect both scroll bars
+            // Adjust the client client to reflect both scroll bars
             rc.bottom -= ScrollHorzHeight;
             rc.right -= ScrollVertWidth;
 
@@ -1622,11 +1656,8 @@ void CPlayplusView::OnSize(UINT nType, int cx, int cy)
 
             nHorzSBLen = nHorzWidth - rc.right;
             ::SetScrollRange(hwnd, SB_HORZ, 0, nHorzSBLen, TRUE);
-
         }
-
     }
-
 }
 
 void CPlayplusView::OnFileLastframe()
@@ -1635,29 +1666,26 @@ void CPlayplusView::OnFileLastframe()
     SetScrollTime(timeStart + timeLength - 1);
     ::InvalidateRect(viewWnd, NULL, FALSE);
     ::UpdateWindow(viewWnd);
-
 }
 
-BOOL CPlayplusView::OnEraseBkgnd(CDC* pDC)
+BOOL CPlayplusView::OnEraseBkgnd(CDC *pDC)
 {
 
     // Set brush to desired background color
     CBrush backBrush(RGB(0, 0, 0));
 
     // Save old brush
-    CBrush* pOldBrush = pDC->SelectObject(&backBrush);
+    CBrush *pOldBrush = pDC->SelectObject(&backBrush);
 
     CRect rect;
-    pDC->GetClipBox(&rect);     // Erase the area needed
+    pDC->GetClipBox(&rect); // Erase the area needed
 
-    pDC->PatBlt(rect.left, rect.top, rect.Width(), rect.Height(),
-        PATCOPY);
+    pDC->PatBlt(rect.left, rect.top, rect.Width(), rect.Height(), PATCOPY);
     pDC->SelectObject(pOldBrush);
     return TRUE;
-
 }
 
-void CPlayplusView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+void CPlayplusView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
 {
     // TODO: Add your message handler code here and/or call default
 
@@ -1673,22 +1701,22 @@ void CPlayplusView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
     switch (nSBCode)
     {
-    case SB_LINEDOWN:
-        nScrollPos += 10;
-        break;
-    case SB_LINEUP:
-        nScrollPos -= 10;
-        break;
-    case SB_PAGEDOWN:
-        nScrollPos += rc.right;
-        break;
-    case SB_PAGEUP:
-        nScrollPos -= rc.right;
-        break;
-    case SB_THUMBTRACK:
-    case SB_THUMBPOSITION:
-        nScrollPos = nPos;
-        break;
+        case SB_LINEDOWN:
+            nScrollPos += 10;
+            break;
+        case SB_LINEUP:
+            nScrollPos -= 10;
+            break;
+        case SB_PAGEDOWN:
+            nScrollPos += rc.right;
+            break;
+        case SB_PAGEUP:
+            nScrollPos -= rc.right;
+            break;
+        case SB_THUMBTRACK:
+        case SB_THUMBPOSITION:
+            nScrollPos = nPos;
+            break;
     }
 
     if (nScrollPos < 0)
@@ -1707,7 +1735,7 @@ void CPlayplusView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
     CView::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
-void CPlayplusView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+void CPlayplusView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
 {
 
     HWND hwnd;
@@ -1723,22 +1751,22 @@ void CPlayplusView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
     switch (nSBCode)
     {
-    case SB_LINEDOWN:
-        nScrollPos += 10;
-        break;
-    case SB_LINEUP:
-        nScrollPos -= 10;
-        break;
-    case SB_PAGEDOWN:
-        nScrollPos += rc.bottom;
-        break;
-    case SB_PAGEUP:
-        nScrollPos -= rc.bottom;
-        break;
-    case SB_THUMBTRACK:
-    case SB_THUMBPOSITION:
-        nScrollPos = nPos;
-        break;
+        case SB_LINEDOWN:
+            nScrollPos += 10;
+            break;
+        case SB_LINEUP:
+            nScrollPos -= 10;
+            break;
+        case SB_PAGEDOWN:
+            nScrollPos += rc.bottom;
+            break;
+        case SB_PAGEUP:
+            nScrollPos -= rc.bottom;
+            break;
+        case SB_THUMBTRACK:
+        case SB_THUMBPOSITION:
+            nScrollPos = nPos;
+            break;
     }
 
     if (nScrollPos < 0)
@@ -1751,7 +1779,7 @@ void CPlayplusView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
         return;
 
     ::SetScrollPos(hwnd, SB_VERT, nScrollPos, TRUE);
-    //InvalidateRect(hwnd, NULL, TRUE);
+    // InvalidateRect(hwnd, NULL, TRUE);
     ::InvalidateRect(hwnd, NULL, FALSE);
     ::UpdateWindow(hwnd);
 
@@ -1767,14 +1795,12 @@ void OpenMovieFileInit(char *gzFileName)
 
     if (autoplay)
         PlayMovie(SOUND_MODE);
-
 }
 
 void CPlayplusView::OnZoomResizetomoviesize()
 {
 
     ResizeToMovie();
-
 }
 
 void CPlayplusView::OnZoomQuarter()
@@ -1783,7 +1809,6 @@ void CPlayplusView::OnZoomQuarter()
     gwZoom = 1;
     FixScrollbars();
     ::InvalidateRect(viewWnd, NULL, TRUE);
-
 }
 
 void CPlayplusView::OnZoomHalf()
@@ -1792,7 +1817,6 @@ void CPlayplusView::OnZoomHalf()
     gwZoom = 2;
     FixScrollbars();
     ::InvalidateRect(viewWnd, NULL, TRUE);
-
 }
 
 void CPlayplusView::OnZoom1()
@@ -1801,7 +1825,6 @@ void CPlayplusView::OnZoom1()
     gwZoom = 4;
     FixScrollbars();
     ::InvalidateRect(viewWnd, NULL, TRUE);
-
 }
 
 void CPlayplusView::OnZoom2()
@@ -1810,7 +1833,6 @@ void CPlayplusView::OnZoom2()
     gwZoom = 8;
     FixScrollbars();
     ::InvalidateRect(viewWnd, NULL, TRUE);
-
 }
 
 void CPlayplusView::OnZoom4()
@@ -1819,55 +1841,48 @@ void CPlayplusView::OnZoom4()
     gwZoom = 16;
     FixScrollbars();
     ::InvalidateRect(viewWnd, NULL, TRUE);
-
 }
 
-void CPlayplusView::OnUpdateZoom1(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateZoom1(CCmdUI *pCmdUI)
 {
 
-    pCmdUI->SetCheck(gwZoom==4);
-
+    pCmdUI->SetCheck(gwZoom == 4);
 }
 
-void CPlayplusView::OnUpdateZoom2(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateZoom2(CCmdUI *pCmdUI)
 {
 
-    pCmdUI->SetCheck(gwZoom==8);
-
+    pCmdUI->SetCheck(gwZoom == 8);
 }
 
-void CPlayplusView::OnUpdateZoom4(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateZoom4(CCmdUI *pCmdUI)
 {
 
-    pCmdUI->SetCheck(gwZoom==16);
-
+    pCmdUI->SetCheck(gwZoom == 16);
 }
 
-void CPlayplusView::OnUpdateZoomHalf(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateZoomHalf(CCmdUI *pCmdUI)
 {
 
-    pCmdUI->SetCheck(gwZoom==2);
-
+    pCmdUI->SetCheck(gwZoom == 2);
 }
 
-void CPlayplusView::OnUpdateZoomQuarter(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateZoomQuarter(CCmdUI *pCmdUI)
 {
 
-    pCmdUI->SetCheck(gwZoom==1);
-
+    pCmdUI->SetCheck(gwZoom == 1);
 }
 
-void CPlayplusView::OnUpdateZoomResizetomoviesize(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateZoomResizetomoviesize(CCmdUI *pCmdUI)
 {
 
-    pCmdUI->Enable(gwZoom==4);
-
+    pCmdUI->Enable(gwZoom == 4);
 }
 
-long GetScrollTime() {
+long GetScrollTime()
+{
 
     return playtime;
-
 }
 
 void SetScrollTime(long time)
@@ -1875,72 +1890,67 @@ void SetScrollTime(long time)
 
     playtime = time;
 
-    if (timeLength > 0) {
+    if (timeLength > 0)
+    {
 
-        float durationPlayed = (float) ((time - timeStart)/1000.0);
+        float durationPlayed = (float)((time - timeStart) / 1000.0);
         CString durationStr;
-        durationStr.Format("%8.1f sec",durationPlayed);
+        durationStr.Format("%8.1f sec", durationPlayed);
         SetTimeIndicator(durationStr);
-
     }
 
-    int x=0;
-    if (timeLength>0)
-        x =  ((time - timeStart) * MAXTIMERANGE) / timeLength;
+    int x = 0;
+    if (timeLength > 0)
+        x = ((time - timeStart) * MAXTIMERANGE) / timeLength;
     else
         x = 0;
 
-    if (x<0)
+    if (x < 0)
         x = 0;
 
-    if (x>MAXTIMERANGE)
+    if (x > MAXTIMERANGE)
         x = MAXTIMERANGE;
 
     if (sliderCtrlPtr)
         sliderCtrlPtr->SetPos(x);
-
 }
 
-void CPlayplusView::OnUpdateFileRewind(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateFileRewind(CCmdUI *pCmdUI)
 {
 
     BOOL enablebutton = (!gfPlaying) && (!gfRecording);
     pCmdUI->Enable(enablebutton);
-
 }
 
-void CPlayplusView::OnUpdateFileLastframe(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateFileLastframe(CCmdUI *pCmdUI)
 {
 
     BOOL enablebutton = (!gfPlaying) && (!gfRecording);
     pCmdUI->Enable(enablebutton);
-
 }
 
 void CPlayplusView::OnButtonRecord()
 {
 
-    if (!gfRecording) {
+    if (!gfRecording)
+    {
 
-        initAudioRecording  =TRUE;
+        initAudioRecording = TRUE;
 
         glRecordStartTimeValue = GetScrollTime();
 
         PlayMovie(SILENT_MODE);
 
         fileModified = 1;
-
     }
-
 }
 
-void CPlayplusView::OnUpdateRecord(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateRecord(CCmdUI *pCmdUI)
 {
 
-    //BOOL enablebutton = (!gfPlaying) && (!gfRecording) && (giFirstAudio<0) && (giFirstVideo>=0) && (audioRecordable);
-    BOOL enablebutton = (!gfPlaying) && (!gfRecording) && (giFirstVideo>=0) && (audioRecordable);
+    // BOOL enablebutton = (!gfPlaying) && (!gfRecording) && (giFirstAudio<0) && (giFirstVideo>=0) && (audioRecordable);
+    BOOL enablebutton = (!gfPlaying) && (!gfRecording) && (giFirstVideo >= 0) && (audioRecordable);
     pCmdUI->Enable(enablebutton);
-
 }
 
 /////////////////////////////////////////////
@@ -1954,56 +1964,58 @@ void CPlayplusView::OnUpdateRecord(CCmdUI* pCmdUI)
 /////////////////////////////////////////////
 // Merge_Video_And_Sound_File
 /////////////////////////////////////////////
-int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_path, CString output_avi_path, BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format, DWORD  audio_format_size, BOOL bInterleave, int interleave_factor) {
+int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_path, CString output_avi_path,
+                               BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format, DWORD audio_format_size,
+                               BOOL bInterleave, int interleave_factor)
+{
 
-    PAVISTREAM            AviStream[NUMSTREAMS];      // the editable streams
-    AVICOMPRESSOPTIONS    gaAVIOptions[NUMSTREAMS];   // compression options
-    LPAVICOMPRESSOPTIONS  galpAVIOptions[NUMSTREAMS];
+    PAVISTREAM AviStream[NUMSTREAMS];            // the editable streams
+    AVICOMPRESSOPTIONS gaAVIOptions[NUMSTREAMS]; // compression options
+    LPAVICOMPRESSOPTIONS galpAVIOptions[NUMSTREAMS];
 
     PAVIFILE pfileVideo = NULL;
 
     AVIFileInit();
 
-    //Open Video and Audio Files
+    // Open Video and Audio Files
     HRESULT hr = AVIFileOpen(&pfileVideo, LPCTSTR(input_video_path), OF_READ | OF_SHARE_DENY_NONE, 0L);
     if (hr != 0)
     {
-        MessageBox(NULL,"Unable to open video file.","Note",MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(NULL, "Unable to open video file.", "Note", MB_OK | MB_ICONEXCLAMATION);
         return 1;
     }
 
-    //Get Video Stream from Video File and Audio Stream from Audio File
+    // Get Video Stream from Video File and Audio Stream from Audio File
 
     // ==========================================================
     // Important Assumption
     // Assume stream 0 is the correct stream in the files
     // ==========================================================
-    if (pfileVideo) {
+    if (pfileVideo)
+    {
 
-        PAVISTREAM  pavi;
-        if (AVIFileGetStream(pfileVideo, &pavi, streamtypeVIDEO , 0) != AVIERR_OK)
+        PAVISTREAM pavi;
+        if (AVIFileGetStream(pfileVideo, &pavi, streamtypeVIDEO, 0) != AVIERR_OK)
         {
             AVIFileRelease(pfileVideo);
-            MessageBox(NULL,"Unable to open video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageBox(NULL, "Unable to open video stream.", "Note", MB_OK | MB_ICONEXCLAMATION);
             return 1;
-
         }
 
-        //Set editable stream number as 0
-        if (CreateEditableStream(&AviStream[0], pavi) != AVIERR_OK) {
+        // Set editable stream number as 0
+        if (CreateEditableStream(&AviStream[0], pavi) != AVIERR_OK)
+        {
 
             AVIStreamRelease(pavi);
             AVIFileRelease(pfileVideo);
-            MessageBox(NULL,"Unable to create editable video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageBox(NULL, "Unable to create editable video stream.", "Note", MB_OK | MB_ICONEXCLAMATION);
             return 1;
-
         }
 
         AVIStreamRelease(pavi);
 
         AVIFileRelease(pfileVideo);
         pfileVideo = NULL;
-
     }
 
     // =============================
@@ -2011,51 +2023,52 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
     // =============================
     {
 
-        PAVISTREAM  pavi;
-        if (AVIStreamOpenFromFile(&pavi,input_audio_path,streamtypeAUDIO,0,OF_READ | OF_SHARE_DENY_NONE,NULL)!=AVIERR_OK)
+        PAVISTREAM pavi;
+        if (AVIStreamOpenFromFile(&pavi, input_audio_path, streamtypeAUDIO, 0, OF_READ | OF_SHARE_DENY_NONE, NULL) !=
+            AVIERR_OK)
         {
             AVIStreamRelease(AviStream[0]);
-            MessageBox(NULL,"Unable to open audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageBox(NULL, "Unable to open audio stream.", "Note", MB_OK | MB_ICONEXCLAMATION);
             return 2;
         }
 
-        //Set editable stream number as 1
-        if (CreateEditableStream(&AviStream[1], pavi) != AVIERR_OK) {
+        // Set editable stream number as 1
+        if (CreateEditableStream(&AviStream[1], pavi) != AVIERR_OK)
+        {
 
             AVIStreamRelease(pavi);
             AVIStreamRelease(AviStream[0]);
-            MessageBox(NULL,"Unable to create editable audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageBox(NULL, "Unable to create editable audio stream.", "Note", MB_OK | MB_ICONEXCLAMATION);
             return 2;
         }
         AVIStreamRelease(pavi);
-
     }
 
-    //Verifying streams are of the correct type
-    AVISTREAMINFO     avis[NUMSTREAMS];
+    // Verifying streams are of the correct type
+    AVISTREAMINFO avis[NUMSTREAMS];
 
     AVIStreamInfo(AviStream[0], &avis[0], sizeof(avis[0]));
     AVIStreamInfo(AviStream[1], &avis[1], sizeof(avis[1]));
 
-    //Assert that the streams we are going to work with are correct in our assumption
-    //such that stream 0 is video and stream 1 is audio
+    // Assert that the streams we are going to work with are correct in our assumption
+    // such that stream 0 is video and stream 1 is audio
 
-    if (avis[0].fccType != streamtypeVIDEO) {
+    if (avis[0].fccType != streamtypeVIDEO)
+    {
 
-        MessageBox(NULL,"Unable to verify video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(NULL, "Unable to verify video stream.", "Note", MB_OK | MB_ICONEXCLAMATION);
         AVIStreamRelease(AviStream[0]);
         AVIStreamRelease(AviStream[1]);
         return 3;
-
     }
 
-    if (avis[1].fccType != streamtypeAUDIO) {
+    if (avis[1].fccType != streamtypeAUDIO)
+    {
 
-        MessageBox(NULL,"Unable to verify audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(NULL, "Unable to verify audio stream.", "Note", MB_OK | MB_ICONEXCLAMATION);
         AVIStreamRelease(AviStream[0]);
         AVIStreamRelease(AviStream[1]);
         return 4;
-
     }
 
     //
@@ -2071,27 +2084,27 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
     _fmemset(galpAVIOptions[1], 0, sizeof(AVICOMPRESSOPTIONS));
 
     //=========================================
-    //Set Video Stream Compress Options
+    // Set Video Stream Compress Options
     //=========================================
-    //No Recompression
+    // No Recompression
     galpAVIOptions[0]->fccType = streamtypeVIDEO;
     galpAVIOptions[0]->fccHandler = 0;
     galpAVIOptions[0]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
     if (bInterleave)
         galpAVIOptions[0]->dwFlags = galpAVIOptions[0]->dwFlags | AVICOMPRESSF_INTERLEAVE;
-    galpAVIOptions[0]->dwKeyFrameEvery = (DWORD) -1;
+    galpAVIOptions[0]->dwKeyFrameEvery = (DWORD)-1;
     galpAVIOptions[0]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
     galpAVIOptions[0]->dwBytesPerSecond = 0;
     galpAVIOptions[0]->dwInterleaveEvery = interleave_factor;
-    //galpAVIOptions[0]->cbParms = 0;
-    //galpAVIOptions[0]->cbFormat = 0;
+    // galpAVIOptions[0]->cbParms = 0;
+    // galpAVIOptions[0]->cbFormat = 0;
 
     //=========================================
-    //Set Audio Stream Compress Options
+    // Set Audio Stream Compress Options
     //=========================================
-    //Recompression may be applied
+    // Recompression may be applied
     //
-    //Audio Compress Options seems to be specified by the audio format in avicompressoptions
+    // Audio Compress Options seems to be specified by the audio format in avicompressoptions
     galpAVIOptions[1]->fccType = streamtypeAUDIO;
     galpAVIOptions[1]->fccHandler = 0;
     galpAVIOptions[1]->dwFlags = AVICOMPRESSF_VALID;
@@ -2101,50 +2114,53 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
     galpAVIOptions[1]->dwQuality = 0;
     galpAVIOptions[1]->dwBytesPerSecond = 0;
     galpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
-    //galpAVIOptions[1]->cbParms = 0;
+    // galpAVIOptions[1]->cbParms = 0;
 
-    if (recompress_audio) {
+    if (recompress_audio)
+    {
 
         galpAVIOptions[1]->cbFormat = audio_format_size;
         galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, audio_format_size);
-        memcpy( (void *) galpAVIOptions[1]->lpFormat,  (void *) audio_recompress_format, audio_format_size );
-
+        memcpy((void *)galpAVIOptions[1]->lpFormat, (void *)audio_recompress_format, audio_format_size);
     }
-    else {
+    else
+    {
 
         LONG lTemp;
         AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), NULL, &lTemp);
         galpAVIOptions[1]->cbFormat = lTemp;
 
-        if (lTemp)  galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
+        if (lTemp)
+            galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
         // Use existing format as compress format
         if (galpAVIOptions[1]->lpFormat)
-            AVIStreamReadFormat(AviStream[1],    AVIStreamStart(AviStream[1]),galpAVIOptions[1]->lpFormat, &lTemp);
-
+            AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), galpAVIOptions[1]->lpFormat, &lTemp);
     }
 
     // ============================
     // Do the work! Merging
     // ============================
 
-    //Save     fccHandlers
+    // Save     fccHandlers
     DWORD fccHandler[NUMSTREAMS];
     fccHandler[0] = galpAVIOptions[0]->fccHandler;
     fccHandler[1] = galpAVIOptions[1]->fccHandler;
 
-    hr = AVISaveV(LPCTSTR(output_avi_path),  NULL, (AVISAVECALLBACK) SaveCallback, NUMSTREAMS, AviStream, galpAVIOptions);
-    //hr = AVISaveV(LPCTSTR(output_avi_path),  NULL, (AVISAVECALLBACK) NULL, NUMSTREAMS, AviStream, galpAVIOptions);
-    if (hr != AVIERR_OK) {
+    hr = AVISaveV(LPCTSTR(output_avi_path), NULL, (AVISAVECALLBACK)SaveCallback, NUMSTREAMS, AviStream, galpAVIOptions);
+    // hr = AVISaveV(LPCTSTR(output_avi_path),  NULL, (AVISAVECALLBACK) NULL, NUMSTREAMS, AviStream, galpAVIOptions);
+    if (hr != AVIERR_OK)
+    {
 
-        //Error merging with audio compress options, retry merging with default audio options (no recompression)
-        if (recompress_audio) {
+        // Error merging with audio compress options, retry merging with default audio options (no recompression)
+        if (recompress_audio)
+        {
 
-            AVISaveOptionsFree(NUMSTREAMS,galpAVIOptions);
+            AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
 
             galpAVIOptions[0] = &gaAVIOptions[0];
             galpAVIOptions[1] = &gaAVIOptions[1];
 
-            //Resetting Compress Options
+            // Resetting Compress Options
             _fmemset(galpAVIOptions[0], 0, sizeof(AVICOMPRESSOPTIONS));
             _fmemset(galpAVIOptions[1], 0, sizeof(AVICOMPRESSOPTIONS));
 
@@ -2153,7 +2169,7 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
             galpAVIOptions[0]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
             if (bInterleave)
                 galpAVIOptions[0]->dwFlags = galpAVIOptions[0]->dwFlags | AVICOMPRESSF_INTERLEAVE;
-            galpAVIOptions[0]->dwKeyFrameEvery = (DWORD) -1;
+            galpAVIOptions[0]->dwKeyFrameEvery = (DWORD)-1;
             galpAVIOptions[0]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
             galpAVIOptions[0]->dwBytesPerSecond = 0;
             galpAVIOptions[0]->dwInterleaveEvery = interleave_factor;
@@ -2168,77 +2184,80 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
             galpAVIOptions[1]->dwBytesPerSecond = 0;
             galpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
 
-            //Use default audio format
+            // Use default audio format
             LONG lTemp;
             AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), NULL, &lTemp);
             galpAVIOptions[1]->cbFormat = lTemp;
-            if (lTemp)  galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
+            if (lTemp)
+                galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
             // Use existing format as compress format
             if (galpAVIOptions[1]->lpFormat)
-                AVIStreamReadFormat(AviStream[1],    AVIStreamStart(AviStream[1]),galpAVIOptions[1]->lpFormat, &lTemp);
+                AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), galpAVIOptions[1]->lpFormat, &lTemp);
 
-            //Do the Work .... Merging
-            hr = AVISaveV(LPCTSTR(output_avi_path),  NULL, (AVISAVECALLBACK) NULL, NUMSTREAMS, AviStream, galpAVIOptions);
+            // Do the Work .... Merging
+            hr = AVISaveV(LPCTSTR(output_avi_path), NULL, (AVISAVECALLBACK)NULL, NUMSTREAMS, AviStream, galpAVIOptions);
 
-            if (hr != AVIERR_OK) {
+            if (hr != AVIERR_OK)
+            {
 
-                AVISaveOptionsFree(NUMSTREAMS,galpAVIOptions);
+                AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
                 AVIStreamRelease(AviStream[0]);
                 AVIStreamRelease(AviStream[1]);
-                MessageBox(NULL,"Unable to merge audio and video streams (1).","Note",MB_OK | MB_ICONEXCLAMATION);
+                MessageBox(NULL, "Unable to merge audio and video streams (1).", "Note", MB_OK | MB_ICONEXCLAMATION);
                 return 5;
-
             }
 
-            //Succesful Merging, but with no audio recompression
-            MessageBox(NULL,"Unable to apply audio compression with the selected options. Your movie is saved without audio compression.","Note",MB_OK | MB_ICONEXCLAMATION);
+            // Succesful Merging, but with no audio recompression
+            MessageBox(NULL,
+                       "Unable to apply audio compression with the selected options. Your movie is saved without audio "
+                       "compression.",
+                       "Note", MB_OK | MB_ICONEXCLAMATION);
 
         } // if recompress audio retry
-        else {
+        else
+        {
 
-            AVISaveOptionsFree(NUMSTREAMS,galpAVIOptions);
+            AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
             AVIStreamRelease(AviStream[0]);
             AVIStreamRelease(AviStream[1]);
-            MessageBox(NULL,"Unable to audio and video merge streams (2).","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageBox(NULL, "Unable to audio and video merge streams (2).", "Note", MB_OK | MB_ICONEXCLAMATION);
             return 5;
-
         }
-
     }
 
     // Restore fccHandlers
     galpAVIOptions[0]->fccHandler = fccHandler[0];
     galpAVIOptions[1]->fccHandler = fccHandler[1];
 
-    //Set Title Bar
+    // Set Title Bar
     HWND mainwnd = NULL;
     mainwnd = AfxGetApp()->m_pMainWnd->m_hWnd;
     if (mainwnd)
-        ::SetWindowText(mainwnd,"CamStudio");
+        ::SetWindowText(mainwnd, "CamStudio");
 
-    AVISaveOptionsFree(NUMSTREAMS,galpAVIOptions);
+    AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
 
     // Free Editable Avi Streams
-    for (int i=0;i<    NUMSTREAMS;i++) {
+    for (int i = 0; i < NUMSTREAMS; i++)
+    {
 
-        if (AviStream[i]) {
+        if (AviStream[i])
+        {
             AVIStreamRelease(AviStream[i]);
-            AviStream[i]=NULL;
+            AviStream[i] = NULL;
         }
-
     }
 
     AVIFileExit();
 
     return 0;
-
 }
 
 BOOL CALLBACK SaveCallback(int iProgress)
 {
-    //Set Progress in Title Bar
+    // Set Progress in Title Bar
 
-    char    szText[300];
+    char szText[300];
 
     wsprintf(szText, "Compressing Audio %d%%", iProgress);
 
@@ -2248,25 +2267,25 @@ BOOL CALLBACK SaveCallback(int iProgress)
         ::SetWindowText(mainwnd, szText);
 
     return WinYield();
-    //return FALSE;
+    // return FALSE;
 }
 
 BOOL WinYield(void)
 {
 
-    //Process 3 messages, then return false
+    // Process 3 messages, then return false
     MSG msg;
-    for (int i=0;i<3; i++) {
+    for (int i = 0; i < 3; i++)
+    {
 
-        if (PeekMessage(&msg,NULL,0,0,PM_REMOVE)) {
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-
     }
 
     return FALSE;
-
 }
 
 //////////////////////////////////////////////////////////////////
@@ -2276,71 +2295,68 @@ BOOL WinYield(void)
 LRESULT CPlayplusView::OnUserGeneric(UINT /*wParam*/, LONG /*lParam*/)
 {
 
-    TimeDependentInsert(tempaudiopath,glRecordStartTimeValue);
+    TimeDependentInsert(tempaudiopath, glRecordStartTimeValue);
 
     SetRPSLine();
 
     return 0;
-
 }
 
-void TimeDependentInsert(CString filename,long shiftTime)
+void TimeDependentInsert(CString filename, long shiftTime)
 {
     int overwriteaudio = NEW_AUDIO_TRACK;
-    if (giFirstAudio>=0)
+    if (giFirstAudio >= 0)
         overwriteaudio = OVERWRITE_AUDIO;
     else
         overwriteaudio = NEW_AUDIO_TRACK;
 
-    //Only the NEW_AUDIO_TRACK selection will cause the resetslider var (FALSE) to have any effect
+    // Only the NEW_AUDIO_TRACK selection will cause the resetslider var (FALSE) to have any effect
     if (shiftTime > timeStart)
-        InitAvi((char *) LPCTSTR(filename), MENU_MERGE, shiftTime, KEEPCOUNTER, overwriteaudio,RESET_TO_CURRENT);
+        InitAvi((char *)LPCTSTR(filename), MENU_MERGE, shiftTime, KEEPCOUNTER, overwriteaudio, RESET_TO_CURRENT);
     else
-        InitAvi((char *) LPCTSTR(filename), MENU_MERGE, -1, KEEPCOUNTER, overwriteaudio,RESET_TO_START);
-
+        InitAvi((char *)LPCTSTR(filename), MENU_MERGE, -1, KEEPCOUNTER, overwriteaudio, RESET_TO_START);
 }
 
 CString GetProgPath()
 {
     // locals
-    TCHAR    szTemp[300];
+    TCHAR szTemp[300];
     CFile converter;
     CString result;
 
     // get root
-    GetModuleFileName( NULL, szTemp, 300 );
+    GetModuleFileName(NULL, szTemp, 300);
 
-    CString path=(CString)szTemp;
-    path=path.Left(path.ReverseFind('\\'));
+    CString path = (CString)szTemp;
+    path = path.Left(path.ReverseFind('\\'));
     return path;
-
 }
 
 CString GetTempPath()
 {
 
     char dirx[300];
-    GetWindowsDirectory(dirx,300);
+    GetWindowsDirectory(dirx, 300);
     CString tempdir(dirx);
     tempdir = tempdir + "\\temp";
 
-    //Verify the chosen temp path is valid
+    // Verify the chosen temp path is valid
 
     WIN32_FIND_DATA wfd;
-    memset(&wfd, 0, sizeof (wfd));
+    memset(&wfd, 0, sizeof(wfd));
     HANDLE hdir = FindFirstFile(LPCTSTR(tempdir), &wfd);
-    if (!hdir) {
+    if (!hdir)
+    {
         return GetProgPath();
     }
     FindClose(hdir);
 
-    //If valid directory, return Windows\temp as temp directory
+    // If valid directory, return Windows\temp as temp directory
     if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
         return tempdir;
 
-    //else return program path as temp directory
+    // else return program path as temp directory
     return GetProgPath();
-
 }
 
 //===============================================
@@ -2349,15 +2365,15 @@ CString GetTempPath()
 // Ver 1.1
 //===============================================
 
-void waveInErrorMsg(MMRESULT result, const char * addstr)
+void waveInErrorMsg(MMRESULT result, const char *addstr)
 {
     // say error message
     char errorbuffer[300];
-    waveInGetErrorText(result, errorbuffer,300);
-    //ErrorMsg("WAVEIN:%x:%s %s", result, errorbuffer, addstr);
+    waveInGetErrorText(result, errorbuffer, 300);
+    // ErrorMsg("WAVEIN:%x:%s %s", result, errorbuffer, addstr);
     CString msgstr;
-    msgstr.Format("%s %s",errorbuffer, addstr);
-    MessageBox(NULL,msgstr,"Wave in Error",MB_OK | MB_ICONEXCLAMATION);
+    msgstr.Format("%s %s", errorbuffer, addstr);
+    MessageBox(NULL, msgstr, "Wave in Error", MB_OK | MB_ICONEXCLAMATION);
 }
 
 BOOL InitAudioRecording()
@@ -2366,65 +2382,65 @@ BOOL InitAudioRecording()
     m_QueuedBuffers = 0;
     m_hRecord = NULL;
 
-    m_BufferSize        = 1000;  // samples per callback
+    m_BufferSize = 1000; // samples per callback
 
     BuildRecordingFormat();
 
     ClearAudioFile();
 
-    //Create temporary wav file for audio recording
+    // Create temporary wav file for audio recording
     GetTempWavePath();
 
-    //look up here
+    // look up here
     m_pFile = new CSoundFile(tempaudiopath, &m_Format);
 
-    //even if we recording with firstaudio's format, we still get the unable to insert problem!
-    //m_pFile = new CSoundFile(tempaudiopath, (LPWAVEFORMATEX) galpAVIOptions[giFirstAudio]->lpFormat);
+    // even if we recording with firstaudio's format, we still get the unable to insert problem!
+    // m_pFile = new CSoundFile(tempaudiopath, (LPWAVEFORMATEX) galpAVIOptions[giFirstAudio]->lpFormat);
 
-    if  (!(m_pFile && m_pFile->IsOK()))
-        MessageBox(NULL,"Error Creating Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
+    if (!(m_pFile && m_pFile->IsOK()))
+        MessageBox(NULL, "Error Creating Sound File", "Note", MB_OK | MB_ICONEXCLAMATION);
 
     return TRUE;
 }
 
-//Initialize the tempaudiopath variable with a valid temporary path
-void GetTempWavePath() {
+// Initialize the tempaudiopath variable with a valid temporary path
+void GetTempWavePath()
+{
 
     CString fileName("\\~twav001.wav");
-    tempaudiopath = GetTempPath () + fileName;
+    tempaudiopath = GetTempPath() + fileName;
 
-    //Test the validity of writing to the file
+    // Test the validity of writing to the file
     int fileverified = 0;
     while (!fileverified)
     {
         OFSTRUCT ofstruct;
-        HFILE fhandle = OpenFile( tempaudiopath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE  | OF_CREATE );
-        if (fhandle != HFILE_ERROR) {
+        HFILE fhandle = OpenFile(tempaudiopath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE | OF_CREATE);
+        if (fhandle != HFILE_ERROR)
+        {
             fileverified = 1;
-            CloseHandle( (HANDLE) fhandle );
+            CloseHandle((HANDLE)fhandle);
             DeleteFile(tempaudiopath);
         }
-        else {
-            srand( (unsigned)time( NULL ) );
+        else
+        {
+            srand((unsigned)time(NULL));
             int randnum = rand();
             char numstr[50];
-            sprintf(numstr,"%d",randnum);
+            sprintf(numstr, "%d", randnum);
 
             CString cnumstr(numstr);
             CString fxstr("\\~temp");
             CString exstr(".wav");
-            tempaudiopath = GetTempPath () + fxstr + cnumstr + exstr;
-
+            tempaudiopath = GetTempPath() + fxstr + cnumstr + exstr;
         }
-
     }
-
 }
 
-//Using this function affects the silenceFileValid variable
-//which may be set in a variety of places
+// Using this function affects the silenceFileValid variable
+// which may be set in a variety of places
 
-//The silenceFileValid, when TRUE, imply the tempsilencepath is pointing to a compatible silence sound file
+// The silenceFileValid, when TRUE, imply the tempsilencepath is pointing to a compatible silence sound file
 BOOL CreateSilenceFile()
 {
     silenceFileValid = FALSE;
@@ -2433,20 +2449,20 @@ BOOL CreateSilenceFile()
 
     ClearAudioSilenceFile();
 
-    //Create temporary wav file for audio recording
+    // Create temporary wav file for audio recording
     GetSilenceWavePath();
     m_pSilenceFile = new CSoundFile(tempsilencepath, &m_Format);
 
-    if  (!(m_pSilenceFile && m_pSilenceFile->IsOK())) {
-        MessageBox(NULL,"Error Creating Silence Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
+    if (!(m_pSilenceFile && m_pSilenceFile->IsOK()))
+    {
+        MessageBox(NULL, "Error Creating Silence Sound File", "Note", MB_OK | MB_ICONEXCLAMATION);
         silenceFileValid = FALSE;
         return silenceFileValid;
-
     }
 
     CBuffer buf(BasicBufSize, TRUE);
     buf.Erase();
-    WriteSilenceFile(&buf) ;
+    WriteSilenceFile(&buf);
 
     ClearAudioSilenceFile();
 
@@ -2456,59 +2472,59 @@ BOOL CreateSilenceFile()
 
 void ClearAudioSilenceFile()
 {
-    if (m_pSilenceFile) {
+    if (m_pSilenceFile)
+    {
 
-        //will close output file
+        // will close output file
         delete m_pSilenceFile;
         m_pSilenceFile = NULL;
     }
-
 }
 
-void GetSilenceWavePath() {
+void GetSilenceWavePath()
+{
 
     CString fileName("\\~tsil001.wav");
-    tempsilencepath = GetTempPath () + fileName;
+    tempsilencepath = GetTempPath() + fileName;
 
-    //Test the validity of writing to the file
+    // Test the validity of writing to the file
     int fileverified = 0;
     while (!fileverified)
     {
         OFSTRUCT ofstruct;
-        HFILE fhandle = OpenFile( tempsilencepath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE  | OF_CREATE );
-        if (fhandle != HFILE_ERROR) {
+        HFILE fhandle = OpenFile(tempsilencepath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE | OF_CREATE);
+        if (fhandle != HFILE_ERROR)
+        {
             fileverified = 1;
-            CloseHandle( (HANDLE) fhandle );
+            CloseHandle((HANDLE)fhandle);
             DeleteFile(tempsilencepath);
         }
-        else {
+        else
+        {
 
-            srand( (unsigned)time( NULL ) );
+            srand((unsigned)time(NULL));
             int randnum = rand();
             char numstr[50];
-            sprintf(numstr,"%d",randnum);
+            sprintf(numstr, "%d", randnum);
 
             CString cnumstr(numstr);
             CString fxstr("\\~tsil");
             CString exstr(".wav");
-            tempsilencepath = GetTempPath () + fxstr + cnumstr + exstr;
-
+            tempsilencepath = GetTempPath() + fxstr + cnumstr + exstr;
         }
-
     }
-
 }
 
-//Delete the m_pFile variable and close existing audio file
+// Delete the m_pFile variable and close existing audio file
 void ClearAudioFile()
 {
-    if (m_pFile) {
+    if (m_pFile)
+    {
 
-        //will close output file
+        // will close output file
         delete m_pFile;
         m_pFile = NULL;
     }
-
 }
 
 void SetBufferSize(int NumberOfSamples)
@@ -2516,7 +2532,7 @@ void SetBufferSize(int NumberOfSamples)
     m_BufferSize = NumberOfSamples;
 }
 
-BOOL StartAudioRecording(WAVEFORMATEX* format)
+BOOL StartAudioRecording(WAVEFORMATEX *format)
 {
     MMRESULT mmReturn = 0;
 
@@ -2524,7 +2540,8 @@ BOOL StartAudioRecording(WAVEFORMATEX* format)
         m_Format = *format;
 
     // open wavein device
-    mmReturn = ::waveInOpen( &m_hRecord, AudioDeviceID, &m_Format,(DWORD) viewWnd, NULL, CALLBACK_WINDOW  ); //use on message to map.....
+    mmReturn = ::waveInOpen(&m_hRecord, AudioDeviceID, &m_Format, (DWORD)viewWnd, NULL,
+                            CALLBACK_WINDOW); // use on message to map.....
 
     if (mmReturn)
     {
@@ -2534,19 +2551,18 @@ BOOL StartAudioRecording(WAVEFORMATEX* format)
     else
     {
         // make several input buffers and add them to the input queue
-        for(int i=0; i<3; i++)
+        for (int i = 0; i < 3; i++)
         {
             AddInputBufferToQueue();
         }
 
         // start recording
         mmReturn = ::waveInStart(m_hRecord);
-        if (mmReturn )
+        if (mmReturn)
         {
             waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
             return FALSE;
         }
-
     }
 
     return TRUE;
@@ -2559,16 +2575,17 @@ int AddInputBufferToQueue()
 
     // create the header
     LPWAVEHDR pHdr = new WAVEHDR;
-    if (pHdr == NULL) return NULL;
+    if (pHdr == NULL)
+        return NULL;
     ZeroMemory(pHdr, sizeof(WAVEHDR));
 
     // new a buffer
-    CBuffer buf(m_Format.nBlockAlign*m_BufferSize, false);
+    CBuffer buf(m_Format.nBlockAlign * m_BufferSize, false);
     pHdr->lpData = buf.ptr.c;
     pHdr->dwBufferLength = buf.ByteLen;
 
     // prepare it
-    mmReturn = ::waveInPrepareHeader(m_hRecord,pHdr, sizeof(WAVEHDR));
+    mmReturn = ::waveInPrepareHeader(m_hRecord, pHdr, sizeof(WAVEHDR));
     if (mmReturn)
     {
         waveInErrorMsg(mmReturn, "in AddInputBufferToQueue()");
@@ -2586,7 +2603,6 @@ int AddInputBufferToQueue()
     // no error
     // increment the number of waiting buffers
     return m_QueuedBuffers++;
-
 }
 
 void StopAudioRecording()
@@ -2604,15 +2620,16 @@ void StopAudioRecording()
     {
 
         mmReturn = ::waveInStop(m_hRecord);
-        if (mmReturn) waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinStop)");
+        if (mmReturn)
+            waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinStop)");
 
         mmReturn = ::waveInClose(m_hRecord);
-        if (mmReturn) waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinClose)");
-
+        if (mmReturn)
+            waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinClose)");
     }
 
-    if (m_QueuedBuffers != 0) MessageBox(NULL,"Audio buffers still in queue!","note", MB_OK);
-
+    if (m_QueuedBuffers != 0)
+        MessageBox(NULL, "Audio buffers still in queue!", "note", MB_OK);
 }
 
 LRESULT CPlayplusView::OnMM_WIM_DATA(WPARAM /*parm1*/, LPARAM parm2)
@@ -2620,7 +2637,7 @@ LRESULT CPlayplusView::OnMM_WIM_DATA(WPARAM /*parm1*/, LPARAM parm2)
 
     MMRESULT mmReturn = 0;
 
-    LPWAVEHDR pHdr = (LPWAVEHDR) parm2;
+    LPWAVEHDR pHdr = (LPWAVEHDR)parm2;
 
     mmReturn = ::waveInUnprepareHeader(m_hRecord, pHdr, sizeof(WAVEHDR));
     if (mmReturn)
@@ -2635,16 +2652,16 @@ LRESULT CPlayplusView::OnMM_WIM_DATA(WPARAM /*parm1*/, LPARAM parm2)
     {
         CBuffer buf(pHdr->lpData, pHdr->dwBufferLength);
 
-        if (!recordpaused) { //write only if not paused
+        if (!recordpaused)
+        { // write only if not paused
 
-            //Write Data to file
+            // Write Data to file
             DataFromSoundIn(&buf);
-
         }
 
         // reuse the buffer:
         // prepare it again
-        mmReturn = ::waveInPrepareHeader(m_hRecord,pHdr, sizeof(WAVEHDR));
+        mmReturn = ::waveInPrepareHeader(m_hRecord, pHdr, sizeof(WAVEHDR));
         if (mmReturn)
         {
             waveInErrorMsg(mmReturn, "in OnWIM_DATA() Prepare Header");
@@ -2653,10 +2670,11 @@ LRESULT CPlayplusView::OnMM_WIM_DATA(WPARAM /*parm1*/, LPARAM parm2)
         {
             // add the input buffer to the queue again
             mmReturn = ::waveInAddBuffer(m_hRecord, pHdr, sizeof(WAVEHDR));
-            if (mmReturn) waveInErrorMsg(mmReturn, "in OnWIM_DATA() Add Buffer");
-            else return 0;  // no error
+            if (mmReturn)
+                waveInErrorMsg(mmReturn, "in OnWIM_DATA() Add Buffer");
+            else
+                return 0; // no error
         }
-
     }
 
     // we are closing the waveIn handle,
@@ -2667,10 +2685,9 @@ LRESULT CPlayplusView::OnMM_WIM_DATA(WPARAM /*parm1*/, LPARAM parm2)
     m_QueuedBuffers--;
 
     return 0;
-
 }
 
-void WriteSilenceFile(CBuffer* buffer)
+void WriteSilenceFile(CBuffer *buffer)
 {
 
     if (m_pSilenceFile)
@@ -2680,15 +2697,13 @@ void WriteSilenceFile(CBuffer* buffer)
         {
 
             ClearAudioSilenceFile();
-            MessageBox(NULL,"Error Writing Silence Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageBox(NULL, "Error Writing Silence Sound File", "Note", MB_OK | MB_ICONEXCLAMATION);
             silenceFileValid = FALSE;
         }
-
     }
-
 }
 
-void DataFromSoundIn(CBuffer* buffer)
+void DataFromSoundIn(CBuffer *buffer)
 {
 
     if (m_pFile)
@@ -2696,143 +2711,142 @@ void DataFromSoundIn(CBuffer* buffer)
 
         if (!m_pFile->Write(buffer))
         {
-            //m_SoundIn.Stop();
+            // m_SoundIn.Stop();
             StopAudioRecording();
             ClearAudioFile();
-            MessageBox(NULL,"Error Writing Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageBox(NULL, "Error Writing Sound File", "Note", MB_OK | MB_ICONEXCLAMATION);
         }
-
     }
-
 }
 
-void BuildRecordingFormat() {
+void BuildRecordingFormat()
+{
 
-    m_Format.wFormatTag    = WAVE_FORMAT_PCM;
+    m_Format.wFormatTag = WAVE_FORMAT_PCM;
     m_Format.wBitsPerSample = audio_bits_per_sample;
     m_Format.nSamplesPerSec = audio_samples_per_seconds;
     m_Format.nChannels = audio_num_channels;
-    m_Format.nBlockAlign = m_Format.nChannels * (m_Format.wBitsPerSample/8);
+    m_Format.nBlockAlign = m_Format.nChannels * (m_Format.wBitsPerSample / 8);
     m_Format.nAvgBytesPerSec = m_Format.nSamplesPerSec * m_Format.nBlockAlign;
     m_Format.cbSize = 0;
-
 }
 
-//Suggest Save/Compress Format to pwfx
-void SuggestRecordingFormat() {
+// Suggest Save/Compress Format to pwfx
+void SuggestRecordingFormat()
+{
 
     WAVEINCAPS pwic;
-    MMRESULT mmr = waveInGetDevCaps( AudioDeviceID ,  &pwic, sizeof(pwic) );
+    MMRESULT mmr = waveInGetDevCaps(AudioDeviceID, &pwic, sizeof(pwic));
     VERIFY(MMSYSERR_NOERROR == mmr);
 
-    //Ordered in preference of choice
-    if ((pwic.dwFormats) & WAVE_FORMAT_2S16) {
+    // Ordered in preference of choice
+    if ((pwic.dwFormats) & WAVE_FORMAT_2S16)
+    {
 
         audio_bits_per_sample = 16;
         audio_num_channels = 2;
         audio_samples_per_seconds = 22050;
         waveinselected = WAVE_FORMAT_2S16;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_2M08) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_2M08)
+    {
 
         audio_bits_per_sample = 8;
         audio_num_channels = 1;
         audio_samples_per_seconds = 22050;
         waveinselected = WAVE_FORMAT_2M08;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_2S08)  {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_2S08)
+    {
 
         audio_bits_per_sample = 8;
         audio_num_channels = 2;
         audio_samples_per_seconds = 22050;
         waveinselected = WAVE_FORMAT_2S08;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_2M16) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_2M16)
+    {
 
         audio_bits_per_sample = 16;
         audio_num_channels = 1;
         audio_samples_per_seconds = 22050;
         waveinselected = WAVE_FORMAT_2M16;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_1M08) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_1M08)
+    {
 
         audio_bits_per_sample = 8;
         audio_num_channels = 1;
         audio_samples_per_seconds = 11025;
         waveinselected = WAVE_FORMAT_1M08;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_1M16) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_1M16)
+    {
 
         audio_bits_per_sample = 16;
         audio_num_channels = 1;
         audio_samples_per_seconds = 11025;
         waveinselected = WAVE_FORMAT_1M16;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_1S08) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_1S08)
+    {
 
         audio_bits_per_sample = 8;
         audio_num_channels = 2;
         audio_samples_per_seconds = 11025;
         waveinselected = WAVE_FORMAT_1S08;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_1S16) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_1S16)
+    {
 
         audio_bits_per_sample = 16;
         audio_num_channels = 2;
         audio_samples_per_seconds = 11025;
         waveinselected = WAVE_FORMAT_1S16;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_4M08) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_4M08)
+    {
 
         audio_bits_per_sample = 8;
         audio_num_channels = 1;
         audio_samples_per_seconds = 44100;
         waveinselected = WAVE_FORMAT_4M08;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_4M16) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_4M16)
+    {
 
         audio_bits_per_sample = 16;
         audio_num_channels = 1;
         audio_samples_per_seconds = 44100;
         waveinselected = WAVE_FORMAT_4M16;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_4S08) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_4S08)
+    {
 
         audio_bits_per_sample = 8;
         audio_num_channels = 2;
         audio_samples_per_seconds = 44100;
         waveinselected = WAVE_FORMAT_4S08;
-
     }
-    else if ((pwic.dwFormats) & WAVE_FORMAT_4S16) {
+    else if ((pwic.dwFormats) & WAVE_FORMAT_4S16)
+    {
 
         audio_bits_per_sample = 16;
         audio_num_channels = 2;
         audio_samples_per_seconds = 44100;
         waveinselected = WAVE_FORMAT_4S16;
     }
-    else {
+    else
+    {
 
-        //Arbitrarily choose one
+        // Arbitrarily choose one
         audio_bits_per_sample = 8;
         audio_num_channels = 1;
         audio_samples_per_seconds = 22050;
         waveinselected = WAVE_FORMAT_2M08;
-
     }
 
     BuildRecordingFormat();
-
 }
 
 void SuggestCompressFormat()
@@ -2842,35 +2856,40 @@ void SuggestCompressFormat()
     AllocCompressFormat();
     MMRESULT mmr = S_OK;
 
-    //1st try MPEGLAYER3
+    // 1st try MPEGLAYER3
     BuildRecordingFormat();
-    if ((m_Format.nSamplesPerSec == 22050) && (m_Format.nChannels == 2) && (m_Format.wBitsPerSample <= 16)) {
+    if ((m_Format.nSamplesPerSec == 22050) && (m_Format.nChannels == 2) && (m_Format.wBitsPerSample <= 16))
+    {
         pwfx->wFormatTag = WAVE_FORMAT_MPEGLAYER3;
-        mmr = acmFormatSuggest(NULL, &m_Format,  pwfx, cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
+        mmr = acmFormatSuggest(NULL, &m_Format, pwfx, cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
     }
 
-    if (mmr != S_OK) {
-        //Use PCM in order to handle most cases
+    if (mmr != S_OK)
+    {
+        // Use PCM in order to handle most cases
         BuildRecordingFormat();
         pwfx->wFormatTag = WAVE_FORMAT_PCM;
-        MMRESULT mmr = acmFormatSuggest(NULL, &m_Format,  pwfx, cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
-        if (mmr != S_OK) {
+        MMRESULT mmr = acmFormatSuggest(NULL, &m_Format, pwfx, cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
+        if (mmr != S_OK)
+        {
             bAudioCompression = FALSE;
         }
     }
 }
 
-void AllocCompressFormat() {
+void AllocCompressFormat()
+{
 
-    int initial_audiosetup=1;
+    int initial_audiosetup = 1;
 
-    if (pwfx) {
+    if (pwfx)
+    {
 
-        initial_audiosetup=0;
-        //Do nothing....already allocated
-
+        initial_audiosetup = 0;
+        // Do nothing....already allocated
     }
-    else {
+    else
+    {
 
         MMRESULT mmresult = acmMetrics(NULL, ACM_METRIC_MAX_SIZE_FORMAT, &cbwfx);
         if (MMSYSERR_NOERROR != mmresult)
@@ -2878,8 +2897,8 @@ void AllocCompressFormat() {
 
             CString msgstr;
             msgstr.Format("Metrics failed mmresult=%u!", mmresult);
-            ::MessageBox(NULL,msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
-            return ;
+            ::MessageBox(NULL, msgstr, "Note", MB_OK | MB_ICONEXCLAMATION);
+            return;
         }
 
         pwfx = (LPWAVEFORMATEX)GlobalAllocPtr(GHND, cbwfx);
@@ -2888,26 +2907,23 @@ void AllocCompressFormat() {
 
             CString msgstr;
             msgstr.Format("GlobalAllocPtr(%lu) failed!", cbwfx);
-            ::MessageBox(NULL,msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
-            return ;
+            ::MessageBox(NULL, msgstr, "Note", MB_OK | MB_ICONEXCLAMATION);
+            return;
         }
 
-        initial_audiosetup=1;
-
+        initial_audiosetup = 1;
     }
-
 }
 
 void SetTimeIndicator(CString timestr)
 {
 
-    //restore
-    //if (statusbarCtrl)
+    // restore
+    // if (statusbarCtrl)
     //    statusbarCtrl->SetPaneText(1,timestr);
 
-    //CWnd* mainWindow = AfxGetMainWnd( );
+    // CWnd* mainWindow = AfxGetMainWnd( );
     //((CMainFrame*) mainWindow)->SetTimeIndicator(timestr);
-
 }
 
 void NukeAVIStream(int i)
@@ -2917,21 +2933,24 @@ void NukeAVIStream(int i)
     //
     // Make sure it's a real stream number
     //
-    if (i < 0 || i >=gcpavi)
+    if (i < 0 || i >= gcpavi)
         return;
 
     //
     // Free all the resources associated with this stream
     //
     AVIStreamRelease(gapavi[i]);
-    if (galpAVIOptions[i]->lpFormat) {
+    if (galpAVIOptions[i]->lpFormat)
+    {
         GlobalFreePtr(galpAVIOptions[i]->lpFormat);
     }
-    if (gapgf[i]) {
+    if (gapgf[i])
+    {
         AVIStreamGetFrameClose(gapgf[i]);
         gapgf[i] = NULL;
     }
-    if (ghdd[i]) {
+    if (ghdd[i])
+    {
         DrawDibClose(ghdd[i]);
         ghdd[i] = 0;
     }
@@ -2939,11 +2958,12 @@ void NukeAVIStream(int i)
     //
     // Compact the arrays of junk
     //
-    for (j = i; j < gcpavi - 1; j++) {
-        gapavi[j] = gapavi[j+1];
-        galpAVIOptions[j] = galpAVIOptions[j+1];
-        gapgf[j] = gapgf[j+1];
-        ghdd[j] = ghdd[j+1];
+    for (j = i; j < gcpavi - 1; j++)
+    {
+        gapavi[j] = gapavi[j + 1];
+        galpAVIOptions[j] = galpAVIOptions[j + 1];
+        gapgf[j] = gapgf[j + 1];
+        ghdd[j] = ghdd[j + 1];
     }
 
     gcpavi--;
@@ -2962,7 +2982,6 @@ void CPlayplusView::OnAudioRemoveexistingaudiotracks()
 {
     RemoveExistingAudioTracks();
     fileModified = 1;
-
 }
 
 void CPlayplusView::OnAudioAddaudiofromwavefile()
@@ -2977,7 +2996,7 @@ void CPlayplusView::OnAudioAddaudiofromwavefile()
     FileName[0] = 0;
     FileTitle[0] = 0;
 
-    LoadString( ghInstApp, IDS_OPENWAVE, Buffer, BUFSIZE );
+    LoadString(ghInstApp, IDS_OPENWAVE, Buffer, BUFSIZE);
 
     memset(&ofn, 0, sizeof(ofn));
     ofn.lpstrTitle = Buffer;
@@ -2991,61 +3010,59 @@ void CPlayplusView::OnAudioAddaudiofromwavefile()
     ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
     // If filename exists
-    if (GetOpenFileName(&ofn)) {
+    if (GetOpenFileName(&ofn))
+    {
 
-        TimeDependentInsert(FileName,-1);
+        TimeDependentInsert(FileName, -1);
         fileModified = 1;
-
     }
-
 }
 
-void RemoveExistingAudioTracks() {
+void RemoveExistingAudioTracks()
+{
 
-    AVISTREAMINFO     avis;
+    AVISTREAMINFO avis;
     int i;
-    for (i = gcpavi - 1; i >= 0; i--) {
+    for (i = gcpavi - 1; i >= 0; i--)
+    {
 
         AVIStreamInfo(gapavi[i], &avis, sizeof(avis));
-        if (avis.fccType==streamtypeAUDIO) {
+        if (avis.fccType == streamtypeAUDIO)
+        {
 
             NukeAVIStream(i);
         }
     }
     giFirstAudio = -1;
 
-    RecomputeStreamsTime(RESET_TO_START,0);
-
+    RecomputeStreamsTime(RESET_TO_START, 0);
 }
 
-void AddAudioWaveFile(char  *FileName)
+void AddAudioWaveFile(char *FileName)
 {
-    //if merging (ie audio exists).. then we do not use initavi..but overwrite existing...
+    // if merging (ie audio exists).. then we do not use initavi..but overwrite existing...
     InitAvi(FileName, MENU_MERGE);
-
 }
 
-void CPlayplusView::OnUpdateAudioRemoveexistingaudiotracks(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateAudioRemoveexistingaudiotracks(CCmdUI *pCmdUI)
 {
 
-    BOOL enablebutton = (!gfPlaying) && (giFirstAudio>=0) && (giFirstVideo>=0) && (!gfRecording);
+    BOOL enablebutton = (!gfPlaying) && (giFirstAudio >= 0) && (giFirstVideo >= 0) && (!gfRecording);
     pCmdUI->Enable(enablebutton);
-
 }
 
-void CPlayplusView::OnUpdateAudioAddaudiofromwavefile(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateAudioAddaudiofromwavefile(CCmdUI *pCmdUI)
 {
     // TODO: Add your command update UI handler code here
     BOOL enablebutton;
 
-    if  (!audioRecordable)
-        //allows only the adding (no editing/recording) of audio track from wave file
-        enablebutton = (!gfPlaying) && (giFirstVideo>=0) && (giFirstAudio<0) && (!gfRecording);
+    if (!audioRecordable)
+        // allows only the adding (no editing/recording) of audio track from wave file
+        enablebutton = (!gfPlaying) && (giFirstVideo >= 0) && (giFirstAudio < 0) && (!gfRecording);
     else
-        enablebutton = (!gfPlaying) && (giFirstVideo>=0) && (!gfRecording);
+        enablebutton = (!gfPlaying) && (giFirstVideo >= 0) && (!gfRecording);
 
     pCmdUI->Enable(enablebutton);
-
 }
 
 void CPlayplusView::OnFileSaveas()
@@ -3054,14 +3071,14 @@ void CPlayplusView::OnFileSaveas()
     OPENFILENAME openfilename;
     gszSaveFileName[0] = 0;
 
-    LoadString( ghInstApp, IDS_SAVETITLE, gszBuffer, BUFSIZE );
+    LoadString(ghInstApp, IDS_SAVETITLE, gszBuffer, BUFSIZE);
     openfilename.lStructSize = sizeof(OPENFILENAME);
     openfilename.lpstrTitle = gszBuffer;
     openfilename.hwndOwner = viewWnd;
     openfilename.hInstance = NULL;
 
-    //AVIBuildFilter(gszFilter, sizeof(gszFilter), TRUE);
-    //openfilename.lpstrFilter = gszFilter;
+    // AVIBuildFilter(gszFilter, sizeof(gszFilter), TRUE);
+    // openfilename.lpstrFilter = gszFilter;
     openfilename.lpstrFilter = "AVI Movie Files (*.avi)\0*.avi\0\0";
     openfilename.lpstrCustomFilter = NULL;
     openfilename.nMaxCustFilter = 0;
@@ -3071,12 +3088,11 @@ void CPlayplusView::OnFileSaveas()
     openfilename.lpstrFileTitle = NULL;
     openfilename.nMaxFileTitle = 0;
     openfilename.lpstrInitialDir = NULL;
-    openfilename.Flags = OFN_PATHMUSTEXIST | OFN_HIDEREADONLY |
-        OFN_OVERWRITEPROMPT ;
+    openfilename.Flags = OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
     openfilename.nFileOffset = 0;
     openfilename.nFileExtension = 0;
 
-    LoadString( ghInstApp, IDS_DEFEXT, gszExtBuffer, BUFSIZE );
+    LoadString(ghInstApp, IDS_DEFEXT, gszExtBuffer, BUFSIZE);
     openfilename.lpstrDefExt = gszExtBuffer;
     openfilename.lCustData = 0;
     openfilename.lpfnHook = NULL;
@@ -3085,33 +3101,31 @@ void CPlayplusView::OnFileSaveas()
     // If we get a filename, save it
     if (GetSaveFileName(&openfilename))
     {
-        DWORD       fccHandler[MAXNUMSTREAMS];
-        int         i;
-        HRESULT     hr;
+        DWORD fccHandler[MAXNUMSTREAMS];
+        int i;
+        HRESULT hr;
 
-        //StartWait();
+        // StartWait();
 
         for (i = 0; i < gcpavi; i++)
             fccHandler[i] = galpAVIOptions[i]->fccHandler;
 
-        SetAdditionalCompressSettings(bAudioCompression, pwfx, cbwfx,interleaveFrames,interleaveFactor, interleaveUnit);
+        SetAdditionalCompressSettings(bAudioCompression, pwfx, cbwfx, interleaveFrames, interleaveFactor,
+                                      interleaveUnit);
 
-        hr = AVISaveV(gszSaveFileName,
-            NULL,
-            (AVISAVECALLBACK) SaveCallback,
-            gcpavi,
-            gapavi,
-            galpAVIOptions);
+        hr = AVISaveV(gszSaveFileName, NULL, (AVISAVECALLBACK)SaveCallback, gcpavi, gapavi, galpAVIOptions);
 
-        if (hr != AVIERR_OK) {
-            switch (hr) {
-            case AVIERR_FILEOPEN:
-                LoadString( ghInstApp, IDS_ERROVERWRITE, gszBuffer, BUFSIZE );
-                ErrMsg(gszBuffer);
-                break;
-            default:
-                LoadString( ghInstApp, IDS_SAVEERROR, gszBuffer, BUFSIZE );
-                ErrMsg(gszBuffer);
+        if (hr != AVIERR_OK)
+        {
+            switch (hr)
+            {
+                case AVIERR_FILEOPEN:
+                    LoadString(ghInstApp, IDS_ERROVERWRITE, gszBuffer, BUFSIZE);
+                    ErrMsg(gszBuffer);
+                    break;
+                default:
+                    LoadString(ghInstApp, IDS_SAVEERROR, gszBuffer, BUFSIZE);
+                    ErrMsg(gszBuffer);
             }
         }
         else
@@ -3121,9 +3135,8 @@ void CPlayplusView::OnFileSaveas()
         for (i = 0; i < gcpavi; i++)
             galpAVIOptions[i]->fccHandler = fccHandler[i];
 
-        //EndWait();
+        // EndWait();
         FixWindowTitle();
-
     }
 }
 
@@ -3147,26 +3160,29 @@ void Msg(const char fmt[], ...)
     wvsprintf(buf, fmt, val);
     va_end(val);
 
-    const COORD _80x50 = {80,50};
+    const COORD _80x50 = {80, 50};
     static BOOL startup = (AllocConsole(), SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), _80x50));
     WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buf, lstrlen(buf), &written, 0);
 }
 
-void DumpFormat(WAVEFORMATEX*  pwfx,const char* str)
+void DumpFormat(WAVEFORMATEX *pwfx, const char *str)
 {
-    Msg("\n String %s: wFormatTag %d channels %d nSamplesPerSec %d abytesPerSec %d blockalign %d wBitsPerSample %d cbSize  %d",str,pwfx->wFormatTag,pwfx->nChannels,pwfx->nSamplesPerSec,pwfx->nAvgBytesPerSec,pwfx->nBlockAlign,pwfx->wBitsPerSample,pwfx->cbSize );
+    Msg("\n String %s: wFormatTag %d channels %d nSamplesPerSec %d abytesPerSec %d blockalign %d wBitsPerSample %d "
+        "cbSize  %d",
+        str, pwfx->wFormatTag, pwfx->nChannels, pwfx->nSamplesPerSec, pwfx->nAvgBytesPerSec, pwfx->nBlockAlign,
+        pwfx->wBitsPerSample, pwfx->cbSize);
 }
 
-//1)function fails (in streamcut) if stream length is smaller then stream start
-//2)editpaste : if pasting at point much further than the end of the stream, the pasting point is set to the end instead rathr than the specified point that is beyond
-//this may cause the cutting to fails...
+// 1)function fails (in streamcut) if stream length is smaller then stream start
+// 2)editpaste : if pasting at point much further than the end of the stream, the pasting point is set to the end
+// instead rathr than the specified point that is beyond this may cause the cutting to fails...
 
-//The plLength returns the number of bytes *removed* from the original streams
-//This value may be *different* from the number of bytes inserted into the stream
+// The plLength returns the number of bytes *removed* from the original streams
+// This value may be *different* from the number of bytes inserted into the stream
 
-//This function allows the lStart to be larger than the existing stream length
-//In this case, the stream will be padded with silence
-int EditStreamReplace(PAVISTREAM pavi, LONG * plPos,  LONG * plLength, PAVISTREAM pstream, LONG lStart, LONG lLength)
+// This function allows the lStart to be larger than the existing stream length
+// In this case, the stream will be padded with silence
+int EditStreamReplace(PAVISTREAM pavi, LONG *plPos, LONG *plLength, PAVISTREAM pstream, LONG lStart, LONG lLength)
 {
     // dumping of format indicates they are the same format
     long cbFormat;
@@ -3180,37 +3196,43 @@ int EditStreamReplace(PAVISTREAM pavi, LONG * plPos,  LONG * plLength, PAVISTREA
     orgFormat = (WAVEFORMATEX *)GlobalAllocPtr(GHND, cbFormat);
     AVIStreamReadFormat(pavi, 0, orgFormat, &cbFormat);
 
-    DumpFormat((WAVEFORMATEX *) galpAVIOptions[giFirstAudio]->lpFormat,"FirstAudio (Existing)");
-    DumpFormat((WAVEFORMATEX *) &m_Format,"Working");
-    DumpFormat((WAVEFORMATEX *) lpFormat,"To replace");
-    DumpFormat((WAVEFORMATEX *) orgFormat,"pavi (Original, supposed to be same as firstaudio");
+    DumpFormat((WAVEFORMATEX *)galpAVIOptions[giFirstAudio]->lpFormat, "FirstAudio (Existing)");
+    DumpFormat((WAVEFORMATEX *)&m_Format, "Working");
+    DumpFormat((WAVEFORMATEX *)lpFormat, "To replace");
+    DumpFormat((WAVEFORMATEX *)orgFormat, "pavi (Original, supposed to be same as firstaudio");
 
-    //Add Silence if start point is larger than existing stream length
+    // Add Silence if start point is larger than existing stream length
     long startPos = *plPos;
     long silenceLengthPasted = *plLength;
-    int value = EditStreamPadSilence( pavi,  &startPos,  &silenceLengthPasted);
+    int value = EditStreamPadSilence(pavi, &startPos, &silenceLengthPasted);
     if (value)
         return value;
 
-    value = EditStreamPaste(pavi, plPos, plLength, pstream, lStart,lLength);
-    if (AVIERR_OK != value) {
+    value = EditStreamPaste(pavi, plPos, plLength, pstream, lStart, lLength);
+    if (AVIERR_OK != value)
+    {
         ErrMsg("Unable to add audio at insertion point (Stream Replace)");
     }
 
     long cutStartPoint = *plPos + *plLength;
     long lx = AVIStreamLength(pavi);
-    if (lx >= (cutStartPoint + *plLength)) {
-        //if pavi is long enough to be cut
-        //do nothing...
-    } else {
-        //if not, try to cut from startpoint to
-        *plLength  = lx - cutStartPoint - 1;
+    if (lx >= (cutStartPoint + *plLength))
+    {
+        // if pavi is long enough to be cut
+        // do nothing...
+    }
+    else
+    {
+        // if not, try to cut from startpoint to
+        *plLength = lx - cutStartPoint - 1;
     }
 
     PAVISTREAM tempStream;
-    if  (*plLength > 0) {
-        value = EditStreamCut(pavi, &cutStartPoint, plLength,  &tempStream );
-        if (AVIERR_OK != value) {
+    if (*plLength > 0)
+    {
+        value = EditStreamCut(pavi, &cutStartPoint, plLength, &tempStream);
+        if (AVIERR_OK != value)
+        {
             ErrMsg("Unable to remove audio at replace point (Stream Replace)");
         }
         AVIStreamRelease(tempStream);
@@ -3218,62 +3240,71 @@ int EditStreamReplace(PAVISTREAM pavi, LONG * plPos,  LONG * plLength, PAVISTREA
     return value;
 }
 
-//Will pad silence from end of stream to plPos if plPos>length(pavi)
+// Will pad silence from end of stream to plPos if plPos>length(pavi)
 //  before pad> |---org stream-----|                         plPos
 //  after  pad> |---org stream-----|_____silence_padded_____|plPos
-int EditStreamPadSilence(PAVISTREAM pavi, LONG * plPos,  LONG * plLength)
+int EditStreamPadSilence(PAVISTREAM pavi, LONG *plPos, LONG *plLength)
 {
-    HRESULT   hr;
+    HRESULT hr;
 
     long lz = AVIStreamLength(pavi);
     long startPasteLocation = *plPos;
 
-    if (startPasteLocation>=lz) {
+    if (startPasteLocation >= lz)
+    {
 
-        if  (silenceFileValid) {
+        if (silenceFileValid)
+        {
 
-            long SilencePasteLength = startPasteLocation - (lz-1);
+            long SilencePasteLength = startPasteLocation - (lz - 1);
 
             PAVISTREAM paviSilence;
-            PAVIFILE    pfileSilence;
+            PAVIFILE pfileSilence;
 
             hr = AVIFileOpen(&pfileSilence, tempsilencepath, 0, 0L);
-            if (hr != AVIERR_OK) {
+            if (hr != AVIERR_OK)
+            {
                 ErrMsg("Unable to open silence file");
                 return hr;
             }
 
             hr = AVIFileGetStream(pfileSilence, &paviSilence, streamtypeAUDIO, 0);
-            if (AVIERR_OK != hr) {
+            if (AVIERR_OK != hr)
+            {
                 ErrMsg("Unable to load silence stream");
                 return hr;
             }
 
             long SilenceStreamLength = AVIStreamLength(paviSilence);
-            //long initialStreamEnd = AVIStreamEnd(pavi)+1;
+            // long initialStreamEnd = AVIStreamEnd(pavi)+1;
             long initialStreamEnd = AVIStreamEnd(pavi);
             long totalPastedLength = 0;
-            while (SilencePasteLength > 0) {
+            while (SilencePasteLength > 0)
+            {
                 LONG PastedLength = 0;
                 LONG lengthToPaste = 0;
-                if (SilencePasteLength>=SilenceStreamLength)
-                    lengthToPaste = SilenceStreamLength;   //restricting to ceiling of SilenceStreamLength
+                if (SilencePasteLength >= SilenceStreamLength)
+                    lengthToPaste = SilenceStreamLength; // restricting to ceiling of SilenceStreamLength
                 else
-                    lengthToPaste=SilencePasteLength;
+                    lengthToPaste = SilencePasteLength;
 
-                //CString msgstr;
-                //msgstr.Format("initialStreamEnd %ld lengthToPaste %ld SilenceStreamLength %ld totalPastedLength %ld,SilencePasteLength %ld",initialStreamEnd, lengthToPaste, SilenceStreamLength,totalPastedLength,SilencePasteLength);
-                //MessageBox(NULL,msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
+                // CString msgstr;
+                // msgstr.Format("initialStreamEnd %ld lengthToPaste %ld SilenceStreamLength %ld totalPastedLength
+                // %ld,SilencePasteLength %ld",initialStreamEnd, lengthToPaste,
+                // SilenceStreamLength,totalPastedLength,SilencePasteLength); MessageBox(NULL,msgstr,"Note",MB_OK |
+                // MB_ICONEXCLAMATION);
 
-                hr = EditStreamPaste(pavi, &initialStreamEnd, &PastedLength, paviSilence, 0,lengthToPaste);
-                if (AVIERR_OK != hr) {
-                    ErrMsg("Unable to pad silence to existing stream at position %ld (Stream Replace)",initialStreamEnd);
+                hr = EditStreamPaste(pavi, &initialStreamEnd, &PastedLength, paviSilence, 0, lengthToPaste);
+                if (AVIERR_OK != hr)
+                {
+                    ErrMsg("Unable to pad silence to existing stream at position %ld (Stream Replace)",
+                           initialStreamEnd);
                     return hr;
                 }
 
                 totalPastedLength += PastedLength;
                 lz = AVIStreamLength(pavi);
-                SilencePasteLength = startPasteLocation - (lz-1);
+                SilencePasteLength = startPasteLocation - (lz - 1);
             }
 
             AVIStreamRelease(paviSilence);
@@ -3281,43 +3312,50 @@ int EditStreamPadSilence(PAVISTREAM pavi, LONG * plPos,  LONG * plLength)
 
             *plLength = totalPastedLength;
             *plPos = initialStreamEnd;
-        } else {
-            //no silence added
+        }
+        else
+        {
+            // no silence added
             ErrMsg("Invalid Silence File! No audio [silence] added");
-            //return -1;
+            // return -1;
         }
     }
 
     return 0;
 }
 
-//Will insert silence at begining of stream to shift the original stream to start sounding at a later time
-int EditStreamSilenceShift(PAVISTREAM pavi, LONG * plPos, LONG * plLength)
+// Will insert silence at begining of stream to shift the original stream to start sounding at a later time
+int EditStreamSilenceShift(PAVISTREAM pavi, LONG *plPos, LONG *plLength)
 {
     HRESULT hr;
 
     long lz = AVIStreamLength(pavi);
-    if (lz < 0) {
+    if (lz < 0)
+    {
         return -1;
     }
     long ShiftToLocation = *plPos;
     long ShiftFromLocation = AVIStreamStart(pavi);
 
-    if (ShiftToLocation>ShiftFromLocation) {
-        if  (silenceFileValid) {
+    if (ShiftToLocation > ShiftFromLocation)
+    {
+        if (silenceFileValid)
+        {
             long SilencePasteLength = ShiftToLocation - ShiftFromLocation;
 
             PAVISTREAM paviSilence;
             PAVIFILE pfileSilence;
 
             hr = AVIFileOpen(&pfileSilence, tempsilencepath, 0, 0L);
-            if (AVIERR_OK != hr) {
+            if (AVIERR_OK != hr)
+            {
                 ErrMsg("Unable to open silence file (2) ");
                 return hr;
             }
 
-            hr = AVIFileGetStream(pfileSilence, &paviSilence, streamtypeAUDIO , 0);
-            if (AVIERR_OK != hr) {
+            hr = AVIFileGetStream(pfileSilence, &paviSilence, streamtypeAUDIO, 0);
+            if (AVIERR_OK != hr)
+            {
                 ErrMsg("Unable to load silence stream (2)");
                 return hr;
             }
@@ -3325,27 +3363,32 @@ int EditStreamSilenceShift(PAVISTREAM pavi, LONG * plPos, LONG * plLength)
             long SilenceStreamLength = AVIStreamLength(paviSilence);
             long StreamPastePoint = ShiftFromLocation;
             long totalPastedLength = 0;
-            while (SilencePasteLength>0) {
+            while (SilencePasteLength > 0)
+            {
                 LONG PastedLength;
                 LONG lengthToPaste;
 
-                if (SilencePasteLength>=SilenceStreamLength)
-                    lengthToPaste=SilenceStreamLength;   //restricting to ceiling of SilenceStreamLength
+                if (SilencePasteLength >= SilenceStreamLength)
+                    lengthToPaste = SilenceStreamLength; // restricting to ceiling of SilenceStreamLength
                 else
-                    lengthToPaste=SilencePasteLength;
+                    lengthToPaste = SilencePasteLength;
 
-                //CString msgstr;
-                //msgstr.Format("initialStreamEnd %ld lengthToPaste %ld SilenceStreamLength %ld totalPastedLength %ld,SilencePasteLength %ld",initialStreamEnd, lengthToPaste, SilenceStreamLength,totalPastedLength,SilencePasteLength);
-                //MessageBox(NULL,msgstr,"Note",MB_OK | MB_ICONEXCLAMATION);
+                // CString msgstr;
+                // msgstr.Format("initialStreamEnd %ld lengthToPaste %ld SilenceStreamLength %ld totalPastedLength
+                // %ld,SilencePasteLength %ld",initialStreamEnd, lengthToPaste,
+                // SilenceStreamLength,totalPastedLength,SilencePasteLength); MessageBox(NULL,msgstr,"Note",MB_OK |
+                // MB_ICONEXCLAMATION);
 
                 PastedLength = 0;
-                hr = EditStreamPaste(pavi, &StreamPastePoint, &PastedLength, paviSilence, 0,lengthToPaste);
-                if (AVIERR_OK != hr) {
-                    ErrMsg("Unable to pad silence to existing stream at position %ld (2)",StreamPastePoint);
+                hr = EditStreamPaste(pavi, &StreamPastePoint, &PastedLength, paviSilence, 0, lengthToPaste);
+                if (AVIERR_OK != hr)
+                {
+                    ErrMsg("Unable to pad silence to existing stream at position %ld (2)", StreamPastePoint);
                     return hr;
                 }
 
-                if (PastedLength<=0) {
+                if (PastedLength <= 0)
+                {
                     ErrMsg("Unable to pad silence ! Pad Length <= 0 ! (2)");
                     return -1;
                 }
@@ -3359,20 +3402,22 @@ int EditStreamSilenceShift(PAVISTREAM pavi, LONG * plPos, LONG * plLength)
 
             *plLength = totalPastedLength;
             *plPos = StreamPastePoint;
-        } else {
-            //no silence added
+        }
+        else
+        {
+            // no silence added
             ErrMsg("Invalid Silence File! No audio [silence] added (2)");
 
-            //return -1;
+            // return -1;
         }
     }
 
     return 0;
 }
 
-//Returns a sample that correspond to the lTime of the stream
-//The lTime can be *larger* than  the length of the original pavi
-long ExAVIStreamTimeToSample( PAVISTREAM pavi, LONG lTime  )
+// Returns a sample that correspond to the lTime of the stream
+// The lTime can be *larger* than  the length of the original pavi
+long ExAVIStreamTimeToSample(PAVISTREAM pavi, LONG lTime)
 {
     AVISTREAMINFO avis;
     AVIStreamInfo(pavi, &avis, sizeof(avis));
@@ -3382,142 +3427,170 @@ long ExAVIStreamTimeToSample( PAVISTREAM pavi, LONG lTime  )
     long timeStreamStart;
     long timeStreamEnd;
 
-    sampleStreamStart = AVIStreamStart( pavi );
-    sampleStreamEnd = AVIStreamEnd( pavi );
-    timeStreamStart  = AVIStreamStartTime( pavi );
-    timeStreamEnd = AVIStreamEndTime( pavi );
+    sampleStreamStart = AVIStreamStart(pavi);
+    sampleStreamEnd = AVIStreamEnd(pavi);
+    timeStreamStart = AVIStreamStartTime(pavi);
+    timeStreamEnd = AVIStreamEndTime(pavi);
 
-    long sampleByAVIS = (long) (((double) (avis.dwRate/avis.dwScale)) * ((double) (lTime-timeStreamStart)/1000.0)) + sampleStreamStart;
+    long sampleByAVIS = (long)(((double)(avis.dwRate / avis.dwScale)) * ((double)(lTime - timeStreamStart) / 1000.0)) +
+                        sampleStreamStart;
     return sampleByAVIS;
 }
 
-long SafeStreamTimeToSample( PAVISTREAM pavi, LONG starttime  )
+long SafeStreamTimeToSample(PAVISTREAM pavi, LONG starttime)
 {
     long startsample = 0;
     if (starttime > AVIStreamLengthTime(pavi))
-        startsample = ExAVIStreamTimeToSample( pavi,  starttime);
+        startsample = ExAVIStreamTimeToSample(pavi, starttime);
     else
-        startsample = AVIStreamTimeToSample( pavi,  starttime);
+        startsample = AVIStreamTimeToSample(pavi, starttime);
 
     if (startsample <= -1)
         startsample = 0;
 
     return startsample;
-
 }
 
-// The interleave factor is set * correctly * (i.e adjusted with respect to the interleaveUnit of MILLISECONDS or FRAMES for saving
-// on other occasations, it is assumed to be 1 (and is not used?)
-void SetAdditionalCompressSettings(BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format, DWORD  audio_format_size, BOOL bInterleave, int interleave_factor, int interleave_unit)
+// The interleave factor is set * correctly * (i.e adjusted with respect to the interleaveUnit of MILLISECONDS or FRAMES
+// for saving on other occasations, it is assumed to be 1 (and is not used?)
+void SetAdditionalCompressSettings(BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format,
+                                   DWORD audio_format_size, BOOL bInterleave, int interleave_factor,
+                                   int interleave_unit)
 {
-    int i=0;
+    int i = 0;
     int frames_per_second = -1;
 
-    for (i = 0; i < gcpavi; i++) {
-        //use the firstvideo to calculate the frames per seconds for use in interleave
-        if (bInterleave) {
-            if (i==giFirstVideo) {
+    for (i = 0; i < gcpavi; i++)
+    {
+        // use the firstvideo to calculate the frames per seconds for use in interleave
+        if (bInterleave)
+        {
+            if (i == giFirstVideo)
+            {
                 AVISTREAMINFO avis;
                 AVIStreamInfo(gapavi[giFirstVideo], &avis, sizeof(avis));
 
-                if (avis.dwScale>0)
-                    frames_per_second = avis.dwRate/avis.dwScale;
-            } else {
-                //Do nothing
+                if (avis.dwScale > 0)
+                    frames_per_second = avis.dwRate / avis.dwScale;
+            }
+            else
+            {
+                // Do nothing
             }
         }
     }
 
-    for (i = 0; i < gcpavi; i++) {
-        if (bInterleave) {
+    for (i = 0; i < gcpavi; i++)
+    {
+        if (bInterleave)
+        {
             galpAVIOptions[i]->dwFlags = galpAVIOptions[i]->dwFlags | AVICOMPRESSF_INTERLEAVE;
 
-            if (interleave_unit==FRAMES) {
+            if (interleave_unit == FRAMES)
+            {
                 galpAVIOptions[i]->dwInterleaveEvery = interleave_factor;
-            } else {
-                //Interleave by milliseconds
-                if (frames_per_second>0) {
-                    double interfloat = (((double) interleaveFactor) * ((double) frames_per_second))/1000.0;
-                    int interint = (int) interfloat;
-                    if (interint<=0)
+            }
+            else
+            {
+                // Interleave by milliseconds
+                if (frames_per_second > 0)
+                {
+                    double interfloat = (((double)interleaveFactor) * ((double)frames_per_second)) / 1000.0;
+                    int interint = (int)interfloat;
+                    if (interint <= 0)
                         interint = 1;
                     galpAVIOptions[i]->dwInterleaveEvery = interint;
-                } else {
+                }
+                else
+                {
                     galpAVIOptions[i]->dwInterleaveEvery = interleave_factor;
                 }
             }
-        } else {
+        }
+        else
+        {
             galpAVIOptions[i]->dwFlags = galpAVIOptions[i]->dwFlags & ~AVICOMPRESSF_INTERLEAVE;
             galpAVIOptions[i]->dwInterleaveEvery = 1;
         }
 
-        if (recompress_audio) {
-            if (i==giFirstAudio) {
-                if (galpAVIOptions[i]->lpFormat) {
+        if (recompress_audio)
+        {
+            if (i == giFirstAudio)
+            {
+                if (galpAVIOptions[i]->lpFormat)
+                {
                     GlobalFreePtr(galpAVIOptions[i]->lpFormat);
                 }
                 galpAVIOptions[i]->cbFormat = audio_format_size;
                 galpAVIOptions[i]->lpFormat = GlobalAllocPtr(GHND, audio_format_size);
-                memcpy( (void *) galpAVIOptions[i]->lpFormat,  (void *) audio_recompress_format, audio_format_size );
+                memcpy((void *)galpAVIOptions[i]->lpFormat, (void *)audio_recompress_format, audio_format_size);
             }
-        } else {
-            //Do nothing
+        }
+        else
+        {
+            // Do nothing
         }
     }
 }
 
-void CPlayplusView::OnUpdateFileSaveas(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateFileSaveas(CCmdUI *pCmdUI)
 {
 
-    pCmdUI->Enable(giFirstVideo>=0);
+    pCmdUI->Enable(giFirstVideo >= 0);
 }
 
-//Note : Using test convert will affect the behavior of player
-//use an option that can turn test convert off
+// Note : Using test convert will affect the behavior of player
+// use an option that can turn test convert off
 
-//Creates an Editable copy of pavi and use it to replace the orignal stream i
-void CloneAudioStream_ReplaceStreamPool(int i,PAVISTREAM pavi)
+// Creates an Editable copy of pavi and use it to replace the orignal stream i
+void CloneAudioStream_ReplaceStreamPool(int i, PAVISTREAM pavi)
 {
-    if (i < 0 || i >=gcpavi)
+    if (i < 0 || i >= gcpavi)
         return;
 
-    //Creates an editable clone of pavi and set it to
+    // Creates an editable clone of pavi and set it to
     PAVISTREAM paviConverted;
-    if (CreateEditableStream(&paviConverted, pavi) != AVIERR_OK) {
-        //error
+    if (CreateEditableStream(&paviConverted, pavi) != AVIERR_OK)
+    {
+        // error
         ErrMsg("Unable to Create Editable Stream for Converted Audio");
 
-        //will not affect original stream
+        // will not affect original stream
 
         return;
-    } else {
+    }
+    else
+    {
         // Free all the resources associated with old stream
         AVIStreamRelease(gapavi[i]);
-        if (galpAVIOptions[i]->lpFormat) {
+        if (galpAVIOptions[i]->lpFormat)
+        {
             GlobalFreePtr(galpAVIOptions[i]->lpFormat);
         }
-        if (gapgf[i]) {
+        if (gapgf[i])
+        {
             AVIStreamGetFrameClose(gapgf[i]);
             gapgf[i] = NULL;
         }
-        if (ghdd[i]) {
+        if (ghdd[i])
+        {
             DrawDibClose(ghdd[i]);
             ghdd[i] = 0;
         }
 
-        gapavi[i]=paviConverted;
+        gapavi[i] = paviConverted;
         galSelStart[i] = galSelLen[i] = -1;
 
         ReInitAudioStream(i);
     }
 }
 
-//This function should be called inside initstreams before the line
-//timeLength = timeEnd - timeStart;
+// This function should be called inside initstreams before the line
+// timeLength = timeEnd - timeStart;
 void ReInitAudioStream(int i)
 {
 
-    //if (giFirstAudio>=0)
+    // if (giFirstAudio>=0)
     //    i=giFirstAudio;
 
     AVISTREAMINFO avis;
@@ -3526,30 +3599,31 @@ void ReInitAudioStream(int i)
     _fmemset(galpAVIOptions[i], 0, sizeof(AVICOMPRESSOPTIONS));
     galpAVIOptions[i]->fccType = avis.fccType;
 
-    //case streamtypeAUDIO:
-    LONG        lTemp;
+    // case streamtypeAUDIO:
+    LONG lTemp;
     galpAVIOptions[i]->dwFlags |= AVICOMPRESSF_VALID;
     galpAVIOptions[i]->dwInterleaveEvery = 1;
     AVIStreamReadFormat(gapavi[i], AVIStreamStart(gapavi[i]), NULL, &lTemp);
     galpAVIOptions[i]->cbFormat = lTemp;
-    if (lTemp)  galpAVIOptions[i]->lpFormat = GlobalAllocPtr(GHND, lTemp);
+    if (lTemp)
+        galpAVIOptions[i]->lpFormat = GlobalAllocPtr(GHND, lTemp);
 
     // Use current format as default format
     if (galpAVIOptions[i]->lpFormat)
-        AVIStreamReadFormat(gapavi[i], AVIStreamStart(gapavi[i]),galpAVIOptions[i]->lpFormat,&lTemp);
+        AVIStreamReadFormat(gapavi[i], AVIStreamStart(gapavi[i]), galpAVIOptions[i]->lpFormat, &lTemp);
 
     // We're finding the earliest and latest start and end points for
     // our scrollbar.
-    //timeStart = min(timeStart, AVIStreamStartTime(gapavi[i]));
-    //timeEnd   = max(timeEnd, AVIStreamEndTime(gapavi[i]));
+    // timeStart = min(timeStart, AVIStreamStartTime(gapavi[i]));
+    // timeEnd   = max(timeEnd, AVIStreamEndTime(gapavi[i]));
 
-    ghdd[i] =   NULL;
+    ghdd[i] = NULL;
     gapgf[i] = NULL;
 
-    //RecomputeStreamsTime(RESET_TO_START,0);
+    // RecomputeStreamsTime(RESET_TO_START,0);
 }
 
-void CPlayplusView::OnUpdateFilePlay(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateFilePlay(CCmdUI *pCmdUI)
 {
     BOOL ev = ((!gfPlaying) && (!gfRecording));
     pCmdUI->Enable(ev);
@@ -3561,11 +3635,9 @@ void CPlayplusView::OnAudioExtension()
         allowRecordExtension = 0;
     else
         allowRecordExtension = 1;
-
 }
-void CPlayplusView::OnUpdateAudioExtension(CCmdUI* pCmdUI)
+void CPlayplusView::OnUpdateAudioExtension(CCmdUI *pCmdUI)
 {
     // TODO: Add your command update UI handler code here
     pCmdUI->SetCheck(!allowRecordExtension);
-
 }

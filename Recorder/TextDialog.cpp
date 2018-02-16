@@ -16,8 +16,8 @@ int msgShown = 0;
 /////////////////////////////////////////////////////////////////////////////
 // CTextDlg dialog
 
-CTextDlg::CTextDlg(CWnd* pParent /*=NULL*/)
-: CDialog(CTextDlg::IDD, pParent)
+CTextDlg::CTextDlg(CWnd *pParent /*=NULL*/)
+    : CDialog(CTextDlg::IDD, pParent)
 {
 
     mycharset = ANSI_CHARSET;
@@ -26,7 +26,7 @@ CTextDlg::CTextDlg(CWnd* pParent /*=NULL*/)
     //}}AFX_DATA_INIT
 }
 
-void CTextDlg::DoDataExchange(CDataExchange* pDX)
+void CTextDlg::DoDataExchange(CDataExchange *pDX)
 {
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CTextDlg)
@@ -40,34 +40,34 @@ void CTextDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CTextDlg, CDialog)
-    //{{AFX_MSG_MAP(CTextDlg)
-    ON_BN_CLICKED(ID_FONT, OnFont)
-    ON_EN_CHANGE(IDC_EDIT1, OnChangeEdit1)
-    ON_BN_CLICKED(ID_JUSTLEFT, OnJustleft)
-    ON_BN_CLICKED(ID_JUSTCENTER, OnJustcenter)
-    ON_BN_CLICKED(ID_JUSTRIGHT, OnJustright)
-    //ON_BN_CLICKED(ID_FONT2, OnFont2)
-    ON_COMMAND(ID_SCRIPT_WESTERN, OnScriptWestern)
-    ON_COMMAND(ID_SCRIPT_ARABIC, OnScriptArabic)
-    ON_COMMAND(ID_SCRIPT_BALTIC, OnScriptBaltic)
-    ON_COMMAND(ID_SCRIPT_CHINESEBIG5, OnScriptChinesebig5)
-    ON_COMMAND(ID_SCRIPT_CHINESEGB2312, OnScriptChinesegb2312)
-    ON_COMMAND(ID_SCRIPT_DEFAULT, OnScriptDefault)
-    ON_COMMAND(ID_SCRIPT_EASTEUROPE, OnScriptEasteurope)
-    ON_COMMAND(ID_SCRIPT_GREEK, OnScriptGreek)
-    ON_COMMAND(ID_SCRIPT_HANGUL, OnScriptHangul)
-    ON_COMMAND(ID_SCRIPT_HEBREW, OnScriptHebrew)
-    ON_COMMAND(ID_SCRIPT_JAPANESESHIFTJIS, OnScriptJapaneseshiftjis)
-    ON_COMMAND(ID_SCRIPT_JOHABKOREAN, OnScriptJohabkorean)
-    ON_COMMAND(ID_SCRIPT_MAC, OnScriptMac)
-    ON_COMMAND(ID_SCRIPT_OEM, OnScriptOem)
-    ON_COMMAND(ID_SCRIPT_RUSSIAN, OnScriptRussian)
-    ON_COMMAND(ID_SCRIPT_SYMBOL, OnScriptSymbol)
-    ON_COMMAND(ID_SCRIPT_THAI, OnScriptThai)
-    ON_COMMAND(ID_SCRIPT_TURKISH, OnScriptTurkish)
-    ON_WM_KILLFOCUS()
-    //}}AFX_MSG_MAP
-    ON_BN_CLICKED(IDC_LANG_ENC, OnBnClickedLangEnc)
+//{{AFX_MSG_MAP(CTextDlg)
+ON_BN_CLICKED(ID_FONT, OnFont)
+ON_EN_CHANGE(IDC_EDIT1, OnChangeEdit1)
+ON_BN_CLICKED(ID_JUSTLEFT, OnJustleft)
+ON_BN_CLICKED(ID_JUSTCENTER, OnJustcenter)
+ON_BN_CLICKED(ID_JUSTRIGHT, OnJustright)
+// ON_BN_CLICKED(ID_FONT2, OnFont2)
+ON_COMMAND(ID_SCRIPT_WESTERN, OnScriptWestern)
+ON_COMMAND(ID_SCRIPT_ARABIC, OnScriptArabic)
+ON_COMMAND(ID_SCRIPT_BALTIC, OnScriptBaltic)
+ON_COMMAND(ID_SCRIPT_CHINESEBIG5, OnScriptChinesebig5)
+ON_COMMAND(ID_SCRIPT_CHINESEGB2312, OnScriptChinesegb2312)
+ON_COMMAND(ID_SCRIPT_DEFAULT, OnScriptDefault)
+ON_COMMAND(ID_SCRIPT_EASTEUROPE, OnScriptEasteurope)
+ON_COMMAND(ID_SCRIPT_GREEK, OnScriptGreek)
+ON_COMMAND(ID_SCRIPT_HANGUL, OnScriptHangul)
+ON_COMMAND(ID_SCRIPT_HEBREW, OnScriptHebrew)
+ON_COMMAND(ID_SCRIPT_JAPANESESHIFTJIS, OnScriptJapaneseshiftjis)
+ON_COMMAND(ID_SCRIPT_JOHABKOREAN, OnScriptJohabkorean)
+ON_COMMAND(ID_SCRIPT_MAC, OnScriptMac)
+ON_COMMAND(ID_SCRIPT_OEM, OnScriptOem)
+ON_COMMAND(ID_SCRIPT_RUSSIAN, OnScriptRussian)
+ON_COMMAND(ID_SCRIPT_SYMBOL, OnScriptSymbol)
+ON_COMMAND(ID_SCRIPT_THAI, OnScriptThai)
+ON_COMMAND(ID_SCRIPT_TURKISH, OnScriptTurkish)
+ON_WM_KILLFOCUS()
+//}}AFX_MSG_MAP
+ON_BN_CLICKED(IDC_LANG_ENC, OnBnClickedLangEnc)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -86,19 +86,19 @@ BOOL CTextDlg::OnInitDialog()
 
     // TODO: Add extra initialization here
 
-    HICON justifyLeftIcon = LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(IDI_ICONJUSTIFYLEFT));
+    HICON justifyLeftIcon = LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_ICONJUSTIFYLEFT));
     m_ctrlButtonJustifyLeft.SetIcon(justifyLeftIcon);
 
-    HICON justifyCenterIcon = LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(IDI_ICONJUSTIFYCENTER));
+    HICON justifyCenterIcon = LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_ICONJUSTIFYCENTER));
     m_ctrlButtonJustifyCenter.SetIcon(justifyCenterIcon);
 
-    HICON justifyRightIcon = LoadIcon(AfxGetInstanceHandle(),MAKEINTRESOURCE(IDI_ICONJUSTIFYRIGHT));
+    HICON justifyRightIcon = LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_ICONJUSTIFYRIGHT));
     m_ctrlButtonJustifyRight.SetIcon(justifyRightIcon);
 
     if ((logFont) && (displayStr))
     {
-        //CFont tempFont;
-        //tempFont.CreateFontIndirect(logFont);
+        // CFont tempFont;
+        // tempFont.CreateFontIndirect(logFont);
         //((CEdit *) GetDlgItem(IDC_EDIT1))->SetFont(&tempFont);
 
         tempFont.DeleteObject();
@@ -106,7 +106,7 @@ BOOL CTextDlg::OnInitDialog()
         m_ctrlEditText.SetFont(&tempFont, TRUE);
         m_ctrlEditText.SetWindowText(*displayStr);
 
-        //tempFont.DeleteObject();
+        // tempFont.DeleteObject();
     }
 
     CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();
@@ -119,12 +119,14 @@ void CTextDlg::OnFont()
 {
     // TODO: Add your control notification handler code here
 
-    if (!logFont) return;
+    if (!logFont)
+        return;
 
-    CFontDialog fontdlg(logFont, CF_EFFECTS | CF_SCREENFONTS |CF_INITTOLOGFONTSTRUCT);
+    CFontDialog fontdlg(logFont, CF_EFFECTS | CF_SCREENFONTS | CF_INITTOLOGFONTSTRUCT);
     fontdlg.m_cf.rgbColors = *colorrgb;
 
-    if (fontdlg.DoModal()==IDOK) {
+    if (fontdlg.DoModal() == IDOK)
+    {
 
         fontdlg.GetCurrentFont(logFont);
         *colorrgb = fontdlg.GetColor();
@@ -134,13 +136,13 @@ void CTextDlg::OnFont()
         m_ctrlEditText.SetFont(&tempFont, TRUE);
 
         //((CEdit *) GetDlgItem(IDC_EDIT1))->SetWindowText(*displayStr);
-        //tempFont.DeleteObject();
+        // tempFont.DeleteObject();
     }
 
     InvalidateTransWnd();
 }
 
-void CTextDlg::PreModal(CString* inStr, LOGFONT *inFont,COLORREF* inRGB, CWnd* parent,int* horzalign)
+void CTextDlg::PreModal(CString *inStr, LOGFONT *inFont, COLORREF *inRGB, CWnd *parent, int *horzalign)
 {
 
     logFont = inFont;
@@ -158,7 +160,7 @@ void CTextDlg::OnChangeEdit1()
     // with the ENM_CHANGE flag ORed into the lParam mask.
 
     // TODO: Add your control notification handler code here
-    m_ctrlEditText.GetWindowText( *displayStr);
+    m_ctrlEditText.GetWindowText(*displayStr);
 
     InvalidateTransWnd();
 }
@@ -167,7 +169,7 @@ void CTextDlg::InvalidateTransWnd()
 {
 
     myparent->Invalidate();
-    //if (myparent)
+    // if (myparent)
     // myparent->PostMessage(WM_USER_INVALIDATEWND,0,0);
 }
 
@@ -197,16 +199,17 @@ void CTextDlg::OnJustright()
 void CTextDlg::ChooseScriptFont()
 {
     // TODO: Add your control notification handler code here
-    //ZeroMemory(logFont, sizeof(LOGFONT));
+    // ZeroMemory(logFont, sizeof(LOGFONT));
 
-    // OEM_CHARSET (255) is currently the one with the highest number. 
+    // OEM_CHARSET (255) is currently the one with the highest number.
     // Cast to elimimate C4244 warning. (Assume that other charset will be always less than 255)
-    logFont->lfCharSet = static_cast<BYTE>(mycharset);    
+    logFont->lfCharSet = static_cast<BYTE>(mycharset);
 
     CFontDialog fontdlg(logFont, CF_SELECTSCRIPT | CF_EFFECTS | CF_SCREENFONTS);
     fontdlg.m_cf.rgbColors = *colorrgb;
 
-    if (fontdlg.DoModal()==IDOK) {
+    if (fontdlg.DoModal() == IDOK)
+    {
 
         fontdlg.GetCurrentFont(logFont);
         *colorrgb = fontdlg.GetColor();
@@ -224,7 +227,6 @@ void CTextDlg::OnScriptWestern()
     // TODO: Add your command handler code here
     mycharset = ANSI_CHARSET;
     ChooseScriptFont();
-
 }
 
 void CTextDlg::OnScriptArabic()
@@ -279,7 +281,7 @@ void CTextDlg::OnScriptGreek()
 void CTextDlg::OnScriptHangul()
 {
     // TODO: Add your command handler code here
-    //mycharset = HANGUL_CHARSET;
+    // mycharset = HANGUL_CHARSET;
     mycharset = HANGEUL_CHARSET;
     ChooseScriptFont();
 }
@@ -347,19 +349,18 @@ void CTextDlg::OnScriptTurkish()
     ChooseScriptFont();
 }
 
-void CTextDlg::OnKillFocus(CWnd* pNewWnd)
+void CTextDlg::OnKillFocus(CWnd *pNewWnd)
 {
     CDialog::OnKillFocus(pNewWnd);
 }
-
 
 void CTextDlg::OnBnClickedLangEnc()
 {
     CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();
     if (pApp->VersionOp() < 5)
     {
-        //int ret = MessageBox("This feature works only in Win 2000/ XP." ,"Note",MB_OK | MB_ICONEXCLAMATION);
-        MessageOut(m_hWnd,IDS_STRING_WORKSWINXP,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+        // int ret = MessageBox("This feature works only in Win 2000/ XP." ,"Note",MB_OK | MB_ICONEXCLAMATION);
+        MessageOut(m_hWnd, IDS_STRING_WORKSWINXP, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
         msgShown = 1;
         m_ctrlButtonLanguage.EnableWindow(FALSE);
         return;
@@ -375,11 +376,10 @@ void CTextDlg::OnBnClickedLangEnc()
     int menuToLoad = IDR_CONTEXTLANGUAGE;
     if (menu.LoadMenu(menuToLoad))
     {
-        CMenu* pPopup = menu.GetSubMenu(0);
+        CMenu *pPopup = menu.GetSubMenu(0);
         ASSERT(pPopup != NULL);
 
         // route commands through main window
         pPopup->TrackPopupMenu(TPM_RIGHTBUTTON | TPM_LEFTALIGN, point.x, point.y, this);
     }
-
 }

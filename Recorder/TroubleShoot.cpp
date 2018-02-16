@@ -16,15 +16,15 @@ extern int TroubleShootVal;
 /////////////////////////////////////////////////////////////////////////////
 // CTroubleShootDlg dialog
 
-CTroubleShootDlg::CTroubleShootDlg(CWnd* pParent /*=NULL*/)
-: CDialog(CTroubleShootDlg::IDD, pParent)
+CTroubleShootDlg::CTroubleShootDlg(CWnd *pParent /*=NULL*/)
+    : CDialog(CTroubleShootDlg::IDD, pParent)
 {
     //{{AFX_DATA_INIT(CTroubleShootDlg)
     // NOTE: the ClassWizard will add member initialization here
     //}}AFX_DATA_INIT
 }
 
-void CTroubleShootDlg::DoDataExchange(CDataExchange* pDX)
+void CTroubleShootDlg::DoDataExchange(CDataExchange *pDX)
 {
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CTroubleShootDlg)
@@ -35,8 +35,8 @@ void CTroubleShootDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CTroubleShootDlg, CDialog)
-    //{{AFX_MSG_MAP(CTroubleShootDlg)
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CTroubleShootDlg)
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -59,9 +59,10 @@ void CTroubleShootDlg::OnOK()
     TroubleShootVal = 0;
 
     int check = m_ctrlButtonBehavior1.GetCheck();
-    if (check) {
+    if (check)
+    {
         // "CamStudio will now exit and set your system to record with microphone. Proceed ?"
-        int ret = MessageOut(*this, IDS_STRING_EXITSET, IDS_STRING_NOTE,MB_YESNOCANCEL | MB_ICONQUESTION);
+        int ret = MessageOut(*this, IDS_STRING_EXITSET, IDS_STRING_NOTE, MB_YESNOCANCEL | MB_ICONQUESTION);
         if (ret == IDCANCEL)
         {
             return;
@@ -74,4 +75,3 @@ void CTroubleShootDlg::OnOK()
 
     CDialog::OnOK();
 }
-

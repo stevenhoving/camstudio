@@ -14,17 +14,17 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CSyncDlg dialog
 
-CSyncDlg::CSyncDlg(int iType, int iShift, CWnd* pParent /*=NULL*/)
-: CDialog(CSyncDlg::IDD, pParent)
-, m_iTimeShift(iShift)
-, m_iShiftType(iType)
+CSyncDlg::CSyncDlg(int iType, int iShift, CWnd *pParent /*=NULL*/)
+    : CDialog(CSyncDlg::IDD, pParent)
+    , m_iTimeShift(iShift)
+    , m_iShiftType(iType)
 {
     //{{AFX_DATA_INIT(CSyncDlg)
     // NOTE: the ClassWizard will add member initialization here
     //}}AFX_DATA_INIT
 }
 
-void CSyncDlg::DoDataExchange(CDataExchange* pDX)
+void CSyncDlg::DoDataExchange(CDataExchange *pDX)
 {
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CSyncDlg)
@@ -39,11 +39,11 @@ void CSyncDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CSyncDlg, CDialog)
-    //{{AFX_MSG_MAP(CSyncDlg)
-    ON_BN_CLICKED(IDC_RADIO1, OnVideoFirst)
-    ON_BN_CLICKED(IDC_RADIO3, OnAudioFirst)
-    ON_BN_CLICKED(IDC_RADIO4, OnNoShift)
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CSyncDlg)
+ON_BN_CLICKED(IDC_RADIO1, OnVideoFirst)
+ON_BN_CLICKED(IDC_RADIO3, OnAudioFirst)
+ON_BN_CLICKED(IDC_RADIO4, OnNoShift)
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ BOOL CSyncDlg::OnInitDialog()
     acc[1].nSec = 4;
     acc[1].nInc = 50;
 
-    //m_ctrlSpinTimeShift.SetBuddy(&m_ctrlEditTimeShift);    // TODO: redundant: done in resource editor
+    // m_ctrlSpinTimeShift.SetBuddy(&m_ctrlEditTimeShift);    // TODO: redundant: done in resource editor
     m_ctrlSpinTimeShift.SetRange(0, 5000);
     m_ctrlSpinTimeShift.SetPos(m_iTimeShift);
     m_ctrlSpinTimeShift.SetAccel(2, acc);

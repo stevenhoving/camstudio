@@ -18,8 +18,8 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CKeyshortcutsDlg dialog
 
-CKeyshortcutsDlg::CKeyshortcutsDlg(CWnd* pParent /*=NULL*/)
-: CDialog(CKeyshortcutsDlg::IDD, pParent)
+CKeyshortcutsDlg::CKeyshortcutsDlg(CWnd *pParent /*=NULL*/)
+    : CDialog(CKeyshortcutsDlg::IDD, pParent)
 {
     //{{AFX_DATA_INIT(CKeyshortcutsDlg)
     // NOTE: the ClassWizard will add member initialization here
@@ -90,11 +90,11 @@ CKeyshortcutsDlg::CKeyshortcutsDlg(CWnd* pParent /*=NULL*/)
     m_vKeyCode.push_back(VK_RETURN);
     m_vKeyCode.push_back(VK_SPACE);
     m_vKeyCode.push_back(VK_TAB);
-    m_vKeyCode.push_back(100000);    // sentinel value; must be last
+    m_vKeyCode.push_back(100000); // sentinel value; must be last
 }
 // TODO: If we still want to check HK overlap
 // Let's reorganize m_ctrlXXXX into array
-void CKeyshortcutsDlg::DoDataExchange(CDataExchange* pDX)
+void CKeyshortcutsDlg::DoDataExchange(CDataExchange *pDX)
 {
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CKeyshortcutsDlg)
@@ -131,8 +131,8 @@ void CKeyshortcutsDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CKeyshortcutsDlg, CDialog)
-    //{{AFX_MSG_MAP(CKeyshortcutsDlg)
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CKeyshortcutsDlg)
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -147,47 +147,39 @@ void CKeyshortcutsDlg::OnOK()
 
     // why don't we use Item Data here instead of conversion?
 
-    cHotKeyOpts.m_RecordStart.m_vKey = GetCode(m_ctrlCBRecord.GetCurSel());// m_keyRecordStart;
-    cHotKeyOpts.m_RecordEnd.m_vKey = GetCode(m_ctrlCBStop.GetCurSel());// m_keyRecordEnd;
-    cHotKeyOpts.m_RecordCancel.m_vKey = GetCode(m_ctrlCBCancel.GetCurSel());// m_keyRecordCancel;
+    cHotKeyOpts.m_RecordStart.m_vKey = GetCode(m_ctrlCBRecord.GetCurSel());  // m_keyRecordStart;
+    cHotKeyOpts.m_RecordEnd.m_vKey = GetCode(m_ctrlCBStop.GetCurSel());      // m_keyRecordEnd;
+    cHotKeyOpts.m_RecordCancel.m_vKey = GetCode(m_ctrlCBCancel.GetCurSel()); // m_keyRecordCancel;
 
-    cHotKeyOpts.m_Next.m_vKey = GetCode(m_ctrlCBNext.GetCurSel());// m_keyNext;
-    cHotKeyOpts.m_Prev.m_vKey = GetCode(m_ctrlCBPrev.GetCurSel());// m_keyPrev;
-    cHotKeyOpts.m_ShowLayout.m_vKey = GetCode(m_ctrlCBShow.GetCurSel());// m_ctrlm_keyShowLayout;
-    
+    cHotKeyOpts.m_Next.m_vKey = GetCode(m_ctrlCBNext.GetCurSel());       // m_keyNext;
+    cHotKeyOpts.m_Prev.m_vKey = GetCode(m_ctrlCBPrev.GetCurSel());       // m_keyPrev;
+    cHotKeyOpts.m_ShowLayout.m_vKey = GetCode(m_ctrlCBShow.GetCurSel()); // m_ctrlm_keyShowLayout;
+
     cHotKeyOpts.m_Autopan.m_vKey = GetCode(m_ctrlCBAutopan.GetCurSel()); // m_AutoSpan
 
-    cHotKeyOpts.m_RecordStart.m_fsMod =
-        MOD_ALT * (m_ctrlButtonRecordALT.GetCheck() == BST_CHECKED) |
-        MOD_CONTROL * (m_ctrlButtonRecordCTRL.GetCheck() == BST_CHECKED) |
-        MOD_SHIFT * (m_ctrlButtonRecordSHFT.GetCheck() == BST_CHECKED);
-    cHotKeyOpts.m_RecordEnd.m_fsMod =
-        MOD_ALT * (m_ctrlButtonStopALT.GetCheck() == BST_CHECKED) |
-        MOD_CONTROL * (m_ctrlButtonStopCTRL.GetCheck() == BST_CHECKED) |
-        MOD_SHIFT * (m_ctrlButtonStopSHFT.GetCheck() == BST_CHECKED);
-    cHotKeyOpts.m_RecordCancel.m_fsMod =
-        MOD_ALT * (m_ctrlButtonCancelALT.GetCheck() == BST_CHECKED) |
-        MOD_CONTROL * (m_ctrlButtonCancelCTRL.GetCheck() == BST_CHECKED) |
-        MOD_SHIFT * (m_ctrlButtonCancelSHFT.GetCheck() == BST_CHECKED);
+    cHotKeyOpts.m_RecordStart.m_fsMod = MOD_ALT * (m_ctrlButtonRecordALT.GetCheck() == BST_CHECKED) |
+                                        MOD_CONTROL * (m_ctrlButtonRecordCTRL.GetCheck() == BST_CHECKED) |
+                                        MOD_SHIFT * (m_ctrlButtonRecordSHFT.GetCheck() == BST_CHECKED);
+    cHotKeyOpts.m_RecordEnd.m_fsMod = MOD_ALT * (m_ctrlButtonStopALT.GetCheck() == BST_CHECKED) |
+                                      MOD_CONTROL * (m_ctrlButtonStopCTRL.GetCheck() == BST_CHECKED) |
+                                      MOD_SHIFT * (m_ctrlButtonStopSHFT.GetCheck() == BST_CHECKED);
+    cHotKeyOpts.m_RecordCancel.m_fsMod = MOD_ALT * (m_ctrlButtonCancelALT.GetCheck() == BST_CHECKED) |
+                                         MOD_CONTROL * (m_ctrlButtonCancelCTRL.GetCheck() == BST_CHECKED) |
+                                         MOD_SHIFT * (m_ctrlButtonCancelSHFT.GetCheck() == BST_CHECKED);
 
-    cHotKeyOpts.m_Next.m_fsMod =
-        MOD_ALT * (m_ctrlButtonNextALT.GetCheck() == BST_CHECKED) |
-        MOD_CONTROL * (m_ctrlButtonNextCTRL.GetCheck() == BST_CHECKED) |
-        MOD_SHIFT * (m_ctrlButtonNextSHFT.GetCheck() == BST_CHECKED);
-    cHotKeyOpts.m_Prev.m_fsMod = 
-        MOD_ALT * (m_ctrlButtonPrevALT.GetCheck() == BST_CHECKED) |
-        MOD_CONTROL * (m_ctrlButtonPrevCTRL.GetCheck() == BST_CHECKED) |
-        MOD_SHIFT * (m_ctrlButtonPrevSHFT.GetCheck() == BST_CHECKED);
-    cHotKeyOpts.m_ShowLayout.m_fsMod =
-        MOD_ALT * (m_ctrlButtonShowALT.GetCheck() == BST_CHECKED) |
-        MOD_CONTROL * (m_ctrlButtonShowCTRL.GetCheck() == BST_CHECKED) |
-        MOD_SHIFT * (m_ctrlButtonShowCHFT.GetCheck() == BST_CHECKED);
+    cHotKeyOpts.m_Next.m_fsMod = MOD_ALT * (m_ctrlButtonNextALT.GetCheck() == BST_CHECKED) |
+                                 MOD_CONTROL * (m_ctrlButtonNextCTRL.GetCheck() == BST_CHECKED) |
+                                 MOD_SHIFT * (m_ctrlButtonNextSHFT.GetCheck() == BST_CHECKED);
+    cHotKeyOpts.m_Prev.m_fsMod = MOD_ALT * (m_ctrlButtonPrevALT.GetCheck() == BST_CHECKED) |
+                                 MOD_CONTROL * (m_ctrlButtonPrevCTRL.GetCheck() == BST_CHECKED) |
+                                 MOD_SHIFT * (m_ctrlButtonPrevSHFT.GetCheck() == BST_CHECKED);
+    cHotKeyOpts.m_ShowLayout.m_fsMod = MOD_ALT * (m_ctrlButtonShowALT.GetCheck() == BST_CHECKED) |
+                                       MOD_CONTROL * (m_ctrlButtonShowCTRL.GetCheck() == BST_CHECKED) |
+                                       MOD_SHIFT * (m_ctrlButtonShowCHFT.GetCheck() == BST_CHECKED);
 
-    cHotKeyOpts.m_Autopan.m_fsMod =
-        MOD_ALT * (m_ctrlButtonAutoSpanALT.GetCheck() == BST_CHECKED) |
-        MOD_CONTROL * (m_ctrlButtonAutoSpanCTRL.GetCheck() == BST_CHECKED) |
-        MOD_SHIFT * (m_ctrlButtonAutoSpanSHFT.GetCheck() == BST_CHECKED);
-
+    cHotKeyOpts.m_Autopan.m_fsMod = MOD_ALT * (m_ctrlButtonAutoSpanALT.GetCheck() == BST_CHECKED) |
+                                    MOD_CONTROL * (m_ctrlButtonAutoSpanCTRL.GetCheck() == BST_CHECKED) |
+                                    MOD_SHIFT * (m_ctrlButtonAutoSpanSHFT.GetCheck() == BST_CHECKED);
 }
 
 BOOL CKeyshortcutsDlg::OnInitDialog()
@@ -231,13 +223,11 @@ BOOL CKeyshortcutsDlg::OnInitDialog()
 
 int CKeyshortcutsDlg::GetIndex(UINT keyShortCut)
 {
-    std::vector <UINT>::iterator iter = std::find(m_vKeyCode.begin(), m_vKeyCode.end(), keyShortCut);
+    std::vector<UINT>::iterator iter = std::find(m_vKeyCode.begin(), m_vKeyCode.end(), keyShortCut);
     return (iter - m_vKeyCode.begin());
 }
 
 UINT CKeyshortcutsDlg::GetCode(size_t index)
 {
-    return ((index < 0) || (m_vKeyCode.size() <= index))
-        ? m_vKeyCode[m_vKeyCode.size()-1]
-        : m_vKeyCode[index];
+    return ((index < 0) || (m_vKeyCode.size() <= index)) ? m_vKeyCode[m_vKeyCode.size() - 1] : m_vKeyCode[index];
 }
