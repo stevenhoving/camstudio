@@ -215,7 +215,8 @@ struct sVideoOpts
         DWORD dwSize = 0UL;
         cProfile.lookupValue("CompressorStateSize", (unsigned&)dwSize);
         State(dwSize);
-        CString  m_cStartRecordingString = "";
+        //CString  m_cStartRecordingString = "";
+        m_cStartRecordingString = "";
         return true;
     }
     bool Write(Setting& cProfile)
