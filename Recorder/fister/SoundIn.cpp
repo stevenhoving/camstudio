@@ -120,7 +120,7 @@ void CSoundIn::Stop()
     }
 }
 
-void CSoundIn::OnMM_WIM_DATA(UINT parm1, LONG parm2)
+void CSoundIn::OnMM_WIM_DATA(WPARAM /*parm1*/, LPARAM parm2)
 {
     MMRESULT mmReturn = 0;
 

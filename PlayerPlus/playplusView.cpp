@@ -663,7 +663,7 @@ int PaintStuff(HDC hdc, HWND hwnd, BOOL fDrawEverything)
     xStreamLeft = -GetScrollPos(hwnd, SB_HORZ);
 
     // for all streams
-    for (i = 0; i < gcpavi; i++)
+    for (int i = 0; i < gcpavi; i++)
     {
         AVISTREAMINFO avis;
         LONG lEndTime;
@@ -981,7 +981,7 @@ void FreeDrawStuff()
     // Make sure we're not playing!
     aviaudioStop();
 
-    for (i = 0; i < gcpavi; i++)
+    for (int i = 0; i < gcpavi; i++)
     {
         if (gapgf[i])
         {
@@ -1062,7 +1062,7 @@ void InitStreams()
     //
     // Walk through and init all streams loaded
     //
-    for (i = 0; i < gcpavi; i++)
+    for (int i = 0; i < gcpavi; i++)
     {
 
         AVIStreamInfo(gapavi[i], &avis, sizeof(avis));
@@ -3107,7 +3107,7 @@ void CPlayplusView::OnFileSaveas()
 
         // StartWait();
 
-        for (i = 0; i < gcpavi; i++)
+        for (int i = 0; i < gcpavi; i++)
             fccHandler[i] = galpAVIOptions[i]->fccHandler;
 
         SetAdditionalCompressSettings(bAudioCompression, pwfx, cbwfx, interleaveFrames, interleaveFactor,
@@ -3132,7 +3132,7 @@ void CPlayplusView::OnFileSaveas()
             fileModified = 0;
 
         // Now put the video compressors back that we stole
-        for (i = 0; i < gcpavi; i++)
+        for (int i = 0; i < gcpavi; i++)
             galpAVIOptions[i]->fccHandler = fccHandler[i];
 
         // EndWait();
@@ -3460,7 +3460,7 @@ void SetAdditionalCompressSettings(BOOL recompress_audio, LPWAVEFORMATEX audio_r
     int i = 0;
     int frames_per_second = -1;
 
-    for (i = 0; i < gcpavi; i++)
+    for (int i = 0; i < gcpavi; i++)
     {
         // use the firstvideo to calculate the frames per seconds for use in interleave
         if (bInterleave)
@@ -3480,7 +3480,7 @@ void SetAdditionalCompressSettings(BOOL recompress_audio, LPWAVEFORMATEX audio_r
         }
     }
 
-    for (i = 0; i < gcpavi; i++)
+    for (int i = 0; i < gcpavi; i++)
     {
         if (bInterleave)
         {

@@ -22,34 +22,17 @@
 
 //#include "./Conversion/WAVEIO.H"
 #include "Conversion.h"
+#include "Picture.h"
 
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <afxtempl.h>
-#include "shlobj.h"
+#include <shlobj.h>
+#include <cstdint>
+#include <stdexcept>
 
-#include "./swfsource/FButton.h"
-#include "./swfsource/FBase.h"
-#include "./swfsource/FShape.h"
-#include "./swfsource/FDisplay.h"
-#include "./swfsource/FControl.h"
-#include "./swfsource/FSprite.h"
-#include "./swfsource/FSound.h"
-#include "./swfsource/FlashMP3Encoder.h"
-#include "./swfsource/FFont.h"
-#include "./swfsource/FlashFontObj.h"
-#include "./swfsource/FMorph.h"
 
-#include "./swfsource/FTarga.h"
-#include "./swfsource/FBitmap.h"
-#include "./swfsource/FImport.h"
-
-#include ".\flashsdk\FSoundSDK.h"
-
-#include "Picture.h"
-
-#include "./swfsource/actioncompiler/actioncompiler.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -111,6 +94,7 @@ int gcpaviSel;                                  // num of edit streams
 PAVISTREAM gapaviSel[MAXNUMSTREAMS];            // edit streams to put on clipbd
 int gStreamTop[MAXNUMSTREAMS + 1];              // y position of each stream
 AVICOMPRESSOPTIONS gaAVIOptions[MAXNUMSTREAMS]; // compression options
+
 LPAVICOMPRESSOPTIONS galpAVIOptions[MAXNUMSTREAMS];
 PGETFRAME gapgf[MAXNUMSTREAMS]; // data for decompressing video
 HDRAWDIB ghdd[MAXNUMSTREAMS];   // drawdib handles
@@ -138,7 +122,7 @@ WORD gwZoom = 4;                   // one-half zoom (divide by 4)
 HWND ghwndMCI;
 
 // buffer for wave data
-LPVOID lpAudio;
+//LPVOID lpAudio;
 
 // constants for painting
 #define VSPACE 8       // some vertical spacing
@@ -576,7 +560,7 @@ char compression;
 char stream_rate;
 bool stream_16bit;
 bool stream_stereo;
-UWORD samplecountavg;
+uint16_t samplecountavg;
 
 long slCurrentSwf = 0;
 
@@ -765,11 +749,8 @@ ON_UPDATE_COMMAND_UI(ID_FILE_SAVEAS, OnUpdateFileSaveas)
 ON_UPDATE_COMMAND_UI(ID_FILE_PLAY, OnUpdateFilePlay)
 ON_COMMAND(ID_AUDIO_EXTENSION, OnAudioExtension)
 ON_UPDATE_COMMAND_UI(ID_AUDIO_EXTENSION, OnUpdateAudioExtension)
-ON_COMMAND(ID_FILE_CONVERTTOSWF, OnFileConverttoswf)
-ON_UPDATE_COMMAND_UI(ID_FILE_CONVERTTOSWF, OnUpdateFileConverttoswf)
 ON_COMMAND(ID_CONVERT, OnConvert)
 ON_COMMAND(ID_HELP_HELP, OnHelpHelp)
-ON_COMMAND(ID_HELP_SWFPRODUCERFAQ, OnHelpSwfproducerfaq)
 //}}AFX_MSG_MAP
 // Standard printing commands
 ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
@@ -1060,7 +1041,6 @@ int PaintStuff(HDC hdc, HWND hwnd, BOOL fDrawEverything)
     LONG lSize = 0;
     RECT rcFrame = {'\0'}; // Init whole struct to prevent Warning C4701: potentially uninitialized local variable
     RECT rcC;
-    int i;
 
     GetClientRect(hwnd, &rcC);
 
@@ -1069,7 +1049,7 @@ int PaintStuff(HDC hdc, HWND hwnd, BOOL fDrawEverything)
     xStreamLeft = -GetScrollPos(hwnd, SB_HORZ);
 
     // for all streams
-    for (i = 0; i < gcpavi; i++)
+    for (int i = 0; i < gcpavi; i++)
     {
         AVISTREAMINFO avis;
         LONG lEndTime;
@@ -1327,9 +1307,9 @@ void FreeAvi()
         AVIStreamRelease(gapavi[i]);
     }
     // Good a place as any to make sure audio data gets freed
-    if (lpAudio)
-        GlobalFreePtr(lpAudio);
-    lpAudio = NULL;
+    //if (lpAudio)
+      //  GlobalFreePtr(lpAudio);
+    //lpAudio = NULL;
 
     gcpavi = 0;
 }
@@ -1458,12 +1438,10 @@ int ErrMsg(LPSTR sz, ...)
 
 void FreeDrawStuff()
 {
-    int i;
-
     // Make sure we're not playing!
     aviaudioStop();
 
-    for (i = 0; i < gcpavi; i++)
+    for (int i = 0; i < gcpavi; i++)
     {
         if (gapgf[i])
         {
@@ -1527,9 +1505,8 @@ void RecomputeStreamsTime(int resetslider, long timeCurrent)
 
 void InitStreams()
 {
-    AVISTREAMINFO avis;
-    LONG lTemp;
-    int i;
+    AVISTREAMINFO avis = {0};
+    LONG lTemp = -1;
     int needTestConvert = 0;
 
     //
@@ -1541,7 +1518,7 @@ void InitStreams()
     //
     // Walk through and init all streams loaded
     //
-    for (i = 0; i < gcpavi; i++)
+    for (int i = 0; i < gcpavi; i++)
     {
         AVIStreamInfo(gapavi[i], &avis, sizeof(avis));
 
@@ -1553,7 +1530,7 @@ void InitStreams()
         //
         // clear options structure to zeroes
         //
-        _fmemset(galpAVIOptions[i], 0, sizeof(AVICOMPRESSOPTIONS));
+        memset(galpAVIOptions[i], 0, sizeof(AVICOMPRESSOPTIONS));
 
         //
         // Initialize the compression options to some default stuff
@@ -1578,7 +1555,12 @@ void InitStreams()
                 AVIStreamReadFormat(gapavi[i], AVIStreamStart(gapavi[i]), NULL, &lTemp);
                 galpAVIOptions[i]->cbFormat = lTemp;
                 if (lTemp)
-                    galpAVIOptions[i]->lpFormat = GlobalAllocPtr(GHND, lTemp);
+                {
+                    auto audio_format = GlobalAllocPtr(GHND, lTemp);
+                    if (audio_format == nullptr)
+                        throw std::runtime_error("unable to allocate global ptr");
+                    galpAVIOptions[i]->lpFormat = audio_format;
+                }
                 // Use current format as default format
                 if (galpAVIOptions[i]->lpFormat)
                     AVIStreamReadFormat(gapavi[i], AVIStreamStart(gapavi[i]), galpAVIOptions[i]->lpFormat, &lTemp);
@@ -2160,7 +2142,7 @@ int CPlayplusView::OnCreate(LPCREATESTRUCT lpCreateStruct)
         allowRecordExtension = 1;
 
     // ver 2.25
-    CreatePropertySheet();
+    //CreatePropertySheet();
 
     return 0;
 }
@@ -2219,7 +2201,7 @@ void CPlayplusView::OnPaint()
                 }
                 // launchHTMLPlayer = 0;
                 // OnFileConverttoswf();
-                PostMessage(WM_COMMAND, ID_FILE_CONVERTTOSWF, 0);
+                //PostMessage(WM_COMMAND, ID_FILE_CONVERTTOSWF, 0);
             }
         }
         doneOnce = 1;
@@ -2743,8 +2725,12 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
                                BOOL bInterleave, int interleave_factor)
 {
     PAVISTREAM AviStream[NUMSTREAMS];            // the editable streams
-    AVICOMPRESSOPTIONS gaAVIOptions[NUMSTREAMS]; // compression options
-    LPAVICOMPRESSOPTIONS galpAVIOptions[NUMSTREAMS];
+    AVICOMPRESSOPTIONS aAVIOptions[NUMSTREAMS]; // compression options
+    LPAVICOMPRESSOPTIONS alpAVIOptions[NUMSTREAMS];
+
+    memset(AviStream, 0, sizeof(AviStream));
+    memset(aAVIOptions, 0, sizeof(aAVIOptions));
+    memset(alpAVIOptions, 0, sizeof(alpAVIOptions));
 
     PAVIFILE pfileVideo = NULL;
 
@@ -2847,28 +2833,28 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
     //
     // AVISaveV code takes a pointer to compression opts
     //
-    galpAVIOptions[0] = &gaAVIOptions[0];
-    galpAVIOptions[1] = &gaAVIOptions[1];
+    alpAVIOptions[0] = &aAVIOptions[0];
+    alpAVIOptions[1] = &aAVIOptions[1];
 
     //
     // clear options structure to zeroes
     //
-    _fmemset(galpAVIOptions[0], 0, sizeof(AVICOMPRESSOPTIONS));
-    _fmemset(galpAVIOptions[1], 0, sizeof(AVICOMPRESSOPTIONS));
+    _fmemset(alpAVIOptions[0], 0, sizeof(AVICOMPRESSOPTIONS));
+    _fmemset(alpAVIOptions[1], 0, sizeof(AVICOMPRESSOPTIONS));
 
     //=========================================
     // Set Video Stream Compress Options
     //=========================================
     // No Recompression
-    galpAVIOptions[0]->fccType = streamtypeVIDEO;
-    galpAVIOptions[0]->fccHandler = 0;
-    galpAVIOptions[0]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
+    alpAVIOptions[0]->fccType = streamtypeVIDEO;
+    alpAVIOptions[0]->fccHandler = 0;
+    alpAVIOptions[0]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
     if (bInterleave)
-        galpAVIOptions[0]->dwFlags = galpAVIOptions[0]->dwFlags | AVICOMPRESSF_INTERLEAVE;
-    galpAVIOptions[0]->dwKeyFrameEvery = (DWORD)-1;
-    galpAVIOptions[0]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
-    galpAVIOptions[0]->dwBytesPerSecond = 0;
-    galpAVIOptions[0]->dwInterleaveEvery = interleave_factor;
+        alpAVIOptions[0]->dwFlags = alpAVIOptions[0]->dwFlags | AVICOMPRESSF_INTERLEAVE;
+    alpAVIOptions[0]->dwKeyFrameEvery = (DWORD)-1;
+    alpAVIOptions[0]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
+    alpAVIOptions[0]->dwBytesPerSecond = 0;
+    alpAVIOptions[0]->dwInterleaveEvery = interleave_factor;
     // galpAVIOptions[0]->cbParms = 0;
     // galpAVIOptions[0]->cbFormat = 0;
 
@@ -2878,34 +2864,34 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
     // Recompression may be applied
     //
     // Audio Compress Options seems to be specified by the audio format in avicompressoptions
-    galpAVIOptions[1]->fccType = streamtypeAUDIO;
-    galpAVIOptions[1]->fccHandler = 0;
-    galpAVIOptions[1]->dwFlags = AVICOMPRESSF_VALID;
+    alpAVIOptions[1]->fccType = streamtypeAUDIO;
+    alpAVIOptions[1]->fccHandler = 0;
+    alpAVIOptions[1]->dwFlags = AVICOMPRESSF_VALID;
     if (bInterleave)
-        galpAVIOptions[1]->dwFlags = galpAVIOptions[1]->dwFlags | AVICOMPRESSF_INTERLEAVE;
-    galpAVIOptions[1]->dwKeyFrameEvery = 0;
-    galpAVIOptions[1]->dwQuality = 0;
-    galpAVIOptions[1]->dwBytesPerSecond = 0;
-    galpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
+        alpAVIOptions[1]->dwFlags = alpAVIOptions[1]->dwFlags | AVICOMPRESSF_INTERLEAVE;
+    alpAVIOptions[1]->dwKeyFrameEvery = 0;
+    alpAVIOptions[1]->dwQuality = 0;
+    alpAVIOptions[1]->dwBytesPerSecond = 0;
+    alpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
     // galpAVIOptions[1]->cbParms = 0;
 
     if (recompress_audio)
     {
-        galpAVIOptions[1]->cbFormat = audio_format_size;
-        galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, audio_format_size);
-        memcpy((void *)galpAVIOptions[1]->lpFormat, (void *)audio_recompress_format, audio_format_size);
+        alpAVIOptions[1]->cbFormat = audio_format_size;
+        alpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, audio_format_size);
+        memcpy((void *)alpAVIOptions[1]->lpFormat, (void *)audio_recompress_format, audio_format_size);
     }
     else
     {
         LONG lTemp;
         AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), NULL, &lTemp);
-        galpAVIOptions[1]->cbFormat = lTemp;
+        alpAVIOptions[1]->cbFormat = lTemp;
 
         if (lTemp)
-            galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
+            alpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
         // Use existing format as compress format
-        if (galpAVIOptions[1]->lpFormat)
-            AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), galpAVIOptions[1]->lpFormat, &lTemp);
+        if (alpAVIOptions[1]->lpFormat)
+            AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), alpAVIOptions[1]->lpFormat, &lTemp);
     }
     // ============================
     // Do the work! Merging
@@ -2913,61 +2899,61 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
 
     // Save     fccHandlers
     DWORD fccHandler[NUMSTREAMS];
-    fccHandler[0] = galpAVIOptions[0]->fccHandler;
-    fccHandler[1] = galpAVIOptions[1]->fccHandler;
+    fccHandler[0] = alpAVIOptions[0]->fccHandler;
+    fccHandler[1] = alpAVIOptions[1]->fccHandler;
 
-    hr = AVISaveV(LPCTSTR(output_avi_path), NULL, (AVISAVECALLBACK)SaveCallback, NUMSTREAMS, AviStream, galpAVIOptions);
+    hr = AVISaveV(LPCTSTR(output_avi_path), NULL, (AVISAVECALLBACK)SaveCallback, NUMSTREAMS, AviStream, alpAVIOptions);
     // hr = AVISaveV(LPCTSTR(output_avi_path),  NULL, (AVISAVECALLBACK) NULL, NUMSTREAMS, AviStream, galpAVIOptions);
     if (hr != AVIERR_OK)
     {
         // Error merging with audio compress options, retry merging with default audio options (no recompression)
         if (recompress_audio)
         {
-            AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
+            AVISaveOptionsFree(NUMSTREAMS, alpAVIOptions);
 
-            galpAVIOptions[0] = &gaAVIOptions[0];
-            galpAVIOptions[1] = &gaAVIOptions[1];
+            alpAVIOptions[0] = &aAVIOptions[0];
+            alpAVIOptions[1] = &aAVIOptions[1];
 
             // Resetting Compress Options
-            _fmemset(galpAVIOptions[0], 0, sizeof(AVICOMPRESSOPTIONS));
-            _fmemset(galpAVIOptions[1], 0, sizeof(AVICOMPRESSOPTIONS));
+            _fmemset(alpAVIOptions[0], 0, sizeof(AVICOMPRESSOPTIONS));
+            _fmemset(alpAVIOptions[1], 0, sizeof(AVICOMPRESSOPTIONS));
 
-            galpAVIOptions[0]->fccType = streamtypeVIDEO;
-            galpAVIOptions[0]->fccHandler = 0;
-            galpAVIOptions[0]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
+            alpAVIOptions[0]->fccType = streamtypeVIDEO;
+            alpAVIOptions[0]->fccHandler = 0;
+            alpAVIOptions[0]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
             if (bInterleave)
-                galpAVIOptions[0]->dwFlags = galpAVIOptions[0]->dwFlags | AVICOMPRESSF_INTERLEAVE;
-            galpAVIOptions[0]->dwKeyFrameEvery = (DWORD)-1;
-            galpAVIOptions[0]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
-            galpAVIOptions[0]->dwBytesPerSecond = 0;
-            galpAVIOptions[0]->dwInterleaveEvery = interleave_factor;
+                alpAVIOptions[0]->dwFlags = alpAVIOptions[0]->dwFlags | AVICOMPRESSF_INTERLEAVE;
+            alpAVIOptions[0]->dwKeyFrameEvery = (DWORD)-1;
+            alpAVIOptions[0]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
+            alpAVIOptions[0]->dwBytesPerSecond = 0;
+            alpAVIOptions[0]->dwInterleaveEvery = interleave_factor;
 
-            galpAVIOptions[1]->fccType = streamtypeAUDIO;
-            galpAVIOptions[1]->fccHandler = 0;
-            galpAVIOptions[1]->dwFlags = AVICOMPRESSF_VALID;
+            alpAVIOptions[1]->fccType = streamtypeAUDIO;
+            alpAVIOptions[1]->fccHandler = 0;
+            alpAVIOptions[1]->dwFlags = AVICOMPRESSF_VALID;
             if (bInterleave)
-                galpAVIOptions[1]->dwFlags = galpAVIOptions[1]->dwFlags | AVICOMPRESSF_INTERLEAVE;
-            galpAVIOptions[1]->dwKeyFrameEvery = 0;
-            galpAVIOptions[1]->dwQuality = 0;
-            galpAVIOptions[1]->dwBytesPerSecond = 0;
-            galpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
+                alpAVIOptions[1]->dwFlags = alpAVIOptions[1]->dwFlags | AVICOMPRESSF_INTERLEAVE;
+            alpAVIOptions[1]->dwKeyFrameEvery = 0;
+            alpAVIOptions[1]->dwQuality = 0;
+            alpAVIOptions[1]->dwBytesPerSecond = 0;
+            alpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
 
             // Use default audio format
             LONG lTemp;
             AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), NULL, &lTemp);
-            galpAVIOptions[1]->cbFormat = lTemp;
+            alpAVIOptions[1]->cbFormat = lTemp;
             if (lTemp)
-                galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
+                alpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
             // Use existing format as compress format
-            if (galpAVIOptions[1]->lpFormat)
-                AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), galpAVIOptions[1]->lpFormat, &lTemp);
+            if (alpAVIOptions[1]->lpFormat)
+                AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), alpAVIOptions[1]->lpFormat, &lTemp);
 
             // Do the Work .... Merging
-            hr = AVISaveV(LPCTSTR(output_avi_path), NULL, (AVISAVECALLBACK)NULL, NUMSTREAMS, AviStream, galpAVIOptions);
+            hr = AVISaveV(LPCTSTR(output_avi_path), NULL, (AVISAVECALLBACK)NULL, NUMSTREAMS, AviStream, alpAVIOptions);
 
             if (hr != AVIERR_OK)
             {
-                AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
+                AVISaveOptionsFree(NUMSTREAMS, alpAVIOptions);
                 AVIStreamRelease(AviStream[0]);
                 AVIStreamRelease(AviStream[1]);
 
@@ -2985,7 +2971,7 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
         } // if recompress audio retry
         else
         {
-            AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
+            AVISaveOptionsFree(NUMSTREAMS, alpAVIOptions);
             AVIStreamRelease(AviStream[0]);
             AVIStreamRelease(AviStream[1]);
             if ((runmode == 0) || (runmode == 1))
@@ -2995,8 +2981,8 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
         }
     }
     // Restore fccHandlers
-    galpAVIOptions[0]->fccHandler = fccHandler[0];
-    galpAVIOptions[1]->fccHandler = fccHandler[1];
+    alpAVIOptions[0]->fccHandler = fccHandler[0];
+    alpAVIOptions[1]->fccHandler = fccHandler[1];
 
     // Set Title Bar
     HWND mainwnd = NULL;
@@ -3004,7 +2990,7 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
     if (mainwnd)
         ::SetWindowText(mainwnd, "CamStudio");
 
-    AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
+    AVISaveOptionsFree(NUMSTREAMS, alpAVIOptions);
 
     // Free Editable Avi Streams
     for (int i = 0; i < NUMSTREAMS; i++)
@@ -3354,7 +3340,7 @@ BOOL StartAudioRecording(WAVEFORMATEX *format)
         m_Format = *format;
 
     // open wavein device
-    mmReturn = ::waveInOpen(&m_hRecord, AudioDeviceID, &m_Format, (DWORD)viewWnd, NULL,
+    mmReturn = ::waveInOpen(&m_hRecord, AudioDeviceID, &m_Format, (DWORD_PTR)viewWnd, NULL,
                             CALLBACK_WINDOW); // use on message to map.....
 
     if (mmReturn)
@@ -3663,7 +3649,7 @@ void SuggestCompressFormat()
         // Use PCM in order to handle most cases
         BuildRecordingFormat();
         pwfx->wFormatTag = WAVE_FORMAT_PCM;
-        MMRESULT mmr = acmFormatSuggest(NULL, &m_Format, pwfx, cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
+        mmr = acmFormatSuggest(NULL, &m_Format, pwfx, cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
 
         if (mmr != 0)
         {
@@ -3910,12 +3896,11 @@ void CPlayplusView::OnFileSaveas()
     if (GetSaveFileName(&openfilename))
     {
         DWORD fccHandler[MAXNUMSTREAMS];
-        int i;
         HRESULT hr;
 
         // StartWait();
 
-        for (i = 0; i < gcpavi; i++)
+        for (int i = 0; i < gcpavi; i++)
             fccHandler[i] = galpAVIOptions[i]->fccHandler;
 
         SetAdditionalCompressSettings(bAudioCompression, pwfx, cbwfx, interleaveFrames, interleaveFactor,
@@ -3940,7 +3925,7 @@ void CPlayplusView::OnFileSaveas()
             fileModified = 0;
 
         // Now put the video compressors back that we stole
-        for (i = 0; i < gcpavi; i++)
+        for (int i = 0; i < gcpavi; i++)
             galpAVIOptions[i]->fccHandler = fccHandler[i];
 
         // EndWait();
@@ -4046,12 +4031,12 @@ void MsgC(const char fmt[], ...)
     WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buf, lstrlen(buf), &written, 0);
 }
 
-void DumpFormat(WAVEFORMATEX *pwfx, const char *str)
+void DumpFormat(WAVEFORMATEX *p_wfx, const char *str)
 {
     Msg("\n Str %s: wFormatTag %d channels %d nSamplesPerSec %d abytesPerSec %d blockalign %d wBitsPerSample %d cbSize "
         " %d",
-        str, pwfx->wFormatTag, pwfx->nChannels, pwfx->nSamplesPerSec, pwfx->nAvgBytesPerSec, pwfx->nBlockAlign,
-        pwfx->wBitsPerSample, pwfx->cbSize);
+        str, p_wfx->wFormatTag, p_wfx->nChannels, p_wfx->nSamplesPerSec, p_wfx->nAvgBytesPerSec, p_wfx->nBlockAlign,
+        p_wfx->wBitsPerSample, p_wfx->cbSize);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -4355,10 +4340,9 @@ void SetAdditionalCompressSettings(BOOL recompress_audio, LPWAVEFORMATEX audio_r
                                    DWORD audio_format_size, BOOL bInterleave, int interleave_factor,
                                    int interleave_unit)
 {
-    int i = 0;
     int frames_per_second = -1;
 
-    for (i = 0; i < gcpavi; i++)
+    for (int i = 0; i < gcpavi; i++)
     {
         // use the firstvideo to calculate the frames per seconds for use in interleave
         if (bInterleave)
@@ -4377,7 +4361,7 @@ void SetAdditionalCompressSettings(BOOL recompress_audio, LPWAVEFORMATEX audio_r
             }
         }
     }
-    for (i = 0; i < gcpavi; i++)
+    for (int i = 0; i < gcpavi; i++)
     {
         if (bInterleave)
         {
@@ -4823,1266 +4807,6 @@ void CreateStopButton(std::ostringstream &f, int controlsWidth, int controlsHeig
 void CreateBackgroundBar(std::ostringstream &f, int controlsWidth, int controlsHeight, int FrameOffsetX,
                          int FrameOffsetY, int BITMAP_X, int BITMAP_Y);
 
-// LPBYTE MakeBitmapRect(LPBITMAPINFOHEADER alpbi, int BITMAP_X, int BITMAP_Y, int format, CChangeRectSwf * itemrect,
-// int lenght, int height, int wLineLen, int dwSize);
-
-bool CPlayplusView::PerformFlash(int &ww, int &hh, LONG &currentTime)
-{
-    // Indirect lpbi
-    bool result = true;
-
-    AVISTREAMINFO avis;
-    AVIStreamInfo(gapavi[giFirstVideo], &avis, sizeof(avis));
-
-    // @FIXME[Carlo Lanzotti]: Why this +1 ?
-    //        int bmWidth = avis.rcFrame.right - avis.rcFrame.left  + 1;
-    //        int bmHeight = avis.rcFrame.bottom - avis.rcFrame.top + 1;
-    int bmWidth = avis.rcFrame.right - avis.rcFrame.left;
-    int bmHeight = avis.rcFrame.bottom - avis.rcFrame.top;
-
-    HDC hdc, screenDC;
-    screenDC = ::GetDC(NULL);
-    hdc = CreateCompatibleDC(screenDC);
-
-    HBITMAP hbm = (HBITMAP)::CreateCompatibleBitmap(screenDC, bmWidth, bmHeight);
-    HBITMAP old_bitmap = (HBITMAP)::SelectObject(hdc, hbm);
-
-    initTemporalCompress(bmWidth, bmHeight);
-
-    // CreateSwfHeader()
-    CString modname, modbasename, modbasenextname;
-    modname = swfname;
-    modbasename = swfbasename;
-
-    if ((needbreakapart) && (breakcycle > 0))
-    {
-        // swfname
-        CString numstr;
-        numstr.Format("_%d", breakcycle);
-        CString xpath = swfname;
-        xpath = xpath.Left(xpath.ReverseFind('.'));
-        modname = xpath + numstr + ".swf";
-
-        xpath = swfbasename;
-        xpath = xpath.Left(xpath.ReverseFind('.'));
-        modbasename = xpath + numstr + ".swf";
-    }
-    // need to next name even if breakcycle == 0
-    if (needbreakapart)
-    {
-        CString xpath = swfbasename;
-        xpath = xpath.Left(xpath.ReverseFind('.'));
-
-        CString numnextstr;
-        numnextstr.Format("_%d", breakcycle + 1);
-
-        modbasenextname = xpath + numnextstr + ".swf";
-    }
-    std::ofstream fileout(LPCTSTR(modname), std::ios::binary);
-    std::ostringstream f(std::ios::binary);
-
-    f << FlashTagBackgroundColor((UBYTE)swfbk_red, (UBYTE)swfbk_green, (UBYTE)swfbk_blue); // white
-
-    if ((giFirstAudio >= 0) && (useAudio))
-    {
-        AVISTREAMINFO strhdr;
-        LONG cbFormat;
-        LPVOID lpFormat;
-
-        AVIStreamInfo(gapavi[giFirstAudio], &strhdr, sizeof(strhdr));
-        AVIStreamFormatSize(gapavi[giFirstAudio], AVIStreamStart(gapavi[giFirstAudio]), &cbFormat);
-
-        lpFormat = GlobalAllocPtr(GHND, cbFormat);
-        if (lpFormat)
-        {
-            AVIStreamReadFormat(gapavi[giFirstAudio], AVIStreamStart(gapavi[giFirstAudio]), lpFormat, &cbFormat);
-
-            int SamplesPerSec = ((LPWAVEFORMATEX)lpFormat)->nSamplesPerSec;
-            // int BytesPerSec = ((LPWAVEFORMATEX) lpFormat)->nAvgBytesPerSec;
-            int BitsPerSample = ((LPWAVEFORMATEX)lpFormat)->wBitsPerSample;
-            int nChannels = ((LPWAVEFORMATEX)lpFormat)->nChannels;
-            DWORD wFormatTag = ((LPWAVEFORMATEX)lpFormat)->wFormatTag;
-
-            GlobalFreePtr(lpFormat);
-
-            if (SamplesPerSec < 6000)
-                play_rate = stream_rate = 0;
-            else if (SamplesPerSec == 11025)
-                play_rate = stream_rate = 1;
-            else if (SamplesPerSec == 22050)
-                play_rate = stream_rate = 2;
-            else if (SamplesPerSec == 44100)
-                play_rate = stream_rate = 3;
-
-            if (BitsPerSample == 16)
-                play_16bit = stream_16bit = true;
-            else
-                play_16bit = stream_16bit = false;
-
-            if (nChannels == 2)
-                play_stereo = stream_stereo = true;
-            else
-                play_stereo = stream_stereo = false;
-
-            if (wFormatTag == WAVE_FORMAT_PCM)
-            {
-                if (useAudioCompression == 0)
-                    compression = 0;
-                else if (useAudioCompression == 1)
-                {
-                    compression = 1;
-                }
-            }
-            else
-            {
-                // Convert Audio to PCM ,  16 bit sample
-                WAVEFORMATEX WaveFormat;
-                WaveFormat.wFormatTag = WAVE_FORMAT_PCM;
-                WaveFormat.wBitsPerSample = static_cast<WORD>(swf_bits_per_sample);
-                WaveFormat.nSamplesPerSec = swf_samples_per_seconds;
-                WaveFormat.nChannels = static_cast<WORD>(swf_num_channels);
-                WaveFormat.nBlockAlign = WaveFormat.nChannels * (WaveFormat.wBitsPerSample / 8);
-                WaveFormat.nAvgBytesPerSec = WaveFormat.nSamplesPerSec * WaveFormat.nBlockAlign;
-                WaveFormat.cbSize = 0;
-
-                // if single file ... will convert
-                // if multi-part file...will convert only on the first part
-                if ((!needbreakapart) || (breakcycle == 0))
-                {
-                    BeginWaitCursor();
-                    PCMConvertedStream = ConvertFirstAudioStream(&WaveFormat);
-                    EndWaitCursor();
-                }
-                if (!PCMConvertedStream)
-                {
-                    noAudioStream = 1;
-                    compression = 0;
-                }
-                else
-                {
-                    usePCMConvertedStream = 1;
-
-                    // Reformat swf sound stream parameters to the converted stream
-                    if (swf_samples_per_seconds < 6000)
-                        play_rate = stream_rate = 0;
-                    else if (swf_samples_per_seconds == 11025)
-                        play_rate = stream_rate = 1;
-                    else if (swf_samples_per_seconds == 22050)
-                        play_rate = stream_rate = 2;
-                    else if (swf_samples_per_seconds == 44100)
-                        play_rate = stream_rate = 3;
-
-                    if (swf_bits_per_sample == 16)
-                        play_16bit = stream_16bit = true;
-                    else
-                        play_16bit = stream_16bit = false;
-
-                    if (swf_num_channels == 2)
-                        play_stereo = stream_stereo = true;
-                    else
-                        play_stereo = stream_stereo = false;
-
-                    if (useAudioCompression == 0)
-                        compression = 0;
-                    else if (useAudioCompression == 1)
-                        compression = 1;
-
-                    SamplesPerSec = swf_samples_per_seconds;
-                    BitsPerSample = swf_bits_per_sample;
-                    nChannels = swf_num_channels;
-                }
-            }
-            samplecountavg = SamplesPerSec / sampleFPS;
-
-            // need this ?
-            // added to ensure each sound stream block is less than 4096 samples
-            if ((!noAudioStream) && (useAudioCompression < 2))
-            {
-                if (samplecountavg > 4096)
-                {
-                    // adjust sampleFPS
-                    sampleFPS = 12;
-                    samplecountavg = SamplesPerSec / sampleFPS;
-                    sampletimeInc = 1000 / sampleFPS;
-                }
-            }
-            long startsampleSwf = 0;
-            if ((needbreakapart) && (breakcycle > 0))
-            {
-                // can we just do nothing ...lets use the old value of startsampleSwf
-                // if (usePCMConvertedStream)
-                //    startsampleSwf = AVIStreamTimeToSample( PCMConvertedStream,  currentTime);
-                // else
-                //    startsampleSwf = AVIStreamTimeToSample( gapavi[giFirstAudio],  currentTime);
-
-                // slCurrentSwf = startsampleSwf;
-            }
-            else
-            {
-                if (usePCMConvertedStream)
-                    startsampleSwf = AVIStreamTimeToSample(PCMConvertedStream, AVIStreamStartTime(PCMConvertedStream));
-                else
-                    startsampleSwf =
-                        AVIStreamTimeToSample(gapavi[giFirstAudio], AVIStreamStartTime(gapavi[giFirstAudio]));
-
-                slCurrentSwf = startsampleSwf;
-            }
-            if (!noAudioStream)
-            {
-                if ((useAudioCompression == 1) && (!stream_16bit))
-                {
-                    // need to force 16 bit because internally, when compressing thru' ADPCM,
-                    // there is a conversion to 16 bit !
-
-                    FlashTagSoundStreamHead2 ssh(play_rate, play_16bit, play_stereo, compression, stream_rate, true,
-                                                 stream_stereo, samplecountavg);
-                    f << ssh;
-                }
-                else
-                {
-                    FlashTagSoundStreamHead2 ssh(play_rate, play_16bit, play_stereo, compression, stream_rate,
-                                                 stream_16bit, stream_stereo, samplecountavg);
-                    f << ssh;
-                }
-            }
-        }
-        else // if !lpFormat
-            noAudioStream = 1;
-    }
-    else // if (giFirstAudio<0)
-        noAudioStream = 1;
-
-    if (addControls)
-    {
-        controlsWidth = bmWidth;
-
-        if (controlsType == 1)
-        {
-            bitmapBarHeight = 19;
-            CreateBackgroundBar(f, controlsWidth, bitmapBarHeight, FrameOffsetX, FrameOffsetY, bmWidth, bmHeight);
-            int offset = CreateFlashBitmapPlayButton(f, bmWidth, bmHeight, "\\playbar", FrameOffsetX);
-            offset = CreateFlashBitmapPauseButton(f, bmWidth, bmHeight, "\\playbar", offset);
-            offset = CreateFlashBitmapStopButton(f, bmWidth, bmHeight, "\\playbar", offset);
-        }
-        else if (controlsType == 2)
-        {
-            bitmapBarHeight = 25;
-            int offset = 0;
-
-            /*if (ControllerAlignment == 0)
-                offset = 0;
-            else */
-            if (ControllerAlignment == 1)
-                offset = (bmWidth - ControllerWidth) / 2 +
-                         FrameOffsetX; // centering .. 296 is the hard code lenght of the bar...
-            if (yes_drawLeftPiece)
-                offset = DrawLeftPiece(f, bmWidth, bmHeight, "\\controller", offset, PieceOffsetY);
-            offset = CreateFlashBitmapPlayButton(f, bmWidth, bmHeight, "\\controller", offset);
-            offset = CreateFlashBitmapPauseButton(f, bmWidth, bmHeight, "\\controller", offset);
-            if (yes_drawStopButton)
-                offset = CreateFlashBitmapStopButton(f, bmWidth, bmHeight, "\\controller", offset);
-            if (yes_drawRightPiece)
-                offset = DrawRightPiece(f, bmWidth, bmHeight, "\\controller", offset, PieceOffsetY);
-        }
-        else
-        {
-            bitmapBarHeight = 25;
-            CreateBackgroundBar(f, controlsWidth, controlsHeight, FrameOffsetX, FrameOffsetY, bmWidth, bmHeight);
-            CreatePlayButton(f, controlsWidth, controlsHeight, FrameOffsetX, FrameOffsetY, bmWidth, bmHeight);
-            CreatePauseButton(f, controlsWidth, controlsHeight, FrameOffsetX, FrameOffsetY, bmWidth, bmHeight);
-            CreateStopButton(f, controlsWidth, controlsHeight, FrameOffsetX, FrameOffsetY, bmWidth, bmHeight);
-        }
-    }
-    controlsHeight = bitmapBarHeight;
-
-    // add after add controls
-    if ((breakcycle == 0) && (addPreloader))
-    {
-        controlsWidth = bmWidth;
-
-        int additonalOffsetY = 0;
-        if (!addControls)
-            additonalOffsetY = 3;
-
-        int widthBar = CreateProgressBar(f, controlsWidth, bitmapBarHeight, FrameOffsetX, FrameOffsetY, bmWidth,
-                                         bmHeight, (int)(0.1 * bmWidth) + FrameOffsetX, additonalOffsetY);
-        DrawLoading(f, bmWidth, bmHeight, loadingPath, 0, 0);
-        DrawNodes(f, widthBar, bmWidth, bmHeight, "\\controller", 0, 0, int(0.1 * bmWidth) + FrameOffsetX,
-                  additonalOffsetY);
-        Preloader(f, widthBar, bmWidth, bmHeight, int(0.1 * bmWidth) + FrameOffsetX);
-        // Preloader(f, widthBar, bmWidth, bmHeight, 12);
-    }
-    else if ((breakcycle > 0) && (addPreloader) && (applyPreloaderToSplitFiles))
-    {
-        controlsWidth = bmWidth;
-
-        int additonalOffsetY = 0;
-        if (!addControls)
-            additonalOffsetY = 3;
-
-        int widthBar = CreateProgressBar(f, controlsWidth, bitmapBarHeight, FrameOffsetX, FrameOffsetY, bmWidth,
-                                         bmHeight, (int)(0.1 * bmWidth) + FrameOffsetX, additonalOffsetY);
-        DrawLoading(f, bmWidth, bmHeight, loadingPath, 0, 0);
-        DrawNodes(f, widthBar, bmWidth, bmHeight, "\\controller", 0, 0, int(0.1 * bmWidth) + FrameOffsetX,
-                  additonalOffsetY);
-        Preloader(f, widthBar, bmWidth, bmHeight, int(0.1 * bmWidth) + FrameOffsetX);
-    }
-    // Progress Dialog
-    CProgressDlg *progressdlogptr = new CProgressDlg;
-    progressdlogptr->Create(this);
-    progressdlogptr->SetStep(1);
-
-    CString msgx, msgout;
-    msgx.LoadString(IDS_GENERATING);
-    // msgout.Format(msgx,swfbasename);
-    msgout.Format(msgx, modbasename);
-    ((CStatic *)progressdlogptr->GetDlgItem(IDC_CONVERSIONTEXT))->SetWindowText(msgout);
-
-    // Main Conversion Block
-    int gfConverting = TRUE;
-
-    while (gfConverting)
-    {
-        CString msgStr;
-
-        if (progressdlogptr->CheckCancelButton())
-        {
-            result = false;
-            break;
-        }
-        // Progress Dialog
-        int percentcompeleted;
-        if ((timeEnd > 1) && (currentTime <= timeEnd))
-            percentcompeleted = (int)((float)currentTime * 100.0 / (float)timeEnd);
-        else
-            percentcompeleted = 0;
-
-        if ((percentcompeleted > oldPercent) || (percentcompeleted == 0))
-        {
-            progressdlogptr->SetPos(percentcompeleted);
-            oldPercent = percentcompeleted;
-        }
-        if (currentTime < timeStart)
-            currentTime = timeStart;
-
-        if (currentTime > timeEnd)
-        {
-            moreSWFsneeded = 0;
-            gfConverting = FALSE;
-        }
-        ConvertToFlash(currentTime, hdc, hbm, f);
-
-        // ConvertToFlash(currentTime, NULL);
-
-        currentTime += sampletimeInc;
-
-        // the click sound that sometime occurs at the end of swf playback is due to the button-click sound record with
-        // "Record from Speakers" option if (framecount > 200)
-        //    break;
-
-        if (framecount > MAXFLASHLIMIT)
-        {
-            if (!needbreakapart) // this case is to cater to the case when user do not want to split even if the limit
-                                 // is reached
-                moreSWFsneeded = 0;
-            else // normal case....split
-                moreSWFsneeded = 1;
-            gfConverting = FALSE;
-        }
-    }
-    // Progress Dialog
-    if (progressdlogptr)
-        delete progressdlogptr;
-    oldPercent = 0;
-
-    if ((moreSWFsneeded) && (allowChaining))
-    {
-        char actionScript[1000];
-        CString actionscriptFormat("loadMovie (\"%s\", \"\");");
-        CString actionscriptStr;
-        actionscriptStr.Format(actionscriptFormat, modbasenextname);
-        strcpy(actionScript, LPCTSTR(actionscriptStr));
-        actionScript[actionscriptStr.GetLength()] = 0;
-
-        // MessageBox(actionscriptStr,"Note",MB_OK);
-
-        ActionCompiler acom(5);
-        acom.Compile(actionScript, f);
-
-        f << FlashTagShowFrame();
-        framecount++;
-
-        filesAreSplit = 1;
-    }
-    else if ((moreSWFsneeded) && (!allowChaining))
-    {
-        // we dont do anything...just let the use edit them
-    }
-    else
-    { // this is either final part of a split file or the only part of a single file
-
-        // if no loop
-        if (noLoop)
-        {
-            // if split file
-            if ((filesAreSplit) && (allowChaining)) // no more swfsneeded ... but already split
-            {
-                // We jsut want to stop playing
-
-                FlashActionStop s;
-                FlashTagDoAction ftd;
-                ftd.AddAction(&s);
-
-                // me
-                if (urlRedirect.GetLength() > 0)
-                {
-                    char actionScriptal[1000];
-                    sprintf(actionScriptal, "getURL(\"%s\", \"_self\");", urlRedirect);
-
-                    ActionCompiler acomal(5);
-                    acomal.Compile(actionScriptal, f);
-                }
-                // end me
-                f << ftd;
-
-                /*
-                char actionScript[1000];
-                CString actionscriptFormat("loadMovie (\"%s\", \"\");");
-                CString actionscriptStr;
-                actionscriptStr.Format(actionscriptFormat,swfbasename);
-                strcpy(actionScript,LPCTSTR(actionscriptStr));
-                actionScript[actionscriptStr.GetLength()]=0;
-
-                ActionCompiler acom(5);
-                acom.Compile(actionScript,f);
-                */
-
-                f << FlashTagShowFrame();
-                framecount++;
-            }
-            else
-            {
-                if (noAutoPlay == 1)
-                {
-                }
-                else
-                {
-                    FlashActionStop s;
-                    FlashTagDoAction ftd;
-                    ftd.AddAction(&s);
-
-                    // me
-                    if (urlRedirect.GetLength() > 0)
-                    {
-                        char actionScriptal[1000];
-                        sprintf(actionScriptal, "getURL(\"%s\", \"_self\");", urlRedirect);
-
-                        ActionCompiler acomal(5);
-                        acomal.Compile(actionScriptal, f);
-                    }
-                    // end me
-
-                    f << ftd;
-                    f << FlashTagShowFrame();
-                    framecount++;
-                }
-            }
-        }
-        else // if looping
-        {
-            // if split file
-            if ((filesAreSplit) && (allowChaining)) // no more swfsneeded ... but already split
-            {
-                char actionScript[1000];
-                CString actionscriptFormat("loadMovie (\"%s\", \"\");");
-                CString actionscriptStr;
-                actionscriptStr.Format(actionscriptFormat, swfbasename);
-                strcpy(actionScript, LPCTSTR(actionscriptStr));
-                actionScript[actionscriptStr.GetLength()] = 0;
-
-                // MessageBox(actionscriptStr,"Note",MB_OK);
-
-                ActionCompiler acom(5);
-                acom.Compile(actionScript, f);
-
-                f << FlashTagShowFrame();
-                framecount++;
-            }
-            else if ((filesAreSplit) && (!allowChaining))
-            {
-                // If we want to loop and yet does not allow chianing of a split file
-                // we just do nothing
-
-                //..let user edit the file themselves
-            }
-            else
-            {
-                int baseframe = 0;
-                if (addPreloader)
-                    baseframe = preloadFrames;
-
-                FlashActionGotoFrame gotoAction(baseframe);
-                FlashActionPlay px;
-                FlashTagDoAction ftd;
-                ftd.AddAction(&gotoAction);
-                ftd.AddAction(&px);
-
-                f << ftd;
-                f << FlashTagShowFrame();
-                framecount++;
-            }
-        }
-    }
-    // CreateSwfEnd()
-    f << FlashTagEnd();
-    // fileout << FlashHeader(5,f.str().size(),(bmWidth+2)*20,(bmHeight+2)*20,15.8,1);
-
-    // Currently, the framecount must be counted/incremented manually at each FlashTagShowFrame
-    // The value is used when the swf is imported
-
-    if (addControls) // may include Preloader
-    {
-        // int ButtonSpaceY = 8;
-        fileout << FlashHeader(5, f.str().size(), (bmWidth + (FrameOffsetX * 2)) * 20,
-                               (bmHeight + (FrameOffsetY * 2) + controlsHeight + ButtonSpaceY + 1) * 20,
-                               (float)sampleFPS, framecount);
-        ww = (bmWidth + (FrameOffsetX * 2));
-        hh = (bmHeight + (FrameOffsetY * 2) + controlsHeight + ButtonSpaceY + 1);
-    }
-    else if (addPreloader)
-    {
-        // int ButtonSpaceY = 8;
-        fileout << FlashHeader(5, f.str().size(), (bmWidth + (FrameOffsetX * 2)) * 20,
-                               (bmHeight + (FrameOffsetY * 2) + controlsHeight + ButtonSpaceY + 1) * 20,
-                               (float)sampleFPS, framecount);
-        ww = (bmWidth + (FrameOffsetX * 2));
-        hh = (bmHeight + (FrameOffsetY * 2) + ButtonSpaceY + 1);
-    }
-    else
-    {
-        fileout << FlashHeader(5, f.str().size(), (bmWidth + (FrameOffsetX * 2)) * 20,
-                               (bmHeight + (FrameOffsetY * 2)) * 20, (float)sampleFPS, framecount);
-        ww = (bmWidth + (FrameOffsetX * 2));
-        hh = (bmHeight + (FrameOffsetY * 2));
-    }
-    fileout << f.str();
-
-    // MsgC("yes");
-
-    // Indirect lpbi
-    ::SelectObject(hdc, old_bitmap);
-    DeleteObject(hbm);
-    DeleteDC(hdc);
-    ::ReleaseDC(NULL, hdc);
-
-    finishTemporalCompress();
-
-    return result;
-}
-
-// CFlash
-void CPlayplusView::OnFileConverttoswf()
-{
-    // CurLangID = STANDARD_LANGID;
-    // HKEY hKey;
-    // DWORD language;
-    // DWORD Type = REG_DWORD;
-    // DWORD Size = sizeof(DWORD);
-    // LONG returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language",
-    // 0L, KEY_ALL_ACCESS, &hKey); if (returnStatus == ERROR_SUCCESS) {
-    //    returnStatus = RegQueryValueEx(hKey, "LanguageID", NULL, &Type,(LPBYTE)&language, &Size);
-
-    //    if (returnStatus == ERROR_SUCCESS) {
-    //        if ( !LoadLangIDDLL((int) language) )
-    //            if ( !LoadLangIDDLL(GetUserDefaultLangID()) )
-    //                LoadLangIDDLL(GetSystemDefaultLangID());
-    //    }
-    //}
-    // RegCloseKey(hKey);
-
-    LoadController();
-
-    if (launchPropPrompt && (IDOK != flashProp.DoModal()))
-    {
-        return;
-    }
-    int ww = 0;
-    int hh = 0;
-    needbreakapart = 0;
-    breakcycle = 0;
-    filesAreSplit = 0;
-
-    firstvideoFrame = 1;
-    usePCMConvertedStream = 0;
-    PCMConvertedStream = NULL;
-    PCMConvertedFile = NULL;
-
-    if (sampleFPS > 0)
-        sampletimeInc = 1000 / sampleFPS;
-    else
-        return;
-
-    int numframesTotal;
-    if (sampletimeInc >= 1)
-    {
-        numframesTotal = timeEnd / sampletimeInc;
-        if (numframesTotal >= MAXFLASHLIMIT)
-        {
-            int ret = IDYES;
-            // MessageBox("Your Movie Exceeds the 16000 Frame Limit. Only 16000 Frames will be encoded into the SWF
-            // file.","Note",MB_OK | MB_ICONEXCLAMATION);
-            if ((runmode == 0) || (runmode == 1))
-                ret = MessageOut(NULL, IDS_MAXFRAME, IDS_NOTE, MB_YESNO | MB_ICONEXCLAMATION);
-            if (ret == IDYES)
-                needbreakapart = 1;
-            else
-                needbreakapart = 0;
-        }
-        // MsgC("numframesTotal %d",numframesTotal);
-    }
-    LONG currentTime = 0;
-    moreSWFsneeded = 1;
-    bool performResult = true;
-    if (!needbreakapart)
-    {
-        performResult = PerformFlash(ww, hh, currentTime);
-    }
-    else
-    {
-        while (moreSWFsneeded)
-        {
-            PerformFlash(ww, hh, currentTime);
-            breakcycle++;
-        }
-    }
-    ///
-
-    produceFlashHTML(LPCTSTR(swfhtmlname), LPCTSTR(swfbasename), LPCTSTR(swfname), onlyflashtag, ww, hh, swfbk_red,
-                     swfbk_green, swfbk_blue);
-
-    BeginWaitCursor();
-    if (usePCMConvertedStream)
-    {
-        cleanTempFile();
-    }
-    if (launchHTMLPlayer)
-    {
-        if (performResult)
-        {
-            Openlink(swfhtmlname);
-        }
-    }
-    EndWaitCursor();
-
-    // allow this only in CamStudio internal mode
-    if (runmode == 1)
-    {
-        if (deleteAVIAfterUse)
-        {
-            if (strlen(playfiledir) > 0)
-            {
-                OnFileClose();
-                DeleteFile(playfiledir);
-            }
-            // MessageBox(playfiledir,"Delete",MB_OK);
-        }
-    }
-    if (runmode)
-    {
-        //::PostMessage(AfxGetMainWnd()->m_hWnd, WM_COMMAND, ID_APP_EXIT, 0);
-        AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_APP_EXIT);
-    }
-}
-
-void ConvertToFlash(long currentTime, HDC hdc, HBITMAP hbm, std::ostringstream &f)
-{
-    if (gcpavi <= 0)
-        return;
-
-    // PaintStuff(dc.m_hDC, viewWnd, FALSE);
-    {
-        long lTime = currentTime;
-        long lSamp = 0;
-        RECT rcFrame;
-        LPBITMAPINFOHEADER lpbi = NULL;
-
-        // for all streams
-        for (int i = 0; i < gcpavi; i++)
-        {
-            AVISTREAMINFO avis;
-            LONG lEndTime;
-            AVIStreamInfo(gapavi[i], &avis, sizeof(avis));
-
-            if (avis.fccType == streamtypeVIDEO)
-            {
-                if (gapgf[i] == NULL)
-                    continue;
-
-                if (i == giFirstVideo)
-                {
-                    //
-                    // Which frame belongs at this time?
-                    //
-                    lEndTime = AVIStreamEndTime(gapavi[i]);
-                    if (lTime <= lEndTime)
-                        lSamp = AVIStreamTimeToSample(gapavi[i], lTime);
-                    else
-                    { // we've scrolled past the end of this stream
-                        lSamp = AVIStreamTimeToSample(gapavi[i], AVIStreamStartTime(gapavi[i]) + timeLength - 1);
-                    }
-                    if (gapgf[i] && lSamp >= AVIStreamStart(gapavi[i]))
-                        lpbi = (LPBITMAPINFOHEADER)AVIStreamGetFrame(gapgf[i], lSamp);
-                    else
-                        lpbi = NULL;
-
-                    // Figure out where to draw this frame
-                    rcFrame.left = 0;
-                    rcFrame.top = 0;
-                    rcFrame.right = rcFrame.left + (avis.rcFrame.right - avis.rcFrame.left);
-                    rcFrame.bottom = rcFrame.top + (avis.rcFrame.bottom - avis.rcFrame.top);
-
-                    // Patch to prevent blank screen
-                    if (lpbi == NULL)
-                    {
-                        lpbi = (LPBITMAPINFOHEADER)AVIStreamGetFrame(gapgf[i], AVIStreamEnd(gapavi[i]) - 1);
-                    }
-                    // HDC hdc = GetDC(NULL);
-                    // PaintVideo(hdc, rcFrame, i, lpbi, lSamp, 0);
-                    // ReleaseDC(NULL,hdc);
-                    PaintSwfFrame(hdc, hbm, rcFrame, lpbi, i, f);
-                }
-            } // If Video Stream
-
-        } // for all streams
-    }
-    return;
-}
-
-void CPlayplusView::OnUpdateFileConverttoswf(CCmdUI *pCmdUI)
-{
-    // TODO: Add your command update UI handler code here
-    BOOL enablebutton = (!gfPlaying) && (!gfRecording) && (giFirstVideo >= 0);
-    pCmdUI->Enable(enablebutton);
-}
-
-void CreateBackgroundBar(std::ostringstream &f, int controlsWidth, int controlsHeight, int FrameOffsetX,
-                         int FrameOffsetY, int BITMAP_X, int BITMAP_Y)
-{
-    // int buttonRadius = controlsHeight;
-    int barDepth = ObjectDepth + 1;
-    int ButtonSpaceY = 5;
-    // int lineThickness = 3;
-
-    // FlashRGB colorBar1(0xc0,0xc0,0xff);
-    // FlashRGB colorBar1(0x00,0x00,0xff);
-    FlashRGB colorBar1(swfbar_red, swfbar_green, swfbar_blue);
-    FlashRGB colorBar2(0xcff, 0xcff, 0xff);
-
-    FlashMatrix m;
-    FlashGradientRecord gr;
-    gr.AddGradient(0, colorBar1);
-    gr.AddGradient(128, colorBar2);
-    gr.AddGradient(255, colorBar1);
-
-    // ffa.AddFillStyle(&ffc2);
-
-    // FlashLineStyleArray fla;
-    // FlashLineStyle ls(lineThickness*20,colorPlay);
-    // FlashLineStyle ls2(1*20,colorPlay);
-    // fla.AddLineStyle(&ls);
-    // fla.AddLineStyle(&ls2);
-
-    FlashShapeWithStyle s;
-    int left = FrameOffsetX;
-    int top = (BITMAP_Y + FrameOffsetY + ButtonSpaceY / 2);
-    int widthBar = controlsWidth;
-    int heightBar = (controlsHeight + (ButtonSpaceY * 2));
-
-    // m.SetTranslate(left,top);
-    // m.SetScale((double) widthBar/32768.0 ,(double) heightBar/32768.0);
-    FlashFillStyleGradient ffg(m, gr);
-    FlashFillStyleArray ffa;
-    ffa.AddFillStyle(&ffg);
-
-    FlashShapeRecordChange changerec, changerec2;
-    changerec.ChangeFillStyle1(1);
-    // changerec.ChangeLineStyle(1);
-    s.AddRecord(changerec);
-    s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-    s.AddRecord(FlashShapeRecordStraight(widthBar * 20, 0 * 20));
-    s.AddRecord(FlashShapeRecordStraight(0 * 20, heightBar * 20));
-    s.AddRecord(FlashShapeRecordStraight(-widthBar * 20, 0 * 20));
-    s.AddRecord(FlashShapeRecordStraight(0 * 20, -heightBar * 20));
-
-    s.SetFillStyleArray(ffa);
-    // s.SetLineStyleArray(fla);
-
-    FlashTagDefineShape3 fsws(s);
-    f << fsws;
-
-    FlashTagPlaceObject2 po(barDepth, fsws.GetID());
-    f << po;
-}
-
-void CreatePlayButton(std::ostringstream &f, int /*controlsWidth*/, int controlsHeight, int FrameOffsetX,
-                      int FrameOffsetY, int BITMAP_X, int BITMAP_Y)
-{
-    int buttonRadius = controlsHeight;
-    int playButtonDepth = ObjectDepth + 2;
-    int ButtonSpaceY = 5;
-    int lineThickness = 3;
-    FlashRGB white(0xff, 0xff, 0xff);
-    FlashRGB colorPlay(0x0, 0x0, 0xff);
-    FlashRGB colorPlayLight(0xe0, 0xe0, 0xff);
-
-    int shapeUP_ID, shapeDOWN_ID;
-
-    {
-        // Shape Up, Over
-        FlashFillStyleSolid ffc(white);
-        FlashFillStyleSolid ffc2(colorPlay);
-
-        FlashFillStyleArray ffa;
-        ffa.AddFillStyle(&ffc);
-        ffa.AddFillStyle(&ffc2);
-
-        FlashLineStyleArray fla;
-        FlashLineStyle ls(lineThickness * 20, colorPlay);
-        FlashLineStyle ls2(1 * 20, colorPlay);
-        fla.AddLineStyle(&ls);
-        fla.AddLineStyle(&ls2);
-
-        FlashShapeWithStyle s;
-        int left = (FrameOffsetX + (lineThickness + 1) / 2);
-        int top = (BITMAP_Y + FrameOffsetY + ButtonSpaceY);
-
-        FlashShapeRecordChange changerec, changerec2;
-        changerec.ChangeFillStyle1(1);
-        changerec.ChangeLineStyle(1);
-        s.AddRecord(changerec);
-        s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20));
-
-        changerec2.ChangeFillStyle1(2);
-        changerec2.ChangeLineStyle(2);
-        s.AddRecord(changerec2);
-        s.AddRecord(
-            FlashShapeRecordChange(left * 20 + buttonRadius * 20 / 4 + 20, top * 20 + buttonRadius * 20 / 4 + 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20 * 2 / 4));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20 * 2 / 4, -buttonRadius * 20 * 1 / 4));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20 * 2 / 4, -buttonRadius * 20 * 1 / 4));
-
-        s.SetFillStyleArray(ffa);
-        s.SetLineStyleArray(fla);
-
-        FlashTagDefineShape3 fsws(s);
-        f << fsws;
-
-        shapeUP_ID = fsws.GetID();
-    }
-    {
-        // Shape Down
-        FlashFillStyleSolid ffc(colorPlayLight);
-        FlashFillStyleSolid ffc2(colorPlay);
-
-        FlashFillStyleArray ffa;
-        ffa.AddFillStyle(&ffc);
-        ffa.AddFillStyle(&ffc2);
-
-        FlashLineStyleArray fla;
-        FlashLineStyle ls(lineThickness * 20, colorPlay);
-        FlashLineStyle ls2(1 * 20, colorPlay);
-        fla.AddLineStyle(&ls);
-        fla.AddLineStyle(&ls2);
-
-        FlashShapeWithStyle s;
-        int left = (FrameOffsetX + (lineThickness + 1) / 2);
-        int top = (BITMAP_Y + FrameOffsetY + ButtonSpaceY);
-
-        FlashShapeRecordChange changerec, changerec2;
-        changerec.ChangeFillStyle1(1);
-        changerec.ChangeLineStyle(1);
-        s.AddRecord(changerec);
-        s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20));
-
-        changerec2.ChangeFillStyle1(2);
-        changerec2.ChangeLineStyle(2);
-        s.AddRecord(changerec2);
-        s.AddRecord(
-            FlashShapeRecordChange(left * 20 + buttonRadius * 20 / 4 + 20, top * 20 + buttonRadius * 20 / 4 + 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20 * 2 / 4));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20 * 2 / 4, -buttonRadius * 20 * 1 / 4));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20 * 2 / 4, -buttonRadius * 20 * 1 / 4));
-
-        s.SetFillStyleArray(ffa);
-        s.SetLineStyleArray(fla);
-
-        FlashTagDefineShape3 fsws(s);
-        f << fsws;
-
-        shapeDOWN_ID = fsws.GetID();
-    }
-    // FlashButtonRecord(UWORD _charID, UWORD _depth, char _validstates, FlashMatrix &_matrix,    FlashColorTransform
-    // &_cfx); FButtonRecord2 *bRec = new FButtonRecord2(false, false, false, true, buttonUpID, 1, mx, cxf);
-
-    FlashMatrix m;
-    // m.SetScale(20,20);
-
-    FlashColorTransform cfxUp, cfxOver, cfxDown;
-    cfxUp.SetMultRGB(FlashRGB(256, 256, 256, 128));
-    cfxOver.SetMultRGB(FlashRGB(256, 256, 256, 256));
-    cfxDown.SetMultRGB(FlashRGB(256, 256, 256, 256));
-    FlashButtonRecord brecUp(shapeUP_ID, playButtonDepth, FBR_UP, m, cfxUp);
-    FlashButtonRecord brecOver(shapeUP_ID, playButtonDepth, FBR_OVER | FBR_HIT_TEST, m, cfxOver);
-    FlashButtonRecord brecDown(shapeDOWN_ID, playButtonDepth, FBR_DOWN, m, cfxDown);
-
-    FlashTagDefineButton2 buttonPlay;
-    FlashActionPlay playAction;
-    buttonPlay.AddButtonRecord(&brecUp);
-    buttonPlay.AddButtonRecord(&brecOver);
-    buttonPlay.AddButtonRecord(&brecDown);
-
-    N_STD::vector<FlashActionRecord *> acrs;
-    acrs.push_back(&playAction);
-
-    buttonPlay.AddActionRecords(acrs, SWFSOURCE_BST_OverUpToOverDown);
-
-    // FlashTagDefineButton buttonPlay;
-    // buttonPlay.AddButtonRecord(&brecUp);
-    // buttonPlay.AddButtonRecord(&brecOver);
-
-    f << buttonPlay;
-
-    FlashTagPlaceObject2 po(playButtonDepth, buttonPlay.GetID());
-    f << po;
-}
-
-void CreatePauseButton(std::ostringstream &f, int /*controlsWidth*/, int controlsHeight, int FrameOffsetX,
-                       int FrameOffsetY, int BITMAP_X, int BITMAP_Y)
-{
-    int buttonRadius = controlsHeight;
-    int pauseButtonDepth = ObjectDepth + 2;
-    int ButtonSpaceY = 5;
-    int lineThickness = 3;
-    FlashRGB white(0xff, 0xff, 0xff);
-    FlashRGB colorPause(0x80, 0x80, 0x0);
-    FlashRGB colorPauseLight(0xff, 0xff, 0x80);
-
-    int shapeUP_ID, shapeDOWN_ID;
-
-    {
-        FlashFillStyleSolid ffc(white);
-        FlashFillStyleSolid ffc2(colorPause);
-
-        FlashFillStyleArray ffa;
-        ffa.AddFillStyle(&ffc);
-        ffa.AddFillStyle(&ffc2);
-
-        FlashLineStyleArray fla;
-        FlashLineStyle ls(lineThickness * 20, colorPause);
-        FlashLineStyle ls2(1 * 20, colorPause);
-        fla.AddLineStyle(&ls);
-        fla.AddLineStyle(&ls2);
-
-        FlashShapeWithStyle s;
-        int left = (FrameOffsetX + (lineThickness + 1) / 2) + buttonRadius + ButtonSpaceY;
-        int top = (BITMAP_Y + FrameOffsetY + ButtonSpaceY);
-
-        FlashShapeRecordChange changerec, changerec2;
-        changerec.ChangeFillStyle1(1);
-        changerec.ChangeLineStyle(1);
-        s.AddRecord(changerec);
-        s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20));
-
-        changerec2.ChangeFillStyle1(2);
-        changerec2.ChangeLineStyle(2);
-        s.AddRecord(changerec2);
-        s.AddRecord(FlashShapeRecordChange(left * 20 + buttonRadius * 20 / 5 + buttonRadius / 4,
-                                           top * 20 + buttonRadius * 20 / 4 + 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20 * 2 / 4));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20 * 1 / 5, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20 * 2 / 4));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20 * 1 / 5, 0 * 20));
-
-        s.AddRecord(FlashShapeRecordChange(left * 20 + buttonRadius * 20 * 3 / 5 - buttonRadius / 4,
-                                           top * 20 + buttonRadius * 20 / 4 + 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20 * 2 / 4));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20 * 1 / 5, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20 * 2 / 4));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20 * 1 / 5, 0 * 20));
-
-        s.SetFillStyleArray(ffa);
-        s.SetLineStyleArray(fla);
-
-        FlashTagDefineShape3 fsws(s);
-        f << fsws;
-
-        shapeUP_ID = fsws.GetID();
-    }
-    {
-        FlashFillStyleSolid ffc(colorPauseLight);
-        FlashFillStyleSolid ffc2(colorPause);
-
-        FlashFillStyleArray ffa;
-        ffa.AddFillStyle(&ffc);
-        ffa.AddFillStyle(&ffc2);
-
-        FlashLineStyleArray fla;
-        FlashLineStyle ls(lineThickness * 20, colorPause);
-        FlashLineStyle ls2(1 * 20, colorPause);
-        fla.AddLineStyle(&ls);
-        fla.AddLineStyle(&ls2);
-
-        FlashShapeWithStyle s;
-        int left = (FrameOffsetX + (lineThickness + 1) / 2) + buttonRadius + ButtonSpaceY;
-        int top = (BITMAP_Y + FrameOffsetY + ButtonSpaceY);
-
-        FlashShapeRecordChange changerec, changerec2;
-        changerec.ChangeFillStyle1(1);
-        changerec.ChangeLineStyle(1);
-        s.AddRecord(changerec);
-        s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20));
-
-        changerec2.ChangeFillStyle1(2);
-        changerec2.ChangeLineStyle(2);
-        s.AddRecord(changerec2);
-        s.AddRecord(FlashShapeRecordChange(left * 20 + buttonRadius * 20 / 5 + buttonRadius / 4,
-                                           top * 20 + buttonRadius * 20 / 4 + 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20 * 2 / 4));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20 * 1 / 5, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20 * 2 / 4));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20 * 1 / 5, 0 * 20));
-
-        s.AddRecord(FlashShapeRecordChange(left * 20 + buttonRadius * 20 * 3 / 5 - buttonRadius / 4,
-                                           top * 20 + buttonRadius * 20 / 4 + 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20 * 2 / 4));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20 * 1 / 5, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20 * 2 / 4));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20 * 1 / 5, 0 * 20));
-
-        s.SetFillStyleArray(ffa);
-        s.SetLineStyleArray(fla);
-
-        FlashTagDefineShape3 fsws(s);
-        f << fsws;
-
-        shapeDOWN_ID = fsws.GetID();
-    }
-    FlashMatrix m;
-
-    FlashColorTransform cfxUp, cfxOver, cfxDown;
-    cfxUp.SetMultRGB(FlashRGB(256, 256, 256, 128));
-    cfxOver.SetMultRGB(FlashRGB(256, 256, 256, 256));
-    cfxDown.SetMultRGB(FlashRGB(256, 256, 256, 256));
-    FlashButtonRecord brecUp(shapeUP_ID, pauseButtonDepth, FBR_UP, m, cfxUp);
-    FlashButtonRecord brecOver(shapeUP_ID, pauseButtonDepth, FBR_OVER | FBR_HIT_TEST, m, cfxOver);
-    FlashButtonRecord brecDown(shapeDOWN_ID, pauseButtonDepth, FBR_DOWN, m, cfxDown);
-
-    FlashTagDefineButton2 buttonPause;
-    FlashActionStop stopAction;
-    buttonPause.AddButtonRecord(&brecUp);
-    buttonPause.AddButtonRecord(&brecOver);
-    buttonPause.AddButtonRecord(&brecDown);
-
-    N_STD::vector<FlashActionRecord *> acrs;
-    acrs.push_back(&stopAction);
-
-    buttonPause.AddActionRecords(acrs, SWFSOURCE_BST_OverUpToOverDown);
-    f << buttonPause;
-
-    FlashTagPlaceObject2 po(pauseButtonDepth, buttonPause.GetID());
-    f << po;
-}
-
-void CreateStopButton(std::ostringstream &f, int /*controlsWidth*/, int controlsHeight, int FrameOffsetX,
-                      int FrameOffsetY, int BITMAP_X, int BITMAP_Y)
-{
-    int buttonRadius = controlsHeight;
-    int stopButtonDepth = ObjectDepth + 2;
-    int ButtonSpaceY = 5;
-    int lineThickness = 3;
-    FlashRGB white(0xff, 0xff, 0xff);
-    FlashRGB colorStop(0xff, 0x0, 0x0);
-    FlashRGB colorStopLight(0xff, 0xe0, 0xe0);
-
-    int shapeUP_ID, shapeDOWN_ID;
-
-    {
-        FlashFillStyleSolid ffc(white);
-        FlashFillStyleSolid ffc2(colorStop);
-
-        FlashFillStyleArray ffa;
-        ffa.AddFillStyle(&ffc);
-        ffa.AddFillStyle(&ffc2);
-
-        FlashLineStyleArray fla;
-        FlashLineStyle ls(lineThickness * 20, colorStop);
-        FlashLineStyle ls2(1 * 20, colorStop);
-        fla.AddLineStyle(&ls);
-        fla.AddLineStyle(&ls2);
-
-        FlashShapeWithStyle s;
-        int left = (FrameOffsetX + (lineThickness + 1) / 2) + (buttonRadius + ButtonSpaceY) * 2;
-        int top = (BITMAP_Y + FrameOffsetY + ButtonSpaceY);
-
-        FlashShapeRecordChange changerec, changerec2;
-        changerec.ChangeFillStyle1(1);
-        changerec.ChangeLineStyle(1);
-        s.AddRecord(changerec);
-        s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20));
-
-        changerec2.ChangeFillStyle1(2);
-        changerec2.ChangeLineStyle(2);
-        s.AddRecord(changerec2);
-        s.AddRecord(
-            FlashShapeRecordChange(left * 20 + buttonRadius * 20 / 4 + 20, top * 20 + buttonRadius * 20 / 4 + 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20 * 2 / 4));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20 * 2 / 4, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20 * 2 / 4));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20 * 2 / 4, 0 * 20));
-
-        s.SetFillStyleArray(ffa);
-        s.SetLineStyleArray(fla);
-
-        FlashTagDefineShape3 fsws(s);
-        f << fsws;
-
-        shapeUP_ID = fsws.GetID();
-    }
-    {
-        FlashFillStyleSolid ffc(colorStopLight);
-        FlashFillStyleSolid ffc2(colorStop);
-
-        FlashFillStyleArray ffa;
-        ffa.AddFillStyle(&ffc);
-        ffa.AddFillStyle(&ffc2);
-
-        FlashLineStyleArray fla;
-        FlashLineStyle ls(lineThickness * 20, colorStop);
-        FlashLineStyle ls2(1 * 20, colorStop);
-        fla.AddLineStyle(&ls);
-        fla.AddLineStyle(&ls2);
-
-        FlashShapeWithStyle s;
-        int left = (FrameOffsetX + (lineThickness + 1) / 2) + (buttonRadius + ButtonSpaceY) * 2;
-        int top = (BITMAP_Y + FrameOffsetY + ButtonSpaceY);
-
-        FlashShapeRecordChange changerec, changerec2;
-        changerec.ChangeFillStyle1(1);
-        changerec.ChangeLineStyle(1);
-        s.AddRecord(changerec);
-        s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20));
-
-        changerec2.ChangeFillStyle1(2);
-        changerec2.ChangeLineStyle(2);
-        s.AddRecord(changerec2);
-        s.AddRecord(
-            FlashShapeRecordChange(left * 20 + buttonRadius * 20 / 4 + 20, top * 20 + buttonRadius * 20 / 4 + 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, buttonRadius * 20 * 2 / 4));
-        s.AddRecord(FlashShapeRecordStraight(buttonRadius * 20 * 2 / 4, 0 * 20));
-        s.AddRecord(FlashShapeRecordStraight(0 * 20, -buttonRadius * 20 * 2 / 4));
-        s.AddRecord(FlashShapeRecordStraight(-buttonRadius * 20 * 2 / 4, 0 * 20));
-
-        s.SetFillStyleArray(ffa);
-        s.SetLineStyleArray(fla);
-
-        FlashTagDefineShape3 fsws(s);
-        f << fsws;
-
-        shapeDOWN_ID = fsws.GetID();
-    }
-    FlashMatrix m;
-
-    FlashColorTransform cfxUp, cfxOver, cfxDown;
-    cfxUp.SetMultRGB(FlashRGB(256, 256, 256, 128));
-    cfxOver.SetMultRGB(FlashRGB(256, 256, 256, 256));
-    cfxDown.SetMultRGB(FlashRGB(256, 256, 256, 256));
-    FlashButtonRecord brecUp(shapeUP_ID, stopButtonDepth, FBR_UP, m, cfxUp);
-    FlashButtonRecord brecOver(shapeUP_ID, stopButtonDepth, FBR_OVER | FBR_HIT_TEST, m, cfxOver);
-    FlashButtonRecord brecDown(shapeDOWN_ID, stopButtonDepth, FBR_DOWN, m, cfxDown);
-
-    FlashTagDefineButton2 buttonStop;
-    FlashActionStop stopAction;
-
-    // handle baseframe
-    int baseframe = 0;
-    if (addPreloader)
-        baseframe = preloadFrames;
-
-    FlashActionGotoFrame gotoAction(baseframe);
-    buttonStop.AddButtonRecord(&brecUp);
-    buttonStop.AddButtonRecord(&brecOver);
-    buttonStop.AddButtonRecord(&brecDown);
-
-    N_STD::vector<FlashActionRecord *> acrs;
-    acrs.push_back(&stopAction);
-    acrs.push_back(&gotoAction);
-
-    buttonStop.AddActionRecords(acrs, SWFSOURCE_BST_OverUpToOverDown);
-    f << buttonStop;
-
-    FlashTagPlaceObject2 po(stopButtonDepth, buttonStop.GetID());
-    f << po;
-}
-
-void PaintSwfFrame(HDC hdc, HBITMAP hbm, RECT rcFrame, LPBITMAPINFOHEADER lpbi, int iStream, std::ostringstream &f)
-{
-    // if lbpi is present, draw it
-    if (lpbi)
-    {
-        int offsetx = 0;
-        int offsety = 0;
-        // int bitmapwidth = rcFrame.right-rcFrame.left+1;
-        // int bitmapheight = rcFrame.bottom-rcFrame.top+1;
-
-        // Draw the Frame
-        DrawDibDraw(ghdd[iStream], hdc, rcFrame.left + offsetx, rcFrame.top + offsety, rcFrame.right - rcFrame.left - 1,
-                    rcFrame.bottom - rcFrame.top - 1, lpbi, NULL, 0, 0, -1, -1,
-                    (iStream == giFirstVideo) ? 0 : DDF_BACKGROUNDPAL);
-
-        // Get it Back in RGB
-        int format = 5;
-        int BITMAP_X = 0;
-        int BITMAP_Y = 0;
-        LPBYTE bitmap;
-        LPBITMAPINFOHEADER alpbi = GetFrame(hbm, &bitmap, BITMAP_X, BITMAP_Y, convertBits);
-        if (convertBits == 16)
-            format = 4;
-        else if (convertBits == 32)
-            format = 5;
-
-        if (alpbi)
-        {
-            WriteSwfFrame(alpbi, f, bitmap, BITMAP_X, BITMAP_Y, format);
-            FreeFrame(alpbi);
-        }
-    }
-    return;
-}
-
 LPBYTE makeReverse32(int width, int height, int /*bitPlanes*/, LPBITMAPINFOHEADER alpbi)
 {
     LPBYTE bitsOrg = (LPBYTE)alpbi + // pointer to data
@@ -6398,540 +5122,6 @@ LPBYTE MakeFullRect(LPBITMAPINFOHEADER /*alpbi*/, LPBYTE bitmap, int BITMAP_X, i
     return bitNew;
 }
 
-// Can be used only after processswfframe / or inside processswfframe
-double ComputePercentCovered(int BITMAP_X, int BITMAP_Y)
-{
-    double percent = 0;
-    double covered = 0;
-    double total = BITMAP_X * BITMAP_Y;
-
-    int max = changeArray.GetSize();
-    if (max > 0)
-    {
-        CChangeRectSwf *itemRect = NULL;
-        for (int i = 0; i < max; i++)
-        {
-            itemRect = changeArray[i];
-            if (itemRect)
-            {
-                int length = itemRect->smallestRight - itemRect->greatestLeft + 1;
-                int height = itemRect->smallestBottom - itemRect->greatestTop + 1;
-                covered = covered + (length * height);
-            }
-        }
-    }
-    if (total > 0)
-        percent = (covered * 100) / total;
-
-    return percent;
-}
-
-void WriteSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitmap, int BITMAP_X, int BITMAP_Y,
-                   int format)
-{
-    int frametype = ProcessSwfFrame(alpbi, f, bitmap, BITMAP_X, BITMAP_Y, format);
-
-    int max = changeArray.GetSize();
-
-    if (max > 0)
-    // if ((max > 0) && (determinant))
-    {
-        LPBYTE bitRect = MakeFullRect(alpbi, bitmap, BITMAP_X, BITMAP_Y, format, max);
-
-        if (!bitRect)
-            return;
-
-        // Set BitsLossless
-        int wLineLen = 0;
-        if (format == 4)
-            wLineLen = ((BITMAP_X)*16 + 31) / 32 * 4;
-        else if (format == 5)
-            wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
-
-        int dwSize = wLineLen * (BITMAP_Y);
-
-        FlashZLibBitmapData zdata((unsigned char *)bitRect, dwSize);
-        FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
-        f << bll;
-
-        if (bitRect)
-        {
-            free(bitRect);
-        }
-        FlashMatrix m;
-        m.SetScale(20, 20);
-        m.SetTranslate((FrameOffsetX - MatrixOffsetX) * 20, (FrameOffsetY - MatrixOffsetY) * 20);
-
-        FlashFillStyleBitmap ffbm(bll.GetID(), m);
-        // to handle
-        if (freecharacter)
-            freeCharacterArray.Add(bll.GetID());
-
-        FlashFillStyleArray ffa;
-        ffa.AddFillStyle(&ffbm);
-
-        FlashShapeWithStyle s;
-        CChangeRectSwf *itemRect = NULL;
-        for (int i = 0; i < max; i++)
-        {
-            itemRect = changeArray[i];
-            if (itemRect)
-            {
-                int length = itemRect->smallestRight - itemRect->greatestLeft + 1;
-                int height = itemRect->smallestBottom - itemRect->greatestTop + 1;
-
-                FlashShapeRecordChange changerec;
-                changerec.ChangeFillStyle1(1);
-                s.AddRecord(changerec);
-                s.AddRecord(FlashShapeRecordChange((itemRect->greatestLeft + FrameOffsetX + MoveOffsetX) * 20,
-                                                   (itemRect->greatestTop + FrameOffsetY + MoveOffsetY) * 20));
-                s.AddRecord(FlashShapeRecordStraight(length * 20, 0 * 20));
-                s.AddRecord(FlashShapeRecordStraight(0 * 20, height * 20));
-                s.AddRecord(FlashShapeRecordStraight(-length * 20, 0 * 20));
-                s.AddRecord(FlashShapeRecordStraight(0 * 20, -height * 20));
-            }
-        }
-        s.SetFillStyleArray(ffa);
-
-        FlashTagDefineShape3 fsws(s);
-        f << fsws;
-
-        if (hasIntermediateFrame)
-        {
-            FlashTagRemoveObject2 ro(IFrameDepth);
-            f << ro;
-            hasIntermediateFrame = 0;
-        }
-        if (frametype == FRAME_HALFKEY)
-        {
-            // Unlike Intermediate Frames, we do not remove the Halfkey object up to a certain depth
-            FlashTagPlaceObject2 po(HalfKeyDepthBase + HalfKeyDepthInc, fsws.GetID());
-            f << po;
-            HalfKeyDepthInc++;
-        }
-        else
-        { // if  frametype==FRAME_INTERMEDIATE
-
-            FlashTagPlaceObject2 po(IFrameDepth, fsws.GetID());
-            f << po;
-            hasIntermediateFrame = 1;
-        }
-        f << FlashTagShowFrame();
-        framecount++;
-
-    } // if (max > 0)
-    else
-    {
-        if (frametype == FRAME_KEYFRAME) // one reason for max == 0
-        {
-            if (freecharacter)
-                gcFlash(f);
-
-            int wLineLen = 0;
-            if (format == 4)
-                wLineLen = ((alpbi->biWidth) * 16 + 31) / 32 * 4;
-            else if (format == 5)
-                wLineLen = ((alpbi->biWidth) * 32 + 31) / 32 * 4;
-
-            int dwSize = wLineLen * (alpbi->biHeight);
-
-            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
-            f << bll;
-
-            FlashMatrix m;
-            m.SetScale(20, 20);
-            m.SetTranslate((FrameOffsetX - MatrixOffsetX) * 20, (FrameOffsetY - MatrixOffsetY) * 20);
-
-            FlashFillStyleBitmap ffb(bll.GetID(), m);
-
-            // to handle
-            if (freecharacter)
-                freeCharacterArray.Add(bll.GetID());
-
-            FlashFillStyleArray ffa;
-            ffa.AddFillStyle(&ffb);
-
-            FlashShapeWithStyle s;
-            FlashShapeRecordChange changerec;
-            changerec.ChangeFillStyle1(1); // must set to FillStyle1 to be imported
-
-            s.AddRecord(changerec);
-            s.AddRecord(FlashShapeRecordChange(FrameOffsetX * 20, FrameOffsetY * 20));
-            s.AddRecord(FlashShapeRecordStraight((BITMAP_X - MoveOffsetX) * 20, 0 * 20));
-            s.AddRecord(FlashShapeRecordStraight(0 * 20, (BITMAP_Y - MoveOffsetY) * 20));
-            s.AddRecord(FlashShapeRecordStraight(-(BITMAP_X - MoveOffsetX) * 20, 0 * 20));
-            s.AddRecord(FlashShapeRecordStraight(0 * 20, -(BITMAP_Y - MoveOffsetY) * 20));
-
-            s.SetFillStyleArray(ffa);
-            FlashTagDefineShape3 fsws(s);
-
-            f << fsws;
-
-            // adding multiple depths greatly slow down,flash drawings..
-            // so we need the remove
-            // if (framei > 0) {
-            if (hasIntermediateFrame)
-            {
-                FlashTagRemoveObject2 ro(IFrameDepth);
-                f << ro;
-                hasIntermediateFrame = 0;
-            }
-            if (HalfKeyDepthInc)
-            {
-                for (int j = HalfKeyDepthInc; j >= 0; j--)
-                {
-                    FlashTagRemoveObject2 ro(HalfKeyDepthBase + j);
-                    f << ro;
-                }
-                HalfKeyDepthInc = 0;
-            }
-            if (hasKeyFrame)
-            {
-                FlashTagRemoveObject2 ro(KeyFrameDepth);
-                f << ro;
-                hasKeyFrame = 0;
-            }
-            FlashTagPlaceObject2 po(KeyFrameDepth, fsws.GetID());
-
-            f << po;
-            hasKeyFrame = 1;
-        }
-        else
-        {
-            // This block here usually capture the case of frametype = halfkey,
-            // and yet changeblocks == 0
-
-            // else if not keyframe...do nothing..just show frame
-
-            // We have to remove this if it is present because
-            // the comparision is made without the intermediate frame
-            if (hasIntermediateFrame)
-            {
-                FlashTagRemoveObject2 ro(IFrameDepth);
-                f << ro;
-                hasIntermediateFrame = 0;
-            }
-        }
-        if (noAutoPlay)
-        {
-            if (firstvideoFrame) // this variable is set to 1 only at the beginning of the full conversion
-                                 // split parts will always have    firstvideoFrame = 0
-            {
-                FlashActionStop s;
-                FlashTagDoAction ftd;
-                ftd.AddAction(&s);
-
-                f << ftd;
-
-                /*                    FlashActionGotoFrame gt(200);
-                FlashTagDoAction ftdg;
-                ftdg.AddAction(&gt);
-
-                f << ftdg;*/
-            }
-        }
-        f << FlashTagShowFrame();
-        framecount++;
-    }
-    // mp3 background music
-    // no synchronization
-    // allow only for single file
-    if ((firstvideoFrame) && (!needbreakapart))
-    {
-        if (useMP3)
-        {
-            if (mp3FileLoaded)
-            {
-                FlashMP3Encoder MP3(LPCTSTR(mp3File), sampleFPS);
-
-                UWORD MP3_id = MP3.WriteDefineTag(f);
-
-                std::vector<FlashSoundEnvelope> v;
-                v.push_back(FlashSoundEnvelope(0, mp3volume, mp3volume));
-                v.push_back(FlashSoundEnvelope(1013526784, mp3volume, mp3volume));
-                FlashSoundInfo fsi(FSI_SYNC_NO_MULTIPLE | FSI_HAS_ENVELOPE, 0, 0, 1, v);
-                f << FlashTagStartSound(MP3_id, fsi);
-
-                f << FlashTagShowFrame(); // this will be frame 0 if mp3 background music is used
-                framecount++;
-            }
-        }
-    }
-    firstvideoFrame = 0;
-
-    if (!noAudioStream)
-    {
-        if (giFirstAudio >= 0)
-        {
-            int absize;
-            absize = samplecountavg * 2 * 2;
-            void *buffer = malloc(absize);
-            long retlenSwf = 0;
-            long lReadSwf = 0;
-            long retval;
-
-            if (usePCMConvertedStream)
-            {
-                retval = AVIStreamRead(PCMConvertedStream, slCurrentSwf, samplecountavg, buffer, absize, &retlenSwf,
-                                       &lReadSwf);
-            }
-            else
-            {
-                retval = AVIStreamRead(gapavi[giFirstAudio], slCurrentSwf, samplecountavg, buffer, absize, &retlenSwf,
-                                       &lReadSwf);
-            }
-            slCurrentSwf += lReadSwf;
-
-            buffer = MakeFullBuffer(buffer, retlenSwf, lReadSwf, samplecountavg, stream_stereo, stream_16bit);
-
-            if (useAudioCompression == 0)
-            {
-                if (retlenSwf > 0)
-                    f << FlashTagSoundStreamBlock((char *)buffer, retlenSwf);
-            }
-            else
-            {
-                if ((retlenSwf > 0) && (lReadSwf > 0))
-                    MakeSoundStreamBlockADPCM(buffer, retlenSwf, lReadSwf, f);
-            }
-            if (buffer)
-                free(buffer);
-        }
-    }
-}
-
-// Determine if the frame is intermediate or key frame
-int ProcessSwfFrame(LPBITMAPINFOHEADER alpbi, std::ostringstream &f, LPBYTE bitmap, int BITMAP_X, int BITMAP_Y,
-                    int format)
-{
-    cleanChangeArray(); // need to clean it for each frame
-
-    int ret = 0;
-    int wColSize = 0;
-    int dwSize = alpbi->biSizeImage + sizeof(BITMAPINFOHEADER) + wColSize;
-
-    if (useHalfKey)
-    {
-        // using halfkey will no longer rely on keyframerate variable
-        if (HalfKeyDepthInc > Max_HalfKeyDepth)
-        {
-            framei = 0;
-            // HalfKeyDepthInc = 0;
-        }
-    }
-    if (framei == 0)
-    {
-        // KeyFrame;
-        if (currentKey_lpbi)
-        {
-            if ((currentKey_lpbi->biSizeImage != alpbi->biSizeImage))
-            {
-                free(currentKey_lpbi);
-                currentKey_lpbi = (LPBITMAPINFOHEADER)malloc(dwSize);
-            }
-        }
-        else
-            currentKey_lpbi = (LPBITMAPINFOHEADER)malloc(dwSize);
-
-        memcpy((void *)currentKey_lpbi, (void *)alpbi, dwSize);
-
-        ret = FRAME_KEYFRAME;
-    }
-    else
-    {
-        // Intermediate Frame
-        //----------
-        // for (int y=0;y<BITMAP_Y;y++)
-        //{
-        //    for (int x=0;x<BITMAP_X;x++)
-        //    {
-        //        if (IsDifferent(alpbi,BITMAP_X,BITMAP_Y,  x,y, format))
-        //        {
-        //            //MsgC(" ID");
-        //            AddExpandBlock(BITMAP_X,BITMAP_Y,x,y, format);
-        //        }
-        //    }
-        //}
-        // The code here is an alternative to the above loop, it does exactly the same thing
-        // except combines the loop and IsDifferent code more efficiently. Faster.
-        // We take any logic we can from inside the loop and move it outside. Also use memcmp
-        // to quickly check if it is worth scanning through an entire row.
-        // if (false)
-        {
-            unsigned long widthBytes = 0;
-            unsigned long pixbytes = 0;
-            if (format == 4)
-            {
-                pixbytes = 2;
-                widthBytes = (BITMAP_X * 16 + 31) / 32 * 4;
-            }
-            else if (format == 5)
-            {
-                pixbytes = 4;
-                widthBytes = (BITMAP_X * 32 + 31) / 32 * 4;
-            }
-            else
-            {
-                // NEED TO FIX OR ASSERT HERE!
-            }
-
-            LPBYTE bitsFrame = (LPBYTE)alpbi + // pointer to data
-                               alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD);
-
-            LPBYTE bitsKey = (LPBYTE)currentKey_lpbi + // pointer to data
-                             currentKey_lpbi->biSize + currentKey_lpbi->biClrUsed * sizeof(RGBQUAD);
-
-            unsigned long nBytesRow = BITMAP_X * pixbytes;
-
-            unsigned long accessy = 0;
-            for (int y = 0; y < BITMAP_Y; y++)
-            {
-                unsigned long access = accessy;
-
-                // See if we can compare the entire row in one go:
-                bool checkPixels = true;
-                LPBYTE t1 = bitsFrame + access;
-                LPBYTE t2 = bitsKey + access;
-                if (memcmp(t1, t2, nBytesRow) == 0)
-                {
-                    // The entire row of pixels is the same
-                    checkPixels = false;
-                }
-
-                if (checkPixels)
-                {
-                    for (int x = 0; x < BITMAP_X; x++)
-                    {
-                        int diff = FALSE;
-
-                        if (format == 4)
-                        {
-                            LPBYTE t = bitsFrame + access;
-                            int val1 = *t++;
-                            int val2 = *t;
-
-                            t = bitsKey + access;
-                            int valKey1 = *t++;
-                            int valKey2 = *t;
-
-                            if ((val1 - valKey1) || (val2 - valKey2))
-                                diff = TRUE;
-                        }
-                        else if (format == 5)
-                        {
-                            LPBYTE t = bitsFrame + access;
-                            int Blue = *t++;
-                            int Green = *t++;
-                            int Red = *t++;
-                            int Alpha = *t++;
-
-                            t = bitsKey + access;
-                            int BlueKey = *t++;
-                            int GreenKey = *t++;
-                            int RedKey = *t++;
-                            int AlphaKey = *t++;
-
-                            if ((Blue - BlueKey) || (Green - GreenKey) || (Red - RedKey) || (Alpha - AlphaKey))
-                                diff = TRUE;
-                        }
-                        if (diff)
-                        {
-                            AddExpandBlock(BITMAP_X, BITMAP_Y, x, y, format);
-                        }
-                        access += pixbytes;
-                    }
-                }
-                accessy += widthBytes;
-            }
-            //----------
-        }
-
-        ret = FRAME_INTERMEDIATE;
-
-        if (useHalfKey)
-        {
-            // if using useHalfKey, then will definitely usePercent
-
-            // Force every frame as Halfkey, ==> every frame is compared to previous frame
-            // whether the number of change blocks is zero or greater, we just save this frame as halfkey
-            // and indicate it when returning
-
-            // Whether this frame is going to be a Key Frame or Halfkey Frame
-            // We need to copy the current frame as a basis for comparison for the next frame
-            {
-                // Halfkey frame
-                // we must not clean up the array and must leave it be
-                // we will need it later on to update the keyframe
-                // cleanChangeArray();
-
-                if (currentKey_lpbi)
-                {
-                    if ((currentKey_lpbi->biSizeImage != alpbi->biSizeImage))
-                    {
-                        free(currentKey_lpbi);
-                        currentKey_lpbi = (LPBITMAPINFOHEADER)malloc(dwSize);
-                    }
-                }
-                else
-                    currentKey_lpbi = (LPBITMAPINFOHEADER)malloc(dwSize);
-
-                memcpy((void *)currentKey_lpbi, (void *)alpbi, dwSize);
-
-                ret = FRAME_HALFKEY;
-
-                if (usePercent)
-                {
-                    double percent = ComputePercentCovered(BITMAP_X, BITMAP_Y);
-                    int determinant = (percent > HalfKeyThreshold);
-                    if (determinant)
-                    {
-                        // since we have decided this to be a keyframe
-                        // we do not need the chnageblocks anymore
-                        cleanChangeArray();
-                        ret = FRAME_KEYFRAME;
-                    }
-                }
-            }
-        }
-        else if (usePercent)
-        {
-            // The introduction of new keyframes seems to result in patches...
-            // The patches are a result of MS Video 1 -- not full 100% quality!
-
-            // If there are too much change in intermediate frame
-            double percent = ComputePercentCovered(BITMAP_X, BITMAP_Y);
-            int determinant = (percent > PercentThreshold);
-
-            if (determinant) // Force keyframe
-            {
-                cleanChangeArray(); // this will clean up changeArray and force ChangeArray.getSize()==0
-
-                if (currentKey_lpbi)
-                {
-                    if ((currentKey_lpbi->biSizeImage != alpbi->biSizeImage))
-                    {
-                        free(currentKey_lpbi);
-                        currentKey_lpbi = (LPBITMAPINFOHEADER)malloc(dwSize);
-                    }
-                }
-                else
-                    currentKey_lpbi = (LPBITMAPINFOHEADER)malloc(dwSize);
-
-                memcpy((void *)currentKey_lpbi, (void *)alpbi, dwSize);
-
-                ret = FRAME_KEYFRAME;
-            }
-        }
-    }
-    framei++;
-    if (!useHalfKey)
-    {
-        if (framei >= keyframerate)
-            framei = 0;
-    }
-    return ret;
-}
 
 int IsDifferent(LPBITMAPINFOHEADER alpbi, int BITMAP_X, int BITMAP_Y, int x, int y, int format)
 {
@@ -7023,7 +5213,7 @@ void AddExpandBlock(int BITMAP_X, int BITMAP_Y, int x, int y, int format)
 }
 
 // Assuming the itemRect is correctly chosen
-void ExpandBlock(CChangeRectSwf *itemRect, int BITMAP_X, int BITMAP_Y, int x, int y, int /*format*/)
+void ExpandBlock(CChangeRectSwf *itemRect, int /*BITMAP_X*/, int /*BITMAP_Y*/, int x, int y, int /*format*/)
 {
     if (itemRect)
     {
@@ -7135,35 +5325,6 @@ void *MakeFullBuffer(void *buffer, long &buffersize, long &numsamples, int avgsa
     return newbuffer;
 }
 
-void MakeSoundStreamBlockADPCM(void *buffer, int buffersize, int numsamples, std::ostringstream &f)
-{
-    if (buffersize <= 0)
-        return;
-
-    FSound sound;
-    int streamsize = 0;
-    int streamchannels = 0;
-    if (stream_16bit) // external var
-        streamsize = 1;
-    if (stream_stereo) // external var
-        streamchannels = 1;
-    sound.format = 4 * (stream_rate) + (streamsize)*2 + (streamchannels);
-    sound.nSamples = numsamples;
-    sound.samples = (U8 *)(buffer);
-    sound.dataLen = buffersize;
-    sound.delay = 0;
-
-    std::vector<U8> adpcmData;
-    adpcmData.clear();
-    FSoundComp compress(&sound, adpcmBPS);
-    compress.Compress((U8 *)(buffer), numsamples, &adpcmData);
-    compress.Flush(&adpcmData);
-
-    FlashTagSoundStreamBlock stb((char *)&adpcmData[0], adpcmData.size());
-    f << stb;
-
-    adpcmData.clear();
-}
 
 // ver 2/24
 // **************************************
@@ -7295,58 +5456,6 @@ void cleanTempFile()
         DeleteFile(tempfile2);
 }
 
-// Produces a 100% Valid XHTML Strict document to display the flash file, which works in all browsers (even IE 4)
-void produceFlashHTML(CString htmlfilename, CString flashfilename, CString flashfilepath, int onlyflashtag, int width,
-                      int height, int bk_red, int bk_green, int bk_blue)
-{
-    COLORREF bkcolor = RGB(bk_blue, bk_green, bk_red);
-
-    FILE *htmlfile = NULL;
-
-    htmlfile = fopen(LPCTSTR(htmlfilename), "wt");
-    if (!htmlfile)
-    {
-        return;
-    }
-
-    if (!onlyflashtag)
-    {
-        fprintf(htmlfile, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
-        fprintf(htmlfile, "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n");
-        fprintf(htmlfile, " \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
-        fprintf(htmlfile, "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
-        fprintf(htmlfile, "<head>\n");
-        fprintf(htmlfile, "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />\n");
-        fprintf(htmlfile, "<title>%s</title>\n", LPCTSTR(flashfilename));
-        fprintf(htmlfile, "<style type=\"text/css\">\n");
-        fprintf(htmlfile, "#movie\n{\n", LPCTSTR(flashfilename));
-        fprintf(htmlfile, "\twidth: %dpx;\n", width);
-        fprintf(htmlfile, "\theight: %dpx;\n", height);
-        fprintf(htmlfile, "}\n</style>\n");
-        fprintf(htmlfile, "</head>\n");
-        fprintf(htmlfile, "<body>\n");
-        fprintf(htmlfile, "<div>\n");
-    }
-
-    fprintf(htmlfile, "<object id=\"movie\" type=\"application/x-shockwave-flash\" data=\"%s\">\n",
-            LPCTSTR(flashfilename));
-    fprintf(htmlfile, "\t<param name=\"movie\" value=\"%s\" />\n", LPCTSTR(flashfilename));
-    fprintf(htmlfile, "\t<param name=\"quality\" value=\"high\" />\n");
-    fprintf(htmlfile, "\t<param name=\"bgcolor\" value=\"#%x\" />\n", bkcolor);
-    fprintf(htmlfile,
-            "\t<p>You do not have the latest version of Flash installed. Please visit this link to download it: <a "
-            "href=\"http://www.adobe.com/products/flashplayer/\">http://www.adobe.com/products/flashplayer/</a></p>\n");
-    fprintf(htmlfile, "</object>\n");
-
-    if (!onlyflashtag)
-    {
-        fprintf(htmlfile, "</div>\n");
-        fprintf(htmlfile, "</body>\n");
-        fprintf(htmlfile, "</html>\n");
-    }
-
-    fclose(htmlfile);
-}
 
 void LoadSettings()
 {
@@ -7436,8 +5545,8 @@ void LoadSettings()
 
         // Lesser Variables
 
-        fscanf(sFile, "PercentThreshold = %f \n", &PercentThreshold);
-        fscanf(sFile, "HalfKeyThreshold = %f \n", &HalfKeyThreshold);
+        fscanf(sFile, "PercentThreshold = %lf \n", &PercentThreshold);
+        fscanf(sFile, "HalfKeyThreshold = %lf \n", &HalfKeyThreshold);
 
         fscanf(sFile, "blocksize_x = %d \n", &blocksize_x);
         fscanf(sFile, "blocksize_y = %d \n", &blocksize_y);
@@ -7470,7 +5579,7 @@ void LoadSettings()
 
         fscanf(sFile, "allowChaining = %d \n", &allowChaining);
         fscanf(sFile, "freecharacter = %d \n", &freecharacter);
-        fscanf(sFile, "percentLoadedThreshold = %f \n", &percentLoadedThreshold);
+        fscanf(sFile, "percentLoadedThreshold = %lf \n", &percentLoadedThreshold);
 
         fscanf(sFile, "addPreloader = %d \n", &addPreloader);
         fscanf(sFile, "applyPreloaderToSplitFiles = %d \n", &applyPreloaderToSplitFiles);
@@ -7782,8 +5891,6 @@ void CPlayplusView::OnConvert()
         OnFileOpen();
         EndWaitCursor();
     }
-    if (giFirstVideo >= 0)
-        OnFileConverttoswf();
 
     convertMode = 0;
 }
@@ -7875,7 +5982,7 @@ void LoadCommand()
     // Read Variables
     // ****************************
 
-    float ver = 1.0;
+//    float ver = 1.0;
 
     // Debugging info
     // The use of scanf("%.2f") instead of scanf("%f") results in hard-to-detect bugs
@@ -7929,904 +6036,6 @@ LPBITMAPINFOHEADER LoadBitmapFile(CString bitmapFile)
     return alpbi;
 }
 
-int CreateFlashBitmapPlayButton(std::ostringstream &f, int /*imagewidth*/, int imageheight, CString subdir,
-                                int imageoffset)
-{
-    LPBITMAPINFOHEADER alpbi = NULL;
-    LPBITMAPINFOHEADER alpbi2 = NULL;
-
-    CString bitmapFile, bitmapFile2;
-    bitmapFile = GetProgPath() + subdir + "\\playbutton.bmp";
-    bitmapFile2 = GetProgPath() + subdir + "\\playbutton2.bmp";
-
-    alpbi = LoadBitmapFile(bitmapFile);
-    alpbi2 = LoadBitmapFile(bitmapFile2);
-
-    int right = 0;
-
-    if ((alpbi) && (alpbi2))
-    {
-        int playButtonDepth = ObjectDepth + 2;
-
-        int shapeUP_ID, shapeOVER_ID;
-
-        int BITMAP_X, BITMAP_Y;
-
-        {
-            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight, 4, alpbi);
-
-            BITMAP_X = alpbi->biWidth;
-            BITMAP_Y = alpbi->biHeight;
-
-            // Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
-            int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; // 32 bit
-
-            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
-            f << bll;
-
-            int left = imageoffset + ButtonSpaceX;
-            int top = imageheight + FrameOffsetY + ButtonSpaceY;
-            right = left + BITMAP_X;
-
-            FlashMatrix m;
-            m.SetScale(20, 20);
-            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
-            // m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
-            FlashFillStyleBitmap ffb(bll.GetID(), m);
-
-            FlashFillStyleArray ffa;
-            ffa.AddFillStyle(&ffb);
-
-            FlashShapeWithStyle s;
-            FlashShapeRecordChange changerec, changerec2;
-            changerec.ChangeFillStyle1(1);
-            s.AddRecord(changerec);
-            s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-            s.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
-            s.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
-            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
-            s.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
-
-            s.SetFillStyleArray(ffa);
-
-            FlashTagDefineShape3 fsws(s);
-            f << fsws;
-
-            shapeUP_ID = fsws.GetID();
-        }
-        {
-            LPBYTE bitmap = makeReverse32(alpbi2->biWidth, alpbi2->biHeight, 4, alpbi2);
-
-            BITMAP_X = alpbi2->biWidth;
-            BITMAP_Y = alpbi2->biHeight;
-
-            // Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
-            int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; // 32 bit
-
-            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
-            f << bll;
-
-            int left = imageoffset + ButtonSpaceX;
-            int top = imageheight + FrameOffsetY + ButtonSpaceY;
-            right = left + BITMAP_X;
-
-            // int left = 15;
-            // int top = 15;
-
-            FlashMatrix m;
-            m.SetScale(20, 20);
-            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
-            // m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
-            FlashFillStyleBitmap ffb(bll.GetID(), m);
-
-            FlashFillStyleArray ffa;
-            ffa.AddFillStyle(&ffb);
-
-            FlashShapeWithStyle s;
-            FlashShapeRecordChange changerec, changerec2;
-            changerec.ChangeFillStyle1(1);
-            s.AddRecord(changerec);
-            s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-            s.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
-            s.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
-            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
-            s.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
-
-            s.SetFillStyleArray(ffa);
-
-            FlashTagDefineShape3 fsws(s);
-            f << fsws;
-
-            shapeOVER_ID = fsws.GetID();
-        }
-        FlashMatrix m;
-        // m.SetScale(20,20);
-
-        FlashColorTransform cfxUp, cfxOver, cfxDown;
-        cfxUp.SetMultRGB(FlashRGB(256, 256, 256, 200));
-        cfxOver.SetMultRGB(FlashRGB(256, 256, 256, 256));
-        cfxDown.SetMultRGB(FlashRGB(256, 256, 256, 256));
-        FlashButtonRecord brecUp(shapeUP_ID, playButtonDepth, FBR_UP, m, cfxUp);
-        FlashButtonRecord brecOver(shapeUP_ID, playButtonDepth, FBR_OVER | FBR_HIT_TEST, m, cfxOver);
-        FlashButtonRecord brecDown(shapeOVER_ID, playButtonDepth, FBR_DOWN, m, cfxDown);
-
-        FlashTagDefineButton2 buttonPlay;
-        FlashActionPlay playAction;
-        buttonPlay.AddButtonRecord(&brecUp);
-        buttonPlay.AddButtonRecord(&brecOver);
-        buttonPlay.AddButtonRecord(&brecDown);
-
-        N_STD::vector<FlashActionRecord *> acrs;
-        acrs.push_back(&playAction);
-
-        buttonPlay.AddActionRecords(acrs, SWFSOURCE_BST_OverUpToOverDown);
-
-        // FlashTagDefineButton buttonPlay;
-        // buttonPlay.AddButtonRecord(&brecUp);
-        // buttonPlay.AddButtonRecord(&brecOver);
-
-        f << buttonPlay;
-
-        FlashTagPlaceObject2 po(playButtonDepth, buttonPlay.GetID());
-        f << po;
-    }
-    if (alpbi)
-        GlobalFreePtr(alpbi);
-
-    if (alpbi2)
-        GlobalFreePtr(alpbi2);
-
-    return right;
-}
-
-int CreateFlashBitmapPauseButton(std::ostringstream &f, int /*imagewidth*/, int imageheight, CString subdir,
-                                 int imageoffset)
-{
-    LPBITMAPINFOHEADER alpbi = NULL;
-    LPBITMAPINFOHEADER alpbi2 = NULL;
-
-    CString bitmapFile, bitmapFile2;
-    bitmapFile = GetProgPath() + subdir + "\\pausebutton.bmp";
-    bitmapFile2 = GetProgPath() + subdir + "\\pausebutton2.bmp";
-
-    alpbi = LoadBitmapFile(bitmapFile);
-    alpbi2 = LoadBitmapFile(bitmapFile2);
-
-    int right = 0;
-
-    if ((alpbi) && (alpbi2))
-    {
-        int ButtonDepth = ObjectDepth + 2;
-
-        //    int buttonWidth = alpbi->biWidth;
-
-        int shapeUP_ID, shapeOVER_ID;
-
-        int BITMAP_X, BITMAP_Y;
-
-        {
-            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight, 4, alpbi);
-
-            BITMAP_X = alpbi->biWidth;
-            BITMAP_Y = alpbi->biHeight;
-
-            // Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
-            int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; // 32 bit
-
-            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
-            f << bll;
-
-            int left = imageoffset + ButtonSpaceX;
-            int top = imageheight + FrameOffsetY + ButtonSpaceY;
-            right = left + BITMAP_X;
-
-            // int left = 15;
-            // int top = 15;
-
-            FlashMatrix m;
-            m.SetScale(20, 20);
-            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
-            // m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
-            FlashFillStyleBitmap ffb(bll.GetID(), m);
-
-            FlashFillStyleArray ffa;
-            ffa.AddFillStyle(&ffb);
-
-            FlashShapeWithStyle s;
-            FlashShapeRecordChange changerec, changerec2;
-            changerec.ChangeFillStyle1(1);
-            s.AddRecord(changerec);
-            s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-            s.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
-            s.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
-            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
-            s.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
-
-            s.SetFillStyleArray(ffa);
-
-            FlashTagDefineShape3 fsws(s);
-            f << fsws;
-
-            shapeUP_ID = fsws.GetID();
-        }
-        {
-            LPBYTE bitmap = makeReverse32(alpbi2->biWidth, alpbi2->biHeight, 4, alpbi2);
-
-            BITMAP_X = alpbi2->biWidth;
-            BITMAP_Y = alpbi2->biHeight;
-
-            // Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
-            int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; // 32 bit
-
-            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
-            f << bll;
-
-            int left = imageoffset + ButtonSpaceX;
-            int top = imageheight + FrameOffsetY + ButtonSpaceY;
-            right = left + BITMAP_X;
-
-            FlashMatrix m;
-            m.SetScale(20, 20);
-            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
-            FlashFillStyleBitmap ffb(bll.GetID(), m);
-
-            FlashFillStyleArray ffa;
-            ffa.AddFillStyle(&ffb);
-
-            FlashShapeWithStyle s;
-            FlashShapeRecordChange changerec, changerec2;
-            changerec.ChangeFillStyle1(1);
-            s.AddRecord(changerec);
-            s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-            s.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
-            s.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
-            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
-            s.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
-
-            s.SetFillStyleArray(ffa);
-
-            FlashTagDefineShape3 fsws(s);
-            f << fsws;
-
-            shapeOVER_ID = fsws.GetID();
-        }
-        FlashMatrix m;
-
-        FlashColorTransform cfxUp, cfxOver, cfxDown;
-        cfxUp.SetMultRGB(FlashRGB(256, 256, 256, 200));
-        cfxOver.SetMultRGB(FlashRGB(256, 256, 256, 256));
-        cfxDown.SetMultRGB(FlashRGB(256, 256, 256, 256));
-        FlashButtonRecord brecUp(shapeUP_ID, ButtonDepth, FBR_UP, m, cfxUp);
-        FlashButtonRecord brecOver(shapeUP_ID, ButtonDepth, FBR_OVER | FBR_HIT_TEST, m, cfxOver);
-        FlashButtonRecord brecDown(shapeOVER_ID, ButtonDepth, FBR_DOWN, m, cfxDown);
-
-        FlashTagDefineButton2 buttonPause;
-        FlashActionStop stopAction;
-        buttonPause.AddButtonRecord(&brecUp);
-        buttonPause.AddButtonRecord(&brecOver);
-        buttonPause.AddButtonRecord(&brecDown);
-
-        N_STD::vector<FlashActionRecord *> acrs;
-        acrs.push_back(&stopAction);
-
-        buttonPause.AddActionRecords(acrs, SWFSOURCE_BST_OverUpToOverDown);
-
-        // FlashTagDefineButton buttonPlay;
-        // buttonPlay.AddButtonRecord(&brecUp);
-        // buttonPlay.AddButtonRecord(&brecOver);
-
-        f << buttonPause;
-
-        FlashTagPlaceObject2 po(ButtonDepth, buttonPause.GetID());
-        f << po;
-    }
-    if (alpbi)
-        GlobalFreePtr(alpbi);
-
-    if (alpbi2)
-        GlobalFreePtr(alpbi2);
-
-    return right;
-}
-
-int CreateFlashBitmapStopButton(std::ostringstream &f, int /*imagewidth*/, int imageheight, CString subdir,
-                                int imageoffset)
-{
-    LPBITMAPINFOHEADER alpbi = NULL;
-    LPBITMAPINFOHEADER alpbi2 = NULL;
-
-    CString bitmapFile, bitmapFile2;
-    bitmapFile = GetProgPath() + subdir + "\\stopbutton.bmp";
-    bitmapFile2 = GetProgPath() + subdir + "\\stopbutton2.bmp";
-
-    alpbi = LoadBitmapFile(bitmapFile);
-    alpbi2 = LoadBitmapFile(bitmapFile2);
-
-    int right = 0;
-
-    if ((alpbi) && (alpbi2))
-    {
-        int ButtonDepth = ObjectDepth + 2;
-
-        // int buttonWidth = alpbi->biWidth;
-
-        int shapeUP_ID, shapeOVER_ID;
-
-        int BITMAP_X, BITMAP_Y;
-
-        {
-            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight, 4, alpbi);
-
-            BITMAP_X = alpbi->biWidth;
-            BITMAP_Y = alpbi->biHeight;
-
-            // Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
-            int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; // 32 bit
-
-            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
-            f << bll;
-
-            int left = imageoffset + ButtonSpaceX;
-            int top = imageheight + FrameOffsetY + ButtonSpaceY;
-            right = left + BITMAP_X;
-
-            FlashMatrix m;
-            m.SetScale(20, 20);
-            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
-            // m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
-            FlashFillStyleBitmap ffb(bll.GetID(), m);
-
-            FlashFillStyleArray ffa;
-            ffa.AddFillStyle(&ffb);
-
-            FlashShapeWithStyle s;
-            FlashShapeRecordChange changerec, changerec2;
-            changerec.ChangeFillStyle1(1);
-            s.AddRecord(changerec);
-            s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-            s.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
-            s.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
-            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
-            s.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
-
-            s.SetFillStyleArray(ffa);
-
-            FlashTagDefineShape3 fsws(s);
-            f << fsws;
-
-            shapeUP_ID = fsws.GetID();
-        }
-        {
-            LPBYTE bitmap = makeReverse32(alpbi2->biWidth, alpbi2->biHeight, 4, alpbi2);
-
-            BITMAP_X = alpbi2->biWidth;
-            BITMAP_Y = alpbi2->biHeight;
-
-            // Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
-            int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; // 32 bit
-
-            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
-            f << bll;
-
-            int left = imageoffset + ButtonSpaceX;
-            int top = imageheight + FrameOffsetY + ButtonSpaceY;
-            right = left + BITMAP_X;
-
-            FlashMatrix m;
-            m.SetScale(20, 20);
-            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
-            FlashFillStyleBitmap ffb(bll.GetID(), m);
-
-            FlashFillStyleArray ffa;
-            ffa.AddFillStyle(&ffb);
-
-            FlashShapeWithStyle s;
-            FlashShapeRecordChange changerec, changerec2;
-            changerec.ChangeFillStyle1(1);
-            s.AddRecord(changerec);
-            s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-            s.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
-            s.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
-            s.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
-            s.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
-
-            s.SetFillStyleArray(ffa);
-
-            FlashTagDefineShape3 fsws(s);
-            f << fsws;
-
-            shapeOVER_ID = fsws.GetID();
-        }
-        FlashMatrix m;
-
-        FlashColorTransform cfxUp, cfxOver, cfxDown;
-        cfxUp.SetMultRGB(FlashRGB(256, 256, 256, 200));
-        cfxOver.SetMultRGB(FlashRGB(256, 256, 256, 256));
-        cfxDown.SetMultRGB(FlashRGB(256, 256, 256, 256));
-        FlashButtonRecord brecUp(shapeUP_ID, ButtonDepth, FBR_UP, m, cfxUp);
-        FlashButtonRecord brecOver(shapeUP_ID, ButtonDepth, FBR_OVER | FBR_HIT_TEST, m, cfxOver);
-        FlashButtonRecord brecDown(shapeOVER_ID, ButtonDepth, FBR_DOWN, m, cfxDown);
-
-        FlashTagDefineButton2 buttonStop;
-        FlashActionStop stopAction;
-
-        // handle baseframe
-        int baseframe = 0;
-        if (addPreloader)
-            baseframe = preloadFrames;
-        // so that we will not get a blank screen when we click stop
-
-        FlashActionGotoFrame gotoAction(baseframe);
-        buttonStop.AddButtonRecord(&brecUp);
-        buttonStop.AddButtonRecord(&brecOver);
-        buttonStop.AddButtonRecord(&brecDown);
-
-        N_STD::vector<FlashActionRecord *> acrs;
-        acrs.push_back(&stopAction);
-        acrs.push_back(&gotoAction);
-
-        buttonStop.AddActionRecords(acrs, SWFSOURCE_BST_OverUpToOverDown);
-
-        // FlashTagDefineButton buttonPlay;
-        // buttonPlay.AddButtonRecord(&brecUp);
-        // buttonPlay.AddButtonRecord(&brecOver);
-
-        f << buttonStop;
-
-        FlashTagPlaceObject2 po(ButtonDepth, buttonStop.GetID());
-        f << po;
-    }
-    if (alpbi)
-        GlobalFreePtr(alpbi);
-
-    if (alpbi2)
-        GlobalFreePtr(alpbi2);
-
-    return right;
-}
-
-int DrawRightPiece(std::ostringstream &f, int imagewidth, int imageheight, CString subdir, int imageoffset, int yoffset)
-{
-    LPBITMAPINFOHEADER alpbi = NULL;
-
-    CString bitmapFile;
-    bitmapFile = GetProgPath() + subdir + "\\rightpiece.bmp";
-
-    alpbi = LoadBitmapFile(bitmapFile);
-
-    int right = 0;
-
-    if (alpbi)
-    {
-        int ButtonDepth = ObjectDepth + 2;
-
-        // int buttonWidth = alpbi->biWidth;
-
-        int BITMAP_X, BITMAP_Y;
-
-        {
-            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight, 4, alpbi);
-
-            BITMAP_X = alpbi->biWidth;
-            BITMAP_Y = alpbi->biHeight;
-
-            // Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
-            int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; // 32 bit
-
-            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
-            f << bll;
-
-            int left = imageoffset;
-            int top = imageheight + FrameOffsetY + ButtonSpaceY - yoffset;
-            right = left + alpbi->biWidth;
-
-            FlashMatrix m;
-            m.SetScale(20, 20);
-            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
-            FlashFillStyleBitmap ffb(bll.GetID(), m);
-
-            FlashFillStyleArray ffa;
-            ffa.AddFillStyle(&ffb);
-
-            FlashShapeWithStyle rightPiece;
-            FlashShapeRecordChange changerec;
-            changerec.ChangeFillStyle1(1);
-            rightPiece.AddRecord(changerec);
-            rightPiece.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-            rightPiece.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
-            rightPiece.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
-            rightPiece.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
-            rightPiece.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
-
-            rightPiece.SetFillStyleArray(ffa);
-
-            FlashTagDefineShape3 fsws(rightPiece);
-            f << fsws;
-
-            FlashTagPlaceObject2 po(ButtonDepth, fsws.GetID());
-            f << po;
-        }
-    }
-    if (alpbi)
-        GlobalFreePtr(alpbi);
-
-    return right;
-}
-
-int DrawLeftPiece(std::ostringstream &f, int /*imagewidth*/, int imageheight, CString subdir, int imageoffset,
-                  int yoffset)
-{
-    LPBITMAPINFOHEADER alpbi = NULL;
-
-    CString bitmapFile;
-    bitmapFile = GetProgPath() + subdir + "\\leftpiece.bmp";
-
-    alpbi = LoadBitmapFile(bitmapFile);
-
-    int right = 0;
-
-    if (alpbi)
-    {
-        int ButtonDepth = ObjectDepth + 2;
-
-        // int buttonWidth = alpbi->biWidth;
-
-        int BITMAP_X, BITMAP_Y;
-
-        {
-            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight, 4, alpbi);
-
-            BITMAP_X = alpbi->biWidth;
-            BITMAP_Y = alpbi->biHeight;
-
-            // Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
-            int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; // 32 bit
-
-            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
-            f << bll;
-
-            int left = imageoffset;
-            int top = imageheight + FrameOffsetY + ButtonSpaceY - yoffset;
-            right = left + alpbi->biWidth;
-
-            FlashMatrix m;
-            m.SetScale(20, 20);
-            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
-            // m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
-            FlashFillStyleBitmap ffb(bll.GetID(), m);
-
-            FlashFillStyleArray ffa;
-            ffa.AddFillStyle(&ffb);
-
-            FlashShapeWithStyle leftPiece;
-            FlashShapeRecordChange changerec;
-            changerec.ChangeFillStyle1(1);
-            leftPiece.AddRecord(changerec);
-            leftPiece.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-            leftPiece.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
-            leftPiece.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
-            leftPiece.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
-            leftPiece.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
-
-            leftPiece.SetFillStyleArray(ffa);
-
-            FlashTagDefineShape3 fsws(leftPiece);
-            f << fsws;
-
-            FlashTagPlaceObject2 po(ButtonDepth, fsws.GetID());
-            f << po;
-        }
-    }
-    if (alpbi)
-        GlobalFreePtr(alpbi);
-
-    return right;
-}
-
-void gcFlash(std::ostringstream &f)
-{
-    int max = freeCharacterArray.GetSize();
-    if (max > 0)
-    {
-        int valueObjectID;
-        for (int i = 0; i < max; i++)
-        {
-            valueObjectID = freeCharacterArray[i];
-
-            // MsgC("valueObjectID = %d",valueObjectID);
-
-            FlashTagFreeCharacter ftfc(valueObjectID);
-            f << ftfc;
-        }
-        freeCharacterArray.RemoveAll();
-    }
-}
-
-void CPlayplusView::OnHelpSwfproducerfaq()
-{
-    Openlink("http://www.camstudio.org/SWFProducerFAQ.htm");
-}
-
-// v 2.28
-// int sprID = 0;
-int CreateProgressBar(std::ostringstream &f, int controlsWidth, int controlsHeight, int FrameOffsetX, int FrameOffsetY,
-                      int BITMAP_X, int BITMAP_Y, int additonalOffsetX, int additionalOffsetY)
-{
-    controlsHeight = 2;
-
-    // int buttonRadius = controlsHeight;
-    int barDepth = ObjectDepth + 5;
-    // int ButtonSpaceY = 5;
-    // int lineThickness = 3;
-    int downOffset = ProgressOffsetY;
-
-    // Todo :
-    // make the fixed colors of progressBar into variables
-    FlashRGB colorBar1(38, 133, 172);
-    FlashRGB colorBar2(82, 175, 212);
-
-    FlashMatrix m;
-    FlashGradientRecord gr;
-    gr.AddGradient(0, colorBar1);
-    gr.AddGradient(128, colorBar2);
-    gr.AddGradient(255, colorBar1);
-
-    FlashShapeWithStyle s;
-    int left = 0;
-    int top = (BITMAP_Y + FrameOffsetY + downOffset + additionalOffsetY);
-
-    int widthBar = controlsWidth - additonalOffsetX - additonalOffsetX; // center
-    int heightBar = controlsHeight;
-
-    FlashFillStyleGradient ffg(m, gr);
-    FlashFillStyleArray ffa;
-    ffa.AddFillStyle(&ffg);
-
-    FlashShapeRecordChange changerec, changerec2;
-    changerec.ChangeFillStyle1(1);
-    s.AddRecord(changerec);
-    s.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-    s.AddRecord(FlashShapeRecordStraight(widthBar * 20, 0 * 20));
-    s.AddRecord(FlashShapeRecordStraight(0 * 20, heightBar * 20));
-    s.AddRecord(FlashShapeRecordStraight(-widthBar * 20, 0 * 20));
-    s.AddRecord(FlashShapeRecordStraight(0 * 20, -heightBar * 20));
-
-    s.SetFillStyleArray(ffa);
-
-    FlashTagDefineShape3 fsws(s);
-    f << fsws;
-
-    FlashTagPlaceObject2 poISP(10, fsws.GetID());
-    FlashTagSprite fts;
-    fts.Add(&poISP);
-    f << fts;
-
-    N_STD::string nameX("Progress");
-    FlashMatrix m2;
-    m2.SetTranslate((FrameOffsetX + additonalOffsetX) * 20,
-                    200 * 20); // place somewhere invisible ...y supposed to be 0, but set to 200*20
-    FlashTagPlaceObject2 po(barDepth, fts.GetID(), m2);
-    po.SetName(nameX);
-    f << po;
-
-    return widthBar;
-}
-
-void FlashActionGetPropertyVar(std::ostringstream &f, CString SpriteTarget, int index, CString varname)
-{
-    CString indexstr;
-    indexstr.Format("%d", index);
-    FlashActionPush param1(0, (char *)LPCTSTR(varname), varname.GetLength() + 1);
-    FlashActionPush param2(0, (char *)LPCTSTR(SpriteTarget), SpriteTarget.GetLength() + 1);
-    FlashActionPush param3(0, (char *)LPCTSTR(indexstr), indexstr.GetLength() + 1);
-    FlashActionGetProperty fagp;
-    FlashActionSetVariable fasv;
-
-    FlashTagDoAction ftd;
-    ftd.AddAction(&param1);
-    ftd.AddAction(&param2);
-    ftd.AddAction(&param3);
-    ftd.AddAction(&fagp);
-    ftd.AddAction(&fasv);
-
-    f << ftd;
-}
-
-void FlashActionSetPropertyFloat(std::ostringstream &f, CString SpriteTarget, int index, CString valuestr)
-{
-    float fvalue = (float)index; // property index
-    char fstr[5];
-    fstr[0] = *(((char *)(&fvalue)));
-    fstr[1] = *(((char *)(&fvalue)) + 1);
-    fstr[2] = *(((char *)(&fvalue)) + 2);
-    fstr[3] = *(((char *)(&fvalue)) + 3);
-
-    FlashActionPush param11(0, (char *)LPCTSTR(SpriteTarget), SpriteTarget.GetLength() + 1); // target
-    FlashActionPush param12(1, fstr, 4);                                                     // index
-    FlashActionPush param13(0, (char *)LPCTSTR(valuestr), valuestr.GetLength() + 1);
-    FlashActionSetProperty fasp;
-
-    FlashTagDoAction ftd2;
-    ftd2.AddAction(&param11);
-    ftd2.AddAction(&param12);
-    ftd2.AddAction(&param13);
-    ftd2.AddAction(&fasp);
-
-    f << ftd2;
-}
-
-void FlashActionSetPropertyFloatVar(std::ostringstream &f, CString SpriteTarget, int index, CString varstr)
-{
-    float fvalue = (float)index; // property index
-    char fstr[5];
-    fstr[0] = *(((char *)(&fvalue)));
-    fstr[1] = *(((char *)(&fvalue)) + 1);
-    fstr[2] = *(((char *)(&fvalue)) + 2);
-    fstr[3] = *(((char *)(&fvalue)) + 3);
-
-    FlashActionPush param11(0, (char *)LPCTSTR(SpriteTarget), SpriteTarget.GetLength() + 1); // target
-    FlashActionPush param12(1, fstr, 4);                                                     // index
-    FlashActionPush param13(0, (char *)LPCTSTR(varstr), varstr.GetLength() + 1);
-    FlashActionGetVariable fagv;
-    FlashActionSetProperty fasp;
-
-    FlashTagDoAction ftd2;
-    ftd2.AddAction(&param11);
-    ftd2.AddAction(&param12);
-    ftd2.AddAction(&param13);
-    ftd2.AddAction(&fagv);
-    ftd2.AddAction(&fasp);
-
-    f << ftd2;
-}
-
-void WriteTextOut(std::ostringstream &f, int width, int height, CString Loadstr, CString fontstr, int red, int green,
-                  int blue, int pointsize, bool bold, bool italic, bool uLine)
-{
-    FlashRect bounds;
-    UWORD depth = static_cast<UWORD>(ObjectDepth);
-    FlashFontFactory fff;
-
-    // centering
-    CSize Extent;
-    GetBounds(LPCTSTR(fontstr), LPCTSTR(Loadstr), pointsize, Extent, bold, italic, uLine);
-
-    // int xpos = (width * 20 - Extent.cx * 20)/2 + FrameOffsetX;
-    // inaccurate Extent ==> so use 1.5 compensate factor
-    int xpos = (width * 20 - int(Extent.cx * 1.5 * 20)) / 2 + FrameOffsetX;
-    int ypos = (height * 20 - (bounds.GetY2() - bounds.GetY1())) / 2 + +FrameOffsetY;
-
-    fff.WriteText(f, LPCTSTR(fontstr), LPCTSTR(Loadstr), xpos, ypos, FlashRGB(red, green, blue), pointsize, depth,
-                  bounds, 0, bold, italic, uLine);
-}
-
-// This preloading works only if addControls is turned on
-// because the flash dimension is not large enough!!!!
-// percent = 1 becuase 1 is max! (100%)
-
-void Preloader(std::ostringstream &f, int widthBar, int /*bmWidth*/, int /*bmHeight*/, int /*progressOffset*/)
-{
-    char actionScript[1000];
-    // char actionScriptal[1000];
-    char actionScript2[1000];
-
-    FlashActionGetPropertyVar(f, "", _totalframes, "tframes");
-    FlashActionGetPropertyVar(f, "", _framesloaded, "floaded");
-
-    // is this actionscript stable ?
-    // sprintf(actionScript,"FullWidth = %d;percent = floaded / tframes; adjustedPercent = percent / %.2f ; currentWidth
-    // = adjustedPercent * FullWidth; if (currentWidth > FullWidth) currentWidth = FullWidth;", widthBar,
-    // percentLoadedThreshold);
-    sprintf(actionScript,
-            "FullWidth = %d;percent = floaded / tframes; adjustedPercent = percent / %.2f ; currentWidth = "
-            "adjustedPercent * FullWidth; if (currentWidth > FullWidth) currentWidth = FullWidth;",
-            widthBar, percentLoadedThreshold, "http://news.bbc.co.uk");
-    // sprintf(actionScript,"", );
-
-    ActionCompiler acom(5);
-    /*bool success = */ (void)acom.Compile(actionScript, f);
-
-    /*
-    // me
-    //sprintf(actionScriptal,"onEnterFrame = function(){if (_framesloaded> 4 && _currentframe >=
-    _totalframes-2){stop();delete onEnterFrame;getURL(\"%s\", \"_self\");}}", "http://news.bbc.co.uk");
-    sprintf(actionScriptal,"trace(\"test\");");
-    ::MessageBox(NULL,actionScriptal,"note", MB_OK|MB_ICONEXCLAMATION|MB_TASKMODAL);
-
-    ActionCompiler acomal(5);
-    bool success = acomal.Compile(actionScriptal,f);
-
-    char tmp[1000];
-    sprintf(tmp,"%d;", (int)success);
-    ::MessageBox(NULL,tmp,"note", MB_OK|MB_ICONEXCLAMATION|MB_TASKMODAL);
-    // end me
-    */
-
-    // is this stable ?
-    sprintf(actionScript2, "alphaVal = 150 - counter; if (dir==0) counter=counter+2;  if (dir==1) counter=counter-2; "
-                           "if (counter > 148) dir = 1; if (counter < 2) dir = 0;");
-    ActionCompiler acom3(5);
-    acom3.Compile(actionScript2, f);
-
-    FlashActionSetPropertyFloatVar(f, "Progress", _width, "currentWidth");
-    FlashActionSetPropertyFloatVar(f, "Loading", _alpha, "alphaVal");
-    FlashActionSetPropertyFloat(f, "Progress", _Y, "0");
-
-    // Preloader Frame
-    f << FlashTagShowFrame();
-    framecount++;
-
-    // WriteTextOut(f, bmWidth, bmHeight, "Loading ...", fontname, font_red + 10, font_green + 10, font_blue + 10,
-    // font_pointsize, font_bold,  font_italic, font_uLine);
-
-    // added open
-    sprintf(actionScript, "condLoad = 0;if (percent >= %.2f) condLoad = 1;", percentLoadedThreshold);
-
-    ActionCompiler acom2(5);
-    acom2.Compile(actionScript, f);
-
-    FlashTagDoAction ftd;
-
-    FlashActionPush paramVar(0, "condLoad", strlen("condLoad") + 1);
-    FlashActionGetVariable fagv;
-    FlashActionGotoFrame gotoAction(0); // 5 bytes
-    FlashActionPlay px;                 // 1 byte?
-    FlashActionIf faif(6);              // 5+1 = 6 bytes
-
-    ftd.AddAction(&paramVar);
-    ftd.AddAction(&fagv);
-
-    ftd.AddAction(&faif); // if true, jump 6 bytes
-    ftd.AddAction(&gotoAction);
-    ftd.AddAction(&px);
-
-    f << ftd;
-    // added close
-
-    int LoadingDepth = ObjectDepth + 6;
-    FlashTagRemoveObject2 ro(LoadingDepth);
-    f << ro;
-
-    f << FlashTagShowFrame();
-    framecount++;
-}
-
-void actionLoadBaseMovie(std::ostringstream &f)
-{
-    char actionScript[1000];
-    CString actionscriptFormat("loadMovie (\"%s\", \"\");");
-    CString actionscriptStr;
-    actionscriptStr.Format(actionscriptFormat, swfbasename);
-    strcpy(actionScript, LPCTSTR(actionscriptStr));
-    actionScript[actionscriptStr.GetLength()] = 0;
-
-    ActionCompiler acom(5);
-    acom.Compile(actionScript, f);
-}
 
 void GetBounds(const char *font, CString textstr, int pointsize, CSize &retExtent, bool bold, bool italic, bool uLine)
 {
@@ -8850,180 +6059,4 @@ void GetBounds(const char *font, CString textstr, int pointsize, CSize &retExten
     DeleteObject(myfont);
 
     retExtent = Extent;
-}
-
-int DrawLoading(std::ostringstream &f, int imagewidth, int imageheight, CString subdir, int /*imageoffset*/,
-                int /*yoffset*/)
-{
-    LPBITMAPINFOHEADER alpbi = NULL;
-    int LoadingDepth = ObjectDepth + 6;
-
-    CString bitmapFile;
-    bitmapFile = subdir;
-
-    alpbi = LoadBitmapFile(bitmapFile);
-
-    int right = 0;
-
-    if (alpbi)
-    {
-        // int ButtonDepth = ObjectDepth + 2;
-
-        // int buttonWidth = alpbi->biWidth;
-
-        int BITMAP_X, BITMAP_Y;
-
-        {
-            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight, 4, alpbi);
-
-            BITMAP_X = alpbi->biWidth;
-            BITMAP_Y = alpbi->biHeight;
-
-            // Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
-            int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; // 32 bit
-
-            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
-            f << bll;
-
-            int left = (imagewidth - BITMAP_X) / 2 + FrameOffsetX;
-            int top = (imageheight - BITMAP_Y) / 2 + FrameOffsetY;
-
-            right = left + alpbi->biWidth;
-
-            FlashMatrix m;
-            m.SetScale(20, 20);
-            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
-            // m.SetTranslate((-left-MatrixOffsetX),(-top-MatrixOffsetY));
-            FlashFillStyleBitmap ffb(bll.GetID(), m);
-
-            FlashFillStyleArray ffa;
-            ffa.AddFillStyle(&ffb);
-
-            FlashShapeWithStyle leftPiece;
-            FlashShapeRecordChange changerec;
-            changerec.ChangeFillStyle1(1);
-            leftPiece.AddRecord(changerec);
-            leftPiece.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-            leftPiece.AddRecord(FlashShapeRecordStraight(BITMAP_X * 20, 0 * 20));
-            leftPiece.AddRecord(FlashShapeRecordStraight(0 * 20, BITMAP_Y * 20));
-            leftPiece.AddRecord(FlashShapeRecordStraight(-BITMAP_X * 20, 0 * 20));
-            leftPiece.AddRecord(FlashShapeRecordStraight(0 * 20, -BITMAP_Y * 20));
-
-            leftPiece.SetFillStyleArray(ffa);
-
-            FlashTagDefineShape3 fsws(leftPiece);
-            f << fsws;
-
-            FlashTagPlaceObject2 poISP(10, fsws.GetID());
-            FlashTagSprite fts;
-            fts.Add(&poISP);
-            f << fts;
-
-            N_STD::string nameX("Loading");
-            // FlashTagPlaceObject2 po(10, fts.GetID());
-            FlashTagPlaceObject2 po(LoadingDepth, fts.GetID());
-            po.SetName(nameX);
-            f << po;
-        }
-    }
-    if (alpbi)
-        GlobalFreePtr(alpbi);
-
-    return right;
-}
-
-// ver 2.29
-// this version some slight instability..somethimes the converted html/swf is not launched
-int DrawNodes(std::ostringstream &f, int widthBar, int /*imagewidth*/, int imageheight, CString subdir,
-              int /*imageoffset*/, int /*yoffset*/, int additionalOffsetX, int additionalOffsetY)
-{
-    // int downOffset = 2;
-    int downOffset = ProgressOffsetY;
-
-    LPBITMAPINFOHEADER alpbi = NULL;
-
-    CString bitmapFile;
-    bitmapFile = GetProgPath() + subdir + "\\loadnode.bmp";
-
-    alpbi = LoadBitmapFile(bitmapFile);
-
-    int right = 0;
-
-    if (alpbi)
-    {
-        int ButtonDepth = ObjectDepth + 3;
-        // int buttonWidth = alpbi->biWidth;
-
-        int BITMAP_X, BITMAP_Y;
-
-        {
-            LPBYTE bitmap = makeReverse32(alpbi->biWidth, alpbi->biHeight, 4, alpbi);
-
-            BITMAP_X = alpbi->biWidth;
-            BITMAP_Y = alpbi->biHeight;
-
-            // Shape Up, Over
-            int wLineLen = ((BITMAP_X)*32 + 31) / 32 * 4;
-            int dwSize = wLineLen * (BITMAP_Y);
-            int format = 5; // 32 bit
-
-            FlashZLibBitmapData zdata((unsigned char *)bitmap, dwSize); // need to takeinto account .... alignment?
-            FlashTagDefineBitsLossless2 bll(format, BITMAP_X, BITMAP_Y, zdata);
-            f << bll;
-
-            int left = FrameOffsetX + additionalOffsetX - BITMAP_X - 1;
-            int top = (imageheight + FrameOffsetY + downOffset) - BITMAP_Y / 2 + additionalOffsetY;
-
-            right = left + alpbi->biWidth;
-
-            FlashMatrix m;
-            m.SetScale(20, 20);
-            m.SetTranslate((left - MatrixOffsetX) * 20, (top - MatrixOffsetY) * 20);
-            FlashFillStyleBitmap ffb(bll.GetID(), m);
-
-            FlashFillStyleArray ffa;
-            ffa.AddFillStyle(&ffb);
-
-            FlashShapeWithStyle nodePiece;
-            FlashShapeRecordChange changerec;
-            changerec.ChangeFillStyle1(1);
-            nodePiece.AddRecord(changerec);
-            nodePiece.AddRecord(FlashShapeRecordChange(left * 20, top * 20));
-            nodePiece.AddRecord(FlashShapeRecordStraight((BITMAP_X + 1) * 20, 0 * 20));
-            nodePiece.AddRecord(FlashShapeRecordStraight(0 * 20, (BITMAP_Y + 1) * 20));
-            nodePiece.AddRecord(FlashShapeRecordStraight(-(BITMAP_X + 1) * 20, 0 * 20));
-            nodePiece.AddRecord(FlashShapeRecordStraight(0 * 20, -(BITMAP_Y + 1) * 20));
-
-            nodePiece.SetFillStyleArray(ffa);
-
-            FlashTagDefineShape3 fsws(nodePiece);
-            f << fsws;
-
-            FlashTagPlaceObject2 po(ButtonDepth, fsws.GetID());
-            f << po;
-
-            FlashMatrix m2;
-            m2.SetTranslate((widthBar + 1) * 20, 0);
-            FlashTagPlaceObject2 po2(ButtonDepth, fsws.GetID(), m2);
-            f << po2;
-        }
-    }
-    if (alpbi)
-        GlobalFreePtr(alpbi);
-
-    return right;
-}
-
-void CPlayplusView::CreatePropertySheet()
-{
-    CString dlgcaption("");
-    dlgcaption.LoadString(IDS_Conversion3);
-
-    flashProp.Construct(dlgcaption);
-    flashProp.AddPage(&page1);
-    flashProp.AddPage(&page2);
-    flashProp.AddPage(&page3);
 }

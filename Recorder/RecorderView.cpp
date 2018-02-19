@@ -907,7 +907,7 @@ void CRecorderView::OnDestroy()
     CView::OnDestroy();
 }
 
-LRESULT CRecorderView::OnRecordStart(UINT /*wParam*/, LONG /*lParam*/)
+LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     TRACE("CRecorderView::OnRecordStart\n");
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
@@ -953,7 +953,7 @@ LRESULT CRecorderView::OnRecordStart(UINT /*wParam*/, LONG /*lParam*/)
     return 0;
 }
 
-LRESULT CRecorderView::OnRecordPaused(UINT /*wParam*/, LONG /*lParam*/)
+LRESULT CRecorderView::OnRecordPaused(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     // TRACE("## CRecorderView::OnRecordPaused\n");
     if (bRecordPaused)
@@ -966,7 +966,7 @@ LRESULT CRecorderView::OnRecordPaused(UINT /*wParam*/, LONG /*lParam*/)
     return 0;
 }
 
-LRESULT CRecorderView::OnRecordInterrupted(UINT wParam, LONG /*lParam*/)
+LRESULT CRecorderView::OnRecordInterrupted(WPARAM wParam, LPARAM /*lParam*/)
 {
     UninstallMyHook(hWndGlobal);
 
@@ -998,7 +998,7 @@ LRESULT CRecorderView::OnRecordInterrupted(UINT wParam, LONG /*lParam*/)
     return 0;
 }
 
-LRESULT CRecorderView::OnSaveCursor(UINT wParam, LONG /*lParam*/)
+LRESULT CRecorderView::OnSaveCursor(WPARAM wParam, LPARAM /*lParam*/)
 {
     // TRACE("CRecorderView::OnSaveCursor\n");
     CamCursor.Save(reinterpret_cast<HCURSOR>(wParam));
@@ -1081,7 +1081,7 @@ void CRecorderView::OnUpdateRegionAllScreens(CCmdUI *pCmdUI)
 }
 
 // This function is called when the avi saving is completed
-LRESULT CRecorderView::OnUserGeneric(UINT /*wParam*/, LONG /*lParam*/)
+LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     CString strTmp = "";
     CString strTargetDir = "";          // Path to target location
@@ -2930,18 +2930,6 @@ void CRecorderView::LoadSettings()
             // ver 1.6
             if (ver > 1.55)
             {
-// TODO, delete
-#ifdef OBSOLETE_CODE
-                // if upgrade from older file versions,
-                // iSpecifiedDirLength == 0 and the following code will not run
-                if ((cProgramOpts.m_iSpecifiedDirLength > 0) && (cProgramOpts.m_iSpecifiedDirLength < 1000))
-                {
-                    fread(specdata, cProgramOpts.m_iSpecifiedDirLength, 1, tFile);
-                    specdata[cProgramOpts.m_iSpecifiedDirLength] = 0;
-                    cProgramOpts.m_strSpecifiedDir = CString(specdata);
-                }
-#endif // OBSOLETE_CODE
-
                 // ver 1.8
                 if (ver >= 1.799999)
                 {
@@ -5094,33 +5082,6 @@ void CRecorderView::SaveProducerCommand()
     strKey = _T("DeleteAVIAfterUse");
     strValue.Format(_T("%d"), cProducerOpts.m_bDeleteAVIAfterUse);
     ::WritePrivateProfileString(strSection, strKey, strValue, strProfile);
-
-#ifdef OBSOLETE_CODE
-    CString fileName = "\\CamStudio.Producer.command";
-    CString setDir = GetProgPath();
-    CString setPath = setDir + fileName;
-
-    FILE *sFile = fopen((LPCTSTR)(setPath), "wt");
-    if (sFile == NULL)
-    {
-        return;
-    }
-
-    // ****************************
-    // Write Variables
-    // ****************************
-
-    float ver = 1.0;
-
-    // fprintf(sFile, "[ CamStudio Flash Producer Commands ver%.2f -- Activate with -x or -b in command line mode ]
-    // \n\n",ver);
-    fprintf(sFile, "[ CamStudio Flash Producer Commands ver%.2f ] \n\n", ver);
-    fprintf(sFile, "bLaunchPropPrompt=%d \n", cProducerOpts.m_bLaunchPropPrompt);
-    fprintf(sFile, "bLaunchHTMLPlayer=%d \n", cProducerOpts.m_bLaunchHTMLPlayer);
-    fprintf(sFile, "bDeleteAVIAfterUse=%d \n", cProducerOpts.m_bDeleteAVIAfterUse);
-
-    fclose(sFile);
-#endif
 }
 
 bool CRecorderView::RunViewer(const CString &strNewFile)

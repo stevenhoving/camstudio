@@ -150,13 +150,9 @@
 #define ID_BUTTON32841                  32841
 #define ID_AUDIO_ALLOWRECORDING         32842
 #define ID_AUDIO_EXTENSION              32843
-#define ID_FILE_CONVERTTOSWF            32844
 #define ID_CONVERT                      32845
 #define ID_HELP_HELP                    32846
-#define ID_HELP_SWFPRODUCERFAQ          32847
 #define IDS_OPENTITLE2                  61446
-#define IDS_SAVESWF1                    61447
-#define IDS_SAVESWF2                    61448
 #define IDS_SAVEHTML                    61449
 #define IDS_INTERLEAVE1                 61450
 #define IDS_NOTE                        61451

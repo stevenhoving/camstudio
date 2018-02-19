@@ -120,8 +120,8 @@ void CSlideToolBar::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
 
     if (!gfPlaying)
     {
-        CSliderCtrl *m_wndSliderCtrl = (CSliderCtrl *)pScrollBar;
-        long value = m_wndSliderCtrl->GetPos();
+        CSliderCtrl *wndSliderCtrl = (CSliderCtrl *)pScrollBar;
+        long value = wndSliderCtrl->GetPos();
         value = timeStart + (value * timeLength) / MAXTIMERANGE;
 
         if (value < timeStart)

@@ -103,7 +103,7 @@ bool CSoundFile::CreateWaveFile()
         return FALSE;
 
     // open file
-    m_hFile = ::mmioOpen(m_FileName.GetBuffer(0), NULL, MMIO_CREATE | MMIO_WRITE | MMIO_EXCLUSIVE | MMIO_ALLOCBUF);
+    m_hFile = ::mmioOpen((LPSTR)m_FileName.c_str(), NULL, MMIO_CREATE | MMIO_WRITE | MMIO_EXCLUSIVE | MMIO_ALLOCBUF);
     if (m_hFile == NULL)
     {
         m_Mode = FILE_ERROR;
@@ -135,7 +135,7 @@ bool CSoundFile::OpenWaveFile()
     if (m_hFile)
         return FALSE;
 
-    m_hFile = mmioOpen(m_FileName.GetBuffer(0), NULL, MMIO_READ);
+    m_hFile = mmioOpen((LPSTR)m_FileName.c_str(), NULL, MMIO_READ);
     if (m_hFile == NULL)
     {
         m_Mode = FILE_ERROR;

@@ -53,7 +53,7 @@ protected:
     afx_msg void OnContextvideoSourceformat();
     afx_msg void OnContextvideoVideosource();
     afx_msg void OnPaint();
-    afx_msg void OnTimer(UINT nIDEvent);
+    afx_msg void OnTimer(UINT_PTR nIDEvent);
     afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
     afx_msg void OnContextvideoEdittransparencyrefreshrate();
     afx_msg void OnContextvideoEdittransparency();

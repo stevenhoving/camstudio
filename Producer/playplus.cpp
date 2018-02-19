@@ -145,7 +145,7 @@ BOOL CPlayplusApp::InitInstance()
                 runmode = 2; // no html launched on finish, no prompt asked
 
             int i;
-            int lenx = strlen(m_lpCmdLine);
+            int lenx = (int)strlen(m_lpCmdLine);
             for (i = 2; i < lenx; i++)
             {
                 if ((m_lpCmdLine[i] != ' ') && (m_lpCmdLine[i] != '\t'))

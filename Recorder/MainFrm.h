@@ -68,8 +68,8 @@ protected:
     //}}AFX_MSG
     afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
     afx_msg LRESULT OnTrayNotify(WPARAM wParam, LPARAM lParam);
-    afx_msg LRESULT OnXNote(UINT wParam, LONG lParam);
-    afx_msg LRESULT OnMotionDetector(UINT wParam, LONG lParam);
+    afx_msg LRESULT OnXNote(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnMotionDetector(WPARAM wParam, LPARAM lParam);
     DECLARE_MESSAGE_MAP()
 private:
     CTrayIcon m_TrayIcon;

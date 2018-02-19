@@ -32,7 +32,7 @@ public:
     virtual bool Start(WAVEFORMATEX* format = NULL);
     static void waveInErrorMsg(MMRESULT result, LPCTSTR addstr);
 
-    afx_msg void OnMM_WIM_DATA(UINT parm1, LONG parm2);
+    afx_msg void OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2);
     DECLARE_MESSAGE_MAP()
 
 protected:

@@ -204,11 +204,11 @@ protected:
 
     afx_msg void OnCamstudio4XnoteWebsite();  // OnHelpWebsite
     //}}AFX_MSG
-    afx_msg LRESULT OnRecordStart (UINT wParam, LONG lParam);
-    afx_msg LRESULT OnRecordInterrupted (UINT wParam, LONG lParam);
-    afx_msg LRESULT OnRecordPaused (UINT wParam, LONG lParam);
-    afx_msg LRESULT OnSaveCursor (UINT wParam, LONG lParam);
-    afx_msg LRESULT OnUserGeneric (UINT wParam, LONG lParam);
+    afx_msg LRESULT OnRecordStart (WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnRecordInterrupted (WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnRecordPaused (WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnSaveCursor (WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnUserGeneric (WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2);
     afx_msg LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);
     DECLARE_MESSAGE_MAP()

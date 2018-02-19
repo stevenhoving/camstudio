@@ -157,8 +157,6 @@ BEGIN
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM "Save &As",                    ID_FILE_SAVEAS
         MENUITEM SEPARATOR
-        MENUITEM "Convert To SWF",              ID_FILE_CONVERTTOSWF
-        MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
     END
     POPUP "Play"
@@ -181,8 +179,6 @@ BEGIN
     POPUP "&Help"
     BEGIN
         MENUITEM "Help",                        ID_HELP_HELP
-        MENUITEM SEPARATOR
-        MENUITEM "SWF Producer FAQ",            ID_HELP_SWFPRODUCERFAQ
         MENUITEM SEPARATOR
         MENUITEM "&About SWF Producer",         ID_APP_ABOUT
     END
@@ -227,8 +223,6 @@ BEGIN
         MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM "Save &As",                    ID_FILE_SAVEAS
-        MENUITEM SEPARATOR
-        MENUITEM "Convert To SWF",              ID_FILE_CONVERTTOSWF
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
     END
@@ -678,8 +672,6 @@ STRINGTABLE
 BEGIN
     AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
     IDS_OPENTITLE2          "Select an AVI file to convert"
-    IDS_SAVESWF1            "Save SWF File As"
-    IDS_SAVESWF2            "What is the output filename ?"
     IDS_SAVEHTML            "Save HTML File As"
     IDS_INTERLEAVE1         "Interleave factor must greater than 0"
     IDS_NOTE                "Note"
@@ -747,10 +739,8 @@ END
 STRINGTABLE 
 BEGIN
     ID_AUDIO_EXTENSION      "Allow audio recording to extend the length of the movie"
-    ID_FILE_CONVERTTOSWF    "Convert to Flash movie"
     ID_CONVERT              "Convert AVI To Flash\nConvert AVI To Flash"
     ID_HELP_HELP            "SWF Prducer Help"
-    ID_HELP_SWFPRODUCERFAQ  "Visit the FAQ page for SWF Producer"
 END
 
 STRINGTABLE 

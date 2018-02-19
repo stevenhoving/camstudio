@@ -270,7 +270,7 @@ BOOL AudioFormat::OnInitDialog()
     // Select the device combo box
     int deviceIsSelected = 0;
     int selectedDevice = WAVE_MAPPER;
-    for (i = 0; i < numdevice; i++)
+    for (int i = 0; i < numdevice; i++)
     {
         if (AudioDeviceID == devicemap[i])
         {
@@ -628,7 +628,7 @@ void SuggestLocalCompressFormat()
         // Use the PCM as default
         BuildLocalRecordingFormat();
         pwfxLocal->wFormatTag = WAVE_FORMAT_PCM;
-        MMRESULT mmr = acmFormatSuggest(NULL, &m_FormatLocal, pwfxLocal, cbwfxLocal, ACM_FORMATSUGGESTF_WFORMATTAG);
+        mmr = acmFormatSuggest(NULL, &m_FormatLocal, pwfxLocal, cbwfxLocal, ACM_FORMATSUGGESTF_WFORMATTAG);
 
         if (mmr != 0)
         {
@@ -694,6 +694,20 @@ void AudioFormat::OnCancel()
     CDialog::OnCancel();
 }
 
+bool file_exists(const char *path)
+{
+    bool result = false;
+    OFSTRUCT ofs;
+    HFILE hdir = OpenFile(path, &ofs, OF_EXIST);
+    if (hdir != HFILE_ERROR)
+    {
+        result = true;
+    }
+    CloseHandle((HANDLE)hdir);
+
+    return result;
+}
+
 void AudioFormat::OnVolume()
 {
     // Ver 1.1
@@ -726,16 +740,11 @@ void AudioFormat::OnVolume()
     testLaunchPath = AppDir + SubDir + exeFileName;
     if (launchPath == "")
     {
-
         // Verify sndvol32.exe exists
-        OFSTRUCT ofs;
-        HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
-        if (hdir != HFILE_ERROR)
+        if (file_exists(testLaunchPath))
         {
-
             launchPath = testLaunchPath;
         }
-        CloseHandle((HANDLE)hdir);
     }
 
     // Test Windows\system32\sndvol32.exe
@@ -744,15 +753,11 @@ void AudioFormat::OnVolume()
     testLaunchPath = AppDir + SubDir + exeFileName;
     if (launchPath == "")
     {
-
         // Verify sndvol32.exe exists
-        OFSTRUCT ofs;
-        HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
-        if (hdir != HFILE_ERROR)
+        if (file_exists(testLaunchPath))
         {
             launchPath = testLaunchPath;
         }
-        CloseHandle((HANDLE)hdir);
     }
 
     // Test Windows\system\sndvol32.exe
@@ -761,16 +766,11 @@ void AudioFormat::OnVolume()
     testLaunchPath = AppDir + SubDir + exeFileName;
     if (launchPath == "")
     {
-
         // Verify sndvol32.exe exists
-        OFSTRUCT ofs;
-        HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
-        if (hdir != HFILE_ERROR)
+        if (file_exists(testLaunchPath))
         {
-
             launchPath = testLaunchPath;
         }
-        CloseHandle((HANDLE)hdir);
     }
 
     if (launchPath != "")

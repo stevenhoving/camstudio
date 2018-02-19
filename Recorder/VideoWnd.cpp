@@ -85,7 +85,7 @@ void CVideoWnd::CreateTransparent(LPCTSTR pTitle, RECT rect, HBITMAP BitmapID)
 }
 
 // FrameGrabber
-void CVideoWnd::OnTimer(UINT /*nIDEvent*/)
+void CVideoWnd::OnTimer(UINT_PTR /*nIDEvent*/)
 {
     if (!m_FrameGrabber.GetSafeHwnd())
     {

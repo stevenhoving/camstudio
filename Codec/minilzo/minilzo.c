@@ -2688,25 +2688,25 @@ _lzo_config_check(void)
 #endif
 #if defined(lzo_bitops_clz32)
     { unsigned i; lzo_uint32 v = 1;
-    for (i = 0; i < 31; i++, v <<= 1)
+    for (int i = 0; i < 31; i++, v <<= 1)
         r &= lzo_bitops_clz32(v) == 31 - i;
     }
 #endif
 #if defined(lzo_bitops_clz64)
     { unsigned i; lzo_uint64 v = 1;
-    for (i = 0; i < 63; i++, v <<= 1)
+    for (int i = 0; i < 63; i++, v <<= 1)
         r &= lzo_bitops_clz64(v) == 63 - i;
     }
 #endif
 #if defined(lzo_bitops_ctz32)
     { unsigned i; lzo_uint32 v = 1;
-    for (i = 0; i < 31; i++, v <<= 1)
+    for (int i = 0; i < 31; i++, v <<= 1)
         r &= lzo_bitops_ctz32(v) == i;
     }
 #endif
 #if defined(lzo_bitops_ctz64)
     { unsigned i; lzo_uint64 v = 1;
-    for (i = 0; i < 63; i++, v <<= 1)
+    for (int i = 0; i < 63; i++, v <<= 1)
         r &= lzo_bitops_ctz64(v) == i;
     }
 #endif

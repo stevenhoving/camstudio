@@ -227,7 +227,7 @@ BOOL CPicture::Load(CString sFilePathName)
     BOOL bResult = FALSE;
     CFile PictureFile;
     CFileException e;
-    int nSize = 0;
+    unsigned long long nSize = 0;
 
     if (m_IPicture != NULL)
         FreePictureData(); // Important - Avoid Leaks...

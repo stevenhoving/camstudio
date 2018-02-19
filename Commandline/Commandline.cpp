@@ -1383,7 +1383,7 @@ int main(int argc, char *argv[])
     char buffer[2];
     string recordHere = output_file;
 
-    for (i = 0; i <= mon_count - 1; i++)
+    for (int i = 0; i <= mon_count - 1; i++)
     {
 
         // whole recording stuff goes BELOW this line.

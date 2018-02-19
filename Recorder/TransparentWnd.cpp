@@ -37,6 +37,8 @@ using namespace Gdiplus;
 // WTF???! Can this life be easier?
 // works both ways
 // TODO: move it somewhere
+
+#if 0
 __inline __declspec(naked) DWORD COLORREFtoARGB(COLORREF, BYTE)
 {
     __asm
@@ -47,6 +49,17 @@ __inline __declspec(naked) DWORD COLORREFtoARGB(COLORREF, BYTE)
         rcr eax, 8
         ret
     }
+}
+#endif
+
+// this is good enough for now...
+#define RCR(x, c) x=((((unsigned)x)>>1)|((x&1) ? (1<<((sizeof(x) * 8) -1)):0) | (((x&1))))
+DWORD COLORREFtoARGB(COLORREF color, BYTE inx)
+{
+    color = _byteswap_ulong(color);
+
+    RCR(color, 8);
+    return color;
 }
 
 extern CScreenAnnotationsDlg sadlg;

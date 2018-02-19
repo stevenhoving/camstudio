@@ -8,10 +8,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-//#include <assert.h>
-
-#include "FlashConversionDlg.h"        // property page
-#include "FlashInterface.h"            // property page
 #include "AdvProperty.h"            // property page
 
 //Multilanguage
@@ -106,11 +102,8 @@ protected:
     afx_msg void OnUpdateFilePlay(CCmdUI* pCmdUI);
     afx_msg void OnAudioExtension();
     afx_msg void OnUpdateAudioExtension(CCmdUI* pCmdUI);
-    afx_msg void OnFileConverttoswf();
-    afx_msg void OnUpdateFileConverttoswf(CCmdUI* pCmdUI);
     afx_msg void OnConvert();
     afx_msg void OnHelpHelp();
-    afx_msg void OnHelpSwfproducerfaq();
     //}}AFX_MSG
     afx_msg LRESULT OnUserGeneric    (UINT wParam, LONG lParam);
     afx_msg LRESULT OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2);
@@ -122,8 +115,6 @@ private:
     BOOL LoadLangIDDLL(LANGID LangID);
 
     CPropertySheet        flashProp;
-    FlashConversionDlg  page1;
-    CFlashInterface        page2;
     CAdvProperty        page3;
     void CreatePropertySheet();
 };

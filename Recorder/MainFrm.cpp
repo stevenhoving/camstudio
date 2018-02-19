@@ -116,7 +116,7 @@ END_MESSAGE_MAP()
 // lParam: time in ms  (Near future, as we are able to use camera as timer. Gige Camera required)
 // BTW. Curently only action 5 (release pause, restart recording) is supported
 //////////////////////////////////////////////////////////
-LRESULT CMainFrame::OnMotionDetector(UINT wParam, LONG lParam)
+LRESULT CMainFrame::OnMotionDetector(WPARAM wParam, LPARAM lParam)
 {
     // TRACE("## CMainFrame::OnMotionDetector (d)    wParam=[%d] HI[%d], LO[%d]\n",wParam, HIWORD(wParam),
     // LOWORD(wParam) );
@@ -136,7 +136,7 @@ LRESULT CMainFrame::OnMotionDetector(UINT wParam, LONG lParam)
 //         hiword: action (1 - start, 2 - stop, 3 - snap, 4 - reset)
 // lParam: time in ms
 //////////////////////////////////////////////////////////
-LRESULT CMainFrame::OnXNote(UINT wParam, LONG lParam)
+LRESULT CMainFrame::OnXNote(WPARAM wParam, LPARAM lParam)
 {
     // Xnote sends source and action info with wParam
     int nHiMod256 = HIWORD(wParam) % 256;
@@ -146,7 +146,7 @@ LRESULT CMainFrame::OnXNote(UINT wParam, LONG lParam)
         ->XNoteProcessWinMessage(nHiMod256, LOWORD(wParam), XNOTE_SOURCE_XNOTESTOPWATCH, (ULONG)lParam);
 
     return 0;
-}
+} 
 
 static UINT indicators[] = {
     ID_SEPARATOR // status line indicator
@@ -464,6 +464,7 @@ LRESULT CMainFrame::OnTrayNotify(WPARAM wParam, LPARAM lParam)
 
 void CMainFrame::CheckForNewVersion()
 {
+#if 0
     try
     {
         CString sFile = "version2.xml";
@@ -510,6 +511,7 @@ void CMainFrame::CheckForNewVersion()
     {
         // MessageBox("Unknown Error occurred while checking for updates");
     }
+#endif
 }
 void CMainFrame::Parse(int result[3], const std::string &input)
 {

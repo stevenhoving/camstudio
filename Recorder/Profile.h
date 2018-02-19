@@ -3,7 +3,7 @@
 /*****
 NEWS NEWS NEWS 10/17/2010
 Config* cfg is defined in StdAfx.h . While it is disputable about it's location,
-meanwhile all new neccesary settings can be accesed directly
+meanwhile all new necessary settings can be accessed directly
 cfg->getRoot()["MySection"]["MySubsection"]["MyValue"]
 see http://www.hyperrealm.com/libconfig/libconfig_manual.html
 CProfile is obsolete
@@ -30,9 +30,9 @@ CProfile is obsolete
 //        last value. The value must be unique or the compiler will complain. 
 // 2.    Initialize the new entry in CProfile::InitSections by calling Add
 //        with the eProfileID, the entry string, and the default value. You
-//        can add the entry to a specific section or default to the applciation
+//        can add the entry to a specific section or default to the application
 //        section. The default value type will define the group within the
-//        section the entry will go in.  
+//        section the entry will go in.
 //
 // Adding a new type
 //

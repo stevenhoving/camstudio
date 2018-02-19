@@ -296,7 +296,7 @@ void CTransparentWnd::SetupRegionByTransColor(CDC *pDC, COLORREF transColor)
         old_zoomBitmap = (CBitmap *)memDC.SelectObject(&zoomBitmap);
 
         CDC tempDC;
-        HBITMAP pOldMemBmp = NULL;
+        pOldMemBmp = NULL;
         tempDC.CreateCompatibleDC(pDC);
 
         pOldMemBmp = (HBITMAP)::SelectObject(tempDC.m_hDC, m_hbitmap);
@@ -493,12 +493,12 @@ void CTransparentWnd::DrawStuff(CDC *dc)
     }
     else
     {
-
-        LPBITMAPINFO pbmiText = GetTextBitmap(pDC, &CRect(clrect), m_factor, &m_tracker.m_rect, &m_textfont,
+        auto temp_rect = CRect(clrect);
+        LPBITMAPINFO pbmiText = GetTextBitmap(pDC, &temp_rect, m_factor, &m_tracker.m_rect, &m_textfont,
                                               m_textstring, NULL, NULL, rgb, m_horzalign);
         // HBITMAP newbm = DrawResampleRGB(pDC, &CRect(clrect),m_factor, (LPBITMAPINFOHEADER) pbmiText);    //Cause:
         // C4189, init but not used
-        (void)DrawResampleRGB(pDC, &CRect(clrect), m_factor,
+        (void)DrawResampleRGB(pDC, &temp_rect, m_factor,
                               (LPBITMAPINFOHEADER)pbmiText); // Solution to prevent C4189, init but not used
 
         if (pbmiText)
@@ -667,13 +667,11 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect *caprect, int fac
             rval = rx;
 
         CPen borderPen;
-        CPen *oldPen;
         borderPen.CreatePen(PS_SOLID, m_borderSize * m_factor, m_borderColor);
         oldPen = (CPen *)pMemDC->SelectObject(&borderPen);
 
         LOGBRUSH logbrush;
         CBrush borderBrush;
-        CBrush *oldBrush;
         logbrush.lbStyle = BS_HOLLOW;
         borderBrush.CreateBrushIndirect(&logbrush);
 
