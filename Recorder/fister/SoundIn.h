@@ -5,9 +5,9 @@
 #if !defined(AFX_SOUNDIN_H__DFF637AC_D133_4419_B4CA_241DFAC75789__INCLUDED_)
 #define AFX_SOUNDIN_H__DFF637AC_D133_4419_B4CA_241DFAC75789__INCLUDED_
 
-#if _MSC_VER > 1000
+
 #pragma once
-#endif // _MSC_VER > 1000
+
 
 #include "soundbase.h"
 #include "Buffer.h"

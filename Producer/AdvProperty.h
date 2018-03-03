@@ -1,11 +1,7 @@
 #if !defined(AFX_ADVPROPERTY_H__06ADD385_A385_4A17_B62F_A0E8AF8063F9__INCLUDED_)
 #define AFX_ADVPROPERTY_H__06ADD385_A385_4A17_B62F_A0E8AF8063F9__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
-// AdvProperty.h : header file
-//
 
 /////////////////////////////////////////////////////////////////////////////
 // CAdvProperty dialog

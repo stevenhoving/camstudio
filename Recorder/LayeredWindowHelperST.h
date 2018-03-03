@@ -33,9 +33,9 @@
 #ifndef _LAYEREDWINDOWHELPERST_H_
 #define _LAYEREDWINDOWHELPERST_H_
 
-#if _MSC_VER > 1000
+
 #pragma once
-#endif // _MSC_VER > 1000
+
 
 #ifndef WS_EX_LAYERED
 #define WS_EX_LAYERED           0x00080000

@@ -4,9 +4,9 @@
 #if !defined(AFX_PLAYPLUSVIEW_H__8B1773D6_C15C_4371_BEB4_1943076AD478__INCLUDED_)
 #define AFX_PLAYPLUSVIEW_H__8B1773D6_C15C_4371_BEB4_1943076AD478__INCLUDED_
 
-#if _MSC_VER > 1000
+
 #pragma once
-#endif // _MSC_VER > 1000
+
 
 #include "AdvProperty.h"            // property page
 

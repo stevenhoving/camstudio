@@ -4,9 +4,9 @@
 #if !defined(AFX_VIDEOWND_H__19C0AC8A_15D7_4E51_9B37_23D2AB758A63__INCLUDED_)
 #define AFX_VIDEOWND_H__19C0AC8A_15D7_4E51_9B37_23D2AB758A63__INCLUDED_
 
-#if _MSC_VER > 1000
+
 #pragma once
-#endif // _MSC_VER > 1000
+
 
 #include "TransparentWnd.h"
 #include "FrameGrabber.h"

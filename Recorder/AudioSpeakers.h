@@ -4,9 +4,9 @@
 #if !defined(AFX_AUDIOSPEAKERS_H__125948FB_55C2_4D8E_8E21_36B3AE266E28__INCLUDED_)
 #define AFX_AUDIOSPEAKERS_H__125948FB_55C2_4D8E_8E21_36B3AE266E28__INCLUDED_
 
-#if _MSC_VER > 1000
+
 #pragma once
-#endif // _MSC_VER > 1000
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CAudioSpeakersDlg dialog

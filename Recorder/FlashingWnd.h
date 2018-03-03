@@ -1,13 +1,7 @@
-//********************************************************************************
-//* FlashingWindow.CPP
-//********************************************************************************
-
 #if !defined(AFX_FLASHINGWND_H__INCLUDED_)
 #define AFX_FLASHINGWND_H__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
 
 class CFlashingWnd : public CWnd
 {

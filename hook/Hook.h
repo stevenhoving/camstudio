@@ -1,8 +1,7 @@
 #ifndef _DEFINED_44E531B1_14D3_11d5_A025_006067718D04
 #define _DEFINED_44E531B1_14D3_11d5_A025_006067718D04
-#if _MSC_VER > 1000
+
 #pragma once
-#endif
 
 #include <windows.h>
 #include <map>
@@ -64,4 +63,3 @@ extern "C" {
 #endif
 
 #endif // _DEFINED_44E531B1_14D3_11d5_A025_006067718D04
-

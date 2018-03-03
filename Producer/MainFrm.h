@@ -1,15 +1,11 @@
-// MainFrm.h : interface of the CMainFrame class
-//
-/////////////////////////////////////////////////////////////////////////////
-
 #if !defined(AFX_MAINFRM_H__AB22A31C_DD6D_4321_9F3D_053A376C0BA8__INCLUDED_)
 #define AFX_MAINFRM_H__AB22A31C_DD6D_4321_9F3D_053A376C0BA8__INCLUDED_
 
+#pragma once
+
 #include "SlideToolBar.h"
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+
 
 class CMainFrame : public CFrameWnd
 {

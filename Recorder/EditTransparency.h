@@ -4,9 +4,9 @@
 #if !defined(AFX_EDITTRANSPARENCY_H__585926AC_E741_4A9F_8787_4D8651D48468__INCLUDED_)
 #define AFX_EDITTRANSPARENCY_H__585926AC_E741_4A9F_8787_4D8651D48468__INCLUDED_
 
-#if _MSC_VER > 1000
+
 #pragma once
-#endif // _MSC_VER > 1000
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CEditTransparencyDlg dialog

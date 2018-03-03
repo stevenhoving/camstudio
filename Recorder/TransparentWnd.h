@@ -14,9 +14,7 @@
 #if !defined(AFX_TRANSPARENTWND_H__INCLUDED_)
 #define AFX_TRANSPARENTWND_H__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif
 
 #include "LayeredWindowHelperST.h"
 #include "Picture.h"
@@ -201,4 +199,3 @@ private:
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
 #endif
-

@@ -5,9 +5,9 @@
 #if !defined(AFX_PLAYPLUSDOC_H__B34DE975_75D9_47D7_A474_5971A0F181CE__INCLUDED_)
 #define AFX_PLAYPLUSDOC_H__B34DE975_75D9_47D7_A474_5971A0F181CE__INCLUDED_
 
-#if _MSC_VER > 1000
+
 #pragma once
-#endif // _MSC_VER > 1000
+
 
 class CPlayplusDoc : public CDocument
 {

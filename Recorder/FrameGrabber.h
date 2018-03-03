@@ -1,9 +1,9 @@
 #if !defined(AFX_FRAMEGRABBER_H__8145B633_9700_11D3_B4B8_E9E5ECC8F23B__INCLUDED_)
 #define AFX_FRAMEGRABBER_H__8145B633_9700_11D3_B4B8_E9E5ECC8F23B__INCLUDED_
 
-#if _MSC_VER > 1000
+
 #pragma once
-#endif // _MSC_VER > 1000
+
 // FrameGrabber.h : header file
 //
 

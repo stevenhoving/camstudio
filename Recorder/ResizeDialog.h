@@ -3,9 +3,9 @@
 #if !defined(AFX_RESIZEDIALOG_H__C4C59E6A_3C80_47C5_AB9C_A71C5A0BEE6D__INCLUDED_)
 #define AFX_RESIZEDIALOG_H__C4C59E6A_3C80_47C5_AB9C_A71C5A0BEE6D__INCLUDED_
 
-#if _MSC_VER > 1000
+
 #pragma once
-#endif // _MSC_VER > 1000
+
 
 #include "TransparentWnd.h"
 

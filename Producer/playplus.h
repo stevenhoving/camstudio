@@ -1,12 +1,7 @@
-// playplus.h : main header file for the PLAYPLUS application
-//
-
 #if !defined(AFX_PLAYPLUS_H__690F740A_CB50_4A20_8631_D538BD9BD425__INCLUDED_)
 #define AFX_PLAYPLUS_H__690F740A_CB50_4A20_8631_D538BD9BD425__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #ifndef __AFXWIN_H__
     #error include 'stdafx.h' before including this file for PCH

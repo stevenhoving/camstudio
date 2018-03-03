@@ -4,9 +4,9 @@
 #if !defined(AFX_KEYSHORTCUTS_H__7D91F35B_8385_4EBB_96CA_AEFB403E2121__INCLUDED_)
 #define AFX_KEYSHORTCUTS_H__7D91F35B_8385_4EBB_96CA_AEFB403E2121__INCLUDED_
 
-#if _MSC_VER > 1000
+
 #pragma once
-#endif // _MSC_VER > 1000
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CKeyshortcutsDlg dialog
