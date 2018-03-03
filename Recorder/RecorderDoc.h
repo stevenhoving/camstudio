@@ -15,45 +15,54 @@ protected: // create from serialization only
     CRecorderDoc();
     DECLARE_DYNCREATE(CRecorderDoc)
 
-// Attributes
+    // Attributes
 public:
-
-// Operations
+    // Operations
 public:
-
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CRecorderDoc)
-    public:
+public:
     virtual BOOL OnNewDocument();
-    virtual void Serialize(CArchive& ar);
+    virtual void Serialize(CArchive &ar);
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 public:
     virtual ~CRecorderDoc();
 #ifdef _DEBUG
     virtual void AssertValid() const;
-    virtual void Dump(CDumpContext& dc) const;
+    virtual void Dump(CDumpContext &dc) const;
 #endif
 
-    unsigned int FrameWidth() const                    {return m_uFrameWidth;}
-    unsigned int FrameWidth(unsigned int uWidth)    {return m_uFrameWidth = uWidth;}
-    unsigned int FrameHeight() const                {return m_uFrameHeight;}
-    unsigned int FrameHeight(unsigned int uHeight)    {return m_uFrameHeight = uHeight;}
-    
-protected:
+    unsigned int FrameWidth() const
+    {
+        return m_uFrameWidth;
+    }
+    unsigned int FrameWidth(unsigned int uWidth)
+    {
+        return m_uFrameWidth = uWidth;
+    }
+    unsigned int FrameHeight() const
+    {
+        return m_uFrameHeight;
+    }
+    unsigned int FrameHeight(unsigned int uHeight)
+    {
+        return m_uFrameHeight = uHeight;
+    }
 
-// Generated message map functions
+protected:
+    // Generated message map functions
 protected:
     //{{AFX_MSG(CRecorderDoc)
-        // NOTE - the ClassWizard will add and remove member functions here.
-        //    DO NOT EDIT what you see in these blocks of generated code !
+    // NOTE - the ClassWizard will add and remove member functions here.
+    //    DO NOT EDIT what you see in these blocks of generated code !
     //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 private:
-    unsigned int m_uFrameWidth;        // Capture frame width
-    unsigned int m_uFrameHeight;    // capture frame height
+    unsigned int m_uFrameWidth;  // Capture frame width
+    unsigned int m_uFrameHeight; // capture frame height
 };
 
 /////////////////////////////////////////////////////////////////////////////

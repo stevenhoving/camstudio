@@ -33,14 +33,12 @@
 #ifndef _LAYEREDWINDOWHELPERST_H_
 #define _LAYEREDWINDOWHELPERST_H_
 
-
 #pragma once
 
-
 #ifndef WS_EX_LAYERED
-#define WS_EX_LAYERED           0x00080000
-#define LWA_COLORKEY            0x00000001
-#define LWA_ALPHA               0x00000002
+#define WS_EX_LAYERED 0x00080000
+#define LWA_COLORKEY 0x00000001
+#define LWA_ALPHA 0x00000002
 #endif
 
 class CLayeredWindowHelperST
@@ -53,11 +51,17 @@ public:
     BOOL SetLayeredWindowAttributes(HWND hWnd, COLORREF crKey, BYTE bAlpha, DWORD dwFlags);
     BOOL SetTransparentPercentage(HWND hWnd, BYTE byPercentage);
 
-    static short GetVersionI()        {return 10;}
-    static LPCTSTR GetVersionC()    {return (LPCTSTR)_T("1.0");}
+    static short GetVersionI()
+    {
+        return 10;
+    }
+    static LPCTSTR GetVersionC()
+    {
+        return (LPCTSTR) _T("1.0");
+    }
 
 private:
-    typedef BOOL (WINAPI* lpfnSetLayeredWindowAttributes)(HWND hWnd, COLORREF crKey, BYTE bAlpha, DWORD dwFlags);
+    typedef BOOL(WINAPI *lpfnSetLayeredWindowAttributes)(HWND hWnd, COLORREF crKey, BYTE bAlpha, DWORD dwFlags);
 
     HMODULE m_hDll;
 };

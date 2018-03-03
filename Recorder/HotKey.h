@@ -4,14 +4,14 @@
 #pragma once
 
 // Values used with Hotkey in program.
-#define HOTKEY_RECORD_START_OR_PAUSE    0
-#define HOTKEY_RECORD_STOP                1
-#define HOTKEY_RECORD_CANCELSTOP        2
-#define HOTKEY_LAYOUT_KEY_NEXT            3
-#define HOTKEY_LAYOUT_KEY_PREVIOUS        4
-#define HOTKEY_LAYOUT_SHOW_HIDE_KEY        5
-#define HOTKEY_ZOOM                        6
-#define HOTKEY_AUTOPAN_SHOW_HIDE_KEY    7
+#define HOTKEY_RECORD_START_OR_PAUSE 0
+#define HOTKEY_RECORD_STOP 1
+#define HOTKEY_RECORD_CANCELSTOP 2
+#define HOTKEY_LAYOUT_KEY_NEXT 3
+#define HOTKEY_LAYOUT_KEY_PREVIOUS 4
+#define HOTKEY_LAYOUT_SHOW_HIDE_KEY 5
+#define HOTKEY_ZOOM 6
+#define HOTKEY_AUTOPAN_SHOW_HIDE_KEY 7
 
 #include <vector>
 
@@ -26,17 +26,17 @@ public:
     {
     }
 
-    sHotKeyDef(const sHotKeyDef& rhs)
+    sHotKeyDef(const sHotKeyDef &rhs)
     {
         *this = rhs;
     }
-    sHotKeyDef& operator=(const sHotKeyDef& rhs)
+    sHotKeyDef &operator=(const sHotKeyDef &rhs)
     {
         if (this == &rhs)
             return *this;
 
-        m_vKey        = rhs.m_vKey;
-        m_fsMod        = rhs.m_fsMod;
+        m_vKey = rhs.m_vKey;
+        m_fsMod = rhs.m_fsMod;
 
         return *this;
     }
@@ -57,29 +57,29 @@ struct sHotKeyOpts
         , m_Autopan(VK_UNDEFINED)
     {
     }
-    sHotKeyOpts(const sHotKeyOpts& rhs)
+    sHotKeyOpts(const sHotKeyOpts &rhs)
     {
         *this = rhs;
     }
     // TODO: default copy constructor??
-    sHotKeyOpts& operator=(const sHotKeyOpts& rhs)
+    sHotKeyOpts &operator=(const sHotKeyOpts &rhs)
     {
         if (this == &rhs)
             return *this;
 
-        m_RecordStart    = rhs.m_RecordStart;
-        m_RecordEnd        = rhs.m_RecordEnd;
-        m_RecordCancel    = rhs.m_RecordCancel;
-        m_Next            = rhs.m_Next;
-        m_Prev            = rhs.m_Prev;
-        m_ShowLayout    = rhs.m_ShowLayout;
-        m_Zoom            = rhs.m_Zoom;
-        m_Autopan        = rhs.m_Autopan;
+        m_RecordStart = rhs.m_RecordStart;
+        m_RecordEnd = rhs.m_RecordEnd;
+        m_RecordCancel = rhs.m_RecordCancel;
+        m_Next = rhs.m_Next;
+        m_Prev = rhs.m_Prev;
+        m_ShowLayout = rhs.m_ShowLayout;
+        m_Zoom = rhs.m_Zoom;
+        m_Autopan = rhs.m_Autopan;
 
         return *this;
     }
-    bool Read(Setting& cProfile);
-    bool Write(Setting& cProfile);
+    bool Read(Setting &cProfile);
+    bool Write(Setting &cProfile);
 
     sHotKeyDef m_RecordStart;
     sHotKeyDef m_RecordEnd;

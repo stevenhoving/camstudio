@@ -4,37 +4,37 @@
 #if !defined(AFX_AUDIOSPEAKERS_H__125948FB_55C2_4D8E_8E21_36B3AE266E28__INCLUDED_)
 #define AFX_AUDIOSPEAKERS_H__125948FB_55C2_4D8E_8E21_36B3AE266E28__INCLUDED_
 
-
 #pragma once
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CAudioSpeakersDlg dialog
 
 class CAudioSpeakersDlg : public CDialog
 {
-// Construction
+
 public:
-    CAudioSpeakersDlg(CWnd* pParent = NULL);
+    CAudioSpeakersDlg(CWnd *pParent = NULL);
     void OnUpdateLineConfig(int line_proper);
     void OnUpdateVolume();
 
-// Dialog Data
+    // Dialog Data
     //{{AFX_DATA(CAudioSpeakersDlg)
-    enum { IDD = IDD_AUDIOWAVEOUT };
-        // NOTE: the ClassWizard will add data members here
+    enum
+    {
+        IDD = IDD_AUDIOWAVEOUT
+    };
+    // NOTE: the ClassWizard will add data members here
     //}}AFX_DATA
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CAudioSpeakersDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
-
     // Generated message map functions
     //{{AFX_MSG(CAudioSpeakersDlg)
     virtual void OnOK();
@@ -43,7 +43,7 @@ protected:
     afx_msg void OnAutoconfig();
     afx_msg void OnSelchangeSounddevice();
     afx_msg void OnManualconfig();
-    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar);
     //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 private:

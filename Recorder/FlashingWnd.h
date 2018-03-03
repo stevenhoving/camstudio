@@ -10,7 +10,7 @@ public:
     virtual ~CFlashingWnd();
 
     // TODO: magic number 200 here, why?  Explain
-    static const UINT WM_FLASH_WINDOW = (WM_APP + 200);    // wparm = invert; lparam = draw
+    static const UINT WM_FLASH_WINDOW = (WM_APP + 200); // wparm = invert; lparam = draw
 
     BOOL CreateFlashing(LPCTSTR pTitle, RECT &rect);
     void DrawFlashingRect(bool bInvert, bool bDraw = true)
@@ -18,15 +18,25 @@ public:
         PaintBorder(bInvert, bDraw);
     }
 
-    void SetUpRegion(const CRect& cRect, int type);
-    
-    CRect Rect() const                {return m_cRect;}
-    bool NewRegionUsed() const        {return m_bNewRegionUsed;}
-    bool NewRegionUsed(bool bUsed)    {return m_bNewRegionUsed = bUsed;}
+    void SetUpRegion(const CRect &cRect, int type);
+
+    CRect Rect() const
+    {
+        return m_cRect;
+    }
+    bool NewRegionUsed() const
+    {
+        return m_bNewRegionUsed;
+    }
+    bool NewRegionUsed(bool bUsed)
+    {
+        return m_bNewRegionUsed = bUsed;
+    }
+
 private:
     void PaintBorder(bool bInvert, bool bDraw = true);
-    //void SetUpRect(int x, int y, int width, int height);
-    //void SetUpRect(int x, int y, int width, int height)
+    // void SetUpRect(int x, int y, int width, int height);
+    // void SetUpRect(int x, int y, int width, int height)
     //{
     //    m_cRect = CRect(x, y, x + width, y + height);
     //}
@@ -35,16 +45,16 @@ private:
     void UpdateRegionMove();
     void MakeFixedRegion(CRgn &wndRgn, CRgn &rgnTemp, CRgn &rgnTemp2, CRgn &rgnTemp3);
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CFlashingWnd)
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
     // Generated message map functions
 protected:
     //{{AFX_MSG(CFlashingWnd)
-    afx_msg BOOL OnEraseBkgnd( CDC* pDC );
+    afx_msg BOOL OnEraseBkgnd(CDC *pDC);
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
     afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
     afx_msg void OnMouseMove(UINT nFlags, CPoint point);
@@ -53,13 +63,13 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 private:
-    COLORREF    m_clrBorderON;        // border ON color
-    COLORREF    m_clrBorderOFF;        // border OFF color
-    CRect        m_cRect;            // border region rectangle
-    HCURSOR        m_hCursorMove;
-    CPoint        m_ptStart;
-    bool        m_bStartDrag;
-    bool        m_bNewRegionUsed;
+    COLORREF m_clrBorderON;  // border ON color
+    COLORREF m_clrBorderOFF; // border OFF color
+    CRect m_cRect;           // border region rectangle
+    HCURSOR m_hCursorMove;
+    CPoint m_ptStart;
+    bool m_bStartDrag;
+    bool m_bNewRegionUsed;
 };
 
 /////////////////////////////////////////////////////////////////////////////

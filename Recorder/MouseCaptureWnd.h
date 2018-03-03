@@ -24,4 +24,4 @@ int DestroyShiftWindow();
 
 void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip);
 
-#endif    // MOUSECAPTUREWND_H
+#endif // MOUSECAPTUREWND_H

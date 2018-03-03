@@ -19,51 +19,53 @@ protected: // create from serialization only
     CMainFrame();
     DECLARE_DYNCREATE(CMainFrame)
 
-// Attributes
+    // Attributes
 public:
-    CBitmap& Logo()    {return m_bmLogo;}
+    CBitmap &Logo()
+    {
+        return m_bmLogo;
+    }
 
-// Operations
+    // Operations
 public:
     void UpdateViewtype();
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CMainFrame)
-    public:
-    virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+public:
+    virtual BOOL PreCreateWindow(CREATESTRUCT &cs);
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 public:
     virtual ~CMainFrame();
 #ifdef _DEBUG
     virtual void AssertValid() const;
-    virtual void Dump(CDumpContext& dc) const;
+    virtual void Dump(CDumpContext &dc) const;
 #endif
 
-protected:  // control bar embedded members
-    CStatusBar  m_wndStatusBar;
-    CToolBar    m_wndToolBar;
-    CBitmap        m_ToolbarBitmap256;
-    CBitmap        m_ToolbarBitmapMask;
-    CImageList  m_ilToolBar;
-    CBitmap        m_bmLogo;
-    //CBitmap        m_bmNotification;
+protected: // control bar embedded members
+    CStatusBar m_wndStatusBar;
+    CToolBar m_wndToolBar;
+    CBitmap m_ToolbarBitmap256;
+    CBitmap m_ToolbarBitmapMask;
+    CImageList m_ilToolBar;
+    CBitmap m_bmLogo;
+    // CBitmap        m_bmNotification;
     CUpdateDialog m_bDialog;
-    
 
-// Generated message map functions
+    // Generated message map functions
 protected:
     //{{AFX_MSG(CMainFrame)
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnClose();
     afx_msg void OnViewCompactview();
-    afx_msg void OnUpdateViewCompactview(CCmdUI* pCmdUI);
+    afx_msg void OnUpdateViewCompactview(CCmdUI *pCmdUI);
     afx_msg void OnViewButtonsview();
-    afx_msg void OnUpdateViewButtonsview(CCmdUI* pCmdUI);
+    afx_msg void OnUpdateViewButtonsview(CCmdUI *pCmdUI);
     afx_msg void OnViewNormalview();
-    afx_msg void OnUpdateViewNormalview(CCmdUI* pCmdUI);
+    afx_msg void OnUpdateViewNormalview(CCmdUI *pCmdUI);
     afx_msg void OnViewtype();
     //}}AFX_MSG
     afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
@@ -76,8 +78,9 @@ private:
     static const UINT WM_USER_XNOTE;
     static const UINT WM_USER_MOTIONDETECTOR;
     void CheckForNewVersion();
-    void Parse(int result[3], const std::string& input);
-    bool LessThanVersion(const std::string& a,const std::string& b);
+    void Parse(int result[3], const std::string &input);
+    bool LessThanVersion(const std::string &a, const std::string &b);
+
 public:
 };
 
@@ -92,5 +95,3 @@ extern int minxScreen;
 extern int minyScreen;
 
 #endif // !defined(AFX_MAINFRM_H__DBFD9E21_C771_4321_8322_1F45ED8D4A66__INCLUDED_)
-
-

@@ -7,40 +7,41 @@
 
 #include <shlobj.h>
 
-class CFolderDialog  
+class CFolderDialog
 {
 public:
-	CFolderDialog(	LPCTSTR lpszFolderName = NULL, DWORD dwFlags = NULL, CWnd* pParentWnd = NULL);
-	virtual ~CFolderDialog();
-	
-	virtual int DoModal();
-	CString GetPathName() const;
+    CFolderDialog(LPCTSTR lpszFolderName = NULL, DWORD dwFlags = NULL, CWnd *pParentWnd = NULL);
+    virtual ~CFolderDialog();
+
+    virtual int DoModal();
+    CString GetPathName() const;
 
 protected:
-	virtual void OnInitDialog();
-	virtual void OnSelChanged(ITEMIDLIST* pIdl);
-	virtual void BrowseDirectory(HWND hWnd, UINT uMsg,	LPARAM lParam);
+    virtual void OnInitDialog();
+    virtual void OnSelChanged(ITEMIDLIST *pIdl);
+    virtual void BrowseDirectory(HWND hWnd, UINT uMsg, LPARAM lParam);
 
-	void EnableOK(BOOL bEnable = TRUE);
-	void SetSelection(LPCTSTR pszSelection);
-	void SetSelection(ITEMIDLIST* pIdl);
-	void SetStatusText(LPCTSTR pszStatusText);
-	CString ShortName(const CString& strName);
+    void EnableOK(BOOL bEnable = TRUE);
+    void SetSelection(LPCTSTR pszSelection);
+    void SetSelection(ITEMIDLIST *pIdl);
+    void SetStatusText(LPCTSTR pszStatusText);
+    CString ShortName(const CString &strName);
 
 private:
-	// Callback function
-	static int CALLBACK BrowseDirectory(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData);
+    // Callback function
+    static int CALLBACK BrowseDirectory(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData);
+
 public:
-	BROWSEINFO m_bi;
+    BROWSEINFO m_bi;
 
 protected:
-	CString m_strInitialFolderName;
-	CString m_strFinalFolderName;
+    CString m_strInitialFolderName;
+    CString m_strFinalFolderName;
 
-	TCHAR m_szDisplayName[MAX_PATH];
-	TCHAR m_szPath[MAX_PATH];
+    TCHAR m_szDisplayName[MAX_PATH];
+    TCHAR m_szPath[MAX_PATH];
 
-	HWND m_hDialogBox;
+    HWND m_hDialogBox;
 };
 
 #endif // _CFolderDialog_

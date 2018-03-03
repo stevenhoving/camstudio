@@ -5,7 +5,8 @@
 #include "Profile.h"
 
 // Video/Audio Merging Functions and Definitions
-extern int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, BOOL bAudioRecompress, sAudioFormat& rAudioFormat);
+extern int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, BOOL bAudioRecompress,
+                           sAudioFormat &rAudioFormat);
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -16,35 +17,81 @@ public:
     {
         switch (hrErr)
         {
-        case AVIERR_OK:
-            break;
-        default:                    TRACE("CAVI::Error: Unknown\n"); break;
-        case AVIERR_UNSUPPORTED:    TRACE("CAVI::Error: AVIERR_UNSUPPORTED\n"); break;
-        case AVIERR_BADFORMAT:        TRACE("CAVI::Error: AVIERR_BADFORMAT\n"); break;
-        case AVIERR_MEMORY:            TRACE("CAVI::Error: AVIERR_MEMORY\n"); break;
-        case AVIERR_INTERNAL:        TRACE("CAVI::Error: AVIERR_INTERNAL\n"); break;
-        case AVIERR_BADFLAGS:        TRACE("CAVI::Error: AVIERR_BADFLAGS\n"); break;
-        case AVIERR_BADPARAM:        TRACE("CAVI::Error: AVIERR_BADPARAM\n"); break;
-        case AVIERR_BADSIZE:        TRACE("CAVI::Error: AVIERR_BADSIZE\n"); break;
-        case AVIERR_BADHANDLE:        TRACE("CAVI::Error: AVIERR_BADHANDLE\n"); break;
-        case AVIERR_FILEREAD:        TRACE("CAVI::Error: AVIERR_FILEREAD\n"); break;
-        case AVIERR_FILEWRITE:        TRACE("CAVI::Error: AVIERR_FILEWRITE\n"); break;
-        case AVIERR_FILEOPEN:        TRACE("CAVI::Error: AVIERR_FILEOPEN\n"); break;
-        case AVIERR_COMPRESSOR:        TRACE("CAVI::Error: AVIERR_COMPRESSOR\n"); break;
-        case AVIERR_NOCOMPRESSOR:    TRACE("CAVI::Error: AVIERR_NOCOMPRESSOR\n"); break;
-        case AVIERR_READONLY:        TRACE("CAVI::Error: AVIERR_READONLY\n"); break;
-        case AVIERR_NODATA:            TRACE("CAVI::Error: AVIERR_NODATA\n"); break;
-        case AVIERR_BUFFERTOOSMALL:    TRACE("CAVI::Error: AVIERR_BUFFERTOOSMALL\n"); break;
-        case AVIERR_CANTCOMPRESS:    TRACE("CAVI::Error: AVIERR_CANTCOMPRESS\n"); break;
-        case AVIERR_USERABORT:        TRACE("CAVI::Error: AVIERR_USERABORT\n"); break;
-        case AVIERR_ERROR:            TRACE("CAVI::Error: AVIERR_ERROR\n"); break;
+            case AVIERR_OK:
+                break;
+            default:
+                TRACE("CAVI::Error: Unknown\n");
+                break;
+            case AVIERR_UNSUPPORTED:
+                TRACE("CAVI::Error: AVIERR_UNSUPPORTED\n");
+                break;
+            case AVIERR_BADFORMAT:
+                TRACE("CAVI::Error: AVIERR_BADFORMAT\n");
+                break;
+            case AVIERR_MEMORY:
+                TRACE("CAVI::Error: AVIERR_MEMORY\n");
+                break;
+            case AVIERR_INTERNAL:
+                TRACE("CAVI::Error: AVIERR_INTERNAL\n");
+                break;
+            case AVIERR_BADFLAGS:
+                TRACE("CAVI::Error: AVIERR_BADFLAGS\n");
+                break;
+            case AVIERR_BADPARAM:
+                TRACE("CAVI::Error: AVIERR_BADPARAM\n");
+                break;
+            case AVIERR_BADSIZE:
+                TRACE("CAVI::Error: AVIERR_BADSIZE\n");
+                break;
+            case AVIERR_BADHANDLE:
+                TRACE("CAVI::Error: AVIERR_BADHANDLE\n");
+                break;
+            case AVIERR_FILEREAD:
+                TRACE("CAVI::Error: AVIERR_FILEREAD\n");
+                break;
+            case AVIERR_FILEWRITE:
+                TRACE("CAVI::Error: AVIERR_FILEWRITE\n");
+                break;
+            case AVIERR_FILEOPEN:
+                TRACE("CAVI::Error: AVIERR_FILEOPEN\n");
+                break;
+            case AVIERR_COMPRESSOR:
+                TRACE("CAVI::Error: AVIERR_COMPRESSOR\n");
+                break;
+            case AVIERR_NOCOMPRESSOR:
+                TRACE("CAVI::Error: AVIERR_NOCOMPRESSOR\n");
+                break;
+            case AVIERR_READONLY:
+                TRACE("CAVI::Error: AVIERR_READONLY\n");
+                break;
+            case AVIERR_NODATA:
+                TRACE("CAVI::Error: AVIERR_NODATA\n");
+                break;
+            case AVIERR_BUFFERTOOSMALL:
+                TRACE("CAVI::Error: AVIERR_BUFFERTOOSMALL\n");
+                break;
+            case AVIERR_CANTCOMPRESS:
+                TRACE("CAVI::Error: AVIERR_CANTCOMPRESS\n");
+                break;
+            case AVIERR_USERABORT:
+                TRACE("CAVI::Error: AVIERR_USERABORT\n");
+                break;
+            case AVIERR_ERROR:
+                TRACE("CAVI::Error: AVIERR_ERROR\n");
+                break;
         }
     }
 
 protected:
     // AVIFile Library Operations
-    void FileInit()        {::AVIFileInit();}
-    void FileExit()        {::AVIFileExit();}
+    void FileInit()
+    {
+        ::AVIFileInit();
+    }
+    void FileExit()
+    {
+        ::AVIFileExit();
+    }
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -55,18 +102,27 @@ public:
     CAVIStream();
     ~CAVIStream();
 
-    operator PAVISTREAM()            {return m_pstream;}
-    //operator PAVISTREAM&()        {return m_pstream;}
-    operator PAVISTREAM*()            {return &m_pstream;}
-    const AVISTREAMINFO& getInfo()    {return m_sAVISTREAMINFO;}
+    operator PAVISTREAM()
+    {
+        return m_pstream;
+    }
+    // operator PAVISTREAM&()        {return m_pstream;}
+    operator PAVISTREAM *()
+    {
+        return &m_pstream;
+    }
+    const AVISTREAMINFO &getInfo()
+    {
+        return m_sAVISTREAMINFO;
+    }
 
 private:
     PAVISTREAM m_pstream;
     AVISTREAMINFO m_sAVISTREAMINFO;
 
-//protected:
+    // protected:
 public:
-    HRESULT OpenFromFile(LPCTSTR szFile, FOURCC fccType, LONG lParam, UINT mode, CLSID * pclsidHandler)
+    HRESULT OpenFromFile(LPCTSTR szFile, FOURCC fccType, LONG lParam, UINT mode, CLSID *pclsidHandler)
     {
         return ::AVIStreamOpenFromFile(&m_pstream, szFile, fccType, lParam, mode, pclsidHandler);
     }
@@ -79,7 +135,7 @@ public:
     {
         return (m_pstream) ? ::AVIStreamRelease(m_pstream) : 0L;
     }
-    HRESULT Info(AVISTREAMINFO * psi, LONG lSize)
+    HRESULT Info(AVISTREAMINFO *psi, LONG lSize)
     {
         return ::AVIStreamInfo(m_pstream, psi, lSize);
     }
@@ -87,30 +143,30 @@ public:
     {
         return ::AVIStreamInfo(m_pstream, &m_sAVISTREAMINFO, sizeof(AVISTREAMINFO));
     }
-    
+
     // Reading Stream Information
-    HRESULT ReadData(DWORD ckid, LPVOID lpData, LONG * lpcbData)
+    HRESULT ReadData(DWORD ckid, LPVOID lpData, LONG *lpcbData)
     {
         return ::AVIStreamReadData(m_pstream, ckid, lpData, lpcbData);
     }
-    HRESULT DataSize(FOURCC fcc, LONG * plSize)
+    HRESULT DataSize(FOURCC fcc, LONG *plSize)
     {
         return ReadData(fcc, 0, plSize);
     }
-    HRESULT ReadFormat(LONG lPos, LPVOID lpFormat, LONG * lpcbFormat)
+    HRESULT ReadFormat(LONG lPos, LPVOID lpFormat, LONG *lpcbFormat)
     {
         return ::AVIStreamReadFormat(m_pstream, lPos, lpFormat, lpcbFormat);
     }
-    HRESULT FormatSize(LONG lPos, LONG * lpcbFormat)
+    HRESULT FormatSize(LONG lPos, LONG *lpcbFormat)
     {
         return ::AVIStreamReadFormat(m_pstream, lPos, 0, lpcbFormat);
     }
-    HRESULT Read(LONG lStart, LONG lSamples, LPVOID lpBuffer, LONG cbBuffer, LONG * plBytes, LONG * plSamples)
+    HRESULT Read(LONG lStart, LONG lSamples, LPVOID lpBuffer, LONG cbBuffer, LONG *plBytes, LONG *plSamples)
     {
         return ::AVIStreamRead(m_pstream, lStart, lSamples, lpBuffer, cbBuffer, plBytes, plSamples);
     }
-    HRESULT SampleSize(LONG lPos, LONG * plSize)
-    {        
+    HRESULT SampleSize(LONG lPos, LONG *plSize)
+    {
         return Read(lPos, 1, 0, 0, plSize, 0);
     }
     HRESULT BeginStreaming(LONG lStart, LONG lEnd, LONG lRate)
@@ -138,18 +194,20 @@ public:
 
     // Creating a File from Existing Streams
     // TODO: vararg version
-    //HRESULT Save(LPCTSTR szFile, CLSID * pclsidHandler, AVISAVECALLBACK lpfnCallback, int nStreams, PAVISTREAM pavi, LPAVICOMPRESSOPTIONS lpOptions,...)
+    // HRESULT Save(LPCTSTR szFile, CLSID * pclsidHandler, AVISAVECALLBACK lpfnCallback, int nStreams, PAVISTREAM pavi,
+    // LPAVICOMPRESSOPTIONS lpOptions,...)
     //{
     //    return ::AVISave(szFile, pclsidHandler, lpfnCallback, nStreams, pavi, lpOptions,...);
     //}
 
     // TODO: Not safe! Do not use.
-    HRESULT SaveV(LPCTSTR szFile, CLSID * pclsidHandler, AVISAVECALLBACK lpfnCallback, int nStreams, PAVISTREAM * pavi, LPAVICOMPRESSOPTIONS * plpOptions)
+    HRESULT SaveV(LPCTSTR szFile, CLSID *pclsidHandler, AVISAVECALLBACK lpfnCallback, int nStreams, PAVISTREAM *pavi,
+                  LPAVICOMPRESSOPTIONS *plpOptions)
     {
         return ::AVISaveV(szFile, pclsidHandler, lpfnCallback, nStreams, pavi, plpOptions);
     }
 
-    BOOL SaveOptions(HWND hwnd, UINT uiFlags, int nStreams, LPAVICOMPRESSOPTIONS * plpOptions)
+    BOOL SaveOptions(HWND hwnd, UINT uiFlags, int nStreams, LPAVICOMPRESSOPTIONS *plpOptions)
     {
         return ::AVISaveOptions(hwnd, uiFlags, nStreams, &m_pstream, plpOptions);
     }
@@ -158,7 +216,7 @@ public:
     {
         return ::GetSaveFileNamePreview(lpofn);
     }
-    HRESULT MakeFileFromStreams(PAVIFILE * ppfile, int nStreams, PAVISTREAM * papStreams)
+    HRESULT MakeFileFromStreams(PAVIFILE *ppfile, int nStreams, PAVISTREAM *papStreams)
     {
         return ::AVIMakeFileFromStreams(ppfile, nStreams, papStreams);
     }
@@ -168,9 +226,11 @@ public:
     {
         return ::AVIStreamSetFormat(m_pstream, lPos, lpFormat, cbFormat);
     }
-    HRESULT Write(LONG lStart, LONG lSamples, LPVOID lpBuffer, LONG cbBuffer, DWORD dwFlags, LONG * plSampWritten, LONG * plBytesWritten)
+    HRESULT Write(LONG lStart, LONG lSamples, LPVOID lpBuffer, LONG cbBuffer, DWORD dwFlags, LONG *plSampWritten,
+                  LONG *plBytesWritten)
     {
-        return ::AVIStreamWrite(m_pstream, lStart, lSamples, lpBuffer, cbBuffer, dwFlags, plSampWritten, plBytesWritten);
+        return ::AVIStreamWrite(m_pstream, lStart, lSamples, lpBuffer, cbBuffer, dwFlags, plSampWritten,
+                                plBytesWritten);
     }
     HRESULT WriteData(DWORD ckid, LPVOID lpData, LONG cbData)
     {
@@ -211,7 +271,7 @@ public:
     }
 
     // Finding Sample and Key Frames
-    
+
     BOOL IsKeyFrame(LONG lPos)
     {
         return (NearestKeyFrame(lPos) == 1L);
@@ -222,7 +282,7 @@ public:
     }
     LONG NearestKeyFrameTime(LONG lTime)
     {
-        return SampleToTime(NearestKeyFrame(TimeToSample(lTime))); 
+        return SampleToTime(NearestKeyFrame(TimeToSample(lTime)));
     }
     LONG NearestSample(LONG lPos)
     {
@@ -238,7 +298,7 @@ public:
     }
     LONG NextKeyFrameTime(LONG lTime)
     {
-        return SampleToTime(NextKeyFrame(TimeToSample(lTime))); 
+        return SampleToTime(NextKeyFrame(TimeToSample(lTime)));
     }
     LONG NextSample(LONG lPos)
     {
@@ -280,37 +340,37 @@ public:
     }
 
     // Creating Temporary Streams
-    HRESULT Create(LONG lParam1, LONG lParam2, CLSID * pclsidHandler)
+    HRESULT Create(LONG lParam1, LONG lParam2, CLSID *pclsidHandler)
     {
         return ::AVIStreamCreate(&m_pstream, lParam1, lParam2, pclsidHandler);
     }
-    HRESULT MakeCompressedStream(PAVISTREAM * ppsCompressed, AVICOMPRESSOPTIONS * lpOptions, CLSID * pclsidHandler)
+    HRESULT MakeCompressedStream(PAVISTREAM *ppsCompressed, AVICOMPRESSOPTIONS *lpOptions, CLSID *pclsidHandler)
     {
         return ::AVIMakeCompressedStream(ppsCompressed, m_pstream, lpOptions, pclsidHandler);
     }
 
     // Editing AVI Streams
-    HRESULT CreateEditableStream(PAVISTREAM * ppsEditable)
+    HRESULT CreateEditableStream(PAVISTREAM *ppsEditable)
     {
         return ::CreateEditableStream(ppsEditable, m_pstream);
     }
-    HRESULT EditStreamCut(LONG * plStart, LONG * plLength, PAVISTREAM * ppResult)
+    HRESULT EditStreamCut(LONG *plStart, LONG *plLength, PAVISTREAM *ppResult)
     {
         return ::EditStreamCut(m_pstream, plStart, plLength, ppResult);
     }
-    HRESULT EditStreamCopy(LONG * plStart, LONG * plLength, PAVISTREAM * ppResult)
+    HRESULT EditStreamCopy(LONG *plStart, LONG *plLength, PAVISTREAM *ppResult)
     {
         return ::EditStreamCopy(m_pstream, plStart, plLength, ppResult);
     }
-    HRESULT EditStreamPaste(LONG * plPos, LONG * plLength, PAVISTREAM pstream, LONG lStart, LONG lLength)
+    HRESULT EditStreamPaste(LONG *plPos, LONG *plLength, PAVISTREAM pstream, LONG lStart, LONG lLength)
     {
         return ::EditStreamPaste(m_pstream, plPos, plLength, pstream, lStart, lLength);
     }
-    HRESULT EditStreamClone(PAVISTREAM * ppResult)
+    HRESULT EditStreamClone(PAVISTREAM *ppResult)
     {
         return ::EditStreamClone(m_pstream, ppResult);
     }
-    HRESULT EditStreamSetInfo(AVISTREAMINFO * lpInfo, LONG cbInfo)
+    HRESULT EditStreamSetInfo(AVISTREAMINFO *lpInfo, LONG cbInfo)
     {
         return ::EditStreamSetInfo(m_pstream, lpInfo, cbInfo);
     }
@@ -328,7 +388,10 @@ public:
     CAVIFile();
     ~CAVIFile();
 
-    operator PAVIFILE()        {return m_pfile;}
+    operator PAVIFILE()
+    {
+        return m_pfile;
+    }
 
 private:
     PAVIFILE m_pfile;
@@ -340,9 +403,15 @@ public:
     {
         return ::AVIFileOpen(&m_pfile, szFile, uMode, lpHandler);
     }
-    ULONG AddRef()    {return (m_pfile) ? ::AVIFileAddRef(m_pfile) : 0UL;}
-    ULONG Release()    {return (m_pfile) ? ::AVIFileRelease(m_pfile) : 0UL;}
-    
+    ULONG AddRef()
+    {
+        return (m_pfile) ? ::AVIFileAddRef(m_pfile) : 0UL;
+    }
+    ULONG Release()
+    {
+        return (m_pfile) ? ::AVIFileRelease(m_pfile) : 0UL;
+    }
+
     // '_' to avoid macro substitution
     // n.b. This appears to be obsolete on Vista
     BOOL GetOpenFileName_Preview(LPOPENFILENAME lpofn)
@@ -351,11 +420,11 @@ public:
     }
 
     // Reading from a File
-    HRESULT Info(AVIFILEINFO * pfi, LONG lSize)
+    HRESULT Info(AVIFILEINFO *pfi, LONG lSize)
     {
         return ::AVIFileInfo(m_pfile, pfi, lSize);
     }
-    HRESULT ReadData(DWORD ckid, LPVOID lpData, LONG * lpcbData)
+    HRESULT ReadData(DWORD ckid, LPVOID lpData, LONG *lpcbData)
     {
         return ::AVIFileReadData(m_pfile, ckid, lpData, lpcbData);
     }
@@ -377,13 +446,13 @@ public:
     }
 
     // Opening and Closing Streams
-    HRESULT GetStream(PAVISTREAM * ppavi, FOURCC fccType = streamtypeVIDEO, LONG lParam = 0L)
+    HRESULT GetStream(PAVISTREAM *ppavi, FOURCC fccType = streamtypeVIDEO, LONG lParam = 0L)
     {
         return ::AVIFileGetStream(m_pfile, ppavi, fccType, lParam);
     }
 
     // Writing Individual Streams
-    HRESULT CreateStream(PAVISTREAM * ppavi, AVISTREAMINFO * psi)
+    HRESULT CreateStream(PAVISTREAM *ppavi, AVISTREAMINFO *psi)
     {
         return ::AVIFileCreateStream(m_pfile, ppavi, psi);
     }
@@ -394,18 +463,19 @@ public:
 class CamAVIFile : public CAVIFile
 {
     CamAVIFile();
+
 public:
-    CamAVIFile(const sVideoOpts& rVideoOpts, const sAudioFormat& rAudioFormat);
+    CamAVIFile(const sVideoOpts &rVideoOpts, const sAudioFormat &rAudioFormat);
     ~CamAVIFile();
 
-    bool Merge(const CString& strVideoIn, const CString& strAudioIn, const CString& strAVIOut);
-    bool FadeOut(const CString& strAVIIn, const CString& strAVIOut);
+    bool Merge(const CString &strVideoIn, const CString &strAudioIn, const CString &strAVIOut);
+    bool FadeOut(const CString &strAVIIn, const CString &strAVIOut);
 
 private:
     CString m_strAVIFile;
     sVideoOpts m_sVideoOpts;
     sAudioFormat m_sAudioFormat;
-    bool CompressionOpts(AVICOMPRESSOPTIONS& rOptions, CAVIStream& raviStream);
+    bool CompressionOpts(AVICOMPRESSOPTIONS &rOptions, CAVIStream &raviStream);
+
 public:
 };
-

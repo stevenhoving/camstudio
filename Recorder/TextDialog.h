@@ -16,38 +16,40 @@ static UINT WM_USER_INVALIDATEWND = ::RegisterWindowMessage(WM_USER_INVALIDATEWN
 
 class CTextDlg : public CDialog
 {
-// Construction
+
 public:
-    CTextDlg(CWnd* pParent = NULL);
-    
-    void PreModal(CString* inStr, LOGFONT *inFont, COLORREF* inRgb, CWnd* parent,int* horzalign);
+    CTextDlg(CWnd *pParent = NULL);
+
+    void PreModal(CString *inStr, LOGFONT *inFont, COLORREF *inRgb, CWnd *parent, int *horzalign);
     void InvalidateTransWnd();
     void ChooseScriptFont();
 
-    CString* displayStr;
-    LOGFONT* logFont;
-    COLORREF* colorrgb;
-    CWnd* myparent;
-    int* myhorzalign;
+    CString *displayStr;
+    LOGFONT *logFont;
+    COLORREF *colorrgb;
+    CWnd *myparent;
+    int *myhorzalign;
     CFont tempFont;
     int mycharset;
 
-// Dialog Data
+    // Dialog Data
     //{{AFX_DATA(CTextDlg)
-    enum { IDD = IDD_TEXTDIALOG };
-        // NOTE: the ClassWizard will add data members here
+    enum
+    {
+        IDD = IDD_TEXTDIALOG
+    };
+    // NOTE: the ClassWizard will add data members here
     //}}AFX_DATA
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CTextDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
-
     // Generated message map functions
     //{{AFX_MSG(CTextDlg)
     virtual void OnOK();
@@ -76,7 +78,7 @@ protected:
     afx_msg void OnScriptSymbol();
     afx_msg void OnScriptThai();
     afx_msg void OnScriptTurkish();
-    afx_msg void OnKillFocus(CWnd* pNewWnd);
+    afx_msg void OnKillFocus(CWnd *pNewWnd);
     //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 private:
@@ -85,6 +87,7 @@ private:
     CButton m_ctrlButtonJustifyRight;
     CEdit m_ctrlEditText;
     CButton m_ctrlButtonLanguage;
+
 public:
     afx_msg void OnBnClickedLangEnc();
 };
@@ -93,4 +96,3 @@ public:
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
 #endif // !defined(AFX_TEXTDIALOG_H__63374646_A843_482E_998F_8DD0E32477E3__INCLUDED_)
-

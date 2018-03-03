@@ -1,6 +1,5 @@
 #pragma once
 
-
 // ProgressDlg dialog
 
 class CProgressDlg : public CDialogEx
@@ -8,33 +7,36 @@ class CProgressDlg : public CDialogEx
     DECLARE_DYNAMIC(CProgressDlg)
 
 public:
-    CProgressDlg(CWnd* pParent = NULL);
+    CProgressDlg(CWnd *pParent = NULL);
     virtual ~CProgressDlg();
 
-    BOOL Create(CWnd *pParent=NULL);
+    BOOL Create(CWnd *pParent = NULL);
 
     // Checking for Cancel button
     BOOL CheckCancelButton();
     // Progress Dialog manipulation
-    void SetRange(short nLower,short nUpper);
-    int  SetStep(short nStep);
-    int  SetPos(int nPos);
-    int  OffsetPos(int nPos);
-    int  StepIt();
+    void SetRange(short nLower, short nUpper);
+    int SetStep(short nStep);
+    int SetPos(int nPos);
+    int OffsetPos(int nPos);
+    int StepIt();
     short RealMax();
     short FakeMax();
     short MinSecProgress();
     short MaxSecProgress();
     short MinProg();
     short MaxProg();
-// Dialog Data
-    enum { IDD = IDD_CONV_DIALOG };
-    CProgressCtrl    m_Progress;
+    // Dialog Data
+    enum
+    {
+        IDD = IDD_CONV_DIALOG
+    };
+    CProgressCtrl m_Progress;
 
     virtual BOOL DestroyWindow();
 
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
 
     UINT m_nCaptionID;
     short m_nLower;
@@ -51,7 +53,7 @@ protected:
     void ReEnableParent();
 
     virtual void OnCancel();
-    virtual void OnOK() {};
+    virtual void OnOK(){};
     void UpdatePercent(int nCurrent);
     void PumpMessages();
 

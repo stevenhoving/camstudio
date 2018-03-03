@@ -11,28 +11,30 @@
 
 class AudioFormat : public CDialog
 {
-// Construction
-public:
-    AudioFormat(CWnd* pParent = NULL);
-    void UpdateLocalCompressFormatInterface();
-    void UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPWAVEFORMATEX  curr_sel_pwfx);
 
-// Dialog Data
+public:
+    AudioFormat(CWnd *pParent = NULL);
+    void UpdateLocalCompressFormatInterface();
+    void UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPWAVEFORMATEX curr_sel_pwfx);
+
+    // Dialog Data
     //{{AFX_DATA(AudioFormat)
-    enum { IDD = IDD_AUDIODIALOG };
-        // NOTE: the ClassWizard will add data members here
+    enum
+    {
+        IDD = IDD_AUDIODIALOG
+    };
+    // NOTE: the ClassWizard will add data members here
     //}}AFX_DATA
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(AudioFormat)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
-
     // Generated message map functions
     //{{AFX_MSG(AudioFormat)
     virtual void OnOK();

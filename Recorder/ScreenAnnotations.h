@@ -16,34 +16,35 @@
 
 class CScreenAnnotationsDlg : public CDialog
 {
-// Construction
-public:
-    CScreenAnnotationsDlg(CWnd* pParent = NULL);
-    
 
-// Dialog Data
+public:
+    CScreenAnnotationsDlg(CWnd *pParent = NULL);
+
+    // Dialog Data
     //{{AFX_DATA(CScreenAnnotationsDlg)
-    enum { IDD = IDD_SCREENANNOTATIONS2 };
-        // NOTE: the ClassWizard will add data members here
+    enum
+    {
+        IDD = IDD_SCREENANNOTATIONS2
+    };
+    // NOTE: the ClassWizard will add data members here
     //}}AFX_DATA
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CScreenAnnotationsDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
-
     // Generated message map functions
     //{{AFX_MSG(CScreenAnnotationsDlg)
     virtual void OnOK();
     virtual BOOL OnInitDialog();
-    afx_msg void OnBegindragList1(NMHDR* pNMHDR, LRESULT* pResult);
-    afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
-    afx_msg void OnRclickList1(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnBegindragList1(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnContextMenu(CWnd *pWnd, CPoint point);
+    afx_msg void OnRclickList1(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnEditobjNewobject();
     afx_msg void OnEditobjEditimage();
     afx_msg void OnEditobjEdittext();
@@ -54,13 +55,13 @@ protected:
     afx_msg void OnEditobjTestedit();
     afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
     virtual void OnCancel();
-    afx_msg void OnEndlabeleditList1(NMHDR* pNMHDR, LRESULT* pResult);
-    afx_msg void OnDblclkList1(NMHDR* pNMHDR, LRESULT* pResult);
-    afx_msg void OnKeydownList1(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnEndlabeleditList1(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnDblclkList1(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnKeydownList1(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnDestroy();
     afx_msg void OnMouseMove(UINT nFlags, CPoint point);
     afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-    afx_msg void OnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnEditlayoutSavelayout();
     afx_msg void OnEditlayoutOpenlayout();
     afx_msg void OnEditlayoutCloseallobjects();
@@ -85,7 +86,7 @@ protected:
     afx_msg void OnHelpShapetopicsResizingshapes();
     afx_msg void OnHelpLayouts();
     afx_msg void OnAnnSavelayout();
-    afx_msg void OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu);
+    afx_msg void OnInitMenuPopup(CMenu *pPopupMenu, UINT nIndex, BOOL bSysMenu);
     afx_msg void OnLibraryOpenshapelibrary();
     afx_msg void OnLibrarySaveshapelibrary();
     afx_msg void OnLibraryNewshapelibrary();
@@ -111,12 +112,13 @@ public:
     void SaveLayoutNew();
     int GetLayoutListSelection();
     void InstantiateLayout(int nItem, int makeselect);
-    
+
     void SaveShapeNew(CTransparentWnd *newWnd);
     void SaveShapeReplace(CTransparentWnd *newWnd);
     void RefreshShapeList();
 
     void CloseAllWindows(int wantDelete);
+
 private:
     bool m_bEditingLabelOn;
     HCURSOR m_hCursorDrag;
@@ -124,24 +126,24 @@ private:
     CListCtrl m_ctrlList;
     CTabCtrl m_ctrlTab;
 
-    CTransparentWnd* LocateWndFromItem(int nItem);
-    CTransparentWnd* LocateWndFromShapeList();
+    CTransparentWnd *LocateWndFromItem(int nItem);
+    CTransparentWnd *LocateWndFromShapeList();
     void InstantiateWnd(int x, int y);
 
     void TabSelectShapeMode(int updateTab);
     void TabSelectLayoutMode(int updateTab);
     void UpdateTabCtrl(int sel);
 
-    CLayoutList* LocateLayoutFromItem(int nItem);
+    CLayoutList *LocateLayoutFromItem(int nItem);
     void RefreshLayoutList();
     void InstantiateLayout();
 
-    BOOL Openlink (CString);
-    BOOL OpenUsingShellExecute (CString);
-    BOOL OpenUsingRegisteredClass (CString);
+    BOOL Openlink(CString);
+    BOOL OpenUsingShellExecute(CString);
+    BOOL OpenUsingRegisteredClass(CString);
 
     void MoveItem(int direction);
-    void AdjustLayoutName(CString& layoutName);
+    void AdjustLayoutName(CString &layoutName);
 };
 
 //{{AFX_INSERT_LOCATION}}
@@ -150,4 +152,3 @@ private:
 extern bool AreWindowsEdited();
 
 #endif // !defined(AFX_SCREENANNOTATIONS_H__BD963A1F_33E6_424C_AEC5_4A3A78700C29__INCLUDED_)
-

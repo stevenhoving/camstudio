@@ -4,33 +4,34 @@
 #if !defined(AFX_KEYSHORTCUTS_H__7D91F35B_8385_4EBB_96CA_AEFB403E2121__INCLUDED_)
 #define AFX_KEYSHORTCUTS_H__7D91F35B_8385_4EBB_96CA_AEFB403E2121__INCLUDED_
 
-
 #pragma once
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CKeyshortcutsDlg dialog
 
 class CKeyshortcutsDlg : public CDialog
 {
-// Construction
-public:
-    CKeyshortcutsDlg(CWnd* pParent = NULL);
 
-// Dialog Data
+public:
+    CKeyshortcutsDlg(CWnd *pParent = NULL);
+
+    // Dialog Data
     //{{AFX_DATA(CKeyshortcutsDlg)
-    enum { IDD = IDD_KEYSHORTCUTS };
-        // NOTE: the ClassWizard will add data members here
+    enum
+    {
+        IDD = IDD_KEYSHORTCUTS
+    };
+    // NOTE: the ClassWizard will add data members here
     //}}AFX_DATA
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CKeyshortcutsDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
     // Generated message map functions
     //{{AFX_MSG(CKeyshortcutsDlg)
@@ -43,7 +44,7 @@ private:
     int GetIndex(UINT keyShortCut);
     UINT GetCode(size_t index);
 
-    std::vector <UINT> m_vKeyCode;
+    std::vector<UINT> m_vKeyCode;
     CButton m_ctrlButtonRecordCTRL;
     CButton m_ctrlButtonRecordALT;
     CButton m_ctrlButtonRecordSHFT;

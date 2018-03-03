@@ -9,9 +9,7 @@
 #if !defined(AFX_PICTURE_H__COPYFREE_BY_YOVAV_GAD__SOURCES_AT_SUPERMAIN_DOT_COM__INCLUDED_)
 #define AFX_PICTURE_H__COPYFREE_BY_YOVAV_GAD__SOURCES_AT_SUPERMAIN_DOT_COM__INCLUDED_
 
-
 #pragma once
-
 
 /////////////////////////////////////////////////////////////////////////////
 // DEPRECEATED: This class should be replaced by the CXImage library classes
@@ -22,10 +20,10 @@ public:
     CPicture();
     virtual ~CPicture();
 
-    BOOL Load(const CString& sFilePathName);
+    BOOL Load(const CString &sFilePathName);
     BOOL LoadFromFile(FILE *fptr);
     BOOL SaveToFile(FILE *fptr);
-    BOOL CopyToPicture(CPicture *dstPic, const CString& exchangeFile);
+    BOOL CopyToPicture(CPicture *dstPic, const CString &exchangeFile);
 
     IPicture *IPicturePtr()
     {
@@ -44,7 +42,7 @@ protected:
     void FreePictureData();
     BOOL Load(UINT ResourceName, LPCTSTR ResourceType);
     BOOL LoadPictureData(BYTE *pBuffer, int nSize);
-    BOOL SaveAsBitmap(const CString& sFilePathName);
+    BOOL SaveAsBitmap(const CString &sFilePathName);
     BOOL Show(CDC *pDC, CPoint LeftTop, CPoint WidthHeight, int MagnifyX, int MagnifyY);
     BOOL Show(CDC *pDC, CRect DrawRect);
     BOOL ShowBitmapResource(CDC *pDC, int BMPResource, CPoint LeftTop);

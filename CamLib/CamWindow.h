@@ -7,7 +7,7 @@
 
 // CamWindow.cpp
 // Window
-void SetTitleBar(const CString& title);
+void SetTitleBar(const CString &title);
 RECT FrameWindow(HWND hWnd, int maxxScreen, int maxyScreen, RECT rcClip);
 
 #endif // CAMWINDOW_H

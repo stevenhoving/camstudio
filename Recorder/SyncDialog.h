@@ -12,29 +12,31 @@
 
 class CSyncDlg : public CDialog
 {
-// Construction
-    CSyncDlg(CWnd* pParent = NULL); //  not implemeted
-public:
-    CSyncDlg(int iType, int iShift, CWnd* pParent = NULL);
 
-// Dialog Data
+    CSyncDlg(CWnd *pParent = NULL); //  not implemeted
+public:
+    CSyncDlg(int iType, int iShift, CWnd *pParent = NULL);
+
+    // Dialog Data
     //{{AFX_DATA(CSyncDlg)
-    enum { IDD = IDD_SYNCHRONIZATION };
+    enum
+    {
+        IDD = IDD_SYNCHRONIZATION
+    };
     int m_iTimeShift;
     int m_iShiftType;
-        // NOTE: the ClassWizard will add data members here
+    // NOTE: the ClassWizard will add data members here
     //}}AFX_DATA
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CSyncDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
-
     // Generated message map functions
     //{{AFX_MSG(CSyncDlg)
     virtual BOOL OnInitDialog();

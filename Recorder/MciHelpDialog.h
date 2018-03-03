@@ -12,33 +12,34 @@
 
 class CMciHelpDialog : public CDialog
 {
-// Construction
+    // Construction
 public:
-	CMciHelpDialog(CWnd* pParent = NULL);   // standard constructor
+    CMciHelpDialog(CWnd *pParent = NULL); // standard constructor
 
-// Dialog Data
-	//{{AFX_DATA(CMciHelpDialog)
-	enum { IDD = IDD_HELPMCI };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+    // Dialog Data
+    //{{AFX_DATA(CMciHelpDialog)
+    enum
+    {
+        IDD = IDD_HELPMCI
+    };
+    // NOTE: the ClassWizard will add data members here
+    //}}AFX_DATA
 
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CMciHelpDialog)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
-
-// Implementation
+    // Overrides
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CMciHelpDialog)
 protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+                                                     //}}AFX_VIRTUAL
 
-	// Generated message map functions
-	//{{AFX_MSG(CMciHelpDialog)
-	virtual void OnOK();
-	virtual void OnCancel();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    // Implementation
+protected:
+    // Generated message map functions
+    //{{AFX_MSG(CMciHelpDialog)
+    virtual void OnOK();
+    virtual void OnCancel();
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

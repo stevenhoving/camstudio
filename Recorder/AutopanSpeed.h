@@ -13,31 +13,33 @@
 
 class CAutopanSpeedDlg : public CDialog
 {
-// Construction
-public:
-    CAutopanSpeedDlg(CWnd* pParent = NULL);
 
-// Dialog Data
+public:
+    CAutopanSpeedDlg(CWnd *pParent = NULL);
+
+    // Dialog Data
     //{{AFX_DATA(CAutopanSpeedDlg)
-    enum { IDD = IDD_AUTOPANSPEED };
-        // NOTE: the ClassWizard will add data members here
+    enum
+    {
+        IDD = IDD_AUTOPANSPEED
+    };
+    // NOTE: the ClassWizard will add data members here
     //}}AFX_DATA
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CAutopanSpeedDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
-
     // Generated message map functions
     //{{AFX_MSG(CAutopanSpeedDlg)
     virtual void OnOK();
     virtual BOOL OnInitDialog();
-    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar);
     //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 private:

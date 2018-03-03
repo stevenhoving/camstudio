@@ -15,26 +15,28 @@ class CFixedRegionDlg : public CDialog
 {
     DECLARE_DYNAMIC(CFixedRegionDlg)
 
-// Construction
-public:
-    CFixedRegionDlg(CWnd* pParent = NULL);
 
-// Dialog Data
+public:
+    CFixedRegionDlg(CWnd *pParent = NULL);
+
+    // Dialog Data
     //{{AFX_DATA(CFixedRegionDlg)
-    enum { IDD = IDD_FIXEDREGION };
-        // NOTE: the ClassWizard will add data members here
+    enum
+    {
+        IDD = IDD_FIXEDREGION
+    };
+    // NOTE: the ClassWizard will add data members here
     //}}AFX_DATA
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CFixedRegionDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
-
     // Generated message map functions
     //{{AFX_MSG(CFixedRegionDlg)
     virtual void OnOK();
@@ -42,8 +44,8 @@ protected:
     virtual BOOL OnInitDialog();
     afx_msg void OnFixedtopleft();
     //}}AFX_MSG
-    afx_msg LRESULT OnRegionUpdate (WPARAM wParam, LPARAM lParam);
-    afx_msg LRESULT OnDisplayChange (WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnRegionUpdate(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnDisplayChange(WPARAM wParam, LPARAM lParam);
     DECLARE_MESSAGE_MAP()
 private:
     CStatic m_ctrlStaticMsg;
@@ -53,7 +55,7 @@ private:
     CEdit m_ctrlEditPosY;
     CButton m_ctrlButtonMouseDrag;
     CButton m_ctrlButtonFixTopLeft;
-    //CButton m_ctrlButtonRoundDown;
+    // CButton m_ctrlButtonRoundDown;
     int m_iLeft;
     int m_iTop;
     int m_iWidth;
@@ -62,6 +64,7 @@ private:
     int m_nRNDHeight;
     void RoundDownWidth();
     void RoundDownHeight();
+
 public:
     afx_msg void OnEnChangeY();
     afx_msg void OnEnChangeHeight();

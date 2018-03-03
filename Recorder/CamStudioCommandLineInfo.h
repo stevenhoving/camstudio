@@ -15,12 +15,24 @@ public:
     CCamStudioCommandLineInfo();
     ~CCamStudioCommandLineInfo() override;
 
-    void ParseParam(const TCHAR* pszParam, BOOL bFlag, BOOL bLast) override;
+    void ParseParam(const TCHAR *pszParam, BOOL bFlag, BOOL bLast) override;
 
-    bool isHelp() const    {return m_bHelp;}
-    int CodecID() const    {return m_iCodecID;}
-    int Seconds() const    {return m_iSeconds;}
-    CString OutFile() const    {return m_csOutfile;}
+    bool isHelp() const
+    {
+        return m_bHelp;
+    }
+    int CodecID() const
+    {
+        return m_iCodecID;
+    }
+    int Seconds() const
+    {
+        return m_iSeconds;
+    }
+    CString OutFile() const
+    {
+        return m_csOutfile;
+    }
 
 private:
     bool m_bHelp;

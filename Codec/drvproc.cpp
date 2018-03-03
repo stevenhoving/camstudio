@@ -203,28 +203,14 @@ LRESULT PASCAL DriverProc(DWORD dwDriverID, HDRVR hDriver, UINT uiMessage, LPARA
 
             *********************************************************************/
 
-            /*
+#if 0
           case ICM_DRAW_BEGIN:
-              {
-                
-
-
-
                   Msg("\nDRAWBEGIN");
                   return ICERR_OK;
-
-              }
           case ICM_DRAW:
-              {
-                
-
-
-
                   Msg("\nDRAW");
                   return ICERR_OK;
-
-              }
-              */
+#endif
 
         case ICM_DECOMPRESS_QUERY:
             return pi->DecompressQuery((LPBITMAPINFOHEADER)lParam1, (LPBITMAPINFOHEADER)lParam2);

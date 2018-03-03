@@ -6,7 +6,8 @@
 #endif
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif // __cplusplus
 
 #ifdef _COMPILING_44E531B1_14D3_11d5_A025_006067718D00
@@ -15,14 +16,13 @@ extern "C" {
 #define LIBSPEC __declspec(dllimport)
 #endif // _COMPILING_44E531B1_14D3_11d5_A025_006067718D00
 
-	LIBSPEC BOOL InstallMyKeyHook(HWND hWnd, UINT msg);
-	LIBSPEC BOOL UninstallMyKeyHook(HWND hWnd);
+    LIBSPEC BOOL InstallMyKeyHook(HWND hWnd, UINT msg);
+    LIBSPEC BOOL UninstallMyKeyHook(HWND hWnd);
 
 #undef LIBSPEC
 #ifdef __cplusplus
 }
 #endif // __cplusplus
-
 
 #define WM_USER_KEYSTART_MSG "WM_USER_KEYSTART_MSG"
 
@@ -33,4 +33,3 @@ extern "C" {
 #endif
 
 #endif // _DEFINED_44E531B1_14D3_11d5_A025_006067718D00
-

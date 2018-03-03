@@ -14,39 +14,45 @@
 
 class CVideoOptionsDlg : public CDialog
 {
-// Construction
-    CVideoOptionsDlg(CWnd* pParent = NULL);
-public:
-    CVideoOptionsDlg(const sVideoOpts& cOpts, CWnd* pParent = NULL);
 
-    const sVideoOpts& Opts() const    {return m_cOpts;}
+    CVideoOptionsDlg(CWnd *pParent = NULL);
+
+public:
+    CVideoOptionsDlg(const sVideoOpts &cOpts, CWnd *pParent = NULL);
+
+    const sVideoOpts &Opts() const
+    {
+        return m_cOpts;
+    }
 
     void RefreshCompressorButtons();
     void RefreshAutoOptions();
     void UpdateAdjustSliderVal();
 
-    void DDV_KeyFrameInterval(CDataExchange* pDX, int value, int minVal, int maxVal);
-    void DDV_CaptureInterval(CDataExchange* pDX, int value, int minVal, int maxVal);
-    void DDV_PlaybackRate(CDataExchange* pDX, int value, int minVal, int maxVal);
+    void DDV_KeyFrameInterval(CDataExchange *pDX, int value, int minVal, int maxVal);
+    void DDV_CaptureInterval(CDataExchange *pDX, int value, int minVal, int maxVal);
+    void DDV_PlaybackRate(CDataExchange *pDX, int value, int minVal, int maxVal);
 
-// Dialog Data
+    // Dialog Data
     //{{AFX_DATA(CVideoOptionsDlg)
-    enum { IDD = IDD_VIDEOOPTIONS };
+    enum
+    {
+        IDD = IDD_VIDEOOPTIONS
+    };
     //}}AFX_DATA
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CVideoOptionsDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
-
     // Generated message map functions
     //{{AFX_MSG(CVideoOptionsDlg)
-    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar);
     virtual void OnOK();
     virtual BOOL OnInitDialog();
     afx_msg void OnAbout();
@@ -72,7 +78,7 @@ private:
     CButton m_ctrlButtonAbout;
     CButton m_ctrlButtonConfigure;
     CButton m_ctrlButtonInfo;
-    CBitmap m_bInfo    ;
+    CBitmap m_bInfo;
     CButton m_ctrlButtonRoundDown;
     int m_iQuality;
     int m_iKeyFrameInterval;
@@ -81,16 +87,17 @@ private:
     int m_iAdjust;
     int m_iStaticQuality;
     int m_iCurrentSliderPos;
-    //int m_arrCaptureRate
-    //int m_arrPlaybackRate[2] = {1,3};
+    // int m_arrCaptureRate
+    // int m_arrPlaybackRate[2] = {1,3};
     int LoadICList();
-    void AutoSetRate(int val, int& framerate, int& delayms);
-    void AutoSetRateWithLock(int val, int& framerate, int& delayms);
+    void AutoSetRate(int val, int &framerate, int &delayms);
+    void AutoSetRateWithLock(int val, int &framerate, int &delayms);
     void AdjustSliderRange();
     int CurrentLockPosition();
     int CurrentAutoAdjustPosition();
     void InitAutoAdjustArray();
     void GetCurrentSliderPos();
+
 public:
     afx_msg void OnBnClickedSupportrounddown();
     afx_msg void OnBnClickedOk();

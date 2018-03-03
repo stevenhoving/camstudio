@@ -4,9 +4,7 @@
 #if !defined(AFX_EDITIMAGE_H__E8731569_888C_480B_95E7_4CA727CD9207__INCLUDED_)
 #define AFX_EDITIMAGE_H__E8731569_888C_480B_95E7_4CA727CD9207__INCLUDED_
 
-
 #pragma once
-
 
 #include "TransparentWnd.h"
 
@@ -15,29 +13,31 @@
 
 class CEditImageDlg : public CDialog
 {
-// Construction
+
 public:
-    CEditImageDlg(CWnd* pParent = NULL);
+    CEditImageDlg(CWnd *pParent = NULL);
 
     void UpdateGUI();
-    void PreModal(CTransparentWnd* transWnd);
+    void PreModal(CTransparentWnd *transWnd);
 
-// Dialog Data
+    // Dialog Data
     //{{AFX_DATA(CEditImageDlg)
-    enum { IDD = IDD_EDITIMAGE };
-        // NOTE: the ClassWizard will add data members here
+    enum
+    {
+        IDD = IDD_EDITIMAGE
+    };
+    // NOTE: the ClassWizard will add data members here
     //}}AFX_DATA
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CEditImageDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
-
     // Generated message map functions
     //{{AFX_MSG(CEditImageDlg)
     virtual BOOL OnInitDialog();
@@ -57,7 +57,7 @@ protected:
     //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 private:
-    CTransparentWnd* m_transWnd;
+    CTransparentWnd *m_transWnd;
     int m_dialogInitialized;
     int pickingColor;
 

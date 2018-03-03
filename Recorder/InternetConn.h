@@ -5,8 +5,8 @@ class CInternetConn
 public:
     CInternetConn(void);
     ~CInternetConn(void);
-    BOOL ReadFile(CString strUrl , CString &strFileContent);
-protected:
-    CInternetSession* m_pSharedInternetSession;    
-};
+    BOOL ReadFile(CString strUrl, CString &strFileContent);
 
+protected:
+    CInternetSession *m_pSharedInternetSession;
+};

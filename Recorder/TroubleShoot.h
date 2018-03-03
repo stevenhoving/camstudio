@@ -1,9 +1,7 @@
 #if !defined(AFX_TROUBLESHOOT_H__4E9048F9_4108_4B64_B5DF_04B0ECDAE07B__INCLUDED_)
 #define AFX_TROUBLESHOOT_H__4E9048F9_4108_4B64_B5DF_04B0ECDAE07B__INCLUDED_
 
-
 #pragma once
-
 
 // CTroubleShootDlg.h : header file
 //
@@ -13,26 +11,28 @@
 
 class CTroubleShootDlg : public CDialog
 {
-// Construction
-public:
-    CTroubleShootDlg(CWnd* pParent = NULL);
 
-// Dialog Data
+public:
+    CTroubleShootDlg(CWnd *pParent = NULL);
+
+    // Dialog Data
     //{{AFX_DATA(CTroubleShootDlg)
-    enum { IDD = IDD_TROUBLESHOOT };
-        // NOTE: the ClassWizard will add data members here
+    enum
+    {
+        IDD = IDD_TROUBLESHOOT
+    };
+    // NOTE: the ClassWizard will add data members here
     //}}AFX_DATA
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CTroubleShootDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
-
     // Generated message map functions
     //{{AFX_MSG(CTroubleShootDlg)
     virtual void OnOK();

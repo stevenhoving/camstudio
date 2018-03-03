@@ -4,38 +4,38 @@
 #if !defined(AFX_AUTOSEARCHDIALOG_H__CAEFF236_0E36_49BC_8B1A_0F2D903EDE9D__INCLUDED_)
 #define AFX_AUTOSEARCHDIALOG_H__CAEFF236_0E36_49BC_8B1A_0F2D903EDE9D__INCLUDED_
 
-
 #pragma once
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CAutoSearchDlg dialog
 
 class CAutoSearchDlg : public CDialog
 {
-// Construction
+
 public:
-    CAutoSearchDlg(CWnd* pParent = NULL);
+    CAutoSearchDlg(CWnd *pParent = NULL);
     void SetVarText(CString textstr);
     void SetVarTextLine2(CString textstr);
     void SetButtonEnable(BOOL enable);
 
-// Dialog Data
+    // Dialog Data
     //{{AFX_DATA(CAutoSearchDlg)
-    enum { IDD = IDD_AUTOSEARCH };
-        // NOTE: the ClassWizard will add data members here
+    enum
+    {
+        IDD = IDD_AUTOSEARCH
+    };
+    // NOTE: the ClassWizard will add data members here
     //}}AFX_DATA
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CAutoSearchDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
-
     // Generated message map functions
     //{{AFX_MSG(CAutoSearchDlg)
     afx_msg void OnCloseDialog();
@@ -52,4 +52,3 @@ private:
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
 #endif // !defined(AFX_AUTOSEARCHDIALOG_H__CAEFF236_0E36_49BC_8B1A_0F2D903EDE9D__INCLUDED_)
-

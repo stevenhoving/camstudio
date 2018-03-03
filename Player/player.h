@@ -1,13 +1,13 @@
 // Constants
-#define BUFFER_LENGTH    256
-#define WM_USER_PLAY    0x00401
+#define BUFFER_LENGTH 256
+#define WM_USER_PLAY 0x00401
 
 // File menu items
-#define IDM_OPEN   1
-#define IDM_CLOSE  2
-#define IDM_EXIT   3
-#define IDM_ABOUT  4
-#define IDD_ABOUT  101
+#define IDM_OPEN 1
+#define IDM_CLOSE 2
+#define IDM_EXIT 3
+#define IDM_ABOUT 4
+#define IDD_ABOUT 101
 
 // Function declarations
 long FAR PASCAL WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -21,4 +21,6 @@ SIZE GetPrimaryScreenSize();
 POINT GetCenterCoords(int width, int height);
 
 // Enable Windows XP visual styles
-#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+#pragma comment(                                                                                                       \
+    linker,                                                                                                            \
+    "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")

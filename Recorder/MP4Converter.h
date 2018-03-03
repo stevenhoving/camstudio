@@ -11,16 +11,13 @@ class CMP4Converter
 public:
     CMP4Converter(void);
     ~CMP4Converter(void);
-    bool ConvertAVItoMP4(
-        const CString& sInputAVI, 
-        const CString& sOutputMP4);
+    bool ConvertAVItoMP4(const CString &sInputAVI, const CString &sOutputMP4);
     bool Success();
     bool Converting();
     void CancelConversion();
     ConversionResult Status();
 
 private:
-
     static DWORD WINAPI ThreadProc(LPVOID lpParam);
     typedef struct ConverterData
     {
@@ -34,8 +31,7 @@ private:
 
     PCONVERTERDATA m_pData;
     HANDLE m_hThread;
-    //static bool m_bSuccess;
+    // static bool m_bSuccess;
     bool m_bConverting;
     static ConversionResult m_ConvRes;
 };
-

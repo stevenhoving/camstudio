@@ -15,28 +15,33 @@
 
 class CCursorOptionsDlg : public CDialog
 {
-// Construction
-    CCursorOptionsDlg(CWnd* pParent = NULL); // disallowed
+
+    CCursorOptionsDlg(CWnd *pParent = NULL); // disallowed
 public:
-    CCursorOptionsDlg(const CCamCursor& cCursor, CWnd* pParent = NULL);
+    CCursorOptionsDlg(const CCamCursor &cCursor, CWnd *pParent = NULL);
 
-    const CCamCursor& GetOptions() const    {return m_cCursor;}
+    const CCamCursor &GetOptions() const
+    {
+        return m_cCursor;
+    }
 
-// Dialog Data
+    // Dialog Data
     //{{AFX_DATA(CCursorOptionsDlg)
-    enum { IDD = IDD_CURSOROPTIONS };
+    enum
+    {
+        IDD = IDD_CURSOROPTIONS
+    };
     //}}AFX_DATA
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CCursorOptionsDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
-
     // Generated message map functions
     //{{AFX_MSG(CCursorOptionsDlg)
     afx_msg void OnHideCursor();
@@ -51,7 +56,7 @@ protected:
     afx_msg void OnSelchangeHighlightshape();
     afx_msg void OnHighlightcolor();
     afx_msg void OnHighlightcursor();
-    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar);
     afx_msg void OnPaint();
     afx_msg void OnBnClickedOk();
     afx_msg void OnHighlightColorLeft();
@@ -71,7 +76,7 @@ private:
     void RefreshHighlight();
     bool LoadStdCursors();
 
-    CFileDialog * m_pIconFileDlg;
+    CFileDialog *m_pIconFileDlg;
     bool m_bInitPaint;
     bool m_bSliding;
 

@@ -10,26 +10,29 @@ class CAdvProperty : public CPropertyPage
 {
     DECLARE_DYNCREATE(CAdvProperty)
 
-// Construction
+
 public:
     CAdvProperty();
     ~CAdvProperty();
 
-// Dialog Data
+    // Dialog Data
     //{{AFX_DATA(CAdvProperty)
-    enum { IDD = IDD_ADVPROP };
-        // NOTE - ClassWizard will add data members here.
-        //    DO NOT EDIT what you see in these blocks of generated code !
+    enum
+    {
+        IDD = IDD_ADVPROP
+    };
+    // NOTE - ClassWizard will add data members here.
+    //    DO NOT EDIT what you see in these blocks of generated code !
     //}}AFX_DATA
 
-// Overrides
+    // Overrides
     // ClassWizard generate virtual function overrides
     //{{AFX_VIRTUAL(CAdvProperty)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
     // Generated message map functions
     //{{AFX_MSG(CAdvProperty)

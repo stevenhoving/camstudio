@@ -1,9 +1,7 @@
 #if !defined(AFX_SLIDETOOLBAR)
 #define AFX_SLIDETOOLBAR
 
-
 #pragma once
-
 
 // SlideToolBar.h : header file
 //
@@ -12,27 +10,25 @@
 
 class CSlideToolBar : public CToolBar
 {
-// Construction
+
 public:
     CSlideToolBar();
 
-// Attributes
+    // Attributes
 public:
-
     CSliderCtrl m_wndSliderCtrl;
-    int    m_slidevalue;
+    int m_slidevalue;
 
-// Operations
+    // Operations
 public:
-
     void SetPositions();
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CSlideToolBar)
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 public:
     void AdjustTimeBar(CRect clientrect);
     void UpdateValues();
@@ -43,7 +39,7 @@ public:
 protected:
     //{{AFX_MSG(CSlideToolBar)
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar);
     //}}AFX_MSG
 
     DECLARE_MESSAGE_MAP()

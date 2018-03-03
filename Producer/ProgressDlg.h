@@ -9,38 +9,42 @@
 
 class CProgressDlg : public CDialog
 {
-// Construction / Destruction
+ / Destruction
 public:
     CProgressDlg(UINT nCaptionID = 0);
     ~CProgressDlg();
 
-    BOOL Create(CWnd *pParent=NULL);
+    BOOL Create(CWnd *pParent = NULL);
 
     // Checking for Cancel button
     BOOL CheckCancelButton();
     // Progress Dialog manipulation
-    void SetRange(int nLower,int nUpper);
-    int  SetStep(int nStep);
-    int  SetPos(int nPos);
-    int  OffsetPos(int nPos);
-    int  StepIt();
+    void SetRange(int nLower, int nUpper);
+    int SetStep(int nStep);
+    int SetPos(int nPos);
+    int OffsetPos(int nPos);
+    int StepIt();
 
-// Dialog Data
+    // Dialog Data
     //{{AFX_DATA(CProgressDlg)
-    enum { IDD = CG_IDD_PROGRESS };
-    CProgressCtrl    m_Progress;
+    enum
+    {
+        IDD = CG_IDD_PROGRESS
+    };
+    CProgressCtrl m_Progress;
     //}}AFX_DATA
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CProgressDlg)
-    public:
+public:
     virtual BOOL DestroyWindow();
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
     UINT m_nCaptionID;
     int m_nLower;
@@ -53,7 +57,7 @@ protected:
     void ReEnableParent();
 
     virtual void OnCancel();
-    virtual void OnOK() {};
+    virtual void OnOK(){};
     void UpdatePercent(int nCurrent);
     void PumpMessages();
 

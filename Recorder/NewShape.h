@@ -4,35 +4,35 @@
 #if !defined(AFX_NEWSHAPE_H__04B11E2E_DC5E_4AC3_B324_DE8A8B41C9BB__INCLUDED_)
 #define AFX_NEWSHAPE_H__04B11E2E_DC5E_4AC3_B324_DE8A8B41C9BB__INCLUDED_
 
-
 #pragma once
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CNewShapeDlg dialog
 
 class CNewShapeDlg : public CDialog
 {
-// Construction
-public:
-    CNewShapeDlg(CWnd* pParent = NULL);
 
-// Dialog Data
+public:
+    CNewShapeDlg(CWnd *pParent = NULL);
+
+    // Dialog Data
     //{{AFX_DATA(CNewShapeDlg)
-    enum { IDD = IDD_NEWSHAPE };
-        // NOTE: the ClassWizard will add data members here
+    enum
+    {
+        IDD = IDD_NEWSHAPE
+    };
+    // NOTE: the ClassWizard will add data members here
     //}}AFX_DATA
 
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CNewShapeDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
-
     // Generated message map functions
     //{{AFX_MSG(CNewShapeDlg)
     virtual BOOL OnInitDialog();

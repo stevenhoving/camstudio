@@ -1,20 +1,19 @@
 #if !defined(AFX_FRAMEGRABBER_H__8145B633_9700_11D3_B4B8_E9E5ECC8F23B__INCLUDED_)
 #define AFX_FRAMEGRABBER_H__8145B633_9700_11D3_B4B8_E9E5ECC8F23B__INCLUDED_
 
-
 #pragma once
 
 // FrameGrabber.h : header file
 //
 
 #if !defined(_INC_VFW)
-    #define    NODRAWDIB
-    #define    NOAVIFMT
-    #define    NOMMREG
-    #define    NOAVIFILE
-    #define    NOMCIWND
-    #define    NOMSACM
-    #include "vfw.h"
+#define NODRAWDIB
+#define NOAVIFMT
+#define NOMMREG
+#define NOAVIFILE
+#define NOMCIWND
+#define NOMSACM
+#include "vfw.h"
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -22,11 +21,11 @@
 
 class CFrameGrabber : public CWnd
 {
-// Construction
+
 public:
     CFrameGrabber();
 
-// Attributes
+    // Attributes
 public:
     LPBITMAPINFO GetDIB();
     LPBYTE GetImageBitsBuffer();
@@ -36,21 +35,20 @@ public:
 
     BOOL VideoFormatDialog();
     BOOL VideoSourceDialog();
-// Operations
+    // Operations
 public:
-
-// Overrides
+    // Overrides
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CFrameGrabber)
-    public:
+public:
     virtual BOOL Create(int x, int y, CWnd *pParentWnd);
     //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 public:
     ~CFrameGrabber() override;
 
-    //must be a public method (for use with callbac)
+    // must be a public method (for use with callbac)
     void SetImageData(LPVOID data);
 
     // Generated message map functions
@@ -59,10 +57,10 @@ protected:
     afx_msg void OnDestroy();
     //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
-    void    update_buffer_size();
-    LPVOID    imageData;
-    DWORD    dwLastCallback;
-    int        vfs;
+    void update_buffer_size();
+    LPVOID imageData;
+    DWORD dwLastCallback;
+    int vfs;
 };
 
 /////////////////////////////////////////////////////////////////////////////

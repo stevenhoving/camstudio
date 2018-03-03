@@ -4,9 +4,7 @@
 #if !defined(AFX_LAYOUTLIST_H__46FEA864_AA1F_4655_9676_0802D031935A__INCLUDED_)
 #define AFX_LAYOUTLIST_H__46FEA864_AA1F_4655_9676_0802D031935A__INCLUDED_
 
-
 #pragma once
-
 
 #include "TransparentWnd.h"
 
@@ -18,10 +16,9 @@ public:
 
     int uniqueID;
     CString layoutName;
-    CArray<CTransparentWnd *,CTransparentWnd *>* layoutArrayPtr;
+    CArray<CTransparentWnd *, CTransparentWnd *> *layoutArrayPtr;
     BOOL SaveLayoutToFile(FILE *fptr);
     BOOL LoadLayoutFromFile(FILE *fptr);
-
 };
 
 #endif // !defined(AFX_LAYOUTLIST_H__46FEA864_AA1F_4655_9676_0802D031935A__INCLUDED_)
