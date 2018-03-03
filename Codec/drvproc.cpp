@@ -94,9 +94,10 @@ extern void Msg(const char fmt[], ...);
  *   Defined separately for each message.
  *
  ***************************************************************************/
-LRESULT PASCAL DriverProc(DWORD dwDriverID, HDRVR hDriver, UINT uiMessage, LPARAM lParam1, LPARAM lParam2)
+LRESULT PASCAL DriverProc(DWORD_PTR dwDriverID, HDRVR hDriver, UINT uiMessage, LPARAM lParam1, LPARAM lParam2)
 {
-    auto *pi = (CodecInst *)static_cast<UINT>(dwDriverID);
+    // \note I know reinterpret_cast is as bad as a c style cast... anyone has a better solution?
+    auto *pi = reinterpret_cast<CodecInst*>(dwDriverID);
     switch (uiMessage)
     {
         case DRV_LOAD:
@@ -106,8 +107,11 @@ LRESULT PASCAL DriverProc(DWORD dwDriverID, HDRVR hDriver, UINT uiMessage, LPARA
             return static_cast<LRESULT>(1L);
 
         case DRV_OPEN:
+        {
             // GAAH! This used to return a pointer to 0xFFFF0000 when lParam==0!
-            return static_cast<LRESULT>(static_cast<DWORD>((UINT)Open((ICOPEN *)lParam2)));
+            const auto *codec = Open((ICOPEN *)lParam2);
+            return reinterpret_cast<LRESULT>(codec);
+        }
 
         case DRV_CLOSE:
             if (pi)
@@ -249,9 +253,8 @@ LRESULT PASCAL DriverProc(DWORD dwDriverID, HDRVR hDriver, UINT uiMessage, LPARA
     {
         return DefDriverProc(dwDriverID, hDriver, uiMessage, lParam1, lParam2);
     }
-    {
-        return ICERR_UNSUPPORTED;
-    }
+
+    return ICERR_UNSUPPORTED;
 }
 
 HMODULE hmoduleCamcodec = nullptr;

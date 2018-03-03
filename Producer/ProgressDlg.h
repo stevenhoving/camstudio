@@ -1,16 +1,16 @@
+#pragma once
+
 // ProgressDlg.h : header file
 // CG: This file was added by the Progress Dialog component
 
 /////////////////////////////////////////////////////////////////////////////
 // CProgressDlg dialog
 
-#ifndef __PROGRESSDLG_H__
-#define __PROGRESSDLG_H__
+
 
 class CProgressDlg : public CDialog
 {
- / Destruction
-public:
+ public:
     CProgressDlg(UINT nCaptionID = 0);
     ~CProgressDlg();
 
@@ -69,5 +69,3 @@ protected:
 public:
     afx_msg void OnBnClickedProgressCancel();
 };
-
-#endif // __PROGRESSDLG_H__
