@@ -110,7 +110,7 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedButtonImagePath()
 {
     const TCHAR *szFilter = TEXT("Bitmap Files (*.bmp)|*.bmp|GIF Files (*.gif)|*.gif|JPEG Files (*.jpg;*.jpeg)|*.jpg; "
                                  "*.jpeg|All Files (*.*)|*.*||");
-    CFileDialog dlg(TRUE, 0, m_image.text, OFN_HIDEREADONLY, szFilter);
+    CFileDialog dlg(TRUE, nullptr, m_image.text, OFN_HIDEREADONLY, szFilter);
     if (dlg.DoModal() == IDOK)
     {
         m_image.text = dlg.GetPathName();
@@ -209,10 +209,10 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedOk()
     }
 
     // Convert values that are defined by buttons again to bools or other values.
-    m_bXnoteRemoteControlMode = m_CheckBoxXnoteRemoteControlMode.GetCheck() ? true : false;
-    m_bXnoteDisplayCameraDelayMode = m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() ? true : false;
-    m_bXnoteDisplayCameraDelayDirection = m_CheckBoxXnoteDisplayCameraDelayDirection.GetCheck() ? true : false;
-    m_bXnoteRecordDurationLimitMode = m_CheckBoxXnoteRecordDurationLimitMode.GetCheck() ? true : false;
+    m_bXnoteRemoteControlMode = m_CheckBoxXnoteRemoteControlMode.GetCheck() != 0;
+    m_bXnoteDisplayCameraDelayMode = m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() != 0;
+    m_bXnoteDisplayCameraDelayDirection = m_CheckBoxXnoteDisplayCameraDelayDirection.GetCheck() != 0;
+    m_bXnoteRecordDurationLimitMode = m_CheckBoxXnoteRecordDurationLimitMode.GetCheck() != 0;
 
     Invalidate();
     OnOK();
@@ -220,8 +220,9 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedOk()
 
 int CAnnotationEffectsOptionsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-    if (CDialog::OnCreate(lpCreateStruct) == -1)
+    if (CDialog::OnCreate(lpCreateStruct) == -1) {
         return -1;
+}
 
     /* TODO: Is this the most appropiate place to put defaults? Probably not ...
      * Also, theres probably a better check than if the text is zero weather
@@ -271,8 +272,9 @@ bool CAnnotationEffectsOptionsDlg::IsStrftimeSafe(char *pbuffer)
         if (nxt != 'a' && nxt != 'A' && nxt != 'b' && nxt != 'B' && nxt != 'c' && nxt != 'd' && nxt != 'H' &&
             nxt != 'I' && nxt != 'j' && nxt != 'm' && nxt != 'M' && nxt != 'p' && nxt != 'S' && nxt != 'U' &&
             nxt != 'w' && nxt != 'W' && nxt != 'x' && nxt != 'X' && nxt != 'y' && nxt != 'Y' && nxt != 'Z' &&
-            nxt != '%')
+            nxt != '%') {
             return false;
+}
 
         pbuffer = ::strchr(++pbuffer, '%');
     }
@@ -307,8 +309,8 @@ void CAnnotationEffectsOptionsDlg::OnEnChangeFormatXnotepreview()
     GetDlgItem(IDC_EDIT_XNOTECAMERADELAYINMILLISEC)->GetWindowText(str);
     ULONG ul_DelayTimeInMilliSec = atol(str);
 
-    bool bDisplayCameraDelay = m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() ? true : false;
-    bool bDisplayCameraDelay2 = m_CheckBoxXnoteDisplayCameraDelayDirection.GetCheck() ? true : false;
+    bool bDisplayCameraDelay = m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() != 0;
+    bool bDisplayCameraDelay2 = m_CheckBoxXnoteDisplayCameraDelayDirection.GetCheck() != 0;
 
     // format (delay) hh:mm:ss.ttt"
     (void)CXnoteStopwatchFormat::FormatXnoteSampleString(cTmpBuff, ul_DelayTimeInMilliSec, bDisplayCameraDelay,

@@ -21,14 +21,14 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-typedef LRESULT(CALLBACK *FRAMECALLBACK)(HWND, LPVIDEOHDR);
+using FRAMECALLBACK = LRESULT (*)(HWND, LPVIDEOHDR) __attribute__((stdcall)))(HWND, LPVIDEOHDR);
 #define IMAGEWIDTH(lpd) ((LPBITMAPINFOHEADER)lpd)->biWidth
 #define IMAGEHEIGHT(lpd) ((LPBITMAPINFOHEADER)lpd)->biHeight
 #define IMAGEBITS(lpd) ((LPBITMAPINFOHEADER)lpd)->biBitCount
 
 LRESULT PASCAL _grabber_CallbackProc(HWND hWnd, LPVIDEOHDR lpVHdr);
 
-CFrameGrabber *theOnlyOneGrabber = NULL;
+CFrameGrabber *theOnlyOneGrabber = nullptr;
 
 /////////////////////////////////////////////////////////////////////////////
 // CFrameGrabber
@@ -36,7 +36,7 @@ CFrameGrabber *theOnlyOneGrabber = NULL;
 CFrameGrabber::CFrameGrabber()
 {
     dwLastCallback = NULL;
-    imageData = NULL;
+    imageData = nullptr;
     vfs = 0; // offset image buffer
 }
 
@@ -62,7 +62,9 @@ END_MESSAGE_MAP()
 BOOL CFrameGrabber::Create(int x, int y, CWnd *pParentWnd)
 {
     if (theOnlyOneGrabber)
+    {
         return FALSE;
+    }
 
     ASSERT(!GetSafeHwnd());
 
@@ -72,9 +74,11 @@ BOOL CFrameGrabber::Create(int x, int y, CWnd *pParentWnd)
     }
 
     HWND hWnd = capCreateCaptureWindow(_T("AviCap_FrameGrabber_lite"), WS_CHILD | WS_CLIPSIBLINGS, x, y, 160, 120,
-                                       pParentWnd ? pParentWnd->GetSafeHwnd() : NULL, 0xffff);
+                                       pParentWnd ? pParentWnd->GetSafeHwnd() : nullptr, 0xffff);
     if (!hWnd)
+    {
         return FALSE;
+    }
 
     // initial setup for capture
     if (!capDriverConnect(hWnd, DEFAULT_CAPTURE_DRIVER) || !capSetCallbackOnFrame(hWnd, _grabber_CallbackProc) ||
@@ -106,14 +110,16 @@ void CFrameGrabber::OnDestroy()
         capDriverDisconnect(GetSafeHwnd());
     }
     CWnd::OnDestroy();
-    theOnlyOneGrabber = NULL;
+    theOnlyOneGrabber = nullptr;
 }
 
 BOOL CFrameGrabber::VideoFormatDialog()
 {
     if (!GetSafeHwnd())
+    {
         return FALSE;
-    BOOL r = (BOOL)capDlgVideoFormat(GetSafeHwnd());
+    }
+    auto r = capDlgVideoFormat(GetSafeHwnd());
     update_buffer_size();
     return r;
 }
@@ -121,8 +127,10 @@ BOOL CFrameGrabber::VideoFormatDialog()
 BOOL CFrameGrabber::VideoSourceDialog()
 {
     if (!GetSafeHwnd())
+    {
         return FALSE;
-    BOOL r = (BOOL)capDlgVideoSource(GetSafeHwnd());
+    }
+    auto r = capDlgVideoSource(GetSafeHwnd());
     update_buffer_size();
     return r;
 }
@@ -130,37 +138,51 @@ BOOL CFrameGrabber::VideoSourceDialog()
 LPBITMAPINFO CFrameGrabber::GetDIB()
 {
     if (!imageData)
-        return NULL;
+    {
+        return nullptr;
+    }
     // get the new one of more then 20 ms passed
     if ((timeGetTime() - dwLastCallback) > 20)
+    {
         capGrabFrameNoStop(GetSafeHwnd());
-    return (LPBITMAPINFO)imageData;
+    }
+    return static_cast<LPBITMAPINFO>(imageData);
 }
 
 LPBYTE CFrameGrabber::GetImageBitsBuffer()
 {
     if (!imageData)
-        return NULL;
+    {
+        return nullptr;
+    }
     // get the new one of more then 20 ms passed
     if (20 < (timeGetTime() - dwLastCallback))
+    {
         capGrabFrameNoStop(GetSafeHwnd());
-    return ((LPBYTE)imageData) + vfs;
+    }
+    return (static_cast<LPBYTE>(imageData)) + vfs;
 }
 
 CSize CFrameGrabber::GetImageSize()
 {
     if (!imageData)
-        return CSize(0, 0);
-    else
+    {
+        return {0, 0};
+    }
+    {
         return CSize(IMAGEWIDTH(imageData), IMAGEHEIGHT(imageData));
+    }
 }
 
 DWORD CFrameGrabber::GetImageBitsResolution()
 {
     if (!imageData)
+    {
         return 0;
-    else
+    }
+    {
         return IMAGEBITS(imageData);
+    }
 }
 
 // this is internal use only!
@@ -171,13 +193,17 @@ void CFrameGrabber::SetImageData(LPVOID data)
 
     // do not call this method indirectly!
     if (!(validCallHint && imageData))
+    {
         return;
+    }
 
     ::CopyMemory(((LPBYTE)imageData) + vfs, data,
                  IMAGEWIDTH(imageData) * IMAGEHEIGHT(imageData) * IMAGEBITS(imageData) / 8);
     dwLastCallback = timeGetTime();
     if (IsWindowVisible())
-        InvalidateRect(NULL);
+    {
+        InvalidateRect(nullptr);
+    }
 }
 
 void CFrameGrabber::update_buffer_size()
@@ -192,17 +218,19 @@ void CFrameGrabber::update_buffer_size()
             GlobalFree(hg);
         }
         vfs = 0;
-        imageData = NULL;
+        imageData = nullptr;
         return;
     }
 
     DWORD lastBufferSize = 0;
     if (imageData)
+    {
         lastBufferSize = vfs + IMAGEWIDTH(imageData) * IMAGEHEIGHT(imageData) * IMAGEBITS(imageData) / 8;
+    }
 
     DWORD newBufferSize;
 
-    BITMAPINFO *lpBmpInfo = (BITMAPINFO *)(new char[vfs]);
+    auto *lpBmpInfo = reinterpret_cast<BITMAPINFO *>(new char[vfs]);
     ((LPBITMAPINFOHEADER)lpBmpInfo)->biSize = sizeof BITMAPINFOHEADER;
 
     if (!capGetVideoFormat(GetSafeHwnd(), lpBmpInfo, (WORD)vfs))
@@ -216,12 +244,12 @@ void CFrameGrabber::update_buffer_size()
             GlobalFree(hg);
         }
         vfs = 0;
-        imageData = NULL;
+        imageData = nullptr;
         return;
     }
 
     newBufferSize = vfs + IMAGEWIDTH(lpBmpInfo) * IMAGEHEIGHT(lpBmpInfo) * IMAGEBITS(lpBmpInfo) / 8;
-    SetWindowPos(NULL, 0, 0, IMAGEWIDTH(lpBmpInfo), IMAGEHEIGHT(lpBmpInfo), SWP_NOMOVE | SWP_NOZORDER);
+    SetWindowPos(nullptr, 0, 0, IMAGEWIDTH(lpBmpInfo), IMAGEHEIGHT(lpBmpInfo), SWP_NOMOVE | SWP_NOZORDER);
     if (newBufferSize > lastBufferSize)
     {
         if (imageData)

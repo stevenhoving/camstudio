@@ -15,7 +15,7 @@ class CBasicMessage : public CDialog
     DECLARE_DYNAMIC(CBasicMessage)
 
 public:
-    CBasicMessage(CWnd* pParent = NULL);   // standard constructor
+    CBasicMessage(CWnd* pParent = NULL);
     virtual ~CBasicMessage();
     void SetText(LPCTSTR lpString);
     void SetTitle(LPCTSTR lpString);

@@ -105,15 +105,16 @@ BOOL CALLBACK aviaudioOpenDevice(HWND hwnd, PAVISTREAM pavi)
     sdwSamplesPerSec = ((LPWAVEFORMAT)lpFormat)->nSamplesPerSec;
     sdwBytesPerSec = ((LPWAVEFORMAT)lpFormat)->nAvgBytesPerSec;
 
-    mmResult = waveOutOpen(&shWaveOut, (UINT)WAVE_MAPPER, (WAVEFORMATEX *)lpFormat, (DWORD_PTR)hwnd, 0L, CALLBACK_WINDOW);
+    mmResult =
+        waveOutOpen(&shWaveOut, (UINT)WAVE_MAPPER, (WAVEFORMATEX *)lpFormat, (DWORD_PTR)hwnd, 0L, CALLBACK_WINDOW);
 
     // Maybe we failed because someone is playing sound already.
     // Shut any sound off, and try once more before giving up.
     if (mmResult)
     {
         sndPlaySound(NULL, 0);
-        mmResult = waveOutOpen(&shWaveOut, (UINT)WAVE_MAPPER, (WAVEFORMATEX *)lpFormat, (DWORD_PTR)hwnd, 0L,
-                               CALLBACK_WINDOW);
+        mmResult =
+            waveOutOpen(&shWaveOut, (UINT)WAVE_MAPPER, (WAVEFORMATEX *)lpFormat, (DWORD_PTR)hwnd, 0L, CALLBACK_WINDOW);
     }
 
     if (mmResult != 0)

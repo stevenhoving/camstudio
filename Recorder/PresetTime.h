@@ -18,7 +18,7 @@ class CPresetTimeDlg : public CDialog
 {
 // Construction
 public:
-    CPresetTimeDlg(CWnd* pParent = NULL);   // standard constructor
+    CPresetTimeDlg(CWnd* pParent = NULL);
 
 // Dialog Data
     //{{AFX_DATA(CPresetTimeDlg)

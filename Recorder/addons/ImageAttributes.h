@@ -10,21 +10,21 @@
 
 struct ImageAttributes
 {
-    ImageAttributes(ePosition pos = TOP_LEFT, ePosType posType = UNDEFINED, int xRatio = 0 , int yRatio = 0, CString strText = "")
+    ImageAttributes(ePosition pos = TOP_LEFT, ePosType posType = UNDEFINED, int xRatio = 0 , int yRatio = 0, const CString& strText = "")
         : position(pos)
         , posType(posType)
         , xPosRatio(xRatio)
         , yPosRatio(yRatio)
         , text(strText)
-        , m_lBrightness(0L)
-        , m_lContrast(0L)
+         
     {
     }
 
     const ImageAttributes& operator=(const ImageAttributes& rhs)
     {
-        if (this == &rhs)
+        if (this == &rhs) {
             return *this;
+}
 
         text            = rhs.text;
         position        = rhs.position;
@@ -40,8 +40,8 @@ struct ImageAttributes
     int            xPosRatio;
     int            yPosRatio;
     CString        text;
-    long        m_lBrightness;
-    long        m_lContrast;
+    long        m_lBrightness{0L};
+    long        m_lContrast{0L};
 };
 
 #endif    // IMAGEATTRIBUTES_H

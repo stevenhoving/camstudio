@@ -15,7 +15,7 @@ class CNewShapeDlg : public CDialog
 {
 // Construction
 public:
-    CNewShapeDlg(CWnd* pParent = NULL);   // standard constructor
+    CNewShapeDlg(CWnd* pParent = NULL);
 
 // Dialog Data
     //{{AFX_DATA(CNewShapeDlg)

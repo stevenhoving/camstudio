@@ -211,7 +211,7 @@ BOOL CRecorderApp::InitInstance()
     catch (const FileIOException)
     { // TODO: move me to resource
       // MessageBox(NULL, "CamStudio.cfg Config file was not found. Using defaults.", "Error", MB_OK);
-        //        return(EXIT_FAILURE);
+      //        return(EXIT_FAILURE);
     }
     catch (const ParseException &pex)
     {

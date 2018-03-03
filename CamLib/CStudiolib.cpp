@@ -9,22 +9,34 @@ int matchSpecial(int keyCtrl, int keyShift, int keyAlt, int ctrlDown, int shiftD
     int ret = 1;
 
     if ((keyCtrl) && (!ctrlDown))
+    {
         ret = 0;
+    }
 
     if ((keyShift) && (!shiftDown))
+    {
         ret = 0;
+    }
 
     if ((keyAlt) && (!altDown))
+    {
         ret = 0;
+    }
 
     if ((!keyCtrl) && (ctrlDown))
+    {
         ret = 0;
+    }
 
     if ((!keyShift) && (shiftDown))
+    {
         ret = 0;
+    }
 
     if ((!keyAlt) && (altDown))
+    {
         ret = 0;
+    }
 
     // if ((keyCtrl) && (ctrlDown)) {
     //    if ((keyShift) && (shiftDown)) {
@@ -68,10 +80,12 @@ int matchSpecial(int keyCtrl, int keyShift, int keyAlt, int ctrlDown, int shiftD
 // Round positive numbers
 long rounddouble(double dVal)
 {
-    long num = (long)dVal;
-    double diff = dVal - (double)num;
+    auto num = static_cast<long>(dVal);
+    double diff = dVal - static_cast<double>(num);
     if (0.5 <= diff)
+    {
         num++;
+    }
 
     return num;
 }

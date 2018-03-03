@@ -15,7 +15,7 @@ class CAudioSpeakersDlg : public CDialog
 {
 // Construction
 public:
-    CAudioSpeakersDlg(CWnd* pParent = NULL);   // standard constructor
+    CAudioSpeakersDlg(CWnd* pParent = NULL);
     void OnUpdateLineConfig(int line_proper);
     void OnUpdateVolume();
 

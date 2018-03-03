@@ -41,7 +41,7 @@ struct OffsetRatio
 
 struct TextAttributes
 {
-    TextAttributes( ePosition pos = TOP_LEFT, ePosType posType = UNDEFINED ,int xRatio = 0, int yRatio = 0, CString strText = "", COLORREF clrBackground = 0UL, COLORREF clrText = 0UL)
+    TextAttributes( ePosition pos = TOP_LEFT, ePosType posType = UNDEFINED ,int xRatio = 0, int yRatio = 0, const CString& strText = "", COLORREF clrBackground = 0UL, COLORREF clrText = 0UL)
         : position(pos)
         , posType(posType)
         , xPosRatio(xRatio)
@@ -49,14 +49,15 @@ struct TextAttributes
         , text(strText)
         , backgroundColor(clrBackground)
         , textColor(clrText)
-        , isFontSelected(FALSE)
+         
     {
     }
 
     const TextAttributes& operator=(const TextAttributes& rhs)
     {
-        if (this == &rhs)
+        if (this == &rhs) {
             return *this;
+}
 
         position        = rhs.position;
         posType            = rhs.posType;
@@ -78,7 +79,7 @@ struct TextAttributes
     CString        text;
     COLORREF    backgroundColor;
     COLORREF    textColor;
-    int            isFontSelected;
+    int            isFontSelected{FALSE};
     LOGFONT        logfont;
 };
 

@@ -21,9 +21,8 @@ BOOL _writeDib(HANDLE hdib, LPCSTR filename);
 INT _DIBNumColors(LPBITMAPINFOHEADER lpbi);
 
 CBitmapEx::CBitmapEx()
-    : CBitmap()
 {
-    _modBMP = NULL;
+    _modBMP = nullptr;
 }
 
 CBitmapEx::~CBitmapEx()
@@ -33,7 +32,7 @@ CBitmapEx::~CBitmapEx()
 
 HANDLE CBitmapEx::DibFromBitmap()
 {
-    return _dibFromBitmap((HBITMAP)GetSafeHandle());
+    return _dibFromBitmap(static_cast<HBITMAP>(GetSafeHandle()));
 }
 
 HANDLE CBitmapEx::DibFromBitmap(HBITMAP hb)
@@ -44,43 +43,49 @@ HANDLE CBitmapEx::DibFromBitmap(HBITMAP hb)
 BOOL CBitmapEx::CreateFromDib(LPBITMAPINFO lpBi)
 {
     if (!lpBi || _modBMP)
+    {
         return FALSE;
-    if (((LPBITMAPINFOHEADER)lpBi)->biCompression != BI_RGB)
+    }
+    if ((reinterpret_cast<LPBITMAPINFOHEADER>(lpBi))->biCompression != BI_RGB)
+    {
         return FALSE;
+    }
 
     if (GetSafeHandle())
     {
 
         // check existing size
         BITMAP bmp;
-        GetObject(sizeof BITMAP, &bmp);
+        GetObject(sizeof(BITMAP), &bmp);
         CSize sz = GetSize();
 
-        if (bmp.bmWidth == ((LPBITMAPINFOHEADER)lpBi)->biWidth && bmp.bmHeight == ((LPBITMAPINFOHEADER)lpBi)->biHeight)
+        if (bmp.bmWidth == (reinterpret_cast<LPBITMAPINFOHEADER>(lpBi))->biWidth &&
+            bmp.bmHeight == (reinterpret_cast<LPBITMAPINFOHEADER>(lpBi))->biHeight)
         {
             // special case: we don't need to destroy existing
             // DDB, just rewrite iBits.
             // Note: we must be sure, the color resolution is
             // not changed, so, let's test it:
-            HDC hdc = ::GetDC(NULL);
+            HDC hdc = ::GetDC(nullptr);
             int hdc_bits = GetDeviceCaps(hdc, BITSPIXEL);
             if (hdc_bits == bmp.bmBitsPixel)
             {
                 // ok to set new iBits
-                BOOL ret = ::SetDIBits(hdc,                      // handle to device context
-                                       (HBITMAP)GetSafeHandle(), // handle to bitmap
-                                       0,                        // starting scan line
-                                       bmp.bmHeight,             // number of scan lines
-                                       DIBPTR(lpBi),             // array of bitmap iBits
-                                       lpBi,                     // address of structure with bitmap data
-                                       DIB_RGB_COLORS            // type of color indexes to use
+                BOOL ret = ::SetDIBits(hdc,                                   // handle to device context
+                                       static_cast<HBITMAP>(GetSafeHandle()), // handle to bitmap
+                                       0,                                     // starting scan line
+                                       bmp.bmHeight,                          // number of scan lines
+                                       DIBPTR(lpBi),                          // array of bitmap iBits
+                                       lpBi,                                  // address of structure with bitmap data
+                                       DIB_RGB_COLORS                         // type of color indexes to use
                                        ) == bmp.bmHeight;
 
-                ::ReleaseDC(NULL, hdc);
+                ::ReleaseDC(nullptr, hdc);
                 return ret;
             }
-            else
-                ::ReleaseDC(NULL, hdc);
+            {
+                ::ReleaseDC(nullptr, hdc);
+            }
         }
         // delete existing bitmap:(
         DeleteObject();
@@ -90,12 +95,15 @@ BOOL CBitmapEx::CreateFromDib(LPBITMAPINFO lpBi)
     HBITMAP hbm;
 
     // Create DDB
-    hdc = ::GetDC(NULL);
-    hbm = CreateDIBitmap(hdc, (LPBITMAPINFOHEADER)lpBi, (LONG)CBM_INIT, DIBPTR(lpBi), lpBi, DIB_RGB_COLORS);
+    hdc = ::GetDC(nullptr);
+    hbm = CreateDIBitmap(hdc, reinterpret_cast<LPBITMAPINFOHEADER>(lpBi), static_cast<LONG>(CBM_INIT), DIBPTR(lpBi),
+                         lpBi, DIB_RGB_COLORS);
 
-    ::ReleaseDC(NULL, hdc);
+    ::ReleaseDC(nullptr, hdc);
     if (!hbm)
+    {
         return FALSE;
+    }
 
     DeleteObject(); // delete attached bitmap
 
@@ -115,7 +123,9 @@ BOOL CBitmapEx::CreateFromDib(LPBITMAPINFO lpBi)
 BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
 {
     if (GetSafeHandle())
+    {
         return FALSE;
+    }
 
     CString Path(filename);
     if (!filename)
@@ -137,7 +147,9 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
 
     CFile file;
     if (!file.Open(Path, CFile::modeRead | CFile::typeBinary))
+    {
         return FALSE;
+    }
 
     // get length of DIB in bytes for use when reading
     // DWORD dwBitsSize = file.GetLength();      -> Cause C4244 warning
@@ -158,8 +170,10 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
     TRY
     {
         if (file.Read(&bmfHeader, sizeof(BITMAPFILEHEADER)) != sizeof(BITMAPFILEHEADER) ||
-            bmfHeader.bfType != ((WORD)('M' << 8) | 'B'))
+            bmfHeader.bfType != (static_cast<WORD>('M' << 8) | 'B'))
+        {
             ret = FALSE;
+        }
     }
     CATCH(CFileException, e)
     {
@@ -168,21 +182,27 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
     END_CATCH
 
     if (!ret)
+    {
         return FALSE;
+    }
 
     // Allocate memory for DIB
     dwBitsSize -= sizeof(BITMAPFILEHEADER);
 
     HANDLE hDIB = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, dwBitsSize);
     if (!hDIB)
+    {
         return FALSE;
+    }
 
-    LPBITMAPINFOHEADER lpbi = (LPBITMAPINFOHEADER)GlobalLock(hDIB);
+    auto lpbi = static_cast<LPBITMAPINFOHEADER>(GlobalLock(hDIB));
     TRY
     {
         // if (file.ReadHuge((LPVOID)lpbi, dwBitsSize)!=dwBitsSize)
         if (file.Read((LPVOID)lpbi, dwBitsSize) != dwBitsSize)
+        {
             ret = FALSE;
+        }
     }
     CATCH(CFileException, e)
     {
@@ -200,10 +220,10 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
     }
 
     // Create DDB
-    HDC hdc = ::GetDC(NULL);
-    HBITMAP hbm =
-        CreateDIBitmap(hdc, (LPBITMAPINFOHEADER)lpbi, (LONG)CBM_INIT, DIBPTR(lpbi), (LPBITMAPINFO)lpbi, DIB_RGB_COLORS);
-    ::ReleaseDC(NULL, hdc);
+    HDC hdc = ::GetDC(nullptr);
+    HBITMAP hbm = CreateDIBitmap(hdc, lpbi, static_cast<LONG>(CBM_INIT), DIBPTR(lpbi),
+                                 reinterpret_cast<LPBITMAPINFO>(lpbi), DIB_RGB_COLORS);
+    ::ReleaseDC(nullptr, hdc);
 
     GlobalUnlock(hDIB);
     GlobalFree(hDIB);
@@ -230,45 +250,55 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
 BOOL CBitmapEx::Save(LPCSTR filename, LPCSTR DialogTitle)
 {
     if (!GetSafeHandle())
+    {
         return FALSE;
+    }
 
     CString Path(filename);
     if (!filename)
     {
         CFileDialog saveAs(FALSE, sext, smask, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, sfiltr);
         if (DialogTitle)
+        {
             saveAs.m_ofn.lpstrTitle = DialogTitle;
+        }
 
         if (IDOK != saveAs.DoModal())
+        {
             return FALSE;
+        }
 
         Path = saveAs.GetPathName();
     }
 
     CFile file;
     if (!file.Open((LPCSTR)Path, CFile::modeCreate | CFile::modeWrite | CFile::typeBinary))
+    {
         return FALSE;
+    }
 
-    HANDLE hdib = _dibFromBitmap((HBITMAP)GetSafeHandle());
+    HANDLE hdib = _dibFromBitmap(static_cast<HBITMAP>(GetSafeHandle()));
     if (!hdib)
+    {
         return FALSE;
+    }
 
-    LPBITMAPINFOHEADER lpbi = (LPBITMAPINFOHEADER)::GlobalLock(hdib);
+    auto lpbi = static_cast<LPBITMAPINFOHEADER>(::GlobalLock(hdib));
 
     // Fill in the fields of the file header
     BITMAPFILEHEADER hdr;
-    hdr.bfType = ((WORD)('M' << 8) | 'B'); // "BM"
+    hdr.bfType = (static_cast<WORD>('M' << 8) | 'B'); // "BM"
     hdr.bfSize = GlobalSize(hdib) + sizeof(BITMAPFILEHEADER);
     hdr.bfReserved1 = 0;
     hdr.bfReserved2 = 0;
-    hdr.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + lpbi->biSize + PALETTESIZE((LPSTR)lpbi);
+    hdr.bfOffBits = static_cast<DWORD>(sizeof(BITMAPFILEHEADER)) + lpbi->biSize + PALETTESIZE((LPSTR)lpbi);
 
     BOOL ret = TRUE;
     TRY
     {
-        file.Write((LPSTR)&hdr, sizeof(BITMAPFILEHEADER));
+        file.Write(reinterpret_cast<LPSTR>(&hdr), sizeof(BITMAPFILEHEADER));
         // file.WriteHuge((LPSTR)lpbi, GlobalSize (hdib));
-        file.Write((LPSTR)lpbi, GlobalSize(hdib));
+        file.Write(reinterpret_cast<LPSTR>(lpbi), GlobalSize(hdib));
     }
     CATCH(CFileException, e)
     {
@@ -290,7 +320,9 @@ CDC *CBitmapEx::BegingModify()
     CDC *dc = dtw->GetDC();
 
     if (_modDC.m_hDC)
+    {
         _modDC.DeleteDC();
+    }
 
     _modDC.CreateCompatibleDC(dc);
 
@@ -303,24 +335,30 @@ CDC *CBitmapEx::BegingModify()
 void CBitmapEx::EndModify()
 {
     if (_modDC.m_hDC && _modBMP)
+    {
         _modDC.SelectObject(_modBMP);
+    }
     if (_modDC.m_hDC)
+    {
         _modDC.DeleteDC();
-    _modBMP = NULL;
+    }
+    _modBMP = nullptr;
 }
 
 // Create color bitmap
 BOOL CBitmapEx::CreateColor(int dx, int dy)
 {
     if (GetSafeHandle())
+    {
         return FALSE;
-    HDC hScrDC = ::GetDC(NULL);
+    }
+    HDC hScrDC = ::GetDC(nullptr);
     HDC hMemDC = ::CreateCompatibleDC(hScrDC);
 
     BOOL r = CreateCompatibleBitmap(CDC::FromHandle(hScrDC), dx, dy);
 
     ::DeleteDC(hMemDC);
-    ::ReleaseDC(NULL, hScrDC);
+    ::ReleaseDC(nullptr, hScrDC);
     return r;
 }
 
@@ -328,9 +366,11 @@ BOOL CBitmapEx::CreateColor(int dx, int dy)
 BOOL CBitmapEx::CreateMono(int dx, int dy)
 {
     if (GetSafeHandle())
+    {
         return FALSE;
+    }
     CDC mDC;
-    mDC.CreateCompatibleDC(NULL); // for mono!
+    mDC.CreateCompatibleDC(nullptr); // for mono!
 
     BOOL r = CreateCompatibleBitmap(&mDC, dx, dy);
 
@@ -343,8 +383,10 @@ CSize CBitmapEx::GetSize()
 {
     BITMAP bmp;
     if (!GetSafeHandle())
-        return CSize(0, 0);
-    GetObject(sizeof BITMAP, &bmp);
+    {
+        return {0, 0};
+    }
+    GetObject(sizeof(BITMAP), &bmp);
     return CSize(bmp.bmWidth, bmp.bmHeight);
 }
 
@@ -392,8 +434,10 @@ BOOL CBitmapEx::CopyRect(CBitmap &bmp, CRect &rc)
 DWORD CBitmapEx::DibImageSize(HANDLE hDIB)
 {
     if (!hDIB)
+    {
         return 0;
-    LPBITMAPINFOHEADER lpbmInfoHdr = (LPBITMAPINFOHEADER)GlobalLock(hDIB);
+    }
+    auto lpbmInfoHdr = static_cast<LPBITMAPINFOHEADER>(GlobalLock(hDIB));
     DWORD sz = sizeof(BITMAPINFOHEADER) + PALETTESIZE((LPSTR)lpbmInfoHdr) + lpbmInfoHdr->biSizeImage;
     GlobalUnlock(hDIB);
     return sz;
@@ -404,10 +448,12 @@ DWORD CBitmapEx::DibImageSize(HANDLE hDIB)
 HANDLE _dibFromBitmap(HBITMAP hBitmap)
 {
     if (!hBitmap)
-        return NULL;
+    {
+        return nullptr;
+    }
 
     BITMAP bm;
-    ::GetObject(hBitmap, sizeof(bm), (LPSTR)&bm);
+    ::GetObject(hBitmap, sizeof(bm), reinterpret_cast<LPSTR>(&bm));
 
     WORD wBits = bm.bmBitsPixel;
 
@@ -428,20 +474,20 @@ HANDLE _dibFromBitmap(HBITMAP hBitmap)
     HANDLE hDIB = ::GlobalAlloc(GMEM_DDESHARE | GMEM_MOVEABLE, dwLen);
     if (!hDIB)
     {
-        return NULL;
+        return nullptr;
     }
 
-    BITMAPINFOHEADER *lpbi = (LPBITMAPINFOHEADER)::GlobalLock(hDIB);
+    auto *lpbi = static_cast<LPBITMAPINFOHEADER>(::GlobalLock(hDIB));
     *lpbi = bi;
 
-    HDC hDC = 0;
-    HPALETTE hPal = NULL;
+    HDC hDC = nullptr;
+    HPALETTE hPal = nullptr;
     HWND hWnd = GetFocus();
     if (!hWnd)
     {
         // load default system palette
-        hPal = (HPALETTE)GetStockObject(DEFAULT_PALETTE);
-        hDC = GetDC(NULL);
+        hPal = static_cast<HPALETTE>(GetStockObject(DEFAULT_PALETTE));
+        hDC = GetDC(nullptr);
         hPal = SelectPalette(hDC, hPal, FALSE);
         RealizePalette(hDC);
     }
@@ -449,8 +495,8 @@ HANDLE _dibFromBitmap(HBITMAP hBitmap)
     {
         // or get palette from focused window
         HDC hDCw = GetDC(hWnd);
-        hPal = SelectPalette(hDCw, (HPALETTE)GetStockObject(DEFAULT_PALETTE), FALSE);
-        hDC = GetDC(NULL);
+        hPal = SelectPalette(hDCw, static_cast<HPALETTE>(GetStockObject(DEFAULT_PALETTE)), FALSE);
+        hDC = GetDC(nullptr);
         hPal = SelectPalette(hDC, hPal, FALSE);
         RealizePalette(hDC);
         SelectPalette(hDCw, hPal, FALSE);
@@ -458,7 +504,8 @@ HANDLE _dibFromBitmap(HBITMAP hBitmap)
     }
 
     // calculate the biSizeImage
-    GetDIBits(hDC, hBitmap, 0, (WORD)bi.biHeight, NULL, (LPBITMAPINFO)lpbi, DIB_RGB_COLORS);
+    GetDIBits(hDC, hBitmap, 0, static_cast<WORD>(bi.biHeight), nullptr, reinterpret_cast<LPBITMAPINFO>(lpbi),
+              DIB_RGB_COLORS);
     bi = *lpbi;
     GlobalUnlock(hDIB);
 
@@ -470,7 +517,9 @@ HANDLE _dibFromBitmap(HBITMAP hBitmap)
         bi.biSizeImage = WIDTHBYTES((DWORD)bm.bmWidth * wBits) * bm.bmHeight;
 
         if (bi.biCompression != BI_RGB)
+        {
             bi.biSizeImage = (bi.biSizeImage * 3) / 2;
+        }
     }
 
     DWORD sl = dwLen;
@@ -483,33 +532,34 @@ HANDLE _dibFromBitmap(HBITMAP hBitmap)
     if (!hDIB)
     {
         SelectPalette(hDC, hPal, FALSE);
-        ReleaseDC(NULL, hDC);
+        ReleaseDC(nullptr, hDC);
         GlobalFree(hPtr);
-        return NULL;
+        return nullptr;
     }
 
-    lpbi = (LPBITMAPINFOHEADER)GlobalLock(hDIB);
-    LPBITMAPINFOHEADER lpS = (LPBITMAPINFOHEADER)GlobalLock(hPtr);
+    lpbi = static_cast<LPBITMAPINFOHEADER>(GlobalLock(hDIB));
+    auto lpS = static_cast<LPBITMAPINFOHEADER>(GlobalLock(hPtr));
 
     CopyMemory(lpbi, lpS, sl);
     GlobalUnlock(hPtr);
     GlobalFree(hPtr);
 
     // actually fill lpBits
-    if (GetDIBits(hDC, hBitmap, 0, (WORD)bi.biHeight, (LPSTR)lpbi + (WORD)lpbi->biSize + PALETTESIZE((LPSTR)lpbi),
-                  (LPBITMAPINFO)lpbi, DIB_RGB_COLORS) == 0)
+    if (GetDIBits(hDC, hBitmap, 0, static_cast<WORD>(bi.biHeight),
+                  reinterpret_cast<LPSTR>(lpbi) + static_cast<WORD>(lpbi->biSize) + PALETTESIZE((LPSTR)lpbi),
+                  reinterpret_cast<LPBITMAPINFO>(lpbi), DIB_RGB_COLORS) == 0)
     {
         GlobalUnlock(hDIB);
-        hDIB = NULL;
+        hDIB = nullptr;
         SelectPalette(hDC, hPal, FALSE);
-        ReleaseDC(NULL, hDC);
-        return NULL;
+        ReleaseDC(nullptr, hDC);
+        return nullptr;
     }
 
     bi = *lpbi;
     GlobalUnlock(hDIB);
     SelectPalette(hDC, hPal, FALSE);
-    ReleaseDC(NULL, hDC);
+    ReleaseDC(nullptr, hDC);
     // OK
     return hDIB;
 }
@@ -517,7 +567,9 @@ HANDLE _dibFromBitmap(HBITMAP hBitmap)
 int _DIBNumColors(LPBITMAPINFOHEADER lpbi)
 {
     if (lpbi->biClrUsed)
-        return (int)lpbi->biClrUsed;
+    {
+        return static_cast<int>(lpbi->biClrUsed);
+    }
 
     switch (lpbi->biBitCount)
     {

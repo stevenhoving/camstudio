@@ -11,11 +11,11 @@ class CBitmapEx : public CBitmap
 {
 public:
     CBitmapEx();
-    ~CBitmapEx();
+    ~CBitmapEx() override;
 
     // load&save DDB
-    BOOL Open(LPCSTR filename, LPCSTR DialogTitle = NULL);
-    BOOL Save(LPCSTR filename, LPCSTR DialogTitle = NULL);
+    BOOL Open(LPCSTR filename, LPCSTR DialogTitle = nullptr);
+    BOOL Save(LPCSTR filename, LPCSTR DialogTitle = nullptr);
 
     void BitBlt(CDC *dc_to, POINT at, DWORD rop = SRCCOPY);
     void StretchBlt(CDC *dc_to, CRect to, DWORD rop = SRCCOPY);
@@ -31,7 +31,7 @@ public:
     CDC *BegingModify();
     void EndModify();
 
-    static HANDLE DibFromBitmap(HBITMAP);
+    static HANDLE DibFromBitmap(HBITMAP /*hb*/);
     static DWORD DibImageSize(HANDLE hDIB);
 
 protected:

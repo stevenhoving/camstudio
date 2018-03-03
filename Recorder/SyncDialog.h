@@ -13,7 +13,7 @@
 class CSyncDlg : public CDialog
 {
 // Construction
-    CSyncDlg(CWnd* pParent = NULL);   // standard constructor; not implemeted
+    CSyncDlg(CWnd* pParent = NULL); //  not implemeted
 public:
     CSyncDlg(int iType, int iShift, CWnd* pParent = NULL);
 

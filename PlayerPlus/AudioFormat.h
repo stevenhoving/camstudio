@@ -14,7 +14,7 @@ class AudioFormat : public CDialog
 {
 // Construction
 public:
-    AudioFormat(CWnd* pParent = NULL);   // standard constructor
+    AudioFormat(CWnd* pParent = NULL);
     void UpdateLocalCompressFormatInterface();
     void UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPWAVEFORMATEX  curr_sel_pwfx);
 

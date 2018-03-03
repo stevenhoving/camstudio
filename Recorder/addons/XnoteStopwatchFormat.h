@@ -11,8 +11,8 @@
 class CXnoteStopwatchFormat
 {
 public:
-    CXnoteStopwatchFormat(void);
-    ~CXnoteStopwatchFormat(void);
+    CXnoteStopwatchFormat();
+    ~CXnoteStopwatchFormat();
 
 public:
     static void CXnoteStopwatchFormat::FormatXnoteSampleString(char *cBuf128, long lDelayTimeInMilliSec, bool bDisplayCameraDelay, bool bDisplayCameraDelay2 );

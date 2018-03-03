@@ -15,9 +15,9 @@
 class CVideoOptionsDlg : public CDialog
 {
 // Construction
-    CVideoOptionsDlg(CWnd* pParent = NULL);   // standard constructor
+    CVideoOptionsDlg(CWnd* pParent = NULL);
 public:
-    CVideoOptionsDlg(const sVideoOpts& cOpts, CWnd* pParent = NULL);   // standard constructor
+    CVideoOptionsDlg(const sVideoOpts& cOpts, CWnd* pParent = NULL);
 
     const sVideoOpts& Opts() const    {return m_cOpts;}
 

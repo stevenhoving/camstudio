@@ -17,7 +17,7 @@ class DrawClick;
 class ClickQueue
 {
 public:
-	typedef std::vector<MSLLHOOKSTRUCT> QueueType; // lazy boy
+	using QueueType = std::vector<MSLLHOOKSTRUCT>; // lazy boy
 private:
 	friend class Cleanup;
 	class Cleanup
@@ -30,14 +30,14 @@ private:
  
 	ClickQueue();
 	~ClickQueue();
-	ClickQueue(const ClickQueue &);             // intentionally undefined
-	ClickQueue & operator=(const ClickQueue &); // intentionally undefined
+	ClickQueue(const ClickQueue &) = delete;             // intentionally undefined
+	ClickQueue & operator=(const ClickQueue &) = delete; // intentionally undefined
 
 	QueueType _queue; // sounds awkward, but we should be able to access all of the queue elements
 	CRITICAL_SECTION cs;
  
 public:
-	typedef QueueType::iterator Iterator;
+	using Iterator = QueueType::iterator;
 	__declspec(dllexport) static ClickQueue &getInstance();
 	__declspec(dllexport) void Enqueue(LPMSLLHOOKSTRUCT pMSG);
 	__declspec(dllexport) QueueType& getQueue() {return _queue;} // caller must lock

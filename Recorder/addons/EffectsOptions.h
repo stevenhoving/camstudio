@@ -19,15 +19,15 @@ class CEffectsOptionsDlg : public CDialog
     DECLARE_DYNAMIC(CEffectsOptionsDlg)
 
 public:
-    CEffectsOptionsDlg(CWnd* pParent = NULL);   // standard constructor
-    virtual ~CEffectsOptionsDlg();
+    CEffectsOptionsDlg(CWnd* pParent = nullptr);
+    ~CEffectsOptionsDlg() override;
 
 // Dialog Data
     enum { IDD = IDD_EFFECTS_OPTIONS };
 
 
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
     virtual int EffectsOptionsSetXPosRatio( int nPosition );
     virtual int EffectsOptionsSetYPosRatio( int nPosition );
 

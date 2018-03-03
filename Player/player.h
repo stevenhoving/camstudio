@@ -10,14 +10,14 @@
 #define IDD_ABOUT  101
 
 // Function declarations
-long FAR PASCAL WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+long FAR PASCAL WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 void OpenMCIMovieFile(HWND hWnd);
 void OpenMCIMovieFileInit(HWND hWnd);
 void UpdateMenubar(HWND hWnd);
 void UpdateTitle(HWND hWnd, LPSTR lpstrMovie);
 BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus);
-SIZE GetPrimaryScreenSize(void);
+SIZE GetPrimaryScreenSize();
 POINT GetCenterCoords(int width, int height);
 
 // Enable Windows XP visual styles

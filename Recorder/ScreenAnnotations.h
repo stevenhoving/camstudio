@@ -18,7 +18,7 @@ class CScreenAnnotationsDlg : public CDialog
 {
 // Construction
 public:
-    CScreenAnnotationsDlg(CWnd* pParent = NULL);   // standard constructor
+    CScreenAnnotationsDlg(CWnd* pParent = NULL);
     
 
 // Dialog Data

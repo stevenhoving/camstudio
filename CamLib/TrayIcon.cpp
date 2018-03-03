@@ -7,16 +7,13 @@
 // NOTIFYICONDATA IconData;
 
 CTrayIcon::CTrayIcon()
-    : m_bTrayIconVisible(FALSE)
-    , m_bMinimizeToTray(TRUE)
-    , m_bDefaultMenuItem(0)
-    , m_nDefaultMenuItem(0)
+
 {
     ::ZeroMemory(&m_nid, sizeof(m_nid));
     m_nid.cbSize = sizeof(NOTIFYICONDATA);
     m_nid.uID = 1;
     m_nid.uFlags = NIF_MESSAGE;
-    m_nid.hWnd = 0;
+    m_nid.hWnd = nullptr;
     m_nid.uCallbackMessage = m_WM_TRAY_ICON_NOTIFY_MESSAGE;
 }
 
@@ -34,10 +31,10 @@ void CTrayIcon::SetNotifyWnd(HWND hWnd)
 void CTrayIcon::initTrayIconData(HWND hWnd)
 {
     m_nid.cbSize = sizeof(NOTIFYICONDATA);
-    m_nid.hWnd = 0;
+    m_nid.hWnd = nullptr;
     m_nid.uID = 1;
     m_nid.uCallbackMessage = m_WM_TRAY_ICON_NOTIFY_MESSAGE;
-    m_nid.hIcon = 0;
+    m_nid.hIcon = nullptr;
     m_nid.szTip[0] = 0;
     m_nid.uFlags = NIF_MESSAGE;
     m_nid.hWnd = hWnd;
@@ -174,7 +171,7 @@ void CTrayIcon::OnTrayRButtonDown(CPoint pt)
 {
     ::SetForegroundWindow(AfxGetMainWnd()->m_hWnd);
     TrackPopupMenu(m_TrayMenu.GetSubMenu(0)->m_hMenu, TPM_BOTTOMALIGN | TPM_LEFTBUTTON | TPM_RIGHTBUTTON, pt.x, pt.y, 0,
-                   AfxGetMainWnd()->m_hWnd, NULL);
+                   AfxGetMainWnd()->m_hWnd, nullptr);
 
     PostMessage(AfxGetMainWnd()->m_hWnd, WM_NULL, 0, 0);
 }
@@ -200,11 +197,13 @@ void CTrayIcon::OnTrayMouseMove(CPoint /*pt*/)
 LRESULT CTrayIcon::OnTrayNotify(WPARAM wParam, LPARAM lParam)
 {
     LRESULT lResult = 0L; // no processed
-    UINT uID = (UINT)wParam;
+    auto uID = static_cast<UINT>(wParam);
     if (uID != 1)
+    {
         return lResult;
+    }
 
-    UINT uMsg = (UINT)lParam;
+    auto uMsg = static_cast<UINT>(lParam);
     CPoint pt;
     GetCursorPos(&pt);
 

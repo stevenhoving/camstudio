@@ -96,23 +96,25 @@ extern void Msg(const char fmt[], ...);
  ***************************************************************************/
 LRESULT PASCAL DriverProc(DWORD dwDriverID, HDRVR hDriver, UINT uiMessage, LPARAM lParam1, LPARAM lParam2)
 {
-    CodecInst *pi = (CodecInst *)(UINT)dwDriverID;
+    auto *pi = (CodecInst *)static_cast<UINT>(dwDriverID);
     switch (uiMessage)
     {
         case DRV_LOAD:
-            return (LRESULT)1L;
+            return static_cast<LRESULT>(1L);
 
         case DRV_FREE:
-            return (LRESULT)1L;
+            return static_cast<LRESULT>(1L);
 
         case DRV_OPEN:
             // GAAH! This used to return a pointer to 0xFFFF0000 when lParam==0!
-            return (LRESULT)(DWORD)(UINT)Open((ICOPEN *)lParam2);
+            return static_cast<LRESULT>(static_cast<DWORD>((UINT)Open((ICOPEN *)lParam2)));
 
         case DRV_CLOSE:
             if (pi)
+            {
                 Close(pi);
-            return (LRESULT)1L;
+            }
+            return static_cast<LRESULT>(1L);
 
         /*********************************************************************
 
@@ -122,7 +124,7 @@ LRESULT PASCAL DriverProc(DWORD dwDriverID, HDRVR hDriver, UINT uiMessage, LPARA
 
         // cwk
         case DRV_QUERYCONFIGURE: // configuration from drivers applet
-            return (LRESULT)1L;
+            return static_cast<LRESULT>(1L);
 
         case DRV_CONFIGURE:
             pi->Configure((HWND)lParam1);
@@ -133,27 +135,35 @@ LRESULT PASCAL DriverProc(DWORD dwDriverID, HDRVR hDriver, UINT uiMessage, LPARA
             //  return ICERR_OK if you will do a configure box, error otherwise
             //
             if (lParam1 == -1)
+            {
                 return pi->QueryConfigure() ? ICERR_OK : ICERR_UNSUPPORTED;
+            }
             else
+            {
                 return pi->Configure((HWND)lParam1);
+            }
 
         case ICM_ABOUT:
             //
             //  return ICERR_OK if you will do a about box, error otherwise
             //
             if (lParam1 == -1)
+            {
                 return pi->QueryAbout() ? ICERR_OK : ICERR_UNSUPPORTED;
+            }
             else
+            {
                 return pi->About((HWND)lParam1);
+            }
 
         case ICM_GETSTATE:
-            return pi->GetState((LPVOID)lParam1, (DWORD)lParam2);
+            return pi->GetState((LPVOID)lParam1, static_cast<DWORD>(lParam2));
 
         case ICM_SETSTATE:
-            return pi->SetState((LPVOID)lParam1, (DWORD)lParam2);
+            return pi->SetState((LPVOID)lParam1, static_cast<DWORD>(lParam2));
 
         case ICM_GETINFO:
-            return pi->GetInfo((ICINFO *)lParam1, (DWORD)lParam2);
+            return pi->GetInfo((ICINFO *)lParam1, static_cast<DWORD>(lParam2));
 
         case ICM_GETDEFAULTQUALITY:
             if (lParam1)
@@ -182,7 +192,7 @@ LRESULT PASCAL DriverProc(DWORD dwDriverID, HDRVR hDriver, UINT uiMessage, LPARA
             return pi->CompressGetSize((LPBITMAPINFOHEADER)lParam1, (LPBITMAPINFOHEADER)lParam2);
 
         case ICM_COMPRESS:
-            return pi->Compress((ICCOMPRESS *)lParam1, (DWORD)lParam2);
+            return pi->Compress((ICCOMPRESS *)lParam1, static_cast<DWORD>(lParam2));
 
         case ICM_COMPRESS_END:
             return pi->CompressEnd();
@@ -196,14 +206,20 @@ LRESULT PASCAL DriverProc(DWORD dwDriverID, HDRVR hDriver, UINT uiMessage, LPARA
             /*
           case ICM_DRAW_BEGIN:
               {
-                
+                
+
+
+
                   Msg("\nDRAWBEGIN");
                   return ICERR_OK;
 
               }
           case ICM_DRAW:
               {
-                
+                
+
+
+
                   Msg("\nDRAW");
                   return ICERR_OK;
 
@@ -223,7 +239,7 @@ LRESULT PASCAL DriverProc(DWORD dwDriverID, HDRVR hDriver, UINT uiMessage, LPARA
             return pi->DecompressGetPalette((LPBITMAPINFOHEADER)lParam1, (LPBITMAPINFOHEADER)lParam2);
 
         case ICM_DECOMPRESS:
-            return pi->Decompress((ICDECOMPRESS *)lParam1, (DWORD)lParam2);
+            return pi->Decompress((ICDECOMPRESS *)lParam1, static_cast<DWORD>(lParam2));
 
         case ICM_DECOMPRESS_END:
             return pi->DecompressEnd();
@@ -236,23 +252,26 @@ LRESULT PASCAL DriverProc(DWORD dwDriverID, HDRVR hDriver, UINT uiMessage, LPARA
 
         case DRV_DISABLE:
         case DRV_ENABLE:
-            return (LRESULT)1L;
+            return static_cast<LRESULT>(1L);
 
         case DRV_INSTALL:
         case DRV_REMOVE:
-            return (LRESULT)DRV_OK;
+            return static_cast<LRESULT>(DRV_OK);
     }
 
     if (uiMessage < DRV_USER)
+    {
         return DefDriverProc(dwDriverID, hDriver, uiMessage, lParam1, lParam2);
-    else
+    }
+    {
         return ICERR_UNSUPPORTED;
+    }
 }
 
-HMODULE hmoduleCamcodec = 0;
+HMODULE hmoduleCamcodec = nullptr;
 
-BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD, LPVOID)
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD /*unused*/, LPVOID /*unused*/)
 {
-    hmoduleCamcodec = (HMODULE)hinstDLL;
+    hmoduleCamcodec = static_cast<HMODULE>(hinstDLL);
     return TRUE;
 }

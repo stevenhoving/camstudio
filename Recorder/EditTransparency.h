@@ -16,7 +16,7 @@ class CTransparentWnd;    // forward declaration
 class CEditTransparencyDlg : public CDialog
 {
 // Construction
-    CEditTransparencyDlg(CWnd* pParent = NULL);   // standard constructor; not used
+    CEditTransparencyDlg(CWnd* pParent = NULL); // not used
 public:
     CEditTransparencyDlg(int& bEnable, int& iLevel, CTransparentWnd* pParent);
 

@@ -15,7 +15,7 @@ class CAutopanSpeedDlg : public CDialog
 {
 // Construction
 public:
-    CAutopanSpeedDlg(CWnd* pParent = NULL);   // standard constructor
+    CAutopanSpeedDlg(CWnd* pParent = NULL);
 
 // Dialog Data
     //{{AFX_DATA(CAutopanSpeedDlg)

@@ -16,7 +16,7 @@
 class CCursorOptionsDlg : public CDialog
 {
 // Construction
-    CCursorOptionsDlg(CWnd* pParent = NULL);   // standard constructor; disallowed
+    CCursorOptionsDlg(CWnd* pParent = NULL); // disallowed
 public:
     CCursorOptionsDlg(const CCamCursor& cCursor, CWnd* pParent = NULL);
 

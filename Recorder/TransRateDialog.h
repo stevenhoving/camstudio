@@ -17,7 +17,7 @@ class CTransRateDlg : public CDialog
 {
 // Construction
 public:
-    CTransRateDlg(CWnd* pParent = NULL);   // standard constructor
+    CTransRateDlg(CWnd* pParent = NULL);
 
 // Dialog Data
     //{{AFX_DATA(CTransRateDlg)

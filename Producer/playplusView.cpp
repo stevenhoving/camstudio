@@ -32,8 +32,6 @@
 #include <cstdint>
 #include <stdexcept>
 
-
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -122,7 +120,7 @@ WORD gwZoom = 4;                   // one-half zoom (divide by 4)
 HWND ghwndMCI;
 
 // buffer for wave data
-//LPVOID lpAudio;
+// LPVOID lpAudio;
 
 // constants for painting
 #define VSPACE 8       // some vertical spacing
@@ -1307,9 +1305,9 @@ void FreeAvi()
         AVIStreamRelease(gapavi[i]);
     }
     // Good a place as any to make sure audio data gets freed
-    //if (lpAudio)
-      //  GlobalFreePtr(lpAudio);
-    //lpAudio = NULL;
+    // if (lpAudio)
+    //  GlobalFreePtr(lpAudio);
+    // lpAudio = NULL;
 
     gcpavi = 0;
 }
@@ -2142,7 +2140,7 @@ int CPlayplusView::OnCreate(LPCREATESTRUCT lpCreateStruct)
         allowRecordExtension = 1;
 
     // ver 2.25
-    //CreatePropertySheet();
+    // CreatePropertySheet();
 
     return 0;
 }
@@ -2201,7 +2199,7 @@ void CPlayplusView::OnPaint()
                 }
                 // launchHTMLPlayer = 0;
                 // OnFileConverttoswf();
-                //PostMessage(WM_COMMAND, ID_FILE_CONVERTTOSWF, 0);
+                // PostMessage(WM_COMMAND, ID_FILE_CONVERTTOSWF, 0);
             }
         }
         doneOnce = 1;
@@ -2724,7 +2722,7 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
                                BOOL recompress_audio, LPWAVEFORMATEX audio_recompress_format, DWORD audio_format_size,
                                BOOL bInterleave, int interleave_factor)
 {
-    PAVISTREAM AviStream[NUMSTREAMS];            // the editable streams
+    PAVISTREAM AviStream[NUMSTREAMS];           // the editable streams
     AVICOMPRESSOPTIONS aAVIOptions[NUMSTREAMS]; // compression options
     LPAVICOMPRESSOPTIONS alpAVIOptions[NUMSTREAMS];
 
@@ -5122,7 +5120,6 @@ LPBYTE MakeFullRect(LPBITMAPINFOHEADER /*alpbi*/, LPBYTE bitmap, int BITMAP_X, i
     return bitNew;
 }
 
-
 int IsDifferent(LPBITMAPINFOHEADER alpbi, int BITMAP_X, int BITMAP_Y, int x, int y, int format)
 {
     unsigned long widthBytes, pixbytes;
@@ -5325,7 +5322,6 @@ void *MakeFullBuffer(void *buffer, long &buffersize, long &numsamples, int avgsa
     return newbuffer;
 }
 
-
 // ver 2/24
 // **************************************
 // Conversion to PCM
@@ -5455,7 +5451,6 @@ void cleanTempFile()
     if (tempfile2 != "")
         DeleteFile(tempfile2);
 }
-
 
 void LoadSettings()
 {
@@ -5982,7 +5977,7 @@ void LoadCommand()
     // Read Variables
     // ****************************
 
-//    float ver = 1.0;
+    //    float ver = 1.0;
 
     // Debugging info
     // The use of scanf("%.2f") instead of scanf("%f") results in hard-to-detect bugs
@@ -6035,7 +6030,6 @@ LPBITMAPINFOHEADER LoadBitmapFile(CString bitmapFile)
     }
     return alpbi;
 }
-
 
 void GetBounds(const char *font, CString textstr, int pointsize, CSize &retExtent, bool bold, bool italic, bool uLine)
 {

@@ -5,7 +5,7 @@
 
 // TODO: should be in mainframe class
 #pragma message("SetTitleBar depreciated; use MainFrame class")
-void SetTitleBar(CString title)
+void SetTitleBar(const CString &title)
 {
     CWinApp *app = AfxGetApp();
     if (app)
@@ -44,8 +44,8 @@ RECT FrameWindow(HWND hWnd, int maxxScreen, int maxyScreen, RECT rcClip)
 
     if (!IsRectEmpty(&rectFrame))
     {
-        HBRUSH newbrush = (HBRUSH)::CreateHatchBrush(HS_BDIAGONAL, RGB(0, 0, 100));
-        HBRUSH oldbrush = (HBRUSH)::SelectObject(hdc, newbrush);
+        auto newbrush = ::CreateHatchBrush(HS_BDIAGONAL, RGB(0, 0, 100));
+        auto oldbrush = static_cast<HBRUSH>(::SelectObject(hdc, newbrush));
 
         const int DINV = 3;
         ::PatBlt(hdc, rcClip.left, rcClip.top, rcClip.right - rcClip.left, DINV, PATINVERT);

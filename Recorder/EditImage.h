@@ -17,7 +17,7 @@ class CEditImageDlg : public CDialog
 {
 // Construction
 public:
-    CEditImageDlg(CWnd* pParent = NULL);   // standard constructor
+    CEditImageDlg(CWnd* pParent = NULL);
 
     void UpdateGUI();
     void PreModal(CTransparentWnd* transWnd);

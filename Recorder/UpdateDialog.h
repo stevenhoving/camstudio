@@ -8,7 +8,7 @@ class CUpdateDialog : public CDialogEx
     DECLARE_DYNAMIC(CUpdateDialog)
 
 public:
-    CUpdateDialog(CWnd* pParent = NULL);   // standard constructor
+    CUpdateDialog(CWnd* pParent = NULL);
     virtual ~CUpdateDialog();
 
 // Dialog Data

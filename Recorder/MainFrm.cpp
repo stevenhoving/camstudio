@@ -146,7 +146,7 @@ LRESULT CMainFrame::OnXNote(WPARAM wParam, LPARAM lParam)
         ->XNoteProcessWinMessage(nHiMod256, LOWORD(wParam), XNOTE_SOURCE_XNOTESTOPWATCH, (ULONG)lParam);
 
     return 0;
-} 
+}
 
 static UINT indicators[] = {
     ID_SEPARATOR // status line indicator

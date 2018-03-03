@@ -1,6 +1,6 @@
 #include "ClickQueue.hpp"
 
-volatile ClickQueue *ClickQueue::_instance = NULL;
+volatile ClickQueue *ClickQueue::_instance = nullptr;
 
 ClickQueue::ClickQueue()
 {
@@ -17,7 +17,7 @@ ClickQueue::Cleanup::~Cleanup()
     if (_instance)
     {
         delete _instance;
-        _instance = NULL;
+        _instance = nullptr;
     }
 }
 
@@ -36,9 +36,11 @@ __declspec(dllexport) void ClickQueue::Enqueue(LPMSLLHOOKSTRUCT pMSG)
     //    if (_queue.size() > 10)
     //        _queue.erase(_queue.begin()); // some protection from extensive clicking
     Lock();
-    if (_queue.size() == 0 || pMSG->time > _queue.back().time) // the latter shouldn't ever be evaluated if former is
-                                                               // true. don't play with compiler options!!!
+    if (_queue.empty() || pMSG->time > _queue.back().time)
+    { // the latter shouldn't ever be evaluated if former is
+      // true. don't play with compiler options!!!
         _queue.push_back(*pMSG);
+    }
     Unlock();
 }
 

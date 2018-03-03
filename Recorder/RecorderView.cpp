@@ -1250,7 +1250,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
         if (hfile == INVALID_HANDLE_VALUE)
         {
             //::MessageBox(NULL,"Unable to create new file. The file may be opened by another application. Please use
-            //another filename.","Note",MB_OK | MB_ICONEXCLAMATION);
+            // another filename.","Note",MB_OK | MB_ICONEXCLAMATION);
             MessageOut(m_hWnd, IDS_STRING_NOCREATEWFILE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             ::PostMessage(hWndGlobal, WM_USER_GENERIC, 0, 0);
             return 0;
@@ -1332,7 +1332,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
                 DeleteFile(strTempAudioWavFilePath);
 
                 //::MessageBox(NULL,"Your AVI movie will not contain a soundtrack. CamStudio is unable to merge the
-                //video with audio.","Note",MB_OK | MB_ICONEXCLAMATION);
+                // video with audio.","Note",MB_OK | MB_ICONEXCLAMATION);
                 MessageOut(m_hWnd, IDS_STRING_NOSOUNDTRACK, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
                 break;
             case 5: // recover both files, but as separate files

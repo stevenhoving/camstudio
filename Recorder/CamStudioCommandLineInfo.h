@@ -12,10 +12,10 @@
 class CCamStudioCommandLineInfo : public CCommandLineInfo
 {
 public:
-    CCamStudioCommandLineInfo(void);
-    virtual ~CCamStudioCommandLineInfo(void);
+    CCamStudioCommandLineInfo();
+    ~CCamStudioCommandLineInfo() override;
 
-    void ParseParam(const TCHAR* pszParam, BOOL bFlag, BOOL bLast);
+    void ParseParam(const TCHAR* pszParam, BOOL bFlag, BOOL bLast) override;
 
     bool isHelp() const    {return m_bHelp;}
     int CodecID() const    {return m_iCodecID;}

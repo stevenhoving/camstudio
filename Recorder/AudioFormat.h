@@ -14,9 +14,9 @@
 class CAudioFormatDlg : public CDialog
 {
     // Construction
-    CAudioFormatDlg(CWnd* pParent = NULL);   // standard constructor; disallowed
+    CAudioFormatDlg(CWnd* pParent = NULL); //disallowed
 public:
-    CAudioFormatDlg(const sAudioFormat& cFmt, CWnd* pParent = NULL);   // standard constructor
+    CAudioFormatDlg(const sAudioFormat& cFmt, CWnd* pParent = NULL);
 
     const sAudioFormat& Format() const    {return m_cFmt;}
 

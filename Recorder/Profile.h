@@ -14,12 +14,12 @@ CProfile is obsolete
 // classes help standardize the process of adding new values amd simplify
 // accessing values. The classes support a number of standard types (int,
 // bool, long, double, CString), composite types (LOGFONT, TextAttributes,
-// ImageAttributes), and alias types (LANGID, COLORREF). 
+// ImageAttributes), and alias types (LANGID, COLORREF).
 //
 // The CProfile class defines the interface to a *.ini file. Entries in the
 // files are composed of string-value pairs (ValuePair) which are associated
 // with a key ID (IDValuePair). The IDValuePair items are collected by ID
-// in a CGroupType. The CGroupType are then collected into a CSectionGroup 
+// in a CGroupType. The CGroupType are then collected into a CSectionGroup
 // for each type the section supports. CProfileSection then collectes all the
 // CSectionGroup for that section and finally, the CProfileSections are
 // collected in the CProfile class.
@@ -27,7 +27,7 @@ CProfile is obsolete
 // Adding a profile entry for an existing type
 // 1.    Define a new eProfileID value for the entry and add it to the end of
 //        enumerated values for the eProfileID, leaving MAX_PROFILE_ID as the
-//        last value. The value must be unique or the compiler will complain. 
+//        last value. The value must be unique or the compiler will complain.
 // 2.    Initialize the new entry in CProfile::InitSections by calling Add
 //        with the eProfileID, the entry string, and the default value. You
 //        can add the entry to a specific section or default to the application
@@ -37,8 +37,6 @@ CProfile is obsolete
 // Adding a new type
 //
 /////////////////////////////////////////////////////////////////////////////
-#ifndef PROFILE_H    // because pragma once is compiler specific
-#define PROFILE_H
 #pragma once
 
 #include "CStudioLib.h"
@@ -48,20 +46,25 @@ CProfile is obsolete
 
 #include <vector>
 
-void ReadFont(Setting& s, LOGFONT& f);
-void ReadIA(Setting& s, ImageAttributes& iaResult);
-void ReadTA(Setting& s, TextAttributes& taResult);
+void ReadFont(Setting &s, LOGFONT &f);
+void ReadIA(Setting &s, ImageAttributes &iaResult);
+void ReadTA(Setting &s, TextAttributes &taResult);
 
-void WriteFont(Setting& s, LOGFONT& f);
-void WriteIA(Setting& s, ImageAttributes& iaResult);
-void WriteTA(Setting& s, TextAttributes& taResult);
+void WriteFont(Setting &s, LOGFONT &f);
+void WriteIA(Setting &s, ImageAttributes &iaResult);
+void WriteTA(Setting &s, TextAttributes &taResult);
 
 template <class T>
-void UpdateSetting(Setting& s, const char* name, T& value, Setting::Type t) {
+void UpdateSetting(Setting &s, const char *name, T &value, Setting::Type t)
+{
     if (s.exists(name))
+    {
         s[name] = value;
+    }
     else
+    {
         s.add(name, t) = value;
+    }
 }
 
 #define LEGACY_PROFILE_DISABLE
@@ -69,15 +72,17 @@ void UpdateSetting(Setting& s, const char* name, T& value, Setting::Type t) {
 // video options
 enum eSynchType
 {
-    NOSYNCH
-    , VIDEOFIRST
-    , AUDIOFIRST
+    NOSYNCH,
+    VIDEOFIRST,
+    AUDIOFIRST
 };
 
 // POD to hold them
 struct sVideoOpts
 {
-    sVideoOpts()
+    sVideoOpts() = default;
+
+    sVideoOpts(const sVideoOpts &rhs)
         : m_bRestrictVideoCodecs(false)
         , m_bAutoAdjust(true)
         , m_bLock(true)
@@ -93,98 +98,93 @@ struct sVideoOpts
         , m_dwCompfccHandler(0UL)
         , m_dwCompressorStateIsFor(0UL)
         , m_dwCompressorStateSize(0UL)
-        , m_pState(0)
-        , m_cStartRecordingString("")
-    {
-    }
-    sVideoOpts(const sVideoOpts& rhs)
-        : m_bRestrictVideoCodecs(false)
-        , m_bAutoAdjust(true)
-        , m_bLock(true)
-        , m_bRoundDown(false)
-        , m_iValueAdjust(1)
-        , m_iTimeLapse(50)
-        , m_iFramesPerSecond(20)
-        , m_iKeyFramesEvery(100)
-        , m_iCompQuality(7000)
-        , m_iSelectedCompressor(0)
-        , m_iShiftType(NOSYNCH)
-        , m_iTimeShift(100)
-        , m_dwCompfccHandler(0UL)
-        , m_dwCompressorStateIsFor(0UL)
-        , m_dwCompressorStateSize(0UL)
-        , m_pState(0)
+        , m_pState(nullptr)
         , m_cStartRecordingString("")
     {
         *this = rhs;
     }
+
     virtual ~sVideoOpts()
     {
-        if (m_pState)
-            delete [] m_pState;
+        delete[] m_pState;
     }
 
-    sVideoOpts& operator=(const sVideoOpts& rhs)
+    sVideoOpts &operator=(const sVideoOpts &rhs)
     {
         if (this == &rhs)
+        {
             return *this;
+        }
 
-        m_bRestrictVideoCodecs        = rhs.m_bRestrictVideoCodecs;
-        m_bAutoAdjust                = rhs.m_bAutoAdjust;
-        m_bLock                        = rhs.m_bLock;
-        m_bRoundDown                = rhs.m_bRoundDown;
-        m_iValueAdjust                = rhs.m_iValueAdjust;
-        m_iTimeLapse                = rhs.m_iTimeLapse;
-        m_iFramesPerSecond            = rhs.m_iFramesPerSecond;
-        m_iKeyFramesEvery            = rhs.m_iKeyFramesEvery;
-        m_iCompQuality                = rhs.m_iCompQuality;
-        m_iSelectedCompressor        = rhs.m_iSelectedCompressor;
-        m_iShiftType                = rhs.m_iShiftType;
-        m_iTimeShift                = rhs.m_iTimeShift;
-        m_dwCompfccHandler            = rhs.m_dwCompfccHandler;
-        m_dwCompressorStateIsFor    = rhs.m_dwCompressorStateIsFor;
+        m_bRestrictVideoCodecs = rhs.m_bRestrictVideoCodecs;
+        m_bAutoAdjust = rhs.m_bAutoAdjust;
+        m_bLock = rhs.m_bLock;
+        m_bRoundDown = rhs.m_bRoundDown;
+        m_iValueAdjust = rhs.m_iValueAdjust;
+        m_iTimeLapse = rhs.m_iTimeLapse;
+        m_iFramesPerSecond = rhs.m_iFramesPerSecond;
+        m_iKeyFramesEvery = rhs.m_iKeyFramesEvery;
+        m_iCompQuality = rhs.m_iCompQuality;
+        m_iSelectedCompressor = rhs.m_iSelectedCompressor;
+        m_iShiftType = rhs.m_iShiftType;
+        m_iTimeShift = rhs.m_iTimeShift;
+        m_dwCompfccHandler = rhs.m_dwCompfccHandler;
+        m_dwCompressorStateIsFor = rhs.m_dwCompressorStateIsFor;
 
         State(rhs.m_pState, rhs.m_dwCompressorStateSize);
-        m_cStartRecordingString        = rhs.m_cStartRecordingString;
+        m_cStartRecordingString = rhs.m_cStartRecordingString;
 
         return *this;
     }
 
-    DWORD StateSize() const    {return m_dwCompressorStateSize;}
+    DWORD StateSize() const
+    {
+        return m_dwCompressorStateSize;
+    }
+
     // n.b. Keep LPCVOID definition; good for memory corruption check
-    //LPCVOID State() const    {return m_pState;}
-    LPVOID State() const    {return m_pState;}
+    // LPCVOID State() const    {return m_pState;}
+    LPVOID State() const
+    {
+        return m_pState;
+    }
+
     LPVOID State(DWORD dwStateSize)
     {
-        if (m_pState) {
-            delete [] m_pState;
-            m_pState = 0;
+        if (m_pState)
+        {
+            delete[] m_pState;
+            m_pState = nullptr;
             m_dwCompressorStateSize = 0L;
         }
 
         ASSERT(0L == m_dwCompressorStateSize);
-        if (dwStateSize < 1L) {
+        if (dwStateSize < 1L)
+        {
             return m_pState;
         }
         m_dwCompressorStateSize = dwStateSize;
-        // TODO, Possible memory leak, where is the delete operation of the new below done?
+        // TODO: , Possible memory leak, where is the delete operation of the new below done?
         m_pState = new char[m_dwCompressorStateSize];
         return m_pState;
     }
+
     LPVOID State(LPCVOID pState, DWORD dwStateSize)
     {
         State(pState ? dwStateSize : 0L);
-        if (!pState || (dwStateSize < 1L)) {
+        if (!pState || (dwStateSize < 1L))
+        {
             return m_pState;
         }
-        
+
         ::_memccpy(m_pState, pState, 1, m_dwCompressorStateSize);
 
         return m_pState;
     }
+
     // CAVEAT!!!  CAVEAT!!!  CAVEAT!!!  CAVEAT!!!
     // Caller of CopyState() must delete the allocated memory!
-    //LPVOID CopyState()
+    // LPVOID CopyState()
     //{
     //    if (!m_pState)
     //        return m_pState;
@@ -197,7 +197,7 @@ struct sVideoOpts
     //    return lpOldState;
     //}
 
-    bool Read(Setting& cProfile)
+    bool Read(Setting &cProfile)
     {
         cProfile.lookupValue("restrictVideoCodecs", m_bRestrictVideoCodecs);
         cProfile.lookupValue("AutoAdjust", m_bAutoAdjust);
@@ -210,100 +210,98 @@ struct sVideoOpts
         cProfile.lookupValue("CompQuality", m_iCompQuality);
         cProfile.lookupValue("shiftType", m_iShiftType);
         cProfile.lookupValue("timeshift", m_iTimeShift);
-        cProfile.lookupValue("CompFCCHandler", (unsigned&)m_dwCompfccHandler);
-        cProfile.lookupValue("CompressorStateIsFor", (unsigned&)m_dwCompressorStateIsFor);
+        cProfile.lookupValue("CompFCCHandler", (unsigned &)m_dwCompfccHandler);
+        cProfile.lookupValue("CompressorStateIsFor", (unsigned &)m_dwCompressorStateIsFor);
         DWORD dwSize = 0UL;
-        cProfile.lookupValue("CompressorStateSize", (unsigned&)dwSize);
+        cProfile.lookupValue("CompressorStateSize", (unsigned &)dwSize);
         State(dwSize);
-        //CString  m_cStartRecordingString = "";
+        // CString  m_cStartRecordingString = "";
         m_cStartRecordingString = "";
         return true;
     }
-    bool Write(Setting& cProfile)
+
+    bool Write(Setting &cProfile)
     {
-        UpdateSetting(cProfile,"restrictVideoCodecs", m_bRestrictVideoCodecs, Setting::TypeBoolean);
-        UpdateSetting(cProfile,"AutoAdjust", m_bAutoAdjust, Setting::TypeBoolean);
+        UpdateSetting(cProfile, "restrictVideoCodecs", m_bRestrictVideoCodecs, Setting::TypeBoolean);
+        UpdateSetting(cProfile, "AutoAdjust", m_bAutoAdjust, Setting::TypeBoolean);
         UpdateSetting(cProfile, "LockCaptureAndPlayback", m_bLock, Setting::TypeBoolean);
-        UpdateSetting(cProfile,"RoundDown", m_bRoundDown, Setting::TypeBoolean);
-        UpdateSetting(cProfile,"ValueAdjust", m_iValueAdjust, Setting::TypeInt);
-        UpdateSetting(cProfile,"TimeLapse", m_iTimeLapse, Setting::TypeInt);
-        UpdateSetting(cProfile,"fps", m_iFramesPerSecond, Setting::TypeInt);
-        UpdateSetting(cProfile,"KeyFramesEvery", m_iKeyFramesEvery, Setting::TypeInt);
-        UpdateSetting(cProfile,"CompQuality", m_iCompQuality, Setting::TypeInt);
-        UpdateSetting(cProfile,"shiftType", m_iShiftType, Setting::TypeInt);
-        UpdateSetting(cProfile,"timeshift", m_iTimeShift, Setting::TypeInt);
-        UpdateSetting(cProfile,"CompFCCHandler", (long&)m_dwCompfccHandler, Setting::TypeInt);
-        UpdateSetting(cProfile,"CompressorStateIsFor", (long&)m_dwCompressorStateIsFor, Setting::TypeInt);
-        UpdateSetting(cProfile,"CompressorStateSize", (long&)m_dwCompressorStateSize, Setting::TypeInt);
+        UpdateSetting(cProfile, "RoundDown", m_bRoundDown, Setting::TypeBoolean);
+        UpdateSetting(cProfile, "ValueAdjust", m_iValueAdjust, Setting::TypeInt);
+        UpdateSetting(cProfile, "TimeLapse", m_iTimeLapse, Setting::TypeInt);
+        UpdateSetting(cProfile, "fps", m_iFramesPerSecond, Setting::TypeInt);
+        UpdateSetting(cProfile, "KeyFramesEvery", m_iKeyFramesEvery, Setting::TypeInt);
+        UpdateSetting(cProfile, "CompQuality", m_iCompQuality, Setting::TypeInt);
+        UpdateSetting(cProfile, "shiftType", m_iShiftType, Setting::TypeInt);
+        UpdateSetting(cProfile, "timeshift", m_iTimeShift, Setting::TypeInt);
+        UpdateSetting(cProfile, "CompFCCHandler", (long &)m_dwCompfccHandler, Setting::TypeInt);
+        UpdateSetting(cProfile, "CompressorStateIsFor", (long &)m_dwCompressorStateIsFor, Setting::TypeInt);
+        UpdateSetting(cProfile, "CompressorStateSize", (long &)m_dwCompressorStateSize, Setting::TypeInt);
         return true;
     }
 
-    bool m_bRestrictVideoCodecs;
-    bool m_bAutoAdjust;
-    bool m_bLock;
-    bool m_bRoundDown;
-    int m_iValueAdjust;
-    int m_iTimeLapse;
-    int m_iFramesPerSecond;
-    int m_iKeyFramesEvery;
-    int m_iCompQuality;
-    int m_iSelectedCompressor;
-    int m_iShiftType;    // NOSYNCH, VIDEOFIRST, AUDIOFIRST
-    int m_iTimeShift;
-    FOURCC m_dwCompfccHandler;
-    FOURCC m_dwCompressorStateIsFor;
-    CString m_cStartRecordingString;
+    bool m_bRestrictVideoCodecs{false};
+    bool m_bAutoAdjust{true};
+    bool m_bLock{true};
+    bool m_bRoundDown{false};
+    int m_iValueAdjust{1};
+    int m_iTimeLapse{50};
+    int m_iFramesPerSecond{20};
+    int m_iKeyFramesEvery{100};
+    int m_iCompQuality{7000};
+    int m_iSelectedCompressor{0};
+    int m_iShiftType{NOSYNCH}; // NOSYNCH, VIDEOFIRST, AUDIOFIRST
+    int m_iTimeShift{100};
+    FOURCC m_dwCompfccHandler{0UL};
+    FOURCC m_dwCompressorStateIsFor{0UL};
+    CString m_cStartRecordingString{""};
+
 protected:
-    LPVOID m_pState;
-    DWORD m_dwCompressorStateSize;
+    LPVOID m_pState{0};
+    DWORD m_dwCompressorStateSize{0UL};
 };
 extern sVideoOpts cVideoOpts;
 
 enum eCaptureType
 {
-    CAPTURE_FIXED
-    , CAPTURE_VARIABLE
-    , CAPTURE_FULLSCREEN
-    , CAPTURE_WINDOW
-    , CAPTURE_ALLSCREENS
+    CAPTURE_FIXED,
+    CAPTURE_VARIABLE,
+    CAPTURE_FULLSCREEN,
+    CAPTURE_WINDOW,
+    CAPTURE_ALLSCREENS
 };
 
 // miscellaneous options
 struct sRegionOpts
 {
-    sRegionOpts()
-        : m_bFixedCapture(false)
-        , m_bSupportMouseDrag(false)
-        , m_iMouseCaptureMode(CAPTURE_FIXED)
-        , m_iCaptureLeft(100)
-        , m_iCaptureTop(100)
-        , m_iCaptureWidth(320)
-        , m_iCaptureHeight(240)
-    {
-    }
-    sRegionOpts(const sRegionOpts& rhs)
+    sRegionOpts() = default;
+
+    sRegionOpts(const sRegionOpts &rhs)
     {
         *this = rhs;
     }
-    sRegionOpts& operator=(const sRegionOpts& rhs)
+
+    sRegionOpts &operator=(const sRegionOpts &rhs)
     {
         if (this == &rhs)
+        {
             return *this;
+        }
 
-        m_bFixedCapture        = rhs.m_bFixedCapture;
-        m_bSupportMouseDrag    = rhs.m_bSupportMouseDrag;
-        m_iMouseCaptureMode    = rhs.m_iMouseCaptureMode;
-        m_iCaptureLeft        = rhs.m_iCaptureLeft;
-        m_iCaptureTop        = rhs.m_iCaptureTop;
-        m_iCaptureWidth        = rhs.m_iCaptureWidth;
-        m_iCaptureHeight    = rhs.m_iCaptureHeight;
+        m_bFixedCapture = rhs.m_bFixedCapture;
+        m_bSupportMouseDrag = rhs.m_bSupportMouseDrag;
+        m_iMouseCaptureMode = rhs.m_iMouseCaptureMode;
+        m_iCaptureLeft = rhs.m_iCaptureLeft;
+        m_iCaptureTop = rhs.m_iCaptureTop;
+        m_iCaptureWidth = rhs.m_iCaptureWidth;
+        m_iCaptureHeight = rhs.m_iCaptureHeight;
         return *this;
     }
-    bool Read(Setting& cProfile)
+
+    bool Read(Setting &cProfile)
     {
         cProfile.lookupValue("FixedCapture", m_bFixedCapture);
         cProfile.lookupValue("SupportMouseDrag", m_bSupportMouseDrag);
-        cProfile.lookupValue("MouseCaptureMode", m_iMouseCaptureMode);        
+        cProfile.lookupValue("MouseCaptureMode", m_iMouseCaptureMode);
         cProfile.lookupValue("Left", m_iCaptureLeft);
         cProfile.lookupValue("Top", m_iCaptureTop);
         cProfile.lookupValue("Width", m_iCaptureWidth);
@@ -311,116 +309,137 @@ struct sRegionOpts
 
         return true;
     }
-    bool Write(Setting& cProfile)
+
+    bool Write(Setting &cProfile)
     {
-        UpdateSetting(cProfile,"FixedCapture", m_bFixedCapture, Setting::TypeBoolean);
-        UpdateSetting(cProfile,"SupportMouseDrag", m_bSupportMouseDrag, Setting::TypeBoolean);
-        UpdateSetting(cProfile,"MouseCaptureMode", m_iMouseCaptureMode, Setting::TypeInt);        
-        UpdateSetting(cProfile,"Left", m_iCaptureLeft, Setting::TypeInt);
-        UpdateSetting(cProfile,"Top", m_iCaptureTop, Setting::TypeInt);
-        UpdateSetting(cProfile,"Width", m_iCaptureWidth, Setting::TypeInt);
-        UpdateSetting(cProfile,"Height", m_iCaptureHeight, Setting::TypeInt);
+        UpdateSetting(cProfile, "FixedCapture", m_bFixedCapture, Setting::TypeBoolean);
+        UpdateSetting(cProfile, "SupportMouseDrag", m_bSupportMouseDrag, Setting::TypeBoolean);
+        UpdateSetting(cProfile, "MouseCaptureMode", m_iMouseCaptureMode, Setting::TypeInt);
+        UpdateSetting(cProfile, "Left", m_iCaptureLeft, Setting::TypeInt);
+        UpdateSetting(cProfile, "Top", m_iCaptureTop, Setting::TypeInt);
+        UpdateSetting(cProfile, "Width", m_iCaptureWidth, Setting::TypeInt);
+        UpdateSetting(cProfile, "Height", m_iCaptureHeight, Setting::TypeInt);
         return true;
     }
 
-    bool isCaptureMode(const eCaptureType eType) const {return eType == m_iMouseCaptureMode;}
+    bool isCaptureMode(const eCaptureType eType) const
+    {
+        return eType == m_iMouseCaptureMode;
+    }
 
-    bool m_bFixedCapture;        // TODO: should be m_bFixed
-    bool m_bSupportMouseDrag;    // TODO: should be m_bMouseDrag
-    int m_iMouseCaptureMode;    // TODO: Mouse??? Just CaptureMode.
+    bool m_bFixedCapture{false};            // TODO: should be m_bFixed
+    bool m_bSupportMouseDrag{false};        // TODO: should be m_bMouseDrag
+    int m_iMouseCaptureMode{CAPTURE_FIXED}; // TODO: Mouse??? Just CaptureMode.
     // TODO: should be a CRect
-    int m_iCaptureLeft;            // TODO: should be m_iLeft (if not CRect)
-    int m_iCaptureTop;            // TODO: should be m_iTop (if not CRect)
-    int m_iCaptureWidth;        // TODO: should be m_iWidth (if not CRect)
-    int m_iCaptureHeight;        // TODO: should be m_iHeight (if not CRect)
+    int m_iCaptureLeft{100};   // TODO: should be m_iLeft (if not CRect)
+    int m_iCaptureTop{100};    // TODO: should be m_iTop (if not CRect)
+    int m_iCaptureWidth{320};  // TODO: should be m_iWidth (if not CRect)
+    int m_iCaptureHeight{240}; // TODO: should be m_iHeight (if not CRect)
 };
 extern sRegionOpts cRegionOpts;
 
 struct sCaptionOpts
 {
-    sCaptionOpts()
-        : m_bAnnotation(false)
-        , m_taCaption(TOP_LEFT)
-    {
-    }
-    sCaptionOpts(const sCaptionOpts& rhs)
+    sCaptionOpts() = default;
+
+    sCaptionOpts(const sCaptionOpts &rhs)
     {
         *this = rhs;
     }
-    sCaptionOpts& operator=(const sCaptionOpts& rhs)
+
+    sCaptionOpts &operator=(const sCaptionOpts &rhs)
     {
         if (this == &rhs)
+        {
             return *this;
+        }
 
-        m_bAnnotation    = rhs.m_bAnnotation;
-        m_taCaption        = rhs.m_taCaption;
+        m_bAnnotation = rhs.m_bAnnotation;
+        m_taCaption = rhs.m_taCaption;
         return *this;
     }
-    bool Read(Setting& cProfile)
-    { // from Caption group
+    bool Read(Setting &cProfile)
+    {
+        // from Caption group
         cProfile.lookupValue("Annotation", m_bAnnotation);
         if (cProfile.exists("TextAttributes"))
-            ReadTA(cProfile["TextAttributes"],m_taCaption);
+        {
+            ReadTA(cProfile["TextAttributes"], m_taCaption);
+        }
         return true;
     }
-    bool Write(Setting& cProfile)
+
+    bool Write(Setting &cProfile)
     {
-        UpdateSetting(cProfile,"Annotation", m_bAnnotation,Setting::TypeBoolean);
-        Setting* s;
+        UpdateSetting(cProfile, "Annotation", m_bAnnotation, Setting::TypeBoolean);
+        Setting *s;
         if (cProfile.exists("TextAttributes"))
+        {
             s = &(cProfile["TextAttributes"]);
+        }
         else
+        {
             s = &(cProfile.add("TextAttributes", Setting::TypeGroup));
+        }
         WriteTA(*s, m_taCaption);
         return true;
     }
 
-    bool m_bAnnotation;
-    TextAttributes m_taCaption;
+    bool m_bAnnotation{false};
+    TextAttributes m_taCaption{TOP_LEFT};
 };
 extern sCaptionOpts cCaptionOpts;
 
 struct sTimestampOpts
 {
-    sTimestampOpts()
-        : m_bAnnotation(false)
-        , m_taTimestamp(TOP_LEFT)
-    {
-    }
-    sTimestampOpts(const sTimestampOpts& rhs)
+    sTimestampOpts() = default;
+
+    sTimestampOpts(const sTimestampOpts &rhs)
     {
         *this = rhs;
     }
-    sTimestampOpts& operator=(const sTimestampOpts& rhs)
+
+    sTimestampOpts &operator=(const sTimestampOpts &rhs)
     {
         if (this == &rhs)
+        {
             return *this;
+        }
 
-        m_bAnnotation    = rhs.m_bAnnotation;
-        m_taTimestamp    = rhs.m_taTimestamp;
+        m_bAnnotation = rhs.m_bAnnotation;
+        m_taTimestamp = rhs.m_taTimestamp;
         return *this;
     }
-    bool Read(Setting& cProfile)
-    {// TimeStamp
+
+    bool Read(Setting &cProfile)
+    {
+        // TimeStamp
         cProfile.lookupValue("Annotation", m_bAnnotation);
-        if(cProfile.exists("TextAttributes"))
-            ReadTA(cProfile["TextAttributes"],m_taTimestamp);
+        if (cProfile.exists("TextAttributes"))
+        {
+            ReadTA(cProfile["TextAttributes"], m_taTimestamp);
+        }
         return true;
     }
-    bool Write(Setting& cProfile)
+
+    bool Write(Setting &cProfile)
     {
-        UpdateSetting(cProfile,"Annotation", m_bAnnotation, Setting::TypeBoolean);
-        Setting* s;
+        UpdateSetting(cProfile, "Annotation", m_bAnnotation, Setting::TypeBoolean);
+        Setting *s;
         if (cProfile.exists("TextAttributes"))
+        {
             s = &(cProfile["TextAttributes"]);
+        }
         else
+        {
             s = &(cProfile.add("TextAttributes", Setting::TypeGroup));
+        }
         WriteTA(*s, m_taTimestamp);
         return true;
     }
 
-    bool m_bAnnotation;
-    TextAttributes m_taTimestamp;
+    bool m_bAnnotation{false};
+    TextAttributes m_taTimestamp{TOP_LEFT};
 };
 extern sTimestampOpts cTimestampOpts;
 
@@ -430,24 +449,16 @@ struct sXNoteOpts
     // settings here are the ones that are initially used for dialog screen..!
     sXNoteOpts()
 #ifdef CAMSTUDIO4XNOTE
-        : m_bAnnotation(true)                            // True, because I did not managed to read info from config    
-        , m_bXnoteRemoteControlMode(true)                // Default On: We want that externals as Xnote and Video motion alerts are recognoized by Camstudio.
+        : m_bAnnotation(true) // True, because I did not managed to read info from config
+        , m_bXnoteRemoteControlMode(
+              true) // Default On: We want that externals as Xnote and Video motion alerts are recognoized by Camstudio.
 #else
-        : m_bAnnotation(false)                            // False, default as it should be with stand Camstudio
-        , m_bXnoteRemoteControlMode(false)                // Default Off: Minimize the Xnote effects in standard Camstudio
-#endif
-        , m_taXNote(BOTTOM_LEFT)
-        , m_bXnoteDisplayCameraDelayMode(true)            // Default On: Show used delay in capture
-        , m_bXnoteDisplayCameraDelayDirection(true)            // Default On: Show used delay in capture
-        , m_ulXnoteCameraDelayInMilliSec(175UL)            // Average delay, default 175 ms
-        , m_cXnoteDisplayFormatString("(0000)..00:00:00.000")    // Default (Delay) hh:mm:ss.ttt, Not really a format. As long as the timer is not running this will be showed
-        , m_bXnoteRecordDurationLimitMode(true)            // Default On: Show used delay in capture
-        , m_ulXnoteRecordDurationLimitInMilliSec(1750UL)        // Average recording duration, default 1750 ms. Required otherwise recording lenght is zero
-        , m_ulStartXnoteTickCounter(0)                    // A non persistent member
-        , m_ulSnapXnoteTickCounter(0)                    // A non persistent member
-        , m_cSnapXnoteTimesString("")                    // A non persistent member
+        :                             m_taXNote(BOTTOM_LEFT)
+        ,             m_cXnoteDisplayFormatString("(0000)..00:00:00.000")    // Default (Delay) hh:mm:ss.ttt, Not really a format. As long as the timer is not running this will be showed
+        ,             m_cSnapXnoteTimesString("")                    // A non persistent member
     {
     }
+
     sXNoteOpts(const sXNoteOpts& rhs)
 // copy ala sVideoOpts
 #ifdef CAMSTUDIO4XNOTE
@@ -470,10 +481,12 @@ struct sXNoteOpts
     {
         *this = rhs;
     }
+
     sXNoteOpts& operator=(const sXNoteOpts& rhs)
     {
-        if (this == &rhs)
+        if (this == &rhs) {
             return *this;
+    }
 
         m_bAnnotation = rhs.m_bAnnotation;
         m_taXNote = rhs.m_taXNote;
@@ -501,15 +514,18 @@ struct sXNoteOpts
         return *this;
     }
     bool Read(Setting& cProfile)
-    { // XNote
-        //TRACE("## bool Read(Setting& cProfile\n");                                                                                
+    {
+        // XNote
+        //TRACE("## bool Read(Setting& cProfile\n");
         cProfile.lookupValue("Annotation", m_bAnnotation);
-        if (cProfile.exists("TextAttributes"))
+        if (cProfile.exists("TextAttributes")) {
             ReadTA(cProfile["TextAttributes"], m_taXNote);
+        }
 
-        if (cProfile.exists("font"))
+        if (cProfile.exists("font")) {
             ReadFont(cProfile["font"], m_taXNote.logfont);
-        
+        }
+
         cProfile.lookupValue("RemoteControl", m_bXnoteRemoteControlMode);
         cProfile.lookupValue("DisplayCameraDelay", m_bXnoteDisplayCameraDelayMode);
         cProfile.lookupValue("DisplayCameraDelayForwards", m_bXnoteDisplayCameraDelayDirection);
@@ -532,7 +548,7 @@ struct sXNoteOpts
             m_taXNote.textColor = RGB(0,0,0);
             m_taXNote.logfont.lfHeight = 12;
         }
-        //TRACE("## ----------------------------------------------------------------------------\n");            
+        //TRACE("## ----------------------------------------------------------------------------\n");
         //TRACE("## m_bAnnotation : [%d]\n", m_bAnnotation   );
         //TRACE("## m_taXNote.text : [%s]\n", m_taXNote.text.GetString()   );
         //TRACE("## m_bXnoteRemoteControlMode: [%d]\n", m_bXnoteRemoteControlMode  );
@@ -541,14 +557,15 @@ struct sXNoteOpts
         //TRACE("## m_cXnoteDisplayFormatString : [%s]\n", m_cXnoteDisplayFormatString   );
         //TRACE("## m_bXnoteRecordDurationLimitMode : [%d]\n", m_bXnoteRecordDurationLimitMode   );
         //TRACE("## m_ulXnoteRecordDurationLimitInMilliSec : [%lu]\n", m_ulXnoteRecordDurationLimitInMilliSec   );
-        //TRACE("## ----------------------------------------------------------------------------\n");            
+        //TRACE("## ----------------------------------------------------------------------------\n");
 
         return true;
     }
+
     bool Write(Setting& cProfile)
     {
         //TRACE("## bool Write(Setting& cProfile\n");            
-        //TRACE("## ----------------------------------------------------------------------------\n");            
+        //TRACE("## ----------------------------------------------------------------------------\n");
         //TRACE("## m_bAnnotation : [%d]\n", m_bAnnotation   );
         //TRACE("## m_taXNote.text : [%s]\n", m_taXNote.text.GetString()   );
         //TRACE("## m_bXnoteRemoteControlMode: [%d]\n", m_bXnoteRemoteControlMode  );
@@ -573,10 +590,12 @@ struct sXNoteOpts
 
         UpdateSetting(cProfile,"Annotation", m_bAnnotation, Setting::TypeBoolean);
         Setting* s;
-        if (cProfile.exists("TextAttributes"))
+        if (cProfile.exists("TextAttributes")) {
             s = &(cProfile["TextAttributes"]);
-        else
+        } else {
             s = &(cProfile.add("TextAttributes", Setting::TypeGroup));
+        }
+
         WriteTA(*s, m_taXNote);
 
         UpdateSetting(cProfile,"RemoteControl", m_bXnoteRemoteControlMode, Setting::TypeBoolean);
@@ -593,25 +612,25 @@ struct sXNoteOpts
         return true;
     }
 
-    bool    m_bAnnotation;
+    bool    m_bAnnotation{false};
     TextAttributes m_taXNote;
 
-    bool    m_bXnoteRemoteControlMode;
+    bool    m_bXnoteRemoteControlMode{false};
     CButton m_CheckBoxXnoteRemoteControlMode;
 
-    bool    m_bXnoteDisplayCameraDelayMode;
-    bool    m_bXnoteDisplayCameraDelayDirection;
-    ULONG    m_ulXnoteCameraDelayInMilliSec;
+    bool    m_bXnoteDisplayCameraDelayMode{true};
+    bool    m_bXnoteDisplayCameraDelayDirection{true};
+    ULONG    m_ulXnoteCameraDelayInMilliSec{175UL};
     CButton m_CheckBoxXnoteDisplayCameraDelayMode;
     CButton m_CheckBoxXnoteDisplayCameraDelayDirection;
 
-    bool    m_bXnoteRecordDurationLimitMode;
-    ULONG    m_ulXnoteRecordDurationLimitInMilliSec;
+    bool    m_bXnoteRecordDurationLimitMode{true};
+    ULONG    m_ulXnoteRecordDurationLimitInMilliSec{1750UL};
     CButton m_CheckBoxXnoteRecordDurationLimitMode;
 
     CString    m_cXnoteDisplayFormatString;
-    ULONG    m_ulStartXnoteTickCounter;
-    ULONG    m_ulSnapXnoteTickCounter;
+    ULONG    m_ulStartXnoteTickCounter{0};
+    ULONG    m_ulSnapXnoteTickCounter{0};
     CString    m_cSnapXnoteTimesString;
     CString m_cXnoteStartEntendedInfo;
 
@@ -624,8 +643,8 @@ extern sXNoteOpts cXNoteOpts;
 struct sWatermarkOpts
 {
     sWatermarkOpts()
-        : m_bAnnotation(false)
-        , m_iaWatermark(TOP_LEFT)
+        : 
+         m_iaWatermark(TOP_LEFT)
     {
     }
     sWatermarkOpts(const sWatermarkOpts& rhs)
@@ -634,8 +653,9 @@ struct sWatermarkOpts
     }
     sWatermarkOpts& operator=(const sWatermarkOpts& rhs)
     {
-        if (this == &rhs)
+        if (this == &rhs) {
             return *this;
+}
 
         m_bAnnotation    = rhs.m_bAnnotation;
         m_iaWatermark    = rhs.m_iaWatermark;
@@ -644,23 +664,25 @@ struct sWatermarkOpts
     bool Read(Setting& cProfile)
     {
         cProfile.lookupValue("Annotation", m_bAnnotation);
-        if (cProfile.exists("ImageAttributes"))
+        if (cProfile.exists("ImageAttributes")) {
             ReadIA(cProfile["ImageAttributes"], m_iaWatermark);
+}
         return true;
     }
     bool Write(Setting& cProfile)
     {
         UpdateSetting(cProfile,"Annotation", m_bAnnotation, Setting::TypeBoolean);
         Setting* s;
-        if (cProfile.exists("ImageAttributes"))
+        if (cProfile.exists("ImageAttributes")) {
             s = &(cProfile["ImageAttributes"]);
-        else
+        } else {
             s = &(cProfile.add("ImageAttributes", Setting::TypeGroup));
+        }
         WriteIA(*s, m_iaWatermark);
         return true;
     }
 
-    bool m_bAnnotation;
+    bool m_bAnnotation{false};
     ImageAttributes m_iaWatermark;
 };
 extern sWatermarkOpts cWatermarkOpts;
@@ -668,13 +690,13 @@ extern sWatermarkOpts cWatermarkOpts;
 
 // Audio format values
 // POD to hold them
-const int MILLISECONDS    = 0;
+const int MILLISECONDS  = 0;
 const int FRAMES        = 1;
 enum eAudioInput
 {
-    NONE
-    , MICROPHONE
-    , SPEAKERS
+    NONE,
+    MICROPHONE,
+    SPEAKERS
 };
 
 struct sAudioFormat
@@ -682,26 +704,10 @@ struct sAudioFormat
 public:
     sAudioFormat()
         : m_uDeviceID(WAVE_MAPPER)
-        , m_bCompression(true)
-        , m_bInterleaveFrames(false)
-        , m_bUseMCI(true)
-        , m_bPerformAutoSearch(true)
-        , m_iRecordAudio(NONE)
-        , m_iNumChannels(2)
-        , m_iBitsPerSample(16)
-        , m_iSamplesPerSeconds(44100)
-        , m_iInterleaveFactor(100)
         , m_iInterleavePeriod(MILLISECONDS)
-        , m_iMixerDevices(0)
-        , m_iSelectedMixer(0)
-        , m_iFeedbackLine(0)
-        , m_iFeedbackLineInfo(0)
-        , m_dwCbwFX(0)
-        , m_dwWaveinSelected(WAVE_FORMAT_4M16)
-        , m_pwfx(0)
-        , m_wFormatTag(0)
     {
     }
+
     sAudioFormat(const sAudioFormat& rhs)
         : m_uDeviceID(WAVE_MAPPER)
         , m_bCompression(true)
@@ -720,11 +726,12 @@ public:
         , m_iFeedbackLineInfo(0)
         , m_dwCbwFX(0)
         , m_dwWaveinSelected(WAVE_FORMAT_4M16)
-        , m_pwfx(0)
+        , m_pwfx(nullptr)
         , m_wFormatTag(0)
     {
         *this = rhs;
     }
+
     virtual ~sAudioFormat()
     {
         DeleteAudio();
@@ -741,42 +748,43 @@ public:
         cProfile.lookupValue("AudioDeviceID", m_uDeviceID);
         cProfile.lookupValue("AudioCompression", m_bCompression);
         cProfile.lookupValue("useMCI", m_bUseMCI);
-        cProfile.lookupValue("performAutoSearch", m_bPerformAutoSearch);        
-        cProfile.lookupValue("RecordAudio", m_iRecordAudio);        
+        cProfile.lookupValue("performAutoSearch", m_bPerformAutoSearch);
+        cProfile.lookupValue("RecordAudio", m_iRecordAudio);
         cProfile.lookupValue("cbwfx", (unsigned&)m_dwCbwFX);
         cProfile.lookupValue("waveinselected", (unsigned&)m_dwWaveinSelected);
         cProfile.lookupValue("audio_bits_per_sample", m_iBitsPerSample);
         cProfile.lookupValue("audio_num_channels", m_iNumChannels);
         cProfile.lookupValue("audio_samples_per_seconds", m_iSamplesPerSeconds);
-        cProfile.lookupValue("NumDev", m_iMixerDevices);        
+        cProfile.lookupValue("NumDev", m_iMixerDevices);
         cProfile.lookupValue("SelectedDev", m_iSelectedMixer);
         cProfile.lookupValue("CompressionFormatTag", m_wFormatTag);
         AudioFormat().wFormatTag = static_cast<WORD>(m_wFormatTag);
         cProfile.lookupValue("feedback_line", m_iFeedbackLine);
-        cProfile.lookupValue("feedback_line_info", m_iFeedbackLineInfo);        
+        cProfile.lookupValue("feedback_line_info", m_iFeedbackLineInfo);
         cProfile.lookupValue("InterleaveFrames", m_bInterleaveFrames);
         cProfile.lookupValue("InterleaveFactor", m_iInterleaveFactor);
         cProfile.lookupValue("InterleaveUnit", m_iInterleavePeriod);
         return true;
     }
+
     bool Write(Setting& cProfile)
     {
         UpdateSetting(cProfile,"AudioDeviceID", (long&)m_uDeviceID,Setting::TypeInt);
         UpdateSetting(cProfile,"AudioCompression", m_bCompression,Setting::TypeBoolean);
         UpdateSetting(cProfile,"useMCI", m_bUseMCI,Setting::TypeBoolean);
         UpdateSetting(cProfile,"performAutoSearch", m_bPerformAutoSearch,Setting::TypeBoolean);
-        UpdateSetting(cProfile,"RecordAudio", m_iRecordAudio,Setting::TypeInt);    
+        UpdateSetting(cProfile,"RecordAudio", m_iRecordAudio,Setting::TypeInt);
         UpdateSetting(cProfile,"cbwfx", (long&)m_dwCbwFX,Setting::TypeInt);
         UpdateSetting(cProfile,"waveinselected", (long&)m_dwWaveinSelected,Setting::TypeInt);
         UpdateSetting(cProfile,"audio_bits_per_sample", m_iBitsPerSample,Setting::TypeInt);
         UpdateSetting(cProfile,"audio_num_channels", m_iNumChannels,Setting::TypeInt);
         UpdateSetting(cProfile,"audio_samples_per_seconds", m_iSamplesPerSeconds,Setting::TypeInt);
-        UpdateSetting(cProfile,"NumDev", m_iMixerDevices,Setting::TypeInt);        
+        UpdateSetting(cProfile,"NumDev", m_iMixerDevices,Setting::TypeInt);
         UpdateSetting(cProfile,"SelectedDev", m_iSelectedMixer,Setting::TypeInt);
         m_wFormatTag = AudioFormat().wFormatTag;
         UpdateSetting(cProfile,"CompressionFormatTag", m_wFormatTag,Setting::TypeInt);
         UpdateSetting(cProfile,"feedback_line", m_iFeedbackLine,Setting::TypeInt);
-        UpdateSetting(cProfile,"feedback_line_info", m_iFeedbackLineInfo,Setting::TypeInt);        
+        UpdateSetting(cProfile,"feedback_line_info", m_iFeedbackLineInfo,Setting::TypeInt);
         UpdateSetting(cProfile,"InterleaveFrames", m_bInterleaveFrames,Setting::TypeBoolean);
         UpdateSetting(cProfile,"InterleaveFactor", m_iInterleaveFactor,Setting::TypeInt);
         UpdateSetting(cProfile,"InterleaveUnit", m_iInterleavePeriod,Setting::TypeInt);
@@ -786,57 +794,56 @@ public:
     bool isAudioFormat() const                {return (m_pwfx) ? true : false;}
     WAVEFORMATEX& AudioFormat()
     {
-        if (!m_pwfx) {
+        if (!m_pwfx)
+        {
             VERIFY(NewAudio());
         }
         return *m_pwfx;
     }
 
     bool DeleteAudio();
-    bool WriteAudio(const LPWAVEFORMATEX pwfx);
+    bool WriteAudio(LPWAVEFORMATEX pwfx);
     void BuildRecordingFormat();
 
-    bool m_bCompression;
-    bool m_bInterleaveFrames;
-    bool m_bUseMCI;
-    bool m_bPerformAutoSearch;    // TODO: not used
-    int m_iRecordAudio;
-    int m_iNumChannels;
-    int m_iBitsPerSample;
-    int m_iSamplesPerSeconds;
-    int m_iInterleaveFactor;
-    int m_iInterleavePeriod;
-    int m_iMixerDevices;
-    int m_iSelectedMixer;
-    int m_iFeedbackLine;
-    int m_iFeedbackLineInfo;
-    UINT m_uDeviceID;
-    int m_wFormatTag;
-    DWORD m_dwCbwFX;    // TODO; can be 
-    DWORD m_dwWaveinSelected;
+    bool m_bCompression{true};
+    bool m_bInterleaveFrames{false};
+    bool m_bUseMCI{true};
+    bool m_bPerformAutoSearch{true};    // TODO: not used
+    int m_iRecordAudio{NONE};
+    int m_iNumChannels{2};
+    int m_iBitsPerSample{16};
+    int m_iSamplesPerSeconds{44100};
+    int m_iInterleaveFactor{100};
+    int m_iInterleavePeriod{ MILLISECONDS }; // \todo convert to enum
+    int m_iMixerDevices{0};
+    int m_iSelectedMixer{0};
+    int m_iFeedbackLine{0};
+    int m_iFeedbackLineInfo{0};
+    UINT m_uDeviceID{ WAVE_MAPPER };
+    int m_wFormatTag{0};
+    DWORD m_dwCbwFX{0};    // TODO: ; can be
+    DWORD m_dwWaveinSelected{WAVE_FORMAT_4M16};
 private:
     bool NewAudio();
     bool CopyAudio(LPWAVEFORMATEX pwfx, DWORD dwCbwFX);
-    LPWAVEFORMATEX m_pwfx;
+    LPWAVEFORMATEX m_pwfx{0};
 };
 extern sAudioFormat cAudioFormat;
 
 struct sProducerOpts
 {
-    sProducerOpts()
-        : m_bLaunchPropPrompt(false)
-        , m_bLaunchHTMLPlayer(true)
-        , m_bDeleteAVIAfterUse(false)
-    {
-    }
+    sProducerOpts() = default;
+
     sProducerOpts(const sProducerOpts& rhs)
     {
         *this = rhs;
     }
+
     sProducerOpts& operator=(const sProducerOpts& rhs)
     {
-        if (this == &rhs)
+        if (this == &rhs) {
             return *this;
+        }
 
         m_bLaunchPropPrompt        = rhs.m_bLaunchPropPrompt;
         m_bLaunchHTMLPlayer        = rhs.m_bLaunchHTMLPlayer;
@@ -844,6 +851,7 @@ struct sProducerOpts
 
         return *this;
     }
+
     bool Read(Setting& cProfile)
     {
         cProfile.lookupValue("launchPropPrompt", m_bLaunchPropPrompt);
@@ -851,6 +859,7 @@ struct sProducerOpts
         cProfile.lookupValue("deleteAVIAfterUse", m_bDeleteAVIAfterUse);
         return true;
     }
+
     bool Write(Setting& cProfile)
     {
         UpdateSetting(cProfile,"launchPropPrompt", m_bLaunchPropPrompt,Setting::TypeBoolean);
@@ -859,56 +868,38 @@ struct sProducerOpts
         return true;
     }
 
-    bool m_bLaunchPropPrompt;
-    bool m_bLaunchHTMLPlayer;
-    bool m_bDeleteAVIAfterUse;
+    bool m_bLaunchPropPrompt{false};
+    bool m_bLaunchHTMLPlayer{true};
+    bool m_bDeleteAVIAfterUse{false};
 };
 extern sProducerOpts cProducerOpts;
 
 enum eVideoFormat
 {
-    ModeAVI
-    , ModeFlash
-    , ModeMP4
+    ModeAVI,
+    ModeFlash,
+    ModeMP4
 };
 enum eAVIPlay
 {
-    NO_PLAYER
-    , CAM1_PLAYER
-    , DEFAULT_PLAYER
-    , CAM2_PLAYER
+    NO_PLAYER,
+    CAM1_PLAYER,
+    DEFAULT_PLAYER,
+    CAM2_PLAYER
 };
 
 enum eViewType
 {
-    VIEW_NORMAL
-    , VIEW_COMPACT
-    , VIEW_BUTTON
+    VIEW_NORMAL,
+    VIEW_COMPACT,
+    VIEW_BUTTON
 };
 
 struct sProgramOpts
 {
     sProgramOpts()
-        : m_bAutoNaming(false)
-        , m_bCaptureTrans(true)
-        , m_bFlashingRect(true)
-        , m_bMinimizeOnStart(false)
-        , m_bSaveSettings(true)
-        , m_bAutoPan(false)
-        , m_bRecordPreset(false)
-        , m_iPresetTime(60)
-        , m_iMaxPan(20)
-        , m_iRecordingMode(ModeAVI)
-        , m_iLaunchPlayer(CAM2_PLAYER)
-        , m_iSpecifiedDirLength(0)
-        , m_iTempPathAccess(USE_INSTALLED_DIR)
+        : m_iTempPathAccess(USE_INSTALLED_DIR)
         , m_iOutputPathAccess(USE_INSTALLED_DIR)
-        , m_iThreadPriority(THREAD_PRIORITY_NORMAL)
-        , m_iViewType(VIEW_NORMAL)
-        , m_iSaveLen(0)
-        , m_iCursorLen(0)
-        , m_iShapeNameInt(0)
-        , m_iLayoutNameInt(0)
         , m_strSpecifiedDir("")
         , m_strDefaultOutDir("")
     {
@@ -919,8 +910,9 @@ struct sProgramOpts
     }
     sProgramOpts& operator=(const sProgramOpts& rhs)
     {
-        if (this == &rhs)
+        if (this == &rhs) {
             return *this;
+}
 
         m_bAutoNaming            = rhs.m_bAutoNaming;
         m_bCaptureTrans            = rhs.m_bCaptureTrans;
@@ -960,8 +952,9 @@ struct sProgramOpts
         cProfile.lookupValue("RecordingMode", m_iRecordingMode);
         cProfile.lookupValue("LaunchPlayer", m_iLaunchPlayer);
         std::string text;
-        if (cProfile.lookupValue("SaveDir", text))
+        if (cProfile.lookupValue("SaveDir", text)) {
             m_strSpecifiedDir = text.c_str();
+}
         cProfile.lookupValue("TempPathAccess", m_iTempPathAccess);
         cProfile.lookupValue("OutputPathAccess", m_iOutputPathAccess);
         cProfile.lookupValue("ThreadPriority", m_iThreadPriority);
@@ -1006,29 +999,29 @@ struct sProgramOpts
         return true;
     }
 
-    bool m_bAutoNaming;
-    bool m_bCaptureTrans;
-    bool m_bFlashingRect;
-    bool m_bMinimizeOnStart;
-    bool m_bSaveSettings;
-    bool m_bAutoPan;
-    bool m_bRecordPreset;
-    int m_iPresetTime;
-    int m_iMaxPan;
-    int m_iRecordingMode;
-    int m_iLaunchPlayer;
-    int m_iTempPathAccess;
-    int m_iOutputPathAccess;
-    int m_iThreadPriority;
-    int m_iViewType;    
-    int m_iSaveLen;
-    int m_iCursorLen;
-    int m_iShapeNameInt;
-    int m_iLayoutNameInt;
-    CString m_strSpecifiedDir;
-    CString m_strDefaultOutDir;
+    bool m_bAutoNaming{false};
+    bool m_bCaptureTrans{true};
+    bool m_bFlashingRect{true};
+    bool m_bMinimizeOnStart{false};
+    bool m_bSaveSettings{true};
+    bool m_bAutoPan{false};
+    bool m_bRecordPreset{false};
+    int m_iPresetTime{60};
+    int m_iMaxPan{20};
+    int m_iRecordingMode{ModeAVI};
+    int m_iLaunchPlayer{CAM2_PLAYER};
+    int m_iTempPathAccess{ USE_INSTALLED_DIR }; // \convert to enum
+    int m_iOutputPathAccess{ USE_INSTALLED_DIR }; // \convert to enum
+    int m_iThreadPriority{THREAD_PRIORITY_NORMAL};
+    int m_iViewType{VIEW_NORMAL};    
+    int m_iSaveLen{0};
+    int m_iCursorLen{0};
+    int m_iShapeNameInt{0};
+    int m_iLayoutNameInt{0};
+    CString m_strSpecifiedDir{""};
+    CString m_strDefaultOutDir{""};
 private:
-    int m_iSpecifiedDirLength;
+    int m_iSpecifiedDirLength{0};
 };
 extern sProgramOpts cProgramOpts;
 
@@ -1040,5 +1033,3 @@ extern int iFrameShift;
 
 //extern int iShapeNameLen;    // string length
 //extern int iLayoutNameLen;    // string length
-
-#endif    // PROFILE_H

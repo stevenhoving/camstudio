@@ -43,9 +43,9 @@ public:
 
 private:
     NOTIFYICONDATA m_nid;
-    BOOL m_bTrayIconVisible;
-    BOOL m_bMinimizeToTray;
-    BOOL m_bDefaultMenuItem;
-    UINT m_nDefaultMenuItem;
+    BOOL m_bTrayIconVisible{FALSE};
+    BOOL m_bMinimizeToTray{TRUE};
+    BOOL m_bDefaultMenuItem{0};
+    UINT m_nDefaultMenuItem{0};
     CMenu m_TrayMenu;
 };

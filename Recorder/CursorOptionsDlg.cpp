@@ -34,13 +34,22 @@ __inline __declspec(naked) DWORD COLORREFtoARGB(COLORREF, BYTE)
 }
 #endif
 
-// this is good enough for now...
-#define RCR(x, c) x=((((unsigned)x)>>1)|((x&1) ? (1<<((sizeof(x) * 8) -1)):0) | (((x&1))))
-DWORD COLORREFtoARGB(COLORREF color, BYTE inx)
+template <typename T>
+inline T rotate_carry_right(T rotateMe, unsigned int rotate)
+{
+    constexpr unsigned char bit_count = sizeof(T) * 8U;
+
+    const T carry_mask = ~(1u << (bit_count - rotate));
+
+    const auto shift = (bit_count - rotate) + 1; // +1 because of the carry
+    return (rotateMe >> rotate) | ((rotateMe << shift) & carry_mask);
+}
+
+DWORD COLORREFtoARGB(COLORREF color, BYTE fill)
 {
     color = _byteswap_ulong(color);
-    
-    RCR(color, 8);
+    memcpy(&color, &fill, 1);
+    color = rotate_carry_right(color, 8);
     return color;
 }
 

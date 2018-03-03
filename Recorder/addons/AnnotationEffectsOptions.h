@@ -17,14 +17,14 @@ class CAnnotationEffectsOptionsDlg : public CDialog
     DECLARE_DYNAMIC(CAnnotationEffectsOptionsDlg)
 
 public:
-    CAnnotationEffectsOptionsDlg(CWnd* pParent = NULL);   // standard constructor
-    virtual ~CAnnotationEffectsOptionsDlg();
+    CAnnotationEffectsOptionsDlg(CWnd* pParent = nullptr);
+    ~CAnnotationEffectsOptionsDlg() override;
 
 // Dialog Data
     enum { IDD = IDD_DIALOG_MAIN_EFFECTS_OPTIONS };
 
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
 
     DECLARE_MESSAGE_MAP()
 public:
@@ -83,7 +83,7 @@ public:
     afx_msg void OnBnClickedOk();
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 private:
-    bool IsStrftimeSafe(char * buffer);    // For user defined date/time layouts
+    bool IsStrftimeSafe(char * pbuffer);    // For user defined date/time layouts
 
 public:
     afx_msg void OnEnChangeFormatXnotepreview();    // The preview field used to display delay and xnote combination in the settings dialog

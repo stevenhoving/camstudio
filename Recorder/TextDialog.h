@@ -18,7 +18,7 @@ class CTextDlg : public CDialog
 {
 // Construction
 public:
-    CTextDlg(CWnd* pParent = NULL);   // standard constructor
+    CTextDlg(CWnd* pParent = NULL);
     
     void PreModal(CString* inStr, LOGFONT *inFont, COLORREF* inRgb, CWnd* parent,int* horzalign);
     void InvalidateTransWnd();

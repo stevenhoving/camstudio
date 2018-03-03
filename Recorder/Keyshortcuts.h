@@ -15,7 +15,7 @@ class CKeyshortcutsDlg : public CDialog
 {
 // Construction
 public:
-    CKeyshortcutsDlg(CWnd* pParent = NULL);   // standard constructor
+    CKeyshortcutsDlg(CWnd* pParent = NULL);
 
 // Dialog Data
     //{{AFX_DATA(CKeyshortcutsDlg)

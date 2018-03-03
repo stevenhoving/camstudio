@@ -20,8 +20,8 @@ class CEffectsOptions2Dlg : public CDialog
 
 // Construction
 public:
-    CEffectsOptions2Dlg(CWnd* pParent = NULL);   // standard constructor
-    virtual ~CEffectsOptions2Dlg();
+    CEffectsOptions2Dlg(CWnd* pParent = nullptr);
+    ~CEffectsOptions2Dlg() override;
 
 // Dialog Data
     //{{AFX_DATA(CEffectsOptions2Dlg)
@@ -32,14 +32,14 @@ public:
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CEffectsOptions2Dlg)
     protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
     //}}AFX_VIRTUAL
 
 // Implementation
 protected:
     // Generated message map functions
     //{{AFX_MSG(CEffectsOptions2Dlg)
-    virtual void OnOK();
+    void OnOK() override;
     afx_msg void OnPaint();
     afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
     int CEffectsOptions2Dlg::EffectsOptions2SetXPosRatio( int nPosition );
@@ -58,7 +58,7 @@ private:
     CSliderCtrl m_ctrlSliderBrightness;
     CSliderCtrl m_ctrlSliderContrast;
 public:
-    virtual BOOL OnInitDialog();
+    BOOL OnInitDialog() override;
 private:
 public:
     afx_msg void OnBnClickedOk();

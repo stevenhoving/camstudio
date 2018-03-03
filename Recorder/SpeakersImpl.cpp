@@ -832,8 +832,9 @@ BOOL ManualSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText, DWORD lineToSea
             // int ret = ::MessageBox(NULL,"We will now proceed with the manual search for the line used for recording
             // speakers output. Not all soundcards support this function. CamStudio will play several tones and then ask
             // you a series of questions. Please turn on your speakers now. \n\nIt is strongly recommended that you
-            // detach your microphone from your soundcard, or at least make sure that there is no background noise around
-            // your microphone. When you are ready, click 'OK'.","Manual Search",MB_OK | MB_ICONEXCLAMATION | MB_OK);
+            // detach your microphone from your soundcard, or at least make sure that there is no background noise
+            // around your microphone. When you are ready, click 'OK'.","Manual Search",MB_OK | MB_ICONEXCLAMATION |
+            // MB_OK);
             MessageOut(NULL, IDS_STRING_MANUALSEARCH, IDS_STRING_MANUAL, MB_OK | MB_ICONEXCLAMATION);
 
             // if (ret==IDNO) return FALSE;

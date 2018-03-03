@@ -8,7 +8,7 @@ class CProgressDlg : public CDialogEx
     DECLARE_DYNAMIC(CProgressDlg)
 
 public:
-    CProgressDlg(CWnd* pParent = NULL);   // standard constructor
+    CProgressDlg(CWnd* pParent = NULL);
     virtual ~CProgressDlg();
 
     BOOL Create(CWnd *pParent=NULL);

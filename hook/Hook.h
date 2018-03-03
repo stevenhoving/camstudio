@@ -18,10 +18,12 @@
            :key(k), mod(m)
        {}
        bool operator < (const HotKey& rhs) const {
-           if (key < rhs.key)
+           if (key < rhs.key) {
                return true;
-           if (key == rhs.key && mod < rhs.mod)
+}
+           if (key == rhs.key && mod < rhs.mod) {
                return true;
+}
            return false;
        }
    };

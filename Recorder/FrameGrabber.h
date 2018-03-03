@@ -43,12 +43,12 @@ public:
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CFrameGrabber)
     public:
-    virtual BOOL Create(int at_x, int at_y, CWnd *pParentWnd);
+    virtual BOOL Create(int x, int y, CWnd *pParentWnd);
     //}}AFX_VIRTUAL
 
 // Implementation
 public:
-    virtual ~CFrameGrabber();
+    ~CFrameGrabber() override;
 
     //must be a public method (for use with callbac)
     void SetImageData(LPVOID data);

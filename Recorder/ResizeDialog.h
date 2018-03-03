@@ -16,7 +16,7 @@ class CResizeDlg : public CDialog
 {
 // Construction
 public:
-    CResizeDlg(CWnd* pParent = NULL);   // standard constructor
+    CResizeDlg(CWnd* pParent = NULL);
     CTransparentWnd * m_transWnd;
     void PreModal(CTransparentWnd *transWnd);
 

@@ -17,7 +17,7 @@ class CFixedRegionDlg : public CDialog
 
 // Construction
 public:
-    CFixedRegionDlg(CWnd* pParent = NULL);   // standard constructor
+    CFixedRegionDlg(CWnd* pParent = NULL);
 
 // Dialog Data
     //{{AFX_DATA(CFixedRegionDlg)

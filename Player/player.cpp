@@ -20,8 +20,8 @@
 #include <windowsx.h>
 #include <mmsystem.h>
 #include <commdlg.h>
-#include <string.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdlib>
 #include <direct.h>
 #include <digitalv.h>
 #include <vfw.h>
@@ -29,14 +29,14 @@
 #include "resource.h"
 
 // Globals
-int defaultWidth = 800;       // Default width of the player window
-int defaultHeight = 600;      // Default height of the player window
-int miminumVfwVersion = 266;  // Minimum version of Video for Windows required by CSCP (266 = v1.1)
-BOOL bIsOpenMovie = FALSE;    // Whether a movie is open
-HWND hWndMCI;                 // Movie window handle
-HMENU hMenuBar = NULL;        // Menu bar handle
-HINSTANCE m_hInstance = NULL; // Instance of the player
-char playfiledir[300];        // File that is currently being played
+int defaultWidth = 800;          // Default width of the player window
+int defaultHeight = 600;         // Default height of the player window
+int miminumVfwVersion = 266;     // Minimum version of Video for Windows required by CSCP (266 = v1.1)
+BOOL bIsOpenMovie = FALSE;       // Whether a movie is open
+HWND hWndMCI;                    // Movie window handle
+HMENU hMenuBar = nullptr;        // Menu bar handle
+HINSTANCE m_hInstance = nullptr; // Instance of the player
+char playfiledir[300];           // File that is currently being played
 
 /*
  * Initialize stuff.
@@ -52,7 +52,7 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
     if (HIWORD(VideoForWindowsVersion()) < miminumVfwVersion)
     {
         // Oops, we are too old, blow out of here
-        MessageOut(NULL, IDS_STRING_VERSION, IDS_STRING_NOTE, MB_OK | MB_ICONSTOP);
+        MessageOut(nullptr, IDS_STRING_VERSION, IDS_STRING_NOTE, MB_OK | MB_ICONSTOP);
         return FALSE;
     }
 
@@ -66,15 +66,15 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
         wndclass.cbWndExtra = 0;
         wndclass.hInstance = hInstance;
         wndclass.hIcon = LoadIcon(hInstance, "APPICON");
-        wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
+        wndclass.hCursor = LoadCursor(nullptr, IDC_ARROW);
         wndclass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 2);
         wndclass.lpszMenuName = szAppNameInitial;
         wndclass.lpszClassName = szAppNameInitial;
 
         if (!RegisterClass(&wndclass))
         {
-            MessageOut(NULL, IDS_STRING_REGCLASS, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            return NULL;
+            MessageOut(nullptr, IDS_STRING_REGCLASS, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            return nullptr;
         }
     }
 
@@ -84,17 +84,17 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
     // Create the main window for the application
     POINT location = GetCenterCoords(defaultWidth, defaultHeight);
     HWND hWnd = CreateWindow(szAppNameInitial, szAppNameInitial, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, location.x,
-                             location.y, defaultWidth, iWinHeight, NULL, NULL, hInstance, NULL);
+                             location.y, defaultWidth, iWinHeight, nullptr, nullptr, hInstance, nullptr);
 
-    if (hWnd == NULL)
+    if (hWnd == nullptr)
     {
-        MessageOut(NULL, IDS_STRING_CREATEWIN, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-        return NULL;
+        MessageOut(nullptr, IDS_STRING_CREATEWIN, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+        return nullptr;
     }
 
-    hMenuBar = GetMenu(hWnd); // Get the menu bar handle
-    UpdateMenubar(hWnd);      // Update menu bar to disable Movie menu
-    UpdateTitle(hWnd, NULL);  // Update title to show correct title
+    hMenuBar = GetMenu(hWnd);   // Get the menu bar handle
+    UpdateMenubar(hWnd);        // Update menu bar to disable Movie menu
+    UpdateTitle(hWnd, nullptr); // Update title to show correct title
 
     // Show the main window
     ShowWindow(hWnd, nCmdShow);
@@ -103,13 +103,13 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
     // Create the movie window using MCIWnd that has no file open initially
     hWndMCI = MCIWndCreate(
         hWnd, hInstance,
-        WS_CHILD | WS_VISIBLE | MCIWNDF_NOOPEN | MCIWNDF_NOERRORDLG | MCIWNDF_NOTIFYSIZE | MCIWNDF_SHOWMODE, NULL);
+        WS_CHILD | WS_VISIBLE | MCIWNDF_NOOPEN | MCIWNDF_NOERRORDLG | MCIWNDF_NOTIFYSIZE | MCIWNDF_SHOWMODE, nullptr);
 
     if (!hWndMCI)
     {
         // We didn't get the movie window, destroy the app's window and bail out
         DestroyWindow(hWnd);
-        return NULL;
+        return nullptr;
     }
 
     MCIWndSetInactiveTimer(hWndMCI, 20);
@@ -131,7 +131,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
 
     m_hInstance = hInstance;
 
-    if ((hWnd = InitWindows(hInstance, hPrevInstance, nCmdShow)) == NULL)
+    if ((hWnd = InitWindows(hInstance, hPrevInstance, nCmdShow)) == nullptr)
     {
         return 0; // Died initializing, bail out
     }
@@ -142,7 +142,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
         PostMessage(hWnd, WM_USER_PLAY, 0, 0);
     }
 
-    while (GetMessage(&msg, NULL, 0, 0))
+    while (GetMessage(&msg, nullptr, 0, 0))
     {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
@@ -212,7 +212,7 @@ long FAR PASCAL WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     MCIWndClose(hWndMCI);         // close the movie
                     ShowWindow(hWndMCI, SW_HIDE); // hide the window
                     UpdateMenubar(hWnd);
-                    UpdateTitle(hWnd, NULL); // title bar back to plain
+                    UpdateTitle(hWnd, nullptr); // title bar back to plain
                     break;
                 case IDM_EXIT:
                     PostMessage(hWnd, WM_CLOSE, 0, 0L);
@@ -251,7 +251,7 @@ long FAR PASCAL WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     GetWindowRect(hWndMCI, &rc);
                     AdjustWindowRect(&rc, GetWindowLong(hWnd, GWL_STYLE), TRUE);
                     POINT location = GetCenterCoords(rc.right - rc.left, rc.bottom - rc.top);
-                    SetWindowPos(hWnd, NULL, location.x, location.y, rc.right - rc.left, rc.bottom - rc.top,
+                    SetWindowPos(hWnd, nullptr, location.x, location.y, rc.right - rc.left, rc.bottom - rc.top,
                                  SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE);
                     MoveWindow(hWnd, location.x, location.y, rc.right - rc.left, rc.bottom - rc.top, true);
                 }
@@ -261,7 +261,7 @@ long FAR PASCAL WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     int iWinHeight = GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYMENU) +
                                      (GetSystemMetrics(SM_CYFRAME) * 2) + defaultHeight;
                     POINT location = GetCenterCoords(defaultWidth, iWinHeight);
-                    SetWindowPos(hWnd, NULL, location.x, location.y, defaultWidth, iWinHeight,
+                    SetWindowPos(hWnd, nullptr, location.x, location.y, defaultWidth, iWinHeight,
                                  SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE);
                     MoveWindow(hWnd, location.x, location.y, defaultWidth, iWinHeight, true);
                 }
@@ -313,7 +313,7 @@ void UpdateTitle(HWND hWnd, LPSTR lpstrMovie)
     char achNewTitle[BUFFER_LENGTH]; // space for the title
     LoadString(m_hInstance, IDS_STRING_APPTITLE, szAppName, BUFFER_LENGTH);
 
-    if (lpstrMovie != NULL)
+    if (lpstrMovie != nullptr)
     {
         wsprintf((LPSTR)achNewTitle, "%s - %s", (LPSTR)szAppName, lpstrMovie);
     }
@@ -367,14 +367,14 @@ void OpenMCIMovieFile(HWND hWnd)
     UpdateMenubar(hWnd);
     if (bIsOpenMovie)
     {
-        UpdateTitle(hWnd, (LPSTR)ofn.lpstrFileTitle);
+        UpdateTitle(hWnd, ofn.lpstrFileTitle);
     }
     else
     {
-        UpdateTitle(hWnd, NULL);
+        UpdateTitle(hWnd, nullptr);
     }
 
-    InvalidateRect(hWnd, NULL, FALSE);
+    InvalidateRect(hWnd, nullptr, FALSE);
     UpdateWindow(hWnd);
 }
 
@@ -405,7 +405,7 @@ void OpenMCIMovieFileInit(HWND hWnd)
     UpdateMenubar(hWnd);
     UpdateTitle(hWnd, (LPSTR)playfiledir);
 
-    InvalidateRect(hWnd, NULL, FALSE);
+    InvalidateRect(hWnd, nullptr, FALSE);
     UpdateWindow(hWnd);
 }
 
@@ -421,7 +421,7 @@ BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case WM_COMMAND:
             if (wParam == 1055)
             {
-                ShellExecute(NULL, "open", "http://www.camstudio.org/", NULL, NULL, SW_SHOW);
+                ShellExecute(nullptr, "open", "http://www.camstudio.org/", nullptr, nullptr, SW_SHOW);
             }
             else
             {
@@ -458,7 +458,7 @@ int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus)
 /*
  * Get the size of the screen.
  */
-SIZE GetPrimaryScreenSize(void)
+SIZE GetPrimaryScreenSize()
 {
     SIZE s;
 

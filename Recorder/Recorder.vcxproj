@@ -315,7 +315,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
       <AdditionalDependencies>winmm.lib;vfw32.lib;msacm32.lib;libconfig++_d.lib;shfolder.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\$(Configuration)\$(ProjectName).exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)libconfig/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ManifestFile>$(SolutionDir)$(Configuration)\$(TargetFileName).intermediate.manifest</ManifestFile>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>

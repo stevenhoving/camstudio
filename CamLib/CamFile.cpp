@@ -9,14 +9,14 @@
 // n.b. Overloads DWORD GetTempPath(DWORD nBufferLength, LPTSTR lpBuffer)
 // There is a conversion from LPTSTR to CString
 // TODO: Rename; this is needlessly dangerous
-// TODO GetTempFolder does not contain the temp folder but returns the udf target folder. Hence the function name is not
-// correct..!
+// TODO: GetTempFolder does not contain the temp folder but returns the udf target folder. Hence the function
+// name is not correct..!
 /////////////////////////////////////////////////////////////////////////////
-CString GetTempFolder(int iAccess, const CString strFolder, bool bOut)
+CString GetTempFolder(int iAccess, const CString &strFolder, bool bOut)
 {
     if (iAccess == USE_USER_SPECIFIED_DIR)
     {
-        CString tempdir = strFolder;
+        const CString &tempdir = strFolder;
 
         // Verify the chosen temp path is valid
         WIN32_FIND_DATA wfd;
@@ -49,14 +49,14 @@ CString GetTempFolder(int iAccess, const CString strFolder, bool bOut)
         {
             tempdir.Format("%s\\My CamStudio Temp Files", GetMyDocumentsPath());
         }
-        if (!CreateDirectory(tempdir, NULL))
+        if (!CreateDirectory(tempdir, nullptr))
         {
             DWORD err = GetLastError();
             if (ERROR_ALREADY_EXISTS == err)
             {
                 return tempdir;
             }
-            else if (ERROR_PATH_NOT_FOUND == err)
+            if (ERROR_PATH_NOT_FOUND == err)
             {
                 return GetMyDocumentsPath();
             }
@@ -72,7 +72,9 @@ CString GetTempFolder(int iAccess, const CString strFolder, bool bOut)
         CString tempdir;
         tempdir = tempPath;
         if (0 < tempdir.ReverseFind('\\'))
+        {
             tempdir = tempdir.Left(tempdir.ReverseFind('\\'));
+        }
         return tempdir;
     }
 
@@ -108,7 +110,7 @@ CString GetProgPath()
 {
     // get root of Camstudio application
     TCHAR szTemp[300];
-    ::GetModuleFileName(NULL, szTemp, 300);
+    ::GetModuleFileName(nullptr, szTemp, 300);
     CString path = szTemp;
     if (0 < path.ReverseFind('\\'))
     {
@@ -130,11 +132,11 @@ CString GetMyVideoPath()
     szPath[0] = 0;
     CString path = szPath;
 
-    if (SUCCEEDED(SHGetFolderPath(NULL, folder, 0, 0, szPath)))
+    if (SUCCEEDED(SHGetFolderPath(nullptr, folder, nullptr, 0, szPath)))
     {
         path = szPath;
     }
-    else if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, 0, 0, szPath)))
+    else if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, szPath)))
     {
         path = szPath;
     }
@@ -149,7 +151,7 @@ CString GetMyDocumentsPath()
     szPath[0] = 0;
     CString path = szPath;
 
-    if (SUCCEEDED(SHGetFolderPath(NULL, folder, 0, 0, szPath)))
+    if (SUCCEEDED(SHGetFolderPath(nullptr, folder, nullptr, 0, szPath)))
     {
         path = szPath;
     }
@@ -167,11 +169,11 @@ CString GetAppDataPath()
     szPath[0] = 0;
     CString path = szPath;
 
-    if (SUCCEEDED(SHGetFolderPath(NULL, folder, 0, 0, szPath)))
+    if (SUCCEEDED(SHGetFolderPath(nullptr, folder, nullptr, 0, szPath)))
     {
         path = szPath;
     }
-    else if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, 0, 0, szPath)))
+    else if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, szPath)))
     {
         path = szPath;
     }
@@ -180,17 +182,21 @@ CString GetAppDataPath()
 
 bool DoesFileExist(const CString &name)
 {
-    return (GetFileAttributes(name.GetString()) == 0xffffffff) ? false : true;
+    return GetFileAttributes(name.GetString()) != 0xffffffff;
 }
 
 bool DoesDefaultOutDirExist(const CString &dir)
 {
     DWORD ftyp = GetFileAttributesA(dir);
     if (ftyp == INVALID_FILE_ATTRIBUTES)
+    {
         return false; // something is wrong with the path
+    }
 
     if (ftyp & FILE_ATTRIBUTE_DIRECTORY)
+    {
         return true; // this is a directory
+    }
 
     return false; // this is not a directory
 }

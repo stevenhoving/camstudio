@@ -18,7 +18,7 @@ BOOL WinYield()
     MSG msg;
     for (int i = 0; i < 3; i++)
     {
-        if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        if (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
             ::TranslateMessage(&msg);
             ::DispatchMessage(&msg);
@@ -36,7 +36,7 @@ LONG GetRegKey(HKEY key, LPCTSTR subkey, LPTSTR retdata)
     {
         long datasize = MAX_PATH;
         TCHAR data[MAX_PATH];
-        ::RegQueryValue(hkey, NULL, data, &datasize);
+        ::RegQueryValue(hkey, nullptr, data, &datasize);
         // _tcscpy (retdata, data);  // Cause C4996 warning, marked as deprecation candidate
         strcpy_s(retdata, sizeof(retdata), data); // Safe replacement
         ::RegCloseKey(hkey);

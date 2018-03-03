@@ -19,10 +19,10 @@ void OnError(LPCSTR lpszFunction)
     TRACE(_T("OnError: %s: %u\n"), lpszFunction, dwError);
     ::SetLastError(ERROR_SUCCESS); // reset the error
 
-    LPVOID lpMsgBuf = 0;
-    DWORD dwLen =
-        ::FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                        NULL, dwError, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL);
+    LPVOID lpMsgBuf = nullptr;
+    DWORD dwLen = ::FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, dwError,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPTSTR>(&lpMsgBuf), 0, nullptr);
 
     if (0 == dwLen)
     {
@@ -31,8 +31,9 @@ void OnError(LPCSTR lpszFunction)
         return;
     }
     // Display the error message and exit the process
-    LPVOID lpDisplayBuf = (LPVOID)::LocalAlloc(
-        LMEM_ZEROINIT, (lstrlen((LPCTSTR)lpMsgBuf) + lstrlen((LPCTSTR)lpszFunction) + 40) * sizeof(TCHAR));
+    auto lpDisplayBuf = static_cast<LPVOID>(::LocalAlloc(
+        LMEM_ZEROINIT,
+        (lstrlen(static_cast<LPCTSTR>(lpMsgBuf)) + lstrlen(static_cast<LPCTSTR>(lpszFunction)) + 40) * sizeof(TCHAR)));
     if (!lpDisplayBuf)
     {
         TRACE(_T("OnError: LocalAlloc error: %ud\n"), ::GetLastError());
@@ -40,7 +41,7 @@ void OnError(LPCSTR lpszFunction)
         ::LocalFree(lpMsgBuf);
         return;
     }
-    HRESULT hr = StringCchPrintf((LPTSTR)lpDisplayBuf, ::LocalSize(lpDisplayBuf) / sizeof(TCHAR),
+    HRESULT hr = StringCchPrintf(static_cast<LPTSTR>(lpDisplayBuf), ::LocalSize(lpDisplayBuf) / sizeof(TCHAR),
                                  TEXT("%s failed with error %d: %s"), lpszFunction, dwError, lpMsgBuf);
     if (SUCCEEDED(hr))
     {
@@ -70,7 +71,7 @@ void ErrMsg(char frmt[], ...)
 
     const COORD _80x50 = {80, 50};
     static BOOL startup = (AllocConsole(), SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), _80x50));
-    WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buf, lstrlen(buf), &written, 0);
+    WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buf, lstrlen(buf), &written, nullptr);
 }
 
 int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus)

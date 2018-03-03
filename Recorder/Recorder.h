@@ -73,8 +73,8 @@ public:
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CRecorderApp)
 public:
-    virtual BOOL InitInstance();
-    virtual int ExitInstance();
+    BOOL InitInstance() override;
+    int ExitInstance() override;
     //}}AFX_VIRTUAL
 
 // Implementation

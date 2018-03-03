@@ -11,7 +11,7 @@ class CProgressDlg : public CDialog
 {
 // Construction / Destruction
 public:
-    CProgressDlg(UINT nCaptionID = 0);   // standard constructor
+    CProgressDlg(UINT nCaptionID = 0);
     ~CProgressDlg();
 
     BOOL Create(CWnd *pParent=NULL);

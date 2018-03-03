@@ -47,7 +47,7 @@ public:
 	//
 	// szModule can be module path or folder path (i.e. ends by "\"), or NULL then
 	// current module name will be used.
-	BOOL Load(LPCTSTR szModule = NULL);
+	BOOL Load(LPCTSTR szModule = nullptr);
 
 	// Select language. Use LANG_NEUTRAL for language auto-detection.
 	BOOL Select(LANGID nLangID = LANG_NEUTRAL);
@@ -59,7 +59,7 @@ public:
 	CString LoadString(UINT nID) const;
 
 	// Translate entire menu
-	BOOL Translate(HMENU hMenu, UINT nMenuID, UINT* pnOrdinal = NULL) const;
+	BOOL Translate(HMENU hMenu, UINT nMenuID, UINT* pnOrdinal = nullptr) const;
 
 	// Translate entire dialog box
 	void Translate(HWND hDialog, UINT nDialogID) const;

@@ -53,7 +53,7 @@ __inline __declspec(naked) DWORD COLORREFtoARGB(COLORREF, BYTE)
 #endif
 
 // this is good enough for now...
-#define RCR(x, c) x=((((unsigned)x)>>1)|((x&1) ? (1<<((sizeof(x) * 8) -1)):0) | (((x&1))))
+#define RCR(x, c) x = ((((unsigned)x) >> 1) | ((x & 1) ? (1 << ((sizeof(x) * 8) - 1)) : 0) | (((x & 1))))
 DWORD COLORREFtoARGB(COLORREF color, BYTE inx)
 {
     color = _byteswap_ulong(color);

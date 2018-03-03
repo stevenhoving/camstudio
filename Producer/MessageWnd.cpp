@@ -494,8 +494,8 @@ void CTransparentWnd::DrawStuff(CDC *dc)
     else
     {
         auto temp_rect = CRect(clrect);
-        LPBITMAPINFO pbmiText = GetTextBitmap(pDC, &temp_rect, m_factor, &m_tracker.m_rect, &m_textfont,
-                                              m_textstring, NULL, NULL, rgb, m_horzalign);
+        LPBITMAPINFO pbmiText = GetTextBitmap(pDC, &temp_rect, m_factor, &m_tracker.m_rect, &m_textfont, m_textstring,
+                                              NULL, NULL, rgb, m_horzalign);
         // HBITMAP newbm = DrawResampleRGB(pDC, &CRect(clrect),m_factor, (LPBITMAPINFOHEADER) pbmiText);    //Cause:
         // C4189, init but not used
         (void)DrawResampleRGB(pDC, &temp_rect, m_factor,

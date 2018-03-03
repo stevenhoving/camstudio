@@ -11,11 +11,11 @@
 
 // actual cursor stuff http://msdn.microsoft.com/en-us/magazine/cc301524.aspx
 
-HHOOK mouseHookLL = NULL;
-HHOOK keyHook = NULL;
-HWND hotkeyWnd = NULL;
+HHOOK mouseHookLL = nullptr;
+HHOOK keyHook = nullptr;
+HWND hotkeyWnd = nullptr;
 
-HINSTANCE hInst = 0;
+HINSTANCE hInst = nullptr;
 
 // Keyboard stuff
 // HotKeyMap hkm; // write only during key's update, problem is unlikely
@@ -33,7 +33,7 @@ __declspec(dllexport) void setHotKeyWindow(HWND hWnd)
 
 // all that stuff is only here in mouse handler since it brakes double clicks when in the main app
 // I guess it is because of stealing thread
-HCURSOR m_hSavedCursor = NULL;
+HCURSOR m_hSavedCursor = nullptr;
 __declspec(dllexport) HCURSOR getCursor()
 {
     return m_hSavedCursor;
@@ -58,7 +58,7 @@ LRESULT CALLBACK LowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
             if (GetCursorPos(&pt))
             { // may need to profile this. dunno how long does it take
                 HWND h = WindowFromPoint(pt);
-                DWORD id = GetWindowThreadProcessId(h, NULL);
+                DWORD id = GetWindowThreadProcessId(h, nullptr);
                 DWORD cid = GetCurrentThreadId();
                 if (id != cid)
                 {
@@ -69,13 +69,17 @@ LRESULT CALLBACK LowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
                     }
                 }
                 else
+                {
                     m_hSavedCursor = GetCursor();
+                }
             }
         }
         MSLLHOOKSTRUCT mhs = *(LPMSLLHOOKSTRUCT)lParam;
         mhs.flags = wParam;
         if (WM_LBUTTONDOWN <= wParam && wParam <= WM_MOUSEHWHEEL)
+        {
             ClickQueue::getInstance().Enqueue(&mhs); // message, pt, time
+        }
     }
     return ::CallNextHookEx(mouseHookLL, nCode, wParam, lParam);
 }
@@ -138,7 +142,7 @@ BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD Reason, LPVOID /*Reserved*/)
             break;
         case DLL_PROCESS_DETACH:
             UnhookWindowsHookEx(keyHook);
-            UninstallMyHook(NULL);
+            UninstallMyHook(nullptr);
             break;
     }
 
@@ -150,10 +154,12 @@ BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD Reason, LPVOID /*Reserved*/)
 // Installs hookproc into the hook chain for all desktop threads, sets
 // the notification window to hWnd using message_to_call.
 /////////////////////////////////////////////////////////////////////////////
-__declspec(dllexport) BOOL InstallMyHook(HWND hWnd, UINT message_to_call)
+__declspec(dllexport) BOOL InstallMyHook(HWND /*hWnd*/, UINT /*message_to_call*/)
 {
-    if (mouseHookLL == NULL)
-        SetWindowsHookEx(WH_MOUSE_LL, (HOOKPROC)LowLevelMouseProc, hInst, 0);
+    if (mouseHookLL == nullptr)
+    {
+        SetWindowsHookEx(WH_MOUSE_LL, static_cast<HOOKPROC>(LowLevelMouseProc), hInst, 0);
+    }
     return TRUE;
 }
 
@@ -161,9 +167,11 @@ __declspec(dllexport) BOOL InstallMyHook(HWND hWnd, UINT message_to_call)
 // UninstallMyHook
 // Removes hookproc fromn hook chain for window hWnd
 /////////////////////////////////////////////////////////////////////////////
-__declspec(dllexport) BOOL UninstallMyHook(HWND hWnd)
+__declspec(dllexport) BOOL UninstallMyHook(HWND /*hWnd*/)
 {
     if (mouseHookLL && UnhookWindowsHookEx(mouseHookLL))
-        mouseHookLL = NULL;
+    {
+        mouseHookLL = nullptr;
+    }
     return TRUE;
 }
