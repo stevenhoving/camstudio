@@ -10,10 +10,6 @@ static char THIS_FILE[] = __FILE__;
 
 CListManager ListManager;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
 CListManager::CListManager()
 {
     shapeArray.RemoveAll();
@@ -53,7 +49,6 @@ int CListManager::RemoveShapeArray(CTransparentWnd *removeWnd, int wantDestroy)
     {
         if (removeWnd)
         {
-
             // TODO ???
             // OnDestroy issue in cpp.
             // Output monitor reports: "OnDestroy or PostNcDestroy in derived class will not be called"
@@ -77,8 +72,9 @@ int CListManager::LoadShapeArray(CString loadDir)
 int CListManager::LoadShapeArray(CString loadDir, int freeExisting)
 {
     int ret = TRUE;
-    FILE *fptr = fopen(LPCTSTR(loadDir), "rb");
-    if (fptr == NULL)
+    FILE *fptr = nullptr;
+    fopen_s(&fptr, loadDir.GetString(), "rb");
+    if (fptr == nullptr)
     {
         // Silent Mode
         // MessageBox(NULL,"Error opening shape file for loading","Note",MB_OK | MB_ICONEXCLAMATION);
@@ -154,7 +150,8 @@ int CListManager::LoadShapeArray(CString loadDir, int freeExisting)
 int CListManager::SaveShapeArray(CString saveDir)
 {
     int ret = TRUE;
-    FILE *fptr = fopen(LPCTSTR(saveDir), "wb");
+    FILE *fptr = nullptr;
+    fopen_s(&fptr, saveDir.GetString(), "wb");
     if (!fptr)
     {
         // MessageBox(NULL,"Error opening shape file for saving","Note",MB_OK | MB_ICONEXCLAMATION);
@@ -495,8 +492,9 @@ int CListManager::SwapLayoutArray(long uniqueID1, long uniqueID2)
 int CListManager::LoadLayout(CString loadDir)
 {
     int ret = TRUE;
-    FILE *fptr = fopen(LPCTSTR(loadDir), "rb");
-    if (fptr != NULL)
+    FILE *fptr = nullptr;
+    fopen_s(&fptr, loadDir.GetString(), "rb");
+    if (fptr != nullptr)
     {
         long fileversion = 0;
         fread((void *)&fileversion, sizeof(long), 1, fptr);
@@ -569,8 +567,9 @@ int CListManager::LoadLayout(CString loadDir)
 int CListManager::SaveLayout(CString saveDir)
 {
     int ret = TRUE;
-    FILE *fptr = fopen(LPCTSTR(saveDir), "wb");
-    if (fptr != NULL)
+    FILE *fptr = nullptr;
+    fopen_s(&fptr, saveDir.GetString(), "wb");
+    if (fptr != nullptr)
     {
         long fileversion = 100;
         fwrite((void *)&fileversion, sizeof(long), 1, fptr);

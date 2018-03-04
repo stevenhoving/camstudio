@@ -47,7 +47,7 @@ bool CMP4Converter::ConvertAVItoMP4(const CString &sInputAVI, const CString &sOu
         m_pData->psOutputFile = new CString(sOutputMP4);
         CString sCmd;
         sCmd.Format(" -i \"%s\" -c:v libx264 -preset slow -crf 22 -c:a mp2 -b:a 128k -y \"%s\" -loglevel quiet",
-                    sInputAVI, sOutputMP4);
+                    sInputAVI.GetString(), sOutputMP4.GetString());
         m_pData->psCmdLine = new CString(sCmd);
         m_pData->pdwPipeSize = new DWORD(1048576); // 1mb
         m_pData->psExePath = new CString(GetProgPath() + "\\ffmpeg.exe");
@@ -111,7 +111,7 @@ DWORD WINAPI CMP4Converter::ThreadProc(LPVOID lpParam)
     }
     DWORD dwRead;
     CHAR buffer[BUF_SIZE];
-    BOOL bSuccess = FALSE;
+    //BOOL bSuccess = FALSE;
 
     BOOL bFlag;
 

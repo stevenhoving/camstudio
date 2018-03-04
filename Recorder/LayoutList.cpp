@@ -12,13 +12,8 @@ static char THIS_FILE[] = __FILE__;
 int iCurrentLayoutID = 1;
 CString g_strLayoutName("Layout_");
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
 CLayoutList::CLayoutList()
 {
-
     uniqueID = iCurrentLayoutID;
     iCurrentLayoutID++;
     if (iCurrentLayoutID > 2147483647)
