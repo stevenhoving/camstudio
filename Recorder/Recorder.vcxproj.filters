@@ -15,9 +15,6 @@
     <Filter Include="Header Files\addons">
       <UniqueIdentifier>{598f2f75-d9e2-41d8-8212-a73c2f505693}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\fister">
-      <UniqueIdentifier>{20ff7f57-b603-4a78-90a0-20e7722eedab}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{3cf414ac-ef4e-4a2e-b6cd-bacdbd2bc384}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
@@ -27,9 +24,6 @@
     </Filter>
     <Filter Include="Source Files\addons">
       <UniqueIdentifier>{97d6e21f-bae8-4121-8ccf-01328c16fa3f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\fister">
-      <UniqueIdentifier>{6f52de0c-63d8-4b98-a8d5-7d1e7fb7b121}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Localization">
       <UniqueIdentifier>{bb9d9a1e-a9bd-4641-bda7-bb108a247bd2}</UniqueIdentifier>
@@ -188,18 +182,6 @@
     </ClInclude>
     <ClInclude Include="addons\TextAttributes.h">
       <Filter>Header Files\addons</Filter>
-    </ClInclude>
-    <ClInclude Include="fister\SoundBase.h">
-      <Filter>Header Files\fister</Filter>
-    </ClInclude>
-    <ClInclude Include="fister\SoundFile.h">
-      <Filter>Header Files\fister</Filter>
-    </ClInclude>
-    <ClInclude Include="fister\SoundIn.h">
-      <Filter>Header Files\fister</Filter>
-    </ClInclude>
-    <ClInclude Include="fister\Buffer.h">
-      <Filter>Header Files\fister</Filter>
     </ClInclude>
     <ClInclude Include="InternetConn.h">
       <Filter>Header Files</Filter>
@@ -549,18 +531,6 @@
     </ClCompile>
     <ClCompile Include="Localization\Localization.cpp">
       <Filter>Source Files\Localization</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\Buffer.cpp">
-      <Filter>Source Files\fister</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\SoundBase.cpp">
-      <Filter>Source Files\fister</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\SoundFile.cpp">
-      <Filter>Source Files\fister</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\SoundIn.cpp">
-      <Filter>Source Files\fister</Filter>
     </ClCompile>
     <ClCompile Include="vfw\VCM.cpp">
       <Filter>Source Files\vfw</Filter>

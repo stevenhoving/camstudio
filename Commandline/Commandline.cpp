@@ -173,8 +173,8 @@ DWORD cbwfx;
 
 // Audio Formats Dialog
 DWORD waveinselected = WAVE_FORMAT_2S16;
-int audio_bits_per_sample = 16;
-int audio_num_channels = 2;
+WORD audio_bits_per_sample = 16;
+WORD audio_num_channels = 2;
 int audio_samples_per_seconds = 22050;
 BOOL bAudioCompression = TRUE;
 

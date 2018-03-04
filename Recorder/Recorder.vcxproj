@@ -98,7 +98,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\CamHook\include;..\tinyxml;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CamLib\include;..\CamHook\include;..\fisterlib\include;..\CxImage\CxImage;..\libconfig\lib;..\tinyxml;.</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -163,7 +163,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(SolutionDir)\$(Configuration)\"
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\CamHook\include;..\tinyxml;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CamLib\include;..\CamHook\include;..\fisterlib\include;..\CxImage\CxImage;..\libconfig\lib;..\tinyxml;.</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -225,7 +225,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(SolutionDir)\$(Configuration)\"
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\CamHook\include;..\tinyxml;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CamLib\include;..\CamHook\include;..\fisterlib\include;..\CxImage\CxImage;..\libconfig\lib;..\tinyxml;.</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -290,7 +290,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\CamHook\include;..\tinyxml;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CamLib\include;..\CamHook\include;..\fisterlib\include;..\CxImage\CxImage;..\libconfig\lib;..\tinyxml;.</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -360,10 +360,6 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <ClInclude Include="CursorOptionsDlg.h" />
     <ClInclude Include="EditImage.h" />
     <ClInclude Include="EditTransparency.h" />
-    <ClInclude Include="fister\Buffer.h" />
-    <ClInclude Include="fister\SoundBase.h" />
-    <ClInclude Include="fister\SoundFile.h" />
-    <ClInclude Include="fister\SoundIn.h" />
     <ClInclude Include="FixedRegion.h" />
     <ClInclude Include="FlashingWnd.h" />
     <ClInclude Include="FrameGrabber.h" />
@@ -540,10 +536,6 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="fister\Buffer.cpp" />
-    <ClCompile Include="fister\SoundBase.cpp" />
-    <ClCompile Include="fister\SoundFile.cpp" />
-    <ClCompile Include="fister\SoundIn.cpp" />
     <ClCompile Include="FixedRegion.cpp" />
     <ClCompile Include="FlashingWnd.cpp" />
     <ClCompile Include="FolderDialog.cpp">
@@ -828,6 +820,9 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     </ProjectReference>
     <ProjectReference Include="..\CxImage\zlib\zlib.vcxproj">
       <Project>{7b53d2c7-1b4a-4a53-a7d3-e25b92470b81}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\FisterLib\FisterLib.vcxproj">
+      <Project>{30b33ecd-fdbd-4f22-af4b-a12319c5d270}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libconfig\lib\libconfig++.vcxproj">
       <Project>{a0c36ce7-d908-4573-8b69-249eeeb7d2be}</Project>

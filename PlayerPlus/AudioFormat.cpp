@@ -24,8 +24,8 @@ static char THIS_FILE[] = __FILE__;
 
 // External Variables
 extern DWORD waveinselected;
-extern int audio_bits_per_sample;
-extern int audio_num_channels;
+extern WORD audio_bits_per_sample;
+extern WORD audio_num_channels;
 extern int audio_samples_per_seconds;
 extern BOOL bAudioCompression;
 

@@ -31,13 +31,14 @@
 #include "VideoOptions.h"
 #include "ProgressDlg.h"
 #include "ximage.h"
-#include "fister/soundfile.h"
-#include <CamHook/CamHook.h> // for WM_USER_RECORDSTART_MSG
-#include "MP4Converter.h"
 
-#include "fister/Buffer.h"
+#include <fisterlib/sound_file.h>
+#include <fisterlib/Buffer.h>
+#include <CamHook/CamHook.h> // for WM_USER_RECORDSTART_MSG
 #include <CamLib/CStudioLib.h>
 #include <CamLib/TrayIcon.h>
+
+#include "MP4Converter.h"
 #include "AudioSpeakers.h"
 #include "HotKey.h"
 #include "Screen.h"
@@ -5602,7 +5603,7 @@ BOOL InitAudioRecording()
     // Create temporary wav file for audio recording
     GetTempAudioWavPath();
     // TODO, Possible memory leak, where is the delete operation of the new below done?
-    pSoundFile = new CSoundFile(strTempAudioWavFilePath, &(cAudioFormat.AudioFormat()));
+    pSoundFile = new CSoundFile(strTempAudioWavFilePath.GetString(), &cAudioFormat.AudioFormat());
 
     if (!(pSoundFile && pSoundFile->IsOK()))
         // MessageBox(NULL,"Error Creating Sound File","Note",MB_OK | MB_ICONEXCLAMATION);

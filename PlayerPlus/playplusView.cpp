@@ -16,7 +16,8 @@ static char THIS_FILE[] = __FILE__;
 #include "muldiv32.h"
 #include <vfw.h>
 
-#include "fister/soundfile.h"
+#include <fisterlib/sound_file.h>
+#include <fisterlib/buffer.h>
 #include "AudioFormat.h"
 
 
@@ -204,8 +205,8 @@ DWORD cbwfx;
 
 // Audio Formats Dialog
 DWORD waveinselected = WAVE_FORMAT_2S16;
-int audio_bits_per_sample = 16;
-int audio_num_channels = 2;
+WORD audio_bits_per_sample = 16;
+WORD audio_num_channels = 2;
 int audio_samples_per_seconds = 22050;
 BOOL bAudioCompression = TRUE;
 
@@ -1962,9 +1963,9 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
                                BOOL bInterleave, int interleave_factor)
 {
 
-    PAVISTREAM AviStream[NUMSTREAMS];            // the editable streams
-    AVICOMPRESSOPTIONS gaAVIOptions[NUMSTREAMS]; // compression options
-    LPAVICOMPRESSOPTIONS galpAVIOptions[NUMSTREAMS];
+    PAVISTREAM AviStream[NUMSTREAMS];          // the editable streams
+    AVICOMPRESSOPTIONS AVIOptions[NUMSTREAMS]; // compression options
+    LPAVICOMPRESSOPTIONS lpAVIOptions[NUMSTREAMS];
 
     PAVIFILE pfileVideo = NULL;
 
@@ -2067,30 +2068,30 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
     //
     // AVISaveV code takes a pointer to compression opts
     //
-    galpAVIOptions[0] = &gaAVIOptions[0];
-    galpAVIOptions[1] = &gaAVIOptions[1];
+    lpAVIOptions[0] = &AVIOptions[0];
+    lpAVIOptions[1] = &AVIOptions[1];
 
     //
     // clear options structure to zeroes
     //
-    _fmemset(galpAVIOptions[0], 0, sizeof(AVICOMPRESSOPTIONS));
-    _fmemset(galpAVIOptions[1], 0, sizeof(AVICOMPRESSOPTIONS));
+    _fmemset(lpAVIOptions[0], 0, sizeof(AVICOMPRESSOPTIONS));
+    _fmemset(lpAVIOptions[1], 0, sizeof(AVICOMPRESSOPTIONS));
 
     //=========================================
     // Set Video Stream Compress Options
     //=========================================
     // No Recompression
-    galpAVIOptions[0]->fccType = streamtypeVIDEO;
-    galpAVIOptions[0]->fccHandler = 0;
-    galpAVIOptions[0]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
+    lpAVIOptions[0]->fccType = streamtypeVIDEO;
+    lpAVIOptions[0]->fccHandler = 0;
+    lpAVIOptions[0]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
     if (bInterleave)
-        galpAVIOptions[0]->dwFlags = galpAVIOptions[0]->dwFlags | AVICOMPRESSF_INTERLEAVE;
-    galpAVIOptions[0]->dwKeyFrameEvery = (DWORD)-1;
-    galpAVIOptions[0]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
-    galpAVIOptions[0]->dwBytesPerSecond = 0;
-    galpAVIOptions[0]->dwInterleaveEvery = interleave_factor;
-    // galpAVIOptions[0]->cbParms = 0;
-    // galpAVIOptions[0]->cbFormat = 0;
+        lpAVIOptions[0]->dwFlags = lpAVIOptions[0]->dwFlags | AVICOMPRESSF_INTERLEAVE;
+    lpAVIOptions[0]->dwKeyFrameEvery = (DWORD)-1;
+    lpAVIOptions[0]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
+    lpAVIOptions[0]->dwBytesPerSecond = 0;
+    lpAVIOptions[0]->dwInterleaveEvery = interleave_factor;
+    // lpAVIOptions[0]->cbParms = 0;
+    // lpAVIOptions[0]->cbFormat = 0;
 
     //=========================================
     // Set Audio Stream Compress Options
@@ -2098,36 +2099,36 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
     // Recompression may be applied
     //
     // Audio Compress Options seems to be specified by the audio format in avicompressoptions
-    galpAVIOptions[1]->fccType = streamtypeAUDIO;
-    galpAVIOptions[1]->fccHandler = 0;
-    galpAVIOptions[1]->dwFlags = AVICOMPRESSF_VALID;
+    lpAVIOptions[1]->fccType = streamtypeAUDIO;
+    lpAVIOptions[1]->fccHandler = 0;
+    lpAVIOptions[1]->dwFlags = AVICOMPRESSF_VALID;
     if (bInterleave)
-        galpAVIOptions[1]->dwFlags = galpAVIOptions[1]->dwFlags | AVICOMPRESSF_INTERLEAVE;
-    galpAVIOptions[1]->dwKeyFrameEvery = 0;
-    galpAVIOptions[1]->dwQuality = 0;
-    galpAVIOptions[1]->dwBytesPerSecond = 0;
-    galpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
-    // galpAVIOptions[1]->cbParms = 0;
+        lpAVIOptions[1]->dwFlags = lpAVIOptions[1]->dwFlags | AVICOMPRESSF_INTERLEAVE;
+    lpAVIOptions[1]->dwKeyFrameEvery = 0;
+    lpAVIOptions[1]->dwQuality = 0;
+    lpAVIOptions[1]->dwBytesPerSecond = 0;
+    lpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
+    // lpAVIOptions[1]->cbParms = 0;
 
     if (recompress_audio)
     {
 
-        galpAVIOptions[1]->cbFormat = audio_format_size;
-        galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, audio_format_size);
-        memcpy((void *)galpAVIOptions[1]->lpFormat, (void *)audio_recompress_format, audio_format_size);
+        lpAVIOptions[1]->cbFormat = audio_format_size;
+        lpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, audio_format_size);
+        memcpy((void *)lpAVIOptions[1]->lpFormat, (void *)audio_recompress_format, audio_format_size);
     }
     else
     {
 
         LONG lTemp;
         AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), NULL, &lTemp);
-        galpAVIOptions[1]->cbFormat = lTemp;
+        lpAVIOptions[1]->cbFormat = lTemp;
 
         if (lTemp)
-            galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
+            lpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
         // Use existing format as compress format
-        if (galpAVIOptions[1]->lpFormat)
-            AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), galpAVIOptions[1]->lpFormat, &lTemp);
+        if (lpAVIOptions[1]->lpFormat)
+            AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), lpAVIOptions[1]->lpFormat, &lTemp);
     }
 
     // ============================
@@ -2136,11 +2137,11 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
 
     // Save     fccHandlers
     DWORD fccHandler[NUMSTREAMS];
-    fccHandler[0] = galpAVIOptions[0]->fccHandler;
-    fccHandler[1] = galpAVIOptions[1]->fccHandler;
+    fccHandler[0] = lpAVIOptions[0]->fccHandler;
+    fccHandler[1] = lpAVIOptions[1]->fccHandler;
 
-    hr = AVISaveV(LPCTSTR(output_avi_path), NULL, (AVISAVECALLBACK)SaveCallback, NUMSTREAMS, AviStream, galpAVIOptions);
-    // hr = AVISaveV(LPCTSTR(output_avi_path),  NULL, (AVISAVECALLBACK) NULL, NUMSTREAMS, AviStream, galpAVIOptions);
+    hr = AVISaveV(LPCTSTR(output_avi_path), NULL, (AVISAVECALLBACK)SaveCallback, NUMSTREAMS, AviStream, lpAVIOptions);
+    // hr = AVISaveV(LPCTSTR(output_avi_path),  NULL, (AVISAVECALLBACK) NULL, NUMSTREAMS, AviStream, lpAVIOptions);
     if (hr != AVIERR_OK)
     {
 
@@ -2148,52 +2149,52 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
         if (recompress_audio)
         {
 
-            AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
+            AVISaveOptionsFree(NUMSTREAMS, lpAVIOptions);
 
-            galpAVIOptions[0] = &gaAVIOptions[0];
-            galpAVIOptions[1] = &gaAVIOptions[1];
+            lpAVIOptions[0] = &AVIOptions[0];
+            lpAVIOptions[1] = &AVIOptions[1];
 
             // Resetting Compress Options
-            _fmemset(galpAVIOptions[0], 0, sizeof(AVICOMPRESSOPTIONS));
-            _fmemset(galpAVIOptions[1], 0, sizeof(AVICOMPRESSOPTIONS));
+            _fmemset(lpAVIOptions[0], 0, sizeof(AVICOMPRESSOPTIONS));
+            _fmemset(lpAVIOptions[1], 0, sizeof(AVICOMPRESSOPTIONS));
 
-            galpAVIOptions[0]->fccType = streamtypeVIDEO;
-            galpAVIOptions[0]->fccHandler = 0;
-            galpAVIOptions[0]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
+            lpAVIOptions[0]->fccType = streamtypeVIDEO;
+            lpAVIOptions[0]->fccHandler = 0;
+            lpAVIOptions[0]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_DATARATE;
             if (bInterleave)
-                galpAVIOptions[0]->dwFlags = galpAVIOptions[0]->dwFlags | AVICOMPRESSF_INTERLEAVE;
-            galpAVIOptions[0]->dwKeyFrameEvery = (DWORD)-1;
-            galpAVIOptions[0]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
-            galpAVIOptions[0]->dwBytesPerSecond = 0;
-            galpAVIOptions[0]->dwInterleaveEvery = interleave_factor;
+                lpAVIOptions[0]->dwFlags = lpAVIOptions[0]->dwFlags | AVICOMPRESSF_INTERLEAVE;
+            lpAVIOptions[0]->dwKeyFrameEvery = (DWORD)-1;
+            lpAVIOptions[0]->dwQuality = (DWORD)ICQUALITY_DEFAULT;
+            lpAVIOptions[0]->dwBytesPerSecond = 0;
+            lpAVIOptions[0]->dwInterleaveEvery = interleave_factor;
 
-            galpAVIOptions[1]->fccType = streamtypeAUDIO;
-            galpAVIOptions[1]->fccHandler = 0;
-            galpAVIOptions[1]->dwFlags = AVICOMPRESSF_VALID;
+            lpAVIOptions[1]->fccType = streamtypeAUDIO;
+            lpAVIOptions[1]->fccHandler = 0;
+            lpAVIOptions[1]->dwFlags = AVICOMPRESSF_VALID;
             if (bInterleave)
-                galpAVIOptions[1]->dwFlags = galpAVIOptions[1]->dwFlags | AVICOMPRESSF_INTERLEAVE;
-            galpAVIOptions[1]->dwKeyFrameEvery = 0;
-            galpAVIOptions[1]->dwQuality = 0;
-            galpAVIOptions[1]->dwBytesPerSecond = 0;
-            galpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
+                lpAVIOptions[1]->dwFlags = lpAVIOptions[1]->dwFlags | AVICOMPRESSF_INTERLEAVE;
+            lpAVIOptions[1]->dwKeyFrameEvery = 0;
+            lpAVIOptions[1]->dwQuality = 0;
+            lpAVIOptions[1]->dwBytesPerSecond = 0;
+            lpAVIOptions[1]->dwInterleaveEvery = interleave_factor;
 
             // Use default audio format
             LONG lTemp;
             AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), NULL, &lTemp);
-            galpAVIOptions[1]->cbFormat = lTemp;
+            lpAVIOptions[1]->cbFormat = lTemp;
             if (lTemp)
-                galpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
+                lpAVIOptions[1]->lpFormat = GlobalAllocPtr(GHND, lTemp);
             // Use existing format as compress format
-            if (galpAVIOptions[1]->lpFormat)
-                AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), galpAVIOptions[1]->lpFormat, &lTemp);
+            if (lpAVIOptions[1]->lpFormat)
+                AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), lpAVIOptions[1]->lpFormat, &lTemp);
 
             // Do the Work .... Merging
-            hr = AVISaveV(LPCTSTR(output_avi_path), NULL, (AVISAVECALLBACK)NULL, NUMSTREAMS, AviStream, galpAVIOptions);
+            hr = AVISaveV(LPCTSTR(output_avi_path), NULL, (AVISAVECALLBACK)NULL, NUMSTREAMS, AviStream, lpAVIOptions);
 
             if (hr != AVIERR_OK)
             {
 
-                AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
+                AVISaveOptionsFree(NUMSTREAMS, lpAVIOptions);
                 AVIStreamRelease(AviStream[0]);
                 AVIStreamRelease(AviStream[1]);
                 MessageBox(NULL, "Unable to merge audio and video streams (1).", "Note", MB_OK | MB_ICONEXCLAMATION);
@@ -2210,7 +2211,7 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
         else
         {
 
-            AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
+            AVISaveOptionsFree(NUMSTREAMS, lpAVIOptions);
             AVIStreamRelease(AviStream[0]);
             AVIStreamRelease(AviStream[1]);
             MessageBox(NULL, "Unable to audio and video merge streams (2).", "Note", MB_OK | MB_ICONEXCLAMATION);
@@ -2219,8 +2220,8 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
     }
 
     // Restore fccHandlers
-    galpAVIOptions[0]->fccHandler = fccHandler[0];
-    galpAVIOptions[1]->fccHandler = fccHandler[1];
+    lpAVIOptions[0]->fccHandler = fccHandler[0];
+    lpAVIOptions[1]->fccHandler = fccHandler[1];
 
     // Set Title Bar
     HWND mainwnd = NULL;
@@ -2228,12 +2229,11 @@ int Merge_Video_And_Sound_File(CString input_video_path, CString input_audio_pat
     if (mainwnd)
         ::SetWindowText(mainwnd, "CamStudio");
 
-    AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
+    AVISaveOptionsFree(NUMSTREAMS, lpAVIOptions);
 
     // Free Editable Avi Streams
     for (int i = 0; i < NUMSTREAMS; i++)
     {
-
         if (AviStream[i])
         {
             AVIStreamRelease(AviStream[i]);
@@ -2385,7 +2385,7 @@ BOOL InitAudioRecording()
     GetTempWavePath();
 
     // look up here
-    m_pFile = new CSoundFile(tempaudiopath, &m_Format);
+    m_pFile = new CSoundFile(tempaudiopath.GetString(), &m_Format);
 
     // even if we recording with firstaudio's format, we still get the unable to insert problem!
     // m_pFile = new CSoundFile(tempaudiopath, (LPWAVEFORMATEX) galpAVIOptions[giFirstAudio]->lpFormat);
@@ -2419,10 +2419,9 @@ void GetTempWavePath()
         {
             srand((unsigned)time(NULL));
             int randnum = rand();
-            char numstr[50];
-            sprintf(numstr, "%d", randnum);
+            const auto numstr = std::to_string(randnum);
 
-            CString cnumstr(numstr);
+            CString cnumstr(numstr.c_str());
             CString fxstr("\\~temp");
             CString exstr(".wav");
             tempaudiopath = GetTempPath() + fxstr + cnumstr + exstr;
@@ -2444,7 +2443,7 @@ BOOL CreateSilenceFile()
 
     // Create temporary wav file for audio recording
     GetSilenceWavePath();
-    m_pSilenceFile = new CSoundFile(tempsilencepath, &m_Format);
+    m_pSilenceFile = new CSoundFile(tempsilencepath.GetString(), &m_Format);
 
     if (!(m_pSilenceFile && m_pSilenceFile->IsOK()))
     {
@@ -2497,10 +2496,9 @@ void GetSilenceWavePath()
 
             srand((unsigned)time(NULL));
             int randnum = rand();
-            char numstr[50];
-            sprintf(numstr, "%d", randnum);
+            const auto numstr = std::to_string(randnum);
 
-            CString cnumstr(numstr);
+            CString cnumstr(numstr.c_str());
             CString fxstr("\\~tsil");
             CString exstr(".wav");
             tempsilencepath = GetTempPath() + fxstr + cnumstr + exstr;

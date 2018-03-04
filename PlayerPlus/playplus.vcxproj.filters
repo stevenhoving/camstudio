@@ -13,26 +13,8 @@
       <UniqueIdentifier>{1fad0ccc-178a-4733-a119-41f1f739a4b6}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
-    <Filter Include="Source Files\fister">
-      <UniqueIdentifier>{df180af9-3d51-4d44-9e79-9963faf41675}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="fister\SoundBase.h">
-      <Filter>Source Files\fister</Filter>
-    </ClInclude>
-    <ClInclude Include="fister\SoundFile.h">
-      <Filter>Source Files\fister</Filter>
-    </ClInclude>
-    <ClInclude Include="fister\SoundIn.h">
-      <Filter>Source Files\fister</Filter>
-    </ClInclude>
-    <ClInclude Include="fister\SoundOut.h">
-      <Filter>Source Files\fister</Filter>
-    </ClInclude>
-    <ClInclude Include="fister\Buffer.h">
-      <Filter>Source Files\fister</Filter>
-    </ClInclude>
     <ClInclude Include="AUDIO.H">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -112,21 +94,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="fister\SoundFile.cpp">
-      <Filter>Source Files\fister</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\SoundIn.cpp">
-      <Filter>Source Files\fister</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\SoundOut.cpp">
-      <Filter>Source Files\fister</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\Buffer.cpp">
-      <Filter>Source Files\fister</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\SoundBase.cpp">
-      <Filter>Source Files\fister</Filter>
-    </ClCompile>
     <ClCompile Include="audio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
