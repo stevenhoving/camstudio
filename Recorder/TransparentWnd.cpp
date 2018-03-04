@@ -34,6 +34,7 @@
 // for using std::min, std::max in gdiplus
 #include <algorithm>
 using namespace std;
+#define byte uint8_t
 #include <Gdiplus.h>
 
 #include <windows.h>

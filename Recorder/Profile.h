@@ -590,11 +590,7 @@ enum eAudioInput
 struct sAudioFormat
 {
 public:
-    sAudioFormat()
-        : m_uDeviceID(WAVE_MAPPER)
-        , m_iInterleavePeriod(MILLISECONDS)
-    {
-    }
+    sAudioFormat() = default;
 
     sAudioFormat(const sAudioFormat &rhs)
         : m_uDeviceID(WAVE_MAPPER)
@@ -614,10 +610,6 @@ public:
     }
 
     sAudioFormat &operator=(const sAudioFormat &rhs);
-
-    ////////////////////////////
-    // TODO: need pimple idom
-    ////////////////////////////
 
     bool Read(libconfig::Setting &cProfile)
     {

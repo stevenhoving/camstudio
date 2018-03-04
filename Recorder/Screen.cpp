@@ -2,7 +2,7 @@
 #include "Screen.h"
 #include "ximage.h"
 #include "RecorderView.h"
-#include <hook/ClickQueue.hpp>
+#include <CamHook/ClickQueue.hpp>
 
 #include "addons/EffectsOptions.h"
 #include "addons/XnoteStopwatchFormat.h"
@@ -10,6 +10,8 @@
 // for using std::min, std::max in gdiplus
 #include <algorithm>
 using namespace std;
+
+#define byte uint8_t
 #include <gdiplus.h>
 
 CCamera::CCamera()

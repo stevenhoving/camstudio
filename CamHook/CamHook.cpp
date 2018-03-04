@@ -3,8 +3,8 @@
 // Mouse button/move event hook DLL.
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include "hook/hook.h"
-#include "hook/ClickQueue.hpp"
+#include "CamHook/CamHook.h"
+#include "CamHook/ClickQueue.hpp"
 
 #include <mmsystem.h>
 

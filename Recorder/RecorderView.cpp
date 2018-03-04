@@ -32,7 +32,7 @@
 #include "ProgressDlg.h"
 #include "ximage.h"
 #include "fister/soundfile.h"
-#include <hook/hook.h> // for WM_USER_RECORDSTART_MSG
+#include <CamHook/CamHook.h> // for WM_USER_RECORDSTART_MSG
 #include "MP4Converter.h"
 
 #include "fister/Buffer.h"

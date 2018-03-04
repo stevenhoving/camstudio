@@ -15,6 +15,7 @@
 // - Moved some variables closer to their initial use
 // - Formatted code nicely
 
+#define VC_EXTRALEAN
 #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 #define INC_OLE2
 #include <windows.h>
@@ -140,7 +141,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
 
     if (strlen(lpszCmdParam) != 0)
     {
-        strcpy(playfiledir, lpszCmdParam);
+        strcpy_s(playfiledir, lpszCmdParam);
         PostMessage(hWnd, WM_USER_PLAY, 0, 0);
     }
 

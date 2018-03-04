@@ -38,25 +38,25 @@
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>false</UseOfAtl>
     <CharacterSet>NotSet</CharacterSet>
-    <PlatformToolset>LLVM-vs2014</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
     <UseOfAtl>false</UseOfAtl>
     <CharacterSet>NotSet</CharacterSet>
-    <PlatformToolset>LLVM-vs2014</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>NotSet</CharacterSet>
-    <PlatformToolset>LLVM-vs2014</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>LLVM-vs2014</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
     <PlatformToolset>v141</PlatformToolset>
@@ -113,7 +113,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\hook\include;..\tinyxml;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\CamHook\include;..\tinyxml;.</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -129,8 +129,9 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <ShowIncludes>false</ShowIncludes>
-      <DisableLanguageExtensions>true</DisableLanguageExtensions>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -176,7 +177,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(SolutionDir)\$(Configuration)\"
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\hook\include;..\tinyxml;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\CamHook\include;..\tinyxml;.</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -192,8 +193,9 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(SolutionDir)\$(Configuration)\"
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <ShowIncludes>false</ShowIncludes>
-      <DisableLanguageExtensions>true</DisableLanguageExtensions>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -236,7 +238,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(SolutionDir)\$(Configuration)\"
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\hook\include;..\tinyxml;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\CamHook\include;..\tinyxml;.</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -250,8 +252,9 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(SolutionDir)\$(Configuration)\"
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <ShowIncludes>false</ShowIncludes>
       <EnablePREfast>false</EnablePREfast>
-      <DisableLanguageExtensions>true</DisableLanguageExtensions>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -298,7 +301,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\hook\include;..\tinyxml;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\CamHook\include;..\tinyxml;.</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -311,8 +314,9 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <ShowIncludes>false</ShowIncludes>
       <EnablePREfast>false</EnablePREfast>
-      <DisableLanguageExtensions>true</DisableLanguageExtensions>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -353,18 +357,20 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     </Link>
     <ClCompile>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\hook\include;..\tinyxml;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\CamHook\include;..\tinyxml;.</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;</PreprocessorDefinitions>
       <ShowIncludes>false</ShowIncludes>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\hook\include;..\tinyxml;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\CamHook\include;..\tinyxml;.</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;</PreprocessorDefinitions>
       <ShowIncludes>false</ShowIncludes>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -583,6 +589,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="FrameGrabber.cpp" />
     <ClCompile Include="GdiPlusInitializer.cpp">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -819,6 +826,9 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <ResourceCompile Include="Recorder.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CamHook\CamHook.vcxproj">
+      <Project>{f4c904b3-2f94-404b-9555-2a3eaa1e5ea6}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\CamLib\CamLib.vcxproj">
       <Project>{90bc3e7c-3d9b-4d95-9a6a-18de32ae0208}</Project>
     </ProjectReference>
@@ -851,9 +861,6 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     </ProjectReference>
     <ProjectReference Include="..\CxImage\zlib\zlib.vcxproj">
       <Project>{7b53d2c7-1b4a-4a53-a7d3-e25b92470b81}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\hook\hook.vcxproj">
-      <Project>{f4c904b3-2f94-404b-9555-2a3eaa1e5ea6}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libconfig\lib\libconfig++.vcxproj">
       <Project>{a0c36ce7-d908-4573-8b69-249eeeb7d2be}</Project>

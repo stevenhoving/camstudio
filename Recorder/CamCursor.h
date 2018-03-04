@@ -10,7 +10,7 @@
 #include <vector>
 #include <algorithm>
 // TODO: reorganize code and move bodies to cpp. Even better to merge CamCursor with CursorOptionsDlg class.
-#include <hook/hook.h> // for getCursor
+#include <CamHook/CamHook.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CCamCursor
