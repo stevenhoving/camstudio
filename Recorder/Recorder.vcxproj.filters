@@ -183,9 +183,6 @@
     <ClInclude Include="addons\TextAttributes.h">
       <Filter>Header Files\addons</Filter>
     </ClInclude>
-    <ClInclude Include="InternetConn.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="UpdateDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -397,9 +394,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="InternetConn.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AudioFormat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -365,7 +365,6 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <ClInclude Include="FrameGrabber.h" />
     <ClInclude Include="GdiPlusInitializer.h" />
     <ClInclude Include="HotKey.h" />
-    <ClInclude Include="InternetConn.h" />
     <ClInclude Include="Keyshortcuts.h" />
     <ClInclude Include="LayeredWindowHelperST.h" />
     <ClInclude Include="LayoutList.h" />
@@ -556,7 +555,6 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="HotKey.cpp" />
-    <ClCompile Include="InternetConn.cpp" />
     <ClCompile Include="Keyshortcuts.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
