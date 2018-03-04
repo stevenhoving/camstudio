@@ -2,9 +2,6 @@
 //
 // Copyright 2001 RenderSoft Software & Web Publishing
 //
-//
-// FixedRegion.cpp : implementation file
-//
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Recorder.h"

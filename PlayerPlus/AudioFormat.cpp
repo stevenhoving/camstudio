@@ -1,6 +1,3 @@
-// AudioFormat.cpp : implementation file
-//
-
 #include "stdafx.h"
 #include "playplus.h"
 

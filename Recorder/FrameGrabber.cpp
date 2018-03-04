@@ -1,11 +1,6 @@
-// CFrameGrabber.cpp : implementation file
-//
 // (c) Vadim Gorbatenko, 1999
 // gvv@mail.tomsknet.ru
 // All rights reserved
-//
-// CFrameGrabber window class
-// Release: 1199
 
 #include "stdafx.h"
 #include "FrameGrabber.h"

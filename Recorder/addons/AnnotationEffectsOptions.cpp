@@ -1,4 +1,3 @@
-// AnnotationEffectsOptions.cpp : implementation file
 // Modifies Timestamp, Caption, and Watermark
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"

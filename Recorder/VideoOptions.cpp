@@ -2,10 +2,8 @@
 //
 // Copyright 2001 RenderSoft Software & Web Publishing
 //
-//
-// VideoOptions.cpp : implementation file
-//
 /////////////////////////////////////////////////////////////////////////////
+
 #include "stdafx.h"
 #include "Recorder.h"
 #include "VideoOptions.h"
