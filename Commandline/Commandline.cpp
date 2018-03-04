@@ -227,8 +227,8 @@ int recordpreset = 0;
 ///////////////////////// //////////////////
 BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
 {
-    lprcMonitor;
-    hdcMonitor;
+    (void)lprcMonitor;
+    (void)hdcMonitor;
     screen *obr;
     obr = (screen *)dwData;
     g_mon_current = g_mon_current + 1;
@@ -1389,7 +1389,8 @@ int main(int argc, char *argv[])
         rcUse.right = pscreen[i].right - 1;
         rcUse.bottom = pscreen[i].bottom - 1;
         // Write AVI file.
-        output_file = recordHere + "_" + (_itoa_s(i, buffer, 2, 10) + ".avi"); // _itoa(i,buffer,10)+".avi";
+        _itoa_s(i, buffer, 2, 10);
+        output_file = recordHere + "_" + buffer + std::string(".avi"); // _itoa(i,buffer,10)+".avi";
         strcpy_s(pscreen[i].outFile, output_file.c_str());
         pscreen[i].index = i;
 

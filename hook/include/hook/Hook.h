@@ -1,6 +1,3 @@
-#ifndef _DEFINED_44E531B1_14D3_11d5_A025_006067718D04
-#define _DEFINED_44E531B1_14D3_11d5_A025_006067718D04
-
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN
@@ -46,7 +43,8 @@ __declspec(dllexport) HCURSOR getCursor();
 extern "C"
 {
 #endif // __cplusplus
-#ifdef _COMPILING_44E531B1_14D3_11d5_A025_006067718D04
+
+#ifdef CAM_HOOK_EXPORT
 #define LIBSPEC __declspec(dllexport)
 #else
 #define LIBSPEC __declspec(dllimport)
@@ -54,9 +52,9 @@ extern "C"
     LIBSPEC BOOL InstallMyHook(HWND hWnd, UINT msg);
     LIBSPEC BOOL UninstallMyHook(HWND hWnd);
 #undef LIBSPEC
+
 #ifdef __cplusplus
 }
-
 #endif // __cplusplus
 
 #define WM_USER_RECORDINTERRUPTED_MSG _T("WM_USER_RECORDINTERRUPTED_MSG")
@@ -70,5 +68,3 @@ extern "C"
 #define GET_X_LPARAM(p) ((int)(short)LOWORD(p))
 #define GET_Y_LPARAM(p) ((int)(short)HIWORD(p))
 #endif
-
-#endif // _DEFINED_44E531B1_14D3_11d5_A025_006067718D04

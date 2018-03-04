@@ -53,6 +53,7 @@
 #include "addons/EffectsOptions2.h"
 
 #include <memory>
+#include <algorithm>
 
 #ifdef _DEBUG
 // #include <vld.h>        // Visual Leak Detector utility (In debug mode)
@@ -62,7 +63,6 @@
 #include <fstream>
 #include <iostream>
 #include <time.h>
-using namespace std;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -111,8 +111,8 @@ extern BOOL onLoadSettings(int iRecordAudio);
 // external variables
 /////////////////////////////////////////////////////////////////////////////
 extern int iRrefreshRate;
-extern CString shapeName;
-extern CString strLayoutName;
+extern CString g_shapeName;
+extern CString g_strLayoutName;
 
 /////////////////////////////////////////////////////////////////////////////
 // unused variables
@@ -170,8 +170,8 @@ int iXNoteLastSnapWithSensor =
 
 char cXNoteLastSnapTimes[128] /*= {'\0'} */;
 HFILE hXnoteLogFile = NULL;
-ofstream ioXnoteLogFile;
-ofstream *pioXnoteLogFile = (ofstream *)0;
+std::ofstream ioXnoteLogFile;
+std::ofstream *pioXnoteLogFile = nullptr;
 
 // Messaging
 HWND hWndGlobal = NULL;
@@ -243,13 +243,13 @@ int bCreatedSADlg = false;
 // ver 1.8
 int vanWndCreated = 0;
 
-int keySCOpened = 0;
+int g_keySCOpened = 0;
 
 int iAudioTimeInitiated = 0;
 int sdwSamplesPerSec = 22050;
 int sdwBytesPerSec = 44100;
 
-int iCurrentLayout = 0;
+int g_iCurrentLayout = 0;
 
 sProgramOpts cProgramOpts;
 sProducerOpts cProducerOpts;
@@ -394,17 +394,18 @@ int UnSetHotKeys()
 
     return 0;
 }
+
 int SetAdjustHotKeys()
 {
-
     int succ[8];
     int ret = SetHotKeys(succ);
+    (void)ret; // \note todo: we are ignorning the sethotkeys result... why?
 
     return 7; // return the max value of #define for Hotkey in program???
 }
+
 int SetHotKeys(int succ[])
 {
-
     UnSetHotKeys();
 
     for (int i = 0; i < 6; i++)
@@ -492,7 +493,7 @@ void SetVideoCompressState(HIC hic, DWORD fccHandler)
     {
         if (cVideoOpts.State())
         {
-            DWORD ret = ICSetState(hic, (LPVOID)cVideoOpts.State(), cVideoOpts.StateSize());
+            LRESULT ret = ICSetState(hic, (LPVOID)cVideoOpts.State(), cVideoOpts.StateSize());
             // if (ret <= 0) {
             if (ret < 0)
             {
@@ -1214,7 +1215,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
             break;
         case ModeMP4:
             strTargetVideoExtension = ".avi";
-            strTargetMP4VideoFile.Format("%s\\%s.mp4", strTargetDir, strTargetBareFileName);
+            strTargetMP4VideoFile.Format("%s\\%s.mp4", strTargetDir.GetString(), strTargetBareFileName.GetString());
             break;
     }
     // if (cProgramOpts.m_iRecordingMode == ModeFlash || cProgramOpts.m_iRecordingMode == ModeMP4)
@@ -1281,7 +1282,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
 
         // do we ever want to merge AV?
         bool wantMerge = true;
-        cfg->lookupValue("Program.MergeAV", wantMerge);
+        g_cfg->lookupValue("Program.MergeAV", wantMerge);
         if (wantMerge)
         {
 
@@ -1414,7 +1415,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
     if (0)
     {
         CString strAVIOut;
-        strAVIOut.Format(_T("%s\\FadeOut.avi"), GetProgPath());
+        strAVIOut.Format(_T("%s\\FadeOut.avi"), GetProgPath().GetString());
         CamAVIFile aviFile(cVideoOpts, cAudioFormat);
         aviFile.FadeOut(strTargetVideoFile, strAVIOut);
     }
@@ -1432,13 +1433,13 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
             CString sMsg;
             CString sRes;
             CString sOutBareName;
-            sOutBareName.Format("%s.mp4", strTargetBareFileName);
+            sOutBareName.Format("%s.mp4", strTargetBareFileName.GetString());
             if (ConvertToMP4(strTargetVideoFile, strTargetMP4VideoFile, sOutBareName))
             {
                 if (!DeleteFile(strTargetVideoFile))
                 {
                     sRes.LoadString(IDS_STRING_DELETE_FAILED);
-                    sMsg.Format(sRes, strTargetMP4VideoFile);
+                    sMsg.Format(sRes, strTargetMP4VideoFile.GetString());
                     MessageBox(sMsg, "Warning", 0);
                 }
             }
@@ -1447,13 +1448,13 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
                 if (!DeleteFile(strTargetVideoFile))
                 {
                     sRes.LoadString(IDS_STRING_DELETE_FAILED);
-                    sMsg.Format(sRes, strTargetVideoFile);
+                    sMsg.Format(sRes, strTargetVideoFile.GetString());
                     MessageBox(sMsg, "Warning", 0);
                 }
                 if (!DeleteFile(strTargetMP4VideoFile))
                 {
                     sRes.LoadString(IDS_STRING_DELETE_FAILED);
-                    sMsg.Format(sRes, strTargetMP4VideoFile);
+                    sMsg.Format(sRes, strTargetMP4VideoFile.GetString());
                     MessageBox(sMsg, "Warning", 0);
                 }
             }
@@ -1787,13 +1788,11 @@ BOOL CRecorderView::OpenUsingShellExecute(CString link)
 BOOL CRecorderView::OpenUsingRegisteredClass(CString link)
 {
     TCHAR key[MAX_PATH + MAX_PATH];
-    HINSTANCE result;
 
     if (GetRegKey(HKEY_CLASSES_ROOT, _T (".htm"), key) == ERROR_SUCCESS)
     {
-        LPCTSTR mode;
-        mode = _T ("\\shell\\open\\command");
-        _tcscat(key, mode);
+        LPCTSTR mode =_T ("\\shell\\open\\command");
+        _tcscat_s(key, mode);
         if (GetRegKey(HKEY_CLASSES_ROOT, key, key) == ERROR_SUCCESS)
         {
             LPTSTR pos;
@@ -1817,13 +1816,13 @@ BOOL CRecorderView::OpenUsingRegisteredClass(CString link)
                 *pos = _T('\0'); // Remove the parameter
             }
 
-            strcat(pos, _T (" "));
-            strcat(pos, link);
-            result = (HINSTANCE)WinExec(key, SW_SHOW);
-            if ((int)result <= HINSTANCE_ERROR)
+            strcat_s(pos, sizeof(key), _T (" "));
+            strcat_s(pos, sizeof(key), link);
+            auto result = WinExec(key, SW_SHOW);
+            if (result <= HINSTANCE_ERROR)
             {
                 CString str;
-                switch ((int)result)
+                switch (result)
                 {
                     case 0:
                         str = _T ("The operating system is out\nof memory or resources.");
@@ -1866,7 +1865,7 @@ BOOL CRecorderView::OpenUsingRegisteredClass(CString link)
                         str = _T ("A sharing violation occurred.");
                         break;
                     default:
-                        str.Format(_T ("Unknown Error (%d) occurred."), (int)result);
+                        str.Format(_T ("Unknown Error (%u) occurred."), result);
                 }
                 str = _T ("Unable to open hyperlink:\n\n") + str;
                 AfxMessageBox(str, MB_ICONEXCLAMATION | MB_OK);
@@ -2097,12 +2096,12 @@ void CRecorderView::OnOptionsAudiospeakers()
 
 void CRecorderView::OnOptionsKeyboardshortcuts()
 {
-    if (!keySCOpened)
+    if (!g_keySCOpened)
     {
-        keySCOpened = 1;
+        g_keySCOpened = 1;
         CKeyshortcutsDlg kscDlg(this);
         kscDlg.DoModal();
-        keySCOpened = 0;
+        g_keySCOpened = 0;
 
         SetAdjustHotKeys();
     }
@@ -2278,10 +2277,10 @@ void CRecorderView::SaveSettings()
     fprintf(sFile, "keyShowLayoutShift=%d \n", cHotKeyOpts.m_ShowLayout.m_bShift);
 
     fprintf(sFile, "iShapeNameInt=%d \n", iShapeNameInt);
-    fprintf(sFile, "shapeNameLen=%d \n", shapeName.GetLength());
+    fprintf(sFile, "shapeNameLen=%d \n", g_shapeName.GetLength());
 
     fprintf(sFile, "iLayoutNameInt=%d \n", iLayoutNameInt);
-    fprintf(sFile, "g_layoutNameLen=%d \n", strLayoutName.GetLength());
+    fprintf(sFile, "g_layoutNameLen=%d \n", g_strLayoutName.GetLength());
 
     fprintf(sFile, "bUseMCI=%d \n", cAudioFormat.m_bUseMCI);
     fprintf(sFile, "iShiftType=%d \n", cVideoOpts.m_iShiftType);
@@ -2353,7 +2352,7 @@ void CRecorderView::SaveSettings()
         // CString cursorFileName = "\\CamCursor.ini";
         // CString cursorDir = GetProgPath();
         CString cursorPath;
-        cursorPath.Format("%s\\CamCursor.ini", GetProgPath());
+        cursorPath.Format("%s\\CamCursor.ini", GetProgPath().GetString());
         // Note, we do not save the cursorFilePath, but instead we make a copy
         // of the cursor file in the Prog directory
         CopyFile(CamCursor.FileName(), cursorPath, FALSE);
@@ -2405,11 +2404,11 @@ void CRecorderView::SaveSettings()
         fwrite((LPCTSTR)cProgramOpts.m_strSpecifiedDir, cProgramOpts.m_strSpecifiedDir.GetLength(), 1, tFile);
 
     // Ver 1.8
-    if (shapeName.GetLength() > 0)
-        fwrite((LPCTSTR)shapeName, shapeName.GetLength(), 1, tFile);
+    if (g_shapeName.GetLength() > 0)
+        fwrite((LPCTSTR)g_shapeName, g_shapeName.GetLength(), 1, tFile);
 
-    if (strLayoutName.GetLength() > 0)
-        fwrite((LPCTSTR)strLayoutName, strLayoutName.GetLength(), 1, tFile);
+    if (g_strLayoutName.GetLength() > 0)
+        fwrite((LPCTSTR)g_strLayoutName, g_strLayoutName.GetLength(), 1, tFile);
 
     fclose(tFile);
 }
@@ -2940,14 +2939,14 @@ void CRecorderView::LoadSettings()
                     {
                         fread(namedata, shapeNameLen, 1, tFile);
                         namedata[shapeNameLen] = 0;
-                        shapeName = CString(namedata);
+                        g_shapeName = CString(namedata);
                     }
 
                     if ((layoutNameLen > 0) && (layoutNameLen < 1000))
                     {
                         fread(namedata, layoutNameLen, 1, tFile);
                         namedata[layoutNameLen] = 0;
-                        strLayoutName = CString(namedata);
+                        g_strLayoutName = CString(namedata);
                     }
                 }
             }
@@ -3378,11 +3377,11 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 
             // Get Current selected
             int cursel = sadlg.GetLayoutListSelection();
-            iCurrentLayout = (cursel < 0) ? 0 : cursel + 1;
-            if (max <= iCurrentLayout)
-                iCurrentLayout = 0;
+            g_iCurrentLayout = (cursel < 0) ? 0 : cursel + 1;
+            if (max <= g_iCurrentLayout)
+                g_iCurrentLayout = 0;
 
-            sadlg.InstantiateLayout(iCurrentLayout, 1);
+            sadlg.InstantiateLayout(g_iCurrentLayout, 1);
         }
         break;
         case HOTKEY_LAYOUT_KEY_PREVIOUS: // 4
@@ -3401,11 +3400,11 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 
             // Get Current selected
             int cursel = sadlg.GetLayoutListSelection();
-            iCurrentLayout = (cursel < 0) ? 0 : cursel - 1;
-            if (iCurrentLayout < 0)
-                iCurrentLayout = max - 1;
+            g_iCurrentLayout = (cursel < 0) ? 0 : cursel - 1;
+            if (g_iCurrentLayout < 0)
+                g_iCurrentLayout = max - 1;
 
-            sadlg.InstantiateLayout(iCurrentLayout, 1);
+            sadlg.InstantiateLayout(g_iCurrentLayout, 1);
         }
         break;
         case HOTKEY_LAYOUT_SHOW_HIDE_KEY: // 5
@@ -3430,13 +3429,13 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 
             // Get Current selected
             int cursel = sadlg.GetLayoutListSelection();
-            iCurrentLayout = (cursel < 0) ? 0 : cursel;
-            if ((iCurrentLayout < 0) || (iCurrentLayout >= max))
+            g_iCurrentLayout = (cursel < 0) ? 0 : cursel;
+            if ((g_iCurrentLayout < 0) || (g_iCurrentLayout >= max))
             {
-                iCurrentLayout = 0;
+                g_iCurrentLayout = 0;
             }
 
-            sadlg.InstantiateLayout(iCurrentLayout, 1);
+            sadlg.InstantiateLayout(g_iCurrentLayout, 1);
         }
         break;
         case HOTKEY_ZOOM: // FIXME: make yet another constant
@@ -4146,8 +4145,8 @@ bool CRecorderView::captureScreenFrame(const CRect &rectView, bool bDisableRect)
     int width = (int)rectView.Width() / _zoom;   // width of being captured screen stuff
     int height = (int)rectView.Height() / _zoom; // width of being captured screen stuff
     CRect zr = _zoom == 1. ? rectView
-                           : CRect(CPoint(min(max(rectView.left, _zoomedAt.x - width / 2), rectView.right - width),
-                                          min(max(rectView.top, _zoomedAt.y - height / 2), rectView.bottom - height)),
+                           : CRect(CPoint(std::min(std::max(rectView.left, _zoomedAt.x - width / 2), rectView.right - width),
+                               std::min(std::max(rectView.top, _zoomedAt.y - height / 2), rectView.bottom - height)),
                                    CSize(width, height));
 
     // FIXME: can be move into UpdateZoom() function
@@ -5068,7 +5067,7 @@ void CRecorderView::SaveProducerCommand()
     // Saving CamStudio.Producer.command.ini for storing text data
 
     CString strProfile;
-    strProfile.Format(_T("%s\\CamStudio.Producer.command"), GetAppDataPath());
+    strProfile.Format(_T("%s\\CamStudio.Producer.command"), GetAppDataPath().GetString());
 
     CString strSection = _T("CamStudio Flash Producer Commands");
     CString strValue;
@@ -5187,7 +5186,7 @@ bool CRecorderView::ConvertToMP4(const CString &sInputAVI, const CString &sOutpu
             pProgDlg->Create(this);
             CString msgx, msgout;
             msgx.LoadString(IDS_STRING_GENERATING);
-            msgout.Format(msgx, sOutBareName);
+            msgout.Format(msgx, sOutBareName.GetString());
             ((CStatic *)pProgDlg->GetDlgItem(IDC_CONVERSIONTEXT))->SetWindowText(msgout);
 
             int nProgress = 0;
@@ -5375,6 +5374,7 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID, int iSensorID, int iSo
             break;
 
         case XNOTE_ACTION_STOPWATCH_SNAP:
+        {
             // Snap,
             // TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d] iSensorID:[%d], time:[%lu],
             // GetRecordState:[%d], GetPausedState:[%d]\n"), iActionID, iSensorID, lXnoteTimeInMilliSeconds,
@@ -5403,10 +5403,13 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID, int iSensorID, int iSo
             CXnoteStopwatchFormat::FormatXnoteInfoSourceSensor(cTmp, iSourceID, iSensorID);
 
             // For onScreen reporting of snaptime we only need info about the last seconds  (00.000aa).
-            nStrLengthNew = max(0, strlen(cTmp) - (6 + 2));
-            // And previous snaps can be truncated. How much snasps to show should be a user option (TODO)
+            //std::min()
+            int strLenTemp = strlen(cTmp) - (6 + 2);
+            nStrLengthNew = std::max(0, strLenTemp);
+
+            // And previous snaps can be truncated. How much snaps to show should be a user option (TODO)
             nStrLengthSnaps =
-                max(0, strlen(cXNoteLastSnapTimes) - min(2, strlen(cXNoteLastSnapTimes) / (6 + 2 + 1)) * (6 + 2 + 1));
+                std::max<int>(0, strlen(cXNoteLastSnapTimes) - std::min<int>(2, strlen(cXNoteLastSnapTimes) / (6 + 2 + 1)) * (6 + 2 + 1));
 
             sprintf(cTmpBuffXNoteTimeStamp, "%s%s ", &cXNoteLastSnapTimes[nStrLengthSnaps], &cTmp[nStrLengthNew]);
             strcpy(cXNoteLastSnapTimes, cTmpBuffXNoteTimeStamp);
@@ -5425,7 +5428,7 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID, int iSensorID, int iSo
                 // OnRecord()..\n"), iActionID, iSensorID);
                 OnRecord();
             }
-            break;
+        } break;
 
         case XNOTE_ACTION_STOPWATCH_RESET:
 
@@ -5659,7 +5662,7 @@ BOOL StartAudioRecording()
     // open wavein device
     // use on message to map.....
     MMRESULT mmReturn = ::waveInOpen(&m_hWaveRecord, cAudioFormat.m_uDeviceID, &(cAudioFormat.AudioFormat()),
-                                     (DWORD)hWndGlobal, NULL, CALLBACK_WINDOW);
+                                     (DWORD_PTR)hWndGlobal, NULL, CALLBACK_WINDOW);
     if (mmReturn)
     {
         waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
@@ -5780,7 +5783,7 @@ BOOL OpenStreamXnoteLogFile()
     GetTempXnoteLogPath();
 
     // If file exist is will be overwritten and re created.
-    ioXnoteLogFile.open(strTempXnoteLogFilePath, ios::out);
+    ioXnoteLogFile.open(strTempXnoteLogFilePath, std::ios::out);
     if (!ioXnoteLogFile.is_open())
     {
         TRACE("## Opening strTempXnoteLogFilePath failed..!\n");
@@ -5832,7 +5835,7 @@ void GetTempXnoteLogPath()
 
             CString cnumstr(numstr);
             strTempXnoteLogFilePath.Format("%s\\%s-%s-%s.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR,
-                                           (LPCSTR)cVideoOpts.m_cStartRecordingString, cnumstr, "txt");
+                                           (LPCSTR)cVideoOpts.m_cStartRecordingString, cnumstr.GetString(), "txt");
         }
     }
 }

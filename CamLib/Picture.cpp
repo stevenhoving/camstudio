@@ -76,7 +76,7 @@
 //----------------------------Cut The Bullshit Here----------------------------
 
 #include "stdafx.h"
-#include "Picture.h"
+#include "CamLib/Picture.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -4,11 +4,7 @@
 #if !defined(AFX_VSCAP_H__CAB648E2_684F_4FF1_B574_9714ACAC6D57__INCLUDED_)
 #define AFX_VSCAP_H__CAB648E2_684F_4FF1_B574_9714ACAC6D57__INCLUDED_
 
-
 #pragma once
-
-
-#include "stdafx.h"
 
 #ifndef __AFXWIN_H__
 #error include 'stdafx.h' before including this file for PCH
@@ -32,13 +28,14 @@
 #endif
 #endif
 
-#include "CamLib/CamError.h"
+#include <CamLib/CamError.h>
 #include "CamStudioCommandLineInfo.h"
 #include "Profile.h"
 #include "resource.h"                   // main symbols
 #include "RecorderVersionReleaseInfo.h" // Contains version and SVN release number
-#include <gdiplus.h>
-#pragma comment(lib, "Gdiplus.lib")
+#include <memory>
+
+
 
 //#define WM_APP_REGIONUPDATE    0x00500    // TODO: Should this be a WM_USER/WM_APP message?
 //#define WM_APP_REGIONUPDATE    WM_USER + 0x00100
@@ -53,7 +50,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // CRecorderApp:
 // See vscap.cpp for the implementation of this class
-//
+
+class gdi;
+
+
 
 class CRecorderApp : public CWinApp
 {
@@ -98,8 +98,7 @@ private:
     int m_iVersionOp;
     CCamStudioCommandLineInfo m_cmdInfo;
 
-    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-    ULONG_PTR gdiplusToken;
+    std::unique_ptr<gdi> m_gdi;
 
     bool RegisterWindowClass();
     BOOL FirstInstance();

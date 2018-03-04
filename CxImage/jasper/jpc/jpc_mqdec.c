@@ -236,7 +236,7 @@ int jpc_mqdec_getbit_func(register jpc_mqdec_t *mqdec)
 int jpc_mqdec_mpsexchrenormd(register jpc_mqdec_t *mqdec)
 {
     int ret;
-    register jpc_mqstate_t *state = *mqdec->curctx;
+    jpc_mqstate_t *state = *mqdec->curctx;
     jpc_mqdec_mpsexchange(mqdec->areg, state->qeval, mqdec->curctx, ret);
     jpc_mqdec_renormd(mqdec->areg, mqdec->creg, mqdec->ctreg, mqdec->in,
       mqdec->eof, mqdec->inbuffer);
@@ -247,7 +247,7 @@ int jpc_mqdec_mpsexchrenormd(register jpc_mqdec_t *mqdec)
 int jpc_mqdec_lpsexchrenormd(register jpc_mqdec_t *mqdec)
 {
     int ret;
-    register jpc_mqstate_t *state = *mqdec->curctx;
+    jpc_mqstate_t *state = *mqdec->curctx;
     jpc_mqdec_lpsexchange(mqdec->areg, state->qeval, mqdec->curctx, ret);
     jpc_mqdec_renormd(mqdec->areg, mqdec->creg, mqdec->ctreg, mqdec->in,
       mqdec->eof, mqdec->inbuffer);

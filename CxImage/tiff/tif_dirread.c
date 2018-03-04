@@ -1869,7 +1869,7 @@ TIFFFetchPerSampleAnys(TIFF* tif, TIFFDirEntry* dir, double* pl)
 static int
 TIFFFetchStripThing(TIFF* tif, TIFFDirEntry* dir, long nstrips, uint32** lpp)
 {
-    register uint32* lp;
+    uint32* lp;
     int status;
 
         CheckDirCount(tif, dir, (uint32) nstrips);
@@ -2000,7 +2000,7 @@ TIFFFetchSubjectDistance(TIFF* tif, TIFFDirEntry* dir)
 static void
 ChopUpSingleUncompressedStrip(TIFF* tif)
 {
-    register TIFFDirectory *td = &tif->tif_dir;
+    TIFFDirectory *td = &tif->tif_dir;
     uint32 bytecount = td->td_stripbytecount[0];
     uint32 offset = td->td_stripoffset[0];
     tsize_t rowbytes = TIFFVTileSize(tif, 1), stripbytes;

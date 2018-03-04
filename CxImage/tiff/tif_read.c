@@ -46,7 +46,7 @@ static    int TIFFCheckRead(TIFF*, int);
 static int
 TIFFSeek(TIFF* tif, uint32 row, tsample_t sample)
 {
-    register TIFFDirectory *td = &tif->tif_dir;
+    TIFFDirectory *td = &tif->tif_dir;
     tstrip_t strip;
 
     if (row >= td->td_imagelength) {    /* out of range */

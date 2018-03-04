@@ -284,7 +284,7 @@ BOOL AudioFormat::OnInitDialog()
     WAVEINCAPS pwic;
     MMRESULT mmr = waveInGetDevCaps(AudioDeviceID, &pwic, sizeof(pwic));
 
-    int selected_cindex = -1; // selected index of combo box
+    //int selected_cindex = -1; // selected index of combo box
     numformat = 0;            // counter, number of format
 
     // This code works on the assumption (when filling in values for the user - interfaces)

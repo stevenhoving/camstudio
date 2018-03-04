@@ -1,5 +1,7 @@
 #pragma once
 
+#include <afxdialogex.h>
+
 // ProgressDlg dialog
 
 class CProgressDlg : public CDialogEx

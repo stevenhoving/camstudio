@@ -1,7 +1,5 @@
-// CamWindow.cpp    - CamStudio Library window functions
-/////////////////////////////////////////////////////////////////////////////
-#include "StdAfx.h"
-#include "CamWindow.h"
+#include "stdafx.h"
+#include "CamLib/CamWindow.h"
 
 // TODO: should be in mainframe class
 #pragma message("SetTitleBar depreciated; use MainFrame class")

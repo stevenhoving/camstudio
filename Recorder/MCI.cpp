@@ -337,7 +337,7 @@ MCIERROR CMCIDevice::Save(const CWnd &rWnd, const CString &strFile)
     sSaveParams.dwCallback = reinterpret_cast<DWORD_PTR>((HWND)rWnd);
     sSaveParams.lpfilename = (LPCTSTR)strFile;
     MCIERROR dwResult =
-        ::mciSendCommand(m_sOpenParams.wDeviceID, MCI_SAVE, MCI_WAIT | MCI_SAVE_FILE, (DWORD)&sSaveParams);
+        ::mciSendCommand(m_sOpenParams.wDeviceID, MCI_SAVE, MCI_WAIT | MCI_SAVE_FILE, (DWORD_PTR)&sSaveParams);
     OnError(dwResult);
     return dwResult;
 }
@@ -397,7 +397,7 @@ MCIERROR CMCIDevice::Set(const WAVEFORMATEX &rWaveFormatEx)
         ::mciSendCommand(m_sOpenParams.wDeviceID, MCI_SET,
                          MCI_WAIT | MCI_WAVE_SET_FORMATTAG | MCI_WAVE_SET_BITSPERSAMPLE | MCI_WAVE_SET_CHANNELS |
                              MCI_WAVE_SET_SAMPLESPERSEC | MCI_WAVE_SET_AVGBYTESPERSEC | MCI_WAVE_SET_BLOCKALIGN,
-                         (DWORD)(LPVOID)&sParams);
+                         (DWORD_PTR)&sParams);
     OnError(dwResult);
     return dwResult;
 }

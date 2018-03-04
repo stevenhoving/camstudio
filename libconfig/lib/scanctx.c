@@ -70,7 +70,7 @@ void scanctx_init(struct scan_context *ctx, const char *top_filename)
 {
   memset(ctx, 0, sizeof(struct scan_context));
   if(top_filename)
-    ctx->top_filename = __scanctx_add_filename(ctx, strdup(top_filename));
+    ctx->top_filename = __scanctx_add_filename(ctx, _strdup(top_filename));
 }
 
 /* ------------------------------------------------------------------------- */
@@ -116,7 +116,8 @@ FILE *scanctx_push_include(struct scan_context *ctx, void *buffer,
     strcat(full_file, file);
   }
 
-  fp = fopen(full_file ? full_file : file, "rt");
+  fp = NULL;
+  fopen_s(&fp, full_file ? full_file : file, "rt");
   free((void *)full_file);
 
   if(fp)
@@ -157,7 +158,7 @@ char *scanctx_take_string(struct scan_context *ctx)
 {
   char *r = strbuf_release(&(ctx->string));
 
-  return(r ? r : strdup(""));
+  return(r ? r : _strdup(""));
 }
 
 /* ------------------------------------------------------------------------- */

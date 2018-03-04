@@ -49,7 +49,7 @@ int
 TIFFWriteScanline(TIFF* tif, tdata_t buf, uint32 row, tsample_t sample)
 {
     static const char module[] = "TIFFWriteScanline";
-    register TIFFDirectory *td;
+    TIFFDirectory *td;
     int status, imagegrew = 0;
     tstrip_t strip;
 

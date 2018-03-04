@@ -8,8 +8,8 @@
 //___________________________________________________________________________________________
 
 #include "stdafx.h"
-#include "afxdlgs.h"
-#include "CBitmapEx.h"
+#include "CamLib/CBitmapEx.h"
+#include <afxdlgs.h>
 
 #define WIDTHBYTES(iBits) (((iBits) + 31) / 32 * 4)
 #define PALETTESIZE(lpbi) (_DIBNumColors((LPBITMAPINFOHEADER)lpbi) * sizeof(RGBQUAD))

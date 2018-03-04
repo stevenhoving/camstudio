@@ -283,7 +283,7 @@ jas_stream_t *jas_stream_fopen(const char *filename, const char *mode)
     stream->ops_ = &jas_stream_fileops;
 
     /* Open the underlying file. */
-    if ((obj->fd = open(filename, openflags, JAS_STREAM_PERMS)) < 0) {
+    if ((obj->fd = _open(filename, openflags, JAS_STREAM_PERMS)) < 0) {
         jas_stream_destroy(stream);
         return 0;
     }
@@ -369,7 +369,7 @@ jas_stream_t *jas_stream_tmpfile()
     tmpnam(obj->pathname);
 
     /* Open the underlying file. */
-    if ((obj->fd = open(obj->pathname, O_CREAT | O_EXCL | O_RDWR | O_TRUNC | O_BINARY,
+    if ((obj->fd = _open(obj->pathname, O_CREAT | O_EXCL | O_RDWR | O_TRUNC | O_BINARY,
       JAS_STREAM_PERMS)) < 0) {
         jas_stream_destroy(stream);
         return 0;
@@ -1091,13 +1091,13 @@ static int mem_close(jas_stream_obj_t *obj)
 static int file_read(jas_stream_obj_t *obj, char *buf, int cnt)
 {
     jas_stream_fileobj_t *fileobj = JAS_CAST(jas_stream_fileobj_t *, obj);
-    return read(fileobj->fd, buf, cnt);
+    return _read(fileobj->fd, buf, cnt);
 }
 
 static int file_write(jas_stream_obj_t *obj, char *buf, int cnt)
 {
     jas_stream_fileobj_t *fileobj = JAS_CAST(jas_stream_fileobj_t *, obj);
-    return write(fileobj->fd, buf, cnt);
+    return _write(fileobj->fd, buf, cnt);
 }
 
 static long file_seek(jas_stream_obj_t *obj, long offset, int origin)
@@ -1110,7 +1110,7 @@ static int file_close(jas_stream_obj_t *obj)
 {
     jas_stream_fileobj_t *fileobj = JAS_CAST(jas_stream_fileobj_t *, obj);
     int ret;
-    ret = close(fileobj->fd);
+    ret = _close(fileobj->fd);
     if (fileobj->flags & JAS_STREAM_FILEOBJ_DELONCLOSE) {
         unlink(fileobj->pathname);
     }

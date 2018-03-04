@@ -312,10 +312,10 @@ void jpc_qmfb_split_row(jpc_fix_t *a, int numcols, int parity)
     jpc_fix_t splitbuf[bufsize];
 #endif
     jpc_fix_t *buf = splitbuf;
-    register jpc_fix_t *srcptr;
-    register jpc_fix_t *dstptr;
-    register int n;
-    register int m;
+    jpc_fix_t *srcptr;
+    jpc_fix_t *dstptr;
+    int n;
+    int m;
     int hstartcol;
 
 #if !defined(HAVE_VLA)
@@ -380,10 +380,10 @@ void jpc_qmfb_split_col(jpc_fix_t *a, int numrows, int stride,
     jpc_fix_t splitbuf[bufsize];
 #endif
     jpc_fix_t *buf = splitbuf;
-    register jpc_fix_t *srcptr;
-    register jpc_fix_t *dstptr;
-    register int n;
-    register int m;
+    jpc_fix_t *srcptr;
+    jpc_fix_t *dstptr;
+    int n;
+    int m;
     int hstartcol;
 
 #if !defined(HAVE_VLA)
@@ -450,10 +450,10 @@ void jpc_qmfb_split_colgrp(jpc_fix_t *a, int numrows, int stride,
     jpc_fix_t *buf = splitbuf;
     jpc_fix_t *srcptr;
     jpc_fix_t *dstptr;
-    register jpc_fix_t *srcptr2;
-    register jpc_fix_t *dstptr2;
-    register int n;
-    register int i;
+    jpc_fix_t *srcptr2;
+    jpc_fix_t *dstptr2;
+    int n;
+    int i;
     int m;
     int hstartcol;
 
@@ -539,10 +539,10 @@ void jpc_qmfb_split_colres(jpc_fix_t *a, int numrows, int numcols,
     jpc_fix_t *buf = splitbuf;
     jpc_fix_t *srcptr;
     jpc_fix_t *dstptr;
-    register jpc_fix_t *srcptr2;
-    register jpc_fix_t *dstptr2;
-    register int n;
-    register int i;
+    jpc_fix_t *srcptr2;
+    jpc_fix_t *dstptr2;
+    int n;
+    int i;
     int m;
     int hstartcol;
 
@@ -625,9 +625,9 @@ void jpc_qmfb_join_row(jpc_fix_t *a, int numcols, int parity)
     jpc_fix_t joinbuf[bufsize];
 #endif
     jpc_fix_t *buf = joinbuf;
-    register jpc_fix_t *srcptr;
-    register jpc_fix_t *dstptr;
-    register int n;
+    jpc_fix_t *srcptr;
+    jpc_fix_t *dstptr;
+    int n;
     int hstartcol;
 
 #if !defined(HAVE_VLA)
@@ -690,9 +690,9 @@ void jpc_qmfb_join_col(jpc_fix_t *a, int numrows, int stride,
     jpc_fix_t joinbuf[bufsize];
 #endif
     jpc_fix_t *buf = joinbuf;
-    register jpc_fix_t *srcptr;
-    register jpc_fix_t *dstptr;
-    register int n;
+    jpc_fix_t *srcptr;
+    jpc_fix_t *dstptr;
+    int n;
     int hstartcol;
 
 #if !defined(HAVE_VLA)
@@ -757,10 +757,10 @@ void jpc_qmfb_join_colgrp(jpc_fix_t *a, int numrows, int stride,
     jpc_fix_t *buf = joinbuf;
     jpc_fix_t *srcptr;
     jpc_fix_t *dstptr;
-    register jpc_fix_t *srcptr2;
-    register jpc_fix_t *dstptr2;
-    register int n;
-    register int i;
+    jpc_fix_t *srcptr2;
+    jpc_fix_t *dstptr2;
+    int n;
+    int i;
     int hstartcol;
 
 #if !defined(HAVE_VLA)
@@ -843,10 +843,10 @@ void jpc_qmfb_join_colres(jpc_fix_t *a, int numrows, int numcols,
     jpc_fix_t *buf = joinbuf;
     jpc_fix_t *srcptr;
     jpc_fix_t *dstptr;
-    register jpc_fix_t *srcptr2;
-    register jpc_fix_t *dstptr2;
-    register int n;
-    register int i;
+    jpc_fix_t *srcptr2;
+    jpc_fix_t *dstptr2;
+    int n;
+    int i;
     int hstartcol;
 
 #if !defined(HAVE_VLA)
@@ -923,9 +923,9 @@ void jpc_qmfb_join_colres(jpc_fix_t *a, int numrows, int numcols,
 void jpc_ft_fwdlift_row(jpc_fix_t *a, int numcols, int parity)
 {
 
-    register jpc_fix_t *lptr;
-    register jpc_fix_t *hptr;
-    register int n;
+    jpc_fix_t *lptr;
+    jpc_fix_t *hptr;
+    int n;
     int llen;
 
     llen = (numcols + 1 - parity) >> 1;
@@ -983,11 +983,11 @@ void jpc_ft_fwdlift_col(jpc_fix_t *a, int numrows, int stride, int parity)
     jpc_fix_t *lptr;
     jpc_fix_t *hptr;
 #if 0
-    register jpc_fix_t *lptr2;
-    register jpc_fix_t *hptr2;
-    register int i;
+    jpc_fix_t *lptr2;
+    jpc_fix_t *hptr2;
+    int i;
 #endif
-    register int n;
+    int n;
     int llen;
 
     llen = (numrows + 1 - parity) >> 1;
@@ -1044,10 +1044,10 @@ void jpc_ft_fwdlift_colgrp(jpc_fix_t *a, int numrows, int stride, int parity)
 
     jpc_fix_t *lptr;
     jpc_fix_t *hptr;
-    register jpc_fix_t *lptr2;
-    register jpc_fix_t *hptr2;
-    register int n;
-    register int i;
+    jpc_fix_t *lptr2;
+    jpc_fix_t *hptr2;
+    int n;
+    int i;
     int llen;
 
     llen = (numrows + 1 - parity) >> 1;
@@ -1144,10 +1144,10 @@ void jpc_ft_fwdlift_colres(jpc_fix_t *a, int numrows, int numcols, int stride,
 
     jpc_fix_t *lptr;
     jpc_fix_t *hptr;
-    register jpc_fix_t *lptr2;
-    register jpc_fix_t *hptr2;
-    register int n;
-    register int i;
+    jpc_fix_t *lptr2;
+    jpc_fix_t *hptr2;
+    int n;
+    int i;
     int llen;
 
     llen = (numrows + 1 - parity) >> 1;
@@ -1241,9 +1241,9 @@ void jpc_ft_fwdlift_colres(jpc_fix_t *a, int numrows, int numcols, int stride,
 void jpc_ft_invlift_row(jpc_fix_t *a, int numcols, int parity)
 {
 
-    register jpc_fix_t *lptr;
-    register jpc_fix_t *hptr;
-    register int n;
+    jpc_fix_t *lptr;
+    jpc_fix_t *hptr;
+    int n;
     int llen;
 
     llen = (numcols + 1 - parity) >> 1;
@@ -1301,11 +1301,11 @@ void jpc_ft_invlift_col(jpc_fix_t *a, int numrows, int stride, int parity)
     jpc_fix_t *lptr;
     jpc_fix_t *hptr;
 #if 0
-    register jpc_fix_t *lptr2;
-    register jpc_fix_t *hptr2;
-    register int i;
+    jpc_fix_t *lptr2;
+    jpc_fix_t *hptr2;
+    int i;
 #endif
-    register int n;
+    int n;
     int llen;
 
     llen = (numrows + 1 - parity) >> 1;
@@ -1362,10 +1362,10 @@ void jpc_ft_invlift_colgrp(jpc_fix_t *a, int numrows, int stride, int parity)
 
     jpc_fix_t *lptr;
     jpc_fix_t *hptr;
-    register jpc_fix_t *lptr2;
-    register jpc_fix_t *hptr2;
-    register int n;
-    register int i;
+    jpc_fix_t *lptr2;
+    jpc_fix_t *hptr2;
+    int n;
+    int i;
     int llen;
 
     llen = (numrows + 1 - parity) >> 1;
@@ -1462,10 +1462,10 @@ void jpc_ft_invlift_colres(jpc_fix_t *a, int numrows, int numcols, int stride,
 
     jpc_fix_t *lptr;
     jpc_fix_t *hptr;
-    register jpc_fix_t *lptr2;
-    register jpc_fix_t *hptr2;
-    register int n;
-    register int i;
+    jpc_fix_t *lptr2;
+    jpc_fix_t *hptr2;
+    int n;
+    int i;
     int llen;
 
     llen = (numrows + 1 - parity) >> 1;
@@ -1643,9 +1643,9 @@ int jpc_ft_synthesize(int *a, int xstart, int ystart, int width, int height,
 void jpc_ns_fwdlift_row(jpc_fix_t *a, int numcols, int parity)
 {
 
-    register jpc_fix_t *lptr;
-    register jpc_fix_t *hptr;
-    register int n;
+    jpc_fix_t *lptr;
+    jpc_fix_t *hptr;
+    int n;
     int llen;
 
     llen = (numcols + 1 - parity) >> 1;
@@ -1767,10 +1767,10 @@ void jpc_ns_fwdlift_colgrp(jpc_fix_t *a, int numrows, int stride,
 
     jpc_fix_t *lptr;
     jpc_fix_t *hptr;
-    register jpc_fix_t *lptr2;
-    register jpc_fix_t *hptr2;
-    register int n;
-    register int i;
+    jpc_fix_t *lptr2;
+    jpc_fix_t *hptr2;
+    int n;
+    int i;
     int llen;
 
     llen = (numrows + 1 - parity) >> 1;
@@ -1975,10 +1975,10 @@ void jpc_ns_fwdlift_colres(jpc_fix_t *a, int numrows, int numcols,
 
     jpc_fix_t *lptr;
     jpc_fix_t *hptr;
-    register jpc_fix_t *lptr2;
-    register jpc_fix_t *hptr2;
-    register int n;
-    register int i;
+    jpc_fix_t *lptr2;
+    jpc_fix_t *hptr2;
+    int n;
+    int i;
     int llen;
 
     llen = (numrows + 1 - parity) >> 1;
@@ -2183,9 +2183,9 @@ void jpc_ns_fwdlift_col(jpc_fix_t *a, int numrows, int stride,
 
     jpc_fix_t *lptr;
     jpc_fix_t *hptr;
-    register jpc_fix_t *lptr2;
-    register jpc_fix_t *hptr2;
-    register int n;
+    jpc_fix_t *lptr2;
+    jpc_fix_t *hptr2;
+    int n;
     int llen;
 
     llen = (numrows + 1 - parity) >> 1;
@@ -2357,9 +2357,9 @@ void jpc_ns_fwdlift_col(jpc_fix_t *a, int numrows, int stride,
 void jpc_ns_invlift_row(jpc_fix_t *a, int numcols, int parity)
 {
 
-    register jpc_fix_t *lptr;
-    register jpc_fix_t *hptr;
-    register int n;
+    jpc_fix_t *lptr;
+    jpc_fix_t *hptr;
+    int n;
     int llen;
 
     llen = (numcols + 1 - parity) >> 1;
@@ -2481,10 +2481,10 @@ void jpc_ns_invlift_colgrp(jpc_fix_t *a, int numrows, int stride,
 
     jpc_fix_t *lptr;
     jpc_fix_t *hptr;
-    register jpc_fix_t *lptr2;
-    register jpc_fix_t *hptr2;
-    register int n;
-    register int i;
+    jpc_fix_t *lptr2;
+    jpc_fix_t *hptr2;
+    int n;
+    int i;
     int llen;
 
     llen = (numrows + 1 - parity) >> 1;
@@ -2689,10 +2689,10 @@ void jpc_ns_invlift_colres(jpc_fix_t *a, int numrows, int numcols,
 
     jpc_fix_t *lptr;
     jpc_fix_t *hptr;
-    register jpc_fix_t *lptr2;
-    register jpc_fix_t *hptr2;
-    register int n;
-    register int i;
+    jpc_fix_t *lptr2;
+    jpc_fix_t *hptr2;
+    int n;
+    int i;
     int llen;
 
     llen = (numrows + 1 - parity) >> 1;
@@ -2897,9 +2897,9 @@ void jpc_ns_invlift_col(jpc_fix_t *a, int numrows, int stride,
 
     jpc_fix_t *lptr;
     jpc_fix_t *hptr;
-    register jpc_fix_t *lptr2;
-    register jpc_fix_t *hptr2;
-    register int n;
+    jpc_fix_t *lptr2;
+    jpc_fix_t *hptr2;
+    int n;
     int llen;
 
     llen = (numrows + 1 - parity) >> 1;

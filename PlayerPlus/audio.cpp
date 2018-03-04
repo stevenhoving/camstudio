@@ -331,7 +331,7 @@ BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, B
     return TRUE;
 }
 
-void CALLBACK aviaudioMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+void CALLBACK aviaudioMessage(HWND /*hwnd*/, UINT msg, WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     if (msg == MM_WOM_DONE)
     {

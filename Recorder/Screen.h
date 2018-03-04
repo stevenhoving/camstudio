@@ -100,7 +100,7 @@ protected:
         VERIFY(AddCursor(pDC));
     }
     void InsertText(CDC *pDC, const CRect &rRect, TextAttributes &rTextAttrs);
-    void InsertImage(CDC *pDC, CRect &rectFrame, const ImageAttributes &rImgAttr);
+    void InsertImage(CDC *pDC, CRect &rectFrame, const ::ImageAttributes &rImgAttr);
 
 private:
     size_t m_uFrameCount;       // count of images captured

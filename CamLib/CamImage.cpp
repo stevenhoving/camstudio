@@ -1,7 +1,5 @@
-// CamImage.cpp    - CamStudio Library image functions
-/////////////////////////////////////////////////////////////////////////////
-#include "StdAfx.h"
-#include "CamImage.h"
+#include "stdafx.h"
+#include "CamLib/CamImage.h"
 
 HANDLE Bitmap2Dib(HBITMAP hbitmap, UINT bits)
 {

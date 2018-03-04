@@ -1,10 +1,6 @@
-// UpdateDialog.cpp : implementation file
-//
-
 #include "stdafx.h"
 #include "Recorder.h"
 #include "UpdateDialog.h"
-#include "afxdialogex.h"
 
 // CUpdateDialog dialog
 

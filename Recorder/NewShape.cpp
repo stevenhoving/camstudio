@@ -14,14 +14,14 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 // TODO : Some Magic numbers here, put them in a haeder file or explain 200 and 150
-int iNewShapeWidth = 200;
-int iNewShapeHeight = 150;
-CString strNewShapeText("Right Click to Edit Text");
-CString strImageFilename("");
-int iImageType = 0;
+int g_iNewShapeWidth = 200;
+int g_iNewShapeHeight = 150;
+CString g_strNewShapeText("Right Click to Edit Text");
+CString g_strImageFilename("");
+int g_iImageType = 0;
 
-CString shapeName("Label_");
-CString shapeStr;
+CString g_shapeName("Label_");
+CString g_shapeStr;
 
 CString proposedShapeStr;
 
@@ -33,8 +33,8 @@ extern void AdjustShapeName(CString &shapeName);
 CNewShapeDlg::CNewShapeDlg(CWnd *pParent /*=NULL*/)
     : CDialog(CNewShapeDlg::IDD, pParent)
     , m_imageDir(GetMyVideoPath())
-    , m_uImageWidth(iNewShapeWidth)
-    , m_uImageHeight(iNewShapeHeight)
+    , m_uImageWidth(g_iNewShapeWidth)
+    , m_uImageHeight(g_iNewShapeHeight)
 {
     //{{AFX_DATA_INIT(CNewShapeDlg)
     // NOTE: the ClassWizard will add member initialization here
@@ -78,33 +78,33 @@ BOOL CNewShapeDlg::OnInitDialog()
 {
     CDialog::OnInitDialog();
 
-    if (strImageFilename)
-        strImageFilename = GetProgPath() + "\\DIALOG.BMP";
+    if (g_strImageFilename)
+        g_strImageFilename = GetProgPath() + "\\DIALOG.BMP";
 
-    m_ctrlTextFileText.SetWindowText(strImageFilename);
+    m_ctrlTextFileText.SetWindowText(g_strImageFilename);
 
-    shapeStr.Format(TEXT("%d"), iShapeNameInt);
-    shapeStr = shapeName + shapeStr;
-    m_ctrlEditName.SetWindowText(shapeStr);
+    g_shapeStr.Format(TEXT("%d"), iShapeNameInt);
+    g_shapeStr = g_shapeName + g_shapeStr;
+    m_ctrlEditName.SetWindowText(g_shapeStr);
 
-    proposedShapeStr = shapeStr;
+    proposedShapeStr = g_shapeStr;
 
     // TODO: Add extra initialization here
     HICON loadFileIcon = LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_ICON1));
     m_ctrlButtonImageFile.SetIcon(loadFileIcon);
 
-    m_ctrlButtoBlankImage.SetCheck((0 == iImageType) ? BST_CHECKED : BST_UNCHECKED);
+    m_ctrlButtoBlankImage.SetCheck((0 == g_iImageType) ? BST_CHECKED : BST_UNCHECKED);
     // m_ctrlButtoImageFile.SetCheck((0 == iImageType) ? BST_UNCHECKED : BST_CHECKED);    // redundant
 
-    m_ctrlStaticWidth.EnableWindow((0 == iImageType));
-    m_ctrlStaticHeight.EnableWindow((0 == iImageType));
-    m_ctrlEditWidth.EnableWindow((0 == iImageType));
-    m_ctrlEditHeight.EnableWindow((0 == iImageType));
+    m_ctrlStaticWidth.EnableWindow((0 == g_iImageType));
+    m_ctrlStaticHeight.EnableWindow((0 == g_iImageType));
+    m_ctrlEditWidth.EnableWindow((0 == g_iImageType));
+    m_ctrlEditHeight.EnableWindow((0 == g_iImageType));
 
-    m_ctrlTextFileText.EnableWindow((0 != iImageType));
-    m_ctrlButtonImageFile.EnableWindow((0 != iImageType));
+    m_ctrlTextFileText.EnableWindow((0 != g_iImageType));
+    m_ctrlButtonImageFile.EnableWindow((0 != g_iImageType));
 
-    m_ctrlEditShaepText.SetWindowText(strNewShapeText);
+    m_ctrlEditShaepText.SetWindowText(g_strNewShapeText);
 
     return TRUE; // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
@@ -137,73 +137,73 @@ void CNewShapeDlg::OnClickImageFile()
 
 void CNewShapeDlg::OnOK()
 {
-    int oldWidth = iNewShapeWidth;
-    int oldHeight = iNewShapeHeight;
+    int oldWidth = g_iNewShapeWidth;
+    int oldHeight = g_iNewShapeHeight;
 
     int val = m_ctrlButtoBlankImage.GetCheck();
-    iImageType = (val) ? 0 : 1;
-    if (!iImageType)
+    g_iImageType = (val) ? 0 : 1;
+    if (!g_iImageType)
     {
         UpdateData();
-        iNewShapeWidth = m_uImageWidth;
-        iNewShapeHeight = m_uImageHeight;
+        g_iNewShapeWidth = m_uImageWidth;
+        g_iNewShapeHeight = m_uImageHeight;
 
         // TODO: numeric validation should be redundant due to DDV macros
-        if (iNewShapeWidth < 20)
+        if (g_iNewShapeWidth < 20)
         {
             MessageOut(NULL, IDS_STRINGWIDTHLESS20, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            iNewShapeWidth = oldWidth;
+            g_iNewShapeWidth = oldWidth;
             return;
         }
 
-        if (maxxScreen < iNewShapeWidth)
+        if (maxxScreen < g_iNewShapeWidth)
         {
             // "Width cannot be larger than maxxScreen"
             MessageOut(NULL, IDS_STRINGWIDTHLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, maxxScreen);
-            iNewShapeWidth = oldWidth;
+            g_iNewShapeWidth = oldWidth;
             return;
         }
 
-        if (iNewShapeHeight < 20)
+        if (g_iNewShapeHeight < 20)
         {
             // "Height cannot be less than 20"
             MessageOut(NULL, IDS_STRINGHEIGHTLESS20, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            iNewShapeHeight = oldHeight;
+            g_iNewShapeHeight = oldHeight;
             return;
         }
 
-        if (maxyScreen < iNewShapeHeight)
+        if (maxyScreen < g_iNewShapeHeight)
         {
             // "Height cannot be larger than maxyScreen
             MessageOut(NULL, IDS_STRINGHEIGHTLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, maxyScreen);
-            iNewShapeHeight = oldHeight;
+            g_iNewShapeHeight = oldHeight;
             return;
         }
     }
 
-    m_ctrlTextFileText.GetWindowText(strImageFilename);
-    strImageFilename.TrimLeft();
-    strImageFilename.TrimRight();
-    if (1 == iImageType)
+    m_ctrlTextFileText.GetWindowText(g_strImageFilename);
+    g_strImageFilename.TrimLeft();
+    g_strImageFilename.TrimRight();
+    if (1 == g_iImageType)
     {
-        if (strImageFilename == "")
+        if (g_strImageFilename == "")
         {
             MessageOut(NULL, IDS_STRINGINVIMGFILE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             return;
         }
     }
 
-    m_ctrlEditShaepText.GetWindowText(strNewShapeText);
-    m_ctrlEditName.GetWindowText(shapeStr);
+    m_ctrlEditShaepText.GetWindowText(g_strNewShapeText);
+    m_ctrlEditName.GetWindowText(g_shapeStr);
 
-    if (proposedShapeStr != shapeStr)
+    if (proposedShapeStr != g_shapeStr)
     {
         // shape name has been changed, reset counter to 1
-        shapeName = shapeStr;
+        g_shapeName = g_shapeStr;
 
         // a better method is to extract the trailing number from shapestr and use it as number for iShapeNameInt
         // iShapeNameInt = 1;
-        AdjustShapeName(shapeName);
+        AdjustShapeName(g_shapeName);
     }
     else
     {

@@ -1,7 +1,5 @@
-// CamSys.cpp    - CamStudio Library file functions
-/////////////////////////////////////////////////////////////////////////////
-#include "StdAfx.h"
-#include "CamSys.h"
+#include "stdafx.h"
+#include "CamLib/CamSys.h"
 
 int GetOperatingSystem()
 {

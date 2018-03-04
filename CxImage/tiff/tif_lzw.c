@@ -824,10 +824,10 @@ LZWPreEncode(TIFF* tif, tsample_t s)
 static int
 LZWEncode(TIFF* tif, tidata_t bp, tsize_t cc, tsample_t s)
 {
-    register LZWCodecState *sp = EncoderState(tif);
-    register long fcode;
-    register hash_t *hp;
-    register int h, c;
+    LZWCodecState *sp = EncoderState(tif);
+    long fcode;
+    hash_t *hp;
+    int h, c;
     hcode_t ent;
     long disp;
     long incount, outcount, checkpoint;
@@ -989,7 +989,7 @@ LZWEncode(TIFF* tif, tidata_t bp, tsize_t cc, tsample_t s)
 static int
 LZWPostEncode(TIFF* tif)
 {
-    register LZWCodecState *sp = EncoderState(tif);
+    LZWCodecState *sp = EncoderState(tif);
     tidata_t op = tif->tif_rawcp;
     long nextbits = sp->lzw_nextbits;
     long nextdata = sp->lzw_nextdata;
@@ -1018,8 +1018,8 @@ LZWPostEncode(TIFF* tif)
 static void
 cl_hash(LZWCodecState* sp)
 {
-    register hash_t *hp = &sp->enc_hashtab[HSIZE-1];
-    register long i = HSIZE-8;
+    hash_t *hp = &sp->enc_hashtab[HSIZE-1];
+    long i = HSIZE-8;
 
      do {
         i -= 8;

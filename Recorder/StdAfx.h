@@ -1,5 +1,7 @@
 #pragma once
 
+#define NOMINMAX
+
 #pragma message("Recorder: stdafx.h")
 #ifdef UNICODE
 #pragma message("UNICODE defined")
@@ -26,6 +28,7 @@
 #include <afxwin.h>  // MFC core and standard components
 #include <afxext.h>  // MFC extensions
 #include <afxdisp.h> // MFC OLE automation classes
+
 #ifndef _AFX_NO_AFXCMN_SUPPORT
 #include <afxcmn.h> // MFC support for Windows Common Controls
 #endif              // _AFX_NO_AFXCMN_SUPPORT
@@ -33,12 +36,12 @@
 #include <vfw.h>
 
 #pragma warning(disable : 4290)
-#include "libconfig.h++"
-#include <afxcontrolbars.h>
+#include "libconfig.hh"
+//#include <afxcontrolbars.h>
 
 #include "Localization\Localization.h"
 
-extern libconfig::Config *cfg;
+extern libconfig::Config *g_cfg;
 #pragma warning(default : 4290)
 
 //#include "constants.h"

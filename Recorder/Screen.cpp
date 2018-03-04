@@ -3,13 +3,15 @@
 #include "ximage.h"
 #include "RecorderView.h"
 #include <hook/ClickQueue.hpp>
+
 #include "addons/EffectsOptions.h"
 #include "addons/XnoteStopwatchFormat.h"
-#include <gdiplus.h>
-using namespace Gdiplus;
 
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
+// for using std::min, std::max in gdiplus
+#include <algorithm>
+using namespace std;
+#include <gdiplus.h>
+
 CCamera::CCamera()
 {
 }
@@ -24,13 +26,14 @@ bool CCamera::AddTimestamp(CDC *pDC)
     {
         CString str;
         TextAttributes tmpTimestamp;
-        // char TimeBuff[256];
-        struct tm *newTime;
+
         time_t szClock;
         time(&szClock);
-        newTime = localtime(&szClock);
+
+        struct tm newTime = { 0 };
+        localtime_s(&newTime, &szClock);
         tmpTimestamp = m_sTimestamp.m_taTimestamp;
-        strftime(tmpTimestamp.text.GetBuffer(256), 256, m_sTimestamp.m_taTimestamp.text, newTime);
+        strftime(tmpTimestamp.text.GetBuffer(256), 256, m_sTimestamp.m_taTimestamp.text, &newTime);
         InsertText(pDC, m_rectFrame, tmpTimestamp);
     }
     return true;
@@ -49,7 +52,6 @@ bool CCamera::AddXNote(CDC *pDC)
 {
     if (m_sXNote.m_bAnnotation)
     {
-
         // CString str;
         TextAttributes taTmpXNote;
         char cTmpBuffXNoteTimeStamp[128] = "";
@@ -134,8 +136,8 @@ bool CCamera::AddCursor(CDC *pDC)
     ptCursor.x -= _zoomFrame.left;
     ptCursor.y -= _zoomFrame.top;
     double zoom = m_rectView.Width() / (double)_zoomFrame.Width(); // TODO: need access to zoom in this class badly
-    ptCursor.x *= zoom;
-    ptCursor.y *= zoom;
+    ptCursor.x = static_cast<long>(ptCursor.x * zoom);
+    ptCursor.y = static_cast<long>(ptCursor.y * zoom);
 
     // TODO: This shift left and up is kind of bogus.
     // The values are half the width and height of the higlight area.
@@ -175,15 +177,15 @@ bool CCamera::AddCursor(CDC *pDC)
 // visualize mouse events queue
 bool CCamera::AddClicks(CDC *pDC)
 {
-    Graphics g(pDC->GetSafeHdc());
-    g.SetSmoothingMode(SmoothingModeAntiAlias);
-    g.SetInterpolationMode(InterpolationModeHighQualityBicubic);
-    Color c;
+    Gdiplus::Graphics g(pDC->GetSafeHdc());
+    g.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+    g.SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic);
+    Gdiplus::Color c;
     c.SetValue(m_cCursor.ClickLeftColor());
-    Pen penLeft(c, m_cCursor.m_fRingWidth);
+    Gdiplus::Pen penLeft(c, m_cCursor.m_fRingWidth);
     c.SetValue(m_cCursor.ClickRightColor());
-    Pen penRight(c, m_cCursor.m_fRingWidth);
-    Pen penMiddle(m_cCursor.m_clrClickMiddle, m_cCursor.m_fRingWidth);
+    Gdiplus::Pen penRight(c, m_cCursor.m_fRingWidth);
+    Gdiplus::Pen penMiddle(m_cCursor.m_clrClickMiddle, m_cCursor.m_fRingWidth);
 
     DWORD now = GetTickCount();
     DWORD threshold = m_cCursor.m_iRingThreshold;
@@ -233,7 +235,7 @@ bool CCamera::AddClicks(CDC *pDC)
                 size = maxsize - size; // maxsize * (threshold - ago) / threshold;
                 break;
         }
-        Pen *pen;
+        Gdiplus::Pen *pen = nullptr;
         switch (iter->flags) // color {
         {
             case WM_RBUTTONDOWN:
@@ -252,8 +254,8 @@ bool CCamera::AddClicks(CDC *pDC)
         pt.x -= _zoomFrame.left;
         pt.y -= _zoomFrame.top;
         double zoom = m_rectView.Width() / (double)_zoomFrame.Width();
-        pt.x *= zoom;
-        pt.y *= zoom;
+        pt.x = static_cast<long>(pt.x * zoom);
+        pt.y = static_cast<long>(pt.y * zoom);
 
         if (iter->flags == WM_MOUSEWHEEL)
         {
@@ -307,8 +309,7 @@ void CCamera::InsertText(CDC *pDC, const CRect &rectBase, TextAttributes &rTextA
 
     // Prepare multiple lines text support
     size_t nBlockLength = rTextAttrs.text.GetLength();
-    size_t nMaxLength =
-        nBlockLength; // For now we assume that Max and BlockLength are equal (as is with singleline strings)
+    size_t nMaxLength = nBlockLength; // For now we assume that Max and BlockLength are equal (as is with singleline strings)
     size_t nNrOfLine = 1;
     size_t nNewLinePos = rTextAttrs.text.FindOneOf("\n");
 
@@ -336,13 +337,13 @@ void CCamera::InsertText(CDC *pDC, const CRect &rectBase, TextAttributes &rTextA
             if (cTextn == '\n')
             {
                 nNrOfLine++;
-                nBlockLength = max(nBlockLength, m);
+                nBlockLength = std::max<size_t>(nBlockLength, m);
                 m = 0;
             }
         }
         // (Because \n will not always terminate a string we have to check one time more.)
         // Now we know the real required blocklength to be able to draw all text.
-        nBlockLength = max(nBlockLength, m);
+        nBlockLength = std::max<size_t>(nBlockLength, m);
     }
 
     /*
@@ -518,9 +519,9 @@ void CCamera::InsertHighLight(CDC *pDC, CPoint pt)
     if (!(m_cCursor.Record() && m_cCursor.Highlight()))
         return;
 
-    Graphics g(pDC->GetSafeHdc());
-    Color c(m_cCursor.HighlightColor());
-    SolidBrush brush(c);
+    Gdiplus::Graphics g(pDC->GetSafeHdc());
+    Gdiplus::Color c(m_cCursor.HighlightColor());
+    Gdiplus::SolidBrush brush(c);
 
     float highlightsize = m_cCursor.HighlightSize() / 2.f;
 
@@ -665,17 +666,18 @@ bool CCamera::CaptureFrame(const CRect &rectView)
     }
     else
     {
-        Bitmap orig(rectView.Width(), rectView.Height());
-        Graphics g(&orig);
+        Gdiplus::Bitmap orig(rectView.Width(), rectView.Height());
+        Gdiplus::Graphics g(&orig);
         HDC origDC = g.GetHDC();
 
         ::BitBlt(origDC, 0, 0, rectView.Width(), rectView.Height(), hScreenDC, rectView.left, rectView.top, dwRop);
 
         g.ReleaseHDC(origDC);
 
-        Graphics g2(cMemDC.GetSafeHdc());
+        Gdiplus::Graphics g2(cMemDC.GetSafeHdc());
 
-        Status s = g2.DrawImage(&orig, 0, 0, m_rectView.Width(), m_rectView.Height());
+        auto s = g2.DrawImage(&orig, 0, 0, m_rectView.Width(), m_rectView.Height());
+        (void)s; // \note todo: we are ignoring the draw image result... why?
     }
     Annotate(&cMemDC);
 

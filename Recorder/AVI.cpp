@@ -8,7 +8,7 @@
 #define NUMSTREAMS 2
 
 namespace
-{ // annonymous
+{ // anonymous
 BOOL CALLBACK AudioCompressCallBack(int iProgress)
 {
     // Set Progress in Title Bar

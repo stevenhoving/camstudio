@@ -239,8 +239,8 @@ jpc_fix_t jpc_refsignmsedec_func(jpc_fix_t x, int bitpos);
 /* Update the per-sample state information. */
 #define    JPC_UPDATEFLAGS4(fp, rowstep, s, vcausalflag) \
 { \
-    register jpc_fix_t *np = (fp) - (rowstep); \
-    register jpc_fix_t *sp = (fp) + (rowstep); \
+    jpc_fix_t *np = (fp) - (rowstep); \
+    jpc_fix_t *sp = (fp) + (rowstep); \
     if ((vcausalflag)) { \
         sp[-1] |= JPC_NESIG; \
         sp[1] |= JPC_NWSIG; \

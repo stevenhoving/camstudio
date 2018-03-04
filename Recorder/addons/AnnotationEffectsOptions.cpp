@@ -336,7 +336,7 @@ void CAnnotationEffectsOptionsDlg::OnEnChangeFormatpreview()
     {
         time_t szClock;
         time(&szClock);
-        struct tm newTime = {0};
+        struct tm newTime = {};
         localtime_s(&newTime, &szClock);
         char TimeBuff[256];
         strftime(TimeBuff, sizeof(TimeBuff), str, &newTime);

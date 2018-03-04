@@ -1,7 +1,5 @@
-// recatangle.cpp    - CamStudio Library rectangle functions
-/////////////////////////////////////////////////////////////////////////////
-#include "StdAfx.h"
-#include "CamRect.h"
+#include "stdafx.h"
+#include "CamLib/CamRect.h"
 
 BOOL isRectEqual(RECT a, RECT b)
 {

@@ -219,6 +219,9 @@
     <ClInclude Include="Localization\Localization.h">
       <Filter>Source Files\Localization</Filter>
     </ClInclude>
+    <ClInclude Include="GdiPlusInitializer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\bitmap1.bmp">
@@ -579,6 +582,9 @@
     </ClCompile>
     <ClCompile Include="vfw\ACM.cpp">
       <Filter>Source Files\vfw</Filter>
+    </ClCompile>
+    <ClCompile Include="GdiPlusInitializer.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

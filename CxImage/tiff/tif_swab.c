@@ -35,7 +35,7 @@
 void
 TIFFSwabShort(uint16* wp)
 {
-    register unsigned char* cp = (unsigned char*) wp;
+    unsigned char* cp = (unsigned char*) wp;
     unsigned char t;
 
     t = cp[1]; cp[1] = cp[0]; cp[0] = t;
@@ -46,7 +46,7 @@ TIFFSwabShort(uint16* wp)
 void
 TIFFSwabLong(uint32* lp)
 {
-    register unsigned char* cp = (unsigned char*) lp;
+    unsigned char* cp = (unsigned char*) lp;
     unsigned char t;
 
     t = cp[3]; cp[3] = cp[0]; cp[0] = t;
@@ -56,10 +56,10 @@ TIFFSwabLong(uint32* lp)
 
 #ifndef TIFFSwabArrayOfShort
 void
-TIFFSwabArrayOfShort(uint16* wp, register unsigned long n)
+TIFFSwabArrayOfShort(uint16* wp, unsigned long n)
 {
-    register unsigned char* cp;
-    register unsigned char t;
+    unsigned char* cp;
+    unsigned char t;
 
     /* XXX unroll loop some */
     while (n-- > 0) {
@@ -88,10 +88,10 @@ TIFFSwabArrayOfTriples(uint8* tp, unsigned long n)
 
 #ifndef TIFFSwabArrayOfLong
 void
-TIFFSwabArrayOfLong(register uint32* lp, register unsigned long n)
+TIFFSwabArrayOfLong(register uint32* lp, unsigned long n)
 {
-    register unsigned char *cp;
-    register unsigned char t;
+    unsigned char *cp;
+    unsigned char t;
 
     /* XXX unroll loop some */
     while (n-- > 0) {
@@ -107,7 +107,7 @@ TIFFSwabArrayOfLong(register uint32* lp, register unsigned long n)
 void
 TIFFSwabDouble(double *dp)
 {
-        register uint32* lp = (uint32*) dp;
+        uint32* lp = (uint32*) dp;
         uint32 t;
 
     TIFFSwabArrayOfLong(lp, 2);
@@ -117,10 +117,10 @@ TIFFSwabDouble(double *dp)
 
 #ifndef TIFFSwabArrayOfDouble
 void
-TIFFSwabArrayOfDouble(double* dp, register unsigned long n)
+TIFFSwabArrayOfDouble(double* dp, unsigned long n)
 {
-    register uint32* lp = (uint32*) dp;
-        register uint32 t;
+    uint32* lp = (uint32*) dp;
+        uint32 t;
 
     TIFFSwabArrayOfLong(lp, n + n);
         while (n-- > 0) {
@@ -215,7 +215,7 @@ TIFFGetBitRevTable(int reversed)
 }
 
 void
-TIFFReverseBits(register unsigned char* cp, register unsigned long n)
+TIFFReverseBits(register unsigned char* cp, unsigned long n)
 {
     for (; n > 8; n -= 8) {
         cp[0] = TIFFBitRevTable[cp[0]];

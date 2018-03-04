@@ -968,7 +968,7 @@ DWORD CodecInst::DecompressRGB(ICDECOMPRESS *icinfo)
 
     int r;
     int use_algo = (byte1 >> 1) & 7; // last three bits
-    int use_gzip_level = (byte1 >> 4);
+    //int use_gzip_level = (byte1 >> 4);
 
     uint8_t originalRGBbit = (byte2 >> 2) & 0x3;
     (void)originalRGBbit;

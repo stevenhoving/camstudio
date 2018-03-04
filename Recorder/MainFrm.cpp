@@ -51,8 +51,6 @@ Avi writing using directshow: http://www.codeguru.com/forum/archive/index.php/t-
 */
 
 /*
-using namespace std;
-
 // For Marshalling memory
 // compile with: /clr
 using namespace System;

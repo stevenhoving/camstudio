@@ -38,14 +38,14 @@ namespace libconfig {
 // ---------------------------------------------------------------------------
 
 ParseException::ParseException(const char *file, int line, const char *error)
-  : _file(file ? ::strdup(file) : NULL), _line(line), _error(error)
+  : _file(file ? ::_strdup(file) : NULL), _line(line), _error(error)
 {
 }
 
 // ---------------------------------------------------------------------------
 
 ParseException::ParseException(const ParseException &other)
-  : _file(other._file ? ::strdup(other._file) : NULL),
+  : _file(other._file ? ::_strdup(other._file) : NULL),
     _line(other._line),
     _error(other._error)
 {
@@ -140,7 +140,7 @@ SettingException::SettingException(const Setting &setting)
   std::stringstream sstr;
   __constructPath(setting, sstr);
 
-  _path = ::strdup(sstr.str().c_str());
+  _path = ::_strdup(sstr.str().c_str());
 }
 
 // ---------------------------------------------------------------------------
@@ -151,7 +151,7 @@ SettingException::SettingException(const Setting &setting, int idx)
   __constructPath(setting, sstr);
   sstr << ".[" << idx << "]";
 
-  _path = ::strdup(sstr.str().c_str());
+  _path = ::_strdup(sstr.str().c_str());
 }
 
 // ---------------------------------------------------------------------------
@@ -162,14 +162,14 @@ SettingException::SettingException(const Setting &setting, const char *name)
   __constructPath(setting, sstr);
   sstr << '.' << name;
 
-  _path = ::strdup(sstr.str().c_str());
+  _path = ::_strdup(sstr.str().c_str());
 }
 
 // ---------------------------------------------------------------------------
 
 SettingException::SettingException(const char *path)
 {
-  _path = ::strdup(path);
+  _path = ::_strdup(path);
 }
 
 // ---------------------------------------------------------------------------
@@ -183,7 +183,7 @@ const char *SettingException::getPath() const
 
 SettingException::SettingException(const SettingException &other)
 {
-  _path = ::strdup(other._path);
+  _path = ::_strdup(other._path);
 }
 
 // ---------------------------------------------------------------------------
@@ -191,7 +191,7 @@ SettingException::SettingException(const SettingException &other)
 SettingException &SettingException::operator=(const SettingException &other)
 {
   ::free(_path);
-  _path = ::strdup(other._path);
+  _path = ::_strdup(other._path);
 
   return(*this);
 }

@@ -1,10 +1,7 @@
-// ProgressDlg.cpp : implementation file
-//
-
 #include "stdafx.h"
 #include "Recorder.h"
 #include "ProgressDlg.h"
-#include "afxdialogex.h"
+
 
 // ProgressDlg dialog
 

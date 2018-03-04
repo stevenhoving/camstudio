@@ -14,7 +14,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 int iCurrentLayoutID = 1;
-CString strLayoutName("Layout_");
+CString g_strLayoutName("Layout_");
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

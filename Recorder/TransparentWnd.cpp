@@ -31,8 +31,14 @@
 #include "CamLib/CStudioLib.h"
 #include "CamLib/CamColor.h"
 
-#include <windowsx.h>
+// for using std::min, std::max in gdiplus
+#include <algorithm>
+using namespace std;
 #include <Gdiplus.h>
+
+#include <windows.h>
+#include <windowsx.h>
+
 using namespace Gdiplus;
 
 extern CScreenAnnotationsDlg sadlg;
@@ -1371,7 +1377,7 @@ CTransparentWnd *CTransparentWnd::Clone(int offsetx, int offsety)
         // CString tempFile = GetTempFolder(iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
         CString tempFile;
         tempFile.Format("%s\\~txPic%d.bmp",
-                        GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir), rand());
+                        GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir).GetString(), rand());
         int ret = m_picture.CopyToPicture(&newWnd->m_picture, tempFile);
         if (!ret)
         {
@@ -1379,7 +1385,7 @@ CTransparentWnd *CTransparentWnd::Clone(int offsetx, int offsety)
             // sprintf(numstr, "%d", randnum);
             // tempFile = GetTempFolder(iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
             tempFile.Format("%s\\~txPic%d.bmp",
-                            GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir), rand());
+                            GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir).GetString(), rand());
             ret = m_picture.CopyToPicture(&newWnd->m_picture, tempFile);
             if (!ret)
             {

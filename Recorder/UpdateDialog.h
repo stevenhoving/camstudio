@@ -1,5 +1,7 @@
 #pragma once
 
+#include <afxdialogex.h>
+
 // CUpdateDialog dialog
 
 class CUpdateDialog : public CDialogEx

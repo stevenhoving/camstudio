@@ -218,10 +218,10 @@ finish_pass (j_compress_ptr cinfo)
 LOCAL(void)
 arith_encode (j_compress_ptr cinfo, unsigned char *st, int val) 
 {
-  register arith_entropy_ptr e = (arith_entropy_ptr) cinfo->entropy;
-  register unsigned char nl, nm;
-  register INT32 qe, temp;
-  register int sv;
+  arith_entropy_ptr e = (arith_entropy_ptr) cinfo->entropy;
+  unsigned char nl, nm;
+  INT32 qe, temp;
+  int sv;
 
   /* Fetch values from our compact representation of Table D.2:
    * Qe values and probability estimation state machine

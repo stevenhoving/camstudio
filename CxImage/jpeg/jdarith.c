@@ -105,10 +105,10 @@ get_byte (j_decompress_ptr cinfo)
 LOCAL(int)
 arith_decode (j_decompress_ptr cinfo, unsigned char *st)
 {
-  register arith_entropy_ptr e = (arith_entropy_ptr) cinfo->entropy;
-  register unsigned char nl, nm;
-  register INT32 qe, temp;
-  register int sv, data;
+  arith_entropy_ptr e = (arith_entropy_ptr) cinfo->entropy;
+  unsigned char nl, nm;
+  INT32 qe, temp;
+  int sv, data;
 
   /* Renormalization & data input per section D.2.6 */
   while (e->a < 0x8000L) {
@@ -135,7 +135,7 @@ arith_decode (j_decompress_ptr cinfo, unsigned char *st)
       }
     }
       }
-      e->c = (e->c << 8) | data; /* insert data into C register */
+      e->c = (e->c << 8) | data; /* insert data into C */
       if ((e->ct += 8) < 0)     /* update bit shift counter */
     /* Need more initial bytes */
     if (++e->ct == 0)

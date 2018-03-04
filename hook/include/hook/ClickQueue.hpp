@@ -1,7 +1,7 @@
 #ifndef ClickQueue_hpp
 #define ClickQueue_hpp
 
-#include "StdAfx.h"
+
 #include <windows.h>
 #include <vector>
 

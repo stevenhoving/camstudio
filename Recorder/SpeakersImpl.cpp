@@ -1264,7 +1264,7 @@ BOOL WaveoutInitialize()
     // A "mapper" for audio mixer devices does not currently exist.
     if (uNumMixers != 0)
     {
-        if (MMSYSERR_NOERROR != AudioMixer.Open(cAudioFormat.m_iSelectedMixer, (DWORD)hWndGlobal, NULL,
+        if (MMSYSERR_NOERROR != AudioMixer.Open(cAudioFormat.m_iSelectedMixer, (DWORD_PTR)hWndGlobal, NULL,
                                                 MIXER_OBJECTF_MIXER | CALLBACK_WINDOW))
         {
             OnError("WaveoutInitialize");
@@ -1302,7 +1302,7 @@ BOOL WaveoutVolumeInitialize()
     // A "mapper" for audio mixer devices does not currently exist.
     if (uNumMixers != 0)
     {
-        if (MMSYSERR_NOERROR != AudioMixer.Open(cAudioFormat.m_iSelectedMixer, (DWORD)hWndGlobal, NULL,
+        if (MMSYSERR_NOERROR != AudioMixer.Open(cAudioFormat.m_iSelectedMixer, (DWORD_PTR)hWndGlobal, NULL,
                                                 MIXER_OBJECTF_MIXER | CALLBACK_WINDOW))
             return FALSE;
 

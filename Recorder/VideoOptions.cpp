@@ -726,8 +726,8 @@ void CVideoOptionsDlg::OnLock()
 
 void CVideoOptionsDlg::OnCaptureFrameRateInfo()
 {
-    MessageBox("Note that the lower the 'Capture Frame' rate figure, the greater\ the CPU usage will be (i.e. the "
-               "slower your PC will run) and the larger\ your video's final filesize will be.",
+    MessageBox("Note that the lower the 'Capture Frame' rate figure, the greater\n the CPU usage will be (i.e. the "
+               "slower your PC will run) and the larger\n your video's final filesize will be.",
                "CamStudio", MB_OK | MB_ICONEXCLAMATION);
 }
 

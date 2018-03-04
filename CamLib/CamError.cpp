@@ -1,5 +1,5 @@
-#include "StdAfx.h"
-#include "CamError.h"
+#include "stdafx.h"
+#include "CamLib/CamError.h"
 #include <strsafe.h> // for StringCchPrintf
 
 /////////////////////////////////////////////////////////////////////////////

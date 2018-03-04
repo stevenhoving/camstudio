@@ -3,11 +3,10 @@
 // Mouse button/move event hook DLL.
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#define _COMPILING_44E531B1_14D3_11d5_A025_006067718D04
-#include "hook/Hook.h"
+#include "hook/hook.h"
+#include "hook/ClickQueue.hpp"
 
 #include <mmsystem.h>
-#include "hook/ClickQueue.hpp"
 
 // actual cursor stuff http://msdn.microsoft.com/en-us/magazine/cc301524.aspx
 

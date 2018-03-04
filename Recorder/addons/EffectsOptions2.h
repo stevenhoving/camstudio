@@ -42,8 +42,8 @@ protected:
     void OnOK() override;
     afx_msg void OnPaint();
     afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
-    int CEffectsOptions2Dlg::EffectsOptions2SetXPosRatio( int nPosition );
-    int CEffectsOptions2Dlg::EffectsOptions2SetYPosRatio( int nPosition );
+    int EffectsOptions2SetXPosRatio( int nPosition );
+    int EffectsOptions2SetYPosRatio( int nPosition );
     //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 public:

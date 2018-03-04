@@ -17,6 +17,7 @@
 #include "CamCursor.h"
 #include "HotKey.h"
 #include "CamLib/CStudioLib.h"
+#include "GdiPlusInitializer.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -28,7 +29,7 @@ static BOOL bClassRegistered = FALSE;
 // this global variable is mentioned in StdAfx.h
 // thus everyone has an access
 // not the best solution though
-libconfig::Config *cfg;
+libconfig::Config *g_cfg;
 
 /////////////////////////////////////////////////////////////////////////////
 // CAboutDlg dialog used for App About
@@ -177,7 +178,13 @@ CRecorderApp theApp;
 BOOL CRecorderApp::InitInstance()
 {
     // Initialize GDI+.
-    Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+    
+    //gdiplusToken
+        //    Gdiplus::GdiplusStartup(&gdiplusToken, gdiplusStartupInput.get(), NULL);
+    //gdi_init(gdiplusStartupInput, gdiplusToken);
+
+    //std::unique_ptr<gdi> m_gdi;
+    m_gdi = std::make_unique<gdi>();
 
     ::OnError("CRecorderApp::InitInstance");
     AfxEnableControlContainer();
@@ -203,10 +210,10 @@ BOOL CRecorderApp::InitInstance()
 
     // TODO: re-enable when class complete
     // Read the file. If there is an error, report it and exit.
-    cfg = new libconfig::Config();
+    g_cfg = new libconfig::Config();
     try
     {
-        cfg->readFile(strProfile);
+        g_cfg->readFile(strProfile);
     }
     catch (const libconfig::FileIOException)
     { // TODO: move me to resource
@@ -241,7 +248,7 @@ BOOL CRecorderApp::InitInstance()
     if (!FirstInstance())
         return FALSE;
 
-    // Register new class and exit if it fails
+    // new class and exit if it fails
     if (!RegisterWindowClass())
     {
         TRACE("Class Registration Failed\n");
@@ -265,30 +272,30 @@ BOOL CRecorderApp::InitInstance()
 
     m_iVersionOp = GetOperatingSystem();
 
-    if (cfg->exists("Audio"))
-        cAudioFormat.Read(cfg->lookup("Audio"));
-    if (cfg->exists("Video"))
-        cVideoOpts.Read(cfg->lookup("Video"));
-    if (cfg->exists("Cursor"))
-        CamCursor.Read(cfg->lookup("Cursor"));
-    if (cfg->exists("Program"))
-        cProgramOpts.Read(cfg->lookup("Program"));
-    if (cfg->exists("HotKeys"))
-        cHotKeyOpts.Read(cfg->lookup("HotKeys"));
-    if (cfg->exists("Region"))
-        cRegionOpts.Read(cfg->lookup("Region"));
-    if (cfg->exists("Caption"))
-        cCaptionOpts.Read(cfg->lookup("Caption"));
-    if (cfg->exists("TimeStamp"))
-        cTimestampOpts.Read(cfg->lookup("TimeStamp"));
-    if (cfg->exists("XNote"))
-        cXNoteOpts.Read(cfg->lookup("XNote"));
-    if (cfg->exists("Watermark"))
-        cWatermarkOpts.Read(cfg->lookup("Watermark"));
-    if (cfg->exists("Producer"))
-        cProducerOpts.Read(cfg->lookup("Producer"));
+    if (g_cfg->exists("Audio"))
+        cAudioFormat.Read(g_cfg->lookup("Audio"));
+    if (g_cfg->exists("Video"))
+        cVideoOpts.Read(g_cfg->lookup("Video"));
+    if (g_cfg->exists("Cursor"))
+        CamCursor.Read(g_cfg->lookup("Cursor"));
+    if (g_cfg->exists("Program"))
+        cProgramOpts.Read(g_cfg->lookup("Program"));
+    if (g_cfg->exists("HotKeys"))
+        cHotKeyOpts.Read(g_cfg->lookup("HotKeys"));
+    if (g_cfg->exists("Region"))
+        cRegionOpts.Read(g_cfg->lookup("Region"));
+    if (g_cfg->exists("Caption"))
+        cCaptionOpts.Read(g_cfg->lookup("Caption"));
+    if (g_cfg->exists("TimeStamp"))
+        cTimestampOpts.Read(g_cfg->lookup("TimeStamp"));
+    if (g_cfg->exists("XNote"))
+        cXNoteOpts.Read(g_cfg->lookup("XNote"));
+    if (g_cfg->exists("Watermark"))
+        cWatermarkOpts.Read(g_cfg->lookup("Watermark"));
+    if (g_cfg->exists("Producer"))
+        cProducerOpts.Read(g_cfg->lookup("Producer"));
 
-    // Register the application's document templates. Document templates
+    // the application's document templates. Document templates
     // serve as the connection between documents, frame windows and views.
 
     CSingleDocTemplate *pDocTemplate;
@@ -323,70 +330,70 @@ int CRecorderApp::ExitInstance()
     libconfig::Setting *s;
     try
     {
-        if (!cfg->exists("Audio"))
-            s = &cfg->getRoot().add("Audio", libconfig::Setting::TypeGroup);
+        if (!g_cfg->exists("Audio"))
+            s = &g_cfg->getRoot().add("Audio", libconfig::Setting::TypeGroup);
         else
-            s = &cfg->lookup("Audio");
+            s = &g_cfg->lookup("Audio");
         cAudioFormat.Write(*s);
 
-        if (!cfg->exists("Video"))
-            s = &cfg->getRoot().add("Video", libconfig::Setting::TypeGroup);
+        if (!g_cfg->exists("Video"))
+            s = &g_cfg->getRoot().add("Video", libconfig::Setting::TypeGroup);
         else
-            s = &cfg->lookup("Video");
+            s = &g_cfg->lookup("Video");
         cVideoOpts.Write(*s);
 
-        if (!cfg->exists("Cursor"))
-            s = &cfg->getRoot().add("Cursor", libconfig::Setting::TypeGroup);
+        if (!g_cfg->exists("Cursor"))
+            s = &g_cfg->getRoot().add("Cursor", libconfig::Setting::TypeGroup);
         else
-            s = &cfg->lookup("Cursor");
+            s = &g_cfg->lookup("Cursor");
         CamCursor.Write(*s);
 
-        if (!cfg->exists("Program"))
-            s = &cfg->getRoot().add("Program", libconfig::Setting::TypeGroup);
+        if (!g_cfg->exists("Program"))
+            s = &g_cfg->getRoot().add("Program", libconfig::Setting::TypeGroup);
         else
-            s = &cfg->lookup("Program");
+            s = &g_cfg->lookup("Program");
         cProgramOpts.Write(*s);
 
-        if (!cfg->exists("HotKeys"))
-            s = &cfg->getRoot().add("HotKeys", libconfig::Setting::TypeGroup);
+        if (!g_cfg->exists("HotKeys"))
+            s = &g_cfg->getRoot().add("HotKeys", libconfig::Setting::TypeGroup);
         else
-            s = &cfg->lookup("HotKeys");
+            s = &g_cfg->lookup("HotKeys");
         cHotKeyOpts.Write(*s);
 
-        if (!cfg->exists("Region"))
-            s = &cfg->getRoot().add("Region", libconfig::Setting::TypeGroup);
+        if (!g_cfg->exists("Region"))
+            s = &g_cfg->getRoot().add("Region", libconfig::Setting::TypeGroup);
         else
-            s = &cfg->lookup("Region");
+            s = &g_cfg->lookup("Region");
         cRegionOpts.Write(*s);
 
-        if (!cfg->exists("Caption"))
-            s = &cfg->getRoot().add("Caption", libconfig::Setting::TypeGroup);
+        if (!g_cfg->exists("Caption"))
+            s = &g_cfg->getRoot().add("Caption", libconfig::Setting::TypeGroup);
         else
-            s = &cfg->lookup("Caption");
+            s = &g_cfg->lookup("Caption");
         cCaptionOpts.Write(*s);
 
-        if (!cfg->exists("TimeStamp"))
-            s = &cfg->getRoot().add("TimeStamp", libconfig::Setting::TypeGroup);
+        if (!g_cfg->exists("TimeStamp"))
+            s = &g_cfg->getRoot().add("TimeStamp", libconfig::Setting::TypeGroup);
         else
-            s = &cfg->lookup("TimeStamp");
+            s = &g_cfg->lookup("TimeStamp");
         cTimestampOpts.Write(*s);
 
-        if (!cfg->exists("XNote"))
-            s = &cfg->getRoot().add("XNote", libconfig::Setting::TypeGroup);
+        if (!g_cfg->exists("XNote"))
+            s = &g_cfg->getRoot().add("XNote", libconfig::Setting::TypeGroup);
         else
-            s = &cfg->lookup("XNote");
+            s = &g_cfg->lookup("XNote");
         cXNoteOpts.Write(*s);
 
-        if (!cfg->exists("Watermark"))
-            s = &cfg->getRoot().add("Watermark", libconfig::Setting::TypeGroup);
+        if (!g_cfg->exists("Watermark"))
+            s = &g_cfg->getRoot().add("Watermark", libconfig::Setting::TypeGroup);
         else
-            s = &cfg->lookup("Watermark");
+            s = &g_cfg->lookup("Watermark");
         cWatermarkOpts.Write(*s);
 
-        if (!cfg->exists("Producer"))
-            s = &cfg->getRoot().add("Producer", libconfig::Setting::TypeGroup);
+        if (!g_cfg->exists("Producer"))
+            s = &g_cfg->getRoot().add("Producer", libconfig::Setting::TypeGroup);
         else
-            s = &cfg->lookup("Producer");
+            s = &g_cfg->lookup("Producer");
         cProducerOpts.Write(*s);
     }
     catch (libconfig::SettingTypeException &e)
@@ -397,8 +404,8 @@ int CRecorderApp::ExitInstance()
     // Save the configuration file out to the user appdata directory.
     CString strProfile;
     strProfile.Format("%s\\CamStudio.cfg", (LPCSTR)(GetAppDataPath()));
-    cfg->writeFile(strProfile);
-    delete cfg;
+    g_cfg->writeFile(strProfile);
+    delete g_cfg;
 
     // Multilanguage
     if (m_wCurLangID != STANDARD_LANGID)
@@ -407,7 +414,9 @@ int CRecorderApp::ExitInstance()
     if (bClassRegistered)
         ::UnregisterClass(_T("CamStudio"), AfxGetInstanceHandle());
 
-    Gdiplus::GdiplusShutdown(gdiplusToken);
+    //Gdiplus::GdiplusShutdown(gdiplusToken);
+    //gdi_shutdown(gdiplusToken);
+    m_gdi.reset();
 
     return CWinApp::ExitInstance();
 }
@@ -488,7 +497,7 @@ bool CRecorderApp::LoadLanguage(LANGID wLangID)
     return bResult;
 }
 
-// Register unique application class name that we wish to use
+// unique application class name that we wish to use
 bool CRecorderApp::RegisterWindowClass()
 {
     // todo: add mutex code
@@ -505,7 +514,7 @@ bool CRecorderApp::RegisterWindowClass()
     // Specify our own class name for using FindWindow later
     wndcls.lpszClassName = _T("CamStudio");
 
-    // Register new class and exit if it fails
+    // new class and exit if it fails
     if (!AfxRegisterClass(&wndcls))
     {
         TRACE("Class Registration Failed\n");

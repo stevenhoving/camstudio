@@ -246,6 +246,7 @@ output_value (j_decompress_ptr cinfo, int ci, int j, int maxj)
 /* Return j'th output value, where j will range from 0 to maxj */
 /* The output values must fall in 0..MAXJSAMPLE in increasing order */
 {
+    (void)ci;
   /* We always provide values 0 and MAXJSAMPLE for each component;
    * any additional values are equally spaced between these limits.
    * (Forcing the upper and lower values to the limits ensures that
@@ -260,6 +261,7 @@ largest_input_value (j_decompress_ptr cinfo, int ci, int j, int maxj)
 /* Return largest input value that should map to j'th output value */
 /* Must have largest(j=0) >= 0, and largest(j=maxj) >= MAXJSAMPLE */
 {
+    (void)ci;
   /* Breakpoints are halfway between values returned by output_value */
   return (int) (((INT32) (2*j + 1) * MAXJSAMPLE + maxj) / (2*maxj));
 }
@@ -462,12 +464,12 @@ color_quantize (j_decompress_ptr cinfo, JSAMPARRAY input_buf,
 {
   my_cquantize_ptr cquantize = (my_cquantize_ptr) cinfo->cquantize;
   JSAMPARRAY colorindex = cquantize->colorindex;
-  register int pixcode, ci;
-  register JSAMPROW ptrin, ptrout;
+  int pixcode, ci;
+  JSAMPROW ptrin, ptrout;
   int row;
   JDIMENSION col;
   JDIMENSION width = cinfo->output_width;
-  register int nc = cinfo->out_color_components;
+  int nc = cinfo->out_color_components;
 
   for (row = 0; row < num_rows; row++) {
     ptrin = input_buf[row];
@@ -489,8 +491,8 @@ color_quantize3 (j_decompress_ptr cinfo, JSAMPARRAY input_buf,
 /* Fast path for out_color_components==3, no dithering */
 {
   my_cquantize_ptr cquantize = (my_cquantize_ptr) cinfo->cquantize;
-  register int pixcode;
-  register JSAMPROW ptrin, ptrout;
+  int pixcode;
+  JSAMPROW ptrin, ptrout;
   JSAMPROW colorindex0 = cquantize->colorindex[0];
   JSAMPROW colorindex1 = cquantize->colorindex[1];
   JSAMPROW colorindex2 = cquantize->colorindex[2];
@@ -517,8 +519,8 @@ quantize_ord_dither (j_decompress_ptr cinfo, JSAMPARRAY input_buf,
 /* General case, with ordered dithering */
 {
   my_cquantize_ptr cquantize = (my_cquantize_ptr) cinfo->cquantize;
-  register JSAMPROW input_ptr;
-  register JSAMPROW output_ptr;
+  JSAMPROW input_ptr;
+  JSAMPROW output_ptr;
   JSAMPROW colorindex_ci;
   int * dither;            /* points to active row of dither matrix */
   int row_index, col_index;    /* current indexes into dither matrix */
@@ -567,9 +569,9 @@ quantize3_ord_dither (j_decompress_ptr cinfo, JSAMPARRAY input_buf,
 /* Fast path for out_color_components==3, with ordered dithering */
 {
   my_cquantize_ptr cquantize = (my_cquantize_ptr) cinfo->cquantize;
-  register int pixcode;
-  register JSAMPROW input_ptr;
-  register JSAMPROW output_ptr;
+  int pixcode;
+  JSAMPROW input_ptr;
+  JSAMPROW output_ptr;
   JSAMPROW colorindex0 = cquantize->colorindex[0];
   JSAMPROW colorindex1 = cquantize->colorindex[1];
   JSAMPROW colorindex2 = cquantize->colorindex[2];
@@ -612,14 +614,14 @@ quantize_fs_dither (j_decompress_ptr cinfo, JSAMPARRAY input_buf,
 /* General case, with Floyd-Steinberg dithering */
 {
   my_cquantize_ptr cquantize = (my_cquantize_ptr) cinfo->cquantize;
-  register LOCFSERROR cur;    /* current error or pixel value */
+  LOCFSERROR cur;    /* current error or pixel value */
   LOCFSERROR belowerr;        /* error for pixel below cur */
   LOCFSERROR bpreverr;        /* error for below/prev col */
   LOCFSERROR bnexterr;        /* error for below/next col */
   LOCFSERROR delta;
-  register FSERRPTR errorptr;    /* => fserrors[] at column before current */
-  register JSAMPROW input_ptr;
-  register JSAMPROW output_ptr;
+  FSERRPTR errorptr;    /* => fserrors[] at column before current */
+  JSAMPROW input_ptr;
+  JSAMPROW output_ptr;
   JSAMPROW colorindex_ci;
   JSAMPROW colormap_ci;
   int pixcode;

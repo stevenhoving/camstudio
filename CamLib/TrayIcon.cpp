@@ -1,13 +1,10 @@
-// CTrayIcon class
-/////////////////////////////////////////////////////////////////////////////
-#include "StdAfx.h"
-#include "TrayIcon.h"
+#include "stdafx.h"
+#include "CamLib/TrayIcon.h"
 
 // Tray Icon
 // NOTIFYICONDATA IconData;
 
 CTrayIcon::CTrayIcon()
-
 {
     ::ZeroMemory(&m_nid, sizeof(m_nid));
     m_nid.cbSize = sizeof(NOTIFYICONDATA);
@@ -218,8 +215,8 @@ LRESULT CTrayIcon::OnTrayNotify(WPARAM wParam, LPARAM lParam)
         case WM_LBUTTONDBLCLK:
             OnTrayLButtonDblClk(pt);
             break;
-
         case WM_RBUTTONDOWN:
+            [[fallthrough]];
         case WM_CONTEXTMENU:
             OnTrayRButtonDown(pt);
             break;

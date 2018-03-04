@@ -196,12 +196,12 @@ void jpc_mqdec_dump(jpc_mqdec_t *dec, FILE *out);
 #define    jpc_mqdec_mpsexchange(areg, delta, curctx, bit) \
 { \
     if ((areg) < (delta)) { \
-        register jpc_mqstate_t *state = *(curctx); \
+        jpc_mqstate_t *state = *(curctx); \
         /* LPS decoded. */ \
         (bit) = state->mps ^ 1; \
         *(curctx) = state->nlps; \
     } else { \
-        register jpc_mqstate_t *state = *(curctx); \
+        jpc_mqstate_t *state = *(curctx); \
         /* MPS decoded. */ \
         (bit) = state->mps; \
         *(curctx) = state->nmps; \
@@ -211,12 +211,12 @@ void jpc_mqdec_dump(jpc_mqdec_t *dec, FILE *out);
 #define    jpc_mqdec_lpsexchange(areg, delta, curctx, bit) \
 { \
     if ((areg) >= (delta)) { \
-        register jpc_mqstate_t *state = *(curctx); \
+        jpc_mqstate_t *state = *(curctx); \
         (areg) = (delta); \
         (bit) = state->mps ^ 1; \
         *(curctx) = state->nlps; \
     } else { \
-        register jpc_mqstate_t *state = *(curctx); \
+        jpc_mqstate_t *state = *(curctx); \
         (areg) = (delta); \
         (bit) = state->mps; \
         *(curctx) = state->nmps; \

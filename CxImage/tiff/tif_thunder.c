@@ -66,8 +66,8 @@ static const int threebitdeltas[8] = { 0, 1, 2, 3, 0, -3, -2, -1 };
 static int
 ThunderDecode(TIFF* tif, tidata_t op, tsize_t maxpixels)
 {
-    register unsigned char *bp;
-    register tsize_t cc;
+    unsigned char *bp;
+    tsize_t cc;
     unsigned int lastpixel;
     tsize_t npixels;
 

@@ -329,8 +329,8 @@ ARITH_INL void arith_encode(struct jbg_arenc_state *s, int cx, int pix)
 {
   extern short jbg_lsz[];
   extern unsigned char jbg_nmps[], jbg_nlps[];
-  register unsigned lsz, ss;
-  register unsigned char *st;
+  unsigned lsz, ss;
+  unsigned char *st;
   long temp;
 
 #ifdef DEBUG
@@ -442,8 +442,8 @@ ARITH_INL int arith_decode(struct jbg_ardec_state *s, int cx)
 {
   extern short jbg_lsz[];
   extern unsigned char jbg_nmps[], jbg_nlps[];
-  register unsigned lsz, ss;
-  register unsigned char *st;
+  unsigned lsz, ss;
+  unsigned char *st;
   int pix;
 
   /* renormalization */
@@ -2036,8 +2036,8 @@ static size_t decode_pscd(struct jbg_dec_state *s, unsigned char *data,
   unsigned int layer, plane;
   unsigned long hl, ll, y, hx, hy, lx, ly, hbpl, lbpl;
   unsigned char *hp, *lp1, *lp2, *p1, *q1;
-  register unsigned long line_h1, line_h2, line_h3;
-  register unsigned long line_l1, line_l2, line_l3;
+  unsigned long line_h1, line_h2, line_h3;
+  unsigned long line_l1, line_l2, line_l3;
   struct jbg_ardec_state *se;
   unsigned long x;
   long o;
@@ -2983,7 +2983,7 @@ void jbg_split_planes(unsigned long x, unsigned long y, int has_planes,
   unsigned k = 8;
   int p;
   unsigned prev;     /* previous *src byte shifted by 8 bit to the left */
-  register int bits, msb = has_planes - 1;
+  int bits, msb = has_planes - 1;
   int bitno;
 
   /* sanity checks */

@@ -1,7 +1,5 @@
-// CStudioLib.cpp    - implementation file for CamStudio Library
-/////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include "CStudioLib.h"
+#include "CamLib/CStudioLib.h"
 
 // todo: unreferenced
 int matchSpecial(int keyCtrl, int keyShift, int keyAlt, int ctrlDown, int shiftDown, int altDown)

@@ -121,11 +121,11 @@ BOOL CAudioFormatDlg::OpenUsingRegisteredClass(CString link)
             strcat_s(pos, strlen(pos) + 2, _T (" "));
             strcat_s(pos, strlen(pos) + strlen(link) + 1, link);
 
-            HINSTANCE result = (HINSTANCE)WinExec(key, SW_SHOW);
-            if ((int)result <= HINSTANCE_ERROR)
+            auto result = WinExec(key, SW_SHOW);
+            if (result <= HINSTANCE_ERROR)
             {
                 CString str;
-                switch ((int)result)
+                switch (result)
                 {
                     case 0:
                         str = _T ("The operating system is out\nof memory or resources.");
@@ -146,8 +146,7 @@ BOOL CAudioFormatDlg::OpenUsingRegisteredClass(CString link)
                         str = _T ("The filename association is\nincomplete or invalid.");
                         break;
                     case SE_ERR_DDEBUSY:
-                        str =
-                            _T ("The DDE transaction could not\nbe completed because other DDE transactions\nwere being processed.");
+                        str =_T ("The DDE transaction could not\nbe completed because other DDE transactions\nwere being processed.");
                         break;
                     case SE_ERR_DDEFAIL:
                         str = _T ("The DDE transaction failed.");
@@ -168,7 +167,7 @@ BOOL CAudioFormatDlg::OpenUsingRegisteredClass(CString link)
                         str = _T ("A sharing violation occurred.");
                         break;
                     default:
-                        str.Format(_T ("Unknown Error (%d) occurred."), (int)result);
+                        str.Format(_T ("Unknown Error (%u) occurred."), result);
                 }
                 str = _T ("Unable to open hyperlink:\n\n") + str;
                 AfxMessageBox(str, MB_ICONEXCLAMATION | MB_OK);

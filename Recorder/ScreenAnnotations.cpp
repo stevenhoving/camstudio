@@ -16,24 +16,24 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern int iNewShapeWidth;
-extern int iNewShapeHeight;
-extern CString strNewShapeText;
-extern CString strImageFilename;
-extern int iImageType;
-extern CString shapeStr;
+extern int g_iNewShapeWidth;
+extern int g_iNewShapeHeight;
+extern CString g_strNewShapeText;
+extern CString g_strImageFilename;
+extern int g_iImageType;
+extern CString g_shapeStr;
 
-extern CString shapeName;
+extern CString g_shapeName;
 
-extern CString strLayoutName;
-extern int keySCOpened;
+extern CString g_strLayoutName;
+extern int g_keySCOpened;
 
-extern int iCurrentLayout;
+extern int g_iCurrentLayout;
 
 extern int SetAdjustHotKeys();
 
 namespace
-{ // annonymous
+{ // anonymous
 
 const int modeShape = 0;
 const int modeLayout = 1;
@@ -248,7 +248,7 @@ void CScreenAnnotationsDlg::OnRclickList1(NMHDR * /*pNMHDR*/, LRESULT *pResult)
                 pPopup->EnableMenuItem(ID_EDITOBJ_COPY, MF_ENABLED | MF_BYCOMMAND);
                 pPopup->EnableMenuItem(ID_EDITOBJ_TESTEDIT, MF_ENABLED | MF_BYCOMMAND);
             }
-            int max = ListManager.displayArray.GetSize();
+            auto max = ListManager.displayArray.GetSize();
             bool bIsEdited = AreWindowsEdited();
             if (bIsEdited || (max <= 0))
             {
@@ -345,9 +345,9 @@ void CScreenAnnotationsDlg::OnRclickList1(NMHDR * /*pNMHDR*/, LRESULT *pResult)
 
 void CScreenAnnotationsDlg::CloseAllWindows(int wantDelete)
 {
-    int max = ListManager.displayArray.GetSize();
+    auto max = ListManager.displayArray.GetSize();
     CTransparentWnd *itemWnd = NULL;
-    for (int i = max - 1; i >= 0; i--)
+    for (auto i = max - 1; i >= 0; i--)
     {
         itemWnd = ListManager.displayArray[i];
         if (itemWnd)
@@ -383,15 +383,15 @@ void CScreenAnnotationsDlg::OnEditobjNewobject()
         int x = (rand() % 100) + 100;
         int y = (rand() % 100) + 100;
         CRect rect;
-        if (iImageType == 0)
+        if (g_iImageType == 0)
         {
             rect.left = x;
             rect.top = y;
-            rect.right = rect.left + iNewShapeWidth - 1;
-            rect.bottom = rect.top + iNewShapeHeight - 1;
-            newWnd->TextString(strNewShapeText);
-            newWnd->ShapeString(shapeStr);
-            newWnd->CreateTransparent(shapeStr, rect, NULL);
+            rect.right = rect.left + g_iNewShapeWidth - 1;
+            rect.bottom = rect.top + g_iNewShapeHeight - 1;
+            newWnd->TextString(g_strNewShapeText);
+            newWnd->ShapeString(g_shapeStr);
+            newWnd->CreateTransparent(g_shapeStr, rect, NULL);
         }
         else
         {
@@ -399,9 +399,9 @@ void CScreenAnnotationsDlg::OnEditobjNewobject()
             rect.top = y;
             rect.right = x + 100;
             rect.bottom = y + 100;
-            newWnd->TextString(strNewShapeText);
-            newWnd->ShapeString(shapeStr);
-            newWnd->CreateTransparent(shapeStr, rect, strImageFilename, 1);
+            newWnd->TextString(g_strNewShapeText);
+            newWnd->ShapeString(g_shapeStr);
+            newWnd->CreateTransparent(g_shapeStr, rect, g_strImageFilename, 1);
         }
 
         if (newWnd)
@@ -473,7 +473,7 @@ void CScreenAnnotationsDlg::SaveLayoutNew()
 
             CString layoutIntStr;
             layoutIntStr.Format("%d", iLayoutNameInt);
-            newLayout->layoutName = strLayoutName + layoutIntStr;
+            newLayout->layoutName = g_strLayoutName + layoutIntStr;
             iLayoutNameInt++;
             if (iLayoutNameInt > 2147483647) // TODO; No Magic Numbers
                 iLayoutNameInt = 1;
@@ -511,7 +511,7 @@ void CScreenAnnotationsDlg::SaveShapeNew(CTransparentWnd *newWnd)
         if (iShapeNameInt > 2147483600) // assume int32
             iShapeNameInt = 1;
 
-        shapeStr = shapeName + shapeStr;
+        shapeStr = g_shapeName + shapeStr;
         CString insstr = shapeStr;
 
         insstr.TrimLeft();
@@ -774,14 +774,14 @@ void CScreenAnnotationsDlg::OnEndlabeleditList1(NMHDR *pNMHDR, LRESULT *pResult)
         if (newWnd)
         {
             newWnd->ShapeString((pDispInfo->item).pszText);
-            if (newWnd->ShapeString() != shapeStr)
+            if (newWnd->ShapeString() != g_shapeStr)
             {
                 // shape name has been changed, reset counter to 1
-                shapeName = newWnd->ShapeString();
+                g_shapeName = newWnd->ShapeString();
 
                 // a better method is to extract the trailing number from shapestr and use it as number for
                 // iShapeNameInt
-                AdjustShapeName(shapeName);
+                AdjustShapeName(g_shapeName);
             }
             else
             {
@@ -816,14 +816,14 @@ void CScreenAnnotationsDlg::OnEndlabeleditList1(NMHDR *pNMHDR, LRESULT *pResult)
         if (itemLayout)
         {
             itemLayout->layoutName = (pDispInfo->item).pszText;
-            if (itemLayout->layoutName != strLayoutName)
+            if (itemLayout->layoutName != g_strLayoutName)
             {
                 // shape name has been changed, reset counter to 1
-                strLayoutName = itemLayout->layoutName;
+                g_strLayoutName = itemLayout->layoutName;
 
                 // a better method is to extract the trailing number from shapestr and use it as number for
                 // iLayoutNameInt
-                AdjustLayoutName(strLayoutName);
+                AdjustLayoutName(g_strLayoutName);
             }
             else
             {
@@ -907,9 +907,9 @@ CTransparentWnd *CScreenAnnotationsDlg::LocateWndFromItem(int nItem)
     WndID = searchItem.lParam;
 
     int found = 0;
-    int max = ListManager.shapeArray.GetSize();
+    auto max = ListManager.shapeArray.GetSize();
     CTransparentWnd *itemWnd = NULL;
-    for (int i = 0; i < max; i++)
+    for (auto i = 0; i < max; i++)
     {
         itemWnd = ListManager.shapeArray[i];
         if (itemWnd)
@@ -1121,8 +1121,8 @@ void CScreenAnnotationsDlg::RefreshShapeList()
     // tabmode must be set to shapeMode before calling this
     m_ctrlList.DeleteAllItems();
 
-    int max = ListManager.shapeArray.GetSize();
-    for (int i = 0; i < max; i++)
+    auto max = ListManager.shapeArray.GetSize();
+    for (auto i = 0; i < max; i++)
     {
         CTransparentWnd *pItemWnd = ListManager.shapeArray[i];
         if (pItemWnd)
@@ -1142,8 +1142,8 @@ void CScreenAnnotationsDlg::RefreshLayoutList()
     // tabmode must be layoutMode before calling this
     m_ctrlList.DeleteAllItems();
 
-    int max = ListManager.layoutArray.GetSize();
-    for (int i = 0; i < max; i++)
+    auto max = ListManager.layoutArray.GetSize();
+    for (auto i = decltype(max)(0); i < max; i++)
     {
         CLayoutList *itemLayout = ListManager.layoutArray[i];
         if (itemLayout)
@@ -1223,12 +1223,12 @@ void CScreenAnnotationsDlg::OnEditlayoutCloseallobjects()
 
 void CScreenAnnotationsDlg::OnEditlayoutLayoutshortcuts()
 {
-    if (!keySCOpened)
+    if (!g_keySCOpened)
     {
-        keySCOpened = 1;
+        g_keySCOpened = 1;
         CKeyshortcutsDlg kscDlg;
         kscDlg.DoModal();
-        keySCOpened = 0;
+        g_keySCOpened = 0;
 
         VERIFY(7 == SetAdjustHotKeys());
     }
@@ -1247,8 +1247,8 @@ CLayoutList *CScreenAnnotationsDlg::LocateLayoutFromItem(int nItem)
 
     int found = 0;
     CLayoutList *itemLayout = NULL;
-    int max = ListManager.layoutArray.GetSize();
-    for (int i = max - 1; i >= 0; i--)
+    auto max = ListManager.layoutArray.GetSize();
+    for (auto i = max - 1; i >= 0; i--)
     {
         itemLayout = ListManager.layoutArray[i];
         if (itemLayout)
@@ -1291,11 +1291,11 @@ void CScreenAnnotationsDlg::InstantiateLayout()
         {
             if (itemLayout->layoutArrayPtr)
             {
-                int max = itemLayout->layoutArrayPtr->GetSize();
+                auto max = itemLayout->layoutArrayPtr->GetSize();
 
                 CTransparentWnd *itemWnd = NULL;
                 // for (int i=max-1;i>=0; i--)
-                for (int i = 0; i < max; i++)
+                for (INT_PTR i = 0; i < max; i++)
                 {
                     itemWnd = (*(itemLayout->layoutArrayPtr))[i];
                     if (itemWnd)
@@ -1599,10 +1599,10 @@ void CScreenAnnotationsDlg::InstantiateLayout(int nItem, int /*makeselect*/)
 
             if (itemLayout->layoutArrayPtr)
             {
-                int max = itemLayout->layoutArrayPtr->GetSize();
+                auto max = itemLayout->layoutArrayPtr->GetSize();
 
                 CTransparentWnd *itemWnd = NULL;
-                for (int i = 0; i < max; i++)
+                for (INT_PTR i = 0; i < max; i++)
                 {
                     itemWnd = (*(itemLayout->layoutArrayPtr))[i];
 
@@ -1633,17 +1633,17 @@ int CScreenAnnotationsDlg::GetLayoutListSelection()
 
 void CScreenAnnotationsDlg::OnNext()
 {
-    int max = ListManager.layoutArray.GetSize();
+    auto max = ListManager.layoutArray.GetSize();
     if (max <= 0)
         return;
 
     // Get Current selected
     int cursel = GetLayoutListSelection();
-    iCurrentLayout = (cursel == -1) ? 0 : cursel + 1;
-    if (max <= iCurrentLayout)
-        iCurrentLayout = 0;
+    g_iCurrentLayout = (cursel == -1) ? 0 : cursel + 1;
+    if (max <= g_iCurrentLayout)
+        g_iCurrentLayout = 0;
 
-    InstantiateLayout(iCurrentLayout, 1);
+    InstantiateLayout(g_iCurrentLayout, 1);
 }
 
 void CScreenAnnotationsDlg::OnHelpShapes()
@@ -1745,7 +1745,7 @@ void CScreenAnnotationsDlg::OnInitMenuPopup(CMenu *pPopupMenu, UINT nIndex, BOOL
 {
     CDialog::OnInitMenuPopup(pPopupMenu, nIndex, bSysMenu);
 
-    int max = ListManager.displayArray.GetSize();
+    auto max = ListManager.displayArray.GetSize();
 
     if (max <= 0)
     {
@@ -2132,8 +2132,8 @@ void AdjustShapeName(CString &shapeName)
 bool AreWindowsEdited()
 {
     bool bisEdited = false;
-    int max = ListManager.displayArray.GetSize();
-    for (int i = max - 1; 0 <= i; --i)
+    auto max = ListManager.displayArray.GetSize();
+    for (auto i = max - 1; 0 <= i; --i)
     {
         CTransparentWnd *itemWnd = ListManager.displayArray[i];
         if (itemWnd)
@@ -2146,7 +2146,7 @@ bool AreWindowsEdited()
         }
     }
     max = ListManager.shapeArray.GetSize();
-    for (int i = max - 1; 0 <= i; --i)
+    for (auto i = max - 1; 0 <= i; --i)
     {
         CTransparentWnd *itemWnd = ListManager.shapeArray[i];
         if (itemWnd)

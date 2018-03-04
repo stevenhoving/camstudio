@@ -55,7 +55,7 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
     {
         // Oops, we are too old, blow out of here
         MessageOut(nullptr, IDS_STRING_VERSION, IDS_STRING_NOTE, MB_OK | MB_ICONSTOP);
-        return false;
+        return nullptr;
     }
 
     if (!hPrevInstance)
@@ -385,8 +385,8 @@ void OpenMCIMovieFile(HWND hWnd)
  */
 void OpenMCIMovieFileInit(HWND hWnd)
 {
-    static char szFile[BUFFER_LENGTH];
-    static char szFileTitle[BUFFER_LENGTH];
+    //static char szFile[BUFFER_LENGTH];
+    //static char szFileTitle[BUFFER_LENGTH];
 
     if (bIsOpenMovie)
     {
