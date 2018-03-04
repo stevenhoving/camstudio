@@ -15,6 +15,7 @@
  */
 
 #include "pngpriv.h"
+#include <stdint.h>
 
 #ifdef PNG_READ_SUPPORTED
 
@@ -1248,7 +1249,7 @@ png_handle_iCCP(png_structp png_ptr, png_infop info_ptr, png_uint_32 length)
 
          png_snprintf2(umsg, 80,
              "Ignoring iCCP chunk with declared size = %u "
-              "and actual length = %u", profile_size, profile_length);
+              "and actual length = %u", (uint32_t)profile_size, (uint32_t)profile_length);
          png_warning(png_ptr, umsg);
       }
 #else

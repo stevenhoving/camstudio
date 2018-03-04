@@ -9,14 +9,9 @@
 #pragma message("UNICODE NOT defined")
 #endif
 
-//#define _CRT_SECURE_NO_WARNINGS //tell the compiler not to warn about using sprintf, fopen instead of *_s
-
+#define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN // Exclude rarely-used stuff from Windows headers
-//#define _AFX_SECURE_NO_WARNINGS
-// replacing calls to deprecated functions with calls to the new secure versions of those functions.
 
-//#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES        1
-//#define _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES        1
 
 ////////////////////////////
 // Use MS Private Assemblies to prevent side by side configuration errors as reported by users.
@@ -44,10 +39,6 @@
 extern libconfig::Config *g_cfg;
 #pragma warning(default : 4290)
 
-//#include "constants.h"
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
 // Enable Windows XP visual styles
 #pragma comment(                                                                                                       \
