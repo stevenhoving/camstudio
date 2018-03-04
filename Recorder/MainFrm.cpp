@@ -3,8 +3,6 @@
 #include "MainFrm.h"
 #include "RecorderView.h"
 #include "addons\Camstudio4XNote.h"
-#include "InternetConn.h"
-#include <tinyxml.h>
 /*
 TODO: Break AVI 2 GB boundary
 ================================
@@ -459,54 +457,7 @@ LRESULT CMainFrame::OnTrayNotify(WPARAM wParam, LPARAM lParam)
 
 void CMainFrame::CheckForNewVersion()
 {
-#if 0
-    try
-    {
-        CString sFile = "version2.xml";
-        CString sError;
-        HRESULT hr;
-        CString strBuffer;
-        CInternetConn myConnection;
-        BOOL isOK = myConnection.ReadFile("http://camstudio.org/checkdaversion/version2.xml", strBuffer);
-        if (!isOK)
-        {
-            return;
-        }
-        TiXmlDocument doc(sFile);
-        doc.Parse(strBuffer);
-
-        if (doc.Error())
-        {
-            return;
-        }
-        CString strPath;
-        strPath.Format("%s\\CamStudio\\version2.xml", (LPCSTR)(GetAppDataPath()));
-        doc.SaveFile(strPath);
-        const char *version = strBuffer;
-        strPath.Format("%s\\CamStudio\\version2.xml", (LPCSTR)(GetAppDataPath()));
-        bool loadOkay = doc.LoadFile(strPath);
-        if (!loadOkay)
-        {
-            return;
-        }
-        TiXmlNode *node = 0;
-        TiXmlElement *todoElement = 0;
-        TiXmlElement *itemElement = 0;
-        node = doc.RootElement();
-        node = node->FirstChild();
-        node = node->FirstChild();
-        std::string input = node->Value();
-        if (LessThanVersion(CURRENT_VERSION_NUMBER, input))
-        {
-            m_bDialog.Create(IDD_DIALOGUPDCS, this);
-            m_bDialog.ShowWindow(SW_SHOW);
-        }
-    }
-    catch (...)
-    {
-        // MessageBox("Unknown Error occurred while checking for updates");
-    }
-#endif
+    // \todo create a new way for checking version update.
 }
 void CMainFrame::Parse(int result[3], const std::string &input)
 {

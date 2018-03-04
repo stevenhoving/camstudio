@@ -22,9 +22,6 @@
     <None Include="minilzo\COPYING" />
     <None Include="minilzo\Makefile" />
     <None Include="minilzo\README.LZO" />
-    <None Include="src\COPYING" />
-    <None Include="src\Makefile" />
-    <None Include="src\README.LZO" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="minilzo\lzoconf.h" />

@@ -11,9 +11,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\COPYING" />
-    <None Include="src\Makefile" />
-    <None Include="src\README.LZO" />
     <None Include="minilzo\Makefile" />
     <None Include="minilzo\README.LZO" />
     <None Include="minilzo\COPYING" />

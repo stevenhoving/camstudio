@@ -62,8 +62,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cximage", "CxImage\CxImage\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CamCommandLine", "Commandline\CamStudioCommandline.vcxproj", "{5AF4A6BD-43EF-4703-A79E-6047A9D2F1BE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyxml", "tinyxml\tinyxml_lib.vcxproj", "{C406DAEC-0886-4771-8DEA-9D7329B46CC1}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minilzo", "dep\minilzo\minilzo.vcxproj", "{92478F30-D5AB-4378-BBE8-D5659D13F35B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CamHook", "CamHook\CamHook.vcxproj", "{F4C904B3-2F94-404B-9555-2A3EAA1E5EA6}"
@@ -330,22 +328,6 @@ Global
 		{5AF4A6BD-43EF-4703-A79E-6047A9D2F1BE}.Unicode Release|Win32.Build.0 = Release|Win32
 		{5AF4A6BD-43EF-4703-A79E-6047A9D2F1BE}.Unicode Release|x64.ActiveCfg = Release|x64
 		{5AF4A6BD-43EF-4703-A79E-6047A9D2F1BE}.Unicode Release|x64.Build.0 = Release|x64
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Debug|Win32.ActiveCfg = Debug|Win32
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Debug|Win32.Build.0 = Debug|Win32
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Debug|x64.ActiveCfg = Debug|x64
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Debug|x64.Build.0 = Debug|x64
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Release|Win32.ActiveCfg = Release|Win32
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Release|Win32.Build.0 = Release|Win32
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Release|x64.ActiveCfg = Release|Win32
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Release|x64.Build.0 = Release|Win32
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Unicode Debug|Win32.ActiveCfg = Debug|Win32
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Unicode Debug|Win32.Build.0 = Debug|Win32
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Unicode Debug|x64.ActiveCfg = Debug|x64
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Unicode Debug|x64.Build.0 = Debug|x64
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Unicode Release|Win32.ActiveCfg = Release|Win32
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Unicode Release|Win32.Build.0 = Release|Win32
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Unicode Release|x64.ActiveCfg = Release|x64
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Unicode Release|x64.Build.0 = Release|x64
 		{92478F30-D5AB-4378-BBE8-D5659D13F35B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{92478F30-D5AB-4378-BBE8-D5659D13F35B}.Debug|Win32.Build.0 = Debug|Win32
 		{92478F30-D5AB-4378-BBE8-D5659D13F35B}.Debug|x64.ActiveCfg = Debug|x64
