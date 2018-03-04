@@ -26,7 +26,6 @@ State | Name | Project
 Official| libconfig | https://github.com/hyperrealm/libconfig
 Official| minilzo | http://www.oberhumer.com/opensource/lzo/
 Official| zlib | https://github.com/madler/zlib
-Official| tinyxml2 | https://github.com/leethomason/tinyxml2
 Fork| CxImage | https://github.com/movableink/cximage
 
 ## Credits
