@@ -5,14 +5,13 @@
 
 #include "stdafx.h"
 #include "Recorder.h"
+#include "AudioSpeakers.h"
 
 #include <mmsystem.h>
 #include <vfw.h>
 #include <windowsx.h>
-
-#include "AudioSpeakers.h"
-
-#include <stdio.h>
+#include <cstdio>
+#include <filesystem>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -219,13 +218,10 @@ void CAudioSpeakersDlg::OnVolume()
         if (osinfo.dwMajorVersion >= 6) // Vista
         {
             testLaunchPath = AppDir + SubDir + "\\SndVol.exe";
-            OFSTRUCT ofs;
-            HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
-            if (hdir != HFILE_ERROR)
+            if (std::experimental::filesystem::exists(testLaunchPath.GetString()))
             {
                 launchPath = testLaunchPath;
             }
-            CloseHandle((HANDLE)hdir);
         }
     }
 

@@ -98,11 +98,11 @@ BOOL CAudioFormatDlg::OpenUsingRegisteredClass(CString link)
     if (GetRegKey(HKEY_CLASSES_ROOT, _T (".htm"), key) == ERROR_SUCCESS)
     {
         LPCTSTR mode = _T ("\\shell\\open\\command");
-        strcat(key, mode);
+        strcat_s(key, mode);
         if (GetRegKey(HKEY_CLASSES_ROOT, key, key) == ERROR_SUCCESS)
         {
             LPTSTR pos = strstr(key, _T ("\"%1\""));
-            if (pos == NULL)
+            if (pos == nullptr)
             {
                 // No quotes found
 
