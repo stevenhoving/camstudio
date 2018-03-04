@@ -26,8 +26,6 @@
 #include <atlstr.h>            // for CString
 #include <atlcoll.h>        // for CAtlMap
 
-
-
 // Class to load language .po-files (Portable Object) directly and
 // to translate strings, menus and dialogs according selected language.
 
@@ -45,7 +43,7 @@ public:
     //
     // 2) Loading from resources. Resource ID treated as language ID, resource type: "PO".
     //
-    // szModule can be module path or folder path (i.e. ends by "\"), or NULL then
+    // szModule can be module path or folder path (i.e. ends by "\"), or nullptr then
     // current module name will be used.
     BOOL Load(LPCTSTR szModule = nullptr);
 
@@ -110,10 +108,10 @@ public:
     static CString GetLangName(LANGID nLangID);
 
 protected:
-    CString                        m_strModule;        // Path used to load language files
-    CAtlMap< LANGID, CString >    m_pLanguages;        // List of available language files
-    LANGID                        m_nDefaultLangID;    // Default language
-    LANGID                        m_nLangID;            // Selected language
+    CString                     m_strModule;        // Path used to load language files
+    CAtlMap< LANGID, CString >  m_pLanguages;        // List of available language files
+    LANGID                      m_nDefaultLangID;    // Default language
+    LANGID                      m_nLangID;            // Selected language
     CAtlMap< UINT, CString >    m_pStrings;            // Loaded strings
     CAtlMap< UINT, CString >    m_pMenus;            // Loaded menus
     CAtlMap< UINT, CString >    m_pDialogs;            // Loaded dialogs

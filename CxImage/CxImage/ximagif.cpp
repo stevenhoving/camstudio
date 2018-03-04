@@ -64,7 +64,7 @@ bool CxImageGIF::Decode(CxFile *fp)
     struct_image image;
     struct_TabCol TabCol;
 
-    if (fp == NULL) return false;
+    if (fp == nullptr) return false;
 
     fp->Read(&dscgif,/*sizeof(dscgif)*/13,1);
     //if (strncmp(dscgif.header,"GIF8",3)!=0) {
@@ -90,7 +90,7 @@ bool CxImageGIF::Decode(CxFile *fp)
     // 1) no global color map found
     // 2) (image.w, image.h) of the 1st image != (dscgif.scrwidth, dscgif.scrheight)
     int32_t bTrueColor=0;
-    CxImage* imaRGB=NULL;
+    CxImage* imaRGB=nullptr;
 
     // Global colour map?
     if (dscgif.pflds & 0x80)
@@ -112,7 +112,7 @@ bool CxImageGIF::Decode(CxFile *fp)
     char ch;
     bool bPreviousWasNull = true;
     int32_t  prevdispmeth = 0;
-    CxImage *previousFrame = NULL;
+    CxImage *previousFrame = nullptr;
 
     for (BOOL bContinue = TRUE; bContinue; )
     {
@@ -265,7 +265,7 @@ bool CxImageGIF::Decode(CxFile *fp)
                     //force full image decoding
                     info.nFrame=info.nNumFrames-1;
                     //build the RGB image
-                    if (imaRGB==NULL) imaRGB = new CxImage(dscgif.scrwidth,dscgif.scrheight,24,CXIMAGE_FORMAT_GIF);
+                    if (imaRGB==nullptr) imaRGB = new CxImage(dscgif.scrwidth,dscgif.scrheight,24,CXIMAGE_FORMAT_GIF);
                     //copy the partial image into the full RGB image
                     for(int32_t y=0;y<image.h;y++){
                         for (int32_t x=0;x<image.w;x++){
@@ -283,12 +283,12 @@ bool CxImageGIF::Decode(CxFile *fp)
                     fp->Seek(-(ibfmax - ibf - 1), SEEK_CUR);
                 }
 
-                if (info.bGetAllFrames && imaRGB == NULL) {
+                if (info.bGetAllFrames && imaRGB == nullptr) {
                     if (iImage == 0) {
                         DestroyFrames();
                         ppFrames = new CxImage*[info.nNumFrames];
                         for(int32_t frameIdx = 0; frameIdx < info.nNumFrames; frameIdx++){
-                            ppFrames[frameIdx] = NULL;
+                            ppFrames[frameIdx] = nullptr;
                         }
                     }
                     ppFrames[iImage] = new CxImage(*this);
@@ -368,7 +368,7 @@ bool CxImageGIF::DecodeExtension(CxFile *fp)
                         bContinue = (1 == fp->Read(&count, sizeof(count), 1));
                         if (bContinue) {
                             uint8_t* dati = (uint8_t*)malloc(count);
-                            bContinue = (dati!=NULL);
+                            bContinue = (dati!=nullptr);
                             if (bContinue){
                                 bContinue = (1 == fp->Read(dati, count, 1));
                                 if (count>2){
@@ -416,7 +416,7 @@ int32_t CxImageGIF::get_byte(CxFile* file)
 */
 int32_t CxImageGIF::out_line(CImageIterator* iter, uint8_t *pixels, int32_t linelen)
 {
-    if (iter == NULL || pixels == NULL)
+    if (iter == nullptr || pixels == nullptr)
         return -1;
 
     //<DP> for 1 & 4 bpp images, the pixels are compressed
@@ -496,12 +496,12 @@ bool CxImageGIF::Encode(CxFile * fp)
 bool CxImageGIF::Encode(CxFile * fp, CxImage ** pImages, int32_t pagecount, bool bLocalColorMap, bool bLocalDispMeth)
 {
   cx_try {
-    if (fp==NULL) cx_throw("invalid file pointer");
-    if (pImages==NULL || pagecount<=0 || pImages[0]==NULL) cx_throw("multipage GIF, no images!");
+    if (fp==nullptr) cx_throw("invalid file pointer");
+    if (pImages==nullptr || pagecount<=0 || pImages[0]==nullptr) cx_throw("multipage GIF, no images!");
 
     int32_t i;
     for (i=0; i<pagecount; i++){
-        if (pImages[i]==NULL)
+        if (pImages[i]==nullptr)
             cx_throw("Bad image pointer");
         if (!(pImages[i]->IsValid()))
             cx_throw("Empty image");
@@ -1121,7 +1121,7 @@ int16_t CxImageGIF::decoder(CxFile* file, CImageIterator* iter, int16_t linewidt
     oc = fc = 0;
 
    /* Allocate space for the decode buffer */
-    if ((buf = new uint8_t[linewidth + 1]) == NULL) return(OUT_OF_MEMORY);
+    if ((buf = new uint8_t[linewidth + 1]) == nullptr) return(OUT_OF_MEMORY);
 
    /* Set up the stack pointer and decode buffer pointer */
     sp = stack;

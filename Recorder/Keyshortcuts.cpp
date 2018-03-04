@@ -15,7 +15,7 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CKeyshortcutsDlg dialog
 
-CKeyshortcutsDlg::CKeyshortcutsDlg(CWnd *pParent /*=NULL*/)
+CKeyshortcutsDlg::CKeyshortcutsDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CKeyshortcutsDlg::IDD, pParent)
 {
     //{{AFX_DATA_INIT(CKeyshortcutsDlg)

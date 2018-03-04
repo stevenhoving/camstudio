@@ -192,7 +192,7 @@ BOOL CMainFrame::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwS
 
     BOOL retval = CWnd::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
     mainWnd = m_hWnd;
-    //::SetWindowPos(mainWnd, NULL, 0, 0, 100, 100,0 );
+    //::SetWindowPos(mainWnd, nullptr, 0, 0, 100, 100,0 );
     // SetWindowPos( &wndTop, 0, 0, 100, 100, SWP_SHOWWINDOW);
     return retval;
 }
@@ -310,7 +310,7 @@ BOOL CMainFrame::OnQueryNewPalette()
         auto val = DrawDibRealize(ghdd[giFirstVideo], hdc, FALSE);
         if (val)
         {
-            ::InvalidateRect(viewWnd, NULL, TRUE);
+            ::InvalidateRect(viewWnd, nullptr, TRUE);
         }
 
         ::ReleaseDC(viewWnd, hdc);

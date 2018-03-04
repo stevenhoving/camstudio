@@ -13,7 +13,7 @@ extern int TroubleShootVal;
 /////////////////////////////////////////////////////////////////////////////
 // CTroubleShootDlg dialog
 
-CTroubleShootDlg::CTroubleShootDlg(CWnd *pParent /*=NULL*/)
+CTroubleShootDlg::CTroubleShootDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CTroubleShootDlg::IDD, pParent)
 {
     //{{AFX_DATA_INIT(CTroubleShootDlg)

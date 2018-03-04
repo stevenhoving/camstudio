@@ -9,7 +9,7 @@ class CResizeDlg : public CDialog
 {
 
 public:
-    CResizeDlg(CWnd *pParent = NULL);
+    CResizeDlg(CWnd *pParent = nullptr);
     CTransparentWnd *m_transWnd;
     void PreModal(CTransparentWnd *transWnd);
 

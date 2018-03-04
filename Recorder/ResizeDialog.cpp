@@ -11,7 +11,7 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CResizeDlg dialog
 
-CResizeDlg::CResizeDlg(CWnd *pParent /*=NULL*/)
+CResizeDlg::CResizeDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CResizeDlg::IDD, pParent)
 {
     //{{AFX_DATA_INIT(CResizeDlg)

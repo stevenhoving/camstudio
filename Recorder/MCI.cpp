@@ -47,7 +47,7 @@ void mciRecordStart()
     // if (dwReturn) {
     //    char buffer[300];
     //    mciGetErrorString(dwReturn, buffer, sizeof(buffer));
-    //    MessageBox(NULL, buffer, "MCI_RECORD", MB_ICONEXCLAMATION | MB_OK);
+    //    MessageBox(nullptr, buffer, "MCI_RECORD", MB_ICONEXCLAMATION | MB_OK);
     //}
     cMCIDevice.Start();
 }
@@ -74,7 +74,7 @@ void mciRecordPause(HWND /*hWndCallback*/, const CString & /*strFile*/)
     ////if (dwReturn) {
     ////char buffer[300];
     ////mciGetErrorString(dwReturn, buffer, sizeof (buffer));
-    ////MessageBox( NULL, buffer, "MCI_RECORD",MB_ICONEXCLAMATION | MB_OK);
+    ////MessageBox( nullptr, buffer, "MCI_RECORD",MB_ICONEXCLAMATION | MB_OK);
     ////}
     cMCIDevice.Pause();
 }
@@ -93,7 +93,7 @@ void mciRecordResume(HWND /*hWndCallback*/, const CString & /*strFile*/)
     ////if (dwReturn) {
     ////char buffer[300];
     ////    mciGetErrorString(dwReturn, buffer, sizeof (buffer));
-    ////    MessageBox( NULL, buffer, "MCI_RECORD",MB_ICONEXCLAMATION | MB_OK);
+    ////    MessageBox( nullptr, buffer, "MCI_RECORD",MB_ICONEXCLAMATION | MB_OK);
     ////}
     cMCIDevice.Resume();
 }
@@ -138,7 +138,7 @@ void mciSetWaveFormat()
     //    mciGetErrorString(dwReturn, buffer, sizeof(buffer));
     //    CString tstr;
     //    VERIFY(tstr.LoadString(IDS_STRING_MCIWAVE));
-    //    ::MessageBox(NULL, buffer, tstr,MB_ICONEXCLAMATION | MB_OK);
+    //    ::MessageBox(nullptr, buffer, tstr,MB_ICONEXCLAMATION | MB_OK);
     //}
 
     // Suggest 10 formats

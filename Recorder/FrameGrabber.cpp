@@ -30,10 +30,10 @@ CFrameGrabber *theOnlyOneGrabber = nullptr;
 // CFrameGrabber
 
 CFrameGrabber::CFrameGrabber()
+    : dwLastCallback(0)
+    , imageData(nullptr)
+    , vfs(0) // offset image buffer
 {
-    dwLastCallback = NULL;
-    imageData = nullptr;
-    vfs = 0; // offset image buffer
 }
 
 CFrameGrabber::~CFrameGrabber()
@@ -54,7 +54,7 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CFrameGrabber message handlers
-// create unvisible child window at (x,y)
+// create invisible child window at (x,y)
 BOOL CFrameGrabber::Create(int x, int y, CWnd *pParentWnd)
 {
     if (theOnlyOneGrabber)
@@ -102,7 +102,7 @@ void CFrameGrabber::OnDestroy()
     // disconnect from capture driver
     if (theOnlyOneGrabber)
     {
-        capSetCallbackOnFrame(GetSafeHwnd(), NULL);
+        capSetCallbackOnFrame(GetSafeHwnd(), nullptr);
         capDriverDisconnect(GetSafeHwnd());
     }
     CWnd::OnDestroy();

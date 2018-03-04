@@ -14,7 +14,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageSKA::Decode(CxFile *hFile)
 {
-    if (hFile==NULL)
+    if (hFile==nullptr)
         return false;
 
     // read the  header

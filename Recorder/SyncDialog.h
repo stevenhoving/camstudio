@@ -7,9 +7,9 @@
 class CSyncDlg : public CDialog
 {
 
-    CSyncDlg(CWnd *pParent = NULL); //  not implemeted
+    CSyncDlg(CWnd *pParent = nullptr); //  not implemeted
 public:
-    CSyncDlg(int iType, int iShift, CWnd *pParent = NULL);
+    CSyncDlg(int iType, int iShift, CWnd *pParent = nullptr);
 
     // Dialog Data
     //{{AFX_DATA(CSyncDlg)

@@ -48,7 +48,7 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
 
 // Mouse Capture functions
 HCURSOR FetchCursorHandle();
-HCURSOR hSavedCursor = NULL;
+HCURSOR hSavedCursor = nullptr;
 
 // AVI functions  and #defines
 #define AVIIF_KEYFRAME 0x00000010L // this frame is a key frame.
@@ -83,7 +83,7 @@ int initcapture = 0;
 
 
 // Messaging
-HWND g_hWndGlobal = NULL;
+HWND g_hWndGlobal = nullptr;
 /*
 static UINT WM_USER_RECORDINTERRUPTED = ::RegisterWindowMessage(WM_USER_RECORDINTERRUPTED_MSG);
 */
@@ -102,7 +102,7 @@ int g_key_frames_every = 25;
 
 int g_comp_quality = 7000;
 DWORD g_comp_fcc_handler = 0;
-ICINFO *g_compressor_info = NULL;
+ICINFO *g_compressor_info = nullptr;
 int g_num_compressor = 0;
 
 // User options:
@@ -115,11 +115,11 @@ std::string g_output_file;
 //int offset_top = 0;
 // Ver 1.2
 // Video Compress Parameters
-LPVOID g_pVideoCompressParams = NULL;
+LPVOID g_pVideoCompressParams = nullptr;
 DWORD g_CompressorStateIsFor = 0;
 DWORD g_CompressorStateSize = 0;
 
-LPVOID g_pParamsUse = NULL;
+LPVOID g_pParamsUse = nullptr;
 void FreeParamsUse();
 BOOL MakeCompressParamsCopy(DWORD paramsSize, LPVOID pOrg);
 
@@ -165,10 +165,10 @@ WAVEFORMATEX m_Format;
 DWORD m_ThreadID;
 int m_QueuedBuffers = 0;
 int m_BufferSize = 1000; // number of samples
-// CSoundFile *m_pFile = NULL;
+// CSoundFile *m_pFile = nullptr;
 
 // Audio Options Dialog
-LPWAVEFORMATEX g_pwfx = NULL;
+LPWAVEFORMATEX g_pwfx = nullptr;
 DWORD cbwfx;
 
 // Audio Formats Dialog
@@ -258,7 +258,7 @@ CHAR wide_to_narrow(WCHAR w)
 
 UINT RecordAVIThread(LPVOID lParam)
 {
-    CoInitialize(NULL);
+    CoInitialize(nullptr);
     SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_NORMAL);
     screen *pscreen = (screen *)lParam; // pointer to current screen
                                         // const char *filepath = pscreen->outFile;
@@ -306,8 +306,8 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
 
     LPBITMAPINFOHEADER alpbi;
     AVISTREAMINFO strhdr;
-    PAVIFILE pfile = NULL;
-    PAVISTREAM ps = NULL, psCompressed = NULL;
+    PAVIFILE pfile = nullptr;
+    PAVISTREAM ps = nullptr, psCompressed = nullptr;
     AVICOMPRESSOPTIONS opts;
     AVICOMPRESSOPTIONS FAR *aopts[1] = {&opts};
     HRESULT hr = 0;
@@ -322,7 +322,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
         return false;
     }
 
-    alpbi = NULL;
+    alpbi = nullptr;
 
     ////////////////////////////////////////////////
     // CAPTURE FIRST FRAME
@@ -336,7 +336,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
     if (g_selected_compressor > 0)
     {
 
-        HIC hic = NULL;
+        HIC hic = nullptr;
         hic = ICOpen(g_compressor_info[g_selected_compressor].fccType, g_compressor_info[g_selected_compressor].fccHandler,
                      ICMODE_QUERY);
         if (hic)
@@ -347,7 +347,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
             int newwidth = 0;
             int newheight = 0;
             int align = 1;
-            while (ICERR_OK != ICCompressQuery(hic, alpbi, NULL))
+            while (ICERR_OK != ICCompressQuery(hic, alpbi, nullptr))
             {
                 // Try adjusting width/height a little bit
                 align = align * 2;
@@ -404,7 +404,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
         {
             g_comp_fcc_handler = mmioFOURCC('M', 'S', 'V', 'C');
             g_strCodec = L"MS Video 1";
-            // MessageBox(NULL,"hic default","note",MB_OK);
+            // MessageBox(nullptr,"hic default","note",MB_OK);
         }
 
     } // selected_compressor
@@ -425,7 +425,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
     //
     // Open the movie file for writing....
     //
-    hr = AVIFileOpen(&pfile, szFileName, OF_WRITE | OF_CREATE, NULL);
+    hr = AVIFileOpen(&pfile, szFileName, OF_WRITE | OF_CREATE, nullptr);
     if (hr != AVIERR_OK)
         goto error;
 
@@ -486,10 +486,10 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
     }
 
     // The 1 here indicates only 1 stream
-    // if (!AVISaveOptions(NULL, 0, 1, &ps, (LPAVICOMPRESSOPTIONS *) &aopts))
+    // if (!AVISaveOptions(nullptr, 0, 1, &ps, (LPAVICOMPRESSOPTIONS *) &aopts))
     //        goto error;
 
-    hr = AVIMakeCompressedStream(&psCompressed, ps, &opts, NULL);
+    hr = AVIMakeCompressedStream(&psCompressed, ps, &opts, nullptr);
     if (hr != AVIERR_OK)
         goto error;
 
@@ -501,7 +501,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
         goto error;
 
     FreeFrame(alpbi);
-    alpbi = NULL;
+    alpbi = nullptr;
 
     if (autopan)
     {
@@ -704,7 +704,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
 
             // std::string msgStr;
             // msgStr.Format("%.2f %d",g_fTimeLength,presettime);
-            // MessageBox(NULL,msgStr,"N",MB_OK);
+            // MessageBox(nullptr,msgStr,"N",MB_OK);
 
             // or should we post messages
         }
@@ -721,7 +721,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
                                 alpbi->biSizeImage, // size of this frame
                                 // AVIIF_KEYFRAME,      // flags....
                                 0, // Dependent n previous frame, not key frame
-                                NULL, NULL);
+                                nullptr, nullptr);
 
             if (hr != AVIERR_OK)
                 break;
@@ -739,12 +739,12 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
                 oldsec = divx;
                 // TODO(dimator): enabling the following causes bad flickering.  Don't
                 // know why it ever existed.
-                // InvalidateRect(g_hWndGlobal,NULL, FALSE);
+                // InvalidateRect(g_hWndGlobal,nullptr, FALSE);
             }
 
             // free memory
             FreeFrame(alpbi);
-            alpbi = NULL;
+            alpbi = nullptr;
             oldframetime = frametime;
         } // if frametime is different
 
@@ -788,23 +788,23 @@ error:
         // PostMessage(g_hWndGlobal,WM_USER_RECORDINTERRUPTED,0,0);
         /*
         char *ErrorBuffer; // This really is a pointer - not reserved space!
-        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |  FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(),
-        MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPTSTR)&ErrorBuffer, 0, NULL);
+        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |  FORMAT_MESSAGE_FROM_SYSTEM, nullptr, GetLastError(),
+        MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPTSTR)&ErrorBuffer, 0, nullptr);
 
         std::string reasonstr(ErrorBuffer);
         std::string errorstr("File Creation Error. Unable to rename file.\n\n");
         std::string reportstr;
 
         reportstr = errorstr + reasonstr;
-        //MessageBox(NULL,reportstr,"Note",MB_OK | MB_ICONEXCLAMATION);
+        //MessageBox(nullptr,reportstr,"Note",MB_OK | MB_ICONEXCLAMATION);
         */
 
         if (g_comp_fcc_handler != mmioFOURCC('M', 'S', 'V', 'C'))
         {
-            // if (IDYES == MessageBox(NULL, "Error recording AVI file using current compressor. Use default compressor
+            // if (IDYES == MessageBox(nullptr, "Error recording AVI file using current compressor. Use default compressor
             // ? ", "Note", MB_YESNO | MB_ICONEXCLAMATION)) {
             /*
-            if (IDYES == MessageOut(NULL, IDS_STRING_ERRAVIDEFAULT, IDS_STRING_NOTE, MB_YESNO | MB_ICONQUESTION )) {
+            if (IDYES == MessageOut(nullptr, IDS_STRING_ERRAVIDEFAULT, IDS_STRING_NOTE, MB_YESNO | MB_ICONQUESTION )) {
 
               compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
               strCodec = "MS Video 1";
@@ -813,8 +813,8 @@ error:
         }
         else
         {
-            // MessageBox(NULL, "Error Creating AVI File", "Error", MB_OK | MB_ICONEXCLAMATION);
-            // MessageOut(NULL,IDS_STRING_ERRCREATEAVI ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+            // MessageBox(nullptr, "Error Creating AVI File", "Error", MB_OK | MB_ICONEXCLAMATION);
+            // MessageOut(nullptr,IDS_STRING_ERRCREATEAVI ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
         }
 
         return 0;
@@ -828,8 +828,8 @@ error:
 
 LPBITMAPINFOHEADER captureScreenFrame(int left, int top, int width, int height)
 {
-    // EnumDisplayMonitors(NULL, NULL, MyInfoEnumProc, 0);
-    HDC hScreenDC = ::GetDC(NULL);
+    // EnumDisplayMonitors(nullptr, nullptr, MyInfoEnumProc, 0);
+    HDC hScreenDC = ::GetDC(nullptr);
 
     HDC hMemDC = ::CreateCompatibleDC(hScreenDC);
     HBITMAP hbm;
@@ -888,24 +888,24 @@ LPBITMAPINFOHEADER captureScreenFrame(int left, int top, int width, int height)
                 DeleteObject(iconinfo.hbmColor);
         }
 
-        ::DrawIconEx(hMemDC, xPoint.x, xPoint.y, hcur, 0, 0, 0, NULL, DI_NORMAL);
+        ::DrawIconEx(hMemDC, xPoint.x, xPoint.y, hcur, 0, 0, 0, nullptr, DI_NORMAL);
     }
 
     SelectObject(hMemDC, oldbm);
     LPBITMAPINFOHEADER pBM_HEADER = (LPBITMAPINFOHEADER)GlobalLock(Bitmap2Dib(hbm, g_bits));
     // LPBITMAPINFOHEADER pBM_HEADER = (LPBITMAPINFOHEADER)GlobalLock(Bitmap2Dib(hbm, 24));
-    if (pBM_HEADER == NULL)
+    if (pBM_HEADER == nullptr)
     {
         // TODO(dimator): Some kind of error message here, and a saner exit.
-        // MessageBox(NULL,"Error reading a frame!","Error",MB_OK | MB_ICONEXCLAMATION);
-        // MessageOut(NULL,IDS_STRING_ERRFRAME ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+        // MessageBox(nullptr,"Error reading a frame!","Error",MB_OK | MB_ICONEXCLAMATION);
+        // MessageOut(nullptr,IDS_STRING_ERRFRAME ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
         ExitThread(1);
     }
 
     DeleteObject(hbm);
     DeleteDC(hMemDC);
 
-    ReleaseDC(NULL, hScreenDC);
+    ReleaseDC(nullptr, hScreenDC);
 
     return pBM_HEADER;
 }
@@ -917,12 +917,12 @@ void FreeFrame(LPBITMAPINFOHEADER alpbi)
 
     GlobalFreePtr(alpbi);
     // GlobalFree(alpbi);
-    alpbi = NULL;
+    alpbi = nullptr;
 }
 
 HCURSOR FetchCursorHandle()
 {
-    if (hSavedCursor == NULL)
+    if (hSavedCursor == nullptr)
         hSavedCursor = GetCursor();
     return hSavedCursor;
 }
@@ -942,11 +942,11 @@ MMRESULT IsFormatSupported(LPWAVEFORMATEX g_pwfx, UINT uDeviceID);
 MMRESULT IsFormatSupported(LPWAVEFORMATEX g_pwfx, UINT uDeviceID)
 {
   return (waveInOpen(
-    NULL,                 // ptr can be NULL for query
+    nullptr,                 // ptr can be nullptr for query
     uDeviceID,            // the device identifier
     g_pwfx,                 // defines requested format
-    NULL,                 // no callback
-    NULL,                 // no instance data
+    nullptr,                 // no callback
+    nullptr,                 // no instance data
     WAVE_FORMAT_QUERY));  // query only, do not open device
 }
 */
@@ -956,7 +956,7 @@ void FreeParamsUse()
     if (g_pParamsUse)
     {
         GlobalFreePtr(g_pParamsUse);
-        g_pParamsUse = NULL;
+        g_pParamsUse = nullptr;
     }
 }
 
@@ -969,10 +969,10 @@ BOOL MakeCompressParamsCopy(DWORD paramsSize, LPVOID pOrg)
     }
 
     g_pParamsUse = (LPVOID)GlobalAllocPtr(GHND, paramsSize);
-    if (NULL == g_pParamsUse)
+    if (nullptr == g_pParamsUse)
     {
-        //::MessageBox(NULL,"Failure allocating Video Params or compression","Note", MB_OK | MB_ICONEXCLAMATION);
-        // MessageOut(NULL,IDS_STRING_FAILALLOCVCM ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+        //::MessageBox(nullptr,"Failure allocating Video Params or compression","Note", MB_OK | MB_ICONEXCLAMATION);
+        // MessageOut(nullptr,IDS_STRING_FAILALLOCVCM ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 
         return false;
     }
@@ -1002,7 +1002,7 @@ void VideoCodecOptions()
 {
     // Capture a frame and use it to determine compatitble compressors for user to select
 
-    LPBITMAPINFOHEADER first_alpbi = NULL;
+    LPBITMAPINFOHEADER first_alpbi = nullptr;
 
     COMPVARS compVars;
     compVars.cbSize = sizeof(COMPVARS); // validate it
@@ -1016,7 +1016,7 @@ void VideoCodecOptions()
     first_alpbi = captureScreenFrame(left, top, width, height);
 
     g_num_compressor = 0;
-    if (g_compressor_info == NULL)
+    if (g_compressor_info == nullptr)
     {
         g_compressor_info = (ICINFO *)calloc(MAXCOMPRESSORS, sizeof(ICINFO));
     }
@@ -1046,7 +1046,7 @@ void VideoCodecOptions()
                              ICMODE_QUERY);
                 if (hic)
                 {
-                    if (ICERR_OK == ICCompressQuery(hic, first_alpbi, NULL))
+                    if (ICERR_OK == ICCompressQuery(hic, first_alpbi, nullptr))
                     {
                         ICGetInfo(hic, &g_compressor_info[g_num_compressor], sizeof(ICINFO));
                         g_num_compressor++;
@@ -1064,7 +1064,7 @@ void VideoCodecOptions()
                              ICMODE_QUERY);
                 if (hic)
                 {
-                    if (ICERR_OK == ICCompressQuery(hic, first_alpbi, NULL))
+                    if (ICERR_OK == ICCompressQuery(hic, first_alpbi, nullptr))
                     {
                         ICGetInfo(hic, &g_compressor_info[g_num_compressor], sizeof(ICINFO));
                         g_num_compressor++;
@@ -1309,7 +1309,7 @@ int main(int argc, char *argv[])
     std::wcout << L"Using codec: " << g_strCodec <<std::endl;
 
     // Screen metrics:
-    hScreenDC = ::GetDC(NULL);
+    hScreenDC = ::GetDC(nullptr);
     maxxScreen = GetDeviceCaps(hScreenDC, HORZRES);
     maxyScreen = GetDeviceCaps(hScreenDC, VERTRES);
 
@@ -1318,7 +1318,7 @@ int main(int argc, char *argv[])
 
     // Detection of screens
     std::cout << "Detected displays:" <<std::endl;
-    EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, (LPARAM)pscreen);
+    EnumDisplayMonitors(nullptr, nullptr, MonitorEnumProc, (LPARAM)pscreen);
 
     char buffer[2];
     auto recordHere = g_output_file;
@@ -1343,7 +1343,7 @@ int main(int argc, char *argv[])
         std::cout << "Creating recording thread for screen no.:" << i << "..." <<std::endl;
         std::cout << "Recording to: " << g_output_file <<std::endl;
 
-        th[i] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)RecordAVIThread, (LPVOID)&pscreen[i], 0, &tid);
+        th[i] = CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)RecordAVIThread, (LPVOID)&pscreen[i], 0, &tid);
 
         // whole recording stuff goes ABOVE this line.
         //std::cout<<"Sirka:" << p_obr[i].width <<std::endl; // just some line for testing.

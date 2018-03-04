@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageJBG::Decode(CxFile *hFile)
 {
-    if (hFile == NULL) return false;
+    if (hFile == nullptr) return false;
 
     struct jbg_dec_state jbig_state;
     uint32_t xmax = 4294967295UL, ymax = 4294967295UL;

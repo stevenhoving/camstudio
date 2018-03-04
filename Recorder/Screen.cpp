@@ -169,9 +169,9 @@ bool CCamera::AddCursor(CDC *pDC)
         }
     }
     // TODO: Rewrite to handle better
-    // HDC hScreenDC = ::GetDC(NULL);
+    // HDC hScreenDC = ::GetDC(nullptr);
     // HDC hMemDC = ::CreateCompatibleDC(hScreenDC);
-    // ::DrawIconEx( hMemDC, ptCursor.x, ptCursor.y, hcur, 0, 0, 0, NULL, DI_NORMAL);
+    // ::DrawIconEx( hMemDC, ptCursor.x, ptCursor.y, hcur, 0, 0, 0, nullptr, DI_NORMAL);
     pDC->DrawIcon(ptCursor.x, ptCursor.y, hcur);
     return true;
 }

@@ -16,7 +16,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageWBMP::Decode(CxFile *hFile)
 {
-    if (hFile == NULL) return false;
+    if (hFile == nullptr) return false;
 
     WBMPHEADER wbmpHead;
 

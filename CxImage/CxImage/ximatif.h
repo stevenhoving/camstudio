@@ -28,7 +28,7 @@
 class DLL_EXP CxImageTIF: public CxImage
 {
 public:
-    CxImageTIF(): CxImage(CXIMAGE_FORMAT_TIF) {m_tif2=NULL; m_multipage=false; m_pages=0;}
+    CxImageTIF(): CxImage(CXIMAGE_FORMAT_TIF) {m_tif2=nullptr; m_multipage=false; m_pages=0;}
     ~CxImageTIF();
 
     TIFF* TIFFOpenEx(CxFile * hFile);

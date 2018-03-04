@@ -11,7 +11,7 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CPresetTimeDlg dialog
 
-CPresetTimeDlg::CPresetTimeDlg(CWnd *pParent /*=NULL*/)
+CPresetTimeDlg::CPresetTimeDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CPresetTimeDlg::IDD, pParent)
 {
     //{{AFX_DATA_INIT(CPresetTimeDlg)

@@ -490,14 +490,14 @@ public:
 #if CXIMAGE_SUPPORT_WINDOWS
     int32_t    Blt(HDC pDC, int32_t x=0, int32_t y=0);
     HBITMAP Draw2HBITMAP(HDC hdc, int32_t x, int32_t y, int32_t cx, int32_t cy, RECT* pClipRect, bool bSmooth);
-    HBITMAP MakeBitmap(HDC hdc = NULL, bool bTransparency = false);
-    HICON   MakeIcon(HDC hdc = NULL, bool bTransparency = false);
+    HBITMAP MakeBitmap(HDC hdc = nullptr, bool bTransparency = false);
+    HICON   MakeIcon(HDC hdc = nullptr, bool bTransparency = false);
     HANDLE    CopyToHandle();
     bool    CreateFromHANDLE(HANDLE hMem);        //Windows objects (clipboard)
     bool    CreateFromHBITMAP(HBITMAP hbmp, HPALETTE hpal=0, bool bTransparency = false);    //Windows resource
     bool    CreateFromHICON(HICON hico, bool bTransparency = false);
     int32_t    Draw(HDC hdc, int32_t x=0, int32_t y=0, int32_t cx = -1, int32_t cy = -1, RECT* pClipRect = 0, bool bSmooth = false, bool bFlipY = false);
-    int32_t    Draw(HDC hdc, const RECT& rect, RECT* pClipRect=NULL, bool bSmooth = false, bool bFlipY = false);
+    int32_t    Draw(HDC hdc, const RECT& rect, RECT* pClipRect=nullptr, bool bSmooth = false, bool bFlipY = false);
     int32_t    Stretch(HDC hdc, int32_t xoffset, int32_t yoffset, int32_t xsize, int32_t ysize, uint32_t dwRop = SRCCOPY);
     int32_t    Stretch(HDC hdc, const RECT& rect, uint32_t dwRop = SRCCOPY);
     int32_t    Tile(HDC hdc, RECT *rc);
@@ -519,7 +519,7 @@ public:
 /** \addtogroup Decode */ //@{
 #ifdef WIN32
     //bool Load(LPCWSTR filename, uint32_t imagetype=0);
-    bool LoadResource(HRSRC hRes, uint32_t imagetype, HMODULE hModule=NULL);
+    bool LoadResource(HRSRC hRes, uint32_t imagetype, HMODULE hModule=nullptr);
 #endif
     // For UNICODE support: char -> TCHAR
     bool Load(const TCHAR* filename, uint32_t imagetype=0);
@@ -576,8 +576,8 @@ public:
     bool Flip(bool bFlipSelection = false, bool bFlipAlpha = true);
     bool Mirror(bool bMirrorSelection = false, bool bMirrorAlpha = true);
     bool Negative();
-    bool RotateLeft(CxImage* iDst = NULL);
-    bool RotateRight(CxImage* iDst = NULL);
+    bool RotateLeft(CxImage* iDst = nullptr);
+    bool RotateRight(CxImage* iDst = nullptr);
     bool IncreaseBpp(uint32_t nbit);
 //@}
 #endif //CXIMAGE_SUPPORT_BASICTRANSFORMATIONS
@@ -585,26 +585,26 @@ public:
 #if CXIMAGE_SUPPORT_TRANSFORMATION
 /** \addtogroup Transformations */ //@{
     // image operations
-    bool Rotate(float angle, CxImage* iDst = NULL);
-    bool Rotate2(float angle, CxImage *iDst = NULL, InterpolationMethod inMethod=IM_BILINEAR,
+    bool Rotate(float angle, CxImage* iDst = nullptr);
+    bool Rotate2(float angle, CxImage *iDst = nullptr, InterpolationMethod inMethod=IM_BILINEAR,
                 OverflowMethod ofMethod=OM_BACKGROUND, RGBQUAD *replColor=0,
                 bool const optimizeRightAngles=true, bool const bKeepOriginalSize=false);
-    bool Rotate180(CxImage* iDst = NULL);
-    bool Resample(int32_t newx, int32_t newy, int32_t mode = 1, CxImage* iDst = NULL);
+    bool Rotate180(CxImage* iDst = nullptr);
+    bool Resample(int32_t newx, int32_t newy, int32_t mode = 1, CxImage* iDst = nullptr);
     bool Resample2(int32_t newx, int32_t newy, InterpolationMethod const inMethod=IM_BICUBIC2,
-                OverflowMethod const ofMethod=OM_REPEAT, CxImage* const iDst = NULL,
+                OverflowMethod const ofMethod=OM_REPEAT, CxImage* const iDst = nullptr,
                 bool const disableAveraging=false);
     bool DecreaseBpp(uint32_t nbit, bool errordiffusion, RGBQUAD* ppal = 0, uint32_t clrimportant = 0);
     bool Dither(int32_t method = 0);
-    bool Crop(int32_t left, int32_t top, int32_t right, int32_t bottom, CxImage* iDst = NULL);
-    bool Crop(const RECT& rect, CxImage* iDst = NULL);
-    bool CropRotatedRectangle( int32_t topx, int32_t topy, int32_t width, int32_t height, float angle, CxImage* iDst = NULL);
+    bool Crop(int32_t left, int32_t top, int32_t right, int32_t bottom, CxImage* iDst = nullptr);
+    bool Crop(const RECT& rect, CxImage* iDst = nullptr);
+    bool CropRotatedRectangle( int32_t topx, int32_t topy, int32_t width, int32_t height, float angle, CxImage* iDst = nullptr);
     bool Skew(float xgain, float ygain, int32_t xpivot=0, int32_t ypivot=0, bool bEnableInterpolation = false);
     bool Expand(int32_t left, int32_t top, int32_t right, int32_t bottom, RGBQUAD canvascolor, CxImage* iDst = 0);
     bool Expand(int32_t newx, int32_t newy, RGBQUAD canvascolor, CxImage* iDst = 0);
     bool Thumbnail(int32_t newx, int32_t newy, RGBQUAD canvascolor, CxImage* iDst = 0);
     bool CircleTransform(int32_t type,int32_t rmax=0,float Koeff=1.0f);
-    bool QIShrink(int32_t newx, int32_t newy, CxImage* const iDst = NULL, bool bChangeBpp = false);
+    bool QIShrink(int32_t newx, int32_t newy, CxImage* const iDst = nullptr, bool bChangeBpp = false);
 
 //@}
 #endif //CXIMAGE_SUPPORT_TRANSFORMATION
@@ -774,7 +774,7 @@ public:
     CxImage* GetParent() const;
     int32_t GetNumLayers() const;
     int32_t LayerDrawAll(HDC hdc, int32_t x=0, int32_t y=0, int32_t cx = -1, int32_t cy = -1, RECT* pClipRect = 0, bool bSmooth = false);
-    int32_t LayerDrawAll(HDC hdc, const RECT& rect, RECT* pClipRect=NULL, bool bSmooth = false);
+    int32_t LayerDrawAll(HDC hdc, const RECT& rect, RECT* pClipRect=nullptr, bool bSmooth = false);
 //@}
 #endif //CXIMAGE_SUPPORT_LAYERS
 

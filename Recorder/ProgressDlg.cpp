@@ -7,7 +7,7 @@
 
 IMPLEMENT_DYNAMIC(CProgressDlg, CDialogEx)
 
-CProgressDlg::CProgressDlg(CWnd *pParent /*=NULL*/)
+CProgressDlg::CProgressDlg(CWnd *pParent /*=nullptr*/)
     : CDialogEx(CProgressDlg::IDD, pParent)
     , m_bCancel(FALSE)
     , m_nLower(0)
@@ -24,7 +24,7 @@ CProgressDlg::CProgressDlg(CWnd *pParent /*=NULL*/)
 
 CProgressDlg::~CProgressDlg()
 {
-    if (m_hWnd != NULL)
+    if (m_hWnd != nullptr)
         DestroyWindow();
 }
 
@@ -61,7 +61,7 @@ BOOL CProgressDlg::DestroyWindow()
 
 void CProgressDlg::ReEnableParent()
 {
-    if (m_bParentDisabled && (m_pParentWnd != NULL))
+    if (m_bParentDisabled && (m_pParentWnd != nullptr))
         m_pParentWnd->EnableWindow(TRUE);
     m_bParentDisabled = FALSE;
 }
@@ -75,7 +75,7 @@ BOOL CProgressDlg::Create(CWnd *pParent)
     // when the dialog is destroyed. So we don't want to set\
     // it to TRUE unless the parent was already enabled.
 
-    if ((m_pParentWnd != NULL) && m_pParentWnd->IsWindowEnabled())
+    if ((m_pParentWnd != nullptr) && m_pParentWnd->IsWindowEnabled())
     {
         m_pParentWnd->EnableWindow(FALSE);
         m_bParentDisabled = TRUE;
@@ -150,11 +150,11 @@ int CProgressDlg::StepIt()
 void CProgressDlg::PumpMessages()
 {
     // Must call Create() before using the dialog
-    ASSERT(m_hWnd != NULL);
+    ASSERT(m_hWnd != nullptr);
 
     MSG msg;
     // Handle dialog messages
-    while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
     {
         if (!IsDialogMessage(&msg))
         {

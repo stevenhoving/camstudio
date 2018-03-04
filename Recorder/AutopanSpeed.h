@@ -9,7 +9,7 @@ class CAutopanSpeedDlg : public CDialog
 {
 
 public:
-    CAutopanSpeedDlg(CWnd *pParent = NULL);
+    CAutopanSpeedDlg(CWnd *pParent = nullptr);
 
     // Dialog Data
     //{{AFX_DATA(CAutopanSpeedDlg)

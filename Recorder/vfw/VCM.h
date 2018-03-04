@@ -86,9 +86,9 @@ public:
     DWORD GetStateSize();
     // queries a video compression driver to return its current configuration in a
     // block of memory.
-    // If pv is NULL, returns the amount of memory, in bytes, required for
+    // If pv is nullptr, returns the amount of memory, in bytes, required for
     // configuration information.
-    // If pv is not NULL, returns ICERR_OK if successful or an error otherwise.
+    // If pv is not nullptr, returns ICERR_OK if successful or an error otherwise.
     LRESULT GetState(LPVOID pv, DWORD_PTR cb);
     LPVOID GetState();
     // notifies a video compression driver to set the state of the compressor.
@@ -263,7 +263,7 @@ public:
                          LONG *plSize);
     // decompresses an image without using initialization functions.
     // Returns a handle to an uncompressed DIB in the CF_DIB format if successful
-    // or NULL otherwise. Image data follows the format header
+    // or nullptr otherwise. Image data follows the format header
     HANDLE ImageDecompress(UINT uiFlags, LPBITMAPINFO lpbiIn, LPVOID lpBits, LPBITMAPINFO lpbiOut);
     // retrieves information about specific installed compressors or enumerates the
     // installed compressors.
@@ -293,7 +293,7 @@ public:
     // Returns a message-specific result.
     LRESULT SendMessage(UINT wMsg, DWORD_PTR dw1, DWORD_PTR dw2);
     // compresses one frame in a sequence of frames.
-    // Returns the address of the compressed bits if successful or NULL otherwise.
+    // Returns the address of the compressed bits if successful or nullptr otherwise.
     LPVOID SeqCompressFrame(PCOMPVARS pc, UINT uiFlags, LPVOID lpBits, BOOL *pfKey, LONG *plSize);
     // ends sequence compression that was initiated by using the ICSeqCompressFrameStart
     // and ICSeqCompressFrame functions.

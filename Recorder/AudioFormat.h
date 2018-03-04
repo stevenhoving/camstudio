@@ -6,9 +6,9 @@
 class CAudioFormatDlg : public CDialog
 {
 
-    CAudioFormatDlg(CWnd *pParent = NULL); // disallowed
+    CAudioFormatDlg(CWnd *pParent = nullptr); // disallowed
 public:
-    CAudioFormatDlg(const sAudioFormat &cFmt, CWnd *pParent = NULL);
+    CAudioFormatDlg(const sAudioFormat &cFmt, CWnd *pParent = nullptr);
 
     const sAudioFormat &Format() const
     {

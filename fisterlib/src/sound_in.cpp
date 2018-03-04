@@ -61,7 +61,7 @@ bool CSoundIn::Start(WAVEFORMATEX *format)
     }
 
     // open wavein device
-    mmReturn = ::waveInOpen(&m_hRecord, WAVE_MAPPER, &m_Format, m_ThreadID, NULL, CALLBACK_THREAD);
+    mmReturn = ::waveInOpen(&m_hRecord, WAVE_MAPPER, &m_Format, m_ThreadID, 0, CALLBACK_THREAD);
     if (mmReturn != MMSYSERR_NOERROR)
     {
         waveInErrorMsg(mmReturn, "in Start()");

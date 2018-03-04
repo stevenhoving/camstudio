@@ -13,7 +13,7 @@ int msgShown = 0;
 /////////////////////////////////////////////////////////////////////////////
 // CTextDlg dialog
 
-CTextDlg::CTextDlg(CWnd *pParent /*=NULL*/)
+CTextDlg::CTextDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CTextDlg::IDD, pParent)
 {
 
@@ -373,7 +373,7 @@ void CTextDlg::OnBnClickedLangEnc()
     if (menu.LoadMenu(menuToLoad))
     {
         CMenu *pPopup = menu.GetSubMenu(0);
-        ASSERT(pPopup != NULL);
+        ASSERT(pPopup != nullptr);
 
         // route commands through main window
         pPopup->TrackPopupMenu(TPM_RIGHTBUTTON | TPM_LEFTALIGN, point.x, point.y, this);

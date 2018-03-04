@@ -16,7 +16,7 @@ void SuggestCompressFormat()
         (cAudioFormat.AudioFormat().wBitsPerSample <= 16))
     {
         cAudioFormat.AudioFormat().wFormatTag = WAVE_FORMAT_MPEGLAYER3;
-        mmr = ::acmFormatSuggest(NULL, &(cAudioFormat.AudioFormat()), &(cAudioFormat.AudioFormat()),
+        mmr = ::acmFormatSuggest(nullptr, &(cAudioFormat.AudioFormat()), &(cAudioFormat.AudioFormat()),
                                  cAudioFormat.m_dwCbwFX, ACM_FORMATSUGGESTF_WFORMATTAG);
     }
 
@@ -27,12 +27,12 @@ void SuggestCompressFormat()
         // Then try ADPCM
         // BuildRecordingFormat();
         // pwfx->wFormatTag = WAVE_FORMAT_ADPCM;
-        // MMRESULT mmr = ::acmFormatSuggest(NULL, &m_Format, pwfx, dwCbwFX, ACM_FORMATSUGGESTF_WFORMATTAG);
+        // MMRESULT mmr = ::acmFormatSuggest(nullptr, &m_Format, pwfx, dwCbwFX, ACM_FORMATSUGGESTF_WFORMATTAG);
         // if (0 != mmr) {
         // Use the PCM as default
         cAudioFormat.BuildRecordingFormat();
         cAudioFormat.AudioFormat().wFormatTag = WAVE_FORMAT_PCM;
-        mmr = ::acmFormatSuggest(NULL, &(cAudioFormat.AudioFormat()), &(cAudioFormat.AudioFormat()),
+        mmr = ::acmFormatSuggest(nullptr, &(cAudioFormat.AudioFormat()), &(cAudioFormat.AudioFormat()),
                                  cAudioFormat.m_dwCbwFX, ACM_FORMATSUGGESTF_WFORMATTAG);
         if (0 != mmr)
         {
@@ -48,7 +48,7 @@ void AttemptCompressFormat()
     cAudioFormat.BuildRecordingFormat();
     // Test Compatibility
     MMRESULT mmr =
-        ::acmFormatSuggest(NULL, &(cAudioFormat.AudioFormat()), &(cAudioFormat.AudioFormat()), cAudioFormat.m_dwCbwFX,
+        ::acmFormatSuggest(nullptr, &(cAudioFormat.AudioFormat()), &(cAudioFormat.AudioFormat()), cAudioFormat.m_dwCbwFX,
                            ACM_FORMATSUGGESTF_NCHANNELS | ACM_FORMATSUGGESTF_NSAMPLESPERSEC |
                                ACM_FORMATSUGGESTF_WBITSPERSAMPLE | ACM_FORMATSUGGESTF_WFORMATTAG);
     if (mmr != 0)

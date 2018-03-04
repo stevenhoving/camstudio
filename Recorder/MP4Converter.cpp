@@ -8,14 +8,14 @@ HANDLE m_gHandles[2];
 ConversionResult CMP4Converter::m_ConvRes;
 
 CMP4Converter::CMP4Converter(void)
-    : m_pData(NULL)
+    : m_pData(nullptr)
     , m_bConverting(true)
     , m_hThread(INVALID_HANDLE_VALUE)
 {
-    m_gHandles[0] = CreateEvent(NULL,  // default security attributes
+    m_gHandles[0] = CreateEvent(nullptr,  // default security attributes
                                 FALSE, // auto-reset event object
                                 FALSE, // initial state is nonsignaled
-                                NULL); // unnamed object
+                                nullptr); // unnamed object
 }
 
 CMP4Converter::~CMP4Converter(void)
@@ -53,7 +53,7 @@ bool CMP4Converter::ConvertAVItoMP4(const CString &sInputAVI, const CString &sOu
         m_pData->psExePath = new CString(GetProgPath() + "\\ffmpeg.exe");
         m_pData->psLogFile = new CString(GetProgPath() + "\\ffmpeg.log");
 
-        m_hThread = CreateThread(NULL,         // default security attributes
+        m_hThread = CreateThread(nullptr,         // default security attributes
                                  0,            // use default stack size
                                  ThreadProc,   // thread function name
                                  m_pData,      // argument to thread function
@@ -77,11 +77,11 @@ DWORD WINAPI CMP4Converter::ThreadProc(LPVOID lpParam)
 
     // Set up the security attributes struct.
     sa.nLength = sizeof(SECURITY_ATTRIBUTES);
-    sa.lpSecurityDescriptor = NULL;
+    sa.lpSecurityDescriptor = nullptr;
     sa.bInheritHandle = TRUE;
 
     if (!CreatePipe(&rdstdout, &wrstdout, &sa, *m_pData->pdwPipeSize))
-        MessageBox(NULL, "CreatePipe failed", "Warning", MB_ICONEXCLAMATION);
+        MessageBox(nullptr, "CreatePipe failed", "Warning", MB_ICONEXCLAMATION);
 
     PROCESS_INFORMATION pi;
     ZeroMemory(&pi, sizeof(pi));
@@ -96,17 +96,17 @@ DWORD WINAPI CMP4Converter::ThreadProc(LPVOID lpParam)
     // Start the FFMpeg process.
     if (!CreateProcess(*m_pData->psExePath,             // module name
                        m_pData->psCmdLine->GetBuffer(), // Command line
-                       NULL,                            // Process handle not inheritable
-                       NULL,                            // Thread handle not inheritable
-                       TRUE,                            // Set handle inheritance to FALSE
-                       NULL,                            // No console
-                       NULL,                            // Use parent's environment block
-                       NULL,                            // Use parent's starting directory
+                       nullptr,                            // Process handle not inheritable
+                       nullptr,                            // Thread handle not inheritable
+                       TRUE,                               // Set handle inheritance to FALSE
+                       0,                                  // No console
+                       nullptr,                            // Use parent's environment block
+                       nullptr,                            // Use parent's starting directory
                        &si,                             // Pointer to STARTUPINFO structure
                        &pi)                             // Pointer to PROCESS_INFORMATION structure
     )
     {
-        MessageBox(NULL, "Failed to start MP4 Converter", "Note", MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(nullptr, "Failed to start MP4 Converter", "Note", MB_OK | MB_ICONEXCLAMATION);
         return 0;
     }
     DWORD dwRead;
@@ -144,12 +144,12 @@ DWORD WINAPI CMP4Converter::ThreadProc(LPVOID lpParam)
             fopen_s(&fp, *m_pData->psLogFile, "w");
 
             if (!CloseHandle(wrstdout))
-                MessageBox(NULL, "Failed to close the write stdout pipe", "Warning", 0);
+                MessageBox(nullptr, "Failed to close the write stdout pipe", "Warning", 0);
 
             bool bContinue = true;
             while (bContinue)
             {
-                bFlag = ReadFile(rdstdout, buffer, nSize, &dwRead, NULL);
+                bFlag = ReadFile(rdstdout, buffer, nSize, &dwRead, nullptr);
                 if (bFlag == FALSE)
                 {
                     bContinue = false;

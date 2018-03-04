@@ -110,7 +110,7 @@ BOOL CBitmapEx::CreateFromDib(LPBITMAPINFO lpBi)
 
 #define sfiltr "Image files (*.BMP)|*.BMP||"
 #define sext "BMP"
-#define smask NULL
+#define smask nullptr
 
 BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
 {

@@ -392,12 +392,12 @@ BOOL CPicture::Show(CDC *pDC, CRect DrawRect)
 // Does: Draw The Loaded Picture Direct To The Client DC
 // ~~~~
 //
-// Note: Bigger OR Smaller Dimentions Than The Original Picture Size
-// ~~~~ Will Draw The Picture Streached To Its New Given Dimentions...
+// Note: Bigger OR Smaller dimensions Than The Original Picture Size
+// ~~~~ Will Draw The Picture stretched To Its New Given dimensions...
 //
 // InPut: pDC - Given DC To Draw On
 // ~~~~~ LeftTop - Opening Point To Start Drawing (Left,Top)
-// WidthHeight - Dimentions Of The Picture To Draw (Width,Height)
+// WidthHeight - dimensions Of The Picture To Draw (Width,Height)
 // MagnifyX - Magnify Pixel Width, 0 = Default (No Magnify)
 // MagnifyY - Magnify Pixel Height, 0 = Default (No Magnify)
 //
@@ -416,11 +416,11 @@ BOOL CPicture::Show(CDC *pDC, CPoint LeftTop, CPoint WidthHeight, int MagnifyX, 
     long Height = 0;
     m_IPicture->get_Width(&Width);
     m_IPicture->get_Height(&Height);
-    if (MagnifyX == NULL)
+    if (MagnifyX == 0)
     {
         MagnifyX = 0;
     }
-    if (MagnifyY == NULL)
+    if (MagnifyY == 0)
     {
         MagnifyY = 0;
     }
@@ -654,7 +654,7 @@ BOOL CPicture::CopyToPicture(CPicture *dstPic, const CString &exchangeFile)
     IStream *FileStream = 0;
     long OutStream;
 
-    CreateILockBytesOnHGlobal(NULL, TRUE, &Buffer); // Create ILockBytes Buffer
+    CreateILockBytesOnHGlobal(nullptr, TRUE, &Buffer); // Create ILockBytes Buffer
 
     HRESULT hr = ::StgCreateDocfileOnILockBytes(Buffer,
     STGM_SHARE_EXCLUSIVE | STGM_CREATE | STGM_READWRITE, 0, &pStorage);
@@ -675,7 +675,7 @@ BOOL CPicture::CopyToPicture(CPicture *dstPic, const CString &exchangeFile)
     bResult = TRUE;
 
     FileStream->Release();
-    FileStream = NULL;
+    FileStream = nullptr;
 
     pStorage->Release();
     Buffer->Flush();

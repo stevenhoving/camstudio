@@ -14,7 +14,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageICO::Decode(CxFile *hFile)
 {
-    if (hFile==NULL) return false;
+    if (hFile==nullptr) return false;
 
     uint32_t off = hFile->Tell(); //<yuandi>
     int32_t    page=info.nFrame;    //internal icon structure indexes
@@ -255,12 +255,12 @@ bool CxImageICO::Encode(CxFile * hFile, CxImage ** pImages, int32_t nPageCount)
 {
   cx_try
   {
-    if (hFile==NULL) cx_throw("invalid file pointer");
-    if (pImages==NULL || nPageCount<=0) cx_throw("multipage ICO, no images!");
+    if (hFile==nullptr) cx_throw("invalid file pointer");
+    if (pImages==nullptr || nPageCount<=0) cx_throw("multipage ICO, no images!");
 
     int32_t i;
     for (i=0; i<nPageCount; i++){
-        if (pImages[i]==NULL)
+        if (pImages[i]==nullptr)
             cx_throw("Bad image pointer");
         if (!(pImages[i]->IsValid()))
             cx_throw("Empty image");
@@ -305,7 +305,7 @@ bool CxImageICO::Encode(CxFile * hFile, bool bAppend, int32_t nPageCount)
 
     //prepare the palette struct
     RGBQUAD* pal=GetPalette();
-    if (head.biBitCount<=8 && pal==NULL) return false;
+    if (head.biBitCount<=8 && pal==nullptr) return false;
 
     int32_t maskwdt=((head.biWidth+31)/32)*4; //mask line width
     int32_t masksize=head.biHeight * maskwdt; //size of mask

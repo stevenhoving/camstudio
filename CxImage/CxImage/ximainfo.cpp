@@ -733,9 +733,9 @@ void CxImage::SetRetreiveAllFrames(bool flag)
 ////////////////////////////////////////////////////////////////////////////////
 CxImage * CxImage::GetFrame(int32_t nFrame) const
 {
-    if ( ppFrames == NULL) return NULL;
-    if ( info.nNumFrames == 0) return NULL;
-    if ( nFrame >= info.nNumFrames ) return NULL;
+    if ( ppFrames == nullptr) return nullptr;
+    if ( info.nNumFrames == 0) return nullptr;
+    if ( nFrame >= info.nNumFrames ) return nullptr;
     if ( nFrame < 0) nFrame = info.nNumFrames - 1;
     return ppFrames[nFrame];
 }

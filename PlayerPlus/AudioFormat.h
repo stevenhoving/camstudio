@@ -3,7 +3,7 @@
 class AudioFormat : public CDialog
 {
 public:
-    explicit AudioFormat(CWnd *pParent = NULL);
+    explicit AudioFormat(CWnd *pParent = nullptr);
     void UpdateLocalCompressFormatInterface();
     void UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPWAVEFORMATEX curr_sel_pwfx);
 

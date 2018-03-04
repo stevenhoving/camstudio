@@ -65,7 +65,7 @@ int maxyScreen;
 int minxScreen;
 int minyScreen;
 
-static HMENU hMenu = NULL;
+static HMENU hMenu = nullptr;
 
 /////////////////////////////////////////////////////////////////////////////
 // CMainFrame
@@ -114,7 +114,7 @@ LRESULT CMainFrame::OnMotionDetector(WPARAM wParam, LPARAM /*lParam*/)
     // TRACE("## CMainFrame::OnMotionDetector (d)    wParam=[%d] HI[%d], LO[%d]\n",wParam, HIWORD(wParam),
     // LOWORD(wParam) );
     dynamic_cast<CRecorderView *>(m_pViewActive)
-        ->XNoteProcessWinMessage(HIWORD(wParam), XNOTE_TRIGGER_MOTIONDETECTOR, XNOTE_SOURCE_MOTIONDETECTOR, NULL);
+        ->XNoteProcessWinMessage(HIWORD(wParam), XNOTE_TRIGGER_MOTIONDETECTOR, XNOTE_SOURCE_MOTIONDETECTOR, 0);
 
     return 0;
 }
@@ -182,7 +182,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     m_ToolbarBitmap256.LoadBitmap(IDB_TOOLBAR256);
     m_ToolbarBitmapMask.LoadBitmap(IDB_TOOLBARMASK);
 
-    HDC hScreenDC = ::GetDC(NULL);
+    HDC hScreenDC = ::GetDC(nullptr);
     int numbits = ::GetDeviceCaps(hScreenDC, BITSPIXEL);
     // maxxScreen = ::GetDeviceCaps(hScreenDC, HORZRES);
     maxxScreen = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
@@ -190,7 +190,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     maxyScreen = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
     minxScreen = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
     minyScreen = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
-    ::ReleaseDC(NULL, hScreenDC);
+    ::ReleaseDC(nullptr, hScreenDC);
 
     if (numbits > 8)
     {
@@ -311,7 +311,7 @@ void CMainFrame::OnViewCompactview()
     DockControlBar(&m_wndToolBar);
 
     // Hide Menu
-    if (hMenu != NULL)
+    if (hMenu != nullptr)
         ::SetMenu(m_hWnd, hMenu);
 
     // Hide Status Bar

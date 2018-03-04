@@ -9,7 +9,7 @@ class CBasicMessage : public CDialog
     DECLARE_DYNAMIC(CBasicMessage)
 
 public:
-    CBasicMessage(CWnd *pParent = NULL);
+    CBasicMessage(CWnd *pParent = nullptr);
     virtual ~CBasicMessage();
     void SetText(LPCTSTR lpString);
     void SetTitle(LPCTSTR lpString);

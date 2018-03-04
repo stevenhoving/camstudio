@@ -7,7 +7,7 @@ class CKeyshortcutsDlg : public CDialog
 {
 
 public:
-    CKeyshortcutsDlg(CWnd *pParent = NULL);
+    CKeyshortcutsDlg(CWnd *pParent = nullptr);
 
     // Dialog Data
     //{{AFX_DATA(CKeyshortcutsDlg)

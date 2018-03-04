@@ -19,7 +19,7 @@ public:
 public:
     virtual BOOL PreCreateWindow(CREATESTRUCT &cs);
     virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect,
-                        CWnd *pParentWnd, UINT nID, CCreateContext *pContext = NULL);
+                        CWnd *pParentWnd, UINT nID, CCreateContext *pContext = nullptr);
     //}}AFX_VIRTUAL
 
     // Implementation

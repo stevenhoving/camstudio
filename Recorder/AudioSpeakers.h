@@ -7,7 +7,7 @@ class CAudioSpeakersDlg : public CDialog
 {
 
 public:
-    CAudioSpeakersDlg(CWnd *pParent = NULL);
+    CAudioSpeakersDlg(CWnd *pParent = nullptr);
     void OnUpdateLineConfig(int line_proper);
     void OnUpdateVolume();
 

@@ -27,7 +27,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageTGA::Decode(CxFile *hFile)
 {
-    if (hFile == NULL) return false;
+    if (hFile == nullptr) return false;
 
     TGAHEADER tgaHead;
 
@@ -98,7 +98,7 @@ bool CxImageTGA::Decode(CxFile *hFile)
 
         if (info.nEscape) cx_throw("Cancelled"); // <vho> - cancel decoding
 
-        if (hFile == NULL || hFile->Eof()) cx_throw("corrupted TGA");
+        if (hFile == nullptr || hFile->Eof()) cx_throw("corrupted TGA");
 
         if (bYReversed) pDest = iter.GetRow(tgaHead.ImageHeight-y-1);
         else pDest = iter.GetRow(y);

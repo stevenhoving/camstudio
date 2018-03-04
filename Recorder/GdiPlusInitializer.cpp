@@ -12,7 +12,7 @@ using namespace std;
 gdi::gdi()
 {
     input = std::make_unique<Gdiplus::GdiplusStartupInput>();
-    Gdiplus::GdiplusStartup(&gdiplusToken, input.get(), NULL);
+    Gdiplus::GdiplusStartup(&gdiplusToken, input.get(), nullptr);
 }
 
 gdi::~gdi()

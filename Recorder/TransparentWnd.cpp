@@ -166,7 +166,7 @@ BOOL CTransparentWnd::PreCreateWindow(CREATESTRUCT &cs)
 
 void CTransparentWnd::CreateTransparent(LPCTSTR pTitle, RECT rect, HBITMAP BitmapID)
 {
-    CreateEx(WS_EX_TOPMOST, AfxRegisterWndClass(0), pTitle, WS_POPUP | WS_SYSMENU, rect, NULL, NULL, NULL);
+    CreateEx(WS_EX_TOPMOST, AfxRegisterWndClass(0), pTitle, WS_POPUP | WS_SYSMENU, rect, nullptr, 0, nullptr);
 
     m_rectWnd = rect;
 
@@ -215,7 +215,7 @@ void CTransparentWnd::CreateTransparent(LPCTSTR pTitle, RECT rect, CString bitma
     // WidthHeight
     m_rectOriginalWnd = m_rectWnd;
 
-    CreateEx(WS_EX_TOPMOST, AfxRegisterWndClass(0), pTitle, WS_POPUP | WS_SYSMENU, rect, NULL, NULL, NULL);
+    CreateEx(WS_EX_TOPMOST, AfxRegisterWndClass(0), pTitle, WS_POPUP | WS_SYSMENU, rect, nullptr, 0, nullptr);
 
     if ((m_rectWnd.Width() > 60) && (m_rectWnd.Height() > 60))
     {
@@ -240,7 +240,7 @@ void CTransparentWnd::SetupRegion(CDC *pDC)
     if (m_regionType == regionNULL)
     {
         m_regionCreated = 0;
-        SetWindowRgn((HRGN)NULL, TRUE);
+        SetWindowRgn((HRGN)nullptr, TRUE);
     }
     else if (m_regionType == regionTRANSPARENTCOLOR)
     {
@@ -296,7 +296,7 @@ void CTransparentWnd::SetupRegionByTransColor(CDC *pDC, COLORREF transColor)
     CBitmap cBitmap;
     CBitmap zoomBitmap;
     CBitmap *old_zoomBitmap = 0;
-    HBITMAP pOldMemBmp = NULL;
+    HBITMAP pOldMemBmp = nullptr;
     COLORREF col;
 
     // need to make wndRgn a member...???
@@ -428,7 +428,7 @@ void CTransparentWnd::OnPaint()
     if (m_hbitmap)
     {
         CDC memDC;
-        HBITMAP pOldMemBmp = NULL;
+        HBITMAP pOldMemBmp = nullptr;
         memDC.CreateCompatibleDC(pDC);
         pOldMemBmp = (HBITMAP)::SelectObject(memDC.m_hDC, m_hbitmap);
 
@@ -537,16 +537,16 @@ void CTransparentWnd::OnPaint()
     else
     {
         // LPBITMAPINFO pbmiText = GetTextBitmap(pDC, &CRect(clrect),m_factor,&m_tracker.m_rect, &m_textfont,
-        // m_textstring, NULL, NULL, rgb, m_horzalign); HBITMAP newbm = DrawResampleRGB(pDC, &CRect(clrect), m_factor,
+        // m_textstring, nullptr, nullptr, rgb, m_horzalign); HBITMAP newbm = DrawResampleRGB(pDC, &CRect(clrect), m_factor,
         // (LPBITMAPINFOHEADER) pbmiText);
         LPBITMAPINFO pbmiText = GetTextBitmap(pDC, &clrect, m_factor, &m_tracker.m_rect, &m_textfont, m_textstring,
-                                              NULL, NULL, m_rgb, m_horzalign);
+                                              nullptr, nullptr, m_rgb, m_horzalign);
         //        HBITMAP newbm = DrawResampleRGB(pDC, &clrect, m_factor, (LPBITMAPINFOHEADER) pbmiText);
 
         if (pbmiText)
         {
             GlobalFreePtr(pbmiText);
-            pbmiText = NULL;
+            pbmiText = nullptr;
         }
     }
 
@@ -570,7 +570,7 @@ void CTransparentWnd::OnContextMenu(CWnd * /*pWnd*/, CPoint point)
     }
 
     CMenu *pPopup = m_menu.GetSubMenu(0);
-    ASSERT(pPopup != NULL);
+    ASSERT(pPopup != nullptr);
     if (bIsEdited)
     {
         DisableContextMenu();
@@ -611,7 +611,7 @@ void CTransparentWnd::EditText()
     m_bTrackingOn = true;
 
     // WidthHeight
-    SetWindowRgn((HRGN)NULL, TRUE);
+    SetWindowRgn((HRGN)nullptr, TRUE);
 
     Invalidate();
 
@@ -624,7 +624,7 @@ void CTransparentWnd::EditText()
     OnUpdateContextMenu();
 
     // WidthHeight
-    // All code areas with SetWindowRgn((HRGN)NULL, TRUE) will need m_regionCreated = 0 ?
+    // All code areas with SetWindowRgn((HRGN)nullptr, TRUE) will need m_regionCreated = 0 ?
     m_regionCreated = 0;
     InvalidateRegion();
     Invalidate();
@@ -646,9 +646,9 @@ LPBITMAPINFO CTransparentWnd::GetDCBitmap(CDC *thisDC, CRect *caprect)
     SelectObject(hMemDC, oldbm);
     LPBITMAPINFOHEADER pBM_HEADER = (LPBITMAPINFOHEADER)GlobalLock(Bitmap2Dib(hbm, 24));
 
-    if (pBM_HEADER == NULL)
+    if (pBM_HEADER == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
 
     DeleteObject(hbm);
@@ -714,7 +714,7 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect *caprect, int fac
     SetBkMode(hMemDC, TRANSPARENT);
     SetTextColor(hMemDC, textcolor);
     // DrawTextEx(hMemDC, (char *)LPCTSTR(textstr), textlength, LPRECT(usetextRect), horzalign | DT_VCENTER |
-    // DT_WORDBREAK | DT_EDITCONTROL , NULL);
+    // DT_WORDBREAK | DT_EDITCONTROL , nullptr);
 
     // use adaptive antialias...if size< than maxxScreen maxyScreen
     CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();
@@ -724,7 +724,7 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect *caprect, int fac
 
         BeginPath(hMemDC);
         DrawTextEx(hMemDC, (char *)LPCTSTR(textstr), textlength, LPRECT(usetextRect),
-                   horzalign | DT_VCENTER | DT_WORDBREAK, NULL);
+                   horzalign | DT_VCENTER | DT_WORDBREAK, nullptr);
         EndPath(hMemDC);
 
         // CPen testpen;
@@ -745,7 +745,7 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect *caprect, int fac
     else
     {
         DrawTextEx(hMemDC, (char *)LPCTSTR(textstr), textlength, LPRECT(usetextRect),
-                   horzalign | DT_VCENTER | DT_WORDBREAK, NULL);
+                   horzalign | DT_VCENTER | DT_WORDBREAK, nullptr);
     }
 
     if ((m_bBorderYes) && (regionSHAPE == m_regionType))
@@ -815,9 +815,9 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect *caprect, int fac
     SelectObject(hMemDC, oldbm);
 
     LPBITMAPINFOHEADER pBM_HEADER = (LPBITMAPINFOHEADER)GlobalLock(Bitmap2Dib(hbm, 24));
-    if (pBM_HEADER == NULL)
+    if (pBM_HEADER == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
 
     pMemDC->Detach();
@@ -844,16 +844,16 @@ HBITMAP CTransparentWnd::DrawResampleRGB(CDC * /*thisDC*/, CRect * /*caprect*/, 
     long reduced_rowbytes = (reduced_width * iBits + 31) / 32 * 4;
 
     if ((factor < 1) || (factor > 3))
-        return NULL;
+        return nullptr;
 
     // Create destination buffer
     // long dwSize = sizeof(BITMAPINFOHEADER) + reduced_rowbytes * reduced_height * 3;
 
     // Allocate room for a DIB and set the LPBI fields
     LPBITMAPINFOHEADER smallbi = (LPBITMAPINFOHEADER)GlobalLock(AllocMakeDib(reduced_width, reduced_height, 24));
-    if (smallbi == NULL)
+    if (smallbi == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
 
     // Get the iBits from the bitmap and stuff them after the LPBI
@@ -966,7 +966,7 @@ HBITMAP CTransparentWnd::DrawResampleRGB(CDC * /*thisDC*/, CRect * /*caprect*/, 
         GlobalFreePtr(smallbi);
     }
 
-    HBITMAP newbm = NULL;
+    HBITMAP newbm = nullptr;
     return newbm;
 }
 
@@ -1044,7 +1044,7 @@ void CTransparentWnd::OnLButtonDown(UINT nFlags, CPoint point)
 
     if (m_bTrackingOn)
     {
-        m_tracker.Track(this, point, FALSE, NULL);
+        m_tracker.Track(this, point, FALSE, nullptr);
         Invalidate();
     }
 
@@ -1133,7 +1133,7 @@ void CTransparentWnd::DisableContextMenu()
     }
 
     CMenu *pPopup = m_menu.GetSubMenu(0);
-    ASSERT(pPopup != NULL);
+    ASSERT(pPopup != nullptr);
 
     pPopup->EnableMenuItem(ID_CONTEXT_EDITTEXT, MF_GRAYED | MF_DISABLED | MF_BYCOMMAND);
     pPopup->EnableMenuItem(ID_CONTEXT_CLOSEALL, MF_GRAYED | MF_DISABLED | MF_BYCOMMAND);
@@ -1158,7 +1158,7 @@ void CTransparentWnd::OnUpdateContextMenu()
     }
 
     CMenu *pPopup = m_menu.GetSubMenu(0);
-    ASSERT(pPopup != NULL);
+    ASSERT(pPopup != nullptr);
 
     pPopup->CheckMenuItem(ID_CONTEXT_ANTIALIAS_NOANTIALIAS, m_factor == 1 ? MF_CHECKED : MF_UNCHECKED);
     pPopup->CheckMenuItem(ID_CONTEXT_ANTIALIAS_ANTIALIASX2, m_factor == 2 ? MF_CHECKED : MF_UNCHECKED);
@@ -1295,7 +1295,7 @@ void CTransparentWnd::ReloadPic(CString filename)
 
     if (m_picture.Load(filename))
     {
-        HBITMAP testtrans = NULL;
+        HBITMAP testtrans = nullptr;
         if (m_picture.IPicturePtr()->get_Handle((unsigned int *)&testtrans) == S_OK)
         {
             m_hbitmap = testtrans;
@@ -1328,19 +1328,19 @@ void CTransparentWnd::ReloadPic(CString filename)
                 m_tracker.m_rect.bottom = m_rectWnd.Height() - 2;
             }
 
-            m_regionCreated = NULL;
+            m_regionCreated = 0;
             SetupRegion();
 
             SetWindowPos(&wndTopMost, m_rectWnd.left, m_rectWnd.top, m_rectWnd.Width(), m_rectWnd.Height(), SWP_NOMOVE);
         }
         else
         {
-            m_hbitmap = NULL;
+            m_hbitmap = nullptr;
         }
     }
     else
     {
-        m_hbitmap = NULL;
+        m_hbitmap = nullptr;
     }
 }
 
@@ -1356,13 +1356,13 @@ CTransparentWnd *CTransparentWnd::Clone(int offsetx, int offsety)
 
     CString pTitle(m_shapeStr);
     newWnd->CreateEx(WS_EX_TOPMOST, AfxRegisterWndClass(0), LPCTSTR(pTitle), WS_POPUP | WS_SYSMENU, newWnd->m_rectWnd,
-                     NULL, NULL, NULL);
-    newWnd->m_regionCreated = NULL;
+                     nullptr, 0, nullptr);
+    newWnd->m_regionCreated = 0;
     newWnd->m_tracker.m_rect = m_tracker.m_rect;
 
-    if (m_hbitmap == NULL)
+    if (m_hbitmap == nullptr)
     {
-        newWnd->m_hbitmap = NULL;
+        newWnd->m_hbitmap = nullptr;
     }
     else
     {
@@ -1389,12 +1389,12 @@ CTransparentWnd *CTransparentWnd::Clone(int offsetx, int offsety)
             if (!ret)
             {
                 // if 2nd try fails
-                newWnd->m_hbitmap = NULL;
+                newWnd->m_hbitmap = nullptr;
                 return newWnd;
             }
         }
 
-        HBITMAP testtrans = NULL;
+        HBITMAP testtrans = nullptr;
         if (newWnd->m_picture.IPicturePtr()->get_Handle((unsigned int *)&testtrans) == S_OK)
         {
             newWnd->m_hbitmap = testtrans;
@@ -1402,7 +1402,7 @@ CTransparentWnd *CTransparentWnd::Clone(int offsetx, int offsety)
         }
         else
         {
-            newWnd->m_hbitmap = NULL;
+            newWnd->m_hbitmap = nullptr;
         }
 
         DeleteFile(tempFile);
@@ -1457,9 +1457,9 @@ void CTransparentWnd::OnContextRefresh()
 // unconfirmed
 void CTransparentWnd::OnContextClone()
 {
-    CTransparentWnd *cloneWnd = NULL;
+    CTransparentWnd *cloneWnd = nullptr;
 
-    srand((unsigned)time(NULL));
+    srand((unsigned)time(nullptr));
     int x = (rand() % 40) - 20;
     int y = (rand() % 40) - 20;
 
@@ -1488,7 +1488,7 @@ void CTransparentWnd::OnContextClose()
 
 BOOL CTransparentWnd::SaveShape(FILE *fptr)
 {
-    if (fptr == NULL)
+    if (fptr == nullptr)
         return FALSE;
 
     long shapeversion = 1;
@@ -1560,7 +1560,7 @@ BOOL CTransparentWnd::SaveShape(FILE *fptr)
 
 BOOL CTransparentWnd::LoadShape(FILE *fptr)
 {
-    if (fptr == NULL)
+    if (fptr == nullptr)
         return FALSE;
 
     BOOL ret = TRUE;
@@ -1640,15 +1640,15 @@ BOOL CTransparentWnd::LoadShape(FILE *fptr)
     ret = TRUE;
     if (m_picture.LoadFromFile(fptr))
     {
-        if (m_picture.IPicturePtr() == NULL)
+        if (m_picture.IPicturePtr() == nullptr)
         {
             // Case : No image
-            m_hbitmap = NULL;
+            m_hbitmap = nullptr;
         }
         else
         {
             // Case : Has image
-            HBITMAP testtrans = NULL;
+            HBITMAP testtrans = nullptr;
             if (m_picture.IPicturePtr()->get_Handle((unsigned int *)&testtrans) == S_OK)
             {
                 m_hbitmap = testtrans;
@@ -1656,7 +1656,7 @@ BOOL CTransparentWnd::LoadShape(FILE *fptr)
             }
             else
             {
-                m_hbitmap = NULL;
+                m_hbitmap = nullptr;
             }
         }
     }
@@ -1664,7 +1664,7 @@ BOOL CTransparentWnd::LoadShape(FILE *fptr)
     {
         // ErrMsg("\nPic Fail");
         // Case : Image Load Error
-        m_hbitmap = NULL;
+        m_hbitmap = nullptr;
         ret = FALSE;
     }
 
@@ -1720,7 +1720,7 @@ void CTransparentWnd::OnContextResize()
     m_bTrackingOn = true;
 
     // WidthHeight
-    SetWindowRgn((HRGN)NULL, TRUE);
+    SetWindowRgn((HRGN)nullptr, TRUE);
 
     Invalidate();
 

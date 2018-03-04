@@ -11,7 +11,7 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CSyncDlg dialog
 
-CSyncDlg::CSyncDlg(int iType, int iShift, CWnd *pParent /*=NULL*/)
+CSyncDlg::CSyncDlg(int iType, int iShift, CWnd *pParent /*=nullptr*/)
     : CDialog(CSyncDlg::IDD, pParent)
     , m_iTimeShift(iShift)
     , m_iShiftType(iType)

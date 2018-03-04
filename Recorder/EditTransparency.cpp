@@ -13,7 +13,7 @@ static char THIS_FILE[] = __FILE__;
 // CEditTransparencyDlg dialog
 
 // The standard ctor is private and inaccessible by design
-CEditTransparencyDlg::CEditTransparencyDlg(CWnd *pParent /*=NULL*/)
+CEditTransparencyDlg::CEditTransparencyDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CEditTransparencyDlg::IDD, pParent)
     , m_rbEnableTrans(m_bEnableTransOld)
     , m_bEnableTransOld(false)

@@ -10,10 +10,10 @@
 class CVideoOptionsDlg : public CDialog
 {
 
-    CVideoOptionsDlg(CWnd *pParent = NULL);
+    CVideoOptionsDlg(CWnd *pParent = nullptr);
 
 public:
-    CVideoOptionsDlg(const sVideoOpts &cOpts, CWnd *pParent = NULL);
+    CVideoOptionsDlg(const sVideoOpts &cOpts, CWnd *pParent = nullptr);
 
     const sVideoOpts &Opts() const
     {

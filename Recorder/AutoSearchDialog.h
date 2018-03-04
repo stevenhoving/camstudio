@@ -7,7 +7,7 @@ class CAutoSearchDlg : public CDialog
 {
 
 public:
-    CAutoSearchDlg(CWnd *pParent = NULL);
+    CAutoSearchDlg(CWnd *pParent = nullptr);
     void SetVarText(CString textstr);
     void SetVarTextLine2(CString textstr);
     void SetButtonEnable(BOOL enable);

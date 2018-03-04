@@ -6,7 +6,7 @@
 
 IMPLEMENT_DYNAMIC(CUpdateDialog, CDialogEx)
 
-CUpdateDialog::CUpdateDialog(CWnd *pParent /*=NULL*/)
+CUpdateDialog::CUpdateDialog(CWnd *pParent /*=nullptr*/)
     : CDialogEx(CUpdateDialog::IDD, pParent)
 {
 }
@@ -27,7 +27,7 @@ END_MESSAGE_MAP()
 void CUpdateDialog::OnBnClickedButtonlink()
 {
     LPCTSTR mode = ("open");
-    ShellExecute(GetSafeHwnd(), mode, "http://www.camstudio.org/", NULL, NULL, SW_SHOW);
+    ShellExecute(GetSafeHwnd(), mode, "http://www.camstudio.org/", nullptr, nullptr, SW_SHOW);
     this->ShowWindow(SW_HIDE);
 }
 // CUpdateDialog message handlers

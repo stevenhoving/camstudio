@@ -75,7 +75,7 @@ void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip)
         RoundRect(hdc, x - 4, y - 4, x + dx + 4, y + dy + 4, 10, 10);
         SetBkMode(hdc, OPAQUE);
 
-        ExtTextOut(hdc, x, y, 0, NULL, (LPCTSTR)strSize, strSize.GetLength(), NULL);
+        ExtTextOut(hdc, x, y, 0, nullptr, (LPCTSTR)strSize, strSize.GetLength(), nullptr);
 
         // Icon
         /* TODO: This creates a flicker when being draw to both screens
@@ -153,7 +153,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
                 {
                     // Multimonitor code -- will need to combine both EnumDisplays ... see comment above
                     // DrawSelectMultiMonitorCallback
-                    HDC hCurMonitorDC = GetDC(NULL);
+                    HDC hCurMonitorDC = GetDC(nullptr);
                     EnumDisplayMonitors(hCurMonitorDC, &g_old_rcClip, DrawSelectMultiMonitorCallback,
                                         0); // 0 indicates erase old rubber-band
                     EnumDisplayMonitors(hCurMonitorDC, &g_rcClip, DrawSelectMultiMonitorCallback,
@@ -176,7 +176,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
                     GetCursorPos(&pt);
 
                     HDC hScreenDC = GetDC(hWnd);
-                    HDC hCurMonitorDC = GetDC(NULL);
+                    HDC hCurMonitorDC = GetDC(nullptr);
 
                     // DrawSelect(hScreenDC, FALSE, &g_rcClip); // erase old rubber-band
                     EnumDisplayMonitors(hCurMonitorDC, &g_rcClip, DrawSelectMultiMonitorCallback,
@@ -336,25 +336,25 @@ bool CreateShiftWindow()
     wndclass.cbWndExtra = 0;
     wndclass.hInstance = hInstance;
     wndclass.hIcon = LoadIcon(hInstance, _T("WINCAP"));
-    wndclass.lpszMenuName = NULL;
+    wndclass.lpszMenuName = nullptr;
     wndclass.lpszClassName = _T("ShiftRegionWindow");
     wndclass.hCursor = hcur;
-    wndclass.hbrBackground = NULL;
+    wndclass.hbrBackground = nullptr;
 
     if (!RegisterClass(&wndclass))
         return false;
 
-    // HDC hScreenDC = ::GetDC(NULL);
+    // HDC hScreenDC = ::GetDC(nullptr);
     // maxxScreen = ::GetDeviceCaps(hScreenDC, HORZRES);
     maxxScreen = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
     // maxyScreen = ::GetDeviceCaps(hScreenDC, VERTRES);
     maxyScreen = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
     minxScreen = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
     minyScreen = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
-    //::ReleaseDC(NULL,hScreenDC);
+    //::ReleaseDC(nullptr,hScreenDC);
 
     hMouseCaptureWnd = ::CreateWindowEx(WS_EX_TOPMOST, _T("ShiftRegionWindow"), _T("Title"), WS_POPUP, minxScreen,
-                                        minyScreen, maxxScreen, maxyScreen, NULL, NULL, hInstance, NULL);
+                                        minyScreen, maxxScreen, maxyScreen, nullptr, nullptr, hInstance, nullptr);
 
     TRACE(_T("CreateShiftWindow : %s\n"), ::IsWindow(hMouseCaptureWnd) ? _T("SUCCEEDED") : _T("FAIL"));
     return ::IsWindow(hMouseCaptureWnd) ? true : false;

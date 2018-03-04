@@ -154,7 +154,7 @@ CString GetMyDocumentsPath()
     {
         path = szPath;
     }
-    /*else if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, 0, 0, szPath)))
+    /*else if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, 0, 0, szPath)))
     {
         path = szPath;
     }*/

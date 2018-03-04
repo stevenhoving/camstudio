@@ -50,7 +50,7 @@ int m_arrAutoSetPlaybackRate[100];
 /////////////////////////////////////////////////////////////////////////////
 // CVideoOptionsDlg dialog
 
-CVideoOptionsDlg::CVideoOptionsDlg(CWnd *pParent /*=NULL*/)
+CVideoOptionsDlg::CVideoOptionsDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CVideoOptionsDlg::IDD, pParent)
     , m_iQuality(0)
     , m_iKeyFrameInterval(0)

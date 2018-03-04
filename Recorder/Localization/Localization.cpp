@@ -107,7 +107,7 @@ static inline CString &UnMakeSafe(CString &str)
 static inline CString Decode(LPCSTR szInput, int nInput= -1)
 {
     (void)nInput;
-    // int nWide = MultiByteToWideChar( CP_UTF8, 0, szInput, nInput, NULL, 0 );
+    // int nWide = MultiByteToWideChar( CP_UTF8, 0, szInput, nInput, nullptr, 0 );
     CString sWide = szInput;
     // if ( nWide > 0 )
     //{
@@ -159,7 +159,7 @@ CString CLocalization::LoadString(UINT nID) const
 BOOL CLocalization::Translate(HMENU hMenu, UINT nMenuID, UINT *pnOrdinal) const
 {
     UINT nLocalOrdinal = 0;
-    if (pnOrdinal == NULL)
+    if (pnOrdinal == nullptr)
         pnOrdinal = &nLocalOrdinal;
 
     UINT nCount = GetMenuItemCount(hMenu);
@@ -224,7 +224,7 @@ void CLocalization::Translate(HWND hDialog, UINT nDialogID) const
         }
     }
 
-    InvalidateRect(hDialog, NULL, TRUE);
+    InvalidateRect(hDialog, nullptr, TRUE);
     UpdateWindow(hDialog);
 }
 
@@ -328,9 +328,9 @@ BOOL CLocalization::Load(LPCTSTR szModule)
 
     CString sPath;
     if (szModule && *szModule)
-        GetFullPathName(szModule, 1024, sPath.GetBuffer(1024), NULL);
+        GetFullPathName(szModule, 1024, sPath.GetBuffer(1024), nullptr);
     else
-        GetModuleFileName(NULL, sPath.GetBuffer(1024), 1024);
+        GetModuleFileName(nullptr, sPath.GetBuffer(1024), 1024);
     sPath.ReleaseBuffer();
     m_strModule = sPath;
     int nPos = m_strModule.ReverseFind(_T('\\'));
@@ -339,7 +339,7 @@ BOOL CLocalization::Load(LPCTSTR szModule)
     // Enumerate resources first
     if (!bFolder)
     {
-        if (HMODULE hModule = LoadLibraryEx(m_strModule, NULL, LOAD_LIBRARY_AS_DATAFILE))
+        if (HMODULE hModule = LoadLibraryEx(m_strModule, nullptr, LOAD_LIBRARY_AS_DATAFILE))
         {
             EnumResourceNames(hModule, RT_PO, EnumResNameProc, (LONG_PTR)this);
 
@@ -558,7 +558,7 @@ BOOL CLocalization::LoadPoFromResource(LANGID nLangID, LPCTSTR szFilename)
 
     BOOL bRet = FALSE;
 
-    if (HMODULE hModule = LoadLibraryEx(szFilename, NULL, LOAD_LIBRARY_AS_DATAFILE))
+    if (HMODULE hModule = LoadLibraryEx(szFilename, nullptr, LOAD_LIBRARY_AS_DATAFILE))
     {
         if (HRSRC hResInfo = FindResource(hModule, MAKEINTRESOURCE(nLangID), RT_PO))
         {
@@ -571,7 +571,7 @@ BOOL CLocalization::LoadPoFromResource(LANGID nLangID, LPCTSTR szFilename)
                     if (magic == LZ_MAGIC)
                     {
                         CAtlTemporaryFile oFile;
-                        HRESULT hr = oFile.Create(NULL, GENERIC_WRITE);
+                        HRESULT hr = oFile.Create(nullptr, GENERIC_WRITE);
                         if (SUCCEEDED(hr))
                         {
                             CString sTempFilename = oFile.TempFileName();

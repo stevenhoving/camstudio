@@ -12,7 +12,7 @@ class CScreenAnnotationsDlg : public CDialog
 {
 
 public:
-    CScreenAnnotationsDlg(CWnd *pParent = NULL);
+    CScreenAnnotationsDlg(CWnd *pParent = nullptr);
 
     // Dialog Data
     //{{AFX_DATA(CScreenAnnotationsDlg)

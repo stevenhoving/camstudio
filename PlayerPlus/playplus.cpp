@@ -18,7 +18,7 @@ extern void OpenMovieFileInit(char *filename);
 #define DUBBER 1
 extern int pmode;
 
-HBITMAP hAboutBM = NULL;
+HBITMAP hAboutBM = nullptr;
 
 extern int autoplay;
 extern int autoexit;
@@ -59,9 +59,9 @@ BOOL CPlayplusApp::InitInstance()
     // create default LanguageID no exists
     if (returnStatus != ERROR_SUCCESS)
     {
-        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio", 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, 0);
-        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap", 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, 0);
-        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap\\Language", 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, 0);
+        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio", 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, nullptr, &hKey, 0);
+        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap", 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, nullptr, &hKey, 0);
+        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap\\Language", 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, nullptr, &hKey, 0);
         RegSetValueEx(hKey, "LanguageID", 0, REG_DWORD, (BYTE *)&language, sizeof(language));
         returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
     }
@@ -69,7 +69,7 @@ BOOL CPlayplusApp::InitInstance()
     // read LanguageID
     if (returnStatus == ERROR_SUCCESS)
     {
-        returnStatus = RegQueryValueEx(hKey, "LanguageID", NULL, &Type, (LPBYTE)&language, &Size);
+        returnStatus = RegQueryValueEx(hKey, "LanguageID", nullptr, &Type, (LPBYTE)&language, &Size);
 
         if (returnStatus == ERROR_SUCCESS)
         {
@@ -289,13 +289,13 @@ void CAboutDlg::OnDestroy()
 {
     CDialog::OnDestroy();
 
-    //::MessageBox(NULL,"Note Destory","nn",MB_OK);
+    //::MessageBox(nullptr,"Note Destory","nn",MB_OK);
 
     // TODO: Add your message handler code here
     if (hAboutBM)
     {
         DeleteObject(hAboutBM);
-        hAboutBM = NULL;
+        hAboutBM = nullptr;
     }
 }
 
@@ -314,5 +314,5 @@ void CAboutDlg::OnBnClickedButtonlink1()
     LPCTSTR mode;
     mode = ("open");
 
-    ShellExecute(GetSafeHwnd(), mode, "http://www.camstudio.org", NULL, NULL, SW_SHOW);
+    ShellExecute(GetSafeHwnd(), mode, "http://www.camstudio.org", nullptr, nullptr, SW_SHOW);
 }

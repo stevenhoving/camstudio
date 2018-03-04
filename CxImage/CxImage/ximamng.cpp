@@ -85,7 +85,7 @@ static mng_bool mymngprocessheader( mng_handle mng, mng_uint32 width, mng_uint32
     mymng->alpha = (uint8_t*)malloc(height * width);
 #else
     mng_set_canvasstyle( mng, MNG_CANVAS_BGR8);
-    mymng->alpha = NULL;
+    mymng->alpha = nullptr;
 #endif
     return MNG_TRUE;
 }
@@ -144,7 +144,7 @@ static mng_bool mymngerror(mng_handle mng, mng_int32 code, mng_int8 severity, mn
 ////////////////////////////////////////////////////////////////////////////////
 CxImageMNG::CxImageMNG(): CxImage(CXIMAGE_FORMAT_MNG)
 {
-    hmng = NULL;
+    hmng = nullptr;
     memset(&mnginfo,0,sizeof(mngstuff));
     mnginfo.nBkgndIndex = -1;
     mnginfo.speed = 1.0f;
@@ -187,9 +187,9 @@ void CxImageMNG::SetCallbacks(mng_handle mng)
 bool CxImageMNG::Load(const TCHAR * imageFileName){
     FILE* hFile;    //file handle to read the image
 #ifdef WIN32
-    if ((hFile=_tfopen(imageFileName,_T("rb")))==NULL)  return false;    // For UNICODE support
+    if ((hFile=_tfopen(imageFileName,_T("rb")))==nullptr)  return false;    // For UNICODE support
 #else
-    if ((hFile=fopen(imageFileName,"rb"))==NULL)  return false;
+    if ((hFile=fopen(imageFileName,"rb"))==nullptr)  return false;
 #endif
     bool bOK = Decode(hFile);
     fclose(hFile);
@@ -198,13 +198,13 @@ bool CxImageMNG::Load(const TCHAR * imageFileName){
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageMNG::Decode(CxFile *hFile)
 {
-    if (hFile == NULL) return false;
+    if (hFile == nullptr) return false;
 
     cx_try
     {
         // set up the mng decoder for our stream
         hmng = mng_initialize(&mnginfo, (mng_memalloc)mymngalloc, (mng_memfree)mymngfree, MNG_NULL);
-        if (hmng == NULL) cx_throw("could not initialize libmng");            
+        if (hmng == nullptr) cx_throw("could not initialize libmng");            
 
         // set the file we want to play
         mnginfo.file = hFile;
@@ -318,12 +318,12 @@ bool CxImageMNG::Encode(CxFile *hFile)
         mnginfo.width =  head.biWidth;
 
         mnginfo.image = (uint8_t*)malloc(head.biSizeImage);
-        if (mnginfo.image == NULL) cx_throw("could not allocate memory for MNG");
+        if (mnginfo.image == nullptr) cx_throw("could not allocate memory for MNG");
         memcpy(mnginfo.image,info.pImage, head.biSizeImage);
 
         // set up the mng decoder for our stream
         hmng = mng_initialize(&mnginfo, (mng_memalloc)mymngalloc, (mng_memfree)mymngfree, MNG_NULL);
-        if (hmng == NULL) cx_throw("could not initialize libmng");            
+        if (hmng == nullptr) cx_throw("could not initialize libmng");            
 
         mng_setcb_openstream(hmng, mymngopenstreamwrite );
         mng_setcb_closestream(hmng, mymngclosestream);
@@ -399,7 +399,7 @@ void CxImageMNG::WritePNG( mng_handle hMNG, int32_t Frame, int32_t FrameCount )
 int32_t CxImageMNG::Resume()
 {
     if (MNG_NEEDTIMERWAIT == mng_display_resume(hmng)){
-        if (info.pImage==NULL){
+        if (info.pImage==nullptr){
             Create(mnginfo.width,mnginfo.height,mnginfo.bpp, CXIMAGE_FORMAT_MNG);
         }
         if (IsValid()){

@@ -223,10 +223,10 @@ static BOOL CALLBACK AboutDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPA
                 EndDialog(hwndDlg, 0);
                 break;
             case IDC_HOMEPAGE:
-                ShellExecute(NULL, NULL, "http://www.rendersoftware.com/products/camstudio/codecs.htm", NULL, NULL, SW_SHOW);
+                ShellExecute(nullptr, nullptr, "http://www.rendersoftware.com/products/camstudio/codecs.htm", nullptr, nullptr, SW_SHOW);
                 break;
             case IDC_EMAIL:
-                ShellExecute(NULL, NULL, "mailto:support@rendersoftware.com", NULL, NULL, SW_SHOW);
+                ShellExecute(nullptr, nullptr, "mailto:support@rendersoftware.com", nullptr, nullptr, SW_SHOW);
                 break;
         }
     }
@@ -637,7 +637,7 @@ DWORD CodecInst::DecompressQuery(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER l
 
 DWORD CodecInst::DecompressGetFormat(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER lpbiOut)
 {
-    // if lpbiOut == NULL, then return the size required to hold an output format struct
+    // if lpbiOut == nullptr, then return the size required to hold an output format struct
     if (lpbiOut == nullptr)
     {
         return lpbiIn->biSize;

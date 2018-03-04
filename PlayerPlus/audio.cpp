@@ -60,7 +60,7 @@ void aviaudioCloseDevice(void)
         }
         waveOutClose(shWaveOut);
 
-        shWaveOut = NULL;
+        shWaveOut = nullptr;
     }
 }
 
@@ -107,7 +107,7 @@ BOOL CALLBACK aviaudioOpenDevice(HWND hwnd, PAVISTREAM pavi)
     // Shut any sound off, and try once more before giving up.
     if (mmResult)
     {
-        sndPlaySound(NULL, 0);
+        sndPlaySound(nullptr, 0);
         mmResult = waveOutOpen(&shWaveOut, (UINT)WAVE_MAPPER, (WAVEFORMATEX *)lpFormat, (DWORD)(UINT)hwnd, 0L,
                                CALLBACK_WINDOW);
     }
@@ -250,7 +250,7 @@ BOOL aviaudioiFillBuffers(void)
 
         if (mmResult != 0)
         {
-            //::MessageBox(NULL,"Waveoutwrite problem","note",MB_OK);
+            //::MessageBox(nullptr,"Waveoutwrite problem","note",MB_OK);
             return false;
         }
 
@@ -279,7 +279,7 @@ BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, B
 
     // CString tx;
     // tx.Format("audioPlayable %d",audioPlayable);
-    // MessageBox(NULL,tx,"Note",MB_OK);
+    // MessageBox(nullptr,tx,"Note",MB_OK);
 
     CString msx;
 
@@ -296,7 +296,7 @@ BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, B
 
     if (!aviaudioOpenDevice(hwnd, pavi))
     {
-        MessageBox(NULL, "AudioOpen failed", "Note", MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(nullptr, "AudioOpen failed", "Note", MB_OK | MB_ICONEXCLAMATION);
         return false;
     }
 

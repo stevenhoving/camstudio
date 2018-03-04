@@ -79,7 +79,7 @@ bool sAudioFormat::NewAudio()
     {
         return bResult;
     }
-    MMRESULT mmresult = ::acmMetrics(NULL, ACM_METRIC_MAX_SIZE_FORMAT, &m_dwCbwFX);
+    MMRESULT mmresult = ::acmMetrics(nullptr, ACM_METRIC_MAX_SIZE_FORMAT, &m_dwCbwFX);
     bResult = (MMSYSERR_NOERROR == mmresult);
     if (!bResult)
     {

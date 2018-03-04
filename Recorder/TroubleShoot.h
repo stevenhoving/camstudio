@@ -7,7 +7,7 @@ class CTroubleShootDlg : public CDialog
 {
 
 public:
-    CTroubleShootDlg(CWnd *pParent = NULL);
+    CTroubleShootDlg(CWnd *pParent = nullptr);
 
     // Dialog Data
     //{{AFX_DATA(CTroubleShootDlg)

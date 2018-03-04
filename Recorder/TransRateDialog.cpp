@@ -13,7 +13,7 @@ extern int iRrefreshRate;
 /////////////////////////////////////////////////////////////////////////////
 // CTransRateDlg dialog
 
-CTransRateDlg::CTransRateDlg(CWnd *pParent /*=NULL*/)
+CTransRateDlg::CTransRateDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CTransRateDlg::IDD, pParent)
     , m_myparent(dynamic_cast<CVideoWnd *>(pParent))
 {

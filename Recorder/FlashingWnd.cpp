@@ -30,7 +30,7 @@ const int SIDELEN2 = 24;
 CFlashingWnd::CFlashingWnd()
     : m_clrBorderON(RGB(255, 255, 180))
     , m_clrBorderOFF(RGB(0, 255, 80))
-    , m_hCursorMove(::LoadCursor(NULL, IDC_SIZEALL))
+    , m_hCursorMove(::LoadCursor(nullptr, IDC_SIZEALL))
     , m_bStartDrag(false)
     , m_bNewRegionUsed(false)
 {

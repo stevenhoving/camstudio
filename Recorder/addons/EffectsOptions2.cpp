@@ -6,7 +6,7 @@
 
 // IMPLEMENT_DYNAMIC(CEffectsOptions2Dlg, CDialog)
 
-CEffectsOptions2Dlg::CEffectsOptions2Dlg(CWnd *pParent /*=NULL*/)
+CEffectsOptions2Dlg::CEffectsOptions2Dlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CEffectsOptions2Dlg::IDD, pParent)
     , m_iPos(0)
     , m_iBrightness(0)

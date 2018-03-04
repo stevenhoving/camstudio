@@ -104,7 +104,7 @@ typedef struct tag_Section_t{
 public:
     EXIFINFO* m_exifinfo;
     char m_szLastError[256];
-    CxExifInfo(EXIFINFO* info = NULL);
+    CxExifInfo(EXIFINFO* info = nullptr);
     ~CxExifInfo();
     bool DecodeExif(CxFile * hFile, int32_t nReadMode = EXIF_READ_EXIF);
     bool EncodeExif(CxFile * hFile);
@@ -158,7 +158,7 @@ public:
         skip_input_data = SkipInputData;
         resync_to_restart = jpeg_resync_to_restart; // use default method
         term_source = TermSource;
-        next_input_byte = NULL; //* => next byte to read from buffer 
+        next_input_byte = nullptr; //* => next byte to read from buffer 
         bytes_in_buffer = 0;    //* # of bytes remaining in buffer 
 
         m_pBuffer = new uint8_t[eBufSize];

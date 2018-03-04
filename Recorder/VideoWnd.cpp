@@ -48,7 +48,7 @@ void CVideoWnd::AdjustRefreshRate(int rate)
         m_iRefreshRate = rate;
         iRrefreshRate = m_iRefreshRate;
         double delayPeriod = 1000 / m_iRefreshRate;
-        SetTimer(0x1, (int)delayPeriod, NULL);
+        SetTimer(0x1, (unsigned int)delayPeriod, nullptr);
     }
 }
 
@@ -68,8 +68,8 @@ void CVideoWnd::CreateTransparent(LPCTSTR pTitle, RECT rect, HBITMAP BitmapID)
         if (ret)
         {
             double delayPeriod = 1000 / m_iRefreshRate;
-            // SetTimer(0x1, DEFAULT_PERIOD, NULL);
-            SetTimer(0x1, (int)delayPeriod, NULL);
+            // SetTimer(0x1, DEFAULT_PERIOD, nullptr);
+            SetTimer(0x1, (int)delayPeriod, nullptr);
             m_iStatus = 1;
         }
         else
@@ -101,7 +101,7 @@ void CVideoWnd::OnTimer(UINT_PTR /*nIDEvent*/)
 
     LPBITMAPINFO lpBi = m_FrameGrabber.GetDIB();
     m_ImageBitmap.CreateFromDib(lpBi);
-    InvalidateRect(NULL);
+    InvalidateRect(nullptr);
 }
 
 void CVideoWnd::OnPaint()
@@ -205,7 +205,7 @@ void CVideoWnd::OnContextvideoSourceformat()
     if (m_FrameGrabber.GetSafeHwnd())
     {
         m_FrameGrabber.VideoSourceDialog();
-        // OnUpdate(NULL, 0, NULL);
+        // OnUpdate(nullptr, 0, nullptr);
         OnUpdateSize();
         Invalidate();
     }
@@ -217,7 +217,7 @@ void CVideoWnd::OnContextvideoVideosource()
     if (m_FrameGrabber.GetSafeHwnd())
     {
         m_FrameGrabber.VideoFormatDialog();
-        // OnUpdate(NULL, 0, NULL);
+        // OnUpdate(nullptr, 0, nullptr);
 
         OnUpdateSize();
         Invalidate();
@@ -239,7 +239,7 @@ void CVideoWnd::OnContextMenu(CWnd * /*pWnd*/, CPoint point)
     }
 
     CMenu *pPopup = m_menu.GetSubMenu(0);
-    ASSERT(pPopup != NULL);
+    ASSERT(pPopup != nullptr);
 
     // if (isEdited)
     //{
@@ -248,7 +248,7 @@ void CVideoWnd::OnContextMenu(CWnd * /*pWnd*/, CPoint point)
     // else
     OnUpdateContextMenu();
 
-    // SetTimer(0x1, ADJUST_PERIOD, NULL);
+    // SetTimer(0x1, ADJUST_PERIOD, nullptr);
     // route commands through main window
     pPopup->TrackPopupMenu(TPM_RIGHTBUTTON | TPM_LEFTALIGN, point.x, point.y, this);
 }
@@ -262,7 +262,7 @@ void CVideoWnd::OnUpdateContextMenu()
     }
 
     CMenu *pPopup = m_menu.GetSubMenu(0);
-    ASSERT(pPopup != NULL);
+    ASSERT(pPopup != nullptr);
 
     if ((m_FrameGrabber.GetSafeHwnd()) && (m_iStatus))
     {
@@ -301,7 +301,7 @@ void CVideoWnd::OnUpdateSize()
     if (!m_iStatus)
     {
         CSize sz(180, 160);
-        SetWindowPos(NULL, 0, 0, sz.cx - 1, sz.cy - 1, SWP_NOMOVE | SWP_NOZORDER);
+        SetWindowPos(nullptr, 0, 0, sz.cx - 1, sz.cy - 1, SWP_NOMOVE | SWP_NOZORDER);
 
         m_rectWnd.right = m_rectWnd.left + sz.cx - 1;
         m_rectWnd.bottom = m_rectWnd.top + sz.cy - 1;
@@ -312,7 +312,7 @@ void CVideoWnd::OnUpdateSize()
     else if (m_FrameGrabber.GetSafeHwnd())
     {
         CSize sz = m_FrameGrabber.GetImageSize();
-        SetWindowPos(NULL, 0, 0, sz.cx - 1, sz.cy - 1, SWP_NOMOVE | SWP_NOZORDER);
+        SetWindowPos(nullptr, 0, 0, sz.cx - 1, sz.cy - 1, SWP_NOMOVE | SWP_NOZORDER);
 
         m_rectWnd.right = m_rectWnd.left + sz.cx - 1;
         m_rectWnd.bottom = m_rectWnd.top + sz.cy - 1;
@@ -326,7 +326,7 @@ void CVideoWnd::OnUpdateSize()
 
         // if (sz.cx && (rcc.Width()!=sz.cx || rcc.Height()!=sz.cy))
         //{
-        //    SetWindowPos(NULL,0,0,
+        //    SetWindowPos(nullptr,0,0,
         //        sz.cx+dx, sz.cy+dy, SWP_NOMOVE|SWP_NOZORDER);
 
         //    GetParentFrame()->GetClientRect(&rcc);
@@ -334,7 +334,7 @@ void CVideoWnd::OnUpdateSize()
         //    dx+= rcw.Width()-rcc.Width();
         //    dy+= rcw.Height()-rcc.Height();
 
-        //    GetParentFrame()->SetWindowPos(NULL,0,0,
+        //    GetParentFrame()->SetWindowPos(nullptr,0,0,
         //        sz.cx+dx, sz.cy+dy, SWP_NOMOVE|SWP_NOZORDER);
         //}
 

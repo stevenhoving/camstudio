@@ -6,7 +6,7 @@
 // CEffectsOptionsDlg dialog
 
 IMPLEMENT_DYNAMIC(CEffectsOptionsDlg, CDialog)
-CEffectsOptionsDlg::CEffectsOptionsDlg(CWnd *pParent /*=NULL*/)
+CEffectsOptionsDlg::CEffectsOptionsDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CEffectsOptionsDlg::IDD, pParent)
 // , m_Position(TOP_LEFT)
 {

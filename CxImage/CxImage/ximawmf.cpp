@@ -54,7 +54,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageWMF::Decode(CxFile *hFile, int32_t nForceWidth, int32_t nForceHeight)
 {
-    if (hFile == NULL) return false;
+    if (hFile == nullptr) return false;
 
     HENHMETAFILE    hMeta;
     HDC                hDC;
@@ -163,17 +163,17 @@ bool CxImageWMF::Decode(CxFile *hFile, int32_t nForceWidth, int32_t nForceHeight
             if (bpp == 24) dwBack = XMF_COLOR_TRANSPARENT;
 #endif
             uint32_t OldColor = SetBkColor(hDC, dwBack);
-            ExtTextOut(hDC, 0, 0, ETO_OPAQUE, &rc, NULL, 0, NULL);
+            ExtTextOut(hDC, 0, 0, ETO_OPAQUE, &rc, nullptr, 0, nullptr);
             SetBkColor(hDC, OldColor);
 
             //retrieves optional palette entries from the specified enhanced metafile
             PLOGPALETTE plogPal;
             PBYTE pjTmp; 
             HPALETTE hPal; 
-            int32_t iEntries = GetEnhMetaFilePaletteEntries(hMeta, 0, NULL);
+            int32_t iEntries = GetEnhMetaFilePaletteEntries(hMeta, 0, nullptr);
             if (iEntries) { 
                 if ((plogPal = (PLOGPALETTE)GlobalAlloc(GMEM_FIXED | GMEM_ZEROINIT, 
-                    sizeof(uint32_t) + sizeof(PALETTEENTRY)*iEntries )) == NULL) { 
+                    sizeof(uint32_t) + sizeof(PALETTEENTRY)*iEntries )) == nullptr) { 
                     DeleteObject(hBitmap);
                     DeleteDC(hDC);
                     DeleteEnhMetaFile(hMeta);
@@ -352,7 +352,7 @@ HENHMETAFILE CxImageWMF::ConvertWmfFiletoEmf(CxFile *fp, METAFILEHEADER *metafil
     // Enhanced Metafile to full screen.
     // the METAFILEHEADER from above is needed to scale the image
 
-//    hMeta = SetWinMetaFileBits(len, p, NULL, NULL);
+//    hMeta = SetWinMetaFileBits(len, p, nullptr, nullptr);
 
     // scale the metafile (pixels/inch of metafile => pixels/inch of display)
 
@@ -409,10 +409,10 @@ HENHMETAFILE CxImageWMF::ConvertEmfFiletoEmf(CxFile *pFile, ENHMETAHEADER *pemfh
     // Check the header first: <km>
     int32_t pos = pFile->Tell();
     int32_t iLenRead = pFile->Read(pemfh, 1, sizeof(ENHMETAHEADER));
-    if (iLenRead < sizeof(ENHMETAHEADER))         return NULL;
-    if (pemfh->iType != EMR_HEADER)               return NULL;
-    if (pemfh->dSignature != ENHMETA_SIGNATURE)   return NULL;
-    //if (pemfh->nBytes != (uint32_t)iLen)             return NULL;
+    if (iLenRead < sizeof(ENHMETAHEADER))         return nullptr;
+    if (pemfh->iType != EMR_HEADER)               return nullptr;
+    if (pemfh->dSignature != ENHMETA_SIGNATURE)   return nullptr;
+    //if (pemfh->nBytes != (uint32_t)iLen)             return nullptr;
     pFile->Seek(pos,SEEK_SET);
 
     uint8_t* pBuff = (uint8_t *)malloc(iLen);
@@ -422,7 +422,7 @@ HENHMETAFILE CxImageWMF::ConvertEmfFiletoEmf(CxFile *pFile, ENHMETAHEADER *pemfh
     iLenRead = pFile->Read(pBuff, 1, iLen);
     if (iLenRead != iLen) {
         free(pBuff);
-        return NULL;
+        return nullptr;
     }
 
     // Make it a Memory Metafile
@@ -430,7 +430,7 @@ HENHMETAFILE CxImageWMF::ConvertEmfFiletoEmf(CxFile *pFile, ENHMETAHEADER *pemfh
 
     free(pBuff);    // finished with this one
 
-    if (!hMeta)    return NULL;    // oops.
+    if (!hMeta)    return nullptr;    // oops.
 
     // Get the Enhanced Metafile Header
     uint32_t uRet = GetEnhMetaFileHeader(hMeta,                // handle of enhanced metafile 
@@ -439,7 +439,7 @@ HENHMETAFILE CxImageWMF::ConvertEmfFiletoEmf(CxFile *pFile, ENHMETAHEADER *pemfh
   
     if (!uRet) {
         DeleteEnhMetaFile(hMeta);
-        return NULL;
+        return nullptr;
     }
 
     return (hMeta);
@@ -451,7 +451,7 @@ HENHMETAFILE CxImageWMF::ConvertEmfFiletoEmf(CxFile *pFile, ENHMETAHEADER *pemfh
 /////////////////////////////////////////////////////////////////////
 bool CxImageWMF::Encode(CxFile * hFile)
 {
-    if (hFile == NULL) return false;
+    if (hFile == nullptr) return false;
     strcpy(info.szLastError, "Save WMF not supported");
     return false;
 }

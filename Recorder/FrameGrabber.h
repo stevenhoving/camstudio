@@ -38,6 +38,14 @@ public:
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CFrameGrabber)
 public:
+#if 0
+    virtual BOOL Create(LPCTSTR lpszClassName,
+        LPCTSTR lpszWindowName, DWORD dwStyle,
+        const RECT& rect,
+        CWnd* pParentWnd, UINT nID,
+        CCreateContext* pContext = nullptr);
+#endif
+
     virtual BOOL Create(int x, int y, CWnd *pParentWnd);
     //}}AFX_VIRTUAL
 

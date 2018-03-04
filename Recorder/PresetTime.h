@@ -10,7 +10,7 @@ class CPresetTimeDlg : public CDialog
 {
 
 public:
-    CPresetTimeDlg(CWnd *pParent = NULL);
+    CPresetTimeDlg(CWnd *pParent = nullptr);
 
     // Dialog Data
     //{{AFX_DATA(CPresetTimeDlg)

@@ -13,10 +13,10 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CEditImageDlg dialog
 
-CEditImageDlg::CEditImageDlg(CWnd *pParent /*=NULL*/)
+CEditImageDlg::CEditImageDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CEditImageDlg::IDD, pParent)
-    , m_hCursorCross(::LoadCursor(NULL, IDC_CROSS))
-    , m_hCursorArrow(::LoadCursor(NULL, IDC_ARROW))
+    , m_hCursorCross(::LoadCursor(nullptr, IDC_CROSS))
+    , m_hCursorArrow(::LoadCursor(nullptr, IDC_ARROW))
 {
     //{{AFX_DATA_INIT(CEditImageDlg)
     // NOTE: the ClassWizard will add member initialization here
@@ -361,11 +361,11 @@ void CEditImageDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
     if (pickingColor == 1)
     {
-        HDC hDC = ::GetDC(NULL);
+        HDC hDC = ::GetDC(nullptr);
         CPoint pt;
         GetCursorPos(&pt);
         COLORREF val = GetPixel(hDC, pt.x, pt.y);
-        ::ReleaseDC(NULL, hDC);
+        ::ReleaseDC(nullptr, hDC);
 
         ReleaseCapture();
         SetCursor(m_hCursorArrow);

@@ -6,7 +6,7 @@
 
 IMPLEMENT_DYNAMIC(CBasicMessage, CDialog)
 
-CBasicMessage::CBasicMessage(CWnd *pParent /*=NULL*/)
+CBasicMessage::CBasicMessage(CWnd *pParent /*=nullptr*/)
     : CDialog(CBasicMessage::IDD, pParent)
     , m_bCancelled(false)
 {

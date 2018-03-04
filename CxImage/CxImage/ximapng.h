@@ -67,19 +67,19 @@ protected:
     static void PNGAPI user_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
     {
         CxFile* hFile = (CxFile*)png_get_io_ptr(png_ptr);
-        if (hFile == NULL || hFile->Read(data,1,length) != length) png_error(png_ptr, "Read Error");
+        if (hFile == nullptr || hFile->Read(data,1,length) != length) png_error(png_ptr, "Read Error");
     }
 
     static void PNGAPI user_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
     {
         CxFile* hFile = (CxFile*)png_get_io_ptr(png_ptr);
-        if (hFile == NULL || hFile->Write(data,1,length) != length) png_error(png_ptr, "Write Error");
+        if (hFile == nullptr || hFile->Write(data,1,length) != length) png_error(png_ptr, "Write Error");
     }
 
     static void PNGAPI user_flush_data(png_structp png_ptr)
     {
         CxFile* hFile = (CxFile*)png_get_io_ptr(png_ptr);
-        if (hFile == NULL || !hFile->Flush()) png_error(png_ptr, "Flush Error");
+        if (hFile == nullptr || !hFile->Flush()) png_error(png_ptr, "Flush Error");
     }
 
     static void PNGAPI user_error_fn(png_structp png_ptr,png_const_charp error_msg)

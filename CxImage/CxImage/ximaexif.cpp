@@ -88,7 +88,7 @@ bool CxImageJPG::CxExifInfo::DecodeExif(CxFile * hFile, int32_t nReadMode)
         Sections[SectionsRead].Size = itemlen;
 
         Data = (uint8_t *)malloc(itemlen);
-        if (Data == NULL){
+        if (Data == nullptr){
             strcpy(m_szLastError,"Could not allocate memory");
             return false;
         }
@@ -119,7 +119,7 @@ bool CxImageJPG::CxExifInfo::DecodeExif(CxFile * hFile, int32_t nReadMode)
 
                     size = ep-cp;
                     Data = (uint8_t *)malloc(size);
-                    if (Data == NULL){
+                    if (Data == nullptr){
                         strcpy(m_szLastError,"could not allocate data for entire image");
                         return false;
                     }
@@ -802,7 +802,7 @@ bool CxImageJPG::CxExifInfo::EncodeExif(CxFile * hFile)
 {
     int32_t a;
 
-    if (FindSection(M_SOS)==NULL){
+    if (FindSection(M_SOS)==nullptr){
         strcpy(m_szLastError,"Can't write exif : didn't read all");
         return false;
     }
@@ -871,7 +871,7 @@ void* CxImageJPG::CxExifInfo::FindSection(int32_t SectionType)
         }
     }
     // Could not be found.
-    return NULL;
+    return nullptr;
 }
 ////////////////////////////////////////////////////////////////////////////////
 #endif     // CXIMAGEJPG_SUPPORT_EXIF

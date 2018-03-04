@@ -16,7 +16,7 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CAutopanSpeedDlg dialog
 
-CAutopanSpeedDlg::CAutopanSpeedDlg(CWnd *pParent /*=NULL*/)
+CAutopanSpeedDlg::CAutopanSpeedDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CAutopanSpeedDlg::IDD, pParent)
 {
     //{{AFX_DATA_INIT(CAutopanSpeedDlg)

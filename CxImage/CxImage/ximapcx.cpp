@@ -27,12 +27,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImagePCX::Decode(CxFile *hFile)
 {
-    if (hFile == NULL) return false;
+    if (hFile == nullptr) return false;
 
     PCXHEADER pcxHeader;
     int32_t i, x, y, y2, nbytes, count, Height, Width;
     uint8_t c, ColorMap[PCX_MAXCOLORS][3];
-    uint8_t *pcximage = NULL, *lpHead1 = NULL, *lpHead2 = NULL;
+    uint8_t *pcximage = nullptr, *lpHead1 = nullptr, *lpHead2 = nullptr;
     uint8_t *pcxplanes, *pcxpixels;
 
   cx_try
@@ -78,7 +78,7 @@ bool CxImagePCX::Decode(CxFile *hFile)
     nbytes = pcxHeader.BytesPerLine * pcxHeader.ColorPlanes * Height;
     lpHead1 = pcximage = (uint8_t*)malloc(nbytes);
     while (nbytes > 0){
-        if (hFile == NULL || hFile->Eof()) cx_throw("corrupted PCX");
+        if (hFile == nullptr || hFile->Eof()) cx_throw("corrupted PCX");
 
         hFile->Read(&c,1,1);
         if ((c & 0XC0) != 0XC0){ // Repeated group
@@ -156,12 +156,12 @@ bool CxImagePCX::Decode(CxFile *hFile)
 
   } cx_catch {
     if (strcmp(message,"")) strncpy(info.szLastError,message,255);
-    if (lpHead1){ free(lpHead1); lpHead1 = NULL; }
-    if (lpHead2){ free(lpHead2); lpHead2 = NULL; }
+    if (lpHead1){ free(lpHead1); lpHead1 = nullptr; }
+    if (lpHead2){ free(lpHead2); lpHead2 = nullptr; }
     return false;
   }
-    if (lpHead1){ free(lpHead1); lpHead1 = NULL; }
-    if (lpHead2){ free(lpHead2); lpHead2 = NULL; }
+    if (lpHead1){ free(lpHead1); lpHead1 = nullptr; }
+    if (lpHead2){ free(lpHead2); lpHead2 = nullptr; }
     return true;
 }
 ////////////////////////////////////////////////////////////////////////////////

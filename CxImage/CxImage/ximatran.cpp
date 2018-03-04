@@ -633,7 +633,7 @@ bool CxImage::Negative()
             }
         }
     } else {
-        if (pSelection==NULL){ //RGB, full image
+        if (pSelection==nullptr){ //RGB, full image
             uint8_t *iSrc=info.pImage;
             for(uint32_t i=0; i < head.biSizeImage; i++){
                 *iSrc=(uint8_t)~(*(iSrc));
@@ -1279,7 +1279,7 @@ bool CxImage::Resample(int32_t newx, int32_t newy, int32_t mode, CxImage* iDst)
  * \param  inMethod - interpolation method to use (see comments at GetPixelColorInterpolated)
  *              If image size is being reduced, averaging is used instead (or simultaneously with) inMethod.
  * \param  ofMethod - what to replace outside pixels by (only significant for bordering pixels of enlarged image)
- * \param  iDst - pointer to destination CxImage or NULL.
+ * \param  iDst - pointer to destination CxImage or nullptr.
  * \param  disableAveraging - force no averaging when shrinking images (Produces aliasing.
  *                      You probably just want to leave this off...)
  *

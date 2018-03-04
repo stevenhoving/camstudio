@@ -11,7 +11,7 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CAutoSearchDlg dialog
 
-CAutoSearchDlg::CAutoSearchDlg(CWnd *pParent /*=NULL*/)
+CAutoSearchDlg::CAutoSearchDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CAutoSearchDlg::IDD, pParent)
 {
     //{{AFX_DATA_INIT(CAutoSearchDlg)

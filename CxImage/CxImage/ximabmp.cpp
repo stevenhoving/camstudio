@@ -81,7 +81,7 @@ bool CxImageBMP::Encode(CxFile * hFile)
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageBMP::Decode(CxFile * hFile)
 {
-    if (hFile == NULL) return false;
+    if (hFile == nullptr) return false;
 
     BITMAPFILEHEADER   bf;
     uint32_t off = hFile->Tell(); //<CSC>
@@ -387,7 +387,7 @@ bool CxImageBMP::Decode(CxFile * hFile)
  */
 bool CxImageBMP::DibReadBitmapInfo(CxFile* fh, BITMAPINFOHEADER *pdib)
 {
-    if ((fh==NULL)||(pdib==NULL)) return false;
+    if ((fh==nullptr)||(pdib==nullptr)) return false;
 
     if (fh->Read(pdib,sizeof(BITMAPINFOHEADER),1)==0) return false;
 

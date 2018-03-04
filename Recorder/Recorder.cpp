@@ -132,7 +132,7 @@ BOOL CAboutDlg::OnInitDialog()
 void CAboutDlg::OnBnClickedButtonlink2()
 {
     LPCTSTR mode = ("open");
-    ShellExecute(GetSafeHwnd(), mode, "http://www.camstudio.org/donate", NULL, NULL, SW_SHOW);
+    ShellExecute(GetSafeHwnd(), mode, "http://www.camstudio.org/donate", nullptr, nullptr, SW_SHOW);
 }
 
 void CAboutDlg::OnButtonlink()
@@ -212,7 +212,7 @@ BOOL CRecorderApp::InitInstance()
     }
     catch (const libconfig::FileIOException)
     { // TODO: move me to resource
-      // MessageBox(NULL, "CamStudio.cfg Config file was not found. Using defaults.", "Error", MB_OK);
+      // MessageBox(nullptr, "CamStudio.cfg Config file was not found. Using defaults.", "Error", MB_OK);
       //        return(EXIT_FAILURE);
     }
     catch (const libconfig::ParseException &pex)
@@ -220,7 +220,7 @@ BOOL CRecorderApp::InitInstance()
         char buf[1024];
         _snprintf_s(buf, 1024, _TRUNCATE, "Config file parse error at %s:%d - %s", pex.getFile(), pex.getLine(),
                     pex.getError());
-        MessageBox(NULL, buf, "Error", MB_OK);
+        MessageBox(nullptr, buf, "Error", MB_OK);
         //        return(EXIT_FAILURE);
     }
 
@@ -393,7 +393,7 @@ int CRecorderApp::ExitInstance()
     }
     catch (libconfig::SettingTypeException &e)
     {
-        MessageBox(NULL, e.getPath(), e.what(), MB_OK);
+        MessageBox(nullptr, e.getPath(), e.what(), MB_OK);
     }
 
     // Save the configuration file out to the user appdata directory.
@@ -449,7 +449,7 @@ BOOL CRecorderApp::FirstInstance()
     }
 
     // check older version class name
-    CWnd *pWndPrev = CWnd::FindWindow(_T("CamStudio"), NULL);
+    CWnd *pWndPrev = CWnd::FindWindow(_T("CamStudio"), nullptr);
     bPrevInstance = (0 != pWndPrev);
     if (bPrevInstance)
     {
@@ -497,14 +497,14 @@ bool CRecorderApp::RegisterWindowClass()
 {
     // todo: add mutex code
     WNDCLASS wndcls;
-    memset(&wndcls, 0, sizeof(WNDCLASS)); // start with NULL defaults
+    memset(&wndcls, 0, sizeof(WNDCLASS)); // start with nullptr defaults
     wndcls.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
     wndcls.lpfnWndProc = ::DefWindowProc;
     wndcls.hInstance = AfxGetInstanceHandle();
     wndcls.hIcon = LoadIcon(IDR_MAINFRAME); // or load a different icon
     wndcls.hCursor = LoadCursor(IDC_ARROW);
     wndcls.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wndcls.lpszMenuName = NULL;
+    wndcls.lpszMenuName = nullptr;
 
     // Specify our own class name for using FindWindow later
     wndcls.lpszClassName = _T("CamStudio");

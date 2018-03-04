@@ -27,7 +27,7 @@ extern void AdjustShapeName(CString &shapeName);
 /////////////////////////////////////////////////////////////////////////////
 // CNewShapeDlg dialog
 
-CNewShapeDlg::CNewShapeDlg(CWnd *pParent /*=NULL*/)
+CNewShapeDlg::CNewShapeDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CNewShapeDlg::IDD, pParent)
     , m_imageDir(GetMyVideoPath())
     , m_uImageWidth(g_iNewShapeWidth)
@@ -148,7 +148,7 @@ void CNewShapeDlg::OnOK()
         // TODO: numeric validation should be redundant due to DDV macros
         if (g_iNewShapeWidth < 20)
         {
-            MessageOut(NULL, IDS_STRINGWIDTHLESS20, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRINGWIDTHLESS20, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             g_iNewShapeWidth = oldWidth;
             return;
         }
@@ -156,7 +156,7 @@ void CNewShapeDlg::OnOK()
         if (maxxScreen < g_iNewShapeWidth)
         {
             // "Width cannot be larger than maxxScreen"
-            MessageOut(NULL, IDS_STRINGWIDTHLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, maxxScreen);
+            MessageOut(nullptr, IDS_STRINGWIDTHLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, maxxScreen);
             g_iNewShapeWidth = oldWidth;
             return;
         }
@@ -164,7 +164,7 @@ void CNewShapeDlg::OnOK()
         if (g_iNewShapeHeight < 20)
         {
             // "Height cannot be less than 20"
-            MessageOut(NULL, IDS_STRINGHEIGHTLESS20, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRINGHEIGHTLESS20, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             g_iNewShapeHeight = oldHeight;
             return;
         }
@@ -172,7 +172,7 @@ void CNewShapeDlg::OnOK()
         if (maxyScreen < g_iNewShapeHeight)
         {
             // "Height cannot be larger than maxyScreen
-            MessageOut(NULL, IDS_STRINGHEIGHTLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, maxyScreen);
+            MessageOut(nullptr, IDS_STRINGHEIGHTLARGER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, maxyScreen);
             g_iNewShapeHeight = oldHeight;
             return;
         }
@@ -185,7 +185,7 @@ void CNewShapeDlg::OnOK()
     {
         if (g_strImageFilename == "")
         {
-            MessageOut(NULL, IDS_STRINGINVIMGFILE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRINGINVIMGFILE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             return;
         }
     }

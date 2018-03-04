@@ -20,7 +20,7 @@ public:
     virtual void OnDraw(CDC *pDC); // overridden to draw this view
     virtual BOOL PreCreateWindow(CREATESTRUCT &cs);
     virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect,
-                        CWnd *pParentWnd, UINT nID, CCreateContext *pContext = NULL);
+                        CWnd *pParentWnd, UINT nID, CCreateContext *pContext = nullptr);
 
 protected:
     virtual BOOL OnPreparePrinting(CPrintInfo *pInfo);

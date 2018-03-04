@@ -15,11 +15,11 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-CCursorOptionsDlg::CCursorOptionsDlg(CWnd *pParent /*=NULL*/)
+CCursorOptionsDlg::CCursorOptionsDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CCursorOptionsDlg::IDD, pParent)
     , m_cCursor(CamCursor)
     , m_pIconFileDlg(0)
-    , m_hPreviewCursor(NULL)
+    , m_hPreviewCursor(nullptr)
     , m_hLoadCursor(CamCursor.Load())
     , m_hCustomCursor(CamCursor.Custom())
     , m_iCustomSel(CamCursor.CustomType())
@@ -46,7 +46,7 @@ CCursorOptionsDlg::CCursorOptionsDlg(const CCamCursor &cCursor, CWnd *pParent)
     : CDialog(CCursorOptionsDlg::IDD, pParent)
     , m_cCursor(cCursor)
     , m_pIconFileDlg(0)
-    , m_hPreviewCursor(NULL)
+    , m_hPreviewCursor(nullptr)
     , m_hLoadCursor(cCursor.Load())
     , m_hCustomCursor(cCursor.Custom())
     , m_iCustomSel(cCursor.CustomType())
@@ -217,7 +217,7 @@ void CCursorOptionsDlg::RefreshHighlight()
 
 void CCursorOptionsDlg::RefreshPreviewCursor()
 {
-    m_hPreviewCursor = NULL;
+    m_hPreviewCursor = nullptr;
     if (m_bRecordCursor)
     {
         switch (m_iCursorType)
@@ -385,9 +385,9 @@ void CCursorOptionsDlg::OnBnClickedFileCursor()
     CString fileName;
     CString filt = "Icon and Cursor Files (*.ico; *.cur)|*.ico;*.cur||";
 
-    if (m_pIconFileDlg == NULL)
+    if (m_pIconFileDlg == nullptr)
     {
-        m_pIconFileDlg = new CFileDialog(TRUE, "*.ico;*.cur", "*.ico;*.cur", NULL, filt, this);
+        m_pIconFileDlg = new CFileDialog(TRUE, "*.ico;*.cur", "*.ico;*.cur", 0, filt, this);
         if (!m_pIconFileDlg)
         {
             ::OnError(_T("CCursorOptionsDlg::OnFilecursor"));

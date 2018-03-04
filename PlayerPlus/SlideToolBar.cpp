@@ -143,7 +143,7 @@ void CSlideToolBar::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
             SetTimeIndicator(durationStr);
         }
 
-        ::InvalidateRect(viewWnd, NULL, FALSE);
+        ::InvalidateRect(viewWnd, nullptr, FALSE);
 
         UpdateValues();
 

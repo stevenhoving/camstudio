@@ -48,7 +48,7 @@ BOOL CALLBACK VideoCompressCallBack(int iProgress)
 // file
 //
 // If recompress audio is set to FALSE, both audio_recompress_format and
-// audio_format_size can be NULL
+// audio_format_size can be nullptr
 // ========================================
 int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, BOOL /*bAudioRecompress*/,
                     sAudioFormat &rAudioFormat)
@@ -69,12 +69,12 @@ int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, B
     ::AVIFileInit();
 
     // Open Video and Audio Files
-    PAVIFILE pfileVideo = NULL;
+    PAVIFILE pfileVideo = nullptr;
     HRESULT hr = ::AVIFileOpen(&pfileVideo, (LPCTSTR)strVideoIn, OF_READ | OF_SHARE_DENY_NONE, 0L);
     if (hr != 0)
     {
-        // MessageBox(NULL,"Unable to open video file.","Note",MB_OK | MB_ICONEXCLAMATION);
-        MessageOut(NULL, IDS_STRING_NOOPENVIDEO, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+        // MessageBox(nullptr,"Unable to open video file.","Note",MB_OK | MB_ICONEXCLAMATION);
+        MessageOut(nullptr, IDS_STRING_NOOPENVIDEO, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
         return 1;
     }
 
@@ -92,8 +92,8 @@ int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, B
         if (AVIERR_OK != ::AVIFileGetStream(pfileVideo, &pavi, streamtypeVIDEO, 0))
         {
             ::AVIFileRelease(pfileVideo);
-            // MessageBox(NULL,"Unable to open video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(NULL, IDS_STRING_NOOPENSREAM, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            // MessageBox(nullptr,"Unable to open video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRING_NOOPENSREAM, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             return 1;
         }
 
@@ -103,15 +103,15 @@ int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, B
             ::AVIStreamRelease(pavi);
             ::AVIFileRelease(pfileVideo);
 
-            // MessageBox(NULL,"Unable to create editable video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(NULL, IDS_STRING_NOCREATESTREAM, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            // MessageBox(nullptr,"Unable to create editable video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRING_NOCREATESTREAM, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             return 1;
         }
 
         ::AVIStreamRelease(pavi);
 
         ::AVIFileRelease(pfileVideo);
-        pfileVideo = NULL;
+        pfileVideo = nullptr;
     }
 
     // =============================
@@ -123,8 +123,8 @@ int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, B
             ::AVIStreamOpenFromFile(&pavi, strAudioIn, streamtypeAUDIO, 0, OF_READ | OF_SHARE_DENY_NONE, 0))
         {
             ::AVIStreamRelease(AviStream[0]);
-            // MessageBox(NULL,"Unable to open audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(NULL, IDS_STRING_NOOPENAUDIO, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            // MessageBox(nullptr,"Unable to open audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRING_NOOPENAUDIO, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 
             return 2;
         }
@@ -134,8 +134,8 @@ int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, B
         {
             ::AVIStreamRelease(pavi);
             ::AVIStreamRelease(AviStream[0]);
-            // MessageBox(NULL,"Unable to create editable audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(NULL, IDS_STRING_NOEDITAUDIO, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            // MessageBox(nullptr,"Unable to create editable audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRING_NOEDITAUDIO, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 
             return 2;
         }
@@ -152,8 +152,8 @@ int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, B
 
     if (avis[0].fccType != streamtypeVIDEO)
     {
-        // MessageBox(NULL,"Unable to verify video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
-        MessageOut(NULL, IDS_STRING_NOVERIFYVIDEO, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+        // MessageBox(nullptr,"Unable to verify video stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+        MessageOut(nullptr, IDS_STRING_NOVERIFYVIDEO, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 
         ::AVIStreamRelease(AviStream[0]);
         ::AVIStreamRelease(AviStream[1]);
@@ -162,8 +162,8 @@ int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, B
 
     if (avis[1].fccType != streamtypeAUDIO)
     {
-        // MessageBox(NULL,"Unable to verify audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
-        MessageOut(NULL, IDS_STRING_NOVERIFYAUDIO, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+        // MessageBox(nullptr,"Unable to verify audio stream.","Note",MB_OK | MB_ICONEXCLAMATION);
+        MessageOut(nullptr, IDS_STRING_NOVERIFYAUDIO, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 
         ::AVIStreamRelease(AviStream[0]);
         ::AVIStreamRelease(AviStream[1]);
@@ -249,7 +249,7 @@ int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, B
     else
     {
         LONG lTemp = 0L;
-        ::AVIStreamReadFormat(AviStream[1], ::AVIStreamStart(AviStream[1]), NULL, &lTemp);
+        ::AVIStreamReadFormat(AviStream[1], ::AVIStreamStart(AviStream[1]), nullptr, &lTemp);
         galpAVIOptions[1]->cbFormat = lTemp;
         if (lTemp)
         {
@@ -273,7 +273,7 @@ int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, B
 
     hr = ::AVISaveV((LPCTSTR)strAVIOut, 0, (AVISAVECALLBACK)AudioCompressCallBack, NUMSTREAMS, AviStream,
                     galpAVIOptions);
-    // hr = AVISaveV(LPCTSTR(strAVIOut), NULL, (AVISAVECALLBACK) NULL, NUMSTREAMS, AviStream, galpAVIOptions);
+    // hr = AVISaveV(LPCTSTR(strAVIOut), nullptr, (AVISAVECALLBACK) nullptr, NUMSTREAMS, AviStream, galpAVIOptions);
     if (hr != AVIERR_OK)
     {
         // Error merging with audio compress options, retry merging with default audio options (no recompression)
@@ -314,7 +314,7 @@ int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, B
 
             // Use default audio format
             LONG lTemp;
-            ::AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), NULL, &lTemp);
+            ::AVIStreamReadFormat(AviStream[1], AVIStreamStart(AviStream[1]), nullptr, &lTemp);
             galpAVIOptions[1]->cbFormat = lTemp;
             if (lTemp)
             {
@@ -327,23 +327,23 @@ int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, B
             }
 
             // Do the Work .... Merging
-            hr = ::AVISaveV(LPCTSTR(strAVIOut), NULL, (AVISAVECALLBACK)NULL, NUMSTREAMS, AviStream, galpAVIOptions);
+            hr = ::AVISaveV(LPCTSTR(strAVIOut), nullptr, (AVISAVECALLBACK)nullptr, NUMSTREAMS, AviStream, galpAVIOptions);
             if (hr != AVIERR_OK)
             {
                 ::AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
                 ::AVIStreamRelease(AviStream[0]);
                 ::AVIStreamRelease(AviStream[1]);
 
-                // MessageBox(NULL,"Unable to merge audio and video streams (1).","Note",MB_OK | MB_ICONEXCLAMATION);
-                MessageOut(NULL, IDS_STRING_NOMERGE1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+                // MessageBox(nullptr,"Unable to merge audio and video streams (1).","Note",MB_OK | MB_ICONEXCLAMATION);
+                MessageOut(nullptr, IDS_STRING_NOMERGE1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 
                 return 5;
             }
 
             // Succesful Merging, but with no audio recompression
-            // MessageBox(NULL,"Unable to apply audio compression with the selected options. Your movie is saved without
+            // MessageBox(nullptr,"Unable to apply audio compression with the selected options. Your movie is saved without
             // audio compression.","Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(NULL, IDS_STRING_NOAUDIOCOMPRESS, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRING_NOAUDIOCOMPRESS, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
         }
         else
         {
@@ -351,8 +351,8 @@ int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, B
             ::AVISaveOptionsFree(NUMSTREAMS, galpAVIOptions);
             ::AVIStreamRelease(AviStream[0]);
             ::AVIStreamRelease(AviStream[1]);
-            // MessageBox(NULL,"Unable to audio and video merge streams (2).","Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(NULL, IDS_STRING_NOMERGE2, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            // MessageBox(nullptr,"Unable to audio and video merge streams (2).","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRING_NOMERGE2, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 
             return 5;
         }
@@ -370,7 +370,7 @@ int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, B
         if (AviStream[i])
         {
             ::AVIStreamRelease(AviStream[i]);
-            AviStream[i] = NULL;
+            AviStream[i] = nullptr;
         }
     }
 

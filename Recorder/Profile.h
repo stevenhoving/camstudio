@@ -595,8 +595,8 @@ public:
     // \todo figure out if this constructor works the way it looks
     sAudioFormat(const sAudioFormat &rhs)
         : m_iRecordAudio(NONE)
-        , m_uDeviceID(WAVE_MAPPER)
         , m_iInterleavePeriod(MILLISECONDS)
+        , m_uDeviceID(WAVE_MAPPER)
         , m_dwCbwFX(0)
         , m_dwWaveinSelected(WAVE_FORMAT_4M16)
         , m_pwfx(nullptr)

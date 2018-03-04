@@ -7,7 +7,7 @@
 class DLL_EXP CxMemFile : public CxFile
 {
 public:
-    CxMemFile(uint8_t* pBuffer = NULL, uint32_t size = 0);
+    CxMemFile(uint8_t* pBuffer = nullptr, uint32_t size = 0);
     ~CxMemFile();
 
     bool Open();

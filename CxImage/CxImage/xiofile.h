@@ -7,7 +7,7 @@
 class DLL_EXP CxIOFile : public CxFile
     {
 public:
-    CxIOFile(FILE* fp = NULL)
+    CxIOFile(FILE* fp = nullptr)
     {
         m_fp = fp;
         m_bCloseFile = (bool)(fp==0);
@@ -35,7 +35,7 @@ public:
         int32_t iErr = 0;
         if ( (m_fp) && (m_bCloseFile) ){ 
             iErr = fclose(m_fp);
-            m_fp = NULL;
+            m_fp = nullptr;
         }
         return (bool)(iErr==0);
     }
@@ -107,7 +107,7 @@ public:
 //////////////////////////////////////////////////////////
     virtual char *    GetS(char *string, int32_t n)
     {
-        if (!m_fp) return NULL;
+        if (!m_fp) return nullptr;
         return fgets(string,n,m_fp);
     }
 //////////////////////////////////////////////////////////

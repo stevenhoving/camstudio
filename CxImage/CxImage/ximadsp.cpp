@@ -149,7 +149,7 @@ bool CxImage::Threshold2(uint8_t level, bool bDirection, RGBQUAD nBkgndColor, bo
 bool CxImage::SplitRGB(CxImage* r,CxImage* g,CxImage* b)
 {
     if (!pDib) return false;
-    if (r==NULL && g==NULL && b==NULL) return false;
+    if (r==nullptr && g==nullptr && b==nullptr) return false;
 
     CxImage tmpr(head.biWidth,head.biHeight,8);
     CxImage tmpg(head.biWidth,head.biHeight,8);
@@ -191,7 +191,7 @@ bool CxImage::SplitRGB(CxImage* r,CxImage* g,CxImage* b)
 bool CxImage::SplitCMYK(CxImage* c,CxImage* m,CxImage* y,CxImage* k)
 {
     if (!pDib) return false;
-    if (c==NULL && m==NULL && y==NULL && k==NULL) return false;
+    if (c==nullptr && m==nullptr && y==nullptr && k==nullptr) return false;
 
     CxImage tmpc(head.biWidth,head.biHeight,8);
     CxImage tmpm(head.biWidth,head.biHeight,8);
@@ -230,7 +230,7 @@ bool CxImage::SplitCMYK(CxImage* c,CxImage* m,CxImage* y,CxImage* k)
 bool CxImage::SplitYUV(CxImage* y,CxImage* u,CxImage* v)
 {
     if (!pDib) return false;
-    if (y==NULL && u==NULL && v==NULL) return false;
+    if (y==nullptr && u==nullptr && v==nullptr) return false;
 
     CxImage tmpy(head.biWidth,head.biHeight,8);
     CxImage tmpu(head.biWidth,head.biHeight,8);
@@ -265,7 +265,7 @@ bool CxImage::SplitYUV(CxImage* y,CxImage* u,CxImage* v)
 bool CxImage::SplitYIQ(CxImage* y,CxImage* i,CxImage* q)
 {
     if (!pDib) return false;
-    if (y==NULL && i==NULL && q==NULL) return false;
+    if (y==nullptr && i==nullptr && q==nullptr) return false;
 
     CxImage tmpy(head.biWidth,head.biHeight,8);
     CxImage tmpi(head.biWidth,head.biHeight,8);
@@ -300,7 +300,7 @@ bool CxImage::SplitYIQ(CxImage* y,CxImage* i,CxImage* q)
 bool CxImage::SplitXYZ(CxImage* x,CxImage* y,CxImage* z)
 {
     if (!pDib) return false;
-    if (x==NULL && y==NULL && z==NULL) return false;
+    if (x==nullptr && y==nullptr && z==nullptr) return false;
 
     CxImage tmpx(head.biWidth,head.biHeight,8);
     CxImage tmpy(head.biWidth,head.biHeight,8);
@@ -335,7 +335,7 @@ bool CxImage::SplitXYZ(CxImage* x,CxImage* y,CxImage* z)
 bool CxImage::SplitHSL(CxImage* h,CxImage* s,CxImage* l)
 {
     if (!pDib) return false;
-    if (h==NULL && s==NULL && l==NULL) return false;
+    if (h==nullptr && s==nullptr && l==nullptr) return false;
 
     CxImage tmph(head.biWidth,head.biHeight,8);
     CxImage tmps(head.biWidth,head.biHeight,8);
@@ -1487,12 +1487,12 @@ bool CxImage::Noise(int32_t level)
  * Computes the bidimensional FFT or DFT of the image.
  * - The images are processed as grayscale
  * - If the dimensions of the image are a power of, 2 the FFT is performed automatically.
- * - If dstReal and/or dstImag are NULL, the resulting images replaces the original(s).
+ * - If dstReal and/or dstImag are nullptr, the resulting images replaces the original(s).
  * - Note: with 8 bits there is a HUGE loss in the dynamics. The function tries
  *   to keep an acceptable SNR, but 8bit = 48dB...
  *
- * \param srcReal, srcImag: source images: One can be NULL, but not both
- * \param dstReal, dstImag: destination images. Can be NULL.
+ * \param srcReal, srcImag: source images: One can be nullptr, but not both
+ * \param dstReal, dstImag: destination images. Can be nullptr.
  * \param direction: 1 = forward, -1 = inverse.
  * \param bForceFFT: if true, the images are resampled to make the dimensions a power of 2.
  * \param bMagnitude: if true, the real part returns the magnitude, the imaginary part returns the phase
@@ -1502,7 +1502,7 @@ bool CxImage::FFT2(CxImage* srcReal, CxImage* srcImag, CxImage* dstReal, CxImage
                    int32_t direction, bool bForceFFT, bool bMagnitude)
 {
     //check if there is something to convert
-    if (srcReal==NULL && srcImag==NULL) return false;
+    if (srcReal==nullptr && srcImag==nullptr) return false;
 
     int32_t w,h;
     //get width and height
@@ -1803,7 +1803,7 @@ bool CxImage::DFT(int32_t dir,int32_t m,double *x1,double *y1,double *x2,double 
 /**
  * Combines different color components into a single image
  * \param r,g,b: color channels
- * \param a: alpha layer, can be NULL
+ * \param a: alpha layer, can be nullptr
  * \param colorspace: 0 = RGB, 1 = HSL, 2 = YUV, 3 = YIQ, 4 = XYZ 
  * \return true if everything is ok
  */
@@ -1901,7 +1901,7 @@ bool CxImage::Repair(float radius, int32_t niterations, int32_t colorspace)
         RepairChannel(&b,radius);
     }
 
-    CxImage* a=NULL;
+    CxImage* a=nullptr;
 #if CXIMAGE_SUPPORT_ALPHA
     if (AlphaIsValid()){
         a = new CxImage();
@@ -1918,7 +1918,7 @@ bool CxImage::Repair(float radius, int32_t niterations, int32_t colorspace)
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImage::RepairChannel(CxImage *ch, float radius)
 {
-    if (ch==NULL) return false;
+    if (ch==nullptr) return false;
 
     CxImage tmp(*ch);
     if (!tmp.IsValid()){
@@ -2448,7 +2448,7 @@ bool CxImage::TextBlur(uint8_t threshold, uint8_t decay, uint8_t max_depth, bool
 {
     if (!pDib) return false;
 
-    RGBQUAD* pPalette=NULL;
+    RGBQUAD* pPalette=nullptr;
     uint16_t bpp = GetBpp();
 
     //the routine is optimized for RGB or GrayScale images
@@ -2508,7 +2508,7 @@ bool CxImage::GaussianBlur(float radius /*= 1.0f*/, CxImage* iDst /*= 0*/)
 {
     if (!pDib) return false;
 
-    RGBQUAD* pPalette=NULL;
+    RGBQUAD* pPalette=nullptr;
     uint16_t bpp = GetBpp();
 
     //the routine is optimized for RGB or GrayScale images
@@ -2526,7 +2526,7 @@ bool CxImage::GaussianBlur(float radius /*= 1.0f*/, CxImage* iDst /*= 0*/)
     }
 
     // generate convolution matrix and make sure it's smaller than each dimension
-    float *cmatrix = NULL;
+    float *cmatrix = nullptr;
     int32_t cmatrix_length = gen_convolve_matrix(radius, &cmatrix);
     // generate lookup table
     float *ctable = gen_lookup_table(cmatrix, cmatrix_length);
@@ -2612,7 +2612,7 @@ bool CxImage::SelectiveBlur(float radius, uint8_t threshold, CxImage* iDst)
 {
     if (!pDib) return false;
 
-    RGBQUAD* pPalette=NULL;
+    RGBQUAD* pPalette=nullptr;
     uint16_t bpp = GetBpp();
 
     CxImage Tmp(*this, true, true, true);
@@ -2715,7 +2715,7 @@ bool CxImage::UnsharpMask(float radius /*= 5.0*/, float amount /*= 0.5*/, int32_
 {
     if (!pDib) return false;
 
-    RGBQUAD* pPalette=NULL;
+    RGBQUAD* pPalette=nullptr;
     uint16_t bpp = GetBpp();
 
     //the routine is optimized for RGB or GrayScale images
@@ -3605,7 +3605,7 @@ bool CxImage::FloodFill(const int32_t xStart, const int32_t yStart, const RGBQUA
         return true;
 #endif //CXIMAGE_SUPPORT_SELECTION
 
-    RGBQUAD* pPalette=NULL;
+    RGBQUAD* pPalette=nullptr;
     uint16_t bpp = GetBpp();
     //nTolerance or nOpacity implemented only for grayscale or 24bpp images
     if ((nTolerance || nOpacity != 255) &&    !(head.biBitCount == 24 || IsGrayScale())){

@@ -21,7 +21,7 @@ public:
     void* m_pOwner;
 
     virtual void Stop();
-    virtual bool Start(WAVEFORMATEX* format = NULL);
+    virtual bool Start(WAVEFORMATEX* format = nullptr);
     static void waveInErrorMsg(MMRESULT result, LPCTSTR addstr);
 
     afx_msg void OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2);

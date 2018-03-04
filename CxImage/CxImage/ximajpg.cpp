@@ -44,7 +44,7 @@ ima_jpeg_error_exit (j_common_ptr cinfo)
 CxImageJPG::CxImageJPG(): CxImage(CXIMAGE_FORMAT_JPG)
 {
 #if CXIMAGEJPG_SUPPORT_EXIF
-    m_exif = NULL;
+    m_exif = nullptr;
     memset(&info.ExifInfo, 0, sizeof(EXIFINFO));
 #endif
 }
@@ -98,7 +98,7 @@ bool CxImageJPG::GetExifThumbnail(const TCHAR *filename, const TCHAR *outname, i
     // nice and fast, but we can't resize :(
     /*
     FILE *hFileWrite;
-    if ((hFileWrite=fopen(outname, "wb")) != NULL)
+    if ((hFileWrite=fopen(outname, "wb")) != nullptr)
     {
       fwrite(m_exifinfo.ThumbnailPointer, m_exifinfo.ThumbnailSize, 1, hFileWrite);
       fclose(hFileWrite);

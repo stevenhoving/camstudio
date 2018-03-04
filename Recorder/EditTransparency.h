@@ -9,7 +9,7 @@ class CTransparentWnd; // forward declaration
 class CEditTransparencyDlg : public CDialog
 {
 
-    CEditTransparencyDlg(CWnd *pParent = NULL); // not used
+    CEditTransparencyDlg(CWnd *pParent = nullptr); // not used
 public:
     CEditTransparencyDlg(int &bEnable, int &iLevel, CTransparentWnd *pParent);
 

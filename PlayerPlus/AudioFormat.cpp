@@ -40,7 +40,7 @@ extern void BuildRecordingFormat();
 extern void AllocCompressFormat();
 
 // Local Variables
-LPWAVEFORMATEX pwfxLocal = NULL;
+LPWAVEFORMATEX pwfxLocal = nullptr;
 DWORD cbwfxLocal = 0;
 
 WORD audio_bits_per_sampleLocal;
@@ -71,7 +71,7 @@ int numdevice = 0;
 /////////////////////////////////////////////////////////////////////////////
 // AudioFormat dialog
 
-AudioFormat::AudioFormat(CWnd *pParent /*=NULL*/)
+AudioFormat::AudioFormat(CWnd *pParent /*=nullptr*/)
     : CDialog(AudioFormat::IDD, pParent)
 {
     //{{AFX_DATA_INIT(AudioFormat)
@@ -152,7 +152,7 @@ void AudioFormat::OnOK()
                 if (getdevice < numdevice)
                 {
 
-                    if (g_pwfx == NULL)
+                    if (g_pwfx == nullptr)
                         AllocCompressFormat(); // Allocate external format in order to return values
 
                     if (cbwfx >= cbwfxLocal)
@@ -185,7 +185,7 @@ void AudioFormat::OnOK()
     {
 
         GlobalFreePtr(pwfxLocal);
-        pwfxLocal = NULL;
+        pwfxLocal = nullptr;
     }
 
     CDialog::OnOK();
@@ -304,7 +304,7 @@ void AudioFormat::OnChoose()
     ACMFORMATCHOOSE acmfc;
     MMRESULT mmresult;
 
-    if (pwfxLocal == NULL)
+    if (pwfxLocal == nullptr)
         SuggestLocalCompressFormat();
 
     //
@@ -325,14 +325,14 @@ void AudioFormat::OnChoose()
     acmfc.pszTitle = TEXT("Audio Compression Format");
     acmfc.szFormatTag[0] = '\0';
     acmfc.szFormat[0] = '\0';
-    acmfc.pszName = NULL;
+    acmfc.pszName = nullptr;
     acmfc.cchName = 0;
     acmfc.fdwEnum = 0;
-    acmfc.pwfxEnum = NULL;
-    acmfc.hInstance = NULL;
-    acmfc.pszTemplateName = NULL;
+    acmfc.pwfxEnum = nullptr;
+    acmfc.hInstance = nullptr;
+    acmfc.pszTemplateName = nullptr;
     acmfc.lCustData = 0L;
-    acmfc.pfnHook = NULL;
+    acmfc.pfnHook = nullptr;
 
     /////////////////////////////
     // Valid formats for saving
@@ -398,7 +398,7 @@ BOOL GetFormatDescription(LPWAVEFORMATEX pwformat, LPTSTR pszFormatTag, LPTSTR p
     MMRESULT mmr;
 
     // Retrieve the descriptive name for the FormatTag in pwformat.
-    if (NULL != pszFormatTag)
+    if (nullptr != pszFormatTag)
     {
         ACMFORMATTAGDETAILS aftd;
 
@@ -409,7 +409,7 @@ BOOL GetFormatDescription(LPWAVEFORMATEX pwformat, LPTSTR pszFormatTag, LPTSTR p
         aftd.dwFormatTag = pwformat->wFormatTag;
 
         // Ask ACM to find first available driver that supports the specified Format tag.
-        mmr = acmFormatTagDetails(NULL, &aftd, ACM_FORMATTAGDETAILSF_FORMATTAG);
+        mmr = acmFormatTagDetails(nullptr, &aftd, ACM_FORMATTAGDETAILSF_FORMATTAG);
         if (MMSYSERR_NOERROR != mmr)
         {
 
@@ -602,7 +602,7 @@ void SuggestLocalCompressFormat()
     {
 
         pwfxLocal->wFormatTag = WAVE_FORMAT_MPEGLAYER3;
-        mmr = acmFormatSuggest(NULL, &m_FormatLocal, pwfxLocal, cbwfxLocal, ACM_FORMATSUGGESTF_WFORMATTAG);
+        mmr = acmFormatSuggest(nullptr, &m_FormatLocal, pwfxLocal, cbwfxLocal, ACM_FORMATSUGGESTF_WFORMATTAG);
     }
 
     // if (mmr!=0) {
@@ -610,7 +610,7 @@ void SuggestLocalCompressFormat()
     // Then try ADPCM
     // BuildLocalRecordingFormat();
     // pwfxLocal->wFormatTag = WAVE_FORMAT_ADPCM;
-    // MMRESULT mmr = acmFormatSuggest(NULL, &m_FormatLocal,  pwfxLocal, cbwfxLocal, ACM_FORMATSUGGESTF_WFORMATTAG);
+    // MMRESULT mmr = acmFormatSuggest(nullptr, &m_FormatLocal,  pwfxLocal, cbwfxLocal, ACM_FORMATSUGGESTF_WFORMATTAG);
 
     if (mmr != 0)
     {
@@ -618,7 +618,7 @@ void SuggestLocalCompressFormat()
         // Use the PCM as default
         BuildLocalRecordingFormat();
         pwfxLocal->wFormatTag = WAVE_FORMAT_PCM;
-        mmr = acmFormatSuggest(NULL, &m_FormatLocal, pwfxLocal, cbwfxLocal, ACM_FORMATSUGGESTF_WFORMATTAG);
+        mmr = acmFormatSuggest(nullptr, &m_FormatLocal, pwfxLocal, cbwfxLocal, ACM_FORMATSUGGESTF_WFORMATTAG);
 
         if (mmr != 0)
         {
@@ -641,13 +641,13 @@ void AllocLocalCompressFormat()
     else
     {
 
-        MMRESULT mmresult = acmMetrics(NULL, ACM_METRIC_MAX_SIZE_FORMAT, &cbwfxLocal);
+        MMRESULT mmresult = acmMetrics(nullptr, ACM_METRIC_MAX_SIZE_FORMAT, &cbwfxLocal);
         if (MMSYSERR_NOERROR != mmresult)
         {
 
             CString msgstr;
             msgstr.Format("Metrics failed mmresult=%u!", mmresult);
-            ::MessageBox(NULL, msgstr, "Note", MB_OK | MB_ICONEXCLAMATION);
+            ::MessageBox(nullptr, msgstr, "Note", MB_OK | MB_ICONEXCLAMATION);
             return;
         }
 
@@ -655,12 +655,12 @@ void AllocLocalCompressFormat()
             cbwfxLocal = cbwfx;
 
         pwfxLocal = (LPWAVEFORMATEX)GlobalAllocPtr(GHND, cbwfxLocal);
-        if (NULL == pwfxLocal)
+        if (nullptr == pwfxLocal)
         {
 
             CString msgstr;
             msgstr.Format("GlobalAllocPtr(%lu) failed!", cbwfxLocal);
-            ::MessageBox(NULL, msgstr, "Note", MB_OK | MB_ICONEXCLAMATION);
+            ::MessageBox(nullptr, msgstr, "Note", MB_OK | MB_ICONEXCLAMATION);
             return;
         }
     }
@@ -673,7 +673,7 @@ void AudioFormat::OnCancel()
     {
 
         GlobalFreePtr(pwfxLocal);
-        pwfxLocal = NULL;
+        pwfxLocal = nullptr;
     }
 
     CDialog::OnCancel();
@@ -778,7 +778,7 @@ void AudioFormat::OnSelchangeInputdevice()
     if (devID < numdevice)
     {
 
-        UpdateDeviceData(devicemap[devID], waveinselected, NULL);
+        UpdateDeviceData(devicemap[devID], waveinselected, nullptr);
     }
 }
 
@@ -961,7 +961,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
 
         // Compressed or Save format
         AllocLocalCompressFormat();
-        if (curr_sel_pwfx == NULL)
+        if (curr_sel_pwfx == nullptr)
         {
 
             SuggestLocalCompressFormat();

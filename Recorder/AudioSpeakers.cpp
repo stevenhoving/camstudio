@@ -33,7 +33,7 @@ extern BOOL configWaveOutManual();
 /////////////////////////////////////////////////////////////////////////////
 // CAudioSpeakersDlg dialog
 
-CAudioSpeakersDlg::CAudioSpeakersDlg(CWnd *pParent /*=NULL*/)
+CAudioSpeakersDlg::CAudioSpeakersDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CAudioSpeakersDlg::IDD, pParent)
 {
     //{{AFX_DATA_INIT(CAudioSpeakersDlg)

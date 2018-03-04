@@ -14,7 +14,7 @@ static char THIS_FILE[] = __FILE__;
 CFolderDialog::CFolderDialog(LPCTSTR lpszFolderName, DWORD dwFlags, CWnd *pParentWnd)
 {
     // Use the supplied initial folder if non-null.
-    if (lpszFolderName == NULL)
+    if (lpszFolderName == nullptr)
         m_strInitialFolderName = _T("");
     else
         m_strInitialFolderName = lpszFolderName;

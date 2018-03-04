@@ -27,7 +27,7 @@ CLayoutList::CLayoutList()
     // if (iLayoutNameInt > 2147483647)
     // iLayoutNameInt = 1;
 
-    layoutArrayPtr = NULL;
+    layoutArrayPtr = nullptr;
 }
 
 CLayoutList::~CLayoutList()
@@ -68,7 +68,7 @@ BOOL CLayoutList::LoadLayoutFromFile(FILE *fptr)
         free(buf);
     }
 
-    if (layoutArrayPtr == NULL)
+    if (layoutArrayPtr == nullptr)
     {
         // TODO, Possible memory leak, where is the delete operation of the new below done?
         layoutArrayPtr = new CArray<CTransparentWnd *, CTransparentWnd *>;

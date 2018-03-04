@@ -143,7 +143,7 @@ BOOL g_bCapturing = FALSE;
 
 HWND g_hFixedRegionWnd;
 
-HBITMAP g_hLogoBM = NULL;
+HBITMAP g_hLogoBM = nullptr;
 
 // Misc Vars
 bool g_bAlreadyMCIPause = false;
@@ -157,8 +157,8 @@ unsigned long g_nTotalBytesWrittenSoFar = 0UL;
 
 // Xnote timing support. Show timing from start of recording
 // Todo , All these global/local vars should become an struct or class
-bool g_bXNoteSnapRecordingState = false; // This settings defines if video recording is triggered by xnote. if trggered by
-                                       // xnote it will stop automattically is this option is set by user.
+bool g_bXNoteSnapRecordingState = false; // This settings defines if video recording is triggered by xnote. if triggered by
+                                       // xnote it will stop automatically is this option is set by user.
 ULONG g_ulXNoteStartTime = 0UL;
 ULONG g_ulXNoteLastSnapTime = 0UL;
 int g_iXNoteStartSource = XNOTE_SOURCE_UNDEFINED;
@@ -171,12 +171,11 @@ int g_iXNoteLastSnapWithSensor =
                              // sensored device or Video Motion Detection)
 
 char g_cXNoteLastSnapTimes[128] = {};
-HFILE g_hXnoteLogFile = NULL;
 std::ofstream g_ioXnoteLogFile;
 
 
 // Messaging
-HWND g_hWndGlobal = NULL;
+HWND g_hWndGlobal = nullptr;
 
 // int iTempPathAccess = USE_WINDOWS_TEMP_DIR;
 // CString specifieddir;
@@ -220,10 +219,10 @@ HWAVEIN m_hWaveRecord;
 DWORD m_ThreadID;
 int m_QueuedBuffers = 0;
 int iBufferSize = 1000; // number of samples
-CSoundFile *g_pSoundFile = NULL;
+CSoundFile *g_pSoundFile = nullptr;
 
 // Audio Options Dialog
-// LPWAVEFORMATEX pwfx = NULL;
+// LPWAVEFORMATEX pwfx = nullptr;
 
 /////////////////////////////////////////////////////////////////////////////
 // ver 1.2
@@ -269,7 +268,7 @@ CString g_strCodec("MS Video 1");
 // Files Directory
 CString savedir("");
 
-HBITMAP hSavedBitmap = NULL;
+HBITMAP hSavedBitmap = nullptr;
 
 /////////////////////////////////////////////////////////////////////////////
 // Function prototypes
@@ -499,8 +498,8 @@ void SetVideoCompressState(HIC hic, DWORD fccHandler)
             // if (ret <= 0) {
             if (ret < 0)
             {
-                // MessageBox(NULL, "Failure in setting compressor state !","Note",MB_OK | MB_ICONEXCLAMATION);
-                MessageOut(NULL, IDS_STRING_SETCOMPRESSOR, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+                // MessageBox(nullptr, "Failure in setting compressor state !","Note",MB_OK | MB_ICONEXCLAMATION);
+                MessageOut(nullptr, IDS_STRING_SETCOMPRESSOR, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             }
         }
     }
@@ -673,7 +672,7 @@ END_EVENTSINK_MAP()
 CRecorderView::CRecorderView()
 {
     // TODO: add construction code here
-    m_basicMsg = NULL;
+    m_basicMsg = nullptr;
     _zoom = 1;
     _zoomDirection = -1; // zoomed out
     _zoomWhen = 0;       // FIXME: I hope it is unlikely zoom start at 47 day boundary ever happen by accident
@@ -683,11 +682,11 @@ CRecorderView::CRecorderView()
 
 CRecorderView::~CRecorderView()
 {
-    if (m_basicMsg != NULL)
+    if (m_basicMsg != nullptr)
     {
         m_basicMsg->CloseWindow();
         delete m_basicMsg;
-        m_basicMsg = NULL;
+        m_basicMsg = nullptr;
     }
 }
 
@@ -812,10 +811,10 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
         return -1;
     }
 
-    HDC hScreenDC = ::GetDC(NULL);
+    HDC hScreenDC = ::GetDC(nullptr);
     g_iBits = ::GetDeviceCaps(hScreenDC, BITSPIXEL);
     g_nColors = g_iBits;
-    ::ReleaseDC(NULL, hScreenDC);
+    ::ReleaseDC(nullptr, hScreenDC);
 
     g_hLogoBM = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP3));
 
@@ -845,7 +844,7 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
         // return -1;
     }
 
-    srand((unsigned)time(NULL));
+    srand((unsigned)time(nullptr));
 
     return 0;
 }
@@ -859,7 +858,7 @@ void CRecorderView::OnDestroy()
 
     DestroyShiftWindow();
 
-    if (g_compressor_info != NULL)
+    if (g_compressor_info != nullptr)
     {
         delete[] g_compressor_info;
         g_num_compressor = 0;
@@ -868,18 +867,18 @@ void CRecorderView::OnDestroy()
     if (hSavedBitmap)
     {
         DeleteObject(hSavedBitmap);
-        hSavedBitmap = NULL;
+        hSavedBitmap = nullptr;
     }
 
     if (g_hLogoBM)
     {
         DeleteObject(g_hLogoBM);
-        g_hLogoBM = NULL;
+        g_hLogoBM = nullptr;
     }
 
     // if (pwfx) {
     //    GlobalFreePtr(pwfx);
-    //    pwfx = NULL;
+    //    pwfx = nullptr;
     //}
 
     // ver 1.6
@@ -1252,10 +1251,10 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
     {
         // Check if video(!) file exists and if so, does it allow overwite
         HANDLE hfile =
-            CreateFile(strTargetVideoFile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+            CreateFile(strTargetVideoFile, GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
         if (hfile == INVALID_HANDLE_VALUE)
         {
-            //::MessageBox(NULL,"Unable to create new file. The file may be opened by another application. Please use
+            //::MessageBox(nullptr,"Unable to create new file. The file may be opened by another application. Please use
             // another filename.","Note",MB_OK | MB_ICONEXCLAMATION);
             MessageOut(m_hWnd, IDS_STRING_NOCREATEWFILE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             ::PostMessage(g_hWndGlobal, WM_USER_GENERIC, 0, 0);
@@ -1337,7 +1336,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
 
                 DeleteFile(strTempAudioWavFilePath);
 
-                //::MessageBox(NULL,"Your AVI movie will not contain a soundtrack. CamStudio is unable to merge the
+                //::MessageBox(nullptr,"Your AVI movie will not contain a soundtrack. CamStudio is unable to merge the
                 // video with audio.","Note",MB_OK | MB_ICONEXCLAMATION);
                 MessageOut(m_hWnd, IDS_STRING_NOSOUNDTRACK, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
                 break;
@@ -1378,7 +1377,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
                 msgstr = msgstr + strTargetAudioFile + "\n";
                 msgstr = msgstr + strTargetXnoteLogFile;
 
-                ::MessageBox(NULL, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
+                ::MessageBox(nullptr, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
             }
             break;
         }
@@ -1577,7 +1576,7 @@ void CRecorderView::OnRecord()
             if (m_basicMsg)
             {
                 delete m_basicMsg;
-                m_basicMsg = NULL;
+                m_basicMsg = nullptr;
             }
 
             m_basicMsg = new CBasicMessage();
@@ -1668,7 +1667,7 @@ void CRecorderView::OnFileVideooptions()
                                  ICMODE_QUERY);
                 if (hic)
                 {
-                    if (ICERR_OK == ICCompressQuery(hic, first_alpbi, NULL))
+                    if (ICERR_OK == ICCompressQuery(hic, first_alpbi, nullptr))
                     {
                         VERIFY(0 < ICGetInfo(hic, &g_compressor_info[g_num_compressor], sizeof(ICINFO)));
                         g_num_compressor++;
@@ -1686,7 +1685,7 @@ void CRecorderView::OnFileVideooptions()
                                  ICMODE_QUERY);
                 if (hic)
                 {
-                    if (ICERR_OK == ICCompressQuery(hic, first_alpbi, NULL))
+                    if (ICERR_OK == ICCompressQuery(hic, first_alpbi, nullptr))
                     {
                         VERIFY(0 < ICGetInfo(hic, &g_compressor_info[g_num_compressor], sizeof(ICINFO)));
                         g_num_compressor++;
@@ -1779,7 +1778,7 @@ BOOL CRecorderView::Openlink(CString link)
 BOOL CRecorderView::OpenUsingShellExecute(CString link)
 {
     LPCTSTR mode = _T ("open");
-    HINSTANCE hRun = ShellExecute(GetSafeHwnd(), mode, link, NULL, NULL, SW_SHOW);
+    HINSTANCE hRun = ShellExecute(GetSafeHwnd(), mode, link, nullptr, nullptr, SW_SHOW);
     if ((int)hRun <= HINSTANCE_ERROR)
     {
         TRACE("Failed to invoke URL using ShellExecute\n");
@@ -1803,7 +1802,7 @@ BOOL CRecorderView::OpenUsingRegisteredClass(CString link)
             {
                 // No quotes found
                 pos = strstr(&key[0], _T ("%1")); // Check for %1, without quotes
-                if (pos == NULL)
+                if (pos == nullptr)
                 {
                     // No parameter at all...
                     pos = &key[0] + key.size() - 1;
@@ -1891,7 +1890,7 @@ LONG CRecorderView::GetRegKey(HKEY key, const std::string &subkey, std::string &
     {
         long datasize = MAX_PATH;
         TCHAR data[MAX_PATH];
-        RegQueryValue(hkey, NULL, data, &datasize);
+        RegQueryValue(hkey, nullptr, data, &datasize);
         retdata = std::string(data, datasize);
         RegCloseKey(hkey);
     }
@@ -2135,7 +2134,7 @@ void CRecorderView::SaveSettings()
 
 #ifndef LEGACY_PROFILE_DISABLE
     FILE *sFile = fopen((LPCTSTR)setPath, "wt");
-    if (sFile == NULL)
+    if (sFile == nullptr)
     {
         // Error creating file ...do nothing...return
         return;
@@ -2160,7 +2159,7 @@ void CRecorderView::SaveSettings()
     fprintf(sFile, "iCompQuality= %d \n", cVideoOpts.m_iCompQuality);
     fprintf(sFile, "dwCompfccHandler= %ld \n", cVideoOpts.m_dwCompfccHandler);
 
-    // LPVOID pVideoCompressParams = NULL;
+    // LPVOID pVideoCompressParams = nullptr;
     fprintf(sFile, "dwCompressorStateIsFor= %ld \n", cVideoOpts.m_dwCompressorStateIsFor);
     fprintf(sFile, "dwCompressorStateSize= %d \n", cVideoOpts.StateSize());
 
@@ -2198,7 +2197,7 @@ void CRecorderView::SaveSettings()
     fprintf(sFile, "uAudioDeviceID= %d \n", cAudioFormat.m_uDeviceID);
 
     // Audio Options Dialog
-    // LPWAVEFORMATEX pwfx = NULL;
+    // LPWAVEFORMATEX pwfx = nullptr;
     // DWORD dwCbwFX;
     fprintf(sFile, "dwCbwFX= %ld \n", cAudioFormat.m_dwCbwFX);
     fprintf(sFile, "iRecordAudio= %d \n", cAudioFormat.m_iRecordAudio);
@@ -2449,7 +2448,7 @@ void CRecorderView::LoadSettings()
     CString setPath = setDir + fileName;
 
     FILE *rFile = fopen((LPCTSTR)setPath, "rt");
-    if (rFile == NULL)
+    if (rFile == nullptr)
     {
         cProgramOpts.m_bSaveSettings = true;
     }
@@ -2467,7 +2466,7 @@ void CRecorderView::LoadSettings()
     setPath = setDir + fileName;
 
     FILE *sFile = fopen((LPCTSTR)setPath, "rt");
-    if (sFile == NULL)
+    if (sFile == nullptr)
     {
         // Error creating file ...
         SuggestRecordingFormat();
@@ -2509,7 +2508,7 @@ void CRecorderView::LoadSettings()
         fscanf_s(sFile, "iCompQuality= %d \n", &cVideoOpts.m_iCompQuality);
         fscanf_s(sFile, "dwCompfccHandler= %ld \n", &cVideoOpts.m_dwCompfccHandler);
 
-        // LPVOID pVideoCompressParams = NULL;
+        // LPVOID pVideoCompressParams = nullptr;
         fscanf_s(sFile, "dwCompressorStateIsFor= %ld \n", &cVideoOpts.m_dwCompressorStateIsFor);
         fscanf_s(sFile, "dwCompressorStateSize= %d \n", &cVideoOpts.m_dwCompressorStateSize);
 
@@ -3240,7 +3239,7 @@ void CRecorderView::OnViewScreenannotations()
 {
     if (!bCreatedSADlg)
     {
-        sadlg.Create(IDD_SCREENANNOTATIONS2, NULL);
+        sadlg.Create(IDD_SCREENANNOTATIONS2, nullptr);
         sadlg.RefreshShapeList();
         bCreatedSADlg = true;
     }
@@ -3272,7 +3271,7 @@ void CRecorderView::OnViewVideoannotations()
         rect.bottom = rect.top + 120 - 1;
         m_vanWnd.TextString(m_newShapeText);
         m_vanWnd.ShapeString(vastr);
-        m_vanWnd.CreateTransparent(m_vanWnd.ShapeString(), rect, NULL);
+        m_vanWnd.CreateTransparent(m_vanWnd.ShapeString(), rect, nullptr);
         vanWndCreated = 1;
     }
 
@@ -3284,7 +3283,7 @@ void CRecorderView::OnViewVideoannotations()
     {
         if (m_vanWnd.m_iStatus != 1)
         {
-            MessageOut(NULL, IDS_STRING_NOWEBCAM, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRING_NOWEBCAM, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             return;
         }
 
@@ -3373,7 +3372,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
         {
             if (!bCreatedSADlg)
             {
-                sadlg.Create(IDD_SCREENANNOTATIONS2, NULL);
+                sadlg.Create(IDD_SCREENANNOTATIONS2, nullptr);
                 // sadlg.ShowWindow(SW_SHOW);
                 bCreatedSADlg = true;
             }
@@ -3394,7 +3393,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
         {
             if (!bCreatedSADlg)
             {
-                sadlg.Create(IDD_SCREENANNOTATIONS2, NULL);
+                sadlg.Create(IDD_SCREENANNOTATIONS2, nullptr);
                 // sadlg.RefreshLayoutList();
                 bCreatedSADlg = true;
             }
@@ -3417,7 +3416,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
         {
             if (!bCreatedSADlg)
             {
-                sadlg.Create(IDD_SCREENANNOTATIONS2, NULL);
+                sadlg.Create(IDD_SCREENANNOTATIONS2, nullptr);
                 sadlg.ShowWindow(SW_SHOW);
                 bCreatedSADlg = true;
             }
@@ -3672,7 +3671,7 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
     }
     else if (cRegionOpts.isCaptureMode(CAPTURE_FULLSCREEN))
     {
-        HMONITOR hMonitor = NULL;
+        HMONITOR hMonitor = nullptr;
         MONITORINFO mi;
 
         // get the nearest monitor to the mouse point
@@ -4309,7 +4308,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     if (wVer < 0x010a)
     {
         TRACE("CRecorderView::RecordVideo: Wrong VideoForWindowsVersion\n");
-        MessageOut(NULL, IDS_STRING_VERSIONOLD, IDS_STRING_NOTE, MB_OK | MB_ICONSTOP);
+        MessageOut(nullptr, IDS_STRING_VERSIONOLD, IDS_STRING_NOTE, MB_OK | MB_ICONSTOP);
         return false;
     }
 
@@ -4372,8 +4371,8 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
             int newwidth = 0;
             int newheight = 0;
             //int align = 1;
-            LRESULT lResult = ::ICCompressQuery(hic, alpbi, NULL);
-            if (ICERR_OK != (lResult = ::ICCompressQuery(hic, alpbi, NULL)))
+            LRESULT lResult = ::ICCompressQuery(hic, alpbi, nullptr);
+            if (ICERR_OK != (lResult = ::ICCompressQuery(hic, alpbi, nullptr)))
             {
                 // Try adjusting width/height a little bit
                 /*align = align * 2;
@@ -4408,7 +4407,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
                 }
             }
 
-            lResult = ::ICCompressQuery(hic, alpbi, NULL);
+            lResult = ::ICCompressQuery(hic, alpbi, nullptr);
             ASSERT(ICERR_OK == lResult);
             ICClose(hic);
 
@@ -4466,10 +4465,10 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     // All var's that are checked in this error handling block must be innitialisated before to prevent warning and,
     // worse case, abnormal endings.
     PAVIFILE pfile = 0;
-    PAVISTREAM ps = NULL;
-    PAVISTREAM psCompressed = NULL;
+    PAVISTREAM ps = nullptr;
+    PAVISTREAM psCompressed = nullptr;
 
-    HRESULT hr = ::AVIFileOpen(&pfile, szVideoFileName, OF_WRITE | OF_CREATE, NULL);
+    HRESULT hr = ::AVIFileOpen(&pfile, szVideoFileName, OF_WRITE | OF_CREATE, nullptr);
     if (hr != AVIERR_OK)
     {
         TRACE("CRecorderView::RecordVideo: VideoAviFileOpen error\n");
@@ -4491,7 +4490,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     SetRect(&strhdr.rcFrame, 0, 0, (int)alpbi->biWidth, (int)alpbi->biHeight);
 
     // And create the stream;
-    /*PAVISTREAM*/ ps = NULL;
+    /*PAVISTREAM*/ ps = nullptr;
     hr = AVIFileCreateStream(pfile, &ps, &strhdr);
     if (hr != AVIERR_OK)
     {
@@ -4536,11 +4535,11 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     }
 
     // The 1 here indicates only 1 stream
-    // if (!AVISaveOptions(NULL, 0, 1, &ps, (LPAVICOMPRESSOPTIONS *) &aopts))
+    // if (!AVISaveOptions(nullptr, 0, 1, &ps, (LPAVICOMPRESSOPTIONS *) &aopts))
     //        goto error;
 
-    /*PAVISTREAM*/ psCompressed = NULL;
-    hr = AVIMakeCompressedStream(&psCompressed, ps, &opts, NULL);
+    /*PAVISTREAM*/ psCompressed = nullptr;
+    hr = AVIMakeCompressedStream(&psCompressed, ps, &opts, nullptr);
     if (AVIERR_OK != hr)
     {
         TRACE("CRecorderView::RecordVideo: AVIMakeCompressedStream error\n");
@@ -4555,7 +4554,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
         goto error;
     }
 
-    alpbi = NULL;
+    alpbi = nullptr;
 
     if (cProgramOpts.m_bAutoPan)
     {
@@ -4791,7 +4790,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 
             // CString msgStr;
             // msgStr.Format("%.2f %d", g_fTimeLength, iPresetTime);
-            // MessageBox(NULL, msgStr, "N", MB_OK);
+            // MessageBox(nullptr, msgStr, "N", MB_OK);
             // or should we post messages
         }
 
@@ -4828,8 +4827,8 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
             //            alpbi->biSizeImage, // size of this frame
             //            //AVIIF_KEYFRAME, // flags....
             //            0, //Dependent n previous frame, not key frame
-            //            NULL,
-            //            NULL);
+            //            nullptr,
+            //            nullptr);
             //    }
             //} else {
 
@@ -4860,11 +4859,11 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
             if (divx != oldsec)
             {
                 oldsec = divx;
-                ::InvalidateRect(g_hWndGlobal, NULL, FALSE);
+                ::InvalidateRect(g_hWndGlobal, nullptr, FALSE);
             }
 
             // free memory
-            alpbi = NULL;
+            alpbi = nullptr;
 
             oldframetime = frametime;
         } // if frametime is different
@@ -5032,18 +5031,18 @@ error:
         ::PostMessage(g_hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
 
         // char *ErrorBuffer; // This really is a pointer - not reserved space!
-        // FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |     FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(),
-        // MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPTSTR)&ErrorBuffer, 0, NULL); CString reasonstr(ErrorBuffer);
+        // FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |     FORMAT_MESSAGE_FROM_SYSTEM, nullptr, GetLastError(),
+        // MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPTSTR)&ErrorBuffer, 0, nullptr); CString reasonstr(ErrorBuffer);
         // CString errorstr("File Creation Error. Unable to rename file.\n\n");
         // CString reportstr;
         // reportstr = errorstr + reasonstr;
-        // MessageBox(NULL, reportstr, "Note", MB_OK | MB_ICONEXCLAMATION);
+        // MessageBox(nullptr, reportstr, "Note", MB_OK | MB_ICONEXCLAMATION);
 
         if (cVideoOpts.m_dwCompfccHandler != ICHANDLER_MSVC)
         {
-            // if (IDYES == MessageBox(NULL, "Error recording AVI file using current compressor. Use default compressor
+            // if (IDYES == MessageBox(nullptr, "Error recording AVI file using current compressor. Use default compressor
             // ? ", "Note", MB_YESNO | MB_ICONEXCLAMATION)) {
-            if (IDYES == MessageOut(NULL, IDS_STRING_ERRAVIDEFAULT, IDS_STRING_NOTE, MB_YESNO | MB_ICONQUESTION))
+            if (IDYES == MessageOut(nullptr, IDS_STRING_ERRAVIDEFAULT, IDS_STRING_NOTE, MB_YESNO | MB_ICONQUESTION))
             {
                 cVideoOpts.m_dwCompfccHandler = ICHANDLER_MSVC;
                 g_strCodec = "MS Video 1";
@@ -5052,8 +5051,8 @@ error:
         }
         else
         {
-            // MessageBox(NULL, "Error Creating AVI File", "Error", MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(NULL, IDS_STRING_ERRCREATEAVI, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            // MessageBox(nullptr, "Error Creating AVI File", "Error", MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRING_ERRCREATEAVI, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
         }
 
         cVideoOpts = SaveVideoOpts;
@@ -5481,7 +5480,7 @@ void CRecorderView::DisplayAutopanInfo(CRect rc)
         HBRUSH oldbrush = (HBRUSH)SelectObject(hdc, newbrush);
         HFONT newfont;
         newfont = CreateFont(16, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
-                             CLIP_DEFAULT_PRECIS, 0, VARIABLE_PITCH, NULL);
+                             CLIP_DEFAULT_PRECIS, 0, VARIABLE_PITCH, nullptr);
         HFONT oldfont = (HFONT)SelectObject(hdc, newfont);
         CString strmessage;
         strmessage.LoadString((cProgramOpts.m_bAutoPan == true) ? IDS_STRING_AUTOPAN_ENABLED
@@ -5499,7 +5498,7 @@ void CRecorderView::DisplayAutopanInfo(CRect rc)
         int x = rectDraw.right - dx;
         int y = rectDraw.bottom - dy;
         Rectangle(hdc, x - 3, y - 3, x + dx + 2, y + dy + 1);
-        ExtTextOut(hdc, x, y, 0, NULL, (LPCTSTR)strmessage, strmessage.GetLength(), NULL);
+        ExtTextOut(hdc, x, y, 0, nullptr, (LPCTSTR)strmessage, strmessage.GetLength(), nullptr);
         SetBkColor(hdc, oldbkcolor);
         SetTextColor(hdc, oldtextcolor);
         SetBkMode(hdc, OPAQUE);
@@ -5520,8 +5519,8 @@ void DataFromSoundIn(CBuffer *buffer)
             StopAudioRecording();
             ClearAudioFile();
 
-            // MessageBox(NULL,"Error Writing Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(NULL, IDS_STRING_ERRSOUND2, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            // MessageBox(nullptr,"Error Writing Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRING_ERRSOUND2, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
         }
     }
 }
@@ -5531,10 +5530,7 @@ int AddInputBufferToQueue()
     // create the header
     // TODO, Possible memory leak, where is the delete operation of the new below done?
     LPWAVEHDR pHdr = new WAVEHDR;
-    if (pHdr == NULL)
-    {
-        return NULL;
-    }
+
     ZeroMemory(pHdr, sizeof(WAVEHDR));
 
     // new a buffer
@@ -5579,7 +5575,7 @@ void waveInErrorMsg(MMRESULT result, const char *addstr)
 
     CString tstr;
     tstr.LoadString(IDS_STRING_WAVEINERR);
-    MessageBox(NULL, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
+    MessageBox(nullptr, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
 }
 
 // Delete the g_pSoundFile variable and close existing audio file
@@ -5588,7 +5584,7 @@ void ClearAudioFile()
     if (g_pSoundFile)
     {
         delete g_pSoundFile; // will close output file
-        g_pSoundFile = NULL;
+        g_pSoundFile = nullptr;
     }
 }
 
@@ -5596,7 +5592,7 @@ BOOL InitAudioRecording()
 {
     m_ThreadID = ::GetCurrentThreadId();
     m_QueuedBuffers = 0;
-    m_hWaveRecord = NULL;
+    m_hWaveRecord = nullptr;
 
     iBufferSize = 1000; // samples per callback
 
@@ -5610,8 +5606,8 @@ BOOL InitAudioRecording()
     g_pSoundFile = new CSoundFile(strTempAudioWavFilePath.GetString(), &cAudioFormat.AudioFormat());
 
     if (!(g_pSoundFile && g_pSoundFile->IsOK()))
-        // MessageBox(NULL,"Error Creating Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
-        MessageOut(NULL, IDS_STRING_ERRSOUND, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+        // MessageBox(nullptr,"Error Creating Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
+        MessageOut(nullptr, IDS_STRING_ERRSOUND, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 
     return TRUE;
 }
@@ -5638,7 +5634,7 @@ void GetTempAudioWavPath()
             fileverified = std::experimental::filesystem::remove(strTempAudioWavFilePath.GetString());
             if (!fileverified)
             {
-                srand((unsigned)time(NULL));
+                srand((unsigned)time(nullptr));
                 int randnum = rand();
 
                 auto numstr = std::to_string(randnum);
@@ -5651,7 +5647,7 @@ void GetTempAudioWavPath()
                 strTempAudioWavFilePath.Format("%s\\%s-%s-%s.%s", csTempFolder.GetString(), TEMPFILETAGINDICATOR,
                     cVideoOpts.m_cStartRecordingString.GetString(), numstr.c_str(), "wav");
 
-                // MessageBox(NULL,strTempAudioWavFilePath,"Uses Temp File",MB_OK);
+                // MessageBox(nullptr,strTempAudioWavFilePath,"Uses Temp File",MB_OK);
                 // fileverified = 1;
                 // Try choosing another temporary filename
                 //fileverified = true;
@@ -5671,7 +5667,7 @@ BOOL StartAudioRecording()
     // open wavein device
     // use on message to map.....
     MMRESULT mmReturn = ::waveInOpen(&m_hWaveRecord, cAudioFormat.m_uDeviceID, &(cAudioFormat.AudioFormat()),
-                                     (DWORD_PTR)g_hWndGlobal, NULL, CALLBACK_WINDOW);
+                                     (DWORD_PTR)g_hWndGlobal, 0, CALLBACK_WINDOW);
     if (mmReturn)
     {
         waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
@@ -5724,8 +5720,8 @@ void StopAudioRecording()
     // if (m_QueuedBuffers != 0) ErrorMsg("Still %d buffers in waveIn queue!", m_QueuedBuffers);
     if (m_QueuedBuffers != 0)
     {
-        // MessageBox(NULL,"Audio buffers still in queue!","note", MB_OK);
-        MessageOut(NULL, IDS_STRING_AUDIOBUF, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+        // MessageBox(nullptr,"Audio buffers still in queue!","note", MB_OK);
+        MessageOut(nullptr, IDS_STRING_AUDIOBUF, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
     }
 
     iAudioTimeInitiated = 0;
@@ -5742,7 +5738,7 @@ int InitSelectRegionWindow()
 
 int InitDrawShiftWindow()
 {
-    // MessageBox(NULL,"sdg","",0);
+    // MessageBox(nullptr,"sdg","",0);
     HDC hScreenDC = ::GetDC(hMouseCaptureWnd);
 
     // FixRectSizePos(&g_rc, maxxScreen, maxyScreen, minxScreen, minyScreen);
@@ -5836,7 +5832,7 @@ void GetTempXnoteLogPath()
         else
         {
             // Try to open a file with a random number attached till we got a file that can be used.
-            srand((unsigned)time(NULL));
+            srand((unsigned)time(nullptr));
             int randnum = rand();
             auto numstr = std::to_string(randnum);
 
@@ -5876,14 +5872,14 @@ void GetVideoCompressState(HIC hic, DWORD fccHandler)
 
     if (cVideoOpts.State(statesize))
     {
-        // ICGetState returns statesize even if pVideoCompressParams is not NULL ??
+        // ICGetState returns statesize even if pVideoCompressParams is not nullptr ??
         DWORD ret = ICGetState(hic, cVideoOpts.State(), cVideoOpts.StateSize());
         if (ret < 0)
         {
             // CString reportstr;
             // reportstr.Format("Failure in getting compressor state ! Error Value = %d", ret);
-            // MessageBox(NULL,reportstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(NULL, IDS_STRING_COMPRESSORSTATE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, ret);
+            // MessageBox(nullptr,reportstr,"Note",MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRING_COMPRESSORSTATE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, ret);
         }
         else
         {

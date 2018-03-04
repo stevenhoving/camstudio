@@ -9,10 +9,10 @@ class CProgressDlg : public CDialogEx
     DECLARE_DYNAMIC(CProgressDlg)
 
 public:
-    CProgressDlg(CWnd *pParent = NULL);
+    CProgressDlg(CWnd *pParent = nullptr);
     virtual ~CProgressDlg();
 
-    BOOL Create(CWnd *pParent = NULL);
+    BOOL Create(CWnd *pParent = nullptr);
 
     // Checking for Cancel button
     BOOL CheckCancelButton();

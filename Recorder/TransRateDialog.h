@@ -9,7 +9,7 @@ class CTransRateDlg : public CDialog
 {
 
 public:
-    CTransRateDlg(CWnd *pParent = NULL);
+    CTransRateDlg(CWnd *pParent = nullptr);
 
     // Dialog Data
     //{{AFX_DATA(CTransRateDlg)

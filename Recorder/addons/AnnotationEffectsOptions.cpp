@@ -9,7 +9,7 @@
 
 IMPLEMENT_DYNAMIC(CAnnotationEffectsOptionsDlg, CDialog)
 
-CAnnotationEffectsOptionsDlg::CAnnotationEffectsOptionsDlg(CWnd *pParent /*=NULL*/)
+CAnnotationEffectsOptionsDlg::CAnnotationEffectsOptionsDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CAnnotationEffectsOptionsDlg::IDD, pParent)
 {
     // TRACE("## CAnnotationEffectsOptionsDlg::CAnnotationEffectsOptionsDlg() \n");

@@ -49,18 +49,18 @@ bool CSoundOut::Start(WAVEFORMATEX *format)
 {
     MMRESULT mmReturn = 0;
 
-    if (m_bPlaying || GetDataToSoundOut == NULL || m_pOwner == NULL)
+    if (m_bPlaying || GetDataToSoundOut == nullptr || m_pOwner == nullptr)
     {
         // already recording!
         return FALSE;
     }
     else
     {
-        if (format != NULL) // was this function called with at specific format
+        if (format != nullptr) // was this function called with at specific format
             m_Format = *format;
 
         // open wavein device
-        mmReturn = ::waveOutOpen(&m_hPlay, WAVE_MAPPER, &m_Format, m_ThreadID, NULL, CALLBACK_THREAD);
+        mmReturn = ::waveOutOpen(&m_hPlay, WAVE_MAPPER, &m_Format, m_ThreadID, 0, CALLBACK_THREAD);
         if (mmReturn)
         {
             waveOutErrorMsg(mmReturn, "in start()");
@@ -154,8 +154,8 @@ int CSoundOut::AddOutputBufferToQueue(CBuffer *buffer)
 
     // create the header
     LPWAVEHDR pHdr = new WAVEHDR;
-    if (pHdr == NULL)
-        return NULL;
+    if (pHdr == nullptr)
+        return 0;
 
     // new a buffer
     pHdr->lpData = buffer->ptr.c;

@@ -39,23 +39,23 @@ bool CxImagePNG::Decode(CxFile *hFile)
 {
     png_struct *png_ptr;
     png_info *info_ptr;
-    uint8_t *row_pointers=NULL;
+    uint8_t *row_pointers=nullptr;
     CImageIterator iter(this);
 
   cx_try
   {
     /* Create and initialize the png_struct with the desired error handler
     * functions.  If you want to use the default stderr and longjump method,
-    * you can supply NULL for the last three parameters.  We also supply the
+    * you can supply nullptr for the last three parameters.  We also supply the
     * the compiler header file version, so that we know if the application
     * was compiled with a compatible version of the library.  REQUIRED    */
-    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING,(void *)NULL,NULL,NULL);
-    if (png_ptr == NULL)  cx_throw("Failed to create PNG structure");
+    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING,(void *)nullptr,nullptr,nullptr);
+    if (png_ptr == nullptr)  cx_throw("Failed to create PNG structure");
 
     /* Allocate/initialize the memory for image information.  REQUIRED. */
     info_ptr = png_create_info_struct(png_ptr);
-    if (info_ptr == NULL) {
-        png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
+    if (info_ptr == nullptr) {
+        png_destroy_read_struct(&png_ptr, (png_infopp)nullptr, (png_infopp)nullptr);
         cx_throw("Failed to initialize PNG info structure");
     }
 
@@ -65,13 +65,13 @@ bool CxImagePNG::Decode(CxFile *hFile)
     if (setjmp(png_ptr->png_jmpbuf)) {
         /* Free all of the memory associated with the png_ptr and info_ptr */
         delete [] row_pointers;
-        png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
+        png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)nullptr);
         cx_throw("");
     }
 
     // use custom I/O functions
     png_set_read_fn(png_ptr, hFile, /*(png_rw_ptr)*/user_read_data);
-    png_set_error_fn(png_ptr,info.szLastError,/*(png_error_ptr)*/user_error_fn,NULL);
+    png_set_error_fn(png_ptr,info.szLastError,/*(png_error_ptr)*/user_error_fn,nullptr);
 
     /* read the file information */
     png_read_info(png_ptr, info_ptr);
@@ -240,7 +240,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
                 }
 
                 //read next row
-                png_read_row(png_ptr, row_pointers, NULL);
+                png_read_row(png_ptr, row_pointers, nullptr);
 
                 //RGBA -> RGB + A
                 for(ax=0;ax<head.biWidth;ax++){
@@ -270,7 +270,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
                 }
 
                 //read next row
-                png_read_row(png_ptr, row_pointers, NULL);
+                png_read_row(png_ptr, row_pointers, nullptr);
 
                 //shrink 16 bit depth images down to 8 bits
                 if (info_ptr->bit_depth > 8){
@@ -293,13 +293,13 @@ bool CxImagePNG::Decode(CxFile *hFile)
     }
 
     delete [] row_pointers;
-    row_pointers = NULL;
+    row_pointers = nullptr;
 
     /* read the rest of the file, getting any additional chunks in info_ptr - REQUIRED */
     png_read_end(png_ptr, info_ptr);
 
     /* clean up after the read, and free any memory allocated - REQUIRED */
-    png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
+    png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)nullptr);
 
   } cx_catch {
     if (strcmp(message,"")) strncpy(info.szLastError,message,255);
@@ -327,17 +327,17 @@ bool CxImagePNG::Encode(CxFile *hFile)
   {
    /* Create and initialize the png_struct with the desired error handler
     * functions.  If you want to use the default stderr and longjump method,
-    * you can supply NULL for the last three parameters.  We also check that
+    * you can supply nullptr for the last three parameters.  We also check that
     * the library version is compatible with the one used at compile time,
     * in case we are using dynamically linked libraries.  REQUIRED.
     */
-    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING,(void *)NULL,NULL,NULL);
-    if (png_ptr == NULL) cx_throw("Failed to create PNG structure");
+    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING,(void *)nullptr,nullptr,nullptr);
+    if (png_ptr == nullptr) cx_throw("Failed to create PNG structure");
 
     /* Allocate/initialize the image information data.  REQUIRED */
     info_ptr = png_create_info_struct(png_ptr);
-    if (info_ptr == NULL){
-        png_destroy_write_struct(&png_ptr,  (png_infopp)NULL);
+    if (info_ptr == nullptr){
+        png_destroy_write_struct(&png_ptr,  (png_infopp)nullptr);
         cx_throw("Failed to initialize PNG info structure");
     }
 
@@ -522,7 +522,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
     }
 
     delete [] row_pointers;
-    row_pointers = NULL;
+    row_pointers = nullptr;
 
     //if necessary, restore the original palette
     if (!bGrayScale && head.biClrUsed && info.nBkgndIndex>0)
@@ -534,7 +534,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
     /* if you malloced the palette, free it here */
     if (info_ptr->palette){
         delete [] (info_ptr->palette);
-        info_ptr->palette = NULL;
+        info_ptr->palette = nullptr;
     }
 
     /* clean up after the write, and free any memory allocated */

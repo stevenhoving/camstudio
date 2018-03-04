@@ -9,7 +9,7 @@ class CEditImageDlg : public CDialog
 {
 
 public:
-    CEditImageDlg(CWnd *pParent = NULL);
+    CEditImageDlg(CWnd *pParent = nullptr);
 
     void UpdateGUI();
     void PreModal(CTransparentWnd *transWnd);

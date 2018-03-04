@@ -23,7 +23,7 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CAudioFormatDlg dialog
 
-CAudioFormatDlg::CAudioFormatDlg(CWnd *pParent /*=NULL*/)
+CAudioFormatDlg::CAudioFormatDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CAudioFormatDlg::IDD, pParent)
     , m_pwfx(0)
     , m_cbwfx(0)
@@ -108,7 +108,7 @@ BOOL CAudioFormatDlg::OpenUsingRegisteredClass(CString link)
 
                 pos = strstr(key, _T ("%1")); // Check for %1, without quotes
 
-                if (pos == NULL) // No parameter at all...
+                if (pos == nullptr) // No parameter at all...
                     pos = key + _tcslen(key) - 1;
                 else
                     *pos = _T('\0'); // Remove the parameter
@@ -182,8 +182,8 @@ BOOL CAudioFormatDlg::OpenUsingRegisteredClass(CString link)
 BOOL CAudioFormatDlg::OpenUsingShellExecute(CString link)
 {
     LPCTSTR mode = _T ("open");
-    // HINSTANCE hRun = ShellExecute (GetParent ()->GetSafeHwnd (), mode, m_sActualLink, NULL, NULL, SW_SHOW);
-    HINSTANCE hRun = ShellExecute(GetSafeHwnd(), mode, link, NULL, NULL, SW_SHOW);
+    // HINSTANCE hRun = ShellExecute (GetParent ()->GetSafeHwnd (), mode, m_sActualLink, nullptr, nullptr, SW_SHOW);
+    HINSTANCE hRun = ShellExecute(GetSafeHwnd(), mode, link, nullptr, nullptr, SW_SHOW);
     if ((int)hRun <= HINSTANCE_ERROR)
     {
         TRACE(_T("Failed to invoke URL using ShellExecute\n"));
@@ -213,7 +213,7 @@ void CAudioFormatDlg::AllocCompressFormat()
         CString tstr;
         tstr.LoadString(IDS_STRING_NOTE);
         msgstr.Format(_T("Metrics failed mmresult=%u!"), mmresult);
-        ::MessageBox(NULL, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
+        ::MessageBox(nullptr, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
         return;
     }
 
@@ -221,13 +221,13 @@ void CAudioFormatDlg::AllocCompressFormat()
         m_cbwfx = m_cFmt.m_dwCbwFX;
     ASSERT(sizeof(WAVEFORMATEX) <= m_cbwfx);
     m_pwfx = reinterpret_cast<LPWAVEFORMATEX>(new char[m_cbwfx]);
-    if (NULL == m_pwfx)
+    if (nullptr == m_pwfx)
     {
         CString msgstr;
         CString tstr;
         tstr.LoadString(IDS_STRING_NOTE);
         msgstr.Format(_T("GlobalAllocPtr(%lu) failed!"), m_cbwfx);
-        ::MessageBox(NULL, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
+        ::MessageBox(nullptr, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
         return;
     }
 
@@ -267,7 +267,7 @@ void CAudioFormatDlg::SuggestLocalCompressFormat()
     if ((sWaveFormat.nSamplesPerSec == 22050) && (sWaveFormat.nChannels == 2) && (sWaveFormat.wBitsPerSample <= 16))
     {
         m_pwfx->wFormatTag = WAVE_FORMAT_MPEGLAYER3;
-        mmr = ::acmFormatSuggest(NULL, &sWaveFormat, m_pwfx, m_cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
+        mmr = ::acmFormatSuggest(nullptr, &sWaveFormat, m_pwfx, m_cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
     }
 
     if (0 != mmr)
@@ -277,12 +277,12 @@ void CAudioFormatDlg::SuggestLocalCompressFormat()
         // Then try ADPCM
         // BuildLocalRecordingFormat();
         // m_pwfx->wFormatTag = WAVE_FORMAT_ADPCM;
-        // mmr = acmFormatSuggest(NULL, &m_sWaveFormat, m_pwfx, m_cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
+        // mmr = acmFormatSuggest(nullptr, &m_sWaveFormat, m_pwfx, m_cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
         // if (mmr != 0) {
         // Use the PCM as default
         BuildLocalRecordingFormat(sWaveFormat);
         m_pwfx->wFormatTag = WAVE_FORMAT_PCM;
-        mmr = acmFormatSuggest(NULL, &sWaveFormat, m_pwfx, m_cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
+        mmr = acmFormatSuggest(nullptr, &sWaveFormat, m_pwfx, m_cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
         if (mmr != 0)
         {
             m_bAudioCompression = FALSE;
@@ -301,7 +301,7 @@ BOOL CAudioFormatDlg::GetFormatDescription(CString &rstrFormatTag, CString &rstr
     aftd.dwFormatTag = m_pwfx->wFormatTag;
 
     // Ask ACM to find first available driver that supports the specified Format tag.
-    MMRESULT mmr = ::acmFormatTagDetails(NULL, &aftd, ACM_FORMATTAGDETAILSF_FORMATTAG);
+    MMRESULT mmr = ::acmFormatTagDetails(nullptr, &aftd, ACM_FORMATTAGDETAILSF_FORMATTAG);
     if (MMSYSERR_NOERROR != mmr)
     {
         return FALSE;
@@ -612,7 +612,7 @@ void CAudioFormatDlg::OnOK()
 
         // GlobalFreePtr(m_pwfx);
         delete[] m_pwfx;
-        m_pwfx = NULL;
+        m_pwfx = nullptr;
     }
 
     m_cFmt.m_bUseMCI = m_ctrlButtonSystemRecord.GetCheck() ? true : false;
@@ -622,7 +622,7 @@ void CAudioFormatDlg::OnOK()
 
 void CAudioFormatDlg::OnSelectCompression()
 {
-    if (m_pwfx == NULL)
+    if (m_pwfx == nullptr)
     {
         SuggestLocalCompressFormat();
     }
@@ -652,15 +652,15 @@ void CAudioFormatDlg::OnSelectCompression()
     acmfc.pszTitle = _T("Audio Compression Format");
     acmfc.szFormatTag[0] = '\0';
     acmfc.szFormat[0] = '\0';
-    acmfc.pszName = NULL;
+    acmfc.pszName = nullptr;
     acmfc.cchName = 0;
     acmfc.fdwEnum = 0;
     acmfc.pwfxEnum = m_pwfx;
     // acmfc.pwfxEnum = &sWaveFormatEx;
-    acmfc.hInstance = NULL;
-    acmfc.pszTemplateName = NULL;
+    acmfc.hInstance = nullptr;
+    acmfc.pszTemplateName = nullptr;
     acmfc.lCustData = 0L;
-    acmfc.pfnHook = NULL;
+    acmfc.pfnHook = nullptr;
 
     // Valid formats for saving
     // BUG: loses current settings
@@ -820,7 +820,7 @@ void CAudioFormatDlg::OnCancel()
     {
         // GlobalFreePtr(m_pwfx);
         delete[] m_pwfx;
-        m_pwfx = NULL;
+        m_pwfx = nullptr;
     }
 
     CDialog::OnCancel();
@@ -932,7 +932,7 @@ void CAudioFormatDlg::OnSelchangeInputdevice()
     int devID = m_ctrlCBInputDevice.GetCurSel();
     if (devID < m_iNumDevice)
     {
-        // UpdateDeviceData(m_devicemap[devID], m_cFmt.m_dwWaveinSelected, NULL);
+        // UpdateDeviceData(m_devicemap[devID], m_cFmt.m_dwWaveinSelected, nullptr);
         UpdateDeviceData(m_devicemap[devID], m_cFmt.m_dwWaveinSelected, m_cFmt.AudioFormat());
     }
 }
@@ -981,7 +981,7 @@ LONG CAudioFormatDlg::GetRegKey(HKEY key, LPCTSTR subkey, LPTSTR retdata)
     {
         long datasize = MAX_PATH;
         TCHAR data[MAX_PATH];
-        lResult = ::RegQueryValue(hkey, NULL, data, &datasize);
+        lResult = ::RegQueryValue(hkey, nullptr, data, &datasize);
         if (ERROR_SUCCESS == lResult)
         {
             strcpy_s(retdata, strlen(retdata) + strlen(data) + 1, data);

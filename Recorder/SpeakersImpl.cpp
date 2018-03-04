@@ -224,7 +224,7 @@ BOOL finalRestoreMMMode()
 
     // get all the values first
     MIXERCONTROLDETAILS_BOOLEAN *pmxcdSelectValue = g_pmcdbSelectArrayInitialState;
-    bResult = (NULL != pmxcdSelectValue);
+    bResult = (nullptr != pmxcdSelectValue);
     if (bResult)
     {
         MIXERCONTROLDETAILS mxcd;
@@ -359,10 +359,10 @@ BOOL initialSaveMMMode()
 
 BOOL configWaveOutManual()
 {
-    // int retv = ::MessageBox(NULL,"Please note : This step is unecessary if the Auto Search function already managed
+    // int retv = ::MessageBox(nullptr,"Please note : This step is unecessary if the Auto Search function already managed
     // to detect the line for recording speakers output. You should use this only if the Auto Search function fails.
     // Proceed?","Note",MB_YESNO | MB_ICONQUESTION);
-    int retv = MessageOut(NULL, IDS_STRING_UNNECESSARY, IDS_STRING_NOTE, MB_YESNO | MB_ICONQUESTION);
+    int retv = MessageOut(nullptr, IDS_STRING_UNNECESSARY, IDS_STRING_NOTE, MB_YESNO | MB_ICONQUESTION);
     if (retv == IDNO)
     {
         return FALSE;
@@ -484,8 +484,8 @@ BOOL useVolume(int operation, DWORD &dwVal, int silence_mode)
                 {
                     if (!silence_mode)
                     {
-                        //::MessageBox(NULL,"WaveoutSetVolume() failed.","Note",MB_OK | MB_ICONEXCLAMATION);
-                        MessageOut(NULL, IDS_STRING_WSETVOL, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+                        //::MessageBox(nullptr,"WaveoutSetVolume() failed.","Note",MB_OK | MB_ICONEXCLAMATION);
+                        MessageOut(nullptr, IDS_STRING_WSETVOL, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
                     }
 
                     return FALSE;
@@ -500,8 +500,8 @@ BOOL useVolume(int operation, DWORD &dwVal, int silence_mode)
                 {
                     if (!silence_mode)
                     {
-                        //::MessageBox(NULL,"WaveoutGetVolume() failed.","Note",MB_OK | MB_ICONEXCLAMATION);
-                        MessageOut(NULL, IDS_STRING_WGETVOL, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+                        //::MessageBox(nullptr,"WaveoutGetVolume() failed.","Note",MB_OK | MB_ICONEXCLAMATION);
+                        MessageOut(nullptr, IDS_STRING_WGETVOL, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
                     }
 
                     return FALSE;
@@ -512,8 +512,8 @@ BOOL useVolume(int operation, DWORD &dwVal, int silence_mode)
         {
             if (!silence_mode)
             {
-                //::MessageBox(NULL,"WaveoutGetVolumeControl() failed.","Note",MB_OK | MB_ICONEXCLAMATION);
-                MessageOut(NULL, IDS_STRING_WGETVOLCTRL, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+                //::MessageBox(nullptr,"WaveoutGetVolumeControl() failed.","Note",MB_OK | MB_ICONEXCLAMATION);
+                MessageOut(nullptr, IDS_STRING_WGETVOLCTRL, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             }
 
             return FALSE;
@@ -525,8 +525,8 @@ BOOL useVolume(int operation, DWORD &dwVal, int silence_mode)
     {
         if (!silence_mode)
         {
-            //::MessageBox(NULL,"WaveoutVolumeInitialize() failed.","Note",MB_OK |MB_ICONEXCLAMATION);
-            MessageOut(NULL, IDS_STRING_WVOLINIT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            //::MessageBox(nullptr,"WaveoutVolumeInitialize() failed.","Note",MB_OK |MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRING_WVOLINIT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
         }
         return FALSE;
     }
@@ -536,7 +536,7 @@ BOOL useVolume(int operation, DWORD &dwVal, int silence_mode)
 
 void AnalyzeData(const CBuffer &buffer, int wBitsPerSample)
 {
-    // if (buffer == NULL)
+    // if (buffer == nullptr)
     //    return;
 
     if (wBitsPerSample == 8)
@@ -662,7 +662,7 @@ BOOL SafeUseWaveoutOnLoad()
     {
         cAudioFormat.m_iRecordAudio = MICROPHONE;
         useWavein(TRUE, FALSE); // silence mode
-        // MessageOut(NULL,IDS_STRING_NODETECTLINE,IDS_STING_NOTE,MB_OK | MB_ICONEXCLAMATION);
+        // MessageOut(nullptr,IDS_STRING_NODETECTLINE,IDS_STING_NOTE,MB_OK | MB_ICONEXCLAMATION);
     }
 
     return val;
@@ -678,7 +678,7 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText, DWORD lineTo
 
         if (!g_bSearchDlgCreated)
         {
-            g_SearchDlg.Create(IDD_AUTOSEARCH, NULL);
+            g_SearchDlg.Create(IDD_AUTOSEARCH, nullptr);
             g_bSearchDlgCreated = true;
         }
         else
@@ -691,11 +691,11 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText, DWORD lineTo
         if (g_dwIndex > g_dwMultipleItems)
         { // if still not found
             // Assume searching for MIXERLINE_COMPONENTTYPE_SRC_ANALOG means searching for speaker source line
-            // int ret = ::MessageBox(NULL,"Not all soundcards support the recording of sound from your speakers.
+            // int ret = ::MessageBox(nullptr,"Not all soundcards support the recording of sound from your speakers.
             // CamStudio will attempt to find the appropriate line on your system. \n\nIt is strongly recommended that
             // you detach your microphone from your soundcard, or at least make sure that there is no background noise
             // around your microphone. When you are ready, click 'OK'.","Note",MB_OK | MB_ICONEXCLAMATION | MB_OK);
-            MessageOut(NULL, IDS_STRING_NOTALL, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRING_NOTALL, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             // if (ret==IDNO) return FALSE;
 
             g_SearchDlg.ShowWindow(SW_RESTORE);
@@ -742,7 +742,7 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText, DWORD lineTo
                 auto pFile = new CSoundFile(testfile.GetString());
                 if (pFile->GetMode() == FILE_ERROR)
                 {
-                    MessageOut(NULL, IDS_STRING_ERRSND, IDS_STRING_ANALYZE, MB_OK | MB_ICONEXCLAMATION);
+                    MessageOut(nullptr, IDS_STRING_ERRSND, IDS_STRING_ANALYZE, MB_OK | MB_ICONEXCLAMATION);
                 }
 
                 // int BasicBufSize = 32768;
@@ -773,7 +773,7 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText, DWORD lineTo
                 }
 
                 delete pFile;
-                g_pSoundFile = NULL;
+                g_pSoundFile = nullptr;
 
                 DeleteFile(testfile);
             }
@@ -832,7 +832,7 @@ BOOL ManualSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText, DWORD lineToSea
 
         if (!g_bSearchDlgCreated)
         {
-            g_SearchDlg.Create(IDD_AUTOSEARCH, NULL);
+            g_SearchDlg.Create(IDD_AUTOSEARCH, nullptr);
             g_bSearchDlgCreated = true;
         }
         else
@@ -845,13 +845,13 @@ BOOL ManualSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText, DWORD lineToSea
         if (g_dwIndex > g_dwMultipleItems)
         { // if still not found
             // Assume searching for MIXERLINE_COMPONENTTYPE_SRC_ANALOG means searching for speaker source line
-            // int ret = ::MessageBox(NULL,"We will now proceed with the manual search for the line used for recording
+            // int ret = ::MessageBox(nullptr,"We will now proceed with the manual search for the line used for recording
             // speakers output. Not all soundcards support this function. CamStudio will play several tones and then ask
             // you a series of questions. Please turn on your speakers now. \n\nIt is strongly recommended that you
             // detach your microphone from your soundcard, or at least make sure that there is no background noise
             // around your microphone. When you are ready, click 'OK'.","Manual Search",MB_OK | MB_ICONEXCLAMATION |
             // MB_OK);
-            MessageOut(NULL, IDS_STRING_MANUALSEARCH, IDS_STRING_MANUAL, MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRING_MANUALSEARCH, IDS_STRING_MANUAL, MB_OK | MB_ICONEXCLAMATION);
 
             // if (ret==IDNO) return FALSE;
 
@@ -925,15 +925,15 @@ BOOL useWave(DWORD lineToSearch, CString namesearch, BOOL silence_mode, int feed
             //}
             // else {
             // if (!silence_mode)
-            // ::MessageBox(NULL,"WaveoutSaveSelectArray() failed.","Note",MB_OK | MB_ICONEXCLAMATION);
+            // ::MessageBox(nullptr,"WaveoutSaveSelectArray() failed.","Note",MB_OK | MB_ICONEXCLAMATION);
             // return FALSE;
             //}
         }
         else
         {
             if (!silence_mode)
-                //::MessageBox(NULL,"WaveoutGetSelectControl() failed.","Note",MB_OK | MB_ICONEXCLAMATION);
-                MessageOut(NULL, IDS_STRING_GETSELCTRL, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+                //::MessageBox(nullptr,"WaveoutGetSelectControl() failed.","Note",MB_OK | MB_ICONEXCLAMATION);
+                MessageOut(nullptr, IDS_STRING_GETSELCTRL, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             return FALSE;
         }
 
@@ -942,16 +942,16 @@ BOOL useWave(DWORD lineToSearch, CString namesearch, BOOL silence_mode, int feed
         }
         else
         {
-            //::MessageBox(NULL,"WaveoutUnInitialize() failed.","Note",MB_OK |MB_ICONEXCLAMATION);
-            MessageOut(NULL, IDS_STRING_UNINIT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            //::MessageBox(nullptr,"WaveoutUnInitialize() failed.","Note",MB_OK |MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRING_UNINIT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             return FALSE;
         }
     }
     else
     {
         if (!silence_mode)
-            //::MessageBox(NULL,"WaveoutInitialize() failed.","Note",MB_OK |MB_ICONEXCLAMATION);
-            MessageOut(NULL, IDS_STRING_INIT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+            //::MessageBox(nullptr,"WaveoutInitialize() failed.","Note",MB_OK |MB_ICONEXCLAMATION);
+            MessageOut(nullptr, IDS_STRING_INIT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
         return FALSE;
     }
 
@@ -965,7 +965,7 @@ BOOL WaveoutSetSelectArray(MIXERCONTROLDETAILS_BOOLEAN *pmxcdSelectValue)
 
     BOOL bRetVal = FALSE;
 
-    if (pmxcdSelectValue != NULL)
+    if (pmxcdSelectValue != nullptr)
     {
         MIXERCONTROLDETAILS mxcd;
         {
@@ -1046,7 +1046,7 @@ BOOL WaveoutSearchSrcLine(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText, DWORD l
                             g_dwIndex = dwi;
                             cAudioFormat.m_iFeedbackLine = g_dwIndex;
                             cAudioFormat.m_iFeedbackLineInfo = pmxcdSelectText[g_dwIndex].dwParam1;
-                            //::MessageBox(NULL,g_strMicName,"Note",MB_OK |MB_ICONEXCLAMATION);
+                            //::MessageBox(nullptr,g_strMicName,"Note",MB_OK |MB_ICONEXCLAMATION);
                         }
                     }
                     else
@@ -1079,7 +1079,7 @@ BOOL WaveoutSetSelectValue(LONG lVal, DWORD dwIndex, BOOL zero_others)
 
     // get all the values first
     MIXERCONTROLDETAILS_BOOLEAN *pmxcdSelectValue = new MIXERCONTROLDETAILS_BOOLEAN[g_dwMultipleItems];
-    if (pmxcdSelectValue != NULL)
+    if (pmxcdSelectValue != nullptr)
     {
         MIXERCONTROLDETAILS mxcd;
         mxcd.cbStruct = sizeof(MIXERCONTROLDETAILS);
@@ -1128,7 +1128,7 @@ BOOL WaveoutSetSelectValue(LONG lVal, DWORD dwIndex, BOOL zero_others)
 //    BOOL bRetVal = FALSE;
 //
 //    MIXERCONTROLDETAILS_BOOLEAN *pmxcdSelectValue = new MIXERCONTROLDETAILS_BOOLEAN[g_dwMultipleItems];
-//    if (pmxcdSelectValue != NULL) {
+//    if (pmxcdSelectValue != nullptr) {
 //        MIXERCONTROLDETAILS mxcd;
 //        mxcd.cbStruct = sizeof(MIXERCONTROLDETAILS);
 //        mxcd.dwControlID = g_dwSelectControlID;
@@ -1155,7 +1155,7 @@ BOOL WaveoutGetSelectControl(DWORD lineToSearch, CString namesearch, int feedbac
 {
     if (!g_AudioMixer.isValid())
     {
-        TRACE("WaveoutGetSelectControl: NULL m_hMixer\n");
+        TRACE("WaveoutGetSelectControl: nullptr m_hMixer\n");
         return FALSE;
     }
 
@@ -1216,7 +1216,7 @@ BOOL WaveoutGetSelectControl(DWORD lineToSearch, CString namesearch, int feedbac
 
     // get the index of the Select control
     MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText = new MIXERCONTROLDETAILS_LISTTEXT[g_dwMultipleItems];
-    if (pmxcdSelectText != NULL)
+    if (pmxcdSelectText != nullptr)
     {
         MIXERCONTROLDETAILS mxcd;
         mxcd.cbStruct = sizeof(MIXERCONTROLDETAILS);
@@ -1280,7 +1280,7 @@ BOOL WaveoutInitialize()
     // A "mapper" for audio mixer devices does not currently exist.
     if (g_uNumMixers != 0)
     {
-        if (MMSYSERR_NOERROR != g_AudioMixer.Open(cAudioFormat.m_iSelectedMixer, (DWORD_PTR)g_hWndGlobal, NULL,
+        if (MMSYSERR_NOERROR != g_AudioMixer.Open(cAudioFormat.m_iSelectedMixer, (DWORD_PTR)g_hWndGlobal, 0,
                                                 MIXER_OBJECTF_MIXER | CALLBACK_WINDOW))
         {
             OnError("WaveoutInitialize");
@@ -1318,7 +1318,7 @@ BOOL WaveoutVolumeInitialize()
     // A "mapper" for audio mixer devices does not currently exist.
     if (g_uNumMixers != 0)
     {
-        if (MMSYSERR_NOERROR != g_AudioMixer.Open(cAudioFormat.m_iSelectedMixer, (DWORD_PTR)g_hWndGlobal, NULL,
+        if (MMSYSERR_NOERROR != g_AudioMixer.Open(cAudioFormat.m_iSelectedMixer, (DWORD_PTR)g_hWndGlobal, 0,
                                                 MIXER_OBJECTF_MIXER | CALLBACK_WINDOW))
             return FALSE;
 

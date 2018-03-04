@@ -11,7 +11,7 @@ class CFixedRegionDlg : public CDialog
 
 
 public:
-    CFixedRegionDlg(CWnd *pParent = NULL);
+    CFixedRegionDlg(CWnd *pParent = nullptr);
 
     // Dialog Data
     //{{AFX_DATA(CFixedRegionDlg)

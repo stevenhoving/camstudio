@@ -22,7 +22,7 @@ extern int g_iDefineMode;
 // CFixedRegionDlg dialog
 IMPLEMENT_DYNAMIC(CFixedRegionDlg, CDialog)
 
-CFixedRegionDlg::CFixedRegionDlg(CWnd *pParent /*=NULL*/)
+CFixedRegionDlg::CFixedRegionDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CFixedRegionDlg::IDD, pParent)
     , m_iLeft(1)
     , m_iTop(1)

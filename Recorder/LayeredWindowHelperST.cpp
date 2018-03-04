@@ -18,7 +18,7 @@ CLayeredWindowHelperST::~CLayeredWindowHelperST()
     // Unload DLL (if any)
     if (m_hDll)
         ::FreeLibrary(m_hDll);
-    m_hDll = NULL;
+    m_hDll = nullptr;
 }
 
 // This function add the WS_EX_LAYERED style to the specified window.
@@ -70,7 +70,7 @@ BOOL CLayeredWindowHelperST::SetLayeredWindowAttributes(HWND hWnd, COLORREF crKe
 
     if (m_hDll)
     {
-        lpfnSetLayeredWindowAttributes pFn = NULL;
+        lpfnSetLayeredWindowAttributes pFn = nullptr;
         pFn = (lpfnSetLayeredWindowAttributes)GetProcAddress(m_hDll, "SetLayeredWindowAttributes");
         if (pFn)
         {
