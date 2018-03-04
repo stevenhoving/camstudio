@@ -14,9 +14,10 @@ static char THIS_FILE[] = __FILE__;
 CSoundOut::CSoundOut()
     : m_QueuedBuffers(0)
     , m_hPlay(nullptr)
-     , m_bPlaying(false)
-     , GetDataToSoundOut(nullptr)
-     , m_pOwner(nullptr)
+    , m_bPlaying(false)
+    , GetDataToSoundOut(nullptr)
+    , m_pOwner(nullptr)
+    , m_ThreadID(0)
 {
     CreateThread();
     m_bAutoDelete = false;

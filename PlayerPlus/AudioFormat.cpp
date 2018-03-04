@@ -7,7 +7,9 @@
 
 #include "AudioFormat.h"
 
-#include <stdio.h>
+#include <string>
+#include <cstdio>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -102,15 +104,13 @@ END_MESSAGE_MAP()
 
 void AudioFormat::OnOK()
 {
-
     CString interleaveFactorStr;
-    int ifactornum;
 
     ((CEdit *)(GetDlgItem(IDC_IFACTOR)))->GetWindowText(interleaveFactorStr);
-    sscanf(LPCTSTR(interleaveFactorStr), "%d", &ifactornum);
+
+    int ifactornum = std::stol(interleaveFactorStr.GetString());
     if (ifactornum <= 0)
     {
-
         MessageBox("Interleave factor must greater than 0", "Note", MB_OK | MB_ICONEXCLAMATION);
         return;
     }
@@ -140,7 +140,6 @@ void AudioFormat::OnOK()
     // data from the Audio Options Dialog can be updated to the external variables
     if (numformat > 0)
     {
-
         int sel = ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->GetCurSel();
         if (sel >= 0)
         {
@@ -279,7 +278,7 @@ BOOL AudioFormat::OnInitDialog()
 
     // Ver 1.2
     WAVEINCAPS pwic;
-    MMRESULT mmr = waveInGetDevCaps(AudioDeviceID, &pwic, sizeof(pwic));
+    MMRESULT mmr = ::waveInGetDevCaps(AudioDeviceID, &pwic, sizeof(pwic));
 
     //int selected_cindex = -1; // selected index of combo box
     numformat = 0;            // counter, number of format
@@ -789,7 +788,7 @@ void AudioFormat::OnSelchangeInputdevice()
 //
 // Update the user - interface based on the device data
 //
-// If the third parameter (compressed format) is not null, we assume it is compatibile with the 2nd parameter (recording
+// If the third parameter (compressed format) is not null, we assume it is compatible with the 2nd parameter (recording
 // format)
 //
 // =====================================
@@ -797,7 +796,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
 {
 
     WAVEINCAPS pwic;
-    MMRESULT mmr = waveInGetDevCaps(deviceID, &pwic, sizeof(pwic));
+    MMRESULT mmr = ::waveInGetDevCaps(deviceID, &pwic, sizeof(pwic));
 
     int selected_cindex = -1; // selected index of combo box
     numformat = 0;            // counter, number of format

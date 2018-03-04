@@ -114,7 +114,7 @@ LRESULT CALLBACK LowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 //    return ::CallNextHookEx(keyHook, code, wParam, lParam);
 //}
 
-//}    // namespace annonymous
+//}    // namespace anonymous
 
 /////////////////////////////////////////////////////////////////////////////
 // DllMain

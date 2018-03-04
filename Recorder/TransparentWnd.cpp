@@ -317,11 +317,11 @@ void CTransparentWnd::SetupRegionByTransColor(CDC *pDC, COLORREF transColor)
 
         CDC tempDC;
         tempDC.CreateCompatibleDC(pDC);
-        HBITMAP pOldMemBmp = (HBITMAP)::SelectObject(tempDC.m_hDC, m_hbitmap);
+        HBITMAP pMemBmp = (HBITMAP)::SelectObject(tempDC.m_hDC, m_hbitmap);
         memDC.StretchBlt(0, 0, cRect.Width(), cRect.Height(), &tempDC, 0, 0, m_rectOriginalWnd.Width(),
                          m_rectOriginalWnd.Height(), SRCCOPY);
 
-        ::SelectObject(tempDC.m_hDC, pOldMemBmp);
+        ::SelectObject(tempDC.m_hDC, pMemBmp);
         tempDC.DeleteDC();
 
         needCleanZoom = 1;
@@ -451,7 +451,7 @@ void CTransparentWnd::OnPaint()
         dxfont.CreateFontIndirect(&m_textfont);
         CFont *oldfont = (CFont *)pDC->SelectObject(&dxfont);
 
-        int textlength = m_textstring.GetLength(); // get number of bytes
+        //int textlength = m_textstring.GetLength(); // get number of bytes
 
         // Draw Text
         pDC->SetBkMode(TRANSPARENT);
@@ -699,11 +699,11 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect *caprect, int fac
         oldfont = (CFont *)pMemDC->SelectObject(&dxfont);
     }
     // if no default font is selected, can cause errors
-    CPen *oldPen = (CPen *)0;
+    CPen *oldPen = nullptr;
     if (pPen)
         oldPen = pMemDC->SelectObject(pPen);
 
-    CBrush *oldBrush = (CBrush *)0;
+    CBrush *oldBrush = nullptr;
     if (pBrush)
         oldBrush = pMemDC->SelectObject(pBrush);
 
@@ -762,13 +762,13 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect *caprect, int fac
 
         CPen borderPen;
         borderPen.CreatePen(PS_SOLID, m_borderSize * m_factor, m_borderColor);
-        CPen *oldPen = (CPen *)pMemDC->SelectObject(&borderPen);
+        CPen *oldPen = pMemDC->SelectObject(&borderPen);
 
         LOGBRUSH logbrush;
         logbrush.lbStyle = BS_HOLLOW;
         CBrush borderBrush;
         borderBrush.CreateBrushIndirect(&logbrush);
-        CBrush *oldBrush = (CBrush *)pMemDC->SelectObject(&borderBrush);
+        CBrush *oldBorderBrush = (CBrush *)pMemDC->SelectObject(&borderBrush);
 
         int drawOffset = (m_borderSize * m_factor) / 2;
 
@@ -788,7 +788,7 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect *caprect, int fac
                               cRect.Height() - 1 - drawOffset);
         }
 
-        pMemDC->SelectObject(oldBrush);
+        pMemDC->SelectObject(oldBorderBrush);
         pMemDC->SelectObject(oldPen);
         borderPen.DeleteObject();
         borderBrush.DeleteObject();

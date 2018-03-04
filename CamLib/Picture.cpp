@@ -313,10 +313,15 @@ BOOL CPicture::LoadPictureData(BYTE *pBuffer, int nSize)
     {
         HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
         MessageBoxEx(hWnd, TEXT("Can not allocate enough memory\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
-        return (FALSE);
+        return false;
     }
 
     void *pData = GlobalLock(hGlobal);
+    if (pData == nullptr)
+    {
+        return false;
+    }
+
     memcpy(pData, pBuffer, nSize);
     GlobalUnlock(hGlobal);
 
@@ -331,7 +336,7 @@ BOOL CPicture::LoadPictureData(BYTE *pBuffer, int nSize)
             HWND hWnd = AfxGetApp()->GetMainWnd()->m_hWnd;
             MessageBoxEx(hWnd, TEXT("IPicture interface is not supported\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP,
                          LANG_ENGLISH);
-            return (FALSE);
+            return false;
         }
 
         // S_OK
@@ -342,7 +347,7 @@ BOOL CPicture::LoadPictureData(BYTE *pBuffer, int nSize)
 
     FreeResource(hGlobal); // 16Bit Windows Needs This (32Bit - Automatic Release)
 
-    return (bResult);
+    return bResult;
 }
 
 //-----------------------------------------------------------------------------

@@ -68,11 +68,11 @@ bool CCamera::AddXNote(CDC *pDC)
             m_sXNote.m_ulXnoteCameraDelayInMilliSec, cXNoteOpts.m_bXnoteDisplayCameraDelayMode,
             cXNoteOpts.m_bXnoteDisplayCameraDelayDirection);
 
-        // Load info how and where user defined to dispaly the annotation
+        // Load info how and where user defined to display the annotation
         taTmpXNote = m_sXNote.m_taXNote;
 
         // Extend stopwatch info by adding on the last line the (three last) xnote stopwatch snaptimes
-        (void)sprintf(taTmpXNote.text.GetBuffer(128), "%s\n%s\n%s",
+        (void)sprintf_s(taTmpXNote.text.GetBuffer(128), 128, "%s\n%s\n%s",
                       cXNoteOpts.m_ulStartXnoteTickCounter == 0 ? "No stopwatch running"
                                                                 : cXNoteOpts.m_cXnoteStartEntendedInfo,
                       cTmpBuffXNoteTimeStamp,

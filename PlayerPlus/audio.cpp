@@ -119,8 +119,8 @@ BOOL CALLBACK aviaudioOpenDevice(HWND hwnd, PAVISTREAM pavi)
 
     for (swBuffers = 0; swBuffers < MAX_AUDIO_BUFFERS; swBuffers++)
     {
-        if (!(salpAudioBuf[swBuffers] =
-                  (LPWAVEHDR)GlobalAllocPtr(GMEM_MOVEABLE | GMEM_SHARE, (DWORD)(sizeof(WAVEHDR) + AUDIO_BUFFER_SIZE))))
+        salpAudioBuf[swBuffers] = (LPWAVEHDR)GlobalAllocPtr(GMEM_MOVEABLE | GMEM_SHARE, (DWORD)(sizeof(WAVEHDR) + AUDIO_BUFFER_SIZE));
+        if (!salpAudioBuf[swBuffers])
             break;
         salpAudioBuf[swBuffers]->dwFlags = WHDR_DONE;
         salpAudioBuf[swBuffers]->lpData = (LPSTR)salpAudioBuf[swBuffers] + sizeof(WAVEHDR);

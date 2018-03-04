@@ -31,7 +31,7 @@
 #include <vfw.h>
 
 #pragma warning(disable : 4290)
-#include "libconfig.hh"
+#include <libconfig.hh>
 //#include <afxcontrolbars.h>
 
 #include "Localization\Localization.h"

@@ -1483,7 +1483,7 @@ BOOL CScreenAnnotationsDlg::OpenUsingRegisteredClass(CString link)
     }
 
     LPCTSTR mode = _T ("\\shell\\open\\command");
-    _tcscat(key, mode);
+    _tcscat_s(key, mode);
     if (ERROR_SUCCESS != GetRegKey(HKEY_CLASSES_ROOT, key, key))
     {
         return FALSE;
@@ -1509,8 +1509,8 @@ BOOL CScreenAnnotationsDlg::OpenUsingRegisteredClass(CString link)
         }
     }
 
-    _tcscat(pos, _T (" "));
-    _tcscat(pos, link);
+    _tcscat_s(pos, 520, _T (" "));
+    _tcscat_s(pos, 520, link);
     // TODO: dicey; WinExec depreciated
     UINT uResult = WinExec(key, SW_SHOW);
     if (HINSTANCE_ERROR < uResult)

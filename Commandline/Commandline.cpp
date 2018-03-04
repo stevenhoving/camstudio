@@ -1266,7 +1266,7 @@ int main(int argc, char *argv[])
     HDC hScreenDC;
     int mon_count = GetSystemMetrics(SM_CMONITORS); // get nubmer of monitors
 
-    HANDLE *th = (HANDLE *)malloc(sizeof(HANDLE) * mon_count);
+    std::vector<HANDLE> th(mon_count);
     // PAVIFILE* pfile = (PAVIFILE *) malloc(sizeof(PAVIFILE) * mon_count);
 
     std::cout << "camstudio_cl: Command line screen recording" <<std::endl;
@@ -1325,7 +1325,6 @@ int main(int argc, char *argv[])
 
     for (int i = 0; i <= mon_count - 1; i++)
     {
-
         // whole recording stuff goes BELOW this line.
         maxxScreen = pscreen[i].width;
         maxyScreen = pscreen[i].height;

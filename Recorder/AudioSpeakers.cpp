@@ -19,7 +19,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern DWORD dwIndex;
+extern DWORD g_dwIndex;
 
 #define SETVOLUME 0
 #define GETVOLUME 1

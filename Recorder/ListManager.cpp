@@ -290,7 +290,6 @@ int CListManager::DestroyLayout(CLayoutList *pLayout)
     pLayout->layoutArrayPtr = NULL;
 
     delete pLayout;
-    pLayout = NULL;
 
     return 1;
 }

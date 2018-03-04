@@ -6,6 +6,7 @@
 #include "BasicMessage.h" // for CBasicMessage
 #include "screen.h"
 #include "MP4Converter.h"
+#include <string>
 #define TEMPFILETAGINDICATOR "~temp"
 
 // forward declaration
@@ -46,7 +47,7 @@ public:
 
     BOOL Openlink(CString);
     BOOL OpenUsingShellExecute(CString);
-    LONG GetRegKey(HKEY key, LPCTSTR subkey, LPTSTR retdata);
+    LONG GetRegKey(HKEY key, const std::string &subkey, std::string &retdata);
     BOOL OpenUsingRegisteredClass(CString);
     VOID XNoteProcessWinMessage(int iActionID, int iSensorID, int iSourceID, ULONG lXnoteTimeInMilliSeconds);
     bool GetRecordState();

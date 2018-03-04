@@ -224,6 +224,7 @@ void WriteTA(libconfig::Setting &s, TextAttributes &taResult)
 void ReadFont(libconfig::Setting &s, LOGFONT &f)
 {
     unsigned tmp;
+
     if (s.lookupValue("CharSet", tmp))
         f.lfCharSet = tmp;
     if (s.lookupValue("ClipPrecision", tmp))
@@ -231,7 +232,7 @@ void ReadFont(libconfig::Setting &s, LOGFONT &f)
     s.lookupValue("Escapement", (int &)f.lfEscapement);
     std::string text;
     if (s.lookupValue("FaceName", text))
-        strncpy(f.lfFaceName, text.c_str(), 32);
+        strncpy_s(f.lfFaceName, text.c_str(), 32);
     s.lookupValue("Height", (int &)f.lfHeight);
     if (s.lookupValue("Italic", tmp))
         f.lfItalic = tmp;

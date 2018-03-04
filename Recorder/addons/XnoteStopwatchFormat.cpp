@@ -73,13 +73,14 @@ void CXnoteStopwatchFormat::FormatXnoteDelayedTimeString(char *cBuf128, DWORD dw
     // Format (delay) hh:mm:ss.ttt
     if (bDisplayCameraDelay)
     {
-        sprintf_s(cBuf128, 128, "(%c%04lu)  %02lu:%02lu:%02lu.%03lu", bDisplayCameraDelay2 ? '-' : '+',
-                      lDelayTimeInMillisSec, ulTickTimeHour, ulTickMinutes, ulTickTimeSeconds, ulTickTimeThousands);
+        char prefix = bDisplayCameraDelay2 ? '-' : '+';
+        sprintf_s(cBuf128, 128, "(%c%04lu)  %02lu:%02lu:%02lu.%03lu",
+            prefix, lDelayTimeInMillisSec, ulTickTimeHour, ulTickMinutes, ulTickTimeSeconds, ulTickTimeThousands);
     }
     else
     {
-        sprintf_s(cBuf128, 128, "%02lu:%02lu:%02lu.%03lu", ulTickTimeHour, ulTickMinutes, ulTickTimeSeconds,
-                      ulTickTimeThousands);
+        sprintf_s(cBuf128, 128, "%02lu:%02lu:%02lu.%03lu",
+            ulTickTimeHour, ulTickMinutes, ulTickTimeSeconds, ulTickTimeThousands);
     }
     ////TRACE("## FormatXnoteDelayedTimeString  Formatted relative time:[%s]\n", cBuf128);
 }

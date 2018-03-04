@@ -220,7 +220,7 @@ HWAVEIN m_hWaveRecord;
 DWORD m_ThreadID;
 int m_QueuedBuffers = 0;
 int iBufferSize = 1000; // number of samples
-CSoundFile *pSoundFile = NULL;
+CSoundFile *g_pSoundFile = NULL;
 
 // Audio Options Dialog
 // LPWAVEFORMATEX pwfx = NULL;
@@ -327,7 +327,7 @@ void SetVideoCompressState(HIC hic, DWORD fccHandler);
 // BOOL CALLBACK SaveCallback(int iProgress);
 
 namespace
-{ // annonymous
+{ // anonymous
 
 ////////////////////////////////
 // AUDIO_CODE
@@ -1790,24 +1790,23 @@ BOOL CRecorderView::OpenUsingShellExecute(CString link)
 
 BOOL CRecorderView::OpenUsingRegisteredClass(CString link)
 {
-    TCHAR key[MAX_PATH + MAX_PATH];
+    std::string key;
 
     if (GetRegKey(HKEY_CLASSES_ROOT, _T (".htm"), key) == ERROR_SUCCESS)
     {
-        LPCTSTR mode =_T ("\\shell\\open\\command");
-        _tcscat_s(key, mode);
+        key += "\\shell\\open\\command";
+
         if (GetRegKey(HKEY_CLASSES_ROOT, key, key) == ERROR_SUCCESS)
         {
-            LPTSTR pos;
-            pos = _tcsstr(key, _T ("\"%1\""));
-            if (pos == NULL)
+            auto pos = _tcsstr(&key[0], _T ("\"%1\""));
+            if (pos == nullptr)
             {
                 // No quotes found
-                pos = strstr(key, _T ("%1")); // Check for %1, without quotes
+                pos = strstr(&key[0], _T ("%1")); // Check for %1, without quotes
                 if (pos == NULL)
                 {
                     // No parameter at all...
-                    pos = key + _tcslen(key) - 1;
+                    pos = &key[0] + key.size() - 1;
                 }
                 else
                 {
@@ -1819,9 +1818,11 @@ BOOL CRecorderView::OpenUsingRegisteredClass(CString link)
                 *pos = _T('\0'); // Remove the parameter
             }
 
-            strcat_s(pos, sizeof(key), _T (" "));
-            strcat_s(pos, sizeof(key), link);
-            auto result = WinExec(key, SW_SHOW);
+            key += " ";
+            key += link;
+            //strcat_s(pos, sizeof(key), _T (" "));
+            //strcat_s(pos, sizeof(key), link);
+            auto result = WinExec(key.c_str(), SW_SHOW);
             if (result <= HINSTANCE_ERROR)
             {
                 CString str;
@@ -1882,16 +1883,16 @@ BOOL CRecorderView::OpenUsingRegisteredClass(CString link)
     return FALSE;
 }
 
-LONG CRecorderView::GetRegKey(HKEY key, LPCTSTR subkey, LPTSTR retdata)
+LONG CRecorderView::GetRegKey(HKEY key, const std::string &subkey, std::string &retdata)
 {
     HKEY hkey;
-    LONG retval = RegOpenKeyEx(key, subkey, 0, KEY_QUERY_VALUE, &hkey);
+    LONG retval = RegOpenKeyEx(key, subkey.c_str(), 0, KEY_QUERY_VALUE, &hkey);
     if (retval == ERROR_SUCCESS)
     {
         long datasize = MAX_PATH;
         TCHAR data[MAX_PATH];
         RegQueryValue(hkey, NULL, data, &datasize);
-        strcpy(retdata, data);
+        retdata = std::string(data, datasize);
         RegCloseKey(hkey);
     }
 
@@ -3654,18 +3655,18 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
     VERIFY(GetCursorPos(&ptMouse));
     if (cRegionOpts.isCaptureMode(CAPTURE_WINDOW))
     {
-        CWnd *pWnd = WindowFromPoint(ptMouse);
-        if (pWnd)
+        CWnd *pWndPoint = WindowFromPoint(ptMouse);
+        if (pWndPoint)
         {
             // tell windows we don't need capture change events anymore
             ReleaseCapture();
 
             // store the windows rect into the rect used for capturing
-            ::GetWindowRect(pWnd->m_hWnd, &g_rcUse);
+            ::GetWindowRect(pWndPoint->m_hWnd, &g_rcUse);
 
             // close the window to show user selection was successful
             // post message to start recording
-            if (pWnd->m_hWnd != m_basicMsg->m_hWnd)
+            if (pWndPoint->m_hWnd != m_basicMsg->m_hWnd)
                 ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
         }
     }
@@ -4888,15 +4889,18 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
             pausecounter++;
             if ((pausecounter % 8) == 0)
             {
+#define CAMSTUDIO_IGNORE_THIS
+#ifndef CAMSTUDIO_IGNORE_THIS
                 // if after every 400 milliseconds (8 * 50)
                 CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
+#endif
 
-                // TODO - Found this crash behaviour while I developed CAMSTUDIO4XNOTE but it looks like to be something
+                // TODO - Found this crash behavior while I developed CAMSTUDIO4XNOTE but it looks like to be something
                 // that was still in previously releases. (before r245) TRACE("CRecorderView: if Pause selected,
-                // statement skippped, pFrame->SetTitle(_T("")), causes error\n");
+                // statement skipped, pFrame->SetTitle(_T("")), causes error\n");
                 if (pauseindicator)
                 {
-#define CAMSTUDIO_IGNORE_THIS
+
 #ifndef CAMSTUDIO_IGNORE_THIS
                     pFrame->SetTitle(_T("")); // This still gives an error before r245 (when build using vs2008)...!
 #endif
@@ -4922,7 +4926,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
             }
 
             // do nothing.. wait
-            ::Sleep(50); // Sleep for 50
+            ::Sleep(50);
 
             haveslept = 1;
         }
@@ -5291,7 +5295,7 @@ void CRecorderView::XNoteActionStopwatchResetParams(void)
     g_iXNoteLastSnapWithSensor = XNOTE_TRIGGER_UNDEFINED;
 
     g_bXNoteSnapRecordingState = false;
-    strcpy(g_cXNoteLastSnapTimes, "");
+    strcpy_s(g_cXNoteLastSnapTimes, "");
 
     cXNoteOpts.m_ulStartXnoteTickCounter = 0UL;
     cXNoteOpts.m_ulSnapXnoteTickCounter = 0UL;
@@ -5417,13 +5421,13 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID, int iSensorID, int iSo
                 std::max<int>(0, strlen(g_cXNoteLastSnapTimes) - std::min<int>(2, strlen(g_cXNoteLastSnapTimes) / (6 + 2 + 1)) * (6 + 2 + 1));
 
             snprintf(cTmpBuffXNoteTimeStamp, sizeof(cTmpBuffXNoteTimeStamp), "%s%s ", &g_cXNoteLastSnapTimes[nStrLengthSnaps], &cTmp[nStrLengthNew]);
-            strcpy(g_cXNoteLastSnapTimes, cTmpBuffXNoteTimeStamp);
+            strcpy_s(g_cXNoteLastSnapTimes, cTmpBuffXNoteTimeStamp);
 
             cXNoteOpts.m_cSnapXnoteTimesString.SetString(g_cXNoteLastSnapTimes);
 
             // Write snap timevalue (in ms) to the with the video recording started log file.
             // Use XML tags because others logs might be written is files in the near future.
-            sprintf(cTmp, "<xnote> <snap> %09lu <\\snap> <frame> <\\frame> <\\xnote>\n", lXnoteTimeInMilliSeconds);
+            sprintf_s(cTmp, "<xnote> <snap> %09lu <\\snap> <frame> <\\frame> <\\xnote>\n", lXnoteTimeInMilliSeconds);
             WriteLineToXnoteLogFile(cTmp);
 
             // If recording but paused onRecord must called for release
@@ -5504,13 +5508,13 @@ void CRecorderView::DisplayAutopanInfo(CRect rc)
     }
 }
 namespace
-{ // annonymous
+{ // anonymous
 
 void DataFromSoundIn(CBuffer *buffer)
 {
-    if (pSoundFile)
+    if (g_pSoundFile)
     {
-        if (!pSoundFile->Write(buffer))
+        if (!g_pSoundFile->Write(buffer))
         {
             // m_SoundIn.Stop();
             StopAudioRecording();
@@ -5578,13 +5582,13 @@ void waveInErrorMsg(MMRESULT result, const char *addstr)
     MessageBox(NULL, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
 }
 
-// Delete the pSoundFile variable and close existing audio file
+// Delete the g_pSoundFile variable and close existing audio file
 void ClearAudioFile()
 {
-    if (pSoundFile)
+    if (g_pSoundFile)
     {
-        delete pSoundFile; // will close output file
-        pSoundFile = NULL;
+        delete g_pSoundFile; // will close output file
+        g_pSoundFile = NULL;
     }
 }
 
@@ -5603,9 +5607,9 @@ BOOL InitAudioRecording()
     // Create temporary wav file for audio recording
     GetTempAudioWavPath();
     // TODO, Possible memory leak, where is the delete operation of the new below done?
-    pSoundFile = new CSoundFile(strTempAudioWavFilePath.GetString(), &cAudioFormat.AudioFormat());
+    g_pSoundFile = new CSoundFile(strTempAudioWavFilePath.GetString(), &cAudioFormat.AudioFormat());
 
-    if (!(pSoundFile && pSoundFile->IsOK()))
+    if (!(g_pSoundFile && g_pSoundFile->IsOK()))
         // MessageBox(NULL,"Error Creating Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
         MessageOut(NULL, IDS_STRING_ERRSOUND, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 
@@ -5629,8 +5633,6 @@ void GetTempAudioWavPath()
     bool fileverified = false;
     while (!fileverified)
     {
-        OFSTRUCT ofstruct;
-
         if (std::experimental::filesystem::exists(strTempAudioWavFilePath.GetString()))
         {
             fileverified = std::experimental::filesystem::remove(strTempAudioWavFilePath.GetString());
@@ -5638,17 +5640,16 @@ void GetTempAudioWavPath()
             {
                 srand((unsigned)time(NULL));
                 int randnum = rand();
-                char numstr[50];
-                sprintf(numstr, "%d", randnum);
 
-                CString cnumstr(numstr);
+                auto numstr = std::to_string(randnum);
+
                 // CString fxstr;
                 // fxstr.Format("\\%s", TEMPFILETAGINDICATOR );
                 // CString exstr(".wav");
                 // strTempAudioWavFilePath = GetTempFolder (cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir)
                 // + fxstr + cnumstr + exstr;
                 strTempAudioWavFilePath.Format("%s\\%s-%s-%s.%s", csTempFolder.GetString(), TEMPFILETAGINDICATOR,
-                    cVideoOpts.m_cStartRecordingString.GetString(), cnumstr, "wav");
+                    cVideoOpts.m_cStartRecordingString.GetString(), numstr.c_str(), "wav");
 
                 // MessageBox(NULL,strTempAudioWavFilePath,"Uses Temp File",MB_OK);
                 // fileverified = 1;
@@ -5837,12 +5838,13 @@ void GetTempXnoteLogPath()
             // Try to open a file with a random number attached till we got a file that can be used.
             srand((unsigned)time(NULL));
             int randnum = rand();
-            char numstr[50];
-            sprintf(numstr, "%d", randnum);
+            auto numstr = std::to_string(randnum);
 
-            CString cnumstr(numstr);
-            strTempXnoteLogFilePath.Format("%s\\%s-%s-%s.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR,
-                                           (LPCSTR)cVideoOpts.m_cStartRecordingString, cnumstr.GetString(), "txt");
+            strTempXnoteLogFilePath.Format("%s\\%s-%s-%s.%s",
+                csTempFolder.GetString(),
+                TEMPFILETAGINDICATOR,
+                cVideoOpts.m_cStartRecordingString.GetString(),
+                numstr.c_str(), "txt");
         }
     }
 }

@@ -300,7 +300,6 @@ BOOL CMainFrame::OnQueryNewPalette()
 {
     // TODO: Add your message handler code here and/or call default
 
-    BOOL val;
     if (giFirstVideo >= 0)
     {
         HDC hdc = ::GetDC(viewWnd);
@@ -308,7 +307,7 @@ BOOL CMainFrame::OnQueryNewPalette()
         //
         // Realize the palette of the first video stream
         //
-        val = DrawDibRealize(ghdd[giFirstVideo], hdc, FALSE);
+        auto val = DrawDibRealize(ghdd[giFirstVideo], hdc, FALSE);
         if (val)
         {
             ::InvalidateRect(viewWnd, NULL, TRUE);

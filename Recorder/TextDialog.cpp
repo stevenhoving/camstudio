@@ -106,7 +106,7 @@ BOOL CTextDlg::OnInitDialog()
         // tempFont.DeleteObject();
     }
 
-    CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();
+    //CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();
 
     return TRUE; // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
@@ -124,7 +124,6 @@ void CTextDlg::OnFont()
 
     if (fontdlg.DoModal() == IDOK)
     {
-
         fontdlg.GetCurrentFont(logFont);
         *colorrgb = fontdlg.GetColor();
 

@@ -1,6 +1,3 @@
-// playplus.cpp : Defines the class behaviors for the application.
-//
-
 #include "stdafx.h"
 #include "playplus.h"
 
@@ -26,9 +23,6 @@ HBITMAP hAboutBM = NULL;
 extern int autoplay;
 extern int autoexit;
 
-/////////////////////////////////////////////////////////////////////////////
-// CPlayplusApp
-
 BEGIN_MESSAGE_MAP(CPlayplusApp, CWinApp)
 //{{AFX_MSG_MAP(CPlayplusApp)
 ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
@@ -42,8 +36,6 @@ ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
 ON_COMMAND(ID_FILE_PRINT_SETUP, CWinApp::OnFilePrintSetup)
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CPlayplusApp construction
 
 CPlayplusApp::CPlayplusApp()
 {
@@ -51,53 +43,44 @@ CPlayplusApp::CPlayplusApp()
     // Place all significant initialization in InitInstance
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// The one and only CPlayplusApp object
-
 CPlayplusApp theApp;
-
-/////////////////////////////////////////////////////////////////////////////
-// CPlayplusApp initialization
 
 BOOL CPlayplusApp::InitInstance()
 {
-
     // Multilang
     CurLangID = STANDARD_LANGID;
     HKEY hKey;
-    DWORD language = 7;
+    LANGID language = 7;
     LONG returnStatus;
     DWORD Type = REG_DWORD;
-    DWORD Size = sizeof(DWORD);
-    returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap\\Language", 0L,
-                                KEY_ALL_ACCESS, &hKey);
+    DWORD Size = sizeof(language);
+    returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
 
     // create default LanguageID no exists
     if (returnStatus != ERROR_SUCCESS)
     {
-        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio", 0, 0,
-                                      REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, 0);
-        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap", 0, 0,
-                                      REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, 0);
-        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap\\Language", 0,
-                                      0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, 0);
-        RegSetValueEx(hKey, "LanguageID", 0, REG_DWORD, (BYTE *)&language, sizeof(DWORD));
-        returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap\\Language", 0L,
-                                    KEY_ALL_ACCESS, &hKey);
+        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio", 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, 0);
+        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap", 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, 0);
+        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap\\Language", 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, 0);
+        RegSetValueEx(hKey, "LanguageID", 0, REG_DWORD, (BYTE *)&language, sizeof(language));
+        returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
     }
 
     // read LanguageID
     if (returnStatus == ERROR_SUCCESS)
     {
-
         returnStatus = RegQueryValueEx(hKey, "LanguageID", NULL, &Type, (LPBYTE)&language, &Size);
 
         if (returnStatus == ERROR_SUCCESS)
         {
             // load ResDLL
-            if (!LoadLangIDDLL((int)language))
+            if (!LoadLangIDDLL(language))
+            {
                 if (!LoadLangIDDLL(GetUserDefaultLangID()))
+                {
                     LoadLangIDDLL(GetSystemDefaultLangID());
+                }
+            }
         }
     }
 
@@ -141,7 +124,6 @@ BOOL CPlayplusApp::InitInstance()
     playfiledir[0] = 0;
     if (strlen(m_lpCmdLine) != 0)
     {
-
         if ((m_lpCmdLine[0] == '-') && ((m_lpCmdLine[1] == 'a') || (m_lpCmdLine[1] == 'x')))
         {
             autoplay = 1;
@@ -158,16 +140,18 @@ BOOL CPlayplusApp::InitInstance()
 
             if (lenx > 4)
             {
-                strcpy(playfiledir, &m_lpCmdLine[i]);
+                strcpy_s(playfiledir, &m_lpCmdLine[i]);
             }
         }
         else
-            strcpy(playfiledir, m_lpCmdLine);
+        {
+            strcpy_s(playfiledir, m_lpCmdLine);
+        }
 
         // Fix to open long filename or filename with quotes on launch
         CString strCleanCmdLineFileName(playfiledir);
         strCleanCmdLineFileName.Replace("\"", "");
-        strcpy(playfiledir, strCleanCmdLineFileName.GetBuffer());
+        strcpy_s(playfiledir, strCleanCmdLineFileName.GetBuffer());
         cmdInfo.m_strFileName = playfiledir;
     }
     /*
@@ -182,7 +166,9 @@ BOOL CPlayplusApp::InitInstance()
 
     // Dispatch commands specified on the command line
     if (!ProcessShellCommand(cmdInfo))
+    {
         return false;
+    }
 
     // The one and only window has been initialized, so show and update it.
     m_pMainWnd->ShowWindow(SW_SHOW);

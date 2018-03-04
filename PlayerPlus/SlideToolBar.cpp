@@ -122,8 +122,8 @@ void CSlideToolBar::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
     if (!gfPlaying)
     {
 
-        CSliderCtrl *m_wndSliderCtrl = (CSliderCtrl *)pScrollBar;
-        long value = m_wndSliderCtrl->GetPos();
+        CSliderCtrl *wndSliderCtrl = (CSliderCtrl *)pScrollBar;
+        long value = wndSliderCtrl->GetPos();
         value = timeStart + (value * timeLength) / MAXTIMERANGE;
 
         if (value < timeStart)
@@ -181,7 +181,7 @@ void CSlideToolBar::AdjustTimeBar(CRect clientrect)
     m_wndSliderCtrl.MoveWindow(rect.left, rect.top, rect.right - rect.left, rect.Height(), TRUE);
 }
 
-void CSlideToolBar::EnableButton(BOOL setToOn, int nIndex)
+void CSlideToolBar::EnableButton(BOOL /*setToOn*/, int /*nIndex*/)
 {
     // m_bEnableChanged = TRUE;
     // nIndex = CommandToIndex( nIndex );

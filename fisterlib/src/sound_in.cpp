@@ -15,6 +15,8 @@ CSoundIn::CSoundIn()
     , m_hRecord(nullptr)
     , m_bRecording(false)
     , m_pOwner(nullptr)
+    , m_ThreadID(0)
+    , DataFromSoundIn(nullptr)
 {
     CreateThread();
     m_bAutoDelete = false;

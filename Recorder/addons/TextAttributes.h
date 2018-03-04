@@ -35,7 +35,7 @@ struct OffsetRatio
 
 struct TextAttributes
 {
-    TextAttributes( ePosition pos = TOP_LEFT, ePosType posType = UNDEFINED ,int xRatio = 0, int yRatio = 0, const CString& strText = "", COLORREF clrBackground = 0UL, COLORREF clrText = 0UL)
+    TextAttributes(ePosition pos = TOP_LEFT, ePosType posType = UNDEFINED ,int xRatio = 0, int yRatio = 0, const CString& strText = "", COLORREF clrBackground = 0UL, COLORREF clrText = 0UL)
         : position(pos)
         , posType(posType)
         , xPosRatio(xRatio)
@@ -43,15 +43,27 @@ struct TextAttributes
         , text(strText)
         , backgroundColor(clrBackground)
         , textColor(clrText)
-         
     {
+    }
+
+    TextAttributes(const TextAttributes &rhs)
+    {
+        position = rhs.position;
+        posType = rhs.posType;
+        xPosRatio = rhs.xPosRatio;
+        yPosRatio = rhs.yPosRatio;
+        text = rhs.text;
+        backgroundColor = rhs.backgroundColor;
+        textColor = rhs.textColor;
+        isFontSelected = rhs.isFontSelected;
+        logfont = rhs.logfont;
     }
 
     const TextAttributes& operator=(const TextAttributes& rhs)
     {
         if (this == &rhs) {
             return *this;
-}
+        }
 
         position        = rhs.position;
         posType            = rhs.posType;
@@ -61,8 +73,7 @@ struct TextAttributes
         backgroundColor = rhs.backgroundColor;
         textColor        = rhs.textColor;
         isFontSelected    = rhs.isFontSelected;
-        logfont            = rhs.logfont;    // bitwise copy is OK; logfont is POD
-        //::memcpy(&logfont, &rhs.logfont, sizeof(LOGFONT));
+        logfont           = rhs.logfont;
 
         return *this;
     }

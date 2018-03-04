@@ -9,16 +9,26 @@ struct HotKey
 {
     DWORD key;
     DWORD mod;
-    HotKey(const HotKey &rhs)
-    {
-        key = rhs.key;
-        mod = rhs.mod;
-    }
+
     HotKey(DWORD k, DWORD m)
         : key(k)
         , mod(m)
     {
     }
+
+    HotKey(const HotKey &rhs)
+    {
+        key = rhs.key;
+        mod = rhs.mod;
+    }
+
+    HotKey &operator=(const HotKey &rhs)
+    {
+        key = rhs.key;
+        mod = rhs.mod;
+        return *this;
+    }
+
     bool operator<(const HotKey &rhs) const
     {
         if (key < rhs.key)
