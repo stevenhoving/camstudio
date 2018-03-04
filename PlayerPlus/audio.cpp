@@ -13,7 +13,7 @@
 #include "muldiv32.h"
 #include <vfw.h>
 
-extern int ErrMsg(LPSTR sz, ...);
+extern int ErrorMsg(LPSTR sz, ...);
 
 BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, BOOL fWait);
 void CALLBACK aviaudioMessage(HWND, UINT, WPARAM, LPARAM);
@@ -72,7 +72,7 @@ BOOL CALLBACK aviaudioOpenDevice(HWND hwnd, PAVISTREAM pavi)
     AVISTREAMINFO strhdr;
 
     if (!pavi) // no wave data to play
-        return FALSE;
+        return false;
 
     if (shWaveOut) // already something playing
         return TRUE;
@@ -85,14 +85,14 @@ BOOL CALLBACK aviaudioOpenDevice(HWND hwnd, PAVISTREAM pavi)
 
     slSampleSize = (LONG)strhdr.dwSampleSize;
     if (slSampleSize <= 0 || slSampleSize > AUDIO_BUFFER_SIZE)
-        return FALSE;
+        return false;
 
     // AVIStreamFormatSize(pavi, 0, &cbFormat);
     AVIStreamFormatSize(pavi, AVIStreamStart(pavi), &cbFormat);
 
     lpFormat = GlobalAllocPtr(GHND, cbFormat);
     if (!lpFormat)
-        return FALSE;
+        return false;
 
     // AVIStreamReadFormat(pavi, 0, lpFormat, &cbFormat);
     AVIStreamReadFormat(pavi, AVIStreamStart(pavi), lpFormat, &cbFormat);
@@ -114,7 +114,7 @@ BOOL CALLBACK aviaudioOpenDevice(HWND hwnd, PAVISTREAM pavi)
 
     if (mmResult != 0)
     {
-        return FALSE;
+        return false;
     }
 
     for (swBuffers = 0; swBuffers < MAX_AUDIO_BUFFERS; swBuffers++)
@@ -135,7 +135,7 @@ BOOL CALLBACK aviaudioOpenDevice(HWND hwnd, PAVISTREAM pavi)
     if (swBuffers < MIN_AUDIO_BUFFERS)
     {
         aviaudioCloseDevice();
-        return FALSE;
+        return false;
     }
 
     swBuffersOut = 0;
@@ -240,7 +240,7 @@ BOOL aviaudioiFillBuffers(void)
             }
             else
             {
-                return FALSE;
+                return false;
             }
         }
 
@@ -251,7 +251,7 @@ BOOL aviaudioiFillBuffers(void)
         if (mmResult != 0)
         {
             //::MessageBox(NULL,"Waveoutwrite problem","note",MB_OK);
-            return FALSE;
+            return false;
         }
 
         ++swBuffersOut;
@@ -273,7 +273,7 @@ BOOL aviaudioiFillBuffers(void)
 BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, BOOL fWait)
 {
     if (audioPlayable <= 0)
-        return FALSE;
+        return false;
 
     recalc = 1;
 
@@ -291,13 +291,13 @@ BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, B
 
     if (lStart >= lEnd)
     {
-        return FALSE;
+        return false;
     }
 
     if (!aviaudioOpenDevice(hwnd, pavi))
     {
         MessageBox(NULL, "AudioOpen failed", "Note", MB_OK | MB_ICONEXCLAMATION);
-        return FALSE;
+        return false;
     }
 
     if (!sfPlaying)

@@ -156,7 +156,7 @@ UINT PlayAVIThread(LPVOID pParam);
 #define MENU_OPEN 11
 #define MENU_MERGE 17
 
-int ErrMsg(LPSTR sz, ...);
+int ErrorMsg(LPSTR sz, ...);
 void FreeDrawStuff();
 void FileStop(int mode);
 void FixWindowTitle();
@@ -1157,7 +1157,7 @@ void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long starttime, int /*keepcou
         {
             if (AVIFileGetStream(pfile, &pavi, streamtypeAUDIO, 0) != AVIERR_OK)
             {
-                ErrMsg("Unable to load audio file");
+                ErrorMsg("Unable to load audio file");
                 return;
             }
             // if not PCM, if not at same audio rate, then covert to working PCM format
@@ -1197,13 +1197,13 @@ void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long starttime, int /*keepcou
                 if (EditStreamReplace(gapavi[giFirstAudio], &startsample, &lx, pavi, AVIStreamStart(pavi),
                                       AVIStreamLength(pavi)) != AVIERR_OK)
                 {
-                    ErrMsg("Unable to add audio at insertion point");
+                    ErrorMsg("Unable to add audio at insertion point");
                 }
             }
             AVIStreamRelease(pavi);
             AVIFileRelease(pfile);
 
-            ErrMsg("resetslider %d,timeCurrent %d", resetslider, timeCurrent);
+            ErrorMsg("resetslider %d,timeCurrent %d", resetslider, timeCurrent);
             RecomputeStreamsTime(resetslider, timeCurrent);
 
             return;
@@ -1235,7 +1235,7 @@ void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long starttime, int /*keepcou
         {
             AVIStreamRelease(pavi);
             LoadString(ghInstApp, IDS_MAXSTREAMS, gszBuffer, BUFSIZE);
-            ErrMsg(gszBuffer);
+            ErrorMsg(gszBuffer);
             break;
         }
         if (CreateEditableStream(&gapavi[i], pavi) != AVIERR_OK)
@@ -1252,7 +1252,7 @@ void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long starttime, int /*keepcou
     {
         LoadString(ghInstApp, IDS_NOOPEN, gszBuffer, BUFSIZE);
 
-        ErrMsg(gszBuffer, lpszFile);
+        ErrorMsg(gszBuffer, lpszFile);
         return;
     }
     FreeDrawStuff();
@@ -1268,7 +1268,7 @@ void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long starttime, int /*keepcou
         long startsample = 0;
 
         startsample = SafeStreamTimeToSample(gapavi[giFirstAudio], starttime);
-        ErrMsg("giFirstAudio = %d,startsample = %d, starttime = %d", giFirstAudio, startsample, starttime);
+        ErrorMsg("giFirstAudio = %d,startsample = %d, starttime = %d", giFirstAudio, startsample, starttime);
 
         if (startsample > 0)
         {
@@ -1326,7 +1326,7 @@ void InitAvi(LPSTR szFile, int nMenu, long starttime, int keepcounter, int overw
 
     if (hr != 0)
     {
-        ErrMsg("Unable to open file %s", szFile);
+        ErrorMsg("Unable to open file %s", szFile);
         return;
     }
     // If we're opening something new, close other open files, otherwise
@@ -1419,7 +1419,7 @@ UINT PlayAVIThread(LPVOID /*pParam*/)
     return 0;
 }
 
-int ErrMsg(LPSTR sz, ...)
+int ErrorMsg(LPSTR sz, ...)
 {
     static char szOutput[4 * BUFSIZE];
 
@@ -1703,7 +1703,7 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM *paviConverted, PAVISTREAM paviDstFo
 
             if (mmr != 0)
             {
-                ErrMsg("Error suggesting PCM format for conversion !");
+                ErrorMsg("Error suggesting PCM format for conversion !");
             }
             AVICOMPRESSOPTIONS compressOptions;
             _fmemset(&compressOptions, 0, sizeof(AVICOMPRESSOPTIONS));
@@ -1716,7 +1716,7 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM *paviConverted, PAVISTREAM paviDstFo
             // ErrMsg("Here is fine 0!");
             if (AVIMakeCompressedStream(&intermediatePCMStream, pavi, &compressOptions, NULL) != AVIERR_OK)
             {
-                ErrMsg("Error converting to PCM format!");
+                ErrorMsg("Error converting to PCM format!");
                 return -1;
             }
             ret += 1;
@@ -1731,7 +1731,7 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM *paviConverted, PAVISTREAM paviDstFo
 
             if (srcWaveFormat == NULL)
             {
-                ErrMsg("Here is read 5!");
+                ErrorMsg("Here is read 5!");
 
                 // release the intermediate stream only if the original stream for conversion is non PCM
                 if ((nonPCM) && (intermediatePCMStream))
@@ -1772,7 +1772,7 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM *paviConverted, PAVISTREAM paviDstFo
 
             if (m_Format.wFormatTag != WAVE_FORMAT_PCM)
             {
-                ErrMsg("Invalid Working Format!Working Format is non PCM !");
+                ErrorMsg("Invalid Working Format!Working Format is non PCM !");
                 free(srcWaveFormat);
 
                 // release the intermediate stream only if the original stream for conversion is non PCM
@@ -1782,7 +1782,7 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM *paviConverted, PAVISTREAM paviDstFo
             }
             if (srcWaveFormat->wFormatTag != WAVE_FORMAT_PCM)
             {
-                ErrMsg("Invalid Intermediate Format! Intermediate Format is non PCM !");
+                ErrorMsg("Invalid Intermediate Format! Intermediate Format is non PCM !");
                 free(srcWaveFormat);
 
                 // release the intermediate stream only if the original stream for conversion is non PCM
@@ -1794,7 +1794,7 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM *paviConverted, PAVISTREAM paviDstFo
             {
                 if (dstFormat->wFormatTag != WAVE_FORMAT_PCM)
                 {
-                    ErrMsg("Invalid Destination Format! Destination Format is non PCM !");
+                    ErrorMsg("Invalid Destination Format! Destination Format is non PCM !");
                     free(srcWaveFormat);
                     free(dstFormat);
 
@@ -1831,7 +1831,7 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM *paviConverted, PAVISTREAM paviDstFo
             }
             if (mmr != 0)
             {
-                ErrMsg("Error suggesting compatible PCM working format for conversion !");
+                ErrorMsg("Error suggesting compatible PCM working format for conversion !");
 
                 free(srcWaveFormat);
 
@@ -1844,7 +1844,7 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM *paviConverted, PAVISTREAM paviDstFo
             if ((PCMFormat.nAvgBytesPerSec != m_Format.nAvgBytesPerSec) ||
                 (PCMFormat.nBlockAlign != m_Format.nBlockAlign))
             {
-                ErrMsg("Note: The format suggested for conversion is not compatible with the working format !");
+                ErrorMsg("Note: The format suggested for conversion is not compatible with the working format !");
 
                 // free(srcWaveFormat);
                 // release the intermediate stream only if the intermediate stream is not a pointer to the original
@@ -1872,7 +1872,7 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM *paviConverted, PAVISTREAM paviDstFo
             if (AVIMakeCompressedStream(&finalPCMStream, intermediatePCMStream, &compressOptionsFinal, NULL) !=
                 AVIERR_OK)
             {
-                ErrMsg("Error converting PCM attributes !");
+                ErrorMsg("Error converting PCM attributes !");
                 free(srcWaveFormat);
 
                 // release the intermediate stream only if the original stream for conversion is non PCM
@@ -1929,7 +1929,7 @@ int TestConvert(PAVISTREAM pavi, PAVISTREAM *paviConverted, PAVISTREAM paviDstFo
     }
     else
     {
-        ErrMsg("Error converting audio, (Streamtype not Audio)");
+        ErrorMsg("Error converting audio, (Streamtype not Audio)");
         return -1;
     }
     return ret;
@@ -1947,17 +1947,17 @@ LPWAVEFORMATEX allocRetrieveAudioFormat(PAVISTREAM pavi)
 
     if (AVIStreamReadFormat(pavi, lStart, NULL, &lLength) != 0)
     {
-        ErrMsg("Error converting audio (1)");
+        ErrorMsg("Error converting audio (1)");
         return 0;
     }
     if ((srcFormat = malloc(lLength)) == NULL)
     {
-        ErrMsg("Error converting audio (2)");
+        ErrorMsg("Error converting audio (2)");
         return 0;
     }
     if (AVIStreamReadFormat(pavi, lStart, srcFormat, &lLength) != 0)
     {
-        ErrMsg("Error converting audio (3)");
+        ErrorMsg("Error converting audio (3)");
         free(srcFormat);
         return 0;
     }
@@ -3912,11 +3912,11 @@ void CPlayplusView::OnFileSaveas()
             {
                 case AVIERR_FILEOPEN:
                     LoadString(ghInstApp, IDS_ERROVERWRITE, gszBuffer, BUFSIZE);
-                    ErrMsg(gszBuffer);
+                    ErrorMsg(gszBuffer);
                     break;
                 default:
                     LoadString(ghInstApp, IDS_SAVEERROR, gszBuffer, BUFSIZE);
-                    ErrMsg(gszBuffer);
+                    ErrorMsg(gszBuffer);
             }
         }
         else
@@ -3965,14 +3965,14 @@ void AuditAudio(PAVISTREAM pavi, long startsample)
     if (slSampleSize <= 0 || slSampleSize > AUDIO_BUFFER_SIZE)
     {
         free(buffer);
-        ErrMsg("Not Pass");
+        ErrorMsg("Not Pass");
         return;
     }
     lSamplesToPlay = slEnd - slCurrent;
     if (lSamplesToPlay > AUDIO_BUFFER_SIZE / slSampleSize)
         lSamplesToPlay = AUDIO_BUFFER_SIZE / slSampleSize;
 
-    ErrMsg("slCurrent %ld, slEnd %ld, lSamplesToPlay %ld", slCurrent, slEnd, lSamplesToPlay);
+    ErrorMsg("slCurrent %ld, slEnd %ld, lSamplesToPlay %ld", slCurrent, slEnd, lSamplesToPlay);
 
     while (slCurrent < slEnd)
     {
@@ -3985,7 +3985,7 @@ void AuditAudio(PAVISTREAM pavi, long startsample)
     if (buffer)
         free(buffer);
 
-    ErrMsg("Ok");
+    ErrorMsg("Ok");
 }
 
 void CPlayplusView::OnZoomTestaudio()
@@ -4086,7 +4086,7 @@ int EditStreamReplace(PAVISTREAM pavi, LONG *plPos, LONG *plLength, PAVISTREAM p
     value = EditStreamPaste(pavi, plPos, plLength, pstream, lStart, lLength);
     if (value != AVIERR_OK)
     {
-        ErrMsg("Unable to add audio at insertion point (Stream Replace)");
+        ErrorMsg("Unable to add audio at insertion point (Stream Replace)");
     }
     // ErrMsg("pavi %ld, *plPos %ld, *plLength %ld, pstream %ld, lStart %ld,lLength %ld",pavi, *plPos, *plLength,
     // pstream, lStart,lLength);
@@ -4116,7 +4116,7 @@ int EditStreamReplace(PAVISTREAM pavi, LONG *plPos, LONG *plLength, PAVISTREAM p
         value = EditStreamCut(pavi, &cutStartPoint, plLength, &tempStream);
         if (value != AVIERR_OK)
         {
-            ErrMsg("Unable to remove audio at replace point (Stream Replace)");
+            ErrorMsg("Unable to remove audio at replace point (Stream Replace)");
         }
         AVIStreamRelease(tempStream);
     }
@@ -4150,13 +4150,13 @@ int EditStreamPadSilence(PAVISTREAM pavi, LONG *plPos, LONG *plLength)
 
             if (hr != 0)
             {
-                ErrMsg("Unable to open silence file");
+                ErrorMsg("Unable to open silence file");
                 return hr;
             }
             hr = AVIFileGetStream(pfileSilence, &paviSilence, streamtypeAUDIO, 0);
             if (hr != AVIERR_OK)
             {
-                ErrMsg("Unable to load silence stream");
+                ErrorMsg("Unable to load silence stream");
                 return hr;
             }
             long SilenceStreamLength = AVIStreamLength(paviSilence);
@@ -4182,7 +4182,7 @@ int EditStreamPadSilence(PAVISTREAM pavi, LONG *plPos, LONG *plLength)
                 hr = EditStreamPaste(pavi, &initialStreamEnd, &PastedLength, paviSilence, 0, lengthToPaste);
                 if (hr != AVIERR_OK)
                 {
-                    ErrMsg("Unable to pad silence to existing stream at position %ld (Stream Replace)",
+                    ErrorMsg("Unable to pad silence to existing stream at position %ld (Stream Replace)",
                            initialStreamEnd);
                     return hr;
                 }
@@ -4199,7 +4199,7 @@ int EditStreamPadSilence(PAVISTREAM pavi, LONG *plPos, LONG *plLength)
         else
         {
             // no silence added
-            ErrMsg("Invalid Silence File! No audio [silence] added");
+            ErrorMsg("Invalid Silence File! No audio [silence] added");
 
             // return -1;
         }
@@ -4229,13 +4229,13 @@ int EditStreamSilenceShift(PAVISTREAM pavi, LONG *plPos, LONG *plLength)
 
             if (hr != 0)
             {
-                ErrMsg("Unable to open silence file (2) ");
+                ErrorMsg("Unable to open silence file (2) ");
                 return hr;
             }
             hr = AVIFileGetStream(pfileSilence, &paviSilence, streamtypeAUDIO, 0);
             if (hr != AVIERR_OK)
             {
-                ErrMsg("Unable to load silence stream (2)");
+                ErrorMsg("Unable to load silence stream (2)");
                 return hr;
             }
             long SilenceStreamLength = AVIStreamLength(paviSilence);
@@ -4261,12 +4261,12 @@ int EditStreamSilenceShift(PAVISTREAM pavi, LONG *plPos, LONG *plLength)
                 hr = EditStreamPaste(pavi, &StreamPastePoint, &PastedLength, paviSilence, 0, lengthToPaste);
                 if (hr != AVIERR_OK)
                 {
-                    ErrMsg("Unable to pad silence to existing stream at position %ld (2)", StreamPastePoint);
+                    ErrorMsg("Unable to pad silence to existing stream at position %ld (2)", StreamPastePoint);
                     return hr;
                 }
                 if (PastedLength <= 0)
                 {
-                    ErrMsg("Unable to pad silence ! Pad Length <= 0 ! (2)");
+                    ErrorMsg("Unable to pad silence ! Pad Length <= 0 ! (2)");
                     return -1;
                 }
                 totalPastedLength += PastedLength;
@@ -4281,7 +4281,7 @@ int EditStreamSilenceShift(PAVISTREAM pavi, LONG *plPos, LONG *plLength)
         else
         {
             // no silence added
-            ErrMsg("Invalid Silence File! No audio [silence] added (2)");
+            ErrorMsg("Invalid Silence File! No audio [silence] added (2)");
 
             // return -1;
         }
@@ -4447,12 +4447,12 @@ void TestConvertFirstAudio()
         else if (retval == 0)
         {
             // no conversion necessary
-            ErrMsg("No Conversion Performed");
+            ErrorMsg("No Conversion Performed");
         }
         else
         {
             // Error
-            ErrMsg("Error in Conversion");
+            ErrorMsg("Error in Conversion");
             // no need to free resources as gapavi[giFirstAudio] remains valid and paviConverted has not been used
         }
     }
@@ -4473,7 +4473,7 @@ void CloneAudioStream_ReplaceStreamPool(int i, PAVISTREAM pavi)
     if (CreateEditableStream(&paviConverted, pavi) != AVIERR_OK)
     {
         // error
-        ErrMsg("Unable to Create Editable Stream for Converted Audio");
+        ErrorMsg("Unable to Create Editable Stream for Converted Audio");
 
         // will not affect original stream
 

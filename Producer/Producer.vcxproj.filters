@@ -5,13 +5,12 @@
       <UniqueIdentifier>{f95fbb07-ff32-45a3-82c2-1e9b4cc6f19d}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{863a6845-76f3-4281-8067-7ec25f31c00e}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{825765a5-dcf7-4e72-bdbc-f36656b36974}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Source Files\fister">
+      <UniqueIdentifier>{2f4b22e2-744e-438b-9a60-cae2e22e5cd8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -22,9 +21,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AudioFormat.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\Buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Conversion.cpp">
@@ -54,17 +50,26 @@
     <ClCompile Include="SlideToolBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="fister\SoundBase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\SoundFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="StdAfx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Conversion\WAVEIO.CPP">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\Buffer.cpp">
+      <Filter>Source Files\fister</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\SoundBase.cpp">
+      <Filter>Source Files\fister</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\SoundFile.cpp">
+      <Filter>Source Files\fister</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\SoundOut.cpp">
+      <Filter>Source Files\fister</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\SoundIn.cpp">
+      <Filter>Source Files\fister</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,41 +78,59 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="AdvProperty.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="AudioFormat.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Conversion.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="MainFrm.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="playplus.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="playplusDoc.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="playplusView.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="ProgressDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="SlideToolBar.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="StdAfx.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="fister\Buffer.h">
+      <Filter>Source Files\fister</Filter>
+    </ClInclude>
+    <ClInclude Include="fister\SoundOut.h">
+      <Filter>Source Files\fister</Filter>
+    </ClInclude>
+    <ClInclude Include="fister\SoundBase.h">
+      <Filter>Source Files\fister</Filter>
+    </ClInclude>
+    <ClInclude Include="fister\SoundFile.h">
+      <Filter>Source Files\fister</Filter>
+    </ClInclude>
+    <ClInclude Include="fister\SoundIn.h">
+      <Filter>Source Files\fister</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageWnd.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -21,7 +21,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-using FRAMECALLBACK = LRESULT (*)(HWND, LPVIDEOHDR) __attribute__((stdcall)))(HWND, LPVIDEOHDR);
+using FRAMECALLBACK = LRESULT(CALLBACK *)(HWND, LPVIDEOHDR);
+
 #define IMAGEWIDTH(lpd) ((LPBITMAPINFOHEADER)lpd)->biWidth
 #define IMAGEHEIGHT(lpd) ((LPBITMAPINFOHEADER)lpd)->biHeight
 #define IMAGEBITS(lpd) ((LPBITMAPINFOHEADER)lpd)->biBitCount

@@ -44,11 +44,11 @@ BOOL CBitmapEx::CreateFromDib(LPBITMAPINFO lpBi)
 {
     if (!lpBi || _modBMP)
     {
-        return FALSE;
+        return false;
     }
     if ((reinterpret_cast<LPBITMAPINFOHEADER>(lpBi))->biCompression != BI_RGB)
     {
-        return FALSE;
+        return false;
     }
 
     if (GetSafeHandle())
@@ -102,7 +102,7 @@ BOOL CBitmapEx::CreateFromDib(LPBITMAPINFO lpBi)
     ::ReleaseDC(nullptr, hdc);
     if (!hbm)
     {
-        return FALSE;
+        return false;
     }
 
     DeleteObject(); // delete attached bitmap
@@ -110,7 +110,7 @@ BOOL CBitmapEx::CreateFromDib(LPBITMAPINFO lpBi)
     if (!Attach((HGDIOBJ)hbm))
     {
         ::DeleteObject((HGDIOBJ)hbm);
-        return FALSE;
+        return false;
     }
 
     return TRUE;
@@ -124,7 +124,7 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
 {
     if (GetSafeHandle())
     {
-        return FALSE;
+        return false;
     }
 
     CString Path(filename);
@@ -140,7 +140,7 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
 
         if (IDOK != openAs.DoModal())
         {
-            return FALSE;
+            return false;
         }
         Path = openAs.GetPathName();
     }
@@ -148,7 +148,7 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
     CFile file;
     if (!file.Open(Path, CFile::modeRead | CFile::typeBinary))
     {
-        return FALSE;
+        return false;
     }
 
     // get length of DIB in bytes for use when reading
@@ -183,7 +183,7 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
 
     if (!ret)
     {
-        return FALSE;
+        return false;
     }
 
     // Allocate memory for DIB
@@ -192,7 +192,7 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
     HANDLE hDIB = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, dwBitsSize);
     if (!hDIB)
     {
-        return FALSE;
+        return false;
     }
 
     auto lpbi = static_cast<LPBITMAPINFOHEADER>(GlobalLock(hDIB));
@@ -216,7 +216,7 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
     {
         GlobalUnlock(hDIB);
         GlobalFree(hDIB);
-        return FALSE;
+        return false;
     }
 
     // Create DDB
@@ -230,7 +230,7 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
 
     if (!hbm)
     {
-        return FALSE;
+        return false;
     }
 
     if (GetSafeHandle())
@@ -241,7 +241,7 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
     if (!Attach((HGDIOBJ)hbm))
     {
         ::DeleteObject((HGDIOBJ)hbm);
-        return FALSE;
+        return false;
     }
 
     return ret;
@@ -251,7 +251,7 @@ BOOL CBitmapEx::Save(LPCSTR filename, LPCSTR DialogTitle)
 {
     if (!GetSafeHandle())
     {
-        return FALSE;
+        return false;
     }
 
     CString Path(filename);
@@ -265,7 +265,7 @@ BOOL CBitmapEx::Save(LPCSTR filename, LPCSTR DialogTitle)
 
         if (IDOK != saveAs.DoModal())
         {
-            return FALSE;
+            return false;
         }
 
         Path = saveAs.GetPathName();
@@ -274,13 +274,13 @@ BOOL CBitmapEx::Save(LPCSTR filename, LPCSTR DialogTitle)
     CFile file;
     if (!file.Open((LPCSTR)Path, CFile::modeCreate | CFile::modeWrite | CFile::typeBinary))
     {
-        return FALSE;
+        return false;
     }
 
     HANDLE hdib = _dibFromBitmap(static_cast<HBITMAP>(GetSafeHandle()));
     if (!hdib)
     {
-        return FALSE;
+        return false;
     }
 
     auto lpbi = static_cast<LPBITMAPINFOHEADER>(::GlobalLock(hdib));
@@ -350,7 +350,7 @@ BOOL CBitmapEx::CreateColor(int dx, int dy)
 {
     if (GetSafeHandle())
     {
-        return FALSE;
+        return false;
     }
     HDC hScrDC = ::GetDC(nullptr);
     HDC hMemDC = ::CreateCompatibleDC(hScrDC);
@@ -367,7 +367,7 @@ BOOL CBitmapEx::CreateMono(int dx, int dy)
 {
     if (GetSafeHandle())
     {
-        return FALSE;
+        return false;
     }
     CDC mDC;
     mDC.CreateCompatibleDC(nullptr); // for mono!

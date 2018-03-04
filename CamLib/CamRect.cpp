@@ -14,7 +14,7 @@ BOOL isRectEqual(RECT a, RECT b)
     //    && (a.bottom == b.bottom))
     //    return TRUE;
     // else
-    //    return FALSE;
+    //    return false;
 }
 
 // The rectangle is normalized for fourth-quadrant positioning, which Windows typically uses for coordinates.

@@ -12,9 +12,9 @@ class CProgressDlg : public CDialog
 {
  public:
     CProgressDlg(UINT nCaptionID = 0);
-    ~CProgressDlg();
+    ~CProgressDlg() override;
 
-    BOOL Create(CWnd *pParent = NULL);
+    BOOL Create(CWnd *pParent = nullptr);
 
     // Checking for Cancel button
     BOOL CheckCancelButton();
@@ -38,10 +38,10 @@ class CProgressDlg : public CDialog
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CProgressDlg)
 public:
-    virtual BOOL DestroyWindow();
+    BOOL DestroyWindow() override;
 
 protected:
-    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+    void DoDataExchange(CDataExchange *pDX) override; // DDX/DDV support
     //}}AFX_VIRTUAL
 
     // Implementation
@@ -56,14 +56,14 @@ protected:
 
     void ReEnableParent();
 
-    virtual void OnCancel();
-    virtual void OnOK(){};
+    void OnCancel() override;
+    void OnOK() override{};
     void UpdatePercent(int nCurrent);
     void PumpMessages();
 
     // Generated message map functions
     //{{AFX_MSG(CProgressDlg)
-    virtual BOOL OnInitDialog();
+    BOOL OnInitDialog() override;
     //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 public:

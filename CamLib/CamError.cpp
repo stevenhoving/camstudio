@@ -58,7 +58,7 @@ void OnError(LPCSTR lpszFunction)
     ::LocalFree(lpDisplayBuf);
 }
 
-void ErrMsg(char frmt[], ...)
+void ErrorMsg(char frmt[], ...)
 {
     DWORD written;
     char buf[5000];

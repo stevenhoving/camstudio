@@ -10,48 +10,13 @@
 #include "Recorder.h"
 #include "CursorOptionsDlg.h"
 #include "CamCursor.h"
+#include "CamColor.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
-// WTF???! Can this life be easier?
-// works both ways
-// TODO: move it somewhere
-#if 0
-__inline __declspec(naked) DWORD COLORREFtoARGB(COLORREF, BYTE)
-{
-    __asm
-    {
-        mov eax, DWORD PTR 4[esp]
-        bswap eax
-        mov al, BYTE PTR 8[esp]
-        rcr eax, 8
-        ret
-    }
-}
-#endif
-
-template <typename T>
-inline T rotate_carry_right(T rotateMe, unsigned int rotate)
-{
-    constexpr unsigned char bit_count = sizeof(T) * 8U;
-
-    const T carry_mask = ~(1u << (bit_count - rotate));
-
-    const auto shift = (bit_count - rotate) + 1; // +1 because of the carry
-    return (rotateMe >> rotate) | ((rotateMe << shift) & carry_mask);
-}
-
-DWORD COLORREFtoARGB(COLORREF color, BYTE fill)
-{
-    color = _byteswap_ulong(color);
-    memcpy(&color, &fill, 1);
-    color = rotate_carry_right(color, 8);
-    return color;
-}
 
 /////////////////////////////////////////////////////////////////////////////
 // CCursorOptionsDlg dialog

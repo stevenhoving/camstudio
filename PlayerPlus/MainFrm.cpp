@@ -15,7 +15,8 @@ static char THIS_FILE[] = __FILE__;
 
 extern HWND mainWnd;
 extern BOOL playerAlive;
-extern HDRAWDIB *ghdd;
+//extern HDRAWDIB *ghdd;
+HDRAWDIB *ghdd;
 extern int giFirstVideo;
 extern HWND viewWnd;
 
@@ -236,16 +237,16 @@ void CMainFrame::ResizeToMovie(RECT movierect)
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
     pStatus->GetWindowRect(&statusbarrect);
 
-    int borderHeight = GetSystemMetrics(SM_CYBORDER);
-    int borderWidth = GetSystemMetrics(SM_CXBORDER);
-    int captionHeight = GetSystemMetrics(SM_CYCAPTION);
+    //int borderHeight = GetSystemMetrics(SM_CYBORDER);
+    //int borderWidth = GetSystemMetrics(SM_CXBORDER);
+    //int captionHeight = GetSystemMetrics(SM_CYCAPTION);
 
     // Dock Toolbar
     // @FIXME[Carlo Lanzotti]: No need to call this unless the tool bar are set to be dockable.
     // DockControlBar(&m_wndToolBar);
 
     // Menu Height
-    int menuY = GetSystemMetrics(SM_CYMENU);
+    //int menuY = GetSystemMetrics(SM_CYMENU);
 
     CWnd *mainWindow = AfxGetMainWnd();
     AdjustWindowRectEx(&movierect, GetWindowLong(mainWindow->m_hWnd, GWL_STYLE), TRUE,
@@ -290,7 +291,7 @@ void CMainFrame::OffsetRectZero(CRect &winrect)
     winrect.left = 0;
     winrect.top = 0;
     winrect.right = winrect.right - x;
-    winrect.bottom = winrect.bottom - x;
+    winrect.bottom = winrect.bottom - y;
 }
 
 void CMainFrame::AdjustTimeBar(CRect clientrect)
@@ -310,7 +311,8 @@ BOOL CMainFrame::OnQueryNewPalette()
         //
         // Realize the palette of the first video stream
         //
-        if (val = DrawDibRealize(ghdd[giFirstVideo], hdc, FALSE))
+        val = DrawDibRealize(ghdd[giFirstVideo], hdc, FALSE);
+        if (val)
         {
             ::InvalidateRect(viewWnd, NULL, TRUE);
         }

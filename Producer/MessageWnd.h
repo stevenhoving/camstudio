@@ -7,8 +7,8 @@
 //*
 //* (C) 1998 by Franz Polzer
 //*
-//* Visit me at:	stud1.tuwien.ac.at/~e9225140
-//* Write to me:	e9225140@student.tuwien.ac.at
+//* Visit me at:    stud1.tuwien.ac.at/~e9225140
+//* Write to me:    e9225140@student.tuwien.ac.at
 //********************************************************************************
 
 #if !defined(AFX_TRANSPARENTWND_H__INCLUDED_)
@@ -79,7 +79,7 @@ public:
     int m_borderSize;
     COLORREF m_borderColor;
     COLORREF m_backgroundColor;
-    int widthPos; // WidthHeight 	(Formula): faction of original =  widthPos*0.025 + 0.2 ... form 0.2 to 5.2
+    int widthPos; // WidthHeight     (Formula): faction of original =  widthPos*0.025 + 0.2 ... form 0.2 to 5.2
     int heightPos;
     CRect m_rectOriginalWnd;
 

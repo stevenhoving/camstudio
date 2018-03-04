@@ -33,7 +33,7 @@ public:
     void AdjustTimeBar(CRect clientrect);
     void UpdateValues();
     void EnableButton(BOOL setToOn, int nIndex);
-    virtual ~CSlideToolBar();
+    ~CSlideToolBar() override;
 
     // Generated message map functions
 protected:

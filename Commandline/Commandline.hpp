@@ -2,35 +2,34 @@
 // License: GPL
 // Coded by karol(dot)toth(at)gmail(dot)com
 
-class screen{
-public:
-    int index;
-    int left;
-    int right;
-    int top;
-    int bottom;
-    int width;
-    int height;
-    char outFile[50];
-    char dispName[50];
-    screen(){
-        
-    };
+#pragma once
 
-    bool SetDimensions(int left, int right, int top, int bottom){
-        if(right > left && bottom > top){
-            this->left = left;
-            this->right = right;
-            this->top = top;
-            this->bottom = bottom;
-            this->width = (right - left) - 1;
-            this->height = (bottom - top) - 1;
-            return true;
-        }
-        else{
+struct  screen
+{
+    screen() = default;
+
+    int index{ 0 };
+    int left{ 0 };
+    int right{ 0 };
+    int top{ 0 };
+    int bottom{ 0 };
+    int width{ 0 };
+    int height{ 0 };
+    char outFile[50]{0};
+    char dispName[50]{0};
+
+    bool SetDimensions(int _left, int _right, int _top, int _bottom)
+    {
+        if (_right <= _left || _bottom <= _top)
             return false;
-        }
 
+        this->left = _left;
+        this->right = _right;
+        this->top = _top;
+        this->bottom = _bottom;
+        this->width = (_right - _left) - 1;
+        this->height = (_bottom - _top) - 1;
+        return true;
     }
     //bool SetName(string name);
 protected:

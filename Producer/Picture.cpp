@@ -72,6 +72,7 @@
 #include "stdafx.h"
 #include "Picture.h"
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -81,7 +82,7 @@ static char THIS_FILE[] = __FILE__;
 #define HIMETRIC_INCH 2540
 #define ERROR_TITLE "CPicture Error" // Error Title (Related To This Class)...
 
-extern void ErrMsg(char format[], ...);
+extern void ErrorMsg(char format[], ...);
 
 //-----------------------------------------------------------------------------
 // Does:   Constructor - Create a New CPicture Object To Hold Picture Data
@@ -235,16 +236,15 @@ BOOL CPicture::Load(CString sFilePathName)
     if (PictureFile.Open(sFilePathName, CFile::modeRead | CFile::typeBinary, &e))
     {
         nSize = PictureFile.GetLength();
-        BYTE *pBuffer = new BYTE[nSize];
+        std::vector<uint8_t> buffer(nSize);
 
-        if (PictureFile.Read(pBuffer, nSize) > 0)
+        if (PictureFile.Read(buffer.data(), nSize) > 0)
         {
-            if (LoadPictureData(pBuffer, nSize))
+            if (LoadPictureData(buffer.data(), nSize))
                 bResult = TRUE;
         }
 
         PictureFile.Close();
-        delete[] pBuffer;
     }
     else // Open Failed...
     {

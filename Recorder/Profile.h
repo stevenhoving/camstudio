@@ -456,6 +456,7 @@ struct sXNoteOpts
         :                             m_taXNote(BOTTOM_LEFT)
         ,             m_cXnoteDisplayFormatString("(0000)..00:00:00.000")    // Default (Delay) hh:mm:ss.ttt, Not really a format. As long as the timer is not running this will be showed
         ,             m_cSnapXnoteTimesString("")                    // A non persistent member
+#endif
     {
     }
 

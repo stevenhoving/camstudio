@@ -2,7 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "SoundFile.h"
 
 #ifdef _DEBUG
@@ -100,14 +100,14 @@ bool CSoundFile::CreateWaveFile()
 {
     // check if file is already open
     if (m_hFile)
-        return FALSE;
+        return false;
 
     // open file
     m_hFile = ::mmioOpen(m_FileName.GetBuffer(0), NULL, MMIO_CREATE | MMIO_WRITE | MMIO_EXCLUSIVE | MMIO_ALLOCBUF);
     if (m_hFile == NULL)
     {
         m_Mode = FILE_ERROR;
-        return FALSE;
+        return false;
     }
 
     ZeroMemory(&m_MMCKInfoParent, sizeof(MMCKINFO));
@@ -133,13 +133,13 @@ bool CSoundFile::OpenWaveFile()
 
     // check if file is already open
     if (m_hFile)
-        return FALSE;
+        return false;
 
     m_hFile = mmioOpen(m_FileName.GetBuffer(0), NULL, MMIO_READ);
     if (m_hFile == NULL)
     {
         m_Mode = FILE_ERROR;
-        return FALSE;
+        return false;
     }
 
     m_MMCKInfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E');
@@ -150,7 +150,7 @@ bool CSoundFile::OpenWaveFile()
         mmioClose(m_hFile, 0);
         m_hFile = NULL;
         m_Mode = FILE_ERROR;
-        return FALSE;
+        return false;
     }
     m_MMCKInfoChild.ckid = mmioFOURCC('f', 'm', 't', ' ');
     mmResult = mmioDescend(m_hFile, &m_MMCKInfoChild, &m_MMCKInfoParent, MMIO_FINDCHUNK);
@@ -160,7 +160,7 @@ bool CSoundFile::OpenWaveFile()
         mmioClose(m_hFile, 0);
         m_Mode = FILE_ERROR;
         m_hFile = NULL;
-        return FALSE;
+        return false;
     }
     DWORD bytesRead = mmioRead(m_hFile, (LPSTR)&m_Format, m_MMCKInfoChild.cksize);
     if (bytesRead < 0)
@@ -168,7 +168,7 @@ bool CSoundFile::OpenWaveFile()
         AfxMessageBox("Error reading PCM wave format record");
         mmioClose(m_hFile, 0);
         m_Mode = FILE_ERROR;
-        return FALSE;
+        return false;
     }
 
     // open output sound file
@@ -179,7 +179,7 @@ bool CSoundFile::OpenWaveFile()
         mmioClose(m_hFile, 0);
         m_hFile = NULL;
         m_Mode = FILE_ERROR;
-        return FALSE;
+        return false;
     }
     m_MMCKInfoChild.ckid = mmioFOURCC('d', 'a', 't', 'a');
     mmResult = mmioDescend(m_hFile, &m_MMCKInfoChild, &m_MMCKInfoParent, MMIO_FINDCHUNK);
@@ -189,7 +189,7 @@ bool CSoundFile::OpenWaveFile()
         mmioClose(m_hFile, 0);
         m_hFile = NULL;
         m_Mode = FILE_ERROR;
-        return FALSE;
+        return false;
     }
 
     return TRUE;

@@ -1,8 +1,4 @@
-// Buffer.cpp: implementation of the CBuffer class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "Buffer.h"
 
 #ifdef _DEBUG
@@ -21,8 +17,7 @@ CBuffer::CBuffer(DWORD size, bool AutoDelete)
     try
     {
         ptr.b = new BYTE[size];
-        if (ptr.b)
-            ByteLen = size;
+        ByteLen = size;
     }
     catch (...)
     {
@@ -41,7 +36,7 @@ CBuffer::CBuffer(void *buffer, DWORD length)
     }
     else
     {
-        ptr.b = NULL;
+        ptr.b = nullptr;
         ByteLen = 0;
     }
 }
@@ -49,8 +44,8 @@ CBuffer::CBuffer(void *buffer, DWORD length)
 CBuffer::~CBuffer()
 {
     // remember to delete the memory
-    if (m_bAutoDelete && ptr.b != NULL)
-        delete ptr.b;
+    if (m_bAutoDelete)
+        delete[] ptr.b;
 }
 
 void CBuffer::Erase()

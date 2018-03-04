@@ -29,38 +29,11 @@
 #include "ScreenAnnotations.h"
 #include "ResizeDialog.h"
 #include "CStudioLib.h"
+#include "CamColor.h"
 
 #include <windowsx.h>
 #include <Gdiplus.h>
 using namespace Gdiplus;
-
-// WTF???! Can this life be easier?
-// works both ways
-// TODO: move it somewhere
-
-#if 0
-__inline __declspec(naked) DWORD COLORREFtoARGB(COLORREF, BYTE)
-{
-    __asm
-    {
-        mov eax, DWORD PTR 4[esp]
-        bswap eax
-        mov al, BYTE PTR 8[esp]
-        rcr eax, 8
-        ret
-    }
-}
-#endif
-
-// this is good enough for now...
-#define RCR(x, c) x = ((((unsigned)x) >> 1) | ((x & 1) ? (1 << ((sizeof(x) * 8) - 1)) : 0) | (((x & 1))))
-DWORD COLORREFtoARGB(COLORREF color, BYTE inx)
-{
-    color = _byteswap_ulong(color);
-
-    RCR(color, 8);
-    return color;
-}
 
 extern CScreenAnnotationsDlg sadlg;
 
@@ -505,6 +478,7 @@ void CTransparentWnd::OnPaint()
         mbstowcs_s(&size, wstr, 1023, m_textstring, _TRUNCATE);
         size_t wlen = wcsnlen_s(wstr, 1023);
         RectF r(m_tracker.m_rect.left, m_tracker.m_rect.top, m_tracker.m_rect.Width(), m_tracker.m_rect.Height());
+        //pDC->GetTextColor()
         Color c((ARGB)COLORREFtoARGB(pDC->GetTextColor(), 255));
         SolidBrush b(c);
         g.DrawString(wstr, wlen, &f, r, &sf, &b);

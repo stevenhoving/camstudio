@@ -46,7 +46,7 @@ CRecorderDoc::~CRecorderDoc()
 BOOL CRecorderDoc::OnNewDocument()
 {
     if (!CDocument::OnNewDocument())
-        return FALSE;
+        return false;
 
     // TODO: add reinitialization code here
     // (SDI documents will reuse this document)

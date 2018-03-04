@@ -56,7 +56,7 @@ bool CSoundIn::Start(WAVEFORMATEX *format)
     if (m_bRecording || DataFromSoundIn == NULL || m_pOwner == NULL)
     {
         // already recording!
-        return FALSE;
+        return false;
     }
     else
     {
@@ -69,7 +69,7 @@ bool CSoundIn::Start(WAVEFORMATEX *format)
         if (mmReturn)
         {
             waveInErrorMsg(mmReturn, "in Start()");
-            return FALSE;
+            return false;
         }
         else
         {
@@ -84,7 +84,7 @@ bool CSoundIn::Start(WAVEFORMATEX *format)
             if (mmReturn)
             {
                 waveInErrorMsg(mmReturn, "in Start()");
-                return FALSE;
+                return false;
             }
             m_bRecording = true;
         }

@@ -18,7 +18,7 @@
 
 #include <assert.h>
 
-extern void ErrMsg(char format[], ...);
+extern void ErrorMsg(char format[], ...);
 extern HWND hWndGlobal;
 extern int versionOp;
 extern int maxxScreen;

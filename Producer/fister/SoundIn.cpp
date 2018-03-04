@@ -6,6 +6,7 @@
 #include "SoundIn.h"
 // include callback class
 
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
@@ -116,11 +117,14 @@ void CSoundIn::Stop()
                 waveInErrorMsg(mmReturn, "in Stop()");
         }
         if (m_QueuedBuffers != 0)
-            ErrorMsg("Still %d buffers in waveIn queue!", m_QueuedBuffers);
+        {
+            //ErrorMsg("Still %d buffers in waveIn queue!", m_QueuedBuffers);
+            assert(false);
+        }
     }
 }
 
-void CSoundIn::OnMM_WIM_DATA(UINT parm1, LONG parm2)
+void CSoundIn::OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2)
 {
     MMRESULT mmReturn = 0;
 
@@ -209,13 +213,13 @@ void CSoundIn::waveInErrorMsg(MMRESULT result, LPCTSTR addstr)
     // say error message
     char errorbuffer[100];
     waveInGetErrorText(result, errorbuffer, 100);
-    ErrorMsg("WAVEIN:%x:%s %s", result, errorbuffer, addstr);
+    //ErrorMsg("WAVEIN:%x:%s %s", result, errorbuffer, addstr);
+    assert(false);
 }
 
 /*
 void CSoundIn::DataFromSoundIn(CBuffer* buffer)
 {
-    
     if(m_pFile)
     {
         if(!m_pFile->Write(buffer))

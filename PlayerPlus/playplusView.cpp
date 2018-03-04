@@ -132,7 +132,7 @@ UINT PlayAVIThread(LPVOID pParam);
 #define MENU_OPEN 11
 #define MENU_MERGE 17
 
-int ErrMsg(LPSTR sz, ...);
+int ErrorMsg(LPSTR sz, ...);
 void FreeDrawStuff();
 void FileStop(int mode);
 void FixWindowTitle();
@@ -775,7 +775,7 @@ void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long /*starttime*/, int /*kee
         {
             ::AVIStreamRelease(pavi);
             LoadString(ghInstApp, IDS_MAXSTREAMS, gszBuffer, BUFSIZE);
-            ErrMsg(gszBuffer);
+            ErrorMsg(gszBuffer);
             break;
         }
         if (AVIERR_OK != CreateEditableStream(&gapavi[i], pavi))
@@ -793,7 +793,7 @@ void InsertAVIFile(PAVIFILE pfile, LPSTR lpszFile, long /*starttime*/, int /*kee
     {
         LoadString(ghInstApp, IDS_NOOPEN, gszBuffer, BUFSIZE);
 
-        ErrMsg(gszBuffer, lpszFile);
+        ErrorMsg(gszBuffer, lpszFile);
         return;
     }
 
@@ -850,7 +850,7 @@ void InitAvi(LPSTR szFile, int nMenu, long starttime, int keepcounter, int overw
     if (AVIERR_OK != hr)
     {
         // LoadString( ghInstApp, IDS_NOOPEN, gszBuffer, BUFSIZE );
-        ErrMsg("Unable to open file %s", szFile);
+        ErrorMsg("Unable to open file %s", szFile);
         return;
     }
 
@@ -961,7 +961,7 @@ UINT PlayAVIThread(LPVOID /*pParam*/)
     return 0;
 }
 
-int ErrMsg(LPSTR sz, ...)
+int ErrorMsg(LPSTR sz, ...)
 {
     static char szOutput[4 * BUFSIZE];
 
@@ -3121,11 +3121,11 @@ void CPlayplusView::OnFileSaveas()
             {
                 case AVIERR_FILEOPEN:
                     LoadString(ghInstApp, IDS_ERROVERWRITE, gszBuffer, BUFSIZE);
-                    ErrMsg(gszBuffer);
+                    ErrorMsg(gszBuffer);
                     break;
                 default:
                     LoadString(ghInstApp, IDS_SAVEERROR, gszBuffer, BUFSIZE);
-                    ErrMsg(gszBuffer);
+                    ErrorMsg(gszBuffer);
             }
         }
         else
@@ -3211,7 +3211,7 @@ int EditStreamReplace(PAVISTREAM pavi, LONG *plPos, LONG *plLength, PAVISTREAM p
     value = EditStreamPaste(pavi, plPos, plLength, pstream, lStart, lLength);
     if (AVIERR_OK != value)
     {
-        ErrMsg("Unable to add audio at insertion point (Stream Replace)");
+        ErrorMsg("Unable to add audio at insertion point (Stream Replace)");
     }
 
     long cutStartPoint = *plPos + *plLength;
@@ -3233,7 +3233,7 @@ int EditStreamReplace(PAVISTREAM pavi, LONG *plPos, LONG *plLength, PAVISTREAM p
         value = EditStreamCut(pavi, &cutStartPoint, plLength, &tempStream);
         if (AVIERR_OK != value)
         {
-            ErrMsg("Unable to remove audio at replace point (Stream Replace)");
+            ErrorMsg("Unable to remove audio at replace point (Stream Replace)");
         }
         AVIStreamRelease(tempStream);
     }
@@ -3264,14 +3264,14 @@ int EditStreamPadSilence(PAVISTREAM pavi, LONG *plPos, LONG *plLength)
             hr = AVIFileOpen(&pfileSilence, tempsilencepath, 0, 0L);
             if (hr != AVIERR_OK)
             {
-                ErrMsg("Unable to open silence file");
+                ErrorMsg("Unable to open silence file");
                 return hr;
             }
 
             hr = AVIFileGetStream(pfileSilence, &paviSilence, streamtypeAUDIO, 0);
             if (AVIERR_OK != hr)
             {
-                ErrMsg("Unable to load silence stream");
+                ErrorMsg("Unable to load silence stream");
                 return hr;
             }
 
@@ -3297,7 +3297,7 @@ int EditStreamPadSilence(PAVISTREAM pavi, LONG *plPos, LONG *plLength)
                 hr = EditStreamPaste(pavi, &initialStreamEnd, &PastedLength, paviSilence, 0, lengthToPaste);
                 if (AVIERR_OK != hr)
                 {
-                    ErrMsg("Unable to pad silence to existing stream at position %ld (Stream Replace)",
+                    ErrorMsg("Unable to pad silence to existing stream at position %ld (Stream Replace)",
                            initialStreamEnd);
                     return hr;
                 }
@@ -3316,7 +3316,7 @@ int EditStreamPadSilence(PAVISTREAM pavi, LONG *plPos, LONG *plLength)
         else
         {
             // no silence added
-            ErrMsg("Invalid Silence File! No audio [silence] added");
+            ErrorMsg("Invalid Silence File! No audio [silence] added");
             // return -1;
         }
     }
@@ -3349,14 +3349,14 @@ int EditStreamSilenceShift(PAVISTREAM pavi, LONG *plPos, LONG *plLength)
             hr = AVIFileOpen(&pfileSilence, tempsilencepath, 0, 0L);
             if (AVIERR_OK != hr)
             {
-                ErrMsg("Unable to open silence file (2) ");
+                ErrorMsg("Unable to open silence file (2) ");
                 return hr;
             }
 
             hr = AVIFileGetStream(pfileSilence, &paviSilence, streamtypeAUDIO, 0);
             if (AVIERR_OK != hr)
             {
-                ErrMsg("Unable to load silence stream (2)");
+                ErrorMsg("Unable to load silence stream (2)");
                 return hr;
             }
 
@@ -3383,13 +3383,13 @@ int EditStreamSilenceShift(PAVISTREAM pavi, LONG *plPos, LONG *plLength)
                 hr = EditStreamPaste(pavi, &StreamPastePoint, &PastedLength, paviSilence, 0, lengthToPaste);
                 if (AVIERR_OK != hr)
                 {
-                    ErrMsg("Unable to pad silence to existing stream at position %ld (2)", StreamPastePoint);
+                    ErrorMsg("Unable to pad silence to existing stream at position %ld (2)", StreamPastePoint);
                     return hr;
                 }
 
                 if (PastedLength <= 0)
                 {
-                    ErrMsg("Unable to pad silence ! Pad Length <= 0 ! (2)");
+                    ErrorMsg("Unable to pad silence ! Pad Length <= 0 ! (2)");
                     return -1;
                 }
 
@@ -3406,7 +3406,7 @@ int EditStreamSilenceShift(PAVISTREAM pavi, LONG *plPos, LONG *plLength)
         else
         {
             // no silence added
-            ErrMsg("Invalid Silence File! No audio [silence] added (2)");
+            ErrorMsg("Invalid Silence File! No audio [silence] added (2)");
 
             // return -1;
         }
@@ -3553,7 +3553,7 @@ void CloneAudioStream_ReplaceStreamPool(int i, PAVISTREAM pavi)
     if (CreateEditableStream(&paviConverted, pavi) != AVIERR_OK)
     {
         // error
-        ErrMsg("Unable to Create Editable Stream for Converted Audio");
+        ErrorMsg("Unable to Create Editable Stream for Converted Audio");
 
         // will not affect original stream
 

@@ -25,7 +25,7 @@ BOOL WinYield()
         }
     }
 
-    return FALSE;
+    return false;
 }
 
 LONG GetRegKey(HKEY key, LPCTSTR subkey, LPTSTR retdata)

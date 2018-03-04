@@ -13,7 +13,7 @@ class CAdvProperty : public CPropertyPage
 
 public:
     CAdvProperty();
-    ~CAdvProperty();
+    ~CAdvProperty() override;
 
     // Dialog Data
     //{{AFX_DATA(CAdvProperty)
@@ -29,15 +29,15 @@ public:
     // ClassWizard generate virtual function overrides
     //{{AFX_VIRTUAL(CAdvProperty)
 protected:
-    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+    void DoDataExchange(CDataExchange *pDX) override; // DDX/DDV support
     //}}AFX_VIRTUAL
 
     // Implementation
 protected:
     // Generated message map functions
     //{{AFX_MSG(CAdvProperty)
-    virtual void OnOK();
-    virtual BOOL OnInitDialog();
+    void OnOK() override;
+    BOOL OnInitDialog() override;
     //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };

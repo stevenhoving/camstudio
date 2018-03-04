@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "resource.h"
 #include "ProgressDlg.h"
-#include ".\progressdlg.h"
+#include <string>
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -67,7 +67,7 @@ BOOL CProgressDlg::Create(CWnd *pParent)
     if (!CDialog::Create(CProgressDlg::IDD, pParent))
     {
         ReEnableParent();
-        return FALSE;
+        return false;
     }
 
     return TRUE;

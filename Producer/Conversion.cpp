@@ -9,7 +9,7 @@ extern CString GetTempPathEx(CString fileName, CString fxstr, CString exstr);
 
 // ver 2.25
 #include "resource.h"
-extern int ErrMsg(LPSTR sz, ...);
+extern int ErrorMsg(LPSTR sz, ...);
 extern int runmode;
 BOOL gfCancelConvert = FALSE;
 int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus);
@@ -441,7 +441,7 @@ BOOL AcmAppFileOpen(HWND /*hwnd*/, PACMAPPFILEDESC paafd)
     }
     else
     {
-        ErrMsg(TEXT("The file '%s' cannot be loaded as a wave file (wio error=%u)."), (LPTSTR)paafd->szFilePath, werr);
+        ErrorMsg(TEXT("The file '%s' cannot be loaded as a wave file (wio error=%u)."), (LPTSTR)paafd->szFilePath, werr);
     }
 
     //
@@ -521,7 +521,7 @@ BOOL AcmAppConvertEnd(HWND /*hdlg*/, PAACONVERTDESC paacd)
             mmr = acmStreamUnprepareHeader(paacd->has, &paacd->ash, 0L);
             if (MMSYSERR_NOERROR != mmr)
             {
-                ErrMsg(TEXT("acmStreamUnprepareHeader() failed with error = %u!"), mmr);
+                ErrorMsg(TEXT("acmStreamUnprepareHeader() failed with error = %u!"), mmr);
             }
         }
 
@@ -593,7 +593,7 @@ BOOL AcmAppConvertBegin(HWND hdlg, PAACONVERTDESC paacd)
         if (MMSYSERR_NOERROR != mmr)
         {
             AcmAppGetErrorString(mmr, ach);
-            ErrMsg(TEXT("The selected driver (hadid=%.04Xh) cannot be opened. %s (%u)"), paacd->hadid, (LPSTR)ach, mmr);
+            ErrorMsg(TEXT("The selected driver (hadid=%.04Xh) cannot be opened. %s (%u)"), paacd->hadid, (LPSTR)ach, mmr);
             return (FALSE);
         }
     }
@@ -608,7 +608,7 @@ BOOL AcmAppConvertBegin(HWND hdlg, PAACONVERTDESC paacd)
 
     if (MMSYSERR_NOERROR != mmr)
     {
-        ErrMsg(TEXT("acmStreamOpen() failed with error = %u!"), mmr);
+        ErrorMsg(TEXT("acmStreamOpen() failed with error = %u!"), mmr);
 
         return (FALSE);
     }
@@ -620,7 +620,7 @@ BOOL AcmAppConvertBegin(HWND hdlg, PAACONVERTDESC paacd)
 
     if (MMSYSERR_NOERROR != mmr)
     {
-        ErrMsg(TEXT("acmStreamSize() failed with error = %u!"), mmr);
+        ErrorMsg(TEXT("acmStreamSize() failed with error = %u!"), mmr);
 
         return (FALSE);
     }
@@ -677,7 +677,7 @@ BOOL AcmAppConvertBegin(HWND hdlg, PAACONVERTDESC paacd)
     mmr = acmStreamPrepareHeader(paacd->has, pash, 0L);
     if (MMSYSERR_NOERROR != mmr)
     {
-        ErrMsg(TEXT("acmStreamPrepareHeader() failed with error = %u!"), mmr);
+        ErrorMsg(TEXT("acmStreamPrepareHeader() failed with error = %u!"), mmr);
         goto aacb_Error;
     }
 
@@ -936,7 +936,7 @@ BOOL AcmAppConvertConvert(HWND hdlg, PAACONVERTDESC paacd)
 
         if (MMSYSERR_NOERROR != mmr)
         {
-            ErrMsg(TEXT("acmStreamConvert() failed with error = %u!"), mmr);
+            ErrorMsg(TEXT("acmStreamConvert() failed with error = %u!"), mmr);
             goto aacc_Error;
         }
 
@@ -1039,7 +1039,7 @@ BOOL AcmAppConvertConvert(HWND hdlg, PAACONVERTDESC paacd)
 
         if (MMSYSERR_NOERROR != mmr)
         {
-            ErrMsg(TEXT("acmStreamConvert() failed with error = %u!"), mmr);
+            ErrorMsg(TEXT("acmStreamConvert() failed with error = %u!"), mmr);
             goto aacc_Error;
         }
 

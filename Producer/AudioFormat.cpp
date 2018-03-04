@@ -14,6 +14,8 @@
 
 #include "AudioFormat.h"
 
+#include <filesystem>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -112,7 +114,6 @@ END_MESSAGE_MAP()
 
 void AudioFormat::OnOK()
 {
-
     CString interleaveFactorStr;
     int ifactornum;
 
@@ -120,7 +121,6 @@ void AudioFormat::OnOK()
     sscanf(LPCTSTR(interleaveFactorStr), "%d", &ifactornum);
     if (ifactornum <= 0)
     {
-
         MessageOut(this->m_hWnd, IDS_INTERLEAVE1, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);
         // MessageBox("Interleave factor must greater than 0","Note",MB_OK | MB_ICONEXCLAMATION);
         return;
@@ -151,14 +151,12 @@ void AudioFormat::OnOK()
     // data from the Audio Options Dialog can be updated to the external variables
     if (numformat > 0)
     {
-
         int sel = ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->GetCurSel();
         if (sel >= 0)
         {
 
             if (pwfxLocal)
             {
-
                 // Ver 1.2
                 int getdevice = ((CComboBox *)(GetDlgItem(IDC_INPUTDEVICE)))->GetCurSel();
                 if (getdevice < numdevice)
@@ -407,11 +405,9 @@ BOOL GetFormatDescription(LPWAVEFORMATEX pwformat, LPTSTR pszFormatTag, LPTSTR p
     MMRESULT mmr;
 
     // Retrieve the descriptive name for the FormatTag in pwformat.
-    if (NULL != pszFormatTag)
+    if (pszFormatTag != nullptr)
     {
-        ACMFORMATTAGDETAILS aftd;
-
-        memset(&aftd, 0, sizeof(aftd));
+        ACMFORMATTAGDETAILS aftd = {0};
 
         // Fill in the required members FormatTAG query.
         aftd.cbStruct = sizeof(aftd);
@@ -419,9 +415,8 @@ BOOL GetFormatDescription(LPWAVEFORMATEX pwformat, LPTSTR pszFormatTag, LPTSTR p
 
         // Ask ACM to find first available driver that supports the specified Format tag.
         mmr = acmFormatTagDetails(NULL, &aftd, ACM_FORMATTAGDETAILSF_FORMATTAG);
-        if (MMSYSERR_NOERROR != mmr)
+        if (mmr != MMSYSERR_NOERROR)
         {
-
             return (FALSE);
         }
 
@@ -430,32 +425,32 @@ BOOL GetFormatDescription(LPWAVEFORMATEX pwformat, LPTSTR pszFormatTag, LPTSTR p
         lstrcpy(pszFormatTag, aftd.szFormatTag);
     }
 
-    CString formatstr;
-    CString str_samples_per_second;
-    CString str_bits_per_sample;
-    CString str_avg_bytes_per_second;
-    CString str_nchannels;
+    auto str_samples_per_second = std::to_string(pwformat->nSamplesPerSec) + " Hz";
+    auto str_bits_per_sample = std::to_string(pwformat->wBitsPerSample) + " Bit";
+    auto str_avg_bytes_per_second = std::to_string(pwformat->nAvgBytesPerSec) + " Bytes/sec";
 
-    str_samples_per_second.Format("%d Hz", pwformat->nSamplesPerSec);
-    str_bits_per_sample.Format("%d Bit", pwformat->wBitsPerSample);
-    str_avg_bytes_per_second.Format("%d Bytes/sec", pwformat->nAvgBytesPerSec);
+    std::string str_nchannels;
     if (pwformat->nChannels == 1)
-        str_nchannels.Format("Mono");
+        str_nchannels = "Mono";
     else
-        str_nchannels.Format("Stereo");
+        str_nchannels = "Stereo";
 
-    formatstr = str_samples_per_second + ", ";
+    auto formatstr = str_samples_per_second + ", ";
     if ((pwformat->wBitsPerSample) > 0)
-        formatstr = formatstr + str_bits_per_sample + ", ";
-    formatstr = formatstr + str_nchannels + "      " + str_avg_bytes_per_second;
-    lstrcpy(pszFormat, LPCTSTR(formatstr));
+    {
+        formatstr += str_bits_per_sample;
+        formatstr += ", ";
+    }
+    formatstr += str_nchannels;
+    formatstr += "      ";
+    formatstr += str_avg_bytes_per_second;
+    lstrcpy(pszFormat, formatstr.c_str());
 
     return (TRUE);
 }
 
 void AudioFormat::OnSelchangeRecordformat()
 {
-
     if (numformat <= 0)
         return; // no format to choose from
 
@@ -655,7 +650,7 @@ void AllocLocalCompressFormat()
         if (MMSYSERR_NOERROR != mmresult)
         {
 
-            // CString msgstr,title;
+            // std::string msgstr,title;
             // msgstr.Format("Metrics failed mmresult=%u!", mmresult);
             // title.LoadString(IDS_NOTE);
             ::MessageOutINT(NULL, IDS_METRICS, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION, mmresult);
@@ -667,10 +662,10 @@ void AllocLocalCompressFormat()
             cbwfxLocal = cbwfx;
 
         pwfxLocal = (LPWAVEFORMATEX)GlobalAllocPtr(GHND, cbwfxLocal);
-        if (NULL == pwfxLocal)
+        if (pwfxLocal == nullptr)
         {
 
-            // CString msgstr;
+            // std::string msgstr;
             // msgstr.Format("GlobalAllocPtr(%lu) failed!", cbwfxLocal);
             // title.LoadString(IDS_NOTE);
             //::MessageBox(NULL,msgstr,title, MB_OK | MB_ICONEXCLAMATION);
@@ -694,27 +689,12 @@ void AudioFormat::OnCancel()
     CDialog::OnCancel();
 }
 
-bool file_exists(const char *path)
-{
-    bool result = false;
-    OFSTRUCT ofs;
-    HFILE hdir = OpenFile(path, &ofs, OF_EXIST);
-    if (hdir != HFILE_ERROR)
-    {
-        result = true;
-    }
-    CloseHandle((HANDLE)hdir);
-
-    return result;
-}
-
 void AudioFormat::OnVolume()
 {
     // Ver 1.1
     if (waveInGetNumDevs() == 0)
     {
-
-        // CString msgstr;
+        // std::string msgstr;
         // msgstr.Format("Unable to detect audio input device. You need a sound card with microphone input.");
         // MessageBox(msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
         // title.LoadString(IDS_NOTE);
@@ -724,15 +704,15 @@ void AudioFormat::OnVolume()
         return;
     }
 
-    CString launchPath("");
-    CString testLaunchPath;
-    CString exeFileName("\\sndvol32.exe");
+    std::string launchPath("");
+    std::string testLaunchPath;
+    std::string exeFileName("\\sndvol32.exe");
 
     char dirx[300];
     GetWindowsDirectory(dirx, 300);
-    CString Windir(dirx);
-    CString AppDir;
-    CString SubDir;
+    std::string Windir(dirx);
+    std::string AppDir;
+    std::string SubDir;
 
     // Test Windows\sndvol32.exe
     AppDir = Windir;
@@ -741,7 +721,7 @@ void AudioFormat::OnVolume()
     if (launchPath == "")
     {
         // Verify sndvol32.exe exists
-        if (file_exists(testLaunchPath))
+        if (std::experimental::filesystem::exists(testLaunchPath))
         {
             launchPath = testLaunchPath;
         }
@@ -754,7 +734,7 @@ void AudioFormat::OnVolume()
     if (launchPath == "")
     {
         // Verify sndvol32.exe exists
-        if (file_exists(testLaunchPath))
+        if (std::experimental::filesystem::exists(testLaunchPath))
         {
             launchPath = testLaunchPath;
         }
@@ -767,7 +747,7 @@ void AudioFormat::OnVolume()
     if (launchPath == "")
     {
         // Verify sndvol32.exe exists
-        if (file_exists(testLaunchPath))
+        if (std::experimental::filesystem::exists(testLaunchPath))
         {
             launchPath = testLaunchPath;
         }
@@ -779,10 +759,7 @@ void AudioFormat::OnVolume()
         // not sure
         launchPath = launchPath + " /r /rec /record";
 
-        if (WinExec(launchPath, SW_SHOW) != 0)
-        {
-        }
-        else
+        if (WinExec(launchPath.c_str(), SW_SHOW) == 0)
         {
             // MessageBox("Error launching Volume Control!","Note",MB_OK | MB_ICONEXCLAMATION);
             ::MessageOut(this->m_hWnd, IDS_VOLCON, IDS_NOTE, MB_OK | MB_ICONEXCLAMATION);

@@ -15,12 +15,14 @@
 // - Moved some variables closer to their initial use
 // - Formatted code nicely
 
+#define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 #define INC_OLE2
 #include <windows.h>
+#include <shellapi.h>
 #include <windowsx.h>
 #include <mmsystem.h>
 #include <commdlg.h>
-#include <cstring>
+#include <string>
 #include <cstdlib>
 #include <direct.h>
 #include <digitalv.h>
@@ -53,7 +55,7 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
     {
         // Oops, we are too old, blow out of here
         MessageOut(nullptr, IDS_STRING_VERSION, IDS_STRING_NOTE, MB_OK | MB_ICONSTOP);
-        return FALSE;
+        return false;
     }
 
     if (!hPrevInstance)
@@ -124,7 +126,7 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
 /*
  * Main routine.
  */
-int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
     HWND hWnd;
     MSG msg;
@@ -154,7 +156,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
 /*
  * Window process for the application.
  */
-long FAR PASCAL WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
     WORD w;
@@ -412,7 +414,7 @@ void OpenMCIMovieFileInit(HWND hWnd)
 /*
  * Dialog Procedure for the "about" dialog box.
  */
-BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(lParam);
 
@@ -434,7 +436,7 @@ BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             return TRUE;
     }
 
-    return FALSE;
+    return false;
 }
 
 /*

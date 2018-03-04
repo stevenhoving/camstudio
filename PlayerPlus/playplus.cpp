@@ -69,20 +69,20 @@ BOOL CPlayplusApp::InitInstance()
     LONG returnStatus;
     DWORD Type = REG_DWORD;
     DWORD Size = sizeof(DWORD);
-    returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L,
+    returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap\\Language", 0L,
                                 KEY_ALL_ACCESS, &hKey);
 
     // create default LanguageID no exists
     if (returnStatus != ERROR_SUCCESS)
     {
-        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick", 0, 0,
+        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio", 0, 0,
                                       REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, 0);
-        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap", 0, 0,
+        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap", 0, 0,
                                       REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, 0);
-        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0,
+        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap\\Language", 0,
                                       0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, 0);
         RegSetValueEx(hKey, "LanguageID", 0, REG_DWORD, (BYTE *)&language, sizeof(DWORD));
-        returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudioOpenSource for Nick\\vscap\\Language", 0L,
+        returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap\\Language", 0L,
                                     KEY_ALL_ACCESS, &hKey);
     }
 
@@ -182,7 +182,7 @@ BOOL CPlayplusApp::InitInstance()
 
     // Dispatch commands specified on the command line
     if (!ProcessShellCommand(cmdInfo))
-        return FALSE;
+        return false;
 
     // The one and only window has been initialized, so show and update it.
     m_pMainWnd->ShowWindow(SW_SHOW);

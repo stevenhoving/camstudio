@@ -17,7 +17,6 @@
 
 #include <algorithm>
 #include <string>
-#include <cstring>
 #include <vector>
 #include <iostream>
 #include <iterator>
@@ -32,8 +31,6 @@
 
 #include <time.h>
 #include "Commandline.hpp"
-
-using namespace std;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -94,24 +91,24 @@ static UINT WM_USER_RECORDINTERRUPTED = ::RegisterWindowMessage(WM_USER_RECORDIN
 /////////////////////////////////////////////////////////
 // Variables/Options requiring interface
 /////////////////////////////////////////////////////////
-int static mon_current = -1;
-int mon_count = 0; // number of physical screens, not virtual
-int bits = 24;
+int static g_mon_current = -1;
+int g_mon_count = 0; // number of physical screens, not virtual
+int g_bits = 24;
 
 // Video Options and Compressions
-int timelapse = 40;
-int frames_per_second = 25;
-int keyFramesEvery = 25;
+int g_timelapse = 40;
+int g_frames_per_second = 25;
+int g_key_frames_every = 25;
 
-int compquality = 7000;
-DWORD compfccHandler = 0;
-ICINFO *compressor_info = NULL;
-int num_compressor = 0;
+int g_comp_quality = 7000;
+DWORD g_comp_fcc_handler = 0;
+ICINFO *g_compressor_info = NULL;
+int g_num_compressor = 0;
 
 // User options:
-int seconds_to_record = -1;
-int selected_compressor = -1;
-string output_file;
+int g_seconds_to_record = -1;
+int g_selected_compressor = -1;
+std::string output_file;
 int offset_left = 0;
 int offset_right;
 int offset_bottom;
@@ -134,7 +131,7 @@ float fActualRate = 0.0;
 float fTimeLength = 0.0;
 int nColors = 24;
 
-CString strCodec("MS Video 1");
+std::wstring strCodec(L"MS Video 1");
 int actualwidth = 0;
 int actualheight = 0;
 
@@ -192,7 +189,7 @@ int interleaveUnit = MILLISECONDS;
 // Tray Icon
 #define WM_TRAY_ICON_NOTIFY_MESSAGE (WM_USER + 50)
 
-string GetCodecDescription(long fccHandler);
+std::string GetCodecDescription(long fccHandler);
 
 // version 1.6
 #define USE_WINDOWS_TEMP_DIR 0
@@ -200,7 +197,7 @@ string GetCodecDescription(long fccHandler);
 #define USE_USER_SPECIFIED_DIR 2
 
 int tempPath_Access = USE_WINDOWS_TEMP_DIR;
-CString specifieddir;
+std::string specifieddir;
 
 int captureTrans = 1;
 int versionOp = 0;
@@ -230,12 +227,11 @@ int recordpreset = 0;
 ///////////////////////// //////////////////
 BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
 {
-
     lprcMonitor;
     hdcMonitor;
     screen *obr;
     obr = (screen *)dwData;
-    mon_current = mon_current + 1;
+    g_mon_current = g_mon_current + 1;
     MONITORINFOEX mo;
     mo.cbSize = sizeof(MONITORINFOEX);
     if (GetMonitorInfo(hMonitor, &mo))
@@ -243,13 +239,13 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
     }
     else
     {
-        cout << "Error in detecting monitors" << endl;
+         std::cout << "Error in detecting monitors" << std::endl;
         return false;
     }
-    obr[mon_current].SetDimensions(mo.rcMonitor.left, mo.rcMonitor.right, mo.rcMonitor.top, mo.rcMonitor.bottom);
-    strcpy_s(obr[mon_current].dispName, sizeof(obr[mon_current].dispName), mo.szDevice);
-    cout << "Screen: " << obr[mon_current].dispName;
-    cout << " resolution:" << obr[mon_current].width << " x " << obr[mon_current].height << endl;
+    obr[g_mon_current].SetDimensions(mo.rcMonitor.left, mo.rcMonitor.right, mo.rcMonitor.top, mo.rcMonitor.bottom);
+    strcpy_s(obr[g_mon_current].dispName, sizeof(obr[g_mon_current].dispName), mo.szDevice);
+     std::cout << "Screen: " << obr[g_mon_current].dispName;
+     std::cout << " resolution:" << obr[g_mon_current].width << " x " << obr[g_mon_current].height << std::endl;
 
     return true;
 }
@@ -275,7 +271,7 @@ HANDLE Bitmap2Dib(HBITMAP hbitmap, UINT bits)
 
     //
     // DWORD align the width of the DIB
-    // Figure out the size of the colour table
+    // Figure out the size of the color table
     // Calculate the size of the DIB
     //
     wLineLen = (bitmap.bmWidth * bits + 31) / 32 * 4;
@@ -331,7 +327,7 @@ UINT RecordAVIThread(LPVOID lParam)
     int left = pscreen->left;
     int width = pscreen->width;
     int height = pscreen->height;
-    int fps = frames_per_second;
+    int fps = g_frames_per_second;
 
     const char *filepath = output_file.c_str();
 
@@ -350,7 +346,7 @@ UINT RecordAVIThread(LPVOID lParam)
         }
         else
         {
-            cout << "Error: Could not open file for creation: " << filepath << endl;
+             std::cout << "Error: Could not open file for creation: " << filepath << std::endl;
             ExitThread(1);
         }
     }
@@ -383,7 +379,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
     wVer = HIWORD(VideoForWindowsVersion());
     if (wVer < 0x010a)
     {
-        return FALSE;
+        return false;
     }
 
     alpbi = NULL;
@@ -397,11 +393,11 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
     // TEST VALIDITY OF COMPRESSOR
     //////////////////////////////////////////////////
 
-    if (selected_compressor > 0)
+    if (g_selected_compressor > 0)
     {
 
         HIC hic = NULL;
-        hic = ICOpen(compressor_info[selected_compressor].fccType, compressor_info[selected_compressor].fccHandler,
+        hic = ICOpen(g_compressor_info[g_selected_compressor].fccType, g_compressor_info[g_selected_compressor].fccHandler,
                      ICMODE_QUERY);
         if (hic)
         {
@@ -455,27 +451,27 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
             }
             else
             {
-                compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-                strCodec = CString("MS Video 1");
+                g_comp_fcc_handler = mmioFOURCC('M', 'S', 'V', 'C');
+                strCodec = L"MS Video 1";
             }
 
             ICClose(hic);
         }
         else
         {
-            compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-            strCodec = CString("MS Video 1");
+            g_comp_fcc_handler = mmioFOURCC('M', 'S', 'V', 'C');
+            strCodec = L"MS Video 1";
             // MessageBox(NULL,"hic default","note",MB_OK);
         }
 
     } // selected_compressor
 
     // IV50
-    if (compfccHandler == mmioFOURCC('I', 'V', '5', '0'))
+    if (g_comp_fcc_handler == mmioFOURCC('I', 'V', '5', '0'))
     {
         // Still Can't Handle Indeo 5.04
-        compfccHandler = mmioFOURCC('M', 'S', 'V', 'C');
-        strCodec = CString("MS Video 1");
+        g_comp_fcc_handler = mmioFOURCC('M', 'S', 'V', 'C');
+        strCodec = L"MS Video 1";
     }
 
     ////////////////////////////////////////////////
@@ -512,9 +508,9 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
     memset(&opts, 0, sizeof(opts));
     aopts[0]->fccType = streamtypeVIDEO;
     // aopts[0]->fccHandler     = mmioFOURCC('M', 'S', 'V', 'C');
-    aopts[0]->fccHandler = compfccHandler;
-    aopts[0]->dwKeyFrameEvery = keyFramesEvery;                      // keyframe rate
-    aopts[0]->dwQuality = compquality;                               // compress quality 0-10,000
+    aopts[0]->fccHandler = g_comp_fcc_handler;
+    aopts[0]->dwKeyFrameEvery = g_key_frames_every;                      // keyframe rate
+    aopts[0]->dwQuality = g_comp_quality;                               // compress quality 0-10,000
     aopts[0]->dwBytesPerSecond = 0;                                  // bytes per second
     aopts[0]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES; // flags
     aopts[0]->lpFormat = 0x0;                                        // save format
@@ -526,14 +522,14 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
     {
         // Internally adjust codec to MSVC 100 Quality
         aopts[0]->fccHandler = mmioFOURCC('M', 'S', 'V', 'C'); // msvc
-        strCodec = CString("MS Video 1");
+        strCodec = L"MS Video 1";
         aopts[0]->dwQuality = 10000;
     }
     else
     {
         // Ver 1.2
         //
-        if ((compfccHandler == CompressorStateIsFor) && (compfccHandler != 0))
+        if ((g_comp_fcc_handler == CompressorStateIsFor) && (g_comp_fcc_handler != 0))
         {
 
             // make a copy of the pVideoCompressParams just in case after compression, this variable become messed up
@@ -623,7 +619,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
         // sleep inaccuracy.
         do
         {
-            nextFrameAt += timelapse;
+            nextFrameAt += g_timelapse;
             nextFrameNumber++;
         } while ((int)nextFrameAt - (int)now < 0);
 
@@ -742,10 +738,10 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
         if (initcapture == 0)
         {
 
-            if (timelapse > 1000)
+            if (g_timelapse > 1000)
                 frametime++;
             else
-                frametime = (DWORD)(((double)timeexpended / 1000.0) * (double)(1000.0 / timelapse));
+                frametime = (DWORD)(((double)timeexpended / 1000.0) * (double)(1000.0 / g_timelapse));
         }
         else
         {
@@ -761,7 +757,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
             // gRecordState = 0;
             // PostMessage(hWndGlobal,WM_USER_RECORDINTERRUPTED,0,0);
 
-            // CString msgStr;
+            // std::string msgStr;
             // msgStr.Format("%.2f %d",fTimeLength,presettime);
             // MessageBox(NULL,msgStr,"N",MB_OK);
 
@@ -818,7 +814,7 @@ error:
 
     // Ver 1.2
     //
-    if ((compfccHandler == CompressorStateIsFor) && (compfccHandler != 0))
+    if ((g_comp_fcc_handler == CompressorStateIsFor) && (g_comp_fcc_handler != 0))
     {
 
         // Detach pParamsUse from AVICOMPRESSOPTIONS so AVISaveOptionsFree will not free it
@@ -850,15 +846,15 @@ error:
         FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |  FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(),
         MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPTSTR)&ErrorBuffer, 0, NULL);
 
-        CString reasonstr(ErrorBuffer);
-        CString errorstr("File Creation Error. Unable to rename file.\n\n");
-        CString reportstr;
+        std::string reasonstr(ErrorBuffer);
+        std::string errorstr("File Creation Error. Unable to rename file.\n\n");
+        std::string reportstr;
 
         reportstr = errorstr + reasonstr;
         //MessageBox(NULL,reportstr,"Note",MB_OK | MB_ICONEXCLAMATION);
         */
 
-        if (compfccHandler != mmioFOURCC('M', 'S', 'V', 'C'))
+        if (g_comp_fcc_handler != mmioFOURCC('M', 'S', 'V', 'C'))
         {
             // if (IDYES == MessageBox(NULL, "Error recording AVI file using current compressor. Use default compressor
             // ? ", "Note", MB_YESNO | MB_ICONEXCLAMATION)) {
@@ -881,7 +877,7 @@ error:
 
     // Save the file on success
 
-    cout << "Recording finished" << endl;
+     std::cout << "Recording finished" <<std::endl;
     return 0;
 }
 
@@ -951,7 +947,7 @@ LPBITMAPINFOHEADER captureScreenFrame(int left, int top, int width, int height)
     }
 
     SelectObject(hMemDC, oldbm);
-    LPBITMAPINFOHEADER pBM_HEADER = (LPBITMAPINFOHEADER)GlobalLock(Bitmap2Dib(hbm, bits));
+    LPBITMAPINFOHEADER pBM_HEADER = (LPBITMAPINFOHEADER)GlobalLock(Bitmap2Dib(hbm, g_bits));
     // LPBITMAPINFOHEADER pBM_HEADER = (LPBITMAPINFOHEADER)GlobalLock(Bitmap2Dib(hbm, 24));
     if (pBM_HEADER == NULL)
     {
@@ -1033,14 +1029,14 @@ BOOL MakeCompressParamsCopy(DWORD paramsSize, LPVOID pOrg)
         //::MessageBox(NULL,"Failure allocating Video Params or compression","Note", MB_OK | MB_ICONEXCLAMATION);
         // MessageOut(NULL,IDS_STRING_FAILALLOCVCM ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
 
-        return FALSE;
+        return false;
     }
 
     memcpy(pParamsUse, pOrg, paramsSize);
     return TRUE;
 }
 
-string GetCodecDescription(long fccHandler)
+std::string GetCodecDescription(long fccHandler)
 {
     ICINFO compinfo;
 
@@ -1054,7 +1050,7 @@ string GetCodecDescription(long fccHandler)
 
     char tmp[128];
     std::transform(compinfo.szDescription, compinfo.szDescription + 128, tmp, wide_to_narrow);
-    return string(tmp);
+    return std::string(tmp);
 }
 
 void VideoCodecOptions()
@@ -1074,21 +1070,21 @@ void VideoCodecOptions()
 
     first_alpbi = captureScreenFrame(left, top, width, height);
 
-    num_compressor = 0;
-    if (compressor_info == NULL)
+    g_num_compressor = 0;
+    if (g_compressor_info == NULL)
     {
-        compressor_info = (ICINFO *)calloc(MAXCOMPRESSORS, sizeof(ICINFO));
+        g_compressor_info = (ICINFO *)calloc(MAXCOMPRESSORS, sizeof(ICINFO));
     }
     else
     {
 
-        free(compressor_info);
-        compressor_info = (ICINFO *)calloc(MAXCOMPRESSORS, sizeof(ICINFO));
+        free(g_compressor_info);
+        g_compressor_info = (ICINFO *)calloc(MAXCOMPRESSORS, sizeof(ICINFO));
     }
 
-    for (int i = 0; ICInfo(ICTYPE_VIDEO, i, &compressor_info[num_compressor]); i++)
+    for (int i = 0; ICInfo(ICTYPE_VIDEO, i, &g_compressor_info[g_num_compressor]); i++)
     {
-        if (num_compressor >= MAXCOMPRESSORS)
+        if (g_num_compressor >= MAXCOMPRESSORS)
             break;
 
         HIC hic;
@@ -1096,19 +1092,19 @@ void VideoCodecOptions()
         if (restrictVideoCodecs)
         {
             // allow only a few
-            if ((compressor_info[num_compressor].fccHandler == mmioFOURCC('m', 's', 'v', 'c')) ||
-                (compressor_info[num_compressor].fccHandler == mmioFOURCC('m', 'r', 'l', 'e')) ||
-                (compressor_info[num_compressor].fccHandler == mmioFOURCC('c', 'v', 'i', 'd')) ||
-                (compressor_info[num_compressor].fccHandler == mmioFOURCC('d', 'i', 'v', 'x')))
+            if ((g_compressor_info[g_num_compressor].fccHandler == mmioFOURCC('m', 's', 'v', 'c')) ||
+                (g_compressor_info[g_num_compressor].fccHandler == mmioFOURCC('m', 'r', 'l', 'e')) ||
+                (g_compressor_info[g_num_compressor].fccHandler == mmioFOURCC('c', 'v', 'i', 'd')) ||
+                (g_compressor_info[g_num_compressor].fccHandler == mmioFOURCC('d', 'i', 'v', 'x')))
             {
-                hic = ICOpen(compressor_info[num_compressor].fccType, compressor_info[num_compressor].fccHandler,
+                hic = ICOpen(g_compressor_info[g_num_compressor].fccType, g_compressor_info[g_num_compressor].fccHandler,
                              ICMODE_QUERY);
                 if (hic)
                 {
                     if (ICERR_OK == ICCompressQuery(hic, first_alpbi, NULL))
                     {
-                        ICGetInfo(hic, &compressor_info[num_compressor], sizeof(ICINFO));
-                        num_compressor++;
+                        ICGetInfo(hic, &g_compressor_info[g_num_compressor], sizeof(ICINFO));
+                        g_num_compressor++;
                     }
                     ICClose(hic);
                 }
@@ -1117,16 +1113,16 @@ void VideoCodecOptions()
         else
         {
             // CamStudio still cannot handle VIFP
-            if (compressor_info[num_compressor].fccHandler != mmioFOURCC('v', 'i', 'f', 'p'))
+            if (g_compressor_info[g_num_compressor].fccHandler != mmioFOURCC('v', 'i', 'f', 'p'))
             {
-                hic = ICOpen(compressor_info[num_compressor].fccType, compressor_info[num_compressor].fccHandler,
+                hic = ICOpen(g_compressor_info[g_num_compressor].fccType, g_compressor_info[g_num_compressor].fccHandler,
                              ICMODE_QUERY);
                 if (hic)
                 {
                     if (ICERR_OK == ICCompressQuery(hic, first_alpbi, NULL))
                     {
-                        ICGetInfo(hic, &compressor_info[num_compressor], sizeof(ICINFO));
-                        num_compressor++;
+                        ICGetInfo(hic, &g_compressor_info[g_num_compressor], sizeof(ICINFO));
+                        g_num_compressor++;
                     }
                     ICClose(hic);
                 }
@@ -1146,17 +1142,17 @@ void PrintRecordInformation()
         printf("Theoretical Frame Rate  : %.2f fps\n", fRate);
         printf("Time Elasped  : %.2f sec\n", fTimeLength);
         printf("Number of Colors  : %d bits\n", nColors);
-        printf("Codec  : %s\n", LPCTSTR(strCodec));
+        printf("Codec  : %S\n", strCodec.c_str());
         printf("Actual Input Rate  : %.2f fps\n", fActualRate);
         printf("Dimension  : %d X %d\n", actualwidth, actualheight);
     }
 }
 
-int OptionNameEqual(string option_name, string parsed_name)
+int OptionNameEqual(const std::string &option_name, std::string parsed_name)
 {
     // Remove '/' and '-' characters at the beginning of parsed_name, convert to
     // lower case, and compare with option_name.
-    string::iterator start_iter = parsed_name.begin();
+    auto start_iter = parsed_name.begin();
 
     if ((*start_iter) == '/')
     {
@@ -1175,29 +1171,28 @@ int OptionNameEqual(string option_name, string parsed_name)
 
 int ParseOptions(int argc, char *argv[])
 {
-    vector<string> args;
+    std::vector<std::string> args;
 
     for (int i = 0; i < argc; ++i)
-        args.push_back(argv[i]);
+        args.emplace_back(argv[i]);
 
-    for (vector<string>::iterator it = args.begin(); it != args.end(); ++it)
+    for (auto it = args.begin(); it != args.end(); ++it)
     {
-
         if (!OptionNameEqual("codec", *it))
         {
             if (++it == args.end())
             {
-                cout << "Expected integer ID of codec" << endl;
+                 std::cout << "Expected integer ID of codec" <<std::endl;
                 return 0;
             }
-            selected_compressor = atoi((*it).c_str());
+            g_selected_compressor = atoi((*it).c_str());
 
             // Make sure we get a valid codec value. Since atoi() returns 0 on
             // failure, we need to add a check for literal "0", because 0 could in
             // fact be a valid codec.
-            if (!selected_compressor && *it != "0")
+            if (!g_selected_compressor && *it != "0")
             {
-                cout << "Expected integer ID of codec: " << *it << endl;
+                std::cout << "Expected integer ID of codec: " << *it <<std::endl;
                 return 0;
             }
         }
@@ -1205,7 +1200,7 @@ int ParseOptions(int argc, char *argv[])
         {
             if (++it == args.end())
             {
-                cout << "Expected filename to write to (.avi)" << endl;
+                std::cout << "Expected filename to write to (.avi)" <<std::endl;
                 return 0;
             }
             output_file = *it;
@@ -1214,15 +1209,15 @@ int ParseOptions(int argc, char *argv[])
         {
             if (++it == args.end())
             {
-                cout << "Expected valid number of seconds to record" << endl;
+                std::cout << "Expected valid number of seconds to record" <<std::endl;
                 return 0;
             }
-            seconds_to_record = atoi((*it).c_str());
+            g_seconds_to_record = atoi((*it).c_str());
 
             // 0 is not a valid number of seconds to record
-            if (!seconds_to_record)
+            if (!g_seconds_to_record)
             {
-                cout << "Expected valid number of seconds to record: " << *it << endl;
+                std::cout << "Expected valid number of seconds to record: " << *it <<std::endl;
                 return 0;
             }
         }
@@ -1230,18 +1225,18 @@ int ParseOptions(int argc, char *argv[])
         {
             if (++it == args.end())
             {
-                cout << "Expected framerate" << endl;
+                std::cout << "Expected framerate" <<std::endl;
                 return 0;
             }
-            frames_per_second = atoi((*it).c_str());
+            g_frames_per_second = atoi((*it).c_str());
             // Set to one key frame per second
-            keyFramesEvery = frames_per_second;
-            timelapse = 1000 / frames_per_second;
+            g_key_frames_every = g_frames_per_second;
+            g_timelapse = 1000 / g_frames_per_second;
 
             // framerate should be positive
-            if (frames_per_second <= 0)
+            if (g_frames_per_second <= 0)
             {
-                cout << "Framerate should be positive: " << *it << endl;
+                std::cout << "Framerate should be positive: " << *it <<std::endl;
                 return 0;
             }
         }
@@ -1257,23 +1252,23 @@ int ParseOptions(int argc, char *argv[])
 
 void PrintUsage(bool showCodecs = 1)
 {
-    cout << "Usage:" << endl << endl;
-    cout << "-codec: which codec to use" << endl
-         << "-outfile: .avi file to write to" << endl
+    std::cout << "Usage:" <<std::endl <<std::endl;
+    std::cout << "-codec: which codec to use" <<std::endl
+         << "-outfile: .avi file to write to" <<std::endl
          << "-seconds: how many seconds to record for ('0' means to record until "
-         << "a key is pressed)" << endl
-         << "-fps: framerate to record with" << endl
-         << "-help: this screen" << endl;
+         << "a key is pressed)" <<std::endl
+         << "-fps: framerate to record with" <<std::endl
+         << "-help: this screen" <<std::endl;
 
     if (!showCodecs)
         return;
 
-    cout << endl << "Valid codecs on this machine:" << endl;
-    for (int i = 0; i < num_compressor; ++i)
+    std::cout <<std::endl << "Valid codecs on this machine:" <<std::endl;
+    for (int i = 0; i < g_num_compressor; ++i)
     {
-        string s = GetCodecDescription(compressor_info[i].fccHandler);
+        const auto s = GetCodecDescription(g_compressor_info[i].fccHandler);
 
-        cout << i << ": " << s << endl;
+         std::cout << i << ": " << s <<std::endl;
     }
 }
 
@@ -1292,22 +1287,23 @@ int ChooseBestCodec()
     // installed, then just use the first codec in the compressor_info[] list.
     // If the compressor_info list is empty, then we must fail and exit.
 
-    vector<string> best_compressors;
-    best_compressors.push_back("camstudio lossless");
-    best_compressors.push_back("microsoft video 1");
-    best_compressors.push_back("cinepak codec");
-    best_compressors.push_back("indeo");
+    const static std::vector<std::string> best_compressors = {
+        "camstudio lossless",
+        "microsoft video 1",
+        "cinepak codec",
+        "indeo"
+    };
 
-    vector<string>::iterator best = best_compressors.begin();
+    auto best = best_compressors.begin();
     for (; best != best_compressors.end(); ++best)
     {
-        for (int i = 0; i < num_compressor; ++i)
+        for (int i = 0; i < g_num_compressor; ++i)
         {
-            string s = GetCodecDescription(compressor_info[i].fccHandler);
-            string lower = s;
+            auto s = GetCodecDescription(g_compressor_info[i].fccHandler);
+            auto lower = s;
             transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
-            if (lower.find(*best) != string::npos)
+            if (lower.find(*best) != std::string::npos)
             {
                 return i;
             }
@@ -1328,8 +1324,8 @@ int main(int argc, char *argv[])
     HANDLE *th = (HANDLE *)malloc(sizeof(HANDLE) * mon_count);
     // PAVIFILE* pfile = (PAVIFILE *) malloc(sizeof(PAVIFILE) * mon_count);
 
-    cout << "camstudio_cl: Command line screen recording" << endl;
-    cout << "v" << CAMSTUDIO_CL_VERSION << endl << endl;
+    std::cout << "camstudio_cl: Command line screen recording" <<std::endl;
+    std::cout << "v" << CAMSTUDIO_CL_VERSION <<std::endl <<std::endl;
 
     VideoCodecOptions();
 
@@ -1340,32 +1336,32 @@ int main(int argc, char *argv[])
 
     if (!output_file.length())
     {
-        cout << "Error: Need a valid output file, -outfile" << endl;
+        std::cout << "Error: Need a valid output file, -outfile" <<std::endl;
         PrintUsage();
         return 1;
     }
-    if (selected_compressor >= num_compressor)
+    if (g_selected_compressor >= g_num_compressor)
     {
-        cout << "Error: Need a valid codec, -codec" << endl;
+        std::cout << "Error: Need a valid codec, -codec" <<std::endl;
         PrintUsage();
         return 1;
     }
 
-    if (selected_compressor == -1)
+    if (g_selected_compressor == -1)
     {
-        selected_compressor = ChooseBestCodec();
+        g_selected_compressor = ChooseBestCodec();
 
-        if (selected_compressor == -1)
+        if (g_selected_compressor == -1)
         {
-            cout << "Error: No useable codec was found on this machine" << endl;
+            std::cout << "Error: No useable codec was found on this machine" <<std::endl;
             return 1;
         }
     }
 
-    compfccHandler = compressor_info[selected_compressor].fccHandler;
-    strCodec = CString(compressor_info[selected_compressor].szDescription);
+    g_comp_fcc_handler = g_compressor_info[g_selected_compressor].fccHandler;
+    strCodec = g_compressor_info[g_selected_compressor].szDescription;
 
-    cout << "Using codec: " << strCodec.GetBuffer() << endl;
+    std::wcout << L"Using codec: " << strCodec <<std::endl;
 
     // Screen metrics:
     hScreenDC = ::GetDC(NULL);
@@ -1376,12 +1372,11 @@ int main(int argc, char *argv[])
     screen *pscreen = obr;
 
     // Detection of screens
-    cout << "Detected displays:" << endl;
+    std::cout << "Detected displays:" <<std::endl;
     EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, (LPARAM)pscreen);
 
-    int i = 0;
     char buffer[2];
-    string recordHere = output_file;
+    auto recordHere = output_file;
 
     for (int i = 0; i <= mon_count - 1; i++)
     {
@@ -1400,23 +1395,23 @@ int main(int argc, char *argv[])
 
         gRecordState = 1;
 
-        cout << "Creating recording thread for screen no.:" << i << "..." << endl;
-        cout << "Recording to: " << output_file << endl;
+        std::cout << "Creating recording thread for screen no.:" << i << "..." <<std::endl;
+        std::cout << "Recording to: " << output_file <<std::endl;
 
         th[i] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)RecordAVIThread, (LPVOID)&pscreen[i], 0, &tid);
 
         // whole recording stuff goes ABOVE this line.
-        // cout<<"Sirka:" << p_obr[i].width << endl; // just some line for testing.
+        //std::cout<<"Sirka:" << p_obr[i].width <<std::endl; // just some line for testing.
     }
-    if (seconds_to_record > 0)
+    if (g_seconds_to_record > 0)
     {
-        cout << "Recording for " << seconds_to_record << " seconds" << endl;
-        ::Sleep(seconds_to_record * 1000);
+        std::cout << "Recording for " << g_seconds_to_record << " seconds" <<std::endl;
+        ::Sleep(g_seconds_to_record * 1000);
     }
     else
     {
-        cout << "Enter any key to stop recording..." << endl;
-        cout.flush();
+        std::cout << "Enter any key to stop recording..." <<std::endl;
+        std::cout.flush();
         getchar();
     }
     // Set gRecordState to 0, to end the while loop inside the recording thread.
@@ -1442,22 +1437,22 @@ int main(int argc, char *argv[])
     // else{
     // rcUse.right = maxxScreen - 1;
     //}
-    ////cout << "Offset L:" << rcUse.left << endl;
-    ////cout << "Offset T:" << rcUse.top << endl;
-    ////cout << "Offset R:" << rcUse.right << endl;
-    ////cout << "Offset B:" << rcUse.bottom << endl;
+    ////cout << "Offset L:" << rcUse.left <<std::endl;
+    ////cout << "Offset T:" << rcUse.top <<std::endl;
+    ////cout << "Offset R:" << rcUse.right <<std::endl;
+    ////cout << "Offset B:" << rcUse.bottom <<std::endl;
     //
     // gRecordState = 1;
 
-    // cout << "Creating recording thread..." << endl;
-    // cout << "Recording to: " << output_file << endl;
+    //std::cout << "Creating recording thread..." <<std::endl;
+    //std::cout << "Recording to: " << output_file <<std::endl;
 
     // if(seconds_to_record > 0){
-    //   cout << "Recording for " << seconds_to_record << " seconds" << endl;
+    //  std::cout << "Recording for " << seconds_to_record << " seconds" <<std::endl;
     //  ::Sleep(seconds_to_record * 1000);
     //} else {
-    //  cout << "Enter any key to stop recording..." << endl;
-    //  cout.flush();
+    // std::cout << "Enter any key to stop recording..." <<std::endl;
+    // std::cout.flush();
     //  getchar();
     //}
 
@@ -1465,11 +1460,11 @@ int main(int argc, char *argv[])
     //// TODO(dimator): Maybe some better IPC, other than a global variable???
     // gRecordState = 0;
 
-    cout << "Waiting for recording thread to exit..." << endl;
+    std::cout << "Waiting for recording thread to exit..." <<std::endl;
     if (WaitForSingleObject(th[0], 5000) == WAIT_TIMEOUT)
     {
-        cout << "Error: Timed out!  The recorded video might have errors." << endl;
-        cout << "Killing thread..." << endl;
+        std::cout << "Error: Timed out!  The recorded video might have errors." <<std::endl;
+        std::cout << "Killing thread..." <<std::endl;
         TerminateThread(th[0], exitcode);
     }
 
@@ -1477,7 +1472,7 @@ int main(int argc, char *argv[])
     GetExitCodeThread(th[0], &exitcode);
     if (exitcode)
     {
-        cout << "Error: Recording thread ended abnormally" << endl;
+        std::cout << "Error: Recording thread ended abnormally" <<std::endl;
         return exitcode;
     }
 

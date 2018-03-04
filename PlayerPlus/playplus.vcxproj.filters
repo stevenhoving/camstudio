@@ -13,71 +13,61 @@
       <UniqueIdentifier>{1fad0ccc-178a-4733-a119-41f1f739a4b6}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
+    <Filter Include="Source Files\fister">
+      <UniqueIdentifier>{df180af9-3d51-4d44-9e79-9963faf41675}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="audio.cpp">
+    <ClInclude Include="fister\SoundBase.h">
+      <Filter>Source Files\fister</Filter>
+    </ClInclude>
+    <ClInclude Include="fister\SoundFile.h">
+      <Filter>Source Files\fister</Filter>
+    </ClInclude>
+    <ClInclude Include="fister\SoundIn.h">
+      <Filter>Source Files\fister</Filter>
+    </ClInclude>
+    <ClInclude Include="fister\SoundOut.h">
+      <Filter>Source Files\fister</Filter>
+    </ClInclude>
+    <ClInclude Include="fister\Buffer.h">
+      <Filter>Source Files\fister</Filter>
+    </ClInclude>
+    <ClInclude Include="AUDIO.H">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioFormat.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\Buffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MainFrm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="playplus.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="playplusDoc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="playplusView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SlideToolBar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\SoundBase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\SoundFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StdAfx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="playplus.rc">
-      <Filter>Source Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
+    </ClInclude>
     <ClInclude Include="AudioFormat.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="MainFrm.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MULDIV32.H">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="playerplus.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="playplus.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="playplusDoc.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="playplusView.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="resource.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="SlideToolBar.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="StdAfx.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -120,5 +110,51 @@
     <None Include="res\toolbar1.bmp">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="fister\SoundFile.cpp">
+      <Filter>Source Files\fister</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\SoundIn.cpp">
+      <Filter>Source Files\fister</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\SoundOut.cpp">
+      <Filter>Source Files\fister</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\Buffer.cpp">
+      <Filter>Source Files\fister</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\SoundBase.cpp">
+      <Filter>Source Files\fister</Filter>
+    </ClCompile>
+    <ClCompile Include="audio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioFormat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="playplus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="playplusDoc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="playplusView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SlideToolBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="playplus.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

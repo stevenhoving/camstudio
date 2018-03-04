@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "SoundIn.h"
-// include callback class
+#include "CamError.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -21,10 +21,10 @@ IMPLEMENT_DYNCREATE(CSoundIn, CWinThread)
 CSoundIn::CSoundIn()
 {
     m_QueuedBuffers = 0;
-    m_hRecord = NULL;
+    m_hRecord = nullptr;
     m_bRecording = false;
     // DataFromSoundIn = NULL;
-    m_pOwner = NULL;
+    m_pOwner = nullptr;
     CreateThread();
     m_bAutoDelete = false;
 }
@@ -32,7 +32,9 @@ CSoundIn::CSoundIn()
 CSoundIn::~CSoundIn()
 {
     if (m_bRecording)
+    {
         Stop();
+    }
     ::PostQuitMessage(0);
 }
 
@@ -53,42 +55,41 @@ bool CSoundIn::Start(WAVEFORMATEX *format)
 {
     MMRESULT mmReturn = 0;
 
-    if (m_bRecording || DataFromSoundIn == NULL || m_pOwner == NULL)
+    if (m_bRecording || DataFromSoundIn == nullptr || m_pOwner == nullptr)
     {
         // already recording!
         return FALSE;
     }
-    else
+
+    if (format != nullptr)
     {
-        if (format != NULL)
-            m_Format = *format;
-
-        // open wavein device
-        mmReturn = ::waveInOpen(&m_hRecord, WAVE_MAPPER, &m_Format, m_ThreadID, NULL, CALLBACK_THREAD);
-
-        if (mmReturn)
-        {
-            waveInErrorMsg(mmReturn, "in Start()");
-            return FALSE;
-        }
-        else
-        {
-            // make several input buffers and add them to the input queue
-            for (int i = 0; i < 3; i++)
-            {
-                AddInputBufferToQueue();
-            }
-
-            // start recording
-            mmReturn = ::waveInStart(m_hRecord);
-            if (mmReturn)
-            {
-                waveInErrorMsg(mmReturn, "in Start()");
-                return FALSE;
-            }
-            m_bRecording = true;
-        }
+        m_Format = *format;
     }
+
+    // open wavein device
+    mmReturn = ::waveInOpen(&m_hRecord, WAVE_MAPPER, &m_Format, m_ThreadID, NULL, CALLBACK_THREAD);
+
+    if (mmReturn)
+    {
+        waveInErrorMsg(mmReturn, "in Start()");
+        return FALSE;
+    }
+
+    // make several input buffers and add them to the input queue
+    for (int i = 0; i < 3; i++)
+    {
+        AddInputBufferToQueue();
+    }
+
+    // start recording
+    mmReturn = ::waveInStart(m_hRecord);
+    if (mmReturn)
+    {
+        waveInErrorMsg(mmReturn, "in Start()");
+        return FALSE;
+    }
+    m_bRecording = true;
+
     return TRUE;
 }
 
@@ -99,32 +100,31 @@ void CSoundIn::Stop()
     {
         return;
     }
-    else
+
+    mmReturn = ::waveInReset(m_hRecord);
+    if (mmReturn)
     {
-        mmReturn = ::waveInReset(m_hRecord);
-        if (mmReturn)
-        {
-            waveInErrorMsg(mmReturn, "in Stop()");
-            return;
-        }
-        else
-        {
-            m_bRecording = FALSE;
-            Sleep(500);
-            mmReturn = ::waveInClose(m_hRecord);
-            if (mmReturn)
-                waveInErrorMsg(mmReturn, "in Stop()");
-        }
-        if (m_QueuedBuffers != 0)
-            ErrorMsg("Still %d buffers in waveIn queue!", m_QueuedBuffers);
+        waveInErrorMsg(mmReturn, "in Stop()");
+        return;
     }
+
+    m_bRecording = FALSE;
+    Sleep(500);
+    mmReturn = ::waveInClose(m_hRecord);
+    if (mmReturn)
+    {
+        waveInErrorMsg(mmReturn, "in Stop()");
+    }
+
+    if (m_QueuedBuffers != 0)
+        ErrorMsg("Still %d buffers in waveIn queue!", m_QueuedBuffers);
 }
 
-void CSoundIn::OnMM_WIM_DATA(UINT parm1, LONG parm2)
+void CSoundIn::OnMM_WIM_DATA(WPARAM /*parm1*/, LPARAM parm2)
 {
     MMRESULT mmReturn = 0;
 
-    LPWAVEHDR pHdr = (LPWAVEHDR)parm2;
+    auto pHdr = (LPWAVEHDR)parm2;
 
     mmReturn = ::waveInUnprepareHeader(m_hRecord, pHdr, sizeof(WAVEHDR));
     if (mmReturn)
@@ -154,9 +154,13 @@ void CSoundIn::OnMM_WIM_DATA(UINT parm1, LONG parm2)
             // add the input buffer to the queue again
             mmReturn = ::waveInAddBuffer(m_hRecord, pHdr, sizeof(WAVEHDR));
             if (mmReturn)
+            {
                 waveInErrorMsg(mmReturn, "in OnWIM_DATA()");
+            }
             else
+            {
                 return; // no error
+            }
         }
     }
 
@@ -173,9 +177,11 @@ int CSoundIn::AddInputBufferToQueue()
     MMRESULT mmReturn = 0;
 
     // create the header
-    LPWAVEHDR pHdr = new WAVEHDR;
-    if (pHdr == NULL)
+    auto pHdr = new WAVEHDR;
+    if (pHdr == nullptr)
+    {
         return NULL;
+    }
     ZeroMemory(pHdr, sizeof(WAVEHDR));
 
     // new a buffer
@@ -215,7 +221,11 @@ void CSoundIn::waveInErrorMsg(MMRESULT result, LPCTSTR addstr)
 /*
 void CSoundIn::DataFromSoundIn(CBuffer* buffer)
 {
-    
+    
+
+
+
+
     if(m_pFile)
     {
         if(!m_pFile->Write(buffer))

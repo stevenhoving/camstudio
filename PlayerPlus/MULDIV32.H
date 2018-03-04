@@ -46,7 +46,7 @@
         _asm     mov     ecx,dword ptr c  //  mov  ecx, c
         _asm     imul    ebx              //  imul ebx
         _asm     idiv    ecx              //  idiv ecx
-        _asm	 shld	 edx, eax, 16     //  shld edx, eax, 16
+        _asm     shld     edx, eax, 16     //  shld edx, eax, 16
 
     } // MulDiv32()
 

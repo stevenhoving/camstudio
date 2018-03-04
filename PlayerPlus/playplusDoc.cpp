@@ -39,7 +39,7 @@ CPlayplusDoc::~CPlayplusDoc()
 BOOL CPlayplusDoc::OnNewDocument()
 {
     if (!CDocument::OnNewDocument())
-        return FALSE;
+        return false;
 
     // TODO: add reinitialization code here
     // (SDI documents will reuse this document)

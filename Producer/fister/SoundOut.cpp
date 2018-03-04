@@ -99,7 +99,7 @@ void CSoundOut::Stop()
     }
 }
 
-void CSoundOut::OnMM_WOM_DONE(UINT parm1, LONG parm2)
+void CSoundOut::OnMM_WOM_DONE(WPARAM parm1, LPARAM parm2)
 {
 
     MMRESULT mmReturn = 0;
@@ -185,5 +185,6 @@ void CSoundOut::waveOutErrorMsg(MMRESULT result, LPCTSTR addstr)
     // say error message
     char errorbuffer[100];
     waveOutGetErrorText(result, errorbuffer, 100);
-    ErrorMsg("WAVEOUT:%x:%s %s", result, errorbuffer, addstr);
+    //ErrorMsg("WAVEOUT:%x:%s %s", result, errorbuffer, addstr);
+    assert(false);
 }

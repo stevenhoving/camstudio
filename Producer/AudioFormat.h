@@ -13,7 +13,7 @@ class AudioFormat : public CDialog
 {
 
 public:
-    AudioFormat(CWnd *pParent = NULL);
+    AudioFormat(CWnd *pParent = nullptr);
     void UpdateLocalCompressFormatInterface();
     void UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPWAVEFORMATEX curr_sel_pwfx);
 
@@ -30,19 +30,19 @@ public:
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(AudioFormat)
 protected:
-    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+    void DoDataExchange(CDataExchange *pDX) override; // DDX/DDV support
     //}}AFX_VIRTUAL
 
     // Implementation
 protected:
     // Generated message map functions
     //{{AFX_MSG(AudioFormat)
-    virtual void OnOK();
-    virtual BOOL OnInitDialog();
+    void OnOK() override;
+    BOOL OnInitDialog() override;
     afx_msg void OnChoose();
     afx_msg void OnSelchangeRecordformat();
     afx_msg void OnInterleave();
-    virtual void OnCancel();
+    void OnCancel() override;
     afx_msg void OnVolume();
     afx_msg void OnSelchangeInputdevice();
     afx_msg void OnInterleaveframes();

@@ -233,7 +233,7 @@ static BOOL CALLBACK AboutDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPA
         }
     }
 
-    return FALSE;
+    return false;
 }
 
 #endif
@@ -335,7 +335,7 @@ static BOOL CALLBACK ConfigureDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam,
         return AboutDialogProc(hwndDlg, uMsg, wParam, lParam);    // handle email and home-page buttons
         }
     }
-    return FALSE;
+    return false;
 }
 #endif
 

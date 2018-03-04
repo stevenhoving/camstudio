@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include "SoundOut.h"
+#include "CamError.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -99,7 +100,7 @@ void CSoundOut::Stop()
     }
 }
 
-void CSoundOut::OnMM_WOM_DONE(UINT parm1, LONG parm2)
+void CSoundOut::OnMM_WOM_DONE(WPARAM parm1, LPARAM parm2)
 {
 
     MMRESULT mmReturn = 0;

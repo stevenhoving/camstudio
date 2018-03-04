@@ -21,7 +21,7 @@ public:
     void TraySetIcon(UINT nResourceID);
     void TraySetIcon(LPCTSTR lpszResourceName);
     void TraySetToolTip(LPCTSTR lpszToolTip);
-    void TraySetMinimizeToTray(BOOL bMinimizeToTray = TRUE);
+    //void TraySetMinimizeToTray(BOOL bMinimizeToTray = TRUE);
     BOOL TraySetMenu(UINT nResourceID, UINT nDefaultPos = 0);
     BOOL TraySetMenu(HMENU hMenu, UINT nDefaultPos = 0);
     BOOL TraySetMenu(LPCTSTR lpszMenuName, UINT nDefaultPos = 0);
