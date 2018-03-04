@@ -100,6 +100,7 @@
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/experimental:external /external:W0 /external:anglebrackets %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>gdi32.lib;winmm.lib;vfw32.lib;msacm32.lib;kernel32.lib;user32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -126,6 +127,7 @@
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/experimental:external /external:W0 /external:anglebrackets %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>gdi32.lib;winmm.lib;vfw32.lib;msacm32.lib;kernel32.lib;user32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -148,6 +150,7 @@
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/experimental:external /external:W0 /external:anglebrackets %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -179,6 +182,7 @@
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/experimental:external /external:W0 /external:anglebrackets %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>

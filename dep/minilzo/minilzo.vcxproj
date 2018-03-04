@@ -116,6 +116,7 @@
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/experimental:external /external:W0 /external:anglebrackets %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -135,6 +136,7 @@
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/experimental:external /external:W0 /external:anglebrackets %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -157,6 +159,7 @@
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/experimental:external /external:W0 /external:anglebrackets %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -181,6 +184,7 @@
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/experimental:external /external:W0 /external:anglebrackets %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

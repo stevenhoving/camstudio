@@ -108,6 +108,7 @@
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/experimental:external /external:W0 /external:anglebrackets %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -158,6 +159,7 @@
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/experimental:external /external:W0 /external:anglebrackets %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -205,6 +207,7 @@
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/experimental:external /external:W0 /external:anglebrackets %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -254,6 +257,7 @@
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/experimental:external /external:W0 /external:anglebrackets %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
