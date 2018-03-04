@@ -7,7 +7,7 @@ HANDLE Bitmap2Dib(HBITMAP hbitmap, UINT bits)
     ::GetObject(hbitmap, sizeof(BITMAP), &bitmap);
 
     // DWORD align the width of the DIB
-    // Figure out the size of the colour table
+    // Figure out the size of the color table
     // Calculate the size of the DIB
     UINT wLineLen = (bitmap.bmWidth * bits + 31) / 32 * 4;
     DWORD wColSize = sizeof(RGBQUAD) * ((bits <= 8) ? 1 << bits : 0);

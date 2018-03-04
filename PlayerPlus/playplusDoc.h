@@ -1,10 +1,3 @@
-// playplusDoc.h : interface of the CPlayplusDoc class
-//
-/////////////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_PLAYPLUSDOC_H__B34DE975_75D9_47D7_A474_5971A0F181CE__INCLUDED_)
-#define AFX_PLAYPLUSDOC_H__B34DE975_75D9_47D7_A474_5971A0F181CE__INCLUDED_
-
 #pragma once
 
 class CPlayplusDoc : public CDocument
@@ -47,5 +40,3 @@ protected:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_PLAYPLUSDOC_H__B34DE975_75D9_47D7_A474_5971A0F181CE__INCLUDED_)

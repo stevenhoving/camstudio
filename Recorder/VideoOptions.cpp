@@ -645,7 +645,7 @@ void CVideoOptionsDlg::OnConfigure()
         // if (g_compressor_info[sel].fccHandler == mmioFOURCC('D', 'I', 'V', 'X'))
         //    return;
 
-// TODO, How long is this code stil experimental and soo in use ???
+// TODO, How long is this code still experimental and so in use ???
 #define EXPERIMENTAL_CODE
 #ifdef EXPERIMENTAL_CODE
         CHIC chic;
@@ -663,8 +663,7 @@ void CVideoOptionsDlg::OnConfigure()
             DWORD dwSize = chic.GetStateSize();
             LRESULT lResult = chic.GetState(m_cOpts.State(dwSize), dwSize);
 
-            // if (lResult != dwSize)  ==> C4244 Warning, type mismatch
-            if (lResult - dwSize != 0) // Save
+             if (lResult != static_cast<LRESULT>(dwSize))
             {
                 m_cOpts.State(0L);
             }

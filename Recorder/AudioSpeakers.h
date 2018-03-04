@@ -1,9 +1,3 @@
-// CAudioSpeakersDlg.h : header file
-//
-/////////////////////////////////////////////////////////////////////////////
-#if !defined(AFX_AUDIOSPEAKERS_H__125948FB_55C2_4D8E_8E21_36B3AE266E28__INCLUDED_)
-#define AFX_AUDIOSPEAKERS_H__125948FB_55C2_4D8E_8E21_36B3AE266E28__INCLUDED_
-
 #pragma once
 
 /////////////////////////////////////////////////////////////////////////////
@@ -56,4 +50,4 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_AUDIOSPEAKERS_H__125948FB_55C2_4D8E_8E21_36B3AE266E28__INCLUDED_)
+

@@ -1,7 +1,3 @@
-// SoundIn.cpp: implementation of the CSoundIn class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "SoundIn.h"
 // include callback class

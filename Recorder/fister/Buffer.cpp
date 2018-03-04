@@ -1,7 +1,3 @@
-// Buffer.cpp: implementation of the CBuffer class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "Buffer.h"
 

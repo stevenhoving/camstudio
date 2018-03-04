@@ -1,8 +1,3 @@
-// EditTransparency.h : header file
-//
-/////////////////////////////////////////////////////////////////////////////
-#if !defined(AFX_EDITTRANSPARENCY_H__585926AC_E741_4A9F_8787_4D8651D48468__INCLUDED_)
-#define AFX_EDITTRANSPARENCY_H__585926AC_E741_4A9F_8787_4D8651D48468__INCLUDED_
 
 #pragma once
 
@@ -62,4 +57,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_EDITTRANSPARENCY_H__585926AC_E741_4A9F_8787_4D8651D48468__INCLUDED_)

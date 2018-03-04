@@ -1,9 +1,3 @@
-// AutopanSpeed.h : header file
-//
-/////////////////////////////////////////////////////////////////////////////
-#if !defined(AFX_AUTOPANSPEED_H__49D4B2FA_02DF_4EAC_BA42_F2EEDEA2FE58__INCLUDED_)
-#define AFX_AUTOPANSPEED_H__49D4B2FA_02DF_4EAC_BA42_F2EEDEA2FE58__INCLUDED_
-
 
 #pragma once
 
@@ -50,4 +44,3 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_AUTOPANSPEED_H__49D4B2FA_02DF_4EAC_BA42_F2EEDEA2FE58__INCLUDED_)

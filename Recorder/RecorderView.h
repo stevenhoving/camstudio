@@ -1,7 +1,3 @@
-// RecorderView.h : interface of the CRecorderView class
-//
-/////////////////////////////////////////////////////////////////////////////
-
 #pragma once
 
 
@@ -276,6 +272,6 @@ extern CString g_strCodec;
 // extern LPWAVEFORMATEX pwfx;
 
 // Video Compress Parameters
-extern void GetVideoCompressState(HIC hic, DWORD fccHandler);
+//extern void GetVideoCompressState(HIC hic, DWORD fccHandler);
 extern void SetVideoCompressState(HIC hic, DWORD fccHandler);
 // extern void AllocCompressFormat(DWORD& dwCbwFX);

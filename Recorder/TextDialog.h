@@ -1,7 +1,3 @@
-#if !defined(AFX_TEXTDIALOG_H__63374646_A843_482E_998F_8DD0E32477E3__INCLUDED_)
-#define AFX_TEXTDIALOG_H__63374646_A843_482E_998F_8DD0E32477E3__INCLUDED_
-
-
 #pragma once
 
 
@@ -95,4 +91,3 @@ public:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_TEXTDIALOG_H__63374646_A843_482E_998F_8DD0E32477E3__INCLUDED_)

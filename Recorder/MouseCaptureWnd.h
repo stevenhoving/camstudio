@@ -1,9 +1,4 @@
-// MouseCaptureWnd.h
 // TODO: Put into a CWnd class
-/////////////////////////////////////////////////////////////////////////////
-#ifndef MOUSECAPTUREWND_H
-#define MOUSECAPTUREWND_H
-
 #pragma once
 
 // MouseCaptureWndProc referenced variables
@@ -24,4 +19,3 @@ int DestroyShiftWindow();
 
 void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip);
 
-#endif // MOUSECAPTUREWND_H

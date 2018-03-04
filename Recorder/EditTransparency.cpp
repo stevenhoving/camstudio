@@ -1,6 +1,3 @@
-// EditTransparency.cpp : implementation file
-//
-/////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Recorder.h"
 #include "EditTransparency.h"

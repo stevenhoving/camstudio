@@ -1,7 +1,3 @@
-// LayoutList.cpp: implementation of the CLayoutList class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "Recorder.h"
 #include "LayoutList.h"

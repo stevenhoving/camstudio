@@ -1,11 +1,3 @@
-// ListManager.h: interface for the CListManager class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_LISTMANAGER_H__0F5DD254_C4A6_4E45_BCBD_8FA13F605F2A__INCLUDED_)
-#define AFX_LISTMANAGER_H__0F5DD254_C4A6_4E45_BCBD_8FA13F605F2A__INCLUDED_
-
-
 #pragma once
 
 
@@ -60,4 +52,4 @@ private:
 
 extern CListManager ListManager;
 
-#endif // !defined(AFX_LISTMANAGER_H__0F5DD254_C4A6_4E45_BCBD_8FA13F605F2A__INCLUDED_)
+

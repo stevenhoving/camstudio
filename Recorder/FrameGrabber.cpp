@@ -181,19 +181,18 @@ DWORD CFrameGrabber::GetImageBitsResolution()
     {
         return 0;
     }
-    {
-        return IMAGEBITS(imageData);
-    }
+
+    return IMAGEBITS(imageData);
 }
 
 // this is internal use only!
-BOOL validCallHint = FALSE;
+BOOL g_validCallHint = FALSE;
 void CFrameGrabber::SetImageData(LPVOID data)
 {
-    ASSERT(validCallHint);
+    ASSERT(g_validCallHint);
 
     // do not call this method indirectly!
-    if (!(validCallHint && imageData))
+    if (!(g_validCallHint && imageData))
     {
         return;
     }
@@ -273,8 +272,8 @@ void CFrameGrabber::update_buffer_size()
 LRESULT PASCAL _grabber_CallbackProc(HWND /*hWnd*/, LPVIDEOHDR lpVHdr)
 {
     ASSERT_VALID(theOnlyOneGrabber);
-    validCallHint = TRUE;
+    g_validCallHint = TRUE;
     theOnlyOneGrabber->SetImageData(lpVHdr->lpData);
-    validCallHint = FALSE;
+    g_validCallHint = FALSE;
     return 0;
 }

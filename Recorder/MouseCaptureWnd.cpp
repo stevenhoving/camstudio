@@ -1,13 +1,10 @@
-// MouseCaptureWnd.cpp : implementation file
-//
-/////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Recorder.h"
 #include "MouseCaptureWnd.h"
 #include "MainFrm.h" // for maxxScreen, maxyScreen
 #include "RecorderView.h"
 #include "HotKey.h"
-#include "CamLib/CStudioLib.h"
+#include <CamLib/CStudioLib.h>
 
 HWND hMouseCaptureWnd;
 // MouseCaptureWndProc referenced functions

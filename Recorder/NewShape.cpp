@@ -1,11 +1,8 @@
-// NewShape.cpp : implementation file
-//
-
 #include "stdafx.h"
 #include "Recorder.h"
 #include "NewShape.h"
 #include "MainFrm.h" // for maxxScreen, maxyScreen
-#include "CamLib/CStudioLib.h"
+#include <CamLib/CStudioLib.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

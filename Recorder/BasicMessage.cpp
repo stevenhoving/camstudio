@@ -1,6 +1,3 @@
-// BasicMessage.cpp : implementation file
-//
-
 #include "stdafx.h"
 //#include "Recorder.h"
 #include "BasicMessage.h"

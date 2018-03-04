@@ -4,14 +4,16 @@
 //
 //___________________________________________________________________________________________
 
-#ifndef _CBITMAPEX_INCL
-#define _CBITMAPEX_INCL
+#pragma once
 
 class CBitmapEx : public CBitmap
 {
 public:
-    CBitmapEx();
+    CBitmapEx() = default;
     ~CBitmapEx() override;
+
+    CBitmapEx(const CBitmapEx&) = delete;
+    CBitmapEx& operator=(const CBitmapEx&) = delete;
 
     // load&save DDB
     BOOL Open(LPCSTR filename, LPCSTR DialogTitle = nullptr);
@@ -36,7 +38,5 @@ public:
 
 protected:
     CDC _modDC;
-    CBitmap *_modBMP;
+    CBitmap *_modBMP{nullptr};
 };
-
-#endif //_RBITMAP_INCL

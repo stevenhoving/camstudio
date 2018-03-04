@@ -28,12 +28,11 @@ private:
     HMIXER m_hMixer;
     MIXERCAPS m_sMixerCaps;
     MIXERLINE m_sMixerLine;
-    static UINT m_uDevices;
+    UINT m_device_count;
 
     MMRESULT GetID(UINT FAR *puMxId, DWORD fdwId = MIXER_OBJECTF_HMIXER);
     DWORD Message(UINT driverID, UINT uMsg, DWORD_PTR dwParam1, DWORD_PTR dwParam2);
 #ifdef _DEBUG
-
     bool query();
     bool queryAll();
 #endif

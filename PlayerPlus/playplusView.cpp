@@ -79,7 +79,7 @@ int giFirstVideo = -1; // 1st video stream found
 #define gfAudioFound (giFirstAudio >= 0)
 
 BOOL gfPlaying = FALSE; // are we currently playing?
-LONG glPlayStartTime;   // When did we start playing?
+DWORD g_play_start_time;   // When did we start playing?
 LONG glPlayStartPos;    // Where were we on the scrollbar?
 LONG timeStart;         // cached start, end, length
 LONG timeEnd;
@@ -152,7 +152,7 @@ HWND mainWnd = NULL;
 
 HBITMAP hLogoBM = NULL;
 
-int nColors = 24;
+int g_nColors = 24;
 int gfRecording = 0;
 
 #define SOUND_MODE 0
@@ -535,7 +535,7 @@ void PlayMovie(int mode)
 {
     TRACE("%s(%ld): PlayMovie", __FILE__, __LINE__);
 
-    glPlayStartTime = timeGetTime();
+    g_play_start_time = timeGetTime();
     glPlayStartPos = GetScrollTime();
 
     // Recording sessions do not reset time
@@ -908,7 +908,7 @@ UINT PlayAVIThread(LPVOID /*pParam*/)
             // playing, calculate it ourself
             //
             if (l == -1)
-                l = timeGetTime() - glPlayStartTime + glPlayStartPos;
+                l = timeGetTime() - g_play_start_time + glPlayStartPos;
 
             if (l != (LONG)GetScrollTime())
             {
@@ -1010,7 +1010,6 @@ void FileStop(int mode)
 
 void RecomputeStreamsTime(int resetslider, long timeCurrent)
 {
-
     timeStart = 0x7FFFFFFF;
     timeEnd = 0;
 
@@ -1216,7 +1215,6 @@ void FixWindowTitle()
 
 void SetTitleBar(CString title)
 {
-
     CWinApp *app = NULL;
     app = AfxGetApp();
     if (app)
@@ -1346,7 +1344,7 @@ int CPlayplusView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     AVIFileInit();
 
     HDC hScreenDC = ::GetDC(NULL);
-    nColors = ::GetDeviceCaps(hScreenDC, BITSPIXEL);
+    g_nColors = ::GetDeviceCaps(hScreenDC, BITSPIXEL);
     maxxScreen = GetDeviceCaps(hScreenDC, HORZRES);
     maxyScreen = GetDeviceCaps(hScreenDC, VERTRES);
     ::ReleaseDC(NULL, hScreenDC);
@@ -1423,7 +1421,7 @@ void CPlayplusView::OnPaint()
     if (gcpavi <= 0)
     {
 
-        if (nColors >= 8)
+        if (g_nColors >= 8)
         {
 
             HDC hdcBits = CreateCompatibleDC(dc.m_hDC);

@@ -12,7 +12,6 @@
 // Write to me: e9225140@student.tuwien.ac.at
 //
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "Recorder.h"
 #include "TransparentWnd.h"
@@ -28,8 +27,9 @@
 #include "ListManager.h"
 #include "ScreenAnnotations.h"
 #include "ResizeDialog.h"
-#include "CamLib/CStudioLib.h"
-#include "CamLib/CamColor.h"
+
+#include <CamLib/CStudioLib.h>
+#include <CamLib/CamColor.h>
 
 // for using std::min, std::max in gdiplus
 #include <algorithm>
@@ -43,8 +43,6 @@ using namespace std;
 using namespace Gdiplus;
 
 extern CScreenAnnotationsDlg sadlg;
-
-extern HANDLE Bitmap2Dib(HBITMAP, UINT);
 
 long lCurrentWndID = 0;
 
@@ -998,12 +996,12 @@ HANDLE CTransparentWnd::AllocMakeDib(int reduced_width, int reduced_height, UINT
     lpbi->biSizeImage = dwSize - sizeof(BITMAPINFOHEADER) - wColSize;
     lpbi->biXPelsPerMeter = 0;
     lpbi->biYPelsPerMeter = 0;
-    lpbi->biClrUsed = (iBits <= 8) ? 1 << iBits : 0;
+    lpbi->biClrUsed = (iBits <= 8) ? 1 << iBits : 0u;
     lpbi->biClrImportant = 0;
 
     // Get the iBits from the bitmap and stuff them after the LPBI
     //    LPBYTE lpBits = (LPBYTE)(lpbi+1)+wColSize;
-    lpbi->biClrUsed = (iBits <= 8) ? 1 << iBits : 0;
+    lpbi->biClrUsed = (iBits <= 8) ? 1 << iBits : 0u;
 
     GlobalUnlock(hdib);
 

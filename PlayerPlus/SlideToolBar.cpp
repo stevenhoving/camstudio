@@ -160,13 +160,12 @@ void CSlideToolBar::UpdateValues()
 
 void CSlideToolBar::AdjustTimeBar(CRect clientrect)
 {
-
     CRect rect;
     GetItemRect(SliderPosition, &rect);
 
     int sliderheight = 22;
     int offset = 0;
-    int initialwidth = 200;
+    //int initialwidth = 200;
 
     if (rect.Height() - 2 < sliderheight)
         sliderheight = rect.Height() - 2;

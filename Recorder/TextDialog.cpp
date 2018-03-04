@@ -1,6 +1,3 @@
-// CTextDlg.cpp : implementation file
-//
-
 #include "stdafx.h"
 #include "Recorder.h"
 #include "TextDialog.h"

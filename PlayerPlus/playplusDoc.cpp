@@ -1,6 +1,3 @@
-// playplusDoc.cpp : implementation of the CPlayplusDoc class
-//
-
 #include "stdafx.h"
 #include "playplus.h"
 

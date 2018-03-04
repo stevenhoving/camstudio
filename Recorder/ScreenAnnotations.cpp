@@ -1,6 +1,4 @@
-// ScreenAnnotations.cpp : implementation file
 // TODO: this whole modeule needs cleanup
-/////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Recorder.h"
 #include "ScreenAnnotations.h"
@@ -8,7 +6,7 @@
 #include "NewShape.h"
 #include "LayoutList.h"
 #include "Keyshortcuts.h"
-#include "CamLib/CStudioLib.h"
+#include <CamLib/CStudioLib.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

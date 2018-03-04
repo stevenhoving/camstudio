@@ -1,6 +1,3 @@
-#if !defined(AFX_FRAMEGRABBER_H__8145B633_9700_11D3_B4B8_E9E5ECC8F23B__INCLUDED_)
-#define AFX_FRAMEGRABBER_H__8145B633_9700_11D3_B4B8_E9E5ECC8F23B__INCLUDED_
-
 #pragma once
 
 // FrameGrabber.h : header file
@@ -68,4 +65,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_FRAMEGRABBER_H__8145B633_9700_11D3_B4B8_E9E5ECC8F23B__INCLUDED_)

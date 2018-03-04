@@ -1,6 +1,3 @@
-// CTroubleShootDlg.cpp : implementation file
-//
-
 #include "stdafx.h"
 #include "Recorder.h"
 #include "TroubleShoot.h"

@@ -1,18 +1,11 @@
-// MainFrm.h : interface of the CMainFrame class
-//
-/////////////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_MAINFRM_H__DBFD9E21_C771_4321_8322_1F45ED8D4A66__INCLUDED_)
-#define AFX_MAINFRM_H__DBFD9E21_C771_4321_8322_1F45ED8D4A66__INCLUDED_
-
-
 #pragma once
 
-#include "CamLib/TrayIcon.h"
+#include <CamLib/TrayIcon.h>
 #include "UpdateDialog.h"
 #include <iostream>
 #include <sstream>
 #include <string>
+
 class CMainFrame : public CFrameWnd
 {
 protected: // create from serialization only
@@ -80,8 +73,6 @@ private:
     void CheckForNewVersion();
     void Parse(int result[3], const std::string &input);
     bool LessThanVersion(const std::string &a, const std::string &b);
-
-public:
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -93,5 +84,3 @@ extern int maxxScreen;
 extern int maxyScreen;
 extern int minxScreen;
 extern int minyScreen;
-
-#endif // !defined(AFX_MAINFRM_H__DBFD9E21_C771_4321_8322_1F45ED8D4A66__INCLUDED_)

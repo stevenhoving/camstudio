@@ -1,7 +1,3 @@
-// ListManager.cpp: implementation of the CListManager class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "Recorder.h"
 #include "ListManager.h"

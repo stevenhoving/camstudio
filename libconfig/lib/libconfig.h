@@ -94,7 +94,7 @@ typedef enum
 
 typedef struct config_list_t
 {
-  unsigned int length;
+  int length;
   config_setting_t **elements;
 } config_list_t;
 

@@ -1,8 +1,3 @@
-//********************************************************************************
-//* FlashingWindow.CPP
-//*
-//********************************************************************************
-
 #include "stdafx.h"
 #include "Recorder.h"
 #include "FlashingWnd.h"
@@ -15,7 +10,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 namespace
-{ // annonymous
+{ // anonymous
 
 const int SMALLTHICKNESS = 4;
 const int THICKNESS = 8;
@@ -196,7 +191,7 @@ BOOL CFlashingWnd::OnEraseBkgnd(CDC * /*pDC*/)
 
 void CFlashingWnd::OnLButtonDown(UINT /*nFlags*/, CPoint /*point*/)
 {
-    if (!cRegionOpts.m_bSupportMouseDrag)
+    if (!cRegionOpts.m_bMouseDrag)
     {
         return;
     }
@@ -211,7 +206,7 @@ void CFlashingWnd::OnLButtonDown(UINT /*nFlags*/, CPoint /*point*/)
 
 void CFlashingWnd::OnLButtonUp(UINT /*nFlags*/, CPoint /*point*/)
 {
-    if (!cRegionOpts.m_bSupportMouseDrag)
+    if (!cRegionOpts.m_bMouseDrag)
     {
         return;
     }
@@ -232,7 +227,7 @@ void CFlashingWnd::OnLButtonUp(UINT /*nFlags*/, CPoint /*point*/)
 
 void CFlashingWnd::OnMouseMove(UINT nFlags, CPoint point)
 {
-    if (cRegionOpts.m_bSupportMouseDrag)
+    if (cRegionOpts.m_bMouseDrag)
     {
         if (m_bStartDrag)
         {

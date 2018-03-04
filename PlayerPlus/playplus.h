@@ -1,9 +1,3 @@
-// playplus.h : main header file for the PLAYPLUS application
-//
-
-#if !defined(AFX_PLAYPLUS_H__690F740A_CB50_4A20_8631_D538BD9BD425__INCLUDED_)
-#define AFX_PLAYPLUS_H__690F740A_CB50_4A20_8631_D538BD9BD425__INCLUDED_
-
 #pragma once
 
 #ifndef __AFXWIN_H__
@@ -53,5 +47,3 @@ private:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_PLAYPLUS_H__690F740A_CB50_4A20_8631_D538BD9BD425__INCLUDED_)

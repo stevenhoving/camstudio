@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // Picture (Implementations) Version 1.00
 //
-// Routins 4 Showing Picture Files... (.BMP .DIB .EMF .GIF .ICO .JPG .WMF)
+// Routines for Showing Picture Files... (.BMP .DIB .EMF .GIF .ICO .JPG .WMF)
 //
 // Author: Dr. Yovav Gad, EMail: Sources@SuperMain.com ,Web: www.SuperMain.com
 //=============================================================================
@@ -48,12 +48,12 @@
 //
 // When Using DC Object On a *Dialog Based* Application (CPaintDC dc(this);)
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Get Picture Dimentions In Pixels
+// Get Picture dimensions In Pixels
 // m_Picture.UpdateSizeOnDC(&dc);
 //
 // m_Picture.Show(&dc, CPoint(0,0), CPoint(m_Picture.m_Width, m_Picture.m_Height), 0,0);
 //
-// Change Original Dimentions
+// Change Original dimensions
 // m_Picture.Show(&dc, CRect(0,0,100,100));
 //
 // Show Bitmap Resource
@@ -77,6 +77,8 @@
 
 #include "stdafx.h"
 #include "CamLib/Picture.h"
+#include <vector>
+#include <cstdint>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -89,10 +91,8 @@ static char THIS_FILE[] = __FILE__;
 
 //-----------------------------------------------------------------------------
 // Does: Constructor - Create a New CPicture Object To Hold Picture Data
-// ~~~~
 //
 //-----------------------------------------------------------------------------
-//=============================================================================
 CPicture::CPicture()
 
 {
@@ -100,10 +100,8 @@ CPicture::CPicture()
 
 //-----------------------------------------------------------------------------
 // Does: Destructor - Free Data And Information From The CPicture Object
-// ~~~~
 //
 //-----------------------------------------------------------------------------
-//=============================================================================
 CPicture::~CPicture()
 {
     FreePictureData(); // Important - Avoid Leaks...
@@ -136,8 +134,8 @@ void CPicture::FreePictureData()
 // ~~~~ (.BMP .DIB .EMF .GIF .ICO .JPG .WMF)
 //
 // Note: When Adding a Bitmap Resource It Would Automatically Show On "Bitmap"
-// ~~~~ This NOT Good Coz We Need To Load It From a Custom Resource "BMP"
-// To Add a Custom Rresource: Import Resource -> Open As -> Custom
+// ~~~~ This NOT Good because We Need To Load It From a Custom Resource "BMP"
+// To Add a Custom resource: Import Resource -> Open As -> Custom
 // (Both .BMP And .DIB Should Be Found Under "BMP")
 //
 // InPut: ResourceName - As a UINT Defined (Example: IDR_PICTURE_RESOURCE)
@@ -154,7 +152,6 @@ BOOL CPicture::Load(UINT ResourceName, LPCTSTR ResourceType)
     HGLOBAL hGlobal = nullptr;
     HRSRC hSource = nullptr;
     LPVOID lpVoid = nullptr;
-    int nSize = 0;
 
     if (m_IPicture != nullptr)
     {
@@ -186,7 +183,7 @@ BOOL CPicture::Load(UINT ResourceName, LPCTSTR ResourceType)
         return (FALSE);
     }
 
-    nSize = static_cast<UINT>(SizeofResource(AfxGetResourceHandle(), hSource));
+    const auto nSize = static_cast<int>(SizeofResource(AfxGetResourceHandle(), hSource));
     if (LoadPictureData(static_cast<BYTE *>(hGlobal), nSize))
     {
         bResult = TRUE;
@@ -225,9 +222,7 @@ BOOL CPicture::Load(UINT ResourceName, LPCTSTR ResourceType)
 // ~~~~~
 //
 // OutPut: TRUE If Succeeded...
-// ~~~~~~
 //-----------------------------------------------------------------------------
-//=============================================================================
 BOOL CPicture::Load(const CString &sFilePathName)
 {
     BOOL bResult = FALSE;
@@ -242,7 +237,6 @@ BOOL CPicture::Load(const CString &sFilePathName)
 
     if (PictureFile.Open(sFilePathName, CFile::modeRead | CFile::typeBinary, &e))
     {
-
         // Prevent C4244 warning and take some predictions for unwanted truncations
         // nSize = PictureFile.GetLength();        -> Cause C4244 warning
         ULONGLONG tmpUlongSize = PictureFile.GetLength();
@@ -255,18 +249,15 @@ BOOL CPicture::Load(const CString &sFilePathName)
         // tracelog if truncated)
         nSize = static_cast<int>(tmpUlongSize);
 
-        auto *pBuffer = new BYTE[nSize];
+        // \todo replace vector with buffer that does not do zero initialization.
+        std::vector<uint8_t> buffer(nSize);
 
-        if (PictureFile.Read(pBuffer, nSize) > 0)
+        if (PictureFile.Read(&buffer[0], nSize) > 0)
         {
-            if (LoadPictureData(pBuffer, nSize))
-            {
-                bResult = TRUE;
-            }
+            bResult = LoadPictureData(&buffer[0], nSize);
         }
 
         PictureFile.Close();
-        delete[] pBuffer;
     }
     else
     {
@@ -686,6 +677,21 @@ BOOL CPicture::CopyToPicture(CPicture *dstPic, const CString &exchangeFile)
     */
 
     return (TRUE);
+}
+
+IPicture * CPicture::IPicturePtr()
+{
+    return m_IPicture;
+}
+
+LONG CPicture::Height() const
+{
+    return m_Height;
+}
+
+LONG CPicture::Width() const
+{
+    return m_Width;
 }
 
 //=============================================================================

@@ -1,9 +1,3 @@
-// SyncDialog.h : header file
-//
-#if !defined(AFX_SYNCDIALOG_H__C6FE6223_66FB_4857_A9BB_E1589B288B7F__INCLUDED_)
-#define AFX_SYNCDIALOG_H__C6FE6223_66FB_4857_A9BB_E1589B288B7F__INCLUDED_
-
-
 #pragma once
 
 
@@ -57,4 +51,3 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_SYNCDIALOG_H__C6FE6223_66FB_4857_A9BB_E1589B288B7F__INCLUDED_)

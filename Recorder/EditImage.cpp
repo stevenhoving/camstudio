@@ -1,4 +1,3 @@
-// EditImage.cpp : implementation file
 // TODO: additional refactoring/simplifaction of enablewindow code
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"

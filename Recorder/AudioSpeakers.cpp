@@ -1,6 +1,3 @@
-// CAudioSpeakersDlg.cpp : implementation file
-//
-
 // With much experimentation, I've painstakingly restored this file which was missing
 // from the originally released 2.0 source code. I hope everyone appreciates the effort
 // I have put into making this coveted feature available to all and of course enjoys

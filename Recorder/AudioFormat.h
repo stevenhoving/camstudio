@@ -1,9 +1,3 @@
-// CAudioFormatDlg.h : header file
-//
-/////////////////////////////////////////////////////////////////////////////
-#if !defined(AFX_AUDIOFORMAT_H__D1098020_67C5_491D_AC06_2EE69A7C135D__INCLUDED_)
-#define AFX_AUDIOFORMAT_H__D1098020_67C5_491D_AC06_2EE69A7C135D__INCLUDED_
-
 #pragma once
 
 /////////////////////////////////////////////////////////////////////////////
@@ -105,4 +99,3 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_AUDIOFORMAT_H__D1098020_67C5_491D_AC06_2EE69A7C135D__INCLUDED_)

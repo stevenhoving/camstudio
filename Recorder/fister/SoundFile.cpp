@@ -1,7 +1,3 @@
-// SoundFile.cpp: implementation of the CSoundFile class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "SoundFile.h"
 #include "buffer.h"

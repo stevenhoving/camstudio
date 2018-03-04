@@ -25,18 +25,9 @@ public:
     BOOL SaveToFile(FILE *fptr);
     BOOL CopyToPicture(CPicture *dstPic, const CString &exchangeFile);
 
-    IPicture *IPicturePtr()
-    {
-        return m_IPicture;
-    }
-    LONG Height() const
-    {
-        return m_Height;
-    }
-    LONG Width() const
-    {
-        return m_Width;
-    }
+    IPicture *IPicturePtr();
+    LONG Height() const;
+    LONG Width() const;
 
 protected:
     void FreePictureData();

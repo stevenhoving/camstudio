@@ -129,12 +129,10 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
  */
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
-    HWND hWnd;
-    MSG msg;
-
     m_hInstance = hInstance;
 
-    if ((hWnd = InitWindows(hInstance, hPrevInstance, nCmdShow)) == nullptr)
+    auto hWnd = InitWindows(hInstance, hPrevInstance, nCmdShow);
+    if (hWnd == nullptr)
     {
         return 0; // Died initializing, bail out
     }
@@ -145,13 +143,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
         PostMessage(hWnd, WM_USER_PLAY, 0, 0);
     }
 
+    MSG msg;
     while (GetMessage(&msg, nullptr, 0, 0))
     {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
 
-    return msg.wParam;
+    return 0;
 }
 
 /*
@@ -272,7 +271,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             break;
         case WM_ACTIVATE:
+            [[fallthrough]];
         case WM_QUERYNEWPALETTE:
+            [[fallthrough]];
         case WM_PALETTECHANGED:
             // Forward palette-related messages through to the MCIWnd, so it can do the right thing.
             if (hWndMCI)
@@ -335,8 +336,8 @@ void OpenMCIMovieFile(HWND hWnd)
 {
     OPENFILENAME ofn;
 
-    static char szFile[BUFFER_LENGTH];
-    static char szFileTitle[BUFFER_LENGTH];
+    char szFile[BUFFER_LENGTH];
+    char szFileTitle[BUFFER_LENGTH];
 
     memset(&ofn, 0, sizeof(ofn));
     ofn.lStructSize = sizeof(ofn);
@@ -386,9 +387,6 @@ void OpenMCIMovieFile(HWND hWnd)
  */
 void OpenMCIMovieFileInit(HWND hWnd)
 {
-    //static char szFile[BUFFER_LENGTH];
-    //static char szFileTitle[BUFFER_LENGTH];
-
     if (bIsOpenMovie)
     {
         MCIWndClose(hWndMCI);

@@ -1,9 +1,3 @@
-// EffectsOptions.h
-// include file for CEffectsOptionsDlg dialog
-/////////////////////////////////////////////////////////////////////////////
-#ifndef EFFECTSOPTIONS_H    // because pragma once is compiler specific
-#define EFFECTSOPTIONS_H
-
 #pragma once
 
 #include "TextAttributes.h"
@@ -41,4 +35,3 @@ public:
     afx_msg void OnBnClickedOk();
 };
 
-#endif    // EFFECTSOPTIONS_H

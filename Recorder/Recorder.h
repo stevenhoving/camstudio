@@ -1,9 +1,3 @@
-// Recorder.h : main header file for the Recorder (before known as VSCAP) application
-//
-/////////////////////////////////////////////////////////////////////////////
-#if !defined(AFX_VSCAP_H__CAB648E2_684F_4FF1_B574_9714ACAC6D57__INCLUDED_)
-#define AFX_VSCAP_H__CAB648E2_684F_4FF1_B574_9714ACAC6D57__INCLUDED_
-
 #pragma once
 
 #ifndef __AFXWIN_H__
@@ -52,8 +46,6 @@
 // See vscap.cpp for the implementation of this class
 
 class gdi;
-
-
 
 class CRecorderApp : public CWinApp
 {
@@ -109,5 +101,3 @@ private:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_VSCAP_H__CAB648E2_684F_4FF1_B574_9714ACAC6D57__INCLUDED_)

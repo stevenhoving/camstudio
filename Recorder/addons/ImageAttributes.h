@@ -1,9 +1,3 @@
-// ImageAttributes.h
-// include file for ImageAttributes structure
-/////////////////////////////////////////////////////////////////////////////
-#ifndef IMAGEATTRIBUTES_H    // because pragma once is compiler specific
-#define IMAGEATTRIBUTES_H
-
 #pragma once
 
 #include "TextAttributes.h"    // for position
@@ -44,4 +38,4 @@ struct ImageAttributes
     long        m_lContrast{0L};
 };
 
-#endif    // IMAGEATTRIBUTES_H
+

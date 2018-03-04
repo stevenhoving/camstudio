@@ -1,6 +1,3 @@
-#if !defined(AFX_SLIDETOOLBAR)
-#define AFX_SLIDETOOLBAR
-
 #pragma once
 
 // SlideToolBar.h : header file
@@ -49,5 +46,3 @@ protected:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_SLIDETOOLBAR_H__992196A1_7C20_11D4_BEC3_B9FC12288B45__INCLUDED_)

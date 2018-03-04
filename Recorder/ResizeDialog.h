@@ -1,8 +1,3 @@
-// ResizeDialog.h : header file
-//
-#if !defined(AFX_RESIZEDIALOG_H__C4C59E6A_3C80_47C5_AB9C_A71C5A0BEE6D__INCLUDED_)
-#define AFX_RESIZEDIALOG_H__C4C59E6A_3C80_47C5_AB9C_A71C5A0BEE6D__INCLUDED_
-
 #pragma once
 
 #include "TransparentWnd.h"
@@ -52,4 +47,3 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_RESIZEDIALOG_H__C4C59E6A_3C80_47C5_AB9C_A71C5A0BEE6D__INCLUDED_)

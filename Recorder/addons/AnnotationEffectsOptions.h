@@ -1,14 +1,8 @@
-// CAnnotationEffectsOptionsDlg dialog
-//
-/////////////////////////////////////////////////////////////////////////////
-#ifndef ANNOTATIONEFFECTSOPTIONS_H    // belt and suspenders
-#define ANNOTATIONEFFECTSOPTIONS_H
-
 #pragma once
 
 #include "EffectsOptions.h"
 #include "EffectsOptions2.h"
-#include "afxwin.h"
+#include <afxwin.h>
 
 // CAnnotationEffectsOptionsDlg dialog
 
@@ -86,7 +80,7 @@ private:
     bool IsStrftimeSafe(char * pbuffer);    // For user defined date/time layouts
 
 public:
-    afx_msg void OnEnChangeFormatXnotepreview();    // The preview field used to display delay and xnote combination in the settings dialog
-    afx_msg void OnEnChangeEditXnoteFormat();
+    // The preview field used to display delay and xnote combination in the settings dialog
+    afx_msg void OnEnChangeFormatXnotepreview();
+    //afx_msg void OnEnChangeEditXnoteFormat();
 };
-#endif    // ANNOTATIONEFFECTSOPTIONS_H

@@ -1,5 +1,6 @@
 #pragma once
 
+#define VC_EXTRALEAN
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <map>
@@ -49,8 +50,8 @@ extern "C"
 #else
 #define LIBSPEC __declspec(dllimport)
 #endif // _COMPILING_44E531B1_14D3_11d5_A025_006067718D04
-    LIBSPEC BOOL InstallMyHook(HWND hWnd, UINT msg);
-    LIBSPEC BOOL UninstallMyHook(HWND hWnd);
+    LIBSPEC BOOL InstallMouseHook(HWND hWnd, UINT msg);
+    LIBSPEC BOOL UninstallMouseHook(HWND hWnd);
 #undef LIBSPEC
 
 #ifdef __cplusplus

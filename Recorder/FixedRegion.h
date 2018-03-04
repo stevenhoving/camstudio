@@ -1,9 +1,3 @@
-// FixedRegion.h : header file
-//
-/////////////////////////////////////////////////////////////////////////////
-#if !defined(AFX_FIXEDREGION_H__FA179C45_83DC_4DE0_BF6B_0C6E841C7BD2__INCLUDED_)
-#define AFX_FIXEDREGION_H__FA179C45_83DC_4DE0_BF6B_0C6E841C7BD2__INCLUDED_
-
 
 #pragma once
 
@@ -77,4 +71,4 @@ public:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_FIXEDREGION_H__FA179C45_83DC_4DE0_BF6B_0C6E841C7BD2__INCLUDED_)
+

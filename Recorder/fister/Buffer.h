@@ -1,11 +1,3 @@
-// Buffer.h: interface for the CBuffer class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_BUFFER_H__B4B9CF06_B948_49A5_9145_ECB3E318BF05__INCLUDED_)
-#define AFX_BUFFER_H__B4B9CF06_B948_49A5_9145_ECB3E318BF05__INCLUDED_
-
-
 #pragma once
 
 
@@ -38,4 +30,4 @@ private:
     bool m_bAutoDelete;
 };
 
-#endif // !defined(AFX_BUFFER_H__B4B9CF06_B948_49A5_9145_ECB3E318BF05__INCLUDED_)
+

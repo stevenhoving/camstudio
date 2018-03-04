@@ -1,10 +1,6 @@
-// SoundOut.cpp: implementation of the CSoundOut class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "SoundOut.h"
-#include "CamLib/CamError.h"
+#include <CamLib/CamError.h>
 
 #ifdef _DEBUG
 #undef THIS_FILE

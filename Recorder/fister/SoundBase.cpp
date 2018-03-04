@@ -1,11 +1,5 @@
-// SoundBase.cpp: implementation of the CSoundBase class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "SoundBase.h"
-
-#pragma message("CamStudio\\fister\\SoundBase.cpp")
 
 #ifdef _DEBUG
 #undef THIS_FILE

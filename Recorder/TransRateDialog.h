@@ -1,12 +1,6 @@
-#if !defined(AFX_TRANSRATEDIALOG_H__DC88D68B_2E44_4167_B066_11937CA0009B__INCLUDED_)
-#define AFX_TRANSRATEDIALOG_H__DC88D68B_2E44_4167_B066_11937CA0009B__INCLUDED_
-
 #pragma once
 
 #include "VideoWnd.h"
-
-// TransRateDialog.h : header file
-//
 
 /////////////////////////////////////////////////////////////////////////////
 // CTransRateDlg dialog
@@ -52,4 +46,3 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_TRANSRATEDIALOG_H__DC88D68B_2E44_4167_B066_11937CA0009B__INCLUDED_)

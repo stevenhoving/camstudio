@@ -1,9 +1,3 @@
-// CKeyshortcutsDlg.h : header file
-//
-/////////////////////////////////////////////////////////////////////////////
-#if !defined(AFX_KEYSHORTCUTS_H__7D91F35B_8385_4EBB_96CA_AEFB403E2121__INCLUDED_)
-#define AFX_KEYSHORTCUTS_H__7D91F35B_8385_4EBB_96CA_AEFB403E2121__INCLUDED_
-
 #pragma once
 
 /////////////////////////////////////////////////////////////////////////////
@@ -42,7 +36,7 @@ protected:
 
 private:
     int GetIndex(UINT keyShortCut);
-    UINT GetCode(size_t index);
+    UINT GetCode(int index);
 
     std::vector<UINT> m_vKeyCode;
     CButton m_ctrlButtonRecordCTRL;
@@ -78,4 +72,4 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_KEYSHORTCUTS_H__7D91F35B_8385_4EBB_96CA_AEFB403E2121__INCLUDED_)
+

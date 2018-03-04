@@ -1,10 +1,7 @@
-// EffectsOptions.cpp : implementation file
-//
-
 #include "stdafx.h"
 #include "../Recorder.h"
 #include "EffectsOptions.h"
-#include ".\effectsoptions.h"
+
 
 // CEffectsOptionsDlg dialog
 

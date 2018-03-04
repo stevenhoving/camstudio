@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CamLib/CamError.h"
+#include <CamLib/CamError.h>
 #include <strsafe.h> // for StringCchPrintf
 
 /////////////////////////////////////////////////////////////////////////////
@@ -60,26 +60,25 @@ void OnError(LPCSTR lpszFunction)
 
 void ErrorMsg(char frmt[], ...)
 {
-    DWORD written;
+    DWORD written = 0;
     char buf[5000];
     va_list val;
 
     va_start(val, frmt);
-    // wvsprintf(buf, frmt, val);   // C4995 warning, function marked as deprecated once
     _vstprintf_s(buf, frmt, val); // Save replacement
     va_end(val);
 
     const COORD _80x50 = {80, 50};
     static BOOL startup = (AllocConsole(), SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), _80x50));
-    WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buf, lstrlen(buf), &written, nullptr);
+    WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buf, (DWORD)lstrlen(buf), &written, nullptr);
 }
 
 int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus)
 {
     CString tstr("");
     CString mstr("");
-    VERIFY(tstr.LoadString(strTitle));
-    VERIFY(mstr.LoadString(strMsg));
+    VERIFY(tstr.LoadString((UINT)strTitle));
+    VERIFY(mstr.LoadString((UINT)strMsg));
 
     return ::MessageBox(hWnd, mstr, tstr, mbstatus);
 }
@@ -89,8 +88,8 @@ int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus, long val)
     CString tstr("");
     CString mstr("");
     CString fstr("");
-    VERIFY(tstr.LoadString(strTitle));
-    VERIFY(mstr.LoadString(strMsg));
+    VERIFY(tstr.LoadString((UINT)strTitle));
+    VERIFY(mstr.LoadString((UINT)strMsg));
     fstr.Format(mstr, val);
 
     return ::MessageBox(hWnd, fstr, tstr, mbstatus);
@@ -101,8 +100,8 @@ int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus, long val1, 
     CString tstr("");
     CString mstr("");
     CString fstr("");
-    VERIFY(tstr.LoadString(strTitle));
-    VERIFY(mstr.LoadString(strMsg));
+    VERIFY(tstr.LoadString((UINT)strTitle));
+    VERIFY(mstr.LoadString((UINT)strMsg));
     fstr.Format(mstr, val1, val2);
 
     return ::MessageBox(hWnd, fstr, tstr, mbstatus);

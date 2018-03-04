@@ -1,6 +1,3 @@
-#ifndef CAMSTUDIO4XNOTE_H    
-#define CAMSTUDIO4XNOTE_H
-
 #pragma once
 
 // Define CAMSTUDIO4XNOTE if this is a custom build release for Xnote Stopwatch users (2010/05/28, Janhgm)
@@ -30,4 +27,4 @@
 // Motion Detector : ( 5 - alert )
 #define XNOTE_ACTION_MOTIONDETECTOR_ALERT        5
 
-#endif // CAMSTUDIO4XNOTE_H    
+

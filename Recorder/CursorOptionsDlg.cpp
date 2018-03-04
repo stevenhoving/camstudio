@@ -10,16 +10,13 @@
 #include "Recorder.h"
 #include "CursorOptionsDlg.h"
 #include "CamCursor.h"
-#include "CamLib/CamColor.h"
+#include <CamLib/CamColor.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
-/////////////////////////////////////////////////////////////////////////////
-// CCursorOptionsDlg dialog
 
 CCursorOptionsDlg::CCursorOptionsDlg(CWnd *pParent /*=NULL*/)
     : CDialog(CCursorOptionsDlg::IDD, pParent)

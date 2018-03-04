@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "MP4Converter.h"
-#include "CamLib/CamFile.h"
+#include <CamLib/CamFile.h>
 
 #define BUF_SIZE 4096
 
@@ -69,7 +69,7 @@ DWORD WINAPI CMP4Converter::ThreadProc(LPVOID lpParam)
     void *rdstdout = 0;
     void *wrstdout = 0;
 
-    bool bRet = false;
+    //bool bRet = false;
 
     ConverterData *m_pData = (ConverterData *)lpParam;
     // Create a pipe for the child process's STDOUT.

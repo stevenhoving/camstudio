@@ -50,11 +50,12 @@ LRESULT CALLBACK LowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
     if (nCode >= 0)
     {
-        if (WM_LBUTTONDOWN != wParam && WM_LBUTTONUP != wParam)
+        if (wParam != WM_LBUTTONDOWN && wParam != WM_LBUTTONUP)
         {
             POINT pt;
             if (GetCursorPos(&pt))
-            { // may need to profile this. dunno how long does it take
+            {
+                // may need to profile this. dunno how long does it take
                 HWND h = WindowFromPoint(pt);
                 DWORD id = GetWindowThreadProcessId(h, nullptr);
                 DWORD cid = GetCurrentThreadId();
@@ -140,7 +141,7 @@ BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD Reason, LPVOID /*Reserved*/)
             break;
         case DLL_PROCESS_DETACH:
             UnhookWindowsHookEx(g_keyHook);
-            UninstallMyHook(nullptr);
+            UninstallMouseHook(nullptr);
             break;
     }
 
@@ -148,11 +149,11 @@ BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD Reason, LPVOID /*Reserved*/)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// InstallMyHook
+// InstallMouseHook
 // Installs hookproc into the hook chain for all desktop threads, sets
 // the notification window to hWnd using message_to_call.
 /////////////////////////////////////////////////////////////////////////////
-__declspec(dllexport) BOOL InstallMyHook(HWND /*hWnd*/, UINT /*message_to_call*/)
+__declspec(dllexport) BOOL InstallMouseHook(HWND /*hWnd*/, UINT /*message_to_call*/)
 {
     if (g_mouseHookLL == nullptr)
     {
@@ -162,10 +163,10 @@ __declspec(dllexport) BOOL InstallMyHook(HWND /*hWnd*/, UINT /*message_to_call*/
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// UninstallMyHook
+// UninstallMouseHook
 // Removes hookproc fromn hook chain for window hWnd
 /////////////////////////////////////////////////////////////////////////////
-__declspec(dllexport) BOOL UninstallMyHook(HWND /*hWnd*/)
+__declspec(dllexport) BOOL UninstallMouseHook(HWND /*hWnd*/)
 {
     if (g_mouseHookLL && UnhookWindowsHookEx(g_mouseHookLL))
     {

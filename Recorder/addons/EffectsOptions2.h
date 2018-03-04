@@ -1,9 +1,3 @@
-// EffectsOptions2.h
-// include file for CEffectsOptions2Dlg dialog
-/////////////////////////////////////////////////////////////////////////////
-#ifndef EFFECTSOPTIONS2_H    // because pragma once is compiler specific
-#define EFFECTSOPTIONS2_H
-
 #pragma once
 #include "ImageAttributes.h"
 #include "ximage.h"
@@ -66,4 +60,4 @@ public:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
-#endif    // EFFECTSOPTIONS2_H
+

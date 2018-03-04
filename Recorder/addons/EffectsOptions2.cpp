@@ -1,6 +1,3 @@
-// EffectsOptions2.cpp : implementation file
-//
-
 #include "stdafx.h"
 #include "../Recorder.h"
 #include "EffectsOptions2.h"

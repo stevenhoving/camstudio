@@ -1,9 +1,3 @@
-// EditImage.h : header file
-//
-/////////////////////////////////////////////////////////////////////////////
-#if !defined(AFX_EDITIMAGE_H__E8731569_888C_480B_95E7_4CA727CD9207__INCLUDED_)
-#define AFX_EDITIMAGE_H__E8731569_888C_480B_95E7_4CA727CD9207__INCLUDED_
-
 #pragma once
 
 #include "TransparentWnd.h"
@@ -85,4 +79,4 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_EDITIMAGE_H__E8731569_888C_480B_95E7_4CA727CD9207__INCLUDED_)
+

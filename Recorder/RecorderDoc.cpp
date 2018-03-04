@@ -8,7 +8,6 @@
 
 #include "stdafx.h"
 #include "Recorder.h"
-
 #include "RecorderDoc.h"
 
 #ifdef _DEBUG

@@ -44,8 +44,8 @@ extern void AllocCompressFormat();
 LPWAVEFORMATEX pwfxLocal = NULL;
 DWORD cbwfxLocal = 0;
 
-int audio_bits_per_sampleLocal;
-int audio_num_channelsLocal;
+WORD audio_bits_per_sampleLocal;
+WORD audio_num_channelsLocal;
 int audio_samples_per_secondsLocal;
 WAVEFORMATEX m_FormatLocal;
 BOOL bAudioCompressionLocal = TRUE;
@@ -581,7 +581,6 @@ void AudioFormat::OnInterleave()
 
 void BuildLocalRecordingFormat()
 {
-
     m_FormatLocal.wFormatTag = WAVE_FORMAT_PCM;
     m_FormatLocal.wBitsPerSample = audio_bits_per_sampleLocal;
     m_FormatLocal.nSamplesPerSec = audio_samples_per_secondsLocal;

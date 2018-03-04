@@ -1,5 +1,3 @@
-#if !defined(AFX_FLASHINGWND_H__INCLUDED_)
-#define AFX_FLASHINGWND_H__INCLUDED_
 
 #pragma once
 
@@ -77,4 +75,3 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif

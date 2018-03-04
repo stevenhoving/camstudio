@@ -1,12 +1,9 @@
-// CAudioFormatDlg.cpp : implementation file
-//
-/////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Recorder.h"
 #include "AudioFormat.h"
 #include "RecorderView.h"
 #include "vfw/ACM.h"
-#include "CamLib/CStudioLib.h"
+#include <CamLib/CStudioLib.h>
 #include <filesystem>
 
 #ifdef _DEBUG

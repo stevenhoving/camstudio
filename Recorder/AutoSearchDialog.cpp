@@ -1,6 +1,3 @@
-// AutoSearchDialog.cpp : implementation file
-//
-
 #include "stdafx.h"
 #include "Recorder.h"
 #include "AutoSearchDialog.h"

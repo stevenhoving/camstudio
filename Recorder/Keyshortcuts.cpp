@@ -1,6 +1,3 @@
-// CKeyshortcutsDlg.cpp : implementation file
-//
-/////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Recorder.h"
 #include "Keyshortcuts.h"
@@ -227,7 +224,14 @@ int CKeyshortcutsDlg::GetIndex(UINT keyShortCut)
     return (iter - m_vKeyCode.begin());
 }
 
-UINT CKeyshortcutsDlg::GetCode(size_t index)
+UINT CKeyshortcutsDlg::GetCode(int index)
 {
-    return ((index < 0) || (m_vKeyCode.size() <= index)) ? m_vKeyCode[m_vKeyCode.size() - 1] : m_vKeyCode[index];
+    // \todo I can remember something about safe narrow cast in the gsl lib.
+    int key_code_size = static_cast<int>(m_vKeyCode.size());
+    if (index < 0 || index > key_code_size)
+    {
+        return m_vKeyCode.back();
+    }
+
+    return m_vKeyCode[index];
 }

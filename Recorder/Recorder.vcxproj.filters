@@ -156,9 +156,6 @@
     <ClInclude Include="TroubleShoot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UseMSPrivateAssemblies.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="VideoOptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -253,9 +253,9 @@ int CAnnotationEffectsOptionsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
         // Format (delay) hh:mm:ss.ttt"
         char cTmpBuff[128] = "";
-        (void)CXnoteStopwatchFormat::FormatXnoteSampleString(cTmpBuff, m_ulXnoteCameraDelayInMilliSec,
-                                                             m_bXnoteDisplayCameraDelayMode,
-                                                             m_bXnoteDisplayCameraDelayDirection);
+        CXnoteStopwatchFormat::FormatXnoteSampleString(cTmpBuff, m_ulXnoteCameraDelayInMilliSec,
+                                                       m_bXnoteDisplayCameraDelayMode,
+                                                       m_bXnoteDisplayCameraDelayDirection);
         m_cXnoteDisplayFormatString = CString(cTmpBuff);
     }
 

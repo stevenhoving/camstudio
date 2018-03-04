@@ -22,9 +22,7 @@
 //
 //==========================================================================;
 
-#ifndef _INC_MULDIV32
-#define _INC_MULDIV32
-
+#pragma once
 
 #ifndef INLINE
 #define INLINE __inline
@@ -132,5 +130,3 @@
 #define muldiv32    MulDivRN
 #define muldivrd32  MulDivRD
 #define muldivru32  MulDivRU
-
-#endif  // _INC_MULDIV32

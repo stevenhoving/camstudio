@@ -11,13 +11,10 @@
 //* Write to me:    e9225140@student.tuwien.ac.at
 //********************************************************************************
 
-#if !defined(AFX_TRANSPARENTWND_H__INCLUDED_)
-#define AFX_TRANSPARENTWND_H__INCLUDED_
-
 #pragma once
 
 #include "LayeredWindowHelperST.h"
-#include "CamLib/Picture.h"
+#include <CamLib/Picture.h>
 
 const int regionNULL = 0;
 const int regionTRANSPARENTCOLOR = 1;
@@ -294,10 +291,3 @@ private:
     POINT m_movepoint;
     CRgn m_wndRgn;
 };
-
-/////////////////////////////////////////////////////////////////////////////
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif

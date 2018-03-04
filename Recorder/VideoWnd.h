@@ -1,14 +1,8 @@
-// VideoWnd.h : header file
-//
-/////////////////////////////////////////////////////////////////////////////
-#if !defined(AFX_VIDEOWND_H__19C0AC8A_15D7_4E51_9B37_23D2AB758A63__INCLUDED_)
-#define AFX_VIDEOWND_H__19C0AC8A_15D7_4E51_9B37_23D2AB758A63__INCLUDED_
-
 #pragma once
 
 #include "TransparentWnd.h"
 #include "FrameGrabber.h"
-#include "CamLib/CBitmapEx.h"
+#include <CamLib/CBitmapEx.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CVideoWnd window
@@ -61,5 +55,3 @@ protected:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_VIDEOWND_H__19C0AC8A_15D7_4E51_9B37_23D2AB758A63__INCLUDED_)

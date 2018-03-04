@@ -1,18 +1,5 @@
-// XnoteStopwatchFormat.cpp : implementation file
-/////////////////////////////////////////////////////////////////////////////
 #include "StdAfx.h"
 #include "XnoteStopwatchFormat.h"
-
-/*
-CXnoteStopwatchFormat::CXnoteStopwatchFormat(void)
-{
-}
-
-
-CXnoteStopwatchFormat::~CXnoteStopwatchFormat(void)
-{
-}
-*/
 
 void CXnoteStopwatchFormat::FormatXnoteSampleString(char *cBuf128, long lDelayTimeInMilliSec, bool bDisplayCameraDelay,
                                                     bool bDisplayCameraDelay2)
@@ -50,7 +37,7 @@ void CXnoteStopwatchFormat::FormatXnoteDelayedTimeString(char *cBuf128, DWORD dw
 
     DWORD dwSubstractCorrTime = 0;
 
-    // Define Delay derection, forward or backwards
+    // Define Delay direction, forward or backwards
     if (bDisplayCameraDelay2)
     {
         dwSubstractCorrTime = dwStartXnoteTickCounter + lDelayTimeInMillisSec;
@@ -64,21 +51,21 @@ void CXnoteStopwatchFormat::FormatXnoteDelayedTimeString(char *cBuf128, DWORD dw
     {
         ulPassedTime = ULONG(dwCurrTickCount - dwSubstractCorrTime);
 
-        ulTickTimeWholeSeconds = ulPassedTime / 1000;
-        ulTickTimeThousands = ulPassedTime - ulTickTimeWholeSeconds * 1000;
+        ulTickTimeWholeSeconds = ulPassedTime / 1000u;
+        ulTickTimeThousands = ulPassedTime - ulTickTimeWholeSeconds * 1000u;
         // ulTickTimeHunderds = ulTickTimeThousands/10;   // Round to floor not to ceiling because we do not add an
         // extra second here
 
         ulTickTimeRest = ulTickTimeWholeSeconds;
 
-        ulTickTimeDays = (ulTickTimeRest / 86400);
-        ulTickTimeRest -= (ulTickTimeDays * 86400);
+        ulTickTimeDays = (ulTickTimeRest / 86400u);
+        ulTickTimeRest -= (ulTickTimeDays * 86400u);
 
-        ulTickTimeHour = (ulTickTimeRest / 3600);
-        ulTickTimeRest -= (ulTickTimeHour * 3600);
+        ulTickTimeHour = (ulTickTimeRest / 3600u);
+        ulTickTimeRest -= (ulTickTimeHour * 3600u);
 
-        ulTickMinutes = (ulTickTimeRest / 60);
-        ulTickTimeRest -= (ulTickMinutes * 60);
+        ulTickMinutes = (ulTickTimeRest / 60u);
+        ulTickTimeRest -= (ulTickMinutes * 60u);
 
         ulTickTimeSeconds = ulTickTimeRest;
     }
@@ -86,12 +73,12 @@ void CXnoteStopwatchFormat::FormatXnoteDelayedTimeString(char *cBuf128, DWORD dw
     // Format (delay) hh:mm:ss.ttt
     if (bDisplayCameraDelay)
     {
-        (void)sprintf(cBuf128, "(%c%04lu)  %02lu:%02lu:%02lu.%03lu", bDisplayCameraDelay2 ? '-' : '+',
+        sprintf_s(cBuf128, 128, "(%c%04lu)  %02lu:%02lu:%02lu.%03lu", bDisplayCameraDelay2 ? '-' : '+',
                       lDelayTimeInMillisSec, ulTickTimeHour, ulTickMinutes, ulTickTimeSeconds, ulTickTimeThousands);
     }
     else
     {
-        (void)sprintf(cBuf128, "%02lu:%02lu:%02lu.%03lu", ulTickTimeHour, ulTickMinutes, ulTickTimeSeconds,
+        sprintf_s(cBuf128, 128, "%02lu:%02lu:%02lu.%03lu", ulTickTimeHour, ulTickMinutes, ulTickTimeSeconds,
                       ulTickTimeThousands);
     }
     ////TRACE("## FormatXnoteDelayedTimeString  Formatted relative time:[%s]\n", cBuf128);
@@ -131,14 +118,14 @@ void CXnoteStopwatchFormat::FormatXnoteInfoSourceSensor(char *cBuf128, int iSour
             break;
     }
 
-    (void)sprintf(cBuf128, "%s%c%c", cBuf128, cSourceTag, cSensorTag);
+    sprintf_s(cBuf128, 128, "%s%c%c", cBuf128, cSourceTag, cSensorTag);
 }
 
 // Attach info about source and sensor after the buf string
 void CXnoteStopwatchFormat::FormatXnoteExtendedInfoSourceSensor(char *cBuf128, int iSourceInfo, int iSensorInfo)
 {
-    CString cSourceTag = _T("");
-    CString cSensorTag = _T("");
+    const char *cSourceTag = _T("");
+    const char *cSensorTag = _T("");
 
     switch (iSourceInfo)
     {
@@ -176,5 +163,5 @@ void CXnoteStopwatchFormat::FormatXnoteExtendedInfoSourceSensor(char *cBuf128, i
             break;
     }
 
-    (void)sprintf(cBuf128, "%s%s %s", cBuf128, cSourceTag, cSensorTag);
+    sprintf_s(cBuf128, 128, "%s%s %s", cBuf128, cSourceTag, cSensorTag);
 }

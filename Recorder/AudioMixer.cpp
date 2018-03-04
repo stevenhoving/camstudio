@@ -2,10 +2,9 @@
 #include "Recorder.h"
 #include "AudioMixer.h"
 
-UINT CAudioMixer::m_uDevices = ::mixerGetNumDevs();
-
 CAudioMixer::CAudioMixer()
     : m_hMixer(0)
+    , m_device_count(::mixerGetNumDevs())
 {
     m_sMixerLine.cbStruct = sizeof(m_sMixerLine);
     ASSERT(queryAll());
@@ -21,7 +20,8 @@ void CAudioMixer::OnError(MMRESULT uError, LPTSTR lpszFunction)
 {
     if (!lpszFunction)
         lpszFunction = _T("CAudioMixer::OnError");
-    if (MMSYSERR_NOERROR != uError)
+
+    if (uError != MMSYSERR_NOERROR)
     {
         TRACE("CAudioMixer::OnError : %s : ", lpszFunction);
     }
@@ -106,8 +106,8 @@ void CAudioMixer::OnError(MMRESULT uError, LPTSTR lpszFunction)
         default:
         {
             TCHAR pszText[MAXERRORLENGTH];
-            MMRESULT mmCode = ::waveInGetErrorText(uError, pszText, MAXERRORLENGTH);
-            if (MMSYSERR_NOERROR == mmCode)
+            const MMRESULT mmCode = ::waveInGetErrorText(uError, pszText, MAXERRORLENGTH);
+            if (mmCode == MMSYSERR_NOERROR)
             {
                 TRACE("Error (%d) : %s\n", uError, pszText);
             }
@@ -118,7 +118,7 @@ void CAudioMixer::OnError(MMRESULT uError, LPTSTR lpszFunction)
         }
         break;
     }
-    if (MMSYSERR_NOERROR != uError)
+    if (uError != MMSYSERR_NOERROR)
     {
         ::OnError(lpszFunction);
     }
@@ -210,14 +210,10 @@ bool CAudioMixer::query()
     if (!bResult)
         return !bResult; // only test valid devices
 
-#define EXPERIMENTAL_CODE
-#ifdef EXPERIMENTAL_CODE
-#endif // EXPERIMENTAL_CODE
-#undef EXPERIMENTAL_CODE
-
     VERIFY(MMSYSERR_NOERROR == GetDevCaps(&m_sMixerCaps));
-    TRACE("Mixer: %s\nVersion: %d.%d\nDestinations: %d\n", m_sMixerCaps.szPname, HIBYTE(m_sMixerCaps.vDriverVersion),
-          LOBYTE(m_sMixerCaps.vDriverVersion), m_sMixerCaps.cDestinations);
+    TRACE("Mixer: %s\nVersion: %d.%d\nDestinations: %d\n",
+        m_sMixerCaps.szPname, HIBYTE(m_sMixerCaps.vDriverVersion),
+        LOBYTE(m_sMixerCaps.vDriverVersion), m_sMixerCaps.cDestinations);
 
     std::vector<DWORD> vDestComponentType;
     vDestComponentType.push_back(MIXERLINE_COMPONENTTYPE_DST_DIGITAL);
@@ -285,17 +281,13 @@ bool CAudioMixer::query()
 
 bool CAudioMixer::queryAll()
 {
-#define EXPERIMENTAL_CODE
-#ifdef EXPERIMENTAL_CODE
-#endif // EXPERIMENTAL_CODE
-#undef EXPERIMENTAL_CODE
 
     bool bResult = isValid();
     if (bResult)
         return !bResult; // only test when no valid devices
 
     // open each mixer ID
-    for (UINT uID = 0; uID < m_uDevices; ++uID)
+    for (UINT uID = 0; uID < m_device_count; ++uID)
     {
         MMRESULT uResult = Open(uID, 0, 0, MIXER_OBJECTF_MIXER);
         if (MMSYSERR_NOERROR != uResult)

@@ -1,8 +1,7 @@
 // CamCursor.h    dlecaration of the CamCursor class
 // Mouse Capture functions
 /////////////////////////////////////////////////////////////////////////////
-#ifndef CAMCURSOR_H
-#define CAMCURSOR_H
+
 #pragma once
 
 #include "Profile.h"
@@ -306,4 +305,3 @@ private:
 
 extern CCamCursor CamCursor; // cursors
 
-#endif // CAMCURSOR_H

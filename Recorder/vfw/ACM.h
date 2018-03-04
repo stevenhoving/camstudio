@@ -49,6 +49,7 @@ public:
     {
         return ::acmFormatEnum(had, pafd, fnCallback, dwInstance, fdwEnum);
     }
+
     MMRESULT FormatEnum(HACMDRIVER had, LPACMFORMATDETAILS pafd, DWORD_PTR dwInstance, DWORD fdwEnum)
     {
         return ::acmFormatEnum(had, pafd, FormatEnumCallback, dwInstance, fdwEnum);

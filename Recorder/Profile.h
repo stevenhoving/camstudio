@@ -165,54 +165,54 @@ struct sRegionOpts
             return *this;
         }
 
-        m_bFixedCapture = rhs.m_bFixedCapture;
-        m_bSupportMouseDrag = rhs.m_bSupportMouseDrag;
-        m_iMouseCaptureMode = rhs.m_iMouseCaptureMode;
-        m_iCaptureLeft = rhs.m_iCaptureLeft;
-        m_iCaptureTop = rhs.m_iCaptureTop;
-        m_iCaptureWidth = rhs.m_iCaptureWidth;
-        m_iCaptureHeight = rhs.m_iCaptureHeight;
+        m_bFixed = rhs.m_bFixed;
+        m_bMouseDrag = rhs.m_bMouseDrag;
+        m_iCaptureMode = rhs.m_iCaptureMode;
+        m_iLeft = rhs.m_iLeft;
+        m_iTop = rhs.m_iTop;
+        m_iWidth = rhs.m_iWidth;
+        m_iHeight = rhs.m_iHeight;
         return *this;
     }
 
     bool Read(libconfig::Setting &cProfile)
     {
-        cProfile.lookupValue("FixedCapture", m_bFixedCapture);
-        cProfile.lookupValue("SupportMouseDrag", m_bSupportMouseDrag);
-        cProfile.lookupValue("MouseCaptureMode", m_iMouseCaptureMode);
-        cProfile.lookupValue("Left", m_iCaptureLeft);
-        cProfile.lookupValue("Top", m_iCaptureTop);
-        cProfile.lookupValue("Width", m_iCaptureWidth);
-        cProfile.lookupValue("Height", m_iCaptureHeight);
+        cProfile.lookupValue("FixedCapture", m_bFixed);
+        cProfile.lookupValue("SupportMouseDrag", m_bMouseDrag);
+        cProfile.lookupValue("MouseCaptureMode", m_iCaptureMode);
+        cProfile.lookupValue("Left", m_iLeft);
+        cProfile.lookupValue("Top", m_iTop);
+        cProfile.lookupValue("Width", m_iWidth);
+        cProfile.lookupValue("Height", m_iHeight);
 
         return true;
     }
 
     bool Write(libconfig::Setting &cProfile)
     {
-        UpdateSetting(cProfile, "FixedCapture", m_bFixedCapture, libconfig::Setting::TypeBoolean);
-        UpdateSetting(cProfile, "SupportMouseDrag", m_bSupportMouseDrag, libconfig::Setting::TypeBoolean);
-        UpdateSetting(cProfile, "MouseCaptureMode", m_iMouseCaptureMode, libconfig::Setting::TypeInt);
-        UpdateSetting(cProfile, "Left", m_iCaptureLeft, libconfig::Setting::TypeInt);
-        UpdateSetting(cProfile, "Top", m_iCaptureTop, libconfig::Setting::TypeInt);
-        UpdateSetting(cProfile, "Width", m_iCaptureWidth, libconfig::Setting::TypeInt);
-        UpdateSetting(cProfile, "Height", m_iCaptureHeight, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "FixedCapture", m_bFixed, libconfig::Setting::TypeBoolean);
+        UpdateSetting(cProfile, "SupportMouseDrag", m_bMouseDrag, libconfig::Setting::TypeBoolean);
+        UpdateSetting(cProfile, "MouseCaptureMode", m_iCaptureMode, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "Left", m_iLeft, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "Top", m_iTop, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "Width", m_iWidth, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "Height", m_iHeight, libconfig::Setting::TypeInt);
         return true;
     }
 
     bool isCaptureMode(const eCaptureType eType) const
     {
-        return eType == m_iMouseCaptureMode;
+        return eType == m_iCaptureMode;
     }
 
-    bool m_bFixedCapture{false};            // TODO: should be m_bFixed
-    bool m_bSupportMouseDrag{false};        // TODO: should be m_bMouseDrag
-    int m_iMouseCaptureMode{CAPTURE_FIXED}; // TODO: Mouse??? Just CaptureMode.
+    bool m_bFixed{false};
+    bool m_bMouseDrag{false};
+    int m_iCaptureMode{CAPTURE_FIXED};
     // TODO: should be a CRect
-    int m_iCaptureLeft{100};   // TODO: should be m_iLeft (if not CRect)
-    int m_iCaptureTop{100};    // TODO: should be m_iTop (if not CRect)
-    int m_iCaptureWidth{320};  // TODO: should be m_iWidth (if not CRect)
-    int m_iCaptureHeight{240}; // TODO: should be m_iHeight (if not CRect)
+    int m_iLeft{100};
+    int m_iTop{100};
+    int m_iWidth{320};
+    int m_iHeight{240};
 };
 extern sRegionOpts cRegionOpts;
 
@@ -592,9 +592,10 @@ struct sAudioFormat
 public:
     sAudioFormat() = default;
 
+    // \todo figure out if this constructor works the way it looks
     sAudioFormat(const sAudioFormat &rhs)
-        : m_uDeviceID(WAVE_MAPPER)
-        , m_iRecordAudio(NONE)
+        : m_iRecordAudio(NONE)
+        , m_uDeviceID(WAVE_MAPPER)
         , m_iInterleavePeriod(MILLISECONDS)
         , m_dwCbwFX(0)
         , m_dwWaveinSelected(WAVE_FORMAT_4M16)

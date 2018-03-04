@@ -1,5 +1,3 @@
-//
-/////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Recorder.h"
 #include "CamStudioCommandLineInfo.h"
@@ -89,4 +87,24 @@ void CCamStudioCommandLineInfo::ParseParam(const TCHAR *pszParam, BOOL bFlag, BO
                 break;
         }
     }
+}
+
+bool CCamStudioCommandLineInfo::isHelp() const
+{
+    return m_bHelp;
+}
+
+int CCamStudioCommandLineInfo::CodecID() const
+{
+    return m_iCodecID;
+}
+
+int CCamStudioCommandLineInfo::Seconds() const
+{
+    return m_iSeconds;
+}
+
+CString CCamStudioCommandLineInfo::OutFile() const
+{
+    return m_csOutfile;
 }

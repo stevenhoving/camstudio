@@ -20,11 +20,6 @@ HANDLE _dibFromBitmap(HBITMAP hBitmap);
 BOOL _writeDib(HANDLE hdib, LPCSTR filename);
 INT _DIBNumColors(LPBITMAPINFOHEADER lpbi);
 
-CBitmapEx::CBitmapEx()
-{
-    _modBMP = nullptr;
-}
-
 CBitmapEx::~CBitmapEx()
 {
     EndModify(); // just in case:)

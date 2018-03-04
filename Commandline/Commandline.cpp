@@ -31,6 +31,7 @@
 
 #include <time.h>
 #include "Commandline.hpp"
+#include <CamLib/CamImage.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -56,7 +57,6 @@ HCURSOR hSavedCursor = NULL;
 #define N_FRAMES 50
 #define TEXT_HEIGHT 20
 
-HANDLE Bitmap2Dib(HBITMAP, UINT);
 int RecordVideo(int top, int left, int width, int height, int numframes, const char *szFileName /*, screen* pscreen*/);
 UINT RecordAVIThread(LPVOID pParam);
 
@@ -108,32 +108,32 @@ int g_num_compressor = 0;
 // User options:
 int g_seconds_to_record = -1;
 int g_selected_compressor = -1;
-std::string output_file;
-int offset_left = 0;
-int offset_right;
-int offset_bottom;
-int offset_top = 0;
+std::string g_output_file;
+//int offset_left = 0;
+//int offset_right;
+//int offset_bottom;
+//int offset_top = 0;
 // Ver 1.2
 // Video Compress Parameters
-LPVOID pVideoCompressParams = NULL;
-DWORD CompressorStateIsFor = 0;
-DWORD CompressorStateSize = 0;
+LPVOID g_pVideoCompressParams = NULL;
+DWORD g_CompressorStateIsFor = 0;
+DWORD g_CompressorStateSize = 0;
 
-LPVOID pParamsUse = NULL;
+LPVOID g_pParamsUse = NULL;
 void FreeParamsUse();
 BOOL MakeCompressParamsCopy(DWORD paramsSize, LPVOID pOrg);
 
 // Report variables
-int nActualFrame = 0;
-int nCurrFrame = 0;
-float fRate = 0.0;
-float fActualRate = 0.0;
-float fTimeLength = 0.0;
-int nColors = 24;
+int g_nActualFrame = 0;
+DWORD g_nCurrFrame = 0;
+float g_fRate = 0.0;
+float g_fActualRate = 0.0;
+float g_fTimeLength = 0.0;
+int g_nColors = 24;
 
 std::wstring g_strCodec(L"MS Video 1");
-int actualwidth = 0;
-int actualheight = 0;
+int g_actualwidth = 0;
+int g_actualheight = 0;
 
 // Cursor variables
 int g_customsel = 0;
@@ -256,66 +256,6 @@ CHAR wide_to_narrow(WCHAR w)
     return CHAR(w);
 }
 
-HANDLE Bitmap2Dib(HBITMAP hbitmap, UINT bits)
-{
-    HANDLE hdib;
-    HDC hdc;
-    BITMAP bitmap;
-    UINT wLineLen;
-    DWORD dwSize;
-    DWORD wColSize;
-    LPBITMAPINFOHEADER lpbi;
-    LPBYTE lpBits;
-
-    GetObject(hbitmap, sizeof(BITMAP), &bitmap);
-
-    //
-    // DWORD align the width of the DIB
-    // Figure out the size of the color table
-    // Calculate the size of the DIB
-    //
-    wLineLen = (bitmap.bmWidth * bits + 31) / 32 * 4;
-    wColSize = sizeof(RGBQUAD) * ((bits <= 8) ? 1 << bits : 0);
-    dwSize = sizeof(BITMAPINFOHEADER) + wColSize + (DWORD)(UINT)wLineLen * (DWORD)(UINT)bitmap.bmHeight;
-
-    //
-    // Allocate room for a DIB and set the LPBI fields
-    //
-    hdib = GlobalAlloc(GHND, dwSize);
-    if (!hdib)
-        return hdib;
-
-    lpbi = (LPBITMAPINFOHEADER)GlobalLock(hdib);
-
-    lpbi->biSize = sizeof(BITMAPINFOHEADER);
-    lpbi->biWidth = bitmap.bmWidth;
-    lpbi->biHeight = bitmap.bmHeight;
-    lpbi->biPlanes = 1;
-    lpbi->biBitCount = (WORD)bits;
-    lpbi->biCompression = BI_RGB;
-    lpbi->biSizeImage = dwSize - sizeof(BITMAPINFOHEADER) - wColSize;
-    lpbi->biXPelsPerMeter = 0;
-    lpbi->biYPelsPerMeter = 0;
-    lpbi->biClrUsed = (bits <= 8) ? 1 << bits : 0;
-    lpbi->biClrImportant = 0;
-
-    //
-    // Get the bits from the bitmap and stuff them after the LPBI
-    //
-    lpBits = (LPBYTE)(lpbi + 1) + wColSize;
-
-    hdc = CreateCompatibleDC(NULL);
-
-    GetDIBits(hdc, hbitmap, 0, bitmap.bmHeight, lpBits, (LPBITMAPINFO)lpbi, DIB_RGB_COLORS);
-
-    lpbi->biClrUsed = (bits <= 8) ? 1 << bits : 0;
-
-    DeleteDC(hdc);
-    GlobalUnlock(hdib);
-
-    return hdib;
-}
-
 UINT RecordAVIThread(LPVOID lParam)
 {
     CoInitialize(NULL);
@@ -329,7 +269,7 @@ UINT RecordAVIThread(LPVOID lParam)
     int height = pscreen->height;
     int fps = g_frames_per_second;
 
-    const char *filepath = output_file.c_str();
+    const char *filepath = g_output_file.c_str();
 
     // Test the validity of writing to the file
     // Make sure the file to be created is currently not used by another application
@@ -370,11 +310,11 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
     PAVISTREAM ps = NULL, psCompressed = NULL;
     AVICOMPRESSOPTIONS opts;
     AVICOMPRESSOPTIONS FAR *aopts[1] = {&opts};
-    HRESULT hr;
-    WORD wVer;
+    HRESULT hr = 0;
+    WORD wVer = 0;
 
-    actualwidth = width;
-    actualheight = height;
+    g_actualwidth = width;
+    g_actualheight = height;
 
     wVer = HIWORD(VideoForWindowsVersion());
     if (wVer < 0x010a)
@@ -402,7 +342,10 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
         if (hic)
         {
 
-            int newleft, newtop, newwidth, newheight;
+            int newleft = 0;
+            int newtop = 0;
+            int newwidth = 0;
+            int newheight = 0;
             int align = 1;
             while (ICERR_OK != ICCompressQuery(hic, alpbi, NULL))
             {
@@ -446,8 +389,8 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
                 width = newwidth;
                 height = newheight;
 
-                actualwidth = newwidth;
-                actualheight = newheight;
+                g_actualwidth = newwidth;
+                g_actualheight = newheight;
             }
             else
             {
@@ -529,15 +472,15 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
     {
         // Ver 1.2
         //
-        if ((g_comp_fcc_handler == CompressorStateIsFor) && (g_comp_fcc_handler != 0))
+        if ((g_comp_fcc_handler == g_CompressorStateIsFor) && (g_comp_fcc_handler != 0))
         {
 
-            // make a copy of the pVideoCompressParams just in case after compression, this variable become messed up
-            if (MakeCompressParamsCopy(CompressorStateSize, pVideoCompressParams))
+            // make a copy of the g_pVideoCompressParams just in case after compression, this variable become messed up
+            if (MakeCompressParamsCopy(g_CompressorStateSize, g_pVideoCompressParams))
             {
 
-                aopts[0]->lpParms = pParamsUse;
-                aopts[0]->cbParms = CompressorStateSize;
+                aopts[0]->lpParms = g_pParamsUse;
+                aopts[0]->cbParms = g_CompressorStateSize;
             }
         }
     }
@@ -568,13 +511,15 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
         panrect_current.bottom = top + height - 1;
     }
 
-    DWORD timeexpended, frametime, oldframetime;
+    DWORD timeexpended = 0;
+    DWORD frametime = 0;
+    DWORD oldframetime = 0;
 
     initialtime = timeGetTime();
     initcapture = 1;
     oldframetime = 0;
-    nCurrFrame = 0;
-    nActualFrame = 0;
+    g_nCurrFrame = 0;
+    g_nActualFrame = 0;
 
     //////////////////////////////////////////////
     // WRITING FRAMES
@@ -748,17 +693,17 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
             initcapture = 0;
         }
 
-        fTimeLength = ((float)timeexpended) / ((float)1000.0);
+        g_fTimeLength = ((float)timeexpended) / ((float)1000.0);
 
         if (recordpreset)
         {
-            // if (int(fTimeLength) >= presettime)
+            // if (int(g_fTimeLength) >= presettime)
             // ;
             // gRecordState = 0;
             // PostMessage(g_hWndGlobal,WM_USER_RECORDINTERRUPTED,0,0);
 
             // std::string msgStr;
-            // msgStr.Format("%.2f %d",fTimeLength,presettime);
+            // msgStr.Format("%.2f %d",g_fTimeLength,presettime);
             // MessageBox(NULL,msgStr,"N",MB_OK);
 
             // or should we post messages
@@ -781,10 +726,10 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
             if (hr != AVIERR_OK)
                 break;
 
-            nActualFrame++;
-            nCurrFrame = frametime;
-            fRate = ((float)nCurrFrame) / fTimeLength;
-            fActualRate = ((float)nActualFrame) / fTimeLength;
+            g_nActualFrame++;
+            g_nCurrFrame = frametime;
+            g_fRate = ((float)g_nCurrFrame) / g_fTimeLength;
+            g_fActualRate = ((float)g_nActualFrame) / g_fTimeLength;
 
             // Update recording stats every half a second
             divx = timeexpended / 500;
@@ -814,13 +759,13 @@ error:
 
     // Ver 1.2
     //
-    if ((g_comp_fcc_handler == CompressorStateIsFor) && (g_comp_fcc_handler != 0))
+    if ((g_comp_fcc_handler == g_CompressorStateIsFor) && (g_comp_fcc_handler != 0))
     {
 
-        // Detach pParamsUse from AVICOMPRESSOPTIONS so AVISaveOptionsFree will not free it
+        // Detach g_pParamsUse from AVICOMPRESSOPTIONS so AVISaveOptionsFree will not free it
         //(we will free it ourselves)
 
-        // Setting this is no harm even if pParamsUse is not attached to lpParams
+        // Setting this is no harm even if g_pParamsUse is not attached to lpParams
         aopts[0]->lpParms = 0;
         aopts[0]->cbParms = 0;
     }
@@ -1008,23 +953,23 @@ MMRESULT IsFormatSupported(LPWAVEFORMATEX g_pwfx, UINT uDeviceID)
 
 void FreeParamsUse()
 {
-    if (pParamsUse)
+    if (g_pParamsUse)
     {
-        GlobalFreePtr(pParamsUse);
-        pParamsUse = NULL;
+        GlobalFreePtr(g_pParamsUse);
+        g_pParamsUse = NULL;
     }
 }
 
 BOOL MakeCompressParamsCopy(DWORD paramsSize, LPVOID pOrg)
 {
-    if (pParamsUse)
+    if (g_pParamsUse)
     {
         // Free Existing
         FreeParamsUse();
     }
 
-    pParamsUse = (LPVOID)GlobalAllocPtr(GHND, paramsSize);
-    if (NULL == pParamsUse)
+    g_pParamsUse = (LPVOID)GlobalAllocPtr(GHND, paramsSize);
+    if (NULL == g_pParamsUse)
     {
         //::MessageBox(NULL,"Failure allocating Video Params or compression","Note", MB_OK | MB_ICONEXCLAMATION);
         // MessageOut(NULL,IDS_STRING_FAILALLOCVCM ,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
@@ -1032,7 +977,7 @@ BOOL MakeCompressParamsCopy(DWORD paramsSize, LPVOID pOrg)
         return false;
     }
 
-    memcpy(pParamsUse, pOrg, paramsSize);
+    memcpy(g_pParamsUse, pOrg, paramsSize);
     return TRUE;
 }
 
@@ -1138,13 +1083,13 @@ void PrintRecordInformation()
     if (gRecordState == 1)
     {
         printf("=================================\n");
-        printf("Current Frame : %d\n", nCurrFrame);
-        printf("Theoretical Frame Rate  : %.2f fps\n", fRate);
-        printf("Time Elasped  : %.2f sec\n", fTimeLength);
-        printf("Number of Colors  : %d bits\n", nColors);
+        printf("Current Frame : %d\n", g_nCurrFrame);
+        printf("Theoretical Frame Rate  : %.2f fps\n", g_fRate);
+        printf("Time Elasped  : %.2f sec\n", g_fTimeLength);
+        printf("Number of Colors  : %d bits\n", g_nColors);
         printf("Codec  : %S\n", g_strCodec.c_str());
-        printf("Actual Input Rate  : %.2f fps\n", fActualRate);
-        printf("Dimension  : %d X %d\n", actualwidth, actualheight);
+        printf("Actual Input Rate  : %.2f fps\n", g_fActualRate);
+        printf("Dimension  : %d X %d\n", g_actualwidth, g_actualheight);
     }
 }
 
@@ -1203,7 +1148,7 @@ int ParseOptions(int argc, char *argv[])
                 std::cout << "Expected filename to write to (.avi)" <<std::endl;
                 return 0;
             }
-            output_file = *it;
+            g_output_file = *it;
         }
         else if (!OptionNameEqual("seconds", *it))
         {
@@ -1334,7 +1279,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (!output_file.length())
+    if (!g_output_file.length())
     {
         std::cout << "Error: Need a valid output file, -outfile" <<std::endl;
         PrintUsage();
@@ -1376,7 +1321,7 @@ int main(int argc, char *argv[])
     EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, (LPARAM)pscreen);
 
     char buffer[2];
-    auto recordHere = output_file;
+    auto recordHere = g_output_file;
 
     for (int i = 0; i <= mon_count - 1; i++)
     {
@@ -1390,14 +1335,14 @@ int main(int argc, char *argv[])
         rcUse.bottom = pscreen[i].bottom - 1;
         // Write AVI file.
         _itoa_s(i, buffer, 2, 10);
-        output_file = recordHere + "_" + buffer + std::string(".avi"); // _itoa(i,buffer,10)+".avi";
-        strcpy_s(pscreen[i].outFile, output_file.c_str());
+        g_output_file = recordHere + "_" + buffer + std::string(".avi"); // _itoa(i,buffer,10)+".avi";
+        strcpy_s(pscreen[i].outFile, g_output_file.c_str());
         pscreen[i].index = i;
 
         gRecordState = 1;
 
         std::cout << "Creating recording thread for screen no.:" << i << "..." <<std::endl;
-        std::cout << "Recording to: " << output_file <<std::endl;
+        std::cout << "Recording to: " << g_output_file <<std::endl;
 
         th[i] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)RecordAVIThread, (LPVOID)&pscreen[i], 0, &tid);
 
@@ -1446,7 +1391,7 @@ int main(int argc, char *argv[])
     // gRecordState = 1;
 
     //std::cout << "Creating recording thread..." <<std::endl;
-    //std::cout << "Recording to: " << output_file <<std::endl;
+    //std::cout << "Recording to: " << g_output_file <<std::endl;
 
     // if(seconds_to_record > 0){
     //  std::cout << "Recording for " << seconds_to_record << " seconds" <<std::endl;

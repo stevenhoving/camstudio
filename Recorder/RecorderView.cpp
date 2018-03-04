@@ -189,12 +189,12 @@ int g_iDefineMode = 0; // set only in FixedRegion.cpp
 int g_selected_compressor = -1;
 
 // Report variables
-int nActualFrame = 0;
-int nCurrFrame = 0;
-float fRate = 0.0;
-float fActualRate = 0.0;
-float fTimeLength = 0.0;
-int nColors = 24;
+int g_nActualFrame = 0;
+int g_nCurrFrame = 0;
+float g_fRate = 0.0;
+float g_fActualRate = 0.0;
+float g_fTimeLength = 0.0;
+int g_nColors = 24;
 CString sTimeLength;
 
 // Path to temporary video avi file
@@ -803,7 +803,6 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     g_hWndGlobal = m_hWnd;
     setHotKeyWindow(m_hWnd);
 
-    //#pragma message("CRecorderView::LoadSettings skipped")
     LoadSettings();
     VERIFY(0 < SetAdjustHotKeys());
 
@@ -814,7 +813,7 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
     HDC hScreenDC = ::GetDC(NULL);
     g_iBits = ::GetDeviceCaps(hScreenDC, BITSPIXEL);
-    nColors = g_iBits;
+    g_nColors = g_iBits;
     ::ReleaseDC(NULL, hScreenDC);
 
     g_hLogoBM = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP3));
@@ -938,7 +937,7 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
     // may be no relevant since will likely expire in normal circumstances.
     // Though if we dump events in file, it is better to clean up
     // FIXME: second parameter is never used
-    // We shall wrap all that stuff in class so it is created in constructor and guaranteed to be destroed in destructor
+    // We shall wrap all that stuff in class so it is created in constructor and guaranteed to be destroyed in destructor
     //InstallMyHook(g_hWndGlobal, WM_USER_SAVECURSOR);
 
     g_bRecordState = true;
@@ -951,7 +950,7 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
     // Ver 1.3
     if (pThread)
     {
-        //pThread->SetThreadPriority(cProgramOpts.m_iThreadPriority);
+        pThread->SetThreadPriority(cProgramOpts.m_iThreadPriority);
     }
 
     // Ver 1.2
@@ -974,7 +973,7 @@ LRESULT CRecorderView::OnRecordPaused(WPARAM /*wParam*/, LPARAM /*lParam*/)
 
 LRESULT CRecorderView::OnRecordInterrupted(WPARAM wParam, LPARAM /*lParam*/)
 {
-    UninstallMyHook(g_hWndGlobal);
+    UninstallMouseHook(g_hWndGlobal);
 
     // Ver 1.1
     if (g_bRecordPaused)
@@ -1014,7 +1013,7 @@ LRESULT CRecorderView::OnSaveCursor(WPARAM wParam, LPARAM /*lParam*/)
 
 void CRecorderView::OnRegionRubber()
 {
-    cRegionOpts.m_iMouseCaptureMode = CAPTURE_VARIABLE;
+    cRegionOpts.m_iCaptureMode = CAPTURE_VARIABLE;
 }
 
 void CRecorderView::OnUpdateRegionRubber(CCmdUI *pCmdUI)
@@ -1028,7 +1027,7 @@ void CRecorderView::OnRegionPanregion()
     CFixedRegionDlg cfrdlg(this);
     if (IDOK == cfrdlg.DoModal())
     {
-        cRegionOpts.m_iMouseCaptureMode = CAPTURE_FIXED;
+        cRegionOpts.m_iCaptureMode = CAPTURE_FIXED;
     }
     g_iDefineMode = 0;
 }
@@ -1040,7 +1039,7 @@ void CRecorderView::OnUpdateRegionPanregion(CCmdUI *pCmdUI)
 
 void CRecorderView::OnRegionSelectScreen()
 {
-    cRegionOpts.m_iMouseCaptureMode = CAPTURE_FULLSCREEN;
+    cRegionOpts.m_iCaptureMode = CAPTURE_FULLSCREEN;
 }
 
 void CRecorderView::OnUpdateRegionSelectScreen(CCmdUI *pCmdUI)
@@ -1050,7 +1049,7 @@ void CRecorderView::OnUpdateRegionSelectScreen(CCmdUI *pCmdUI)
 
 void CRecorderView::OnRegionFullscreen()
 {
-    cRegionOpts.m_iMouseCaptureMode = CAPTURE_ALLSCREENS;
+    cRegionOpts.m_iCaptureMode = CAPTURE_ALLSCREENS;
 }
 
 void CRecorderView::OnUpdateRegionFullscreen(CCmdUI *pCmdUI)
@@ -1069,7 +1068,7 @@ void CRecorderView::OnUpdateRegionFullscreen(CCmdUI *pCmdUI)
 
 void CRecorderView::OnRegionAllScreens()
 {
-    cRegionOpts.m_iMouseCaptureMode = CAPTURE_ALLSCREENS;
+    cRegionOpts.m_iCaptureMode = CAPTURE_ALLSCREENS;
 }
 
 void CRecorderView::OnUpdateRegionAllScreens(CCmdUI *pCmdUI)
@@ -1489,11 +1488,11 @@ void CRecorderView::OnRecord()
     }
     g_bRecordPaused = false;
 
-    nActualFrame = 0;
-    nCurrFrame = 0;
-    fRate = 0.0;
-    fActualRate = 0.0;
-    fTimeLength = 0.0;
+    g_nActualFrame = 0;
+    g_nCurrFrame = 0;
+    g_fRate = 0.0;
+    g_fActualRate = 0.0;
+    g_fTimeLength = 0.0;
 
     // r272: How we define rect cshecked and changed because some pixel gots dropped:  100x100 => 99x99
     // g_rcUse is the rect that will be used in the end to define the size of the recording.
@@ -1501,21 +1500,21 @@ void CRecorderView::OnRecord()
     // A Full screen area is 0, 0 to MaxX-1, MaxY-1
 
     // TRACE( _T("## CRecorderView::OnRecord /CAPTURE_FIXED/ before / cRegionOpts / T=%d, L=%d, B=.. , R=.. , W=%d, H=%d
-    // \n"), cRegionOpts.m_iCaptureTop, cRegionOpts.m_iCaptureLeft, cRegionOpts.m_iCaptureWidth,
-    // cRegionOpts.m_iCaptureHeight );
+    // \n"), cRegionOpts.m_iTop, cRegionOpts.m_iCaptureLeft, cRegionOpts.m_iWidth,
+    // cRegionOpts.m_iHeight );
 
-    switch (cRegionOpts.m_iMouseCaptureMode)
+    switch (cRegionOpts.m_iCaptureMode)
     {
         case CAPTURE_FIXED:
             // Applicable when Option region is set as 'Fixed Region'
-            g_rc = CRect(cRegionOpts.m_iCaptureLeft,                                // X = Left
-                       cRegionOpts.m_iCaptureTop,                                 // Y = Top
-                       cRegionOpts.m_iCaptureLeft + cRegionOpts.m_iCaptureWidth,  // X = Width
-                       cRegionOpts.m_iCaptureTop + cRegionOpts.m_iCaptureHeight); // Y = Height
+            g_rc = CRect(cRegionOpts.m_iLeft,                                // X = Left
+                       cRegionOpts.m_iTop,                                 // Y = Top
+                       cRegionOpts.m_iLeft + cRegionOpts.m_iWidth,  // X = Width
+                       cRegionOpts.m_iTop + cRegionOpts.m_iHeight); // Y = Height
             // TRACE( _T("## CRecorderView::OnRecord /CAPTURE_FIXED/ before / g_rc / T=%d, L=%d, B=%d, R=%d \n"), g_rc.top,
             // g_rc.left, g_rc.bottom, g_rc.right );
 
-            if (cRegionOpts.m_bFixedCapture)
+            if (cRegionOpts.m_bFixed)
             {
                 // Applicable when Option region is set as 'Fixed Region' and retangle offset is fixed either.
 
@@ -1582,7 +1581,7 @@ void CRecorderView::OnRecord()
 
             m_basicMsg = new CBasicMessage();
             m_basicMsg->Create(CBasicMessage::IDD);
-            if (cRegionOpts.m_iMouseCaptureMode == CAPTURE_WINDOW)
+            if (cRegionOpts.m_iCaptureMode == CAPTURE_WINDOW)
             {
                 m_basicMsg->SetText(_T("Click on window to be captured."));
             }
@@ -2149,9 +2148,9 @@ void CRecorderView::SaveSettings()
     fprintf(sFile, "bFlashingRect=%d \n", cProgramOpts.m_bFlashingRect);
     fprintf(sFile, "iLaunchPlayer=%d \n", cProgramOpts.m_iLaunchPlayer);
     fprintf(sFile, "bMinimizeOnStart=%d \n", cProgramOpts.m_bMinimizeOnStart);
-    fprintf(sFile, "iMouseCaptureMode= %d \n", cRegionOpts.m_iMouseCaptureMode);
-    fprintf(sFile, "iCaptureWidth=%d \n", cRegionOpts.m_iCaptureWidth);
-    fprintf(sFile, "iCaptureHeight=%d \n", cRegionOpts.m_iCaptureHeight);
+    fprintf(sFile, "iMouseCaptureMode= %d \n", cRegionOpts.m_iCaptureMode);
+    fprintf(sFile, "iCaptureWidth=%d \n", cRegionOpts.m_iWidth);
+    fprintf(sFile, "iCaptureHeight=%d \n", cRegionOpts.m_iHeight);
 
     fprintf(sFile, "iTimeLapse=%d \n", cVideoOpts.m_iTimeLapse);
     fprintf(sFile, "iFramesPerSecond= %d \n", cVideoOpts.m_iFramesPerSecond);
@@ -2231,9 +2230,9 @@ void CRecorderView::SaveSettings()
     fprintf(sFile, "iThreadPriority=%d \n", cProgramOpts.m_iThreadPriority);
 
     // Ver 1.5
-    fprintf(sFile, "iCaptureLeft= %d \n", cRegionOpts.m_iCaptureLeft);
-    fprintf(sFile, "iCaptureTop= %d \n", cRegionOpts.m_iCaptureTop);
-    fprintf(sFile, "bFixedCapture=%d \n", cRegionOpts.m_bFixedCapture);
+    fprintf(sFile, "iCaptureLeft= %d \n", cRegionOpts.m_iLeft);
+    fprintf(sFile, "iCaptureTop= %d \n", cRegionOpts.m_iTop);
+    fprintf(sFile, "bFixedCapture=%d \n", cRegionOpts.m_bFixed);
     fprintf(sFile, "iInterleaveUnit= %d \n", cAudioFormat.m_iInterleavePeriod);
 
     // Ver 1.6
@@ -2248,7 +2247,7 @@ void CRecorderView::SaveSettings()
     fprintf(sFile, "bPerformAutoSearch=%d \n", cAudioFormat.m_bPerformAutoSearch);
 
     // Ver 1.8
-    fprintf(sFile, "bSupportMouseDrag=%d \n", cRegionOpts.m_bSupportMouseDrag);
+    fprintf(sFile, "bSupportMouseDrag=%d \n", cRegionOpts.m_bMouseDrag);
 
     // New variables, add here
     fprintf(sFile, "keyRecordStartCtrl=%d \n", cHotKeyOpts.m_RecordStart.m_bCtrl);
@@ -2368,8 +2367,9 @@ void CRecorderView::SaveSettings()
     setDir = GetAppDataPath();
     setPath = setDir + fileName;
 
-    FILE *tFile = fopen((LPCTSTR)setPath, "wb");
-    if (tFile == NULL)
+    FILE *tFile = nullptr;
+    fopen_s(&tFile, setPath.GetString(), "wb");
+    if (tFile == nullptr)
     {
         // Error creating file ...do nothing...return
         return;
@@ -2497,9 +2497,9 @@ void CRecorderView::LoadSettings()
 
         fscanf_s(sFile, "iLaunchPlayer=%d \n", &cProgramOpts.m_iLaunchPlayer);
         fscanf_s(sFile, "bMinimizeOnStart=%d \n", &cProgramOpts.m_bMinimizeOnStart);
-        fscanf_s(sFile, "iMouseCaptureMode= %d \n", &cRegionOpts.m_iMouseCaptureMode);
-        fscanf_s(sFile, "iCaptureWidth=%d \n", &cRegionOpts.m_iCaptureWidth);
-        fscanf_s(sFile, "iCaptureHeight=%d \n", &cRegionOpts.m_iCaptureHeight);
+        fscanf_s(sFile, "iMouseCaptureMode= %d \n", &cRegionOpts.m_iCaptureMode);
+        fscanf_s(sFile, "iCaptureWidth=%d \n", &cRegionOpts.m_iWidth);
+        fscanf_s(sFile, "iCaptureHeight=%d \n", &cRegionOpts.m_iHeight);
 
         fscanf_s(sFile, "iTimeLapse=%d \n", &cVideoOpts.m_iTimeLapse);
         fscanf_s(sFile, "iFramesPerSecond= %d \n", &cVideoOpts.m_iFramesPerSecond);
@@ -2672,9 +2672,9 @@ void CRecorderView::LoadSettings()
     // Ver 1.5
     if (ver >= 1.499999)
     {
-        fscanf_s(sFile, "iCaptureLeft= %d \n", &cRegionOpts.m_iCaptureLeft);
-        fscanf_s(sFile, "iCaptureTop= %d \n", &cRegionOpts.m_iCaptureTop);
-        fscanf_s(sFile, "bFixedCapture=%d \n", &cRegionOpts.m_bFixedCapture);
+        fscanf_s(sFile, "iCaptureLeft= %d \n", &cRegionOpts.m_iLeft);
+        fscanf_s(sFile, "iCaptureTop= %d \n", &cRegionOpts.m_iTop);
+        fscanf_s(sFile, "bFixedCapture=%d \n", &cRegionOpts.m_bFixed);
         fscanf_s(sFile, "iInterleaveUnit= %d \n", &cAudioFormat.m_iInterleavePeriod);
     }
     else
@@ -2756,7 +2756,7 @@ void CRecorderView::LoadSettings()
     int layoutNameLen = 0;
     if (ver >= 1.799999)
     {
-        fscanf_s(sFile, "bSupportMouseDrag=%d \n", &cRegionOpts.m_bSupportMouseDrag);
+        fscanf_s(sFile, "bSupportMouseDrag=%d \n", &cRegionOpts.m_bMouseDrag);
 
         fscanf_s(sFile, "keyRecordStartCtrl=%d \n", &cHotKeyOpts.m_RecordStart.m_bCtrl);
         fscanf_s(sFile, "keyRecordEndCtrl=%d \n", &cHotKeyOpts.m_RecordEnd.m_bCtrl);
@@ -2871,16 +2871,17 @@ void CRecorderView::LoadSettings()
     fileName = "\\CamStudio\\Camdata.ini";
     setDir = GetAppDataPath();
     setPath = setDir + fileName;
-    FILE *tFile = fopen(LPCTSTR(setPath), "rb");
+    FILE *tFile = nullptr;
+    fopen_s(&tFile, setPath.GetString(), "rb");
 
-    if (tFile == NULL)
+    if (tFile == nullptr)
     {
         setDir = GetProgPath();
         setPath = setDir + fileName;
-        tFile = fopen(LPCTSTR(setPath), "rb");
+        fopen_s(&tFile, setPath.GetString(), "rb");
     }
 
-    if (tFile == NULL)
+    if (tFile == nullptr)
     {
         // Error creating file
         cAudioFormat.m_dwCbwFX = 0;
@@ -2977,14 +2978,14 @@ void CRecorderView::DecideSaveSettings()
 
     if (cProgramOpts.m_bSaveSettings)
     {
-#pragma message("CRecorderView::SaveSettings skipped")
         SaveSettings();
         DeleteFile(nosavePath);
     }
     else
     {
         // Create the nosave.ini file if savesettings = 0;
-        FILE *rFile = fopen(LPCTSTR(nosavePath), "wt");
+        FILE *rFile;
+        fopen_s(&rFile, nosavePath.GetString(), "wt");
         fprintf(rFile, "savesettings = 0 \n");
         fclose(rFile);
 
@@ -3638,7 +3639,7 @@ void CRecorderView::OnOptionsLanguageGerman()
 
 void CRecorderView::OnRegionWindow()
 {
-    cRegionOpts.m_iMouseCaptureMode = CAPTURE_WINDOW;
+    cRegionOpts.m_iCaptureMode = CAPTURE_WINDOW;
 }
 
 void CRecorderView::OnUpdateRegionWindow(CCmdUI *pCmdUI)
@@ -3887,8 +3888,8 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     fontANSI.CreateStockObject(ANSI_VAR_FONT);
     CFont *pOldFont = srcDC.SelectObject(&fontANSI);
 
-    COLORREF rectcolor = (nColors <= 8) ? RGB(255, 255, 255) : RGB(225, 225, 225);
-    COLORREF textcolor = (nColors <= 8) ? RGB(0, 0, 128) : RGB(0, 0, 100);
+    COLORREF rectcolor = (g_nColors <= 8) ? RGB(255, 255, 255) : RGB(225, 225, 225);
+    COLORREF textcolor = (g_nColors <= 8) ? RGB(0, 0, 128) : RGB(0, 0, 100);
     textcolor = RGB(0, 144, 0);
 
     CBrush brushSolid;
@@ -3941,7 +3942,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     srcDC.TextOut(xoffset, yoffset, csMsg);
 
     // Line: Current frame
-    csMsg.Format("Current Frame : %d", nCurrFrame);
+    csMsg.Format("Current Frame : %d", g_nCurrFrame);
     sizeExtent = srcDC.GetTextExtent(csMsg);
     yoffset += sizeExtent.cy + iLineSpacing;
     rectText.top = yoffset - 2;
@@ -3961,7 +3962,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     srcDC.TextOut(xoffset, yoffset, csMsg);
 
     // Line : Input rate
-    csMsg.Format("Actual Input Rate : %.2f fps", fActualRate);
+    csMsg.Format("Actual Input Rate : %.2f fps", g_fActualRate);
     sizeExtent = srcDC.GetTextExtent(csMsg);
     yoffset += sizeExtent.cy + iLineSpacing;
     rectText.top = yoffset - 2;
@@ -3969,7 +3970,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     srcDC.TextOut(xoffset, yoffset, csMsg);
 
     // Line : Elapsed time
-    // csMsg.Format("Time Elapsed : %.2f sec",  fTimeLength);
+    // csMsg.Format("Time Elapsed : %.2f sec",  g_fTimeLength);
     csMsg = "Time Elapsed : " + sTimeLength;
     sizeExtent = srcDC.GetTextExtent(csMsg);
     yoffset += sizeExtent.cy + iLineSpacing;
@@ -3978,7 +3979,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     srcDC.TextOut(xoffset, yoffset, csMsg);
 
     // Line : Colors info
-    csMsg.Format("Number of Colors : %d g_iBits", nColors);
+    csMsg.Format("Number of Colors : %d g_iBits", g_nColors);
     sizeExtent = srcDC.GetTextExtent(csMsg);
     yoffset += sizeExtent.cy + iLineSpacing;
     rectText.top = yoffset - 2;
@@ -4015,7 +4016,7 @@ void CRecorderView::DisplayBackground(CDC &srcDC)
 {
     // TRACE("CRecorderView::DisplayBackground\n");
     // Ver 1.1
-    if (8 <= nColors)
+    if (8 <= g_nColors)
     {
         CRect rectClient;
         GetClientRect(&rectClient);
@@ -4266,7 +4267,7 @@ UINT CRecorderView::RecordVideo()
 
     // TRACE("## CRecorderView::RecordAVIThread First  Temp.Avi file=[%s]\n", strTempVideoAviFilePath.GetString()  );
 
-    srand(time(nullptr));
+    srand(static_cast<unsigned int>(time(nullptr)));
     bool fileverified = false;
     while (!fileverified)
     {
@@ -4317,7 +4318,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     // HIER_BEN_IK
     // TRACE(_T("## CRecorderView::RecordVideo / cRegionOpts.m_iMouseCaptureMode =%d\n"),
     // cRegionOpts.m_iMouseCaptureMode );
-    switch (cRegionOpts.m_iMouseCaptureMode)
+    switch (cRegionOpts.m_iCaptureMode)
     {
         case CAPTURE_WINDOW:
         case CAPTURE_FULLSCREEN:
@@ -4482,7 +4483,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     // strhdr.fccHandler             = dwCompfccHandler;
     strhdr.fccHandler = 0;
     strhdr.dwScale = 1;
-    strhdr.dwRate = fps;
+    strhdr.dwRate = (DWORD)fps;
     strhdr.dwSuggestedBufferSize = alpbi->biSizeImage;
     // rectangle for stream
     SetRect(&strhdr.rcFrame, 0, 0, (int)alpbi->biWidth, (int)alpbi->biHeight);
@@ -4599,8 +4600,8 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     }
 
     g_bInitCapture = true;
-    nCurrFrame = 0;
-    nActualFrame = 0;
+    g_nCurrFrame = 0;
+    g_nActualFrame = 0;
     g_dwInitialTime = ::timeGetTime();
     DWORD timeexpended = 0;
     DWORD frametime = 0;
@@ -4608,8 +4609,8 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     //////////////////////////////////////////////
     // WRITING FRAMES
     //////////////////////////////////////////////
-    long divx = 0L;
-    long oldsec = 0L;
+    unsigned long divx = 0L;
+    unsigned long oldsec = 0L;
     while (g_bRecordState)
     {
         if (!g_bInitCapture)
@@ -4772,24 +4773,22 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
         {
             g_bInitCapture = false;
         }
-        int seconds = 0.0;
-        int minutes = 0;
-        int hours = 0;
-        hours = timeexpended / 1000 / 60 / 60 % 60;
-        minutes = timeexpended / 1000 / 60 % 60;
-        seconds = timeexpended / 1000 % 60;
-        sTimeLength.Format("%d hrs %d mins %d secs", hours, minutes, seconds);
-        fTimeLength = ((float)timeexpended) / ((float)1000.0);
+
+        const unsigned int hours = timeexpended / 1000u / 60u / 60u % 60u;
+        const unsigned int minutes = timeexpended / 1000u / 60u % 60u;
+        const unsigned int seconds = timeexpended / 1000u % 60u;
+        sTimeLength.Format("%u hrs %u mins %u secs", hours, minutes, seconds);
+        g_fTimeLength = ((float)timeexpended) / ((float)1000.0);
 
         if (cProgramOpts.m_bRecordPreset)
         {
-            if (cProgramOpts.m_iPresetTime <= int(fTimeLength))
+            if (cProgramOpts.m_iPresetTime <= int(g_fTimeLength))
             {
                 ::PostMessage(g_hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
             }
 
             // CString msgStr;
-            // msgStr.Format("%.2f %d", fTimeLength, iPresetTime);
+            // msgStr.Format("%.2f %d", g_fTimeLength, iPresetTime);
             // MessageBox(NULL, msgStr, "N", MB_OK);
             // or should we post messages
         }
@@ -4849,13 +4848,13 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 
             // g_nTotalBytesWrittenSoFar += alpbi->biSizeImage;
             g_nTotalBytesWrittenSoFar += lBytesWritten;
-            nActualFrame++;
-            nCurrFrame = frametime;
-            fRate = ((float)nCurrFrame) / fTimeLength;
-            fActualRate = ((float)nActualFrame) / fTimeLength;
+            g_nActualFrame++;
+            g_nCurrFrame = frametime;
+            g_fRate = ((float)g_nCurrFrame) / g_fTimeLength;
+            g_fActualRate = ((float)g_nActualFrame) / g_fTimeLength;
 
             // Update recording stats every half a second
-            divx = timeexpended / 500;
+            divx = timeexpended / 500u;
             if (divx != oldsec)
             {
                 oldsec = divx;

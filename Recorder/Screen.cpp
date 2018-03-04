@@ -192,25 +192,25 @@ bool CCamera::AddClicks(CDC *pDC)
     DWORD now = GetTickCount();
     DWORD threshold = m_cCursor.m_iRingThreshold;
 
-    DWORD ago;
-
     ClickQueue &cc = ClickQueue::getInstance();
     cc.Lock(); // different thread of the same process puts events in queue
     ClickQueue::QueueType &queue = cc.getQueue();
 
-    ClickQueue::Iterator iter, iter2; // iter2 is used to clean up "down" events when "up" happend
+    ClickQueue::Iterator iter, iter2; // iter2 is used to clean up "down" events when "up" happened
     int maxsize = m_cCursor.m_iRingSize;
+    
     // Remove expired events
     iter = queue.begin();
     while ((iter != queue.end()) && ((now - iter->time) > threshold)) // how to deal with integer overflow?
         ++iter;
+
     //_ASSERTE(_CrtCheckMemory());
     if (iter != queue.begin()) // TODO: good place to dump events to log file before discarding them
         queue.erase(queue.begin(), iter);
 
     for (iter = queue.begin(); iter != queue.end(); ++iter)
     {
-        ago = now - iter->time;
+        DWORD ago = now - iter->time;
         int size = maxsize * ago / threshold;
         bool found = false;
         switch (iter->flags) // holds MW_ for mouse
@@ -267,7 +267,9 @@ bool CCamera::AddClicks(CDC *pDC)
             g.DrawLine(pen, pt.x + size, pt.y, pt.x, pt.y - size * delta / 120);
         }
         else
+        {
             g.DrawEllipse(pen, pt.x - size, pt.y - size, 2 * size, 2 * size);
+        }
     }
     cc.Unlock();
     return true;
@@ -372,7 +374,7 @@ void CCamera::InsertText(CDC *pDC, const CRect &rectBase, TextAttributes &rTextA
     CRect outerRectAbsolutePositions(0, 0, 0, 0);
     CRect innerRectAbsolutePositions(0, 0, 0, 0);
 
-    // Ratio's for floating offset of retangle instead of fixed positions.
+    // Ratio's for floating offset of rectangle instead of fixed positions.
     int xPosRatio = 0;
     int yPosRatio = 0;
 
@@ -385,7 +387,7 @@ void CCamera::InsertText(CDC *pDC, const CRect &rectBase, TextAttributes &rTextA
     else
     {
 
-        // But, If user annoatation setting are not yet updated we have to reconstruct xPos and yPos ratio
+        // But, If user annotation setting are not yet updated we have to reconstruct xPos and yPos ratio
         // Other option is that we just delete this block of code and let user redefine his/her settings.
 
         // Define outer X offset ratio
@@ -609,7 +611,7 @@ bool CCamera::CaptureFrame(const CRect &rectView)
     // Left value = right + width() - 1 = 0 + 1680 - 1 = 1679  (because first column = 0 )
     // Right value = bottom - top - 1 = 1050 - 0 -1 = 1049 (because first row = 0 )
     // Logical Width() = right - left + 1 = 1679 - 0 + 1 = 1680
-    // Logical Height = bottomt - top + 1 = 1049 - 0 + 1 = 1050
+    // Logical Height = bottom - top + 1 = 1049 - 0 + 1 = 1050
     // But Crect Width() = right - left = 1679 - 0 = 1679
     // But Crect Height() = bottom - top = 1049 - 0 = 1049
     // ==================================================
@@ -618,7 +620,7 @@ bool CCamera::CaptureFrame(const CRect &rectView)
     // ==================================================
     // Problem found...!
     // This function expect a param from class CRect.
-    // But in some occassions this function is called with a rcUse structure (also a CRect)
+    // But in some occasions this function is called with a rcUse structure (also a CRect)
     //   but rcUse is build with Top,Left,Bottom,Right info only.
     // It appears that CRect calculate  Width() as Right - Left  without adding the required one additional pixel by
     // default....! Soo, on different locations one could find some add and subtracts to get pixel size correct.
@@ -628,7 +630,7 @@ bool CCamera::CaptureFrame(const CRect &rectView)
     // m_rectView.left, m_rectView.bottom, m_rectView.right,  m_rectView.Width(), m_rectView.Height() );
 
     // And now we know why we have to add one additional picture here...!
-    // Because in this function not the Weight/Hight are expected but Bottom anf Left value....!
+    // Because in this function not the Weight/Hight are expected but Bottom and Left value....!
     m_rectFrame = CRect(CPoint(0, 0), m_rectView.Size());
 
     // TRACE( _T("## *** CCamera::CaptureFrame  m_rectFrame.  TLBR=/%d/%d/%d/%d/  WH=/%d/%d/\n"), m_rectFrame.top,
@@ -658,7 +660,7 @@ bool CCamera::CaptureFrame(const CRect &rectView)
     dwRop |= CAPTUREBLT;
 
     // this is to estimate penalty for extra image creation & GDI+
-    // some caching may be usefull since don't change zoom level often
+    // some caching may be useful since don't change zoom level often
     // thus makes sense to store `orig` & `g` as class members
     // SEVERE FPS drop noticed 40 fps -> 17 fps
     if (m_rectView.Width() == _zoomFrame.Width())

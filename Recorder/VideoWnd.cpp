@@ -1,6 +1,3 @@
-// VideoWnd.cpp : implementation file
-//
-
 #include "stdafx.h"
 #include "Recorder.h"
 #include "VideoWnd.h"

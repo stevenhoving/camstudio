@@ -1,9 +1,3 @@
-// ScreenAnnotations.h : header file
-//
-#if !defined(AFX_SCREENANNOTATIONS_H__BD963A1F_33E6_424C_AEC5_4A3A78700C29__INCLUDED_)
-#define AFX_SCREENANNOTATIONS_H__BD963A1F_33E6_424C_AEC5_4A3A78700C29__INCLUDED_
-
-
 #pragma once
 
 
@@ -151,4 +145,3 @@ private:
 
 extern bool AreWindowsEdited();
 
-#endif // !defined(AFX_SCREENANNOTATIONS_H__BD963A1F_33E6_424C_AEC5_4A3A78700C29__INCLUDED_)

@@ -16,8 +16,8 @@
 #include "RecorderVersionReleaseInfo.h"
 #include "CamCursor.h"
 #include "HotKey.h"
-#include "CamLib/CStudioLib.h"
 #include "GdiPlusInitializer.h"
+#include <CamLib/CStudioLib.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

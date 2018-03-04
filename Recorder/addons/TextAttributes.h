@@ -1,9 +1,3 @@
-// TextAttributes.h
-// include file for TextAttributes structure
-/////////////////////////////////////////////////////////////////////////////
-#ifndef TEXTATTRIBUTES_H    // because pragma once is compiler specific
-#define TEXTATTRIBUTES_H
-
 #pragma once
 
 enum ePosType
@@ -83,4 +77,3 @@ struct TextAttributes
     LOGFONT        logfont;
 };
 
-#endif    // TEXTATTRIBUTES_H

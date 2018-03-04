@@ -1,13 +1,6 @@
-// MainFrm.h : interface of the CMainFrame class
-//
-/////////////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_MAINFRM_H__AB22A31C_DD6D_4321_9F3D_053A376C0BA8__INCLUDED_)
-#define AFX_MAINFRM_H__AB22A31C_DD6D_4321_9F3D_053A376C0BA8__INCLUDED_
+#pragma once
 
 #include "SlideToolBar.h"
-
-#pragma once
 
 class CMainFrame : public CFrameWnd
 {
@@ -62,5 +55,3 @@ protected:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_MAINFRM_H__AB22A31C_DD6D_4321_9F3D_053A376C0BA8__INCLUDED_)
