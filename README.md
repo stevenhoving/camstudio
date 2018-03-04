@@ -9,13 +9,15 @@ I have forked this project because:
 
 ## Goals
 Besides creating a clean installer for camstudio I have found myself a couple of additional goals.
-* Fix memory leaks.
-* Remove swf support.
+* Fix memory leaks - done.
+* Remove swf support - done.
 * Upgrade project dependencies (CxImage, zlib, minilzo, libconfig++).
+* Create release.
 * Introduce unit test.
 * Add support for mkv.
 * Replace UI framework with Qt.
 * Improve settings screen.
+
 
 ## The source forge project
 https://sourceforge.net/p/camstudio
