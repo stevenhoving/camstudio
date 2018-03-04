@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CamLib/CamFile.h"
-#include "shlobj.h"
+#include <shlobj.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // GetTempPath
@@ -140,6 +140,7 @@ CString GetMyVideoPath()
     }
     return path;
 }
+
 CString GetMyDocumentsPath()
 {
     // Get the user's video path

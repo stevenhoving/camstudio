@@ -1190,7 +1190,6 @@ void InitStreams()
 
 void FixWindowTitle()
 {
-
     char szTitle[512];
 
     if (pmode == PLAYER)
@@ -1220,7 +1219,6 @@ void SetTitleBar(CString title)
     app = AfxGetApp();
     if (app)
     {
-
         HWND mainwnd = NULL;
         mainwnd = app->m_pMainWnd->m_hWnd;
         if (mainwnd)

@@ -30,9 +30,6 @@
     <ClCompile Include="CamSys.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CamWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CBitmapEx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -66,9 +63,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\CamLib\CamSys.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\CamLib\CamWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\CamLib\CBitmapEx.h">

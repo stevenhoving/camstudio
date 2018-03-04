@@ -4,8 +4,6 @@
 // (c) Vadim Gorbatenko, 1997-99
 // gvv@mail.tomsknet.ru
 // All rights reserved
-//
-//___________________________________________________________________________________________
 
 #include "stdafx.h"
 #include "CamLib/CBitmapEx.h"
@@ -17,7 +15,6 @@
 #define DIBPTR(lpbi) (LPBYTE)(DIBCOLORS((LPBITMAPINFOHEADER)lpbi) + (UINT)((LPBITMAPINFOHEADER)lpbi)->biClrUsed)
 
 HANDLE _dibFromBitmap(HBITMAP hBitmap);
-BOOL _writeDib(HANDLE hdib, LPCSTR filename);
 INT _DIBNumColors(LPBITMAPINFOHEADER lpbi);
 
 CBitmapEx::~CBitmapEx()

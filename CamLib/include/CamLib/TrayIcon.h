@@ -1,7 +1,6 @@
-// CTrayIcon class
 // Class to manage the tray icon processing.
-// TODO: Temporpary class implementation; new one on the way
-/////////////////////////////////////////////////////////////////////////////
+// TODO: Temporpary class implementation; new one on the way....
+
 #pragma once
 
 class CTrayIcon

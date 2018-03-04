@@ -1,13 +1,10 @@
 //-----------------------------------------------------------------------------
 // Picture (Prototypes) Version 1.00
 //
-// Routins 4 Showing Picture Files... (.BMP .DIB .EMF .GIF .ICO .JPG .WMF)
+// Routines 4 Showing Picture Files... (.BMP .DIB .EMF .GIF .ICO .JPG .WMF)
 //
 // Author: Dr. Yovav Gad, EMail: Sources@SuperMain.com ,Web: www.SuperMain.com
 //=============================================================================
-
-#if !defined(AFX_PICTURE_H__COPYFREE_BY_YOVAV_GAD__SOURCES_AT_SUPERMAIN_DOT_COM__INCLUDED_)
-#define AFX_PICTURE_H__COPYFREE_BY_YOVAV_GAD__SOURCES_AT_SUPERMAIN_DOT_COM__INCLUDED_
 
 #pragma once
 
@@ -42,9 +39,7 @@ protected:
 protected:
     IPicture *m_IPicture{nullptr}; // Same As LPPICTURE (typedef IPicture __RPC_FAR *LPPICTURE)
 
-    LONG m_Height{0}; // Height (In Pixels Ignor What Current Device Context Uses)
-    LONG m_Width{0};  // Width (In Pixels Ignor What Current Device Context Uses)
+    LONG m_Height{0}; // Height (In Pixels Ignore What Current Device Context Uses)
+    LONG m_Width{0};  // Width (In Pixels Ignore What Current Device Context Uses)
     LONG m_Weight{0}; // Size Of The Image Object In Bytes (File OR Resource)
 };
-
-#endif // !defined(AFX_PICTURE_H__COPYFREE_BY_YOVAV_GAD__SOURCES_AT_SUPERMAIN_DOT_COM__INCLUDED_)

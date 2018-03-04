@@ -1,5 +1,3 @@
-// CamImage.h    - include file for CamStudio Library image api's
-
 #pragma once
 
 HANDLE Bitmap2Dib(HBITMAP hbitmap, UINT bits);

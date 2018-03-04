@@ -1,9 +1,3 @@
-// CBITMAPEX.H
-// CBitmap extention
-//
-//
-//___________________________________________________________________________________________
-
 #pragma once
 
 class CBitmapEx : public CBitmap

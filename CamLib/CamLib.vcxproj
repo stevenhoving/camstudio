@@ -165,7 +165,6 @@
     <ClCompile Include="CamImage.cpp" />
     <ClCompile Include="CamRect.cpp" />
     <ClCompile Include="CamSys.cpp" />
-    <ClCompile Include="CamWindow.cpp" />
     <ClCompile Include="CBitmapEx.cpp" />
     <ClCompile Include="CStudiolib.cpp" />
     <ClCompile Include="Picture.cpp" />
@@ -184,7 +183,6 @@
     <ClInclude Include="include\CamLib\CamImage.h" />
     <ClInclude Include="include\CamLib\CamRect.h" />
     <ClInclude Include="include\CamLib\CamSys.h" />
-    <ClInclude Include="include\CamLib\CamWindow.h" />
     <ClInclude Include="include\CamLib\CBitmapEx.h" />
     <ClInclude Include="include\CamLib\CStudioLib.h" />
     <ClInclude Include="include\CamLib\Picture.h" />
