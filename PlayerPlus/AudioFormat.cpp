@@ -29,7 +29,7 @@ extern int audio_num_channels;
 extern int audio_samples_per_seconds;
 extern BOOL bAudioCompression;
 
-extern LPWAVEFORMATEX pwfx;
+extern LPWAVEFORMATEX g_pwfx;
 extern DWORD cbwfx;
 
 extern UINT AudioDeviceID;
@@ -156,7 +156,7 @@ void AudioFormat::OnOK()
                 if (getdevice < numdevice)
                 {
 
-                    if (pwfx == NULL)
+                    if (g_pwfx == NULL)
                         AllocCompressFormat(); // Allocate external format in order to return values
 
                     if (cbwfx >= cbwfxLocal)
@@ -170,7 +170,7 @@ void AudioFormat::OnOK()
 
                         // Update the external pwfx (compressed format) ;
                         cbwfx = cbwfxLocal;
-                        memcpy((void *)pwfx, (void *)pwfxLocal, cbwfxLocal);
+                        memcpy((void *)g_pwfx, (void *)pwfxLocal, cbwfxLocal);
 
                         // Update the external m_Format (Recording format) and related variables;
                         waveinselected = formatmap[sel];
@@ -295,7 +295,7 @@ BOOL AudioFormat::OnInitDialog()
     if (devID < numdevice)
     {
 
-        UpdateDeviceData(selectedDevice, waveinselected, pwfx);
+        UpdateDeviceData(selectedDevice, waveinselected, g_pwfx);
     }
 
     return TRUE; // return TRUE unless you set the focus to a control
@@ -600,9 +600,10 @@ void SuggestLocalCompressFormat()
 
     // 1st try MPEGLAYER3
     BuildLocalRecordingFormat();
-    MMRESULT mmr;
-    if ((m_FormatLocal.nSamplesPerSec == 22050) && (m_FormatLocal.nChannels == 2) &&
-        (m_FormatLocal.wBitsPerSample <= 16))
+    MMRESULT mmr = 0;
+    if ((m_FormatLocal.nSamplesPerSec == 22050)
+        && (m_FormatLocal.nChannels == 2)
+        && (m_FormatLocal.wBitsPerSample <= 16))
     {
 
         pwfxLocal->wFormatTag = WAVE_FORMAT_MPEGLAYER3;
@@ -622,7 +623,7 @@ void SuggestLocalCompressFormat()
         // Use the PCM as default
         BuildLocalRecordingFormat();
         pwfxLocal->wFormatTag = WAVE_FORMAT_PCM;
-        MMRESULT mmr = acmFormatSuggest(NULL, &m_FormatLocal, pwfxLocal, cbwfxLocal, ACM_FORMATSUGGESTF_WFORMATTAG);
+        mmr = acmFormatSuggest(NULL, &m_FormatLocal, pwfxLocal, cbwfxLocal, ACM_FORMATSUGGESTF_WFORMATTAG);
 
         if (mmr != 0)
         {

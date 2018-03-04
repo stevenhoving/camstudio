@@ -19,7 +19,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern int iDefineMode;
+extern int g_iDefineMode;
 
 /////////////////////////////////////////////////////////////////////////////
 // CFixedRegionDlg dialog
@@ -210,8 +210,8 @@ void CFixedRegionDlg::OnSelect()
     m_ctrlStaticMsg.SetWindowText(_T("Click and drag to define a rectangle"));
 
     cRegionOpts.m_iMouseCaptureMode = CAPTURE_VARIABLE; // set temporarily to variable region
-    iDefineMode = 1;
-    hFixedRegionWnd = m_hWnd;
+    g_iDefineMode = 1;
+    g_hFixedRegionWnd = m_hWnd;
     ::ShowWindow(hMouseCaptureWnd, SW_SHOW);
     ::UpdateWindow(hMouseCaptureWnd);
     m_ctrlStaticMsg.SetWindowText(_T(""));
@@ -222,7 +222,7 @@ void CFixedRegionDlg::OnSelect()
 // TODO: why doesn't this message send position values?
 LRESULT CFixedRegionDlg::OnRegionUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
-    CRect rectUse(rcUse);
+    CRect rectUse(g_rcUse);
     if (!m_ctrlButtonFixTopLeft.GetCheck())
     {
         m_iLeft = rectUse.left;

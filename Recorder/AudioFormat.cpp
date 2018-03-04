@@ -7,6 +7,7 @@
 #include "RecorderView.h"
 #include "vfw/ACM.h"
 #include "CamLib/CStudioLib.h"
+#include <filesystem>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -854,13 +855,10 @@ void CAudioFormatDlg::OnVolume()
     if (launchPath == "")
     {
         // Verify sndvol32.exe exists
-        OFSTRUCT ofs;
-        HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
-        if (hdir != HFILE_ERROR)
+        if (std::experimental::filesystem::exists(testLaunchPath.GetString()))
         {
             launchPath = testLaunchPath;
         }
-        CloseHandle((HANDLE)hdir);
     }
 
     if (launchPath == "")
@@ -869,13 +867,10 @@ void CAudioFormatDlg::OnVolume()
         // Verify sndvol32.exe exists
         SubDir = "\\system32";
         testLaunchPath = AppDir + SubDir + exeFileName;
-        OFSTRUCT ofs;
-        HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
-        if (hdir != HFILE_ERROR)
+        if (std::experimental::filesystem::exists(testLaunchPath.GetString()))
         {
             launchPath = testLaunchPath;
         }
-        CloseHandle((HANDLE)hdir);
     }
 
     if (launchPath == "")
@@ -884,13 +879,10 @@ void CAudioFormatDlg::OnVolume()
         // Verify sndvol32.exe exists
         SubDir = "\\system32";
         testLaunchPath = AppDir + SubDir + exeFileName;
-        OFSTRUCT ofs;
-        HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
-        if (hdir != HFILE_ERROR)
+        if (std::experimental::filesystem::exists(testLaunchPath.GetString()))
         {
             launchPath = testLaunchPath;
         }
-        CloseHandle((HANDLE)hdir);
     }
 
     if (launchPath != "")
@@ -915,13 +907,10 @@ void CAudioFormatDlg::OnVolume()
         if (osinfo.dwMajorVersion >= 6) // Vista
         {
             testLaunchPath = AppDir + SubDir + "\\SndVol.exe";
-            OFSTRUCT ofs;
-            HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
-            if (hdir != HFILE_ERROR)
+            if (std::experimental::filesystem::exists(testLaunchPath.GetString()))
             {
                 launchPath = testLaunchPath;
             }
-            CloseHandle((HANDLE)hdir);
         }
     }
 

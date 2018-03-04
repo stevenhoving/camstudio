@@ -15,7 +15,7 @@
 
 #include <vector>
 
-const UINT VK_UNDEFINED = 100000;
+constexpr UINT VK_UNDEFINED = 100000;
 
 struct sHotKeyDef
 {
@@ -47,9 +47,15 @@ public:
 struct sHotKeyOpts
 {
     sHotKeyOpts()
+#ifndef _DEBUG
         : m_RecordStart(VK_F8)
         , m_RecordEnd(VK_F9)
         , m_RecordCancel(VK_F10)
+#else
+        : m_RecordStart(VK_F8, MOD_CONTROL)
+        , m_RecordEnd(VK_F9, MOD_CONTROL)
+        , m_RecordCancel(VK_F10, MOD_CONTROL)
+#endif
         , m_Next(VK_F11, MOD_CONTROL)
         , m_Prev(VK_UNDEFINED, MOD_CONTROL)
         , m_ShowLayout(VK_UNDEFINED)

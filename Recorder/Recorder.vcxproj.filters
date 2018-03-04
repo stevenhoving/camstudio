@@ -421,18 +421,6 @@
     <ClCompile Include="InternetConn.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="addons\AnnotationEffectsOptions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="addons\EffectsOptions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="addons\EffectsOptions2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="addons\XnoteStopwatchFormat.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AudioFormat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -588,6 +576,18 @@
     </ClCompile>
     <ClCompile Include="FrameGrabber.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="addons\AnnotationEffectsOptions.cpp">
+      <Filter>Source Files\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="addons\EffectsOptions.cpp">
+      <Filter>Source Files\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="addons\EffectsOptions2.cpp">
+      <Filter>Source Files\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="addons\XnoteStopwatchFormat.cpp">
+      <Filter>Source Files\addons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

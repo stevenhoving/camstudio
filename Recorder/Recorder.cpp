@@ -138,7 +138,7 @@ void CAboutDlg::OnBnClickedButtonlink2()
 void CAboutDlg::OnButtonlink()
 {
     // TODO: Add your control notification handler code here
-    ::PostMessage(hWndGlobal, WM_COMMAND, ID_CAMSTUDIO4XNOTE_WEBSITE, 0);
+    ::PostMessage(g_hWndGlobal, WM_COMMAND, ID_CAMSTUDIO4XNOTE_WEBSITE, 0);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -178,12 +178,6 @@ CRecorderApp theApp;
 BOOL CRecorderApp::InitInstance()
 {
     // Initialize GDI+.
-    
-    //gdiplusToken
-        //    Gdiplus::GdiplusStartup(&gdiplusToken, gdiplusStartupInput.get(), NULL);
-    //gdi_init(gdiplusStartupInput, gdiplusToken);
-
-    //std::unique_ptr<gdi> m_gdi;
     m_gdi = std::make_unique<gdi>();
 
     ::OnError("CRecorderApp::InitInstance");
@@ -193,18 +187,19 @@ BOOL CRecorderApp::InitInstance()
     // If you are not using these features and wish to reduce the size
     // of your final executable, you should remove from the following
     // the specific initialization routines you do not need.
-    SetRegistryKey(_T("CamStudioOpenSource for Nick"));
+    SetRegistryKey(_T("CamStudio"));
 
     // First free the string allocated by MFC at CWinApp startup.
     // The string is allocated before InitInstance is called.
     free((void *)m_pszProfileName);
+
     // Change the name of the .INI file.
     // The CWinApp destructor will free the memory.
     CString strProfile;
     if (!DoesFileExist(strProfile))
     {
         // Only reading, if the user has no file yet, see if a starter file was provided:
-        strProfile.Format("%s\\CamStudio.cfg", (LPCSTR)(GetAppDataPath()));
+        strProfile.Format("%s\\CamStudio\\CamStudio.cfg", (LPCSTR)(GetAppDataPath()));
     }
     m_pszProfileName = _tcsdup(strProfile);
 
@@ -403,7 +398,7 @@ int CRecorderApp::ExitInstance()
 
     // Save the configuration file out to the user appdata directory.
     CString strProfile;
-    strProfile.Format("%s\\CamStudio.cfg", (LPCSTR)(GetAppDataPath()));
+    strProfile.Format("%s\\CamStudio\\CamStudio.cfg", (LPCSTR)(GetAppDataPath()));
     g_cfg->writeFile(strProfile);
     delete g_cfg;
 
@@ -414,8 +409,8 @@ int CRecorderApp::ExitInstance()
     if (bClassRegistered)
         ::UnregisterClass(_T("CamStudio"), AfxGetInstanceHandle());
 
-    //Gdiplus::GdiplusShutdown(gdiplusToken);
-    //gdi_shutdown(gdiplusToken);
+    // Gdiplus::GdiplusShutdown(gdiplusToken);
+    // gdi_shutdown(gdiplusToken);
     m_gdi.reset();
 
     return CWinApp::ExitInstance();
@@ -531,5 +526,5 @@ void CAboutDlg::OnStnClickedStaticVersion()
 void CAboutDlg::OnBnClickedButtonlink3()
 {
     // TODO: Add your control notification handler code here
-    ::PostMessage(hWndGlobal, WM_COMMAND, ID_HELP_WEBSITE, 0);
+    ::PostMessage(g_hWndGlobal, WM_COMMAND, ID_HELP_WEBSITE, 0);
 }

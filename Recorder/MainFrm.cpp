@@ -63,7 +63,7 @@ using namespace System::Runtime::InteropServices;
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern bool bRecordState; // in RecorderView
+extern bool g_bRecordState; // in RecorderView
 
 int maxxScreen;
 int maxyScreen;
@@ -288,7 +288,7 @@ void CMainFrame::Dump(CDumpContext &dc) const
 void CMainFrame::OnClose()
 {
     // TODO: Add your message handler code here and/or call default
-    if (bRecordState)
+    if (g_bRecordState)
     {
         // MessageBox("Please stop video recording before exiting program.","Note",MB_OK | MB_ICONEXCLAMATION);
         MessageOut(this->m_hWnd, IDS_STRING_STOPBEFOREEXIT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
@@ -483,10 +483,10 @@ void CMainFrame::CheckForNewVersion()
             return;
         }
         CString strPath;
-        strPath.Format("%s\\version2.xml", (LPCSTR)(GetAppDataPath()));
+        strPath.Format("%s\\CamStudio\\version2.xml", (LPCSTR)(GetAppDataPath()));
         doc.SaveFile(strPath);
         const char *version = strBuffer;
-        strPath.Format("%s\\version2.xml", (LPCSTR)(GetAppDataPath()));
+        strPath.Format("%s\\CamStudio\\version2.xml", (LPCSTR)(GetAppDataPath()));
         bool loadOkay = doc.LoadFile(strPath);
         if (!loadOkay)
         {

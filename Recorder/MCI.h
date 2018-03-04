@@ -11,7 +11,7 @@ extern void mciRecordResume(HWND hWndCallback, const CString &strFile);
 extern void mciSetWaveFormat(); // add before mcirecord
 
 extern int isMciRecordOpen;   // TODO: replace with cMCIDevice.IsOpen()
-extern bool bAlreadyMCIPause; // TODO: replace with cMCIDevice.IsPause()
+extern bool g_bAlreadyMCIPause; // TODO: replace with cMCIDevice.IsPause()
 
 extern WAVEFORMATEX m_FormatSpeaker;
 extern int iAudioBitsPerSampleSpeaker;

@@ -291,7 +291,7 @@ public:
     BOOL Remove(DWORD fccType, DWORD fccHandler, UINT wFlags);
     // sends a message to a compressor.
     // Returns a message-specific result.
-    LRESULT SendMessage(UINT wMsg, DWORD dw1, DWORD dw2);
+    LRESULT SendMessage(UINT wMsg, DWORD_PTR dw1, DWORD_PTR dw2);
     // compresses one frame in a sequence of frames.
     // Returns the address of the compressed bits if successful or NULL otherwise.
     LPVOID SeqCompressFrame(PCOMPVARS pc, UINT uiFlags, LPVOID lpBits, BOOL *pfKey, LONG *plSize);
@@ -315,7 +315,7 @@ public:
     //}
 };
 
-extern ICINFO *pCompressorInfo;
-extern int num_compressor;
+extern ICINFO *g_compressor_info;
+extern int g_num_compressor;
 
 extern CString GetCodecDescription(FOURCC fccHandler);

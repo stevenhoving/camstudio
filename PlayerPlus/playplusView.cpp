@@ -1,7 +1,5 @@
-// playplusView.cpp : implementation of the CPlayplusView class
-//
-
 #include "stdafx.h"
+#include "playplusview.h"
 #include "playplus.h"
 
 #include "playplusDoc.h"
@@ -20,7 +18,7 @@ static char THIS_FILE[] = __FILE__;
 
 #include "fister/soundfile.h"
 #include "AudioFormat.h"
-#include ".\playplusview.h"
+
 
 // Program Mode -- to be set at compile time
 #define PLAYER 0
@@ -38,7 +36,7 @@ extern void CALLBACK aviaudioMessage(HWND, UINT, WPARAM, LPARAM);
 extern void CALLBACK aviaudioStop(void);
 extern LONG CALLBACK aviaudioTime(void);
 
-BOOL CALLBACK DlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+//BOOL CALLBACK DlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 static BOOL gfDefDlgEx = FALSE; // the recursion flag for message crackers
 
 #define BUFSIZE 260
@@ -201,7 +199,7 @@ int m_BufferSize = 1000; // number of samples
 #define WM_USER_GENERIC 0x00401
 
 // Audio Options Dialog
-LPWAVEFORMATEX pwfx = NULL;
+LPWAVEFORMATEX g_pwfx = NULL;
 DWORD cbwfx;
 
 // Audio Formats Dialog
@@ -646,15 +644,15 @@ int PaintStuff(HDC hdc, HWND hwnd, BOOL fDrawEverything)
     int xStreamLeft;
     int yStreamTop;
     int iFrameWidth;
-    int n;
+    //int n;
     int nFrames;
-    int i;
     LONG lSamp, lCurSamp;
     LPBITMAPINFOHEADER lpbi = NULL;
     LONG l;
     LONG lTime;
     LONG lSize = 0;
-    RECT rcFrame, rcC;
+    RECT rcFrame = {};
+    RECT rcC = {};
 
     GetClientRect(hwnd, &rcC);
 
@@ -692,7 +690,7 @@ int PaintStuff(HDC hdc, HWND hwnd, BOOL fDrawEverything)
             iFrameWidth = (avis.rcFrame.right - avis.rcFrame.left) + HSPACE;
             nFrames = 0;
 
-            for (n = -nFrames; n <= nFrames; n++)
+            for (int n = -nFrames; n <= nFrames; n++)
             {
                 if (i == giFirstVideo)
                 {
@@ -976,8 +974,6 @@ int ErrorMsg(LPSTR sz, ...)
 
 void FreeDrawStuff()
 {
-    int i;
-
     // Make sure we're not playing!
     aviaudioStop();
 
@@ -1051,7 +1047,6 @@ void InitStreams()
 {
     AVISTREAMINFO avis;
     LONG lTemp;
-    int i;
 
     //
     // Start with bogus times
@@ -1404,10 +1399,10 @@ void CPlayplusView::OnDestroy()
         hLogoBM = NULL;
     }
 
-    if (pwfx)
+    if (g_pwfx)
     {
-        GlobalFreePtr(pwfx);
-        pwfx = NULL;
+        GlobalFreePtr(g_pwfx);
+        g_pwfx = NULL;
     }
 }
 
@@ -2721,7 +2716,6 @@ void DataFromSoundIn(CBuffer *buffer)
 
 void BuildRecordingFormat()
 {
-
     m_Format.wFormatTag = WAVE_FORMAT_PCM;
     m_Format.wBitsPerSample = audio_bits_per_sample;
     m_Format.nSamplesPerSec = audio_samples_per_seconds;
@@ -2731,7 +2725,7 @@ void BuildRecordingFormat()
     m_Format.cbSize = 0;
 }
 
-// Suggest Save/Compress Format to pwfx
+// Suggest Save/Compress Format to g_pwfx
 void SuggestRecordingFormat()
 {
 
@@ -2860,16 +2854,16 @@ void SuggestCompressFormat()
     BuildRecordingFormat();
     if ((m_Format.nSamplesPerSec == 22050) && (m_Format.nChannels == 2) && (m_Format.wBitsPerSample <= 16))
     {
-        pwfx->wFormatTag = WAVE_FORMAT_MPEGLAYER3;
-        mmr = acmFormatSuggest(NULL, &m_Format, pwfx, cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
+        g_pwfx->wFormatTag = WAVE_FORMAT_MPEGLAYER3;
+        mmr = acmFormatSuggest(NULL, &m_Format, g_pwfx, cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
     }
 
     if (mmr != S_OK)
     {
         // Use PCM in order to handle most cases
         BuildRecordingFormat();
-        pwfx->wFormatTag = WAVE_FORMAT_PCM;
-        MMRESULT mmr = acmFormatSuggest(NULL, &m_Format, pwfx, cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
+        g_pwfx->wFormatTag = WAVE_FORMAT_PCM;
+        mmr = acmFormatSuggest(NULL, &m_Format, g_pwfx, cbwfx, ACM_FORMATSUGGESTF_WFORMATTAG);
         if (mmr != S_OK)
         {
             bAudioCompression = FALSE;
@@ -2882,7 +2876,7 @@ void AllocCompressFormat()
 
     int initial_audiosetup = 1;
 
-    if (pwfx)
+    if (g_pwfx)
     {
 
         initial_audiosetup = 0;
@@ -2901,8 +2895,8 @@ void AllocCompressFormat()
             return;
         }
 
-        pwfx = (LPWAVEFORMATEX)GlobalAllocPtr(GHND, cbwfx);
-        if (NULL == pwfx)
+        g_pwfx = (LPWAVEFORMATEX)GlobalAllocPtr(GHND, cbwfx);
+        if (NULL == g_pwfx)
         {
 
             CString msgstr;
@@ -3102,7 +3096,6 @@ void CPlayplusView::OnFileSaveas()
     if (GetSaveFileName(&openfilename))
     {
         DWORD fccHandler[MAXNUMSTREAMS];
-        int i;
         HRESULT hr;
 
         // StartWait();
@@ -3110,7 +3103,7 @@ void CPlayplusView::OnFileSaveas()
         for (int i = 0; i < gcpavi; i++)
             fccHandler[i] = galpAVIOptions[i]->fccHandler;
 
-        SetAdditionalCompressSettings(bAudioCompression, pwfx, cbwfx, interleaveFrames, interleaveFactor,
+        SetAdditionalCompressSettings(bAudioCompression, g_pwfx, cbwfx, interleaveFrames, interleaveFactor,
                                       interleaveUnit);
 
         hr = AVISaveV(gszSaveFileName, NULL, (AVISAVECALLBACK)SaveCallback, gcpavi, gapavi, galpAVIOptions);
@@ -3457,7 +3450,6 @@ void SetAdditionalCompressSettings(BOOL recompress_audio, LPWAVEFORMATEX audio_r
                                    DWORD audio_format_size, BOOL bInterleave, int interleave_factor,
                                    int interleave_unit)
 {
-    int i = 0;
     int frames_per_second = -1;
 
     for (int i = 0; i < gcpavi; i++)

@@ -9,6 +9,8 @@
 
 #pragma once
 
+#define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
 #include <windows.h>
 #include <vfw.h>
 #pragma hdrstop
@@ -22,12 +24,11 @@ extern HMODULE hmoduleCamcodec;
 
 struct CodecInst
 {
-
     // methods
 
-    unsigned char *prevFrame;
-    unsigned char *diffFrame;
-    unsigned char *diffinput;
+    unsigned char *m_prevFrame;
+    unsigned char *m_diffFrame;
+    unsigned char *m_diffinput;
 
     int m_algorithm;
     int m_gzip_level;

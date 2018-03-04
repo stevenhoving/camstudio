@@ -13,7 +13,7 @@
 
 #include <mmsystem.h>
 
-extern HWND hWndGlobal;
+extern HWND g_hWndGlobal;
 
 extern CSoundFile *pSoundFile;
 
@@ -387,15 +387,15 @@ BOOL configWaveOutManual()
     // CString anstr;
     // anstr.Format("You will now be asked several questions. A tone may or may not be heard after you click 'OK'.
     // Please listen carefully before answering the questions."); int ret =
-    // ::MessageBox(hWndGlobal,anstr,"Analyzing",MB_OK | MB_ICONEXCLAMATION);
-    MessageOut(hWndGlobal, IDS_STRING_ASKQUESTIONS, IDS_STRING_ANALYZE, MB_OK | MB_ICONEXCLAMATION);
+    // ::MessageBox(g_hWndGlobal,anstr,"Analyzing",MB_OK | MB_ICONEXCLAMATION);
+    MessageOut(g_hWndGlobal, IDS_STRING_ASKQUESTIONS, IDS_STRING_ANALYZE, MB_OK | MB_ICONEXCLAMATION);
 
     for (DWORD dwi = 0; dwi < dwMultipleItems; dwi++)
     {
         // testfile=GetProgPath()+"\\testsnd.wav";
         // sndPlaySound(testfile, SND_SYNC);
         // anstr.Format("This is a sample tone. Did you hear a tone?");
-        ////int ret = ::MessageBox(hWndGlobal,anstr,"Analyzing",MB_YESNO | MB_ICONQUESTION);
+        ////int ret = ::MessageBox(g_hWndGlobal,anstr,"Analyzing",MB_YESNO | MB_ICONQUESTION);
         // if (ret==IDNO) {
         // break;
         //}
@@ -405,15 +405,15 @@ BOOL configWaveOutManual()
         sndPlaySound(testfile, SND_SYNC);
 
         // anstr.Format("Testing line %d of %d. Did you hear a tone?",dwi+1,dwMultipleItems);
-        // int ret = ::MessageBox(hWndGlobal,anstr,"Analyzing",MB_YESNO | MB_ICONQUESTION);
+        // int ret = ::MessageBox(g_hWndGlobal,anstr,"Analyzing",MB_YESNO | MB_ICONQUESTION);
 
-        int ret = MessageOut(hWndGlobal, IDS_STRING_TESTINGLINE, IDS_STRING_ANALYZE, MB_YESNO | MB_ICONQUESTION,
+        int ret = MessageOut(g_hWndGlobal, IDS_STRING_TESTINGLINE, IDS_STRING_ANALYZE, MB_YESNO | MB_ICONQUESTION,
                              dwi + 1, dwMultipleItems);
         if (ret == IDYES)
         {
             // anstr.Format("Line %d set for recording sound from speakers !",dwi+1);
-            // int ret = ::MessageBox(hWndGlobal,anstr,"Analyzing",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(hWndGlobal, IDS_STRING_SETTINGLINE, IDS_STRING_ANALYZE, MB_OK | MB_ICONEXCLAMATION, dwi + 1);
+            // int ret = ::MessageBox(g_hWndGlobal,anstr,"Analyzing",MB_OK | MB_ICONEXCLAMATION);
+            MessageOut(g_hWndGlobal, IDS_STRING_SETTINGLINE, IDS_STRING_ANALYZE, MB_OK | MB_ICONEXCLAMATION, dwi + 1);
 
             cAudioFormat.m_iFeedbackLine = dwi;
             cAudioFormat.m_iFeedbackLineInfo =
@@ -432,7 +432,7 @@ BOOL configWaveOutManual()
     }
 
     if (cAudioFormat.m_iFeedbackLine == -1)
-        MessageOut(hWndGlobal, IDS_STRING_NODETECT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+        MessageOut(g_hWndGlobal, IDS_STRING_NODETECT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
 
     // restore
     if (orig_recordaudio == 1)
@@ -717,14 +717,14 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText, DWORD lineTo
                 CString testfile;
                 testfile = GetMyVideoPath() + "\\testrec" + fnum + ".wav";
 
-                mciRecordOpen(hWndGlobal);
+                mciRecordOpen(g_hWndGlobal);
                 mciSetWaveFormat();
                 mciRecordStart();
 
                 CString soundpath = GetMyVideoPath() + "\\testsnd.wav";
                 sndPlaySound(soundpath, SND_SYNC);
 
-                mciRecordStop(hWndGlobal, testfile);
+                mciRecordStop(g_hWndGlobal, testfile);
                 mciRecordClose();
 
                 // Open file for Analysis
@@ -869,7 +869,7 @@ BOOL ManualSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText, DWORD lineToSea
                 testfile.Format("%s\\testrec%d.wav", GetMyVideoPath(), dwi);
 
                 // TODO: How is testfile used here?
-                mciRecordOpen(hWndGlobal);
+                mciRecordOpen(g_hWndGlobal);
                 mciSetWaveFormat();
                 mciRecordStart();
 
@@ -877,7 +877,7 @@ BOOL ManualSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText, DWORD lineToSea
                 CString soundpath = GetMyVideoPath() + "\\testsnd.wav";
                 sndPlaySound(soundpath, SND_SYNC);
 
-                mciRecordStop(hWndGlobal, testfile);
+                mciRecordStop(g_hWndGlobal, testfile);
                 mciRecordClose();
             }
 
@@ -1264,7 +1264,7 @@ BOOL WaveoutInitialize()
     // A "mapper" for audio mixer devices does not currently exist.
     if (uNumMixers != 0)
     {
-        if (MMSYSERR_NOERROR != AudioMixer.Open(cAudioFormat.m_iSelectedMixer, (DWORD_PTR)hWndGlobal, NULL,
+        if (MMSYSERR_NOERROR != AudioMixer.Open(cAudioFormat.m_iSelectedMixer, (DWORD_PTR)g_hWndGlobal, NULL,
                                                 MIXER_OBJECTF_MIXER | CALLBACK_WINDOW))
         {
             OnError("WaveoutInitialize");
@@ -1302,7 +1302,7 @@ BOOL WaveoutVolumeInitialize()
     // A "mapper" for audio mixer devices does not currently exist.
     if (uNumMixers != 0)
     {
-        if (MMSYSERR_NOERROR != AudioMixer.Open(cAudioFormat.m_iSelectedMixer, (DWORD_PTR)hWndGlobal, NULL,
+        if (MMSYSERR_NOERROR != AudioMixer.Open(cAudioFormat.m_iSelectedMixer, (DWORD_PTR)g_hWndGlobal, NULL,
                                                 MIXER_OBJECTF_MIXER | CALLBACK_WINDOW))
             return FALSE;
 

@@ -1,10 +1,8 @@
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
 #include "StdAfx.h"
 #include "VCM.h"
 
-ICINFO *pCompressorInfo = 0;
-int num_compressor = 0;
+ICINFO *g_compressor_info = nullptr;
+int g_num_compressor = 0;
 
 CString GetCodecDescription(FOURCC fccHandler)
 {
@@ -119,17 +117,18 @@ bool CHIC::getState()
         TRACE("CHIC::getState: %s Not open\n", bResult ? "OK" : "FAIL");
         return bResult;
     }
+
     try
     {
         if (m_pState)
         {
-            ASSERT(0 < m_ulStateSize);
+            ASSERT(m_ulStateSize > 0);
             delete[] m_pState;
             m_ulStateSize = 0L;
         }
-        ASSERT(0L == m_ulStateSize);
+        ASSERT(m_ulStateSize == 0L);
         m_ulStateSize = GetStateSize();
-        bResult = (0 < m_ulStateSize);
+        bResult = m_ulStateSize > 0;
         if (!bResult)
         {
             TRACE("CHIC::getState: %s bad size\n", bResult ? "OK" : "FAIL");
@@ -427,7 +426,7 @@ BOOL CHIC::Remove(DWORD fccType, DWORD fccHandler, UINT wFlags)
     return ::ICRemove(fccType, fccHandler, wFlags);
 }
 
-LRESULT CHIC::SendMessage(UINT wMsg, DWORD dw1, DWORD dw2)
+LRESULT CHIC::SendMessage(UINT wMsg, DWORD_PTR dw1, DWORD_PTR dw2)
 {
     return ::ICSendMessage(m_hIC, wMsg, dw1, dw2);
 }

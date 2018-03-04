@@ -159,7 +159,7 @@ void CVideoOptionsDlg::RefreshCompressorButtons()
         BOOL bEnableAbout = FALSE;
         BOOL bEnableCfg = FALSE;
         CHIC chic;
-        if (chic.Open(pCompressorInfo[sel].fccType, pCompressorInfo[sel].fccHandler, ICMODE_QUERY))
+        if (chic.Open(g_compressor_info[sel].fccType, g_compressor_info[sel].fccHandler, ICMODE_QUERY))
         {
             // bEnableAbout = (ICERR_UNSUPPORTED != chic.QueryAbout());
             // bEnableCfg = (ICERR_UNSUPPORTED != chic.QueryConfigure());
@@ -169,7 +169,7 @@ void CVideoOptionsDlg::RefreshCompressorButtons()
         m_ctrlButtonAbout.EnableWindow(bEnableAbout);
         m_ctrlButtonConfigure.EnableWindow(bEnableCfg);
 
-        // HIC hic = ICOpen(pCompressorInfo[sel].fccType, pCompressorInfo[sel].fccHandler, ICMODE_QUERY);
+        // HIC hic = ICOpen(g_compressor_info[sel].fccType, g_compressor_info[sel].fccHandler, ICMODE_QUERY);
         // if (hic) {
         //    m_ctrlButtonAbout.EnableWindow(ICQueryAbout(hic));
         //    m_ctrlButtonConfigure.EnableWindow(ICQueryConfigure(hic));
@@ -316,7 +316,7 @@ void CVideoOptionsDlg::AutoSetRate(int val, int &framerate, int &delayms)
 
         ////Automatically Adjust the Quality for MSVC (MS Video 1) if the framerate is too high
         // int sel = ((CComboBox *) GetDlgItem(IDC_COMPRESSORS))->GetCurSel();
-        // if (pCompressorInfo[sel].fccHandler==mmioFOURCC('M', 'S', 'V', 'C')) {
+        // if (g_compressor_info[sel].fccHandler==mmioFOURCC('M', 'S', 'V', 'C')) {
         //    int cQuality = ((CSliderCtrl *) GetDlgItem(IDC_QUALITY_SLIDER))->GetPos();
         //    if (cQuality<80) {
         //        ((CSliderCtrl *) GetDlgItem(IDC_QUALITY_SLIDER))->SetPos(80);
@@ -387,14 +387,14 @@ int CVideoOptionsDlg::LoadICList()
 {
     m_ctrlCBCompressor.ResetContent();
     CHIC::TRACEFOURCC(m_cOpts.m_dwCompfccHandler);
-    if (0 < num_compressor)
+    if (0 < g_num_compressor)
     {
         int sel = -1;
-        for (int i = 0; i < num_compressor; i++)
+        for (int i = 0; i < g_num_compressor; i++)
         {
-            m_ctrlCBCompressor.AddString(CString(pCompressorInfo[i].szDescription));
-            CHIC::TRACEFOURCC(pCompressorInfo[i].fccHandler, CString(pCompressorInfo[i].szDescription));
-            if (m_cOpts.m_dwCompfccHandler == pCompressorInfo[i].fccHandler)
+            m_ctrlCBCompressor.AddString(CString(g_compressor_info[i].szDescription));
+            CHIC::TRACEFOURCC(g_compressor_info[i].fccHandler, CString(g_compressor_info[i].szDescription));
+            if (m_cOpts.m_dwCompfccHandler == g_compressor_info[i].fccHandler)
             {
                 sel = i;
             }
@@ -403,13 +403,13 @@ int CVideoOptionsDlg::LoadICList()
         if (sel == -1)
         {
             sel = 0;
-            m_cOpts.m_dwCompfccHandler = pCompressorInfo[sel].fccHandler;
+            m_cOpts.m_dwCompfccHandler = g_compressor_info[sel].fccHandler;
         }
 
         m_ctrlCBCompressor.SetCurSel(sel);
     }
 
-    return num_compressor;
+    return g_num_compressor;
 }
 
 void CVideoOptionsDlg::DDV_KeyFrameInterval(CDataExchange *pDX, int value, int minVal, int maxVal)
@@ -583,7 +583,8 @@ void CVideoOptionsDlg::OnOK()
     {
         return;
     }
-    if (m_ctrlButtonLock.GetCheck() == true)
+
+    if (m_ctrlButtonLock.GetCheck() == TRUE)
     {
         if ((m_iCaptureInterval * m_iPlaybackRate) != 1000)
         {
@@ -603,9 +604,9 @@ void CVideoOptionsDlg::OnOK()
     int sel = m_ctrlCBCompressor.GetCurSel();
     if (sel != CB_ERR)
     {
-        m_cOpts.m_dwCompfccHandler = pCompressorInfo[sel].fccHandler;
+        m_cOpts.m_dwCompfccHandler = g_compressor_info[sel].fccHandler;
         CHIC::TRACEFOURCC(m_cOpts.m_dwCompfccHandler);
-        strCodec = CString(pCompressorInfo[sel].szDescription);
+        g_strCodec = CString(g_compressor_info[sel].szDescription);
         m_cOpts.m_iSelectedCompressor = sel;
     }
     m_cOpts.m_bRoundDown = m_ctrlButtonRoundDown.GetCheck() ? true : false;
@@ -618,7 +619,7 @@ void CVideoOptionsDlg::OnAbout()
     if (sel != CB_ERR)
     {
         CHIC chic;
-        if (chic.Open(pCompressorInfo[sel].fccType, pCompressorInfo[sel].fccHandler, ICMODE_QUERY))
+        if (chic.Open(g_compressor_info[sel].fccType, g_compressor_info[sel].fccHandler, ICMODE_QUERY))
         {
             VERIFY(ICERR_OK == chic.About(m_hWnd));
         }
@@ -641,14 +642,14 @@ void CVideoOptionsDlg::OnConfigure()
     if (sel != CB_ERR)
     {
         // Still unable to handle DIVX state (results in error)
-        // if (pCompressorInfo[sel].fccHandler == mmioFOURCC('D', 'I', 'V', 'X'))
+        // if (g_compressor_info[sel].fccHandler == mmioFOURCC('D', 'I', 'V', 'X'))
         //    return;
 
 // TODO, How long is this code stil experimental and soo in use ???
 #define EXPERIMENTAL_CODE
 #ifdef EXPERIMENTAL_CODE
         CHIC chic;
-        if (chic.Open(pCompressorInfo[sel].fccType, pCompressorInfo[sel].fccHandler, ICMODE_QUERY))
+        if (chic.Open(g_compressor_info[sel].fccType, g_compressor_info[sel].fccHandler, ICMODE_QUERY))
         {
             // Set our current Video Compress State Info into the hic,
             // which will update the ICConfigure Dialog
@@ -669,12 +670,12 @@ void CVideoOptionsDlg::OnConfigure()
             }
         }
 #else
-        HIC hic = ICOpen(pCompressorInfo[sel].fccType, pCompressorInfo[sel].fccHandler, ICMODE_QUERY);
+        HIC hic = ICOpen(g_compressor_info[sel].fccType, g_compressor_info[sel].fccHandler, ICMODE_QUERY);
         if (hic)
         {
             // Set our current Video Compress State Info into the hic, which will
             // update the ICConfigure Dialog
-            SetVideoCompressState(hic, pCompressorInfo[sel].fccHandler);
+            SetVideoCompressState(hic, g_compressor_info[sel].fccHandler);
 
             ICConfigure(hic, m_hWnd);
 
@@ -682,7 +683,7 @@ void CVideoOptionsDlg::OnConfigure()
             // ICConfigure dialog. This will set the external pVideoCompressParams
             // variable which is used by AVICOMPRESSOPTIONS (This means the external
             // variable pVideoCompressParams will be changed even if user press "Cancel")
-            GetVideoCompressState(hic, pCompressorInfo[sel].fccHandler);
+            GetVideoCompressState(hic, g_compressor_info[sel].fccHandler);
 
             ICClose(hic);
         }

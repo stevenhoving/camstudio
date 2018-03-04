@@ -1,12 +1,6 @@
-// playplusView.h : interface of the CPlayplusView class
-//
-/////////////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_PLAYPLUSVIEW_H__8B1773D6_C15C_4371_BEB4_1943076AD478__INCLUDED_)
-#define AFX_PLAYPLUSVIEW_H__8B1773D6_C15C_4371_BEB4_1943076AD478__INCLUDED_
-
 #pragma once
 
+class CPlayplusDoc;
 class CPlayplusView : public CView
 {
 protected: // create from serialization only
@@ -101,10 +95,3 @@ inline CPlayplusDoc *CPlayplusView::GetDocument()
     return (CPlayplusDoc *)m_pDocument;
 }
 #endif
-
-/////////////////////////////////////////////////////////////////////////////
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_PLAYPLUSVIEW_H__8B1773D6_C15C_4371_BEB4_1943076AD478__INCLUDED_)

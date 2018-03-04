@@ -262,16 +262,16 @@ inline CRecorderDoc *CRecorderView::GetDocument()
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
 // External Variables
-extern HWND hWndGlobal;
-extern bool bRecordState;
-extern CRect rc;
-extern CRect rcUse;
-extern CRect rcClip;
-extern CRect old_rcClip;
-extern CRect rcOffset;
-extern CPoint ptOrigin;
+extern HWND g_hWndGlobal;
+extern bool g_bRecordState;
+extern CRect g_rc;
+extern CRect g_rcUse;
+extern CRect g_rcClip;
+extern CRect g_old_rcClip;
+extern CRect g_rcOffset;
+extern CPoint g_ptOrigin;
 
-extern CString strCodec;
+extern CString g_strCodec;
 
 // extern LPWAVEFORMATEX pwfx;
 

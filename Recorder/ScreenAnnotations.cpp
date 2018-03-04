@@ -28,7 +28,7 @@ extern CString g_shapeName;
 extern CString g_strLayoutName;
 extern int g_keySCOpened;
 
-extern int g_iCurrentLayout;
+extern INT_PTR g_iCurrentLayout;
 
 extern int SetAdjustHotKeys();
 

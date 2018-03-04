@@ -8,15 +8,15 @@
 
 // MouseCaptureWndProc referenced variables
 
-extern int iDefineMode;
-extern BOOL bCapturing;
+extern int g_iDefineMode;
+extern BOOL g_bCapturing;
 extern BOOL bAllowNewRecordStartKey;
 
 extern HBITMAP hSavedBitmap;
 
-extern HWND hWndGlobal;
+extern HWND g_hWndGlobal;
 extern HWND hMouseCaptureWnd;
-extern HWND hFixedRegionWnd;
+extern HWND g_hFixedRegionWnd;
 
 long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam);
 bool CreateShiftWindow();

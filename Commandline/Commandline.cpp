@@ -80,10 +80,10 @@ int maxyScreen;
 int gRecordState = 0;
 DWORD initialtime = 0;
 int initcapture = 0;
-int irsmallcount = 0;
+
 
 // Messaging
-HWND hWndGlobal = NULL;
+HWND g_hWndGlobal = NULL;
 /*
 static UINT WM_USER_RECORDINTERRUPTED = ::RegisterWindowMessage(WM_USER_RECORDINTERRUPTED_MSG);
 */
@@ -131,7 +131,7 @@ float fActualRate = 0.0;
 float fTimeLength = 0.0;
 int nColors = 24;
 
-std::wstring strCodec(L"MS Video 1");
+std::wstring g_strCodec(L"MS Video 1");
 int actualwidth = 0;
 int actualheight = 0;
 
@@ -168,7 +168,7 @@ int m_BufferSize = 1000; // number of samples
 // CSoundFile *m_pFile = NULL;
 
 // Audio Options Dialog
-LPWAVEFORMATEX pwfx = NULL;
+LPWAVEFORMATEX g_pwfx = NULL;
 DWORD cbwfx;
 
 // Audio Formats Dialog
@@ -452,7 +452,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
             else
             {
                 g_comp_fcc_handler = mmioFOURCC('M', 'S', 'V', 'C');
-                strCodec = L"MS Video 1";
+                g_strCodec = L"MS Video 1";
             }
 
             ICClose(hic);
@@ -460,7 +460,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
         else
         {
             g_comp_fcc_handler = mmioFOURCC('M', 'S', 'V', 'C');
-            strCodec = L"MS Video 1";
+            g_strCodec = L"MS Video 1";
             // MessageBox(NULL,"hic default","note",MB_OK);
         }
 
@@ -471,7 +471,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
     {
         // Still Can't Handle Indeo 5.04
         g_comp_fcc_handler = mmioFOURCC('M', 'S', 'V', 'C');
-        strCodec = L"MS Video 1";
+        g_strCodec = L"MS Video 1";
     }
 
     ////////////////////////////////////////////////
@@ -522,7 +522,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
     {
         // Internally adjust codec to MSVC 100 Quality
         aopts[0]->fccHandler = mmioFOURCC('M', 'S', 'V', 'C'); // msvc
-        strCodec = L"MS Video 1";
+        g_strCodec = L"MS Video 1";
         aopts[0]->dwQuality = 10000;
     }
     else
@@ -755,7 +755,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
             // if (int(fTimeLength) >= presettime)
             // ;
             // gRecordState = 0;
-            // PostMessage(hWndGlobal,WM_USER_RECORDINTERRUPTED,0,0);
+            // PostMessage(g_hWndGlobal,WM_USER_RECORDINTERRUPTED,0,0);
 
             // std::string msgStr;
             // msgStr.Format("%.2f %d",fTimeLength,presettime);
@@ -794,7 +794,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
                 oldsec = divx;
                 // TODO(dimator): enabling the following causes bad flickering.  Don't
                 // know why it ever existed.
-                // InvalidateRect(hWndGlobal,NULL, FALSE);
+                // InvalidateRect(g_hWndGlobal,NULL, FALSE);
             }
 
             // free memory
@@ -840,7 +840,7 @@ error:
 
     if (hr != NOERROR)
     {
-        // PostMessage(hWndGlobal,WM_USER_RECORDINTERRUPTED,0,0);
+        // PostMessage(g_hWndGlobal,WM_USER_RECORDINTERRUPTED,0,0);
         /*
         char *ErrorBuffer; // This really is a pointer - not reserved space!
         FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |  FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(),
@@ -992,14 +992,14 @@ HCURSOR FetchCursorHandle()
 //===============================================
 
 /*
-MMRESULT IsFormatSupported(LPWAVEFORMATEX pwfx, UINT uDeviceID);
+MMRESULT IsFormatSupported(LPWAVEFORMATEX g_pwfx, UINT uDeviceID);
 
-MMRESULT IsFormatSupported(LPWAVEFORMATEX pwfx, UINT uDeviceID)
+MMRESULT IsFormatSupported(LPWAVEFORMATEX g_pwfx, UINT uDeviceID)
 {
   return (waveInOpen(
     NULL,                 // ptr can be NULL for query
     uDeviceID,            // the device identifier
-    pwfx,                 // defines requested format
+    g_pwfx,                 // defines requested format
     NULL,                 // no callback
     NULL,                 // no instance data
     WAVE_FORMAT_QUERY));  // query only, do not open device
@@ -1142,7 +1142,7 @@ void PrintRecordInformation()
         printf("Theoretical Frame Rate  : %.2f fps\n", fRate);
         printf("Time Elasped  : %.2f sec\n", fTimeLength);
         printf("Number of Colors  : %d bits\n", nColors);
-        printf("Codec  : %S\n", strCodec.c_str());
+        printf("Codec  : %S\n", g_strCodec.c_str());
         printf("Actual Input Rate  : %.2f fps\n", fActualRate);
         printf("Dimension  : %d X %d\n", actualwidth, actualheight);
     }
@@ -1359,9 +1359,9 @@ int main(int argc, char *argv[])
     }
 
     g_comp_fcc_handler = g_compressor_info[g_selected_compressor].fccHandler;
-    strCodec = g_compressor_info[g_selected_compressor].szDescription;
+    g_strCodec = g_compressor_info[g_selected_compressor].szDescription;
 
-    std::wcout << L"Using codec: " << strCodec <<std::endl;
+    std::wcout << L"Using codec: " << g_strCodec <<std::endl;
 
     // Screen metrics:
     hScreenDC = ::GetDC(NULL);

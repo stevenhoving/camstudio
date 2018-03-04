@@ -3,8 +3,6 @@
 #include "Profile.h"
 #include <CamHook/CamHook.h>
 
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
 bool sHotKeyOpts::Read(libconfig::Setting &cProfile)
 {
     std::string hk("Start");
@@ -14,6 +12,7 @@ bool sHotKeyOpts::Read(libconfig::Setting &cProfile)
         s.lookupValue("Key", m_RecordStart.m_vKey);
         s.lookupValue("Mod", m_RecordStart.m_fsMod);
     }
+
     hk = "End";
     if (cProfile.exists(hk))
     {

@@ -550,6 +550,7 @@ HANDLE _dibFromBitmap(HBITMAP hBitmap)
                   reinterpret_cast<LPBITMAPINFO>(lpbi), DIB_RGB_COLORS) == 0)
     {
         GlobalUnlock(hDIB);
+        GlobalFree(hDIB);
         hDIB = nullptr;
         SelectPalette(hDC, hPal, FALSE);
         ReleaseDC(nullptr, hDC);

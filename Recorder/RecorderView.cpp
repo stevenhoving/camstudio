@@ -54,6 +54,7 @@
 
 #include <memory>
 #include <algorithm>
+#include <filesystem>
 
 #ifdef _DEBUG
 // #include <vld.h>        // Visual Leak Detector utility (In debug mode)
@@ -125,56 +126,56 @@ CTransparentWnd *transWnd;
 // State variables
 /////////////////////////////////////////////////////////////////////////////
 
-// Vars used for selecting fixed /variableregion
-CRect rc;         // Size:  0 .. MaxScreenSize-1
-CRect rcUse;      // Size:  0 .. MaxScreenSize-1
-CRect rcClip;     // Size:  0 .. MaxScreenSize-1
-CRect old_rcClip; // Size:  0 .. MaxScreenSize-1
-CRect rcOffset;
-CPoint ptOrigin;
+// Vars used for selecting fixed /variable region
+CRect g_rc;         // Size:  0 .. MaxScreenSize-1
+CRect g_rcUse;      // Size:  0 .. MaxScreenSize-1
+CRect g_rcClip;     // Size:  0 .. MaxScreenSize-1
+CRect g_old_rcClip; // Size:  0 .. MaxScreenSize-1
+CRect g_rcOffset;
+CPoint g_ptOrigin;
 
 // Autopan
-CRect rectPanCurrent;
-CRect rectPanDest;
+CRect g_rectPanCurrent;
+CRect g_rectPanDest;
 
-BOOL bCapturing = FALSE;
+BOOL g_bCapturing = FALSE;
 
-HWND hFixedRegionWnd;
+HWND g_hFixedRegionWnd;
 
-HBITMAP hLogoBM = NULL;
+HBITMAP g_hLogoBM = NULL;
 
 // Misc Vars
-bool bAlreadyMCIPause = false;
-bool bRecordState = false;
-bool bRecordPaused = false;
-UINT interruptkey = 0;
-DWORD dwInitialTime = 0;
-bool bInitCapture = false;
-int irsmallcount = 0;
-unsigned long nTotalBytesWrittenSoFar = 0UL;
+bool g_bAlreadyMCIPause = false;
+bool g_bRecordState = false;
+bool g_bRecordPaused = false;
+WPARAM g_interruptkey = 0;
+DWORD g_dwInitialTime = 0;
+bool g_bInitCapture = false;
+
+unsigned long g_nTotalBytesWrittenSoFar = 0UL;
 
 // Xnote timing support. Show timing from start of recording
 // Todo , All these global/local vars should become an struct or class
-bool bXNoteSnapRecordingState = false; // This settings defines if video recording is triggered by xnote. if trggered by
+bool g_bXNoteSnapRecordingState = false; // This settings defines if video recording is triggered by xnote. if trggered by
                                        // xnote it will stop automattically is this option is set by user.
-ULONG ulXNoteStartTime = 0UL;
-ULONG ulXNoteLastSnapTime = 0UL;
-int iXNoteStartSource = XNOTE_SOURCE_UNDEFINED;
-int iXNoteLastSnapSource = XNOTE_SOURCE_UNDEFINED;
-int iXNoteStartWithSensor =
+ULONG g_ulXNoteStartTime = 0UL;
+ULONG g_ulXNoteLastSnapTime = 0UL;
+int g_iXNoteStartSource = XNOTE_SOURCE_UNDEFINED;
+int g_iXNoteLastSnapSource = XNOTE_SOURCE_UNDEFINED;
+int g_iXNoteStartWithSensor =
     XNOTE_TRIGGER_UNDEFINED; // Defines if event is manual (with key or mouse) or automatic generated (by means of RS232
                              // sensored device or Video Motion Detection)
-int iXNoteLastSnapWithSensor =
+int g_iXNoteLastSnapWithSensor =
     XNOTE_TRIGGER_UNDEFINED; // Defines if event is manual (with key or mouse) or automatic generated (by means of RS232
                              // sensored device or Video Motion Detection)
 
-char cXNoteLastSnapTimes[128] /*= {'\0'} */;
-HFILE hXnoteLogFile = NULL;
-std::ofstream ioXnoteLogFile;
-std::ofstream *pioXnoteLogFile = nullptr;
+char g_cXNoteLastSnapTimes[128] = {};
+HFILE g_hXnoteLogFile = NULL;
+std::ofstream g_ioXnoteLogFile;
+
 
 // Messaging
-HWND hWndGlobal = NULL;
+HWND g_hWndGlobal = NULL;
 
 // int iTempPathAccess = USE_WINDOWS_TEMP_DIR;
 // CString specifieddir;
@@ -182,10 +183,10 @@ HWND hWndGlobal = NULL;
 /////////////////////////////////////////////////////////////////////////////
 // Variables/Options requiring interface
 /////////////////////////////////////////////////////////////////////////////
-int iBits = 24;
-int iDefineMode = 0; // set only in FixedRegion.cpp
+int g_iBits = 24;
+int g_iDefineMode = 0; // set only in FixedRegion.cpp
 
-int selected_compressor = -1;
+int g_selected_compressor = -1;
 
 // Report variables
 int nActualFrame = 0;
@@ -249,7 +250,7 @@ int iAudioTimeInitiated = 0;
 int sdwSamplesPerSec = 22050;
 int sdwBytesPerSec = 44100;
 
-int g_iCurrentLayout = 0;
+INT_PTR g_iCurrentLayout = 0;
 
 sProgramOpts cProgramOpts;
 sProducerOpts cProducerOpts;
@@ -263,7 +264,7 @@ sTimestampOpts cTimestampOpts;
 sXNoteOpts cXNoteOpts;
 sWatermarkOpts cWatermarkOpts;
 
-CString strCodec("MS Video 1");
+CString g_strCodec("MS Video 1");
 // Files Directory
 CString savedir("");
 
@@ -383,14 +384,14 @@ void GetVideoCompressState(HIC hic, DWORD fccHandler);
 int UnSetHotKeys()
 {
 
-    UnregisterHotKey(hWndGlobal, HOTKEY_RECORD_START_OR_PAUSE);
-    UnregisterHotKey(hWndGlobal, HOTKEY_RECORD_STOP);
-    UnregisterHotKey(hWndGlobal, HOTKEY_RECORD_CANCELSTOP);
-    UnregisterHotKey(hWndGlobal, HOTKEY_LAYOUT_KEY_NEXT);
-    UnregisterHotKey(hWndGlobal, HOTKEY_LAYOUT_KEY_PREVIOUS);
-    UnregisterHotKey(hWndGlobal, HOTKEY_LAYOUT_SHOW_HIDE_KEY);
-    UnregisterHotKey(hWndGlobal, HOTKEY_ZOOM);
-    UnregisterHotKey(hWndGlobal, HOTKEY_AUTOPAN_SHOW_HIDE_KEY);
+    UnregisterHotKey(g_hWndGlobal, HOTKEY_RECORD_START_OR_PAUSE);
+    UnregisterHotKey(g_hWndGlobal, HOTKEY_RECORD_STOP);
+    UnregisterHotKey(g_hWndGlobal, HOTKEY_RECORD_CANCELSTOP);
+    UnregisterHotKey(g_hWndGlobal, HOTKEY_LAYOUT_KEY_NEXT);
+    UnregisterHotKey(g_hWndGlobal, HOTKEY_LAYOUT_KEY_PREVIOUS);
+    UnregisterHotKey(g_hWndGlobal, HOTKEY_LAYOUT_SHOW_HIDE_KEY);
+    UnregisterHotKey(g_hWndGlobal, HOTKEY_ZOOM);
+    UnregisterHotKey(g_hWndGlobal, HOTKEY_AUTOPAN_SHOW_HIDE_KEY);
 
     return 0;
 }
@@ -417,7 +418,7 @@ int SetHotKeys(int succ[])
     int nid = 0;
     if (cHotKeyOpts.m_RecordStart.m_vKey != VK_UNDEFINED)
     {
-        ret = RegisterHotKey(hWndGlobal, nid, cHotKeyOpts.m_RecordStart.m_fsMod, cHotKeyOpts.m_RecordStart.m_vKey);
+        ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_RecordStart.m_fsMod, cHotKeyOpts.m_RecordStart.m_vKey);
         if (!ret)
             succ[0] = 1;
     }
@@ -426,7 +427,7 @@ int SetHotKeys(int succ[])
 
     if (cHotKeyOpts.m_RecordEnd.m_vKey != VK_UNDEFINED)
     {
-        ret = RegisterHotKey(hWndGlobal, nid, cHotKeyOpts.m_RecordEnd.m_fsMod, cHotKeyOpts.m_RecordEnd.m_vKey);
+        ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_RecordEnd.m_fsMod, cHotKeyOpts.m_RecordEnd.m_vKey);
         if (!ret)
             succ[1] = 1;
     }
@@ -435,7 +436,7 @@ int SetHotKeys(int succ[])
 
     if (cHotKeyOpts.m_RecordCancel.m_vKey != VK_UNDEFINED)
     {
-        ret = RegisterHotKey(hWndGlobal, nid, cHotKeyOpts.m_RecordCancel.m_fsMod, cHotKeyOpts.m_RecordCancel.m_vKey);
+        ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_RecordCancel.m_fsMod, cHotKeyOpts.m_RecordCancel.m_vKey);
         if (!ret)
             succ[2] = 1;
     }
@@ -444,7 +445,7 @@ int SetHotKeys(int succ[])
 
     if (cHotKeyOpts.m_Next.m_vKey != VK_UNDEFINED)
     {
-        ret = RegisterHotKey(hWndGlobal, nid, cHotKeyOpts.m_Next.m_fsMod, cHotKeyOpts.m_Next.m_vKey);
+        ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_Next.m_fsMod, cHotKeyOpts.m_Next.m_vKey);
         if (!ret)
             succ[3] = 1;
     }
@@ -453,7 +454,7 @@ int SetHotKeys(int succ[])
 
     if (cHotKeyOpts.m_Prev.m_vKey != VK_UNDEFINED)
     {
-        ret = RegisterHotKey(hWndGlobal, nid, cHotKeyOpts.m_Prev.m_fsMod, cHotKeyOpts.m_Next.m_vKey);
+        ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_Prev.m_fsMod, cHotKeyOpts.m_Next.m_vKey);
         if (!ret)
             succ[4] = 1;
     }
@@ -462,7 +463,7 @@ int SetHotKeys(int succ[])
 
     if (cHotKeyOpts.m_ShowLayout.m_vKey != VK_UNDEFINED)
     {
-        ret = RegisterHotKey(hWndGlobal, nid, cHotKeyOpts.m_ShowLayout.m_fsMod, cHotKeyOpts.m_ShowLayout.m_vKey);
+        ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_ShowLayout.m_fsMod, cHotKeyOpts.m_ShowLayout.m_vKey);
         if (!ret)
             succ[5] = 1;
     }
@@ -471,7 +472,7 @@ int SetHotKeys(int succ[])
 
     if (cHotKeyOpts.m_Zoom.m_vKey != VK_UNDEFINED)
     {
-        ret = RegisterHotKey(hWndGlobal, nid, cHotKeyOpts.m_Zoom.m_fsMod, cHotKeyOpts.m_Zoom.m_vKey);
+        ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_Zoom.m_fsMod, cHotKeyOpts.m_Zoom.m_vKey);
         if (!ret)
             succ[6] = 1;
     }
@@ -480,7 +481,7 @@ int SetHotKeys(int succ[])
 
     if (cHotKeyOpts.m_Autopan.m_vKey != VK_UNDEFINED)
     {
-        ret = RegisterHotKey(hWndGlobal, nid, cHotKeyOpts.m_Autopan.m_fsMod, cHotKeyOpts.m_Autopan.m_vKey);
+        ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_Autopan.m_fsMod, cHotKeyOpts.m_Autopan.m_vKey);
         if (!ret)
             succ[7] = 1;
     }
@@ -757,13 +758,13 @@ void CRecorderView::OnPaint()
 
     // Draw Autopan Info
     // Draw Message msgRecMode
-    if (!bRecordState)
+    if (!g_bRecordState)
     {
         DisplayRecordingMsg(dc);
         return;
     }
     // Display the record information when recording
-    if (bRecordState)
+    if (g_bRecordState)
     {
         CRect rectClient;
         GetClientRect(&rectClient);
@@ -799,7 +800,7 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     if (CView::OnCreate(lpCreateStruct) == -1)
         return -1;
 
-    hWndGlobal = m_hWnd;
+    g_hWndGlobal = m_hWnd;
     setHotKeyWindow(m_hWnd);
 
     //#pragma message("CRecorderView::LoadSettings skipped")
@@ -812,11 +813,11 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     }
 
     HDC hScreenDC = ::GetDC(NULL);
-    iBits = ::GetDeviceCaps(hScreenDC, BITSPIXEL);
-    nColors = iBits;
+    g_iBits = ::GetDeviceCaps(hScreenDC, BITSPIXEL);
+    nColors = g_iBits;
     ::ReleaseDC(NULL, hScreenDC);
 
-    hLogoBM = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP3));
+    g_hLogoBM = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP3));
 
     CRect rect(0, 0, maxxScreen - 1, maxyScreen - 1);
     if (!m_FlashingWnd.CreateFlashing("Flashing", rect))
@@ -853,15 +854,15 @@ void CRecorderView::OnDestroy()
 {
     DecideSaveSettings();
 
-    // UnSetHotKeys(hWndGlobal);
+    // UnSetHotKeys(g_hWndGlobal);
     // getHotKeyMap().clear(); // who actually cares?
 
     DestroyShiftWindow();
 
-    if (pCompressorInfo != NULL)
+    if (g_compressor_info != NULL)
     {
-        delete[] pCompressorInfo;
-        num_compressor = 0;
+        delete[] g_compressor_info;
+        g_num_compressor = 0;
     }
 
     if (hSavedBitmap)
@@ -870,10 +871,10 @@ void CRecorderView::OnDestroy()
         hSavedBitmap = NULL;
     }
 
-    if (hLogoBM)
+    if (g_hLogoBM)
     {
-        DeleteObject(hLogoBM);
-        hLogoBM = NULL;
+        DeleteObject(g_hLogoBM);
+        g_hLogoBM = NULL;
     }
 
     // if (pwfx) {
@@ -929,8 +930,8 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
     if (cProgramOpts.m_bMinimizeOnStart)
         ::PostMessage(AfxGetMainWnd()->m_hWnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 
-    // Check validity of rc and fix it
-    // FixRectSizePos(&rc, maxxScreen, maxyScreen, minxScreen, minyScreen);
+    // Check validity of g_rc and fix it
+    // FixRectSizePos(&g_rc, maxxScreen, maxyScreen, minxScreen, minyScreen);
 
     // TODO: mouse events handler should be installed only if we are interested in highlighting
     // Shall we empty the click queue? if we stop & start again we have a chance to see previous stuff
@@ -938,28 +939,30 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
     // Though if we dump events in file, it is better to clean up
     // FIXME: second parameter is never used
     // We shall wrap all that stuff in class so it is created in constructor and guaranteed to be destroed in destructor
-    InstallMyHook(hWndGlobal, WM_USER_SAVECURSOR);
+    //InstallMyHook(g_hWndGlobal, WM_USER_SAVECURSOR);
 
-    bRecordState = true;
-    interruptkey = 0;
+    g_bRecordState = true;
+    g_interruptkey = 0;
 
-    strCodec = GetCodecDescription(cVideoOpts.m_dwCompfccHandler);
+    g_strCodec = GetCodecDescription(cVideoOpts.m_dwCompfccHandler);
 
     CWinThread *pThread = AfxBeginThread(RecordThread, this);
 
     // Ver 1.3
     if (pThread)
-        pThread->SetThreadPriority(cProgramOpts.m_iThreadPriority);
+    {
+        //pThread->SetThreadPriority(cProgramOpts.m_iThreadPriority);
+    }
 
     // Ver 1.2
-    bAllowNewRecordStartKey = TRUE; // allow this only after bRecordState is set to 1
+    bAllowNewRecordStartKey = TRUE; // allow this only after g_bRecordState is set to 1
     return 0;
 }
 
 LRESULT CRecorderView::OnRecordPaused(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     // TRACE("## CRecorderView::OnRecordPaused\n");
-    if (bRecordPaused)
+    if (g_bRecordPaused)
     {
         return 0;
     }
@@ -971,23 +974,23 @@ LRESULT CRecorderView::OnRecordPaused(WPARAM /*wParam*/, LPARAM /*lParam*/)
 
 LRESULT CRecorderView::OnRecordInterrupted(WPARAM wParam, LPARAM /*lParam*/)
 {
-    UninstallMyHook(hWndGlobal);
+    UninstallMyHook(g_hWndGlobal);
 
     // Ver 1.1
-    if (bRecordPaused)
+    if (g_bRecordPaused)
     {
         CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
         pFrame->SetTitle(_T("CamStudio"));
     }
 
-    bRecordState = false;
+    g_bRecordState = false;
 
     // Reset others states (XNote) that should be reset if recirdings ends.
     // TRACE("## CRecorderView::OnRecordInterrupted , Call XNoteActionStopwatchResetParams()\n");
     XNoteActionStopwatchResetParams();
 
     // Store the interrupt key in case this function is triggered by a keypress
-    interruptkey = wParam;
+    g_interruptkey = wParam;
 
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
     pStatus->SetPaneText(0, "Press the Record Button to start recording");
@@ -1021,13 +1024,13 @@ void CRecorderView::OnUpdateRegionRubber(CCmdUI *pCmdUI)
 
 void CRecorderView::OnRegionPanregion()
 {
-    iDefineMode = 0;
+    g_iDefineMode = 0;
     CFixedRegionDlg cfrdlg(this);
     if (IDOK == cfrdlg.DoModal())
     {
         cRegionOpts.m_iMouseCaptureMode = CAPTURE_FIXED;
     }
-    iDefineMode = 0;
+    g_iDefineMode = 0;
 }
 
 void CRecorderView::OnUpdateRegionPanregion(CCmdUI *pCmdUI)
@@ -1101,9 +1104,9 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
 
     // ver 1.2
     // FIXME: this is not quite right. Shall be bCancelled or something
-    if (interruptkey == cHotKeyOpts.m_RecordCancel.m_vKey)
+    if (g_interruptkey == cHotKeyOpts.m_RecordCancel.m_vKey)
     {
-        // if (interruptkey==VK_ESCAPE) {
+        // if (g_interruptkey==VK_ESCAPE) {
         // Perform processing for cancel operation
         DeleteFile(strTempVideoAviFilePath);
         DeleteFile(strTempXnoteLogFilePath);
@@ -1255,7 +1258,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
             //::MessageBox(NULL,"Unable to create new file. The file may be opened by another application. Please use
             // another filename.","Note",MB_OK | MB_ICONEXCLAMATION);
             MessageOut(m_hWnd, IDS_STRING_NOCREATEWFILE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            ::PostMessage(hWndGlobal, WM_USER_GENERIC, 0, 0);
+            ::PostMessage(g_hWndGlobal, WM_USER_GENERIC, 0, 0);
             return 0;
         }
         CloseHandle(hfile);
@@ -1395,7 +1398,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
             // filename."
             MessageOut(m_hWnd, IDS_STRING_MOVEFILEFAILURE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             // Repeat this function until success
-            ::PostMessage(hWndGlobal, WM_USER_GENERIC, 0, 0);
+            ::PostMessage(g_hWndGlobal, WM_USER_GENERIC, 0, 0);
             return 0;
         }
 
@@ -1471,9 +1474,9 @@ void CRecorderView::OnRecord()
     pStatus->SetPaneText(0, "Press the Stop Button to stop recording");
 
     // Version 1.1
-    if (bRecordPaused)
+    if (g_bRecordPaused)
     {
-        bRecordPaused = false;
+        g_bRecordPaused = false;
         // ver 1.8
         // if (iRecordAudio==2)
         // mciRecordResume(strTempAudioWavFilePath);
@@ -1484,7 +1487,7 @@ void CRecorderView::OnRecord()
 
         return;
     }
-    bRecordPaused = false;
+    g_bRecordPaused = false;
 
     nActualFrame = 0;
     nCurrFrame = 0;
@@ -1493,8 +1496,8 @@ void CRecorderView::OnRecord()
     fTimeLength = 0.0;
 
     // r272: How we define rect cshecked and changed because some pixel gots dropped:  100x100 => 99x99
-    // rcUse is the rect that will be used in the end to define the size of the recording.
-    // BTW. rcUse is also used to store previous values.
+    // g_rcUse is the rect that will be used in the end to define the size of the recording.
+    // BTW. g_rcUse is also used to store previous values.
     // A Full screen area is 0, 0 to MaxX-1, MaxY-1
 
     // TRACE( _T("## CRecorderView::OnRecord /CAPTURE_FIXED/ before / cRegionOpts / T=%d, L=%d, B=.. , R=.. , W=%d, H=%d
@@ -1505,44 +1508,44 @@ void CRecorderView::OnRecord()
     {
         case CAPTURE_FIXED:
             // Applicable when Option region is set as 'Fixed Region'
-            rc = CRect(cRegionOpts.m_iCaptureLeft,                                // X = Left
+            g_rc = CRect(cRegionOpts.m_iCaptureLeft,                                // X = Left
                        cRegionOpts.m_iCaptureTop,                                 // Y = Top
                        cRegionOpts.m_iCaptureLeft + cRegionOpts.m_iCaptureWidth,  // X = Width
                        cRegionOpts.m_iCaptureTop + cRegionOpts.m_iCaptureHeight); // Y = Height
-            // TRACE( _T("## CRecorderView::OnRecord /CAPTURE_FIXED/ before / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top,
-            // rc.left, rc.bottom, rc.right );
+            // TRACE( _T("## CRecorderView::OnRecord /CAPTURE_FIXED/ before / g_rc / T=%d, L=%d, B=%d, R=%d \n"), g_rc.top,
+            // g_rc.left, g_rc.bottom, g_rc.right );
 
             if (cRegionOpts.m_bFixedCapture)
             {
                 // Applicable when Option region is set as 'Fixed Region' and retangle offset is fixed either.
 
                 // I don't expect that code below is ever invoked...! Hence, dead code
-                if (rc.top < 0)
+                if (g_rc.top < 0)
                 {
-                    TRACE(_T("## CRecorderView::OnRecord rc.top<0  [%d]\n"), rc.top);
-                    // rc.top = 0;
+                    TRACE(_T("## CRecorderView::OnRecord g_rc.top<0  [%d]\n"), g_rc.top);
+                    // g_rc.top = 0;
                 }
-                if (rc.left < 0)
+                if (g_rc.left < 0)
                 {
-                    TRACE(_T("## CRecorderView::OnRecord rc.left<0  [%d]\n"), rc.left);
-                    // rc.left = 0;
+                    TRACE(_T("## CRecorderView::OnRecord g_rc.left<0  [%d]\n"), g_rc.left);
+                    // g_rc.left = 0;
                 }
-                if (maxxScreen <= rc.right)
+                if (maxxScreen <= g_rc.right)
                 {
-                    TRACE(_T("## CRecorderView::OnRecord maxxScreen<rc.right  [%d]\n"), rc.right);
-                    // rc.right = maxxScreen - 1;  //ok
+                    TRACE(_T("## CRecorderView::OnRecord maxxScreen<g_rc.right  [%d]\n"), g_rc.right);
+                    // g_rc.right = maxxScreen - 1;  //ok
                 }
-                if (maxyScreen <= rc.bottom)
+                if (maxyScreen <= g_rc.bottom)
                 {
-                    TRACE(_T("## CRecorderView::OnRecord maxyScreen<rc.bottom<0  [%d]\n"), rc.bottom);
-                    // rc.bottom = maxyScreen - 1; //ok
+                    TRACE(_T("## CRecorderView::OnRecord maxyScreen<g_rc.bottom<0  [%d]\n"), g_rc.bottom);
+                    // g_rc.bottom = maxyScreen - 1; //ok
                 }
 
                 // using protocols for iMouseCaptureMode==0
-                old_rcClip = rcClip = rc;
-                old_rcClip.NormalizeRect();
-                rcUse = old_rcClip;
-                ::PostMessage(hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
+                g_old_rcClip = g_rcClip = g_rc;
+                g_old_rcClip.NormalizeRect();
+                g_rcUse = g_old_rcClip;
+                ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
             }
             else
             {
@@ -1562,8 +1565,8 @@ void CRecorderView::OnRecord()
             break;
         case CAPTURE_ALLSCREENS:
             // Applicable when Option region is set as 'Full Screen'
-            rcUse = CRect(minxScreen, minyScreen, maxxScreen, maxyScreen);
-            ::PostMessage(hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
+            g_rcUse = CRect(minxScreen, minyScreen, maxxScreen, maxyScreen);
+            ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
             break;
 
         case CAPTURE_WINDOW:
@@ -1607,14 +1610,14 @@ void CRecorderView::OnRecord()
 void CRecorderView::OnStop()
 {
     // Version 1.1
-    if (!bRecordState)
+    if (!g_bRecordState)
     {
         return;
     }
 
-    if (bRecordPaused)
+    if (g_bRecordPaused)
     {
-        bRecordPaused = false;
+        g_bRecordPaused = false;
 
         // Set Title Bar
         CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
@@ -1632,23 +1635,23 @@ void CRecorderView::OnStop()
 #define MAXCOMPRESSORS 50
 void CRecorderView::OnFileVideooptions()
 {
-    // Capture a frame and use it to determine compatitble compressors for user to select
+    // Capture a frame and use it to determine compatible compressors for user to select
     CRect rect(0, 0, 320, 200);
     LPBITMAPINFOHEADER first_alpbi = captureScreenFrame(rect) ? m_cCamera.Image() : 0;
 
-    num_compressor = 0;
-    if (pCompressorInfo)
+    g_num_compressor = 0;
+    if (g_compressor_info)
     {
-        delete[] pCompressorInfo;
+        delete[] g_compressor_info;
     }
 
     // TODO, Possible memory leak, where is the delete operation of the new below done?
-    pCompressorInfo = new ICINFO[MAXCOMPRESSORS];
+    g_compressor_info = new ICINFO[MAXCOMPRESSORS];
 
-    // for (int i = 0; ICInfo(ICTYPE_VIDEO, i, &pCompressorInfo[num_compressor]); i++) {
-    for (int i = 0; ICInfo(0, i, &pCompressorInfo[num_compressor]); i++)
+    // for (int i = 0; ICInfo(ICTYPE_VIDEO, i, &g_compressor_info[g_num_compressor]); i++) {
+    for (int i = 0; ICInfo(0, i, &g_compressor_info[g_num_compressor]); i++)
     {
-        if (MAXCOMPRESSORS <= num_compressor)
+        if (MAXCOMPRESSORS <= g_num_compressor)
         {
             break; // maximum allows 30 compressors
         }
@@ -1656,19 +1659,19 @@ void CRecorderView::OnFileVideooptions()
         if (cVideoOpts.m_bRestrictVideoCodecs)
         {
             // allow only a few
-            if ((pCompressorInfo[num_compressor].fccHandler == ICHANDLER_MSVC) ||
-                (pCompressorInfo[num_compressor].fccHandler == ICHANDLER_MRLE) ||
-                (pCompressorInfo[num_compressor].fccHandler == ICHANDLER_CVID) ||
-                (pCompressorInfo[num_compressor].fccHandler == ICHANDLER_DIVX))
+            if ((g_compressor_info[g_num_compressor].fccHandler == ICHANDLER_MSVC) ||
+                (g_compressor_info[g_num_compressor].fccHandler == ICHANDLER_MRLE) ||
+                (g_compressor_info[g_num_compressor].fccHandler == ICHANDLER_CVID) ||
+                (g_compressor_info[g_num_compressor].fccHandler == ICHANDLER_DIVX))
             {
-                HIC hic = ICOpen(pCompressorInfo[num_compressor].fccType, pCompressorInfo[num_compressor].fccHandler,
+                HIC hic = ICOpen(g_compressor_info[g_num_compressor].fccType, g_compressor_info[g_num_compressor].fccHandler,
                                  ICMODE_QUERY);
                 if (hic)
                 {
                     if (ICERR_OK == ICCompressQuery(hic, first_alpbi, NULL))
                     {
-                        VERIFY(0 < ICGetInfo(hic, &pCompressorInfo[num_compressor], sizeof(ICINFO)));
-                        num_compressor++;
+                        VERIFY(0 < ICGetInfo(hic, &g_compressor_info[g_num_compressor], sizeof(ICINFO)));
+                        g_num_compressor++;
                     }
                     ICClose(hic);
                 }
@@ -1677,16 +1680,16 @@ void CRecorderView::OnFileVideooptions()
         else
         {
             // CamStudio still cannot handle VIFP
-            if (pCompressorInfo[num_compressor].fccHandler != ICHANDLER_VIFP)
+            if (g_compressor_info[g_num_compressor].fccHandler != ICHANDLER_VIFP)
             {
-                HIC hic = ICOpen(pCompressorInfo[num_compressor].fccType, pCompressorInfo[num_compressor].fccHandler,
+                HIC hic = ICOpen(g_compressor_info[g_num_compressor].fccType, g_compressor_info[g_num_compressor].fccHandler,
                                  ICMODE_QUERY);
                 if (hic)
                 {
                     if (ICERR_OK == ICCompressQuery(hic, first_alpbi, NULL))
                     {
-                        VERIFY(0 < ICGetInfo(hic, &pCompressorInfo[num_compressor], sizeof(ICINFO)));
-                        num_compressor++;
+                        VERIFY(0 < ICGetInfo(hic, &g_compressor_info[g_num_compressor], sizeof(ICINFO)));
+                        g_num_compressor++;
                     }
                     ICClose(hic);
                 }
@@ -1694,7 +1697,7 @@ void CRecorderView::OnFileVideooptions()
         }
     }
 
-    if (num_compressor)
+    if (g_num_compressor)
     {
         CVideoOptionsDlg cDlg(cVideoOpts, this);
         if (IDOK == cDlg.DoModal())
@@ -1923,19 +1926,19 @@ void CRecorderView::OnHelpHelp()
 
     Openlink(helppath);
 
-    // HtmlHelp( hWndGlobal, progdir + "\\help.chm", HH_DISPLAY_INDEX, (DWORD)"CamStudio");
+    // HtmlHelp( g_hWndGlobal, progdir + "\\help.chm", HH_DISPLAY_INDEX, (DWORD)"CamStudio");
 }
 
 void CRecorderView::OnPause()
 {
-    // TRACE ("## CRecorderView::OnPause BEGIN RecordState:[%d] RecordPaused:[%d]\n", bRecordState, bRecordPaused);
+    // TRACE ("## CRecorderView::OnPause BEGIN RecordState:[%d] RecordPaused:[%d]\n", g_bRecordState, g_bRecordPaused);
 
     // return if not current recording or already in paused state
-    if (!bRecordState || bRecordPaused)
+    if (!g_bRecordState || g_bRecordPaused)
         return;
 
-    bRecordPaused = true;
-    // TRACE ("## CRecorderView::OnPause  STATE SWITCHED RecordPaused:[%d]\n", bRecordPaused);
+    g_bRecordPaused = true;
+    // TRACE ("## CRecorderView::OnPause  STATE SWITCHED RecordPaused:[%d]\n", g_bRecordPaused);
 
     // TODO: Set flag that will switch from recording to pause to off if nothing is happening for al very long time.
 
@@ -1954,20 +1957,20 @@ void CRecorderView::OnPause()
 void CRecorderView::OnUpdatePause(CCmdUI *pCmdUI)
 {
     // Version 1.1
-    // pCmdUI->Enable(bRecordState && (!bRecordPaused));
-    pCmdUI->Enable(!bRecordPaused);
+    // pCmdUI->Enable(g_bRecordState && (!g_bRecordPaused));
+    pCmdUI->Enable(!g_bRecordPaused);
 }
 
 void CRecorderView::OnUpdateStop(CCmdUI * /*pCmdUI*/)
 {
     // Version 1.1
-    // pCmdUI->Enable(bRecordState);
+    // pCmdUI->Enable(g_bRecordState);
 }
 
 void CRecorderView::OnUpdateRecord(CCmdUI *pCmdUI)
 {
     // Version 1.1
-    pCmdUI->Enable(!bRecordState || bRecordPaused);
+    pCmdUI->Enable(!g_bRecordState || g_bRecordPaused);
 }
 
 void CRecorderView::OnHelpFaq()
@@ -1990,10 +1993,10 @@ LRESULT CRecorderView::OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2)
 
     // TRACE("WIM_DATA %4d\n", pHdr->dwBytesRecorded);
 
-    if (bRecordState)
+    if (g_bRecordState)
     {
         CBuffer buf(pHdr->lpData, pHdr->dwBufferLength);
-        if (!bRecordPaused)
+        if (!g_bRecordPaused)
         {
             // write only if not paused
             // Write Data to file
@@ -2341,10 +2344,10 @@ void CRecorderView::SaveSettings()
 #endif // LEGACY_PROFILE_DISABLE
 
     // ver 1.8,
-    CString m_newfile = GetAppDataPath() + "\\CamShapes.ini";
+    CString m_newfile = GetAppDataPath() + "\\CamStudio\\CamShapes.ini";
     ListManager.SaveShapeArray(m_newfile);
 
-    m_newfile = GetAppDataPath() + "\\CamLayout.ini";
+    m_newfile = GetAppDataPath() + "\\CamStudio\\CamLayout.ini";
     ListManager.SaveLayout(m_newfile);
 
     if (CamCursor.Select() == 2)
@@ -2352,7 +2355,7 @@ void CRecorderView::SaveSettings()
         // CString cursorFileName = "\\CamCursor.ini";
         // CString cursorDir = GetProgPath();
         CString cursorPath;
-        cursorPath.Format("%s\\CamCursor.ini", GetProgPath().GetString());
+        cursorPath.Format("%s\\CamStudio\\CamCursor.ini", GetProgPath().GetString());
         // Note, we do not save the cursorFilePath, but instead we make a copy
         // of the cursor file in the Prog directory
         CopyFile(CamCursor.FileName(), cursorPath, FALSE);
@@ -2361,7 +2364,7 @@ void CRecorderView::SaveSettings()
     //********************************************
     // Creating Camdata.ini for storing binary data
     //********************************************
-    fileName = "\\Camdata.ini";
+    fileName = "\\CamStudio\\Camdata.ini";
     setDir = GetAppDataPath();
     setPath = setDir + fileName;
 
@@ -2421,17 +2424,17 @@ void CRecorderView::LoadSettings()
     {
         // attempt to load the shapes and layouts ...never mind the version
         CString m_newfile;
-        m_newfile = GetAppDataPath() + "\\CamShapes.ini";
+        m_newfile = GetAppDataPath() + "\\CamStudio\\CamShapes.ini";
         if (!DoesFileExist(m_newfile))
         {
-            m_newfile = GetProgPath() + "\\CamShapes.ini";
+            m_newfile = GetProgPath() + "\\CamStudio\\CamShapes.ini";
         }
         ListManager.LoadShapeArray(m_newfile);
 
-        m_newfile = GetAppDataPath() + "\\CamLayout.ini";
+        m_newfile = GetAppDataPath() + "\\CamStudio\\CamLayout.ini";
         if (!DoesFileExist(m_newfile))
         {
-            m_newfile = GetProgPath() + "\\CamLayout.ini";
+            m_newfile = GetProgPath() + "\\CamStudio\\CamLayout.ini";
         }
         ListManager.LoadLayout(m_newfile);
     }
@@ -2439,7 +2442,7 @@ void CRecorderView::LoadSettings()
 #ifndef LEGACY_PROFILE_DISABLE
 
     // The absence of nosave.ini file indicates savesettings = 1
-    CString fileName("\\NoSave.ini ");
+    CString fileName("\\CamStudio\\NoSave.ini ");
     CString setDir = GetProgPath();
     CString setPath = setDir + fileName;
 
@@ -2457,7 +2460,7 @@ void CRecorderView::LoadSettings()
     //********************************************
     // Loading CamStudio.ini for storing text data
     //********************************************
-    fileName = "\\CamStudio.ini";
+    fileName = "\\CamStudio\\CamStudio.ini";
     setDir = GetProgPath();
     setPath = setDir + fileName;
 
@@ -2630,7 +2633,7 @@ void CRecorderView::LoadSettings()
             cVideoOpts.m_iKeyFramesEvery = framerate;
         }
 
-        strCodec = GetCodecDescription(cVideoOpts.m_dwCompfccHandler);
+        g_strCodec = GetCodecDescription(cVideoOpts.m_dwCompfccHandler);
 
         switch (CamCursor.Select())
         {
@@ -2865,7 +2868,7 @@ void CRecorderView::LoadSettings()
     //********************************************
     // Loading Camdata.ini binary data
     //********************************************
-    fileName = "\\Camdata.ini";
+    fileName = "\\CamStudio\\Camdata.ini";
     setDir = GetAppDataPath();
     setPath = setDir + fileName;
     FILE *tFile = fopen(LPCTSTR(setPath), "rb");
@@ -2906,13 +2909,13 @@ void CRecorderView::LoadSettings()
 
         if (ver > 1.35)
         {
-            // if perfoming an upgrade from previous settings,
+            // if performing an upgrade from previous settings,
             // do not load these additional camdata.ini information
             if (0 < cAudioFormat.m_dwCbwFX)
             {
                 // AllocCompressFormat(cAudioFormat.m_dwCbwFX);
-                int countread = fread(&(cAudioFormat.AudioFormat()), cAudioFormat.m_dwCbwFX, 1, tFile);
-                if (1 == countread)
+                size_t countread = fread(&(cAudioFormat.AudioFormat()), cAudioFormat.m_dwCbwFX, 1, tFile);
+                if (countread == 1)
                 {
                     AttemptCompressFormat();
                 }
@@ -2968,7 +2971,7 @@ void CRecorderView::OnUpdateOptionsProgramoptionsSavesettingsonexit(CCmdUI *pCmd
 
 void CRecorderView::DecideSaveSettings()
 {
-    CString nosaveName("\\NoSave.ini");
+    CString nosaveName("\\CamStudio\\NoSave.ini");
     CString nosaveDir = GetAppDataPath();
     CString nosavePath = nosaveDir + nosaveName;
 
@@ -2988,18 +2991,18 @@ void CRecorderView::DecideSaveSettings()
         // Delete Settings File
         CString setDir;
         CString setPath;
-        CString fileName("\\CamStudio.ini ");
+        CString fileName("\\CamStudio\\CamStudio.ini ");
         setDir = GetAppDataPath();
         setPath = setDir + fileName;
 
         DeleteFile(setPath);
 
-        fileName = "\\Camdata.ini";
+        fileName = "\\CamStudio\\Camdata.ini";
         setPath = setDir + fileName;
 
         DeleteFile(setPath);
 
-        fileName = "\\CamCursor.ini";
+        fileName = "\\CamStudio\\CamCursor.ini";
         setPath = setDir + fileName;
 
         DeleteFile(setPath);
@@ -3321,10 +3324,10 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
     switch (wParam)
     {
         case HOTKEY_RECORD_START_OR_PAUSE: // 0 = start recording
-            if (bRecordState)
+            if (g_bRecordState)
             {
                 // pause if currently recording
-                if (!bRecordPaused)
+                if (!g_bRecordPaused)
                 {
                     OnPause();
                 }
@@ -3345,7 +3348,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
             }
             break;
         case HOTKEY_RECORD_STOP: // 1
-            if (bRecordState)
+            if (g_bRecordState)
             {
                 if (cHotKeyOpts.m_RecordEnd.m_vKey != cHotKeyOpts.m_RecordCancel.m_vKey)
                 {
@@ -3358,7 +3361,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
             }
             break;
         case HOTKEY_RECORD_CANCELSTOP: // 2:
-            if (bRecordState)
+            if (g_bRecordState)
             {
                 OnRecordInterrupted(cHotKeyOpts.m_RecordCancel.m_vKey, 0);
             }
@@ -3371,7 +3374,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
                 // sadlg.ShowWindow(SW_SHOW);
                 bCreatedSADlg = true;
             }
-            int max = ListManager.layoutArray.GetSize();
+            INT_PTR max = ListManager.layoutArray.GetSize();
             if (max <= 0)
                 return 0;
 
@@ -3392,7 +3395,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
                 // sadlg.RefreshLayoutList();
                 bCreatedSADlg = true;
             }
-            int max = ListManager.layoutArray.GetSize();
+            INT_PTR max = ListManager.layoutArray.GetSize();
             if (max <= 0)
             {
                 return 0;
@@ -3416,14 +3419,14 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
                 bCreatedSADlg = true;
             }
 
-            int displaynum = ListManager.displayArray.GetSize();
+            INT_PTR displaynum = ListManager.displayArray.GetSize();
             if (displaynum > 0)
             {
                 sadlg.CloseAllWindows(1);
                 return 0;
             }
 
-            int max = ListManager.layoutArray.GetSize();
+            INT_PTR max = ListManager.layoutArray.GetSize();
             if (max <= 0)
                 return 0;
 
@@ -3656,12 +3659,12 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
             ReleaseCapture();
 
             // store the windows rect into the rect used for capturing
-            ::GetWindowRect(pWnd->m_hWnd, &rcUse);
+            ::GetWindowRect(pWnd->m_hWnd, &g_rcUse);
 
             // close the window to show user selection was successful
             // post message to start recording
             if (pWnd->m_hWnd != m_basicMsg->m_hWnd)
-                ::PostMessage(hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
+                ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
         }
     }
     else if (cRegionOpts.isCaptureMode(CAPTURE_FULLSCREEN))
@@ -3675,14 +3678,14 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
         GetMonitorInfo(hMonitor, &mi);
 
         // set the rectangle used for recording to the monitor's
-        CopyRect(rcUse, &mi.rcMonitor);
+        CopyRect(g_rcUse, &mi.rcMonitor);
 
         // tell windows we don't need capture change events anymore
         ReleaseCapture();
 
         // post message to start recording
         if (pWnd->m_hWnd != m_basicMsg->m_hWnd)
-            ::PostMessage(hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
+            ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
     }
     CView::OnCaptureChanged(pWnd);
 }
@@ -3758,15 +3761,15 @@ void CRecorderView::OnXnoteRecordDurationLimitMode()
     // Toggle, settings for the running program are changed
     cXNoteOpts.m_bXnoteRecordDurationLimitMode = !cXNoteOpts.m_bXnoteRecordDurationLimitMode;
 
-    // If we set bXNoteSnapRecordingState to FALSE the autopause check will be ignored for the current
+    // If we set g_bXNoteSnapRecordingState to FALSE the autopause check will be ignored for the current
     // recording but only if recording is activated by a xnote start message.
-    bXNoteSnapRecordingState = cXNoteOpts.m_bXnoteRecordDurationLimitMode;
+    g_bXNoteSnapRecordingState = cXNoteOpts.m_bXnoteRecordDurationLimitMode;
 
-    // If bXNoteSnapRecordingState is set to TRUE here an applicable reference time for autopause is required.
+    // If g_bXNoteSnapRecordingState is set to TRUE here an applicable reference time for autopause is required.
     // (Otherwise recording will stop immidiatelly).
-    if (bXNoteSnapRecordingState)
+    if (g_bXNoteSnapRecordingState)
     {
-        ulXNoteLastSnapTime = GetTickCount();
+        g_ulXNoteLastSnapTime = GetTickCount();
     }
 
     // Prepare info to show.
@@ -3947,7 +3950,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
 
     // Line: Current file sizing
     const unsigned long MEGABYTE = (1024UL * 1024UL);
-    double dMegaBtyes = nTotalBytesWrittenSoFar;
+    double dMegaBtyes = g_nTotalBytesWrittenSoFar;
     dMegaBtyes /= MEGABYTE;
 
     csMsg.Format("Current File Size : %.2f Mb", dMegaBtyes);
@@ -3975,7 +3978,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     srcDC.TextOut(xoffset, yoffset, csMsg);
 
     // Line : Colors info
-    csMsg.Format("Number of Colors : %d iBits", nColors);
+    csMsg.Format("Number of Colors : %d g_iBits", nColors);
     sizeExtent = srcDC.GetTextExtent(csMsg);
     yoffset += sizeExtent.cy + iLineSpacing;
     rectText.top = yoffset - 2;
@@ -3983,7 +3986,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     srcDC.TextOut(xoffset, yoffset, csMsg);
 
     // Line : Codex
-    csMsg.Format("Codec : %s", LPCTSTR(strCodec));
+    csMsg.Format("Codec : %s", LPCTSTR(g_strCodec));
     sizeExtent = srcDC.GetTextExtent(csMsg);
     yoffset += sizeExtent.cy + iLineSpacing;
     rectText.top = yoffset - 2;
@@ -4019,7 +4022,7 @@ void CRecorderView::DisplayBackground(CDC &srcDC)
         CDC dcBits;
         dcBits.CreateCompatibleDC(&srcDC);
         CBitmap bitmapLogo;
-        bitmapLogo.Attach(hLogoBM);
+        bitmapLogo.Attach(g_hLogoBM);
 
         BITMAP bitmap;
         bitmapLogo.GetBitmap(&bitmap);
@@ -4171,11 +4174,11 @@ bool CRecorderView::captureScreenFrame(const CRect &rectView, bool bDisableRect)
 
     CPoint pt;
     VERIFY(::GetCursorPos(&pt));
-    double dist =
-        sqrt((double)(pt.x - _zoomedAt.x) * (pt.x - _zoomedAt.x) + (pt.y - _zoomedAt.y) * (pt.y - _zoomedAt.y));
+    //double dist = sqrt((double)(pt.x - _zoomedAt.x) * (pt.x - _zoomedAt.x) + (pt.y - _zoomedAt.y) * (pt.y - _zoomedAt.y));
 
     if (cProgramOpts.m_bAutoPan)
-    { // always cursor centered
+    {
+        // always cursor centered
         VERIFY(::GetCursorPos(&_zoomedAt));
     }
     else
@@ -4263,28 +4266,29 @@ UINT CRecorderView::RecordVideo()
 
     // TRACE("## CRecorderView::RecordAVIThread First  Temp.Avi file=[%s]\n", strTempVideoAviFilePath.GetString()  );
 
-    srand((unsigned)time(NULL));
+    srand(time(nullptr));
     bool fileverified = false;
     while (!fileverified)
     {
-        OFSTRUCT ofstruct;
-        HFILE hFile = OpenFile(strTempVideoAviFilePath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE | OF_CREATE);
-        fileverified = (hFile != HFILE_ERROR);
-        if (fileverified)
+        auto filepath = std::experimental::filesystem::path(strTempVideoAviFilePath.GetString());
+        if (std::experimental::filesystem::exists(filepath))
         {
-            CloseHandle((HANDLE)hFile);
-            DeleteFile(strTempVideoAviFilePath);
+            fileverified = std::experimental::filesystem::remove(filepath);
+            if (!fileverified)
+            {
+                strTempVideoAviFilePath.Format("%s\\%s-%s-%d.%s", csTempFolder.GetString(), TEMPFILETAGINDICATOR,
+                    csStartTime.GetString(), rand(), "avi");
+            }
         }
         else
         {
-            strTempVideoAviFilePath.Format("%s\\%s-%s-%d.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR,
-                                           (LPCSTR)csStartTime, rand(), "avi");
+            fileverified = true;
         }
     }
     // TRACE(_T("## CRecorderView::RecordAVIThread  Final Temp.Avi file=[%s]\n"), strTempVideoAviFilePath.GetString() );
-    // TRACE(_T("## CRecorderView::RecordVideo rcUse / T=%d, L=%d, B=%d, R=%d \n"), rcUse.top, rcUse.left, rcUse.bottom,
-    // rcUse.right );
-    return RecordVideo(rcUse, cVideoOpts.m_iFramesPerSecond, strTempVideoAviFilePath) ? 0UL : 1UL;
+    // TRACE(_T("## CRecorderView::RecordVideo g_rcUse / T=%d, L=%d, B=%d, R=%d \n"), g_rcUse.top, g_rcUse.left, g_rcUse.bottom,
+    // g_rcUse.right );
+    return RecordVideo(g_rcUse, cVideoOpts.m_iFramesPerSecond, strTempVideoAviFilePath) ? 0UL : 1UL;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -4321,7 +4325,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
             {
                 if (m_basicMsg->Cancelled())
                 {
-                    bRecordState = false;
+                    g_bRecordState = false;
                     return false;
                 }
                 else
@@ -4346,7 +4350,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     // CRecorderView::RecordVideo / GetDocument / W=%d, H=%d\n"), GetDocument()->FrameWidth(),
     // GetDocument()->FrameHeight() );
 
-    nTotalBytesWrittenSoFar = 0;
+    g_nTotalBytesWrittenSoFar = 0;
 
     ////////////////////////////////////////////////
     // CAPTURE FIRST FRAME
@@ -4356,15 +4360,15 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     // TEST VALIDITY OF COMPRESSOR
     if (cVideoOpts.m_iSelectedCompressor > 0)
     {
-        HIC hic = ::ICOpen(pCompressorInfo[cVideoOpts.m_iSelectedCompressor].fccType,
-                           pCompressorInfo[cVideoOpts.m_iSelectedCompressor].fccHandler, ICMODE_QUERY);
+        HIC hic = ::ICOpen(g_compressor_info[cVideoOpts.m_iSelectedCompressor].fccType,
+                           g_compressor_info[cVideoOpts.m_iSelectedCompressor].fccHandler, ICMODE_QUERY);
         if (hic)
         {
-            int newleft = 0;
-            int newtop = 0;
+            //int newleft = 0;
+            //int newtop = 0;
             int newwidth = 0;
             int newheight = 0;
-            int align = 1;
+            //int align = 1;
             LRESULT lResult = ::ICCompressQuery(hic, alpbi, NULL);
             if (ICERR_OK != (lResult = ::ICCompressQuery(hic, alpbi, NULL)))
             {
@@ -4426,15 +4430,15 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
         {
             // TRACE("CRecorderView::RecordVideo - ICOpen failed\n");
             cVideoOpts.m_dwCompfccHandler = ICHANDLER_MSVC;
-            strCodec = CString("MS Video 1");
+            g_strCodec = CString("MS Video 1");
         }
-    } // selected_compressor
+    } // g_selected_compressor
 
     // IV50
     if (cVideoOpts.m_dwCompfccHandler == ICHANDLER_IV50)
     { // Still Can't Handle Indeo 5.04
         cVideoOpts.m_dwCompfccHandler = ICHANDLER_MSVC;
-        strCodec = CString("MS Video 1");
+        g_strCodec = CString("MS Video 1");
     }
 
     ////////////////////////////////////////////////
@@ -4511,7 +4515,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     {
         // Internally adjust codec to MSVC 100 Quality
         aopts[0]->fccHandler = ICHANDLER_MSVC; // msvc
-        strCodec = CString("MS Video 1");
+        g_strCodec = CString("MS Video 1");
         aopts[0]->dwQuality = 10000;
     }
     else
@@ -4552,9 +4556,9 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 
     if (cProgramOpts.m_bAutoPan)
     {
-        rectPanCurrent = rectFrame;
-        rectPanCurrent.right--;
-        rectPanCurrent.bottom--;
+        g_rectPanCurrent = rectFrame;
+        g_rectPanCurrent.right--;
+        g_rectPanCurrent.bottom--;
     }
 
     //////////////////////////////////////////////
@@ -4562,7 +4566,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     //////////////////////////////////////////////
     if ((cAudioFormat.isInput(SPEAKERS)) || (cAudioFormat.m_bUseMCI))
     {
-        mciRecordOpen(hWndGlobal);
+        mciRecordOpen(g_hWndGlobal);
         mciSetWaveFormat();
         mciRecordStart();
 
@@ -4594,10 +4598,10 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
         Sleep(cVideoOpts.m_iTimeShift);
     }
 
-    bInitCapture = true;
+    g_bInitCapture = true;
     nCurrFrame = 0;
     nActualFrame = 0;
-    dwInitialTime = ::timeGetTime();
+    g_dwInitialTime = ::timeGetTime();
     DWORD timeexpended = 0;
     DWORD frametime = 0;
     DWORD oldframetime = 0;
@@ -4606,11 +4610,11 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     //////////////////////////////////////////////
     long divx = 0L;
     long oldsec = 0L;
-    while (bRecordState)
+    while (g_bRecordState)
     {
-        if (!bInitCapture)
+        if (!g_bInitCapture)
         {
-            timeexpended = timeGetTime() - dwInitialTime;
+            timeexpended = timeGetTime() - g_dwInitialTime;
         }
         else
         {
@@ -4623,98 +4627,98 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
             CPoint xPoint;
             GetCursorPos(&xPoint);
 
-            int extleft = (rectPanCurrent.Width() * 1) / 4 + rectPanCurrent.left;
-            int extright = (rectPanCurrent.Width() * 3) / 4 + rectPanCurrent.left;
-            int exttop = (rectPanCurrent.Height() * 1) / 4 + rectPanCurrent.top;
-            int extbottom = (rectPanCurrent.Height() * 3) / 4 + rectPanCurrent.top;
+            int extleft = (g_rectPanCurrent.Width() * 1) / 4 + g_rectPanCurrent.left;
+            int extright = (g_rectPanCurrent.Width() * 3) / 4 + g_rectPanCurrent.left;
+            int exttop = (g_rectPanCurrent.Height() * 1) / 4 + g_rectPanCurrent.top;
+            int extbottom = (g_rectPanCurrent.Height() * 3) / 4 + g_rectPanCurrent.top;
 
             if (xPoint.x < extleft)
             {
                 // need to pan left
-                rectPanDest.left = xPoint.x - rectFrame.Width() / 2;
-                rectPanDest.right = rectPanDest.left + rectFrame.Width() - 1;
-                if (rectPanDest.left < 0)
+                g_rectPanDest.left = xPoint.x - rectFrame.Width() / 2;
+                g_rectPanDest.right = g_rectPanDest.left + rectFrame.Width() - 1;
+                if (g_rectPanDest.left < 0)
                 {
-                    rectPanDest.left = 0;
-                    rectPanDest.right = rectPanDest.left + rectFrame.Width() - 1;
+                    g_rectPanDest.left = 0;
+                    g_rectPanDest.right = g_rectPanDest.left + rectFrame.Width() - 1;
                 }
             }
             else if (extright < xPoint.x)
             {
                 // need to pan right
-                rectPanDest.left = xPoint.x - rectFrame.Width() / 2;
-                rectPanDest.right = rectPanDest.left + rectFrame.Width() - 1;
-                if (maxxScreen <= rectPanDest.right)
+                g_rectPanDest.left = xPoint.x - rectFrame.Width() / 2;
+                g_rectPanDest.right = g_rectPanDest.left + rectFrame.Width() - 1;
+                if (maxxScreen <= g_rectPanDest.right)
                 {
-                    rectPanDest.right = maxxScreen - 1;
-                    rectPanDest.left = rectPanDest.right - rectFrame.Width() + 1;
+                    g_rectPanDest.right = maxxScreen - 1;
+                    g_rectPanDest.left = g_rectPanDest.right - rectFrame.Width() + 1;
                 }
             }
             else
             {
-                rectPanDest.right = rectPanCurrent.right;
-                rectPanDest.left = rectPanCurrent.left;
+                g_rectPanDest.right = g_rectPanCurrent.right;
+                g_rectPanDest.left = g_rectPanCurrent.left;
             }
 
             if (xPoint.y < exttop)
             { // need to pan up
-                rectPanDest.top = xPoint.y - rectFrame.Height() / 2;
-                rectPanDest.bottom = rectPanDest.top + rectFrame.Height() - 1;
-                if (rectPanDest.top < 0)
+                g_rectPanDest.top = xPoint.y - rectFrame.Height() / 2;
+                g_rectPanDest.bottom = g_rectPanDest.top + rectFrame.Height() - 1;
+                if (g_rectPanDest.top < 0)
                 {
-                    rectPanDest.top = 0;
-                    rectPanDest.bottom = rectPanDest.top + rectFrame.Height() - 1;
+                    g_rectPanDest.top = 0;
+                    g_rectPanDest.bottom = g_rectPanDest.top + rectFrame.Height() - 1;
                 }
             }
             else if (extbottom < xPoint.y)
             { // need to pan down
-                rectPanDest.top = xPoint.y - rectFrame.Height() / 2;
-                rectPanDest.bottom = rectPanDest.top + rectFrame.Height() - 1;
-                if (maxyScreen <= rectPanDest.bottom)
+                g_rectPanDest.top = xPoint.y - rectFrame.Height() / 2;
+                g_rectPanDest.bottom = g_rectPanDest.top + rectFrame.Height() - 1;
+                if (maxyScreen <= g_rectPanDest.bottom)
                 {
-                    rectPanDest.bottom = maxyScreen - 1;
-                    rectPanDest.top = rectPanDest.bottom - rectFrame.Height() + 1;
+                    g_rectPanDest.bottom = maxyScreen - 1;
+                    g_rectPanDest.top = g_rectPanDest.bottom - rectFrame.Height() + 1;
                 }
             }
             else
             {
-                rectPanDest.top = rectPanCurrent.top;
-                rectPanDest.bottom = rectPanCurrent.bottom;
+                g_rectPanDest.top = g_rectPanCurrent.top;
+                g_rectPanDest.bottom = g_rectPanCurrent.bottom;
             }
 
             // Determine Pan Values
-            int xdiff = rectPanDest.left - rectPanCurrent.left;
-            int ydiff = rectPanDest.top - rectPanCurrent.top;
+            int xdiff = g_rectPanDest.left - g_rectPanCurrent.left;
+            int ydiff = g_rectPanDest.top - g_rectPanCurrent.top;
             if (abs(xdiff) < cProgramOpts.m_iMaxPan)
             {
-                rectPanCurrent.left += xdiff;
+                g_rectPanCurrent.left += xdiff;
             }
             else if (xdiff < 0)
             {
-                rectPanCurrent.left -= cProgramOpts.m_iMaxPan;
+                g_rectPanCurrent.left -= cProgramOpts.m_iMaxPan;
             }
             else
             {
-                rectPanCurrent.left += cProgramOpts.m_iMaxPan;
+                g_rectPanCurrent.left += cProgramOpts.m_iMaxPan;
             }
 
             if (abs(ydiff) < cProgramOpts.m_iMaxPan)
             {
-                rectPanCurrent.top += ydiff;
+                g_rectPanCurrent.top += ydiff;
             }
             else if (ydiff < 0)
             {
-                rectPanCurrent.top -= cProgramOpts.m_iMaxPan;
+                g_rectPanCurrent.top -= cProgramOpts.m_iMaxPan;
             }
             else
             {
-                rectPanCurrent.top += cProgramOpts.m_iMaxPan;
+                g_rectPanCurrent.top += cProgramOpts.m_iMaxPan;
             }
 
-            rectPanCurrent.right = rectPanCurrent.left + rectFrame.Width() - 1;
-            rectPanCurrent.bottom = rectPanCurrent.top + rectFrame.Height() - 1;
+            g_rectPanCurrent.right = g_rectPanCurrent.left + rectFrame.Width() - 1;
+            g_rectPanCurrent.bottom = g_rectPanCurrent.top + rectFrame.Height() - 1;
 
-            CRect rectPanFrame(rectPanCurrent);
+            CRect rectPanFrame(g_rectPanCurrent);
             rectPanFrame.right++;
             rectPanFrame.bottom++;
             alpbi = captureScreenFrame(rectPanFrame, false) ? m_cCamera.Image() : 0;
@@ -4753,7 +4757,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
             }
         }
 
-        if (!bInitCapture)
+        if (!g_bInitCapture)
         {
             if (1000 < cVideoOpts.m_iTimeLapse)
             {
@@ -4766,7 +4770,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
         }
         else
         {
-            bInitCapture = false;
+            g_bInitCapture = false;
         }
         int seconds = 0.0;
         int minutes = 0;
@@ -4781,7 +4785,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
         {
             if (cProgramOpts.m_iPresetTime <= int(fTimeLength))
             {
-                ::PostMessage(hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
+                ::PostMessage(g_hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
             }
 
             // CString msgStr;
@@ -4794,7 +4798,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
         //{
         //    cc++;
         //    unsigned long thistime = timeGetTime();
-        //    int diffInTime = thistime - dwInitialTime;
+        //    int diffInTime = thistime - g_dwInitialTime;
         //    if (diffInTime >= iTimeShift)
         //    {
         //        ErrMsg("cc %d diffInTime %d", cc-1, diffInTime);
@@ -4843,8 +4847,8 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
                 break;
             }
 
-            // nTotalBytesWrittenSoFar += alpbi->biSizeImage;
-            nTotalBytesWrittenSoFar += lBytesWritten;
+            // g_nTotalBytesWrittenSoFar += alpbi->biSizeImage;
+            g_nTotalBytesWrittenSoFar += lBytesWritten;
             nActualFrame++;
             nCurrFrame = frametime;
             fRate = ((float)nCurrFrame) / fTimeLength;
@@ -4855,7 +4859,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
             if (divx != oldsec)
             {
                 oldsec = divx;
-                ::InvalidateRect(hWndGlobal, NULL, FALSE);
+                ::InvalidateRect(g_hWndGlobal, NULL, FALSE);
             }
 
             // free memory
@@ -4873,7 +4877,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
         DWORD timestartpause = 0;
         DWORD timeendpause = 0;
         DWORD timedurationpause = 0;
-        while (bRecordPaused)
+        while (g_bRecordPaused)
         {
             if (!haveslept)
             {
@@ -4910,10 +4914,10 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 
             if (cAudioFormat.isInput(SPEAKERS) || cAudioFormat.m_bUseMCI)
             {
-                if (bAlreadyMCIPause == 0)
+                if (g_bAlreadyMCIPause == 0)
                 {
-                    mciRecordPause(hWndGlobal, strTempAudioWavFilePath);
-                    bAlreadyMCIPause = true;
+                    mciRecordPause(g_hWndGlobal, strTempAudioWavFilePath);
+                    g_bAlreadyMCIPause = true;
                 }
             }
 
@@ -4928,32 +4932,32 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
         {
             if (cAudioFormat.isInput(SPEAKERS) || cAudioFormat.m_bUseMCI)
             {
-                if (bAlreadyMCIPause)
+                if (g_bAlreadyMCIPause)
                 {
-                    bAlreadyMCIPause = false;
-                    mciRecordResume(hWndGlobal, strTempAudioWavFilePath);
+                    g_bAlreadyMCIPause = false;
+                    mciRecordResume(g_hWndGlobal, strTempAudioWavFilePath);
                 }
                 timeendpause = timeGetTime();
                 timedurationpause = timeendpause - timestartpause;
-                dwInitialTime = dwInitialTime + timedurationpause;
+                g_dwInitialTime = g_dwInitialTime + timedurationpause;
                 continue;
             }
         }
         else
         {
             // introduce time lapse
-            // maximum lapse when bRecordState changes will be less than 100 milliseconds
+            // maximum lapse when g_bRecordState changes will be less than 100 milliseconds
             int no_iteration = cVideoOpts.m_iTimeLapse / 50;
             int remainlapse = cVideoOpts.m_iTimeLapse - no_iteration * 50;
             for (int j = 0; j < no_iteration; j++)
             {
                 ::Sleep(50); // Sleep for 50 milliseconds many times
-                if (!bRecordState)
+                if (!g_bRecordState)
                 {
                     break;
                 }
             }
-            if (bRecordState)
+            if (g_bRecordState)
             {
                 ::Sleep(remainlapse);
             }
@@ -4987,7 +4991,7 @@ error:
     if (cAudioFormat.isInput(SPEAKERS) || cAudioFormat.m_bUseMCI)
     {
         GetTempAudioWavPath();
-        mciRecordStop(hWndGlobal, strTempAudioWavFilePath);
+        mciRecordStop(g_hWndGlobal, strTempAudioWavFilePath);
         mciRecordClose();
         // restoreWave();
     }
@@ -5021,7 +5025,7 @@ error:
 
     if (hr != NOERROR)
     {
-        ::PostMessage(hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
+        ::PostMessage(g_hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
 
         // char *ErrorBuffer; // This really is a pointer - not reserved space!
         // FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |     FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(),
@@ -5038,8 +5042,8 @@ error:
             if (IDYES == MessageOut(NULL, IDS_STRING_ERRAVIDEFAULT, IDS_STRING_NOTE, MB_YESNO | MB_ICONQUESTION))
             {
                 cVideoOpts.m_dwCompfccHandler = ICHANDLER_MSVC;
-                strCodec = "MS Video 1";
-                ::PostMessage(hWndGlobal, WM_USER_RECORDSTART, 0, 0);
+                g_strCodec = "MS Video 1";
+                ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, 0);
             }
         }
         else
@@ -5054,7 +5058,7 @@ error:
 
     cVideoOpts = SaveVideoOpts;
     // Save the file on success
-    ::PostMessage(hWndGlobal, WM_USER_GENERIC, 0, 0);
+    ::PostMessage(g_hWndGlobal, WM_USER_GENERIC, 0, 0);
 
     TRACE("CRecorderView::RecordVideo: Success end\n");
     return true;
@@ -5174,7 +5178,7 @@ long CRecorderView::GetAVILengthTime(const CString &sAVIFile)
 }
 bool CRecorderView::ConvertToMP4(const CString &sInputAVI, const CString &sOutputMP4, const CString &sOutBareName)
 {
-    ConversionResult res;
+    ConversionResult res = FAILED;
 
     auto pConv = std::make_unique<CMP4Converter>();
     if (pConv)
@@ -5191,8 +5195,8 @@ bool CRecorderView::ConvertToMP4(const CString &sInputAVI, const CString &sOutpu
 
             int nProgress = 0;
             time_t timer;
-            long lTimeStart = time(&timer);
-            long lCurrentTime = 0;
+            time_t lTimeStart = time(&timer);
+            time_t lCurrentTime = 0;
             while (pConv->Converting())
             {
                 lCurrentTime = time(&timer);
@@ -5201,7 +5205,8 @@ bool CRecorderView::ConvertToMP4(const CString &sInputAVI, const CString &sOutpu
                     pConv->CancelConversion();
                     break;
                 }
-                if (lCurrentTime - lTimeStart >= rand() % pProgDlg->MaxProg() + pProgDlg->MinProg() &&
+                const auto delta_time = difftime(lCurrentTime, lTimeStart);
+                if (delta_time >= rand() % pProgDlg->MaxProg() + pProgDlg->MinProg() &&
                     nProgress < pProgDlg->FakeMax())
                 {
                     nProgress = nProgress + rand() % pProgDlg->MaxProg() + pProgDlg->MinProg();
@@ -5230,12 +5235,12 @@ bool CRecorderView::ConvertToMP4(const CString &sInputAVI, const CString &sOutpu
 
 bool CRecorderView::GetRecordState()
 {
-    return bRecordState;
+    return g_bRecordState;
 }
 
 bool CRecorderView::GetPausedState()
 {
-    return bRecordPaused;
+    return g_bRecordPaused;
 }
 
 VOID CRecorderView::XNoteSetRecordingInPauseMode(void)
@@ -5243,25 +5248,25 @@ VOID CRecorderView::XNoteSetRecordingInPauseMode(void)
     // TRACE("## XNoteSetRecordingInPauseMode / BEGIN ##\n" );
 
     // return if not current recording or already in paused state
-    if (!bRecordState || bRecordPaused)
+    if (!g_bRecordState || g_bRecordPaused)
         return;
 
     // RecordDurationLimitMode applicable
     if (cXNoteOpts.m_bXnoteRecordDurationLimitMode)
     {
-        if (bXNoteSnapRecordingState == true)
+        if (g_bXNoteSnapRecordingState == true)
         {
-            if ((GetTickCount() - ulXNoteLastSnapTime) > (ULONG)cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec)
+            if ((GetTickCount() - g_ulXNoteLastSnapTime) > (ULONG)cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec)
             {
-                bXNoteSnapRecordingState = false;
+                g_bXNoteSnapRecordingState = false;
 
                 /* TRACE("## CRecorderView::XNoteSetRecordingInPauseMode / PostMessage WM_USER_RECORDPAUSED bool:[%d]
                    difftime[%d][%d] ##\n", cXNoteOpts.m_bXnoteRecordDurationLimitMode,
                     cXNoteOpts.m_ulXnoteRecordDurationLimitInMilliSec ,
-                    GetTickCount() - ulXNoteLastSnapTime ); */
+                    GetTickCount() - g_ulXNoteLastSnapTime ); */
 
                 // Post message that will put recording on hold with the next incoming frame
-                ::PostMessage(hWndGlobal, WM_USER_RECORDPAUSED, 0, 0);
+                ::PostMessage(g_hWndGlobal, WM_USER_RECORDPAUSED, 0, 0);
             }
         }
     }
@@ -5277,16 +5282,16 @@ void CRecorderView::XNoteActionStopwatchResetParams(void)
     // Reset
     // Once CamStudio recording session shall terminate, Xnote stopwatch params must be reset.
     // TODO, put all gelobal params in stuct or class.
-    ulXNoteStartTime = 0UL;
-    ulXNoteLastSnapTime = 0UL;
+    g_ulXNoteStartTime = 0UL;
+    g_ulXNoteLastSnapTime = 0UL;
 
-    iXNoteStartSource = XNOTE_SOURCE_UNDEFINED;
-    iXNoteLastSnapSource = XNOTE_SOURCE_UNDEFINED;
-    iXNoteStartWithSensor = XNOTE_TRIGGER_UNDEFINED;
-    iXNoteLastSnapWithSensor = XNOTE_TRIGGER_UNDEFINED;
+    g_iXNoteStartSource = XNOTE_SOURCE_UNDEFINED;
+    g_iXNoteLastSnapSource = XNOTE_SOURCE_UNDEFINED;
+    g_iXNoteStartWithSensor = XNOTE_TRIGGER_UNDEFINED;
+    g_iXNoteLastSnapWithSensor = XNOTE_TRIGGER_UNDEFINED;
 
-    bXNoteSnapRecordingState = false;
-    strcpy(cXNoteLastSnapTimes, "");
+    g_bXNoteSnapRecordingState = false;
+    strcpy(g_cXNoteLastSnapTimes, "");
 
     cXNoteOpts.m_ulStartXnoteTickCounter = 0UL;
     cXNoteOpts.m_ulSnapXnoteTickCounter = 0UL;
@@ -5329,15 +5334,15 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID, int iSensorID, int iSo
             // GetRecordState(), GetPausedState() ); TRACE("## CRecorderView::XNoteProcessWinMessage START Tick:[%lu]
             // XNote:[%lu]\n", GetTickCount(), lXnoteTimeInMilliSeconds);
 
-            if (ulXNoteStartTime == 0UL)
+            if (g_ulXNoteStartTime == 0UL)
             {
-                bXNoteSnapRecordingState = true;
+                g_bXNoteSnapRecordingState = true;
 
-                iXNoteStartWithSensor = iSensorID;
-                iXNoteStartSource = iSourceID;
+                g_iXNoteStartWithSensor = iSensorID;
+                g_iXNoteStartSource = iSourceID;
 
-                ulXNoteStartTime = dwCurrTickCount;
-                ulXNoteLastSnapTime = dwCurrTickCount;
+                g_ulXNoteStartTime = dwCurrTickCount;
+                g_ulXNoteLastSnapTime = dwCurrTickCount;
                 cXNoteOpts.m_ulStartXnoteTickCounter = ULONG(dwCurrTickCount);
                 cXNoteOpts.m_ulSnapXnoteTickCounter = ULONG(dwCurrTickCount);
                 ;
@@ -5385,36 +5390,36 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID, int iSensorID, int iSo
             // Because we don't have the correct Xnote time yet (todo) we shall use the current TickCount.
             // Penalty is a minor difference in snaptime as registrated by xnote and our snaptime ( 15-20 ms)
 
-            bXNoteSnapRecordingState = true;
+            g_bXNoteSnapRecordingState = true;
 
-            iXNoteStartWithSensor = iSensorID;
-            iXNoteLastSnapSource = iSourceID;
+            g_iXNoteStartWithSensor = iSensorID;
+            g_iXNoteLastSnapSource = iSourceID;
 
-            ulXNoteLastSnapTime = dwCurrTickCount;
+            g_ulXNoteLastSnapTime = dwCurrTickCount;
             cXNoteOpts.m_ulSnapXnoteTickCounter = dwCurrTickCount;
 
             // CXnoteStopwatchFormat::FormatXnoteDelayedTimeString( cTmp, cXNoteOpts.m_ulStartXnoteTickCounter,
             // dwCurrTickCount ,0 , false );
 
-            sprintf(cTmp, "%s\n", cXNoteOpts.m_cXnoteStartEntendedInfo);
-            // Show Xnote values instead of own calcuated value
+            snprintf(cTmp, sizeof(cTmp), "%s\n", cXNoteOpts.m_cXnoteStartEntendedInfo.GetString());
+            // Show Xnote values instead of own calculated value
             CXnoteStopwatchFormat::FormatXnoteDelayedTimeString(cTmp, 0, lXnoteTimeInMilliSeconds, 0, false, false);
             // Add info about how the snap is created.
             CXnoteStopwatchFormat::FormatXnoteInfoSourceSensor(cTmp, iSourceID, iSensorID);
 
             // For onScreen reporting of snaptime we only need info about the last seconds  (00.000aa).
             //std::min()
-            int strLenTemp = strlen(cTmp) - (6 + 2);
+            int strLenTemp = (int)strlen(cTmp) - (6 + 2);
             nStrLengthNew = std::max(0, strLenTemp);
 
             // And previous snaps can be truncated. How much snaps to show should be a user option (TODO)
             nStrLengthSnaps =
-                std::max<int>(0, strlen(cXNoteLastSnapTimes) - std::min<int>(2, strlen(cXNoteLastSnapTimes) / (6 + 2 + 1)) * (6 + 2 + 1));
+                std::max<int>(0, strlen(g_cXNoteLastSnapTimes) - std::min<int>(2, strlen(g_cXNoteLastSnapTimes) / (6 + 2 + 1)) * (6 + 2 + 1));
 
-            sprintf(cTmpBuffXNoteTimeStamp, "%s%s ", &cXNoteLastSnapTimes[nStrLengthSnaps], &cTmp[nStrLengthNew]);
-            strcpy(cXNoteLastSnapTimes, cTmpBuffXNoteTimeStamp);
+            snprintf(cTmpBuffXNoteTimeStamp, sizeof(cTmpBuffXNoteTimeStamp), "%s%s ", &g_cXNoteLastSnapTimes[nStrLengthSnaps], &cTmp[nStrLengthNew]);
+            strcpy(g_cXNoteLastSnapTimes, cTmpBuffXNoteTimeStamp);
 
-            cXNoteOpts.m_cSnapXnoteTimesString.SetString(cXNoteLastSnapTimes);
+            cXNoteOpts.m_cSnapXnoteTimesString.SetString(g_cXNoteLastSnapTimes);
 
             // Write snap timevalue (in ms) to the with the video recording started log file.
             // Use XML tags because others logs might be written is files in the near future.
@@ -5444,8 +5449,8 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID, int iSensorID, int iSo
             {
 
                 // Reset some values to make sure that recording will start again it and stops if duration times out.
-                bXNoteSnapRecordingState = true;
-                ulXNoteLastSnapTime = dwCurrTickCount;
+                g_bXNoteSnapRecordingState = true;
+                g_ulXNoteLastSnapTime = dwCurrTickCount;
                 cXNoteOpts.m_ulSnapXnoteTickCounter = dwCurrTickCount;
 
                 // TRACE(_T("## CRecorderView::XNoteProcessWinMessage: iActionID:[%d] iSensorID:[%d], Motion detected,
@@ -5464,10 +5469,10 @@ VOID CRecorderView::XNoteProcessWinMessage(int iActionID, int iSensorID, int iSo
 
 void CRecorderView::DisplayAutopanInfo(CRect rc)
 {
-    if (bRecordState)
+    if (g_bRecordState)
     {
         CRect rectDraw(rc);
-        HDC hdc = ::GetDC(hFixedRegionWnd);
+        HDC hdc = ::GetDC(g_hFixedRegionWnd);
         HBRUSH newbrush = (HBRUSH)CreateHatchBrush(HS_CROSS, RGB(0, 0, 0));
         HBRUSH oldbrush = (HBRUSH)SelectObject(hdc, newbrush);
         HFONT newfont;
@@ -5494,7 +5499,7 @@ void CRecorderView::DisplayAutopanInfo(CRect rc)
         SetBkColor(hdc, oldbkcolor);
         SetTextColor(hdc, oldtextcolor);
         SetBkMode(hdc, OPAQUE);
-        ::ReleaseDC(hFixedRegionWnd, hdc);
+        ::ReleaseDC(g_hFixedRegionWnd, hdc);
         Sleep(500);
     }
 }
@@ -5621,36 +5626,39 @@ void GetTempAudioWavPath()
                                    (LPCSTR)cVideoOpts.m_cStartRecordingString, "wav");
 
     // Test the validity of writing to the file
-    int fileverified = 0;
+    bool fileverified = false;
     while (!fileverified)
     {
         OFSTRUCT ofstruct;
-        HFILE fhandle = OpenFile(strTempAudioWavFilePath, &ofstruct, OF_SHARE_EXCLUSIVE | OF_WRITE | OF_CREATE);
-        if (fhandle != HFILE_ERROR)
+
+        if (std::experimental::filesystem::exists(strTempAudioWavFilePath.GetString()))
         {
-            fileverified = 1;
-            CloseHandle((HANDLE)fhandle);
-            DeleteFile(strTempAudioWavFilePath);
+            fileverified = std::experimental::filesystem::remove(strTempAudioWavFilePath.GetString());
+            if (!fileverified)
+            {
+                srand((unsigned)time(NULL));
+                int randnum = rand();
+                char numstr[50];
+                sprintf(numstr, "%d", randnum);
+
+                CString cnumstr(numstr);
+                // CString fxstr;
+                // fxstr.Format("\\%s", TEMPFILETAGINDICATOR );
+                // CString exstr(".wav");
+                // strTempAudioWavFilePath = GetTempFolder (cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir)
+                // + fxstr + cnumstr + exstr;
+                strTempAudioWavFilePath.Format("%s\\%s-%s-%s.%s", csTempFolder.GetString(), TEMPFILETAGINDICATOR,
+                    cVideoOpts.m_cStartRecordingString.GetString(), cnumstr, "wav");
+
+                // MessageBox(NULL,strTempAudioWavFilePath,"Uses Temp File",MB_OK);
+                // fileverified = 1;
+                // Try choosing another temporary filename
+                //fileverified = true;
+            }
         }
         else
         {
-            srand((unsigned)time(NULL));
-            int randnum = rand();
-            char numstr[50];
-            sprintf(numstr, "%d", randnum);
-
-            CString cnumstr(numstr);
-            // CString fxstr;
-            // fxstr.Format("\\%s", TEMPFILETAGINDICATOR );
-            // CString exstr(".wav");
-            // strTempAudioWavFilePath = GetTempFolder (cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir)
-            // + fxstr + cnumstr + exstr;
-            strTempAudioWavFilePath.Format("%s\\%s-%s-%s.%s", (LPCSTR)csTempFolder, TEMPFILETAGINDICATOR,
-                                           (LPCSTR)cVideoOpts.m_cStartRecordingString, cnumstr, "wav");
-
-            // MessageBox(NULL,strTempAudioWavFilePath,"Uses Temp File",MB_OK);
-            // fileverified = 1;
-            // Try choosing another temporary filename
+            fileverified = true;
         }
     }
 }
@@ -5662,7 +5670,7 @@ BOOL StartAudioRecording()
     // open wavein device
     // use on message to map.....
     MMRESULT mmReturn = ::waveInOpen(&m_hWaveRecord, cAudioFormat.m_uDeviceID, &(cAudioFormat.AudioFormat()),
-                                     (DWORD_PTR)hWndGlobal, NULL, CALLBACK_WINDOW);
+                                     (DWORD_PTR)g_hWndGlobal, NULL, CALLBACK_WINDOW);
     if (mmReturn)
     {
         waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
@@ -5736,25 +5744,25 @@ int InitDrawShiftWindow()
     // MessageBox(NULL,"sdg","",0);
     HDC hScreenDC = ::GetDC(hMouseCaptureWnd);
 
-    // FixRectSizePos(&rc, maxxScreen, maxyScreen, minxScreen, minyScreen);
+    // FixRectSizePos(&g_rc, maxxScreen, maxyScreen, minxScreen, minyScreen);
 
-    rcClip.left = rc.left;
-    rcClip.top = rc.top;
-    rcClip.right = rc.right;
-    rcClip.bottom = rc.bottom;
-    DrawSelect(hScreenDC, TRUE, &rcClip);
+    g_rcClip.left = g_rc.left;
+    g_rcClip.top = g_rc.top;
+    g_rcClip.right = g_rc.right;
+    g_rcClip.bottom = g_rc.bottom;
+    DrawSelect(hScreenDC, TRUE, &g_rcClip);
 
-    old_rcClip = rcClip;
+    g_old_rcClip = g_rcClip;
 
     // Set Curosr at the centre of the clip rectangle
     POINT ptOrigin;
-    ptOrigin.x = (rcClip.right + rcClip.left) / 2;
-    ptOrigin.y = (rcClip.top + rcClip.bottom) / 2;
+    ptOrigin.x = (g_rcClip.right + g_rcClip.left) / 2;
+    ptOrigin.y = (g_rcClip.top + g_rcClip.bottom) / 2;
 
-    rcOffset.left = rcClip.left - ptOrigin.x;
-    rcOffset.top = rcClip.top - ptOrigin.y;
-    rcOffset.right = rcClip.right - ptOrigin.x;
-    rcOffset.bottom = rcClip.bottom - ptOrigin.y;
+    g_rcOffset.left = g_rcClip.left - ptOrigin.x;
+    g_rcOffset.top = g_rcClip.top - ptOrigin.y;
+    g_rcOffset.right = g_rcClip.right - ptOrigin.x;
+    g_rcOffset.bottom = g_rcClip.bottom - ptOrigin.y;
 
     ::ReleaseDC(hMouseCaptureWnd, hScreenDC);
 
@@ -5765,13 +5773,12 @@ int InitDrawShiftWindow()
 // XNOTE or MOTION DETECTOR stopwatch supporting CODE
 //===============================================
 
-// Delete the hXnoteLogFile variable and close existing log file
+// Delete the g_hXnoteLogFile variable and close existing log file
 void CloseStreamXnoteLogFile()
 {
-    if (ioXnoteLogFile.is_open())
+    if (g_ioXnoteLogFile.is_open())
     {
-        ioXnoteLogFile.close();
-        pioXnoteLogFile = NULL;
+        g_ioXnoteLogFile.close();
     }
 }
 
@@ -5783,8 +5790,8 @@ BOOL OpenStreamXnoteLogFile()
     GetTempXnoteLogPath();
 
     // If file exist is will be overwritten and re created.
-    ioXnoteLogFile.open(strTempXnoteLogFilePath, std::ios::out);
-    if (!ioXnoteLogFile.is_open())
+    g_ioXnoteLogFile.open(strTempXnoteLogFilePath, std::ios::out);
+    if (!g_ioXnoteLogFile.is_open())
     {
         TRACE("## Opening strTempXnoteLogFilePath failed..!\n");
     }
@@ -5795,9 +5802,9 @@ BOOL OpenStreamXnoteLogFile()
 void WriteLineToXnoteLogFile(char *pStr)
 {
     // TRACE("## WriteLineToXnoteLogFile pStr=[%s]\n",pStr);
-    if (ioXnoteLogFile.is_open())
+    if (g_ioXnoteLogFile.is_open())
     {
-        ioXnoteLogFile << pStr;
+        g_ioXnoteLogFile << pStr;
     }
 }
 

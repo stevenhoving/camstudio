@@ -126,54 +126,54 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
                 GetCursorPos(&pt);
 
                 // Update rect with new mouse info
-                rcClip.left = pt.x + rcOffset.left;
-                rcClip.top = pt.y + rcOffset.top;
-                rcClip.right = pt.x + rcOffset.right;
-                rcClip.bottom = pt.y + rcOffset.bottom;
+                g_rcClip.left = pt.x + g_rcOffset.left;
+                g_rcClip.top = pt.y + g_rcOffset.top;
+                g_rcClip.right = pt.x + g_rcOffset.right;
+                g_rcClip.bottom = pt.y + g_rcOffset.bottom;
 
-                if (rcClip.left < 0)
+                if (g_rcClip.left < 0)
                 {
-                    rcClip.left = 0;
-                    rcClip.right = rc.Width();
+                    g_rcClip.left = 0;
+                    g_rcClip.right = g_rc.Width();
                 }
-                if (rcClip.top < 0)
+                if (g_rcClip.top < 0)
                 {
-                    rcClip.top = 0;
-                    rcClip.bottom = rc.Height();
+                    g_rcClip.top = 0;
+                    g_rcClip.bottom = g_rc.Height();
                 }
-                if (rcClip.right > maxxScreen - 1)
+                if (g_rcClip.right > maxxScreen - 1)
                 {
-                    rcClip.right = maxxScreen - 1;
-                    rcClip.left = maxxScreen - 1 - rc.Width();
+                    g_rcClip.right = maxxScreen - 1;
+                    g_rcClip.left = maxxScreen - 1 - g_rc.Width();
                 }
-                if (rcClip.bottom > maxyScreen - 1)
+                if (g_rcClip.bottom > maxyScreen - 1)
                 {
-                    rcClip.bottom = maxyScreen - 1;
-                    rcClip.top = maxyScreen - 1 - rc.Height();
+                    g_rcClip.bottom = maxyScreen - 1;
+                    g_rcClip.top = maxyScreen - 1 - g_rc.Height();
                 }
 
-                if (!isRectEqual(old_rcClip, rcClip))
+                if (!isRectEqual(g_old_rcClip, g_rcClip))
                 {
                     // Multimonitor code -- will need to combine both EnumDisplays ... see comment above
                     // DrawSelectMultiMonitorCallback
                     HDC hCurMonitorDC = GetDC(NULL);
-                    EnumDisplayMonitors(hCurMonitorDC, &old_rcClip, DrawSelectMultiMonitorCallback,
+                    EnumDisplayMonitors(hCurMonitorDC, &g_old_rcClip, DrawSelectMultiMonitorCallback,
                                         0); // 0 indicates erase old rubber-band
-                    EnumDisplayMonitors(hCurMonitorDC, &rcClip, DrawSelectMultiMonitorCallback,
+                    EnumDisplayMonitors(hCurMonitorDC, &g_rcClip, DrawSelectMultiMonitorCallback,
                                         1);         // 1 indicates draw new rubber-band
                     ReleaseDC(hWnd, hCurMonitorDC); /*
                       //single monitor code
                       HDC hScreenDC = GetDC(hWnd);
-                      DrawSelect(hScreenDC, FALSE, &old_rcClip); // erase old rubber-band
-                      DrawSelect(hScreenDC, TRUE, &rcClip); // new rubber-band
+                      DrawSelect(hScreenDC, FALSE, &g_old_rcClip); // erase old rubber-band
+                      DrawSelect(hScreenDC, TRUE, &g_rcClip); // new rubber-band
                       ReleaseDC(hWnd,hScreenDC);*/
                 }                                   // if old
 
-                old_rcClip = rcClip;
+                g_old_rcClip = g_rcClip;
             }
             else if (cRegionOpts.isCaptureMode(CAPTURE_VARIABLE))
             { // Variable Region
-                if (bCapturing)
+                if (g_bCapturing)
                 {
                     POINT pt;
                     GetCursorPos(&pt);
@@ -181,18 +181,18 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
                     HDC hScreenDC = GetDC(hWnd);
                     HDC hCurMonitorDC = GetDC(NULL);
 
-                    // DrawSelect(hScreenDC, FALSE, &rcClip); // erase old rubber-band
-                    EnumDisplayMonitors(hCurMonitorDC, &rcClip, DrawSelectMultiMonitorCallback,
+                    // DrawSelect(hScreenDC, FALSE, &g_rcClip); // erase old rubber-band
+                    EnumDisplayMonitors(hCurMonitorDC, &g_rcClip, DrawSelectMultiMonitorCallback,
                                         0); // erase old rubber-band
 
-                    rcClip.left = ptOrigin.x;
-                    rcClip.top = ptOrigin.y;
-                    rcClip.right = pt.x;
-                    rcClip.bottom = pt.y;
+                    g_rcClip.left = g_ptOrigin.x;
+                    g_rcClip.top = g_ptOrigin.y;
+                    g_rcClip.right = pt.x;
+                    g_rcClip.bottom = pt.y;
 
-                    NormalizeRect(&rcClip);
-                    // DrawSelect(hScreenDC, TRUE, &rcClip); // new rubber-band
-                    EnumDisplayMonitors(hCurMonitorDC, &rcClip, DrawSelectMultiMonitorCallback,
+                    NormalizeRect(&g_rcClip);
+                    // DrawSelect(hScreenDC, TRUE, &g_rcClip); // new rubber-band
+                    EnumDisplayMonitors(hCurMonitorDC, &g_rcClip, DrawSelectMultiMonitorCallback,
                                         1); // draw new rubber-band
 
                     ReleaseDC(hWnd, hScreenDC);
@@ -210,32 +210,32 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
             {
                 // erase final
                 HDC hScreenDC = GetDC(hWnd);
-                DrawSelect(hScreenDC, FALSE, &old_rcClip);
-                old_rcClip = rcClip;
+                DrawSelect(hScreenDC, FALSE, &g_old_rcClip);
+                g_old_rcClip = g_rcClip;
                 ReleaseDC(hWnd, hScreenDC);
             }
             else if (cRegionOpts.isCaptureMode(CAPTURE_VARIABLE))
             {
-                NormalizeRect(&rcClip);
-                old_rcClip = rcClip;
-                bCapturing = FALSE;
+                NormalizeRect(&g_rcClip);
+                g_old_rcClip = g_rcClip;
+                g_bCapturing = FALSE;
             }
 
             ShowWindow(hWnd, SW_HIDE);
 
-            if (!IsRectEmpty(&old_rcClip))
+            if (!IsRectEmpty(&g_old_rcClip))
             {
-                NormalizeRect(&old_rcClip);
-                CopyRect(&rcUse, &old_rcClip);
-                if (iDefineMode == 0)
+                NormalizeRect(&g_old_rcClip);
+                CopyRect(&g_rcUse, &g_old_rcClip);
+                if (g_iDefineMode == 0)
                 {
                     TRACE(_T("MouseCaptureWndProc: CRecorderView::WM_USER_RECORDSTART\n"));
-                    ::PostMessage(hWndGlobal, CRecorderView::WM_USER_RECORDSTART, 0, (LPARAM)0);
+                    ::PostMessage(g_hWndGlobal, CRecorderView::WM_USER_RECORDSTART, 0, (LPARAM)0);
                 }
                 else
                 {
                     TRACE(_T("MouseCaptureWndProc: WM_APP_REGIONUPDATE\n"));
-                    ::PostMessage(hFixedRegionWnd, WM_APP_REGIONUPDATE, 0, (LPARAM)0);
+                    ::PostMessage(g_hFixedRegionWnd, WM_APP_REGIONUPDATE, 0, (LPARAM)0);
                 }
             }
         }
@@ -251,17 +251,17 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
             {
                 CPoint pt;
                 GetCursorPos(&pt);
-                ptOrigin = pt;
-                rcClip.left = rcClip.right = pt.x;
-                rcClip.top = rcClip.bottom = pt.y;
-                rcClip.NormalizeRect(); // Make sure it is a normal rect
+                g_ptOrigin = pt;
+                g_rcClip.left = g_rcClip.right = pt.x;
+                g_rcClip.top = g_rcClip.bottom = pt.y;
+                g_rcClip.NormalizeRect(); // Make sure it is a normal rect
                 CWindowDC cScreenDC(CWnd::FromHandle(hWnd));
-                DrawSelect(cScreenDC, TRUE, &rcClip); // Draw the rubber-band box
+                DrawSelect(cScreenDC, TRUE, &g_rcClip); // Draw the rubber-band box
                 // HDC hScreenDC = GetDC(hWnd);
-                // DrawSelect(hScreenDC, TRUE, &rcClip); // Draw the rubber-band box
+                // DrawSelect(hScreenDC, TRUE, &g_rcClip); // Draw the rubber-band box
                 // ReleaseDC(hWnd,hScreenDC);
 
-                bCapturing = TRUE;
+                g_bCapturing = TRUE;
             }
         }
         break;
@@ -274,7 +274,7 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
                 // Cancel the operation
                 // erase final
                 HDC hScreenDC = GetDC(hWnd);
-                DrawSelect(hScreenDC, FALSE, &old_rcClip);
+                DrawSelect(hScreenDC, FALSE, &g_old_rcClip);
                 ReleaseDC(hWnd, hScreenDC);
 
                 // Cancel the operation
@@ -300,16 +300,16 @@ long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM 
                 {
                     // erase final
                     HDC hScreenDC = GetDC(hWnd);
-                    DrawSelect(hScreenDC, FALSE, &old_rcClip);
+                    DrawSelect(hScreenDC, FALSE, &g_old_rcClip);
                     ReleaseDC(hWnd, hScreenDC);
                 }
                 else if (cRegionOpts.isCaptureMode(CAPTURE_VARIABLE))
                 {
-                    NormalizeRect(&rcClip);
-                    old_rcClip = rcClip;
-                    if (bCapturing)
+                    NormalizeRect(&g_rcClip);
+                    g_old_rcClip = g_rcClip;
+                    if (g_bCapturing)
                     {
-                        bCapturing = FALSE;
+                        g_bCapturing = FALSE;
                     }
                 }
 

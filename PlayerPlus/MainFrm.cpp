@@ -15,8 +15,8 @@ static char THIS_FILE[] = __FILE__;
 
 extern HWND mainWnd;
 extern BOOL playerAlive;
-//extern HDRAWDIB *ghdd;
-HDRAWDIB *ghdd;
+extern HDRAWDIB ghdd[25];
+//HDRAWDIB *ghdd;
 extern int giFirstVideo;
 extern HWND viewWnd;
 

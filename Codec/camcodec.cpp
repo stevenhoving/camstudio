@@ -105,7 +105,7 @@ TCHAR szName[] = TEXT("CamCodec");
 // static HEAP_ALLOC(wrkmem, LZO1X_1_MEM_COMPRESS);
 static long __LZO_MMODEL wrkmem[((LZO1X_1_MEM_COMPRESS) + (sizeof(long) - 1)) / sizeof(long)];
 
-#define VERSION 0x00010003 // 1.3
+#define VERSION 0x00010005 // 1.5
 
 /********************************************************************
 ********************************************************************/
@@ -168,19 +168,17 @@ int AppFlags()
 
 // Constructor
 CodecInst::CodecInst()
+    : m_prevFrame(nullptr)
+    , m_diffFrame(nullptr)
+    , m_diffinput(nullptr)
+    , m_gzip_level(6)
+    , m_algorithm(0)
+    , m_autokeyframe(0)
+    , m_autokeyframe_rate(20)
+    , m_currentFrame(0)
+    , m_compressionHasBegun(0)
+    , m_decompressionHasBegun(0)
 {
-    prevFrame = nullptr;
-    diffFrame = nullptr;
-    diffinput = nullptr;
-    m_gzip_level = 6;
-    m_algorithm = 0;
-
-    m_autokeyframe = 0;
-    m_autokeyframe_rate = 20;
-    m_currentFrame = 0;
-
-    m_compressionHasBegun = 0;
-    m_decompressionHasBegun = 0;
 }
 
 CodecInst *Open(ICOPEN *icinfo)
@@ -359,7 +357,7 @@ DWORD CodecInst::Configure(HWND /*hwnd*/)
 
 DWORD CodecInst::GetState(LPVOID /*pv*/, DWORD /*dwSize*/)
 {
-    return 0;
+    return 1;
 }
 
 DWORD CodecInst::SetState(LPVOID /*pv*/, DWORD /*dwSize*/)
@@ -386,8 +384,7 @@ DWORD CodecInst::GetInfo(ICINFO *icinfo, DWORD dwSize)
 
     icinfo->dwVersion = VERSION;
     icinfo->dwVersionICM = ICVERSION;
-    MultiByteToWideChar(CP_ACP, 0, szDescription, -1, icinfo->szDescription,
-                        sizeof(icinfo->szDescription) / sizeof(WCHAR));
+    MultiByteToWideChar(CP_ACP, 0, szDescription, -1, icinfo->szDescription, sizeof(icinfo->szDescription) / sizeof(WCHAR));
     MultiByteToWideChar(CP_ACP, 0, szName, -1, icinfo->szName, sizeof(icinfo->szName) / sizeof(WCHAR));
 
     return sizeof(ICINFO);
@@ -779,14 +776,14 @@ DWORD CodecInst::CompressRGB(ICCOMPRESS *icinfo)
     int r = LZO_E_ERROR;
     unsigned char byte1, byte2;
 
-    if ((prevFrame == nullptr) || (isKey))
+    if ((m_prevFrame == nullptr) || (isKey))
     {
-        if (prevFrame == nullptr)
+        if (m_prevFrame == nullptr)
         {
-            prevFrame = static_cast<unsigned char *>(malloc(in_len));
+            m_prevFrame = static_cast<unsigned char *>(malloc(in_len));
         }
 
-        memcpy(prevFrame, input, in_len);
+        memcpy(m_prevFrame, input, in_len);
 
         if (m_algorithm == 0)
         {
@@ -829,14 +826,14 @@ DWORD CodecInst::CompressRGB(ICCOMPRESS *icinfo)
         unsigned char *prevFrameptr;
         unsigned char *inputptr;
 
-        if (diffinput == nullptr)
+        if (m_diffinput == nullptr)
         {
-            diffinput = static_cast<unsigned char *>(malloc(in_len));
+            m_diffinput = static_cast<unsigned char *>(malloc(in_len));
         }
 
-        diffinputptr = diffinput;
+        diffinputptr = m_diffinput;
         inputptr = input;
-        prevFrameptr = prevFrame;
+        prevFrameptr = m_prevFrame;
 
         for (unsigned long i = 0; i < in_len; i++)
         {
@@ -856,12 +853,12 @@ DWORD CodecInst::CompressRGB(ICCOMPRESS *icinfo)
 
         if (m_algorithm == 0)
         {
-            r = lzo1x_1_compress(diffinput, in_len, outputbyte + 2, &out_len, wrkmem);
+            r = lzo1x_1_compress(m_diffinput, in_len, outputbyte + 2, &out_len, wrkmem);
         }
         else if (m_algorithm == 1)
         {
             unsigned long destlen;
-            r = compress2(outputbyte + 2, &destlen, diffinput, in_len, m_gzip_level);
+            r = compress2(outputbyte + 2, &destlen, m_diffinput, in_len, m_gzip_level);
             out_len = destlen;
         }
 
@@ -1013,14 +1010,14 @@ DWORD CodecInst::DecompressRGB(ICDECOMPRESS *icinfo)
     }
     else
     {
-        if (diffFrame == nullptr)
+        if (m_diffFrame == nullptr)
         {
-            diffFrame = static_cast<unsigned char *>(malloc(size * 3 / 2));
+            m_diffFrame = static_cast<unsigned char *>(malloc(size * 3 / 2));
         }
 
         if (use_algo == 0)
         {
-            r = lzo1x_decompress(inbyte + 2, in_len - 2, diffFrame, &out_len, nullptr);
+            r = lzo1x_decompress(inbyte + 2, in_len - 2, m_diffFrame, &out_len, nullptr);
             if (r != LZO_E_OK)
             {
                 // this should NEVER happen
@@ -1031,7 +1028,7 @@ DWORD CodecInst::DecompressRGB(ICDECOMPRESS *icinfo)
         else if (use_algo == 1)
         {
             unsigned long destLen = size * 3 / 2;
-            r = uncompress(diffFrame, &destLen, inbyte + 2, in_len - 2);
+            r = uncompress(m_diffFrame, &destLen, inbyte + 2, in_len - 2);
             out_len = destLen;
 
             if (r != Z_OK)
@@ -1046,7 +1043,7 @@ DWORD CodecInst::DecompressRGB(ICDECOMPRESS *icinfo)
         unsigned char *outputptr;
 
         outputptr = out;          // out is the current yuv
-        diffFrameptr = diffFrame; // is the difference in yuvptr
+        diffFrameptr = m_diffFrame; // is the difference in yuvptr
 
         for (unsigned long i = 0; i < out_len; i++)
         {
@@ -1082,22 +1079,22 @@ DWORD CodecInst::DecompressEnd()
 
 DWORD CodecInst::FreeResources()
 {
-    if (prevFrame != nullptr)
+    if (m_prevFrame != nullptr)
     {
-        free(prevFrame);
-        prevFrame = nullptr;
+        free(m_prevFrame);
+        m_prevFrame = nullptr;
     }
 
-    if (diffFrame != nullptr)
+    if (m_diffFrame != nullptr)
     {
-        free(diffFrame);
-        diffFrame = nullptr;
+        free(m_diffFrame);
+        m_diffFrame = nullptr;
     }
 
-    if (diffinput != nullptr)
+    if (m_diffinput != nullptr)
     {
-        free(diffinput);
-        diffinput = nullptr;
+        free(m_diffinput);
+        m_diffinput = nullptr;
     }
 
     return ICERR_OK;
