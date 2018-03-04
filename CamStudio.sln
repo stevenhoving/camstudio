@@ -70,6 +70,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minilzo", "dep\minilzo\mini
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CamHook", "CamHook\CamHook.vcxproj", "{F4C904B3-2F94-404B-9555-2A3EAA1E5EA6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FisterLib", "FisterLib\FisterLib.vcxproj", "{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -392,6 +394,22 @@ Global
 		{F4C904B3-2F94-404B-9555-2A3EAA1E5EA6}.Unicode Release|Win32.Build.0 = Release|Win32
 		{F4C904B3-2F94-404B-9555-2A3EAA1E5EA6}.Unicode Release|x64.ActiveCfg = Release|x64
 		{F4C904B3-2F94-404B-9555-2A3EAA1E5EA6}.Unicode Release|x64.Build.0 = Release|x64
+		{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}.Debug|Win32.ActiveCfg = Debug|Win32
+		{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}.Debug|Win32.Build.0 = Debug|Win32
+		{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}.Debug|x64.ActiveCfg = Debug|x64
+		{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}.Debug|x64.Build.0 = Debug|x64
+		{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}.Release|Win32.ActiveCfg = Release|Win32
+		{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}.Release|Win32.Build.0 = Release|Win32
+		{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}.Release|x64.ActiveCfg = Release|x64
+		{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}.Release|x64.Build.0 = Release|x64
+		{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}.Unicode Debug|Win32.ActiveCfg = Debug|Win32
+		{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}.Unicode Debug|Win32.Build.0 = Debug|Win32
+		{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}.Unicode Debug|x64.ActiveCfg = Debug|x64
+		{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}.Unicode Debug|x64.Build.0 = Debug|x64
+		{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}.Unicode Release|Win32.ActiveCfg = Release|Win32
+		{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}.Unicode Release|Win32.Build.0 = Release|Win32
+		{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}.Unicode Release|x64.ActiveCfg = Release|x64
+		{30B33ECD-FDBD-4F22-AF4B-A12319C5D270}.Unicode Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
