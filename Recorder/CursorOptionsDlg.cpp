@@ -10,7 +10,7 @@
 #include "Recorder.h"
 #include "CursorOptionsDlg.h"
 #include "CamCursor.h"
-#include "CamColor.h"
+#include "CamLib/CamColor.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

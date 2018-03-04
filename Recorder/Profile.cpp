@@ -2,7 +2,7 @@
 #include "Recorder.h"
 #include "Profile.h"
 #include "HotKey.h"
-#include "CStudioLib.h"
+#include "CamLib/CStudioLib.h"
 #include "addons\TextAttributes.h" // for position
 #include "addons\ImageAttributes.h"
 #include "addons\Camstudio4XNote.h"
@@ -65,7 +65,8 @@ bool sAudioFormat::DeleteAudio()
 {
     if (m_pwfx)
     {
-        delete[] m_pwfx, m_pwfx = 0;
+        delete[] m_pwfx;
+        m_pwfx = 0;
     }
     m_dwCbwFX = 0;
     return true;
@@ -160,7 +161,7 @@ void sAudioFormat::BuildRecordingFormat()
 
 /////////////////////////////////////////////////////////////////////////////
 
-void ReadIA(Setting &s, ImageAttributes &iaResult)
+void ReadIA(libconfig::Setting &s, ImageAttributes &iaResult)
 {
     s.lookupValue("Brightness", (int &)iaResult.m_lBrightness);
     s.lookupValue("Contrast", (int &)iaResult.m_lContrast);
@@ -173,19 +174,19 @@ void ReadIA(Setting &s, ImageAttributes &iaResult)
         iaResult.text = text.c_str();
 }
 
-void WriteIA(Setting &s, ImageAttributes &iaResult)
+void WriteIA(libconfig::Setting &s, ImageAttributes &iaResult)
 {
-    UpdateSetting(s, "Brightness", (int &)iaResult.m_lBrightness, Setting::TypeInt);
-    UpdateSetting(s, "Contrast", (int &)iaResult.m_lContrast, Setting::TypeInt);
-    UpdateSetting(s, "Position", (int &)iaResult.position, Setting::TypeInt);
-    UpdateSetting(s, "PosType", (int &)iaResult.posType, Setting::TypeInt);
-    UpdateSetting(s, "xPosRatio", iaResult.xPosRatio, Setting::TypeInt);
-    UpdateSetting(s, "yPosRatio", iaResult.yPosRatio, Setting::TypeInt);
+    UpdateSetting(s, "Brightness", (int &)iaResult.m_lBrightness, libconfig::Setting::TypeInt);
+    UpdateSetting(s, "Contrast", (int &)iaResult.m_lContrast, libconfig::Setting::TypeInt);
+    UpdateSetting(s, "Position", (int &)iaResult.position, libconfig::Setting::TypeInt);
+    UpdateSetting(s, "PosType", (int &)iaResult.posType, libconfig::Setting::TypeInt);
+    UpdateSetting(s, "xPosRatio", iaResult.xPosRatio, libconfig::Setting::TypeInt);
+    UpdateSetting(s, "yPosRatio", iaResult.yPosRatio, libconfig::Setting::TypeInt);
     std::string text(iaResult.text);
-    UpdateSetting(s, "text", text, Setting::TypeString);
+    UpdateSetting(s, "text", text, libconfig::Setting::TypeString);
 }
 
-void ReadTA(Setting &s, TextAttributes &taResult)
+void ReadTA(libconfig::Setting &s, TextAttributes &taResult)
 {
     s.lookupValue("position", (int &)taResult.position);
     s.lookupValue("posType", (int &)taResult.posType);
@@ -201,26 +202,26 @@ void ReadTA(Setting &s, TextAttributes &taResult)
         ReadFont(s["Font"], taResult.logfont);
 }
 
-void WriteTA(Setting &s, TextAttributes &taResult)
+void WriteTA(libconfig::Setting &s, TextAttributes &taResult)
 {
-    UpdateSetting(s, "position", (int &)taResult.position, Setting::TypeInt);
-    UpdateSetting(s, "posType", (int &)taResult.posType, Setting::TypeInt);
-    UpdateSetting(s, "xPosRatio", taResult.xPosRatio, Setting::TypeInt);
-    UpdateSetting(s, "yPosRatio", taResult.yPosRatio, Setting::TypeInt);
+    UpdateSetting(s, "position", (int &)taResult.position, libconfig::Setting::TypeInt);
+    UpdateSetting(s, "posType", (int &)taResult.posType, libconfig::Setting::TypeInt);
+    UpdateSetting(s, "xPosRatio", taResult.xPosRatio, libconfig::Setting::TypeInt);
+    UpdateSetting(s, "yPosRatio", taResult.yPosRatio, libconfig::Setting::TypeInt);
     std::string text(taResult.text);
-    UpdateSetting(s, "text", text, Setting::TypeString);
-    UpdateSetting(s, "backgroundColor", (int &)taResult.backgroundColor, Setting::TypeInt);
-    UpdateSetting(s, "textColor", (int &)taResult.textColor, Setting::TypeInt);
-    UpdateSetting(s, "isFontSelected", taResult.isFontSelected, Setting::TypeInt);
-    Setting *sf;
+    UpdateSetting(s, "text", text, libconfig::Setting::TypeString);
+    UpdateSetting(s, "backgroundColor", (int &)taResult.backgroundColor, libconfig::Setting::TypeInt);
+    UpdateSetting(s, "textColor", (int &)taResult.textColor, libconfig::Setting::TypeInt);
+    UpdateSetting(s, "isFontSelected", taResult.isFontSelected, libconfig::Setting::TypeInt);
+    libconfig::Setting *sf;
     if (s.exists("Font"))
         sf = &(s["Font"]);
     else
-        sf = &(s.add("Font", Setting::TypeGroup));
+        sf = &(s.add("Font", libconfig::Setting::TypeGroup));
     WriteFont(*sf, taResult.logfont);
 }
 
-void ReadFont(Setting &s, LOGFONT &f)
+void ReadFont(libconfig::Setting &s, LOGFONT &f)
 {
     unsigned tmp;
     if (s.lookupValue("CharSet", tmp))
@@ -249,31 +250,157 @@ void ReadFont(Setting &s, LOGFONT &f)
     s.lookupValue("Width", (int &)f.lfWidth);
 }
 
-void WriteFont(Setting &s, LOGFONT &f)
+void WriteFont(libconfig::Setting &s, LOGFONT &f)
 {
     long tmp;
     tmp = f.lfCharSet;
-    UpdateSetting(s, "CharSet", tmp, Setting::TypeInt);
+    UpdateSetting(s, "CharSet", tmp, libconfig::Setting::TypeInt);
     tmp = f.lfClipPrecision;
-    UpdateSetting(s, "ClipPrecision", tmp, Setting::TypeInt);
-    UpdateSetting(s, "Escapement", (long &)f.lfEscapement, Setting::TypeInt);
+    UpdateSetting(s, "ClipPrecision", tmp, libconfig::Setting::TypeInt);
+    UpdateSetting(s, "Escapement", (long &)f.lfEscapement, libconfig::Setting::TypeInt);
     std::string text;
     text.assign(f.lfFaceName, 32);
-    UpdateSetting(s, "FaceName", text, Setting::TypeString);
-    UpdateSetting(s, "Height", (long &)f.lfHeight, Setting::TypeInt);
+    UpdateSetting(s, "FaceName", text, libconfig::Setting::TypeString);
+    UpdateSetting(s, "Height", (long &)f.lfHeight, libconfig::Setting::TypeInt);
     tmp = f.lfItalic;
-    UpdateSetting(s, "Italic", tmp, Setting::TypeInt);
-    UpdateSetting(s, "Orientation", f.lfOrientation, Setting::TypeInt);
+    UpdateSetting(s, "Italic", tmp, libconfig::Setting::TypeInt);
+    UpdateSetting(s, "Orientation", f.lfOrientation, libconfig::Setting::TypeInt);
     tmp = f.lfOutPrecision;
-    UpdateSetting(s, "OutPrecision", tmp, Setting::TypeInt);
+    UpdateSetting(s, "OutPrecision", tmp, libconfig::Setting::TypeInt);
     tmp = f.lfPitchAndFamily;
-    UpdateSetting(s, "PitchAndFamily", tmp, Setting::TypeInt);
+    UpdateSetting(s, "PitchAndFamily", tmp, libconfig::Setting::TypeInt);
     tmp = f.lfQuality;
-    UpdateSetting(s, "Quality", tmp, Setting::TypeInt);
+    UpdateSetting(s, "Quality", tmp, libconfig::Setting::TypeInt);
     tmp = f.lfStrikeOut;
-    UpdateSetting(s, "StrikeOut", tmp, Setting::TypeInt);
+    UpdateSetting(s, "StrikeOut", tmp, libconfig::Setting::TypeInt);
     tmp = f.lfUnderline;
-    UpdateSetting(s, "Underline", tmp, Setting::TypeInt);
-    UpdateSetting(s, "Weight", f.lfWeight, Setting::TypeInt);
-    UpdateSetting(s, "Width", f.lfWidth, Setting::TypeInt);
+    UpdateSetting(s, "Underline", tmp, libconfig::Setting::TypeInt);
+    UpdateSetting(s, "Weight", f.lfWeight, libconfig::Setting::TypeInt);
+    UpdateSetting(s, "Width", f.lfWidth, libconfig::Setting::TypeInt);
+}
+
+sVideoOpts &sVideoOpts::operator=(const sVideoOpts &rhs)
+{
+    if (this == &rhs)
+    {
+        return *this;
+    }
+
+    m_bRestrictVideoCodecs = rhs.m_bRestrictVideoCodecs;
+    m_bAutoAdjust = rhs.m_bAutoAdjust;
+    m_bLock = rhs.m_bLock;
+    m_bRoundDown = rhs.m_bRoundDown;
+    m_iValueAdjust = rhs.m_iValueAdjust;
+    m_iTimeLapse = rhs.m_iTimeLapse;
+    m_iFramesPerSecond = rhs.m_iFramesPerSecond;
+    m_iKeyFramesEvery = rhs.m_iKeyFramesEvery;
+    m_iCompQuality = rhs.m_iCompQuality;
+    m_iSelectedCompressor = rhs.m_iSelectedCompressor;
+    m_iShiftType = rhs.m_iShiftType;
+    m_iTimeShift = rhs.m_iTimeShift;
+    m_dwCompfccHandler = rhs.m_dwCompfccHandler;
+    m_dwCompressorStateIsFor = rhs.m_dwCompressorStateIsFor;
+
+    State(rhs.m_pState, rhs.m_dwCompressorStateSize);
+    m_cStartRecordingString = rhs.m_cStartRecordingString;
+
+    return *this;
+}
+
+sVideoOpts::sVideoOpts(const sVideoOpts &rhs)
+    : m_iShiftType(NOSYNCH)
+    , m_pState(nullptr)
+    , m_cStartRecordingString("")
+{
+    *this = rhs;
+}
+
+sVideoOpts::~sVideoOpts()
+{
+    delete[] m_pState;
+}
+
+DWORD sVideoOpts::StateSize() const
+{
+    return m_dwCompressorStateSize;
+}
+
+LPVOID sVideoOpts::State(LPCVOID pState, DWORD dwStateSize)
+{
+    State(pState ? dwStateSize : 0L);
+    if (!pState || (dwStateSize < 1L))
+    {
+        return m_pState;
+    }
+
+    ::_memccpy(m_pState, pState, 1, m_dwCompressorStateSize);
+
+    return m_pState;
+}
+
+LPVOID sVideoOpts::State(DWORD dwStateSize)
+{
+    if (m_pState)
+    {
+        delete[] m_pState;
+        m_pState = nullptr;
+        m_dwCompressorStateSize = 0L;
+    }
+
+    ASSERT(0L == m_dwCompressorStateSize);
+    if (dwStateSize < 1L)
+    {
+        return m_pState;
+    }
+    m_dwCompressorStateSize = dwStateSize;
+    // TODO: , Possible memory leak, where is the delete operation of the new below done?
+    m_pState = new char[m_dwCompressorStateSize];
+    return m_pState;
+}
+
+LPVOID sVideoOpts::State() const
+{
+    return m_pState;
+}
+
+bool sVideoOpts::Read(libconfig::Setting &cProfile)
+{
+    cProfile.lookupValue("restrictVideoCodecs", m_bRestrictVideoCodecs);
+    cProfile.lookupValue("AutoAdjust", m_bAutoAdjust);
+    cProfile.lookupValue("LockCaptureAndPlayback", m_bLock);
+    cProfile.lookupValue("RoundDown", m_bRoundDown);
+    cProfile.lookupValue("ValueAdjust", m_iValueAdjust);
+    cProfile.lookupValue("TimeLapse", m_iTimeLapse);
+    cProfile.lookupValue("fps", m_iFramesPerSecond);
+    cProfile.lookupValue("KeyFramesEvery", m_iKeyFramesEvery);
+    cProfile.lookupValue("CompQuality", m_iCompQuality);
+    cProfile.lookupValue("shiftType", m_iShiftType);
+    cProfile.lookupValue("timeshift", m_iTimeShift);
+    cProfile.lookupValue("CompFCCHandler", (unsigned &)m_dwCompfccHandler);
+    cProfile.lookupValue("CompressorStateIsFor", (unsigned &)m_dwCompressorStateIsFor);
+    DWORD dwSize = 0UL;
+    cProfile.lookupValue("CompressorStateSize", (unsigned &)dwSize);
+    State(dwSize);
+    // CString  m_cStartRecordingString = "";
+    m_cStartRecordingString = "";
+    return true;
+}
+
+bool sVideoOpts::Write(libconfig::Setting &cProfile)
+{
+    UpdateSetting(cProfile, "restrictVideoCodecs", m_bRestrictVideoCodecs, libconfig::Setting::TypeBoolean);
+    UpdateSetting(cProfile, "AutoAdjust", m_bAutoAdjust, libconfig::Setting::TypeBoolean);
+    UpdateSetting(cProfile, "LockCaptureAndPlayback", m_bLock, libconfig::Setting::TypeBoolean);
+    UpdateSetting(cProfile, "RoundDown", m_bRoundDown, libconfig::Setting::TypeBoolean);
+    UpdateSetting(cProfile, "ValueAdjust", m_iValueAdjust, libconfig::Setting::TypeInt);
+    UpdateSetting(cProfile, "TimeLapse", m_iTimeLapse, libconfig::Setting::TypeInt);
+    UpdateSetting(cProfile, "fps", m_iFramesPerSecond, libconfig::Setting::TypeInt);
+    UpdateSetting(cProfile, "KeyFramesEvery", m_iKeyFramesEvery, libconfig::Setting::TypeInt);
+    UpdateSetting(cProfile, "CompQuality", m_iCompQuality, libconfig::Setting::TypeInt);
+    UpdateSetting(cProfile, "shiftType", m_iShiftType, libconfig::Setting::TypeInt);
+    UpdateSetting(cProfile, "timeshift", m_iTimeShift, libconfig::Setting::TypeInt);
+    UpdateSetting(cProfile, "CompFCCHandler", (long &)m_dwCompfccHandler, libconfig::Setting::TypeInt);
+    UpdateSetting(cProfile, "CompressorStateIsFor", (long &)m_dwCompressorStateIsFor, libconfig::Setting::TypeInt);
+    UpdateSetting(cProfile, "CompressorStateSize", (long &)m_dwCompressorStateSize, libconfig::Setting::TypeInt);
+    return true;
 }

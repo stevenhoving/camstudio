@@ -4,18 +4,17 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #define _COMPILING_44E531B1_14D3_11d5_A025_006067718D04
-#include "Hook.h"
-//#include <stdio.h>
+#include "hook/Hook.h"
+
 #include <mmsystem.h>
-#include "ClickQueue.hpp"
+#include "hook/ClickQueue.hpp"
 
 // actual cursor stuff http://msdn.microsoft.com/en-us/magazine/cc301524.aspx
 
-HHOOK mouseHookLL = nullptr;
-HHOOK keyHook = nullptr;
-HWND hotkeyWnd = nullptr;
-
-HINSTANCE hInst = nullptr;
+HHOOK g_mouseHookLL = nullptr;
+HHOOK g_keyHook = nullptr;
+HWND g_hotkeyWnd = nullptr;
+HINSTANCE g_hInst = nullptr;
 
 // Keyboard stuff
 // HotKeyMap hkm; // write only during key's update, problem is unlikely
@@ -27,7 +26,7 @@ HINSTANCE hInst = nullptr;
 //__declspec(dllexport) HotKeyMap& getHotKeyMap() { return hkm; }
 __declspec(dllexport) void setHotKeyWindow(HWND hWnd)
 {
-    hotkeyWnd = hWnd;
+    g_hotkeyWnd = hWnd;
 }
 //__declspec(dllexport) void setPassThrough(bool pass) { PassThrough = pass; }
 
@@ -81,7 +80,7 @@ LRESULT CALLBACK LowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
             ClickQueue::getInstance().Enqueue(&mhs); // message, pt, time
         }
     }
-    return ::CallNextHookEx(mouseHookLL, nCode, wParam, lParam);
+    return ::CallNextHookEx(g_mouseHookLL, nCode, wParam, lParam);
 }
 // 2.7
 // LRESULT CALLBACK KeyboardProc(
@@ -126,7 +125,7 @@ BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD Reason, LPVOID /*Reserved*/)
     switch (Reason)
     {
         case DLL_PROCESS_ATTACH:
-            hInst = hInstance;
+            g_hInst = hInstance;
             // 2.7
             // modMap[VK_SHIFT] = MOD_SHIFT;
             // modMap[VK_LSHIFT] = MOD_SHIFT;
@@ -138,10 +137,10 @@ BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD Reason, LPVOID /*Reserved*/)
             // modMap[VK_LCONTROL] = MOD_CONTROL; // shall we distinguish left & right?
             // modMap[VK_RCONTROL] = MOD_CONTROL;
             //// We are always interested in keyboard shortcuts
-            // keyHook = ::SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, hInst, 0);
+            // keyHook = ::SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, g_hInst, 0);
             break;
         case DLL_PROCESS_DETACH:
-            UnhookWindowsHookEx(keyHook);
+            UnhookWindowsHookEx(g_keyHook);
             UninstallMyHook(nullptr);
             break;
     }
@@ -156,9 +155,9 @@ BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD Reason, LPVOID /*Reserved*/)
 /////////////////////////////////////////////////////////////////////////////
 __declspec(dllexport) BOOL InstallMyHook(HWND /*hWnd*/, UINT /*message_to_call*/)
 {
-    if (mouseHookLL == nullptr)
+    if (g_mouseHookLL == nullptr)
     {
-        SetWindowsHookEx(WH_MOUSE_LL, static_cast<HOOKPROC>(LowLevelMouseProc), hInst, 0);
+        SetWindowsHookEx(WH_MOUSE_LL, static_cast<HOOKPROC>(LowLevelMouseProc), g_hInst, 0);
     }
     return TRUE;
 }
@@ -169,9 +168,9 @@ __declspec(dllexport) BOOL InstallMyHook(HWND /*hWnd*/, UINT /*message_to_call*/
 /////////////////////////////////////////////////////////////////////////////
 __declspec(dllexport) BOOL UninstallMyHook(HWND /*hWnd*/)
 {
-    if (mouseHookLL && UnhookWindowsHookEx(mouseHookLL))
+    if (g_mouseHookLL && UnhookWindowsHookEx(g_mouseHookLL))
     {
-        mouseHookLL = nullptr;
+        g_mouseHookLL = nullptr;
     }
     return TRUE;
 }

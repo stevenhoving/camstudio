@@ -7,7 +7,7 @@
 #include "MainFrm.h" // for maxxScreen, maxyScreen
 #include "RecorderView.h"
 #include "HotKey.h"
-#include "CStudioLib.h"
+#include "CamLib/CStudioLib.h"
 
 HWND hMouseCaptureWnd;
 // MouseCaptureWndProc referenced functions

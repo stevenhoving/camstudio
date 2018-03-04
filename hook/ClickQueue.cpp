@@ -1,4 +1,4 @@
-#include "ClickQueue.hpp"
+#include "hook/ClickQueue.hpp"
 
 volatile ClickQueue *ClickQueue::_instance = nullptr;
 

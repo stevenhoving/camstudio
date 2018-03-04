@@ -1,9 +1,9 @@
 #if !defined(AFX_TEXTDIALOG_H__63374646_A843_482E_998F_8DD0E32477E3__INCLUDED_)
 #define AFX_TEXTDIALOG_H__63374646_A843_482E_998F_8DD0E32477E3__INCLUDED_
 
-#if _MSC_VER >= 1000
+
 #pragma once
-#endif // _MSC_VER >= 1000
+
 
 // CTextDlg.h : header file
 //

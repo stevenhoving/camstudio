@@ -10,7 +10,7 @@
 #include <vector>
 #include <algorithm>
 // TODO: reorganize code and move bodies to cpp. Even better to merge CamCursor with CursorOptionsDlg class.
-#include "../hook/hook.h" // for getCursor
+#include <hook/hook.h> // for getCursor
 
 /////////////////////////////////////////////////////////////////////////////
 // CCamCursor
@@ -233,7 +233,7 @@ public:
         return m_clrClickRight = clr;
     }
 
-    bool Read(Setting &cProfile)
+    bool Read(libconfig::Setting &cProfile)
     {
         cProfile.lookupValue("RecordCursor", m_bRecord);
         cProfile.lookupValue("CursorType", m_iCustomSel);
@@ -255,24 +255,24 @@ public:
         return true;
     }
 
-    bool Write(Setting &cProfile)
+    bool Write(libconfig::Setting &cProfile)
     {
-        UpdateSetting(cProfile, "RecordCursor", m_bRecord, Setting::TypeBoolean);
-        UpdateSetting(cProfile, "CursorType", m_iCustomSel, Setting::TypeInt);
-        UpdateSetting(cProfile, "CursorSel", m_iSelect, Setting::TypeInt);
-        UpdateSetting(cProfile, "Highlight", m_bHighlight, Setting::TypeBoolean);
-        UpdateSetting(cProfile, "HighlightSize", m_iHighlightSize, Setting::TypeInt);
-        UpdateSetting(cProfile, "HighlightShape", m_iHighlightShape, Setting::TypeInt);
-        UpdateSetting(cProfile, "HighlightColor", (long &)m_clrHighlight, Setting::TypeInt);
-        UpdateSetting(cProfile, "RingThreshold", m_iRingThreshold, Setting::TypeInt);
-        UpdateSetting(cProfile, "RingSize", m_iRingSize, Setting::TypeInt);
-        UpdateSetting(cProfile, "RingWidth", m_fRingWidth, Setting::TypeFloat);
-        UpdateSetting(cProfile, "HighlightClick", m_bHighlightClick, Setting::TypeBoolean);
-        UpdateSetting(cProfile, "ClickColorLeft", (long &)m_clrClickLeft, Setting::TypeInt);
-        UpdateSetting(cProfile, "ClickColorMiddle", (long &)m_clrClickMiddle, Setting::TypeInt);
-        UpdateSetting(cProfile, "ClickColorRight", (long &)m_clrClickRight, Setting::TypeInt);
+        UpdateSetting(cProfile, "RecordCursor", m_bRecord, libconfig::Setting::TypeBoolean);
+        UpdateSetting(cProfile, "CursorType", m_iCustomSel, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "CursorSel", m_iSelect, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "Highlight", m_bHighlight, libconfig::Setting::TypeBoolean);
+        UpdateSetting(cProfile, "HighlightSize", m_iHighlightSize, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "HighlightShape", m_iHighlightShape, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "HighlightColor", (long &)m_clrHighlight, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "RingThreshold", m_iRingThreshold, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "RingSize", m_iRingSize, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "RingWidth", m_fRingWidth, libconfig::Setting::TypeFloat);
+        UpdateSetting(cProfile, "HighlightClick", m_bHighlightClick, libconfig::Setting::TypeBoolean);
+        UpdateSetting(cProfile, "ClickColorLeft", (long &)m_clrClickLeft, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "ClickColorMiddle", (long &)m_clrClickMiddle, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "ClickColorRight", (long &)m_clrClickRight, libconfig::Setting::TypeInt);
         std::string text(m_strFileName);
-        UpdateSetting(cProfile, "CursorDir", text, Setting::TypeString);
+        UpdateSetting(cProfile, "CursorDir", text, libconfig::Setting::TypeString);
         return true;
     }
 

@@ -1,12 +1,9 @@
 // RecorderView.h : interface of the CRecorderView class
 //
 /////////////////////////////////////////////////////////////////////////////
-#if !defined(AFX_VSCAPVIEW_H__DCC4865E_3B37_402E_AC1B_C8ABF4519F51__INCLUDED_)
-#define AFX_VSCAPVIEW_H__DCC4865E_3B37_402E_AC1B_C8ABF4519F51__INCLUDED_
 
-#if _MSC_VER >= 1000
 #pragma once
-#endif // _MSC_VER >= 1000
+
 
 #include "VideoWnd.h"     // for CVideoWnd
 #include "FlashingWnd.h"  // for CFlashingWnd
@@ -282,5 +279,3 @@ extern CString strCodec;
 extern void GetVideoCompressState(HIC hic, DWORD fccHandler);
 extern void SetVideoCompressState(HIC hic, DWORD fccHandler);
 // extern void AllocCompressFormat(DWORD& dwCbwFX);
-
-#endif // !defined(AFX_VSCAPVIEW_H__DCC4865E_3B37_402E_AC1B_C8ABF4519F51__INCLUDED_)

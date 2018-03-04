@@ -5,9 +5,7 @@
 #if !defined(AFX_VSCAPDOC_H__8E747B04_A2E7_43C2_BFDC_34C231661E31__INCLUDED_)
 #define AFX_VSCAPDOC_H__8E747B04_A2E7_43C2_BFDC_34C231661E31__INCLUDED_
 
-#if _MSC_VER >= 1000
 #pragma once
-#endif // _MSC_VER >= 1000
 
 class CRecorderDoc : public CDocument
 {

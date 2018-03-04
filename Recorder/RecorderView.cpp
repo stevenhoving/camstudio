@@ -31,13 +31,13 @@
 #include "VideoOptions.h"
 #include "ProgressDlg.h"
 #include "ximage.h"
-#include "soundfile.h"
-#include "hook.h" // for WM_USER_RECORDSTART_MSG
+#include "fister/soundfile.h"
+#include <hook/hook.h> // for WM_USER_RECORDSTART_MSG
 #include "MP4Converter.h"
 
-#include "Buffer.h"
-#include "CStudioLib.h"
-#include "TrayIcon.h"
+#include "fister/Buffer.h"
+#include <CamLib/CStudioLib.h>
+#include <CamLib/TrayIcon.h>
 #include "AudioSpeakers.h"
 #include "HotKey.h"
 #include "Screen.h"
@@ -51,6 +51,8 @@
 #include "addons/AnnotationEffectsOptions.h"
 #include "addons/EffectsOptions.h"
 #include "addons/EffectsOptions2.h"
+
+#include <memory>
 
 #ifdef _DEBUG
 // #include <vld.h>        // Visual Leak Detector utility (In debug mode)
@@ -5175,11 +5177,11 @@ bool CRecorderView::ConvertToMP4(const CString &sInputAVI, const CString &sOutpu
 {
     ConversionResult res;
 
-    CMP4Converter *pConv = new CMP4Converter();
+    auto pConv = std::make_unique<CMP4Converter>();
     if (pConv)
     {
         pConv->ConvertAVItoMP4(sInputAVI, sOutputMP4);
-        CProgressDlg *pProgDlg = new CProgressDlg();
+        auto pProgDlg = std::make_unique<CProgressDlg>();
         if (pProgDlg)
         {
             pProgDlg->Create(this);
@@ -5221,12 +5223,10 @@ bool CRecorderView::ConvertToMP4(const CString &sInputAVI, const CString &sOutpu
                 lTimeStart = time(&timer);
             }
             res = pConv->Status();
-            delete (pProgDlg);
         }
-        delete pConv;
     }
 
-    return (res == SUCCESS) ? true : false;
+    return res == SUCCESS;
 }
 
 bool CRecorderView::GetRecordState()

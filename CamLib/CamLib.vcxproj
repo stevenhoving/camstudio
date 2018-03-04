@@ -103,6 +103,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>./include/CamLib</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <TargetMachine>MachineX64</TargetMachine>
@@ -159,22 +160,22 @@
     <ClCompile Include="TrayIcon.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CamColor.h" />
-    <ClInclude Include="CamError.h" />
-    <ClInclude Include="CamFile.h" />
-    <ClInclude Include="CamImage.h" />
-    <ClInclude Include="CamRect.h" />
-    <ClInclude Include="CamSys.h" />
-    <ClInclude Include="CamWindow.h" />
-    <ClInclude Include="CBitmapEx.h" />
-    <ClInclude Include="CStudioLib.h" />
-    <ClInclude Include="Picture.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="TrayIcon.h" />
+    <ResourceCompile Include="..\hook\hook.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\hook\hook.rc" />
+    <ClInclude Include="include\CamLib\CamColor.h" />
+    <ClInclude Include="include\CamLib\CamError.h" />
+    <ClInclude Include="include\CamLib\CamFile.h" />
+    <ClInclude Include="include\CamLib\CamImage.h" />
+    <ClInclude Include="include\CamLib\CamRect.h" />
+    <ClInclude Include="include\CamLib\CamSys.h" />
+    <ClInclude Include="include\CamLib\CamWindow.h" />
+    <ClInclude Include="include\CamLib\CBitmapEx.h" />
+    <ClInclude Include="include\CamLib\CStudioLib.h" />
+    <ClInclude Include="include\CamLib\Picture.h" />
+    <ClInclude Include="include\CamLib\TrayIcon.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,5 +4,3 @@
 // and still use the old naming either. stdafx.obj will contain the pre-compiled type information
 
 #include "stdafx.h"
-
-#include "Localization\Localization.cpp"

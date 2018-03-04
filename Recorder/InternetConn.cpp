@@ -33,7 +33,7 @@ BOOL CInternetConn::ReadFile(CString strUrl, CString &strFileContent)
 
         char buff[1025];
         UINT len = 0;
-        while ((len = pFile->Read(buff, 1024)))
+        while ((len = pFile->Read(buff, 1024)) != 0)
         {
             buff[len] = 0;
             strFileContent += buff;

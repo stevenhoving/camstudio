@@ -3,6 +3,7 @@
 
 #pragma once
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <map>
 
@@ -36,9 +37,9 @@ struct HotKey
 
 typedef std::map<HotKey, DWORD> HotKeyMap;      // key & mod => WM_HOTKEY code
 typedef std::pair<HotKey, DWORD> HotKeyMapPair; // key & mod => WM_HOTKEY code
-__declspec(dllexport) HotKeyMap &getHotKeyMap();
+//__declspec(dllexport) HotKeyMap &getHotKeyMap();
 __declspec(dllexport) void setHotKeyWindow(HWND hWnd);
-__declspec(dllexport) void setPassThrough(bool pass);
+//__declspec(dllexport) void setPassThrough(bool pass);
 __declspec(dllexport) HCURSOR getCursor();
 
 #ifdef __cplusplus

@@ -28,8 +28,8 @@
 #include "ListManager.h"
 #include "ScreenAnnotations.h"
 #include "ResizeDialog.h"
-#include "CStudioLib.h"
-#include "CamColor.h"
+#include "CamLib/CStudioLib.h"
+#include "CamLib/CamColor.h"
 
 #include <windowsx.h>
 #include <Gdiplus.h>

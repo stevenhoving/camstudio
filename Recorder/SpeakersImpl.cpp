@@ -4,11 +4,11 @@
 #include "Recorder.h"
 
 #include "AutoSearchDialog.h"
-#include "soundfile.h"
-#include "Buffer.h"
+#include "fister/soundfile.h"
+#include "fister/Buffer.h"
 #include "AudioMixer.h"
 #include "MCI.h"
-#include "CStudioLib.h"
+#include <CamLib/CStudioLib.h>
 #include "resource.h"
 
 #include <mmsystem.h>

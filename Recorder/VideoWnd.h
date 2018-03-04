@@ -8,7 +8,7 @@
 
 #include "TransparentWnd.h"
 #include "FrameGrabber.h"
-#include "CBitmapEx.h"
+#include "CamLib/CBitmapEx.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CVideoWnd window

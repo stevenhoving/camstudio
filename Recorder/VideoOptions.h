@@ -1,9 +1,9 @@
 #if !defined(AFX_VIDEOOPTIONS_H__25063B0F_28D8_469C_871E_F8A0DD84DA6B__INCLUDED_)
 #define AFX_VIDEOOPTIONS_H__25063B0F_28D8_469C_871E_F8A0DD84DA6B__INCLUDED_
 
-#if _MSC_VER >= 1000
+
 #pragma once
-#endif // _MSC_VER >= 1000
+
 
 #include "profile.h"
 // VideoOptions.h : header file

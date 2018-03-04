@@ -5,9 +5,9 @@
 #if !defined(AFX_LISTMANAGER_H__0F5DD254_C4A6_4E45_BCBD_8FA13F605F2A__INCLUDED_)
 #define AFX_LISTMANAGER_H__0F5DD254_C4A6_4E45_BCBD_8FA13F605F2A__INCLUDED_
 
-#if _MSC_VER >= 1000
+
 #pragma once
-#endif // _MSC_VER >= 1000
+
 
 #include "TransparentWnd.h"
 #include "LayoutList.h"

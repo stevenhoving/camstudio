@@ -16,7 +16,7 @@
 #include "RecorderVersionReleaseInfo.h"
 #include "CamCursor.h"
 #include "HotKey.h"
-#include "CStudioLib.h"
+#include "CamLib/CStudioLib.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -28,7 +28,7 @@ static BOOL bClassRegistered = FALSE;
 // this global variable is mentioned in StdAfx.h
 // thus everyone has an access
 // not the best solution though
-Config *cfg;
+libconfig::Config *cfg;
 
 /////////////////////////////////////////////////////////////////////////////
 // CAboutDlg dialog used for App About
@@ -203,17 +203,17 @@ BOOL CRecorderApp::InitInstance()
 
     // TODO: re-enable when class complete
     // Read the file. If there is an error, report it and exit.
-    cfg = new Config();
+    cfg = new libconfig::Config();
     try
     {
         cfg->readFile(strProfile);
     }
-    catch (const FileIOException)
+    catch (const libconfig::FileIOException)
     { // TODO: move me to resource
       // MessageBox(NULL, "CamStudio.cfg Config file was not found. Using defaults.", "Error", MB_OK);
       //        return(EXIT_FAILURE);
     }
-    catch (const ParseException &pex)
+    catch (const libconfig::ParseException &pex)
     {
         char buf[1024];
         _snprintf_s(buf, 1024, _TRUNCATE, "Config file parse error at %s:%d - %s", pex.getFile(), pex.getLine(),
@@ -320,76 +320,76 @@ BOOL CRecorderApp::InitInstance()
 
 int CRecorderApp::ExitInstance()
 {
-    Setting *s;
+    libconfig::Setting *s;
     try
     {
         if (!cfg->exists("Audio"))
-            s = &cfg->getRoot().add("Audio", Setting::TypeGroup);
+            s = &cfg->getRoot().add("Audio", libconfig::Setting::TypeGroup);
         else
             s = &cfg->lookup("Audio");
         cAudioFormat.Write(*s);
 
         if (!cfg->exists("Video"))
-            s = &cfg->getRoot().add("Video", Setting::TypeGroup);
+            s = &cfg->getRoot().add("Video", libconfig::Setting::TypeGroup);
         else
             s = &cfg->lookup("Video");
         cVideoOpts.Write(*s);
 
         if (!cfg->exists("Cursor"))
-            s = &cfg->getRoot().add("Cursor", Setting::TypeGroup);
+            s = &cfg->getRoot().add("Cursor", libconfig::Setting::TypeGroup);
         else
             s = &cfg->lookup("Cursor");
         CamCursor.Write(*s);
 
         if (!cfg->exists("Program"))
-            s = &cfg->getRoot().add("Program", Setting::TypeGroup);
+            s = &cfg->getRoot().add("Program", libconfig::Setting::TypeGroup);
         else
             s = &cfg->lookup("Program");
         cProgramOpts.Write(*s);
 
         if (!cfg->exists("HotKeys"))
-            s = &cfg->getRoot().add("HotKeys", Setting::TypeGroup);
+            s = &cfg->getRoot().add("HotKeys", libconfig::Setting::TypeGroup);
         else
             s = &cfg->lookup("HotKeys");
         cHotKeyOpts.Write(*s);
 
         if (!cfg->exists("Region"))
-            s = &cfg->getRoot().add("Region", Setting::TypeGroup);
+            s = &cfg->getRoot().add("Region", libconfig::Setting::TypeGroup);
         else
             s = &cfg->lookup("Region");
         cRegionOpts.Write(*s);
 
         if (!cfg->exists("Caption"))
-            s = &cfg->getRoot().add("Caption", Setting::TypeGroup);
+            s = &cfg->getRoot().add("Caption", libconfig::Setting::TypeGroup);
         else
             s = &cfg->lookup("Caption");
         cCaptionOpts.Write(*s);
 
         if (!cfg->exists("TimeStamp"))
-            s = &cfg->getRoot().add("TimeStamp", Setting::TypeGroup);
+            s = &cfg->getRoot().add("TimeStamp", libconfig::Setting::TypeGroup);
         else
             s = &cfg->lookup("TimeStamp");
         cTimestampOpts.Write(*s);
 
         if (!cfg->exists("XNote"))
-            s = &cfg->getRoot().add("XNote", Setting::TypeGroup);
+            s = &cfg->getRoot().add("XNote", libconfig::Setting::TypeGroup);
         else
             s = &cfg->lookup("XNote");
         cXNoteOpts.Write(*s);
 
         if (!cfg->exists("Watermark"))
-            s = &cfg->getRoot().add("Watermark", Setting::TypeGroup);
+            s = &cfg->getRoot().add("Watermark", libconfig::Setting::TypeGroup);
         else
             s = &cfg->lookup("Watermark");
         cWatermarkOpts.Write(*s);
 
         if (!cfg->exists("Producer"))
-            s = &cfg->getRoot().add("Producer", Setting::TypeGroup);
+            s = &cfg->getRoot().add("Producer", libconfig::Setting::TypeGroup);
         else
             s = &cfg->lookup("Producer");
         cProducerOpts.Write(*s);
     }
-    catch (SettingTypeException &e)
+    catch (libconfig::SettingTypeException &e)
     {
         MessageBox(NULL, e.getPath(), e.what(), MB_OK);
     }

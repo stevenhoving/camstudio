@@ -8,7 +8,7 @@
 #include "NewShape.h"
 #include "LayoutList.h"
 #include "Keyshortcuts.h"
-#include "CStudioLib.h"
+#include "CamLib/CStudioLib.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

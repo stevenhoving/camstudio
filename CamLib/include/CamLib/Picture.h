@@ -49,7 +49,7 @@ protected:
     BOOL UpdateSizeOnDC(CDC *pDC);
 
 protected:
-    IPicture *m_IPicture{0}; // Same As LPPICTURE (typedef IPicture __RPC_FAR *LPPICTURE)
+    IPicture *m_IPicture{nullptr}; // Same As LPPICTURE (typedef IPicture __RPC_FAR *LPPICTURE)
 
     LONG m_Height{0}; // Height (In Pixels Ignor What Current Device Context Uses)
     LONG m_Width{0};  // Width (In Pixels Ignor What Current Device Context Uses)

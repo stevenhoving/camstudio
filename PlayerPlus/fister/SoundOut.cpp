@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "SoundOut.h"
-#include "CamError.h"
+#include "CamLib/CamError.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

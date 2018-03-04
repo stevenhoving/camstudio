@@ -2,7 +2,7 @@
 #include "Screen.h"
 #include "ximage.h"
 #include "RecorderView.h"
-#include "../hook/ClickQueue.hpp"
+#include <hook/ClickQueue.hpp>
 #include "addons/EffectsOptions.h"
 #include "addons/XnoteStopwatchFormat.h"
 #include <gdiplus.h>
@@ -126,6 +126,7 @@ bool CCamera::AddWatermark(CDC *pDC)
 
     return true;
 }
+
 bool CCamera::AddCursor(CDC *pDC)
 {
     CPoint ptCursor;

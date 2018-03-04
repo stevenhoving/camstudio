@@ -4,9 +4,9 @@
 #if !defined(AFX_VSCAP_H__CAB648E2_684F_4FF1_B574_9714ACAC6D57__INCLUDED_)
 #define AFX_VSCAP_H__CAB648E2_684F_4FF1_B574_9714ACAC6D57__INCLUDED_
 
-#if _MSC_VER >= 1000
+
 #pragma once
-#endif // _MSC_VER >= 1000
+
 
 #include "stdafx.h"
 
@@ -32,7 +32,7 @@
 #endif
 #endif
 
-#include "CamError.h"
+#include "CamLib/CamError.h"
 #include "CamStudioCommandLineInfo.h"
 #include "Profile.h"
 #include "resource.h"                   // main symbols

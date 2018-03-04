@@ -7,7 +7,7 @@
 #include "RecorderView.h"
 #include "addons\Camstudio4XNote.h"
 #include "InternetConn.h"
-#include "tinyxml\tinyxml.h"
+#include <tinyxml.h>
 /*
 TODO: Break AVI 2 GB boundary
 ================================
@@ -116,7 +116,7 @@ END_MESSAGE_MAP()
 // lParam: time in ms  (Near future, as we are able to use camera as timer. Gige Camera required)
 // BTW. Curently only action 5 (release pause, restart recording) is supported
 //////////////////////////////////////////////////////////
-LRESULT CMainFrame::OnMotionDetector(WPARAM wParam, LPARAM lParam)
+LRESULT CMainFrame::OnMotionDetector(WPARAM wParam, LPARAM /*lParam*/)
 {
     // TRACE("## CMainFrame::OnMotionDetector (d)    wParam=[%d] HI[%d], LO[%d]\n",wParam, HIWORD(wParam),
     // LOWORD(wParam) );

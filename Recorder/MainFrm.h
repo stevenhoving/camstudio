@@ -5,10 +5,10 @@
 #if !defined(AFX_MAINFRM_H__DBFD9E21_C771_4321_8322_1F45ED8D4A66__INCLUDED_)
 #define AFX_MAINFRM_H__DBFD9E21_C771_4321_8322_1F45ED8D4A66__INCLUDED_
 
-#if _MSC_VER >= 1000
+
 #pragma once
-#endif // _MSC_VER >= 1000
-#include "TrayIcon.h"
+
+#include "CamLib/TrayIcon.h"
 #include "UpdateDialog.h"
 #include <iostream>
 #include <sstream>

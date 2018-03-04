@@ -22,7 +22,7 @@ CFolderDialog::CFolderDialog(LPCTSTR lpszFolderName, DWORD dwFlags, CWnd *pParen
     else
         m_strInitialFolderName = lpszFolderName;
 
-    memset(&m_bi, '\0', sizeof(BROWSEINFO));
+    memset(&m_bi, 0, sizeof(BROWSEINFO));
 
     m_bi.hwndOwner = pParentWnd ? pParentWnd->GetSafeHwnd() : 0;
 
@@ -76,10 +76,8 @@ int CFolderDialog::DoModal()
     // initialize the result to the starting folder value
     m_strFinalFolderName = m_strInitialFolderName;
 
-    ITEMIDLIST *piid = NULL;
-
     // call the shell function
-    piid = ::SHBrowseForFolder(&m_bi);
+    auto *piid = ::SHBrowseForFolder(&m_bi);
 
     // process the result
     if (piid && ::SHGetPathFromIDList(piid, m_szPath))

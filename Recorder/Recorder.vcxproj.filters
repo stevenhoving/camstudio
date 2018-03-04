@@ -31,6 +31,9 @@
     <Filter Include="Source Files\fister">
       <UniqueIdentifier>{6f52de0c-63d8-4b98-a8d5-7d1e7fb7b121}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Localization">
+      <UniqueIdentifier>{bb9d9a1e-a9bd-4641-bda7-bb108a247bd2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioFormat.h">
@@ -212,6 +215,9 @@
     </ClInclude>
     <ClInclude Include="MP4Converter.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Localization\Localization.h">
+      <Filter>Source Files\Localization</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -457,18 +463,6 @@
     <ClCompile Include="EditTransparency.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="fister\Buffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\SoundBase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\SoundFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fister\SoundIn.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FixedRegion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -550,12 +544,6 @@
     <ClCompile Include="TroubleShoot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vfw\ACM.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vfw\VCM.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="VideoOptions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -570,6 +558,27 @@
     </ClCompile>
     <ClCompile Include="MP4Converter.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Localization\Localization.cpp">
+      <Filter>Source Files\Localization</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\Buffer.cpp">
+      <Filter>Source Files\fister</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\SoundBase.cpp">
+      <Filter>Source Files\fister</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\SoundFile.cpp">
+      <Filter>Source Files\fister</Filter>
+    </ClCompile>
+    <ClCompile Include="fister\SoundIn.cpp">
+      <Filter>Source Files\fister</Filter>
+    </ClCompile>
+    <ClCompile Include="vfw\VCM.cpp">
+      <Filter>Source Files\vfw</Filter>
+    </ClCompile>
+    <ClCompile Include="vfw\ACM.cpp">
+      <Filter>Source Files\vfw</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

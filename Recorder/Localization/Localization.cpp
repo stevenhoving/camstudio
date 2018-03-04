@@ -21,12 +21,15 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#include "stdafx.h"
 #include "Localization.h"
 
 #include <atlfile.h>         // for CAtlFile, CAtlTemporaryFile
 #include <windowsx.h>        // for ComboBox_*
 #include <lzexpand.h>        // for LZOpenFile,LZRead,LZClose
 #pragma comment(lib, "lz32") // for LZOpenFile,LZRead,LZClose
+
+//using namespace ATL;
 
 #ifdef _DEBUG
 #define LOG ATLTRACE
@@ -39,6 +42,8 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
+
 
 #define LZ_MAGIC ('DDZS') // Lempel-Ziv algorithm magic number: 'SZDD' (in reverse order)
 #define ORDINAL 0x80000000
@@ -99,8 +104,9 @@ static inline CString &UnMakeSafe(CString &str)
     return str;
 }
 
-static inline CString Decode(LPCSTR szInput, int nInput = -1)
+static inline CString Decode(LPCSTR szInput, int nInput= -1)
 {
+    (void)nInput;
     // int nWide = MultiByteToWideChar( CP_UTF8, 0, szInput, nInput, NULL, 0 );
     CString sWide = szInput;
     // if ( nWide > 0 )
@@ -404,7 +410,7 @@ void CLocalization::FillComboBox(HWND hwndCombo) const
     for (POSITION pos = GetStartPosition(); pos;)
     {
         LANGID nID = GetNext(pos);
-        int index = ComboBox_AddString(hwndCombo, GetLangName(nID));
+        index = ComboBox_AddString(hwndCombo, GetLangName(nID));
         ComboBox_SetItemData(hwndCombo, index, nID);
         if (nID == m_nLangID)
             ComboBox_SetCurSel(hwndCombo, index);
@@ -680,7 +686,7 @@ BOOL CLocalization::LoadPoFromString(LANGID nLangID, const CStringA &sContent)
             case '#':
                 if (mode != mode_ref && mode != mode_start && mode != mode_msgstr)
                 {
-                    LOG("CLocalization Error : Invalid .po-line #%d: %s\n", nLine, sOriginalLine);
+                    LOG("CLocalization Error : Invalid .po-line #%d: %s\n", nLine, sOriginalLine.GetString());
                     bRet = FALSE;
                     break;
                 }
@@ -713,7 +719,7 @@ BOOL CLocalization::LoadPoFromString(LANGID nLangID, const CStringA &sContent)
                     // ID
                     if (mode != mode_start && mode != mode_ref)
                     {
-                        LOG("CLocalization Error : Invalid .po-line #%d: %s\n", nLine, sOriginalLine);
+                        LOG("CLocalization Error : Invalid .po-line #%d: %s\n", nLine, sOriginalLine.GetString());
                         bRet = FALSE;
                         break;
                     }
@@ -741,7 +747,7 @@ BOOL CLocalization::LoadPoFromString(LANGID nLangID, const CStringA &sContent)
                 else
                 {
                     // Unknown string
-                    LOG("CLocalization Error : Invalid .po-line #%d: %s\n", nLine, sOriginalLine);
+                    LOG("CLocalization Error : Invalid .po-line #%d: %s\n", nLine, sOriginalLine.GetString());
                     bRet = FALSE;
                     break;
                 }
@@ -749,7 +755,7 @@ BOOL CLocalization::LoadPoFromString(LANGID nLangID, const CStringA &sContent)
             case '\"':
                 if (mode != mode_msgid && mode != mode_msgstr)
                 {
-                    LOG("CLocalization Error : Invalid .po-line #%d: %s\n", nLine, sOriginalLine);
+                    LOG("CLocalization Error : Invalid .po-line #%d: %s\n", nLine, sOriginalLine.GetString());
                     bRet = FALSE;
                     break;
                 }
@@ -761,7 +767,7 @@ BOOL CLocalization::LoadPoFromString(LANGID nLangID, const CStringA &sContent)
                 else
                 {
                     // Unknown string
-                    LOG("CLocalization Error : Invalid .po-line #%d: %s\n", nLine, sOriginalLine);
+                    LOG("CLocalization Error : Invalid .po-line #%d: %s\n", nLine, sOriginalLine.GetString());
                     bRet = FALSE;
                     break;
                 }
@@ -780,7 +786,7 @@ BOOL CLocalization::LoadPoFromString(LANGID nLangID, const CStringA &sContent)
     if (bRet && mode != mode_msgstr)
     {
         // Unknown string
-        LOG("CLocalization Error : Invalid .po-line #%d: %s\n", nLine, sOriginalLine);
+        LOG("CLocalization Error : Invalid .po-line #%d: %s\n", nLine, sOriginalLine.GetString());
         bRet = FALSE;
     }
 

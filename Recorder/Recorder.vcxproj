@@ -113,7 +113,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)$(ProjectName)\fister;$(SolutionDir)CxImage\CxImage;$(SolutionDir)CamLib;$(SolutionDir)hook;$(SolutionDir)hookkey;$(SolutionDir)libconfig/lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\hook\include;..\tinyxml;.</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -173,7 +173,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(SolutionDir)\$(Configuration)\"
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)$(ProjectName)\fister;$(SolutionDir)CxImage\CxImage;$(SolutionDir)CamLib;$(SolutionDir)hook;$(SolutionDir)hookkey;$(SolutionDir)libconfig/lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\hook\include;..\tinyxml;.</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -230,7 +230,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(SolutionDir)\$(Configuration)\"
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)$(ProjectName)\fister;$(SolutionDir)CxImage\CxImage;$(SolutionDir)CamLib;$(SolutionDir)hook;$(SolutionDir)hookkey;$(SolutionDir)libconfig/lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\hook\include;..\tinyxml;.</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -290,7 +290,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)$(ProjectName)\fister;$(SolutionDir)CxImage\CxImage;$(SolutionDir)CamLib;$(SolutionDir)hook;$(SolutionDir)hookkey;$(SolutionDir)libconfig/lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\hook\include;..\tinyxml;.</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -343,12 +343,14 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     </Link>
     <ClCompile>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\hook\include;..\tinyxml;.</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..\CamLib\include;..\libconfig\lib;..\CxImage\CxImage;..\hook\include;..\tinyxml;.</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -383,6 +385,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
     <ClInclude Include="LayeredWindowHelperST.h" />
     <ClInclude Include="LayoutList.h" />
     <ClInclude Include="ListManager.h" />
+    <ClInclude Include="Localization\Localization.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MCI.h" />
     <ClInclude Include="MouseCaptureWnd.h" />
@@ -598,6 +601,7 @@ xcopy /s /y "$(ProjectDir)\output\*.*" "$(OutDir)"
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="Localization\Localization.cpp" />
     <ClCompile Include="MainFrm.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>

@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "MP4Converter.h"
-#include "CamFile.h"
+#include "CamLib/CamFile.h"
 
 #define BUF_SIZE 4096
 

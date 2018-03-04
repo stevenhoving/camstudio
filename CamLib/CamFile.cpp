@@ -43,11 +43,11 @@ CString GetTempFolder(int iAccess, const CString &strFolder, bool bOut)
         // tempdir.Format("%s\\Videos", GetProgPath());
         if (bOut)
         {
-            tempdir.Format("%s\\My CamStudio Videos", GetMyDocumentsPath());
+            tempdir.Format("%s\\My CamStudio Videos", GetMyDocumentsPath().GetString());
         }
         else
         {
-            tempdir.Format("%s\\My CamStudio Temp Files", GetMyDocumentsPath());
+            tempdir.Format("%s\\My CamStudio Temp Files", GetMyDocumentsPath().GetString());
         }
         if (!CreateDirectory(tempdir, nullptr))
         {

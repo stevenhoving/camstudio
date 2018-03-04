@@ -207,7 +207,7 @@ public:
         return ::AVISaveV(szFile, pclsidHandler, lpfnCallback, nStreams, pavi, plpOptions);
     }
 
-    BOOL SaveOptions(HWND hwnd, UINT uiFlags, int nStreams, LPAVICOMPRESSOPTIONS *plpOptions)
+    INT_PTR SaveOptions(HWND hwnd, UINT uiFlags, int nStreams, LPAVICOMPRESSOPTIONS *plpOptions)
     {
         return ::AVISaveOptions(hwnd, uiFlags, nStreams, &m_pstream, plpOptions);
     }

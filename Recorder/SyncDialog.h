@@ -3,9 +3,9 @@
 #if !defined(AFX_SYNCDIALOG_H__C6FE6223_66FB_4857_A9BB_E1589B288B7F__INCLUDED_)
 #define AFX_SYNCDIALOG_H__C6FE6223_66FB_4857_A9BB_E1589B288B7F__INCLUDED_
 
-#if _MSC_VER >= 1000
+
 #pragma once
-#endif // _MSC_VER >= 1000
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CSyncDlg dialog

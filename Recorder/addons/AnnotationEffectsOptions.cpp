@@ -72,12 +72,10 @@ void CAnnotationEffectsOptionsDlg::DoDataExchange(CDataExchange *pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAnnotationEffectsOptionsDlg, CDialog)
-
 ON_EN_CHANGE(IDC_EDIT_TIMESTAMP_FORMAT, &CAnnotationEffectsOptionsDlg::OnEnChangeEditTimestampFormat)
-ON_BN_CLICKED(IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS, OnBnClickedButtonTimestampFormatOptions)
-
+ON_BN_CLICKED(IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS,
+              &CAnnotationEffectsOptionsDlg::OnBnClickedButtonTimestampFormatOptions)
 ON_BN_CLICKED(IDC_BUTTON_XNOTEREMOTECONTROLMODE, &CAnnotationEffectsOptionsDlg::OnBnClickedButtonXnoteRemoteControlMode)
-
 ON_EN_CHANGE(IDC_EDIT_XNOTECAMERADELAYINMILLISEC,
              &CAnnotationEffectsOptionsDlg::OnEnChangeEditXNoteCameraDelayInMilliSec)
 ON_BN_CLICKED(IDC_BUTTON_XNOTEDISPLAYCAMERADELAYMODE,
@@ -220,9 +218,10 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedOk()
 
 int CAnnotationEffectsOptionsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-    if (CDialog::OnCreate(lpCreateStruct) == -1) {
+    if (CDialog::OnCreate(lpCreateStruct) == -1)
+    {
         return -1;
-}
+    }
 
     /* TODO: Is this the most appropiate place to put defaults? Probably not ...
      * Also, theres probably a better check than if the text is zero weather
@@ -272,9 +271,10 @@ bool CAnnotationEffectsOptionsDlg::IsStrftimeSafe(char *pbuffer)
         if (nxt != 'a' && nxt != 'A' && nxt != 'b' && nxt != 'B' && nxt != 'c' && nxt != 'd' && nxt != 'H' &&
             nxt != 'I' && nxt != 'j' && nxt != 'm' && nxt != 'M' && nxt != 'p' && nxt != 'S' && nxt != 'U' &&
             nxt != 'w' && nxt != 'W' && nxt != 'x' && nxt != 'X' && nxt != 'y' && nxt != 'Y' && nxt != 'Z' &&
-            nxt != '%') {
+            nxt != '%')
+        {
             return false;
-}
+        }
 
         pbuffer = ::strchr(++pbuffer, '%');
     }
@@ -336,9 +336,10 @@ void CAnnotationEffectsOptionsDlg::OnEnChangeFormatpreview()
     {
         time_t szClock;
         time(&szClock);
-        struct tm *newTime = localtime(&szClock);
+        struct tm newTime = {0};
+        localtime_s(&newTime, &szClock);
         char TimeBuff[256];
-        strftime(TimeBuff, sizeof(TimeBuff), str, newTime);
+        strftime(TimeBuff, sizeof(TimeBuff), str, &newTime);
         m_FormatTimestampPreview.SetWindowText(TimeBuff);
     }
     else

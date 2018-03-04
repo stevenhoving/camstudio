@@ -6,7 +6,7 @@
 #include "AudioFormat.h"
 #include "RecorderView.h"
 #include "vfw/ACM.h"
-#include "CStudioLib.h"
+#include "CamLib/CStudioLib.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

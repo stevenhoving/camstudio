@@ -17,7 +17,7 @@
 #pragma once
 
 #include "LayeredWindowHelperST.h"
-#include "Picture.h"
+#include "CamLib/Picture.h"
 
 const int regionNULL = 0;
 const int regionTRANSPARENTCOLOR = 1;
