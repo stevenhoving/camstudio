@@ -25,8 +25,8 @@ class CCamCursor
 {
 public:
     CCamCursor()
-        : m_bRecord(true)
-        , m_iSelect(ACTIVE)
+        : m_iSelect(ACTIVE)
+        , m_bRecord(true)
         , m_iHighlightSize(64)
         , m_bHighlightClick(false)
         , m_clrHighlight(0xa0ffff80)
@@ -118,6 +118,7 @@ public:
     {
         return m_iSelect;
     }
+
     int Select(int iSelect)
     {
         return m_iSelect = ((0 <= iSelect) && (iSelect < 3)) ? iSelect : 0;
@@ -127,6 +128,7 @@ public:
     {
         return Cursor(m_iSelect);
     }
+
     HCURSOR Cursor(int iCursorType)
     {
         switch (iCursorType)
@@ -154,6 +156,7 @@ public:
     {
         return m_vIconID.size();
     }
+
     DWORD GetID(size_t uIndex)
     {
         return (uIndex < m_vIconID.size()) ? m_vIconID[uIndex] : 0;
@@ -163,26 +166,32 @@ public:
     {
         return m_bRecord;
     }
+
     bool Record(bool bRec)
     {
         return m_bRecord = bRec;
     }
+
     int CustomType() const
     {
         return m_iCustomSel;
     }
+
     int CustomType(int iType)
     {
         return m_iCustomSel = iType;
     }
+
     bool Highlight() const
     {
         return m_bHighlight;
     }
+
     bool Highlight(bool bHiLight)
     {
         return m_bHighlight = bHiLight;
     }
+
     int HighlightSize() const
     {
         return m_iHighlightSize;
@@ -191,6 +200,7 @@ public:
     {
         return m_iHighlightSize = iSize;
     }
+
     int HighlightShape() const
     {
         return m_iHighlightShape;
