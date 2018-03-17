@@ -15,6 +15,13 @@
 #define ID_FILE_LASTFRAME 40006
 #define IDC_STATIC -1
 
+// File menu items
+#define IDM_OPEN 1
+#define IDM_CLOSE 2
+#define IDM_EXIT 3
+#define IDM_ABOUT 4
+#define IDD_ABOUT 101
+
 // Next default values for new objects
 //
 #ifdef APSTUDIO_INVOKED

@@ -4,12 +4,7 @@
 #define BUFFER_LENGTH 256
 #define WM_USER_PLAY 0x00401
 
-// File menu items
-#define IDM_OPEN 1
-#define IDM_CLOSE 2
-#define IDM_EXIT 3
-#define IDM_ABOUT 4
-#define IDD_ABOUT 101
+
 
 // Function declarations
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);

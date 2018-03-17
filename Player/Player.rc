@@ -10,19 +10,17 @@
 #define APSTUDIO_HIDDEN_SYMBOLS
 #include "windows.h"
 #undef APSTUDIO_HIDDEN_SYMBOLS
-#include "player.h"
+//#include "player.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -33,12 +31,13 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // remains consistent on all systems.
 APPICON                 ICON                    "Player.ico"
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Menu
 //
 
-PLAYER MENU 
+PLAYER MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -110,7 +109,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_ABOUT, DIALOG
     BEGIN
@@ -164,7 +163,7 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_VERSION      "CamStudio Player requires a newer version of Video for Windows."
     IDS_STRING_NOTE         "Note"
@@ -174,7 +173,7 @@ BEGIN
     IDS_STRING_APPTITLE     "CamStudio Player Classic"
 END
 
-#endif    // English (U.S.) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
