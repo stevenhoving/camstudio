@@ -822,27 +822,20 @@ DWORD CodecInst::CompressRGB(ICCOMPRESS *icinfo)
     }
     else
     {
-        unsigned char *diffinputptr;
-        unsigned char *prevFrameptr;
-        unsigned char *inputptr;
 
         if (m_diffinput == nullptr)
         {
             m_diffinput = static_cast<unsigned char *>(malloc(in_len));
         }
 
-        diffinputptr = m_diffinput;
-        inputptr = input;
-        prevFrameptr = m_prevFrame;
+        unsigned char *diffinputptr = m_diffinput;
+        unsigned char *inputptr = input;
+        unsigned char *prevFrameptr = m_prevFrame;
 
-        for (unsigned long i = 0; i < in_len; i++)
+        for (unsigned long i = 0; i < in_len; ++i)
         {
             *diffinputptr = *inputptr - *prevFrameptr;
-
-            if (*diffinputptr)
-            {
-                *prevFrameptr = *inputptr;
-            }
+            *prevFrameptr = *inputptr;
 
             prevFrameptr++;
             inputptr++;
