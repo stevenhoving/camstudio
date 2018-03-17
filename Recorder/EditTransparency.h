@@ -4,8 +4,8 @@ class CTransparentWnd;
 
 class CEditTransparencyDlg : public CDialog
 {
+    explicit CEditTransparencyDlg(CWnd *pParent = nullptr);
 public:
-    CEditTransparencyDlg(CWnd *pParent = nullptr) = delete;
     CEditTransparencyDlg(int &bEnable, int &iLevel, CTransparentWnd *pParent);
 
     // Dialog Data

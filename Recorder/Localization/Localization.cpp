@@ -388,7 +388,7 @@ BOOL CLocalization::Load(LPCTSTR szModule)
 BOOL CALLBACK CLocalization::EnumResNameProc(HMODULE /*hModule*/, LPCTSTR /*lpszType*/, LPTSTR lpszName,
                                              LONG_PTR lParam)
 {
-    CLocalization *pThis = static_cast<CLocalization *>(lParam);
+    CLocalization *pThis = reinterpret_cast<CLocalization *>(lParam);
 
     if ((UINT_PTR)lpszName < 0xffff)
     {
