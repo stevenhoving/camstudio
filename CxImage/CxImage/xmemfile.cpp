@@ -196,8 +196,24 @@ bool CxMemFile::Alloc(uint32_t dwNewLen)
         uint32_t dwNewBufferSize = (uint32_t)(((dwNewLen>>16)+1)<<16);
 
         // allocate new buffer
-        if (m_pBuffer == nullptr) m_pBuffer = (uint8_t*)malloc(dwNewBufferSize);
-        else    m_pBuffer = (uint8_t*)realloc(m_pBuffer, dwNewBufferSize);
+        if (m_pBuffer == nullptr)
+        {
+            m_pBuffer = (uint8_t*)malloc(dwNewBufferSize);
+        }
+        else
+        {
+            //m_pBuffer = (uint8_t*)realloc(m_pBuffer, dwNewBufferSize);
+            uint8_t* temp = (uint8_t*)realloc(m_pBuffer, dwNewBufferSize);
+            if (temp == nullptr)
+            {
+                free(m_pBuffer);
+                m_pBuffer = nullptr;
+                m_Size = 0;
+                return false;
+            }
+            m_pBuffer = temp;
+        }
+
         // I own this buffer now (caller knows nothing about it)
         m_bFreeOnClose = true;
 

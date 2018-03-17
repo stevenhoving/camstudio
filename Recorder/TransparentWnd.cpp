@@ -88,6 +88,8 @@ CTransparentWnd::CTransparentWnd()
     , m_widthPos(32)
     , m_heightPos(32)
     , m_rectOriginalWnd(m_rectWnd)
+    , m_BitmapID(0)
+    , m_vertalign() // double check
 {
     if (lCurrentWndID > 2147483647)
         lCurrentWndID = 0;
@@ -428,9 +430,8 @@ void CTransparentWnd::OnPaint()
     if (m_hbitmap)
     {
         CDC memDC;
-        HBITMAP pOldMemBmp = nullptr;
         memDC.CreateCompatibleDC(pDC);
-        pOldMemBmp = (HBITMAP)::SelectObject(memDC.m_hDC, m_hbitmap);
+        HBITMAP pOldMemBmp = (HBITMAP)::SelectObject(memDC.m_hDC, m_hbitmap);
 
         // WidthHeight
         // pDC->BitBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, SRCCOPY);
@@ -1457,14 +1458,11 @@ void CTransparentWnd::OnContextRefresh()
 // unconfirmed
 void CTransparentWnd::OnContextClone()
 {
-    CTransparentWnd *cloneWnd = nullptr;
-
     srand((unsigned)time(nullptr));
     int x = (rand() % 40) - 20;
     int y = (rand() % 40) - 20;
 
-    cloneWnd = Clone(x, y);
-
+    CTransparentWnd *cloneWnd = Clone(x, y);
     if (cloneWnd)
     {
         ListManager.AddDisplayArray(cloneWnd);

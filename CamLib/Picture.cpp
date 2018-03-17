@@ -306,6 +306,8 @@ BOOL CPicture::Load(const CString &sFilePathName)
 BOOL CPicture::LoadPictureData(BYTE *pBuffer, int nSize)
 {
     BOOL bResult = FALSE;
+    if (pBuffer == nullptr)
+        return false;
 
     HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE, nSize);
 
@@ -319,6 +321,7 @@ BOOL CPicture::LoadPictureData(BYTE *pBuffer, int nSize)
     void *pData = GlobalLock(hGlobal);
     if (pData == nullptr)
     {
+        FreeResource(hGlobal);
         return false;
     }
 
@@ -806,7 +809,7 @@ BOOL CPicture::LoadFromFile(FILE *fptr)
     }
 
     size_t readcount = fread((void *)&OutData, sizeof(DWORD), 1, fptr);
-    if (readcount < 1)
+    if (readcount != 1)
     {
         MessageBoxEx(nullptr, TEXT("Unable to read image size\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
         return FALSE;
@@ -819,7 +822,7 @@ BOOL CPicture::LoadFromFile(FILE *fptr)
 
     BufferBytes = static_cast<BYTE *>(malloc(OutData + 1));
     readcount = fread((void *)BufferBytes, OutData, 1, fptr);
-    if (readcount < 1)
+    if (readcount != 1)
     {
         MessageBoxEx(nullptr, TEXT("Unable to read image\t"), ERROR_TITLE, MB_OK | MB_ICONSTOP, LANG_ENGLISH);
         free(BufferBytes);

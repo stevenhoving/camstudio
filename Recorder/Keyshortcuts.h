@@ -1,13 +1,9 @@
 #pragma once
 
-/////////////////////////////////////////////////////////////////////////////
-// CKeyshortcutsDlg dialog
-
 class CKeyshortcutsDlg : public CDialog
 {
-
 public:
-    CKeyshortcutsDlg(CWnd *pParent = nullptr);
+    explicit CKeyshortcutsDlg(CWnd *pParent = nullptr);
 
     // Dialog Data
     //{{AFX_DATA(CKeyshortcutsDlg)
@@ -71,5 +67,3 @@ private:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-

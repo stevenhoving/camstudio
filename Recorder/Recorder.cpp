@@ -322,9 +322,9 @@ BOOL CRecorderApp::InitInstance()
 
 int CRecorderApp::ExitInstance()
 {
-    libconfig::Setting *s;
     try
     {
+        libconfig::Setting *s;
         if (!g_cfg->exists("Audio"))
             s = &g_cfg->getRoot().add("Audio", libconfig::Setting::TypeGroup);
         else
@@ -467,25 +467,25 @@ BOOL CRecorderApp::FirstInstance()
     return !bPrevInstance;
 }
 
-bool CRecorderApp::LoadLanguage(LANGID wLangID)
+bool CRecorderApp::LoadLanguage(LANGID LangID)
 {
     // integrated language is the right one
-    bool bResult = (wLangID == STANDARD_LANGID);
+    bool bResult = (LangID == STANDARD_LANGID);
     if (bResult)
     {
-        ASSERT(m_wCurLangID == wLangID);
+        ASSERT(m_wCurLangID == LangID);
         TRACE("m_wCurLangID: %d\n", m_wCurLangID);
         return true;
     }
 
     CString strLangIDDLL;
-    strLangIDDLL.Format(_T("RecorderLANG%.2x.dll"), wLangID);
+    strLangIDDLL.Format(_T("RecorderLANG%.2x.dll"), LangID);
     HINSTANCE hInstance = ::LoadLibrary(strLangIDDLL);
     bResult = (0 != hInstance);
     if (bResult)
     {
         AfxSetResourceHandle(hInstance);
-        m_wCurLangID = wLangID;
+        m_wCurLangID = LangID;
     }
 
     TRACE("m_wCurLangID: %d %s\n", m_wCurLangID, bResult ? "loaded" : "failed");

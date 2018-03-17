@@ -28,6 +28,8 @@ CFixedRegionDlg::CFixedRegionDlg(CWnd *pParent /*=nullptr*/)
     , m_iTop(1)
     , m_iWidth(1)
     , m_iHeight(1)
+    , m_iRNDWidth(0)
+    , m_nRNDHeight(0)
 {
     // TRACE ( _T("## Why are m_itop and m_ileft defined here as 1,1 instead of 0,0. Not correct I beieve\n") );
 

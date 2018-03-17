@@ -1,4 +1,3 @@
-// FolderDialog.cpp: implementation of the CFolderDialog class.
 // $Copyright © 1998 Kenneth M. Reed, ALL RIGHTS RESERVED. $
 // $Header: FolderDialog.cpp Revision:1.11 Tue Jun 23 18:00:44 1998 KenReed $
 
@@ -12,6 +11,8 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 CFolderDialog::CFolderDialog(LPCTSTR lpszFolderName, DWORD dwFlags, CWnd *pParentWnd)
+    : m_szPath()
+    , m_hDialogBox()
 {
     // Use the supplied initial folder if non-null.
     if (lpszFolderName == nullptr)

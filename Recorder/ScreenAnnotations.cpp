@@ -196,11 +196,10 @@ void CScreenAnnotationsDlg::OnRclickList1(NMHDR * /*pNMHDR*/, LRESULT *pResult)
 {
     int nItem = -1;
     int numitems = m_ctrlList.GetItemCount();
-    int itemstate = 0;
 
     for (int i = 0; i < numitems; i++)
     {
-        itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
+        int itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
         if (itemstate & LVIS_SELECTED)
         {
             nItem = i;
@@ -599,12 +598,11 @@ void CScreenAnnotationsDlg::OnEditobjCopy()
     {
         int nItem = -1;
         int numitems = m_ctrlList.GetItemCount();
-        int itemstate = 0;
 
         for (int i = 0; i < numitems; i++)
         {
             // GetItemState( int nItem, LVIS_SELECTED )
-            itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
+            int itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
             if (itemstate & LVIS_SELECTED)
             {
                 nItem = i;
@@ -677,12 +675,11 @@ void CScreenAnnotationsDlg::OnEditobjRemove()
 {
     int nItem = -1;
     int numitems = m_ctrlList.GetItemCount();
-    int itemstate = 0;
 
     for (int i = 0; i < numitems; i++)
     {
         // GetItemState( int nItem, LVIS_SELECTED )
-        itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
+        int itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
         if (itemstate & LVIS_SELECTED)
         {
             nItem = i;
@@ -720,11 +717,10 @@ void CScreenAnnotationsDlg::OnEditobjTestedit()
 {
     int nItem = -1;
     int numitems = m_ctrlList.GetItemCount();
-    int itemstate = 0;
 
     for (int i = 0; i < numitems; i++)
     {
-        itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
+        int itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
         if (itemstate & LVIS_SELECTED)
         {
             nItem = i;
@@ -797,11 +793,10 @@ void CScreenAnnotationsDlg::OnEndlabeleditList1(NMHDR *pNMHDR, LRESULT *pResult)
 
         int nItem = -1;
         int numitems = m_ctrlList.GetItemCount();
-        int itemstate = 0;
 
         for (int i = 0; i < numitems; i++)
         {
-            itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
+            int itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
             if (itemstate & LVIS_SELECTED)
             {
                 nItem = i;
@@ -875,11 +870,10 @@ CTransparentWnd *CScreenAnnotationsDlg::LocateWndFromShapeList()
 
     int nItem = -1;
     int numitems = m_ctrlList.GetItemCount();
-    int itemstate = 0;
 
     for (int i = 0; i < numitems; i++)
     {
-        itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
+        int itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
         if (itemstate & LVIS_SELECTED)
         {
             nItem = i;
@@ -904,7 +898,6 @@ CTransparentWnd *CScreenAnnotationsDlg::LocateWndFromItem(int nItem)
 
     WndID = searchItem.lParam;
 
-    int found = 0;
     auto max = ListManager.shapeArray.GetSize();
     CTransparentWnd *itemWnd = nullptr;
     for (auto i = 0; i < max; i++)
@@ -915,7 +908,6 @@ CTransparentWnd *CScreenAnnotationsDlg::LocateWndFromItem(int nItem)
             if (itemWnd->UniqueID() == WndID)
             {
                 newWnd = itemWnd;
-                found = 1;
                 break; // allow only one removal
             }
         }
@@ -1018,11 +1010,10 @@ void CScreenAnnotationsDlg::OnLButtonUp(UINT nFlags, CPoint point)
                 // Locate Selected Item
                 int nItem = -1;
                 int numitems = m_ctrlList.GetItemCount();
-                int itemstate = 0;
 
                 for (int i = 0; i < numitems; i++)
                 {
-                    itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
+                    int itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
                     if (itemstate & LVIS_SELECTED)
                     {
                         nItem = i;
@@ -1070,11 +1061,10 @@ void CScreenAnnotationsDlg::OnLButtonUp(UINT nFlags, CPoint point)
                 // Locate Selected Item
                 int nItem = -1;
                 int numitems = m_ctrlList.GetItemCount();
-                int itemstate = 0;
 
                 for (int i = 0; i < numitems; i++)
                 {
-                    itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
+                    int itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
                     if (itemstate & LVIS_SELECTED)
                     {
                         nItem = i;
@@ -1243,7 +1233,6 @@ CLayoutList *CScreenAnnotationsDlg::LocateLayoutFromItem(int nItem)
     m_ctrlList.GetItem(&searchItem);
     LayoutID = searchItem.lParam;
 
-    int found = 0;
     CLayoutList *itemLayout = nullptr;
     auto max = ListManager.layoutArray.GetSize();
     for (auto i = max - 1; i >= 0; i--)
@@ -1254,7 +1243,6 @@ CLayoutList *CScreenAnnotationsDlg::LocateLayoutFromItem(int nItem)
             if (itemLayout->uniqueID == LayoutID)
             {
                 returnLayout = itemLayout;
-                found = 1;
                 break; // allow only one removal
             }
         }
@@ -1271,11 +1259,10 @@ void CScreenAnnotationsDlg::InstantiateLayout()
 
         int nItem = -1;
         int numitems = m_ctrlList.GetItemCount();
-        int itemstate = 0;
 
         for (int i = 0; i < numitems; i++)
         {
-            itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
+            int itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
             if (itemstate & LVIS_SELECTED)
             {
                 nItem = i;
@@ -1791,10 +1778,9 @@ void CScreenAnnotationsDlg::OnInitMenuPopup(CMenu *pPopupMenu, UINT nIndex, BOOL
         }
         // Enabling / Disabling Item Up / Down
         int nItem = -1;
-        int itemstate = 0;
         for (int i = 0; i < numitems; i++)
         {
-            itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
+            int itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
             if (itemstate & LVIS_SELECTED)
             {
                 nItem = i;
@@ -1956,11 +1942,10 @@ void CScreenAnnotationsDlg::MoveItem(int direction)
     // Locate Selected Item
     int nItem = -1;
     int numitems = m_ctrlList.GetItemCount();
-    int itemstate = 0;
 
     for (int i = 0; i < numitems; i++)
     {
-        itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
+        int itemstate = m_ctrlList.GetItemState(i, LVIS_SELECTED);
         if (itemstate & LVIS_SELECTED)
         {
             nItem = i;

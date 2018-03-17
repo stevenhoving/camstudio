@@ -2,14 +2,11 @@
 
 #include <afxdialogex.h>
 
-// CUpdateDialog dialog
-
 class CUpdateDialog : public CDialogEx
 {
     DECLARE_DYNAMIC(CUpdateDialog)
-
 public:
-    CUpdateDialog(CWnd *pParent = nullptr);
+    explicit CUpdateDialog(CWnd *pParent = nullptr);
     virtual ~CUpdateDialog();
 
     // Dialog Data

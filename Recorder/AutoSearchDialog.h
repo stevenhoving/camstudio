@@ -1,13 +1,9 @@
 #pragma once
 
-/////////////////////////////////////////////////////////////////////////////
-// CAutoSearchDlg dialog
-
 class CAutoSearchDlg : public CDialog
 {
-
 public:
-    CAutoSearchDlg(CWnd *pParent = nullptr);
+    explicit CAutoSearchDlg(CWnd *pParent = nullptr);
     void SetVarText(CString textstr);
     void SetVarTextLine2(CString textstr);
     void SetButtonEnable(BOOL enable);

@@ -34,6 +34,7 @@ CAudioFormatDlg::CAudioFormatDlg(CWnd *pParent /*=nullptr*/)
     , m_iNumFormat(0)
     , m_iNumDevice(0)
     , m_iInterleavePeriod(0)
+    , m_devicemap()
 {
     //{{AFX_DATA_INIT(CAudioFormatDlg)
     // NOTE: the ClassWizard will add member initialization here
@@ -54,6 +55,7 @@ CAudioFormatDlg::CAudioFormatDlg(const sAudioFormat &cFmt, CWnd *pParent)
     , m_iNumFormat(0)
     , m_iNumDevice(0)
     , m_iInterleavePeriod(cFmt.m_iInterleavePeriod)
+    , m_devicemap()
 {
 }
 

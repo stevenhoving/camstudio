@@ -320,6 +320,9 @@ bool CxImageTIF::Decode(CxFile * hFile)
 
             if (info.nEscape){ // <vho> - cancel decoding
                 free(bits);
+#ifdef FIX_16BPP_DARKIMG
+                free(row_shifts);
+#endif
                 cx_throw("Cancelled");
             }
 

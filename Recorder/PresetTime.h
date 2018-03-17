@@ -1,16 +1,9 @@
 #pragma once
 
-// PresetTime.h : header file
-//
-
-/////////////////////////////////////////////////////////////////////////////
-// CPresetTimeDlg dialog
-
 class CPresetTimeDlg : public CDialog
 {
-
 public:
-    CPresetTimeDlg(CWnd *pParent = nullptr);
+    explicit CPresetTimeDlg(CWnd *pParent = nullptr);
 
     // Dialog Data
     //{{AFX_DATA(CPresetTimeDlg)

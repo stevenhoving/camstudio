@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 /////////////////////////////////////////////////////////////////////////////
 // CAudioFormatDlg dialog
 
@@ -62,7 +64,7 @@ private:
     BOOL m_bAudioCompression;
     int m_iNumFormat;
     int m_iNumDevice;
-    UINT m_devicemap[15];
+    std::array<UINT, 15> m_devicemap;
 
     // dialog variables
     int m_iInterleavePeriod;

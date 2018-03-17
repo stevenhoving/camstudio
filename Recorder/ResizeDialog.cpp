@@ -13,6 +13,7 @@ static char THIS_FILE[] = __FILE__;
 
 CResizeDlg::CResizeDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CResizeDlg::IDD, pParent)
+    , m_transWnd(nullptr)
 {
     //{{AFX_DATA_INIT(CResizeDlg)
     // NOTE: the ClassWizard will add member initialization here

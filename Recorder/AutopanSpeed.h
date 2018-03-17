@@ -1,15 +1,9 @@
-
 #pragma once
-
-
-/////////////////////////////////////////////////////////////////////////////
-// CAutopanSpeedDlg dialog
 
 class CAutopanSpeedDlg : public CDialog
 {
-
 public:
-    CAutopanSpeedDlg(CWnd *pParent = nullptr);
+    explicit CAutopanSpeedDlg(CWnd *pParent = nullptr);
 
     // Dialog Data
     //{{AFX_DATA(CAutopanSpeedDlg)

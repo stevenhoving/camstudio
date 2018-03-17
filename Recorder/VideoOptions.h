@@ -1,17 +1,10 @@
 #pragma once
 
 #include "profile.h"
-// VideoOptions.h : header file
-//
-
-/////////////////////////////////////////////////////////////////////////////
-// CVideoOptionsDlg dialog
 
 class CVideoOptionsDlg : public CDialog
 {
-
-    CVideoOptionsDlg(CWnd *pParent = nullptr);
-
+    explicit CVideoOptionsDlg(CWnd *pParent = nullptr);
 public:
     CVideoOptionsDlg(const sVideoOpts &cOpts, CWnd *pParent = nullptr);
 

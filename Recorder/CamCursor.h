@@ -1,7 +1,3 @@
-// CamCursor.h    dlecaration of the CamCursor class
-// Mouse Capture functions
-/////////////////////////////////////////////////////////////////////////////
-
 #pragma once
 
 #include "Profile.h"
@@ -24,266 +20,65 @@ enum eCursorType
 class CCamCursor
 {
 public:
-    CCamCursor()
-        : m_iSelect(ACTIVE)
-        , m_bRecord(true)
-        , m_iHighlightSize(64)
-        , m_bHighlightClick(false)
-        , m_clrHighlight(0xa0ffff80)
-        , m_clrClickLeft(0xa0ff0000)
-        , m_clrClickRight(0xa00000ff)
-        , m_clrClickMiddle(0xa000ff00)
-        , m_fRingWidth(1.5)
-        , m_iRingSize(20)
-        , m_iRingThreshold(1000)
-    {
-    }
-    CCamCursor(const CCamCursor &rhs)
-    {
-        *this = rhs;
-    }
-    virtual ~CCamCursor()
-    {
-    }
+    CCamCursor();
 
-    // TODO: can't we just use default copy constructor???
-    /*
-    CCamCursor& operator=(const CCamCursor& rhs)
-    {
-        if (this == &rhs)
-            return *this;
+    CCamCursor(const CCamCursor &rhs);
 
-        //TRACE("CCamCursor::Save assignment\n");
-        m_iSelect            = rhs.m_iSelect;
-        m_hSavedCursor        = rhs.m_hSavedCursor;
-        m_hLoadCursor        = rhs.m_hLoadCursor;
-        m_hCustomCursor        = rhs.m_hCustomCursor;
-        m_strDir            = rhs.m_strDir;
-        m_strFileName        = m_strFileName;
-        m_vIconID            = rhs.m_vIconID;
-        m_bRecord            = rhs.m_bRecord;
-        m_iCustomSel        = rhs.m_iCustomSel;
-        m_bHighlight        = rhs.m_bHighlight;
-        m_iHighlightSize    = rhs.m_iHighlightSize;
-        m_iHighlightShape    = rhs.m_iHighlightShape;
-        m_clrHighlight        = rhs.m_clrHighlight;
-        m_bHighlightClick    = rhs.m_bHighlightClick;
-        m_clrClickLeft        = rhs.m_clrClickLeft;
-        m_clrClickRight        = rhs.m_clrClickRight;
+    virtual ~CCamCursor() = default;
 
-        return *this;
-    }*/
+    HCURSOR Load() const;
+    HCURSOR Load(HCURSOR hCursor);
+    HCURSOR Save() const;
+    HCURSOR Save(HCURSOR hCursor);
+    HCURSOR Custom() const;
+    HCURSOR Custom(HCURSOR hCursor);
+    CString Dir() const;
+    CString Dir(CString strDir);
+    CString FileName() const;
+    CString FileName(CString strFileName);
+    int Select() const;
 
-    HCURSOR Load() const
-    {
-        return m_hLoadCursor;
-    }
-    HCURSOR Load(HCURSOR hCursor)
-    {
-        return m_hLoadCursor = hCursor;
-    }
-    HCURSOR Save() const
-    {
-        return m_hSavedCursor;
-    }
-    HCURSOR Save(HCURSOR hCursor)
-    { // mlt_msk: what are we saving on? int assignment?
-        return (m_hSavedCursor == hCursor) ? m_hSavedCursor : (m_hSavedCursor = hCursor);
-    }
-    HCURSOR Custom() const
-    {
-        return m_hCustomCursor;
-    }
-    HCURSOR Custom(HCURSOR hCursor)
-    {
-        return m_hCustomCursor = hCursor;
-    }
-    CString Dir() const
-    {
-        return m_strDir;
-    }
-    CString Dir(CString strDir)
-    {
-        return m_strDir = strDir;
-    }
-    CString FileName() const
-    {
-        return m_strFileName;
-    }
-    CString FileName(CString strFileName)
-    {
-        return m_strFileName = strFileName;
-    }
-    int Select() const
-    {
-        return m_iSelect;
-    }
+    int Select(int iSelect);
 
-    int Select(int iSelect)
-    {
-        return m_iSelect = ((0 <= iSelect) && (iSelect < 3)) ? iSelect : 0;
-    }
+    HCURSOR Cursor();
 
-    HCURSOR Cursor()
-    {
-        return Cursor(m_iSelect);
-    }
+    HCURSOR Cursor(int iCursorType);
 
-    HCURSOR Cursor(int iCursorType)
-    {
-        switch (iCursorType)
-        {
-            default:
-            case ACTIVE:
-                m_hSavedCursor = getCursor();
-                return m_hSavedCursor;
-            case CUSTOM:
-                return m_hCustomCursor;
-            case CUSTOMFILE:
-                return m_hLoadCursor;
-        }
-    }
+    void AddID(DWORD dwID);
 
-    void AddID(DWORD dwID)
-    {
-        if (std::find(m_vIconID.begin(), m_vIconID.end(), dwID) == m_vIconID.end())
-        {
-            m_vIconID.push_back(dwID);
-        }
-    }
+    size_t SizeID() const;
 
-    size_t SizeID() const
-    {
-        return m_vIconID.size();
-    }
+    DWORD GetID(size_t uIndex);
 
-    DWORD GetID(size_t uIndex)
-    {
-        return (uIndex < m_vIconID.size()) ? m_vIconID[uIndex] : 0;
-    }
+    bool Record() const;
 
-    bool Record() const
-    {
-        return m_bRecord;
-    }
+    bool Record(bool bRec);
 
-    bool Record(bool bRec)
-    {
-        return m_bRecord = bRec;
-    }
+    int CustomType() const;
 
-    int CustomType() const
-    {
-        return m_iCustomSel;
-    }
+    int CustomType(int iType);
 
-    int CustomType(int iType)
-    {
-        return m_iCustomSel = iType;
-    }
+    bool Highlight() const;
 
-    bool Highlight() const
-    {
-        return m_bHighlight;
-    }
+    bool Highlight(bool bHiLight);
 
-    bool Highlight(bool bHiLight)
-    {
-        return m_bHighlight = bHiLight;
-    }
+    int HighlightSize() const;
+    int HighlightSize(int iSize);
 
-    int HighlightSize() const
-    {
-        return m_iHighlightSize;
-    }
-    int HighlightSize(int iSize)
-    {
-        return m_iHighlightSize = iSize;
-    }
+    int HighlightShape() const;
+    int HighlightShape(int iShape);
+    COLORREF HighlightColor() const;
+    COLORREF HighlightColor(COLORREF clr);
+    bool HighlightClick() const;
+    bool HighlightClick(bool bHiLight);
+    COLORREF ClickLeftColor() const;
+    COLORREF ClickLeftColor(COLORREF clr);
+    COLORREF ClickRightColor() const;
+    COLORREF ClickRightColor(COLORREF clr);
 
-    int HighlightShape() const
-    {
-        return m_iHighlightShape;
-    }
-    int HighlightShape(int iShape)
-    {
-        return m_iHighlightShape = iShape;
-    }
-    COLORREF HighlightColor() const
-    {
-        return m_clrHighlight;
-    }
-    COLORREF HighlightColor(COLORREF clr)
-    {
-        return m_clrHighlight = clr;
-    }
-    bool HighlightClick() const
-    {
-        return m_bHighlightClick;
-    }
-    bool HighlightClick(bool bHiLight)
-    {
-        return m_bHighlightClick = bHiLight;
-    }
-    COLORREF ClickLeftColor() const
-    {
-        return m_clrClickLeft;
-    }
-    COLORREF ClickLeftColor(COLORREF clr)
-    {
-        return m_clrClickLeft = clr;
-    }
-    COLORREF ClickRightColor() const
-    {
-        return m_clrClickRight;
-    }
-    COLORREF ClickRightColor(COLORREF clr)
-    {
-        return m_clrClickRight = clr;
-    }
+    bool Read(libconfig::Setting &cProfile);
 
-    bool Read(libconfig::Setting &cProfile)
-    {
-        cProfile.lookupValue("RecordCursor", m_bRecord);
-        cProfile.lookupValue("CursorType", m_iCustomSel);
-        cProfile.lookupValue("CursorSel", m_iSelect);
-        cProfile.lookupValue("Highlight", m_bHighlight);
-        cProfile.lookupValue("HighlightSize", m_iHighlightSize);
-        cProfile.lookupValue("HighlightShape", m_iHighlightShape);
-        cProfile.lookupValue("HighlightColor", (int &)m_clrHighlight);
-        cProfile.lookupValue("HighlightClick", m_bHighlightClick);
-        cProfile.lookupValue("RingThreshold", m_iRingThreshold);
-        cProfile.lookupValue("RingSize", m_iRingSize);
-        cProfile.lookupValue("RingWidth", m_fRingWidth);
-        cProfile.lookupValue("ClickColorLeft", (int &)m_clrClickLeft);
-        cProfile.lookupValue("ClickColorMiddle", (int &)m_clrClickMiddle);
-        cProfile.lookupValue("ClickColorRight", (int &)m_clrClickRight);
-        std::string text;
-        if (cProfile.lookupValue("CursorDir", text))
-            m_strFileName = text.c_str();
-        return true;
-    }
-
-    bool Write(libconfig::Setting &cProfile)
-    {
-        UpdateSetting(cProfile, "RecordCursor", m_bRecord, libconfig::Setting::TypeBoolean);
-        UpdateSetting(cProfile, "CursorType", m_iCustomSel, libconfig::Setting::TypeInt);
-        UpdateSetting(cProfile, "CursorSel", m_iSelect, libconfig::Setting::TypeInt);
-        UpdateSetting(cProfile, "Highlight", m_bHighlight, libconfig::Setting::TypeBoolean);
-        UpdateSetting(cProfile, "HighlightSize", m_iHighlightSize, libconfig::Setting::TypeInt);
-        UpdateSetting(cProfile, "HighlightShape", m_iHighlightShape, libconfig::Setting::TypeInt);
-        UpdateSetting(cProfile, "HighlightColor", (long &)m_clrHighlight, libconfig::Setting::TypeInt);
-        UpdateSetting(cProfile, "RingThreshold", m_iRingThreshold, libconfig::Setting::TypeInt);
-        UpdateSetting(cProfile, "RingSize", m_iRingSize, libconfig::Setting::TypeInt);
-        UpdateSetting(cProfile, "RingWidth", m_fRingWidth, libconfig::Setting::TypeFloat);
-        UpdateSetting(cProfile, "HighlightClick", m_bHighlightClick, libconfig::Setting::TypeBoolean);
-        UpdateSetting(cProfile, "ClickColorLeft", (long &)m_clrClickLeft, libconfig::Setting::TypeInt);
-        UpdateSetting(cProfile, "ClickColorMiddle", (long &)m_clrClickMiddle, libconfig::Setting::TypeInt);
-        UpdateSetting(cProfile, "ClickColorRight", (long &)m_clrClickRight, libconfig::Setting::TypeInt);
-        std::string text(m_strFileName);
-        UpdateSetting(cProfile, "CursorDir", text, libconfig::Setting::TypeString);
-        return true;
-    }
+    bool Write(libconfig::Setting &cProfile);
 
     // why do we ever want to make everything private and use getter/setter even for plain types with no onchange
     // events??? let's keep it simple

@@ -15,6 +15,7 @@ int iRrefreshRate = DEFAULT_PERIOD;
 /////////////////////////////////////////////////////////////////////////////
 // CVideoWnd
 CVideoWnd::CVideoWnd()
+    : m_ProcessorMode(0)
 {
     m_iStatus = 0;
     m_baseType = 1;

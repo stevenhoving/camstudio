@@ -15,9 +15,14 @@ int msgShown = 0;
 
 CTextDlg::CTextDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CTextDlg::IDD, pParent)
+    , displayStr(nullptr)
+    , logFont(nullptr)
+    , colorrgb(nullptr)
+    , myparent(nullptr)
+    , myhorzalign(nullptr)
+    , tempFont()
+    , mycharset(ANSI_CHARSET)
 {
-
-    mycharset = ANSI_CHARSET;
     //{{AFX_DATA_INIT(CTextDlg)
     // NOTE: the ClassWizard will add member initialization here
     //}}AFX_DATA_INIT
@@ -138,12 +143,11 @@ void CTextDlg::OnFont()
     InvalidateTransWnd();
 }
 
-void CTextDlg::PreModal(CString *inStr, LOGFONT *inFont, COLORREF *inRGB, CWnd *parent, int *horzalign)
+void CTextDlg::PreModal(CString *inStr, LOGFONT *inFont, COLORREF *inRgb, CWnd *parent, int *horzalign)
 {
-
     logFont = inFont;
     displayStr = inStr;
-    colorrgb = inRGB;
+    colorrgb = inRgb;
     myparent = parent;
     myhorzalign = horzalign;
 }

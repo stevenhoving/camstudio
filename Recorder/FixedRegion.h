@@ -1,17 +1,10 @@
-
 #pragma once
-
-
-/////////////////////////////////////////////////////////////////////////////
-// CFixedRegionDlg dialog
 
 class CFixedRegionDlg : public CDialog
 {
     DECLARE_DYNAMIC(CFixedRegionDlg)
-
-
 public:
-    CFixedRegionDlg(CWnd *pParent = nullptr);
+    explicit CFixedRegionDlg(CWnd *pParent = nullptr);
 
     // Dialog Data
     //{{AFX_DATA(CFixedRegionDlg)

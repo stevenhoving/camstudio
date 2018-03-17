@@ -2,14 +2,10 @@
 
 #include "VideoWnd.h"
 
-/////////////////////////////////////////////////////////////////////////////
-// CTransRateDlg dialog
-
 class CTransRateDlg : public CDialog
 {
-
 public:
-    CTransRateDlg(CWnd *pParent = nullptr);
+    explicit CTransRateDlg(CWnd *pParent = nullptr);
 
     // Dialog Data
     //{{AFX_DATA(CTransRateDlg)

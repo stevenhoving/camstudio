@@ -1,16 +1,11 @@
-
 #pragma once
 
-/////////////////////////////////////////////////////////////////////////////
-// CEditTransparencyDlg dialog
-
-class CTransparentWnd; // forward declaration
+class CTransparentWnd;
 
 class CEditTransparencyDlg : public CDialog
 {
-
-    CEditTransparencyDlg(CWnd *pParent = nullptr); // not used
 public:
+    CEditTransparencyDlg(CWnd *pParent = nullptr) = delete;
     CEditTransparencyDlg(int &bEnable, int &iLevel, CTransparentWnd *pParent);
 
     // Dialog Data

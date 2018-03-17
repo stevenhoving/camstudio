@@ -1407,6 +1407,7 @@ bool CxImage::Median(int32_t Ksize)
     CxImage tmp(*this);
     if (!tmp.IsValid()){
         strcpy(info.szLastError,tmp.GetLastError());
+        free(kernel);
         return false;
     }
 
@@ -2456,12 +2457,17 @@ bool CxImage::TextBlur(uint8_t threshold, uint8_t decay, uint8_t max_depth, bool
         pPalette = new RGBQUAD[head.biClrUsed];
         memcpy(pPalette, GetPalette(),GetPaletteSize());
         if (!IncreaseBpp(24))
+        {
+            delete [] pPalette;
             return false;
+        }
     }
 
     CxImage tmp(*this);
-    if (!tmp.IsValid()){
+    if (!tmp.IsValid())
+    {
         strcpy(info.szLastError,tmp.GetLastError());
+        delete [] pPalette;
         return false;
     }
 
@@ -2516,12 +2522,17 @@ bool CxImage::GaussianBlur(float radius /*= 1.0f*/, CxImage* iDst /*= 0*/)
         pPalette = new RGBQUAD[head.biClrUsed];
         memcpy(pPalette, GetPalette(),GetPaletteSize());
         if (!IncreaseBpp(24))
+        {
+            delete [] pPalette;
             return false;
+        }
     }
 
     CxImage tmp_x(*this, false, true, true);
-    if (!tmp_x.IsValid()){
+    if (!tmp_x.IsValid())
+    {
         strcpy(info.szLastError,tmp_x.GetLastError());
+        delete [] pPalette;
         return false;
     }
 
@@ -2551,6 +2562,7 @@ bool CxImage::GaussianBlur(float radius /*= 1.0f*/, CxImage* iDst /*= 0*/)
     CxImage tmp_y(tmp_x, false, true, true);
     if (!tmp_y.IsValid()){
         strcpy(info.szLastError,tmp_y.GetLastError());
+        delete [] pPalette;
         return false;
     }
 
@@ -2722,13 +2734,18 @@ bool CxImage::UnsharpMask(float radius /*= 5.0*/, float amount /*= 0.5*/, int32_
     if (!(head.biBitCount == 24 || IsGrayScale())){
         pPalette = new RGBQUAD[head.biClrUsed];
         memcpy(pPalette, GetPalette(),GetPaletteSize());
-        if (!IncreaseBpp(24))
+        if (!IncreaseBpp(24)) {
+            delete [] pPalette;
             return false;
+        }
     }
 
     CxImage iDst;
     if (!GaussianBlur(radius,&iDst))
+    {
+        delete [] pPalette;
         return false;
+    }
 
     CImageIterator itSrc(this);
     CImageIterator itDst(&iDst);
@@ -2743,7 +2760,10 @@ bool CxImage::UnsharpMask(float radius /*= 5.0*/, float amount /*= 0.5*/, int32_
     }
 
     if (xmin==xmax || ymin==ymax)
+    {
+        delete [] pPalette;
         return false;
+    }
 
     double dbScaler = 100.0/(ymax-ymin);
     int32_t bypp = head.biBitCount>>3;
@@ -3612,12 +3632,18 @@ bool CxImage::FloodFill(const int32_t xStart, const int32_t yStart, const RGBQUA
         pPalette = new RGBQUAD[head.biClrUsed];
         memcpy(pPalette, GetPalette(),GetPaletteSize());
         if (!IncreaseBpp(24))
+        {
+            delete [] pPalette;
             return false;
+        }
     }
 
     uint8_t* pFillMask = (uint8_t*)calloc(head.biWidth * head.biHeight,1);
     if (!pFillMask)
+    {
+        delete [] pPalette;
         return false;
+    }
 
 //------------------------------------- Begin of Flood Fill
     POINT offset[4] = {{-1,0},{0,-1},{1,0},{0,1}};
@@ -3737,6 +3763,8 @@ bool CxImage::FloodFill(const int32_t xStart, const int32_t yStart, const RGBQUA
     if (bSelectFilledArea){
         if (!SelectionIsValid()){
             if (!SelectionCreate()){
+                delete [] pPalette;
+                free(pFillMask);
                 return false;
             }
             SelectionClear();

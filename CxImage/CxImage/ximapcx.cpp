@@ -78,7 +78,7 @@ bool CxImagePCX::Decode(CxFile *hFile)
     nbytes = pcxHeader.BytesPerLine * pcxHeader.ColorPlanes * Height;
     lpHead1 = pcximage = (uint8_t*)malloc(nbytes);
     while (nbytes > 0){
-        if (hFile == nullptr || hFile->Eof()) cx_throw("corrupted PCX");
+        if (hFile->Eof()) cx_throw("corrupted PCX");
 
         hFile->Read(&c,1,1);
         if ((c & 0XC0) != 0XC0){ // Repeated group

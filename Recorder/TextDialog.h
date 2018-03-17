@@ -1,20 +1,12 @@
 #pragma once
 
-
-// CTextDlg.h : header file
-//
-
 #define WM_USER_INVALIDATEWND_MSG "WM_USER_INVALIDATEWND_MSG"
 static UINT WM_USER_INVALIDATEWND = ::RegisterWindowMessage(WM_USER_INVALIDATEWND_MSG);
 
-/////////////////////////////////////////////////////////////////////////////
-// CTextDlg dialog
-
 class CTextDlg : public CDialog
 {
-
 public:
-    CTextDlg(CWnd *pParent = nullptr);
+    explicit CTextDlg(CWnd *pParent = nullptr);
 
     void PreModal(CString *inStr, LOGFONT *inFont, COLORREF *inRgb, CWnd *parent, int *horzalign);
     void InvalidateTransWnd();
@@ -55,7 +47,7 @@ protected:
     afx_msg void OnJustleft();
     afx_msg void OnJustcenter();
     afx_msg void OnJustright();
-    afx_msg void OnFont2();
+    //afx_msg void OnFont2();
     afx_msg void OnScriptWestern();
     afx_msg void OnScriptArabic();
     afx_msg void OnScriptBaltic();
@@ -90,4 +82,3 @@ public:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
-

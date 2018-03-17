@@ -17,6 +17,7 @@ CEditImageDlg::CEditImageDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CEditImageDlg::IDD, pParent)
     , m_hCursorCross(::LoadCursor(nullptr, IDC_CROSS))
     , m_hCursorArrow(::LoadCursor(nullptr, IDC_ARROW))
+    , m_transWnd(nullptr)
 {
     //{{AFX_DATA_INIT(CEditImageDlg)
     // NOTE: the ClassWizard will add member initialization here

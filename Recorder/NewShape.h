@@ -1,13 +1,9 @@
 #pragma once
 
-/////////////////////////////////////////////////////////////////////////////
-// CNewShapeDlg dialog
-
 class CNewShapeDlg : public CDialog
 {
-
 public:
-    CNewShapeDlg(CWnd *pParent = nullptr);
+    explicit CNewShapeDlg(CWnd *pParent = nullptr);
 
     // Dialog Data
     //{{AFX_DATA(CNewShapeDlg)

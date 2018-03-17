@@ -47,7 +47,7 @@ bool CxImage::LayerCreate(int32_t position)
     if (ptmp[position]){
         ptmp[position]->info.pParent = this;
     } else {
-        free(ptmp);
+        delete [] ptmp;
         return false;
     }
 

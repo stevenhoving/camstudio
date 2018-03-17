@@ -2,14 +2,12 @@
 
 #include <afxdialogex.h>
 
-// ProgressDlg dialog
-
 class CProgressDlg : public CDialogEx
 {
     DECLARE_DYNAMIC(CProgressDlg)
 
 public:
-    CProgressDlg(CWnd *pParent = nullptr);
+    explicit CProgressDlg(CWnd *pParent = nullptr);
     virtual ~CProgressDlg();
 
     BOOL Create(CWnd *pParent = nullptr);

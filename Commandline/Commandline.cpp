@@ -1174,9 +1174,6 @@ int ParseOptions(int argc, char *argv[])
                 return 0;
             }
             g_frames_per_second = atoi((*it).c_str());
-            // Set to one key frame per second
-            g_key_frames_every = g_frames_per_second;
-            g_timelapse = 1000 / g_frames_per_second;
 
             // framerate should be positive
             if (g_frames_per_second <= 0)
@@ -1184,6 +1181,12 @@ int ParseOptions(int argc, char *argv[])
                 std::cout << "Framerate should be positive: " << *it <<std::endl;
                 return 0;
             }
+
+            // Set to one key frame per second
+            g_key_frames_every = g_frames_per_second;
+            g_timelapse = 1000 / g_frames_per_second;
+
+
         }
         else if (!OptionNameEqual("help", *it))
         {

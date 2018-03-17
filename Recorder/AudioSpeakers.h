@@ -1,13 +1,9 @@
 #pragma once
 
-/////////////////////////////////////////////////////////////////////////////
-// CAudioSpeakersDlg dialog
-
 class CAudioSpeakersDlg : public CDialog
 {
-
 public:
-    CAudioSpeakersDlg(CWnd *pParent = nullptr);
+    explicit CAudioSpeakersDlg(CWnd *pParent = nullptr);
     void OnUpdateLineConfig(int line_proper);
     void OnUpdateVolume();
 

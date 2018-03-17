@@ -1,13 +1,9 @@
 #pragma once
 
-/////////////////////////////////////////////////////////////////////////////
-// CTroubleShootDlg dialog
-
 class CTroubleShootDlg : public CDialog
 {
-
 public:
-    CTroubleShootDlg(CWnd *pParent = nullptr);
+    explicit CTroubleShootDlg(CWnd *pParent = nullptr);
 
     // Dialog Data
     //{{AFX_DATA(CTroubleShootDlg)

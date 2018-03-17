@@ -75,7 +75,7 @@ void CXnoteStopwatchFormat::FormatXnoteDelayedTimeString(char *cBuf128, DWORD dw
     {
         char prefix = bDisplayCameraDelay2 ? '-' : '+';
         sprintf_s(cBuf128, 128, "(%c%04lu)  %02lu:%02lu:%02lu.%03lu",
-            prefix, lDelayTimeInMillisSec, ulTickTimeHour, ulTickMinutes, ulTickTimeSeconds, ulTickTimeThousands);
+            prefix, (ULONG)lDelayTimeInMillisSec, ulTickTimeHour, ulTickMinutes, ulTickTimeSeconds, ulTickTimeThousands);
     }
     else
     {

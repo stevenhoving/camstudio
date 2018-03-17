@@ -15,6 +15,7 @@ using namespace std;
 #include <gdiplus.h>
 
 CCamera::CCamera()
+    : m_uFrameCount(0)
 {
 }
 

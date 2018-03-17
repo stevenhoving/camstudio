@@ -2,9 +2,6 @@
 #include "Recorder.h"
 #include "ProgressDlg.h"
 
-
-// ProgressDlg dialog
-
 IMPLEMENT_DYNAMIC(CProgressDlg, CDialogEx)
 
 CProgressDlg::CProgressDlg(CWnd *pParent /*=nullptr*/)
@@ -19,6 +16,7 @@ CProgressDlg::CProgressDlg(CWnd *pParent /*=nullptr*/)
     , m_nMaxProg(5)
     , m_nFakeMax(95)
     , m_bParentDisabled(FALSE)
+    , m_nCaptionID(0)
 {
 }
 

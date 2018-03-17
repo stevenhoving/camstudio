@@ -156,7 +156,7 @@ void CFlashingWnd::PaintBorder(bool bInvert, bool bDraw)
     {
         return;
     }
-    COLORREF clrColor = (bDraw & !bInvert) ? m_clrBorderON : m_clrBorderOFF;
+    COLORREF clrColor = (bDraw && !bInvert) ? m_clrBorderON : m_clrBorderOFF;
 
     clrColor = m_clrBorderON;
     CWindowDC cWindowDC(CWnd::FromHandle(m_hWnd));

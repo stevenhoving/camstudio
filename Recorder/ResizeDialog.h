@@ -2,14 +2,10 @@
 
 #include "TransparentWnd.h"
 
-/////////////////////////////////////////////////////////////////////////////
-// CResizeDlg dialog
-
 class CResizeDlg : public CDialog
 {
-
 public:
-    CResizeDlg(CWnd *pParent = nullptr);
+    explicit CResizeDlg(CWnd *pParent = nullptr);
     CTransparentWnd *m_transWnd;
     void PreModal(CTransparentWnd *transWnd);
 

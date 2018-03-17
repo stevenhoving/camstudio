@@ -385,7 +385,7 @@ BOOL configWaveOutManual()
     // ::MessageBox(g_hWndGlobal,anstr,"Analyzing",MB_OK | MB_ICONEXCLAMATION);
     MessageOut(g_hWndGlobal, IDS_STRING_ASKQUESTIONS, IDS_STRING_ANALYZE, MB_OK | MB_ICONEXCLAMATION);
 
-    for (DWORD dwi = 0; dwi < g_dwMultipleItems; dwi++)
+    for (int dwi = 0; dwi < (int)g_dwMultipleItems; dwi++)
     {
         // testfile=GetProgPath()+"\\testsnd.wav";
         // sndPlaySound(testfile, SND_SYNC);
@@ -403,7 +403,7 @@ BOOL configWaveOutManual()
         // int ret = ::MessageBox(g_hWndGlobal,anstr,"Analyzing",MB_YESNO | MB_ICONQUESTION);
 
         int ret = MessageOut(g_hWndGlobal, IDS_STRING_TESTINGLINE, IDS_STRING_ANALYZE, MB_YESNO | MB_ICONQUESTION,
-                             dwi + 1, g_dwMultipleItems);
+                             dwi + 1, (long)g_dwMultipleItems);
         if (ret == IDYES)
         {
             // anstr.Format("Line %d set for recording sound from speakers !",dwi+1);
@@ -617,19 +617,18 @@ BOOL WaveoutInternalAdjustVolume(long lineID)
         return FALSE;
     }
 
-    long dwVal = mxcdVolume.dwValue;
-
-    double fraction = 0;
-    long targetVal = 0;
     float denom = (float)dwMaximum - dwMinimum;
-    float numer = (float)dwVal;
-    float volumeThresholdPercent = 7.0;
+    float numer = (float)mxcdVolume.dwValue;
+
     if (denom > 0.00001)
     {
-        fraction = (numer / denom) * 100.0;
+        static const float volumeThresholdPercent = 7.0;
+
+        double fraction = (numer / denom) * 100.0;
         if (fraction < volumeThresholdPercent)
-        { // if volume less than 7% of maximum
-            targetVal = (long)(volumeThresholdPercent / 100.0 * (dwMaximum - dwMinimum)) + dwMinimum;
+        {
+            // if volume less than 7% of maximum
+            long targetVal = (long)(volumeThresholdPercent / 100.0 * (dwMaximum - dwMinimum)) + dwMinimum;
 
             MIXERCONTROLDETAILS_UNSIGNED mxcdVolumeTemp = {targetVal};
             MIXERCONTROLDETAILS mxcd_temp;
@@ -711,7 +710,7 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText, DWORD lineTo
             g_second_maximum_line = -1;
             g_maximum_value = -1;
             g_second_maximum_value = -1;
-            for (DWORD dwi = 0; dwi < g_dwMultipleItems; dwi++)
+            for (int dwi = 0; dwi < (int)g_dwMultipleItems; dwi++)
             {
                 CString anstrx, fmtstrx;
                 fmtstrx.LoadString(IDS_STRING_ANALINE);

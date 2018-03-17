@@ -193,11 +193,10 @@ void CTrayIcon::OnTrayMouseMove(CPoint /*pt*/)
 
 LRESULT CTrayIcon::OnTrayNotify(WPARAM wParam, LPARAM lParam)
 {
-    LRESULT lResult = 0L; // no processed
     auto uID = static_cast<UINT>(wParam);
     if (uID != 1)
     {
-        return lResult;
+        return 0L; // no processed
     }
 
     auto uMsg = static_cast<UINT>(lParam);

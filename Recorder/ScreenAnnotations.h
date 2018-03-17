@@ -1,18 +1,13 @@
 #pragma once
 
-
 #include "TransparentWnd.h"
 #include "LayoutList.h"
 #include "ListManager.h"
 
-/////////////////////////////////////////////////////////////////////////////
-// CScreenAnnotationsDlg dialog
-
 class CScreenAnnotationsDlg : public CDialog
 {
-
 public:
-    CScreenAnnotationsDlg(CWnd *pParent = nullptr);
+    explicit CScreenAnnotationsDlg(CWnd *pParent = nullptr);
 
     // Dialog Data
     //{{AFX_DATA(CScreenAnnotationsDlg)
@@ -144,4 +139,3 @@ private:
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
 extern bool AreWindowsEdited();
-
