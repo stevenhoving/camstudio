@@ -1494,7 +1494,7 @@ void CRecorderView::OnRecord()
     g_fActualRate = 0.0;
     g_fTimeLength = 0.0;
 
-    // r272: How we define rect cshecked and changed because some pixel gots dropped:  100x100 => 99x99
+    // r272: How we define rect checked and changed because some pixel got dropped:  100x100 => 99x99
     // g_rcUse is the rect that will be used in the end to define the size of the recording.
     // BTW. g_rcUse is also used to store previous values.
     // A Full screen area is 0, 0 to MaxX-1, MaxY-1
@@ -1516,7 +1516,7 @@ void CRecorderView::OnRecord()
 
             if (cRegionOpts.m_bFixed)
             {
-                // Applicable when Option region is set as 'Fixed Region' and retangle offset is fixed either.
+                // Applicable when Option region is set as 'Fixed Region' and rectangle offset is fixed either.
 
                 // I don't expect that code below is ever invoked...! Hence, dead code
                 if (g_rc.top < 0)
@@ -1548,19 +1548,19 @@ void CRecorderView::OnRecord()
             }
             else
             {
-                // Applicable when Option region is set as 'Fixed Region' but retangle offset is floating.
-                // Floating Retangle. Drag the retangle first to its position...
+                // Applicable when Option region is set as 'Fixed Region' but rectangle offset is floating.
+                // Floating rectangle. Drag the rectangle first to its position...
 
                 ::ShowWindow(hMouseCaptureWnd, SW_SHOW);
                 ::UpdateWindow(hMouseCaptureWnd);
-                InitDrawShiftWindow(); // will affect rc implicity
+                InitDrawShiftWindow(); // will affect rc implicitly
             }
             break;
         case CAPTURE_VARIABLE:
             // Applicable when Option region is set as 'Region'
             ::ShowWindow(hMouseCaptureWnd, SW_SHOW);
             ::UpdateWindow(hMouseCaptureWnd);
-            InitSelectRegionWindow(); // will affect rc implicity
+            InitSelectRegionWindow(); // will affect rc implicitly
             break;
         case CAPTURE_ALLSCREENS:
             // Applicable when Option region is set as 'Full Screen'
