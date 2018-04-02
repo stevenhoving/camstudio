@@ -1,0 +1,37 @@
+﻿  tif_xfile.cpp
+  ximabmp.cpp
+  ximadsp.cpp
+  ximaenc.cpp
+  ximaexif.cpp
+  xImage.cpp
+  ximagif.cpp
+  ximahist.cpp
+  ximaico.cpp
+d:\dev\camstudio\cximage\cximage\ximaico.cpp(350): warning C4838: conversion from 'int32_t' to 'DWORD' requires a narrowing conversion
+  ximainfo.cpp
+  ximaint.cpp
+  ximajas.cpp
+  ximajbg.cpp
+  ximajpg.cpp
+  ximalpha.cpp
+  ximalyr.cpp
+  ximamng.cpp
+  ximapal.cpp
+  ximapcx.cpp
+  ximapng.cpp
+  Generating Code...
+  Compiling...
+  ximapsd.cpp
+  ximaraw.cpp
+  ximasel.cpp
+  ximaska.cpp
+  ximatga.cpp
+  ximath.cpp
+  ximatif.cpp
+  ximatran.cpp
+  ximawbmp.cpp
+  ximawmf.cpp
+  ximawnd.cpp
+  xmemfile.cpp
+  Generating Code...
+  cximage.vcxproj -> D:\dev\camstudio\Release\cximage.lib
