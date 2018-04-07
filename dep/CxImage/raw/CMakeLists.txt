@@ -13,12 +13,33 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-add_subdirectory(zlib)
-add_subdirectory(libpng)
-add_subdirectory(minilzo)
-add_subdirectory(CxImage)
+project(raw C)
+
+set(RAW_SOURCE
+    dcr.c
+    dcraw.c
+    libdcr.c
+    libdcr.h
+)
+
+source_group(raw FILES
+    ${RAW_SOURCE}
+)
+
+add_library(raw STATIC
+    ${RAW_SOURCE}
+)
+
+target_link_libraries(raw
+    png_static
+)
+
+target_include_directories(raw
+  PUBLIC
+    .
+)
 
 install(
-    DIRECTORY ${CMAKE_SOURCE_DIR}/bin/
-    DESTINATION bin
+    DIRECTORY include
+    DESTINATION include
 )

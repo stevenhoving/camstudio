@@ -1,3 +1,6 @@
 [submodule "dep/zlib"]
 	path = dep/zlib
 	url = git@github.com:aeon-external-dependencies/zlib.git
+[submodule "dep/libpng"]
+	path = dep/libpng
+	url = git@github.com:aeon-external-dependencies/libpng.git

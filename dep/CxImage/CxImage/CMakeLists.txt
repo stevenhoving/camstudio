@@ -88,6 +88,7 @@ target_include_directories(CxImage
 target_link_libraries(CxImage
     zlibstatic
     jasper
+    png_static
 )
 
 install(

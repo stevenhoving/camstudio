@@ -28,9 +28,9 @@ extern "C" {
  #include <pngstruct.h>
  #include <pnginfo.h>
 #else
- #include "../png/png.h"
- #include "../png/pngstruct.h"
- #include "../png/pnginfo.h"
+ #include <png.h>
+ #include <pngstruct.h>
+ #include <pnginfo.h>
 #endif
 }
 
@@ -86,7 +86,7 @@ protected:
     {
         // \todo fix the incorrect max size of error_ptr.
         strncpy_s((char*)png_ptr->error_ptr,255, error_msg,255);
-        longjmp(png_ptr->png_jmpbuf, 1);
+        longjmp(png_jmpbuf(png_ptr), 1);
     }
 };
 
