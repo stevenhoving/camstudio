@@ -23,7 +23,7 @@ endif()
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_compile_options(/WX) # treat warnings as errors.
+#add_compile_options(/WX) # treat warnings as errors.
 add_compile_options(/permissive-) # vs conformance mode.
 add_compile_options(/Zc:twoPhase-) # 2 phase name lookup.
 
