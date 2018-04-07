@@ -1,0 +1,3 @@
+[submodule "dep/zlib"]
+	path = dep/zlib
+	url = git@github.com:aeon-external-dependencies/zlib.git
