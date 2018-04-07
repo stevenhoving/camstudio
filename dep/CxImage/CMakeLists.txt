@@ -13,10 +13,5 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-add_subdirectory(minilzo)
 add_subdirectory(CxImage)
-
-install(
-    DIRECTORY ${CMAKE_SOURCE_DIR}/bin/
-    DESTINATION bin
-)
+add_subdirectory(jasper)
