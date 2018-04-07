@@ -129,7 +129,7 @@ bool CxImageTGA::Encode(CxFile * hFile)
     if (EncodeSafeCheck(hFile)) return false;
 
     if (head.biBitCount<8){
-        strcpy(info.szLastError,"Bit depth must be 8 or 24");
+        strcpy_s(info.szLastError,"Bit depth must be 8 or 24");
         return false;
     }
 

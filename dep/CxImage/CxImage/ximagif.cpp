@@ -17,6 +17,8 @@
     #include <assert.h>
 #endif
 
+#define COMMENT_LEN 256
+
 ////////////////////////////////////////////////////////////////////////////////
 CxImageGIF::CxImageGIF(): CxImage(CXIMAGE_FORMAT_GIF)
 {
@@ -31,7 +33,7 @@ CxImageGIF::CxImageGIF(): CxImage(CXIMAGE_FORMAT_GIF)
 
     byte_buff = new uint8_t [257];
     accum = new char [256];
-    m_comment = new char [256];
+    m_comment = new char [COMMENT_LEN];
 
     m_loops=0;
     info.dispmeth=0;
@@ -471,7 +473,7 @@ bool CxImageGIF::Encode(CxFile * fp)
     if (EncodeSafeCheck(fp)) return false;
 
     if(head.biBitCount > 8)    {
-        //strcpy(info.szLastError,"GIF Images must be 8 bit or less");
+        //strcpy_s(info.szLastError,"GIF Images must be 8 bit or less");
         //return FALSE;
         return EncodeRGB(fp);
     }
@@ -551,7 +553,7 @@ bool CxImageGIF::Encode(CxFile * fp, CxImage ** pImages, int32_t pagecount, bool
     fp->PutC(';'); // Write the GIF file terminator
 
   } cx_catch {
-      if (strcmp(message,"")) strncpy(info.szLastError,message,255);
+      if (strcmp(message,"")) strncpy_s(info.szLastError,message,255);
       return false;
   }
     return true;
@@ -921,7 +923,7 @@ void CxImageGIF::output( code_int  code)
         flush_char();
         g_outfile->Flush();
 
-        if(g_outfile->Error()) strcpy(info.szLastError,"Write Error in GIF file");
+        if(g_outfile->Error()) strcpy_s(info.szLastError,"Write Error in GIF file");
     }
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -1375,10 +1377,10 @@ int32_t CxImageGIF::GetLoops()
 {    return m_loops; }
 ////////////////////////////////////////////////////////////////////////////////
 void CxImageGIF::SetComment(const char* sz_comment_in)
-{    if (sz_comment_in) strncpy(m_comment,sz_comment_in,255); }
+{    if (sz_comment_in) strncpy_s(m_comment, COMMENT_LEN, sz_comment_in,255); }
 ////////////////////////////////////////////////////////////////////////////////
 void CxImageGIF::GetComment(char* sz_comment_out)
-{    if (sz_comment_out) strncpy(sz_comment_out,m_comment,255); }
+{    if (sz_comment_out) strncpy_s(sz_comment_out, COMMENT_LEN, m_comment,255); }
 ////////////////////////////////////////////////////////////////////////////////
 void CxImageGIF::GifMix(CxImage & imgsrc2, struct_image & imgdesc)
 {

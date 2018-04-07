@@ -285,7 +285,7 @@ bool CxImageICO::Encode(CxFile * hFile, CxImage ** pImages, int32_t nPageCount)
     }
 
   } cx_catch {
-      if (strcmp(message,"")) strncpy(info.szLastError,message,255);
+      if (strcmp(message,"")) strncpy_s(info.szLastError,message,255);
       return false;
   }
     return true;
@@ -298,7 +298,7 @@ bool CxImageICO::Encode(CxFile * hFile, bool bAppend, int32_t nPageCount)
 #if CXIMAGE_SUPPORT_PNG == 0
     //check format limits
     if ((head.biWidth>255)||(head.biHeight>255)){
-        strcpy(info.szLastError,"Can't save this image as icon");
+        strcpy_s(info.szLastError,"Can't save this image as icon");
         return false;
     }
 #endif

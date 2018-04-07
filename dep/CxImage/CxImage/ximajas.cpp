@@ -192,7 +192,7 @@ bool CxImageJAS::Encode(CxFile * hFile, uint32_t imagetype)
     if (EncodeSafeCheck(hFile)) return false;
 
     if (head.biClrUsed!=0 && !IsGrayScale()){
-        strcpy(info.szLastError,"JasPer can save only RGB or GrayScale images");
+        strcpy_s(info.szLastError,"JasPer can save only RGB or GrayScale images");
         return false;
     }
 
@@ -279,20 +279,20 @@ bool CxImageJAS::Encode(CxFile * hFile, uint32_t imagetype)
      char szfmt[4];
     *szfmt = '\0';
 #if CXIMAGE_SUPPORT_JP2
-    if (imagetype == CXIMAGE_FORMAT_JP2) strcpy(szfmt,"jp2");
+    if (imagetype == CXIMAGE_FORMAT_JP2) strcpy_s(szfmt,"jp2");
 #endif
 #if CXIMAGE_SUPPORT_JPC
-    if (imagetype == CXIMAGE_FORMAT_JPC) strcpy(szfmt,"jpc");
+    if (imagetype == CXIMAGE_FORMAT_JPC) strcpy_s(szfmt,"jpc");
 #endif
 #if CXIMAGE_SUPPORT_RAS
-    if (imagetype == CXIMAGE_FORMAT_RAS) strcpy(szfmt,"ras");
+    if (imagetype == CXIMAGE_FORMAT_RAS) strcpy_s(szfmt,"ras");
 #endif
 #if CXIMAGE_SUPPORT_PNM
-    if (imagetype == CXIMAGE_FORMAT_PNM) strcpy(szfmt,"pnm");
+    if (imagetype == CXIMAGE_FORMAT_PNM) strcpy_s(szfmt,"pnm");
 #endif
 #if CXIMAGE_SUPPORT_PGX
     if (imagetype == CXIMAGE_FORMAT_PGX){
-        strcpy(szfmt,"pgx");
+        strcpy_s(szfmt,"pgx");
         if (head.biClrUsed==0) cx_throw("PGX can save only GrayScale images");
     }
 #endif

@@ -75,12 +75,12 @@
 bool CxImage::EncodeSafeCheck(CxFile *hFile)
 {
     if (hFile==nullptr) {
-        strcpy(info.szLastError,CXIMAGE_ERR_NOFILE);
+        strcpy_s(info.szLastError,CXIMAGE_ERR_NOFILE);
         return true;
     }
 
     if (pDib==nullptr){
-        strcpy(info.szLastError,CXIMAGE_ERR_NOIMAGE);
+        strcpy_s(info.szLastError,CXIMAGE_ERR_NOIMAGE);
         return true;
     }
     return false;
@@ -143,7 +143,7 @@ bool CxImage::Encode(FILE *hFile, uint32_t imagetype)
 bool CxImage::Encode(uint8_t * &buffer, int32_t &size, uint32_t imagetype)
 {
     if (buffer!=nullptr){
-        strcpy(info.szLastError,"the buffer must be empty");
+        strcpy_s(info.szLastError,"the buffer must be empty");
         return false;
     }
     CxMemFile file;
@@ -175,7 +175,7 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             delete newima;
             return false;
         }
@@ -190,7 +190,7 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             delete newima;
             return false;
         }
@@ -205,7 +205,7 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             delete newima;
             return false;
         }
@@ -220,7 +220,7 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             delete newima;
             return false;
         }
@@ -235,7 +235,7 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             delete newima;
             return false;
         }
@@ -250,7 +250,7 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             delete newima;
             return false;
         }
@@ -265,7 +265,7 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             delete newima;
             return false;
         }
@@ -280,7 +280,7 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             delete newima;
             return false;
         }
@@ -295,7 +295,7 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             delete newima;
             return false;
         }
@@ -310,7 +310,7 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             delete newima;
             return false;
         }
@@ -325,7 +325,7 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             delete newima;
             return false;
         }
@@ -340,7 +340,7 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             delete newima;
             return false;
         }
@@ -371,7 +371,7 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             delete newima;
             return false;
         }
@@ -387,7 +387,7 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             delete newima;
             return false;
         }
@@ -403,7 +403,7 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             delete newima;
             return false;
         }
@@ -419,14 +419,14 @@ bool CxImage::Encode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             delete newima;
             return false;
         }
     }
 #endif
 
-    strcpy(info.szLastError,"Encode: Unknown format");
+    strcpy_s(info.szLastError,"Encode: Unknown format");
     return false;
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -461,7 +461,7 @@ bool CxImage::Encode(CxFile * hFile, CxImage ** pImages, int32_t pagecount, uint
         if (newima.Encode(hFile,pImages,pagecount)){
             return true;
         } else {
-            strcpy(info.szLastError,newima.GetLastError());
+            strcpy_s(info.szLastError,newima.GetLastError());
             return false;
         }
     }
@@ -473,7 +473,7 @@ bool CxImage::Encode(CxFile * hFile, CxImage ** pImages, int32_t pagecount, uint
         if (newima.Encode(hFile,pImages,pagecount)){
             return true;
         } else {
-            strcpy(info.szLastError,newima.GetLastError());
+            strcpy_s(info.szLastError,newima.GetLastError());
             return false;
         }
     }
@@ -485,12 +485,12 @@ bool CxImage::Encode(CxFile * hFile, CxImage ** pImages, int32_t pagecount, uint
         if (newima.Encode(hFile,pImages,pagecount)){
             return true;
         } else {
-            strcpy(info.szLastError,newima.GetLastError());
+            strcpy_s(info.szLastError,newima.GetLastError());
             return false;
         }
     }
 #endif
-    strcpy(info.szLastError,"Multipage Encode, Unsupported operation for this format");
+    strcpy_s(info.szLastError,"Multipage Encode, Unsupported operation for this format");
     return false;
 }
 
@@ -507,7 +507,7 @@ bool CxImage::Encode(CxFile * hFile, CxImage ** pImages, int32_t pagecount, uint
 bool CxImage::Encode2RGBA(uint8_t * &buffer, int32_t &size, bool bFlipY)
 {
     if (buffer!=nullptr){
-        strcpy(info.szLastError,"the buffer must be empty");
+        strcpy_s(info.szLastError,"the buffer must be empty");
         return false;
     }
     CxMemFile file;
@@ -585,7 +585,7 @@ bool CxImage::Load(const TCHAR * filename, uint32_t imagetype)
     }
 
     char szError[256];
-    strcpy(szError,info.szLastError); //save the first error
+    strcpy_s(szError,info.szLastError); //save the first error
 
     // if failed, try automatic recognition of the file...
     FILE* hFile;
@@ -599,7 +599,7 @@ bool CxImage::Load(const TCHAR * filename, uint32_t imagetype)
     bOK = Decode(hFile,CXIMAGE_FORMAT_UNKNOWN);
     fclose(hFile);
 
-    if (!bOK && imagetype > 0) strcpy(info.szLastError,szError); //restore the first error
+    if (!bOK && imagetype > 0) strcpy_s(info.szLastError,szError); //restore the first error
 
     return bOK;
 }
@@ -623,7 +623,7 @@ bool CxImage::Load(const TCHAR * filename, uint32_t imagetype)
 //    }
 //
 //    char szError[256];
-//    strcpy(szError,info.szLastError); //save the first error
+//    strcpy_s(szError,info.szLastError); //save the first error
 //
 //    // if failed, try automatic recognition of the file...
 //    FILE* hFile;    //file handle to read the image
@@ -631,7 +631,7 @@ bool CxImage::Load(const TCHAR * filename, uint32_t imagetype)
 //    bOK = Decode(hFile,CXIMAGE_FORMAT_UNKNOWN);
 //    fclose(hFile);
 //
-//    if (!bOK && imagetype > 0) strcpy(info.szLastError,szError); //restore the first error
+//    if (!bOK && imagetype > 0) strcpy_s(info.szLastError,szError); //restore the first error
 //
 //    return bOK;
 //}
@@ -668,7 +668,7 @@ bool CxImage::LoadResource(HRSRC hRes, uint32_t imagetype, HMODULE hModule)
             CxMemFile fTmp((uint8_t*)lpVoid,rsize);
             return Decode(&fTmp,imagetype);
         }
-    } else strcpy(info.szLastError,"Unable to load resource!");
+    } else strcpy_s(info.szLastError,"Unable to load resource!");
     return false;
 }
 #endif //WIN32
@@ -759,7 +759,7 @@ bool CxImage::Decode(FILE *hFile, uint32_t imagetype)
 bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
 {
     if (hFile == nullptr){
-        strcpy(info.szLastError,CXIMAGE_ERR_NOFILE);
+        strcpy_s(info.szLastError,CXIMAGE_ERR_NOFILE);
         return false;
     }
 
@@ -776,7 +776,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             hFile->Seek(pos,SEEK_SET);
             delete newima;
             if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
@@ -795,7 +795,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             hFile->Seek(pos,SEEK_SET);
             delete newima;
             if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
@@ -815,7 +815,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
             return true;
         } else {
             info.nNumFrames = newima->info.nNumFrames;
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             hFile->Seek(pos,SEEK_SET);
             delete newima;
             if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
@@ -835,7 +835,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
             return true;
         } else {
             info.nNumFrames = newima->info.nNumFrames;
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             hFile->Seek(pos,SEEK_SET);
             delete newima;
             if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
@@ -854,7 +854,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             hFile->Seek(pos,SEEK_SET);
             delete newima;
             if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
@@ -874,7 +874,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
             return true;
         } else {
             info.nNumFrames = newima->info.nNumFrames;
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             hFile->Seek(pos,SEEK_SET);
             delete newima;
             if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
@@ -894,7 +894,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
             return true;
         } else {
             info.nNumFrames = newima->info.nNumFrames;
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             hFile->Seek(pos,SEEK_SET);
             delete newima;
             if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
@@ -913,7 +913,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             hFile->Seek(pos,SEEK_SET);
             delete newima;
             if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
@@ -932,7 +932,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             hFile->Seek(pos,SEEK_SET);
             delete newima;
             if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
@@ -951,7 +951,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             hFile->Seek(pos,SEEK_SET);
             delete newima;
             if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
@@ -970,7 +970,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             hFile->Seek(pos,SEEK_SET);
             delete newima;
             if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
@@ -989,7 +989,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             hFile->Seek(pos,SEEK_SET);
             delete newima;
             if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
@@ -1024,7 +1024,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             hFile->Seek(pos,SEEK_SET);
             delete newima;
             if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
@@ -1043,7 +1043,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             hFile->Seek(pos,SEEK_SET);
             delete newima;
             if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
@@ -1062,7 +1062,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             hFile->Seek(pos,SEEK_SET);
             delete newima;
             if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
@@ -1081,7 +1081,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
             delete newima;
             return true;
         } else {
-            strcpy(info.szLastError,newima->GetLastError());
+            strcpy_s(info.szLastError,newima->GetLastError());
             hFile->Seek(pos,SEEK_SET);
             delete newima;
             if (CXIMAGE_FORMAT_UNKNOWN!=imagetype)
@@ -1090,7 +1090,7 @@ bool CxImage::Decode(CxFile *hFile, uint32_t imagetype)
     }
 #endif
 
-    strcpy(info.szLastError,"Decode: Unknown or wrong format");
+    strcpy_s(info.szLastError,"Decode: Unknown or wrong format");
     return false;
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -1124,7 +1124,7 @@ bool CxImage::CheckFormat(uint8_t * buffer, uint32_t size, uint32_t imagetype)
 {
     if (buffer == nullptr || size == 0)
     {
-        strcpy(info.szLastError,"invalid or empty buffer");
+        strcpy_s(info.szLastError,"invalid or empty buffer");
         return false;
     }
     CxMemFile file(buffer,size);

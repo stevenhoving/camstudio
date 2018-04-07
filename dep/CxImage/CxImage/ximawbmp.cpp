@@ -90,7 +90,7 @@ bool CxImageWBMP::Encode(CxFile * hFile)
 
     //check format limits
     if (head.biBitCount!=1){
-        strcpy(info.szLastError,"Can't save this image as WBMP");
+        strcpy_s(info.szLastError,"Can't save this image as WBMP");
         return false;
     }
 

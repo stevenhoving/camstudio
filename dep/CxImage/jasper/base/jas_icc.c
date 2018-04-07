@@ -1112,7 +1112,7 @@ static int jas_icctxtdesc_input(jas_iccattrval_t *attrval, jas_stream_t *in,
     txtdesc->maclen = c;
     if (jas_stream_read(in, txtdesc->macdata, 67) != 67)
         goto error;
-    txtdesc->asclen = strlen(txtdesc->ascdata) + 1;
+    txtdesc->asclen = (jas_iccuint32_t)strlen(txtdesc->ascdata) + 1;
 #define WORKAROUND_BAD_PROFILES
 #ifdef WORKAROUND_BAD_PROFILES
     n = txtdesc->asclen + txtdesc->uclen * 2 + 15 + 67;
@@ -1136,7 +1136,7 @@ error:
 static int jas_icctxtdesc_getsize(jas_iccattrval_t *attrval)
 {
     jas_icctxtdesc_t *txtdesc = &attrval->data.txtdesc;
-    return strlen(txtdesc->ascdata) + 1 + txtdesc->uclen * 2 + 15 + 67;
+    return (int)strlen(txtdesc->ascdata) + 1 + txtdesc->uclen * 2 + 15 + 67;
 }
 
 static int jas_icctxtdesc_output(jas_iccattrval_t *attrval, jas_stream_t *out)
@@ -1216,7 +1216,7 @@ error:
 static int jas_icctxt_getsize(jas_iccattrval_t *attrval)
 {
     jas_icctxt_t *txt = &attrval->data.txt;
-    return strlen(txt->string) + 1;
+    return (int)strlen(txt->string) + 1;
 }
 
 static int jas_icctxt_output(jas_iccattrval_t *attrval, jas_stream_t *out)
@@ -1592,7 +1592,7 @@ static int jas_iccgetuint8(jas_stream_t *in, jas_iccuint8_t *val)
     int c;
     if ((c = jas_stream_getc(in)) == EOF)
         return -1;
-    *val = c;
+    *val = (jas_iccuint8_t)c;
     return 0;
 }
 
@@ -1601,7 +1601,7 @@ static int jas_iccgetuint16(jas_stream_t *in, jas_iccuint16_t *val)
     ulonglong tmp;
     if (jas_iccgetuint(in, 2, &tmp))
         return -1;
-    *val = tmp;
+    *val = (jas_iccuint16_t)tmp;
     return 0;
 }
 
@@ -1610,8 +1610,8 @@ static int jas_iccgetsint32(jas_stream_t *in, jas_iccsint32_t *val)
     ulonglong tmp;
     if (jas_iccgetuint(in, 4, &tmp))
         return -1;
-    *val = (tmp & 0x80000000) ? (-JAS_CAST(longlong, (((~tmp) &
-      0x7fffffff) + 1))) : JAS_CAST(longlong, tmp);
+    *val = (jas_iccsint32_t)((tmp & 0x80000000) ? (-JAS_CAST(longlong, (((~tmp) &
+      0x7fffffff) + 1))) : JAS_CAST(longlong, tmp));
     return 0;
 }
 
@@ -1620,7 +1620,7 @@ static int jas_iccgetuint32(jas_stream_t *in, jas_iccuint32_t *val)
     ulonglong tmp;
     if (jas_iccgetuint(in, 4, &tmp))
         return -1;
-    *val = tmp;
+    *val = (jas_iccuint32_t)tmp;
     return 0;
 }
 

@@ -14,7 +14,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 void CxImagePNG::ima_png_error(png_struct *png_ptr, char *message)
 {
-    strcpy(info.szLastError,message);
+    strcpy_s(info.szLastError,message);
     longjmp(png_ptr->png_jmpbuf, 1);
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -100,7 +100,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
         channels = 4;
         break;
     default:
-        strcpy(info.szLastError,"unknown PNG color type");
+        strcpy_s(info.szLastError,"unknown PNG color type");
         longjmp(png_ptr->png_jmpbuf, 1);
     }
 
@@ -302,7 +302,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
     png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)nullptr);
 
   } cx_catch {
-    if (strcmp(message,"")) strncpy(info.szLastError,message,255);
+    if (strcmp(message,"")) strncpy_s(info.szLastError,message,255);
     if (info.nEscape == -1 && info.dwType == CXIMAGE_FORMAT_PNG) return true;
     return false;
   }
@@ -541,7 +541,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
     png_destroy_write_struct(&png_ptr, (png_infopp)&info_ptr);
 
   } cx_catch {
-    if (strcmp(message,"")) strncpy(info.szLastError,message,255);
+    if (strcmp(message,"")) strncpy_s(info.szLastError,message,255);
     return FALSE;
   }
     /* that's it */

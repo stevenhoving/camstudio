@@ -388,9 +388,9 @@ jas_matrix_t *jas_seq2d_input(FILE *in)
     int xoff;
     int yoff;
 
-    if (fscanf(in, "%d %d", &xoff, &yoff) != 2)
+    if (fscanf_s(in, "%d %d", &xoff, &yoff) != 2)
         return 0;
-    if (fscanf(in, "%d %d", &numcols, &numrows) != 2)
+    if (fscanf_s(in, "%d %d", &numcols, &numrows) != 2)
         return 0;
     if (!(matrix = jas_seq2d_create(xoff, yoff, xoff + numcols, yoff + numrows)))
         return 0;
@@ -402,7 +402,7 @@ jas_matrix_t *jas_seq2d_input(FILE *in)
     /* Get matrix data. */
     for (i = 0; i < jas_matrix_numrows(matrix); i++) {
         for (j = 0; j < jas_matrix_numcols(matrix); j++) {
-            if (fscanf(in, "%ld", &x) != 1) {
+            if (fscanf_s(in, "%ld", &x) != 1) {
                 jas_matrix_destroy(matrix);
                 return 0;
             }
@@ -421,7 +421,7 @@ int jas_seq2d_output(jas_matrix_t *matrix, FILE *out)
     jas_seqent_t x;
     char buf[MAXLINELEN + 1];
     char sbuf[MAXLINELEN + 1];
-    int n;
+    size_t n;
 
     fprintf(out, "%d %d\n", jas_seq2d_xstart(matrix),
       jas_seq2d_ystart(matrix));
@@ -432,7 +432,7 @@ int jas_seq2d_output(jas_matrix_t *matrix, FILE *out)
     for (i = 0; i < jas_matrix_numrows(matrix); ++i) {
         for (j = 0; j < jas_matrix_numcols(matrix); ++j) {
             x = jas_matrix_get(matrix, i, j);
-            sprintf(sbuf, "%s%4ld", (strlen(buf) > 0) ? " " : "",
+            sprintf_s(sbuf, MAXLINELEN, "%s%4ld", (strlen(buf) > 0u) ? " " : "",
               JAS_CAST(long, x));
             n = strlen(buf);
             if (n + strlen(sbuf) > MAXLINELEN) {
@@ -440,7 +440,7 @@ int jas_seq2d_output(jas_matrix_t *matrix, FILE *out)
                 fputs("\n", out);
                 buf[0] = '\0';
             }
-            strcat(buf, sbuf);
+            strcat_s(buf, MAXLINELEN, sbuf);
             if (j == jas_matrix_numcols(matrix) - 1) {
                 fputs(buf, out);
                 fputs("\n", out);

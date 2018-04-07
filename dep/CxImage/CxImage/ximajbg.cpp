@@ -111,7 +111,7 @@ bool CxImageJBG::Encode(CxFile * hFile)
     if (EncodeSafeCheck(hFile)) return false;
 
     if (head.biBitCount != 1){
-        strcpy(info.szLastError,"JBG can save only 1-bpp images");
+        strcpy_s(info.szLastError,"JBG can save only 1-bpp images");
         return false;
     }
 
@@ -129,7 +129,7 @@ bool CxImageJBG::Encode(CxFile * hFile)
 
     uint8_t *buffer = (uint8_t*)malloc(ew*h*2);
     if (!buffer) {
-        strcpy(info.szLastError,"Sorry, not enough memory available!");
+        strcpy_s(info.szLastError,"Sorry, not enough memory available!");
         return false;
     }
 
@@ -163,7 +163,7 @@ bool CxImageJBG::Encode(CxFile * hFile)
     free(buffer);
 
     if (hFile->Error()){
-        strcpy(info.szLastError,"Problem while writing JBG file");
+        strcpy_s(info.szLastError,"Problem while writing JBG file");
         return false;
     }
 

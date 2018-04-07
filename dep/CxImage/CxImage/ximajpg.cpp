@@ -325,7 +325,7 @@ bool CxImageJPG::Encode(CxFile * hFile)
     if (EncodeSafeCheck(hFile)) return false;
 
     if (head.biClrUsed!=0 && !IsGrayScale()){
-        strcpy(info.szLastError,"JPEG can save only RGB or GreyScale images");
+        strcpy_s(info.szLastError,"JPEG can save only RGB or GreyScale images");
         return false;
     }    
 
@@ -371,7 +371,7 @@ bool CxImageJPG::Encode(CxFile * hFile)
         /* If we get here, the JPEG code has signaled an error.
         * We need to clean up the JPEG object, close the input file, and return.
         */
-        strcpy(info.szLastError, jerr.buffer); //<CSC>
+        strcpy_s(info.szLastError, jerr.buffer); //<CSC>
         jpeg_destroy_compress(&cinfo);
         return 0;
     }

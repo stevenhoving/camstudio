@@ -26,7 +26,7 @@ bool CxImage::IncreaseBpp(uint32_t nbit)
             tmp.Create(head.biWidth,head.biHeight,4,info.dwType);
             tmp.SetPalette(GetPalette(),GetNumColors());
             if (!tmp.IsValid()){
-                strcpy(info.szLastError,tmp.GetLastError());
+                strcpy_s(info.szLastError,tmp.GetLastError());
                 return false;
             }
 
@@ -58,7 +58,7 @@ bool CxImage::IncreaseBpp(uint32_t nbit)
             tmp.Create(head.biWidth,head.biHeight,8,info.dwType);
             tmp.SetPalette(GetPalette(),GetNumColors());
             if (!tmp.IsValid()){
-                strcpy(info.szLastError,tmp.GetLastError());
+                strcpy_s(info.szLastError,tmp.GetLastError());
                 return false;
             }
 
@@ -88,7 +88,7 @@ bool CxImage::IncreaseBpp(uint32_t nbit)
             tmp.CopyInfo(*this);
             tmp.Create(head.biWidth,head.biHeight,24,info.dwType);
             if (!tmp.IsValid()){
-                strcpy(info.szLastError,tmp.GetLastError());
+                strcpy_s(info.szLastError,tmp.GetLastError());
                 return false;
             }
 
@@ -1034,7 +1034,7 @@ bool CxImage::Resample(int32_t newx, int32_t newy, int32_t mode, CxImage* iDst)
     newImage.Create(newx,newy,head.biBitCount,GetType());
     newImage.SetPalette(GetPalette());
     if (!newImage.IsValid()){
-        strcpy(info.szLastError,newImage.GetLastError());
+        strcpy_s(info.szLastError,newImage.GetLastError());
         return false;
     }
 
@@ -1311,7 +1311,7 @@ bool CxImage::Resample2(
     newImage.Create(newx,newy,head.biBitCount,GetType());
     newImage.SetPalette(GetPalette());
     if (!newImage.IsValid()){
-        strcpy(info.szLastError,newImage.GetLastError());
+        strcpy_s(info.szLastError,newImage.GetLastError());
         return false;
     }
     
@@ -1401,7 +1401,7 @@ bool CxImage::DecreaseBpp(uint32_t nbit, bool errordiffusion, RGBQUAD* ppal, uin
 {
     if (!pDib) return false;
     if (head.biBitCount <  nbit){
-        strcpy(info.szLastError,"DecreaseBpp: target BPP greater than source BPP");
+        strcpy_s(info.szLastError,"DecreaseBpp: target BPP greater than source BPP");
         return false;
     }
     if (head.biBitCount == nbit){
@@ -1417,7 +1417,7 @@ bool CxImage::DecreaseBpp(uint32_t nbit, bool errordiffusion, RGBQUAD* ppal, uin
     tmp.Create(head.biWidth,head.biHeight,(uint16_t)nbit,info.dwType);
     if (clrimportant) tmp.SetClrImportant(clrimportant);
     if (!tmp.IsValid()){
-        strcpy(info.szLastError,tmp.GetLastError());
+        strcpy_s(info.szLastError,tmp.GetLastError());
         return false;
     }
 
@@ -1507,7 +1507,7 @@ bool CxImage::Dither(int32_t method)
     tmp.CopyInfo(*this);
     tmp.Create(head.biWidth, head.biHeight, 1, info.dwType);
     if (!tmp.IsValid()){
-        strcpy(info.szLastError,tmp.GetLastError());
+        strcpy_s(info.szLastError,tmp.GetLastError());
         return false;
     }
 
@@ -2125,11 +2125,11 @@ bool CxImage::CropRotatedRectangle( int32_t topx, int32_t topy, int32_t width, i
     CxImage tmp(*this, true, false, true);
     // tmp.Copy(*this, true, false, true);
     if (!tmp.IsValid()){
-        strcpy(info.szLastError,tmp.GetLastError());
+        strcpy_s(info.szLastError,tmp.GetLastError());
         return false;
     }
     if (!tmp.Crop( startx, topy, endx, endy)){
-        strcpy(info.szLastError,tmp.GetLastError());
+        strcpy_s(info.szLastError,tmp.GetLastError());
         return false;
     }
     
@@ -2175,7 +2175,7 @@ bool CxImage::Crop(int32_t left, int32_t top, int32_t right, int32_t bottom, CxI
     tmp.CopyInfo(*this);
     tmp.Create(endx-startx,endy-starty,head.biBitCount,info.dwType);
     if (!tmp.IsValid()){
-        strcpy(info.szLastError,tmp.GetLastError());
+        strcpy_s(info.szLastError,tmp.GetLastError());
         return false;
     }
 
@@ -2244,7 +2244,7 @@ bool CxImage::Skew(float xgain, float ygain, int32_t xpivot, int32_t ypivot, boo
 
     CxImage tmp(*this);
     if (!tmp.IsValid()){
-        strcpy(info.szLastError,tmp.GetLastError());
+        strcpy_s(info.szLastError,tmp.GetLastError());
         return false;
     }
 
@@ -2311,7 +2311,7 @@ bool CxImage::Expand(int32_t left, int32_t top, int32_t right, int32_t bottom, R
     CxImage tmp;
     tmp.CopyInfo(*this);
     if (!tmp.Create(newWidth, newHeight, head.biBitCount, info.dwType)){
-        strcpy(info.szLastError,tmp.GetLastError());
+        strcpy_s(info.szLastError,tmp.GetLastError());
         return false;
     }
 
@@ -2432,7 +2432,7 @@ bool CxImage::Thumbnail(int32_t newx, int32_t newy, RGBQUAD canvascolor, CxImage
 
     CxImage tmp(*this);
     if (!tmp.IsValid()){
-        strcpy(info.szLastError,tmp.GetLastError());
+        strcpy_s(info.szLastError,tmp.GetLastError());
         return false;
     }
 
@@ -2479,7 +2479,7 @@ bool CxImage::CircleTransform(int32_t type,int32_t rmax,float Koeff)
 
     CxImage tmp(*this);
     if (!tmp.IsValid()){
-        strcpy(info.szLastError,tmp.GetLastError());
+        strcpy_s(info.szLastError,tmp.GetLastError());
         return false;
     }
 
@@ -2569,7 +2569,7 @@ bool CxImage::QIShrink(int32_t newx, int32_t newy, CxImage* const iDst, bool bCh
     
     if (newx>head.biWidth || newy>head.biHeight) { 
         //let me repeat... this method can't enlarge image
-        strcpy(info.szLastError,"QIShrink can't enlarge image");
+        strcpy_s(info.szLastError,"QIShrink can't enlarge image");
         return false;
     }
 
@@ -2585,7 +2585,7 @@ bool CxImage::QIShrink(int32_t newx, int32_t newy, CxImage* const iDst, bool bCh
     newImage.Create(newx,newy,(bChangeBpp)?24:head.biBitCount,GetType());
     newImage.SetPalette(GetPalette());
     if (!newImage.IsValid()){
-        strcpy(info.szLastError,newImage.GetLastError());
+        strcpy_s(info.szLastError,newImage.GetLastError());
         return false;
     }
 

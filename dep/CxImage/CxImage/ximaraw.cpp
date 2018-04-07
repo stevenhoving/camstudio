@@ -323,7 +323,7 @@ bool CxImageRAW::GetExifThumbnail(const TCHAR *filename, const TCHAR *outname, i
 bool CxImageRAW::Encode(CxFile * hFile)
 {
     if (hFile == nullptr) return false;
-    strcpy(info.szLastError, "Save RAW not supported");
+    strcpy_s(info.szLastError, "Save RAW not supported");
     return false;
 }
 ////////////////////////////////////////////////////////////////////////////////

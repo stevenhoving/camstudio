@@ -747,7 +747,7 @@ bool CxImage::CreateFromHBITMAP(HBITMAP hbmp, HPALETTE hpal, bool bTransparency)
             // copy the pixels
             if (GetDIBits(dc, hbmp, 0, head.biHeight, info.pImage,
                 (LPBITMAPINFO)pDib, DIB_RGB_COLORS) == 0){ //replace &head with pDib <Wil Stark>
-                strcpy(info.szLastError,"GetDIBits failed");
+                strcpy_s(info.szLastError,"GetDIBits failed");
                 ::ReleaseDC(nullptr, dc);
                 return false;
             }

@@ -958,7 +958,7 @@ startoff = jas_stream_getrwcount(enc->out);
     if (!(enc->mrk = jpc_ms_create(JPC_MS_COM))) {
         return -1;
     }
-    sprintf(buf, "Creator: JasPer Version %s", jas_getversion());
+    sprintf_s(buf, sizeof(buf), "Creator: JasPer Version %s", jas_getversion());
     com = &enc->mrk->parms.com;
     com->len = strlen(buf);
     com->regid = JPC_COM_LATIN;
@@ -2258,7 +2258,7 @@ static jpc_enc_band_t *band_create(jpc_enc_band_t *band, jpc_enc_cp_t *cp,
     uint_fast16_t rlvlno;
     jpc_tsfb_band_t *bandinfo;
     jpc_enc_tcmpt_t *tcmpt;
-    uint_fast32_t prcno;
+    int prcno;
     jpc_enc_prc_t *prc;
 
     tcmpt = rlvl->tcmpt;

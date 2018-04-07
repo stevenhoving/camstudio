@@ -25,7 +25,7 @@
  */
 
 #ifndef _TIFFIOP_
-#define    _TIFFIOP_
+#define _TIFFIOP_
 /*
  * ``Library-private'' definitions.
  */
@@ -66,6 +66,7 @@ typedef TIFF_UINT64_T uint64;
 
 #include "tiffio.h"
 #include "tif_dir.h"
+#include <cstddef>
 
 #ifndef STRIP_SIZE_DEFAULT
 # define STRIP_SIZE_DEFAULT 8192
@@ -100,10 +101,10 @@ typedef    uint32 (*TIFFStripMethod)(TIFF*, uint32);
 typedef    void (*TIFFTileMethod)(TIFF*, uint32*, uint32*);
 
 struct tiff {
-    char*        tif_name;    /* name of open file */
-    int        tif_fd;        /* open file descriptor */
-    int        tif_mode;    /* open mode (O_*) */
-    uint32        tif_flags;
+    char*       tif_name;    /* name of open file */
+    std::size_t tif_fd;        /* open file descriptor */
+    int         tif_mode;    /* open mode (O_*) */
+    uint32      tif_flags;
 #define    TIFF_FILLORDER        0x00003    /* natural bit fill order for machine */
 #define    TIFF_DIRTYHEADER    0x00004    /* header must be written on close */
 #define    TIFF_DIRTYDIRECT    0x00008    /* current directory must be written */

@@ -463,7 +463,7 @@ bool CxImage::SelectionSplit(CxImage *dest)
 
     CxImage tmp(head.biWidth,head.biHeight,8);
     if (!tmp.IsValid()){
-        strcpy(info.szLastError,tmp.GetLastError());
+        strcpy_s(info.szLastError,tmp.GetLastError());
         return false;
     }
 
@@ -486,7 +486,7 @@ bool CxImage::SelectionSplit(CxImage *dest)
 bool CxImage::SelectionSet(CxImage &from)
 {
     if (!from.IsGrayScale() || head.biWidth != from.head.biWidth || head.biHeight != from.head.biHeight){
-        strcpy(info.szLastError,"CxImage::SelectionSet: wrong width or height, or image is not gray scale");
+        strcpy_s(info.szLastError,"CxImage::SelectionSet: wrong width or height, or image is not gray scale");
         return false;
     }
 
@@ -495,7 +495,7 @@ bool CxImage::SelectionSet(CxImage &from)
     uint8_t* src = from.info.pImage;
     uint8_t* dst = pSelection;
     if (src==nullptr || dst==nullptr){
-        strcpy(info.szLastError,"CxImage::SelectionSet: null pointer");
+        strcpy_s(info.szLastError,"CxImage::SelectionSet: null pointer");
         return false;
     }
 

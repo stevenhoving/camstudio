@@ -175,7 +175,7 @@ void* CxImage::Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32
 
     // prevent further actions if width or height are not vaild <Balabasnia>
     if ((dwWidth == 0) || (dwHeight == 0)){
-        strcpy(info.szLastError,"CxImage::Create : width and height must be greater than zero");
+        strcpy_s(info.szLastError,"CxImage::Create : width and height must be greater than zero");
         return nullptr;
     }
 
@@ -188,7 +188,7 @@ void* CxImage::Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32
     // limit memory requirements
     if ((((float)dwWidth*(float)dwHeight*(float)wBpp)/8.0f) > (float)CXIMAGE_MAX_MEMORY)
     {
-        strcpy(info.szLastError,"CXIMAGE_MAX_MEMORY exceeded");
+        strcpy_s(info.szLastError,"CXIMAGE_MAX_MEMORY exceeded");
         return nullptr;
     }
 
@@ -222,7 +222,7 @@ void* CxImage::Create(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32
 
     pDib = malloc(GetSize()); // alloc memory block to store our bitmap
     if (!pDib){
-        strcpy(info.szLastError,"CxImage::Create can't allocate memory");
+        strcpy_s(info.szLastError,"CxImage::Create can't allocate memory");
         return nullptr;
     }
 

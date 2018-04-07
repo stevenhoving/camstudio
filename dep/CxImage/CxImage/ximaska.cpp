@@ -81,7 +81,7 @@ bool CxImageSKA::Encode(CxFile * hFile)
     if (EncodeSafeCheck(hFile)) return false;
 
     if(head.biBitCount > 8)    {
-        strcpy(info.szLastError,"SKA Images must be 8 bit or less");
+        strcpy_s(info.szLastError,"SKA Images must be 8 bit or less");
         return false;
     }
 

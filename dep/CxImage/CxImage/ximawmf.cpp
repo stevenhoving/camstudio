@@ -105,7 +105,7 @@ bool CxImageWMF::Decode(CxFile *hFile, int32_t nForceWidth, int32_t nForceHeight
         hMeta = ConvertEmfFiletoEmf(hFile, &emh);
 
         if (!hMeta){
-            strcpy(info.szLastError,"corrupted WMF");
+            strcpy_s(info.szLastError,"corrupted WMF");
             return false; // definitively give up
         }
 
@@ -130,13 +130,13 @@ bool CxImageWMF::Decode(CxFile *hFile, int32_t nForceWidth, int32_t nForceHeight
         head.biHeight= cy;
         info.dwType = CXIMAGE_FORMAT_WMF;
         DeleteEnhMetaFile(hMeta);
-        strcpy(info.szLastError,"output dimensions returned");
+        strcpy_s(info.szLastError,"output dimensions returned");
         return true;
     }
 
     if (!cx || !cy)    {
         DeleteEnhMetaFile(hMeta);
-        strcpy(info.szLastError,"empty WMF");
+        strcpy_s(info.szLastError,"empty WMF");
         return false;
     }
 
@@ -177,7 +177,7 @@ bool CxImageWMF::Decode(CxFile *hFile, int32_t nForceWidth, int32_t nForceHeight
                     DeleteObject(hBitmap);
                     DeleteDC(hDC);
                     DeleteEnhMetaFile(hMeta);
-                    strcpy(info.szLastError,"Cancelled");
+                    strcpy_s(info.szLastError,"Cancelled");
                     return false;
                 } 
 
@@ -205,7 +205,7 @@ bool CxImageWMF::Decode(CxFile *hFile, int32_t nForceWidth, int32_t nForceHeight
             if (info.nEscape) {    // Check if cancelled
                 DeleteObject(hBitmap);
                 DeleteDC(hDC);
-                strcpy(info.szLastError,"Cancelled");
+                strcpy_s(info.szLastError,"Cancelled");
                 return false;
             }
 
@@ -452,7 +452,7 @@ HENHMETAFILE CxImageWMF::ConvertEmfFiletoEmf(CxFile *pFile, ENHMETAHEADER *pemfh
 bool CxImageWMF::Encode(CxFile * hFile)
 {
     if (hFile == nullptr) return false;
-    strcpy(info.szLastError, "Save WMF not supported");
+    strcpy_s(info.szLastError, "Save WMF not supported");
     return false;
 }
 #endif    // CXIMAGE_SUPPORT_ENCODE

@@ -103,12 +103,12 @@ int jp2_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
     jp2_cdef_t *cdef;
     int i;
     uint_fast32_t typeasoc;
-jas_iccprof_t *iccprof;
-jas_stream_t *iccstream;
-int pos;
-int needcdef;
-int prec;
-int sgnd;
+    jas_iccprof_t *iccprof;
+    jas_stream_t *iccstream;
+    int pos;
+    int needcdef;
+    int prec;
+    int sgnd;
 
     box = 0;
     tmpstream = 0;
@@ -343,7 +343,7 @@ int sgnd;
     /* Output the JPEG-2000 code stream. */
 
     overhead = jas_stream_getrwcount(out);
-    sprintf(buf, "%s\n_jp2overhead=%lu\n", (optstr ? optstr : ""),
+    sprintf_s(buf, sizeof(buf), "%s\n_jp2overhead=%lu\n", (optstr ? optstr : ""),
       (unsigned long) overhead);
 
     if (jpc_encode(image, out, buf)) {

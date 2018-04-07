@@ -1300,7 +1300,7 @@ bool CxImagePSD::Decode(CxFile *hFile)
 bool CxImagePSD::Encode(CxFile * hFile)
 {
     if (hFile == nullptr) return false;
-    strcpy(info.szLastError, "Save PSD not supported");
+    strcpy_s(info.szLastError, "Save PSD not supported");
     return false;
 }
 ////////////////////////////////////////////////////////////////////////////////

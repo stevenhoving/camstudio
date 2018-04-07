@@ -226,7 +226,7 @@ void CxImage::AlphaStrip()
     } else {
         CxImage tmp(head.biWidth,head.biHeight,24);
         if (!tmp.IsValid()){
-            strcpy(info.szLastError,tmp.GetLastError());
+            strcpy_s(info.szLastError,tmp.GetLastError());
             return;
         }
 
@@ -300,7 +300,7 @@ bool CxImage::AlphaSplit(CxImage *dest)
 
     CxImage tmp(head.biWidth,head.biHeight,8);
     if (!tmp.IsValid()){
-        strcpy(info.szLastError,tmp.GetLastError());
+        strcpy_s(info.szLastError,tmp.GetLastError());
         return false;
     }
 
@@ -327,7 +327,7 @@ bool CxImage::AlphaPaletteSplit(CxImage *dest)
 
     CxImage tmp(head.biWidth,head.biHeight,8);
     if (!tmp.IsValid()){
-        strcpy(info.szLastError,tmp.GetLastError());
+        strcpy_s(info.szLastError,tmp.GetLastError());
         return false;
     }
 
