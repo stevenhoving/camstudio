@@ -16,3 +16,4 @@
 add_subdirectory(CxImage)
 add_subdirectory(jasper)
 add_subdirectory(jbig)
+add_subdirectory(jpeg)
