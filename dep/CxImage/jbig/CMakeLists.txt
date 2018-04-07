@@ -13,6 +13,28 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-add_subdirectory(CxImage)
-add_subdirectory(jasper)
-add_subdirectory(jbig)
+project(jbig C)
+
+set(JBIG_SOURCE
+    jbig.c
+    jbig.h
+    jbig_tab.c
+)
+
+source_group(jbig FILES
+    ${JBIG_SOURCE}
+)
+
+add_library(jbig STATIC
+    ${JBIG_SOURCE}
+)
+
+target_include_directories(jbig
+  PUBLIC
+    .
+)
+
+install(
+    DIRECTORY include
+    DESTINATION include
+)
