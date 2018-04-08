@@ -289,7 +289,6 @@ BOOL CBitmapEx::Save(LPCSTR filename, LPCSTR DialogTitle)
     TRY
     {
         file.Write(reinterpret_cast<LPSTR>(&hdr), sizeof(BITMAPFILEHEADER));
-        // file.WriteHuge((LPSTR)lpbi, GlobalSize (hdib));
         file.Write(reinterpret_cast<LPSTR>(lpbi), GlobalSize(hdib));
     }
     CATCH(CFileException, e)
@@ -355,7 +354,7 @@ BOOL CBitmapEx::CreateColor(int dx, int dy)
 }
 
 // Create monocolor bitmap
-BOOL CBitmapEx::CreateMono(int dx, int dy)
+BOOL CBitmapEx::CreateMono(int width, int height)
 {
     if (GetSafeHandle())
     {
@@ -364,13 +363,12 @@ BOOL CBitmapEx::CreateMono(int dx, int dy)
     CDC mDC;
     mDC.CreateCompatibleDC(nullptr); // for mono!
 
-    BOOL r = CreateCompatibleBitmap(&mDC, dx, dy);
+    BOOL r = CreateCompatibleBitmap(&mDC, width, height);
 
     mDC.DeleteDC();
     return r;
 }
 
-// This was the first extention i've done! :)))
 CSize CBitmapEx::GetSize()
 {
     BITMAP bmp;
