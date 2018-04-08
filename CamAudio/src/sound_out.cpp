@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "fisterlib/sound_out.h"
-#include "fisterlib/buffer.h"
+#include "CamAudio/sound_out.h"
+#include "CamAudio/buffer.h"
 #include <CamLib/CamError.h>
 
 #ifdef _DEBUG

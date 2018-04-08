@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "fisterlib/sound_base.h"
+#include "CamAudio/sound_base.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

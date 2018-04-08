@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "fisterlib/buffer.h"
+#include "CamAudio/buffer.h"
 
 #include <new>
 #include <tchar.h>
