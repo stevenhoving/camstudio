@@ -37,7 +37,4 @@ add_subdirectory(dep)
 add_subdirectory(CamCodec)
 add_subdirectory(CamHook)
 add_subdirectory(CamLib)
-add_subdirectory(CommandLine)
-
-
-
+add_subdirectory(CamStudioCmd)
