@@ -94,7 +94,7 @@ Comments) 1950 to 1952 in the files ftp://ds.internic.net/rfc/rfc1950.txt
 #include "camcodec.h"
 #include "resource.h"
 #include <minilzo/minilzo.h>
-#include "../CxImage/zlib/zlib.h"
+#include <zlib.h>
 #include <cstdio>
 #include <cstdint>
 
@@ -400,7 +400,7 @@ struct PrintBitmapType
     {
         if (!lpbi)
         {
-            strcpy(s, "(null)");
+            strcpy_s(s, "(null)");
         }
         else
         {

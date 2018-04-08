@@ -13,29 +13,39 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-set(LIB_MINI_LZO_SOURCE
-    minilzo/lzoconf.h
-    minilzo/lzodefs.h
-    minilzo/minilzo.c
-    minilzo/minilzo.h
+project(CamCodec)
+
+set(CODEC_SOURCE
+    camcodec.cpp
+    camcodec.h
+    camcodec.def
+    camcodec.rc
+    drvproc.cpp
+    resource.h
 )
 
-source_group(libminilzo FILES
-    ${LIB_MINI_LZO_SOURCE}
+source_group(CamCodec FILES
+    ${CODEC_SOURCE}
 )
 
-add_library(libminilzo STATIC
-    ${LIB_MINI_LZO_SOURCE}
+add_library(CamCodec SHARED
+    ${CODEC_SOURCE}
 )
 
-target_include_directories(libminilzo
+target_link_libraries(CamCodec
+    libminilzo
+    zlibstatic
+    winmm.lib
+    odbc32.lib
+    odbccp32.lib
+)
+
+target_include_directories(CamCodec
   PUBLIC
     .
-  PRIVATE
-    minilzo
 )
 
-set_target_properties(libminilzo PROPERTIES FOLDER "External/minilzo")
+set_target_properties(CamCodec PROPERTIES FOLDER "CamCodec")
 
 install(
     DIRECTORY include
