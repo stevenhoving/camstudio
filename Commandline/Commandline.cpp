@@ -30,7 +30,7 @@
 #include <atlstr.h>
 
 #include <time.h>
-#include "Commandline.hpp"
+#include "Commandline.h"
 #include <CamLib/CamImage.h>
 
 #ifdef _DEBUG
@@ -303,7 +303,6 @@ UINT RecordAVIThread(LPVOID lParam)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int RecordVideo(int top, int left, int width, int height, int fps, const char *szFileName /*screen *pscreen*/)
 {
-
     LPBITMAPINFOHEADER alpbi;
     AVISTREAMINFO strhdr;
     PAVIFILE pfile = nullptr;
@@ -312,6 +311,16 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
     AVICOMPRESSOPTIONS FAR *aopts[1] = {&opts};
     HRESULT hr = 0;
     WORD wVer = 0;
+
+    DWORD nextFrameAt = 0;
+    DWORD nextFrameNumber = 0;
+
+    long divx = 0;
+    long oldsec = 0;
+
+    DWORD timeexpended = 0;
+    DWORD frametime = 0;
+    DWORD oldframetime = 0;
 
     g_actualwidth = width;
     g_actualheight = height;
@@ -511,9 +520,9 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
         panrect_current.bottom = top + height - 1;
     }
 
-    DWORD timeexpended = 0;
-    DWORD frametime = 0;
-    DWORD oldframetime = 0;
+    timeexpended = 0;
+    frametime = 0;
+    oldframetime = 0;
 
     initialtime = timeGetTime();
     initcapture = 1;
@@ -525,13 +534,12 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
     // WRITING FRAMES
     //////////////////////////////////////////////
 
-    long divx, oldsec;
     divx = 0;
     oldsec = 0;
 
     // Time when the next frame will be taken
-    DWORD nextFrameAt = timeGetTime();
-    DWORD nextFrameNumber = 0;
+    nextFrameAt = timeGetTime();
+    nextFrameNumber = 0;
 
     while (gRecordState)
     { // repeatedly loop
@@ -649,7 +657,6 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
             }
             else
             {
-
                 if (xdiff < 0)
                     panrect_current.left -= maxpan;
                 else
@@ -676,7 +683,6 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
         }
         else
         {
-
             alpbi = captureScreenFrame(left, top, width, height);
         }
 
@@ -822,7 +828,7 @@ error:
 
     // Save the file on success
 
-     std::cout << "Recording finished" <<std::endl;
+    std::cout << "Recording finished" <<std::endl;
     return 0;
 }
 

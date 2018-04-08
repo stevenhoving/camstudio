@@ -24,10 +24,10 @@ set(LIB_SOURCE
     CBitmapEx.cpp
     CStudiolib.cpp
     Picture.cpp
-    stdafx.cpp
     TrayIcon.cpp
-    stdafx.h
     targetver.h
+    stdafx.h
+    stdafx.cpp
 )
 
 set(LIB_INCLUDE
