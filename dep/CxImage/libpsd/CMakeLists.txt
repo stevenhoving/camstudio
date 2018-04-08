@@ -99,6 +99,8 @@ target_include_directories(libpsd
     .
 )
 
+set_target_properties(libpsd PROPERTIES FOLDER "CxImage")
+
 install(
     DIRECTORY include
     DESTINATION include

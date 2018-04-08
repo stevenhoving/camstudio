@@ -213,6 +213,8 @@ target_include_directories(jasper
     include/
 )
 
+set_target_properties(jasper PROPERTIES FOLDER "CxImage")
+
 install(
     DIRECTORY include
     DESTINATION include

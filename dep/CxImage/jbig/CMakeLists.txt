@@ -34,6 +34,8 @@ target_include_directories(jbig
     .
 )
 
+set_target_properties(jbig PROPERTIES FOLDER "CxImage")
+
 install(
     DIRECTORY include
     DESTINATION include

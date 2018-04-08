@@ -86,6 +86,8 @@ target_include_directories(tiff
     .
 )
 
+set_target_properties(tiff PROPERTIES FOLDER "CxImage")
+
 install(
     DIRECTORY include
     DESTINATION include

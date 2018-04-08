@@ -112,6 +112,8 @@ target_include_directories(jpeg
     .
 )
 
+set_target_properties(jpeg PROPERTIES FOLDER "CxImage")
+
 install(
     DIRECTORY include
     DESTINATION include

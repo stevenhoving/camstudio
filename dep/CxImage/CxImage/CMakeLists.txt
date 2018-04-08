@@ -91,6 +91,8 @@ target_link_libraries(CxImage
     png_static
 )
 
+set_target_properties(CxImage PROPERTIES FOLDER "CxImage")
+
 install(
     DIRECTORY include
     DESTINATION include
