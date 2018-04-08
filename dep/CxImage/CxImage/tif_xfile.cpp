@@ -95,7 +95,7 @@ _TIFFFdOpen(void* fd, const char* name, const char* mode)
         _tiffSizeProcEx, _tiffMapProcEx, _tiffUnmapProcEx);
     if (tif)
     {
-        tif->tif_fd = reinterpret_cast<std::size_t>(fd);
+        tif->tif_fd = reinterpret_cast<size_t>(fd);
     }
     return tif;
 }

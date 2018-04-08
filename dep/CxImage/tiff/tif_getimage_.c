@@ -3013,6 +3013,7 @@ PickContigCase(TIFFRGBAImage* img)
 						case 0x11:
 							img->put.contig = putcontig8bitYCbCr11tile;
 							break;
+                        }
 					}
 				}
 			}
@@ -3153,7 +3154,6 @@ TIFFReadRGBAStrip(TIFF* tif, uint32 row, uint32 * raster )
 
 int
 TIFFReadRGBATile(TIFF* tif, uint32 col, uint32 row, uint32 * raster)
-
 {
     char 	emsg[1024] = "";
     TIFFRGBAImage img;

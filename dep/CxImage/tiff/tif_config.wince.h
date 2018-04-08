@@ -57,10 +57,10 @@
 /* #undef WORDS_BIGENDIAN */
 
 /* Define to `__inline__' or `__inline' if that's what the C compiler
-   calls it, or to nothing if 'inline' is not supported under any name.  */
+   calls it, or to nothing if 'TIFF_INLINE' is not supported under any name.  */
 #ifndef __cplusplus
-# ifndef inline
-#  define inline __inline
+# ifndef TIFF_INLINE
+#  define TIFF_INLINE __inline
 # endif
 #endif
 
