@@ -35,6 +35,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 add_subdirectory(dep)
 add_subdirectory(CamCodec)
+add_subdirectory(CamHook)
 
 
 

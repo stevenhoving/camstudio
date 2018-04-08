@@ -4,7 +4,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "CamHook/CamHook.h"
-#include "CamHook/ClickQueue.hpp"
+#include "CamHook/ClickQueue.h"
 
 #include <mmsystem.h>
 
@@ -23,7 +23,7 @@ HINSTANCE g_hInst = nullptr;
 // bool PassThrough = false; // pass hotkey to other application
 
 //__declspec(dllexport) HotKeyMap& getHotKeyMap() { return hkm; }
-__declspec(dllexport) void setHotKeyWindow(HWND hWnd)
+void setHotKeyWindow(HWND hWnd)
 {
     g_hotkeyWnd = hWnd;
 }
@@ -32,7 +32,7 @@ __declspec(dllexport) void setHotKeyWindow(HWND hWnd)
 // all that stuff is only here in mouse handler since it brakes double clicks when in the main app
 // I guess it is because of stealing thread
 HCURSOR m_hSavedCursor = nullptr;
-__declspec(dllexport) HCURSOR getCursor()
+HCURSOR getCursor()
 {
     return m_hSavedCursor;
 }
@@ -153,7 +153,7 @@ BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD Reason, LPVOID /*Reserved*/)
 // Installs hookproc into the hook chain for all desktop threads, sets
 // the notification window to hWnd using message_to_call.
 /////////////////////////////////////////////////////////////////////////////
-__declspec(dllexport) BOOL InstallMouseHook(HWND /*hWnd*/, UINT /*message_to_call*/)
+BOOL InstallMouseHook(HWND /*hWnd*/, UINT /*message_to_call*/)
 {
     if (g_mouseHookLL == nullptr)
     {
@@ -166,7 +166,7 @@ __declspec(dllexport) BOOL InstallMouseHook(HWND /*hWnd*/, UINT /*message_to_cal
 // UninstallMouseHook
 // Removes hookproc fromn hook chain for window hWnd
 /////////////////////////////////////////////////////////////////////////////
-__declspec(dllexport) BOOL UninstallMouseHook(HWND /*hWnd*/)
+BOOL UninstallMouseHook(HWND /*hWnd*/)
 {
     if (g_mouseHookLL && UnhookWindowsHookEx(g_mouseHookLL))
     {
