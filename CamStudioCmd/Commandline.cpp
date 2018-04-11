@@ -32,6 +32,8 @@
 #include <time.h>
 #include "Commandline.h"
 #include <CamLib/CamImage.h>
+#include <CamLib/CamFile.h>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -154,7 +156,7 @@ RECT panrect_current;
 RECT panrect_dest;
 
 // Path to temporary wav file
-char tempaudiopath[MAX_PATH];
+TCHAR tempaudiopath[MAX_PATH];
 int recordaudio = 0;
 
 // Audio Recording Variables
@@ -232,9 +234,9 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
     screen *obr;
     obr = (screen *)dwData;
     g_mon_current = g_mon_current + 1;
-    MONITORINFOEX mo;
-    mo.cbSize = sizeof(MONITORINFOEX);
-    if (GetMonitorInfo(hMonitor, &mo))
+    MONITORINFOEXA mo;
+    mo.cbSize = sizeof(mo);
+    if (GetMonitorInfoA(hMonitor, &mo))
     {
     }
     else
@@ -269,7 +271,7 @@ UINT RecordAVIThread(LPVOID lParam)
     int height = pscreen->height;
     int fps = g_frames_per_second;
 
-    const char *filepath = pscreen->outFile;
+    const auto *filepath = g_output_file.c_str();
 
     // Test the validity of writing to the file
     // Make sure the file to be created is currently not used by another application
@@ -282,7 +284,7 @@ UINT RecordAVIThread(LPVOID lParam)
         {
             fileverified = 1;
             CloseHandle((HANDLE)fhandle);
-            DeleteFile(filepath);
+            DeleteFileA(filepath);
         }
         else
         {
@@ -434,7 +436,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
     //
     // Open the movie file for writing....
     //
-    hr = AVIFileOpen(&pfile, szFileName, OF_WRITE | OF_CREATE, nullptr);
+    hr = AVIFileOpenA(&pfile, szFileName, OF_WRITE | OF_CREATE, nullptr);
     if (hr != AVIERR_OK)
         goto error;
 
@@ -864,7 +866,7 @@ LPBITMAPINFOHEADER captureScreenFrame(int left, int top, int width, int height)
         ::GetLocalTime(&systime);
         //::GetSystemTime(&systime);
         TCHAR msg[0x100];
-        ::sprintf_s(msg, "%s %02d:%02d:%02d:%03d", "Recording", systime.wHour, systime.wMinute, systime.wSecond,
+        ::_stprintf_s(msg, _T("%s %02d:%02d:%02d:%03d"), _T("Recording"), systime.wHour, systime.wMinute, systime.wSecond,
                     systime.wMilliseconds);
     }
 
@@ -1006,7 +1008,7 @@ std::string GetCodecDescription(long fccHandler)
 
 void VideoCodecOptions()
 {
-    // Capture a frame and use it to determine compatitble compressors for user to select
+    // Capture a frame and use it to determine compatible compressors for user to select
 
     LPBITMAPINFOHEADER first_alpbi = nullptr;
 

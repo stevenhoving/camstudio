@@ -22,7 +22,7 @@ public:
 
     virtual void Stop();
     virtual bool Start(WAVEFORMATEX* format = nullptr);
-    static void waveInErrorMsg(MMRESULT result, LPCTSTR addstr);
+    static void waveInErrorMsg(MMRESULT result, const TCHAR *addstr);
 
     afx_msg void OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2);
     DECLARE_MESSAGE_MAP()

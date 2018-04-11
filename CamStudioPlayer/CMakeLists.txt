@@ -11,6 +11,12 @@ add_executable(CamStudioPlayer WIN32
     ${PLAYER_SOURCE}
 )
 
+target_compile_definitions(CamStudioPlayer
+  PRIVATE
+    -D_UNICODE
+    -DUNICODE
+)
+
 target_link_libraries(CamStudioPlayer
     CamLib
     gdi32.lib

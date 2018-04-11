@@ -9,7 +9,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 void OpenMCIMovieFile(HWND hWnd);
 void OpenMCIMovieFileInit(HWND hWnd);
 void UpdateMenubar(HWND hWnd);
-void UpdateTitle(HWND hWnd, LPSTR lpstrMovie);
+void UpdateTitle(HWND hWnd, TCHAR *lpstrMovie);
 //DLGPROC
 //typedef INT_PTR(CALLBACK* DLGPROC)(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);

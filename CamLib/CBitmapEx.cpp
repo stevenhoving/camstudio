@@ -108,11 +108,11 @@ BOOL CBitmapEx::CreateFromDib(LPBITMAPINFO lpBi)
     return TRUE;
 }
 
-#define sfiltr "Image files (*.BMP)|*.BMP||"
-#define sext "BMP"
+#define sfiltr _T("Image files (*.BMP)|*.BMP||")
+#define sext _T("BMP")
 #define smask nullptr
 
-BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
+BOOL CBitmapEx::Open(const TCHAR * filename, const TCHAR *DialogTitle)
 {
     if (GetSafeHandle())
     {
@@ -239,7 +239,7 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
     return ret;
 }
 
-BOOL CBitmapEx::Save(LPCSTR filename, LPCSTR DialogTitle)
+BOOL CBitmapEx::Save(const TCHAR *filename, const TCHAR *DialogTitle)
 {
     if (!GetSafeHandle())
     {
@@ -264,7 +264,7 @@ BOOL CBitmapEx::Save(LPCSTR filename, LPCSTR DialogTitle)
     }
 
     CFile file;
-    if (!file.Open((LPCSTR)Path, CFile::modeCreate | CFile::modeWrite | CFile::typeBinary))
+    if (!file.Open(Path, CFile::modeCreate | CFile::modeWrite | CFile::typeBinary))
     {
         return false;
     }

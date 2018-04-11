@@ -16,7 +16,7 @@ CAudioMixer::~CAudioMixer()
         Close();
 }
 
-void CAudioMixer::OnError(MMRESULT uError, LPTSTR lpszFunction)
+void CAudioMixer::OnError(MMRESULT uError, const TCHAR *lpszFunction /*= nullptr*/)
 {
     if (!lpszFunction)
         lpszFunction = _T("CAudioMixer::OnError");

@@ -469,7 +469,7 @@ void CScreenAnnotationsDlg::SaveLayoutNew()
             newLayout->layoutArrayPtr = cloneArray;
 
             CString layoutIntStr;
-            layoutIntStr.Format("%d", iLayoutNameInt);
+            layoutIntStr.Format(_T("%d"), iLayoutNameInt);
             newLayout->layoutName = g_strLayoutName + layoutIntStr;
             iLayoutNameInt++;
             if (iLayoutNameInt > 2147483647) // TODO; No Magic Numbers
@@ -503,7 +503,7 @@ void CScreenAnnotationsDlg::SaveShapeNew(CTransparentWnd *newWnd)
         int nItemMod = modeShape;
 
         CString shapeStr;
-        shapeStr.Format("%d", iShapeNameInt);
+        shapeStr.Format(_T("%d"), iShapeNameInt);
         iShapeNameInt++;
         if (iShapeNameInt > 2147483600) // assume int32
             iShapeNameInt = 1;
@@ -1303,12 +1303,12 @@ void CScreenAnnotationsDlg::OnEditobjLibraryCloselibrary()
 {
     CString m_newfile;
 
-    static char BASED_CODE szFilter[] = "Shape Files (*.shapes)|*.shapes||";
-    static char szTitle[] = "Save Shapes";
+    static const TCHAR *szFilter = _T("Shape Files (*.shapes)|*.shapes||");
+    static const TCHAR *szTitle = _T("Save Shapes");
 
-    CFileDialog fdlg(FALSE, "*.shapes", "*.shapes", OFN_LONGNAMES | OFN_EXTENSIONDIFFERENT, szFilter, this);
+    CFileDialog fdlg(FALSE, _T("*.shapes"), _T("*.shapes"), OFN_LONGNAMES | OFN_EXTENSIONDIFFERENT, szFilter, this);
     fdlg.m_ofn.lpstrTitle = szTitle;
-    fdlg.m_ofn.lpstrDefExt = "shapes";
+    fdlg.m_ofn.lpstrDefExt = _T("shapes");
 
     if (fdlg.DoModal() == IDOK)
     {
@@ -1330,10 +1330,10 @@ void CScreenAnnotationsDlg::OnEditobjLibraryCloselibrary()
 
 void CScreenAnnotationsDlg::OnEditobjLibraryOpenlibrary()
 {
-    static char BASED_CODE szFilter[] = "Shape Files (*.shapes)|*.shapes||";
-    static char szTitle[] = "Load Shapes";
+    static const TCHAR *szFilter = _T("Shape Files (*.shapes)|*.shapes||");
+    static const TCHAR *szTitle = _T("Load Shapes");
 
-    CFileDialog fdlg(TRUE, "*.shapes", "*.shapes", OFN_LONGNAMES | OFN_FILEMUSTEXIST, szFilter, this);
+    CFileDialog fdlg(TRUE, _T("*.shapes"), _T("*.shapes"), OFN_LONGNAMES | OFN_FILEMUSTEXIST, szFilter, this);
     fdlg.m_ofn.lpstrTitle = szTitle;
     if (IDOK == fdlg.DoModal())
     {
@@ -1375,10 +1375,10 @@ void CScreenAnnotationsDlg::OnEditlayoutLibraryOpenlibrary()
 {
     CString filename;
 
-    static char BASED_CODE szFilter[] = "Layout Files (*.layout)|*.layout||";
-    static char szTitle[] = "Load Layout";
+    static const TCHAR *szFilter = _T("Layout Files (*.layout)|*.layout||");
+    static const TCHAR *szTitle = _T("Load Layout");
 
-    CFileDialog fdlg(TRUE, "*.layout;*.lay", "*.layout;*.lay", OFN_LONGNAMES | OFN_FILEMUSTEXIST, szFilter, this);
+    CFileDialog fdlg(TRUE, _T("*.layout;*.lay"), _T("*.layout;*.lay"), OFN_LONGNAMES | OFN_FILEMUSTEXIST, szFilter, this);
     fdlg.m_ofn.lpstrTitle = szTitle;
 
     if (fdlg.DoModal() == IDOK)
@@ -1393,12 +1393,12 @@ void CScreenAnnotationsDlg::OnEditlayoutLibraryCloselibrary()
 {
     CString m_newfile;
 
-    static char BASED_CODE szFilter[] = "Layout Files (*.layout)|*.layout||";
-    static char szTitle[] = "Save Layout";
+    static const TCHAR *szFilter = _T("Layout Files (*.layout)|*.layout||");
+    static const TCHAR *szTitle = _T("Save Layout");
 
-    CFileDialog fdlg(FALSE, "*.layout", "*.layout", OFN_LONGNAMES | OFN_EXTENSIONDIFFERENT, szFilter, this);
+    CFileDialog fdlg(FALSE, _T("*.layout"), _T("*.layout"), OFN_LONGNAMES | OFN_EXTENSIONDIFFERENT, szFilter, this);
     fdlg.m_ofn.lpstrTitle = szTitle;
-    fdlg.m_ofn.lpstrDefExt = "layout";
+    fdlg.m_ofn.lpstrDefExt = _T("layout");
 
     if (fdlg.DoModal() == IDOK)
     {
@@ -1911,10 +1911,10 @@ void CScreenAnnotationsDlg::OnLibraryInsertshapelibaray()
 {
     CString filename;
 
-    static char BASED_CODE szFilter[] = "Shape Files (*.shapes)|*.shapes||";
-    static char szTitle[] = "Insert Shapes From File";
+    static const TCHAR *szFilter = _T("Shape Files (*.shapes)|*.shapes||");
+    static const TCHAR *szTitle = _T("Insert Shapes From File");
 
-    CFileDialog fdlg(TRUE, "*.shapes", "*.shapes", OFN_LONGNAMES | OFN_FILEMUSTEXIST, szFilter, this);
+    CFileDialog fdlg(TRUE, _T("*.shapes"), _T("*.shapes"), OFN_LONGNAMES | OFN_FILEMUSTEXIST, szFilter, this);
     fdlg.m_ofn.lpstrTitle = szTitle;
 
     if (fdlg.DoModal() == IDOK)
@@ -2036,8 +2036,7 @@ void CScreenAnnotationsDlg::AdjustLayoutName(CString &layoutName)
         }
         if ((xchar >= 0) && (xchar <= numchar))
         {
-            int val;
-            sscanf_s(LPCTSTR(reconstructNum), "%d", &val);
+            int val = std::stoi(reconstructNum.GetString());
             if ((val >= 0) && (val < 100000))
             {
                 iLayoutNameInt = val + 1;
@@ -2092,8 +2091,7 @@ void AdjustShapeName(CString &shapeName)
         }
         if ((xchar >= 0) && (xchar <= numchar))
         {
-            int val;
-            sscanf_s(LPCTSTR(reconstructNum), "%d", &val);
+            int val = std::stoi(reconstructNum.GetString());
             if ((val >= 0) && (val < 100000))
             {
                 iShapeNameInt = val + 1;

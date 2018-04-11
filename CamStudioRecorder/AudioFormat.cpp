@@ -369,7 +369,7 @@ void CAudioFormatDlg::UpdateDeviceData(UINT /*deviceID*/, DWORD dwFormat, const 
         m_ctrlCBRecordFormat.AddString(_T("None Available"));
         m_ctrlCBRecordFormat.SetCurSel(0);
         m_ctrlEditCompressedFormatTag.SetWindowText(_T("None Available"));
-        m_ctrlEditCompressedFormat.SetWindowText(" ");
+        m_ctrlEditCompressedFormat.SetWindowText(_T(" "));
         m_ctrlButtonChooseCompressedFormat.EnableWindow(FALSE);
         // For this case, where no recording format, compressed format is available
         // is handled by OnOk (no external formats is updated) when the user press
@@ -441,7 +441,7 @@ bool CAudioFormatDlg::LoadDeviceList()
         {
             iIdx = m_ctrlCBInputDevice.AddString(wicaps.szPname);
             m_ctrlCBInputDevice.SetItemData(iIdx, i);
-            // As i is always a possitive value we can cast to UINT
+            // As i is always a positive value we can cast to UINT
             if (m_cFmt.m_uDeviceID == (UINT)i)
             {
                 m_ctrlCBInputDevice.SetCurSel(iIdx);
@@ -554,7 +554,7 @@ BOOL CAudioFormatDlg::OnInitDialog()
 
     // This code works on the assumption (when filling in values for the user - interfaces)
     // that the m_Format and pwfx formats (external variables) are already chosen correctly
-    // and compatibile with each other
+    // and compatible with each other
     int devID = m_ctrlCBInputDevice.GetCurSel();
     if (CB_ERR != devID)
     {

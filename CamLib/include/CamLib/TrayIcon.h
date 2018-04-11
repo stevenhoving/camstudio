@@ -18,12 +18,12 @@ public:
 
     void TraySetIcon(HICON hIcon);
     void TraySetIcon(UINT nResourceID);
-    void TraySetIcon(LPCTSTR lpszResourceName);
-    void TraySetToolTip(LPCTSTR lpszToolTip);
+    void TraySetIcon(const TCHAR * lpszResourceName);
+    void TraySetToolTip(const TCHAR *lpszToolTip);
     //void TraySetMinimizeToTray(BOOL bMinimizeToTray = TRUE);
     BOOL TraySetMenu(UINT nResourceID, UINT nDefaultPos = 0);
     BOOL TraySetMenu(HMENU hMenu, UINT nDefaultPos = 0);
-    BOOL TraySetMenu(LPCTSTR lpszMenuName, UINT nDefaultPos = 0);
+    BOOL TraySetMenu(const TCHAR * lpszMenuName, UINT nDefaultPos = 0);
     BOOL TrayUpdate();
     BOOL TrayShow();
     BOOL TrayHide();

@@ -385,22 +385,15 @@ void CCursorOptionsDlg::OnBnClickedFileCursor()
     CString fileName;
     CString filt = "Icon and Cursor Files (*.ico; *.cur)|*.ico;*.cur||";
 
-    if (m_pIconFileDlg == nullptr)
-    {
-        m_pIconFileDlg = new CFileDialog(TRUE, "*.ico;*.cur", "*.ico;*.cur", 0, filt, this);
-        if (!m_pIconFileDlg)
-        {
-            ::OnError(_T("CCursorOptionsDlg::OnFilecursor"));
-            return;
-        }
-    }
-    char dirx[200];
+    auto m_pIconFileDlg = new CFileDialog(TRUE, _T("*.ico;*.cur"), _T("*.ico;*.cur"), 0, filt, this);
+
+    TCHAR dirx[200];
     VERIFY(GetWindowsDirectory(dirx, 200));
     CString initdir(dirx);
     initdir = initdir + "\\cursors";
 
     m_pIconFileDlg->m_ofn.Flags |= OFN_FILEMUSTEXIST;
-    m_pIconFileDlg->m_ofn.lpstrTitle = "File to load";
+    m_pIconFileDlg->m_ofn.lpstrTitle = _T("File to load");
 
     if (m_cCursor.Dir().IsEmpty())
     {
@@ -423,7 +416,8 @@ void CCursorOptionsDlg::OnBnClickedFileCursor()
         fileName = fileName.Left(fileName.ReverseFind('\\'));
         m_cCursor.Dir(fileName);
     }
-    delete m_pIconFileDlg, m_pIconFileDlg = 0;
+    delete m_pIconFileDlg;
+    m_pIconFileDlg = nullptr;
 }
 
 void CCursorOptionsDlg::OnOK()

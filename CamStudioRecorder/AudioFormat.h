@@ -2,13 +2,10 @@
 
 #include <array>
 
-/////////////////////////////////////////////////////////////////////////////
-// CAudioFormatDlg dialog
 
 class CAudioFormatDlg : public CDialog
 {
-
-    CAudioFormatDlg(CWnd *pParent = nullptr); // disallowed
+    CAudioFormatDlg(CWnd *pParent = nullptr);
 public:
     CAudioFormatDlg(const sAudioFormat &cFmt, CWnd *pParent = nullptr);
 

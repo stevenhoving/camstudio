@@ -26,8 +26,8 @@ END_MESSAGE_MAP()
 
 void CUpdateDialog::OnBnClickedButtonlink()
 {
-    LPCTSTR mode = ("open");
-    ShellExecute(GetSafeHwnd(), mode, "http://www.camstudio.org/", nullptr, nullptr, SW_SHOW);
+    const auto *mode = _T("open");
+    ShellExecute(GetSafeHwnd(), mode, _T("http://www.camstudio.org/"), nullptr, nullptr, SW_SHOW);
     this->ShowWindow(SW_HIDE);
 }
 // CUpdateDialog message handlers

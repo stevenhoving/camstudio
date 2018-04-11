@@ -70,7 +70,7 @@ private:
     void RefreshHighlight();
     bool LoadStdCursors();
 
-    CFileDialog *m_pIconFileDlg;
+    //CFileDialog *m_pIconFileDlg;
     bool m_bInitPaint;
     bool m_bSliding;
 

@@ -15,7 +15,7 @@ public:
         return 0 != m_hMixer;
     }
 
-    static void OnError(MMRESULT uError, LPTSTR lpszFunction = 0);
+    static void OnError(MMRESULT uError, const TCHAR *lpszFunction = nullptr);
     MMRESULT Close();
     MMRESULT GetControlDetails(LPMIXERCONTROLDETAILS pmxcd, DWORD fdwDetails);
     MMRESULT GetDevCaps(LPMIXERCAPS pmxcaps, UINT cbmxcaps = sizeof(MIXERCAPS));

@@ -31,6 +31,8 @@
 #include "player.h"
 #include "resource.h"
 
+#include <tchar.h>
+
 // Globals
 int defaultWidth = 800;          // Default width of the player window
 int defaultHeight = 600;         // Default height of the player window
@@ -39,7 +41,7 @@ BOOL bIsOpenMovie = FALSE;       // Whether a movie is open
 HWND hWndMCI;                    // Movie window handle
 HMENU hMenuBar = nullptr;        // Menu bar handle
 HINSTANCE m_hInstance = nullptr; // Instance of the player
-char playfiledir[300];           // File that is currently being played
+TCHAR playfiledir[300];           // File that is currently being played
 
 /*
  * Initialize stuff.
@@ -49,7 +51,7 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
     // Window must be created with this title for the menu to initialize properly; use szAppName for the actual app
     // title. This is due to the menu in the resources having the ID "PLAYER". If you are changing one of these values,
     // make sure to change both to the same thing.
-    static char szAppNameInitial[] = "PLAYER";
+    static const TCHAR *szAppNameInitial = _T("PLAYER");
 
     // First let's make sure we are running on 1.1
     if (HIWORD(VideoForWindowsVersion()) < miminumVfwVersion)
@@ -68,7 +70,7 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
         wndclass.cbClsExtra = 0;
         wndclass.cbWndExtra = 0;
         wndclass.hInstance = hInstance;
-        wndclass.hIcon = LoadIcon(hInstance, "APPICON");
+        wndclass.hIcon = LoadIcon(hInstance, _T("APPICON"));
         wndclass.hCursor = LoadCursor(nullptr, IDC_ARROW);
         wndclass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 2);
         wndclass.lpszMenuName = szAppNameInitial;
@@ -127,7 +129,7 @@ HWND InitWindows(HINSTANCE hInstance, HINSTANCE hPrevInstance, int nCmdShow)
 /*
  * Main routine.
  */
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
+int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpszCmdParam, int nCmdShow)
 {
     m_hInstance = hInstance;
 
@@ -137,9 +139,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
         return 0; // Died initializing, bail out
     }
 
-    if (strlen(lpszCmdParam) != 0)
+    if (_tcslen(lpszCmdParam) != 0)
     {
-        strcpy_s(playfiledir, lpszCmdParam);
+        _tcscpy_s(playfiledir, lpszCmdParam);
         PostMessage(hWnd, WM_USER_PLAY, 0, 0);
     }
 
@@ -311,22 +313,22 @@ void UpdateMenubar(HWND hWnd)
 /*
  * Updates the application title bar.
  */
-void UpdateTitle(HWND hWnd, LPSTR lpstrMovie)
+void UpdateTitle(HWND hWnd, TCHAR *lpstrMovie)
 {
-    char szAppName[BUFFER_LENGTH];   // space for the title
-    char achNewTitle[BUFFER_LENGTH]; // space for the title
+    TCHAR szAppName[BUFFER_LENGTH];   // space for the title
+    TCHAR achNewTitle[BUFFER_LENGTH]; // space for the title
     LoadString(m_hInstance, IDS_STRING_APPTITLE, szAppName, BUFFER_LENGTH);
 
     if (lpstrMovie != nullptr)
     {
-        wsprintf((LPSTR)achNewTitle, "%s - %s", (LPSTR)szAppName, lpstrMovie);
+        wsprintf(achNewTitle, _T("%s - %s"), (LPSTR)szAppName, lpstrMovie);
     }
     else
     {
-        lstrcpy((LPSTR)achNewTitle, (LPSTR)szAppName);
+        lstrcpy(achNewTitle, szAppName);
     }
 
-    SetWindowText(hWnd, (LPSTR)achNewTitle);
+    SetWindowText(hWnd, achNewTitle);
 }
 
 /*
@@ -334,15 +336,14 @@ void UpdateTitle(HWND hWnd, LPSTR lpstrMovie)
  */
 void OpenMCIMovieFile(HWND hWnd)
 {
+    TCHAR szFile[BUFFER_LENGTH];
+    TCHAR szFileTitle[BUFFER_LENGTH];
     OPENFILENAME ofn;
-
-    char szFile[BUFFER_LENGTH];
-    char szFileTitle[BUFFER_LENGTH];
-
     memset(&ofn, 0, sizeof(ofn));
+
     ofn.lStructSize = sizeof(ofn);
     ofn.hwndOwner = hWnd;
-    ofn.lpstrFilter = "AVI Files\0*.avi\0\0";
+    ofn.lpstrFilter = _T("AVI Files\0*.avi\0\0");
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = sizeof(szFile);
     ofn.lpstrFileTitle = szFileTitle;
@@ -404,7 +405,7 @@ void OpenMCIMovieFileInit(HWND hWnd)
     }
 
     UpdateMenubar(hWnd);
-    UpdateTitle(hWnd, (LPSTR)playfiledir);
+    UpdateTitle(hWnd, playfiledir);
 
     InvalidateRect(hWnd, nullptr, FALSE);
     UpdateWindow(hWnd);
@@ -422,7 +423,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case WM_COMMAND:
             if (wParam == 1055)
             {
-                ShellExecute(nullptr, "open", "http://www.camstudio.org/", nullptr, nullptr, SW_SHOW);
+                ShellExecute(nullptr, _T("open"), _T("http://www.camstudio.org/"), nullptr, nullptr, SW_SHOW);
             }
             else
             {
@@ -445,8 +446,8 @@ int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus)
 {
     if (m_hInstance)
     {
-        char Msg_buffer[1000];
-        char Title_buffer[1000];
+        TCHAR Msg_buffer[1000];
+        TCHAR Title_buffer[1000];
         LoadString(m_hInstance, strTitle, Title_buffer, 1000);
         LoadString(m_hInstance, strMsg, Msg_buffer, 1000);
 

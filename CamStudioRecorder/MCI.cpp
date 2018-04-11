@@ -27,7 +27,7 @@ void mciRecordOpen(HWND hWndCallback)
 {
     // mop.dwCallback = reinterpret_cast<DWORD_PTR>(hWndCallback);
     // mop.lpstrDeviceType = reinterpret_cast<LPCTSTR>(MCI_DEVTYPE_WAVEFORM_AUDIO);
-    // mop.lpstrElementName = TEXT("");
+    // mop.lpstrElementName = _T("");
     // mciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_TYPE_ID | MCI_OPEN_ELEMENT,
     // reinterpret_cast<DWORD_PTR>(&mop)); isMciRecordOpen = 1;
 
@@ -306,7 +306,7 @@ MCIERROR CMCIDevice::Open(const CWnd &rWnd)
     ASSERT(!IsOpen());
     m_sOpenParams.dwCallback = reinterpret_cast<DWORD_PTR>((HWND)rWnd);
     m_sOpenParams.lpstrDeviceType = reinterpret_cast<LPCTSTR>(MCI_DEVTYPE_WAVEFORM_AUDIO);
-    m_sOpenParams.lpstrElementName = TEXT("");
+    m_sOpenParams.lpstrElementName = _T("");
     dwResult = ::mciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_TYPE_ID | MCI_OPEN_ELEMENT,
                                 reinterpret_cast<DWORD_PTR>(&m_sOpenParams));
     OnError(dwResult);

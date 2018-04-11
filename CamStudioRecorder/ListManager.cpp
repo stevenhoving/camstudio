@@ -73,7 +73,7 @@ int CListManager::LoadShapeArray(CString loadDir, int freeExisting)
 {
     int ret = TRUE;
     FILE *fptr = nullptr;
-    fopen_s(&fptr, loadDir.GetString(), "rb");
+    _wfopen_s(&fptr, loadDir.GetString(), _T("rb"));
     if (fptr == nullptr)
     {
         // Silent Mode
@@ -151,7 +151,7 @@ int CListManager::SaveShapeArray(CString saveDir)
 {
     int ret = TRUE;
     FILE *fptr = nullptr;
-    fopen_s(&fptr, saveDir.GetString(), "wb");
+    _wfopen_s(&fptr, saveDir.GetString(), _T("wb"));
     if (!fptr)
     {
         // MessageBox(nullptr,"Error opening shape file for saving","Note",MB_OK | MB_ICONEXCLAMATION);
@@ -492,7 +492,7 @@ int CListManager::LoadLayout(CString loadDir)
 {
     int ret = TRUE;
     FILE *fptr = nullptr;
-    fopen_s(&fptr, loadDir.GetString(), "rb");
+    _wfopen_s(&fptr, loadDir.GetString(), _T("rb"));
     if (fptr != nullptr)
     {
         long fileversion = 0;
@@ -567,7 +567,7 @@ int CListManager::SaveLayout(CString saveDir)
 {
     int ret = TRUE;
     FILE *fptr = nullptr;
-    fopen_s(&fptr, saveDir.GetString(), "wb");
+    _wfopen_s(&fptr, saveDir.GetString(), _T("wb"));
     if (fptr != nullptr)
     {
         long fileversion = 100;
@@ -637,7 +637,7 @@ int CListManager::SaveLayoutArrayToFile(CArray<CTransparentWnd *, CTransparentWn
     return ret;
 }
 
-// Ensure window is on the top of displaylist
+// Ensure window is on the top of display list
 void CListManager::EnsureOnTopList(CTransparentWnd *transWnd)
 {
     int max = displayArray.GetSize();
@@ -645,7 +645,7 @@ void CListManager::EnsureOnTopList(CTransparentWnd *transWnd)
         return;
     if (transWnd == displayArray[max - 1])
     {
-        // at botton of list (i.e on top..no chnage)
+        // at bottom of list (i.e on top..no change)
         // no change
         return;
     }

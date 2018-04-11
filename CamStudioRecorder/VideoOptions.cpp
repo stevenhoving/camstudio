@@ -586,7 +586,7 @@ void CVideoOptionsDlg::OnOK()
     {
         if ((m_iCaptureInterval * m_iPlaybackRate) != 1000)
         {
-            MessageBox("Capture and Playback Rate lock is enabled.\n Values must be multipliers of 1000", "CamStudio",
+            MessageBox(_T("Capture and Playback Rate lock is enabled.\n Values must be multipliers of 1000"), _T("CamStudio"),
                        MB_OK | MB_ICONEXCLAMATION);
             return;
         }
@@ -706,9 +706,8 @@ void CVideoOptionsDlg::OnLock()
 {
     if (m_ctrlButtonLock.GetCheck() == false)
     {
-        if (MessageBox("Please note by deselecting this option you increase the risk \nthat the audio and video will "
-                       "desynchronize. Are you sure?",
-                       "CamStudio", MB_YESNO | MB_ICONEXCLAMATION) == IDYES)
+        if (MessageBox(_T("Please note by deselecting this option you increase the risk \nthat the audio and video will desynchronize. Are you sure?"),
+                       _T("CamStudio"), MB_YESNO | MB_ICONEXCLAMATION) == IDYES)
         {
             m_ctrlButtonLock.SetCheck(false);
         }
@@ -724,9 +723,8 @@ void CVideoOptionsDlg::OnLock()
 
 void CVideoOptionsDlg::OnCaptureFrameRateInfo()
 {
-    MessageBox("Note that the lower the 'Capture Frame' rate figure, the greater\n the CPU usage will be (i.e. the "
-               "slower your PC will run) and the larger\n your video's final filesize will be.",
-               "CamStudio", MB_OK | MB_ICONEXCLAMATION);
+    MessageBox(_T("Note that the lower the 'Capture Frame' rate figure, the greater\n the CPU usage will be (i.e. the slower your PC will run) and the larger\n your video's final filesize will be."),
+               _T("CamStudio"), MB_OK | MB_ICONEXCLAMATION);
 }
 
 void CVideoOptionsDlg::OnBnClickedSupportrounddown()

@@ -314,24 +314,24 @@ void CFixedRegionDlg::OnEnKillfocusHeight()
 void CFixedRegionDlg::RoundDownHeight()
 {
     CString sVal;
-    m_ctrlEditHeight.GetWindowTextA(sVal);
-    int nHeight = atoi(sVal);
+    m_ctrlEditHeight.GetWindowText(sVal);
+    int nHeight = std::stoi(sVal.GetString());
     if ((nHeight % 2) != 0)
     {
         nHeight = nHeight - 1;
-        sVal.Format("%d", nHeight);
-        m_ctrlEditHeight.SetWindowTextA(sVal);
+        sVal.Format(_T("%d"), nHeight);
+        m_ctrlEditHeight.SetWindowText(sVal);
     }
 }
 void CFixedRegionDlg::RoundDownWidth()
 {
     CString sVal;
-    m_ctrlEditWidth.GetWindowTextA(sVal);
-    int nWidth = atoi(sVal);
+    m_ctrlEditWidth.GetWindowText(sVal);
+    int nWidth = std::stoi(sVal.GetString());
     if ((nWidth % 2) != 0)
     {
         nWidth = nWidth - 1;
-        sVal.Format("%d", nWidth);
-        m_ctrlEditWidth.SetWindowTextA(sVal);
+        sVal.Format(_T("%d"), nWidth);
+        m_ctrlEditWidth.SetWindowText(sVal);
     }
 }

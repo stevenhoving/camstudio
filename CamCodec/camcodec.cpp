@@ -95,11 +95,13 @@ Comments) 1950 to 1952 in the files ftp://ds.internic.net/rfc/rfc1950.txt
 #include "resource.h"
 #include <minilzo/minilzo.h>
 #include <zlib.h>
+
+#include <tchar.h>
 #include <cstdio>
 #include <cstdint>
 
-TCHAR szDescription[] = TEXT("CamStudio Lossless Codec v1.5");
-TCHAR szName[] = TEXT("CamCodec");
+static const TCHAR *szDescription = _T("CamStudio Lossless Codec v1.5");
+static const TCHAR *szName = _T("CamCodec");
 
 //#define HEAP_ALLOC(var,size) long __LZO_MMODEL var [ ((size) + (sizeof(long) - 1)) / sizeof(long) ]
 // static HEAP_ALLOC(wrkmem, LZO1X_1_MEM_COMPRESS);
@@ -133,26 +135,26 @@ int AppFlags()
         TCHAR apppath[MAX_PATH];
         if (GetModuleFileName(nullptr, apppath, MAX_PATH))
         {
-            TCHAR *appname = strrchr(apppath, '\\');
+            TCHAR *appname = _tcsrchr(apppath, '\\');
             appname = appname ? appname + 1 : apppath;
             //            Msg("App name is %s; ", appname);
-            if (!lstrcmpi(appname, TEXT("premiere.exe")))
+            if (!lstrcmpi(appname, _T("premiere.exe")))
             {
                 flags = 1;
             }
-            if (!lstrcmpi(appname, TEXT("veditor.exe")))
+            if (!lstrcmpi(appname, _T("veditor.exe")))
             {
                 flags = 1;
             }
-            if (!lstrcmpi(appname, TEXT("avi2mpg2_vfw.exe")))
+            if (!lstrcmpi(appname, _T("avi2mpg2_vfw.exe")))
             {
                 flags = 1;
             }
-            if (!lstrcmpi(appname, TEXT("bink.exe")))
+            if (!lstrcmpi(appname, _T("bink.exe")))
             {
                 flags = 1;
             }
-            if (!lstrcmpi(appname, TEXT("afterfx.exe")))
+            if (!lstrcmpi(appname, _T("afterfx.exe")))
             {
                 flags = 2;
             }
@@ -384,8 +386,13 @@ DWORD CodecInst::GetInfo(ICINFO *icinfo, DWORD dwSize)
 
     icinfo->dwVersion = VERSION;
     icinfo->dwVersionICM = ICVERSION;
+#ifndef _UNICODE
     MultiByteToWideChar(CP_ACP, 0, szDescription, -1, icinfo->szDescription, sizeof(icinfo->szDescription) / sizeof(WCHAR));
     MultiByteToWideChar(CP_ACP, 0, szName, -1, icinfo->szName, sizeof(icinfo->szName) / sizeof(WCHAR));
+#else
+    wcscpy_s(icinfo->szDescription, szDescription);
+    wcscpy_s(icinfo->szName, szName);
+#endif
 
     return sizeof(ICINFO);
 }
@@ -1100,8 +1107,8 @@ DWORD CodecInst::CompressBegin(LPBITMAPINFOHEADER lpbiIn, LPBITMAPINFOHEADER lpb
 
     // Msg("CSCD CompressBegin: input = %s, output = %s\n", &PrintBitmapType(lpbiIn), &PrintBitmapType(lpbiOut));
 
-    m_algorithm = GetPrivateProfileInt("GENERAL", "algorithm", 0, "camcodec100.ini");
-    m_gzip_level = GetPrivateProfileInt("GENERAL", "gzip_level", 6, "camcodec100.ini");
+    m_algorithm = GetPrivateProfileInt(_T("GENERAL"), _T("algorithm"), 0, _T("camcodec100.ini"));
+    m_gzip_level = GetPrivateProfileInt(_T("GENERAL"), _T("gzip_level"), 6, _T("camcodec100.ini"));
 
     m_currentFrame = 0;
     CompressEnd(); // free resources if necessary

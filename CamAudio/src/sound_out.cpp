@@ -63,7 +63,7 @@ bool CSoundOut::Start(WAVEFORMATEX *format)
         mmReturn = ::waveOutOpen(&m_hPlay, WAVE_MAPPER, &m_Format, m_ThreadID, 0, CALLBACK_THREAD);
         if (mmReturn)
         {
-            waveOutErrorMsg(mmReturn, "in start()");
+            waveOutErrorMsg(mmReturn, _T("in start()"));
             return FALSE;
         }
         else
@@ -91,7 +91,7 @@ void CSoundOut::Stop()
         m_bPlaying = FALSE;
         mmReturn = ::waveOutReset(m_hPlay);
         if (mmReturn)
-            waveOutErrorMsg(mmReturn, "in stop()");
+            waveOutErrorMsg(mmReturn, _T("in stop()"));
         TRACE("waveOutReset()\n");
     }
 }
@@ -105,7 +105,7 @@ void CSoundOut::OnMM_WOM_DONE(WPARAM parm1, LPARAM parm2)
     mmReturn = ::waveOutUnprepareHeader(m_hPlay, pHdr, sizeof(WAVEHDR));
     if (mmReturn)
     {
-        waveOutErrorMsg(mmReturn, "in OnWOM_DONE()");
+        waveOutErrorMsg(mmReturn, _T("in OnWOM_DONE()"));
         return;
     }
 
@@ -115,7 +115,7 @@ void CSoundOut::OnMM_WOM_DONE(WPARAM parm1, LPARAM parm2)
     {
         CBuffer buf(pHdr->lpData, pHdr->dwBufferLength);
 
-        // virtual function supplyed by user
+        // virtual function supplied by user
         GetDataToSoundOut(&buf, m_pOwner);
 
         if (buf.ByteLen > 0)
@@ -143,7 +143,7 @@ void CSoundOut::OnMM_WOM_DONE(WPARAM parm1, LPARAM parm2)
     {
         mmReturn = ::waveOutClose(m_hPlay);
         if (mmReturn)
-            waveOutErrorMsg(mmReturn, "in stop()");
+            waveOutErrorMsg(mmReturn, _T("in stop()"));
         TRACE("waveOutClose()\n");
     }
 }
@@ -166,13 +166,13 @@ int CSoundOut::AddOutputBufferToQueue(CBuffer *buffer)
     mmReturn = ::waveOutPrepareHeader(m_hPlay, pHdr, sizeof(WAVEHDR));
     if (mmReturn)
     {
-        waveOutErrorMsg(mmReturn, "in AddOutputBufferToQueue()");
+        waveOutErrorMsg(mmReturn, _T("in AddOutputBufferToQueue()"));
         return m_QueuedBuffers;
     }
     // write the buffer to output queue
     mmReturn = ::waveOutWrite(m_hPlay, pHdr, sizeof(WAVEHDR));
     if (mmReturn)
-        waveOutErrorMsg(mmReturn, "in AddOutputBufferToQueue()");
+        waveOutErrorMsg(mmReturn, _T("in AddOutputBufferToQueue()"));
     // increment the number of waiting buffers
     return m_QueuedBuffers++;
 }
@@ -180,7 +180,7 @@ int CSoundOut::AddOutputBufferToQueue(CBuffer *buffer)
 void CSoundOut::waveOutErrorMsg(MMRESULT result, LPCTSTR addstr)
 {
     // say error message
-    char errorbuffer[100];
+    TCHAR errorbuffer[100];
     waveOutGetErrorText(result, errorbuffer, 100);
     ErrorMsg("WAVEOUT:%x:%s %s", result, errorbuffer, addstr);
 }

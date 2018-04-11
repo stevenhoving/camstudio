@@ -143,7 +143,7 @@ void CVideoWnd::OnPaint()
     int textlength = m_textstring.GetLength(); // get number of bytes
     pDC->SetBkMode(TRANSPARENT);
     pDC->SetTextColor(m_rgb);
-    pDC->DrawText((char *)LPCTSTR(m_textstring), textlength, &m_tracker.m_rect,
+    pDC->DrawText(m_textstring.GetString(), textlength, &m_tracker.m_rect,
                   m_horzalign | DT_VCENTER | DT_WORDBREAK);
 
     pDC->SelectObject(oldfont);

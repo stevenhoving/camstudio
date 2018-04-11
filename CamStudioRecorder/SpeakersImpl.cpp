@@ -3,8 +3,8 @@
 
 #include "AutoSearchDialog.h"
 
-#include <fisterlib/sound_file.h>
-#include <fisterlib/buffer.h>
+#include <CamAudio/sound_file.h>
+#include <CamAudio/buffer.h>
 
 #include "AudioMixer.h"
 #include "MCI.h"
@@ -281,7 +281,7 @@ BOOL initialSaveMMMode()
         MMRESULT mmResult = g_AudioMixer.GetLineInfo(&mxl, (MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_COMPONENTTYPE));
         if (mmResult != MMSYSERR_NOERROR)
         {
-            ::OnError("initialSaveMMMode: mixerGetLineInfo");
+            ::OnError(_T("initialSaveMMMode: mixerGetLineInfo"));
             return bResult;
         }
 
@@ -309,7 +309,7 @@ BOOL initialSaveMMMode()
             mmResult = g_AudioMixer.GetLineControls(&mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE);
             if (mmResult != MMSYSERR_NOERROR)
             {
-                OnError("initialSaveMMMode: mixerGetLineControls");
+                OnError(_T("initialSaveMMMode: mixerGetLineControls"));
                 return bResult;
             }
         }
@@ -396,7 +396,7 @@ BOOL configWaveOutManual()
         //}
 
         CString testfile("");
-        testfile.Format("%s\testrec%d.wav", GetMyVideoPath().GetString(), dwi);
+        testfile.Format(_T("%s\testrec%d.wav"), GetMyVideoPath().GetString(), dwi);
         sndPlaySound(testfile, SND_SYNC);
 
         // anstr.Format("Testing line %d of %d. Did you hear a tone?",dwi+1,g_dwMultipleItems);
@@ -421,7 +421,7 @@ BOOL configWaveOutManual()
     for (DWORD dwi = 0; dwi < g_dwMultipleItems; ++dwi)
     {
         CString testfile("");
-        testfile.Format("%s\testrec%d.wav", GetMyVideoPath().GetString(), dwi);
+        testfile.Format(_T("%s\testrec%d.wav"), GetMyVideoPath().GetString(), dwi);
 
         DeleteFile(testfile);
     }
@@ -722,10 +722,8 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText, DWORD lineTo
 
                 WaveoutInternalAdjustVolume(pmxcdSelectText[dwi].dwParam1);
 
-                CString fnum;
-                fnum.Format("%d", dwi);
-                CString testfile;
-                testfile = GetMyVideoPath() + "\\testrec" + fnum + ".wav";
+                auto fnum = std::to_wstring(dwi);
+                auto testfile = get_my_video_path() + _T("\\testrec") + fnum + _T(".wav");
 
                 mciRecordOpen(g_hWndGlobal);
                 mciSetWaveFormat();
@@ -734,11 +732,11 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText, DWORD lineTo
                 CString soundpath = GetMyVideoPath() + "\\testsnd.wav";
                 sndPlaySound(soundpath, SND_SYNC);
 
-                mciRecordStop(g_hWndGlobal, testfile);
+                mciRecordStop(g_hWndGlobal, testfile.c_str());
                 mciRecordClose();
 
                 // Open file for Analysis
-                auto pFile = new CSoundFile(testfile.GetString());
+                auto pFile = new CSoundFile(wstring_to_utf8(testfile));
                 if (pFile->GetMode() == FILE_ERROR)
                 {
                     MessageOut(nullptr, IDS_STRING_ERRSND, IDS_STRING_ANALYZE, MB_OK | MB_ICONEXCLAMATION);
@@ -774,7 +772,7 @@ BOOL AutomaticSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText, DWORD lineTo
                 delete pFile;
                 g_pSoundFile = nullptr;
 
-                DeleteFile(testfile);
+                DeleteFile(testfile.c_str());
             }
 
             if ((g_second_maximum_value > 0) && (g_maximum_value > 0) && (g_maximum_value > g_second_maximum_value))
@@ -881,7 +879,7 @@ BOOL ManualSearch(MIXERCONTROLDETAILS_LISTTEXT *pmxcdSelectText, DWORD lineToSea
                 // fnum.Format("%d", dwi);
                 CString testfile;
                 // testfile = GetProgPath() + "\\testrec" + fnum + ".wav";
-                testfile.Format("%s\\testrec%d.wav", GetMyVideoPath().GetString(), dwi);
+                testfile.Format(_T("%s\\testrec%d.wav"), GetMyVideoPath().GetString(), dwi);
 
                 // TODO: How is testfile used here?
                 mciRecordOpen(g_hWndGlobal);
@@ -1166,7 +1164,7 @@ BOOL WaveoutGetSelectControl(DWORD lineToSearch, CString namesearch, int feedbac
     MMRESULT mmResult = g_AudioMixer.GetLineInfo(&mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_COMPONENTTYPE);
     if (MMSYSERR_NOERROR != mmResult)
     {
-        OnError("WaveoutGetSelectControl: mixerGetLineInfo");
+        OnError(_T("WaveoutGetSelectControl: mixerGetLineInfo"));
         return FALSE;
     }
 
@@ -1197,7 +1195,7 @@ BOOL WaveoutGetSelectControl(DWORD lineToSearch, CString namesearch, int feedbac
         if (MMSYSERR_NOERROR !=
             g_AudioMixer.GetLineControls(&mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE))
         {
-            OnError("WaveoutGetSelectControl: mixerGetLineControls");
+            OnError(_T("WaveoutGetSelectControl: mixerGetLineControls"));
             return FALSE;
         }
     }
@@ -1251,7 +1249,7 @@ BOOL WaveoutGetSelectControl(DWORD lineToSearch, CString namesearch, int feedbac
     }
     else
     {
-        OnError("WaveoutGetSelectControl: pmxcdSelectText");
+        OnError(_T("WaveoutGetSelectControl: pmxcdSelectText"));
     }
 
     return (g_dwIndex < g_dwMultipleItems);
@@ -1282,13 +1280,13 @@ BOOL WaveoutInitialize()
         if (MMSYSERR_NOERROR != g_AudioMixer.Open(cAudioFormat.m_iSelectedMixer, (DWORD_PTR)g_hWndGlobal, 0,
                                                 MIXER_OBJECTF_MIXER | CALLBACK_WINDOW))
         {
-            OnError("WaveoutInitialize");
+            OnError(_T("WaveoutInitialize"));
             return FALSE;
         }
 
         if (MMSYSERR_NOERROR != g_AudioMixer.GetDevCaps(&g_sMixerCaps, sizeof(MIXERCAPS)))
         {
-            OnError("WaveoutInitialize");
+            OnError(_T("WaveoutInitialize"));
             return FALSE;
         }
     }

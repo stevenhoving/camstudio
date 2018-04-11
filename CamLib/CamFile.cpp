@@ -41,11 +41,11 @@ CString GetTempFolder(int iAccess, const CString &strFolder, bool bOut)
         // tempdir.Format("%s\\Videos", GetProgPath());
         if (bOut)
         {
-            tempdir.Format("%s\\My CamStudio Videos", GetMyDocumentsPath().GetString());
+            tempdir.Format(_T("%s\\My CamStudio Videos"), GetMyDocumentsPath().GetString());
         }
         else
         {
-            tempdir.Format("%s\\My CamStudio Temp Files", GetMyDocumentsPath().GetString());
+            tempdir.Format(_T("%s\\My CamStudio Temp Files"), GetMyDocumentsPath().GetString());
         }
         if (!CreateDirectory(tempdir, nullptr))
         {
@@ -64,7 +64,7 @@ CString GetTempFolder(int iAccess, const CString &strFolder, bool bOut)
             return tempdir;
         }
     }
-    char tempPath[_MAX_PATH + 1] = {'\0'};
+    TCHAR tempPath[_MAX_PATH + 1] = {'\0'};
     if (GetTempPath(_MAX_PATH, tempPath))
     {
         CString tempdir;
@@ -126,7 +126,7 @@ CString GetMyVideoPath()
     // Get the user's video path
     int folder = CSIDL_MYVIDEO;
 
-    char szPath[MAX_PATH + 100];
+    TCHAR szPath[MAX_PATH + 100];
     szPath[0] = 0;
     CString path = szPath;
 
@@ -146,7 +146,7 @@ CString GetMyDocumentsPath()
     // Get the user's video path
     int folder = CSIDL_PERSONAL;
 
-    char szPath[MAX_PATH + 100];
+    TCHAR szPath[MAX_PATH + 100];
     szPath[0] = 0;
     CString path = szPath;
 
@@ -164,7 +164,7 @@ CString GetAppDataPath()
 {
     int folder = CSIDL_APPDATA;
 
-    char szPath[MAX_PATH + 100];
+    TCHAR szPath[MAX_PATH + 100];
     szPath[0] = 0;
     CString path = szPath;
 
@@ -186,7 +186,7 @@ bool DoesFileExist(const CString &name)
 
 bool DoesDefaultOutDirExist(const CString &dir)
 {
-    DWORD ftyp = GetFileAttributesA(dir);
+    DWORD ftyp = GetFileAttributes(dir);
     if (ftyp == INVALID_FILE_ATTRIBUTES)
     {
         return false; // something is wrong with the path

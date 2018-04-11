@@ -18,7 +18,7 @@ BOOL CALLBACK AudioCompressCallBack(int iProgress)
     fmtstr.LoadString(IDS_STRING_COMPRESSINGAUDIO);
     CString szText;
     szText.Format((LPCTSTR)fmtstr, iProgress);
-    szText.Format("Compress Video %d%%", iProgress);
+    szText.Format(_T("Compress Video %d%%"), iProgress);
     AfxGetMainWnd()->SetWindowText(szText);
 
     return WinYield();
@@ -30,7 +30,7 @@ BOOL CALLBACK VideoCompressCallBack(int iProgress)
     // CString fmtstr;
     // fmtstr.LoadString(IDS_STRING_COMPRESSINGAUDIO);
     CString szText;
-    szText.Format("Compress Video %d%%", iProgress);
+    szText.Format(_T("Compress Video %d%%"), iProgress);
     AfxGetMainWnd()->SetWindowText(szText);
 
     return WinYield();

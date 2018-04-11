@@ -75,7 +75,7 @@ void CTransRateDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
     int valRate = m_ctrlSliderTransRate.GetPos();
 
     CString valstr;
-    valstr.Format(TEXT("%d fps"), valRate);
+    valstr.Format(_T("%d fps"), valRate);
     m_ctrlStaticFrameRate.SetWindowText(valstr);
 
     if (m_myparent)

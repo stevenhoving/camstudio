@@ -97,7 +97,7 @@ CTransparentWnd::CTransparentWnd()
     ZeroMemory(&m_textfont, sizeof(LOGFONT));
     m_textfont.lfHeight = 12;
     m_textfont.lfWidth = 8;
-    strcpy_s(m_textfont.lfFaceName, "Arial");
+    _tcscpy_s(m_textfont.lfFaceName, _T("Arial"));
 
     m_tracker.m_rect.left = 20;
     m_tracker.m_rect.top = 20;
@@ -480,8 +480,13 @@ void CTransparentWnd::OnPaint()
         sf.SetAlignment((Gdiplus::StringAlignment)m_horzalign); // happen to coincide with left, center, right
         sf.SetLineAlignment(StringAlignmentCenter);             // for DT_VCENTER
         size_t size = 0;
+#ifndef _UNICODE
         wchar_t wstr[1024];
         mbstowcs_s(&size, wstr, 1023, m_textstring, _TRUNCATE);
+#else
+        wchar_t *wstr = (LPWSTR)m_textstring.GetString();
+#endif
+
         size_t wlen = wcsnlen_s(wstr, 1023);
         RectF r(m_tracker.m_rect.left, m_tracker.m_rect.top, m_tracker.m_rect.Width(), m_tracker.m_rect.Height());
         //pDC->GetTextColor()
@@ -724,7 +729,8 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect *caprect, int fac
         // use stroke path method, less buggy
 
         BeginPath(hMemDC);
-        DrawTextEx(hMemDC, (char *)LPCTSTR(textstr), textlength, LPRECT(usetextRect),
+        const auto *text_str = textstr.GetString();
+        DrawTextEx(hMemDC, (LPWSTR)text_str, textlength, LPRECT(usetextRect),
                    horzalign | DT_VCENTER | DT_WORDBREAK, nullptr);
         EndPath(hMemDC);
 
@@ -745,7 +751,8 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect *caprect, int fac
     }
     else
     {
-        DrawTextEx(hMemDC, (char *)LPCTSTR(textstr), textlength, LPRECT(usetextRect),
+        const auto *text_str = textstr.GetString();
+        DrawTextEx(hMemDC, (LPWSTR)text_str, textlength, LPRECT(usetextRect),
                    horzalign | DT_VCENTER | DT_WORDBREAK, nullptr);
     }
 
@@ -1376,16 +1383,17 @@ CTransparentWnd *CTransparentWnd::Clone(int offsetx, int offsety)
         // CString exstr(".bmp");
         // CString tempFile = GetTempFolder(iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
         CString tempFile;
-        tempFile.Format("%s\\~txPic%d.bmp",
-                        GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir).GetString(), rand());
+        tempFile.Format(_T("%s\\~txPic%d.bmp"),
+                        GetTempFolder((int)cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir.c_str()).GetString(), rand());
+
         int ret = m_picture.CopyToPicture(&newWnd->m_picture, tempFile);
         if (!ret)
         {
             // randnum = rand();
             // sprintf(numstr, "%d", randnum);
             // tempFile = GetTempFolder(iTempPathAccess, specifieddir) + fxstr + cnumstr + exstr;
-            tempFile.Format("%s\\~txPic%d.bmp",
-                            GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir).GetString(), rand());
+            tempFile.Format(_T("%s\\~txPic%d.bmp"),
+                            GetTempFolder((int)cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir.c_str()).GetString(), rand());
             ret = m_picture.CopyToPicture(&newWnd->m_picture, tempFile);
             if (!ret)
             {

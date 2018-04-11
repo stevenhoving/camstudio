@@ -110,9 +110,9 @@ BOOL CAboutDlg::OnInitDialog()
     // only needs to be done once.
     CString strBuffer;
     CString strVersionInfo;
-    strVersionInfo.Format("v%s\n", CURRENT_VERSION_NUMBER);
+    strVersionInfo.Format(_T("v%s\n"), CURRENT_VERSION_NUMBER);
     CString strReleaseInfo;
-    strReleaseInfo.Format("Build on Mercurial release: r%s\n", CURRENT_HG_RELEASE_NUMBER);
+    strReleaseInfo.Format(_T("Build on Mercurial release: r%s\n"), CURRENT_HG_RELEASE_NUMBER);
 
     // CamStudio Recorder <VERSION><RELEASE><XNOTESTOPWATCHSUPPORT><BUGFIXES><COPYRIGHT-1><COPYRIGHT-2>
     m_ctrlStaticVersion.GetWindowText(strBuffer);

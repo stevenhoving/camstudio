@@ -79,7 +79,7 @@ void CEditTransparencyDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrol
     m_riLevel = m_ctrlSliderTransparency.GetPos();
 
     CString valstr;
-    valstr.Format("%d", m_riLevel);
+    valstr.Format(_T("%d"), m_riLevel);
     m_ctrlStaticTransparency.SetWindowText(valstr);
 
     m_pTransparentWnd->InvalidateTransparency();
@@ -99,7 +99,7 @@ BOOL CEditTransparencyDlg::OnInitDialog()
     m_ctrlButtonEnableTranparency.SetCheck(m_rbEnableTrans);
 
     CString valstr;
-    valstr.Format("%d", m_riLevel);
+    valstr.Format(_T("%d"), m_riLevel);
     m_ctrlStaticTransparency.SetWindowText(valstr);
 
     return TRUE; // return TRUE unless you set the focus to a control

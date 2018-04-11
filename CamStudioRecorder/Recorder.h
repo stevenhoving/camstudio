@@ -84,7 +84,7 @@ public:
     //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 private:
-    static const char *CAMSTUDIO_MUTEX;
+    static const TCHAR *CAMSTUDIO_MUTEX;
     HANDLE m_hAppMutex;
     LANGID m_wCurLangID;
     int m_iVersionOp;

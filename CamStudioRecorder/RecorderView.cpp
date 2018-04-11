@@ -32,8 +32,8 @@
 #include "ProgressDlg.h"
 #include "ximage.h"
 
-#include <fisterlib/sound_file.h>
-#include <fisterlib/Buffer.h>
+#include <CamAudio/sound_file.h>
+#include <CamAudio/Buffer.h>
 #include <CamHook/CamHook.h> // for WM_USER_RECORDSTART_MSG
 #include <CamLib/CStudioLib.h>
 #include <CamLib/TrayIcon.h>
@@ -819,17 +819,17 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     g_hLogoBM = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP3));
 
     CRect rect(0, 0, maxxScreen - 1, maxyScreen - 1);
-    if (!m_FlashingWnd.CreateFlashing("Flashing", rect))
+    if (!m_FlashingWnd.CreateFlashing(_T("Flashing"), rect))
     {
         return -1;
     }
 
     // Ver 1.2
     // strCursorDir default
-    char dirx[_MAX_PATH];
+    TCHAR dirx[_MAX_PATH];
     GetWindowsDirectory(dirx, _MAX_PATH);
     CString windir;
-    windir.Format("%s\\cursors", dirx);
+    windir.Format(_T("%s\\cursors"), dirx);
     CamCursor.Dir(windir);
 
     // savedir default
@@ -914,7 +914,7 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     TRACE("CRecorderView::OnRecordStart\n");
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
-    pStatus->SetPaneText(0, "Press the Stop Button to stop recording");
+    pStatus->SetPaneText(0, _T("Press the Stop Button to stop recording"));
 
     m_cCamera.Set(cCaptionOpts);
     m_cCamera.Set(cTimestampOpts);
@@ -992,7 +992,7 @@ LRESULT CRecorderView::OnRecordInterrupted(WPARAM wParam, LPARAM /*lParam*/)
     g_interruptkey = wParam;
 
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
-    pStatus->SetPaneText(0, "Press the Record Button to start recording");
+    pStatus->SetPaneText(0, _T("Press the Record Button to start recording"));
 
     Invalidate();
 
@@ -1217,7 +1217,8 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
             break;
         case ModeMP4:
             strTargetVideoExtension = ".avi";
-            strTargetMP4VideoFile.Format("%s\\%s.mp4", strTargetDir.GetString(), strTargetBareFileName.GetString());
+            strTargetMP4VideoFile.Format(_T("%s\\%s.mp4"), strTargetDir.GetString(), strTargetBareFileName.GetString());
+            break;
             break;
     }
     // if (cProgramOpts.m_iRecordingMode == ModeFlash || cProgramOpts.m_iRecordingMode == ModeMP4)
@@ -1228,7 +1229,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
     // Create all the applicable targetfile names
     strTargetVideoFile =
         strTargetDir + "\\" + strTargetBareFileName +
-        strTargetVideoExtension; // strTargetVideoFile is the same string as strNewFile in previuosly approach
+        strTargetVideoExtension; // strTargetVideoFile is the same string as strNewFile in previously approach
     strTargetAudioFile = strTargetDir + "\\" + strTargetBareFileName + ".wav";
     strTargetXnoteLogFile = strTargetDir + "\\" + strTargetBareFileName + ".txt";
 
@@ -1249,7 +1250,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
     // Ver 1.1
     if (cAudioFormat.m_iRecordAudio)
     {
-        // Check if video(!) file exists and if so, does it allow overwite
+        // Check if video(!) file exists and if so, does it allow overwrite
         HANDLE hfile =
             CreateFile(strTargetVideoFile, GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
         if (hfile == INVALID_HANDLE_VALUE)
@@ -1435,14 +1436,14 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
             CString sMsg;
             CString sRes;
             CString sOutBareName;
-            sOutBareName.Format("%s.mp4", strTargetBareFileName.GetString());
+            sOutBareName.Format(_T("%s.mp4"), strTargetBareFileName.GetString());
             if (ConvertToMP4(strTargetVideoFile, strTargetMP4VideoFile, sOutBareName))
             {
                 if (!DeleteFile(strTargetVideoFile))
                 {
                     sRes.LoadString(IDS_STRING_DELETE_FAILED);
                     sMsg.Format(sRes, strTargetMP4VideoFile.GetString());
-                    MessageBox(sMsg, "Warning", 0);
+                    MessageBox(sMsg, _T("Warning"), 0);
                 }
             }
             else
@@ -1451,13 +1452,13 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
                 {
                     sRes.LoadString(IDS_STRING_DELETE_FAILED);
                     sMsg.Format(sRes, strTargetVideoFile.GetString());
-                    MessageBox(sMsg, "Warning", 0);
+                    MessageBox(sMsg, _T("Warning"), 0);
                 }
                 if (!DeleteFile(strTargetMP4VideoFile))
                 {
                     sRes.LoadString(IDS_STRING_DELETE_FAILED);
                     sMsg.Format(sRes, strTargetMP4VideoFile.GetString());
-                    MessageBox(sMsg, "Warning", 0);
+                    MessageBox(sMsg, _T("Warning"), 0);
                 }
             }
         }
@@ -1470,7 +1471,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
 void CRecorderView::OnRecord()
 {
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
-    pStatus->SetPaneText(0, "Press the Stop Button to stop recording");
+    pStatus->SetPaneText(0, _T("Press the Stop Button to stop recording"));
 
     // Version 1.1
     if (g_bRecordPaused)
@@ -1947,7 +1948,7 @@ void CRecorderView::OnPause()
     // mciRecordPause(strTempAudioWavFilePath);
 
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
-    pStatus->SetPaneText(0, "Recording Paused");
+    pStatus->SetPaneText(0, _T("Recording Paused"));
 
     // Set Title Bar
     CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
@@ -2130,7 +2131,7 @@ void CRecorderView::SaveSettings()
     CString fileName("\\CamStudio.ini");
     CString setDir = GetProgPath(); // TODO : Check use of setDir .. NOT savedir ???
     CString setPath;
-    setPath.Format("%s\\CamStudio.ini", (LPCSTR)GetProgPath());
+    setPath.Format(_T("%s\\CamStudio.ini"), GetProgPath().GetString());
 
 #ifndef LEGACY_PROFILE_DISABLE
     FILE *sFile = fopen((LPCTSTR)setPath, "wt");
@@ -2355,7 +2356,7 @@ void CRecorderView::SaveSettings()
         // CString cursorFileName = "\\CamCursor.ini";
         // CString cursorDir = GetProgPath();
         CString cursorPath;
-        cursorPath.Format("%s\\CamStudio\\CamCursor.ini", GetProgPath().GetString());
+        cursorPath.Format(_T("%s\\CamStudio\\CamCursor.ini"), GetProgPath().GetString());
         // Note, we do not save the cursorFilePath, but instead we make a copy
         // of the cursor file in the Prog directory
         CopyFile(CamCursor.FileName(), cursorPath, FALSE);
@@ -2369,7 +2370,7 @@ void CRecorderView::SaveSettings()
     setPath = setDir + fileName;
 
     FILE *tFile = nullptr;
-    fopen_s(&tFile, setPath.GetString(), "wb");
+    _wfopen_s(&tFile, setPath.GetString(), _T("wb"));
     if (tFile == nullptr)
     {
         // Error creating file ...do nothing...return
@@ -2873,13 +2874,13 @@ void CRecorderView::LoadSettings()
     setDir = GetAppDataPath();
     setPath = setDir + fileName;
     FILE *tFile = nullptr;
-    fopen_s(&tFile, setPath.GetString(), "rb");
+    _wfopen_s(&tFile, setPath.GetString(), _T("rb"));
 
     if (tFile == nullptr)
     {
         setDir = GetProgPath();
         setPath = setDir + fileName;
-        fopen_s(&tFile, setPath.GetString(), "rb");
+        _wfopen_s(&tFile, setPath.GetString(), _T("rb"));
     }
 
     if (tFile == nullptr)
@@ -2986,8 +2987,8 @@ void CRecorderView::DecideSaveSettings()
     {
         // Create the nosave.ini file if savesettings = 0;
         FILE *rFile;
-        fopen_s(&rFile, nosavePath.GetString(), "wt");
-        fprintf(rFile, "savesettings = 0 \n");
+        _wfopen_s(&rFile, nosavePath.GetString(), _T("wt"));
+        fputs("savesettings = 0\n", rFile);
         fclose(rFile);
 
         // Delete Settings File
@@ -3917,7 +3918,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     //////////////////////////////////
 
     // First line: Start recording
-    csMsg.Format("Start recording : %s", cVideoOpts.m_cStartRecordingString.GetString());
+    csMsg.Format(_T("Start recording : %s"), cVideoOpts.m_cStartRecordingString.c_str());
     sizeExtent = srcDC.GetTextExtent(csMsg);
     iStartPosY -= (iLines * (sizeExtent.cy + iLineSpacing));
     yoffset = iStartPosY;
@@ -3943,7 +3944,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     srcDC.TextOut(xoffset, yoffset, csMsg);
 
     // Line: Current frame
-    csMsg.Format("Current Frame : %d", g_nCurrFrame);
+    csMsg.Format(_T("Current Frame : %d"), g_nCurrFrame);
     sizeExtent = srcDC.GetTextExtent(csMsg);
     yoffset += sizeExtent.cy + iLineSpacing;
     rectText.top = yoffset - 2;
@@ -3955,7 +3956,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     double dMegaBtyes = g_nTotalBytesWrittenSoFar;
     dMegaBtyes /= MEGABYTE;
 
-    csMsg.Format("Current File Size : %.2f Mb", dMegaBtyes);
+    csMsg.Format(_T("Current File Size : %.2f Mb"), dMegaBtyes);
     sizeExtent = srcDC.GetTextExtent(csMsg);
     yoffset += sizeExtent.cy + iLineSpacing;
     rectText.top = yoffset - 2;
@@ -3963,7 +3964,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     srcDC.TextOut(xoffset, yoffset, csMsg);
 
     // Line : Input rate
-    csMsg.Format("Actual Input Rate : %.2f fps", g_fActualRate);
+    csMsg.Format(_T("Actual Input Rate : %.2f fps"), g_fActualRate);
     sizeExtent = srcDC.GetTextExtent(csMsg);
     yoffset += sizeExtent.cy + iLineSpacing;
     rectText.top = yoffset - 2;
@@ -3980,7 +3981,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     srcDC.TextOut(xoffset, yoffset, csMsg);
 
     // Line : Colors info
-    csMsg.Format("Number of Colors : %d g_iBits", g_nColors);
+    csMsg.Format(_T("Number of Colors : %d g_iBits"), g_nColors);
     sizeExtent = srcDC.GetTextExtent(csMsg);
     yoffset += sizeExtent.cy + iLineSpacing;
     rectText.top = yoffset - 2;
@@ -3988,7 +3989,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     srcDC.TextOut(xoffset, yoffset, csMsg);
 
     // Line : Codex
-    csMsg.Format("Codec : %s", LPCTSTR(g_strCodec));
+    csMsg.Format(_T("Codec : %s"), g_strCodec.GetString());
     sizeExtent = srcDC.GetTextExtent(csMsg);
     yoffset += sizeExtent.cy + iLineSpacing;
     rectText.top = yoffset - 2;
@@ -3996,7 +3997,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     srcDC.TextOut(xoffset, yoffset, csMsg);
 
     // Line 9 : Dimension,sizing
-    csMsg.Format("Dimension : %u X %d", GetDocument()->FrameWidth(), GetDocument()->FrameHeight());
+    csMsg.Format(_T("Dimension : %u X %d"), GetDocument()->FrameWidth(), GetDocument()->FrameHeight());
     sizeExtent = srcDC.GetTextExtent(csMsg);
     yoffset += sizeExtent.cy + iLineSpacing;
     rectText.top = yoffset - 2;
@@ -4256,7 +4257,7 @@ UINT CRecorderView::RecordVideo()
     int second = ctime.GetSecond();
     // Create timestamp tag
     CString csStartTime = "";
-    csStartTime.Format("%04d%02d%02d_%02d%02d_%02d", year, month, day, hour, minutes,
+    csStartTime.Format(_T("%04d%02d%02d_%02d%02d_%02d"), year, month, day, hour, minutes,
                        second); // 20100528, changed dateformating to yyyymmdd_hhmm_ss
     // We will keep this tag info that tell us when the recording started for later usage.
     cVideoOpts.m_cStartRecordingString.SetString(csStartTime);
@@ -4278,7 +4279,7 @@ UINT CRecorderView::RecordVideo()
             fileverified = std::experimental::filesystem::remove(filepath);
             if (!fileverified)
             {
-                strTempVideoAviFilePath.Format("%s\\%s-%s-%d.%s", csTempFolder.GetString(), TEMPFILETAGINDICATOR,
+                strTempVideoAviFilePath.Format(_T("%s\\%s-%s-%d.%s"), csTempFolder.c_str(), TEMPFILETAGINDICATOR,
                     csStartTime.GetString(), rand(), "avi");
             }
         }
@@ -4452,17 +4453,17 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
         m_FlashingWnd.ShowWindow(SW_SHOW);
     }
 
+    // Open the movie file for writing....
+    TCHAR szTitle[BUFSIZE];
+    _tcscpy_s(szTitle, _T("AVI Movie"));
     ////////////////////////////////////////////////
     // INIT AVI USING FIRST FRAME
     ////////////////////////////////////////////////
     ::AVIFileInit();
 
-    // Open the movie file for writing....
-    char szTitle[BUFSIZE];
-    strcpy_s(szTitle, "AVI Movie");
 
     // There are a few routine in this code that use a 'goto error' routine for exception handling.
-    // All var's that are checked in this error handling block must be innitialisated before to prevent warning and,
+    // All var's that are checked in this error handling block must be initialized before to prevent warning and,
     // worse case, abnormal endings.
     PAVIFILE pfile = 0;
     PAVISTREAM ps = nullptr;
@@ -5569,9 +5570,9 @@ void waveInErrorMsg(MMRESULT result, const char *addstr)
 {
     // say error message
     char errorbuffer[500];
-    waveInGetErrorText(result, errorbuffer, 500);
+    waveInGetErrorTextA(result, errorbuffer, 500);
     CString msgstr;
-    msgstr.Format("%s %s", errorbuffer, addstr);
+    msgstr.Format(_T("%s %s"), errorbuffer, addstr);
 
     CString tstr;
     tstr.LoadString(IDS_STRING_WAVEINERR);

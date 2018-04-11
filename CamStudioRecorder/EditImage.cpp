@@ -423,10 +423,10 @@ void CEditImageDlg::OnLoad()
 
     CString filename;
 
-    static char BASED_CODE szFilter[] = "Picture Files (*.bmp; *.jpg; *.gif)|*.bmp; *.jpg; *.gif||";
-    static char szTitle[] = "Load Picture";
+    static const TCHAR *szFilter = _T("Picture Files (*.bmp; *.jpg; *.gif)|*.bmp; *.jpg; *.gif||");
+    static const TCHAR *szTitle = _T("Load Picture");
 
-    CFileDialog fdlg(TRUE, "*.bmp; *.jpg; *.gif", "*.bmp; *.jpg; *.gif", OFN_LONGNAMES | OFN_FILEMUSTEXIST, szFilter,
+    CFileDialog fdlg(TRUE, _T("*.bmp; *.jpg; *.gif"), _T("*.bmp; *.jpg; *.gif"), OFN_LONGNAMES | OFN_FILEMUSTEXIST, szFilter,
                      this);
     fdlg.m_ofn.lpstrTitle = szTitle;
 

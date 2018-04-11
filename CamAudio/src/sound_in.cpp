@@ -64,7 +64,7 @@ bool CSoundIn::Start(WAVEFORMATEX *format)
     mmReturn = ::waveInOpen(&m_hRecord, WAVE_MAPPER, &m_Format, m_ThreadID, 0, CALLBACK_THREAD);
     if (mmReturn != MMSYSERR_NOERROR)
     {
-        waveInErrorMsg(mmReturn, "in Start()");
+        waveInErrorMsg(mmReturn, _T("in Start()"));
         return false;
     }
 
@@ -78,7 +78,7 @@ bool CSoundIn::Start(WAVEFORMATEX *format)
     mmReturn = ::waveInStart(m_hRecord);
     if (mmReturn != MMSYSERR_NOERROR)
     {
-        waveInErrorMsg(mmReturn, "in Start()");
+        waveInErrorMsg(mmReturn, _T("in Start()"));
         return false;
     }
     m_bRecording = true;
@@ -97,7 +97,7 @@ void CSoundIn::Stop()
     mmReturn = ::waveInReset(m_hRecord);
     if (mmReturn != MMSYSERR_NOERROR)
     {
-        waveInErrorMsg(mmReturn, "in Stop()");
+        waveInErrorMsg(mmReturn, _T("in Stop()"));
         return;
     }
 
@@ -106,7 +106,7 @@ void CSoundIn::Stop()
     mmReturn = ::waveInClose(m_hRecord);
     if (mmReturn != MMSYSERR_NOERROR)
     {
-        waveInErrorMsg(mmReturn, "in Stop()");
+        waveInErrorMsg(mmReturn, _T("in Stop()"));
     }
 
     if (m_QueuedBuffers != 0)
@@ -124,7 +124,7 @@ void CSoundIn::OnMM_WIM_DATA(WPARAM /*parm1*/, LPARAM parm2)
     mmReturn = ::waveInUnprepareHeader(m_hRecord, pHdr, sizeof(WAVEHDR));
     if (mmReturn != MMSYSERR_NOERROR)
     {
-        waveInErrorMsg(mmReturn, "in OnWIM_DATA()");
+        waveInErrorMsg(mmReturn, _T("in OnWIM_DATA()"));
         return;
     }
 
@@ -134,7 +134,7 @@ void CSoundIn::OnMM_WIM_DATA(WPARAM /*parm1*/, LPARAM parm2)
     {
         CBuffer buf(pHdr->lpData, pHdr->dwBufferLength);
 
-        // virtual processing function supplyed by user
+        // virtual processing function supplied by user
         DataFromSoundIn(&buf, m_pOwner);
 
         // reuse the buffer:
@@ -142,7 +142,7 @@ void CSoundIn::OnMM_WIM_DATA(WPARAM /*parm1*/, LPARAM parm2)
         mmReturn = ::waveInPrepareHeader(m_hRecord, pHdr, sizeof(WAVEHDR));
         if (mmReturn)
         {
-            waveInErrorMsg(mmReturn, "in OnWIM_DATA()");
+            waveInErrorMsg(mmReturn, _T("in OnWIM_DATA()"));
         }
         else // no error
         {
@@ -150,7 +150,7 @@ void CSoundIn::OnMM_WIM_DATA(WPARAM /*parm1*/, LPARAM parm2)
             mmReturn = ::waveInAddBuffer(m_hRecord, pHdr, sizeof(WAVEHDR));
             if (mmReturn != MMSYSERR_NOERROR)
             {
-                waveInErrorMsg(mmReturn, "in OnWIM_DATA()");
+                waveInErrorMsg(mmReturn, _T("in OnWIM_DATA()"));
             }
             else
             {
@@ -185,7 +185,7 @@ int CSoundIn::AddInputBufferToQueue()
     mmReturn = ::waveInPrepareHeader(m_hRecord, pHdr, sizeof(WAVEHDR));
     if (mmReturn != MMSYSERR_NOERROR)
     {
-        waveInErrorMsg(mmReturn, "in AddInputBufferToQueue()");
+        waveInErrorMsg(mmReturn, _T("in AddInputBufferToQueue()"));
         return m_QueuedBuffers;
     }
 
@@ -193,7 +193,7 @@ int CSoundIn::AddInputBufferToQueue()
     mmReturn = ::waveInAddBuffer(m_hRecord, pHdr, sizeof(WAVEHDR));
     if (mmReturn != MMSYSERR_NOERROR)
     {
-        waveInErrorMsg(mmReturn, "in AddInputBufferToQueue()");
+        waveInErrorMsg(mmReturn, _T("in AddInputBufferToQueue()"));
         return m_QueuedBuffers;
     }
 
@@ -202,12 +202,12 @@ int CSoundIn::AddInputBufferToQueue()
     return m_QueuedBuffers++;
 }
 
-void CSoundIn::waveInErrorMsg(MMRESULT result, LPCTSTR addstr)
+void CSoundIn::waveInErrorMsg(MMRESULT result, const TCHAR *addstr)
 {
     // say error message
-    char errorbuffer[100];
+    TCHAR errorbuffer[100];
     waveInGetErrorText(result, errorbuffer, 100);
-    printf("WAVEIN:%x:%s %s", result, errorbuffer, addstr);
+    _tprintf(_T("WAVEIN:%x:%s %s"), result, errorbuffer, addstr);
 }
 
 /*

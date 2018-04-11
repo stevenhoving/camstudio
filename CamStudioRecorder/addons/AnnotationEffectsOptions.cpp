@@ -356,8 +356,8 @@ void CAnnotationEffectsOptionsDlg::OnEnChangeFormatpreview()
         time(&szClock);
         struct tm newTime = {};
         localtime_s(&newTime, &szClock);
-        char TimeBuff[256];
-        strftime(TimeBuff, sizeof(TimeBuff), str, &newTime);
+        TCHAR TimeBuff[256];
+        wcsftime(TimeBuff, sizeof(TimeBuff), str, &newTime);
         m_FormatTimestampPreview.SetWindowText(TimeBuff);
     }
     else

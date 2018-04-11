@@ -220,14 +220,14 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     // ver 1.2
     m_TrayIcon.SetNotifyWnd(*this);
     m_TrayIcon.TraySetIcon(IDR_MAINFRAME);
-    m_TrayIcon.TraySetToolTip("CamStudio");
+    m_TrayIcon.TraySetToolTip(_T("CamStudio"));
     m_TrayIcon.TraySetMenu(IDR_TRAYMENU);
     m_TrayIcon.TrayShow();
 
+    SetWindowText(_T("CamStudio"));
 #ifdef CAMSTUDIO4XNOTE
     SetWindowText("CamStudio4Xnote by Janhgm - Custom Build");
 #else
-    SetWindowText("CamStudio");
 #endif
     CheckForNewVersion();
     return 0;
@@ -250,7 +250,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT &cs)
     // add width of borders
     cs.cx += (::GetSystemMetrics(SM_CXFRAME) * 2) + ::GetSystemMetrics(SM_CXMENUSIZE);
     // add height of Caption + menu + toolbar + status + borders
-    cs.cy += ::GetSystemMetrics(SM_CYCAPTION) + (::GetSystemMetrics(SM_CYMENU) * 2) // assume statusbar same hieght
+    cs.cy += ::GetSystemMetrics(SM_CYCAPTION) + (::GetSystemMetrics(SM_CYMENU) * 2) // assume statusbar same height
              + ::GetSystemMetrics(SM_CXMENUSIZE) + (::GetSystemMetrics(SM_CYFRAME) * 2);
 
     cs.style &= ~FWS_ADDTOTITLE;

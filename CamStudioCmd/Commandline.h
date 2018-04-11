@@ -6,7 +6,7 @@
 
 #include <windows.h>
 
-struct  screen
+struct screen
 {
     screen() = default;
 

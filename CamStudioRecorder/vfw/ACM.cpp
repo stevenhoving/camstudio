@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "ACM.h"
 #include "../Profile.h" // TODO: remove; for cAudioFormat
 

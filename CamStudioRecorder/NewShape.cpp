@@ -80,7 +80,7 @@ BOOL CNewShapeDlg::OnInitDialog()
 
     m_ctrlTextFileText.SetWindowText(g_strImageFilename);
 
-    g_shapeStr.Format(TEXT("%d"), iShapeNameInt);
+    g_shapeStr.Format(_T("%d"), iShapeNameInt);
     g_shapeStr = g_shapeName + g_shapeStr;
     m_ctrlEditName.SetWindowText(g_shapeStr);
 

@@ -46,7 +46,7 @@ bool CMP4Converter::ConvertAVItoMP4(const CString &sInputAVI, const CString &sOu
         m_pData->psInputFile = new CString(sInputAVI);
         m_pData->psOutputFile = new CString(sOutputMP4);
         CString sCmd;
-        sCmd.Format(" -i \"%s\" -c:v libx264 -preset slow -crf 22 -c:a mp2 -b:a 128k -y \"%s\" -loglevel quiet",
+        sCmd.Format(_T(" -i \"%s\" -c:v libx264 -preset slow -crf 22 -c:a mp2 -b:a 128k -y \"%s\" -loglevel quiet"),
                     sInputAVI.GetString(), sOutputMP4.GetString());
         m_pData->psCmdLine = new CString(sCmd);
         m_pData->pdwPipeSize = new DWORD(1048576); // 1mb
@@ -81,7 +81,7 @@ DWORD WINAPI CMP4Converter::ThreadProc(LPVOID lpParam)
     sa.bInheritHandle = TRUE;
 
     if (!CreatePipe(&rdstdout, &wrstdout, &sa, *m_pData->pdwPipeSize))
-        MessageBox(nullptr, "CreatePipe failed", "Warning", MB_ICONEXCLAMATION);
+        MessageBox(nullptr, _T("CreatePipe failed"), _T("Warning"), MB_ICONEXCLAMATION);
 
     PROCESS_INFORMATION pi;
     ZeroMemory(&pi, sizeof(pi));
@@ -106,7 +106,7 @@ DWORD WINAPI CMP4Converter::ThreadProc(LPVOID lpParam)
                        &pi)                             // Pointer to PROCESS_INFORMATION structure
     )
     {
-        MessageBox(nullptr, "Failed to start MP4 Converter", "Note", MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(nullptr, _T("Failed to start MP4 Converter"), _T("Note"), MB_OK | MB_ICONEXCLAMATION);
         return 0;
     }
     DWORD dwRead;
@@ -141,10 +141,10 @@ DWORD WINAPI CMP4Converter::ThreadProc(LPVOID lpParam)
             FILE *fp;
             int nSize = BUF_SIZE - 1;
 
-            fopen_s(&fp, *m_pData->psLogFile, "w");
+            _wfopen_s(&fp, *m_pData->psLogFile, _T("w"));
 
             if (!CloseHandle(wrstdout))
-                MessageBox(nullptr, "Failed to close the write stdout pipe", "Warning", 0);
+                MessageBox(nullptr, _T("Failed to close the write stdout pipe"), _T("Warning"), 0);
 
             bool bContinue = true;
             while (bContinue)

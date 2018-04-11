@@ -5,6 +5,12 @@ add_executable(CamStudioCmd
     Commandline.h
 )
 
+target_compile_definitions(CamStudioCmd
+  PRIVATE
+    -D_UNICODE
+    -DUNICODE
+)
+
 target_link_libraries(CamStudioCmd
     CamLib
     gdi32.lib

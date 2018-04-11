@@ -104,7 +104,7 @@ bool CSoundFile::CreateWaveFile()
     }
 
     // open file
-    m_hFile = ::mmioOpen((LPSTR)m_FileName.c_str(), nullptr, MMIO_CREATE | MMIO_WRITE | MMIO_EXCLUSIVE | MMIO_ALLOCBUF);
+    m_hFile = ::mmioOpenA((LPSTR)m_FileName.c_str(), nullptr, MMIO_CREATE | MMIO_WRITE | MMIO_EXCLUSIVE | MMIO_ALLOCBUF);
     if (m_hFile == nullptr)
     {
         m_Mode = FILE_ERROR;
@@ -138,7 +138,7 @@ bool CSoundFile::OpenWaveFile()
         return false;
     }
 
-    m_hFile = ::mmioOpen((LPSTR)m_FileName.c_str(), nullptr, MMIO_READ);
+    m_hFile = ::mmioOpenA((LPSTR)m_FileName.c_str(), nullptr, MMIO_READ);
     if (m_hFile == nullptr)
     {
         m_Mode = FILE_ERROR;
@@ -149,7 +149,7 @@ bool CSoundFile::OpenWaveFile()
     MMRESULT mmResult = ::mmioDescend(m_hFile, &m_MMCKInfoParent, nullptr, MMIO_FINDRIFF);
     if (mmResult != MMSYSERR_NOERROR)
     {
-        AfxMessageBox("Error descending into file");
+        AfxMessageBox(_T("Error descending into file"));
         ::mmioClose(m_hFile, 0);
         m_hFile = nullptr;
         m_Mode = FILE_ERROR;
@@ -159,7 +159,7 @@ bool CSoundFile::OpenWaveFile()
     mmResult = ::mmioDescend(m_hFile, &m_MMCKInfoChild, &m_MMCKInfoParent, MMIO_FINDCHUNK);
     if (mmResult != MMSYSERR_NOERROR)
     {
-        AfxMessageBox("Error descending in wave file");
+        AfxMessageBox(_T("Error descending in wave file"));
         mmioClose(m_hFile, 0);
         m_Mode = FILE_ERROR;
         m_hFile = nullptr;
@@ -168,7 +168,7 @@ bool CSoundFile::OpenWaveFile()
     long bytesRead = ::mmioRead(m_hFile, (LPSTR)&m_Format, m_MMCKInfoChild.cksize);
     if (bytesRead < 0)
     {
-        AfxMessageBox("Error reading PCM wave format record");
+        AfxMessageBox(_T("Error reading PCM wave format record"));
         ::mmioClose(m_hFile, 0);
         m_Mode = FILE_ERROR;
         return false;
@@ -178,7 +178,7 @@ bool CSoundFile::OpenWaveFile()
     mmResult = ::mmioAscend(m_hFile, &m_MMCKInfoChild, 0);
     if (mmResult != MMSYSERR_NOERROR)
     {
-        AfxMessageBox("Error ascending in File");
+        AfxMessageBox(_T("Error ascending in File"));
         ::mmioClose(m_hFile, 0);
         m_hFile = nullptr;
         m_Mode = FILE_ERROR;
@@ -188,7 +188,7 @@ bool CSoundFile::OpenWaveFile()
     mmResult = ::mmioDescend(m_hFile, &m_MMCKInfoChild, &m_MMCKInfoParent, MMIO_FINDCHUNK);
     if (mmResult != MMSYSERR_NOERROR)
     {
-        AfxMessageBox("error reading data chunk");
+        AfxMessageBox(_T("error reading data chunk"));
         ::mmioClose(m_hFile, 0);
         m_hFile = nullptr;
         m_Mode = FILE_ERROR;

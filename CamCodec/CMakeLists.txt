@@ -32,6 +32,12 @@ add_library(CamCodec SHARED
     ${CODEC_SOURCE}
 )
 
+target_compile_definitions(CamCodec
+  PRIVATE
+    -D_UNICODE
+    -DUNICODE
+)
+
 target_link_libraries(CamCodec
     libminilzo
     zlibstatic

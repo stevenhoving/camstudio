@@ -2,7 +2,7 @@
 #include "Screen.h"
 #include "ximage.h"
 #include "RecorderView.h"
-#include <CamHook/ClickQueue.hpp>
+#include <CamHook/ClickQueue.h>
 
 #include "addons/EffectsOptions.h"
 #include "addons/XnoteStopwatchFormat.h"
@@ -36,7 +36,8 @@ bool CCamera::AddTimestamp(CDC *pDC)
         struct tm newTime = { 0 };
         localtime_s(&newTime, &szClock);
         tmpTimestamp = m_sTimestamp.m_taTimestamp;
-        strftime(tmpTimestamp.text.GetBuffer(256), 256, m_sTimestamp.m_taTimestamp.text, &newTime);
+        //strftime(tmpTimestamp.text.GetBuffer(256), 256, m_sTimestamp.m_taTimestamp.text, &newTime);
+        wcsftime(tmpTimestamp.text.GetBuffer(256), 256, m_sTimestamp.m_taTimestamp.text, &newTime);
         InsertText(pDC, m_rectFrame, tmpTimestamp);
     }
     return true;
@@ -316,7 +317,7 @@ void CCamera::InsertText(CDC *pDC, const CRect &rectBase, TextAttributes &rTextA
     size_t nBlockLength = rTextAttrs.text.GetLength();
     size_t nMaxLength = nBlockLength; // For now we assume that Max and BlockLength are equal (as is with singleline strings)
     size_t nNrOfLine = 1;
-    size_t nNewLinePos = rTextAttrs.text.FindOneOf("\n");
+    size_t nNewLinePos = rTextAttrs.text.FindOneOf(_T("\n"));
 
     // Define thickness of the border
     int nBorderLineThickness = 3;
@@ -334,7 +335,7 @@ void CCamera::InsertText(CDC *pDC, const CRect &rectBase, TextAttributes &rTextA
         */
         CString cText = rTextAttrs.text.GetString();
         // nMaxLength = strlen(rTextAttrs.text.GetString());
-        nMaxLength = strlen(cText);
+        nMaxLength = cText.GetLength();
         UINT n = 0, m = 0;
         for (n = 0, m = 0; n < nMaxLength; n++, m++)
         {

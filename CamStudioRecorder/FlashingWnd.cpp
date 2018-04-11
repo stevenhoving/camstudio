@@ -70,7 +70,7 @@ BOOL CFlashingWnd::CreateFlashing(LPCTSTR pTitle, RECT &rect)
         CreateEx(WS_EX_TOPMOST, AfxRegisterWndClass(0, LoadCursor(0, IDC_ARROW)), pTitle, WS_POPUP, rect, 0, 0, 0);
     if (!bResult)
     {
-        ::OnError("CFlashingWnd::CreateFlashing");
+        ::OnError(_T("CFlashingWnd::CreateFlashing"));
     }
     return bResult;
 }
@@ -78,7 +78,7 @@ BOOL CFlashingWnd::CreateFlashing(LPCTSTR pTitle, RECT &rect)
 //********************************************************************************
 //* SetupRegion()
 //*
-//* Set the Window Region for transparancy outside the mask region
+//* Set the Window Region for transparency outside the mask region
 //*
 //* cRect : The area are that should be recorded
 //*

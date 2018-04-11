@@ -10,8 +10,8 @@ public:
     CBitmapEx& operator=(const CBitmapEx&) = delete;
 
     // load&save DDB
-    BOOL Open(LPCSTR filename, LPCSTR DialogTitle = nullptr);
-    BOOL Save(LPCSTR filename, LPCSTR DialogTitle = nullptr);
+    BOOL Open(const TCHAR *filename, const TCHAR *DialogTitle = nullptr);
+    BOOL Save(const TCHAR *filename, const TCHAR *DialogTitle = nullptr);
 
     void BitBlt(CDC *dc_to, POINT at, DWORD rop = SRCCOPY);
     void StretchBlt(CDC *dc_to, CRect to, DWORD rop = SRCCOPY);
