@@ -1,17 +1,14 @@
 #pragma once
 
-#define NOMINMAX
-
-#pragma message("Recorder: stdafx.h")
-#ifdef UNICODE
-#pragma message("UNICODE defined")
-#else
-#pragma message("UNICODE NOT defined")
-#endif
+//#pragma message("Recorder: stdafx.h")
+//#ifdef UNICODE
+//#pragma message("UNICODE defined")
+//#else
+//#pragma message("UNICODE NOT defined")
+//#endif
 
 #define WIN32_LEAN_AND_MEAN
-#define VC_EXTRALEAN // Exclude rarely-used stuff from Windows headers
-
+#define VC_EXTRALEAN
 
 ////////////////////////////
 // Use MS Private Assemblies to prevent side by side configuration errors as reported by users.
@@ -30,17 +27,8 @@
 
 #include <vfw.h>
 
-#pragma warning(disable : 4290)
 #include <libconfig.hh>
-//#include <afxcontrolbars.h>
 
 #include "Localization\Localization.h"
 
 extern libconfig::Config *g_cfg;
-#pragma warning(default : 4290)
-
-
-// Enable Windows XP visual styles
-#pragma comment(                                                                                                       \
-    linker,                                                                                                            \
-    "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
