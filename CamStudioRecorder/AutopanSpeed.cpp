@@ -56,7 +56,7 @@ BOOL CAutopanSpeedDlg::OnInitDialog()
 
     // update the test speed display
     CString maxpanspeedstr;
-    maxpanspeedstr.Format("%d", cProgramOpts.m_iMaxPan);
+    maxpanspeedstr.Format(_T("%d"), cProgramOpts.m_iMaxPan);
     m_ctrlStaticMaxSpeed.SetWindowText(maxpanspeedstr);
 
     return TRUE; // return TRUE unless you set the focus to a control
@@ -76,9 +76,9 @@ void CAutopanSpeedDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar
     // FIXME: how to check that we are scrolling our slider?
     // it looks like it is generic message is handled here
     if (SB_THUMBTRACK == nSBCode)
-    { // this (temporarily) fixes reset of the counter to 0 when slider is releazed
+    { // this (temporarily) fixes reset of the counter to 0 when slider is released
         CString maxpanspeedstr;
-        maxpanspeedstr.Format("%d", nPos);
+        maxpanspeedstr.Format(_T("%d"), nPos);
         m_ctrlStaticMaxSpeed.SetWindowText(maxpanspeedstr);
     }
 
