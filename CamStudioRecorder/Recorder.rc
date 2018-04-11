@@ -572,7 +572,7 @@ FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     CONTROL         IDB_BITMAP4,IDC_STATIC,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_REALSIZEIMAGE,55,6,166,42,WS_EX_DLGMODALFRAME
     DEFPUSHBUTTON   "OK",IDOK,111,53,60,15,WS_GROUP
-    CTEXT           "CamStudio Recorder <VERSION> <RELEASE> <XNOTESTOPWATCHSUPPORT> <BUGFIXES> <COPYRIGHT-1> <COPYRIGHT-2>",IDC_STATIC_VERSION,7,72,267,71
+    CTEXT           "CamStudio Recorder <VERSION> <RELEASE> <BUGFIXES> <COPYRIGHT-1> <COPYRIGHT-2>",IDC_STATIC_VERSION,7,72,267,71
     PUSHBUTTON      "Visit the \nCamStudio website",IDC_BUTTONLINK3,86,160,102,28,BS_MULTILINE | BS_FLAT
 END
 
@@ -2561,14 +2561,8 @@ END
 
 STRINGTABLE
 BEGIN
-    ID_OPTIONS_SWF_LAUNCHHTML 
-                            "Launch an HTML file to preview the SWF file upon completion"
-    ID_OPTIONS_SWF_DELETEAVIFILE 
-                            "When this setting is enabled, a source AVI will not be deleted and will be placed in the default recording directory"
     ID_AVISWF               "Toggle mode to record AVI or MP4"
     ID_OPTIONS_NAMING_ASK   "User defined filename"
-    ID_XNOTE_RECORDDURATIONLIMITMODE 
-                            "Requires Xnote Stopwatch to enable auto pause functionality."
     ID_OPTIONS_PROGRAMOPTIONS_NAMINGOFFILES_AUTOMATICFILENAMINGUSEDATETIME 
                             "Automatically use today's date and time to name the file"
     ID_OPTIONS_PROGRAMOPTIONS_SAVINGOFAVINAMING_AUTOMATICFILENAMINGFIXEDNAME 
@@ -2851,7 +2845,6 @@ END
 STRINGTABLE
 BEGIN
     ID_ANNOTATION_ADDSYSTEMTIMESTAMP "Add a system timestamp to the recording"
-    ID_ANNOTATION_ADDXNOTE  "Add a Xnote stopwatch timestamp to the recording"
     ID_ANNOTATION_ADDCAPTION "Add a caption to the recording"
     ID_ANNOTATION_ADDWATERMARK "Add a watermark to the recording"
     ID_EFFECTS_OPTIONS      "Set effects options"
