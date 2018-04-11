@@ -8,60 +8,68 @@
 // Gets the last windows error and then resets the error; gets the string
 // associated with the error and displays a messagebox of the error
 /////////////////////////////////////////////////////////////////////////////
-void OnError(LPCSTR lpszFunction)
+
+void OnError(const TCHAR *lpszFunction)
 {
+    WCHAR   wszMsgBuff[512];
+    DWORD   dwChars;
+
     // Retrieve the system error message for the last-error code
     DWORD dwError = ::GetLastError();
     if (ERROR_SUCCESS == dwError)
     {
         return;
     }
-    TRACE(_T("OnError: %s: %u\n"), lpszFunction, dwError);
+    TRACE(_T("OnError: %ws: %u\n"), lpszFunction, dwError);
     ::SetLastError(ERROR_SUCCESS); // reset the error
 
-    LPVOID lpMsgBuf = nullptr;
-    DWORD dwLen = ::FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, dwError,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPTSTR>(&lpMsgBuf), 0, nullptr);
+    dwChars = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        dwError,
+        0,
+        wszMsgBuff,
+        512,
+        NULL);
 
-    if (0 == dwLen)
+    if (0 == dwChars)
     {
-        TRACE(_T("OnError: FormatMessage error: %ud\n"), ::GetLastError());
-        ::SetLastError(ERROR_SUCCESS); // reset the error
-        return;
-    }
-    // Display the error message and exit the process
-    auto lpDisplayBuf = static_cast<LPVOID>(::LocalAlloc(
-        LMEM_ZEROINIT,
-        (lstrlen(static_cast<LPCTSTR>(lpMsgBuf)) + lstrlen(static_cast<LPCTSTR>(lpszFunction)) + 40) * sizeof(TCHAR)));
-    if (!lpDisplayBuf)
-    {
-        TRACE(_T("OnError: LocalAlloc error: %ud\n"), ::GetLastError());
-        ::SetLastError(ERROR_SUCCESS); // reset the error
-        ::LocalFree(lpMsgBuf);
-        return;
-    }
-    HRESULT hr = StringCchPrintf(static_cast<LPTSTR>(lpDisplayBuf), ::LocalSize(lpDisplayBuf) / sizeof(TCHAR),
-                                 TEXT("%s failed with error %d: %s"), lpszFunction, dwError, lpMsgBuf);
-    if (SUCCEEDED(hr))
-    {
-        //::MessageBox(0, (LPCTSTR)lpDisplayBuf, TEXT("Error"), MB_OK);
-        TRACE(_T("OnError: : %s\n"), lpDisplayBuf);
-    }
-    else
-    {
-        TRACE(_T("OnError: StringCchPrintf error: %ud\n"), ::GetLastError());
-        ::SetLastError(ERROR_SUCCESS); // reset the error
+        // The error code did not exist in the system errors.
+        // Try Ntdsbmsg.dll for the error code.
+
+        HINSTANCE hInst;
+
+        // Load the library.
+        hInst = ::LoadLibrary(L"Ntdsbmsg.dll");
+        if (NULL == hInst)
+        {
+            printf("cannot load Ntdsbmsg.dll\n");
+            exit(1);  // Could 'return' instead of 'exit'.
+        }
+
+        // Try getting message text from ntdsbmsg.
+        dwChars = ::FormatMessage(FORMAT_MESSAGE_FROM_HMODULE |
+            FORMAT_MESSAGE_IGNORE_INSERTS,
+            hInst,
+            dwError,
+            0,
+            wszMsgBuff,
+            512,
+            NULL);
+
+        // Free the library.
+        ::FreeLibrary(hInst);
     }
 
-    ::LocalFree(lpMsgBuf);
-    ::LocalFree(lpDisplayBuf);
+    TRACE(_T("OnError value: %d Message: %ws\n"),
+        dwError,
+        dwChars ? wszMsgBuff : L"Error message not found.");
 }
 
-void ErrorMsg(const char *frmt, ...)
+void ErrorMsg(const TCHAR *frmt, ...)
 {
     DWORD written = 0;
-    char buf[5000];
+    TCHAR buf[5000];
     va_list val;
 
     va_start(val, frmt);
