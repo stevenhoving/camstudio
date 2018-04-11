@@ -24,21 +24,21 @@
 #if CXIMAGE_SUPPORT_MNG
 
 //#define MNG_NO_CMS
-#define MNG_SUPPORT_DISPLAY
-#define MNG_SUPPORT_READ
-#define    MNG_SUPPORT_WRITE
-#define MNG_ACCESS_CHUNKS
-#define MNG_STORE_CHUNKS
+//#define MNG_SUPPORT_DISPLAY
+//#define MNG_SUPPORT_READ
+//#define MNG_SUPPORT_WRITE
+//#define MNG_ACCESS_CHUNKS
+//#define MNG_STORE_CHUNKS
 
 extern "C" {
-#include "../mng/libmng.h"
-#include "../mng/libmng_data.h"
-#include "../mng/libmng_error.h"
+#include <libmng.h>
+#include <libmng_data.h>
+#include <libmng_error.h>
 }
 
 //uint32_t _stdcall RunMNGThread(void *lpParam);
 
-typedef struct tagmngstuff 
+typedef struct tagmngstuff
 {
     CxFile        *file;
     uint8_t        *image;

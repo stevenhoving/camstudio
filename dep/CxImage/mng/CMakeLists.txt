@@ -67,6 +67,15 @@ add_library(mng STATIC
     ${MNG_SOURCE}
 )
 
+target_compile_definitions(mng
+  PUBLIC
+    -DMNG_SUPPORT_DISPLAY
+    -DMNG_SUPPORT_READ
+    -DMNG_SUPPORT_WRITE
+    -DMNG_ACCESS_CHUNKS
+    -DMNG_STORE_CHUNKS
+)
+
 target_link_libraries(mng
     zlibstatic
 )

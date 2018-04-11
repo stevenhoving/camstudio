@@ -30,14 +30,23 @@ add_library(raw STATIC
     ${RAW_SOURCE}
 )
 
+target_compile_definitions(raw
+  PRIVATE
+    # disable support for LCMS
+    -DNO_LCMS
+)
+
 target_link_libraries(raw
     png_static
+    jpeg
 )
 
 target_include_directories(raw
   PUBLIC
     .
 )
+
+set_target_properties(raw PROPERTIES FOLDER "CxImage")
 
 install(
     DIRECTORY include

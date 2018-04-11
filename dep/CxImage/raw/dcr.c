@@ -86,11 +86,12 @@ int DCR_CLASS main (int argc, char **argv)
 	char *ofname;
 	FILE *ofp;
 	const char *write_ext;
+    errno_t err;
 
 	struct utimbuf ut;
 
 #ifndef LOCALTIME
-	putenv ("TZ=UTC");
+	_putenv ("TZ=UTC");
 #endif
 #ifdef LOCALEDIR
 	setlocale (LC_CTYPE, "");
@@ -119,12 +120,12 @@ int DCR_CLASS main (int argc, char **argv)
 	}
 
 	if (dcr.opt.write_to_stdout) {
-		if (isatty(1)) {
+		if (_isatty(1)) {
 			fprintf (stderr,_("Will not write an image to the terminal!\n"));
 			return 1;
 		}
 #if defined(WIN32) || defined(DJGPP) || defined(__CYGWIN__)
-		if (setmode(1,O_BINARY) < 0) {
+		if (_setmode(1,O_BINARY) < 0) {
 			perror ("setmode()");
 			return 1;
 		}
@@ -144,15 +145,16 @@ int DCR_CLASS main (int argc, char **argv)
 
 		//!!! set return point for error handling
 		if (setjmp (dcr.failure)) {
-			if (fileno(dcr.obj_) > 2) (*dcr.ops_->close_)(dcr.obj_);
-			if (fileno(ofp) > 2) fclose(ofp);
+			if (_fileno(dcr.obj_) > 2) (*dcr.ops_->close_)(dcr.obj_);
+			if (_fileno(ofp) > 2) fclose(ofp);
 			status = 1;
 			goto cleanup;
 		}
 
 		//!!! open input file
 		dcr.ifname = argv[arg];
-		if (!(dcr.obj_ = fopen (dcr.ifname, "rb"))) {
+        err = fopen_s((FILE **)&dcr.obj_, dcr.ifname, "rb");
+		if (err || !dcr.obj_) {
 			perror (dcr.ifname);
 			continue;
 		}
@@ -383,7 +385,7 @@ thumbnail:
 		ofname = (char *) malloc (strlen(dcr.ifname) + 64);
 		dcr_merror (&dcr, ofname, "main()");
 		if (dcr.opt.write_to_stdout)
-			strcpy (ofname,_("standard output"));
+			strcpy(ofname,_("standard output"));
 		else {
 			char *cp;
 			strcpy (ofname, dcr.ifname);

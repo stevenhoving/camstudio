@@ -85,9 +85,21 @@ target_include_directories(CxImage
     .
 )
 
+target_compile_definitions(CxImage
+  PRIVATE
+    -D_UNICODE
+    -DUNICODE
+)
+
 target_link_libraries(CxImage
     zlibstatic
     jasper
+    jpeg
+    jbig
+    mng
+    tiff
+    raw
+    libpsd
     png_static
 )
 
