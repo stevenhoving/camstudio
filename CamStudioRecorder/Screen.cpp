@@ -5,7 +5,6 @@
 #include <CamHook/ClickQueue.h>
 
 #include "addons/EffectsOptions.h"
-#include "addons/XnoteStopwatchFormat.h"
 
 // for using std::min, std::max in gdiplus
 #include <algorithm>
@@ -39,51 +38,6 @@ bool CCamera::AddTimestamp(CDC *pDC)
         //strftime(tmpTimestamp.text.GetBuffer(256), 256, m_sTimestamp.m_taTimestamp.text, &newTime);
         wcsftime(tmpTimestamp.text.GetBuffer(256), 256, m_sTimestamp.m_taTimestamp.text, &newTime);
         InsertText(pDC, m_rectFrame, tmpTimestamp);
-    }
-    return true;
-}
-
-/////////////////////////////////////
-// AddXNote
-//
-// Write stopwatchinfo to screen
-// Firts line : Activation info. Which appliaction started and was this manually of automatic started.
-// Second line: Show stopwatch running digits
-// Third line : Extended info about the last (three) stopwatch snaps.
-//
-/////////////////////////////////////
-bool CCamera::AddXNote(CDC *pDC)
-{
-    if (m_sXNote.m_bAnnotation)
-    {
-        // CString str;
-        TextAttributes taTmpXNote;
-        char cTmpBuffXNoteTimeStamp[128] = "";
-        DWORD dwCurrTickCount = GetTickCount();
-
-        // Determine is Xnote Stopwatch is still running. If not just show regular time.
-        CXnoteStopwatchFormat::FormatXnoteDelayedTimeString(
-            cTmpBuffXNoteTimeStamp, cXNoteOpts.m_ulStartXnoteTickCounter,
-            cXNoteOpts.m_ulStartXnoteTickCounter == 0
-                ? 0
-                : dwCurrTickCount, // Determine is Xnote Stopwatch is still running. If not, show only zero's
-            m_sXNote.m_ulXnoteCameraDelayInMilliSec, cXNoteOpts.m_bXnoteDisplayCameraDelayMode,
-            cXNoteOpts.m_bXnoteDisplayCameraDelayDirection);
-
-        // Load info how and where user defined to display the annotation
-        taTmpXNote = m_sXNote.m_taXNote;
-
-        // Extend stopwatch info by adding on the last line the (three last) xnote stopwatch snaptimes
-        (void)sprintf_s(taTmpXNote.text.GetBuffer(128), 128, "%s\n%s\n%s",
-                      cXNoteOpts.m_ulStartXnoteTickCounter == 0 ? "No stopwatch running"
-                                                                : cXNoteOpts.m_cXnoteStartEntendedInfo,
-                      cTmpBuffXNoteTimeStamp,
-                      cXNoteOpts.m_ulStartXnoteTickCounter == 0 ? "Waiting..." : cXNoteOpts.m_cSnapXnoteTimesString);
-
-        InsertText(pDC, m_rectFrame, taTmpXNote);
-
-        // Determine if we must switch from recording to pause mode.
-        CRecorderView::XNoteSetRecordingInPauseMode();
     }
     return true;
 }
@@ -280,7 +234,6 @@ bool CCamera::AddClicks(CDC *pDC)
 bool CCamera::Annotate(CDC *pDC)
 {
     AddTimestamp(pDC);
-    AddXNote(pDC);
     AddCaption(pDC);
     AddWatermark(pDC);
     if (m_cCursor.Record())

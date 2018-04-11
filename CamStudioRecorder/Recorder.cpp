@@ -114,14 +114,12 @@ BOOL CAboutDlg::OnInitDialog()
     CString strReleaseInfo;
     strReleaseInfo.Format(_T("Build on Mercurial release: r%s\n"), CURRENT_HG_RELEASE_NUMBER);
 
-    // CamStudio Recorder <VERSION><RELEASE><XNOTESTOPWATCHSUPPORT><BUGFIXES><COPYRIGHT-1><COPYRIGHT-2>
     m_ctrlStaticVersion.GetWindowText(strBuffer);
-    strBuffer.Replace("<VERSION>", _T(strVersionInfo));
-    strBuffer.Replace("<RELEASE>", _T(strReleaseInfo));
-    strBuffer.Replace("<XNOTESTOPWATCHSUPPORT>", "\nXNoteStopwatch support coded by JanHgm (www.jahoma.nl/timereg)\n");
-    strBuffer.Replace("<BUGFIXES>", "Bugfixes and additional features added by Nick the Geek and others.\n");
-    strBuffer.Replace("<COPYRIGHT-1>", "\nCopyright © 2001 RenderSoft Software and Web Publishing\n");
-    strBuffer.Replace("<COPYRIGHT-2>", "Copyright © 2008 CamStudio Group && Contributors\n");
+    strBuffer.Replace(_T("<VERSION>"), strVersionInfo);
+    strBuffer.Replace(_T("<RELEASE>"), strReleaseInfo);
+    strBuffer.Replace(_T("<BUGFIXES>"), _T("Bugfixes and additional features added by Nick the Geek and others.\n"));
+    strBuffer.Replace(_T("<COPYRIGHT-1>"), _T("\nCopyright © 2001 RenderSoft Software and Web Publishing\n"));
+    strBuffer.Replace(_T("<COPYRIGHT-2>"), _T("Copyright © 2008 CamStudio Group && Contributors\n"));
 
     m_ctrlStaticVersion.SetWindowText(strBuffer);
 

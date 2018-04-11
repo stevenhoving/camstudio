@@ -2,7 +2,6 @@
 #include "Recorder.h"
 #include "MainFrm.h"
 #include "RecorderView.h"
-#include "addons\Camstudio4XNote.h"
 /*
 TODO: Break AVI 2 GB boundary
 ================================
@@ -70,11 +69,6 @@ static HMENU hMenu = nullptr;
 /////////////////////////////////////////////////////////////////////////////
 // CMainFrame
 
-// Do not change applied RegisterWindowMessage names because otherwise the communication link between sender and
-// receiver application is broken.
-const UINT CMainFrame::WM_USER_XNOTE = ::RegisterWindowMessage("XNote");
-const UINT CMainFrame::WM_USER_MOTIONDETECTOR = ::RegisterWindowMessage("MotionAlerter");
-
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
@@ -90,56 +84,8 @@ ON_UPDATE_COMMAND_UI(ID_VIEW_NORMALVIEW, OnUpdateViewNormalview)
 ON_COMMAND(ID_VIEWTYPE, OnViewtype)
 //}}AFX_MSG_MAP
 ON_MESSAGE(CTrayIcon::m_WM_TRAY_ICON_NOTIFY_MESSAGE, OnTrayNotify)
-ON_REGISTERED_MESSAGE(CMainFrame::WM_USER_XNOTE, OnXNote)
-ON_REGISTERED_MESSAGE(CMainFrame::WM_USER_MOTIONDETECTOR, OnMotionDetector)
 ON_WM_SYSCOMMAND()
 END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// String send by MotionAlerter as message identifier is : "MotionAlerter"
-//
-// CMainFrame::OnMotionDetector
-// Handles XNote supporing WindowsMessages. Xnote is a stopwatch application.  (http://www.xnotestopwatch.com/)
-// MotionDetector is based on the MotionDetection example from Andrew ....
-// Allows that external program can work with Camstudio and can instruct CamStudio when to start recording, to pause and
-// to terminate recording.
-//
-// wParam: loword: id (in  xnote.ini under [General] "id=" key)
-//         hiword: action (1 - start, 2 - stop, 3 - snap, 4 - reset, 5 - release pause)
-// lParam: time in ms  (Near future, as we are able to use camera as timer. Gige Camera required)
-// BTW. Curently only action 5 (release pause, restart recording) is supported
-//////////////////////////////////////////////////////////
-LRESULT CMainFrame::OnMotionDetector(WPARAM wParam, LPARAM /*lParam*/)
-{
-    // TRACE("## CMainFrame::OnMotionDetector (d)    wParam=[%d] HI[%d], LO[%d]\n",wParam, HIWORD(wParam),
-    // LOWORD(wParam) );
-    dynamic_cast<CRecorderView *>(m_pViewActive)
-        ->XNoteProcessWinMessage(HIWORD(wParam), XNOTE_TRIGGER_MOTIONDETECTOR, XNOTE_SOURCE_MOTIONDETECTOR, 0);
-
-    return 0;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// CMainFrame::OnXNote
-// Handles XNote WindowsMessages. Xnote is a stopwatch application.  (http://www.xnotestopwatch.com/)
-// Allows that external program can work with Camstudio and can instruct CamStudio when to start recording, to pause and
-// to terminate recording.
-//
-// wParam: loword: id (in  xnote.ini under [General] "id=" key)
-//         hiword: action (1 - start, 2 - stop, 3 - snap, 4 - reset)
-// lParam: time in ms
-//////////////////////////////////////////////////////////
-LRESULT CMainFrame::OnXNote(WPARAM wParam, LPARAM lParam)
-{
-    // Xnote sends source and action info with wParam
-    int nHiMod256 = HIWORD(wParam) % 256;
-    // TRACE("## CMainFrame::OnXNote (u)    wParam=[%u] HI[%u], LO[%u] nHiMod256=[%d]\n",wParam, HIWORD(wParam),
-    // LOWORD(wParam), nHiMod256 );
-    dynamic_cast<CRecorderView *>(m_pViewActive)
-        ->XNoteProcessWinMessage(nHiMod256, LOWORD(wParam), XNOTE_SOURCE_XNOTESTOPWATCH, (ULONG)lParam);
-
-    return 0;
-}
 
 static UINT indicators[] = {
     ID_SEPARATOR // status line indicator
@@ -225,10 +171,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     m_TrayIcon.TrayShow();
 
     SetWindowText(_T("CamStudio"));
-#ifdef CAMSTUDIO4XNOTE
-    SetWindowText("CamStudio4Xnote by Janhgm - Custom Build");
-#else
-#endif
     CheckForNewVersion();
     return 0;
 }

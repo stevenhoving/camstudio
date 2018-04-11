@@ -5,7 +5,6 @@
 #include <CamLib/CStudioLib.h>
 #include "addons\TextAttributes.h" // for position
 #include "addons\ImageAttributes.h"
-#include "addons\Camstudio4XNote.h"
 
 bool bRecordPreset = false;
 

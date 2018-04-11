@@ -54,7 +54,7 @@ IDB_SCREENANNOTATIONS_SMALL BITMAP                  "res\\bmp00001.bmp"
 
 IDR_MAINFRAME1          BITMAP                  "res\\mainfram.bmp"
 
-IDB_BITMAP4             BITMAP                  "Recorder_logo.bmp"
+IDB_BITMAP4             BITMAP                  "res\\Recorder_logo.bmp"
 
 IDB_BITMAP6             BITMAP                  "res\\bitmap6.bmp"
 
@@ -114,7 +114,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "Recorder.ico"
+IDR_MAINFRAME           ICON                    "res\\Recorder.ico"
 
 IDI_ICON1               ICON                    "res\\icon1.ico"
 
@@ -329,7 +329,6 @@ BEGIN
         POPUP "A&nnotation"
         BEGIN
             MENUITEM "Add System Time Stamp",       ID_ANNOTATION_ADDSYSTEMTIMESTAMP
-            MENUITEM "Add Xnote Time Stamp",        ID_ANNOTATION_ADDXNOTE
             MENUITEM "Add Caption",                 ID_ANNOTATION_ADDCAPTION
             MENUITEM "Add Watermark",               ID_ANNOTATION_ADDWATERMARK
         END
@@ -574,9 +573,7 @@ BEGIN
     CONTROL         IDB_BITMAP4,IDC_STATIC,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_REALSIZEIMAGE,55,6,166,42,WS_EX_DLGMODALFRAME
     DEFPUSHBUTTON   "OK",IDOK,111,53,60,15,WS_GROUP
     CTEXT           "CamStudio Recorder <VERSION> <RELEASE> <XNOTESTOPWATCHSUPPORT> <BUGFIXES> <COPYRIGHT-1> <COPYRIGHT-2>",IDC_STATIC_VERSION,7,72,267,71
-    PUSHBUTTON      "Visit the \nCamStudio website",IDC_BUTTONLINK3,20,145,102,28,BS_MULTILINE | BS_FLAT
-    PUSHBUTTON      "Visit the \nXnoteCamstudio website",IDC_BUTTONLINK,156,145,102,28,BS_MULTILINE | BS_FLAT
-    PUSHBUTTON      "Please donate to support Camstudio's development",IDC_BUTTONLINK2,19,177,238,22,BS_MULTILINE | BS_FLAT
+    PUSHBUTTON      "Visit the \nCamStudio website",IDC_BUTTONLINK3,86,160,102,28,BS_MULTILINE | BS_FLAT
 END
 
 IDD_VIDEOOPTIONS DIALOGEX 0, 0, 303, 289
@@ -1022,7 +1019,7 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,161,169,50,14
 END
 
-IDD_DIALOG_MAIN_EFFECTS_OPTIONS DIALOGEX 0, 0, 254, 337
+IDD_DIALOG_MAIN_EFFECTS_OPTIONS DIALOGEX 0, 0, 255, 201
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Effects options"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -1033,35 +1030,17 @@ BEGIN
     PUSHBUTTON      "Options...",IDC_BUTTON_TIMESTAMP_FORMAT_OPTIONS,186,23,50,14,WS_GROUP
     LTEXT           "Preview:",IDC_STATIC,20,43,29,8
     EDITTEXT        IDC_FORMATTIMESTAMPPREVIEW,55,40,176,14,ES_AUTOHSCROLL | ES_READONLY | WS_GROUP
-    GROUPBOX        "Stopwatch timestamp",IDC_STATIC,7,65,239,132
-    LTEXT           "Stopwatch functions are triggered by external applications as Xnote Stopwatch or Motion Alerter.",IDC_STATIC,18,75,218,19
-    LTEXT           "Set stopwatch compensatiom time (in ms) to sync with recording.",IDC_STATIC,17,108,218,12
-    EDITTEXT        IDC_EDIT_XNOTECAMERADELAYINMILLISEC,16,119,39,14,ES_AUTOHSCROLL | ES_NUMBER
-    CONTROL         "Show applied compensation in annotation",IDC_BUTTON_XNOTEDISPLAYCAMERADELAYMODE,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,59,127,148,10
-    LTEXT           "Format preview:",IDC_STATIC,18,136,59,8
-    EDITTEXT        IDC_FORMAT_XNOTEPREVIEW,15,145,108,14,ES_AUTOHSCROLL | ES_READONLY
-    PUSHBUTTON      "Options...",IDC_BUTTON_XNOTECAMERADELAYMODE,189,146,50,14
-    LTEXT           "Switch to Pause mode N milli seconds after a Xnote event occured.",IDC_STATIC,17,168,221,8
-    EDITTEXT        IDC_EDIT_XNOTERECORDDURATIONLIMITINMILLISEC,15,178,39,14,ES_AUTOHSCROLL | ES_NUMBER
-    CONTROL         "Enable Xnote auto pause functionality",IDC_BUTTON_XNOTERECORDDURATIONLIMITMODE,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_GROUP | WS_TABSTOP,57,180,137,10
-    EDITTEXT        IDC_EDIT_XNOTE_FORMAT,196,182,50,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_VISIBLE | NOT WS_TABSTOP
-    GROUPBOX        "Caption",IDC_STATIC,7,202,240,41
-    LTEXT           "Text",IDC_STATIC,17,212,16,8
-    EDITTEXT        IDC_EDIT_CAPTION_TEXT,17,222,160,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "Options...",IDC_BUTTON_CAPTION_OPTIONS,189,221,50,14
-    GROUPBOX        "Water mark",IDC_STATIC,7,248,240,57
-    LTEXT           "Image Path",IDC_STATIC,17,259,38,8
-    EDITTEXT        IDC_EDIT_IMAGE_PATH,17,269,195,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "...",IDC_BUTTON_IMAGE_PATH,216,267,23,17
-    PUSHBUTTON      "Options...",IDC_BUTTON_WATERMARK_OPTIONS,189,287,50,14
-    DEFPUSHBUTTON   "OK",IDOK,141,315,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,197,315,50,14
-    CONTROL         "Enable external control",IDC_BUTTON_XNOTEREMOTECONTROLMODE,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,17,93,90,10
-    CONTROL         "Hold back (delay)",IDC_BUTTON_XNOTEDISPLAYCAMERADELAYDIRECTION,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,59,117,71,10
+    GROUPBOX        "Caption",IDC_STATIC,6,63,240,41
+    GROUPBOX        "Water mark",IDC_STATIC,7,110,240,57
+    LTEXT           "Image Path",IDC_STATIC,17,121,38,8
+    EDITTEXT        IDC_EDIT_IMAGE_PATH,17,131,195,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BUTTON_IMAGE_PATH,216,129,23,17
+    PUSHBUTTON      "Options...",IDC_BUTTON_WATERMARK_OPTIONS,189,149,50,14
+    DEFPUSHBUTTON   "OK",IDOK,141,179,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,197,179,50,14
+    LTEXT           "Text",IDC_STATIC,17,73,16,8
+    EDITTEXT        IDC_EDIT_CAPTION_TEXT,17,83,160,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Options...",IDC_BUTTON_CAPTION_OPTIONS,189,82,50,14
 END
 
 IDD_EFFECTS_OPTIONS2 DIALOGEX 0, 0, 206, 154
@@ -1320,7 +1299,8 @@ BEGIN
 
     IDD_DIALOG_MAIN_EFFECTS_OPTIONS, DIALOG
     BEGIN
-        BOTTOMMARGIN, 312
+        RIGHTMARGIN, 254
+        BOTTOMMARGIN, 193
     END
 
     IDD_EFFECTS_OPTIONS2, DIALOG
@@ -2581,14 +2561,11 @@ END
 
 STRINGTABLE
 BEGIN
-    ID_TOOLS_SWFPRODUCER    "Launch SWF Producer"
     ID_OPTIONS_SWF_LAUNCHHTML 
                             "Launch an HTML file to preview the SWF file upon completion"
     ID_OPTIONS_SWF_DELETEAVIFILE 
                             "When this setting is enabled, a source AVI will not be deleted and will be placed in the default recording directory"
-    ID_OPTIONS_SWF_DISPLAYPARAMETERS 
-                            "Display conversion options before generating SWF"
-    ID_AVISWF               "Toggle mode to record AVI, MP4 or Flash"
+    ID_AVISWF               "Toggle mode to record AVI or MP4"
     ID_OPTIONS_NAMING_ASK   "User defined filename"
     ID_XNOTE_RECORDDURATIONLIMITMODE 
                             "Requires Xnote Stopwatch to enable auto pause functionality."
@@ -2723,15 +2700,11 @@ END
 STRINGTABLE
 BEGIN
     IDS_STRING_UNSSC        "Unable to set shortcuts for %s"
-    IDS_ERRPPRODUCER        "Error launching SWF Producer!"
     IDS_RECAVI              "Record to AVI"
-    IDS_RECSWF              "Record to SWF"
     IDS_RESTARTAPP          "Application must be restarted to apply the changes!"
     IDS_ERROR_PLAYER        "Error launching CamStudio Player!"
     IDS_ERROR_PLAYER2       "Error launching CamStudio Player 2.0!"
     IDS_STRING_LINEUNDETECTED "Line undetected"
-    IDS_XNOTE_RECORDING_DURATION_ON "Xnote:<X> Stamp:<S> Rec:Limited,"
-    IDS_XNOTE_RECORDING_DURATION_OFF "Xnote:<X> Stamp:<S> Rec:Continuously."
     IDS_STRING_MOVEFILEFAILURE 
                             "File Move Error. Unable to move or to rename/copy file. The source file may be opened by another application or destination file stilll exist. Please use another filename."
     IDS_STRING_AUTOPAN_ENABLED "Autopan Enabled"

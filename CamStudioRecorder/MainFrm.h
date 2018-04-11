@@ -63,13 +63,9 @@ protected:
     //}}AFX_MSG
     afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
     afx_msg LRESULT OnTrayNotify(WPARAM wParam, LPARAM lParam);
-    afx_msg LRESULT OnXNote(WPARAM wParam, LPARAM lParam);
-    afx_msg LRESULT OnMotionDetector(WPARAM wParam, LPARAM lParam);
     DECLARE_MESSAGE_MAP()
 private:
     CTrayIcon m_TrayIcon;
-    static const UINT WM_USER_XNOTE;
-    static const UINT WM_USER_MOTIONDETECTOR;
     void CheckForNewVersion();
     void Parse(int result[3], const std::string &input);
     bool LessThanVersion(const std::string &a, const std::string &b);

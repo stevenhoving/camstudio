@@ -49,11 +49,8 @@ public:
     BOOL OpenUsingShellExecute(CString);
     LONG GetRegKey(HKEY key, const std::string &subkey, std::string &retdata);
     BOOL OpenUsingRegisteredClass(CString);
-    VOID XNoteProcessWinMessage(int iActionID, int iSensorID, int iSourceID, ULONG lXnoteTimeInMilliSeconds);
     bool GetRecordState();
     bool GetPausedState();
-    static VOID XNoteSetRecordingInPauseMode(void);
-    static void XNoteActionStopwatchResetParams(void);
 
 #ifdef _DEBUG
     virtual void AssertValid() const;
@@ -175,14 +172,11 @@ protected:
     afx_msg void OnAnnotationAddsystemtimestamp();
     afx_msg void OnUpdateAnnotationAddsystemtimestamp(CCmdUI *pCmdUI);
 
-    afx_msg void OnAnnotationAddXNote();
     afx_msg void OnUpdateCameraDelayInMilliSec(CCmdUI *pCmdUI);
     afx_msg void OnCameraDelayInMilliSec();
-    afx_msg void OnUpdateAnnotationAddXNote(CCmdUI *pCmdUI);
 
     afx_msg void OnUpdateRecordDurationLimitInMilliSec(CCmdUI *pCmdUI);
     afx_msg void OnRecordDurationLimitInMilliSec();
-    afx_msg void OnXnoteRecordDurationLimitMode();
 
     afx_msg void OnAnnotationAddcaption();
     afx_msg void OnUpdateAnnotationAddcaption(CCmdUI *pCmdUI);
@@ -193,7 +187,6 @@ protected:
     afx_msg void OnBnClickedButtonlink();
     afx_msg void OnUpdateOptionsAudiooptionsAudiovideosynchronization(CCmdUI *pCmdUI);
 
-    afx_msg void OnCamstudio4XnoteWebsite(); // OnHelpWebsite
     //}}AFX_MSG
     afx_msg LRESULT OnRecordStart(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnRecordInterrupted(WPARAM wParam, LPARAM lParam);
@@ -243,7 +236,6 @@ private:
     long GetAVILengthTime(const CString &sAVIFile);
     // dialog controls
     // TEST a la AudioFormat.cpp
-    // CButton m_ctrlButtonOnXnoteRecordDurationLimitMode;
 };
 
 #ifndef _DEBUG // debug version in vscapView.cpp
