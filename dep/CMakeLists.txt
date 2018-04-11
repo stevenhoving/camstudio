@@ -18,6 +18,12 @@ add_subdirectory(libpng)
 add_subdirectory(minilzo)
 add_subdirectory(CxImage)
 
+set(BUILD_EXAMPLES OFF CACHE BOOL "Disable libconfig examples" FORCE)
+set(BUILD_TESTS OFF CACHE BOOL "Disable libconfig examples" FORCE)
+add_subdirectory(libconfig)
+set_target_properties(libconfig PROPERTIES FOLDER "External/libconfig")
+set_target_properties(libconfig++ PROPERTIES FOLDER "External/libconfig")
+
 install(
     DIRECTORY ${CMAKE_SOURCE_DIR}/bin/
     DESTINATION bin
