@@ -4,3 +4,6 @@
 [submodule "dep/libpng"]
 	path = dep/libpng
 	url = git@github.com:aeon-external-dependencies/libpng.git
+[submodule "dep/libconfig"]
+	path = dep/libconfig
+	url = git@github.com:hyperrealm/libconfig.git
