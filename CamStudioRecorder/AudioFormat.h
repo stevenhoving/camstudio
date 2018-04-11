@@ -88,11 +88,6 @@ private:
     BOOL GetFormatDescription(CString &rstrFormatTag, CString &rstrFormat);
     void UpdateCompressFormatInterface();
     void UpdateDeviceData(UINT deviceID, DWORD dwFormat, const WAVEFORMATEX &rwfx);
-
-    BOOL OpenUsingRegisteredClass(CString link);
-    BOOL Openlink(CString);
-    BOOL OpenUsingShellExecute(CString);
-    LONG GetRegKey(HKEY key, LPCTSTR subkey, LPTSTR retdata);
 };
 
 //{{AFX_INSERT_LOCATION}}

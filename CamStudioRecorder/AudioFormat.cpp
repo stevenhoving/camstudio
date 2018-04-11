@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "AudioFormat.h"
+#include "AudioVolume.h"
+
 #include "RecorderView.h"
 #include "vfw/ACM.h"
 #include <CamLib/CStudioLib.h>
-#include <filesystem>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -93,106 +95,7 @@ ON_BN_CLICKED(IDC_BUTTON1, OnHelp)
 //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-BOOL CAudioFormatDlg::OpenUsingRegisteredClass(CString link)
-{
-    TCHAR key[MAX_PATH + MAX_PATH];
 
-    if (GetRegKey(HKEY_CLASSES_ROOT, _T (".htm"), key) == ERROR_SUCCESS)
-    {
-        LPCTSTR mode = _T ("\\shell\\open\\command");
-        strcat_s(key, mode);
-        if (GetRegKey(HKEY_CLASSES_ROOT, key, key) == ERROR_SUCCESS)
-        {
-            LPTSTR pos = strstr(key, _T ("\"%1\""));
-            if (pos == nullptr)
-            {
-                // No quotes found
-
-                pos = strstr(key, _T ("%1")); // Check for %1, without quotes
-
-                if (pos == nullptr) // No parameter at all...
-                    pos = key + _tcslen(key) - 1;
-                else
-                    *pos = _T('\0'); // Remove the parameter
-            }
-            else
-                *pos = _T('\0'); // Remove the parameter
-
-            strcat_s(pos, strlen(pos) + 2, _T (" "));
-            strcat_s(pos, strlen(pos) + strlen(link) + 1, link);
-
-            auto result = WinExec(key, SW_SHOW);
-            if (result <= HINSTANCE_ERROR)
-            {
-                CString str;
-                switch (result)
-                {
-                    case 0:
-                        str = _T ("The operating system is out\nof memory or resources.");
-                        break;
-                    case SE_ERR_PNF:
-                        str = _T ("The specified path was not found.");
-                        break;
-                    case SE_ERR_FNF:
-                        str = _T ("The specified file was not found.");
-                        break;
-                    case ERROR_BAD_FORMAT:
-                        str = _T ("The .EXE file is invalid\n(non-Win32 .EXE or error in .EXE image).");
-                        break;
-                    case SE_ERR_ACCESSDENIED:
-                        str = _T ("The operating system denied\naccess to the specified file.");
-                        break;
-                    case SE_ERR_ASSOCINCOMPLETE:
-                        str = _T ("The filename association is\nincomplete or invalid.");
-                        break;
-                    case SE_ERR_DDEBUSY:
-                        str =_T ("The DDE transaction could not\nbe completed because other DDE transactions\nwere being processed.");
-                        break;
-                    case SE_ERR_DDEFAIL:
-                        str = _T ("The DDE transaction failed.");
-                        break;
-                    case SE_ERR_DDETIMEOUT:
-                        str = _T ("The DDE transaction could not\nbe completed because the request timed out.");
-                        break;
-                    case SE_ERR_DLLNOTFOUND:
-                        str = _T ("The specified dynamic-link library was not found.");
-                        break;
-                    case SE_ERR_NOASSOC:
-                        str = _T ("There is no application associated\nwith the given filename extension.");
-                        break;
-                    case SE_ERR_OOM:
-                        str = _T ("There was not enough memory to complete the operation.");
-                        break;
-                    case SE_ERR_SHARE:
-                        str = _T ("A sharing violation occurred.");
-                        break;
-                    default:
-                        str.Format(_T ("Unknown Error (%u) occurred."), result);
-                }
-                str = _T ("Unable to open hyperlink:\n\n") + str;
-                AfxMessageBox(str, MB_ICONEXCLAMATION | MB_OK);
-            }
-            else
-            {
-                return TRUE;
-            }
-        }
-    }
-    return FALSE;
-}
-
-BOOL CAudioFormatDlg::OpenUsingShellExecute(CString link)
-{
-    LPCTSTR mode = _T ("open");
-    // HINSTANCE hRun = ShellExecute (GetParent ()->GetSafeHwnd (), mode, m_sActualLink, nullptr, nullptr, SW_SHOW);
-    HINSTANCE hRun = ShellExecute(GetSafeHwnd(), mode, link, nullptr, nullptr, SW_SHOW);
-    if ((int)hRun <= HINSTANCE_ERROR)
-    {
-        TRACE(_T("Failed to invoke URL using ShellExecute\n"));
-        return FALSE;
-    }
-    return TRUE;
-}
 
 void CAudioFormatDlg::AllocCompressFormat()
 {
@@ -830,103 +733,7 @@ void CAudioFormatDlg::OnCancel()
 
 void CAudioFormatDlg::OnVolume()
 {
-    // Ver 1.1
-    if (waveInGetNumDevs() == 0)
-    {
-        // CString msgstr;
-        // msgstr.Format("Unable to detect audio input device. You need a sound card with microphone input.");
-        // MessageBox(msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
-        MessageOut(this->m_hWnd, IDS_STRING_NOINPUT1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-        return;
-    }
-
-    TCHAR dirx[300];
-    GetWindowsDirectory(dirx, 300);
-    CString Windir(dirx);
-
-    // Test Windows\sndvol32.exe
-    CString exeFileName("\\sndvol32.exe");
-    CString AppDir = Windir;
-    CString SubDir = "";
-    CString testLaunchPath = AppDir + SubDir + exeFileName;
-
-    CString launchPath("");
-    if (launchPath == "")
-    {
-        // Verify sndvol32.exe exists
-        if (std::experimental::filesystem::exists(testLaunchPath.GetString()))
-        {
-            launchPath = testLaunchPath;
-        }
-    }
-
-    if (launchPath == "")
-    {
-        // Test Windows\system32\sndvol32.exe
-        // Verify sndvol32.exe exists
-        SubDir = "\\system32";
-        testLaunchPath = AppDir + SubDir + exeFileName;
-        if (std::experimental::filesystem::exists(testLaunchPath.GetString()))
-        {
-            launchPath = testLaunchPath;
-        }
-    }
-
-    if (launchPath == "")
-    {
-        // Test Windows\system\sndvol32.exe
-        // Verify sndvol32.exe exists
-        SubDir = "\\system32";
-        testLaunchPath = AppDir + SubDir + exeFileName;
-        if (std::experimental::filesystem::exists(testLaunchPath.GetString()))
-        {
-            launchPath = testLaunchPath;
-        }
-    }
-
-    if (launchPath != "")
-    { // launch Volume Control
-        // not sure
-        launchPath = launchPath + " /r /rec /record";
-
-        if (WinExec(launchPath, SW_SHOW) != 0)
-        {
-        }
-        else
-        {
-            // MessageBox("Error launching Volume Control!","Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(this->m_hWnd, IDS_STRING_ERRVOLCTRL1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-        }
-    }
-    // Sound mixer moved in Windows Vista! check new exe name only if windows version matches
-    OSVERSIONINFO osinfo;
-    osinfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-    if (GetVersionEx((LPOSVERSIONINFO)&osinfo))
-    {
-        if (osinfo.dwMajorVersion >= 6) // Vista
-        {
-            testLaunchPath = AppDir + SubDir + "\\SndVol.exe";
-            if (std::experimental::filesystem::exists(testLaunchPath.GetString()))
-            {
-                launchPath = testLaunchPath;
-            }
-        }
-    }
-
-    if (launchPath != "")
-    { // launch Volume Control
-        // not sure
-        launchPath = launchPath + " /r /rec /record";
-
-        if (WinExec(launchPath, SW_SHOW) != 0)
-        {
-        }
-        else
-        {
-            // MessageBox("Error launching Volume Control!","Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(this->m_hWnd, IDS_STRING_ERRVOLCTRL1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-        }
-    }
+    OnAudioVolume(m_hWnd);
 }
 
 void CAudioFormatDlg::OnSelchangeInputdevice()
@@ -958,38 +765,7 @@ void CAudioFormatDlg::OnSystemrecord()
 
 void CAudioFormatDlg::OnHelp()
 {
-    CString progdir = GetProgPath();
-    CString helppath = progdir + _T("\\help.htm#Helpmci");
-    Openlink(helppath);
-}
-
-BOOL CAudioFormatDlg::Openlink(CString link)
-{
-    // As a last resort try ShellExecuting the URL, may even work on Navigator!
-    BOOL bSuccess = OpenUsingShellExecute(link);
-    if (!bSuccess)
-    {
-        bSuccess = OpenUsingRegisteredClass(link);
-    }
-
-    return bSuccess;
-}
-
-LONG CAudioFormatDlg::GetRegKey(HKEY key, LPCTSTR subkey, LPTSTR retdata)
-{
-    HKEY hkey;
-    LONG lResult = ::RegOpenKeyEx(key, subkey, 0, KEY_QUERY_VALUE, &hkey);
-    if (ERROR_SUCCESS == lResult)
-    {
-        long datasize = MAX_PATH;
-        TCHAR data[MAX_PATH];
-        lResult = ::RegQueryValue(hkey, nullptr, data, &datasize);
-        if (ERROR_SUCCESS == lResult)
-        {
-            strcpy_s(retdata, strlen(retdata) + strlen(data) + 1, data);
-        }
-        VERIFY(ERROR_SUCCESS == ::RegCloseKey(hkey));
-    }
-
-    return lResult;
+    //CString progdir = GetProgPath();
+    //CString helppath = progdir + _T("\\help.htm#Helpmci");
+    //Openlink(helppath);
 }

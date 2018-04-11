@@ -6,6 +6,7 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "AudioSpeakers.h"
+#include "AudioVolume.h"
 
 #include <mmsystem.h>
 #include <vfw.h>
@@ -147,99 +148,7 @@ BOOL CAudioSpeakersDlg::OnInitDialog()
 
 void CAudioSpeakersDlg::OnVolume()
 {
-    // Ver 1.1
-    if (waveInGetNumDevs() == 0)
-    {
-        // CString msgstr;
-        // msgstr.Format("Unable to detect audio input device. You need a sound card with microphone input.");
-        // MessageBox(msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
-        MessageOut(m_hWnd, IDS_STRING_NOINPUT1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-        return;
-    }
-
-    TCHAR dirx[_MAX_PATH];
-    VERIFY(::GetWindowsDirectory(dirx, _MAX_PATH));
-    CString Windir(dirx);
-    // Test Windows\sndvol32.exe
-    CString AppDir = Windir;
-    CString SubDir = "";
-    CString exeFileName("\\sndvol32.exe");
-    CString testLaunchPath = AppDir + SubDir + exeFileName;
-    CString launchPath("");
-    if (launchPath == "")
-    {
-        // Verify sndvol32.exe exists
-        OFSTRUCT ofs;
-        HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
-        if (hdir != HFILE_ERROR)
-        {
-            launchPath = testLaunchPath;
-        }
-        CloseHandle((HANDLE)hdir);
-    }
-
-    // Test Windows\system32\sndvol32.exe
-    // AppDir = Windir;    // unmodified
-    SubDir = "\\system32";
-    testLaunchPath = AppDir + SubDir + exeFileName;
-    if (launchPath == "")
-    {
-        // Verify sndvol32.exe exists
-        OFSTRUCT ofs;
-        HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
-        if (hdir != HFILE_ERROR)
-        {
-            launchPath = testLaunchPath;
-        }
-        CloseHandle((HANDLE)hdir);
-    }
-
-    // Test Windows\system\sndvol32.exe
-    // AppDir = Windir;            // unmodified
-    // SubDir = "\\system32";    // unmodified
-    testLaunchPath = AppDir + SubDir + exeFileName;
-    if (launchPath == "")
-    {
-        // Verify sndvol32.exe exists
-        OFSTRUCT ofs;
-        HFILE hdir = OpenFile(testLaunchPath, &ofs, OF_EXIST);
-        if (hdir != HFILE_ERROR)
-        {
-            launchPath = testLaunchPath;
-        }
-        CloseHandle((HANDLE)hdir);
-    }
-
-    // Sound mixer moved in Windows Vista! check new exe name only if windows version matches
-    OSVERSIONINFO osinfo;
-    osinfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-    if (GetVersionEx((LPOSVERSIONINFO)&osinfo))
-    {
-        if (osinfo.dwMajorVersion >= 6) // Vista
-        {
-            testLaunchPath = AppDir + SubDir + "\\SndVol.exe";
-            if (std::experimental::filesystem::exists(testLaunchPath.GetString()))
-            {
-                launchPath = testLaunchPath;
-            }
-        }
-    }
-
-    if (launchPath != "")
-    { // launch Volume Control
-        // not sure
-        launchPath = launchPath + _T(" /d ");
-        launchPath.AppendFormat(_T("%d"), m_ctrlCBSoundDevice.GetCurSel());
-
-        if (WinExec(launchPath, SW_SHOW) != 0)
-        {
-        }
-        else
-        {
-            // MessageBox("Error launching Volume Control!","Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(m_hWnd, IDS_STRING_ERRVOLCTRL1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-        }
-    }
+    OnAudioVolume(m_hWnd);
 }
 
 void CAudioSpeakersDlg::OnAutoconfig()
