@@ -1,8 +1,6 @@
 #include "StdAfx.h"
 #include "AVICompressorFilter.h"
 
-#pragma comment(lib, "strmiids")
-
 AVICompressorFilter::AVICompressorFilter(void)
     : m_pSysDevEnum(NULL)
     , m_pMoniker(NULL)

@@ -7,9 +7,6 @@
 
 #define DEFAULT_CAPTURE_DRIVER 0 // in most cases
 
-#pragma comment(lib, "winmm.lib")
-#pragma comment(lib, "vfw32.lib")
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
