@@ -1424,138 +1424,12 @@ void CScreenAnnotationsDlg::OnHelpHelp()
     progdir = GetProgPath();
     helpScreenPath = progdir + "\\help.htm#ScreenAnn";
 
-    Openlink(helpScreenPath);
+    //Openlink(helpScreenPath);
 }
 
 void CScreenAnnotationsDlg::OnOptionsClosescreenannotations()
 {
     OnOK();
-}
-
-BOOL CScreenAnnotationsDlg::Openlink(CString link)
-{
-    BOOL bSuccess = FALSE;
-
-    // As a last resort try ShellExecuting the URL, may
-    // even work on Navigator!
-    if (!bSuccess)
-        bSuccess = OpenUsingShellExecute(link);
-
-    if (!bSuccess)
-        bSuccess = OpenUsingRegisteredClass(link);
-    return bSuccess;
-}
-
-BOOL CScreenAnnotationsDlg::OpenUsingShellExecute(CString link)
-{
-    LPCTSTR mode;
-    mode = _T ("open");
-
-    // HINSTANCE hRun = ShellExecute (GetParent ()->GetSafeHwnd (), mode, m_sActualLink, nullptr, nullptr, SW_SHOW);
-    HINSTANCE hRun = ShellExecute(GetSafeHwnd(), mode, link, nullptr, nullptr, SW_SHOW);
-    if ((int)hRun <= HINSTANCE_ERROR)
-    {
-        TRACE("Failed to invoke URL using ShellExecute\n");
-        return FALSE;
-    }
-    return TRUE;
-}
-
-BOOL CScreenAnnotationsDlg::OpenUsingRegisteredClass(CString link)
-{
-    TCHAR key[MAX_PATH + MAX_PATH];
-    if (ERROR_SUCCESS != GetRegKey(HKEY_CLASSES_ROOT, _T (".htm"), key))
-    {
-        return FALSE;
-    }
-
-    LPCTSTR mode = _T ("\\shell\\open\\command");
-    _tcscat_s(key, mode);
-    if (ERROR_SUCCESS != GetRegKey(HKEY_CLASSES_ROOT, key, key))
-    {
-        return FALSE;
-    }
-
-    LPTSTR pos = _tcsstr(key, _T ("\"%1\""));
-    if (pos)
-    {
-        *pos = _T('\0'); // Remove the parameter
-    }
-    else // No quotes found
-    {
-        // Check for %1, without quotes
-        pos = strstr(key, _T ("%1"));
-        if (pos)
-        {
-            *pos = _T('\0'); // Remove the parameter
-        }
-        else
-        {
-            // No parameter at all...
-            pos = key + _tcslen(key) - 1;
-        }
-    }
-
-    _tcscat_s(pos, 520, _T (" "));
-    _tcscat_s(pos, 520, link);
-    // TODO: dicey; WinExec depreciated
-    UINT uResult = WinExec(key, SW_SHOW);
-    if (HINSTANCE_ERROR < uResult)
-    {
-        return TRUE;
-    }
-
-    // TODO: should be in OnError handler
-    CString str;
-    switch (uResult)
-    {
-        case 0:
-            str = _T ("The operating system is out\nof memory or resources.");
-            break;
-        case SE_ERR_PNF:
-            str = _T ("The specified path was not found.");
-            break;
-        case SE_ERR_FNF:
-            str = _T ("The specified file was not found.");
-            break;
-        case ERROR_BAD_FORMAT:
-            str = _T ("The .EXE file is invalid\n(non-Win32 .EXE or error in .EXE image).");
-            break;
-        case SE_ERR_ACCESSDENIED:
-            str = _T ("The operating system denied\naccess to the specified file.");
-            break;
-        case SE_ERR_ASSOCINCOMPLETE:
-            str = _T ("The filename association is\nincomplete or invalid.");
-            break;
-        case SE_ERR_DDEBUSY:
-            str =
-                _T ("The DDE transaction could not\nbe completed because other DDE transactions\nwere being processed.");
-            break;
-        case SE_ERR_DDEFAIL:
-            str = _T ("The DDE transaction failed.");
-            break;
-        case SE_ERR_DDETIMEOUT:
-            str = _T ("The DDE transaction could not\nbe completed because the request timed out.");
-            break;
-        case SE_ERR_DLLNOTFOUND:
-            str = _T ("The specified dynamic-link library was not found.");
-            break;
-        case SE_ERR_NOASSOC:
-            str = _T ("There is no application associated\nwith the given filename extension.");
-            break;
-        case SE_ERR_OOM:
-            str = _T ("There was not enough memory to complete the operation.");
-            break;
-        case SE_ERR_SHARE:
-            str = _T ("A sharing violation occurred.");
-            break;
-        default:
-            str.Format(_T ("Unknown Error (%d) occurred."), uResult);
-    }
-    str = _T ("Unable to open hyperlink:\n\n") + str;
-    AfxMessageBox(str, MB_ICONEXCLAMATION | MB_OK);
-
-    return FALSE;
 }
 
 // partial
@@ -1636,8 +1510,6 @@ void CScreenAnnotationsDlg::OnHelpShapes()
     CString progdir, helpScreenPath;
     progdir = GetProgPath();
     helpScreenPath = progdir + "\\help.htm#Shape";
-
-    Openlink(helpScreenPath);
 }
 
 void CScreenAnnotationsDlg::OnHelpShapetopicsInstantiatingashape()
@@ -1645,8 +1517,6 @@ void CScreenAnnotationsDlg::OnHelpShapetopicsInstantiatingashape()
     CString progdir, helpScreenPath;
     progdir = GetProgPath();
     helpScreenPath = progdir + "\\help.htm#InstantiatingShapes";
-
-    Openlink(helpScreenPath);
 }
 
 void CScreenAnnotationsDlg::OnHelpShapetopicsEditingashape()
@@ -1654,8 +1524,6 @@ void CScreenAnnotationsDlg::OnHelpShapetopicsEditingashape()
     CString progdir, helpScreenPath;
     progdir = GetProgPath();
     helpScreenPath = progdir + "\\help.htm#EditingShapes";
-
-    Openlink(helpScreenPath);
 }
 
 void CScreenAnnotationsDlg::OnHelpShapetopicsEditingtext()
@@ -1663,8 +1531,6 @@ void CScreenAnnotationsDlg::OnHelpShapetopicsEditingtext()
     CString progdir, helpScreenPath;
     progdir = GetProgPath();
     helpScreenPath = progdir + "\\help.htm#EditText";
-
-    Openlink(helpScreenPath);
 }
 
 void CScreenAnnotationsDlg::OnHelpShapetopicsEditingimage()
@@ -1672,8 +1538,6 @@ void CScreenAnnotationsDlg::OnHelpShapetopicsEditingimage()
     CString progdir, helpScreenPath;
     progdir = GetProgPath();
     helpScreenPath = progdir + "\\help.htm#EditImage";
-
-    Openlink(helpScreenPath);
 }
 
 void CScreenAnnotationsDlg::OnHelpShapetopicsCreatinganewshape()
@@ -1681,8 +1545,6 @@ void CScreenAnnotationsDlg::OnHelpShapetopicsCreatinganewshape()
     CString progdir, helpScreenPath;
     progdir = GetProgPath();
     helpScreenPath = progdir + "\\help.htm#NewShape";
-
-    Openlink(helpScreenPath);
 }
 
 void CScreenAnnotationsDlg::OnHelpShapetopicsEditingtransparency()
@@ -1690,8 +1552,6 @@ void CScreenAnnotationsDlg::OnHelpShapetopicsEditingtransparency()
     CString progdir, helpScreenPath;
     progdir = GetProgPath();
     helpScreenPath = progdir + "\\help.htm#EditTrans";
-
-    Openlink(helpScreenPath);
 }
 
 void CScreenAnnotationsDlg::OnHelpShapetopicsManagingshapes()
@@ -1699,8 +1559,6 @@ void CScreenAnnotationsDlg::OnHelpShapetopicsManagingshapes()
     CString progdir, helpScreenPath;
     progdir = GetProgPath();
     helpScreenPath = progdir + "\\help.htm#ManagingShapes";
-
-    Openlink(helpScreenPath);
 }
 
 void CScreenAnnotationsDlg::OnHelpShapetopicsResizingshapes()
@@ -1708,8 +1566,6 @@ void CScreenAnnotationsDlg::OnHelpShapetopicsResizingshapes()
     CString progdir, helpScreenPath;
     progdir = GetProgPath();
     helpScreenPath = progdir + "\\help.htm#Resize";
-
-    Openlink(helpScreenPath);
 }
 
 void CScreenAnnotationsDlg::OnHelpLayouts()
@@ -1717,8 +1573,6 @@ void CScreenAnnotationsDlg::OnHelpLayouts()
     CString progdir, helpScreenPath;
     progdir = GetProgPath();
     helpScreenPath = progdir + "\\help.htm#Layout";
-
-    Openlink(helpScreenPath);
 }
 
 void CScreenAnnotationsDlg::OnAnnSavelayout()

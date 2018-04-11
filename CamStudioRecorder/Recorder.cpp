@@ -17,6 +17,7 @@
 #include "CamCursor.h"
 #include "HotKey.h"
 #include "GdiPlusInitializer.h"
+#include "string_convert.h"
 #include <CamLib/CStudioLib.h>
 
 #ifdef _DEBUG
@@ -129,19 +130,20 @@ BOOL CAboutDlg::OnInitDialog()
 
 void CAboutDlg::OnBnClickedButtonlink2()
 {
-    LPCTSTR mode = ("open");
-    ShellExecute(GetSafeHwnd(), mode, "http://www.camstudio.org/donate", nullptr, nullptr, SW_SHOW);
+    // \note i'm sorry, this is a personal port...
+    // const auto *mode = _T("open");
+    // ShellExecute(GetSafeHwnd(), mode, _T("http://www.camstudio.org/donate"), nullptr, nullptr, SW_SHOW);
 }
 
 void CAboutDlg::OnButtonlink()
 {
     // TODO: Add your control notification handler code here
-    ::PostMessage(g_hWndGlobal, WM_COMMAND, ID_CAMSTUDIO4XNOTE_WEBSITE, 0);
+    //::PostMessage(g_hWndGlobal, WM_COMMAND, ID_CAMSTUDIO4XNOTE_WEBSITE, 0);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // CRecorderApp
-const char *CRecorderApp::CAMSTUDIO_MUTEX = _T("VSCAP_CAB648E2_684F_4FF1_B574_9714ACAC6D57");
+const TCHAR *CRecorderApp::CAMSTUDIO_MUTEX = _T("VSCAP_CAB648E2_684F_4FF1_B574_9714ACAC6D57");
 
 BEGIN_MESSAGE_MAP(CRecorderApp, CWinApp)
 //{{AFX_MSG_MAP(CRecorderApp)
@@ -170,6 +172,14 @@ CRecorderApp::CRecorderApp()
 
 CRecorderApp theApp;
 
+std::string get_config_path()
+{
+    std::string profile_path;
+    profile_path += wstring_to_utf8(GetAppDataPath().GetString());
+    profile_path += "\\CamStudio\\CamStudio.cfg";
+    return profile_path;
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // CRecorderApp initialization
 
@@ -178,7 +188,7 @@ BOOL CRecorderApp::InitInstance()
     // Initialize GDI+.
     m_gdi = std::make_unique<gdi>();
 
-    ::OnError("CRecorderApp::InitInstance");
+    ::OnError(_T("CRecorderApp::InitInstance"));
     AfxEnableControlContainer();
 
     // Standard initialization
@@ -193,20 +203,20 @@ BOOL CRecorderApp::InitInstance()
 
     // Change the name of the .INI file.
     // The CWinApp destructor will free the memory.
-    CString strProfile;
-    if (!DoesFileExist(strProfile))
-    {
-        // Only reading, if the user has no file yet, see if a starter file was provided:
-        strProfile.Format("%s\\CamStudio\\CamStudio.cfg", (LPCSTR)(GetAppDataPath()));
-    }
-    m_pszProfileName = _tcsdup(strProfile);
+    //CString strProfile;
+
+    // Only reading, if the user has no file yet, see if a starter file was provided:
+    std::string profile_path = get_config_path();
+
+    // \todo fix this..
+    m_pszProfileName = (LPCTSTR)_strdup(profile_path.c_str());
 
     // TODO: re-enable when class complete
     // Read the file. If there is an error, report it and exit.
     g_cfg = new libconfig::Config();
     try
     {
-        g_cfg->readFile(strProfile);
+        g_cfg->readFile(profile_path.c_str());
     }
     catch (const libconfig::FileIOException)
     { // TODO: move me to resource
@@ -215,11 +225,11 @@ BOOL CRecorderApp::InitInstance()
     }
     catch (const libconfig::ParseException &pex)
     {
-        char buf[1024];
-        _snprintf_s(buf, 1024, _TRUNCATE, "Config file parse error at %s:%d - %s", pex.getFile(), pex.getLine(),
-                    pex.getError());
-        MessageBox(nullptr, buf, "Error", MB_OK);
-        //        return(EXIT_FAILURE);
+        TCHAR buf[1024];
+
+        // \todo fix
+        //_snprintf_s(buf, 1024, _TRUNCATE, "Config file parse error at %s:%d - %s", pex.getFile(), pex.getLine(), pex.getError());
+        MessageBox(nullptr, buf, _T("Error"), MB_OK);
     }
 
     //    m_cmSettings.Read();
@@ -281,8 +291,6 @@ BOOL CRecorderApp::InitInstance()
         cCaptionOpts.Read(g_cfg->lookup("Caption"));
     if (g_cfg->exists("TimeStamp"))
         cTimestampOpts.Read(g_cfg->lookup("TimeStamp"));
-    if (g_cfg->exists("XNote"))
-        cXNoteOpts.Read(g_cfg->lookup("XNote"));
     if (g_cfg->exists("Watermark"))
         cWatermarkOpts.Read(g_cfg->lookup("Watermark"));
     if (g_cfg->exists("Producer"))
@@ -371,12 +379,6 @@ int CRecorderApp::ExitInstance()
             s = &g_cfg->lookup("TimeStamp");
         cTimestampOpts.Write(*s);
 
-        if (!g_cfg->exists("XNote"))
-            s = &g_cfg->getRoot().add("XNote", libconfig::Setting::TypeGroup);
-        else
-            s = &g_cfg->lookup("XNote");
-        cXNoteOpts.Write(*s);
-
         if (!g_cfg->exists("Watermark"))
             s = &g_cfg->getRoot().add("Watermark", libconfig::Setting::TypeGroup);
         else
@@ -391,13 +393,14 @@ int CRecorderApp::ExitInstance()
     }
     catch (libconfig::SettingTypeException &e)
     {
-        MessageBox(nullptr, e.getPath(), e.what(), MB_OK);
+        const auto path = utf8_to_wstring(e.getPath());
+        const auto what = utf8_to_wstring(e.what());
+        MessageBox(nullptr, path.c_str(), what.c_str(), MB_OK);
     }
 
     // Save the configuration file out to the user appdata directory.
-    CString strProfile;
-    strProfile.Format("%s\\CamStudio\\CamStudio.cfg", (LPCSTR)(GetAppDataPath()));
-    g_cfg->writeFile(strProfile);
+    std::string profile_path = get_config_path();
+    g_cfg->writeFile(profile_path.c_str());
     delete g_cfg;
 
     // Multilanguage

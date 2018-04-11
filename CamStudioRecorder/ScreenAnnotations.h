@@ -127,10 +127,6 @@ private:
     void RefreshLayoutList();
     void InstantiateLayout();
 
-    BOOL Openlink(CString);
-    BOOL OpenUsingShellExecute(CString);
-    BOOL OpenUsingRegisteredClass(CString);
-
     void MoveItem(int direction);
     void AdjustLayoutName(CString &layoutName);
 };

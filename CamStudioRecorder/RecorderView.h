@@ -45,10 +45,6 @@ protected:
 public:
     virtual ~CRecorderView();
 
-    BOOL Openlink(CString);
-    BOOL OpenUsingShellExecute(CString);
-    LONG GetRegKey(HKEY key, const std::string &subkey, std::string &retdata);
-    BOOL OpenUsingRegisteredClass(CString);
     bool GetRecordState();
     bool GetPausedState();
 
@@ -146,13 +142,6 @@ protected:
     afx_msg void OnViewVideoannotations();
     afx_msg void OnOptionsSynchronization();
     afx_msg void OnSetFocus(CWnd *pOldWnd);
-    afx_msg void OnToolsSwfproducer();
-    afx_msg void OnOptionsSwfLaunchhtml();
-    afx_msg void OnOptionsSwfDeleteavifile();
-    afx_msg void OnOptionsSwfDisplayparameters();
-    afx_msg void OnUpdateOptionsSwfLaunchhtml(CCmdUI *pCmdUI);
-    afx_msg void OnUpdateOptionsSwfDisplayparameters(CCmdUI *pCmdUI);
-    afx_msg void OnUpdateOptionsSwfDeleteavifile(CCmdUI *pCmdUI);
     afx_msg void OnAVISWFMP4();
     afx_msg BOOL OnEraseBkgnd(CDC *pDC);
     afx_msg void OnOptionsNamingAutodate();
@@ -174,6 +163,7 @@ protected:
 
     afx_msg void OnUpdateCameraDelayInMilliSec(CCmdUI *pCmdUI);
     afx_msg void OnCameraDelayInMilliSec();
+
 
     afx_msg void OnUpdateRecordDurationLimitInMilliSec(CCmdUI *pCmdUI);
     afx_msg void OnRecordDurationLimitInMilliSec();

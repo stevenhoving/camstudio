@@ -43,6 +43,8 @@ CProfile is obsolete
 #include "addons\TextAttributes.h"
 #include "addons\ImageAttributes.h"
 
+#include "string_convert.h"
+
 #include <vector>
 
 void ReadFont(libconfig::Setting &s, LOGFONT &f);
@@ -53,8 +55,10 @@ void WriteFont(libconfig::Setting &s, LOGFONT &f);
 void WriteIA(libconfig::Setting &s, ImageAttributes &iaResult);
 void WriteTA(libconfig::Setting &s, TextAttributes &taResult);
 
-template <class T>
-void UpdateSetting(libconfig::Setting &s, const char *name, T &value, libconfig::Setting::Type t)
+
+template <typename T>
+static
+void UpdateSetting(libconfig::Setting &s, const char *name, const T &value, libconfig::Setting::Type t)
 {
     if (s.exists(name))
     {
@@ -63,6 +67,66 @@ void UpdateSetting(libconfig::Setting &s, const char *name, T &value, libconfig:
     else
     {
         s.add(name, t) = value;
+    }
+}
+
+// colorref specialization
+template <>
+static
+void UpdateSetting<COLORREF>(libconfig::Setting &s, const char *name, const COLORREF &value, libconfig::Setting::Type t)
+{
+    if (s.exists(name))
+    {
+        s[name] = static_cast<int64_t>(value);
+    }
+    else
+    {
+        s.add(name, t) = static_cast<int64_t>(value);
+    }
+}
+
+// uint32_t specialization
+template <>
+static
+void UpdateSetting<uint32_t>(libconfig::Setting &s, const char *name, const uint32_t &value, libconfig::Setting::Type t)
+{
+    if (s.exists(name))
+    {
+        s[name] = static_cast<int64_t>(value);
+    }
+    else
+    {
+        s.add(name, t) = static_cast<int64_t>(value);
+    }
+}
+
+// std::wstring specialization
+template <>
+static
+void UpdateSetting<std::wstring>(libconfig::Setting &s, const char *name, const std::wstring &value, libconfig::Setting::Type t)
+{
+    if (s.exists(name))
+    {
+        s[name] = wstring_to_utf8(value);
+    }
+    else
+    {
+        s.add(name, t) = wstring_to_utf8(value);
+    }
+}
+
+// dir_access specialization
+template <>
+static
+void UpdateSetting<dir_access>(libconfig::Setting &s, const char *name, const dir_access &value, libconfig::Setting::Type t)
+{
+    if (s.exists(name))
+    {
+        s[name] = static_cast<int>(value);
+    }
+    else
+    {
+        s.add(name, t) = static_cast<int>(value);
     }
 }
 
@@ -130,7 +194,7 @@ struct sVideoOpts
     int m_iTimeShift{100};
     FOURCC m_dwCompfccHandler{0UL};
     FOURCC m_dwCompressorStateIsFor{0UL};
-    CString m_cStartRecordingString{""};
+    std::string m_cStartRecordingString{""};
 
 protected:
     LPVOID m_pState{nullptr};
@@ -321,7 +385,6 @@ struct sTimestampOpts
 };
 extern sTimestampOpts cTimestampOpts;
 
-
 struct sWatermarkOpts
 {
     sWatermarkOpts()
@@ -435,13 +498,13 @@ public:
 
     bool Write(libconfig::Setting &cProfile)
     {
-        UpdateSetting(cProfile, "AudioDeviceID", (long &)m_uDeviceID, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "AudioDeviceID", m_uDeviceID, libconfig::Setting::TypeInt);
         UpdateSetting(cProfile, "AudioCompression", m_bCompression, libconfig::Setting::TypeBoolean);
         UpdateSetting(cProfile, "useMCI", m_bUseMCI, libconfig::Setting::TypeBoolean);
         UpdateSetting(cProfile, "performAutoSearch", m_bPerformAutoSearch, libconfig::Setting::TypeBoolean);
         UpdateSetting(cProfile, "RecordAudio", m_iRecordAudio, libconfig::Setting::TypeInt);
-        UpdateSetting(cProfile, "cbwfx", (long &)m_dwCbwFX, libconfig::Setting::TypeInt);
-        UpdateSetting(cProfile, "waveinselected", (long &)m_dwWaveinSelected, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "cbwfx", m_dwCbwFX, libconfig::Setting::TypeInt);
+        UpdateSetting(cProfile, "waveinselected", m_dwWaveinSelected, libconfig::Setting::TypeInt);
         UpdateSetting(cProfile, "audio_bits_per_sample", m_iBitsPerSample, libconfig::Setting::TypeInt);
         UpdateSetting(cProfile, "audio_num_channels", m_iNumChannels, libconfig::Setting::TypeInt);
         UpdateSetting(cProfile, "audio_samples_per_seconds", m_iSamplesPerSeconds, libconfig::Setting::TypeInt);
@@ -551,7 +614,6 @@ extern sProducerOpts cProducerOpts;
 enum eVideoFormat
 {
     ModeAVI,
-    ModeFlash,
     ModeMP4
 };
 enum eAVIPlay
@@ -572,12 +634,13 @@ enum eViewType
 struct sProgramOpts
 {
     sProgramOpts()
-        : m_iTempPathAccess(USE_INSTALLED_DIR)
-        , m_iOutputPathAccess(USE_INSTALLED_DIR)
-        , m_strSpecifiedDir("")
-        , m_strDefaultOutDir("")
+        : m_iTempPathAccess(dir_access::install_dir)
+        , m_iOutputPathAccess(dir_access::install_dir)
+        , m_strSpecifiedDir()
+        , m_strDefaultOutDir()
     {
     }
+
     sProgramOpts(const sProgramOpts &rhs)
     {
         *this = rhs;
@@ -610,9 +673,10 @@ struct sProgramOpts
         m_iLayoutNameInt = rhs.m_iLayoutNameInt;
         m_iSpecifiedDirLength = rhs.m_iSpecifiedDirLength;
         m_strSpecifiedDir = rhs.m_strSpecifiedDir;
-        if (m_strSpecifiedDir.GetLength() != m_iSpecifiedDirLength)
+        if (m_strSpecifiedDir.size() != m_iSpecifiedDirLength)
         {
-            m_iSpecifiedDirLength = m_strSpecifiedDir.GetLength();
+            // lowering cast
+            m_iSpecifiedDirLength = static_cast<int>(m_strSpecifiedDir.size());
         }
         m_strDefaultOutDir = rhs.m_strDefaultOutDir;
         return *this;
@@ -630,10 +694,10 @@ struct sProgramOpts
         std::string text;
         if (cProfile.lookupValue("SaveDir", text))
         {
-            m_strSpecifiedDir = text.c_str();
+            m_strSpecifiedDir = utf8_to_wstring(text);
         }
-        cProfile.lookupValue("TempPathAccess", m_iTempPathAccess);
-        cProfile.lookupValue("OutputPathAccess", m_iOutputPathAccess);
+        cProfile.lookupValue("TempPathAccess", (int&)m_iTempPathAccess);
+        cProfile.lookupValue("OutputPathAccess", (int&)m_iOutputPathAccess);
         cProfile.lookupValue("ThreadPriority", m_iThreadPriority);
         cProfile.lookupValue("AutoPan", m_bAutoPan);
         cProfile.lookupValue("MaxPan", m_iMaxPan);
@@ -646,7 +710,7 @@ struct sProgramOpts
         cProfile.lookupValue("ShapeNameLen", m_iCursorLen);
         if (cProfile.lookupValue("DefaultOutDir", text))
         {
-            m_strDefaultOutDir = text.c_str();
+            m_strDefaultOutDir = utf8_to_wstring(text);
         }
         return true;
     }
@@ -660,8 +724,7 @@ struct sProgramOpts
         UpdateSetting(cProfile, "PresetTime", m_iPresetTime, libconfig::Setting::TypeInt);
         UpdateSetting(cProfile, "RecordingMode", m_iRecordingMode, libconfig::Setting::TypeInt);
         UpdateSetting(cProfile, "LaunchPlayer", m_iLaunchPlayer, libconfig::Setting::TypeInt);
-        std::string text(m_strSpecifiedDir);
-        UpdateSetting(cProfile, "SaveDir", text, libconfig::Setting::TypeString);
+        UpdateSetting(cProfile, "SaveDir", m_strSpecifiedDir, libconfig::Setting::TypeString);
         UpdateSetting(cProfile, "TempPathAccess", m_iTempPathAccess, libconfig::Setting::TypeInt);
         UpdateSetting(cProfile, "OutputPathAccess", m_iOutputPathAccess, libconfig::Setting::TypeInt);
         UpdateSetting(cProfile, "ThreadPriority", m_iThreadPriority, libconfig::Setting::TypeInt);
@@ -687,16 +750,16 @@ struct sProgramOpts
     int m_iMaxPan{20};
     int m_iRecordingMode{ModeAVI};
     int m_iLaunchPlayer{CAM2_PLAYER};
-    int m_iTempPathAccess{USE_INSTALLED_DIR};   // \convert to enum
-    int m_iOutputPathAccess{USE_INSTALLED_DIR}; // \convert to enum
+    dir_access m_iTempPathAccess{ dir_access::install_dir};
+    dir_access m_iOutputPathAccess{ dir_access::install_dir};
     int m_iThreadPriority{THREAD_PRIORITY_NORMAL};
     int m_iViewType{VIEW_NORMAL};
     int m_iSaveLen{0};
     int m_iCursorLen{0};
     int m_iShapeNameInt{0};
     int m_iLayoutNameInt{0};
-    CString m_strSpecifiedDir{""};
-    CString m_strDefaultOutDir{""};
+    std::wstring m_strSpecifiedDir;
+    std::wstring m_strDefaultOutDir;
 
 private:
     int m_iSpecifiedDirLength{0};

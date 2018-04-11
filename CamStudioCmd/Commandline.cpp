@@ -193,12 +193,7 @@ int interleaveUnit = MILLISECONDS;
 
 std::string GetCodecDescription(long fccHandler);
 
-// version 1.6
-#define USE_WINDOWS_TEMP_DIR 0
-#define USE_INSTALLED_DIR 1
-#define USE_USER_SPECIFIED_DIR 2
-
-int tempPath_Access = USE_WINDOWS_TEMP_DIR;
+dir_access tempPath_Access = dir_access::windows_temp_dir;
 std::string specifieddir;
 
 int captureTrans = 1;
@@ -206,7 +201,6 @@ int versionOp = 0;
 
 // ver 2.26 Vscap Interface
 #define ModeAVI 0
-#define ModeFlash 1
 int RecordingMode = 0;
 
 // TODO(dimator): remove restrictVideoCodecs, or possibly fix the codec to only
@@ -245,6 +239,7 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
         return false;
     }
     obr[g_mon_current].SetDimensions(mo.rcMonitor.left, mo.rcMonitor.right, mo.rcMonitor.top, mo.rcMonitor.bottom);
+
     strcpy_s(obr[g_mon_current].dispName, sizeof(obr[g_mon_current].dispName), mo.szDevice);
      std::cout << "Screen: " << obr[g_mon_current].dispName;
      std::cout << " resolution:" << obr[g_mon_current].width << " x " << obr[g_mon_current].height << std::endl;
@@ -471,28 +466,18 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
     aopts[0]->cbFormat = 0;
     aopts[0]->dwInterleaveEvery = 0; // for non-video streams only
 
-    // ver 2.26
-    if (RecordingMode == ModeFlash)
+
+    // Ver 1.2
+    //
+    if ((g_comp_fcc_handler == g_CompressorStateIsFor) && (g_comp_fcc_handler != 0))
     {
-        // Internally adjust codec to MSVC 100 Quality
-        aopts[0]->fccHandler = mmioFOURCC('M', 'S', 'V', 'C'); // msvc
-        g_strCodec = L"MS Video 1";
-        aopts[0]->dwQuality = 10000;
-    }
-    else
-    {
-        // Ver 1.2
-        //
-        if ((g_comp_fcc_handler == g_CompressorStateIsFor) && (g_comp_fcc_handler != 0))
+
+        // make a copy of the g_pVideoCompressParams just in case after compression, this variable become messed up
+        if (MakeCompressParamsCopy(g_CompressorStateSize, g_pVideoCompressParams))
         {
 
-            // make a copy of the g_pVideoCompressParams just in case after compression, this variable become messed up
-            if (MakeCompressParamsCopy(g_CompressorStateSize, g_pVideoCompressParams))
-            {
-
-                aopts[0]->lpParms = g_pParamsUse;
-                aopts[0]->cbParms = g_CompressorStateSize;
-            }
+            aopts[0]->lpParms = g_pParamsUse;
+            aopts[0]->cbParms = g_CompressorStateSize;
         }
     }
 

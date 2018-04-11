@@ -197,12 +197,14 @@ MMRESULT CAudioMixer::GetID(UINT *puMxId, DWORD fdwId)
     OnError(uResult, _T("CAudioMixer::GetID"));
     return uResult;
 }
+
 DWORD CAudioMixer::Message(UINT driverID, UINT uMsg, DWORD_PTR dwParam1, DWORD_PTR dwParam2)
 {
     DWORD dwResult = ::mixerMessage(reinterpret_cast<HMIXER>(driverID), uMsg, dwParam1, dwParam2);
     OnError(dwResult, _T("CAudioMixer::Message"));
     return dwResult;
 }
+
 #ifdef _DEBUG
 bool CAudioMixer::query()
 {

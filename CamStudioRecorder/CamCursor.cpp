@@ -249,15 +249,17 @@ bool CCamCursor::Write(libconfig::Setting &cProfile)
     UpdateSetting(cProfile, "Highlight", m_bHighlight, libconfig::Setting::TypeBoolean);
     UpdateSetting(cProfile, "HighlightSize", m_iHighlightSize, libconfig::Setting::TypeInt);
     UpdateSetting(cProfile, "HighlightShape", m_iHighlightShape, libconfig::Setting::TypeInt);
-    UpdateSetting(cProfile, "HighlightColor", (long &)m_clrHighlight, libconfig::Setting::TypeInt);
+
+
+    UpdateSetting(cProfile, "HighlightColor", m_clrHighlight, libconfig::Setting::TypeInt);
     UpdateSetting(cProfile, "RingThreshold", m_iRingThreshold, libconfig::Setting::TypeInt);
     UpdateSetting(cProfile, "RingSize", m_iRingSize, libconfig::Setting::TypeInt);
     UpdateSetting(cProfile, "RingWidth", m_fRingWidth, libconfig::Setting::TypeFloat);
     UpdateSetting(cProfile, "HighlightClick", m_bHighlightClick, libconfig::Setting::TypeBoolean);
-    UpdateSetting(cProfile, "ClickColorLeft", (long &)m_clrClickLeft, libconfig::Setting::TypeInt);
-    UpdateSetting(cProfile, "ClickColorMiddle", (long &)m_clrClickMiddle, libconfig::Setting::TypeInt);
-    UpdateSetting(cProfile, "ClickColorRight", (long &)m_clrClickRight, libconfig::Setting::TypeInt);
-    std::string text(m_strFileName);
+    UpdateSetting(cProfile, "ClickColorLeft", m_clrClickLeft, libconfig::Setting::TypeInt);
+    UpdateSetting(cProfile, "ClickColorMiddle", m_clrClickMiddle, libconfig::Setting::TypeInt);
+    UpdateSetting(cProfile, "ClickColorRight", m_clrClickRight, libconfig::Setting::TypeInt);
+    std::wstring text(m_strFileName.GetString());
     UpdateSetting(cProfile, "CursorDir", text, libconfig::Setting::TypeString);
     return true;
 }

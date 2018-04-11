@@ -32,7 +32,8 @@ int CListManager::RemoveShapeArray(CTransparentWnd *removeWnd, int wantDestroy)
 {
     int found = 0;
 
-    int max = shapeArray.GetSize();
+    // \note lowering cast
+    int max = static_cast<int>(shapeArray.GetSize());
     CTransparentWnd *itemWnd = nullptr;
     for (int i = 0; i < max; i++)
     {
@@ -618,7 +619,8 @@ int CListManager::SaveLayoutArrayToFile(CArray<CTransparentWnd *, CTransparentWn
     long shapearrayversion = 100;
     fwrite((void *)&shapearrayversion, sizeof(long), 1, fptr);
 
-    int max = layoutArrayPtr->GetSize();
+    // \note lowering cast
+    int max = static_cast<int>(layoutArrayPtr->GetSize());
     fwrite((void *)&max, sizeof(int), 1, fptr); // Number of Shapes
 
     CTransparentWnd *itemWnd = nullptr;

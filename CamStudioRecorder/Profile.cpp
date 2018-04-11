@@ -3,6 +3,7 @@
 #include "Profile.h"
 #include "HotKey.h"
 #include <CamLib/CStudioLib.h>
+#include "string_convert.h"
 #include "addons\TextAttributes.h" // for position
 #include "addons\ImageAttributes.h"
 
@@ -181,7 +182,7 @@ void WriteIA(libconfig::Setting &s, ImageAttributes &iaResult)
     UpdateSetting(s, "PosType", (int &)iaResult.posType, libconfig::Setting::TypeInt);
     UpdateSetting(s, "xPosRatio", iaResult.xPosRatio, libconfig::Setting::TypeInt);
     UpdateSetting(s, "yPosRatio", iaResult.yPosRatio, libconfig::Setting::TypeInt);
-    std::string text(iaResult.text);
+    std::wstring text(iaResult.text);
     UpdateSetting(s, "text", text, libconfig::Setting::TypeString);
 }
 
@@ -207,7 +208,7 @@ void WriteTA(libconfig::Setting &s, TextAttributes &taResult)
     UpdateSetting(s, "posType", (int &)taResult.posType, libconfig::Setting::TypeInt);
     UpdateSetting(s, "xPosRatio", taResult.xPosRatio, libconfig::Setting::TypeInt);
     UpdateSetting(s, "yPosRatio", taResult.yPosRatio, libconfig::Setting::TypeInt);
-    std::string text(taResult.text);
+    std::wstring text(taResult.text);
     UpdateSetting(s, "text", text, libconfig::Setting::TypeString);
     UpdateSetting(s, "backgroundColor", (int &)taResult.backgroundColor, libconfig::Setting::TypeInt);
     UpdateSetting(s, "textColor", (int &)taResult.textColor, libconfig::Setting::TypeInt);
@@ -229,9 +230,13 @@ void ReadFont(libconfig::Setting &s, LOGFONT &f)
     if (s.lookupValue("ClipPrecision", tmp))
         f.lfClipPrecision = tmp;
     s.lookupValue("Escapement", (int &)f.lfEscapement);
+
     std::string text;
     if (s.lookupValue("FaceName", text))
-        strncpy_s(f.lfFaceName, text.c_str(), 32);
+    {
+        wcsncpy_s(f.lfFaceName, utf8_to_wstring(text).c_str(), 32);
+    }
+
     s.lookupValue("Height", (int &)f.lfHeight);
     if (s.lookupValue("Italic", tmp))
         f.lfItalic = tmp;
@@ -258,7 +263,7 @@ void WriteFont(libconfig::Setting &s, LOGFONT &f)
     tmp = f.lfClipPrecision;
     UpdateSetting(s, "ClipPrecision", tmp, libconfig::Setting::TypeInt);
     UpdateSetting(s, "Escapement", (long &)f.lfEscapement, libconfig::Setting::TypeInt);
-    std::string text;
+    std::wstring text;
     text.assign(f.lfFaceName, 32);
     UpdateSetting(s, "FaceName", text, libconfig::Setting::TypeString);
     UpdateSetting(s, "Height", (long &)f.lfHeight, libconfig::Setting::TypeInt);
