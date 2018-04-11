@@ -11,7 +11,14 @@ I have forked this project because:
 Besides creating a clean installer for camstudio I have found myself a couple of additional goals.
 * Fix memory leaks - done.
 * Remove swf support - done.
-* Upgrade project dependencies (CxImage, zlib, minilzo, libconfig++).
+* remove xnote support - done.
+* Upgrade project dependencies:
+  * CxImage - pending.
+  * zlib - done.
+  * minilzo - done.
+  * libconfig++ - done.
+  * libpng - done.
+* Replace static visual studio project files with CMake - pending.
 * Create release.
 * Introduce unit test.
 * Add support for mkv.
