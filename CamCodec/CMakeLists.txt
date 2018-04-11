@@ -51,8 +51,6 @@ target_include_directories(CamCodec
     .
 )
 
-set_target_properties(CamCodec PROPERTIES FOLDER "CamCodec")
-
 install(
     DIRECTORY include
     DESTINATION include
