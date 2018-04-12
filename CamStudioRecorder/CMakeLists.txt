@@ -100,14 +100,16 @@ set(RECORDER_SOURCE
     VideoOptions.h
     VideoWnd.h
     string_convert.h
+)
 
-    # todo move these into seperate source group
+set(RECORDER_VFW_SOURCE
     vfw/ACM.cpp
     vfw/ACM.h
     vfw/VCM.cpp
     vfw/VCM.h
+)
 
-    # todo move these info seperate source group
+set(RECORDER_ADDONS_SOURCE
     addons/AnnotationEffectsOptions.cpp
     addons/AnnotationEffectsOptions.h
     addons/EffectsOptions.cpp
@@ -125,6 +127,21 @@ set(RECORDER_RESOURCE
 set(CMAKE_MFC_FLAG 2)
 
 add_executable(CamStudioRecorder WIN32
+    ${RECORDER_SOURCE}
+    ${RECORDER_RESOURCE}
+    ${RECORDER_VFW_SOURCE}
+    ${RECORDER_ADDONS_SOURCE}
+)
+
+source_group(vfw FILES
+    ${RECORDER_VFW_SOURCE}
+)
+
+source_group(addons FILES
+    ${RECORDER_ADDONS_SOURCE}
+)
+
+source_group(src FILES
     ${RECORDER_SOURCE}
     ${RECORDER_RESOURCE}
 )
@@ -166,8 +183,6 @@ target_link_libraries(CamStudioRecorder
     Msacm32.lib
 )
 
-# todo figure out how todo install
-#install(TARGETS CamStudioPlayer
-#    DIRECTORY include
-#    DESTINATION include
-#)
+install(TARGETS CamStudioRecorder
+    RUNTIME DESTINATION bin
+)
