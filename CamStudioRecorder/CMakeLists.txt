@@ -145,6 +145,12 @@ target_compile_definitions(CamStudioRecorder
     -D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 )
 
+set_target_properties(CamStudioRecorder PROPERTIES
+  COMPILE_FLAGS "/Yustdafx.h")
+
+set_source_files_properties(stdafx.cpp PROPERTIES
+    COMPILE_FLAGS "/Ycstdafx.h")
+
 target_link_libraries(CamStudioRecorder
     CamLib
     CamHook
