@@ -157,6 +157,7 @@ target_link_libraries(CamStudioRecorder
     CamAudio
     libconfig++
     CxImage
+    localization
     gdi32.lib
     winmm.lib
     vfw32.lib

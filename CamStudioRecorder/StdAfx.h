@@ -29,6 +29,6 @@
 
 #include <libconfig.hh>
 
-#include "Localization\Localization.h"
+#include <localization/localization.h>
 
 extern libconfig::Config *g_cfg;
