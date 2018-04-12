@@ -56,7 +56,7 @@
 #define RESTRICTED 0
 
 #define NO_JPEG
-#define NO_LCMS
+//#define NO_LCMS
 //#define DJGPP
 
 //#define COLORCHECK

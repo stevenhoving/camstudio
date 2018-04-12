@@ -17,6 +17,7 @@ add_subdirectory(zlib)
 add_subdirectory(libpng)
 add_subdirectory(minilzo)
 add_subdirectory(CxImage)
+add_subdirectory(localization)
 
 set(BUILD_EXAMPLES OFF CACHE BOOL "Disable libconfig examples" FORCE)
 set(BUILD_TESTS OFF CACHE BOOL "Disable libconfig examples" FORCE)

@@ -31,7 +31,7 @@ add_library(raw STATIC
 )
 
 target_compile_definitions(raw
-  PRIVATE
+  PUBLIC
     # disable support for LCMS
     -DNO_LCMS
 )

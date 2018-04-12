@@ -7,6 +7,7 @@
 //#pragma message("UNICODE NOT defined")
 //#endif
 
+
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 
@@ -30,5 +31,7 @@
 #include <libconfig.hh>
 
 #include <localization/localization.h>
+
+#include <memory>
 
 extern libconfig::Config *g_cfg;

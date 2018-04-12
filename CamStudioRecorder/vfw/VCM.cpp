@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "VCM.h"
 
 ICINFO *g_compressor_info = nullptr;
