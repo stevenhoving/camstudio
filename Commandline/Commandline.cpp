@@ -269,7 +269,7 @@ UINT RecordAVIThread(LPVOID lParam)
     int height = pscreen->height;
     int fps = g_frames_per_second;
 
-    const char *filepath = g_output_file.c_str();
+    const char *filepath = pscreen->outFile;
 
     // Test the validity of writing to the file
     // Make sure the file to be created is currently not used by another application
@@ -1337,14 +1337,14 @@ int main(int argc, char *argv[])
         rcUse.bottom = pscreen[i].bottom - 1;
         // Write AVI file.
         _itoa_s(i, buffer, 2, 10);
-        g_output_file = recordHere + "_" + buffer + std::string(".avi"); // _itoa(i,buffer,10)+".avi";
-        strcpy_s(pscreen[i].outFile, g_output_file.c_str());
+        auto tmpPath = recordHere + "_" + buffer + std::string(".avi"); // _itoa(i,buffer,10)+".avi";
+        strcpy_s(pscreen[i].outFile, tmpPath.c_str());
         pscreen[i].index = i;
 
         gRecordState = 1;
 
         std::cout << "Creating recording thread for screen no.:" << i << "..." <<std::endl;
-        std::cout << "Recording to: " << g_output_file <<std::endl;
+        std::cout << "Recording to: " << tmpPath <<std::endl;
 
         th[i] = CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)RecordAVIThread, (LPVOID)&pscreen[i], 0, &tid);
 
