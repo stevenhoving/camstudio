@@ -1140,20 +1140,22 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
     else if (fdlg.DoModal() == IDOK)
     {
         strTmp = fdlg.GetPathName();
-        strTargetDir = strTmp.Left(strTmp.ReverseFind('\\'));
+        const auto filepath = std::experimental::filesystem::path(strTmp.GetString());
+
+        strTargetDir = filepath.parent_path().string().c_str(); //strTmp.Left(strTmp.ReverseFind('\\'));
         // remove path info, we now have the udf defined filename
-        strTmp = strTmp.Mid(strTmp.ReverseFind('\\') + 1);
+        strTmp = filepath.filename().wstring().c_str(); //  strTmp.Mid(strTmp.ReverseFind('\\') + 1);
 
         // Split filename in base and extension
-        int iPos = strTmp.ReverseFind('.');
-        if (iPos > 0)
+        const auto filename = filepath.filename();
+        if (filename.has_extension())
         {
-            strTargetBareFileName = strTmp.Left(iPos);
-            strTargetVideoExtension = strTmp.Mid(iPos); // Extension with dot included
+            strTargetBareFileName = filename.stem().c_str();// strTmp.Left(iPos);
+            strTargetVideoExtension = filename.extension().c_str();// strTmp.Mid(iPos); // Extension with dot included
         }
         else
         {
-            strTargetBareFileName = strTmp;
+            strTargetBareFileName = filename.c_str();
             // append always .avi if no extension is given.
             strTargetVideoExtension = ".avi";
         }
@@ -1162,11 +1164,11 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
     {
         std::experimental::filesystem::remove(strTempVideoAviFilePath);
         if (!cAudioFormat.isInput(NONE))
-        {
-            DeleteFileW(strTempAudioWavFilePath.c_str());
-        }
+            std::experimental::filesystem::remove(strTempAudioWavFilePath);
+
         return 0;
     }
+
     // append always .avi as filetype when record to flash or mp4 is applicable because MP4 converter expects as
     // input an AVI file
     switch (cProgramOpts.m_iRecordingMode)
@@ -1278,7 +1280,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
 
                 std::error_code ec;
                 std::experimental::filesystem::rename(strTempVideoAviFilePath, strTargetVideoFile.GetString(), ec);
-                if (!ec)
+                if (ec)
                 {
                     // Although there is error copying, the temp file still remains in the temp directory and is not
                     // deleted, in case user wants a manual recover MessageBox("File Creation Error. Unable to
@@ -1297,7 +1299,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
             {
                 std::error_code ec;
                 std::experimental::filesystem::rename(strTempVideoAviFilePath, strTargetAudioFile.GetString(), ec);
-                if (!ec)
+                if (ec)
                 {
                     // MessageBox("File Creation Error. Unable to rename/copy video file.","Note",MB_OK |
                     // MB_ICONEXCLAMATION);
@@ -1306,7 +1308,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
                 }
 
                 std::experimental::filesystem::rename(strTempAudioWavFilePath, strTargetAudioFile.GetString(), ec);
-                if (!ec)
+                if (ec)
                 {
                     // MessageBox("File Creation Error. Unable to rename/copy audio file.","Note",MB_OK |
                     // MB_ICONEXCLAMATION);
@@ -1340,7 +1342,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
 
         std::error_code ec;
         std::experimental::filesystem::rename(strTempVideoAviFilePath, strTargetVideoFile.GetString(), ec);
-        if (!ec)
+        if (ec)
         {
             // Unable to rename/copy file.
             // In case of an move problem we do nothing. Source has an unique name and not to delete the source file
