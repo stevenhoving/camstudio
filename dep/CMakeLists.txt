@@ -23,8 +23,16 @@ add_subdirectory(fmt)
 set(BUILD_EXAMPLES OFF CACHE BOOL "Disable libconfig examples" FORCE)
 set(BUILD_TESTS OFF CACHE BOOL "Disable libconfig examples" FORCE)
 add_subdirectory(libconfig)
-set_target_properties(libconfig PROPERTIES FOLDER "External/libconfig")
-set_target_properties(libconfig++ PROPERTIES FOLDER "External/libconfig")
+
+set_target_properties(libconfig libconfig++
+  PROPERTIES
+    FOLDER "External/libconfig"
+)
+
+set_target_properties(fmt
+  PROPERTIES
+    FOLDER "External/fmt"
+)
 
 install(
     DIRECTORY ${CMAKE_SOURCE_DIR}/bin/
