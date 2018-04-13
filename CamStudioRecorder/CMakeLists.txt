@@ -177,6 +177,7 @@ target_link_libraries(CamStudioRecorder
     libconfig++
     CxImage
     localization
+    fmt
     gdi32.lib
     winmm.lib
     vfw32.lib
@@ -185,6 +186,6 @@ target_link_libraries(CamStudioRecorder
     Msacm32.lib
 )
 
-install(TARGETS CamStudioRecorder
-    RUNTIME DESTINATION bin
-)
+#install(TARGETS CamStudioRecorder
+#    RUNTIME DESTINATION bin
+#)

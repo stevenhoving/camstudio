@@ -7,3 +7,6 @@
 [submodule "dep/libconfig"]
 	path = dep/libconfig
 	url = git@github.com:hyperrealm/libconfig.git
+[submodule "dep/fmt"]
+	path = dep/fmt
+	url = git@github.com:fmtlib/fmt.git
