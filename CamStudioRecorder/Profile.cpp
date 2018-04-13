@@ -315,7 +315,7 @@ sVideoOpts &sVideoOpts::operator=(const sVideoOpts &rhs)
 sVideoOpts::sVideoOpts(const sVideoOpts &rhs)
     : m_iShiftType(NOSYNCH)
     , m_pState(nullptr)
-    , m_cStartRecordingString("")
+    , m_cStartRecordingString()
 {
     *this = rhs;
 }
@@ -387,7 +387,7 @@ bool sVideoOpts::Read(libconfig::Setting &cProfile)
     cProfile.lookupValue("CompressorStateSize", (unsigned &)dwSize);
     State(dwSize);
     // CString  m_cStartRecordingString = "";
-    m_cStartRecordingString = "";
+    m_cStartRecordingString = _T("");
     return true;
 }
 

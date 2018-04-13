@@ -194,7 +194,7 @@ struct sVideoOpts
     int m_iTimeShift{100};
     FOURCC m_dwCompfccHandler{0UL};
     FOURCC m_dwCompressorStateIsFor{0UL};
-    std::string m_cStartRecordingString{""};
+    std::wstring m_cStartRecordingString;
 
 protected:
     LPVOID m_pState{nullptr};

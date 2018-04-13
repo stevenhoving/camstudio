@@ -33,6 +33,8 @@
 #include "AviWriter.h"
 
 #include <ximage.h>
+#include <fmt/format.h>
+#include <fmt/printf.h>
 
 #include <CamAudio/sound_file.h>
 #include <CamAudio/Buffer.h>
@@ -182,7 +184,7 @@ int g_nColors = 24;
 CString sTimeLength;
 
 // Path to temporary video avi file
-CString strTempVideoAviFilePath;
+std::wstring strTempVideoAviFilePath;
 
 // Path to temporary audio wav file
 std::wstring strTempAudioWavFilePath;
@@ -1069,7 +1071,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
     {
         // if (g_interruptkey==VK_ESCAPE) {
         // Perform processing for cancel operation
-        std::experimental::filesystem::remove(strTempVideoAviFilePath.GetString());
+        std::experimental::filesystem::remove(strTempVideoAviFilePath);
         if (!cAudioFormat.isInput(NONE))
             DeleteFileW(strTempAudioWavFilePath.c_str());
         return 0;
@@ -1158,7 +1160,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
     }
     else
     {
-        std::experimental::filesystem::remove(strTempVideoAviFilePath.GetString());
+        std::experimental::filesystem::remove(strTempVideoAviFilePath);
         if (!cAudioFormat.isInput(NONE))
         {
             DeleteFileW(strTempAudioWavFilePath.c_str());
@@ -1249,12 +1251,12 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
             // ver 2.26 ...overwrite audio settings for Flash Mode recording ... no compression used...
             if ((cAudioFormat.isInput(SPEAKERS)) || (cAudioFormat.m_bUseMCI))
             {
-                result = MergeVideoAudio(strTempVideoAviFilePath, strTempAudioWavFilePath.c_str(), strTargetVideoFile, FALSE,
+                result = MergeVideoAudio(strTempVideoAviFilePath.c_str(), strTempAudioWavFilePath.c_str(), strTargetVideoFile, FALSE,
                                          cAudioFormat);
             }
             else if (cAudioFormat.isInput(MICROPHONE))
             {
-                result = MergeVideoAudio(strTempVideoAviFilePath, strTempAudioWavFilePath.c_str(), strTargetVideoFile,
+                result = MergeVideoAudio(strTempVideoAviFilePath.c_str(), strTempAudioWavFilePath.c_str(), strTargetVideoFile,
                                          cAudioFormat.m_bCompression, cAudioFormat);
             }
         }
@@ -1265,15 +1267,18 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
             case 0: // Successful
             case 1: // video file broken; Unable to recover
             case 3: // this case is rare; Unable to recover
-                std::experimental::filesystem::remove(strTempVideoAviFilePath.GetString());
+                std::experimental::filesystem::remove(strTempVideoAviFilePath);
                 std::experimental::filesystem::remove(strTempAudioWavFilePath);
                 break;
             case 2:
             case 4: // recover video file
+            {
                 // video file is ok, but not audio file
                 // so Move the video file as avi and ignore the audio  (Move = More or Copy+Delete)
 
-                if (!MoveFile(strTempVideoAviFilePath, strTargetVideoFile))
+                std::error_code ec;
+                std::experimental::filesystem::rename(strTempVideoAviFilePath, strTargetVideoFile.GetString(), ec);
+                if (!ec)
                 {
                     // Although there is error copying, the temp file still remains in the temp directory and is not
                     // deleted, in case user wants a manual recover MessageBox("File Creation Error. Unable to
@@ -1287,10 +1292,12 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
                 //::MessageBox(nullptr,"Your AVI movie will not contain a soundtrack. CamStudio is unable to merge the
                 // video with audio.","Note",MB_OK | MB_ICONEXCLAMATION);
                 MessageOut(m_hWnd, IDS_STRING_NOSOUNDTRACK, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-                break;
+            } break;
             case 5: // recover both files, but as separate files
             {
-                if (!MoveFile(strTempVideoAviFilePath, strTargetAudioFile))
+                std::error_code ec;
+                std::experimental::filesystem::rename(strTempVideoAviFilePath, strTargetAudioFile.GetString(), ec);
+                if (!ec)
                 {
                     // MessageBox("File Creation Error. Unable to rename/copy video file.","Note",MB_OK |
                     // MB_ICONEXCLAMATION);
@@ -1298,7 +1305,6 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
                     return 0;
                 }
 
-                std::error_code ec;
                 std::experimental::filesystem::rename(strTempAudioWavFilePath, strTargetAudioFile.GetString(), ec);
                 if (!ec)
                 {
@@ -1329,9 +1335,12 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
         // TRACE("## CRecorderView::OnUserGeneric  NO Audio, just do a plain copy of temp avi to final avi\n");
         //////////////////////////////////////////////////
         // No audio, just do a plain copy of temp avi to final avi will do the job
-        // MoveFile behaviour. First it will try to rename file. If not possible it will do a copy and a delete.
+        // MoveFile behavior. First it will try to rename file. If not possible it will do a copy and a delete.
         //////////////////////////////////////////////////
-        if (!MoveFile(strTempVideoAviFilePath, strTargetVideoFile))
+
+        std::error_code ec;
+        std::experimental::filesystem::rename(strTempVideoAviFilePath, strTargetVideoFile.GetString(), ec);
+        if (!ec)
         {
             // Unable to rename/copy file.
             // In case of an move problem we do nothing. Source has an unique name and not to delete the source file
@@ -3812,17 +3821,16 @@ UINT CRecorderView::RecordVideo()
     int hour = ctime.GetHour();
     int minutes = ctime.GetMinute();
     int second = ctime.GetSecond();
+
     // Create timestamp tag
-    CString csStartTime = "";
-    csStartTime.Format(_T("%04d%02d%02d_%02d%02d_%02d"), year, month, day, hour, minutes,
-                       second); // 20100528, changed dateformating to yyyymmdd_hhmm_ss
-    // We will keep this tag info that tell us when the recording started for later usage.
+    auto csStartTime = fmt::sprintf(_T("%04d%02d%02d_%02d%02d_%02d"),
+        year, month, day, hour, minutes, second);
 
     // \todo this is wrong
-    cVideoOpts.m_cStartRecordingString = wstring_to_utf8(csStartTime.GetString());
+    cVideoOpts.m_cStartRecordingString = csStartTime;
 
-    strTempVideoAviFilePath.Format(_T("%s\\%s-%s.%s"), csTempFolder.c_str(), TEMPFILETAGINDICATOR, csStartTime.GetString(),
-        _T("avi"));
+    strTempVideoAviFilePath = fmt::format(_T("{}\\{}-{}.{}"), csTempFolder,
+        _T(TEMPFILETAGINDICATOR), csStartTime, _T("avi"));
 
     // TRACE("## CRecorderView::RecordAVIThread First  Temp.Avi file=[%s]\n", strTempVideoAviFilePath.GetString()  );
 
@@ -3830,14 +3838,14 @@ UINT CRecorderView::RecordVideo()
     bool fileverified = false;
     while (!fileverified)
     {
-        auto filepath = std::experimental::filesystem::path(strTempVideoAviFilePath.GetString());
+        auto filepath = std::experimental::filesystem::path(strTempVideoAviFilePath);
         if (std::experimental::filesystem::exists(filepath))
         {
             fileverified = std::experimental::filesystem::remove(filepath);
             if (!fileverified)
             {
-                strTempVideoAviFilePath.Format(_T("%s\\%s-%s-%d.%s"), csTempFolder.c_str(), TEMPFILETAGINDICATOR,
-                    csStartTime.GetString(), rand(), "avi");
+                strTempVideoAviFilePath = fmt::format(_T("{}\\{}-{}-{}.{}"), csTempFolder,
+                    _T(TEMPFILETAGINDICATOR), csStartTime, rand(), _T("avi"));
             }
         }
         else
@@ -3849,7 +3857,7 @@ UINT CRecorderView::RecordVideo()
     // TRACE(_T("## CRecorderView::RecordVideo g_rcUse / T=%d, L=%d, B=%d, R=%d \n"), g_rcUse.top, g_rcUse.left, g_rcUse.bottom,
     // g_rcUse.right );
 
-    const auto temp = wstring_to_utf8(strTempVideoAviFilePath.GetString());
+    const auto temp = wstring_to_utf8(strTempVideoAviFilePath);
     return RecordVideo(g_rcUse, cVideoOpts.m_iFramesPerSecond, temp.c_str()) ? 0UL : 1UL;
 }
 
@@ -4958,7 +4966,7 @@ void GetTempAudioWavPath()
     strTempAudioWavFilePath += _T("\\");
     strTempAudioWavFilePath += _T(TEMPFILETAGINDICATOR);
     strTempAudioWavFilePath += _T("-");
-    strTempAudioWavFilePath += utf8_to_wstring(cVideoOpts.m_cStartRecordingString);
+    strTempAudioWavFilePath += cVideoOpts.m_cStartRecordingString;
     strTempAudioWavFilePath += _T(".wav");
 
     //.Format(_T("%s\\%s-%s.%s"), csTempFolder.c_str(), TEMPFILETAGINDICATOR,
@@ -4982,13 +4990,13 @@ void GetTempAudioWavPath()
                 // strTempAudioWavFilePath = GetTempFolder (cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir)
                 // + fxstr + cnumstr + exstr;
 
-                std::string filename;
-                filename += TEMPFILETAGINDICATOR;
+                std::wstring filename;
+                filename += _T(TEMPFILETAGINDICATOR);
                 filename += '-';
                 filename += cVideoOpts.m_cStartRecordingString;
                 filename += '-';
-                filename += std::to_string(randnum);
-                filename += ".wav";
+                filename += std::to_wstring(randnum);
+                filename += _T(".wav");
 
                 std::experimental::filesystem::path path(csTempFolder);
                 path /=filename;
