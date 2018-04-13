@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <windows.h>
+
 struct  screen
 {
     screen() = default;
@@ -15,8 +17,8 @@ struct  screen
     int bottom{ 0 };
     int width{ 0 };
     int height{ 0 };
-    char outFile[50]{0};
-    char dispName[50]{0};
+    char outFile[MAX_PATH]{0};
+    char dispName[MAX_PATH]{0};
 
     bool SetDimensions(int _left, int _right, int _top, int _bottom)
     {
