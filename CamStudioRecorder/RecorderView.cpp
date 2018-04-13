@@ -4667,7 +4667,7 @@ bool CRecorderView::RunViewer(const CString &strNewFile)
     // Launch the player
     if (cProgramOpts.m_iLaunchPlayer == CAM1_PLAYER)
     {
-        std::string launch_path = create_launch_path("player.exe",
+        std::string launch_path = create_launch_path("CamStudioPlayer.exe",
             wstring_to_utf8(strNewFile.GetString()));
 
 
@@ -4693,7 +4693,7 @@ bool CRecorderView::RunViewer(const CString &strNewFile)
     }
     else if (cProgramOpts.m_iLaunchPlayer == CAM2_PLAYER)
     {
-        std::string launch_path = create_launch_path("Playerplus.exe",
+        std::string launch_path = create_launch_path("CamStudioPlayerplus.exe",
             wstring_to_utf8(strNewFile.GetString()));
 
         if (WinExec(launch_path.c_str(), SW_SHOW) < HINSTANCE_ERROR)
