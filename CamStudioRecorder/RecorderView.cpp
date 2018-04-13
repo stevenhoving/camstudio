@@ -4580,10 +4580,9 @@ error:
 
     ::AVIFileExit();
 #endif
-    //if (hr != NOERROR)
-    {
-        ::PostMessage(g_hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
-    }
+
+    ::PostMessage(g_hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
+
 #if 0
     if (hr != NOERROR)
     {
@@ -4670,7 +4669,6 @@ bool CRecorderView::RunViewer(const CString &strNewFile)
         std::string launch_path = create_launch_path("CamStudioPlayer.exe",
             wstring_to_utf8(strNewFile.GetString()));
 
-
         //CString AppDir = GetProgPath();
         //CString exefileName("\\player.exe ");
         //1CString launchPath = AppDir + exefileName + strNewFile;
@@ -4737,24 +4735,6 @@ bool CRecorderView::RunProducer(const CString &strNewFile)
     return true;
 }
 
-
-long CRecorderView::GetAVILengthTime(const CString &sAVIFile)
-{
-    long lRet = 0;
-    HRESULT hr;
-    PAVIFILE pFile;
-    hr = AVIFileOpen(&pFile, sAVIFile, 0, 0L);
-    if (hr == AVIERR_OK)
-    {
-        PAVISTREAM pavi;
-        if (AVIFileGetStream(pFile, &pavi, streamtypeAUDIO, 0) == AVIERR_OK)
-        {
-            lRet = AVIStreamLengthTime(pavi);
-        }
-        AVIFileRelease(pFile);
-    }
-    return lRet;
-}
 bool CRecorderView::ConvertToMP4(const CString &sInputAVI, const CString &sOutputMP4, const CString &sOutBareName)
 {
     ConversionResult res = FAILED;
