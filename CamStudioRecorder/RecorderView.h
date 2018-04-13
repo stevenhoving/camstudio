@@ -1,12 +1,13 @@
 #pragma once
 
-
 #include "VideoWnd.h"     // for CVideoWnd
 #include "FlashingWnd.h"  // for CFlashingWnd
 #include "BasicMessage.h" // for CBasicMessage
 #include "screen.h"
 #include "MP4Converter.h"
+
 #include <string>
+
 #define TEMPFILETAGINDICATOR "~temp"
 
 // forward declaration
@@ -161,11 +162,7 @@ protected:
     afx_msg void OnAnnotationAddsystemtimestamp();
     afx_msg void OnUpdateAnnotationAddsystemtimestamp(CCmdUI *pCmdUI);
 
-    afx_msg void OnUpdateCameraDelayInMilliSec(CCmdUI *pCmdUI);
     afx_msg void OnCameraDelayInMilliSec();
-
-
-    afx_msg void OnUpdateRecordDurationLimitInMilliSec(CCmdUI *pCmdUI);
     afx_msg void OnRecordDurationLimitInMilliSec();
 
     afx_msg void OnAnnotationAddcaption();

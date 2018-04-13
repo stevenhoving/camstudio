@@ -1,6 +1,8 @@
 project(CamStudioRecorder)
 
 set(RECORDER_SOURCE
+    AviWriter.cpp
+    AviWriter.h
     AudioFormat.cpp
     AudioMixer.cpp
     AudioSpeakers.cpp

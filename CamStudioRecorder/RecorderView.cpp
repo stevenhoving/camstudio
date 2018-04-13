@@ -30,7 +30,9 @@
 #include "TroubleShoot.h"
 #include "VideoOptions.h"
 #include "ProgressDlg.h"
-#include "ximage.h"
+#include "AviWriter.h"
+
+#include <ximage.h>
 
 #include <CamAudio/sound_file.h>
 #include <CamAudio/Buffer.h>
@@ -76,7 +78,7 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 // AVI functions and #defines
-#define AVIIF_KEYFRAME 0x00000010L // this frame is a key frame.
+
 #define BUFSIZE 260
 #define N_FRAMES 50
 #define TEXT_HEIGHT 20
@@ -3851,174 +3853,7 @@ UINT CRecorderView::RecordVideo()
     return RecordVideo(g_rcUse, cVideoOpts.m_iFramesPerSecond, temp.c_str()) ? 0UL : 1UL;
 }
 
-class avi_writer
-{
-public:
-    avi_writer(const std::string video_filename, const int fps, BITMAPINFOHEADER frame_info, const sVideoOpts &video_options)
-        : video_filename_(video_filename)
-        , fps_(fps)
-        , video_options_(video_options)
-    {
-        ::AVIFileInit();
 
-        HRESULT hr = ::AVIFileOpenA(&pfile, video_filename_.c_str(), OF_WRITE | OF_CREATE, nullptr);
-        if (hr != AVIERR_OK)
-        {
-            TRACE("avi_multiplexer::avi_multiplexer: VideoAviFileOpen error\n");
-            CAVI::OnError(hr);
-            throw std::runtime_error("unable to initialize avi writer");
-        }
-
-        // Fill in the header for the video stream....
-        // The video stream will run in 15ths of a second....
-        //AVISTREAMINFO strhdr;
-        //::ZeroMemory(&strhdr, sizeof(AVISTREAMINFO));
-        strhdr.fccType = streamtypeVIDEO; // stream type
-                                          // strhdr.fccHandler             = dwCompfccHandler;
-        strhdr.fccHandler = 0;
-        strhdr.dwScale = 1;
-        strhdr.dwRate = (DWORD)fps_;
-        strhdr.dwSuggestedBufferSize = frame_info_.biSizeImage;
-        // rectangle for stream
-        SetRect(&strhdr.rcFrame, 0, 0, (int)frame_info_.biWidth, (int)frame_info_.biHeight);
-
-        // And create the stream;
-        hr = ::AVIFileCreateStream(pfile, &ps, &strhdr);
-        if (hr != AVIERR_OK)
-        {
-            TRACE("CRecorderView::RecordVideo: AVIFileCreateStream error\n");
-            CAVI::OnError(hr);
-            throw std::runtime_error("unable to initialize avi writer");
-        }
-
-        //AVISaveOptions(nullptr, )
-        opts.fccType = streamtypeVIDEO;
-        opts.fccHandler = cVideoOpts.m_dwCompfccHandler;
-        opts.dwKeyFrameEvery = cVideoOpts.m_iKeyFramesEvery;        // keyframe rate
-        opts.dwQuality = cVideoOpts.m_iCompQuality;                 // compress quality 0-10, 000
-        opts.dwBytesPerSecond = 0;                                  // bytes per second
-        opts.dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES; // flags
-        opts.lpFormat = 0x0;                                        // save format
-        opts.cbFormat = 0;
-        opts.dwInterleaveEvery = 0; // for non-video streams only
-
-        // Ver 1.2
-        //
-        if ((video_options_.m_dwCompfccHandler != 0) &&
-            (video_options_.m_dwCompfccHandler == video_options_.m_dwCompressorStateIsFor))
-        {
-            // make a copy of the pVideoCompressParams just in case after compression,
-            // this variable become messed up
-            opts.lpParms = video_options_.State();
-            opts.cbParms = video_options_.StateSize();
-        }
-
-        // The 1 here indicates only 1 stream
-        // if (!AVISaveOptions(nullptr, 0, 1, &ps, (LPAVICOMPRESSOPTIONS *) &aopts))
-        //        goto error;
-
-        /*PAVISTREAM*/ psCompressed = nullptr;
-        hr = AVIMakeCompressedStream(&psCompressed, ps, &opts, nullptr);
-        if (AVIERR_OK != hr)
-        {
-            TRACE("CRecorderView::RecordVideo: AVIMakeCompressedStream error\n");
-            CAVI::OnError(hr);
-
-            throw std::runtime_error("unable to initialize avi writer");
-        }
-
-        hr = AVIStreamSetFormat(psCompressed, 0, &frame_info_, frame_info_.biSize + frame_info_.biClrUsed * sizeof(RGBQUAD));
-        if (hr != AVIERR_OK)
-        {
-            CAVI::OnError(hr);
-
-            throw std::runtime_error("unable to initialize avi writer");
-        }
-    }
-
-    ~avi_writer()
-    {
-        if (!pfile)
-            return;
-        stop();
-    }
-
-    void stop()
-    {
-        if ((video_options_.m_dwCompfccHandler == video_options_.m_dwCompressorStateIsFor) && (video_options_.m_dwCompfccHandler != 0))
-        {
-            // Detach pParamsUse from AVICOMPRESSOPTIONS so AVISaveOptionsFree will not free it
-            // (we will free it ourselves)
-            opts.lpParms = 0;
-            opts.cbParms = 0;
-        }
-
-        // its unclear if this is needed...
-        //::AVISaveOptionsFree(1, (LPAVICOMPRESSOPTIONS FAR *)&aopts);
-
-        if (pfile)
-        {
-            ::AVIFileClose(pfile);
-            pfile = nullptr;
-        }
-
-        if (ps)
-        {
-            ::AVIStreamClose(ps);
-        }
-
-        if (psCompressed)
-        {
-            ::AVIStreamClose(psCompressed);
-        }
-
-        ::AVIFileExit();
-    }
-
-    void write(DWORD frametime, BITMAPINFOHEADER *alpbi)
-    {
-        LONG lSampWritten = 0L;
-        LONG lBytesWritten = 0L;
-        auto hr = ::AVIStreamWrite(psCompressed, frametime, 1,
-            (LPBYTE)alpbi + alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD),
-            alpbi->biSizeImage, 0, &lSampWritten, &lBytesWritten);
-        //}
-        if (hr != AVIERR_OK)
-        {
-            TRACE("CRecorderView::RecordVideo: AVIStreamWrite error\n");
-            CAVI::OnError(hr);
-            throw std::runtime_error("unable to write avi frame");
-        }
-
-        total_bytes_written_ += lBytesWritten;
-        total_samples_written_ += lSampWritten;
-    }
-
-    uint64_t total_bytes_written() const
-    {
-        return total_bytes_written_;
-    }
-
-    uint64_t total_samples_written() const
-    {
-        return total_samples_written_;
-    }
-
-private:
-    uint64_t total_bytes_written_{ 0 };
-    uint64_t total_samples_written_{ 0 };
-
-    PAVIFILE pfile{ 0 };
-    PAVISTREAM ps{ nullptr };
-    PAVISTREAM psCompressed{ nullptr};
-    AVISTREAMINFO strhdr{};
-    AVICOMPRESSOPTIONS opts{};
-
-    std::string video_filename_;
-    int fps_;
-    BITMAPINFOHEADER frame_info_;
-    sVideoOpts video_options_;
-};
 
 /////////////////////////////////////////////////////////////////////////////
 // RecordVideo
@@ -4745,6 +4580,10 @@ error:
 
     ::AVIFileExit();
 #endif
+    //if (hr != NOERROR)
+    {
+        ::PostMessage(g_hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
+    }
 #if 0
     if (hr != NOERROR)
     {
