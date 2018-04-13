@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "ListManager.h"
+#include <cstdint>
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -160,11 +161,11 @@ int CListManager::SaveShapeArray(CString saveDir)
         return FALSE;
     }
 
-    long fileversion = 100;
-    fwrite((void *)&fileversion, sizeof(long), 1, fptr);
+    int32_t fileversion = 100;
+    fwrite(&fileversion, sizeof(fileversion), 1, fptr);
 
-    int max = shapeArray.GetSize();
-    fwrite((void *)&max, sizeof(int), 1, fptr); // Number of Shapes
+    int max = static_cast<int>(shapeArray.GetSize());
+    fwrite(&max, sizeof(max), 1, fptr); // Number of Shapes
 
     int reserve[100];
     reserve[0] = 'c';

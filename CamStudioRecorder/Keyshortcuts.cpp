@@ -221,7 +221,7 @@ BOOL CKeyshortcutsDlg::OnInitDialog()
 int CKeyshortcutsDlg::GetIndex(UINT keyShortCut)
 {
     std::vector<UINT>::iterator iter = std::find(m_vKeyCode.begin(), m_vKeyCode.end(), keyShortCut);
-    return (iter - m_vKeyCode.begin());
+    return static_cast<int>(iter - m_vKeyCode.begin());
 }
 
 UINT CKeyshortcutsDlg::GetCode(int index)
