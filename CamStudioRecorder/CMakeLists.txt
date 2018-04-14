@@ -93,7 +93,6 @@ set(RECORDER_SOURCE
     MCI.h
     MouseCaptureWnd.h
     MP4Converter.h
-    MULDIV32.h
     NewShape.h
     PresetTime.h
     Profile.h
