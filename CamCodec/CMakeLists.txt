@@ -51,7 +51,19 @@ target_include_directories(CamCodec
     .
 )
 
+set_target_properties(CamCodec PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+)
+
+install(TARGETS CamCodec
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
+
 install(
-    DIRECTORY include
-    DESTINATION include
+  FILES
+    CamCodec.inf
+  DESTINATION
+    bin
 )

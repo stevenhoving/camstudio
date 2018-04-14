@@ -27,6 +27,7 @@ add_subdirectory(libconfig)
 set_target_properties(libconfig libconfig++
   PROPERTIES
     FOLDER "External/libconfig"
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
 
 set_target_properties(fmt

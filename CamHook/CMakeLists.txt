@@ -55,7 +55,12 @@ target_include_directories(CamHook
     include
 )
 
-install(
-    DIRECTORY include
-    DESTINATION include
+set_target_properties(CamHook PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+)
+
+install(TARGETS CamHook
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
 )
