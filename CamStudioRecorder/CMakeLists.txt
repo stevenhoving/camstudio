@@ -178,6 +178,13 @@ target_compile_definitions(CamStudioRecorder
     -D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 )
 
+target_compile_options(CamStudioRecorder
+  PRIVATE
+    /experimental:external
+    /external:W0
+    /external:anglebrackets
+)
+
 set_target_properties(CamStudioRecorder PROPERTIES
   COMPILE_FLAGS "/Yustdafx.h")
 
@@ -202,6 +209,7 @@ target_link_libraries(CamStudioRecorder
 
 set_target_properties(CamStudioRecorder PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+    VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$(Configuration)
 )
 
 install(TARGETS CamStudioRecorder

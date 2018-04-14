@@ -22,6 +22,8 @@ if(NOT DEFINED MSVC OR MSVC_VERSION LESS 1910)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D_DEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
 
 #add_compile_options(/WX) # treat warnings as errors.
 add_compile_options(/permissive-) # vs conformance mode.
