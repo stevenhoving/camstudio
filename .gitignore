@@ -12,3 +12,4 @@ Release
 *.dsp
 
 *.vcxproj.user
+vs_build

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CamLib/CamFile.h"
 #include <shlobj.h>
+#include <filesystem>
 
 /////////////////////////////////////////////////////////////////////////////
 // GetTempPath
@@ -41,11 +42,11 @@ CString GetTempFolder(int iAccess, const CString &strFolder, bool bOut)
         // tempdir.Format("%s\\Videos", GetProgPath());
         if (bOut)
         {
-            tempdir.Format("%s\\My CamStudio Videos", GetMyDocumentsPath().GetString());
+            tempdir.Format(_T("%s\\My CamStudio Videos"), GetMyDocumentsPath().GetString());
         }
         else
         {
-            tempdir.Format("%s\\My CamStudio Temp Files", GetMyDocumentsPath().GetString());
+            tempdir.Format(_T("%s\\My CamStudio Temp Files"), GetMyDocumentsPath().GetString());
         }
         if (!CreateDirectory(tempdir, nullptr))
         {
@@ -64,7 +65,7 @@ CString GetTempFolder(int iAccess, const CString &strFolder, bool bOut)
             return tempdir;
         }
     }
-    char tempPath[_MAX_PATH + 1] = {'\0'};
+    TCHAR tempPath[_MAX_PATH + 1] = {'\0'};
     if (GetTempPath(_MAX_PATH, tempPath))
     {
         CString tempdir;
@@ -104,6 +105,80 @@ CString GetTempFolder(int iAccess, const CString &strFolder, bool bOut)
     return GetProgPath();
 }
 
+std::wstring get_temp_folder(dir_access iAccess, const std::wstring &folder /*= ""*/, bool bOut /*= false*/)
+{
+    switch (iAccess)
+    {
+        case dir_access::user_specified_dir:
+        {
+            // fallback behavior, use application root when user supplied temp folder does not exist.
+            if (!std::experimental::filesystem::exists(folder))
+                return get_prog_path();
+
+            const auto status = std::experimental::filesystem::status(folder);
+
+            // If valid directory, return the user supplied directory as temp directory.
+            if (status.type() == std::experimental::filesystem::file_type::directory)
+                return folder;
+            else
+                throw std::runtime_error("failed to get user supplied temp folder");
+        } break;
+
+        case dir_access::install_dir:
+        {
+            // handles USE_INSTALLED_DIR value of iAccess
+            // attempts to create <CamStudio root dir>\\temp dir
+            // if failed to create just return CamStudio root dir
+
+            std::wstring tempdir;
+            if (bOut)
+            {
+                tempdir = get_my_documents_path() + _T("\\My CamStudio Videos");
+            }
+            else
+            {
+                tempdir = get_my_documents_path() + _T("\\My CamStudio Temp Files");
+            }
+
+            if (std::experimental::filesystem::exists(tempdir))
+                return tempdir;
+
+            if (std::experimental::filesystem::create_directories(tempdir))
+                return tempdir;
+
+            // \note this is actually the failure path...
+            return get_my_documents_path();
+        } break;
+    }
+
+    wchar_t tempPath[MAX_PATH + 1] = {0};
+    if (GetTempPathW(MAX_PATH, tempPath))
+    {
+        std::wstring tempdir = tempPath;
+        if (tempdir.back() == '\\')
+            tempdir.resize(tempdir.size() - 1);
+        return tempdir;
+    }
+
+    // This code looks for an old style temp directory. NOT standard windows.
+    wchar_t dirx[_MAX_PATH];
+    ::GetWindowsDirectoryW(dirx, _MAX_PATH);
+    std::wstring tempdir = dirx;
+    tempdir += _T("\\temp");
+
+    // Verify the chosen temp path is valid
+    if (!std::experimental::filesystem::exists(tempdir))
+        return get_prog_path();
+
+    // If valid directory, return Windows\temp as temp directory
+    if (std::experimental::filesystem::status(tempdir).type() == std::experimental::filesystem::file_type::directory)
+        return tempdir;
+
+    // else return program path as temp directory
+    // iAccess = USE_INSTALLED_DIR;    // TODO: nonsense; iAccess is NOT an output
+    return get_prog_path();
+}
+
 CString GetProgPath()
 {
     // get root of Camstudio application
@@ -117,16 +192,51 @@ CString GetProgPath()
     return path;
 }
 
+std::wstring get_prog_path()
+{
+    // get root of Camstudio application
+    wchar_t szTemp[300];
+    ::GetModuleFileNameW(nullptr, szTemp, 300);
+    std::wstring path = szTemp;
+    const auto found = path.rfind('\\');
+    if (found != std::wstring::npos)
+    {
+        path = path.substr(0, found);
+    }
+    return path;
+}
+
 #ifndef CSIDL_MYVIDEO
 #define CSIDL_MYVIDEO 0x000e // "My Videos" folder
 #endif
+
+std::wstring get_my_video_path()
+{
+    wchar_t szPath[MAX_PATH + 100] = { 0 };
+
+    // Get the user's video path
+    if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_MYVIDEO, nullptr, 0, szPath)))
+    {
+        return szPath;
+    }
+    else if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, szPath)))
+    {
+        return szPath;
+    }
+
+    throw std::runtime_error("error while getting the users video path");
+
+    return std::wstring();
+}
+
+
 
 CString GetMyVideoPath()
 {
     // Get the user's video path
     int folder = CSIDL_MYVIDEO;
 
-    char szPath[MAX_PATH + 100];
+    TCHAR szPath[MAX_PATH + 100];
     szPath[0] = 0;
     CString path = szPath;
 
@@ -146,7 +256,7 @@ CString GetMyDocumentsPath()
     // Get the user's video path
     int folder = CSIDL_PERSONAL;
 
-    char szPath[MAX_PATH + 100];
+    TCHAR szPath[MAX_PATH + 100];
     szPath[0] = 0;
     CString path = szPath;
 
@@ -160,11 +270,22 @@ CString GetMyDocumentsPath()
     }*/
     return path;
 }
+
+std::wstring get_my_documents_path()
+{
+    wchar_t szPath[MAX_PATH + 100] = { 0 };
+
+    if (FAILED(SHGetFolderPathW(nullptr, CSIDL_PERSONAL, nullptr, 0, szPath)))
+        throw std::runtime_error("Unable to get my documents path");
+
+    return szPath;
+}
+
 CString GetAppDataPath()
 {
     int folder = CSIDL_APPDATA;
 
-    char szPath[MAX_PATH + 100];
+    TCHAR szPath[MAX_PATH + 100];
     szPath[0] = 0;
     CString path = szPath;
 
@@ -186,7 +307,7 @@ bool DoesFileExist(const CString &name)
 
 bool DoesDefaultOutDirExist(const CString &dir)
 {
-    DWORD ftyp = GetFileAttributesA(dir);
+    DWORD ftyp = GetFileAttributes(dir);
     if (ftyp == INVALID_FILE_ATTRIBUTES)
     {
         return false; // something is wrong with the path

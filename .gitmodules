@@ -1,0 +1,12 @@
+[submodule "dep/zlib"]
+	path = dep/zlib
+	url = git@github.com:aeon-external-dependencies/zlib.git
+[submodule "dep/libpng"]
+	path = dep/libpng
+	url = git@github.com:aeon-external-dependencies/libpng.git
+[submodule "dep/libconfig"]
+	path = dep/libconfig
+	url = git@github.com:hyperrealm/libconfig.git
+[submodule "dep/fmt"]
+	path = dep/fmt
+	url = git@github.com:fmtlib/fmt.git

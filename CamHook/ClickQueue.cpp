@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CamHook/ClickQueue.hpp"
+#include "CamHook/ClickQueue.h"
 
 volatile ClickQueue *ClickQueue::_instance = nullptr;
 
@@ -22,7 +22,7 @@ ClickQueue::Cleanup::~Cleanup()
     }
 }
 
-__declspec(dllexport) ClickQueue &ClickQueue::getInstance()
+ClickQueue &ClickQueue::getInstance()
 {
     static Cleanup _Cleanup;
     if (!_instance)
@@ -32,7 +32,7 @@ __declspec(dllexport) ClickQueue &ClickQueue::getInstance()
     return *(ClickQueue *)_instance; // after singleton is created it won't change anymore
 }
 
-__declspec(dllexport) void ClickQueue::Enqueue(LPMSLLHOOKSTRUCT pMSG)
+void ClickQueue::Enqueue(LPMSLLHOOKSTRUCT pMSG)
 {
     //    if (_queue.size() > 10)
     //        _queue.erase(_queue.begin()); // some protection from extensive clicking
@@ -45,12 +45,12 @@ __declspec(dllexport) void ClickQueue::Enqueue(LPMSLLHOOKSTRUCT pMSG)
     Unlock();
 }
 
-__declspec(dllexport) void ClickQueue::Lock()
+void ClickQueue::Lock()
 {
     ::EnterCriticalSection(&cs);
 }
 
-__declspec(dllexport) void ClickQueue::Unlock()
+void ClickQueue::Unlock()
 {
     ::LeaveCriticalSection(&cs);
 }

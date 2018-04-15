@@ -51,7 +51,6 @@
 
 #include "camcodec.h"
 
-extern void Msg(const char fmt[], ...);
 /***************************************************************************
  * DriverProc  -  The entry point for an installable driver.
  *

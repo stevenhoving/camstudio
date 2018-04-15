@@ -36,7 +36,7 @@ LONG GetRegKey(HKEY key, LPCTSTR subkey, LPTSTR retdata)
         TCHAR data[MAX_PATH];
         ::RegQueryValue(hkey, nullptr, data, &datasize);
         // _tcscpy (retdata, data);  // Cause C4996 warning, marked as deprecation candidate
-        strcpy_s(retdata, sizeof(retdata), data); // Safe replacement
+        _tcscpy_s(retdata, sizeof(retdata), data); // Safe replacement
         ::RegCloseKey(hkey);
     }
     return retval;

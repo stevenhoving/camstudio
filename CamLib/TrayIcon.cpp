@@ -72,7 +72,7 @@ void CTrayIcon::TraySetIcon(UINT nResourceID)
     }
 }
 
-void CTrayIcon::TraySetIcon(LPCTSTR lpszResourceName)
+void CTrayIcon::TraySetIcon(const TCHAR *lpszResourceName)
 {
     HICON hIcon = AfxGetApp()->LoadIcon(lpszResourceName);
     if (hIcon)
@@ -86,11 +86,11 @@ void CTrayIcon::TraySetIcon(LPCTSTR lpszResourceName)
     }
 }
 
-void CTrayIcon::TraySetToolTip(LPCTSTR lpszToolTip)
+void CTrayIcon::TraySetToolTip(const TCHAR *lpszToolTip)
 {
-    ASSERT((strlen(lpszToolTip) > 0) && (strlen(lpszToolTip) < 64));
+    ASSERT((_tcslen(lpszToolTip) > 0) && (_tcslen(lpszToolTip) < 64));
 
-    strcpy_s(m_nid.szTip, lpszToolTip);
+    _tcscpy_s(m_nid.szTip, lpszToolTip);
     m_nid.uFlags |= NIF_TIP;
 }
 
@@ -151,7 +151,7 @@ BOOL CTrayIcon::TraySetMenu(UINT nResourceID, UINT /*nDefaultPos*/)
     return bSuccess;
 }
 
-BOOL CTrayIcon::TraySetMenu(LPCTSTR lpszMenuName, UINT /*nDefaultPos*/)
+BOOL CTrayIcon::TraySetMenu(const TCHAR *lpszMenuName, UINT /*nDefaultPos*/)
 {
     BOOL bSuccess;
     bSuccess = m_TrayMenu.LoadMenu(lpszMenuName);

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "CamHookExport.h"
+
 #define VC_EXTRALEAN
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -45,24 +47,18 @@ struct HotKey
 
 typedef std::map<HotKey, DWORD> HotKeyMap;      // key & mod => WM_HOTKEY code
 typedef std::pair<HotKey, DWORD> HotKeyMapPair; // key & mod => WM_HOTKEY code
-//__declspec(dllexport) HotKeyMap &getHotKeyMap();
-__declspec(dllexport) void setHotKeyWindow(HWND hWnd);
-//__declspec(dllexport) void setPassThrough(bool pass);
-__declspec(dllexport) HCURSOR getCursor();
+
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif // __cplusplus
 
-#ifdef CAM_HOOK_EXPORT
-#define LIBSPEC __declspec(dllexport)
-#else
-#define LIBSPEC __declspec(dllimport)
-#endif // _COMPILING_44E531B1_14D3_11d5_A025_006067718D04
-    LIBSPEC BOOL InstallMouseHook(HWND hWnd, UINT msg);
-    LIBSPEC BOOL UninstallMouseHook(HWND hWnd);
-#undef LIBSPEC
+    CAMHOOK_EXPORT void setHotKeyWindow(HWND hWnd);
+    CAMHOOK_EXPORT HCURSOR getCursor();
+
+    CAMHOOK_EXPORT BOOL InstallMouseHook(HWND hWnd, UINT msg);
+    CAMHOOK_EXPORT BOOL UninstallMouseHook(HWND hWnd);
 
 #ifdef __cplusplus
 }
@@ -74,6 +70,7 @@ extern "C"
 #define WM_USER_GENERIC_MSG _T("WM_USER_GENERIC_MSG")
 #define WM_USER_RECORDSTART_MSG _T("WM_USER_RECORDSTART_MSG")
 #define WM_USER_RECORDAUTO_MSG _T("WM_USER_RECORDAUTO_MSG")
+
 // These declarations are because the latest SDK isn't installed...
 #ifndef GET_X_LPARAM
 #define GET_X_LPARAM(p) ((int)(short)LOWORD(p))

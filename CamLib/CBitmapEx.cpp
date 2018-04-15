@@ -108,11 +108,11 @@ BOOL CBitmapEx::CreateFromDib(LPBITMAPINFO lpBi)
     return TRUE;
 }
 
-#define sfiltr "Image files (*.BMP)|*.BMP||"
-#define sext "BMP"
+#define sfiltr _T("Image files (*.BMP)|*.BMP||")
+#define sext _T("BMP")
 #define smask nullptr
 
-BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
+BOOL CBitmapEx::Open(const TCHAR * filename, const TCHAR *DialogTitle)
 {
     if (GetSafeHandle())
     {
@@ -239,7 +239,7 @@ BOOL CBitmapEx::Open(LPCSTR filename, LPCSTR DialogTitle)
     return ret;
 }
 
-BOOL CBitmapEx::Save(LPCSTR filename, LPCSTR DialogTitle)
+BOOL CBitmapEx::Save(const TCHAR *filename, const TCHAR *DialogTitle)
 {
     if (!GetSafeHandle())
     {
@@ -264,7 +264,7 @@ BOOL CBitmapEx::Save(LPCSTR filename, LPCSTR DialogTitle)
     }
 
     CFile file;
-    if (!file.Open((LPCSTR)Path, CFile::modeCreate | CFile::modeWrite | CFile::typeBinary))
+    if (!file.Open(Path, CFile::modeCreate | CFile::modeWrite | CFile::typeBinary))
     {
         return false;
     }
@@ -289,7 +289,6 @@ BOOL CBitmapEx::Save(LPCSTR filename, LPCSTR DialogTitle)
     TRY
     {
         file.Write(reinterpret_cast<LPSTR>(&hdr), sizeof(BITMAPFILEHEADER));
-        // file.WriteHuge((LPSTR)lpbi, GlobalSize (hdib));
         file.Write(reinterpret_cast<LPSTR>(lpbi), GlobalSize(hdib));
     }
     CATCH(CFileException, e)
@@ -355,7 +354,7 @@ BOOL CBitmapEx::CreateColor(int dx, int dy)
 }
 
 // Create monocolor bitmap
-BOOL CBitmapEx::CreateMono(int dx, int dy)
+BOOL CBitmapEx::CreateMono(int width, int height)
 {
     if (GetSafeHandle())
     {
@@ -364,13 +363,12 @@ BOOL CBitmapEx::CreateMono(int dx, int dy)
     CDC mDC;
     mDC.CreateCompatibleDC(nullptr); // for mono!
 
-    BOOL r = CreateCompatibleBitmap(&mDC, dx, dy);
+    BOOL r = CreateCompatibleBitmap(&mDC, width, height);
 
     mDC.DeleteDC();
     return r;
 }
 
-// This was the first extention i've done! :)))
 CSize CBitmapEx::GetSize()
 {
     BITMAP bmp;
