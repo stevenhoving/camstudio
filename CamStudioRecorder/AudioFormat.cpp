@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "AudioFormat.h"
-#include "AudioVolume.h"
 
 #include "RecorderView.h"
 #include "vfw/ACM.h"
+
+#include <CamLib/AudioVolume.h>
 #include <CamLib/CStudioLib.h>
 
 

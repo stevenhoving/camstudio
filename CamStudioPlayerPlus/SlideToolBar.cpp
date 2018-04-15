@@ -139,7 +139,7 @@ void CSlideToolBar::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
 
             float durationPlayed = (float)((playtime - timeStart) / 1000.0);
             CString durationStr;
-            durationStr.Format("%8.1f sec", durationPlayed);
+            durationStr.Format(_T("%8.1f sec"), durationPlayed);
             SetTimeIndicator(durationStr);
         }
 

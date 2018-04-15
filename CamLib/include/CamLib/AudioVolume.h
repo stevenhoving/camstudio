@@ -1,6 +1,11 @@
 #pragma once
 
+#include <windows.h>
 #include <filesystem>
+
+// \note we abuse the fact that the project (CamStudioRecorder or CamStudioPlayerPlus) have a
+//       resource.h file.
+#include "resource.h"
 
 static
 void OnAudioVolume(HWND hwnd)
@@ -8,10 +13,13 @@ void OnAudioVolume(HWND hwnd)
     // Ver 1.1
     if (waveInGetNumDevs() == 0)
     {
-        // CString msgstr;
-        // msgstr.Format("Unable to detect audio input device. You need a sound card with microphone input.");
-        // MessageBox(msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
+#ifdef IDS_STRING_NOINPUT1
         MessageOut(hwnd, IDS_STRING_NOINPUT1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+#else
+        CString msgstr;
+        msgstr.Format(_T("Unable to detect audio input device. You need a sound card with microphone input."));
+        MessageBox(hwnd, msgstr, _T("Note"), MB_OK | MB_ICONEXCLAMATION);
+#endif
         return;
     }
 
@@ -68,8 +76,12 @@ void OnAudioVolume(HWND hwnd)
         }
         else
         {
-            // MessageBox("Error launching Volume Control!","Note",MB_OK | MB_ICONEXCLAMATION);
+            
+#ifdef IDS_STRING_ERRVOLCTRL1
             MessageOut(hwnd, IDS_STRING_ERRVOLCTRL1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+#else
+            MessageBox(hwnd, _T("Error launching Volume Control!"), _T("Note"), MB_OK | MB_ICONEXCLAMATION);
+#endif
         }
     }
     // Sound mixer moved in Windows Vista! check new exe name only if windows version matches
@@ -97,8 +109,12 @@ void OnAudioVolume(HWND hwnd)
         }
         else
         {
-            // MessageBox("Error launching Volume Control!","Note",MB_OK | MB_ICONEXCLAMATION);
+            
+#ifdef IDS_STRING_ERRVOLCTRL1
             MessageOut(hwnd, IDS_STRING_ERRVOLCTRL1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+#else
+            MessageBox(hwnd, _T("Error launching Volume Control!"),_T("Note"),MB_OK | MB_ICONEXCLAMATION);
+#endif
         }
     }
 }

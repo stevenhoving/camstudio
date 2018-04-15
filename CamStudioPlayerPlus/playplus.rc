@@ -65,7 +65,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "Player.ico"
+IDR_MAINFRAME           ICON                    "res\\Player.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -77,13 +77,13 @@ IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 
 IDR_PLAYERTOOLBAR       BITMAP                  "res\\toolbar1.bmp"
 
-IDB_BITMAP_LOGO_PLAYER  BITMAP                  "Player_banner.bmp"
+IDB_BITMAP_LOGO_PLAYER  BITMAP                  "res\\Player_banner.bmp"
 
-IDB_BITMAP_LOGO_DUBBER  BITMAP                  "Producer_banner.bmp"
+IDB_BITMAP_LOGO_DUBBER  BITMAP                  "res\\Producer_banner.bmp"
 
-IDB_BITMAP_ABOUT_PLAYER BITMAP                  "Player_logo.bmp"
+IDB_BITMAP_ABOUT_PLAYER BITMAP                  "res\\Player_logo.bmp"
 
-IDB_BITMAP_ABOUT_DUBBER BITMAP                  "Producer_logo.bmp"
+IDB_BITMAP_ABOUT_DUBBER BITMAP                  "res\\Producer_logo.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////

@@ -146,11 +146,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
     if (pmode == PLAYER)
     {
-        SetWindowText("CamStudio Player - Custom Build");
+        SetWindowText(_T("CamStudio Player - Custom Build"));
     }
     else
     {
-        SetWindowText("CamStudio Dubber - Custom Build");
+        SetWindowText(_T("CamStudio Dubber - Custom Build"));
     }
 
     return 0;
@@ -204,7 +204,7 @@ void CMainFrame::OnClose()
 
     if ((fileModified == 1) && (pmode == DUBBER))
     {
-        int ret = MessageBox("Do you want to save changes ?", "Note", MB_YESNOCANCEL | MB_ICONQUESTION);
+        int ret = MessageBox(_T("Do you want to save changes ?"), _T("Note"), MB_YESNOCANCEL | MB_ICONQUESTION);
         if (ret == IDYES)
         {
             SendMessage(WM_COMMAND, ID_FILE_SAVEAS, 0);

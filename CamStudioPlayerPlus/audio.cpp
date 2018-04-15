@@ -4,9 +4,10 @@
  *
  **************************************************************************/
 
-#define STRICT
-#define INC_OLE2
 #include "stdafx.h"
+//#define STRICT
+#define INC_OLE2
+
 #include <windows.h>
 #include <windowsx.h>
 #include <mmsystem.h>
@@ -296,7 +297,7 @@ BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, B
 
     if (!aviaudioOpenDevice(hwnd, pavi))
     {
-        MessageBox(nullptr, "AudioOpen failed", "Note", MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(nullptr, _T("AudioOpen failed"), _T("Note"), MB_OK | MB_ICONEXCLAMATION);
         return false;
     }
 

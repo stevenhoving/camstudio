@@ -5,14 +5,18 @@
 #include "playplusDoc.h"
 #include "playplusView.h"
 
+#include <filesystem>
+#include <algorithm>
+#include <string>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern char playfiledir[300];
-extern void OpenMovieFileInit(char *filename);
+extern std::wstring playfiledir;
+extern void OpenMovieFileInit(const std::wstring &filename);
 
 #define PLAYER 0
 #define DUBBER 1
@@ -45,6 +49,19 @@ CPlayplusApp::CPlayplusApp()
 
 CPlayplusApp theApp;
 
+
+template<typename T>
+T replace_all(T str, const T& from, const T& to)
+{
+    size_t start_pos = 0;
+    while ((start_pos = str.find(from, start_pos)) != std::string::npos)
+    {
+        str.replace(start_pos, from.size(), to);
+        start_pos += to.size();
+    }
+    return str;
+}
+
 BOOL CPlayplusApp::InitInstance()
 {
     // Multilang
@@ -54,22 +71,22 @@ BOOL CPlayplusApp::InitInstance()
     LONG returnStatus;
     DWORD Type = REG_DWORD;
     DWORD Size = sizeof(language);
-    returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
+    returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\CamStudio\\vscap\\Language"), 0L, KEY_ALL_ACCESS, &hKey);
 
     // create default LanguageID no exists
     if (returnStatus != ERROR_SUCCESS)
     {
-        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio", 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, nullptr, &hKey, 0);
-        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap", 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, nullptr, &hKey, 0);
-        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap\\Language", 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, nullptr, &hKey, 0);
-        RegSetValueEx(hKey, "LanguageID", 0, REG_DWORD, (BYTE *)&language, sizeof(language));
-        returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\CamStudio\\vscap\\Language", 0L, KEY_ALL_ACCESS, &hKey);
+        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, _T("Software\\CamStudio"), 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, nullptr, &hKey, 0);
+        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, _T("Software\\CamStudio\\vscap"), 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, nullptr, &hKey, 0);
+        returnStatus = RegCreateKeyEx(HKEY_CURRENT_USER, _T("Software\\CamStudio\\vscap\\Language"), 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, nullptr, &hKey, 0);
+        RegSetValueEx(hKey, _T("LanguageID"), 0, REG_DWORD, (BYTE *)&language, sizeof(language));
+        returnStatus = RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\CamStudio\\vscap\\Language"), 0L, KEY_ALL_ACCESS, &hKey);
     }
 
     // read LanguageID
     if (returnStatus == ERROR_SUCCESS)
     {
-        returnStatus = RegQueryValueEx(hKey, "LanguageID", nullptr, &Type, (LPBYTE)&language, &Size);
+        returnStatus = RegQueryValueEx(hKey, _T("LanguageID"), nullptr, &Type, (LPBYTE)&language, &Size);
 
         if (returnStatus == ERROR_SUCCESS)
         {
@@ -122,7 +139,7 @@ BOOL CPlayplusApp::InitInstance()
     ParseCommandLine(cmdInfo);
 
     playfiledir[0] = 0;
-    if (strlen(m_lpCmdLine) != 0)
+    if (_tcslen(m_lpCmdLine) != 0)
     {
         if ((m_lpCmdLine[0] == '-') && ((m_lpCmdLine[1] == 'a') || (m_lpCmdLine[1] == 'x')))
         {
@@ -131,7 +148,7 @@ BOOL CPlayplusApp::InitInstance()
                 autoexit = 1;
 
             int i;
-            int lenx = strlen(m_lpCmdLine);
+            int lenx = _tcslen(m_lpCmdLine);
             for (i = 2; i < lenx; i++)
             {
                 if ((m_lpCmdLine[i] != ' ') && (m_lpCmdLine[i] != '\t'))
@@ -140,19 +157,18 @@ BOOL CPlayplusApp::InitInstance()
 
             if (lenx > 4)
             {
-                strcpy_s(playfiledir, &m_lpCmdLine[i]);
+                playfiledir = &m_lpCmdLine[i];
             }
         }
         else
         {
-            strcpy_s(playfiledir, m_lpCmdLine);
+            playfiledir = m_lpCmdLine;
         }
 
         // Fix to open long filename or filename with quotes on launch
-        CString strCleanCmdLineFileName(playfiledir);
-        strCleanCmdLineFileName.Replace("\"", "");
-        strcpy_s(playfiledir, strCleanCmdLineFileName.GetBuffer());
-        cmdInfo.m_strFileName = playfiledir;
+        auto strCleanCmdLineFileName = playfiledir;
+        playfiledir = replace_all(strCleanCmdLineFileName, std::wstring(_T("\"")), std::wstring());
+        cmdInfo.m_strFileName = playfiledir.c_str();
     }
     /*
     if (strlen(m_lpCmdLine)!=0) {
@@ -271,9 +287,9 @@ BOOL CAboutDlg::OnInitDialog()
 
     // TODO: Add extra initialization here
     if (pmode == PLAYER)
-        ((CStatic *)(GetDlgItem(IDC_TITLE)))->SetWindowText("RenderSoft CamStudio Player 2.1");
+        ((CStatic *)(GetDlgItem(IDC_TITLE)))->SetWindowText(_T("RenderSoft CamStudio Player 2.1"));
     else if (pmode == DUBBER)
-        ((CStatic *)(GetDlgItem(IDC_TITLE)))->SetWindowText("RenderSoft CamStudio Dubber 1.0");
+        ((CStatic *)(GetDlgItem(IDC_TITLE)))->SetWindowText(_T("RenderSoft CamStudio Dubber 1.0"));
 
     if ((pmode == PLAYER) || (pmode == DUBBER))
     {
@@ -312,7 +328,7 @@ int CPlayplusApp::ExitInstance()
 void CAboutDlg::OnBnClickedButtonlink1()
 {
     LPCTSTR mode;
-    mode = ("open");
+    mode = _T("open");
 
-    ShellExecute(GetSafeHwnd(), mode, "http://www.camstudio.org", nullptr, nullptr, SW_SHOW);
+    ShellExecute(GetSafeHwnd(), mode, _T("http://www.camstudio.org"), nullptr, nullptr, SW_SHOW);
 }

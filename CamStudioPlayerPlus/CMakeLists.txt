@@ -49,6 +49,11 @@ add_executable(CamStudioPlayerPlus WIN32
     ${PLAYER_PLUS_RESOURCE}
 )
 
+source_group(src FILES
+    ${PLAYER_PLUS_SOURCE}
+    ${PLAYER_PLUS_RESOURCE}
+)
+
 target_compile_definitions(CamStudioPlayerPlus
   PRIVATE
     -DNOMINMAX
@@ -71,7 +76,10 @@ set_source_files_properties(stdafx.cpp PROPERTIES
     COMPILE_FLAGS "/Ycstdafx.h")
 
 target_link_libraries(CamStudioPlayerPlus
+    CamAudio
     CamLib
+    fmt
+    msacm32.lib
     gdi32.lib
     winmm.lib
     vfw32.lib

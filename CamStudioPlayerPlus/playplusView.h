@@ -81,7 +81,7 @@ protected:
     afx_msg void OnAudioExtension();
     afx_msg void OnUpdateAudioExtension(CCmdUI *pCmdUI);
     //}}AFX_MSG
-    afx_msg LRESULT OnUserGeneric(UINT wParam, LONG lParam);
+    afx_msg LRESULT OnUserGeneric(WPARAM wParam, LPARAM lParam);
     // afx_msg void OnMM_WIM_DATA(UINT parm1, LONG parm2);
     afx_msg LRESULT OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2);
     afx_msg LRESULT OnMM_WOM_DONE(WPARAM parm1, LPARAM parm2);

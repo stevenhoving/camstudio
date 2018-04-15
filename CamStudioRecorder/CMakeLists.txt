@@ -68,7 +68,6 @@ set(RECORDER_SOURCE
     AudioFormat.h
     AudioMixer.h
     AudioSpeakers.h
-    AudioVolume.h
     AutopanSpeed.h
     AutoSearchDialog.h
     AVI.h

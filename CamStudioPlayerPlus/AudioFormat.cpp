@@ -6,6 +6,7 @@
 #include <windowsx.h>
 
 #include "AudioFormat.h"
+#include <CamLib/AudioVolume.h>
 
 #include <string>
 #include <cstdio>
@@ -111,7 +112,7 @@ void AudioFormat::OnOK()
     int ifactornum = std::stol(interleaveFactorStr.GetString());
     if (ifactornum <= 0)
     {
-        MessageBox("Interleave factor must greater than 0", "Note", MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(_T("Interleave factor must greater than 0"), _T("Note"), MB_OK | MB_ICONEXCLAMATION);
         return;
     }
 
@@ -200,7 +201,7 @@ BOOL AudioFormat::OnInitDialog()
     // Interleave
     ((CButton *)(GetDlgItem(IDC_INTERLEAVE)))->SetCheck(interleaveFrames);
     CString interleaveFactorStr;
-    interleaveFactorStr.Format("%d", interleaveFactor);
+    interleaveFactorStr.Format(_T("%d"), interleaveFactor);
     ((CEdit *)(GetDlgItem(IDC_IFACTOR)))->SetWindowText(interleaveFactorStr);
 
     if (interleaveFrames)
@@ -241,7 +242,7 @@ BOOL AudioFormat::OnInitDialog()
     numdevice++;
 
     ((CComboBox *)(GetDlgItem(IDC_INPUTDEVICE)))->ResetContent();
-    ((CComboBox *)(GetDlgItem(IDC_INPUTDEVICE)))->AddString("Default input device");
+    ((CComboBox *)(GetDlgItem(IDC_INPUTDEVICE)))->AddString(_T("Default input device"));
 
     int numdevs = waveInGetNumDevs();
     for (int i = 0; i < numdevs; i++)
@@ -322,7 +323,7 @@ void AudioFormat::OnChoose()
     acmfc.fdwStyle = ACMFORMATCHOOSE_STYLEF_INITTOWFXSTRUCT;
 
     acmfc.cbwfx = cbwfxLocal;
-    acmfc.pszTitle = TEXT("Audio Compression Format");
+    acmfc.pszTitle = _T("Audio Compression Format");
     acmfc.szFormatTag[0] = '\0';
     acmfc.szFormat[0] = '\0';
     acmfc.pszName = nullptr;
@@ -352,8 +353,8 @@ void AudioFormat::OnChoose()
         {
 
             CString msgstr;
-            msgstr.Format("FormatChoose() failed with error = %u!", mmresult);
-            MessageBox(msgstr, "Note", MB_OK | MB_ICONEXCLAMATION);
+            msgstr.Format(_T("FormatChoose() failed with error = %u!"), mmresult);
+            MessageBox(msgstr, _T("Note"), MB_OK | MB_ICONEXCLAMATION);
         }
 
         return;
@@ -376,13 +377,13 @@ void AudioFormat::UpdateLocalCompressFormatInterface()
     if (bAudioCompressionLocal == 0)
     {
 
-        ((CEdit *)(GetDlgItem(IDC_COMPRESSEDFORMATTAG)))->SetWindowText("None Available");
-        ((CEdit *)(GetDlgItem(IDC_COMPRESSEDFORMAT)))->SetWindowText(" ");
+        ((CEdit *)(GetDlgItem(IDC_COMPRESSEDFORMATTAG)))->SetWindowText(_T("None Available"));
+        ((CEdit *)(GetDlgItem(IDC_COMPRESSEDFORMAT)))->SetWindowText(_T(" "));
         return;
     }
 
-    char pszFormat[200];
-    char pszFormatTag[200];
+    TCHAR pszFormat[200];
+    TCHAR pszFormatTag[200];
     BOOL res = GetFormatDescription(pwfxLocal, pszFormatTag, pszFormat);
 
     if (res)
@@ -427,13 +428,13 @@ BOOL GetFormatDescription(LPWAVEFORMATEX pwformat, LPTSTR pszFormatTag, LPTSTR p
     CString str_avg_bytes_per_second;
     CString str_nchannels;
 
-    str_samples_per_second.Format("%d Hz", pwformat->nSamplesPerSec);
-    str_bits_per_sample.Format("%d Bit", pwformat->wBitsPerSample);
-    str_avg_bytes_per_second.Format("%d Bytes/sec", pwformat->nAvgBytesPerSec);
+    str_samples_per_second.Format(_T("%d Hz"), pwformat->nSamplesPerSec);
+    str_bits_per_sample.Format(_T("%d Bit"), pwformat->wBitsPerSample);
+    str_avg_bytes_per_second.Format(_T("%d Bytes/sec"), pwformat->nAvgBytesPerSec);
     if (pwformat->nChannels == 1)
-        str_nchannels.Format("Mono");
+        str_nchannels.Format(_T("Mono"));
     else
-        str_nchannels.Format("Stereo");
+        str_nchannels.Format(_T("Stereo"));
 
     formatstr = str_samples_per_second + ", ";
     if ((pwformat->wBitsPerSample) > 0)
@@ -646,8 +647,8 @@ void AllocLocalCompressFormat()
         {
 
             CString msgstr;
-            msgstr.Format("Metrics failed mmresult=%u!", mmresult);
-            ::MessageBox(nullptr, msgstr, "Note", MB_OK | MB_ICONEXCLAMATION);
+            msgstr.Format(_T("Metrics failed mmresult=%u!"), mmresult);
+            ::MessageBox(nullptr, msgstr, _T("Note"), MB_OK | MB_ICONEXCLAMATION);
             return;
         }
 
@@ -659,8 +660,8 @@ void AllocLocalCompressFormat()
         {
 
             CString msgstr;
-            msgstr.Format("GlobalAllocPtr(%lu) failed!", cbwfxLocal);
-            ::MessageBox(nullptr, msgstr, "Note", MB_OK | MB_ICONEXCLAMATION);
+            msgstr.Format(_T("GlobalAllocPtr(%lu) failed!"), cbwfxLocal);
+            ::MessageBox(nullptr, msgstr, _T("Note"), MB_OK | MB_ICONEXCLAMATION);
             return;
         }
     }
@@ -681,13 +682,15 @@ void AudioFormat::OnCancel()
 
 void AudioFormat::OnVolume()
 {
+    OnAudioVolume(m_hWnd);
+#if 0
     // Ver 1.1
     if (waveInGetNumDevs() == 0)
     {
 
         CString msgstr;
-        msgstr.Format("Unable to detect audio input device. You need a sound card with microphone input.");
-        MessageBox(msgstr, "Note", MB_OK | MB_ICONEXCLAMATION);
+        msgstr.Format(_T("Unable to detect audio input device. You need a sound card with microphone input."));
+        MessageBox(msgstr, _T("Note"), MB_OK | MB_ICONEXCLAMATION);
 
         return;
     }
@@ -696,7 +699,7 @@ void AudioFormat::OnVolume()
     CString testLaunchPath;
     CString exeFileName("\\sndvol32.exe");
 
-    char dirx[300];
+    TCHAR dirx[300];
     GetWindowsDirectory(dirx, 300);
     CString Windir(dirx);
     CString AppDir;
@@ -767,6 +770,7 @@ void AudioFormat::OnVolume()
             MessageBox("Error launching Volume Control!", "Note", MB_OK | MB_ICONEXCLAMATION);
         }
     }
+#endif
 }
 
 void AudioFormat::OnSelchangeInputdevice()
@@ -811,7 +815,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
     if ((pwic.dwFormats) & WAVE_FORMAT_1M08)
     {
 
-        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString("11.025 kHz, mono, 8-bit");
+        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString(_T("11.025 kHz, mono, 8-bit"));
 
         formatmap[numformat] = WAVE_FORMAT_1M08;
         numformat++;
@@ -820,7 +824,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
     if ((pwic.dwFormats) & WAVE_FORMAT_1M16)
     {
 
-        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString("11.025 kHz, mono, 16-bit");
+        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString(_T("11.025 kHz, mono, 16-bit"));
 
         formatmap[numformat] = WAVE_FORMAT_1M16;
         numformat++;
@@ -829,7 +833,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
     if ((pwic.dwFormats) & WAVE_FORMAT_1S08)
     {
 
-        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString("11.025 kHz, stereo, 8-bit");
+        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString(_T("11.025 kHz, stereo, 8-bit"));
 
         formatmap[numformat] = WAVE_FORMAT_1S08;
         numformat++;
@@ -838,7 +842,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
     if ((pwic.dwFormats) & WAVE_FORMAT_1S16)
     {
 
-        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString("11.025 kHz, stereo, 16-bit");
+        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString(_T("11.025 kHz, stereo, 16-bit"));
 
         formatmap[numformat] = WAVE_FORMAT_1S16;
         numformat++;
@@ -847,7 +851,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
     if ((pwic.dwFormats) & WAVE_FORMAT_2M08)
     {
 
-        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString("22.05 kHz, mono, 8-bit");
+        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString(_T("22.05 kHz, mono, 8-bit"));
 
         formatmap[numformat] = WAVE_FORMAT_2M08;
         numformat++;
@@ -856,7 +860,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
     if ((pwic.dwFormats) & WAVE_FORMAT_2M16)
     {
 
-        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString("22.05 kHz, mono, 16-bit");
+        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString(_T("22.05 kHz, mono, 16-bit"));
 
         formatmap[numformat] = WAVE_FORMAT_2M16;
         numformat++;
@@ -865,7 +869,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
     if ((pwic.dwFormats) & WAVE_FORMAT_2S08)
     {
 
-        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString("22.05 kHz, stereo, 8-bit");
+        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString(_T("22.05 kHz, stereo, 8-bit"));
 
         formatmap[numformat] = WAVE_FORMAT_2S08;
         numformat++;
@@ -874,7 +878,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
     if ((pwic.dwFormats) & WAVE_FORMAT_2S16)
     {
 
-        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString("22.05 kHz, stereo, 16-bit");
+        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString(_T("22.05 kHz, stereo, 16-bit"));
 
         formatmap[numformat] = WAVE_FORMAT_2S16;
         numformat++;
@@ -883,7 +887,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
     if ((pwic.dwFormats) & WAVE_FORMAT_4M08)
     {
 
-        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString("44.1 kHz, mono, 8-bit");
+        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString(_T("44.1 kHz, mono, 8-bit"));
 
         formatmap[numformat] = WAVE_FORMAT_4M08;
         numformat++;
@@ -892,7 +896,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
     if ((pwic.dwFormats) & WAVE_FORMAT_4M16)
     {
 
-        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString("44.1 kHz, mono, 16-bit");
+        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString(_T("44.1 kHz, mono, 16-bit"));
 
         formatmap[numformat] = WAVE_FORMAT_4M16;
         numformat++;
@@ -901,7 +905,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
     if ((pwic.dwFormats) & WAVE_FORMAT_4S08)
     {
 
-        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString("44.1 kHz, stereo, 8-bit");
+        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString(_T("44.1 kHz, stereo, 8-bit"));
 
         formatmap[numformat] = WAVE_FORMAT_4S08;
         numformat++;
@@ -910,7 +914,7 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
     if ((pwic.dwFormats) & WAVE_FORMAT_4S16)
     {
 
-        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString("44.1 kHz, stereo, 16-bit");
+        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString(_T("44.1 kHz, stereo, 16-bit"));
 
         formatmap[numformat] = WAVE_FORMAT_4S16;
         numformat++;
@@ -919,11 +923,11 @@ void AudioFormat::UpdateDeviceData(UINT deviceID, DWORD curr_sel_rec_format, LPW
     if (numformat <= 0)
     {
 
-        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString("None Available");
+        ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->AddString(_T("None Available"));
         ((CComboBox *)(GetDlgItem(IDC_RECORDFORMAT)))->SetCurSel(0);
 
-        ((CEdit *)(GetDlgItem(IDC_COMPRESSEDFORMATTAG)))->SetWindowText("None Available");
-        ((CEdit *)(GetDlgItem(IDC_COMPRESSEDFORMAT)))->SetWindowText(" ");
+        ((CEdit *)(GetDlgItem(IDC_COMPRESSEDFORMATTAG)))->SetWindowText(_T("None Available"));
+        ((CEdit *)(GetDlgItem(IDC_COMPRESSEDFORMAT)))->SetWindowText(_T(" "));
 
         ((CButton *)(GetDlgItem(IDC_CHOOSE)))->EnableWindow(FALSE);
 

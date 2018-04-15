@@ -2,10 +2,10 @@
 
 #include <array>
 
-
 class CAudioFormatDlg : public CDialog
 {
     CAudioFormatDlg(CWnd *pParent = nullptr);
+
 public:
     CAudioFormatDlg(const sAudioFormat &cFmt, CWnd *pParent = nullptr);
 
@@ -92,4 +92,3 @@ private:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
