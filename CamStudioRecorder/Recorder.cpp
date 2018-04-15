@@ -206,10 +206,10 @@ BOOL CRecorderApp::InitInstance()
     //CString strProfile;
 
     // Only reading, if the user has no file yet, see if a starter file was provided:
-    std::string profile_path = get_config_path();
+    const auto profile_path = get_config_path();
 
     // \todo fix this..
-    m_pszProfileName = (LPCTSTR)_strdup(profile_path.c_str());
+    m_pszProfileName = _tcsdup(utf8_to_wstring(profile_path).c_str());
 
     // TODO: re-enable when class complete
     // Read the file. If there is an error, report it and exit.

@@ -51,7 +51,7 @@ avi_writer::avi_writer(const std::string video_filename, const int fps,
     hr = ::AVIFileCreateStream(avi_file_, &avi_stream_, &avi_stream_info_);
     if (hr != AVIERR_OK)
     {
-        TRACE("CRecorderView::RecordVideo: AVIFileCreateStream error\n");
+        TRACE("AviWriter: AVIFileCreateStream error\n");
         CAVI::OnError(hr);
         throw std::runtime_error("unable to initialize avi writer");
     }
@@ -80,7 +80,7 @@ avi_writer::avi_writer(const std::string video_filename, const int fps,
         nullptr);
     if (hr != AVIERR_OK)
     {
-        TRACE("CRecorderView::RecordVideo: AVIMakeCompressedStream error\n");
+        TRACE("AviWriter: AVIMakeCompressedStream error\n");
         CAVI::OnError(hr);
 
         throw std::runtime_error("unable to initialize avi writer");
@@ -130,7 +130,7 @@ void avi_writer::write(DWORD frametime, BITMAPINFOHEADER *alpbi)
 
     if (hr != AVIERR_OK)
     {
-        TRACE("CRecorderView::RecordVideo: AVIStreamWrite error\n");
+        TRACE("AviWriter: AVIStreamWrite error\n");
         CAVI::OnError(hr);
         throw std::runtime_error("unable to write avi frame");
     }

@@ -1,7 +1,8 @@
 #pragma once
 
-#include <CamLib/TrayIcon.h>
 #include "UpdateDialog.h"
+
+#include <CamLib/TrayIcon.h>
 #include <iostream>
 #include <sstream>
 #include <string>

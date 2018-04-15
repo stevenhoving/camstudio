@@ -55,7 +55,6 @@ void WriteFont(libconfig::Setting &s, LOGFONT &f);
 void WriteIA(libconfig::Setting &s, ImageAttributes &iaResult);
 void WriteTA(libconfig::Setting &s, TextAttributes &taResult);
 
-
 template <typename T>
 static
 void UpdateSetting(libconfig::Setting &s, const char *name, const T &value, libconfig::Setting::Type t)
@@ -72,7 +71,6 @@ void UpdateSetting(libconfig::Setting &s, const char *name, const T &value, libc
 
 // colorref specialization
 template <>
-static
 void UpdateSetting<COLORREF>(libconfig::Setting &s, const char *name, const COLORREF &value, libconfig::Setting::Type t)
 {
     if (s.exists(name))
@@ -87,7 +85,6 @@ void UpdateSetting<COLORREF>(libconfig::Setting &s, const char *name, const COLO
 
 // uint32_t specialization
 template <>
-static
 void UpdateSetting<uint32_t>(libconfig::Setting &s, const char *name, const uint32_t &value, libconfig::Setting::Type t)
 {
     if (s.exists(name))
@@ -102,7 +99,6 @@ void UpdateSetting<uint32_t>(libconfig::Setting &s, const char *name, const uint
 
 // std::wstring specialization
 template <>
-static
 void UpdateSetting<std::wstring>(libconfig::Setting &s, const char *name, const std::wstring &value, libconfig::Setting::Type t)
 {
     if (s.exists(name))
@@ -117,7 +113,6 @@ void UpdateSetting<std::wstring>(libconfig::Setting &s, const char *name, const 
 
 // dir_access specialization
 template <>
-static
 void UpdateSetting<dir_access>(libconfig::Setting &s, const char *name, const dir_access &value, libconfig::Setting::Type t)
 {
     if (s.exists(name))
@@ -129,6 +124,8 @@ void UpdateSetting<dir_access>(libconfig::Setting &s, const char *name, const di
         s.add(name, t) = static_cast<int>(value);
     }
 }
+
+
 
 #define LEGACY_PROFILE_DISABLE
 

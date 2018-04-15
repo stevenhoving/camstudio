@@ -1,5 +1,7 @@
 #pragma once
 
+#include <windows.h>
+
 // Constants
 #define BUFFER_LENGTH 256
 #define WM_USER_PLAY 0x00401

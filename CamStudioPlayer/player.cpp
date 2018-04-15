@@ -18,20 +18,26 @@
 #define VC_EXTRALEAN
 #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 #define INC_OLE2
-#include <windows.h>
+
+#include "player.h"
+#include <vfw.h>
+
+
 #include <shellapi.h>
 #include <windowsx.h>
 #include <mmsystem.h>
 #include <commdlg.h>
+
 #include <string>
 #include <cstdlib>
-#include <direct.h>
-#include <digitalv.h>
-#include <vfw.h>
-#include "player.h"
-#include "resource.h"
 
 #include <tchar.h>
+
+#include <direct.h>
+#include <digitalv.h>
+
+#include "resource.h"
+
 
 // Globals
 int defaultWidth = 800;          // Default width of the player window
