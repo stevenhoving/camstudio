@@ -13,3 +13,4 @@ BOOL CALLBACK aviaudioPlay(HWND hwnd, PAVISTREAM pavi, LONG lStart, LONG lEnd, B
 void CALLBACK aviaudioMessage(HWND, UINT, WPARAM, LPARAM);
 void CALLBACK aviaudioStop(void);
 LONG CALLBACK aviaudioTime(void);
+
