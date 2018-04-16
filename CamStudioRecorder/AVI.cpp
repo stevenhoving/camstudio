@@ -377,7 +377,7 @@ int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, B
     ::AVIFileExit();
 
     // Set Title Bar
-    ::AfxGetMainWnd()->SetWindowText(_T("CamStudio - Custom Build"));
+    ::AfxGetMainWnd()->SetWindowText(_T("CamStudio"));
     return 0;
 #endif // EXPERIMENTAL_CODE
 }

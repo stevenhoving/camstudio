@@ -146,11 +146,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
     if (pmode == PLAYER)
     {
-        SetWindowText(_T("CamStudio Player - Custom Build"));
+        SetWindowText(_T("CamStudio Player"));
     }
     else
     {
-        SetWindowText(_T("CamStudio Dubber - Custom Build"));
+        SetWindowText(_T("CamStudio Dubber"));
     }
 
     return 0;
