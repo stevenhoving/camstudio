@@ -30,6 +30,11 @@ Besides creating a clean installer for camstudio I have found myself a couple of
 * swf support.
 * xnote support.
 
+## How to clone/build
+1. `git clone https://github.com/stevenhoving/camstudio.git --recursive`
+2. `bootstrap.cmd`
+3. Now open the project in the `vs_build` directory and build it.
+
 ## The source forge project
 https://sourceforge.net/p/camstudio
 
