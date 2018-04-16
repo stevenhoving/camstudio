@@ -26,7 +26,7 @@ Besides creating a clean installer for camstudio I have found myself a couple of
 * Replace UI framework with Qt.
 * Improve settings screen.
 
-## Features removed
+## Removed features
 * swf support.
 * xnote support.
 
