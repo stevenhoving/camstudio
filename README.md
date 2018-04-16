@@ -18,7 +18,7 @@ Besides creating a clean installer for camstudio I have found myself a couple of
   * minilzo - done.
   * libconfig++ - done.
   * libpng - done.
-* Replace static visual studio project files with CMake - pending.
+* Replace static visual studio project files with CMake - done.
 * Create release.
 * Introduce unit test.
 * Add support for mkv.
