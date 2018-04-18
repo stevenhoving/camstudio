@@ -2,6 +2,7 @@
 #include "Recorder.h"
 #include "ListManager.h"
 #include <cstdint>
+#include <filesystem>
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -153,6 +154,11 @@ int CListManager::SaveShapeArray(CString saveDir)
 {
     int ret = TRUE;
     FILE *fptr = nullptr;
+
+    const auto path = std::experimental::filesystem::path(saveDir.GetString());
+    if (!std::experimental::filesystem::exists(path.parent_path()))
+        std::experimental::filesystem::create_directories(path.parent_path());
+
     _wfopen_s(&fptr, saveDir.GetString(), _T("wb"));
     if (!fptr)
     {
