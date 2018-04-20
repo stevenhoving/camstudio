@@ -1,8 +1,7 @@
-
-shallow_clone: true
+# shallow_clone: true
 
 image:
-  - Visual Studio 2017
+  Visual Studio 2017
 
 build:
   verbosity: detailed
@@ -18,11 +17,9 @@ branches:
 
 install:
   ############################################################################
-  # All external dependencies are installed in C:\projects\deps
+  # Update git submodules
   ############################################################################
-  - mkdir C:\projects\deps
-  - cd C:\projects\deps
-
+  - git submodule update --init --recursive
 
   ############################################################################
   # Install a recent CMake
@@ -35,10 +32,10 @@ install:
   - cmake --version
 
 build_script:
-  - cd C:\projects\libraries
+  - cd C:\projects\camstudio
   - IF EXIST build RMDIR /S /Q vs_build
-  - MKDIR vs_buils
-  - cd build
-  - cmake -G "Visual Studio 15 Win64"
+  - MKDIR vs_build
+  - cd vs_build
+  - cmake ../ -G "Visual Studio 15 2017 Win64" -T host=x64
   - cmake  --build .
-  
+
