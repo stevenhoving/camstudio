@@ -2,7 +2,7 @@
 // $Header: FolderDialog.cpp Revision:1.11 Tue Jun 23 18:00:44 1998 KenReed $
 
 #include "stdafx.h"
-#include "FolderDialog.h"
+#include "FolderDlg.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

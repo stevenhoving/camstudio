@@ -1,12 +1,7 @@
 #pragma once
 
-
-/////////////////////////////////////////////////////////////////////////////
-// CSyncDlg dialog
-
 class CSyncDlg : public CDialog
 {
-
     CSyncDlg(CWnd *pParent = nullptr); //  not implemeted
 public:
     CSyncDlg(int iType, int iShift, CWnd *pParent = nullptr);

@@ -20,13 +20,13 @@
 #include "MouseCaptureWnd.h"
 #include "resource.h"
 
-#include "TextDialog.h"
-#include "EditTransparency.h"
-#include "EditImage.h"
+#include "TextDlg.h"
+#include "EditTransparencyDlg.h"
+#include "EditImageDlg.h"
 
 #include "ListManager.h"
-#include "ScreenAnnotations.h"
-#include "ResizeDialog.h"
+#include "ScreenAnnotationsDlg.h"
+#include "ResizeDlg.h"
 
 #include <CamLib/CStudioLib.h>
 #include <CamLib/CamColor.h>

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Recorder.h"
-#include "EditTransparency.h"
+#include "EditTransparencyDlg.h"
 #include "TransparentWnd.h"
 
 #ifdef _DEBUG

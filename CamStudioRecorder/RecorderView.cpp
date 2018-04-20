@@ -16,19 +16,19 @@
 #include "MouseCaptureWnd.h"
 #include "CamCursor.h"
 
-#include "AutopanSpeed.h"
-#include "AudioFormat.h"
-#include "AutoSearchDialog.h"
+#include "AutopanSpeedDlg.h"
+#include "AudioFormatDlg.h"
+#include "AutoSearchDlg.h"
 #include "CursorOptionsDlg.h"
-#include "FolderDialog.h"
-#include "FixedRegion.h"
-#include "Keyshortcuts.h"
+#include "FolderDlg.h"
+#include "FixedRegionDlg.h"
+#include "KeyshortcutsDlg.h"
 #include "ListManager.h"
-#include "PresetTime.h"
-#include "ScreenAnnotations.h"
-#include "SyncDialog.h"
-#include "TroubleShoot.h"
-#include "VideoOptions.h"
+#include "PresetTimeDlg.h"
+#include "ScreenAnnotationsDlg.h"
+#include "SyncDlg.h"
+#include "TroubleShootDlg.h"
+#include "VideoOptionsDlg.h"
 #include "ProgressDlg.h"
 #include "AviWriter.h"
 
@@ -43,7 +43,7 @@
 #include <CamLib/TrayIcon.h>
 
 #include "MP4Converter.h"
-#include "AudioSpeakers.h"
+#include "AudioSpeakersDlg.h"
 #include "HotKey.h"
 #include "Screen.h"
 #include "vfw/VCM.h"
@@ -51,9 +51,9 @@
 #include "AVI.h"
 #include "MCI.h"
 
-#include "addons/AnnotationEffectsOptions.h"
-#include "addons/EffectsOptions.h"
-#include "addons/EffectsOptions2.h"
+#include "addons/AnnotationEffectsOptionsDlg.h"
+#include "addons/EffectsOptionsDlg.h"
+#include "addons/EffectsOptions2Dlg.h"
 
 #include "string_convert.h"
 
@@ -1360,15 +1360,6 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
         }
     }
 
-    // TEST
-    if (0)
-    {
-        CString strAVIOut;
-        strAVIOut.Format(_T("%s\\FadeOut.avi"), GetProgPath().GetString());
-        CamAVIFile aviFile(cVideoOpts, cAudioFormat);
-        aviFile.FadeOut(strTargetVideoFile, strAVIOut);
-    }
-
     switch (cProgramOpts.m_iRecordingMode)
     {
         case ModeAVI:
@@ -1523,8 +1514,8 @@ void CRecorderView::OnRecord()
                 m_basicMsg = nullptr;
             }
 
-            m_basicMsg = new CBasicMessage();
-            m_basicMsg->Create(CBasicMessage::IDD);
+            m_basicMsg = new CBasicMessageDlg();
+            m_basicMsg->Create(CBasicMessageDlg::IDD);
             if (cRegionOpts.m_iCaptureMode == CAPTURE_WINDOW)
             {
                 m_basicMsg->SetText(_T("Click on window to be captured."));

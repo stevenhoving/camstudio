@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "../Recorder.h"
-#include "EffectsOptions.h"
+#include "EffectsOptionsDlg.h"
 
 
 // CEffectsOptionsDlg dialog

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "EffectsOptions.h"
-#include "EffectsOptions2.h"
+#include "EffectsOptionsDlg.h"
+#include "EffectsOptions2Dlg.h"
 #include <afxwin.h>
 
 class CAnnotationEffectsOptionsDlg : public CDialog

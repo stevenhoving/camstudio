@@ -1,6 +1,8 @@
 #pragma once
+
 #include "dshow.h"
 #include <list>
+
 class AVICompressorFilter
 {
 public:

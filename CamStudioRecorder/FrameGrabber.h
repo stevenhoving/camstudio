@@ -18,7 +18,6 @@
 
 class CFrameGrabber : public CWnd
 {
-
 public:
     CFrameGrabber();
 

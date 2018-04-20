@@ -1,10 +1,9 @@
 #include "StdAfx.h"
 #include "Screen.h"
-#include "ximage.h"
 #include "RecorderView.h"
 #include <CamHook/ClickQueue.h>
 
-#include "addons/EffectsOptions.h"
+#include "addons/EffectsOptionsDlg.h"
 
 // for using std::min, std::max in gdiplus
 #include <algorithm>

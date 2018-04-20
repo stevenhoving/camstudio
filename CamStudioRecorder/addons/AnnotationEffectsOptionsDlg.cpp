@@ -1,10 +1,8 @@
 // Modifies Timestamp, Caption, and Watermark
-/////////////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
-#include "../Recorder.h"
-#include "AnnotationEffectsOptions.h"
 
-// CAnnotationEffectsOptionsDlg dialog
+#include "stdafx.h"
+#include "Recorder.h"
+#include "AnnotationEffectsOptionsDlg.h"
 
 IMPLEMENT_DYNAMIC(CAnnotationEffectsOptionsDlg, CDialog)
 

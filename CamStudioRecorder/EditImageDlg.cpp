@@ -2,7 +2,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Recorder.h"
-#include "EditImage.h"
+#include "EditImageDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

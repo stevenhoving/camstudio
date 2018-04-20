@@ -2,7 +2,7 @@
 
 #include "VideoWnd.h"     // for CVideoWnd
 #include "FlashingWnd.h"  // for CFlashingWnd
-#include "BasicMessage.h" // for CBasicMessage
+#include "BasicMessageDlg.h" // for CBasicMessageDlg
 #include "screen.h"
 #include "MP4Converter.h"
 
@@ -10,7 +10,6 @@
 
 #define TEMPFILETAGINDICATOR "~temp"
 
-// forward declaration
 class CRecorderDoc;
 
 class CRecorderView : public CView
@@ -198,7 +197,7 @@ private:
     CFlashingWnd m_FlashingWnd;
     CVideoWnd m_vanWnd;
     CCamera m_cCamera;
-    CBasicMessage *m_basicMsg;
+    CBasicMessageDlg *m_basicMsg;
     double _zoom;
     CPoint _zoomedAt;
     DWORD _zoomWhen;

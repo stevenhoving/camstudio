@@ -6,8 +6,6 @@
     #error include 'resource.h' before including this file for dialog resource
 #endif
 
-// CEffectsOptionsDlg dialog
-
 class CEffectsOptionsDlg : public CDialog
 {
     DECLARE_DYNAMIC(CEffectsOptionsDlg)
