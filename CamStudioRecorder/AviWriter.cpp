@@ -76,7 +76,7 @@ avi_writer::avi_writer(const std::string video_filename, const int fps,
         avi_compress_options_.cbParms = video_options_.StateSize();
     }
 
-    hr = AVIMakeCompressedStream(&avi_stream_compressed_, avi_stream_, &avi_compress_options_,
+    hr = ::AVIMakeCompressedStream(&avi_stream_compressed_, avi_stream_, &avi_compress_options_,
         nullptr);
     if (hr != AVIERR_OK)
     {

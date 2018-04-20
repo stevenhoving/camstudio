@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "Recorder.h"
 #include "VideoWnd.h"
+#include "Recorder.h"
 #include "TransRateDialog.h"
 
 #ifdef _DEBUG
@@ -15,11 +15,12 @@ int iRrefreshRate = DEFAULT_PERIOD;
 /////////////////////////////////////////////////////////////////////////////
 // CVideoWnd
 CVideoWnd::CVideoWnd()
-    : m_ProcessorMode(0)
+    : CTransparentWnd()
+    , m_ProcessorMode(0)
+    , m_iStatus(0)
+    , m_iRefreshRate(iRrefreshRate)
 {
-    m_iStatus = 0;
     m_baseType = 1;
-    m_iRefreshRate = iRrefreshRate;
 }
 
 CVideoWnd::~CVideoWnd()
@@ -43,7 +44,6 @@ END_MESSAGE_MAP()
 
 void CVideoWnd::AdjustRefreshRate(int rate)
 {
-
     if (rate != m_iRefreshRate)
     {
         m_iRefreshRate = rate;

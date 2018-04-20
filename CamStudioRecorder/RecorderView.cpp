@@ -16,8 +16,8 @@
 #include "MouseCaptureWnd.h"
 #include "CamCursor.h"
 
-#include "AutopanSpeed.h"
-#include "AudioFormat.h"
+#include "AutopanSpeedDlg.h"
+#include "AudioFormatDlg.h"
 #include "AutoSearchDialog.h"
 #include "CursorOptionsDlg.h"
 #include "FolderDialog.h"
@@ -43,7 +43,7 @@
 #include <CamLib/TrayIcon.h>
 
 #include "MP4Converter.h"
-#include "AudioSpeakers.h"
+#include "AudioSpeakersDlg.h"
 #include "HotKey.h"
 #include "Screen.h"
 #include "vfw/VCM.h"
@@ -1358,15 +1358,6 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
         {
             std::experimental::filesystem::remove(strTempAudioWavFilePath);
         }
-    }
-
-    // TEST
-    if (0)
-    {
-        CString strAVIOut;
-        strAVIOut.Format(_T("%s\\FadeOut.avi"), GetProgPath().GetString());
-        CamAVIFile aviFile(cVideoOpts, cAudioFormat);
-        aviFile.FadeOut(strTargetVideoFile, strAVIOut);
     }
 
     switch (cProgramOpts.m_iRecordingMode)

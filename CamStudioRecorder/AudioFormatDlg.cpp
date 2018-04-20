@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Recorder.h"
-#include "AudioFormat.h"
+#include "AudioFormatDlg.h"
 
 #include "RecorderView.h"
 #include "vfw/ACM.h"
@@ -18,13 +18,6 @@ static char THIS_FILE[] = __FILE__;
 #if !defined(AVE_FORMAT_MPEGLAYER3)
 #define WAVE_FORMAT_MPEGLAYER3 0x0055
 #endif
-
-// Local Variables
-
-// ver 1.8
-
-/////////////////////////////////////////////////////////////////////////////
-// CAudioFormatDlg dialog
 
 CAudioFormatDlg::CAudioFormatDlg(CWnd *pParent /*=nullptr*/)
     : CDialog(CAudioFormatDlg::IDD, pParent)

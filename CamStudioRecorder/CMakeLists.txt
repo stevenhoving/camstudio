@@ -18,10 +18,14 @@ project(CamStudioRecorder)
 set(RECORDER_SOURCE
     AviWriter.cpp
     AviWriter.h
-    AudioFormat.cpp
+    AudioFormatDlg.cpp
+    AudioFormatDlg.h
     AudioMixer.cpp
-    AudioSpeakers.cpp
-    AutopanSpeed.cpp
+    AudioMixer.h
+    AudioSpeakersDlg.cpp
+    AudioSpeakersDlg.h
+    AutopanSpeedDlg.cpp
+    AutopanSpeedDlg.h
     AutoSearchDialog.cpp
     AVI.cpp
     AVICompressorFilter.cpp
@@ -62,13 +66,8 @@ set(RECORDER_SOURCE
     TransparentWnd.cpp
     TransRateDialog.cpp
     TroubleShoot.cpp
-    UpdateDialog.cpp
     VideoOptions.cpp
     VideoWnd.cpp
-    AudioFormat.h
-    AudioMixer.h
-    AudioSpeakers.h
-    AutopanSpeed.h
     AutoSearchDialog.h
     AVI.h
     AVICompressorFilter.h
@@ -111,7 +110,6 @@ set(RECORDER_SOURCE
     TransparentWnd.h
     TransRateDialog.h
     TroubleShoot.h
-    UpdateDialog.h
     VideoOptions.h
     VideoWnd.h
     string_convert.h
