@@ -87,4 +87,3 @@ struct TextAttributes
     int            isFontSelected{FALSE};
     LOGFONT        logfont;
 };
-

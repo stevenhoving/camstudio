@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Recorder.h"
-#include "FixedRegion.h"
+#include "FixedRegionDlg.h"
 #include "MainFrm.h" // for maxxScreen, maxyScreen
 #include "RecorderView.h"
 #include "MouseCaptureWnd.h"

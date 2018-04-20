@@ -26,22 +26,34 @@ set(RECORDER_SOURCE
     AudioSpeakersDlg.h
     AutopanSpeedDlg.cpp
     AutopanSpeedDlg.h
-    AutoSearchDialog.cpp
+    AutoSearchDlg.cpp
+    AutoSearchDlg.h
     AVI.cpp
+    AVI.h
     AVICompressorFilter.cpp
-    BasicMessage.cpp
+    AVICompressorFilter.h
+    BasicMessageDlg.cpp
+    BasicMessageDlg.h
     CamCursor.cpp
+    CamCursor.h
     CamStudioCommandLineInfo.cpp
     CursorOptionsDlg.cpp
-    EditImage.cpp
-    EditTransparency.cpp
-    FixedRegion.cpp
+    CursorOptionsDlg.h
+    EditImageDlg.cpp
+    EditImageDlg.h
+    EditTransparencyDlg.cpp
+    EditTransparencyDlg.h
+    FixedRegionDlg.cpp
+    FixedRegionDlg.h
     FlashingWnd.cpp
-    FolderDialog.cpp
+    FolderDlg.cpp
+    FolderDlg.h
     FrameGrabber.cpp
+    FrameGrabber.h
     GdiPlusInitializer.cpp
     HotKey.cpp
-    Keyshortcuts.cpp
+    KeyshortcutsDlg.cpp
+    KeyshortcutsDlg.h
     LayeredWindowHelperST.cpp
     LayoutList.cpp
     ListManager.cpp
@@ -49,41 +61,39 @@ set(RECORDER_SOURCE
     MCI.cpp
     MouseCaptureWnd.cpp
     MP4Converter.cpp
-    NewShape.cpp
-    PresetTime.cpp
+    NewShapeDlg.cpp
+    NewShapeDlg.h
+    PresetTimeDlg.cpp
+    PresetTimeDlg.h
     Profile.cpp
     ProgressDlg.cpp
     Recorder.cpp
     RecorderDoc.cpp
     RecorderView.cpp
-    ResizeDialog.cpp
+    ResizeDlg.cpp
     Screen.cpp
-    ScreenAnnotations.cpp
+    Screen.h
+    ScreenAnnotationsDlg.cpp
+    ScreenAnnotationsDlg.h
     SpeakersImpl.cpp
-    StdAfx.cpp
-    SyncDialog.cpp
-    TextDialog.cpp
+    stdafx.cpp
+    stdafx.h
+    SyncDlg.cpp
+    SyncDlg.h
+    TextDlg.cpp
+    TextDlg.h
     TransparentWnd.cpp
-    TransRateDialog.cpp
-    TroubleShoot.cpp
-    VideoOptions.cpp
+    TransRateDlg.cpp
+    TransRateDlg.h
+    TroubleShootDlg.cpp
+    TroubleShootDlg.h
+    VideoOptionsDlg.cpp
+    VideoOptionsDlg.h
     VideoWnd.cpp
-    AutoSearchDialog.h
-    AVI.h
-    AVICompressorFilter.h
-    BasicMessage.h
-    CamCursor.h
     CamStudioCommandLineInfo.h
-    CursorOptionsDlg.h
-    EditImage.h
-    EditTransparency.h
-    FixedRegion.h
     FlashingWnd.h
-    FolderDialog.h
-    FrameGrabber.h
     GdiPlusInitializer.h
     HotKey.h
-    Keyshortcuts.h
     LayeredWindowHelperST.h
     LayoutList.h
     ListManager.h
@@ -91,26 +101,16 @@ set(RECORDER_SOURCE
     MCI.h
     MouseCaptureWnd.h
     MP4Converter.h
-    NewShape.h
-    PresetTime.h
     Profile.h
     ProgressDlg.h
     Recorder.h
     RecorderDoc.h
     RecorderVersionReleaseInfo.h
     RecorderView.h
-    ResizeDialog.h
+    ResizeDlg.h
     resource.h
-    Screen.h
-    ScreenAnnotations.h
-    StdAfx.h
-    SyncDialog.h
     targetver.h
-    TextDialog.h
     TransparentWnd.h
-    TransRateDialog.h
-    TroubleShoot.h
-    VideoOptions.h
     VideoWnd.h
     string_convert.h
 )
@@ -123,12 +123,12 @@ set(RECORDER_VFW_SOURCE
 )
 
 set(RECORDER_ADDONS_SOURCE
-    addons/AnnotationEffectsOptions.cpp
-    addons/AnnotationEffectsOptions.h
-    addons/EffectsOptions.cpp
-    addons/EffectsOptions.h
-    addons/EffectsOptions2.cpp
-    addons/EffectsOptions2.h
+    addons/AnnotationEffectsOptionsDlg.cpp
+    addons/AnnotationEffectsOptionsDlg.h
+    addons/EffectsOptionsDlg.cpp
+    addons/EffectsOptionsDlg.h
+    addons/EffectsOptions2Dlg.cpp
+    addons/EffectsOptions2Dlg.h
     addons/ImageAttributes.h
     addons/TextAttributes.h
 )

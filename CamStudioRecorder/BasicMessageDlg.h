@@ -1,16 +1,15 @@
 #pragma once
+
 #include <afxwin.h>
 #include "resource.h" //Added by janhgm, otherwise IDD_BASICMESSAGE is undeclared identifier
 
-// CBasicMessage dialog
-
-class CBasicMessage : public CDialog
+class CBasicMessageDlg : public CDialog
 {
-    DECLARE_DYNAMIC(CBasicMessage)
+    DECLARE_DYNAMIC(CBasicMessageDlg)
 
 public:
-    CBasicMessage(CWnd *pParent = nullptr);
-    virtual ~CBasicMessage();
+    CBasicMessageDlg(CWnd *pParent = nullptr);
+    virtual ~CBasicMessageDlg();
     void SetText(LPCTSTR lpString);
     void SetTitle(LPCTSTR lpString);
     virtual void OnCancel();

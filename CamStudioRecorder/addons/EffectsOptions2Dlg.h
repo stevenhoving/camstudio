@@ -1,12 +1,11 @@
 #pragma once
+
 #include "ImageAttributes.h"
-#include "ximage.h"
+#include <ximage.h>
 
 #ifndef IDD_EFFECTS_OPTIONS2
     #error include 'resource.h' before including this file for dialog resource
 #endif
-
-// CEffectsOptions2Dlg dialog
 
 class CEffectsOptions2Dlg : public CDialog
 {
@@ -59,5 +58,3 @@ public:
 };
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
-
-

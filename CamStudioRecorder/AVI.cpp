@@ -2,7 +2,7 @@
 #include "Recorder.h"
 #include "AVI.h"
 #include "vfw/VCM.h"
-#include "ximage.h"
+#include <ximage.h>
 #include <windowsx.h> // for memory operations
 
 #define NUMSTREAMS 2

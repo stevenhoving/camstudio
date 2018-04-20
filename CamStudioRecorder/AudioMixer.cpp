@@ -213,7 +213,7 @@ bool CAudioMixer::query()
         return !bResult; // only test valid devices
 
     VERIFY(MMSYSERR_NOERROR == GetDevCaps(&m_sMixerCaps));
-    TRACE("Mixer: %s\nVersion: %d.%d\nDestinations: %d\n",
+    TRACE("Mixer: %S\nVersion: %d.%d\nDestinations: %d\n",
         m_sMixerCaps.szPname, HIBYTE(m_sMixerCaps.vDriverVersion),
         LOBYTE(m_sMixerCaps.vDriverVersion), m_sMixerCaps.cDestinations);
 
@@ -266,7 +266,7 @@ bool CAudioMixer::query()
         m_sMixerLine.dwComponentType = *iter;
         if (MMSYSERR_NOERROR == GetLineInfo(&m_sMixerLine, MIXER_GETLINEINFOF_COMPONENTTYPE))
         {
-            TRACE("Device : %s\nLine : %d\nDest : %d\nSource : %d\n", m_sMixerLine.szName, m_sMixerLine.dwLineID,
+            TRACE("Device : %S\nLine : %d\nDest : %d\nSource : %d\n", m_sMixerLine.szName, m_sMixerLine.dwLineID,
                   m_sMixerLine.dwDestination, m_sMixerLine.dwSource);
         }
         else
