@@ -48,5 +48,3 @@ struct ImageAttributes
     long        m_lBrightness{0L};
     long        m_lContrast{0L};
 };
-
-

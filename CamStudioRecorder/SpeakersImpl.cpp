@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Recorder.h"
 
-#include "AutoSearchDialog.h"
+#include "AutoSearchDlg.h"
 
 #include <CamAudio/sound_file.h>
 #include <CamAudio/buffer.h>

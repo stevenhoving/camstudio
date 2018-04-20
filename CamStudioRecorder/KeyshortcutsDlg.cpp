@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Recorder.h"
-#include "Keyshortcuts.h"
+#include "KeyshortcutsDlg.h"
 #include "HotKey.h"
 
 #include <vector>

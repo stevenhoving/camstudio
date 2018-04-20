@@ -5,7 +5,7 @@
 
 #include "stdafx.h"
 #include "Recorder.h"
-#include "AudioSpeakers.h"
+#include "AudioSpeakersDlg.h"
 #include <CamLib/AudioVolume.h>
 
 #include <mmsystem.h>

@@ -4,8 +4,8 @@ class CAudioSpeakersDlg : public CDialog
 {
 public:
     explicit CAudioSpeakersDlg(CWnd *pParent = nullptr);
-    void OnUpdateLineConfig(int line_proper);
-    void OnUpdateVolume();
+    //void OnUpdateLineConfig(int line_proper);
+    //void OnUpdateVolume();
 
     // Dialog Data
     //{{AFX_DATA(CAudioSpeakersDlg)

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Recorder.h"
-#include "AutoSearchDialog.h"
+#include "AutoSearchDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

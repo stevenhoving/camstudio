@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Recorder.h"
-#include "TroubleShoot.h"
+#include "TroubleShootDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

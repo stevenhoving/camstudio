@@ -6,7 +6,7 @@
 
 #include "stdafx.h"
 #include "Recorder.h"
-#include "VideoOptions.h"
+#include "VideoOptionsDlg.h"
 #include "RecorderView.h"
 #include "vfw/VCM.h"
 

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Recorder.h"
-#include "NewShape.h"
+#include "NewShapeDlg.h"
 #include "MainFrm.h" // for maxxScreen, maxyScreen
 #include <CamLib/CStudioLib.h>
 

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "UpdateDialog.h"
-
 #include <CamLib/TrayIcon.h>
 #include <iostream>
 #include <sstream>
@@ -46,8 +44,6 @@ protected: // control bar embedded members
     CBitmap m_ToolbarBitmapMask;
     CImageList m_ilToolBar;
     CBitmap m_bmLogo;
-    // CBitmap        m_bmNotification;
-    CUpdateDialog m_bDialog;
 
     // Generated message map functions
 protected:

@@ -1,11 +1,11 @@
 // TODO: this whole modeule needs cleanup
 #include "stdafx.h"
 #include "Recorder.h"
-#include "ScreenAnnotations.h"
+#include "ScreenAnnotationsDlg.h"
 #include "ListManager.h"
-#include "NewShape.h"
+#include "NewShapeDlg.h"
 #include "LayoutList.h"
-#include "Keyshortcuts.h"
+#include "KeyshortcutsDlg.h"
 #include <CamLib/CStudioLib.h>
 
 #ifdef _DEBUG

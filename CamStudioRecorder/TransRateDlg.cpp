@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Recorder.h"
-#include "TransRateDialog.h"
+#include "TransRateDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

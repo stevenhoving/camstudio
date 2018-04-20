@@ -1,7 +1,7 @@
 #pragma once
 #include "camcursor.h"
 #include "profile.h"
-#include "ximage.h"
+#include <ximage.h>
 
 ////////////////////////////////////////////////////////
 // What is used for what...

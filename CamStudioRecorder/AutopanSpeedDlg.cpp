@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Recorder.h"
-#include "AutopanSpeed.h"
+#include "AutopanSpeedDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

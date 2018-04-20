@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Recorder.h"
-#include "ResizeDialog.h"
+#include "ResizeDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

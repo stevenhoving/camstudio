@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "LayoutList.h"
-#include "ScreenAnnotations.h"
+#include "ScreenAnnotationsDlg.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

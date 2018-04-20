@@ -3,8 +3,8 @@
 #include "Profile.h"
 
 // Video/Audio Merging Functions and Definitions
-extern int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, BOOL bAudioRecompress,
-                           sAudioFormat &rAudioFormat);
+int MergeVideoAudio(CString strVideoIn, CString strAudioIn, CString strAVIOut, BOOL bAudioRecompress,
+                    sAudioFormat &rAudioFormat);
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -104,7 +104,7 @@ public:
     {
         return m_pstream;
     }
-    // operator PAVISTREAM&()        {return m_pstream;}
+
     operator PAVISTREAM *()
     {
         return &m_pstream;
@@ -474,6 +474,4 @@ private:
     sVideoOpts m_sVideoOpts;
     sAudioFormat m_sAudioFormat;
     bool CompressionOpts(AVICOMPRESSOPTIONS &rOptions, CAVIStream &raviStream);
-
-public:
 };
