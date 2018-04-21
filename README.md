@@ -1,5 +1,8 @@
 # CamStudio
 
+![AppVeyor](https://ci.appveyor.com/api/projects/status/github/stevenhoving/camstudio?branch=master&svg=true)
+
+
 ## The fork
 This is a personal fork of the camstudio source code found in the mecurial repository on sourceforge.net.
 I have forked this project because:
