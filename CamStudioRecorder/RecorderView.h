@@ -43,7 +43,7 @@ protected:
 
     // Implementation
 public:
-    virtual ~CRecorderView();
+    ~CRecorderView() override;
 
     bool GetRecordState();
     bool GetPausedState();
@@ -53,8 +53,6 @@ public:
     virtual void Dump(CDumpContext &dc) const;
 #endif
 
-protected:
-    // Generated message map functions
 protected:
     //{{AFX_MSG(CRecorderView)
     afx_msg void OnRegionRubber();
@@ -194,16 +192,15 @@ public:
     static UINT WM_USER_RECORDSTART;
 
 private:
-    CFlashingWnd m_FlashingWnd;
-    CVideoWnd m_vanWnd;
-    CCamera m_cCamera;
-    CBasicMessageDlg *m_basicMsg;
-    double _zoom;
-    CPoint _zoomedAt;
-    DWORD _zoomWhen;
-    int _zoomDirection;
-    bool showmessage;
-    // CamStudio.ini settings
+    CFlashingWnd flashing_wnd_;
+    CVideoWnd van_wnd_;
+    CCamera camera_;
+    CBasicMessageDlg *basic_msg_;
+    double zoom_;
+    CPoint zoomed_at_;
+    DWORD zoom_when_;
+    int zoom_direction_;
+    bool show_message_;
 
     void DisplayRecordingStatistics(CDC &srcDC);
     void DisplayBackground(CDC &srcDC);
@@ -220,7 +217,6 @@ private:
     void DisplayAutopanInfo(CRect rc);
     bool ConvertToMP4(const CString &sInputAVI, const CString &sOutputMP4, const CString &sOutBareName);
     // dialog controls
-    // TEST a la AudioFormat.cpp
 };
 
 #ifndef _DEBUG // debug version in vscapView.cpp

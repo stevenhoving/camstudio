@@ -4,8 +4,7 @@
 //
 //
 // vscapView.cpp : implementation of the CRecorderView class
-//
-/////////////////////////////////////////////////////////////////////////////
+
 #include "stdafx.h"
 #include "Recorder.h"
 
@@ -77,25 +76,11 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-// AVI functions and #defines
-
-#define BUFSIZE 260
-#define N_FRAMES 50
-#define TEXT_HEIGHT 20
-
-#define LPLPBI LPBITMAPINFOHEADER *
-
-#define BUF_SIZE 4096
 
 // version 1.6
-
 #if !defined(WAVE_FORMAT_MPEGLAYER3)
 #define WAVE_FORMAT_MPEGLAYER3 0x0055
 #endif
-
-#define SWAP(x, y) ((x) ^= (y) ^= (x) ^= (y))
 
 #ifndef CAPTUREBLT
 #define CAPTUREBLT (DWORD)0x40000000
@@ -120,13 +105,6 @@ extern BOOL onLoadSettings(int iRecordAudio);
 extern int iRrefreshRate;
 extern CString g_shapeName;
 extern CString g_strLayoutName;
-
-/////////////////////////////////////////////////////////////////////////////
-// unused variables
-/////////////////////////////////////////////////////////////////////////////
-#ifdef UNUSED_CODE
-CTransparentWnd *transWnd;
-#endif // UNUSED_CODE
 
 /////////////////////////////////////////////////////////////////////////////
 // State variables
@@ -253,10 +231,6 @@ CString savedir("");
 HBITMAP hSavedBitmap = nullptr;
 
 /////////////////////////////////////////////////////////////////////////////
-// Function prototypes
-/////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////
 // ===========================================================================
 // ver 1.2
 // ===========================================================================
@@ -324,14 +298,6 @@ void DataFromSoundIn(CBuffer *buffer);
 int AddInputBufferToQueue();
 
 ////////////////////////////////
-// XNOTE_CODE
-////////////////////////////////
-void GetTempXnoteLogPath();
-BOOL OpenStreamXnoteLogFile();
-void CloseStreamXnoteLogFile();
-void WriteLineToXnoteLogFile(char *pStr);
-
-////////////////////////////////
 // Region Select Functions
 ////////////////////////////////
 int InitDrawShiftWindow();
@@ -342,19 +308,6 @@ int InitSelectRegionWindow();
 ////////////////////////////////
 // bool UnSetHotKeys(HWND hWnd);
 // int SetHotKeys(int succ[]);
-
-//===============================================
-// EXPERIMENTAL CODE
-//===============================================
-
-////////////////////////////////
-// OBSOLETE_CODE
-////////////////////////////////
-#define THIS_COULD_BE_OBSOLETE_CODE
-#ifndef THIS_COULD_BE_OBSOLETE_CODE
-void SetBufferSize(int NumberOfSamples); //  TODO Might be obsolete...!
-void GetVideoCompressState(HIC hic, DWORD fccHandler);
-#endif // THIS_COULD_BE_OBSOLETE_CODE
 
 } // namespace
 
@@ -639,23 +592,23 @@ END_EVENTSINK_MAP()
 // CRecorderView construction/destruction
 
 CRecorderView::CRecorderView()
+    : CView()
+    , basic_msg_(nullptr)
+    , zoom_(1)
+    , zoom_direction_(-1) // zoomed out
+    , zoom_when_(0)       // FIXME: I hope it is unlikely zoom start at 47 day boundary ever happen by accident
+    , zoomed_at_(10, 10)
+    , show_message_(true)
 {
-    // TODO: add construction code here
-    m_basicMsg = nullptr;
-    _zoom = 1;
-    _zoomDirection = -1; // zoomed out
-    _zoomWhen = 0;       // FIXME: I hope it is unlikely zoom start at 47 day boundary ever happen by accident
-    _zoomedAt = CPoint(10, 10);
-    showmessage = true;
 }
 
 CRecorderView::~CRecorderView()
 {
-    if (m_basicMsg != nullptr)
+    if (basic_msg_ != nullptr)
     {
-        m_basicMsg->CloseWindow();
-        delete m_basicMsg;
-        m_basicMsg = nullptr;
+        basic_msg_->CloseWindow();
+        delete basic_msg_;
+        basic_msg_ = nullptr;
     }
 }
 
@@ -672,10 +625,8 @@ BOOL CRecorderView::PreCreateWindow(CREATESTRUCT &cs)
 
 void CRecorderView::OnDraw(CDC * /*pDC*/)
 {
-    CRecorderDoc *pDoc = GetDocument();
-    ASSERT_VALID(pDoc);
-
-    // TODO: add draw code for native data here
+    //CRecorderDoc *pDoc = GetDocument();
+    //ASSERT_VALID(pDoc);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -788,7 +739,7 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     g_hLogoBM = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP3));
 
     CRect rect(0, 0, maxxScreen - 1, maxyScreen - 1);
-    if (!m_FlashingWnd.CreateFlashing(_T("Flashing"), rect))
+    if (!flashing_wnd_.CreateFlashing(_T("Flashing"), rect))
     {
         return -1;
     }
@@ -885,13 +836,10 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
     pStatus->SetPaneText(0, _T("Press the Stop Button to stop recording"));
 
-    m_cCamera.Set(cCaptionOpts);
-    m_cCamera.Set(cTimestampOpts);
-    m_cCamera.Set(cWatermarkOpts);
-    m_cCamera.Set(CamCursor);
-
-    // TRACE("## CRecorderView::OnRecordStart  m_cCamera.m_sXNote.m_ulXnoteRecordDurationLimitInMilliSec[%d]\n",
-    // m_cCamera.m_sXNote.m_ulXnoteRecordDurationLimitInMilliSec  );
+    camera_.Set(cCaptionOpts);
+    camera_.Set(cTimestampOpts);
+    camera_.Set(cWatermarkOpts);
+    camera_.Set(CamCursor);
 
     // ver 1.2
     if (cProgramOpts.m_bMinimizeOnStart)
@@ -971,7 +919,7 @@ LRESULT CRecorderView::OnSaveCursor(WPARAM wParam, LPARAM /*lParam*/)
 {
     // TRACE("CRecorderView::OnSaveCursor\n");
     CamCursor.Save(reinterpret_cast<HCURSOR>(wParam));
-    m_cCamera.Save(reinterpret_cast<HCURSOR>(wParam));
+    camera_.Save(reinterpret_cast<HCURSOR>(wParam));
     return 0;
 }
 
@@ -1227,10 +1175,10 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
         // ver 1.8
         if (vanWndCreated)
         {
-            if (m_vanWnd.IsWindowVisible())
+            if (van_wnd_.IsWindowVisible())
             {
                 // Otherwise, will slow down the merging significantly
-                m_vanWnd.ShowWindow(SW_HIDE);
+                van_wnd_.ShowWindow(SW_HIDE);
             }
         }
 
@@ -1508,23 +1456,23 @@ void CRecorderView::OnRecord()
             // Applicable when Option region is set as 'Window' and as 'Full Screen'
 
             // TODO, Possible memory leak, where is the delete operation of the new below done?
-            if (m_basicMsg)
+            if (basic_msg_)
             {
-                delete m_basicMsg;
-                m_basicMsg = nullptr;
+                delete basic_msg_;
+                basic_msg_ = nullptr;
             }
 
-            m_basicMsg = new CBasicMessageDlg();
-            m_basicMsg->Create(CBasicMessageDlg::IDD);
+            basic_msg_ = new CBasicMessageDlg();
+            basic_msg_->Create(CBasicMessageDlg::IDD);
             if (cRegionOpts.m_iCaptureMode == CAPTURE_WINDOW)
             {
-                m_basicMsg->SetText(_T("Click on window to be captured."));
+                basic_msg_->SetText(_T("Click on window to be captured."));
             }
             else
             {
-                m_basicMsg->SetText(_T("Click on screen to be captured."));
+                basic_msg_->SetText(_T("Click on screen to be captured."));
             }
-            m_basicMsg->ShowWindow(SW_SHOW);
+            basic_msg_->ShowWindow(SW_SHOW);
             SetCapture(); // what is this for?
             // TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top,
             // rc.left, rc.bottom, rc.right ); TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / MinX=%d,
@@ -1568,7 +1516,7 @@ void CRecorderView::OnFileVideooptions()
 {
     // Capture a frame and use it to determine compatible compressors for user to select
     CRect rect(0, 0, 320, 200);
-    LPBITMAPINFOHEADER first_alpbi = captureScreenFrame(rect) ? m_cCamera.Image() : 0;
+    LPBITMAPINFOHEADER first_alpbi = captureScreenFrame(rect) ? camera_.Image() : 0;
 
     g_num_compressor = 0;
     if (g_compressor_info)
@@ -3042,26 +2990,26 @@ void CRecorderView::OnViewVideoannotations()
         // TODO, Magic values here again 160,120
         rect.right = rect.left + 160 - 1;
         rect.bottom = rect.top + 120 - 1;
-        m_vanWnd.TextString(m_newShapeText);
-        m_vanWnd.ShapeString(vastr);
-        m_vanWnd.CreateTransparent(m_vanWnd.ShapeString(), rect, nullptr);
+        van_wnd_.TextString(m_newShapeText);
+        van_wnd_.ShapeString(vastr);
+        van_wnd_.CreateTransparent(van_wnd_.ShapeString(), rect, nullptr);
         vanWndCreated = 1;
     }
 
-    if (m_vanWnd.IsWindowVisible())
+    if (van_wnd_.IsWindowVisible())
     {
-        m_vanWnd.ShowWindow(SW_HIDE);
+        van_wnd_.ShowWindow(SW_HIDE);
     }
     else
     {
-        if (m_vanWnd.m_iStatus != 1)
+        if (van_wnd_.m_iStatus != 1)
         {
             MessageOut(nullptr, IDS_STRING_NOWEBCAM, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             return;
         }
 
-        m_vanWnd.OnUpdateSize();
-        m_vanWnd.ShowWindow(SW_RESTORE);
+        van_wnd_.OnUpdateSize();
+        van_wnd_.ShowWindow(SW_RESTORE);
     }
 }
 
@@ -3217,18 +3165,18 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
         }
         break;
         case HOTKEY_ZOOM: // FIXME: make yet another constant
-            if (_zoomWhen == 0)
+            if (zoom_when_ == 0)
             {
-                if (_zoom <= 1.) // noone needs zoom < 1?? safe for float comparison though
-                    VERIFY(::GetCursorPos(&_zoomedAt));
-                _zoomWhen = ::GetTickCount();
+                if (zoom_ <= 1.) // noone needs zoom < 1?? safe for float comparison though
+                    VERIFY(::GetCursorPos(&zoomed_at_));
+                zoom_when_ = ::GetTickCount();
             }
-            _zoomDirection *= -1;
+            zoom_direction_ *= -1;
             break;
         case HOTKEY_AUTOPAN_SHOW_HIDE_KEY:
 
             OnOptionsAutopan();
-            showmessage = true;
+            show_message_ = true;
             break;
     }
 
@@ -3395,7 +3343,7 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
 
             // close the window to show user selection was successful
             // post message to start recording
-            if (pWndPoint->m_hWnd != m_basicMsg->m_hWnd)
+            if (pWndPoint->m_hWnd != basic_msg_->m_hWnd)
                 ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
         }
     }
@@ -3416,7 +3364,7 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
         ReleaseCapture();
 
         // post message to start recording
-        if (pWnd->m_hWnd != m_basicMsg->m_hWnd)
+        if (pWnd->m_hWnd != basic_msg_->m_hWnd)
             ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
     }
     CView::OnCaptureChanged(pWnd);
@@ -3707,70 +3655,70 @@ bool CRecorderView::captureScreenFrame(const CRect &rectView, bool bDisableRect)
     // TRACE("CRecorderView::captureScreenFrame\n");
     // CRect rectView(left, top, left + width, top + height);
 
-    int width = (int)rectView.Width() / _zoom;   // width of being captured screen stuff
-    int height = (int)rectView.Height() / _zoom; // width of being captured screen stuff
-    CRect zr = _zoom == 1. ? rectView
-                           : CRect(CPoint(std::min(std::max(rectView.left, _zoomedAt.x - width / 2), rectView.right - width),
-                               std::min(std::max(rectView.top, _zoomedAt.y - height / 2), rectView.bottom - height)),
+    int width = (int)rectView.Width() / zoom_;   // width of being captured screen stuff
+    int height = (int)rectView.Height() / zoom_; // width of being captured screen stuff
+    CRect zr = zoom_ == 1. ? rectView
+                           : CRect(CPoint(std::min(std::max(rectView.left, zoomed_at_.x - width / 2), rectView.right - width),
+                               std::min(std::max(rectView.top, zoomed_at_.y - height / 2), rectView.bottom - height)),
                                    CSize(width, height));
 
     // FIXME: can be move into UpdateZoom() function
-    if (_zoomWhen) // should zoom in/out
+    if (zoom_when_) // should zoom in/out
     {
         DWORD threshold = 1000; // 1 sec
         DWORD now = ::GetTickCount();
-        DWORD ago = now - _zoomWhen;
+        DWORD ago = now - zoom_when_;
         if (ago > threshold)
         {
-            _zoomWhen = 0;
+            zoom_when_ = 0;
         }
         else
         { // FIXME: change zoom from current state in case use changed mind zooming
-            _zoom = 1.5 - cos(ago * 3.141592 / threshold) / 1.9 * _zoomDirection;
-            if (_zoom > 2.)
-                _zoom = 2.;
-            if (_zoom < 1.)
-                _zoom = 1.;
+            zoom_ = 1.5 - cos(ago * 3.141592 / threshold) / 1.9 * zoom_direction_;
+            if (zoom_ > 2.)
+                zoom_ = 2.;
+            if (zoom_ < 1.)
+                zoom_ = 1.;
         }
     }
 
     CPoint pt;
     VERIFY(::GetCursorPos(&pt));
-    //double dist = sqrt((double)(pt.x - _zoomedAt.x) * (pt.x - _zoomedAt.x) + (pt.y - _zoomedAt.y) * (pt.y - _zoomedAt.y));
+    //double dist = sqrt((double)(pt.x - zoomed_at_.x) * (pt.x - zoomed_at_.x) + (pt.y - zoomed_at_.y) * (pt.y - zoomed_at_.y));
 
     if (cProgramOpts.m_bAutoPan)
     {
         // always cursor centered
-        VERIFY(::GetCursorPos(&_zoomedAt));
+        VERIFY(::GetCursorPos(&zoomed_at_));
     }
     else
     {
-        if (abs(pt.x - _zoomedAt.x) > .4 * width)
-            _zoomedAt.x += (pt.x - _zoomedAt.x) * cProgramOpts.m_iMaxPan / width;
-        if (abs(pt.y - _zoomedAt.y) > .4 * height)
-            _zoomedAt.y += (pt.y - _zoomedAt.y) * cProgramOpts.m_iMaxPan / height;
+        if (abs(pt.x - zoomed_at_.x) > .4 * width)
+            zoomed_at_.x += (pt.x - zoomed_at_.x) * cProgramOpts.m_iMaxPan / width;
+        if (abs(pt.y - zoomed_at_.y) > .4 * height)
+            zoomed_at_.y += (pt.y - zoomed_at_.y) * cProgramOpts.m_iMaxPan / height;
     }
 
     // if flashing rect
     if (!bDisableRect && (cProgramOpts.m_bFlashingRect))
     {
         // if (cProgramOpts.m_bAutoPan) {
-        //    m_FlashingWnd.SetUpRegion(rectView, 1);
+        //    flashing_wnd_.SetUpRegion(rectView, 1);
         //}
-        m_FlashingWnd.SetUpRegion(zr, cProgramOpts.m_bAutoPan);
-        m_FlashingWnd.DrawFlashingRect(cProgramOpts.m_bAutoPan);
-        // m_FlashingWnd.PostMessage(CFlashingWnd::WM_FLASH_WINDOW, cProgramOpts.m_bAutoPan, 1L);
+        flashing_wnd_.SetUpRegion(zr, cProgramOpts.m_bAutoPan);
+        flashing_wnd_.DrawFlashingRect(cProgramOpts.m_bAutoPan);
+        // flashing_wnd_.PostMessage(CFlashingWnd::WM_FLASH_WINDOW, cProgramOpts.m_bAutoPan, 1L);
     }
 
-    m_cCamera.SetView(rectView); // this set m_rectView & m_rectFrame
+    camera_.SetView(rectView); // this set m_rectView & m_rectFrame
     // severe changes where made to CaptureFrame
-    bool bResult = m_cCamera.CaptureFrame(zr);
+    bool bResult = camera_.CaptureFrame(zr);
 
     // if flashing rect
     if (!bDisableRect && (cProgramOpts.m_bFlashingRect))
     {
-        m_FlashingWnd.DrawFlashingRect(cProgramOpts.m_bAutoPan, false);
-        // m_FlashingWnd.PostMessage(CFlashingWnd::WM_FLASH_WINDOW, cProgramOpts.m_bAutoPan, 0L);
+        flashing_wnd_.DrawFlashingRect(cProgramOpts.m_bAutoPan, false);
+        // flashing_wnd_.PostMessage(CFlashingWnd::WM_FLASH_WINDOW, cProgramOpts.m_bAutoPan, 0L);
     }
     return bResult;
 }
@@ -3886,15 +3834,15 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     {
         case CAPTURE_WINDOW:
         case CAPTURE_FULLSCREEN:
-            if (m_basicMsg)
+            if (basic_msg_)
             {
-                if (m_basicMsg->Cancelled())
+                if (basic_msg_->Cancelled())
                 {
                     g_bRecordState = false;
                     return false;
                 }
                 else
-                    m_basicMsg->ShowWindow(SW_HIDE);
+                    basic_msg_->ShowWindow(SW_HIDE);
             }
             // For rects captured with SetCapture
             // TRACE(_T("## CRecorderView::RecordVideo / cRegionOpts.m_iMouseCaptureMode =%d  (Do nothing) \n"),
@@ -3921,7 +3869,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     // CAPTURE FIRST FRAME
     ////////////////////////////////////////////////
 
-    LPBITMAPINFOHEADER alpbi = captureScreenFrame(rectFrame) ? m_cCamera.Image() : 0;
+    LPBITMAPINFOHEADER alpbi = captureScreenFrame(rectFrame) ? camera_.Image() : 0;
     // TEST VALIDITY OF COMPRESSOR
     if (cVideoOpts.m_iSelectedCompressor > 0)
     {
@@ -3965,7 +3913,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
                     CRect rectNewFrame(rectFrame.left, rectFrame.top, rectFrame.left + newwidth,
                                        rectFrame.top + newheight);
 
-                    alpbi = captureScreenFrame(rectNewFrame) ? m_cCamera.Image() : 0;
+                    alpbi = captureScreenFrame(rectNewFrame) ? camera_.Image() : 0;
                     rectFrame = rectNewFrame;
                 }
             }
@@ -4011,14 +3959,11 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     ////////////////////////////////////////////////
     if (cProgramOpts.m_bFlashingRect)
     {
-        m_FlashingWnd.SetUpRegion(rectFrame, cProgramOpts.m_bAutoPan);
-        m_FlashingWnd.ShowWindow(SW_SHOW);
+        flashing_wnd_.SetUpRegion(rectFrame, cProgramOpts.m_bAutoPan);
+        flashing_wnd_.ShowWindow(SW_SHOW);
     }
 
     // Open the movie file for writing....
-    TCHAR szTitle[BUFSIZE];
-    _tcscpy_s(szTitle, _T("AVI Movie"));
-
     avi_writer avi(szVideoFileName, fps, *alpbi, cVideoOpts);
 
 #if 0
@@ -4275,11 +4220,11 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
             CRect rectPanFrame(g_rectPanCurrent);
             rectPanFrame.right++;
             rectPanFrame.bottom++;
-            alpbi = captureScreenFrame(rectPanFrame, false) ? m_cCamera.Image() : 0;
-            if (showmessage)
+            alpbi = captureScreenFrame(rectPanFrame, false) ? camera_.Image() : 0;
+            if (show_message_)
             {
                 DisplayAutopanInfo(rectPanFrame);
-                showmessage = false;
+                show_message_ = false;
             }
         }
         else
@@ -4287,27 +4232,27 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
             // ver 1.8
             // moving region
 
-            if (m_FlashingWnd.NewRegionUsed())
+            if (flashing_wnd_.NewRegionUsed())
             {
                 // Happens when flashing region was moved
                 // it seems unlikely will be called when setting new region explicitly in the code. good for zoom!
                 // TRACE(_T("rectFrame != newRect %s\n"), (rectFrame != newRect) ? _T("TRUE") : _T("FALSE"));
                 // TRACE(_T("rectFrame.Width: %d\nNewRect.Width: %d\n"), rectFrame.Width(), newRect.Width());
-                TRACE(_T("rectFrame != newRect %s\n"), (rectFrame != m_FlashingWnd.Rect()) ? _T("TRUE") : _T("FALSE"));
-                TRACE(_T("rectFrame.Width: %d\nNewRect.Width: %d\n"), rectFrame.Width(), m_FlashingWnd.Rect().Width());
+                TRACE(_T("rectFrame != newRect %s\n"), (rectFrame != flashing_wnd_.Rect()) ? _T("TRUE") : _T("FALSE"));
+                TRACE(_T("rectFrame.Width: %d\nNewRect.Width: %d\n"), rectFrame.Width(), flashing_wnd_.Rect().Width());
                 // rectFrame = newRect;
-                rectFrame = m_FlashingWnd.Rect();
+                rectFrame = flashing_wnd_.Rect();
                 rectFrame.bottom++;
                 rectFrame.right++;
-                m_FlashingWnd.NewRegionUsed(false);
+                flashing_wnd_.NewRegionUsed(false);
                 // width and height unchanged
             }
             // rectFrame = CRect(left, top, left + width, top + height);
-            alpbi = captureScreenFrame(rectFrame, false) ? m_cCamera.Image() : 0;
-            if (showmessage)
+            alpbi = captureScreenFrame(rectFrame, false) ? camera_.Image() : 0;
+            if (show_message_)
             {
                 DisplayAutopanInfo(rectFrame);
-                showmessage = false;
+                show_message_ = false;
             }
         }
 
@@ -4531,7 +4476,7 @@ error:
 
     if (cProgramOpts.m_bFlashingRect)
     {
-        m_FlashingWnd.ShowWindow(SW_HIDE);
+        flashing_wnd_.ShowWindow(SW_HIDE);
     }
 
     // Ver 1.2
@@ -5118,52 +5063,5 @@ int InitDrawShiftWindow()
 
     return 0;
 }
-
-//===============================================
-// EXPERIMENTAL CODE
-//===============================================
-
-// Nothing currently...!
-
-//===============================================
-// OBSOLETE CODE
-// Not used or used and called from dead code branches only
-//===============================================
-
-#ifndef THIS_COULD_BE_OBSOLETE_CODE
-void SetBufferSize(int NumberOfSamples)
-{
-    iBufferSize = NumberOfSamples;
-}
-
-void GetVideoCompressState(HIC hic, DWORD fccHandler)
-{
-    DWORD statesize = ICGetStateSize(hic);
-    if (statesize < 1L)
-    {
-        return;
-    }
-
-    if (cVideoOpts.State(statesize))
-    {
-        // ICGetState returns statesize even if pVideoCompressParams is not nullptr ??
-        DWORD ret = ICGetState(hic, cVideoOpts.State(), cVideoOpts.StateSize());
-        if (ret < 0)
-        {
-            // CString reportstr;
-            // reportstr.Format("Failure in getting compressor state ! Error Value = %d", ret);
-            // MessageBox(nullptr,reportstr,"Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(nullptr, IDS_STRING_COMPRESSORSTATE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, ret);
-        }
-        else
-        {
-            // we store only the state for one compressor in pVideoCompressParams
-            // So we need to indicate which compressor the state is referring to
-            cVideoOpts.m_dwCompressorStateIsFor = fccHandler;
-        }
-    }
-}
-
-#endif // THIS_COULD_BE_OBSOLETE_CODE
 
 } // namespace
