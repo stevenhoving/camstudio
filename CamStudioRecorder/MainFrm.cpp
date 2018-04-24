@@ -2,6 +2,7 @@
 #include "Recorder.h"
 #include "MainFrm.h"
 #include "RecorderView.h"
+#include <afxdatarecovery.h>
 /*
 TODO: Break AVI 2 GB boundary
 ================================
@@ -231,7 +232,100 @@ void CMainFrame::OnClose()
         return;
     }
 
-    CFrameWnd::OnClose();
+    // Workarround for CFrameWnd::OnClose();
+    if (m_lpfnCloseProc != NULL)
+    {
+        // if there is a close proc, then defer to it, and return
+        // after calling it so the frame itself does not close.
+        (*m_lpfnCloseProc)(this);
+        return;
+    }
+
+    // Note: only queries the active document
+    CDocument* pDocument = GetActiveDocument();
+    if (pDocument != NULL && !pDocument->CanCloseFrame(this))
+    {
+        // document can't close right now -- don't close it
+        return;
+    }
+    CWinApp* pApp = AfxGetApp();
+    if (pApp != NULL && pApp->m_pMainWnd == this)
+    {
+        CDataRecoveryHandler *pHandler = pApp->GetDataRecoveryHandler();
+        if ((pHandler != NULL) && (pHandler->GetShutdownByRestartManager()))
+        {
+            // If the application is being shut down by the Restart Manager, do
+            // a final autosave.  This will mark all the documents as not dirty,
+            // so the SaveAllModified call below won't prompt for save.
+            pHandler->AutosaveAllDocumentInfo();
+            pHandler->SaveOpenDocumentList();
+        }
+
+        // attempt to save all documents
+        if (pDocument == NULL && !pApp->SaveAllModified())
+            return;     // don't close it
+
+        if ((pHandler != NULL) && (!pHandler->GetShutdownByRestartManager()))
+        {
+            // If the application is not being shut down by the Restart Manager,
+            // delete any autosaved documents since everything is now fully saved.
+            pHandler->DeleteAllAutosavedFiles();
+        }
+
+        // hide the application's windows before closing all the documents
+        pApp->HideApplication();
+
+        // close all documents first
+        pApp->CloseAllDocuments(FALSE);
+
+        // don't exit if there are outstanding component objects
+        if (!AfxOleCanExitApp())
+        {
+            // take user out of control of the app
+            AfxOleSetUserCtrl(FALSE);
+
+            // don't destroy the main window and close down just yet
+            //  (there are outstanding component (OLE) objects)
+            return;
+        }
+
+        // there are cases where destroying the documents may destroy the
+        //  main window of the application.
+        if (!afxContextIsDLL && pApp->m_pMainWnd == NULL)
+        {
+            AfxPostQuitMessage(0);
+            return;
+        }
+    }
+
+    // detect the case that this is the last frame on the document and
+    // shut down with OnCloseDocument instead.
+    if (pDocument != NULL && pDocument->m_bAutoDelete)
+    {
+        BOOL bOtherFrame = FALSE;
+        POSITION pos = pDocument->GetFirstViewPosition();
+        while (pos != NULL)
+        {
+            CView* pView = pDocument->GetNextView(pos);
+            ENSURE_VALID(pView);
+            if (pView->GetParentFrame() != this)
+            {
+                bOtherFrame = TRUE;
+                break;
+            }
+        }
+        if (!bOtherFrame)
+        {
+            pDocument->OnCloseDocument();
+            return;
+        }
+
+        // allow the document to cleanup before the window is destroyed
+        pDocument->PreCloseFrame(this);
+    }
+
+    // then destroy the window
+    DestroyWindow();
 }
 
 void CMainFrame::OnViewCompactview()

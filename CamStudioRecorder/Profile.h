@@ -73,13 +73,14 @@ void UpdateSetting(libconfig::Setting &s, const char *name, const T &value, libc
 template <>
 void UpdateSetting<COLORREF>(libconfig::Setting &s, const char *name, const COLORREF &value, libconfig::Setting::Type t)
 {
+    const int32_t temp = *reinterpret_cast<const int32_t*>(&value);
     if (s.exists(name))
     {
-        s[name] = static_cast<int64_t>(value);
+        s[name] = static_cast<int32_t>(temp);
     }
     else
     {
-        s.add(name, t) = static_cast<int64_t>(value);
+        s.add(name, t) = static_cast<int32_t>(temp);
     }
 }
 
@@ -87,13 +88,14 @@ void UpdateSetting<COLORREF>(libconfig::Setting &s, const char *name, const COLO
 template <>
 void UpdateSetting<uint32_t>(libconfig::Setting &s, const char *name, const uint32_t &value, libconfig::Setting::Type t)
 {
+    const int32_t temp = *reinterpret_cast<const int32_t*>(&value);
     if (s.exists(name))
     {
-        s[name] = static_cast<int64_t>(value);
+        s[name] = static_cast<int32_t>(temp);
     }
     else
     {
-        s.add(name, t) = static_cast<int64_t>(value);
+        s.add(name, t) = static_cast<int32_t>(temp);
     }
 }
 
