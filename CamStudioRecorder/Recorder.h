@@ -29,8 +29,6 @@
 #include "RecorderVersionReleaseInfo.h" // Contains version and SVN release number
 #include <memory>
 
-
-
 //#define WM_APP_REGIONUPDATE    0x00500    // TODO: Should this be a WM_USER/WM_APP message?
 //#define WM_APP_REGIONUPDATE    WM_USER + 0x00100
 #define WM_APP_REGIONUPDATE (WM_APP + 100)
@@ -41,16 +39,13 @@
 #define SEC_SETTINGS _T("Language")
 #define STANDARD_LANGID 0x09 // English
 
-/////////////////////////////////////////////////////////////////////////////
-// CRecorderApp:
-// See vscap.cpp for the implementation of this class
-
 class gdi;
 
 class CRecorderApp : public CWinApp
 {
 public:
     CRecorderApp();
+    ~CRecorderApp() override;
 
     LANGID LanguageID() const
     {

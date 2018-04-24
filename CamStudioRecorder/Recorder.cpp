@@ -1,11 +1,7 @@
 // RenderSoft CamStudio
 //
 // Copyright 2001 RenderSoft Software & Web Publishing
-//
-//
-// vscap.cpp : Defines the class behaviors for the application.
-//
-/////////////////////////////////////////////////////////////////////////////
+
 #include "stdafx.h"
 #include "Recorder.h"
 
@@ -138,7 +134,6 @@ void CAboutDlg::OnBnClickedButtonlink2()
 void CAboutDlg::OnButtonlink()
 {
     // TODO: Add your control notification handler code here
-    //::PostMessage(g_hWndGlobal, WM_COMMAND, ID_CAMSTUDIO4XNOTE_WEBSITE, 0);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -158,19 +153,16 @@ ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
 ON_COMMAND(ID_FILE_PRINT_SETUP, CWinApp::OnFilePrintSetup)
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CRecorderApp construction
+CRecorderApp theApp;
 
 CRecorderApp::CRecorderApp()
+    : CWinApp()
 {
-    // TODO: add construction code here,
-    // Place all significant initialization in InitInstance
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// The one and only CRecorderApp object
-
-CRecorderApp theApp;
+CRecorderApp::~CRecorderApp()
+{
+}
 
 std::string get_config_path()
 {
@@ -180,11 +172,10 @@ std::string get_config_path()
     return profile_path;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CRecorderApp initialization
-
 BOOL CRecorderApp::InitInstance()
 {
+    CWinApp::InitInstance();
+
     // Initialize GDI+.
     m_gdi = std::make_unique<gdi>();
 
@@ -298,13 +289,10 @@ BOOL CRecorderApp::InitInstance()
 
     // the application's document templates. Document templates
     // serve as the connection between documents, frame windows and views.
-
-    CSingleDocTemplate *pDocTemplate;
-    // TODO, Possible memory leak, where is the delete operation of the new below done?
-    pDocTemplate = new CSingleDocTemplate(IDR_MAINFRAME, RUNTIME_CLASS(CRecorderDoc),
-                                          RUNTIME_CLASS(CMainFrame), // main SDI frame window
-                                          RUNTIME_CLASS(CRecorderView));
-    AddDocTemplate(pDocTemplate);
+    AddDocTemplate(new CSingleDocTemplate(IDR_MAINFRAME,
+        RUNTIME_CLASS(CRecorderDoc),
+        RUNTIME_CLASS(CMainFrame), // main SDI frame window
+        RUNTIME_CLASS(CRecorderView)));
 
     // Parse command line for standard shell commands, DDE, file open
     // CCamStudioCommandLineInfo cmdInfo;
