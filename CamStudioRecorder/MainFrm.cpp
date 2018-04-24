@@ -171,7 +171,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     m_TrayIcon.TrayShow();
 
     SetWindowText(_T("CamStudio"));
-    CheckForNewVersion();
     return 0;
 }
 
@@ -224,10 +223,8 @@ void CMainFrame::Dump(CDumpContext &dc) const
 
 void CMainFrame::OnClose()
 {
-    // TODO: Add your message handler code here and/or call default
     if (g_bRecordState)
     {
-        // MessageBox("Please stop video recording before exiting program.","Note",MB_OK | MB_ICONEXCLAMATION);
         MessageOut(this->m_hWnd, IDS_STRING_STOPBEFOREEXIT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
         return;
     }
@@ -362,14 +359,11 @@ void CMainFrame::OnViewCompactview()
 
 void CMainFrame::OnUpdateViewCompactview(CCmdUI *pCmdUI)
 {
-    // TODO: Add your command update UI handler code here
     pCmdUI->SetCheck(cProgramOpts.m_iViewType == VIEW_COMPACT);
 }
 
 void CMainFrame::OnViewButtonsview()
 {
-    // TODO: Add your command handler code here
-
     CRect windowrect;
     CRect clientrect;
     CRect toolbarrect;
@@ -488,27 +482,4 @@ void CMainFrame::OnSysCommand(UINT nID, LPARAM lParam)
 LRESULT CMainFrame::OnTrayNotify(WPARAM wParam, LPARAM lParam)
 {
     return m_TrayIcon.OnTrayNotify(wParam, lParam);
-}
-
-void CMainFrame::CheckForNewVersion()
-{
-    // \todo create a new way for checking version update.
-}
-void CMainFrame::Parse(int result[3], const std::string &input)
-{
-    std::istringstream parser(input);
-    parser >> result[0];
-    for (int idx = 1; idx < 3; idx++)
-    {
-        parser.get(); // Skip period
-        parser >> result[idx];
-    }
-}
-
-bool CMainFrame::LessThanVersion(const std::string &a, const std::string &b)
-{
-    int parsedA[3], parsedB[3];
-    Parse(parsedA, a);
-    Parse(parsedB, b);
-    return std::lexicographical_compare(parsedA, parsedA + 3, parsedB, parsedB + 3);
 }

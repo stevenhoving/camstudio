@@ -63,9 +63,6 @@ protected:
     DECLARE_MESSAGE_MAP()
 private:
     CTrayIcon m_TrayIcon;
-    void CheckForNewVersion();
-    void Parse(int result[3], const std::string &input);
-    bool LessThanVersion(const std::string &a, const std::string &b);
 };
 
 /////////////////////////////////////////////////////////////////////////////
