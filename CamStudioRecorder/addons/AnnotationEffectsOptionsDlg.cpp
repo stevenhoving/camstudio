@@ -37,22 +37,6 @@ void CAnnotationEffectsOptionsDlg::DoDataExchange(CDataExchange *pDX)
 
     DDX_Text(pDX, IDC_EDIT_CAPTION_TEXT, m_caption.text);
     DDX_Control(pDX, IDC_FORMATTIMESTAMPPREVIEW, m_FormatTimestampPreview);
-
-    // TRACE("## CAnnotationEffectsOptionsDlg::DoDataExchange\n" );
-    // TRACE("## -----------------------------------------------\n" );
-    // TRACE("## m_CheckBoxXnoteDisplayCameraDelayMode=[%d]\n", m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() );
-    // TRACE("## m_bXnoteDisplayCameraDelayMode=[%d]\n", m_bXnoteDisplayCameraDelayMode);
-    // TRACE("## m_ulXnoteRecordDurationLimitInMilliSec=[%d]\n", m_ulXnoteRecordDurationLimitInMilliSec);
-    // TRACE("## -----------------------------------------------\n" );
-    // TRACE("## m_CheckBoxXnoteRecordDurationLimitMode=[%d]\n", m_CheckBoxXnoteRecordDurationLimitMode.GetCheck()  );
-    // TRACE("## m_bXnoteRecordDurationLimitMode=[%d]\n", m_bXnoteRecordDurationLimitMode);
-    // TRACE("## m_ulXnoteCameraDelayInMilliSec=[%lu]\n", m_ulXnoteCameraDelayInMilliSec);
-    // TRACE("## -----------------------------------------------\n" );
-
-
-    // TRACE("## m_CheckBoxXnoteDisplayCameraDelayMode=[%d]\n", m_CheckBoxXnoteDisplayCameraDelayMode.GetCheck() );
-    // TRACE("## m_CheckBoxXnoteRecordDurationLimitMode=[%d]\n", m_CheckBoxXnoteRecordDurationLimitMode.GetCheck()  );
-    // TRACE("## -----------------------------------------------\n" );
 }
 
 BEGIN_MESSAGE_MAP(CAnnotationEffectsOptionsDlg, CDialog)
@@ -164,10 +148,6 @@ int CAnnotationEffectsOptionsDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
         m_timestamp.textColor = RGB(0, 0, 0);
         m_timestamp.logfont.lfHeight = 12;
     }
-
-    // At first I believed that m_cXnoteDisplayFormatString had not any added value here.
-    // But it appeared that the length of this filed determines the visible tect in annotation.
-    // Code below determine the string length of the filed to use.
 
     return 0;
 }

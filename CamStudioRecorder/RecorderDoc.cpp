@@ -1,13 +1,8 @@
 // RenderSoft CamStudio
 //
 // Copyright 2001 RenderSoft Software & Web Publishing
-//
-//
-// vscapDoc.cpp : implementation of the CRecorderDoc class
-//
 
 #include "stdafx.h"
-#include "Recorder.h"
 #include "RecorderDoc.h"
 
 #ifdef _DEBUG
@@ -16,26 +11,16 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/////////////////////////////////////////////////////////////////////////////
-// CRecorderDoc
-
 IMPLEMENT_DYNCREATE(CRecorderDoc, CDocument)
 
 BEGIN_MESSAGE_MAP(CRecorderDoc, CDocument)
-//{{AFX_MSG_MAP(CRecorderDoc)
-// NOTE - the ClassWizard will add and remove mapping macros here.
-// DO NOT EDIT what you see in these blocks of generated code!
-//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CRecorderDoc construction/destruction
-
 CRecorderDoc::CRecorderDoc()
-    : m_uFrameWidth(0)
+    : CDocument()
+    , m_uFrameWidth(0)
     , m_uFrameHeight(0)
 {
-    // TODO: add one-time construction code here
 }
 
 CRecorderDoc::~CRecorderDoc()
@@ -53,9 +38,6 @@ BOOL CRecorderDoc::OnNewDocument()
     return TRUE;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CRecorderDoc serialization
-
 void CRecorderDoc::Serialize(CArchive &ar)
 {
     if (ar.IsStoring())
@@ -68,9 +50,7 @@ void CRecorderDoc::Serialize(CArchive &ar)
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////
 // CRecorderDoc diagnostics
-
 #ifdef _DEBUG
 void CRecorderDoc::AssertValid() const
 {
@@ -81,7 +61,25 @@ void CRecorderDoc::Dump(CDumpContext &dc) const
 {
     CDocument::Dump(dc);
 }
+
 #endif //_DEBUG
 
-/////////////////////////////////////////////////////////////////////////////
-// CRecorderDoc commands
+unsigned int CRecorderDoc::FrameWidth(unsigned int uWidth)
+{
+    return m_uFrameWidth = uWidth;
+}
+
+unsigned int CRecorderDoc::FrameWidth() const
+{
+    return m_uFrameWidth;
+}
+
+unsigned int CRecorderDoc::FrameHeight(unsigned int uHeight)
+{
+    return m_uFrameHeight = uHeight;
+}
+
+unsigned int CRecorderDoc::FrameHeight() const
+{
+    return m_uFrameHeight;
+}

@@ -20,36 +20,18 @@ public:
 
     // Implementation
 public:
-    virtual ~CRecorderDoc();
+    ~CRecorderDoc() override;
 #ifdef _DEBUG
     virtual void AssertValid() const;
     virtual void Dump(CDumpContext &dc) const;
 #endif
 
-    unsigned int FrameWidth() const
-    {
-        return m_uFrameWidth;
-    }
-    unsigned int FrameWidth(unsigned int uWidth)
-    {
-        return m_uFrameWidth = uWidth;
-    }
-    unsigned int FrameHeight() const
-    {
-        return m_uFrameHeight;
-    }
-    unsigned int FrameHeight(unsigned int uHeight)
-    {
-        return m_uFrameHeight = uHeight;
-    }
+    unsigned int FrameWidth() const;
+    unsigned int FrameWidth(unsigned int uWidth);
+    unsigned int FrameHeight() const;
+    unsigned int FrameHeight(unsigned int uHeight);
 
 protected:
-    // Generated message map functions
-protected:
-    //{{AFX_MSG(CRecorderDoc)
-    // NOTE - the ClassWizard will add and remove member functions here.
-    //    DO NOT EDIT what you see in these blocks of generated code !
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 private:
     unsigned int m_uFrameWidth;  // Capture frame width
