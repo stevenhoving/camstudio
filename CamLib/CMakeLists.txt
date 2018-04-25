@@ -42,6 +42,7 @@ set(LIB_INCLUDE
     include/CamLib/Picture.h
     include/CamLib/TrayIcon.h
     include/CamLib/AudioVolume.h
+    include/CamLib/console.h
 )
 
 source_group(CamLib FILES

@@ -2,6 +2,7 @@
 #include "Recorder.h"
 #include "MainFrm.h"
 #include "RecorderView.h"
+#include <CamLib/console.h>
 #include <afxdatarecovery.h>
 /*
 TODO: Break AVI 2 GB boundary
@@ -96,6 +97,7 @@ static UINT indicators[] = {
 
 CMainFrame::CMainFrame()
 {
+    console::create();
     // TODO: add member initialization code here
     m_bmLogo.LoadBitmap(IDB_BITMAP3);
 }
