@@ -15,6 +15,8 @@
 
 project(CamStudioRecorder)
 
+find_package(ffmpeg)
+
 set(RECORDER_SOURCE
     AviWriter.cpp
     AviWriter.h
@@ -163,6 +165,7 @@ target_include_directories(CamStudioRecorder
   PUBLIC
     .
     ${libconfig_SOURCE_DIR}/lib
+    ${FFMPEG_INCLUDE_DIR}
 )
 
 target_compile_definitions(CamStudioRecorder
@@ -196,6 +199,7 @@ target_link_libraries(CamStudioRecorder
     CxImage
     localization
     fmt
+    ${FFMPEG_LIBRARIES}
     gdi32.lib
     winmm.lib
     vfw32.lib

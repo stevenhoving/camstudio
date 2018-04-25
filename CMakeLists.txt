@@ -17,6 +17,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project(CamStudio)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/dep/cmake")
+
 if(NOT DEFINED MSVC OR MSVC_VERSION LESS 1910)
   message(FATAL_ERROR "camstudio currently only builds with visual studio 2017 for now.")
 endif()
