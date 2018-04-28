@@ -16,6 +16,7 @@ Besides creating a clean installer for camstudio I have found myself a couple of
 * Remove unmaintainable features:
   * swf support - done.
   * xnote support - done.
+  * video producer - parcial done.
 * Upgrade project dependencies:
   * CxImage - pending.
   * zlib - done.
