@@ -34,6 +34,11 @@ Besides creating a clean installer for camstudio I have found myself a couple of
 * swf support.
 * xnote support.
 
+## Prerequisites
+* Git.
+* Visual Studio 2017.
+* Cmake 3.11.
+
 ## How to clone/build
 1. `git clone https://github.com/stevenhoving/camstudio.git --recursive`
 2. `bootstrap.cmd`
