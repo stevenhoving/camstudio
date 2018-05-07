@@ -17,7 +17,13 @@ cmake_minimum_required(VERSION 3.10)
 
 project(CamStudio)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/dep/cmake")
+include(CTest)
+enable_testing()
+
+list(APPEND CMAKE_MODULE_PATH
+  "${CMAKE_SOURCE_DIR}/dep/cmake"
+  "${CMAKE_SOURCE_DIR}/dep/cmake_utility"
+)
 
 if(NOT DEFINED MSVC OR MSVC_VERSION LESS 1910)
   message(FATAL_ERROR "camstudio currently only builds with visual studio 2017 for now.")
@@ -35,6 +41,10 @@ add_compile_options(/Zc:twoPhase-) # 2 phase name lookup.
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+set(CMAKE_INSTALL_PREFIX
+    ${CMAKE_BINARY_DIR}/lib
+)    
+
 ###############################################################################
 
 add_subdirectory(dep)
@@ -42,6 +52,7 @@ add_subdirectory(CamCodec)
 add_subdirectory(CamHook)
 add_subdirectory(CamLib)
 add_subdirectory(CamAudio)
+add_subdirectory(CamEncoder)
 add_subdirectory(CamStudioCmd)
 add_subdirectory(CamStudioPlayer)
 add_subdirectory(CamStudioPlayerPlus)

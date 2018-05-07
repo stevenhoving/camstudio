@@ -33,7 +33,6 @@ set(TIFF_SOURCE
     tif_fax3sm.c
     tif_flush.c
     tif_getimage.c
-    tif_getimage_.c
     tif_jbig.c
     tif_jpeg.c
     tif_luv.c
@@ -88,7 +87,7 @@ target_include_directories(tiff
 
 set_target_properties(tiff PROPERTIES FOLDER "CxImage")
 
-install(
-    DIRECTORY include
-    DESTINATION include
-)
+#install(
+#    DIRECTORY include
+#    DESTINATION include
+#)

@@ -13,3 +13,9 @@
 [submodule "dep/ffmpeg"]
 	path = dep/ffmpeg
 	url = https://github.com/stevenhoving/camstudio-dependency-ffmpeg.git
+[submodule "dep/googletest"]
+	path = dep/googletest
+	url = https://github.com/aeon-external-dependencies/googletest.git
+[submodule "dep/cmake_utility"]
+	path = dep/cmake_utility
+	url = https://github.com/aeon-engine/libaeon-cmake.git

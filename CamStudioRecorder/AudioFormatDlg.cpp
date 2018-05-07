@@ -252,7 +252,7 @@ void CAudioFormatDlg::UpdateCompressFormatInterface()
 // Update the user - interface based on the device data
 //
 // If the third parameter (compressed format) is not null,
-// we assume it is compatibile with the 2nd parameter (recording format)
+// we assume it is compatible with the 2nd parameter (recording format)
 void CAudioFormatDlg::UpdateDeviceData(UINT /*deviceID*/, DWORD dwFormat, const WAVEFORMATEX &rwfx)
 {
     // WAVEINCAPS wic;
@@ -389,7 +389,7 @@ bool CAudioFormatDlg::LoadFormatList()
             m_ctrlCBRecordFormat.SetCurSel(iIdx);
         }
     }
-    m_iNumFormat = m_vFormat.size();
+    m_iNumFormat = static_cast<int>(m_vFormat.size());
 
     return true;
 }
@@ -455,7 +455,8 @@ BOOL CAudioFormatDlg::OnInitDialog()
     int devID = m_ctrlCBInputDevice.GetCurSel();
     if (CB_ERR != devID)
     {
-        UpdateDeviceData(m_ctrlCBInputDevice.GetItemData(devID), m_cFmt.m_dwWaveinSelected, m_cFmt.AudioFormat());
+        const auto device_id = static_cast<UINT>(m_ctrlCBInputDevice.GetItemData(devID));
+        UpdateDeviceData(device_id, m_cFmt.m_dwWaveinSelected, m_cFmt.AudioFormat());
     }
 
     // ver 1.8

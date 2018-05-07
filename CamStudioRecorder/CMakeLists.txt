@@ -15,8 +15,6 @@
 
 project(CamStudioRecorder)
 
-find_package(ffmpeg)
-
 set(RECORDER_SOURCE
     AudioFormatDlg.cpp
     AudioFormatDlg.h
@@ -28,8 +26,6 @@ set(RECORDER_SOURCE
     AutopanSpeedDlg.h
     AutoSearchDlg.cpp
     AutoSearchDlg.h
-    AVI.cpp
-    AVI.h
     AVICompressorFilter.cpp
     AVICompressorFilter.h
     BasicMessageDlg.cpp
@@ -133,13 +129,6 @@ set(RECORDER_ADDONS_SOURCE
     addons/TextAttributes.h
 )
 
-set(RECORDER_CODEC_SOURCE
-    codec/avi_writer.cpp
-    codec/avi_writer.h
-    codec/video_writer.cpp
-    codec/video_writer.h
-)
-
 set(RECORDER_RESOURCE
     Recorder.rc
 )
@@ -150,7 +139,6 @@ add_executable(CamStudioRecorder WIN32
     ${RECORDER_SOURCE}
     ${RECORDER_RESOURCE}
     ${RECORDER_VFW_SOURCE}
-    ${RECORDER_CODEC_SOURCE}
     ${RECORDER_ADDONS_SOURCE}
 )
 
@@ -160,10 +148,6 @@ source_group(vfw FILES
 
 source_group(addons FILES
     ${RECORDER_ADDONS_SOURCE}
-)
-
-source_group(codec FILES
-    ${RECORDER_CODEC_SOURCE}
 )
 
 source_group(src FILES
@@ -209,7 +193,7 @@ target_link_libraries(CamStudioRecorder
     CxImage
     localization
     fmt
-    ${FFMPEG_LIBRARIES}
+    CamEncoder
     gdi32.lib
     winmm.lib
     vfw32.lib
@@ -224,7 +208,7 @@ set_target_properties(CamStudioRecorder PROPERTIES
 )
 
 install(TARGETS CamStudioRecorder
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/bin
+    LIBRARY DESTINATION ${CMAKE_BINARY_DIR}/lib
+    ARCHIVE DESTINATION ${CMAKE_BINARY_DIR}/lib
 )

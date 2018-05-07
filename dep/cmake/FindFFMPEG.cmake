@@ -35,135 +35,49 @@
 
 
 find_path(FFMPEG_INCLUDE_DIR1 libavformat/avformat.h
-  $ENV{FFMPEG_DIR}
-  $ENV{FFMPEG_DIR}/ffmpeg
-  $ENV{FFMPEG_DIR}/libavformat
-  $ENV{FFMPEG_DIR}/include/libavformat
-  $ENV{FFMPEG_DIR}/include/ffmpeg
-  /usr/local/include/ffmpeg
-  /usr/include/ffmpeg
-  /usr/include/libavformat
-  /usr/include/ffmpeg/libavformat
-  /usr/include/${CMAKE_LIBRARY_ARCHITECTURE}/libavformat
-  /usr/local/include/libavformat
   ${CMAKE_SOURCE_DIR}/dep/ffmpeg/include
 )
 
 find_path(FFMPEG_INCLUDE_DIR2 libavutil/avutil.h
-  $ENV{FFMPEG_DIR}
-  $ENV{FFMPEG_DIR}/ffmpeg
-  $ENV{FFMPEG_DIR}/libavutil
-  $ENV{FFMPEG_DIR}/include/libavutil
-  $ENV{FFMPEG_DIR}/include/ffmpeg
-  /usr/local/include/ffmpeg
-  /usr/include/ffmpeg
-  /usr/include/libavutil
-  /usr/include/ffmpeg/libavutil
-  /usr/include/${CMAKE_LIBRARY_ARCHITECTURE}/libavutil
-  /usr/local/include/libavutil
   ${CMAKE_SOURCE_DIR}/dep/ffmpeg/include
 )
 
 find_path(FFMPEG_INCLUDE_DIR3 libavcodec/avcodec.h
-  $ENV{FFMPEG_DIR}
-  $ENV{FFMPEG_DIR}/ffmpeg
-  $ENV{FFMPEG_DIR}/libavcodec
-  $ENV{FFMPEG_DIR}/include/libavcodec
-  $ENV{FFMPEG_DIR}/include/ffmpeg
-  /usr/local/include/ffmpeg
-  /usr/include/ffmpeg
-  /usr/include/libavcodec
-  /usr/include/ffmpeg/libavcodec
-  /usr/include/${CMAKE_LIBRARY_ARCHITECTURE}/libavcodec
-  /usr/local/include/libavcodec
   ${CMAKE_SOURCE_DIR}/dep/ffmpeg/include
 )
 
 find_path(FFMPEG_INCLUDE_DIR4 libswscale/swscale.h
-  $ENV{FFMPEG_DIR}
-  $ENV{FFMPEG_DIR}/ffmpeg
-  $ENV{FFMPEG_DIR}/libswscale
-  $ENV{FFMPEG_DIR}/include/libswscale
-  $ENV{FFMPEG_DIR}/include/ffmpeg
-  /usr/local/include/ffmpeg
-  /usr/include/ffmpeg
-  /usr/include/libswscale
-  /usr/include/ffmpeg/libswscale
-  /usr/include/${CMAKE_LIBRARY_ARCHITECTURE}/libswscale
-  /usr/local/include/libswscale
   ${CMAKE_SOURCE_DIR}/dep/ffmpeg/include
 )
 
 find_path(FFMPEG_INCLUDE_DIR5 libavdevice/avdevice.h
-  $ENV{FFMPEG_DIR}
-  $ENV{FFMPEG_DIR}/ffmpeg
-  $ENV{FFMPEG_DIR}/libavdevice
-  $ENV{FFMPEG_DIR}/include/libavdevice
-  $ENV{FFMPEG_DIR}/include/ffmpeg
-  /usr/local/include/ffmpeg
-  /usr/include/ffmpeg
-  /usr/include/libavdevice
-  /usr/include/ffmpeg/libavdevice
-  /usr/include/${CMAKE_LIBRARY_ARCHITECTURE}/libavdevice
-  /usr/local/include/libavdevice
   ${CMAKE_SOURCE_DIR}/dep/ffmpeg/include
 )
 
 if(FFMPEG_INCLUDE_DIR1)
-  if(FFMPEG_INCLUDE_DIR2)
-    if(FFMPEG_INCLUDE_DIR3)
-      set(FFMPEG_INCLUDE_DIR ${FFMPEG_INCLUDE_DIR1}
-                             ${FFMPEG_INCLUDE_DIR2}
-                             ${FFMPEG_INCLUDE_DIR3})
-    endif()
-  endif()
-endif()
-
-if(FFMPEG_INCLUDE_DIR4)
-  set(FFMPEG_INCLUDE_DIR ${FFMPEG_INCLUDE_DIR}
-                         ${FFMPEG_INCLUDE_DIR4})
-endif()
-
-if(FFMPEG_INCLUDE_DIR5)
-  set(FFMPEG_INCLUDE_DIR ${FFMPEG_INCLUDE_DIR}
-                         ${FFMPEG_INCLUDE_DIR5}
-                         ${FFMPEG_INCLUDE_DIR5}/..)
+  set(FFMPEG_INCLUDE_DIR
+    ${FFMPEG_INCLUDE_DIR1}
+  )
+  
+  set(FFMPEG_BIN_DIR
+    ${CMAKE_SOURCE_DIR}/dep/ffmpeg/bin
+  )
 endif()
 
 find_library(FFMPEG_avformat_LIBRARY avformat
-  $ENV{FFMPEG_DIR}
-  $ENV{FFMPEG_DIR}/lib
-  $ENV{FFMPEG_DIR}/libavformat
-  /usr/local/lib
-  /usr/lib
   ${CMAKE_SOURCE_DIR}/dep/ffmpeg/lib
 )
 
 find_library(FFMPEG_avcodec_LIBRARY avcodec
-  $ENV{FFMPEG_DIR}
-  $ENV{FFMPEG_DIR}/lib
-  $ENV{FFMPEG_DIR}/libavcodec
-  /usr/local/lib
-  /usr/lib
   ${CMAKE_SOURCE_DIR}/dep/ffmpeg/lib
 )
 
 find_library(FFMPEG_avutil_LIBRARY avutil
-  $ENV{FFMPEG_DIR}
-  $ENV{FFMPEG_DIR}/lib
-  $ENV{FFMPEG_DIR}/libavutil
-  /usr/local/lib
-  /usr/lib
   ${CMAKE_SOURCE_DIR}/dep/ffmpeg/lib
 )
 
 if(NOT DISABLE_SWSCALE)
   find_library(FFMPEG_swscale_LIBRARY swscale
-    $ENV{FFMPEG_DIR}
-    $ENV{FFMPEG_DIR}/lib
-    $ENV{FFMPEG_DIR}/libswscale
-    /usr/local/lib
-    /usr/lib
     ${CMAKE_SOURCE_DIR}/dep/ffmpeg/lib
   )
 endif(NOT DISABLE_SWSCALE)
@@ -173,22 +87,8 @@ find_library(FFMPEG_swresample_LIBRARY swresample
 )
 
 find_library(FFMPEG_avdevice_LIBRARY avdevice
-  $ENV{FFMPEG_DIR}
-  $ENV{FFMPEG_DIR}/lib
-  $ENV{FFMPEG_DIR}/libavdevice
-  /usr/local/lib
-  /usr/lib
   ${CMAKE_SOURCE_DIR}/dep/ffmpeg/lib
 )
-
-find_library(_FFMPEG_z_LIBRARY_ z
-  $ENV{FFMPEG_DIR}
-  $ENV{FFMPEG_DIR}/lib
-  /usr/local/lib
-  /usr/lib
-)
-
-
 
 if(FFMPEG_INCLUDE_DIR)
   if(FFMPEG_avformat_LIBRARY)
@@ -214,11 +114,6 @@ if(FFMPEG_INCLUDE_DIR)
                                ${FFMPEG_swresample_LIBRARY}
           )
         endif()
-        if(_FFMPEG_z_LIBRARY_)
-          set( FFMPEG_LIBRARIES ${FFMPEG_LIBRARIES}
-                                ${_FFMPEG_z_LIBRARY_}
-          )
-        endif()
       endif()
     endif()
   endif()
@@ -236,8 +131,7 @@ mark_as_advanced(
   FFMPEG_avutil_LIBRARY
   FFMPEG_swscale_LIBRARY
   FFMPEG_avdevice_LIBRARY
-  _FFMPEG_z_LIBRARY_
-  )
+)
 
 # Set package properties if FeatureSummary was included
 if(COMMAND set_package_properties)

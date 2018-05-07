@@ -14,14 +14,19 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 add_subdirectory(zlib)
+
+#set(SKIP_INSTALL_HEADERS ON CACHE BOOL "" FORCE)
 add_subdirectory(libpng)
 add_subdirectory(minilzo)
 add_subdirectory(CxImage)
 add_subdirectory(localization)
 add_subdirectory(fmt)
+add_subdirectory(googletest)
 
+# libconfig settings
 set(BUILD_EXAMPLES OFF CACHE BOOL "Disable libconfig examples" FORCE)
 set(BUILD_TESTS OFF CACHE BOOL "Disable libconfig examples" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 add_subdirectory(libconfig)
 
 set_target_properties(libconfig libconfig++
@@ -30,12 +35,13 @@ set_target_properties(libconfig libconfig++
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
 
+# fmt format library settings.
 set_target_properties(fmt
   PROPERTIES
     FOLDER "External/fmt"
 )
 
-install(
-    DIRECTORY ${CMAKE_SOURCE_DIR}/bin/
-    DESTINATION bin
-)
+#install(
+#    DIRECTORY ${CMAKE_BINARY_DIR}/bin/
+#    DESTINATION bin
+#)

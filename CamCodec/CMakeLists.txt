@@ -56,14 +56,14 @@ set_target_properties(CamCodec PROPERTIES
 )
 
 install(TARGETS CamCodec
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/bin
+    LIBRARY DESTINATION ${CMAKE_BINARY_DIR}/lib
+    ARCHIVE DESTINATION ${CMAKE_BINARY_DIR}/lib
 )
 
 install(
   FILES
     CamCodec.inf
   DESTINATION
-    bin
+    ${CMAKE_BINARY_DIR}/bin
 )

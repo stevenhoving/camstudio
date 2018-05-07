@@ -37,7 +37,7 @@ target_include_directories(libminilzo
 
 set_target_properties(libminilzo PROPERTIES FOLDER "External/minilzo")
 
-install(
-    DIRECTORY include
-    DESTINATION include
-)
+#install(
+#    DIRECTORY include
+#    DESTINATION include
+#)

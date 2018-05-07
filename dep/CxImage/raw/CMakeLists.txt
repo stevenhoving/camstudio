@@ -48,7 +48,7 @@ target_include_directories(raw
 
 set_target_properties(raw PROPERTIES FOLDER "CxImage")
 
-install(
-    DIRECTORY include
-    DESTINATION include
-)
+#install(
+#    DIRECTORY include
+#    DESTINATION include
+#)

@@ -15,26 +15,24 @@
  * along with this program.If not, see < https://www.gnu.org/licenses/>.
  */
 
-#include "stdafx.h"
-#include "avi_writer.h"
-#include "Avi.h"
+#include "CamEncoder/avi_writer.h"
 
 #define AVIIF_KEYFRAME 0x00000010L // this frame is a key frame.
 
 avi_writer::avi_writer(const std::string video_filename, const int fps,
-    const BITMAPINFOHEADER &frame_info, const sVideoOpts &video_options)
+    const BITMAPINFOHEADER &frame_info, const avi_config &video_options)
     : video_filename_(video_filename)
     , fps_(fps)
-    , video_options_(video_options)
     , frame_info_(frame_info)
+    , video_options_(video_options)
 {
     ::AVIFileInit();
 
     HRESULT hr = ::AVIFileOpenA(&avi_file_, video_filename_.c_str(), OF_WRITE | OF_CREATE, nullptr);
     if (hr != AVIERR_OK)
     {
-        TRACE("avi_multiplexer::avi_multiplexer: VideoAviFileOpen error\n");
-        CAVI::OnError(hr);
+        //TRACE("avi_multiplexer::avi_multiplexer: VideoAviFileOpen error\n");
+        //CAVI::OnError(hr);
         throw std::runtime_error("unable to initialize avi writer");
     }
 
@@ -51,8 +49,8 @@ avi_writer::avi_writer(const std::string video_filename, const int fps,
     hr = ::AVIFileCreateStream(avi_file_, &avi_stream_, &avi_stream_info_);
     if (hr != AVIERR_OK)
     {
-        TRACE("AviWriter: AVIFileCreateStream error\n");
-        CAVI::OnError(hr);
+        //TRACE("AviWriter: AVIFileCreateStream error\n");
+        //CAVI::OnError(hr);
         throw std::runtime_error("unable to initialize avi writer");
     }
 
@@ -72,16 +70,16 @@ avi_writer::avi_writer(const std::string video_filename, const int fps,
     {
         // make a copy of the pVideoCompressParams just in case after compression,
         // this variable become messed up
-        avi_compress_options_.lpParms = video_options_.State();
-        avi_compress_options_.cbParms = video_options_.StateSize();
+        //avi_compress_options_.lpParms = video_options_.State();
+        //avi_compress_options_.cbParms = video_options_.StateSize();
     }
 
     hr = ::AVIMakeCompressedStream(&avi_stream_compressed_, avi_stream_, &avi_compress_options_,
         nullptr);
     if (hr != AVIERR_OK)
     {
-        TRACE("AviWriter: AVIMakeCompressedStream error\n");
-        CAVI::OnError(hr);
+        //TRACE("AviWriter: AVIMakeCompressedStream error\n");
+        //CAVI::OnError(hr);
 
         throw std::runtime_error("unable to initialize avi writer");
     }
@@ -90,7 +88,7 @@ avi_writer::avi_writer(const std::string video_filename, const int fps,
         frame_info_.biSize + frame_info_.biClrUsed * sizeof(RGBQUAD));
     if (hr != AVIERR_OK)
     {
-        CAVI::OnError(hr);
+        //CAVI::OnError(hr);
         throw std::runtime_error("unable to initialize avi writer");
     }
 }
@@ -130,8 +128,8 @@ void avi_writer::write(DWORD frametime, BITMAPINFOHEADER *alpbi)
 
     if (hr != AVIERR_OK)
     {
-        TRACE("AviWriter: AVIStreamWrite error\n");
-        CAVI::OnError(hr);
+        //TRACE("AviWriter: AVIStreamWrite error\n");
+        //CAVI::OnError(hr);
         throw std::runtime_error("unable to write avi frame");
     }
 

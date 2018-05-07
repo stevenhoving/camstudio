@@ -15,10 +15,10 @@
  * along with this program.If not, see < https://www.gnu.org/licenses/>.
  */
 
-#include "stdafx.h"
-#include "video_writer.h"
+//#include "stdafx.h"
+#include "CamEncoder/video_writer.h"
 
-#include <fmt/format.h>
+//#include <fmt/format.h>
 #include <fmt/printf.h>
 
 #include <filesystem>
@@ -57,21 +57,20 @@ std::string avx_err2str(int errnum)
 void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
 {
     AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
-
+#if 0
     fmt::printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s stream_index:%d\n",
         avx_ts2str(pkt->pts), avx_ts2timestr(pkt->pts, time_base),
         avx_ts2str(pkt->dts), avx_ts2timestr(pkt->dts, time_base),
         avx_ts2str(pkt->duration), avx_ts2timestr(pkt->duration, time_base),
         pkt->stream_index);
+#endif
 }
-
-
 
 video_writer::video_writer(const char *filename, video_meta meta)
     : filename_(filename)
     , meta_(meta)
 {
-    av_register_all();
+    //av_register_all();
 
     //av_dict_set(&opt, "rotate", "90", 0);
 
@@ -91,7 +90,9 @@ video_writer::video_writer(const char *filename, video_meta meta)
     }
 
     if (!format_context_)
+    {
         return;
+    }
 
     output_format_ = format_context_->oformat;
 
@@ -154,8 +155,6 @@ void video_writer::write(DWORD frametime, BITMAPINFOHEADER *alpbi)
     if (av_frame_make_writable(video_st_.frame) < 0)
         exit(1);
 
-    auto *ost = &video_st_;
-
     const auto *data = (LPBYTE)alpbi + alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD);
     const auto size = alpbi->biSizeImage;
 
@@ -164,67 +163,62 @@ void video_writer::write(DWORD frametime, BITMAPINFOHEADER *alpbi)
 
     const auto pixel_format = AV_PIX_FMT_BGR24;
 
-    if (pixel_format != AV_PIX_FMT_YUV420P)
+    // convert from rgb to yuv420p
+    if (!video_st_.sws_ctx)
     {
-        /* as we only generate a YUV420P picture, we must convert it
-         * to the codec pixel format if needed
-         */
-        if (!ost->sws_ctx)
+        video_st_.sws_ctx = sws_getContext(width, height,
+            pixel_format,
+            width, height,
+            //AV_PIX_FMT_YUV420P,
+            AV_PIX_FMT_YUV444P,
+            SCALE_FLAGS, NULL, NULL, NULL);
+        if (!video_st_.sws_ctx)
         {
-            ost->sws_ctx = sws_getContext(width, height,
-                pixel_format,
-                width, height,
-                AV_PIX_FMT_YUV420P,
-                SCALE_FLAGS, NULL, NULL, NULL);
-            if (!ost->sws_ctx)
-            {
-                fprintf(stderr,
-                    "Could not initialize the conversion context\n");
-                exit(1);
-            }
+            //fprintf(stderr, "Could not initialize the conversion context\n");
+            fputs("Could not initialize the conversion context\n", stderr);
+            exit(1);
         }
-
-        const uint8_t * const src[3] = {
-            data + (size - width * 3),
-            nullptr,
-            nullptr
-        };
-
-        const int src_stride[3] = { -(width * 3), 0, 0 };
-        const int dst_stride[3] = { width, width / 2, width / 2 };
-        sws_scale(ost->sws_ctx, src,
-            src_stride, 0,
-            meta_.height, ost->frame->data,
-            dst_stride);
     }
 
-    //ost->frame->pts = frametime;
+    const uint8_t * const src[3] = {
+        data + (size - width * 3),
+        nullptr,
+        nullptr
+    };
 
-    ost->frame->pts = ost->next_pts++;
+    const int src_stride[3] = { -(width * 3), 0, 0 };
+    //const int dst_stride[3] = { width, width / 2, width / 2 }; // for YUV420
+    const int dst_stride[3] = { width, width, width }; // for YUV444
+    sws_scale(video_st_.sws_ctx, src,
+        src_stride, 0,
+        meta_.height, video_st_.frame->data,
+        dst_stride);
 
-    int success = write_video_frame(format_context_, &video_st_, video_st_.frame);
-    if (success)
-        printf("frame written\n");
+
+    video_st_.frame->pts = video_st_.next_pts++;
+
+    // \todo we currently ignore the result of write vide frame
+    write_video_frame(format_context_, &video_st_, video_st_.frame);
 }
+
 int video_writer::write_video_frame(AVFormatContext *oc, output_stream *ost, AVFrame *frame)
 {
-    AVCodecContext *c;
-    int got_packet = 0;
-
     AVPacket pkt = {0};
     av_init_packet(&pkt);
     pkt.data = NULL;
     pkt.size = 0;
 
-    c = ost->enc;
+    AVCodecContext *c = ost->enc;
 
     int ret;
-    if ((ret = avcodec_send_frame(c, frame)) < 0) {
+    if ((ret = avcodec_send_frame(c, frame)) < 0)
+    {
         fmt::fprintf(stderr, "Error code: %s\n", avx_err2str(ret));
         return 0;
     }
 
-    while (1) {
+    while (1)
+    {
         ret = avcodec_receive_packet(c, &pkt);
         if (ret)
             break;
@@ -235,8 +229,8 @@ int video_writer::write_video_frame(AVFormatContext *oc, output_stream *ost, AVF
 
     ret = ((ret == AVERROR(EAGAIN)) ? 0 : -1);
     return ret;
-}
 
+}
 void video_writer::stop()
 {
     printf("stop called\n");

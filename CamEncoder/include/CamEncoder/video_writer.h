@@ -17,6 +17,12 @@
 
 #pragma once
 
+#include "av_ffmpeg.h"
+#include "CamEncoder/av_config.h"
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -24,30 +30,6 @@
 #include <string.h>
 #include <string>
 
-extern "C"
-{
-#include <libavcodec/avcodec.h>
-
-#include <libavutil/opt.h>
-#include <libavutil/imgutils.h>
-
-#include <libavutil/avassert.h>
-#include <libavutil/channel_layout.h>
-#include <libavutil/opt.h>
-#include <libavutil/mathematics.h>
-#include <libavutil/timestamp.h>
-#include <libavformat/avformat.h>
-#include <libswscale/swscale.h>
-#include <libswresample/swresample.h>
-}
-
-struct video_meta
-{
-    int width;
-    int height;
-    int bpp;
-    int fps;
-};
 
 // a wrapper around a single output AVStream
 struct output_stream
@@ -103,7 +85,7 @@ public:
 
     /*
     * encode one audio frame and send it to the muxer
-    * return 1 when encoding is finished, 0 otherwise
+    * return 0 when encoding is finished, -1 otherwise
     */
     int write_audio_frame(AVFormatContext *oc, output_stream *ost);
 

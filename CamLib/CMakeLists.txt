@@ -69,7 +69,7 @@ target_include_directories(CamLib
     include
 )
 
-install(
-    DIRECTORY include
-    DESTINATION include
-)
+#install(
+#    DIRECTORY include
+#    DESTINATION include
+#)

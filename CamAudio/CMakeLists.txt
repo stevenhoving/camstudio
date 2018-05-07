@@ -60,7 +60,7 @@ target_link_libraries(CamAudio
     CamLib
 )
 
-install(
-    DIRECTORY include
-    DESTINATION include
-)
+#install(
+#    DIRECTORY include
+#    DESTINATION include
+#)

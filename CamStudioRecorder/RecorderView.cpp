@@ -30,9 +30,6 @@
 #include "VideoOptionsDlg.h"
 #include "ProgressDlg.h"
 
-#include "codec/avi_writer.h"
-#include "codec/video_writer.h"
-
 #include <ximage.h>
 #include <fmt/format.h>
 #include <fmt/printf.h>
@@ -42,6 +39,8 @@
 #include <CamHook/CamHook.h> // for WM_USER_RECORDSTART_MSG
 #include <CamLib/CStudioLib.h>
 #include <CamLib/TrayIcon.h>
+#include <CamEncoder/avi_writer.h>
+#include <CamEncoder/video_writer.h>
 
 #include "MP4Converter.h"
 #include "AudioSpeakersDlg.h"
@@ -49,7 +48,7 @@
 #include "Screen.h"
 #include "vfw/VCM.h"
 #include "vfw/ACM.h"
-#include "AVI.h"
+
 #include "MCI.h"
 
 #include "addons/AnnotationEffectsOptionsDlg.h"
@@ -1200,13 +1199,13 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
             // ver 2.26 ...overwrite audio settings for Flash Mode recording ... no compression used...
             if ((cAudioFormat.isInput(SPEAKERS)) || (cAudioFormat.m_bUseMCI))
             {
-                result = MergeVideoAudio(strTempVideoAviFilePath.c_str(), strTempAudioWavFilePath.c_str(), strTargetVideoFile, FALSE,
-                                         cAudioFormat);
+                //result = MergeVideoAudio(strTempVideoAviFilePath.c_str(), strTempAudioWavFilePath.c_str(), strTargetVideoFile, FALSE,
+                                         //cAudioFormat);
             }
             else if (cAudioFormat.isInput(MICROPHONE))
             {
-                result = MergeVideoAudio(strTempVideoAviFilePath.c_str(), strTempAudioWavFilePath.c_str(), strTargetVideoFile,
-                                         cAudioFormat.m_bCompression, cAudioFormat);
+                //result = MergeVideoAudio(strTempVideoAviFilePath.c_str(), strTempAudioWavFilePath.c_str(), strTargetVideoFile,
+                                         //cAudioFormat.m_bCompression, cAudioFormat);
             }
         }
 
@@ -3968,7 +3967,9 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     meta.width = alpbi->biWidth;
     meta.height = alpbi->biHeight;
     meta.bpp = alpbi->biBitCount;
-    meta.fps = fps;
+    // \todo check if this is correct...
+    meta.fps.num = fps;
+    meta.fps.den = 1;
     video_writer avi(szVideoFileName, meta);
 
 #if 0

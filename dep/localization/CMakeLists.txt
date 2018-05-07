@@ -36,7 +36,7 @@ target_include_directories(localization
 
 set_target_properties(localization PROPERTIES FOLDER "External/localization")
 
-install(
-    DIRECTORY include
-    DESTINATION include
-)
+#install(
+#    DIRECTORY include
+#    DESTINATION include
+#)

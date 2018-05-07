@@ -17,8 +17,11 @@
 
 #pragma once
 
-#include "Profile.h" // for sVideoOpts
+//#include "Profile.h" // for sVideoOpts
+#include "avi_config.h"
 
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #include <vfw.h>
 #include <string>
 
@@ -26,7 +29,7 @@ class avi_writer
 {
 public:
     avi_writer(const std::string video_filename, const int fps, const BITMAPINFOHEADER &frame_info,
-        const sVideoOpts &video_options);
+        const avi_config &video_options);
 
     ~avi_writer();
 
@@ -50,5 +53,5 @@ private:
     std::string video_filename_;
     int fps_;
     BITMAPINFOHEADER frame_info_;
-    sVideoOpts video_options_;
+    avi_config video_options_;
 };

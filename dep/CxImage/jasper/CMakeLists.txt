@@ -215,7 +215,7 @@ target_include_directories(jasper
 
 set_target_properties(jasper PROPERTIES FOLDER "CxImage")
 
-install(
-    DIRECTORY include
-    DESTINATION include
-)
+#install(
+#    DIRECTORY include
+#    DESTINATION include
+#)

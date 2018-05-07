@@ -13,30 +13,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-project(jbig C)
+include(Unittests)
 
-set(JBIG_SOURCE
-    jbig.c
-    jbig.h
-    jbig_tab.c
+add_unit_test_suite(
+    TARGET test_cam_encoder
+    SOURCES
+        test_video_encoder.cpp
+    INCLUDES
+        ${CMAKE_CURRENT_BINARY_DIR}
+    LIBRARIES CamEncoder
+    FOLDER tests/CamEncoder
 )
 
-source_group(jbig FILES
-    ${JBIG_SOURCE}
+set_target_properties(test_cam_encoder PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+    VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$(Configuration)
 )
-
-add_library(jbig STATIC
-    ${JBIG_SOURCE}
-)
-
-target_include_directories(jbig
-  PUBLIC
-    .
-)
-
-set_target_properties(jbig PROPERTIES FOLDER "CxImage")
-
-#install(
-#    DIRECTORY include
-#    DESTINATION include
-#)

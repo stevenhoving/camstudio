@@ -87,7 +87,7 @@ target_include_directories(mng
 
 set_target_properties(mng PROPERTIES FOLDER "CxImage")
 
-install(
-    DIRECTORY include
-    DESTINATION include
-)
+#install(
+#    DIRECTORY include
+#    DESTINATION include
+#)
