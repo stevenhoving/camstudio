@@ -358,7 +358,7 @@ av_video::~av_video()
     av_frame_free(&frame_);
 }
 
-void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFOHEADER *frame)
+void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFO *image)
 {
     /* when we pass a frame to the encoder, it may keep a reference to it
     * internally; make sure we do not overwrite it here
@@ -366,10 +366,13 @@ void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFOHEADER *frame)
     if (av_frame_make_writable(frame_) < 0)
         throw std::runtime_error("Unable to make temp video frame writable");
 
-    const auto *src_data = ((LPBYTE)frame) + frame->biSize + (frame->biClrUsed * sizeof(RGBQUAD));
-    const auto src_data_size = frame->biSizeImage;
-    const auto src_width = frame->biWidth;
-    const auto src_height = frame->biHeight;
+    const auto &header = image->bmiHeader;
+
+    //image->bmiColors
+    const auto *src_data = ((LPBYTE)image) + header.biSize + (header.biClrUsed * sizeof(RGBQUAD));
+    const auto src_data_size = header.biSizeImage;
+    const auto src_width = header.biWidth;
+    const auto src_height = header.biHeight;
     const auto src_pixel_format = AV_PIX_FMT_BGR24;
 
     const auto dst_width = context_->width;

@@ -22,13 +22,10 @@
 #include <stdexcept>
 #include <cstdint>
 
-#include <windows.h> // for BITMAPINFOHEADER, needs to go...
-
-// hardcode windows shut for now.
-//struct BITMAPINFOHEADER;
-//typedef struct tagBITMAPINFOHEADER {}
-//struct tagBITMAPINFOHEADER;
-//using BITMAPINFOHEADER = tagBITMAPINFOHEADER;
+/*!
+ * for BITMAPINFO, we temporary encode BITMAPINFO frames.
+ */
+#include <windows.h>
 
 using timestamp_t = uint64_t;
 
@@ -38,7 +35,7 @@ public:
     av_video(const video_codec &config, const video_meta &meta);
     ~av_video();
 
-    void push_encode_frame(timestamp_t timestamp, BITMAPINFOHEADER *alpbi);
+    void push_encode_frame(timestamp_t timestamp, BITMAPINFO *image);
 
     // this function will return false, if it was unable to read a encoded packet.
     bool pull_encoded_packet(AVPacket *pkt, bool *valid_packet);

@@ -22,25 +22,24 @@
 struct rgb
 {
     uint8_t r, g, b;
-    //uint8_t reserved;
 };
 
-// \note this is NOT a correct bmpinfo...
-BITMAPINFOHEADER *create_bmpinfo(int width, int height)
+// \note this function does not create a correct bitmapinfo object.
+BITMAPINFO *create_bmpinfo(int width, int height)
 {
     // create a bmp
     const auto image_size = width * height * sizeof(rgb);
     const auto frame_size = sizeof(BITMAPINFOHEADER) + image_size;
 
-    BITMAPINFOHEADER *frame = (BITMAPINFOHEADER *)malloc(frame_size + 1);
+    BITMAPINFO *frame = (BITMAPINFO *)malloc(frame_size + 1);
     memset(frame, 0, frame_size);
-    frame->biSize = sizeof(BITMAPINFOHEADER);
-    frame->biClrUsed = 0;
-    frame->biWidth = width;
-    frame->biHeight = height;
-    frame->biSizeImage = image_size;
+    frame->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    frame->bmiHeader.biClrUsed = 0;
+    frame->bmiHeader.biWidth = width;
+    frame->bmiHeader.biHeight = height;
+    frame->bmiHeader.biSizeImage = image_size;
 
-    auto *frame_data = ((uint8_t *)frame) + frame->biSize + (frame->biClrUsed * sizeof(RGBQUAD));
+    auto *frame_data = ((uint8_t *)frame) + frame->bmiHeader.biSize + (frame->bmiHeader.biClrUsed * sizeof(RGBQUAD));
     rgb *data = reinterpret_cast<rgb *>(frame_data);
     uint8_t value = 0;
     for (int i = 0; i < width * height; ++i)
@@ -50,7 +49,6 @@ BITMAPINFOHEADER *create_bmpinfo(int width, int height)
     }
     return frame;
 }
-
 
 TEST(test_video_encoder, test_create_h264_encoder)
 {
