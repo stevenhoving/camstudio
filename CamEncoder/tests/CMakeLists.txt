@@ -19,6 +19,7 @@ add_unit_test_suite(
     TARGET test_cam_encoder
     SOURCES
         test_video_encoder.cpp
+        test_muxer.cpp
     INCLUDES
         ${CMAKE_CURRENT_BINARY_DIR}
     LIBRARIES CamEncoder

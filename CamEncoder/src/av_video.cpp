@@ -18,7 +18,6 @@
 #include "CamEncoder/av_video.h"
 #include <fmt/printf.h>
 #include <fmt/ostream.h>
-//#include <windows.h> // only temp so we can use the bitmap header struct.
 #include <cassert>
 
 std::ostream &operator<<(std::ostream &os, const AVMediaType d)
@@ -146,23 +145,6 @@ av_video::av_video(const video_codec &config, const video_meta &meta)
     case AV_CODEC_ID_H264:
         printf("av_video: H264 encoder\n");
         break;
-    // currently disabled, first focus on h264
-#if 0
-    case AV_CODEC_ID_MPEG4:
-        printf("av_video: MPEG-4 ASP encoder\n");
-        truncate_framerate = true;
-        break;
-    case AV_CODEC_ID_MPEG2VIDEO:
-        printf("av_video: MPEG-2 encoder\n");
-        //truncate_framerate = true;
-        break;
-    case AV_CODEC_ID_VP8:
-        printf("av_video: VP8 encoder\n");
-        break;
-    case AV_CODEC_ID_VP9:
-        printf("av_video: VP9 encoder\n");
-        break;
-#endif
     default:
         throw std::runtime_error("av_video: unsupported encoder");
         break;
@@ -188,13 +170,6 @@ av_video::av_video(const video_codec &config, const video_meta &meta)
                 fps.num, fps.den, supported_fps.num, supported_fps.den);
             fps = supported_fps;
         }
-    }
-    else if (truncate_framerate == true && ((fps.num & ~0xFFFF) || (fps.den & ~0xFFFF)))
-    {
-        // This may only be required for mpeg4 video.
-        printf("av_video: truncating framerate %d / %d",
-            fps.num, fps.den);
-        fps = truncate_fps(fps);
     }
 
     set_fps(context_, fps);

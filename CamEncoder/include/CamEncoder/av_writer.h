@@ -19,42 +19,11 @@
 
 #include "av_audio.h"
 #include "av_video.h"
+#include "av_muxer.h"
 
-#include <fmt/format.h>
-#include <string>
-
-enum class av_track_type
-{
-    video,
-    audio
-};
-
-struct av_track
-{
-    av_track_type type;
-    AVStream *stream;
-    int64_t duration;
-};
-
-enum class muxer_type
-{
-    mp4,
-    mkv
-};
-
-// also known as a ffmpeg formatter
-class av_muxer
+// the class where everything comes together, audio codec + video codec + file muxer.
+class av_writer
 {
 public:
-    av_muxer(const char *filename, muxer_type muxer, bool mp4_optimize);
 
-    ~av_muxer();
-
-private:
-    AVFormatContext *context_{ nullptr };
-    AVOutputFormat *output_format_{ nullptr };
-
-    std::string muxer_name_;
-    muxer_type muxer_{ muxer_type ::mp4 };
-    AVRational time_base_;
 };

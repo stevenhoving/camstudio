@@ -18,6 +18,7 @@
 #include <gtest/gtest.h>
 #include <CamEncoder/av_video.h>
 
+#if 0
 #pragma pack(1)
 struct rgb
 {
@@ -76,3 +77,5 @@ TEST(test_video_encoder, test_create_h264_encoder)
 
     free(frame);
 }
+
+#endif

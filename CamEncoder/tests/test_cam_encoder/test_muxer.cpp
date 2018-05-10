@@ -15,46 +15,10 @@
  * along with this program.If not, see < https://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include <gtest/gtest.h>
+#include <CamEncoder/av_muxer.h>
 
-#include "av_audio.h"
-#include "av_video.h"
-
-#include <fmt/format.h>
-#include <string>
-
-enum class av_track_type
+TEST(test_muxer, test_create_muxer)
 {
-    video,
-    audio
-};
-
-struct av_track
-{
-    av_track_type type;
-    AVStream *stream;
-    int64_t duration;
-};
-
-enum class muxer_type
-{
-    mp4,
-    mkv
-};
-
-// also known as a ffmpeg formatter
-class av_muxer
-{
-public:
-    av_muxer(const char *filename, muxer_type muxer, bool mp4_optimize);
-
-    ~av_muxer();
-
-private:
-    AVFormatContext *context_{ nullptr };
-    AVOutputFormat *output_format_{ nullptr };
-
-    std::string muxer_name_;
-    muxer_type muxer_{ muxer_type ::mp4 };
-    AVRational time_base_;
-};
+    av_muxer muxer(muxer_type::mkv, false);
+}

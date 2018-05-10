@@ -17,22 +17,31 @@ project(CamEncoder)
 
 find_package(ffmpeg)
 
-set(ENCODER_SOURCE
+set(ENCODER_LEGACY_SOURCE
     src/avi_writer.cpp
-    src/av_audio.cpp
-    src/av_muxer.cpp
-    src/av_video.cpp
     src/video_writer.cpp
 )
 
-set(ENCODER_INCLUDE
+set(ENCODER_LEGACY_INCLUDE
     include/CamEncoder/avi_writer.h
     include/CamEncoder/avi_config.h
+    include/CamEncoder/video_writer.h
+)
+
+set(ENCODER_SOURCE
+    src/av_audio.cpp
+    src/av_muxer.cpp
+    src/av_video.cpp
+    src/av_writer.cpp
+)
+
+set(ENCODER_INCLUDE
+
     include/CamEncoder/av_audio.h
     include/CamEncoder/av_config.h
     include/CamEncoder/av_muxer.h
     include/CamEncoder/av_video.h
-    include/CamEncoder/video_writer.h
+    include/CamEncoder/av_writer.h
     include/CamEncoder/av_ffmpeg.h
 )
 
@@ -41,9 +50,16 @@ source_group(src FILES
     ${ENCODER_INCLUDE}
 )
 
+source_group(src\\legacy FILES
+    ${ENCODER_LEGACY_SOURCE}
+    ${ENCODER_LEGACY_INCLUDE}
+)
+
 add_library(CamEncoder STATIC
     ${ENCODER_SOURCE}
     ${ENCODER_INCLUDE}
+    ${ENCODER_LEGACY_SOURCE}
+    ${ENCODER_LEGACY_INCLUDE}
 )
 
 target_include_directories(CamEncoder

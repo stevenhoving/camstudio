@@ -16,3 +16,52 @@
  */
 
 #include "CamEncoder/av_muxer.h"
+
+av_muxer::av_muxer(const char *filename, muxer_type muxer, bool mp4_optimize)
+    : muxer_(muxer)
+{
+    context_ = avformat_alloc_context();
+    if (context_ == nullptr)
+        throw std::runtime_error("unable to alloc avformat context");
+
+    AVDictionary * av_opts = NULL;
+    switch (muxer_)
+    {
+    case muxer_type::mp4:
+        time_base_.num = 1;
+        time_base_.den = 90000;
+        muxer_name_ = "mp4";
+
+        av_dict_set(&av_opts, "brand", "mp42", 0);
+        if (mp4_optimize)
+            av_dict_set(&av_opts, "movflags", "faststart+disable_chpl", 0);
+        else
+            av_dict_set(&av_opts, "movflags", "+disable_chpl", 0);
+        break;
+
+    case muxer_type::mkv:
+        // libavformat is essentially hard coded such that it only
+        // works with a timebase of 1/1000
+        time_base_.num = 1;
+        time_base_.den = 1000;
+        muxer_name_ = "matroska";
+        break;
+
+    default:
+        throw std::runtime_error("invalid muxer");
+    }
+
+    output_format_ = av_guess_format(muxer_name_.c_str(), nullptr, nullptr);
+    if (output_format_ == nullptr)
+        throw std::runtime_error(fmt::format("Could not guess output format {}", muxer_name_));
+    
+    int ret = avio_open2(&context_->pb, filename, AVIO_FLAG_WRITE, &context_->interrupt_callback,
+        nullptr);
+    if (ret < 0)
+        throw std::runtime_error(fmt::format("avio_open2 failed, err: {}", ret));
+}
+
+av_muxer::~av_muxer()
+{
+    avformat_free_context(context_);
+}
