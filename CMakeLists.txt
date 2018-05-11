@@ -25,7 +25,7 @@ list(APPEND CMAKE_MODULE_PATH
   "${CMAKE_SOURCE_DIR}/dep/cmake_utility"
 )
 
-if(NOT DEFINED MSVC OR MSVC_VERSION LESS 1910)
+if(NOT DEFINED MSVC OR MSVC_VERSION LESS 1914)
   message(FATAL_ERROR "camstudio currently only builds with visual studio 2017 for now.")
 endif()
 
