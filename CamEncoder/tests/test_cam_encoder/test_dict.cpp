@@ -25,3 +25,26 @@ TEST(test_dict, test_assignment)
     auto key_value = dict.at("test");
     ASSERT_STREQ(key_value->value, "42");
 }
+
+TEST(test_dict, test_access)
+{
+    av_dict dict;
+    dict["test"] = "42";
+    const auto value = dict["test"];
+    ASSERT_STREQ(value, "42");
+}
+
+TEST(test_dict, test_size)
+{
+    av_dict dict;
+    dict["test"] = "42";
+    EXPECT_EQ(dict.size(), 1);
+}
+
+TEST(test_dict, test_clear)
+{
+    av_dict dict;
+    dict["test"] = "42";
+    dict.clear();
+    EXPECT_EQ(dict.size(), 0);
+}
