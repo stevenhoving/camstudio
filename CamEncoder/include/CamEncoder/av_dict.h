@@ -19,6 +19,7 @@
 
 #include "av_ffmpeg.h"
 #include <string_view>
+#include <cstdint>
 #include <cassert>
 
 // this is a wrapper around AVDictionary. The interface is somewhat modeled after std::map.
@@ -36,26 +37,58 @@ public:
 
         void operator=(const std::string_view &value)
         {
-             av_dict_set(dict_, key_.data(), value.data(), 0);
+            int ret = av_dict_set(dict_, key_.data(), value.data(), 0);
+            if (ret < 0)
+                throw std::runtime_error("value insertion/assignment failed");
         }
+
+        void operator=(const int64_t value)
+        {
+            int ret = av_dict_set_int(dict_, key_.data(), value, 0);
+            if (ret < 0)
+                throw std::runtime_error("value insertion/assignment failed");
+        }
+
+         operator const char *() const
+         {
+             auto key_value = av_dict_get(*dict_, key_.data(), nullptr, 0);
+             if (key_value == nullptr)
+                 throw std::runtime_error("key was not found");
+
+             return key_value->value;
+         }
 
     private:
         AVDictionary **dict_;
         const std::string_view &key_;
     };
 
-    ~av_dict()
+    av_dict() = default;
+
+    ~av_dict() noexcept
     {
         av_dict_free(&dict_);
     }
+
+    // disallow copy & move, because you don't want that anyway.
+    av_dict(const av_dict &) = delete;
+    av_dict(av_dict &&) = delete;
+    av_dict &operator=(const av_dict &) = delete;
+    av_dict &operator=(const av_dict &&) = delete;
 
     int size() const noexcept
     {
         return av_dict_count(dict_);
     }
 
+    void clear() noexcept
+    {
+        av_dict_free(&dict_);
+    }
+
     // \todo make this a bit mode std::map style...
-    AVDictionaryEntry *at(const std::string_view &key, const AVDictionaryEntry *prev = nullptr, int flags = 0)
+    AVDictionaryEntry *at(const std::string_view &key, const AVDictionaryEntry *prev = nullptr,
+        int flags = 0)
     {
         return av_dict_get(dict_, key.data(), prev, flags);
     }
@@ -67,10 +100,9 @@ public:
 
     operator AVDictionary **() noexcept
     {
-        assert(dict_ != nullptr);
         return &dict_;
     }
 
 private:
-    AVDictionary *dict_{nullptr};
+    AVDictionary *dict_{ nullptr };
 };
