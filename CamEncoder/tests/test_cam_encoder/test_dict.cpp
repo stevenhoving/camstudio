@@ -16,27 +16,12 @@
  */
 
 #include <gtest/gtest.h>
-#include <CamEncoder/av_muxer.h>
+#include <CamEncoder/av_dict.h>
 
-av_video create_video(const av_video_meta &meta)
+TEST(test_dict, test_assignment)
 {
-    av_video_codec video_codec_config;
-    video_codec_config.id = AV_CODEC_ID_H264;
-
-    return av_video(video_codec_config, meta);
-}
-
-TEST(test_muxer, test_create_muxer)
-{
-    av_video_meta meta;
-    meta.bitrate = 4000;
-    meta.bpp = 24;
-    meta.height = 512;
-    meta.width = 512;
-    meta.fps = {25, 1};
-    meta.preset = video::preset::ultrafast;  // configure 'almost' realtime video encoding
-    meta.profile = video::profile::baseline; // lets try 264 baseline
-    meta.tune = video::tune::zerolatency;
-    auto video = create_video(meta);
-    av_muxer muxer("test.mkv", av_muxer_type::mkv, false, meta, video);
+    av_dict dict;
+    dict["test"] = "42";
+    auto key_value = dict.at("test");
+    ASSERT_STREQ(key_value->value, "42");
 }

@@ -3963,7 +3963,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     // Open the movie file for writing....
     //avi_writer avi(szVideoFileName, fps, *alpbi, cVideoOpts);
 
-    video_meta meta;
+    av_video_meta meta;
     meta.width = alpbi->biWidth;
     meta.height = alpbi->biHeight;
     meta.bpp = alpbi->biBitCount;

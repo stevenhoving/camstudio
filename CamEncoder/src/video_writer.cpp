@@ -66,7 +66,7 @@ void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
 #endif
 }
 
-video_writer::video_writer(const char *filename, video_meta meta)
+video_writer::video_writer(const char *filename, av_video_meta meta)
     : filename_(filename)
     , meta_(meta)
 {
@@ -270,7 +270,7 @@ int video_writer::write_frame(AVFormatContext *fmt_ctx, const AVRational *time_b
     return av_interleaved_write_frame(fmt_ctx, pkt);
 }
 
-void video_writer::add_stream(output_stream *ost, AVFormatContext *oc, AVCodec **codec, enum AVCodecID codec_id, video_meta meta)
+void video_writer::add_stream(output_stream *ost, AVFormatContext *oc, AVCodec **codec, enum AVCodecID codec_id, av_video_meta meta)
 {
     AVCodecContext *c;
     int i;

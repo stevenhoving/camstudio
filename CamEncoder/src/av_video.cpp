@@ -16,6 +16,7 @@
  */
 
 #include "CamEncoder/av_video.h"
+#include "CamEncoder/av_dict.h"
 #include <fmt/printf.h>
 #include <fmt/ostream.h>
 #include <cassert>
@@ -75,37 +76,37 @@ void set_fps(AVCodecContext *context, const AVRational &fps)
 /*!
  * calculate a approximate gob size.
  */
-int calculate_gop_size(const video_meta &meta)
+int calculate_gop_size(const av_video_meta &meta)
 {
     double gob_size = ((meta.fps.num / meta.fps.den) + 0.5) * 10.0;
     return static_cast<int>(gob_size);
 }
 
-void apply_preset(AVDictionary **av_opts, std::optional<video::preset> preset)
+void apply_preset(av_dict &av_opts, std::optional<video::preset> preset)
 {
     const auto preset_idx = static_cast<int>(preset.value_or(video::preset::medium));
     const auto preset_name = video::preset_names.at(preset_idx);
-    av_dict_set(av_opts, "preset", preset_name, 0);
+    av_opts["preset"] = preset_name;
 }
 
-void apply_tune(AVDictionary **av_opts, std::optional<video::tune> preset)
+void apply_tune(av_dict &av_opts, std::optional<video::tune> preset)
 {
     if (!preset)
         return;
 
     const auto tune_idx = static_cast<int>(preset.value());
     const auto tune_name = video::tune_names.at(tune_idx);
-    av_dict_set(av_opts, "tune", tune_name, 0);
+    av_opts["tune"] = tune_name;
 }
 
-void apply_profile(AVDictionary **av_opts, std::optional<video::profile> profile)
+void apply_profile(av_dict &av_opts, std::optional<video::profile> profile)
 {
     if (!profile)
         return;
 
     const auto profile_idx = static_cast<int>(profile.value());
     const auto profile_name = video::profile_names.at(profile_idx);
-    av_dict_set(av_opts, "profile", profile_name, 0);
+    av_opts["profile"] = profile_name;
 }
 
 void dump_context(AVCodecContext *context)
@@ -131,7 +132,7 @@ void dump_context(AVCodecContext *context)
     params = nullptr;
 }
 
-av_video::av_video(const video_codec &config, const video_meta &meta)
+av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
 {
     bool truncate_framerate = false;
     switch (config.id)
@@ -143,6 +144,7 @@ av_video::av_video(const video_codec &config, const video_meta &meta)
         break;
 #endif
     case AV_CODEC_ID_H264:
+        codec_type_ = av_video_codec_type::h264;
         printf("av_video: H264 encoder\n");
         break;
     default:
@@ -197,10 +199,10 @@ av_video::av_video(const video_codec &config, const video_meta &meta)
     //       Is this related to mpeg2?
     //context_->max_b_frames = 1;
 
-    AVDictionary * av_opts = nullptr;
-    apply_preset(&av_opts, meta.preset);
-    apply_tune(&av_opts, meta.tune);
-    apply_profile(&av_opts, meta.profile);
+    av_dict av_opts;
+    apply_preset(av_opts, meta.preset);
+    apply_tune(av_opts, meta.tune);
+    apply_profile(av_opts, meta.profile);
 
     /* iterate through lavc_opts and have avutil parse the options for us */
     //hb_dict_iter_t iter;
@@ -225,7 +227,7 @@ av_video::av_video(const video_codec &config, const video_meta &meta)
         /* Average bitrate */
         context_->bit_rate = static_cast<int64_t>(1000.0 * meta.bitrate.value());
         // ffmpeg's mpeg2 encoder requires that the bit_rate_tolerance be >= bitrate * fps
-        context_->bit_rate_tolerance = context_->bit_rate * av_q2d(fps) + 1;
+        context_->bit_rate_tolerance = static_cast<int>(context_->bit_rate * av_q2d(fps) + 1);
     }
     else
     {
@@ -233,14 +235,14 @@ av_video::av_video(const video_codec &config, const video_meta &meta)
         // These settings produce better image quality than
         // what was previously used
         context_->flags |= AV_CODEC_FLAG_QSCALE;
-        context_->global_quality = FF_QP2LAMBDA * meta.quality.value() + 0.5;
+        context_->global_quality = static_cast<int>(FF_QP2LAMBDA * meta.quality.value() + 0.5);
         //Set constant quality for libvpx
         if (config.id == AV_CODEC_ID_VP8 ||
             config.id == AV_CODEC_ID_VP9)
         {
             char quality[7];
             snprintf(quality, 7, "%.2f", meta.quality.value());
-            av_dict_set(&av_opts, "crf", quality, 0);
+            av_opts["crf"] = quality;
             //This value was chosen to make the bitrate high enough
             //for libvpx to "turn off" the maximum bitrate feature
             //that is normally applied to constant quality.
@@ -291,7 +293,7 @@ av_video::av_video(const video_codec &config, const video_meta &meta)
     //    hb_log("encavcodecInit: avcodec_open failed");
     //}
 
-    int ret = avcodec_open2(context_, codec, &av_opts);
+    int ret = avcodec_open2(context_, codec, av_opts);
     if (ret)
     {
         printf("unable to open video encoder\n");
@@ -302,12 +304,11 @@ av_video::av_video(const video_codec &config, const video_meta &meta)
 
     // avcodec_open populates the opts dictionary with the
     // things it didn't recognize.
-    AVDictionaryEntry *t = NULL;
-    while ((t = av_dict_get(av_opts, "", t, AV_DICT_IGNORE_SUFFIX)))
+    AVDictionaryEntry *t = nullptr;
+    while ((t = av_opts.at("", t, AV_DICT_IGNORE_SUFFIX)))
     {
         printf("encavcodecInit: Unknown avcodec option %s", t->key);
     }
-    av_dict_free(&av_opts);
 
     dump_context(context_);
 
@@ -390,6 +391,11 @@ bool av_video::pull_encoded_packet(AVPacket *pkt, bool *valid_packet)
 
     throw std::runtime_error("avcodec_receive_packet failed");
     return false;
+}
+
+av_video_codec_type av_video::get_codec_type() const noexcept
+{
+    return codec_type_;
 }
 
 int av_video::write_video_frame(AVFrame *frame)

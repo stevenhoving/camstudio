@@ -29,16 +29,25 @@
 
 using timestamp_t = uint64_t;
 
+enum class av_video_codec_type
+{
+    none,
+    h264, // ffmpeg h264
+    x264, // libx264 h264
+};
+
 class av_video
 {
 public:
-    av_video(const video_codec &config, const video_meta &meta);
+    av_video(const av_video_codec &config, const av_video_meta &meta);
     ~av_video();
 
     void push_encode_frame(timestamp_t timestamp, BITMAPINFO *image);
 
     // this function will return false, if it was unable to read a encoded packet.
     bool pull_encoded_packet(AVPacket *pkt, bool *valid_packet);
+
+    av_video_codec_type get_codec_type() const noexcept;
 
 private:
     // hack function... currently contains both the send to video encoder and receiving encoded
@@ -54,4 +63,6 @@ private:
     AVCodecContext *context_{ nullptr };
     AVFrame *frame_{ nullptr };
     SwsContext *sws_context_{ nullptr };
+
+    av_video_codec_type codec_type_{ av_video_codec_type::none };
 };

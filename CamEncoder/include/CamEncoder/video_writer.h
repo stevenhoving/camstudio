@@ -53,7 +53,7 @@ struct output_stream
 class video_writer
 {
 public:
-    video_writer(const char *filename, video_meta meta);
+    video_writer(const char *filename, av_video_meta meta);
     ~video_writer();
 
     void write(DWORD frametime, BITMAPINFOHEADER *alpbi);
@@ -71,7 +71,7 @@ public:
     int write_frame(AVFormatContext *fmt_ctx, const AVRational *time_base, AVStream *st, AVPacket *pkt);
 
     /* Add an output stream. */
-    void add_stream(output_stream *ost, AVFormatContext *oc, AVCodec **codec, enum AVCodecID codec_id, video_meta meta);
+    void add_stream(output_stream *ost, AVFormatContext *oc, AVCodec **codec, enum AVCodecID codec_id, av_video_meta meta);
 
     /**************************************************************/
     /* audio output */
@@ -99,7 +99,7 @@ public:
 
 private:
     std::string filename_;
-    video_meta meta_;
+    av_video_meta meta_;
     output_stream video_st_ = { 0 };
     output_stream audio_st_ = { 0 };
 

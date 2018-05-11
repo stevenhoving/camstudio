@@ -18,6 +18,7 @@ include(Unittests)
 add_unit_test_suite(
     TARGET test_cam_encoder
     SOURCES
+        test_dict.cpp
         test_video_encoder.cpp
         test_muxer.cpp
     INCLUDES

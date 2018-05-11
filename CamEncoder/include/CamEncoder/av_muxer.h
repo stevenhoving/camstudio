@@ -17,11 +17,13 @@
 
 #pragma once
 
+#include "av_config.h"
 #include "av_audio.h"
 #include "av_video.h"
 
 #include <fmt/format.h>
 #include <string>
+#include <vector>
 
 enum class av_track_type
 {
@@ -36,8 +38,9 @@ struct av_track
     int64_t duration;
 };
 
-enum class muxer_type
+enum class av_muxer_type
 {
+    none,
     mp4,
     mkv
 };
@@ -46,15 +49,15 @@ enum class muxer_type
 class av_muxer
 {
 public:
-    av_muxer(const char *filename, muxer_type muxer, bool mp4_optimize);
-
+    av_muxer(const char *filename, av_muxer_type muxer, bool mp4_optimize, const av_video_meta &meta, av_video &vcodec);
     ~av_muxer();
-
 private:
     AVFormatContext *context_{ nullptr };
     AVOutputFormat *output_format_{ nullptr };
 
     std::string muxer_name_;
-    muxer_type muxer_{ muxer_type ::mp4 };
+    av_muxer_type muxer_{ av_muxer_type ::none };
     AVRational time_base_;
+
+    std::vector<av_track> tracks_;
 };

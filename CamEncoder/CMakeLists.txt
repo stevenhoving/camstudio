@@ -39,6 +39,7 @@ set(ENCODER_INCLUDE
 
     include/CamEncoder/av_audio.h
     include/CamEncoder/av_config.h
+    include/CamEncoder/av_dict.h
     include/CamEncoder/av_muxer.h
     include/CamEncoder/av_video.h
     include/CamEncoder/av_writer.h

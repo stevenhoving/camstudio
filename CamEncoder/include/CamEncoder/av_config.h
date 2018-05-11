@@ -103,7 +103,7 @@ struct frame_rate
 };
 
 // is a mix of video input config and user configurations. \todo split these.
-struct video_meta
+struct av_video_meta
 {
     int width = { 0 };
     int height = { 0 };
@@ -116,7 +116,7 @@ struct video_meta
     std::optional<video::profile> profile; // for example h264
 };
 
-struct video_codec
+struct av_video_codec
 {
     AVCodecID id;
 };
