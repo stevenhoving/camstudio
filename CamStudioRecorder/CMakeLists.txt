@@ -136,6 +136,8 @@ set(RECORDER_ADDONS_SOURCE
 set(RECORDER_CODEC_SOURCE
     codec/avi_writer.cpp
     codec/avi_writer.h
+    codec/video_writer.cpp
+    codec/video_writer.h
 )
 
 set(RECORDER_RESOURCE
@@ -194,10 +196,10 @@ target_compile_options(CamStudioRecorder
 )
 
 set_target_properties(CamStudioRecorder PROPERTIES
-  COMPILE_FLAGS "/Yustdafx.h")
+    COMPILE_FLAGS /Yustdafx.h)
 
 set_source_files_properties(stdafx.cpp PROPERTIES
-    COMPILE_FLAGS "/Ycstdafx.h")
+    COMPILE_FLAGS /Ycstdafx.h)
 
 target_link_libraries(CamStudioRecorder
     CamLib

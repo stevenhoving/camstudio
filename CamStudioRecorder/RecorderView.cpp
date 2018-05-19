@@ -31,6 +31,7 @@
 #include "ProgressDlg.h"
 
 #include "codec/avi_writer.h"
+#include "codec/video_writer.h"
 
 #include <ximage.h>
 #include <fmt/format.h>
@@ -3965,7 +3966,14 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     }
 
     // Open the movie file for writing....
-    avi_writer avi(szVideoFileName, fps, *alpbi, cVideoOpts);
+    //avi_writer avi(szVideoFileName, fps, *alpbi, cVideoOpts);
+
+    video_meta meta;
+    meta.width = alpbi->biWidth;
+    meta.height = alpbi->biHeight;
+    meta.bpp = alpbi->biBitCount;
+    meta.fps = fps;
+    video_writer avi(szVideoFileName, meta);
 
 #if 0
     ////////////////////////////////////////////////
