@@ -19,15 +19,12 @@
 #include <CamEncoder/av_video.h>
 #include "test_utilities.h"
 
-#if 0
-
-
 TEST(test_video_encoder, test_create_h264_encoder)
 {
-    video_codec video_codec_config;
+    av_video_codec video_codec_config;
     video_codec_config.id = AV_CODEC_ID_H264;
 
-    video_meta meta;
+    av_video_meta meta;
     meta.bitrate = 4000;
     meta.bpp = 24;
     meta.height = 512;
@@ -37,16 +34,11 @@ TEST(test_video_encoder, test_create_h264_encoder)
     meta.profile = video::profile::baseline; // lets try 264 baseline
     meta.tune = video::tune::zerolatency;
 
+    av_dict avargs;
     av_video test(video_codec_config, meta);
+    test.open(nullptr, avargs);
 
     auto frame = create_bmpinfo(512, 512);
-
-    //for (int i = 0; i < 25; ++i)
-    for (int i = 0; i < 5; ++i)
-        test.push_encode_frame(i, frame);
-
-
+    test.push_encode_frame(0, frame);
     free(frame);
 }
-
-#endif

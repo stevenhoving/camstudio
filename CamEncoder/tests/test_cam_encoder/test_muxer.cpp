@@ -51,13 +51,15 @@ TEST(test_muxer, test_create_muxer)
 av_video_meta create_video_config()
 {
     av_video_meta meta;
-    meta.bitrate = 4000;
+    //meta.bitrate = 4000;
+    meta.quality = 25;
     meta.bpp = 24;
     meta.height = 512;
     meta.width = 512;
     meta.fps = {25, 1};
     meta.preset = video::preset::ultrafast;  // configure 'almost' realtime video encoding
-    meta.profile = video::profile::baseline; // lets try 264 baseline
+    //meta.profile = video::profile::baseline; // lets try 264 baseline
+    meta.profile = video::profile::main; // lets try 264 baseline
     meta.tune = video::tune::zerolatency;
     return meta;
 }
@@ -68,8 +70,6 @@ std::unique_ptr<av_video> create_video_codec(const av_video_meta &meta)
     video_codec_config.id = AV_CODEC_ID_H264;
 
     return std::make_unique<av_video>(video_codec_config, meta);
-
-    //return av_video(video_codec_config, meta);
 }
 
 TEST(test_muxer, test_create_mkv_muxer)
@@ -85,6 +85,7 @@ TEST(test_muxer, test_create_mkv_muxer)
     auto frame = create_bmpinfo(512, 512);
     for (int i = 0; i < 100; ++i)
         muxer.encode_frame(i, frame);
+    free(frame);
 }
 
 TEST(test_muxer, test_create_mp4_muxer)
@@ -100,4 +101,5 @@ TEST(test_muxer, test_create_mp4_muxer)
     auto frame = create_bmpinfo(512, 512);
     for (int i = 0; i < 100; ++i)
         muxer.encode_frame(i, frame);
+    free(frame);
 }

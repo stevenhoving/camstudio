@@ -206,16 +206,20 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
         context_->bit_rate = static_cast<int64_t>(1000.0 * meta.bitrate.value());
 
         // ffmpeg's mpeg2 encoder requires that the bit_rate_tolerance be >= bitrate * fps
-        context_->bit_rate_tolerance = static_cast<int>(context_->bit_rate * av_q2d(fps) + 1);
+        //context_->bit_rate_tolerance = static_cast<int>(context_->bit_rate * av_q2d(fps) + 1);
     }
     else
     {
         /* Constant quantizer */
-        // These settings produce better image quality than what was previously used
         context_->flags |= AV_CODEC_FLAG_QSCALE;
-        context_->global_quality = static_cast<int>(FF_QP2LAMBDA * meta.quality.value() + 0.5);
-        fmt::print("av_video: encoding at constant quantizer {}", context_->global_quality);
+
+        /* global_quality only seem to apply to mpeg 1, 2 and 4 */
+        //context_->global_quality = static_cast<int>(FF_QP2LAMBDA * meta.quality.value() + 0.5);
+
+        // x264 requires this.
+        av_opts_["crf"] = meta.quality.value();
     }
+
     context_->width = meta.width;
     context_->height = meta.height;
     context_->pix_fmt = AV_PIX_FMT_YUV420P;
@@ -245,14 +249,10 @@ void av_video::open(AVStream *stream, av_dict &dict)
     //entries if it encounters them.
     dict = av_opts_;
     auto av_opts = av_opts_;
-    int ret = avcodec_open2(context_, codec_, av_opts);
-    if (ret)
-    {
-        printf("unable to open video encoder\n");
 
-        // \todo free mem
-        return;
-    }
+    if (int ret = avcodec_open2(context_, codec_, av_opts); ret)
+        throw std::runtime_error(fmt::format("av_video: unable to open video encoder: {}",
+            av_error_to_string(ret)));
 
     // avcodec_open populates the opts dictionary with the
     // things it didn't recognize.
@@ -262,11 +262,16 @@ void av_video::open(AVStream *stream, av_dict &dict)
         for (int i = 0; i < av_opts.size(); ++i)
         {
             t = av_opts.at("", t, AV_DICT_IGNORE_SUFFIX);
-            printf("encavcodecInit: Unknown avcodec option %s", t->key);
+            fmt::print("av_video: unknown avcodec option: {}", t->key);
         }
     }
 
-    ret = avcodec_parameters_from_context(stream->codecpar, context_);
+    if (stream != nullptr)
+    {
+        if (int ret = avcodec_parameters_from_context(stream->codecpar, context_); ret)
+            throw std::runtime_error(
+                fmt::format("av_video: failed to copy avcodec parameters: {}", av_error_to_string(ret)));
+    }
 
     dump_context(context_);
 }
@@ -285,7 +290,6 @@ void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFO *image)
 
         const auto &header = image->bmiHeader;
 
-        //image->bmiColors
         const auto *src_data = ((LPBYTE)image) + header.biSize + (header.biClrUsed * sizeof(RGBQUAD));
         const auto src_data_size = header.biSizeImage;
         const auto src_width = header.biWidth;
@@ -358,25 +362,18 @@ AVRational av_video::get_time_base() const noexcept
     return context_->time_base;
 }
 
-
-
-// is this wrong?
-#define SCALE_FLAGS SWS_BICUBIC
-
 // \todo handle output pixel format, for when we want to encode yuv444 video.
-SwsContext *av_video::create_software_scaler(AVPixelFormat src_pixel_format, int width,
-    int height)
+SwsContext *av_video::create_software_scaler(AVPixelFormat src_pixel_format, int width, int height)
 {
     SwsContext *software_scaler_context = sws_getContext(width, height,
         src_pixel_format,
         width, height,
         AV_PIX_FMT_YUV420P,
         //AV_PIX_FMT_YUV444P,
-        SCALE_FLAGS, NULL, NULL, NULL);
+        SWS_BICUBIC, nullptr, nullptr, nullptr);
+
     if (!software_scaler_context)
-    {
         throw std::runtime_error("Could not initialize the conversion context");
-    }
 
     return software_scaler_context;
 }

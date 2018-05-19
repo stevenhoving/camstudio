@@ -25,22 +25,12 @@
 
 #include <memory>
 #include <string>
-#include <vector>
 #include <array>
 
 enum class av_track_type
 {
     video,
     audio
-};
-
-struct av_track_x
-{
-    av_track_type type;
-    AVStream *stream;
-    //int64_t duration;
-    AVCodecContext *codec_context;
-    //AVFrame *frame;
 };
 
 enum class av_muxer_type
@@ -63,8 +53,6 @@ struct av_track
     AVStream *stream;
     AVCodecContext *codec_context;
 
-    /* pts of the next frame that will be generated */
-    int64_t next_pts;
     int samples_count;
 };
 
@@ -76,42 +64,38 @@ public:
 
     // open the muxer so its ready to encode stuff.
     void open();
-
     void flush();
 
     // Add a video codec as track/stream.
     void add_stream(std::unique_ptr<av_video> video_codec);
 
-    // this encodes a video frame.
+    // this sends a video frame to the video encoder and sends any pending results to the muxer.
     void encode_frame(timestamp_t timestamp, BITMAPINFO *image);
 
-    int write_frame(AVFormatContext *format_context, const AVRational &time_base, AVStream *st, AVPacket *pkt);
-
-    /**************************************************************/
     /* audio output */
+    AVFrame *alloc_audio_frame(enum AVSampleFormat sample_fmt, uint64_t channel_layout,
+        int sample_rate, int nb_samples);
 
-    AVFrame *alloc_audio_frame(enum AVSampleFormat sample_fmt, uint64_t channel_layout, int sample_rate, int nb_samples);
-
-    void open_audio(AVFormatContext *format_context, AVCodec *codec, av_track *ost, AVDictionary *opt_arg);
-
-    /* Prepare a 16 bit dummy audio frame of 'frame_size' samples and
-    * 'nb_channels' channels. */
-    //AVFrame *get_audio_frame(av_track *ost);
+    void open_audio(AVFormatContext *format_context, AVCodec *codec, av_track *track,
+        AVDictionary *opt_arg);
 
     /*
-    * encode one audio frame and send it to the muxer
-    * return 1 when encoding is finished, 0 otherwise
-    */
-    int write_audio_frame(AVFormatContext *format_context, av_track *ost);
+     * encode one audio frame and send it to the muxer
+     * return 1 when encoding is finished, 0 otherwise
+     */
+    int write_audio_frame(av_track *ost, AVFrame *frame);
 
     void close_stream(AVFormatContext *format_context, av_track *ost);
 
 private:
+    int write_frame(const AVRational &time_base, AVStream *st, AVPacket *pkt);
+private:
     AVFormatContext *format_context_{nullptr};
     AVOutputFormat *output_format_{ nullptr };
     std::unique_ptr<av_video> video_codec_;
-    av_track video_st{};
-    av_track audio_st{};
+    //std::unique_ptr<av_audio> audio_codec_;
+    av_track video_track{};
+    av_track audio_track{};
     std::string filename_;
     int have_video = 0, have_audio = 0;
     int encode_video = 0, encode_audio = 0;

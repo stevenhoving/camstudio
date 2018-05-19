@@ -41,6 +41,7 @@ set(ENCODER_INCLUDE
     include/CamEncoder/av_dict.h
     include/CamEncoder/av_error.h
     include/CamEncoder/av_muxer.h
+    include/CamEncoder/av_icodec.h
     include/CamEncoder/av_video.h
     include/CamEncoder/av_ffmpeg.h
 )

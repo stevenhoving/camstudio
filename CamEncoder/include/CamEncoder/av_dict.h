@@ -36,15 +36,13 @@ public:
 
         void operator=(const std::string_view &value)
         {
-            int ret = av_dict_set(dict_, key_.data(), value.data(), 0);
-            if (ret < 0)
+            if (int ret = av_dict_set(dict_, key_.data(), value.data(), 0); ret < 0)
                 throw std::runtime_error("value insertion/assignment failed");
         }
 
         void operator=(const int64_t value)
         {
-            int ret = av_dict_set_int(dict_, key_.data(), value, 0);
-            if (ret < 0)
+            if (int ret = av_dict_set_int(dict_, key_.data(), value, 0); ret < 0)
                 throw std::runtime_error("value insertion/assignment failed");
         }
 

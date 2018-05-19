@@ -47,7 +47,7 @@ av_muxer::av_muxer(const char *filename, av_muxer_type muxer_type)
 
 av_muxer::~av_muxer()
 {
-    //flush();
+    // flush();
 
     /* Write the trailer, if any. The trailer must be written before you
      * close the CodecContexts open when you wrote the header; otherwise
@@ -56,13 +56,10 @@ av_muxer::~av_muxer()
     av_write_trailer(format_context_);
 
     /* Close each codec. */
-    //if (have_video)
-        //close_stream(format_context_, &video_st);
-    //if (video_codec_)
-        video_codec_.reset();
+    video_codec_.reset();
 
     if (have_audio)
-        close_stream(format_context_, &audio_st);
+        close_stream(format_context_, &audio_track);
 
     if (!(output_format_->flags & AVFMT_NOFILE))
         /* Close the output file. */
@@ -74,27 +71,19 @@ av_muxer::~av_muxer()
 
 void av_muxer::open()
 {
-    /* Add the audio and video streams using the default format codecs
-    * and initialize the codecs. */
-    //if (output_format_->video_codec != AV_CODEC_ID_NONE)
-    //{
-        //add_stream(&video_st, format_context_, &video_codec, output_format_->video_codec);
-        //have_video = 1;
-        //encode_video = 1;
-    //}
-    //if (output_format_->audio_codec != AV_CODEC_ID_NONE)
+    av_dict avargs;
+    video_codec_->open(video_track.stream, avargs);
+
+    // if (output_format_->audio_codec != AV_CODEC_ID_NONE)
     //{
     //    add_stream(&audio_st, format_context_, &audio_codec, output_format_->audio_codec);
     //    have_audio = 1;
     //    encode_audio = 1;
     //}
-    av_dict avargs;
-    video_codec_->open(video_st.stream, avargs);
+
 
     /* Now that all the parameters are set, we can open the audio and
     * video codecs and allocate the necessary encode buffers. */
-    //if (have_video)
-    //    open_video(format_context_, video_codec, &video_st, opt);
 
     //if (have_audio)
     //    open_audio(format_context_, audio_codec, &audio_st, opt);
@@ -104,21 +93,15 @@ void av_muxer::open()
     /* open the output file, if needed */
     if (!(output_format_->flags & AVFMT_NOFILE))
     {
-        int ret = avio_open(&format_context_->pb, filename_.c_str(), AVIO_FLAG_WRITE);
-        if (ret < 0)
-        {
-            fmt::print("Could not open '{}': {}\n", filename_, av_error_to_string(ret));
-            return;
-        }
+        if (int ret = avio_open(&format_context_->pb, filename_.c_str(), AVIO_FLAG_WRITE); ret < 0)
+            throw std::runtime_error(fmt::format("Could not open '{}': {}", filename_,
+                av_error_to_string(ret)));
     }
 
     /* Write the stream header, if any. */
-    int ret = avformat_write_header(format_context_, avargs);
-    if (ret < 0)
-    {
-        fmt::print("Error occurred when opening output file: {}\n", av_error_to_string(ret));
-        return;
-    }
+    if (int ret = avformat_write_header(format_context_, avargs); ret < 0)
+        throw std::runtime_error(fmt::format("Error occurred when opening output file: {}",
+            av_error_to_string(ret)));
 }
 
 void av_muxer::flush()
@@ -128,14 +111,12 @@ void av_muxer::flush()
 
 void av_muxer::encode_frame(timestamp_t timestamp, BITMAPINFO *image)
 {
-    if (image == nullptr)
-        __debugbreak();
     video_codec_->push_encode_frame(timestamp, image);
 
-    AVPacket pkt = {0};
+    AVPacket pkt = {};
     av_init_packet(&pkt);
 
-    for(bool valid_packet = true; valid_packet == true;)
+    for(bool valid_packet = true; valid_packet;)
     {
         if (!video_codec_->pull_encoded_packet(&pkt, &valid_packet))
             throw std::runtime_error("pull encoded packet failed");
@@ -144,8 +125,8 @@ void av_muxer::encode_frame(timestamp_t timestamp, BITMAPINFO *image)
             break;
 
         auto time_base = video_codec_->get_codec_context()->time_base;
-        auto stream = video_st.stream;
-        write_frame(format_context_, time_base, stream, &pkt);
+        auto stream = video_track.stream;
+        write_frame(time_base, stream, &pkt);
         av_packet_unref(&pkt);
     }
 }
@@ -163,13 +144,11 @@ void av_muxer::add_stream(std::unique_ptr<av_video> video_codec)
     track.stream->id = format_context_->nb_streams - 1;
     track.stream->time_base = codec_context->time_base;
 
-    track.codec_context = codec_context;
-
     /* Some formats want stream headers to be separate. */
     if (format_context_->oformat->flags & AVFMT_GLOBALHEADER)
         codec_context->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
-    video_st = track;
+    video_track = track;
 }
 
 AVFrame *av_muxer::alloc_audio_frame(enum AVSampleFormat sample_fmt, uint64_t channel_layout, int sample_rate,
@@ -207,7 +186,7 @@ void av_muxer::open_audio(AVFormatContext *format_context, AVCodec *codec, av_tr
     AVCodecContext *c;
     int nb_samples;
     int ret;
-    AVDictionary *opt = NULL;
+    AVDictionary *opt = nullptr;
 
     c = track->codec_context;
 
@@ -222,18 +201,18 @@ void av_muxer::open_audio(AVFormatContext *format_context, AVCodec *codec, av_tr
     }
 
     /* init signal generator */
-    // ost->t = 0;
-    // ost->tincr = 2 * M_PI * 110.0 / c->sample_rate;
+    // track->t = 0;
+    // track->tincr = 2 * M_PI * 110.0 / c->sample_rate;
     /* increment frequency by 110 Hz per second */
-    // ost->tincr2 = 2 * M_PI * 110.0 / c->sample_rate / c->sample_rate;
+    // track->tincr2 = 2 * M_PI * 110.0 / c->sample_rate / c->sample_rate;
 
     if (c->codec->capabilities & AV_CODEC_CAP_VARIABLE_FRAME_SIZE)
         nb_samples = 10000;
     else
         nb_samples = c->frame_size;
 
-    // ost->frame = alloc_audio_frame(c->sample_fmt, c->channel_layout, c->sample_rate, nb_samples);
-    // ost->tmp_frame = alloc_audio_frame(AV_SAMPLE_FMT_S16, c->channel_layout, c->sample_rate, nb_samples);
+    // track->frame = alloc_audio_frame(c->sample_fmt, c->channel_layout, c->sample_rate, nb_samples);
+    // track->tmp_frame = alloc_audio_frame(AV_SAMPLE_FMT_S16, c->channel_layout, c->sample_rate, nb_samples);
 
     /* copy the stream parameters to the muxer */
     ret = avcodec_parameters_from_context(track->stream->codecpar, c);
@@ -265,25 +244,23 @@ void av_muxer::open_audio(AVFormatContext *format_context, AVCodec *codec, av_tr
     //}
 }
 
-int av_muxer::write_audio_frame(AVFormatContext *format_context, av_track *ost)
+int av_muxer::write_audio_frame(av_track *track, AVFrame *frame)
 {
-    AVCodecContext *c;
-    AVPacket pkt = {0}; // data and size must be 0;
-    AVFrame *frame;
-    int ret;
-    int got_packet;
-    int dst_nb_samples;
+    AVCodecContext *c = nullptr;
+    AVPacket pkt = {}; // data and size must be 0;
+
+    int ret = 0;
+    int got_packet = 0;
+    int dst_nb_samples = 0;
 
     av_init_packet(&pkt);
-    c = ost->codec_context;
-
-    // frame = get_audio_frame(ost);
+    c = track->codec_context;
 
     if (frame)
     {
         /* convert samples from native format to destination codec format, using the resampler */
         /* compute destination number of samples */
-        // dst_nb_samples = av_rescale_rnd(swr_get_delay(ost->swr_ctx, c->sample_rate) + frame->nb_samples,
+        // dst_nb_samples = av_rescale_rnd(swr_get_delay(track->swr_ctx, c->sample_rate) + frame->nb_samples,
         // c->sample_rate, c->sample_rate, AV_ROUND_UP);
         av_assert0(dst_nb_samples == frame->nb_samples);
 
@@ -291,22 +268,22 @@ int av_muxer::write_audio_frame(AVFormatContext *format_context, av_track *ost)
          * internally;
          * make sure we do not overwrite it here
          */
-        // ret = av_frame_make_writable(ost->frame);
+        // ret = av_frame_make_writable(track->frame);
         if (ret < 0)
             exit(1);
 
         /* convert to destination format */
-        // ret = swr_convert(ost->swr_ctx,
-        //    ost->frame->data, dst_nb_samples,
+        // ret = swr_convert(track->swr_ctx,
+        //    track->frame->data, dst_nb_samples,
         //    (const uint8_t **)frame->data, frame->nb_samples);
         // if (ret < 0) {
         //    fmt::print("Error while converting\n");
         //    exit(1);
         //}
-        // frame = ost->frame;
+        // frame = track->frame;
         //
-        // frame->pts = av_rescale_q(ost->samples_count, { 1, c->sample_rate }, c->time_base);
-        // ost->samples_count += dst_nb_samples;
+        // frame->pts = av_rescale_q(track->samples_count, { 1, c->sample_rate }, c->time_base);
+        // track->samples_count += dst_nb_samples;
     }
 
     ret = avcodec_encode_audio2(c, &pkt, frame, &got_packet);
@@ -318,7 +295,7 @@ int av_muxer::write_audio_frame(AVFormatContext *format_context, av_track *ost)
 
     if (got_packet)
     {
-        ret = write_frame(format_context, c->time_base, ost->stream, &pkt);
+        ret = write_frame(c->time_base, track->stream, &pkt);
         if (ret < 0)
         {
             fmt::print("Error while writing audio frame: {}\n", av_error_to_string(ret));
@@ -332,19 +309,19 @@ int av_muxer::write_audio_frame(AVFormatContext *format_context, av_track *ost)
 void av_muxer::close_stream(AVFormatContext *format_context, av_track *ost)
 {
     avcodec_free_context(&ost->codec_context);
-    // av_frame_free(&ost->frame);
-    // av_frame_free(&ost->tmp_frame);
-    // sws_freeContext(ost->sws_ctx);
-    // swr_free(&ost->swr_ctx);
+    // av_frame_free(&track->frame);
+    // av_frame_free(&track->tmp_frame);
+    // sws_freeContext(track->sws_ctx);
+    // swr_free(&track->swr_ctx);
 }
 
-int av_muxer::write_frame(AVFormatContext *format_context, const AVRational &time_base, AVStream *st, AVPacket *pkt)
+int av_muxer::write_frame(const AVRational &time_base, AVStream *st, AVPacket *pkt)
 {
     /* rescale output packet timestamp values from codec to stream timebase */
     av_packet_rescale_ts(pkt, time_base, st->time_base);
     pkt->stream_index = st->index;
 
     /* Write the compressed frame to the media file. */
-    av_log_packet(format_context, pkt);
-    return av_interleaved_write_frame(format_context, pkt);
+    //av_log_packet(format_context_, pkt);
+    return av_interleaved_write_frame(format_context_, pkt);
 }
