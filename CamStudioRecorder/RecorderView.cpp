@@ -1007,7 +1007,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
     CString strTargetBareFileName = ""; // Target filename without path and without extension
     CString strTargetVideoFile = "";    // Video filename initial without path but with extension
     CString strTargetAudioFile = "";    // Audio filename initial without path but with extension
-    CString strTargetVideoExtension = ".avi";
+    CString strTargetVideoExtension = ".mkv";
     CString strTargetMP4VideoFile = "";
 
     // ver 1.2
@@ -1038,9 +1038,9 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
     switch (cProgramOpts.m_iRecordingMode)
     {
         case ModeAVI:
-            strFilter = _T("AVI Movie Files (*.avi)|*.avi||");
-            strTitle = _T("Save AVI File");
-            strExtFilter = _T("*.avi");
+            strFilter = _T("mkv Movie Files (*.mkv)|*.mkv||");
+            strTitle = _T("Save mkv File");
+            strExtFilter = _T("*.mkv");
             break;
         case ModeMP4:
             strFilter = _T("MPEG Movie Files (*.mp4)|*.mp4||");
@@ -1084,7 +1084,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
         // Use local copy of the timestamp string created when recording was started for autonaming.
         // "ccyymmdd-hhmm-ss" , Timestamp still used for default temp.avi output "temp-ccyymmdd-hhmm-ss.avi"
         strTargetBareFileName = cVideoOpts.m_cStartRecordingString.c_str();
-        strTargetVideoExtension = ".avi";
+        strTargetVideoExtension = ".mkv";
     }
     else if (fdlg.DoModal() == IDOK)
     {
@@ -1106,7 +1106,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
         {
             strTargetBareFileName = filename.c_str();
             // append always .avi if no extension is given.
-            strTargetVideoExtension = ".avi";
+            strTargetVideoExtension = ".mkv";
         }
     }
     else
