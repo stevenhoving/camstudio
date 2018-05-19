@@ -17,13 +17,28 @@
 
 #pragma once
 
-#include "av_audio.h"
-#include "av_video.h"
-#include "av_muxer.h"
+#include "av_ffmpeg.h"
+#include <string>
 
-// the class where everything comes together, audio codec + video codec + file muxer.
-class av_writer
+static std::string av_error_to_string(int errnum)
 {
-public:
+    char x[1024] = {0};
+    int ret = av_strerror(errnum, x, 1023);
+    if (ret < 0)
+        throw std::runtime_error("av_strerror failed");
+    return x;
+}
 
-};
+static std::string av_timestamp_to_string(int64_t ts)
+{
+    char x[AV_TS_MAX_STRING_SIZE] = {0};
+    av_ts_make_string(x, ts);
+    return x;
+}
+
+static std::string av_timestamp_to_timestring(int64_t ts, AVRational *tb)
+{
+    char x[AV_TS_MAX_STRING_SIZE] = {0};
+    av_ts_make_time_string(x, ts, tb);
+    return x;
+}

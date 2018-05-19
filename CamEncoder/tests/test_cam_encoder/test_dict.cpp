@@ -46,11 +46,37 @@ TEST(test_dict, test_clear)
     av_dict dict;
     dict["test"] = "42";
     dict.clear();
-    EXPECT_EQ(dict.size(), 0);
+    EXPECT_TRUE(dict.empty());
 }
 
 TEST(test_dict, test_empty_access)
 {
     av_dict dict;
     ASSERT_THROW({ dict.at("test"); }, std::out_of_range);
+}
+
+TEST(test_dict, test_copy_assignment)
+{
+    av_dict dict;
+    dict["test"] = "42";
+
+    av_dict dict_copy = dict;
+    dict.clear();
+
+    EXPECT_TRUE(dict.empty());
+    const auto value = dict_copy["test"];
+    ASSERT_STREQ(value, "42");
+}
+
+TEST(test_dict, test_copy_constructor)
+{
+    av_dict dict;
+    dict["test"] = "42";
+
+    av_dict dict_copy(dict);
+    dict.clear();
+
+    EXPECT_TRUE(dict.empty());
+    const auto value = dict_copy["test"];
+    ASSERT_STREQ(value, "42");
 }

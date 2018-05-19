@@ -32,3 +32,13 @@ extern "C"
 #include <libswresample/swresample.h>
 
 } // extern "C"
+
+static inline bool operator==(const AVRational &lhs, const AVRational &rhs)
+{
+    return lhs.den == rhs.den && lhs.num == rhs.num;
+}
+
+static inline bool operator!=(const AVRational &lhs, const AVRational &rhs)
+{
+    return !(lhs == rhs);
+}

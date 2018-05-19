@@ -20,7 +20,6 @@
 #include "av_ffmpeg.h"
 #include <string_view>
 #include <cstdint>
-#include <cassert>
 
 // this is a wrapper around AVDictionary. The interface is somewhat modeled after std::map.
 class av_dict
@@ -63,17 +62,29 @@ public:
         const std::string_view &key_;
     };
 
-    av_dict() = default;
+    av_dict() noexcept
+        : dict_(nullptr)
+    {
+    }
 
     ~av_dict() noexcept
     {
         av_dict_free(&dict_);
     }
 
-    // disallow copy & move, because you don't want that anyway.
-    av_dict(const av_dict &) = delete;
+    av_dict(const av_dict &dict)
+    {
+        av_dict_copy(&dict_, dict.dict_, 0);
+    }
+
+    av_dict &operator=(const av_dict &dict)
+    {
+        av_dict_copy(&dict_, dict.dict_, 0);
+        return *this;
+    }
+
+    // disallow move.
     av_dict(av_dict &&) = delete;
-    av_dict &operator=(const av_dict &) = delete;
     av_dict &operator=(const av_dict &&) = delete;
 
     int size() const noexcept

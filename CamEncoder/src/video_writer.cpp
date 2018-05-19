@@ -30,14 +30,14 @@
 
 #define SCALE_FLAGS SWS_BICUBIC
 
-std::string avx_ts2str(int64_t ts)
+std::string av_timestamp_to_string(int64_t ts)
 {
     char x[AV_TS_MAX_STRING_SIZE] = { 0 };
     av_ts_make_string(x, ts);
     return x;
 }
 
-std::string avx_ts2timestr(int64_t ts, AVRational *tb)
+std::string av_timestamp_to_timestring(int64_t ts, AVRational *tb)
 {
     char x[AV_TS_MAX_STRING_SIZE] = { 0 };
     av_ts_make_time_string(x, ts, tb);

@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+set(GTEST_CATCH_EXCEPTIONS 0)
+
 include(Unittests)
 
 add_unit_test_suite(
@@ -21,6 +23,7 @@ add_unit_test_suite(
         test_dict.cpp
         test_video_encoder.cpp
         test_muxer.cpp
+        test_utilities.h
     INCLUDES
         ${CMAKE_CURRENT_BINARY_DIR}
     LIBRARIES CamEncoder

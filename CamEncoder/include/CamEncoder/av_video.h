@@ -19,6 +19,7 @@
 
 #include "av_config.h"
 #include "av_ffmpeg.h"
+#include "av_dict.h"
 #include <stdexcept>
 #include <cstdint>
 
@@ -42,27 +43,27 @@ public:
     av_video(const av_video_codec &config, const av_video_meta &meta);
     ~av_video();
 
+    void open(AVStream *stream, av_dict &dict); // should be protected, with av_muxer as friend
+
     void push_encode_frame(timestamp_t timestamp, BITMAPINFO *image);
 
     // this function will return false, if it was unable to read a encoded packet.
     bool pull_encoded_packet(AVPacket *pkt, bool *valid_packet);
 
     av_video_codec_type get_codec_type() const noexcept;
+    AVCodecContext *get_codec_context() const noexcept;
+    AVRational get_time_base() const noexcept;
 
 private:
-    // hack function... currently contains both the send to video encoder and receiving encoded
-    // video frames code.
-    int write_video_frame(AVFrame *frame);
-
-    // create a reusable video frame for feeding data into the video encoder.
-    AVFrame *create_video_frame(AVPixelFormat pix_fmt, int width, int height);
-
     // create a video frame scaler/converter so we can convert our rgb24 to a.e. yuv420.
     SwsContext *create_software_scaler(AVPixelFormat pix_fmt, int width, int height);
+
 private:
+    AVCodec *codec_{ nullptr };
     AVCodecContext *context_{ nullptr };
     AVFrame *frame_{ nullptr };
     SwsContext *sws_context_{ nullptr };
 
     av_video_codec_type codec_type_{ av_video_codec_type::none };
+    av_dict av_opts_{};
 };

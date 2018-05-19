@@ -32,7 +32,6 @@ set(ENCODER_SOURCE
     src/av_audio.cpp
     src/av_muxer.cpp
     src/av_video.cpp
-    src/av_writer.cpp
 )
 
 set(ENCODER_INCLUDE
@@ -40,9 +39,9 @@ set(ENCODER_INCLUDE
     include/CamEncoder/av_audio.h
     include/CamEncoder/av_config.h
     include/CamEncoder/av_dict.h
+    include/CamEncoder/av_error.h
     include/CamEncoder/av_muxer.h
     include/CamEncoder/av_video.h
-    include/CamEncoder/av_writer.h
     include/CamEncoder/av_ffmpeg.h
 )
 

@@ -17,6 +17,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project(CamStudio)
 
+set(GTEST_CATCH_EXCEPTIONS 0)
+
 include(CTest)
 enable_testing()
 
@@ -43,7 +45,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(CMAKE_INSTALL_PREFIX
     ${CMAKE_BINARY_DIR}/lib
-)    
+)
 
 ###############################################################################
 

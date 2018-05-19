@@ -17,159 +17,334 @@
 
 #include "CamEncoder/av_muxer.h"
 #include "CamEncoder/av_dict.h"
+#include "CamEncoder/av_error.h"
 
-av_muxer::av_muxer(const char *filename, av_muxer_type muxer, bool mp4_optimize,
-    const av_video_meta &meta, av_video &vcodec)
-    : muxer_(muxer)
+void av_log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
 {
-    context_ = avformat_alloc_context();
-    if (context_ == nullptr)
-        throw std::runtime_error("alloc avformat context failed");
+    AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
 
-    av_dict av_opts;
-    switch (muxer_)
-    {
-    case av_muxer_type::mp4:
-        time_base_.num = 1;
-        time_base_.den = 90000;
-        muxer_name_ = "mp4";
+    fmt::print("pts:{} pts_time:{} dts:{} dts_time:{} duration:{} duration_time:{} stream_index:{}\n",
+               av_timestamp_to_string(pkt->pts), av_timestamp_to_timestring(pkt->pts, time_base),
+               av_timestamp_to_string(pkt->dts), av_timestamp_to_timestring(pkt->dts, time_base),
+               av_timestamp_to_string(pkt->duration), av_timestamp_to_timestring(pkt->duration, time_base),
+               pkt->stream_index);
+}
 
-        av_opts["brand"] = "mp42";
-        if (mp4_optimize)
-            av_opts["movflags"] = "faststart+disable_chpl";
-        else
-            av_opts["movflags"] = "+disable_chpl";
-        break;
+av_muxer::av_muxer(const char *filename, av_muxer_type muxer_type)
+    : filename_(filename)
+{
+    const auto muxer_type_name = av_muxer_type_names.at(static_cast<int>(muxer_type));
 
-    case av_muxer_type::mkv:
-        // libavformat is essentially hard coded such that it only
-        // works with a timebase of 1/1000
-        time_base_.num = 1;
-        time_base_.den = 1000;
-        muxer_name_ = "matroska";
-        break;
-
-    default:
-        throw std::runtime_error("invalid muxer");
-    }
-
-    output_format_ = av_guess_format(muxer_name_.c_str(), nullptr, nullptr);
+    output_format_ = av_guess_format(muxer_type_name, nullptr, nullptr);
     if (output_format_ == nullptr)
-        throw std::runtime_error(fmt::format("Could not guess output format {}", muxer_name_));
-    
-    int ret = avio_open2(&context_->pb, filename, AVIO_FLAG_WRITE, &context_->interrupt_callback,
-        nullptr);
-    if (ret < 0)
-        throw std::runtime_error(fmt::format("avio_open2 failed, err: {}", ret));
+        throw std::runtime_error(fmt::format("unable to guess output format: '{}'", muxer_type_name));
 
-    av_track video_track;
-    video_track.type = av_track_type::video;
-    video_track.stream = avformat_new_stream(context_, nullptr);
-    if (video_track.stream == nullptr)
-        throw std::runtime_error("Unable to create video stream");
-
-    video_track.stream->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
-    video_track.stream->time_base = time_base_;
-
-    uint8_t *priv_data = NULL;
-    int priv_size = 0;
-
-    switch (vcodec.get_codec_type())
-    {
-    case av_video_codec_type::x264:
-        video_track.stream->codecpar->codec_id = AV_CODEC_ID_H264;
-
-        // adaptive streaming (SPS and PPS before IDR frames)
-        //if (muxer_ == muxer_type::mp4 && job->inline_parameter_sets)
-        //{
-            //video_track.stream->codecpar->codec_tag = MKTAG('a', 'v', 'c', '3');
-        //}
-        //else
-        //{
-        video_track.stream->codecpar->codec_tag = MKTAG('a', 'v', 'c', '1');
-        //}
-#if 0
-        /* Taken from x264 muxers.c */
-        priv_size = 5 + 1 + 2 + job->config.h264.sps_length + 1 + 2 +
-            job->config.h264.pps_length;
-
-        priv_data = (uint8_t *)av_malloc(priv_size + AV_INPUT_BUFFER_PADDING_SIZE);
-        if (priv_data == NULL)
-        {
-            //hb_error("H.264 extradata: malloc failure");
-            throw std::runtime_error("H.264 extradata: malloc failure");
-        }
-
-        priv_data[0] = 1;
-        priv_data[1] = job->config.h264.sps[1]; /* AVCProfileIndication */
-        priv_data[2] = job->config.h264.sps[2]; /* profile_compat */
-        priv_data[3] = job->config.h264.sps[3]; /* AVCLevelIndication */
-        priv_data[4] = 0xff; // nalu size length is four bytes
-        priv_data[5] = 0xe1; // one sps
-
-        priv_data[6] = job->config.h264.sps_length >> 8;
-        priv_data[7] = job->config.h264.sps_length;
-
-        memcpy(priv_data + 8, job->config.h264.sps,
-            job->config.h264.sps_length);
-
-        priv_data[8 + job->config.h264.sps_length] = 1; // one pps
-        priv_data[9 + job->config.h264.sps_length] =
-            job->config.h264.pps_length >> 8;
-        priv_data[10 + job->config.h264.sps_length] =
-            job->config.h264.pps_length;
-
-        memcpy(priv_data + 11 + job->config.h264.sps_length,
-            job->config.h264.pps, job->config.h264.pps_length);
-#endif
-        break;
-    }
-
-    // we currently do not support codec extra data for now
-    //video_track->st->codecpar->extradata = priv_data;
-    //video_track->st->codecpar->extradata_size = priv_size;
-
-    //video_track.stream->sample_aspect_ratio.num = job->par.num;
-    //video_track.stream->sample_aspect_ratio.den = job->par.den;
-    //video_track.stream->codecpar->sample_aspect_ratio.num = job->par.num;
-    //video_track.stream->codecpar->sample_aspect_ratio.den = job->par.den;
-    //video_track.stream->codecpar->width = job->width;
-    //video_track.stream->codecpar->height = job->height;
-    video_track.stream->codecpar->width = meta.width;
-    video_track.stream->codecpar->height = meta.height;
-    video_track.stream->disposition |= AV_DISPOSITION_DEFAULT;
-
-    tracks_.emplace_back(video_track);
-
-    // \todo add audio track
-
-    // \todo add CamEncoding/CamStudio version information
-    const char *encoding_tool = "CamStudio";
-
-    av_dict_set(&context_->metadata, "encoding_tool", encoding_tool, 0);
-    time_t now = time(NULL);
-    struct tm * now_utc = gmtime(&now);
-    char now_8601[24];
-    strftime(now_8601, sizeof(now_8601), "%Y-%m-%dT%H:%M:%SZ", now_utc);
-    av_dict_set(&context_->metadata, "creation_time", now_8601, 0);
-
-
-    ret = avformat_write_header(context_, av_opts);
-    if (ret < 0)
-        throw std::runtime_error("av_muxer: avformat_write_header failed");
-
-    if (!av_opts.empty())
-    {
-        AVDictionaryEntry *t = nullptr;
-        for (int i = 0; i < av_opts.size(); ++i)
-        {
-            t = av_opts.at("", t, AV_DICT_IGNORE_SUFFIX);
-            fmt::print("av_muxer: unknown option {}\n", t->key);
-        }
-    }
+    /* allocate the output media context */
+    int ret = avformat_alloc_output_context2(&format_context_, output_format_, nullptr, nullptr);
+    if (format_context_ == nullptr)
+        throw std::runtime_error("unable to create avformat output context");
 }
 
 av_muxer::~av_muxer()
 {
-    avformat_free_context(context_);
+    //flush();
+
+    /* Write the trailer, if any. The trailer must be written before you
+     * close the CodecContexts open when you wrote the header; otherwise
+     * av_write_trailer() may try to use memory that was freed on
+     * av_codec_close(). */
+    av_write_trailer(format_context_);
+
+    /* Close each codec. */
+    //if (have_video)
+        //close_stream(format_context_, &video_st);
+    //if (video_codec_)
+        video_codec_.reset();
+
+    if (have_audio)
+        close_stream(format_context_, &audio_st);
+
+    if (!(output_format_->flags & AVFMT_NOFILE))
+        /* Close the output file. */
+        avio_closep(&format_context_->pb);
+
+    /* free the stream */
+    avformat_free_context(format_context_);
+}
+
+void av_muxer::open()
+{
+    /* Add the audio and video streams using the default format codecs
+    * and initialize the codecs. */
+    //if (output_format_->video_codec != AV_CODEC_ID_NONE)
+    //{
+        //add_stream(&video_st, format_context_, &video_codec, output_format_->video_codec);
+        //have_video = 1;
+        //encode_video = 1;
+    //}
+    //if (output_format_->audio_codec != AV_CODEC_ID_NONE)
+    //{
+    //    add_stream(&audio_st, format_context_, &audio_codec, output_format_->audio_codec);
+    //    have_audio = 1;
+    //    encode_audio = 1;
+    //}
+    av_dict avargs;
+    video_codec_->open(video_st.stream, avargs);
+
+    /* Now that all the parameters are set, we can open the audio and
+    * video codecs and allocate the necessary encode buffers. */
+    //if (have_video)
+    //    open_video(format_context_, video_codec, &video_st, opt);
+
+    //if (have_audio)
+    //    open_audio(format_context_, audio_codec, &audio_st, opt);
+
+    av_dump_format(format_context_, 0, filename_.c_str(), 1);
+
+    /* open the output file, if needed */
+    if (!(output_format_->flags & AVFMT_NOFILE))
+    {
+        int ret = avio_open(&format_context_->pb, filename_.c_str(), AVIO_FLAG_WRITE);
+        if (ret < 0)
+        {
+            fmt::print("Could not open '{}': {}\n", filename_, av_error_to_string(ret));
+            return;
+        }
+    }
+
+    /* Write the stream header, if any. */
+    int ret = avformat_write_header(format_context_, avargs);
+    if (ret < 0)
+    {
+        fmt::print("Error occurred when opening output file: {}\n", av_error_to_string(ret));
+        return;
+    }
+}
+
+void av_muxer::flush()
+{
+    encode_frame(0, nullptr);
+}
+
+void av_muxer::encode_frame(timestamp_t timestamp, BITMAPINFO *image)
+{
+    if (image == nullptr)
+        __debugbreak();
+    video_codec_->push_encode_frame(timestamp, image);
+
+    AVPacket pkt = {0};
+    av_init_packet(&pkt);
+
+    for(bool valid_packet = true; valid_packet == true;)
+    {
+        if (!video_codec_->pull_encoded_packet(&pkt, &valid_packet))
+            throw std::runtime_error("pull encoded packet failed");
+
+        if (!valid_packet)
+            break;
+
+        auto time_base = video_codec_->get_codec_context()->time_base;
+        auto stream = video_st.stream;
+        write_frame(format_context_, time_base, stream, &pkt);
+        av_packet_unref(&pkt);
+    }
+}
+
+void av_muxer::add_stream(std::unique_ptr<av_video> video_codec)
+{
+    video_codec_ = std::move(video_codec);
+    auto codec_context = video_codec_->get_codec_context();
+
+    av_track track;
+    track.stream = avformat_new_stream(format_context_, codec_context->codec);
+    if (!track.stream)
+        throw std::runtime_error("Could not allocate stream");
+
+    track.stream->id = format_context_->nb_streams - 1;
+    track.stream->time_base = codec_context->time_base;
+
+    track.codec_context = codec_context;
+
+    /* Some formats want stream headers to be separate. */
+    if (format_context_->oformat->flags & AVFMT_GLOBALHEADER)
+        codec_context->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+
+    video_st = track;
+}
+
+AVFrame *av_muxer::alloc_audio_frame(enum AVSampleFormat sample_fmt, uint64_t channel_layout, int sample_rate,
+                                     int nb_samples)
+{
+    AVFrame *frame = av_frame_alloc();
+    int ret;
+
+    if (!frame)
+    {
+        fmt::print("Error allocating an audio frame\n");
+        exit(1);
+    }
+
+    frame->format = sample_fmt;
+    frame->channel_layout = channel_layout;
+    frame->sample_rate = sample_rate;
+    frame->nb_samples = nb_samples;
+
+    if (nb_samples)
+    {
+        ret = av_frame_get_buffer(frame, 0);
+        if (ret < 0)
+        {
+            fmt::print("Error allocating an audio buffer\n");
+            exit(1);
+        }
+    }
+
+    return frame;
+}
+
+void av_muxer::open_audio(AVFormatContext *format_context, AVCodec *codec, av_track *track, AVDictionary *opt_arg)
+{
+    AVCodecContext *c;
+    int nb_samples;
+    int ret;
+    AVDictionary *opt = NULL;
+
+    c = track->codec_context;
+
+    /* open it */
+    av_dict_copy(&opt, opt_arg, 0);
+    ret = avcodec_open2(c, codec, &opt);
+    av_dict_free(&opt);
+    if (ret < 0)
+    {
+        fmt::print("Could not open audio codec: {}\n", av_error_to_string(ret));
+        exit(1);
+    }
+
+    /* init signal generator */
+    // ost->t = 0;
+    // ost->tincr = 2 * M_PI * 110.0 / c->sample_rate;
+    /* increment frequency by 110 Hz per second */
+    // ost->tincr2 = 2 * M_PI * 110.0 / c->sample_rate / c->sample_rate;
+
+    if (c->codec->capabilities & AV_CODEC_CAP_VARIABLE_FRAME_SIZE)
+        nb_samples = 10000;
+    else
+        nb_samples = c->frame_size;
+
+    // ost->frame = alloc_audio_frame(c->sample_fmt, c->channel_layout, c->sample_rate, nb_samples);
+    // ost->tmp_frame = alloc_audio_frame(AV_SAMPLE_FMT_S16, c->channel_layout, c->sample_rate, nb_samples);
+
+    /* copy the stream parameters to the muxer */
+    ret = avcodec_parameters_from_context(track->stream->codecpar, c);
+    if (ret < 0)
+    {
+        fmt::print("Could not copy the stream parameters\n");
+        exit(1);
+    }
+
+    /* create resampler context */
+    // track->swr_ctx = swr_alloc();
+    // if (!track->swr_ctx) {
+    //    fmt::print("Could not allocate resampler context\n");
+    //    exit(1);
+    //}
+
+    /* set options */
+    // av_opt_set_int(track->swr_ctx, "in_channel_count", c->channels, 0);
+    // av_opt_set_int(track->swr_ctx, "in_sample_rate", c->sample_rate, 0);
+    // av_opt_set_sample_fmt(track->swr_ctx, "in_sample_fmt", AV_SAMPLE_FMT_S16, 0);
+    // av_opt_set_int(track->swr_ctx, "out_channel_count", c->channels, 0);
+    // av_opt_set_int(track->swr_ctx, "out_sample_rate", c->sample_rate, 0);
+    // av_opt_set_sample_fmt(track->swr_ctx, "out_sample_fmt", c->sample_fmt, 0);
+
+    /* initialize the resampling context */
+    // if ((ret = swr_init(track->swr_ctx)) < 0) {
+    //    fmt::print("Failed to initialize the resampling context\n");
+    //    exit(1);
+    //}
+}
+
+int av_muxer::write_audio_frame(AVFormatContext *format_context, av_track *ost)
+{
+    AVCodecContext *c;
+    AVPacket pkt = {0}; // data and size must be 0;
+    AVFrame *frame;
+    int ret;
+    int got_packet;
+    int dst_nb_samples;
+
+    av_init_packet(&pkt);
+    c = ost->codec_context;
+
+    // frame = get_audio_frame(ost);
+
+    if (frame)
+    {
+        /* convert samples from native format to destination codec format, using the resampler */
+        /* compute destination number of samples */
+        // dst_nb_samples = av_rescale_rnd(swr_get_delay(ost->swr_ctx, c->sample_rate) + frame->nb_samples,
+        // c->sample_rate, c->sample_rate, AV_ROUND_UP);
+        av_assert0(dst_nb_samples == frame->nb_samples);
+
+        /* when we pass a frame to the encoder, it may keep a reference to it
+         * internally;
+         * make sure we do not overwrite it here
+         */
+        // ret = av_frame_make_writable(ost->frame);
+        if (ret < 0)
+            exit(1);
+
+        /* convert to destination format */
+        // ret = swr_convert(ost->swr_ctx,
+        //    ost->frame->data, dst_nb_samples,
+        //    (const uint8_t **)frame->data, frame->nb_samples);
+        // if (ret < 0) {
+        //    fmt::print("Error while converting\n");
+        //    exit(1);
+        //}
+        // frame = ost->frame;
+        //
+        // frame->pts = av_rescale_q(ost->samples_count, { 1, c->sample_rate }, c->time_base);
+        // ost->samples_count += dst_nb_samples;
+    }
+
+    ret = avcodec_encode_audio2(c, &pkt, frame, &got_packet);
+    if (ret < 0)
+    {
+        fmt::print("Error encoding audio frame: {}\n", av_error_to_string(ret));
+        exit(1);
+    }
+
+    if (got_packet)
+    {
+        ret = write_frame(format_context, c->time_base, ost->stream, &pkt);
+        if (ret < 0)
+        {
+            fmt::print("Error while writing audio frame: {}\n", av_error_to_string(ret));
+            exit(1);
+        }
+    }
+
+    return (frame || got_packet) ? 0 : 1;
+}
+
+void av_muxer::close_stream(AVFormatContext *format_context, av_track *ost)
+{
+    avcodec_free_context(&ost->codec_context);
+    // av_frame_free(&ost->frame);
+    // av_frame_free(&ost->tmp_frame);
+    // sws_freeContext(ost->sws_ctx);
+    // swr_free(&ost->swr_ctx);
+}
+
+int av_muxer::write_frame(AVFormatContext *format_context, const AVRational &time_base, AVStream *st, AVPacket *pkt)
+{
+    /* rescale output packet timestamp values from codec to stream timebase */
+    av_packet_rescale_ts(pkt, time_base, st->time_base);
+    pkt->stream_index = st->index;
+
+    /* Write the compressed frame to the media file. */
+    av_log_packet(format_context, pkt);
+    return av_interleaved_write_frame(format_context, pkt);
 }
