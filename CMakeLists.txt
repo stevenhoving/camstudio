@@ -28,7 +28,7 @@ list(APPEND CMAKE_MODULE_PATH
 )
 
 if(NOT DEFINED MSVC OR MSVC_VERSION LESS 1914)
-  message(FATAL_ERROR "camstudio currently only builds with visual studio 2017 for now.")
+  message(FATAL_ERROR "camstudio currently only builds with visual studio 2017 15.7 for now.")
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
