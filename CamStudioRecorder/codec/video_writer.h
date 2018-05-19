@@ -84,7 +84,36 @@ public:
 
     void stop();
 
-    int total_bytes_written() { return 10; }
+    int total_bytes_written();
+
+    int write_frame(AVFormatContext *fmt_ctx, const AVRational *time_base, AVStream *st, AVPacket *pkt);
+
+    /* Add an output stream. */
+    void add_stream(output_stream *ost, AVFormatContext *oc, AVCodec **codec, enum AVCodecID codec_id, video_meta meta);
+
+    /**************************************************************/
+    /* audio output */
+    AVFrame *alloc_audio_frame(enum AVSampleFormat sample_fmt, uint64_t channel_layout, int sample_rate, int nb_samples);
+
+    void open_audio(AVFormatContext *oc, AVCodec *codec, output_stream *ost, AVDictionary *opt_arg);
+
+    /* Prepare a 16 bit dummy audio frame of 'frame_size' samples and
+    * 'nb_channels' channels. */
+    AVFrame *get_audio_frame(output_stream *ost);
+
+    /*
+    * encode one audio frame and send it to the muxer
+    * return 1 when encoding is finished, 0 otherwise
+    */
+    int write_audio_frame(AVFormatContext *oc, output_stream *ost);
+
+    /**************************************************************/
+    /* video output */
+    AVFrame *alloc_picture(enum AVPixelFormat pix_fmt, int width, int height);
+
+    void open_video(AVFormatContext *oc, AVCodec *codec, output_stream *ost, AVDictionary *opt_arg);
+
+    void close_stream(AVFormatContext *oc, output_stream *ost);
 
 private:
     std::string filename_;
