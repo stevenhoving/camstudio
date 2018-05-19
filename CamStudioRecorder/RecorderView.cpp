@@ -1007,7 +1007,6 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
     CString strTargetBareFileName = ""; // Target filename without path and without extension
     CString strTargetVideoFile = "";    // Video filename initial without path but with extension
     CString strTargetAudioFile = "";    // Audio filename initial without path but with extension
-    CString strTargetXnoteLogFile = ""; // Xnote log filename initial without path but with extension
     CString strTargetVideoExtension = ".avi";
     CString strTargetMP4VideoFile = "";
 
@@ -1141,14 +1140,12 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
         strTargetDir + "\\" + strTargetBareFileName +
         strTargetVideoExtension; // strTargetVideoFile is the same string as strNewFile in previously approach
     strTargetAudioFile = strTargetDir + "\\" + strTargetBareFileName + ".wav";
-    strTargetXnoteLogFile = strTargetDir + "\\" + strTargetBareFileName + ".txt";
 
     // TRACE("## CRecorderView::OnUserGeneric 2a # strTargetDir            :[%s]\n", strTargetDir);
     // TRACE("## 2b # strTargetBareFileName   :[%s]\n", strTargetBareFileName );
     // TRACE("## 2c # strTargetVideoExtension :[%s]\n", strTargetVideoExtension );
     // TRACE("## 3a # strTargetVideoFile      :[%s]\n", strTargetVideoFile );
     // TRACE("## 3b # strTargetAudioFile      :[%s]\n", strTargetAudioFile );
-    // TRACE("## 3c # strTargetXnoteLogFile   :[%s]\n", strTargetXnoteLogFile );
 
     /////////////////////////////////////////////////////////
     // To be compatible with old previously solution.
@@ -1274,8 +1271,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
                 // files are saved separately as \n\n");
 
                 msgstr = msgstr + strTargetVideoFile + "\n";
-                msgstr = msgstr + strTargetAudioFile + "\n";
-                msgstr = msgstr + strTargetXnoteLogFile;
+                msgstr = msgstr + strTargetAudioFile;
 
                 ::MessageBox(nullptr, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
             }
@@ -4095,11 +4091,6 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
         InitAudioRecording();
         StartAudioRecording();
     }
-
-    // Document which version and release of Camstudio is used.
-    char cTmp[128] = "";
-    // sprintf( cTmp, "<recorder><version>%s</version><release>%s</release></recorder>\n", CURRENT_VERSION_NUMBER,
-    // CURRENT_HG_RELEASE_NUMBER ); WriteLineToXnoteLogFile( cTmp );
 
     if (cVideoOpts.m_iShiftType == AUDIOFIRST)
     {

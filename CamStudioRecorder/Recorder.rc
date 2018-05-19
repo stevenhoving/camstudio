@@ -52,8 +52,6 @@ IDB_TOOLBARMASK         BITMAP                  "res\\ToolbarMask.bmp"
 
 IDB_SCREENANNOTATIONS_SMALL BITMAP                  "res\\bmp00001.bmp"
 
-IDR_MAINFRAME1          BITMAP                  "res\\mainfram.bmp"
-
 IDB_BITMAP4             BITMAP                  "res\\Recorder_logo.bmp"
 
 IDB_BITMAP6             BITMAP                  "res\\bitmap6.bmp"
@@ -209,18 +207,7 @@ BEGIN
     BUTTON      ID_VIEWTYPE
     BUTTON      ID_VIEW_SCREENANNOTATIONS
     BUTTON      ID_AVISWF
-    BUTTON      ID_XNOTE_RECORDDURATIONLIMITMODE
     BUTTON      ID_MP4
-END
-
-IDR_MAINFRAME1 TOOLBAR 21, 21
-BEGIN
-    BUTTON      ID_RECORD
-    BUTTON      ID_PAUSE
-    BUTTON      ID_STOP
-    SEPARATOR
-    BUTTON      ID_VIEWTYPE
-    BUTTON      ID_VIEW_SCREENANNOTATIONS
 END
 
 
