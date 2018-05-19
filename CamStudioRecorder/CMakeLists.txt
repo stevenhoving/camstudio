@@ -18,8 +18,6 @@ project(CamStudioRecorder)
 find_package(ffmpeg)
 
 set(RECORDER_SOURCE
-    AviWriter.cpp
-    AviWriter.h
     AudioFormatDlg.cpp
     AudioFormatDlg.h
     AudioMixer.cpp
@@ -135,6 +133,11 @@ set(RECORDER_ADDONS_SOURCE
     addons/TextAttributes.h
 )
 
+set(RECORDER_CODEC_SOURCE
+    codec/avi_writer.cpp
+    codec/avi_writer.h
+)
+
 set(RECORDER_RESOURCE
     Recorder.rc
 )
@@ -145,6 +148,7 @@ add_executable(CamStudioRecorder WIN32
     ${RECORDER_SOURCE}
     ${RECORDER_RESOURCE}
     ${RECORDER_VFW_SOURCE}
+    ${RECORDER_CODEC_SOURCE}
     ${RECORDER_ADDONS_SOURCE}
 )
 
@@ -154,6 +158,10 @@ source_group(vfw FILES
 
 source_group(addons FILES
     ${RECORDER_ADDONS_SOURCE}
+)
+
+source_group(codec FILES
+    ${RECORDER_CODEC_SOURCE}
 )
 
 source_group(src FILES

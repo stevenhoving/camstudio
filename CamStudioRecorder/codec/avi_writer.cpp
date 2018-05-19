@@ -16,7 +16,7 @@
  */
 
 #include "stdafx.h"
-#include "AviWriter.h"
+#include "avi_writer.h"
 #include "Avi.h"
 
 #define AVIIF_KEYFRAME 0x00000010L // this frame is a key frame.

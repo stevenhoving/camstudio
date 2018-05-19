@@ -29,7 +29,8 @@
 #include "TroubleShootDlg.h"
 #include "VideoOptionsDlg.h"
 #include "ProgressDlg.h"
-#include "AviWriter.h"
+
+#include "codec/avi_writer.h"
 
 #include <ximage.h>
 #include <fmt/format.h>
