@@ -10,3 +10,6 @@
 [submodule "dep/fmt"]
 	path = dep/fmt
 	url = https://github.com/fmtlib/fmt.git
+[submodule "dep/ffmpeg"]
+	path = dep/ffmpeg
+	url = https://github.com/stevenhoving/camstudio-dependency-ffmpeg.git
