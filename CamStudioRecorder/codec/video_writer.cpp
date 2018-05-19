@@ -46,8 +46,11 @@ std::string avx_ts2timestr(int64_t ts, AVRational *tb)
 
 std::string avx_err2str(int errnum)
 {
-    char x[AV_TS_MAX_STRING_SIZE] = { 0 };
-    av_make_error_string(x, AV_ERROR_MAX_STRING_SIZE, errnum);
+    char x[1024] = { 0 };
+    int ret = av_strerror(errnum, x, 1023);
+    if (ret < 0)
+        printf("avx_err2str failed");
+
     return x;
 }
 
@@ -77,52 +80,52 @@ video_writer::video_writer(const char *filename, video_meta meta)
     filename_ = path.string();
 
     /* allocate the output media context */
-    avformat_alloc_output_context2(&oc, NULL, NULL, filename_.c_str());
-    if (!oc)
+    avformat_alloc_output_context2(&format_context_, NULL, NULL, filename_.c_str());
+    if (!format_context_)
     {
         printf("Could not deduce output format from file extension: using MPEG.\n");
 
         path.replace_extension("mpeg");
         filename_ = path.string();
-        avformat_alloc_output_context2(&oc, NULL, "mpeg", filename_.c_str());
+        avformat_alloc_output_context2(&format_context_, NULL, "mpeg", filename_.c_str());
     }
 
-    if (!oc)
+    if (!format_context_)
         return;
 
-    fmt = oc->oformat;
+    output_format_ = format_context_->oformat;
 
     /* Add the audio and video streams using the default format codecs
      * and initialize the codecs.
      */
-    if (fmt->video_codec != AV_CODEC_ID_NONE)
+    if (output_format_->video_codec != AV_CODEC_ID_NONE)
     {
-        add_stream(&video_st_, oc, &video_codec, fmt->video_codec, meta_);
-        have_video = 1;
+        add_stream(&video_st_, format_context_, &video_codec_, output_format_->video_codec, meta_);
+        have_video_ = 1;
         encode_video = 1;
     }
-    if (fmt->audio_codec != AV_CODEC_ID_NONE)
+    if (output_format_->audio_codec != AV_CODEC_ID_NONE)
     {
-        add_stream(&audio_st_, oc, &audio_codec, fmt->audio_codec, meta_);
-        have_audio = 1;
-        encode_audio = 1;
+        add_stream(&audio_st_, format_context_, &audio_codec_, output_format_->audio_codec, meta_);
+        have_audio_ = 1;
+        encode_audio_ = 1;
     }
 
     /* Now that all the parameters are set, we can open the audio and
      * video codecs and allocate the necessary encode buffers.
      */
-    if (have_video)
-        open_video(oc, video_codec, &video_st_, opt);
+    if (have_video_)
+        open_video(format_context_, video_codec_, &video_st_, opt_);
 
-    if (have_audio)
-        open_audio(oc, audio_codec, &audio_st_, opt);
+    if (have_audio_)
+        open_audio(format_context_, audio_codec_, &audio_st_, opt_);
 
-    av_dump_format(oc, 0, filename_.c_str(), 1);
+    av_dump_format(format_context_, 0, filename_.c_str(), 1);
 
     int ret = 0;
     /* open the output file, if needed */
-    if (!(fmt->flags & AVFMT_NOFILE)) {
-        ret = avio_open(&oc->pb, filename_.c_str(), AVIO_FLAG_WRITE);
+    if (!(output_format_->flags & AVFMT_NOFILE)) {
+        ret = avio_open(&format_context_->pb, filename_.c_str(), AVIO_FLAG_WRITE);
         if (ret < 0) {
             fmt::fprintf(stderr, "Could not open '%s': %s\n", filename_,
                 avx_err2str(ret));
@@ -131,7 +134,7 @@ video_writer::video_writer(const char *filename, video_meta meta)
     }
 
     /* Write the stream header, if any. */
-    ret = avformat_write_header(oc, &opt);
+    ret = avformat_write_header(format_context_, &opt_);
     if (ret < 0) {
         fmt::fprintf(stderr, "Error occurred when opening output file: %s\n",
             avx_err2str(ret));
@@ -199,44 +202,39 @@ void video_writer::write(DWORD frametime, BITMAPINFOHEADER *alpbi)
 
     ost->frame->pts = ost->next_pts++;
 
-    int success = write_video_frame(oc, &video_st_, video_st_.frame);
+    int success = write_video_frame(format_context_, &video_st_, video_st_.frame);
     if (success)
         printf("frame written\n");
 }
-
 int video_writer::write_video_frame(AVFormatContext *oc, output_stream *ost, AVFrame *frame)
 {
     AVCodecContext *c;
     int got_packet = 0;
-    AVPacket pkt = { 0 };
+
+    AVPacket pkt = {0};
+    av_init_packet(&pkt);
+    pkt.data = NULL;
+    pkt.size = 0;
 
     c = ost->enc;
 
-    av_init_packet(&pkt);
-
-    /* encode the image */
-    auto ret = avcodec_encode_video2(c, &pkt, frame, &got_packet);
-    if (ret < 0) {
-        fmt::fprintf(stderr, "Error encoding video frame: %s\n", avx_err2str(ret));
-        exit(1);
+    int ret;
+    if ((ret = avcodec_send_frame(c, frame)) < 0) {
+        fmt::fprintf(stderr, "Error code: %s\n", avx_err2str(ret));
+        return 0;
     }
 
-    if (got_packet)
-    {
+    while (1) {
+        ret = avcodec_receive_packet(c, &pkt);
+        if (ret)
+            break;
+
         ret = write_frame(oc, &c->time_base, ost->st, &pkt);
-    }
-    else
-    {
-        ret = 0;
+        av_packet_unref(&pkt);
     }
 
-    if (ret < 0)
-    {
-        fmt::fprintf(stderr, "Error while writing video frame: %s\n", avx_err2str(ret));
-        exit(1);
-    }
-
-    return (frame || got_packet) ? 0 : 1;
+    ret = ((ret == AVERROR(EAGAIN)) ? 0 : -1);
+    return ret;
 }
 
 void video_writer::stop()
@@ -246,20 +244,20 @@ void video_writer::stop()
     * close the CodecContexts open when you wrote the header; otherwise
     * av_write_trailer() may try to use memory that was freed on
     * av_codec_close(). */
-    av_write_trailer(oc);
+    av_write_trailer(format_context_);
 
     /* Close each codec. */
-    if (have_video)
-        close_stream(oc, &video_st_);
-    if (have_audio)
-        close_stream(oc, &audio_st_);
+    if (have_video_)
+        close_stream(format_context_, &video_st_);
+    if (have_audio_)
+        close_stream(format_context_, &audio_st_);
 
-    if (!(fmt->flags & AVFMT_NOFILE))
+    if (!(output_format_->flags & AVFMT_NOFILE))
         /* Close the output file. */
-        avio_closep(&oc->pb);
+        avio_closep(&format_context_->pb);
 
     /* free the stream */
-    avformat_free_context(oc);
+    avformat_free_context(format_context_);
 }
 
 int video_writer::total_bytes_written()

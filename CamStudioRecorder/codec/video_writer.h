@@ -121,12 +121,12 @@ private:
     output_stream video_st_ = { 0 };
     output_stream audio_st_ = { 0 };
 
-    AVOutputFormat *fmt = { nullptr };
-    AVFormatContext *oc = { nullptr };
-    AVCodec *audio_codec = { nullptr };
-    AVCodec *video_codec = { nullptr };
+    AVOutputFormat *output_format_ = { nullptr };
+    AVFormatContext *format_context_ = { nullptr };
+    AVCodec *audio_codec_ = { nullptr };
+    AVCodec *video_codec_ = { nullptr };
 
-    int have_video = 0, have_audio = 0;
-    int encode_video = 0, encode_audio = 0;
-    AVDictionary *opt = { nullptr };
+    int have_video_ = 0, have_audio_ = 0;
+    int encode_video = 0, encode_audio_ = 0;
+    AVDictionary *opt_ = { nullptr };
 };
