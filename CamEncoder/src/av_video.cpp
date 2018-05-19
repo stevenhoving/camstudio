@@ -304,10 +304,14 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
 
     // avcodec_open populates the opts dictionary with the
     // things it didn't recognize.
-    AVDictionaryEntry *t = nullptr;
-    while ((t = av_opts.at("", t, AV_DICT_IGNORE_SUFFIX)))
+    if (!av_opts.empty())
     {
-        printf("encavcodecInit: Unknown avcodec option %s", t->key);
+        AVDictionaryEntry *t = nullptr;
+        for (int i = 0; i < av_opts.size(); ++i)
+        {
+            t = av_opts.at("", t, AV_DICT_IGNORE_SUFFIX);
+            printf("encavcodecInit: Unknown avcodec option %s", t->key);
+        }
     }
 
     dump_context(context_);

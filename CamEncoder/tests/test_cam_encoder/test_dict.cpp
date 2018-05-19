@@ -48,3 +48,9 @@ TEST(test_dict, test_clear)
     dict.clear();
     EXPECT_EQ(dict.size(), 0);
 }
+
+TEST(test_dict, test_empty_access)
+{
+    av_dict dict;
+    ASSERT_THROW({ dict.at("test"); }, std::out_of_range);
+}

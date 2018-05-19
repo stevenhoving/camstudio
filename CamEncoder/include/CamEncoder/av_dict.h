@@ -53,7 +53,7 @@ public:
          {
              auto key_value = av_dict_get(*dict_, key_.data(), nullptr, 0);
              if (key_value == nullptr)
-                 throw std::runtime_error("key was not found");
+                 throw std::out_of_range("unable to find key");
 
              return key_value->value;
          }
@@ -81,6 +81,11 @@ public:
         return av_dict_count(dict_);
     }
 
+    bool empty() const noexcept
+    {
+        return size() == 0;
+    }
+
     void clear() noexcept
     {
         av_dict_free(&dict_);
@@ -90,7 +95,10 @@ public:
     AVDictionaryEntry *at(const std::string_view &key, const AVDictionaryEntry *prev = nullptr,
         int flags = 0)
     {
-        return av_dict_get(dict_, key.data(), prev, flags);
+        auto key_value = av_dict_get(dict_, key.data(), prev, flags);
+        if (key_value == nullptr)
+            throw std::out_of_range("unable to find key");
+        return key_value;
     }
 
     av_mapped_type operator[](const std::string_view &key) noexcept

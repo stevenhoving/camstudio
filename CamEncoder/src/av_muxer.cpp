@@ -158,9 +158,15 @@ av_muxer::av_muxer(const char *filename, av_muxer_type muxer, bool mp4_optimize,
     if (ret < 0)
         throw std::runtime_error("av_muxer: avformat_write_header failed");
 
-    AVDictionaryEntry *t = nullptr;
-    while ((t = av_opts.at("", t, AV_DICT_IGNORE_SUFFIX)))
-        fmt::print("av_muxer: unknown option {}\n", t->key);
+    if (!av_opts.empty())
+    {
+        AVDictionaryEntry *t = nullptr;
+        for (int i = 0; i < av_opts.size(); ++i)
+        {
+            t = av_opts.at("", t, AV_DICT_IGNORE_SUFFIX);
+            fmt::print("av_muxer: unknown option {}\n", t->key);
+        }
+    }
 }
 
 av_muxer::~av_muxer()
