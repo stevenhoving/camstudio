@@ -798,8 +798,8 @@ DWORD CodecInst::CompressRGB(ICCOMPRESS *icinfo)
         }
         else if (m_algorithm == 1)
         {
-            unsigned long destlen;
-            r = compress2(outputbyte + 2, &destlen, input, in_len, m_gzip_level);
+            uLongf destlen;
+            r = compress2(outputbyte + 2, &destlen, input, static_cast<uLong>(in_len), m_gzip_level);
             out_len = destlen;
         }
 
@@ -825,15 +825,14 @@ DWORD CodecInst::CompressRGB(ICCOMPRESS *icinfo)
         // Force key frames in case this is auto key framing mode
         *icinfo->lpdwFlags = AVIIF_KEYFRAME;
 
-        icinfo->lpbiOutput->biSizeImage = out_len + 2;
+        // \todo convert this into a 'safe' lowering cast.
+        icinfo->lpbiOutput->biSizeImage = static_cast<DWORD>(out_len + 2);
     }
     else
     {
 
         if (m_diffinput == nullptr)
-        {
             m_diffinput = static_cast<unsigned char *>(malloc(in_len));
-        }
 
         unsigned char *diffinputptr = m_diffinput;
         unsigned char *inputptr = input;
@@ -859,7 +858,7 @@ DWORD CodecInst::CompressRGB(ICCOMPRESS *icinfo)
         {
             unsigned long destlen;
             r = compress2(outputbyte + 2, &destlen, m_diffinput, in_len, m_gzip_level);
-            out_len = destlen;
+            out_len = static_cast<uLong>(destlen);
         }
 
         // Force non key frames in case this is auto key framing mode
@@ -882,7 +881,8 @@ DWORD CodecInst::CompressRGB(ICCOMPRESS *icinfo)
         *outputbyte = byte1;
         *(outputbyte + 1) = byte2;
 
-        icinfo->lpbiOutput->biSizeImage = out_len + 2;
+        // \todo convert this into a 'safe' lowering cast.
+        icinfo->lpbiOutput->biSizeImage = static_cast<DWORD>(out_len + 2);
 
         // if (diffinput) free(diffinput);
         // memcpy(prevFrame,icinfo->lpInput,in_len);
@@ -995,7 +995,7 @@ DWORD CodecInst::DecompressRGB(ICDECOMPRESS *icinfo)
         else if (use_algo == 1)
         {
             unsigned long destLen = size;
-            r = uncompress(out, &destLen, inbyte + 2, in_len - 2);
+            r = uncompress(out, &destLen, inbyte + 2, static_cast<uLong>(in_len - 2));
             out_len = destLen;
 
             if (r != Z_OK)
@@ -1028,7 +1028,7 @@ DWORD CodecInst::DecompressRGB(ICDECOMPRESS *icinfo)
         else if (use_algo == 1)
         {
             unsigned long destLen = size * 3 / 2;
-            r = uncompress(m_diffFrame, &destLen, inbyte + 2, in_len - 2);
+            r = uncompress(m_diffFrame, &destLen, inbyte + 2, static_cast<uLong>(in_len - 2));
             out_len = destLen;
 
             if (r != Z_OK)
