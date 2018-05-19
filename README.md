@@ -17,7 +17,7 @@ Besides creating a clean installer for camstudio I have found myself a couple of
   * swf support - done.
   * xnote support - done.
 * Upgrade project dependencies:
-  * CxImage - pending.
+  * CxImage - canceled.
   * zlib - done.
   * minilzo - done.
   * libconfig++ - done.
@@ -25,7 +25,7 @@ Besides creating a clean installer for camstudio I have found myself a couple of
 * Replace static visual studio project files with CMake - done.
 * Create release.
 * Introduce unit test.
-* Add support for mkv.
+* Add support for mkv - in progress.
 * Replace UI framework with Qt.
 * Improve settings screen.
 
@@ -45,9 +45,10 @@ https://sourceforge.net/p/camstudio
 State | Name | Project
 ----- | -----|--------
 Official| libconfig | https://github.com/hyperrealm/libconfig
-Official| minilzo | http://www.oberhumer.com/opensource/lzo/
+Official| minilzo | http://www.oberhumer.com/opensource/lzo
 Official| zlib | https://github.com/madler/zlib
 Fork| CxImage | https://github.com/movableink/cximage
+Official| ffmpeg | https://www.ffmpeg.org
 
 ## Credits
 A big thanks goes out to the original CamStudio developers. And to bestlily who had a initial port of CamStudio (https://github.com/bestlily/Camstudio), thanks.
