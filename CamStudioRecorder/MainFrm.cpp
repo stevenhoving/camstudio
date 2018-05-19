@@ -4,54 +4,6 @@
 #include "RecorderView.h"
 #include <CamLib/console.h>
 #include <afxdatarecovery.h>
-/*
-TODO: Break AVI 2 GB boundary
-================================
-AVI File Size Limits
-http://neuron2.net/LVG/filesize.html
-Extended AVI recording with OpenDML
-This is an extension to the AVI file format that allows AVI files to be of any size.
-To create and work with OpenDML AVIs, you need software that supports the OpenDML standard (such as VirtualDub).
-
-http://www.the-labs.com/Video/odmlff2-avidef.pdf
-
-Google:  +msdn +AVI +2.0
-
-MSDN: Avi 2.0
-
-See also AviSynth
-
-AVI overview:   http://www.jmcgowan.com/avi.html
-
-
-avi.h declarec Class CAVI
-CAVI use PAVISTREAM
-
-
-PAVISTREAM is defines in vfw.h
-typedef       IAVIStream FAR* PAVISTREAM;
-
-DECLARE_INTERFACE_(IAVIStream, IUnknown)
-
-http://vjforums.com/archive/index.php/t-13937.html
-* The source file to write the opendml avi's is located in VirtualDub/source/AVIOutputFile.cpp and
-its all custom code that follows the openDML spec, without using any VFW methods for opening the file,
-writing chunks, etc.
-* The VFW api has methods like AVIStreamWrite / AVIStreamWriteHeader / AVIStreamCreate for writing avi
-streams, and none of this is used by the virtualdub code, although I did find that it does use VFW and
-the AVIStreamRead method for opening some .avi's.
-
-Avi writing using directshow: http://www.codeguru.com/forum/archive/index.php/t-372248.html
-
-
-*/
-
-/*
-// For Marshalling memory
-// compile with: /clr
-using namespace System;
-using namespace System::Runtime::InteropServices;
-*/
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
