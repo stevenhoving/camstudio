@@ -39,10 +39,7 @@
 #include <CamHook/CamHook.h> // for WM_USER_RECORDSTART_MSG
 #include <CamLib/CStudioLib.h>
 #include <CamLib/TrayIcon.h>
-//#include <CamEncoder/avi_writer.h>
-//#include <CamEncoder/video_writer.h>
 #include <CamEncoder/av_encoder.h>
-
 
 #include "MP4Converter.h"
 #include "AudioSpeakersDlg.h"
