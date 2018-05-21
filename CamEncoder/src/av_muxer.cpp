@@ -31,7 +31,7 @@ void av_log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
                pkt->stream_index);
 }
 
-av_muxer::av_muxer(const char *filename, av_muxer_type muxer_type)
+av_muxer::av_muxer(const char *filename, const av_muxer_type muxer_type)
     : filename_(filename)
 {
     const auto muxer_type_name = av_muxer_type_names.at(static_cast<int>(muxer_type));
@@ -52,6 +52,8 @@ av_muxer::av_muxer(const char *filename, av_muxer_type muxer_type)
         time_base_.num = 1;
         time_base_.den = 90000;
         break;
+    case av_muxer_type::avi:
+        [[fallthrough]];
     case av_muxer_type::mkv:
         time_base_.num = 1;
         time_base_.den = 1000;

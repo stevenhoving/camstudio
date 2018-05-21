@@ -57,6 +57,8 @@ void test_muxer(const int width, const int height, const int fps, av_muxer_type 
         filename += "mkv";
     else if (muxer_type == av_muxer_type::mp4)
         filename += "mp4";
+    else if (muxer_type == av_muxer_type::avi)
+        filename += "avi";
 
     av_muxer muxer(filename.c_str(), muxer_type);
     muxer.add_stream(create_video_codec(config, codec_id, pixel_format));
@@ -87,7 +89,9 @@ TEST(test_muxer, test_create_mp4_muxer)
 
 TEST(test_muxer, test_create_mkv_cam_codec_muxer)
 {
+    av_log_set_level(AV_LOG_TRACE);
     //test_muxer(512, 512, 25, av_muxer_type::mkv, AV_CODEC_ID_CSCD, AV_PIX_FMT_RGB555LE);
+    test_muxer(512, 512, 25, av_muxer_type::avi, AV_CODEC_ID_CSCD, AV_PIX_FMT_BGR24);
     test_muxer(512, 512, 25, av_muxer_type::mkv, AV_CODEC_ID_CSCD, AV_PIX_FMT_BGR24);
     //test_muxer(512, 512, 25, av_muxer_type::mkv, AV_CODEC_ID_CSCD, AV_PIX_FMT_BGR0);
 }

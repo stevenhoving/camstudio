@@ -27,7 +27,6 @@ int __cdecl cam_codec_init(AVCodecContext *avctx)
     {
     case AV_PIX_FMT_RGB555LE:
         avctx->bits_per_coded_sample = 16;
-        avctx->pix_fmt = AV_PIX_FMT_RGB555LE;
         break;
     case AV_PIX_FMT_BGR24:
         [[fallthrough]];

@@ -35,13 +35,15 @@ enum class av_muxer_type
 {
     none,
     mp4,
-    mkv
+    mkv,
+    avi
 };
 
-constexpr std::array<const char*, 3> av_muxer_type_names = {
+constexpr std::array<const char*, 4> av_muxer_type_names = {
     "invalid",
     "mp4",
-    "matroska"
+    "matroska",
+    "avi"
 };
 
 // a wrapper around a single output AVStream
@@ -57,7 +59,7 @@ struct av_track
 class av_muxer
 {
 public:
-    av_muxer(const char *filename, av_muxer_type muxer_type);
+    av_muxer(const char *filename, const av_muxer_type muxer_type);
     ~av_muxer();
 
     // open the muxer so its ready to encode stuff.
@@ -94,7 +96,7 @@ private:
     //std::unique_ptr<av_audio> audio_codec_;
     av_track video_track{};
     av_track audio_track{};
-    std::string filename_;
+    const std::string filename_;
     AVRational time_base_{1, 0};
     int have_audio{0};
     int encode_audio{0};
