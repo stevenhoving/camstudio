@@ -20,17 +20,17 @@
 extern "C"
 {
 #include <libavcodec/avcodec.h>
+#include <libavutil/avassert.h>
 #include <libavutil/opt.h>
 #include <libavutil/imgutils.h>
-#include <libavutil/avassert.h>
 #include <libavutil/channel_layout.h>
 #include <libavutil/opt.h>
+#include <libavutil/lzo.h>
 #include <libavutil/mathematics.h>
 #include <libavutil/timestamp.h>
 #include <libavformat/avformat.h>
 #include <libswscale/swscale.h>
 #include <libswresample/swresample.h>
-
 } // extern "C"
 
 static inline bool operator==(const AVRational &lhs, const AVRational &rhs)

@@ -18,6 +18,7 @@
 #include "CamEncoder/av_video.h"
 #include "CamEncoder/av_dict.h"
 #include "CamEncoder/av_error.h"
+#include "CamEncoder/av_cam_codec/av_cam_codec.h"
 #include <fmt/printf.h>
 #include <fmt/ostream.h>
 #include <cassert>
@@ -145,23 +146,34 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
     /* cam studio video codec is currently disabled because the ffmpeg implementation only supports
      * decoding.
      */
-#if 0
+
+    //AVPixelFormat input_pixel_format_{AV_PIX_FMT_NONE};
+    //AVPixelFormat output_pixel_format_{AV_PIX_FMT_NONE};
     case AV_CODEC_ID_CSCD:
+        codec_type_ = av_video_codec_type::cscd;
+        //input_pixel_format_ = AV_PIX_FMT_RGB555LE;
+        input_pixel_format_ = AV_PIX_FMT_BGR24;
+        //input_pixel_format_ = AV_PIX_FMT_BGR0;
+        //output_pixel_format_ = AV_PIX_FMT_RGB555LE;
+        output_pixel_format_ = AV_PIX_FMT_BGR24;
+        //output_pixel_format_ = AV_PIX_FMT_BGR0;
         printf("av_video: CamStudio encoder\n");
+        codec_ = &cam_codec_encoder;
         break;
-#endif
     case AV_CODEC_ID_H264:
         codec_type_ = av_video_codec_type::h264;
+        input_pixel_format_ = AV_PIX_FMT_BGR24;
+        output_pixel_format_ = AV_PIX_FMT_YUV420P;
         printf("av_video: H264 encoder\n");
+
+        codec_ = avcodec_find_encoder(config.id);
+        if (codec_ == nullptr)
+            throw std::runtime_error("av_video: unable to find video encoder");
         break;
     default:
         throw std::runtime_error("av_video: unsupported encoder");
         break;
     }
-
-    codec_ = avcodec_find_encoder(config.id);
-    if (codec_ == nullptr)
-        throw std::runtime_error("av_video: unable to find video encoder");
 
     context_ = avcodec_alloc_context3(codec_);
 
@@ -182,48 +194,55 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
 
     // this allows for variable framerate with ms timestamps.
     context_->time_base = { 1, 1000 };
+    //context_->time_base = { 1, 25 };
 
-    // calculate a approximate gob size.
-    context_->gop_size = calculate_gop_size(meta);
+    //context_->time_base = {fps.den, fps.num};
+    //context_->framerate = {25, 1};
 
-    // either quality of bitrate must be set.
-    assert(!!meta.quality || !!meta.bitrate);
-
-    apply_preset(av_opts_, meta.preset);
-    apply_tune(av_opts_, meta.tune);
-    apply_profile(av_opts_, meta.profile);
-
-    /*
-     * set variable framerate.
-     * \see https://superuser.com/questions/908295/ffmpeg-libx264-how-to-specify-a-variable-frame-rate-but-with-a-maximum
-     */
-    av_opts_["vsync"] = "vfr";
-
-    // Now set the things in context that we don't want to allow
-    // the user to override.
-    if (meta.bitrate)
+    if (codec_type_ != av_video_codec_type::cscd)
     {
-        // Average bitrate
-        context_->bit_rate = static_cast<int64_t>(1000.0 * meta.bitrate.value());
+        // calculate a approximate gob size.
+        context_->gop_size = calculate_gop_size(meta);
 
-        // ffmpeg's mpeg2 encoder requires that the bit_rate_tolerance be >= bitrate * fps
-        //context_->bit_rate_tolerance = static_cast<int>(context_->bit_rate * av_q2d(fps) + 1);
-    }
-    else
-    {
-        /* Constant quantizer */
-        context_->flags |= AV_CODEC_FLAG_QSCALE;
+        // either quality of bitrate must be set.
+        assert(!!meta.quality || !!meta.bitrate);
 
-        /* global_quality only seem to apply to mpeg 1, 2 and 4 */
-        //context_->global_quality = static_cast<int>(FF_QP2LAMBDA * meta.quality.value() + 0.5);
+        apply_preset(av_opts_, meta.preset);
+        apply_tune(av_opts_, meta.tune);
+        apply_profile(av_opts_, meta.profile);
 
-        // x264 requires this.
-        av_opts_["crf"] = meta.quality.value();
+        /*!
+         * set variable framerate.
+         * \see https://superuser.com/questions/908295/ffmpeg-libx264-how-to-specify-a-variable-frame-rate-but-with-a-maximum
+         */
+        av_opts_["vsync"] = "vfr";
+
+        // Now set the things in context that we don't want to allow
+        // the user to override.
+        if (meta.bitrate)
+        {
+            // Average bitrate
+            context_->bit_rate = static_cast<int64_t>(1000.0 * meta.bitrate.value());
+
+            // ffmpeg's mpeg2 encoder requires that the bit_rate_tolerance be >= bitrate * fps
+            //context_->bit_rate_tolerance = static_cast<int>(context_->bit_rate * av_q2d(fps) + 1);
+        }
+        else
+        {
+            /* Constant quantizer */
+            context_->flags |= AV_CODEC_FLAG_QSCALE;
+
+            /* global_quality only seem to apply to mpeg 1, 2 and 4 */
+            //context_->global_quality = static_cast<int>(FF_QP2LAMBDA * meta.quality.value() + 0.5);
+
+            // x264 requires this.
+            av_opts_["crf"] = static_cast<int64_t>(meta.quality.value());
+        }
     }
 
     context_->width = meta.width;
     context_->height = meta.height;
-    context_->pix_fmt = AV_PIX_FMT_YUV420P;
+    context_->pix_fmt = input_pixel_format_;
 
     // \todo we have no grayscale settings for now
     //if (grayscale)
@@ -233,10 +252,9 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
 
     frame_ = create_video_frame(context_->pix_fmt, context_->width, context_->height);
 
-    // dst pixel format for 264 high444 profile = AV_PIX_FMT_YUV444P
     sws_context_ = create_software_scaler(
-        AV_PIX_FMT_BGR24, context_->width, context_->height,
-        AV_PIX_FMT_YUV420P, context_->width, context_->height
+        input_pixel_format_, context_->width, context_->height,
+        output_pixel_format_, context_->width, context_->height
     );
 }
 
@@ -297,26 +315,54 @@ void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFO *image)
         const auto src_data_size = header.biSizeImage;
         const auto src_width = header.biWidth;
         const auto src_height = header.biHeight;
-        const auto src_pixel_format = AV_PIX_FMT_BGR24;
 
         const auto dst_width = context_->width;
         const auto dst_height = context_->height;
         const auto dst_pixel_format = context_->pix_fmt;
 
-        // convert from rgb to yuv420p
-        const uint8_t * const src[3] = {
+        /* currently we always expect rgb/bgr as input */
+        const uint8_t *const src[3] = {
             src_data + (src_data_size - (src_width * 3)),
             nullptr,
             nullptr
         };
 
         const int src_stride[3] = { src_width * -3, 0, 0 };
-        const int dst_stride[3] = { dst_width, dst_width / 2, dst_width / 2 }; // for YUV420
-        //const int dst_stride[3] = { dst_width, dst_width, dst_width }; // for YUV444
-        sws_scale(sws_context_, src,
-            src_stride, 0,
-            src_height, frame_->data,
-            dst_stride);
+        int dst_stride[3] = {0, 0, 0};
+        switch(input_pixel_format_)
+        {
+        case AV_PIX_FMT_RGB555LE:
+            dst_stride[0] = src_width * 2;
+            dst_stride[1] = 0;
+            dst_stride[2] = 0;
+            break;
+        case AV_PIX_FMT_BGR24:
+            dst_stride[0] = src_width * 3;
+            dst_stride[1] = 0;
+            dst_stride[2] = 0;
+            break;
+        case AV_PIX_FMT_BGR0:
+            dst_stride[0] = src_width * 4;
+            dst_stride[1] = 0;
+            dst_stride[2] = 0;
+            break;
+        case AV_PIX_FMT_YUV420P:
+            dst_stride[0] = dst_width;
+            dst_stride[1] = dst_width / 2;
+            dst_stride[2] = dst_width / 2;
+            break;
+        case AV_PIX_FMT_YUV444P:
+            dst_stride[0] = dst_width;
+            dst_stride[1] = dst_width;
+            dst_stride[2] = dst_width;
+            break;
+        default:
+            throw std::runtime_error("av_video: invalid encoder input format");
+            break;
+        }
+        sws_scale(sws_context_,
+            src, src_stride, 0, src_height,
+            frame_->data, dst_stride);
 
         frame_->pts = timestamp;
         encode_frame = frame_;

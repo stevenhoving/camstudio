@@ -34,8 +34,8 @@ using timestamp_t = uint64_t;
 enum class av_video_codec_type
 {
     none,
-    h264, // ffmpeg h264
-    x264, // libx264 h264
+    h264,
+    cscd, // cam codec encoder
 };
 
 class av_video : public av_icodec
@@ -64,6 +64,9 @@ private:
     AVCodec *codec_{ nullptr };
     AVCodecContext *context_{ nullptr };
     AVFrame *frame_{ nullptr };
+
+    AVPixelFormat input_pixel_format_{ AV_PIX_FMT_NONE };
+    AVPixelFormat output_pixel_format_{ AV_PIX_FMT_NONE };
     SwsContext *sws_context_{ nullptr };
 
     av_video_codec_type codec_type_{ av_video_codec_type::none };

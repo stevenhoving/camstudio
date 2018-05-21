@@ -38,15 +38,17 @@ av_video_meta create_video_config(const int width, const int height, const int f
     return meta;
 }
 
-std::unique_ptr<av_video> create_video_codec(const av_video_meta &meta)
+std::unique_ptr<av_video> create_video_codec(const av_video_meta &meta, AVCodecID codec_id, AVPixelFormat pixel_format)
 {
     av_video_codec video_codec_config;
-    video_codec_config.id = AV_CODEC_ID_H264;
+    video_codec_config.id = codec_id;
+    video_codec_config.pixel_format = pixel_format;
 
     return std::make_unique<av_video>(video_codec_config, meta);
 }
 
-void test_muxer(const int width, const int height, const int fps, av_muxer_type muxer_type)
+void test_muxer(const int width, const int height, const int fps, av_muxer_type muxer_type,
+    AVCodecID codec_id = AV_CODEC_ID_H264, AVPixelFormat pixel_format = AV_PIX_FMT_BGR24)
 {
     auto config = create_video_config(width, height, fps);
 
@@ -57,18 +59,18 @@ void test_muxer(const int width, const int height, const int fps, av_muxer_type 
         filename += "mp4";
 
     av_muxer muxer(filename.c_str(), muxer_type);
-    muxer.add_stream(create_video_codec(config));
+    muxer.add_stream(create_video_codec(config, codec_id, pixel_format));
     muxer.open();
 
-    auto frame = create_bmpinfo(config.width, config.height);
+    auto frame = create_bmpinfo(config.width, config.height, pixel_format);
     DWORD timestamp = GetTickCount();
     for (int i = 0; i < 100; ++i)
     {
         DWORD ts = GetTickCount() - timestamp;
         muxer.encode_frame(ts, frame);
-        fill_bmpinfo(frame, ts / fps);
+        fill_bmpinfo(frame, ts / fps, pixel_format);
         double dt = (1.0 / (double)fps) * 1000.0;
-        Sleep(dt);
+        Sleep((DWORD)dt);
     }
     free(frame);
 }
@@ -81,4 +83,11 @@ TEST(test_muxer, test_create_mkv_muxer)
 TEST(test_muxer, test_create_mp4_muxer)
 {
     test_muxer(512, 512, 25, av_muxer_type::mp4);
+}
+
+TEST(test_muxer, test_create_mkv_cam_codec_muxer)
+{
+    //test_muxer(512, 512, 25, av_muxer_type::mkv, AV_CODEC_ID_CSCD, AV_PIX_FMT_RGB555LE);
+    test_muxer(512, 512, 25, av_muxer_type::mkv, AV_CODEC_ID_CSCD, AV_PIX_FMT_BGR24);
+    //test_muxer(512, 512, 25, av_muxer_type::mkv, AV_CODEC_ID_CSCD, AV_PIX_FMT_BGR0);
 }

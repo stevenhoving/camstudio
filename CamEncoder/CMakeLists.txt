@@ -36,14 +36,29 @@ set(ENCODER_INCLUDE
     include/CamEncoder/av_encoder.h
 )
 
+set(ENCODER_CAM_ENCODER_SOURCE
+    src/av_cam_codec/av_cam_codec.cpp
+)
+
+set(ENCODER_CAM_ENCODER_INCLUDE
+    include/CamEncoder/av_cam_codec/av_cam_codec.h
+)
+
 source_group(src FILES
     ${ENCODER_SOURCE}
     ${ENCODER_INCLUDE}
 )
 
+source_group(src\\cam_codec FILES
+    ${ENCODER_CAM_ENCODER_SOURCE}
+    ${ENCODER_CAM_ENCODER_INCLUDE}
+)
+
 add_library(CamEncoder STATIC
     ${ENCODER_SOURCE}
     ${ENCODER_INCLUDE}
+    ${ENCODER_CAM_ENCODER_SOURCE}
+    ${ENCODER_CAM_ENCODER_INCLUDE}
 )
 
 target_include_directories(CamEncoder
@@ -69,6 +84,8 @@ target_compile_options(CamEncoder
 target_link_libraries(CamEncoder
   PUBLIC
     fmt
+    libminilzo
+    zlibstatic
     ${FFMPEG_LIBRARIES}
 )
 

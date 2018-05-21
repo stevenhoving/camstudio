@@ -293,21 +293,21 @@ static BOOL CALLBACK ConfigureDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam,
         else if (l_algorithm == 1)
         {            
             CheckDlgButton(hwndDlg, IDC_RADIO1, BST_UNCHECKED);
-            CheckDlgButton(hwndDlg, IDC_RADIO2, BST_CHECKED);            
+            CheckDlgButton(hwndDlg, IDC_RADIO2, BST_CHECKED);
 
         }
-    } 
+    }
     else if (uMsg == WM_COMMAND)
     {
         switch (LOWORD(wParam))
         {
-    case IDOK:            
+    case IDOK:
         {
             char algostr[2];
             if (IsDlgButtonChecked(hwndDlg, IDC_RADIO1))
                 sprintf(algostr,"0");
             else if (IsDlgButtonChecked(hwndDlg, IDC_RADIO2))
-                sprintf(algostr,"1");            
+                sprintf(algostr,"1");
 
             int val=6;
             char gzip_levelstr[10];
@@ -325,7 +325,7 @@ static BOOL CALLBACK ConfigureDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam,
 
             WritePrivateProfileString("GENERAL", "algorithm", algostr, "camcodec100.ini");
             WritePrivateProfileString("GENERAL", "gzip_level", gzip_level_out_str , "camcodec100.ini");
-            //WritePrivateProfileString("GENERAL", "gzip_level", gzip_levelstr , "camcodec100.ini");            
+            //WritePrivateProfileString("GENERAL", "gzip_level", gzip_levelstr , "camcodec100.ini");
         }
 
     case IDCANCEL:
