@@ -34,3 +34,17 @@ static BITMAPINFO *create_bmpinfo(int width, int height)
     }
     return frame;
 }
+
+static void fill_bmpinfo(BITMAPINFO *frame, int index)
+{
+    const auto width = frame->bmiHeader.biWidth;
+    const auto height = frame->bmiHeader.biHeight;
+    auto *frame_data = ((uint8_t *)frame) + frame->bmiHeader.biSize + (frame->bmiHeader.biClrUsed * sizeof(RGBQUAD));
+    rgb *data = reinterpret_cast<rgb *>(frame_data);
+    uint8_t value = index % 255;
+    for (int i = 0; i < width * height; ++i)
+    {
+        auto &pxl = data[i];
+        pxl.r = pxl.g = pxl.b = value++;
+    }
+}

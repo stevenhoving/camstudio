@@ -98,8 +98,8 @@ namespace video
 
 struct frame_rate
 {
-    int den;
     int num;
+    int den;
 };
 
 // is a mix of video input config and user configurations. \todo split these.

@@ -18,6 +18,7 @@
 #include "CamEncoder/av_muxer.h"
 #include "CamEncoder/av_dict.h"
 #include "CamEncoder/av_error.h"
+#include <fmt/format.h>
 
 void av_log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
 {
@@ -40,14 +41,27 @@ av_muxer::av_muxer(const char *filename, av_muxer_type muxer_type)
         throw std::runtime_error(fmt::format("unable to guess output format: '{}'", muxer_type_name));
 
     /* allocate the output media context */
-    int ret = avformat_alloc_output_context2(&format_context_, output_format_, nullptr, nullptr);
-    if (format_context_ == nullptr)
-        throw std::runtime_error("unable to create avformat output context");
+    if (int ret = avformat_alloc_output_context2(&format_context_, output_format_, nullptr, nullptr); ret < 0)
+        throw std::runtime_error(
+            fmt::format("av_muxer: unable to create avformat output context: {}",
+                av_error_to_string(ret)));
+
+    switch(muxer_type)
+    {
+    case av_muxer_type::mp4:
+        time_base_.num = 1;
+        time_base_.den = 90000;
+        break;
+    case av_muxer_type::mkv:
+        time_base_.num = 1;
+        time_base_.den = 1000;
+        break;
+    }
 }
 
 av_muxer::~av_muxer()
 {
-    // flush();
+    flush();
 
     /* Write the trailer, if any. The trailer must be written before you
      * close the CodecContexts open when you wrote the header; otherwise
@@ -125,8 +139,7 @@ void av_muxer::encode_frame(timestamp_t timestamp, BITMAPINFO *image)
             break;
 
         auto time_base = video_codec_->get_codec_context()->time_base;
-        auto stream = video_track.stream;
-        write_frame(time_base, stream, &pkt);
+        write_frame(time_base, video_track.stream, &pkt);
         av_packet_unref(&pkt);
     }
 }
@@ -142,7 +155,8 @@ void av_muxer::add_stream(std::unique_ptr<av_video> video_codec)
         throw std::runtime_error("Could not allocate stream");
 
     track.stream->id = format_context_->nb_streams - 1;
-    track.stream->time_base = codec_context->time_base;
+    track.stream->time_base = time_base_;//codec_context->time_base;
+    //track.stream->time_base = codec_context->time_base;
 
     /* Some formats want stream headers to be separate. */
     if (format_context_->oformat->flags & AVFMT_GLOBALHEADER)
@@ -315,13 +329,13 @@ void av_muxer::close_stream(AVFormatContext *format_context, av_track *ost)
     // swr_free(&track->swr_ctx);
 }
 
-int av_muxer::write_frame(const AVRational &time_base, AVStream *st, AVPacket *pkt)
+int av_muxer::write_frame(const AVRational &time_base, AVStream *stream, AVPacket *pkt)
 {
     /* rescale output packet timestamp values from codec to stream timebase */
-    av_packet_rescale_ts(pkt, time_base, st->time_base);
-    pkt->stream_index = st->index;
+    av_packet_rescale_ts(pkt, time_base, stream->time_base);
+    pkt->stream_index = stream->index;
 
     /* Write the compressed frame to the media file. */
-    //av_log_packet(format_context_, pkt);
+    av_log_packet(format_context_, pkt);
     return av_interleaved_write_frame(format_context_, pkt);
 }

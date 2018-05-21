@@ -39,8 +39,10 @@
 #include <CamHook/CamHook.h> // for WM_USER_RECORDSTART_MSG
 #include <CamLib/CStudioLib.h>
 #include <CamLib/TrayIcon.h>
-#include <CamEncoder/avi_writer.h>
-#include <CamEncoder/video_writer.h>
+//#include <CamEncoder/avi_writer.h>
+//#include <CamEncoder/video_writer.h>
+#include <CamEncoder/av_encoder.h>
+
 
 #include "MP4Converter.h"
 #include "AudioSpeakersDlg.h"
@@ -3799,7 +3801,27 @@ UINT CRecorderView::RecordVideo()
     return RecordVideo(g_rcUse, cVideoOpts.m_iFramesPerSecond, temp.c_str()) ? 0UL : 1UL;
 }
 
+av_video_meta create_video_config(const int width, const int height, const int fps)
+{
+    av_video_meta meta;
+    meta.quality = 26; // a q factor of 26 should be enough for nice quality
+    meta.bpp = 24;
+    meta.width = width;
+    meta.height = height;
+    meta.fps = {fps, 1};
+    meta.preset = video::preset::ultrafast;
+    meta.profile = video::profile::baseline;
+    meta.tune = video::tune::zerolatency;
+    return meta;
+}
 
+std::unique_ptr<av_video> create_video_codec(const av_video_meta &meta)
+{
+    av_video_codec video_codec_config;
+    video_codec_config.id = AV_CODEC_ID_H264;
+
+    return std::make_unique<av_video>(video_codec_config, meta);
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // RecordVideo
@@ -3811,7 +3833,6 @@ UINT CRecorderView::RecordVideo()
 // bool CRecorderView::RecordVideo(int top, int left, int width, int height, int fps, const char *szVideoFileName)
 bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFileName)
 {
-    // TRACE("CRecorderView::RecordVideo (.....) \n");
     WORD wVer = HIWORD(VideoForWindowsVersion());
     if (wVer < 0x010a)
     {
@@ -3951,119 +3972,23 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
         g_strCodec = CString("MS Video 1");
     }
 
-    ////////////////////////////////////////////////
-    // Set Up Flashing Rect
-    ////////////////////////////////////////////////
+    /* setup flashing rectangle */
     if (cProgramOpts.m_bFlashingRect)
     {
         flashing_wnd_.SetUpRegion(rectFrame, cProgramOpts.m_bAutoPan);
         flashing_wnd_.ShowWindow(SW_SHOW);
     }
 
-    // Open the movie file for writing....
-    //avi_writer avi(szVideoFileName, fps, *alpbi, cVideoOpts);
+    /* Setup ffmpeg video encoder */
+    auto config = create_video_config(alpbi->biWidth, alpbi->biHeight, fps);
 
-    av_video_meta meta;
-    meta.width = alpbi->biWidth;
-    meta.height = alpbi->biHeight;
-    meta.bpp = alpbi->biBitCount;
-    // \todo check if this is correct...
-    meta.fps.num = fps;
-    meta.fps.den = 1;
-    video_writer avi(szVideoFileName, meta);
+    auto video_encoder = std::make_unique<av_muxer>(szVideoFileName, av_muxer_type::mkv);
+    video_encoder->add_stream(
+        create_video_codec(config)
+    );
+    video_encoder->open();
 
-#if 0
-    ////////////////////////////////////////////////
-    // INIT AVI USING FIRST FRAME
-    ////////////////////////////////////////////////
-    ::AVIFileInit();
-
-
-
-    // There are a few routine in this code that use a 'goto error' routine for exception handling.
-    // All var's that are checked in this error handling block must be initialized before to prevent warning and,
-    // worse case, abnormal endings.
-    PAVIFILE pfile = 0;
-    PAVISTREAM ps = nullptr;
-    PAVISTREAM psCompressed = nullptr;
-
-    HRESULT hr = ::AVIFileOpenA(&pfile, szVideoFileName, OF_WRITE | OF_CREATE, nullptr);
-    if (hr != AVIERR_OK)
-    {
-        TRACE("CRecorderView::RecordVideo: VideoAviFileOpen error\n");
-        CAVI::OnError(hr);
-        goto error;
-    }
-
-    // Fill in the header for the video stream....
-    // The video stream will run in 15ths of a second....
-    AVISTREAMINFO strhdr;
-    ::ZeroMemory(&strhdr, sizeof(AVISTREAMINFO));
-    strhdr.fccType = streamtypeVIDEO; // stream type
-    // strhdr.fccHandler             = dwCompfccHandler;
-    strhdr.fccHandler = 0;
-    strhdr.dwScale = 1;
-    strhdr.dwRate = (DWORD)fps;
-    strhdr.dwSuggestedBufferSize = alpbi->biSizeImage;
-    // rectangle for stream
-    SetRect(&strhdr.rcFrame, 0, 0, (int)alpbi->biWidth, (int)alpbi->biHeight);
-
-    // And create the stream;
-    /*PAVISTREAM*/ ps = nullptr;
-    hr = AVIFileCreateStream(pfile, &ps, &strhdr);
-    if (hr != AVIERR_OK)
-    {
-        TRACE("CRecorderView::RecordVideo: AVIFileCreateStream error\n");
-        CAVI::OnError(hr);
-        goto error;
-    }
-
-    AVICOMPRESSOPTIONS opts;
-    AVICOMPRESSOPTIONS FAR *aopts[1] = {&opts};
-    memset(&opts, 0, sizeof(opts));
-    aopts[0]->fccType = streamtypeVIDEO;
-    aopts[0]->fccHandler = cVideoOpts.m_dwCompfccHandler;
-    aopts[0]->dwKeyFrameEvery = cVideoOpts.m_iKeyFramesEvery;        // keyframe rate
-    aopts[0]->dwQuality = cVideoOpts.m_iCompQuality;                 // compress quality 0-10, 000
-    aopts[0]->dwBytesPerSecond = 0;                                  // bytes per second
-    aopts[0]->dwFlags = AVICOMPRESSF_VALID | AVICOMPRESSF_KEYFRAMES; // flags
-    aopts[0]->lpFormat = 0x0;                                        // save format
-    aopts[0]->cbFormat = 0;
-    aopts[0]->dwInterleaveEvery = 0; // for non-video streams only
-
-    // Ver 1.2
-    //
-    if ((cVideoOpts.m_dwCompfccHandler != 0) &&
-        (cVideoOpts.m_dwCompfccHandler == cVideoOpts.m_dwCompressorStateIsFor))
-    {
-        // make a copy of the pVideoCompressParams just in case after compression,
-        // this variable become messed up
-        aopts[0]->lpParms = cVideoOpts.State();
-        aopts[0]->cbParms = cVideoOpts.StateSize();
-    }
-
-    // The 1 here indicates only 1 stream
-    // if (!AVISaveOptions(nullptr, 0, 1, &ps, (LPAVICOMPRESSOPTIONS *) &aopts))
-    //        goto error;
-
-    /*PAVISTREAM*/ psCompressed = nullptr;
-    hr = AVIMakeCompressedStream(&psCompressed, ps, &opts, nullptr);
-    if (AVIERR_OK != hr)
-    {
-        TRACE("CRecorderView::RecordVideo: AVIMakeCompressedStream error\n");
-        CAVI::OnError(hr);
-        goto error;
-    }
-
-    hr = AVIStreamSetFormat(psCompressed, 0, alpbi, alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD));
-    if (hr != AVIERR_OK)
-    {
-        CAVI::OnError(hr);
-        goto error;
-    }
-#endif
     alpbi = nullptr;
-
 
     if (cProgramOpts.m_bAutoPan)
     {
@@ -4105,11 +4030,12 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     DWORD timeexpended = 0;
     DWORD frametime = 0;
     DWORD oldframetime = 0;
-    //////////////////////////////////////////////
-    // WRITING FRAMES
-    //////////////////////////////////////////////
+
+    /* start recording frames */
     unsigned long divx = 0L;
     unsigned long oldsec = 0L;
+
+    DWORD start_timestamp = GetTickCount();
     while (g_bRecordState)
     {
         if (!g_bInitCapture)
@@ -4310,48 +4236,13 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
 
         if ((frametime == 0) || (oldframetime < frametime))
         {
-            // ver 1.8
-            // if (iShiftType == 1) {
-            //    if (frametime == 0) {
-            //        //Discard .. do nothing
-            //    } else {
-            //        //writr old frame time instead
-            //        hr = AVIStreamWrite(psCompressed, // stream pointer
-            //            oldframetime, // time of this frame
-            //            1, // number to write
-            //            (LPBYTE) alpbi +                // pointer to data
-            //            alpbi->biSize +
-            //            alpbi->biClrUsed * sizeof(RGBQUAD),
-            //            alpbi->biSizeImage, // size of this frame
-            //            //AVIIF_KEYFRAME, // flags....
-            //            0, //Dependent n previous frame, not key frame
-            //            nullptr,
-            //            nullptr);
-            //    }
-            //} else {
+            DWORD timestamp = GetTickCount() - start_timestamp;
 
-
-            avi.write(frametime, alpbi);
-#if 0
-            // if frametime repeats (frametime == oldframetime)
-            // ...the avistreamwrite will cause an error
-            LONG lSampWritten = 0L;
-            LONG lBytesWritten = 0L;
-            hr = ::AVIStreamWrite(psCompressed, frametime, 1,
-                                  (LPBYTE)alpbi + alpbi->biSize + alpbi->biClrUsed * sizeof(RGBQUAD),
-                                  alpbi->biSizeImage, 0, &lSampWritten, &lBytesWritten);
-            //}
-            if (hr != AVIERR_OK)
-            {
-                TRACE("CRecorderView::RecordVideo: AVIStreamWrite error\n");
-                CAVI::OnError(hr);
-                break;
-            }
-#endif
+            video_encoder->encode_frame(timestamp, (BITMAPINFO *)alpbi);
 
             // g_nTotalBytesWrittenSoFar += alpbi->biSizeImage;
             //g_nTotalBytesWrittenSoFar += lBytesWritten;
-            g_nTotalBytesWrittenSoFar = avi.total_bytes_written();
+            g_nTotalBytesWrittenSoFar = 0;//avi.total_bytes_written();
 
             g_nActualFrame++;
             g_nCurrFrame = frametime;
@@ -4392,29 +4283,15 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
             pausecounter++;
             if ((pausecounter % 8) == 0)
             {
-#define CAMSTUDIO_IGNORE_THIS
-#ifndef CAMSTUDIO_IGNORE_THIS
-                // if after every 400 milliseconds (8 * 50)
-                CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
-#endif
-
                 // TODO - Found this crash behavior while I developed CAMSTUDIO4XNOTE but it looks like to be something
                 // that was still in previously releases. (before r245) TRACE("CRecorderView: if Pause selected,
                 // statement skipped, pFrame->SetTitle(_T("")), causes error\n");
                 if (pauseindicator)
                 {
-
-#ifndef CAMSTUDIO_IGNORE_THIS
-                    pFrame->SetTitle(_T("")); // This still gives an error before r245 (when build using vs2008)...!
-#endif
                     pauseindicator = 0;
                 }
                 else
                 {
-#ifndef CAMSTUDIO_IGNORE_THIS
-                    pFrame->SetTitle(_T("Paused"));
-#endif
-#undef CAMSTUDIO_IGNORE_THIS
                     pauseindicator = 1;
                 }
             }
@@ -4471,26 +4348,12 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
         }
     } // for loop
 
-error:
-
     // Now close the file
 
     if (cProgramOpts.m_bFlashingRect)
     {
         flashing_wnd_.ShowWindow(SW_HIDE);
     }
-
-    // Ver 1.2
-    //
-    //if ((cVideoOpts.m_dwCompfccHandler == cVideoOpts.m_dwCompressorStateIsFor) && (cVideoOpts.m_dwCompfccHandler != 0))
-    //{
-    //    // Detach pParamsUse from AVICOMPRESSOPTIONS so AVISaveOptionsFree will not free it
-    //    // (we will free it ourselves)
-    //    aopts[0]->lpParms = 0;
-    //    aopts[0]->cbParms = 0;
-    //}
-    //
-    //::AVISaveOptionsFree(1, (LPAVICOMPRESSOPTIONS FAR *)&aopts);
 
     //////////////////////////////////////////////
     // Recording Audio
@@ -4508,25 +4371,7 @@ error:
         ClearAudioFile();
     }
 
-    avi.stop();
-#if 0
-    if (pfile)
-    {
-        ::AVIFileClose(pfile);
-    }
-
-    if (ps)
-    {
-        ::AVIStreamClose(ps);
-    }
-
-    if (psCompressed)
-    {
-        ::AVIStreamClose(psCompressed);
-    }
-
-    ::AVIFileExit();
-#endif
+    video_encoder.reset();
 
     ::PostMessage(g_hWndGlobal, WM_USER_RECORDINTERRUPTED, 0, 0);
 

@@ -44,6 +44,7 @@ set(ENCODER_INCLUDE
     include/CamEncoder/av_icodec.h
     include/CamEncoder/av_video.h
     include/CamEncoder/av_ffmpeg.h
+    include/CamEncoder/av_encoder.h
 )
 
 source_group(src FILES

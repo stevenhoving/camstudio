@@ -61,16 +61,20 @@ AVRational truncate_fps(AVRational fps)
  */
 void set_fps(AVCodecContext *context, const AVRational &fps)
 {
-    context->time_base = { fps.den, fps.num };
-    context->framerate = { fps.num, fps.den };
+    // this allows for variable framerate with ms timestamps.
+    context->time_base = { 1, 1000 };
 }
 
 /*!
  * calculate a approximate gob size.
+ *
+ * \note Currently generate a gop that is equal to fps. The practical problem I faced it that you
+ * record a 5 second video having a gop of 250 is simply not good enough.
+ * This used to be gop = ((num/den) + 0.5) * 10.
  */
 int calculate_gop_size(const av_video_meta &meta)
 {
-    double gob_size = ((meta.fps.num / meta.fps.den) + 0.5) * 10.0;
+    double gob_size = ((meta.fps.num / meta.fps.den) + 0.5);
     return static_cast<int>(gob_size);
 }
 
@@ -171,7 +175,7 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
 
     context_ = avcodec_alloc_context3(codec_);
 
-    auto fps = AVRational{ meta.fps.den, meta.fps.num };
+    auto fps = AVRational{ meta.fps.num, meta.fps.den };
 
     // Check if the codec has a specific set of supported frame rates. If it has, find the nearest
     // matching framerate.
@@ -197,6 +201,13 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
     apply_preset(av_opts_, meta.preset);
     apply_tune(av_opts_, meta.tune);
     apply_profile(av_opts_, meta.profile);
+
+    /*
+     * set variable framerate.
+     * \see https://superuser.com/questions/908295/ffmpeg-libx264-how-to-specify-a-variable-frame-rate-but-with-a-maximum
+     */
+    //av_opts_["vsync"] = 2;
+    av_opts_["vsync"] = "vfr";
 
     // Now set the things in context that we don't want to allow
     // the user to override.

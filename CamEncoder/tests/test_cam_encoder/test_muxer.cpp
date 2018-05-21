@@ -22,45 +22,19 @@
 #include <chrono>
 #include <memory>
 
-#if 0
-av_video create_video(const av_video_meta &meta)
-{
-    av_video_codec video_codec_config;
-    video_codec_config.id = AV_CODEC_ID_H264;
-
-    return av_video(video_codec_config, meta);
-}
-
-TEST(test_muxer, test_create_muxer)
-{
-    av_video_meta meta;
-    meta.bitrate = 4000;
-    meta.bpp = 24;
-    meta.height = 512;
-    meta.width = 512;
-    meta.fps = {25, 1};
-    meta.preset = video::preset::ultrafast;  // configure 'almost' realtime video encoding
-    meta.profile = video::profile::baseline; // lets try 264 baseline
-    meta.tune = video::tune::zerolatency;
-    auto video = create_video(meta);
-    av_muxer muxer("test.mkv", av_muxer_type::mkv, meta, video);
-}
-
-#endif
-
-av_video_meta create_video_config()
+av_video_meta create_video_config(const int width, const int height, const int fps)
 {
     av_video_meta meta;
     //meta.bitrate = 4000;
     meta.quality = 25;
     meta.bpp = 24;
-    meta.height = 512;
-    meta.width = 512;
-    meta.fps = {25, 1};
-    meta.preset = video::preset::ultrafast;  // configure 'almost' realtime video encoding
+    meta.width = width;
+    meta.height = height;
+    meta.fps = {fps, 1};
+    //meta.preset = video::preset::ultrafast;  // configure 'almost' realtime video encoding
     //meta.profile = video::profile::baseline; // lets try 264 baseline
-    meta.profile = video::profile::main; // lets try 264 baseline
-    meta.tune = video::tune::zerolatency;
+    meta.profile = video::profile::high; // lets try 264 baseline
+    //meta.tune = video::tune::zerolatency;z
     return meta;
 }
 
@@ -72,34 +46,39 @@ std::unique_ptr<av_video> create_video_codec(const av_video_meta &meta)
     return std::make_unique<av_video>(video_codec_config, meta);
 }
 
-TEST(test_muxer, test_create_mkv_muxer)
+void test_muxer(const int width, const int height, const int fps, av_muxer_type muxer_type)
 {
-    auto config = create_video_config();
+    auto config = create_video_config(width, height, fps);
 
-    av_muxer muxer("test.mkv", av_muxer_type::mkv);
-    muxer.add_stream(
-        create_video_codec(config)
-    );
+    std::string filename = "test.";
+    if (muxer_type == av_muxer_type::mkv)
+        filename += "mkv";
+    else if (muxer_type == av_muxer_type::mp4)
+        filename += "mp4";
+
+    av_muxer muxer(filename.c_str(), muxer_type);
+    muxer.add_stream(create_video_codec(config));
     muxer.open();
 
-    auto frame = create_bmpinfo(512, 512);
+    auto frame = create_bmpinfo(config.width, config.height);
+    DWORD timestamp = GetTickCount();
     for (int i = 0; i < 100; ++i)
-        muxer.encode_frame(i, frame);
+    {
+        DWORD ts = GetTickCount() - timestamp;
+        muxer.encode_frame(ts, frame);
+        fill_bmpinfo(frame, ts / fps);
+        double dt = (1.0 / (double)fps) * 1000.0;
+        Sleep(dt);
+    }
     free(frame);
+}
+
+TEST(test_muxer, test_create_mkv_muxer)
+{
+    test_muxer(512, 512, 25, av_muxer_type::mkv);
 }
 
 TEST(test_muxer, test_create_mp4_muxer)
 {
-    auto config = create_video_config();
-
-    av_muxer muxer("test.mp4", av_muxer_type::mp4);
-    muxer.add_stream(
-        create_video_codec(config)
-    );
-    muxer.open();
-
-    auto frame = create_bmpinfo(512, 512);
-    for (int i = 0; i < 100; ++i)
-        muxer.encode_frame(i, frame);
-    free(frame);
+    test_muxer(512, 512, 25, av_muxer_type::mp4);
 }
