@@ -138,7 +138,7 @@ void av_muxer::encode_frame(timestamp_t timestamp, BITMAPINFO *image)
         if (!valid_packet)
             break;
 
-        auto time_base = video_codec_->get_codec_context()->time_base;
+        const auto time_base = video_codec_->get_time_base();
         write_frame(time_base, video_track.stream, &pkt);
         av_packet_unref(&pkt);
     }
@@ -155,8 +155,7 @@ void av_muxer::add_stream(std::unique_ptr<av_video> video_codec)
         throw std::runtime_error("Could not allocate stream");
 
     track.stream->id = format_context_->nb_streams - 1;
-    track.stream->time_base = time_base_;//codec_context->time_base;
-    //track.stream->time_base = codec_context->time_base;
+    track.stream->time_base = time_base_;
 
     /* Some formats want stream headers to be separate. */
     if (format_context_->oformat->flags & AVFMT_GLOBALHEADER)
@@ -169,9 +168,7 @@ AVFrame *av_muxer::alloc_audio_frame(enum AVSampleFormat sample_fmt, uint64_t ch
                                      int nb_samples)
 {
     AVFrame *frame = av_frame_alloc();
-    int ret;
-
-    if (!frame)
+    if (frame == nullptr)
     {
         fmt::print("Error allocating an audio frame\n");
         exit(1);
@@ -184,8 +181,7 @@ AVFrame *av_muxer::alloc_audio_frame(enum AVSampleFormat sample_fmt, uint64_t ch
 
     if (nb_samples)
     {
-        ret = av_frame_get_buffer(frame, 0);
-        if (ret < 0)
+        if (int ret = av_frame_get_buffer(frame, 0); ret < 0)
         {
             fmt::print("Error allocating an audio buffer\n");
             exit(1);
@@ -323,10 +319,6 @@ int av_muxer::write_audio_frame(av_track *track, AVFrame *frame)
 void av_muxer::close_stream(AVFormatContext *format_context, av_track *ost)
 {
     avcodec_free_context(&ost->codec_context);
-    // av_frame_free(&track->frame);
-    // av_frame_free(&track->tmp_frame);
-    // sws_freeContext(track->sws_ctx);
-    // swr_free(&track->swr_ctx);
 }
 
 int av_muxer::write_frame(const AVRational &time_base, AVStream *stream, AVPacket *pkt)

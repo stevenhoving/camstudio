@@ -57,7 +57,8 @@ public:
 
 private:
     // create a video frame scaler/converter so we can convert our rgb24 to a.e. yuv420.
-    SwsContext *create_software_scaler(AVPixelFormat pix_fmt, int width, int height);
+    SwsContext *create_software_scaler(AVPixelFormat src_pixel_format, int src_width, int src_height,
+                                       AVPixelFormat dst_pixel_format, int dst_width, int dst_height);
 
 private:
     AVCodec *codec_{ nullptr };

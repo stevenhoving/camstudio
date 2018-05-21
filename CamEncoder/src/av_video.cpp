@@ -56,16 +56,6 @@ AVRational truncate_fps(AVRational fps)
 }
 
 /*!
- * \note hack, helper function sets both framerate and time_base.
- * resulting in the video encoder to be set to Constant Frame Rate.
- */
-void set_fps(AVCodecContext *context, const AVRational &fps)
-{
-    // this allows for variable framerate with ms timestamps.
-    context->time_base = { 1, 1000 };
-}
-
-/*!
  * calculate a approximate gob size.
  *
  * \note Currently generate a gop that is equal to fps. The practical problem I faced it that you
@@ -190,7 +180,8 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
         }
     }
 
-    set_fps(context_, fps);
+    // this allows for variable framerate with ms timestamps.
+    context_->time_base = { 1, 1000 };
 
     // calculate a approximate gob size.
     context_->gop_size = calculate_gop_size(meta);
@@ -206,7 +197,6 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
      * set variable framerate.
      * \see https://superuser.com/questions/908295/ffmpeg-libx264-how-to-specify-a-variable-frame-rate-but-with-a-maximum
      */
-    //av_opts_["vsync"] = 2;
     av_opts_["vsync"] = "vfr";
 
     // Now set the things in context that we don't want to allow
@@ -235,9 +225,6 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
     context_->height = meta.height;
     context_->pix_fmt = AV_PIX_FMT_YUV420P;
 
-    //context_->sample_aspect_ratio.num = job->par.num;
-    //context_->sample_aspect_ratio.den = job->par.den;
-
     // \todo we have no grayscale settings for now
     //if (grayscale)
     //    context->flags |= AV_CODEC_FLAG_GRAY;
@@ -245,7 +232,12 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
     context_->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
     frame_ = create_video_frame(context_->pix_fmt, context_->width, context_->height);
-    sws_context_ = create_software_scaler(AV_PIX_FMT_BGR24, context_->width, context_->height);
+
+    // dst pixel format for 264 high444 profile = AV_PIX_FMT_YUV444P
+    sws_context_ = create_software_scaler(
+        AV_PIX_FMT_BGR24, context_->width, context_->height,
+        AV_PIX_FMT_YUV420P, context_->width, context_->height
+    );
 }
 
 av_video::~av_video()
@@ -373,14 +365,12 @@ AVRational av_video::get_time_base() const noexcept
     return context_->time_base;
 }
 
-// \todo handle output pixel format, for when we want to encode yuv444 video.
-SwsContext *av_video::create_software_scaler(AVPixelFormat src_pixel_format, int width, int height)
+SwsContext *av_video::create_software_scaler(AVPixelFormat src_pixel_format, int src_width, int src_height,
+                                             AVPixelFormat dst_pixel_format, int dst_width, int dst_height)
 {
-    SwsContext *software_scaler_context = sws_getContext(width, height,
-        src_pixel_format,
-        width, height,
-        AV_PIX_FMT_YUV420P,
-        //AV_PIX_FMT_YUV444P,
+    SwsContext *software_scaler_context = sws_getContext(
+        src_width, src_height, src_pixel_format,
+        dst_width, dst_height, dst_pixel_format,
         SWS_BICUBIC, nullptr, nullptr, nullptr);
 
     if (!software_scaler_context)
