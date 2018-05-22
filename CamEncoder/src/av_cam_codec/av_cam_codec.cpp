@@ -90,15 +90,19 @@ int __cdecl cam_codec_init(AVCodecContext *avctx)
     return 0;
 }
 
+int gzip_compress(const Bytef * src, uLong src_len, Bytef *dst, uLongf *dst_len, const int level)
+{
+    return compress2(dst, dst_len, src, src_len, level);
+}
+
 int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const AVFrame *frame, int *got_packet)
 {
     CamStudioContext *c = (CamStudioContext *)avctx->priv_data;
 
     lzo_uint in_len = 0;
-    lzo_uint out_len = 0;
 
-    auto packet_size = c->frame_size + 2; // +2 because we have 2 header bytes
-    if (int ret = ff_alloc_packet2(avctx, pkt, packet_size, 0); ret < 0)
+    const auto initial_packet_size = c->frame_size + 2; // +2 because we have 2 header bytes
+    if (int ret = ff_alloc_packet2(avctx, pkt, initial_packet_size, 0); ret < 0)
         return ret;
 
     uint8_t *buf = pkt->data;
@@ -139,12 +143,29 @@ int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const
     in_len = c->frame_size;
     if (insert_keyframe)
     {
-        av_frame_copy(c->previouse_frame, frame);
+        int ret = av_frame_copy(c->previouse_frame, frame);
+        if (ret < 0)
+        {
+            // just return some error code... for now...
+            return AVERROR(ENOMEM);
+        }
 
-        auto r = lzo1x_1_compress(frame->data[0], in_len, buf + 2, &out_len, c->comp_buf);
-        pkt->flags |= AV_PKT_FLAG_KEY;
+        if (c->algorithm == 0)
+        {
+            lzo_uint out_len = 0;
+            auto r = lzo1x_1_compress(frame->data[0], in_len, buf + 2, &out_len, c->comp_buf);
+            pkt->flags |= AV_PKT_FLAG_KEY;
 
-        av_shrink_packet(pkt, static_cast<int>(out_len + 2));
+            av_shrink_packet(pkt, static_cast<int>(out_len + 2));
+        }
+        else if (c->algorithm == 1)
+        {
+            unsigned long out_len = 0;
+            auto r = gzip_compress(frame->data[0], in_len, buf + 2, &out_len, c->gzip_level);
+            pkt->flags |= AV_PKT_FLAG_KEY;
+
+            av_shrink_packet(pkt, static_cast<int>(out_len + 2));
+        }
     }
     else
     {
@@ -165,6 +186,7 @@ int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const
 
         if (c->algorithm == 0)
         {
+            lzo_uint out_len = 0;
             auto r = lzo1x_1_compress(c->delta_frame->data[0], in_len, buf + 2, &out_len, c->comp_buf);
             pkt->flags &= ~AV_PKT_FLAG_KEY;
 
@@ -172,10 +194,11 @@ int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const
         }
         else if (c->algorithm == 1)
         {
-            __debugbreak();
-            //unsigned long destlen;
-            //r = compress2(outputbyte + 2, &destlen, m_diffinput, in_len, m_gzip_level);
-            //out_len = static_cast<uLong>(destlen);
+            unsigned long out_len = 0;
+            auto r = gzip_compress(frame->data[0], in_len, buf + 2, &out_len, c->gzip_level);
+            pkt->flags &= ~AV_PKT_FLAG_KEY;
+
+            av_shrink_packet(pkt, static_cast<int>(out_len + 2));
         }
     }
 
