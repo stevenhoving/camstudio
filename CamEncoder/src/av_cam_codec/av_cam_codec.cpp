@@ -54,9 +54,9 @@ int __cdecl cam_codec_init(AVCodecContext *avctx)
     c->comp_size = LZO1X_1_MEM_COMPRESS * 8;
     c->comp_buf = (unsigned char *)av_malloc(c->comp_size + AV_LZO_OUTPUT_PADDING);
 
-    c->algorithm = 0; // we hardcode to lzo for now
-    c->autokeyframe = 0; // we force enable keyframe insertion
-    c->autokeyframe_rate = 25; // we force keyframe rate to 25
+    //c->algorithm = 0; // we hardcode to lzo for now
+    //c->autokeyframe = 1; // we force enable keyframe insertion
+    //c->autokeyframe_rate = 25; // we force keyframe rate to 25
     c->currentFrame = 0; // the framecounter...
 
     c->previouse_frame = av_frame_alloc();
@@ -66,6 +66,26 @@ int __cdecl cam_codec_init(AVCodecContext *avctx)
     c->delta_frame = av_frame_alloc();
     if (c->delta_frame == nullptr)
         return AVERROR(ENOMEM);
+
+    c->previouse_frame->format = avctx->pix_fmt;
+    c->previouse_frame->width = avctx->width;
+    c->previouse_frame->height = avctx->height;
+
+    c->delta_frame->format = avctx->pix_fmt;
+    c->delta_frame->width = avctx->width;
+    c->delta_frame->height = avctx->height;
+
+    if (int ret = av_frame_get_buffer(c->previouse_frame, 32); ret < 0)
+    {
+        printf("unable to allocate prev video frame\n");
+        return AVERROR(ENOMEM);
+    }
+
+    if (int ret = av_frame_get_buffer(c->delta_frame, 32); ret < 0)
+    {
+        printf("unable to allocate delta video frame\n");
+        return AVERROR(ENOMEM);
+    }
 
     return 0;
 }
@@ -84,7 +104,7 @@ int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const
     uint8_t *buf = pkt->data;
 
 //#define CONVERTCOLORYUY2_BIT 1
-//#define NON_KEYFRAME_BIT 0
+#define NON_KEYFRAME_BIT 0
 #define KEYFRAME_BIT 1       // 0 ==> DELTA FRAME, 1==>KEY FRAME
 //#define ALGORITHM_GZIP_BIT 2 // 000=>LZO , 001 = >GZIP, 010==>RESERVED, 011 ==>RESERVED, etc.
     // byte 1 :0000  000  0
@@ -93,9 +113,13 @@ int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const
     // byte 2 :0000          00           00
     // byte 2 :reserved      origRGBbit   convertmodebit (colorspace)
 
-    unsigned char keybit = KEYFRAME_BIT;
+    bool insert_keyframe = (c->currentFrame % c->autokeyframe_rate) == 0;
+
+    unsigned char keybit = insert_keyframe ? KEYFRAME_BIT : NON_KEYFRAME_BIT;
     unsigned char algo = static_cast<unsigned char>(c->algorithm) << 1;
     unsigned char gzip_level_bits = 0;
+
+    /* why would you need to store the gzip compression level in your bytestream? */
     if (c->algorithm == 1)
         gzip_level_bits = static_cast<unsigned char>(c->gzip_level) << 4;
 
@@ -105,19 +129,18 @@ int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const
     unsigned char byte1 = keybit | algo | gzip_level_bits;
     unsigned char byte2 = convertmodebit | originalRGBbit;
 
-    buf[0] = byte1; // set the frame to keyframe
+    buf[0] = byte1;
     buf[1] = byte2;
 
-    bool insert_keyframe = (c->currentFrame % c->autokeyframe_rate) == 0;
-
+    /* when auto key frame is disabled, it means that we always insert a keyframe. */
     if (c->autokeyframe == 0)
         insert_keyframe = true;
 
-    if (insert_keyframe || c->previouse_frame->format == -1)
+    in_len = c->frame_size;
+    if (insert_keyframe)
     {
         av_frame_copy(c->previouse_frame, frame);
 
-        in_len = c->frame_size;
         auto r = lzo1x_1_compress(frame->data[0], in_len, buf + 2, &out_len, c->comp_buf);
         pkt->flags |= AV_PKT_FLAG_KEY;
 
@@ -125,9 +148,38 @@ int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const
     }
     else
     {
-        __debugbreak();
+        /* for now only support interleaved (planar needs a bit of extra work) */
+        unsigned char *diffinputptr = c->delta_frame->data[0];
+        unsigned char *inputptr = frame->data[0];
+        unsigned char *prevFrameptr = c->previouse_frame->data[0];
+
+        for (unsigned long i = 0; i != in_len; ++i)
+        {
+            *diffinputptr = *inputptr - *prevFrameptr;
+            *prevFrameptr = *inputptr;
+
+            prevFrameptr++;
+            inputptr++;
+            diffinputptr++;
+        }
+
+        if (c->algorithm == 0)
+        {
+            auto r = lzo1x_1_compress(c->delta_frame->data[0], in_len, buf + 2, &out_len, c->comp_buf);
+            pkt->flags &= ~AV_PKT_FLAG_KEY;
+
+            av_shrink_packet(pkt, static_cast<int>(out_len + 2));
+        }
+        else if (c->algorithm == 1)
+        {
+            __debugbreak();
+            //unsigned long destlen;
+            //r = compress2(outputbyte + 2, &destlen, m_diffinput, in_len, m_gzip_level);
+            //out_len = static_cast<uLong>(destlen);
+        }
     }
 
+    c->currentFrame++;
     *got_packet = 1;
     return 0;
 }
