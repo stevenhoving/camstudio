@@ -21,8 +21,6 @@
 
 int __cdecl cam_codec_init(AVCodecContext *avctx)
 {
-    printf("camcodec encoder init\n");
-
     switch(avctx->pix_fmt)
     {
     case AV_PIX_FMT_RGB555LE:
@@ -74,7 +72,6 @@ int __cdecl cam_codec_init(AVCodecContext *avctx)
 
 int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const AVFrame *frame, int *got_packet)
 {
-    printf("camcodec encode picture\n");
     CamStudioContext *c = (CamStudioContext *)avctx->priv_data;
 
     lzo_uint in_len = 0;
@@ -124,7 +121,7 @@ int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const
         auto r = lzo1x_1_compress(frame->data[0], in_len, buf + 2, &out_len, c->comp_buf);
         pkt->flags |= AV_PKT_FLAG_KEY;
 
-        av_shrink_packet(pkt, out_len + 2);
+        av_shrink_packet(pkt, static_cast<int>(out_len + 2));
     }
     else
     {
@@ -137,7 +134,6 @@ int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const
 
 int __cdecl cam_codec_encode_end(AVCodecContext *avctx)
 {
-    printf("camcodec encoder end\n");
     CamStudioContext *c = (CamStudioContext *)avctx->priv_data;
     av_freep(&c->comp_buf);
     av_frame_free(&c->previouse_frame);

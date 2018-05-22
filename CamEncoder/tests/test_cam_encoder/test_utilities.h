@@ -32,8 +32,7 @@ static int get_pixel_size(AVPixelFormat pixel_format)
     case AV_PIX_FMT_BGR24: return 3;
     case AV_PIX_FMT_BGR0: return 4;
     default:
-        assert(false);
-        break;
+        throw std::runtime_error("unable to get pixel size, invalid pixel format");
     }
 }
 

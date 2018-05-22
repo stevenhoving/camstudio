@@ -25,7 +25,6 @@
 av_video_meta create_video_config(const int width, const int height, const int fps)
 {
     av_video_meta meta;
-    //meta.bitrate = 4000;
     meta.quality = 25;
     meta.bpp = 24;
     meta.width = width;
@@ -52,13 +51,30 @@ void test_muxer(const int width, const int height, const int fps, av_muxer_type 
 {
     auto config = create_video_config(width, height, fps);
 
-    std::string filename = "test.";
-    if (muxer_type == av_muxer_type::mkv)
-        filename += "mkv";
-    else if (muxer_type == av_muxer_type::mp4)
-        filename += "mp4";
-    else if (muxer_type == av_muxer_type::avi)
-        filename += "avi";
+    std::string filename = "test_";
+
+    switch(codec_id)
+    {
+    case AV_CODEC_ID_H264:
+        filename += "h264";
+        break;
+    case AV_CODEC_ID_CSCD:
+        filename += "cscd";
+        break;
+    }
+
+    switch(muxer_type)
+    {
+    case av_muxer_type::mkv:
+        filename += ".mkv";
+        break;
+    case av_muxer_type::mp4:
+        filename += ".mp4";
+        break;
+    case av_muxer_type::avi:
+        filename += ".avi";
+        break;
+    }
 
     av_muxer muxer(filename.c_str(), muxer_type);
     muxer.add_stream(create_video_codec(config, codec_id, pixel_format));

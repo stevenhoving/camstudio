@@ -71,6 +71,7 @@ void UpdateSetting(libconfig::Setting &s, const char *name, const T &value, libc
 
 // colorref specialization
 template <>
+static
 void UpdateSetting<COLORREF>(libconfig::Setting &s, const char *name, const COLORREF &value, libconfig::Setting::Type t)
 {
     const int32_t temp = *reinterpret_cast<const int32_t*>(&value);
@@ -86,6 +87,7 @@ void UpdateSetting<COLORREF>(libconfig::Setting &s, const char *name, const COLO
 
 // uint32_t specialization
 template <>
+static
 void UpdateSetting<uint32_t>(libconfig::Setting &s, const char *name, const uint32_t &value, libconfig::Setting::Type t)
 {
     const int32_t temp = *reinterpret_cast<const int32_t*>(&value);
@@ -101,6 +103,7 @@ void UpdateSetting<uint32_t>(libconfig::Setting &s, const char *name, const uint
 
 // std::wstring specialization
 template <>
+static
 void UpdateSetting<std::wstring>(libconfig::Setting &s, const char *name, const std::wstring &value, libconfig::Setting::Type t)
 {
     if (s.exists(name))
@@ -115,6 +118,7 @@ void UpdateSetting<std::wstring>(libconfig::Setting &s, const char *name, const 
 
 // dir_access specialization
 template <>
+static
 void UpdateSetting<dir_access>(libconfig::Setting &s, const char *name, const dir_access &value, libconfig::Setting::Type t)
 {
     if (s.exists(name))

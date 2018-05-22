@@ -143,29 +143,16 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
     bool truncate_framerate = false;
     switch (config.id)
     {
-    /* cam studio video codec is currently disabled because the ffmpeg implementation only supports
-     * decoding.
-     */
-
-    //AVPixelFormat input_pixel_format_{AV_PIX_FMT_NONE};
-    //AVPixelFormat output_pixel_format_{AV_PIX_FMT_NONE};
     case AV_CODEC_ID_CSCD:
         codec_type_ = av_video_codec_type::cscd;
-        //input_pixel_format_ = AV_PIX_FMT_RGB555LE;
-        input_pixel_format_ = AV_PIX_FMT_BGR24;
-        //input_pixel_format_ = AV_PIX_FMT_BGR0;
-        //output_pixel_format_ = AV_PIX_FMT_RGB555LE;
+        input_pixel_format_ = config.pixel_format;
         output_pixel_format_ = AV_PIX_FMT_BGR24;
-        //output_pixel_format_ = AV_PIX_FMT_BGR0;
-        printf("av_video: CamStudio encoder\n");
         codec_ = &cam_codec_encoder;
         break;
     case AV_CODEC_ID_H264:
         codec_type_ = av_video_codec_type::h264;
-        input_pixel_format_ = AV_PIX_FMT_BGR24;
+        input_pixel_format_ = config.pixel_format;
         output_pixel_format_ = AV_PIX_FMT_YUV420P;
-        printf("av_video: H264 encoder\n");
-
         codec_ = avcodec_find_encoder(config.id);
         if (codec_ == nullptr)
             throw std::runtime_error("av_video: unable to find video encoder");
@@ -194,10 +181,6 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
 
     // this allows for variable framerate with ms timestamps.
     context_->time_base = { 1, 1000 };
-    //context_->time_base = { 1, 25 };
-
-    //context_->time_base = {fps.den, fps.num};
-    //context_->framerate = {25, 1};
 
     if (codec_type_ != av_video_codec_type::cscd)
     {
@@ -239,10 +222,17 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
             av_opts_["crf"] = static_cast<int64_t>(meta.quality.value());
         }
     }
+    else
+    {
+        av_opts_["algorithm"] = 0; // select lzo compressor
+        av_opts_["gzip_level"] = 0; // gzip compresion level is not used.
+        av_opts_["autokeyframe"] = 1; // enable keyframe insertion every x frames.
+        av_opts_["autokeyframe_rate"] = 25; // set the keyframe insertion to x.
+    }
 
     context_->width = meta.width;
     context_->height = meta.height;
-    context_->pix_fmt = input_pixel_format_;
+    context_->pix_fmt = output_pixel_format_;
 
     // \todo we have no grayscale settings for now
     //if (grayscale)
@@ -266,8 +256,10 @@ av_video::~av_video()
 
 void av_video::open(AVStream *stream, av_dict &dict)
 {
-    // create a copy of our settings dict as avcodec_open2 clears it and fills it with the invalid
-    //entries if it encounters them.
+    /*!
+     * create a copy of our settings dict as avcodec_open2 clears it and fills it with the invalid
+     * entries if it encounters them.
+     */
     dict = av_opts_;
     auto av_opts = av_opts_;
 
@@ -275,8 +267,7 @@ void av_video::open(AVStream *stream, av_dict &dict)
         throw std::runtime_error(fmt::format("av_video: unable to open video encoder: {}",
             av_error_to_string(ret)));
 
-    // avcodec_open populates the opts dictionary with the
-    // things it didn't recognize.
+    /* avcodec_open populates the opts dictionary with the things it didn't recognize. */
     if (!av_opts.empty())
     {
         AVDictionaryEntry *t = nullptr;
@@ -304,8 +295,8 @@ void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFO *image)
     if (image != nullptr)
     {
         /* when we pass a frame to the encoder, it may keep a reference to it
-        * internally; make sure we do not overwrite it here
-        */
+         * internally; make sure we do not overwrite it here
+         */
         if (av_frame_make_writable(frame_) < 0)
             throw std::runtime_error("Unable to make temp video frame writable");
 
@@ -328,8 +319,9 @@ void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFO *image)
         };
 
         const int src_stride[3] = { src_width * -3, 0, 0 };
+
         int dst_stride[3] = {0, 0, 0};
-        switch(input_pixel_format_)
+        switch(output_pixel_format_)
         {
         case AV_PIX_FMT_RGB555LE:
             dst_stride[0] = src_width * 2;
