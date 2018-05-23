@@ -41,7 +41,6 @@
 #include <CamLib/TrayIcon.h>
 #include <CamEncoder/av_encoder.h>
 
-#include "MP4Converter.h"
 #include "AudioSpeakersDlg.h"
 #include "HotKey.h"
 #include "Screen.h"
@@ -1040,11 +1039,6 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
             strTitle = _T("Save mkv File");
             strExtFilter = _T("*.mkv");
             break;
-        case ModeMP4:
-            strFilter = _T("MPEG Movie Files (*.mp4)|*.mp4||");
-            strTitle = _T("Save MPEG File");
-            strExtFilter = _T("*.mp4");
-            break;
     }
 
     //std::experimental::filesystem::directory_entry::ex
@@ -1075,8 +1069,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
     // TRACE("## CRecorderView::OnUserGeneric , savedir = GetProgPath [%s]\n", (GetProgPath()==savedir) ? "EQUAL" :
     // "DIFFERENT"  );
 
-    if (/*(cProgramOpts.m_iRecordingMode == ModeAVI || cProgramOpts.m_iRecordingMode == ModeMP4) &&*/ cProgramOpts
-            .m_bAutoNaming)
+    if (/*cProgramOpts.m_iRecordingMode == ModeAVI &&*/ cProgramOpts.m_bAutoNaming)
     {
 
         // Use local copy of the timestamp string created when recording was started for autonaming.
@@ -1118,17 +1111,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
 
     // append always .avi as filetype when record to flash or mp4 is applicable because MP4 converter expects as
     // input an AVI file
-    switch (cProgramOpts.m_iRecordingMode)
-    {
-        case ModeMP4:
-            strTargetVideoExtension = ".avi";
-            strTargetMP4VideoFile.Format(_T("%s\\%s.mp4"), strTargetDir.GetString(), strTargetBareFileName.GetString());
-            break;
-        default:
-            // error
-            break;
-    }
-    // if (cProgramOpts.m_iRecordingMode == ModeFlash || cProgramOpts.m_iRecordingMode == ModeMP4)
+    // if (cProgramOpts.m_iRecordingMode == ModeFlash)
     //{
     //    strTargetVideoExtension = ".avi";
     //}
@@ -1309,39 +1292,6 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
         case ModeAVI:
             RunViewer(strTargetVideoFile);
             break;
-        case ModeMP4:
-        {
-            CString sMsg;
-            CString sRes;
-            CString sOutBareName;
-            sOutBareName.Format(_T("%s.mp4"), strTargetBareFileName.GetString());
-            if (ConvertToMP4(strTargetVideoFile, strTargetMP4VideoFile, sOutBareName))
-            {
-                if (!std::experimental::filesystem::remove(strTargetVideoFile.GetString()))
-                {
-                    sRes.LoadString(IDS_STRING_DELETE_FAILED);
-                    sMsg.Format(sRes, strTargetMP4VideoFile.GetString());
-                    MessageBox(sMsg, _T("Warning"), 0);
-                }
-            }
-            else
-            {
-                if (!std::experimental::filesystem::remove(strTargetVideoFile.GetString()))
-                {
-                    sRes.LoadString(IDS_STRING_DELETE_FAILED);
-                    sMsg.Format(sRes, strTargetVideoFile.GetString());
-                    MessageBox(sMsg, _T("Warning"), 0);
-                }
-                if (!std::experimental::filesystem::remove(strTargetMP4VideoFile.GetString()))
-                {
-                    sRes.LoadString(IDS_STRING_DELETE_FAILED);
-                    sMsg.Format(sRes, strTargetMP4VideoFile.GetString());
-                    MessageBox(sMsg, _T("Warning"), 0);
-                }
-            }
-        }
-
-        break;
     }
     return 0;
 }
@@ -3203,10 +3153,7 @@ void CRecorderView::OnOptionsSynchronization()
 
 void CRecorderView::OnAVISWFMP4()
 {
-    if (cProgramOpts.m_iRecordingMode < ModeMP4)
-        cProgramOpts.m_iRecordingMode++;
-    else
-        cProgramOpts.m_iRecordingMode = ModeAVI;
+    cProgramOpts.m_iRecordingMode = ModeAVI;
     Invalidate();
 }
 
@@ -3615,10 +3562,8 @@ void CRecorderView::DisplayRecordingMsg(CDC &srcDC)
         case ModeAVI:
             msgRecMode.LoadString(IDS_RECAVI);
             break;
-        case ModeMP4:
-            msgRecMode.LoadString(IDS_RECMP4);
-            break;
     }
+
     // msgRecMode.LoadString((cProgramOpts.m_iRecordingMode == ModeAVI) ? IDS_RECAVI : IDS_RECSWF);
     CSize sizeExtent = srcDC.GetTextExtent(msgRecMode);
 
@@ -4523,63 +4468,6 @@ bool CRecorderView::RunProducer(const CString &strNewFile)
     }
 #endif
     return true;
-}
-
-bool CRecorderView::ConvertToMP4(const CString &sInputAVI, const CString &sOutputMP4, const CString &sOutBareName)
-{
-    ConversionResult res = FAILED;
-
-    auto pConv = std::make_unique<CMP4Converter>();
-    if (pConv)
-    {
-        pConv->ConvertAVItoMP4(sInputAVI, sOutputMP4);
-        auto pProgDlg = std::make_unique<CProgressDlg>();
-        if (pProgDlg)
-        {
-            pProgDlg->Create(this);
-            CString msgx, msgout;
-            msgx.LoadString(IDS_STRING_GENERATING);
-            msgout.Format(msgx, sOutBareName.GetString());
-            ((CStatic *)pProgDlg->GetDlgItem(IDC_CONVERSIONTEXT))->SetWindowText(msgout);
-
-            int nProgress = 0;
-            time_t timer;
-            time_t lTimeStart = time(&timer);
-            time_t lCurrentTime = 0;
-            while (pConv->Converting())
-            {
-                lCurrentTime = time(&timer);
-                if (pProgDlg->CheckCancelButton())
-                {
-                    pConv->CancelConversion();
-                    break;
-                }
-                const auto delta_time = difftime(lCurrentTime, lTimeStart);
-                if (delta_time >= rand() % pProgDlg->MaxProg() + pProgDlg->MinProg() &&
-                    nProgress < pProgDlg->FakeMax())
-                {
-                    nProgress = nProgress + rand() % pProgDlg->MaxProg() + pProgDlg->MinProg();
-                    pProgDlg->SetPos(nProgress);
-                    lTimeStart = time(&timer);
-                }
-            }
-            while (nProgress < pProgDlg->RealMax())
-            {
-                lCurrentTime = time(&timer);
-                if (pProgDlg->CheckCancelButton())
-                {
-                    res = CANCELLED;
-                    break;
-                }
-                nProgress++;
-                pProgDlg->SetPos(nProgress);
-                lTimeStart = time(&timer);
-            }
-            res = pConv->Status();
-        }
-    }
-
-    return res == SUCCESS;
 }
 
 bool CRecorderView::GetRecordState()

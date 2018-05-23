@@ -56,7 +56,6 @@ set(RECORDER_SOURCE
     MainFrm.cpp
     MCI.cpp
     MouseCaptureWnd.cpp
-    MP4Converter.cpp
     NewShapeDlg.cpp
     NewShapeDlg.h
     PresetTimeDlg.cpp
@@ -96,7 +95,6 @@ set(RECORDER_SOURCE
     MainFrm.h
     MCI.h
     MouseCaptureWnd.h
-    MP4Converter.h
     Profile.h
     ProgressDlg.h
     Recorder.h
@@ -109,6 +107,7 @@ set(RECORDER_SOURCE
     TransparentWnd.h
     VideoWnd.h
     string_convert.h
+    capture_thread.h
 )
 
 set(RECORDER_VFW_SOURCE

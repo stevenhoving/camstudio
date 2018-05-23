@@ -617,8 +617,8 @@ extern sProducerOpts cProducerOpts;
 enum eVideoFormat
 {
     ModeAVI,
-    ModeMP4
 };
+
 enum eAVIPlay
 {
     NO_PLAYER,

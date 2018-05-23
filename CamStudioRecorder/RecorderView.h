@@ -4,7 +4,6 @@
 #include "FlashingWnd.h"  // for CFlashingWnd
 #include "BasicMessageDlg.h" // for CBasicMessageDlg
 #include "screen.h"
-#include "MP4Converter.h"
 
 #include <string>
 
@@ -215,7 +214,6 @@ private:
     bool RunViewer(const CString &strNewFile);
     bool RunProducer(const CString &strNewFile);
     void DisplayAutopanInfo(CRect rc);
-    bool ConvertToMP4(const CString &sInputAVI, const CString &sOutputMP4, const CString &sOutBareName);
     // dialog controls
 };
 
