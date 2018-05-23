@@ -3816,7 +3816,7 @@ std::unique_ptr<av_video> create_video_codec(const av_video_meta &meta)
 {
     av_video_codec video_codec_config;
     video_codec_config.id = AV_CODEC_ID_H264;
-    video_codec_config.pixel_format = AV_PIX_FMT_YUV420P;
+    video_codec_config.pixel_format = AV_PIX_FMT_RGB24;
 
     return std::make_unique<av_video>(video_codec_config, meta);
 }
