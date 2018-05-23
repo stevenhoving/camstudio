@@ -227,7 +227,7 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
         av_opts_["algorithm"] = 0; // select lzo compressor
         av_opts_["gzip_level"] = 0; // gzip compresion level is not used.
         av_opts_["autokeyframe"] = 1; // enable keyframe insertion every x frames.
-        av_opts_["autokeyframe_rate"] = 25; // set the keyframe insertion to x.
+        av_opts_["autokeyframe_rate"] = calculate_gop_size(meta) * 10;
     }
 
     context_->width = meta.width;
