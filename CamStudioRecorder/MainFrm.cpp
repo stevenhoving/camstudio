@@ -49,7 +49,9 @@ static UINT indicators[] = {
 
 CMainFrame::CMainFrame()
 {
+#ifdef _DEBUG
     console::create();
+#endif
     // TODO: add member initialization code here
     m_bmLogo.LoadBitmap(IDB_BITMAP3);
 }

@@ -111,6 +111,7 @@ struct av_video_meta
     frame_rate fps = { 0, 0 };
     std::optional<double> quality;
     std::optional<double> bitrate;
+    std::optional<int> gop;
     std::optional<video::preset> preset;
     std::optional<video::tune> tune;
     std::optional<video::profile> profile; // for example h264

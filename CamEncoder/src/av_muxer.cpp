@@ -18,13 +18,15 @@
 #include "CamEncoder/av_muxer.h"
 #include "CamEncoder/av_dict.h"
 #include "CamEncoder/av_error.h"
+#include "av_log.h"
+
 #include <fmt/format.h>
 
 void av_log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
 {
     AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
 
-    fmt::print("pts:{} pts_time:{} dts:{} dts_time:{} duration:{} duration_time:{} stream_index:{}\n",
+    _log("pts:{} pts_time:{} dts:{} dts_time:{} duration:{} duration_time:{} stream_index:{}\n",
                av_timestamp_to_string(pkt->pts), av_timestamp_to_timestring(pkt->pts, time_base),
                av_timestamp_to_string(pkt->dts), av_timestamp_to_timestring(pkt->dts, time_base),
                av_timestamp_to_string(pkt->duration), av_timestamp_to_timestring(pkt->duration, time_base),
@@ -172,7 +174,7 @@ AVFrame *av_muxer::alloc_audio_frame(enum AVSampleFormat sample_fmt, uint64_t ch
     AVFrame *frame = av_frame_alloc();
     if (frame == nullptr)
     {
-        fmt::print("Error allocating an audio frame\n");
+        _log("Error allocating an audio frame\n");
         exit(1);
     }
 
@@ -185,7 +187,7 @@ AVFrame *av_muxer::alloc_audio_frame(enum AVSampleFormat sample_fmt, uint64_t ch
     {
         if (int ret = av_frame_get_buffer(frame, 0); ret < 0)
         {
-            fmt::print("Error allocating an audio buffer\n");
+            _log("Error allocating an audio buffer\n");
             exit(1);
         }
     }
@@ -208,7 +210,7 @@ void av_muxer::open_audio(AVFormatContext *format_context, AVCodec *codec, av_tr
     av_dict_free(&opt);
     if (ret < 0)
     {
-        fmt::print("Could not open audio codec: {}\n", av_error_to_string(ret));
+        _log("Could not open audio codec: {}\n", av_error_to_string(ret));
         exit(1);
     }
 
@@ -230,14 +232,14 @@ void av_muxer::open_audio(AVFormatContext *format_context, AVCodec *codec, av_tr
     ret = avcodec_parameters_from_context(track->stream->codecpar, c);
     if (ret < 0)
     {
-        fmt::print("Could not copy the stream parameters\n");
+        _log("Could not copy the stream parameters\n");
         exit(1);
     }
 
     /* create resampler context */
     // track->swr_ctx = swr_alloc();
     // if (!track->swr_ctx) {
-    //    fmt::print("Could not allocate resampler context\n");
+    //    _log("Could not allocate resampler context\n");
     //    exit(1);
     //}
 
@@ -251,7 +253,7 @@ void av_muxer::open_audio(AVFormatContext *format_context, AVCodec *codec, av_tr
 
     /* initialize the resampling context */
     // if ((ret = swr_init(track->swr_ctx)) < 0) {
-    //    fmt::print("Failed to initialize the resampling context\n");
+    //    _log("Failed to initialize the resampling context\n");
     //    exit(1);
     //}
 }
@@ -289,7 +291,7 @@ int av_muxer::write_audio_frame(av_track *track, AVFrame *frame)
         //    track->frame->data, dst_nb_samples,
         //    (const uint8_t **)frame->data, frame->nb_samples);
         // if (ret < 0) {
-        //    fmt::print("Error while converting\n");
+        //    _log("Error while converting\n");
         //    exit(1);
         //}
         // frame = track->frame;
@@ -301,7 +303,7 @@ int av_muxer::write_audio_frame(av_track *track, AVFrame *frame)
     ret = avcodec_encode_audio2(c, &pkt, frame, &got_packet);
     if (ret < 0)
     {
-        fmt::print("Error encoding audio frame: {}\n", av_error_to_string(ret));
+        _log("Error encoding audio frame: {}\n", av_error_to_string(ret));
         exit(1);
     }
 
@@ -310,7 +312,7 @@ int av_muxer::write_audio_frame(av_track *track, AVFrame *frame)
         ret = write_frame(c->time_base, track->stream, &pkt);
         if (ret < 0)
         {
-            fmt::print("Error while writing audio frame: {}\n", av_error_to_string(ret));
+            _log("Error while writing audio frame: {}\n", av_error_to_string(ret));
             exit(1);
         }
     }

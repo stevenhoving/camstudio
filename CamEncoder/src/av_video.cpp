@@ -19,7 +19,8 @@
 #include "CamEncoder/av_dict.h"
 #include "CamEncoder/av_error.h"
 #include "CamEncoder/av_cam_codec/av_cam_codec.h"
-#include <fmt/printf.h>
+#include "av_log.h"
+
 #include <fmt/ostream.h>
 #include <cassert>
 
@@ -101,18 +102,18 @@ void dump_context(AVCodecContext *context)
     AVCodecParameters * params = avcodec_parameters_alloc();
     avcodec_parameters_from_context(params, context);
 
-    fmt::print("Codec:\n");
-    fmt::print("    codec type: {}\n", params->codec_type);
-    fmt::print("      codec id: {}\n", params->codec_id);
-    fmt::print("        format: {}\n", static_cast<AVPixelFormat>(params->format));
-    fmt::print("      bit rate: {}\n", params->bit_rate);
-    fmt::print("           bcs: {}\n", params->bits_per_coded_sample);
-    fmt::print("           brs: {}\n", params->bits_per_raw_sample);
+    _log("Codec:\n");
+    _log("    codec type: {}\n", params->codec_type);
+    _log("      codec id: {}\n", params->codec_id);
+    _log("        format: {}\n", static_cast<AVPixelFormat>(params->format));
+    _log("      bit rate: {}\n", params->bit_rate);
+    _log("           bcs: {}\n", params->bits_per_coded_sample);
+    _log("           brs: {}\n", params->bits_per_raw_sample);
 
-    fmt::print("       profile: {}\n", params->profile);
-    fmt::print("         level: {}\n", params->level);
-    fmt::print("  aspect ratio: {}\n", params->sample_aspect_ratio);
-    fmt::print("    dimentions: {}x{}\n", params->width, params->height);
+    _log("       profile: {}\n", params->profile);
+    _log("         level: {}\n", params->level);
+    _log("  aspect ratio: {}\n", params->sample_aspect_ratio);
+    _log("    dimentions: {}x{}\n", params->width, params->height);
 
     avcodec_parameters_free(&params);
     params = nullptr;
@@ -174,7 +175,7 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
         AVRational supported_fps = codec_->supported_framerates[idx];
         if (supported_fps != fps)
         {
-            fmt::print("av_video: framerate {} is not supported. Using {}.", fps, supported_fps);
+            _log("av_video: framerate {} is not supported. Using {}.", fps, supported_fps);
             fps = supported_fps;
         }
     }
@@ -274,7 +275,7 @@ void av_video::open(AVStream *stream, av_dict &dict)
         for (int i = 0; i < av_opts.size(); ++i)
         {
             t = av_opts.at("", t, AV_DICT_IGNORE_SUFFIX);
-            fmt::print("av_video: unknown avcodec option: {}", t->key);
+            _log("av_video: unknown avcodec option: {}", t->key);
         }
     }
 
@@ -361,7 +362,7 @@ void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFO *image)
     }
     else
     {
-        fmt::print("flush encoder\n");
+        _log("flush encoder\n");
     }
 
     if (int ret = avcodec_send_frame(context_, encode_frame); ret < 0)

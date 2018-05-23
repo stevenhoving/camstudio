@@ -3651,8 +3651,9 @@ bool CRecorderView::captureScreenFrame(const CRect &rectView, bool bDisableRect)
     // TRACE("CRecorderView::captureScreenFrame\n");
     // CRect rectView(left, top, left + width, top + height);
 
-    int width = (int)rectView.Width() / zoom_;   // width of being captured screen stuff
-    int height = (int)rectView.Height() / zoom_; // width of being captured screen stuff
+    int width = static_cast<int>(rectView.Width() / zoom_);   // width of being captured screen stuff
+    int height = static_cast<int>(rectView.Height() / zoom_); // height of being captured screen stuff
+
     CRect zr = zoom_ == 1. ? rectView
                            : CRect(CPoint(std::min(std::max(rectView.left, zoomed_at_.x - width / 2), rectView.right - width),
                                std::min(std::max(rectView.top, zoomed_at_.y - height / 2), rectView.bottom - height)),
@@ -3806,6 +3807,7 @@ av_video_meta create_video_config(const int width, const int height, const int f
     meta.width = width;
     meta.height = height;
     meta.fps = {fps, 1};
+    meta.gop = fps * 10;
     meta.preset = video::preset::ultrafast;
     meta.profile = video::profile::baseline;
     meta.tune = video::tune::zerolatency;
@@ -3816,6 +3818,8 @@ std::unique_ptr<av_video> create_video_codec(const av_video_meta &meta)
 {
     av_video_codec video_codec_config;
     video_codec_config.id = AV_CODEC_ID_H264;
+
+    // The video input pixel format should be automatically detected.
     video_codec_config.pixel_format = AV_PIX_FMT_RGB24;
 
     return std::make_unique<av_video>(video_codec_config, meta);
