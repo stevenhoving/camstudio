@@ -95,6 +95,50 @@ int gzip_compress(const Bytef * src, uLong src_len, Bytef *dst, uLongf *dst_len,
     return compress2(dst, dst_len, src, src_len, level);
 }
 
+/*   0                               1
+ * |              byte 1           |               byte 2          |
+ * | 7   6   5   4   3   2   1   0 | 7   6   5   4   3   2   1   0 |
+ * +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+ * |     level     |   algo    |key|  reserved     | RGBbit| cmode |
+ * +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+ *
+ * Level: 4 bits
+ *
+ *   Level was initially storing the gzip compression level. But this value is currently not used
+ *   by the decoder.
+ *
+ * Algo: 3 bits
+ *
+ *   Algo stores the used compression algorithm.
+ *   - 0 lzo
+ *   - 1 gzip
+ *   - 2 reserved
+ *   - 3 reserved
+ *   - 4 reserved
+ *   - 5 reserved
+ *   - 6 reserved
+ *   - 7 reserved
+ *
+ * Key: 1 bit
+ *
+ *   Key stores the frame type.
+ *   - 0 delta frame
+ *   - 1 key frame.
+ *
+ * RGBbit: 2 bit.
+ *
+ *   RGBBit is intended to store the original bits per pixel.
+ *   - 0 undefined
+ *   - 1 16 bit rgb
+ *   - 2 24 bit rgb
+ *   - 3 32 bit rgba
+ *
+ * Cmode: 2 bit.
+ *
+ *   The original purpose of cmode a.k.a convertmodebit (colorspace) is unknown. We can only guess
+ *   what its purpose would have been. In the meantime these 2 bits are unused.
+ */
+
 int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const AVFrame *frame, int *got_packet)
 {
     CamStudioContext *c = (CamStudioContext *)avctx->priv_data;
@@ -160,8 +204,8 @@ int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const
         }
         else if (c->algorithm == 1)
         {
-            unsigned long out_len = 0;
-            auto r = gzip_compress(frame->data[0], in_len, buf + 2, &out_len, c->gzip_level);
+            uLong out_len = initial_packet_size;
+            auto r = gzip_compress(frame->data[0], static_cast<uLong>(in_len), buf + 2, &out_len, c->gzip_level);
             pkt->flags |= AV_PKT_FLAG_KEY;
 
             av_shrink_packet(pkt, static_cast<int>(out_len + 2));
@@ -194,8 +238,9 @@ int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const
         }
         else if (c->algorithm == 1)
         {
-            unsigned long out_len = 0;
-            auto r = gzip_compress(frame->data[0], in_len, buf + 2, &out_len, c->gzip_level);
+            uLong out_len = initial_packet_size;
+            auto r = gzip_compress(c->delta_frame->data[0], static_cast<uLong>(in_len), buf + 2,
+                &out_len, c->gzip_level);
             pkt->flags &= ~AV_PKT_FLAG_KEY;
 
             av_shrink_packet(pkt, static_cast<int>(out_len + 2));
