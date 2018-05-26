@@ -711,7 +711,7 @@ struct sProgramOpts
         // TODO: check these two
         cProfile.lookupValue("LayoutNameLen", m_iSaveLen);
         cProfile.lookupValue("ShapeNameLen", m_iCursorLen);
-        if (cProfile.lookupValue("DefaultOutDir", text))
+        if (cProfile.exists("DefaultOutDir") && cProfile.lookupValue("DefaultOutDir", text))
         {
             m_strDefaultOutDir = utf8_to_wstring(text);
         }

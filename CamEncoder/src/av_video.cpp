@@ -198,7 +198,7 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
          * set variable framerate.
          * \see https://superuser.com/questions/908295/ffmpeg-libx264-how-to-specify-a-variable-frame-rate-but-with-a-maximum
          */
-        av_opts_["vsync"] = "vfr";
+        //av_opts_["vsync"] = "vfr";
 
         // Now set the things in context that we don't want to allow
         // the user to override.
@@ -224,8 +224,8 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
     }
     else
     {
-        av_opts_["algorithm"] = 0; // select lzo compressor
-        av_opts_["gzip_level"] = 0; // gzip compresion level is not used.
+        av_opts_["algorithm"] = 1; // select lzo compressor
+        av_opts_["gzip_level"] = 9; // gzip compresion level is not used.
         av_opts_["autokeyframe"] = 1; // enable keyframe insertion every x frames.
         av_opts_["autokeyframe_rate"] = calculate_gop_size(meta) * 10;
     }
@@ -288,7 +288,7 @@ void av_video::open(AVStream *stream, av_dict &dict)
     dump_context(context_);
 }
 
-void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFO *image)
+void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFOHEADER *image)
 {
     // also handle encoder flush
     AVFrame *encode_frame = nullptr;
@@ -300,12 +300,13 @@ void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFO *image)
         if (av_frame_make_writable(frame_) < 0)
             throw std::runtime_error("Unable to make temp video frame writable");
 
-        const auto &header = image->bmiHeader;
+        //const auto &header = image->bmiHeader;
 
-        const auto *src_data = ((LPBYTE)image) + header.biSize + (header.biClrUsed * sizeof(RGBQUAD));
-        const auto src_data_size = header.biSizeImage;
-        const auto src_width = header.biWidth;
-        const auto src_height = header.biHeight;
+        const auto *src_data = ((LPBYTE)image) + image->biSize + (image->biClrUsed * sizeof(RGBQUAD));
+        //const auto *src_data = (uint8_t *)image->bmiColors;//((LPBYTE)image) + header.biSize + (header.biClrUsed * sizeof(RGBQUAD));
+        const auto src_data_size = image->biSizeImage;
+        const auto src_width = image->biWidth;
+        const auto src_height = image->biHeight;
 
         const auto dst_width = context_->width;
         const auto dst_height = context_->height;
@@ -352,9 +353,13 @@ void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFO *image)
             throw std::runtime_error("av_video: invalid encoder input format");
             break;
         }
-        sws_scale(sws_context_,
+        int ret = sws_scale(sws_context_,
             src, src_stride, 0, src_height,
             frame_->data, dst_stride);
+        if (ret < 0)
+        {
+            fmt::print("scale failed: {}\n", av_error_to_string(ret));
+        }
 
         frame_->pts = timestamp;
         encode_frame = frame_;

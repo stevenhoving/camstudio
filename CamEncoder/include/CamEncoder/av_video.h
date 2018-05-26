@@ -46,7 +46,7 @@ public:
 
     void open(AVStream *stream, av_dict &dict) override;
 
-    void push_encode_frame(timestamp_t timestamp, BITMAPINFO *image);
+    void push_encode_frame(timestamp_t timestamp, BITMAPINFOHEADER *image);
 
     // this function will return false, if it was unable to read a encoded packet.
     bool pull_encoded_packet(AVPacket *pkt, bool *valid_packet) override;

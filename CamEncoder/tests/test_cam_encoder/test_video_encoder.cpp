@@ -39,6 +39,6 @@ TEST(test_video_encoder, test_create_h264_encoder)
     test.open(nullptr, avargs);
 
     auto frame = create_bmpinfo(512, 512);
-    test.push_encode_frame(0, frame);
+    test.push_encode_frame(0, (BITMAPINFOHEADER *)frame);
     free(frame);
 }

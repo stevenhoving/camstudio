@@ -119,5 +119,5 @@ struct av_video_meta
 struct av_video_codec
 {
     AVCodecID id;
-    AVPixelFormat pixel_format;
+    AVPixelFormat pixel_format = AV_PIX_FMT_BGR24;
 };

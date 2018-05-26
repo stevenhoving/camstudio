@@ -108,6 +108,7 @@ set(RECORDER_SOURCE
     VideoWnd.h
     string_convert.h
     capture_thread.h
+    capture_thread.cpp
 )
 
 set(RECORDER_VFW_SOURCE
@@ -188,6 +189,7 @@ target_link_libraries(CamStudioRecorder
     CamLib
     CamHook
     CamAudio
+    CamCapture
     libconfig++
     CxImage
     localization

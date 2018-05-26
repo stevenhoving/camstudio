@@ -829,6 +829,60 @@ void CRecorderView::OnDestroy()
     CView::OnDestroy();
 }
 
+std::string generate_temp_filename()
+{
+    const auto csTempFolder = get_temp_folder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir);
+    // Location where we are creating our files
+    // TRACE("## CRecorderView::RecordVideo()  cProgramOpts.m_strSpecifiedDir=[%s]\n", cProgramOpts.m_strSpecifiedDir );
+    // TRACE("## CRecorderView::RecordVideo()  csTempFolder=[%s]\n", csTempFolder );
+
+    // Define a date-time tag "ccyymmdd_uumm_ss" to add to the temp.avi file.
+    // (New recordings can start just after previously recording ended.)
+    time_t osBinaryTime; // C run-time time (defined in <time.h>)
+    time(&osBinaryTime);
+    CTime ctime(osBinaryTime);
+
+    int day = ctime.GetDay();
+    int month = ctime.GetMonth();
+    int year = ctime.GetYear();
+    int hour = ctime.GetHour();
+    int minutes = ctime.GetMinute();
+    int second = ctime.GetSecond();
+
+    // Create timestamp tag
+    auto csStartTime = fmt::sprintf(_T("%04d%02d%02d_%02d%02d_%02d"), year, month, day, hour, minutes, second);
+
+    // \todo this is wrong
+    cVideoOpts.m_cStartRecordingString = csStartTime;
+
+    strTempVideoAviFilePath =
+        fmt::format(_T("{}\\{}-{}.{}"), csTempFolder, _T(TEMPFILETAGINDICATOR), csStartTime, _T("mkv"));
+
+    // TRACE("## CRecorderView::RecordAVIThread First  Temp.Avi file=[%s]\n", strTempVideoAviFilePath.GetString()  );
+
+    srand(static_cast<unsigned int>(time(nullptr)));
+    bool fileverified = false;
+    while (!fileverified)
+    {
+        auto filepath = std::experimental::filesystem::path(strTempVideoAviFilePath);
+        if (std::experimental::filesystem::exists(filepath))
+        {
+            fileverified = std::experimental::filesystem::remove(filepath);
+            if (!fileverified)
+            {
+                strTempVideoAviFilePath = fmt::format(_T("{}\\{}-{}-{}.{}"), csTempFolder, _T(TEMPFILETAGINDICATOR),
+                                                      csStartTime, rand(), _T("mkv"));
+            }
+        }
+        else
+        {
+            fileverified = true;
+        }
+    }
+
+    return wstring_to_utf8(strTempVideoAviFilePath);
+}
+
 LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     TRACE("CRecorderView::OnRecordStart\n");
@@ -858,15 +912,23 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
     g_bRecordState = true;
     g_interruptkey = 0;
 
-    g_strCodec = GetCodecDescription(cVideoOpts.m_dwCompfccHandler);
+    //g_strCodec = GetCodecDescription(cVideoOpts.m_dwCompfccHandler);
 
-    CWinThread *pThread = AfxBeginThread(RecordThread, this);
+    //CWinThread *pThread = AfxBeginThread(RecordThread, this);
+    capture_settings settings;
+    settings.capture_hwnd_ = 0; // 0 for now
+    settings.capture_rect_ = {g_rcUse.left, g_rcUse.top, g_rcUse.right, g_rcUse.bottom};
+    settings.fps = cVideoOpts.m_iFramesPerSecond;
+    settings.filename = generate_temp_filename();
+
+    capture_thread_ = std::make_unique<capture_thread>();
+    capture_thread_->start(settings);
 
     // Ver 1.3
-    if (pThread)
-    {
-        pThread->SetThreadPriority(cProgramOpts.m_iThreadPriority);
-    }
+    //if (pThread)
+    //{
+    //    pThread->SetThreadPriority(cProgramOpts.m_iThreadPriority);
+    //}
 
     // Ver 1.2
     bAllowNewRecordStartKey = TRUE; // allow this only after g_bRecordState is set to 1
@@ -898,6 +960,8 @@ LRESULT CRecorderView::OnRecordInterrupted(WPARAM wParam, LPARAM /*lParam*/)
     }
 
     g_bRecordState = false;
+    capture_thread_->stop();
+    capture_thread_.reset();
 
     // Store the interrupt key in case this function is triggered by a keypress
     g_interruptkey = wParam;
@@ -4181,7 +4245,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
         {
             DWORD timestamp = GetTickCount() - start_timestamp;
 
-            video_encoder->encode_frame(timestamp, (BITMAPINFO *)alpbi);
+            video_encoder->encode_frame(timestamp, alpbi);
 
             // g_nTotalBytesWrittenSoFar += alpbi->biSizeImage;
             //g_nTotalBytesWrittenSoFar += lBytesWritten;

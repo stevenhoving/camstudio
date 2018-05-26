@@ -17,21 +17,48 @@
 
 #pragma once
 
+#include "CamCapture/cam_capture.h"
+#include "CamCapture/cam_rect.h"
+#include <atomic>
 #include <thread>
 
+enum class capture_type
+{
+    fixed,
+    variable,
+    fullscreen,
+    window,
+    allscreens
+};
+
+struct capture_settings
+{
+    HWND capture_hwnd_{0};
+    rect<int> capture_rect_{0, 0, 0, 0};
+    capture_type capture_type_{ capture_type::allscreens };
+
+    int fps{30};
+    std::string filename;
+};
 
 class capture_thread
 {
 public:
-    capture_thread()
-    {
-    }
+    capture_thread() = default;
+    ~capture_thread();
 
-    ~capture_thread()
-    {
-        if (capture_thread_.joinable())
-            capture_thread_.join();
-    }
+    void start(capture_settings settings);
+    void stop();
+
+protected:
+    void run();
+    bool capture_screen_frame(const rect<int> &capture_dst_rect);
+
 private:
+    capture_settings capture_settings_;
+    std::unique_ptr<cam_capture_source> capture_source_;
     std::thread capture_thread_;
+    std::atomic<bool> run_{false};
+
+    rect<int> capture_dst_rect_{0, 0, 0, 0};
 };

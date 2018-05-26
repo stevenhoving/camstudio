@@ -125,7 +125,7 @@ void av_muxer::flush()
     encode_frame(0, nullptr);
 }
 
-void av_muxer::encode_frame(timestamp_t timestamp, BITMAPINFO *image)
+void av_muxer::encode_frame(timestamp_t timestamp, BITMAPINFOHEADER *image)
 {
     video_codec_->push_encode_frame(timestamp, image);
 

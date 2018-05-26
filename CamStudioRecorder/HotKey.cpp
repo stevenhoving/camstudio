@@ -62,8 +62,8 @@ bool sHotKeyOpts::Read(libconfig::Setting &cProfile)
         s.lookupValue("Key", m_Autopan.m_vKey);
         s.lookupValue("Mod", m_Autopan.m_fsMod);
     }
-    bool pass = false;
-    cProfile.lookupValue("PassThrough", pass);
+    //bool pass = false;
+    //cProfile.lookupValue("PassThrough", pass);
     // setPassThrough(pass); // see hook.cpp
     return true;
 }

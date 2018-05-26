@@ -85,7 +85,7 @@ void test_muxer(const int width, const int height, const int fps, av_muxer_type 
     for (int i = 0; i < 100; ++i)
     {
         DWORD ts = GetTickCount() - timestamp;
-        muxer.encode_frame(ts, frame);
+        muxer.encode_frame(ts, (BITMAPINFOHEADER *)frame);
         fill_bmpinfo(frame, ts / fps, pixel_format);
         double dt = (1.0 / (double)fps) * 1000.0;
         Sleep((DWORD)dt);

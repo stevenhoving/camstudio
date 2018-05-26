@@ -5,6 +5,9 @@
 #include "BasicMessageDlg.h" // for CBasicMessageDlg
 #include "screen.h"
 
+#include "capture_thread.h"
+
+
 #include <string>
 
 #define TEMPFILETAGINDICATOR "~temp"
@@ -191,6 +194,9 @@ public:
     static UINT WM_USER_RECORDSTART;
 
 private:
+    std::unique_ptr<capture_thread> capture_thread_;
+
+
     CFlashingWnd flashing_wnd_;
     CVideoWnd van_wnd_;
     CCamera camera_;
