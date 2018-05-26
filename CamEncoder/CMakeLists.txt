@@ -21,6 +21,7 @@ set(ENCODER_SOURCE
     src/av_audio.cpp
     src/av_muxer.cpp
     src/av_video.cpp
+    src/av_log.h
 )
 
 set(ENCODER_INCLUDE
