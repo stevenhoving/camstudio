@@ -25,7 +25,7 @@ av_video_meta cam_create_video_config(const int width, const int height, const i
 {
     av_video_meta meta;
     // \todo make all these parameters configurable through the UI.
-    meta.quality = 25;
+    meta.quality = 26;
     meta.bpp = 24;
     meta.width = width;
     meta.height = height;
@@ -115,14 +115,22 @@ void capture_thread::run()
     video_encoder->add_stream(cam_create_video_codec(config));
     video_encoder->open();
 
-    DWORD start_timestamp = GetTickCount();
+    cam::stop_watch stopwatch;
+    stopwatch.time_start();
     while (run_)
     {
+        double time_capture_start = stopwatch.time_now();
         const auto frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
 
-        DWORD timestamp = GetTickCount() - start_timestamp;
+        DWORD timestamp = static_cast<DWORD>(time_capture_start * 1000.0);
         video_encoder->encode_frame(timestamp, frame);
-        Sleep(0);
+
+        double time_capture_end = stopwatch.time_now();
+        double dt = time_capture_end - time_capture_start;
+
+        fmt::print("fps: {}\n", 1.0/dt);
+
+        //Sleep(0);
     }
 
     video_encoder.reset();

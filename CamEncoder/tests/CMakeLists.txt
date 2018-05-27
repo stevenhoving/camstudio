@@ -23,10 +23,11 @@ add_unit_test_suite(
         test_dict.cpp
         test_video_encoder.cpp
         test_muxer.cpp
+        test_rgb2yuv.cpp
         test_utilities.h
     INCLUDES
         ${CMAKE_CURRENT_BINARY_DIR}
-    LIBRARIES CamEncoder
+    LIBRARIES CamEncoder CamCapture fmt
     FOLDER tests/CamEncoder
 )
 

@@ -30,7 +30,7 @@ public:
     cam_annotation_systemtime(point<int> systemtime_position, color systemtime_color) noexcept;
     ~cam_annotation_systemtime() override;
 
-    void draw(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect, const point<int> &mouse_pos) override;
+    void draw(Gdiplus::Graphics &canvas, const cam_draw_data &draw_data) override;
 private:
     point<int> systemtime_position_;
     color systemtime_color_;

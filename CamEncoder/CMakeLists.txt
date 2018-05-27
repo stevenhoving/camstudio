@@ -35,6 +35,7 @@ set(ENCODER_INCLUDE
     include/CamEncoder/av_video.h
     include/CamEncoder/av_ffmpeg.h
     include/CamEncoder/av_encoder.h
+    include/CamEncoder/av_rgb2yuv.h
 )
 
 set(ENCODER_CAM_ENCODER_SOURCE

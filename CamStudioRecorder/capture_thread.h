@@ -19,6 +19,7 @@
 
 #include "CamCapture/cam_capture.h"
 #include "CamCapture/cam_rect.h"
+#include "CamCapture/cam_stop_watch.h"
 #include <atomic>
 #include <thread>
 

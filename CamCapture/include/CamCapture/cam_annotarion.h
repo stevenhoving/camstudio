@@ -25,9 +25,24 @@ namespace Gdiplus
 class Graphics;
 } // namespace Gdiplus
 
+class cam_draw_data
+{
+public:
+    cam_draw_data(const double frame_delta, const rect<int> &canvast_rect, const point<int> &mouse_pos)
+        : frame_delta_(frame_delta)
+        , canvast_rect_(canvast_rect)
+        , mouse_pos_(mouse_pos)
+    {
+    }
+
+    const double frame_delta_;
+    const rect<int> &canvast_rect_;
+    const point<int> &mouse_pos_;
+};
+
 class cam_iannotation
 {
 public:
     virtual ~cam_iannotation() = default;
-    virtual void draw(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect, const point<int> &mouse_pos) = 0;
+    virtual void draw(Gdiplus::Graphics &canvas, const cam_draw_data &draw_data) = 0;
 };

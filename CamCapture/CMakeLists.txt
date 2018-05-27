@@ -27,13 +27,14 @@ set(CAPTURE_SOURCE
 )
 
 set(CAPTURE_INCLUDE
+    include/CamCapture/cam_annotarion.h
     include/CamCapture/cam_capture.h
     include/CamCapture/cam_color.h
+    include/CamCapture/cam_gdiplus.h
     include/CamCapture/cam_rect.h
     include/CamCapture/cam_point.h
     include/CamCapture/cam_size.h
-    include/CamCapture/cam_gdiplus.h
-    include/CamCapture/cam_annotarion.h
+    include/CamCapture/cam_stop_watch.h
 )
 
 source_group(src FILES

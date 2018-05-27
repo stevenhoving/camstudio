@@ -160,7 +160,10 @@ void cam_capture_source::_draw_annotations()
     canvas.SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);
 
     point<int> mouse_point(pt.x, pt.y);
+
+    cam_draw_data draw_data(0.1, dst_capture_rect_, mouse_point);
+
     for (const auto &annotation : annotations_)
-        annotation->draw(canvas, dst_capture_rect_, mouse_point);
+        annotation->draw(canvas, draw_data);
 
 }

@@ -28,7 +28,7 @@ public:
     cam_annotation_cursor(bool halo_enabled, size<int> halo_size, color halo_color) noexcept;
     ~cam_annotation_cursor() override;
 
-    void draw(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect, const point<int> &mouse_pos) override;
+    void draw(Gdiplus::Graphics &canvas, const cam_draw_data &draw_data) override;
 protected:
     void _draw_cursor(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect, const point<int> &mouse_pos);
     void _draw_extras(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect, const point<int> &mouse_pos);

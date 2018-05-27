@@ -18,6 +18,7 @@
 #include "CamEncoder/av_video.h"
 #include "CamEncoder/av_dict.h"
 #include "CamEncoder/av_error.h"
+#include "CamEncoder/av_rgb2yuv.h"
 #include "CamEncoder/av_cam_codec/av_cam_codec.h"
 #include "av_log.h"
 
@@ -354,12 +355,17 @@ void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFOHEADER *image)
             throw std::runtime_error("av_video: invalid encoder input format");
             break;
         }
-        int ret = sws_scale(sws_context_,
-            src, src_stride, 0, src_height,
-            frame_->data, dst_stride);
-        if (ret < 0)
+        if (output_pixel_format_ != AV_PIX_FMT_YUV420P)
         {
-            fmt::print("scale failed: {}\n", av_error_to_string(ret));
+            int ret = sws_scale(sws_context_, src, src_stride, 0, src_height, frame_->data, dst_stride);
+            if (ret < 0)
+            {
+                fmt::print("scale failed: {}\n", av_error_to_string(ret));
+            }
+        }
+        else
+        {
+            bgr2yuv420p_v2(frame_->data, src, src_width, src_height, src_stride);
         }
 
         frame_->pts = timestamp;

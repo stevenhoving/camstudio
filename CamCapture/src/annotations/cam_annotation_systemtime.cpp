@@ -40,8 +40,7 @@ cam_annotation_systemtime::~cam_annotation_systemtime()
 {
 }
 
-void cam_annotation_systemtime::draw(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect,
-    const point<int> &mouse_pos)
+void cam_annotation_systemtime::draw(Gdiplus::Graphics &canvas, const cam_draw_data &/*draw_data*/)
 {
     const auto tp = std::chrono::system_clock::now();
     const auto t = std::chrono::system_clock::to_time_t(tp);

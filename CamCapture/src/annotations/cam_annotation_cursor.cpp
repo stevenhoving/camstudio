@@ -31,11 +31,10 @@ cam_annotation_cursor::~cam_annotation_cursor()
 {
 }
 
-void cam_annotation_cursor::draw(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect,
-    const point<int> &mouse_pos)
+void cam_annotation_cursor::draw(Gdiplus::Graphics &canvas, const cam_draw_data &draw_data)
 {
-    _draw_extras(canvas, canvast_rect, mouse_pos);
-    _draw_cursor(canvas, canvast_rect, mouse_pos);
+    _draw_extras(canvas, draw_data.canvast_rect_, draw_data.mouse_pos_);
+    _draw_cursor(canvas, draw_data.canvast_rect_, draw_data.mouse_pos_);
 }
 
 void cam_annotation_cursor::_draw_cursor(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect,
