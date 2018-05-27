@@ -53,7 +53,6 @@ capture_thread::~capture_thread()
 
 void capture_thread::start(capture_settings settings)
 {
-    // \todo make sure we can't start 2x without stopping in between.
     if (run_)
     {
         fmt::print("capture_thread: unable to start capturing 2x\n");
@@ -123,7 +122,7 @@ void capture_thread::run()
 
         DWORD timestamp = GetTickCount() - start_timestamp;
         video_encoder->encode_frame(timestamp, frame);
-        //Sleep(10);
+        Sleep(0);
     }
 
     video_encoder.reset();

@@ -15,15 +15,25 @@
 
 project(CamCapture)
 
+set(ANNOTATIONS_SOURCE
+    src/annotations/cam_annotation_cursor.cpp
+    include/CamCapture/annotations/cam_annotation_cursor.h
+    src/annotations/cam_annotation_systemtime.cpp
+    include/CamCapture/annotations/cam_annotation_systemtime.h
+)
+
 set(CAPTURE_SOURCE
     src/cam_capture.cpp
 )
 
 set(CAPTURE_INCLUDE
     include/CamCapture/cam_capture.h
+    include/CamCapture/cam_color.h
     include/CamCapture/cam_rect.h
     include/CamCapture/cam_point.h
     include/CamCapture/cam_size.h
+    include/CamCapture/cam_gdiplus.h
+    include/CamCapture/cam_annotarion.h
 )
 
 source_group(src FILES
@@ -31,14 +41,21 @@ source_group(src FILES
     ${CAPTURE_INCLUDE}
 )
 
+source_group(src\\annotations FILES
+    ${ANNOTATIONS_SOURCE}
+)
+
 add_library(CamCapture STATIC
     ${CAPTURE_SOURCE}
     ${CAPTURE_INCLUDE}
+    ${ANNOTATIONS_SOURCE}
 )
 
 target_include_directories(CamCapture
   PUBLIC
     include
+  PRIVATE
+    include/CamCapture
 )
 
 target_compile_definitions(CamCapture
@@ -46,6 +63,7 @@ target_compile_definitions(CamCapture
     -DNOMINMAX
     -D_UNICODE
     -DUNICODE
+    #-DWIN32_LEAN_AND_MEAN
 )
 
 target_compile_options(CamCapture

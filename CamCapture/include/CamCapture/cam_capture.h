@@ -18,8 +18,11 @@
 #pragma once
 
 #include "cam_rect.h"
+#include "cam_annotarion.h"
 #include <ximage.h>
 #include <windows.h>
+#include <memory>
+#include <vector>
 
 class cam_capture_source
 {
@@ -39,7 +42,8 @@ public:
 
 protected:
     // \todo is a cursor a annotation?
-    void _draw_cursor() const;
+    void _draw_cursor();
+    void _draw_annotations();
 
 private:
     BITMAPINFOHEADER bitmap_info_;
@@ -57,4 +61,5 @@ private:
 
     // rect to actually capture
     rect<int> dst_capture_rect_;
+    std::vector<std::unique_ptr<cam_iannotation>> annotations_;
 };

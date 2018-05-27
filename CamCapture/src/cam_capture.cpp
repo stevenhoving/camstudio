@@ -17,18 +17,13 @@
 #include "CamCapture/cam_capture.h"
 #include "CamCapture/cam_point.h"
 #include "CamCapture/cam_size.h"
-
-#include <ctime>
+#include "CamCapture/cam_gdiplus.h"
+#include "CamCapture/annotations/cam_annotation_cursor.h"
+#include "CamCapture/annotations/cam_annotation_systemtime.h"
+#include <fmt/printf.h>
+#include <memory>
 #include <cassert>
-
- // for using std::min, std::max in gdiplus
-#include <algorithm>
-namespace Gdiplus
-{
-using std::max;
-using std::min;
-}
-#include <gdiplus.h>
+#include <ctime>
 
 cam_capture_source::cam_capture_source(HWND hwnd)
     : bitmap_info_{}
@@ -74,6 +69,14 @@ cam_capture_source::cam_capture_source(HWND hwnd)
     bitmap_info_.biYPelsPerMeter = 0;
     bitmap_info_.biClrUsed = 0;
     bitmap_info_.biClrImportant = 0;
+
+    annotations_.emplace_back(
+        std::make_unique<cam_annotation_cursor>(true, size<int>(100, 100), color(127, 255, 0, 0))
+    );
+
+    annotations_.emplace_back(
+        std::make_unique<cam_annotation_systemtime>(point<int>(10, 10), color(255, 0, 0, 0))
+    );
 }
 
 cam_capture_source::~cam_capture_source()
@@ -91,7 +94,6 @@ bool cam_capture_source::capture_frame(const rect<int> &/*src_capture_rect*/)
 {
     const auto previous_object = ::SelectObject(memory_dc_, bitmap_frame_);
 
-    //BOOL blit_ret = ::BitBlt(memory_dc_, 0, 0, width_, height_, desktop_dc_, x_, y_, SRCCOPY | CAPTUREBLT);
     BOOL blit_ret = ::BitBlt(memory_dc_, 0, 0,
         dst_capture_rect_.width(), dst_capture_rect_.height(),
         desktop_dc_,
@@ -104,8 +106,7 @@ bool cam_capture_source::capture_frame(const rect<int> &/*src_capture_rect*/)
         return false;
     }
 
-    if (show_cursor_)
-        _draw_cursor();
+    _draw_annotations();
 
     ::SelectObject(memory_dc_, previous_object);
 
@@ -119,7 +120,7 @@ BITMAPINFOHEADER *cam_capture_source::get_frame() const
     return static_cast<BITMAPINFOHEADER *>(captured_frame_.GetDIB());
 }
 
-void cam_capture_source::_draw_cursor() const
+void cam_capture_source::_draw_cursor()
 {
     /* \todo cache mouse cursor */
     CURSORINFO cursor_info = {};
@@ -148,4 +149,18 @@ void cam_capture_source::_draw_cursor() const
 
     ::DeleteObject(icon_info.hbmColor);
     ::DeleteObject(icon_info.hbmMask);
+}
+
+void cam_capture_source::_draw_annotations()
+{
+    POINT pt;
+    ::GetCursorPos(&pt);
+
+    Gdiplus::Graphics canvas(memory_dc_);
+    canvas.SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);
+
+    point<int> mouse_point(pt.x, pt.y);
+    for (const auto &annotation : annotations_)
+        annotation->draw(canvas, dst_capture_rect_, mouse_point);
+
 }
