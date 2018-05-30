@@ -26,6 +26,50 @@
 
 TEST(test_rgb2yuv, test_bgr2yuv)
 {
+    const int width = 3999;
+    const int height = 3999;
+
+    int total = width * height;
+
+    std::vector<uint8_t> yuv420_sse(total * 3);
+    std::vector<uint8_t> yuv420_c(total * 3);
+
+    auto sse_y = yuv420_sse.data();
+    auto sse_u = sse_y + total;
+    auto sse_v = sse_u + (total >> 1);
+
+    auto c_y = yuv420_c.data();
+    auto c_u = c_y + total;
+    auto c_v = c_u + (total >> 1);
+
+    uint8_t *destination_sse[8] = {sse_y, sse_u, sse_v};
+    uint8_t *destination_c[8] = { c_y, c_u, c_v };
+
+    int color = 0;
+    std::vector<uint8_t> rgb_buffer(width * height * 3);
+    for (auto &itr : rgb_buffer)
+    {
+        itr = color++ % 255;
+    }
+
+    const uint8_t *const src[3] = {rgb_buffer.data() + (rgb_buffer.size() - (width * 3)), nullptr, nullptr};
+    const int src_stride[3] = {width * -3, 0, 0};
+
+    bgr2yuv420p(destination_c, src, width, height, src_stride);
+    bgr2yuv420p_v2(destination_sse, src, width, height, src_stride);
+
+    for (int i = 0; i < yuv420_sse.size(); ++i)
+    {
+        if (yuv420_sse[i] != yuv420_c[i])
+        {
+            fmt::print("{} is not the same - sse: {}, c: {}\n", i, yuv420_sse[i], yuv420_c[i]);
+        }
+    }
+
+}
+
+TEST(test_rgb2yuv, test_bgr2yuv_perf)
+{
     const int width = 4000;
     const int height = 4000;
 
