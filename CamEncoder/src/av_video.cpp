@@ -290,7 +290,7 @@ void av_video::open(AVStream *stream, av_dict &dict)
     dump_context(context_);
 }
 
-void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFOHEADER *image)
+void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFOHEADER *image, unsigned char *data)
 {
     // also handle encoder flush
     AVFrame *encode_frame = nullptr;
@@ -302,26 +302,23 @@ void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFOHEADER *image)
         if (av_frame_make_writable(frame_) < 0)
             throw std::runtime_error("Unable to make temp video frame writable");
 
-        //const auto &header = image->bmiHeader;
-
-        const auto *src_data = ((LPBYTE)image) + image->biSize + (image->biClrUsed * sizeof(RGBQUAD));
-        //const auto *src_data = (uint8_t *)image->bmiColors;//((LPBYTE)image) + header.biSize + (header.biClrUsed * sizeof(RGBQUAD));
-        const auto src_data_size = image->biSizeImage;
+        const auto *src_data = data;
         const auto src_width = image->biWidth;
-        const auto src_height = image->biHeight;
+        const auto src_height = abs(image->biHeight);
 
         const auto dst_width = context_->width;
         const auto dst_height = context_->height;
         const auto dst_pixel_format = context_->pix_fmt;
 
-        /* currently we always expect rgb/bgr as input */
+        /* \todo fix hard coded input format */
+        const auto src_data_size = src_width * src_height * 4;
         const uint8_t *const src[3] = {
-            src_data + (src_data_size - (src_width * 3)),
+            src_data + (src_data_size - (src_width * 4)),
             nullptr,
             nullptr
         };
-
-        const int src_stride[3] = { src_width * -3, 0, 0 };
+        /* \todo fix hard coded input format stride */
+        const int src_stride[3] = { src_width * -4, 0, 0 };
 
         int dst_stride[3] = {0, 0, 0};
         switch(output_pixel_format_)
@@ -363,9 +360,13 @@ void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFOHEADER *image)
                 fmt::print("scale failed: {}\n", av_error_to_string(ret));
             }
         }
+        else if (input_pixel_format_ == AV_PIX_FMT_BGRA)
+        {
+            bgra2yuv420p(frame_->data, src, src_width, src_height, src_stride);
+        }
         else
         {
-            bgr2yuv420p_v2(frame_->data, src, src_width, src_height, src_stride);
+            bgr2yuv420p(frame_->data, src, src_width, src_height, src_stride);
         }
 
         frame_->pts = timestamp;

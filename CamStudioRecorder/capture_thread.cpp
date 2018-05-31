@@ -41,7 +41,7 @@ std::unique_ptr<av_video> cam_create_video_codec(const av_video_meta &meta)
     av_video_codec video_codec_config;
     video_codec_config.id = AV_CODEC_ID_H264;
     // \todo remove 'pixel_format'.
-    video_codec_config.pixel_format = AV_PIX_FMT_BGR24;
+    video_codec_config.pixel_format = AV_PIX_FMT_BGRA;
 
     return std::make_unique<av_video>(video_codec_config, meta);
 }
@@ -108,7 +108,7 @@ void capture_thread::run()
     const auto pre_frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
 
     /* Setup ffmpeg video encoder */
-    const auto config = cam_create_video_config(pre_frame->biWidth, pre_frame->biHeight, capture_settings_.fps);
+    const auto config = cam_create_video_config(pre_frame->bi->bmiHeader.biWidth, pre_frame->bi->bmiHeader.biHeight, capture_settings_.fps);
 
     auto video_encoder = std::make_unique<av_muxer>(capture_settings_.filename.c_str(),
         av_muxer_type::mkv);
@@ -123,7 +123,7 @@ void capture_thread::run()
         const auto frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
 
         DWORD timestamp = static_cast<DWORD>(time_capture_start * 1000.0);
-        video_encoder->encode_frame(timestamp, frame);
+        video_encoder->encode_frame(timestamp, (BITMAPINFOHEADER*)frame->bi, frame->lpBitmapBits);
 
         double time_capture_end = stopwatch.time_now();
         double dt = time_capture_end - time_capture_start;

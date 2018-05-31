@@ -77,7 +77,6 @@ target_compile_options(CamCapture
 target_link_libraries(CamCapture
   PUBLIC
     fmt
-    CxImage
 )
 
 add_subdirectory(tests)

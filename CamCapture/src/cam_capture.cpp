@@ -56,8 +56,21 @@ cam_capture_source::cam_capture_source(HWND hwnd)
         y_ = 0;
     }
 
-    bitmap_frame_ = ::CreateCompatibleBitmap(desktop_dc_, width_, height_);
+    ZeroMemory(&bmp_info_, sizeof(BITMAPINFO));
+    bmp_info_.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bmp_info_.bmiHeader.biWidth = width_;
+    /* \todo we can avoid doing the reverse stride rbg2yuv by making the height negative */
+    bmp_info_.bmiHeader.biHeight = height_;
+    bmp_info_.bmiHeader.biPlanes = 1;
+    bmp_info_.bmiHeader.biBitCount = 32;
+    bmp_info_.bmiHeader.biCompression = BI_RGB;
 
+    bitmap_frame_ = ::CreateDIBSection(desktop_dc_, &bmp_info_, DIB_RGB_COLORS, (VOID**)&bmp_data_, NULL, 0);
+
+    frame_.bi = &bmp_info_;
+    frame_.lpBitmapBits = bmp_data_;
+
+    /* \todo bitmap_info_ is unused ... cleanup */
     bitmap_info_.biSize = sizeof(BITMAPINFOHEADER);
     bitmap_info_.biWidth = width_;
     bitmap_info_.biHeight = height_;
@@ -70,6 +83,8 @@ cam_capture_source::cam_capture_source(HWND hwnd)
     bitmap_info_.biClrUsed = 0;
     bitmap_info_.biClrImportant = 0;
 
+    old_selected_bitmap_ = ::SelectObject(memory_dc_, bitmap_frame_);
+
     annotations_.emplace_back(
         std::make_unique<cam_annotation_cursor>(true, size<int>(100, 100), color(127, 255, 0, 0))
     );
@@ -81,6 +96,8 @@ cam_capture_source::cam_capture_source(HWND hwnd)
 
 cam_capture_source::~cam_capture_source()
 {
+    ::SelectObject(memory_dc_, old_selected_bitmap_);
+
     ::DeleteDC(memory_dc_);
     ::ReleaseDC(hwnd_, desktop_dc_);
 }
@@ -92,8 +109,6 @@ void cam_capture_source::set_capture_dst_rect(const rect<int> &view) noexcept
 
 bool cam_capture_source::capture_frame(const rect<int> &/*src_capture_rect*/)
 {
-    const auto previous_object = ::SelectObject(memory_dc_, bitmap_frame_);
-
     BOOL blit_ret = ::BitBlt(memory_dc_, 0, 0,
         dst_capture_rect_.width(), dst_capture_rect_.height(),
         desktop_dc_,
@@ -101,23 +116,16 @@ bool cam_capture_source::capture_frame(const rect<int> &/*src_capture_rect*/)
         SRCCOPY | CAPTUREBLT);
 
     if (!blit_ret)
-    {
-        ::SelectObject(memory_dc_, previous_object);
         return false;
-    }
 
     _draw_annotations();
-
-    ::SelectObject(memory_dc_, previous_object);
-
-    captured_frame_.CreateFromHBITMAP(bitmap_frame_);
 
     return true;
 }
 
-BITMAPINFOHEADER *cam_capture_source::get_frame() const
+const cam_frame *cam_capture_source::get_frame() const
 {
-    return static_cast<BITMAPINFOHEADER *>(captured_frame_.GetDIB());
+    return &frame_;
 }
 
 void cam_capture_source::_draw_cursor()
