@@ -33,7 +33,7 @@ class cam_capture_source
 {
 public:
     cam_capture_source() = delete;
-    cam_capture_source(HWND hwnd);
+    cam_capture_source(HWND hwnd, const rect<int> &view);
     ~cam_capture_source();
 
     void set_capture_dst_rect(const rect<int> &view) noexcept;

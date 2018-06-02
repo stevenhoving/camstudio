@@ -3773,6 +3773,7 @@ std::unique_ptr<av_video> create_video_codec(const av_video_meta &meta)
 // bool CRecorderView::RecordVideo(int top, int left, int width, int height, int fps, const char *szVideoFileName)
 bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFileName)
 {
+#if 0
     WORD wVer = HIWORD(VideoForWindowsVersion());
     if (wVer < 0x010a)
     {
@@ -4355,6 +4356,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     ::PostMessage(g_hWndGlobal, WM_USER_GENERIC, 0, 0);
 
     TRACE("CRecorderView::RecordVideo: Success end\n");
+#endif
     return true;
 }
 

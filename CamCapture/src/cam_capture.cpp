@@ -25,7 +25,7 @@
 #include <cassert>
 #include <ctime>
 
-cam_capture_source::cam_capture_source(HWND hwnd)
+cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> &view)
     : bitmap_info_{}
     , bitmap_frame_{nullptr}
     , hwnd_{hwnd}
@@ -39,10 +39,15 @@ cam_capture_source::cam_capture_source(HWND hwnd)
 {
     if (hwnd == 0)
     {
-        width_ = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
-        height_ = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
-        x_ = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
-        y_ = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
+        //width_ = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
+        //height_ = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
+        //x_ = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
+        //y_ = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
+
+        width_ = view.width();//::GetSystemMetrics(SM_CXVIRTUALSCREEN);
+        height_ = view.height();//::GetSystemMetrics(SM_CYVIRTUALSCREEN);
+        x_ = view.left();//::GetSystemMetrics(SM_XVIRTUALSCREEN);
+        y_ = view.top();//::GetSystemMetrics(SM_YVIRTUALSCREEN);
     }
     else
     {
