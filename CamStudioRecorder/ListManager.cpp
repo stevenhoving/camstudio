@@ -206,7 +206,7 @@ int CListManager::RemoveDisplayArray(CTransparentWnd *removeWnd, int wantDestroy
 {
     int found = 0;
 
-    int max = displayArray.GetSize();
+    int max = (int)displayArray.GetSize();
     CTransparentWnd *itemWnd = nullptr;
     for (int i = 0; i < max; i++)
     {
@@ -259,7 +259,7 @@ int CListManager::RemoveLayoutArray(CLayoutList *pLayout, int wantDestroyLayout)
 {
     int found = 0;
 
-    int max = layoutArray.GetSize();
+    int max = (int)layoutArray.GetSize();
     CLayoutList *itemLayout = nullptr;
     for (int i = max - 1; i >= 0; i--)
     {
@@ -298,7 +298,7 @@ int CListManager::DestroyLayout(CLayoutList *pLayout)
 
 int CListManager::DestroyArrayItems(CArray<CTransparentWnd *, CTransparentWnd *> *removeArray)
 {
-    int max = removeArray->GetSize();
+    int max = (int)removeArray->GetSize();
     CTransparentWnd *itemWnd = nullptr;
     for (int i = max - 1; 0 <= i; i--)
     {
@@ -329,7 +329,7 @@ CArray<CTransparentWnd *, CTransparentWnd *> *CListManager::CloneDisplayArray()
     // TODO, Possible memory leak, where is the delete operation of the new below done?
     CArray<CTransparentWnd *, CTransparentWnd *> *cloneArray = new CArray<CTransparentWnd *, CTransparentWnd *>;
 
-    int max = displayArray.GetSize();
+    int max = (int)displayArray.GetSize();
     CTransparentWnd *itemWnd = nullptr;
     for (int i = 0; i < max; i++)
     {
@@ -361,7 +361,7 @@ int CListManager::FreeDisplayArray()
 int CListManager::FreeLayoutArray()
 {
     // Free Multiple Lists
-    int max = layoutArray.GetSize();
+    int max = (int)layoutArray.GetSize();
     for (int i = max - 1; i >= 0; i--)
     {
         CLayoutList *pLayout = layoutArray[i];
@@ -380,7 +380,7 @@ CArray<CTransparentWnd *, CTransparentWnd *> *CListManager::CloneLayoutArrayPtr(
     // TODO, Possible memory leak, where is the delete operation of the new below done?
     CArray<CTransparentWnd *, CTransparentWnd *> *cloneArray = new CArray<CTransparentWnd *, CTransparentWnd *>;
 
-    int max = layoutArrayPtr->GetSize();
+    int max = (int)layoutArrayPtr->GetSize();
     for (int i = 0; i < max; i++)
     {
         CTransparentWnd *itemWnd = (*layoutArrayPtr)[i];
@@ -425,7 +425,7 @@ int CListManager::SwapShapeArray(long uniqueID1, long uniqueID2)
     int swapItem1 = -1;
     int swapItem2 = -1;
 
-    int max = shapeArray.GetSize();
+    int max = (int)shapeArray.GetSize();
     for (int i = 0; i < max; i++)
     {
         CTransparentWnd *itemWnd = shapeArray[i];
@@ -460,7 +460,7 @@ int CListManager::SwapLayoutArray(long uniqueID1, long uniqueID2)
     int swapItem1 = -1;
     int swapItem2 = -1;
 
-    int max = layoutArray.GetSize();
+    int max = (int)layoutArray.GetSize();
     CLayoutList *itemLayout = nullptr;
     for (int i = 0; i < max; i++)
     {
@@ -575,7 +575,7 @@ int CListManager::SaveLayout(CString saveDir)
         long fileversion = 100;
         fwrite((void *)&fileversion, sizeof(long), 1, fptr);
 
-        int max = layoutArray.GetSize();
+        int max = (int)layoutArray.GetSize();
         fwrite((void *)&max, sizeof(int), 1, fptr); // Number of Shapes
 
         int reserve[100];
@@ -643,7 +643,7 @@ int CListManager::SaveLayoutArrayToFile(CArray<CTransparentWnd *, CTransparentWn
 // Ensure window is on the top of display list
 void CListManager::EnsureOnTopList(CTransparentWnd *transWnd)
 {
-    int max = displayArray.GetSize();
+    int max = (int)displayArray.GetSize();
     if (max <= 0)
         return;
     if (transWnd == displayArray[max - 1])

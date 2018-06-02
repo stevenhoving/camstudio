@@ -19,6 +19,8 @@
 
 #include "cam_size.h"
 #include "cam_point.h"
+#include <optional>
+#include <string>
 
 template<typename T>
 class rect

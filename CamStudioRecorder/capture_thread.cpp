@@ -32,6 +32,8 @@ av_video_meta cam_create_video_config(const int width, const int height, const i
     meta.fps = {fps, 1};
     meta.preset = video::preset::ultrafast;
     meta.profile = video::profile::baseline;
+    //meta.profile = video::profile::high;
+    //meta.tune = video::tune::animation;
     meta.tune = video::tune::zerolatency;
     return meta;
 }

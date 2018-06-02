@@ -38,6 +38,7 @@ BEGIN_MESSAGE_MAP(CAutopanSpeedDlg, CDialog)
 //{{AFX_MSG_MAP(CAutopanSpeedDlg)
 ON_WM_HSCROLL()
 //}}AFX_MSG_MAP
+ON_BN_CLICKED(IDOK, &CAutopanSpeedDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -83,4 +84,11 @@ void CAutopanSpeedDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar
     }
 
     CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
+}
+
+
+void CAutopanSpeedDlg::OnBnClickedOk()
+{
+    // TODO: Add your control notification handler code here
+    CDialog::OnOK();
 }

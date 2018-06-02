@@ -4,7 +4,7 @@
 
 struct ImageAttributes
 {
-    ImageAttributes(ePosition pos = TOP_LEFT, ePosType posType = UNDEFINED, int xRatio = 0 , int yRatio = 0, const CString& strText = "")
+    ImageAttributes(ePosition pos = TOP_LEFT, ePosType posType = UNDEFINED, int xRatio = 0 , int yRatio = 0, const CString& strText = CString(""))
         : position(pos)
         , posType(posType)
         , xPosRatio(xRatio)

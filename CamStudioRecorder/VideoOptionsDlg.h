@@ -2,10 +2,11 @@
 
 #include "profile.h"
 
-class CVideoOptionsDlg : public CDialog
+class CVideoOptionsDlg : public CDialogEx
 {
-    explicit CVideoOptionsDlg(CWnd *pParent = nullptr);
+    DECLARE_DYNAMIC(CVideoOptionsDlg)
 public:
+    explicit CVideoOptionsDlg(CWnd *pParent = nullptr);
     CVideoOptionsDlg(const sVideoOpts &cOpts, CWnd *pParent = nullptr);
 
     const sVideoOpts &Opts() const
@@ -13,7 +14,6 @@ public:
         return m_cOpts;
     }
 
-    void RefreshCompressorButtons();
     void RefreshAutoOptions();
     void UpdateAdjustSliderVal();
 
@@ -21,13 +21,10 @@ public:
     void DDV_CaptureInterval(CDataExchange *pDX, int value, int minVal, int maxVal);
     void DDV_PlaybackRate(CDataExchange *pDX, int value, int minVal, int maxVal);
 
-    // Dialog Data
-    //{{AFX_DATA(CVideoOptionsDlg)
-    enum
-    {
-        IDD = IDD_VIDEOOPTIONS
-    };
-    //}}AFX_DATA
+
+#ifdef AFX_DESIGN_TIME
+    enum {IDD = IDD_VIDEOOPTIONS};
+#endif
 
     // Overrides
     // ClassWizard generated virtual function overrides
@@ -55,16 +52,13 @@ protected:
 private:
     sVideoOpts m_cOpts;
     CComboBox m_ctrlCBCompressor;
-    CSliderCtrl m_ctrlSliderQuality;
-    CStatic m_ctrlStaticQuality;
-    CEdit m_ctrlEditKeyFrameInterval;
+    //CSliderCtrl m_ctrlSliderQuality;
+    //CEdit m_ctrlEditKeyFrameInterval;
     CEdit m_ctrlEdiPlaybackRate;
     CButton m_ctrlButtonAutoAdjust;
     CButton m_ctrlButtonLock;
     CSliderCtrl m_ctrlSliderAdjust;
-    CEdit m_ctrlEditCaptureInterval;
-    CButton m_ctrlButtonAbout;
-    CButton m_ctrlButtonConfigure;
+    //CEdit m_ctrlEditCaptureInterval;
     CButton m_ctrlButtonInfo;
     CBitmap m_bInfo;
     CButton m_ctrlButtonRoundDown;
@@ -89,6 +83,7 @@ private:
 public:
     afx_msg void OnBnClickedSupportrounddown();
     afx_msg void OnBnClickedOk();
+    afx_msg void OnNMCustomdrawAdjust(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 //{{AFX_INSERT_LOCATION}}

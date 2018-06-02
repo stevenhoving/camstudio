@@ -89,8 +89,8 @@ void CAboutDlg::DoDataExchange(CDataExchange *pDX)
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 //{{AFX_MSG_MAP(CAboutDlg)
-ON_BN_CLICKED(IDC_BUTTONLINK, OnButtonlink)
-ON_BN_CLICKED(IDC_BUTTONLINK2, OnBnClickedButtonlink2)
+//ON_BN_CLICKED(IDC_BUTTONLINK, OnButtonlink)
+//ON_BN_CLICKED(IDC_BUTTONLINK2, OnBnClickedButtonlink2)
 //}}AFX_MSG_MAP
 ON_STN_CLICKED(IDC_STATIC_VERSION, &CAboutDlg::OnStnClickedStaticVersion)
 ON_BN_CLICKED(IDC_BUTTONLINK3, &CAboutDlg::OnBnClickedButtonlink3)
@@ -214,7 +214,7 @@ BOOL CRecorderApp::InitInstance()
       // MessageBox(nullptr, "CamStudio.cfg Config file was not found. Using defaults.", "Error", MB_OK);
       //        return(EXIT_FAILURE);
     }
-    catch (const libconfig::ParseException &pex)
+    catch (const libconfig::ParseException & /*pex*/)
     {
         TCHAR buf[1024];
 

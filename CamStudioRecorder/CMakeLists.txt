@@ -15,7 +15,18 @@
 
 project(CamStudioRecorder)
 
+set(RECORDER_NEW_SOURCE
+    # new
+    video_settings_ui.h
+    video_settings_ui.cpp
+    string_convert.h
+    capture_thread.h
+    capture_thread.cpp
+    utility/make_array.h
+)
+
 set(RECORDER_SOURCE
+    # legacy
     AudioFormatDlg.cpp
     AudioFormatDlg.h
     AudioMixer.cpp
@@ -102,13 +113,8 @@ set(RECORDER_SOURCE
     RecorderVersionReleaseInfo.h
     RecorderView.h
     ResizeDlg.h
-    resource.h
-    targetver.h
     TransparentWnd.h
     VideoWnd.h
-    string_convert.h
-    capture_thread.h
-    capture_thread.cpp
 )
 
 set(RECORDER_VFW_SOURCE
@@ -131,11 +137,14 @@ set(RECORDER_ADDONS_SOURCE
 
 set(RECORDER_RESOURCE
     Recorder.rc
+    resource.h
+    targetver.h
 )
 
 set(CMAKE_MFC_FLAG 2)
 
 add_executable(CamStudioRecorder WIN32
+    ${RECORDER_NEW_SOURCE}
     ${RECORDER_SOURCE}
     ${RECORDER_RESOURCE}
     ${RECORDER_VFW_SOURCE}
@@ -151,8 +160,15 @@ source_group(addons FILES
 )
 
 source_group(src FILES
-    ${RECORDER_SOURCE}
+    ${RECORDER_NEW_SOURCE}
+)
+
+source_group(resource FILES
     ${RECORDER_RESOURCE}
+)
+
+source_group(src\\legacy FILES
+    ${RECORDER_SOURCE}
 )
 
 target_include_directories(CamStudioRecorder
@@ -168,7 +184,7 @@ target_compile_definitions(CamStudioRecorder
     -D_AFXDLL=1
     -D_UNICODE
     -DUNICODE
-    # silence codecvt deprication warning for now
+    # silence codecvt deprecation warning for now
     -D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 )
 

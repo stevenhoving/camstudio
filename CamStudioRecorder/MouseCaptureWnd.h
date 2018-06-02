@@ -13,7 +13,7 @@ extern HWND g_hWndGlobal;
 extern HWND hMouseCaptureWnd;
 extern HWND g_hFixedRegionWnd;
 
-long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam);
+LRESULT WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam);
 bool CreateShiftWindow();
 int DestroyShiftWindow();
 

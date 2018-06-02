@@ -124,7 +124,7 @@ void CKeyshortcutsDlg::DoDataExchange(CDataExchange *pDX)
     DDX_Control(pDX, IDC_NEXTKEY, m_ctrlCBNext);
     DDX_Control(pDX, IDC_PREVKEY, m_ctrlCBPrev);
     DDX_Control(pDX, IDC_SHOWKEY, m_ctrlCBShow);
-    DDX_Control(pDX, IDC_TOGGLEAUTOSPAN, m_ctrlCBAutopan);
+//    DDX_Control(pDX, IDC_TOGGLEAUTOSPAN, m_ctrlCBAutopan);
 }
 
 BEGIN_MESSAGE_MAP(CKeyshortcutsDlg, CDialog)

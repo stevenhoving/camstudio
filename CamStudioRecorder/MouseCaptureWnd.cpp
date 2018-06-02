@@ -106,7 +106,7 @@ void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip)
 // MouseCaptureWndProc()
 //
 /////////////////////////////////////////////////////////////////////////////
-long WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam)
+LRESULT WINAPI MouseCaptureWndProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam)
 {
     switch (wMessage)
     {

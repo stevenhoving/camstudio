@@ -220,7 +220,9 @@ BOOL CAudioFormatDlg::GetFormatDescription(CString &rstrFormatTag, CString &rstr
     strChannels.Format(_T("%s"), (1 == m_pwfx->nChannels) ? _T("Mono") : _T("Stereo"));
 
     CString formatstr;
-    formatstr = strSamplesPerSecond + ", ";
+    formatstr.Append(strSamplesPerSecond);
+    formatstr.Append(CString(", "));
+
     if (0 < m_pwfx->wBitsPerSample)
         formatstr = formatstr + strBitsPerSample + ", ";
     formatstr = formatstr + strChannels + " " + strAvgBytesPerSecond;

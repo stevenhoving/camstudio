@@ -59,6 +59,7 @@ BEGIN_MESSAGE_MAP(CEditTransparencyDlg, CDialog)
 ON_BN_CLICKED(IDC_CHECK1, OnCheck1)
 ON_WM_HSCROLL()
 //}}AFX_MSG_MAP
+ON_BN_CLICKED(IDOK, &CEditTransparencyDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -114,4 +115,11 @@ void CEditTransparencyDlg::OnCancel()
     m_pTransparentWnd->InvalidateTransparency();
 
     CDialog::OnCancel();
+}
+
+
+void CEditTransparencyDlg::OnBnClickedOk()
+{
+    // TODO: Add your control notification handler code here
+    CDialog::OnOK();
 }

@@ -1,18 +1,21 @@
 #pragma once
 
-#include "VideoWnd.h"     // for CVideoWnd
-#include "FlashingWnd.h"  // for CFlashingWnd
-#include "BasicMessageDlg.h" // for CBasicMessageDlg
+#include "VideoWnd.h"
+#include "FlashingWnd.h"
+#include "BasicMessageDlg.h"
 #include "screen.h"
+
 
 #include "capture_thread.h"
 
-
+#include <memory>
 #include <string>
 
 #define TEMPFILETAGINDICATOR "~temp"
 
 class CRecorderDoc;
+
+class video_settings_model;
 
 class CRecorderView : public CView
 {
@@ -195,7 +198,7 @@ public:
 
 private:
     std::unique_ptr<capture_thread> capture_thread_;
-
+    std::unique_ptr<video_settings_model> video_settings_model_;
 
     CFlashingWnd flashing_wnd_;
     CVideoWnd van_wnd_;
@@ -221,6 +224,8 @@ private:
     bool RunProducer(const CString &strNewFile);
     void DisplayAutopanInfo(CRect rc);
     // dialog controls
+public:
+    afx_msg void OnToolsSettings();
 };
 
 #ifndef _DEBUG // debug version in vscapView.cpp

@@ -50,8 +50,10 @@ int m_arrAutoSetPlaybackRate[100];
 /////////////////////////////////////////////////////////////////////////////
 // CVideoOptionsDlg dialog
 
+IMPLEMENT_DYNAMIC(CVideoOptionsDlg, CDialogEx)
+
 CVideoOptionsDlg::CVideoOptionsDlg(CWnd *pParent /*=nullptr*/)
-    : CDialog(CVideoOptionsDlg::IDD, pParent)
+    : CDialogEx(IDD_VIDEOOPTIONS, pParent)
     , m_iQuality(0)
     , m_iKeyFrameInterval(0)
     , m_iCaptureInterval(0)
@@ -80,7 +82,7 @@ CVideoOptionsDlg::CVideoOptionsDlg(CWnd *pParent /*=nullptr*/)
 }
 
 CVideoOptionsDlg::CVideoOptionsDlg(const sVideoOpts &cOpts, CWnd *pParent)
-    : CDialog(CVideoOptionsDlg::IDD, pParent)
+    : CDialogEx(IDD_VIDEOOPTIONS, pParent)
     , m_iQuality(0)
     , m_iKeyFrameInterval(200)
     , m_iCaptureInterval(0)
@@ -107,17 +109,15 @@ CVideoOptionsDlg::CVideoOptionsDlg(const sVideoOpts &cOpts, CWnd *pParent)
 
 void CVideoOptionsDlg::DoDataExchange(CDataExchange *pDX)
 {
-    CDialog::DoDataExchange(pDX);
+    CDialogEx::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CVideoOptionsDlg)
     // NOTE: the ClassWizard will add DDX and DDV calls here
     //}}AFX_DATA_MAP
-    DDX_Control(pDX, IDC_COMPRESSORS, m_ctrlCBCompressor);
-    DDX_Control(pDX, ID_ABOUT, m_ctrlButtonAbout);
-    DDX_Control(pDX, ID_CONFIGURE, m_ctrlButtonConfigure);
-    DDX_Control(pDX, IDC_QUALITY_SLIDER, m_ctrlSliderQuality);
-    DDX_Control(pDX, IDC_QUALITY, m_ctrlStaticQuality);
-    DDX_Control(pDX, IDC_KEYFRAMES, m_ctrlEditKeyFrameInterval);
-    DDX_Control(pDX, IDC_KEYFRAMES2, m_ctrlEditCaptureInterval);
+//    DDX_Control(pDX, IDC_COMPRESSORS, m_ctrlCBCompressor);
+    //DDX_Control(pDX, IDC_QUALITY_SLIDER, m_ctrlSliderQuality);
+    //DDX_Control(pDX, IDC_KEYFRAMES, m_ctrlEditKeyFrameInterval);
+    //DDX_Control(pDX, IDC_KEYFRAMES2, m_ctrlEditCaptureInterval);
+#if 0
     DDX_Control(pDX, IDC_FPS, m_ctrlEdiPlaybackRate);
     DDX_Control(pDX, IDC_AUTO, m_ctrlButtonAutoAdjust);
     DDX_Control(pDX, IDC_LOCK, m_ctrlButtonLock);
@@ -133,48 +133,23 @@ void CVideoOptionsDlg::DoDataExchange(CDataExchange *pDX)
     DDX_Slider(pDX, IDC_ADJUST, m_iAdjust);
     DDX_Text(pDX, IDC_QUALITY, m_iStaticQuality);
     DDX_Control(pDX, IDC_SUPPORTROUNDDOWN, m_ctrlButtonRoundDown);
+#endif
 }
 
 BEGIN_MESSAGE_MAP(CVideoOptionsDlg, CDialog)
 //{{AFX_MSG_MAP(CVideoOptionsDlg)
 ON_WM_HSCROLL()
-ON_BN_CLICKED(ID_ABOUT, OnAbout)
-ON_CBN_SELCHANGE(IDC_COMPRESSORS, OnSelchangeCompressors)
-ON_BN_CLICKED(ID_CONFIGURE, OnConfigure)
+//ON_BN_CLICKED(ID_ABOUT, OnAbout)
+//ON_CBN_SELCHANGE(IDC_COMPRESSORS, OnSelchangeCompressors)
+//ON_BN_CLICKED(ID_CONFIGURE, OnConfigure)
 ON_BN_CLICKED(IDC_AUTO, OnAuto)
 ON_BN_CLICKED(IDC_LOCK, OnLock)
-ON_BN_CLICKED(IDC_CFE_INFO, OnCaptureFrameRateInfo)
+//ON_BN_CLICKED(IDC_CFE_INFO, OnCaptureFrameRateInfo)
 //}}AFX_MSG_MAP
-ON_BN_CLICKED(IDC_SUPPORTROUNDDOWN, &CVideoOptionsDlg::OnBnClickedSupportrounddown)
-ON_BN_CLICKED(IDOK, &CVideoOptionsDlg::OnBnClickedOk)
+//ON_BN_CLICKED(IDC_SUPPORTROUNDDOWN, &CVideoOptionsDlg::OnBnClickedSupportrounddown)
+//ON_BN_CLICKED(IDOK, &CVideoOptionsDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
 
-void CVideoOptionsDlg::RefreshCompressorButtons()
-{
-    int sel = m_ctrlCBCompressor.GetCurSel();
-    if (sel != CB_ERR)
-    {
-        BOOL bEnableAbout = FALSE;
-        BOOL bEnableCfg = FALSE;
-        CHIC chic;
-        if (chic.Open(g_compressor_info[sel].fccType, g_compressor_info[sel].fccHandler, ICMODE_QUERY))
-        {
-            // bEnableAbout = (ICERR_UNSUPPORTED != chic.QueryAbout());
-            // bEnableCfg = (ICERR_UNSUPPORTED != chic.QueryConfigure());
-            bEnableAbout = chic.QueryAbout() ? TRUE : FALSE;
-            bEnableCfg = chic.QueryConfigure() ? TRUE : FALSE;
-        }
-        m_ctrlButtonAbout.EnableWindow(bEnableAbout);
-        m_ctrlButtonConfigure.EnableWindow(bEnableCfg);
-
-        // HIC hic = ICOpen(g_compressor_info[sel].fccType, g_compressor_info[sel].fccHandler, ICMODE_QUERY);
-        // if (hic) {
-        //    m_ctrlButtonAbout.EnableWindow(ICQueryAbout(hic));
-        //    m_ctrlButtonConfigure.EnableWindow(ICQueryConfigure(hic));
-        //    ICClose(hic);
-        //}
-    }
-}
 void CVideoOptionsDlg::AutoSetRateWithLock(int val, int &framerate, int &delayms)
 {
     if (val >= 1 && val <= 63)
@@ -356,8 +331,8 @@ void CVideoOptionsDlg::AutoSetRate(int val, int &framerate, int &delayms)
 void CVideoOptionsDlg::RefreshAutoOptions()
 {
     m_ctrlEdiPlaybackRate.EnableWindow(!m_cOpts.m_bAutoAdjust);
-    m_ctrlEditKeyFrameInterval.EnableWindow(!m_cOpts.m_bAutoAdjust);
-    m_ctrlEditCaptureInterval.EnableWindow(!m_cOpts.m_bAutoAdjust);
+    //m_ctrlEditKeyFrameInterval.EnableWindow(!m_cOpts.m_bAutoAdjust);
+    //m_ctrlEditCaptureInterval.EnableWindow(!m_cOpts.m_bAutoAdjust);
     m_ctrlSliderAdjust.EnableWindow(m_cOpts.m_bAutoAdjust);
     // if (m_cOpts.m_bAutoAdjust) {
     //    UpdateAdjustSliderVal();
@@ -418,7 +393,7 @@ void CVideoOptionsDlg::DDV_KeyFrameInterval(CDataExchange *pDX, int value, int m
         {
             // "Key frames cannot be set for every %d frames. Please enter a value in the range 1 to 200."
             MessageOut(*(pDX->m_pDlgWnd), IDS_STRING_KEYFRAMES1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, value);
-            pDX->PrepareEditCtrl(IDC_KEYFRAMES);
+            //pDX->PrepareEditCtrl(IDC_KEYFRAMES);
             pDX->Fail();
         }
         else
@@ -488,8 +463,8 @@ void CVideoOptionsDlg::DDV_PlaybackRate(CDataExchange *pDX, int value, int minVa
 
 BOOL CVideoOptionsDlg::OnInitDialog()
 {
-    CDialog::OnInitDialog();
-    m_ctrlSliderQuality.SetRange(1, 100, TRUE);
+    CDialogEx::OnInitDialog();
+    //m_ctrlSliderQuality.SetRange(1, 100, TRUE);
     AdjustSliderRange();
     GetCurrentSliderPos();
     m_ctrlButtonAutoAdjust.SetCheck(m_cOpts.m_bAutoAdjust);
@@ -500,7 +475,7 @@ BOOL CVideoOptionsDlg::OnInitDialog()
     m_ctrlButtonInfo.SetBitmap(hBitmap);
     RefreshAutoOptions();
     LoadICList();
-    RefreshCompressorButtons();
+    //RefreshCompressorButtons();
     AdjustSliderRange();
     return TRUE; // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
@@ -542,7 +517,7 @@ void CVideoOptionsDlg::AdjustSliderRange()
 }
 void CVideoOptionsDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
 {
-    CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
+    CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
     UpdateData();
     m_iStaticQuality = m_iQuality;
     UpdateData(FALSE);
@@ -608,7 +583,7 @@ void CVideoOptionsDlg::OnOK()
         m_cOpts.m_iSelectedCompressor = sel;
     }
     m_cOpts.m_bRoundDown = m_ctrlButtonRoundDown.GetCheck() ? true : false;
-    CDialog::OnOK(); // call base;
+    CDialogEx::OnOK(); // call base;
 }
 
 void CVideoOptionsDlg::OnAbout()
@@ -626,7 +601,7 @@ void CVideoOptionsDlg::OnAbout()
 
 void CVideoOptionsDlg::OnSelchangeCompressors()
 {
-    RefreshCompressorButtons();
+    //RefreshCompressorButtons();
 }
 
 // Ver 1.2
@@ -691,7 +666,7 @@ void CVideoOptionsDlg::OnConfigure()
 
 void CVideoOptionsDlg::OnCancel()
 {
-    CDialog::OnCancel();
+    CDialogEx::OnCancel();
 }
 
 void CVideoOptionsDlg::OnAuto()
@@ -736,3 +711,4 @@ void CVideoOptionsDlg::OnBnClickedOk()
     // TODO: Add your control notification handler code here
     OnOK();
 }
+

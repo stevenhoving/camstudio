@@ -35,7 +35,7 @@ struct OffsetRatio
 
 struct TextAttributes
 {
-    TextAttributes(ePosition pos = TOP_LEFT, ePosType posType = UNDEFINED ,int xRatio = 0, int yRatio = 0, const CString& strText = "", COLORREF clrBackground = 0UL, COLORREF clrText = 0UL)
+    TextAttributes(ePosition pos = TOP_LEFT, ePosType posType = UNDEFINED ,int xRatio = 0, int yRatio = 0, const CString& strText = CString(""), COLORREF clrBackground = 0UL, COLORREF clrText = 0UL)
         : position(pos)
         , posType(posType)
         , xPosRatio(xRatio)

@@ -33,6 +33,8 @@ protected:
 private:
     CSliderCtrl m_ctrlSliderPanSpeed;
     CStatic m_ctrlStaticMaxSpeed;
+public:
+    afx_msg void OnBnClickedOk();
 };
 
 //{{AFX_INSERT_LOCATION}}

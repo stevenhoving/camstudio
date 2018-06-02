@@ -47,6 +47,8 @@ private:
     CStatic m_ctrlStaticTransparency;
 
 protected:
+public:
+    afx_msg void OnBnClickedOk();
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -7,7 +7,12 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#define _WIN32_IE 0x0700
 #include "afxres.h"
+#include "verrsrc.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -80,22 +85,24 @@ END
 
 2 TEXTINCLUDE 
 BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#define _WIN32_IE 0x0700\r\n"
     "#include ""afxres.h""\r\n"
+    "#include ""verrsrc.h""\r\n"
     "\0"
 END
 
 3 TEXTINCLUDE 
 BEGIN
-    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
     "#define _AFX_NO_OLE_RESOURCES\r\n"
     "#define _AFX_NO_TRACKER_RESOURCES\r\n"
     "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
     "\r\n"
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
-    "#ifdef _WIN32\r\n"
     "LANGUAGE 9, 1\r\n"
     "#pragma code_page(1252)\r\n"
-    "#endif\r\n"
     "#include ""res\\Recorder.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
     "#include ""afxres.rc""         // Standard components\r\n"
     "#include ""afxprint.rc""       // printing/print preview resources\r\n"
@@ -305,6 +312,8 @@ BEGIN
     END
     POPUP "&Tools"
     BEGIN
+        MENUITEM "Settings",                    ID_TOOLS_SETTINGS
+        MENUITEM SEPARATOR
         MENUITEM "&Screen Annotations",         ID_VIEW_SCREENANNOTATIONS
         MENUITEM "&Video Annotations",          ID_VIEW_VIDEOANNOTATIONS
         MENUITEM SEPARATOR
@@ -571,33 +580,23 @@ FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,92,261,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,162,261,50,14
-    EDITTEXT        IDC_KEYFRAMES,95,68,46,13,ES_AUTOHSCROLL
-    LTEXT           "frames",IDC_STATIC_KEYFRAMES,147,68,22,13,SS_CENTERIMAGE
-    LTEXT           "Quality",IDC_STATIC_QUALITY_LABEL,19,46,22,14,SS_CENTERIMAGE
-    CONTROL         "Slider1",IDC_QUALITY_SLIDER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,50,46,130,14
-    LTEXT           "Playback Rate",IDC_STATIC,19,129,48,8
-    EDITTEXT        IDC_FPS,97,128,46,13,ES_AUTOHSCROLL
-    LTEXT           "Set Key Frames Every",IDC_STATIC,19,68,70,13,SS_CENTERIMAGE
-    LTEXT           "frames/second",IDC_STATIC_KEYFRAMES2,149,130,48,8
-    EDITTEXT        IDC_KEYFRAMES2,97,108,46,13,ES_AUTOHSCROLL
-    LTEXT           "milliseconds",IDC_STATIC_KEYFRAMES3,149,108,38,13,SS_CENTERIMAGE
-    LTEXT           "Capture Frames Every",IDC_STATIC,19,108,70,13,SS_CENTERIMAGE
-    COMBOBOX        IDC_COMPRESSORS,19,23,191,84,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        "Compressor",IDC_STATIC,7,5,291,85
-    LTEXT           "Ql",IDC_QUALITY,187,47,31,12,SS_CENTERIMAGE
-    PUSHBUTTON      "&About",ID_ABOUT,236,22,50,14,NOT WS_TABSTOP
-    PUSHBUTTON      "&Configure",ID_CONFIGURE,236,43,50,14,NOT WS_TABSTOP
-    CONTROL         "Auto Adjust",IDC_AUTO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,165,52,10
-    CONTROL         "Slider2",IDC_ADJUST,"msctls_trackbar32",TBS_AUTOTICKS | TBS_TOP | WS_TABSTOP,68,183,167,17
-    LTEXT           "Max Framerate",IDC_STATIC,21,184,37,21
-    LTEXT           "Time Lapse ",IDC_STATIC,132,205,40,8
-    LTEXT           "1 Frame/Minute",IDC_STATIC,236,183,51,17,SS_CENTERIMAGE
-    GROUPBOX        "",IDC_STATIC,7,155,292,96
-    GROUPBOX        "Framerates",IDC_STATIC,7,93,291,61
-    CONTROL         "Lock Capture and Playback Rates",IDC_LOCK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,168,164,125,10
-    PUSHBUTTON      "",IDC_CFE_INFO,189,110,12,10,BS_BITMAP | BS_FLAT
-    CONTROL         "Round down video height and width to even numbers",IDC_SUPPORTROUNDDOWN,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,223,252,22
+    GROUPBOX        "Capture Source",IDC_STATIC,7,5,291,38
+    CONTROL         "Auto Adjust",IDC_AUTO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,21,98,52,10
+    CONTROL         "Slider2",IDC_ADJUST,"msctls_trackbar32",TBS_AUTOTICKS | TBS_TOP | WS_TABSTOP,43,116,167,17
+    LTEXT           "Max fps",IDC_STATIC,16,121,29,11
+    LTEXT           "Time Lapse ",IDC_STATIC,105,136,40,8
+    LTEXT           "1 Frame/Minute",IDC_STATIC,236,116,51,17,SS_CENTERIMAGE
+    GROUPBOX        "",IDC_STATIC,7,89,292,59
+    CONTROL         "Lock Capture and Playback Rates",IDC_LOCK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,169,97,125,10
+    COMBOBOX        IDC_COMBO1,55,21,89,30,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Source:",IDC_STATIC,15,22,24,8
+    GROUPBOX        "Framerates",IDC_STATIC,7,43,291,48
+    LTEXT           "Sample rate:",IDC_STATIC,14,57,38,13,SS_CENTERIMAGE
+    EDITTEXT        IDC_KEYFRAMES2,55,57,46,13,ES_AUTOHSCROLL
+    LTEXT           "ms",IDC_STATIC_KEYFRAMES3,106,57,38,13,SS_CENTERIMAGE
+    LTEXT           "fps",IDC_STATIC_KEYFRAMES2,106,75,15,8
+    EDITTEXT        IDC_FPS,55,73,46,12,ES_AUTOHSCROLL
+    LTEXT           "Capture rate:",IDC_STATIC,14,75,40,8
 END
 
 IDD_CURSOROPTIONS DIALOGEX 0, 0, 254, 236
@@ -1074,6 +1073,45 @@ BEGIN
     EDITTEXT        IDC_MESSAGE,15,18,239,29,ES_MULTILINE | ES_AUTOHSCROLL | ES_OEMCONVERT | ES_READONLY | NOT WS_BORDER
 END
 
+IDD_SETTINGS_UI DIALOGEX 0, 0, 410, 267
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Video Settings"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,346,246,57,14
+    GROUPBOX        "Source",IDC_STATIC,7,7,396,32
+    COMBOBOX        IDC_VIDEO_SOURCE_COMBO,64,18,102,61,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Source:",IDC_STATIC,37,20,24,8
+    LTEXT           "Framerate (FPS):",IDC_STATIC,185,20,58,8
+    EDITTEXT        IDC_FPS,246,18,65,14,ES_AUTOHSCROLL | ES_NUMBER
+    GROUPBOX        "Output Settings",IDC_STATIC,7,41,396,200
+    COMBOBOX        IDC_VIDEO_CONTAINER_COMBO,64,54,64,68,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Container:",IDC_STATIC,26,55,35,8
+    LTEXT           "Video Codec:",IDC_STATIC,17,90,44,8
+    COMBOBOX        IDC_VIDEO_CODEC_COMBO,64,89,64,59,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Video",IDC_STATIC,14,76,19,8
+    LTEXT           "Optimize Video",IDC_STATIC,14,143,50,8
+    CONTROL         "",IDC_CODEC_PRESET_SLIDER,"msctls_trackbar32",TBS_AUTOTICKS | TBS_BOTH | TBS_NOTICKS | TBS_NOTIFYBEFOREMOVE | WS_TABSTOP,64,155,85,12
+    LTEXT           "Encoder Preset:",IDC_STATIC,8,156,53,8
+    LTEXT           "Encoder Tune:",IDC_STATIC,12,171,49,8
+    LTEXT           "Encoder Profile:",IDC_STATIC,8,187,53,8
+    COMBOBOX        IDC_CODEC_TUNE_COMBO,64,169,67,91,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_CODEC_PROFILE_COMBO,64,186,67,74,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Encoder Level:",IDC_STATIC,151,187,49,8
+    COMBOBOX        IDC_CODEC_LEVEL_COMBO_,203,186,67,74,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_VIDEO_CODEC_EXTRA,64,206,339,31
+    LTEXT           "Extra Options:",IDC_STATIC,14,214,47,8
+    LTEXT           "Quality",IDC_STATIC,199,76,23,8
+    CONTROL         "Constant Quality:",IDC_CODEC_QUALITY_CONSTANT,"Button",BS_AUTORADIOBUTTON | BS_NOTIFY | WS_GROUP,202,89,72,10
+    CONTROL         "",IDC_CODEC_CONSTANT_QUALITY_SLIDER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,208,104,175,13
+    LTEXT           "| Lower Quality",IDC_CODEC_CONSTANT_QUALITY_LOW_LABEL,212,118,51,8
+    LTEXT           "Higher Quality |",IDC_CODEC_CONSTANT_QUALITY_HIGH_LABEL,327,118,52,8
+    CONTROL         "Avg Bitrate (kbps):",IDC_CODEC_QUALITY_BITRATE,"Button",BS_AUTORADIOBUTTON | BS_NOTIFY | WS_GROUP,202,135,73,10
+    EDITTEXT        IDC_CODEC_QUALITY_BITRATE_EDIT,278,134,65,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Ultrafast",IDC_CODEC_PRESET_NAME,149,156,71,8
+    LTEXT           "25",IDC_CODEC_QUALITY_VALUE,278,90,9,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1300,6 +1338,14 @@ BEGIN
         RIGHTMARGIN, 266
         TOPMARGIN, 7
         BOTTOMMARGIN, 89
+    END
+
+    IDD_SETTINGS_UI, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 403
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 260
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2331,6 +2377,16 @@ BEGIN
     0
 END
 
+IDD_VIDEOOPTIONS DLGINIT
+BEGIN
+    IDC_COMBO1, 0x403, 4, 0
+0x4447, 0x0049, 
+    IDC_COMBO1, 0x403, 20, 0
+0x6544, 0x736b, 0x6f74, 0x2070, 0x7544, 0x6c70, 0x6369, 0x7461, 0x6f69, 
+0x006e, 
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2457,6 +2513,48 @@ END
 IDD_TROUBLESHOOT AFX_DIALOG_LAYOUT
 BEGIN
     0
+END
+
+IDD_VIDEOOPTIONS AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_SETTINGS_UI AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
 END
 
 
@@ -2842,16 +2940,13 @@ END
 //
 // Generated from the TEXTINCLUDE 3 resource.
 //
-#define _AFX_NO_SPLITTER_RESOURCES
 #define _AFX_NO_OLE_RESOURCES
 #define _AFX_NO_TRACKER_RESOURCES
 #define _AFX_NO_PROPERTY_RESOURCES
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE 9, 1
 #pragma code_page(1252)
-#endif
 #include "res\Recorder.rc2"  // non-Microsoft Visual C++ edited resources
 #include "afxres.rc"         // Standard components
 #include "afxprint.rc"       // printing/print preview resources
