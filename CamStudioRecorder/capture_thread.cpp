@@ -110,7 +110,8 @@ void capture_thread::run()
     const auto pre_frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
 
     /* Setup ffmpeg video encoder */
-    const auto config = cam_create_video_config(pre_frame->biWidth, pre_frame->biHeight, capture_settings_.fps);
+    // \todo video encoder framerate is ignored atm..
+    const auto config = cam_create_video_config(pre_frame->biWidth, pre_frame->biHeight, 30);
 
     auto video_encoder = std::make_unique<av_muxer>(capture_settings_.filename.c_str(),
         av_muxer_type::mkv);
@@ -132,6 +133,7 @@ void capture_thread::run()
 
         fmt::print("fps: {}\n", 1.0/dt);
 
+        //capture_settings_.video_settings.video_source_fps_
         //Sleep(0);
     }
 

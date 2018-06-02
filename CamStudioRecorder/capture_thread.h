@@ -20,6 +20,9 @@
 #include "CamCapture/cam_capture.h"
 #include "CamCapture/cam_rect.h"
 #include "CamCapture/cam_stop_watch.h"
+
+#include "video_settings_ui.h"
+
 #include <atomic>
 #include <thread>
 
@@ -38,8 +41,8 @@ struct capture_settings
     rect<int> capture_rect_{0, 0, 0, 0};
     capture_type capture_type_{ capture_type::allscreens };
 
-    int fps{30};
     std::string filename;
+    video_settings_model video_settings;
 };
 
 class capture_thread

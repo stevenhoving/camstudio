@@ -163,7 +163,7 @@ int g_nColors = 24;
 CString sTimeLength;
 
 // Path to temporary video avi file
-std::wstring strTempVideoAviFilePath;
+std::wstring strTempVideoFilePath;
 
 // Path to temporary audio wav file
 std::wstring strTempAudioWavFilePath;
@@ -468,7 +468,7 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
     ON_UPDATE_COMMAND_UI(ID_REGION_PANREGION, OnUpdateRegionPanregion)
     ON_COMMAND(ID_OPTIONS_AUTOPAN, OnOptionsAutopan)
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_AUTOPAN, OnUpdateOptionsAutopan)
-    ON_COMMAND(ID_OPTIONS_VIDEOOPTIONS, OnFileVideooptions)
+    ON_COMMAND(ID_OPTIONS_VIDEOOPTIONS, OnVideoSettings)
     ON_COMMAND(ID_OPTIONS_CURSOROPTIONS, OnOptionsCursoroptions)
     ON_COMMAND(ID_OPTIONS_ATUOPANSPEED, OnOptionsAtuopanspeed)
     ON_COMMAND(ID_REGION_FULLSCREEN, OnRegionFullscreen)
@@ -831,16 +831,12 @@ void CRecorderView::OnDestroy()
     CView::OnDestroy();
 }
 
-std::string generate_temp_filename()
+std::string generate_temp_filename(video_container::type container)
 {
-    const auto csTempFolder = get_temp_folder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir);
-    // Location where we are creating our files
-    // TRACE("## CRecorderView::RecordVideo()  cProgramOpts.m_strSpecifiedDir=[%s]\n", cProgramOpts.m_strSpecifiedDir );
-    // TRACE("## CRecorderView::RecordVideo()  csTempFolder=[%s]\n", csTempFolder );
+    const auto temp_folder = get_temp_folder(cProgramOpts.m_iTempPathAccess,
+        cProgramOpts.m_strSpecifiedDir);
 
-    // Define a date-time tag "ccyymmdd_uumm_ss" to add to the temp.avi file.
-    // (New recordings can start just after previously recording ended.)
-    time_t osBinaryTime; // C run-time time (defined in <time.h>)
+    time_t osBinaryTime;
     time(&osBinaryTime);
     CTime ctime(osBinaryTime);
 
@@ -852,13 +848,15 @@ std::string generate_temp_filename()
     int second = ctime.GetSecond();
 
     // Create timestamp tag
-    auto csStartTime = fmt::sprintf(_T("%04d%02d%02d_%02d%02d_%02d"), year, month, day, hour, minutes, second);
+    auto start_time = fmt::sprintf(_T("%04d%02d%02d_%02d%02d_%02d"), year, month, day, hour, minutes, second);
 
     // \todo this is wrong
-    cVideoOpts.m_cStartRecordingString = csStartTime;
+    cVideoOpts.m_cStartRecordingString = start_time;
 
-    strTempVideoAviFilePath =
-        fmt::format(_T("{}\\{}-{}.{}"), csTempFolder, _T(TEMPFILETAGINDICATOR), csStartTime, _T("mkv"));
+    const auto file_extention = video_container::names().at(container);
+
+    strTempVideoFilePath =
+        fmt::format(_T("{}\\{}-{}.{}"), temp_folder, _T(TEMPFILETAGINDICATOR), start_time, file_extention);
 
     // TRACE("## CRecorderView::RecordAVIThread First  Temp.Avi file=[%s]\n", strTempVideoAviFilePath.GetString()  );
 
@@ -866,14 +864,14 @@ std::string generate_temp_filename()
     bool fileverified = false;
     while (!fileverified)
     {
-        auto filepath = std::experimental::filesystem::path(strTempVideoAviFilePath);
+        auto filepath = std::experimental::filesystem::path(strTempVideoFilePath);
         if (std::experimental::filesystem::exists(filepath))
         {
             fileverified = std::experimental::filesystem::remove(filepath);
             if (!fileverified)
             {
-                strTempVideoAviFilePath = fmt::format(_T("{}\\{}-{}-{}.{}"), csTempFolder, _T(TEMPFILETAGINDICATOR),
-                                                      csStartTime, rand(), _T("mkv"));
+                strTempVideoFilePath = fmt::format(_T("{}\\{}-{}-{}.{}"), temp_folder,
+                    _T(TEMPFILETAGINDICATOR), start_time, rand(), file_extention);
             }
         }
         else
@@ -882,7 +880,7 @@ std::string generate_temp_filename()
         }
     }
 
-    return wstring_to_utf8(strTempVideoAviFilePath);
+    return wstring_to_utf8(strTempVideoFilePath);
 }
 
 LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
@@ -914,14 +912,13 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
     g_bRecordState = true;
     g_interruptkey = 0;
 
-    //g_strCodec = GetCodecDescription(cVideoOpts.m_dwCompfccHandler);
-
-    //CWinThread *pThread = AfxBeginThread(RecordThread, this);
     capture_settings settings;
     settings.capture_hwnd_ = 0; // 0 for now
     settings.capture_rect_ = {g_rcUse.left, g_rcUse.top, g_rcUse.right, g_rcUse.bottom};
-    settings.fps = cVideoOpts.m_iFramesPerSecond;
-    settings.filename = generate_temp_filename();
+    settings.video_settings = *video_settings_model_;
+
+    const auto video_container_type = static_cast<video_container::type>(video_settings_model_->video_container_.get_index());
+    settings.filename = generate_temp_filename(video_container_type);
 
     capture_thread_ = std::make_unique<capture_thread>();
     capture_thread_->start(settings);
@@ -1083,7 +1080,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
     {
         // if (g_interruptkey==VK_ESCAPE) {
         // Perform processing for cancel operation
-        std::experimental::filesystem::remove(strTempVideoAviFilePath);
+        std::experimental::filesystem::remove(strTempVideoFilePath);
         if (!cAudioFormat.isInput(NONE))
             DeleteFileW(strTempAudioWavFilePath.c_str());
         return 0;
@@ -1168,7 +1165,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
     }
     else
     {
-        std::experimental::filesystem::remove(strTempVideoAviFilePath);
+        std::experimental::filesystem::remove(strTempVideoFilePath);
         if (!cAudioFormat.isInput(NONE))
             std::experimental::filesystem::remove(strTempAudioWavFilePath);
 
@@ -1263,7 +1260,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
             case 0: // Successful
             case 1: // video file broken; Unable to recover
             case 3: // this case is rare; Unable to recover
-                std::experimental::filesystem::remove(strTempVideoAviFilePath);
+                std::experimental::filesystem::remove(strTempVideoFilePath);
                 std::experimental::filesystem::remove(strTempAudioWavFilePath);
                 break;
             case 2:
@@ -1273,7 +1270,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
                 // so Move the video file as avi and ignore the audio  (Move = More or Copy+Delete)
 
                 std::error_code ec;
-                std::experimental::filesystem::rename(strTempVideoAviFilePath, strTargetVideoFile.GetString(), ec);
+                std::experimental::filesystem::rename(strTempVideoFilePath, strTargetVideoFile.GetString(), ec);
                 if (ec)
                 {
                     // Although there is error copying, the temp file still remains in the temp directory and is not
@@ -1292,7 +1289,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
             case 5: // recover both files, but as separate files
             {
                 std::error_code ec;
-                std::experimental::filesystem::rename(strTempVideoAviFilePath, strTargetAudioFile.GetString(), ec);
+                std::experimental::filesystem::rename(strTempVideoFilePath, strTargetAudioFile.GetString(), ec);
                 if (ec)
                 {
                     // MessageBox("File Creation Error. Unable to rename/copy video file.","Note",MB_OK |
@@ -1334,7 +1331,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
         //////////////////////////////////////////////////
 
         std::error_code ec;
-        std::experimental::filesystem::rename(strTempVideoAviFilePath, strTargetVideoFile.GetString(), ec);
+        std::experimental::filesystem::rename(strTempVideoFilePath, strTargetVideoFile.GetString(), ec);
         if (ec)
         {
             // Unable to rename/copy file.
@@ -1522,77 +1519,10 @@ void CRecorderView::OnStop()
     OnRecordInterrupted(0, 0);
 }
 
-// ver 1.6
-#define MAXCOMPRESSORS 50
-void CRecorderView::OnFileVideooptions()
+void CRecorderView::OnVideoSettings()
 {
-    // Capture a frame and use it to determine compatible compressors for user to select
-    CRect rect(0, 0, 320, 200);
-    LPBITMAPINFOHEADER first_alpbi = captureScreenFrame(rect) ? camera_.Image() : 0;
-
-    g_num_compressor = 0;
-    if (g_compressor_info)
-    {
-        delete[] g_compressor_info;
-    }
-
-    // TODO, Possible memory leak, where is the delete operation of the new below done?
-    g_compressor_info = new ICINFO[MAXCOMPRESSORS];
-
-    // for (int i = 0; ICInfo(ICTYPE_VIDEO, i, &g_compressor_info[g_num_compressor]); i++) {
-    for (int i = 0; ICInfo(0, i, &g_compressor_info[g_num_compressor]); i++)
-    {
-        if (MAXCOMPRESSORS <= g_num_compressor)
-        {
-            break; // maximum allows 30 compressors
-        }
-
-        if (cVideoOpts.m_bRestrictVideoCodecs)
-        {
-            // allow only a few
-            if ((g_compressor_info[g_num_compressor].fccHandler == ICHANDLER_MSVC) ||
-                (g_compressor_info[g_num_compressor].fccHandler == ICHANDLER_MRLE) ||
-                (g_compressor_info[g_num_compressor].fccHandler == ICHANDLER_CVID) ||
-                (g_compressor_info[g_num_compressor].fccHandler == ICHANDLER_DIVX))
-            {
-                HIC hic = ICOpen(g_compressor_info[g_num_compressor].fccType, g_compressor_info[g_num_compressor].fccHandler,
-                                 ICMODE_QUERY);
-                if (hic)
-                {
-                    if (ICERR_OK == ICCompressQuery(hic, first_alpbi, nullptr))
-                    {
-                        VERIFY(0 < ICGetInfo(hic, &g_compressor_info[g_num_compressor], sizeof(ICINFO)));
-                        g_num_compressor++;
-                    }
-                    ICClose(hic);
-                }
-            }
-        }
-        else
-        {
-            // CamStudio still cannot handle VIFP
-            if (g_compressor_info[g_num_compressor].fccHandler != ICHANDLER_VIFP)
-            {
-                HIC hic = ICOpen(g_compressor_info[g_num_compressor].fccType, g_compressor_info[g_num_compressor].fccHandler,
-                                 ICMODE_QUERY);
-                if (hic)
-                {
-                    if (ICERR_OK == ICCompressQuery(hic, first_alpbi, nullptr))
-                    {
-                        VERIFY(0 < ICGetInfo(hic, &g_compressor_info[g_num_compressor], sizeof(ICINFO)));
-                        g_num_compressor++;
-                    }
-                    ICClose(hic);
-                }
-            }
-        }
-    }
-
-    //if (g_num_compressor)
-    //{
-        video_settings_ui cDlg(nullptr, *video_settings_model_);
-        cDlg.DoModal();
-    //}
+    video_settings_ui cDlg(nullptr, *video_settings_model_);
+    cDlg.DoModal();
 }
 
 void CRecorderView::OnOptionsCursoroptions()
@@ -3775,7 +3705,7 @@ UINT CRecorderView::RecordVideo()
     // \todo this is wrong
     cVideoOpts.m_cStartRecordingString = csStartTime;
 
-    strTempVideoAviFilePath = fmt::format(_T("{}\\{}-{}.{}"), csTempFolder,
+    strTempVideoFilePath = fmt::format(_T("{}\\{}-{}.{}"), csTempFolder,
         _T(TEMPFILETAGINDICATOR), csStartTime, _T("avi"));
 
     // TRACE("## CRecorderView::RecordAVIThread First  Temp.Avi file=[%s]\n", strTempVideoAviFilePath.GetString()  );
@@ -3784,13 +3714,13 @@ UINT CRecorderView::RecordVideo()
     bool fileverified = false;
     while (!fileverified)
     {
-        auto filepath = std::experimental::filesystem::path(strTempVideoAviFilePath);
+        auto filepath = std::experimental::filesystem::path(strTempVideoFilePath);
         if (std::experimental::filesystem::exists(filepath))
         {
             fileverified = std::experimental::filesystem::remove(filepath);
             if (!fileverified)
             {
-                strTempVideoAviFilePath = fmt::format(_T("{}\\{}-{}-{}.{}"), csTempFolder,
+                strTempVideoFilePath = fmt::format(_T("{}\\{}-{}-{}.{}"), csTempFolder,
                     _T(TEMPFILETAGINDICATOR), csStartTime, rand(), _T("avi"));
             }
         }
@@ -3803,7 +3733,7 @@ UINT CRecorderView::RecordVideo()
     // TRACE(_T("## CRecorderView::RecordVideo g_rcUse / T=%d, L=%d, B=%d, R=%d \n"), g_rcUse.top, g_rcUse.left, g_rcUse.bottom,
     // g_rcUse.right );
 
-    const auto temp = wstring_to_utf8(strTempVideoAviFilePath);
+    const auto temp = wstring_to_utf8(strTempVideoFilePath);
     return RecordVideo(g_rcUse, cVideoOpts.m_iFramesPerSecond, temp.c_str()) ? 0UL : 1UL;
 }
 

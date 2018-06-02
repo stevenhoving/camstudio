@@ -69,7 +69,7 @@ protected:
     afx_msg void OnStop();
     afx_msg void OnUpdateRegionPanregion(CCmdUI *pCmdUI);
     afx_msg void OnUpdateRegionRubber(CCmdUI *pCmdUI);
-    afx_msg void OnFileVideooptions();
+    afx_msg void OnVideoSettings();
     afx_msg void OnOptionsCursoroptions();
     afx_msg void OnOptionsAutopan();
     afx_msg void OnOptionsAtuopanspeed();
@@ -252,9 +252,6 @@ extern CPoint g_ptOrigin;
 
 extern CString g_strCodec;
 
-// extern LPWAVEFORMATEX pwfx;
 
-// Video Compress Parameters
-//extern void GetVideoCompressState(HIC hic, DWORD fccHandler);
 extern void SetVideoCompressState(HIC hic, DWORD fccHandler);
-// extern void AllocCompressFormat(DWORD& dwCbwFX);
+
