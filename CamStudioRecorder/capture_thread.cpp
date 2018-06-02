@@ -21,20 +21,82 @@
 #include <fmt/printf.h>
 #include <algorithm>
 
-av_video_meta cam_create_video_config(const int width, const int height, const int fps)
+
+
+std::optional<video::preset> cam_create_codec_preset(video_codec_preset preset)
+{
+    switch(preset.get_index())
+    {
+        case video_codec_preset::type::ultrafast: return video::preset::ultrafast;
+        case video_codec_preset::type::superfast: return video::preset::superfast;
+        case video_codec_preset::type::veryfast: return video::preset::veryfast;
+        case video_codec_preset::type::faster: return video::preset::faster;
+        case video_codec_preset::type::fast: return video::preset::fast;
+        case video_codec_preset::type::medium: return video::preset::medium;
+        case video_codec_preset::type::slow: return video::preset::slow;
+        case video_codec_preset::type::slower: return video::preset::slower;
+        case video_codec_preset::type::veryslow: return video::preset::veryslow;
+    }
+}
+
+std::optional<video::tune> cam_create_codec_tune(video_codec_tune tune)
+{
+    switch(tune.get_index())
+    {
+    case video_codec_tune::type::none: return {};
+    case video_codec_tune::type::film: return video::tune::film;
+    case video_codec_tune::type::animation: return video::tune::animation;
+    case video_codec_tune::type::grain: return video::tune::grain;
+    case video_codec_tune::type::stillimage: return video::tune::stillimage;
+    case video_codec_tune::type::fastdecode: return video::tune::fastdecode;
+    case video_codec_tune::type::zerolatency: return video::tune::zerolatency;
+    }
+}
+
+std::optional<video::profile> cam_create_codec_profile(video_codec_profile profile)
+{
+    switch(profile.get_index())
+    {
+    case video_codec_profile::type::none: return {};
+    case video_codec_profile::type::baseline: return video::profile::baseline;
+    case video_codec_profile::type::main: return video::profile::main;
+    case video_codec_profile::type::high: return video::profile::high;
+    case video_codec_profile::type::high10: return video::profile::high10;
+    case video_codec_profile::type::high422: return video::profile::high422;
+    case video_codec_profile::type::high444: return video::profile::high444;
+    }
+
+}
+
+av_video_meta cam_create_video_config(const int width, const int height, const int fps, video_settings_model &settings)
 {
     av_video_meta meta;
     // \todo make all these parameters configurable through the UI.
-    meta.quality = 26;
+    
     meta.bpp = 24;
     meta.width = width;
     meta.height = height;
     meta.fps = {fps, 1};
-    meta.preset = video::preset::ultrafast;
-    meta.profile = video::profile::baseline;
+    //meta.preset = video::preset::ultrafast;
+    //meta.profile = video::profile::baseline;
     //meta.profile = video::profile::high;
     //meta.tune = video::tune::animation;
-    meta.tune = video::tune::zerolatency;
+    //meta.tune = video::tune::zerolatency;
+
+    std::optional<video::preset> preset;
+    std::optional<video::tune> tune;
+    std::optional<video::profile> profile; // for example h264
+
+    if (settings.video_codec_quality_type_ == video_quality_type::constant_quality)
+        meta.quality = settings.video_codec_quality_constant_;
+    else
+        meta.bitrate = settings.video_codec_quality_bitrate_;
+
+    meta.preset = cam_create_codec_preset(settings.video_codec_preset_);
+    meta.profile = cam_create_codec_profile(settings.video_codec_profile_);
+    meta.tune = cam_create_codec_tune(settings.video_codec_tune_);
+
+
     return meta;
 }
 
@@ -111,7 +173,11 @@ void capture_thread::run()
 
     /* Setup ffmpeg video encoder */
     // \todo video encoder framerate is ignored atm..
-    const auto config = cam_create_video_config(pre_frame->bi->bmiHeader.biWidth, pre_frame->bi->bmiHeader.biHeight, 30);
+    const auto config = cam_create_video_config(
+        pre_frame->bi->bmiHeader.biWidth,
+        pre_frame->bi->bmiHeader.biHeight,
+        30,
+        capture_settings_.video_settings);
 
     auto video_encoder = std::make_unique<av_muxer>(capture_settings_.filename.c_str(),
         av_muxer_type::mkv);
@@ -124,7 +190,7 @@ void capture_thread::run()
     cam::stop_watch frame_limiter;
     frame_limiter.time_start();
 
-    double max_frame_time = 1.0/60.0;
+    const double max_frame_time = 1.0/capture_settings_.video_settings.video_source_fps_;
     while (run_)
     {
         stopwatch.time_start();
@@ -140,7 +206,6 @@ void capture_thread::run()
         double sleep_for = max_frame_time - dt;
         sleep_for = std::max(sleep_for, 0.0);
 
-        //capture_settings_.video_settings.video_source_fps_
         std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(ceil(sleep_for * 1000.0))));
 
         dt = stopwatch.time_since();
