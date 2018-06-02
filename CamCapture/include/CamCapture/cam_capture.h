@@ -19,10 +19,15 @@
 
 #include "cam_rect.h"
 #include "cam_annotarion.h"
-#include <ximage.h>
 #include <windows.h>
 #include <memory>
 #include <vector>
+
+struct cam_frame
+{
+    BITMAPINFO *bi{nullptr};
+    unsigned char *lpBitmapBits{nullptr};
+};
 
 class cam_capture_source
 {
@@ -38,7 +43,7 @@ public:
      * \todo the src_capture_rect does not belong here...
      */
     bool capture_frame(const rect<int> &src_capture_rect);
-    BITMAPINFOHEADER *get_frame() const;
+    const cam_frame *get_frame() const;
 
 protected:
     // \todo is a cursor a annotation?
@@ -57,7 +62,11 @@ private:
     int y_;
     bool show_cursor_;
 
-    CxImage captured_frame_;
+    BITMAPINFO bmp_info_;
+    unsigned char *bmp_data_{nullptr};
+    cam_frame frame_;
+
+    HGDIOBJ old_selected_bitmap_{nullptr};
 
     // rect to actually capture
     rect<int> dst_capture_rect_;

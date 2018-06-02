@@ -16,6 +16,8 @@
 #include "string_convert.h"
 #include <CamLib/CStudioLib.h>
 
+#include <filesystem>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -201,6 +203,9 @@ BOOL CRecorderApp::InitInstance()
 
     // \todo fix this..
     m_pszProfileName = _tcsdup(utf8_to_wstring(profile_path).c_str());
+
+    std::filesystem::path path(profile_path);
+    std::filesystem::create_directories(path.parent_path());
 
     // TODO: re-enable when class complete
     // Read the file. If there is an error, report it and exit.
