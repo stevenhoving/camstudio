@@ -65,12 +65,12 @@ public:
 
     T width() const noexcept
     {
-        return right_ - left_;
+        return (right_ - left_);
     }
 
     T height() const noexcept
     {
-        return bottom_ - top_;
+        return (bottom_ - top_);
     }
 
     size_type size() const noexcept

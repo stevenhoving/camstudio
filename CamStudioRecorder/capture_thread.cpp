@@ -103,7 +103,7 @@ void capture_thread::run()
         return;
     }
 
-    capture_source_ = std::make_unique<cam_capture_source>(capture_settings_.capture_hwnd_);
+    capture_source_ = std::make_unique<cam_capture_source>(capture_settings_.capture_hwnd_, capture_settings_.capture_rect_);
 
     const auto pre_frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
 
@@ -117,20 +117,30 @@ void capture_thread::run()
 
     cam::stop_watch stopwatch;
     stopwatch.time_start();
+
+    cam::stop_watch frame_limiter;
+    frame_limiter.time_start();
+
+    double max_frame_time = 1.0/60.0;
     while (run_)
     {
-        double time_capture_start = stopwatch.time_now();
+        stopwatch.time_start();
+        double time_capture_start = frame_limiter.time_now();
         const auto frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
 
         DWORD timestamp = static_cast<DWORD>(time_capture_start * 1000.0);
         video_encoder->encode_frame(timestamp, (BITMAPINFOHEADER*)frame->bi, frame->lpBitmapBits);
 
-        double time_capture_end = stopwatch.time_now();
+        double time_capture_end = frame_limiter.time_now();
         double dt = time_capture_end - time_capture_start;
 
-        fmt::print("fps: {}\n", 1.0/dt);
+        double sleep_for = max_frame_time - dt;
+        sleep_for = std::max(sleep_for, 0.0);
 
-        //Sleep(0);
+        std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(ceil(sleep_for * 1000.0))));
+
+        dt = stopwatch.time_since();
+        fmt::print("fps: {}\n", 1.0 / dt);
     }
 
     video_encoder.reset();
