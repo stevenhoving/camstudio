@@ -283,7 +283,6 @@ void CMainFrame::OnClose()
 
 void CMainFrame::OnViewCompactview()
 {
-    // TODO: Add your command handler code here
     CRect clientrect;
     CRect windowrect;
     CRect toolbarrect;
@@ -353,7 +352,6 @@ void CMainFrame::OnViewButtonsview()
 
 void CMainFrame::OnViewNormalview()
 {
-    // TODO: Add your command handler code here
     CRect windowrect;
     GetWindowRect(&windowrect);
 
@@ -405,7 +403,6 @@ void CMainFrame::OnUpdateViewNormalview(CCmdUI *pCmdUI)
 
 void CMainFrame::OnViewtype()
 {
-    // TODO: Add your command handler code here
     cProgramOpts.m_iViewType++;
     if (cProgramOpts.m_iViewType > VIEW_BUTTON)
         cProgramOpts.m_iViewType = VIEW_NORMAL;

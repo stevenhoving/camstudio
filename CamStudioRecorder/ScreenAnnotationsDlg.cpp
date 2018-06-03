@@ -178,7 +178,6 @@ BOOL CScreenAnnotationsDlg::OnInitDialog()
 
     if (!saImageListLoaded)
     {
-        saImageList.Create(IDB_SCREENANNOTATIONS_SMALL, 16, 10, RGB(255, 255, 255));
         saImageListLoaded = 1;
         m_ctrlList.SetImageList(&saImageList, LVSIL_SMALL);
     }

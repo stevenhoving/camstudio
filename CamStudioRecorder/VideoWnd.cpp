@@ -214,7 +214,6 @@ void CVideoWnd::OnContextvideoSourceformat()
 
 void CVideoWnd::OnContextvideoVideosource()
 {
-    // TODO: Add your command handler code here
     if (m_FrameGrabber.GetSafeHwnd())
     {
         m_FrameGrabber.VideoFormatDialog();
@@ -348,7 +347,6 @@ void CVideoWnd::OnUpdateSize()
 
 void CVideoWnd::OnContextvideoEdittransparencyrefreshrate()
 {
-    // TODO: Add your command handler code here
     // if (versionOp<5) {
     // int ret = MessageBox("This feature is only available in Win 2000/ XP." ,"Note",MB_OK | MB_ICONEXCLAMATION);
     // return;

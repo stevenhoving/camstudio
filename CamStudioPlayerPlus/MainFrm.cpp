@@ -199,7 +199,6 @@ BOOL CMainFrame::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwS
 
 void CMainFrame::OnClose()
 {
-    // TODO: Add your message handler code here and/or call default
     playerAlive = FALSE;
 
     if ((fileModified == 1) && (pmode == DUBBER))
@@ -221,7 +220,6 @@ void CMainFrame::OnClose()
 
 void CMainFrame::ResizeToMovie(RECT movierect)
 {
-    // TODO: Add your command handler code here
     CRect clientrect;
     CRect windowrect;
     CRect toolbarrect;
@@ -298,8 +296,6 @@ void CMainFrame::AdjustTimeBar(CRect clientrect)
 
 BOOL CMainFrame::OnQueryNewPalette()
 {
-    // TODO: Add your message handler code here and/or call default
-
     if (giFirstVideo >= 0)
     {
         HDC hdc = ::GetDC(viewWnd);

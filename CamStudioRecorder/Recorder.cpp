@@ -135,7 +135,6 @@ void CAboutDlg::OnBnClickedButtonlink2()
 
 void CAboutDlg::OnButtonlink()
 {
-    // TODO: Add your control notification handler code here
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -514,11 +513,9 @@ bool CRecorderApp::RegisterWindowClass()
 
 void CAboutDlg::OnStnClickedStaticVersion()
 {
-    // TODO: Add your control notification handler code here
 }
 
 void CAboutDlg::OnBnClickedButtonlink3()
 {
-    // TODO: Add your control notification handler code here
     ::PostMessage(g_hWndGlobal, WM_COMMAND, ID_HELP_WEBSITE, 0);
 }

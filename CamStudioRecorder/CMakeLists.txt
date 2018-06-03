@@ -19,9 +19,12 @@ set(RECORDER_NEW_SOURCE
     # new
     video_settings_ui.h
     video_settings_ui.cpp
+    video_settings_model.h
+    video_settings_model.cpp
     string_convert.h
     capture_thread.h
     capture_thread.cpp
+    utility/filesystem.h
     utility/make_array.h
 )
 
@@ -204,11 +207,12 @@ target_link_libraries(CamStudioRecorder
     CamHook
     CamAudio
     CamCapture
+    CamEncoder
     libconfig++
+    cpptoml
     CxImage
     localization
     fmt
-    CamEncoder
     gdi32.lib
     winmm.lib
     vfw32.lib

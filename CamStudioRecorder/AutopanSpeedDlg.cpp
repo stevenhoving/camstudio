@@ -89,6 +89,5 @@ void CAutopanSpeedDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar
 
 void CAutopanSpeedDlg::OnBnClickedOk()
 {
-    // TODO: Add your control notification handler code here
     CDialog::OnOK();
 }

@@ -576,7 +576,6 @@ void PlayMovie(int mode)
 
 void CPlayplusView::OnFileRewind()
 {
-    // TODO: Add your command handler code here
     SetScrollTime(timeStart);
     ::InvalidateRect(viewWnd, nullptr, FALSE);
     ::UpdateWindow(viewWnd);
@@ -1679,8 +1678,6 @@ BOOL CPlayplusView::OnEraseBkgnd(CDC *pDC)
 
 void CPlayplusView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
 {
-    // TODO: Add your message handler code here and/or call default
-
     HWND hwnd;
     int nScrollPos;
     RECT rc;
@@ -2961,8 +2958,6 @@ void CPlayplusView::OnAudioRemoveexistingaudiotracks()
 
 void CPlayplusView::OnAudioAddaudiofromwavefile()
 {
-    // TODO: Add your command handler code here
-
     TCHAR Buffer[BUFSIZE];
     TCHAR FileName[BUFSIZE];
     TCHAR FileTitle[BUFSIZE];

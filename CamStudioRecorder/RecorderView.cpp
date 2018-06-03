@@ -600,6 +600,7 @@ CRecorderView::CRecorderView()
     , show_message_(true)
 {
     video_settings_model_ = std::make_unique<video_settings_model>();
+    video_settings_model_->load();
 }
 
 CRecorderView::~CRecorderView()
@@ -4816,6 +4817,4 @@ void CRecorderView::OnToolsSettings()
     else
         sadlg.ShowWindow(SW_RESTORE);
 #endif
-
-    // TODO: Add your command handler code here
 }

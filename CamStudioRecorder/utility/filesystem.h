@@ -16,23 +16,32 @@
  */
 
 #pragma once
-
-#include <codecvt>
 #include <string>
+#include <filesystem>
+#include <windows.h>
+#include <shlobj.h>
 
-//https://stackoverflow.com/questions/4358870/convert-wstring-to-string-encoded-in-utf-8
-// convert UTF-8 string to wstring
-static
-std::wstring utf8_to_wstring(const std::string& str)
+namespace utility
 {
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> myconv;
-    return myconv.from_bytes(str);
+static
+std::filesystem::path get_app_data_path()
+{
+    wchar_t app_data_path[MAX_PATH + 1] = {};
+    if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_APPDATA, nullptr, 0, app_data_path)))
+    {
+        return std::filesystem::path(app_data_path);
+    }
+    else if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, app_data_path)))
+    {
+        return std::filesystem::path(app_data_path);
+    }
+    throw std::runtime_error("unable to get app data path");
 }
 
-// convert wstring to UTF-8 string
 static
-std::string wstring_to_utf8(const std::wstring& str)
+std::filesystem::path create_config_path(const std::wstring &filename)
 {
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> myconv;
-    return myconv.to_bytes(str);
+    return get_app_data_path() / "CamStudio" / filename;
 }
+
+} // namespace utility

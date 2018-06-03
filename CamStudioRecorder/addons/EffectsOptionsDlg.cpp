@@ -36,7 +36,6 @@ END_MESSAGE_MAP()
 
 void CEffectsOptionsDlg::OnBnClickedButtonBackgroundColor()
 {
-    // TODO: Add your control notification handler code here
     CColorDialog dlg;
     dlg.m_cc.Flags |= CC_FULLOPEN | CC_RGBINIT;
     dlg.m_cc.rgbResult = m_params.backgroundColor;
@@ -48,7 +47,6 @@ void CEffectsOptionsDlg::OnBnClickedButtonBackgroundColor()
 
 void CEffectsOptionsDlg::OnBnClickedButtonTextColor()
 {
-    // TODO: Add your control notification handler code here
     CColorDialog dlg;
     dlg.m_cc.Flags |= CC_FULLOPEN | CC_RGBINIT;
     dlg.m_cc.rgbResult = m_params.textColor;
@@ -60,7 +58,6 @@ void CEffectsOptionsDlg::OnBnClickedButtonTextColor()
 
 void CEffectsOptionsDlg::OnBnClickedButtonFont()
 {
-    // TODO: Add your control notification handler code here
     CFontDialog dlg(&m_params.logfont);
     if (dlg.DoModal() == IDOK)
     {
@@ -71,8 +68,6 @@ void CEffectsOptionsDlg::OnBnClickedButtonFont()
 
 void CEffectsOptionsDlg::OnBnClickedOk()
 {
-    // TODO: Add your control notification handler code here
-
     // Free floating position not yet support in this dialog. but other modules (screen.cpp) still support it
     m_params.posType = PREDEFINED_POSITION;
     m_params.xPosRatio = EffectsOptionsSetXPosRatio(m_params.position);
@@ -88,7 +83,6 @@ void CEffectsOptionsDlg::OnBnClickedOk()
 // Scale  LEFT=0, CENTER= 50, RIGHT= 100
 int CEffectsOptionsDlg::EffectsOptionsSetXPosRatio(int nPosition)
 {
-
     int nRatio = 0;
 
     // Define X ratio

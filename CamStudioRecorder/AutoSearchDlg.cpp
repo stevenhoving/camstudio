@@ -64,8 +64,6 @@ void CAutoSearchDlg::OnCloseDialog()
 
 void CAutoSearchDlg::OnClose()
 {
-    // TODO: Add your message handler code here and/or call default
     ShowWindow(SW_HIDE);
-
     // CDialog::OnClose();
 }

@@ -119,8 +119,6 @@ BOOL CTextDlg::OnInitDialog()
 
 void CTextDlg::OnFont()
 {
-    // TODO: Add your control notification handler code here
-
     if (!logFont)
         return;
 
@@ -159,7 +157,6 @@ void CTextDlg::OnChangeEdit1()
     // function to send the EM_SETEVENTMASK message to the control
     // with the ENM_CHANGE flag ORed into the lParam mask.
 
-    // TODO: Add your control notification handler code here
     m_ctrlEditText.GetWindowText(*displayStr);
 
     InvalidateTransWnd();
@@ -167,7 +164,6 @@ void CTextDlg::OnChangeEdit1()
 
 void CTextDlg::InvalidateTransWnd()
 {
-
     myparent->Invalidate();
     // if (myparent)
     // myparent->PostMessage(WM_USER_INVALIDATEWND,0,0);
@@ -175,21 +171,18 @@ void CTextDlg::InvalidateTransWnd()
 
 void CTextDlg::OnJustleft()
 {
-    // TODO: Add your control notification handler code here
     *myhorzalign = DT_LEFT;
     InvalidateTransWnd();
 }
 
 void CTextDlg::OnJustcenter()
 {
-    // TODO: Add your control notification handler code here
     *myhorzalign = DT_CENTER;
     InvalidateTransWnd();
 }
 
 void CTextDlg::OnJustright()
 {
-    // TODO: Add your control notification handler code here
     *myhorzalign = DT_RIGHT;
     InvalidateTransWnd();
 
@@ -198,7 +191,6 @@ void CTextDlg::OnJustright()
 
 void CTextDlg::ChooseScriptFont()
 {
-    // TODO: Add your control notification handler code here
     // ZeroMemory(logFont, sizeof(LOGFONT));
 
     // OEM_CHARSET (255) is currently the one with the highest number.
@@ -224,63 +216,54 @@ void CTextDlg::ChooseScriptFont()
 
 void CTextDlg::OnScriptWestern()
 {
-    // TODO: Add your command handler code here
     mycharset = ANSI_CHARSET;
     ChooseScriptFont();
 }
 
 void CTextDlg::OnScriptArabic()
 {
-    // TODO: Add your command handler code here
     mycharset = ARABIC_CHARSET;
     ChooseScriptFont();
 }
 
 void CTextDlg::OnScriptBaltic()
 {
-    // TODO: Add your command handler code here
     mycharset = BALTIC_CHARSET;
     ChooseScriptFont();
 }
 
 void CTextDlg::OnScriptChinesebig5()
 {
-    // TODO: Add your command handler code here
     mycharset = CHINESEBIG5_CHARSET;
     ChooseScriptFont();
 }
 
 void CTextDlg::OnScriptChinesegb2312()
 {
-    // TODO: Add your command handler code here
     mycharset = GB2312_CHARSET;
     ChooseScriptFont();
 }
 
 void CTextDlg::OnScriptDefault()
 {
-    // TODO: Add your command handler code here
     mycharset = DEFAULT_CHARSET;
     ChooseScriptFont();
 }
 
 void CTextDlg::OnScriptEasteurope()
 {
-    // TODO: Add your command handler code here
     mycharset = EASTEUROPE_CHARSET;
     ChooseScriptFont();
 }
 
 void CTextDlg::OnScriptGreek()
 {
-    // TODO: Add your command handler code here
     mycharset = GREEK_CHARSET;
     ChooseScriptFont();
 }
 
 void CTextDlg::OnScriptHangul()
 {
-    // TODO: Add your command handler code here
     // mycharset = HANGUL_CHARSET;
     mycharset = HANGEUL_CHARSET;
     ChooseScriptFont();
@@ -288,63 +271,54 @@ void CTextDlg::OnScriptHangul()
 
 void CTextDlg::OnScriptHebrew()
 {
-    // TODO: Add your command handler code here
     mycharset = HEBREW_CHARSET;
     ChooseScriptFont();
 }
 
 void CTextDlg::OnScriptJapaneseshiftjis()
 {
-    // TODO: Add your command handler code here
     mycharset = SHIFTJIS_CHARSET;
     ChooseScriptFont();
 }
 
 void CTextDlg::OnScriptJohabkorean()
 {
-    // TODO: Add your command handler code here
     mycharset = JOHAB_CHARSET;
     ChooseScriptFont();
 }
 
 void CTextDlg::OnScriptMac()
 {
-    // TODO: Add your command handler code here
     mycharset = MAC_CHARSET;
     ChooseScriptFont();
 }
 
 void CTextDlg::OnScriptOem()
 {
-    // TODO: Add your command handler code here
     mycharset = OEM_CHARSET;
     ChooseScriptFont();
 }
 
 void CTextDlg::OnScriptRussian()
 {
-    // TODO: Add your command handler code here
     mycharset = RUSSIAN_CHARSET;
     ChooseScriptFont();
 }
 
 void CTextDlg::OnScriptSymbol()
 {
-    // TODO: Add your command handler code here
     mycharset = SYMBOL_CHARSET;
     ChooseScriptFont();
 }
 
 void CTextDlg::OnScriptThai()
 {
-    // TODO: Add your command handler code here
     mycharset = THAI_CHARSET;
     ChooseScriptFont();
 }
 
 void CTextDlg::OnScriptTurkish()
 {
-    // TODO: Add your command handler code here
     mycharset = TURKISH_CHARSET;
     ChooseScriptFont();
 }

@@ -74,7 +74,6 @@ BOOL CSyncDlg::OnInitDialog()
 // No shift
 void CSyncDlg::OnNoShift()
 {
-    // TODO: Add your control notification handler code here
     m_ctrlButtonNoSync.SetCheck(TRUE);
     m_ctrlButtonInvalid.SetCheck(FALSE);
     m_ctrlButtonAudioFirst.SetCheck(FALSE);

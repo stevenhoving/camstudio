@@ -142,7 +142,6 @@ void CEditImageDlg::PreModal(CTransparentWnd *transWnd)
 
 void CEditImageDlg::OnNoCutout()
 {
-    // TODO: Add your control notification handler code here
     if (!m_transWnd)
     {
         return;
@@ -157,7 +156,6 @@ void CEditImageDlg::OnNoCutout()
 
 void CEditImageDlg::OnCutoutTrans()
 {
-    // TODO: Add your control notification handler code here
     if (!m_transWnd)
     {
         return;
@@ -172,7 +170,6 @@ void CEditImageDlg::OnCutoutTrans()
 
 void CEditImageDlg::OnCutoutPredefined()
 {
-    // TODO: Add your control notification handler code here
     if (!m_transWnd)
     {
         return;
@@ -276,7 +273,6 @@ void CEditImageDlg::OnAddBorder()
 
 void CEditImageDlg::OnBorderColor()
 {
-    // TODO: Add your control notification handler code here
     if (!m_transWnd)
     {
         return;
@@ -293,7 +289,6 @@ void CEditImageDlg::OnBorderColor()
 
 void CEditImageDlg::OnColor()
 {
-    // TODO: Add your control notification handler code here
     if (!m_transWnd)
     {
         return;
@@ -316,7 +311,7 @@ void CEditImageDlg::OnSelchangePredefinedshape()
     {
         return;
     }
-    // TODO: Add your control notification handler code here
+    
     m_transWnd->RegionPredefinedShape(m_ctrlCBPredefinedShape.GetCurSel());
 
     m_transWnd->Invalidate();
@@ -329,8 +324,6 @@ void CEditImageDlg::OnChangeBordersize()
     // send this notification unless you override the CDialog::OnInitDialog()
     // function and call CRichEditCtrl().SetEventMask()
     // with the ENM_CHANGE flag ORed into the mask.
-
-    // TODO: Add your control notification handler code here
 
     if (!m_transWnd)
     {
@@ -348,7 +341,6 @@ void CEditImageDlg::OnChangeBordersize()
 
 void CEditImageDlg::OnColorPick()
 {
-    // TODO: Add your control notification handler code here
     SetCapture();
     SetCursor(m_hCursorCross);
     pickingColor = 1;
@@ -358,8 +350,6 @@ void CEditImageDlg::OnColorPick()
 
 void CEditImageDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
-    // TODO: Add your message handler code here and/or call default
-
     if (pickingColor == 1)
     {
         HDC hDC = ::GetDC(nullptr);
@@ -387,7 +377,6 @@ void CEditImageDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CEditImageDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
-    // TODO: Add your message handler code here and/or call default
     if (pickingColor == 1)
     {
         SetCursor(m_hCursorCross);
@@ -398,7 +387,7 @@ void CEditImageDlg::OnMouseMove(UINT nFlags, CPoint point)
 
 void CEditImageDlg::OnBkcolor()
 {
-    // TODO: Add your control notification handler code here
+    
     if (!m_transWnd)
     {
         return;
@@ -415,7 +404,7 @@ void CEditImageDlg::OnBkcolor()
 
 void CEditImageDlg::OnLoad()
 {
-    // TODO: Add your control notification handler code here
+    
     if (!m_transWnd)
     {
         return;

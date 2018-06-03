@@ -114,8 +114,6 @@ void CSlideToolBar::SetPositions()
 
 void CSlideToolBar::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
 {
-    // TODO: Add your message handler code here and/or call default
-
     // accept scrolling only if non playing ?
     // accept only if a file exists ?
 

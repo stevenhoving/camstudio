@@ -110,7 +110,6 @@ void CEffectsOptions2Dlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScroll
 
 void CEffectsOptions2Dlg::OnBnClickedOk()
 {
-    // TODO: Add your control notification handler code here
     // Free floating position not yet support in this dialog. but still used in other modules
     m_params.posType = PREDEFINED_POSITION;
     m_params.xPosRatio = EffectsOptions2SetXPosRatio(m_params.position);
@@ -126,7 +125,6 @@ void CEffectsOptions2Dlg::OnBnClickedOk()
 // Scale  LEFT=0, CENTER= 50, RIGHT= 100
 int CEffectsOptions2Dlg::EffectsOptions2SetXPosRatio(int nPosition)
 {
-
     int nRatio = 0;
 
     // Define X ratio

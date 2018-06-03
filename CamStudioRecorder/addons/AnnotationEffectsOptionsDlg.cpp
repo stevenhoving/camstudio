@@ -73,7 +73,6 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedButtonImagePath()
 
 void CAnnotationEffectsOptionsDlg::OnBnClickedButtonCaptionOptions()
 {
-    // TODO: Add your control notification handler code here
     CEffectsOptionsDlg optDlg;
     optDlg.m_params = m_caption;
     if (optDlg.DoModal() == IDOK)
@@ -84,7 +83,6 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedButtonCaptionOptions()
 
 void CAnnotationEffectsOptionsDlg::OnBnClickedButtonTimestampFormatOptions()
 {
-    // TODO: Add your control notification handler code here
     CEffectsOptionsDlg optDlg;
     optDlg.m_params = m_timestamp;
     if (optDlg.DoModal() == IDOK)
@@ -95,7 +93,6 @@ void CAnnotationEffectsOptionsDlg::OnBnClickedButtonTimestampFormatOptions()
 
 void CAnnotationEffectsOptionsDlg::OnBnClickedButtonWatermarkOptions()
 {
-    // TODO: Add your control notification handler code here
     CEffectsOptions2Dlg optDlg;
     optDlg.m_params = m_image;
     if (optDlg.DoModal() == IDOK)

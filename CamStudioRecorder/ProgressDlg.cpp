@@ -233,7 +233,6 @@ void CProgressDlg::OnBnClickedProgressCancel()
 
 void CProgressDlg::OnStnClickedConversiontext()
 {
-    // TODO: Add your control notification handler code here
 }
 
 // ProgressDlg message handlers

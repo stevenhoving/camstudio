@@ -18,24 +18,6 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Russian (Russia) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
-LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
-#pragma code_page(1251)
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-IDB_BITMAP5             BITMAP                  "res\\bitmap5.bmp"
-
-#endif    // Russian (Russia) resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
 // English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
@@ -55,17 +37,7 @@ IDB_TOOLBAR256          BITMAP                  "res\\ToolbarPalette256.bmp"
 
 IDB_TOOLBARMASK         BITMAP                  "res\\ToolbarMask.bmp"
 
-IDB_SCREENANNOTATIONS_SMALL BITMAP                  "res\\bmp00001.bmp"
-
 IDB_BITMAP4             BITMAP                  "res\\Recorder_logo.bmp"
-
-IDB_BITMAP6             BITMAP                  "res\\bitmap6.bmp"
-
-IDB_BITMAP7             BITMAP                  "res\\bitmap7.bmp"
-
-IDB_BITMAP8             BITMAP                  "res\\bitmap8.bmp"
-
-IDB_BITMAP9             BITMAP                  "res\\bitmap9.bmp"
 
 IDB_BITMAP10            BITMAP                  "res\\info-icon.bmp"
 
@@ -210,11 +182,6 @@ BEGIN
     BUTTON      ID_RECORD
     BUTTON      ID_PAUSE
     BUTTON      ID_STOP
-    SEPARATOR
-    BUTTON      ID_VIEWTYPE
-    BUTTON      ID_VIEW_SCREENANNOTATIONS
-    BUTTON      ID_AVISWF
-    BUTTON      ID_MP4
 END
 
 
@@ -1046,7 +1013,7 @@ BEGIN
     EDITTEXT        IDC_MESSAGE,15,18,239,29,ES_MULTILINE | ES_AUTOHSCROLL | ES_OEMCONVERT | ES_READONLY | NOT WS_BORDER
 END
 
-IDD_SETTINGS_UI DIALOGEX 0, 0, 410, 267
+IDD_VIDEO_SETTINGS_UI DIALOGEX 0, 0, 410, 267
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Video Settings"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -1307,7 +1274,7 @@ BEGIN
         BOTTOMMARGIN, 89
     END
 
-    IDD_SETTINGS_UI, DIALOG
+    IDD_VIDEO_SETTINGS_UI, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 403
@@ -2472,7 +2439,7 @@ BEGIN
     0
 END
 
-IDD_SETTINGS_UI AFX_DIALOG_LAYOUT
+IDD_VIDEO_SETTINGS_UI AFX_DIALOG_LAYOUT
 BEGIN
     0,
     0, 0, 0, 0,

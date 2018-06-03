@@ -67,7 +67,6 @@ END_MESSAGE_MAP()
 
 void CEditTransparencyDlg::OnCheck1()
 {
-    // TODO: Add your control notification handler code here
     m_rbEnableTrans = m_ctrlButtonEnableTranparency.GetCheck();
 
     m_ctrlSliderTransparency.EnableWindow(m_rbEnableTrans);
@@ -76,7 +75,6 @@ void CEditTransparencyDlg::OnCheck1()
 
 void CEditTransparencyDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar)
 {
-    // TODO: Add your message handler code here and/or call default
     m_riLevel = m_ctrlSliderTransparency.GetPos();
 
     CString valstr;
@@ -117,9 +115,7 @@ void CEditTransparencyDlg::OnCancel()
     CDialog::OnCancel();
 }
 
-
 void CEditTransparencyDlg::OnBnClickedOk()
 {
-    // TODO: Add your control notification handler code here
     CDialog::OnOK();
 }

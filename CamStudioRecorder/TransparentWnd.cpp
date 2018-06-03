@@ -1722,7 +1722,6 @@ void CTransparentWnd::RefreshWindowSize()
 // WidthHeight
 void CTransparentWnd::OnContextResize()
 {
-    // TODO: Add your command handler code here
     m_bTrackingOn = true;
 
     // WidthHeight

@@ -247,7 +247,6 @@ LRESULT CFixedRegionDlg::OnRegionUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/)
 
 void CFixedRegionDlg::OnFixedtopleft()
 {
-    // TODO: Add your control notification handler code here
     int fixtl = m_ctrlButtonFixTopLeft.GetCheck();
     m_ctrlEditPosX.EnableWindow(fixtl);
     m_ctrlEditPosY.EnableWindow(fixtl);
@@ -282,8 +281,6 @@ void CFixedRegionDlg::OnEnChangeHeight()
 
 void CFixedRegionDlg::OnBnClickedOk()
 {
-    // TODO: Add your control notification handler code here
-
     OnOK();
 }
 

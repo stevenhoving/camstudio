@@ -757,7 +757,6 @@ void CAudioFormatDlg::OnInterleaveseconds()
 
 void CAudioFormatDlg::OnSystemrecord()
 {
-    // TODO: Add your control notification handler code here
 }
 
 void CAudioFormatDlg::OnHelp()

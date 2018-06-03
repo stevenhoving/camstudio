@@ -23,12 +23,12 @@
 IMPLEMENT_DYNAMIC(video_settings_ui, CDialogEx)
 
 video_settings_ui::video_settings_ui(CWnd* pParent /*=nullptr*/)
-    : CDialogEx(IDD_SETTINGS_UI, pParent)
+    : CDialogEx(IDD_VIDEO_SETTINGS_UI, pParent)
 {
 }
 
 video_settings_ui::video_settings_ui(CWnd *pParent /*= nullptr*/, video_settings_model &model)
-    : CDialogEx(IDD_SETTINGS_UI, pParent)
+    : CDialogEx(IDD_VIDEO_SETTINGS_UI, pParent)
     , model_(&model)
 {
 }
@@ -175,6 +175,7 @@ BEGIN_MESSAGE_MAP(video_settings_ui, CDialogEx)
     ON_BN_CLICKED(IDC_CODEC_QUALITY_BITRATE, &video_settings_ui::OnBnClickedCodecQualityBitrate)
     ON_WM_HSCROLL()
     ON_EN_CHANGE(IDC_CODEC_QUALITY_BITRATE_EDIT, &video_settings_ui::OnEnChangeCodecQualityBitrateEdit)
+    ON_BN_CLICKED(IDOK, &video_settings_ui::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 
@@ -261,4 +262,10 @@ void video_settings_ui::OnEnChangeCodecQualityBitrateEdit()
 
     const auto bitrate = wcstol(bitrate_text, nullptr, 10);
     model_->video_codec_quality_bitrate_ = bitrate;
+}
+
+void video_settings_ui::OnBnClickedOk()
+{
+    model_->save();
+    CDialogEx::OnOK();
 }

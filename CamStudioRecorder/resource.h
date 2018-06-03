@@ -25,7 +25,6 @@
 #define IDB_BITMAP1                     130
 #define IDS_STRING_REC_CAN              130
 #define IDD_CURSOROPTIONS               132
-#define IDB_SCREENANNOTATIONS_SMALL     134
 #define IDI_ICON1                       135
 #define IDI_CUSTOMICON_CONTEXTHELP      136
 #define IDI_CUSTOMICON_MAGNIFY          137
@@ -85,18 +84,13 @@
 #define IDR_CONTEXTLANGUAGE             198
 #define IDD_EFFECTS_OPTIONS             198
 #define IDD_TRANSPARENCY                199
-#define IDB_BITMAP5                     199
 #define IDD_NEWSHAPE                    200
 #define IDD_EDITIMAGE                   201
 #define IDD_DIALOG_MAIN_EFFECTS_OPTIONS 202
 #define IDD_BASICMESSAGE                203
 #define IDC_CURSORDROPPER               205
-#define IDB_BITMAP6                     205
-#define IDB_BITMAP7                     206
 #define IDC_CURSORDRAG                  207
-#define IDB_BITMAP8                     207
 #define IDC_CURSOR4                     208
-#define IDB_BITMAP9                     213
 #define IDB_BITMAP10                    214
 #define IDB_BITMAP3                     220
 #define IDD_CONV_DIALOG                 226
@@ -262,7 +256,7 @@
 #define IDD_SCREENANNOTATIONS2          5103
 #define IDD_TRANSRATE                   5104
 #define IDD_EFFECTS_OPTIONS2            5105
-#define IDD_SETTINGS_UI                 5106
+#define IDD_VIDEO_SETTINGS_UI           5106
 #define IDR_CONTEXTEDITOBJ              5130
 #define IDR_CONTEXTEDITLAYOUT           5131
 #define IDR_CONTEXTVIDEO                5132
@@ -422,7 +416,6 @@
 #define ID_OUTPUTDIRECTORY_USEWINDOWSTEMPORARYDIRECTORY 32940
 #define ID_OUTPUTDIRECTORY_USEMYCAMSTUDIORECORDINGSDIRECTORY 32941
 #define ID_OUTPUTDIRECTORY_USEUSERSPECIFIEDDIRECTORY 32942
-#define ID_MP4                          32950
 #define ID_TOOLS_SETTINGS               32951
 #define IDS_STRING_NOTE                 61446
 #define IDS_STRING_INTERLEAVE1          61447
@@ -566,7 +559,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        234
-#define _APS_NEXT_COMMAND_VALUE         32952
+#define _APS_NEXT_COMMAND_VALUE         32954
 #define _APS_NEXT_CONTROL_VALUE         1099
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
