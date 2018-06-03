@@ -22,6 +22,9 @@ add_subdirectory(CxImage)
 add_subdirectory(localization)
 add_subdirectory(fmt)
 add_subdirectory(googletest)
+
+# cpptoml settings
+set(CPPTOML_BUILD_EXAMPLES OFF CACHE BOOL "Disable cpptoml examples" FORCE)
 add_subdirectory(cpptoml)
 
 # libconfig settings
@@ -41,4 +44,3 @@ set_target_properties(fmt
   PROPERTIES
     FOLDER "External/fmt"
 )
-
