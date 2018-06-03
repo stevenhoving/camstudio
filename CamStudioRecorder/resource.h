@@ -148,9 +148,7 @@
 #define IDC_IFACTOR                     1022
 #define IDC_INTERLEAVE                  1023
 #define IDC_RECORDKEY                   1025
-#define IDC_AUTO                        1026
 #define IDC_NEXTKEY                     1026
-#define IDC_ADJUST                      1027
 #define ID_PROGRESS_CANCEL              1027
 #define IDC_EDITCAPTION                 1029
 #define IDC_DATE                        1030
@@ -240,13 +238,8 @@
 #define IDC_STATICHEIGHT                1075
 #define IDC_ALT7                        1075
 #define IDC_SHIFT7                      1076
-#define IDC_LOCK                        1078
 #define IDC_LANG_ENC                    1081
 #define IDC_CODEC_PRESET_NAME           1098
-#define IDC_KEYFRAMES2                  1154
-#define IDC_STATIC_KEYFRAMES2           1278
-#define IDC_STATIC_KEYFRAMES3           1279
-#define IDC_COMBO1                      1290
 #define IDC_RECORDFORMAT                1290
 #define IDC_PREDEFINEDSHAPE             1290
 #define IDC_INPUTDEVICE                 1291
@@ -265,7 +258,6 @@
 #define IDC_CODEC_QUALITY_VALUE         1303
 #define IDC_VIDEO_CODEC_EXTRA           1304
 #define IDD_ABOUTBOX                    5100
-#define IDD_VIDEOOPTIONS                5101
 #define IDD_AUDIOWAVEOUT                5102
 #define IDD_SCREENANNOTATIONS2          5103
 #define IDD_TRANSRATE                   5104
