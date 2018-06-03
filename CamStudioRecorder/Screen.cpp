@@ -268,7 +268,7 @@ void CCamera::InsertText(CDC *pDC, const CRect &rectBase, TextAttributes &rTextA
     // Prepare multiple lines text support
     size_t nBlockLength = rTextAttrs.text.GetLength();
     size_t nMaxLength = nBlockLength; // For now we assume that Max and BlockLength are equal (as is with singleline strings)
-    size_t nNrOfLine = 1;
+    int nNrOfLine = 1;
     size_t nNewLinePos = rTextAttrs.text.FindOneOf(_T("\n"));
 
     // Define thickness of the border
@@ -315,7 +315,7 @@ void CCamera::InsertText(CDC *pDC, const CRect &rectBase, TextAttributes &rTextA
 
     CSize sizeText = dcBits.GetTextExtent(
         rTextAttrs.text,
-        nBlockLength); // Use Blocklength because with multiple lines this will be less than textlength.
+        (int)nBlockLength); // Use Blocklength because with multiple lines this will be less than textlength.
 
     // Required area's and offset pointers.
     CSize innerRectDimensions(sizeText.cx, nNrOfLine * sizeText.cy); // Used for drawing text
