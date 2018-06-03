@@ -19,3 +19,6 @@
 [submodule "dep/cmake_utility"]
 	path = dep/cmake_utility
 	url = https://github.com/aeon-engine/libaeon-cmake.git
+[submodule "dep/cpptoml"]
+	path = dep/cpptoml
+	url = https://github.com/skystrife/cpptoml.git
