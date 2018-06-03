@@ -40,8 +40,6 @@ set(RECORDER_SOURCE
     AutopanSpeedDlg.h
     AutoSearchDlg.cpp
     AutoSearchDlg.h
-    AVICompressorFilter.cpp
-    AVICompressorFilter.h
     BasicMessageDlg.cpp
     BasicMessageDlg.h
     CamCursor.cpp
