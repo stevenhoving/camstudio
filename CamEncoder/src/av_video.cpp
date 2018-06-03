@@ -265,7 +265,7 @@ void av_video::open(AVStream *stream, av_dict &dict)
     dict = av_opts_;
     auto av_opts = av_opts_;
 
-    if (int ret = avcodec_open2(context_, codec_, av_opts); ret)
+    if (int ret = avcodec_open2(context_, codec_, av_opts); ret < 0)
         throw std::runtime_error(fmt::format("av_video: unable to open video encoder: {}",
             av_error_to_string(ret)));
 
