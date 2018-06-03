@@ -27,7 +27,6 @@
 #include "ScreenAnnotationsDlg.h"
 #include "SyncDlg.h"
 #include "TroubleShootDlg.h"
-#include "VideoOptionsDlg.h"
 #include "ProgressDlg.h"
 
 

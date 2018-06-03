@@ -93,8 +93,6 @@ set(RECORDER_SOURCE
     TransRateDlg.h
     TroubleShootDlg.cpp
     TroubleShootDlg.h
-    VideoOptionsDlg.cpp
-    VideoOptionsDlg.h
     VideoWnd.cpp
     CamStudioCommandLineInfo.h
     FlashingWnd.h
