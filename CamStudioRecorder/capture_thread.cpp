@@ -21,8 +21,6 @@
 #include <fmt/printf.h>
 #include <algorithm>
 
-
-
 std::optional<video::preset> cam_create_codec_preset(video_codec_preset preset)
 {
     switch(preset.get_index())
@@ -63,9 +61,9 @@ std::optional<video::profile> cam_create_codec_profile(video_codec_profile profi
     case video_codec_profile::type::baseline: return video::profile::baseline;
     case video_codec_profile::type::main: return video::profile::main;
     case video_codec_profile::type::high: return video::profile::high;
-    case video_codec_profile::type::high10: return video::profile::high10;
-    case video_codec_profile::type::high422: return video::profile::high422;
-    case video_codec_profile::type::high444: return video::profile::high444;
+    //case video_codec_profile::type::high10: return video::profile::high10; /* disable for now */
+    //case video_codec_profile::type::high422: return video::profile::high422;
+    //case video_codec_profile::type::high444: return video::profile::high444;
     }
     return {};
 }
@@ -73,21 +71,11 @@ std::optional<video::profile> cam_create_codec_profile(video_codec_profile profi
 av_video_meta cam_create_video_config(const int width, const int height, const int fps, video_settings_model &settings)
 {
     av_video_meta meta;
-    // \todo make all these parameters configurable through the UI.
-    
+
     meta.bpp = 24;
     meta.width = width;
     meta.height = height;
     meta.fps = {fps, 1};
-    //meta.preset = video::preset::ultrafast;
-    //meta.profile = video::profile::baseline;
-    //meta.profile = video::profile::high;
-    //meta.tune = video::tune::animation;
-    //meta.tune = video::tune::zerolatency;
-
-    std::optional<video::preset> preset;
-    std::optional<video::tune> tune;
-    std::optional<video::profile> profile; // for example h264
 
     if (settings.video_codec_quality_type_ == video_quality_type::constant_quality)
         meta.quality = settings.video_codec_quality_constant_;
@@ -97,7 +85,6 @@ av_video_meta cam_create_video_config(const int width, const int height, const i
     meta.preset = cam_create_codec_preset(settings.video_codec_preset_);
     meta.profile = cam_create_codec_profile(settings.video_codec_profile_);
     meta.tune = cam_create_codec_tune(settings.video_codec_tune_);
-
 
     return meta;
 }

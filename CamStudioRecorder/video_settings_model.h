@@ -244,9 +244,9 @@ public:
         baseline,
         main,
         high,
-        high10,
-        high422,
-        high444
+        //high10, /* disable for now */
+        //high422,
+        //high444
     };
     static constexpr auto names()
     {
@@ -254,10 +254,11 @@ public:
             L"Auto",
             L"Baseline",
             L"Main",
-            L"High",
-            L"High10",
-            L"High422",
-            L"High444");
+            L"High"
+            //L"High10", /* disable for now */
+            //L"High422",
+            //L"High444"
+            );
     }
 
     video_codec_profile(type new_type)
