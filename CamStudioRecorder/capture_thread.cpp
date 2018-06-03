@@ -37,6 +37,7 @@ std::optional<video::preset> cam_create_codec_preset(video_codec_preset preset)
         case video_codec_preset::type::slower: return video::preset::slower;
         case video_codec_preset::type::veryslow: return video::preset::veryslow;
     }
+    return {};
 }
 
 std::optional<video::tune> cam_create_codec_tune(video_codec_tune tune)
@@ -51,6 +52,7 @@ std::optional<video::tune> cam_create_codec_tune(video_codec_tune tune)
     case video_codec_tune::type::fastdecode: return video::tune::fastdecode;
     case video_codec_tune::type::zerolatency: return video::tune::zerolatency;
     }
+    return {};
 }
 
 std::optional<video::profile> cam_create_codec_profile(video_codec_profile profile)
@@ -65,7 +67,7 @@ std::optional<video::profile> cam_create_codec_profile(video_codec_profile profi
     case video_codec_profile::type::high422: return video::profile::high422;
     case video_codec_profile::type::high444: return video::profile::high444;
     }
-
+    return {};
 }
 
 av_video_meta cam_create_video_config(const int width, const int height, const int fps, video_settings_model &settings)
