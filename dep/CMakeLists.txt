@@ -22,6 +22,7 @@ add_subdirectory(CxImage)
 add_subdirectory(localization)
 add_subdirectory(fmt)
 add_subdirectory(googletest)
+add_subdirectory(cpptoml)
 
 # libconfig settings
 set(BUILD_EXAMPLES OFF CACHE BOOL "Disable libconfig examples" FORCE)
@@ -41,7 +42,3 @@ set_target_properties(fmt
     FOLDER "External/fmt"
 )
 
-#install(
-#    DIRECTORY ${CMAKE_BINARY_DIR}/bin/
-#    DESTINATION bin
-#)
