@@ -290,7 +290,7 @@ public:
     video_codec video_codec_{video_codec::type::x264};
     video_codec_preset video_codec_preset_{video_codec_preset::type::ultrafast};
     video_codec_tune video_codec_tune_{video_codec_tune::type::none};
-    video_codec_profile video_codec_profile_{video_codec_profile::type::none};
+    video_codec_profile video_codec_profile_{video_codec_profile::type::baseline};
     video_codec_level video_codec_level_{video_codec_level::type::none};
     int video_codec_quality_bitrate_{4000};
     int video_codec_quality_constant_{27};
