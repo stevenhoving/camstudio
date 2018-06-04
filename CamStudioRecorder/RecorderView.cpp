@@ -476,35 +476,26 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
     ON_UPDATE_COMMAND_UI(ID_SCREENS_SELECTSCREEN, OnUpdateRegionSelectScreen)
     ON_COMMAND(ID_SCREENS_ALLSCREENS, OnRegionAllScreens)
     ON_UPDATE_COMMAND_UI(ID_SCREENS_ALLSCREENS, OnUpdateRegionAllScreens)
-    ON_COMMAND(ID_HELP_WEBSITE, OnHelpWebsite)
-    ON_COMMAND(ID_HELP_HELP, OnHelpHelp)
     ON_COMMAND(ID_PAUSE, OnPause)
     ON_UPDATE_COMMAND_UI(ID_PAUSE, OnUpdatePause)
     ON_COMMAND(ID_OPTIONS_RECORDAUDIO, OnOptionsRecordaudio)
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDAUDIO, OnUpdateOptionsRecordaudio)
     ON_COMMAND(ID_OPTIONS_AUDIOFORMAT, OnOptionsAudioformat)
     ON_COMMAND(ID_OPTIONS_AUDIOSPEAKERS, OnOptionsAudiospeakers)
-    ON_COMMAND(ID_HELP_FAQ, OnHelpFaq)
     ON_COMMAND(ID_OPTIONS_RECORDAUDIO_DONOTRECORDAUDIO, OnOptionsRecordaudioDonotrecordaudio)
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDAUDIO_DONOTRECORDAUDIO, OnUpdateOptionsRecordaudioDonotrecordaudio)
     ON_COMMAND(ID_OPTIONS_RECORDAUDIO_RECORDFROMSPEAKERS, OnOptionsRecordaudioRecordfromspeakers)
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDAUDIO_RECORDFROMSPEAKERS, OnUpdateOptionsRecordaudioRecordfromspeakers)
     ON_COMMAND(ID_OPTIONS_RECORDAUDIOMICROPHONE, OnOptionsRecordaudiomicrophone)
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDAUDIOMICROPHONE, OnUpdateOptionsRecordaudiomicrophone)
-    ON_COMMAND(ID_HELP_DONATIONS, OnHelpDonations)
-    ON_COMMAND(ID_VIEW_SCREENANNOTATIONS, OnViewScreenannotations)
-    ON_UPDATE_COMMAND_UI(ID_VIEW_SCREENANNOTATIONS, OnUpdateViewScreenannotations)
-    ON_COMMAND(ID_VIEW_VIDEOANNOTATIONS, OnViewVideoannotations)
     ON_COMMAND(ID_OPTIONS_AUDIOOPTIONS_AUDIOVIDEOSYNCHRONIZATION, OnOptionsSynchronization)
     ON_COMMAND(ID_AVISWF, OnAVISWFMP4)
     ON_COMMAND(ID_OPTIONS_NAMING_AUTODATE, OnOptionsNamingAutodate)
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_NAMING_AUTODATE, OnUpdateOptionsNamingAutodate)
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_LANGUAGE_ENGLISH, OnUpdateOptionsLanguageEnglish)
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_LANGUAGE_GERMAN, OnUpdateOptionsLanguageGerman)
-//    ON_UPDATE_COMMAND_UI(ID_OPTIONS_LANGUAGE_FILIPINO, OnUpdateOptionsLanguageFilipino)
     ON_COMMAND(ID_OPTIONS_LANGUAGE_ENGLISH, OnOptionsLanguageEnglish)
     ON_COMMAND(ID_OPTIONS_LANGUAGE_GERMAN, OnOptionsLanguageFilipino)
-    //ON_COMMAND(ID_OPTIONS_LANGUAGE_FILIPINO, OnOptionsLanguageFilipino)
     ON_COMMAND(ID_REGION_WINDOW, OnRegionWindow)
     ON_UPDATE_COMMAND_UI(ID_REGION_WINDOW, OnUpdateRegionWindow)
 
@@ -575,12 +566,9 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
     ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_GENERIC, OnUserGeneric)
     ON_MESSAGE(MM_WIM_DATA, OnMM_WIM_DATA)
     ON_MESSAGE(WM_HOTKEY, OnHotKey)
-    ON_COMMAND(ID_HELP_CAMSTUDIOBLOG, OnHelpCamstudioblog)
-//    ON_BN_CLICKED(IDC_BUTTONLINK, OnBnClickedButtonlink)
     ON_WM_CAPTURECHANGED()
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_AUDIOOPTIONS_AUDIOVIDEOSYNCHRONIZATION,
                          &CRecorderView::OnUpdateOptionsAudiooptionsAudiovideosynchronization)
-    ON_COMMAND(ID_TOOLS_SETTINGS, &CRecorderView::OnToolsSettings)
 END_MESSAGE_MAP()
 
 BEGIN_EVENTSINK_MAP(CRecorderView, CView)
@@ -2895,63 +2883,6 @@ void CRecorderView::OnUpdateUsePlayer20(CCmdUI *pCmdUI)
     pCmdUI->SetCheck(cProgramOpts.m_iLaunchPlayer == CAM2_PLAYER);
 }
 
-void CRecorderView::OnViewScreenannotations()
-{
-    if (!bCreatedSADlg)
-    {
-        sadlg.Create(IDD_SCREENANNOTATIONS2, nullptr);
-        sadlg.RefreshShapeList();
-        bCreatedSADlg = true;
-    }
-
-    if (sadlg.IsWindowVisible())
-        sadlg.ShowWindow(SW_HIDE);
-    else
-        sadlg.ShowWindow(SW_RESTORE);
-}
-
-void CRecorderView::OnUpdateViewScreenannotations(CCmdUI * /*pCmdUI*/)
-{
-}
-
-void CRecorderView::OnViewVideoannotations()
-{
-    if (!vanWndCreated)
-    {
-        int x = (rand() % 100) + 100;
-        int y = (rand() % 100) + 100;
-        CRect rect;
-        CString vastr("Video Annotation");
-        CString m_newShapeText("Right Click to Edit Text");
-
-        rect.left = x;
-        rect.top = y;
-        // TODO, Magic values here again 160,120
-        rect.right = rect.left + 160 - 1;
-        rect.bottom = rect.top + 120 - 1;
-        van_wnd_.TextString(m_newShapeText);
-        van_wnd_.ShapeString(vastr);
-        van_wnd_.CreateTransparent(van_wnd_.ShapeString(), rect, nullptr);
-        vanWndCreated = 1;
-    }
-
-    if (van_wnd_.IsWindowVisible())
-    {
-        van_wnd_.ShowWindow(SW_HIDE);
-    }
-    else
-    {
-        if (van_wnd_.m_iStatus != 1)
-        {
-            MessageOut(nullptr, IDS_STRING_NOWEBCAM, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            return;
-        }
-
-        van_wnd_.OnUpdateSize();
-        van_wnd_.ShowWindow(SW_RESTORE);
-    }
-}
-
 void CRecorderView::OnSetFocus(CWnd *pOldWnd)
 {
     CView::OnSetFocus(pOldWnd);
@@ -3371,16 +3302,6 @@ void CRecorderView::OnEffectsOptions()
         // Watermark
         cWatermarkOpts.m_iaWatermark = dlg.m_image;
     }
-}
-
-void CRecorderView::OnHelpCamstudioblog()
-{
-    // Openlink("http://www.camstudio.org/blog");
-}
-
-void CRecorderView::OnBnClickedButtonlink()
-{
-    // Openlink("http://www.camstudio.org/blog");
 }
 
 void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)

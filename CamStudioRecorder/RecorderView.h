@@ -140,8 +140,6 @@ protected:
     afx_msg void OnHelpDonations();
     afx_msg void OnOptionsUsePlayer20();
     afx_msg void OnUpdateUsePlayer20(CCmdUI *pCmdUI);
-    afx_msg void OnViewScreenannotations();
-    afx_msg void OnUpdateViewScreenannotations(CCmdUI *pCmdUI);
     afx_msg void OnViewVideoannotations();
     afx_msg void OnOptionsSynchronization();
     afx_msg void OnSetFocus(CWnd *pOldWnd);
@@ -172,8 +170,6 @@ protected:
     afx_msg void OnAnnotationAddwatermark();
     afx_msg void OnUpdateAnnotationAddwatermark(CCmdUI *pCmdUI);
     afx_msg void OnEffectsOptions();
-    afx_msg void OnHelpCamstudioblog();
-    afx_msg void OnBnClickedButtonlink();
     afx_msg void OnUpdateOptionsAudiooptionsAudiovideosynchronization(CCmdUI *pCmdUI);
 
     //}}AFX_MSG

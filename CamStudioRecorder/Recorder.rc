@@ -277,16 +277,6 @@ BEGIN
             MENUITEM "German",                      ID_OPTIONS_LANGUAGE_GERMAN
         END
     END
-    POPUP "&Tools"
-    BEGIN
-        MENUITEM "Settings",                    ID_TOOLS_SETTINGS
-        MENUITEM SEPARATOR
-        MENUITEM "&Screen Annotations",         ID_VIEW_SCREENANNOTATIONS
-        MENUITEM "&Video Annotations",          ID_VIEW_VIDEOANNOTATIONS
-        MENUITEM SEPARATOR
-        MENUITEM "CamStudio Movie Player",      ID_TOOLS_PLAYER
-        MENUITEM "CamStudio Movie Player 2.0",  ID_TOOLS_PLAYER2
-    END
     POPUP "&Effects"
     BEGIN
         POPUP "A&nnotation"
@@ -297,19 +287,8 @@ BEGIN
         END
         MENUITEM "Options...",                  ID_EFFECTS_OPTIONS
     END
-    POPUP "&View"
-    BEGIN
-        MENUITEM "&Normal View",                ID_VIEW_NORMALVIEW
-        MENUITEM "&Compact View",               ID_VIEW_COMPACTVIEW
-        MENUITEM "&Buttons View",               ID_VIEW_BUTTONSVIEW
-    END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&Help",                       ID_HELP_HELP
-        MENUITEM SEPARATOR
-        MENUITEM "&CamStudio Homepage",         ID_HELP_WEBSITE
-        MENUITEM "CamStudio &FAQ",              ID_HELP_FAQ
-        MENUITEM SEPARATOR
         MENUITEM "&About",                      ID_APP_ABOUT
     END
 END
@@ -477,24 +456,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Layout Shortcuts ...",        ID_EDITLAYOUT_LAYOUTSHORTCUTS
         MENUITEM "Close All Objects",           ID_OBJECTS_CLOSEALLOBJECTS
-    END
-    POPUP "Help "
-    BEGIN
-        MENUITEM "Screen Annotations Help",     ID_HELP_HELP
-        MENUITEM SEPARATOR
-        MENUITEM "Shapes",                      ID_HELP_SHAPES
-        POPUP "Shape Topics"
-        BEGIN
-            MENUITEM "Instantiating a shape",       ID_HELP_SHAPETOPICS_INSTANTIATINGASHAPE
-            MENUITEM "Editing a shape",             ID_HELP_SHAPETOPICS_EDITINGASHAPE
-            MENUITEM "Editing Text",                ID_HELP_SHAPETOPICS_EDITINGTEXT
-            MENUITEM "Editing Image",               ID_HELP_SHAPETOPICS_EDITINGIMAGE
-            MENUITEM "Editing Transparency",        ID_HELP_SHAPETOPICS_EDITINGTRANSPARENCY
-            MENUITEM "Resizing Shapes",             ID_HELP_SHAPETOPICS_RESIZINGSHAPES
-            MENUITEM "Managing shapes\t",           ID_HELP_SHAPETOPICS_MANAGINGSHAPES
-            MENUITEM "Creating a new shape",        ID_HELP_SHAPETOPICS_CREATINGANEWSHAPE
-        END
-        MENUITEM "Layouts",                     ID_HELP_LAYOUTS
     END
 END
 
@@ -1014,12 +975,12 @@ BEGIN
 END
 
 IDD_VIDEO_SETTINGS_UI DIALOGEX 0, 0, 410, 267
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Video Settings"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,346,246,57,14
-    GROUPBOX        "Source",IDC_STATIC,7,7,396,32
+    GROUPBOX        "Capture",IDC_STATIC,7,7,396,32
     COMBOBOX        IDC_VIDEO_SOURCE_COMBO,64,18,102,61,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Source:",IDC_STATIC,37,20,24,8
     LTEXT           "Framerate (FPS):",IDC_STATIC,185,20,58,8
@@ -2573,9 +2534,6 @@ BEGIN
                             "Play AVI file when recording stops"
     ID_OPTIONS_HIDEFLASHING "Hide flashing rectangle during recording"
     ID_OPTIONS_PROGRAMOPTIONS_PLAYAVI "Play AVI file when recording stops"
-    ID_HELP_WEBSITE         "Visit the website of CamStudio"
-    ID_HELP_HELP            "Display CamStudio Help"
-    ID_VIEW_COMPACTVIEW     "Compact view"
     ID_PAUSE                "Pause recording"
     ID_VIEW_BUTTONVIEW      "Button View"
     ID_OPTIONS_RECORDAUDIO  "Recording audio from microphone"
@@ -2585,11 +2543,9 @@ END
 STRINGTABLE
 BEGIN
     ID_OPTIONS_AUDIOFORMAT  "Set audio options for microphone"
-    ID_HELP_FAQ             "Visit the frequently asked questions webpage "
     ID_OPTIONS_KEYBOARDSHORTCUTS "Set program key shortcuts"
     ID_VIEW_BUTTONSVIEW     "Buttons view"
     ID_VIEWTYPE             "Toggle view"
-    ID_VIEW_NORMALVIEW      "Normal view"
     ID_OPTIONS_PROGRAMOPTIONS_SAVESETTINGSONEXIT "Save settings on exit"
     ID_OPTIONS_RECORDINGTHREADPRIORITY_NORMAL 
                             "Set recording thread priority to normal"
@@ -2620,10 +2576,8 @@ BEGIN
                             "Use your system's default player to play the AVI file "
     ID_OPTIONS_PROGRAMOPTIONS_NOPLAY 
                             "Do not play AVI file when recording stops"
-    ID_HELP_DONATIONS       "Donate to CamStudio"
     ID_OPTIONS_PROGRAMOPTIONS_PLAYAVIFILEWHENRECORDINGSTOPS_USECAMSTUDIOPLAYER20 
                             "Use CamStudio Player 2.0 to play the AVI file"
-    ID_VIEW_SCREENANNOTATIONS "Display screen annotations dialog"
 END
 
 STRINGTABLE
@@ -2835,9 +2789,6 @@ BEGIN
     ID_ANNOTATION_ADDCAPTION "Add a caption to the recording"
     ID_ANNOTATION_ADDWATERMARK "Add a watermark to the recording"
     ID_EFFECTS_OPTIONS      "Set effects options"
-    ID_HELP_CAMSTUDIOBLOG   "Visit the CamStudio blog"
-    ID_TOOLS_PLAYER         "Launch CamStudio Movie Player"
-    ID_TOOLS_PLAYER2        "Launch CamStudio Movie Player 2.0"
     ID_REGION_ALLSCREENS    "Capture all monitors"
 END
 

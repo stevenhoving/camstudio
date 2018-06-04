@@ -18,18 +18,9 @@ public:
         return m_bmLogo;
     }
 
-    // Operations
-public:
-    void UpdateViewtype();
+    BOOL PreCreateWindow(CREATESTRUCT &cs) override;
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CMainFrame)
-public:
-    virtual BOOL PreCreateWindow(CREATESTRUCT &cs);
-    //}}AFX_VIRTUAL
 
-    // Implementation
 public:
     ~CMainFrame() override;
 #ifdef _DEBUG
@@ -50,13 +41,6 @@ protected:
     //{{AFX_MSG(CMainFrame)
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnClose();
-    afx_msg void OnViewCompactview();
-    afx_msg void OnUpdateViewCompactview(CCmdUI *pCmdUI);
-    afx_msg void OnViewButtonsview();
-    afx_msg void OnUpdateViewButtonsview(CCmdUI *pCmdUI);
-    afx_msg void OnViewNormalview();
-    afx_msg void OnUpdateViewNormalview(CCmdUI *pCmdUI);
-    afx_msg void OnViewtype();
     //}}AFX_MSG
     afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
     afx_msg LRESULT OnTrayNotify(WPARAM wParam, LPARAM lParam);

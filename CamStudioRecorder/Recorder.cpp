@@ -68,10 +68,6 @@ public:
 
 private:
     CStatic m_ctrlStaticVersion;
-
-public:
-    afx_msg void OnStnClickedStaticVersion();
-    afx_msg void OnBnClickedButtonlink3();
 };
 
 CAboutDlg::CAboutDlg()
@@ -90,16 +86,9 @@ void CAboutDlg::DoDataExchange(CDataExchange *pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
-//{{AFX_MSG_MAP(CAboutDlg)
-//ON_BN_CLICKED(IDC_BUTTONLINK, OnButtonlink)
-//ON_BN_CLICKED(IDC_BUTTONLINK2, OnBnClickedButtonlink2)
-//}}AFX_MSG_MAP
-ON_STN_CLICKED(IDC_STATIC_VERSION, &CAboutDlg::OnStnClickedStaticVersion)
-ON_BN_CLICKED(IDC_BUTTONLINK3, &CAboutDlg::OnBnClickedButtonlink3)
 END_MESSAGE_MAP()
 
 BEGIN_EVENTSINK_MAP(CAboutDlg, CDialog)
-// ON_EVENT(CAboutDlg, IDC_BUTTONLINK2, DISPID_CLICK, OnBnClickedButtonlink2, VTS_NONE)
 END_EVENTSINK_MAP()
 
 BOOL CAboutDlg::OnInitDialog()
@@ -310,11 +299,6 @@ BOOL CRecorderApp::InitInstance()
     m_pMainWnd->ShowWindow(SW_SHOW);
     m_pMainWnd->UpdateWindow();
 
-    if (cProgramOpts.m_iViewType != VIEW_NORMAL)
-    {
-        CMainFrame *cwind = (CMainFrame *)AfxGetMainWnd();
-        cwind->UpdateViewtype();
-    }
     return TRUE;
 }
 
@@ -509,13 +493,4 @@ bool CRecorderApp::RegisterWindowClass()
         return false;
     }
     return true;
-}
-
-void CAboutDlg::OnStnClickedStaticVersion()
-{
-}
-
-void CAboutDlg::OnBnClickedButtonlink3()
-{
-    ::PostMessage(g_hWndGlobal, WM_COMMAND, ID_HELP_WEBSITE, 0);
 }
