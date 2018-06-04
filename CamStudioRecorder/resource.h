@@ -114,7 +114,6 @@
 #define IDC_SLIDER_BRIGHTNESS           1007
 #define IDC_HIGHLIGHTSHAPE              1008
 #define IDC_HEIGHTSLIDER                1008
-#define IDC_RATESLIDER                  1008
 #define IDC_VIDEO_CONTAINER_COMBO       1008
 #define IDC_CUSTOMCURSOR                1009
 #define IDC_STOPKEY                     1010
@@ -171,7 +170,6 @@
 #define IDC_SYSTEMRECORD                1057
 #define IDC_BUTTONLINK3                 1057
 #define IDC_SHIFT1                      1058
-#define IDC_RATETEXT                    1058
 #define IDC_BUTTON_FONT                 1058
 #define IDC_BUTTON_TEXT_COLOR           1059
 #define IDC_IMAGEFILETEXT               1059
@@ -254,7 +252,6 @@
 #define IDD_ABOUTBOX                    5100
 #define IDD_AUDIOWAVEOUT                5102
 #define IDD_SCREENANNOTATIONS2          5103
-#define IDD_TRANSRATE                   5104
 #define IDD_EFFECTS_OPTIONS2            5105
 #define IDD_VIDEO_SETTINGS_UI           5106
 #define IDR_CONTEXTEDITOBJ              5130

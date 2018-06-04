@@ -2,7 +2,6 @@
 #include "Recorder.h"
 #include "AudioFormatDlg.h"
 
-#include "RecorderView.h"
 #include "vfw/ACM.h"
 
 #include <CamLib/AudioVolume.h>

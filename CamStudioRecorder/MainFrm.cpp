@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "MainFrm.h"
-#include "RecorderView.h"
 #include <CamLib/console.h>
 #include <afxdatarecovery.h>
 

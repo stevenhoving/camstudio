@@ -1,6 +1,5 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "Screen.h"
-#include "RecorderView.h"
 #include <CamHook/ClickQueue.h>
 
 #include "addons/EffectsOptionsDlg.h"

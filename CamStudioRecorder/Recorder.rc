@@ -837,19 +837,6 @@ BEGIN
     LTEXT           "Making a window transparent will slow\nthe recording rate significantly.",IDC_STATIC,29,35,120,17
 END
 
-IDD_TRANSRATE DIALOGEX 0, 0, 186, 126
-STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Edit Refresh Rate"
-FONT 8, "MS Sans Serif", 0, 0, 0x0
-BEGIN
-    DEFPUSHBUTTON   "Close",IDOK,6,97,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,62,97,50,14,NOT WS_VISIBLE
-    GROUPBOX        "Webcam / Video Refresh Rate ",-1,7,7,172,83
-    CONTROL         "Slider1",IDC_RATESLIDER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,15,65,121,12
-    LTEXT           "Rate",IDC_RATETEXT,144,65,28,12,SS_CENTERIMAGE
-    LTEXT           "Note : If the refresh rate is too high, it will cause your system to slow down and will even freeze the display of dialog boxes in CamStudio. This is especially true if transparency is turned on.",-1,15,22,156,36
-END
-
 IDD_SYNCHRONIZATION DIALOGEX 0, 0, 244, 134
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Audio and Video Synchronization"
@@ -1182,14 +1169,6 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 179
         TOPMARGIN, 7
-    END
-
-    IDD_TRANSRATE, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 179
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 119
     END
 
     IDD_SYNCHRONIZATION, DIALOG

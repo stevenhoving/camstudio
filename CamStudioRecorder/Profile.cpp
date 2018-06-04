@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "Recorder.h"
 #include "Profile.h"
 #include "HotKey.h"

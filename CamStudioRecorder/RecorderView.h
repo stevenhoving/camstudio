@@ -1,10 +1,8 @@
 #pragma once
 
-#include "VideoWnd.h"
 #include "FlashingWnd.h"
 #include "BasicMessageDlg.h"
 #include "screen.h"
-
 
 #include "capture_thread.h"
 
@@ -197,7 +195,6 @@ private:
     std::unique_ptr<video_settings_model> video_settings_model_;
 
     CFlashingWnd flashing_wnd_;
-    CVideoWnd van_wnd_;
     CCamera camera_;
     CBasicMessageDlg *basic_msg_;
     double zoom_;

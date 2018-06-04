@@ -56,9 +56,8 @@ set(RECORDER_SOURCE
     FlashingWnd.cpp
     FolderDlg.cpp
     FolderDlg.h
-    FrameGrabber.cpp
-    FrameGrabber.h
     GdiPlusInitializer.cpp
+    GdiPlusInitializer.h
     HotKey.cpp
     KeyshortcutsDlg.cpp
     KeyshortcutsDlg.h
@@ -90,14 +89,10 @@ set(RECORDER_SOURCE
     TextDlg.cpp
     TextDlg.h
     TransparentWnd.cpp
-    TransRateDlg.cpp
-    TransRateDlg.h
     TroubleShootDlg.cpp
     TroubleShootDlg.h
-    VideoWnd.cpp
     CamStudioCommandLineInfo.h
     FlashingWnd.h
-    GdiPlusInitializer.h
     HotKey.h
     LayeredWindowHelperST.h
     LayoutList.h
@@ -113,7 +108,6 @@ set(RECORDER_SOURCE
     RecorderView.h
     ResizeDlg.h
     TransparentWnd.h
-    VideoWnd.h
 )
 
 set(RECORDER_VFW_SOURCE

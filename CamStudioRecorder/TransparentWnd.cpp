@@ -16,7 +16,6 @@
 #include "Recorder.h"
 #include "TransparentWnd.h"
 #include "MainFrm.h" // for maxxScreen, maxyScreen
-#include "RecorderView.h"
 #include "MouseCaptureWnd.h"
 #include "resource.h"
 

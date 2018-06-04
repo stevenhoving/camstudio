@@ -7,7 +7,7 @@
 #include "Recorder.h"
 #include "FixedRegionDlg.h"
 #include "MainFrm.h" // for maxxScreen, maxyScreen
-#include "RecorderView.h"
+#include "RecorderView.h" // for g_rcUse
 #include "MouseCaptureWnd.h"
 
 #ifdef _DEBUG

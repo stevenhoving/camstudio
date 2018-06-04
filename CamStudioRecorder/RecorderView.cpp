@@ -7,8 +7,9 @@
 
 #include "stdafx.h"
 #include "Recorder.h"
-
 #include "RecorderView.h"
+
+
 #include "RecorderDoc.h"
 #include "MainFrm.h"
 
@@ -201,9 +202,6 @@ int TroubleShootVal = 0;
 
 CScreenAnnotationsDlg sadlg;
 int bCreatedSADlg = false;
-
-// ver 1.8
-int vanWndCreated = 0;
 
 int g_keySCOpened = 0;
 
@@ -1202,16 +1200,6 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
         }
         CloseHandle(hfile);
         std::experimental::filesystem::remove(strTargetVideoFile.GetString());
-
-        // ver 1.8
-        if (vanWndCreated)
-        {
-            if (van_wnd_.IsWindowVisible())
-            {
-                // Otherwise, will slow down the merging significantly
-                van_wnd_.ShowWindow(SW_HIDE);
-            }
-        }
 
         // If video only (Do not record audio) there is no reason to merge video with audio and video.avi file could be
         // used without further processing.
