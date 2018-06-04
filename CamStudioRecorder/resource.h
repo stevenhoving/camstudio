@@ -8,7 +8,6 @@
 #define ID_FONT                         3
 #define ID_MANUALCONFIG                 3
 #define IDRESET                         3
-#define IDNEXT                          3
 #define IDC_BKCOLOR                     3
 #define IDVOLUME                        4
 #define IDOPTIONSDATE                   4
@@ -160,8 +159,6 @@
 #define IDC_STATICVOLUME                1051
 #define IDC_STATICINFO                  1052
 #define IDC_CHECK1                      1053
-#define IDC_LIST1                       1053
-#define IDC_TAB1                        1054
 #define IDC_CHECK2                      1054
 #define IDC_EDIT1                       1055
 #define IDC_CTRL1                       1056
@@ -251,7 +248,6 @@
 #define IDC_VIDEO_CODEC_EXTRA           1304
 #define IDD_ABOUTBOX                    5100
 #define IDD_AUDIOWAVEOUT                5102
-#define IDD_SCREENANNOTATIONS2          5103
 #define IDD_EFFECTS_OPTIONS2            5105
 #define IDD_VIDEO_SETTINGS_UI           5106
 #define IDR_CONTEXTEDITOBJ              5130

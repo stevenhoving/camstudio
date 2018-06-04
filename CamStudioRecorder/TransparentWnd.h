@@ -62,7 +62,6 @@ public:
     BOOL LoadShape(FILE *fptr);
 
     void RefreshWindowSize();
-    void EnsureOnTopList(CTransparentWnd *transWnd);
 
     // accessor/mutators
     bool EditImageOn() const
@@ -222,13 +221,10 @@ protected:
     afx_msg BOOL OnEraseBkgnd(CDC *pDC);
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
     afx_msg void OnContextMenu(CWnd *pWnd, CPoint point);
-    afx_msg void OnContextCloseall();
     afx_msg void OnContextClose();
-    afx_msg void OnContextSaveLayout();
     afx_msg void OnContextResize();
     afx_msg void OnContextRefresh();
     afx_msg void OnContextEditText();
-    afx_msg void OnContextSave();
     afx_msg BOOL OnSetCursor(CWnd *pWnd, UINT nHitTest, UINT message);
     afx_msg void OnContextEditTransparency();
     afx_msg void OnContextNoAntiAlias();

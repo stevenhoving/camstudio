@@ -131,10 +131,6 @@ void UpdateSetting<dir_access>(libconfig::Setting &s, const char *name, const di
     }
 }
 
-
-
-#define LEGACY_PROFILE_DISABLE
-
 // video options
 enum eSynchType
 {

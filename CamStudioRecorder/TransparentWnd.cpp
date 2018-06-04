@@ -23,8 +23,6 @@
 #include "EditTransparencyDlg.h"
 #include "EditImageDlg.h"
 
-#include "ListManager.h"
-#include "ScreenAnnotationsDlg.h"
 #include "ResizeDlg.h"
 
 #include <CamLib/CStudioLib.h>
@@ -40,8 +38,6 @@ using namespace std;
 #include <windowsx.h>
 
 using namespace Gdiplus;
-
-extern CScreenAnnotationsDlg sadlg;
 
 long lCurrentWndID = 0;
 
@@ -130,13 +126,10 @@ ON_WM_LBUTTONDOWN()
 ON_WM_LBUTTONUP()
 ON_WM_SETCURSOR()
 ON_WM_CONTEXTMENU()
-ON_COMMAND(ID_CONTEXT_CLOSEALL, OnContextCloseall)
 ON_COMMAND(ID_CONTEXT_CLOSE, OnContextClose)
-ON_COMMAND(ID_CONTEXT_SAVELAYOUT, OnContextSaveLayout)
 ON_COMMAND(ID_CONTEXT_RESIZE, OnContextResize)
 ON_COMMAND(ID_CONTEXT_REFRESH, OnContextRefresh)
 ON_COMMAND(ID_CONTEXT_EDITTEXT, OnContextEditText)
-ON_COMMAND(ID_CONTEXT_SAVE, OnContextSave)
 ON_COMMAND(ID_CONTEXT_EDITTRANSPARENCY, OnContextEditTransparency)
 ON_COMMAND(ID_CONTEXT_ANTIALIAS_NOANTIALIAS, OnContextNoAntiAlias)
 ON_COMMAND(ID_CONTEXT_ANTIALIAS_ANTIALIASX2, OnContextAntiAlias2)
@@ -563,10 +556,7 @@ void CTransparentWnd::OnPaint()
 
 void CTransparentWnd::OnContextMenu(CWnd * /*pWnd*/, CPoint point)
 {
-    // not very stable when editing is on
-    EnsureOnTopList(this);
-
-    bool bIsEdited = AreWindowsEdited();
+    //bool bIsEdited = AreWindowsEdited();
 
     if (m_menuLoaded == 0)
     {
@@ -576,34 +566,17 @@ void CTransparentWnd::OnContextMenu(CWnd * /*pWnd*/, CPoint point)
 
     CMenu *pPopup = m_menu.GetSubMenu(0);
     ASSERT(pPopup != nullptr);
-    if (bIsEdited)
-    {
-        DisableContextMenu();
-    }
-    else
-    {
-        OnUpdateContextMenu();
-    }
+    //if (bIsEdited)
+    //{
+    //    DisableContextMenu();
+    //}
+    //else
+    //{
+    //    OnUpdateContextMenu();
+   // }
 
     // route commands through main window
     pPopup->TrackPopupMenu(TPM_RIGHTBUTTON | TPM_LEFTALIGN, point.x, point.y, this);
-}
-
-void CTransparentWnd::OnContextSaveLayout()
-{
-    sadlg.SaveLayoutNew();
-}
-
-void CTransparentWnd::OnContextSave()
-{
-    if (m_saveMethod == saveMethodNew)
-    {
-        sadlg.SaveShapeNew(this);
-    }
-    else
-    {
-        sadlg.SaveShapeReplace(this);
-    }
 }
 
 void CTransparentWnd::OnContextEditText()
@@ -1034,18 +1007,8 @@ BOOL CTransparentWnd::OnSetCursor(CWnd *pWnd, UINT nHitTest, UINT message)
     return CWnd::OnSetCursor(pWnd, nHitTest, message);
 }
 
-void CTransparentWnd::EnsureOnTopList(CTransparentWnd *transWnd)
-{
-    if (m_baseType > 0)
-        return; // if not screen annotation...skip
-
-    ListManager.EnsureOnTopList(transWnd);
-}
-
 void CTransparentWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
-    EnsureOnTopList(this);
-
     CRect truerect;
     m_tracker.GetTrueRect(&truerect);
 
@@ -1472,23 +1435,15 @@ void CTransparentWnd::OnContextClone()
     CTransparentWnd *cloneWnd = Clone(x, y);
     if (cloneWnd)
     {
-        ListManager.AddDisplayArray(cloneWnd);
-
         cloneWnd->InvalidateRegion();
         cloneWnd->InvalidateTransparency();
         cloneWnd->ShowWindow(SW_SHOW);
     }
 }
 
-void CTransparentWnd::OnContextCloseall()
-{
-    sadlg.CloseAllWindows(1);
-}
-
 void CTransparentWnd::OnContextClose()
 {
     ShowWindow(SW_HIDE);
-    ListManager.RemoveDisplayArray(this, 1);
 }
 
 BOOL CTransparentWnd::SaveShape(FILE *fptr)

@@ -62,13 +62,9 @@ set(RECORDER_SOURCE
     KeyshortcutsDlg.cpp
     KeyshortcutsDlg.h
     LayeredWindowHelperST.cpp
-    LayoutList.cpp
-    ListManager.cpp
     MainFrm.cpp
     MCI.cpp
     MouseCaptureWnd.cpp
-    NewShapeDlg.cpp
-    NewShapeDlg.h
     PresetTimeDlg.cpp
     PresetTimeDlg.h
     Profile.cpp
@@ -79,8 +75,6 @@ set(RECORDER_SOURCE
     ResizeDlg.cpp
     Screen.cpp
     Screen.h
-    ScreenAnnotationsDlg.cpp
-    ScreenAnnotationsDlg.h
     SpeakersImpl.cpp
     stdafx.cpp
     stdafx.h
@@ -95,8 +89,6 @@ set(RECORDER_SOURCE
     FlashingWnd.h
     HotKey.h
     LayeredWindowHelperST.h
-    LayoutList.h
-    ListManager.h
     MainFrm.h
     MCI.h
     MouseCaptureWnd.h

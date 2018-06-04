@@ -23,9 +23,7 @@
 #include "FolderDlg.h"
 #include "FixedRegionDlg.h"
 #include "KeyshortcutsDlg.h"
-#include "ListManager.h"
 #include "PresetTimeDlg.h"
-#include "ScreenAnnotationsDlg.h"
 #include "SyncDlg.h"
 #include "TroubleShootDlg.h"
 #include "ProgressDlg.h"
@@ -104,8 +102,6 @@ extern BOOL onLoadSettings(int iRecordAudio);
 // external variables
 /////////////////////////////////////////////////////////////////////////////
 extern int iRrefreshRate;
-extern CString g_shapeName;
-extern CString g_strLayoutName;
 
 /////////////////////////////////////////////////////////////////////////////
 // State variables
@@ -197,11 +193,6 @@ BOOL bAllowNewRecordStartKey = TRUE;
 PSTR strFile;
 
 int TroubleShootVal = 0;
-
-// ver 1.8
-
-CScreenAnnotationsDlg sadlg;
-int bCreatedSADlg = false;
 
 int g_keySCOpened = 0;
 
@@ -320,9 +311,9 @@ int UnSetHotKeys()
     UnregisterHotKey(g_hWndGlobal, HOTKEY_RECORD_START_OR_PAUSE);
     UnregisterHotKey(g_hWndGlobal, HOTKEY_RECORD_STOP);
     UnregisterHotKey(g_hWndGlobal, HOTKEY_RECORD_CANCELSTOP);
-    UnregisterHotKey(g_hWndGlobal, HOTKEY_LAYOUT_KEY_NEXT);
-    UnregisterHotKey(g_hWndGlobal, HOTKEY_LAYOUT_KEY_PREVIOUS);
-    UnregisterHotKey(g_hWndGlobal, HOTKEY_LAYOUT_SHOW_HIDE_KEY);
+    //UnregisterHotKey(g_hWndGlobal, HOTKEY_LAYOUT_KEY_NEXT);
+    //UnregisterHotKey(g_hWndGlobal, HOTKEY_LAYOUT_KEY_PREVIOUS);
+    //UnregisterHotKey(g_hWndGlobal, HOTKEY_LAYOUT_SHOW_HIDE_KEY);
     UnregisterHotKey(g_hWndGlobal, HOTKEY_ZOOM);
     UnregisterHotKey(g_hWndGlobal, HOTKEY_AUTOPAN_SHOW_HIDE_KEY);
 
@@ -808,11 +799,6 @@ void CRecorderView::OnDestroy()
 
     FreeWaveoutResouces();
     WaveoutUninitialize();
-
-    // ver 1.8
-    ListManager.FreeDisplayArray();
-    ListManager.FreeShapeArray();
-    ListManager.FreeLayoutArray();
 
     CView::OnDestroy();
 }
@@ -1776,214 +1762,6 @@ void CRecorderView::SaveSettings()
     CString setPath;
     setPath.Format(_T("%s\\CamStudio.ini"), GetProgPath().GetString());
 
-#ifndef LEGACY_PROFILE_DISABLE
-    FILE *sFile = fopen((LPCTSTR)setPath, "wt");
-    if (sFile == nullptr)
-    {
-        // Error creating file ...do nothing...return
-        return;
-    }
-
-    // ****************************
-    // Dump Variables
-    // ****************************
-    // Take note of those vars with printf %ld
-    float ver = (float)2.5;
-    fprintf(sFile, "[ CamStudio Settings ver%.2f -- Please do not edit ] \n\n", ver);
-    fprintf(sFile, "bFlashingRect=%d \n", cProgramOpts.m_bFlashingRect);
-    fprintf(sFile, "iLaunchPlayer=%d \n", cProgramOpts.m_iLaunchPlayer);
-    fprintf(sFile, "bMinimizeOnStart=%d \n", cProgramOpts.m_bMinimizeOnStart);
-    fprintf(sFile, "iMouseCaptureMode= %d \n", cRegionOpts.m_iCaptureMode);
-    fprintf(sFile, "iCaptureWidth=%d \n", cRegionOpts.m_iWidth);
-    fprintf(sFile, "iCaptureHeight=%d \n", cRegionOpts.m_iHeight);
-
-    fprintf(sFile, "iTimeLapse=%d \n", cVideoOpts.m_iTimeLapse);
-    fprintf(sFile, "iFramesPerSecond= %d \n", cVideoOpts.m_iFramesPerSecond);
-    fprintf(sFile, "iKeyFramesEvery= %d \n", cVideoOpts.m_iKeyFramesEvery);
-    fprintf(sFile, "iCompQuality= %d \n", cVideoOpts.m_iCompQuality);
-    fprintf(sFile, "dwCompfccHandler= %ld \n", cVideoOpts.m_dwCompfccHandler);
-
-    // LPVOID pVideoCompressParams = nullptr;
-    fprintf(sFile, "dwCompressorStateIsFor= %ld \n", cVideoOpts.m_dwCompressorStateIsFor);
-    fprintf(sFile, "dwCompressorStateSize= %d \n", cVideoOpts.StateSize());
-
-    fprintf(sFile, "bRecordCursor=%d \n", CamCursor.Record());
-    fprintf(
-        sFile, "iCustomSel=%d \n",
-        CamCursor
-            .CustomType()); // Having this line means the custom cursor type cannot be re-arranged in a new order in the
-                            // combo box...else previous saved settings referring to the custom type will not be correct
-    fprintf(sFile, "iCursorType=%d \n", CamCursor.Select());
-    fprintf(sFile, "bHighlightCursor=%d \n", CamCursor.Highlight());
-    fprintf(sFile, "iHighlightSize=%d \n", CamCursor.HighlightSize());
-    fprintf(sFile, "iHighlightShape=%d \n", CamCursor.HighlightShape());
-    fprintf(sFile, "bHighlightClick=%d \n", CamCursor.HighlightClick());
-
-    fprintf(sFile, "g_highlightcolorR=%d \n", GetRValue(CamCursor.HighlightColor()));
-    fprintf(sFile, "g_highlightcolorG=%d \n", GetGValue(CamCursor.HighlightColor()));
-    fprintf(sFile, "g_highlightcolorB=%d \n", GetBValue(CamCursor.HighlightColor()));
-
-    fprintf(sFile, "g_highlightclickcolorleftR=%d \n", GetRValue(CamCursor.ClickLeftColor()));
-    fprintf(sFile, "g_highlightclickcolorleftG=%d \n", GetGValue(CamCursor.ClickLeftColor()));
-    fprintf(sFile, "g_highlightclickcolorleftB=%d \n", GetBValue(CamCursor.ClickLeftColor()));
-
-    fprintf(sFile, "g_highlightclickcolorrightR=%d \n", GetRValue(CamCursor.ClickRightColor()));
-    fprintf(sFile, "g_highlightclickcolorrightG=%d \n", GetGValue(CamCursor.ClickRightColor()));
-    fprintf(sFile, "g_highlightclickcolorrightB=%d \n", GetBValue(CamCursor.ClickRightColor()));
-
-    // fprintf(sFile, "savedir=%s; \n",LPCTSTR(savedir));
-    // fprintf(sFile, "strCursorDir=%s; \n",LPCTSTR(strCursorDir));
-
-    fprintf(sFile, "autopan=%d \n", cProgramOpts.m_bAutoPan);
-    fprintf(sFile, "iMaxPan= %d \n", cProgramOpts.m_iMaxPan);
-
-    // Audio Functions and Variables
-    fprintf(sFile, "uAudioDeviceID= %d \n", cAudioFormat.m_uDeviceID);
-
-    // Audio Options Dialog
-    // LPWAVEFORMATEX pwfx = nullptr;
-    // DWORD dwCbwFX;
-    fprintf(sFile, "dwCbwFX= %ld \n", cAudioFormat.m_dwCbwFX);
-    fprintf(sFile, "iRecordAudio= %d \n", cAudioFormat.m_iRecordAudio);
-
-    // Audio Formats Dialog
-    fprintf(sFile, "dwWaveinSelected= %d \n", cAudioFormat.m_dwWaveinSelected);
-    fprintf(sFile, "iAudioBitsPerSample= %d \n", cAudioFormat.m_iBitsPerSample);
-    fprintf(sFile, "iAudioNumChannels= %d \n", cAudioFormat.m_iNumChannels);
-    fprintf(sFile, "iAudioSamplesPerSeconds= %d \n", cAudioFormat.m_iSamplesPerSeconds);
-    fprintf(sFile, "bAudioCompression= %d \n", cAudioFormat.m_bCompression);
-
-    fprintf(sFile, "bInterleaveFrames= %d \n", cAudioFormat.m_bInterleaveFrames);
-    fprintf(sFile, "iInterleaveFactor= %d \n", cAudioFormat.m_iInterleaveFactor);
-
-    // Key Shortcuts
-    fprintf(sFile, "keyRecordStart= %d \n", cHotKeyOpts.m_RecordStart.m_vKey);
-    fprintf(sFile, "keyRecordEnd= %d \n", cHotKeyOpts.m_RecordEnd.m_vKey);
-    fprintf(sFile, "uKeyRecordCancel= %d \n", cHotKeyOpts.m_RecordCancel.m_vKey);
-
-    // iViewType
-    fprintf(sFile, "iViewType= %d \n", cProgramOpts.m_iViewType);
-
-    fprintf(sFile, "bAutoAdjust= %d \n", cVideoOpts.m_bAutoAdjust);
-    fprintf(sFile, "iValueAdjust= %d \n", cVideoOpts.m_iValueAdjust);
-
-    fprintf(sFile, "savedir=%d \n", savedir.GetLength());
-    // TODO: Just save the string
-    fprintf(sFile, "strCursorDir=%d \n", CamCursor.Dir().GetLength());
-
-    // Ver 1.3
-    fprintf(sFile, "iThreadPriority=%d \n", cProgramOpts.m_iThreadPriority);
-
-    // Ver 1.5
-    fprintf(sFile, "iCaptureLeft= %d \n", cRegionOpts.m_iLeft);
-    fprintf(sFile, "iCaptureTop= %d \n", cRegionOpts.m_iTop);
-    fprintf(sFile, "bFixedCapture=%d \n", cRegionOpts.m_bFixed);
-    fprintf(sFile, "iInterleaveUnit= %d \n", cAudioFormat.m_iInterleavePeriod);
-
-    // Ver 1.6
-    fprintf(sFile, "iTempPathAccess=%d \n", cProgramOpts.m_iTempPathAccess);
-    fprintf(sFile, "bCaptureTrans=%d \n", cProgramOpts.m_bCaptureTrans);
-    fprintf(sFile, "specifieddir=%d \n", specifieddir.GetLength());
-
-    fprintf(sFile, "NumDev=%d \n", cAudioFormat.m_iMixerDevices);
-    fprintf(sFile, "SelectedDev=%d \n", cAudioFormat.m_iSelectedMixer);
-    fprintf(sFile, "iFeedbackLine=%d \n", cAudioFormat.m_iFeedbackLine);
-    fprintf(sFile, "feedback_line_info=%d \n", cAudioFormat.m_iFeedbackLineInfo);
-    fprintf(sFile, "bPerformAutoSearch=%d \n", cAudioFormat.m_bPerformAutoSearch);
-
-    // Ver 1.8
-    fprintf(sFile, "bSupportMouseDrag=%d \n", cRegionOpts.m_bMouseDrag);
-
-    // New variables, add here
-    fprintf(sFile, "keyRecordStartCtrl=%d \n", cHotKeyOpts.m_RecordStart.m_bCtrl);
-    fprintf(sFile, "keyRecordEndCtrl=%d \n", cHotKeyOpts.m_RecordEnd.m_bCtrl);
-    fprintf(sFile, "keyRecordCancelCtrl=%d \n", cHotKeyOpts.m_RecordCancel.m_bCtrl);
-
-    fprintf(sFile, "keyRecordStartAlt=%d \n", cHotKeyOpts.m_RecordStart.m_bAlt);
-    fprintf(sFile, "keyRecordEndAlt=%d \n", cHotKeyOpts.m_RecordEnd.m_bAlt);
-    fprintf(sFile, "keyRecordCancelAlt=%d \n", cHotKeyOpts.m_RecordCancel.m_bAlt);
-
-    fprintf(sFile, "keyRecordStartShift=%d \n", cHotKeyOpts.m_RecordStart.m_bShift);
-    fprintf(sFile, "keyRecordEndShift=%d \n", cHotKeyOpts.m_RecordEnd.m_bShift);
-    fprintf(sFile, "keyRecordCancelShift=%d \n", cHotKeyOpts.m_RecordCancel.m_bShift);
-
-    fprintf(sFile, "keyNext=%d \n", cHotKeyOpts.m_Next.m_vKey);
-    fprintf(sFile, "keyPrev=%d \n", cHotKeyOpts.m_Prev.m_vKey);
-    fprintf(sFile, "keyShowLayout=%d \n", cHotKeyOpts.m_ShowLayout.m_vKey);
-
-    fprintf(sFile, "keyNextCtrl=%d \n", cHotKeyOpts.m_Next.m_bCtrl);
-    fprintf(sFile, "keyPrevCtrl=%d \n", cHotKeyOpts.m_Prev.m_bCtrl);
-    fprintf(sFile, "keyShowLayoutCtrl=%d \n", cHotKeyOpts.m_ShowLayout.m_bCtrl);
-
-    fprintf(sFile, "keyNextAlt=%d \n", cHotKeyOpts.m_Next.m_bAlt);
-    fprintf(sFile, "keyPrevAlt=%d \n", cHotKeyOpts.m_Prev.m_bAlt);
-    fprintf(sFile, "keyShowLayoutAlt=%d \n", cHotKeyOpts.m_ShowLayout.m_bAlt);
-
-    fprintf(sFile, "keyNextShift=%d \n", cHotKeyOpts.m_Next.m_bShift);
-    fprintf(sFile, "keyPrevShift=%d \n", cHotKeyOpts.m_Prev.m_bShift);
-    fprintf(sFile, "keyShowLayoutShift=%d \n", cHotKeyOpts.m_ShowLayout.m_bShift);
-
-    fprintf(sFile, "iShapeNameInt=%d \n", iShapeNameInt);
-    fprintf(sFile, "shapeNameLen=%d \n", g_shapeName.GetLength());
-
-    fprintf(sFile, "iLayoutNameInt=%d \n", iLayoutNameInt);
-    fprintf(sFile, "g_layoutNameLen=%d \n", g_strLayoutName.GetLength());
-
-    fprintf(sFile, "bUseMCI=%d \n", cAudioFormat.m_bUseMCI);
-    fprintf(sFile, "iShiftType=%d \n", cVideoOpts.m_iShiftType);
-    fprintf(sFile, "iTimeShift=%d \n", cVideoOpts.m_iTimeShift);
-    fprintf(sFile, "iFrameShift=%d \n", iFrameShift);
-
-    // ver 2.26
-    fprintf(sFile, "bLaunchPropPrompt=%d \n", cProducerOpts.m_bLaunchPropPrompt);
-    fprintf(sFile, "bLaunchHTMLPlayer=%d \n", cProducerOpts.m_bLaunchHTMLPlayer);
-    fprintf(sFile, "bDeleteAVIAfterUse=%d \n", cProducerOpts.m_bDeleteAVIAfterUse);
-    fprintf(sFile, "iRecordingMode=%d \n", cProgramOpts.m_iRecordingMode);
-    fprintf(sFile, "bAutoNaming=%d \n", cProgramOpts.m_bAutoNaming);
-    fprintf(sFile, "bRestrictVideoCodecs=%d \n", cVideoOpts.m_bRestrictVideoCodecs);
-    // fprintf(sFile, "base_nid=%d \n",base_nid);
-
-    // ver 2.40
-    fprintf(sFile, "iPresetTime=%d \n", cProgramOpts.m_iPresetTime);
-    fprintf(sFile, "bRecordPreset=%d \n", cProgramOpts.m_bRecordPreset);
-
-    // Add new variables here
-
-    // Effects
-    fprintf(sFile, "bTimestampAnnotation=%d \n", cTimestampOpts.m_bAnnotation);
-    fprintf(sFile, "timestampBackColor=%d \n", cTimestampOpts.m_taTimestamp.backgroundColor);
-    fprintf(sFile, "timestampSelected=%d \n", cTimestampOpts.m_taTimestamp.isFontSelected);
-    fprintf(sFile, "timestampPosition=%d \n", cTimestampOpts.m_taTimestamp.position);
-    fprintf(sFile, "timestampTextColor=%d \n", cTimestampOpts.m_taTimestamp.textColor);
-    fprintf(sFile, "timestampTextFont=%s \n", cTimestampOpts.m_taTimestamp.logfont.lfFaceName);
-    fprintf(sFile, "timestampTextWeight=%d \n", cTimestampOpts.m_taTimestamp.logfont.lfWeight);
-    fprintf(sFile, "timestampTextHeight=%d \n", cTimestampOpts.m_taTimestamp.logfont.lfHeight);
-    fprintf(sFile, "timestampTextWidth=%d \n", cTimestampOpts.m_taTimestamp.logfont.lfWidth);
-
-    fprintf(sFile, "bCaptionAnnotation=%d \n", cCaptionOpts.m_bAnnotation);
-    fprintf(sFile, "captionBackColor=%d \n", cCaptionOpts.m_taCaption.backgroundColor);
-    fprintf(sFile, "captionSelected=%d \n", cCaptionOpts.m_taCaption.isFontSelected);
-    fprintf(sFile, "captionPosition=%d \n", cCaptionOpts.m_taCaption.position);
-    // fprintf(sFile, "captionText=%s \n", taCaption.text);
-    fprintf(sFile, "captionTextColor=%d \n", cCaptionOpts.m_taCaption.textColor);
-    fprintf(sFile, "captionTextFont=%s \n", cCaptionOpts.m_taCaption.logfont.lfFaceName);
-    fprintf(sFile, "captionTextWeight=%d \n", cCaptionOpts.m_taCaption.logfont.lfWeight);
-    fprintf(sFile, "captionTextHeight=%d \n", cCaptionOpts.m_taCaption.logfont.lfHeight);
-    fprintf(sFile, "captionTextWidth=%d \n", cCaptionOpts.m_taCaption.logfont.lfWidth);
-
-    fprintf(sFile, "bWatermarkAnnotation=%d \n", cWatermarkOpts.m_bAnnotation);
-    fprintf(sFile, "bWatermarkAnnotation=%d \n", cWatermarkOpts.m_iaWatermark.position);
-
-    fclose(sFile);
-#endif // LEGACY_PROFILE_DISABLE
-
-    // ver 1.8,
-    CString m_newfile = GetAppDataPath() + "\\CamStudio\\CamShapes.ini";
-    ListManager.SaveShapeArray(m_newfile);
-
-    m_newfile = GetAppDataPath() + "\\CamStudio\\CamLayout.ini";
-    ListManager.SaveLayout(m_newfile);
-
     if (CamCursor.Select() == 2)
     {
         // CString cursorFileName = "\\CamCursor.ini";
@@ -2041,447 +1819,12 @@ void CRecorderView::SaveSettings()
     if (!cProgramOpts.m_strSpecifiedDir.empty())
         fwrite(cProgramOpts.m_strSpecifiedDir.c_str(), cProgramOpts.m_strSpecifiedDir.size(), 1, tFile);
 
-    // Ver 1.8
-    if (g_shapeName.GetLength() > 0)
-        fwrite((LPCTSTR)g_shapeName, g_shapeName.GetLength(), 1, tFile);
-
-    if (g_strLayoutName.GetLength() > 0)
-        fwrite((LPCTSTR)g_strLayoutName, g_strLayoutName.GetLength(), 1, tFile);
-
     fclose(tFile);
 }
 
 // Ver 1.2
 void CRecorderView::LoadSettings()
 {
-    // this can be deferred until the Create of the Screen Annotation dialog
-    // if (ver>=1.799999) {
-    {
-        // attempt to load the shapes and layouts ...never mind the version
-        CString m_newfile;
-        m_newfile = GetAppDataPath() + "\\CamStudio\\CamShapes.ini";
-        if (!DoesFileExist(m_newfile))
-        {
-            m_newfile = GetProgPath() + "\\CamStudio\\CamShapes.ini";
-        }
-        ListManager.LoadShapeArray(m_newfile);
-
-        m_newfile = GetAppDataPath() + "\\CamStudio\\CamLayout.ini";
-        if (!DoesFileExist(m_newfile))
-        {
-            m_newfile = GetProgPath() + "\\CamStudio\\CamLayout.ini";
-        }
-        ListManager.LoadLayout(m_newfile);
-    }
-
-#ifndef LEGACY_PROFILE_DISABLE
-
-    // The absence of nosave.ini file indicates savesettings = 1
-    CString fileName("\\CamStudio\\NoSave.ini ");
-    CString setDir = GetProgPath();
-    CString setPath = setDir + fileName;
-
-    FILE *rFile = fopen((LPCTSTR)setPath, "rt");
-    if (rFile == nullptr)
-    {
-        cProgramOpts.m_bSaveSettings = true;
-    }
-    else
-    {
-        fclose(rFile);
-        cProgramOpts.m_bSaveSettings = false;
-    }
-
-    //********************************************
-    // Loading CamStudio.ini for storing text data
-    //********************************************
-    fileName = "\\CamStudio\\CamStudio.ini";
-    setDir = GetProgPath();
-    setPath = setDir + fileName;
-
-    FILE *sFile = fopen((LPCTSTR)setPath, "rt");
-    if (sFile == nullptr)
-    {
-        // Error creating file ...
-        SuggestRecordingFormat();
-        SuggestCompressFormat();
-        return;
-    }
-
-    // ****************************
-    // Read Variables
-    // ****************************
-
-    int idata;
-    // int iSaveLen=0;
-    // int iCursorLen=0;
-    char sdata[1000];
-    char tdata[1000];
-    float ver = 1.0;
-
-    // Ver 1.6
-    // int iSpecifiedDirLength=0;
-    char specdata[1000];
-
-    fscanf_s(sFile, "[ CamStudio Settings ver%f -- Please do not edit ] \n\n", &ver);
-
-    // Ver 1.2
-    if (ver >= 1.199999)
-    {
-        fscanf_s(sFile, "bFlashingRect=%d \n", &cProgramOpts.m_bFlashingRect);
-
-        fscanf_s(sFile, "iLaunchPlayer=%d \n", &cProgramOpts.m_iLaunchPlayer);
-        fscanf_s(sFile, "bMinimizeOnStart=%d \n", &cProgramOpts.m_bMinimizeOnStart);
-        fscanf_s(sFile, "iMouseCaptureMode= %d \n", &cRegionOpts.m_iCaptureMode);
-        fscanf_s(sFile, "iCaptureWidth=%d \n", &cRegionOpts.m_iWidth);
-        fscanf_s(sFile, "iCaptureHeight=%d \n", &cRegionOpts.m_iHeight);
-
-        fscanf_s(sFile, "iTimeLapse=%d \n", &cVideoOpts.m_iTimeLapse);
-        fscanf_s(sFile, "iFramesPerSecond= %d \n", &cVideoOpts.m_iFramesPerSecond);
-        fscanf_s(sFile, "iKeyFramesEvery= %d \n", &cVideoOpts.m_iKeyFramesEvery);
-        fscanf_s(sFile, "iCompQuality= %d \n", &cVideoOpts.m_iCompQuality);
-        fscanf_s(sFile, "dwCompfccHandler= %ld \n", &cVideoOpts.m_dwCompfccHandler);
-
-        // LPVOID pVideoCompressParams = nullptr;
-        fscanf_s(sFile, "dwCompressorStateIsFor= %ld \n", &cVideoOpts.m_dwCompressorStateIsFor);
-        fscanf_s(sFile, "dwCompressorStateSize= %d \n", &cVideoOpts.m_dwCompressorStateSize);
-
-        int itemp = 0;
-        fscanf_s(sFile, "bRecordCursor=%d \n", &itemp);
-        CamCursor.Record(itemp ? true : false);
-        // Having this line means the custom cursor type cannot be re-arranged
-        // in a new order in the combo box...else previous saved settings
-        // referring to the custom type will not be correct
-
-        {
-            int iCursorType = 0;
-            fscanf_s(sFile, "iCustomSel=%d \n", &iCursorType);
-            CamCursor.CustomType(iCursorType);
-            fscanf_s(sFile, "iCursorType=%d \n", &iCursorType);
-            CamCursor.Select(iCursorType);
-            int itemp = 0;
-            fscanf_s(sFile, "bHighlightCursor=%d \n", &itemp);
-            CamCursor.Highlight(itemp ? true : false);
-            fscanf_s(sFile, "iHighlightSize=%d \n", &itemp);
-            CamCursor.HighlightSize(itemp);
-            fscanf_s(sFile, "iHighlightShape=%d \n", &itemp);
-            CamCursor.HighlightShape(itemp);
-            fscanf_s(sFile, "bHighlightClick=%d \n", &itemp);
-            CamCursor.HighlightClick(itemp ? true : false);
-        }
-
-        int redv = 0;
-        int greenv = 0;
-        int bluev = 0;
-        fscanf_s(sFile, "g_highlightcolorR=%d \n", &idata);
-        redv = idata;
-        fscanf_s(sFile, "g_highlightcolorG=%d \n", &idata);
-        greenv = idata;
-        fscanf_s(sFile, "g_highlightcolorB=%d \n", &idata);
-        bluev = idata;
-        CamCursor.HighlightColor(RGB(redv, greenv, bluev));
-
-        redv = 0;
-        greenv = 0;
-        bluev = 0;
-        fscanf_s(sFile, "g_highlightclickcolorleftR=%d \n", &idata);
-        redv = idata;
-        fscanf_s(sFile, "g_highlightclickcolorleftG=%d \n", &idata);
-        greenv = idata;
-        fscanf_s(sFile, "g_highlightclickcolorleftB=%d \n", &idata);
-        bluev = idata;
-        CamCursor.ClickLeftColor(RGB(redv, greenv, bluev));
-
-        redv = 0;
-        greenv = 0;
-        bluev = 0;
-        fscanf_s(sFile, "g_highlightclickcolorrightR=%d \n", &idata);
-        redv = idata;
-        fscanf_s(sFile, "g_highlightclickcolorrightG=%d \n", &idata);
-        greenv = idata;
-        fscanf_s(sFile, "g_highlightclickcolorrightB=%d \n", &idata);
-        bluev = idata;
-        CamCursor.ClickRightColor(RGB(redv, greenv, bluev));
-
-        fscanf_s(sFile, "autopan=%d \n", &cProgramOpts.m_bAutoPan);
-        fscanf_s(sFile, "iMaxPan= %d \n", &cProgramOpts.m_iMaxPan);
-
-        // Audio Functions and Variables
-        fscanf_s(sFile, "uAudioDeviceID= %d \n", &cAudioFormat.m_uDeviceID);
-
-        // Audio Options Dialog
-        fscanf_s(sFile, "dwCbwFX= %ld \n", &cAudioFormat.m_dwCbwFX);
-        fscanf_s(sFile, "iRecordAudio= %d \n", &cAudioFormat.m_iRecordAudio);
-
-        // Audio Formats Dialog
-        fscanf_s(sFile, "dwWaveinSelected= %d \n", &cAudioFormat.m_dwWaveinSelected);
-        fscanf_s(sFile, "iAudioBitsPerSample= %d \n", &cAudioFormat.m_iBitsPerSample);
-        fscanf_s(sFile, "iAudioNumChannels= %d \n", &cAudioFormat.m_iNumChannels);
-        fscanf_s(sFile, "iAudioSamplesPerSeconds= %d \n", &cAudioFormat.m_iSamplesPerSeconds);
-        fscanf_s(sFile, "bAudioCompression= %d \n", &cAudioFormat.m_bCompression);
-
-        fscanf_s(sFile, "bInterleaveFrames= %d \n", &cAudioFormat.m_bInterleaveFrames);
-        fscanf_s(sFile, "iInterleaveFactor= %d \n", &cAudioFormat.m_iInterleaveFactor);
-
-        // Key Shortcuts
-        fscanf_s(sFile, "keyRecordStart= %d \n", &cHotKeyOpts.m_RecordStart.m_vKey);
-        fscanf_s(sFile, "keyRecordEnd= %d \n", &cHotKeyOpts.m_RecordEnd.m_vKey);
-        fscanf_s(sFile, "uKeyRecordCancel= %d \n", &cHotKeyOpts.m_RecordCancel.m_vKey);
-
-        fscanf_s(sFile, "iViewType= %d \n", &cProgramOpts.m_iViewType);
-
-        fscanf_s(sFile, "bAutoAdjust= %d \n", &cVideoOpts.m_bAutoAdjust);
-        fscanf_s(sFile, "iValueAdjust= %d \n", &cVideoOpts.m_iValueAdjust);
-
-        fscanf_s(sFile, "savedir=%d \n", &iSaveLen);
-        fscanf_s(sFile, "strCursorDir=%d \n", &iCursorLen);
-
-        AttemptRecordingFormat();
-
-        // ver 1.4
-        // Force settings from previous version to upgrade
-        if (ver < 1.35)
-        {
-            // set auto adjust to max rate
-            cVideoOpts.m_bAutoAdjust = 1;
-            cVideoOpts.m_iValueAdjust = 1;
-
-            // set default compressor
-            cVideoOpts.m_dwCompfccHandler = ICHANDLER_MSVC;
-            cVideoOpts.m_dwCompressorStateIsFor = 0;
-            cVideoOpts.m_dwCompressorStateSize = 0;
-            cVideoOpts.m_iCompQuality = 7000;
-
-            // set default audio recording format and compress format
-            SuggestRecordingFormat();
-            SuggestCompressFormat();
-        }
-
-        if (cVideoOpts.m_bAutoAdjust)
-        {
-            int framerate;
-            int delayms;
-            int val = cVideoOpts.m_iValueAdjust;
-            AutoSetRate(val, framerate, delayms);
-            cVideoOpts.m_iTimeLapse = delayms;
-            cVideoOpts.m_iFramesPerSecond = framerate;
-            cVideoOpts.m_iKeyFramesEvery = framerate;
-        }
-
-        g_strCodec = GetCodecDescription(cVideoOpts.m_dwCompfccHandler);
-
-        switch (CamCursor.Select())
-        {
-            case 1:
-            {
-                if (CamCursor.CustomType() < 0)
-                {
-                    CamCursor.CustomType(0);
-                }
-                DWORD customicon = CamCursor.GetID(CamCursor.CustomType());
-                if (!CamCursor.Custom(::LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(customicon))))
-                {
-                    CamCursor.Select(0);
-                }
-            }
-            break;
-            case 2: // load cursor
-            {
-                CString cursorPath;
-                cursorPath.Format("%s\\CamCursor.ini", GetProgPath());
-                if (!CamCursor.Load(::LoadCursorFromFile(cursorPath)))
-                {
-                    CamCursor.Select(0);
-                }
-            }
-            break;
-        }
-    } // ver 1.2
-
-    // Ver 1.3
-    if (ver >= 1.299999)
-    {
-        fscanf_s(sFile, "iThreadPriority=%d \n", &cProgramOpts.m_iThreadPriority);
-    }
-
-    // Ver 1.5
-    if (ver >= 1.499999)
-    {
-        fscanf_s(sFile, "iCaptureLeft= %d \n", &cRegionOpts.m_iLeft);
-        fscanf_s(sFile, "iCaptureTop= %d \n", &cRegionOpts.m_iTop);
-        fscanf_s(sFile, "bFixedCapture=%d \n", &cRegionOpts.m_bFixed);
-        fscanf_s(sFile, "iInterleaveUnit= %d \n", &cAudioFormat.m_iInterleavePeriod);
-    }
-    else
-    {
-        // force interleve settings
-        cAudioFormat.m_iInterleavePeriod = MILLISECONDS;
-        cAudioFormat.m_iInterleaveFactor = 100;
-    }
-
-    // Ver 1.6
-    if (ver >= 1.599999)
-    {
-        fscanf_s(sFile, "iTempPathAccess=%d \n", &cProgramOpts.m_iTempPathAccess);
-        fscanf_s(sFile, "bCaptureTrans=%d \n", &cProgramOpts.m_bCaptureTrans);
-        fscanf_s(sFile, "specifieddir=%d \n", &cProgramOpts.m_iSpecifiedDirLength);
-        fscanf_s(sFile, "NumDev=%d \n", &cAudioFormat.m_iMixerDevices);
-        fscanf_s(sFile, "SelectedDev=%d \n", &cAudioFormat.m_iSelectedMixer);
-        fscanf_s(sFile, "iFeedbackLine=%d \n", &cAudioFormat.m_iFeedbackLine);
-        fscanf_s(sFile, "feedback_line_info=%d \n", &cAudioFormat.m_iFeedbackLineInfo);
-        fscanf_s(sFile, "bPerformAutoSearch=%d \n", &cAudioFormat.m_bPerformAutoSearch);
-
-        onLoadSettings(cAudioFormat.m_iRecordAudio);
-    }
-    else
-    {
-        cProgramOpts.m_iTempPathAccess = dir_access::windows_temp_dir;
-        cProgramOpts.m_bCaptureTrans = true;
-        cProgramOpts.m_iSpecifiedDirLength = 0;
-
-        cAudioFormat.m_iMixerDevices = 0;
-        cAudioFormat.m_iSelectedMixer = 0;
-        cAudioFormat.m_iFeedbackLine = -1;
-        cAudioFormat.m_iFeedbackLineInfo = -1;
-        cAudioFormat.m_bPerformAutoSearch = 1;
-    }
-
-    if (cProgramOpts.m_iSpecifiedDirLength == 0)
-    {
-        int old_tempPath_Access = cProgramOpts.m_iTempPathAccess;
-        cProgramOpts.m_iTempPathAccess = dir_access::windows_temp_dir;
-        cProgramOpts.m_strSpecifiedDir = GetTempFolder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir);
-        cProgramOpts.m_iTempPathAccess = old_tempPath_Access;
-
-        // Do not modify the iSpecifiedDirLength variable, even if specified dir is changed. It will need to be used
-        // below
-    }
-
-    // Update Player to ver 2.0
-    // Make the the modified keys do not overlap
-    if (ver < 1.799999)
-    {
-        if (cProgramOpts.m_iLaunchPlayer == CAM1_PLAYER)
-            cProgramOpts.m_iLaunchPlayer = CAM2_PLAYER;
-
-        if ((cHotKeyOpts.m_RecordStart.m_vKey == VK_MENU) || (cHotKeyOpts.m_RecordStart.m_vKey == VK_SHIFT) ||
-            (cHotKeyOpts.m_RecordStart.m_vKey == VK_CONTROL) || (cHotKeyOpts.m_RecordStart.m_vKey == VK_ESCAPE))
-        {
-            cHotKeyOpts.m_RecordStart.m_vKey = VK_F8;
-            cHotKeyOpts.m_RecordStart.m_bCtrl = true;
-        }
-
-        if ((cHotKeyOpts.m_RecordEnd.m_vKey == VK_MENU) || (cHotKeyOpts.m_RecordEnd.m_vKey == VK_SHIFT) ||
-            (cHotKeyOpts.m_RecordEnd.m_vKey == VK_CONTROL) || (cHotKeyOpts.m_RecordEnd.m_vKey == VK_ESCAPE))
-        {
-            cHotKeyOpts.m_RecordEnd.m_vKey = VK_F9;
-            cHotKeyOpts.m_RecordEnd.m_bCtrl = true;
-        }
-
-        if ((cHotKeyOpts.m_RecordCancel.m_vKey == VK_MENU) || (cHotKeyOpts.m_RecordCancel.m_vKey == VK_SHIFT) ||
-            (cHotKeyOpts.m_RecordCancel.m_vKey == VK_CONTROL) || (cHotKeyOpts.m_RecordCancel.m_vKey == VK_ESCAPE))
-        {
-            cHotKeyOpts.m_RecordCancel.m_vKey = VK_F10;
-            cHotKeyOpts.m_RecordCancel.m_bCtrl = 1;
-        }
-    }
-
-    // Ver 1.8
-    int shapeNameLen = 0;
-    int layoutNameLen = 0;
-    if (ver >= 1.799999)
-    {
-        fscanf_s(sFile, "bSupportMouseDrag=%d \n", &cRegionOpts.m_bMouseDrag);
-
-        fscanf_s(sFile, "keyRecordStartCtrl=%d \n", &cHotKeyOpts.m_RecordStart.m_bCtrl);
-        fscanf_s(sFile, "keyRecordEndCtrl=%d \n", &cHotKeyOpts.m_RecordEnd.m_bCtrl);
-        fscanf_s(sFile, "keyRecordCancelCtrl=%d \n", &cHotKeyOpts.m_RecordCancel.m_bCtrl);
-
-        fscanf_s(sFile, "keyRecordStartAlt=%d \n", &cHotKeyOpts.m_RecordStart.m_bAlt);
-        fscanf_s(sFile, "keyRecordEndAlt=%d \n", &cHotKeyOpts.m_RecordEnd.m_bAlt);
-        fscanf_s(sFile, "keyRecordCancelAlt=%d \n", &cHotKeyOpts.m_RecordCancel.m_bAlt);
-
-        fscanf_s(sFile, "keyRecordStartShift=%d \n", &cHotKeyOpts.m_RecordStart.m_bShift);
-        fscanf_s(sFile, "keyRecordEndShift=%d \n", &cHotKeyOpts.m_RecordEnd.m_bShift);
-        fscanf_s(sFile, "keyRecordCancelShift=%d \n", &cHotKeyOpts.m_RecordCancel.m_bShift);
-
-        fscanf_s(sFile, "keyNext=%d \n", &cHotKeyOpts.m_Next.m_vKey);
-        fscanf_s(sFile, "keyPrev=%d \n", &cHotKeyOpts.m_Prev.m_vKey);
-        fscanf_s(sFile, "keyShowLayout=%d \n", &cHotKeyOpts.m_ShowLayout.m_vKey);
-
-        fscanf_s(sFile, "keyNextCtrl=%d \n", &cHotKeyOpts.m_Next.m_bCtrl);
-        fscanf_s(sFile, "keyPrevCtrl=%d \n", &cHotKeyOpts.m_Prev.m_bCtrl);
-        fscanf_s(sFile, "keyShowLayoutCtrl=%d \n", &cHotKeyOpts.m_ShowLayout.m_bCtrl);
-
-        fscanf_s(sFile, "keyNextAlt=%d \n", &cHotKeyOpts.m_Next.m_bAlt);
-        fscanf_s(sFile, "keyPrevAlt=%d \n", &cHotKeyOpts.m_Prev.m_bAlt);
-        fscanf_s(sFile, "keyShowLayoutAlt=%d \n", &cHotKeyOpts.m_ShowLayout.m_bAlt);
-
-        fscanf_s(sFile, "keyNextShift=%d \n", &cHotKeyOpts.m_Next.m_bShift);
-        fscanf_s(sFile, "keyPrevShift=%d \n", &cHotKeyOpts.m_Prev.m_bShift);
-        fscanf_s(sFile, "keyShowLayoutShift=%d \n", &cHotKeyOpts.m_ShowLayout.m_bShift);
-
-        fscanf_s(sFile, "iShapeNameInt=%d \n", &iShapeNameInt);
-        fscanf_s(sFile, "shapeNameLen=%d \n", &shapeNameLen);
-
-        fscanf_s(sFile, "iLayoutNameInt=%d \n", &iLayoutNameInt);
-        fscanf_s(sFile, "g_layoutNameLen=%d \n", &layoutNameLen);
-
-        fscanf_s(sFile, "bUseMCI=%d \n", &cAudioFormat.m_bUseMCI);
-        fscanf_s(sFile, "iShiftType=%d \n", &cVideoOpts.m_iShiftType);
-        fscanf_s(sFile, "iTimeShift=%d \n", &cVideoOpts.m_iTimeShift);
-        fscanf_s(sFile, "iFrameShift=%d \n", &iFrameShift);
-    }
-
-    // ver 2.26
-    // save format is set as 2.0
-    if (ver >= 1.999999)
-    {
-        fscanf_s(sFile, "bLaunchPropPrompt=%d \n", &cProducerOpts.m_bLaunchPropPrompt);
-        fscanf_s(sFile, "bLaunchHTMLPlayer=%d \n", &cProducerOpts.m_bLaunchHTMLPlayer);
-        fscanf_s(sFile, "bDeleteAVIAfterUse=%d \n", &cProducerOpts.m_bDeleteAVIAfterUse);
-        fscanf_s(sFile, "iRecordingMode=%d \n", &cProgramOpts.m_iRecordingMode);
-        fscanf_s(sFile, "bAutoNaming=%d \n", &cProgramOpts.m_bAutoNaming);
-        fscanf_s(sFile, "bRestrictVideoCodecs=%d \n", &cVideoOpts.m_bRestrictVideoCodecs);
-        // fscanf_s(sFile, "base_nid=%d \n",&base_nid);
-    }
-
-    // ver 2.40
-    if (ver >= 2.399999)
-    {
-        fscanf_s(sFile, "iPresetTime=%d \n", &cProgramOpts.m_iPresetTime);
-        fscanf_s(sFile, "bRecordPreset=%d \n", &cProgramOpts.m_bRecordPreset);
-    }
-
-    // new variables add here
-
-    // Effects
-    fscanf_s(sFile, "bTimestampAnnotation=%d \n", &cTimestampOpts.m_bAnnotation);
-    fscanf_s(sFile, "timestampBackColor=%d \n", &cTimestampOpts.m_taTimestamp.backgroundColor);
-    fscanf_s(sFile, "timestampSelected=%d \n", &cTimestampOpts.m_taTimestamp.isFontSelected);
-    fscanf_s(sFile, "timestampPosition=%d \n", &cTimestampOpts.m_taTimestamp.position);
-    fscanf_s(sFile, "timestampTextColor=%d \n", &cTimestampOpts.m_taTimestamp.textColor);
-    fscanf(sFile, "timestampTextFont=%s \n", cTimestampOpts.m_taTimestamp.logfont.lfFaceName);
-    fscanf_s(sFile, "timestampTextWeight=%d \n", &cTimestampOpts.m_taTimestamp.logfont.lfWeight);
-    fscanf_s(sFile, "timestampTextHeight=%d \n", &cTimestampOpts.m_taTimestamp.logfont.lfHeight);
-    fscanf_s(sFile, "timestampTextWidth=%d \n", &cTimestampOpts.m_taTimestamp.logfont.lfWidth);
-
-    fscanf_s(sFile, "bCaptionAnnotation=%d \n", &cCaptionOpts.m_bAnnotation);
-    fscanf_s(sFile, "captionBackColor=%d \n", &cCaptionOpts.m_taCaption.backgroundColor);
-    fscanf_s(sFile, "captionSelected=%d \n", &cCaptionOpts.m_taCaption.isFontSelected);
-    fscanf_s(sFile, "captionPosition=%d \n", &cCaptionOpts.m_taCaption.position);
-    // fscanf_s(sFile, "captionText=%s \n", &taCaption.text);
-    fscanf_s(sFile, "captionTextColor=%d \n", &cCaptionOpts.m_taCaption.textColor);
-    fscanf(sFile, "captionTextFont=%s \n", cCaptionOpts.m_taCaption.logfont.lfFaceName);
-    fscanf_s(sFile, "captionTextWeight=%d \n", &cCaptionOpts.m_taCaption.logfont.lfWeight);
-    fscanf_s(sFile, "captionTextHeight=%d \n", &cCaptionOpts.m_taCaption.logfont.lfHeight);
-    fscanf_s(sFile, "captionTextWidth=%d \n", &cCaptionOpts.m_taCaption.logfont.lfWidth);
-
-    fscanf_s(sFile, "bWatermarkAnnotation=%d \n", &cWatermarkOpts.m_bAnnotation);
-    fscanf_s(sFile, "bWatermarkAnnotation=%d \n", &cWatermarkOpts.m_iaWatermark.position);
-
-    fclose(sFile);
-#else
     AttemptRecordingFormat();
     // set default audio recording format and compress format
     // This prevents reading profile settings
@@ -2499,7 +1842,6 @@ void CRecorderView::LoadSettings()
     int layoutNameLen = 0;
     float ver = 2.5; // What kind of var is this?  (Value for version?)
 
-#endif
     //********************************************
     // Loading Camdata.ini binary data
     //********************************************
@@ -2565,29 +1907,6 @@ void CRecorderView::LoadSettings()
             if (1L <= cVideoOpts.StateSize())
             {
                 fread(cVideoOpts.State(cVideoOpts.StateSize()), cVideoOpts.StateSize(), 1, tFile);
-            }
-
-            // ver 1.6
-            if (ver > 1.55)
-            {
-                // ver 1.8
-                if (ver >= 1.799999)
-                {
-                    char namedata[1000];
-                    if ((shapeNameLen > 0) && (shapeNameLen < 1000))
-                    {
-                        fread(namedata, shapeNameLen, 1, tFile);
-                        namedata[shapeNameLen] = 0;
-                        g_shapeName = CString(namedata);
-                    }
-
-                    if ((layoutNameLen > 0) && (layoutNameLen < 1000))
-                    {
-                        fread(namedata, layoutNameLen, 1, tFile);
-                        namedata[layoutNameLen] = 0;
-                        g_strLayoutName = CString(namedata);
-                    }
-                }
             }
         }
     }
@@ -2947,85 +2266,10 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
                 OnRecordInterrupted(cHotKeyOpts.m_RecordCancel.m_vKey, 0);
             }
             break;
-        case HOTKEY_LAYOUT_KEY_NEXT: // 3
-        {
-            if (!bCreatedSADlg)
-            {
-                sadlg.Create(IDD_SCREENANNOTATIONS2, nullptr);
-                // sadlg.ShowWindow(SW_SHOW);
-                bCreatedSADlg = true;
-            }
-            INT_PTR max = ListManager.layoutArray.GetSize();
-            if (max <= 0)
-                return 0;
-
-            // Get Current selected
-            int cursel = sadlg.GetLayoutListSelection();
-            g_iCurrentLayout = (cursel < 0) ? 0 : cursel + 1;
-            if (max <= g_iCurrentLayout)
-                g_iCurrentLayout = 0;
-
-            sadlg.InstantiateLayout(g_iCurrentLayout, 1);
-        }
-        break;
-        case HOTKEY_LAYOUT_KEY_PREVIOUS: // 4
-        {
-            if (!bCreatedSADlg)
-            {
-                sadlg.Create(IDD_SCREENANNOTATIONS2, nullptr);
-                // sadlg.RefreshLayoutList();
-                bCreatedSADlg = true;
-            }
-            int max = (int)ListManager.layoutArray.GetSize();
-            if (max <= 0)
-            {
-                return 0;
-            }
-
-            // Get Current selected
-            int cursel = sadlg.GetLayoutListSelection();
-            g_iCurrentLayout = (cursel < 0) ? 0 : cursel - 1;
-            if (g_iCurrentLayout < 0)
-                g_iCurrentLayout = max - 1;
-
-            sadlg.InstantiateLayout(g_iCurrentLayout, 1);
-        }
-        break;
-        case HOTKEY_LAYOUT_SHOW_HIDE_KEY: // 5
-        {
-            if (!bCreatedSADlg)
-            {
-                sadlg.Create(IDD_SCREENANNOTATIONS2, nullptr);
-                sadlg.ShowWindow(SW_SHOW);
-                bCreatedSADlg = true;
-            }
-
-            INT_PTR displaynum = ListManager.displayArray.GetSize();
-            if (displaynum > 0)
-            {
-                sadlg.CloseAllWindows(1);
-                return 0;
-            }
-
-            INT_PTR max = ListManager.layoutArray.GetSize();
-            if (max <= 0)
-                return 0;
-
-            // Get Current selected
-            int cursel = sadlg.GetLayoutListSelection();
-            g_iCurrentLayout = (cursel < 0) ? 0 : cursel;
-            if ((g_iCurrentLayout < 0) || (g_iCurrentLayout >= max))
-            {
-                g_iCurrentLayout = 0;
-            }
-
-            sadlg.InstantiateLayout(g_iCurrentLayout, 1);
-        }
-        break;
         case HOTKEY_ZOOM: // FIXME: make yet another constant
             if (zoom_when_ == 0)
             {
-                if (zoom_ <= 1.) // noone needs zoom < 1?? safe for float comparison though
+                if (zoom_ <= 1.0)
                     VERIFY(::GetCursorPos(&zoomed_at_));
                 zoom_when_ = ::GetTickCount();
             }
@@ -4705,25 +3949,3 @@ int InitDrawShiftWindow()
 }
 
 } // namespace
-
-
-
-void CRecorderView::OnToolsSettings()
-{
-    //video_settings_ui test(this);
-    //test.DoModal();
-
-#if 0
-    if (!bCreatedSADlg)
-    {
-        sadlg.Create(IDD_SCREENANNOTATIONS2, nullptr);
-        sadlg.RefreshShapeList();
-        bCreatedSADlg = true;
-    }
-
-    if (sadlg.IsWindowVisible())
-        sadlg.ShowWindow(SW_HIDE);
-    else
-        sadlg.ShowWindow(SW_RESTORE);
-#endif
-}
