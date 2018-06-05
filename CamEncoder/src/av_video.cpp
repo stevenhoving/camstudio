@@ -290,7 +290,7 @@ void av_video::open(AVStream *stream, av_dict &dict)
     dump_context(context_);
 }
 
-void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFOHEADER *image, unsigned char *data)
+void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFO *image, unsigned char *data)
 {
     // also handle encoder flush
     AVFrame *encode_frame = nullptr;
@@ -303,8 +303,8 @@ void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFOHEADER *image,
             throw std::runtime_error("Unable to make temp video frame writable");
 
         const auto *src_data = data;
-        const auto src_width = image->biWidth;
-        const auto src_height = abs(image->biHeight);
+        const auto src_width = image->bmiHeader.biWidth;
+        const auto src_height = abs(image->bmiHeader.biHeight);
 
         const auto dst_width = context_->width;
         const auto dst_height = context_->height;

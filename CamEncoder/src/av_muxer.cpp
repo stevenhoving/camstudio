@@ -127,7 +127,7 @@ void av_muxer::flush()
     encode_frame(0, nullptr, nullptr);
 }
 
-void av_muxer::encode_frame(timestamp_t timestamp, BITMAPINFOHEADER *image, unsigned char *data)
+void av_muxer::encode_frame(timestamp_t timestamp, BITMAPINFO *image, unsigned char *data)
 {
     video_codec_->push_encode_frame(timestamp, image, data);
 
@@ -332,6 +332,6 @@ int av_muxer::write_frame(const AVRational &time_base, AVStream *stream, AVPacke
     pkt->stream_index = stream->index;
 
     /* Write the compressed frame to the media file. */
-    av_log_packet(format_context_, pkt);
+    //av_log_packet(format_context_, pkt);
     return av_interleaved_write_frame(format_context_, pkt);
 }

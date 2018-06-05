@@ -131,7 +131,6 @@ void capture_thread::stop()
 
 bool capture_thread::capture_screen_frame(const rect<int> &capture_dst_rect)
 {
-    capture_source_->set_capture_dst_rect(capture_dst_rect);
     return capture_source_->capture_frame(capture_dst_rect);
 }
 
@@ -163,8 +162,8 @@ void capture_thread::run()
     /* Setup ffmpeg video encoder */
     // \todo video encoder framerate is ignored atm..
     const auto config = cam_create_video_config(
-        pre_frame->bi->bmiHeader.biWidth,
-        pre_frame->bi->bmiHeader.biHeight,
+        pre_frame->bitmap_info->bmiHeader.biWidth,
+        pre_frame->bitmap_info->bmiHeader.biHeight,
         30,
         capture_settings_.video_settings);
 
@@ -187,7 +186,7 @@ void capture_thread::run()
         const auto frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
 
         DWORD timestamp = static_cast<DWORD>(time_capture_start * 1000.0);
-        video_encoder->encode_frame(timestamp, (BITMAPINFOHEADER*)frame->bi, frame->lpBitmapBits);
+        video_encoder->encode_frame(timestamp, frame->bitmap_info, frame->bitmap_data);
 
         double time_capture_end = frame_limiter.time_now();
         double dt = time_capture_end - time_capture_start;
@@ -198,7 +197,7 @@ void capture_thread::run()
         std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(ceil(sleep_for * 1000.0))));
 
         dt = stopwatch.time_since();
-        fmt::print("fps: {}\n", 1.0 / dt);
+        //fmt::print("fps: {}\n", 1.0 / dt);
     }
 
     video_encoder.reset();

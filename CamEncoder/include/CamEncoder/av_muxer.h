@@ -70,7 +70,7 @@ public:
     void add_stream(std::unique_ptr<av_video> video_codec);
 
     // this sends a video frame to the video encoder and sends any pending results to the muxer.
-    void encode_frame(timestamp_t timestamp, BITMAPINFOHEADER *image, unsigned char *data);
+    void encode_frame(timestamp_t timestamp, BITMAPINFO *image, unsigned char *data);
 
     /* audio output */
     AVFrame *alloc_audio_frame(enum AVSampleFormat sample_fmt, uint64_t channel_layout,
