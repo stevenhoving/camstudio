@@ -20,20 +20,20 @@
 #include <fmt/printf.h>
 #include <windows.h>
 
-cam_annotation_cursor::cam_annotation_cursor(bool halo_enabled, size<int> halo_size, color halo_color) noexcept
+cam_annotation_cursor::cam_annotation_cursor(bool halo_enabled, const size<int> &halo_size, color halo_color) noexcept
     : halo_enabled_(halo_enabled)
     , halo_size_(halo_size)
     , halo_color_(halo_color)
 {
 }
 
-cam_annotation_cursor::~cam_annotation_cursor()
-{
-}
+cam_annotation_cursor::~cam_annotation_cursor() = default;
 
 void cam_annotation_cursor::draw(Gdiplus::Graphics &canvas, const cam_draw_data &draw_data)
 {
-    _draw_extras(canvas, draw_data.canvast_rect_, draw_data.mouse_pos_);
+    if (halo_enabled_)
+        _draw_extras(canvas, draw_data.canvast_rect_, draw_data.mouse_pos_);
+
     _draw_cursor(canvas, draw_data.canvast_rect_, draw_data.mouse_pos_);
 }
 
@@ -43,7 +43,7 @@ void cam_annotation_cursor::_draw_cursor(Gdiplus::Graphics &canvas, const rect<i
     CURSORINFO cursor_info = {};
     cursor_info.cbSize = sizeof(CURSORINFO);
 
-    BOOL ret = ::GetCursorInfo(&cursor_info);
+    auto ret = ::GetCursorInfo(&cursor_info);
     if (!ret)
         return;
 

@@ -43,7 +43,7 @@ public:
      * \param[in] src_capture_rect the rectangle of the capture source.
      * \todo the src_capture_rect does not belong here...
      */
-    bool capture_frame(const rect<int> &src_capture_rect);
+    bool capture_frame(const rect<int> &capture_rect);
     const cam_frame *get_frame();
 
 protected:

@@ -19,10 +19,7 @@
 
 #include <memory>
 
-namespace Gdiplus
-{
-    struct GdiplusStartupInput;
-} // namespace Gdiplus
+#include <CamCapture/cam_gdiplus_fwd.h>
 
 class gdi
 {

@@ -36,9 +36,9 @@ static std::string av_timestamp_to_string(int64_t ts)
     return x;
 }
 
-static std::string av_timestamp_to_timestring(int64_t ts, AVRational *tb)
+static std::string av_timestamp_to_timestring(int64_t ts, AVRational &tb)
 {
     char x[AV_TS_MAX_STRING_SIZE] = {0};
-    av_ts_make_time_string(x, ts, tb);
+    av_ts_make_time_string(x, ts, &tb);
     return x;
 }

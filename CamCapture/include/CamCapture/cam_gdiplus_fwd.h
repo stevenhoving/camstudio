@@ -19,5 +19,6 @@
 
 namespace Gdiplus
 {
+struct GdiplusStartupInput;
 class Graphics;
 } // namespace Gdiplus

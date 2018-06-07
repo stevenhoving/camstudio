@@ -92,11 +92,11 @@ private:
 private:
     AVFormatContext *format_context_{ nullptr };
     AVOutputFormat *output_format_{ nullptr };
-    std::unique_ptr<av_video> video_codec_;
+    std::unique_ptr<av_video> video_codec_{};
     //std::unique_ptr<av_audio> audio_codec_;
     av_track video_track{};
     av_track audio_track{};
-    const std::string filename_;
+    const std::string filename_{};
     AVRational time_base_{1, 0};
     int have_audio{0};
     int encode_audio{0};

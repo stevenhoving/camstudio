@@ -33,8 +33,9 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
     , memory_dc_{::CreateCompatibleDC(desktop_dc_)}
     , src_rect_()
     , show_cursor_{true}
+    , annotations_()
 {
-    if (hwnd == 0)
+    if (hwnd == nullptr)
     {
         src_rect_.right_ = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
         src_rect_.bottom_ = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);

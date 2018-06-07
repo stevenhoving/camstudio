@@ -24,7 +24,7 @@
 
 void av_log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
 {
-    AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
+    AVRational &time_base = fmt_ctx->streams[pkt->stream_index]->time_base;
 
     _log("pts:{} pts_time:{} dts:{} dts_time:{} duration:{} duration_time:{} stream_index:{}\n",
                av_timestamp_to_string(pkt->pts), av_timestamp_to_timestring(pkt->pts, time_base),
