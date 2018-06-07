@@ -60,7 +60,9 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
     bitmap_info_.bmiHeader.biBitCount = 32;
     bitmap_info_.bmiHeader.biCompression = BI_RGB;
 
-    bitmap_frame_ = ::CreateDIBSection(desktop_dc_, &bitmap_info_, DIB_RGB_COLORS, (VOID**)&bitmap_data_, NULL, 0);
+    bitmap_frame_ = ::CreateDIBSection(desktop_dc_, &bitmap_info_, DIB_RGB_COLORS,
+        reinterpret_cast<void **>(&bitmap_data_), nullptr, 0);
+
     /* \todo handle CreateDIBSection failure */
     assert(bitmap_frame_);
 
