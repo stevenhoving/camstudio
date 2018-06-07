@@ -439,7 +439,7 @@ __forceinline sse_vec2 vec2_shuffle(sse_vec2 data, sse_vec2 order)
  * - 4000x4000 - 100x bgr2yuv took: 908.413ms
  */
 static
-void bgr2yuv420p_v2(uint8_t *destination[8], const uint8_t *const src[3], const int width, const int height, const int src_stride[3])
+void bgr2yuv420p_v2(uint8_t *destination[8], const int dst_stride[3], const uint8_t *const src[3], const int width, const int height, const int src_stride[3])
 {
     const bgr *bgr_pixels = (const bgr *)src[0];
     const auto stride = src_stride[0]/3;
@@ -447,6 +447,10 @@ void bgr2yuv420p_v2(uint8_t *destination[8], const uint8_t *const src[3], const 
     auto y = destination[0];
     auto u = destination[1];
     auto v = destination[2];
+
+    const auto y_stride_delta = dst_stride[0] - width;
+    const auto u_stride_delta = dst_stride[1] - (width >> 1);
+    const auto v_stride_delta = dst_stride[2] - (width >> 1);
 
     //const int sse_aligned_width = align_down(width, 24);
     const int sse_aligned_width = align_down(width, 16);
@@ -546,6 +550,9 @@ void bgr2yuv420p_v2(uint8_t *destination[8], const uint8_t *const src[3], const 
 
                 *y++ = ((66 * r2 + 129 * g2 + 25 * b2) >> 8) + 16;
             }
+            y += y_stride_delta;
+            u += u_stride_delta;
+            v += v_stride_delta;
         }
         else
         {
@@ -604,13 +611,15 @@ void bgr2yuv420p_v2(uint8_t *destination[8], const uint8_t *const src[3], const 
 
                 *y++ = ((66 * r + 129 * g + 25 * b) >> 8) + 16;
             }
+            y += y_stride_delta;
         }
         bgr_pixels += stride * 2;
     }
 }
 
-static void bgra2yuv420p(uint8_t *destination[8], const uint8_t *const src[3], const int width, const int height,
-                           const int src_stride[3])
+static void bgra2yuv420p(uint8_t *destination[8], const int dst_stride[3],
+                         const uint8_t *const src[3], const int width, const int height,
+                         const int src_stride[3])
 {
     const bgra *bgra_pixels = (const bgra *)src[0];
     const auto stride = src_stride[0] / 4;
@@ -618,6 +627,10 @@ static void bgra2yuv420p(uint8_t *destination[8], const uint8_t *const src[3], c
     auto y = destination[0];
     auto u = destination[1];
     auto v = destination[2];
+
+    const auto y_stride_delta = dst_stride[0] - width;
+    const auto u_stride_delta = dst_stride[1] - (width >> 1);
+    const auto v_stride_delta = dst_stride[2] - (width >> 1);
 
     const int sse_aligned_width = align_down(width, 16);
 
@@ -720,6 +733,9 @@ static void bgra2yuv420p(uint8_t *destination[8], const uint8_t *const src[3], c
 
                 *y++ = ((66 * r2 + 129 * g2 + 25 * b2) >> 8) + 16;
             }
+            y += y_stride_delta;
+            u += u_stride_delta;
+            v += v_stride_delta;
         }
         else
         {
@@ -776,13 +792,14 @@ static void bgra2yuv420p(uint8_t *destination[8], const uint8_t *const src[3], c
 
                 *y++ = ((66 * r + 129 * g + 25 * b) >> 8) + 16;
             }
+            y += y_stride_delta;
         }
         bgra_pixels += stride;
     }
 }
 
 static
-void bgr2yuv420p(uint8_t *destination[8], const uint8_t *const src[3], const int width, const int height, const int src_stride[3])
+void bgr2yuv420p(uint8_t *destination[8], const int dst_stride[3], const uint8_t *const src[3], const int width, const int height, const int src_stride[3])
 {
     const bgr *bgr_pixels = (const bgr *)src[0];
     const auto stride = src_stride[0] / 3;
@@ -791,6 +808,10 @@ void bgr2yuv420p(uint8_t *destination[8], const uint8_t *const src[3], const int
     auto y = destination[0];
     auto u = destination[1];
     auto v = destination[2];
+
+    const auto y_stride_delta = dst_stride[0] - width;
+    const auto u_stride_delta = dst_stride[1] - (width >> 1);
+    const auto v_stride_delta = dst_stride[2] - (width >> 1);
 
     for (int line = 0; line < height; ++line)
     {
@@ -815,6 +836,9 @@ void bgr2yuv420p(uint8_t *destination[8], const uint8_t *const src[3], const int
 
                 *y++ = ((66 * r2 + 129 * g2 + 25 * b2) >> 8) + 16;
             }
+            y+= y_stride_delta;
+            u+= u_stride_delta;
+            v+= v_stride_delta;
         }
         else
         {
@@ -827,6 +851,7 @@ void bgr2yuv420p(uint8_t *destination[8], const uint8_t *const src[3], const int
 
                 *y++ = ((66 * r + 129 * g + 25 * b) >> 8) + 16;
             }
+            y+= y_stride_delta;
         }
         bgr_pixels += stride * 2;
     }
@@ -966,4 +991,3 @@ void rgb2yuv420i(uint8_t *destination, uint8_t *rgb, size_t width, size_t height
     }
 }
 #endif
- 

@@ -356,11 +356,8 @@ void av_video::push_encode_frame(timestamp_t timestamp, unsigned char *data, int
             throw std::runtime_error("av_video: invalid encoder input format");
             break;
         }
-#define ALWAYS_USE_SWS_SCALE 1
 
-#if ALWAYS_USE_SWS_SCALE == 0
         if (output_pixel_format_ != AV_PIX_FMT_YUV420P)
-#endif
         {
             int ret = sws_scale(sws_context_, src, src_stride, 0, src_height, frame_->data, dst_stride);
             if (ret < 0)
@@ -368,16 +365,14 @@ void av_video::push_encode_frame(timestamp_t timestamp, unsigned char *data, int
                 fmt::print("scale failed: {}\n", av_error_to_string(ret));
             }
         }
-#if ALWAYS_USE_SWS_SCALE == 0
         else if (input_pixel_format_ == AV_PIX_FMT_BGRA)
         {
-            bgra2yuv420p(frame_->data, src, src_width, src_height, src_stride);
+            bgra2yuv420p(frame_->data, dst_stride, src, src_width, src_height, src_stride);
         }
         else
         {
-            bgr2yuv420p(frame_->data, src, src_width, src_height, src_stride);
+            bgr2yuv420p(frame_->data, dst_stride, src, src_width, src_height, src_stride);
         }
-#endif
 
         frame_->pts = timestamp;
         encode_frame = frame_;
