@@ -75,13 +75,13 @@ int __cdecl cam_codec_init(AVCodecContext *avctx)
     c->delta_frame->width = avctx->width;
     c->delta_frame->height = avctx->height;
 
-    if (int ret = av_frame_get_buffer(c->previouse_frame, 32); ret < 0)
+    if (int ret = av_frame_get_buffer(c->previouse_frame, 1); ret < 0)
     {
         printf("unable to allocate prev video frame\n");
         return AVERROR(ENOMEM);
     }
 
-    if (int ret = av_frame_get_buffer(c->delta_frame, 32); ret < 0)
+    if (int ret = av_frame_get_buffer(c->delta_frame, 1); ret < 0)
     {
         printf("unable to allocate delta video frame\n");
         return AVERROR(ENOMEM);
