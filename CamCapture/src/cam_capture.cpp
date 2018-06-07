@@ -40,11 +40,6 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
         src_rect_.bottom_ = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
         src_rect_.left_ = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
         src_rect_.top_ = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
-
-        //capture_width_ = view.width();
-        //capture_height_ = view.height();
-        //capture_x_ = view.left();
-        //capture_y_ = view.top();
     }
     else
     {
@@ -56,11 +51,6 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
         src_rect_.top_ = window_rect.top;
         src_rect_.right_ = window_rect.right;
         src_rect_.bottom_ = window_rect.bottom;
-
-        //capture_width_ = src_rect_.width();
-        //capture_height_ = src_rect_.height();
-        //capture_x_ = src_rect_.left();
-        //capture_y_ = src_rect_.top();
     }
 
     bitmap_info_.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
@@ -109,12 +99,7 @@ bool cam_capture_source::capture_frame(const rect<int> &capture_rect)
         return false;
 
     captured_rect_ = capture_rect;
-    /*
-     * \bugs
-     * - the system time annotation only draws at the utter left top of the source frame. Not the
-     *   capture frame.
-     * - the mouse drawing has an incorrect offset.
-     */
+
     _draw_annotations(capture_rect);
 
     return true;
@@ -127,37 +112,6 @@ const cam_frame *cam_capture_source::get_frame()
     /* \todo make the bytes per pixel optional */
     frame_.stride = src_rect_.width() * 4;
     return &frame_;
-}
-
-void cam_capture_source::_draw_cursor()
-{
-    /* \todo cache mouse cursor */
-    CURSORINFO cursor_info = {};
-    cursor_info.cbSize = sizeof(CURSORINFO);
-
-    BOOL ret = ::GetCursorInfo(&cursor_info);
-    if (!ret)
-        return;
-
-    if (!(cursor_info.flags & CURSOR_SHOWING))
-        return;
-
-    ICONINFO icon_info;
-    ::GetIconInfo(cursor_info.hCursor, &icon_info);
-
-    auto cursor_x = cursor_info.ptScreenPos.x;
-    auto cursor_y = cursor_info.ptScreenPos.y;
-
-    cursor_x -= src_rect_.left();
-    cursor_y -= src_rect_.top();
-
-    cursor_x -= icon_info.xHotspot;
-    cursor_y -= icon_info.yHotspot;
-
-    ::DrawIconEx(memory_dc_, cursor_x, cursor_y, cursor_info.hCursor, 0, 0, 0, NULL, DI_NORMAL);
-
-    ::DeleteObject(icon_info.hbmColor);
-    ::DeleteObject(icon_info.hbmMask);
 }
 
 void cam_capture_source::_draw_annotations(const rect<int> &capture_rect)

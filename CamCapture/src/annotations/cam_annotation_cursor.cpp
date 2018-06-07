@@ -75,9 +75,18 @@ void cam_annotation_cursor::_draw_cursor(Gdiplus::Graphics &canvas, const rect<i
 void cam_annotation_cursor::_draw_extras(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect,
                                          const point<int> &mouse_pos)
 {
+    auto cursor_x = mouse_pos.x();
+    auto cursor_y = mouse_pos.y();
+
+    cursor_x -= canvast_rect.left();
+    cursor_y -= canvast_rect.top();
+
+    cursor_x -= halo_size_.width() / 2;
+    cursor_y -= halo_size_.height() / 2;
+
     const auto r = Gdiplus::Rect(
-        mouse_pos.x() - halo_size_.width() / 2,
-        mouse_pos.y() - halo_size_.height() / 2,
+        cursor_x,
+        cursor_y,
         halo_size_.width(),
         halo_size_.height()
     );

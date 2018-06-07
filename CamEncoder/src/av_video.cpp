@@ -233,7 +233,8 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
             context_->flags |= AV_CODEC_FLAG_QSCALE;
 
             /* global_quality only seem to apply to mpeg 1, 2 and 4 */
-            //context_->global_quality = static_cast<int>(FF_QP2LAMBDA * meta.quality.value() + 0.5);
+            //context_->global_quality =
+            //      static_cast<int>(FF_QP2LAMBDA * meta.quality.value() + 0.5);
 
             // x264 requires this.
             av_opts_["crf"] = static_cast<int64_t>(meta.quality.value());
@@ -319,7 +320,7 @@ void av_video::push_encode_frame(timestamp_t timestamp, unsigned char *data, int
         if (av_frame_make_writable(frame_) < 0)
             throw std::runtime_error("Unable to make temp video frame writable");
 
-        const auto *src_data = data;
+        const auto src_data = data;
         const auto src_width = width;
         const auto src_height = height;
 
@@ -359,11 +360,8 @@ void av_video::push_encode_frame(timestamp_t timestamp, unsigned char *data, int
 
         if (output_pixel_format_ != AV_PIX_FMT_YUV420P)
         {
-            int ret = sws_scale(sws_context_, src, src_stride, 0, src_height, frame_->data, dst_stride);
-            if (ret < 0)
-            {
-                fmt::print("scale failed: {}\n", av_error_to_string(ret));
-            }
+            if (int ret = sws_scale(sws_context_, src, src_stride, 0, src_height, frame_->data, dst_stride); ret < 0)
+                throw std::runtime_error(fmt::format("av_video: sws scale failed: {}", av_error_to_string(ret)));
         }
         else if (input_pixel_format_ == AV_PIX_FMT_BGRA)
         {

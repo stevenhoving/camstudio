@@ -47,8 +47,6 @@ public:
     const cam_frame *get_frame();
 
 protected:
-    // \todo is a cursor a annotation?
-    void _draw_cursor();
     void _draw_annotations(const rect<int> &capture_rect);
 
 private:
@@ -66,9 +64,5 @@ private:
 
     HGDIOBJ old_selected_bitmap_{nullptr};
 
-    //int capture_width_{0};
-    //int capture_height_{0};
-    //int capture_x_{0};
-    //int capture_y_{0};
     std::vector<std::unique_ptr<cam_iannotation>> annotations_;
 };
