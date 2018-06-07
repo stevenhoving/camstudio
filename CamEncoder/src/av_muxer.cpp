@@ -124,12 +124,12 @@ void av_muxer::open()
 
 void av_muxer::flush()
 {
-    encode_frame(0, nullptr, nullptr);
+    encode_frame(0, nullptr, 0, 0, 0);
 }
 
-void av_muxer::encode_frame(timestamp_t timestamp, BITMAPINFO *image, unsigned char *data)
+void av_muxer::encode_frame(timestamp_t timestamp, unsigned char *data, int width, int height, int stride)
 {
-    video_codec_->push_encode_frame(timestamp, image, data);
+    video_codec_->push_encode_frame(timestamp, data, width, height, stride);
 
     AVPacket pkt = {};
     av_init_packet(&pkt);

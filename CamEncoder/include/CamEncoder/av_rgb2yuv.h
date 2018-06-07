@@ -621,24 +621,28 @@ static void bgra2yuv420p(uint8_t *destination[8], const uint8_t *const src[3], c
 
     const int sse_aligned_width = align_down(width, 16);
 
-    __no_unroll for (int line = 0; line < height; ++line)
+    __no_unroll
+    for (int line_nr = 0; line_nr < height; ++line_nr)
     {
-        if (!(line % 2))
+        const bgra *line = bgra_pixels;
+
+        if (!(line_nr % 2))
         {
             int x = 0;
-            __no_unroll for (x = 0; x < sse_aligned_width; x += 16)
+            __no_unroll
+            for (x = 0; x < sse_aligned_width; x += 16)
             {
-                const auto pxl0 = _mm_lddqu_si128((__m128i *)bgra_pixels); // load 4 pixels
-                bgra_pixels += 4;
+                const auto pxl0 = _mm_lddqu_si128((__m128i *)line); // load 4 pixels
+                line += 4;
 
-                const auto pxl1 = _mm_lddqu_si128((__m128i *)bgra_pixels); // load 4 pixels
-                bgra_pixels += 4;
+                const auto pxl1 = _mm_lddqu_si128((__m128i *)line); // load 4 pixels
+                line += 4;
 
-                const auto pxl2 = _mm_lddqu_si128((__m128i *)bgra_pixels); // load 4 pixels
-                bgra_pixels += 4;
+                const auto pxl2 = _mm_lddqu_si128((__m128i *)line); // load 4 pixels
+                line += 4;
 
-                const auto pxl3 = _mm_lddqu_si128((__m128i *)bgra_pixels); // load 4 pixels
-                bgra_pixels += 4;
+                const auto pxl3 = _mm_lddqu_si128((__m128i *)line); // load 4 pixels
+                line += 4;
 
                 // unpack so we end up with 4x 4 pixels
                 auto vec_data0 = vec3_unpack_lo_bgr_odd(pxl0);
@@ -699,7 +703,7 @@ static void bgra2yuv420p(uint8_t *destination[8], const uint8_t *const src[3], c
 
             __no_unroll for (; x < width; x += 2)
             {
-                const auto &data1 = *bgra_pixels++;
+                const auto &data1 = *line++;
                 const auto r1 = data1.r;
                 const auto g1 = data1.g;
                 const auto b1 = data1.b;
@@ -708,7 +712,7 @@ static void bgra2yuv420p(uint8_t *destination[8], const uint8_t *const src[3], c
                 *u++ = ((-38 * r1 + -74 * g1 + 112 * b1) >> 8) + 128;
                 *v++ = ((112 * r1 + -94 * g1 + -18 * b1) >> 8) + 128;
 
-                const auto &data2 = *bgra_pixels++;
+                const auto &data2 = *line++;
 
                 const auto r2 = data2.r;
                 const auto g2 = data2.g;
@@ -723,17 +727,17 @@ static void bgra2yuv420p(uint8_t *destination[8], const uint8_t *const src[3], c
 
             __no_unroll for (; x < sse_aligned_width; x += 16)
             {
-                const auto pxl0 = _mm_lddqu_si128((__m128i *)bgra_pixels); // load 4 pixels
-                bgra_pixels += 4;
+                const auto pxl0 = _mm_lddqu_si128((__m128i *)line); // load 4 pixels
+                line += 4;
 
-                const auto pxl1 = _mm_lddqu_si128((__m128i *)bgra_pixels); // load 4 pixels
-                bgra_pixels += 4;
+                const auto pxl1 = _mm_lddqu_si128((__m128i *)line); // load 4 pixels
+                line += 4;
 
-                const auto pxl2 = _mm_lddqu_si128((__m128i *)bgra_pixels); // load 4 pixels
-                bgra_pixels += 4;
+                const auto pxl2 = _mm_lddqu_si128((__m128i *)line); // load 4 pixels
+                line += 4;
 
-                const auto pxl3 = _mm_lddqu_si128((__m128i *)bgra_pixels); // load 4 pixels
-                bgra_pixels += 4;
+                const auto pxl3 = _mm_lddqu_si128((__m128i *)line); // load 4 pixels
+                line += 4;
 
                 // unpack so we end up with 4x 4 pixels
                 auto vec_data0 = vec3_unpack_lo_bgr_odd(pxl0);
@@ -765,7 +769,7 @@ static void bgra2yuv420p(uint8_t *destination[8], const uint8_t *const src[3], c
 
             __no_unroll for (; x < width; ++x)
             {
-                const auto &data = *bgra_pixels++;
+                const auto &data = *line++;
                 const auto r = data.r;
                 const auto g = data.g;
                 const auto b = data.b;
@@ -773,7 +777,7 @@ static void bgra2yuv420p(uint8_t *destination[8], const uint8_t *const src[3], c
                 *y++ = ((66 * r + 129 * g + 25 * b) >> 8) + 16;
             }
         }
-        bgra_pixels += stride * 2;
+        bgra_pixels += stride;
     }
 }
 

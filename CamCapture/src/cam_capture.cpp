@@ -25,29 +25,26 @@
 #include <cassert>
 #include <ctime>
 
-cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> &view)
+cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
     : bitmap_info_{}
     , bitmap_frame_{nullptr}
     , hwnd_{hwnd}
     , desktop_dc_{::GetDC(hwnd_)}
     , memory_dc_{::CreateCompatibleDC(desktop_dc_)}
-    , width_{0}
-    , height_{0}
-    , x_{0}
-    , y_{0}
+    , src_rect_()
     , show_cursor_{true}
 {
     if (hwnd == 0)
     {
-        //width_ = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
-        //height_ = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
-        //x_ = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
-        //y_ = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
+        src_rect_.right_ = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
+        src_rect_.bottom_ = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
+        src_rect_.left_ = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
+        src_rect_.top_ = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
 
-        width_ = view.width();//::GetSystemMetrics(SM_CXVIRTUALSCREEN);
-        height_ = view.height();//::GetSystemMetrics(SM_CYVIRTUALSCREEN);
-        x_ = view.left();//::GetSystemMetrics(SM_XVIRTUALSCREEN);
-        y_ = view.top();//::GetSystemMetrics(SM_YVIRTUALSCREEN);
+        //capture_width_ = view.width();
+        //capture_height_ = view.height();
+        //capture_x_ = view.left();
+        //capture_y_ = view.top();
     }
     else
     {
@@ -55,41 +52,34 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> &view)
         BOOL ret = ::GetWindowRect(hwnd, &window_rect);
         assert(ret != 0 && "Failed to get window rect.");
 
-        width_ = window_rect.right - window_rect.left;
-        height_ = window_rect.bottom - window_rect.top;
-        x_ = 0;
-        y_ = 0;
+        src_rect_.left_ = window_rect.left;
+        src_rect_.top_ = window_rect.top;
+        src_rect_.right_ = window_rect.right;
+        src_rect_.bottom_ = window_rect.bottom;
+
+        //capture_width_ = src_rect_.width();
+        //capture_height_ = src_rect_.height();
+        //capture_x_ = src_rect_.left();
+        //capture_y_ = src_rect_.top();
     }
 
-    ZeroMemory(&bmp_info_, sizeof(BITMAPINFO));
-    bmp_info_.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    bmp_info_.bmiHeader.biWidth = width_;
-    /* \todo we can avoid doing the reverse stride rbg2yuv by making the height negative */
-    bmp_info_.bmiHeader.biHeight = height_;
-    bmp_info_.bmiHeader.biPlanes = 1;
-    bmp_info_.bmiHeader.biBitCount = 32;
-    bmp_info_.bmiHeader.biCompression = BI_RGB;
+    bitmap_info_.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bitmap_info_.bmiHeader.biWidth = src_rect_.width();
+    bitmap_info_.bmiHeader.biHeight = src_rect_.height() * -1;
+    bitmap_info_.bmiHeader.biPlanes = 1;
+    bitmap_info_.bmiHeader.biBitCount = 32;
+    bitmap_info_.bmiHeader.biCompression = BI_RGB;
 
-    bitmap_frame_ = ::CreateDIBSection(desktop_dc_, &bmp_info_, DIB_RGB_COLORS, (VOID**)&bmp_data_, NULL, 0);
+    bitmap_frame_ = ::CreateDIBSection(desktop_dc_, &bitmap_info_, DIB_RGB_COLORS, (VOID**)&bitmap_data_, NULL, 0);
+    /* \todo handle CreateDIBSection failure */
+    assert(bitmap_frame_);
 
-    frame_.bi = &bmp_info_;
-    frame_.lpBitmapBits = bmp_data_;
-
-    /* \todo bitmap_info_ is unused ... cleanup */
-    bitmap_info_.biSize = sizeof(BITMAPINFOHEADER);
-    bitmap_info_.biWidth = width_;
-    bitmap_info_.biHeight = height_;
-    bitmap_info_.biPlanes = 1;
-    bitmap_info_.biBitCount = 32;
-    bitmap_info_.biCompression = BI_RGB;
-    bitmap_info_.biSizeImage = 0;
-    bitmap_info_.biXPelsPerMeter = 0;
-    bitmap_info_.biYPelsPerMeter = 0;
-    bitmap_info_.biClrUsed = 0;
-    bitmap_info_.biClrImportant = 0;
+    frame_.bitmap_info = &bitmap_info_;
+    frame_.bitmap_data = bitmap_data_;
 
     old_selected_bitmap_ = ::SelectObject(memory_dc_, bitmap_frame_);
 
+    /* \todo make adding these annotations optional */
     annotations_.emplace_back(
         std::make_unique<cam_annotation_cursor>(true, size<int>(100, 100), color(127, 255, 0, 0))
     );
@@ -107,29 +97,35 @@ cam_capture_source::~cam_capture_source()
     ::ReleaseDC(hwnd_, desktop_dc_);
 }
 
-void cam_capture_source::set_capture_dst_rect(const rect<int> &view) noexcept
+bool cam_capture_source::capture_frame(const rect<int> &capture_rect)
 {
-    dst_capture_rect_ = view;
-}
-
-bool cam_capture_source::capture_frame(const rect<int> &/*src_capture_rect*/)
-{
-    BOOL blit_ret = ::BitBlt(memory_dc_, 0, 0,
-        dst_capture_rect_.width(), dst_capture_rect_.height(),
+    const auto ret = ::BitBlt(memory_dc_, 0, 0,
+        capture_rect.width(), capture_rect.height(),
         desktop_dc_,
-        dst_capture_rect_.left(), dst_capture_rect_.top(),
+        capture_rect.left(), capture_rect.top(),
         SRCCOPY | CAPTUREBLT);
-
-    if (!blit_ret)
+    assert(ret);
+    if (!ret)
         return false;
 
-    _draw_annotations();
+    captured_rect_ = capture_rect;
+    /*
+     * \bugs
+     * - the system time annotation only draws at the utter left top of the source frame. Not the
+     *   capture frame.
+     * - the mouse drawing has an incorrect offset.
+     */
+    _draw_annotations(capture_rect);
 
     return true;
 }
 
-const cam_frame *cam_capture_source::get_frame() const
+const cam_frame *cam_capture_source::get_frame()
 {
+    frame_.width = captured_rect_.width();
+    frame_.height = captured_rect_.height();
+    /* \todo make the bytes per pixel optional */
+    frame_.stride = src_rect_.width() * 4;
     return &frame_;
 }
 
@@ -152,8 +148,8 @@ void cam_capture_source::_draw_cursor()
     auto cursor_x = cursor_info.ptScreenPos.x;
     auto cursor_y = cursor_info.ptScreenPos.y;
 
-    cursor_x -= x_;
-    cursor_y -= y_;
+    cursor_x -= src_rect_.left();
+    cursor_y -= src_rect_.top();
 
     cursor_x -= icon_info.xHotspot;
     cursor_y -= icon_info.yHotspot;
@@ -164,7 +160,7 @@ void cam_capture_source::_draw_cursor()
     ::DeleteObject(icon_info.hbmMask);
 }
 
-void cam_capture_source::_draw_annotations()
+void cam_capture_source::_draw_annotations(const rect<int> &capture_rect)
 {
     POINT pt;
     ::GetCursorPos(&pt);
@@ -174,9 +170,8 @@ void cam_capture_source::_draw_annotations()
 
     point<int> mouse_point(pt.x, pt.y);
 
-    cam_draw_data draw_data(0.1, dst_capture_rect_, mouse_point);
+    cam_draw_data draw_data(0.1, capture_rect, mouse_point);
 
     for (const auto &annotation : annotations_)
         annotation->draw(canvas, draw_data);
-
 }

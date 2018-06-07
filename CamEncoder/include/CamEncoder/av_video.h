@@ -24,11 +24,6 @@
 #include <stdexcept>
 #include <cstdint>
 
-/*!
- * for BITMAPINFO, we temporary encode BITMAPINFO frames.
- */
-#include <windows.h>
-
 using timestamp_t = uint64_t;
 
 enum class av_video_codec_type
@@ -46,7 +41,7 @@ public:
 
     void open(AVStream *stream, av_dict &dict) override;
 
-    void push_encode_frame(timestamp_t timestamp, BITMAPINFO *image, unsigned char *data);
+    void push_encode_frame(timestamp_t timestamp, unsigned char *data, int width, int height, int stride);
 
     // this function will return false, if it was unable to read a encoded packet.
     bool pull_encoded_packet(AVPacket *pkt, bool *valid_packet) override;

@@ -21,6 +21,27 @@
 #include <fmt/printf.h>
 #include <algorithm>
 
+av_muxer_type cam_create_container(video_container container)
+{
+    switch (container.get_index())
+    {
+        case video_container::type::avi: return av_muxer_type::avi;
+        case video_container::type::mp4: return av_muxer_type::mp4;
+        case video_container::type::mkv: return av_muxer_type::mkv;
+    }
+    return {};
+}
+
+video::codec cam_create_codec(video_codec codec)
+{
+    switch (codec.get_index())
+    {
+        case video_codec::type::x264: return video::codec::x264;
+        case video_codec::type::camstudio: return video::codec::camstudio;
+    }
+    return {};
+}
+
 std::optional<video::preset> cam_create_codec_preset(video_codec_preset preset)
 {
     switch(preset.get_index())
@@ -82,6 +103,7 @@ av_video_meta cam_create_video_config(const int width, const int height, const i
     else
         meta.bitrate = settings.video_codec_quality_bitrate_;
 
+    meta.codec = cam_create_codec(settings.video_codec_);
     meta.preset = cam_create_codec_preset(settings.video_codec_preset_);
     meta.profile = cam_create_codec_profile(settings.video_codec_profile_);
     meta.tune = cam_create_codec_tune(settings.video_codec_tune_);
@@ -92,7 +114,6 @@ av_video_meta cam_create_video_config(const int width, const int height, const i
 std::unique_ptr<av_video> cam_create_video_codec(const av_video_meta &meta)
 {
     av_video_codec video_codec_config;
-    video_codec_config.id = AV_CODEC_ID_H264;
     // \todo remove 'pixel_format'.
     video_codec_config.pixel_format = AV_PIX_FMT_BGRA;
 
@@ -162,13 +183,13 @@ void capture_thread::run()
     /* Setup ffmpeg video encoder */
     // \todo video encoder framerate is ignored atm..
     const auto config = cam_create_video_config(
-        pre_frame->bitmap_info->bmiHeader.biWidth,
-        pre_frame->bitmap_info->bmiHeader.biHeight,
+        pre_frame->width,
+        pre_frame->height,
         30,
         capture_settings_.video_settings);
 
     auto video_encoder = std::make_unique<av_muxer>(capture_settings_.filename.c_str(),
-        av_muxer_type::mkv);
+        cam_create_container(capture_settings_.video_settings.video_container_));
     video_encoder->add_stream(cam_create_video_codec(config));
     video_encoder->open();
 
@@ -186,7 +207,8 @@ void capture_thread::run()
         const auto frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
 
         DWORD timestamp = static_cast<DWORD>(time_capture_start * 1000.0);
-        video_encoder->encode_frame(timestamp, frame->bitmap_info, frame->bitmap_data);
+        video_encoder->encode_frame(timestamp, frame->bitmap_data, frame->width, frame->height,
+            frame->stride);
 
         double time_capture_end = frame_limiter.time_now();
         double dt = time_capture_end - time_capture_start;

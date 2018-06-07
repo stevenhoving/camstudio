@@ -25,8 +25,11 @@
 
 struct cam_frame
 {
-    BITMAPINFO *bi{nullptr};
-    unsigned char *lpBitmapBits{nullptr};
+    BITMAPINFO *bitmap_info{nullptr};
+    unsigned char *bitmap_data{nullptr};
+    int width{0};
+    int height{0};
+    int stride{0};
 };
 
 class cam_capture_source
@@ -36,39 +39,36 @@ public:
     cam_capture_source(HWND hwnd, const rect<int> &view);
     ~cam_capture_source();
 
-    void set_capture_dst_rect(const rect<int> &view) noexcept;
-
     /*!
      * \param[in] src_capture_rect the rectangle of the capture source.
      * \todo the src_capture_rect does not belong here...
      */
     bool capture_frame(const rect<int> &src_capture_rect);
-    const cam_frame *get_frame() const;
+    const cam_frame *get_frame();
 
 protected:
     // \todo is a cursor a annotation?
     void _draw_cursor();
-    void _draw_annotations();
+    void _draw_annotations(const rect<int> &capture_rect);
 
 private:
-    BITMAPINFOHEADER bitmap_info_;
+    BITMAPINFO bitmap_info_;
     HBITMAP bitmap_frame_;
     HWND hwnd_;
     HDC desktop_dc_;
     HDC memory_dc_;
-    int width_;
-    int height_;
-    int x_;
-    int y_;
+    rect<int> src_rect_;
     bool show_cursor_;
 
-    BITMAPINFO bmp_info_;
-    unsigned char *bmp_data_{nullptr};
+    unsigned char *bitmap_data_{nullptr};
     cam_frame frame_;
+    rect<int> captured_rect_;
 
     HGDIOBJ old_selected_bitmap_{nullptr};
 
-    // rect to actually capture
-    rect<int> dst_capture_rect_;
+    //int capture_width_{0};
+    //int capture_height_{0};
+    //int capture_x_{0};
+    //int capture_y_{0};
     std::vector<std::unique_ptr<cam_iannotation>> annotations_;
 };

@@ -2908,7 +2908,6 @@ av_video_meta create_video_config(const int width, const int height, const int f
 std::unique_ptr<av_video> create_video_codec(const av_video_meta &meta)
 {
     av_video_codec video_codec_config;
-    video_codec_config.id = AV_CODEC_ID_H264;
 
     // The video input pixel format should be automatically detected.
     video_codec_config.pixel_format = AV_PIX_FMT_RGB24;

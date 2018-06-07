@@ -25,6 +25,19 @@
 
 namespace video
 {
+    enum class codec
+    {
+        x264,
+        camstudio
+    };
+
+    enum class container
+    {
+        avi,
+        mp4,
+        mkv
+    };
+
     // h264 presets (maybe applicable for other video codecs)
     enum class preset
     {
@@ -105,10 +118,12 @@ struct frame_rate
 // is a mix of video input config and user configurations. \todo split these.
 struct av_video_meta
 {
-    int width = { 0 };
-    int height = { 0 };
-    int bpp = { 0 };
-    frame_rate fps = { 0, 0 };
+    int width{ 0 };
+    int height{ 0 };
+    int bpp{ 0 };
+    frame_rate fps{ 0, 0 };
+    video::codec codec{ video::codec::x264 };
+    video::container container{video::container::mkv};
     std::optional<double> quality;
     std::optional<double> bitrate;
     std::optional<int> gop;
@@ -119,6 +134,5 @@ struct av_video_meta
 
 struct av_video_codec
 {
-    AVCodecID id;
     AVPixelFormat pixel_format = AV_PIX_FMT_BGR24;
 };

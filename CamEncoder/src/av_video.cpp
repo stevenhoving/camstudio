@@ -120,7 +120,7 @@ void dump_context(AVCodecContext *context)
     params = nullptr;
 }
 
-AVFrame *create_video_frame(AVPixelFormat pix_fmt, int width, int height)
+AVFrame *create_video_frame(AVPixelFormat pix_fmt, int width, int height, bool camstudio_codec)
 {
     AVFrame *video_frame = av_frame_alloc();
     if (!video_frame)
@@ -130,32 +130,47 @@ AVFrame *create_video_frame(AVPixelFormat pix_fmt, int width, int height)
     video_frame->width = width;
     video_frame->height = height;
 
+    int align = 0;
+    /* special case the cam studio codec, it needs to have a  tightly packed video frame */
+    if (camstudio_codec)
+        align = 1;
+
     /* allocate the buffers for the frame data */
-    if (int ret = av_frame_get_buffer(video_frame, 32); ret < 0)
-    {
-        fprintf(stderr, "Could not allocate frame data.\n");
-        throw std::runtime_error("blegh!!");
-    }
+    if (int ret = av_frame_get_buffer(video_frame, align); ret < 0)
+        throw std::runtime_error("Could not allocate frame data.");
 
     return video_frame;
 }
 
+void my_av_log_callback(void *avcl, int level, const char *fmt, va_list vl)
+{
+    char log_buffer[1024] = {};
+    int prefix = 0;
+    int ret = av_log_format_line2(avcl, level, fmt, vl, log_buffer, 1024, &prefix);
+    puts(log_buffer);
+}
+
+
 av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
 {
+    //av_log_set_level(AV_LOG_DEBUG);
+    //av_log_set_callback(my_av_log_callback);
+
     bool truncate_framerate = false;
-    switch (config.id)
+
+    switch (meta.codec)
     {
-    case AV_CODEC_ID_CSCD:
+    case video::codec::camstudio:
         codec_type_ = av_video_codec_type::cscd;
         input_pixel_format_ = config.pixel_format;
         output_pixel_format_ = AV_PIX_FMT_BGR24;
         codec_ = &cam_codec_encoder;
         break;
-    case AV_CODEC_ID_H264:
+    case video::codec::x264:
         codec_type_ = av_video_codec_type::h264;
         input_pixel_format_ = config.pixel_format;
         output_pixel_format_ = AV_PIX_FMT_YUV420P;
-        codec_ = avcodec_find_encoder(config.id);
+        codec_ = avcodec_find_encoder(AV_CODEC_ID_H264);
         if (codec_ == nullptr)
             throw std::runtime_error("av_video: unable to find video encoder");
         break;
@@ -235,6 +250,7 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
     context_->width = meta.width;
     context_->height = meta.height;
     context_->pix_fmt = output_pixel_format_;
+    context_->sample_aspect_ratio.num = 0;
 
     // \todo we have no grayscale settings for now
     //if (grayscale)
@@ -242,7 +258,8 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
 
     context_->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
-    frame_ = create_video_frame(context_->pix_fmt, context_->width, context_->height);
+    frame_ = create_video_frame(context_->pix_fmt, context_->width, context_->height,
+        codec_type_ == av_video_codec_type::cscd);
 
     sws_context_ = create_software_scaler(
         input_pixel_format_, context_->width, context_->height,
@@ -290,11 +307,11 @@ void av_video::open(AVStream *stream, av_dict &dict)
     dump_context(context_);
 }
 
-void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFO *image, unsigned char *data)
+void av_video::push_encode_frame(timestamp_t timestamp, unsigned char *data, int width, int height, int stride)
 {
     // also handle encoder flush
     AVFrame *encode_frame = nullptr;
-    if (image != nullptr)
+    if (data != nullptr)
     {
         /* when we pass a frame to the encoder, it may keep a reference to it
          * internally; make sure we do not overwrite it here
@@ -303,56 +320,47 @@ void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFO *image, unsig
             throw std::runtime_error("Unable to make temp video frame writable");
 
         const auto *src_data = data;
-        const auto src_width = image->bmiHeader.biWidth;
-        const auto src_height = abs(image->bmiHeader.biHeight);
+        const auto src_width = width;
+        const auto src_height = height;
 
         const auto dst_width = context_->width;
         const auto dst_height = context_->height;
         const auto dst_pixel_format = context_->pix_fmt;
 
-        /* \todo fix hard coded input format */
-        const auto src_data_size = src_width * src_height * 4;
-        const uint8_t *const src[3] = {
-            src_data + (src_data_size - (src_width * 4)),
-            nullptr,
-            nullptr
-        };
-        /* \todo fix hard coded input format stride */
-        const int src_stride[3] = { src_width * -4, 0, 0 };
+        /* \todo fix hard coded src ptr and stride. */
+        uint8_t *src[3] = {const_cast<uint8_t *>(src_data), nullptr, nullptr};
+        int src_stride[3] = {stride, 0, 0};
+
+        /* special case camstudio codec, because it wants its data upside down. */
+        if (codec_type_ == av_video_codec_type::cscd)
+        {
+            src[0] = src[0] + (dst_height * src_stride[0]) - src_stride[0];
+            src_stride[0] = src_stride[0] * -1;
+        }
 
         int dst_stride[3] = {0, 0, 0};
+
         switch(output_pixel_format_)
         {
         case AV_PIX_FMT_RGB555LE:
-            dst_stride[0] = src_width * 2;
-            dst_stride[1] = 0;
-            dst_stride[2] = 0;
-            break;
         case AV_PIX_FMT_BGR24:
-            dst_stride[0] = src_width * 3;
-            dst_stride[1] = 0;
-            dst_stride[2] = 0;
-            break;
         case AV_PIX_FMT_BGR0:
-            dst_stride[0] = src_width * 4;
-            dst_stride[1] = 0;
-            dst_stride[2] = 0;
-            break;
         case AV_PIX_FMT_YUV420P:
-            dst_stride[0] = dst_width;
-            dst_stride[1] = dst_width / 2;
-            dst_stride[2] = dst_width / 2;
-            break;
         case AV_PIX_FMT_YUV444P:
-            dst_stride[0] = dst_width;
-            dst_stride[1] = dst_width;
-            dst_stride[2] = dst_width;
+            dst_stride[0] = frame_->linesize[0];
+            dst_stride[1] = frame_->linesize[1];
+            dst_stride[2] = frame_->linesize[2];
             break;
+
         default:
             throw std::runtime_error("av_video: invalid encoder input format");
             break;
         }
+#define ALWAYS_USE_SWS_SCALE 1
+
+#if ALWAYS_USE_SWS_SCALE == 0
         if (output_pixel_format_ != AV_PIX_FMT_YUV420P)
+#endif
         {
             int ret = sws_scale(sws_context_, src, src_stride, 0, src_height, frame_->data, dst_stride);
             if (ret < 0)
@@ -360,6 +368,7 @@ void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFO *image, unsig
                 fmt::print("scale failed: {}\n", av_error_to_string(ret));
             }
         }
+#if ALWAYS_USE_SWS_SCALE == 0
         else if (input_pixel_format_ == AV_PIX_FMT_BGRA)
         {
             bgra2yuv420p(frame_->data, src, src_width, src_height, src_stride);
@@ -368,6 +377,7 @@ void av_video::push_encode_frame(timestamp_t timestamp, BITMAPINFO *image, unsig
         {
             bgr2yuv420p(frame_->data, src, src_width, src_height, src_stride);
         }
+#endif
 
         frame_->pts = timestamp;
         encode_frame = frame_;

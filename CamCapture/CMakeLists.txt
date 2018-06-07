@@ -17,8 +17,8 @@ project(CamCapture)
 
 set(ANNOTATIONS_SOURCE
     src/annotations/cam_annotation_cursor.cpp
-    include/CamCapture/annotations/cam_annotation_cursor.h
     src/annotations/cam_annotation_systemtime.cpp
+    include/CamCapture/annotations/cam_annotation_cursor.h
     include/CamCapture/annotations/cam_annotation_systemtime.h
 )
 
