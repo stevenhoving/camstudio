@@ -128,7 +128,6 @@ protected:
     afx_msg void OnUpdateOptionsRecordaudioRecordfromspeakers(CCmdUI *pCmdUI);
     afx_msg void OnOptionsRecordaudiomicrophone();
     afx_msg void OnUpdateOptionsRecordaudiomicrophone(CCmdUI *pCmdUI);
-    afx_msg void OnOptionsProgramoptionsTroubleshoot();
     afx_msg void OnOptionsProgramoptionsCamstudioplay();
     afx_msg void OnUpdateOptionsProgramoptionsCamstudioplay(CCmdUI *pCmdUI);
     afx_msg void OnOptionsProgramoptionsDefaultplay();

@@ -70,7 +70,6 @@
 #define IDR_TRAYMENU                    186
 #define IDB_BITMAP4                     189
 #define IDD_AUTOSEARCH                  190
-#define IDD_TROUBLESHOOT                191
 #define IDR_CONTEXTMENU                 192
 #define IDD_RESIZE                      192
 #define IDD_TEXTDIALOG                  193
@@ -159,7 +158,6 @@
 #define IDC_STATICVOLUME                1051
 #define IDC_STATICINFO                  1052
 #define IDC_CHECK1                      1053
-#define IDC_CHECK2                      1054
 #define IDC_EDIT1                       1055
 #define IDC_CTRL1                       1056
 #define IDC_TRANSTEXT                   1057
@@ -388,7 +386,6 @@
 #define ID_OUTPUTDIRECTORY_USEWINDOWSTEMPORARYDIRECTORY 32940
 #define ID_OUTPUTDIRECTORY_USEMYCAMSTUDIORECORDINGSDIRECTORY 32941
 #define ID_OUTPUTDIRECTORY_USEUSERSPECIFIEDDIRECTORY 32942
-#define ID_TOOLS_SETTINGS               32951
 #define IDS_STRING_NOTE                 61446
 #define IDS_STRING_INTERLEAVE1          61447
 #define IDS_STRING_NOINPUT1             61448

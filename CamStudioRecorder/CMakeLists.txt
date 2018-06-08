@@ -83,8 +83,6 @@ set(RECORDER_SOURCE
     TextDlg.cpp
     TextDlg.h
     TransparentWnd.cpp
-    TroubleShootDlg.cpp
-    TroubleShootDlg.h
     CamStudioCommandLineInfo.h
     FlashingWnd.h
     HotKey.h

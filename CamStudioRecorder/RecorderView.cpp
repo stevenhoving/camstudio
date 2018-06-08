@@ -25,9 +25,7 @@
 #include "KeyshortcutsDlg.h"
 #include "PresetTimeDlg.h"
 #include "SyncDlg.h"
-#include "TroubleShootDlg.h"
 #include "ProgressDlg.h"
-
 
 #include <ximage.h>
 #include <fmt/format.h>
@@ -543,7 +541,6 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
     ON_COMMAND(ID_OPTIONS_NAMING_ASK, OnOptionsNamingAsk)
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_NAMING_ASK, OnUpdateOptionsNamingAsk)
     ON_COMMAND(ID_OPTIONS_KEYBOARDSHORTCUTS, OnOptionsKeyboardshortcuts)
-    ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_TROUBLESHOOT, OnOptionsProgramoptionsTroubleshoot)
 
     ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
     ON_COMMAND(ID_FILE_PRINT_DIRECT, CView::OnFilePrint)
@@ -2127,18 +2124,6 @@ void CRecorderView::OnOptionsRecordaudiomicrophone()
 void CRecorderView::OnUpdateOptionsRecordaudiomicrophone(CCmdUI *pCmdUI)
 {
     pCmdUI->SetCheck(cAudioFormat.isInput(MICROPHONE));
-}
-
-void CRecorderView::OnOptionsProgramoptionsTroubleshoot()
-{
-    CTroubleShootDlg tbsDlg;
-    if (IDOK == tbsDlg.DoModal())
-    {
-        if ((TroubleShootVal == 1))
-        {
-            ::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_CLOSE, 0, 0);
-        }
-    }
 }
 
 void CRecorderView::OnOptionsProgramoptionsCamstudioplay()
