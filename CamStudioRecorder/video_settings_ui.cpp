@@ -82,21 +82,15 @@ BOOL video_settings_ui::OnInitDialog()
 
     /* codec quality */
     video_codec_constant_quality_slider_.SetRange(0, 51);
-    if (model_->video_codec_quality_type_ == video_quality_type::constant_quality)
-    {
-        _set_codec_quality_mode(video_quality_type::constant_quality);
+    _set_codec_quality_mode(model_->video_codec_quality_type_);
 
-        const auto quality = model_->video_codec_quality_constant_;
-        video_codec_constant_quality_slider_.SetPos(quality);
-        const auto quality_str = std::to_wstring(quality);
-        video_codec_quality_value_label_.SetWindowText(quality_str.c_str());
-    }
-    else
-    {
-        _set_codec_quality_mode(video_quality_type::constant_bitrate);
-        const auto bitrate = std::to_wstring(model_->video_codec_quality_bitrate_);
-        codec_quality_bitrate_edit_.SetWindowText(bitrate.c_str());
-    }
+    const auto quality = model_->video_codec_quality_constant_;
+    video_codec_constant_quality_slider_.SetPos(quality);
+    const auto quality_str = std::to_wstring(quality);
+    video_codec_quality_value_label_.SetWindowText(quality_str.c_str());
+
+    const auto bitrate = std::to_wstring(model_->video_codec_quality_bitrate_);
+    codec_quality_bitrate_edit_.SetWindowText(bitrate.c_str());
 
     return TRUE;
 }
@@ -183,11 +177,17 @@ END_MESSAGE_MAP()
 
 void video_settings_ui::OnEnChangeFps()
 {
-    wchar_t fps_text[10] = {};
+    wchar_t fps_text[10 + 1] = {};
     video_source_fps_.GetWindowText(fps_text, 10);
-    const auto fps = std::stoi(fps_text);
-
-    model_->video_source_fps_ = fps;
+    try
+    {
+        const auto fps = std::stoi(fps_text);
+        model_->video_source_fps_ = fps;
+    }
+    catch (std::exception &)
+    {
+        // blindly ignore the exception on purpose
+    }
 }
 
 void video_settings_ui::OnCbnSelchangeVideoSourceCombo()
@@ -257,11 +257,18 @@ void video_settings_ui::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBa
 
 void video_settings_ui::OnEnChangeCodecQualityBitrateEdit()
 {
-    wchar_t bitrate_text[20];
-    codec_quality_bitrate_edit_.GetWindowText(bitrate_text, (sizeof(bitrate_text)/sizeof(bitrate_text[0]))-1);
+    wchar_t bitrate_text[10 + 1];
+    codec_quality_bitrate_edit_.GetWindowText(bitrate_text, 10);
 
-    const auto bitrate = wcstol(bitrate_text, nullptr, 10);
-    model_->video_codec_quality_bitrate_ = bitrate;
+    try
+    {
+        const auto bitrate = std::stoi(bitrate_text);
+        model_->video_codec_quality_bitrate_ = bitrate;
+    }
+    catch (std::exception &)
+    {
+        // blindly ignore the exception on purpose
+    }
 }
 
 void video_settings_ui::OnBnClickedOk()
