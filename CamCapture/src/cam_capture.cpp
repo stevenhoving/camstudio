@@ -74,7 +74,8 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
 
     /* \todo make adding these annotations optional */
     annotations_.emplace_back(
-        std::make_unique<cam_annotation_cursor>(true, true, size<int>(100, 100), color(127, 255, 0, 0))
+        std::make_unique<cam_annotation_cursor>(true, true, cam_halo_type::circle,
+            size<int>(100, 100), color(127, 255, 0, 0))
     );
 
     annotations_.emplace_back(

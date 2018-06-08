@@ -21,9 +21,11 @@
 #include <windows.h>
 
 cam_annotation_cursor::cam_annotation_cursor(bool cursor_enabled, bool halo_enabled,
-                                             const size<int> &halo_size, color halo_color) noexcept
+                                             cam_halo_type halo_type, const size<int> &halo_size,
+                                             color halo_color) noexcept
     : cursor_enabled_(cursor_enabled)
     , halo_enabled_(halo_enabled)
+    , halo_type_(halo_type)
     , halo_size_(halo_size)
     , halo_color_(halo_color)
 {
@@ -87,7 +89,7 @@ void cam_annotation_cursor::_draw_extras(Gdiplus::Graphics &canvas, const rect<i
     cursor_x -= halo_size_.width() / 2;
     cursor_y -= halo_size_.height() / 2;
 
-    const auto r = Gdiplus::Rect(
+    auto halo_rect = Gdiplus::Rect(
         cursor_x,
         cursor_y,
         halo_size_.width(),
@@ -95,5 +97,19 @@ void cam_annotation_cursor::_draw_extras(Gdiplus::Graphics &canvas, const rect<i
     );
     const Gdiplus::Color c(halo_color_.a_, halo_color_.r_, halo_color_.g_, halo_color_.b_);
     const Gdiplus::SolidBrush b(c);
-    canvas.FillEllipse(&b, r);
+
+    switch(halo_type_)
+    {
+    case cam_halo_type::circle:
+        [[fallthough]];
+    case cam_halo_type::ellipse:
+        canvas.FillEllipse(&b, halo_rect);
+        break;
+
+    case cam_halo_type::square:
+        [[fallthough]];
+    case cam_halo_type::rectangle:
+        canvas.FillRectangle(&b, halo_rect);
+        break;
+    }
 }

@@ -21,11 +21,19 @@
 #include "CamCapture/cam_size.h"
 #include "CamCapture/cam_color.h"
 
+enum class cam_halo_type
+{
+    circle,
+    ellipse,
+    square,
+    rectangle
+};
+
 class cam_annotation_cursor : public cam_iannotation
 {
 public:
     cam_annotation_cursor() noexcept = default;
-    cam_annotation_cursor(bool cursor_enabled, bool halo_enabled, const size<int> &halo_size,
+    cam_annotation_cursor(bool cursor_enabled, bool halo_enabled, cam_halo_type halo_type, const size<int> &halo_size,
         color halo_color) noexcept;
     ~cam_annotation_cursor() override;
 
@@ -36,6 +44,7 @@ protected:
 private:
     bool cursor_enabled_{false};
     bool halo_enabled_{false};
+    cam_halo_type halo_type_{cam_halo_type::circle};
     size<int> halo_size_{0,0};
     color halo_color_{};
 };
