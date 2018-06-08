@@ -708,8 +708,8 @@ DWORD CodecInst::DecompressGetPalette(LPBITMAPINFOHEADER /*lpbiIn*/, LPBITMAPINF
 #define ORIG_RGB32 3
 
 #define CONVERTCOLORYUY2_BIT 1
-#define NON_KEYFRAME_BIT 0
-#define KEYFRAME_BIT 1       // 0 ==> DELTA FRAME, 1==>KEY FRAME
+#define CSCD_NON_KEYFRAME_BIT 0
+#define CSCD_KEYFRAME_BIT 1       // 0 ==> DELTA FRAME, 1==>KEY FRAME
 #define ALGORITHM_GZIP_BIT 2 // 000=>LZO , 001 = >GZIP, 010==>RESERVED, 011 ==>RESERVED, etc.
 // byte 1 :0000  000  0
 // byte 1 :level algo frametype
@@ -803,7 +803,7 @@ DWORD CodecInst::CompressRGB(ICCOMPRESS *icinfo)
             out_len = destlen;
         }
 
-        unsigned char keybit = KEYFRAME_BIT;
+        unsigned char keybit = CSCD_KEYFRAME_BIT;
         auto algo = static_cast<unsigned char>(m_algorithm);
         unsigned char gzip_level_bits = 0;
 
@@ -864,7 +864,7 @@ DWORD CodecInst::CompressRGB(ICCOMPRESS *icinfo)
         // Force non key frames in case this is auto key framing mode
         *icinfo->lpdwFlags &= ~AVIIF_KEYFRAME;
 
-        unsigned char keybit = NON_KEYFRAME_BIT;
+        unsigned char keybit = CSCD_NON_KEYFRAME_BIT;
         auto algo = static_cast<unsigned char>(m_algorithm);
         unsigned char gzip_level_bits = 0;
         algo = algo << 1;
@@ -974,7 +974,7 @@ DWORD CodecInst::DecompressRGB(ICDECOMPRESS *icinfo)
 
     // Msg("Decompress %d %d",use_algo,byte1);
 
-    if (byte1 & KEYFRAME_BIT)
+    if (byte1 & CSCD_KEYFRAME_BIT)
     {
         if (use_algo == 0)
         {

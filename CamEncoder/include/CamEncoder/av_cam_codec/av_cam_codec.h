@@ -59,11 +59,10 @@ static const AVOption cam_codec_options[] = {
     { nullptr },
 };
 
-
 static const AVClass cam_encoder_class = {
-    "csce encoder",         // class_name
-    av_default_item_name,   // const char* (*item_name)(void* ctx);
-    cam_codec_options, // .option = 
+    "csce encoder",
+    av_default_item_name,
+    cam_codec_options,
     100, //LIBAVUTIL_VERSION_INT,  //.version = LIBAVUTIL_VERSION_INT,
 };
 
@@ -95,17 +94,17 @@ static AVCodec cam_codec_encoder = {
     nullptr,                        // const AVProfile *profiles;
     nullptr,                        // const char *wrapper_name;
     // private data fields
-    sizeof(CamStudioContext),      // int priv_data_size;
+    sizeof(CamStudioContext),       // int priv_data_size;
     nullptr,                        // struct AVCodec *next;
     nullptr,                        // int(*init_thread_copy)(AVCodecContext *);
     nullptr,                        // int(*update_thread_context)(AVCodecContext *dst, const AVCodecContext *src);
     nullptr,                        // const AVCodecDefault *defaults; (\todo do we need this?)
     nullptr,                        // void(*init_static_data)(struct AVCodec *codec);
-    cam_codec_init,             // int(*init)(AVCodecContext *);
+    cam_codec_init,                 // int(*init)(AVCodecContext *);
     nullptr,                        // int(*encode_sub)(AVCodecContext *, uint8_t *buf, int buf_size, const struct AVSubtitle *sub);
-    cam_codec_encode_picture,          // int(*encode2)(AVCodecContext *avctx, AVPacket *avpkt, const AVFrame *frame, int *got_packet_ptr);
+    cam_codec_encode_picture,       // int(*encode2)(AVCodecContext *avctx, AVPacket *avpkt, const AVFrame *frame, int *got_packet_ptr);
     nullptr,                        // int(*decode)(AVCodecContext *, void *outdata, int *outdata_size, AVPacket *avpkt);
-    cam_codec_encode_end,              // int(*close)(AVCodecContext *);
+    cam_codec_encode_end,           // int(*close)(AVCodecContext *);
     nullptr,                        // int(*send_frame)(AVCodecContext *avctx, const AVFrame *frame);
     nullptr,                        // int(*receive_packet)(AVCodecContext *avctx, AVPacket *avpkt);
     nullptr,                        // int(*receive_frame)(AVCodecContext *avctx, AVFrame *frame);
@@ -114,41 +113,3 @@ static AVCodec cam_codec_encoder = {
     nullptr,                        // const char *bsfs;
     nullptr,                        // const struct AVCodecHWConfigInternal **hw_configs;
 };
-
-static int ff_alloc_packet2(AVCodecContext *avctx, AVPacket *avpkt, int64_t size, int64_t min_size)
-{
-    if (avpkt->size < 0)
-    {
-        av_log(avctx, AV_LOG_ERROR, "Invalid negative user packet size %d\n", avpkt->size);
-        return AVERROR(EINVAL);
-    }
-    if (size < 0 || size > INT_MAX - AV_INPUT_BUFFER_PADDING_SIZE)
-    {
-        av_log(avctx, AV_LOG_ERROR, "Invalid minimum required packet size %" PRId64 " (max allowed is %d)\n", size,
-               INT_MAX - AV_INPUT_BUFFER_PADDING_SIZE);
-        return AVERROR(EINVAL);
-    }
-
-    if (avpkt->data)
-    {
-        AVBufferRef *buf = avpkt->buf;
-
-        if (avpkt->size < size)
-        {
-            av_log(avctx, AV_LOG_ERROR, "User packet is too small (%d < %" PRId64 ")\n", avpkt->size, size);
-            return AVERROR(EINVAL);
-        }
-
-        av_init_packet(avpkt);
-        avpkt->buf = buf;
-        avpkt->size = (int)size;
-        return 0;
-    }
-    else
-    {
-        int ret = av_new_packet(avpkt, (int)size);
-        if (ret < 0)
-            av_log(avctx, AV_LOG_ERROR, "Failed to allocate packet of size %" PRId64 "\n", size);
-        return ret;
-    }
-}
