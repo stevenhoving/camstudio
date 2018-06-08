@@ -104,8 +104,8 @@ int gzip_compress(const Bytef * src, uLong src_len, Bytef *dst, uLongf *dst_len,
  *
  * Level: 4 bits
  *
- *   Level was initially storing the gzip compression level. But this value is currently not used
- *   by the decoder.
+ *   Level was initially used to store the gzip compression level. But this value is currently not
+ *   used by the decoder.
  *
  * Algo: 3 bits
  *
@@ -135,9 +135,12 @@ int gzip_compress(const Bytef * src, uLong src_len, Bytef *dst, uLongf *dst_len,
  *
  * Cmode: 2 bit.
  *
- *   The original purpose of cmode a.k.a convertmodebit (colorspace) is unknown. We can only guess
- *   what its purpose would have been. In the meantime these 2 bits are unused.
+ *   The original purpose of cmode a.k.a convertmodebit (colorspace) is not known to me. We can only
+ *   guess what its purpose would have been. In the meantime these 2 bits are unused.
  */
+
+#define CSCD_NON_KEYFRAME_BIT 0
+#define CSCD_KEYFRAME_BIT 1
 
 int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const AVFrame *frame, int *got_packet)
 {
@@ -151,19 +154,9 @@ int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const
 
     uint8_t *buf = pkt->data;
 
-//#define CONVERTCOLORYUY2_BIT 1
-#define NON_KEYFRAME_BIT 0
-#define KEYFRAME_BIT 1       // 0 ==> DELTA FRAME, 1==>KEY FRAME
-//#define ALGORITHM_GZIP_BIT 2 // 000=>LZO , 001 = >GZIP, 010==>RESERVED, 011 ==>RESERVED, etc.
-    // byte 1 :0000  000  0
-    // byte 1 :level algo frametype
-
-    // byte 2 :0000          00           00
-    // byte 2 :reserved      origRGBbit   convertmodebit (colorspace)
-
     bool insert_keyframe = (c->currentFrame % c->autokeyframe_rate) == 0;
 
-    unsigned char keybit = insert_keyframe ? KEYFRAME_BIT : NON_KEYFRAME_BIT;
+    unsigned char keybit = insert_keyframe ? CSCD_KEYFRAME_BIT : CSCD_NON_KEYFRAME_BIT;
     unsigned char algo = static_cast<unsigned char>(c->algorithm) << 1;
     unsigned char gzip_level_bits = 0;
 

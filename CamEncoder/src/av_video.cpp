@@ -18,7 +18,10 @@
 #include "CamEncoder/av_video.h"
 #include "CamEncoder/av_dict.h"
 #include "CamEncoder/av_error.h"
-#include "CamEncoder/av_rgb2yuv.h"
+#include "CamEncoder/av_yuv/av_rgb2yuv.h"
+#include "CamEncoder/av_yuv/av_rgba2yuv.h"
+#include "CamEncoder/av_yuv/av_rgb2yuv_ssse3.h"
+#include "CamEncoder/av_yuv/av_rgba2yuv_ssse3.h"
 #include "CamEncoder/av_cam_codec/av_cam_codec.h"
 #include "av_log.h"
 
@@ -365,7 +368,7 @@ void av_video::push_encode_frame(timestamp_t timestamp, unsigned char *data, int
         }
         else if (input_pixel_format_ == AV_PIX_FMT_BGRA)
         {
-            bgra2yuv420p(frame_->data, dst_stride, src, src_width, src_height, src_stride);
+            simd::bgra2yuv420p_sse(frame_->data, dst_stride, src, src_width, src_height, src_stride);
         }
         else
         {

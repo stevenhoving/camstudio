@@ -35,7 +35,6 @@ set(ENCODER_INCLUDE
     include/CamEncoder/av_video.h
     include/CamEncoder/av_ffmpeg.h
     include/CamEncoder/av_encoder.h
-    include/CamEncoder/av_rgb2yuv.h
 )
 
 set(ENCODER_CAM_ENCODER_SOURCE
@@ -44,6 +43,25 @@ set(ENCODER_CAM_ENCODER_SOURCE
 
 set(ENCODER_CAM_ENCODER_INCLUDE
     include/CamEncoder/av_cam_codec/av_cam_codec.h
+)
+
+set(ENCODER_YUV_SOURCE
+    src/av_yuv/av_rgb2yuv.cpp
+    src/av_yuv/av_rgba2yuv.cpp
+    src/av_yuv/av_rgb2yuv_ssse3.cpp
+    src/av_yuv/av_rgba2yuv_ssse3.cpp
+)
+
+set(ENCODER_YUV_INCLUDE
+    include/CamEncoder/av_yuv/av_rgb2yuv.h
+    include/CamEncoder/av_yuv/av_rgba2yuv.h
+    include/CamEncoder/av_yuv/av_rgb2yuv_ssse3.h
+    include/CamEncoder/av_yuv/av_rgba2yuv_ssse3.h
+    include/CamEncoder/av_yuv/av_yuv_pixel_type.h
+    include/CamEncoder/av_yuv/av_simd_utility.h
+    include/CamEncoder/av_yuv/av_simd_debug.h
+    include/CamEncoder/av_yuv/av_simd_common.h
+    include/CamEncoder/av_yuv/av_simd_vec.h
 )
 
 source_group(src FILES
@@ -56,11 +74,18 @@ source_group(src\\cam_codec FILES
     ${ENCODER_CAM_ENCODER_INCLUDE}
 )
 
+source_group(src\\av_yuv FILES
+    ${ENCODER_YUV_SOURCE}
+    ${ENCODER_YUV_INCLUDE}
+)
+
 add_library(CamEncoder STATIC
     ${ENCODER_SOURCE}
     ${ENCODER_INCLUDE}
     ${ENCODER_CAM_ENCODER_SOURCE}
     ${ENCODER_CAM_ENCODER_INCLUDE}
+    ${ENCODER_YUV_SOURCE}
+    ${ENCODER_YUV_INCLUDE}
 )
 
 target_include_directories(CamEncoder

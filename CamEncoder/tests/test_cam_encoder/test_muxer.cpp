@@ -22,43 +22,47 @@
 #include <chrono>
 #include <memory>
 
-av_video_meta create_video_config(const int width, const int height, const int fps)
+constexpr auto test_width = 128;
+constexpr auto test_height = 128;
+
+av_video_meta create_video_config(video::codec codec, const int width,
+                                  const int height, const int fps)
 {
     av_video_meta meta;
+    meta.codec = codec;
     meta.quality = 25;
     meta.bpp = 24;
     meta.width = width;
     meta.height = height;
     meta.fps = {fps, 1};
-    //meta.preset = video::preset::ultrafast;  // configure 'almost' realtime video encoding
-    //meta.profile = video::profile::baseline; // lets try 264 baseline
-    meta.profile = video::profile::high; // lets try 264 baseline
-    //meta.tune = video::tune::zerolatency;z
+    meta.preset = video::preset::ultrafast;  // configure 'almost' realtime video encoding
+    meta.profile = video::profile::baseline; // lets try 264 baseline
+    //meta.profile = video::profile::high; // lets try 264 baseline
+    meta.tune = video::tune::zerolatency;
     return meta;
 }
 
-std::unique_ptr<av_video> create_video_codec(const av_video_meta &meta, AVCodecID codec_id, AVPixelFormat pixel_format)
+std::unique_ptr<av_video> create_video_codec(const av_video_meta &meta, AVPixelFormat pixel_format)
 {
     av_video_codec video_codec_config;
-    video_codec_config.id = codec_id;
     video_codec_config.pixel_format = pixel_format;
 
     return std::make_unique<av_video>(video_codec_config, meta);
 }
 
 void test_muxer(const int width, const int height, const int fps, av_muxer_type muxer_type,
-    AVCodecID codec_id = AV_CODEC_ID_H264, AVPixelFormat pixel_format = AV_PIX_FMT_BGR24)
+    video::codec codec, AVPixelFormat pixel_format = AV_PIX_FMT_BGRA)
 {
-    auto config = create_video_config(width, height, fps);
+    auto config = create_video_config(codec, width, height, fps);
 
     std::string filename = "test_";
 
-    switch(codec_id)
+    switch(codec)
     {
-    case AV_CODEC_ID_H264:
+    case video::codec::x264:
         filename += "h264";
         break;
-    case AV_CODEC_ID_CSCD:
+    case video::codec::camstudio:
         filename += "cscd";
         break;
     }
@@ -77,7 +81,7 @@ void test_muxer(const int width, const int height, const int fps, av_muxer_type 
     }
 
     av_muxer muxer(filename.c_str(), muxer_type);
-    muxer.add_stream(create_video_codec(config, codec_id, pixel_format));
+    muxer.add_stream(create_video_codec(config, pixel_format));
     muxer.open();
 
     auto frame = create_bmpinfo(config.width, config.height, pixel_format);
@@ -85,7 +89,8 @@ void test_muxer(const int width, const int height, const int fps, av_muxer_type 
     for (int i = 0; i < 100; ++i)
     {
         DWORD ts = GetTickCount() - timestamp;
-        muxer.encode_frame(ts, (BITMAPINFOHEADER *)frame);
+        muxer.encode_frame(ts, reinterpret_cast<unsigned char *>(frame->bmiColors), config.width,
+            config.height, config.width * 3);
         fill_bmpinfo(frame, ts / fps, pixel_format);
         double dt = (1.0 / (double)fps) * 1000.0;
         Sleep((DWORD)dt);
@@ -95,19 +100,22 @@ void test_muxer(const int width, const int height, const int fps, av_muxer_type 
 
 TEST(test_muxer, test_create_mkv_muxer)
 {
-    test_muxer(512, 512, 25, av_muxer_type::mkv);
+    test_muxer(test_width, test_height, 25, av_muxer_type::mkv, video::codec::x264);
 }
 
 TEST(test_muxer, test_create_mp4_muxer)
 {
-    test_muxer(512, 512, 25, av_muxer_type::mp4);
+    test_muxer(test_width, test_height, 25, av_muxer_type::mp4, video::codec::x264);
 }
 
 TEST(test_muxer, test_create_mkv_cam_codec_muxer)
 {
     av_log_set_level(AV_LOG_TRACE);
-    //test_muxer(512, 512, 25, av_muxer_type::mkv, AV_CODEC_ID_CSCD, AV_PIX_FMT_RGB555LE);
-    test_muxer(512, 512, 25, av_muxer_type::avi, AV_CODEC_ID_CSCD, AV_PIX_FMT_BGR24);
-    test_muxer(512, 512, 25, av_muxer_type::mkv, AV_CODEC_ID_CSCD, AV_PIX_FMT_BGR24);
-    //test_muxer(512, 512, 25, av_muxer_type::mkv, AV_CODEC_ID_CSCD, AV_PIX_FMT_BGR0);
+    //test_muxer(test_width, test_height, 25, av_muxer_type::mkv, AV_CODEC_ID_CSCD, AV_PIX_FMT_RGB555LE);
+    test_muxer(test_width, test_height, 25, av_muxer_type::avi, video::codec::camstudio, AV_PIX_FMT_BGR24);
+    test_muxer(test_width, test_height, 25, av_muxer_type::mkv, video::codec::camstudio, AV_PIX_FMT_BGR24);
+
+    test_muxer(test_width, test_height, 25, av_muxer_type::avi, video::codec::camstudio, AV_PIX_FMT_BGR0);
+    test_muxer(test_width, test_height, 25, av_muxer_type::mkv, video::codec::camstudio, AV_PIX_FMT_BGRA);
+    //test_muxer(test_width, test_height, 25, av_muxer_type::mkv, AV_CODEC_ID_CSCD, AV_PIX_FMT_BGR0);
 }
