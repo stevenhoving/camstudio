@@ -73,6 +73,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 #include <assert.h>
 #include <ctype.h>
@@ -413,7 +414,7 @@ int jas_image_readcmpt(jas_image_t *image, int cmptno, jas_image_coord_t x,
     int c;
     jas_seqent_t *dr;
     jas_seqent_t *d;
-    int drs;
+    int64_t drs;
 
     if (cmptno < 0 || cmptno >= image->numcmpts_) {
         return -1;
@@ -463,7 +464,7 @@ int jas_image_writecmpt(jas_image_t *image, int cmptno, jas_image_coord_t x, jas
     jas_image_coord_t j;
     jas_seqent_t *d;
     jas_seqent_t *dr;
-    int drs;
+    int64_t drs;
     jas_seqent_t v;
     int k;
     int c;
