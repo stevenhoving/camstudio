@@ -217,7 +217,6 @@ BEGIN
         BEGIN
             MENUITEM "&Audio Options for Microphone", ID_OPTIONS_AUDIOFORMAT
             MENUITEM "Audio Options for Spea&kers", ID_OPTIONS_AUDIOSPEAKERS
-            MENUITEM "Audio and Video Synchronization", ID_OPTIONS_AUDIOOPTIONS_AUDIOVIDEOSYNCHRONIZATION
         END
         MENUITEM SEPARATOR
         MENUITEM "Do not record audio",         ID_OPTIONS_RECORDAUDIO_DONOTRECORDAUDIO
@@ -805,26 +804,6 @@ BEGIN
     LTEXT           "Making a window transparent will slow\nthe recording rate significantly.",IDC_STATIC,29,35,120,17
 END
 
-IDD_SYNCHRONIZATION DIALOGEX 0, 0, 244, 134
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Audio and Video Synchronization"
-FONT 8, "MS Sans Serif", 0, 0, 0x0
-BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,64,113,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,130,113,50,14
-    GROUPBOX        "Synchronization",IDC_STATIC,7,3,230,109
-    CONTROL         "(Invalid) My video goes before audio, delay the recording of video by",IDC_RADIO1,
-                    "Button",BS_AUTORADIOBUTTON | BS_TOP | BS_MULTILINE | NOT WS_VISIBLE,20,92,202,19
-    CONTROL         "My audio goes before my video (I hear the words before I see the mouth movements) . Delay the recording of the video stream and shift by",IDC_RADIO3,
-                    "Button",BS_AUTORADIOBUTTON | BS_TOP | BS_MULTILINE,19,39,207,27
-    CONTROL         "Do not shift the audio or video streams",IDC_RADIO4,
-                    "Button",BS_AUTORADIOBUTTON | BS_TOP | BS_MULTILINE,19,20,137,10
-    LTEXT           "Timeshift",IDC_STATIC,32,74,29,12,SS_CENTERIMAGE
-    EDITTEXT        IDC_EDIT1,68,74,48,12,ES_AUTOHSCROLL | ES_READONLY | ES_NUMBER
-    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_NOTHOUSANDS,171,74,11,17
-    LTEXT           "milliseconds",IDC_STATIC,126,74,38,12,SS_CENTERIMAGE
-END
-
 IDD_PRESETTIME DIALOGEX 0, 0, 186, 90
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Preset Time"
@@ -1121,14 +1100,6 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 179
         TOPMARGIN, 7
-    END
-
-    IDD_SYNCHRONIZATION, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 237
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 127
     END
 
     IDD_PRESETTIME, DIALOG
@@ -2311,11 +2282,6 @@ BEGIN
     0
 END
 
-IDD_SYNCHRONIZATION AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
 IDD_TEXTDIALOG AFX_DIALOG_LAYOUT
 BEGIN
     0
@@ -2684,8 +2650,6 @@ BEGIN
     ID_EDITLAYOUT_LIBRARY_OPENLIBRARY "Open an existing layout library"
     ID_EDITLAYOUT_LIBRARY_CLOSELIBRARY "Display video annotations dialog"
     ID_OPTIONS_CLOSESCREENANNOTATIONS "Close screen annotations dialog"
-    ID_OPTIONS_AUDIOOPTIONS_AUDIOVIDEOSYNCHRONIZATION 
-                            "Delay recording of audio or video stream to synchronize"
 END
 
 STRINGTABLE

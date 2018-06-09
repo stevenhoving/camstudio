@@ -77,7 +77,6 @@
 #define IDI_ICONJUSTIFYLEFT             194
 #define IDI_ICONJUSTIFYCENTER           195
 #define IDI_ICONJUSTIFYRIGHT            196
-#define IDD_SYNCHRONIZATION             196
 #define IDD_PRESETTIME                  197
 #define IDR_CONTEXTLANGUAGE             198
 #define IDD_EFFECTS_OPTIONS             198
@@ -97,7 +96,6 @@
 #define IDC_RADIO3                      1001
 #define IDC_RADIO2                      1002
 #define IDC_CURSOR1                     1003
-#define IDC_RADIO4                      1003
 #define CG_IDC_PROGDLG_PROGRESS         1003
 #define IDC_CURSOR2                     1004
 #define CG_IDC_PROGDLG_PERCENT          1004
@@ -319,7 +317,6 @@
 #define ID_SCRIPT_JAPANESESHIFTJIS      32838
 #define ID_CONTEXTVIDEO_EDITTRANSPARENCY 32838
 #define ID_SCRIPT_SYMBOL                32839
-#define ID_OPTIONS_AUDIOOPTIONS_AUDIOVIDEOSYNCHRONIZATION 32839
 #define ID_SCRIPT_TURKISH               32840
 #define ID_SCRIPT_JOHABKOREAN           32841
 #define ID_SCRIPT_HEBREW                32842

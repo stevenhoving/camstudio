@@ -73,13 +73,9 @@ set(RECORDER_SOURCE
     RecorderDoc.cpp
     RecorderView.cpp
     ResizeDlg.cpp
-    Screen.cpp
-    Screen.h
     SpeakersImpl.cpp
     stdafx.cpp
     stdafx.h
-    SyncDlg.cpp
-    SyncDlg.h
     TextDlg.cpp
     TextDlg.h
     TransparentWnd.cpp

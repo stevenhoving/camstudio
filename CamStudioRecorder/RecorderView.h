@@ -2,8 +2,6 @@
 
 #include "FlashingWnd.h"
 #include "BasicMessageDlg.h"
-#include "screen.h"
-
 #include "capture_thread.h"
 
 #include <memory>
@@ -137,8 +135,6 @@ protected:
     afx_msg void OnHelpDonations();
     afx_msg void OnOptionsUsePlayer20();
     afx_msg void OnUpdateUsePlayer20(CCmdUI *pCmdUI);
-    afx_msg void OnViewVideoannotations();
-    afx_msg void OnOptionsSynchronization();
     afx_msg void OnSetFocus(CWnd *pOldWnd);
     afx_msg void OnAVISWFMP4();
     afx_msg BOOL OnEraseBkgnd(CDC *pDC);
@@ -194,7 +190,6 @@ private:
     std::unique_ptr<video_settings_model> video_settings_model_;
 
     CFlashingWnd flashing_wnd_;
-    CCamera camera_;
     CBasicMessageDlg *basic_msg_;
     double zoom_;
     CPoint zoomed_at_;
@@ -208,16 +203,12 @@ private:
     bool SaveAppSettings();
     void SaveProducerCommand();
 
-    bool captureScreenFrame(const CRect &rectView, bool bDisableRect = true);
     bool RecordVideo(CRect rectFrame, int fps, const char *szFileName);
     UINT RecordVideo();
-    static UINT RecordThread(LPVOID pParam);
     bool RunViewer(const CString &strNewFile);
     bool RunProducer(const CString &strNewFile);
     void DisplayAutopanInfo(CRect rc);
     // dialog controls
-public:
-    afx_msg void OnToolsSettings();
 };
 
 #ifndef _DEBUG // debug version in vscapView.cpp

@@ -8,8 +8,6 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "RecorderView.h"
-
-
 #include "RecorderDoc.h"
 #include "MainFrm.h"
 
@@ -24,7 +22,6 @@
 #include "FixedRegionDlg.h"
 #include "KeyshortcutsDlg.h"
 #include "PresetTimeDlg.h"
-#include "SyncDlg.h"
 #include "ProgressDlg.h"
 
 #include <ximage.h>
@@ -40,7 +37,6 @@
 
 #include "AudioSpeakersDlg.h"
 #include "HotKey.h"
-#include "Screen.h"
 #include "vfw/VCM.h"
 #include "vfw/ACM.h"
 
@@ -475,7 +471,6 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDAUDIO_RECORDFROMSPEAKERS, OnUpdateOptionsRecordaudioRecordfromspeakers)
     ON_COMMAND(ID_OPTIONS_RECORDAUDIOMICROPHONE, OnOptionsRecordaudiomicrophone)
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDAUDIOMICROPHONE, OnUpdateOptionsRecordaudiomicrophone)
-    ON_COMMAND(ID_OPTIONS_AUDIOOPTIONS_AUDIOVIDEOSYNCHRONIZATION, OnOptionsSynchronization)
     ON_COMMAND(ID_AVISWF, OnAVISWFMP4)
     ON_COMMAND(ID_OPTIONS_NAMING_AUTODATE, OnOptionsNamingAutodate)
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_NAMING_AUTODATE, OnUpdateOptionsNamingAutodate)
@@ -553,8 +548,6 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
     ON_MESSAGE(MM_WIM_DATA, OnMM_WIM_DATA)
     ON_MESSAGE(WM_HOTKEY, OnHotKey)
     ON_WM_CAPTURECHANGED()
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_AUDIOOPTIONS_AUDIOVIDEOSYNCHRONIZATION,
-                         &CRecorderView::OnUpdateOptionsAudiooptionsAudiovideosynchronization)
 END_MESSAGE_MAP()
 
 BEGIN_EVENTSINK_MAP(CRecorderView, CView)
@@ -858,11 +851,6 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
     pStatus->SetPaneText(0, _T("Press the Stop Button to stop recording"));
 
-    camera_.Set(cCaptionOpts);
-    camera_.Set(cTimestampOpts);
-    camera_.Set(cWatermarkOpts);
-    camera_.Set(CamCursor);
-
     // ver 1.2
     if (cProgramOpts.m_bMinimizeOnStart)
         ::PostMessage(AfxGetMainWnd()->m_hWnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
@@ -948,9 +936,7 @@ LRESULT CRecorderView::OnRecordInterrupted(WPARAM wParam, LPARAM /*lParam*/)
 
 LRESULT CRecorderView::OnSaveCursor(WPARAM wParam, LPARAM /*lParam*/)
 {
-    // TRACE("CRecorderView::OnSaveCursor\n");
     CamCursor.Save(reinterpret_cast<HCURSOR>(wParam));
-    camera_.Save(reinterpret_cast<HCURSOR>(wParam));
     return 0;
 }
 
@@ -2270,28 +2256,6 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
     return 1;
 }
 
-void CRecorderView::OnUpdateOptionsAudiooptionsAudiovideosynchronization(CCmdUI *pCmdUI)
-{
-    // enable if audio or video devices
-    BOOL bEnable = ((0 < waveInGetNumDevs()) || (0 < waveOutGetNumDevs()));
-    pCmdUI->Enable(bEnable);
-}
-
-void CRecorderView::OnOptionsSynchronization()
-{
-    // if ((waveInGetNumDevs() == 0) || (waveOutGetNumDevs() == 0)) {
-    //    MessageOut(m_hWnd,IDS_STRING_NOINPUT3,IDS_STRING_NOTE,MB_OK | MB_ICONEXCLAMATION);
-    //    return;
-    //}
-
-    CSyncDlg synDlg(cVideoOpts.m_iShiftType, cVideoOpts.m_iTimeShift, this);
-    if (IDOK == synDlg.DoModal())
-    {
-        cVideoOpts.m_iTimeShift = synDlg.m_iTimeShift;
-        cVideoOpts.m_iShiftType = synDlg.m_iShiftType;
-    }
-}
-
 void CRecorderView::OnAVISWFMP4()
 {
     cProgramOpts.m_iRecordingMode = ModeAVI;
@@ -2715,164 +2679,6 @@ void CRecorderView::DisplayRecordingMsg(CDC &srcDC)
     srcDC.SelectObject(pOldFont);
     srcDC.SetTextColor(oldTextColor);
     srcDC.SetBkColor(oldBkColor);
-}
-
-/////////////////////////
-// TODO janhgm
-// If recording is on pause it would be nice if we can recover a few records from the bin.
-// Gives us a better overview about the conditions when we (or a device) decided that we should start recording again.
-/////////////////////////
-bool CRecorderView::captureScreenFrame(const CRect &rectView, bool bDisableRect)
-{
-    // TRACE("CRecorderView::captureScreenFrame\n");
-    // CRect rectView(left, top, left + width, top + height);
-
-    int width = static_cast<int>(rectView.Width() / zoom_);   // width of being captured screen stuff
-    int height = static_cast<int>(rectView.Height() / zoom_); // height of being captured screen stuff
-
-    CRect zr = zoom_ == 1. ? rectView
-                           : CRect(CPoint(std::min(std::max(rectView.left, zoomed_at_.x - width / 2), rectView.right - width),
-                               std::min(std::max(rectView.top, zoomed_at_.y - height / 2), rectView.bottom - height)),
-                                   CSize(width, height));
-
-    // FIXME: can be move into UpdateZoom() function
-    if (zoom_when_) // should zoom in/out
-    {
-        DWORD threshold = 1000; // 1 sec
-        DWORD now = ::GetTickCount();
-        DWORD ago = now - zoom_when_;
-        if (ago > threshold)
-        {
-            zoom_when_ = 0;
-        }
-        else
-        { // FIXME: change zoom from current state in case use changed mind zooming
-            zoom_ = 1.5 - cos(ago * 3.141592 / threshold) / 1.9 * zoom_direction_;
-            if (zoom_ > 2.)
-                zoom_ = 2.;
-            if (zoom_ < 1.)
-                zoom_ = 1.;
-        }
-    }
-
-    CPoint pt;
-    VERIFY(::GetCursorPos(&pt));
-    //double dist = sqrt((double)(pt.x - zoomed_at_.x) * (pt.x - zoomed_at_.x) + (pt.y - zoomed_at_.y) * (pt.y - zoomed_at_.y));
-
-    if (cProgramOpts.m_bAutoPan)
-    {
-        // always cursor centered
-        VERIFY(::GetCursorPos(&zoomed_at_));
-    }
-    else
-    {
-        if (abs(pt.x - zoomed_at_.x) > .4 * width)
-            zoomed_at_.x += (pt.x - zoomed_at_.x) * cProgramOpts.m_iMaxPan / width;
-        if (abs(pt.y - zoomed_at_.y) > .4 * height)
-            zoomed_at_.y += (pt.y - zoomed_at_.y) * cProgramOpts.m_iMaxPan / height;
-    }
-
-    // if flashing rect
-    if (!bDisableRect && (cProgramOpts.m_bFlashingRect))
-    {
-        // if (cProgramOpts.m_bAutoPan) {
-        //    flashing_wnd_.SetUpRegion(rectView, 1);
-        //}
-        flashing_wnd_.SetUpRegion(zr, cProgramOpts.m_bAutoPan);
-        flashing_wnd_.DrawFlashingRect(cProgramOpts.m_bAutoPan);
-        // flashing_wnd_.PostMessage(CFlashingWnd::WM_FLASH_WINDOW, cProgramOpts.m_bAutoPan, 1L);
-    }
-
-    camera_.SetView(rectView); // this set m_rectView & m_rectFrame
-    // severe changes where made to CaptureFrame
-    bool bResult = camera_.CaptureFrame(zr);
-
-    // if flashing rect
-    if (!bDisableRect && (cProgramOpts.m_bFlashingRect))
-    {
-        flashing_wnd_.DrawFlashingRect(cProgramOpts.m_bAutoPan, false);
-        // flashing_wnd_.PostMessage(CFlashingWnd::WM_FLASH_WINDOW, cProgramOpts.m_bAutoPan, 0L);
-    }
-    return bResult;
-}
-
-UINT CRecorderView::RecordThread(LPVOID pParam)
-{
-    CRecorderView *pcRecorderView = reinterpret_cast<CRecorderView *>(pParam);
-    if (!pcRecorderView)
-        return 0;
-
-    return pcRecorderView->RecordVideo();
-}
-
-UINT CRecorderView::RecordVideo()
-{
-    // TRACE("CRecorderView::RecordAVIThread\n");
-
-    // Test the validity of writing to the file
-    // Make sure the file to be created is currently not used by another application
-
-    // Attempt to write to temp.avi file while file still exist results in a crash when old temp.avi is still in use or
-    // locked (or not freed). Can be prevented if Camstudio always write to an unique file. We decided to use the
-    // standard date-timestamp (~temp-ccyymmdd-hhuu-ss.avi) to make the file unique Another benefit of using this
-    // filename is that we don't always have to copy from temp to realname once recording is finished and we always new
-    // when a recording was created.
-
-    const auto csTempFolder = get_temp_folder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir);
-    // Location where we are creating our files
-    // TRACE("## CRecorderView::RecordVideo()  cProgramOpts.m_strSpecifiedDir=[%s]\n", cProgramOpts.m_strSpecifiedDir );
-    // TRACE("## CRecorderView::RecordVideo()  csTempFolder=[%s]\n", csTempFolder );
-
-    // Define a date-time tag "ccyymmdd_uumm_ss" to add to the temp.avi file.
-    // (New recordings can start just after previously recording ended.)
-    time_t osBinaryTime; // C run-time time (defined in <time.h>)
-    time(&osBinaryTime);
-    CTime ctime(osBinaryTime);
-
-    int day = ctime.GetDay();
-    int month = ctime.GetMonth();
-    int year = ctime.GetYear();
-    int hour = ctime.GetHour();
-    int minutes = ctime.GetMinute();
-    int second = ctime.GetSecond();
-
-    // Create timestamp tag
-    auto csStartTime = fmt::sprintf(_T("%04d%02d%02d_%02d%02d_%02d"),
-        year, month, day, hour, minutes, second);
-
-    // \todo this is wrong
-    cVideoOpts.m_cStartRecordingString = csStartTime;
-
-    strTempVideoFilePath = fmt::format(_T("{}\\{}-{}.{}"), csTempFolder,
-        _T(TEMPFILETAGINDICATOR), csStartTime, _T("avi"));
-
-    // TRACE("## CRecorderView::RecordAVIThread First  Temp.Avi file=[%s]\n", strTempVideoAviFilePath.GetString()  );
-
-    srand(static_cast<unsigned int>(time(nullptr)));
-    bool fileverified = false;
-    while (!fileverified)
-    {
-        auto filepath = std::experimental::filesystem::path(strTempVideoFilePath);
-        if (std::experimental::filesystem::exists(filepath))
-        {
-            fileverified = std::experimental::filesystem::remove(filepath);
-            if (!fileverified)
-            {
-                strTempVideoFilePath = fmt::format(_T("{}\\{}-{}-{}.{}"), csTempFolder,
-                    _T(TEMPFILETAGINDICATOR), csStartTime, rand(), _T("avi"));
-            }
-        }
-        else
-        {
-            fileverified = true;
-        }
-    }
-    // TRACE(_T("## CRecorderView::RecordAVIThread  Final Temp.Avi file=[%s]\n"), strTempVideoAviFilePath.GetString() );
-    // TRACE(_T("## CRecorderView::RecordVideo g_rcUse / T=%d, L=%d, B=%d, R=%d \n"), g_rcUse.top, g_rcUse.left, g_rcUse.bottom,
-    // g_rcUse.right );
-
-    const auto temp = wstring_to_utf8(strTempVideoFilePath);
-    return RecordVideo(g_rcUse, cVideoOpts.m_iFramesPerSecond, temp.c_str()) ? 0UL : 1UL;
 }
 
 av_video_meta create_video_config(const int width, const int height, const int fps)
