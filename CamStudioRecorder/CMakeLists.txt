@@ -163,12 +163,12 @@ target_include_directories(CamStudioRecorder
 
 target_compile_definitions(CamStudioRecorder
   PRIVATE
-    -DNOMINMAX
-    -D_AFXDLL=1
-    -D_UNICODE
-    -DUNICODE
+    NOMINMAX
+    _AFXDLL=1
+    _UNICODE
+    UNICODE
     # silence codecvt deprecation warning for now
-    -D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+    _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 )
 
 target_compile_options(CamStudioRecorder
