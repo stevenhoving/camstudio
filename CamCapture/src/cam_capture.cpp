@@ -113,13 +113,16 @@ const cam_frame *cam_capture_source::get_frame()
 {
     frame_.width = captured_rect_.width();
     frame_.height = captured_rect_.height();
-    /* \todo make the bytes per pixel optional */
+    /* \todo make the bytes per pixel optional or based on the actual Bpp */
     frame_.stride = src_rect_.width() * 4;
     return &frame_;
 }
 
 void cam_capture_source::_draw_annotations(const rect<int> &capture_rect)
 {
+    if (annotations_.empty())
+        return;
+
     POINT pt;
     ::GetCursorPos(&pt);
 

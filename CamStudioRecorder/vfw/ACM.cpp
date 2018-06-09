@@ -57,28 +57,6 @@ void AttemptCompressFormat()
     }
 }
 
-// ver .12
-void AttemptRecordingFormat()
-{
-    WAVEINCAPS wic;
-    ::ZeroMemory(&wic, sizeof(WAVEINCAPS));
-    MMRESULT mmr = ::waveInGetDevCaps(cAudioFormat.m_uDeviceID, &wic, sizeof(wic));
-    if (MMSYSERR_NOERROR != mmr)
-    {
-        // TODO: handle error code
-
-        // reset wic.dwFormats to force SuggestRecordingFormat call
-        wic.dwFormats = 0;
-    }
-    if (wic.dwFormats & cAudioFormat.m_dwWaveinSelected)
-    {
-        cAudioFormat.BuildRecordingFormat();
-    }
-    else
-    {
-        SuggestRecordingFormat();
-    }
-}
 
 // Suggest Save/Compress Format to pwfx
 void SuggestRecordingFormat()

@@ -229,7 +229,7 @@ LRESULT CFixedRegionDlg::OnRegionUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/)
     }
     m_iWidth = rectUse.Width();
     m_iHeight = rectUse.Height();
-    if (cVideoOpts.m_bRoundDown)
+    //if (cVideoOpts.m_bRoundDown)
     {
         if (m_iWidth % 2 != 0)
             m_iWidth -= 1;
@@ -273,7 +273,7 @@ void CFixedRegionDlg::OnEnChangeY()
 
 void CFixedRegionDlg::OnEnChangeHeight()
 {
-    if (cVideoOpts.m_bRoundDown)
+    //if (cVideoOpts.m_bRoundDown)
     {
         RoundDownWidth();
     }
@@ -286,7 +286,7 @@ void CFixedRegionDlg::OnBnClickedOk()
 
 void CFixedRegionDlg::OnBnClickedSupportrounddown()
 {
-    if (cVideoOpts.m_bRoundDown)
+    //if (cVideoOpts.m_bRoundDown)
     {
         RoundDownHeight();
         RoundDownWidth();
@@ -295,14 +295,14 @@ void CFixedRegionDlg::OnBnClickedSupportrounddown()
 
 void CFixedRegionDlg::OnEnKillfocusWidth()
 {
-    if (cVideoOpts.m_bRoundDown)
+    //if (cVideoOpts.m_bRoundDown)
     {
         RoundDownWidth();
     }
 }
 void CFixedRegionDlg::OnEnKillfocusHeight()
 {
-    if (cVideoOpts.m_bRoundDown)
+    //if (cVideoOpts.m_bRoundDown)
     {
         RoundDownHeight();
     }

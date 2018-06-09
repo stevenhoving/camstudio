@@ -12,6 +12,7 @@
 class CRecorderDoc;
 
 class video_settings_model;
+class settings_model;
 
 class CRecorderView : public CView
 {
@@ -188,6 +189,7 @@ public:
 private:
     std::unique_ptr<capture_thread> capture_thread_;
     std::unique_ptr<video_settings_model> video_settings_model_;
+    std::unique_ptr<settings_model> settings_model_;
 
     CFlashingWnd flashing_wnd_;
     CBasicMessageDlg *basic_msg_;

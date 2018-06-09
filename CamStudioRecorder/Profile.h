@@ -139,68 +139,6 @@ enum eSynchType
     AUDIOFIRST
 };
 
-// POD to hold them
-struct sVideoOpts
-{
-    sVideoOpts() = default;
-
-    sVideoOpts(const sVideoOpts &rhs);
-
-    virtual ~sVideoOpts();
-
-    sVideoOpts &operator=(const sVideoOpts &rhs);
-
-    DWORD StateSize() const;
-
-    // n.b. Keep LPCVOID definition; good for memory corruption check
-    // LPCVOID State() const    {return m_pState;}
-    LPVOID State() const;
-
-    LPVOID State(DWORD dwStateSize);
-
-    LPVOID State(LPCVOID pState, DWORD dwStateSize);
-
-    // CAVEAT!!!  CAVEAT!!!  CAVEAT!!!  CAVEAT!!!
-    // Caller of CopyState() must delete the allocated memory!
-    // LPVOID CopyState()
-    //{
-    //    if (!m_pState)
-    //        return m_pState;
-    //    ASSERT(0L < m_dwCompressorStateSize);
-    //    LPVOID lpOldState = m_pState;
-    //    DWORD dwOldSize = m_dwCompressorStateSize;
-    //    m_pState = 0;
-    //    m_dwCompressorStateSize = 0L;
-    //    VERIFY(0 != State(lpOldState, dwOldSize));
-    //    return lpOldState;
-    //}
-
-    bool Read(libconfig::Setting &cProfile);
-
-    bool Write(libconfig::Setting &cProfile);
-
-    bool m_bRestrictVideoCodecs{false};
-    bool m_bAutoAdjust{true};
-    bool m_bLock{true};
-    bool m_bRoundDown{false};
-    int m_iValueAdjust{1};
-    int m_iTimeLapse{50};
-    int m_iFramesPerSecond{20};
-    int m_iKeyFramesEvery{100};
-    int m_iCompQuality{7000};
-    int m_iSelectedCompressor{0};
-    int m_iShiftType{NOSYNCH}; // NOSYNCH, VIDEOFIRST, AUDIOFIRST
-    int m_iTimeShift{100};
-    FOURCC m_dwCompfccHandler{0UL};
-    FOURCC m_dwCompressorStateIsFor{0UL};
-    std::wstring m_cStartRecordingString;
-
-protected:
-    LPVOID m_pState{nullptr};
-    DWORD m_dwCompressorStateSize{0UL};
-};
-extern sVideoOpts cVideoOpts;
-
 enum eCaptureType
 {
     CAPTURE_FIXED,

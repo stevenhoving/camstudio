@@ -261,8 +261,8 @@ BOOL CRecorderApp::InitInstance()
 
     if (g_cfg->exists("Audio"))
         cAudioFormat.Read(g_cfg->lookup("Audio"));
-    if (g_cfg->exists("Video"))
-        cVideoOpts.Read(g_cfg->lookup("Video"));
+    //if (g_cfg->exists("Video"))
+        //cVideoOpts.Read(g_cfg->lookup("Video"));
     if (g_cfg->exists("Cursor"))
         CamCursor.Read(g_cfg->lookup("Cursor"));
     if (g_cfg->exists("Program"))
@@ -313,11 +313,11 @@ int CRecorderApp::ExitInstance()
             s = &g_cfg->lookup("Audio");
         cAudioFormat.Write(*s);
 
-        if (!g_cfg->exists("Video"))
-            s = &g_cfg->getRoot().add("Video", libconfig::Setting::TypeGroup);
-        else
-            s = &g_cfg->lookup("Video");
-        cVideoOpts.Write(*s);
+        //if (!g_cfg->exists("Video"))
+        //    s = &g_cfg->getRoot().add("Video", libconfig::Setting::TypeGroup);
+        //else
+        //    s = &g_cfg->lookup("Video");
+        //cVideoOpts.Write(*s);
 
         if (!g_cfg->exists("Cursor"))
             s = &g_cfg->getRoot().add("Cursor", libconfig::Setting::TypeGroup);

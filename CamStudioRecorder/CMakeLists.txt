@@ -24,6 +24,8 @@ set(RECORDER_NEW_SOURCE
     string_convert.h
     capture_thread.h
     capture_thread.cpp
+    settings_model.h
+    settings_model.cpp
     utility/filesystem.h
     utility/make_array.h
 )

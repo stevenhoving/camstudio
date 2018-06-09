@@ -22,18 +22,10 @@
 #include "CamCapture/cam_stop_watch.h"
 
 #include "video_settings_ui.h"
+#include "settings_model.h"
 
 #include <atomic>
 #include <thread>
-
-enum class capture_type
-{
-    fixed,
-    variable,
-    fullscreen,
-    window,
-    allscreens
-};
 
 struct capture_settings
 {

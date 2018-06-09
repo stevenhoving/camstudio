@@ -24,7 +24,7 @@
 #include "PresetTimeDlg.h"
 #include "ProgressDlg.h"
 
-#include <ximage.h>
+//#include <ximage.h>
 #include <fmt/format.h>
 #include <fmt/printf.h>
 
@@ -48,6 +48,7 @@
 
 #include "string_convert.h"
 #include "video_settings_ui.h"
+#include "settings_model.h"
 
 #ifdef _DEBUG
 // #include <vld.h>        // Visual Leak Detector utility (In debug mode)
@@ -199,7 +200,6 @@ int g_iCurrentLayout = 0;
 sProgramOpts cProgramOpts;
 sProducerOpts cProducerOpts;
 sAudioFormat cAudioFormat;
-sVideoOpts cVideoOpts;
 sHotKeyOpts cHotKeyOpts;
 sRegionOpts cRegionOpts;
 CCamCursor CamCursor;
@@ -277,7 +277,6 @@ void GetTempAudioWavPath();
 BOOL StartAudioRecording();
 void StopAudioRecording();
 void waveInErrorMsg(MMRESULT result, const char *);
-void DataFromSoundIn(CBuffer *buffer);
 int AddInputBufferToQueue();
 
 ////////////////////////////////
@@ -404,23 +403,6 @@ int SetHotKeys(int succ[])
             succ[7] = 1;
     }
     return tstatus;
-}
-
-void SetVideoCompressState(HIC hic, DWORD fccHandler)
-{
-    if (cVideoOpts.m_dwCompressorStateIsFor == fccHandler)
-    {
-        if (cVideoOpts.State())
-        {
-            LRESULT ret = ICSetState(hic, (LPVOID)cVideoOpts.State(), cVideoOpts.StateSize());
-            // if (ret <= 0) {
-            if (ret < 0)
-            {
-                // MessageBox(nullptr, "Failure in setting compressor state !","Note",MB_OK | MB_ICONEXCLAMATION);
-                MessageOut(nullptr, IDS_STRING_SETCOMPRESSOR, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            }
-        }
-    }
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -568,6 +550,9 @@ CRecorderView::CRecorderView()
 {
     video_settings_model_ = std::make_unique<video_settings_model>();
     video_settings_model_->load();
+
+    settings_model_ = std::make_unique<settings_model>();
+    settings_model_->load();
 }
 
 CRecorderView::~CRecorderView()
@@ -813,7 +798,7 @@ std::string generate_temp_filename(video_container::type container)
     auto start_time = fmt::sprintf(_T("%04d%02d%02d_%02d%02d_%02d"), year, month, day, hour, minutes, second);
 
     // \todo this is wrong
-    cVideoOpts.m_cStartRecordingString = start_time;
+    //cVideoOpts.m_cStartRecordingString = start_time;
 
     const auto file_extention = video_container::names().at(container);
 
@@ -1092,7 +1077,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
 
         // Use local copy of the timestamp string created when recording was started for autonaming.
         // "ccyymmdd-hhmm-ss" , Timestamp still used for default temp.avi output "temp-ccyymmdd-hhmm-ss.avi"
-        strTargetBareFileName = cVideoOpts.m_cStartRecordingString.c_str();
+        //strTargetBareFileName = cVideoOpts.m_cStartRecordingString.c_str();
         strTargetVideoExtension = ".mkv";
     }
     else if (fdlg.DoModal() == IDOK)
@@ -1594,6 +1579,7 @@ void CRecorderView::OnHelpFaq()
 
 LRESULT CRecorderView::OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2)
 {
+#if 0
     HANDLE hInputDev = (HANDLE)parm1;
     ASSERT(hInputDev == m_hWaveRecord);
     LPWAVEHDR pHdr = (LPWAVEHDR)parm2;
@@ -1645,6 +1631,7 @@ LRESULT CRecorderView::OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2)
     delete pHdr->lpData;
     delete pHdr;
     m_QueuedBuffers--;
+#endif
 
     return 0;
 }
@@ -1793,11 +1780,6 @@ void CRecorderView::SaveSettings()
     if (cAudioFormat.m_dwCbwFX > 0)
         fwrite(&(cAudioFormat.AudioFormat()), cAudioFormat.m_dwCbwFX, 1, tFile);
 
-    if (0L < cVideoOpts.StateSize())
-    {
-        fwrite(cVideoOpts.State(), cVideoOpts.StateSize(), 1, tFile);
-    }
-
     // Ver 1.6
     if (!cProgramOpts.m_strSpecifiedDir.empty())
         fwrite(cProgramOpts.m_strSpecifiedDir.c_str(), cProgramOpts.m_strSpecifiedDir.size(), 1, tFile);
@@ -1808,7 +1790,7 @@ void CRecorderView::SaveSettings()
 // Ver 1.2
 void CRecorderView::LoadSettings()
 {
-    AttemptRecordingFormat();
+    //AttemptRecordingFormat();
     // set default audio recording format and compress format
     // This prevents reading profile settings
     // SuggestRecordingFormat();
@@ -1885,11 +1867,6 @@ void CRecorderView::LoadSettings()
                     cAudioFormat.DeleteAudio();
                     SuggestCompressFormat();
                 }
-            }
-
-            if (1L <= cVideoOpts.StateSize())
-            {
-                fread(cVideoOpts.State(cVideoOpts.StateSize()), cVideoOpts.StateSize(), 1, tFile);
             }
         }
     }
@@ -2521,7 +2498,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     //////////////////////////////////
 
     // First line: Start recording
-    csMsg.Format(_T("Start recording : %s"), cVideoOpts.m_cStartRecordingString.c_str());
+    //csMsg.Format(_T("Start recording : %s"), cVideoOpts.m_cStartRecordingString.c_str());
     sizeExtent = srcDC.GetTextExtent(csMsg);
     iStartPosY -= (iLines * (sizeExtent.cy + iLineSpacing));
     yoffset = iStartPosY;
@@ -2725,7 +2702,6 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
         return false;
     }
 
-    sVideoOpts SaveVideoOpts = cVideoOpts;
 
     // And again CS is doing a recalculation to determine width and height.
     // If sizing is determined with SetCapture() the dimensions are different as we getwith CRect(Top,Left,Bottom,Right)
@@ -3458,8 +3434,13 @@ void CRecorderView::DisplayAutopanInfo(CRect rc)
         Sleep(500);
     }
 }
+
+
+
 namespace
-{ // anonymous
+{
+
+#if 0
 
 void DataFromSoundIn(CBuffer *buffer)
 {
@@ -3513,6 +3494,8 @@ int AddInputBufferToQueue()
     return m_QueuedBuffers++;
 }
 
+
+
 //===============================================
 // AUDIO CODE
 //===============================================
@@ -3563,6 +3546,7 @@ BOOL InitAudioRecording()
 
     return TRUE;
 }
+
 
 // Initialize the strTempAudioWavFilePath variable with a valid temporary path
 void GetTempAudioWavPath()
@@ -3698,6 +3682,7 @@ void StopAudioRecording()
 
     iAudioTimeInitiated = 0;
 }
+#endif
 
 //===============================================
 // REGION CODE
@@ -3723,7 +3708,7 @@ int InitDrawShiftWindow()
 
     g_old_rcClip = g_rcClip;
 
-    // Set Curosr at the centre of the clip rectangle
+    // Set Cursor at the center of the clip rectangle
     POINT ptOrigin;
     ptOrigin.x = (g_rcClip.right + g_rcClip.left) / 2;
     ptOrigin.y = (g_rcClip.top + g_rcClip.bottom) / 2;
@@ -3739,3 +3724,4 @@ int InitDrawShiftWindow()
 }
 
 } // namespace
+
