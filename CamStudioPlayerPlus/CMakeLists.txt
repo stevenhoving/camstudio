@@ -56,10 +56,10 @@ source_group(src FILES
 
 target_compile_definitions(CamStudioPlayerPlus
   PRIVATE
-    -DNOMINMAX
-    -D_AFXDLL=1
-    -D_UNICODE
-    -DUNICODE
+    NOMINMAX
+    _AFXDLL=1
+    _UNICODE
+    UNICODE
 )
 
 target_compile_options(CamStudioPlayerPlus

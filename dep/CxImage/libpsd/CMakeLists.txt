@@ -94,6 +94,11 @@ target_link_libraries(libpsd
     zlibstatic
 )
 
+target_compile_definitions(libpsd
+  PRIVATE
+    _CRT_SECURE_NO_WARNINGS
+)
+
 target_include_directories(libpsd
   PUBLIC
     .

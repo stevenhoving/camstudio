@@ -44,10 +44,10 @@ add_library(CamHook SHARED
 
 target_compile_definitions(CamHook
   PRIVATE
-    -D_AFXDLL
-    -DCAM_HOOK_EXPORT
-    -D_UNICODE
-    -DUNICODE
+    _AFXDLL
+    _UNICODE
+    UNICODE
+    CAM_HOOK_EXPORT
 )
 
 target_include_directories(CamHook

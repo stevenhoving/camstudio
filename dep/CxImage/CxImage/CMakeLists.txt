@@ -87,8 +87,9 @@ target_include_directories(CxImage
 
 target_compile_definitions(CxImage
   PRIVATE
-    -D_UNICODE
-    -DUNICODE
+    _UNICODE
+    UNICODE
+    _CRT_SECURE_NO_WARNINGS
 )
 
 target_link_libraries(CxImage

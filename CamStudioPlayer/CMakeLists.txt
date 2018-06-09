@@ -28,8 +28,8 @@ add_executable(CamStudioPlayer WIN32
 
 target_compile_definitions(CamStudioPlayer
   PRIVATE
-    -D_UNICODE
-    -DUNICODE
+    _UNICODE
+    UNICODE
 )
 
 target_link_libraries(CamStudioPlayer

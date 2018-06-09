@@ -96,9 +96,9 @@ target_include_directories(CamEncoder
 
 target_compile_definitions(CamEncoder
   PRIVATE
-    -DNOMINMAX
-    -D_UNICODE
-    -DUNICODE
+    NOMINMAX
+    _UNICODE
+    UNICODE
 )
 
 target_compile_options(CamEncoder

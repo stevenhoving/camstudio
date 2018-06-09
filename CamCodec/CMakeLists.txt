@@ -34,8 +34,8 @@ add_library(CamCodec SHARED
 
 target_compile_definitions(CamCodec
   PRIVATE
-    -D_UNICODE
-    -DUNICODE
+    _UNICODE
+    UNICODE
 )
 
 target_link_libraries(CamCodec

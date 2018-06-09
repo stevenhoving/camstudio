@@ -107,6 +107,11 @@ add_library(jpeg STATIC
     ${JPEG_SOURCE}
 )
 
+target_compile_definitions(jpeg
+  PRIVATE
+    _CRT_SECURE_NO_WARNINGS
+)
+
 target_include_directories(jpeg
   PUBLIC
     .

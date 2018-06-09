@@ -22,8 +22,8 @@ add_executable(CamStudioCmd
 
 target_compile_definitions(CamStudioCmd
   PRIVATE
-    -D_UNICODE
-    -DUNICODE
+    _UNICODE
+    UNICODE
 )
 
 target_link_libraries(CamStudioCmd

@@ -33,7 +33,9 @@ add_library(raw STATIC
 target_compile_definitions(raw
   PUBLIC
     # disable support for LCMS
-    -DNO_LCMS
+    NO_LCMS
+  PRIVATE
+    _CRT_SECURE_NO_WARNINGS
 )
 
 target_link_libraries(raw

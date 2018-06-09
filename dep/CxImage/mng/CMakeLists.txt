@@ -69,15 +69,20 @@ add_library(mng STATIC
 
 target_compile_definitions(mng
   PUBLIC
-    -DMNG_SUPPORT_DISPLAY
-    -DMNG_SUPPORT_READ
-    -DMNG_SUPPORT_WRITE
-    -DMNG_ACCESS_CHUNKS
-    -DMNG_STORE_CHUNKS
+    MNG_SUPPORT_DISPLAY
+    MNG_SUPPORT_READ
+    MNG_SUPPORT_WRITE
+    MNG_ACCESS_CHUNKS
+    MNG_STORE_CHUNKS
 )
 
 target_link_libraries(mng
     zlibstatic
+)
+
+target_compile_definitions(mng
+  PRIVATE
+    _CRT_SECURE_NO_WARNINGS
 )
 
 target_include_directories(mng

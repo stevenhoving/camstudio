@@ -15,6 +15,9 @@
 
 project(jasper C)
 
+option(JASPER_ENABLE_JPEG "Enable jasper jpeg support" OFF)
+option(JASPER_ENABLE_BMP "Enable jasper bmp support" ON)
+
 set(JASPER_BASE_SOURCE
     base/jas_cm.c
     base/jas_debug.c
@@ -36,17 +39,19 @@ source_group(jasper\\base FILES
     ${JASPER_BASE_SOURCE}
 )
 
-set(BMP_SOURCE
-    bmp/bmp_cod.c
-    bmp/bmp_cod.h
-    bmp/bmp_dec.c
-    bmp/bmp_enc.c
-    bmp/bmp_enc.h
-)
+if (JASPER_ENABLE_BMP)
+    set(BMP_SOURCE
+        bmp/bmp_cod.c
+        bmp/bmp_cod.h
+        bmp/bmp_dec.c
+        bmp/bmp_enc.c
+        bmp/bmp_enc.h
+    )
 
-source_group(jasper\\bmp FILES
-    ${BMP_SOURCE}
-)
+    source_group(jasper\\bmp FILES
+        ${BMP_SOURCE}
+    )
+endif()
 
 set(JASPER_INCLUDE
     include/jasper/jasper.h
@@ -133,20 +138,22 @@ source_group(jasper\\jpc FILES
     ${JPC_SOURCE}
 )
 
-# jpeg support is currently disabled
-#set(JPG_SOURCE
-#    jpg/jpg_cod.h
-#    jpg/jpg_dec.c
-#    jpg/jpg_dummy.c
-#    jpg/jpg_enc.c
-#    jpg/jpg_enc.h
-#    jpg/jpg_jpeglib.h
-#    jpg/jpg_val.c
-#)
-#
-#source_group(jasper\\jpg FILES
-#    ${JPG_SOURCE}
-#)
+if (JASPER_ENABLE_JPEG)
+    message(ERROR "enable jasper jpeg support")
+    set(JPG_SOURCE
+        jpg/jpg_cod.h
+        jpg/jpg_dec.c
+        jpg/jpg_dummy.c
+        jpg/jpg_enc.c
+        jpg/jpg_enc.h
+        jpg/jpg_jpeglib.h
+        jpg/jpg_val.c
+    )
+
+    source_group(jasper\\jpg FILES
+        ${JPG_SOURCE}
+    )
+endif()
 
 set(MIF_SOURCE
     mif/mif_cod.c
@@ -193,20 +200,34 @@ source_group(jasper\\ras FILES
     ${RAS_SOURCE}
 )
 
-add_library(jasper STATIC
+set(JASPER_SOURCE
     ${JASPER_BASE_SOURCE}
     ${JASPER_INCLUDE}
-    ${BMP_SOURCE}
     ${JP2_SOURCE}
     ${JPC_SOURCE}
-    #${JPG_SOURCE}
     ${MIF_SOURCE}
     ${PGX_SOURCE}
     ${PNM_SOURCE}
     ${RAS_SOURCE}
 )
 
-add_definitions(-DEXCLUDE_JPG_SUPPORT)
+if(JASPER_ENABLE_BMP)
+    list(APPEND JASPER_SOURCE ${BMP_SOURCE})
+endif()
+
+if(JASPER_ENABLE_JPEG)
+    list(APPEND JASPER_SOURCE ${JPG_SOURCE})
+endif()
+
+add_library(jasper STATIC
+    ${JASPER_SOURCE}
+)
+
+target_compile_definitions(jasper
+  PRIVATE
+    EXCLUDE_JPG_SUPPORT
+    _CRT_SECURE_NO_WARNINGS
+)
 
 target_include_directories(jasper
   PUBLIC

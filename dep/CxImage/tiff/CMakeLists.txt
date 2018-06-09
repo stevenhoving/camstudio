@@ -80,6 +80,11 @@ target_link_libraries(tiff
     zlibstatic
 )
 
+target_compile_definitions(tiff
+  PRIVATE
+    _CRT_SECURE_NO_WARNINGS
+)
+
 target_include_directories(tiff
   PUBLIC
     .

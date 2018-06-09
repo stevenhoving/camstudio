@@ -29,6 +29,11 @@ add_library(jbig STATIC
     ${JBIG_SOURCE}
 )
 
+target_compile_definitions(jbig
+  PRIVATE
+    _CRT_SECURE_NO_WARNINGS
+)
+
 target_include_directories(jbig
   PUBLIC
     .
