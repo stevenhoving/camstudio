@@ -15,11 +15,33 @@
  * along with this program.If not, see < https://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include <gtest/gtest.h>
+#include <CamLib/rect.h>
 
-namespace Gdiplus
+TEST(test_rect, test_clamp)
 {
-struct GdiplusStartupInput;
-class Graphics;
-class Bitmap;
-} // namespace Gdiplus
+    CRect rect(10, 10, 100, 100);
+    const CRect max_rect(0, 0, 95, 95);
+
+    rect = clamp_rect(rect, max_rect);
+
+    EXPECT_EQ(rect.left, 5);
+    EXPECT_EQ(rect.top, 5);
+    EXPECT_EQ(rect.right, 95);
+    EXPECT_EQ(rect.bottom, 95);
+}
+
+TEST(test_rect, test_merge)
+{
+    CRect a(10, 10, 20, 20);
+    CRect b(15, 15, 25, 25);
+
+    const auto rect = merge_rect(a, b);
+
+    EXPECT_EQ(rect.left, 10);
+    EXPECT_EQ(rect.top, 10);
+    EXPECT_EQ(rect.right, 25);
+    EXPECT_EQ(rect.bottom, 25);
+}
+
+//merge_rect

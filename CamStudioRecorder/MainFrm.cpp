@@ -12,10 +12,10 @@ static char THIS_FILE[] = __FILE__;
 
 extern bool g_bRecordState; // in RecorderView
 
-int maxxScreen;
-int maxyScreen;
-int minxScreen;
-int minyScreen;
+int g_maxx_screen;
+int g_maxy_screen;
+int g_minx_screen;
+int g_miny_screen;
 
 static HMENU hMenu = nullptr;
 
@@ -79,12 +79,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
     HDC hScreenDC = ::GetDC(nullptr);
     int numbits = ::GetDeviceCaps(hScreenDC, BITSPIXEL);
-    // maxxScreen = ::GetDeviceCaps(hScreenDC, HORZRES);
-    maxxScreen = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
-    // maxyScreen = ::GetDeviceCaps(hScreenDC, VERTRES);
-    maxyScreen = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
-    minxScreen = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
-    minyScreen = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
+    // g_maxx_screen = ::GetDeviceCaps(hScreenDC, HORZRES);
+    g_maxx_screen = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
+    // g_maxy_screen = ::GetDeviceCaps(hScreenDC, VERTRES);
+    g_maxy_screen = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
+    g_minx_screen = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
+    g_miny_screen = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
     ::ReleaseDC(nullptr, hScreenDC);
 
     if (numbits > 8)

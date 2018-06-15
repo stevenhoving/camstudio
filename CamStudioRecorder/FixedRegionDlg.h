@@ -1,10 +1,15 @@
 #pragma once
 
+#include <memory>
+
+class settings_model;
+class mouse_capture_wnd;
+
 class CFixedRegionDlg : public CDialog
 {
     DECLARE_DYNAMIC(CFixedRegionDlg)
 public:
-    explicit CFixedRegionDlg(CWnd *pParent = nullptr);
+    explicit CFixedRegionDlg(CWnd *pParent, settings_model &settings);
 
     // Dialog Data
     //{{AFX_DATA(CFixedRegionDlg)
@@ -49,8 +54,13 @@ private:
     int m_iHeight;
     int m_iRNDWidth;
     int m_nRNDHeight;
+
+    settings_model &settings_;
+
     void RoundDownWidth();
     void RoundDownHeight();
+
+    std::unique_ptr<mouse_capture_wnd> capture_;
 
 public:
     afx_msg void OnEnChangeY();

@@ -34,6 +34,7 @@ void settings_model::save()
 
     auto capture_settings = cpptoml::make_table();
     capture_settings->insert("capture_type", static_cast<int>(capture_type_));
+    capture_settings->insert("capture_fixed", capture_fixed_);
     capture_settings->insert("capture_mouse_drag", capture_mouse_drag_);
 
     auto capture_rect = cpptoml::make_array();
@@ -66,6 +67,7 @@ void settings_model::load()
     /* capture settings */
     const auto capture = root->get_table("capture-settings");
     capture_type_ = static_cast<capture_type>(*capture->get_as<int>("capture_type"));
+    capture_fixed_ = *capture->get_as<bool>("capture_fixed");
     capture_mouse_drag_ = *capture->get_as<bool>("capture_mouse_drag");
     const auto capture_rect = *capture->get_array_of<int64_t>("capture_rect");
 
@@ -73,10 +75,50 @@ void settings_model::load()
     if (capture_rect.size() == 4)
     {
         capture_rect_ = rect<int>(
-            capture_rect.at(0),
-            capture_rect.at(1),
-            capture_rect.at(2),
-            capture_rect.at(3)
+            static_cast<int>(capture_rect.at(0)),
+            static_cast<int>(capture_rect.at(1)),
+            static_cast<int>(capture_rect.at(2)),
+            static_cast<int>(capture_rect.at(3))
         );
     }
+}
+
+void settings_model::set_capture_mode(capture_type type)
+{
+    capture_type_ = type;
+}
+
+capture_type settings_model::get_capture_mode()
+{
+    return capture_type_;
+}
+
+void settings_model::set_capture_rect(const rect<int> &capture_rect)
+{
+    capture_rect_ = capture_rect;
+}
+
+rect<int> settings_model::get_capture_rect()
+{
+    return capture_rect_;
+}
+
+void settings_model::set_mouse_drag(bool capture_mouse_drag)
+{
+    capture_mouse_drag_ = capture_mouse_drag;
+}
+
+bool settings_model::get_mouse_drag()
+{
+    return capture_mouse_drag_;
+}
+
+void settings_model::set_capture_fixed(bool capture_fixed)
+{
+    capture_fixed_ = capture_fixed;
+}
+
+bool settings_model::get_capture_fixed()
+{
+    return capture_fixed_;
 }

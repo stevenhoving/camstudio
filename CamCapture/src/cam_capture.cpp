@@ -56,7 +56,7 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
 
     bitmap_info_.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
     bitmap_info_.bmiHeader.biWidth = src_rect_.width();
-    bitmap_info_.bmiHeader.biHeight = src_rect_.height() * -1;
+    bitmap_info_.bmiHeader.biHeight = -src_rect_.height();
     bitmap_info_.bmiHeader.biPlanes = 1;
     bitmap_info_.bmiHeader.biBitCount = 32;
     bitmap_info_.bmiHeader.biCompression = BI_RGB;
@@ -100,7 +100,10 @@ bool cam_capture_source::capture_frame(const rect<int> &capture_rect)
         SRCCOPY | CAPTUREBLT);
     assert(ret);
     if (!ret)
+    {
+        fmt::print("capture failed\n");
         return false;
+    }
 
     captured_rect_ = capture_rect;
 
@@ -118,8 +121,15 @@ const cam_frame *cam_capture_source::get_frame()
     return &frame_;
 }
 
+void cam_capture_source::enable_annotations()
+{
+    enable_annotations_ = true;
+}
+
 void cam_capture_source::_draw_annotations(const rect<int> &capture_rect)
 {
+    if (!enable_annotations_)
+        return;
     if (annotations_.empty())
         return;
 

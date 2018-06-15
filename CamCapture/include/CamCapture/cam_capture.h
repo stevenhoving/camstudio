@@ -45,6 +45,7 @@ public:
      */
     bool capture_frame(const rect<int> &capture_rect);
     const cam_frame *get_frame();
+    void enable_annotations();
 
 protected:
     void _draw_annotations(const rect<int> &capture_rect);
@@ -64,5 +65,6 @@ private:
 
     HGDIOBJ old_selected_bitmap_{nullptr};
 
+    bool enable_annotations_{false};
     std::vector<std::unique_ptr<cam_iannotation>> annotations_;
 };

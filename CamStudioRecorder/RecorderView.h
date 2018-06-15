@@ -11,6 +11,8 @@
 
 class CRecorderDoc;
 
+class mouse_capture_wnd;
+
 class video_settings_model;
 class settings_model;
 
@@ -191,7 +193,9 @@ private:
     std::unique_ptr<video_settings_model> video_settings_model_;
     std::unique_ptr<settings_model> settings_model_;
 
-    CFlashingWnd flashing_wnd_;
+    std::unique_ptr<mouse_capture_wnd> mouse_capture_wnd_;
+
+    //CFlashingWnd flashing_wnd_;
     CBasicMessageDlg *basic_msg_;
     double zoom_;
     CPoint zoomed_at_;
@@ -206,7 +210,6 @@ private:
     void SaveProducerCommand();
 
     bool RecordVideo(CRect rectFrame, int fps, const char *szFileName);
-    UINT RecordVideo();
     bool RunViewer(const CString &strNewFile);
     bool RunProducer(const CString &strNewFile);
     void DisplayAutopanInfo(CRect rc);
@@ -234,9 +237,3 @@ extern CRect g_rcClip;
 extern CRect g_old_rcClip;
 extern CRect g_rcOffset;
 extern CPoint g_ptOrigin;
-
-extern CString g_strCodec;
-
-
-extern void SetVideoCompressState(HIC hic, DWORD fccHandler);
-

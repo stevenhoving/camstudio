@@ -15,7 +15,7 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "TransparentWnd.h"
-#include "MainFrm.h" // for maxxScreen, maxyScreen
+#include "MainFrm.h" // for g_maxx_screen, g_maxy_screen
 #include "MouseCaptureWnd.h"
 #include "resource.h"
 
@@ -153,7 +153,7 @@ BOOL CTransparentWnd::PreCreateWindow(CREATESTRUCT &cs)
 
     // This line here prevents taskbar buttons from appearing for each TransparentWnd
     // cs.hwndParent = hWndGlobal; //this will cause the text tracker unable to move/resize
-    cs.hwndParent = hMouseCaptureWnd;
+    cs.hwndParent = g_hMouseCaptureWnd;
 
     return CWnd::PreCreateWindow(cs);
 }
@@ -694,9 +694,9 @@ LPBITMAPINFO CTransparentWnd::GetTextBitmap(CDC *thisDC, CRect *caprect, int fac
     // DrawTextEx(hMemDC, (char *)LPCTSTR(textstr), textlength, LPRECT(usetextRect), horzalign | DT_VCENTER |
     // DT_WORDBREAK | DT_EDITCONTROL , nullptr);
 
-    // use adaptive antialias...if size< than maxxScreen maxyScreen
+    // use adaptive antialias...if size< than g_maxx_screen g_maxy_screen
     CRecorderApp *pApp = (CRecorderApp *)AfxGetApp();
-    if ((pApp->VersionOp() >= 5) && ((usetextRect.Width() > maxxScreen) || (usetextRect.Height() > maxyScreen)))
+    if ((pApp->VersionOp() >= 5) && ((usetextRect.Width() > g_maxx_screen) || (usetextRect.Height() > g_maxy_screen)))
     {
         // use stroke path method, less buggy
 
@@ -1653,9 +1653,9 @@ void CTransparentWnd::RefreshWindowSize()
         m_rectWnd.right = m_rectWnd.left + 40 - 1;
     }
 
-    if (m_rectWnd.Width() > maxxScreen)
+    if (m_rectWnd.Width() > g_maxx_screen)
     {
-        m_rectWnd.right = m_rectWnd.left + maxxScreen - 1;
+        m_rectWnd.right = m_rectWnd.left + g_maxx_screen - 1;
     }
 
     if (m_rectWnd.Height() < 40)
@@ -1663,9 +1663,9 @@ void CTransparentWnd::RefreshWindowSize()
         m_rectWnd.bottom = m_rectWnd.top + 40 - 1;
     }
 
-    if (m_rectWnd.Height() > maxyScreen)
+    if (m_rectWnd.Height() > g_maxy_screen)
     {
-        m_rectWnd.bottom = m_rectWnd.top + maxyScreen - 1;
+        m_rectWnd.bottom = m_rectWnd.top + g_maxy_screen - 1;
     }
 
     SetWindowPos(&wndTopMost, m_rectWnd.left, m_rectWnd.top, m_rectWnd.right - m_rectWnd.left + 1,

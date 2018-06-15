@@ -178,6 +178,7 @@ void capture_thread::run()
 
     capture_source_ = std::make_unique<cam_capture_source>(capture_settings_.capture_hwnd_,
         capture_settings_.capture_rect_);
+    capture_source_->enable_annotations();
 
     const auto pre_frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
 

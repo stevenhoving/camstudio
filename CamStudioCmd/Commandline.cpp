@@ -76,7 +76,7 @@ void PrintRecordInformation();
 RECT rcUse;
 
 int maxxScreen;
-int maxyScreen;
+int g_maxy_screen;
 
 // Misc Vars
 int gRecordState = 0;
@@ -372,7 +372,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
                 if (hm > 0)
                 {
                     newheight = height + (align - hm);
-                    if (newheight > maxyScreen)
+                    if (newheight > g_maxy_screen)
                         newwidth = height - hm;
                 }
                 if (alpbi)
@@ -565,7 +565,7 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
 
         // Record frame
         // Autopan
-        if ((autopan) && (width < maxxScreen) && (height < maxyScreen))
+        if ((autopan) && (width < maxxScreen) && (height < g_maxy_screen))
         {
             POINT xPoint;
             GetCursorPos(&xPoint);
@@ -620,9 +620,9 @@ int RecordVideo(int top, int left, int width, int height, int fps, const char *s
 
                 panrect_dest.top = xPoint.y - height / 2;
                 panrect_dest.bottom = panrect_dest.top + height - 1;
-                if (panrect_dest.bottom >= maxyScreen)
+                if (panrect_dest.bottom >= g_maxy_screen)
                 {
-                    panrect_dest.bottom = maxyScreen - 1;
+                    panrect_dest.bottom = g_maxy_screen - 1;
                     panrect_dest.top = panrect_dest.bottom - height + 1;
                 }
             }
@@ -1307,7 +1307,7 @@ int main(int argc, char *argv[])
     // Screen metrics:
     hScreenDC = ::GetDC(nullptr);
     maxxScreen = GetDeviceCaps(hScreenDC, HORZRES);
-    maxyScreen = GetDeviceCaps(hScreenDC, VERTRES);
+    g_maxy_screen = GetDeviceCaps(hScreenDC, VERTRES);
 
     screen *obr = (screen *)malloc(sizeof(screen) * mon_count); // new screen[mon_count];//array of screens(objects)
     screen *pscreen = obr;
@@ -1323,7 +1323,7 @@ int main(int argc, char *argv[])
     {
         // whole recording stuff goes BELOW this line.
         maxxScreen = pscreen[i].width;
-        maxyScreen = pscreen[i].height;
+        g_maxy_screen = pscreen[i].height;
         rcUse.left = pscreen[i].left;
         rcUse.top = pscreen[i].top;
         rcUse.right = pscreen[i].right - 1;
