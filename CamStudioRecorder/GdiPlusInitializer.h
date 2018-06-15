@@ -21,16 +21,16 @@
 
 #include <CamCapture/cam_gdiplus_fwd.h>
 
-class gdi
+class gdi_plus
 {
 public:
     // initialize gdi plus
-    gdi();
+    gdi_plus();
     // uninitialize gdi plus
-    ~gdi();
+    ~gdi_plus();
 
-    gdi(const gdi &) = delete;
-    gdi &operator = (const gdi &) = delete;
+    gdi_plus(const gdi_plus &) = delete;
+    gdi_plus &operator = (const gdi_plus &) = delete;
 
 
     std::unique_ptr<Gdiplus::GdiplusStartupInput> input;

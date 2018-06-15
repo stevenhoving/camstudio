@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "Recorder.h"
 #include "FlashingWnd.h"
-#include "MainFrm.h" // for maxxScreen, maxyScreen
+#include "MainFrm.h" // for g_maxx_screen, g_maxy_screen
+
+#if 0
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -170,7 +172,7 @@ void CFlashingWnd::PaintBorder(bool bInvert, bool bDraw)
 
     if (bInvert)
     {
-        cWindowDC.PatBlt(0, 0, maxxScreen, maxyScreen, PATINVERT);
+        cWindowDC.PatBlt(0, 0, g_maxx_screen, g_maxy_screen, PATINVERT);
     }
     else
     {
@@ -259,15 +261,15 @@ void CFlashingWnd::CheckRect(int diffx, int diffy)
         m_cRect.bottom = m_cRect.top + saveRect.Height();
     }
 
-    if ((maxxScreen - 1) < m_cRect.right)
+    if ((g_maxx_screen - 1) < m_cRect.right)
     {
-        m_cRect.right = maxxScreen - 1;
+        m_cRect.right = g_maxx_screen - 1;
         m_cRect.left = m_cRect.right - saveRect.Width();
     }
 
-    if ((maxyScreen - 1) < m_cRect.bottom)
+    if ((g_maxy_screen - 1) < m_cRect.bottom)
     {
-        m_cRect.bottom = maxyScreen - 1;
+        m_cRect.bottom = g_maxy_screen - 1;
         m_cRect.top = m_cRect.bottom - saveRect.Height();
     }
     TRACE(_T("m_cRect.Width: %d\nsaveRect.Width: %d\n"), m_cRect.Width(), saveRect.Width());
@@ -320,3 +322,5 @@ LRESULT CFlashingWnd::OnFlashWindow(WPARAM wInvert, LPARAM lDraw)
     DrawFlashingRect(bInvert, bDraw);
     return 1L;
 }
+
+#endif

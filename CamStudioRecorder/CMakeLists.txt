@@ -17,6 +17,10 @@ project(CamStudioRecorder)
 
 set(RECORDER_NEW_SOURCE
     # new
+    background_capture_source.h
+    background_capture_source.cpp
+    mouse_capture_ui.h
+    mouse_capture_ui.cpp
     video_settings_ui.h
     video_settings_ui.cpp
     video_settings_model.h
@@ -66,7 +70,6 @@ set(RECORDER_SOURCE
     LayeredWindowHelperST.cpp
     MainFrm.cpp
     MCI.cpp
-    MouseCaptureWnd.cpp
     PresetTimeDlg.cpp
     PresetTimeDlg.h
     Profile.cpp
@@ -87,7 +90,6 @@ set(RECORDER_SOURCE
     LayeredWindowHelperST.h
     MainFrm.h
     MCI.h
-    MouseCaptureWnd.h
     Profile.h
     ProgressDlg.h
     Recorder.h

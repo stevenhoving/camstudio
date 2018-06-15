@@ -1,6 +1,8 @@
 
 #pragma once
 
+#if 0
+
 class CFlashingWnd : public CWnd
 {
 public:
@@ -75,3 +77,4 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
+#endif

@@ -225,6 +225,7 @@
 #define IDC_SHIFT7                      1076
 #define IDC_LANG_ENC                    1081
 #define IDC_CODEC_PRESET_NAME           1098
+#define IDC_REGION_MOVE                 1099
 #define IDC_RECORDFORMAT                1290
 #define IDC_PREDEFINEDSHAPE             1290
 #define IDC_INPUTDEVICE                 1291
@@ -526,7 +527,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        234
 #define _APS_NEXT_COMMAND_VALUE         32954
-#define _APS_NEXT_CONTROL_VALUE         1099
+#define _APS_NEXT_CONTROL_VALUE         1100
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

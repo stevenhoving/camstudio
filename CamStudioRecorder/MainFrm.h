@@ -54,7 +54,7 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
-extern int maxxScreen;
-extern int maxyScreen;
-extern int minxScreen;
-extern int minyScreen;
+extern int g_maxx_screen;
+extern int g_maxy_screen;
+extern int g_minx_screen;
+extern int g_miny_screen;

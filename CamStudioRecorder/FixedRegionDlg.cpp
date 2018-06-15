@@ -4,11 +4,14 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include "Recorder.h"
 #include "FixedRegionDlg.h"
-#include "MainFrm.h" // for maxxScreen, maxyScreen
-#include "RecorderView.h" // for g_rcUse
-#include "MouseCaptureWnd.h"
+
+#include "settings_model.h"
+#include "mouse_capture_ui.h"
+
+#include "MainFrm.h" // only for g_maxx_screen and alike
+#include <CamLib/CamError.h>
+#include <fmt/printf.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -16,68 +19,69 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern int g_iDefineMode;
-
-/////////////////////////////////////////////////////////////////////////////
-// CFixedRegionDlg dialog
 IMPLEMENT_DYNAMIC(CFixedRegionDlg, CDialog)
 
-CFixedRegionDlg::CFixedRegionDlg(CWnd *pParent /*=nullptr*/)
+CFixedRegionDlg::CFixedRegionDlg(CWnd *pParent, settings_model &settings)
     : CDialog(CFixedRegionDlg::IDD, pParent)
-    , m_iLeft(1)
-    , m_iTop(1)
-    , m_iWidth(1)
-    , m_iHeight(1)
-    , m_iRNDWidth(0)
-    , m_nRNDHeight(0)
+    , capture_rect_(0, 0, 0, 0)
+    , settings_(settings)
 {
-    // TRACE ( _T("## Why are m_itop and m_ileft defined here as 1,1 instead of 0,0. Not correct I beieve\n") );
+    capture_ = std::make_unique<mouse_capture_ui>(AfxGetInstanceHandle(), GetSafeHwnd(),
+        [this](const CRect &capture_rect)
+        {
+            if (!m_ctrlButtonFixTopLeft.GetCheck())
+            {
+                capture_rect_.left_ = capture_rect.left;
+                capture_rect_.top_ = capture_rect.top;
+            }
+            capture_rect_.width(capture_rect.Width());
+            capture_rect_.height(capture_rect.Height());
 
-    //{{AFX_DATA_INIT(CFixedRegionDlg)
-    // NOTE: the ClassWizard will add member initialization here
-    //}}AFX_DATA_INIT
+            settings_.set_capture_rect(capture_rect_);
+
+            UpdateData(FALSE);
+        }
+    );
+
+    capture_rect_ = settings_.get_capture_rect();
 }
 
 void CFixedRegionDlg::DoDataExchange(CDataExchange *pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CFixedRegionDlg)
-    // NOTE: the ClassWizard will add DDX and DDV calls here
-    DDX_Control(pDX, IDC_MSG, m_ctrlStaticMsg);
-    DDX_Control(pDX, IDC_WIDTH, m_ctrlEditWidth);
-    DDX_Control(pDX, IDC_HEIGHT, m_ctrlEditHeight);
-    DDX_Control(pDX, IDC_X, m_ctrlEditPosX);
-    DDX_Control(pDX, IDC_Y, m_ctrlEditPosY);
+
+    DDX_Control(pDX, IDC_WIDTH, width_text_edit_ctrl_);
+    DDX_Control(pDX, IDC_HEIGHT, height_text_edit_ctrl_);
+    DDX_Control(pDX, IDC_X, left_text_edit_ctrl_);
+    DDX_Control(pDX, IDC_Y, top_text_edit_ctrl_);
     DDX_Control(pDX, IDC_SUPPORTMOUSEDRAG, m_ctrlButtonMouseDrag);
     DDX_Control(pDX, IDC_FIXEDTOPLEFT, m_ctrlButtonFixTopLeft);
-    //}}AFX_DATA_MAP
-    DDX_Text(pDX, IDC_X, m_iLeft);
-    DDV_MinMaxInt(pDX, m_iLeft, minxScreen, maxxScreen);
-    DDX_Text(pDX, IDC_Y, m_iTop);
-    DDV_MinMaxInt(pDX, m_iTop, minyScreen, maxyScreen);
-    DDX_Text(pDX, IDC_WIDTH, m_iWidth);
-    DDV_MinMaxInt(pDX, m_iWidth, 0, abs(maxxScreen - minxScreen));
-    DDX_Text(pDX, IDC_HEIGHT, m_iHeight);
-    DDV_MinMaxInt(pDX, m_iHeight, 0, abs(maxyScreen - minyScreen));
+
+    DDX_Text(pDX, IDC_X, capture_rect_.left_);
+    DDV_MinMaxInt(pDX, capture_rect_.left_, g_minx_screen, g_maxx_screen);
+    DDX_Text(pDX, IDC_Y, capture_rect_.top_);
+    DDV_MinMaxInt(pDX, capture_rect_.top_, g_miny_screen, g_maxy_screen);
+    int width = capture_rect_.width();
+    DDX_Text(pDX, IDC_WIDTH, width);
+    DDV_MinMaxInt(pDX, width, 0, abs(g_maxx_screen - g_minx_screen));
+    int height = capture_rect_.height();
+    DDX_Text(pDX, IDC_HEIGHT, height);
+    DDV_MinMaxInt(pDX, height, 0, abs(g_maxy_screen - g_miny_screen));
 }
 
 BEGIN_MESSAGE_MAP(CFixedRegionDlg, CDialog)
-//{{AFX_MSG_MAP(CFixedRegionDlg)
-ON_BN_CLICKED(IDSELECT, OnSelect)
+ON_BN_CLICKED(IDSELECT, OnRegionSelect)
 ON_BN_CLICKED(IDC_FIXEDTOPLEFT, OnFixedtopleft)
-//}}AFX_MSG_MAP
-ON_MESSAGE(WM_APP_REGIONUPDATE, OnRegionUpdate)
-ON_MESSAGE(WM_DISPLAYCHANGE, OnDisplayChange)
 ON_EN_CHANGE(IDC_Y, &CFixedRegionDlg::OnEnChangeY)
 ON_EN_CHANGE(IDC_HEIGHT, &CFixedRegionDlg::OnEnChangeHeight)
 ON_BN_CLICKED(IDOK, &CFixedRegionDlg::OnBnClickedOk)
-//ON_BN_CLICKED(IDC_SUPPORTROUNDDOWN, &CFixedRegionDlg::OnBnClickedSupportrounddown)
 ON_EN_KILLFOCUS(IDC_WIDTH, &CFixedRegionDlg::OnEnKillfocusWidth)
 ON_EN_KILLFOCUS(IDC_HEIGHT, &CFixedRegionDlg::OnEnKillfocusHeight)
+ON_EN_CHANGE(IDC_X, &CFixedRegionDlg::OnEnChangeX)
+ON_EN_CHANGE(IDC_WIDTH, &CFixedRegionDlg::OnEnChangeWidth)
+ON_BN_CLICKED(IDC_REGION_MOVE, &CFixedRegionDlg::OnRegionMove)
+ON_BN_CLICKED(IDC_SUPPORTMOUSEDRAG, &CFixedRegionDlg::OnBnClickedSupportmousedrag)
 END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CFixedRegionDlg message handlers
 
 void CFixedRegionDlg::OnOK()
 {
@@ -87,31 +91,30 @@ void CFixedRegionDlg::OnOK()
     }
 
     // Not Correct, one to high because MinXY is zero an MaxXY is width/height no of pixels.
-    int maxWidth = abs(maxxScreen - minxScreen); // Assuming number first pixel is one not zero.
-    int maxHeight = abs(maxyScreen - minyScreen);
-    // TRACE(_T("## CFixedRegionDlg::OnOK / maxWidth=[%d], maxHeight=[%d]\n"), maxWidth, maxHeight );
+    int maxWidth = abs(g_maxx_screen - g_minx_screen); // Assuming number first pixel is one not zero.
+    int maxHeight = abs(g_maxy_screen - g_miny_screen);
 
-    if (m_iWidth < 0)
+    if (capture_rect_.width() < 0)
     {
         MessageOut(m_hWnd, IDS_STRING_WIDTHGREATER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
         return;
     }
 
-    if (maxWidth < m_iWidth)
+    if (maxWidth < capture_rect_.width())
     {
-        MessageOut(m_hWnd, IDS_STRING_WIDTHSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, maxxScreen);
+        MessageOut(m_hWnd, IDS_STRING_WIDTHSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, g_maxx_screen);
         return;
     }
 
-    if (m_iHeight < 0)
+    if (capture_rect_.height() < 0)
     {
         MessageOut(m_hWnd, IDS_STRING_HEIGHTGREATER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
         return;
     }
 
-    if (maxHeight < m_iHeight)
+    if (maxHeight < capture_rect_.height())
     {
-        MessageOut(m_hWnd, IDS_STRING_HEIGHTSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, maxyScreen);
+        MessageOut(m_hWnd, IDS_STRING_HEIGHTSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, g_maxy_screen);
         return;
     }
 
@@ -119,66 +122,61 @@ void CFixedRegionDlg::OnOK()
     int fval = m_ctrlButtonFixTopLeft.GetCheck();
     if (fval)
     {
-        if (m_iLeft < minxScreen)
+        if (capture_rect_.left_ < g_minx_screen)
         {
             MessageOut(m_hWnd, IDS_STRING_LEFTGREATER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             return;
         }
 
-        if (maxxScreen < m_iLeft)
+        if (g_maxx_screen < capture_rect_.left_)
         {
-            MessageOut(this->m_hWnd, IDS_STRING_LEFTSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, maxxScreen);
+            MessageOut(this->m_hWnd, IDS_STRING_LEFTSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, g_maxx_screen);
             return;
         }
 
-        if (m_iTop < minyScreen)
+        if (capture_rect_.top_ < g_miny_screen)
         {
             MessageOut(m_hWnd, IDS_STRING_TOPGREATER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             return;
         }
 
-        if (maxyScreen < m_iTop)
+        if (g_maxy_screen < capture_rect_.top_)
         {
-            MessageOut(m_hWnd, IDS_STRING_TOPSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, maxyScreen);
+            MessageOut(m_hWnd, IDS_STRING_TOPSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, g_maxy_screen);
             return;
         }
 
-        if (maxWidth < (m_iLeft + m_iWidth))
+        if (maxWidth < (capture_rect_.left_ + capture_rect_.width()))
         {
-            m_iWidth = maxxScreen - m_iLeft;
-            if (m_iWidth <= 0)
+            capture_rect_.width(g_maxx_screen - capture_rect_.left_);
+            if (capture_rect_.width() <= 0)
             {
                 // TODO -- where did these constants came from? Get rid of 'em, put 'em in an ini or #define them
                 // somewhere Answer: See struct sRegionOpts in Profile.h. An area of 240x320 is defined there.
-                m_iLeft = minxScreen + 100;
-                m_iWidth = 320;
+                capture_rect_.left_ = g_minx_screen + 100;
+                capture_rect_.width(320);
             }
-            MessageOut(m_hWnd, IDS_STRING_VALUEEXCEEDWIDTH, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, m_iWidth);
+            MessageOut(m_hWnd, IDS_STRING_VALUEEXCEEDWIDTH, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, capture_rect_.width());
         }
 
-        if (maxHeight < (m_iTop + m_iHeight))
+        if (maxHeight < (capture_rect_.top_ + capture_rect_.height()))
         {
-            m_iHeight = maxyScreen - m_iTop;
-            if (m_iHeight <= 0)
+            capture_rect_.height(g_maxy_screen - capture_rect_.top_);
+            if (capture_rect_.height() <= 0)
             {
                 // TODO -- where did these constants come from? Get rid of 'em, put 'em in an ini or #define them
                 // somewhere Answer: See struct sRegionOpts in Profile.h. An area of 240x320 is defined there.
-                m_iTop = minyScreen + 100;
-                m_iHeight = 240;
+                capture_rect_.top_ = g_miny_screen + 100;
+                capture_rect_.height(240);
             }
-            MessageOut(m_hWnd, IDS_STRING_VALUEEXCEEDHEIGHT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, m_iHeight);
+            MessageOut(m_hWnd, IDS_STRING_VALUEEXCEEDHEIGHT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, capture_rect_.height());
         }
     }
 
-    // Technical pixel coordinates are applicable.  Top-Left = 0:0 not 1:1 What user often think it is.
-    // TRACE(_T("## CFixedRegionDlg::OnOK / L=%d, T=%d, W=%d, H=%d\n"), m_iLeft, m_iTop, m_iWidth, m_iHeight );
+    settings_.set_capture_rect(capture_rect_);
 
-    cRegionOpts.m_iLeft = m_iLeft;
-    cRegionOpts.m_iTop = m_iTop;
-    cRegionOpts.m_bFixed = fval ? true : false;
-    cRegionOpts.m_iWidth = m_iWidth;
-    cRegionOpts.m_iHeight = m_iHeight;
-    cRegionOpts.m_bMouseDrag = m_ctrlButtonMouseDrag.GetCheck() ? true : false;
+    settings_.set_region_mouse_drag(m_ctrlButtonMouseDrag.GetCheck() ? true : false);
+
     CDialog::OnOK();
 }
 
@@ -186,97 +184,91 @@ BOOL CFixedRegionDlg::OnInitDialog()
 {
     CDialog::OnInitDialog();
 
-    m_iLeft = cRegionOpts.m_iLeft;
-    m_iTop = cRegionOpts.m_iTop;
-    m_iWidth = cRegionOpts.m_iWidth;
-    m_iHeight = cRegionOpts.m_iHeight;
-    UpdateData(FALSE);
-
-    // TRACE(_T("## CFixedRegionDlg::OnInitDialog / L=%d, T=%d, W=%d, H=%d\n"), m_iLeft, m_iTop, m_iWidth, m_iHeight );
-
-    m_ctrlEditPosX.EnableWindow(TRUE);
-    m_ctrlEditPosY.EnableWindow(TRUE);
-    m_ctrlButtonFixTopLeft.SetCheck(cRegionOpts.m_bFixed);
-    m_ctrlEditPosX.EnableWindow(cRegionOpts.m_bFixed);
-    m_ctrlEditPosY.EnableWindow(cRegionOpts.m_bFixed);
-    m_ctrlButtonMouseDrag.SetCheck(cRegionOpts.m_bMouseDrag);
-    return TRUE; // return TRUE unless you set the focus to a control
-    // EXCEPTION: OCX Property Pages should return FALSE
-}
-
-void CFixedRegionDlg::OnSelect()
-{
-    m_ctrlStaticMsg.SetWindowText(_T("Click and drag to define a rectangle"));
-
-    cRegionOpts.m_iCaptureMode = CAPTURE_VARIABLE; // set temporarily to variable region
-    g_iDefineMode = 1;
-    g_hFixedRegionWnd = m_hWnd;
-    ::ShowWindow(hMouseCaptureWnd, SW_SHOW);
-    ::UpdateWindow(hMouseCaptureWnd);
-    m_ctrlStaticMsg.SetWindowText(_T(""));
-}
-
-// OnRegionUpdate
-// message handler for WM_APP_REGIONUPDATE
-// TODO: why doesn't this message send position values?
-LRESULT CFixedRegionDlg::OnRegionUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/)
-{
-    CRect rectUse(g_rcUse);
-    if (!m_ctrlButtonFixTopLeft.GetCheck())
-    {
-        m_iLeft = rectUse.left;
-        m_iTop = rectUse.top;
-    }
-    m_iWidth = rectUse.Width();
-    m_iHeight = rectUse.Height();
-    //if (cVideoOpts.m_bRoundDown)
-    {
-        if (m_iWidth % 2 != 0)
-            m_iWidth -= 1;
-        if (m_iHeight % 2 != 0)
-            m_iHeight -= 1;
-    }
-
-    // TRACE(_T("## CFixedRegionDlg::OnRegionUpdate / L=%d, T=%d, W=%d, H=%d\n"), m_iLeft, m_iTop, m_iWidth, m_iHeight
-    // );
+    capture_rect_ = settings_.get_capture_rect();
 
     UpdateData(FALSE);
 
-    return 0;
+    const auto capture_fixed = settings_.get_region_fixed();
+    left_text_edit_ctrl_.EnableWindow(TRUE);
+    top_text_edit_ctrl_.EnableWindow(TRUE);
+    m_ctrlButtonFixTopLeft.SetCheck(capture_fixed);
+    left_text_edit_ctrl_.EnableWindow(capture_fixed);
+    top_text_edit_ctrl_.EnableWindow(capture_fixed);
+
+    const auto capture_mouse_drag = settings_.get_region_mouse_drag();
+    m_ctrlButtonMouseDrag.SetCheck(capture_mouse_drag);
+
+    return TRUE;
+}
+
+void CFixedRegionDlg::OnRegionSelect()
+{
+    capture_->set_modify_mode(modify_mode::select);
+    capture_->show(capture_rect_, capture_type::fixed);
+}
+
+void CFixedRegionDlg::OnRegionMove()
+{
+    capture_->set_modify_mode(modify_mode::move);
+    capture_->show(capture_rect_, capture_type::fixed);
 }
 
 void CFixedRegionDlg::OnFixedtopleft()
 {
-    int fixtl = m_ctrlButtonFixTopLeft.GetCheck();
-    m_ctrlEditPosX.EnableWindow(fixtl);
-    m_ctrlEditPosY.EnableWindow(fixtl);
+    const auto checked = m_ctrlButtonFixTopLeft.GetCheck();
+    left_text_edit_ctrl_.EnableWindow(checked);
+    top_text_edit_ctrl_.EnableWindow(checked);
+    settings_.set_region_fixed(checked != 0);
 }
 
-LRESULT CFixedRegionDlg::OnDisplayChange(WPARAM /*wParam*/, LPARAM /*lParam*/)
+void CFixedRegionDlg::OnBnClickedSupportmousedrag()
 {
-    // TODO: add handling if a display is turned on / off while trying to select region
-    // -- this probably isn't as important as catching this same message when recording but
-    // it should eventually be handled.
+    const auto checked = m_ctrlButtonMouseDrag.GetCheck();
+    settings_.set_region_mouse_drag(checked != 0);
+}
 
-    return 0;
+std::wstring get_window_text(const CEdit &text_edit)
+{
+    wchar_t text[255 + 1]; // just limit it to 255 for now
+    text_edit.GetWindowText(text, 255);
+    return text;
+}
+
+void set_window_text(CEdit &text_edit, const std::wstring &text)
+{
+    text_edit.SetWindowText(text.c_str());
+}
+
+void CFixedRegionDlg::OnEnChangeX()
+{
+    const auto left_text = get_window_text(left_text_edit_ctrl_);
+    if (left_text.empty())
+        return;
+    capture_rect_.left_ = std::stoi(left_text);
 }
 
 void CFixedRegionDlg::OnEnChangeY()
 {
-    // TODO:  If this is a RICHEDIT control, the control will not
-    // send this notification unless you override the CDialog::OnInitDialog()
-    // function and call CRichEditCtrl().SetEventMask()
-    // with the ENM_CHANGE flag ORed into the mask.
+    const auto top_text = get_window_text(top_text_edit_ctrl_);
+    if (top_text.empty())
+        return;
+    capture_rect_.top_ = std::stoi(top_text);
+}
 
-    // TODO:  Add your control notification handler code here
+void CFixedRegionDlg::OnEnChangeWidth()
+{
+    const auto width_text = get_window_text(width_text_edit_ctrl_);
+    if (width_text.empty())
+        return;
+    capture_rect_.width(std::stoi(width_text));
 }
 
 void CFixedRegionDlg::OnEnChangeHeight()
 {
-    //if (cVideoOpts.m_bRoundDown)
-    {
-        RoundDownWidth();
-    }
+    const auto height_text = get_window_text(height_text_edit_ctrl_);
+    if (height_text.empty())
+        return;
+    capture_rect_.height(std::stoi(height_text));
 }
 
 void CFixedRegionDlg::OnBnClickedOk()
@@ -284,51 +276,23 @@ void CFixedRegionDlg::OnBnClickedOk()
     OnOK();
 }
 
-void CFixedRegionDlg::OnBnClickedSupportrounddown()
-{
-    //if (cVideoOpts.m_bRoundDown)
-    {
-        RoundDownHeight();
-        RoundDownWidth();
-    }
-}
-
 void CFixedRegionDlg::OnEnKillfocusWidth()
 {
-    //if (cVideoOpts.m_bRoundDown)
+    if (capture_rect_.width() % 2 != 0)
     {
-        RoundDownWidth();
-    }
-}
-void CFixedRegionDlg::OnEnKillfocusHeight()
-{
-    //if (cVideoOpts.m_bRoundDown)
-    {
-        RoundDownHeight();
+        capture_rect_.width(capture_rect_.width() + 1);
+        set_window_text(width_text_edit_ctrl_, std::to_wstring(capture_rect_.width()));
     }
 }
 
-void CFixedRegionDlg::RoundDownHeight()
+void CFixedRegionDlg::OnEnKillfocusHeight()
 {
-    CString sVal;
-    m_ctrlEditHeight.GetWindowText(sVal);
-    int nHeight = std::stoi(sVal.GetString());
-    if ((nHeight % 2) != 0)
+    if (capture_rect_.height() % 2 != 0)
     {
-        nHeight = nHeight - 1;
-        sVal.Format(_T("%d"), nHeight);
-        m_ctrlEditHeight.SetWindowText(sVal);
+        capture_rect_.height(capture_rect_.height() + 1);
+        set_window_text(height_text_edit_ctrl_, std::to_wstring(capture_rect_.height()));
     }
 }
-void CFixedRegionDlg::RoundDownWidth()
-{
-    CString sVal;
-    m_ctrlEditWidth.GetWindowText(sVal);
-    int nWidth = std::stoi(sVal.GetString());
-    if ((nWidth % 2) != 0)
-    {
-        nWidth = nWidth - 1;
-        sVal.Format(_T("%d"), nWidth);
-        m_ctrlEditWidth.SetWindowText(sVal);
-    }
-}
+
+
+

@@ -18,7 +18,7 @@ extern int giFirstVideo;
 extern HWND viewWnd;
 
 extern int maxxScreen;
-extern int maxyScreen;
+extern int g_maxy_screen;
 
 extern int fileModified;
 
@@ -261,9 +261,9 @@ void CMainFrame::ResizeToMovie(RECT movierect)
         windowrect.left = maxxScreen - compactcx;
     }
 
-    if (compactcy > maxyScreen - windowrect.top)
+    if (compactcy > g_maxy_screen - windowrect.top)
     {
-        windowrect.top = maxyScreen - compactcy - 20; // 20 to compensate for taskbar height
+        windowrect.top = g_maxy_screen - compactcy - 20; // 20 to compensate for taskbar height
     }
 
     if (windowrect.left <= 0)

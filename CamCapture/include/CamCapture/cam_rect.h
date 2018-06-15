@@ -75,6 +75,17 @@ public:
         return (bottom_ - top_);
     }
 
+    void width(const T new_width) noexcept
+    {
+        right_ = left_ + new_width;
+    }
+
+    void height(const T new_height) noexcept
+    {
+        bottom_ = top_ + new_height;
+    }
+
+
     size_type size() const noexcept
     {
         return { width(), height() };

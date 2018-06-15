@@ -149,7 +149,7 @@ void PlayMovie(int mode);
 void StopPlayingRecording();
 
 int maxxScreen = 800;
-int maxyScreen = 600;
+int g_maxy_screen = 600;
 
 int doneOnce = 0;
 
@@ -1345,7 +1345,7 @@ int CPlayplusView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     HDC hScreenDC = ::GetDC(nullptr);
     g_nColors = ::GetDeviceCaps(hScreenDC, BITSPIXEL);
     maxxScreen = GetDeviceCaps(hScreenDC, HORZRES);
-    maxyScreen = GetDeviceCaps(hScreenDC, VERTRES);
+    g_maxy_screen = GetDeviceCaps(hScreenDC, VERTRES);
     ::ReleaseDC(nullptr, hScreenDC);
 
     if (pmode == PLAYER)

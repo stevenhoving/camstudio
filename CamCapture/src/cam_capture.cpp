@@ -56,7 +56,7 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
 
     bitmap_info_.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
     bitmap_info_.bmiHeader.biWidth = src_rect_.width();
-    bitmap_info_.bmiHeader.biHeight = src_rect_.height() * -1;
+    bitmap_info_.bmiHeader.biHeight = -src_rect_.height();
     bitmap_info_.bmiHeader.biPlanes = 1;
     bitmap_info_.bmiHeader.biBitCount = 32;
     bitmap_info_.bmiHeader.biCompression = BI_RGB;
@@ -69,8 +69,6 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
 
     frame_.bitmap_info = &bitmap_info_;
     frame_.bitmap_data = bitmap_data_;
-
-    old_selected_bitmap_ = ::SelectObject(memory_dc_, bitmap_frame_);
 
     /* \todo make adding these annotations optional */
     annotations_.emplace_back(
@@ -85,26 +83,31 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
 
 cam_capture_source::~cam_capture_source()
 {
-    ::SelectObject(memory_dc_, old_selected_bitmap_);
-
     ::DeleteDC(memory_dc_);
     ::ReleaseDC(hwnd_, desktop_dc_);
 }
 
 bool cam_capture_source::capture_frame(const rect<int> &capture_rect)
 {
+    old_selected_bitmap_ = ::SelectObject(memory_dc_, bitmap_frame_);
     const auto ret = ::BitBlt(memory_dc_, 0, 0,
         capture_rect.width(), capture_rect.height(),
         desktop_dc_,
         capture_rect.left(), capture_rect.top(),
         SRCCOPY | CAPTUREBLT);
+
     assert(ret);
     if (!ret)
+    {
+        ::SelectObject(memory_dc_, old_selected_bitmap_);
         return false;
+    }
 
     captured_rect_ = capture_rect;
 
     _draw_annotations(capture_rect);
+
+    ::SelectObject(memory_dc_, old_selected_bitmap_);
 
     return true;
 }
@@ -118,21 +121,30 @@ const cam_frame *cam_capture_source::get_frame()
     return &frame_;
 }
 
+void cam_capture_source::enable_annotations()
+{
+    enable_annotations_ = true;
+}
+
 void cam_capture_source::_draw_annotations(const rect<int> &capture_rect)
 {
+    if (!enable_annotations_)
+        return;
     if (annotations_.empty())
         return;
 
-    POINT pt;
-    ::GetCursorPos(&pt);
+    {
+        POINT pt;
+        ::GetCursorPos(&pt);
 
-    Gdiplus::Graphics canvas(memory_dc_);
-    canvas.SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);
+        Gdiplus::Graphics canvas(memory_dc_);
+        canvas.SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);
 
-    point<int> mouse_point(pt.x, pt.y);
+        point<int> mouse_point(pt.x, pt.y);
 
-    cam_draw_data draw_data(0.1, capture_rect, mouse_point);
+        cam_draw_data draw_data(0.1, capture_rect, mouse_point);
 
-    for (const auto &annotation : annotations_)
-        annotation->draw(canvas, draw_data);
+        for (const auto &annotation : annotations_)
+            annotation->draw(canvas, draw_data);
+    }
 }

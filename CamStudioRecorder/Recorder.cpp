@@ -167,7 +167,7 @@ BOOL CRecorderApp::InitInstance()
     CWinApp::InitInstance();
 
     // Initialize GDI+.
-    m_gdi = std::make_unique<gdi>();
+    m_gdi = std::make_unique<gdi_plus>();
 
     ::OnError(_T("CRecorderApp::InitInstance"));
     AfxEnableControlContainer();
@@ -269,8 +269,8 @@ BOOL CRecorderApp::InitInstance()
         cProgramOpts.Read(g_cfg->lookup("Program"));
     if (g_cfg->exists("HotKeys"))
         cHotKeyOpts.Read(g_cfg->lookup("HotKeys"));
-    if (g_cfg->exists("Region"))
-        cRegionOpts.Read(g_cfg->lookup("Region"));
+    //if (g_cfg->exists("Region"))
+        //cRegionOpts.Read(g_cfg->lookup("Region"));
     if (g_cfg->exists("Caption"))
         cCaptionOpts.Read(g_cfg->lookup("Caption"));
     if (g_cfg->exists("TimeStamp"))
@@ -337,11 +337,11 @@ int CRecorderApp::ExitInstance()
             s = &g_cfg->lookup("HotKeys");
         cHotKeyOpts.Write(*s);
 
-        if (!g_cfg->exists("Region"))
-            s = &g_cfg->getRoot().add("Region", libconfig::Setting::TypeGroup);
-        else
-            s = &g_cfg->lookup("Region");
-        cRegionOpts.Write(*s);
+        //if (!g_cfg->exists("Region"))
+        //    s = &g_cfg->getRoot().add("Region", libconfig::Setting::TypeGroup);
+        //else
+        //    s = &g_cfg->lookup("Region");
+        //cRegionOpts.Write(*s);
 
         if (!g_cfg->exists("Caption"))
             s = &g_cfg->getRoot().add("Caption", libconfig::Setting::TypeGroup);

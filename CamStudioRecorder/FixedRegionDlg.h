@@ -1,10 +1,27 @@
 #pragma once
 
+#include <memory>
+
+#include <CamCapture/cam_rect.h>
+
+class settings_model;
+class mouse_capture_ui;
+
+static rect<int> from_crect(const CRect &rect)
+{
+    return {rect.left, rect.top, rect.right, rect.bottom};
+}
+
+static CRect from_rect(const rect<int> &rect)
+{
+    return {rect.left(), rect.top(), rect.right(), rect.bottom()};
+}
+
 class CFixedRegionDlg : public CDialog
 {
     DECLARE_DYNAMIC(CFixedRegionDlg)
 public:
-    explicit CFixedRegionDlg(CWnd *pParent = nullptr);
+    explicit CFixedRegionDlg(CWnd *pParent, settings_model &settings);
 
     // Dialog Data
     //{{AFX_DATA(CFixedRegionDlg)
@@ -22,43 +39,38 @@ protected:
     virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
     //}}AFX_VIRTUAL
 
-    // Implementation
 protected:
     // Generated message map functions
     //{{AFX_MSG(CFixedRegionDlg)
     virtual void OnOK();
-    afx_msg void OnSelect();
+    afx_msg void OnRegionSelect();
     virtual BOOL OnInitDialog();
     afx_msg void OnFixedtopleft();
     //}}AFX_MSG
-    afx_msg LRESULT OnRegionUpdate(WPARAM wParam, LPARAM lParam);
-    afx_msg LRESULT OnDisplayChange(WPARAM wParam, LPARAM lParam);
     DECLARE_MESSAGE_MAP()
 private:
-    CStatic m_ctrlStaticMsg;
-    CEdit m_ctrlEditWidth;
-    CEdit m_ctrlEditHeight;
-    CEdit m_ctrlEditPosX;
-    CEdit m_ctrlEditPosY;
+    CEdit width_text_edit_ctrl_;
+    CEdit height_text_edit_ctrl_;
+    CEdit left_text_edit_ctrl_;
+    CEdit top_text_edit_ctrl_;
     CButton m_ctrlButtonMouseDrag;
     CButton m_ctrlButtonFixTopLeft;
-    // CButton m_ctrlButtonRoundDown;
-    int m_iLeft;
-    int m_iTop;
-    int m_iWidth;
-    int m_iHeight;
-    int m_iRNDWidth;
-    int m_nRNDHeight;
-    void RoundDownWidth();
-    void RoundDownHeight();
+    rect<int> capture_rect_;
+
+    settings_model &settings_;
+
+    std::unique_ptr<mouse_capture_ui> capture_;
 
 public:
+    afx_msg void OnEnChangeX();
     afx_msg void OnEnChangeY();
+    afx_msg void OnEnChangeWidth();
     afx_msg void OnEnChangeHeight();
     afx_msg void OnBnClickedOk();
-    afx_msg void OnBnClickedSupportrounddown();
     afx_msg void OnEnKillfocusWidth();
     afx_msg void OnEnKillfocusHeight();
+    afx_msg void OnRegionMove();
+    afx_msg void OnBnClickedSupportmousedrag();
 };
 
 //{{AFX_INSERT_LOCATION}}

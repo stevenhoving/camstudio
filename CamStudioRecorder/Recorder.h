@@ -4,24 +4,6 @@
 #error include 'stdafx.h' before including this file for PCH
 #endif
 
-#ifdef _DEBUG
-// VISUAL LEAK DETECTOR by Dan Moulding (dmoulding@gmail.com)
-// Enhanced Memory Leak Detection for Visual C++
-// Requires that Visual Leak Detector (vld) is installed and include and library are add to MSVS toolbox (see vld
-// instructions) BTW. vld requires dbghelp.dll and msvcr80.dll. These are not included within the distribution of vld.
-// http://www.codeproject.com/KB/applications/visualleakdetector.aspx
-// http://sites.google.com/site/dmoulding/vld
-//
-// Because vld requires a lot of memory it self and can slow down performance the default state is that we do not keep
-// it acticated all the time. If you want to debug a certain source you can copy the include below in the file you wat
-// to validate.
-//
-//#define _VISUALLEAKDETECTOR
-#ifdef _VISUALLEAKDETECTOR
-#include <vld.h>
-#endif
-#endif
-
 #include <CamLib/CamError.h>
 #include "CamStudioCommandLineInfo.h"
 #include "Profile.h"
@@ -29,17 +11,13 @@
 #include "RecorderVersionReleaseInfo.h" // Contains version and SVN release number
 #include <memory>
 
-//#define WM_APP_REGIONUPDATE    0x00500    // TODO: Should this be a WM_USER/WM_APP message?
-//#define WM_APP_REGIONUPDATE    WM_USER + 0x00100
-#define WM_APP_REGIONUPDATE (WM_APP + 100)
-
 // Multilanguage
 #define ENT_LANGID _T("LanguageID")
 #define ENT_LANGINI _T("LangINI")
 #define SEC_SETTINGS _T("Language")
 #define STANDARD_LANGID 0x09 // English
 
-class gdi;
+class gdi_plus;
 
 class CRecorderApp : public CWinApp
 {
@@ -85,7 +63,7 @@ private:
     int m_iVersionOp;
     CCamStudioCommandLineInfo m_cmdInfo;
 
-    std::unique_ptr<gdi> m_gdi;
+    std::unique_ptr<gdi_plus> m_gdi;
 
     bool RegisterWindowClass();
     BOOL FirstInstance();

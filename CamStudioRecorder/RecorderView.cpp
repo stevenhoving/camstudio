@@ -11,7 +11,7 @@
 #include "RecorderDoc.h"
 #include "MainFrm.h"
 
-#include "MouseCaptureWnd.h"
+
 #include "CamCursor.h"
 
 #include "AutopanSpeedDlg.h"
@@ -46,13 +46,11 @@
 #include "addons/EffectsOptionsDlg.h"
 #include "addons/EffectsOptions2Dlg.h"
 
+// new stuff
 #include "string_convert.h"
 #include "video_settings_ui.h"
 #include "settings_model.h"
-
-#ifdef _DEBUG
-// #include <vld.h>        // Visual Leak Detector utility (In debug mode)
-#endif
+#include "mouse_capture_ui.h"
 
 #include <memory>
 #include <algorithm>
@@ -103,18 +101,14 @@ extern int iRrefreshRate;
 /////////////////////////////////////////////////////////////////////////////
 
 // Vars used for selecting fixed /variable region
-CRect g_rc;         // Size:  0 .. MaxScreenSize-1
+//CRect g_rc;         // Size:  0 .. MaxScreenSize-1
 CRect g_rcUse;      // Size:  0 .. MaxScreenSize-1
-CRect g_rcClip;     // Size:  0 .. MaxScreenSize-1
-CRect g_old_rcClip; // Size:  0 .. MaxScreenSize-1
-CRect g_rcOffset;
-CPoint g_ptOrigin;
+//CRect g_rcClip;     // Size:  0 .. MaxScreenSize-1
+
 
 // Autopan
 CRect g_rectPanCurrent;
 CRect g_rectPanDest;
-
-BOOL g_bCapturing = FALSE;
 
 HWND g_hFixedRegionWnd;
 
@@ -183,7 +177,7 @@ CSoundFile *g_pSoundFile = nullptr;
 // Key short-cuts variables
 /////////////////////////////////////////////////////////////////////////////
 // state vars
-BOOL bAllowNewRecordStartKey = TRUE;
+BOOL g_bAllowNewRecordStartKey = TRUE;
 
 PSTR strFile;
 
@@ -201,17 +195,16 @@ sProgramOpts cProgramOpts;
 sProducerOpts cProducerOpts;
 sAudioFormat cAudioFormat;
 sHotKeyOpts cHotKeyOpts;
-sRegionOpts cRegionOpts;
+//sRegionOpts cRegionOpts;
 CCamCursor CamCursor;
 sCaptionOpts cCaptionOpts;
 sTimestampOpts cTimestampOpts;
 sWatermarkOpts cWatermarkOpts;
 
-CString g_strCodec("MS Video 1");
 // Files Directory
 CString savedir("");
 
-HBITMAP hSavedBitmap = nullptr;
+HBITMAP g_hSavedBitmap = nullptr;
 
 /////////////////////////////////////////////////////////////////////////////
 // ===========================================================================
@@ -256,13 +249,7 @@ int UnSetHotKeys();
 int SetAdjustHotKeys();
 int SetHotKeys(int succ[]);
 // Region Display Functions
-void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip);
-
-// Misc Functions
-void SetVideoCompressState(HIC hic, DWORD fccHandler);
-
-// void CALLBACK OnMM_WIM_DATA(UINT parm1, LONG parm2);
-// BOOL CALLBACK SaveCallback(int iProgress);
+//void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip);
 
 namespace
 { // anonymous
@@ -278,12 +265,6 @@ BOOL StartAudioRecording();
 void StopAudioRecording();
 void waveInErrorMsg(MMRESULT result, const char *);
 int AddInputBufferToQueue();
-
-////////////////////////////////
-// Region Select Functions
-////////////////////////////////
-int InitDrawShiftWindow();
-int InitSelectRegionWindow();
 
 ////////////////////////////////
 // HOTKEYS_CODE
@@ -553,6 +534,11 @@ CRecorderView::CRecorderView()
 
     settings_model_ = std::make_unique<settings_model>();
     settings_model_->load();
+
+    // hackery to make sure things are okey
+    //const auto capture_rect = settings_model_->get_capture_rect();
+    //g_rc = {capture_rect.left(), capture_rect.top(), capture_rect.right(), capture_rect.bottom()};
+    //g_rcClip = g_rc;
 }
 
 CRecorderView::~CRecorderView()
@@ -679,10 +665,13 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     LoadSettings();
     VERIFY(0 < SetAdjustHotKeys());
 
-    if (!CreateShiftWindow())
-    {
-        return -1;
-    }
+    mouse_capture_ui_ = std::make_unique<mouse_capture_ui>(AfxGetInstanceHandle(), GetSafeHwnd(),
+        [this](const CRect &capture_rect)
+        {
+            settings_model_->set_capture_rect(from_crect(capture_rect));
+            ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
+        }
+    );
 
     HDC hScreenDC = ::GetDC(nullptr);
     g_iBits = ::GetDeviceCaps(hScreenDC, BITSPIXEL);
@@ -690,12 +679,6 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     ::ReleaseDC(nullptr, hScreenDC);
 
     g_hLogoBM = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP3));
-
-    CRect rect(0, 0, maxxScreen - 1, maxyScreen - 1);
-    if (!flashing_wnd_.CreateFlashing(_T("Flashing"), rect))
-    {
-        return -1;
-    }
 
     // Ver 1.2
     // strCursorDir default
@@ -724,12 +707,14 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CRecorderView::OnDestroy()
 {
+    settings_model_->save();
     DecideSaveSettings();
 
     // UnSetHotKeys(g_hWndGlobal);
     // getHotKeyMap().clear(); // who actually cares?
 
-    DestroyShiftWindow();
+    //DestroyShiftWindow();
+    //mouse_capture_wnd_.reset();
 
     if (g_compressor_info != nullptr)
     {
@@ -737,10 +722,10 @@ void CRecorderView::OnDestroy()
         g_num_compressor = 0;
     }
 
-    if (hSavedBitmap)
+    if (g_hSavedBitmap)
     {
-        DeleteObject(hSavedBitmap);
-        hSavedBitmap = nullptr;
+        DeleteObject(g_hSavedBitmap);
+        g_hSavedBitmap = nullptr;
     }
 
     if (g_hLogoBM)
@@ -841,7 +826,7 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
         ::PostMessage(AfxGetMainWnd()->m_hWnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 
     // Check validity of g_rc and fix it
-    // FixRectSizePos(&g_rc, maxxScreen, maxyScreen, minxScreen, minyScreen);
+    // FixRectSizePos(&g_rc, g_maxx_screen, g_maxy_screen, g_minx_screen, g_miny_screen);
 
     // TODO: mouse events handler should be installed only if we are interested in highlighting
     // Shall we empty the click queue? if we stop & start again we have a chance to see previous stuff
@@ -856,7 +841,7 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
 
     capture_settings settings;
     settings.capture_hwnd_ = 0; // 0 for now
-    settings.capture_rect_ = {g_rcUse.left, g_rcUse.top, g_rcUse.right, g_rcUse.bottom};
+    settings.capture_rect_ = settings_model_->get_capture_rect();
     settings.video_settings = *video_settings_model_;
 
     const auto video_container_type = static_cast<video_container::type>(video_settings_model_->video_container_.get_index());
@@ -872,7 +857,7 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
     //}
 
     // Ver 1.2
-    bAllowNewRecordStartKey = TRUE; // allow this only after g_bRecordState is set to 1
+    g_bAllowNewRecordStartKey = TRUE; // allow this only after g_bRecordState is set to 1
     return 0;
 }
 
@@ -927,52 +912,55 @@ LRESULT CRecorderView::OnSaveCursor(WPARAM wParam, LPARAM /*lParam*/)
 
 void CRecorderView::OnRegionRubber()
 {
-    cRegionOpts.m_iCaptureMode = CAPTURE_VARIABLE;
+    settings_model_->set_capture_mode(capture_type::variable);
 }
 
 void CRecorderView::OnUpdateRegionRubber(CCmdUI *pCmdUI)
 {
-    pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_VARIABLE));
+    bool is_rubber = settings_model_->get_capture_mode() == capture_type::variable;
+    pCmdUI->SetCheck(is_rubber);
 }
 
 void CRecorderView::OnRegionPanregion()
 {
-    g_iDefineMode = 0;
-    CFixedRegionDlg cfrdlg(this);
-    if (IDOK == cfrdlg.DoModal())
+    CFixedRegionDlg cfrdlg(this, *settings_model_.get());
+    if (cfrdlg.DoModal() == IDOK)
     {
-        cRegionOpts.m_iCaptureMode = CAPTURE_FIXED;
+        settings_model_->set_capture_mode(capture_type::fixed);
     }
-    g_iDefineMode = 0;
 }
 
 void CRecorderView::OnUpdateRegionPanregion(CCmdUI *pCmdUI)
 {
-    pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_FIXED));
+    const auto capture_mode = settings_model_->get_capture_mode();
+    pCmdUI->SetCheck(capture_mode == capture_type::fixed);
 }
 
 void CRecorderView::OnRegionSelectScreen()
 {
-    cRegionOpts.m_iCaptureMode = CAPTURE_FULLSCREEN;
+    settings_model_->set_capture_mode(capture_type::fullscreen);
 }
 
 void CRecorderView::OnUpdateRegionSelectScreen(CCmdUI *pCmdUI)
 {
-    pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_FULLSCREEN));
+    const auto capture_mode = settings_model_->get_capture_mode();
+    pCmdUI->SetCheck(capture_mode == capture_type::fullscreen);
 }
 
 void CRecorderView::OnRegionFullscreen()
 {
-    cRegionOpts.m_iCaptureMode = CAPTURE_ALLSCREENS;
+    settings_model_->set_capture_mode(capture_type::allscreens);
 }
 
 void CRecorderView::OnUpdateRegionFullscreen(CCmdUI *pCmdUI)
 {
     if (::GetSystemMetrics(SM_CMONITORS) == 1)
     {
+        const auto capture_mode = settings_model_->get_capture_mode();
+
         // Capture all screens has the same effect as full screen for
         // a system with only one monitor.
-        pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_ALLSCREENS));
+        pCmdUI->SetCheck(capture_mode == capture_type::allscreens);
     }
     else
     {
@@ -982,20 +970,22 @@ void CRecorderView::OnUpdateRegionFullscreen(CCmdUI *pCmdUI)
 
 void CRecorderView::OnRegionAllScreens()
 {
-    cRegionOpts.m_iCaptureMode = CAPTURE_ALLSCREENS;
+    settings_model_->set_capture_mode(capture_type::allscreens);
 }
 
 void CRecorderView::OnUpdateRegionAllScreens(CCmdUI *pCmdUI)
 {
     if (::GetSystemMetrics(SM_CMONITORS) == 1)
     {
-        pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_ALLSCREENS));
+        const auto capture_mode = settings_model_->get_capture_mode();
+        pCmdUI->SetCheck(capture_mode == capture_type::allscreens);
         pCmdUI->m_pMenu->RemoveMenu(ID_SCREENS_SELECTSCREEN, MF_BYCOMMAND);
         pCmdUI->m_pMenu->RemoveMenu(ID_SCREENS_ALLSCREENS, MF_BYCOMMAND);
     }
     else
     {
-        pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_ALLSCREENS));
+        settings_model_->set_capture_mode(capture_type::allscreens);
+        //pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_ALLSCREENS));
     }
 }
 
@@ -1266,7 +1256,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
         {
             // Unable to rename/copy file.
             // In case of an move problem we do nothing. Source has an unique name and not to delete the source file
-            // don't cause problems anylonger The file may be opened by another application. Please use another
+            // don't cause problems any longer The file may be opened by another application. Please use another
             // filename."
             MessageOut(m_hWnd, IDS_STRING_MOVEFILEFAILURE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             // Repeat this function until success
@@ -1325,107 +1315,65 @@ void CRecorderView::OnRecord()
     // \n"), cRegionOpts.m_iTop, cRegionOpts.m_iCaptureLeft, cRegionOpts.m_iWidth,
     // cRegionOpts.m_iHeight );
 
-    switch (cRegionOpts.m_iCaptureMode)
+    switch (settings_model_->get_capture_mode())
     {
-        case CAPTURE_FIXED:
-            // Applicable when Option region is set as 'Fixed Region'
-            g_rc = CRect(cRegionOpts.m_iLeft,                                // X = Left
-                       cRegionOpts.m_iTop,                                 // Y = Top
-                       cRegionOpts.m_iLeft + cRegionOpts.m_iWidth,  // X = Width
-                       cRegionOpts.m_iTop + cRegionOpts.m_iHeight); // Y = Height
-            // TRACE( _T("## CRecorderView::OnRecord /CAPTURE_FIXED/ before / g_rc / T=%d, L=%d, B=%d, R=%d \n"), g_rc.top,
-            // g_rc.left, g_rc.bottom, g_rc.right );
+    case capture_type::fixed:
+        // \todo auto panning fixed rect is not supported for now
+        ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
+    break;
+    case capture_type::variable:
+    {
+        const auto capture_rect = rect<int>();
+        mouse_capture_ui_->set_modify_mode(modify_mode::select);
+        mouse_capture_ui_->show(capture_rect, capture_type::variable);
+    } break;
+    case capture_type::allscreens:
+    {
+        // Applicable when Option region is set as 'Full Screen'
+        rect<int> capture_rect(
+            g_minx_screen,
+            g_miny_screen,
+            g_minx_screen + g_maxx_screen,
+            g_miny_screen + g_maxy_screen);
 
-            if (cRegionOpts.m_bFixed)
-            {
-                // Applicable when Option region is set as 'Fixed Region' and rectangle offset is fixed either.
+        // \todo fix this hack
+        settings_model_->set_capture_rect(capture_rect);
+        ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
+    } break;
 
-                // I don't expect that code below is ever invoked...! Hence, dead code
-                if (g_rc.top < 0)
-                {
-                    TRACE(_T("## CRecorderView::OnRecord g_rc.top<0  [%d]\n"), g_rc.top);
-                    // g_rc.top = 0;
-                }
-                if (g_rc.left < 0)
-                {
-                    TRACE(_T("## CRecorderView::OnRecord g_rc.left<0  [%d]\n"), g_rc.left);
-                    // g_rc.left = 0;
-                }
-                if (maxxScreen <= g_rc.right)
-                {
-                    TRACE(_T("## CRecorderView::OnRecord maxxScreen<g_rc.right  [%d]\n"), g_rc.right);
-                    // g_rc.right = maxxScreen - 1;  //ok
-                }
-                if (maxyScreen <= g_rc.bottom)
-                {
-                    TRACE(_T("## CRecorderView::OnRecord maxyScreen<g_rc.bottom<0  [%d]\n"), g_rc.bottom);
-                    // g_rc.bottom = maxyScreen - 1; //ok
-                }
+    case capture_type::window:
+    case capture_type::fullscreen:
+        // Applicable when Option region is set as 'Window' and as 'Full Screen'
 
-                // using protocols for iMouseCaptureMode==0
-                g_old_rcClip = g_rcClip = g_rc;
-                g_old_rcClip.NormalizeRect();
-                g_rcUse = g_old_rcClip;
-                ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
-            }
-            else
-            {
-                // Applicable when Option region is set as 'Fixed Region' but rectangle offset is floating.
-                // Floating rectangle. Drag the rectangle first to its position...
+        // TODO, Possible memory leak, where is the delete operation of the new below done?
+        if (basic_msg_)
+        {
+            delete basic_msg_;
+            basic_msg_ = nullptr;
+        }
 
-                ::ShowWindow(hMouseCaptureWnd, SW_SHOW);
-                ::UpdateWindow(hMouseCaptureWnd);
-                InitDrawShiftWindow(); // will affect rc implicitly
-            }
-            break;
-        case CAPTURE_VARIABLE:
-            // Applicable when Option region is set as 'Region'
-            ::ShowWindow(hMouseCaptureWnd, SW_SHOW);
-            ::UpdateWindow(hMouseCaptureWnd);
-            InitSelectRegionWindow(); // will affect rc implicitly
-            break;
-        case CAPTURE_ALLSCREENS:
-            // Applicable when Option region is set as 'Full Screen'
-            g_rcUse = CRect(minxScreen, minyScreen, maxxScreen, maxyScreen);
-            ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
-            break;
+        basic_msg_ = new CBasicMessageDlg();
+        basic_msg_->Create(CBasicMessageDlg::IDD);
+        if (settings_model_->get_capture_mode() == capture_type::window)
+        {
+            basic_msg_->SetText(_T("Click on window to be captured."));
+        }
+        else
+        {
+            basic_msg_->SetText(_T("Click on screen to be captured."));
+        }
+        basic_msg_->ShowWindow(SW_SHOW);
+        SetCapture(); // what is this for?
+        // TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top,
+        // rc.left, rc.bottom, rc.right ); TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / MinX=%d,
+        // MinY=%d, MaxX=%d, MaxY=%d \n"), g_minx_screen, g_miny_screen, g_maxx_screen, g_maxy_screen );
 
-        case CAPTURE_WINDOW:
-        case CAPTURE_FULLSCREEN:
-            // Applicable when Option region is set as 'Window' and as 'Full Screen'
+        // TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top,
+        // rc.left, rc.bottom, rc.right ); TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / MinX=%d,
+        // MinY=%d, MaxX=%d, MaxY=%d \n"), g_minx_screen, g_miny_screen, g_maxx_screen, g_maxy_screen );
 
-            // TODO, Possible memory leak, where is the delete operation of the new below done?
-            if (basic_msg_)
-            {
-                delete basic_msg_;
-                basic_msg_ = nullptr;
-            }
-
-            basic_msg_ = new CBasicMessageDlg();
-            basic_msg_->Create(CBasicMessageDlg::IDD);
-            if (cRegionOpts.m_iCaptureMode == CAPTURE_WINDOW)
-            {
-                basic_msg_->SetText(_T("Click on window to be captured."));
-            }
-            else
-            {
-                basic_msg_->SetText(_T("Click on screen to be captured."));
-            }
-            basic_msg_->ShowWindow(SW_SHOW);
-            SetCapture(); // what is this for?
-            // TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top,
-            // rc.left, rc.bottom, rc.right ); TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / MinX=%d,
-            // MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
-
-            // TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top,
-            // rc.left, rc.bottom, rc.right ); TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / MinX=%d,
-            // MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen, minyScreen, maxxScreen, maxyScreen );
-
-            break;
+        break;
     }
-    // TRACE(_T("## CRecorderView::OnRecord / after / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top, rc.left, rc.bottom,
-    // rc.right ); TRACE(_T("## CRecorderView::OnRecord / after / MinX=%d, MinY=%d, MaxX=%d, MaxY=%d \n"), minxScreen,
-    // minyScreen, maxxScreen, maxyScreen );
 }
 
 void CRecorderView::OnStop()
@@ -1445,14 +1393,13 @@ void CRecorderView::OnStop()
         pFrame->SetTitle(_T("CamStudio"));
     }
 
-    // Broadcast. // mlt_msk: WTF? it is not a broadcasting
     OnRecordInterrupted(0, 0);
 }
 
 void CRecorderView::OnVideoSettings()
 {
-    video_settings_ui cDlg(nullptr, *video_settings_model_);
-    cDlg.DoModal();
+    video_settings_ui settings_dialog(this, *video_settings_model_);
+    settings_dialog.DoModal();
 }
 
 void CRecorderView::OnOptionsCursoroptions()
@@ -2186,11 +2133,11 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
             }
             else
             {
-                if (bAllowNewRecordStartKey)
+                if (g_bAllowNewRecordStartKey)
                 {
                     // prevent the case which CamStudio presents more than one region
                     // for the user to select
-                    bAllowNewRecordStartKey = FALSE;
+                    g_bAllowNewRecordStartKey = FALSE;
                     OnRecord();
                 }
             }
@@ -2343,19 +2290,23 @@ void CRecorderView::OnOptionsLanguageGerman()
 
 void CRecorderView::OnRegionWindow()
 {
-    cRegionOpts.m_iCaptureMode = CAPTURE_WINDOW;
+    settings_model_->set_capture_mode(capture_type::window);
+    //cRegionOpts.m_iCaptureMode = CAPTURE_WINDOW;
 }
 
 void CRecorderView::OnUpdateRegionWindow(CCmdUI *pCmdUI)
 {
-    pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_WINDOW));
+    const auto capture_mode = settings_model_->get_capture_mode();
+    pCmdUI->SetCheck(capture_mode == capture_type::window);
 }
 
 void CRecorderView::OnCaptureChanged(CWnd *pWnd)
 {
     CPoint ptMouse;
     VERIFY(GetCursorPos(&ptMouse));
-    if (cRegionOpts.isCaptureMode(CAPTURE_WINDOW))
+
+    const auto capture_mode = settings_model_->get_capture_mode();
+    if (capture_mode == capture_type::window)//.isCaptureMode(CAPTURE_WINDOW))
     {
         CWnd *pWndPoint = WindowFromPoint(ptMouse);
         if (pWndPoint)
@@ -2372,7 +2323,8 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
                 ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
         }
     }
-    else if (cRegionOpts.isCaptureMode(CAPTURE_FULLSCREEN))
+    //else if (cRegionOpts.isCaptureMode(CAPTURE_FULLSCREEN))
+    else if (capture_mode == capture_type::fullscreen)
     {
         HMONITOR hMonitor = nullptr;
         MONITORINFO mi;
@@ -2559,7 +2511,6 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     srcDC.TextOut(xoffset, yoffset, csMsg);
 
     // Line : Codex
-    csMsg.Format(_T("Codec : %s"), g_strCodec.GetString());
     sizeExtent = srcDC.GetTextExtent(csMsg);
     yoffset += sizeExtent.cy + iLineSpacing;
     rectText.top = yoffset - 2;
@@ -2771,7 +2722,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
                 int wm = (rectFrame.Width() % align);
                 if (0 < wm) {
                     newwidth = rectFrame.Width() + (align - wm);
-                    if (maxxScreen < newwidth) {
+                    if (g_maxx_screen < newwidth) {
                         newwidth = rectFrame.Width() - wm;
                     }
                 }
@@ -2779,7 +2730,7 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
                 int hm = (rectFrame.Height() % align);
                 if (0 < hm) {
                     newheight = rectFrame.Height() + (align - hm);
-                    if (maxyScreen < newheight) {
+                    if (g_maxy_screen < newheight) {
                         newwidth = rectFrame.Height() - hm;
                     }
                 }
@@ -2821,7 +2772,6 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
         {
             // TRACE("CRecorderView::RecordVideo - ICOpen failed\n");
             cVideoOpts.m_dwCompfccHandler = ICHANDLER_MSVC;
-            g_strCodec = CString("MS Video 1");
         }
     } // g_selected_compressor
 
@@ -2829,7 +2779,6 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
     if (cVideoOpts.m_dwCompfccHandler == ICHANDLER_IV50)
     { // Still Can't Handle Indeo 5.04
         cVideoOpts.m_dwCompfccHandler = ICHANDLER_MSVC;
-        g_strCodec = CString("MS Video 1");
     }
 
     /* setup flashing rectangle */
@@ -3255,7 +3204,6 @@ bool CRecorderView::RecordVideo(CRect rectFrame, int fps, const char *szVideoFil
             if (IDYES == MessageOut(nullptr, IDS_STRING_ERRAVIDEFAULT, IDS_STRING_NOTE, MB_YESNO | MB_ICONQUESTION))
             {
                 cVideoOpts.m_dwCompfccHandler = ICHANDLER_MSVC;
-                g_strCodec = "MS Video 1";
                 ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, 0);
             }
         }
@@ -3684,44 +3632,4 @@ void StopAudioRecording()
 }
 #endif
 
-//===============================================
-// REGION CODE
-//===============================================
-
-int InitSelectRegionWindow()
-{
-    return 0;
 }
-
-int InitDrawShiftWindow()
-{
-    // MessageBox(nullptr,"sdg","",0);
-    HDC hScreenDC = ::GetDC(hMouseCaptureWnd);
-
-    // FixRectSizePos(&g_rc, maxxScreen, maxyScreen, minxScreen, minyScreen);
-
-    g_rcClip.left = g_rc.left;
-    g_rcClip.top = g_rc.top;
-    g_rcClip.right = g_rc.right;
-    g_rcClip.bottom = g_rc.bottom;
-    DrawSelect(hScreenDC, TRUE, &g_rcClip);
-
-    g_old_rcClip = g_rcClip;
-
-    // Set Cursor at the center of the clip rectangle
-    POINT ptOrigin;
-    ptOrigin.x = (g_rcClip.right + g_rcClip.left) / 2;
-    ptOrigin.y = (g_rcClip.top + g_rcClip.bottom) / 2;
-
-    g_rcOffset.left = g_rcClip.left - ptOrigin.x;
-    g_rcOffset.top = g_rcClip.top - ptOrigin.y;
-    g_rcOffset.right = g_rcClip.right - ptOrigin.x;
-    g_rcOffset.bottom = g_rcClip.bottom - ptOrigin.y;
-
-    ::ReleaseDC(hMouseCaptureWnd, hScreenDC);
-
-    return 0;
-}
-
-} // namespace
-

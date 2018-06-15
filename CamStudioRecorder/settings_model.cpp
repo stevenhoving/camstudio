@@ -26,6 +26,16 @@
 #include <optional>
 #include <iostream>
 
+namespace config
+{
+    constexpr auto capture_settings = "capture-settings";
+    constexpr auto capture_type = "capture_type";
+    constexpr auto capture_region_fixed = "capture_region_fixed";
+    constexpr auto capture_region_mouse_drag = "capture_region_mouse_drag";
+    constexpr auto capture_rect = "capture_rect";
+} // namespace config
+
+
 void settings_model::save()
 {
     auto root = cpptoml::make_table();
@@ -33,8 +43,9 @@ void settings_model::save()
     root->insert("version", 1);
 
     auto capture_settings = cpptoml::make_table();
-    capture_settings->insert("capture_type", static_cast<int>(capture_type_));
-    capture_settings->insert("capture_mouse_drag", capture_mouse_drag_);
+    capture_settings->insert(config::capture_type, static_cast<int>(capture_type_));
+    capture_settings->insert(config::capture_region_fixed, capture_fixed_);
+    capture_settings->insert(config::capture_region_mouse_drag, capture_mouse_drag_);
 
     auto capture_rect = cpptoml::make_array();
     capture_rect->push_back(capture_rect_.left());
@@ -42,9 +53,9 @@ void settings_model::save()
     capture_rect->push_back(capture_rect_.right());
     capture_rect->push_back(capture_rect_.bottom());
 
-    capture_settings->insert("capture_rect", capture_rect);
+    capture_settings->insert(config::capture_rect, capture_rect);
 
-    root->insert("capture-settings", capture_settings);
+    root->insert(config::capture_settings, capture_settings);
 
     std::ofstream stream(utility::create_config_path(L"settings.toml"));
     cpptoml::toml_writer writer{stream, ""};
@@ -64,19 +75,60 @@ void settings_model::load()
     assert(version == 1);
 
     /* capture settings */
-    const auto capture = root->get_table("capture-settings");
-    capture_type_ = static_cast<capture_type>(*capture->get_as<int>("capture_type"));
-    capture_mouse_drag_ = *capture->get_as<bool>("capture_mouse_drag");
-    const auto capture_rect = *capture->get_array_of<int64_t>("capture_rect");
+    const auto capture = root->get_table(config::capture_settings);
+    capture_type_ = static_cast<capture_type>(*capture->get_as<int>(config::capture_type));
+    capture_fixed_ = *capture->get_as<bool>(config::capture_region_fixed);
+    capture_mouse_drag_ = *capture->get_as<bool>(config::capture_region_mouse_drag);
+    const auto capture_rect = *capture->get_array_of<int64_t>(config::capture_rect);
 
     // ignore if capture_rect does not contain the value data
     if (capture_rect.size() == 4)
     {
         capture_rect_ = rect<int>(
-            capture_rect.at(0),
-            capture_rect.at(1),
-            capture_rect.at(2),
-            capture_rect.at(3)
+            static_cast<int>(capture_rect.at(0)),
+            static_cast<int>(capture_rect.at(1)),
+            static_cast<int>(capture_rect.at(2)),
+            static_cast<int>(capture_rect.at(3))
         );
     }
+}
+
+void settings_model::set_capture_mode(capture_type type)
+{
+    capture_type_ = type;
+}
+
+capture_type settings_model::get_capture_mode()
+{
+    return capture_type_;
+}
+
+void settings_model::set_capture_rect(const rect<int> &capture_rect)
+{
+    capture_rect_ = capture_rect;
+}
+
+rect<int> settings_model::get_capture_rect()
+{
+    return capture_rect_;
+}
+
+void settings_model::set_region_mouse_drag(bool capture_mouse_drag)
+{
+    capture_mouse_drag_ = capture_mouse_drag;
+}
+
+bool settings_model::get_region_mouse_drag()
+{
+    return capture_mouse_drag_;
+}
+
+void settings_model::set_region_fixed(bool capture_fixed)
+{
+    capture_fixed_ = capture_fixed;
+}
+
+bool settings_model::get_region_fixed()
+{
+    return capture_fixed_;
 }

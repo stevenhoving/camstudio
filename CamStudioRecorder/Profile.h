@@ -139,6 +139,8 @@ enum eSynchType
     AUDIOFIRST
 };
 
+#if 0
+
 enum eCaptureType
 {
     CAPTURE_FIXED,
@@ -214,7 +216,8 @@ struct sRegionOpts
     int m_iWidth{320};
     int m_iHeight{240};
 };
-extern sRegionOpts cRegionOpts;
+//extern sRegionOpts cRegionOpts;
+#endif
 
 struct sCaptionOpts
 {

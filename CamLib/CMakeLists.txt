@@ -16,18 +16,18 @@
 project(CamLib)
 
 set(LIB_SOURCE
-    CamError.cpp
-    CamFile.cpp
-    CamImage.cpp
-    CamRect.cpp
-    CamSys.cpp
-    CBitmapEx.cpp
-    CStudiolib.cpp
-    Picture.cpp
-    TrayIcon.cpp
-    targetver.h
-    stdafx.h
-    stdafx.cpp
+    src/CamError.cpp
+    src/CamFile.cpp
+    src/CamImage.cpp
+    src/CamRect.cpp
+    src/CamSys.cpp
+    src/CBitmapEx.cpp
+    src/CStudiolib.cpp
+    src/Picture.cpp
+    src/TrayIcon.cpp
+    src/targetver.h
+    src/stdafx.h
+    src/stdafx.cpp
 )
 
 set(LIB_INCLUDE
@@ -43,6 +43,7 @@ set(LIB_INCLUDE
     include/CamLib/TrayIcon.h
     include/CamLib/AudioVolume.h
     include/CamLib/console.h
+    include/CamLib/rect.h
 )
 
 source_group(CamLib FILES
@@ -73,3 +74,5 @@ target_include_directories(CamLib
 #    DIRECTORY include
 #    DESTINATION include
 #)
+
+add_subdirectory(tests)

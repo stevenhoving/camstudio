@@ -31,10 +31,23 @@ enum class capture_type
 class settings_model
 {
 public:
+    void set_capture_mode(capture_type type);
+    capture_type get_capture_mode();
+
+    void set_capture_rect(const rect<int>& capture_rect);
+    rect<int> get_capture_rect();
+
+    void set_region_mouse_drag(bool capture_mouse_drag);
+    bool get_region_mouse_drag();
+
+    void set_region_fixed(bool capture_fixed);
+    bool get_region_fixed();
+
     /* capture settings */
     capture_type capture_type_{capture_type::fullscreen};
-    bool capture_mouse_drag_{false};
     rect<int> capture_rect_{0, 0, 0, 0};
+    bool capture_fixed_{false};
+    bool capture_mouse_drag_{false};
 
     /* For now we will fall back to a simple save and load strategy.
      * The current implementation has a couple of problems. No input validation. No format version
@@ -43,4 +56,6 @@ public:
     void save();
 
     void load();
+
+    
 };

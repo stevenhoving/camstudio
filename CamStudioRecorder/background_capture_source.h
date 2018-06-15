@@ -15,18 +15,28 @@
  * along with this program.If not, see < https://www.gnu.org/licenses/>.
  */
 
-#include "stdafx.h"
-#include "GdiPlusInitializer.h"
-#include "CamCapture/cam_gdiplus.h"
+#pragma once
 
-gdi_plus::gdi_plus()
-{
-    input = std::make_unique<Gdiplus::GdiplusStartupInput>();
-    auto ret = Gdiplus::GdiplusStartup(&gdiplusToken, input.get(), nullptr);
-    assert(ret == Gdiplus::Status::Ok);
-}
+#include <CamCapture/cam_rect.h>
+#include <windows.h>
+#include <cassert>
 
-gdi_plus::~gdi_plus()
+// \todo move this to camcapture library
+
+// capture source that creates compatible bitmaps.
+class background_capture_source
 {
-    Gdiplus::GdiplusShutdown(gdiplusToken);
-}
+public:
+    background_capture_source(HWND hwnd);
+
+    void capture_frame();
+    HBITMAP get_frame();
+
+private:
+    BITMAPINFO bitmap_info_{};
+    HBITMAP bitmap_frame_{nullptr};
+    HWND hwnd_{nullptr};
+    HDC desktop_dc_{nullptr};
+    HDC memory_dc_{nullptr};
+    rect<int> src_rect_{0, 0, 0, 0};
+};

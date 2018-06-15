@@ -21,4 +21,5 @@ namespace Gdiplus
 {
 struct GdiplusStartupInput;
 class Graphics;
+class Bitmap;
 } // namespace Gdiplus
