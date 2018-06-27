@@ -91,6 +91,7 @@
 #define IDB_BITMAP10                    214
 #define IDB_BITMAP3                     220
 #define IDD_CONV_DIALOG                 226
+#define IDD_WINDOW_SELECT               234
 #define IDC_RADIO1                      1000
 #define IDC_INTERLEAVESECONDS           1001
 #define IDC_RADIO3                      1001
@@ -226,6 +227,7 @@
 #define IDC_LANG_ENC                    1081
 #define IDC_CODEC_PRESET_NAME           1098
 #define IDC_REGION_MOVE                 1099
+#define IDC_WINDOW_SELECT_BUTTON        1100
 #define IDC_RECORDFORMAT                1290
 #define IDC_PREDEFINEDSHAPE             1290
 #define IDC_INPUTDEVICE                 1291
@@ -525,9 +527,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        234
+#define _APS_NEXT_RESOURCE_VALUE        236
 #define _APS_NEXT_COMMAND_VALUE         32954
-#define _APS_NEXT_CONTROL_VALUE         1100
+#define _APS_NEXT_CONTROL_VALUE         1305
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

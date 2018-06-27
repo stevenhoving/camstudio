@@ -73,3 +73,8 @@ HBITMAP background_capture_source::get_frame()
 {
     return bitmap_frame_;
 }
+
+rect<int> background_capture_source::get_size()
+{
+    return src_rect_;
+}

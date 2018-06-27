@@ -28,10 +28,7 @@
 #include <fmt/printf.h>
 #include <fmt/ostream.h>
 
-std::ostream &operator<<(std::ostream &os, const CRect &rect)
-{
-    return os << fmt::format("{} {} {} {}", rect.left, rect.top, rect.right, rect.bottom);
-}
+
 
 LRESULT WINAPI wnd_proc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam)
 {

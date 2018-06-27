@@ -947,6 +947,12 @@ BEGIN
     LTEXT           "25",IDC_CODEC_QUALITY_VALUE,281,90,9,8
 END
 
+IDD_WINDOW_SELECT DIALOGEX 0, 0, 310, 94
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1143,6 +1149,14 @@ BEGIN
         RIGHTMARGIN, 403
         TOPMARGIN, 7
         BOTTOMMARGIN, 260
+    END
+
+    IDD_WINDOW_SELECT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 303
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 87
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2327,6 +2341,11 @@ BEGIN
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0
+END
+
+IDD_WINDOW_SELECT AFX_DIALOG_LAYOUT
+BEGIN
+    0
 END
 
 

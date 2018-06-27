@@ -51,6 +51,7 @@
 #include "video_settings_ui.h"
 #include "settings_model.h"
 #include "mouse_capture_ui.h"
+#include "window_select_ui.h"
 
 #include <memory>
 #include <algorithm>
@@ -2290,6 +2291,11 @@ void CRecorderView::OnOptionsLanguageGerman()
 
 void CRecorderView::OnRegionWindow()
 {
+    window_select_ui test(this,
+        [](const HWND selected_window)
+        {fmt::print("window selected\n");}
+    );
+    test.DoModal();
     settings_model_->set_capture_mode(capture_type::window);
     //cRegionOpts.m_iCaptureMode = CAPTURE_WINDOW;
 }

@@ -17,27 +17,20 @@
 
 #pragma once
 
-#include <CamCapture/cam_rect.h>
-#include <windows.h>
-#include <cassert>
+#include <fmt/format.h>
+#include <iostream>
+#include <atltypes.h>
 
-// \todo move this to camcapture library
+// fmt user defined helpers
 
-// capture source that creates compatible bitmaps.
-class background_capture_source
+static
+std::ostream &operator<<(std::ostream &os, const CRect &rect)
 {
-public:
-    background_capture_source(HWND hwnd);
+    return os << fmt::format("{} {} {} {}", rect.left, rect.top, rect.right, rect.bottom);
+}
 
-    void capture_frame();
-    HBITMAP get_frame();
-    rect<int> get_size();
-
-private:
-    BITMAPINFO bitmap_info_{};
-    HBITMAP bitmap_frame_{nullptr};
-    HWND hwnd_{nullptr};
-    HDC desktop_dc_{nullptr};
-    HDC memory_dc_{nullptr};
-    rect<int> src_rect_{0, 0, 0, 0};
-};
+static
+std::ostream &operator<<(std::ostream &os, const CPoint &point)
+{
+    return os << fmt::format("{} {}", point.x, point.y);
+}

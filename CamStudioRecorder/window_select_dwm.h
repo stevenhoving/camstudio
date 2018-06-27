@@ -17,27 +17,21 @@
 
 #pragma once
 
-#include <CamCapture/cam_rect.h>
+#include "CamCapture/cam_rect.h"
 #include <windows.h>
-#include <cassert>
+#include <dwmapi.h>
 
-// \todo move this to camcapture library
-
-// capture source that creates compatible bitmaps.
-class background_capture_source
+// \todo handle enabled/disabled dwm (only for win7, on win8 and higher you can no longer disable dwm)
+class dwm_thumbnail
 {
 public:
-    background_capture_source(HWND hwnd);
+    dwm_thumbnail() = default;
+    ~dwm_thumbnail();
 
-    void capture_frame();
-    HBITMAP get_frame();
-    rect<int> get_size();
+    void link(HWND dst, HWND src);
+    void unlink();
+    void set_size(rect<int> dst_size);
 
 private:
-    BITMAPINFO bitmap_info_{};
-    HBITMAP bitmap_frame_{nullptr};
-    HWND hwnd_{nullptr};
-    HDC desktop_dc_{nullptr};
-    HDC memory_dc_{nullptr};
-    rect<int> src_rect_{0, 0, 0, 0};
+    HTHUMBNAIL thumbnail_{ INVALID_HANDLE_VALUE };
 };

@@ -19,12 +19,21 @@ set(RECORDER_NEW_SOURCE
     # new
     background_capture_source.h
     background_capture_source.cpp
+    fmt_helper.h
     mouse_capture_ui.h
     mouse_capture_ui.cpp
     video_settings_ui.h
     video_settings_ui.cpp
     video_settings_model.h
     video_settings_model.cpp
+    window_select_data.h
+    window_select_ui.h
+    window_select_ui.cpp
+    window_select_dwm.h
+    window_select_dwm.cpp
+    window_thumbnail_widget.h
+    window_thumbnail_widget.cpp
+    window_utils.h
     string_convert.h
     capture_thread.h
     capture_thread.cpp
@@ -198,9 +207,10 @@ target_link_libraries(CamStudioRecorder
     gdi32.lib
     winmm.lib
     vfw32.lib
-    Gdiplus.lib
+    gdiplus.lib
     strmiids.lib
-    Msacm32.lib
+    msacm32.lib
+    dwmapi.lib
 )
 
 set_target_properties(CamStudioRecorder PROPERTIES
