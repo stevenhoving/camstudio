@@ -14,14 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.If not, see <https://www.gnu.org/licenses/>.
  */
-
 #pragma once
 
 #include "CamCapture/cam_rect.h"
 #include <windows.h>
 #include <dwmapi.h>
 
-// \todo handle enabled/disabled dwm (only for win7, on win8 and higher you can no longer disable dwm)
+/*
+ * \note only for win 7 it is possible to disable DWM. This means that we have to check for OS
+ * version and supply a alternative method.
+ * From win 8 it is no longer possible to disable DWM.
+ */
 class dwm_thumbnail
 {
 public:
@@ -31,6 +34,8 @@ public:
     void link(HWND dst, HWND src);
     void unlink();
     void set_size(rect<int> dst_size);
+private:
+    rect<int> _get_src_size();
 
 private:
     HTHUMBNAIL thumbnail_{ INVALID_HANDLE_VALUE };

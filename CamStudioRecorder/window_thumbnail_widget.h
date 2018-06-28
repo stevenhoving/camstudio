@@ -17,38 +17,70 @@
 
 #pragma once
 
-//#include "CamCapture/cam_rect.h"
 #include "window_select_data.h"
-#include "window_select_dwm.h"
 
-enum class button_state
+class window_icon
 {
-    normal,
-    hover,
-    down
+public:
+    window_icon(HICON icon)
+        : window_icon_(icon)
+    {
+        BITMAP window_icon_bitmap = {};
+        if (!::GetIconInfo(window_icon_, &window_icon_info_))
+            return;
+
+        if (window_icon_info_.hbmColor)
+        {
+            if (::GetObject(window_icon_info_.hbmColor, sizeof(window_icon_bitmap), &window_icon_bitmap))
+            {
+                width = window_icon_bitmap.bmWidth;
+                height = window_icon_bitmap.bmHeight;
+                bpp = window_icon_bitmap.bmBitsPixel;
+                DeleteObject(window_icon_info_.hbmColor);
+            }
+        }
+        else if (window_icon_info_.hbmMask)
+        {
+            if (::GetObject(window_icon_info_.hbmMask, sizeof(window_icon_bitmap), &window_icon_bitmap))
+            {
+                width = window_icon_bitmap.bmWidth;
+                height = window_icon_bitmap.bmHeight / 2;
+                bpp = 1;
+                DeleteObject(window_icon_info_.hbmMask);
+            }
+        }
+
+        if (width == 0 || height == 0)
+        {
+            width = ::GetSystemMetrics(SM_CXICON);
+            height = ::GetSystemMetrics(SM_CYICON);
+            bpp = 0;
+        }
+    }
+
+    bool empty()
+    {
+        return window_icon_ == nullptr;
+    }
+
+    HICON window_icon_{nullptr};
+    ICONINFO window_icon_info_{};
+
+    int width = {0};
+    int height = {0};
+    int bpp = {0};
 };
 
 class window_button : public CButton
 {
 public:
-    window_button(const window_data &data);
-    //void create(CRect rect, const int id);
+    window_button(CWnd *parent, const window_data &data);
+    void create(CRect rect, const int id);
+    window_data &get_data() noexcept;
 
-    // void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) override;
-    void OnCreate(HWND hwnd);
-    void OnMouseMove(UINT nFlags, CPoint point);
-    BOOL OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT *pResult) override;
-
-    window_data &get_data();
-    void set_state(button_state state)
-    {
-        prev_button_state_ = button_state_;
-        button_state_ = state;
-    }
-
+    void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) override;
 private:
-    //dwm_thumbnail dwm_;
-    button_state button_state_{button_state::normal};
-    button_state prev_button_state_{button_state::normal};
+    CWnd *parent_{nullptr};
     window_data data_;
+    window_icon window_icon_;
 };

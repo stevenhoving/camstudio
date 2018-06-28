@@ -17,222 +17,106 @@
 
 #include "stdafx.h"
 #include "window_thumbnail_widget.h"
+#include "window_utils.h"
 #include <fmt/printf.h>
 #include "fmt_helper.h"
+#include <shellapi.h>
+#include <CommonControls.h>
 
-window_button::window_button(const window_data &data)
-    : CButton()
-    , data_(data)
-    //, window_capture_source_(std::make_unique<background_capture_source>(data.hwnd))
+HICON get_shell_icon(const std::wstring &filepath)
 {
-}
+    SHFILEINFOW sfi;
+    ::SHGetFileInfo(filepath.c_str(), 0, &sfi, sizeof(sfi), SHGFI_SYSICONINDEX);
 
-void DrawBitmap(CDC *pDC, HBITMAP hbitmap, CRect size)
-{
-    CBitmap *pBitmap = CBitmap::FromHandle(hbitmap);
-    BITMAP bm;
-    pBitmap->GetBitmap(&bm);
-
-    CDC MemDC;
-    MemDC.CreateCompatibleDC(pDC);
-    const auto old_bitmap = MemDC.SelectObject(pBitmap);
-
-    pDC->SetStretchBltMode(STRETCH_HALFTONE);
-    pDC->StretchBlt(0, 0, size.Width(), size.Height(), &MemDC, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
-    MemDC.SelectObject(old_bitmap);
-}
-
-#if 0
-void window_button::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
-{
-
-    CRect rt = lpDrawItemStruct->rcItem;
-    CDC bmpDC;
-    auto dc = CDC::FromHandle(lpDrawItemStruct->hDC);
-    bmpDC.CreateCompatibleDC(dc);
-
-    window_capture_source_->capture_frame();
-    const auto bitmap = window_capture_source_->get_frame();
-    const auto src_size = window_capture_source_->get_size();
-    const auto dst_size = size<int>(button_width, button_height);
-
-    auto pOldBitmap = bmpDC.SelectObject(bitmap);
-
-    dc->SetStretchBltMode(STRETCH_HALFTONE);
-    dc->StretchBlt(0, 0, dst_size.width(), dst_size.height(), &bmpDC, 0, 0, src_size.width(), src_size.height(),
-                   SRCCOPY | CAPTUREBLT);
-    bmpDC.SelectObject(pOldBitmap);
-
-    if (button_state_ == button_state::hover)
+    IImageList *piml = nullptr;
+    if (::SHGetImageList(SHIL_LARGE, IID_IImageList, (void **)&piml) == S_OK)
     {
-        
-    }
-    else
-    {
-        dc->FillSolidRect(rt, RGB(0, 0, 255));
+        HICON hIcon;
+        if (piml->GetIcon(sfi.iIcon, ILD_TRANSPARENT, &hIcon) == S_OK)
+            return hIcon;
     }
 
-    bmpDC.DeleteDC();
-
-
-
-    //CDC dc;
-    //dc.Attach(lpDrawItemStruct->hDC);
-    //CRect rt = lpDrawItemStruct->rcItem;
-    //
-    //window_capture_source_->capture_frame();
-    //const auto bitmap = window_capture_source_->get_frame();
-    //DrawBitmap(&dc, bitmap, rt);
-    //
-    ////dc.FillSolidRect(rt, RGB(0, 0, 255));
-    //
-    //auto state = lpDrawItemStruct->itemState;
-    //if (state & ODS_SELECTED)
-    //{
-    //    dc.DrawEdge(rt, EDGE_SUNKEN, BF_RECT);
-    //}
-    //else
-    //{
-    //    dc.DrawEdge(rt, EDGE_RAISED, BF_RECT);
-    //}
-    //
-    //// draw text if needed
-    ////dc.SetTextColor(RGB(255, 255, 120));
-    //
-    //
-    //
-    ////dc.GetSafeHdc()
-    //
-    ////background_bitmap_ = std::unique_ptr<Gdiplus::Bitmap>(Gdiplus::Bitmap::FromHBITMAP(background_frame_, 0));
-    //
-    //if (state & ODS_FOCUS)
-    //{
-    //    auto focus_rect = rt;
-    //    focus_rect.InflateRect(3, 3);
-    //    dc.DrawFocusRect(&focus_rect);
-    //}
-
-    //dc.Detach();
-}
-#endif
-
-void window_button::OnCreate(HWND hwnd)
-{
-    // CRect pos;
-    // GetWindowRect(&pos);
-    //::SetWindowPos(hwnd, HWND_TOP, pos.left, pos.top, pos.Width(), pos.Height(),SWP_SHOWWINDOW);
-
-    // auto src = get_the_parent(data_.hwnd);
-    //dwm_.link(hwnd, data_.hwnd);
+    return nullptr;
 }
 
-bool is_in_rect(CRect rect, CPoint point)
+HICON get_icon(HWND hwnd, const std::wstring &filepath)
 {
-    bool result = point.x > rect.left && point.x < rect.right;
-    result = result && point.y > rect.top && point.y < rect.bottom;
+    HICON result = 0;
+    const auto ret = ::SendMessageTimeout(hwnd, WM_GETICON, ICON_BIG, 0, SMTO_ABORTIFHUNG, 2000,
+        reinterpret_cast<DWORD_PTR*>(&result));
+    if (ret != 0 && result == nullptr)
+        result = reinterpret_cast<HICON>(::GetClassLongPtr(hwnd, GCLP_HICON));
+
+    if (result == nullptr)
+        result = get_shell_icon(filepath);
+
     return result;
 }
 
-void window_button::OnMouseMove(UINT nFlags, CPoint point)
+window_button::window_button(CWnd *parent, const window_data &data)
+    : CButton()
+    , parent_(parent)
+    , data_(data)
+    , window_icon_(get_icon(data.hwnd, data.process_filepath))
 {
-    CRect ButtonRect;
+}
 
-    std::string title(data_.process_name.begin(), data_.process_name.end());
-    GetWindowRect(&ButtonRect);
-    // fmt::print("mouse move {} - {} | {}\n", title, ButtonRect, point);
-    if (button_state_ == button_state::down)
+void window_button::create(CRect rect, const int id)
+{
+    const auto style = WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_OWNERDRAW;
+    Create(data_.window_title.c_str(), style, rect, parent_, id);
+}
+
+void window_button::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
+{
+    CRect client_rect;
+    GetWindowRect(&client_rect);
+
+    CDC dc;
+    dc.Attach(lpDrawItemStruct->hDC);
+    CRect rt = lpDrawItemStruct->rcItem;
+
+    dc.FillSolidRect(rt, RGB(200, 200, 200));
+
+    auto state = lpDrawItemStruct->itemState;
+    if (state & ODS_SELECTED)
     {
-        // fmt::print("down\n");
-        // if (!is_in_rect(ButtonRect, point))
-        {
-            set_state(button_state::hover);
-            Invalidate(FALSE);
-        }
-    }
-    else if (prev_button_state_ == button_state::down && button_state_ == button_state::hover)
-    {
-        // fmt::print("down\n");
-        set_state(button_state::down);
+        dc.DrawEdge(rt, EDGE_SUNKEN, BF_RECT);
     }
     else
     {
-        // if (is_in_rect(ButtonRect, point))
-        {
-            // fmt::print("hover\n");
-            set_state(button_state::hover);
-            Invalidate(FALSE);
-        }
-        // else
-        //{
-        //    //fmt::print("normal\n");
-        //    set_state(button_state::normal);
-        //}
+        dc.DrawEdge(rt, EDGE_RAISED, BF_RECT);
     }
-#if 1
-    TRACKMOUSEEVENT tme;
-    CWnd::OnMouseMove(nFlags, point);
-    tme.cbSize = sizeof(TRACKMOUSEEVENT);
-    tme.dwFlags = TME_LEAVE;
-    tme.hwndTrack = m_hWnd;
-    _TrackMouseEvent(&tme);
-#endif
-}
 
-BOOL window_button::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT *pResult)
-{
-    switch (message)
+    // draw text if needed
+    dc.SetTextColor(RGB(0, 0, 0));
+    auto text_rect = rt;
+    text_rect.DeflateRect(3, 3);
+
+    if (!window_icon_.empty())
     {
-        case WM_CREATE:
-            fmt::print("on create\n");
-            break;
-        case WM_SHOWWINDOW:
-        {
-            //OnCreate(GetSafeHwnd());
-            //CRect dest;
-            //GetClientRect(&dest);
-
-            //fmt::print("WM_SHOWWINDOW size: {}\n", dest);
-
-            //dwm_.set_size({dest.left, dest.top, dest.right, dest.bottom});
-        }
-        break;
-        case WM_MOUSEMOVE:
-        {
-            const auto x_pos = GET_X_LPARAM(lParam);
-            const auto y_pos = GET_Y_LPARAM(lParam);
-            OnMouseMove(0, {x_pos, y_pos});
-        }
-        break;
-
-        case WM_MOUSELEAVE:
-            fmt::print("mouse leave\n");
-            set_state(button_state::normal);
-            Invalidate(FALSE);
-            break;
-
-        case WM_PAINT:
-            break;
-
-        case WM_SIZE:
-        {
-            // CRect dest;
-            // GetClientRect(&dest);
-            //
-            // fmt::print("button on size: {}\n", dest);
-            //
-            // dwm_.set_size({dest.left, dest.top, dest.right, dest.bottom});
-        }
-        break;
-
-        default:
-            break;
+        text_rect.bottom = text_rect.top + window_icon_.height;
+        dc.DrawIcon(text_rect.TopLeft(), window_icon_.window_icon_);
+        text_rect.left = window_icon_.width + 5;
     }
-    // fmt::print("on wnd msg\n");
 
-    return CWnd::OnWndMsg(message, wParam, lParam, pResult);
+    std::wstring &button_text = data_.window_title;
+    if (button_text.empty())
+        button_text = data_.process_name;
+
+    dc.DrawText(button_text.c_str(), text_rect, DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_WORDBREAK);
+
+    if (state & ODS_FOCUS)
+    {
+        auto focus_rect = rt;
+        focus_rect.InflateRect(3, 3);
+        dc.DrawFocusRect(&focus_rect);
+    }
+
+    dc.Detach();
 }
 
-window_data &window_button::get_data()
+window_data &window_button::get_data() noexcept
 {
     return data_;
 }

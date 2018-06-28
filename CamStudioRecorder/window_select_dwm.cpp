@@ -46,3 +46,14 @@ void dwm_thumbnail::set_size(rect<int> dst_size)
     if (const auto ret = DwmUpdateThumbnailProperties(thumbnail_, &dskThumbProps); ret < 0)
         fmt::print("unable to update thumbnail props\n");
 }
+
+rect<int> dwm_thumbnail::_get_src_size()
+{
+    SIZE src_size;
+    if (const auto ret = DwmQueryThumbnailSourceSize(thumbnail_, &src_size); ret != S_OK)
+    {
+        fmt::print("failed to query source file\n");
+        return {0, 0, 0, 0};
+    }
+    return {0, 0, src_size.cx, src_size.cy};
+}
