@@ -196,6 +196,7 @@ set_source_files_properties(stdafx.cpp PROPERTIES
 target_link_libraries(CamStudioRecorder
     CamLib
     CamHook
+    cam_hook2
     CamAudio
     CamCapture
     CamEncoder

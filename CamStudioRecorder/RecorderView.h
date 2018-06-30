@@ -17,6 +17,8 @@ class window_select_ui;
 class video_settings_model;
 class settings_model;
 
+class mouse_hook;
+
 class CRecorderView : public CView
 {
 protected: // create from serialization only
@@ -195,6 +197,8 @@ private:
 
     std::unique_ptr<mouse_capture_ui> mouse_capture_ui_;
     std::unique_ptr<window_select_ui> window_select_ui_;
+
+    std::unique_ptr<mouse_hook> mouse_hook_;
 
     CBasicMessageDlg *basic_msg_;
     double zoom_;

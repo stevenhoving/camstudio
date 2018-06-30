@@ -30,10 +30,12 @@
 
 #include <CamAudio/sound_file.h>
 #include <CamAudio/Buffer.h>
-#include <CamHook/CamHook.h> // for WM_USER_RECORDSTART_MSG
+//#include <CamHook/CamHook.h> // for WM_USER_RECORDSTART_MSG
 #include <CamLib/CStudioLib.h>
 #include <CamLib/TrayIcon.h>
 #include <CamEncoder/av_encoder.h>
+
+#include <cam_hook/cam_hook.h>
 
 #include "AudioSpeakersDlg.h"
 #include "HotKey.h"
@@ -530,6 +532,8 @@ CRecorderView::CRecorderView()
     , zoomed_at_(10, 10)
     , show_message_(true)
 {
+    mouse_hook_ = std::make_unique<mouse_hook>();
+
     video_settings_model_ = std::make_unique<video_settings_model>();
     video_settings_model_->load();
 
@@ -661,7 +665,7 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
         return -1;
 
     g_hWndGlobal = m_hWnd;
-    setHotKeyWindow(m_hWnd);
+    //setHotKeyWindow(m_hWnd);
 
     LoadSettings();
     VERIFY(0 < SetAdjustHotKeys());
@@ -840,6 +844,8 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
     g_bRecordState = true;
     g_interruptkey = 0;
 
+    mouse_hook_->attach();
+
     capture_settings settings;
     settings.capture_hwnd_ = reinterpret_cast<HWND>(lParam);
     settings.capture_rect_ = settings_model_->get_capture_rect();
@@ -889,6 +895,8 @@ LRESULT CRecorderView::OnRecordInterrupted(WPARAM wParam, LPARAM /*lParam*/)
     g_bRecordState = false;
     capture_thread_->stop();
     capture_thread_.reset();
+
+    mouse_hook_->detach();
 
     // Store the interrupt key in case this function is triggered by a keypress
     g_interruptkey = wParam;

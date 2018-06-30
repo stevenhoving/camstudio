@@ -13,53 +13,51 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-project(CamHook)
+project(cam_hook2)
 
-set(HOOK_SOURCE
-    CamHook.cpp
-    CamHook.rc
-    ClickQueue.cpp
-    resource.h
-    stdafx.h
-    stdafx.cpp
+set(SOURCE
+    src/main.cpp
+    src/cam_hook.cpp
 )
 
-set(HOOK_INCLUDE
-    include/CamHook/CamHook.h
-    include/CamHook/CamHookExport.h
-    include/CamHook/ClickQueue.h
+set(INCLUDE
+    include/cam_hook/cam_hook.h
+    include/cam_hook/cam_hook_export.h
+    include/cam_hook/cam_common.h
 )
 
-source_group(CamHook FILES
-    ${HOOK_SOURCE}
-    ${HOOK_INCLUDE}
+source_group(src FILES
+    ${SOURCE}
+    ${INCLUDE}
 )
 
-set(CMAKE_MFC_FLAG 2)
-
-add_library(CamHook SHARED
-    ${HOOK_SOURCE}
-    ${HOOK_INCLUDE}
+add_library(cam_hook2 SHARED
+    ${SOURCE}
+    ${INCLUDE}
 )
 
-target_compile_definitions(CamHook
+target_compile_definitions(cam_hook2
   PRIVATE
-    _AFXDLL
+    NOMINMAX
     _UNICODE
     UNICODE
     CAM_HOOK_EXPORT
 )
 
-target_include_directories(CamHook
+target_include_directories(cam_hook2
   PUBLIC
     include
 )
 
-set_target_properties(CamHook PROPERTIES
+target_link_libraries(cam_hook2
+    fmt
+)
+
+set_target_properties(cam_hook2 PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
 
-install(TARGETS CamHook
+install(TARGETS cam_hook2
     RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/bin
     LIBRARY DESTINATION ${CMAKE_BINARY_DIR}/lib
     ARCHIVE DESTINATION ${CMAKE_BINARY_DIR}/lib

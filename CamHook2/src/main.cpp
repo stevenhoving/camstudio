@@ -15,10 +15,19 @@
  * along with this program.If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include "cam_hook/cam_hook.h"
 
-#ifdef CAM_HOOK_EXPORT
-#define CAMHOOK_EXPORT __declspec(dllexport)
-#else
-#define CAMHOOK_EXPORT
-#endif
+BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD Reason, LPVOID /*Reserved*/)
+{
+    switch (Reason)
+    {
+        case DLL_PROCESS_ATTACH:
+            mouse_hook::get().set_instance(hInstance);
+            break;
+        case DLL_PROCESS_DETACH:
+            mouse_hook::get().detach();
+            break;
+    }
+
+    return TRUE;
+}

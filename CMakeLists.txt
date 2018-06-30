@@ -38,6 +38,8 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
 #add_compile_options(/WX) # treat warnings as errors.
 add_compile_options(/permissive-) # vs conformance mode.
 add_compile_options(/Zc:twoPhase-) # 2 phase name lookup.
+add_compile_options(/Zc:rvalueCast)
+
 
 ###############################################################################
 
@@ -52,6 +54,7 @@ set(CMAKE_INSTALL_PREFIX
 add_subdirectory(dep)
 add_subdirectory(CamCodec)
 add_subdirectory(CamHook)
+add_subdirectory(CamHook2)
 add_subdirectory(CamLib)
 add_subdirectory(CamAudio)
 add_subdirectory(CamCapture)

@@ -17,8 +17,9 @@
 
 #pragma once
 
-#ifdef CAM_HOOK_EXPORT
-#define CAMHOOK_EXPORT __declspec(dllexport)
-#else
-#define CAMHOOK_EXPORT
-#endif
+#define WINVER 0x0601
+#define _WIN32_WINNT 0x0601
+
+#define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
+#include <windows.h>

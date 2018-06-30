@@ -45,7 +45,10 @@ public:
      */
     bool capture_frame(const rect<int> &capture_rect);
     const cam_frame *get_frame();
+
     void enable_annotations();
+
+    void add_annotation(std::unique_ptr<cam_iannotation> annotation);
 
 protected:
     void _draw_annotations(const rect<int> &capture_rect);

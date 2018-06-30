@@ -70,6 +70,7 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
     frame_.bitmap_info = &bitmap_info_;
     frame_.bitmap_data = bitmap_data_;
 
+#if 0
     /* \todo make adding these annotations optional */
     annotations_.emplace_back(
         std::make_unique<cam_annotation_cursor>(true, true, cam_halo_type::circle,
@@ -79,6 +80,7 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
     annotations_.emplace_back(
         std::make_unique<cam_annotation_systemtime>(point<int>(10, 10), color(255, 0, 0, 0))
     );
+#endif
 }
 
 cam_capture_source::~cam_capture_source()
@@ -124,6 +126,11 @@ const cam_frame *cam_capture_source::get_frame()
 void cam_capture_source::enable_annotations()
 {
     enable_annotations_ = true;
+}
+
+void cam_capture_source::add_annotation(std::unique_ptr<cam_iannotation> annotation)
+{
+    annotations_.emplace_back(std::move(annotation));
 }
 
 void cam_capture_source::_draw_annotations(const rect<int> &capture_rect)
