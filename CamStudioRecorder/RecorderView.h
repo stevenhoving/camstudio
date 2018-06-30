@@ -167,7 +167,6 @@ protected:
     afx_msg void OnAnnotationAddwatermark();
     afx_msg void OnUpdateAnnotationAddwatermark(CCmdUI *pCmdUI);
     afx_msg void OnEffectsOptions();
-    afx_msg void OnUpdateOptionsAudiooptionsAudiovideosynchronization(CCmdUI *pCmdUI);
 
     //}}AFX_MSG
     afx_msg LRESULT OnRecordStart(WPARAM wParam, LPARAM lParam);
@@ -197,7 +196,6 @@ private:
     std::unique_ptr<mouse_capture_ui> mouse_capture_ui_;
     std::unique_ptr<window_select_ui> window_select_ui_;
 
-    //CFlashingWnd flashing_wnd_;
     CBasicMessageDlg *basic_msg_;
     double zoom_;
     CPoint zoomed_at_;
@@ -233,7 +231,5 @@ inline CRecorderDoc *CRecorderView::GetDocument()
 // External Variables
 extern HWND g_hWndGlobal;
 extern bool g_bRecordState;
-//extern CRect g_rc;
 extern CRect g_rcUse;
-//extern CRect g_rcClip;
 extern CRect g_old_rcClip;

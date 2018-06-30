@@ -816,7 +816,7 @@ std::string generate_temp_filename(video_container::type container)
     return wstring_to_utf8(strTempVideoFilePath);
 }
 
-LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
+LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
 {
     TRACE("CRecorderView::OnRecordStart\n");
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
@@ -841,7 +841,7 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM /*lParam*/)
     g_interruptkey = 0;
 
     capture_settings settings;
-    settings.capture_hwnd_ = 0; // 0 for now
+    settings.capture_hwnd_ = reinterpret_cast<HWND>(lParam);
     settings.capture_rect_ = settings_model_->get_capture_rect();
     settings.video_settings = *video_settings_model_;
 
@@ -1320,7 +1320,7 @@ void CRecorderView::OnRecord()
     {
     case capture_type::fixed:
         // \todo auto panning fixed rect is not supported for now
-        ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
+        ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, 0);
     break;
     case capture_type::variable:
     {
@@ -1339,14 +1339,28 @@ void CRecorderView::OnRecord()
 
         // \todo fix this hack
         settings_model_->set_capture_rect(capture_rect);
-        ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
+        ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, 0);
     } break;
 
     case capture_type::window:
-    case capture_type::fullscreen:
-        // Applicable when Option region is set as 'Window' and as 'Full Screen'
+    {
+        window_select_ui window_select(this,
+            [](const HWND selected_window)
+            {
+                const unsigned long style = ::GetWindowLong(selected_window, GWL_STYLE);
+                if ((style & WS_MINIMIZE) == WS_MINIMIZE)
+                    ::ShowWindow(selected_window, SW_SHOWNORMAL);
+                ::BringWindowToTop(selected_window);
 
-        // TODO, Possible memory leak, where is the delete operation of the new below done?
+                ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0,
+                    reinterpret_cast<LPARAM>(selected_window));
+            });
+
+        window_select.DoModal();
+
+    } break;
+    case capture_type::fullscreen:
+        /* \todo rewrite this the full screen function */
         if (basic_msg_)
         {
             delete basic_msg_;
@@ -1355,23 +1369,9 @@ void CRecorderView::OnRecord()
 
         basic_msg_ = new CBasicMessageDlg();
         basic_msg_->Create(CBasicMessageDlg::IDD);
-        if (settings_model_->get_capture_mode() == capture_type::window)
-        {
-            basic_msg_->SetText(_T("Click on window to be captured."));
-        }
-        else
-        {
-            basic_msg_->SetText(_T("Click on screen to be captured."));
-        }
+        basic_msg_->SetText(_T("Click on screen to be captured."));
         basic_msg_->ShowWindow(SW_SHOW);
         SetCapture(); // what is this for?
-        // TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top,
-        // rc.left, rc.bottom, rc.right ); TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / MinX=%d,
-        // MinY=%d, MaxX=%d, MaxY=%d \n"), g_minx_screen, g_miny_screen, g_maxx_screen, g_maxy_screen );
-
-        // TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / rc / T=%d, L=%d, B=%d, R=%d \n"), rc.top,
-        // rc.left, rc.bottom, rc.right ); TRACE(_T("## CRecorderView::OnRecord CAPTURE_WINDOW / after / MinX=%d,
-        // MinY=%d, MaxX=%d, MaxY=%d \n"), g_minx_screen, g_miny_screen, g_maxx_screen, g_maxy_screen );
 
         break;
     }
@@ -2291,13 +2291,8 @@ void CRecorderView::OnOptionsLanguageGerman()
 
 void CRecorderView::OnRegionWindow()
 {
-    window_select_ui test(this,
-        [](const HWND selected_window)
-        {fmt::print("window selected\n");}
-    );
-    test.DoModal();
+
     settings_model_->set_capture_mode(capture_type::window);
-    //cRegionOpts.m_iCaptureMode = CAPTURE_WINDOW;
 }
 
 void CRecorderView::OnUpdateRegionWindow(CCmdUI *pCmdUI)
