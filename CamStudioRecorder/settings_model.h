@@ -56,6 +56,4 @@ public:
     void save();
 
     void load();
-
-    
 };

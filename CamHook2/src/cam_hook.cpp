@@ -17,6 +17,7 @@
 
 #include "cam_hook/cam_hook.h"
 #include <fmt/printf.h>
+#include <limits>
 
 void mouse_hook::set_instance(HINSTANCE instance)
 {
@@ -44,8 +45,16 @@ LRESULT CALLBACK mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lPara
         case WM_LBUTTONUP:
         case WM_RBUTTONDOWN:
         case WM_RBUTTONUP:
-            fmt::print("mouse action\n");
-            break;
+        {
+            MSLLHOOKSTRUCT mouse_event = *reinterpret_cast<MSLLHOOKSTRUCT *>(lParam);
+            mouse_event.dwExtraInfo = static_cast<ULONG_PTR>(wParam);
+            {
+                std::unique_lock<std::mutex> slock(mouse_events_lock_);
+                mouse_events_.emplace_back(mouse_event);
+
+                fmt::print("mouse action queue size: {}\n", mouse_events_.size());
+            }
+        } break;
 
         // ignore
         case WM_MOUSEMOVE:
@@ -53,15 +62,43 @@ LRESULT CALLBACK mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lPara
         case WM_MOUSEHWHEEL:
             break;
         }
-        LPMSG msg = reinterpret_cast<LPMSG>(lParam);
-
-        if (msg->message == WM_LBUTTONUP)
-        {
-            POINT pt;
-            GetCursorPos(&pt);
-            HWND hwnd = WindowFromPoint(pt);
-        }
     }
 
     return CallNextHookEx(hook_, nCode, wParam, lParam);
+}
+
+int32_t mouse_hook::get_mouse_events_count()
+{
+    std::unique_lock<std::mutex> slock(mouse_events_lock_);
+    constexpr auto mouse_events_max = std::numeric_limits<int32_t>::max();
+    if (mouse_events_.size() > mouse_events_max)
+    {
+        // maybe this is a unwanted side effect, but it keeps things at bay.
+        // \todo this is wrong, now we are removing the newest first, but we should remove the oldest.
+        mouse_events_.resize(mouse_events_max);
+        mouse_events_.shrink_to_fit();
+        return mouse_events_max;
+    }
+
+    return static_cast<int32_t>(mouse_events_.size());
+}
+
+// here we must assume that the user has actually allocated enough memory
+bool mouse_hook::get_mouse_events(MSLLHOOKSTRUCT *dst, int32_t count)
+{
+    if (dst == nullptr)
+        return false;
+
+    {
+        std::unique_lock<std::mutex> slock(mouse_events_lock_);
+        const auto copy_count = std::min<int32_t>(count, mouse_events_.size());
+        memcpy(dst, mouse_events_.data(), count * sizeof(MSLLHOOKSTRUCT));
+
+        /* \todo fix this so it does not do useless copy stuff, just use a circular buffer instead
+         * of a std::vector */
+        auto itr = mouse_events_.begin();
+        std::advance(itr, copy_count);
+        mouse_events_.erase(mouse_events_.begin(), itr);
+        return true;
+    }
 }
