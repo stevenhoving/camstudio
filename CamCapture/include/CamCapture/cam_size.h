@@ -17,6 +17,8 @@
 
 #pragma once
 
+namespace cam
+{
 template<typename T>
 class size
 {
@@ -42,3 +44,4 @@ private:
     T width_{ static_cast<T>(0) };
     T height_{ static_cast<T>(0) };
 };
+} // namespace cam

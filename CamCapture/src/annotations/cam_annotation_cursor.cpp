@@ -20,14 +20,15 @@
 #include <fmt/printf.h>
 #include <windows.h>
 
-cam_annotation_cursor::cam_annotation_cursor(bool cursor_enabled, bool halo_enabled,
-                                             cam_halo_type halo_type, const size<int> &halo_size,
-                                             color halo_color) noexcept
+cam_annotation_cursor::cam_annotation_cursor(bool cursor_enabled, const cam_halo_type halo_type,
+                                             const mouse_action_config &halo_config,
+                                             const mouse_action_config &left_click_config,
+                                             const mouse_action_config &right_click_config) noexcept
     : cursor_enabled_(cursor_enabled)
-    , halo_enabled_(halo_enabled)
     , halo_type_(halo_type)
-    , halo_size_(halo_size)
-    , halo_color_(halo_color)
+    , halo_config_(halo_config)
+    , left_click_config_(left_click_config)
+    , right_click_config_(right_click_config)
 {
 }
 
@@ -35,8 +36,8 @@ cam_annotation_cursor::~cam_annotation_cursor() = default;
 
 void cam_annotation_cursor::draw(Gdiplus::Graphics &canvas, const cam_draw_data &draw_data)
 {
-    if (halo_enabled_)
-        _draw_extras(canvas, draw_data.canvast_rect_, draw_data.mouse_pos_);
+    if (halo_config_.enabled)
+        _draw_halo(canvas, draw_data.canvast_rect_, draw_data.mouse_pos_, halo_config_);
 
     if (cursor_enabled_)
         _draw_cursor(canvas, draw_data.canvast_rect_, draw_data.mouse_pos_);
@@ -77,8 +78,8 @@ void cam_annotation_cursor::_draw_cursor(Gdiplus::Graphics &canvas, const rect<i
     ::DeleteObject(icon_info.hbmMask);
 }
 
-void cam_annotation_cursor::_draw_extras(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect,
-                                         const point<int> &mouse_pos)
+void cam_annotation_cursor::_draw_halo(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect,
+                                       const point<int> &mouse_pos, const mouse_action_config &halo_config)
 {
     auto cursor_x = mouse_pos.x();
     auto cursor_y = mouse_pos.y();
@@ -86,16 +87,20 @@ void cam_annotation_cursor::_draw_extras(Gdiplus::Graphics &canvas, const rect<i
     cursor_x -= canvast_rect.left();
     cursor_y -= canvast_rect.top();
 
-    cursor_x -= halo_size_.width() / 2;
-    cursor_y -= halo_size_.height() / 2;
+    cursor_x -= halo_config.size.width() / 2;
+    cursor_y -= halo_config.size.height() / 2;
 
-    auto halo_rect = Gdiplus::Rect(
+    const auto halo_rect = Gdiplus::Rect(
         cursor_x,
         cursor_y,
-        halo_size_.width(),
-        halo_size_.height()
+        halo_config.size.width(),
+        halo_config.size.height()
     );
-    const Gdiplus::Color c(halo_color_.a_, halo_color_.r_, halo_color_.g_, halo_color_.b_);
+    const Gdiplus::Color c(
+        halo_config.color.a_,
+        halo_config.color.r_,
+        halo_config.color.g_,
+        halo_config.color.b_);
     const Gdiplus::SolidBrush b(c);
 
     switch(halo_type_)

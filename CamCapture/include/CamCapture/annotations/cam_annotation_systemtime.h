@@ -27,12 +27,12 @@ class cam_annotation_systemtime : public cam_iannotation
 {
 public:
     cam_annotation_systemtime() noexcept = default;
-    cam_annotation_systemtime(point<int> systemtime_position, color systemtime_color) noexcept;
+    cam_annotation_systemtime(point<int> systemtime_position, cam::color systemtime_color) noexcept;
     ~cam_annotation_systemtime() override;
 
     void draw(Gdiplus::Graphics &canvas, const cam_draw_data &draw_data) override;
 private:
     point<int> systemtime_position_;
-    color systemtime_color_;
+    cam::color systemtime_color_;
     std::unique_ptr<struct font_ptr> font_pimpl_;
 };

@@ -26,7 +26,7 @@ template<typename T>
 class rect
 {
 public:
-    using size_type = size<T>;
+    using size_type = cam::size<T>;
 
     rect() noexcept = default;
     rect(const T left, const T top, const T right, const T bottom) noexcept
@@ -37,7 +37,7 @@ public:
     {
     }
 
-    rect(const point<T> left_top, const size<T> width_height) noexcept
+    rect(const point<T> left_top, const size_type width_height) noexcept
         : left_(left_top.x())
         , top_(left_top.y())
         , right_(left_top.x() + width_height.width())

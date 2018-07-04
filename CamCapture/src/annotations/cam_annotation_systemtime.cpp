@@ -27,7 +27,7 @@ struct font_ptr
     std::unique_ptr<Gdiplus::SolidBrush> blackBrush;
 };
 
-cam_annotation_systemtime::cam_annotation_systemtime(point<int> systemtime_position, color systemtime_color) noexcept
+cam_annotation_systemtime::cam_annotation_systemtime(point<int> systemtime_position, cam::color systemtime_color) noexcept
     : systemtime_position_(systemtime_position)
     , systemtime_color_(systemtime_color)
 {

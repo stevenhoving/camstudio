@@ -211,11 +211,8 @@ private:
     void DisplayBackground(CDC &srcDC);
     void DisplayRecordingMsg(CDC &srcDC);
     bool SaveAppSettings();
-    void SaveProducerCommand();
 
-    bool RecordVideo(CRect rectFrame, int fps, const char *szFileName);
     bool RunViewer(const CString &strNewFile);
-    bool RunProducer(const CString &strNewFile);
     void DisplayAutopanInfo(CRect rc);
     // dialog controls
 };
