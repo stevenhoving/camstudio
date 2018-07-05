@@ -25,12 +25,24 @@ class color
 {
 public:
     color() noexcept = default;
-    color(const uint8_t a, const uint8_t r, const uint8_t g, const uint8_t b) noexcept
+    constexpr color(const uint32_t argb) noexcept
+        : color((argb >> 24) & 0xFF, (argb >> 16) & 0xFF, (argb >> 8) & 0xFF, (argb >> 0) & 0xFF)
+    {
+    }
+
+    constexpr color(const uint8_t a, const uint8_t r, const uint8_t g, const uint8_t b) noexcept
         : a_(a)
         , r_(r)
         , g_(g)
         , b_(b)
     {
+    }
+
+    operator uint32_t()
+    {
+        return static_cast<uint32_t>(a_) << 24
+            | static_cast<uint32_t>(r_) << 16
+            | static_cast<uint32_t>(g_) << 8 | b_;
     }
 
     uint8_t a_{ 255u };

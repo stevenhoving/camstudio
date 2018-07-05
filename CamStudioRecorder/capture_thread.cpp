@@ -157,7 +157,7 @@ bool capture_thread::capture_screen_frame(const rect<int> &capture_dst_rect)
 
 void capture_thread::run()
 {
-    auto current_desktop = OpenInputDesktop(0, FALSE, GENERIC_ALL);
+    auto current_desktop = ::OpenInputDesktop(0, FALSE, GENERIC_ALL);
     if (!current_desktop)
     {
         fmt::print("capture_thread: unable to get current desktop\n");
@@ -166,8 +166,8 @@ void capture_thread::run()
     }
 
     // bind desktop to this thread
-    bool desktop_attached = SetThreadDesktop(current_desktop) != 0;
-    CloseDesktop(current_desktop);
+    bool desktop_attached = ::SetThreadDesktop(current_desktop) != 0;
+    ::CloseDesktop(current_desktop);
     current_desktop = nullptr;
     if (!desktop_attached)
     {
