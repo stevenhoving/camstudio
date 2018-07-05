@@ -70,4 +70,7 @@ private:
 
     bool enable_annotations_{false};
     std::vector<std::unique_ptr<cam_iannotation>> annotations_;
+
+    // hack...
+    std::vector<MSLLHOOKSTRUCT> mouse_events_;
 };

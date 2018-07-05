@@ -20,20 +20,36 @@
 #include "cam_rect.h"
 #include "cam_point.h"
 #include "cam_gdiplus_fwd.h"
+#include <cstdint>
+
+class cam_mouse_button
+{
+public:
+    enum type : uint8_t
+    {
+        none = 0,
+        left_button_down = 1 << 0,
+        right_button_down = 1 << 1,
+        left_button_up = 1 << 2,
+        right_button_up = 1 << 3
+    };
+};
 
 class cam_draw_data
 {
 public:
-    cam_draw_data(const double frame_delta, const rect<int> &canvast_rect, const point<int> &mouse_pos)
+    cam_draw_data(const double frame_delta, const rect<int> &canvast_rect, const point<int> &mouse_pos, cam_mouse_button::type mouse_button_state)
         : frame_delta_(frame_delta)
         , canvast_rect_(canvast_rect)
         , mouse_pos_(mouse_pos)
+        , mouse_button_state_(mouse_button_state)
     {
     }
 
-    const double frame_delta_;
+    double frame_delta_;
     const rect<int> &canvast_rect_;
     const point<int> &mouse_pos_;
+    cam_mouse_button::type mouse_button_state_;
 };
 
 class cam_iannotation

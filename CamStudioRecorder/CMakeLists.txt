@@ -22,6 +22,8 @@ set(RECORDER_NEW_SOURCE
     fmt_helper.h
     mouse_capture_ui.h
     mouse_capture_ui.cpp
+    cursor_settings_ui.h
+    cursor_settings_ui.cpp
     video_settings_ui.h
     video_settings_ui.cpp
     video_settings_model.h

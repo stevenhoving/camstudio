@@ -20,6 +20,28 @@
 #include <windows.h>
 #include <psapi.h>
 
+// function to automatically resize a static label based on its window text.
+static
+void label_auto_size(CStatic *label)
+{
+    CString s;
+    label->GetWindowText(s);
+
+    CDC dc;
+    dc.CreateCompatibleDC(NULL);
+    dc.SelectObject(label->GetFont());
+
+    CRect r;
+    label->GetClientRect(&r);
+
+    if (s.Find('\n') < 0)
+        dc.DrawText(s, &r, DT_CALCRECT | DT_NOPREFIX | DT_SINGLELINE | DT_EDITCONTROL);
+    else
+        dc.DrawText(s, &r, DT_CALCRECT | DT_NOPREFIX | DT_EDITCONTROL);
+
+    label->SetWindowPos(0, 0, 0, r.Width(), r.Height(), SWP_NOMOVE);
+}
+
 static
 void draw_bitmap(CDC *pDC, HBITMAP hbitmap, CRect size)
 {

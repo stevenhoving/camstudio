@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "capture_thread.h"
 #include <CamEncoder/av_encoder.h>
+#include <CamCapture/annotations/cam_annotation_cursor.h>
 #include <fmt/printf.h>
 #include <algorithm>
 
@@ -179,6 +180,22 @@ void capture_thread::run()
     capture_source_ = std::make_unique<cam_capture_source>(capture_settings_.capture_hwnd_,
         capture_settings_.capture_rect_);
     capture_source_->enable_annotations();
+
+    const auto &settings = capture_settings_.settings;
+
+    const auto halo_size = cam::size(
+        settings.get_cursor_halo_size(),
+        settings.get_cursor_halo_size()
+    );
+
+    capture_source_->add_annotation(
+        std::make_unique<cam_annotation_cursor>(
+            settings.get_cursor_enabled(),
+            static_cast<cam_halo_type>(capture_settings_.settings.get_cursor_halo_type()),
+            mouse_action_config{ settings.get_cursor_halo_enabled(), halo_size, settings.get_cursor_halo_color() },
+            mouse_action_config{ settings.get_cursor_click_enabled(), halo_size, settings.get_cursor_click_left_color() },
+            mouse_action_config{ settings.get_cursor_click_enabled(), halo_size, settings.get_cursor_click_right_color() }
+    ));
 
     const auto pre_frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
 

@@ -44,6 +44,7 @@ namespace cursor
     constexpr auto halo_enabled = "cursor_halo_enabled";
     constexpr auto halo_type = "cursor_halo_type";
     constexpr auto halo_color = "cursor_halo_color";
+    constexpr auto halo_size = "cursor_halo_size";
     constexpr auto click_enabled = "cursor_click_enabled";
     constexpr auto click_left_color = "cursor_click_left_color";
     constexpr auto click_right_color = "cursor_click_right_color";
@@ -147,6 +148,111 @@ private:
     std::shared_ptr<cpptoml::table> table_;
 };
 
+bool settings_model::get_cursor_enabled() const
+{
+    return cursor_enabled_;
+}
+
+void settings_model::set_cursor_halo_enabled(bool enabled)
+{
+    cursor_halo_enabled_ = enabled;
+}
+
+bool settings_model::get_cursor_halo_enabled() const
+{
+    return cursor_halo_enabled_;
+}
+
+void settings_model::set_cursor_halo_type(cursor_halo_type halo_type)
+{
+    cursor_halo_type_ = halo_type;
+}
+
+cursor_halo_type settings_model::get_cursor_halo_type() const
+{
+    return cursor_halo_type_;
+}
+
+void settings_model::set_cursor_halo_color(cam::color color)
+{
+    cursor_halo_color_ = color;
+}
+
+cam::color settings_model::get_cursor_halo_color() const
+{
+    return cursor_halo_color_;
+}
+
+void settings_model::set_cursor_halo_size(const int size)
+{
+    cursor_halo_size_ = size;
+}
+
+int settings_model::get_cursor_halo_size() const
+{
+    return cursor_halo_size_;
+}
+
+void settings_model::set_cursor_click_enabled(bool enabled)
+{
+    cursor_click_enabled_ = enabled;
+}
+
+bool settings_model::get_cursor_click_enabled() const
+{
+    return cursor_click_enabled_;
+}
+
+void settings_model::set_cursor_click_left_color(cam::color color)
+{
+    cursor_click_left_color_ = color;
+}
+
+cam::color settings_model::get_cursor_click_left_color() const
+{
+    return cursor_click_left_color_;
+}
+
+void settings_model::set_cursor_click_right_color(cam::color color)
+{
+    cursor_click_right_color_ = color;
+}
+
+cam::color settings_model::get_cursor_click_right_color() const
+{
+    return cursor_click_right_color_;
+}
+
+void settings_model::set_cursor_ring_threshold(int threshold)
+{
+    cursor_ring_threshold_ = threshold;
+}
+
+int settings_model::get_cursor_ring_threshold() const
+{
+    return cursor_ring_threshold_;
+}
+
+void settings_model::set_cursor_ring_size(int size)
+{
+    cursor_ring_size_ = size;
+}
+
+int settings_model::get_cursor_ring_size() const
+{
+    return cursor_ring_size_;
+}
+
+void settings_model::set_cursor_ring_width(double width)
+{
+    cursor_ring_width_ = width;
+}
+
+double settings_model::get_cursor_ring_width() const
+{
+    return cursor_ring_width_;
+}
+
 void settings_model::save()
 {
     auto root = cpptoml::make_table();
@@ -181,6 +287,8 @@ void settings_model::_save_cursor_settings(cpptoml::table &root)
     cursor.insert(config::cursor::halo_enabled, cursor_halo_enabled_);
     cursor.insert(config::cursor::halo_type, cursor_halo_type_);
     cursor.insert(config::cursor::halo_color, cursor_halo_color_);
+    cursor.insert(config::cursor::halo_size, cursor_halo_size_);
+
     cursor.insert(config::cursor::click_enabled, cursor_click_enabled_);
     cursor.insert(config::cursor::click_left_color, cursor_click_left_color_);
     cursor.insert(config::cursor::click_right_color, cursor_click_right_color_);
@@ -208,6 +316,7 @@ void settings_model::_load_cursor_settings(const cpptoml::table &root)
     cursor_halo_enabled_ = cursor.get_optional<bool>(config::cursor::halo_enabled, false);
     cursor_halo_type_ = cursor.get_optional<cursor_halo_type>(config::cursor::halo_type, cursor_halo_type::circle);
     cursor_halo_color_ = cursor.get_optional<cam::color>(config::cursor::halo_color, 0xFFFFFF80);
+    cursor_halo_size_ = cursor.get_optional<int>(config::cursor::halo_size, 100);
     cursor_click_enabled_ = cursor.get_optional<bool>(config::cursor::click_enabled, false);
     cursor_click_left_color_ = cursor.get_optional<cam::color>(config::cursor::click_left_color, 0xa0ff0000);
     cursor_click_right_color_ = cursor.get_optional<cam::color>(config::cursor::click_right_color, 0xa00000ff);
@@ -273,4 +382,9 @@ void settings_model::set_region_fixed(bool capture_fixed)
 bool settings_model::get_region_fixed()
 {
     return capture_fixed_;
+}
+
+void settings_model::set_cursor_enabled(bool enabled)
+{
+    cursor_enabled_ = enabled;
 }

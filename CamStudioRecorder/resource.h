@@ -24,6 +24,7 @@
 #define IDB_BITMAP1                     130
 #define IDS_STRING_REC_CAN              130
 #define IDD_CURSOROPTIONS               132
+#define IDD_CURSOR_OPTIONS              132
 #define IDI_ICON1                       135
 #define IDI_CUSTOMICON_CONTEXTHELP      136
 #define IDI_CUSTOMICON_MAGNIFY          137
@@ -92,6 +93,7 @@
 #define IDB_BITMAP3                     220
 #define IDD_CONV_DIALOG                 226
 #define IDD_WINDOW_SELECT               234
+#define IDD_CURSOR_SETTINGS_UI          236
 #define IDC_RADIO1                      1000
 #define IDC_INTERLEAVESECONDS           1001
 #define IDC_RADIO3                      1001
@@ -126,14 +128,16 @@
 #define IDC_MAXSPEED                    1014
 #define IDC_HEIGHT                      1014
 #define IDC_AUTOSPANKEY                 1014
-#define IDC_MSG                         1015
 #define IDC_STATIC_SIZE                 1016
 #define IDC_X                           1016
 #define IDC_STATIC_SHAPE                1017
 #define IDC_Y                           1017
 #define IDC_STATIC_HALFSIZE             1018
+#define IDC_HALO_COLOR_LABEL            1018
 #define IDC_CHOOSE_COMPRESSED_FORMAT    1019
+#define IDC_STATIC_SHAPE3               1019
 #define IDC_COMPRESSEDFORMATTAG         1020
+#define IDC_STATIC_SHAPE4               1020
 #define IDC_COMPRESSEDFORMAT            1021
 #define IDC_IFACTOR                     1022
 #define IDC_INTERLEAVE                  1023
@@ -245,6 +249,22 @@
 #define IDC_CODEC_QUALITY_BITRATE_EDIT  1302
 #define IDC_CODEC_QUALITY_VALUE         1303
 #define IDC_VIDEO_CODEC_EXTRA           1304
+#define IDC_SHOW_HALO                   1305
+#define IDC_HALO_COLOR                  1306
+#define IDC_SHOW_CURSOR                 1307
+#define IDC_HALO_SIZE                   1308
+#define IDC_HALO_SHAPE                  1309
+#define IDC_SHOW_MOUSE_CLICKS           1310
+#define IDC_CLICK_LEFT_COLOR            1311
+#define IDC_CLICK_RIGHT_COLOR           1312
+#define IDC_CURSOR_PREVIEW              1313
+#define IDC_CURSOR_HALO_COLOR_EXAMPLE   1314
+#define IDC_CURSOR_LEFT_CLICK_COLOR_EXAMPLE 1315
+#define IDC_CURSOR_RIGHT_CLICK_COLOR_EXAMPLE 1316
+#define IDC_CURSOR_SIZE_SMALLER_LABEL   1317
+#define IDC_CURSOR_SIZE_BIGGER_LABEL    1318
+#define IDC_CURSOR_SIZE_LABEL           1319
+#define IDC_CURSOR_HALO_SHAPE_LABEL     1320
 #define IDD_ABOUTBOX                    5100
 #define IDD_AUDIOWAVEOUT                5102
 #define IDD_EFFECTS_OPTIONS2            5105
@@ -527,9 +547,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        236
+#define _APS_NEXT_RESOURCE_VALUE        239
 #define _APS_NEXT_COMMAND_VALUE         32954
-#define _APS_NEXT_CONTROL_VALUE         1305
+#define _APS_NEXT_CONTROL_VALUE         1321
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

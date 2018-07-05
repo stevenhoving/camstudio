@@ -58,6 +58,29 @@ public:
     void set_region_fixed(bool capture_fixed);
     bool get_region_fixed();
 
+    /* cursor */
+    void set_cursor_enabled(bool enabled);
+    bool get_cursor_enabled() const;
+    void set_cursor_halo_enabled(bool enabled);
+    bool get_cursor_halo_enabled()const;
+    void set_cursor_halo_type(cursor_halo_type halo_type);
+    cursor_halo_type get_cursor_halo_type()const;
+    void set_cursor_halo_color(cam::color color);
+    cam::color get_cursor_halo_color()const;
+    void set_cursor_halo_size(const int size);
+    int get_cursor_halo_size() const;
+    void set_cursor_click_enabled(bool enabled);
+    bool get_cursor_click_enabled()const;
+    void set_cursor_click_left_color(cam::color color);
+    cam::color get_cursor_click_left_color()const;
+    void set_cursor_click_right_color(cam::color color);
+    cam::color get_cursor_click_right_color()const;
+    void set_cursor_ring_threshold(int threshold);
+    int get_cursor_ring_threshold()const;
+    void set_cursor_ring_size(int size);
+    int get_cursor_ring_size()const;
+    void set_cursor_ring_width(double width);
+    double get_cursor_ring_width()const;
 
     /* For now we will fall back to a simple save and load strategy.
      * The current implementation has a couple of problems. No input validation. No format version
@@ -85,6 +108,7 @@ private:
     bool cursor_halo_enabled_{false};
     cursor_halo_type cursor_halo_type_{cursor_halo_type::circle};
     cam::color cursor_halo_color_{0xFFFFFF80};
+    int cursor_halo_size_{100};
     bool cursor_click_enabled_{false};
     cam::color cursor_click_left_color_{0xa0ff0000};
     cam::color cursor_click_right_color_{0xa00000ff};

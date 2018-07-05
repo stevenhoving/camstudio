@@ -51,9 +51,12 @@
 // new stuff
 #include "string_convert.h"
 #include "video_settings_ui.h"
+#include "cursor_settings_ui.h"
+
 #include "settings_model.h"
 #include "mouse_capture_ui.h"
 #include "window_select_ui.h"
+
 
 #include <memory>
 #include <algorithm>
@@ -850,6 +853,7 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
     settings.capture_hwnd_ = reinterpret_cast<HWND>(lParam);
     settings.capture_rect_ = settings_model_->get_capture_rect();
     settings.video_settings = *video_settings_model_;
+    settings.settings = *settings_model_;
 
     const auto video_container_type = static_cast<video_container::type>(video_settings_model_->video_container_.get_index());
     settings.filename = generate_temp_filename(video_container_type);
@@ -1409,11 +1413,10 @@ void CRecorderView::OnVideoSettings()
 
 void CRecorderView::OnOptionsCursoroptions()
 {
-    CCursorOptionsDlg cod(CamCursor, this);
-    if (IDOK == cod.DoModal())
-    {
-        CamCursor = cod.GetOptions();
-    }
+    cursor_settings_ui cursor_settings(this, settings_model_.get());
+    cursor_settings.DoModal();
+    // just always save the settings model after possible modification.
+    settings_model_->save();
 }
 
 void CRecorderView::OnOptionsAutopan()

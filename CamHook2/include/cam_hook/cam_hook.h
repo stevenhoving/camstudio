@@ -23,7 +23,6 @@
 #include <mutex>
 #include <cstdint>
 
-
 /* \todo which is used... and which isn't */
 #define WM_USER_RECORDINTERRUPTED_MSG L"WM_USER_RECORDINTERRUPTED_MSG"
 #define WM_USER_RECORDPAUSED_MSG L"WM_USER_RECORDPAUSED_MSG"
@@ -53,6 +52,7 @@ public:
 
     int32_t get_mouse_events_count();
     bool get_mouse_events(MSLLHOOKSTRUCT *dst, int32_t count);
+    void clear_mouse_events();
 private:
     HINSTANCE instance_{nullptr};
     HHOOK hook_{nullptr};

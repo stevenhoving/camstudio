@@ -20,6 +20,7 @@
 #include "CamCapture/cam_gdiplus.h"
 #include "CamCapture/annotations/cam_annotation_cursor.h"
 #include "CamCapture/annotations/cam_annotation_systemtime.h"
+#include <cam_hook/cam_hook.h>
 #include <fmt/printf.h>
 #include <memory>
 #include <cassert>
@@ -70,13 +71,17 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
     frame_.bitmap_info = &bitmap_info_;
     frame_.bitmap_data = bitmap_data_;
 
-#if 0
-    /* \todo make adding these annotations optional */
-    annotations_.emplace_back(
-        std::make_unique<cam_annotation_cursor>(true, true, cam_halo_type::circle,
-            cam::size<int>(100, 100), color(127, 255, 0, 0))
-    );
 
+    /* \todo make adding these annotations optional */
+    //annotations_.emplace_back(
+    //    std::make_unique<cam_annotation_cursor>(true, , cam_halo_type::circle,
+    //        cam::size<int>(100, 100), color(127, 255, 0, 0))
+    //);
+
+    //annotations_.emplace_back( std::make_unique<cam_annotation_cursor>(true, cam_halo_type::circle,
+        //mouse_action_config(), mouse_action_config(), mouse_action_config()));
+
+#if 0
     annotations_.emplace_back(
         std::make_unique<cam_annotation_systemtime>(point<int>(10, 10), color(255, 0, 0, 0))
     );
@@ -149,7 +154,44 @@ void cam_capture_source::_draw_annotations(const rect<int> &capture_rect)
 
         point<int> mouse_point(pt.x, pt.y);
 
-        cam_draw_data draw_data(0.1, capture_rect, mouse_point);
+        //fmt::print("cam_capture_source\n");
+
+
+        const auto mouse_event_count = mouse_hook::get().get_mouse_events_count();
+        if (mouse_event_count > 0)
+        {
+            //fmt::print("mouse_event_count: {}\n", mouse_event_count);
+            mouse_events_.resize(mouse_event_count);
+            mouse_hook::get().get_mouse_events(&mouse_events_[0], mouse_event_count);
+        }
+
+        unsigned int mouse_status = 0;
+        if (!mouse_events_.empty())
+        {
+            for (const auto &mouse_event : mouse_events_)
+            {
+                switch (mouse_event.dwExtraInfo)
+                {
+                case WM_LBUTTONDOWN:
+                    mouse_status |= cam_mouse_button::left_button_down;
+                    break;
+
+                case WM_LBUTTONUP:
+                    mouse_status |= cam_mouse_button::left_button_up;
+                    break;
+
+                case WM_RBUTTONDOWN:
+                    mouse_status |= cam_mouse_button::right_button_down;
+                    break;
+
+                case WM_RBUTTONUP:
+                    mouse_status |= cam_mouse_button::right_button_up;
+                    break;
+                }
+            }
+        }
+
+        cam_draw_data draw_data(0.1, capture_rect, mouse_point, static_cast<cam_mouse_button::type>(mouse_status));
 
         for (const auto &annotation : annotations_)
             annotation->draw(canvas, draw_data);

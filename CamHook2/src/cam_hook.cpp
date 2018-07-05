@@ -26,6 +26,7 @@ void mouse_hook::set_instance(HINSTANCE instance)
 
 void mouse_hook::attach()
 {
+    clear_mouse_events();
     hook_ = ::SetWindowsHookEx(WH_MOUSE_LL, mouse_hook::global_message_proc, instance_, 0);
 }
 
@@ -33,6 +34,7 @@ void mouse_hook::detach()
 {
     ::UnhookWindowsHookEx(hook_);
     hook_ = nullptr;
+    clear_mouse_events();
 }
 
 LRESULT CALLBACK mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lParam)
@@ -61,6 +63,9 @@ LRESULT CALLBACK mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lPara
         case WM_MOUSEWHEEL:
         case WM_MOUSEHWHEEL:
             break;
+        default:
+            //fmt::print("unhandled mouse hook event: {}\n", static_cast<unsigned int>(wParam));
+            break;
         }
     }
 
@@ -70,16 +75,7 @@ LRESULT CALLBACK mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lPara
 int32_t mouse_hook::get_mouse_events_count()
 {
     std::unique_lock<std::mutex> slock(mouse_events_lock_);
-    constexpr auto mouse_events_max = std::numeric_limits<int32_t>::max();
-    if (mouse_events_.size() > mouse_events_max)
-    {
-        // maybe this is a unwanted side effect, but it keeps things at bay.
-        // \todo this is wrong, now we are removing the newest first, but we should remove the oldest.
-        mouse_events_.resize(mouse_events_max);
-        mouse_events_.shrink_to_fit();
-        return mouse_events_max;
-    }
-
+    // \todo make lowering cast safe
     return static_cast<int32_t>(mouse_events_.size());
 }
 
@@ -92,13 +88,25 @@ bool mouse_hook::get_mouse_events(MSLLHOOKSTRUCT *dst, int32_t count)
     {
         std::unique_lock<std::mutex> slock(mouse_events_lock_);
         const auto copy_count = std::min<int32_t>(count, mouse_events_.size());
-        memcpy(dst, mouse_events_.data(), count * sizeof(MSLLHOOKSTRUCT));
+        memcpy(dst, mouse_events_.data(), copy_count * sizeof(MSLLHOOKSTRUCT));
 
         /* \todo fix this so it does not do useless copy stuff, just use a circular buffer instead
          * of a std::vector */
-        auto itr = mouse_events_.begin();
-        std::advance(itr, copy_count);
-        mouse_events_.erase(mouse_events_.begin(), itr);
+        //auto itr = mouse_events_.begin();
+        //std::advance(itr, copy_count);
+        //mouse_events_.erase(mouse_events_.begin(), itr);
+
+        fmt::print("mouse_hook - clear\n");
+        mouse_events_.clear();
+        mouse_events_.shrink_to_fit();
+
         return true;
     }
+}
+
+void mouse_hook::clear_mouse_events()
+{
+    std::unique_lock<std::mutex> slock(mouse_events_lock_);
+    mouse_events_.clear();
+    mouse_events_.shrink_to_fit();
 }

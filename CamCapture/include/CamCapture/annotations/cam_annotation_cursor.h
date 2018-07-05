@@ -47,13 +47,21 @@ public:
     ~cam_annotation_cursor() override;
 
     void draw(Gdiplus::Graphics &canvas, const cam_draw_data &draw_data) override;
+
+    void set_cursor_enabled(bool enabled) {cursor_enabled_ = enabled;}
+    void set_halo_type(cam_halo_type halo_type) {halo_type_ = halo_type;}
+    void set_halo_config(const mouse_action_config &config) {halo_config_ = config;}
+    void set_left_click_config(const mouse_action_config &config) {left_click_config_ = config;}
+    void set_right_click_config(const mouse_action_config &config) {right_click_config_ = config;}
 protected:
     void _draw_cursor(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect, const point<int> &mouse_pos);
     void _draw_halo(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect, const point<int> &mouse_pos, const mouse_action_config &halo_config);
 private:
     bool cursor_enabled_{false};
-    const cam_halo_type halo_type_{cam_halo_type::circle};
+    cam_halo_type halo_type_{cam_halo_type::circle};
     mouse_action_config halo_config_{};
     mouse_action_config left_click_config_{};
     mouse_action_config right_click_config_{};
+
+    unsigned int mouse_button_state_{0};
 };

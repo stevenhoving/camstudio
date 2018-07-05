@@ -36,11 +36,30 @@ cam_annotation_cursor::~cam_annotation_cursor() = default;
 
 void cam_annotation_cursor::draw(Gdiplus::Graphics &canvas, const cam_draw_data &draw_data)
 {
-    if (halo_config_.enabled)
+    if (draw_data.mouse_button_state_ & cam_mouse_button::left_button_down)
+        mouse_button_state_ |= cam_mouse_button::left_button_down;
+
+    if (draw_data.mouse_button_state_ & cam_mouse_button::right_button_down)
+        mouse_button_state_ |= cam_mouse_button::right_button_down;
+
+    /* only draw the normal halo if we don't have a mouse click to draw */
+    if (halo_config_.enabled && mouse_button_state_ == 0)
         _draw_halo(canvas, draw_data.canvast_rect_, draw_data.mouse_pos_, halo_config_);
+
+    if (left_click_config_.enabled && (mouse_button_state_ & cam_mouse_button::left_button_down) != 0)
+        _draw_halo(canvas, draw_data.canvast_rect_, draw_data.mouse_pos_, left_click_config_);
+
+    if (right_click_config_.enabled && (mouse_button_state_ & cam_mouse_button::right_button_down) != 0)
+        _draw_halo(canvas, draw_data.canvast_rect_, draw_data.mouse_pos_, right_click_config_);
 
     if (cursor_enabled_)
         _draw_cursor(canvas, draw_data.canvast_rect_, draw_data.mouse_pos_);
+
+    if (draw_data.mouse_button_state_ & cam_mouse_button::left_button_up)
+        mouse_button_state_ &= ~cam_mouse_button::left_button_down;
+
+    if (draw_data.mouse_button_state_ & cam_mouse_button::right_button_up)
+        mouse_button_state_ &= ~cam_mouse_button::right_button_down;
 }
 
 void cam_annotation_cursor::_draw_cursor(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect,
@@ -61,8 +80,8 @@ void cam_annotation_cursor::_draw_cursor(Gdiplus::Graphics &canvas, const rect<i
     if (!ret)
         return;
 
-    auto cursor_x = cursor_info.ptScreenPos.x;
-    auto cursor_y = cursor_info.ptScreenPos.y;
+    auto cursor_x = mouse_pos.x();
+    auto cursor_y = mouse_pos.y();
 
     cursor_x -= canvast_rect.left();
     cursor_y -= canvast_rect.top();
@@ -106,13 +125,13 @@ void cam_annotation_cursor::_draw_halo(Gdiplus::Graphics &canvas, const rect<int
     switch(halo_type_)
     {
     case cam_halo_type::circle:
-        [[fallthough]];
+        [[fallthrough]];
     case cam_halo_type::ellipse:
         canvas.FillEllipse(&b, halo_rect);
         break;
 
     case cam_halo_type::square:
-        [[fallthough]];
+        [[fallthrough]];
     case cam_halo_type::rectangle:
         canvas.FillRectangle(&b, halo_rect);
         break;
