@@ -142,7 +142,6 @@ protected:
     afx_msg void OnOptionsUsePlayer20();
     afx_msg void OnUpdateUsePlayer20(CCmdUI *pCmdUI);
     afx_msg void OnSetFocus(CWnd *pOldWnd);
-    afx_msg void OnAVISWFMP4();
     afx_msg BOOL OnEraseBkgnd(CDC *pDC);
     afx_msg void OnOptionsNamingAutodate();
     afx_msg void OnUpdateOptionsNamingAutodate(CCmdUI *pCmdUI);

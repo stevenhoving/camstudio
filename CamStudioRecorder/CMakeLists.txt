@@ -62,8 +62,6 @@ set(RECORDER_SOURCE
     CamCursor.cpp
     CamCursor.h
     CamStudioCommandLineInfo.cpp
-    CursorOptionsDlg.cpp
-    CursorOptionsDlg.h
     EditImageDlg.cpp
     EditImageDlg.h
     EditTransparencyDlg.cpp

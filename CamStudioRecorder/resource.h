@@ -2,7 +2,6 @@
 // Microsoft Visual C++ generated include file.
 // Used by Recorder.rc
 //
-#define IDC_HIGHLIGHTCOLOR              3
 #define IDSELECT                        3
 #define IDOPTIONSCAPTION                3
 #define ID_FONT                         3
@@ -12,18 +11,15 @@
 #define IDVOLUME                        4
 #define IDOPTIONSDATE                   4
 #define ID_JUSTLEFT                     4
-#define IDC_HIGHLIGHTCOLORLB            4
 #define IDC_LOAD                        4
 #define IDOPTIONSGRAPHICS               5
 #define ID_AUTOCONFIG                   5
 #define ID_JUSTCENTER                   5
-#define IDC_HIGHLIGHTCOLORRB            5
 #define ID_JUSTRIGHT                    6
 #define IDR_MAINFRAME                   128
 #define IDS_STRING_CONV_ERR             129
 #define IDB_BITMAP1                     130
 #define IDS_STRING_REC_CAN              130
-#define IDD_CURSOROPTIONS               132
 #define IDD_CURSOR_OPTIONS              132
 #define IDI_ICON1                       135
 #define IDI_CUSTOMICON_CONTEXTHELP      136
@@ -98,41 +94,29 @@
 #define IDC_INTERLEAVESECONDS           1001
 #define IDC_RADIO3                      1001
 #define IDC_RADIO2                      1002
-#define IDC_CURSOR1                     1003
 #define CG_IDC_PROGDLG_PROGRESS         1003
-#define IDC_CURSOR2                     1004
 #define CG_IDC_PROGDLG_PERCENT          1004
-#define IDC_CURSOR3                     1005
-#define IDC_HIGHLIGHTCURSOR             1006
 #define IDC_FPS                         1007
-#define IDC_HIGHLIGHTSIZE               1007
 #define IDC_PANSLIDER                   1007
 #define IDC_VOLUMESLIDER                1007
 #define IDC_TRANSSLIDER                 1007
 #define IDC_WIDTHSLIDER                 1007
 #define IDC_SLIDER_BRIGHTNESS           1007
-#define IDC_HIGHLIGHTSHAPE              1008
 #define IDC_HEIGHTSLIDER                1008
 #define IDC_VIDEO_CONTAINER_COMBO       1008
-#define IDC_CUSTOMCURSOR                1009
 #define IDC_STOPKEY                     1010
-#define IDC_FILECURSOR                  1011
 #define IDC_PREVKEY                     1011
-#define IDC_ICONCURSOR                  1012
 #define IDC_CANCELKEY                   1012
 #define IDC_CONVERSIONTEXT              1012
 #define IDC_GROUPBOX                    1013
 #define IDC_WIDTH                       1013
 #define IDC_SHOWKEY                     1013
-#define IDC_HIGHLIGHTCLICK              1013
 #define IDC_MAXSPEED                    1014
 #define IDC_HEIGHT                      1014
 #define IDC_AUTOSPANKEY                 1014
 #define IDC_STATIC_SIZE                 1016
 #define IDC_X                           1016
-#define IDC_STATIC_SHAPE                1017
 #define IDC_Y                           1017
-#define IDC_STATIC_HALFSIZE             1018
 #define IDC_HALO_COLOR_LABEL            1018
 #define IDC_CHOOSE_COMPRESSED_FORMAT    1019
 #define IDC_STATIC_SHAPE3               1019
@@ -180,7 +164,6 @@
 #define IDC_STATIC_VERSION              1061
 #define IDC_EDIT3                       1062
 #define IDC_CTRL3                       1062
-#define IDC_STATIC_HIGHLIGHT_PREVIEW    1062
 #define IDC_COLOR                       1063
 #define IDC_ALT3                        1063
 #define IDC_STATIC_PREVIEW_IMAGE        1063
@@ -385,7 +368,6 @@
 #define ID_LIBRARY_INSERTSHAPELIBARAY   32894
 #define ID_OBJECTS_MOVEITEMUP           32895
 #define ID_OBJECTS_MOVEITEMDOWN         32896
-#define ID_AVISWF                       32901
 #define ID_OPTIONS_NAMING_ASK           32902
 #define ID_OPTIONS_PROGRAMOPTIONS_NAMINGOFFILES_AUTOMATICFILENAMINGUSEDATETIME 32904
 #define ID_OPTIONS_PROGRAMOPTIONS_SAVINGOFAVINAMING_AUTOMATICFILENAMINGFIXEDNAME 32905
@@ -402,7 +384,6 @@
 #define ID_SCREENS_CHOOSESCREEN         32930
 #define ID_SCREENS_SELECTSCREEN         32931
 #define ID_OPTIONS_VIDEOOPTIONS         32932
-#define ID_BUTTON32936                  32936
 #define ID_OUTPUTDIRECTORY_USEWINDOWSTEMPORARYDIRECTORY 32940
 #define ID_OUTPUTDIRECTORY_USEMYCAMSTUDIORECORDINGSDIRECTORY 32941
 #define ID_OUTPUTDIRECTORY_USEUSERSPECIFIEDDIRECTORY 32942

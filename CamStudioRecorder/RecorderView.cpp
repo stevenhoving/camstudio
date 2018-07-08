@@ -17,7 +17,6 @@
 #include "AutopanSpeedDlg.h"
 #include "AudioFormatDlg.h"
 #include "AutoSearchDlg.h"
-#include "CursorOptionsDlg.h"
 #include "FolderDlg.h"
 #include "FixedRegionDlg.h"
 #include "KeyshortcutsDlg.h"
@@ -440,7 +439,6 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDAUDIO_RECORDFROMSPEAKERS, OnUpdateOptionsRecordaudioRecordfromspeakers)
     ON_COMMAND(ID_OPTIONS_RECORDAUDIOMICROPHONE, OnOptionsRecordaudiomicrophone)
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDAUDIOMICROPHONE, OnUpdateOptionsRecordaudiomicrophone)
-    ON_COMMAND(ID_AVISWF, OnAVISWFMP4)
     ON_COMMAND(ID_OPTIONS_NAMING_AUTODATE, OnOptionsNamingAutodate)
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_NAMING_AUTODATE, OnUpdateOptionsNamingAutodate)
     ON_UPDATE_COMMAND_UI(ID_OPTIONS_LANGUAGE_ENGLISH, OnUpdateOptionsLanguageEnglish)
@@ -2186,12 +2184,6 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
     }
 
     return 1;
-}
-
-void CRecorderView::OnAVISWFMP4()
-{
-    cProgramOpts.m_iRecordingMode = ModeAVI;
-    Invalidate();
 }
 
 BOOL CRecorderView::OnEraseBkgnd(CDC *pDC)
