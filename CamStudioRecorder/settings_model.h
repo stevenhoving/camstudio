@@ -20,6 +20,7 @@
 #include <CamCapture/cam_rect.h>
 #include <CamCapture/cam_color.h>
 #include <CamLib/CamFile.h>
+#include "utility/make_array.h"
 
 enum class capture_type
 {
@@ -36,6 +37,88 @@ enum class cursor_halo_type
     ellipse,
     square,
     rectangle
+};
+
+class application_output_directory
+{
+public:
+    enum type
+    {
+        ask_user, /* x */
+        user_my_documents, /* C:/users/<username>/Documents/My CamStudio Videos */
+        user_specified /* x */
+    };
+    static constexpr auto names()
+    {
+        return make_array(
+            L"Ask user",
+            L"My Documents",
+            L"User specified"
+        );
+    }
+
+    application_output_directory(type new_type)
+        : type_(new_type)
+    {
+    }
+    int get_index() const
+    {
+        return type_;
+    }
+    void set_index(const type new_type)
+    {
+        type_ = new_type;
+    }
+    void set_index(const int new_type)
+    {
+        type_ = static_cast<type>(new_type);
+    }
+
+private:
+    type type_;
+};
+
+class temp_output_directory
+{
+public:
+    enum type
+    {
+        user_temp = 0, /* C:/users/<username>/AppData/Local/temp */
+        user_my_documents = 1, /* C:/users/<username>/Documents/My CamStudio Temp Files */
+        windows_temp = 2, /* C:/windows/temp */
+        install = 3, /* ea. C:/program files/CamStudio/temp */
+        user_specified = 4 /* x */
+    };
+    static constexpr auto names()
+    {
+        return make_array(
+            L"User profile temp directory",
+            L"My Documents",
+            L"Windows temp directory",
+            L"Installation directory",
+            L"User specified"
+        );
+    }
+
+    temp_output_directory(type new_type)
+        : type_(new_type)
+    {
+    }
+    int get_index() const
+    {
+        return type_;
+    }
+    void set_index(const type new_type)
+    {
+        type_ = new_type;
+    }
+    void set_index(const int new_type)
+    {
+        type_ = static_cast<type>(new_type);
+    }
+
+private:
+    type type_;
 };
 
 namespace cpptoml
@@ -90,13 +173,15 @@ public:
     bool get_application_auto_filename() const noexcept;
     void set_application_minimize_on_capture_start(bool minimize_on_capture_start)noexcept;
     bool get_application_minimize_on_capture_start() const noexcept;
-    void set_application_temp_directory_access(dir_access temp_directory_access)noexcept;
-    dir_access get_application_temp_directory_access() const noexcept;
+    void set_application_temp_directory_type(temp_output_directory::type temp_directory_access) noexcept;
+    temp_output_directory::type get_application_temp_directory_type() const noexcept;
+    /* \todo store/load std::wstring directory paths in utf8 */
     void set_application_temp_directory(std::string output_directory);
     const std::string &get_application_temp_directory() const noexcept;
 
-    void set_application_output_directory_access(dir_access output_directory_access)noexcept;
-    dir_access get_application_output_directory_access() const noexcept;
+    void set_application_output_directory_type(application_output_directory::type output_directory_access)noexcept;
+    application_output_directory::type get_application_output_directory_type() const noexcept;
+    /* \todo store/load std::wstring directory paths in utf8 */
     void set_application_output_directory(std::string output_directory);
     const std::string &get_application_output_directory() const noexcept;
 
@@ -146,11 +231,11 @@ private:
     bool application_minimize_on_capture_start_{false};
 
     // where we will be storing our temporary recording
-    dir_access application_temp_directory_access_{dir_access::windows_temp_dir};
+    temp_output_directory::type application_temp_directory_access_{temp_output_directory::user_temp};
     std::string application_temp_directory_{""};
 
     // where we will open the move recording file dialog in when we finished a recording.
-    dir_access application_output_directory_access_{dir_access::user_specified_dir};
+    application_output_directory::type application_output_directory_access_{application_output_directory::ask_user};
     // user defined output directory
     std::string application_output_directory_{""};
     // AutoPan = false; // not implemented

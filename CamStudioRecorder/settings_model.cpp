@@ -192,12 +192,12 @@ bool settings_model::get_application_minimize_on_capture_start() const noexcept
     return application_minimize_on_capture_start_;
 }
 
-void settings_model::set_application_temp_directory_access(dir_access temp_directory_access) noexcept
+void settings_model::set_application_temp_directory_type(temp_output_directory::type temp_directory_access) noexcept
 {
     application_temp_directory_access_ = temp_directory_access;
 }
 
-dir_access settings_model::get_application_temp_directory_access() const noexcept
+temp_output_directory::type settings_model::get_application_temp_directory_type() const noexcept
 {
     return application_temp_directory_access_;
 }
@@ -212,12 +212,12 @@ const std::string &settings_model::get_application_temp_directory() const noexce
     return application_temp_directory_;
 }
 
-void settings_model::set_application_output_directory_access(dir_access output_directory_access) noexcept
+void settings_model::set_application_output_directory_type(application_output_directory::type output_directory_access) noexcept
 {
     application_output_directory_access_ = output_directory_access;
 }
 
-dir_access settings_model::get_application_output_directory_access() const noexcept
+application_output_directory::type settings_model::get_application_output_directory_type() const noexcept
 {
     return application_output_directory_access_;
 }
@@ -336,9 +336,9 @@ void settings_model::_load_application_settings(const cpptoml::table &root)
     table application = root.get_table(config::application::settings);
     application_auto_filename_ = application.get_optional<bool>(config::application::auto_filename, false);
     application_minimize_on_capture_start_ = application.get_optional<bool>(config::application::minimize_on_capture_start, false);
-    application_temp_directory_access_ = application.get_optional<dir_access>(config::application::temp_directory_access, dir_access::windows_temp_dir);
+    application_temp_directory_access_ = application.get_optional<temp_output_directory::type>(config::application::temp_directory_access, temp_output_directory::user_temp);
     application_temp_directory_ = application.get_optional<std::string>(config::application::temp_directory, "");
-    application_output_directory_access_ = application.get_optional<dir_access>(config::application::output_directory_access, dir_access::user_specified_dir);
+    application_output_directory_access_ = application.get_optional<application_output_directory::type>(config::application::output_directory_access, application_output_directory::ask_user);
     application_output_directory_ = application.get_optional<std::string>(config::application::output_directory, "");
 }
 

@@ -36,6 +36,9 @@ public:
 #endif
 
 private:
+    void _enable_output_directory_user_specified(application_output_directory::type output_type);
+    void _enable_temp_directory_user_specified(temp_output_directory::type temp_type);
+private:
     settings_model *settings_{nullptr};
 
 protected:
@@ -53,4 +56,10 @@ public:
     CButton temp_directory_user_specified_browse_button_;
     afx_msg void OnBnClickedApplicationMinimizeOnRecord();
     afx_msg void OnBnClickedAutoFilenameGeneration();
+    afx_msg void OnCbnSelchangeOutputDirectoryCheckbox();
+    afx_msg void OnCbnSelchangeTempDirectoryCombobox();
+    afx_msg void OnBnClickedOutputDirectoryUserSpecifiedBrowseButton();
+    afx_msg void OnBnClickedTempDirectoryUserSpecifiedBrowseButton();
+    afx_msg void OnEnChangeOutputDirectoryUserSpecifiedEdit();
+    afx_msg void OnEnChangeTempDirectoryUserSpecifiedEdit();
 };

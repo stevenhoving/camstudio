@@ -637,8 +637,10 @@ void CRecorderView::OnDestroy()
 std::string CRecorderView::generate_temp_filename(video_container::type container)
 {
     const auto output_directory = settings_model_->get_application_temp_directory();
-    const auto temp_folder = get_temp_folder(
-        settings_model_->get_application_temp_directory_access(),
+
+    /* \todo fix this... */
+    const auto temp_folder = get_temp_folder(dir_access::windows_temp_dir,
+        //settings_model_->get_application_temp_directory_access(),
         std::wstring(output_directory.begin(), output_directory.end()));
 
     time_t osBinaryTime;

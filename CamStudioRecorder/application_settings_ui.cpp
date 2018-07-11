@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "application_settings_ui.h"
 #include "afxdialogex.h"
+#include <filesystem>
 
 IMPLEMENT_DYNAMIC(application_settings_ui, CDialogEx)
 
@@ -46,27 +47,41 @@ BOOL application_settings_ui::OnInitDialog()
     /* auto generate filename */
     auto_filename_generation_checkbox_.SetCheck(settings_->get_application_auto_filename());
 
-    /* source fps */
-    //const auto fps_text = std::to_wstring(model_->video_source_fps_);
-    //video_source_fps_.SetWindowText(fps_text.c_str());
-#if 0
-    /* source name */
-    for (const auto video_source_name : video_source::names())
-        video_source_combo_.AddString(video_source_name);
-    video_source_combo_.SetCurSel(model_->video_source_.get_index());
+    /* output directory */
+    for (const auto name : application_output_directory::names())
+        output_directory_combobox_.AddString(name);
+    output_directory_combobox_.SetCurSel(settings_->get_application_output_directory_type());
 
-    /* video container */
-    for (const auto video_container_name : video_container::names())
-        video_container_combo_.AddString(video_container_name);
-    video_container_combo_.SetCurSel(model_->video_container_.get_index());
+    _enable_output_directory_user_specified(settings_->get_application_output_directory_type());
+    const auto output_directory = std::filesystem::path(settings_->get_application_output_directory());
+    output_directory_user_specified_edit_.SetWindowText(output_directory.c_str());
 
-    /* codec name */
-    for (const auto video_codec_name : video_codec::names())
-        video_codec_combo_.AddString(video_codec_name);
-    video_codec_combo_.SetCurSel(model_->video_codec_.get_index());
-#endif
+    /* temp directory */
+    for (const auto name : temp_output_directory::names())
+        temp_directory_combobox_.AddString(name);
+    temp_directory_combobox_.SetCurSel(settings_->get_application_temp_directory_type());
+
+    _enable_temp_directory_user_specified(settings_->get_application_temp_directory_type());
+    const auto temp_directory = std::filesystem::path(settings_->get_application_temp_directory());
+    temp_directory_user_specified_edit_.SetWindowText(temp_directory.c_str());
 
     return TRUE;
+}
+
+void application_settings_ui::_enable_output_directory_user_specified(application_output_directory::type output_type)
+{
+    const auto is_enabled = output_type == application_output_directory::user_specified;
+
+    output_directory_user_specified_edit_.EnableWindow(is_enabled);
+    output_directory_user_specified_browse_button_.EnableWindow(is_enabled);
+}
+
+void application_settings_ui::_enable_temp_directory_user_specified(temp_output_directory::type temp_type)
+{
+    const auto is_enabled = temp_type == temp_output_directory::user_specified;
+
+    temp_directory_user_specified_edit_.EnableWindow(is_enabled);
+    temp_directory_user_specified_browse_button_.EnableWindow(is_enabled);
 }
 
 void application_settings_ui::DoDataExchange(CDataExchange* pDX)
@@ -85,6 +100,12 @@ void application_settings_ui::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(application_settings_ui, CDialogEx)
     ON_BN_CLICKED(IDC_APPLICATION_MINIMIZE_ON_RECORD, &application_settings_ui::OnBnClickedApplicationMinimizeOnRecord)
     ON_BN_CLICKED(IDC_AUTO_FILENAME_GENERATION, &application_settings_ui::OnBnClickedAutoFilenameGeneration)
+    ON_CBN_SELCHANGE(IDC_OUTPUT_DIRECTORY_CHECKBOX, &application_settings_ui::OnCbnSelchangeOutputDirectoryCheckbox)
+    ON_CBN_SELCHANGE(IDC_TEMP_DIRECTORY_COMBOBOX, &application_settings_ui::OnCbnSelchangeTempDirectoryCombobox)
+    ON_BN_CLICKED(IDC_OUTPUT_DIRECTORY_USER_SPECIFIED_BROWSE_BUTTON, &application_settings_ui::OnBnClickedOutputDirectoryUserSpecifiedBrowseButton)
+    ON_BN_CLICKED(IDC_TEMP_DIRECTORY_USER_SPECIFIED_BROWSE_BUTTON, &application_settings_ui::OnBnClickedTempDirectoryUserSpecifiedBrowseButton)
+    ON_EN_CHANGE(IDC_OUTPUT_DIRECTORY_USER_SPECIFIED_EDIT, &application_settings_ui::OnEnChangeOutputDirectoryUserSpecifiedEdit)
+    ON_EN_CHANGE(IDC_TEMP_DIRECTORY_USER_SPECIFIED_EDIT, &application_settings_ui::OnEnChangeTempDirectoryUserSpecifiedEdit)
 END_MESSAGE_MAP()
 
 
@@ -96,4 +117,85 @@ void application_settings_ui::OnBnClickedApplicationMinimizeOnRecord()
 void application_settings_ui::OnBnClickedAutoFilenameGeneration()
 {
     settings_->set_application_auto_filename(auto_filename_generation_checkbox_.GetCheck() != 0);
+}
+
+void application_settings_ui::OnCbnSelchangeOutputDirectoryCheckbox()
+{
+    const auto output_directory_type = static_cast<application_output_directory::type>(
+        output_directory_combobox_.GetCurSel()
+    );
+
+    settings_->set_application_output_directory_type(output_directory_type);
+
+    _enable_output_directory_user_specified(output_directory_type);
+}
+
+void application_settings_ui::OnCbnSelchangeTempDirectoryCombobox()
+{
+    const auto temp_directory_type = static_cast<temp_output_directory::type>(
+        temp_directory_combobox_.GetCurSel()
+    );
+
+    settings_->set_application_temp_directory_type(temp_directory_type);
+    _enable_temp_directory_user_specified(temp_directory_type);
+}
+
+std::wstring get_window_text(const CWnd &window)
+{
+    const auto window_text_length = window.GetWindowTextLengthW();
+    auto window_text = std::wstring(window_text_length + 1, '\0');
+    // \todo make safe lowering cast..
+    window.GetWindowTextW(window_text.data(), static_cast<int>(window_text.size()));
+    window_text.resize(window_text_length);
+    return window_text;
+}
+
+void application_settings_ui::OnBnClickedOutputDirectoryUserSpecifiedBrowseButton()
+{
+    const auto output_directory_temp = settings_->get_application_output_directory();
+
+    /* \todo store/load std::wstring directory paths in utf8 */
+    const auto output_directory = std::wstring(output_directory_temp.begin(),
+        output_directory_temp.end());
+
+    CFolderPickerDialog folder_picker(output_directory.c_str(), 0, this);
+    if (folder_picker.DoModal() == IDOK)
+    {
+        // \note we abuse the fact that setting the window text, triggers the OnChange
+        output_directory_user_specified_edit_.SetWindowText(folder_picker.GetPathName());
+    }
+}
+
+void application_settings_ui::OnEnChangeOutputDirectoryUserSpecifiedEdit()
+{
+    std::filesystem::path new_output_directory_path = get_window_text(
+        output_directory_user_specified_edit_
+    );
+
+    settings_->set_application_output_directory(new_output_directory_path.generic_string());
+}
+
+void application_settings_ui::OnBnClickedTempDirectoryUserSpecifiedBrowseButton()
+{
+    const auto temp_directory_temp = settings_->get_application_temp_directory();
+
+    /* \todo store/load std::wstring directory paths in utf8 */
+    const auto temp_directory = std::wstring(temp_directory_temp.begin(),
+        temp_directory_temp.end());
+
+    CFolderPickerDialog folder_picker(temp_directory.c_str(), 0, this);
+    if (folder_picker.DoModal() == IDOK)
+    {
+        // \note we abuse the fact that setting the window text, triggers the OnChange
+        temp_directory_user_specified_edit_.SetWindowText(folder_picker.GetPathName());
+    }
+}
+
+void application_settings_ui::OnEnChangeTempDirectoryUserSpecifiedEdit()
+{
+    std::filesystem::path new_temp_directory_path = get_window_text(
+        temp_directory_user_specified_edit_
+    );
+
+    settings_->set_application_temp_directory(new_temp_directory_path.generic_string());
 }

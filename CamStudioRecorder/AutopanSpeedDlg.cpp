@@ -51,7 +51,7 @@ BOOL CAutopanSpeedDlg::OnInitDialog()
     // extra initialization
     // set the slider limits and current position
     const int MAXPANSPEED = 200;
-    ASSERT(cProgramOpts.m_iMaxPan <= MAXPANSPEED);
+    //ASSERT(cProgramOpts.m_iMaxPan <= MAXPANSPEED);
     m_ctrlSliderPanSpeed.SetRange(1, MAXPANSPEED, TRUE);
     //m_ctrlSliderPanSpeed.SetPos(cProgramOpts.m_iMaxPan);
 
