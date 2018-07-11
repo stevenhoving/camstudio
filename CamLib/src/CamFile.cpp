@@ -112,13 +112,11 @@ std::wstring get_temp_folder(dir_access iAccess, const std::wstring &folder /*= 
         case dir_access::user_specified_dir:
         {
             // fallback behavior, use application root when user supplied temp folder does not exist.
-            if (!std::experimental::filesystem::exists(folder))
+            if (!std::filesystem::exists(folder))
                 return get_prog_path();
 
-            const auto status = std::experimental::filesystem::status(folder);
-
             // If valid directory, return the user supplied directory as temp directory.
-            if (status.type() == std::experimental::filesystem::file_type::directory)
+            if (std::filesystem::is_directory(folder))
                 return folder;
             else
                 throw std::runtime_error("failed to get user supplied temp folder");
@@ -140,10 +138,10 @@ std::wstring get_temp_folder(dir_access iAccess, const std::wstring &folder /*= 
                 tempdir = get_my_documents_path() + _T("\\My CamStudio Temp Files");
             }
 
-            if (std::experimental::filesystem::exists(tempdir))
+            if (std::filesystem::exists(tempdir))
                 return tempdir;
 
-            if (std::experimental::filesystem::create_directories(tempdir))
+            if (std::filesystem::create_directories(tempdir))
                 return tempdir;
 
             // \note this is actually the failure path...
@@ -167,11 +165,11 @@ std::wstring get_temp_folder(dir_access iAccess, const std::wstring &folder /*= 
     tempdir += _T("\\temp");
 
     // Verify the chosen temp path is valid
-    if (!std::experimental::filesystem::exists(tempdir))
+    if (!std::filesystem::exists(tempdir))
         return get_prog_path();
 
     // If valid directory, return Windows\temp as temp directory
-    if (std::experimental::filesystem::status(tempdir).type() == std::experimental::filesystem::file_type::directory)
+    if (std::filesystem::is_directory(tempdir))
         return tempdir;
 
     // else return program path as temp directory

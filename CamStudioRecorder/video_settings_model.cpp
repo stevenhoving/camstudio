@@ -18,6 +18,11 @@
 #include "stdafx.h"
 #include "video_settings_model.h"
 
+std::wstring video_settings_model::get_video_container_file_extention() const
+{
+    return video_container::names().at(video_container_.get_index());
+}
+
 void video_settings_model::save()
 {
     auto root = cpptoml::make_table();

@@ -1,24 +1,21 @@
 #pragma once
 
+#include <vector>
+
 class CKeyshortcutsDlg : public CDialog
 {
 public:
     explicit CKeyshortcutsDlg(CWnd *pParent = nullptr);
 
-    // Dialog Data
-    //{{AFX_DATA(CKeyshortcutsDlg)
     enum
     {
         IDD = IDD_KEYSHORTCUTS
     };
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CKeyshortcutsDlg)
+
+
 protected:
-    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+    virtual void DoDataExchange(CDataExchange *pDX);
     //}}AFX_VIRTUAL
 
     // Implementation
@@ -64,6 +61,3 @@ private:
     CComboBox m_ctrlCBShow;
     CComboBox m_ctrlCBAutopan;
 };
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.

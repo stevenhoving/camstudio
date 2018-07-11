@@ -17,9 +17,10 @@
 
 #include "stdafx.h"
 #include "settings_model.h"
-
+#include "settings_table.h"
 #include "utility/make_array.h"
 #include "utility/filesystem.h"
+
 #include <fmt/format.h>
 #include <cpptoml.h>
 #include <string_view>
@@ -53,100 +54,18 @@ namespace cursor
     constexpr auto ring_width = "cursor_ring_width";
 }
 
-} // namespace config
-
-
-/* cpptoml table wrapper to make things easier */
-class table
+namespace application
 {
-public:
-    table(std::shared_ptr<cpptoml::table> table)
-        : table_(table)
-    {
-    }
+    constexpr auto settings = "application-settings";
+    constexpr auto auto_filename = "auto_filename";
+    constexpr auto minimize_on_capture_start = "minimize_on_capture_start";
+    constexpr auto temp_directory_access = "temp_directory_access";
+    constexpr auto temp_directory = "temp_directory";
+    constexpr auto output_directory_access = "output_directory_access";
+    constexpr auto output_directory = "output_directory";
 
-    template<typename T>
-    void insert(const std::string &key, T value)
-    {
-        if constexpr(std::is_enum_v<T>)
-            table_->insert<int64_t>(key, static_cast<int64_t>(value));
-        else
-            table_->insert<T>(key, std::move(value));
-    }
-
-    template<>
-    void insert(const std::string &key, cam::color value)
-    {
-        table_->insert<uint32_t>(key, value);
-    }
-
-    template<>
-    void insert(const std::string &key, rect<int> value)
-    {
-        auto array = cpptoml::make_array();
-        array->push_back(value.left());
-        array->push_back(value.top());
-        array->push_back(value.right());
-        array->push_back(value.bottom());
-        table_->insert(key, array);
-    }
-
-    template<typename T>
-    T get_optional(const std::string &key, const T default_value)
-    {
-        if (!table_)
-            return default_value;
-
-        if (!table_->contains(key))
-            return default_value;
-
-        if constexpr(std::is_enum_v<T>)
-            return static_cast<T>(*table_->get_as<int64_t>(key));
-        else
-            return *table_->get_as<T>(key);
-    }
-
-    template<>
-    cam::color get_optional(const std::string &key, const cam::color default_value)
-    {
-        if (!table_)
-            return default_value;
-
-        const auto value = table_->get_as<uint32_t>(key);
-        if (!value)
-            return default_value;
-
-        return cam::color(*value);
-    }
-
-    // cookie cutter of a cookie cutter is preferred.
-    template<>
-    rect<int> get_optional(const std::string &key, const rect<int> default_value)
-    {
-        if (!table_)
-            return default_value;
-
-        const auto value = table_->get_array_of<int64_t>(key);
-        if (!value)
-            return default_value;
-
-        assert(value->size() == 4);
-        return rect<int>(
-            static_cast<int>(value->at(0)),
-            static_cast<int>(value->at(1)),
-            static_cast<int>(value->at(2)),
-            static_cast<int>(value->at(3))
-        );
-    }
-
-    std::shared_ptr<cpptoml::table> get_table()
-    {
-        return table_;
-    }
-
-private:
-    std::shared_ptr<cpptoml::table> table_;
-};
+} // namespace application
+} // namespace config
 
 bool settings_model::get_cursor_enabled() const
 {
@@ -253,6 +172,66 @@ double settings_model::get_cursor_ring_width() const
     return cursor_ring_width_;
 }
 
+void settings_model::set_application_auto_filename(bool auto_filename) noexcept
+{
+    application_auto_filename_ = auto_filename;
+}
+
+bool settings_model::get_application_auto_filename() const noexcept
+{
+    return application_auto_filename_;
+}
+
+void settings_model::set_application_minimize_on_capture_start(bool minimize_on_capture_start) noexcept
+{
+    application_minimize_on_capture_start_ = minimize_on_capture_start;
+}
+
+bool settings_model::get_application_minimize_on_capture_start() const noexcept
+{
+    return application_minimize_on_capture_start_;
+}
+
+void settings_model::set_application_temp_directory_access(dir_access temp_directory_access) noexcept
+{
+    application_temp_directory_access_ = temp_directory_access;
+}
+
+dir_access settings_model::get_application_temp_directory_access() const noexcept
+{
+    return application_temp_directory_access_;
+}
+
+void settings_model::set_application_temp_directory(std::string temp_directory)
+{
+    application_temp_directory_ = temp_directory;
+}
+
+const std::string &settings_model::get_application_temp_directory() const noexcept
+{
+    return application_temp_directory_;
+}
+
+void settings_model::set_application_output_directory_access(dir_access output_directory_access) noexcept
+{
+    application_output_directory_access_ = output_directory_access;
+}
+
+dir_access settings_model::get_application_output_directory_access() const noexcept
+{
+    return application_output_directory_access_;
+}
+
+void settings_model::set_application_output_directory(std::string output_directory)
+{
+    application_output_directory_ = output_directory;
+}
+
+const std::string & settings_model::get_application_output_directory() const noexcept
+{
+    return application_output_directory_;
+}
+
 void settings_model::save()
 {
     auto root = cpptoml::make_table();
@@ -261,6 +240,7 @@ void settings_model::save()
 
     _save_capture_settings(*root);
     _save_cursor_settings(*root);
+    _save_hotkey_settings(*root);
 
     std::ofstream stream(utility::create_config_path(L"settings.toml"));
     cpptoml::toml_writer writer{stream, ""};
@@ -300,6 +280,25 @@ void settings_model::_save_cursor_settings(cpptoml::table &root)
     root.insert(config::cursor::settings, cursor.get_table());
 }
 
+void settings_model::_save_hotkey_settings(cpptoml::table &root)
+{
+    // \todo
+}
+
+void settings_model::_save_application_settings(cpptoml::table &root)
+{
+    table application = cpptoml::make_table();
+
+    application.insert(config::application::auto_filename, application_auto_filename_);
+    application.insert(config::application::minimize_on_capture_start, application_minimize_on_capture_start_);
+    application.insert(config::application::temp_directory_access, application_temp_directory_access_);
+    application.insert(config::application::temp_directory, application_temp_directory_);
+    application.insert(config::application::output_directory_access, application_output_directory_access_);
+    application.insert(config::application::output_directory, application_output_directory_);
+
+    root.insert(config::application::settings, application.get_table());
+}
+
 void settings_model::_load_capture_settings(const cpptoml::table &root)
 {
     table capture = root.get_table(config::capture::settings);
@@ -326,6 +325,22 @@ void settings_model::_load_cursor_settings(const cpptoml::table &root)
     cursor_ring_width_ = cursor.get_optional<double>(config::cursor::ring_width, 1.5);
 }
 
+void settings_model::_load_hotkey_settings(const cpptoml::table &root)
+{
+    // \todo
+}
+
+void settings_model::_load_application_settings(const cpptoml::table &root)
+{
+    table application = root.get_table(config::application::settings);
+    application_auto_filename_ = application.get_optional<bool>(config::application::auto_filename, false);
+    application_minimize_on_capture_start_ = application.get_optional<bool>(config::application::minimize_on_capture_start, false);
+    application_temp_directory_access_ = application.get_optional<dir_access>(config::application::temp_directory_access, dir_access::windows_temp_dir);
+    application_temp_directory_ = application.get_optional<std::string>(config::application::temp_directory, "");
+    application_output_directory_access_ = application.get_optional<dir_access>(config::application::output_directory_access, dir_access::user_specified_dir);
+    application_output_directory_ = application.get_optional<std::string>(config::application::output_directory, "");
+}
+
 void settings_model::load()
 {
     const auto config_filepath = utility::create_config_path(L"settings.toml");
@@ -342,6 +357,8 @@ void settings_model::load()
     _load_capture_settings(*root);
     /* cursor settings */
     _load_cursor_settings(*root);
+    /* hotkey settings */
+    _load_hotkey_settings(*root);
 }
 
 void settings_model::set_capture_mode(capture_type type)

@@ -26,21 +26,6 @@ public:
     {
     }
 
-    sHotKeyDef(const sHotKeyDef &rhs)
-    {
-        *this = rhs;
-    }
-    sHotKeyDef &operator=(const sHotKeyDef &rhs)
-    {
-        if (this == &rhs)
-            return *this;
-
-        m_vKey = rhs.m_vKey;
-        m_fsMod = rhs.m_fsMod;
-
-        return *this;
-    }
-
     UINT m_vKey;
     UINT m_fsMod;
 };
@@ -97,4 +82,5 @@ struct sHotKeyOpts
     sHotKeyDef m_Autopan;
 };
 
-extern sHotKeyOpts cHotKeyOpts;
+//extern sHotKeyOpts cHotKeyOpts;
+static sHotKeyOpts cHotKeyOpts;

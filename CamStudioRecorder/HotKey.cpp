@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "HotKey.h"
-#include "Profile.h"
+//#include "Profile.h"
 #include <CamHook/CamHook.h>
 
 bool sHotKeyOpts::Read(libconfig::Setting &cProfile)
@@ -78,8 +78,8 @@ bool sHotKeyOpts::Write(libconfig::Setting &cProfile)
     }
     else
         s = &(cProfile.add(hk, libconfig::Setting::TypeGroup));
-    UpdateSetting(*s, "Key", (int &)m_RecordStart.m_vKey, libconfig::Setting::TypeInt);
-    UpdateSetting(*s, "Mod", (int &)m_RecordStart.m_fsMod, libconfig::Setting::TypeInt);
+    //UpdateSetting(*s, "Key", (int &)m_RecordStart.m_vKey, libconfig::Setting::TypeInt);
+    //UpdateSetting(*s, "Mod", (int &)m_RecordStart.m_fsMod, libconfig::Setting::TypeInt);
 
     hk = "End";
     if (cProfile.exists(hk))
@@ -88,8 +88,8 @@ bool sHotKeyOpts::Write(libconfig::Setting &cProfile)
     }
     else
         s = &(cProfile.add(hk, libconfig::Setting::TypeGroup));
-    UpdateSetting(*s, "Key", (int &)m_RecordEnd.m_vKey, libconfig::Setting::TypeInt);
-    UpdateSetting(*s, "Mod", (int &)m_RecordEnd.m_fsMod, libconfig::Setting::TypeInt);
+    //UpdateSetting(*s, "Key", (int &)m_RecordEnd.m_vKey, libconfig::Setting::TypeInt);
+    //UpdateSetting(*s, "Mod", (int &)m_RecordEnd.m_fsMod, libconfig::Setting::TypeInt);
 
     hk = "Cancel";
     if (cProfile.exists(hk))
@@ -98,8 +98,8 @@ bool sHotKeyOpts::Write(libconfig::Setting &cProfile)
     }
     else
         s = &(cProfile.add(hk, libconfig::Setting::TypeGroup));
-    UpdateSetting(*s, "Key", (int &)m_RecordCancel.m_vKey, libconfig::Setting::TypeInt);
-    UpdateSetting(*s, "Mod", (int &)m_RecordCancel.m_fsMod, libconfig::Setting::TypeInt);
+    //UpdateSetting(*s, "Key", (int &)m_RecordCancel.m_vKey, libconfig::Setting::TypeInt);
+    //UpdateSetting(*s, "Mod", (int &)m_RecordCancel.m_fsMod, libconfig::Setting::TypeInt);
 
     hk = "Next";
     if (cProfile.exists(hk))
@@ -108,8 +108,8 @@ bool sHotKeyOpts::Write(libconfig::Setting &cProfile)
     }
     else
         s = &(cProfile.add(hk, libconfig::Setting::TypeGroup));
-    UpdateSetting(*s, "Key", (int &)m_Next.m_vKey, libconfig::Setting::TypeInt);
-    UpdateSetting(*s, "Mod", (int &)m_Next.m_fsMod, libconfig::Setting::TypeInt);
+    //UpdateSetting(*s, "Key", (int &)m_Next.m_vKey, libconfig::Setting::TypeInt);
+    //UpdateSetting(*s, "Mod", (int &)m_Next.m_fsMod, libconfig::Setting::TypeInt);
 
     hk = "Prev";
     if (cProfile.exists(hk))
@@ -118,8 +118,8 @@ bool sHotKeyOpts::Write(libconfig::Setting &cProfile)
     }
     else
         s = &(cProfile.add(hk, libconfig::Setting::TypeGroup));
-    UpdateSetting(*s, "Key", (int &)m_Prev.m_vKey, libconfig::Setting::TypeInt);
-    UpdateSetting(*s, "Mod", (int &)m_Prev.m_fsMod, libconfig::Setting::TypeInt);
+    //UpdateSetting(*s, "Key", (int &)m_Prev.m_vKey, libconfig::Setting::TypeInt);
+    //UpdateSetting(*s, "Mod", (int &)m_Prev.m_fsMod, libconfig::Setting::TypeInt);
 
     hk = "Layout";
     if (cProfile.exists(hk))
@@ -128,8 +128,8 @@ bool sHotKeyOpts::Write(libconfig::Setting &cProfile)
     }
     else
         s = &(cProfile.add(hk, libconfig::Setting::TypeGroup));
-    UpdateSetting(*s, "Key", (int &)m_ShowLayout.m_vKey, libconfig::Setting::TypeInt);
-    UpdateSetting(*s, "Mod", (int &)m_ShowLayout.m_fsMod, libconfig::Setting::TypeInt);
+    //UpdateSetting(*s, "Key", (int &)m_ShowLayout.m_vKey, libconfig::Setting::TypeInt);
+    //UpdateSetting(*s, "Mod", (int &)m_ShowLayout.m_fsMod, libconfig::Setting::TypeInt);
 
     hk = "Zoom";
     if (cProfile.exists(hk))
@@ -138,8 +138,8 @@ bool sHotKeyOpts::Write(libconfig::Setting &cProfile)
     }
     else
         s = &(cProfile.add(hk, libconfig::Setting::TypeGroup));
-    UpdateSetting(*s, "Key", (int &)m_Zoom.m_vKey, libconfig::Setting::TypeInt);
-    UpdateSetting(*s, "Mod", (int &)m_Zoom.m_fsMod, libconfig::Setting::TypeInt);
+    //UpdateSetting(*s, "Key", (int &)m_Zoom.m_vKey, libconfig::Setting::TypeInt);
+    //UpdateSetting(*s, "Mod", (int &)m_Zoom.m_fsMod, libconfig::Setting::TypeInt);
 
     hk = "AutoSpan";
     if (cProfile.exists(hk))
@@ -148,8 +148,8 @@ bool sHotKeyOpts::Write(libconfig::Setting &cProfile)
     }
     else
         s = &(cProfile.add(hk, libconfig::Setting::TypeGroup));
-    UpdateSetting(*s, "Key", (int &)m_Autopan.m_vKey, libconfig::Setting::TypeInt);
-    UpdateSetting(*s, "Mod", (int &)m_Autopan.m_fsMod, libconfig::Setting::TypeInt);
+    //UpdateSetting(*s, "Key", (int &)m_Autopan.m_vKey, libconfig::Setting::TypeInt);
+    //UpdateSetting(*s, "Mod", (int &)m_Autopan.m_fsMod, libconfig::Setting::TypeInt);
 
     return true;
 }

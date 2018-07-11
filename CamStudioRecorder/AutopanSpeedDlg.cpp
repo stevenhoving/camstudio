@@ -53,11 +53,11 @@ BOOL CAutopanSpeedDlg::OnInitDialog()
     const int MAXPANSPEED = 200;
     ASSERT(cProgramOpts.m_iMaxPan <= MAXPANSPEED);
     m_ctrlSliderPanSpeed.SetRange(1, MAXPANSPEED, TRUE);
-    m_ctrlSliderPanSpeed.SetPos(cProgramOpts.m_iMaxPan);
+    //m_ctrlSliderPanSpeed.SetPos(cProgramOpts.m_iMaxPan);
 
     // update the test speed display
     CString maxpanspeedstr;
-    maxpanspeedstr.Format(_T("%d"), cProgramOpts.m_iMaxPan);
+    //maxpanspeedstr.Format(_T("%d"), cProgramOpts.m_iMaxPan);
     m_ctrlStaticMaxSpeed.SetWindowText(maxpanspeedstr);
 
     return TRUE; // return TRUE unless you set the focus to a control
@@ -67,7 +67,7 @@ BOOL CAutopanSpeedDlg::OnInitDialog()
 void CAutopanSpeedDlg::OnOK()
 {
     // read the slider position and set the max pan speed
-    cProgramOpts.m_iMaxPan = m_ctrlSliderPanSpeed.GetPos();
+    //cProgramOpts.m_iMaxPan = m_ctrlSliderPanSpeed.GetPos();
     CDialog::OnOK();
 }
 

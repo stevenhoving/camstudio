@@ -124,6 +124,12 @@ void cursor_settings_ui::_draw_cursor_preview(cam_mouse_button::type mouse_butto
     Gdiplus::Graphics canvas(&image);
     canvas.SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);
 
+    // draw a raster so we can see what has alpha and what is not...
+    //Gdiplus::Pen pen(Gdiplus::Color::Gray, 1);
+    //const auto raster_line_count = 5;
+    //preview_rect.Width() / raster_line_count;
+
+
     point<int> mouse_point(preview_rect.Width()/2, preview_rect.Height()/2);
 
     rect<int> prev_rect(0, 0, preview_rect.Width(), preview_rect.Height());
@@ -132,7 +138,7 @@ void cursor_settings_ui::_draw_cursor_preview(cam_mouse_button::type mouse_butto
     annotation_->draw(canvas, draw_data);
 
     HBITMAP bitmap;
-    if (const auto ret = image.GetHBITMAP(Gdiplus::Color(255, 0, 0, 0), &bitmap); ret != Gdiplus::Status::Ok)
+    if (const auto ret = image.GetHBITMAP(Gdiplus::Color(255, 255, 255, 255), &bitmap); ret != Gdiplus::Status::Ok)
         fmt::print("failed to get bitmap from bitmap\n");
 
     HBITMAP hbmOld = cursor_preview_.SetBitmap(bitmap);
@@ -208,7 +214,7 @@ void cursor_settings_ui::OnBnClickedPickHaloColor()
     if (color_dialog.DoModal() == IDOK)
     {
         auto color = color_dialog.GetColor();
-        settings_->set_cursor_halo_color(cam::color(255, GetRValue(color), GetGValue(color), GetBValue(color)));
+        settings_->set_cursor_halo_color(cam::color(127, GetRValue(color), GetGValue(color), GetBValue(color)));
         _draw_cursor_preview(cam_mouse_button::none);
         Invalidate();
     }
@@ -221,7 +227,7 @@ void cursor_settings_ui::OnBnClickedPickClickLeftColor()
     if (color_dialog.DoModal() == IDOK)
     {
         auto color = color_dialog.GetColor();
-        settings_->set_cursor_click_left_color(cam::color(255, GetRValue(color), GetGValue(color), GetBValue(color)));
+        settings_->set_cursor_click_left_color(cam::color(127, GetRValue(color), GetGValue(color), GetBValue(color)));
         _draw_cursor_preview(cam_mouse_button::none);
         Invalidate();
     }
@@ -234,7 +240,7 @@ void cursor_settings_ui::OnBnClickedPickClickRightColor()
     if (color_dialog.DoModal() == IDOK)
     {
         auto color = color_dialog.GetColor();
-        settings_->set_cursor_click_right_color(cam::color(255, GetRValue(color), GetGValue(color), GetBValue(color)));
+        settings_->set_cursor_click_right_color(cam::color(127, GetRValue(color), GetGValue(color), GetBValue(color)));
         _draw_cursor_preview(cam_mouse_button::none);
         Invalidate();
     }
@@ -271,7 +277,6 @@ HBRUSH cursor_settings_ui::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
     return hbr;
 }
 
-
 void cursor_settings_ui::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
     if (nSBCode == SB_THUMBPOSITION || nSBCode == SB_THUMBTRACK)
@@ -287,4 +292,3 @@ void cursor_settings_ui::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollB
 
     CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
 }
-

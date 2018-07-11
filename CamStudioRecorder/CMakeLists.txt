@@ -17,6 +17,8 @@ project(CamStudioRecorder)
 
 set(RECORDER_NEW_SOURCE
     # new
+    application_settings_ui.h
+    application_settings_ui.cpp
     background_capture_source.h
     background_capture_source.cpp
     fmt_helper.h
@@ -41,31 +43,20 @@ set(RECORDER_NEW_SOURCE
     capture_thread.cpp
     settings_model.h
     settings_model.cpp
+    settings_table.h
     utility/filesystem.h
     utility/make_array.h
 )
 
 set(RECORDER_SOURCE
     # legacy
-    AudioFormatDlg.cpp
-    AudioFormatDlg.h
-    AudioMixer.cpp
-    AudioMixer.h
-    AudioSpeakersDlg.cpp
-    AudioSpeakersDlg.h
     AutopanSpeedDlg.cpp
     AutopanSpeedDlg.h
     AutoSearchDlg.cpp
     AutoSearchDlg.h
     BasicMessageDlg.cpp
     BasicMessageDlg.h
-    CamCursor.cpp
-    CamCursor.h
     CamStudioCommandLineInfo.cpp
-    EditImageDlg.cpp
-    EditImageDlg.h
-    EditTransparencyDlg.cpp
-    EditTransparencyDlg.h
     FixedRegionDlg.cpp
     FixedRegionDlg.h
     FlashingWnd.cpp
@@ -79,41 +70,23 @@ set(RECORDER_SOURCE
     LayeredWindowHelperST.cpp
     MainFrm.cpp
     MCI.cpp
-    PresetTimeDlg.cpp
-    PresetTimeDlg.h
-    Profile.cpp
-    ProgressDlg.cpp
     Recorder.cpp
     RecorderDoc.cpp
     RecorderView.cpp
-    ResizeDlg.cpp
-    SpeakersImpl.cpp
     stdafx.cpp
     stdafx.h
     TextDlg.cpp
     TextDlg.h
-    TransparentWnd.cpp
     CamStudioCommandLineInfo.h
     FlashingWnd.h
     HotKey.h
     LayeredWindowHelperST.h
     MainFrm.h
     MCI.h
-    Profile.h
-    ProgressDlg.h
     Recorder.h
     RecorderDoc.h
     RecorderVersionReleaseInfo.h
     RecorderView.h
-    ResizeDlg.h
-    TransparentWnd.h
-)
-
-set(RECORDER_VFW_SOURCE
-    vfw/ACM.cpp
-    vfw/ACM.h
-    vfw/VCM.cpp
-    vfw/VCM.h
 )
 
 set(RECORDER_ADDONS_SOURCE
@@ -139,12 +112,7 @@ add_executable(CamStudioRecorder WIN32
     ${RECORDER_NEW_SOURCE}
     ${RECORDER_SOURCE}
     ${RECORDER_RESOURCE}
-    ${RECORDER_VFW_SOURCE}
     ${RECORDER_ADDONS_SOURCE}
-)
-
-source_group(vfw FILES
-    ${RECORDER_VFW_SOURCE}
 )
 
 source_group(addons FILES

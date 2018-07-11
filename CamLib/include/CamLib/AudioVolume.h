@@ -36,7 +36,7 @@ void OnAudioVolume(HWND hwnd)
     std::string launchPath;
 
     // Verify sndvol32.exe exists
-    if (std::experimental::filesystem::exists(testLaunchPath))
+    if (std::filesystem::exists(testLaunchPath))
     {
         launchPath = testLaunchPath;
     }
@@ -48,7 +48,7 @@ void OnAudioVolume(HWND hwnd)
         // Verify sndvol32.exe exists
         SubDir = "\\system32";
         testLaunchPath = AppDir + SubDir + exeFileName;
-        if (std::experimental::filesystem::exists(testLaunchPath))
+        if (std::filesystem::exists(testLaunchPath))
         {
             launchPath = testLaunchPath;
         }
@@ -60,7 +60,7 @@ void OnAudioVolume(HWND hwnd)
         // Verify sndvol32.exe exists
         SubDir = "\\system";
         testLaunchPath = AppDir + SubDir + exeFileName;
-        if (std::experimental::filesystem::exists(testLaunchPath))
+        if (std::filesystem::exists(testLaunchPath))
         {
             launchPath = testLaunchPath;
         }
@@ -92,7 +92,7 @@ void OnAudioVolume(HWND hwnd)
         if (osinfo.dwMajorVersion >= 6) // Vista
         {
             testLaunchPath = AppDir + SubDir + "\\SndVol.exe";
-            if (std::experimental::filesystem::exists(testLaunchPath))
+            if (std::filesystem::exists(testLaunchPath))
             {
                 launchPath = testLaunchPath;
             }

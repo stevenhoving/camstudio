@@ -19,6 +19,7 @@
 
 #include <CamCapture/cam_rect.h>
 #include <CamCapture/cam_color.h>
+#include <CamLib/CamFile.h>
 
 enum class capture_type
 {
@@ -82,6 +83,23 @@ public:
     void set_cursor_ring_width(double width);
     double get_cursor_ring_width()const;
 
+    /* hot keys */
+
+    /* application */
+    void set_application_auto_filename(bool auto_filename)noexcept;
+    bool get_application_auto_filename() const noexcept;
+    void set_application_minimize_on_capture_start(bool minimize_on_capture_start)noexcept;
+    bool get_application_minimize_on_capture_start() const noexcept;
+    void set_application_temp_directory_access(dir_access temp_directory_access)noexcept;
+    dir_access get_application_temp_directory_access() const noexcept;
+    void set_application_temp_directory(std::string output_directory);
+    const std::string &get_application_temp_directory() const noexcept;
+
+    void set_application_output_directory_access(dir_access output_directory_access)noexcept;
+    dir_access get_application_output_directory_access() const noexcept;
+    void set_application_output_directory(std::string output_directory);
+    const std::string &get_application_output_directory() const noexcept;
+
     /* For now we will fall back to a simple save and load strategy.
      * The current implementation has a couple of problems. No input validation. No format version
      * validation in release mode. etc.
@@ -92,9 +110,15 @@ public:
 private:
     void _save_capture_settings(cpptoml::table &root);
     void _save_cursor_settings(cpptoml::table &root);
+    void _save_hotkey_settings(cpptoml::table &root);
+    void _save_application_settings(cpptoml::table &root);
 
     void _load_capture_settings(const cpptoml::table &root);
     void _load_cursor_settings(const cpptoml::table &root);
+    void _load_hotkey_settings(const cpptoml::table &root);
+    void _load_application_settings(const cpptoml::table &root);
+
+
 private:
 
     /* capture settings */
@@ -116,4 +140,19 @@ private:
     int cursor_ring_threshold_{1000};
     int cursor_ring_size_{20};
     double cursor_ring_width_{1.5};
+
+    /* application settings */
+    bool application_auto_filename_{false};
+    bool application_minimize_on_capture_start_{false};
+
+    // where we will be storing our temporary recording
+    dir_access application_temp_directory_access_{dir_access::windows_temp_dir};
+    std::string application_temp_directory_{""};
+
+    // where we will open the move recording file dialog in when we finished a recording.
+    dir_access application_output_directory_access_{dir_access::user_specified_dir};
+    // user defined output directory
+    std::string application_output_directory_{""};
+    // AutoPan = false; // not implemented
+    // MaxPan = 20; // not implemented
 };

@@ -11,19 +11,12 @@
 #include "RecorderDoc.h"
 #include "MainFrm.h"
 
-
-#include "CamCursor.h"
-
 #include "AutopanSpeedDlg.h"
-#include "AudioFormatDlg.h"
 #include "AutoSearchDlg.h"
 #include "FolderDlg.h"
 #include "FixedRegionDlg.h"
 #include "KeyshortcutsDlg.h"
-#include "PresetTimeDlg.h"
-#include "ProgressDlg.h"
 
-//#include <ximage.h>
 #include <fmt/format.h>
 #include <fmt/printf.h>
 
@@ -36,11 +29,9 @@
 
 #include <cam_hook/cam_hook.h>
 
-#include "AudioSpeakersDlg.h"
-#include "HotKey.h"
-#include "vfw/VCM.h"
-#include "vfw/ACM.h"
+#include <fmt/time.h>
 
+#include "HotKey.h"
 #include "MCI.h"
 
 #include "addons/AnnotationEffectsOptionsDlg.h"
@@ -51,6 +42,7 @@
 #include "string_convert.h"
 #include "video_settings_ui.h"
 #include "cursor_settings_ui.h"
+#include "application_settings_ui.h"
 
 #include "settings_model.h"
 #include "mouse_capture_ui.h"
@@ -73,12 +65,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
-// version 1.6
-#if !defined(WAVE_FORMAT_MPEGLAYER3)
-#define WAVE_FORMAT_MPEGLAYER3 0x0055
-#endif
-
 #ifndef CAPTUREBLT
 #define CAPTUREBLT (DWORD)0x40000000
 #endif
@@ -92,8 +78,6 @@ extern BOOL useWavein(BOOL, int);
 extern BOOL useWaveout(BOOL, int);
 extern BOOL WaveoutUninitialize();
 
-extern BOOL initialSaveMMMode();
-extern BOOL finalRestoreMMMode();
 extern BOOL onLoadSettings(int iRecordAudio);
 
 /////////////////////////////////////////////////////////////////////////////
@@ -196,15 +180,15 @@ int sdwBytesPerSec = 44100;
 
 int g_iCurrentLayout = 0;
 
-sProgramOpts cProgramOpts;
-sProducerOpts cProducerOpts;
-sAudioFormat cAudioFormat;
-sHotKeyOpts cHotKeyOpts;
+//sProgramOpts cProgramOpts;
+//sProducerOpts cProducerOpts;
+//sAudioFormat cAudioFormat;
+//sHotKeyOpts cHotKeyOpts;
 //sRegionOpts cRegionOpts;
-CCamCursor CamCursor;
-sCaptionOpts cCaptionOpts;
-sTimestampOpts cTimestampOpts;
-sWatermarkOpts cWatermarkOpts;
+//CCamCursor CamCursor;
+//sCaptionOpts cCaptionOpts;
+//sTimestampOpts cTimestampOpts;
+//sWatermarkOpts cWatermarkOpts;
 
 // Files Directory
 CString savedir("");
@@ -286,7 +270,6 @@ int AddInputBufferToQueue();
 // ver 1.8
 int UnSetHotKeys()
 {
-
     UnregisterHotKey(g_hWndGlobal, HOTKEY_RECORD_START_OR_PAUSE);
     UnregisterHotKey(g_hWndGlobal, HOTKEY_RECORD_STOP);
     UnregisterHotKey(g_hWndGlobal, HOTKEY_RECORD_CANCELSTOP);
@@ -416,11 +399,8 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
     ON_UPDATE_COMMAND_UI(ID_REGION_RUBBER, OnUpdateRegionRubber)
     ON_COMMAND(ID_REGION_PANREGION, OnRegionPanregion)
     ON_UPDATE_COMMAND_UI(ID_REGION_PANREGION, OnUpdateRegionPanregion)
-    ON_COMMAND(ID_OPTIONS_AUTOPAN, OnOptionsAutopan)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_AUTOPAN, OnUpdateOptionsAutopan)
     ON_COMMAND(ID_OPTIONS_VIDEOOPTIONS, OnVideoSettings)
     ON_COMMAND(ID_OPTIONS_CURSOROPTIONS, OnOptionsCursoroptions)
-    ON_COMMAND(ID_OPTIONS_ATUOPANSPEED, OnOptionsAtuopanspeed)
     ON_COMMAND(ID_REGION_FULLSCREEN, OnRegionFullscreen)
     ON_UPDATE_COMMAND_UI(ID_REGION_FULLSCREEN, OnUpdateRegionFullscreen)
     ON_COMMAND(ID_SCREENS_SELECTSCREEN, OnRegionSelectScreen)
@@ -429,96 +409,23 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
     ON_UPDATE_COMMAND_UI(ID_SCREENS_ALLSCREENS, OnUpdateRegionAllScreens)
     ON_COMMAND(ID_PAUSE, OnPause)
     ON_UPDATE_COMMAND_UI(ID_PAUSE, OnUpdatePause)
-    ON_COMMAND(ID_OPTIONS_RECORDAUDIO, OnOptionsRecordaudio)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDAUDIO, OnUpdateOptionsRecordaudio)
-    ON_COMMAND(ID_OPTIONS_AUDIOFORMAT, OnOptionsAudioformat)
-    ON_COMMAND(ID_OPTIONS_AUDIOSPEAKERS, OnOptionsAudiospeakers)
-    ON_COMMAND(ID_OPTIONS_RECORDAUDIO_DONOTRECORDAUDIO, OnOptionsRecordaudioDonotrecordaudio)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDAUDIO_DONOTRECORDAUDIO, OnUpdateOptionsRecordaudioDonotrecordaudio)
-    ON_COMMAND(ID_OPTIONS_RECORDAUDIO_RECORDFROMSPEAKERS, OnOptionsRecordaudioRecordfromspeakers)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDAUDIO_RECORDFROMSPEAKERS, OnUpdateOptionsRecordaudioRecordfromspeakers)
-    ON_COMMAND(ID_OPTIONS_RECORDAUDIOMICROPHONE, OnOptionsRecordaudiomicrophone)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDAUDIOMICROPHONE, OnUpdateOptionsRecordaudiomicrophone)
-    ON_COMMAND(ID_OPTIONS_NAMING_AUTODATE, OnOptionsNamingAutodate)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_NAMING_AUTODATE, OnUpdateOptionsNamingAutodate)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_LANGUAGE_ENGLISH, OnUpdateOptionsLanguageEnglish)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_LANGUAGE_GERMAN, OnUpdateOptionsLanguageGerman)
-    ON_COMMAND(ID_OPTIONS_LANGUAGE_ENGLISH, OnOptionsLanguageEnglish)
-    ON_COMMAND(ID_OPTIONS_LANGUAGE_GERMAN, OnOptionsLanguageFilipino)
+
     ON_COMMAND(ID_REGION_WINDOW, OnRegionWindow)
     ON_UPDATE_COMMAND_UI(ID_REGION_WINDOW, OnUpdateRegionWindow)
-
-    ON_COMMAND(ID_ANNOTATION_ADDSYSTEMTIMESTAMP, OnAnnotationAddsystemtimestamp)
-    ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDSYSTEMTIMESTAMP, OnUpdateAnnotationAddsystemtimestamp)
-
-    ON_COMMAND(ID_ANNOTATION_ADDCAPTION, OnAnnotationAddcaption)
-    ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDCAPTION, OnUpdateAnnotationAddcaption)
-    ON_COMMAND(ID_ANNOTATION_ADDWATERMARK, OnAnnotationAddwatermark)
-    ON_UPDATE_COMMAND_UI(ID_ANNOTATION_ADDWATERMARK, OnUpdateAnnotationAddwatermark)
-    ON_COMMAND(ID_EFFECTS_OPTIONS, OnEffectsOptions)
-    ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_PRESETTIME, OnOptionsProgramoptionsPresettime)
-    ON_COMMAND(ID_OPTIONS_MINIMIZEONSTART, OnOptionsMinimizeonstart)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_MINIMIZEONSTART, OnUpdateOptionsMinimizeonstart)
-    ON_COMMAND(ID_OPTIONS_HIDEFLASHING, OnOptionsHideflashing)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_HIDEFLASHING, OnUpdateOptionsHideflashing)
-    ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_SAVESETTINGSONEXIT, OnOptionsProgramoptionsSavesettingsonexit)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_SAVESETTINGSONEXIT, OnUpdateOptionsProgramoptionsSavesettingsonexit)
-    ON_COMMAND(ID_OPTIONS_CAPTURETRANS, OnOptionsCapturetrans)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_CAPTURETRANS, OnUpdateOptionsCapturetrans)
-    ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_PLAYAVI, OnOptionsProgramoptionsPlayavi)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_PLAYAVI, OnUpdateOptionsProgramoptionsPlayavi)
-    ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_NOPLAY, OnOptionsProgramoptionsNoplay)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_NOPLAY, OnUpdateOptionsProgramoptionsNoplay)
-    ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_DEFAULTPLAY, OnOptionsProgramoptionsDefaultplay)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_DEFAULTPLAY, OnUpdateOptionsProgramoptionsDefaultplay)
-    ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_CAMSTUDIOPLAY, OnOptionsProgramoptionsCamstudioplay)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_CAMSTUDIOPLAY, OnUpdateOptionsProgramoptionsCamstudioplay)
-    ON_COMMAND(ID_OPTIONS_PROGRAMOPTIONS_PLAYAVIFILEWHENRECORDINGSTOPS_USECAMSTUDIOPLAYER20, OnOptionsUsePlayer20)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_PROGRAMOPTIONS_PLAYAVIFILEWHENRECORDINGSTOPS_USECAMSTUDIOPLAYER20, OnUpdateUsePlayer20)
-    ON_COMMAND(ID_OPTIONS_TEMPDIR_WINDOWS, OnOptionsTempdirWindows)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_TEMPDIR_WINDOWS, OnUpdateOptionsTempdirWindows)
-    ON_COMMAND(ID_OPTIONS_TEMPDIR_INSTALLED, OnOptionsTempdirInstalled)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_TEMPDIR_INSTALLED, OnUpdateOptionsTempdirInstalled)
-    ON_COMMAND(ID_OPTIONS_TEMPDIR_USER, OnOptionsTempdirUser)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_TEMPDIR_USER, OnUpdateOptionsTempdirUser)
-
-    ON_COMMAND(ID_OUTPUTDIRECTORY_USEWINDOWSTEMPORARYDIRECTORY, OnOptionsOutputDirWindows)
-    ON_UPDATE_COMMAND_UI(ID_OUTPUTDIRECTORY_USEWINDOWSTEMPORARYDIRECTORY, OnUpdateOptionsOutputDirWindows)
-
-    ON_COMMAND(ID_OUTPUTDIRECTORY_USEMYCAMSTUDIORECORDINGSDIRECTORY, OnOptionsOutputDirInstalled)
-    ON_UPDATE_COMMAND_UI(ID_OUTPUTDIRECTORY_USEMYCAMSTUDIORECORDINGSDIRECTORY, OnUpdateOptionsOutputDirInstalled)
-
-    ON_COMMAND(ID_OUTPUTDIRECTORY_USEUSERSPECIFIEDDIRECTORY, OnOptionsOutputDirUser)
-    ON_UPDATE_COMMAND_UI(ID_OUTPUTDIRECTORY_USEUSERSPECIFIEDDIRECTORY, OnUpdateOptionsUser)
-
-    ON_COMMAND(ID_OPTIONS_RECORDINGTHREADPRIORITY_NORMAL, OnOptionsRecordingthreadpriorityNormal)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDINGTHREADPRIORITY_NORMAL, OnUpdateOptionsRecordingthreadpriorityNormal)
-    ON_COMMAND(ID_OPTIONS_RECORDINGTHREADPRIORITY_HIGHEST, OnOptionsRecordingthreadpriorityHighest)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDINGTHREADPRIORITY_HIGHEST, OnUpdateOptionsRecordingthreadpriorityHighest)
-    ON_COMMAND(ID_OPTIONS_RECORDINGTHREADPRIORITY_ABOVENORMAL, OnOptionsRecordingthreadpriorityAbovenormal)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDINGTHREADPRIORITY_ABOVENORMAL, OnUpdateOptionsRecordingthreadpriorityAbovenormal)
-    ON_COMMAND(ID_OPTIONS_RECORDINGTHREADPRIORITY_TIMECRITICAL, OnOptionsRecordingthreadpriorityTimecritical)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_RECORDINGTHREADPRIORITY_TIMECRITICAL,
-                         OnUpdateOptionsRecordingthreadpriorityTimecritical)
-    ON_COMMAND(ID_OPTIONS_NAMING_ASK, OnOptionsNamingAsk)
-    ON_UPDATE_COMMAND_UI(ID_OPTIONS_NAMING_ASK, OnUpdateOptionsNamingAsk)
     ON_COMMAND(ID_OPTIONS_KEYBOARDSHORTCUTS, OnOptionsKeyboardshortcuts)
-
     ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
     ON_COMMAND(ID_FILE_PRINT_DIRECT, CView::OnFilePrint)
     ON_COMMAND(ID_FILE_PRINT_PREVIEW, CView::OnFilePrintPreview)
     ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDSTART, OnRecordStart)
     ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDINTERRUPTED, OnRecordInterrupted)
     ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDPAUSED, OnRecordPaused)
-    ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_SAVECURSOR, OnSaveCursor)
     ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_GENERIC, OnUserGeneric)
-    ON_MESSAGE(MM_WIM_DATA, OnMM_WIM_DATA)
     ON_MESSAGE(WM_HOTKEY, OnHotKey)
     ON_WM_CAPTURECHANGED()
+    ON_COMMAND(ID_OPTIONS_PROGRAMSETTINGS, &CRecorderView::OnOptionsProgramsettings)
 END_MESSAGE_MAP()
 
 BEGIN_EVENTSINK_MAP(CRecorderView, CView)
-
 END_EVENTSINK_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -686,25 +593,17 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
     g_hLogoBM = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP3));
 
-    // Ver 1.2
-    // strCursorDir default
-    TCHAR dirx[_MAX_PATH];
-    GetWindowsDirectory(dirx, _MAX_PATH);
-    CString windir;
-    windir.Format(_T("%s\\cursors"), dirx);
-    CamCursor.Dir(windir);
-
     // savedir default
     // We by default save to to user's configured my videos directory.
     // Using GetProgPath instead is not compatible with Vista/Win7 since we have no write permission.
-    savedir = GetMyVideoPath();
+    //savedir = GetMyVideoPath();
     // TRACE("## CRecorderView::OnCreate: initialSaveMMMode Default savedir=GetProgPath()=[%s]!\n", savedir);
 
-    if (!initialSaveMMMode())
-    {
-        TRACE("CRecorderView::OnCreate: initialSaveMMMode FAILED!\n");
-        // return -1;
-    }
+    //if (!initialSaveMMMode())
+    //{
+    //    TRACE("CRecorderView::OnCreate: initialSaveMMMode FAILED!\n");
+    //    // return -1;
+    //}
 
     srand((unsigned)time(nullptr));
 
@@ -714,19 +613,11 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 void CRecorderView::OnDestroy()
 {
     settings_model_->save();
-    DecideSaveSettings();
 
     // UnSetHotKeys(g_hWndGlobal);
     // getHotKeyMap().clear(); // who actually cares?
 
     //DestroyShiftWindow();
-    //mouse_capture_wnd_.reset();
-
-    if (g_compressor_info != nullptr)
-    {
-        delete[] g_compressor_info;
-        g_num_compressor = 0;
-    }
 
     if (g_hSavedBitmap)
     {
@@ -740,39 +631,15 @@ void CRecorderView::OnDestroy()
         g_hLogoBM = nullptr;
     }
 
-    // if (pwfx) {
-    //    GlobalFreePtr(pwfx);
-    //    pwfx = nullptr;
-    //}
-
-    // ver 1.6
-    if (TroubleShootVal)
-    {
-        // Safety code
-        if ((waveInGetNumDevs() == 0) || (waveOutGetNumDevs() == 0) || (mixerGetNumDevs() == 0))
-        {
-            // Do nothing
-        }
-        else
-        {
-            useWavein(TRUE, FALSE);
-        }
-    }
-    else
-    {
-        finalRestoreMMMode();
-    }
-
-    FreeWaveoutResouces();
-    WaveoutUninitialize();
-
     CView::OnDestroy();
 }
 
-std::string generate_temp_filename(video_container::type container)
+std::string CRecorderView::generate_temp_filename(video_container::type container)
 {
-    const auto temp_folder = get_temp_folder(cProgramOpts.m_iTempPathAccess,
-        cProgramOpts.m_strSpecifiedDir);
+    const auto output_directory = settings_model_->get_application_temp_directory();
+    const auto temp_folder = get_temp_folder(
+        settings_model_->get_application_temp_directory_access(),
+        std::wstring(output_directory.begin(), output_directory.end()));
 
     time_t osBinaryTime;
     time(&osBinaryTime);
@@ -802,10 +669,10 @@ std::string generate_temp_filename(video_container::type container)
     bool fileverified = false;
     while (!fileverified)
     {
-        auto filepath = std::experimental::filesystem::path(strTempVideoFilePath);
-        if (std::experimental::filesystem::exists(filepath))
+        auto filepath = std::filesystem::path(strTempVideoFilePath);
+        if (std::filesystem::exists(filepath))
         {
-            fileverified = std::experimental::filesystem::remove(filepath);
+            fileverified = std::filesystem::remove(filepath);
             if (!fileverified)
             {
                 strTempVideoFilePath = fmt::format(_T("{}\\{}-{}-{}.{}"), temp_folder,
@@ -821,14 +688,15 @@ std::string generate_temp_filename(video_container::type container)
     return wstring_to_utf8(strTempVideoFilePath);
 }
 
+
+
 LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
 {
     TRACE("CRecorderView::OnRecordStart\n");
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
     pStatus->SetPaneText(0, _T("Press the Stop Button to stop recording"));
 
-    // ver 1.2
-    if (cProgramOpts.m_bMinimizeOnStart)
+    if (settings_model_->get_application_minimize_on_capture_start())
         ::PostMessage(AfxGetMainWnd()->m_hWnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 
     // Check validity of g_rc and fix it
@@ -885,7 +753,7 @@ LRESULT CRecorderView::OnRecordPaused(WPARAM /*wParam*/, LPARAM /*lParam*/)
 
 LRESULT CRecorderView::OnRecordInterrupted(WPARAM wParam, LPARAM /*lParam*/)
 {
-    UninstallMouseHook(g_hWndGlobal);
+    //UninstallMouseHook(g_hWndGlobal);
 
     // Ver 1.1
     if (g_bRecordPaused)
@@ -912,12 +780,6 @@ LRESULT CRecorderView::OnRecordInterrupted(WPARAM wParam, LPARAM /*lParam*/)
     ::SetForegroundWindow(AfxGetMainWnd()->m_hWnd);
     AfxGetMainWnd()->ShowWindow(SW_RESTORE);
 
-    return 0;
-}
-
-LRESULT CRecorderView::OnSaveCursor(WPARAM wParam, LPARAM /*lParam*/)
-{
-    CamCursor.Save(reinterpret_cast<HCURSOR>(wParam));
     return 0;
 }
 
@@ -1000,288 +862,92 @@ void CRecorderView::OnUpdateRegionAllScreens(CCmdUI *pCmdUI)
     }
 }
 
+void CRecorderView::restore_window()
+{
+    ::SetForegroundWindow(AfxGetMainWnd()->m_hWnd);
+    AfxGetMainWnd()->ShowWindow(SW_RESTORE);
+}
+
 // This function is called when the avi saving is completed
 LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
-    CString strTmp = "";
-    CString strTargetDir = "";          // Path to target location
-    CString strTargetBareFileName = ""; // Target filename without path and without extension
-    CString strTargetVideoFile = "";    // Video filename initial without path but with extension
-    CString strTargetAudioFile = "";    // Audio filename initial without path but with extension
-    CString strTargetVideoExtension = ".mkv";
-    CString strTargetMP4VideoFile = "";
+    restore_window();
 
-    // ver 1.2
-    ::SetForegroundWindow(AfxGetMainWnd()->m_hWnd);
-    AfxGetMainWnd()->ShowWindow(SW_RESTORE);
-
-    // ver 1.2
-    // FIXME: this is not quite right. Shall be bCancelled or something
     if (g_interruptkey == cHotKeyOpts.m_RecordCancel.m_vKey)
     {
-        // if (g_interruptkey==VK_ESCAPE) {
-        // Perform processing for cancel operation
-        std::experimental::filesystem::remove(strTempVideoFilePath);
-        if (!cAudioFormat.isInput(NONE))
-            DeleteFileW(strTempAudioWavFilePath.c_str());
+        // recording was canceled, so remove the temp file.
+        std::filesystem::remove(strTempVideoFilePath);
         return 0;
     }
 
-    ////////////////////////////////////
-    // Prepare Dialog (but do not use it here)
-    ////////////////////////////////////
-    // To ask user for the filename, Normal thread exit
+    std::filesystem::path target_directory;
 
-    CString strFilter;
-    CString strTitle;
-    CString strExtFilter;
-
-    switch (cProgramOpts.m_iRecordingMode)
+    if (std::filesystem::exists(settings_model_->get_application_output_directory()))
     {
-        case ModeAVI:
-            strFilter = _T("mkv Movie Files (*.mkv)|*.mkv||");
-            strTitle = _T("Save mkv File");
-            strExtFilter = _T("*.mkv");
-            break;
-    }
-
-    //std::experimental::filesystem::directory_entry::ex
-    if (DoesDefaultOutDirExist(cProgramOpts.m_strDefaultOutDir.c_str()))
-    {
-        strTargetDir = cProgramOpts.m_strDefaultOutDir.c_str();
+        target_directory = settings_model_->get_application_output_directory();
     }
     else
     {
-        strTargetDir = get_temp_folder(cProgramOpts.m_iOutputPathAccess, cProgramOpts.m_strSpecifiedDir, true).c_str();
+        // \note this is wrong!!
+        //strTargetDir = get_temp_folder(settings_model_->get_application_temp_directory_access(),
+            //settings_model_->get_application_temp_directory(), true);
+        assert(false);
     }
 
-    CFileDialog fdlg(FALSE, strExtFilter, strExtFilter, OFN_LONGNAMES | OFN_OVERWRITEPROMPT, strFilter, this);
-    fdlg.m_ofn.lpstrTitle = strTitle;
+    const auto file_extention = video_settings_model_->get_video_container_file_extention();
+    const auto filter = fmt::format(L"Video files (*.{0}|*/{0})", file_extention);
+    const auto title = L"Save video file";
+    const auto extended_filter = fmt::format(L"*.{}", file_extention);
+
+    CFileDialog file_dialog(FALSE, extended_filter.c_str(), extended_filter.c_str(),
+        OFN_LONGNAMES | OFN_OVERWRITEPROMPT | OFN_ENABLESIZING, filter.c_str(), this);
+    file_dialog.m_ofn.lpstrTitle = title;
 
     // Savedir is a global var and therefor mostly set before.
     if (savedir == "")
     {
         savedir = GetMyVideoPath();
     }
-    fdlg.m_ofn.lpstrInitialDir = strTargetDir;
 
-    // I believed that savedir would always be GetProgPath().
-    // But this test below proved that that is not alway the case
-    // TRACE("## CRecorderView::OnUserGeneric() cProgramOpts.m_strSpecifiedDir=[%s]\n",cProgramOpts.m_strSpecifiedDir );
-    // TRACE("## CRecorderView::OnUserGeneric , savedir    = [%s]\n", savedir );
-    // TRACE("## CRecorderView::OnUserGeneric , GetProgPath= [%s]\n", GetProgPath() );
-    // TRACE("## CRecorderView::OnUserGeneric , savedir = GetProgPath [%s]\n", (GetProgPath()==savedir) ? "EQUAL" :
-    // "DIFFERENT"  );
+    const auto initial_directory = target_directory.generic_wstring();
+    file_dialog.m_ofn.lpstrInitialDir = initial_directory.c_str();
 
-    if (/*cProgramOpts.m_iRecordingMode == ModeAVI &&*/ cProgramOpts.m_bAutoNaming)
+    std::filesystem::path target_filepath;
+    if (settings_model_->get_application_auto_filename())
     {
+        const auto t = std::time(nullptr);
+        const auto tm = fmt::localtime(t);
 
-        // Use local copy of the timestamp string created when recording was started for autonaming.
-        // "ccyymmdd-hhmm-ss" , Timestamp still used for default temp.avi output "temp-ccyymmdd-hhmm-ss.avi"
-        //strTargetBareFileName = cVideoOpts.m_cStartRecordingString.c_str();
-        strTargetVideoExtension = ".mkv";
+        // auto filename name format should be configurable.
+        target_filepath = std::filesystem::path(settings_model_->get_application_output_directory()) /
+            fmt::format("T{:%Y%m%d-%H%M-%s}", tm);
     }
-    else if (fdlg.DoModal() == IDOK)
+    else if (file_dialog.DoModal() == IDOK)
     {
-        strTmp = fdlg.GetPathName();
-        const auto filepath = std::experimental::filesystem::path(strTmp.GetString());
-
-        strTargetDir = filepath.parent_path().string().c_str(); //strTmp.Left(strTmp.ReverseFind('\\'));
-        // remove path info, we now have the udf defined filename
-        strTmp = filepath.filename().wstring().c_str(); //  strTmp.Mid(strTmp.ReverseFind('\\') + 1);
-
-        // Split filename in base and extension
-        const auto filename = filepath.filename();
-        if (filename.has_extension())
-        {
-            strTargetBareFileName = filename.stem().c_str();// strTmp.Left(iPos);
-            strTargetVideoExtension = filename.extension().c_str();// strTmp.Mid(iPos); // Extension with dot included
-        }
-        else
-        {
-            strTargetBareFileName = filename.c_str();
-            // append always .avi if no extension is given.
-            strTargetVideoExtension = ".mkv";
-        }
+        const auto file_dialog_filepath = file_dialog.GetPathName();
+        target_filepath = std::filesystem::path(file_dialog_filepath.GetString());
     }
     else
     {
-        std::experimental::filesystem::remove(strTempVideoFilePath);
-        if (!cAudioFormat.isInput(NONE))
-            std::experimental::filesystem::remove(strTempAudioWavFilePath);
-
         return 0;
     }
 
-    // append always .avi as filetype when record to flash or mp4 is applicable because MP4 converter expects as
-    // input an AVI file
-    // if (cProgramOpts.m_iRecordingMode == ModeFlash)
-    //{
-    //    strTargetVideoExtension = ".avi";
-    //}
+    if (!target_filepath.has_extension())
+        target_filepath.replace_extension(video_settings_model_->get_video_container_file_extention());
 
-    // Create all the applicable targetfile names
-    strTargetVideoFile =
-        strTargetDir + "\\" + strTargetBareFileName +
-        strTargetVideoExtension; // strTargetVideoFile is the same string as strNewFile in previously approach
-    strTargetAudioFile = strTargetDir + "\\" + strTargetBareFileName + ".wav";
-
-    // TRACE("## CRecorderView::OnUserGeneric 2a # strTargetDir            :[%s]\n", strTargetDir);
-    // TRACE("## 2b # strTargetBareFileName   :[%s]\n", strTargetBareFileName );
-    // TRACE("## 2c # strTargetVideoExtension :[%s]\n", strTargetVideoExtension );
-    // TRACE("## 3a # strTargetVideoFile      :[%s]\n", strTargetVideoFile );
-    // TRACE("## 3b # strTargetAudioFile      :[%s]\n", strTargetAudioFile );
-
-    /////////////////////////////////////////////////////////
-    // To be compatible with old previously solution.
-    // Savedir is a global var and was always be set. (Mostly as GetProgPath())
-    // Todo: Better solution required. Doubt that we need to set or require a global savedir always
-    /////////////////////////////////////////////////////////
-    savedir = strTargetDir;
-
-    // Ver 1.1
-    if (cAudioFormat.m_iRecordAudio)
+    std::error_code ec;
+    std::filesystem::rename(strTempVideoFilePath, target_filepath, ec);
+    if (ec)
     {
-        // Check if video(!) file exists and if so, does it allow overwrite
-        HANDLE hfile =
-            CreateFile(strTargetVideoFile, GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
-        if (hfile == INVALID_HANDLE_VALUE)
-        {
-            //::MessageBox(nullptr,"Unable to create new file. The file may be opened by another application. Please use
-            // another filename.","Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(m_hWnd, IDS_STRING_NOCREATEWFILE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            ::PostMessage(g_hWndGlobal, WM_USER_GENERIC, 0, 0);
-            return 0;
-        }
-        CloseHandle(hfile);
-        std::experimental::filesystem::remove(strTargetVideoFile.GetString());
-
-        // If video only (Do not record audio) there is no reason to merge video with audio and video.avi file could be
-        // used without further processing.
-        if (cAudioFormat.m_iRecordAudio == NONE)
-        {
-            TRACE("## CRecorderView::OnUserGeneric  NO Audio defined, no merge required. .\n");
-        }
-
-        int result = -1;
-
-        // do we ever want to merge AV?
-        bool wantMerge = true;
-        g_cfg->lookupValue("Program.MergeAV", wantMerge);
-        if (wantMerge)
-        {
-
-            // Mergefile video with audio
-            // ver 2.26 ...overwrite audio settings for Flash Mode recording ... no compression used...
-            if ((cAudioFormat.isInput(SPEAKERS)) || (cAudioFormat.m_bUseMCI))
-            {
-                //result = MergeVideoAudio(strTempVideoAviFilePath.c_str(), strTempAudioWavFilePath.c_str(), strTargetVideoFile, FALSE,
-                                         //cAudioFormat);
-            }
-            else if (cAudioFormat.isInput(MICROPHONE))
-            {
-                //result = MergeVideoAudio(strTempVideoAviFilePath.c_str(), strTempAudioWavFilePath.c_str(), strTargetVideoFile,
-                                         //cAudioFormat.m_bCompression, cAudioFormat);
-            }
-        }
-
-        // Check Results : Attempt Recovery on error
-        switch (result)
-        {
-            case 0: // Successful
-            case 1: // video file broken; Unable to recover
-            case 3: // this case is rare; Unable to recover
-                std::experimental::filesystem::remove(strTempVideoFilePath);
-                std::experimental::filesystem::remove(strTempAudioWavFilePath);
-                break;
-            case 2:
-            case 4: // recover video file
-            {
-                // video file is ok, but not audio file
-                // so Move the video file as avi and ignore the audio  (Move = More or Copy+Delete)
-
-                std::error_code ec;
-                std::experimental::filesystem::rename(strTempVideoFilePath, strTargetVideoFile.GetString(), ec);
-                if (ec)
-                {
-                    // Although there is error copying, the temp file still remains in the temp directory and is not
-                    // deleted, in case user wants a manual recover MessageBox("File Creation Error. Unable to
-                    // rename/copy file.","Note",MB_OK | MB_ICONEXCLAMATION);
-                    MessageOut(m_hWnd, IDS_STRING_MOVEFILEFAILURE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-                    return 0;
-                }
-
-                std::experimental::filesystem::remove(strTempAudioWavFilePath);
-
-                //::MessageBox(nullptr,"Your AVI movie will not contain a soundtrack. CamStudio is unable to merge the
-                // video with audio.","Note",MB_OK | MB_ICONEXCLAMATION);
-                MessageOut(m_hWnd, IDS_STRING_NOSOUNDTRACK, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            } break;
-            case 5: // recover both files, but as separate files
-            {
-                std::error_code ec;
-                std::experimental::filesystem::rename(strTempVideoFilePath, strTargetAudioFile.GetString(), ec);
-                if (ec)
-                {
-                    // MessageBox("File Creation Error. Unable to rename/copy video file.","Note",MB_OK |
-                    // MB_ICONEXCLAMATION);
-                    MessageOut(m_hWnd, IDS_STRING_MOVEFILEFAILURE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-                    return 0;
-                }
-
-                std::experimental::filesystem::rename(strTempAudioWavFilePath, strTargetAudioFile.GetString(), ec);
-                if (ec)
-                {
-                    // MessageBox("File Creation Error. Unable to rename/copy audio file.","Note",MB_OK |
-                    // MB_ICONEXCLAMATION);
-                    MessageOut(m_hWnd, IDS_STRING_FILECREATION3, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-                    return 0;
-                }
-
-                CString tstr;
-                tstr.LoadString(IDS_STRING_NOTE);
-                CString msgstr;
-                msgstr.LoadString(IDS_STRING_NOMERGE);
-                // CString msgstr("CamStudio is unable to merge the video with audio files. Your video, audio and log
-                // files are saved separately as \n\n");
-
-                msgstr = msgstr + strTargetVideoFile + "\n";
-                msgstr = msgstr + strTargetAudioFile;
-
-                ::MessageBox(nullptr, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
-            }
-            break;
-        }
+        // Unable to rename/copy file.
+        // In case of an move problem we do nothing. Source has an unique name and not to delete the source file
+        // don't cause problems any longer The file may be opened by another application. Please use another
+        // filename."
+        MessageOut(m_hWnd, IDS_STRING_MOVEFILEFAILURE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+        // Repeat this function until success
+        ::PostMessage(g_hWndGlobal, WM_USER_GENERIC, 0, 0);
+        return 0;
     }
-    else
-    {
-        // TRACE("## CRecorderView::OnUserGeneric  NO Audio, just do a plain copy of temp avi to final avi\n");
-        //////////////////////////////////////////////////
-        // No audio, just do a plain copy of temp avi to final avi will do the job
-        // MoveFile behavior. First it will try to rename file. If not possible it will do a copy and a delete.
-        //////////////////////////////////////////////////
-
-        std::error_code ec;
-        std::experimental::filesystem::rename(strTempVideoFilePath, strTargetVideoFile.GetString(), ec);
-        if (ec)
-        {
-            // Unable to rename/copy file.
-            // In case of an move problem we do nothing. Source has an unique name and not to delete the source file
-            // don't cause problems any longer The file may be opened by another application. Please use another
-            // filename."
-            MessageOut(m_hWnd, IDS_STRING_MOVEFILEFAILURE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-            // Repeat this function until success
-            ::PostMessage(g_hWndGlobal, WM_USER_GENERIC, 0, 0);
-            return 0;
-        }
-
-        if (!cAudioFormat.isInput(NONE))
-        {
-            std::experimental::filesystem::remove(strTempAudioWavFilePath);
-        }
-    }
-
-    RunViewer(strTargetVideoFile);
 
     return 0;
 }
@@ -1417,51 +1083,41 @@ void CRecorderView::OnOptionsCursoroptions()
     settings_model_->save();
 }
 
-void CRecorderView::OnOptionsAutopan()
-{
-    cProgramOpts.m_bAutoPan = !cProgramOpts.m_bAutoPan;
-}
 
-void CRecorderView::OnOptionsAtuopanspeed()
-{
-    CAutopanSpeedDlg aps_dlg;
-    aps_dlg.DoModal();
-}
-
-void CRecorderView::OnUpdateOptionsAutopan(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_bAutoPan);
-}
-
-void CRecorderView::OnOptionsMinimizeonstart()
-{
-    cProgramOpts.m_bMinimizeOnStart = !cProgramOpts.m_bMinimizeOnStart;
-}
-
-void CRecorderView::OnUpdateOptionsMinimizeonstart(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_bMinimizeOnStart);
-}
-
-void CRecorderView::OnOptionsHideflashing()
-{
-    cProgramOpts.m_bFlashingRect = !cProgramOpts.m_bFlashingRect;
-}
-
-void CRecorderView::OnUpdateOptionsHideflashing(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(!cProgramOpts.m_bFlashingRect);
-}
-
-void CRecorderView::OnOptionsProgramoptionsPlayavi()
-{
-    cProgramOpts.m_iLaunchPlayer = (cProgramOpts.m_iLaunchPlayer) ? NO_PLAYER : CAM1_PLAYER;
-}
-
-void CRecorderView::OnUpdateOptionsProgramoptionsPlayavi(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_iLaunchPlayer);
-}
+//void CRecorderView::OnUpdateOptionsAutopan(CCmdUI *pCmdUI)
+//{
+//    pCmdUI->SetCheck(cProgramOpts.m_bAutoPan);
+//}
+//
+//void CRecorderView::OnOptionsMinimizeonstart()
+//{
+//    cProgramOpts.m_bMinimizeOnStart = !cProgramOpts.m_bMinimizeOnStart;
+//}
+//
+//void CRecorderView::OnUpdateOptionsMinimizeonstart(CCmdUI *pCmdUI)
+//{
+//    pCmdUI->SetCheck(cProgramOpts.m_bMinimizeOnStart);
+//}
+//
+//void CRecorderView::OnOptionsHideflashing()
+//{
+//    cProgramOpts.m_bFlashingRect = !cProgramOpts.m_bFlashingRect;
+//}
+//
+//void CRecorderView::OnUpdateOptionsHideflashing(CCmdUI *pCmdUI)
+//{
+//    pCmdUI->SetCheck(!cProgramOpts.m_bFlashingRect);
+//}
+//
+//void CRecorderView::OnOptionsProgramoptionsPlayavi()
+//{
+//    cProgramOpts.m_iLaunchPlayer = (cProgramOpts.m_iLaunchPlayer) ? NO_PLAYER : CAM1_PLAYER;
+//}
+//
+//void CRecorderView::OnUpdateOptionsProgramoptionsPlayavi(CCmdUI *pCmdUI)
+//{
+//    pCmdUI->SetCheck(cProgramOpts.m_iLaunchPlayer);
+//}
 
 void CRecorderView::OnHelpWebsite()
 {
@@ -1530,65 +1186,7 @@ void CRecorderView::OnHelpFaq()
     //Openlink("http://www.camstudio.org/faq.htm");
 }
 
-LRESULT CRecorderView::OnMM_WIM_DATA(WPARAM parm1, LPARAM parm2)
-{
 #if 0
-    HANDLE hInputDev = (HANDLE)parm1;
-    ASSERT(hInputDev == m_hWaveRecord);
-    LPWAVEHDR pHdr = (LPWAVEHDR)parm2;
-    MMRESULT mmReturn = ::waveInUnprepareHeader(m_hWaveRecord, pHdr, sizeof(WAVEHDR));
-    if (mmReturn)
-    {
-        waveInErrorMsg(mmReturn, "in OnWIM_DATA()");
-        return 0;
-    }
-
-    // TRACE("WIM_DATA %4d\n", pHdr->dwBytesRecorded);
-
-    if (g_bRecordState)
-    {
-        CBuffer buf(pHdr->lpData, pHdr->dwBufferLength);
-        if (!g_bRecordPaused)
-        {
-            // write only if not paused
-            // Write Data to file
-            DataFromSoundIn(&buf);
-        }
-
-        // reuse the buffer:
-        // prepare it again
-        mmReturn = ::waveInPrepareHeader(m_hWaveRecord, pHdr, sizeof(WAVEHDR));
-        if (mmReturn)
-        {
-            waveInErrorMsg(mmReturn, "in OnWIM_DATA()");
-        }
-        else
-        {
-            // no error
-            // add the input buffer to the queue again
-            mmReturn = ::waveInAddBuffer(m_hWaveRecord, pHdr, sizeof(WAVEHDR));
-            if (mmReturn)
-            {
-                waveInErrorMsg(mmReturn, "in OnWIM_DATA()");
-            }
-            else
-            {
-                return 0; // no error
-            }
-        }
-    }
-
-    // we are closing the waveIn handle,
-    // all data must be deleted
-    // this buffer was allocated in Start()
-    delete pHdr->lpData;
-    delete pHdr;
-    m_QueuedBuffers--;
-#endif
-
-    return 0;
-}
-
 void CRecorderView::OnOptionsRecordaudio()
 {
     if (waveInGetNumDevs() == 0)
@@ -1649,6 +1247,7 @@ void CRecorderView::OnOptionsAudiospeakers()
     CAudioSpeakersDlg aos;
     aos.DoModal();
 }
+#endif
 
 void CRecorderView::OnOptionsKeyboardshortcuts()
 {
@@ -1663,432 +1262,18 @@ void CRecorderView::OnOptionsKeyboardshortcuts()
     }
 }
 
-// use CWinApp class profile API's
 bool CRecorderView::SaveAppSettings()
 {
     return false;
 }
 
-// Ver 1.2
 void CRecorderView::SaveSettings()
 {
-    //********************************************
-    // Creating CamStudio.ini for storing text data
-    //********************************************
-    //
-    // Once defined...the format cannot change in future versions
-    // new properties can only be appended at the end
-    // otherwise, the datafile will not be upward compatible with future versions
-
-    CString fileName("\\CamStudio.ini");
-    CString setDir = GetProgPath(); // TODO : Check use of setDir .. NOT savedir ???
-    CString setPath;
-    setPath.Format(_T("%s\\CamStudio.ini"), GetProgPath().GetString());
-
-    if (CamCursor.Select() == 2)
-    {
-        // CString cursorFileName = "\\CamCursor.ini";
-        // CString cursorDir = GetProgPath();
-        CString cursorPath;
-        cursorPath.Format(_T("%s\\CamStudio\\CamCursor.ini"), GetProgPath().GetString());
-        // Note, we do not save the cursorFilePath, but instead we make a copy
-        // of the cursor file in the Prog directory
-        CopyFile(CamCursor.FileName(), cursorPath, FALSE);
-    }
-
-    //********************************************
-    // Creating Camdata.ini for storing binary data
-    //********************************************
-    fileName = "\\CamStudio\\Camdata.ini";
-    setDir = GetAppDataPath();
-    setPath = setDir + fileName;
-
-    FILE *tFile = nullptr;
-    _wfopen_s(&tFile, setPath.GetString(), _T("wb"));
-    if (tFile == nullptr)
-    {
-        // Error creating file ...do nothing...return
-        return;
-    }
-
-    // ****************************
-    // Dump Variables
-    // ****************************
-    // Saving Directories, put here
-    if (savedir.GetLength() > 0)
-    {
-        if (savedir == GetMyVideoPath())
-        {
-            fwrite((LPCTSTR) "%CSIDL_MYVIDEO%", 15, 1, tFile);
-        }
-        else
-        {
-            fwrite((LPCTSTR)savedir, savedir.GetLength(), 1, tFile);
-        }
-    }
-
-    if (!CamCursor.Dir().IsEmpty())
-        fwrite((LPCTSTR)(CamCursor.Dir()), CamCursor.Dir().GetLength(), 1, tFile);
-
-    if (cAudioFormat.m_dwCbwFX > 0)
-        fwrite(&(cAudioFormat.AudioFormat()), cAudioFormat.m_dwCbwFX, 1, tFile);
-
-    // Ver 1.6
-    if (!cProgramOpts.m_strSpecifiedDir.empty())
-        fwrite(cProgramOpts.m_strSpecifiedDir.c_str(), cProgramOpts.m_strSpecifiedDir.size(), 1, tFile);
-
-    fclose(tFile);
 }
 
-// Ver 1.2
+
 void CRecorderView::LoadSettings()
 {
-    //AttemptRecordingFormat();
-    // set default audio recording format and compress format
-    // This prevents reading profile settings
-    // SuggestRecordingFormat();
-    // SuggestCompressFormat();
-    onLoadSettings(cAudioFormat.m_iRecordAudio);
-
-    CString fileName("");
-    CString setDir("");
-    CString setPath("");
-    char sdata[1000];
-    char tdata[1000];
-    // char specdata[1000];
-    int shapeNameLen = 0;
-    int layoutNameLen = 0;
-    float ver = 2.5; // What kind of var is this?  (Value for version?)
-
-    //********************************************
-    // Loading Camdata.ini binary data
-    //********************************************
-    fileName = "\\CamStudio\\Camdata.ini";
-    setDir = GetAppDataPath();
-    setPath = setDir + fileName;
-    FILE *tFile = nullptr;
-    _wfopen_s(&tFile, setPath.GetString(), _T("rb"));
-
-    if (tFile == nullptr)
-    {
-        setDir = GetProgPath();
-        setPath = setDir + fileName;
-        _wfopen_s(&tFile, setPath.GetString(), _T("rb"));
-    }
-
-    if (tFile == nullptr)
-    {
-        // Error creating file
-        cAudioFormat.m_dwCbwFX = 0;
-        SuggestCompressFormat();
-        return;
-    }
-
-    if (ver >= 1.2)
-    {
-        // ****************************
-        // Load Binary Data
-        // ****************************
-        if ((iSaveLen > 0) && (iSaveLen < 1000))
-        {
-            fread(sdata, iSaveLen, 1, tFile);
-            sdata[iSaveLen] = 0;
-            savedir = CString(sdata);
-        }
-
-        if ((iCursorLen > 0) && (iCursorLen < 1000))
-        {
-            fread(tdata, iCursorLen, 1, tFile);
-            tdata[iCursorLen] = 0;
-            CamCursor.Dir(CString(tdata));
-        }
-
-        if (ver > 1.35)
-        {
-            // if performing an upgrade from previous settings,
-            // do not load these additional camdata.ini information
-            if (0 < cAudioFormat.m_dwCbwFX)
-            {
-                // AllocCompressFormat(cAudioFormat.m_dwCbwFX);
-                size_t countread = fread(&(cAudioFormat.AudioFormat()), cAudioFormat.m_dwCbwFX, 1, tFile);
-                if (countread == 1)
-                {
-                    AttemptCompressFormat();
-                }
-                else
-                {
-                    cAudioFormat.DeleteAudio();
-                    SuggestCompressFormat();
-                }
-            }
-        }
-    }
-
-    fclose(tFile);
-}
-
-void CRecorderView::OnOptionsProgramoptionsSavesettingsonexit()
-{
-    cProgramOpts.m_bSaveSettings = !cProgramOpts.m_bSaveSettings;
-}
-
-void CRecorderView::OnUpdateOptionsProgramoptionsSavesettingsonexit(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_bSaveSettings);
-}
-
-void CRecorderView::DecideSaveSettings()
-{
-    CString nosaveName("\\CamStudio\\NoSave.ini");
-    CString nosaveDir = GetAppDataPath();
-    CString nosavePath = nosaveDir + nosaveName;
-
-    if (cProgramOpts.m_bSaveSettings)
-    {
-        SaveSettings();
-        std::experimental::filesystem::remove(nosavePath.GetString());
-    }
-    else
-    {
-        // Create the nosave.ini file if savesettings = 0;
-        FILE *rFile;
-        _wfopen_s(&rFile, nosavePath.GetString(), _T("wt"));
-        fputs("savesettings = 0\n", rFile);
-        fclose(rFile);
-
-        // Delete Settings File
-        CString setDir;
-        CString setPath;
-        CString fileName("\\CamStudio\\CamStudio.ini ");
-        setDir = GetAppDataPath();
-        setPath = setDir + fileName;
-
-        std::experimental::filesystem::remove(setPath.GetString());
-
-        fileName = "\\CamStudio\\Camdata.ini";
-        setPath = setDir + fileName;
-
-        std::experimental::filesystem::remove(setPath.GetString());
-
-        fileName = "\\CamStudio\\CamCursor.ini";
-        setPath = setDir + fileName;
-
-        std::experimental::filesystem::remove(setPath.GetString());
-    }
-}
-
-void CRecorderView::OnOptionsRecordingthreadpriorityNormal()
-{
-    cProgramOpts.m_iThreadPriority = THREAD_PRIORITY_NORMAL;
-}
-
-void CRecorderView::OnOptionsRecordingthreadpriorityHighest()
-{
-    cProgramOpts.m_iThreadPriority = THREAD_PRIORITY_HIGHEST;
-}
-
-void CRecorderView::OnOptionsRecordingthreadpriorityAbovenormal()
-{
-    cProgramOpts.m_iThreadPriority = THREAD_PRIORITY_ABOVE_NORMAL;
-}
-
-void CRecorderView::OnOptionsRecordingthreadpriorityTimecritical()
-{
-    cProgramOpts.m_iThreadPriority = THREAD_PRIORITY_TIME_CRITICAL;
-}
-
-void CRecorderView::OnUpdateOptionsRecordingthreadpriorityNormal(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_iThreadPriority == THREAD_PRIORITY_NORMAL);
-}
-
-void CRecorderView::OnUpdateOptionsRecordingthreadpriorityHighest(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_iThreadPriority == THREAD_PRIORITY_HIGHEST);
-}
-
-void CRecorderView::OnUpdateOptionsRecordingthreadpriorityAbovenormal(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_iThreadPriority == THREAD_PRIORITY_ABOVE_NORMAL);
-}
-
-void CRecorderView::OnUpdateOptionsRecordingthreadpriorityTimecritical(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_iThreadPriority == THREAD_PRIORITY_TIME_CRITICAL);
-}
-
-void CRecorderView::OnOptionsCapturetrans()
-{
-    cProgramOpts.m_bCaptureTrans = !cProgramOpts.m_bCaptureTrans;
-}
-
-void CRecorderView::OnUpdateOptionsCapturetrans(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_bCaptureTrans);
-}
-
-void CRecorderView::OnOptionsTempdirWindows()
-{
-    cProgramOpts.m_iTempPathAccess = dir_access::windows_temp_dir;
-}
-
-void CRecorderView::OnUpdateOptionsTempdirWindows(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_iTempPathAccess == dir_access::windows_temp_dir);
-}
-
-void CRecorderView::OnOptionsTempdirInstalled()
-{
-    cProgramOpts.m_iTempPathAccess = dir_access::install_dir;
-}
-
-void CRecorderView::OnUpdateOptionsTempdirInstalled(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_iTempPathAccess == dir_access::install_dir);
-}
-
-void CRecorderView::OnOptionsTempdirUser()
-{
-    CFolderDialog cfg(cProgramOpts.m_strSpecifiedDir.c_str());
-    if (IDOK == cfg.DoModal())
-    {
-        cProgramOpts.m_strSpecifiedDir = cfg.GetPathName();
-        cProgramOpts.m_iTempPathAccess = dir_access::user_specified_dir;
-    }
-}
-
-void CRecorderView::OnUpdateOptionsTempdirUser(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_iTempPathAccess == dir_access::user_specified_dir);
-}
-void CRecorderView::OnOptionsOutputDirWindows()
-{
-    cProgramOpts.m_iOutputPathAccess = dir_access::windows_temp_dir;
-}
-void CRecorderView::OnUpdateOptionsOutputDirWindows(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_iOutputPathAccess == dir_access::windows_temp_dir);
-}
-void CRecorderView::OnOptionsOutputDirInstalled()
-{
-    
-    cProgramOpts.m_iOutputPathAccess = dir_access::install_dir;
-}
-void CRecorderView::OnUpdateOptionsOutputDirInstalled(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_iOutputPathAccess == dir_access::install_dir);
-}
-void CRecorderView::OnOptionsOutputDirUser()
-{
-    CFolderDialog cfg(cProgramOpts.m_strSpecifiedDir.c_str());
-    if (IDOK == cfg.DoModal())
-    {
-        
-        cProgramOpts.m_strSpecifiedDir = cfg.GetPathName();
-        cProgramOpts.m_iOutputPathAccess = dir_access::user_specified_dir;
-    }
-}
-void CRecorderView::OnUpdateOptionsUser(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_iOutputPathAccess == dir_access::user_specified_dir);
-}
-void CRecorderView::OnOptionsRecordaudioDonotrecordaudio()
-{
-    cAudioFormat.m_iRecordAudio = NONE;
-}
-
-void CRecorderView::OnUpdateOptionsRecordaudioDonotrecordaudio(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cAudioFormat.isInput(NONE));
-}
-
-void CRecorderView::OnOptionsRecordaudioRecordfromspeakers()
-{
-    if (waveOutGetNumDevs() == 0)
-    {
-        // CString msgstr;
-        // msgstr.Format("Unable to detect audio output device. You need a sound card with speakers attached.");
-        // MessageBox(msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
-        MessageOut(m_hWnd, IDS_STRING_NOAUDIOOUTPUT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-        return;
-    }
-
-    cAudioFormat.m_iRecordAudio = SPEAKERS;
-
-    useWaveout(FALSE, FALSE);
-}
-
-void CRecorderView::OnUpdateOptionsRecordaudioRecordfromspeakers(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cAudioFormat.isInput(SPEAKERS));
-}
-
-void CRecorderView::OnOptionsRecordaudiomicrophone()
-{
-    if (waveInGetNumDevs() == 0)
-    {
-        MessageOut(m_hWnd, IDS_STRING_NOINPUT1, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-
-        return;
-    }
-
-    cAudioFormat.m_iRecordAudio = MICROPHONE;
-
-    useWavein(TRUE, FALSE); // TRUE ==> silence mode, will not report errors
-}
-
-void CRecorderView::OnUpdateOptionsRecordaudiomicrophone(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cAudioFormat.isInput(MICROPHONE));
-}
-
-void CRecorderView::OnOptionsProgramoptionsCamstudioplay()
-{
-    cProgramOpts.m_iLaunchPlayer = CAM1_PLAYER;
-}
-
-void CRecorderView::OnUpdateOptionsProgramoptionsCamstudioplay(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_iLaunchPlayer == CAM1_PLAYER);
-}
-
-void CRecorderView::OnOptionsProgramoptionsDefaultplay()
-{
-    cProgramOpts.m_iLaunchPlayer = DEFAULT_PLAYER;
-}
-
-void CRecorderView::OnUpdateOptionsProgramoptionsDefaultplay(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_iLaunchPlayer == DEFAULT_PLAYER);
-}
-
-void CRecorderView::OnOptionsProgramoptionsNoplay()
-{
-    cProgramOpts.m_iLaunchPlayer = NO_PLAYER;
-}
-
-void CRecorderView::OnUpdateOptionsProgramoptionsNoplay(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_iLaunchPlayer == NO_PLAYER);
-}
-
-void CRecorderView::OnHelpDonations()
-{
-    CString progdir, donatepath;
-    progdir = GetProgPath();
-    donatepath = progdir + "\\help.htm#Donations";
-
-//    Openlink(donatepath);
-}
-
-void CRecorderView::OnOptionsUsePlayer20()
-{
-    cProgramOpts.m_iLaunchPlayer = CAM2_PLAYER;
-}
-
-void CRecorderView::OnUpdateUsePlayer20(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_iLaunchPlayer == CAM2_PLAYER);
 }
 
 void CRecorderView::OnSetFocus(CWnd *pOldWnd)
@@ -2177,8 +1362,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
             zoom_direction_ *= -1;
             break;
         case HOTKEY_AUTOPAN_SHOW_HIDE_KEY:
-
-            OnOptionsAutopan();
+            //OnOptionsAutopan();
             show_message_ = true;
             break;
     }
@@ -2210,87 +1394,8 @@ BOOL CRecorderView::OnEraseBkgnd(CDC *pDC)
     return TRUE;
 }
 
-void CRecorderView::OnOptionsNamingAutodate()
-{
-    // Toggle between NamingAsk and AutoUpdate
-    CFolderDialog cfg(cProgramOpts.m_strDefaultOutDir.c_str());
-    if (IDOK == cfg.DoModal())
-    {
-        cProgramOpts.m_strDefaultOutDir = cfg.GetPathName();
-    }
-    cProgramOpts.m_bAutoNaming = true;
-}
-
-void CRecorderView::OnUpdateOptionsNamingAutodate(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cProgramOpts.m_bAutoNaming);
-}
-
-///////////////////////////
-// Option, user shall define filename
-///////////////////////////
-void CRecorderView::OnOptionsNamingAsk()
-{
-    // Toggle between NamingAsk and AutoUpdate
-    cProgramOpts.m_bAutoNaming = false;
-}
-
-void CRecorderView::OnUpdateOptionsNamingAsk(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(!cProgramOpts.m_bAutoNaming);
-}
-void CRecorderView::OnOptionsProgramoptionsPresettime()
-{
-    CPresetTimeDlg prestDlg;
-    prestDlg.DoModal();
-}
-
-// Multilanguage
-
-void CRecorderView::OnUpdateOptionsLanguageEnglish(CCmdUI *pCmdUI)
-{
-    CRecorderApp *pApp = static_cast<CRecorderApp *>(AfxGetApp());
-    pCmdUI->SetCheck(pApp->LanguageID() == 9);
-}
-
-void CRecorderView::OnUpdateOptionsLanguageGerman(CCmdUI *pCmdUI)
-{
-    CRecorderApp *pApp = static_cast<CRecorderApp *>(AfxGetApp());
-    pCmdUI->SetCheck(pApp->LanguageID() == 7);
-}
-
-void CRecorderView::OnUpdateOptionsLanguageFilipino(CCmdUI *pCmdUI)
-{
-    CRecorderApp *pApp = static_cast<CRecorderApp *>(AfxGetApp());
-    pCmdUI->SetCheck(pApp->LanguageID() == 2);
-}
-
-void CRecorderView::OnOptionsLanguageEnglish()
-{
-    CRecorderApp *pApp = static_cast<CRecorderApp *>(AfxGetApp());
-    pApp->LanguageID(9);
-    // AfxGetApp()->WriteProfileInt(SEC_SETTINGS, ENT_LANGID, 9);
-    AfxMessageBox(IDS_RESTARTAPP);
-}
-
-void CRecorderView::OnOptionsLanguageFilipino()
-{
-    CRecorderApp *pApp = static_cast<CRecorderApp *>(AfxGetApp());
-    pApp->LanguageID(2);
-    // AfxGetApp()->WriteProfileInt(SEC_SETTINGS, ENT_LANGID, 9);
-    AfxMessageBox(IDS_RESTARTAPP);
-}
-void CRecorderView::OnOptionsLanguageGerman()
-{
-    CRecorderApp *pApp = static_cast<CRecorderApp *>(AfxGetApp());
-    pApp->LanguageID(7);
-    // AfxGetApp()->WriteProfileInt(SEC_SETTINGS, ENT_LANGID, 7);
-    AfxMessageBox(IDS_RESTARTAPP);
-}
-
 void CRecorderView::OnRegionWindow()
 {
-
     settings_model_->set_capture_mode(capture_type::window);
 }
 
@@ -2345,73 +1450,6 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
             ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
     }
     CView::OnCaptureChanged(pWnd);
-}
-
-void CRecorderView::OnAnnotationAddsystemtimestamp()
-{
-    // Why do we use a .not. here? Because we clicked the button and need to toggle checkbox now
-    cTimestampOpts.m_bAnnotation = !cTimestampOpts.m_bAnnotation;
-}
-
-void CRecorderView::OnUpdateAnnotationAddsystemtimestamp(CCmdUI *pCmdUI)
-{
-    // Show current selection on screen
-    pCmdUI->SetCheck(cTimestampOpts.m_bAnnotation);
-}
-
-void CRecorderView::OnCameraDelayInMilliSec()
-{
-    // TRACE ("## CRecorderView::OnCameraDelayInMilliSec\n");
-    // Nothing is actual changed here.
-}
-
-void CRecorderView::OnRecordDurationLimitInMilliSec()
-{
-    // TRACE ("## CRecorderView::OnRecordDurationLimitInMilliSec\n");
-    // Nothing is actual changed here.
-}
-
-void CRecorderView::OnAnnotationAddcaption()
-{
-    cCaptionOpts.m_bAnnotation = !cCaptionOpts.m_bAnnotation;
-}
-
-void CRecorderView::OnUpdateAnnotationAddcaption(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cCaptionOpts.m_bAnnotation);
-}
-
-void CRecorderView::OnAnnotationAddwatermark()
-{
-    cWatermarkOpts.m_bAnnotation = !cWatermarkOpts.m_bAnnotation;
-}
-
-void CRecorderView::OnUpdateAnnotationAddwatermark(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(cWatermarkOpts.m_bAnnotation);
-}
-
-void CRecorderView::OnEffectsOptions()
-{
-    // TRACE("## CRecorderView::OnEffectsOptions() \n");
-    CAnnotationEffectsOptionsDlg dlg(this);
-
-    dlg.m_timestamp = cTimestampOpts.m_taTimestamp;
-
-    dlg.m_caption = cCaptionOpts.m_taCaption;
-    dlg.m_image = cWatermarkOpts.m_iaWatermark;
-
-    if (IDOK == dlg.DoModal())
-    {
-        // timestamp
-        cTimestampOpts.m_taTimestamp = dlg.m_timestamp;
-
-        // Caption
-        cCaptionOpts.m_taCaption = dlg.m_caption;
-
-        // Watermark
-        cWatermarkOpts.m_iaWatermark = dlg.m_image;
-    }
 }
 
 void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
@@ -2580,12 +1618,7 @@ void CRecorderView::DisplayRecordingMsg(CDC &srcDC)
     COLORREF oldBkColor = srcDC.SetBkColor(RGB(0, 0, 0));
 
     CString msgRecMode;
-    switch (cProgramOpts.m_iRecordingMode)
-    {
-        case ModeAVI:
-            msgRecMode.LoadString(IDS_RECAVI);
-            break;
-    }
+    msgRecMode.LoadString(IDS_RECAVI);
 
     // msgRecMode.LoadString((cProgramOpts.m_iRecordingMode == ModeAVI) ? IDS_RECAVI : IDS_RECSWF);
     CSize sizeExtent = srcDC.GetTextExtent(msgRecMode);
@@ -2673,6 +1706,7 @@ bool CRecorderView::GetPausedState()
 
 void CRecorderView::DisplayAutopanInfo(CRect rc)
 {
+#if 0
     if (g_bRecordState)
     {
         CRect rectDraw(rc);
@@ -2684,8 +1718,8 @@ void CRecorderView::DisplayAutopanInfo(CRect rc)
                              CLIP_DEFAULT_PRECIS, 0, VARIABLE_PITCH, nullptr);
         HFONT oldfont = (HFONT)SelectObject(hdc, newfont);
         CString strmessage;
-        strmessage.LoadString((cProgramOpts.m_bAutoPan == true) ? IDS_STRING_AUTOPAN_ENABLED
-                                                                : IDS_STRING_AUTOPAN_DISABLED);
+        //strmessage.LoadString((cProgramOpts.m_bAutoPan == true) ? IDS_STRING_AUTOPAN_ENABLED
+                                                                //: IDS_STRING_AUTOPAN_DISABLED);
         // m_Loc.LoadString((cProgramOpts.m_bAutoPan == true ) ? IDS_STRING_AUTOPAN_ENABLED :
         // IDS_STRING_AUTOPAN_DISABLED ); strmessage.Format("%d - %d -%d - %d", rectDraw.left, rectDraw.top,
         // rectDraw.right, rectDraw.bottom);
@@ -2706,9 +1740,8 @@ void CRecorderView::DisplayAutopanInfo(CRect rc)
         ::ReleaseDC(g_hFixedRegionWnd, hdc);
         Sleep(500);
     }
+#endif
 }
-
-
 
 namespace
 {
@@ -2845,9 +1878,9 @@ void GetTempAudioWavPath()
     bool fileverified = false;
     while (!fileverified)
     {
-        if (std::experimental::filesystem::exists(strTempAudioWavFilePath))
+        if (std::filesystem::exists(strTempAudioWavFilePath))
         {
-            fileverified = std::experimental::filesystem::remove(strTempAudioWavFilePath);
+            fileverified = std::filesystem::remove(strTempAudioWavFilePath);
             if (!fileverified)
             {
                 srand((unsigned)time(nullptr));
@@ -2867,7 +1900,7 @@ void GetTempAudioWavPath()
                 filename += std::to_wstring(randnum);
                 filename += _T(".wav");
 
-                std::experimental::filesystem::path path(csTempFolder);
+                std::filesystem::path path(csTempFolder);
                 path /=filename;
 
                 strTempAudioWavFilePath = path.wstring();
@@ -2956,5 +1989,13 @@ void StopAudioRecording()
     iAudioTimeInitiated = 0;
 }
 #endif
+}
 
+void CRecorderView::OnOptionsProgramsettings()
+{
+    application_settings_ui settings(this, *settings_model_);
+    settings.DoModal();
+
+
+    // TODO: Add your command handler code here
 }

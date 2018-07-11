@@ -2376,7 +2376,7 @@ BOOL InitAudioRecording()
     GetTempWavePath();
 
     // look up here
-    const auto path = std::experimental::filesystem::path(tempaudiopath.GetString());
+    const auto path = std::filesystem::path(tempaudiopath.GetString());
     m_pFile = new CSoundFile(path.string(), &m_Format);
 
     // even if we recording with firstaudio's format, we still get the unable to insert problem!
@@ -2398,10 +2398,10 @@ void GetTempWavePath()
     int fileverified = 0;
     while (!fileverified)
     {
-        if (std::experimental::filesystem::exists(tempaudiopath.GetString()))
+        if (std::filesystem::exists(tempaudiopath.GetString()))
         {
             fileverified = 1;
-            std::experimental::filesystem::remove(tempaudiopath.GetString());
+            std::filesystem::remove(tempaudiopath.GetString());
         }
         else
         {
@@ -2432,7 +2432,7 @@ BOOL CreateSilenceFile()
     // Create temporary wav file for audio recording
     GetSilenceWavePath();
 
-    const auto path = std::experimental::filesystem::path(tempsilencepath.GetString());
+    const auto path = std::filesystem::path(tempsilencepath.GetString());
     m_pSilenceFile = new CSoundFile(path.string(), &m_Format);
 
     if (!(m_pSilenceFile && m_pSilenceFile->IsOK()))
@@ -2473,10 +2473,10 @@ void GetSilenceWavePath()
     int fileverified = 0;
     while (!fileverified)
     {
-        if (std::experimental::filesystem::exists(tempsilencepath.GetString()))
+        if (std::filesystem::exists(tempsilencepath.GetString()))
         {
             fileverified = 1;
-            std::experimental::filesystem::remove(tempsilencepath.GetString());
+            std::filesystem::remove(tempsilencepath.GetString());
         }
         else
         {

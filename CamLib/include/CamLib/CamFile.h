@@ -6,7 +6,6 @@ static const int USE_WINDOWS_TEMP_DIR = 0;
 static const int USE_INSTALLED_DIR = 1;
 static const int USE_USER_SPECIFIED_DIR = 2;
 
-
 enum class dir_access : int
 {
     windows_temp_dir = 0,

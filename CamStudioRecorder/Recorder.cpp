@@ -10,7 +10,6 @@
 #include "RecorderView.h"
 #include "CamStudioCommandLineInfo.h"
 #include "RecorderVersionReleaseInfo.h"
-#include "CamCursor.h"
 #include "HotKey.h"
 #include "GdiPlusInitializer.h"
 #include "string_convert.h"
@@ -259,26 +258,26 @@ BOOL CRecorderApp::InitInstance()
 
     m_iVersionOp = GetOperatingSystem();
 
-    if (g_cfg->exists("Audio"))
-        cAudioFormat.Read(g_cfg->lookup("Audio"));
+    //if (g_cfg->exists("Audio"))
+        //cAudioFormat.Read(g_cfg->lookup("Audio"));
     //if (g_cfg->exists("Video"))
         //cVideoOpts.Read(g_cfg->lookup("Video"));
-    if (g_cfg->exists("Cursor"))
-        CamCursor.Read(g_cfg->lookup("Cursor"));
-    if (g_cfg->exists("Program"))
-        cProgramOpts.Read(g_cfg->lookup("Program"));
-    if (g_cfg->exists("HotKeys"))
-        cHotKeyOpts.Read(g_cfg->lookup("HotKeys"));
+    //if (g_cfg->exists("Cursor"))
+        //CamCursor.Read(g_cfg->lookup("Cursor"));
+    //if (g_cfg->exists("Program"))
+        //cProgramOpts.Read(g_cfg->lookup("Program"));
+    //if (g_cfg->exists("HotKeys"))
+        //cHotKeyOpts.Read(g_cfg->lookup("HotKeys"));
     //if (g_cfg->exists("Region"))
         //cRegionOpts.Read(g_cfg->lookup("Region"));
-    if (g_cfg->exists("Caption"))
-        cCaptionOpts.Read(g_cfg->lookup("Caption"));
-    if (g_cfg->exists("TimeStamp"))
-        cTimestampOpts.Read(g_cfg->lookup("TimeStamp"));
-    if (g_cfg->exists("Watermark"))
-        cWatermarkOpts.Read(g_cfg->lookup("Watermark"));
-    if (g_cfg->exists("Producer"))
-        cProducerOpts.Read(g_cfg->lookup("Producer"));
+    //if (g_cfg->exists("Caption"))
+        //cCaptionOpts.Read(g_cfg->lookup("Caption"));
+    //if (g_cfg->exists("TimeStamp"))
+        //cTimestampOpts.Read(g_cfg->lookup("TimeStamp"));
+    //if (g_cfg->exists("Watermark"))
+        //cWatermarkOpts.Read(g_cfg->lookup("Watermark"));
+    //if (g_cfg->exists("Producer"))
+        //cProducerOpts.Read(g_cfg->lookup("Producer"));
 
     // the application's document templates. Document templates
     // serve as the connection between documents, frame windows and views.
@@ -304,14 +303,15 @@ BOOL CRecorderApp::InitInstance()
 
 int CRecorderApp::ExitInstance()
 {
+#if 0
     try
     {
-        libconfig::Setting *s;
-        if (!g_cfg->exists("Audio"))
-            s = &g_cfg->getRoot().add("Audio", libconfig::Setting::TypeGroup);
-        else
-            s = &g_cfg->lookup("Audio");
-        cAudioFormat.Write(*s);
+        //libconfig::Setting *s;
+        //if (!g_cfg->exists("Audio"))
+        //    s = &g_cfg->getRoot().add("Audio", libconfig::Setting::TypeGroup);
+        //else
+        //    s = &g_cfg->lookup("Audio");
+        //cAudioFormat.Write(*s);
 
         //if (!g_cfg->exists("Video"))
         //    s = &g_cfg->getRoot().add("Video", libconfig::Setting::TypeGroup);
@@ -319,65 +319,66 @@ int CRecorderApp::ExitInstance()
         //    s = &g_cfg->lookup("Video");
         //cVideoOpts.Write(*s);
 
-        if (!g_cfg->exists("Cursor"))
-            s = &g_cfg->getRoot().add("Cursor", libconfig::Setting::TypeGroup);
-        else
-            s = &g_cfg->lookup("Cursor");
-        CamCursor.Write(*s);
-
-        if (!g_cfg->exists("Program"))
-            s = &g_cfg->getRoot().add("Program", libconfig::Setting::TypeGroup);
-        else
-            s = &g_cfg->lookup("Program");
-        cProgramOpts.Write(*s);
-
-        if (!g_cfg->exists("HotKeys"))
-            s = &g_cfg->getRoot().add("HotKeys", libconfig::Setting::TypeGroup);
-        else
-            s = &g_cfg->lookup("HotKeys");
-        cHotKeyOpts.Write(*s);
-
-        //if (!g_cfg->exists("Region"))
-        //    s = &g_cfg->getRoot().add("Region", libconfig::Setting::TypeGroup);
+        //if (!g_cfg->exists("Cursor"))
+        //    s = &g_cfg->getRoot().add("Cursor", libconfig::Setting::TypeGroup);
         //else
-        //    s = &g_cfg->lookup("Region");
-        //cRegionOpts.Write(*s);
-
-        if (!g_cfg->exists("Caption"))
-            s = &g_cfg->getRoot().add("Caption", libconfig::Setting::TypeGroup);
-        else
-            s = &g_cfg->lookup("Caption");
-        cCaptionOpts.Write(*s);
-
-        if (!g_cfg->exists("TimeStamp"))
-            s = &g_cfg->getRoot().add("TimeStamp", libconfig::Setting::TypeGroup);
-        else
-            s = &g_cfg->lookup("TimeStamp");
-        cTimestampOpts.Write(*s);
-
-        if (!g_cfg->exists("Watermark"))
-            s = &g_cfg->getRoot().add("Watermark", libconfig::Setting::TypeGroup);
-        else
-            s = &g_cfg->lookup("Watermark");
-        cWatermarkOpts.Write(*s);
-
-        if (!g_cfg->exists("Producer"))
-            s = &g_cfg->getRoot().add("Producer", libconfig::Setting::TypeGroup);
-        else
-            s = &g_cfg->lookup("Producer");
-        cProducerOpts.Write(*s);
+        //    s = &g_cfg->lookup("Cursor");
+        //CamCursor.Write(*s);
+        //
+        //if (!g_cfg->exists("Program"))
+        //    s = &g_cfg->getRoot().add("Program", libconfig::Setting::TypeGroup);
+        //else
+        //    s = &g_cfg->lookup("Program");
+        //cProgramOpts.Write(*s);
+        //
+        //if (!g_cfg->exists("HotKeys"))
+        //    s = &g_cfg->getRoot().add("HotKeys", libconfig::Setting::TypeGroup);
+        //else
+        //    s = &g_cfg->lookup("HotKeys");
+        //cHotKeyOpts.Write(*s);
+        //
+        ////if (!g_cfg->exists("Region"))
+        ////    s = &g_cfg->getRoot().add("Region", libconfig::Setting::TypeGroup);
+        ////else
+        ////    s = &g_cfg->lookup("Region");
+        ////cRegionOpts.Write(*s);
+        //
+        //if (!g_cfg->exists("Caption"))
+        //    s = &g_cfg->getRoot().add("Caption", libconfig::Setting::TypeGroup);
+        //else
+        //    s = &g_cfg->lookup("Caption");
+        //cCaptionOpts.Write(*s);
+        //
+        //if (!g_cfg->exists("TimeStamp"))
+        //    s = &g_cfg->getRoot().add("TimeStamp", libconfig::Setting::TypeGroup);
+        //else
+        //    s = &g_cfg->lookup("TimeStamp");
+        //cTimestampOpts.Write(*s);
+        //
+        //if (!g_cfg->exists("Watermark"))
+        //    s = &g_cfg->getRoot().add("Watermark", libconfig::Setting::TypeGroup);
+        //else
+        //    s = &g_cfg->lookup("Watermark");
+        //cWatermarkOpts.Write(*s);
+        //
+        //if (!g_cfg->exists("Producer"))
+        //    s = &g_cfg->getRoot().add("Producer", libconfig::Setting::TypeGroup);
+        //else
+        //    s = &g_cfg->lookup("Producer");
+        //cProducerOpts.Write(*s);
     }
-    catch (libconfig::SettingTypeException &e)
-    {
-        const auto path = utf8_to_wstring(e.getPath());
-        const auto what = utf8_to_wstring(e.what());
-        MessageBox(nullptr, path.c_str(), what.c_str(), MB_OK);
-    }
+    //catch (libconfig::SettingTypeException &e)
+    //{
+    //    const auto path = utf8_to_wstring(e.getPath());
+    //    const auto what = utf8_to_wstring(e.what());
+    //    MessageBox(nullptr, path.c_str(), what.c_str(), MB_OK);
+    //}
 
     // Save the configuration file out to the user appdata directory.
     std::string profile_path = get_config_path();
     g_cfg->writeFile(profile_path.c_str());
     delete g_cfg;
+#endif
 
     // Multilanguage
     if (m_wCurLangID != STANDARD_LANGID)

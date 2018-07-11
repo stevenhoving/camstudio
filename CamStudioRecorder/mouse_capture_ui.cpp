@@ -156,7 +156,11 @@ void mouse_capture_ui::on_paint(HWND hWnd, WPARAM wParam, LPARAM lParam)
     // \note using gdiplus to draw something is not fast...
     Gdiplus::Graphics canvas(hdc_mem);
 
-    const Gdiplus::RectF paint_rect(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
+    const Gdiplus::RectF paint_rect(
+        static_cast<Gdiplus::REAL>(rc.left),
+        static_cast<Gdiplus::REAL>(rc.top),
+        static_cast<Gdiplus::REAL>(rc.right - rc.left),
+        static_cast<Gdiplus::REAL>(rc.bottom - rc.top));
     const auto ret = canvas.DrawImage(background_bitmap_.get(), paint_rect);
     assert(ret == Gdiplus::Status::Ok);
 
