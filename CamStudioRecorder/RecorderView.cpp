@@ -1996,6 +1996,6 @@ void CRecorderView::OnOptionsProgramsettings()
     application_settings_ui settings(this, *settings_model_);
     settings.DoModal();
 
-
-    // TODO: Add your command handler code here
+    // just always force a safe, ignore the model result for now
+    settings_model_->save();
 }

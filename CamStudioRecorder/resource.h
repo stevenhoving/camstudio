@@ -124,7 +124,7 @@
 #define IDC_CHECK1                      1053
 #define IDC_EDIT1                       1055
 #define IDC_CTRL1                       1056
-#define IDC_EDIT2                       1056
+#define IDC_TEMP_DIRECTORY_USER_SPECIFIED_EDIT 1056
 #define IDC_TRANSTEXT                   1057
 #define IDC_ALT1                        1057
 #define IDC_BUTTONLINK3                 1057
@@ -140,6 +140,7 @@
 #define IDC_SHIFT2                      1061
 #define IDC_STATIC_VERSION              1061
 #define IDC_BUTTON2                     1061
+#define IDC_TEMP_DIRECTORY_USER_SPECIFIED_BROWSE_BUTTON 1061
 #define IDC_EDIT3                       1062
 #define IDC_CTRL3                       1062
 #define IDC_ALT3                        1063
@@ -218,9 +219,15 @@
 #define IDC_LEFT_CLICK_COLOR_ALPHA      1322
 #define IDC_APPLICATION_MINIMIZE_ON_RECORD 1322
 #define IDC_RIGHT_CLICK_COLOR_ALPHA     1323
-#define IDC_CHECK2                      1323
-#define IDC_COMBO1                      1324
-#define IDC_COMBO2                      1325
+#define IDC_AUTO_FILENAME_GENERATION    1323
+#define IDC_TEMP_DIRECTORY_COMBOBOX     1324
+#define IDC_OUTPUT_DIRECTORY_CHECKBOX   1325
+#define IDC_OUTPUT_DIRECTORY_LABEL      1327
+#define IDC_OUTPUT_DIRECTORY_USER_SPECIFIED_LABEL 1328
+#define IDC_OUTPUT_DIRECTORY_USER_SPECIFIED_EDIT 1329
+#define IDC_OUTPUT_DIRECTORY_USER_SPECIFIED_BROWSE_BUTTON 1330
+#define IDC_TEMP_DIRECTORY_LABEL        1331
+#define IDC_TEMP_DIRECTORY_USER_SPECIFIED_LABEL 1332
 #define IDD_ABOUTBOX                    5100
 #define IDD_EFFECTS_OPTIONS2            5105
 #define IDD_VIDEO_SETTINGS_UI           5106
@@ -503,7 +510,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        242
 #define _APS_NEXT_COMMAND_VALUE         32955
-#define _APS_NEXT_CONTROL_VALUE         1327
+#define _APS_NEXT_CONTROL_VALUE         1333
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

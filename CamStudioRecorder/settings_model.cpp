@@ -241,6 +241,7 @@ void settings_model::save()
     _save_capture_settings(*root);
     _save_cursor_settings(*root);
     _save_hotkey_settings(*root);
+    _save_application_settings(*root);
 
     std::ofstream stream(utility::create_config_path(L"settings.toml"));
     cpptoml::toml_writer writer{stream, ""};
@@ -353,12 +354,10 @@ void settings_model::load()
     const auto version = *root->get_as<int>("version");
     assert(version == 1);
 
-    /* capture settings */
     _load_capture_settings(*root);
-    /* cursor settings */
     _load_cursor_settings(*root);
-    /* hotkey settings */
     _load_hotkey_settings(*root);
+    _load_application_settings(*root);
 }
 
 void settings_model::set_capture_mode(capture_type type)
