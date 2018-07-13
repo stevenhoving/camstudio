@@ -54,41 +54,13 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-#ifndef CAPTUREBLT
-#define CAPTUREBLT (DWORD)0x40000000
-#endif
 
-/////////////////////////////////////////////////////////////////////////////
-// external functions
-/////////////////////////////////////////////////////////////////////////////
-extern void FreeWaveoutResouces();
-
-extern BOOL useWavein(BOOL, int);
-extern BOOL useWaveout(BOOL, int);
-extern BOOL WaveoutUninitialize();
-
-extern BOOL onLoadSettings(int iRecordAudio);
-
-/////////////////////////////////////////////////////////////////////////////
-// external variables
-/////////////////////////////////////////////////////////////////////////////
-extern int iRrefreshRate;
-
-/////////////////////////////////////////////////////////////////////////////
-// State variables
-/////////////////////////////////////////////////////////////////////////////
-
-// Vars used for selecting fixed /variable region
-//CRect g_rc;         // Size:  0 .. MaxScreenSize-1
 CRect g_rcUse;      // Size:  0 .. MaxScreenSize-1
-//CRect g_rcClip;     // Size:  0 .. MaxScreenSize-1
 
 
 // Autopan
 CRect g_rectPanCurrent;
 CRect g_rectPanDest;
-
-HWND g_hFixedRegionWnd;
 
 HBITMAP g_hLogoBM = nullptr;
 
@@ -157,30 +129,12 @@ CSoundFile *g_pSoundFile = nullptr;
 // state vars
 BOOL g_bAllowNewRecordStartKey = TRUE;
 
-PSTR strFile;
-
-int TroubleShootVal = 0;
-
-int g_keySCOpened = 0;
-
 int iAudioTimeInitiated = 0;
 int sdwSamplesPerSec = 22050;
 int sdwBytesPerSec = 44100;
 
 int g_iCurrentLayout = 0;
 
-//sProgramOpts cProgramOpts;
-//sProducerOpts cProducerOpts;
-//sAudioFormat cAudioFormat;
-//sHotKeyOpts cHotKeyOpts;
-//sRegionOpts cRegionOpts;
-//CCamCursor CamCursor;
-//sCaptionOpts cCaptionOpts;
-//sTimestampOpts cTimestampOpts;
-//sWatermarkOpts cWatermarkOpts;
-
-// Files Directory
-CString savedir("");
 
 HBITMAP g_hSavedBitmap = nullptr;
 
@@ -571,7 +525,7 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
         [this](const CRect &capture_rect)
         {
             settings_model_->set_capture_rect(from_crect(capture_rect));
-            ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
+            ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, 0);
         }
     );
 
@@ -581,18 +535,6 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     ::ReleaseDC(nullptr, hScreenDC);
 
     g_hLogoBM = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP3));
-
-    // savedir default
-    // We by default save to to user's configured my videos directory.
-    // Using GetProgPath instead is not compatible with Vista/Win7 since we have no write permission.
-    //savedir = GetMyVideoPath();
-    // TRACE("## CRecorderView::OnCreate: initialSaveMMMode Default savedir=GetProgPath()=[%s]!\n", savedir);
-
-    //if (!initialSaveMMMode())
-    //{
-    //    TRACE("CRecorderView::OnCreate: initialSaveMMMode FAILED!\n");
-    //    // return -1;
-    //}
 
     srand((unsigned)time(nullptr));
 
@@ -1037,9 +979,6 @@ void CRecorderView::OnRecord()
     if (g_bRecordPaused)
     {
         g_bRecordPaused = false;
-        // ver 1.8
-        // if (iRecordAudio==2)
-        // mciRecordResume(strTempAudioWavFilePath);
 
         // Set Title Bar
         CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
@@ -1055,14 +994,6 @@ void CRecorderView::OnRecord()
     g_fActualRate = 0.0;
     g_fTimeLength = 0.0;
 
-    // r272: How we define rect checked and changed because some pixel got dropped:  100x100 => 99x99
-    // g_rcUse is the rect that will be used in the end to define the size of the recording.
-    // BTW. g_rcUse is also used to store previous values.
-    // A Full screen area is 0, 0 to MaxX-1, MaxY-1
-
-    // TRACE( _T("## CRecorderView::OnRecord /CAPTURE_FIXED/ before / cRegionOpts / T=%d, L=%d, B=.. , R=.. , W=%d, H=%d
-    // \n"), cRegionOpts.m_iTop, cRegionOpts.m_iCaptureLeft, cRegionOpts.m_iWidth,
-    // cRegionOpts.m_iHeight );
 
     switch (settings_model_->get_capture_mode())
     {
@@ -1159,42 +1090,6 @@ void CRecorderView::OnOptionsCursoroptions()
     settings_model_->save();
 }
 
-
-//void CRecorderView::OnUpdateOptionsAutopan(CCmdUI *pCmdUI)
-//{
-//    pCmdUI->SetCheck(cProgramOpts.m_bAutoPan);
-//}
-//
-//void CRecorderView::OnOptionsMinimizeonstart()
-//{
-//    cProgramOpts.m_bMinimizeOnStart = !cProgramOpts.m_bMinimizeOnStart;
-//}
-//
-//void CRecorderView::OnUpdateOptionsMinimizeonstart(CCmdUI *pCmdUI)
-//{
-//    pCmdUI->SetCheck(cProgramOpts.m_bMinimizeOnStart);
-//}
-//
-//void CRecorderView::OnOptionsHideflashing()
-//{
-//    cProgramOpts.m_bFlashingRect = !cProgramOpts.m_bFlashingRect;
-//}
-//
-//void CRecorderView::OnUpdateOptionsHideflashing(CCmdUI *pCmdUI)
-//{
-//    pCmdUI->SetCheck(!cProgramOpts.m_bFlashingRect);
-//}
-//
-//void CRecorderView::OnOptionsProgramoptionsPlayavi()
-//{
-//    cProgramOpts.m_iLaunchPlayer = (cProgramOpts.m_iLaunchPlayer) ? NO_PLAYER : CAM1_PLAYER;
-//}
-//
-//void CRecorderView::OnUpdateOptionsProgramoptionsPlayavi(CCmdUI *pCmdUI)
-//{
-//    pCmdUI->SetCheck(cProgramOpts.m_iLaunchPlayer);
-//}
-
 void CRecorderView::OnHelpWebsite()
 {
     // Openlink("http://www.atomixbuttons.com/vsc");
@@ -1221,13 +1116,7 @@ void CRecorderView::OnPause()
         return;
 
     g_bRecordPaused = true;
-    // TRACE ("## CRecorderView::OnPause  STATE SWITCHED RecordPaused:[%d]\n", g_bRecordPaused);
 
-    // TODO: Set flag that will switch from recording to pause to off if nothing is happening for al very long time.
-
-    // ver 1.8
-    // if (iRecordAudio==2)
-    // mciRecordPause(strTempAudioWavFilePath);
 
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
     pStatus->SetPaneText(0, _T("Recording Paused"));
@@ -1239,15 +1128,11 @@ void CRecorderView::OnPause()
 
 void CRecorderView::OnUpdatePause(CCmdUI *pCmdUI)
 {
-    // Version 1.1
-    // pCmdUI->Enable(g_bRecordState && (!g_bRecordPaused));
     pCmdUI->Enable(!g_bRecordPaused);
 }
 
 void CRecorderView::OnUpdateStop(CCmdUI * /*pCmdUI*/)
 {
-    // Version 1.1
-    // pCmdUI->Enable(g_bRecordState);
 }
 
 void CRecorderView::OnUpdateRecord(CCmdUI *pCmdUI)
@@ -1262,80 +1147,12 @@ void CRecorderView::OnHelpFaq()
     //Openlink("http://www.camstudio.org/faq.htm");
 }
 
-#if 0
-void CRecorderView::OnOptionsRecordaudio()
-{
-    if (waveInGetNumDevs() == 0)
-    {
-        // CString msgstr;
-        // msgstr.Format("Unable to detect audio input device. You need a sound card with microphone input.");
-        // MessageBox(msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
-        MessageOut(m_hWnd, IDS_STRING_NOINPUT3, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-        return;
-    }
-
-    cAudioFormat.m_iRecordAudio = (!cAudioFormat.isInput(NONE)) ? NONE : MICROPHONE;
-}
-
-void CRecorderView::OnUpdateOptionsRecordaudio(CCmdUI *pCmdUI)
-{
-    pCmdUI->SetCheck(!cAudioFormat.isInput(NONE));
-}
-
-void CRecorderView::OnOptionsAudioformat()
-{
-    if (waveInGetNumDevs() == 0)
-    {
-        // CString msgstr;
-        // msgstr.Format("Unable to detect audio input device. You need a sound card with microphone input.");
-        // MessageBox(msgstr,"Note", MB_OK | MB_ICONEXCLAMATION);
-
-        MessageOut(m_hWnd, IDS_STRING_NOINPUT3, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-        return;
-    }
-
-    CAudioFormatDlg aod(cAudioFormat, this);
-    if (IDOK == aod.DoModal())
-    {
-        // update settings
-        cAudioFormat = aod.Format();
-    }
-
-    // if (iInterleaveUnit == MILLISECONDS) {
-    //    double interfloat = (((double) iInterleaveFactor) * ((double) iFramesPerSecond))/1000.0;
-    //    int interint = (int) interfloat;
-    //    if (interint<=0)
-    //        interint = 1;
-
-    //    CString bstr;
-    //    bstr.Format("interleave Unit = %d",interint);
-    //    //MessageBox(bstr,"Note",MB_OK);
-    //}
-}
-
-void CRecorderView::OnOptionsAudiospeakers()
-{
-    if (waveOutGetNumDevs() == 0)
-    {
-        MessageOut(m_hWnd, IDS_STRING_NOAUDIOOUTPUT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-    }
-
-    CAudioSpeakersDlg aos;
-    aos.DoModal();
-}
-#endif
-
 void CRecorderView::OnOptionsKeyboardshortcuts()
 {
-    if (!g_keySCOpened)
-    {
-        g_keySCOpened = 1;
-        CKeyshortcutsDlg kscDlg(this);
-        kscDlg.DoModal();
-        g_keySCOpened = 0;
+    CKeyshortcutsDlg kscDlg(this);
+    kscDlg.DoModal();
 
-        SetAdjustHotKeys();
-    }
+    SetAdjustHotKeys();
 }
 
 bool CRecorderView::SaveAppSettings()
@@ -1346,7 +1163,6 @@ bool CRecorderView::SaveAppSettings()
 void CRecorderView::SaveSettings()
 {
 }
-
 
 void CRecorderView::LoadSettings()
 {
@@ -1483,6 +1299,7 @@ void CRecorderView::OnUpdateRegionWindow(CCmdUI *pCmdUI)
 
 void CRecorderView::OnCaptureChanged(CWnd *pWnd)
 {
+#if 0
     CPoint ptMouse;
     VERIFY(GetCursorPos(&ptMouse));
 
@@ -1525,6 +1342,7 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
         if (pWnd->m_hWnd != basic_msg_->m_hWnd)
             ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
     }
+#endif
     CView::OnCaptureChanged(pWnd);
 }
 
@@ -1550,7 +1368,7 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
 
     CRect rectText;
     GetClientRect(&rectText);
-    CSize sizeExtent = (CSize)0;
+    CSize sizeExtent(0);
 
     CString csMsg;
     int xoffset = 16;
@@ -1653,7 +1471,7 @@ void CRecorderView::DisplayBackground(CDC &srcDC)
 {
     // TRACE("CRecorderView::DisplayBackground\n");
     // Ver 1.1
-    if (8 <= g_nColors)
+    if (g_nColors > 8)
     {
         CRect rectClient;
         GetClientRect(&rectClient);
@@ -1753,7 +1571,7 @@ std::string create_launch_path(const std::string &application, const std::string
     return launch_path;
 }
 
-bool CRecorderView::RunViewer(const CString &strNewFile)
+bool CRecorderView::RunViewer(const CString &/*strNewFile*/)
 {
     // Launch the player
 
@@ -1775,296 +1593,14 @@ bool CRecorderView::GetRecordState()
     return g_bRecordState;
 }
 
+// \todo remove this function
 bool CRecorderView::GetPausedState()
 {
     return g_bRecordPaused;
 }
 
-void CRecorderView::DisplayAutopanInfo(CRect rc)
+void CRecorderView::DisplayAutopanInfo(CRect /*rc*/)
 {
-#if 0
-    if (g_bRecordState)
-    {
-        CRect rectDraw(rc);
-        HDC hdc = ::GetDC(g_hFixedRegionWnd);
-        HBRUSH newbrush = (HBRUSH)CreateHatchBrush(HS_CROSS, RGB(0, 0, 0));
-        HBRUSH oldbrush = (HBRUSH)SelectObject(hdc, newbrush);
-        HFONT newfont;
-        newfont = CreateFont(16, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
-                             CLIP_DEFAULT_PRECIS, 0, VARIABLE_PITCH, nullptr);
-        HFONT oldfont = (HFONT)SelectObject(hdc, newfont);
-        CString strmessage;
-        //strmessage.LoadString((cProgramOpts.m_bAutoPan == true) ? IDS_STRING_AUTOPAN_ENABLED
-                                                                //: IDS_STRING_AUTOPAN_DISABLED);
-        // m_Loc.LoadString((cProgramOpts.m_bAutoPan == true ) ? IDS_STRING_AUTOPAN_ENABLED :
-        // IDS_STRING_AUTOPAN_DISABLED ); strmessage.Format("%d - %d -%d - %d", rectDraw.left, rectDraw.top,
-        // rectDraw.right, rectDraw.bottom);
-        SIZE sExtent;
-        DWORD dw = GetTextExtentPoint(hdc, (LPCTSTR)strmessage, strmessage.GetLength(), &sExtent);
-        VERIFY(0 != dw);
-        COLORREF oldtextcolor = SetTextColor(hdc, RGB(255, 255, 255));
-        COLORREF oldbkcolor = SetBkColor(hdc, RGB(0, 0, 0));
-        int dx = sExtent.cx;
-        int dy = sExtent.cy;
-        int x = rectDraw.right - dx;
-        int y = rectDraw.bottom - dy;
-        Rectangle(hdc, x - 3, y - 3, x + dx + 2, y + dy + 1);
-        ExtTextOut(hdc, x, y, 0, nullptr, (LPCTSTR)strmessage, strmessage.GetLength(), nullptr);
-        SetBkColor(hdc, oldbkcolor);
-        SetTextColor(hdc, oldtextcolor);
-        SetBkMode(hdc, OPAQUE);
-        ::ReleaseDC(g_hFixedRegionWnd, hdc);
-        Sleep(500);
-    }
-#endif
-}
-
-namespace
-{
-
-#if 0
-
-void DataFromSoundIn(CBuffer *buffer)
-{
-    if (g_pSoundFile)
-    {
-        if (!g_pSoundFile->Write(buffer))
-        {
-            // m_SoundIn.Stop();
-            StopAudioRecording();
-            ClearAudioFile();
-
-            // MessageBox(nullptr,"Error Writing Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
-            MessageOut(nullptr, IDS_STRING_ERRSOUND2, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-        }
-    }
-}
-
-int AddInputBufferToQueue()
-{
-    // create the header
-    // TODO, Possible memory leak, where is the delete operation of the new below done?
-    LPWAVEHDR pHdr = new WAVEHDR;
-
-    ZeroMemory(pHdr, sizeof(WAVEHDR));
-
-    // new a buffer
-    CBuffer buf(cAudioFormat.AudioFormat().nBlockAlign * iBufferSize, false);
-    pHdr->lpData = buf.ptr.c;
-    pHdr->dwBufferLength = buf.ByteLen;
-
-    // prepare it
-    MMRESULT mmReturn = ::waveInPrepareHeader(m_hWaveRecord, pHdr, sizeof(WAVEHDR));
-    if (mmReturn)
-    {
-        waveInErrorMsg(mmReturn, "in AddInputBufferToQueue()");
-        // todo: leak? did pHdr get deleted?
-        return m_QueuedBuffers;
-    }
-
-    // add the input buffer to the queue
-    mmReturn = ::waveInAddBuffer(m_hWaveRecord, pHdr, sizeof(WAVEHDR));
-    if (mmReturn)
-    {
-        waveInErrorMsg(mmReturn, "Error in AddInputBufferToQueue()");
-        // todo: leak? did pHdr get deleted?
-        return m_QueuedBuffers;
-    }
-
-    // no error
-    // increment the number of waiting buffers
-    return m_QueuedBuffers++;
-}
-
-
-
-//===============================================
-// AUDIO CODE
-//===============================================
-
-void waveInErrorMsg(MMRESULT result, const char *addstr)
-{
-    // say error message
-    char errorbuffer[500];
-    waveInGetErrorTextA(result, errorbuffer, 500);
-    CString msgstr;
-    msgstr.Format(_T("%s %s"), errorbuffer, addstr);
-
-    CString tstr;
-    tstr.LoadString(IDS_STRING_WAVEINERR);
-    MessageBox(nullptr, msgstr, tstr, MB_OK | MB_ICONEXCLAMATION);
-}
-
-// Delete the g_pSoundFile variable and close existing audio file
-void ClearAudioFile()
-{
-    if (g_pSoundFile)
-    {
-        delete g_pSoundFile; // will close output file
-        g_pSoundFile = nullptr;
-    }
-}
-
-BOOL InitAudioRecording()
-{
-    m_ThreadID = ::GetCurrentThreadId();
-    m_QueuedBuffers = 0;
-    m_hWaveRecord = nullptr;
-
-    iBufferSize = 1000; // samples per callback
-
-    cAudioFormat.BuildRecordingFormat();
-
-    ClearAudioFile();
-
-    // Create temporary wav file for audio recording
-    GetTempAudioWavPath();
-    // TODO, Possible memory leak, where is the delete operation of the new below done?
-    g_pSoundFile = new CSoundFile(wstring_to_utf8(strTempAudioWavFilePath), &cAudioFormat.AudioFormat());
-
-    if (!(g_pSoundFile && g_pSoundFile->IsOK()))
-        // MessageBox(nullptr,"Error Creating Sound File","Note",MB_OK | MB_ICONEXCLAMATION);
-        MessageOut(nullptr, IDS_STRING_ERRSOUND, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-
-    return TRUE;
-}
-
-
-// Initialize the strTempAudioWavFilePath variable with a valid temporary path
-void GetTempAudioWavPath()
-{
-    const auto csTempFolder = get_temp_folder(cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir);
-
-    // CString fileName;
-    // fileName.Format("\\%s001.wav", TEMPFILETAGINDICATOR );
-    // strTempAudioWavFilePath = GetTempFolder (cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir) +
-    // fileName;
-
-    strTempAudioWavFilePath = csTempFolder;
-    strTempAudioWavFilePath += _T("\\");
-    strTempAudioWavFilePath += _T(TEMPFILETAGINDICATOR);
-    strTempAudioWavFilePath += _T("-");
-    strTempAudioWavFilePath += cVideoOpts.m_cStartRecordingString;
-    strTempAudioWavFilePath += _T(".wav");
-
-    //.Format(_T("%s\\%s-%s.%s"), csTempFolder.c_str(), TEMPFILETAGINDICATOR,
-    //                               cVideoOpts.m_cStartRecordingString.c_str(), "wav");
-
-    // Test the validity of writing to the file
-    bool fileverified = false;
-    while (!fileverified)
-    {
-        if (std::filesystem::exists(strTempAudioWavFilePath))
-        {
-            fileverified = std::filesystem::remove(strTempAudioWavFilePath);
-            if (!fileverified)
-            {
-                srand((unsigned)time(nullptr));
-                int randnum = rand();
-
-                // CString fxstr;
-                // fxstr.Format("\\%s", TEMPFILETAGINDICATOR );
-                // CString exstr(".wav");
-                // strTempAudioWavFilePath = GetTempFolder (cProgramOpts.m_iTempPathAccess, cProgramOpts.m_strSpecifiedDir)
-                // + fxstr + cnumstr + exstr;
-
-                std::wstring filename;
-                filename += _T(TEMPFILETAGINDICATOR);
-                filename += '-';
-                filename += cVideoOpts.m_cStartRecordingString;
-                filename += '-';
-                filename += std::to_wstring(randnum);
-                filename += _T(".wav");
-
-                std::filesystem::path path(csTempFolder);
-                path /=filename;
-
-                strTempAudioWavFilePath = path.wstring();
-
-                //.Format(_T("%s\\%s-%s-%s.%s"), csTempFolder.GetString(), TEMPFILETAGINDICATOR,
-                  //  cVideoOpts.m_cStartRecordingString.GetString(), numstr.c_str(), _T("wav"));
-                assert(false); // \todo fix this
-
-                // MessageBox(nullptr,strTempAudioWavFilePath,"Uses Temp File",MB_OK);
-                // fileverified = 1;
-                // Try choosing another temporary filename
-                //fileverified = true;
-            }
-        }
-        else
-        {
-            fileverified = true;
-        }
-    }
-}
-
-BOOL StartAudioRecording()
-{
-    TRACE(_T("StartAudioRecording\n"));
-
-    // open wavein device
-    // use on message to map.....
-    MMRESULT mmReturn = ::waveInOpen(&m_hWaveRecord, cAudioFormat.m_uDeviceID, &(cAudioFormat.AudioFormat()),
-                                     (DWORD_PTR)g_hWndGlobal, 0, CALLBACK_WINDOW);
-    if (mmReturn)
-    {
-        waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
-        return FALSE;
-    }
-
-    // make several input buffers and add them to the input queue
-    for (int i = 0; i < 3; i++)
-    {
-        AddInputBufferToQueue();
-    }
-
-    // start recording
-    mmReturn = ::waveInStart(m_hWaveRecord);
-    if (mmReturn)
-    {
-        waveInErrorMsg(mmReturn, "Error in StartAudioRecording()");
-        return FALSE;
-    }
-
-    iAudioTimeInitiated = 1;
-    sdwSamplesPerSec = cAudioFormat.AudioFormat().nSamplesPerSec;
-    sdwBytesPerSec = cAudioFormat.AudioFormat().nAvgBytesPerSec;
-
-    return TRUE;
-}
-
-void StopAudioRecording()
-{
-    MMRESULT mmReturn = ::waveInReset(m_hWaveRecord);
-    if (mmReturn)
-    {
-        waveInErrorMsg(mmReturn, "in Stop()");
-        return;
-    }
-    Sleep(500);
-
-    mmReturn = ::waveInStop(m_hWaveRecord);
-    if (mmReturn)
-    {
-        waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinStop)");
-    }
-
-    mmReturn = ::waveInClose(m_hWaveRecord);
-    if (mmReturn)
-    {
-        waveInErrorMsg(mmReturn, "Error in StopAudioRecording() (WaveinClose)");
-    }
-
-    // if (m_QueuedBuffers != 0) ErrorMsg("Still %d buffers in waveIn queue!", m_QueuedBuffers);
-    if (m_QueuedBuffers != 0)
-    {
-        // MessageBox(nullptr,"Audio buffers still in queue!","note", MB_OK);
-        MessageOut(nullptr, IDS_STRING_AUDIOBUF, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-    }
-
-    iAudioTimeInitiated = 0;
-}
-#endif
 }
 
 void CRecorderView::OnOptionsProgramsettings()
