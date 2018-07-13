@@ -22,9 +22,9 @@
 TEST(test_video_encoder, test_create_h264_encoder)
 {
     av_video_codec video_codec_config;
-    video_codec_config.id = AV_CODEC_ID_H264;
 
     av_video_meta meta;
+    meta.codec = video::codec::x264;
     meta.bitrate = 4000;
     meta.bpp = 24;
     meta.height = 512;
@@ -39,6 +39,7 @@ TEST(test_video_encoder, test_create_h264_encoder)
     test.open(nullptr, avargs);
 
     auto frame = create_bmpinfo(512, 512);
-    test.push_encode_frame(0, (BITMAPINFOHEADER *)frame);
+    test.push_encode_frame(0, (unsigned char *)frame->bmiColors, frame->bmiHeader.biWidth,
+        frame->bmiHeader.biHeight, frame->bmiHeader.biWidth);
     free(frame);
 }

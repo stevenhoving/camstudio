@@ -17,12 +17,8 @@
 
 #pragma once
 
-
 #include <cstdint>
 
-namespace simd
-{
 void bgr2yuv420p_sse(uint8_t *destination[8], const int dst_stride[3], const uint8_t *const src[3],
                      const int width, const int height, const int src_stride[3]);
-} // namespace simd
 

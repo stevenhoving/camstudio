@@ -27,8 +27,8 @@
 #include <tmmintrin.h>
 #include <cstdio>
 
-namespace simd
-{
+using namespace simd;
+
 static const auto shuffle_lo_odd = vec3_set_shuffle_lo(9, 6, 3, 0);
 static const auto shuffle_hi_odd = vec3_set_shuffle_hi(9, 6, 3, 0);
 
@@ -307,5 +307,3 @@ void bgr2yuv420p_sse(uint8_t *destination[8], const int dst_stride[3], const uin
         bgr_pixels += stride * 2;
     }
 }
-
-} // namespace simd
