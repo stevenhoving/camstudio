@@ -121,6 +121,11 @@ std::unique_ptr<av_video> cam_create_video_codec(const av_video_meta &meta)
     return std::make_unique<av_video>(video_codec_config, meta);
 }
 
+capture_thread::capture_thread(const std::function<void()> &on_recording_completed)
+    : on_recording_completed_(on_recording_completed)
+{
+}
+
 capture_thread::~capture_thread()
 {
     stop();
@@ -243,4 +248,6 @@ void capture_thread::run()
 
     video_encoder.reset();
     fmt::print("capture_thread: completed recording");
+
+    on_recording_completed_();
 }

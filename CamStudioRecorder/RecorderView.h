@@ -42,6 +42,7 @@ private:
     void restore_window();
 
 
+    std::filesystem::path generate_auto_filename();
 protected:
     virtual BOOL OnPreparePrinting(CPrintInfo *pInfo);
     virtual void OnBeginPrinting(CDC *pDC, CPrintInfo *pInfo);

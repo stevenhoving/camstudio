@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <filesystem>
 
 static const int USE_WINDOWS_TEMP_DIR = 0;
 static const int USE_INSTALLED_DIR = 1;
@@ -13,10 +14,9 @@ enum class dir_access : int
     user_specified_dir = 2
 };
 
-std::wstring get_temp_folder(dir_access iAccess, const std::wstring &folder = _T(""), bool bOut = false);
-std::wstring get_prog_path();
+std::filesystem::path get_prog_path();
 std::wstring get_my_video_path();
-std::wstring get_my_documents_path();
+std::filesystem::path get_my_documents_path();
 
 
 CString GetTempFolder(int iAccess, const CString &strFolder = _T(""), bool bOut = false);

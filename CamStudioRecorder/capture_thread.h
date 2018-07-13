@@ -41,7 +41,7 @@ struct capture_settings
 class capture_thread
 {
 public:
-    capture_thread() = default;
+    capture_thread(const std::function<void()> &on_recording_completed);
     ~capture_thread();
 
     void start(capture_settings settings);
@@ -58,4 +58,6 @@ private:
     std::atomic<bool> run_{false};
 
     rect<int> capture_dst_rect_{0, 0, 0, 0};
+
+    std::function<void()> on_recording_completed_;
 };

@@ -634,14 +634,80 @@ void CRecorderView::OnDestroy()
     CView::OnDestroy();
 }
 
+std::filesystem::path get_temp_folder_ex(const temp_output_directory::type type,
+                                         const std::filesystem::path &user_specified_temp)
+{
+    switch (type)
+    {
+    case temp_output_directory::user_temp:
+    {
+        const auto user_temp = std::filesystem::temp_directory_path() / "CamStudio Temp Files";
+        if (!std::filesystem::exists(user_temp))
+        {
+            if (!std::filesystem::create_directories(user_temp))
+                throw std::runtime_error("invalid temp path");
+        }
+        return user_temp;
+    } break;
+
+    case temp_output_directory::user_specified:
+    {
+        if (!std::filesystem::exists(user_specified_temp))
+        {
+            if (!std::filesystem::create_directories(user_specified_temp))
+                throw std::runtime_error("invalid user defined temp path");
+        }
+
+        // If valid directory, return the user supplied directory as temp directory.
+        if (!std::filesystem::is_directory(user_specified_temp))
+            throw std::runtime_error("failed to get user supplied temp folder");
+
+        return user_specified_temp;
+    } break;
+
+    case temp_output_directory::user_my_documents:
+    {
+        const auto my_documents = get_my_documents_path() / "My CamStudio Temp Files";
+
+        if (!std::filesystem::exists(my_documents))
+        {
+            if (!std::filesystem::create_directories(my_documents))
+                throw std::runtime_error("invalid user defined temp path");
+        }
+        return my_documents;
+    } break;
+
+    case temp_output_directory::windows_temp:
+    {
+        wchar_t dirx[_MAX_PATH];
+        ::GetWindowsDirectoryW(dirx, _MAX_PATH);
+        return std::filesystem::path(dirx) / "temp";
+    } break;
+
+
+    case temp_output_directory::install:
+    {
+        const auto install_dir = get_prog_path() / "temp";
+
+        if (!std::filesystem::exists(install_dir))
+        {
+            if (!std::filesystem::create_directories(install_dir))
+                throw std::runtime_error("invalid user defined temp path");
+        }
+
+        return install_dir;
+    } break;
+    }
+    throw std::runtime_error("Unable to create temp folder");
+}
+
+
 std::string CRecorderView::generate_temp_filename(video_container::type container)
 {
-    const auto output_directory = settings_model_->get_application_temp_directory();
-
-    /* \todo fix this... */
-    const auto temp_folder = get_temp_folder(dir_access::windows_temp_dir,
-        //settings_model_->get_application_temp_directory_access(),
-        std::wstring(output_directory.begin(), output_directory.end()));
+    const auto temp_directory = get_temp_folder_ex(
+        settings_model_->get_application_temp_directory_type(),
+        settings_model_->get_application_temp_directory()
+    );
 
     time_t osBinaryTime;
     time(&osBinaryTime);
@@ -655,15 +721,17 @@ std::string CRecorderView::generate_temp_filename(video_container::type containe
     int second = ctime.GetSecond();
 
     // Create timestamp tag
-    auto start_time = fmt::sprintf(_T("%04d%02d%02d_%02d%02d_%02d"), year, month, day, hour, minutes, second);
+    auto start_time = fmt::sprintf(L"%04d%02d%02d_%02d%02d_%02d", year, month, day, hour, minutes, second);
 
     // \todo this is wrong
     //cVideoOpts.m_cStartRecordingString = start_time;
 
     const auto file_extention = video_container::names().at(container);
 
-    strTempVideoFilePath =
-        fmt::format(_T("{}\\{}-{}.{}"), temp_folder, _T(TEMPFILETAGINDICATOR), start_time, file_extention);
+    //strTempVideoFilePath =
+        //fmt::format(L"{}\\{}-{}.{}", temp_directory.generic_wstring(), _T(TEMPFILETAGINDICATOR), start_time, file_extention);
+    std::filesystem::path temp_video_file_path = temp_directory / fmt::format(L"{}-{}.{}",_T(TEMPFILETAGINDICATOR), start_time, file_extention);
+    strTempVideoFilePath = temp_video_file_path.generic_wstring();
 
     // TRACE("## CRecorderView::RecordAVIThread First  Temp.Avi file=[%s]\n", strTempVideoAviFilePath.GetString()  );
 
@@ -677,7 +745,7 @@ std::string CRecorderView::generate_temp_filename(video_container::type containe
             fileverified = std::filesystem::remove(filepath);
             if (!fileverified)
             {
-                strTempVideoFilePath = fmt::format(_T("{}\\{}-{}-{}.{}"), temp_folder,
+                strTempVideoFilePath = fmt::format(_T("{}\\{}-{}-{}.{}"), temp_directory,
                     _T(TEMPFILETAGINDICATOR), start_time, rand(), file_extention);
             }
         }
@@ -723,10 +791,14 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
     settings.video_settings = *video_settings_model_;
     settings.settings = *settings_model_;
 
-    const auto video_container_type = static_cast<video_container::type>(video_settings_model_->video_container_.get_index());
+    const auto video_container_type = static_cast<video_container::type>(
+        video_settings_model_->video_container_.get_index());
     settings.filename = generate_temp_filename(video_container_type);
 
-    capture_thread_ = std::make_unique<capture_thread>();
+    capture_thread_ = std::make_unique<capture_thread>(
+        [this]()
+        {PostMessage(WM_USER_GENERIC, 0, 0);}
+     );
     capture_thread_->start(settings);
 
     // Ver 1.3
@@ -870,6 +942,17 @@ void CRecorderView::restore_window()
     AfxGetMainWnd()->ShowWindow(SW_RESTORE);
 }
 
+std::filesystem::path CRecorderView::generate_auto_filename()
+{
+    const auto t = std::time(nullptr);
+    const auto tm = fmt::localtime(t);
+
+    const auto filename = fmt::format(L"{:%Y%m%d-%H%M-%S}.{}", tm, video_settings_model_->get_video_container_file_extention());
+
+    // \todo auto filename name format should be configurable.
+    return std::filesystem::path(filename);
+}
+
 // This function is called when the avi saving is completed
 LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
@@ -882,56 +965,58 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
         return 0;
     }
 
-    std::filesystem::path target_directory;
+    std::filesystem::path target_filepath; // the complete filepath including directory
 
-    if (std::filesystem::exists(settings_model_->get_application_output_directory()))
-    {
-        target_directory = settings_model_->get_application_output_directory();
-    }
-    else
-    {
-        // \note this is wrong!!
-        //strTargetDir = get_temp_folder(settings_model_->get_application_temp_directory_access(),
-            //settings_model_->get_application_temp_directory(), true);
-        assert(false);
-    }
-
-    const auto file_extention = video_settings_model_->get_video_container_file_extention();
-    const auto filter = fmt::format(L"Video files (*.{0}|*/{0})", file_extention);
-    const auto title = L"Save video file";
-    const auto extended_filter = fmt::format(L"*.{}", file_extention);
-
-    CFileDialog file_dialog(FALSE, extended_filter.c_str(), extended_filter.c_str(),
-        OFN_LONGNAMES | OFN_OVERWRITEPROMPT | OFN_ENABLESIZING, filter.c_str(), this);
-    file_dialog.m_ofn.lpstrTitle = title;
-
-    // Savedir is a global var and therefor mostly set before.
-    if (savedir == "")
-    {
-        savedir = GetMyVideoPath();
-    }
-
-    const auto initial_directory = target_directory.generic_wstring();
-    file_dialog.m_ofn.lpstrInitialDir = initial_directory.c_str();
-
-    std::filesystem::path target_filepath;
+    std::filesystem::path target_filename; // only the filename
     if (settings_model_->get_application_auto_filename())
     {
-        const auto t = std::time(nullptr);
-        const auto tm = fmt::localtime(t);
+        // \todo auto filename name format should be configurable.
+        target_filename = generate_auto_filename();
+    }
 
-        // auto filename name format should be configurable.
-        target_filepath = std::filesystem::path(settings_model_->get_application_output_directory()) /
-            fmt::format("T{:%Y%m%d-%H%M-%s}", tm);
-    }
-    else if (file_dialog.DoModal() == IDOK)
+    switch(settings_model_->get_application_output_directory_type())
     {
-        const auto file_dialog_filepath = file_dialog.GetPathName();
-        target_filepath = std::filesystem::path(file_dialog_filepath.GetString());
-    }
-    else
-    {
-        return 0;
+        case application_output_directory::ask_user:
+        {
+            const auto file_extention = video_settings_model_->get_video_container_file_extention();
+            const auto filter = fmt::format(L"Video files (*.{})", file_extention);
+            const auto title = L"Save video file";
+            const auto extended_filter = fmt::format(L"*.{}", file_extention);
+
+            CFileDialog file_dialog(FALSE, extended_filter.c_str(), target_filename.c_str(),
+                OFN_LONGNAMES | OFN_OVERWRITEPROMPT | OFN_ENABLESIZING, filter.c_str(), this);
+            file_dialog.m_ofn.lpstrTitle = title;
+
+            if (file_dialog.DoModal() == IDOK)
+            {
+                const auto file_dialog_filepath = file_dialog.GetPathName();
+                target_filepath = std::filesystem::path(file_dialog_filepath.GetString());
+            }
+            else
+            {
+                std::filesystem::remove(strTempVideoFilePath);
+                return 0;
+            }
+        }
+
+        case application_output_directory::user_specified:
+            // hack so we always have a filename
+            if (target_filename.empty())
+                target_filename = generate_auto_filename();
+
+            // make sure nobody removed our our destination directory in the meantime.
+            std::filesystem::create_directories(settings_model_->get_application_output_directory());
+            target_filepath = settings_model_->get_application_output_directory() / target_filename;
+            break;
+
+        case application_output_directory::user_my_documents:
+            if (target_filename.empty())
+                target_filename = generate_auto_filename();
+
+            target_filepath = get_my_documents_path() / "My CamStudio Videos";
+            std::filesystem::create_directories(target_filepath);
+            target_filepath /= target_filename;
+            break;
     }
 
     if (!target_filepath.has_extension())
