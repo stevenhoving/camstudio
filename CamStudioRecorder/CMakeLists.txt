@@ -52,22 +52,16 @@ set(RECORDER_SOURCE
     # legacy
     AutopanSpeedDlg.cpp
     AutopanSpeedDlg.h
-    AutoSearchDlg.cpp
-    AutoSearchDlg.h
     BasicMessageDlg.cpp
     BasicMessageDlg.h
     CamStudioCommandLineInfo.cpp
     FixedRegionDlg.cpp
     FixedRegionDlg.h
-    FlashingWnd.cpp
-    FolderDlg.cpp
-    FolderDlg.h
     GdiPlusInitializer.cpp
     GdiPlusInitializer.h
     HotKey.cpp
     KeyshortcutsDlg.cpp
     KeyshortcutsDlg.h
-    LayeredWindowHelperST.cpp
     MainFrm.cpp
     MCI.cpp
     Recorder.cpp
@@ -78,26 +72,13 @@ set(RECORDER_SOURCE
     TextDlg.cpp
     TextDlg.h
     CamStudioCommandLineInfo.h
-    FlashingWnd.h
     HotKey.h
-    LayeredWindowHelperST.h
     MainFrm.h
     MCI.h
     Recorder.h
     RecorderDoc.h
     RecorderVersionReleaseInfo.h
     RecorderView.h
-)
-
-set(RECORDER_ADDONS_SOURCE
-    addons/AnnotationEffectsOptionsDlg.cpp
-    addons/AnnotationEffectsOptionsDlg.h
-    addons/EffectsOptionsDlg.cpp
-    addons/EffectsOptionsDlg.h
-    addons/EffectsOptions2Dlg.cpp
-    addons/EffectsOptions2Dlg.h
-    addons/ImageAttributes.h
-    addons/TextAttributes.h
 )
 
 set(RECORDER_RESOURCE
@@ -112,11 +93,6 @@ add_executable(CamStudioRecorder WIN32
     ${RECORDER_NEW_SOURCE}
     ${RECORDER_SOURCE}
     ${RECORDER_RESOURCE}
-    ${RECORDER_ADDONS_SOURCE}
-)
-
-source_group(addons FILES
-    ${RECORDER_ADDONS_SOURCE}
 )
 
 source_group(src FILES

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "FlashingWnd.h"
 #include "BasicMessageDlg.h"
 #include "capture_thread.h"
 

@@ -12,8 +12,6 @@
 #include "MainFrm.h"
 
 #include "AutopanSpeedDlg.h"
-#include "AutoSearchDlg.h"
-#include "FolderDlg.h"
 #include "FixedRegionDlg.h"
 #include "KeyshortcutsDlg.h"
 
@@ -22,7 +20,6 @@
 
 #include <CamAudio/sound_file.h>
 #include <CamAudio/Buffer.h>
-//#include <CamHook/CamHook.h> // for WM_USER_RECORDSTART_MSG
 #include <CamLib/CStudioLib.h>
 #include <CamLib/TrayIcon.h>
 #include <CamEncoder/av_encoder.h>
@@ -33,10 +30,6 @@
 
 #include "HotKey.h"
 #include "MCI.h"
-
-#include "addons/AnnotationEffectsOptionsDlg.h"
-#include "addons/EffectsOptionsDlg.h"
-#include "addons/EffectsOptions2Dlg.h"
 
 // new stuff
 #include "string_convert.h"
@@ -53,11 +46,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <cassert>
-
-#include <windowsx.h>
-#include <fstream>
-#include <iostream>
-#include <time.h>
+#include <ctime>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
