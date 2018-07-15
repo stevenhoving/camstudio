@@ -12,21 +12,22 @@ I have forked this project because:
 
 ## Goals
 Besides creating a clean installer for camstudio I have found myself a couple of additional goals.
+
 * Fix memory leaks - done.
 * Remove unmaintainable features:
   * swf support - done.
   * xnote support - done.
-* Upgrade project dependencies:
+* Upgrade/Remove project dependencies:
   * CxImage - canceled.
   * zlib - done.
   * minilzo - done.
-  * libconfig++ - done.
+  * libconfig++ - removed.
   * libpng - done.
 * Replace static visual studio project files with CMake - done.
 * Create release.
 * Introduce unit test - in progress.
 * Add support for mkv - done.
-* Replace libcondig with alternative - in progress.
+* Replace libcondig with alternative - done.
 * Replace UI framework with Qt.
 * Improve settings screen.
 
@@ -45,11 +46,12 @@ https://sourceforge.net/p/camstudio
 ## Dependencies
 State | Name | Project
 ----- | -----|--------
-Official| libconfig | https://github.com/hyperrealm/libconfig
 Official| minilzo | http://www.oberhumer.com/opensource/lzo
 Official| zlib | https://github.com/madler/zlib
 Fork| CxImage | https://github.com/movableink/cximage
 Official| ffmpeg | https://www.ffmpeg.org
+Official| cpptoml | https://github.com/skystrife/cpptoml
+Official| fmtlib | https://github.com/fmtlib/fmt
 
 ## Credits
 A big thanks goes out to the original CamStudio developers. And to bestlily who had a initial port of CamStudio (https://github.com/bestlily/Camstudio), thanks.
