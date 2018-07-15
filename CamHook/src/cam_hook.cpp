@@ -19,6 +19,8 @@
 #include <fmt/printf.h>
 #include <limits>
 
+using namespace std::chrono_literals;
+
 void mouse_hook::set_instance(HINSTANCE instance)
 {
     instance_ = instance;
@@ -28,17 +30,41 @@ void mouse_hook::attach()
 {
     clear_mouse_events();
     hook_ = ::SetWindowsHookEx(WH_MOUSE_LL, mouse_hook::global_message_proc, instance_, 0);
+
+    debug_unhook_ = std::thread([this]()
+    {
+        while (hook_ != nullptr && !IsDebuggerPresent())
+            std::this_thread::sleep_for(0ms);
+        fmt::print("shutting down or debugger attached\n");
+
+        // only detach when we are not shutting down.
+        if (hook_)
+            _detach_impl();
+    });
 }
 
 void mouse_hook::detach()
 {
+    _detach_impl();
+
+    if (debug_unhook_.joinable())
+        debug_unhook_.join();
+}
+
+void mouse_hook::_detach_impl()
+{
     ::UnhookWindowsHookEx(hook_);
     hook_ = nullptr;
+
     clear_mouse_events();
 }
 
 LRESULT CALLBACK mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lParam)
 {
+    // for debugging..
+    if (IsDebuggerPresent())
+        _detach_impl();
+
     if (nCode >= HC_ACTION)
     {
         switch(wParam)
@@ -51,7 +77,7 @@ LRESULT CALLBACK mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lPara
             MSLLHOOKSTRUCT mouse_event = *reinterpret_cast<MSLLHOOKSTRUCT *>(lParam);
             mouse_event.dwExtraInfo = static_cast<ULONG_PTR>(wParam);
             {
-                std::unique_lock<std::mutex> slock(mouse_events_lock_);
+                std::lock_guard<std::mutex> slock(mouse_events_lock_);
                 mouse_events_.emplace_back(mouse_event);
 
                 fmt::print("mouse action queue size: {}\n", mouse_events_.size());
@@ -74,7 +100,7 @@ LRESULT CALLBACK mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lPara
 
 int32_t mouse_hook::get_mouse_events_count()
 {
-    std::unique_lock<std::mutex> slock(mouse_events_lock_);
+    std::lock_guard<std::mutex> slock(mouse_events_lock_);
     // \todo make lowering cast safe
     return static_cast<int32_t>(mouse_events_.size());
 }
@@ -86,8 +112,8 @@ bool mouse_hook::get_mouse_events(MSLLHOOKSTRUCT *dst, int32_t count)
         return false;
 
     {
-        std::unique_lock<std::mutex> slock(mouse_events_lock_);
-        const auto copy_count = std::min<int32_t>(count, mouse_events_.size());
+        std::lock_guard<std::mutex> slock(mouse_events_lock_);
+        const auto copy_count = std::min<int32_t>(count, static_cast<int32_t>(mouse_events_.size()));
         memcpy(dst, mouse_events_.data(), copy_count * sizeof(MSLLHOOKSTRUCT));
 
         /* \todo fix this so it does not do useless copy stuff, just use a circular buffer instead
@@ -106,7 +132,9 @@ bool mouse_hook::get_mouse_events(MSLLHOOKSTRUCT *dst, int32_t count)
 
 void mouse_hook::clear_mouse_events()
 {
-    std::unique_lock<std::mutex> slock(mouse_events_lock_);
+    std::lock_guard<std::mutex> slock(mouse_events_lock_);
     mouse_events_.clear();
     mouse_events_.shrink_to_fit();
 }
+
+

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "HotKey.h"
 //#include "Profile.h"
-#include <CamHook/CamHook.h>
 
 bool sHotKeyOpts::Read()
 {

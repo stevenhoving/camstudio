@@ -78,7 +78,7 @@ target_compile_options(CamCapture
 target_link_libraries(CamCapture
   PUBLIC
     fmt
-    cam_hook2
+    cam_hook
 )
 
 add_subdirectory(tests)

@@ -21,7 +21,9 @@
 #include "cam_common.h"
 #include <vector>
 #include <mutex>
+#include <thread>
 #include <cstdint>
+#include <atomic>
 
 /* \todo which is used... and which isn't */
 #define WM_USER_RECORDINTERRUPTED_MSG L"WM_USER_RECORDINTERRUPTED_MSG"
@@ -54,10 +56,13 @@ public:
     bool get_mouse_events(MSLLHOOKSTRUCT *dst, int32_t count);
     void clear_mouse_events();
 private:
+    void _detach_impl();
+private:
     HINSTANCE instance_{nullptr};
     HHOOK hook_{nullptr};
 
     // the mouse hook tracking part
     std::mutex mouse_events_lock_;
     std::vector<MSLLHOOKSTRUCT> mouse_events_;
+    std::thread debug_unhook_;
 };

@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-project(cam_hook2)
+project(cam_hook)
 
 set(SOURCE
     src/main.cpp
@@ -31,12 +31,12 @@ source_group(src FILES
     ${INCLUDE}
 )
 
-add_library(cam_hook2 SHARED
+add_library(cam_hook SHARED
     ${SOURCE}
     ${INCLUDE}
 )
 
-target_compile_definitions(cam_hook2
+target_compile_definitions(cam_hook
   PRIVATE
     NOMINMAX
     _UNICODE
@@ -44,20 +44,20 @@ target_compile_definitions(cam_hook2
     CAM_HOOK_EXPORT
 )
 
-target_include_directories(cam_hook2
+target_include_directories(cam_hook
   PUBLIC
     include
 )
 
-target_link_libraries(cam_hook2
+target_link_libraries(cam_hook
     fmt
 )
 
-set_target_properties(cam_hook2 PROPERTIES
+set_target_properties(cam_hook PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
 
-install(TARGETS cam_hook2
+install(TARGETS cam_hook
     RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/bin
     LIBRARY DESTINATION ${CMAKE_BINARY_DIR}/lib
     ARCHIVE DESTINATION ${CMAKE_BINARY_DIR}/lib
