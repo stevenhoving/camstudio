@@ -101,23 +101,6 @@ std::wstring strTempVideoFilePath;
 // Path to temporary audio wav file
 std::wstring strTempAudioWavFilePath;
 
-// Ver 1.1
-/////////////////////////////////////////////////////////////////////////////
-// Audio Functions and Variables
-/////////////////////////////////////////////////////////////////////////////
-// The program records video and sound separately, into 2 files
-// ~temp.avi and ~temp.wav, before merging these 2 file into a single avi file
-// using the Merge_Video_And_Sound_File function
-/////////////////////////////////////////////////////////////////////////////
-
-HWAVEIN m_hWaveRecord;
-DWORD m_ThreadID;
-int m_QueuedBuffers = 0;
-int iBufferSize = 1000; // number of samples
-CSoundFile *g_pSoundFile = nullptr;
-
-// Audio Options Dialog
-// LPWAVEFORMATEX pwfx = nullptr;
 
 /////////////////////////////////////////////////////////////////////////////
 // ver 1.2
@@ -126,13 +109,6 @@ CSoundFile *g_pSoundFile = nullptr;
 /////////////////////////////////////////////////////////////////////////////
 // state vars
 BOOL g_bAllowNewRecordStartKey = TRUE;
-
-int iAudioTimeInitiated = 0;
-int sdwSamplesPerSec = 22050;
-int sdwBytesPerSec = 44100;
-
-int g_iCurrentLayout = 0;
-
 
 HBITMAP g_hSavedBitmap = nullptr;
 
@@ -374,12 +350,6 @@ END_EVENTSINK_MAP()
 
 CRecorderView::CRecorderView()
     : CView()
-    , basic_msg_(nullptr)
-    , zoom_(1)
-    , zoom_direction_(-1) // zoomed out
-    , zoom_when_(0)       // FIXME: I hope it is unlikely zoom start at 47 day boundary ever happen by accident
-    , zoomed_at_(10, 10)
-    , show_message_(true)
 {
     mouse_hook_ = std::make_unique<mouse_hook>();
 
@@ -388,11 +358,6 @@ CRecorderView::CRecorderView()
 
     settings_model_ = std::make_unique<settings_model>();
     settings_model_->load();
-
-    // hackery to make sure things are okey
-    //const auto capture_rect = settings_model_->get_capture_rect();
-    //g_rc = {capture_rect.left(), capture_rect.top(), capture_rect.right(), capture_rect.bottom()};
-    //g_rcClip = g_rc;
 }
 
 CRecorderView::~CRecorderView()
@@ -413,32 +378,22 @@ BOOL CRecorderView::PreCreateWindow(CREATESTRUCT &cs)
     return CView::PreCreateWindow(cs);
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CRecorderView drawing
-
-void CRecorderView::OnDraw(CDC * /*pDC*/)
+void CRecorderView::OnDraw(CDC *pCDC)
 {
-    //CRecorderDoc *pDoc = GetDocument();
-    //ASSERT_VALID(pDoc);
+    CView::OnDraw(pCDC);
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CRecorderView printing
 
 BOOL CRecorderView::OnPreparePrinting(CPrintInfo *pInfo)
 {
-    // default preparation
     return DoPreparePrinting(pInfo);
 }
 
 void CRecorderView::OnBeginPrinting(CDC * /*pDC*/, CPrintInfo * /*pInfo*/)
 {
-    // TODO: add extra initialization before printing
 }
 
 void CRecorderView::OnEndPrinting(CDC * /*pDC*/, CPrintInfo * /*pInfo*/)
 {
-    // TODO: add cleanup after printing
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -503,9 +458,6 @@ void CRecorderView::OnPaint()
         dc.BitBlt(0, 0, rectClient.Width(), rectClient.Height(), &dcBits, 0, 0, SRCCOPY);
         dcBits.SelectObject(pOldBitmap);
     }
-
-    // ver 2.26
-    // Do not call CView::OnPaint() for painting messages
 }
 
 int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -545,8 +497,6 @@ void CRecorderView::OnDestroy()
 
     // UnSetHotKeys(g_hWndGlobal);
     // getHotKeyMap().clear(); // who actually cares?
-
-    //DestroyShiftWindow();
 
     if (g_hSavedBitmap)
     {
@@ -630,7 +580,6 @@ std::filesystem::path get_temp_folder_ex(const temp_output_directory::type type,
     throw std::runtime_error("Unable to create temp folder");
 }
 
-
 std::string CRecorderView::generate_temp_filename(video_container::type container)
 {
     const auto temp_directory = get_temp_folder_ex(
@@ -652,13 +601,8 @@ std::string CRecorderView::generate_temp_filename(video_container::type containe
     // Create timestamp tag
     auto start_time = fmt::sprintf(L"%04d%02d%02d_%02d%02d_%02d", year, month, day, hour, minutes, second);
 
-    // \todo this is wrong
-    //cVideoOpts.m_cStartRecordingString = start_time;
-
     const auto file_extention = video_container::names().at(container);
 
-    //strTempVideoFilePath =
-        //fmt::format(L"{}\\{}-{}.{}", temp_directory.generic_wstring(), _T(TEMPFILETAGINDICATOR), start_time, file_extention);
     std::filesystem::path temp_video_file_path = temp_directory / fmt::format(L"{}-{}.{}",_T(TEMPFILETAGINDICATOR), start_time, file_extention);
     strTempVideoFilePath = temp_video_file_path.generic_wstring();
 
@@ -1253,7 +1197,6 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
             break;
         case HOTKEY_AUTOPAN_SHOW_HIDE_KEY:
             //OnOptionsAutopan();
-            show_message_ = true;
             break;
     }
 

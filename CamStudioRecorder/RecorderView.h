@@ -46,7 +46,7 @@ protected:
     virtual BOOL OnPreparePrinting(CPrintInfo *pInfo);
     virtual void OnBeginPrinting(CDC *pDC, CPrintInfo *pInfo);
     virtual void OnEndPrinting(CDC *pDC, CPrintInfo *pInfo);
-    //}}AFX_VIRTUAL
+
 
     // Implementation
 public:
@@ -120,12 +120,11 @@ private:
 
     std::unique_ptr<mouse_hook> mouse_hook_;
 
-    CBasicMessageDlg *basic_msg_;
-    double zoom_;
+    CBasicMessageDlg *basic_msg_{nullptr};
+    double zoom_{1};
     CPoint zoomed_at_;
-    DWORD zoom_when_;
-    int zoom_direction_;
-    bool show_message_;
+    DWORD zoom_when_{0}; // FIXME: I hope it is unlikely zoom start at 47 day boundary ever happen by accident
+    int zoom_direction_{-1}; // zoomed out
 
     void DisplayRecordingStatistics(CDC &srcDC);
     void DisplayBackground(CDC &srcDC);
