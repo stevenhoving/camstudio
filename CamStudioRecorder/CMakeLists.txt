@@ -127,7 +127,7 @@ target_compile_options(CamStudioRecorder
     /experimental:external
     /external:W0
     /external:anglebrackets
-    /Wall
+    /W4
 )
 
 set_target_properties(CamStudioRecorder PROPERTIES
