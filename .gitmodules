@@ -4,9 +4,6 @@
 [submodule "dep/libpng"]
 	path = dep/libpng
 	url = https://github.com/aeon-external-dependencies/libpng.git
-[submodule "dep/libconfig"]
-	path = dep/libconfig
-	url = https://github.com/hyperrealm/libconfig.git
 [submodule "dep/fmt"]
 	path = dep/fmt
 	url = https://github.com/fmtlib/fmt.git
