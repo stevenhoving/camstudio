@@ -69,8 +69,8 @@ struct sHotKeyOpts
 
         return *this;
     }
-    bool Read(libconfig::Setting &cProfile);
-    bool Write(libconfig::Setting &cProfile);
+    bool Read();
+    bool Write();
 
     sHotKeyDef m_RecordStart;
     sHotKeyDef m_RecordEnd;

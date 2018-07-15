@@ -27,18 +27,6 @@ add_subdirectory(googletest)
 set(CPPTOML_BUILD_EXAMPLES OFF CACHE BOOL "Disable cpptoml examples" FORCE)
 add_subdirectory(cpptoml)
 
-# libconfig settings
-set(BUILD_EXAMPLES OFF CACHE BOOL "Disable libconfig examples" FORCE)
-set(BUILD_TESTS OFF CACHE BOOL "Disable libconfig examples" FORCE)
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-add_subdirectory(libconfig)
-
-set_target_properties(libconfig libconfig++
-  PROPERTIES
-    FOLDER "External/libconfig"
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
-)
-
 # fmt format library settings.
 set_target_properties(fmt
   PROPERTIES

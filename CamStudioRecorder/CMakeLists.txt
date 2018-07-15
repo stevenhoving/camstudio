@@ -143,7 +143,6 @@ target_link_libraries(CamStudioRecorder
     CamAudio
     CamCapture
     CamEncoder
-    libconfig++
     cpptoml
     CxImage
     localization

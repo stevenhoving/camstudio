@@ -24,10 +24,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 static BOOL bClassRegistered = FALSE;
-// this global variable is mentioned in StdAfx.h
-// thus everyone has an access
-// not the best solution though
-libconfig::Config *g_cfg;
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CAboutDlg dialog used for App About
@@ -193,31 +190,6 @@ BOOL CRecorderApp::InitInstance()
 
     std::filesystem::path path(profile_path);
     std::filesystem::create_directories(path.parent_path());
-
-    // TODO: re-enable when class complete
-    // Read the file. If there is an error, report it and exit.
-    g_cfg = new libconfig::Config();
-    try
-    {
-        g_cfg->readFile(profile_path.c_str());
-    }
-    catch (const libconfig::FileIOException)
-    { // TODO: move me to resource
-      // MessageBox(nullptr, "CamStudio.cfg Config file was not found. Using defaults.", "Error", MB_OK);
-      //        return(EXIT_FAILURE);
-    }
-    catch (const libconfig::ParseException & /*pex*/)
-    {
-        TCHAR buf[1024];
-
-        // \todo fix
-        //_snprintf_s(buf, 1024, _TRUNCATE, "Config file parse error at %s:%d - %s", pex.getFile(), pex.getLine(), pex.getError());
-        MessageBox(nullptr, buf, _T("Error"), MB_OK);
-    }
-
-    //    m_cmSettings.Read();
-    // initialize global values
-    //    VERIFY(m_cmSettings.Read(LANGUAGE, m_wCurLangID));
 
     //    m_wCurLangID = static_cast<LANGID>(GetProfileInt(SEC_SETTINGS, ENT_LANGID, STANDARD_LANGID));
     if (!LoadLanguage(m_wCurLangID))

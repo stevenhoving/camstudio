@@ -3,8 +3,9 @@
 //#include "Profile.h"
 #include <CamHook/CamHook.h>
 
-bool sHotKeyOpts::Read(libconfig::Setting &cProfile)
+bool sHotKeyOpts::Read()
 {
+#if 0
     std::string hk("Start");
     if (cProfile.exists(hk))
     {
@@ -65,11 +66,13 @@ bool sHotKeyOpts::Read(libconfig::Setting &cProfile)
     //bool pass = false;
     //cProfile.lookupValue("PassThrough", pass);
     // setPassThrough(pass); // see hook.cpp
+#endif
     return true;
 }
 
-bool sHotKeyOpts::Write(libconfig::Setting &cProfile)
+bool sHotKeyOpts::Write()
 {
+#if 0
     libconfig::Setting *s;
     std::string hk("Start");
     if (cProfile.exists(hk))
@@ -150,6 +153,7 @@ bool sHotKeyOpts::Write(libconfig::Setting &cProfile)
         s = &(cProfile.add(hk, libconfig::Setting::TypeGroup));
     //UpdateSetting(*s, "Key", (int &)m_Autopan.m_vKey, libconfig::Setting::TypeInt);
     //UpdateSetting(*s, "Mod", (int &)m_Autopan.m_fsMod, libconfig::Setting::TypeInt);
+#endif
 
     return true;
 }
