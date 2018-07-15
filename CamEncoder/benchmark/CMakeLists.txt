@@ -13,24 +13,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-add_subdirectory(zlib)
+include(Benchmark)
 
-#set(SKIP_INSTALL_HEADERS ON CACHE BOOL "" FORCE)
-add_subdirectory(libpng)
-add_subdirectory(minilzo)
-add_subdirectory(CxImage)
-add_subdirectory(localization)
-add_subdirectory(fmt)
-add_subdirectory(googletest)
-add_subdirectory(google_benchmark)
-
-
-# cpptoml settings
-set(CPPTOML_BUILD_EXAMPLES OFF CACHE BOOL "Disable cpptoml examples" FORCE)
-add_subdirectory(cpptoml)
-
-# fmt format library settings.
-set_target_properties(fmt
-  PROPERTIES
-    FOLDER "External/fmt"
+add_benchmark_suite(
+    TARGET benchmark_yuv2rgb
+    SOURCES
+        benchmark_yuv2rgb.cpp
+    INCLUDES
+        ${CMAKE_CURRENT_BINARY_DIR}
+    LIBRARIES
+        CamEncoder
+    FOLDER benchmark/benchmark_yuv2rgb
 )
+
+#set_target_properties(test_cam_encoder PROPERTIES
+#    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+#    VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$(Configuration)
+#)

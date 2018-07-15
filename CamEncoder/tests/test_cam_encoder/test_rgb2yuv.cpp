@@ -105,7 +105,7 @@ TEST(test_rgb2yuv, test_bgra2yuv)
     const int src_stride[3] = {width * -4, 0, 0};
 
     bgra2yuv420p(destination_c, dst_stride, src, width, height, src_stride);
-    simd::bgra2yuv420p_sse(destination_sse, dst_stride, src, width, height, src_stride);
+    bgra2yuv420p_sse(destination_sse, dst_stride, src, width, height, src_stride);
 
     for (int i = 0; i < yuv420_sse.size(); ++i)
     {
@@ -174,7 +174,7 @@ TEST(test_rgb2yuv, test_bgra2yuv_perf)
     stopwatch.time_start();
 
     for (int i = 0; i < 100; ++i)
-        simd::bgra2yuv420p_sse(destination, dst_stride, src, width, height, src_stride);
+        bgra2yuv420p_sse(destination, dst_stride, src, width, height, src_stride);
 
     double dt = stopwatch.time_since() * 1000.0;
     fmt::print("4000x4000 - 100x bgra2yuv took: {}ms\n", dt);

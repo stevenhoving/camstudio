@@ -368,7 +368,7 @@ void av_video::push_encode_frame(timestamp_t timestamp, unsigned char *data, int
         }
         else if (input_pixel_format_ == AV_PIX_FMT_BGRA)
         {
-            simd::bgra2yuv420p_sse(frame_->data, dst_stride, src, src_width, src_height, src_stride);
+            bgra2yuv420p_sse(frame_->data, dst_stride, src, src_width, src_height, src_stride);
         }
         else
         {

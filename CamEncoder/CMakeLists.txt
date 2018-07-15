@@ -165,3 +165,4 @@ add_custom_command(TARGET CamEncoder POST_BUILD
 )
 
 add_subdirectory(tests)
+add_subdirectory(benchmark)

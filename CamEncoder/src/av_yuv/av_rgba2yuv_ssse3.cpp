@@ -60,6 +60,9 @@ static const auto uv_shuffle2 = _mm_set_epi8(
 static const vec3 uv_shuffle = { uv_shuffle0, uv_shuffle1, uv_shuffle2 };
 static const vec2 vec2_uv_shuffle = { uv_shuffle0, uv_shuffle1 };
 
+} // namespace simd
+
+using namespace simd;
 
 void bgra2yuv420p_sse(uint8_t *destination[8], const int dst_stride[3],
                          const uint8_t *const src[3], const int width, const int height,
@@ -242,4 +245,4 @@ void bgra2yuv420p_sse(uint8_t *destination[8], const int dst_stride[3],
     }
 }
 
-} // namespace simd
+
