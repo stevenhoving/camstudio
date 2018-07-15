@@ -75,7 +75,12 @@ class window_button : public CButton
 {
 public:
     window_button(CWnd *parent, const window_data &data);
-    void create(CRect rect, const int id);
+    window_button(const window_button &) = delete;
+    window_button &operator = (const window_button &) = delete;
+    window_button (window_button &&) = delete;
+    window_button &operator = (window_button &&) = delete;
+
+    void create(CRect rect, const unsigned int id);
     window_data &get_data() noexcept;
 
     void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) override;

@@ -27,6 +27,8 @@ public:
     application_settings_ui(CWnd* pParent = nullptr);
     application_settings_ui(CWnd* pParent, settings_model &model);
     virtual ~application_settings_ui();
+    application_settings_ui(const application_settings_ui &) = delete;
+    application_settings_ui &operator = (const application_settings_ui &) = delete;
 
     BOOL OnInitDialog() override;
 

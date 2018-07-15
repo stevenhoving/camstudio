@@ -208,8 +208,8 @@ void cursor_settings_ui::OnStnClickedCursorPreview()
 
 void cursor_settings_ui::OnBnClickedPickHaloColor()
 {
-    const auto color = settings_->get_cursor_halo_color();
-    const auto halo_color = RGB(color.r_, color.g_, color.b_);
+    const auto halo_color_config = settings_->get_cursor_halo_color();
+    const auto halo_color = RGB(halo_color_config.r_, halo_color_config.g_, halo_color_config.b_);
     CColorDialog color_dialog(halo_color, CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT);
     if (color_dialog.DoModal() == IDOK)
     {
@@ -252,8 +252,6 @@ HBRUSH cursor_settings_ui::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
     if (nCtlColor == CTLCOLOR_STATIC)
     {
-        DWORD color = GetSysColor(COLOR_BTNFACE);
-
         switch(pWnd->GetDlgCtrlID())
         {
             case IDC_CURSOR_HALO_COLOR_EXAMPLE:
@@ -285,7 +283,7 @@ void cursor_settings_ui::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollB
         switch (id)
         {
         case IDC_HALO_SIZE:
-            _set_cursor_halo_size_label(nPos);
+            _set_cursor_halo_size_label(static_cast<int>(nPos));
             break;
         }
     }

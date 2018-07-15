@@ -43,7 +43,6 @@ LRESULT WINAPI wnd_proc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam)
 mouse_capture_ui::mouse_capture_ui(HINSTANCE instance, HWND parent, const std::function<void(const CRect &capture_rect)> &completed)
     : instance_(instance)
     , completed_(completed)
-    , capture_rect_(0, 0, 0, 0)
 {
     const auto screen_x = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
     const auto screen_y = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
@@ -134,10 +133,10 @@ void mouse_capture_ui::hide()
     ::ShowWindow(hwnd_, SW_HIDE);
 }
 
-void mouse_capture_ui::on_paint(HWND hWnd, WPARAM wParam, LPARAM lParam)
+void mouse_capture_ui::on_paint(HWND hWnd, WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     PAINTSTRUCT ps;
-    auto hdc = ::BeginPaint(hWnd, &ps);
+    ::BeginPaint(hWnd, &ps);
 
     // Get the size of the client rectangle.
     RECT rc;
@@ -190,7 +189,7 @@ void mouse_capture_ui::on_paint(HWND hWnd, WPARAM wParam, LPARAM lParam)
     ::EndPaint(hWnd, &ps);
 }
 
-void mouse_capture_ui::on_mouse_wheel(HWND hWnd, WPARAM wParam, LPARAM lParam)
+void mouse_capture_ui::on_mouse_wheel(HWND hWnd, WPARAM wParam, LPARAM /*lParam*/)
 {
     // in select mode the mouse wheel does not have any function
     if (modify_mode_ != modify_mode::move)
@@ -307,7 +306,7 @@ void mouse_capture_ui::on_mouse_move(HWND hWnd)
     }
 }
 
-void mouse_capture_ui::on_lbutton_up(HWND hWnd)
+void mouse_capture_ui::on_lbutton_up(HWND /*hWnd*/)
 {
     hide();
 
@@ -339,7 +338,7 @@ void mouse_capture_ui::on_lbutton_up(HWND hWnd)
     completed_(capture_rect_drag_rect_);
 }
 
-void mouse_capture_ui::on_lbutton_down(HWND hWnd)
+void mouse_capture_ui::on_lbutton_down(HWND /*hWnd*/)
 {
     if (modify_mode_ == modify_mode::move)
         return;
@@ -351,7 +350,7 @@ void mouse_capture_ui::on_lbutton_down(HWND hWnd)
     select_rect_ = true;
 }
 
-void mouse_capture_ui::on_rbutton_down(HWND hWnd)
+void mouse_capture_ui::on_rbutton_down(HWND /*hWnd*/)
 {
     if (capture_mode_ != capture_type::fixed)
         return;
@@ -359,7 +358,7 @@ void mouse_capture_ui::on_rbutton_down(HWND hWnd)
     hide();
 }
 
-void mouse_capture_ui::on_key_down(HWND hWnd, WPARAM wParam, LPARAM lParam)
+void mouse_capture_ui::on_key_down(HWND /*hWnd*/, WPARAM wParam, LPARAM /*lParam*/)
 {
     int nVirtKey = (int)wParam; // virtual-key code
 

@@ -116,9 +116,11 @@ bool is_window_candidate(HWND hwnd)
     return result;
 }
 
-BOOL CALLBACK enum_windows_callback(HWND hwnd, LPARAM lparam)
+BOOL CALLBACK enum_windows_callback(HWND hwnd, LPARAM lparam) noexcept
 {
     const auto window_set = reinterpret_cast<get_windows_info *>(lparam);
+    if (window_set == nullptr)
+        return TRUE;
 
     DWORD window_thread_process_id;
     ::GetWindowThreadProcessId(hwnd, &window_thread_process_id);
@@ -127,15 +129,23 @@ BOOL CALLBACK enum_windows_callback(HWND hwnd, LPARAM lparam)
     {
         DWORD process_id = 0;
         ::GetWindowThreadProcessId(hwnd, &process_id);
-        const auto[process_name, process_filepath] = get_process_name(process_id);
 
-        if (process_name.empty())
-            return TRUE;
+        try
+        {
+            const auto [process_name, process_filepath] = get_process_name(process_id);
 
-        const auto window_title = get_window_title(hwnd);
+            if (process_name.empty())
+                return TRUE;
 
-        window_data data = {process_id, process_name, process_filepath, window_title, hwnd};
-        window_set->windows.emplace_back(data);
+            const auto window_title = get_window_title(hwnd);
+
+            window_data data = { process_id, process_name, process_filepath, window_title, hwnd };
+            window_set->windows.emplace_back(data);
+        }
+        catch(const std::exception & /*ex*/)
+        {
+            return FALSE;
+        }
     }
 
     return TRUE;
@@ -171,15 +181,17 @@ BOOL window_select_ui::OnInitDialog()
     CRect button_rect(0, 0, button_width, button_height);
 
     constexpr auto button_horizontal_count = 6;
-    const auto columns = windows.size() % button_horizontal_count;
-    const auto rows = windows.size() / button_horizontal_count;
+    const auto windows_size = static_cast<int>(windows.size());
+    const auto columns = windows_size % button_horizontal_count;
+    const auto rows = windows_size / button_horizontal_count;
 
-    const auto window_width = std::min<int>(windows.size(), button_horizontal_count) * button_width;
-    const auto window_height = std::max<int>(rows, 1) * button_height;
+    const auto window_width = std::min(windows_size, button_horizontal_count) * button_width;
+    const auto window_height = std::max(rows, 1) * button_height;
 
     // set size
-    SetWindowPos(&CWnd::wndTop, -1, -1,
-        std::min<int>(windows.size(), button_horizontal_count) * button_width,
+    //SetWindowPos(&CWnd::wndTop, -1, -1,
+    SetWindowPos(nullptr, -1, -1,
+        std::min(windows_size, button_horizontal_count) * button_width,
         rows * button_height,
         SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
 
@@ -204,13 +216,13 @@ BOOL window_select_ui::OnInitDialog()
 
 BOOL window_select_ui::OnCmdMsg(UINT nID, int nCode, void *pExtra, AFX_CMDHANDLERINFO *pHandlerInfo)
 {
-    const auto button_id = nID - IDC_WINDOW_SELECT_BUTTON;
-    if (button_id < 0 || button_id > capture_windows_.size())
+    const auto button_id = static_cast<int>(nID) - IDC_WINDOW_SELECT_BUTTON;
+    if (button_id < 0 || button_id > static_cast<int>(capture_windows_.size()))
         return CDialogEx::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
 
     const auto &window = capture_windows_.at(button_id);
     const auto &window_data = window->get_data();
-    const auto process_name = std::string(window_data.process_name.begin(), window_data.process_name.end());
+    //const auto process_name = std::string(window_data.process_name.begin(), window_data.process_name.end());
 
     if (completed_)
         completed_(window_data.hwnd);

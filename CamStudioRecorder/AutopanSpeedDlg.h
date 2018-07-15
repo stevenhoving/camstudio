@@ -4,6 +4,10 @@ class CAutopanSpeedDlg : public CDialog
 {
 public:
     explicit CAutopanSpeedDlg(CWnd *pParent = nullptr);
+    CAutopanSpeedDlg(const CAutopanSpeedDlg &) = delete;
+    CAutopanSpeedDlg &operator = (const CAutopanSpeedDlg &) = delete;
+    CAutopanSpeedDlg(CAutopanSpeedDlg &&) = delete;
+    CAutopanSpeedDlg &operator = (CAutopanSpeedDlg &&) = delete;
 
     // Dialog Data
     //{{AFX_DATA(CAutopanSpeedDlg)

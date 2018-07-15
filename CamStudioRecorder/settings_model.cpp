@@ -281,7 +281,7 @@ void settings_model::_save_cursor_settings(cpptoml::table &root)
     root.insert(config::cursor::settings, cursor.get_table());
 }
 
-void settings_model::_save_hotkey_settings(cpptoml::table &root)
+void settings_model::_save_hotkey_settings(cpptoml::table & /*root*/)
 {
     // \todo
 }
@@ -326,7 +326,7 @@ void settings_model::_load_cursor_settings(const cpptoml::table &root)
     cursor_ring_width_ = cursor.get_optional<double>(config::cursor::ring_width, 1.5);
 }
 
-void settings_model::_load_hotkey_settings(const cpptoml::table &root)
+void settings_model::_load_hotkey_settings(const cpptoml::table & /*root*/)
 {
     // \todo
 }

@@ -61,7 +61,7 @@ window_button::window_button(CWnd *parent, const window_data &data)
 {
 }
 
-void window_button::create(CRect rect, const int id)
+void window_button::create(CRect rect, const unsigned int id)
 {
     const auto style = WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_OWNERDRAW;
     Create(data_.window_title.c_str(), style, rect, parent_, id);

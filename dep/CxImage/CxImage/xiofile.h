@@ -12,7 +12,7 @@ public:
         m_bCloseFile = (bool)(fp==0);
     }
 
-    ~CxIOFile()
+    ~CxIOFile() override
     {
         Close();
     }

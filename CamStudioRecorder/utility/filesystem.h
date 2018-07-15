@@ -31,7 +31,8 @@ std::filesystem::path get_app_data_path()
     {
         return std::filesystem::path(app_data_path);
     }
-    else if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, app_data_path)))
+
+    if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, app_data_path)))
     {
         return std::filesystem::path(app_data_path);
     }

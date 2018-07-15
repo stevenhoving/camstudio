@@ -131,7 +131,7 @@ void video_settings_ui::_set_codec_quality_constant(int q)
 
 void video_settings_ui::_set_codec_preset_index(int index)
 {
-    const auto index_text = video_codec_preset::names().at(index);
+    const auto index_text = video_codec_preset::names().at(static_cast<size_t>(index));
     model_->video_codec_preset_.set_index(static_cast<video_codec_preset::type>(index));
     video_codec_preset_name_.SetWindowText(index_text);
 }
@@ -244,10 +244,10 @@ void video_settings_ui::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBa
         switch(id)
         {
         case IDC_CODEC_CONSTANT_QUALITY_SLIDER:
-            _set_codec_quality_constant(nPos);
+            _set_codec_quality_constant(static_cast<int>(nPos));
             break;
         case IDC_CODEC_PRESET_SLIDER:
-            _set_codec_preset_index(nPos);
+            _set_codec_preset_index(static_cast<int>(nPos));
             break;
         }
     }

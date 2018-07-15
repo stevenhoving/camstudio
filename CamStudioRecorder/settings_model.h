@@ -57,19 +57,19 @@ public:
         );
     }
 
-    application_output_directory(type new_type)
+    application_output_directory(type new_type) noexcept
         : type_(new_type)
     {
     }
-    int get_index() const
+    int get_index() const noexcept
     {
         return type_;
     }
-    void set_index(const type new_type)
+    void set_index(const type new_type) noexcept
     {
         type_ = new_type;
     }
-    void set_index(const int new_type)
+    void set_index(const int new_type) noexcept
     {
         type_ = static_cast<type>(new_type);
     }
@@ -100,19 +100,19 @@ public:
         );
     }
 
-    temp_output_directory(type new_type)
+    temp_output_directory(type new_type) noexcept
         : type_(new_type)
     {
     }
-    int get_index() const
+    int get_index() const noexcept
     {
         return type_;
     }
-    void set_index(const type new_type)
+    void set_index(const type new_type) noexcept
     {
         type_ = new_type;
     }
-    void set_index(const int new_type)
+    void set_index(const int new_type) noexcept
     {
         type_ = static_cast<type>(new_type);
     }

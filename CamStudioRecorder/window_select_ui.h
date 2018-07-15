@@ -45,6 +45,8 @@ class window_select_ui : public CDialogEx
 public:
     window_select_ui(CWnd* pParent, const std::function<void(const HWND window_handle)> &completed);
     virtual ~window_select_ui();
+    window_select_ui(const window_select_ui &) = delete;
+    window_select_ui &operator = (const window_select_ui &) = delete;
 
     std::vector<window_data> get_windows();
 

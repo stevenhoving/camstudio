@@ -43,6 +43,9 @@ class capture_thread
 public:
     capture_thread(const std::function<void()> &on_recording_completed);
     ~capture_thread();
+    capture_thread(const capture_thread &) = delete;
+    capture_thread &operator = (const capture_thread &) = delete;
+
 
     void start(capture_settings settings);
     void stop();

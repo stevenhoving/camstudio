@@ -42,6 +42,8 @@ public:
     mouse_capture_ui(HINSTANCE instance, HWND parent,
         const std::function<void(const CRect &capture_rect)> &completed);
     ~mouse_capture_ui();
+    mouse_capture_ui(const mouse_capture_ui &) = delete;
+    mouse_capture_ui &operator = (const mouse_capture_ui &) = delete;
 
     void show(const rect<int> region, const capture_type type);
     void hide();
@@ -68,7 +70,7 @@ private:
     CRect capture_rect_drag_rect_{0, 0, 0, 0};
 
     // used for fixed
-    CRect capture_rect_;
+    CRect capture_rect_{0, 0, 0, 0};
 
     // used to clamp
     CRect max_screen_rect_;

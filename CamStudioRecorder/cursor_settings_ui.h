@@ -31,6 +31,8 @@ public:
     cursor_settings_ui(CWnd* pParent = nullptr);
     cursor_settings_ui(CWnd* pParent, settings_model *settings);
     virtual ~cursor_settings_ui();
+    cursor_settings_ui(const cursor_settings_ui &) = delete;
+    cursor_settings_ui &operator = (const cursor_settings_ui &) = delete;
 
     BOOL OnInitDialog() override;
 private:

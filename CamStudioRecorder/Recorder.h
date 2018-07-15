@@ -24,6 +24,9 @@ public:
     CRecorderApp();
     ~CRecorderApp() override;
 
+    CRecorderApp(const CRecorderApp &) = delete;
+    CRecorderApp &operator = (const CRecorderApp &) = delete;
+
     LANGID LanguageID() const
     {
         return m_wCurLangID;
