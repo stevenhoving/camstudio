@@ -63,7 +63,6 @@ set(RECORDER_SOURCE
     KeyshortcutsDlg.cpp
     KeyshortcutsDlg.h
     MainFrm.cpp
-    MCI.cpp
     Recorder.cpp
     RecorderDoc.cpp
     RecorderView.cpp
@@ -74,7 +73,6 @@ set(RECORDER_SOURCE
     CamStudioCommandLineInfo.h
     HotKey.h
     MainFrm.h
-    MCI.h
     Recorder.h
     RecorderDoc.h
     RecorderVersionReleaseInfo.h

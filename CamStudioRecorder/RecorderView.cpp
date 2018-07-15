@@ -17,6 +17,7 @@
 
 #include <fmt/format.h>
 #include <fmt/printf.h>
+#include <fmt/time.h>
 
 #include <CamAudio/sound_file.h>
 #include <CamAudio/Buffer.h>
@@ -26,10 +27,7 @@
 
 #include <cam_hook/cam_hook.h>
 
-#include <fmt/time.h>
-
 #include "HotKey.h"
-#include "MCI.h"
 
 // new stuff
 #include "string_convert.h"
