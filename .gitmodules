@@ -19,3 +19,6 @@
 [submodule "dep/cpptoml"]
 	path = dep/cpptoml
 	url = https://github.com/skystrife/cpptoml.git
+[submodule "dep/google_benchmark"]
+	path = dep/google_benchmark
+	url = https://github.com/aeon-external-dependencies/google_benchmark.git
