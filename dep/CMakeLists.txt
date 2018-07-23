@@ -23,6 +23,7 @@ add_subdirectory(localization)
 add_subdirectory(fmt)
 add_subdirectory(googletest)
 add_subdirectory(google_benchmark)
+add_subdirectory(yuvconvert)
 
 
 # cpptoml settings

@@ -113,6 +113,7 @@ target_link_libraries(CamEncoder
     fmt
     libminilzo
     zlibstatic
+    yuvconvert
     ${FFMPEG_LIBRARIES}
 )
 
