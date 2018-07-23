@@ -45,24 +45,6 @@ set(ENCODER_CAM_ENCODER_INCLUDE
     include/CamEncoder/av_cam_codec/av_cam_codec.h
 )
 
-set(ENCODER_YUV_SOURCE
-    src/av_yuv/av_rgb2yuv.cpp
-    src/av_yuv/av_rgba2yuv.cpp
-    src/av_yuv/av_rgb2yuv_ssse3.cpp
-    src/av_yuv/av_rgba2yuv_ssse3.cpp
-)
-
-set(ENCODER_YUV_INCLUDE
-    include/CamEncoder/av_yuv/av_rgb2yuv.h
-    include/CamEncoder/av_yuv/av_rgba2yuv.h
-    include/CamEncoder/av_yuv/av_rgb2yuv_ssse3.h
-    include/CamEncoder/av_yuv/av_rgba2yuv_ssse3.h
-    include/CamEncoder/av_yuv/av_yuv_pixel_type.h
-    include/CamEncoder/av_yuv/av_simd_utility.h
-    include/CamEncoder/av_yuv/av_simd_debug.h
-    include/CamEncoder/av_yuv/av_simd_common.h
-    include/CamEncoder/av_yuv/av_simd_vec.h
-)
 
 source_group(src FILES
     ${ENCODER_SOURCE}
@@ -72,11 +54,6 @@ source_group(src FILES
 source_group(src\\cam_codec FILES
     ${ENCODER_CAM_ENCODER_SOURCE}
     ${ENCODER_CAM_ENCODER_INCLUDE}
-)
-
-source_group(src\\av_yuv FILES
-    ${ENCODER_YUV_SOURCE}
-    ${ENCODER_YUV_INCLUDE}
 )
 
 add_library(CamEncoder STATIC
@@ -166,4 +143,3 @@ add_custom_command(TARGET CamEncoder POST_BUILD
 )
 
 add_subdirectory(tests)
-add_subdirectory(benchmark)
