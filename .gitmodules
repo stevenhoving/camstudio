@@ -22,3 +22,6 @@
 [submodule "dep/google_benchmark"]
 	path = dep/google_benchmark
 	url = https://github.com/aeon-external-dependencies/google_benchmark.git
+[submodule "dep/yuvconvert"]
+	path = dep/yuvconvert
+	url = https://github.com/stevenhoving/yuvconvert.git
