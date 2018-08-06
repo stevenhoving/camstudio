@@ -38,6 +38,7 @@
 #include "settings_model.h"
 #include "mouse_capture_ui.h"
 #include "window_select_ui.h"
+#include "shortcut_settings_ui.h"
 
 
 #include <memory>
@@ -1091,8 +1092,8 @@ void CRecorderView::OnHelpFaq()
 
 void CRecorderView::OnOptionsKeyboardshortcuts()
 {
-    CKeyshortcutsDlg kscDlg(this);
-    kscDlg.DoModal();
+    shortcut_settings_ui settings_ui(this);
+    settings_ui.DoModal();
 
     SetAdjustHotKeys();
 }

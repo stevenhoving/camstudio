@@ -15,7 +15,6 @@
 #define IDS_STRING_CONV_ERR             129
 #define IDB_BITMAP1                     130
 #define IDS_STRING_REC_CAN              130
-#define IDD_CURSOR_OPTIONS              132
 #define IDI_ICON1                       135
 #define IDI_CUSTOMICON_CONTEXTHELP      136
 #define IDI_CUSTOMICON_MAGNIFY          137
@@ -83,6 +82,7 @@
 #define IDD_WINDOW_SELECT               234
 #define IDD_CURSOR_SETTINGS_UI          236
 #define IDD_APPLICATION_SETTINGS_UI     239
+#define IDD_SHORTCUTS_SETTINGS_UI       242
 #define IDC_RADIO1                      1000
 #define IDC_RADIO2                      1002
 #define IDC_FPS                         1007
@@ -139,7 +139,6 @@
 #define IDC_NAME                        1061
 #define IDC_SHIFT2                      1061
 #define IDC_STATIC_VERSION              1061
-#define IDC_BUTTON2                     1061
 #define IDC_TEMP_DIRECTORY_USER_SPECIFIED_BROWSE_BUTTON 1061
 #define IDC_EDIT3                       1062
 #define IDC_CTRL3                       1062
@@ -228,6 +227,9 @@
 #define IDC_OUTPUT_DIRECTORY_USER_SPECIFIED_BROWSE_BUTTON 1330
 #define IDC_TEMP_DIRECTORY_LABEL        1331
 #define IDC_TEMP_DIRECTORY_USER_SPECIFIED_LABEL 1332
+#define IDC_SHORTCUTS_TABLE             1333
+#define IDC_SHORTCUT_LABEL              1342
+#define IDC_RICHEDIT22                  1346
 #define IDD_ABOUTBOX                    5100
 #define IDD_EFFECTS_OPTIONS2            5105
 #define IDD_VIDEO_SETTINGS_UI           5106
@@ -363,9 +365,6 @@
 #define ID_SCREENS_CHOOSESCREEN         32930
 #define ID_SCREENS_SELECTSCREEN         32931
 #define ID_OPTIONS_VIDEOOPTIONS         32932
-#define ID_OUTPUTDIRECTORY_USEWINDOWSTEMPORARYDIRECTORY 32940
-#define ID_OUTPUTDIRECTORY_USEMYCAMSTUDIORECORDINGSDIRECTORY 32941
-#define ID_OUTPUTDIRECTORY_USEUSERSPECIFIEDDIRECTORY 32942
 #define ID_OPTIONS_PROGRAMSETTINGS      32954
 #define IDS_STRING_NOTE                 61446
 #define IDS_STRING_INTERLEAVE1          61447
@@ -508,9 +507,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        242
+#define _APS_NEXT_RESOURCE_VALUE        247
 #define _APS_NEXT_COMMAND_VALUE         32955
-#define _APS_NEXT_CONTROL_VALUE         1333
+#define _APS_NEXT_CONTROL_VALUE         1347
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

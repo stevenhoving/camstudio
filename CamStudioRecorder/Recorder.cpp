@@ -161,6 +161,7 @@ std::string get_config_path()
 BOOL CRecorderApp::InitInstance()
 {
     CWinApp::InitInstance();
+    AfxInitRichEdit2();
 
     // Initialize GDI+.
     m_gdi = std::make_unique<gdi_plus>();

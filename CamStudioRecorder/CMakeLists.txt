@@ -26,6 +26,8 @@ set(RECORDER_NEW_SOURCE
     mouse_capture_ui.cpp
     cursor_settings_ui.h
     cursor_settings_ui.cpp
+    shortcut_settings_ui.h
+    shortcut_settings_ui.cpp
     video_settings_ui.h
     video_settings_ui.cpp
     video_settings_model.h
@@ -46,6 +48,10 @@ set(RECORDER_NEW_SOURCE
     settings_table.h
     utility/filesystem.h
     utility/make_array.h
+    ui/listbox_grid_ui.cpp
+    ui/listbox_grid_ui.h
+    ui/listbox_base_ui.cpp
+    ui/listbox_base_ui.h
 )
 
 set(RECORDER_SOURCE
@@ -128,6 +134,7 @@ target_compile_options(CamStudioRecorder
     /external:W0
     /external:anglebrackets
     /W4
+    /wd4505 # warning C4505: unreferenced local function has been removed
 )
 
 set_target_properties(CamStudioRecorder PROPERTIES
