@@ -11,6 +11,7 @@
 #include "RecorderDoc.h"
 #include "MainFrm.h"
 
+#include "BasicMessageDlg.h"
 #include "AutopanSpeedDlg.h"
 #include "FixedRegionDlg.h"
 #include "KeyshortcutsDlg.h"
@@ -361,15 +362,6 @@ CRecorderView::CRecorderView()
     settings_model_->load();
 }
 
-CRecorderView::~CRecorderView()
-{
-    if (basic_msg_ != nullptr)
-    {
-        basic_msg_->CloseWindow();
-        delete basic_msg_;
-        basic_msg_ = nullptr;
-    }
-}
 
 BOOL CRecorderView::PreCreateWindow(CREATESTRUCT &cs)
 {
@@ -383,6 +375,7 @@ void CRecorderView::OnDraw(CDC *pCDC)
 {
     CView::OnDraw(pCDC);
 }
+CRecorderView::~CRecorderView() = default;
 
 BOOL CRecorderView::OnPreparePrinting(CPrintInfo *pInfo)
 {
@@ -983,16 +976,11 @@ void CRecorderView::OnRecord()
     } break;
     case capture_type::fullscreen:
         /* \todo rewrite this the full screen function */
-        if (basic_msg_)
-        {
-            delete basic_msg_;
-            basic_msg_ = nullptr;
-        }
 
-        basic_msg_ = new CBasicMessageDlg();
-        basic_msg_->Create(CBasicMessageDlg::IDD);
-        basic_msg_->SetText(_T("Click on screen to be captured."));
-        basic_msg_->ShowWindow(SW_SHOW);
+        auto message_window = std::make_unique<CBasicMessageDlg>();
+        message_window->Create(CBasicMessageDlg::IDD);
+        message_window->SetText(_T("Click on screen to be captured."));
+        message_window->ShowWindow(SW_SHOW);
         SetCapture(); // what is this for?
 
         break;

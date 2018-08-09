@@ -74,8 +74,6 @@ set(RECORDER_SOURCE
     RecorderView.cpp
     stdafx.cpp
     stdafx.h
-    TextDlg.cpp
-    TextDlg.h
     CamStudioCommandLineInfo.h
     HotKey.h
     MainFrm.h

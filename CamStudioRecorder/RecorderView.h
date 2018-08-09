@@ -120,7 +120,6 @@ private:
 
     std::unique_ptr<mouse_hook> mouse_hook_;
 
-    CBasicMessageDlg *basic_msg_{nullptr};
     double zoom_{1};
     CPoint zoomed_at_;
     DWORD zoom_when_{0}; // FIXME: I hope it is unlikely zoom start at 47 day boundary ever happen by accident
