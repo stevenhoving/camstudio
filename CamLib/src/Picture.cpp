@@ -80,12 +80,6 @@
 #include <vector>
 #include <cstdint>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #define HIMETRIC_INCH 2540
 #define ERROR_TITLE _T("CPicture Error") // Error Title (Related To This Class)...
 

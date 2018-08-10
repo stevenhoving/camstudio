@@ -36,13 +36,6 @@
 #define LOG __noop
 #endif
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-
 
 #define LZ_MAGIC ('DDZS') // Lempel-Ziv algorithm magic number: 'SZDD' (in reverse order)
 #define ORDINAL 0x80000000

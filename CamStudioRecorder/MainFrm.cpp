@@ -4,12 +4,6 @@
 #include <CamLib/console.h>
 #include <afxdatarecovery.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 extern bool g_bRecordState; // in RecorderView
 
 int g_maxx_screen;

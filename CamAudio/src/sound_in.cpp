@@ -2,12 +2,6 @@
 #include "CamAudio/sound_in.h"
 #include "CamAudio/buffer.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#define new DEBUG_NEW
-#endif
-
 IMPLEMENT_DYNCREATE(CSoundIn, CWinThread)
 
 CSoundIn::CSoundIn()

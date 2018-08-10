@@ -4,12 +4,6 @@
 #include <new>
 #include <tchar.h>
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#define new DEBUG_NEW
-#endif
-
 CBuffer::CBuffer(uint32_t size, bool AutoDelete)
 {
     m_bAutoDelete = AutoDelete;

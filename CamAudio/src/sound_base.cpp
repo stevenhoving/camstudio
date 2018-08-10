@@ -1,12 +1,6 @@
 #include "stdafx.h"
 #include "CamAudio/sound_base.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#define new DEBUG_NEW
-#endif
-
 CSoundBase::CSoundBase()
 {
     m_BufferSize = 1000; // samples per callback

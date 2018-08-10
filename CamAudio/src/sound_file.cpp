@@ -2,12 +2,6 @@
 #include "CamAudio/sound_file.h"
 #include "CamAudio/buffer.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#define new DEBUG_NEW
-#endif
-
 CSoundFile::CSoundFile(const std::string &FileName, WAVEFORMATEX *format)
     : m_hFile(nullptr)
     , m_FileName(FileName)
