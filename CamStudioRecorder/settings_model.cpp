@@ -27,6 +27,8 @@
 #include <optional>
 #include <iostream>
 
+using namespace std::string_literals;
+
 namespace config
 {
 namespace capture
@@ -63,8 +65,13 @@ namespace application
     constexpr auto temp_directory = "temp_directory";
     constexpr auto output_directory_access = "output_directory_access";
     constexpr auto output_directory = "output_directory";
-
 } // namespace application
+
+namespace shortcut
+{
+    constexpr auto settings = "shortcut-settings";
+} // namespace shortcut
+
 } // namespace config
 
 bool settings_model::get_cursor_enabled() const
@@ -172,6 +179,26 @@ double settings_model::get_cursor_ring_width() const
     return cursor_ring_width_;
 }
 
+void settings_model::set_shortcut(shortcut_action::type shortcut_type, std::wstring shortcut)
+{
+    shortcut_settings_.at(shortcut_type).shortcut = shortcut;
+}
+
+auto settings_model::get_shortcut(shortcut_action::type shortcut_type) -> std::wstring
+{
+    return shortcut_settings_.at(shortcut_type).shortcut;
+}
+
+auto settings_model::get_shortcut_data(shortcut_action::type shortcut_type) -> shortcut_definition &
+{
+    return shortcut_settings_.at(shortcut_type);
+}
+
+auto settings_model::get_shortcut_map() -> const shortcut_map_type &
+{
+    return shortcut_settings_;
+}
+
 void settings_model::set_application_auto_filename(bool auto_filename) noexcept
 {
     application_auto_filename_ = auto_filename;
@@ -240,7 +267,7 @@ void settings_model::save()
 
     _save_capture_settings(*root);
     _save_cursor_settings(*root);
-    _save_hotkey_settings(*root);
+    _save_shotcut_settings(*root);
     _save_application_settings(*root);
 
     std::ofstream stream(utility::create_config_path(L"settings.toml"));
@@ -281,11 +308,6 @@ void settings_model::_save_cursor_settings(cpptoml::table &root)
     root.insert(config::cursor::settings, cursor.get_table());
 }
 
-void settings_model::_save_hotkey_settings(cpptoml::table & /*root*/)
-{
-    // \todo
-}
-
 void settings_model::_save_application_settings(cpptoml::table &root)
 {
     table application = cpptoml::make_table();
@@ -298,6 +320,35 @@ void settings_model::_save_application_settings(cpptoml::table &root)
     application.insert(config::application::output_directory, application_output_directory_);
 
     root.insert(config::application::settings, application.get_table());
+}
+
+void settings_model::_save_shotcut_settings(cpptoml::table &root)
+{
+    table shortcuts = cpptoml::make_table();
+    constexpr auto setting_keys = shortcut_action::setting_keys();
+
+    shortcuts.insert(setting_keys.at(shortcut_action::record_start_or_pause),
+        shortcut_settings_.at(shortcut_action::record_start_or_pause).shortcut
+    );
+
+    shortcuts.insert(setting_keys.at(shortcut_action::record_stop),
+        shortcut_settings_.at(shortcut_action::record_stop).shortcut
+    );
+
+    shortcuts.insert(setting_keys.at(shortcut_action::record_cancel),
+        shortcut_settings_.at(shortcut_action::record_cancel).shortcut
+    );
+
+    // currently not supported.
+#if 0
+    shortcuts.insert(setting_keys.at(shortcut_action::zoom),
+        shortcut_settings_.at(shortcut_action::zoom).shortcut
+    );
+    shortcuts.insert(setting_keys.at(shortcut_action::autopan),
+        shortcut_settings_.at(shortcut_action::autopan).shortcut
+    );
+#endif
+    root.insert(config::shortcut::settings, shortcuts.get_table());
 }
 
 void settings_model::_load_capture_settings(const cpptoml::table &root)
@@ -326,11 +377,6 @@ void settings_model::_load_cursor_settings(const cpptoml::table &root)
     cursor_ring_width_ = cursor.get_optional<double>(config::cursor::ring_width, 1.5);
 }
 
-void settings_model::_load_hotkey_settings(const cpptoml::table & /*root*/)
-{
-    // \todo
-}
-
 void settings_model::_load_application_settings(const cpptoml::table &root)
 {
     table application = root.get_table(config::application::settings);
@@ -340,6 +386,56 @@ void settings_model::_load_application_settings(const cpptoml::table &root)
     application_temp_directory_ = application.get_optional<std::string>(config::application::temp_directory, "");
     application_output_directory_access_ = application.get_optional<application_output_directory::type>(config::application::output_directory_access, application_output_directory::ask_user);
     application_output_directory_ = application.get_optional<std::string>(config::application::output_directory, "");
+}
+
+void settings_model::_load_shortcut_settings(const cpptoml::table &root)
+{
+    table shortcuts = root.get_table(config::shortcut::settings);
+
+    constexpr auto setting_keys = shortcut_action::setting_keys();
+
+    // start / pause recording.
+    {
+        const auto start_pause = shortcuts.get<std::wstring>(setting_keys.at(shortcut_action::record_start_or_pause));
+        auto &start_pause_setting = shortcut_settings_.at(shortcut_action::record_start_or_pause);
+        start_pause_setting.is_enabled = start_pause ? shortcut_enabled::yes : shortcut_enabled::no;
+        start_pause_setting.shortcut = start_pause ? *start_pause : L""s;
+    }
+
+    // stop recording.
+    {
+        const auto stop_recording = shortcuts.get<std::wstring>(setting_keys.at(shortcut_action::record_stop));
+        auto &stop_recording_setting = shortcut_settings_.at(shortcut_action::record_stop);
+        stop_recording_setting.is_enabled = stop_recording ? shortcut_enabled::yes : shortcut_enabled::no;
+        stop_recording_setting.shortcut = stop_recording ? *stop_recording : L""s;
+    }
+
+    // cancel recording.
+    {
+        const auto cancel_recording = shortcuts.get<std::wstring>(setting_keys.at(shortcut_action::record_cancel));
+        auto &cancel_recording_setting = shortcut_settings_.at(shortcut_action::record_cancel);
+        cancel_recording_setting.is_enabled = cancel_recording ? shortcut_enabled::yes : shortcut_enabled::no;
+        cancel_recording_setting.shortcut = cancel_recording ? *cancel_recording : L""s;
+    }
+
+    // currently not supported.
+#if 0
+    // zoom.
+    {
+        const auto zoom = shortcuts.get<std::wstring>(setting_keys.at(shortcut_action::zoom));
+        auto &zoom_setting = shortcut_settings_.at(shortcut_action::zoom);
+        zoom_setting.is_enabled = zoom ? shortcut_enabled::yes : shortcut_enabled::no;
+        zoom_setting.shortcut = zoom ? *zoom : L""s;
+    }
+
+    // autopan.
+    {
+        const auto autopan = shortcuts.get<std::wstring>(setting_keys.at(shortcut_action::autopan));
+        auto &autopan_setting = shortcut_settings_.at(shortcut_action::autopan);
+        autopan_setting.is_enabled = autopan ? shortcut_enabled::yes : shortcut_enabled::no;
+        autopan_setting.shortcut = autopan ? *autopan : L""s;
+    }
+#endif
 }
 
 void settings_model::load()
@@ -356,7 +452,7 @@ void settings_model::load()
 
     _load_capture_settings(*root);
     _load_cursor_settings(*root);
-    _load_hotkey_settings(*root);
+    _load_shortcut_settings(*root);
     _load_application_settings(*root);
 }
 

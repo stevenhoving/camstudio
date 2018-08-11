@@ -57,7 +57,6 @@ protected:
 protected:
     afx_msg int OnCreate(LPCREATESTRUCT create_struct);
     afx_msg void OnSize(UINT type, int cx, int cy);
-    afx_msg void on_size(UINT type, int cx, int cy);
     afx_msg BOOL OnEraseBkgnd(CDC *dc);
     afx_msg void OnSetFocus(CWnd *old_wnd);
     afx_msg void OnEnable(BOOL enable);

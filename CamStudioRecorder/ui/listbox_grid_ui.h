@@ -29,16 +29,19 @@ class listbox_grid : public listbox_base
 
     using item_type = LVITEM;
     using item_text_type = const wchar_t *;
-    using item_text_callback_type = std::function<item_text_type(int row, int col)>;
+    using item_text_callback_type = std::function<item_text_type(int item_index, int subitem_index)>;
+    using item_select_callback_type = std::function<void(int item_index)>;
 public:
     listbox_grid();
     ~listbox_grid() override;
+
+    void set_text_callback(item_text_callback_type get_text_callback);
+    void set_select_callback(item_select_callback_type on_select_callback);
 
     int add_column(const wchar_t *title, int width = 100);
     void set_row_count(int count);
 
     void on_get_text(LV_ITEM *item);
-    void set_text_callback(item_text_callback_type get_text_callback);
 
     // listbox_base
     int add_item(const CString &text, DWORD_PTR data = 0, int item_index = -1) override;
@@ -55,6 +58,8 @@ public:
     void set_item_text(int item_index, const CString &text) override;
     void set_item_text(int item_index, int sub_index, const CString &text) override;
 
+    void on_selection_changed() override;
+
 protected:
     HWND _get_list_hwnd() const override;
     CWnd* _on_create_list() override;
@@ -64,6 +69,7 @@ protected:
     CVSListBoxEditCtrl wnd_edit_;
     std::vector<std::wstring> header_;
     item_text_callback_type get_text_callback_;
+    item_select_callback_type on_select_callback_;
 
 protected:
     afx_msg void _on_get_disp_info(NMHDR *notify_message_header, LRESULT *result);

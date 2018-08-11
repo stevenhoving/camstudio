@@ -34,6 +34,11 @@ void listbox_grid::set_text_callback(item_text_callback_type get_text_callback)
     get_text_callback_ = get_text_callback;
 }
 
+void listbox_grid::set_select_callback(item_select_callback_type on_select_callback)
+{
+    on_select_callback_ = on_select_callback;
+}
+
 HWND listbox_grid::_get_list_hwnd() const
 {
     return wnd_list_->GetSafeHwnd();
@@ -239,6 +244,13 @@ void listbox_grid::set_item_text(int item_index, int subindex, const CString& te
 
     ASSERT_VALID(wnd_list_.get());
     wnd_list_->SetItemText(item_index, subindex, text);
+}
+
+void listbox_grid::on_selection_changed()
+{
+    const auto item_index = get_selected_item();
+    if (on_select_callback_)
+        on_select_callback_(item_index);
 }
 
 int listbox_grid::add_column(const wchar_t *title, int width /*= 100*/)

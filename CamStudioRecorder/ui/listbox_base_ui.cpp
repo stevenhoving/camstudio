@@ -70,12 +70,6 @@ void listbox_base::OnSize(UINT type, int cx, int cy)
     _adjust_layout();
 }
 
-void listbox_base::on_size(UINT type, int cx, int cy)
-{
-    CStatic::OnSize(type, cx, cy);
-    _adjust_layout();
-}
-
 void listbox_base::_adjust_layout()
 {
     if (GetSafeHwnd() == nullptr)
@@ -104,12 +98,12 @@ void listbox_base::_adjust_layout()
     _on_size_list();
 }
 
-BOOL listbox_base::OnEraseBkgnd(CDC */*dc*/)
+BOOL listbox_base::OnEraseBkgnd(CDC * /*dc*/)
 {
     return TRUE;
 }
 
-void listbox_base::OnSetFocus(CWnd */*old_wnd*/)
+void listbox_base::OnSetFocus(CWnd * /*old_wnd*/)
 {
     auto wnd_list = CWnd::FromHandle(_get_list_hwnd());
     assert(wnd_list != nullptr);

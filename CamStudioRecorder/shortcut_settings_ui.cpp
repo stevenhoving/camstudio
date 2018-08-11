@@ -67,14 +67,17 @@ BOOL shortcut_settings_ui::OnInitDialog()
     shortcut_table_.add_column(L"Shortcut", 100);
     shortcut_table_.add_column(L"State", 100);
 
-    const auto start_pause = settings_->get_shortcut_data(shortcut_action::record_start_or_pause);
+    const auto &shortcut_map = settings_->get_shortcut_map();
+    constexpr auto shortcut_enabled_names = shortcut_enabled::names();
+    constexpr auto shortcut_action_names = shortcut_action::names();
+    for (const auto &itr : shortcut_map)
+    {
+        const auto &shortcut = itr.second;
+        const auto shortcut_name = shortcut_action_names.at(shortcut.action);
+        const auto shortcut_enabled = shortcut_enabled_names.at(shortcut.is_enabled);
 
-    //shortcut_table_data_.emplace_back(make_array(L"Start/Pause recording"s, start_pause, shortcut_enabled::names().at(static_cast<const int>(start_pause.is_enabled))));
-
-    //shortcut_table_data_.emplace_back(make_array(L"Stop recording"s, L"F9"s, L"Enabled"s));
-    //shortcut_table_data_.emplace_back(make_array(L"Cancel recording"s, L"F10"s, L"Enabled"s));
-    //shortcut_table_data_.emplace_back(make_array(L"Toggle zoom"s, L""s, L"Undefined"s));
-    //shortcut_table_data_.emplace_back(make_array(L"Toggle auto pan"s, L""s, L"Undefined"s));
+        shortcut_table_data_.emplace_back(make_array(shortcut_name, shortcut.shortcut, shortcut_enabled));
+    }
 
     shortcut_table_.set_row_count(static_cast<int>(shortcut_table_data_.size()));
 

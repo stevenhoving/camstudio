@@ -59,13 +59,26 @@ public:
     }
 
     template<>
-    void insert(const std::string &key, const std::wstring &value)
+    void insert(const std::string &key, std::wstring value)
     {
         table_->insert<std::string>(key, wstring_to_utf8(value));
     }
 
     template<typename T>
-    T get_optional(const std::string &key, const T default_value)
+    auto get(const std::string &key)
+    {
+        return table_->get_as<T>(key);
+    }
+
+    template<>
+    auto get<std::wstring>(const std::string &key)
+    {
+        const auto value = *table_->get_as<std::string>(key);
+        return cpptoml::option<std::wstring>(utf8_to_wstring(value));
+    }
+
+    template<typename T>
+    auto get_optional(const std::string &key, const T default_value)
     {
         if (!table_)
             return default_value;
@@ -80,11 +93,8 @@ public:
     }
 
     template<>
-    cam::color get_optional(const std::string &key, const cam::color default_value)
+    auto get_optional<cam::color>(const std::string &key, const cam::color default_value)
     {
-        if (!table_)
-            return default_value;
-
         const auto value = table_->get_as<uint32_t>(key);
         if (!value)
             return default_value;
@@ -94,11 +104,8 @@ public:
 
     // cookie cutter of a cookie cutter is preferred.
     template<>
-    rect<int> get_optional(const std::string &key, const rect<int> default_value)
+    auto get_optional<rect<int>>(const std::string &key, const rect<int> default_value)
     {
-        if (!table_)
-            return default_value;
-
         const auto value = table_->get_array_of<int64_t>(key);
         if (!value)
             return default_value;
@@ -109,10 +116,20 @@ public:
             static_cast<int>(value->at(1)),
             static_cast<int>(value->at(2)),
             static_cast<int>(value->at(3))
-            );
+        );
     }
 
-    std::shared_ptr<cpptoml::table> get_table() const
+    template<>
+    auto get_optional<std::wstring>(const std::string &key, const std::wstring default_value)
+    {
+        const auto value = table_->get_as<std::string>(key);
+        if (!value)
+            return default_value;
+
+        return utf8_to_wstring(*value);
+    }
+
+    auto get_table() const
     {
         return table_;
     }

@@ -229,7 +229,9 @@
 #define IDC_TEMP_DIRECTORY_USER_SPECIFIED_LABEL 1332
 #define IDC_SHORTCUTS_TABLE             1333
 #define IDC_SHORTCUT_LABEL              1342
-#define IDC_RICHEDIT22                  1346
+#define IDC_SHORTCUT_EDIT                  1346
+#define IDC_SHORTCUT_SET                1347
+#define IDC_SHORTCUT_RESTORE            1348
 #define IDD_ABOUTBOX                    5100
 #define IDD_EFFECTS_OPTIONS2            5105
 #define IDD_VIDEO_SETTINGS_UI           5106
@@ -509,7 +511,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        247
 #define _APS_NEXT_COMMAND_VALUE         32955
-#define _APS_NEXT_CONTROL_VALUE         1347
+#define _APS_NEXT_CONTROL_VALUE         1348
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif
