@@ -1,6 +1,5 @@
 #pragma once
 
-#include "BasicMessageDlg.h"
 #include "capture_thread.h"
 
 #include <memory>
@@ -20,48 +19,34 @@ class mouse_hook;
 
 class CRecorderView : public CView
 {
-protected: // create from serialization only
+protected:
     CRecorderView();
     DECLARE_DYNCREATE(CRecorderView)
 
 public:
+    ~CRecorderView() override;
     CRecorderDoc *GetDocument();
 
     void SaveSettings();
     void LoadSettings();
 
+    bool GetRecordState();
+    bool GetPausedState();
 
-public:
-    virtual void OnDraw(CDC *pDC); // overridden to draw this view
-    virtual BOOL PreCreateWindow(CREATESTRUCT &cs);
+    // CView
+    void OnDraw(CDC *pDC) override;
 
+#ifdef _DEBUG
+    void AssertValid() const override;
+    void Dump(CDumpContext &dc) const override;
+#endif
 
 private:
     std::string generate_temp_filename(video_container::type container);
     void restore_window();
-
-
     std::filesystem::path generate_auto_filename();
-protected:
-    virtual BOOL OnPreparePrinting(CPrintInfo *pInfo);
-    virtual void OnBeginPrinting(CDC *pDC, CPrintInfo *pInfo);
-    virtual void OnEndPrinting(CDC *pDC, CPrintInfo *pInfo);
-
-
-    // Implementation
-public:
-    ~CRecorderView() override;
-
-    bool GetRecordState();
-    bool GetPausedState();
-
-#ifdef _DEBUG
-    virtual void AssertValid() const;
-    virtual void Dump(CDumpContext &dc) const;
-#endif
 
 protected:
-    //{{AFX_MSG(CRecorderView)
     afx_msg void OnRegionRubber();
     afx_msg void OnRegionPanregion();
     afx_msg void OnPaint();
@@ -92,6 +77,7 @@ protected:
     afx_msg void OnRegionWindow();
     afx_msg void OnUpdateRegionWindow(CCmdUI *pCmdUI);
     afx_msg void OnCaptureChanged(CWnd *pWnd);
+    afx_msg void OnOptionsProgramsettings();
 
     afx_msg LRESULT OnRecordStart(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnRecordInterrupted(WPARAM wParam, LPARAM lParam);
@@ -120,6 +106,9 @@ private:
 
     std::unique_ptr<mouse_hook> mouse_hook_;
 
+    bool record_state_{false};
+    bool record_paused_{false};
+
     double zoom_{1};
     CPoint zoomed_at_;
     DWORD zoom_when_{0}; // FIXME: I hope it is unlikely zoom start at 47 day boundary ever happen by accident
@@ -132,9 +121,6 @@ private:
 
     bool RunViewer(const CString &strNewFile);
     void DisplayAutopanInfo(CRect rc);
-    // dialog controls
-public:
-    afx_msg void OnOptionsProgramsettings();
 };
 
 #ifndef _DEBUG // debug version in vscapView.cpp
@@ -144,13 +130,6 @@ inline CRecorderDoc *CRecorderView::GetDocument()
 }
 #endif
 
-/////////////////////////////////////////////////////////////////////////////
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Developer Studio will insert additional declarations immediately before the previous line.
-
 // External Variables
-extern HWND g_hWndGlobal;
-extern bool g_bRecordState;
 extern CRect g_rcUse;
 extern CRect g_old_rcClip;

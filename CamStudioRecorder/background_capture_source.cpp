@@ -37,6 +37,7 @@
         RECT window_rect = {};
         BOOL ret = ::GetWindowRect(hwnd, &window_rect);
         assert(ret != 0 && "Failed to get window rect.");
+        (void)ret;
 
         src_rect_.left_ = window_rect.left;
         src_rect_.top_ = window_rect.top;

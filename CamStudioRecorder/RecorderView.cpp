@@ -14,14 +14,13 @@
 #include "BasicMessageDlg.h"
 #include "AutopanSpeedDlg.h"
 #include "FixedRegionDlg.h"
-#include "KeyshortcutsDlg.h"
 
 #include <fmt/format.h>
 #include <fmt/printf.h>
 #include <fmt/time.h>
 
 #include <CamAudio/sound_file.h>
-#include <CamAudio/Buffer.h>
+#include <CamAudio/buffer.h>
 #include <CamLib/CStudioLib.h>
 #include <CamLib/TrayIcon.h>
 #include <CamEncoder/av_encoder.h>
@@ -48,9 +47,8 @@
 #include <cassert>
 #include <ctime>
 
-
+HWND g_hWndGlobal = nullptr;
 CRect g_rcUse;      // Size:  0 .. MaxScreenSize-1
-
 
 // Autopan
 CRect g_rectPanCurrent;
@@ -60,8 +58,7 @@ HBITMAP g_hLogoBM = nullptr;
 
 // Misc Vars
 bool g_bAlreadyMCIPause = false;
-bool g_bRecordState = false;
-bool g_bRecordPaused = false;
+
 WPARAM g_interruptkey = 0;
 DWORD g_dwInitialTime = 0;
 bool g_bInitCapture = false;
@@ -69,7 +66,7 @@ bool g_bInitCapture = false;
 unsigned long g_nTotalBytesWrittenSoFar = 0UL;
 
 // Messaging
-HWND g_hWndGlobal = nullptr;
+
 
 // int iTempPathAccess = USE_WINDOWS_TEMP_DIR;
 // CString specifieddir;
@@ -153,32 +150,6 @@ int SetHotKeys(int succ[]);
 // Region Display Functions
 //void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip);
 
-namespace
-{ // anonymous
-
-////////////////////////////////
-// AUDIO_CODE
-////////////////////////////////
-void ClearAudioFile();
-BOOL InitAudioRecording();
-void GetTempAudioWavPath();
-// BOOL StartAudioRecording(WAVEFORMATEX* format);
-BOOL StartAudioRecording();
-void StopAudioRecording();
-void waveInErrorMsg(MMRESULT result, const char *);
-int AddInputBufferToQueue();
-
-////////////////////////////////
-// HOTKEYS_CODE
-////////////////////////////////
-// bool UnSetHotKeys(HWND hWnd);
-// int SetHotKeys(int succ[]);
-
-} // namespace
-
-// Functions that select audio options based on settings read
-
-/////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 // ver 1.8
 int UnSetHotKeys()
@@ -304,36 +275,36 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
     ON_WM_DESTROY()
     ON_WM_SETFOCUS()
     ON_WM_ERASEBKGND()
-    ON_COMMAND(ID_RECORD, OnRecord)
-    ON_UPDATE_COMMAND_UI(ID_RECORD, OnUpdateRecord)
-    ON_COMMAND(ID_STOP, OnStop)
-    ON_UPDATE_COMMAND_UI(ID_STOP, OnUpdateStop)
-    ON_COMMAND(ID_REGION_RUBBER, OnRegionRubber)
-    ON_UPDATE_COMMAND_UI(ID_REGION_RUBBER, OnUpdateRegionRubber)
-    ON_COMMAND(ID_REGION_PANREGION, OnRegionPanregion)
-    ON_UPDATE_COMMAND_UI(ID_REGION_PANREGION, OnUpdateRegionPanregion)
-    ON_COMMAND(ID_OPTIONS_VIDEOOPTIONS, OnVideoSettings)
-    ON_COMMAND(ID_OPTIONS_CURSOROPTIONS, OnOptionsCursoroptions)
-    ON_COMMAND(ID_REGION_FULLSCREEN, OnRegionFullscreen)
-    ON_UPDATE_COMMAND_UI(ID_REGION_FULLSCREEN, OnUpdateRegionFullscreen)
-    ON_COMMAND(ID_SCREENS_SELECTSCREEN, OnRegionSelectScreen)
-    ON_UPDATE_COMMAND_UI(ID_SCREENS_SELECTSCREEN, OnUpdateRegionSelectScreen)
-    ON_COMMAND(ID_SCREENS_ALLSCREENS, OnRegionAllScreens)
-    ON_UPDATE_COMMAND_UI(ID_SCREENS_ALLSCREENS, OnUpdateRegionAllScreens)
-    ON_COMMAND(ID_PAUSE, OnPause)
-    ON_UPDATE_COMMAND_UI(ID_PAUSE, OnUpdatePause)
+    ON_COMMAND(ID_RECORD, &CRecorderView::OnRecord)
+    ON_UPDATE_COMMAND_UI(ID_RECORD, &CRecorderView::OnUpdateRecord)
+    ON_COMMAND(ID_STOP, &CRecorderView::OnStop)
+    ON_UPDATE_COMMAND_UI(ID_STOP, &CRecorderView::OnUpdateStop)
+    ON_COMMAND(ID_REGION_RUBBER, &CRecorderView::OnRegionRubber)
+    ON_UPDATE_COMMAND_UI(ID_REGION_RUBBER, &CRecorderView::OnUpdateRegionRubber)
+    ON_COMMAND(ID_REGION_PANREGION, &CRecorderView::OnRegionPanregion)
+    ON_UPDATE_COMMAND_UI(ID_REGION_PANREGION, &CRecorderView::OnUpdateRegionPanregion)
+    ON_COMMAND(ID_OPTIONS_VIDEOOPTIONS, &CRecorderView::OnVideoSettings)
+    ON_COMMAND(ID_OPTIONS_CURSOROPTIONS, &CRecorderView::OnOptionsCursoroptions)
+    ON_COMMAND(ID_REGION_FULLSCREEN, &CRecorderView::OnRegionFullscreen)
+    ON_UPDATE_COMMAND_UI(ID_REGION_FULLSCREEN, &CRecorderView::OnUpdateRegionFullscreen)
+    ON_COMMAND(ID_SCREENS_SELECTSCREEN, &CRecorderView::OnRegionSelectScreen)
+    ON_UPDATE_COMMAND_UI(ID_SCREENS_SELECTSCREEN, &CRecorderView::OnUpdateRegionSelectScreen)
+    ON_COMMAND(ID_SCREENS_ALLSCREENS, &CRecorderView::OnRegionAllScreens)
+    ON_UPDATE_COMMAND_UI(ID_SCREENS_ALLSCREENS, &CRecorderView::OnUpdateRegionAllScreens)
+    ON_COMMAND(ID_PAUSE, &CRecorderView::OnPause)
+    ON_UPDATE_COMMAND_UI(ID_PAUSE, &CRecorderView::OnUpdatePause)
 
-    ON_COMMAND(ID_REGION_WINDOW, OnRegionWindow)
-    ON_UPDATE_COMMAND_UI(ID_REGION_WINDOW, OnUpdateRegionWindow)
-    ON_COMMAND(ID_OPTIONS_KEYBOARDSHORTCUTS, OnOptionsKeyboardshortcuts)
-    ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
-    ON_COMMAND(ID_FILE_PRINT_DIRECT, CView::OnFilePrint)
-    ON_COMMAND(ID_FILE_PRINT_PREVIEW, CView::OnFilePrintPreview)
-    ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDSTART, OnRecordStart)
-    ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDINTERRUPTED, OnRecordInterrupted)
-    ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDPAUSED, OnRecordPaused)
-    ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_GENERIC, OnUserGeneric)
-    ON_MESSAGE(WM_HOTKEY, OnHotKey)
+    ON_COMMAND(ID_REGION_WINDOW, &CRecorderView::OnRegionWindow)
+    ON_UPDATE_COMMAND_UI(ID_REGION_WINDOW, &CRecorderView::OnUpdateRegionWindow)
+    ON_COMMAND(ID_OPTIONS_KEYBOARDSHORTCUTS, &CRecorderView::OnOptionsKeyboardshortcuts)
+    ON_COMMAND(ID_FILE_PRINT, &CRecorderView::CView::OnFilePrint)
+    ON_COMMAND(ID_FILE_PRINT_DIRECT, &CRecorderView::CView::OnFilePrint)
+    ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CRecorderView::CView::OnFilePrintPreview)
+    ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDSTART, &CRecorderView::OnRecordStart)
+    ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDINTERRUPTED, &CRecorderView::OnRecordInterrupted)
+    ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDPAUSED, &CRecorderView::OnRecordPaused)
+    ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_GENERIC, &CRecorderView::OnUserGeneric)
+    ON_MESSAGE(WM_HOTKEY, &CRecorderView::OnHotKey)
     ON_WM_CAPTURECHANGED()
     ON_COMMAND(ID_OPTIONS_PROGRAMSETTINGS, &CRecorderView::OnOptionsProgramsettings)
 END_MESSAGE_MAP()
@@ -356,33 +327,11 @@ CRecorderView::CRecorderView()
     settings_model_->load();
 }
 
-
-BOOL CRecorderView::PreCreateWindow(CREATESTRUCT &cs)
-{
-    // TODO: Modify the Window class or styles here by modifying
-    // the CREATESTRUCT cs
-
-    return CView::PreCreateWindow(cs);
-}
-
 void CRecorderView::OnDraw(CDC *pCDC)
 {
     CView::OnDraw(pCDC);
 }
 CRecorderView::~CRecorderView() = default;
-
-BOOL CRecorderView::OnPreparePrinting(CPrintInfo *pInfo)
-{
-    return DoPreparePrinting(pInfo);
-}
-
-void CRecorderView::OnBeginPrinting(CDC * /*pDC*/, CPrintInfo * /*pInfo*/)
-{
-}
-
-void CRecorderView::OnEndPrinting(CDC * /*pDC*/, CPrintInfo * /*pInfo*/)
-{
-}
 
 /////////////////////////////////////////////////////////////////////////////
 // CRecorderView diagnostics
@@ -414,13 +363,13 @@ void CRecorderView::OnPaint()
 
     // Draw Autopan Info
     // Draw Message msgRecMode
-    if (!g_bRecordState)
+    if (!record_state_)
     {
         DisplayRecordingMsg(dc);
         return;
     }
     // Display the record information when recording
-    if (g_bRecordState)
+    if (record_state_)
     {
         CRect rectClient;
         GetClientRect(&rectClient);
@@ -619,8 +568,6 @@ std::string CRecorderView::generate_temp_filename(video_container::type containe
     return wstring_to_utf8(strTempVideoFilePath);
 }
 
-
-
 LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
 {
     TRACE("CRecorderView::OnRecordStart\n");
@@ -641,7 +588,7 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
     // We shall wrap all that stuff in class so it is created in constructor and guaranteed to be destroyed in destructor
     //InstallMyHook(g_hWndGlobal, WM_USER_SAVECURSOR);
 
-    g_bRecordState = true;
+    record_state_ = true;
     g_interruptkey = 0;
 
     mouse_hook_->attach();
@@ -669,14 +616,14 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
     //}
 
     // Ver 1.2
-    g_bAllowNewRecordStartKey = TRUE; // allow this only after g_bRecordState is set to 1
+    g_bAllowNewRecordStartKey = TRUE; // allow this only after record_state_ is set to 1
     return 0;
 }
 
 LRESULT CRecorderView::OnRecordPaused(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     // TRACE("## CRecorderView::OnRecordPaused\n");
-    if (g_bRecordPaused)
+    if (record_paused_)
     {
         return 0;
     }
@@ -691,13 +638,13 @@ LRESULT CRecorderView::OnRecordInterrupted(WPARAM wParam, LPARAM /*lParam*/)
     //UninstallMouseHook(g_hWndGlobal);
 
     // Ver 1.1
-    if (g_bRecordPaused)
+    if (record_paused_)
     {
         CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
         pFrame->SetTitle(_T("CamStudio"));
     }
 
-    g_bRecordState = false;
+    record_state_ = false;
     capture_thread_->stop();
     capture_thread_.reset();
 
@@ -840,27 +787,26 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
         case application_output_directory::ask_user:
         {
             const auto file_extention = video_settings_model_->get_video_container_file_extention();
-            const auto filter = fmt::format(L"Video files (*.{})", file_extention);
+            const auto filter = fmt::format(L"Video Files (*.{})", file_extention);
             const auto title = L"Save video file";
-            const auto extended_filter = fmt::format(L"*.{}", file_extention);
 
-            CFileDialog file_dialog(FALSE, extended_filter.c_str(), target_filename.c_str(),
+            CFileDialog file_dialog(FALSE, nullptr, target_filename.c_str(),
                 OFN_LONGNAMES | OFN_OVERWRITEPROMPT | OFN_ENABLESIZING, filter.c_str(), this);
             file_dialog.m_ofn.lpstrTitle = title;
 
-            if (file_dialog.DoModal() == IDOK)
-            {
-                const auto file_dialog_filepath = file_dialog.GetPathName();
-                target_filepath = std::filesystem::path(file_dialog_filepath.GetString());
-            }
-            else
+            if (file_dialog.DoModal() != IDOK)
             {
                 std::filesystem::remove(strTempVideoFilePath);
                 return 0;
             }
-        }
+
+            const auto file_dialog_filepath = file_dialog.GetPathName();
+            target_filepath = std::filesystem::path(file_dialog_filepath.GetString());
+            target_filepath.replace_extension(file_extention);
+        } break;
 
         case application_output_directory::user_specified:
+        {
             // hack so we always have a filename
             if (target_filename.empty())
                 target_filename = generate_auto_filename();
@@ -868,16 +814,17 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
             // make sure nobody removed our our destination directory in the meantime.
             std::filesystem::create_directories(settings_model_->get_application_output_directory());
             target_filepath = settings_model_->get_application_output_directory() / target_filename;
-            break;
+        } break;
 
         case application_output_directory::user_my_documents:
+        {
             if (target_filename.empty())
                 target_filename = generate_auto_filename();
 
             target_filepath = get_my_documents_path() / "My CamStudio Videos";
             std::filesystem::create_directories(target_filepath);
             target_filepath /= target_filename;
-            break;
+        } break;
     }
 
     if (!target_filepath.has_extension())
@@ -906,9 +853,9 @@ void CRecorderView::OnRecord()
     pStatus->SetPaneText(0, _T("Press the Stop Button to stop recording"));
 
     // Version 1.1
-    if (g_bRecordPaused)
+    if (record_paused_)
     {
-        g_bRecordPaused = false;
+        record_paused_ = false;
 
         // Set Title Bar
         CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
@@ -916,7 +863,7 @@ void CRecorderView::OnRecord()
 
         return;
     }
-    g_bRecordPaused = false;
+    record_paused_ = false;
 
     g_nActualFrame = 0;
     g_nCurrFrame = 0;
@@ -984,14 +931,14 @@ void CRecorderView::OnRecord()
 void CRecorderView::OnStop()
 {
     // Version 1.1
-    if (!g_bRecordState)
+    if (!record_state_)
     {
         return;
     }
 
-    if (g_bRecordPaused)
+    if (record_paused_)
     {
-        g_bRecordPaused = false;
+        record_paused_ = false;
 
         // Set Title Bar
         CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
@@ -1034,13 +981,13 @@ void CRecorderView::OnHelpHelp()
 
 void CRecorderView::OnPause()
 {
-    // TRACE ("## CRecorderView::OnPause BEGIN RecordState:[%d] RecordPaused:[%d]\n", g_bRecordState, g_bRecordPaused);
+    // TRACE ("## CRecorderView::OnPause BEGIN RecordState:[%d] RecordPaused:[%d]\n", record_state_, record_paused_);
 
     // return if not current recording or already in paused state
-    if (!g_bRecordState || g_bRecordPaused)
+    if (!record_state_ || record_paused_)
         return;
 
-    g_bRecordPaused = true;
+    record_paused_ = true;
 
 
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
@@ -1053,7 +1000,7 @@ void CRecorderView::OnPause()
 
 void CRecorderView::OnUpdatePause(CCmdUI *pCmdUI)
 {
-    pCmdUI->Enable(!g_bRecordPaused);
+    pCmdUI->Enable(!record_paused_);
 }
 
 void CRecorderView::OnUpdateStop(CCmdUI * /*pCmdUI*/)
@@ -1063,7 +1010,7 @@ void CRecorderView::OnUpdateStop(CCmdUI * /*pCmdUI*/)
 void CRecorderView::OnUpdateRecord(CCmdUI *pCmdUI)
 {
     // Version 1.1
-    pCmdUI->Enable(!g_bRecordState || g_bRecordPaused);
+    pCmdUI->Enable(!record_state_ || record_paused_);
 }
 
 void CRecorderView::OnHelpFaq()
@@ -1074,7 +1021,7 @@ void CRecorderView::OnHelpFaq()
 
 void CRecorderView::OnOptionsKeyboardshortcuts()
 {
-    shortcut_settings_ui settings_ui(this);
+    shortcut_settings_ui settings_ui(this, settings_model_.get());
     settings_ui.DoModal();
 
     SetAdjustHotKeys();
@@ -1127,10 +1074,10 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
     switch (wParam)
     {
         case HOTKEY_RECORD_START_OR_PAUSE: // 0 = start recording
-            if (g_bRecordState)
+            if (record_state_)
             {
                 // pause if currently recording
-                if (!g_bRecordPaused)
+                if (!record_paused_)
                 {
                     OnPause();
                 }
@@ -1151,7 +1098,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
             }
             break;
         case HOTKEY_RECORD_STOP: // 1
-            if (g_bRecordState)
+            if (record_state_)
             {
                 if (cHotKeyOpts.m_RecordEnd.m_vKey != cHotKeyOpts.m_RecordCancel.m_vKey)
                 {
@@ -1164,7 +1111,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
             }
             break;
         case HOTKEY_RECORD_CANCELSTOP: // 2:
-            if (g_bRecordState)
+            if (record_state_)
             {
                 OnRecordInterrupted(cHotKeyOpts.m_RecordCancel.m_vKey, 0);
             }
@@ -1514,13 +1461,13 @@ bool CRecorderView::RunViewer(const CString &/*strNewFile*/)
 
 bool CRecorderView::GetRecordState()
 {
-    return g_bRecordState;
+    return record_state_;
 }
 
 // \todo remove this function
 bool CRecorderView::GetPausedState()
 {
-    return g_bRecordPaused;
+    return record_paused_;
 }
 
 void CRecorderView::DisplayAutopanInfo(CRect /*rc*/)

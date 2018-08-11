@@ -44,7 +44,7 @@ private:
     settings_model *settings_{nullptr};
 
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);
+    void DoDataExchange(CDataExchange* pDX) override;
 
     DECLARE_MESSAGE_MAP()
 public:

@@ -78,7 +78,7 @@ static bool is_top_most(HWND hwnd)
     return GetWindowLong(hwnd, GWL_EXSTYLE) & WS_EX_TOPMOST;
 }
 
-static HWND get_root_parent(HWND hwnd)
+static inline HWND get_root_parent(HWND hwnd)
 {
     HWND result = GetParent(hwnd);
     if (result)

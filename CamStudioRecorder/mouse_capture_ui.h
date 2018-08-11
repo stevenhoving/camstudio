@@ -78,7 +78,6 @@ private:
     // used to keep track of what we have pained so we can erase it.
     std::vector<CRect> paint_rect_;
     HBRUSH hatched_brush_;
-    HBRUSH transparant_brush_{nullptr};
     HWND hwnd_{nullptr};
     HINSTANCE instance_{nullptr};
 

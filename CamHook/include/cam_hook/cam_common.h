@@ -17,8 +17,13 @@
 
 #pragma once
 
+#ifndef WINVER
 #define WINVER 0x0601
+#endif // WINVER
+
+#ifndef _WIN32_WINNT
 #define _WIN32_WINNT 0x0601
+#endif // _WIN32_WINNT
 
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN

@@ -96,8 +96,8 @@ BOOL CAboutDlg::OnInitDialog()
     strBuffer.Replace(_T("<VERSION>"), strVersionInfo);
     strBuffer.Replace(_T("<RELEASE>"), strReleaseInfo);
     strBuffer.Replace(_T("<BUGFIXES>"), _T("Bugfixes and additional features added by Nick the Geek and others.\n"));
-    strBuffer.Replace(_T("<COPYRIGHT-1>"), _T("\nCopyright © 2001 RenderSoft Software and Web Publishing\n"));
-    strBuffer.Replace(_T("<COPYRIGHT-2>"), _T("Copyright © 2008 CamStudio Group && Contributors\n"));
+    strBuffer.Replace(_T("<COPYRIGHT-1>"), _T("\nCopyright \xA9 2001 RenderSoft Software and Web Publishing\n"));
+    strBuffer.Replace(_T("<COPYRIGHT-2>"), _T("Copyright \xA9 2008 CamStudio Group && Contributors\n"));
 
     m_ctrlStaticVersion.SetWindowText(strBuffer);
 
@@ -122,15 +122,15 @@ const TCHAR *CRecorderApp::CAMSTUDIO_MUTEX = _T("VSCAP_CAB648E2_684F_4FF1_B574_9
 
 BEGIN_MESSAGE_MAP(CRecorderApp, CWinApp)
 //{{AFX_MSG_MAP(CRecorderApp)
-ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
+ON_COMMAND(ID_APP_ABOUT, &CRecorderApp::OnAppAbout)
 // NOTE - the ClassWizard will add and remove mapping macros here.
 // DO NOT EDIT what you see in these blocks of generated code!
 //}}AFX_MSG_MAP
 // Standard file based document commands
-ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
-ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
+ON_COMMAND(ID_FILE_NEW, &CWinApp::OnFileNew)
+ON_COMMAND(ID_FILE_OPEN, &CWinApp::OnFileOpen)
 // Standard print setup command
-ON_COMMAND(ID_FILE_PRINT_SETUP, CWinApp::OnFilePrintSetup)
+ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinApp::OnFilePrintSetup)
 END_MESSAGE_MAP()
 
 CRecorderApp theApp;

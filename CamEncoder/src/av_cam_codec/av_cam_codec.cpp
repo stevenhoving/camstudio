@@ -228,7 +228,12 @@ int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const
         if (c->algorithm == 0)
         {
             lzo_uint out_len = 0;
-            auto r = lzo1x_1_compress(frame->data[0], in_len, buf + 2, &out_len, c->comp_buf);
+            const auto r = lzo1x_1_compress(frame->data[0], in_len, buf + 2, &out_len, c->comp_buf);
+            if (r !=LZO_E_OK)
+            {
+                // just return some error code... for now...
+                return AVERROR(EFAULT);
+            }
             pkt->flags |= AV_PKT_FLAG_KEY;
 
             av_shrink_packet(pkt, static_cast<int>(out_len + 2));
@@ -236,7 +241,12 @@ int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const
         else if (c->algorithm == 1)
         {
             uLong out_len = initial_packet_size;
-            auto r = gzip_compress(frame->data[0], static_cast<uLong>(in_len), buf + 2, &out_len, c->gzip_level);
+            const auto r = gzip_compress(frame->data[0], static_cast<uLong>(in_len), buf + 2, &out_len, c->gzip_level);
+            if (r != Z_OK)
+            {
+                // just return some error code... for now...
+                return AVERROR(EFAULT);
+            }
             pkt->flags |= AV_PKT_FLAG_KEY;
 
             av_shrink_packet(pkt, static_cast<int>(out_len + 2));
@@ -262,7 +272,13 @@ int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const
         if (c->algorithm == 0)
         {
             lzo_uint out_len = 0;
-            auto r = lzo1x_1_compress(c->delta_frame->data[0], in_len, buf + 2, &out_len, c->comp_buf);
+            const auto r = lzo1x_1_compress(c->delta_frame->data[0], in_len, buf + 2, &out_len, c->comp_buf);
+            if (r != LZO_E_OK)
+            {
+                // just return some error code... for now...
+                return AVERROR(EFAULT);
+            }
+
             pkt->flags &= ~AV_PKT_FLAG_KEY;
 
             av_shrink_packet(pkt, static_cast<int>(out_len + 2));
@@ -270,8 +286,14 @@ int __cdecl cam_codec_encode_picture(AVCodecContext *avctx, AVPacket *pkt, const
         else if (c->algorithm == 1)
         {
             uLong out_len = initial_packet_size;
-            auto r = gzip_compress(c->delta_frame->data[0], static_cast<uLong>(in_len), buf + 2,
+            const auto r = gzip_compress(c->delta_frame->data[0], static_cast<uLong>(in_len), buf + 2,
                 &out_len, c->gzip_level);
+
+            if (r != Z_OK)
+            {
+                // just return some error code... for now...
+                return AVERROR(EFAULT);
+            }
             pkt->flags &= ~AV_PKT_FLAG_KEY;
 
             av_shrink_packet(pkt, static_cast<int>(out_len + 2));

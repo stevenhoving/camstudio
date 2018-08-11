@@ -23,6 +23,7 @@ class av_dict;
 class av_icodec
 {
 public:
+    virtual ~av_icodec() {};
     virtual void open(AVStream *stream, av_dict &dict) = 0;
     virtual bool pull_encoded_packet(AVPacket *pkt, bool *valid_packet) = 0;
     virtual AVCodecContext *get_codec_context() const noexcept = 0;

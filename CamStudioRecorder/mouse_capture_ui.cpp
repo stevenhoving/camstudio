@@ -49,12 +49,12 @@ mouse_capture_ui::mouse_capture_ui(HINSTANCE instance, HWND parent, const std::f
     const auto screen_width = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
     const auto screen_height = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
 
-    max_screen_rect_ = {
+    max_screen_rect_ = CRect(
         screen_x,
         screen_y,
         screen_x + screen_width,
         screen_y + screen_height
-    };
+    );
 
     register_window_class(instance);
 

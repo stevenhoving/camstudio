@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "string_convert.h"
 #include <CamCapture/cam_color.h>
 #include <CamCapture/cam_rect.h>
 #include <CamCapture/cam_size.h>
@@ -57,11 +58,11 @@ public:
         table_->insert(key, array);
     }
 
-    //template<>
-    //void insert(const std::string &key, const std::shared_ptr<cpptoml::table>& value)
-    //{
-    //    table_->insert(key, value);
-    //}
+    template<>
+    void insert(const std::string &key, const std::wstring &value)
+    {
+        table_->insert<std::string>(key, wstring_to_utf8(value));
+    }
 
     template<typename T>
     T get_optional(const std::string &key, const T default_value)

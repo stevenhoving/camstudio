@@ -64,8 +64,8 @@ void CFixedRegionDlg::DoDataExchange(CDataExchange *pDX)
 }
 
 BEGIN_MESSAGE_MAP(CFixedRegionDlg, CDialog)
-ON_BN_CLICKED(IDSELECT, OnRegionSelect)
-ON_BN_CLICKED(IDC_FIXEDTOPLEFT, OnFixedtopleft)
+ON_BN_CLICKED(IDSELECT, &CFixedRegionDlg::OnRegionSelect)
+ON_BN_CLICKED(IDC_FIXEDTOPLEFT, &CFixedRegionDlg::OnFixedtopleft)
 ON_EN_CHANGE(IDC_Y, &CFixedRegionDlg::OnEnChangeY)
 ON_EN_CHANGE(IDC_HEIGHT, &CFixedRegionDlg::OnEnChangeHeight)
 ON_BN_CLICKED(IDOK, &CFixedRegionDlg::OnBnClickedOk)

@@ -4,14 +4,10 @@
 #include <CamLib/console.h>
 #include <afxdatarecovery.h>
 
-extern bool g_bRecordState; // in RecorderView
-
 int g_maxx_screen;
 int g_maxy_screen;
 int g_minx_screen;
 int g_miny_screen;
-
-static HMENU hMenu = nullptr;
 
 /////////////////////////////////////////////////////////////////////////////
 // CMainFrame
@@ -19,12 +15,10 @@ static HMENU hMenu = nullptr;
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
-//{{AFX_MSG_MAP(CMainFrame)
     ON_WM_CREATE()
     ON_WM_CLOSE()
-//}}AFX_MSG_MAP
-ON_MESSAGE(CTrayIcon::m_WM_TRAY_ICON_NOTIFY_MESSAGE, OnTrayNotify)
-ON_WM_SYSCOMMAND()
+    ON_MESSAGE(CTrayIcon::m_WM_TRAY_ICON_NOTIFY_MESSAGE, &CMainFrame::OnTrayNotify)
+    ON_WM_SYSCOMMAND()
 END_MESSAGE_MAP()
 
 static UINT indicators[] = {
@@ -161,19 +155,17 @@ void CMainFrame::Dump(CDumpContext &dc) const
 
 #endif //_DEBUG
 
-/////////////////////////////////////////////////////////////////////////////
-// CMainFrame message handlers
-
 void CMainFrame::OnClose()
 {
-    if (g_bRecordState)
-    {
-        MessageOut(this->m_hWnd, IDS_STRING_STOPBEFOREEXIT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-        return;
-    }
+    // if want to close the application while a recording is going on...
+    //if (g_bRecordState)
+    //{
+    //    MessageOut(this->m_hWnd, IDS_STRING_STOPBEFOREEXIT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
+    //    return;
+    //}
 
     // Workarround for CFrameWnd::OnClose();
-    if (m_lpfnCloseProc != NULL)
+    if (m_lpfnCloseProc != nullptr)
     {
         // if there is a close proc, then defer to it, and return
         // after calling it so the frame itself does not close.
@@ -183,13 +175,13 @@ void CMainFrame::OnClose()
 
     // Note: only queries the active document
     CDocument* pDocument = GetActiveDocument();
-    if (pDocument != NULL && !pDocument->CanCloseFrame(this))
+    if (pDocument != nullptr && !pDocument->CanCloseFrame(this))
     {
         // document can't close right now -- don't close it
         return;
     }
     CWinApp* pApp = AfxGetApp();
-    if (pApp != NULL && pApp->m_pMainWnd == this)
+    if (pApp != nullptr && pApp->m_pMainWnd == this)
     {
         CDataRecoveryHandler *pHandler = pApp->GetDataRecoveryHandler();
         if ((pHandler != NULL) && (pHandler->GetShutdownByRestartManager()))
@@ -202,10 +194,10 @@ void CMainFrame::OnClose()
         }
 
         // attempt to save all documents
-        if (pDocument == NULL && !pApp->SaveAllModified())
+        if (pDocument == nullptr && !pApp->SaveAllModified())
             return;     // don't close it
 
-        if ((pHandler != NULL) && (!pHandler->GetShutdownByRestartManager()))
+        if ((pHandler != nullptr) && (!pHandler->GetShutdownByRestartManager()))
         {
             // If the application is not being shut down by the Restart Manager,
             // delete any autosaved documents since everything is now fully saved.
@@ -240,11 +232,11 @@ void CMainFrame::OnClose()
 
     // detect the case that this is the last frame on the document and
     // shut down with OnCloseDocument instead.
-    if (pDocument != NULL && pDocument->m_bAutoDelete)
+    if (pDocument != nullptr && pDocument->m_bAutoDelete)
     {
         BOOL bOtherFrame = FALSE;
         POSITION pos = pDocument->GetFirstViewPosition();
-        while (pos != NULL)
+        while (pos != nullptr)
         {
             CView* pView = pDocument->GetNextView(pos);
             ENSURE_VALID(pView);

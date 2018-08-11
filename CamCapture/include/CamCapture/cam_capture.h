@@ -60,7 +60,6 @@ private:
     HDC desktop_dc_;
     HDC memory_dc_;
     rect<int> src_rect_;
-    bool show_cursor_;
 
     unsigned char *bitmap_data_{nullptr};
     cam_frame frame_;

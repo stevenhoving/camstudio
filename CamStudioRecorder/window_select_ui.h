@@ -65,7 +65,7 @@ public:
 #endif
 
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);
+    void DoDataExchange(CDataExchange* pDX) override;
 
     DECLARE_MESSAGE_MAP()
 };

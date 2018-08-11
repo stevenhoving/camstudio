@@ -37,7 +37,7 @@ class av_video : public av_icodec
 {
 public:
     av_video(const av_video_codec &config, const av_video_meta &meta);
-    ~av_video();
+    ~av_video() override;
 
     void open(AVStream *stream, av_dict &dict) override;
 

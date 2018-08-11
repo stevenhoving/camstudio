@@ -46,7 +46,7 @@ private:
     void _set_codec_preset_index(int index);
 
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    void DoDataExchange(CDataExchange* pDX) override;
 
     DECLARE_MESSAGE_MAP()
 private:

@@ -50,6 +50,11 @@ av_muxer::av_muxer(const char *filename, const av_muxer_type muxer_type)
 
     switch(muxer_type)
     {
+    case av_muxer_type::none:
+        throw std::runtime_error(
+            fmt::format("av_muxer: unable to create avformat output context: invalid muxer type")
+        );
+        break;
     case av_muxer_type::mp4:
         time_base_.num = 1;
         time_base_.den = 90000;

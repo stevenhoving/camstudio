@@ -20,7 +20,6 @@ public:
 
     BOOL PreCreateWindow(CREATESTRUCT &cs) override;
 
-
 public:
     ~CMainFrame() override;
 #ifdef _DEBUG
@@ -36,12 +35,9 @@ protected: // control bar embedded members
     CImageList m_ilToolBar;
     CBitmap m_bmLogo;
 
-    // Generated message map functions
 protected:
-    //{{AFX_MSG(CMainFrame)
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnClose();
-    //}}AFX_MSG
     afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
     afx_msg LRESULT OnTrayNotify(WPARAM wParam, LPARAM lParam);
     DECLARE_MESSAGE_MAP()

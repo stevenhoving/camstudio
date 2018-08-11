@@ -66,8 +66,7 @@ set(RECORDER_SOURCE
     GdiPlusInitializer.cpp
     GdiPlusInitializer.h
     HotKey.cpp
-    KeyshortcutsDlg.cpp
-    KeyshortcutsDlg.h
+    HotKey.h
     MainFrm.cpp
     Recorder.cpp
     RecorderDoc.cpp
@@ -75,7 +74,6 @@ set(RECORDER_SOURCE
     stdafx.cpp
     stdafx.h
     CamStudioCommandLineInfo.h
-    HotKey.h
     MainFrm.h
     Recorder.h
     RecorderDoc.h
@@ -148,8 +146,6 @@ target_link_libraries(CamStudioRecorder
     CamCapture
     CamEncoder
     cpptoml
-    CxImage
-    localization
     fmt
     gdi32.lib
     winmm.lib

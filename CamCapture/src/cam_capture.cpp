@@ -33,7 +33,6 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
     , desktop_dc_{::GetDC(hwnd_)}
     , memory_dc_{::CreateCompatibleDC(desktop_dc_)}
     , src_rect_()
-    , show_cursor_{true}
     , annotations_()
 {
     if (hwnd == nullptr)

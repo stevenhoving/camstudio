@@ -3,15 +3,15 @@
 #include "CamStudioCommandLineInfo.h"
 #include <tchar.h>
 
-CCamStudioCommandLineInfo::CCamStudioCommandLineInfo(void)
-    : m_iCodecID(0)
-    , m_csOutfile(_T(""))
+CCamStudioCommandLineInfo::CCamStudioCommandLineInfo()
+    : m_csOutfile(_T(""))
+    , m_iCodecID(0)
     , m_iSeconds(0)
     , m_bHelp(false)
 {
 }
 
-CCamStudioCommandLineInfo::~CCamStudioCommandLineInfo(void)
+CCamStudioCommandLineInfo::~CCamStudioCommandLineInfo()
 {
 }
 

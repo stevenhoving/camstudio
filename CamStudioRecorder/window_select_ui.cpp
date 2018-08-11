@@ -35,7 +35,7 @@ IMPLEMENT_DYNAMIC(window_select_ui, CDialogEx)
 */
 
 /* \todo no dpi correction */
-constexpr auto button_spacing = 10;
+//constexpr auto button_spacing = 10;
 constexpr auto button_width = 250;
 constexpr auto button_height = 250;
 
@@ -182,11 +182,11 @@ BOOL window_select_ui::OnInitDialog()
 
     constexpr auto button_horizontal_count = 6;
     const auto windows_size = static_cast<int>(windows.size());
-    const auto columns = windows_size % button_horizontal_count;
+//    const auto columns = windows_size % button_horizontal_count;
     const auto rows = windows_size / button_horizontal_count;
 
-    const auto window_width = std::min(windows_size, button_horizontal_count) * button_width;
-    const auto window_height = std::max(rows, 1) * button_height;
+    //const auto window_width = std::min(windows_size, button_horizontal_count) * button_width;
+    //const auto window_height = std::max(rows, 1) * button_height;
 
     // set size
     //SetWindowPos(&CWnd::wndTop, -1, -1,

@@ -152,7 +152,7 @@ void my_av_log_callback(void *avcl, int level, const char *fmt, va_list vl)
 {
     char log_buffer[1024] = {};
     int prefix = 0;
-    int ret = av_log_format_line2(avcl, level, fmt, vl, log_buffer, 1024, &prefix);
+    av_log_format_line2(avcl, level, fmt, vl, log_buffer, 1024, &prefix);
     puts(log_buffer);
 }
 
@@ -162,7 +162,8 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
     //av_log_set_level(AV_LOG_DEBUG);
     //av_log_set_callback(my_av_log_callback);
 
-    bool truncate_framerate = false;
+    // truncate_framerate is not used, as its commonly used to handle mpeg2/4 framerate limitations.
+    //bool truncate_framerate = false;
 
     switch (meta.codec)
     {

@@ -14,16 +14,16 @@ public:
     // ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CRecorderDoc)
 public:
-    virtual BOOL OnNewDocument();
-    virtual void Serialize(CArchive &ar);
+    BOOL OnNewDocument() override;
+    void Serialize(CArchive &ar) override;
     //}}AFX_VIRTUAL
 
     // Implementation
 public:
     ~CRecorderDoc() override;
 #ifdef _DEBUG
-    virtual void AssertValid() const;
-    virtual void Dump(CDumpContext &dc) const;
+    void AssertValid() const override;
+    void Dump(CDumpContext &dc) const override;
 #endif
 
     unsigned int FrameWidth() const;

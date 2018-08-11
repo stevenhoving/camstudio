@@ -99,5 +99,7 @@ private:
     const std::string filename_{};
     AVRational time_base_{1, 0};
     int have_audio{0};
-    int encode_audio{0};
+
+    // Commented, because we do not handle audio yet.
+    //int encode_audio{0};
 };
