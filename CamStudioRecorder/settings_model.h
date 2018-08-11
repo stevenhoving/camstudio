@@ -252,7 +252,7 @@ public:
     /* shortcuts */
     void set_shortcut(shortcut_action::type shortcut_type, std::wstring shortcut);
     auto get_shortcut(shortcut_action::type shortcut_type) -> std::wstring;
-    auto get_shortcut_data(shortcut_action::type shortcut_type) -> shortcut_definition &;
+    auto get_shortcut_data(shortcut_action::type shortcut_type) -> const shortcut_definition &;
     auto get_shortcut_map() -> const shortcut_map_type &;
 
     /* application */

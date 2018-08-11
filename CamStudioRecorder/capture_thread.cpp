@@ -133,13 +133,14 @@ capture_thread::~capture_thread()
 
 void capture_thread::start(capture_settings settings)
 {
-    if (run_)
+    if (run_ || capture_state_ != capture_state::stopped)
     {
         fmt::print("capture_thread: unable to start capturing 2x\n");
         return;
     }
 
     run_ = true;
+    capture_state_ = capture_state::capturing;
     capture_settings_ = settings;
     capture_thread_ = std::thread([this](){run();});
 
@@ -154,6 +155,13 @@ void capture_thread::stop()
     run_ = false;
     if (capture_thread_.joinable())
         capture_thread_.join();
+
+    capture_state_ = capture_state::stopped;
+}
+
+capture_state capture_thread::get_capture_state() const noexcept
+{
+    return capture_state_;
 }
 
 bool capture_thread::capture_screen_frame(const rect<int> &capture_dst_rect)
@@ -167,11 +175,11 @@ void capture_thread::run()
     if (!current_desktop)
     {
         fmt::print("capture_thread: unable to get current desktop\n");
-        // we might retry getting the current desktop
+        // \todo we might retry getting the current desktop
         return;
     }
 
-    // bind desktop to this thread
+    // bind current desktop to this thread.
     bool desktop_attached = ::SetThreadDesktop(current_desktop) != 0;
     ::CloseDesktop(current_desktop);
     current_desktop = nullptr;
@@ -217,8 +225,8 @@ void capture_thread::run()
     video_encoder->add_stream(cam_create_video_codec(config));
     video_encoder->open();
 
-    cam::stop_watch stopwatch;
-    stopwatch.time_start();
+    //cam::stop_watch stopwatch;
+    //stopwatch.time_start();
 
     cam::stop_watch frame_limiter;
     frame_limiter.time_start();
@@ -226,7 +234,7 @@ void capture_thread::run()
     const double max_frame_time = 1.0/capture_settings_.video_settings.video_source_fps_;
     while (run_)
     {
-        stopwatch.time_start();
+        //stopwatch.time_start();
         double time_capture_start = frame_limiter.time_now();
         const auto frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
 
@@ -238,11 +246,10 @@ void capture_thread::run()
         double dt = time_capture_end - time_capture_start;
 
         double sleep_for = max_frame_time - dt;
-        sleep_for = std::max(sleep_for, 0.0);
+        if (sleep_for > 0)
+            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(ceil(sleep_for * 1000.0))));
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(ceil(sleep_for * 1000.0))));
-
-        dt = stopwatch.time_since();
+        //dt = stopwatch.time_since();
         //fmt::print("fps: {}\n", 1.0 / dt);
     }
 

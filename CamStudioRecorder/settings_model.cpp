@@ -189,7 +189,7 @@ auto settings_model::get_shortcut(shortcut_action::type shortcut_type) -> std::w
     return shortcut_settings_.at(shortcut_type).shortcut;
 }
 
-auto settings_model::get_shortcut_data(shortcut_action::type shortcut_type) -> shortcut_definition &
+auto settings_model::get_shortcut_data(shortcut_action::type shortcut_type) -> const shortcut_definition &
 {
     return shortcut_settings_.at(shortcut_type);
 }

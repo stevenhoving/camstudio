@@ -17,6 +17,8 @@ class settings_model;
 
 class mouse_hook;
 
+class shortcut_controller;
+
 class CRecorderView : public CView
 {
 protected:
@@ -27,8 +29,8 @@ public:
     ~CRecorderView() override;
     CRecorderDoc *GetDocument();
 
-    void SaveSettings();
-    void LoadSettings();
+    void save_settings();
+    void load_settings();
 
     bool GetRecordState();
     bool GetPausedState();
@@ -46,14 +48,18 @@ private:
     void restore_window();
     std::filesystem::path generate_auto_filename();
 
+    void set_shortcuts();
+
 protected:
     afx_msg void OnRegionRubber();
     afx_msg void OnRegionPanregion();
     afx_msg void OnPaint();
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnDestroy();
-    afx_msg void OnRecord();
-    afx_msg void OnStop();
+    void OnRecord();
+    void OnStop();
+    void OnCancel();
+
     afx_msg void OnUpdateRegionPanregion(CCmdUI *pCmdUI);
     afx_msg void OnUpdateRegionRubber(CCmdUI *pCmdUI);
     afx_msg void OnVideoSettings();
@@ -106,8 +112,11 @@ private:
 
     std::unique_ptr<mouse_hook> mouse_hook_;
 
-    bool record_state_{false};
-    bool record_paused_{false};
+    std::unique_ptr<shortcut_controller> shortcut_controller_;
+
+    // state machinery for the ongoing recording...
+    bool is_recording{false};
+    bool is_paused{false};
 
     double zoom_{1};
     CPoint zoomed_at_;

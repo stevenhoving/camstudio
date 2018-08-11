@@ -38,6 +38,13 @@ struct capture_settings
     settings_model settings;
 };
 
+enum class capture_state
+{
+    stopped,
+    capturing,
+    paused
+};
+
 class capture_thread
 {
 public:
@@ -46,9 +53,9 @@ public:
     capture_thread(const capture_thread &) = delete;
     capture_thread &operator = (const capture_thread &) = delete;
 
-
     void start(capture_settings settings);
     void stop();
+    capture_state get_capture_state() const noexcept;
 
 protected:
     void run();
@@ -59,6 +66,7 @@ private:
     std::unique_ptr<cam_capture_source> capture_source_;
     std::thread capture_thread_;
     std::atomic<bool> run_{false};
+    capture_state capture_state_{capture_state::stopped};
 
     rect<int> capture_dst_rect_{0, 0, 0, 0};
 

@@ -39,6 +39,7 @@
 #include "mouse_capture_ui.h"
 #include "window_select_ui.h"
 #include "shortcut_settings_ui.h"
+#include "shortcut_controller.h"
 
 
 #include <memory>
@@ -105,6 +106,7 @@ BOOL g_bAllowNewRecordStartKey = TRUE;
 
 HBITMAP g_hSavedBitmap = nullptr;
 
+#if 0
 /////////////////////////////////////////////////////////////////////////////
 // ===========================================================================
 // ver 1.2
@@ -143,54 +145,62 @@ UINT keyShowLayoutAlt = 0;
 UINT keyNextShift = 0;
 UINT keyPrevShift = 0;
 UINT keyShowLayoutShift = 0;
+#endif
 
-int UnSetHotKeys();
-int SetAdjustHotKeys();
-int SetHotKeys(int succ[]);
-// Region Display Functions
-//void DrawSelect(HDC hdc, BOOL fDraw, LPRECT lprClip);
-
-/////////////////////////////////////////////////////////////////////////////
-// ver 1.8
-int UnSetHotKeys()
+void CRecorderView::set_shortcuts()
 {
-    UnregisterHotKey(g_hWndGlobal, HOTKEY_RECORD_START_OR_PAUSE);
-    UnregisterHotKey(g_hWndGlobal, HOTKEY_RECORD_STOP);
-    UnregisterHotKey(g_hWndGlobal, HOTKEY_RECORD_CANCELSTOP);
-    //UnregisterHotKey(g_hWndGlobal, HOTKEY_LAYOUT_KEY_NEXT);
-    //UnregisterHotKey(g_hWndGlobal, HOTKEY_LAYOUT_KEY_PREVIOUS);
-    //UnregisterHotKey(g_hWndGlobal, HOTKEY_LAYOUT_SHOW_HIDE_KEY);
-    UnregisterHotKey(g_hWndGlobal, HOTKEY_ZOOM);
-    UnregisterHotKey(g_hWndGlobal, HOTKEY_AUTOPAN_SHOW_HIDE_KEY);
+    shortcut_controller_->clear();
 
-    return 0;
-}
+    shortcut_controller_->register_action(settings_model_->get_shortcut_data(shortcut_action::record_start_or_pause),
+        [this]()
+        {
+            const auto capture_state = capture_thread_->get_capture_state();
+            if (capture_state != capture_state::stopped)
+            {
+                // pause if currently recording
+                if (capture_state == capture_state::paused)
+                {
+                    OnPause();
+                }
+                else
+                {
+                    OnRecord();
+                }
+            }
+            else
+            {
+                if (g_bAllowNewRecordStartKey)
+                {
+                    // prevent the case which CamStudio presents more than one region
+                    // for the user to select
+                    g_bAllowNewRecordStartKey = FALSE;
+                    OnRecord();
+                }
+            }
+        }
+    );
 
-int SetAdjustHotKeys()
-{
-    int succ[8];
-    int ret = SetHotKeys(succ);
-    (void)ret; // \note todo: we are ignorning the sethotkeys result... why?
+    shortcut_controller_->register_action(settings_model_->get_shortcut_data(shortcut_action::record_stop),
+        [this]()
+        {
+            OnStop();
+        }
+    );
 
-    return 7; // return the max value of #define for Hotkey in program???
-}
+    shortcut_controller_->register_action(settings_model_->get_shortcut_data(shortcut_action::record_cancel),
+        [this]()
+        {
+            OnCancel();
+        }
+    );
 
-int SetHotKeys(int succ[])
-{
-    UnSetHotKeys();
 
-    for (int i = 0; i < 6; i++)
-        succ[i] = 0;
-
-    int tstatus = 0;
 
     BOOL ret;
     int nid = 0;
     if (cHotKeyOpts.m_RecordStart.m_vKey != VK_UNDEFINED)
     {
         ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_RecordStart.m_fsMod, cHotKeyOpts.m_RecordStart.m_vKey);
-        if (!ret)
-            succ[0] = 1;
     }
 
     nid++;
@@ -198,8 +208,7 @@ int SetHotKeys(int succ[])
     if (cHotKeyOpts.m_RecordEnd.m_vKey != VK_UNDEFINED)
     {
         ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_RecordEnd.m_fsMod, cHotKeyOpts.m_RecordEnd.m_vKey);
-        if (!ret)
-            succ[1] = 1;
+        
     }
 
     nid++;
@@ -207,8 +216,7 @@ int SetHotKeys(int succ[])
     if (cHotKeyOpts.m_RecordCancel.m_vKey != VK_UNDEFINED)
     {
         ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_RecordCancel.m_fsMod, cHotKeyOpts.m_RecordCancel.m_vKey);
-        if (!ret)
-            succ[2] = 1;
+        
     }
 
     nid++;
@@ -216,8 +224,7 @@ int SetHotKeys(int succ[])
     if (cHotKeyOpts.m_Next.m_vKey != VK_UNDEFINED)
     {
         ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_Next.m_fsMod, cHotKeyOpts.m_Next.m_vKey);
-        if (!ret)
-            succ[3] = 1;
+        
     }
 
     nid++;
@@ -225,8 +232,7 @@ int SetHotKeys(int succ[])
     if (cHotKeyOpts.m_Prev.m_vKey != VK_UNDEFINED)
     {
         ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_Prev.m_fsMod, cHotKeyOpts.m_Next.m_vKey);
-        if (!ret)
-            succ[4] = 1;
+        
     }
 
     nid++;
@@ -234,8 +240,7 @@ int SetHotKeys(int succ[])
     if (cHotKeyOpts.m_ShowLayout.m_vKey != VK_UNDEFINED)
     {
         ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_ShowLayout.m_fsMod, cHotKeyOpts.m_ShowLayout.m_vKey);
-        if (!ret)
-            succ[5] = 1;
+        
     }
 
     nid++;
@@ -243,8 +248,7 @@ int SetHotKeys(int succ[])
     if (cHotKeyOpts.m_Zoom.m_vKey != VK_UNDEFINED)
     {
         ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_Zoom.m_fsMod, cHotKeyOpts.m_Zoom.m_vKey);
-        if (!ret)
-            succ[6] = 1;
+        
     }
 
     nid++;
@@ -252,10 +256,7 @@ int SetHotKeys(int succ[])
     if (cHotKeyOpts.m_Autopan.m_vKey != VK_UNDEFINED)
     {
         ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_Autopan.m_fsMod, cHotKeyOpts.m_Autopan.m_vKey);
-        if (!ret)
-            succ[7] = 1;
     }
-    return tstatus;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -363,13 +364,13 @@ void CRecorderView::OnPaint()
 
     // Draw Autopan Info
     // Draw Message msgRecMode
-    if (!record_state_)
+    if (!is_recording)
     {
         DisplayRecordingMsg(dc);
         return;
     }
     // Display the record information when recording
-    if (record_state_)
+    if (is_recording)
     {
         CRect rectClient;
         GetClientRect(&rectClient);
@@ -403,10 +404,10 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
         return -1;
 
     g_hWndGlobal = m_hWnd;
-    //setHotKeyWindow(m_hWnd);
+    shortcut_controller_ = std::make_unique<shortcut_controller>(m_hWnd);
+    set_shortcuts();
 
-    LoadSettings();
-    VERIFY(0 < SetAdjustHotKeys());
+    load_settings();
 
     mouse_capture_ui_ = std::make_unique<mouse_capture_ui>(AfxGetInstanceHandle(), GetSafeHwnd(),
         [this](const CRect &capture_rect)
@@ -588,7 +589,7 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
     // We shall wrap all that stuff in class so it is created in constructor and guaranteed to be destroyed in destructor
     //InstallMyHook(g_hWndGlobal, WM_USER_SAVECURSOR);
 
-    record_state_ = true;
+    is_recording = true;
     g_interruptkey = 0;
 
     mouse_hook_->attach();
@@ -623,7 +624,7 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
 LRESULT CRecorderView::OnRecordPaused(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     // TRACE("## CRecorderView::OnRecordPaused\n");
-    if (record_paused_)
+    if (is_paused)
     {
         return 0;
     }
@@ -638,13 +639,13 @@ LRESULT CRecorderView::OnRecordInterrupted(WPARAM wParam, LPARAM /*lParam*/)
     //UninstallMouseHook(g_hWndGlobal);
 
     // Ver 1.1
-    if (record_paused_)
+    if (is_paused)
     {
         CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
         pFrame->SetTitle(_T("CamStudio"));
     }
 
-    record_state_ = false;
+    is_recording = false;
     capture_thread_->stop();
     capture_thread_.reset();
 
@@ -762,11 +763,11 @@ std::filesystem::path CRecorderView::generate_auto_filename()
 }
 
 // This function is called when the avi saving is completed
-LRESULT CRecorderView::OnUserGeneric(WPARAM /*wParam*/, LPARAM /*lParam*/)
+LRESULT CRecorderView::OnUserGeneric(WPARAM wParam, LPARAM /*lParam*/)
 {
     restore_window();
 
-    if (g_interruptkey == cHotKeyOpts.m_RecordCancel.m_vKey)
+    if (wParam != 0)
     {
         // recording was canceled, so remove the temp file.
         std::filesystem::remove(strTempVideoFilePath);
@@ -853,9 +854,9 @@ void CRecorderView::OnRecord()
     pStatus->SetPaneText(0, _T("Press the Stop Button to stop recording"));
 
     // Version 1.1
-    if (record_paused_)
+    if (is_paused)
     {
-        record_paused_ = false;
+        is_paused = false;
 
         // Set Title Bar
         CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
@@ -863,7 +864,7 @@ void CRecorderView::OnRecord()
 
         return;
     }
-    record_paused_ = false;
+    is_paused = false;
 
     g_nActualFrame = 0;
     g_nCurrFrame = 0;
@@ -930,15 +931,14 @@ void CRecorderView::OnRecord()
 
 void CRecorderView::OnStop()
 {
-    // Version 1.1
-    if (!record_state_)
+    if (!is_recording)
     {
         return;
     }
 
-    if (record_paused_)
+    if (is_paused)
     {
-        record_paused_ = false;
+        is_paused = false;
 
         // Set Title Bar
         CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
@@ -946,6 +946,25 @@ void CRecorderView::OnStop()
     }
 
     OnRecordInterrupted(0, 0);
+}
+
+void CRecorderView::OnCancel()
+{
+    if (!is_recording)
+    {
+        return;
+    }
+
+    if (is_paused)
+    {
+        is_paused = false;
+
+        // Set Title Bar
+        CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
+        pFrame->SetTitle(_T("CamStudio"));
+    }
+
+    OnRecordInterrupted(1, 0);
 }
 
 void CRecorderView::OnVideoSettings()
@@ -984,10 +1003,10 @@ void CRecorderView::OnPause()
     // TRACE ("## CRecorderView::OnPause BEGIN RecordState:[%d] RecordPaused:[%d]\n", record_state_, record_paused_);
 
     // return if not current recording or already in paused state
-    if (!record_state_ || record_paused_)
+    if (!is_recording || is_paused)
         return;
 
-    record_paused_ = true;
+    is_paused = true;
 
 
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
@@ -1000,7 +1019,7 @@ void CRecorderView::OnPause()
 
 void CRecorderView::OnUpdatePause(CCmdUI *pCmdUI)
 {
-    pCmdUI->Enable(!record_paused_);
+    pCmdUI->Enable(!is_paused);
 }
 
 void CRecorderView::OnUpdateStop(CCmdUI * /*pCmdUI*/)
@@ -1010,7 +1029,7 @@ void CRecorderView::OnUpdateStop(CCmdUI * /*pCmdUI*/)
 void CRecorderView::OnUpdateRecord(CCmdUI *pCmdUI)
 {
     // Version 1.1
-    pCmdUI->Enable(!record_state_ || record_paused_);
+    pCmdUI->Enable(!is_recording || is_paused);
 }
 
 void CRecorderView::OnHelpFaq()
@@ -1024,7 +1043,7 @@ void CRecorderView::OnOptionsKeyboardshortcuts()
     shortcut_settings_ui settings_ui(this, settings_model_.get());
     settings_ui.DoModal();
 
-    SetAdjustHotKeys();
+    set_shortcuts();
 }
 
 bool CRecorderView::SaveAppSettings()
@@ -1032,11 +1051,11 @@ bool CRecorderView::SaveAppSettings()
     return false;
 }
 
-void CRecorderView::SaveSettings()
+void CRecorderView::save_settings()
 {
 }
 
-void CRecorderView::LoadSettings()
+void CRecorderView::load_settings()
 {
 }
 
@@ -1071,6 +1090,8 @@ void CRecorderView::OnSetFocus(CWnd *pOldWnd)
 /////////////////////////////////////////////////////////////////////////////
 LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 {
+    shortcut_controller_->handle_action(static_cast<int>(wParam));
+#if 0
     switch (wParam)
     {
         case HOTKEY_RECORD_START_OR_PAUSE: // 0 = start recording
@@ -1129,6 +1150,7 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
             //OnOptionsAutopan();
             break;
     }
+#endif
 
     return 1;
 }
@@ -1461,13 +1483,13 @@ bool CRecorderView::RunViewer(const CString &/*strNewFile*/)
 
 bool CRecorderView::GetRecordState()
 {
-    return record_state_;
+    return is_recording;
 }
 
 // \todo remove this function
 bool CRecorderView::GetPausedState()
 {
-    return record_paused_;
+    return is_paused;
 }
 
 void CRecorderView::DisplayAutopanInfo(CRect /*rc*/)
