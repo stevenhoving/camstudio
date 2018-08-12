@@ -31,6 +31,7 @@ BEGIN_MESSAGE_MAP(shortcut_settings_ui, CDialogEx)
     ON_MESSAGE(WM_UPDATE_SHORTCUT_TEXT_MESSAGE, &shortcut_settings_ui::OnUpdateShortcutTextMessage)
     ON_BN_CLICKED(IDC_SHORTCUT_SET, &shortcut_settings_ui::OnBnClickedShortcutSet)
     ON_BN_CLICKED(IDC_SHORTCUT_RESTORE, &shortcut_settings_ui::OnBnClickedShortcutRestore)
+    ON_BN_CLICKED(IDC_SHORTCUT_ENABLED, &shortcut_settings_ui::OnBnClickedShortcutEnabled)
 END_MESSAGE_MAP()
 
 shortcut_settings_ui::shortcut_settings_ui(CWnd* pParent /*=nullptr*/)
@@ -68,15 +69,10 @@ BOOL shortcut_settings_ui::OnInitDialog()
     shortcut_table_.add_column(L"State", 100);
 
     const auto &shortcut_map = settings_->get_shortcut_map();
-    constexpr auto shortcut_enabled_names = shortcut_enabled::names();
-    constexpr auto shortcut_action_names = shortcut_action::names();
-    for (const auto &itr : shortcut_map)
+    for (auto &itr : shortcut_map)
     {
-        const auto &shortcut = itr.second;
-        const auto shortcut_name = shortcut_action_names.at(shortcut.action);
-        const auto shortcut_enabled = shortcut_enabled_names.at(shortcut.is_enabled);
-
-        shortcut_table_data_.emplace_back(make_array(shortcut_name, shortcut.shortcut, shortcut_enabled));
+        auto entry = const_cast<shortcut_definition *>(&itr.second);
+        shortcut_table_data_.emplace_back(entry);
     }
 
     shortcut_table_.set_row_count(static_cast<int>(shortcut_table_data_.size()));
@@ -91,20 +87,41 @@ auto shortcut_settings_ui::get_shortcut_data(int item_index, int itemsub_index) 
         return nullptr;
 
     const auto &row_entry = shortcut_table_data_.at(item_index);
-    if (itemsub_index >= row_entry.size())
-        return nullptr;
 
-    return row_entry.at(itemsub_index).c_str();
+    constexpr auto shortcut_enabled_names = shortcut_enabled::names();
+    constexpr auto shortcut_action_names = shortcut_action::names();
+    switch(itemsub_index)
+    {
+    case 0: // Action
+        return shortcut_action_names.at(row_entry->action);
+    case 1: // Shortcut
+        return row_entry->shortcut.c_str();
+    case 2: // State
+        return shortcut_enabled_names.at(row_entry->is_enabled);
+    }
+    return nullptr;
 }
 
 auto shortcut_settings_ui::on_shortcut_select(int item_index) -> void
 {
+    current_entry_ = item_index;
+
     if (item_index == -1)
     {
         _set_current_shortcut(L""s);
         return;
     }
-    _set_current_shortcut(shortcut_table_data_.at(item_index).at(1));
+
+    const auto shortcut = shortcut_table_data_.at(item_index);
+    const auto ui_enabled =  shortcut->is_enabled != shortcut_enabled::unsupported;
+    shortcut_edit_.EnableWindow(ui_enabled);
+    shortcut_enabled_checkbox_.EnableWindow(ui_enabled);
+    set_shortcut_button_.EnableWindow(ui_enabled);
+    // \todo implement restore shortcut...
+    restore_shortcut_button_.EnableWindow(false);
+
+    shortcut_enabled_checkbox_.SetCheck(shortcut->is_enabled == shortcut_enabled::yes);
+    _set_current_shortcut(shortcut->shortcut);
 }
 
 void shortcut_settings_ui::DoDataExchange(CDataExchange* pDX)
@@ -112,9 +129,10 @@ void shortcut_settings_ui::DoDataExchange(CDataExchange* pDX)
     CDialogEx::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_SHORTCUTS_TABLE, shortcut_table_);
     DDX_Control(pDX, IDC_SHORTCUT_EDIT, shortcut_edit_);
+    DDX_Control(pDX, IDC_SHORTCUT_ENABLED, shortcut_enabled_checkbox_);
+    DDX_Control(pDX, IDC_SHORTCUT_SET, set_shortcut_button_);
+    DDX_Control(pDX, IDC_SHORTCUT_RESTORE, restore_shortcut_button_);
 }
-
-
 
 /* \todo code can be a lot better... */
 void shortcut_settings_ui::OnEnMsgfilterRichedit(NMHDR *pNMHDR, LRESULT *result)
@@ -212,14 +230,29 @@ void shortcut_settings_ui::_set_current_shortcut(std::wstring shortcut)
     PostMessage(WM_UPDATE_SHORTCUT_TEXT_MESSAGE);
 }
 
-
 void shortcut_settings_ui::OnBnClickedShortcutSet()
 {
-    // actually set the modifer
-}
+    if (current_entry_ == -1)
+        return;
 
+    shortcut_table_data_.at(current_entry_)->shortcut = current_shortcut_;
+    shortcut_table_.Invalidate();
+}
 
 void shortcut_settings_ui::OnBnClickedShortcutRestore()
 {
     // reset to the default
+}
+
+void shortcut_settings_ui::OnBnClickedShortcutEnabled()
+{
+    if (current_entry_ == -1)
+        return;
+
+    auto &shortcut = shortcut_table_data_.at(current_entry_);
+
+    const auto is_enabled_checked = (shortcut_enabled_checkbox_.GetCheck() & BST_CHECKED) != 0;
+    const auto enabled = is_enabled_checked ? shortcut_enabled::yes : shortcut_enabled::no;
+    shortcut->is_enabled = enabled;
+    shortcut_table_.Invalidate();
 }

@@ -118,6 +118,11 @@ private:
     bool is_recording{false};
     bool is_paused{false};
 
+    // state machinery for indicating that a new recording will be started when the shortcut is pressed.
+    bool allow_new_record_start_key_{ true };
+
+    std::wstring temp_video_filepath_{};
+
     double zoom_{1};
     CPoint zoomed_at_;
     DWORD zoom_when_{0}; // FIXME: I hope it is unlikely zoom start at 47 day boundary ever happen by accident
@@ -126,7 +131,6 @@ private:
     void DisplayRecordingStatistics(CDC &srcDC);
     void DisplayBackground(CDC &srcDC);
     void DisplayRecordingMsg(CDC &srcDC);
-    bool SaveAppSettings();
 
     bool RunViewer(const CString &strNewFile);
     void DisplayAutopanInfo(CRect rc);

@@ -43,11 +43,6 @@ private:
 private:
     settings_model *settings_{nullptr};
 
-protected:
-    void DoDataExchange(CDataExchange* pDX) override;
-
-    DECLARE_MESSAGE_MAP()
-public:
     CButton minimize_on_record_checkbox_;
     CButton auto_filename_generation_checkbox_;
     CComboBox output_directory_combobox_;
@@ -56,6 +51,10 @@ public:
     CComboBox temp_directory_combobox_;
     CEdit temp_directory_user_specified_edit_;
     CButton temp_directory_user_specified_browse_button_;
+protected:
+    void DoDataExchange(CDataExchange* pDX) override;
+
+    DECLARE_MESSAGE_MAP()
     afx_msg void OnBnClickedApplicationMinimizeOnRecord();
     afx_msg void OnBnClickedAutoFilenameGeneration();
     afx_msg void OnCbnSelchangeOutputDirectoryCheckbox();

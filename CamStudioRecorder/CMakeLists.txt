@@ -28,6 +28,8 @@ set(RECORDER_NEW_SOURCE
     cursor_settings_ui.cpp
     shortcut_settings_ui.h
     shortcut_settings_ui.cpp
+    shortcut_controller.h
+    shortcut_controller.cpp
     video_settings_ui.h
     video_settings_ui.cpp
     video_settings_model.h
@@ -61,24 +63,22 @@ set(RECORDER_SOURCE
     BasicMessageDlg.cpp
     BasicMessageDlg.h
     CamStudioCommandLineInfo.cpp
+    CamStudioCommandLineInfo.h
     FixedRegionDlg.cpp
     FixedRegionDlg.h
     GdiPlusInitializer.cpp
     GdiPlusInitializer.h
-    HotKey.cpp
-    HotKey.h
     MainFrm.cpp
+    MainFrm.h
     Recorder.cpp
+    Recorder.h
     RecorderDoc.cpp
+    RecorderDoc.h
     RecorderView.cpp
+    RecorderView.h
     stdafx.cpp
     stdafx.h
-    CamStudioCommandLineInfo.h
-    MainFrm.h
-    Recorder.h
-    RecorderDoc.h
     RecorderVersionReleaseInfo.h
-    RecorderView.h
 )
 
 set(RECORDER_RESOURCE

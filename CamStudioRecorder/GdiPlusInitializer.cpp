@@ -23,8 +23,9 @@
 gdi_plus::gdi_plus()
 {
     input = std::make_unique<Gdiplus::GdiplusStartupInput>();
-    auto ret = Gdiplus::GdiplusStartup(&gdiplusToken, input.get(), nullptr);
+    const auto ret = Gdiplus::GdiplusStartup(&gdiplusToken, input.get(), nullptr);
     assert(ret == Gdiplus::Status::Ok);
+    (void)ret;
 }
 
 gdi_plus::~gdi_plus()

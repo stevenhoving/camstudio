@@ -34,7 +34,7 @@ std::vector<std::wstring> tokenize_string(const std::wstring &text, const wchar_
 
     size_t offset_found = std::wstring::npos;
     size_t offset_prev = 0;
-    while((offset_found = text.find(token, offset_found)) != std::wstring::npos)
+    while((offset_found = text.find(token, offset_prev)) != std::wstring::npos)
     {
         result.emplace_back(text.substr(offset_prev, offset_found - offset_prev));
         offset_prev = offset_found + 1;
@@ -79,7 +79,18 @@ UINT parse_shortcut_modifiers(const std::wstring &shortcut)
 }
 
 static const std::map<std::wstring, int> virtual_key_to_nr = {
-    { L"F1"s, VK_F1  },
+    // misc
+    { L"ctrl"s, VK_CONTROL },
+    { L"shift"s, VK_SHIFT },
+    { L"alt"s, VK_MENU },
+    { L"space"s, VK_SPACE },
+    { L"+"s, VK_ADD },
+    { L"-"s, VK_SUBTRACT },
+    { L"*"s, VK_MULTIPLY },
+    { L"/"s, VK_DIVIDE },
+    { L"."s, VK_SEPARATOR },
+    // function keys
+    { L"F1"s, VK_F1 },
     { L"F2"s, VK_F2 },
     { L"F3"s, VK_F3 },
     { L"F4"s, VK_F4 },
@@ -103,7 +114,7 @@ static const std::map<std::wstring, int> virtual_key_to_nr = {
     { L"F22"s, VK_F22 },
     { L"F23"s, VK_F23 },
     { L"F24"s, VK_F24 },
-    { L"0"s, '0'},
+    // numbers/letters
     { L"0"s, '0'},
     { L"1"s, '1'},
     { L"2"s, '2'},
@@ -140,6 +151,32 @@ static const std::map<std::wstring, int> virtual_key_to_nr = {
     { L"X"s, 'X'},
     { L"Y"s, 'Y'},
     { L"Z"s, 'Z'},
+    { L"a"s, 'a'},
+    { L"b"s, 'b'},
+    { L"c"s, 'c'},
+    { L"d"s, 'd'},
+    { L"e"s, 'e'},
+    { L"f"s, 'f'},
+    { L"g"s, 'g'},
+    { L"h"s, 'h'},
+    { L"i"s, 'i'},
+    { L"j"s, 'j'},
+    { L"k"s, 'k'},
+    { L"l"s, 'l'},
+    { L"m"s, 'm'},
+    { L"n"s, 'n'},
+    { L"o"s, 'o'},
+    { L"p"s, 'p'},
+    { L"q"s, 'q'},
+    { L"r"s, 'r'},
+    { L"s"s, 's'},
+    { L"t"s, 't'},
+    { L"u"s, 'u'},
+    { L"v"s, 'v'},
+    { L"w"s, 'w'},
+    { L"x"s, 'x'},
+    { L"y"s, 'y'},
+    { L"z"s, 'z'},
 };
 
 // parse ea. <shift+ctr+F9> to F9
@@ -173,6 +210,9 @@ void shortcut_controller::clear()
 
 void shortcut_controller::register_action(const shortcut_definition &definition, shortcut_function_type shortcut_function)
 {
+    if (definition.is_enabled != shortcut_enabled::yes)
+        return;
+
     const auto modifiers = parse_shortcut_modifiers(definition.shortcut);
     const auto virtual_key = parse_shortcut_virtual_key(definition.shortcut);
     const auto shortcut_id = shortcut_id_generator_++;
@@ -186,3 +226,4 @@ void shortcut_controller::handle_action(int shortcut_id)
     fmt::print("handle shortcut action\n");
     shortcut_lambda_map_.at(shortcut_id)();
 }
+

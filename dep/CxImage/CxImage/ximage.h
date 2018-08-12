@@ -315,6 +315,8 @@ public:
     uint8_t    GetJpegScale() const;
     void    SetJpegScale(uint8_t q);
 
+    uint8_t * GetImageData() {return info.pImage;}
+
 #if CXIMAGE_SUPPORT_EXIF
     EXIFINFO *GetExifInfo() {return &info.ExifInfo;};
     bool  GetExifThumbnail(const TCHAR *filename, const TCHAR *outname, int32_t imageType);

@@ -65,16 +65,21 @@ public:
     }
 
     template<typename T>
-    auto get(const std::string &key)
+    auto get(const std::string &key) const
     {
         return table_->get_as<T>(key);
     }
 
     template<>
-    auto get<std::wstring>(const std::string &key)
+    auto get<std::wstring>(const std::string &key) const
     {
         const auto value = *table_->get_as<std::string>(key);
         return cpptoml::option<std::wstring>(utf8_to_wstring(value));
+    }
+
+    bool contains(const std::string &key) const
+    {
+        return table_->contains(key);
     }
 
     template<typename T>

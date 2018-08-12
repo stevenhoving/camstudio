@@ -327,26 +327,22 @@ void settings_model::_save_shotcut_settings(cpptoml::table &root)
     table shortcuts = cpptoml::make_table();
     constexpr auto setting_keys = shortcut_action::setting_keys();
 
-    shortcuts.insert(setting_keys.at(shortcut_action::record_start_or_pause),
-        shortcut_settings_.at(shortcut_action::record_start_or_pause).shortcut
-    );
+    if (const auto &start = shortcut_settings_.at(shortcut_action::record_start_or_pause); start.is_enabled != shortcut_enabled::unsupported)
+        shortcuts.insert(setting_keys.at(shortcut_action::record_start_or_pause), start.is_enabled == shortcut_enabled::yes ? start.shortcut : L""s);
 
-    shortcuts.insert(setting_keys.at(shortcut_action::record_stop),
-        shortcut_settings_.at(shortcut_action::record_stop).shortcut
-    );
+    if (const auto &stop = shortcut_settings_.at(shortcut_action::record_stop); stop.is_enabled != shortcut_enabled::unsupported)
+        shortcuts.insert(setting_keys.at(shortcut_action::record_stop), stop.is_enabled == shortcut_enabled::yes ? stop.shortcut : L""s);
 
-    shortcuts.insert(setting_keys.at(shortcut_action::record_cancel),
-        shortcut_settings_.at(shortcut_action::record_cancel).shortcut
-    );
+    if (const auto &cancel = shortcut_settings_.at(shortcut_action::record_cancel); cancel.is_enabled != shortcut_enabled::unsupported)
+        shortcuts.insert(setting_keys.at(shortcut_action::record_cancel), cancel.is_enabled == shortcut_enabled::yes ? cancel.shortcut : L""s);
 
     // currently not supported.
 #if 0
-    shortcuts.insert(setting_keys.at(shortcut_action::zoom),
-        shortcut_settings_.at(shortcut_action::zoom).shortcut
-    );
-    shortcuts.insert(setting_keys.at(shortcut_action::autopan),
-        shortcut_settings_.at(shortcut_action::autopan).shortcut
-    );
+    if (const auto &zoom = shortcut_settings_.at(shortcut_action::zoom); zoom.is_enabled == shortcut_enabled::yes)
+        shortcuts.insert(setting_keys.at(shortcut_action::zoom), zoom.shortcut);
+
+    if (const auto &autopan = shortcut_settings_.at(shortcut_action::autopan); autopan.is_enabled == shortcut_enabled::yes)
+        shortcuts.insert(setting_keys.at(shortcut_action::autopan), autopan.shortcut);
 #endif
     root.insert(config::shortcut::settings, shortcuts.get_table());
 }
@@ -391,51 +387,30 @@ void settings_model::_load_application_settings(const cpptoml::table &root)
 void settings_model::_load_shortcut_settings(const cpptoml::table &root)
 {
     table shortcuts = root.get_table(config::shortcut::settings);
+    _load_shortcut(shortcuts, shortcut_action::record_start_or_pause);
+    _load_shortcut(shortcuts, shortcut_action::record_stop);
+    _load_shortcut(shortcuts, shortcut_action::record_cancel);
+    // currently not supported
+    // _load_shortcut(shortcuts, shortcut_action::zoom);
+    // _load_shortcut(shortcuts, shortcut_action::autopan);
+}
 
-    constexpr auto setting_keys = shortcut_action::setting_keys();
+void settings_model::_load_shortcut(const table &shortcuts, shortcut_action::type shortcut)
+{
+    constexpr auto keys = shortcut_action::setting_keys();
 
-    // start / pause recording.
+    auto &shortcut_setting = shortcut_settings_.at(shortcut);
+    if (const auto field_name = keys.at(shortcut); shortcuts.contains(field_name))
     {
-        const auto start_pause = shortcuts.get<std::wstring>(setting_keys.at(shortcut_action::record_start_or_pause));
-        auto &start_pause_setting = shortcut_settings_.at(shortcut_action::record_start_or_pause);
-        start_pause_setting.is_enabled = start_pause ? shortcut_enabled::yes : shortcut_enabled::no;
-        start_pause_setting.shortcut = start_pause ? *start_pause : L""s;
+        const auto field = shortcuts.get<std::wstring>(field_name);
+        const auto field_value = *field;
+        shortcut_setting.is_enabled = field_value.empty() ? shortcut_enabled::no : shortcut_enabled::yes;
+        shortcut_setting.shortcut = field_value;
     }
-
-    // stop recording.
+    else
     {
-        const auto stop_recording = shortcuts.get<std::wstring>(setting_keys.at(shortcut_action::record_stop));
-        auto &stop_recording_setting = shortcut_settings_.at(shortcut_action::record_stop);
-        stop_recording_setting.is_enabled = stop_recording ? shortcut_enabled::yes : shortcut_enabled::no;
-        stop_recording_setting.shortcut = stop_recording ? *stop_recording : L""s;
+        shortcut_setting.is_enabled = shortcut_enabled::unsupported;
     }
-
-    // cancel recording.
-    {
-        const auto cancel_recording = shortcuts.get<std::wstring>(setting_keys.at(shortcut_action::record_cancel));
-        auto &cancel_recording_setting = shortcut_settings_.at(shortcut_action::record_cancel);
-        cancel_recording_setting.is_enabled = cancel_recording ? shortcut_enabled::yes : shortcut_enabled::no;
-        cancel_recording_setting.shortcut = cancel_recording ? *cancel_recording : L""s;
-    }
-
-    // currently not supported.
-#if 0
-    // zoom.
-    {
-        const auto zoom = shortcuts.get<std::wstring>(setting_keys.at(shortcut_action::zoom));
-        auto &zoom_setting = shortcut_settings_.at(shortcut_action::zoom);
-        zoom_setting.is_enabled = zoom ? shortcut_enabled::yes : shortcut_enabled::no;
-        zoom_setting.shortcut = zoom ? *zoom : L""s;
-    }
-
-    // autopan.
-    {
-        const auto autopan = shortcuts.get<std::wstring>(setting_keys.at(shortcut_action::autopan));
-        auto &autopan_setting = shortcut_settings_.at(shortcut_action::autopan);
-        autopan_setting.is_enabled = autopan ? shortcut_enabled::yes : shortcut_enabled::no;
-        autopan_setting.shortcut = autopan ? *autopan : L""s;
-    }
-#endif
 }
 
 void settings_model::load()

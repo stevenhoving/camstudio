@@ -20,11 +20,13 @@
 #include <afxcmn.h>
 #include "ui/listbox_grid_ui.h"
 
+
 #include <vector>
 #include <string>
 #include <array>
 
 class settings_model;
+struct shortcut_definition;
 
 class shortcut_settings_ui : public CDialogEx
 {
@@ -48,21 +50,25 @@ public:
 protected:
     void DoDataExchange(CDataExchange* pDX) override;
     afx_msg void OnEnMsgfilterRichedit(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnBnClickedShortcutSet();
+    afx_msg void OnBnClickedShortcutRestore();
     afx_msg LRESULT OnUpdateShortcutTextMessage(WPARAM wParam, LPARAM lParams);
+    afx_msg void OnBnClickedShortcutEnabled();
     DECLARE_MESSAGE_MAP()
 
 private:
     void _set_current_shortcut(std::wstring shortcut);
+
     listbox_grid shortcut_table_;
-    settings_model *settings_;
-
-    using shortcut_table_entry = std::array<std::wstring, 3>;
-
-    // \todo rewrite this so it uses a correct config model type...
-    std::vector<shortcut_table_entry> shortcut_table_data_;
-    std::wstring current_shortcut_;
     CRichEditCtrl shortcut_edit_;
+    CButton shortcut_enabled_checkbox_;
+    CButton set_shortcut_button_;
+    CButton restore_shortcut_button_;
+
+    settings_model *settings_{nullptr};
+    std::vector<shortcut_definition *> shortcut_table_data_{};
+    int current_entry_{-1};
+    std::wstring current_shortcut_{};
 public:
-    afx_msg void OnBnClickedShortcutSet();
-    afx_msg void OnBnClickedShortcutRestore();
+
 };

@@ -40,6 +40,8 @@ enum class cursor_halo_type
     rectangle
 };
 
+class table;
+
 class application_output_directory
 {
 public:
@@ -137,9 +139,9 @@ public:
     static constexpr auto names()
     {
         return make_array(
-            L"Start a new or pause a ongoing recording",
-            L"Stop the ongoing recording",
-            L"Cancel the ongoing recording",
+            L"Start a new or pause current recording",
+            L"Stop the current recording",
+            L"Cancel the current recording",
             L"Zoom",
             L"Autopan"
         );
@@ -169,8 +171,8 @@ public:
     static constexpr auto names()
     {
         return make_array(
-            L"Yes",
-            L"No",
+            L"Enabled",
+            L"Disabled",
             L"Unsupported"
         );
     }
@@ -289,6 +291,8 @@ private:
     void _load_cursor_settings(const cpptoml::table &root);
     void _load_application_settings(const cpptoml::table &root);
     void _load_shortcut_settings(const cpptoml::table &root);
+
+    void _load_shortcut(const table &shortcuts, shortcut_action::type shortcut);
 
 private:
 

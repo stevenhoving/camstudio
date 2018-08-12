@@ -10,7 +10,6 @@
 #include "RecorderView.h"
 #include "CamStudioCommandLineInfo.h"
 #include "RecorderVersionReleaseInfo.h"
-#include "HotKey.h"
 #include "GdiPlusInitializer.h"
 #include "string_convert.h"
 #include <CamLib/CStudioLib.h>

@@ -27,8 +27,6 @@
 
 #include <cam_hook/cam_hook.h>
 
-#include "HotKey.h"
-
 // new stuff
 #include "string_convert.h"
 #include "video_settings_ui.h"
@@ -89,63 +87,8 @@ float g_fTimeLength = 0.0;
 int g_nColors = 24;
 CString sTimeLength;
 
-// Path to temporary video avi file
-std::wstring strTempVideoFilePath;
-
-// Path to temporary audio wav file
-std::wstring strTempAudioWavFilePath;
-
-
-/////////////////////////////////////////////////////////////////////////////
-// ver 1.2
-/////////////////////////////////////////////////////////////////////////////
-// Key short-cuts variables
-/////////////////////////////////////////////////////////////////////////////
 // state vars
-BOOL g_bAllowNewRecordStartKey = TRUE;
 
-HBITMAP g_hSavedBitmap = nullptr;
-
-#if 0
-/////////////////////////////////////////////////////////////////////////////
-// ===========================================================================
-// ver 1.2
-// ===========================================================================
-// Key short-cuts variables
-// ===========================================================================
-
-UINT keyRecordStart = VK_F8;
-UINT keyRecordEnd = VK_F9;
-UINT keyRecordCancel = VK_F10;
-// ver 1.8 key shortcuts
-UINT keyRecordStartCtrl = 0;
-UINT keyRecordEndCtrl = 0;
-UINT keyRecordCancelCtrl = 0;
-
-UINT keyRecordStartAlt = 0;
-UINT keyRecordEndAlt = 0;
-UINT keyRecordCancelAlt = 0;
-
-UINT keyRecordStartShift = 0;
-UINT keyRecordEndShift = 0;
-UINT keyRecordCancelShift = 0;
-
-UINT keyNext = VK_F11;
-UINT keyPrev = VK_F12;
-UINT keyShowLayout = 100000; // none
-
-UINT keyNextCtrl = 1;
-UINT keyPrevCtrl = 1;
-UINT keyShowLayoutCtrl = 0;
-
-UINT keyNextAlt = 0;
-UINT keyPrevAlt = 0;
-UINT keyShowLayoutAlt = 0;
-
-UINT keyNextShift = 0;
-UINT keyPrevShift = 0;
-UINT keyShowLayoutShift = 0;
-#endif
 
 void CRecorderView::set_shortcuts()
 {
@@ -169,11 +112,11 @@ void CRecorderView::set_shortcuts()
             }
             else
             {
-                if (g_bAllowNewRecordStartKey)
+                if (allow_new_record_start_key_)
                 {
                     // prevent the case which CamStudio presents more than one region
                     // for the user to select
-                    g_bAllowNewRecordStartKey = FALSE;
+                    allow_new_record_start_key_ = FALSE;
                     OnRecord();
                 }
             }
@@ -181,82 +124,12 @@ void CRecorderView::set_shortcuts()
     );
 
     shortcut_controller_->register_action(settings_model_->get_shortcut_data(shortcut_action::record_stop),
-        [this]()
-        {
-            OnStop();
-        }
+        [this](){OnStop();}
     );
 
     shortcut_controller_->register_action(settings_model_->get_shortcut_data(shortcut_action::record_cancel),
-        [this]()
-        {
-            OnCancel();
-        }
+        [this](){OnCancel();}
     );
-
-
-
-    BOOL ret;
-    int nid = 0;
-    if (cHotKeyOpts.m_RecordStart.m_vKey != VK_UNDEFINED)
-    {
-        ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_RecordStart.m_fsMod, cHotKeyOpts.m_RecordStart.m_vKey);
-    }
-
-    nid++;
-
-    if (cHotKeyOpts.m_RecordEnd.m_vKey != VK_UNDEFINED)
-    {
-        ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_RecordEnd.m_fsMod, cHotKeyOpts.m_RecordEnd.m_vKey);
-        
-    }
-
-    nid++;
-
-    if (cHotKeyOpts.m_RecordCancel.m_vKey != VK_UNDEFINED)
-    {
-        ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_RecordCancel.m_fsMod, cHotKeyOpts.m_RecordCancel.m_vKey);
-        
-    }
-
-    nid++;
-
-    if (cHotKeyOpts.m_Next.m_vKey != VK_UNDEFINED)
-    {
-        ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_Next.m_fsMod, cHotKeyOpts.m_Next.m_vKey);
-        
-    }
-
-    nid++;
-
-    if (cHotKeyOpts.m_Prev.m_vKey != VK_UNDEFINED)
-    {
-        ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_Prev.m_fsMod, cHotKeyOpts.m_Next.m_vKey);
-        
-    }
-
-    nid++;
-
-    if (cHotKeyOpts.m_ShowLayout.m_vKey != VK_UNDEFINED)
-    {
-        ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_ShowLayout.m_fsMod, cHotKeyOpts.m_ShowLayout.m_vKey);
-        
-    }
-
-    nid++;
-
-    if (cHotKeyOpts.m_Zoom.m_vKey != VK_UNDEFINED)
-    {
-        ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_Zoom.m_fsMod, cHotKeyOpts.m_Zoom.m_vKey);
-        
-    }
-
-    nid++;
-
-    if (cHotKeyOpts.m_Autopan.m_vKey != VK_UNDEFINED)
-    {
-        ret = RegisterHotKey(g_hWndGlobal, nid, cHotKeyOpts.m_Autopan.m_fsMod, cHotKeyOpts.m_Autopan.m_vKey);
-    }
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -436,12 +309,6 @@ void CRecorderView::OnDestroy()
     // UnSetHotKeys(g_hWndGlobal);
     // getHotKeyMap().clear(); // who actually cares?
 
-    if (g_hSavedBitmap)
-    {
-        DeleteObject(g_hSavedBitmap);
-        g_hSavedBitmap = nullptr;
-    }
-
     if (g_hLogoBM)
     {
         DeleteObject(g_hLogoBM);
@@ -542,7 +409,7 @@ std::string CRecorderView::generate_temp_filename(video_container::type containe
     const auto file_extention = video_container::names().at(container);
 
     std::filesystem::path temp_video_file_path = temp_directory / fmt::format(L"{}-{}.{}",_T(TEMPFILETAGINDICATOR), start_time, file_extention);
-    strTempVideoFilePath = temp_video_file_path.generic_wstring();
+    auto strTempVideoFilePath = temp_video_file_path.generic_wstring();
 
     // TRACE("## CRecorderView::RecordAVIThread First  Temp.Avi file=[%s]\n", strTempVideoAviFilePath.GetString()  );
 
@@ -617,7 +484,7 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
     //}
 
     // Ver 1.2
-    g_bAllowNewRecordStartKey = TRUE; // allow this only after record_state_ is set to 1
+    allow_new_record_start_key_ = TRUE; // allow this only after record_state_ is set to 1
     return 0;
 }
 
@@ -770,7 +637,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM wParam, LPARAM /*lParam*/)
     if (wParam != 0)
     {
         // recording was canceled, so remove the temp file.
-        std::filesystem::remove(strTempVideoFilePath);
+        std::filesystem::remove(temp_video_filepath_);
         return 0;
     }
 
@@ -797,7 +664,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM wParam, LPARAM /*lParam*/)
 
             if (file_dialog.DoModal() != IDOK)
             {
-                std::filesystem::remove(strTempVideoFilePath);
+                std::filesystem::remove(temp_video_filepath_);
                 return 0;
             }
 
@@ -832,7 +699,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM wParam, LPARAM /*lParam*/)
         target_filepath.replace_extension(video_settings_model_->get_video_container_file_extention());
 
     std::error_code ec;
-    std::filesystem::rename(strTempVideoFilePath, target_filepath, ec);
+    std::filesystem::rename(temp_video_filepath_, target_filepath, ec);
     if (ec)
     {
         // Unable to rename/copy file.
@@ -1000,14 +867,10 @@ void CRecorderView::OnHelpHelp()
 
 void CRecorderView::OnPause()
 {
-    // TRACE ("## CRecorderView::OnPause BEGIN RecordState:[%d] RecordPaused:[%d]\n", record_state_, record_paused_);
-
-    // return if not current recording or already in paused state
     if (!is_recording || is_paused)
         return;
 
     is_paused = true;
-
 
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
     pStatus->SetPaneText(0, _T("Recording Paused"));
@@ -1035,7 +898,7 @@ void CRecorderView::OnUpdateRecord(CCmdUI *pCmdUI)
 void CRecorderView::OnHelpFaq()
 {
     // Openlink("http://www.atomixbuttons.com/vsc/page5.html");
-    //Openlink("http://www.camstudio.org/faq.htm");
+    // Openlink("http://www.camstudio.org/faq.htm");
 }
 
 void CRecorderView::OnOptionsKeyboardshortcuts()
@@ -1044,11 +907,6 @@ void CRecorderView::OnOptionsKeyboardshortcuts()
     settings_ui.DoModal();
 
     set_shortcuts();
-}
-
-bool CRecorderView::SaveAppSettings()
-{
-    return false;
 }
 
 void CRecorderView::save_settings()
@@ -1091,52 +949,8 @@ void CRecorderView::OnSetFocus(CWnd *pOldWnd)
 LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 {
     shortcut_controller_->handle_action(static_cast<int>(wParam));
+
 #if 0
-    switch (wParam)
-    {
-        case HOTKEY_RECORD_START_OR_PAUSE: // 0 = start recording
-            if (record_state_)
-            {
-                // pause if currently recording
-                if (!record_paused_)
-                {
-                    OnPause();
-                }
-                else
-                {
-                    OnRecord();
-                }
-            }
-            else
-            {
-                if (g_bAllowNewRecordStartKey)
-                {
-                    // prevent the case which CamStudio presents more than one region
-                    // for the user to select
-                    g_bAllowNewRecordStartKey = FALSE;
-                    OnRecord();
-                }
-            }
-            break;
-        case HOTKEY_RECORD_STOP: // 1
-            if (record_state_)
-            {
-                if (cHotKeyOpts.m_RecordEnd.m_vKey != cHotKeyOpts.m_RecordCancel.m_vKey)
-                {
-                    OnRecordInterrupted(cHotKeyOpts.m_RecordEnd.m_vKey, 0);
-                }
-                else
-                { // FIXME: something is not quite right here
-                    OnRecordInterrupted(cHotKeyOpts.m_RecordCancel.m_vKey + 1, 0);
-                }
-            }
-            break;
-        case HOTKEY_RECORD_CANCELSTOP: // 2:
-            if (record_state_)
-            {
-                OnRecordInterrupted(cHotKeyOpts.m_RecordCancel.m_vKey, 0);
-            }
-            break;
         case HOTKEY_ZOOM: // FIXME: make yet another constant
             if (zoom_when_ == 0)
             {
@@ -1151,7 +965,6 @@ LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
             break;
     }
 #endif
-
     return 1;
 }
 

@@ -56,7 +56,7 @@ CWnd* listbox_grid::_on_create_list()
     wnd_list_ = std::make_unique<CListCtrl>();
 
     const DWORD window_style = WS_TABSTOP | WS_CHILD | WS_VISIBLE | LVS_AUTOARRANGE | LVS_REPORT |
-        LVS_OWNERDATA;
+        LVS_OWNERDATA | LVS_SHOWSELALWAYS | LVS_SINGLESEL;
 
     wnd_list_->CWnd::CreateEx(WS_EX_CLIENTEDGE, _T("SysListView32"), _T(""), window_style,
         rect_empty, this, list_id);
