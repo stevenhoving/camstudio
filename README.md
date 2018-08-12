@@ -1,6 +1,6 @@
 # CamStudio
 
-![AppVeyor](https://ci.appveyor.com/api/projects/status/github/stevenhoving/camstudio?branch=develop&svg=true)
+[![Build status](https://ci.appveyor.com/api/projects/status/fj6dyhgs69l6s2jg?svg=true)](https://ci.appveyor.com/project/stevenhoving/camstudio)
 
 
 ## The fork
