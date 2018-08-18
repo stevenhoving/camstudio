@@ -30,6 +30,13 @@ add_unit_test_suite(
     FOLDER tests/CamEncoder
 )
 
+target_compile_definitions(test_cam_encoder
+  PRIVATE
+    _UNICODE
+    UNICODE
+    _CRT_SECURE_NO_WARNINGS
+)
+
 set_target_properties(test_cam_encoder PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$(Configuration)
