@@ -83,7 +83,7 @@ BOOL shortcut_settings_ui::OnInitDialog()
 auto shortcut_settings_ui::get_shortcut_data(int item_index, int itemsub_index) -> const wchar_t *
 {
     // just failsafe for now
-    if (item_index >= shortcut_table_data_.size())
+    if (item_index >= static_cast<int>(shortcut_table_data_.size()))
         return nullptr;
 
     const auto &row_entry = shortcut_table_data_.at(item_index);
