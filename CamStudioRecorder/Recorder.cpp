@@ -222,8 +222,6 @@ BOOL CRecorderApp::InitInstance()
 
     LoadStdProfileSettings(); // Load standard INI file options (including MRU)
 
-    m_iVersionOp = GetOperatingSystem();
-
     //if (g_cfg->exists("Audio"))
         //cAudioFormat.Read(g_cfg->lookup("Audio"));
     //if (g_cfg->exists("Video"))

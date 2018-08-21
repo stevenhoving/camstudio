@@ -20,7 +20,6 @@ set(LIB_SOURCE
     src/CamFile.cpp
     src/CamImage.cpp
     src/CamRect.cpp
-    src/CamSys.cpp
     src/CBitmapEx.cpp
     src/CStudiolib.cpp
     src/Picture.cpp
@@ -36,7 +35,6 @@ set(LIB_INCLUDE
     include/CamLib/CamFile.h
     include/CamLib/CamImage.h
     include/CamLib/CamRect.h
-    include/CamLib/CamSys.h
     include/CamLib/CBitmapEx.h
     include/CamLib/CStudioLib.h
     include/CamLib/Picture.h

@@ -37,10 +37,6 @@ public:
         // FIXME:        VERIFY(m_cmSettings.Write(LANGUAGE, m_wCurLangID));
         return m_wCurLangID;
     }
-    int VersionOp() const
-    {
-        return m_iVersionOp;
-    }
 
     // Overrides
     // ClassWizard generated virtual function overrides
