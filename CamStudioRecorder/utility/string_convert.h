@@ -14,29 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.If not, see <https://www.gnu.org/licenses/>.
  */
+
 #pragma once
 
-#include "CamCapture/cam_rect.h"
-#include <windef.h>
-#include <dwmapi.h>
+#include <string>
 
-/*
- * \note only for win 7 it is possible to disable DWM. This means that we have to check for OS
- * version and supply a alternative method.
- * From win 8 it is no longer possible to disable DWM.
- */
-class dwm_thumbnail
+namespace utility
 {
-public:
-    dwm_thumbnail() = default;
-    ~dwm_thumbnail();
 
-    void link(HWND dst, HWND src);
-    void unlink();
-    void set_size(rect<int> dst_size);
-private:
-    rect<int> _get_src_size();
+// convert UTF-8 string to wstring
+std::wstring utf8_to_wstring(const std::string& str);
 
-private:
-    HTHUMBNAIL thumbnail_{ INVALID_HANDLE_VALUE };
-};
+// convert wstring to UTF-8 string
+std::string wstring_to_utf8(const std::wstring& str);
+
+} // namespace utility

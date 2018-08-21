@@ -19,10 +19,6 @@
 
 #include "settings/video_settings.h"
 
-
-
-
-
 class video_settings_model
 {
 public:

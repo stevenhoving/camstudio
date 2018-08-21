@@ -21,7 +21,7 @@
 #include "window_select_dwm.h"
 #include "window_thumbnail_widget.h"
 #include "window_select_data.h"
-#include <windows.h>
+#include <windef.h>
 #include <functional>
 #include <vector>
 

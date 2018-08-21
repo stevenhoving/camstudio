@@ -11,7 +11,7 @@
 #include "CamStudioCommandLineInfo.h"
 #include "RecorderVersionReleaseInfo.h"
 #include "GdiPlusInitializer.h"
-#include "string_convert.h"
+#include "utility/string_convert.h"
 #include <CamLib/CStudioLib.h>
 
 #include <filesystem>
@@ -146,7 +146,7 @@ CRecorderApp::~CRecorderApp()
 std::string get_config_path()
 {
     std::string profile_path;
-    profile_path += wstring_to_utf8(GetAppDataPath().GetString());
+    profile_path += utility::wstring_to_utf8(GetAppDataPath().GetString());
     profile_path += "\\CamStudio\\CamStudio.cfg";
     return profile_path;
 }
@@ -180,7 +180,7 @@ BOOL CRecorderApp::InitInstance()
     const auto profile_path = get_config_path();
 
     // \todo fix this..
-    m_pszProfileName = _tcsdup(utf8_to_wstring(profile_path).c_str());
+    m_pszProfileName = _tcsdup(utility::utf8_to_wstring(profile_path).c_str());
 
     std::filesystem::path path(profile_path);
     std::filesystem::create_directories(path.parent_path());

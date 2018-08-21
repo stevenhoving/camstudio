@@ -17,7 +17,7 @@
 
 #include "stdafx.h"
 #include "shortcut_controller.h"
-#include "string_convert.h"
+#include "utility/string_convert.h"
 #include <fmt/format.h>
 #include <fmt/printf.h>
 #include <stdexcept>
@@ -217,7 +217,8 @@ void shortcut_controller::register_action(const shortcut_definition &definition,
     const auto virtual_key = parse_shortcut_virtual_key(definition.shortcut);
     const auto shortcut_id = shortcut_id_generator_++;
     if (const auto ret = ::RegisterHotKey(shortcut_window_handle_, shortcut_id, modifiers, virtual_key); ret == 0)
-        throw std::runtime_error(fmt::format("failed to register shortcut: '{}'", wstring_to_utf8(definition.shortcut)));
+        throw std::runtime_error(fmt::format("failed to register shortcut: '{}'", utility::wstring_to_utf8(definition.shortcut)));
+
     shortcut_lambda_map_.emplace(shortcut_id, shortcut_function);
 }
 

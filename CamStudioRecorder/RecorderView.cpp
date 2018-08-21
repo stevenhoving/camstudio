@@ -28,7 +28,7 @@
 #include <cam_hook/cam_hook.h>
 
 // new stuff
-#include "string_convert.h"
+#include "utility/string_convert.h"
 #include "video_settings_ui.h"
 #include "cursor_settings_ui.h"
 #include "application_settings_ui.h"
@@ -433,7 +433,7 @@ std::string CRecorderView::generate_temp_filename(video_container::type containe
         }
     }
 
-    return wstring_to_utf8(strTempVideoFilePath);
+    return utility::wstring_to_utf8(strTempVideoFilePath);
 }
 
 LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
@@ -1269,7 +1269,7 @@ std::unique_ptr<av_video> create_video_codec(const av_video_meta &meta)
 
 std::string create_launch_path(const std::string &application, const std::string &arguments)
 {
-    std::string launch_path = wstring_to_utf8(get_prog_path());
+    std::string launch_path = utility::wstring_to_utf8(get_prog_path());
     launch_path += "\\";
     launch_path += application;
     launch_path += " ";

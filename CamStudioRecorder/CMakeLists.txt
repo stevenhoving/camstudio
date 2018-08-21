@@ -41,22 +41,29 @@ set(RECORDER_NEW_SOURCE
     window_thumbnail_widget.h
     window_thumbnail_widget.cpp
     window_utils.h
-    string_convert.h
     capture_thread.h
     capture_thread.cpp
     settings_model.h
     settings_model.cpp
     settings_table.h
-    utility/filesystem.h
-    utility/make_array.h
     ui/listbox_grid_ui.cpp
     ui/listbox_grid_ui.h
     ui/listbox_base_ui.cpp
     ui/listbox_base_ui.h
 )
 
+set(RECORDER_UTILITY_SOURCE
+    utility/filesystem.h
+    utility/filesystem.cpp
+    utility/make_array.h
+    utility/string_convert.h
+    utility/string_convert.cpp
+)
+
 set(RECORDER_SETTINGS_SOURCE
     settings/application_settings.h
+    settings/video_settings.h
+    settings/shortcut_settings.h
     settings/settings_enum_type.h
 )
 
@@ -97,6 +104,7 @@ add_executable(CamStudioRecorder WIN32
     ${RECORDER_NEW_SOURCE}
     ${RECORDER_SOURCE}
     ${RECORDER_SETTINGS_SOURCE}
+    ${RECORDER_UTILITY_SOURCE}
     ${RECORDER_RESOURCE}
 )
 
@@ -106,6 +114,10 @@ source_group(src FILES
 
 source_group(src\\settings FILES
     ${RECORDER_SETTINGS_SOURCE}
+)
+
+source_group(src\\utility FILES
+    ${RECORDER_UTILITY_SOURCE}
 )
 
 source_group(resource FILES
