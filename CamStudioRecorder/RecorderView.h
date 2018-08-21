@@ -121,7 +121,7 @@ private:
     // state machinery for indicating that a new recording will be started when the shortcut is pressed.
     bool allow_new_record_start_key_{ true };
 
-    std::wstring temp_video_filepath_{};
+    std::string temp_video_filepath_{};
 
     double zoom_{1};
     CPoint zoomed_at_;

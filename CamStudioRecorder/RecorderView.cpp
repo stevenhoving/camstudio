@@ -471,6 +471,9 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
         video_settings_model_->video_container_.get_index());
     settings.filename = generate_temp_filename(video_container_type);
 
+    // hack, store the filepath to the temp file so we can reuse it later.
+    temp_video_filepath_ = settings.filename;
+
     capture_thread_ = std::make_unique<capture_thread>(
         [this]()
         {PostMessage(WM_USER_GENERIC, 0, 0);}
@@ -638,6 +641,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM wParam, LPARAM /*lParam*/)
     {
         // recording was canceled, so remove the temp file.
         std::filesystem::remove(temp_video_filepath_);
+        temp_video_filepath_.clear();
         return 0;
     }
 
@@ -665,6 +669,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM wParam, LPARAM /*lParam*/)
             if (file_dialog.DoModal() != IDOK)
             {
                 std::filesystem::remove(temp_video_filepath_);
+                temp_video_filepath_.clear();
                 return 0;
             }
 
