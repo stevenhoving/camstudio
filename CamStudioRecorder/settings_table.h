@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "string_convert.h"
+#include "utility/string_convert.h"
 #include <CamCapture/cam_color.h>
 #include <CamCapture/cam_rect.h>
 #include <CamCapture/cam_size.h>
@@ -61,7 +61,7 @@ public:
     template<>
     void insert(const std::string &key, std::wstring value)
     {
-        table_->insert<std::string>(key, wstring_to_utf8(value));
+        table_->insert<std::string>(key, utility::wstring_to_utf8(value));
     }
 
     template<typename T>
@@ -74,7 +74,7 @@ public:
     auto get<std::wstring>(const std::string &key) const
     {
         const auto value = *table_->get_as<std::string>(key);
-        return cpptoml::option<std::wstring>(utf8_to_wstring(value));
+        return cpptoml::option<std::wstring>(utility::utf8_to_wstring(value));
     }
 
     bool contains(const std::string &key) const
@@ -131,7 +131,7 @@ public:
         if (!value)
             return default_value;
 
-        return utf8_to_wstring(*value);
+        return utility::utf8_to_wstring(*value);
     }
 
     auto get_table() const
