@@ -25,6 +25,12 @@
 #define _WIN32_WINNT 0x0601
 #endif // _WIN32_WINNT
 
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
+
+#ifndef VC_EXTRALEAN
 #define VC_EXTRALEAN
+#endif
+
 #include <windows.h>

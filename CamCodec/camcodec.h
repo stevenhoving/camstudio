@@ -9,8 +9,11 @@
 
 #pragma once
 
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
 #define VC_EXTRALEAN
+
 #include <windows.h>
 #include <vfw.h>
 #pragma hdrstop
