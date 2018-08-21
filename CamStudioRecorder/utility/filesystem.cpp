@@ -15,12 +15,33 @@
  * along with this program.If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
-#include <string>
-#include <filesystem>
+#include "stdafx.h"
+#include "utility/filesystem.h"
+
+#include <windows.h>
+#include <shlobj.h>
 
 namespace utility
 {
-std::filesystem::path get_app_data_path();
-std::filesystem::path create_config_path(const std::wstring &filename);
+std::filesystem::path get_app_data_path()
+{
+    wchar_t app_data_path[MAX_PATH + 1] = {};
+    if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_APPDATA, nullptr, 0, app_data_path)))
+    {
+        return std::filesystem::path(app_data_path);
+    }
+
+    if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, app_data_path)))
+    {
+        return std::filesystem::path(app_data_path);
+    }
+    throw std::runtime_error("unable to get app data path");
+}
+
+std::filesystem::path create_config_path(const std::wstring &filename)
+{
+    return get_app_data_path() / "CamStudio" / filename;
+}
+
 } // namespace utility
+
