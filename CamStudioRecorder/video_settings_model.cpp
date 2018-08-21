@@ -17,6 +17,8 @@
 
 #include "stdafx.h"
 #include "video_settings_model.h"
+#include "utility/filesystem.h"
+#include <cpptoml.h>
 
 std::wstring video_settings_model::get_video_container_file_extention() const
 {

@@ -16,7 +16,6 @@
 project(CamStudioRecorder)
 
 set(RECORDER_NEW_SOURCE
-    # new
     application_settings_ui.h
     application_settings_ui.cpp
     background_capture_source.h
@@ -56,8 +55,13 @@ set(RECORDER_NEW_SOURCE
     ui/listbox_base_ui.h
 )
 
+set(RECORDER_SETTINGS_SOURCE
+    settings/application_settings.h
+    settings/settings_enum_type.h
+)
+
+# legacy
 set(RECORDER_SOURCE
-    # legacy
     AutopanSpeedDlg.cpp
     AutopanSpeedDlg.h
     BasicMessageDlg.cpp
@@ -92,11 +96,16 @@ set(CMAKE_MFC_FLAG 2)
 add_executable(CamStudioRecorder WIN32
     ${RECORDER_NEW_SOURCE}
     ${RECORDER_SOURCE}
+    ${RECORDER_SETTINGS_SOURCE}
     ${RECORDER_RESOURCE}
 )
 
 source_group(src FILES
     ${RECORDER_NEW_SOURCE}
+)
+
+source_group(src\\settings FILES
+    ${RECORDER_SETTINGS_SOURCE}
 )
 
 source_group(resource FILES

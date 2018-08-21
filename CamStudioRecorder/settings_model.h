@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "settings/application_settings.h"
+#include "settings/shortcut_settings.h"
 #include <CamCapture/cam_rect.h>
 #include <CamCapture/cam_color.h>
 #include <CamLib/CamFile.h>
@@ -42,168 +44,8 @@ enum class cursor_halo_type
 
 class table;
 
-class application_output_directory
-{
-public:
-    enum type
-    {
-        ask_user, /* x */
-        user_my_documents, /* C:/users/<username>/Documents/My CamStudio Videos */
-        user_specified /* x */
-    };
-    static constexpr auto names()
-    {
-        return make_array(
-            L"Ask user",
-            L"My Documents",
-            L"User specified"
-        );
-    }
 
-    application_output_directory(type new_type) noexcept
-        : type_(new_type)
-    {
-    }
-    int get_index() const noexcept
-    {
-        return type_;
-    }
-    void set_index(const type new_type) noexcept
-    {
-        type_ = new_type;
-    }
-    void set_index(const int new_type) noexcept
-    {
-        type_ = static_cast<type>(new_type);
-    }
 
-private:
-    type type_;
-};
-
-class temp_output_directory
-{
-public:
-    enum type
-    {
-        user_temp = 0, /* C:/users/<username>/AppData/Local/temp */
-        user_my_documents = 1, /* C:/users/<username>/Documents/My CamStudio Temp Files */
-        windows_temp = 2, /* C:/windows/temp */
-        install = 3, /* ea. C:/program files/CamStudio/temp */
-        user_specified = 4 /* x */
-    };
-    static constexpr auto names()
-    {
-        return make_array(
-            L"User profile temp directory",
-            L"My Documents",
-            L"Windows temp directory",
-            L"Installation directory",
-            L"User specified"
-        );
-    }
-
-    temp_output_directory(type new_type) noexcept
-        : type_(new_type)
-    {
-    }
-    int get_index() const noexcept
-    {
-        return type_;
-    }
-    void set_index(const type new_type) noexcept
-    {
-        type_ = new_type;
-    }
-    void set_index(const int new_type) noexcept
-    {
-        type_ = static_cast<type>(new_type);
-    }
-
-private:
-    type type_;
-};
-
-/* shortcut */
-class shortcut_action
-{
-public:
-    enum type
-    {
-        record_start_or_pause = 0,
-        record_stop = 1,
-        record_cancel = 2,
-        zoom = 3, // currently not supported
-        autopan = 4
-    };
-    static constexpr auto names()
-    {
-        return make_array(
-            L"Start a new or pause current recording",
-            L"Stop the current recording",
-            L"Cancel the current recording",
-            L"Zoom",
-            L"Autopan"
-        );
-    }
-
-    static constexpr auto setting_keys()
-    {
-        return make_array(
-            "start_pause",
-            "stop",
-            "cancel",
-            "zoom",
-            "autopan"
-        );
-    }
-};
-
-class shortcut_enabled
-{
-public:
-    enum type
-    {
-        yes = 0,
-        no = 1,
-        unsupported = 2
-    };
-    static constexpr auto names()
-    {
-        return make_array(
-            L"Enabled",
-            L"Disabled",
-            L"Unsupported"
-        );
-    }
-
-    shortcut_enabled(type new_type) noexcept
-        : type_(new_type)
-    {
-    }
-    int get_index() const noexcept
-    {
-        return type_;
-    }
-    void set_index(const type new_type) noexcept
-    {
-        type_ = new_type;
-    }
-    void set_index(const int new_type) noexcept
-    {
-        type_ = static_cast<type>(new_type);
-    }
-
-private:
-    type type_;
-};
-
-struct shortcut_definition
-{
-    shortcut_action::type action;
-    shortcut_enabled::type is_enabled;
-    std::wstring shortcut; // in the form of <modifiers-key>, example: "Ctrl-Shift-W".
-};
 
 namespace cpptoml
 {

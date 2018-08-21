@@ -45,7 +45,6 @@ set(ENCODER_CAM_ENCODER_INCLUDE
     include/CamEncoder/av_cam_codec/av_cam_codec.h
 )
 
-
 source_group(src FILES
     ${ENCODER_SOURCE}
     ${ENCODER_INCLUDE}
@@ -83,6 +82,7 @@ target_compile_options(CamEncoder
     /experimental:external
     /external:W0
     /external:anglebrackets
+    /experimental:preprocessor
 )
 
 target_link_libraries(CamEncoder
