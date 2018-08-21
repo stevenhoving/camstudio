@@ -1,9 +1,6 @@
 [submodule "dep/zlib"]
 	path = dep/zlib
 	url = https://github.com/aeon-external-dependencies/zlib.git
-[submodule "dep/libpng"]
-	path = dep/libpng
-	url = https://github.com/aeon-external-dependencies/libpng.git
 [submodule "dep/fmt"]
 	path = dep/fmt
 	url = https://github.com/fmtlib/fmt.git
