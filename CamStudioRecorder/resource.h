@@ -83,6 +83,7 @@
 #define IDD_CURSOR_SETTINGS_UI          236
 #define IDD_APPLICATION_SETTINGS_UI     239
 #define IDD_SHORTCUTS_SETTINGS_UI       242
+#define IDB_RECORDER_ICON               248
 #define IDC_RADIO1                      1000
 #define IDC_RADIO2                      1002
 #define IDC_FPS                         1007
@@ -127,7 +128,6 @@
 #define IDC_TEMP_DIRECTORY_USER_SPECIFIED_EDIT 1056
 #define IDC_TRANSTEXT                   1057
 #define IDC_ALT1                        1057
-#define IDC_BUTTONLINK3                 1057
 #define IDC_SHIFT1                      1058
 #define IDC_BUTTON_FONT                 1058
 #define IDC_BUTTON_TEXT_COLOR           1059
@@ -233,6 +233,8 @@
 #define IDC_SHORTCUT_SET                1347
 #define IDC_SHORTCUT_RESTORE            1348
 #define IDC_SHORTCUT_ENABLED            1349
+#define IDC_CAMSTUDIO_LINK              1352
+#define IDC_GITHUB_LINK                 1353
 #define IDD_ABOUTBOX                    5100
 #define IDD_EFFECTS_OPTIONS2            5105
 #define IDD_VIDEO_SETTINGS_UI           5106
@@ -510,9 +512,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        247
+#define _APS_NEXT_RESOURCE_VALUE        251
 #define _APS_NEXT_COMMAND_VALUE         32955
-#define _APS_NEXT_CONTROL_VALUE         1350
+#define _APS_NEXT_CONTROL_VALUE         1354
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

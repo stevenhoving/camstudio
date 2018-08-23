@@ -5,7 +5,6 @@
 #endif
 
 #include <CamLib/CamError.h>
-#include "CamStudioCommandLineInfo.h"
 #include "resource.h"                   // main symbols
 #include "RecorderVersionReleaseInfo.h" // Contains version and SVN release number
 #include <memory>
@@ -27,48 +26,19 @@ public:
     CRecorderApp(const CRecorderApp &) = delete;
     CRecorderApp &operator = (const CRecorderApp &) = delete;
 
-    LANGID LanguageID() const
-    {
-        return m_wCurLangID;
-    }
-    LANGID LanguageID(LANGID wLangID)
-    {
-        m_wCurLangID = wLangID;
-        // FIXME:        VERIFY(m_cmSettings.Write(LANGUAGE, m_wCurLangID));
-        return m_wCurLangID;
-    }
-
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CRecorderApp)
 public:
     BOOL InitInstance() override;
     int ExitInstance() override;
-    //}}AFX_VIRTUAL
 
     // Implementation
 
-    //{{AFX_MSG(CRecorderApp)
     afx_msg void OnAppAbout();
-    // NOTE - the ClassWizard will add and remove member functions here.
-    //    DO NOT EDIT what you see in these blocks of generated code !
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 private:
-    static const TCHAR *CAMSTUDIO_MUTEX;
     HANDLE m_hAppMutex;
-    LANGID m_wCurLangID;
-    int m_iVersionOp;
-    CCamStudioCommandLineInfo m_cmdInfo;
 
     std::unique_ptr<gdi_plus> m_gdi;
 
     bool RegisterWindowClass();
     BOOL FirstInstance();
-    bool LoadLanguage(LANGID LangID);
 };
-
-/////////////////////////////////////////////////////////////////////////////
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Developer Studio will insert additional declarations immediately before the previous line.

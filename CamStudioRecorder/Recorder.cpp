@@ -8,127 +8,26 @@
 #include "MainFrm.h"
 #include "RecorderDoc.h"
 #include "RecorderView.h"
-#include "CamStudioCommandLineInfo.h"
-#include "RecorderVersionReleaseInfo.h"
+#include "AboutDlg.h"
+
 #include "GdiPlusInitializer.h"
 #include "utility/string_convert.h"
+#include "utility/filesystem.h"
 #include <CamLib/CStudioLib.h>
 
 #include <filesystem>
 
-static BOOL bClassRegistered = FALSE;
-
-
-/////////////////////////////////////////////////////////////////////////////
-// CAboutDlg dialog used for App About
-
-class CAboutDlg : public CDialog
-{
-public:
-    CAboutDlg();
-
-    // Dialog Data
-    //{{AFX_DATA(CAboutDlg)
-    enum
-    {
-        IDD = IDD_ABOUTBOX
-    };
-    //}}AFX_DATA
-
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CAboutDlg)
-protected:
-    virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
-    //}}AFX_VIRTUAL
-
-    // Implementation
-protected:
-    //{{AFX_MSG(CAboutDlg)
-    afx_msg void OnButtonlink();
-    //}}AFX_MSG
-    DECLARE_MESSAGE_MAP()
-public:
-    // afx_msg void OnBnClickedButtonlink();
-    DECLARE_EVENTSINK_MAP()
-    afx_msg void OnBnClickedButtonlink2();
-
-public:
-    virtual BOOL OnInitDialog();
-
-private:
-    CStatic m_ctrlStaticVersion;
-};
-
-CAboutDlg::CAboutDlg()
-    : CDialog(CAboutDlg::IDD)
-{
-    //{{AFX_DATA_INIT(CAboutDlg)
-    //}}AFX_DATA_INIT
-}
-
-void CAboutDlg::DoDataExchange(CDataExchange *pDX)
-{
-    CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CAboutDlg)
-    //}}AFX_DATA_MAP
-    DDX_Control(pDX, IDC_STATIC_VERSION, m_ctrlStaticVersion);
-}
-
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
-END_MESSAGE_MAP()
-
-BEGIN_EVENTSINK_MAP(CAboutDlg, CDialog)
-END_EVENTSINK_MAP()
-
-BOOL CAboutDlg::OnInitDialog()
-{
-    CDialog::OnInitDialog();
-
-    // only needs to be done once.
-    CString strBuffer;
-    CString strVersionInfo;
-    strVersionInfo.Format(_T("v%s\n"), CURRENT_VERSION_NUMBER);
-    CString strReleaseInfo;
-    strReleaseInfo.Format(_T("Build on Mercurial release: r%s\n"), CURRENT_HG_RELEASE_NUMBER);
-
-    m_ctrlStaticVersion.GetWindowText(strBuffer);
-    strBuffer.Replace(_T("<VERSION>"), strVersionInfo);
-    strBuffer.Replace(_T("<RELEASE>"), strReleaseInfo);
-    strBuffer.Replace(_T("<BUGFIXES>"), _T("Bugfixes and additional features added by Nick the Geek and others.\n"));
-    strBuffer.Replace(_T("<COPYRIGHT-1>"), _T("\nCopyright \xA9 2001 RenderSoft Software and Web Publishing\n"));
-    strBuffer.Replace(_T("<COPYRIGHT-2>"), _T("Copyright \xA9 2008 CamStudio Group && Contributors\n"));
-
-    m_ctrlStaticVersion.SetWindowText(strBuffer);
-
-    return TRUE; // return TRUE unless you set the focus to a control
-    // EXCEPTION: OCX Property Pages should return FALSE
-}
-
-void CAboutDlg::OnBnClickedButtonlink2()
-{
-    // \note i'm sorry, this is a personal port...
-    // const auto *mode = _T("open");
-    // ShellExecute(GetSafeHwnd(), mode, _T("http://www.camstudio.org/donate"), nullptr, nullptr, SW_SHOW);
-}
-
-void CAboutDlg::OnButtonlink()
-{
-}
+static bool bClassRegistered = false;
 
 /////////////////////////////////////////////////////////////////////////////
 // CRecorderApp
-const TCHAR *CRecorderApp::CAMSTUDIO_MUTEX = _T("VSCAP_CAB648E2_684F_4FF1_B574_9714ACAC6D57");
+constexpr auto CAMSTUDIO_MUTEX = _T("VSCAP_CAB648E2_684F_4FF1_B574_9714ACAC6D57");
+constexpr auto CAMSTUDIO_CLASS_NAME = L"CamStudio";
 
 BEGIN_MESSAGE_MAP(CRecorderApp, CWinApp)
-//{{AFX_MSG_MAP(CRecorderApp)
+//ON_COMMAND(ID_FILE_NEW, &CWinApp::OnFileNew)
+//ON_COMMAND(ID_FILE_OPEN, &CWinApp::OnFileOpen)
 ON_COMMAND(ID_APP_ABOUT, &CRecorderApp::OnAppAbout)
-// NOTE - the ClassWizard will add and remove mapping macros here.
-// DO NOT EDIT what you see in these blocks of generated code!
-//}}AFX_MSG_MAP
-// Standard file based document commands
-ON_COMMAND(ID_FILE_NEW, &CWinApp::OnFileNew)
-ON_COMMAND(ID_FILE_OPEN, &CWinApp::OnFileOpen)
-// Standard print setup command
 ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinApp::OnFilePrintSetup)
 END_MESSAGE_MAP()
 
@@ -139,17 +38,7 @@ CRecorderApp::CRecorderApp()
 {
 }
 
-CRecorderApp::~CRecorderApp()
-{
-}
-
-std::string get_config_path()
-{
-    std::string profile_path;
-    profile_path += utility::wstring_to_utf8(GetAppDataPath().GetString());
-    profile_path += "\\CamStudio\\CamStudio.cfg";
-    return profile_path;
-}
+CRecorderApp::~CRecorderApp() = default;
 
 BOOL CRecorderApp::InitInstance()
 {
@@ -162,40 +51,8 @@ BOOL CRecorderApp::InitInstance()
     ::OnError(_T("CRecorderApp::InitInstance"));
     AfxEnableControlContainer();
 
-    // Standard initialization
-    // If you are not using these features and wish to reduce the size
-    // of your final executable, you should remove from the following
-    // the specific initialization routines you do not need.
-    SetRegistryKey(_T("CamStudio"));
-
-    // First free the string allocated by MFC at CWinApp startup.
-    // The string is allocated before InitInstance is called.
-    free((void *)m_pszProfileName);
-
-    // Change the name of the .INI file.
-    // The CWinApp destructor will free the memory.
-    //CString strProfile;
-
-    // Only reading, if the user has no file yet, see if a starter file was provided:
-    const auto profile_path = get_config_path();
-
-    // \todo fix this..
-    m_pszProfileName = _tcsdup(utility::utf8_to_wstring(profile_path).c_str());
-
-    std::filesystem::path path(profile_path);
-    std::filesystem::create_directories(path.parent_path());
-
-    //    m_wCurLangID = static_cast<LANGID>(GetProfileInt(SEC_SETTINGS, ENT_LANGID, STANDARD_LANGID));
-    if (!LoadLanguage(m_wCurLangID))
-    {
-        if (!LoadLanguage(::GetUserDefaultLangID()))
-        {
-            LoadLanguage(::GetSystemDefaultLangID());
-        }
-    }
-
-    // WriteProfileInt(SEC_SETTINGS, ENT_LANGID, m_wCurLangID);
-    //    VERIFY(m_cmSettings.Write(LANGUAGE, m_wCurLangID));
+    const auto app_data_path = utility::get_app_data_path();
+    std::filesystem::create_directories(app_data_path);
 
     if (!FirstInstance())
         return FALSE;
@@ -215,34 +72,6 @@ BOOL CRecorderApp::InitInstance()
 //#endif
 #endif // Windows Vista
 
-    // Change the registry key under which our settings are stored.
-    // You should modify this string to be something appropriate
-    // such as the name of your company or organization.
-    // SetRegistryKey(_T("Local AppWizard-Generated Applications"));
-
-    LoadStdProfileSettings(); // Load standard INI file options (including MRU)
-
-    //if (g_cfg->exists("Audio"))
-        //cAudioFormat.Read(g_cfg->lookup("Audio"));
-    //if (g_cfg->exists("Video"))
-        //cVideoOpts.Read(g_cfg->lookup("Video"));
-    //if (g_cfg->exists("Cursor"))
-        //CamCursor.Read(g_cfg->lookup("Cursor"));
-    //if (g_cfg->exists("Program"))
-        //cProgramOpts.Read(g_cfg->lookup("Program"));
-    //if (g_cfg->exists("HotKeys"))
-        //cHotKeyOpts.Read(g_cfg->lookup("HotKeys"));
-    //if (g_cfg->exists("Region"))
-        //cRegionOpts.Read(g_cfg->lookup("Region"));
-    //if (g_cfg->exists("Caption"))
-        //cCaptionOpts.Read(g_cfg->lookup("Caption"));
-    //if (g_cfg->exists("TimeStamp"))
-        //cTimestampOpts.Read(g_cfg->lookup("TimeStamp"));
-    //if (g_cfg->exists("Watermark"))
-        //cWatermarkOpts.Read(g_cfg->lookup("Watermark"));
-    //if (g_cfg->exists("Producer"))
-        //cProducerOpts.Read(g_cfg->lookup("Producer"));
-
     // the application's document templates. Document templates
     // serve as the connection between documents, frame windows and views.
     AddDocTemplate(new CSingleDocTemplate(IDR_MAINFRAME,
@@ -250,12 +79,10 @@ BOOL CRecorderApp::InitInstance()
         RUNTIME_CLASS(CMainFrame), // main SDI frame window
         RUNTIME_CLASS(CRecorderView)));
 
-    // Parse command line for standard shell commands, DDE, file open
-    // CCamStudioCommandLineInfo cmdInfo;
-    ParseCommandLine(m_cmdInfo);
-
-    // Dispatch commands specified on the command line
-    if (!ProcessShellCommand(m_cmdInfo))
+    // dummy commandline parser.
+    CCommandLineInfo cmd_info;
+    ParseCommandLine(cmd_info);
+    if (!ProcessShellCommand(cmd_info))
         return FALSE;
 
     // The one and only window has been initialized, so show and update it.
@@ -267,94 +94,10 @@ BOOL CRecorderApp::InitInstance()
 
 int CRecorderApp::ExitInstance()
 {
-#if 0
-    try
-    {
-        //libconfig::Setting *s;
-        //if (!g_cfg->exists("Audio"))
-        //    s = &g_cfg->getRoot().add("Audio", libconfig::Setting::TypeGroup);
-        //else
-        //    s = &g_cfg->lookup("Audio");
-        //cAudioFormat.Write(*s);
-
-        //if (!g_cfg->exists("Video"))
-        //    s = &g_cfg->getRoot().add("Video", libconfig::Setting::TypeGroup);
-        //else
-        //    s = &g_cfg->lookup("Video");
-        //cVideoOpts.Write(*s);
-
-        //if (!g_cfg->exists("Cursor"))
-        //    s = &g_cfg->getRoot().add("Cursor", libconfig::Setting::TypeGroup);
-        //else
-        //    s = &g_cfg->lookup("Cursor");
-        //CamCursor.Write(*s);
-        //
-        //if (!g_cfg->exists("Program"))
-        //    s = &g_cfg->getRoot().add("Program", libconfig::Setting::TypeGroup);
-        //else
-        //    s = &g_cfg->lookup("Program");
-        //cProgramOpts.Write(*s);
-        //
-        //if (!g_cfg->exists("HotKeys"))
-        //    s = &g_cfg->getRoot().add("HotKeys", libconfig::Setting::TypeGroup);
-        //else
-        //    s = &g_cfg->lookup("HotKeys");
-        //cHotKeyOpts.Write(*s);
-        //
-        ////if (!g_cfg->exists("Region"))
-        ////    s = &g_cfg->getRoot().add("Region", libconfig::Setting::TypeGroup);
-        ////else
-        ////    s = &g_cfg->lookup("Region");
-        ////cRegionOpts.Write(*s);
-        //
-        //if (!g_cfg->exists("Caption"))
-        //    s = &g_cfg->getRoot().add("Caption", libconfig::Setting::TypeGroup);
-        //else
-        //    s = &g_cfg->lookup("Caption");
-        //cCaptionOpts.Write(*s);
-        //
-        //if (!g_cfg->exists("TimeStamp"))
-        //    s = &g_cfg->getRoot().add("TimeStamp", libconfig::Setting::TypeGroup);
-        //else
-        //    s = &g_cfg->lookup("TimeStamp");
-        //cTimestampOpts.Write(*s);
-        //
-        //if (!g_cfg->exists("Watermark"))
-        //    s = &g_cfg->getRoot().add("Watermark", libconfig::Setting::TypeGroup);
-        //else
-        //    s = &g_cfg->lookup("Watermark");
-        //cWatermarkOpts.Write(*s);
-        //
-        //if (!g_cfg->exists("Producer"))
-        //    s = &g_cfg->getRoot().add("Producer", libconfig::Setting::TypeGroup);
-        //else
-        //    s = &g_cfg->lookup("Producer");
-        //cProducerOpts.Write(*s);
-    }
-    //catch (libconfig::SettingTypeException &e)
-    //{
-    //    const auto path = utf8_to_wstring(e.getPath());
-    //    const auto what = utf8_to_wstring(e.what());
-    //    MessageBox(nullptr, path.c_str(), what.c_str(), MB_OK);
-    //}
-
-    // Save the configuration file out to the user appdata directory.
-    std::string profile_path = get_config_path();
-    g_cfg->writeFile(profile_path.c_str());
-    delete g_cfg;
-#endif
-
-    // Multilanguage
-    if (m_wCurLangID != STANDARD_LANGID)
-        ::FreeLibrary(AfxGetResourceHandle());
-
     if (bClassRegistered)
-        ::UnregisterClass(_T("CamStudio"), AfxGetInstanceHandle());
+        ::UnregisterClass(CAMSTUDIO_CLASS_NAME, AfxGetInstanceHandle());
 
-    // Gdiplus::GdiplusShutdown(gdiplusToken);
-    // gdi_shutdown(gdiplusToken);
     m_gdi.reset();
-
     return CWinApp::ExitInstance();
 }
 
@@ -391,7 +134,7 @@ BOOL CRecorderApp::FirstInstance()
     }
 
     // check older version class name
-    CWnd *pWndPrev = CWnd::FindWindow(_T("CamStudio"), nullptr);
+    CWnd *pWndPrev = CWnd::FindWindow(CAMSTUDIO_CLASS_NAME, nullptr);
     bPrevInstance = (0 != pWndPrev);
     if (bPrevInstance)
     {
@@ -409,31 +152,6 @@ BOOL CRecorderApp::FirstInstance()
     return !bPrevInstance;
 }
 
-bool CRecorderApp::LoadLanguage(LANGID LangID)
-{
-    // integrated language is the right one
-    bool bResult = (LangID == STANDARD_LANGID);
-    if (bResult)
-    {
-        ASSERT(m_wCurLangID == LangID);
-        TRACE("m_wCurLangID: %d\n", m_wCurLangID);
-        return true;
-    }
-
-    CString strLangIDDLL;
-    strLangIDDLL.Format(_T("RecorderLANG%.2x.dll"), LangID);
-    HINSTANCE hInstance = ::LoadLibrary(strLangIDDLL);
-    bResult = (0 != hInstance);
-    if (bResult)
-    {
-        AfxSetResourceHandle(hInstance);
-        m_wCurLangID = LangID;
-    }
-
-    TRACE("m_wCurLangID: %d %s\n", m_wCurLangID, bResult ? "loaded" : "failed");
-    return bResult;
-}
-
 // unique application class name that we wish to use
 bool CRecorderApp::RegisterWindowClass()
 {
@@ -449,7 +167,7 @@ bool CRecorderApp::RegisterWindowClass()
     wndcls.lpszMenuName = nullptr;
 
     // Specify our own class name for using FindWindow later
-    wndcls.lpszClassName = _T("CamStudio");
+    wndcls.lpszClassName = CAMSTUDIO_CLASS_NAME;
 
     // new class and exit if it fails
     if (!AfxRegisterClass(&wndcls))
@@ -457,5 +175,6 @@ bool CRecorderApp::RegisterWindowClass()
         TRACE("Class Registration Failed\n");
         return false;
     }
+    bClassRegistered = true;
     return true;
 }

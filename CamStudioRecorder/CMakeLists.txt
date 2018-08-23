@@ -69,12 +69,12 @@ set(RECORDER_SETTINGS_SOURCE
 
 # legacy
 set(RECORDER_SOURCE
+    AboutDlg.cpp
+    AboutDlg.h
     AutopanSpeedDlg.cpp
     AutopanSpeedDlg.h
     BasicMessageDlg.cpp
     BasicMessageDlg.h
-    CamStudioCommandLineInfo.cpp
-    CamStudioCommandLineInfo.h
     FixedRegionDlg.cpp
     FixedRegionDlg.h
     GdiPlusInitializer.cpp

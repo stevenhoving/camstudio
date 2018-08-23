@@ -28,19 +28,19 @@ std::filesystem::path get_app_data_path()
     wchar_t app_data_path[MAX_PATH + 1] = {};
     if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_APPDATA, nullptr, 0, app_data_path)))
     {
-        return std::filesystem::path(app_data_path);
+        return std::filesystem::path(app_data_path) / "CamStudio";
     }
 
     if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, app_data_path)))
     {
-        return std::filesystem::path(app_data_path);
+        return std::filesystem::path(app_data_path) / "CamStudio";
     }
     throw std::runtime_error("unable to get app data path");
 }
 
 std::filesystem::path create_config_path(const std::wstring &filename)
 {
-    return get_app_data_path() / "CamStudio" / filename;
+    return get_app_data_path() / filename;
 }
 
 } // namespace utility
