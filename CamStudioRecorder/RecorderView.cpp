@@ -19,8 +19,6 @@
 #include <fmt/printf.h>
 #include <fmt/time.h>
 
-#include <CamAudio/sound_file.h>
-#include <CamAudio/buffer.h>
 #include <CamLib/CStudioLib.h>
 #include <CamLib/TrayIcon.h>
 #include <CamEncoder/av_encoder.h>

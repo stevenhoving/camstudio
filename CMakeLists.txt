@@ -54,7 +54,6 @@ set(CMAKE_INSTALL_PREFIX
 add_subdirectory(dep)
 add_subdirectory(CamHook)
 add_subdirectory(CamLib)
-add_subdirectory(CamAudio)
 add_subdirectory(CamCapture)
 add_subdirectory(CamEncoder)
 #add_subdirectory(CamStudioCmd)
