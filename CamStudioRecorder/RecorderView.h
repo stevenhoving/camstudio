@@ -5,7 +5,7 @@
 #include <memory>
 #include <string>
 
-#define TEMPFILETAGINDICATOR "~temp"
+
 
 class CRecorderDoc;
 

@@ -15,14 +15,9 @@
 #include "AutopanSpeedDlg.h"
 #include "FixedRegionDlg.h"
 
-#include <fmt/format.h>
-#include <fmt/printf.h>
-#include <fmt/time.h>
-
 #include <CamLib/CStudioLib.h>
 #include <CamLib/TrayIcon.h>
 #include <CamEncoder/av_encoder.h>
-
 #include <cam_hook/cam_hook.h>
 
 // new stuff
@@ -37,6 +32,9 @@
 #include "shortcut_settings_ui.h"
 #include "shortcut_controller.h"
 
+#include <fmt/format.h>
+#include <fmt/printf.h>
+#include <fmt/time.h>
 
 #include <memory>
 #include <algorithm>
@@ -85,50 +83,11 @@ float g_fTimeLength = 0.0;
 int g_nColors = 24;
 CString sTimeLength;
 
-// state vars
+
+constexpr auto TEMPFILETAGINDICATOR = L"~temp";
 
 
-void CRecorderView::set_shortcuts()
-{
-    shortcut_controller_->clear();
 
-    shortcut_controller_->register_action(settings_model_->get_shortcut_data(shortcut_action::record_start_or_pause),
-        [this]()
-        {
-            const auto capture_state = capture_thread_->get_capture_state();
-            if (capture_state != capture_state::stopped)
-            {
-                // pause if currently recording
-                if (capture_state == capture_state::paused)
-                {
-                    OnPause();
-                }
-                else
-                {
-                    OnRecord();
-                }
-            }
-            else
-            {
-                if (allow_new_record_start_key_)
-                {
-                    // prevent the case which CamStudio presents more than one region
-                    // for the user to select
-                    allow_new_record_start_key_ = FALSE;
-                    OnRecord();
-                }
-            }
-        }
-    );
-
-    shortcut_controller_->register_action(settings_model_->get_shortcut_data(shortcut_action::record_stop),
-        [this](){OnStop();}
-    );
-
-    shortcut_controller_->register_action(settings_model_->get_shortcut_data(shortcut_action::record_cancel),
-        [this](){OnCancel();}
-    );
-}
 
 /////////////////////////////////////////////////////////////////////////////
 // CRecorderView
@@ -205,8 +164,47 @@ void CRecorderView::OnDraw(CDC *pCDC)
 }
 CRecorderView::~CRecorderView() = default;
 
-/////////////////////////////////////////////////////////////////////////////
-// CRecorderView diagnostics
+void CRecorderView::set_shortcuts()
+{
+    shortcut_controller_->clear();
+
+    shortcut_controller_->register_action(settings_model_->get_shortcut_data(shortcut_action::record_start_or_pause),
+        [this]()
+    {
+        const auto capture_state = capture_thread_->get_capture_state();
+        if (capture_state != capture_state::stopped)
+        {
+            // pause if currently recording
+            if (capture_state == capture_state::paused)
+            {
+                OnPause();
+            }
+            else
+            {
+                OnRecord();
+            }
+        }
+        else
+        {
+            if (allow_new_record_start_key_)
+            {
+                // prevent the case which CamStudio presents more than one region
+                // for the user to select
+                allow_new_record_start_key_ = FALSE;
+                OnRecord();
+            }
+        }
+    }
+    );
+
+    shortcut_controller_->register_action(settings_model_->get_shortcut_data(shortcut_action::record_stop),
+        [this]() {OnStop(); }
+    );
+
+    shortcut_controller_->register_action(settings_model_->get_shortcut_data(shortcut_action::record_cancel),
+        [this]() {OnCancel(); }
+    );
+}
 
 #ifdef _DEBUG
 void CRecorderView::AssertValid() const
@@ -406,7 +404,7 @@ std::string CRecorderView::generate_temp_filename(video_container::type containe
 
     const auto file_extention = video_container::names().at(container);
 
-    std::filesystem::path temp_video_file_path = temp_directory / fmt::format(L"{}-{}.{}",_T(TEMPFILETAGINDICATOR), start_time, file_extention);
+    std::filesystem::path temp_video_file_path = temp_directory / fmt::format(L"{}-{}.{}", TEMPFILETAGINDICATOR, start_time, file_extention);
     auto strTempVideoFilePath = temp_video_file_path.generic_wstring();
 
     // TRACE("## CRecorderView::RecordAVIThread First  Temp.Avi file=[%s]\n", strTempVideoAviFilePath.GetString()  );
@@ -422,7 +420,7 @@ std::string CRecorderView::generate_temp_filename(video_container::type containe
             if (!fileverified)
             {
                 strTempVideoFilePath = fmt::format(_T("{}\\{}-{}-{}.{}"), temp_directory,
-                    _T(TEMPFILETAGINDICATOR), start_time, rand(), file_extention);
+                    TEMPFILETAGINDICATOR, start_time, rand(), file_extention);
             }
         }
         else

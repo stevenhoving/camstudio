@@ -46,10 +46,6 @@ set(RECORDER_NEW_SOURCE
     settings_model.h
     settings_model.cpp
     settings_table.h
-    ui/listbox_grid_ui.cpp
-    ui/listbox_grid_ui.h
-    ui/listbox_base_ui.cpp
-    ui/listbox_base_ui.h
 )
 
 set(RECORDER_UTILITY_SOURCE
@@ -65,6 +61,13 @@ set(RECORDER_SETTINGS_SOURCE
     settings/video_settings.h
     settings/shortcut_settings.h
     settings/settings_enum_type.h
+)
+
+set(RECORDER_UI_SOURCE
+    ui/listbox_grid_ui.cpp
+    ui/listbox_grid_ui.h
+    ui/listbox_base_ui.cpp
+    ui/listbox_base_ui.h
 )
 
 # legacy
@@ -105,6 +108,7 @@ add_executable(CamStudioRecorder WIN32
     ${RECORDER_SOURCE}
     ${RECORDER_SETTINGS_SOURCE}
     ${RECORDER_UTILITY_SOURCE}
+    ${RECORDER_UI_SOURCE}
     ${RECORDER_RESOURCE}
 )
 
@@ -120,12 +124,16 @@ source_group(src\\utility FILES
     ${RECORDER_UTILITY_SOURCE}
 )
 
-source_group(resource FILES
-    ${RECORDER_RESOURCE}
+source_group(src\\ui FILES
+    ${RECORDER_UI_SOURCE}
 )
 
 source_group(src\\legacy FILES
     ${RECORDER_SOURCE}
+)
+
+source_group(resource FILES
+    ${RECORDER_RESOURCE}
 )
 
 target_include_directories(CamStudioRecorder
