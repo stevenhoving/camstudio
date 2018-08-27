@@ -17,6 +17,7 @@
 #include "CamCapture/cam_capture.h"
 #include "CamCapture/cam_point.h"
 #include "CamCapture/cam_size.h"
+#include "CamCapture/cam_stop_watch.h"
 #include "CamCapture/cam_gdiplus.h"
 #include "CamCapture/annotations/cam_annotation_cursor.h"
 #include "CamCapture/annotations/cam_annotation_systemtime.h"
@@ -34,6 +35,7 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
     , memory_dc_{::CreateCompatibleDC(desktop_dc_)}
     , src_rect_()
     , annotations_()
+    , stopwatch_(std::make_unique<cam::stop_watch>())
 {
     if (hwnd == nullptr)
     {
@@ -69,6 +71,8 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
 
     frame_.bitmap_info = &bitmap_info_;
     frame_.bitmap_data = bitmap_data_;
+
+    stopwatch_->time_start();
 }
 
 cam_capture_source::~cam_capture_source()
@@ -106,7 +110,7 @@ const cam_frame *cam_capture_source::get_frame()
 {
     frame_.width = captured_rect_.width();
     frame_.height = captured_rect_.height();
-    /* \todo make the bytes per pixel optional or based on the actual Bpp */
+    /* \todo make the bytes per pixel based on the actual Bpp */
     frame_.stride = src_rect_.width() * 4;
     return &frame_;
 }
@@ -137,13 +141,9 @@ void cam_capture_source::_draw_annotations(const rect<int> &capture_rect)
 
         point<int> mouse_point(pt.x, pt.y);
 
-        //fmt::print("cam_capture_source\n");
-
-
         const auto mouse_event_count = mouse_hook::get().get_mouse_events_count();
         if (mouse_event_count > 0)
         {
-            //fmt::print("mouse_event_count: {}\n", mouse_event_count);
             mouse_events_.resize(mouse_event_count);
             mouse_hook::get().get_mouse_events(&mouse_events_[0], mouse_event_count);
         }
@@ -174,7 +174,9 @@ void cam_capture_source::_draw_annotations(const rect<int> &capture_rect)
             }
         }
 
-        cam_draw_data draw_data(0.1, capture_rect, mouse_point, static_cast<cam_mouse_button::type>(mouse_status));
+        double dt = stopwatch_->time_since();
+        stopwatch_->time_start();
+        cam_draw_data draw_data(dt, capture_rect, mouse_point, static_cast<cam_mouse_button::type>(mouse_status));
 
         for (const auto &annotation : annotations_)
             annotation->draw(canvas, draw_data);

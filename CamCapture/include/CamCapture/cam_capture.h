@@ -19,9 +19,15 @@
 
 #include "cam_rect.h"
 #include "cam_annotarion.h"
+
 #include <windows.h>
 #include <memory>
 #include <vector>
+
+namespace cam
+{
+    class stop_watch;
+} // namespace cam
 
 struct cam_frame
 {
@@ -69,6 +75,7 @@ private:
 
     bool enable_annotations_{false};
     std::vector<std::unique_ptr<cam_iannotation>> annotations_;
+    std::unique_ptr<cam::stop_watch> stopwatch_;
 
     // hack...
     std::vector<MSLLHOOKSTRUCT> mouse_events_;
