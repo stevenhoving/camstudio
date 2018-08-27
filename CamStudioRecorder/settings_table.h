@@ -22,14 +22,16 @@
 #include <CamCapture/cam_rect.h>
 #include <CamCapture/cam_size.h>
 #include <cpptoml.h>
+#include <cassert>
 
  /* cpptoml table wrapper to make things easier */
 class table
 {
 public:
-    table(std::shared_ptr<cpptoml::table> table)
-        : table_(table)
+    table(std::shared_ptr<cpptoml::table> toml_table)
+        : table_(toml_table)
     {
+        assert(table_);
     }
 
     template<typename T>
@@ -79,6 +81,7 @@ public:
 
     bool contains(const std::string &key) const
     {
+        assert(table_);
         return table_->contains(key);
     }
 
