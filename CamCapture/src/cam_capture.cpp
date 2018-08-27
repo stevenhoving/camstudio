@@ -69,22 +69,6 @@ cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
 
     frame_.bitmap_info = &bitmap_info_;
     frame_.bitmap_data = bitmap_data_;
-
-
-    /* \todo make adding these annotations optional */
-    //annotations_.emplace_back(
-    //    std::make_unique<cam_annotation_cursor>(true, , cam_halo_type::circle,
-    //        cam::size<int>(100, 100), color(127, 255, 0, 0))
-    //);
-
-    //annotations_.emplace_back( std::make_unique<cam_annotation_cursor>(true, cam_halo_type::circle,
-        //mouse_action_config(), mouse_action_config(), mouse_action_config()));
-
-#if 0
-    annotations_.emplace_back(
-        std::make_unique<cam_annotation_systemtime>(point<int>(10, 10), color(255, 0, 0, 0))
-    );
-#endif
 }
 
 cam_capture_source::~cam_capture_source()
