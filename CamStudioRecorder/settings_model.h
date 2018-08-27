@@ -145,7 +145,7 @@ private:
     bool capture_mouse_drag_{false};
 
     /* cursor settings */
-    bool cursor_enabled_{false};
+    bool cursor_enabled_{true};
     bool cursor_halo_enabled_{false};
     cursor_halo_type cursor_halo_type_{cursor_halo_type::circle};
     cam::color cursor_halo_color_{0xFFFFFF80};
