@@ -79,6 +79,7 @@
 #define IDC_HALO_COLOR_LABEL            1018
 #define IDC_STATIC_SHAPE3               1019
 #define IDC_STATIC_SHAPE4               1020
+#define IDC_STATIC_SHAPE5               1021
 #define IDC_FIXEDTOPLEFT                1047
 #define IDC_SUPPORTMOUSEDRAG            1048
 #define IDC_TEMP_DIRECTORY_USER_SPECIFIED_EDIT 1056
@@ -132,7 +133,10 @@
 #define IDC_RIGHT_CLICK_COLOR_ALPHA     1323
 #define IDC_AUTO_FILENAME_GENERATION    1323
 #define IDC_TEMP_DIRECTORY_COMBOBOX     1324
+#define IDC_CLICK_MIDDLE_COLOR          1324
 #define IDC_OUTPUT_DIRECTORY_CHECKBOX   1325
+#define IDC_CURSOR_MIDDLE_CLICK_COLOR_EXAMPLE 1325
+#define IDC_MIDDLE_CLICK_COLOR_ALPHA    1326
 #define IDC_OUTPUT_DIRECTORY_LABEL      1327
 #define IDC_OUTPUT_DIRECTORY_USER_SPECIFIED_LABEL 1328
 #define IDC_OUTPUT_DIRECTORY_USER_SPECIFIED_EDIT 1329
@@ -147,6 +151,7 @@
 #define IDC_SHORTCUT_ENABLED            1349
 #define IDC_CAMSTUDIO_LINK              1352
 #define IDC_GITHUB_LINK                 1353
+#define IDC_SHOW_RINGS                       1354
 #define IDD_ABOUTBOX                    5100
 #define IDD_VIDEO_SETTINGS_UI           5106
 #define IDR_CONTEXTEDITOBJ              5130
@@ -408,7 +413,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        251
 #define _APS_NEXT_COMMAND_VALUE         32955
-#define _APS_NEXT_CONTROL_VALUE         1354
+#define _APS_NEXT_CONTROL_VALUE         1355
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

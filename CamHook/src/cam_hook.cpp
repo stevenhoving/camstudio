@@ -69,9 +69,16 @@ LRESULT CALLBACK mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lPara
     {
         switch(wParam)
         {
+        case WM_MOUSEWHEEL:
+            [[fallthrough]];
+        case WM_MOUSEHWHEEL:
+            [[fallthrough]];
         case WM_LBUTTONDOWN:
+            [[fallthrough]];
         case WM_LBUTTONUP:
+            [[fallthrough]];
         case WM_RBUTTONDOWN:
+            [[fallthrough]];
         case WM_RBUTTONUP:
         {
             MSLLHOOKSTRUCT mouse_event = *reinterpret_cast<MSLLHOOKSTRUCT *>(lParam);
@@ -86,8 +93,6 @@ LRESULT CALLBACK mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lPara
 
         // ignore
         case WM_MOUSEMOVE:
-        case WM_MOUSEWHEEL:
-        case WM_MOUSEHWHEEL:
             break;
         default:
             //fmt::print("unhandled mouse hook event: {}\n", static_cast<unsigned int>(wParam));

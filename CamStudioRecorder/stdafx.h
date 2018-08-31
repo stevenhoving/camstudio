@@ -47,6 +47,7 @@
 #include <CamCapture/cam_gdiplus.h>
 
 #include <afxcontrolbars.h> // MFC support for ribbons and control bars
+#include <afxdialogex.h>
 
 #include "resource.h"
 //#include <localization/localization.h>

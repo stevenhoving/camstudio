@@ -17,7 +17,6 @@
 
 #include "stdafx.h"
 #include "application_settings_ui.h"
-#include "afxdialogex.h"
 #include <filesystem>
 
 IMPLEMENT_DYNAMIC(application_settings_ui, CDialogEx)
@@ -25,7 +24,6 @@ IMPLEMENT_DYNAMIC(application_settings_ui, CDialogEx)
 application_settings_ui::application_settings_ui(CWnd* pParent /*=nullptr*/)
     : CDialogEx(IDD_APPLICATION_SETTINGS_UI, pParent)
 {
-
 }
 
 application_settings_ui::application_settings_ui(CWnd* pParent, settings_model &model)

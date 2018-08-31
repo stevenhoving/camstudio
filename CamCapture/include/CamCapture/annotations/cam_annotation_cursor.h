@@ -20,6 +20,7 @@
 #include "CamCapture/cam_annotarion.h"
 #include "CamCapture/cam_size.h"
 #include "CamCapture/cam_color.h"
+#include <vector>
 
 enum class cam_halo_type
 {
@@ -32,36 +33,76 @@ enum class cam_halo_type
 struct mouse_action_config
 {
     bool enabled{false};
-    cam::size<int> size{ 0,0 };
+    cam::size<int> size{ 0, 0 };
     cam::color color{};
 };
+
+
+class cam_mouse_ring_state
+{
+public:
+    constexpr cam_mouse_ring_state(const point<int> &ring_center, const cam_mouse_button::type ring_type) noexcept
+        : ring_center_(ring_center)
+        , ring_type_(ring_type_)
+    {
+    }
+
+    point<int> ring_center_;
+    double lifetime_{ 0.0 };
+    cam_mouse_button::type ring_type_;
+};
+
+constexpr bool operator == (const cam_mouse_ring_state &lhs, const cam_mouse_ring_state &rhs)
+{
+    return lhs.lifetime_ == rhs.lifetime_
+        && lhs.ring_center_ == rhs.ring_center_
+        && lhs.ring_type_ == rhs.ring_type_;
+}
 
 class cam_annotation_cursor : public cam_iannotation
 {
 public:
     cam_annotation_cursor() noexcept = default;
-    cam_annotation_cursor(bool cursor_enabled, const cam_halo_type halo_type,
+    cam_annotation_cursor(
+        const bool cursor_enabled,
+        const bool ring_enabled,
+        const cam_halo_type halo_type,
         const mouse_action_config &halo_config,
         const mouse_action_config &left_click_config,
         const mouse_action_config &right_click_config) noexcept;
+
     ~cam_annotation_cursor() override;
 
     void draw(Gdiplus::Graphics &canvas, const cam_draw_data &draw_data) override;
 
-    void set_cursor_enabled(bool enabled) {cursor_enabled_ = enabled;}
-    void set_halo_type(cam_halo_type halo_type) {halo_type_ = halo_type;}
-    void set_halo_config(const mouse_action_config &config) {halo_config_ = config;}
-    void set_left_click_config(const mouse_action_config &config) {left_click_config_ = config;}
-    void set_right_click_config(const mouse_action_config &config) {right_click_config_ = config;}
+    void set_cursor_enabled(const bool enabled) noexcept;
+    void set_cursor_ring_enabled(const bool enabled);
+    void set_halo_type(const cam_halo_type halo_type) noexcept;
+    void set_halo_config(const mouse_action_config &config) noexcept;
+    void set_left_click_config(const mouse_action_config &config) noexcept;
+    void set_right_click_config(const mouse_action_config &config) noexcept;
+    void set_middle_click_config(const mouse_action_config &config) noexcept;
 protected:
-    void _draw_cursor(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect, const point<int> &mouse_pos);
-    void _draw_halo(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect, const point<int> &mouse_pos, const mouse_action_config &halo_config);
+    void _draw_cursor(Gdiplus::Graphics &canvas, const rect<int> &canvas_rect, const point<int> &mouse_pos);
+    void _draw_halo(Gdiplus::Graphics &canvas, const rect<int> &canvas_rect, const point<int> &mouse_pos, const mouse_action_config &halo_config);
+    void _draw_rings(Gdiplus::Graphics &canvas, const rect<int> &canvas_rect, const double frame_delta);
+    bool _draw_ring(Gdiplus::Graphics &canvas, const rect<int> &canvas_rect, cam_mouse_ring_state &ring, const double frame_delta);
 private:
+    // 'cached' config fields
     bool cursor_enabled_{false};
     cam_halo_type halo_type_{cam_halo_type::circle};
     mouse_action_config halo_config_{};
     mouse_action_config left_click_config_{};
     mouse_action_config right_click_config_{};
+    mouse_action_config middle_click_config_{};
 
+    bool ring_enabled_{false};
+    int ring_threshold_{100};
+    int ring_size_{20};
+    int ring_speed_{5};
+    double ring_width_{1.5};
+    std::vector<cam_mouse_ring_state> queued_rings_;
+
+    // draw 'runtime' settings.
     unsigned int mouse_button_state_{0};
 };

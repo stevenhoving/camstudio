@@ -21,19 +21,19 @@ template<typename T>
 class point
 {
 public:
-    point() noexcept = default;
-    point(const T x, const T y) noexcept
+    constexpr point() noexcept = default;
+    constexpr point(const T x, const T y) noexcept
         : x_(x)
         , y_(y)
     {
     }
 
-    T x() const noexcept
+    constexpr T x() const noexcept
     {
         return x_;
     }
 
-    T y() const noexcept
+    constexpr T y() const noexcept
     {
         return y_;
     }
@@ -42,3 +42,9 @@ private:
     T x_{ static_cast<T>(0) };
     T y_{ static_cast<T>(0) };
 };
+
+template<typename T>
+constexpr bool operator == (const point<T> &lhs, const point<T> &rhs)
+{
+    return lhs.x() == rhs.x() && lhs.y() == rhs.y();
+}

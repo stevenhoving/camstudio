@@ -19,10 +19,9 @@
 
 #include "settings/application_settings.h"
 #include "settings/shortcut_settings.h"
+#include "utility/make_array.h"
 #include <CamCapture/cam_rect.h>
 #include <CamCapture/cam_color.h>
-#include <CamLib/CamFile.h>
-#include "utility/make_array.h"
 #include <map>
 
 enum class capture_type
@@ -43,9 +42,6 @@ enum class cursor_halo_type
 };
 
 class table;
-
-
-
 
 namespace cpptoml
 {
@@ -72,6 +68,10 @@ public:
     /* cursor */
     void set_cursor_enabled(bool enabled);
     auto get_cursor_enabled() const -> bool;
+
+    void set_cursor_ring_enabled(bool enabled);
+    bool get_cursor_ring_enabled() const;
+
     void set_cursor_halo_enabled(bool enabled);
     bool get_cursor_halo_enabled() const;
     void set_cursor_halo_type(cursor_halo_type halo_type);
@@ -86,6 +86,8 @@ public:
     auto get_cursor_click_left_color() const -> cam::color;
     void set_cursor_click_right_color(cam::color color);
     auto get_cursor_click_right_color() const -> cam::color;
+    void set_cursor_click_middle_color(cam::color color);
+    auto get_cursor_click_middle_color() const->cam::color;
     void set_cursor_ring_threshold(int threshold);
     auto get_cursor_ring_threshold() const -> int;
     void set_cursor_ring_size(int size);
@@ -151,9 +153,11 @@ private:
     cam::color cursor_halo_color_{0xFFFFFF80};
     int cursor_halo_size_{100};
     bool cursor_click_enabled_{false};
-    cam::color cursor_click_left_color_{0xa0ff0000};
-    cam::color cursor_click_right_color_{0xa00000ff};
+    cam::color cursor_click_left_color_{0xa0, 0xff, 0, 0};
+    cam::color cursor_click_right_color_{0xa0, 0, 0, 0xff};
+    cam::color cursor_click_middle_color_{0xa0, 0, 0xff, 0};
     // currently not used
+    bool cursor_ring_enabled_{false};
     int cursor_ring_threshold_{1000};
     int cursor_ring_size_{20};
     double cursor_ring_width_{1.5};

@@ -23,19 +23,19 @@ template<typename T>
 class size
 {
 public:
-    size() noexcept = default;
-    size(const T width, const T height) noexcept
+    constexpr size() noexcept = default;
+    constexpr size(const T width, const T height) noexcept
         : width_(width)
         , height_(height)
     {
     }
 
-    T width() const noexcept
+    constexpr T width() const noexcept
     {
         return width_;
     }
 
-    T height() const noexcept
+    constexpr T height() const noexcept
     {
         return height_;
     }
@@ -44,4 +44,20 @@ private:
     T width_{ static_cast<T>(0) };
     T height_{ static_cast<T>(0) };
 };
+
+// Y must be int/float
+// \todo do float rounding?
+template<typename T, typename Y>
+constexpr auto operator * (const size<T> &lhs, const Y rhs) -> size<T>
+{
+    return {static_cast<T>(lhs.width() * rhs), static_cast<T>(lhs.height() * rhs)};
+}
+
+template<typename T>
+constexpr bool operator == (const size<T> &lhs, const size<T> &rhs)
+{
+    return lhs.width() == rhs.width()
+        && lhs.height() == rhs.height();
+}
+
 } // namespace cam

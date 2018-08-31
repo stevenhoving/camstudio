@@ -25,6 +25,8 @@ set(RECORDER_NEW_SOURCE
     mouse_capture_ui.cpp
     cursor_settings_ui.h
     cursor_settings_ui.cpp
+    cursor_settings_preview.h
+    cursor_settings_preview.cpp
     shortcut_settings_ui.h
     shortcut_settings_ui.cpp
     shortcut_controller.h

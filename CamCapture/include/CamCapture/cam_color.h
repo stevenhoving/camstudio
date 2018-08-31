@@ -24,7 +24,7 @@ namespace cam
 class color
 {
 public:
-    color() noexcept = default;
+    constexpr color() noexcept = default;
     constexpr color(const uint32_t argb) noexcept
         : color((argb >> 24) & 0xFF, (argb >> 16) & 0xFF, (argb >> 8) & 0xFF, (argb >> 0) & 0xFF)
     {
@@ -38,7 +38,12 @@ public:
     {
     }
 
-    operator uint32_t()
+    constexpr color(const uint8_t r, const uint8_t g, const uint8_t b) noexcept
+        : color(0xFF, r, g, b)
+    {
+    }
+
+    constexpr operator uint32_t()
     {
         return static_cast<uint32_t>(a_) << 24
             | static_cast<uint32_t>(r_) << 16
@@ -50,4 +55,14 @@ public:
     uint8_t g_{ 0 };
     uint8_t b_{ 0 };
 };
+
+namespace colors
+{
+    static constexpr color red{0xff, 0xff, 0, 0};
+    static constexpr color green{0xff, 0, 0xff, 0};
+    static constexpr color blue{0xff, 0, 0, 0xff};
+
+    static constexpr color black{ 0xff, 0, 0, 0 };
+    static constexpr color white{ 0xff, 0xff, 0xff, 0xff };
+} // namespace colors
 } // namespace cam

@@ -30,24 +30,26 @@ public:
         none = 0,
         left_button_down = 1 << 0,
         right_button_down = 1 << 1,
-        left_button_up = 1 << 2,
-        right_button_up = 1 << 3
+        middle_button_down = 1 << 2,
+        left_button_up = 1 << 3,
+        right_button_up = 1 << 4,
+        middle_button_up = 1 << 5
     };
 };
 
 class cam_draw_data
 {
 public:
-    cam_draw_data(const double frame_delta, const rect<int> &canvast_rect, const point<int> &mouse_pos, cam_mouse_button::type mouse_button_state)
+    cam_draw_data(const double frame_delta, const rect<int> &canvas_rect, const point<int> &mouse_pos, cam_mouse_button::type mouse_button_state)
         : frame_delta_(frame_delta)
-        , canvast_rect_(canvast_rect)
+        , canvas_rect_(canvas_rect)
         , mouse_pos_(mouse_pos)
         , mouse_button_state_(mouse_button_state)
     {
     }
 
     double frame_delta_;
-    const rect<int> &canvast_rect_;
+    const rect<int> &canvas_rect_;
     const point<int> &mouse_pos_;
     cam_mouse_button::type mouse_button_state_;
 };

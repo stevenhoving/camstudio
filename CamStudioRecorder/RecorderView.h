@@ -2,9 +2,9 @@
 
 #include "capture_thread.h"
 
+#include <filesystem>
 #include <memory>
 #include <string>
-
 
 
 class CRecorderDoc;

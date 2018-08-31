@@ -280,7 +280,7 @@ BOOL CBitmapEx::Save(const TCHAR *filename, const TCHAR *DialogTitle)
     // Fill in the fields of the file header
     BITMAPFILEHEADER hdr;
     hdr.bfType = (static_cast<WORD>('M' << 8) | 'B'); // "BM"
-    hdr.bfSize = GlobalSize(hdib) + sizeof(BITMAPFILEHEADER);
+    hdr.bfSize = static_cast<DWORD>(GlobalSize(hdib) + sizeof(BITMAPFILEHEADER));
     hdr.bfReserved1 = 0;
     hdr.bfReserved2 = 0;
     hdr.bfOffBits = static_cast<DWORD>(sizeof(BITMAPFILEHEADER)) + lpbi->biSize + PALETTESIZE((LPSTR)lpbi);
@@ -289,7 +289,7 @@ BOOL CBitmapEx::Save(const TCHAR *filename, const TCHAR *DialogTitle)
     TRY
     {
         file.Write(reinterpret_cast<LPSTR>(&hdr), sizeof(BITMAPFILEHEADER));
-        file.Write(reinterpret_cast<LPSTR>(lpbi), GlobalSize(hdib));
+        file.Write(reinterpret_cast<LPSTR>(lpbi), static_cast<UINT>(GlobalSize(hdib)));
     }
     CATCH(CFileException, e)
     {

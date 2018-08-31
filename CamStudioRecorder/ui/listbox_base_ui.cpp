@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "listbox_base_ui.h"
 #include <algorithm>
+#include <cassert>
 
 IMPLEMENT_DYNAMIC(listbox_base, CStatic)
 BEGIN_MESSAGE_MAP(listbox_base, CStatic)

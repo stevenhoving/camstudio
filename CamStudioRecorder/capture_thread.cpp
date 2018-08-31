@@ -204,6 +204,7 @@ void capture_thread::run()
     capture_source_->add_annotation(
         std::make_unique<cam_annotation_cursor>(
             settings.get_cursor_enabled(),
+            settings.get_cursor_ring_enabled(),
             static_cast<cam_halo_type>(capture_settings_.settings.get_cursor_halo_type()),
             mouse_action_config{ settings.get_cursor_halo_enabled(), halo_size, settings.get_cursor_halo_color() },
             mouse_action_config{ settings.get_cursor_click_enabled(), halo_size, settings.get_cursor_click_left_color() },

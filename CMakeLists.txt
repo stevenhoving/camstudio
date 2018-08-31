@@ -27,8 +27,9 @@ list(APPEND CMAKE_MODULE_PATH
   "${CMAKE_SOURCE_DIR}/dep/cmake_utility"
 )
 
-if(NOT DEFINED MSVC OR MSVC_VERSION LESS 1914)
-  message(FATAL_ERROR "camstudio currently only builds with visual studio 2017 15.7 for now.")
+
+if(NOT DEFINED MSVC OR MSVC_VERSION LESS 1915)
+  message(FATAL_ERROR "camstudio currently only builds with visual studio 2017 15.8 for now.")
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
@@ -37,8 +38,8 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
 
 #add_compile_options(/WX) # treat warnings as errors.
 add_compile_options(/permissive-) # vs conformance mode.
-add_compile_options(/Zc:twoPhase-) # 2 phase name lookup.
 add_compile_options(/Zc:rvalueCast)
+add_compile_options(/Zc:ternary)
 
 
 ###############################################################################

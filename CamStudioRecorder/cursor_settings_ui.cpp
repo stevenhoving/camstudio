@@ -24,10 +24,33 @@
 #include <CamCapture/cam_color.h>
 #include <CamCapture/cam_rect.h>
 #include <CamCapture/cam_gdiplus.h>
+#include <CamCapture/cam_stop_watch.h>
 #include <fmt/printf.h>
 
-
 IMPLEMENT_DYNAMIC(cursor_settings_ui, CDialogEx)
+
+#if 0
+#define ON_BN_CLICKED(id, memberFxn) \
+	ON_CONTROL(BN_CLICKED, id, memberFxn)
+#define ON_BN_DOUBLECLICKED(id, memberFxn) \
+	ON_CONTROL(BN_DOUBLECLICKED, id, memberFxn)
+#endif
+
+BEGIN_MESSAGE_MAP(cursor_settings_ui, CDialogEx)
+    ON_BN_CLICKED(IDC_SHOW_CURSOR, &cursor_settings_ui::OnBnClickedShowCursor)
+    ON_BN_CLICKED(IDC_SHOW_RINGS, &cursor_settings_ui::OnBnClickedShowRings)
+    ON_BN_CLICKED(IDC_HALO_COLOR, &cursor_settings_ui::OnBnClickedPickHaloColor)
+    ON_BN_CLICKED(IDC_CLICK_LEFT_COLOR, &cursor_settings_ui::OnBnClickedPickClickLeftColor)
+    ON_BN_CLICKED(IDC_CLICK_RIGHT_COLOR, &cursor_settings_ui::OnBnClickedPickClickRightColor)
+    ON_BN_CLICKED(IDC_CLICK_MIDDLE_COLOR, &cursor_settings_ui::OnBnClickedPickClickMiddleColor)
+    ON_BN_CLICKED(IDC_SHOW_HALO, &cursor_settings_ui::OnBnClickedShowHalo)
+    ON_BN_CLICKED(IDC_SHOW_MOUSE_CLICKS, &cursor_settings_ui::OnBnClickedShowMouseClicks)
+    ON_CBN_SELCHANGE(IDC_HALO_SHAPE, &cursor_settings_ui::OnCbnSelchangeHaloShape)
+    ON_WM_HSCROLL()
+    ON_WM_CTLCOLOR()
+    ON_WM_TIMER()
+END_MESSAGE_MAP()
+
 
 cursor_settings_ui::cursor_settings_ui(CWnd* pParent /*=nullptr*/)
     : CDialogEx(IDD_CURSOR_SETTINGS_UI, pParent)
@@ -59,6 +82,7 @@ BOOL cursor_settings_ui::OnInitDialog()
 
     annotation_ = std::make_unique<cam_annotation_cursor>(
         settings_->get_cursor_enabled(),
+        settings_->get_cursor_ring_enabled(),
         static_cast<cam_halo_type>(settings_->get_cursor_halo_type()),
         //mouse_action_config
         mouse_action_config{ settings_->get_cursor_halo_enabled(), halo_size, settings_->get_cursor_halo_color() },
@@ -78,6 +102,17 @@ BOOL cursor_settings_ui::OnInitDialog()
     show_cursor_checkbox_.SetCheck(settings_->get_cursor_enabled());
     show_cursor_mouse_halo_checkbox_.SetCheck(settings_->get_cursor_halo_enabled());
     show_cursor_mouse_click_checkbox_.SetCheck(settings_->get_cursor_click_enabled());
+    show_cursor_rings_checkbox_.SetCheck(settings_->get_cursor_ring_enabled());
+
+    cursor_preview_.set_on_left_down([this](){mouse_button_state_ |= cam_mouse_button::left_button_down;});
+    cursor_preview_.set_on_right_down([this](){mouse_button_state_ |= cam_mouse_button::right_button_down;});
+    cursor_preview_.set_on_middle_down([this](){mouse_button_state_ |= cam_mouse_button::middle_button_down;});
+    cursor_preview_.set_on_left_up([this]() {mouse_button_state_ |= cam_mouse_button::left_button_up; });
+    cursor_preview_.set_on_right_up([this]() {mouse_button_state_ |= cam_mouse_button::right_button_up; });
+    cursor_preview_.set_on_middle_up([this]() {mouse_button_state_ |= cam_mouse_button::middle_button_up; });
+
+    // update preview
+    SetTimer(0, 50, nullptr);
 
     return TRUE;
 }
@@ -93,10 +128,11 @@ void cursor_settings_ui::_set_cursor_halo_size_label(const int halo_size)
     _draw_cursor_preview(cam_mouse_button::none);
 }
 
-void cursor_settings_ui::_draw_cursor_preview(cam_mouse_button::type mouse_buttons_state)
+void cursor_settings_ui::_draw_cursor_preview(cam_mouse_button::type mouse_buttons_state, double dt /*= 0.1*/)
 {
     // force update annotation settings
     annotation_->set_cursor_enabled(settings_->get_cursor_enabled());
+    annotation_->set_cursor_ring_enabled(settings_->get_cursor_ring_enabled());
     annotation_->set_halo_type(static_cast<cam_halo_type>(settings_->get_cursor_halo_type()));
 
     const auto halo_size = cam::size(
@@ -116,6 +152,10 @@ void cursor_settings_ui::_draw_cursor_preview(cam_mouse_button::type mouse_butto
         { settings_->get_cursor_click_enabled(), halo_size, settings_->get_cursor_click_right_color() }
     );
 
+    annotation_->set_middle_click_config(
+        { settings_->get_cursor_click_enabled(), halo_size, settings_->get_cursor_click_middle_color() }
+    );
+
     CRect preview_rect;
     cursor_preview_.GetWindowRect(&preview_rect);
 
@@ -123,17 +163,17 @@ void cursor_settings_ui::_draw_cursor_preview(cam_mouse_button::type mouse_butto
 
     Gdiplus::Graphics canvas(&image);
     canvas.SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);
+    canvas.SetCompositingMode(Gdiplus::CompositingMode::CompositingModeSourceOver);
 
     // draw a raster so we can see what has alpha and what is not...
     //Gdiplus::Pen pen(Gdiplus::Color::Gray, 1);
     //const auto raster_line_count = 5;
     //preview_rect.Width() / raster_line_count;
 
-
     point<int> mouse_point(preview_rect.Width()/2, preview_rect.Height()/2);
 
     rect<int> prev_rect(0, 0, preview_rect.Width(), preview_rect.Height());
-    cam_draw_data draw_data(0.1, prev_rect, mouse_point, mouse_buttons_state);
+    cam_draw_data draw_data(dt, prev_rect, mouse_point, mouse_buttons_state);
 
     annotation_->draw(canvas, draw_data);
 
@@ -149,28 +189,19 @@ void cursor_settings_ui::_draw_cursor_preview(cam_mouse_button::type mouse_butto
 void cursor_settings_ui::DoDataExchange(CDataExchange* pDX)
 {
     CDialogEx::DoDataExchange(pDX);
+
+    DDX_Control(pDX, IDC_SHOW_CURSOR, show_cursor_checkbox_);
+    DDX_Control(pDX, IDC_SHOW_RINGS, show_cursor_rings_checkbox_);
+    DDX_Control(pDX, IDC_SHOW_HALO, show_cursor_mouse_halo_checkbox_);
+    DDX_Control(pDX, IDC_SHOW_MOUSE_CLICKS, show_cursor_mouse_click_checkbox_);
+
     DDX_Control(pDX, IDC_HALO_SIZE, halo_size_ctrl_);
     DDX_Control(pDX, IDC_HALO_SHAPE, halo_shape_ctrl_);
-    DDX_Control(pDX, IDC_SHOW_CURSOR, show_cursor_checkbox_);
-    DDX_Control(pDX, IDC_SHOW_HALO, show_cursor_mouse_halo_checkbox_);
+
     DDX_Control(pDX, IDC_CURSOR_HALO_COLOR_EXAMPLE, cursor_halo_color_example_);
     DDX_Control(pDX, IDC_CURSOR_SIZE_LABEL, cursor_halo_size_label_);
-    DDX_Control(pDX, IDC_SHOW_MOUSE_CLICKS, show_cursor_mouse_click_checkbox_);
     DDX_Control(pDX, IDC_CURSOR_PREVIEW, cursor_preview_);
 }
-
-BEGIN_MESSAGE_MAP(cursor_settings_ui, CDialogEx)
-    ON_BN_CLICKED(IDC_SHOW_CURSOR, &cursor_settings_ui::OnBnClickedShowCursor)
-    ON_BN_CLICKED(IDC_HALO_COLOR, &cursor_settings_ui::OnBnClickedPickHaloColor)
-    ON_WM_CTLCOLOR()
-    ON_BN_CLICKED(IDC_CLICK_LEFT_COLOR, &cursor_settings_ui::OnBnClickedPickClickLeftColor)
-    ON_BN_CLICKED(IDC_CLICK_RIGHT_COLOR, &cursor_settings_ui::OnBnClickedPickClickRightColor)
-    ON_WM_HSCROLL()
-    ON_BN_CLICKED(IDC_SHOW_HALO, &cursor_settings_ui::OnBnClickedShowHalo)
-    ON_BN_CLICKED(IDC_SHOW_MOUSE_CLICKS, &cursor_settings_ui::OnBnClickedShowMouseClicks)
-    ON_CBN_SELCHANGE(IDC_HALO_SHAPE, &cursor_settings_ui::OnCbnSelchangeHaloShape)
-    ON_STN_CLICKED(IDC_CURSOR_PREVIEW, &cursor_settings_ui::OnStnClickedCursorPreview)
-END_MESSAGE_MAP()
 
 void cursor_settings_ui::OnCbnSelchangeHaloShape()
 {
@@ -187,6 +218,14 @@ void cursor_settings_ui::OnBnClickedShowCursor()
     _draw_cursor_preview(cam_mouse_button::none);
 }
 
+void cursor_settings_ui::OnBnClickedShowRings()
+{
+    fmt::print("show rings\n");
+    const auto checked = show_cursor_rings_checkbox_.GetCheck() != 0;
+    settings_->set_cursor_ring_enabled(checked);
+    //mouse_button_state_ |= cam_mouse_button::left_button_down;
+}
+
 void cursor_settings_ui::OnBnClickedShowHalo()
 {
     const auto checked = show_cursor_mouse_halo_checkbox_.GetCheck() != 0;
@@ -201,11 +240,6 @@ void cursor_settings_ui::OnBnClickedShowMouseClicks()
     _draw_cursor_preview(cam_mouse_button::none);
 }
 
-void cursor_settings_ui::OnStnClickedCursorPreview()
-{
-    _draw_cursor_preview(cam_mouse_button::left_button_down);
-}
-
 void cursor_settings_ui::OnBnClickedPickHaloColor()
 {
     const auto halo_color_config = settings_->get_cursor_halo_color();
@@ -213,7 +247,7 @@ void cursor_settings_ui::OnBnClickedPickHaloColor()
     CColorDialog color_dialog(halo_color, CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT);
     if (color_dialog.DoModal() == IDOK)
     {
-        auto color = color_dialog.GetColor();
+        const auto color = color_dialog.GetColor();
         settings_->set_cursor_halo_color(cam::color(127, GetRValue(color), GetGValue(color), GetBValue(color)));
         _draw_cursor_preview(cam_mouse_button::none);
         Invalidate();
@@ -226,9 +260,8 @@ void cursor_settings_ui::OnBnClickedPickClickLeftColor()
     CColorDialog color_dialog(halo_color, CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT);
     if (color_dialog.DoModal() == IDOK)
     {
-        auto color = color_dialog.GetColor();
+        const auto color = color_dialog.GetColor();
         settings_->set_cursor_click_left_color(cam::color(127, GetRValue(color), GetGValue(color), GetBValue(color)));
-        _draw_cursor_preview(cam_mouse_button::none);
         Invalidate();
     }
 }
@@ -239,9 +272,20 @@ void cursor_settings_ui::OnBnClickedPickClickRightColor()
     CColorDialog color_dialog(halo_color, CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT);
     if (color_dialog.DoModal() == IDOK)
     {
-        auto color = color_dialog.GetColor();
+        const auto color = color_dialog.GetColor();
         settings_->set_cursor_click_right_color(cam::color(127, GetRValue(color), GetGValue(color), GetBValue(color)));
-        _draw_cursor_preview(cam_mouse_button::none);
+        Invalidate();
+    }
+}
+
+void cursor_settings_ui::OnBnClickedPickClickMiddleColor()
+{
+    const auto halo_color = static_cast<COLORREF>(settings_->get_cursor_click_middle_color());
+    CColorDialog color_dialog(halo_color, CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT);
+    if (color_dialog.DoModal() == IDOK)
+    {
+        const auto color = color_dialog.GetColor();
+        settings_->set_cursor_click_middle_color(cam::color(127, GetRValue(color), GetGValue(color), GetBValue(color)));
         Invalidate();
     }
 }
@@ -269,6 +313,11 @@ HBRUSH cursor_settings_ui::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
                 const auto color = settings_->get_cursor_click_right_color();
                 return (HBRUSH)CreateSolidBrush(RGB(color.r_, color.g_, color.b_));
             }
+            case IDC_CURSOR_MIDDLE_CLICK_COLOR_EXAMPLE:
+            {
+                const auto color = settings_->get_cursor_click_middle_color();
+                return (HBRUSH)CreateSolidBrush(RGB(color.r_, color.g_, color.b_));
+            }
         }
     }
 
@@ -290,3 +339,16 @@ void cursor_settings_ui::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollB
 
     CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
 }
+
+void cursor_settings_ui::OnTimer(UINT_PTR nIDEvent)
+{
+    assert(nIDEvent == 0);
+    static auto stopwatch = [](){cam::stop_watch temp; temp.time_start(); return temp;}();
+    const auto dt = stopwatch.time_since();
+    _draw_cursor_preview(static_cast<cam_mouse_button::type>(mouse_button_state_), dt);
+    stopwatch.time_start();
+    mouse_button_state_ = 0;
+}
+
+
+

@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "listbox_grid_ui.h"
+#include <cassert>
 
 constexpr auto list_id = 1;
 

@@ -20,7 +20,9 @@
 #include <fmt/printf.h>
 #include <windows.h>
 
-cam_annotation_cursor::cam_annotation_cursor(bool cursor_enabled, const cam_halo_type halo_type,
+cam_annotation_cursor::cam_annotation_cursor(const bool cursor_enabled,
+                                             const bool ring_enabled,
+                                             const cam_halo_type halo_type,
                                              const mouse_action_config &halo_config,
                                              const mouse_action_config &left_click_config,
                                              const mouse_action_config &right_click_config) noexcept
@@ -29,6 +31,7 @@ cam_annotation_cursor::cam_annotation_cursor(bool cursor_enabled, const cam_halo
     , halo_config_(halo_config)
     , left_click_config_(left_click_config)
     , right_click_config_(right_click_config)
+    , ring_enabled_(ring_enabled)
 {
 }
 
@@ -36,33 +39,120 @@ cam_annotation_cursor::~cam_annotation_cursor() = default;
 
 void cam_annotation_cursor::draw(Gdiplus::Graphics &canvas, const cam_draw_data &draw_data)
 {
-    if (draw_data.mouse_button_state_ & cam_mouse_button::left_button_down)
-        mouse_button_state_ |= cam_mouse_button::left_button_down;
+    const auto &rect = draw_data.canvas_rect_;
+    const auto &position = draw_data.mouse_pos_;
 
-    if (draw_data.mouse_button_state_ & cam_mouse_button::right_button_down)
+    if ((draw_data.mouse_button_state_ & cam_mouse_button::left_button_down) != 0)
+    {
+        mouse_button_state_ |= cam_mouse_button::left_button_down;
+        if (ring_enabled_)
+        {
+            queued_rings_.emplace_back(
+                cam_mouse_ring_state(position, cam_mouse_button::left_button_down)
+            );
+        }
+    }
+
+    if ((draw_data.mouse_button_state_ & cam_mouse_button::right_button_down) != 0)
+    {
         mouse_button_state_ |= cam_mouse_button::right_button_down;
+        if (ring_enabled_)
+        {
+            queued_rings_.emplace_back(
+                cam_mouse_ring_state(position, cam_mouse_button::right_button_down)
+            );
+        }
+    }
+
+    if ((draw_data.mouse_button_state_ & cam_mouse_button::middle_button_down) != 0)
+    {
+        mouse_button_state_ |= cam_mouse_button::middle_button_down;
+        if (ring_enabled_)
+        {
+            queued_rings_.emplace_back(
+                cam_mouse_ring_state(position, cam_mouse_button::middle_button_down)
+            );
+        }
+    }
 
     /* only draw the normal halo if we don't have a mouse click to draw */
-    if (halo_config_.enabled && mouse_button_state_ == 0)
-        _draw_halo(canvas, draw_data.canvast_rect_, draw_data.mouse_pos_, halo_config_);
+    if (halo_config_.enabled)
+    {
+        const auto mouse_click_enabled = left_click_config_.enabled
+            || right_click_config_.enabled
+            || middle_click_config_.enabled;
+
+        if (mouse_click_enabled && mouse_button_state_ == 0)
+            _draw_halo(canvas, rect, position, halo_config_);
+        else if (mouse_click_enabled == false)
+            _draw_halo(canvas, rect, position, halo_config_);
+    }
 
     if (left_click_config_.enabled && (mouse_button_state_ & cam_mouse_button::left_button_down) != 0)
-        _draw_halo(canvas, draw_data.canvast_rect_, draw_data.mouse_pos_, left_click_config_);
+        _draw_halo(canvas, rect, position, left_click_config_);
 
     if (right_click_config_.enabled && (mouse_button_state_ & cam_mouse_button::right_button_down) != 0)
-        _draw_halo(canvas, draw_data.canvast_rect_, draw_data.mouse_pos_, right_click_config_);
+        _draw_halo(canvas, rect, position, right_click_config_);
+
+    if (middle_click_config_.enabled && (mouse_button_state_ & cam_mouse_button::middle_button_down) != 0)
+        _draw_halo(canvas, rect, position, middle_click_config_);
+
+    if (ring_enabled_ && !queued_rings_.empty())
+        _draw_rings(canvas, rect, draw_data.frame_delta_);
 
     if (cursor_enabled_)
-        _draw_cursor(canvas, draw_data.canvast_rect_, draw_data.mouse_pos_);
+        _draw_cursor(canvas, rect, position);
 
     if (draw_data.mouse_button_state_ & cam_mouse_button::left_button_up)
         mouse_button_state_ &= ~cam_mouse_button::left_button_down;
 
     if (draw_data.mouse_button_state_ & cam_mouse_button::right_button_up)
         mouse_button_state_ &= ~cam_mouse_button::right_button_down;
+
+    if (draw_data.mouse_button_state_ & cam_mouse_button::middle_button_up)
+        mouse_button_state_ &= ~cam_mouse_button::middle_button_down;
 }
 
-void cam_annotation_cursor::_draw_cursor(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect,
+void cam_annotation_cursor::set_cursor_enabled(const bool enabled) noexcept
+{
+    cursor_enabled_ = enabled;
+}
+
+void cam_annotation_cursor::set_cursor_ring_enabled(const bool enabled)
+{
+    if (enabled == ring_enabled_)
+        return;
+
+    queued_rings_.clear();
+    ring_enabled_ = enabled;
+}
+
+void cam_annotation_cursor::set_halo_type(const cam_halo_type halo_type) noexcept
+{
+    halo_type_ = halo_type;
+}
+
+void cam_annotation_cursor::set_halo_config(const mouse_action_config &config) noexcept
+{
+    halo_config_ = config;
+}
+
+void cam_annotation_cursor::set_left_click_config(const mouse_action_config &config) noexcept
+{
+    left_click_config_ = config;
+}
+
+void cam_annotation_cursor::set_right_click_config(const mouse_action_config &config) noexcept
+{
+    right_click_config_ = config;
+}
+
+void cam_annotation_cursor::set_middle_click_config(const mouse_action_config &config) noexcept
+{
+    middle_click_config_ = config;
+}
+
+void cam_annotation_cursor::_draw_cursor(Gdiplus::Graphics &canvas, const rect<int> &canvas_rect,
                                          const point<int> &mouse_pos)
 {
     CURSORINFO cursor_info = {};
@@ -83,8 +173,8 @@ void cam_annotation_cursor::_draw_cursor(Gdiplus::Graphics &canvas, const rect<i
     auto cursor_x = mouse_pos.x();
     auto cursor_y = mouse_pos.y();
 
-    cursor_x -= canvast_rect.left();
-    cursor_y -= canvast_rect.top();
+    cursor_x -= canvas_rect.left();
+    cursor_y -= canvas_rect.top();
 
     cursor_x -= icon_info.xHotspot;
     cursor_y -= icon_info.yHotspot;
@@ -97,14 +187,15 @@ void cam_annotation_cursor::_draw_cursor(Gdiplus::Graphics &canvas, const rect<i
     ::DeleteObject(icon_info.hbmMask);
 }
 
-void cam_annotation_cursor::_draw_halo(Gdiplus::Graphics &canvas, const rect<int> &canvast_rect,
-                                       const point<int> &mouse_pos, const mouse_action_config &halo_config)
+void cam_annotation_cursor::_draw_halo(Gdiplus::Graphics &canvas, const rect<int> &canvas_rect,
+                                       const point<int> &mouse_pos,
+                                       const mouse_action_config &halo_config)
 {
     auto cursor_x = mouse_pos.x();
     auto cursor_y = mouse_pos.y();
 
-    cursor_x -= canvast_rect.left();
-    cursor_y -= canvast_rect.top();
+    cursor_x -= canvas_rect.left();
+    cursor_y -= canvas_rect.top();
 
     cursor_x -= halo_config.size.width() / 2;
     cursor_y -= halo_config.size.height() / 2;
@@ -136,4 +227,58 @@ void cam_annotation_cursor::_draw_halo(Gdiplus::Graphics &canvas, const rect<int
         canvas.FillRectangle(&b, halo_rect);
         break;
     }
+}
+
+void cam_annotation_cursor::_draw_rings(Gdiplus::Graphics &canvas, const rect<int> &canvas_rect,
+                                        const double frame_delta)
+{
+    std::vector<cam_mouse_ring_state *> dead_rings;
+    for (auto &ring : queued_rings_)
+    {
+        if (_draw_ring(canvas, canvas_rect, ring, frame_delta))
+            dead_rings.emplace_back(&ring);
+    }
+
+    for (const auto &dead_ring : dead_rings)
+    {
+        queued_rings_.erase(std::find(queued_rings_.begin(), queued_rings_.end(), *dead_ring));
+    }
+}
+
+bool cam_annotation_cursor::_draw_ring(Gdiplus::Graphics &canvas, const rect<int> &canvas_rect,
+                                       cam_mouse_ring_state &ring, const double frame_delta)
+{
+    ring.lifetime_ += frame_delta * ring_speed_;
+    // \todo make sure that ring size is always 'odd'.
+    const auto ring_size = static_cast<int>(std::round(ring_size_ * ring.lifetime_));
+
+    const auto center = ring.ring_center_;
+    auto cursor_x = center.x();
+    auto cursor_y = center.y();
+
+    cursor_x -= canvas_rect.left();
+    cursor_y -= canvas_rect.top();
+
+    cursor_x -= ring_size / 2;
+    cursor_y -= ring_size / 2;
+
+    const auto ring_rect = Gdiplus::Rect(
+        cursor_x,
+        cursor_y,
+        ring_size,
+        ring_size
+    );
+    //const Gdiplus::Color c(
+    //    click_ring_config_.color.a_,
+    //    click_ring_config_.color.r_,
+    //    click_ring_config_.color.g_,
+    //    click_ring_config_.color.b_);
+    // fixed to red for now... should be different color per mouse button
+    const auto c = Gdiplus::Color::Red;
+
+    const Gdiplus::Pen pen(c);
+    canvas.DrawEllipse(&pen, ring_rect);
+
+    // return true when this ring needs to be deleted.
+    return ring_size > ring_threshold_;
 }

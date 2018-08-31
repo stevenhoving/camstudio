@@ -44,16 +44,41 @@ namespace cursor
 {
     constexpr auto settings = "cursor-settings";
     constexpr auto enabled = "cursor_enabled";
+
     constexpr auto halo_enabled = "cursor_halo_enabled";
     constexpr auto halo_type = "cursor_halo_type";
     constexpr auto halo_color = "cursor_halo_color";
     constexpr auto halo_size = "cursor_halo_size";
+
     constexpr auto click_enabled = "cursor_click_enabled";
     constexpr auto click_left_color = "cursor_click_left_color";
     constexpr auto click_right_color = "cursor_click_right_color";
+    constexpr auto click_middle_color = "cursor_click_middle_color";
+
+    constexpr auto ring_enabled = "cursor_ring_enabled";
     constexpr auto ring_threshold = "cursor_ring_threshold";
     constexpr auto ring_size = "cursor_ring_size";
     constexpr auto ring_width = "cursor_ring_width";
+
+namespace defaults
+{
+    constexpr auto enabled = true;
+
+    constexpr auto halo_enabled = false;
+    constexpr auto halo_type = cursor_halo_type::circle;
+    constexpr auto halo_color = cam::color(0xFFFFFF80);
+    constexpr auto halo_size = 100;
+
+    constexpr auto click_enabled = false;
+    constexpr auto click_left_color = cam::color(0xa0, 0xff, 0, 0);
+    constexpr auto click_right_color = cam::color(0xa0, 0, 0, 0xff);
+    constexpr auto click_middle_color = cam::color(0xa0, 0, 0xff, 0);
+
+    constexpr auto ring_enabled = false;
+    constexpr auto ring_threshold = 100;
+    constexpr auto ring_size = 20;
+    constexpr auto ring_width = 1.5;
+}
 }
 
 namespace application
@@ -77,6 +102,16 @@ namespace shortcut
 bool settings_model::get_cursor_enabled() const
 {
     return cursor_enabled_;
+}
+
+void settings_model::set_cursor_ring_enabled(bool enabled)
+{
+    cursor_ring_enabled_ = enabled;
+}
+
+bool settings_model::get_cursor_ring_enabled() const
+{
+    return cursor_ring_enabled_;
 }
 
 void settings_model::set_cursor_halo_enabled(bool enabled)
@@ -134,7 +169,7 @@ void settings_model::set_cursor_click_left_color(cam::color color)
     cursor_click_left_color_ = color;
 }
 
-cam::color settings_model::get_cursor_click_left_color() const
+auto settings_model::get_cursor_click_left_color() const-> cam::color
 {
     return cursor_click_left_color_;
 }
@@ -144,9 +179,19 @@ void settings_model::set_cursor_click_right_color(cam::color color)
     cursor_click_right_color_ = color;
 }
 
-cam::color settings_model::get_cursor_click_right_color() const
+auto settings_model::get_cursor_click_right_color() const -> cam::color
 {
     return cursor_click_right_color_;
+}
+
+void settings_model::set_cursor_click_middle_color(cam::color color)
+{
+    cursor_click_middle_color_ = color;
+}
+
+auto settings_model::get_cursor_click_middle_color() const -> cam::color
+{
+    return cursor_click_middle_color_;
 }
 
 void settings_model::set_cursor_ring_threshold(int threshold)
@@ -292,6 +337,7 @@ void settings_model::_save_cursor_settings(cpptoml::table &root)
     table cursor = cpptoml::make_table();
 
     cursor.insert(config::cursor::enabled, cursor_enabled_);
+    cursor.insert(config::cursor::ring_enabled, cursor_ring_enabled_);
     cursor.insert(config::cursor::halo_enabled, cursor_halo_enabled_);
     cursor.insert(config::cursor::halo_type, cursor_halo_type_);
     cursor.insert(config::cursor::halo_color, cursor_halo_color_);
@@ -300,7 +346,9 @@ void settings_model::_save_cursor_settings(cpptoml::table &root)
     cursor.insert(config::cursor::click_enabled, cursor_click_enabled_);
     cursor.insert(config::cursor::click_left_color, cursor_click_left_color_);
     cursor.insert(config::cursor::click_right_color, cursor_click_right_color_);
-    // currently unused
+    cursor.insert(config::cursor::click_middle_color, cursor_click_middle_color_);
+
+    // currently unused (ish)
     cursor.insert(config::cursor::ring_threshold, cursor_ring_threshold_);
     cursor.insert(config::cursor::ring_size, cursor_ring_size_);
     cursor.insert(config::cursor::ring_width, cursor_ring_width_);
@@ -358,19 +406,47 @@ void settings_model::_load_capture_settings(const cpptoml::table &root)
 
 void settings_model::_load_cursor_settings(const cpptoml::table &root)
 {
-    table cursor = root.get_table(config::cursor::settings);
-    cursor_enabled_ = cursor.get_optional<bool>(config::cursor::enabled, true);
-    cursor_halo_enabled_ = cursor.get_optional<bool>(config::cursor::halo_enabled, false);
-    cursor_halo_type_ = cursor.get_optional<cursor_halo_type>(config::cursor::halo_type, cursor_halo_type::circle);
-    cursor_halo_color_ = cursor.get_optional<cam::color>(config::cursor::halo_color, 0xFFFFFF80);
-    cursor_halo_size_ = cursor.get_optional<int>(config::cursor::halo_size, 100);
-    cursor_click_enabled_ = cursor.get_optional<bool>(config::cursor::click_enabled, false);
-    cursor_click_left_color_ = cursor.get_optional<cam::color>(config::cursor::click_left_color, 0xa0ff0000);
-    cursor_click_right_color_ = cursor.get_optional<cam::color>(config::cursor::click_right_color, 0xa00000ff);
-    // currently unused
-    cursor_ring_threshold_ = cursor.get_optional<int>(config::cursor::ring_threshold, 1000);
-    cursor_ring_size_ = cursor.get_optional<int>(config::cursor::ring_size, 20);
-    cursor_ring_width_ = cursor.get_optional<double>(config::cursor::ring_width, 1.5);
+    const table cursor = root.get_table(config::cursor::settings);
+
+    cursor_enabled_ = cursor.get_optional(config::cursor::enabled,
+        config::cursor::defaults::enabled);
+
+    cursor_halo_enabled_ = cursor.get_optional(config::cursor::halo_enabled,
+        config::cursor::defaults::halo_enabled);
+
+    cursor_halo_type_ = cursor.get_optional(config::cursor::halo_type,
+        config::cursor::defaults::halo_type);
+
+    cursor_halo_color_ = cursor.get_optional(config::cursor::halo_color,
+        config::cursor::defaults::halo_color);
+
+    cursor_halo_size_ = cursor.get_optional(config::cursor::halo_size,
+        config::cursor::defaults::halo_size);
+
+    cursor_click_enabled_ = cursor.get_optional(config::cursor::click_enabled,
+        config::cursor::defaults::click_enabled);
+
+    cursor_click_left_color_ = cursor.get_optional(config::cursor::click_left_color,
+        config::cursor::defaults::click_left_color);
+
+    cursor_click_right_color_ = cursor.get_optional(config::cursor::click_right_color,
+        config::cursor::defaults::click_right_color);
+
+    cursor_click_middle_color_ = cursor.get_optional(config::cursor::click_middle_color,
+        config::cursor::defaults::click_middle_color);
+
+    // currently unused (ish)
+    cursor_ring_enabled_ = cursor.get_optional(config::cursor::ring_enabled,
+        config::cursor::defaults::ring_enabled);
+
+    cursor_ring_threshold_ = cursor.get_optional(config::cursor::ring_threshold,
+        config::cursor::defaults::ring_threshold);
+
+    cursor_ring_size_ = cursor.get_optional(config::cursor::ring_size,
+        config::cursor::defaults::ring_size);
+
+    cursor_ring_width_ = cursor.get_optional(config::cursor::ring_width,
+        config::cursor::defaults::ring_width);
 }
 
 void settings_model::_load_application_settings(const cpptoml::table &root)

@@ -19,17 +19,16 @@
 
 #include "cam_size.h"
 #include "cam_point.h"
-#include <optional>
-#include <string>
 
+/* \note no restrictions on what you feed this template class. Maybe we should. */
 template<typename T>
 class rect
 {
 public:
     using size_type = cam::size<T>;
 
-    rect() noexcept = default;
-    rect(const T left, const T top, const T right, const T bottom) noexcept
+    constexpr rect() noexcept = default;
+    constexpr rect(const T left, const T top, const T right, const T bottom) noexcept
         : left_(left)
         , top_(top)
         , right_(right)
@@ -37,7 +36,7 @@ public:
     {
     }
 
-    rect(const point<T> left_top, const size_type width_height) noexcept
+    constexpr rect(const point<T> left_top, const size_type width_height) noexcept
         : left_(left_top.x())
         , top_(left_top.y())
         , right_(left_top.x() + width_height.width())
@@ -45,48 +44,47 @@ public:
     {
     }
 
-    T left() const noexcept
+    constexpr T left() const noexcept
     {
         return left_;
     }
 
-    T top() const noexcept
+    constexpr T top() const noexcept
     {
         return top_;
     }
 
-    T right() const noexcept
+    constexpr T right() const noexcept
     {
         return right_;
     }
 
-    T bottom() const noexcept
+    constexpr T bottom() const noexcept
     {
         return bottom_;
     }
 
-    T width() const noexcept
+    constexpr T width() const noexcept
     {
         return (right_ - left_);
     }
 
-    T height() const noexcept
+    constexpr T height() const noexcept
     {
         return (bottom_ - top_);
     }
 
-    void width(const T new_width) noexcept
+    constexpr void width(const T new_width) noexcept
     {
         right_ = left_ + new_width;
     }
 
-    void height(const T new_height) noexcept
+    constexpr void height(const T new_height) noexcept
     {
         bottom_ = top_ + new_height;
     }
 
-
-    size_type size() const noexcept
+    constexpr size_type size() const noexcept
     {
         return { width(), height() };
     }
@@ -96,3 +94,12 @@ public:
     T right_{ static_cast<T>(0) };
     T bottom_{ static_cast<T>(0) };
 };
+
+template<typename T>
+constexpr bool operator == (const rect<T> &lhs, const rect<T> &rhs)
+{
+    return lhs.left() == rhs.left()
+        && lhs.right() == rhs.right()
+        && lhs.top() == rhs.top()
+        && lhs.bottom() == rhs.bottom();
+}

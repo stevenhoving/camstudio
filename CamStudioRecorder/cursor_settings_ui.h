@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "cursor_settings_preview.h"
 #include <CamCapture/cam_annotarion.h>
 #include <vector>
 
@@ -37,11 +38,12 @@ public:
     BOOL OnInitDialog() override;
 private:
     void _set_cursor_halo_size_label(const int halo_size);
-    void _draw_cursor_preview(cam_mouse_button::type mouse_buttons_state);
+    void _draw_cursor_preview(cam_mouse_button::type mouse_buttons_state, double dt = 0.1);
 
     // hack for now not following MVP or MVC
     settings_model *settings_{ nullptr };
-    std::unique_ptr<cam_annotation_cursor> annotation_;
+    std::unique_ptr<cam_annotation_cursor> annotation_{};
+    uint8_t mouse_button_state_{cam_mouse_button::none};
 
 public:
 // Dialog Data
@@ -55,17 +57,20 @@ protected:
     DECLARE_MESSAGE_MAP()
 public:
     afx_msg void OnBnClickedShowCursor();
+    afx_msg void OnBnClickedShowRings();
     afx_msg void OnBnClickedShowHalo();
     afx_msg void OnBnClickedShowMouseClicks();
-
     afx_msg void OnBnClickedPickHaloColor();
     afx_msg void OnBnClickedPickClickLeftColor();
     afx_msg void OnBnClickedPickClickRightColor();
-
+    afx_msg void OnBnClickedPickClickMiddleColor();
+    afx_msg void OnCbnSelchangeHaloShape();
     afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
     afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+    afx_msg void OnTimer(UINT_PTR nIDEvent);
 
     CButton show_cursor_checkbox_;
+    CButton show_cursor_rings_checkbox_;
     CButton show_cursor_mouse_halo_checkbox_;
     CButton show_cursor_mouse_click_checkbox_;
 
@@ -73,7 +78,6 @@ public:
     CComboBox halo_shape_ctrl_;
     CStatic cursor_halo_color_example_;
     CStatic cursor_halo_size_label_;
-    CStatic cursor_preview_;
-    afx_msg void OnCbnSelchangeHaloShape();
-    afx_msg void OnStnClickedCursorPreview();
+    cursor_settings_preview cursor_preview_;
+
 };
