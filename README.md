@@ -29,7 +29,13 @@ Besides creating a clean installer for camstudio I have found myself a couple of
 * Add support for mkv - done.
 * Replace libcondig with alternative - done.
 * Replace UI framework with Qt.
-* Improve settings screen.
+* Improve settings screen - done.
+
+## Settings dialogs
+![video settings dialog](https://raw.githubusercontent.com/stevenhoving/camstudio/develop/assets/github/video-settings-dialog.png)
+![video settings dialog](https://raw.githubusercontent.com/stevenhoving/camstudio/develop/assets/github/cursor-settings-dialog.png)
+![video settings dialog](https://raw.githubusercontent.com/stevenhoving/camstudio/develop/assets/github/shortcuts-settings-dialog.png)
+![video settings dialog](https://raw.githubusercontent.com/stevenhoving/camstudio/develop/assets/github/application-settings-dialog.png)
 
 ## Removed features
 * swf support.
