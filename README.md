@@ -15,27 +15,27 @@ Besides creating a clean installer for camstudio I have found myself a couple of
 
 * Fix memory leaks - done.
 * Remove unmaintainable features:
-  * swf support - done.
-  * xnote support - done.
+  * swf support - removed.
+  * xnote support - removed.
 * Upgrade/Remove project dependencies:
-  * CxImage - canceled.
+  * CxImage - removed.
   * zlib - done.
   * minilzo - done.
   * libconfig++ - removed.
-  * libpng - done.
+  * libpng - removed.
 * Replace static visual studio project files with CMake - done.
-* Create release.
-* Introduce unit test - in progress.
 * Add support for mkv - done.
 * Replace libcondig with alternative - done.
-* Replace UI framework with Qt.
 * Improve settings screen - done.
+* Create release - in progress.
+* Introduce unit test - in progress.
+* Replace UI framework with Qt.
 
 ## Settings dialogs
 ![video settings dialog](https://raw.githubusercontent.com/stevenhoving/camstudio/develop/assets/github/video-settings-dialog.png)
-![video settings dialog](https://raw.githubusercontent.com/stevenhoving/camstudio/develop/assets/github/cursor-settings-dialog.png)
-![video settings dialog](https://raw.githubusercontent.com/stevenhoving/camstudio/develop/assets/github/shortcuts-settings-dialog.png)
-![video settings dialog](https://raw.githubusercontent.com/stevenhoving/camstudio/develop/assets/github/application-settings-dialog.png)
+![cursor settings dialog](https://raw.githubusercontent.com/stevenhoving/camstudio/develop/assets/github/cursor-settings-dialog.png)
+![shortcuts settings dialog](https://raw.githubusercontent.com/stevenhoving/camstudio/develop/assets/github/shortcuts-settings-dialog.png)
+![application settings dialog](https://raw.githubusercontent.com/stevenhoving/camstudio/develop/assets/github/application-settings-dialog.png)
 
 ## Removed features
 * swf support.
@@ -53,11 +53,13 @@ https://sourceforge.net/p/camstudio
 State | Name | Project
 ----- | -----|--------
 Official| minilzo | http://www.oberhumer.com/opensource/lzo
-Official| zlib | https://github.com/madler/zlib
-Fork| CxImage | https://github.com/movableink/cximage
-Official| ffmpeg | https://www.ffmpeg.org
+Official| zlib    | https://github.com/madler/zlib
+Official| ffmpeg  | https://www.ffmpeg.org
 Official| cpptoml | https://github.com/skystrife/cpptoml
-Official| fmtlib | https://github.com/fmtlib/fmt
+Official| fmtlib  | https://github.com/fmtlib/fmt
+Official| Aeon Cmake | https://github.com/aeon-engine/libaeon-cmake
+Official| Google Test  | https://github.com/google/googletest
+Official| Google Benchmark | https://github.com/google/benchmark
 
 ## Credits
 A big thanks goes out to the original CamStudio developers. And to bestlily who had a initial port of CamStudio (https://github.com/bestlily/Camstudio), thanks.
