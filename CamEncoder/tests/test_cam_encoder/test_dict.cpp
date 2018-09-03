@@ -17,6 +17,7 @@
 
 #include <gtest/gtest.h>
 #include <CamEncoder/av_dict.h>
+#include <CamEncoder/av_ffmpeg.h>
 
 TEST(test_dict, test_assignment)
 {

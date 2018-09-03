@@ -17,9 +17,12 @@
 
 #pragma once
 
-#include "av_ffmpeg.h"
+
 #include <string_view>
 #include <cstdint>
+
+struct AVDictionary;
+struct AVDictionaryEntry;
 
 // this is a wrapper around AVDictionary. The interface is somewhat modeled after std::map.
 class av_dict
@@ -28,97 +31,39 @@ public:
     class av_mapped_type
     {
     public:
-        av_mapped_type(AVDictionary **dict, const std::string_view &key) noexcept
-            : dict_(dict)
-            , key_(key)
-        {
-        }
-
-        void operator=(const std::string_view &value)
-        {
-            if (int ret = av_dict_set(dict_, key_.data(), value.data(), 0); ret < 0)
-                throw std::runtime_error("value insertion/assignment failed");
-        }
-
-        void operator=(const int64_t value)
-        {
-            if (int ret = av_dict_set_int(dict_, key_.data(), value, 0); ret < 0)
-                throw std::runtime_error("value insertion/assignment failed");
-        }
-
-         operator const char *() const
-         {
-             auto key_value = av_dict_get(*dict_, key_.data(), nullptr, 0);
-             if (key_value == nullptr)
-                 throw std::out_of_range("unable to find key");
-
-             return key_value->value;
-         }
-
+        av_mapped_type(AVDictionary **dict, const std::string_view &key) noexcept;
+        av_mapped_type& operator=(std::string_view value);
+        av_mapped_type& operator=(const int64_t value);
+        operator const char *() const;
     private:
         AVDictionary **dict_;
-        const std::string_view &key_;
+        std::string_view key_;
     };
 
-    av_dict() noexcept
-        : dict_(nullptr)
-    {
-    }
+    av_dict() noexcept;
+    ~av_dict() noexcept;
 
-    ~av_dict() noexcept
-    {
-        av_dict_free(&dict_);
-    }
+    av_dict(const av_dict &dict);
 
-    av_dict(const av_dict &dict)
-    {
-        av_dict_copy(&dict_, dict.dict_, 0);
-    }
-
-    av_dict &operator=(const av_dict &dict)
-    {
-        av_dict_copy(&dict_, dict.dict_, 0);
-        return *this;
-    }
+    av_dict &operator=(const av_dict &dict);
 
     // disallow move.
     av_dict(av_dict &&) = delete;
     av_dict &operator=(const av_dict &&) = delete;
 
-    int size() const noexcept
-    {
-        return av_dict_count(dict_);
-    }
+    int size() const noexcept;
 
-    bool empty() const noexcept
-    {
-        return size() == 0;
-    }
+    bool empty() const noexcept;
 
-    void clear() noexcept
-    {
-        av_dict_free(&dict_);
-    }
+    void clear() noexcept;
 
     // \todo make this a bit mode std::map style...
     AVDictionaryEntry *at(const std::string_view &key, const AVDictionaryEntry *prev = nullptr,
-        int flags = 0)
-    {
-        auto key_value = av_dict_get(dict_, key.data(), prev, flags);
-        if (key_value == nullptr)
-            throw std::out_of_range("unable to find key");
-        return key_value;
-    }
+        int flags = 0);
 
-    av_mapped_type operator[](const std::string_view &key) noexcept
-    {
-        return av_mapped_type(&dict_, key);
-    }
+    av_mapped_type operator[](const std::string_view &key) noexcept;
 
-    operator AVDictionary **() noexcept
-    {
-        return &dict_;
-    }
+    operator AVDictionary **() noexcept;
 
 private:
     AVDictionary *dict_{ nullptr };

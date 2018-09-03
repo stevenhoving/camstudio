@@ -18,38 +18,13 @@
 #include "CamEncoder/av_video.h"
 #include "CamEncoder/av_dict.h"
 #include "CamEncoder/av_error.h"
-//#include "CamEncoder/av_yuv/av_rgb2yuv.h"
-//#include "CamEncoder/av_yuv/av_rgba2yuv.h"
-//#include "CamEncoder/av_yuv/av_rgb2yuv_ssse3.h"
-//#include "CamEncoder/av_yuv/av_rgba2yuv_ssse3.h"
 #include "CamEncoder/av_cam_codec/av_cam_codec.h"
 
 #include "av_log.h"
 
 #include <yuvconvert.h>
-
-#include <fmt/ostream.h>
 #include <cassert>
 
-std::ostream &operator<<(std::ostream &os, const AVMediaType d)
-{
-    return os << av_get_media_type_string(d);
-}
-
-std::ostream &operator<<(std::ostream &os, const AVCodecID d)
-{
-    return os << avcodec_get_name(d);
-}
-
-std::ostream &operator<<(std::ostream &os, const AVRational d)
-{
-    return os << d.den << '/' << d.num;
-}
-
-std::ostream &operator<<(std::ostream &os, const AVPixelFormat d)
-{
-    return os << av_get_pix_fmt_name(d);
-}
 
 /*!
  * truncate fps, only used for mpeg4.
@@ -365,25 +340,23 @@ void av_video::push_encode_frame(timestamp_t timestamp, unsigned char *data, int
             break;
         }
 
-        if (output_pixel_format_ != AV_PIX_FMT_YUV420P)
+        //if (output_pixel_format_ != AV_PIX_FMT_YUV420P)
         {
             if (int ret = sws_scale(sws_context_, src, src_stride, 0, src_height, frame_->data, dst_stride); ret < 0)
                 throw std::runtime_error(fmt::format("av_video: sws scale failed: {}", av_error_to_string(ret)));
         }
+#if 0
         else if (input_pixel_format_ == AV_PIX_FMT_BGRA)
         {
             yuvconvert::bgra_to_420(frame_->data, dst_stride, src, src_width, src_height, src_stride,
                 yuvconvert::simd_mode::ssse3);
-
-            //bgra2yuv420p_sse(frame_->data, dst_stride, src, src_width, src_height, src_stride);
-            //bgra2yuv420p_2(frame_->data, dst_stride, src, src_width, src_height, src_stride);
         }
         else
         {
             yuvconvert::bgr_to_420(frame_->data, dst_stride, src, src_width, src_height, src_stride,
                 yuvconvert::simd_mode::ssse3);
-            //bgr2yuv420p(frame_->data, dst_stride, src, src_width, src_height, src_stride);
         }
+#endif
 
         frame_->pts = timestamp;
         encode_frame = frame_;

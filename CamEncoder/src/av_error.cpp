@@ -15,18 +15,28 @@
  * along with this program.If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include "CamEncoder/av_error.h"
+#include "CamEncoder/av_ffmpeg.h"
 
+std::string av_error_to_string(int error_number)
+{
+    char x[1024] = { 0 };
+    int ret = av_strerror(error_number, x, 1023);
+    if (ret < 0)
+        throw std::runtime_error("av_strerror failed");
+    return x;
+}
 
-#include <string>
+std::string av_timestamp_to_string(int64_t timestamp)
+{
+    char x[AV_TS_MAX_STRING_SIZE] = { 0 };
+    av_ts_make_string(x, timestamp);
+    return x;
+}
 
-//typedef struct AVRational {
-//    int num; ///< Numerator
-//    int den; ///< Denominator
-//} AVRational;
-
-struct AVRational;
-
-std::string av_error_to_string(int error_number);
-std::string av_timestamp_to_string(int64_t timestamp);
-std::string av_timestamp_to_timestring(int64_t timestamp, AVRational &tb);
+std::string av_timestamp_to_timestring(int64_t timestamp, AVRational &tb)
+{
+    char x[AV_TS_MAX_STRING_SIZE] = { 0 };
+    av_ts_make_time_string(x, timestamp, &tb);
+    return x;
+}

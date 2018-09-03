@@ -19,6 +19,8 @@ find_package(ffmpeg)
 
 set(ENCODER_SOURCE
     src/av_audio.cpp
+    src/av_dict.cpp
+    src/av_error.cpp
     src/av_muxer.cpp
     src/av_video.cpp
     src/av_log.h
