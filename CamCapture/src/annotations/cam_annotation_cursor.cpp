@@ -42,38 +42,19 @@ void cam_annotation_cursor::draw(Gdiplus::Graphics &canvas, const cam_draw_data 
     const auto &rect = draw_data.canvas_rect_;
     const auto &position = draw_data.mouse_pos_;
 
-    if ((draw_data.mouse_button_state_ & cam_mouse_button::left_button_down) != 0)
+    unsigned int mouse_button_state = 0;
+    mouse_button_state |= (draw_data.mouse_button_state_ & cam_mouse_button::left_button_down);
+    mouse_button_state |= (draw_data.mouse_button_state_ & cam_mouse_button::right_button_down);
+    mouse_button_state |= (draw_data.mouse_button_state_ & cam_mouse_button::middle_button_down);
+
+    if (ring_enabled_ && mouse_button_state != mouse_button_state_)
     {
-        mouse_button_state_ |= cam_mouse_button::left_button_down;
-        if (ring_enabled_)
-        {
-            queued_rings_.emplace_back(
-                cam_mouse_ring_state(position, cam_mouse_button::left_button_down)
-            );
-        }
+        _handle_ring_button_state_changed(position, mouse_button_state, cam_mouse_button::left_button_down);
+        _handle_ring_button_state_changed(position, mouse_button_state, cam_mouse_button::right_button_down);
+        _handle_ring_button_state_changed(position, mouse_button_state, cam_mouse_button::middle_button_down);
     }
 
-    if ((draw_data.mouse_button_state_ & cam_mouse_button::right_button_down) != 0)
-    {
-        mouse_button_state_ |= cam_mouse_button::right_button_down;
-        if (ring_enabled_)
-        {
-            queued_rings_.emplace_back(
-                cam_mouse_ring_state(position, cam_mouse_button::right_button_down)
-            );
-        }
-    }
-
-    if ((draw_data.mouse_button_state_ & cam_mouse_button::middle_button_down) != 0)
-    {
-        mouse_button_state_ |= cam_mouse_button::middle_button_down;
-        if (ring_enabled_)
-        {
-            queued_rings_.emplace_back(
-                cam_mouse_ring_state(position, cam_mouse_button::middle_button_down)
-            );
-        }
-    }
+    mouse_button_state_ = mouse_button_state;
 
     /* only draw the normal halo if we don't have a mouse click to draw */
     if (halo_config_.enabled)
@@ -150,6 +131,19 @@ void cam_annotation_cursor::set_right_click_config(const mouse_action_config &co
 void cam_annotation_cursor::set_middle_click_config(const mouse_action_config &config) noexcept
 {
     middle_click_config_ = config;
+}
+
+void cam_annotation_cursor::_handle_ring_button_state_changed(const point<int> &position, const unsigned int mouse_button_state, const cam_mouse_button::type mouse_button_type)
+{
+    const auto mouse_button_state_delta = mouse_button_state ^ mouse_button_state_;
+    const auto is_state_changed = mouse_button_state_delta & mouse_button_type;
+    const auto is_state_new = mouse_button_state & mouse_button_type;
+    if (is_state_changed && is_state_new)
+    {
+        queued_rings_.emplace_back(
+            cam_mouse_ring_state(position, mouse_button_type)
+        );
+    }
 }
 
 void cam_annotation_cursor::_draw_cursor(Gdiplus::Graphics &canvas, const rect<int> &canvas_rect,

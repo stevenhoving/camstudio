@@ -37,7 +37,6 @@ struct mouse_action_config
     cam::color color{};
 };
 
-
 class cam_mouse_ring_state
 {
 public:
@@ -83,6 +82,8 @@ public:
     void set_right_click_config(const mouse_action_config &config) noexcept;
     void set_middle_click_config(const mouse_action_config &config) noexcept;
 protected:
+    void _handle_ring_button_state_changed(const point<int> &position, const unsigned int mouse_button_state, const cam_mouse_button::type mouse_button_type);
+
     void _draw_cursor(Gdiplus::Graphics &canvas, const rect<int> &canvas_rect, const point<int> &mouse_pos);
     void _draw_halo(Gdiplus::Graphics &canvas, const rect<int> &canvas_rect, const point<int> &mouse_pos, const mouse_action_config &halo_config);
     void _draw_rings(Gdiplus::Graphics &canvas, const rect<int> &canvas_rect, const double frame_delta);
