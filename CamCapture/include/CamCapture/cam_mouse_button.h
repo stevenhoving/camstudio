@@ -17,14 +17,17 @@
 
 #pragma once
 
-#include "cam_gdiplus_fwd.h"
-#include <cstdint>
-
-class cam_draw_data;
-
-class cam_iannotation
+class cam_mouse_button
 {
 public:
-    virtual ~cam_iannotation() = default;
-    virtual void draw(Gdiplus::Graphics &canvas, const cam_draw_data &draw_data) = 0;
+    enum type : unsigned int
+    {
+        none = 0,
+        left_button_down = 1 << 0,
+        right_button_down = 1 << 1,
+        middle_button_down = 1 << 2,
+        left_button_up = 1 << 3,
+        right_button_up = 1 << 4,
+        middle_button_up = 1 << 5
+    };
 };

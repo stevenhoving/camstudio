@@ -24,6 +24,7 @@
 #include <CamCapture/cam_color.h>
 #include <CamCapture/cam_rect.h>
 #include <CamCapture/cam_gdiplus.h>
+#include <CamCapture/cam_draw_data.h>
 #include <CamCapture/cam_stop_watch.h>
 #include <fmt/printf.h>
 

@@ -17,14 +17,28 @@
 
 #pragma once
 
-#include "cam_gdiplus_fwd.h"
-#include <cstdint>
+#include "CamCapture/cam_mouse_button.h"
 
-class cam_draw_data;
+template<typename T>
+class rect;
 
-class cam_iannotation
+template<typename T>
+class point;
+
+class cam_draw_data
 {
 public:
-    virtual ~cam_iannotation() = default;
-    virtual void draw(Gdiplus::Graphics &canvas, const cam_draw_data &draw_data) = 0;
+    constexpr cam_draw_data(const double frame_delta, const rect<int> &canvas_rect,
+                            const point<int> &mouse_pos, const cam_mouse_button::type mouse_button_state) noexcept
+        : frame_delta_(frame_delta)
+        , canvas_rect_(canvas_rect)
+        , mouse_pos_(mouse_pos)
+        , mouse_button_state_(mouse_button_state)
+    {
+    }
+
+    double frame_delta_;
+    const rect<int> &canvas_rect_;
+    const point<int> &mouse_pos_;
+    cam_mouse_button::type mouse_button_state_;
 };

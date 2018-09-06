@@ -17,6 +17,7 @@
 #include "CamCapture/cam_capture.h"
 #include "CamCapture/cam_point.h"
 #include "CamCapture/cam_size.h"
+#include "CamCapture/cam_draw_data.h"
 #include "CamCapture/cam_stop_watch.h"
 #include "CamCapture/cam_gdiplus.h"
 #include "CamCapture/annotations/cam_annotation_cursor.h"

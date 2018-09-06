@@ -19,6 +19,7 @@
 
 #include "cursor_settings_preview.h"
 #include <CamCapture/cam_annotarion.h>
+#include <CamCapture/cam_mouse_button.h>
 #include <vector>
 
 class settings_model;
@@ -50,7 +51,7 @@ private:
     // hack for now not following MVP or MVC
     settings_model *settings_{ nullptr };
     std::unique_ptr<cam_annotation_cursor> annotation_{};
-    uint8_t mouse_button_state_{cam_mouse_button::none};
+    unsigned int mouse_button_state_{cam_mouse_button::none};
 
 protected:
     void DoDataExchange(CDataExchange* pDX) override;

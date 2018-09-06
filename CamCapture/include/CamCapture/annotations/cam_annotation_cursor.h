@@ -17,9 +17,12 @@
 
 #pragma once
 
+#include "CamCapture/cam_mouse_button.h"
 #include "CamCapture/cam_annotarion.h"
-#include "CamCapture/cam_size.h"
 #include "CamCapture/cam_color.h"
+#include "CamCapture/cam_point.h"
+#include "CamCapture/cam_size.h"
+#include "CamCapture/cam_rect.h"
 #include <vector>
 
 enum class cam_halo_type

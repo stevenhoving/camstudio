@@ -15,8 +15,9 @@
  * along with this program.If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "annotations/cam_annotation_cursor.h"
-#include "cam_gdiplus.h"
+#include "CamCapture/annotations/cam_annotation_cursor.h"
+#include "CamCapture/cam_gdiplus.h"
+#include "CamCapture/cam_draw_data.h"
 #include <fmt/printf.h>
 #include <windows.h>
 
@@ -292,7 +293,7 @@ bool cam_annotation_cursor::_draw_ring(Gdiplus::Graphics &canvas, const rect<int
     const auto color = Gdiplus::Color(config.color.a_, config.color.r_, config.color.g_,
         config.color.b_);
 
-    const auto pen = Gdiplus::Pen(color, ring_width_);
+    const auto pen = Gdiplus::Pen(color, static_cast<Gdiplus::REAL>(ring_width_));
     canvas.DrawEllipse(&pen, ring_rect);
 
     // return true when this ring needs to be deleted.
