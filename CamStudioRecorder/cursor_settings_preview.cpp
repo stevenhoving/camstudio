@@ -36,6 +36,8 @@ BEGIN_MESSAGE_MAP(cursor_settings_preview, CStatic)
     ON_WM_LBUTTONUP()
     ON_WM_RBUTTONUP()
     ON_WM_MBUTTONUP()
+    ON_WM_MOUSEWHEEL()
+    ON_WM_MOUSEHWHEEL()
 END_MESSAGE_MAP()
 
 cursor_settings_preview::cursor_settings_preview() = default;
@@ -131,12 +133,13 @@ void cursor_settings_preview::OnMButtonUp(UINT /*nFlags*/, CPoint /*point*/)
         on_middle_up_();
 }
 
-void cursor_settings_preview::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+BOOL cursor_settings_preview::OnMouseWheel(UINT /*nFlags*/, short /*zDelta*/, CPoint /*pt*/)
 {
     fmt::print("mouse wheel\n");
+    return TRUE;
 }
 
-void cursor_settings_preview::OnMouseHWheel(UINT nFlags, short zDelta, CPoint pt)
+void cursor_settings_preview::OnMouseHWheel(UINT /*nFlags*/, short /*zDelta*/, CPoint /*pt*/)
 {
     fmt::print("mouse H wheel\n");
 }

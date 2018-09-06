@@ -27,7 +27,6 @@ class cam_annotation_cursor;
 class cursor_settings_ui : public CDialogEx
 {
     DECLARE_DYNAMIC(cursor_settings_ui)
-
 public:
     cursor_settings_ui(CWnd* pParent = nullptr);
     cursor_settings_ui(CWnd* pParent, settings_model *settings);
@@ -36,20 +35,22 @@ public:
     cursor_settings_ui &operator = (const cursor_settings_ui &) = delete;
 
     BOOL OnInitDialog() override;
+
+    // Dialog Data
+#ifdef AFX_DESIGN_TIME
+    enum { IDD = IDD_CURSOR_SETTINGS_UI };
+#endif
+
 private:
-    void _set_cursor_halo_size_label(const int halo_size);
+    void _set_annotation_settings();
+    void _set_cursor_halo_size(const int halo_size);
+    void _set_cursor_ring_size(const int halo_size);
     void _draw_cursor_preview(cam_mouse_button::type mouse_buttons_state, double dt = 0.1);
 
     // hack for now not following MVP or MVC
     settings_model *settings_{ nullptr };
     std::unique_ptr<cam_annotation_cursor> annotation_{};
     uint8_t mouse_button_state_{cam_mouse_button::none};
-
-public:
-// Dialog Data
-#ifdef AFX_DESIGN_TIME
-    enum { IDD = IDD_CURSOR_SETTINGS_UI };
-#endif
 
 protected:
     void DoDataExchange(CDataExchange* pDX) override;
@@ -75,9 +76,13 @@ public:
     CButton show_cursor_mouse_click_checkbox_;
 
     CSliderCtrl halo_size_ctrl_;
+    CSliderCtrl ring_size_ctrl_;
+
     CComboBox halo_shape_ctrl_;
+
     CStatic cursor_halo_color_example_;
     CStatic cursor_halo_size_label_;
-    cursor_settings_preview cursor_preview_;
+    CStatic cursor_ring_size_label_;
 
+    cursor_settings_preview cursor_preview_;
 };

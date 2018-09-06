@@ -29,13 +29,6 @@
 
 IMPLEMENT_DYNAMIC(cursor_settings_ui, CDialogEx)
 
-#if 0
-#define ON_BN_CLICKED(id, memberFxn) \
-	ON_CONTROL(BN_CLICKED, id, memberFxn)
-#define ON_BN_DOUBLECLICKED(id, memberFxn) \
-	ON_CONTROL(BN_DOUBLECLICKED, id, memberFxn)
-#endif
-
 BEGIN_MESSAGE_MAP(cursor_settings_ui, CDialogEx)
     ON_BN_CLICKED(IDC_SHOW_CURSOR, &cursor_settings_ui::OnBnClickedShowCursor)
     ON_BN_CLICKED(IDC_SHOW_RINGS, &cursor_settings_ui::OnBnClickedShowRings)
@@ -73,6 +66,7 @@ BOOL cursor_settings_ui::OnInitDialog()
 
     // setup
     halo_size_ctrl_.SetRange(1, 128, TRUE);
+    ring_size_ctrl_.SetRange(1, 128, TRUE);
     //halo_shape_ctrl_.SetItemData() // Circle;Ellipse;Square;Rectangle;
 
     const auto halo_size = cam::size(
@@ -83,26 +77,37 @@ BOOL cursor_settings_ui::OnInitDialog()
     annotation_ = std::make_unique<cam_annotation_cursor>(
         settings_->get_cursor_enabled(),
         settings_->get_cursor_ring_enabled(),
+
+        mouse_action_config{ settings_->get_cursor_ring_enabled(), halo_size, settings_->get_cursor_ring_click_left_color() },
+        mouse_action_config{ settings_->get_cursor_ring_enabled(), halo_size, settings_->get_cursor_ring_click_right_color() },
+        mouse_action_config{ settings_->get_cursor_ring_enabled(), halo_size, settings_->get_cursor_ring_click_right_color() },
+
         static_cast<cam_halo_type>(settings_->get_cursor_halo_type()),
         //mouse_action_config
         mouse_action_config{ settings_->get_cursor_halo_enabled(), halo_size, settings_->get_cursor_halo_color() },
         mouse_action_config{ settings_->get_cursor_click_enabled(), halo_size, settings_->get_cursor_click_left_color() },
-        mouse_action_config{ settings_->get_cursor_click_enabled(), halo_size, settings_->get_cursor_click_right_color() }
+        mouse_action_config{ settings_->get_cursor_click_enabled(), halo_size, settings_->get_cursor_click_right_color() },
+        mouse_action_config{ settings_->get_cursor_click_enabled(), halo_size, settings_->get_cursor_click_middle_color() }
     );
 
     // set config
+    // halo
     const auto halo_shape_size = settings_->get_cursor_halo_size();
     halo_size_ctrl_.SetPos(halo_shape_size);
 
     const auto halo_shape_type = static_cast<int>(settings_->get_cursor_halo_type());
     halo_shape_ctrl_.SetCurSel(halo_shape_type);
-
-    _set_cursor_halo_size_label(settings_->get_cursor_halo_size());
+    _set_cursor_halo_size(settings_->get_cursor_halo_size());
 
     show_cursor_checkbox_.SetCheck(settings_->get_cursor_enabled());
     show_cursor_mouse_halo_checkbox_.SetCheck(settings_->get_cursor_halo_enabled());
     show_cursor_mouse_click_checkbox_.SetCheck(settings_->get_cursor_click_enabled());
+
+    // ring
     show_cursor_rings_checkbox_.SetCheck(settings_->get_cursor_ring_enabled());
+    const auto ring_size = settings_->get_cursor_ring_size();
+    ring_size_ctrl_.SetPos(ring_size);
+    _set_cursor_ring_size(ring_size);
 
     cursor_preview_.set_on_left_down([this](){mouse_button_state_ |= cam_mouse_button::left_button_down;});
     cursor_preview_.set_on_right_down([this](){mouse_button_state_ |= cam_mouse_button::right_button_down;});
@@ -117,22 +122,30 @@ BOOL cursor_settings_ui::OnInitDialog()
     return TRUE;
 }
 
-void cursor_settings_ui::_set_cursor_halo_size_label(const int halo_size)
+void cursor_settings_ui::_set_annotation_settings()
 {
-    settings_->set_cursor_halo_size(halo_size);
-
-    const auto halo_size_string = std::to_wstring(halo_size) + L"px";
-    cursor_halo_size_label_.SetWindowText(halo_size_string.c_str());
-    label_auto_size(&cursor_halo_size_label_);
-
-    _draw_cursor_preview(cam_mouse_button::none);
-}
-
-void cursor_settings_ui::_draw_cursor_preview(cam_mouse_button::type mouse_buttons_state, double dt /*= 0.1*/)
-{
-    // force update annotation settings
     annotation_->set_cursor_enabled(settings_->get_cursor_enabled());
     annotation_->set_cursor_ring_enabled(settings_->get_cursor_ring_enabled());
+
+    // ring config
+    const auto ring_size = cam::size(
+        settings_->get_cursor_ring_size(),
+        settings_->get_cursor_ring_size()
+    );
+
+    annotation_->set_ring_left_click_config(
+        { settings_->get_cursor_ring_enabled(), ring_size, settings_->get_cursor_ring_click_left_color() }
+    );
+
+    annotation_->set_ring_right_click_config(
+        { settings_->get_cursor_ring_enabled(), ring_size, settings_->get_cursor_ring_click_right_color() }
+    );
+
+    annotation_->set_ring_middle_click_config(
+        { settings_->get_cursor_ring_enabled(), ring_size, settings_->get_cursor_ring_click_middle_color() }
+    );
+
+    // halo config
     annotation_->set_halo_type(static_cast<cam_halo_type>(settings_->get_cursor_halo_type()));
 
     const auto halo_size = cam::size(
@@ -144,17 +157,45 @@ void cursor_settings_ui::_draw_cursor_preview(cam_mouse_button::type mouse_butto
         { settings_->get_cursor_halo_enabled(), halo_size, settings_->get_cursor_halo_color() }
     );
 
-    annotation_->set_left_click_config(
+    annotation_->set_halo_left_click_config(
         { settings_->get_cursor_click_enabled(), halo_size, settings_->get_cursor_click_left_color() }
     );
 
-    annotation_->set_right_click_config(
+    annotation_->set_halo_right_click_config(
         { settings_->get_cursor_click_enabled(), halo_size, settings_->get_cursor_click_right_color() }
     );
 
-    annotation_->set_middle_click_config(
+    annotation_->set_halo_middle_click_config(
         { settings_->get_cursor_click_enabled(), halo_size, settings_->get_cursor_click_middle_color() }
     );
+}
+
+void cursor_settings_ui::_set_cursor_halo_size(const int halo_size)
+{
+    settings_->set_cursor_halo_size(halo_size);
+
+    const auto halo_size_string = std::to_wstring(halo_size) + L"px";
+    cursor_halo_size_label_.SetWindowText(halo_size_string.c_str());
+    label_auto_size(&cursor_halo_size_label_);
+
+    _draw_cursor_preview(cam_mouse_button::none);
+}
+
+void cursor_settings_ui::_set_cursor_ring_size(const int ring_size)
+{
+    settings_->set_cursor_ring_size(ring_size);
+
+    const auto ring_size_string = std::to_wstring(ring_size) + L"px";
+    cursor_ring_size_label_.SetWindowText(ring_size_string.c_str());
+    label_auto_size(&cursor_ring_size_label_);
+
+    _draw_cursor_preview(cam_mouse_button::none);
+}
+
+void cursor_settings_ui::_draw_cursor_preview(cam_mouse_button::type mouse_buttons_state, double dt /*= 0.1*/)
+{
+    // force update annotation settings
+    _set_annotation_settings();
 
     CRect preview_rect;
     cursor_preview_.GetWindowRect(&preview_rect);
@@ -201,6 +242,8 @@ void cursor_settings_ui::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_CURSOR_HALO_COLOR_EXAMPLE, cursor_halo_color_example_);
     DDX_Control(pDX, IDC_CURSOR_SIZE_LABEL, cursor_halo_size_label_);
     DDX_Control(pDX, IDC_CURSOR_PREVIEW, cursor_preview_);
+    DDX_Control(pDX, IDC_RING_CURSOR_SIZE_LABEL, cursor_ring_size_label_);
+    DDX_Control(pDX, IDC_RING_SIZE, ring_size_ctrl_);
 }
 
 void cursor_settings_ui::OnCbnSelchangeHaloShape()
@@ -298,6 +341,7 @@ HBRUSH cursor_settings_ui::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
     {
         switch(pWnd->GetDlgCtrlID())
         {
+            // halo
             case IDC_CURSOR_HALO_COLOR_EXAMPLE:
             {
                 const auto color = settings_->get_cursor_halo_color();
@@ -318,6 +362,22 @@ HBRUSH cursor_settings_ui::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
                 const auto color = settings_->get_cursor_click_middle_color();
                 return (HBRUSH)CreateSolidBrush(RGB(color.r_, color.g_, color.b_));
             }
+            // ring
+            case IDC_RING_CURSOR_LEFT_CLICK_COLOR_EXAMPLE:
+            {
+                const auto color = settings_->get_cursor_ring_click_left_color();
+                return (HBRUSH)CreateSolidBrush(RGB(color.r_, color.g_, color.b_));
+            }
+            case IDC_RING_CURSOR_RIGHT_CLICK_COLOR_EXAMPLE:
+            {
+                const auto color = settings_->get_cursor_ring_click_right_color();
+                return (HBRUSH)CreateSolidBrush(RGB(color.r_, color.g_, color.b_));
+            }
+            case IDC_RING_CURSOR_MIDDLE_CLICK_COLOR_EXAMPLE:
+            {
+                const auto color = settings_->get_cursor_ring_click_middle_color();
+                return (HBRUSH)CreateSolidBrush(RGB(color.r_, color.g_, color.b_));
+            }
         }
     }
 
@@ -332,7 +392,10 @@ void cursor_settings_ui::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollB
         switch (id)
         {
         case IDC_HALO_SIZE:
-            _set_cursor_halo_size_label(static_cast<int>(nPos));
+            _set_cursor_halo_size(static_cast<int>(nPos));
+            break;
+        case IDC_RING_SIZE:
+            _set_cursor_ring_size(static_cast<int>(nPos));
             break;
         }
     }
@@ -340,9 +403,9 @@ void cursor_settings_ui::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollB
     CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
-void cursor_settings_ui::OnTimer(UINT_PTR nIDEvent)
+void cursor_settings_ui::OnTimer(UINT_PTR /*nIDEvent*/)
 {
-    assert(nIDEvent == 0);
+    //assert(nIDEvent == 0);
     static auto stopwatch = [](){cam::stop_watch temp; temp.time_start(); return temp;}();
     const auto dt = stopwatch.time_since();
     _draw_cursor_preview(static_cast<cam_mouse_button::type>(mouse_button_state_), dt);

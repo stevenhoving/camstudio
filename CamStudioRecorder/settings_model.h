@@ -88,12 +88,20 @@ public:
     auto get_cursor_click_right_color() const -> cam::color;
     void set_cursor_click_middle_color(cam::color color);
     auto get_cursor_click_middle_color() const->cam::color;
+
     void set_cursor_ring_threshold(int threshold);
     auto get_cursor_ring_threshold() const -> int;
     void set_cursor_ring_size(int size);
     auto get_cursor_ring_size() const -> int;
     void set_cursor_ring_width(double width);
     auto get_cursor_ring_width() const -> double;
+
+    void set_cursor_ring_click_left_color(cam::color color);
+    auto get_cursor_ring_click_left_color() const->cam::color;
+    void set_cursor_ring_click_right_color(cam::color color);
+    auto get_cursor_ring_click_right_color() const->cam::color;
+    void set_cursor_ring_click_middle_color(cam::color color);
+    auto get_cursor_ring_click_middle_color() const->cam::color;
 
     /* shortcuts */
     void set_shortcut(shortcut_action::type shortcut_type, std::wstring shortcut);
@@ -148,6 +156,8 @@ private:
 
     /* cursor settings */
     bool cursor_enabled_{true};
+
+    // halo config
     bool cursor_halo_enabled_{false};
     cursor_halo_type cursor_halo_type_{cursor_halo_type::circle};
     cam::color cursor_halo_color_{0xFFFFFF80};
@@ -156,11 +166,15 @@ private:
     cam::color cursor_click_left_color_{0xa0, 0xff, 0, 0};
     cam::color cursor_click_right_color_{0xa0, 0, 0, 0xff};
     cam::color cursor_click_middle_color_{0xa0, 0, 0xff, 0};
-    // currently not used
+
+    // ring config
     bool cursor_ring_enabled_{false};
     int cursor_ring_threshold_{1000};
     int cursor_ring_size_{20};
     double cursor_ring_width_{1.5};
+    cam::color cursor_ring_click_left_color_{ 0xa0, 0xff, 0, 0 };
+    cam::color cursor_ring_click_right_color_{ 0xa0, 0, 0, 0xff };
+    cam::color cursor_ring_click_middle_color_{ 0xa0, 0, 0xff, 0 };
 
     /* application settings */
     bool application_auto_filename_{false};

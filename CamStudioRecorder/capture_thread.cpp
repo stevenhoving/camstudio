@@ -201,14 +201,29 @@ void capture_thread::run()
         settings.get_cursor_halo_size()
     );
 
+    const auto ring_size = cam::size(
+        settings.get_cursor_ring_size(),
+        settings.get_cursor_ring_size()
+    );
+
+    const auto show_cursor_enabled = settings.get_cursor_enabled();
+    const auto show_cursor_ring_enabled = settings.get_cursor_ring_enabled();
+    const auto show_cursor_halo_enabled = settings.get_cursor_halo_enabled();
+    const auto show_cursor_halo_clicks_enabled = settings.get_cursor_click_enabled();
+
     capture_source_->add_annotation(
         std::make_unique<cam_annotation_cursor>(
-            settings.get_cursor_enabled(),
-            settings.get_cursor_ring_enabled(),
+            show_cursor_enabled,
+            show_cursor_ring_enabled,
+            mouse_action_config{ show_cursor_ring_enabled, ring_size, settings.get_cursor_click_left_color() },
+            mouse_action_config{ show_cursor_ring_enabled, ring_size, settings.get_cursor_click_right_color() },
+            mouse_action_config{ show_cursor_ring_enabled, ring_size, settings.get_cursor_click_middle_color() },
+
             static_cast<cam_halo_type>(capture_settings_.settings.get_cursor_halo_type()),
-            mouse_action_config{ settings.get_cursor_halo_enabled(), halo_size, settings.get_cursor_halo_color() },
-            mouse_action_config{ settings.get_cursor_click_enabled(), halo_size, settings.get_cursor_click_left_color() },
-            mouse_action_config{ settings.get_cursor_click_enabled(), halo_size, settings.get_cursor_click_right_color() }
+            mouse_action_config{ show_cursor_halo_enabled, halo_size, settings.get_cursor_halo_color() },
+            mouse_action_config{ show_cursor_halo_clicks_enabled, halo_size, settings.get_cursor_click_left_color() },
+            mouse_action_config{ show_cursor_halo_clicks_enabled, halo_size, settings.get_cursor_click_right_color() },
+            mouse_action_config{ show_cursor_halo_clicks_enabled, halo_size, settings.get_cursor_click_middle_color() }
     ));
 
     const auto pre_frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;

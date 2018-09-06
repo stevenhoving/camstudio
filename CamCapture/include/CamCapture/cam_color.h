@@ -47,7 +47,8 @@ public:
     {
         return static_cast<uint32_t>(a_) << 24
             | static_cast<uint32_t>(r_) << 16
-            | static_cast<uint32_t>(g_) << 8 | b_;
+            | static_cast<uint32_t>(g_) << 8
+            | static_cast<uint32_t>(b_) << 0;
     }
 
     uint8_t a_{ 255u };
