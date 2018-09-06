@@ -65,6 +65,9 @@ public:
     afx_msg void OnBnClickedPickClickLeftColor();
     afx_msg void OnBnClickedPickClickRightColor();
     afx_msg void OnBnClickedPickClickMiddleColor();
+    afx_msg void OnBnClickedRingClickLeftColor();
+    afx_msg void OnBnClickedRingClickRightColor();
+    afx_msg void OnBnClickedRingClickMiddleColor();
     afx_msg void OnCbnSelchangeHaloShape();
     afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
     afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);

@@ -42,6 +42,9 @@ BEGIN_MESSAGE_MAP(cursor_settings_ui, CDialogEx)
     ON_WM_HSCROLL()
     ON_WM_CTLCOLOR()
     ON_WM_TIMER()
+    ON_BN_CLICKED(IDC_RING_CLICK_LEFT_COLOR, &cursor_settings_ui::OnBnClickedRingClickLeftColor)
+    ON_BN_CLICKED(IDC_RING_CLICK_RIGHT_COLOR, &cursor_settings_ui::OnBnClickedRingClickRightColor)
+    ON_BN_CLICKED(IDC_RING_CLICK_MIDDLE_COLOR, &cursor_settings_ui::OnBnClickedRingClickMiddleColor)
 END_MESSAGE_MAP()
 
 
@@ -251,86 +254,103 @@ void cursor_settings_ui::OnCbnSelchangeHaloShape()
     const auto index = halo_shape_ctrl_.GetCurSel();
     settings_->set_cursor_halo_type(static_cast<cursor_halo_type>(index));
 
-    _draw_cursor_preview(cam_mouse_button::none);
+    //_draw_cursor_preview(cam_mouse_button::none);
 }
 
 void cursor_settings_ui::OnBnClickedShowCursor()
 {
     const auto checked = show_cursor_checkbox_.GetCheck() != 0;
     settings_->set_cursor_enabled(checked);
-    _draw_cursor_preview(cam_mouse_button::none);
+    //_draw_cursor_preview(cam_mouse_button::none);
 }
 
 void cursor_settings_ui::OnBnClickedShowRings()
 {
-    fmt::print("show rings\n");
     const auto checked = show_cursor_rings_checkbox_.GetCheck() != 0;
     settings_->set_cursor_ring_enabled(checked);
-    //mouse_button_state_ |= cam_mouse_button::left_button_down;
 }
 
 void cursor_settings_ui::OnBnClickedShowHalo()
 {
     const auto checked = show_cursor_mouse_halo_checkbox_.GetCheck() != 0;
     settings_->set_cursor_halo_enabled(checked);
-    _draw_cursor_preview(cam_mouse_button::none);
+    //_draw_cursor_preview(cam_mouse_button::none);
 }
 
 void cursor_settings_ui::OnBnClickedShowMouseClicks()
 {
     const auto checked = show_cursor_mouse_click_checkbox_.GetCheck() != 0;
     settings_->set_cursor_click_enabled(checked);
-    _draw_cursor_preview(cam_mouse_button::none);
+    //_draw_cursor_preview(cam_mouse_button::none);
+}
+
+template<typename Callback>
+void handle_color_change(const cam::color &color, Callback save_color_callback)
+{
+    const auto rgb_color = RGB(color.r_, color.g_, color.b_);
+    CColorDialog color_dialog(rgb_color, CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT);
+    if (color_dialog.DoModal() == IDOK)
+    {
+        const auto out_color = color_dialog.GetColor();
+        const auto save_color = cam::color(127, GetRValue(out_color), GetGValue(out_color), GetBValue(out_color));
+        save_color_callback(save_color);
+    }
 }
 
 void cursor_settings_ui::OnBnClickedPickHaloColor()
 {
-    const auto halo_color_config = settings_->get_cursor_halo_color();
-    const auto halo_color = RGB(halo_color_config.r_, halo_color_config.g_, halo_color_config.b_);
-    CColorDialog color_dialog(halo_color, CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT);
-    if (color_dialog.DoModal() == IDOK)
-    {
-        const auto color = color_dialog.GetColor();
-        settings_->set_cursor_halo_color(cam::color(127, GetRValue(color), GetGValue(color), GetBValue(color)));
-        _draw_cursor_preview(cam_mouse_button::none);
-        Invalidate();
-    }
+    handle_color_change(settings_->get_cursor_halo_color(),
+        [this](const cam::color &save_color)
+        {settings_->set_cursor_halo_color(save_color); Invalidate();}
+    );
 }
 
 void cursor_settings_ui::OnBnClickedPickClickLeftColor()
 {
-    const auto halo_color = static_cast<COLORREF>(settings_->get_cursor_click_left_color());
-    CColorDialog color_dialog(halo_color, CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT);
-    if (color_dialog.DoModal() == IDOK)
-    {
-        const auto color = color_dialog.GetColor();
-        settings_->set_cursor_click_left_color(cam::color(127, GetRValue(color), GetGValue(color), GetBValue(color)));
-        Invalidate();
-    }
+    handle_color_change(settings_->get_cursor_click_left_color(),
+        [this](const cam::color &save_color)
+        {settings_->set_cursor_click_left_color(save_color); Invalidate();}
+    );
 }
 
 void cursor_settings_ui::OnBnClickedPickClickRightColor()
 {
-    const auto halo_color = static_cast<COLORREF>(settings_->get_cursor_click_right_color());
-    CColorDialog color_dialog(halo_color, CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT);
-    if (color_dialog.DoModal() == IDOK)
-    {
-        const auto color = color_dialog.GetColor();
-        settings_->set_cursor_click_right_color(cam::color(127, GetRValue(color), GetGValue(color), GetBValue(color)));
-        Invalidate();
-    }
+    handle_color_change(settings_->get_cursor_click_right_color(),
+        [this](const cam::color &save_color)
+        {settings_->set_cursor_click_right_color(save_color); Invalidate();}
+    );
 }
 
 void cursor_settings_ui::OnBnClickedPickClickMiddleColor()
 {
-    const auto halo_color = static_cast<COLORREF>(settings_->get_cursor_click_middle_color());
-    CColorDialog color_dialog(halo_color, CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT);
-    if (color_dialog.DoModal() == IDOK)
-    {
-        const auto color = color_dialog.GetColor();
-        settings_->set_cursor_click_middle_color(cam::color(127, GetRValue(color), GetGValue(color), GetBValue(color)));
-        Invalidate();
-    }
+    handle_color_change(settings_->get_cursor_click_middle_color(),
+        [this](const cam::color &save_color)
+        {settings_->set_cursor_click_middle_color(save_color); Invalidate();}
+    );
+}
+
+void cursor_settings_ui::OnBnClickedRingClickLeftColor()
+{
+    handle_color_change(settings_->get_cursor_ring_click_left_color(),
+        [this](const cam::color &save_color)
+        {settings_->set_cursor_ring_click_left_color(save_color); Invalidate(); }
+    );
+}
+
+void cursor_settings_ui::OnBnClickedRingClickRightColor()
+{
+    handle_color_change(settings_->get_cursor_ring_click_right_color(),
+        [this](const cam::color &save_color)
+        {settings_->set_cursor_ring_click_right_color(save_color); Invalidate(); }
+    );
+}
+
+void cursor_settings_ui::OnBnClickedRingClickMiddleColor()
+{
+    handle_color_change(settings_->get_cursor_ring_click_middle_color(),
+        [this](const cam::color &save_color)
+        {settings_->set_cursor_ring_click_middle_color(save_color); Invalidate(); }
+    );
 }
 
 HBRUSH cursor_settings_ui::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -410,8 +430,18 @@ void cursor_settings_ui::OnTimer(UINT_PTR /*nIDEvent*/)
     const auto dt = stopwatch.time_since();
     _draw_cursor_preview(static_cast<cam_mouse_button::type>(mouse_button_state_), dt);
     stopwatch.time_start();
-    mouse_button_state_ = 0;
+
+    if (mouse_button_state_ & cam_mouse_button::left_button_up)
+        mouse_button_state_ &= ~(cam_mouse_button::left_button_down | cam_mouse_button::left_button_up);
+
+    if (mouse_button_state_ & cam_mouse_button::right_button_up)
+        mouse_button_state_ &= ~(cam_mouse_button::right_button_down | cam_mouse_button::right_button_up);
+
+    if (mouse_button_state_ & cam_mouse_button::middle_button_up)
+        mouse_button_state_ &= ~(cam_mouse_button::middle_button_down | cam_mouse_button::middle_button_up);
 }
+
+
 
 
 
