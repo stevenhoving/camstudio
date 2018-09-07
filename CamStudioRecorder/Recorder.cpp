@@ -14,6 +14,7 @@
 #include "utility/string_convert.h"
 #include "utility/filesystem.h"
 #include <CamLib/CStudioLib.h>
+#include <CamLib/CamError.h>
 
 #include <filesystem>
 

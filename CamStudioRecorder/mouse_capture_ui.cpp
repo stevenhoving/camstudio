@@ -28,8 +28,6 @@
 #include <fmt/printf.h>
 #include <fmt/ostream.h>
 
-
-
 LRESULT WINAPI wnd_proc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam)
 {
     const auto mouse_capture_ptr = reinterpret_cast<void *>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
@@ -320,20 +318,7 @@ void mouse_capture_ui::on_lbutton_up(HWND /*hWnd*/)
     }
 
     if (!capture_rect_drag_rect_.IsRectEmpty())
-    {
         capture_rect_drag_rect_.NormalizeRect();
-    }
-
-    // \todo remove this global crap
-    // g_rcUse.CopyRect(&capture_rect_drag_rect_);
-    // rect<int> capture_rect(capture_rect_drag_rect_.left, capture_rect_drag_rect_.top,
-    // capture_rect_drag_rect_.right, capture_rect_drag_rect_.bottom);
-
-    // if (capture_mode == capture_type::variable)
-    //{
-    //    //fmt::print("MouseCaptureWndProc: CRecorderView::WM_USER_RECORDSTART\n");
-    //    ::PostMessage(g_hWndGlobal, CRecorderView::WM_USER_RECORDSTART, 0, (LPARAM)0);
-    //}
 
     completed_(capture_rect_drag_rect_);
 }

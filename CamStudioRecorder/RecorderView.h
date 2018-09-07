@@ -1,23 +1,20 @@
 #pragma once
 
-#include "capture_thread.h"
+#include "settings/video_settings.h"
 
 #include <filesystem>
 #include <memory>
 #include <string>
 
-
 class CRecorderDoc;
 
 class mouse_capture_ui;
 class window_select_ui;
-
 class video_settings_model;
 class settings_model;
-
 class mouse_hook;
-
 class shortcut_controller;
+class capture_thread;
 
 class CRecorderView : public CView
 {
@@ -28,9 +25,6 @@ protected:
 public:
     ~CRecorderView() override;
     CRecorderDoc *GetDocument();
-
-    void save_settings();
-    void load_settings();
 
     bool GetRecordState();
     bool GetPausedState();
@@ -51,15 +45,15 @@ private:
     void set_shortcuts();
 
 protected:
+    void OnRecord();
+    void OnStop();
+    void OnCancel();
+
     afx_msg void OnRegionRubber();
     afx_msg void OnRegionPanregion();
     afx_msg void OnPaint();
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnDestroy();
-    void OnRecord();
-    void OnStop();
-    void OnCancel();
-
     afx_msg void OnUpdateRegionPanregion(CCmdUI *pCmdUI);
     afx_msg void OnUpdateRegionRubber(CCmdUI *pCmdUI);
     afx_msg void OnVideoSettings();
@@ -71,12 +65,9 @@ protected:
     afx_msg void OnUpdateRegionSelectScreen(CCmdUI *pCmdUI);
     afx_msg void OnRegionAllScreens();
     afx_msg void OnUpdateRegionAllScreens(CCmdUI *pCmdUI);
-    afx_msg void OnHelpWebsite();
-    afx_msg void OnHelpHelp();
     afx_msg void OnPause();
     afx_msg void OnUpdatePause(CCmdUI *pCmdUI);
     afx_msg void OnUpdateStop(CCmdUI *pCmdUI);
-    afx_msg void OnHelpFaq();
     afx_msg void OnOptionsKeyboardshortcuts();
     afx_msg void OnSetFocus(CWnd *pOldWnd);
     afx_msg BOOL OnEraseBkgnd(CDC *pDC);
@@ -123,6 +114,8 @@ private:
 
     std::string temp_video_filepath_{};
 
+    HBITMAP g_hLogoBM{nullptr};
+
     double zoom_{1};
     CPoint zoomed_at_;
     DWORD zoom_when_{0}; // FIXME: I hope it is unlikely zoom start at 47 day boundary ever happen by accident
@@ -142,7 +135,3 @@ inline CRecorderDoc *CRecorderView::GetDocument()
     return (CRecorderDoc *)m_pDocument;
 }
 #endif
-
-// External Variables
-extern CRect g_rcUse;
-extern CRect g_old_rcClip;

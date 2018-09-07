@@ -87,7 +87,7 @@ LRESULT CALLBACK mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lPara
                 std::lock_guard<std::mutex> slock(mouse_events_lock_);
                 mouse_events_.emplace_back(mouse_event);
 
-                fmt::print("mouse action queue size: {}\n", mouse_events_.size());
+                //fmt::print("mouse action queue size: {}\n", mouse_events_.size());
             }
         } break;
 

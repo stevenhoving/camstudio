@@ -4,7 +4,7 @@
 #error include 'stdafx.h' before including this file for PCH
 #endif
 
-#include <CamLib/CamError.h>
+
 #include "resource.h"                   // main symbols
 #include "RecorderVersionReleaseInfo.h" // Contains version and SVN release number
 #include <memory>

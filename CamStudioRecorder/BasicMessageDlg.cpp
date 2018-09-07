@@ -1,8 +1,5 @@
 #include "stdafx.h"
-//#include "Recorder.h"
 #include "BasicMessageDlg.h"
-
-// CBasicMessageDlg dialog
 
 IMPLEMENT_DYNAMIC(CBasicMessageDlg, CDialog)
 
@@ -36,7 +33,6 @@ void CBasicMessageDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
     CDialog::OnShowWindow(bShow, nStatus);
 
-    // TODO: Add your message handler code here
     m_MessageText.SetWindowText(strText);
     m_MessageText.HideCaret();
 }

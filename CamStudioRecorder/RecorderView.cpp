@@ -17,6 +17,7 @@
 
 #include <CamLib/CStudioLib.h>
 #include <CamLib/TrayIcon.h>
+#include <CamLib/CamError.h>
 #include <CamEncoder/av_encoder.h>
 #include <cam_hook/cam_hook.h>
 
@@ -32,6 +33,8 @@
 #include "shortcut_settings_ui.h"
 #include "shortcut_controller.h"
 
+#include "capture_thread.h"
+
 #include <fmt/format.h>
 #include <fmt/printf.h>
 #include <fmt/time.h>
@@ -42,52 +45,7 @@
 #include <cassert>
 #include <ctime>
 
-HWND g_hWndGlobal = nullptr;
-CRect g_rcUse;      // Size:  0 .. MaxScreenSize-1
-
-// Autopan
-CRect g_rectPanCurrent;
-CRect g_rectPanDest;
-
-HBITMAP g_hLogoBM = nullptr;
-
-// Misc Vars
-bool g_bAlreadyMCIPause = false;
-
-WPARAM g_interruptkey = 0;
-DWORD g_dwInitialTime = 0;
-bool g_bInitCapture = false;
-
-unsigned long g_nTotalBytesWrittenSoFar = 0UL;
-
-// Messaging
-
-
-// int iTempPathAccess = USE_WINDOWS_TEMP_DIR;
-// CString specifieddir;
-
-/////////////////////////////////////////////////////////////////////////////
-// Variables/Options requiring interface
-/////////////////////////////////////////////////////////////////////////////
-int g_iBits = 24;
-int g_iDefineMode = 0; // set only in FixedRegion.cpp
-
-int g_selected_compressor = -1;
-
-// Report variables
-int g_nActualFrame = 0;
-int g_nCurrFrame = 0;
-float g_fRate = 0.0;
-float g_fActualRate = 0.0;
-float g_fTimeLength = 0.0;
-int g_nColors = 24;
-CString sTimeLength;
-
-
 constexpr auto TEMPFILETAGINDICATOR = L"~temp";
-
-
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CRecorderView
@@ -128,9 +86,9 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
     ON_COMMAND(ID_REGION_WINDOW, &CRecorderView::OnRegionWindow)
     ON_UPDATE_COMMAND_UI(ID_REGION_WINDOW, &CRecorderView::OnUpdateRegionWindow)
     ON_COMMAND(ID_OPTIONS_KEYBOARDSHORTCUTS, &CRecorderView::OnOptionsKeyboardshortcuts)
-    ON_COMMAND(ID_FILE_PRINT, &CRecorderView::CView::OnFilePrint)
-    ON_COMMAND(ID_FILE_PRINT_DIRECT, &CRecorderView::CView::OnFilePrint)
-    ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CRecorderView::CView::OnFilePrintPreview)
+    //ON_COMMAND(ID_FILE_PRINT, &CRecorderView::CView::OnFilePrint)
+    //ON_COMMAND(ID_FILE_PRINT_DIRECT, &CRecorderView::CView::OnFilePrint)
+    //ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CRecorderView::CView::OnFilePrintPreview)
     ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDSTART, &CRecorderView::OnRecordStart)
     ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDINTERRUPTED, &CRecorderView::OnRecordInterrupted)
     ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDPAUSED, &CRecorderView::OnRecordPaused)
@@ -272,24 +230,17 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     if (CView::OnCreate(lpCreateStruct) == -1)
         return -1;
 
-    g_hWndGlobal = m_hWnd;
+    //g_hWndGlobal = m_hWnd;
     shortcut_controller_ = std::make_unique<shortcut_controller>(m_hWnd);
     set_shortcuts();
-
-    load_settings();
 
     mouse_capture_ui_ = std::make_unique<mouse_capture_ui>(AfxGetInstanceHandle(), GetSafeHwnd(),
         [this](const CRect &capture_rect)
         {
             settings_model_->set_capture_rect(from_crect(capture_rect));
-            ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, 0);
+            ::PostMessage(m_hWnd, WM_USER_RECORDSTART, 0, 0);
         }
     );
-
-    HDC hScreenDC = ::GetDC(nullptr);
-    g_iBits = ::GetDeviceCaps(hScreenDC, BITSPIXEL);
-    g_nColors = g_iBits;
-    ::ReleaseDC(nullptr, hScreenDC);
 
     g_hLogoBM = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP3));
 
@@ -302,8 +253,6 @@ void CRecorderView::OnDestroy()
 {
     settings_model_->save();
 
-    // UnSetHotKeys(g_hWndGlobal);
-    // getHotKeyMap().clear(); // who actually cares?
 
     if (g_hLogoBM)
     {
@@ -441,19 +390,7 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
     if (settings_model_->get_application_minimize_on_capture_start())
         ::PostMessage(AfxGetMainWnd()->m_hWnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 
-    // Check validity of g_rc and fix it
-    // FixRectSizePos(&g_rc, g_maxx_screen, g_maxy_screen, g_minx_screen, g_miny_screen);
-
-    // TODO: mouse events handler should be installed only if we are interested in highlighting
-    // Shall we empty the click queue? if we stop & start again we have a chance to see previous stuff
-    // may be no relevant since will likely expire in normal circumstances.
-    // Though if we dump events in file, it is better to clean up
-    // FIXME: second parameter is never used
-    // We shall wrap all that stuff in class so it is created in constructor and guaranteed to be destroyed in destructor
-    //InstallMyHook(g_hWndGlobal, WM_USER_SAVECURSOR);
-
     is_recording = true;
-    g_interruptkey = 0;
 
     mouse_hook_->attach();
 
@@ -502,9 +439,6 @@ LRESULT CRecorderView::OnRecordPaused(WPARAM /*wParam*/, LPARAM /*lParam*/)
 
 LRESULT CRecorderView::OnRecordInterrupted(WPARAM wParam, LPARAM /*lParam*/)
 {
-    //UninstallMouseHook(g_hWndGlobal);
-
-    // Ver 1.1
     if (is_paused)
     {
         CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
@@ -517,15 +451,11 @@ LRESULT CRecorderView::OnRecordInterrupted(WPARAM wParam, LPARAM /*lParam*/)
 
     mouse_hook_->detach();
 
-    // Store the interrupt key in case this function is triggered by a keypress
-    g_interruptkey = wParam;
-
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
     pStatus->SetPaneText(0, _T("Press the Record Button to start recording"));
 
     Invalidate();
 
-    // ver 1.2
     ::SetForegroundWindow(AfxGetMainWnd()->m_hWnd);
     AfxGetMainWnd()->ShowWindow(SW_RESTORE);
 
@@ -709,7 +639,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM wParam, LPARAM /*lParam*/)
         // filename."
         MessageOut(m_hWnd, IDS_STRING_MOVEFILEFAILURE, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
         // Repeat this function until success
-        ::PostMessage(g_hWndGlobal, WM_USER_GENERIC, 0, 0);
+        ::PostMessage(m_hWnd, WM_USER_GENERIC, 0, 0);
         return 0;
     }
 
@@ -721,7 +651,6 @@ void CRecorderView::OnRecord()
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
     pStatus->SetPaneText(0, _T("Press the Stop Button to stop recording"));
 
-    // Version 1.1
     if (is_paused)
     {
         is_paused = false;
@@ -734,18 +663,12 @@ void CRecorderView::OnRecord()
     }
     is_paused = false;
 
-    g_nActualFrame = 0;
-    g_nCurrFrame = 0;
-    g_fRate = 0.0;
-    g_fActualRate = 0.0;
-    g_fTimeLength = 0.0;
-
 
     switch (settings_model_->get_capture_mode())
     {
     case capture_type::fixed:
         // \todo auto panning fixed rect is not supported for now
-        ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, 0);
+        ::PostMessage(m_hWnd, WM_USER_RECORDSTART, 0, 0);
     break;
     case capture_type::variable:
     {
@@ -764,20 +687,21 @@ void CRecorderView::OnRecord()
 
         // \todo fix this hack
         settings_model_->set_capture_rect(capture_rect);
-        ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, 0);
+        ::PostMessage(m_hWnd, WM_USER_RECORDSTART, 0, 0);
     } break;
 
     case capture_type::window:
     {
+        const auto hwnd = m_hWnd;
         window_select_ui window_select(this,
-            [](const HWND selected_window)
+            [hwnd](const HWND selected_window)
             {
                 const unsigned long style = ::GetWindowLong(selected_window, GWL_STYLE);
                 if ((style & WS_MINIMIZE) == WS_MINIMIZE)
                     ::ShowWindow(selected_window, SW_SHOWNORMAL);
                 ::BringWindowToTop(selected_window);
 
-                ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0,
+                ::PostMessage(hwnd, WM_USER_RECORDSTART, 0,
                     reinterpret_cast<LPARAM>(selected_window));
             });
 
@@ -785,14 +709,13 @@ void CRecorderView::OnRecord()
 
     } break;
     case capture_type::fullscreen:
-        /* \todo rewrite this the full screen function */
+        /* \todo rewrite this as the full screen function */
 
         auto message_window = std::make_unique<CBasicMessageDlg>();
         message_window->Create(CBasicMessageDlg::IDD);
         message_window->SetText(_T("Click on screen to be captured."));
         message_window->ShowWindow(SW_SHOW);
-        SetCapture(); // what is this for?
-
+        SetCapture();
         break;
     }
 }
@@ -849,25 +772,9 @@ void CRecorderView::OnOptionsCursoroptions()
     settings_model_->save();
 }
 
-void CRecorderView::OnHelpWebsite()
-{
-    // Openlink("http://www.atomixbuttons.com/vsc");
-    // Openlink("http://www.rendersoftware.com");
-    // Openlink("http://www.camstudio.org");
-}
-
-void CRecorderView::OnHelpHelp()
-{
-    CString progdir = GetProgPath();
-    CString helppath = progdir + "\\help.htm";
-
-    //Openlink(helppath);
-
-    // HtmlHelp( g_hWndGlobal, progdir + "\\help.chm", HH_DISPLAY_INDEX, (DWORD)"CamStudio");
-}
-
 void CRecorderView::OnPause()
 {
+    // it is important to know that pause doesn't work anymore...
     if (!is_recording || is_paused)
         return;
 
@@ -892,14 +799,7 @@ void CRecorderView::OnUpdateStop(CCmdUI * /*pCmdUI*/)
 
 void CRecorderView::OnUpdateRecord(CCmdUI *pCmdUI)
 {
-    // Version 1.1
     pCmdUI->Enable(!is_recording || is_paused);
-}
-
-void CRecorderView::OnHelpFaq()
-{
-    // Openlink("http://www.atomixbuttons.com/vsc/page5.html");
-    // Openlink("http://www.camstudio.org/faq.htm");
 }
 
 void CRecorderView::OnOptionsKeyboardshortcuts()
@@ -910,62 +810,14 @@ void CRecorderView::OnOptionsKeyboardshortcuts()
     set_shortcuts();
 }
 
-void CRecorderView::save_settings()
-{
-}
-
-void CRecorderView::load_settings()
-{
-}
-
 void CRecorderView::OnSetFocus(CWnd *pOldWnd)
 {
     CView::OnSetFocus(pOldWnd);
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// OnHotKey WM_HOTKEY message handler
-// The WM_HOTKEY message is posted when the user presses a hot key registered
-// by the RegisterHotKey function.
-//
-// wParam - Specifies the identifier of the hot key that generated the message.
-// lParam - The low-order word specifies the keys that were to be pressed in
-// combination with the key specified by the high-order word to generate the
-// WM_HOTKEY message. This word can be one or more of the following values.
-//    MOD_ALT - Either ALT key was held down.
-//    MOD_CONTROL - Either CTRL key was held down.
-//    MOD_SHIFT - Either SHIFT key was held down.
-//    MOD_WIN - Either WINDOWS key was held down.
-// The high-order word specifies the virtual key code of the hot key.
-//
-// HOTKEY_RECORD_START_OR_PAUSE        0
-// HOTKEY_RECORD_STOP                1
-// HOTKEY_RECORD_CANCELSTOP            2
-// HOTKEY_LAYOUT_KEY_NEXT            3
-// HOTKEY_LAYOUT_KEY_PREVIOUS        4
-// HOTKEY_LAYOUT_SHOW_HIDE_KEY        5
-// HOTKEY_ZOOM 6
-//
-/////////////////////////////////////////////////////////////////////////////
 LRESULT CRecorderView::OnHotKey(WPARAM wParam, LPARAM /*lParam*/)
 {
     shortcut_controller_->handle_action(static_cast<int>(wParam));
-
-#if 0
-        case HOTKEY_ZOOM: // FIXME: make yet another constant
-            if (zoom_when_ == 0)
-            {
-                if (zoom_ <= 1.0)
-                    VERIFY(::GetCursorPos(&zoomed_at_));
-                zoom_when_ = ::GetTickCount();
-            }
-            zoom_direction_ *= -1;
-            break;
-        case HOTKEY_AUTOPAN_SHOW_HIDE_KEY:
-            //OnOptionsAutopan();
-            break;
-    }
-#endif
     return 1;
 }
 
@@ -985,7 +837,6 @@ BOOL CRecorderView::OnEraseBkgnd(CDC *pDC)
     CRect rectClient;
     GetClientRect(&rectClient);
     CBitmap *pOldBitmap = dcBits.SelectObject(&bitmapLogo);
-    // pDC->BitBlt(0, 0, bitmap.bmWidth, bitmap.bmHeight, &dcBits, 0, 0, SRCCOPY);
     pDC->StretchBlt(0, 0, rectClient.Width(), rectClient.Height(), &dcBits, 0, 0, bitmap.bmWidth, bitmap.bmHeight,
                     SRCCOPY);
     dcBits.SelectObject(pOldBitmap);
@@ -1006,6 +857,7 @@ void CRecorderView::OnUpdateRegionWindow(CCmdUI *pCmdUI)
 
 void CRecorderView::OnCaptureChanged(CWnd *pWnd)
 {
+    fmt::print("OnCaptureChanged\n");
 #if 0
     CPoint ptMouse;
     VERIFY(GetCursorPos(&ptMouse));
@@ -1025,7 +877,7 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
             // close the window to show user selection was successful
             // post message to start recording
             if (pWndPoint->m_hWnd != basic_msg_->m_hWnd)
-                ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
+                ::PostMessage(m_hWnd, WM_USER_RECORDSTART, 0, (LPARAM)0);
         }
     }
     //else if (cRegionOpts.isCaptureMode(CAPTURE_FULLSCREEN))
@@ -1047,14 +899,15 @@ void CRecorderView::OnCaptureChanged(CWnd *pWnd)
 
         // post message to start recording
         if (pWnd->m_hWnd != basic_msg_->m_hWnd)
-            ::PostMessage(g_hWndGlobal, WM_USER_RECORDSTART, 0, (LPARAM)0);
+            ::PostMessage(m_hWnd, WM_USER_RECORDSTART, 0, (LPARAM)0);
     }
 #endif
     CView::OnCaptureChanged(pWnd);
 }
 
-void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
+void CRecorderView::DisplayRecordingStatistics(CDC &/*srcDC*/)
 {
+#if 0
     // TRACE("CRecorderView::DisplayRecordingStatistics\n");
 
     CFont fontANSI;
@@ -1172,31 +1025,27 @@ void CRecorderView::DisplayRecordingStatistics(CDC &srcDC)
     srcDC.SetTextColor(oldTextColor);
     srcDC.SetBkColor(oldBkColor);
     srcDC.SetBkMode(iOldBkMode);
+#endif
 }
 
 void CRecorderView::DisplayBackground(CDC &srcDC)
 {
-    // TRACE("CRecorderView::DisplayBackground\n");
-    // Ver 1.1
-    if (g_nColors > 8)
-    {
-        CRect rectClient;
-        GetClientRect(&rectClient);
-        CDC dcBits;
-        dcBits.CreateCompatibleDC(&srcDC);
-        CBitmap bitmapLogo;
-        bitmapLogo.Attach(g_hLogoBM);
+    CRect rectClient;
+    GetClientRect(&rectClient);
+    CDC dcBits;
+    dcBits.CreateCompatibleDC(&srcDC);
+    CBitmap bitmapLogo;
+    bitmapLogo.Attach(g_hLogoBM);
 
-        BITMAP bitmap;
-        bitmapLogo.GetBitmap(&bitmap);
-        CBitmap *pOldBitmap = dcBits.SelectObject(&bitmapLogo);
+    BITMAP bitmap;
+    bitmapLogo.GetBitmap(&bitmap);
+    CBitmap *pOldBitmap = dcBits.SelectObject(&bitmapLogo);
 
-        srcDC.StretchBlt(0, 0, rectClient.Width(), rectClient.Height(), &dcBits, 0, 0, bitmap.bmWidth, bitmap.bmHeight,
-                         SRCCOPY);
-        dcBits.SelectObject(pOldBitmap);
+    srcDC.StretchBlt(0, 0, rectClient.Width(), rectClient.Height(), &dcBits, 0, 0, bitmap.bmWidth, bitmap.bmHeight,
+                        SRCCOPY);
+    dcBits.SelectObject(pOldBitmap);
 
-        bitmapLogo.Detach();
-    }
+    bitmapLogo.Detach();
 }
 
 void CRecorderView::DisplayRecordingMsg(CDC &srcDC)
