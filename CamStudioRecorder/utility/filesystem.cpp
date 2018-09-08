@@ -26,16 +26,10 @@ namespace utility
 std::filesystem::path get_app_data_path()
 {
     wchar_t app_data_path[MAX_PATH + 1] = {};
-    if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_APPDATA, nullptr, 0, app_data_path)))
-    {
-        return std::filesystem::path(app_data_path) / "CamStudio";
-    }
+    if (FAILED(SHGetFolderPath(nullptr, CSIDL_LOCAL_APPDATA, nullptr, 0, app_data_path)))
+        throw std::runtime_error("unable to get app data path");
 
-    if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, app_data_path)))
-    {
-        return std::filesystem::path(app_data_path) / "CamStudio";
-    }
-    throw std::runtime_error("unable to get app data path");
+    return std::filesystem::path(app_data_path) / "CamStudio";
 }
 
 std::filesystem::path create_config_path(const std::wstring &filename)
