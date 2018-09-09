@@ -55,9 +55,9 @@ struct video_container_type
 };
 
 static const wchar_t* video_container_strings[] = {
-    L"MKV",
-    L"MP4",
-    L"AVI"
+    L"mkv",
+    L"mp4",
+    L"avi"
 };
 
 using video_container = settings_enum_type<video_container_type,

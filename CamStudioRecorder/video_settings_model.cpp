@@ -20,7 +20,7 @@
 #include "utility/filesystem.h"
 #include <cpptoml.h>
 
-std::wstring video_settings_model::get_video_container_file_extention() const
+std::wstring video_settings_model::get_video_container_file_extension() const
 {
     return video_container::names().at(video_container_.get_index());
 }

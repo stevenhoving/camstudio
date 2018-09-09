@@ -38,7 +38,7 @@ public:
 #endif
 
 private:
-    std::string generate_temp_filename(video_container::type container);
+    std::string generate_temp_filename();
     void restore_window();
     std::filesystem::path generate_auto_filename();
 

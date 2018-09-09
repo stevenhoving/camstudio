@@ -330,7 +330,7 @@ std::filesystem::path get_temp_folder_ex(const temp_output_directory::type type,
     throw std::runtime_error("Unable to create temp folder");
 }
 
-std::string CRecorderView::generate_temp_filename(video_container::type container)
+std::string CRecorderView::generate_temp_filename()
 {
     const auto temp_directory = get_temp_folder_ex(
         settings_model_->get_application_temp_directory_type(),
@@ -349,16 +349,18 @@ std::string CRecorderView::generate_temp_filename(video_container::type containe
     int second = ctime.GetSecond();
 
     // Create timestamp tag
-    auto start_time = fmt::sprintf(L"%04d%02d%02d_%02d%02d_%02d", year, month, day, hour, minutes, second);
+    const auto start_time = fmt::sprintf(L"%04d%02d%02d_%02d%02d_%02d", year, month, day, hour,
+        minutes, second);
 
-    const auto file_extention = video_container::names().at(container);
+    const auto file_extention  = video_settings_model_->get_video_container_file_extension();
 
-    std::filesystem::path temp_video_file_path = temp_directory / fmt::format(L"{}-{}.{}", TEMPFILETAGINDICATOR, start_time, file_extention);
+    const std::filesystem::path temp_video_file_path = temp_directory / fmt::format(L"{}-{}.{}", TEMPFILETAGINDICATOR, start_time, file_extention);
     auto strTempVideoFilePath = temp_video_file_path.generic_wstring();
 
     // TRACE("## CRecorderView::RecordAVIThread First  Temp.Avi file=[%s]\n", strTempVideoAviFilePath.GetString()  );
 
     srand(static_cast<unsigned int>(time(nullptr)));
+
     bool fileverified = false;
     while (!fileverified)
     {
@@ -383,7 +385,6 @@ std::string CRecorderView::generate_temp_filename(video_container::type containe
 
 LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
 {
-    TRACE("CRecorderView::OnRecordStart\n");
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
     pStatus->SetPaneText(0, _T("Press the Stop Button to stop recording"));
 
@@ -399,10 +400,7 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
     settings.capture_rect_ = settings_model_->get_capture_rect();
     settings.video_settings = *video_settings_model_;
     settings.settings = *settings_model_;
-
-    const auto video_container_type = static_cast<video_container::type>(
-        video_settings_model_->video_container_.get_index());
-    settings.filename = generate_temp_filename(video_container_type);
+    settings.filename = generate_temp_filename();
 
     // hack, store the filepath to the temp file so we can reuse it later.
     temp_video_filepath_ = settings.filename;
@@ -413,31 +411,21 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
      );
     capture_thread_->start(settings);
 
-    // Ver 1.3
-    //if (pThread)
-    //{
-    //    pThread->SetThreadPriority(cProgramOpts.m_iThreadPriority);
-    //}
-
-    // Ver 1.2
     allow_new_record_start_key_ = TRUE; // allow this only after record_state_ is set to 1
     return 0;
 }
 
 LRESULT CRecorderView::OnRecordPaused(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
-    // TRACE("## CRecorderView::OnRecordPaused\n");
     if (is_paused)
     {
         return 0;
     }
-    // TRACE("## CRecorderView::OnRecordPaused Tick:[%lu] Call OnPause() now\n", GetTickCount() );
     OnPause();
-
     return 0;
 }
 
-LRESULT CRecorderView::OnRecordInterrupted(WPARAM wParam, LPARAM /*lParam*/)
+LRESULT CRecorderView::OnRecordInterrupted(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     if (is_paused)
     {
@@ -552,7 +540,7 @@ std::filesystem::path CRecorderView::generate_auto_filename()
     const auto t = std::time(nullptr);
     const auto tm = fmt::localtime(t);
 
-    const auto filename = fmt::format(L"{:%Y%m%d-%H%M-%S}.{}", tm, video_settings_model_->get_video_container_file_extention());
+    const auto filename = fmt::format(L"{:%Y%m%d-%H%M-%S}.{}", tm, video_settings_model_->get_video_container_file_extension());
 
     // \todo auto filename name format should be configurable.
     return std::filesystem::path(filename);
@@ -584,7 +572,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM wParam, LPARAM /*lParam*/)
     {
         case application_output_directory::ask_user:
         {
-            const auto file_extention = video_settings_model_->get_video_container_file_extention();
+            const auto file_extention = video_settings_model_->get_video_container_file_extension();
             const auto filter = fmt::format(L"Video Files (*.{})", file_extention);
             const auto title = L"Save video file";
 
@@ -627,7 +615,7 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM wParam, LPARAM /*lParam*/)
     }
 
     if (!target_filepath.has_extension())
-        target_filepath.replace_extension(video_settings_model_->get_video_container_file_extention());
+        target_filepath.replace_extension(video_settings_model_->get_video_container_file_extension());
 
     std::error_code ec;
     std::filesystem::rename(temp_video_filepath_, target_filepath, ec);

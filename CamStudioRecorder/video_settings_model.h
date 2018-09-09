@@ -22,7 +22,7 @@
 class video_settings_model
 {
 public:
-    std::wstring get_video_container_file_extention() const;
+    std::wstring get_video_container_file_extension() const;
     video_source video_source_{video_source::type::gdi};
     int video_source_fps_{30}; // this is heavily depending on the source and the OS.
     video_container video_container_{video_container::type::mkv};
