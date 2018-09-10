@@ -25,14 +25,14 @@ public:
     std::wstring get_video_container_file_extension() const;
     video_source video_source_{video_source::type::gdi};
     int video_source_fps_{30}; // this is heavily depending on the source and the OS.
-    video_container video_container_{video_container::type::mkv};
+    video_container video_container_{video_container::type::mp4};
     video_codec video_codec_{video_codec::type::x264};
     video_codec_preset video_codec_preset_{video_codec_preset::type::ultrafast};
     video_codec_tune video_codec_tune_{video_codec_tune::type::none};
     video_codec_profile video_codec_profile_{video_codec_profile::type::baseline};
     video_codec_level video_codec_level_{video_codec_level::type::none};
     int video_codec_quality_bitrate_{4000};
-    int video_codec_quality_constant_{27};
+    int video_codec_quality_constant_{25};
     video_quality_type video_codec_quality_type_{video_quality_type::constant_quality};
 
     /* For now we will fall back to a simple save and load strategy.
