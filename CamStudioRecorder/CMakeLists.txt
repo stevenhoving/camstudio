@@ -141,7 +141,6 @@ source_group(resource FILES
 target_include_directories(CamStudioRecorder
   PUBLIC
     .
-    ${libconfig_SOURCE_DIR}/lib
     ${FFMPEG_INCLUDE_DIR}
 )
 
