@@ -99,6 +99,13 @@ av_video_meta cam_create_video_config(const int width, const int height, const i
     meta.height = height;
     meta.fps = {fps, 1};
 
+    switch(settings.video_container_.get_index())
+    {
+    case video_container::avi:  meta.container = video::container::avi; break;
+    case video_container::mp4:  meta.container = video::container::mp4; break;
+    case video_container::mkv:  meta.container = video::container::mkv; break;
+    }
+
     if (settings.video_codec_quality_type_ == video_quality_type::constant_quality)
         meta.quality = settings.video_codec_quality_constant_;
     else

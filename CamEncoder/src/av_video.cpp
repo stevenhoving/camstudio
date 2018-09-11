@@ -193,6 +193,15 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
         apply_tune(av_opts_, meta.tune);
         apply_profile(av_opts_, meta.profile);
 
+        switch(meta.container)
+        {
+        case video::container::mp4:
+        {
+            av_opts_["brand"] = "mp42";
+            av_opts_["movflags"] = "+disable_chpl";
+        } break;
+        }
+
         /*!
          * set variable framerate.
          * \see https://superuser.com/questions/908295/ffmpeg-libx264-how-to-specify-a-variable-frame-rate-but-with-a-maximum
