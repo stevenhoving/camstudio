@@ -160,7 +160,7 @@ private:
     // halo config
     bool cursor_halo_enabled_{false};
     cursor_halo_type cursor_halo_type_{cursor_halo_type::circle};
-    cam::color cursor_halo_color_{0xFFFFFF80};
+    cam::color cursor_halo_color_{0xa0FFFF80};
     int cursor_halo_size_{100};
     bool cursor_click_enabled_{false};
     cam::color cursor_click_left_color_{0xa0, 0xff, 0, 0};

@@ -71,7 +71,7 @@ namespace defaults
 
     constexpr auto halo_enabled = false;
     constexpr auto halo_type = cursor_halo_type::circle;
-    constexpr auto halo_color = cam::color(0xFFFFFF80);
+    constexpr auto halo_color = cam::color(0xa0FFFF80);
     constexpr auto halo_size = 100;
 
     constexpr auto click_enabled = false;
