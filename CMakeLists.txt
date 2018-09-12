@@ -27,6 +27,8 @@ list(APPEND CMAKE_MODULE_PATH
 include(CTest)
 enable_testing()
 
+find_package(InnoSetup)
+
 if(NOT DEFINED MSVC OR MSVC_VERSION LESS 1915)
   message(FATAL_ERROR "camstudio currently only builds with visual studio 2017 15.8 for now.")
 endif()
@@ -39,7 +41,6 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
 add_compile_options(/permissive-) # vs conformance mode.
 add_compile_options(/Zc:rvalueCast)
 add_compile_options(/Zc:ternary)
-
 
 ###############################################################################
 
@@ -55,3 +56,10 @@ add_subdirectory(CamLib)
 add_subdirectory(CamCapture)
 add_subdirectory(CamEncoder)
 add_subdirectory(CamStudioRecorder)
+
+###############################################################################
+
+if (INNOSETUP_COMPILER_FOUND)
+  include (CreateInnoSetup)
+  create_inno_setup()
+endif()
