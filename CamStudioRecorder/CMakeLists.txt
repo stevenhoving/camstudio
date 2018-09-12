@@ -197,7 +197,14 @@ set_target_properties(CamStudioRecorder PROPERTIES
 )
 
 install(TARGETS CamStudioRecorder
-    RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/bin
-    LIBRARY DESTINATION ${CMAKE_BINARY_DIR}/lib
-    ARCHIVE DESTINATION ${CMAKE_BINARY_DIR}/lib
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
+
+install(
+  FILES
+    "${CMAKE_SOURCE_DIR}/license.txt"
+  DESTINATION
+    bin
 )

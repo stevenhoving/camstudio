@@ -45,9 +45,7 @@ add_compile_options(/Zc:ternary)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-set(CMAKE_INSTALL_PREFIX
-    ${CMAKE_BINARY_DIR}/lib
-)
+set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
 
 ###############################################################################
 

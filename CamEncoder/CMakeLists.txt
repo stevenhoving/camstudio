@@ -27,7 +27,6 @@ set(ENCODER_SOURCE
 )
 
 set(ENCODER_INCLUDE
-
     include/CamEncoder/av_audio.h
     include/CamEncoder/av_config.h
     include/CamEncoder/av_dict.h
@@ -96,52 +95,17 @@ target_link_libraries(CamEncoder
     ${FFMPEG_LIBRARIES}
 )
 
-#install(
-#    DIRECTORY include
-#    DESTINATION include
-#)
-
-# Really hacky way to make sure we deploy the ffmpeg binaries.
-#set(FFMPEG_BIN_DIR
-#    "${FFMPEG_INCLUDE_DIR}/../bin"
-#)
-
-#install(
-#  FILES
-#    "${FFMPEG_BIN_DIR}/avcodec-58.dll"
-#    "${FFMPEG_BIN_DIR}/avdevice-58.dll"
-#    "${FFMPEG_BIN_DIR}/avfilter-7.dll"
-#    "${FFMPEG_BIN_DIR}/avformat-58.dll"
-#    "${FFMPEG_BIN_DIR}/avutil-56.dll"
-#    "${FFMPEG_BIN_DIR}/postproc-55.dll"
-#    "${FFMPEG_BIN_DIR}/swresample-3.dll"
-#    "${FFMPEG_BIN_DIR}/swscale-5.dll"
-#  DESTINATION
-#    ${CMAKE_BINARY_DIR}/bin
-#)
-
-#SET(SRC_FILES head1.h head2.h head3.h)
-#COPY_IF_DIFFERENT( /from_dir /to_dir ${SRC_FILES} IncludeTargets "Includes")
-#ADD_TARGET(CopyIncludes ALL DEPENDS ${IncludeTargets})
-
-add_custom_command(TARGET CamEncoder POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+install(
+  FILES
     "${FFMPEG_BIN_DIR}/avcodec-58.dll"
-    $<TARGET_FILE_DIR:CamEncoder>/avcodec-58.dll
     "${FFMPEG_BIN_DIR}/avdevice-58.dll"
-    $<TARGET_FILE_DIR:CamEncoder>
     "${FFMPEG_BIN_DIR}/avfilter-7.dll"
-    $<TARGET_FILE_DIR:CamEncoder>
     "${FFMPEG_BIN_DIR}/avformat-58.dll"
-    $<TARGET_FILE_DIR:CamEncoder>
     "${FFMPEG_BIN_DIR}/avutil-56.dll"
-    $<TARGET_FILE_DIR:CamEncoder>
     "${FFMPEG_BIN_DIR}/postproc-55.dll"
-    $<TARGET_FILE_DIR:CamEncoder>
     "${FFMPEG_BIN_DIR}/swresample-3.dll"
-    $<TARGET_FILE_DIR:CamEncoder>
     "${FFMPEG_BIN_DIR}/swscale-5.dll"
-    $<TARGET_FILE_DIR:CamEncoder>
+  DESTINATION bin
 )
 
 add_subdirectory(tests)
