@@ -6,7 +6,6 @@
 
 
 #include "resource.h"                   // main symbols
-#include "RecorderVersionReleaseInfo.h" // Contains version and SVN release number
 #include <memory>
 
 // Multilanguage

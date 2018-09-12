@@ -15,6 +15,13 @@
 
 project(CamStudioRecorder)
 
+include(MyBuildinfo)
+
+generate_build_info_header(
+    "${CMAKE_SOURCE_DIR}/license.txt"
+    "${CMAKE_BINARY_DIR}/buildinfo.h"
+)
+
 set(RECORDER_NEW_SOURCE
     application_settings_ui.h
     application_settings_ui.cpp
@@ -94,7 +101,6 @@ set(RECORDER_SOURCE
     RecorderView.h
     stdafx.cpp
     stdafx.h
-    RecorderVersionReleaseInfo.h
 )
 
 set(RECORDER_RESOURCE
@@ -141,7 +147,7 @@ source_group(resource FILES
 target_include_directories(CamStudioRecorder
   PUBLIC
     .
-    ${FFMPEG_INCLUDE_DIR}
+    ${CMAKE_BINARY_DIR}
 )
 
 target_compile_definitions(CamStudioRecorder

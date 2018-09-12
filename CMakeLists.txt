@@ -19,14 +19,13 @@ project(CamStudio)
 
 set(GTEST_CATCH_EXCEPTIONS 0)
 
-include(CTest)
-enable_testing()
-
 list(APPEND CMAKE_MODULE_PATH
   "${CMAKE_SOURCE_DIR}/dep/cmake"
   "${CMAKE_SOURCE_DIR}/dep/cmake_utility"
 )
 
+include(CTest)
+enable_testing()
 
 if(NOT DEFINED MSVC OR MSVC_VERSION LESS 1915)
   message(FATAL_ERROR "camstudio currently only builds with visual studio 2017 15.8 for now.")

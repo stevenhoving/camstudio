@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "AboutDlg.h"
 
-#include "RecorderVersionReleaseInfo.h"
+#include "buildinfo.h"
 #include <fmt/format.h>
 
 CAboutDlg::CAboutDlg()
@@ -26,13 +26,13 @@ BOOL CAboutDlg::OnInitDialog()
     CDialog::OnInitDialog();
 
     const auto about_text = fmt::format(
-        L"Version: v{}\n"
-        L"Copyright \xA9 2001 RenderSoft Software and Web Publishing\n"
-        L"Copyright \xA9 2008 CamStudio Group && Contributors\n"
-        L"Copyright \xA9 2018 Steven Hoving",
-        CURRENT_VERSION_NUMBER);
+        "Version: v{}\n"
+        "Copyright \xA9 2001 RenderSoft Software and Web Publishing\n"
+        "Copyright \xA9 2008 CamStudio Group && Contributors\n"
+        "Copyright \xA9 2018 Steven Hoving",
+        aeon::buildinfo::full_version);
 
-    version_copyright_label_.SetWindowText(about_text.c_str());
+    version_copyright_label_.SetWindowText(CString(about_text.c_str()));
 
     return TRUE;
 }
