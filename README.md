@@ -31,12 +31,6 @@ Besides creating a clean installer for camstudio I have found myself a couple of
 * Introduce unit test - in progress.
 * Replace UI framework with Qt.
 
-## Settings dialogs
-![video settings dialog](https://raw.githubusercontent.com/stevenhoving/camstudio/develop/assets/github/video-settings-dialog.png)
-![cursor settings dialog](https://raw.githubusercontent.com/stevenhoving/camstudio/develop/assets/github/cursor-settings-dialog.png)
-![shortcuts settings dialog](https://raw.githubusercontent.com/stevenhoving/camstudio/develop/assets/github/shortcuts-settings-dialog.png)
-![application settings dialog](https://raw.githubusercontent.com/stevenhoving/camstudio/develop/assets/github/application-settings-dialog.png)
-
 ## Removed features
 * swf support.
 * xnote support.
