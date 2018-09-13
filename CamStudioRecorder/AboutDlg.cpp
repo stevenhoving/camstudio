@@ -30,7 +30,7 @@ BOOL CAboutDlg::OnInitDialog()
         "Copyright \xA9 2001 RenderSoft Software and Web Publishing\n"
         "Copyright \xA9 2008 CamStudio Group && Contributors\n"
         "Copyright \xA9 2018 Steven Hoving",
-        aeon::buildinfo::full_version);
+        buildinfo::full_version);
 
     version_copyright_label_.SetWindowText(CString(about_text.c_str()));
 
