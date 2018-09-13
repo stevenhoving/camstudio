@@ -17,7 +17,6 @@ add_subdirectory(zlib)
 
 #set(SKIP_INSTALL_HEADERS ON CACHE BOOL "" FORCE)
 add_subdirectory(minilzo)
-add_subdirectory(localization)
 add_subdirectory(fmt)
 add_subdirectory(googletest)
 add_subdirectory(google_benchmark)
