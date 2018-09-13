@@ -15,7 +15,7 @@
 
 [Setup]
 AppName=CamStudio
-AppVersion=3.0-alpha-1
+AppVersion=@CAMSTUDIO_VERSION@
 AppCopyright=Copyright (C) 2018 Steven Hoving. Copyright (C) 2008 CamStudio Group & Contributors. Copyright (C) 2001 RenderSoft Software and Web Publishing.
 DefaultDirName={pf}\CamStudio
 DefaultGroupName=CamStudio

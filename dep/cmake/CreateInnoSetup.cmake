@@ -25,14 +25,14 @@ function(create_inno_setup)
 
     #file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/setup/" DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
 
+    set(CAMSTUDIO_VERSION ${git_describe_tag})
     configure_file(
         "${CMAKE_CURRENT_SOURCE_DIR}/setup/setup.iss"
         "${CMAKE_INSTALL_PREFIX}/bin/setup.iss"
     )
 
-    add_custom_target(CreateInstaller
+    add_custom_target(DEPLOY
                       COMMAND ${INNOSETUP_PATH} "${CMAKE_INSTALL_PREFIX}/bin/setup.iss" /FCamStudio-${git_describe_tag}
-                      DEPENDS INSTALL
                       VERBATIM)
 
 endfunction()
