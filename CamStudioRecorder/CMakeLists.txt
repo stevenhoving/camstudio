@@ -205,6 +205,7 @@ install(TARGETS CamStudioRecorder
 install(
   FILES
     "${CMAKE_SOURCE_DIR}/license.txt"
+    "${CMAKE_SOURCE_DIR}/README.md"
   DESTINATION
     bin
 )
