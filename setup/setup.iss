@@ -39,7 +39,7 @@ Source: "postproc-55.dll"; DestDir: "{app}"
 Source: "swresample-3.dll"; DestDir: "{app}"
 Source: "swscale-5.dll"; DestDir: "{app}"
 Source: "license.txt"; DestDir: "{app}"
-;Source: "Readme.txt"; DestDir: "{app}"; Flags: isreadme
+Source: "README.md"; DestDir: "{app}"; Flags: isreadme
 
 [Icons]
 Name: "{group}\CamStudio Recorder"; Filename: "{app}\CamStudioRecorder.exe"
