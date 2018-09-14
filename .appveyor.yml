@@ -37,5 +37,9 @@ build_script:
   - MKDIR vs_build
   - cd vs_build
   - cmake ../ -G "Visual Studio 15 2017 Win64" -T host=x64
-  - cmake  --build .
+  - cmake --build . --target INSTALL
+  - cmake --build . --target DEPLOY
 
+artifacts:
+  - path: C:\projects\camstudio\vs_build\install\bin\installer\*.zip
+    name: Installer
