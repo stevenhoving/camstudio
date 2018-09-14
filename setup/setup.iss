@@ -17,6 +17,9 @@
 AppName=CamStudio
 AppVersion=@CAMSTUDIO_VERSION@
 AppCopyright=Copyright (C) 2018 Steven Hoving. Copyright (C) 2008 CamStudio Group & Contributors. Copyright (C) 2001 RenderSoft Software and Web Publishing.
+AppPublisherURL=http://www.github.com/stevenhoving/camstudio
+AppSupportURL=http://www.github.com/stevenhoving/camstudio
+AppUpdatesURL=http://www.github.com/stevenhoving/camstudio
 DefaultDirName={pf}\CamStudio
 DefaultGroupName=CamStudio
 UninstallDisplayIcon={app}\CamStudioRecorder.exe
