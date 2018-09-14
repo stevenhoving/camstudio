@@ -41,5 +41,5 @@ build_script:
   - cmake --build . --target DEPLOY
 
 artifacts:
-  - path: C:\projects\camstudio\vs_build\install\bin\installer\*.exe
+  - path: vs_build\install\bin\installer\*.exe
     name: Installer
