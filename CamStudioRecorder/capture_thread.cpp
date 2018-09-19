@@ -171,7 +171,7 @@ capture_state capture_thread::get_capture_state() const noexcept
     return capture_state_;
 }
 
-bool capture_thread::capture_screen_frame(const rect<int> &capture_dst_rect)
+bool capture_thread::capture_screen_frame(const cam::rect<int> &capture_dst_rect)
 {
     return capture_source_->capture_frame(capture_dst_rect);
 }

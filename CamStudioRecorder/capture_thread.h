@@ -30,7 +30,7 @@
 struct capture_settings
 {
     HWND capture_hwnd_{0};
-    rect<int> capture_rect_{0, 0, 0, 0};
+    cam::rect<int> capture_rect_{0, 0, 0, 0};
     capture_type capture_type_{ capture_type::allscreens };
 
     std::string filename;
@@ -59,7 +59,7 @@ public:
 
 protected:
     void run();
-    bool capture_screen_frame(const rect<int> &capture_dst_rect);
+    bool capture_screen_frame(const cam::rect<int> &capture_dst_rect);
 
 private:
     capture_settings capture_settings_;
@@ -68,7 +68,7 @@ private:
     std::atomic<bool> run_{false};
     capture_state capture_state_{capture_state::stopped};
 
-    rect<int> capture_dst_rect_{0, 0, 0, 0};
+    cam::rect<int> capture_dst_rect_{0, 0, 0, 0};
 
     std::function<void()> on_recording_completed_;
 };

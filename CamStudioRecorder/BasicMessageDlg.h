@@ -1,7 +1,7 @@
 #pragma once
 
 #include <afxwin.h>
-#include "resource.h" //Added by janhgm, otherwise IDD_BASICMESSAGE is undeclared identifier
+#include "resource.h"
 
 class CBasicMessageDlg : public CDialog
 {
@@ -11,7 +11,6 @@ public:
     CBasicMessageDlg(CWnd *pParent = nullptr);
     virtual ~CBasicMessageDlg();
     void SetText(LPCTSTR lpString);
-    void SetTitle(LPCTSTR lpString);
     virtual void OnCancel();
     bool Cancelled();
     // Dialog Data

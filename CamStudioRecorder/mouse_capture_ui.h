@@ -45,7 +45,7 @@ public:
     mouse_capture_ui(const mouse_capture_ui &) = delete;
     mouse_capture_ui &operator = (const mouse_capture_ui &) = delete;
 
-    void show(const rect<int> region, const capture_type type);
+    void show(const cam::rect<int> region, const capture_type type);
     void hide();
     void set_modify_mode(modify_mode mode);
     void set_cancel_hotkey(int hotkey);

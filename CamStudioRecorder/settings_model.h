@@ -56,8 +56,8 @@ public:
     void set_capture_mode(capture_type type);
     auto get_capture_mode() -> capture_type;
 
-    void set_capture_rect(const rect<int>& capture_rect);
-    auto get_capture_rect() -> rect<int>;
+    void set_capture_rect(const cam::rect<int>& capture_rect);
+    auto get_capture_rect() -> cam::rect<int>;
 
     void set_region_mouse_drag(bool capture_mouse_drag);
     auto get_region_mouse_drag() -> bool;
@@ -150,7 +150,7 @@ private:
 
     /* capture settings */
     capture_type capture_type_{capture_type::allscreens};
-    rect<int> capture_rect_{0, 0, 0, 0};
+    cam::rect<int> capture_rect_{0, 0, 0, 0};
     bool capture_fixed_{false};
     bool capture_mouse_drag_{false};
 

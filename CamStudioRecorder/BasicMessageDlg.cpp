@@ -43,6 +43,7 @@ void CBasicMessageDlg::OnCancel()
     ReleaseCapture();
     this->ShowWindow(SW_HIDE);
 }
+
 bool CBasicMessageDlg::Cancelled()
 {
     return m_bCancelled;

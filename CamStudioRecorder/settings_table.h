@@ -50,7 +50,7 @@ public:
     }
 
     template<>
-    void insert(const std::string &key, rect<int> value)
+    void insert(const std::string &key, cam::rect<int> value)
     {
         auto array = cpptoml::make_array();
         array->push_back(value.left());
@@ -112,14 +112,14 @@ public:
 
     // cookie cutter of a cookie cutter is preferred.
     template<>
-    auto get_optional<rect<int>>(const std::string &key, const rect<int> default_value) const
+    auto get_optional<cam::rect<int>>(const std::string &key, const cam::rect<int> default_value) const
     {
         const auto value = table_->get_array_of<int64_t>(key);
         if (!value)
             return default_value;
 
         assert(value->size() == 4);
-        return rect<int>(
+        return cam::rect<int>(
             static_cast<int>(value->at(0)),
             static_cast<int>(value->at(1)),
             static_cast<int>(value->at(2)),

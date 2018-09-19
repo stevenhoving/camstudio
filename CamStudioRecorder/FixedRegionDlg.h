@@ -7,12 +7,12 @@
 class settings_model;
 class mouse_capture_ui;
 
-static rect<int> from_crect(const CRect &rect)
+static cam::rect<int> from_rect(const CRect &rect)
 {
     return {rect.left, rect.top, rect.right, rect.bottom};
 }
 
-static CRect from_rect(const rect<int> &rect)
+static CRect from_rect(const cam::rect<int> &rect)
 {
     return {rect.left(), rect.top(), rect.right(), rect.bottom()};
 }
@@ -42,7 +42,7 @@ private:
     CEdit top_text_edit_ctrl_;
     CButton m_ctrlButtonMouseDrag;
     CButton m_ctrlButtonFixTopLeft;
-    rect<int> capture_rect_;
+    cam::rect<int> capture_rect_;
 
     settings_model &settings_;
 

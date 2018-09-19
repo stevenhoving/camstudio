@@ -33,9 +33,9 @@ public:
 
     void link(HWND dst, HWND src);
     void unlink();
-    void set_size(rect<int> dst_size);
+    void set_size(cam::rect<int> dst_size);
 private:
-    rect<int> _get_src_size();
+    cam::rect<int> _get_src_size();
 
 private:
     HTHUMBNAIL thumbnail_{ INVALID_HANDLE_VALUE };

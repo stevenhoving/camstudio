@@ -237,7 +237,7 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     mouse_capture_ui_ = std::make_unique<mouse_capture_ui>(AfxGetInstanceHandle(), GetSafeHwnd(),
         [this](const CRect &capture_rect)
         {
-            settings_model_->set_capture_rect(from_crect(capture_rect));
+            settings_model_->set_capture_rect(from_rect(capture_rect));
             ::PostMessage(m_hWnd, WM_USER_RECORDSTART, 0, 0);
         }
     );
@@ -660,14 +660,14 @@ void CRecorderView::OnRecord()
     break;
     case capture_type::variable:
     {
-        const auto capture_rect = rect<int>();
+        const auto capture_rect = cam::rect<int>();
         mouse_capture_ui_->set_modify_mode(modify_mode::select);
         mouse_capture_ui_->show(capture_rect, capture_type::variable);
     } break;
     case capture_type::allscreens:
     {
         // Applicable when Option region is set as 'Full Screen'
-        rect<int> capture_rect(
+        cam::rect<int> capture_rect(
             g_minx_screen,
             g_miny_screen,
             g_minx_screen + g_maxx_screen,

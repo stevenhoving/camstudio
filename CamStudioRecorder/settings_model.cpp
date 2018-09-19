@@ -441,7 +441,7 @@ void settings_model::_load_capture_settings(const cpptoml::table &root)
     capture_type_ = capture.get_optional<capture_type>(config::capture::type, capture_type::fullscreen);
     capture_fixed_ = capture.get_optional<bool>(config::capture::region_fixed, false);
     capture_mouse_drag_ = capture.get_optional<bool>(config::capture::region_mouse_drag, false);
-    capture_rect_ = capture.get_optional<rect<int>>(config::capture::rect, {0, 0, 0, 0});
+    capture_rect_ = capture.get_optional<cam::rect<int>>(config::capture::rect, {0, 0, 0, 0});
 }
 
 void settings_model::_load_cursor_settings(const cpptoml::table &root)
@@ -567,12 +567,12 @@ capture_type settings_model::get_capture_mode()
     return capture_type_;
 }
 
-void settings_model::set_capture_rect(const rect<int> &capture_rect)
+void settings_model::set_capture_rect(const cam::rect<int> &capture_rect)
 {
     capture_rect_ = capture_rect;
 }
 
-rect<int> settings_model::get_capture_rect()
+cam::rect<int> settings_model::get_capture_rect()
 {
     return capture_rect_;
 }

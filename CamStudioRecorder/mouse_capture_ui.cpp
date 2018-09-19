@@ -100,7 +100,7 @@ HWND mouse_capture_ui::create_capture_window(HINSTANCE instance, HWND parent, CR
     return hwnd;
 }
 
-void mouse_capture_ui::show(const rect<int> region, const capture_type type)
+void mouse_capture_ui::show(const cam::rect<int> region, const capture_type type)
 {
     // \todo make this load the correct icon based on the modify mode
     HICON icon = ::LoadIcon(instance_, MAKEINTRESOURCE(IDI_ICONCROSSHAIR));

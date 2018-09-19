@@ -20,6 +20,9 @@
 #include "cam_size.h"
 #include "cam_point.h"
 
+namespace cam
+{
+
 /* \note no restrictions on what you feed this template class. Maybe we should. */
 template<typename T>
 class rect
@@ -103,3 +106,4 @@ constexpr bool operator == (const rect<T> &lhs, const rect<T> &rhs)
         && lhs.top() == rhs.top()
         && lhs.bottom() == rhs.bottom();
 }
+} // namespace cam

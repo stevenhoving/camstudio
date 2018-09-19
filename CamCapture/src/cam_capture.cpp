@@ -28,7 +28,7 @@
 #include <cassert>
 #include <ctime>
 
-cam_capture_source::cam_capture_source(HWND hwnd, const rect<int> & /*view*/)
+cam_capture_source::cam_capture_source(HWND hwnd, const cam::rect<int> & /*view*/)
     : bitmap_info_{}
     , bitmap_frame_{nullptr}
     , hwnd_{hwnd}
@@ -82,7 +82,7 @@ cam_capture_source::~cam_capture_source()
     ::ReleaseDC(hwnd_, desktop_dc_);
 }
 
-bool cam_capture_source::capture_frame(const rect<int> &capture_rect)
+bool cam_capture_source::capture_frame(const cam::rect<int> &capture_rect)
 {
     old_selected_bitmap_ = ::SelectObject(memory_dc_, bitmap_frame_);
     const auto ret = ::BitBlt(memory_dc_, 0, 0,
@@ -126,7 +126,7 @@ void cam_capture_source::add_annotation(std::unique_ptr<cam_iannotation> annotat
     annotations_.emplace_back(std::move(annotation));
 }
 
-void cam_capture_source::_draw_annotations(const rect<int> &capture_rect)
+void cam_capture_source::_draw_annotations(const cam::rect<int> &capture_rect)
 {
     if (!enable_annotations_)
         return;

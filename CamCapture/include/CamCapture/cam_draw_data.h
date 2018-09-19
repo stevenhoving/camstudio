@@ -28,7 +28,7 @@ class point;
 class cam_draw_data
 {
 public:
-    constexpr cam_draw_data(const double frame_delta, const rect<int> &canvas_rect,
+    constexpr cam_draw_data(const double frame_delta, const cam::rect<int> &canvas_rect,
                             const point<int> &mouse_pos, const cam_mouse_button::type mouse_button_state) noexcept
         : frame_delta_(frame_delta)
         , canvas_rect_(canvas_rect)
@@ -38,7 +38,7 @@ public:
     }
 
     double frame_delta_;
-    const rect<int> &canvas_rect_;
+    const cam::rect<int> &canvas_rect_;
     const point<int> &mouse_pos_;
     cam_mouse_button::type mouse_button_state_;
 };

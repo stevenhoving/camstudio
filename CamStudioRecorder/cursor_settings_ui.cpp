@@ -217,7 +217,7 @@ void cursor_settings_ui::_draw_cursor_preview(cam_mouse_button::type mouse_butto
 
     point<int> mouse_point(preview_rect.Width()/2, preview_rect.Height()/2);
 
-    rect<int> prev_rect(0, 0, preview_rect.Width(), preview_rect.Height());
+    cam::rect<int> prev_rect(0, 0, preview_rect.Width(), preview_rect.Height());
     cam_draw_data draw_data(dt, prev_rect, mouse_point, mouse_buttons_state);
 
     annotation_->draw(canvas, draw_data);

@@ -31,7 +31,7 @@ public:
 
     void capture_frame();
     HBITMAP get_frame();
-    rect<int> get_size();
+    cam::rect<int> get_size();
 
 private:
     BITMAPINFO bitmap_info_{};
@@ -39,5 +39,5 @@ private:
     HWND hwnd_{nullptr};
     HDC desktop_dc_{nullptr};
     HDC memory_dc_{nullptr};
-    rect<int> src_rect_{0, 0, 0, 0};
+    cam::rect<int> src_rect_{0, 0, 0, 0};
 };

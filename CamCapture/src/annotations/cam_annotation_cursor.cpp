@@ -170,7 +170,7 @@ void cam_annotation_cursor::_handle_ring_button_state_changed(const point<int> &
     }
 }
 
-void cam_annotation_cursor::_draw_cursor(Gdiplus::Graphics &canvas, const rect<int> &canvas_rect,
+void cam_annotation_cursor::_draw_cursor(Gdiplus::Graphics &canvas, const cam::rect<int> &canvas_rect,
                                          const point<int> &mouse_pos)
 {
     CURSORINFO cursor_info = {};
@@ -205,7 +205,7 @@ void cam_annotation_cursor::_draw_cursor(Gdiplus::Graphics &canvas, const rect<i
     ::DeleteObject(icon_info.hbmMask);
 }
 
-void cam_annotation_cursor::_draw_halo(Gdiplus::Graphics &canvas, const rect<int> &canvas_rect,
+void cam_annotation_cursor::_draw_halo(Gdiplus::Graphics &canvas, const cam::rect<int> &canvas_rect,
                                        const point<int> &mouse_pos,
                                        const mouse_action_config &halo_config)
 {
@@ -247,7 +247,7 @@ void cam_annotation_cursor::_draw_halo(Gdiplus::Graphics &canvas, const rect<int
     }
 }
 
-void cam_annotation_cursor::_draw_rings(Gdiplus::Graphics &canvas, const rect<int> &canvas_rect,
+void cam_annotation_cursor::_draw_rings(Gdiplus::Graphics &canvas, const cam::rect<int> &canvas_rect,
                                         const double frame_delta)
 {
     std::vector<cam_mouse_ring_state *> dead_rings;
@@ -263,7 +263,7 @@ void cam_annotation_cursor::_draw_rings(Gdiplus::Graphics &canvas, const rect<in
     }
 }
 
-bool cam_annotation_cursor::_draw_ring(Gdiplus::Graphics &canvas, const rect<int> &canvas_rect,
+bool cam_annotation_cursor::_draw_ring(Gdiplus::Graphics &canvas, const cam::rect<int> &canvas_rect,
                                        cam_mouse_ring_state &ring, const double frame_delta)
 {
     const auto config = _get_ring_config(ring.ring_type_);

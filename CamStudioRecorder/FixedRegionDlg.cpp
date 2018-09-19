@@ -145,8 +145,6 @@ void CFixedRegionDlg::OnOK()
             capture_rect_.width(g_maxx_screen - capture_rect_.left_);
             if (capture_rect_.width() <= 0)
             {
-                // TODO -- where did these constants came from? Get rid of 'em, put 'em in an ini or #define them
-                // somewhere Answer: See struct sRegionOpts in Profile.h. An area of 240x320 is defined there.
                 capture_rect_.left_ = g_minx_screen + 100;
                 capture_rect_.width(320);
             }

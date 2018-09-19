@@ -35,7 +35,7 @@ void dwm_thumbnail::unlink()
     thumbnail_ = nullptr;
 }
 
-void dwm_thumbnail::set_size(rect<int> dst_size)
+void dwm_thumbnail::set_size(cam::rect<int> dst_size)
 {
     DWM_THUMBNAIL_PROPERTIES dskThumbProps;
     dskThumbProps.dwFlags = DWM_TNP_RECTDESTINATION | DWM_TNP_VISIBLE | DWM_TNP_SOURCECLIENTAREAONLY;
@@ -47,7 +47,7 @@ void dwm_thumbnail::set_size(rect<int> dst_size)
         fmt::print("unable to update thumbnail props\n");
 }
 
-rect<int> dwm_thumbnail::_get_src_size()
+cam::rect<int> dwm_thumbnail::_get_src_size()
 {
     SIZE src_size;
     if (const auto ret = DwmQueryThumbnailSourceSize(thumbnail_, &src_size); ret != S_OK)

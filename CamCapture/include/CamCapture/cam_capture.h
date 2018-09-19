@@ -42,14 +42,14 @@ class cam_capture_source
 {
 public:
     cam_capture_source() = delete;
-    cam_capture_source(HWND hwnd, const rect<int> &view);
+    cam_capture_source(HWND hwnd, const cam::rect<int> &view);
     ~cam_capture_source();
 
     /*!
      * \param[in] src_capture_rect the rectangle of the capture source.
      * \todo the src_capture_rect does not belong here...
      */
-    bool capture_frame(const rect<int> &capture_rect);
+    bool capture_frame(const cam::rect<int> &capture_rect);
     const cam_frame *get_frame();
 
     void enable_annotations();
@@ -57,7 +57,7 @@ public:
     void add_annotation(std::unique_ptr<cam_iannotation> annotation);
 
 protected:
-    void _draw_annotations(const rect<int> &capture_rect);
+    void _draw_annotations(const cam::rect<int> &capture_rect);
 
 private:
     BITMAPINFO bitmap_info_;
@@ -65,11 +65,11 @@ private:
     HWND hwnd_;
     HDC desktop_dc_;
     HDC memory_dc_;
-    rect<int> src_rect_;
+    cam::rect<int> src_rect_;
 
     unsigned char *bitmap_data_{nullptr};
     cam_frame frame_;
-    rect<int> captured_rect_;
+    cam::rect<int> captured_rect_;
 
     HGDIOBJ old_selected_bitmap_{nullptr};
 
