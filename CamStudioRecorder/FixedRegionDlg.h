@@ -1,8 +1,8 @@
 #pragma once
 
-#include <memory>
-
+#include "virtual_screen_info.h"
 #include <CamCapture/cam_rect.h>
+#include <memory>
 
 class settings_model;
 class mouse_capture_ui;
@@ -21,7 +21,7 @@ class CFixedRegionDlg : public CDialog
 {
     DECLARE_DYNAMIC(CFixedRegionDlg)
 public:
-    explicit CFixedRegionDlg(CWnd *pParent, settings_model &settings);
+    explicit CFixedRegionDlg(CWnd *pParent, virtual_screen_info screen_info, settings_model &settings);
 
     enum
     {
@@ -45,6 +45,7 @@ private:
     cam::rect<int> capture_rect_;
 
     settings_model &settings_;
+    virtual_screen_info screen_info_;
 
     std::unique_ptr<mouse_capture_ui> capture_;
 

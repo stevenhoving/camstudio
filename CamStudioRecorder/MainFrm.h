@@ -44,13 +44,3 @@ protected:
 private:
     CTrayIcon m_TrayIcon;
 };
-
-/////////////////////////////////////////////////////////////////////////////
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Developer Studio will insert additional declarations immediately before the previous line.
-
-extern int g_maxx_screen;
-extern int g_maxy_screen;
-extern int g_minx_screen;
-extern int g_miny_screen;

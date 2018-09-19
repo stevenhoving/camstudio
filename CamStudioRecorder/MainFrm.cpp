@@ -65,27 +65,18 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     m_ToolbarBitmap256.LoadBitmap(IDB_TOOLBAR256);
     m_ToolbarBitmapMask.LoadBitmap(IDB_TOOLBARMASK);
 
-    HDC hScreenDC = ::GetDC(nullptr);
-    int numbits = ::GetDeviceCaps(hScreenDC, BITSPIXEL);
-    g_maxx_screen = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
-    g_maxy_screen = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
-    g_minx_screen = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
-    g_miny_screen = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
-    ::ReleaseDC(nullptr, hScreenDC);
+    // \todo cleanup
 
-    if (numbits > 8)
-    {
-        // m_ilToolBar.Create(21,21, ILC_COLOR8 | ILC_MASK, 4, 4);
-        m_ilToolBar.Create(21, 21, ILC_COLOR16 | ILC_MASK, 4, 4);
-        // m_ilToolBar.Create(32,32, ILC_COLOR16 | ILC_MASK, 4, 4);
-        m_ilToolBar.Add(&m_ToolbarBitmap256, &m_ToolbarBitmapMask);
+    // m_ilToolBar.Create(21,21, ILC_COLOR8 | ILC_MASK, 4, 4);
+    m_ilToolBar.Create(21, 21, ILC_COLOR16 | ILC_MASK, 4, 4);
+    // m_ilToolBar.Create(32,32, ILC_COLOR16 | ILC_MASK, 4, 4);
+    m_ilToolBar.Add(&m_ToolbarBitmap256, &m_ToolbarBitmapMask);
 
-        // VC6
-        // m_wndToolBar.GetToolBarCtrl().SetImageList(&m_ilToolBar);
+    // VC6
+    // m_wndToolBar.GetToolBarCtrl().SetImageList(&m_ilToolBar);
 
-        // VC5
-        ::SendMessage(m_wndToolBar.GetToolBarCtrl().m_hWnd, TB_SETIMAGELIST, 0, (LPARAM)m_ilToolBar.GetSafeHandle());
-    }
+    // VC5
+    ::SendMessage(m_wndToolBar.GetToolBarCtrl().m_hWnd, TB_SETIMAGELIST, 0, (LPARAM)m_ilToolBar.GetSafeHandle());
 
     m_wndToolBar.ModifyStyle(0, TBSTYLE_FLAT);
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "settings/video_settings.h"
+#include "virtual_screen_info.h"
 
 #include <filesystem>
 #include <memory>
@@ -94,6 +95,14 @@ public:
     static UINT WM_USER_RECORDSTART;
 
 private:
+
+    void DisplayRecordingStatistics(CDC &srcDC);
+    void DisplayBackground(CDC &srcDC);
+    void DisplayRecordingMsg(CDC &srcDC);
+
+    bool RunViewer(const CString &strNewFile);
+    void DisplayAutopanInfo(CRect rc);
+
     std::unique_ptr<capture_thread> capture_thread_;
     std::unique_ptr<video_settings_model> video_settings_model_;
     std::unique_ptr<settings_model> settings_model_;
@@ -116,17 +125,11 @@ private:
 
     HBITMAP g_hLogoBM{nullptr};
 
-    double zoom_{1};
-    CPoint zoomed_at_;
-    DWORD zoom_when_{0}; // FIXME: I hope it is unlikely zoom start at 47 day boundary ever happen by accident
-    int zoom_direction_{-1}; // zoomed out
-
-    void DisplayRecordingStatistics(CDC &srcDC);
-    void DisplayBackground(CDC &srcDC);
-    void DisplayRecordingMsg(CDC &srcDC);
-
-    bool RunViewer(const CString &strNewFile);
-    void DisplayAutopanInfo(CRect rc);
+    //double zoom_{1};
+    //CPoint zoomed_at_;
+    //DWORD zoom_when_{0}; // FIXME: I hope it is unlikely zoom start at 47 day boundary ever happen by accident
+    //int zoom_direction_{-1}; // -1 means zoomed out.
+    virtual_screen_info virtual_screen_info_{};
 };
 
 #ifndef _DEBUG // debug version in vscapView.cpp

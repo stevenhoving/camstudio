@@ -15,10 +15,11 @@
 
 IMPLEMENT_DYNAMIC(CFixedRegionDlg, CDialog)
 
-CFixedRegionDlg::CFixedRegionDlg(CWnd *pParent, settings_model &settings)
+CFixedRegionDlg::CFixedRegionDlg(CWnd *pParent, virtual_screen_info screen_info, settings_model &settings)
     : CDialog(CFixedRegionDlg::IDD, pParent)
     , capture_rect_(0, 0, 0, 0)
     , settings_(settings)
+    , screen_info_(screen_info)
 {
     capture_ = std::make_unique<mouse_capture_ui>(AfxGetInstanceHandle(), GetSafeHwnd(),
         [this](const CRect &capture_rect)
@@ -52,15 +53,15 @@ void CFixedRegionDlg::DoDataExchange(CDataExchange *pDX)
     DDX_Control(pDX, IDC_FIXEDTOPLEFT, m_ctrlButtonFixTopLeft);
 
     DDX_Text(pDX, IDC_X, capture_rect_.left_);
-    DDV_MinMaxInt(pDX, capture_rect_.left_, g_minx_screen, g_maxx_screen);
+    DDV_MinMaxInt(pDX, capture_rect_.left_, screen_info_.size.left(), screen_info_.size.right());
     DDX_Text(pDX, IDC_Y, capture_rect_.top_);
-    DDV_MinMaxInt(pDX, capture_rect_.top_, g_miny_screen, g_maxy_screen);
+    DDV_MinMaxInt(pDX, capture_rect_.top_, screen_info_.size.top(), screen_info_.size.bottom());
     int width = capture_rect_.width();
     DDX_Text(pDX, IDC_WIDTH, width);
-    DDV_MinMaxInt(pDX, width, 0, abs(g_maxx_screen - g_minx_screen));
+    DDV_MinMaxInt(pDX, width, 0, abs(screen_info_.size.width()));
     int height = capture_rect_.height();
     DDX_Text(pDX, IDC_HEIGHT, height);
-    DDV_MinMaxInt(pDX, height, 0, abs(g_maxy_screen - g_miny_screen));
+    DDV_MinMaxInt(pDX, height, 0, abs(screen_info_.size.height()));
 }
 
 BEGIN_MESSAGE_MAP(CFixedRegionDlg, CDialog)
@@ -84,9 +85,8 @@ void CFixedRegionDlg::OnOK()
         return;
     }
 
-    // Not Correct, one to high because MinXY is zero an MaxXY is width/height no of pixels.
-    int maxWidth = abs(g_maxx_screen - g_minx_screen); // Assuming number first pixel is one not zero.
-    int maxHeight = abs(g_maxy_screen - g_miny_screen);
+    int maxWidth = abs(screen_info_.size.width());
+    int maxHeight = abs(screen_info_.size.height());
 
     if (capture_rect_.width() < 0)
     {
@@ -96,7 +96,7 @@ void CFixedRegionDlg::OnOK()
 
     if (maxWidth < capture_rect_.width())
     {
-        MessageOut(m_hWnd, IDS_STRING_WIDTHSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, g_maxx_screen);
+        MessageOut(m_hWnd, IDS_STRING_WIDTHSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, screen_info_.size.width());
         return;
     }
 
@@ -108,7 +108,7 @@ void CFixedRegionDlg::OnOK()
 
     if (maxHeight < capture_rect_.height())
     {
-        MessageOut(m_hWnd, IDS_STRING_HEIGHTSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, g_maxy_screen);
+        MessageOut(m_hWnd, IDS_STRING_HEIGHTSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, screen_info_.size.height());
         return;
     }
 
@@ -116,36 +116,36 @@ void CFixedRegionDlg::OnOK()
     int fval = m_ctrlButtonFixTopLeft.GetCheck();
     if (fval)
     {
-        if (capture_rect_.left_ < g_minx_screen)
+        if (capture_rect_.left_ < screen_info_.size.left())
         {
             MessageOut(m_hWnd, IDS_STRING_LEFTGREATER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             return;
         }
 
-        if (g_maxx_screen < capture_rect_.left_)
+        if (capture_rect_.left_ >= screen_info_.size.right())
         {
-            MessageOut(this->m_hWnd, IDS_STRING_LEFTSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, g_maxx_screen);
+            MessageOut(this->m_hWnd, IDS_STRING_LEFTSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, screen_info_.size.right());
             return;
         }
 
-        if (capture_rect_.top_ < g_miny_screen)
+        if (capture_rect_.top_ < screen_info_.size.top())
         {
             MessageOut(m_hWnd, IDS_STRING_TOPGREATER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
             return;
         }
 
-        if (g_maxy_screen < capture_rect_.top_)
+        if (capture_rect_.top_ >= screen_info_.size.bottom())
         {
-            MessageOut(m_hWnd, IDS_STRING_TOPSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, g_maxy_screen);
+            MessageOut(m_hWnd, IDS_STRING_TOPSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, screen_info_.size.bottom());
             return;
         }
 
         if (maxWidth < (capture_rect_.left_ + capture_rect_.width()))
         {
-            capture_rect_.width(g_maxx_screen - capture_rect_.left_);
+            capture_rect_.width(screen_info_.size.width() - capture_rect_.left_);
             if (capture_rect_.width() <= 0)
             {
-                capture_rect_.left_ = g_minx_screen + 100;
+                capture_rect_.left_ = screen_info_.size.left() + 100;
                 capture_rect_.width(320);
             }
             MessageOut(m_hWnd, IDS_STRING_VALUEEXCEEDWIDTH, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, capture_rect_.width());
@@ -153,12 +153,12 @@ void CFixedRegionDlg::OnOK()
 
         if (maxHeight < (capture_rect_.top_ + capture_rect_.height()))
         {
-            capture_rect_.height(g_maxy_screen - capture_rect_.top_);
+            capture_rect_.height(screen_info_.size.height() - capture_rect_.top_);
             if (capture_rect_.height() <= 0)
             {
                 // TODO -- where did these constants come from? Get rid of 'em, put 'em in an ini or #define them
                 // somewhere Answer: See struct sRegionOpts in Profile.h. An area of 240x320 is defined there.
-                capture_rect_.top_ = g_miny_screen + 100;
+                capture_rect_.top_ = screen_info_.size.top() + 100;
                 capture_rect_.height(240);
             }
             MessageOut(m_hWnd, IDS_STRING_VALUEEXCEEDHEIGHT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, capture_rect_.height());

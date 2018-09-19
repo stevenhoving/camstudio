@@ -101,12 +101,12 @@ END_MESSAGE_MAP()
 BEGIN_EVENTSINK_MAP(CRecorderView, CView)
 END_EVENTSINK_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CRecorderView construction/destruction
+
 
 CRecorderView::CRecorderView()
     : CView()
 {
+    virtual_screen_info_ = get_virtual_screen_info();
     mouse_hook_ = std::make_unique<mouse_hook>();
 
     video_settings_model_ = std::make_unique<video_settings_model>();
@@ -463,7 +463,7 @@ void CRecorderView::OnUpdateRegionRubber(CCmdUI *pCmdUI)
 
 void CRecorderView::OnRegionPanregion()
 {
-    CFixedRegionDlg cfrdlg(this, *settings_model_.get());
+    CFixedRegionDlg cfrdlg(this, virtual_screen_info_, *settings_model_.get());
     if (cfrdlg.DoModal() == IDOK)
     {
         settings_model_->set_capture_mode(capture_type::fixed);
@@ -664,17 +664,11 @@ void CRecorderView::OnRecord()
         mouse_capture_ui_->set_modify_mode(modify_mode::select);
         mouse_capture_ui_->show(capture_rect, capture_type::variable);
     } break;
+
     case capture_type::allscreens:
     {
         // Applicable when Option region is set as 'Full Screen'
-        cam::rect<int> capture_rect(
-            g_minx_screen,
-            g_miny_screen,
-            g_minx_screen + g_maxx_screen,
-            g_miny_screen + g_maxy_screen);
-
-        // \todo fix this hack
-        settings_model_->set_capture_rect(capture_rect);
+        settings_model_->set_capture_rect(virtual_screen_info_.size);
         ::PostMessage(m_hWnd, WM_USER_RECORDSTART, 0, 0);
     } break;
 
@@ -697,7 +691,7 @@ void CRecorderView::OnRecord()
 
     } break;
     case capture_type::fullscreen:
-        /* \todo rewrite this as the full screen function */
+        /* \todo rewrite this as the monitor selection function */
 
         auto message_window = std::make_unique<CBasicMessageDlg>();
         message_window->Create(CBasicMessageDlg::IDD);

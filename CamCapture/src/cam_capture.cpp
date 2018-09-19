@@ -40,10 +40,10 @@ cam_capture_source::cam_capture_source(HWND hwnd, const cam::rect<int> & /*view*
 {
     if (hwnd == nullptr)
     {
-        src_rect_.right_ = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
-        src_rect_.bottom_ = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
         src_rect_.left_ = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
         src_rect_.top_ = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
+        src_rect_.right_ = src_rect_.left_ + ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
+        src_rect_.bottom_ = src_rect_.top_ + ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
     }
     else
     {
