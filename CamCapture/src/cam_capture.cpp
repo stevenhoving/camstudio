@@ -28,6 +28,8 @@
 #include <cassert>
 #include <ctime>
 
+constexpr auto CAPTURE_BPP = 32;
+
 cam_capture_source::cam_capture_source(HWND hwnd, const cam::rect<int> & /*view*/)
     : bitmap_info_{}
     , bitmap_frame_{nullptr}
@@ -61,7 +63,7 @@ cam_capture_source::cam_capture_source(HWND hwnd, const cam::rect<int> & /*view*
     bitmap_info_.bmiHeader.biWidth = src_rect_.width();
     bitmap_info_.bmiHeader.biHeight = -src_rect_.height();
     bitmap_info_.bmiHeader.biPlanes = 1;
-    bitmap_info_.bmiHeader.biBitCount = 32;
+    bitmap_info_.bmiHeader.biBitCount = CAPTURE_BPP;
     bitmap_info_.bmiHeader.biCompression = BI_RGB;
 
     bitmap_frame_ = ::CreateDIBSection(desktop_dc_, &bitmap_info_, DIB_RGB_COLORS,
@@ -111,8 +113,7 @@ const cam_frame *cam_capture_source::get_frame()
 {
     frame_.width = captured_rect_.width();
     frame_.height = captured_rect_.height();
-    /* \todo make the bytes per pixel based on the actual Bpp */
-    frame_.stride = src_rect_.width() * 4;
+    frame_.stride = src_rect_.width() * (CAPTURE_BPP / 8);
     return &frame_;
 }
 
