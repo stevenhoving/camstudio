@@ -29,7 +29,8 @@ BOOL CAboutDlg::OnInitDialog()
         "Version: v{}\n"
         "Copyright \xA9 2001 RenderSoft Software and Web Publishing\n"
         "Copyright \xA9 2008 CamStudio Group && Contributors\n"
-        "Copyright \xA9 2018 Steven Hoving",
+        "Copyright \xA9 2018 Steven Hoving\n"
+        "Part of this product is derived from RenderSoft CamStudio",
         buildinfo::full_version);
 
     version_copyright_label_.SetWindowText(CString(about_text.c_str()));
