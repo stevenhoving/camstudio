@@ -4,14 +4,6 @@
 #include <CamLib/console.h>
 #include <afxdatarecovery.h>
 
-int g_maxx_screen;
-int g_maxy_screen;
-int g_minx_screen;
-int g_miny_screen;
-
-/////////////////////////////////////////////////////////////////////////////
-// CMainFrame
-
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
@@ -25,15 +17,12 @@ static UINT indicators[] = {
     ID_SEPARATOR // status line indicator
 };
 
-/////////////////////////////////////////////////////////////////////////////
-// CMainFrame construction/destruction
-
 CMainFrame::CMainFrame()
 {
-//#ifdef _DEBUG
+#ifdef _DEBUG
     console::create();
-//#endif
-    // TODO: add member initialization code here
+#endif
+
     m_bmLogo.LoadBitmap(IDB_BITMAP3);
 }
 
@@ -79,17 +68,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     ::SendMessage(m_wndToolBar.GetToolBarCtrl().m_hWnd, TB_SETIMAGELIST, 0, (LPARAM)m_ilToolBar.GetSafeHandle());
 
     m_wndToolBar.ModifyStyle(0, TBSTYLE_FLAT);
-
-    // TODO: Remove this if you don't want tool tips or a resizeable toolbar
     m_wndToolBar.SetBarStyle(m_wndToolBar.GetBarStyle() | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
-    // m_wndToolBar.SetButtonText(1,"Record");
-    // TODO: Delete these three lines if you don't want the toolbar to
-    // be dockable
-    m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
-    EnableDocking(CBRS_ALIGN_ANY);
-    DockControlBar(&m_wndToolBar);
 
-    // ver 1.2
     m_TrayIcon.SetNotifyWnd(*this);
     m_TrayIcon.TraySetIcon(IDR_MAINFRAME);
     m_TrayIcon.TraySetToolTip(_T("CamStudio"));
