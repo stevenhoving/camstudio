@@ -357,8 +357,6 @@ std::string CRecorderView::generate_temp_filename()
     const std::filesystem::path temp_video_file_path = temp_directory / fmt::format(L"{}-{}.{}", TEMPFILETAGINDICATOR, start_time, file_extention);
     auto strTempVideoFilePath = temp_video_file_path.generic_wstring();
 
-    // TRACE("## CRecorderView::RecordAVIThread First  Temp.Avi file=[%s]\n", strTempVideoAviFilePath.GetString()  );
-
     srand(static_cast<unsigned int>(time(nullptr)));
 
     bool fileverified = false;
@@ -546,7 +544,6 @@ std::filesystem::path CRecorderView::generate_auto_filename()
     return std::filesystem::path(filename);
 }
 
-// This function is called when the avi saving is completed
 LRESULT CRecorderView::OnUserGeneric(WPARAM wParam, LPARAM /*lParam*/)
 {
     restore_window();
@@ -1032,8 +1029,6 @@ void CRecorderView::DisplayBackground(CDC &srcDC)
 
 void CRecorderView::DisplayRecordingMsg(CDC &srcDC)
 {
-    // TRACE("CRecorderView::DisplayRecordingMsg\n");
-
     CPen penSolid;
     penSolid.CreatePen(PS_SOLID, 1, RGB(225, 225, 225));
     CPen *pOldPen = srcDC.SelectObject(&penSolid);
@@ -1048,24 +1043,6 @@ void CRecorderView::DisplayRecordingMsg(CDC &srcDC)
 
     COLORREF oldTextColor = srcDC.SetTextColor(RGB(225, 225, 225));
     COLORREF oldBkColor = srcDC.SetBkColor(RGB(0, 0, 0));
-
-    CString msgRecMode;
-    msgRecMode.LoadString(IDS_RECAVI);
-
-    // msgRecMode.LoadString((cProgramOpts.m_iRecordingMode == ModeAVI) ? IDS_RECAVI : IDS_RECSWF);
-    CSize sizeExtent = srcDC.GetTextExtent(msgRecMode);
-
-    CRect rectClient;
-    GetClientRect(&rectClient);
-    int xoffset = 12;
-    int yoffset = 6;
-    int xmove = rectClient.Width() - sizeExtent.cx - xoffset;
-    int ymove = yoffset;
-
-    CRect rectMode(xmove, ymove, xmove + sizeExtent.cx, ymove + sizeExtent.cy);
-    srcDC.Rectangle(&rectMode);
-    srcDC.Rectangle(rectMode.left - 3, rectMode.top - 3, rectMode.right + 3, rectMode.bottom + 3);
-    srcDC.TextOut(rectMode.left, rectMode.top, msgRecMode);
 
     srcDC.SelectObject(pOldPen);
     srcDC.SelectObject(pOldBrush);
@@ -1107,23 +1084,6 @@ std::string create_launch_path(const std::string &application, const std::string
     launch_path += " ";
     launch_path += arguments;
     return launch_path;
-}
-
-bool CRecorderView::RunViewer(const CString &/*strNewFile*/)
-{
-    // Launch the player
-
-    // open default application for video files.
-    //if (Openlink(strNewFile))
-    {
-    }
-    //else
-    {
-        //MessageBox(L"Error launching avi player!","Note",MB_OK | MB_ICONEXCLAMATION);
-        //MessageOut(m_hWnd, IDS_STRING_ERRDEFAULTPLAYER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-    }
-
-    return true;
 }
 
 bool CRecorderView::GetRecordState()

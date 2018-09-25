@@ -99,8 +99,6 @@ private:
     void DisplayRecordingStatistics(CDC &srcDC);
     void DisplayBackground(CDC &srcDC);
     void DisplayRecordingMsg(CDC &srcDC);
-
-    bool RunViewer(const CString &strNewFile);
     void DisplayAutopanInfo(CRect rc);
 
     std::unique_ptr<capture_thread> capture_thread_;
