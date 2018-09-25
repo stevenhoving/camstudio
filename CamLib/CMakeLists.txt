@@ -18,7 +18,6 @@ project(CamLib)
 set(LIB_SOURCE
     src/CamError.cpp
     src/CamFile.cpp
-    src/CamImage.cpp
     src/CamRect.cpp
     src/CBitmapEx.cpp
     src/CStudiolib.cpp
@@ -33,7 +32,6 @@ set(LIB_INCLUDE
     include/CamLib/CamColor.h
     include/CamLib/CamError.h
     include/CamLib/CamFile.h
-    include/CamLib/CamImage.h
     include/CamLib/CamRect.h
     include/CamLib/CBitmapEx.h
     include/CamLib/CStudioLib.h
