@@ -6,7 +6,7 @@
 class CTrayIcon
 {
 public:
-    CTrayIcon(); // not implemented
+    CTrayIcon();
 
     virtual ~CTrayIcon();
 

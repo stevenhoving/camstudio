@@ -112,7 +112,6 @@ void CFixedRegionDlg::OnOK()
         return;
     }
 
-    // version 1.5
     int fval = m_ctrlButtonFixTopLeft.GetCheck();
     if (fval)
     {

@@ -28,7 +28,6 @@ CMainFrame::CMainFrame()
 
 CMainFrame::~CMainFrame()
 {
-    // ver 1.2
     m_ToolbarBitmap256.DeleteObject();
     m_ToolbarBitmapMask.DeleteObject();
 }
@@ -50,7 +49,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
         return -1; // fail to create
     }
 
-    // ver 1.2
     m_ToolbarBitmap256.LoadBitmap(IDB_TOOLBAR256);
     m_ToolbarBitmapMask.LoadBitmap(IDB_TOOLBARMASK);
 

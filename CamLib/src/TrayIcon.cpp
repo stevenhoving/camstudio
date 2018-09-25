@@ -16,7 +16,6 @@ CTrayIcon::CTrayIcon()
 
 CTrayIcon::~CTrayIcon()
 {
-    // ver 1.2
     finishTrayIconData();
 }
 
@@ -226,9 +225,3 @@ LRESULT CTrayIcon::OnTrayNotify(WPARAM wParam, LPARAM lParam)
 
     return 0;
 }
-
-///////////////////////////////////////////////////
-// Ver 1.2
-///////////////////////////////////////////////////
-// Functions for implementing Tray Icons
-///////////////////////////////////////////////////
