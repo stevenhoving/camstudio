@@ -44,7 +44,8 @@ private:
 };
 
 template<typename T>
-constexpr bool operator == (const point<T> &lhs, const point<T> &rhs)
+constexpr auto operator == (const point<T> &lhs, const point<T> &rhs) noexcept -> bool
 {
-    return lhs.x() == rhs.x() && lhs.y() == rhs.y();
+    return lhs.x() == rhs.x()
+        && lhs.y() == rhs.y();
 }

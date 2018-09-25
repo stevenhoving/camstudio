@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "capture_thread.h"
 #include <CamEncoder/av_encoder.h>
+#include <CamCapture/cam_stop_watch.h>
 #include <CamCapture/annotations/cam_annotation_cursor.h>
 #include <fmt/printf.h>
 #include <algorithm>

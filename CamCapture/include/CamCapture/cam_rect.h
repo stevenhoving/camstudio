@@ -99,7 +99,7 @@ public:
 };
 
 template<typename T>
-constexpr bool operator == (const rect<T> &lhs, const rect<T> &rhs)
+constexpr auto operator == (const rect<T> &lhs, const rect<T> &rhs) noexcept -> bool
 {
     return lhs.left() == rhs.left()
         && lhs.right() == rhs.right()

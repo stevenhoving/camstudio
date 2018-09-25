@@ -43,7 +43,7 @@ public:
     {
     }
 
-    constexpr operator uint32_t()
+    constexpr operator uint32_t() const noexcept
     {
         return static_cast<uint32_t>(a_) << 24
             | static_cast<uint32_t>(r_) << 16
@@ -59,11 +59,11 @@ public:
 
 namespace colors
 {
-    static constexpr color red{0xff, 0xff, 0, 0};
-    static constexpr color green{0xff, 0, 0xff, 0};
-    static constexpr color blue{0xff, 0, 0, 0xff};
+    static constexpr color red{0xff, 0, 0};
+    static constexpr color green{0, 0xff, 0};
+    static constexpr color blue{0, 0, 0xff};
 
-    static constexpr color black{ 0xff, 0, 0, 0 };
-    static constexpr color white{ 0xff, 0xff, 0xff, 0xff };
+    static constexpr color black{0, 0, 0};
+    static constexpr color white{0xff, 0xff, 0xff};
 } // namespace colors
 } // namespace cam

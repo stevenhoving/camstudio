@@ -54,7 +54,7 @@ constexpr auto operator * (const size<T> &lhs, const Y rhs) -> size<T>
 }
 
 template<typename T>
-constexpr bool operator == (const size<T> &lhs, const size<T> &rhs)
+constexpr auto operator == (const size<T> &lhs, const size<T> &rhs) noexcept -> bool
 {
     return lhs.width() == rhs.width()
         && lhs.height() == rhs.height();

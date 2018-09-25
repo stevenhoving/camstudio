@@ -117,8 +117,6 @@ private:
 
     // Ring config fields
     bool ring_enabled_{false};
-    //int ring_threshold_{100};
-    //int ring_size_{20};
     int ring_speed_{5};
     double ring_width_{1.5};
     mouse_action_config ring_left_click_config_{};
