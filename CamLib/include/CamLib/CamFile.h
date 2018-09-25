@@ -17,14 +17,3 @@ enum class dir_access : int
 std::filesystem::path get_prog_path();
 std::wstring get_my_video_path();
 std::filesystem::path get_my_documents_path();
-
-
-CString GetTempFolder(int iAccess, const CString &strFolder = _T(""), bool bOut = false);
-CString GetProgPath();
-CString FindExtension(const CString &name);
-CString GetMyVideoPath();
-CString GetAppDataPath();
-CString GetMyDocumentsPath();
-
-bool DoesFileExist(const CString &name);
-bool DoesDefaultOutDirExist(const CString &dir);
