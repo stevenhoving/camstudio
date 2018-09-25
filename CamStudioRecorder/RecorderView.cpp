@@ -15,9 +15,9 @@
 #include "AutopanSpeedDlg.h"
 #include "FixedRegionDlg.h"
 
-#include <CamLib/CStudioLib.h>
 #include <CamLib/TrayIcon.h>
 #include <CamLib/CamError.h>
+#include <CamLib/CamFile.h>
 #include <CamEncoder/av_encoder.h>
 #include <cam_hook/cam_hook.h>
 
