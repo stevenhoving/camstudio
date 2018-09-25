@@ -29,7 +29,6 @@ set(LIB_SOURCE
 )
 
 set(LIB_INCLUDE
-    include/CamLib/CamColor.h
     include/CamLib/CamError.h
     include/CamLib/CamFile.h
     include/CamLib/CamRect.h
