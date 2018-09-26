@@ -26,7 +26,7 @@ class color
 public:
     constexpr color() noexcept = default;
     constexpr color(const uint32_t argb) noexcept
-        : color((argb >> 24) & 0xFF, (argb >> 16) & 0xFF, (argb >> 8) & 0xFF, (argb >> 0) & 0xFF)
+        : color((argb >> 24) & 0xff, (argb >> 16) & 0xff, (argb >> 8) & 0xff, (argb >> 0) & 0xff)
     {
     }
 
@@ -39,7 +39,7 @@ public:
     }
 
     constexpr color(const uint8_t r, const uint8_t g, const uint8_t b) noexcept
-        : color(0xFF, r, g, b)
+        : color(0xff, r, g, b)
     {
     }
 
@@ -51,7 +51,7 @@ public:
             | static_cast<uint32_t>(b_) << 0;
     }
 
-    uint8_t a_{ 255u };
+    uint8_t a_{ 0xff };
     uint8_t r_{ 0 };
     uint8_t g_{ 0 };
     uint8_t b_{ 0 };
