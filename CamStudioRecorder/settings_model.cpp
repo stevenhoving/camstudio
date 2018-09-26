@@ -29,6 +29,8 @@
 
 using namespace std::string_literals;
 
+constexpr auto SETTINGS_FILENAME = L"settings.toml";
+
 namespace config
 {
 namespace capture
@@ -337,7 +339,7 @@ void settings_model::set_application_output_directory(std::string output_directo
     application_output_directory_ = output_directory;
 }
 
-const std::string & settings_model::get_application_output_directory() const noexcept
+const std::string &settings_model::get_application_output_directory() const noexcept
 {
     return application_output_directory_;
 }
@@ -353,7 +355,7 @@ void settings_model::save()
     _save_shotcut_settings(*root);
     _save_application_settings(*root);
 
-    std::ofstream stream(utility::create_config_path(L"settings.toml"));
+    std::ofstream stream(utility::create_config_path(SETTINGS_FILENAME));
     cpptoml::toml_writer writer{stream, ""};
     root->accept(writer);
 }
@@ -541,7 +543,7 @@ void settings_model::_load_shortcut(const table &shortcuts, shortcut_action::typ
 
 void settings_model::load()
 {
-    const auto config_filepath = utility::create_config_path(L"settings.toml");
+    const auto config_filepath = utility::create_config_path(SETTINGS_FILENAME);
 
     // non existing config file is not an error.
     if (!std::filesystem::exists(config_filepath))

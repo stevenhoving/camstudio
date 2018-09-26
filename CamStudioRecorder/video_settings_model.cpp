@@ -20,6 +20,8 @@
 #include "utility/filesystem.h"
 #include <cpptoml.h>
 
+constexpr auto VIDEO_OPTIONS_FILENAME = L"video_options.toml";
+
 std::wstring video_settings_model::get_video_container_file_extension() const
 {
     return video_container::names().at(video_container_.get_index());
@@ -57,14 +59,14 @@ void video_settings_model::save()
 
     root->insert("video-settings", videosettings);
 
-    std::ofstream stream(utility::create_config_path(L"video_options.toml"));
+    std::ofstream stream(utility::create_config_path(VIDEO_OPTIONS_FILENAME));
     cpptoml::toml_writer writer{stream, ""};
     root->accept(writer);
 }
 
 void video_settings_model::load()
 {
-    const auto config_filepath = utility::create_config_path(L"video_options.toml");
+    const auto config_filepath = utility::create_config_path(VIDEO_OPTIONS_FILENAME);
 
     // non existing config file is not an error.
     if (!std::filesystem::exists(config_filepath))
