@@ -14,55 +14,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
 #pragma once
 
 #include "cam_hook_export.h"
 #include "cam_common.h"
-#include <vector>
-#include <mutex>
-#include <thread>
-#include <cstdint>
-#include <atomic>
+#include <memory>
 
-/* \todo which is used... and which isn't */
 #define WM_USER_RECORDINTERRUPTED_MSG L"WM_USER_RECORDINTERRUPTED_MSG"
 #define WM_USER_RECORDPAUSED_MSG L"WM_USER_RECORDPAUSED_MSG"
-#define WM_USER_SAVECURSOR_MSG L"WM_USER_SAVECURSOR_MSG"
 #define WM_USER_GENERIC_MSG L"WM_USER_GENERIC_MSG"
 #define WM_USER_RECORDSTART_MSG L"WM_USER_RECORDSTART_MSG"
-#define WM_USER_RECORDAUTO_MSG L"WM_USER_RECORDAUTO_MSG"
 
-class CAMHOOK_EXPORT mouse_hook
+class mouse_hook
 {
 public:
-    static mouse_hook &get()
-    {
-        static mouse_hook hook;
-        return hook;
-    }
+    CAMHOOK_EXPORT static auto get() -> mouse_hook &;
 
-    static LRESULT CALLBACK global_message_proc(int nCode, WPARAM wParam, LPARAM lParam)
-    {
-        return mouse_hook::get().message_proc(nCode, wParam, lParam);
-    }
+    CAMHOOK_EXPORT mouse_hook();
+    CAMHOOK_EXPORT ~mouse_hook();
+    CAMHOOK_EXPORT void set_instance(HINSTANCE instance);
+    CAMHOOK_EXPORT void attach();
+    CAMHOOK_EXPORT void detach();
 
-    void set_instance(HINSTANCE instance);
-    void attach();
-    void detach();
-    LRESULT message_proc(int nCode, WPARAM wParam, LPARAM lParam);
+    CAMHOOK_EXPORT auto get_mouse_events_count() -> int32_t;
+    CAMHOOK_EXPORT auto get_mouse_events(MSLLHOOKSTRUCT *dst, int32_t count) -> bool;
+    CAMHOOK_EXPORT void clear_mouse_events();
 
-    int32_t get_mouse_events_count();
-    bool get_mouse_events(MSLLHOOKSTRUCT *dst, int32_t count);
-    void clear_mouse_events();
+protected:
+    static auto CALLBACK global_message_proc(int nCode, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    auto message_proc(int nCode, WPARAM wParam, LPARAM lParam) -> LRESULT;
+
 private:
     void _detach_impl();
 private:
-    HINSTANCE instance_{nullptr};
-    HHOOK hook_{nullptr};
-
-    // the mouse hook tracking part
-    std::mutex mouse_events_lock_;
-    std::vector<MSLLHOOKSTRUCT> mouse_events_;
-    std::thread debug_unhook_;
+    std::unique_ptr<struct hook_pimpl> pimpl_;
 };

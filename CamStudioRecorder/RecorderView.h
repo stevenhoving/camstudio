@@ -90,7 +90,6 @@ public:
     // TODO: should be private
     static UINT WM_USER_RECORDINTERRUPTED;
     static UINT WM_USER_RECORDPAUSED;
-    static UINT WM_USER_SAVECURSOR;
     static UINT WM_USER_GENERIC;
     static UINT WM_USER_RECORDSTART;
 
