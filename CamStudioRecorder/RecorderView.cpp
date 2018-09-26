@@ -1076,16 +1076,6 @@ std::unique_ptr<av_video> create_video_codec(const av_video_meta &meta)
     return std::make_unique<av_video>(video_codec_config, meta);
 }
 
-std::string create_launch_path(const std::string &application, const std::string &arguments)
-{
-    std::string launch_path = utility::wstring_to_utf8(get_prog_path());
-    launch_path += "\\";
-    launch_path += application;
-    launch_path += " ";
-    launch_path += arguments;
-    return launch_path;
-}
-
 bool CRecorderView::GetRecordState()
 {
     return is_recording;
