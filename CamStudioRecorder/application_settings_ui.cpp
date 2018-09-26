@@ -17,6 +17,8 @@
 
 #include "stdafx.h"
 #include "application_settings_ui.h"
+#include "utility/string_convert.h"
+#include "utility/window_util.h"
 #include <filesystem>
 
 IMPLEMENT_DYNAMIC(application_settings_ui, CDialogEx)
@@ -138,23 +140,12 @@ void application_settings_ui::OnCbnSelchangeTempDirectoryCombobox()
     _enable_temp_directory_user_specified(temp_directory_type);
 }
 
-std::wstring get_window_text(const CWnd &window)
-{
-    const auto window_text_length = window.GetWindowTextLengthW();
-    auto window_text = std::wstring(static_cast<size_t>(window_text_length + 1), '\0');
-    // \todo make safe lowering cast..
-    window.GetWindowTextW(window_text.data(), static_cast<int>(window_text.size()));
-    window_text.resize(static_cast<size_t>(window_text_length));
-    return window_text;
-}
+
 
 void application_settings_ui::OnBnClickedOutputDirectoryUserSpecifiedBrowseButton()
 {
-    const auto output_directory_temp = settings_->get_application_output_directory();
-
-    /* \todo store/load std::wstring directory paths in utf8 */
-    const auto output_directory = std::wstring(output_directory_temp.begin(),
-        output_directory_temp.end());
+    const auto output_directory = utility::utf8_to_wstring(
+        settings_->get_application_output_directory());
 
     CFolderPickerDialog folder_picker(output_directory.c_str(), 0, this);
     if (folder_picker.DoModal() == IDOK)
@@ -166,7 +157,7 @@ void application_settings_ui::OnBnClickedOutputDirectoryUserSpecifiedBrowseButto
 
 void application_settings_ui::OnEnChangeOutputDirectoryUserSpecifiedEdit()
 {
-    std::filesystem::path new_output_directory_path = get_window_text(
+    std::filesystem::path new_output_directory_path = utility::get_window_text(
         output_directory_user_specified_edit_
     );
 
@@ -175,11 +166,8 @@ void application_settings_ui::OnEnChangeOutputDirectoryUserSpecifiedEdit()
 
 void application_settings_ui::OnBnClickedTempDirectoryUserSpecifiedBrowseButton()
 {
-    const auto temp_directory_temp = settings_->get_application_temp_directory();
-
-    /* \todo store/load std::wstring directory paths in utf8 */
-    const auto temp_directory = std::wstring(temp_directory_temp.begin(),
-        temp_directory_temp.end());
+    const auto temp_directory = utility::utf8_to_wstring(
+        settings_->get_application_temp_directory());
 
     CFolderPickerDialog folder_picker(temp_directory.c_str(), 0, this);
     if (folder_picker.DoModal() == IDOK)
@@ -191,7 +179,7 @@ void application_settings_ui::OnBnClickedTempDirectoryUserSpecifiedBrowseButton(
 
 void application_settings_ui::OnEnChangeTempDirectoryUserSpecifiedEdit()
 {
-    std::filesystem::path new_temp_directory_path = get_window_text(
+    std::filesystem::path new_temp_directory_path = utility::get_window_text(
         temp_directory_user_specified_edit_
     );
 

@@ -17,7 +17,7 @@
 
 #include "stdafx.h"
 #include "window_select_ui.h"
-#include "window_utils.h"
+#include "utility/window_util.h"
 #include "fmt_helper.h"
 
 #include <afxdialogex.h>
@@ -82,7 +82,7 @@ bool is_window_candidate(HWND hwnd)
 
     CRect rect;
     const unsigned long style = ::GetWindowLong(hwnd, GWL_STYLE);
-    if ((::GetWindowRect(hwnd, &rect) < 1 || !rect_empty(rect))
+    if ((::GetWindowRect(hwnd, &rect) < 1 || !utility::rect_empty(rect))
         && (style & WS_VISIBLE) ==  WS_VISIBLE
         /*&& (style & WS_MINIMIZE) != WS_MINIMIZE*/)
     {
@@ -92,7 +92,7 @@ bool is_window_candidate(HWND hwnd)
             hwnd_walk_prev = hwnd_walk;
             hwnd_walk = ::GetWindow(hwnd_walk, GW_OWNER);
             CRect rect2;
-            if (!hwnd_candidate && hwnd_walk && ::GetWindowRect(hwnd_walk, &rect2) >= 1 && !rect_empty(rect2))
+            if (!hwnd_candidate && hwnd_walk && ::GetWindowRect(hwnd_walk, &rect2) >= 1 && !utility::rect_empty(rect2))
                 hwnd_candidate = hwnd_walk;
 
         } while(hwnd_walk);
@@ -132,12 +132,12 @@ BOOL CALLBACK enum_windows_callback(HWND hwnd, LPARAM lparam) noexcept
 
         try
         {
-            const auto [process_name, process_filepath] = get_process_name(process_id);
+            const auto [process_name, process_filepath] = utility::get_process_name(process_id);
 
             if (process_name.empty())
                 return TRUE;
 
-            const auto window_title = get_window_title(hwnd);
+            const auto window_title = utility::get_window_title(hwnd);
 
             window_data data = { process_id, process_name, process_filepath, window_title, hwnd };
             window_set->windows.emplace_back(data);
@@ -155,7 +155,7 @@ std::vector<window_data> window_select_ui::get_windows()
 {
     get_windows_info result;
 
-    result.ignore_camstudio_wnd = get_root_parent(GetSafeHwnd());
+    result.ignore_camstudio_wnd = utility::get_root_parent(GetSafeHwnd());
     result.ignore_shell_tray_wnd = ::FindWindow(L"Shell_TrayWnd", 0);
     result.ignore_progman_wnd = ::FindWindow(L"Progman", 0); // DWM Thumbnail desktop
     result.ignore_current_process_id = ::GetCurrentProcessId();

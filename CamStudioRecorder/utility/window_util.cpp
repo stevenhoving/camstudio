@@ -15,13 +15,34 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include "stdafx.h"
+#include "window_util.h"
 
 #include <windows.h>
 #include <psapi.h>
 
-// function to automatically resize a static label based on its window text.
-static
+namespace utility
+{
+std::wstring get_window_text(const CWnd &window)
+{
+    const auto window_text_length = window.GetWindowTextLengthW();
+    auto window_text = std::wstring(static_cast<size_t>(window_text_length + 1), '\0');
+    // \todo make safe lowering cast..
+    window.GetWindowTextW(window_text.data(), static_cast<int>(window_text.size()));
+    window_text.resize(static_cast<size_t>(window_text_length));
+    return window_text;
+}
+
+auto get_window_title(HWND hwnd) -> std::wstring
+{
+    std::wstring title;
+    const auto title_length = GetWindowTextLength(hwnd);
+    title.resize(title_length + 1);
+    GetWindowText(hwnd, &title[0], (int)title.size());
+    title.resize(title_length);
+    return title;
+}
+
 void label_auto_size(CStatic *label)
 {
     CString s;
@@ -42,7 +63,6 @@ void label_auto_size(CStatic *label)
     label->SetWindowPos(0, 0, 0, r.Width(), r.Height(), SWP_NOMOVE);
 }
 
-static
 void draw_bitmap(CDC *pDC, HBITMAP hbitmap, CRect size)
 {
     CBitmap *pBitmap = CBitmap::FromHandle(hbitmap);
@@ -58,27 +78,25 @@ void draw_bitmap(CDC *pDC, HBITMAP hbitmap, CRect size)
     MemDC.SelectObject(old_bitmap);
 }
 
-static
 bool is_in_rect(const CRect &rect, const CPoint &point)
 {
     const bool result =
-           (point.x > rect.left && point.x < rect.right)
+        (point.x > rect.left && point.x < rect.right)
         && (point.y > rect.top && point.y < rect.bottom);
     return result;
 }
 
-static
 bool rect_empty(const CRect &rect)
 {
     return rect.right == rect.left || rect.bottom == rect.top;
 }
 
-static bool is_top_most(HWND hwnd)
+bool is_top_most(HWND hwnd)
 {
     return GetWindowLong(hwnd, GWL_EXSTYLE) & WS_EX_TOPMOST;
 }
 
-static inline HWND get_root_parent(HWND hwnd)
+HWND get_root_parent(HWND hwnd)
 {
     HWND result = GetParent(hwnd);
     if (result)
@@ -86,7 +104,7 @@ static inline HWND get_root_parent(HWND hwnd)
     return hwnd;
 }
 
-static auto get_process_name(DWORD process_id)
+auto get_process_name(unsigned int process_id) -> std::tuple<std::wstring, std::wstring>
 {
     std::wstring process_name(MAX_PATH, '\0');
     std::wstring process_filepath(MAX_PATH, '\0');
@@ -111,12 +129,4 @@ static auto get_process_name(DWORD process_id)
     return std::make_tuple(process_name, process_filepath);
 }
 
-static std::wstring get_window_title(HWND hwnd)
-{
-    std::wstring title;
-    const auto title_length = GetWindowTextLength(hwnd);
-    title.resize(title_length + 1);
-    GetWindowText(hwnd, &title[0], (int)title.size());
-    title.resize(title_length);
-    return title;
-}
+} // namespace utility

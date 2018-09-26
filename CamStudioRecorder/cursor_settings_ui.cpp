@@ -18,7 +18,7 @@
 #include "stdafx.h"
 #include "cursor_settings_ui.h"
 #include "settings_model.h"
-#include "window_utils.h"
+#include "utility/window_util.h"
 #include "afxdialogex.h"
 #include <CamCapture/annotations/cam_annotation_cursor.h>
 #include <CamCapture/cam_color.h>
@@ -180,7 +180,7 @@ void cursor_settings_ui::_set_cursor_halo_size(const int halo_size)
 
     const auto halo_size_string = std::to_wstring(halo_size) + L"px";
     cursor_halo_size_label_.SetWindowText(halo_size_string.c_str());
-    label_auto_size(&cursor_halo_size_label_);
+    utility::label_auto_size(&cursor_halo_size_label_);
 
     _draw_cursor_preview(cam_mouse_button::none);
 }
@@ -191,7 +191,7 @@ void cursor_settings_ui::_set_cursor_ring_size(const int ring_size)
 
     const auto ring_size_string = std::to_wstring(ring_size) + L"px";
     cursor_ring_size_label_.SetWindowText(ring_size_string.c_str());
-    label_auto_size(&cursor_ring_size_label_);
+    utility::label_auto_size(&cursor_ring_size_label_);
 
     _draw_cursor_preview(cam_mouse_button::none);
 }

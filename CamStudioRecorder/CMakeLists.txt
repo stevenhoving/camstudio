@@ -49,7 +49,6 @@ set(RECORDER_NEW_SOURCE
     window_select_dwm.cpp
     window_thumbnail_widget.h
     window_thumbnail_widget.cpp
-    window_utils.h
     capture_thread.h
     capture_thread.cpp
     settings_model.h
@@ -65,6 +64,8 @@ set(RECORDER_UTILITY_SOURCE
     utility/make_array.h
     utility/string_convert.h
     utility/string_convert.cpp
+    utility/window_util.h
+    utility/window_util.cpp
 )
 
 set(RECORDER_SETTINGS_SOURCE
