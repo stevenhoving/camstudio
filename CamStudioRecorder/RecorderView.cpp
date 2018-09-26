@@ -316,7 +316,7 @@ std::filesystem::path get_temp_folder_ex(const temp_output_directory::type type,
 
     case temp_output_directory::install:
     {
-        const auto install_dir = utility::get_app_install_path() / "temp";
+        const auto install_dir = utility::get_app_runtime_path() / "temp";
 
         if (!std::filesystem::exists(install_dir))
         {
