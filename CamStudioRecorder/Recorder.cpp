@@ -10,7 +10,7 @@
 #include "RecorderView.h"
 #include "AboutDlg.h"
 
-#include "GdiPlusInitializer.h"
+#include "gdi_plus_initializer.h"
 #include "utility/string_convert.h"
 #include "utility/filesystem.h"
 #include <CamLib/CamError.h>

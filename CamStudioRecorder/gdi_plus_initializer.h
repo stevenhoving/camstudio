@@ -32,7 +32,6 @@ public:
     gdi_plus(const gdi_plus &) = delete;
     gdi_plus &operator = (const gdi_plus &) = delete;
 
-
     std::unique_ptr<Gdiplus::GdiplusStartupInput> input;
     ULONG_PTR gdiplusToken;
 };

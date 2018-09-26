@@ -34,6 +34,8 @@ set(RECORDER_NEW_SOURCE
     cursor_settings_ui.cpp
     cursor_settings_preview.h
     cursor_settings_preview.cpp
+    gdi_plus_initializer.cpp
+    gdi_plus_initializer.h
     shortcut_settings_ui.h
     shortcut_settings_ui.cpp
     shortcut_controller.h
@@ -92,8 +94,7 @@ set(RECORDER_SOURCE
     BasicMessageDlg.h
     FixedRegionDlg.cpp
     FixedRegionDlg.h
-    GdiPlusInitializer.cpp
-    GdiPlusInitializer.h
+
     MainFrm.cpp
     MainFrm.h
     Recorder.cpp

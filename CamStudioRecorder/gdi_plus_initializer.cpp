@@ -16,7 +16,7 @@
  */
 
 #include "stdafx.h"
-#include "GdiPlusInitializer.h"
+#include "gdi_plus_initializer.h"
 #include "CamCapture/cam_gdiplus.h"
 #include <cassert>
 
