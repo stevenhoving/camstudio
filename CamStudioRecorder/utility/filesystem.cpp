@@ -23,13 +23,22 @@
 
 namespace utility
 {
+
+std::filesystem::path get_app_runtime_path()
+{
+    wchar_t szTemp[1024] = {};
+    ::GetModuleFileNameW(nullptr, szTemp, 1023);
+    std::filesystem::path program_path(szTemp);
+    return program_path.remove_filename();
+}
+
 std::filesystem::path get_app_data_path()
 {
     wchar_t app_data_path[MAX_PATH + 1] = {};
     if (FAILED(SHGetFolderPath(nullptr, CSIDL_LOCAL_APPDATA, nullptr, 0, app_data_path)))
         throw std::runtime_error("unable to get app data path");
 
-    return std::filesystem::path(app_data_path) / "CamStudio";
+    return std::filesystem::path(app_data_path) / L"CamStudio";
 }
 
 std::filesystem::path create_config_path(const std::wstring &filename)

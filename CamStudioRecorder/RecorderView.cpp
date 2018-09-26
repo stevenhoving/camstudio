@@ -23,6 +23,7 @@
 
 // new stuff
 #include "utility/string_convert.h"
+#include "utility/filesystem.h"
 #include "video_settings_ui.h"
 #include "cursor_settings_ui.h"
 #include "application_settings_ui.h"
@@ -315,7 +316,7 @@ std::filesystem::path get_temp_folder_ex(const temp_output_directory::type type,
 
     case temp_output_directory::install:
     {
-        const auto install_dir = get_prog_path() / "temp";
+        const auto install_dir = utility::get_app_install_path() / "temp";
 
         if (!std::filesystem::exists(install_dir))
         {

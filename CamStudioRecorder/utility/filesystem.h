@@ -21,6 +21,13 @@
 
 namespace utility
 {
+/* returns the runtime path of camstudio */
+std::filesystem::path get_app_runtime_path();
+
+/* returns the appdata path of camstudio */
 std::filesystem::path get_app_data_path();
+
+/* returns the path to camstudio appdata + filename */
 std::filesystem::path create_config_path(const std::wstring &filename);
+
 } // namespace utility

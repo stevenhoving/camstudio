@@ -2,22 +2,7 @@
 #include "CamLib/CamFile.h"
 #include <shlobj.h>
 
-std::filesystem::path get_prog_path()
-{
-    // get root of Camstudio application
-    wchar_t szTemp[1024] = {};
-    ::GetModuleFileNameW(nullptr, szTemp, 1023);
-    std::filesystem::path program_path(szTemp);
-    return program_path.remove_filename();
 
-    //std::wstring path = szTemp;
-    //const auto found = path.rfind('\\');
-    //if (found != std::wstring::npos)
-    //{
-    //    path = path.substr(0, found);
-    //}
-    //return path;
-}
 
 #ifndef CSIDL_MYVIDEO
 #define CSIDL_MYVIDEO 0x000e // "My Videos" folder
