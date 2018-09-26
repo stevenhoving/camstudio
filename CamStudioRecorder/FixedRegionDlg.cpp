@@ -8,6 +8,7 @@
 
 #include "settings_model.h"
 #include "mouse_capture_ui.h"
+#include "utility/rect_util.h"
 
 #include "MainFrm.h" // only for g_maxx_screen and alike
 #include <CamLib/CamError.h>
@@ -22,12 +23,13 @@ CFixedRegionDlg::CFixedRegionDlg(CWnd *pParent, virtual_screen_info screen_info,
     , screen_info_(screen_info)
 {
     capture_ = std::make_unique<mouse_capture_ui>(AfxGetInstanceHandle(), GetSafeHwnd(),
+        screen_info_,
         [this](const CRect &capture_rect)
         {
             if (!m_ctrlButtonFixTopLeft.GetCheck())
             {
-                capture_rect_.left_ = capture_rect.left;
-                capture_rect_.top_ = capture_rect.top;
+                capture_rect_.left(capture_rect.left);
+                capture_rect_.top(capture_rect.top);
             }
             capture_rect_.width(capture_rect.Width());
             capture_rect_.height(capture_rect.Height());

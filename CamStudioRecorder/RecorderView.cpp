@@ -24,6 +24,8 @@
 // new stuff
 #include "utility/string_convert.h"
 #include "utility/filesystem.h"
+#include "utility/rect_util.h"
+
 #include "video_settings_ui.h"
 #include "cursor_settings_ui.h"
 #include "application_settings_ui.h"
@@ -235,9 +237,10 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     set_shortcuts();
 
     mouse_capture_ui_ = std::make_unique<mouse_capture_ui>(AfxGetInstanceHandle(), GetSafeHwnd(),
+        virtual_screen_info_,
         [this](const CRect &capture_rect)
         {
-            settings_model_->set_capture_rect(from_rect(capture_rect));
+            settings_model_->set_capture_rect(utility::from_rect(capture_rect));
             ::PostMessage(m_hWnd, WM_USER_RECORDSTART, 0, 0);
         }
     );

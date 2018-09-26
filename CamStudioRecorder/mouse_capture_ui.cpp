@@ -19,6 +19,7 @@
 #include "mouse_capture_ui.h"
 #include "settings_model.h"
 #include "background_capture_source.h"
+#include "utility/rect_util.h"
 
 #include <CamLib/rect.h>
 
@@ -38,21 +39,13 @@ LRESULT WINAPI wnd_proc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam)
     return mouse_capture->message_handler(hWnd, wMessage, wParam, lParam);
 }
 
-mouse_capture_ui::mouse_capture_ui(HINSTANCE instance, HWND parent, const std::function<void(const CRect &capture_rect)> &completed)
+mouse_capture_ui::mouse_capture_ui(HINSTANCE instance, HWND parent, const virtual_screen_info &screen_info,
+    const std::function<void(const CRect &capture_rect)> &completed)
     : instance_(instance)
     , completed_(completed)
+    , virtual_screen_info_(screen_info)
 {
-    const auto screen_x = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
-    const auto screen_y = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
-    const auto screen_width = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
-    const auto screen_height = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
-
-    max_screen_rect_ = CRect(
-        screen_x,
-        screen_y,
-        screen_x + screen_width,
-        screen_y + screen_height
-    );
+    max_screen_rect_ = utility::from_rect(virtual_screen_info_.size);
 
     register_window_class(instance);
 

@@ -17,7 +17,7 @@
 
 #include "stdafx.h"
 #include "window_thumbnail_widget.h"
-#include "window_utils.h"
+#include "utility/window_util.h"
 #include <fmt/printf.h>
 #include "fmt_helper.h"
 #include <shellapi.h>

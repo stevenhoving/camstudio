@@ -47,24 +47,44 @@ public:
     {
     }
 
-    constexpr T left() const noexcept
+    constexpr auto left() const noexcept -> T
     {
         return left_;
     }
 
-    constexpr T top() const noexcept
+    constexpr void left(const T new_left) noexcept
+    {
+        left_ = new_left;
+    }
+
+    constexpr auto top() const noexcept -> T
     {
         return top_;
     }
 
-    constexpr T right() const noexcept
+    constexpr void top(const T new_top) noexcept
+    {
+        top_ = new_top;
+    }
+
+    constexpr auto right() const noexcept -> T
     {
         return right_;
     }
 
-    constexpr T bottom() const noexcept
+    constexpr void right(const T new_right) noexcept
+    {
+        right_ = new_right;
+    }
+
+    constexpr auto bottom() const noexcept -> T
     {
         return bottom_;
+    }
+
+    constexpr void bottom(const T new_bottom) noexcept
+    {
+        bottom_ = new_bottom;
     }
 
     constexpr T width() const noexcept

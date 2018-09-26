@@ -27,10 +27,10 @@
     assert(memory_dc_);
     if (hwnd == nullptr)
     {
-        src_rect_.right_ = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
-        src_rect_.bottom_ = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
-        src_rect_.left_ = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
-        src_rect_.top_ = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
+        src_rect_.left(::GetSystemMetrics(SM_XVIRTUALSCREEN));
+        src_rect_.top(::GetSystemMetrics(SM_YVIRTUALSCREEN));
+        src_rect_.width(::GetSystemMetrics(SM_CXVIRTUALSCREEN));
+        src_rect_.bottom(::GetSystemMetrics(SM_CYVIRTUALSCREEN));
     }
     else
     {
@@ -39,10 +39,10 @@
         assert(ret != 0 && "Failed to get window rect.");
         (void)ret;
 
-        src_rect_.left_ = window_rect.left;
-        src_rect_.top_ = window_rect.top;
-        src_rect_.right_ = window_rect.right;
-        src_rect_.bottom_ = window_rect.bottom;
+        src_rect_.left(window_rect.left);
+        src_rect_.top(window_rect.top);
+        src_rect_.right(window_rect.right);
+        src_rect_.bottom(window_rect.bottom);
     }
 
     bitmap_info_.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);

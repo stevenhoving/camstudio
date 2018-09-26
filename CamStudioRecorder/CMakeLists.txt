@@ -64,6 +64,7 @@ set(RECORDER_UTILITY_SOURCE
     utility/filesystem.h
     utility/filesystem.cpp
     utility/make_array.h
+    utility/rect_util.h
     utility/string_convert.h
     utility/string_convert.cpp
     utility/window_util.h

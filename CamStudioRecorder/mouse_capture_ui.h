@@ -18,6 +18,7 @@
 #pragma once
 
 #include "settings_model.h"
+#include "virtual_screen_info.h"
 
 #include <CamCapture/cam_gdiplus_fwd.h>
 
@@ -39,7 +40,7 @@ enum class modify_mode
 class mouse_capture_ui
 {
 public:
-    mouse_capture_ui(HINSTANCE instance, HWND parent,
+    mouse_capture_ui(HINSTANCE instance, HWND parent, const virtual_screen_info &screen_info,
         const std::function<void(const CRect &capture_rect)> &completed);
     ~mouse_capture_ui();
     mouse_capture_ui(const mouse_capture_ui &) = delete;
@@ -75,8 +76,6 @@ private:
     // used to clamp
     CRect max_screen_rect_;
 
-    // used to keep track of what we have pained so we can erase it.
-    std::vector<CRect> paint_rect_;
     HBRUSH hatched_brush_;
     HWND hwnd_{nullptr};
     HINSTANCE instance_{nullptr};
@@ -95,4 +94,6 @@ private:
     bool select_rect_{false};
     /// the hotkey used to cancel the mouse capture operation.
     int cancel_vkey_{VK_ESCAPE};
+
+    virtual_screen_info virtual_screen_info_{};
 };

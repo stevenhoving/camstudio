@@ -7,16 +7,6 @@
 class settings_model;
 class mouse_capture_ui;
 
-static cam::rect<int> from_rect(const CRect &rect)
-{
-    return {rect.left, rect.top, rect.right, rect.bottom};
-}
-
-static CRect from_rect(const cam::rect<int> &rect)
-{
-    return {rect.left(), rect.top(), rect.right(), rect.bottom()};
-}
-
 class CFixedRegionDlg : public CDialog
 {
     DECLARE_DYNAMIC(CFixedRegionDlg)

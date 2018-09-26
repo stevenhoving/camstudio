@@ -24,7 +24,6 @@ class CWnd;
 class CStatic;
 class CDC;
 
-
 namespace utility
 {
 auto get_window_text(const CWnd &window) -> std::wstring;
