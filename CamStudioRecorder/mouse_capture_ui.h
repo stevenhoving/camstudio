@@ -64,6 +64,9 @@ private:
     void on_paint(HWND hWnd, WPARAM wParam, LPARAM lParam);
     void on_mouse_wheel(HWND hWnd, WPARAM wParam, LPARAM lParam);
 
+    // translate mouse position from virtual 'space' domain.
+    POINT translate_from_virtual(const POINT &mouse_position);
+
     // used for variable
     CPoint capture_rect_drag_start_{0, 0};
     CPoint capture_rect_drag_end_{0, 0};

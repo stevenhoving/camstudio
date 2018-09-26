@@ -29,6 +29,9 @@
 #include <fmt/printf.h>
 #include <fmt/ostream.h>
 
+ // translate mouse position from virtual 'space' domain.
+POINT translate_from_virtual(const POINT &mouse_position);
+
 LRESULT WINAPI wnd_proc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam)
 {
     const auto mouse_capture_ptr = reinterpret_cast<void *>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
@@ -192,6 +195,16 @@ void mouse_capture_ui::on_mouse_wheel(HWND hWnd, WPARAM wParam, LPARAM /*lParam*
     on_mouse_move(hWnd);
 }
 
+POINT mouse_capture_ui::translate_from_virtual(const POINT &mouse_position)
+{
+    // virtual dataspace can be negative, but the target dataspace is always positive.
+    const auto screen_rect = virtual_screen_info_.size;
+    POINT result = mouse_position;
+    result.x += screen_rect.left();
+    result.y += screen_rect.top();
+    return result;
+}
+
 void mouse_capture_ui::set_modify_mode(modify_mode mode)
 {
     modify_mode_ = mode;
@@ -250,6 +263,7 @@ void mouse_capture_ui::on_mouse_move(HWND hWnd)
 {
     POINT pt;
     ::GetCursorPos(&pt);
+    pt = translate_from_virtual(pt);
 
     if (modify_mode_ == modify_mode::select)
     {
