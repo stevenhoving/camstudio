@@ -27,7 +27,7 @@ Besides creating a clean installer for camstudio I have found myself a couple of
 * Add support for mkv - done.
 * Replace libcondig with alternative - done.
 * Improve settings screen - done.
-* Create release - in progress.
+* Create release - done.
 * Introduce unit test - in progress.
 * Replace UI framework with Qt.
 
