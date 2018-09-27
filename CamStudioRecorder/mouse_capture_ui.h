@@ -18,8 +18,7 @@
 #pragma once
 
 #include "settings_model.h"
-#include "virtual_screen_info.h"
-
+#include <CamCapture/cam_virtual_screen_info.h>
 #include <CamCapture/cam_gdiplus_fwd.h>
 
 #include <atltypes.h>
@@ -40,7 +39,7 @@ enum class modify_mode
 class mouse_capture_ui
 {
 public:
-    mouse_capture_ui(HINSTANCE instance, HWND parent, const virtual_screen_info &screen_info,
+    mouse_capture_ui(HINSTANCE instance, HWND parent, const cam::virtual_screen_info &screen_info,
         const std::function<void(const CRect &capture_rect)> &completed);
     ~mouse_capture_ui();
     mouse_capture_ui(const mouse_capture_ui &) = delete;
@@ -98,5 +97,5 @@ private:
     /// the hotkey used to cancel the mouse capture operation.
     int cancel_vkey_{VK_ESCAPE};
 
-    virtual_screen_info virtual_screen_info_{};
+    cam::virtual_screen_info virtual_screen_info_{};
 };

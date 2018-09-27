@@ -28,14 +28,24 @@ public:
     {
     }
 
-    constexpr T x() const noexcept
+    constexpr auto x() const noexcept -> T
     {
         return x_;
     }
 
-    constexpr T y() const noexcept
+    constexpr void x(const T new_x) noexcept
+    {
+        x_ = new_x;
+    }
+
+    constexpr auto y() const noexcept -> T
     {
         return y_;
+    }
+
+    constexpr void y(const T new_y) noexcept
+    {
+        y_ = new_y;
     }
 
 private:

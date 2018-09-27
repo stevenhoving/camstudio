@@ -16,7 +16,7 @@
 
 IMPLEMENT_DYNAMIC(CFixedRegionDlg, CDialog)
 
-CFixedRegionDlg::CFixedRegionDlg(CWnd *pParent, virtual_screen_info screen_info, settings_model &settings)
+CFixedRegionDlg::CFixedRegionDlg(CWnd *pParent, cam::virtual_screen_info screen_info, settings_model &settings)
     : CDialog(CFixedRegionDlg::IDD, pParent)
     , capture_rect_(0, 0, 0, 0)
     , settings_(settings)
@@ -286,6 +286,3 @@ void CFixedRegionDlg::OnEnKillfocusHeight()
         set_window_text(height_text_edit_ctrl_, std::to_wstring(capture_rect_.height()));
     }
 }
-
-
-

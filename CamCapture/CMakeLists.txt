@@ -24,6 +24,7 @@ set(ANNOTATIONS_SOURCE
 
 set(CAPTURE_SOURCE
     src/cam_capture.cpp
+    src/cam_virtual_screen_info.cpp
 )
 
 set(CAPTURE_INCLUDE
@@ -38,6 +39,7 @@ set(CAPTURE_INCLUDE
     include/CamCapture/cam_point.h
     include/CamCapture/cam_size.h
     include/CamCapture/cam_stop_watch.h
+    include/CamCapture/cam_virtual_screen_info.h
 )
 
 source_group(src FILES

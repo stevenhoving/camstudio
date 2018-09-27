@@ -2,6 +2,8 @@
 
 #include <CamCapture/cam_rect.h>
 
+namespace cam
+{
 struct virtual_screen_info
 {
     // the virtual screen rect
@@ -13,3 +15,4 @@ struct virtual_screen_info
 };
 
 virtual_screen_info get_virtual_screen_info();
+} // namespace cam

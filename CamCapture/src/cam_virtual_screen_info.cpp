@@ -1,6 +1,9 @@
-#include "stdafx.h"
-#include "virtual_screen_info.h"
+#include "cam_virtual_screen_info.h"
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+
+namespace cam
+{
 
 virtual_screen_info get_virtual_screen_info()
 {
@@ -21,3 +24,5 @@ virtual_screen_info get_virtual_screen_info()
     result.monitor_count = monitor_count;
     return result;
 }
+
+} // namespace cam

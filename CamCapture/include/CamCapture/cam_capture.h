@@ -19,6 +19,7 @@
 
 #include "cam_rect.h"
 #include "cam_annotarion.h"
+#include "cam_virtual_screen_info.h"
 
 #include <windows.h>
 #include <memory>
@@ -58,6 +59,7 @@ public:
 
 protected:
     void _draw_annotations(const cam::rect<int> &capture_rect);
+    auto _translate_from_virtual(const POINT &mouse_position) -> point<int>;
 
 private:
     BITMAPINFO bitmap_info_;
@@ -66,6 +68,7 @@ private:
     HDC desktop_dc_;
     HDC memory_dc_;
     cam::rect<int> src_rect_;
+    cam::virtual_screen_info virtual_screen_info_;
 
     unsigned char *bitmap_data_{nullptr};
     cam_frame frame_;

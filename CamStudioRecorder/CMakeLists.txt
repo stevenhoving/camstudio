@@ -56,8 +56,6 @@ set(RECORDER_NEW_SOURCE
     settings_model.h
     settings_model.cpp
     settings_table.h
-    virtual_screen_info.cpp
-    virtual_screen_info.h
 )
 
 set(RECORDER_UTILITY_SOURCE

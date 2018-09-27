@@ -39,13 +39,11 @@ cam_capture_source::cam_capture_source(HWND hwnd, const cam::rect<int> & /*view*
     , src_rect_()
     , annotations_()
     , stopwatch_(std::make_unique<cam::stop_watch>())
+    , virtual_screen_info_(cam::get_virtual_screen_info())
 {
     if (hwnd == nullptr)
     {
-        src_rect_.left_ = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
-        src_rect_.top_ = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
-        src_rect_.right_ = src_rect_.left_ + ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
-        src_rect_.bottom_ = src_rect_.top_ + ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
+        src_rect_ = virtual_screen_info_.size;
     }
     else
     {
@@ -137,11 +135,10 @@ void cam_capture_source::_draw_annotations(const cam::rect<int> &capture_rect)
     {
         POINT pt;
         ::GetCursorPos(&pt);
+        const auto mouse_point = _translate_from_virtual(pt);
 
         Gdiplus::Graphics canvas(memory_dc_);
         canvas.SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);
-
-        point<int> mouse_point(pt.x, pt.y);
 
         const auto mouse_event_count = mouse_hook::get().get_mouse_events_count();
         if (mouse_event_count > 0)
@@ -183,4 +180,15 @@ void cam_capture_source::_draw_annotations(const cam::rect<int> &capture_rect)
         for (const auto &annotation : annotations_)
             annotation->draw(canvas, draw_data);
     }
+}
+
+auto cam_capture_source::_translate_from_virtual(const POINT &mouse_position) -> point<int>
+{
+    // virtual dataspace can be negative, but the target dataspace is always positive.
+    const auto screen_rect = virtual_screen_info_.size;
+    auto result = point<int>(mouse_position.x, mouse_position.y);
+    result.x(result.x() - screen_rect.left());
+    result.y(result.y() - screen_rect.top());
+
+    return result;
 }

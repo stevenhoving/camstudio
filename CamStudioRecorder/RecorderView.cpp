@@ -108,7 +108,7 @@ END_EVENTSINK_MAP()
 CRecorderView::CRecorderView()
     : CView()
 {
-    virtual_screen_info_ = get_virtual_screen_info();
+    virtual_screen_info_ = cam::get_virtual_screen_info();
     mouse_hook_ = std::make_unique<mouse_hook>();
 
     video_settings_model_ = std::make_unique<video_settings_model>();

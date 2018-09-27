@@ -39,7 +39,7 @@ LRESULT WINAPI wnd_proc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam)
     return mouse_capture->message_handler(hWnd, wMessage, wParam, lParam);
 }
 
-mouse_capture_ui::mouse_capture_ui(HINSTANCE instance, HWND parent, const virtual_screen_info &screen_info,
+mouse_capture_ui::mouse_capture_ui(HINSTANCE instance, HWND parent, const cam::virtual_screen_info &screen_info,
     const std::function<void(const CRect &capture_rect)> &completed)
     : instance_(instance)
     , completed_(completed)

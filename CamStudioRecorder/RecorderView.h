@@ -1,7 +1,7 @@
 #pragma once
 
 #include "settings/video_settings.h"
-#include "virtual_screen_info.h"
+#include <CamCapture/cam_virtual_screen_info.h>
 
 #include <filesystem>
 #include <memory>
@@ -126,7 +126,7 @@ private:
     //CPoint zoomed_at_;
     //DWORD zoom_when_{0}; // FIXME: I hope it is unlikely zoom start at 47 day boundary ever happen by accident
     //int zoom_direction_{-1}; // -1 means zoomed out.
-    virtual_screen_info virtual_screen_info_{};
+    cam::virtual_screen_info virtual_screen_info_{};
 };
 
 #ifndef _DEBUG // debug version in vscapView.cpp
