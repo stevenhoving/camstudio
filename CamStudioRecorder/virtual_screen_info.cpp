@@ -8,15 +8,16 @@ virtual_screen_info get_virtual_screen_info()
 
     HDC hScreenDC = ::GetDC(nullptr);
     const auto bpp = ::GetDeviceCaps(hScreenDC, BITSPIXEL);
+    ::ReleaseDC(nullptr, hScreenDC);
+
     const auto max_x = ::GetSystemMetrics(SM_CXVIRTUALSCREEN);
     const auto max_y = ::GetSystemMetrics(SM_CYVIRTUALSCREEN);
     const auto min_x = ::GetSystemMetrics(SM_XVIRTUALSCREEN);
     const auto min_y = ::GetSystemMetrics(SM_YVIRTUALSCREEN);
     const auto monitor_count = ::GetSystemMetrics(SM_CMONITORS);
-    ::ReleaseDC(nullptr, hScreenDC);
 
     result.bpp = bpp;
-    result.size = { min_x, min_y, max_x, max_y };
+    result.size = { min_x, min_y, min_x + max_x, min_y + max_y };
     result.monitor_count = monitor_count;
     return result;
 }
