@@ -643,8 +643,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,0
- PRODUCTVERSION 3,1,0,0
+ FILEVERSION 3,0,0,0
+ PRODUCTVERSION 3,0,0,0
  FILEFLAGSMASK 0x1fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -660,13 +660,11 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "Comments", "CamStudio Recorder"
-            VALUE "CompanyName", "CamStudio Group"
             VALUE "FileDescription", "CamStudio Recorder"
-            VALUE "FileVersion", "3.1.0.0"
-            VALUE "InternalName", "Camstudio Open Source"
-            VALUE "LegalCopyright", "Copyright © 2001 RenderSoft Software and Web Publishing, Copyright © 2009 CamStudio Group & Contributors"
+            VALUE "FileVersion", "3.0.0.0"
+            VALUE "LegalCopyright", "Copyright (C) 2018  Steven Hoving, Copyright © 2009 CamStudio Group & Contributors, Copyright © 2001 RenderSoft Software and Web Publishing"
             VALUE "ProductName", "CamStudio Recorder"
-            VALUE "ProductVersion", "3.1.0.0"
+            VALUE "ProductVersion", "3.0.0.0"
         END
     END
     BLOCK "VarFileInfo"
