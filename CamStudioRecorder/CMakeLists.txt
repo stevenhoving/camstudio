@@ -15,7 +15,10 @@
 
 project(CamStudioRecorder)
 
+find_package(ffmpeg)
+
 include(MyBuildinfo)
+include(CopyToTargetConfigPath)
 
 generate_build_info_header(
     "${CMAKE_SOURCE_DIR}/license.txt"
@@ -211,4 +214,16 @@ install(
     "${CMAKE_SOURCE_DIR}/README.md"
   DESTINATION
     bin
+)
+
+copy_to_target_config_path(TARGET CamStudioRecorder
+  FILES
+    "${FFMPEG_BIN_DIR}/avcodec-58.dll"
+    "${FFMPEG_BIN_DIR}/avdevice-58.dll"
+    "${FFMPEG_BIN_DIR}/avfilter-7.dll"
+    "${FFMPEG_BIN_DIR}/avformat-58.dll"
+    "${FFMPEG_BIN_DIR}/avutil-56.dll"
+    "${FFMPEG_BIN_DIR}/postproc-55.dll"
+    "${FFMPEG_BIN_DIR}/swresample-3.dll"
+    "${FFMPEG_BIN_DIR}/swscale-5.dll"
 )
