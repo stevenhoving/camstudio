@@ -20,7 +20,6 @@
 #include "cam_common.h"
 #include <memory>
 
-#define WM_USER_RECORDINTERRUPTED_MSG L"WM_USER_RECORDINTERRUPTED_MSG"
 #define WM_USER_RECORDPAUSED_MSG L"WM_USER_RECORDPAUSED_MSG"
 #define WM_USER_GENERIC_MSG L"WM_USER_GENERIC_MSG"
 #define WM_USER_RECORDSTART_MSG L"WM_USER_RECORDSTART_MSG"
@@ -35,6 +34,8 @@ public:
     CAMHOOK_EXPORT void set_instance(HINSTANCE instance);
     CAMHOOK_EXPORT void attach();
     CAMHOOK_EXPORT void detach();
+    CAMHOOK_EXPORT void pause();
+    CAMHOOK_EXPORT void unpause();
 
     CAMHOOK_EXPORT auto get_mouse_events_count() -> int32_t;
     CAMHOOK_EXPORT auto get_mouse_events(MSLLHOOKSTRUCT *dst, int32_t count) -> bool;

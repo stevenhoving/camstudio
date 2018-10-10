@@ -17,6 +17,12 @@ class mouse_hook;
 class shortcut_controller;
 class capture_thread;
 
+enum class record_interrupt_reason : int
+{
+    stopped,
+    canceled
+};
+
 class CRecorderView : public CView
 {
 protected:
@@ -25,10 +31,11 @@ protected:
 
 public:
     ~CRecorderView() override;
-    CRecorderDoc *GetDocument();
 
-    bool GetRecordState();
-    bool GetPausedState();
+    /* function that is called before the window is destroyed */
+    void shutdown();
+
+    CRecorderDoc *GetDocument();
 
     // CView
     void OnDraw(CDC *pDC) override;
@@ -39,9 +46,9 @@ public:
 #endif
 
 private:
-    std::string generate_temp_filename();
+    auto generate_temp_filename() -> std::string;
     void restore_window();
-    std::filesystem::path generate_auto_filename();
+    auto generate_auto_filename() -> std::filesystem::path ;
 
     void set_shortcuts();
 
@@ -50,10 +57,13 @@ protected:
     void OnStop();
     void OnCancel();
 
+    /* stop or cancel the ongoing recording and cleanup */
+    void _interrupt_recording(const record_interrupt_reason reason);
+
     afx_msg void OnRegionRubber();
     afx_msg void OnRegionPanregion();
     afx_msg void OnPaint();
-    afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+    afx_msg auto OnCreate(LPCREATESTRUCT lpCreateStruct) -> int;
     afx_msg void OnDestroy();
     afx_msg void OnUpdateRegionPanregion(CCmdUI *pCmdUI);
     afx_msg void OnUpdateRegionRubber(CCmdUI *pCmdUI);
@@ -71,24 +81,21 @@ protected:
     afx_msg void OnUpdateStop(CCmdUI *pCmdUI);
     afx_msg void OnOptionsKeyboardshortcuts();
     afx_msg void OnSetFocus(CWnd *pOldWnd);
-    afx_msg BOOL OnEraseBkgnd(CDC *pDC);
+    afx_msg auto OnEraseBkgnd(CDC *pDC) -> BOOL;
     afx_msg void OnRegionWindow();
     afx_msg void OnUpdateRegionWindow(CCmdUI *pCmdUI);
     afx_msg void OnCaptureChanged(CWnd *pWnd);
     afx_msg void OnOptionsProgramsettings();
-
-    afx_msg LRESULT OnRecordStart(WPARAM wParam, LPARAM lParam);
-    afx_msg LRESULT OnRecordInterrupted(WPARAM wParam, LPARAM lParam);
-    afx_msg LRESULT OnRecordPaused(WPARAM wParam, LPARAM lParam);
-    afx_msg LRESULT OnUserGeneric(WPARAM wParam, LPARAM lParam);
-    afx_msg LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);
+    afx_msg auto OnRecordStart(WPARAM wParam, LPARAM lParam) -> LRESULT;
+    afx_msg auto OnRecordPaused(WPARAM wParam, LPARAM lParam) -> LRESULT;
+    afx_msg auto OnUserGeneric(WPARAM wParam, LPARAM lParam) -> LRESULT;
+    afx_msg auto OnHotKey(WPARAM wParam, LPARAM lParam) -> LRESULT;
     DECLARE_MESSAGE_MAP()
 public:
     DECLARE_EVENTSINK_MAP()
 
 public:
     // TODO: should be private
-    static UINT WM_USER_RECORDINTERRUPTED;
     static UINT WM_USER_RECORDPAUSED;
     static UINT WM_USER_GENERIC;
     static UINT WM_USER_RECORDSTART;
@@ -107,13 +114,9 @@ private:
     std::unique_ptr<mouse_capture_ui> mouse_capture_ui_;
     std::unique_ptr<window_select_ui> window_select_ui_;
 
-    std::unique_ptr<mouse_hook> mouse_hook_;
+    std::unique_ptr<mouse_hook> mouse_capture_hook_;
 
     std::unique_ptr<shortcut_controller> shortcut_controller_;
-
-    // state machinery for the ongoing recording...
-    bool is_recording{false};
-    bool is_paused{false};
 
     // state machinery for indicating that a new recording will be started when the shortcut is pressed.
     bool allow_new_record_start_key_{ true };

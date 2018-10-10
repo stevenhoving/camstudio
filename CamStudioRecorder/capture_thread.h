@@ -39,21 +39,35 @@ struct capture_settings
 
 enum class capture_state
 {
+    stopping,
     stopped,
     capturing,
-    paused
+    paused,
+    canceling,
+    canceled
 };
 
 class capture_thread
 {
 public:
-    capture_thread(const std::function<void()> &on_recording_completed);
+    capture_thread(
+        const std::function<void()> &on_recording_completed,
+        const std::function<void()> &on_recording_canceled
+    );
     ~capture_thread();
     capture_thread(const capture_thread &) = delete;
     capture_thread &operator = (const capture_thread &) = delete;
 
     void start(capture_settings settings);
+    /* stop the recording and finish */
     void stop();
+    /* cancel the recording and cleanup */
+    void cancel();
+    /* pause the current recording */
+    void pause();
+    /* unpause a paused recording */
+    void unpause();
+    /* returns the capture state */
     capture_state get_capture_state() const noexcept;
 
 protected:
@@ -65,9 +79,10 @@ private:
     std::unique_ptr<cam_capture_source> capture_source_;
     std::thread capture_thread_;
     std::atomic<bool> run_{false};
-    capture_state capture_state_{capture_state::stopped};
+    std::atomic<capture_state> capture_state_{capture_state::stopped};
 
     cam::rect<int> capture_dst_rect_{0, 0, 0, 0};
 
     std::function<void()> on_recording_completed_;
+    std::function<void()> on_recording_canceled_;
 };

@@ -28,6 +28,7 @@ using namespace std::chrono_literals;
 
 struct hook_pimpl
 {
+    std::atomic<bool> paused_{false};
     HINSTANCE instance_{ nullptr };
     HHOOK hook_{ nullptr };
 
@@ -54,7 +55,10 @@ mouse_hook::mouse_hook()
 {
 }
 
-mouse_hook::~mouse_hook() = default;
+mouse_hook::~mouse_hook()
+{
+    detach();
+}
 
 void mouse_hook::set_instance(HINSTANCE instance)
 {
@@ -86,6 +90,16 @@ void mouse_hook::detach()
         pimpl_->debug_unhook_.join();
 }
 
+void mouse_hook::pause()
+{
+    pimpl_->paused_ = true;
+}
+
+void mouse_hook::unpause()
+{
+    pimpl_->paused_ = false;
+}
+
 void mouse_hook::_detach_impl()
 {
     ::UnhookWindowsHookEx(pimpl_->hook_);
@@ -100,9 +114,9 @@ auto CALLBACK mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lParam) 
     if (IsDebuggerPresent())
         _detach_impl();
 
-    if (nCode >= HC_ACTION)
+    if (!pimpl_->paused_ && nCode >= HC_ACTION)
     {
-        switch(wParam)
+        switch (wParam)
         {
         case WM_MOUSEWHEEL:
             [[fallthrough]];

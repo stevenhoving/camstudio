@@ -129,8 +129,10 @@ std::unique_ptr<av_video> cam_create_video_codec(const av_video_meta &meta)
     return std::make_unique<av_video>(video_codec_config, meta);
 }
 
-capture_thread::capture_thread(const std::function<void()> &on_recording_completed)
+capture_thread::capture_thread(const std::function<void()> &on_recording_completed,
+                               const std::function<void()> &on_recording_canceled)
     : on_recording_completed_(on_recording_completed)
+    , on_recording_canceled_(on_recording_canceled)
 {
 }
 
@@ -161,10 +163,40 @@ void capture_thread::stop()
         return;
 
     run_ = false;
+
+    capture_state_ = capture_state::stopping;
+
     if (capture_thread_.joinable())
         capture_thread_.join();
 
     capture_state_ = capture_state::stopped;
+}
+
+void capture_thread::cancel()
+{
+    if (!run_)
+        return;
+
+    run_ = false;
+
+    capture_state_ = capture_state::canceling;
+
+    if (capture_thread_.joinable())
+        capture_thread_.join();
+
+    capture_state_ = capture_state::canceled;
+}
+
+void capture_thread::pause()
+{
+    if (capture_state_ == capture_state::capturing)
+        capture_state_ = capture_state::paused;
+}
+
+void capture_thread::unpause()
+{
+    if (capture_state_ == capture_state::paused)
+        capture_state_ = capture_state::capturing;
 }
 
 capture_state capture_thread::get_capture_state() const noexcept
@@ -275,10 +307,16 @@ void capture_thread::run()
 
         //dt = stopwatch.time_since();
         //fmt::print("fps: {}\n", 1.0 / dt);
+
+        while (capture_state_ == capture_state::paused && run_ == true)
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     video_encoder.reset();
     fmt::print("capture_thread: completed recording");
 
-    on_recording_completed_();
+    if (capture_state_ == capture_state::stopping)
+        on_recording_completed_();
+    else /* if (capture_state == capture_state::canceling) */
+        on_recording_canceled_();
 }

@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "Recorder.h"
 #include "MainFrm.h"
+#include "Recorder.h"
+#include "RecorderView.h"
 #include <CamLib/console.h>
 #include <afxdatarecovery.h>
 
@@ -124,14 +125,13 @@ void CMainFrame::Dump(CDumpContext &dc) const
 
 void CMainFrame::OnClose()
 {
-    // if want to close the application while a recording is going on...
-    //if (g_bRecordState)
-    //{
-    //    MessageOut(this->m_hWnd, IDS_STRING_STOPBEFOREEXIT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION);
-    //    return;
-    //}
+    auto view = dynamic_cast<CRecorderView *>(GetActiveView());
+    if (view)
+    {
+        view->shutdown();
+    }
 
-    // Workarround for CFrameWnd::OnClose();
+    // Workarround for CFrameWnd::OnClose(); crash.
     if (m_lpfnCloseProc != nullptr)
     {
         // if there is a close proc, then defer to it, and return

@@ -53,7 +53,6 @@ constexpr auto TEMPFILETAGINDICATOR = L"~temp";
 /////////////////////////////////////////////////////////////////////////////
 // CRecorderView
 
-UINT CRecorderView::WM_USER_RECORDINTERRUPTED = ::RegisterWindowMessage(WM_USER_RECORDINTERRUPTED_MSG);
 UINT CRecorderView::WM_USER_RECORDPAUSED = ::RegisterWindowMessage(WM_USER_RECORDPAUSED_MSG);
 UINT CRecorderView::WM_USER_GENERIC = ::RegisterWindowMessage(WM_USER_GENERIC_MSG);
 UINT CRecorderView::WM_USER_RECORDSTART = ::RegisterWindowMessage(WM_USER_RECORDSTART_MSG);
@@ -61,6 +60,10 @@ UINT CRecorderView::WM_USER_RECORDSTART = ::RegisterWindowMessage(WM_USER_RECORD
 IMPLEMENT_DYNCREATE(CRecorderView, CView)
 
 BEGIN_MESSAGE_MAP(CRecorderView, CView)
+    ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDSTART, &CRecorderView::OnRecordStart)
+    ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDPAUSED, &CRecorderView::OnRecordPaused)
+    ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_GENERIC, &CRecorderView::OnUserGeneric)
+
     ON_WM_PAINT()
     ON_WM_CREATE()
     ON_WM_DESTROY()
@@ -84,17 +87,9 @@ BEGIN_MESSAGE_MAP(CRecorderView, CView)
     ON_UPDATE_COMMAND_UI(ID_SCREENS_ALLSCREENS, &CRecorderView::OnUpdateRegionAllScreens)
     ON_COMMAND(ID_PAUSE, &CRecorderView::OnPause)
     ON_UPDATE_COMMAND_UI(ID_PAUSE, &CRecorderView::OnUpdatePause)
-
     ON_COMMAND(ID_REGION_WINDOW, &CRecorderView::OnRegionWindow)
     ON_UPDATE_COMMAND_UI(ID_REGION_WINDOW, &CRecorderView::OnUpdateRegionWindow)
     ON_COMMAND(ID_OPTIONS_KEYBOARDSHORTCUTS, &CRecorderView::OnOptionsKeyboardshortcuts)
-    //ON_COMMAND(ID_FILE_PRINT, &CRecorderView::CView::OnFilePrint)
-    //ON_COMMAND(ID_FILE_PRINT_DIRECT, &CRecorderView::CView::OnFilePrint)
-    //ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CRecorderView::CView::OnFilePrintPreview)
-    ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDSTART, &CRecorderView::OnRecordStart)
-    ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDINTERRUPTED, &CRecorderView::OnRecordInterrupted)
-    ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_RECORDPAUSED, &CRecorderView::OnRecordPaused)
-    ON_REGISTERED_MESSAGE(CRecorderView::WM_USER_GENERIC, &CRecorderView::OnUserGeneric)
     ON_MESSAGE(WM_HOTKEY, &CRecorderView::OnHotKey)
     ON_WM_CAPTURECHANGED()
     ON_COMMAND(ID_OPTIONS_PROGRAMSETTINGS, &CRecorderView::OnOptionsProgramsettings)
@@ -109,7 +104,7 @@ CRecorderView::CRecorderView()
     : CView()
 {
     virtual_screen_info_ = cam::get_virtual_screen_info();
-    mouse_hook_ = std::make_unique<mouse_hook>();
+    mouse_capture_hook_ = std::make_unique<mouse_hook>();
 
     video_settings_model_ = std::make_unique<video_settings_model>();
     video_settings_model_->load();
@@ -122,7 +117,14 @@ void CRecorderView::OnDraw(CDC *pCDC)
 {
     CView::OnDraw(pCDC);
 }
+
 CRecorderView::~CRecorderView() = default;
+
+void CRecorderView::shutdown()
+{
+    /* \note if an recording is ongoing, it will be canceled. */
+    _interrupt_recording(record_interrupt_reason::canceled);
+}
 
 void CRecorderView::set_shortcuts()
 {
@@ -191,15 +193,8 @@ void CRecorderView::OnPaint()
 {
     CPaintDC dc(this); // device context for painting
 
-    // Draw Autopan Info
-    // Draw Message msgRecMode
-    if (!is_recording)
-    {
-        DisplayRecordingMsg(dc);
-        return;
-    }
     // Display the record information when recording
-    if (is_recording)
+    if (capture_thread_ && capture_thread_->get_capture_state() == capture_state::capturing)
     {
         CRect rectClient;
         GetClientRect(&rectClient);
@@ -224,6 +219,12 @@ void CRecorderView::OnPaint()
         // OffScreen Buffer
         dc.BitBlt(0, 0, rectClient.Width(), rectClient.Height(), &dcBits, 0, 0, SRCCOPY);
         dcBits.SelectObject(pOldBitmap);
+    }
+    else
+    {
+        // Draw Autopan Info
+        // Draw Message msgRecMode
+        DisplayRecordingMsg(dc);
     }
 }
 
@@ -255,7 +256,6 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 void CRecorderView::OnDestroy()
 {
     settings_model_->save();
-
 
     if (g_hLogoBM)
     {
@@ -392,9 +392,7 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
     if (settings_model_->get_application_minimize_on_capture_start())
         ::PostMessage(AfxGetMainWnd()->m_hWnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 
-    is_recording = true;
-
-    mouse_hook_->attach();
+    mouse_capture_hook_->attach();
 
     capture_settings settings;
     settings.capture_hwnd_ = reinterpret_cast<HWND>(lParam);
@@ -407,8 +405,8 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
     temp_video_filepath_ = settings.filename;
 
     capture_thread_ = std::make_unique<capture_thread>(
-        [this]()
-        {PostMessage(WM_USER_GENERIC, 0, 0);}
+        [this](){PostMessage(WM_USER_GENERIC, 0 /* finalize recording */, 0);},
+        [this](){PostMessage(WM_USER_GENERIC, 1 /* cancel recording */, 0);}
      );
     capture_thread_->start(settings);
 
@@ -418,37 +416,42 @@ LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
 
 LRESULT CRecorderView::OnRecordPaused(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
-    if (is_paused)
-    {
+    if (!capture_thread_ || capture_thread_->get_capture_state() == capture_state::paused)
         return 0;
-    }
+
     OnPause();
     return 0;
 }
 
-LRESULT CRecorderView::OnRecordInterrupted(WPARAM /*wParam*/, LPARAM /*lParam*/)
+void CRecorderView::_interrupt_recording(const record_interrupt_reason reason)
 {
-    if (is_paused)
+    if (!capture_thread_)
+        return;
+
+    if (capture_thread_->get_capture_state() == capture_state::paused)
     {
-        CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
+        auto pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
         pFrame->SetTitle(_T("CamStudio"));
     }
 
-    is_recording = false;
-    capture_thread_->stop();
+    if (reason == record_interrupt_reason::stopped)
+        capture_thread_->stop();
+    else /* if (reason == record_interupt_reason::canceled) */
+        capture_thread_->cancel();
+
     capture_thread_.reset();
+    mouse_capture_hook_->detach();
 
-    mouse_hook_->detach();
-
-    CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
-    pStatus->SetPaneText(0, _T("Press the Record Button to start recording"));
-
-    Invalidate();
+    auto pStatus = reinterpret_cast<CStatusBar *>(AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR));
+    if (pStatus != nullptr)
+    {
+        pStatus->SetPaneText(0, _T("Press the Record Button to start recording"));
+        pStatus->Invalidate();
+        //Invalidate();
+    }
 
     ::SetForegroundWindow(AfxGetMainWnd()->m_hWnd);
     AfxGetMainWnd()->ShowWindow(SW_RESTORE);
-
-    return 0;
 }
 
 void CRecorderView::OnRegionRubber()
@@ -639,18 +642,17 @@ void CRecorderView::OnRecord()
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
     pStatus->SetPaneText(0, _T("Press the Stop Button to stop recording"));
 
-    if (is_paused)
+    if (capture_thread_ && capture_thread_->get_capture_state() == capture_state::paused)
     {
-        is_paused = false;
+        capture_thread_->unpause();
+        mouse_capture_hook_->unpause();
 
         // Set Title Bar
-        CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
+        auto pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
         pFrame->SetTitle(_T("CamStudio"));
 
         return;
     }
-    is_paused = false;
-
 
     switch (settings_model_->get_capture_mode())
     {
@@ -704,40 +706,32 @@ void CRecorderView::OnRecord()
 
 void CRecorderView::OnStop()
 {
-    if (!is_recording)
-    {
+    if (!capture_thread_ || capture_thread_->get_capture_state() != capture_state::capturing)
         return;
-    }
 
-    if (is_paused)
+    if (capture_thread_->get_capture_state() == capture_state::paused)
     {
-        is_paused = false;
-
         // Set Title Bar
         CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
         pFrame->SetTitle(_T("CamStudio"));
     }
 
-    OnRecordInterrupted(0, 0);
+    _interrupt_recording(record_interrupt_reason::stopped);
 }
 
 void CRecorderView::OnCancel()
 {
-    if (!is_recording)
-    {
+    if (!capture_thread_ || capture_thread_->get_capture_state() != capture_state::capturing)
         return;
-    }
 
-    if (is_paused)
+    if (capture_thread_->get_capture_state() == capture_state::paused)
     {
-        is_paused = false;
-
         // Set Title Bar
         CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
         pFrame->SetTitle(_T("CamStudio"));
     }
 
-    OnRecordInterrupted(1, 0);
+    _interrupt_recording(record_interrupt_reason::canceled);
 }
 
 void CRecorderView::OnVideoSettings()
@@ -756,11 +750,11 @@ void CRecorderView::OnOptionsCursoroptions()
 
 void CRecorderView::OnPause()
 {
-    // it is important to know that pause doesn't work anymore...
-    if (!is_recording || is_paused)
+    if (!capture_thread_ || capture_thread_->get_capture_state() == capture_state::paused)
         return;
 
-    is_paused = true;
+    capture_thread_->pause();
+    mouse_capture_hook_->pause();
 
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
     pStatus->SetPaneText(0, _T("Recording Paused"));
@@ -772,6 +766,7 @@ void CRecorderView::OnPause()
 
 void CRecorderView::OnUpdatePause(CCmdUI *pCmdUI)
 {
+    const auto is_paused = capture_thread_ && capture_thread_->get_capture_state() == capture_state::paused;
     pCmdUI->Enable(!is_paused);
 }
 
@@ -781,6 +776,9 @@ void CRecorderView::OnUpdateStop(CCmdUI * /*pCmdUI*/)
 
 void CRecorderView::OnUpdateRecord(CCmdUI *pCmdUI)
 {
+    const auto is_recording = capture_thread_ && capture_thread_->get_capture_state() == capture_state::capturing;
+    const auto is_paused = capture_thread_ && capture_thread_->get_capture_state() == capture_state::paused;
+
     pCmdUI->Enable(!is_recording || is_paused);
 }
 
@@ -1077,17 +1075,6 @@ std::unique_ptr<av_video> create_video_codec(const av_video_meta &meta)
     video_codec_config.pixel_format = AV_PIX_FMT_RGB24;
 
     return std::make_unique<av_video>(video_codec_config, meta);
-}
-
-bool CRecorderView::GetRecordState()
-{
-    return is_recording;
-}
-
-// \todo remove this function
-bool CRecorderView::GetPausedState()
-{
-    return is_paused;
 }
 
 void CRecorderView::DisplayAutopanInfo(CRect /*rc*/)
