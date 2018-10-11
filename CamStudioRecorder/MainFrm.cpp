@@ -24,13 +24,13 @@ CMainFrame::CMainFrame()
     console::create();
 #endif
 
-    m_bmLogo.LoadBitmap(IDB_BITMAP3);
+    logo_bmp_.LoadBitmap(IDB_BITMAP3);
 }
 
 CMainFrame::~CMainFrame()
 {
-    m_ToolbarBitmap256.DeleteObject();
-    m_ToolbarBitmapMask.DeleteObject();
+    toolbar_bmp_256_.DeleteObject();
+    toolbar_bmp_mask_.DeleteObject();
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -38,42 +38,40 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
         return -1;
 
-    if (!m_wndToolBar.Create(this) || !m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
+    if (!wnd_toolbar_.Create(this) || !wnd_toolbar_.LoadToolBar(IDR_MAINFRAME))
     {
         TRACE("Failed to create toolbar\n");
-        return -1; // fail to create
+        return -1;
     }
 
-    if (!m_wndStatusBar.Create(this) || !m_wndStatusBar.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT)))
+    if (!wnd_status_bar_.Create(this) || !wnd_status_bar_.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT)))
     {
         TRACE("Failed to create status bar\n");
-        return -1; // fail to create
+        return -1;
     }
 
-    m_ToolbarBitmap256.LoadBitmap(IDB_TOOLBAR256);
-    m_ToolbarBitmapMask.LoadBitmap(IDB_TOOLBARMASK);
+    toolbar_bmp_256_.LoadBitmap(IDB_TOOLBAR256);
+    toolbar_bmp_mask_.LoadBitmap(IDB_TOOLBARMASK);
 
-    // \todo cleanup
 
-    // m_ilToolBar.Create(21,21, ILC_COLOR8 | ILC_MASK, 4, 4);
-    m_ilToolBar.Create(21, 21, ILC_COLOR16 | ILC_MASK, 4, 4);
-    // m_ilToolBar.Create(32,32, ILC_COLOR16 | ILC_MASK, 4, 4);
-    m_ilToolBar.Add(&m_ToolbarBitmap256, &m_ToolbarBitmapMask);
+    image_list_toolbar_.Create(21, 21, ILC_COLOR16 | ILC_MASK, 4, 4);
+    //m_ilToolBar.Create(32,32, ILC_COLOR16 | ILC_MASK, 4, 4);
+    image_list_toolbar_.Add(&toolbar_bmp_256_, &toolbar_bmp_mask_);
 
     // VC6
     // m_wndToolBar.GetToolBarCtrl().SetImageList(&m_ilToolBar);
 
     // VC5
-    ::SendMessage(m_wndToolBar.GetToolBarCtrl().m_hWnd, TB_SETIMAGELIST, 0, (LPARAM)m_ilToolBar.GetSafeHandle());
+    ::SendMessage(wnd_toolbar_.GetToolBarCtrl().m_hWnd, TB_SETIMAGELIST, 0, (LPARAM)image_list_toolbar_.GetSafeHandle());
 
-    m_wndToolBar.ModifyStyle(0, TBSTYLE_FLAT);
-    m_wndToolBar.SetBarStyle(m_wndToolBar.GetBarStyle() | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
+    wnd_toolbar_.ModifyStyle(0, TBSTYLE_FLAT);
+    wnd_toolbar_.SetBarStyle(wnd_toolbar_.GetBarStyle() | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
 
-    m_TrayIcon.SetNotifyWnd(*this);
-    m_TrayIcon.TraySetIcon(IDR_MAINFRAME);
-    m_TrayIcon.TraySetToolTip(_T("CamStudio"));
-    m_TrayIcon.TraySetMenu(IDR_TRAYMENU);
-    m_TrayIcon.TrayShow();
+    tray_icon_.SetNotifyWnd(*this);
+    tray_icon_.TraySetIcon(IDR_MAINFRAME);
+    tray_icon_.TraySetToolTip(_T("CamStudio"));
+    tray_icon_.TraySetMenu(IDR_TRAYMENU);
+    tray_icon_.TrayShow();
 
     SetWindowText(_T("CamStudio"));
     return 0;
@@ -89,7 +87,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT &cs)
 
     // use logo to set width and heights
     BITMAP bitmap;
-    m_bmLogo.GetBitmap(&bitmap);
+    logo_bmp_.GetBitmap(&bitmap);
 
     cs.cx = bitmap.bmWidth - 26;  // Otherwise size won't be correct
     cs.cy = bitmap.bmHeight + 10; // Otherwise size won't be correct
@@ -136,7 +134,7 @@ void CMainFrame::OnClose()
 
 void CMainFrame::OnSysCommand(UINT nID, LPARAM lParam)
 {
-    if (m_TrayIcon.MinimizeToTray())
+    if (tray_icon_.MinimizeToTray())
     {
         if ((nID & 0xFFF0) == SC_MINIMIZE)
         {
@@ -148,5 +146,5 @@ void CMainFrame::OnSysCommand(UINT nID, LPARAM lParam)
 }
 LRESULT CMainFrame::OnTrayNotify(WPARAM wParam, LPARAM lParam)
 {
-    return m_TrayIcon.OnTrayNotify(wParam, lParam);
+    return tray_icon_.OnTrayNotify(wParam, lParam);
 }

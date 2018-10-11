@@ -7,15 +7,14 @@
 
 class CMainFrame : public CFrameWnd
 {
-protected: // create from serialization only
+protected:
     CMainFrame();
     DECLARE_DYNCREATE(CMainFrame)
 
-    // Attributes
 public:
     CBitmap &Logo()
     {
-        return m_bmLogo;
+        return logo_bmp_;
     }
 
     BOOL PreCreateWindow(CREATESTRUCT &cs) override;
@@ -27,20 +26,18 @@ public:
     void Dump(CDumpContext &dc) const override;
 #endif
 
-protected: // control bar embedded members
-    CStatusBar m_wndStatusBar;
-    CToolBar m_wndToolBar;
-    CBitmap m_ToolbarBitmap256;
-    CBitmap m_ToolbarBitmapMask;
-    CImageList m_ilToolBar;
-    CBitmap m_bmLogo;
-
 protected:
-    afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+    afx_msg auto OnCreate(LPCREATESTRUCT lpCreateStruct) -> int;
     afx_msg void OnClose();
     afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
-    afx_msg LRESULT OnTrayNotify(WPARAM wParam, LPARAM lParam);
+    afx_msg auto OnTrayNotify(WPARAM wParam, LPARAM lParam) -> LRESULT;
     DECLARE_MESSAGE_MAP()
 private:
-    CTrayIcon m_TrayIcon;
+    CStatusBar wnd_status_bar_;
+    CToolBar wnd_toolbar_;
+    CBitmap toolbar_bmp_256_;
+    CBitmap toolbar_bmp_mask_;
+    CImageList image_list_toolbar_;
+    CBitmap logo_bmp_;
+    CTrayIcon tray_icon_;
 };
