@@ -115,7 +115,7 @@ set(RECORDER_RESOURCE
     targetver.h
 )
 
-set(CMAKE_MFC_FLAG 2)
+set(CMAKE_MFC_FLAG 1)
 
 add_executable(CamStudioRecorder WIN32
     ${RECORDER_NEW_SOURCE}
@@ -159,7 +159,7 @@ target_include_directories(CamStudioRecorder
 target_compile_definitions(CamStudioRecorder
   PRIVATE
     NOMINMAX
-    _AFXDLL=1
+    _AFXDLL
     _UNICODE
     UNICODE
     # silence codecvt deprecation warning for now

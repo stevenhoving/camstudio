@@ -46,9 +46,9 @@ add_library(CamLib STATIC
 
 target_compile_definitions(CamLib
   PRIVATE
-    _AFXDLL
     _UNICODE
     UNICODE
+    _AFXDLL
 )
 
 target_include_directories(CamLib
