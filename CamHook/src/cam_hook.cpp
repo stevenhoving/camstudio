@@ -159,7 +159,7 @@ auto mouse_hook::get_mouse_events_count() -> int32_t
     return static_cast<int32_t>(pimpl_->mouse_events_.size());
 }
 
-// here we must assume that the user has actually allocated enough memory
+// We must assume that the user has actually allocated enough memory. Please don't lie to us.
 auto mouse_hook::get_mouse_events(MSLLHOOKSTRUCT *dst, int32_t count) -> bool
 {
     if (dst == nullptr)
@@ -170,15 +170,12 @@ auto mouse_hook::get_mouse_events(MSLLHOOKSTRUCT *dst, int32_t count) -> bool
         const auto copy_count = std::min<int32_t>(count, static_cast<int32_t>(pimpl_->mouse_events_.size()));
         memcpy(dst, pimpl_->mouse_events_.data(), copy_count * sizeof(MSLLHOOKSTRUCT));
 
-        /* \todo fix this so it does not do useless copy stuff, just use a circular buffer instead
-         * of a std::vector */
-        //auto itr = mouse_events_.begin();
-        //std::advance(itr, copy_count);
-        //mouse_events_.erase(mouse_events_.begin(), itr);
+        // \todo replace std::vector with circular object buffer.
+        const auto itr = pimpl_->mouse_events_.begin() + copy_count;
+        pimpl_->mouse_events_.erase(pimpl_->mouse_events_.begin(), itr);
 
-        fmt::print("mouse_hook - clear\n");
-        pimpl_->mouse_events_.clear();
-        pimpl_->mouse_events_.shrink_to_fit();
+        if (pimpl_->mouse_events_.capacity() > 10000)
+            pimpl_->mouse_events_.shrink_to_fit();
 
         return true;
     }
