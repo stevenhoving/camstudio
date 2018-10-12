@@ -2,8 +2,6 @@
 #include "CamLib/CamFile.h"
 #include <shlobj.h>
 
-
-
 #ifndef CSIDL_MYVIDEO
 #define CSIDL_MYVIDEO 0x000e // "My Videos" folder
 #endif
