@@ -766,7 +766,7 @@ END
 STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Recorder\n\nRecorder\n\n\nRecorder.Document\nRecorder Document"
-    IDS_STRING_REC_CAN      "Recording cancelled!"
+    IDS_STRING_REC_CAN      "Recording cancelled"
 END
 
 STRINGTABLE
@@ -919,7 +919,6 @@ BEGIN
                             "Unable to create new file. The file may be opened by another application. Please use another filename."
     IDS_STRING_FILECREATIONERROR 
                             "File Creation Error. Unable to rename/copy file."
-    IDS_STRING_NOSOUNDTRACK "Your AVI movie will not contain a soundtrack. CamStudio is unable to merge the video with audio."
     IDS_STRING_FILECREATION2 
                             "File Creation Error. Unable to rename/copy video file."
     IDS_STRING_FILECREATION3 
@@ -927,25 +926,13 @@ BEGIN
     IDS_STRING_NOMERGE      "CamStudio is unable to merge the video with audio files. Your video and audio files are saved separately as \n\n"
     IDS_STRING_FILECREATION4 
                             "File Creation Error. Unable to rename/copy file. The file may be opened by another application. Please use another filename."
-    IDS_STRING_ERRPLAYER    "Error launching CamStudio Player !"
     IDS_STRING_VERSIONOLD   "CamStudio requires a newer version of Video for Windows."
-    IDS_STRING_ERRAVIDEFAULT 
-                            "CamStudio could not record the AVI file using the current compressor. Use default compressor? "
-    IDS_STRING_ERRCREATEAVI "Error creating AVI file"
-    IDS_STRING_ERRFRAME     "Error reading a frame!"
-    IDS_STRING_WAVEINERR    "Wave in error"
-    IDS_STRING_ERRSOUND     "Error creating sound file"
-    IDS_STRING_AUDIOBUF     "Audio buffers still in queue!"
-    IDS_STRING_ERRSOUND2    "Error Writing Sound File"
 END
 
 STRINGTABLE
 BEGIN
     IDS_STRING_UNSSC        "Unable to set shortcuts for %s"
-    IDS_RECAVI              "Record to AVI"
     IDS_RESTARTAPP          "Application must be restarted to apply the changes!"
-    IDS_ERROR_PLAYER        "Error launching CamStudio Player!"
-    IDS_ERROR_PLAYER2       "Error launching CamStudio Player 2.0!"
     IDS_STRING_LINEUNDETECTED "Line undetected"
     IDS_STRING_MOVEFILEFAILURE 
                             "File Move Error. Unable to move or to rename/copy file. The source file may be opened by another application or destination file stilll exist. Please use another filename."
@@ -955,52 +942,22 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_STRING_NOINPUT3     "Unable to detect audio input device. You need a sound card with microphone input."
-    IDS_STRING_METRICSFAILED "Metrics failed mmresult=%u!"
-    IDS_STRING_GALLOC       "GlobalAllocPtr failed!"
     IDS_STRING_NOOPENVIDEO  "Unable to open video file."
     IDS_STRING_NOOPENSREAM  "Unable to open video stream."
     IDS_STRING_NOCREATESTREAM "Unable to create editable video stream."
-    IDS_STRING_NOOPENAUDIO  "Unable to open audio stream."
-    IDS_STRING_NOEDITAUDIO  "Unable to create editable audio stream."
-    IDS_STRING_NOVERIFYVIDEO "Unable to verify video stream."
-    IDS_STRING_NOVERIFYAUDIO "Unable to verify audio stream."
-    IDS_STRING_NOMERGE1     "Unable to merge audio and video streams (1)."
-    IDS_STRING_NOAUDIOCOMPRESS 
-                            "Unable to apply audio compression with the selected options. Your movie is saved without audio compression."
-    IDS_STRING_NOMERGE2     "Unable to merge audio and video streams (2)."
-    IDS_STRING_GALLOCVCM    "GlobalAllocPtr for Video Compress Parameters failed!"
-    IDS_STRING_FAILALLOCVCM "Failure allocating Video Parameters for compression"
-    IDS_STRING_COMPRESSORSTATE 
-                            "Failure in getting compressor state! Error Value = %d"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_STRING_SETCOMPRESSOR "Failure in setting compressor state!"
-    IDS_STRING_UNNECESSARY  "Please note: This step is unecessary if the auto search function already managed to detect the line for recording speakers output. You should use this only if the auto search function fails. Proceed?"
-    IDS_STRING_ASKQUESTIONS "You will now be asked several questions. A tone may or may not be heard after you click 'OK'. Please listen carefully before answering the questions."
     IDS_STRING_ANALYZE      "Analyzing"
-    IDS_STRING_TESTINGLINE  "Testing line %d of %d. Did you hear a tone that sound like the recorded tone? "
-    IDS_STRING_SETTINGLINE  "CamStudio successfully set line %d set for recording sound from speakers!"
-    IDS_STRING_NODETECT     "Unable to detect recording line for speakers. Please make sure your soundcard is correctly selected in the 'Soundcard Device' of 'Audio Options for Speakers' "
-    IDS_STRING_MANUALSEARCH "We will now proceed with the manual search for the line used for recording speakers output. Not all soundcards support this function. CamStudio will play several tones and then ask you a series of questions. Please turn on your speakers now. \n\nIt is strongly recommended that you detach your microphone from your soundcard, or at least make sure that there is no background noise around your microphone. When you are ready, click 'OK'."
     IDS_STRING_MANUAL       "Manual Search"
-    IDS_STRING_GETSELCTRL   "WaveoutGetSelectControl() failed."
     IDS_STRING_UNINIT       "WaveoutUnInitialize() failed."
-    IDS_STRING_INIT         "WaveoutInitialize() failed."
-    IDS_STRING_MCIWAVE      "CamStudio could not set the wave format on MCI Device."
-    IDS_STRING_HEARTONES    "You will hear several tones while CamStudio is searching your system. Please wait..."
     IDS_STRING_RECLINE      "Recording line %d of %d"
-    IDS_STRING_HEARSEARCH   "You will hear several tones while CamStudio is searching your system. Please wait..."
 END
 
 STRINGTABLE
 BEGIN
     IDS_STRING_ANALINE      "Analyzing line %d of %d"
-    IDS_STRING_LINEDETECTED "Line %d detected for recording sound from speakers! You may now close this dialog box."
-    IDS_STRING_AUTODETECTFAILS 
-                            "CamStudio is unable to detect the line on your system for recording sound from your speakers. You may want to try manual configuration in Audio Options."
     IDS_STRING_COMPRESSINGAUDIO "Compressing Audio %d%%"
     IDS_STRING_CURRFRAME    "Current Frame: %d"
     IDS_STRING_TIMEELASPED  "Time Elasped: %.2f sec"
@@ -1008,24 +965,13 @@ BEGIN
     IDS_STRING_CODEC        "Codec: %s"
     IDS_STRING_ACTUALRATE   "Actual Input Rate: %.2f fps"
     IDS_STRING_DIMENSION    "Dimension: %d by %d pixels"
-    IDS_STRING_NOTALL       "Not all soundcards support the recording of sound from your speakers. CamStudio will attempt to find the appropriate line on your system. \n\nIt is strongly recommended that you detach your microphone from your soundcard, or at least make sure that there is no background noise around your microphone. \n\nWhen you are ready, click 'OK'."
-    IDS_STRING_ERRSND       "Error opening sound file."
-    IDS_STRING_NOAUDIOOUTPUT 
-                            "Unable to detect audio output device. You need a sound card with speakers attached."
-    IDS_STRING_WSETVOL      "WaveoutSetVolume() failed."
-    IDS_STRING_WGETVOL      "WaveoutGetVolume() failed."
-    IDS_STRING_WGETVOLCTRL  "WaveoutGetVolumeControl() failed."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_STRING_WVOLINIT     "WaveoutVolumeInitialize() failed."
-    IDS_STRING_OUTOFMEM     "Out of memory for audio buffer!"
     IDS_STRING_ERRDESCENT   "Error descending into file"
     IDS_STRING_ERRDEFAULTPLAYER "Error launching default player!"
     IDS_STRING_NODETECTLINE "Unable to detect audio line for recording from speakers. Please try the manual search in the Audio Options for Speakers dialog box."
-    IDS_STRING_LINEDETECTEDTH 
-                            "Line %d detected for recording sound from speakers (by threshold). You may now close this dialog box."
     IDS_STRINGSPRKEY        "Record / Pause Key"
     IDS_STRINGSRKEY         "Stop Key"
     IDS_STRINGCRKEY         "Cancel Recording Key"
@@ -1072,8 +1018,6 @@ BEGIN
     IDS_STRINGWIDTHLARGER   "Width cannot be larger than %d"
     IDS_STRINGHEIGHTLESS20  "Height cannot be less than 20"
     IDS_STRINGHEIGHTLARGER  "Height cannot be larger than %d"
-    IDS_STRINGINVIMGFILE    "Invalid Image File"
-    IDS_STRINGSAVECLLA      "Save Current Layout Library"
 END
 
 STRINGTABLE
