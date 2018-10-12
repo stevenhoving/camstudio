@@ -15,6 +15,8 @@
 
 project(cam_hook)
 
+option(DEPLOY_BUILD "Configure cam hook for deployment" 0)
+
 set(SOURCE
     src/main.cpp
     src/cam_hook.cpp
@@ -42,6 +44,7 @@ target_compile_definitions(cam_hook
     _UNICODE
     UNICODE
     CAM_HOOK_EXPORT
+    DEPLOY_BUILD=${DEPLOY_BUILD}
 )
 
 target_include_directories(cam_hook

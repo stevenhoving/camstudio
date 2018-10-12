@@ -70,6 +70,7 @@ void mouse_hook::attach()
     clear_mouse_events();
     pimpl_->hook_ = ::SetWindowsHookEx(WH_MOUSE_LL, mouse_hook::global_message_proc, pimpl_->instance_, 0);
 
+#if DEPLOY_BUILD == 0
     pimpl_->debug_unhook_ = std::thread([this]()
     {
         while (pimpl_->hook_ != nullptr && !IsDebuggerPresent())
@@ -80,6 +81,7 @@ void mouse_hook::attach()
         if (pimpl_->hook_)
             _detach_impl();
     });
+#endif
 }
 
 void mouse_hook::detach()
@@ -110,9 +112,11 @@ void mouse_hook::_detach_impl()
 
 auto CALLBACK mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
+#if DEPLOY_BUILD == 0
     // for debugging..
     if (IsDebuggerPresent())
         _detach_impl();
+#endif
 
     if (!pimpl_->paused_ && nCode >= HC_ACTION)
     {
@@ -135,8 +139,6 @@ auto CALLBACK mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lParam) 
             {
                 std::lock_guard<std::mutex> slock(pimpl_->mouse_events_lock_);
                 pimpl_->mouse_events_.emplace_back(mouse_event);
-
-                //fmt::print("mouse action queue size: {}\n", mouse_events_.size());
             }
         } break;
 
@@ -144,7 +146,6 @@ auto CALLBACK mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lParam) 
         case WM_MOUSEMOVE:
             break;
         default:
-            //fmt::print("unhandled mouse hook event: {}\n", static_cast<unsigned int>(wParam));
             break;
         }
     }

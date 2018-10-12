@@ -36,7 +36,7 @@ build_script:
   - IF EXIST build RMDIR /S /Q vs_build
   - MKDIR vs_build
   - cd vs_build
-  - cmake ../ -G "Visual Studio 15 2017 Win64" -T host=x64
+  - cmake ../ -G "Visual Studio 15 2017 Win64" -T host=x64 -DDEPLOY_BUILD=1
   - cmake --build . --target INSTALL
   - cmake --build . --target DEPLOY
 
