@@ -81,8 +81,8 @@ av_muxer::~av_muxer()
     /* Close each codec. */
     video_codec_.reset();
 
-    if (have_audio)
-        close_stream(format_context_, &audio_track);
+    //if (have_audio)
+    //    close_stream(format_context_, &audio_track);
 
     if (!(output_format_->flags & AVFMT_NOFILE))
         /* Close the output file. */

@@ -53,7 +53,7 @@ struct av_track
     AVStream *stream;
     AVCodecContext *codec_context;
 
-    int samples_count;
+    int sample_count;
 };
 
 class av_muxer
@@ -98,8 +98,8 @@ private:
     av_track audio_track{};
     const std::string filename_{};
     AVRational time_base_{1, 0};
-    int have_audio{0};
 
     // Commented, because we do not handle audio yet.
+    //int have_audio{0};
     //int encode_audio{0};
 };
