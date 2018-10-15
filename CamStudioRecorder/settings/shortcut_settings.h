@@ -100,7 +100,7 @@ private:
 
 struct shortcut_definition
 {
-    shortcut_action::type action;
-    shortcut_enabled::type is_enabled;
+    shortcut_action::type action{shortcut_action::record_start_or_pause};
+    shortcut_enabled::type is_enabled{shortcut_enabled::unsupported};
     std::wstring shortcut; // in the form of <modifiers-key>, example: "Ctrl-Shift-W".
 };

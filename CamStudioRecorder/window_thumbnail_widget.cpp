@@ -25,7 +25,7 @@
 
 HICON get_shell_icon(const std::wstring &filepath)
 {
-    SHFILEINFOW sfi;
+    SHFILEINFOW sfi = {};
     ::SHGetFileInfo(filepath.c_str(), 0, &sfi, sizeof(sfi), SHGFI_SYSICONINDEX);
 
     IImageList *piml = nullptr;

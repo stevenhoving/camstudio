@@ -35,6 +35,7 @@ CRecorderApp theApp;
 
 CRecorderApp::CRecorderApp()
     : CWinApp()
+    , m_hAppMutex(INVALID_HANDLE_VALUE)
 {
 }
 

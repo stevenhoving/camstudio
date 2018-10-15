@@ -267,6 +267,11 @@ void capture_thread::run()
     ));
 
     const auto pre_frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
+    if (pre_frame == nullptr)
+    {
+        fmt::print("capture_thread: unable to capture a pre frame\n");
+        return;
+    }
 
     /* Setup ffmpeg video encoder */
     // \todo video encoder framerate is ignored atm..
@@ -294,14 +299,17 @@ void capture_thread::run()
         double time_capture_start = frame_limiter.time_now();
         const auto frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
 
-        DWORD timestamp = static_cast<DWORD>(time_capture_start * 1000.0);
-        video_encoder->encode_frame(timestamp, frame->bitmap_data, frame->width, frame->height,
-            frame->stride);
+        if (frame != nullptr)
+        {
+            const auto timestamp = static_cast<timestamp_t>(time_capture_start * 1000.0);
+            video_encoder->encode_frame(timestamp, frame->bitmap_data, frame->width, frame->height,
+                frame->stride);
+        }
 
-        double time_capture_end = frame_limiter.time_now();
-        double dt = time_capture_end - time_capture_start;
+        const double time_capture_end = frame_limiter.time_now();
+        const double dt = time_capture_end - time_capture_start;
 
-        double sleep_for = max_frame_time - dt;
+        const double sleep_for = max_frame_time - dt;
         if (sleep_for > 0)
             std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(ceil(sleep_for * 1000.0))));
 

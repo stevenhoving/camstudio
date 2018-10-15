@@ -30,10 +30,10 @@ struct get_windows_info
     std::vector<window_data> windows;
 
     // hwnd's to ignore
-    HWND ignore_camstudio_wnd;
-    HWND ignore_shell_tray_wnd;
-    HWND ignore_progman_wnd;
-    DWORD ignore_current_process_id;
+    HWND ignore_camstudio_wnd{nullptr};
+    HWND ignore_shell_tray_wnd{nullptr};
+    HWND ignore_progman_wnd{nullptr};
+    DWORD ignore_current_process_id{0};
 };
 
 using message_handler_type = LRESULT WINAPI (HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam);
@@ -53,7 +53,7 @@ public:
     BOOL OnInitDialog() override;
     BOOL OnCmdMsg(UINT nID, int nCode, void *pExtra, AFX_CMDHANDLERINFO *pHandlerInfo) override;
 
-    message_handler_type *old_message_handler_;
+    message_handler_type *old_message_handler_{nullptr};
     void *old_user_data_{nullptr};
 
     std::vector<std::unique_ptr<window_button>> capture_windows_;

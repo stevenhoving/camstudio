@@ -22,9 +22,9 @@
 
 struct window_data
 {
-    unsigned int process_id;
+    unsigned int process_id{0};
     std::wstring process_name;
     std::wstring process_filepath;
     std::wstring window_title;
-    HWND hwnd;
+    HWND hwnd{nullptr};
 };

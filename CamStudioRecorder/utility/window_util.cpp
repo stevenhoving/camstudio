@@ -26,7 +26,7 @@ namespace utility
 std::wstring get_window_text(const CWnd &window)
 {
     const auto window_text_length = window.GetWindowTextLengthW();
-    auto window_text = std::wstring(static_cast<size_t>(window_text_length + 1), '\0');
+    auto window_text = std::wstring(static_cast<size_t>(window_text_length) + 1, '\0');
     // \todo make safe lowering cast..
     window.GetWindowTextW(window_text.data(), static_cast<int>(window_text.size()));
     window_text.resize(static_cast<size_t>(window_text_length));
@@ -36,7 +36,7 @@ std::wstring get_window_text(const CWnd &window)
 auto get_window_title(HWND hwnd) -> std::wstring
 {
     std::wstring title;
-    const auto title_length = GetWindowTextLength(hwnd);
+    const auto title_length = static_cast<std::size_t>(GetWindowTextLength(hwnd));
     title.resize(title_length + 1);
     GetWindowText(hwnd, &title[0], (int)title.size());
     title.resize(title_length);
