@@ -132,31 +132,32 @@ void CRecorderView::set_shortcuts()
 
     shortcut_controller_->register_action(settings_model_->get_shortcut_data(shortcut_action::record_start_or_pause),
         [this]()
-    {
-        const auto capture_state = capture_thread_->get_capture_state();
-        if (capture_state != capture_state::stopped)
         {
-            // pause if currently recording
-            if (capture_state == capture_state::paused)
+            const auto capture_state = capture_thread_ ? capture_thread_->get_capture_state()
+                                                       : capture_state::stopped;
+            if (capture_state != capture_state::stopped)
             {
-                OnPause();
+                // pause if currently recording
+                if (capture_state == capture_state::capturing)
+                {
+                    OnPause();
+                }
+                else
+                {
+                    OnRecord();
+                }
             }
             else
             {
-                OnRecord();
+                if (allow_new_record_start_key_)
+                {
+                    // prevent the case which CamStudio presents more than one region
+                    // for the user to select
+                    allow_new_record_start_key_ = FALSE;
+                    OnRecord();
+                }
             }
         }
-        else
-        {
-            if (allow_new_record_start_key_)
-            {
-                // prevent the case which CamStudio presents more than one region
-                // for the user to select
-                allow_new_record_start_key_ = FALSE;
-                OnRecord();
-            }
-        }
-    }
     );
 
     shortcut_controller_->register_action(settings_model_->get_shortcut_data(shortcut_action::record_stop),
