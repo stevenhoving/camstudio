@@ -40,10 +40,11 @@ av_muxer::av_muxer(const char *filename, const av_muxer_type muxer_type)
 
     output_format_ = av_guess_format(muxer_type_name, nullptr, nullptr);
     if (output_format_ == nullptr)
-        throw std::runtime_error(fmt::format("unable to guess output format: '{}'", muxer_type_name));
+        throw std::runtime_error(fmt::format("unable to guess output format: '{}'",
+            muxer_type_name));
 
     /* allocate the output media context */
-    if (int ret = avformat_alloc_output_context2(&format_context_, output_format_, nullptr, nullptr); ret < 0)
+    if (const auto ret = avformat_alloc_output_context2(&format_context_, output_format_, nullptr, nullptr);  ret < 0)
         throw std::runtime_error(
             fmt::format("av_muxer: unable to create avformat output context: {}",
                 av_error_to_string(ret)));
