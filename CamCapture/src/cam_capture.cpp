@@ -154,24 +154,16 @@ void cam_capture_source::_draw_annotations(const cam::rect<int> &capture_rect)
             {
                 switch (mouse_event.dwExtraInfo)
                 {
-                case WM_LBUTTONDOWN:
-                    mouse_status |= cam_mouse_button::left_button_down;
-                    break;
-
-                case WM_LBUTTONUP:
-                    mouse_status |= cam_mouse_button::left_button_up;
-                    break;
-
-                case WM_RBUTTONDOWN:
-                    mouse_status |= cam_mouse_button::right_button_down;
-                    break;
-
-                case WM_RBUTTONUP:
-                    mouse_status |= cam_mouse_button::right_button_up;
-                    break;
+                case WM_LBUTTONDOWN: mouse_status |= cam_mouse_button::left_button_down; break;
+                case WM_LBUTTONUP:   mouse_status |= cam_mouse_button::left_button_up; break;
+                case WM_RBUTTONDOWN: mouse_status |= cam_mouse_button::right_button_down; break;
+                case WM_RBUTTONUP:   mouse_status |= cam_mouse_button::right_button_up; break;
+                case WM_MBUTTONDOWN: mouse_status |= cam_mouse_button::middle_button_down; break;
+                case WM_MBUTTONUP:   mouse_status |= cam_mouse_button::middle_button_up; break;
                 }
             }
         }
+        mouse_events_.clear();
 
         double dt = stopwatch_->time_since();
         stopwatch_->time_start();
