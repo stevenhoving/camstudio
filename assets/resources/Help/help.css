@@ -1,0 +1,108 @@
+a:link
+{
+	background-color: inherit;
+	color: #0000FF;
+}
+
+a:visited
+{
+	background-color: inherit;
+	color: #0000FF;
+}
+
+a:active
+{
+	background-color: inherit;
+	color: #0000FF;
+}
+
+a:hover
+{
+	background-color: #DDDDDD;
+	color: #0000FF;
+}
+
+body
+{
+	background-image: url(global/images/background.png);
+}
+
+code, pre
+{
+	background-color: #DDDDDD;
+	color: inherit;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+	text-transform: capitalize;
+}
+
+table, tr, td, th
+{
+	border: 1px solid #000000;
+	border-collapse: collapse;
+	padding: 5px;
+}
+
+th
+{
+	text-transform: capitalize;
+}
+
+#img_main_window
+{
+	float: right;
+}
+
+#screen_annotations_img
+{
+	position: relative;
+}
+
+#screen_annotations_img_desc
+{
+	background-color: #FFFFFF;
+	border: 1px solid #000000;
+	color: inherit;
+	font-weight: bold;
+	left: 254px;
+	padding: 5px;
+	position: absolute;
+	top: 64px;
+	width: 200px;
+}
+
+#arrow
+{
+	left: 120px;
+	position: absolute;
+	top: 85px;
+}
+
+.emphasize
+{
+	font-style: italic;
+}
+
+.getting_there
+{
+	background-color: inherit;
+	color: blue;
+}
+
+.inline_image_r
+{
+	float: right;
+	padding: 6px;
+}
+
+.navigation
+{
+	text-transform: capitalize;
+}
+
+.standout
+{
+	font-weight: bold;
+}

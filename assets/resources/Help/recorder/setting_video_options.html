@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="copyright" content="Copyright &copy; 2001 RenderSoft Software and Web Publishing, Copyright &copy; 2008 CamStudio Group &amp; Contributors." />
+<meta name="creator" content="RenderSoft Software and Web Publishing, CamStudio Group &amp; Contributors." />
+<meta name="language" content="en-us" />
+<link href="../help.css" rel="stylesheet" type="text/css" />
+<title>Setting Video Options</title>
+</head>
+<body>
+<h1>Setting Video Options</h1>
+<p class="getting_there">(From the main menu, choose Options->Video Options)</p>
+<p>Setting the video options allows you to optimize your video recordings by choosing between the file size, quality and frame rates of your video files.</p>
+<p><img src="images/video_options_dialog.png" alt="Video Options dialog" class="inline_image_r" /></p>
+<ul>
+	<li>Auto Adjust<p>Use the Auto Adjust settings to set the Key Frame Rate, Capture Rate and Playback Rate automatically through the slider. Shift the slider to the left to increase the frame rate and to the right to reduce file size. If the slider is situated at the right of the Time Lapse indicator, it means you are creating a time-lapse movie. In Time Lapse mode, CamStudio will usually capture a frame only after a long period of time. (Example: after every 30 seconds). However, during playback, the frames will be displayed more quickly. (Example: at 20 frames per second).</p></li>
+	<li>Compressor<p>The Compressor select-box allows you to select the encoder for your AVI file. An encoder compresses your AVI files to make them smaller in size and cause them to play faster. The default setting is the Microsoft Video 1 compressor.</p></li>
+	<li>Configure<p>Click this button to configure the parameters of your selected compressor. The parameters for each compressor is different and some settings will cause CamStudio's performance to degrade or behave unpredictably. For some compressors, clicking this button will not have any effect.</p></li>
+	<li>Quality<p>The quality setting determines how nicely your picture is saved. A lower value means a lower picture quality but also a smaller file size. Only some compressors use this value.</p></li>
+	<li>Set Key Frames Every<p>This setting specifies the keyframe rate. When a frame is saved in an AVI file, they can either be saved as a full frame, or only partially as a difference to the previous frame. The keyframe rate specifies how often full frames are written to the AVI file. A high value means you can fast forward/rewind to a particular frame in your movie much faster. But it also means a higher file size.</p></li>
+	<li>Capture Frames Every<p>This field determines the input frame rate. It dictates how long the CamStudio will 'sleep' after capturing each frame. One millisecond is 1/1000 of a second. If you set this to a large value (for example 1 hour, or 3,600,000 milliseconds), you practically create a time-lapse movie. CamStudio will actually 'sit and watch' for activities on the screen that takes a long time to occur and take a snapshot (say, only once every hour).</p></li>
+	<li>Playback Rate<p>This field determines the output frame rate. It specifies how many frames are played back per second. A higher value means a smoother playback. Typical values of 20 to 30 frames per seconds are adequate for most purposes.</p></li>
+</ul>
+</body>
+</html>

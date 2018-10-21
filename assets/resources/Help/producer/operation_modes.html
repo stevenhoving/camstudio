@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="copyright" content="Copyright &copy; 2001 RenderSoft Software and Web Publishing, Copyright &copy; 2008 CamStudio Group &amp; Contributors." />
+<meta name="creator" content="RenderSoft Software and Web Publishing, CamStudio Group &amp; Contributors." />
+<meta name="language" content="en-us" />
+<link href="../help.css" rel="stylesheet" type="text/css" />
+<title>Operation Modes</title>
+</head>
+<body>
+<h1>Operation Modes</h1>
+<p>The SWF Producer can operates in 3 modes:</p>
+<h2>Standalone Mode</h2>
+<p>The first mode runs like a normal program. You can launch it by selecting the Tools->SWF Producer command inside the CamStudio Screen Recorder. Or you can simply double click the Producer.exe file in the installed directory.</p>
+<p>To convert a file, simply click the <img src="images/convert_icon.png" alt="Convert" /> button. The producer will ask you for an AVI file to convert. It will then display a dialog box below where you can adjust some of the conversion parameters.</p>
+<h3>General Conversion Parameters</h3>
+<p><img src="images/conversion_to_flash_general.png" alt="Conversion to Flash - General tab" class="inline_image_r" /></p>
+<p>The Output Filename items let you indicate the name of the (.swf) to generate. You can choose a different filename by clicking on the Change button. The producer will also create an accompanying HTML file that will be opened when the conversion is completed. You can thus preview the .swf movie in your internet browser.</p>
+<p>The Video Properties items let you specify the color display mode of the Flash movie. It can be 16-bit or 32-bit. A 16-bit movie will give a smaller file size, but may affect the display quality slightly.</p>
+<p>When the SWF Producer converts the AVI, it actually behaves like a player that plays back the AVI and re-samples/re-captures the frames at fix periods of time. The Sample rate is the number of frames that is sampled every second. This rate is also used in the playback of the Flash (.swf) movie. A higher rate will result in a smoother playback, but a large value is not necessary if the original AVI itself is not playing at high speed.</p>
+<p>The Producer generates Flash movie frames using a temporal compression algorithm. To save space, it does not save every frame for each frame it samples or captures. Instead, the difference between the current frame and the previous frame is stored. The Producer thus periodically store a full frame (Keyframe) followed by a number of difference frames (Intermediate Frames). The Keyframe Rate indicates the number of Intermediate Frames that will follow each Keyframe. A higher value usually means higher compression.</p>
+<p>You also can Encode the Audio to the Flash movie if there is an audio track in the AVI. You can encode it without compression (PCM) or with compression (ADPCM).</p>
+<p>Please note: the audio track in the original AVI may already be compressed in some format that is incompatible with Flash (e.g CCITT u-law or CCITT A-law ). In this case, CamStudio Producer will attempt to convert it to PCM and then reconvert to, say ADPCM, before actually saving the sound stream to the Flash file.</p>
+<p>Sometimes, the audio conversion stage indicated above may fail. You may get error messages such as 'Error Opening Audio File for Conversion'. In this case, you can solve this by pre-converting the audio track in the AVI file to the PCM format. This can easily be achieved with a third party video editor (such as VirtualDub).</p>
+<p class="standout">Behavior Group</p>
+<p>The Add Player Controls item, when checked, will add a play, stop and pause button to the Flash movie.</p>
+<p>The Loop item will cause the Flash movie to go back to the 1st frame when it has finished playing. Otherwise, it will stop at the last frame.</p>
+<p>The Autostart item will cause the Flash movie to play automatically when launched. If this item is turned off, you will need to add player controls to the Flash movie. Otherwise, the Flash movie will always stop at the 1st frame and there is no provision (no play button) for users to play it.</p>
+<p>If Loop is selected, but AutoStart is turned off, the Flash movie, when it has finished playing, will go the 1st frame and stop there.</p>
+<p>The Add Preloader + Progressbar checkbox adds a 'Loading...' message to the SWF file. A progress bar at the bottom indicates the fraction of loading that is completed.</p>
+<p>If you select the Produce raw movie checkbox, CamStudio will produce a linear SWF file without the Preloader and Player buttons. This raw movie can be loaded/enhanced by the Flash MX editor.</p>
+<p>For more details, please refer to the section on <a href="further_editing.html">Further Editing</a> of the Flash (.swf) movie.</p>
+<h3>SWF Interface Parameters</h3>
+<p><img src="images/conversion_to_flash_interface.png" alt="Conversion to Flash - Interface tab" /></p>
+<p>This panel allows you to customize the message that the preloader displays when the SWF file is being loaded. The default message is 'Loading...', but you can easily translate the message into a different language by choosing another bitmap. Alternatively, using your company's logo as the preloader image may give the Flash file a professional touch.</p>
+<p>When the Flash Player has downloaded a SWF file partially, it will start playing the movie. The Percentage of movie to preload refers to the fraction of the movie that will be loaded before the playing starts.</p>
+<p>If you want to make the dimension of the Flash file to be larger than the dimension of the AVI movie, you can specify a non-zero width and height for the borders around the movie. The borders are, by default, white in color. However, if you need to match colors with your custom controller (i.e custom play buttons etc.), you can change the border colors by clicking the 'Background Color' button.</p>
+<p>If you want to customize the graphics for the controller interface, you can do so by editing the bitmap files in the &lt;CamStudio Installation Folder&gt;/controller directory. You are advised to use graphics with the same dimensions as the original bitmaps. Otherwise you will need to edit the Controller.ini file (in the /controller subfolder) with a text editor.</p>
+<h3>Advanced Conversion Parameters</h3>
+<p><img src="images/conversion_to_flash_advanced.png" alt="Conversion to Flash - Advanced tab" /></p>
+<p>The Manage Flash Player Memory will reduce unnecessary memory usage. It achieves this by freeing objects/frames that have already been displayed. However, because of this, movies with the 'Loop' option will need to reload every time they have completed playing.</p>
+<p>If your AVI file is very large, CamStudio will not be able to squeeze all the information into a SWF file. This is due to the 16000 frame limit imposed by the Flash player. In this case, CamStudio will split your movie into several SWF files that are chained together. For deployment, you will need to upload all the SWF files to your server.</p>
+<p>You have the option not to chain the SWFs together if you are creating an external SWF file that will load and manage them. This assumes you are very experienced in using actionscripts in the Flash MX editor and is thus not covered in this help file.</p>
+<h2>Internal Mode</h2>
+<p>You can set the CamStudio Recorder to record directly to Flash. This is toggled by the <img src="images/swf_icon.png" alt="SWF" /> button in the CamStudio Recorder.</p>
+<h2>Silence Mode</h2>
+<p>The Producer can also be launched on the command line (in DOS Prompt) by typing <code>Producer -b filename.avi</code>.</p>
+<p>When Producer is launched this way, it opens the file 'filename.avi' and automatically converts the AVI movie into a Flash file and then exits. It will not issue any error messages or display any HTML preview during conversion. As such, it is useful for converting multiple copies of AVI into Flash files.</p>
+<p>The output file name will usually be filename.swf, and will be stored in the same directory as filename.avi. Additionally, a second file, filename.swf.html, will also be generated for testing the SWF file.</p>
+<p>For example, you can create a batch file with the following commands:</p>
+<pre><code>Producer -b c:\folder1\demo1.avi
+Producer -b c:\folder2\demo2.avi
+Producer -b c:\folder3\demo3.avi</code></pre>
+<p>By running the batch file, you will be able to obtain the following output files after conversion:</p>
+<pre><code>C:\folder1\demo1.swf
+C:\folder1\demo1.swf.html
+C:\folder2\demo2.swf
+C:\folder2\demo2.swf.html
+C:\folder3\demo3.swf
+C:\folder3\demo3.swf.html</code></pre>
+<h3 id="advanced">For Advanced Users</h3>
+<p>You can also place a text file CamStudio.Producer.param in the directory of Producer.exe. When producer is launched with the -b option, it will first search for this file and attempt to override the default parameters with the values indicated in this file. An example of this file is found in CamStudio's installed directory as CamStudio.Producer.ini. Following is a table of parameters:</p>
+<table>
+<tr>
+	<th>parameter</th>
+	<th>default value</th>
+	<th colspan="2">description</th>
+</tr>
+<tr>
+	<td>Max_HalfKeyDepth</td>
+	<td>15</td>
+	<td colspan="2">key frame rate (5, 10, 12, 15, 20)</td>
+</tr>
+<tr>
+	<td>FrameOffsetX</td>
+	<td>0</td>
+	<td colspan="2">add a border with the specified thickness to the left and right of the swf movie (valid values 0 to 200)</td>
+</tr>
+<tr>
+	<td>FrameOffsetY</td>
+	<td>0</td>
+	<td colspan="2">add a border with the specified thickness to the top and bottom of the swf movie (valid values 0 to 200)</td>
+</tr>
+<tr>
+	<td>useAudio</td>
+	<td>1</td>
+	<td colspan="2">encode audio (0 for no, or 1 for yes)</td>
+</tr>
+<tr>
+	<td>useAudioCompression</td>
+	<td>1</td>
+	<td colspan="2">0 = PCM, 1 = ADPCM</td>
+</tr>
+<tr>
+	<td>sampleFPS</td>
+	<td>40</td>
+	<td colspan="2">sample or playback rate (5, 10, 12, 15, 20, 25, 30, 35, 40)</td>
+</tr>
+<tr>
+	<td>convertBits</td>
+	<td>16</td>
+	<td colspan="2">16 or 32 bit graphics (valid values 16 or 32)</td>
+</tr>
+<tr>
+	<td>NoLoop</td>
+	<td>0</td>
+	<td colspan="2">1 means no loop, 0 indicates looping</td>
+</tr>
+<tr>
+	<td>noAutoPlay</td>
+	<td>0</td>
+	<td colspan="2">A value of 1 means the movie will stop on first frame, 0 means the movie will play on start</td>
+</tr>
+<tr>
+	<td>addControls</td>
+	<td>0</td>
+	<td colspan="2">add play, stop and pause buttons to the movie (value 1 or 0)</td>
+</tr>
+<tr>
+	<td>controlsHeight</td>
+	<td>25</td>
+	<td colspan="2">height of the control bar</td>
+</tr>
+<tr>
+	<td>adpcmBPS</td>
+	<td>5</td>
+	<td colspan="2">if compressing audio to ADPCM, this value is the number of bits to compress to. Valid values are 2, 3, 4 and 5 (5 = least compression, highest quality)</td>
+</tr>
+<tr>
+	<td>blocksize_x</td>
+	<td>64</td>
+	<td colspan="2">for a large movie image, use 128; for small movie, the suggested value is 32</td>
+</tr>
+<tr>
+	<td>blocksize_y</td>
+	<td>64</td>
+	<td colspan="2">for a large movie image, use 128; for small movie, the suggested value is 32</td>
+</tr>
+<tr>
+	<td>swfbar_red</td>
+	<td>0</td>
+	<td colspan="2">red component of the control bar (if addControls = 1) value 0 - 255</td>
+</tr>
+<tr>
+	<td>swfbar_green</td>
+	<td>0</td>
+	<td colspan="2">green component of the control bar (if addControls = 1) value 0 - 255</td>
+</tr>
+<tr>
+	<td>swfbar_blue</td>
+	<td>255</td>
+	<td colspan="2">blue component of the control bar (if addControls = 1) value 0 - 255</td>
+</tr>
+<tr>
+	<td>swfbk_red</td>
+	<td>255</td>
+	<td colspan="2">red component of background (valid only if FrameOffsetX  is greater than 0) value 0 - 255</td>
+</tr>
+<tr>
+	<td>swfbk_green</td>
+	<td>255</td>
+	<td colspan="2">green component of background  (valid only if FrameOffsetX  is greater than 0) value 0 - 255</td>
+</tr>
+<tr>
+	<td>swfbk_blue</td>
+	<td>255</td>
+	<td colspan="2">blue component of background (if FrameOffsetX or FrameOffsetY is greater than 0) value 0 - 255</td>
+</tr>
+<tr>
+	<td>swf_bits_per_sample</td>
+	<td>16</td>
+	<td>For bits per sample (valid values are 8 or 16)</td>
+	<td rowspan="3">The following 3 parameters are applicable only if your AVI contains an audio track that is non-PCM. The SWF Producer converts the audio internally to PCM by making use of these values, before further compressing it or saving it to the Flash file.</td>
+</tr>
+<tr>
+	<td>swf_samples_per_seconds</td>
+	<td>22050</td>
+	<td>For samples per second (valid values are 11025, 22050, 44100)</td>
+</tr>
+<tr>
+	<td>swf_num_channels</td>
+	<td>2</td>
+	<td>For channels (valid values are 1 = mono, 2 = stereo)</td>
+</tr>
+<tr>
+	<td>allowChaining</td>
+	<td>1</td>
+	<td colspan="2">If the AVI is split into several SWF files because it is too large, each of the SWF files will automatically load the next SWF when it has completed playing. (value 0 or 1)</td>
+</tr>
+<tr>
+	<td>freecharacter</td>
+	<td>0</td>
+	<td colspan="2">If value is 1, performs garbage collection within the Flash Player. Results in better utilization of memory. (value 0 or 1)</td>
+</tr>
+<tr>
+	<td>percentLoadedThreshold</td>
+	<td>0.70</td>
+	<td colspan="2">Fraction of movie to preload (range 0.1 to 1.0)</td>
+</tr>
+<tr>
+	<td>addPreloader</td>
+	<td>1</td>
+	<td colspan="2">Adds a preloader and progressbar to the Flash file. (value 0 or 1)</td>
+</tr>
+<tr>
+	<td>produceRaw</td>
+	<td>0</td>
+	<td colspan="2">Produce a raw SWF file for further editing with the Flash MX editor. Usually, you use the 'loadmovie' actionscript function to load the raw SWF file.</td>
+</tr>
+</table>
+<p>Please note: When editing this file you should not change the order of the parameters in the file or insert/delete any properties. You should also not put any additional spaces around the equal sign. An invalid value can cause the Producer to give unexpected results.</p>
+</body>
+</html>

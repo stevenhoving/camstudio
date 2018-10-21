@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="copyright" content="Copyright &copy; 2001 RenderSoft Software and Web Publishing, Copyright &copy; 2008 CamStudio Group &amp; Contributors." />
+<meta name="creator" content="RenderSoft Software and Web Publishing, CamStudio Group &amp; Contributors." />
+<meta name="language" content="en-us" />
+<link href="../help.css" rel="stylesheet" type="text/css" />
+<title>Screen Annotations</title>
+</head>
+<body>
+<h1>Screen Annotations</h1>
+<p class="getting_there">(From the main menu, choose Tools->Screen Annotations)</p>
+<p>The Screen Annotations feature allows you to add captions to your screen during recording. An example of a screen annotation is shown below:</p>
+<p><img src="images/screen_annotation_example.png" alt="Example of a screen annotation" /></p>
+<p>You can display the Screen Annotations dialog box by clicking on the icon <img src="images/screen_annotations_icon.png" alt="" /> or choose Tools->Screen Annotations from the main menu.</p>
+<div id="screen_annotations_img"><img src="images/screen_annotations_window.png" alt="Screen Annotations window" />
+<img id="arrow" src="images/arrow_left.png" alt="" /><p id="screen_annotations_img_desc">To instantiate the shape Orange Gradient, simply double click on it or drag it out of the Screen Annotations dialog box.</p></div>
+<p>Screen annotations consist of two main components: Shapes and Layouts.</p>
+<h2>Shapes</h2>
+<p>A shape is just a floating window that will appear on top of all other windows on your desktop. An example is shown below.</p>
+<p><img src="images/screen_annotation_example.png" alt="Screen annotation - shape" /></p>
+<p>To create the shape above, simply double click on the item Orange Gradient or drag it out of the Screen Annotations dialog box, then to edit it, right-click the shape to display the context menu shown below.</p>
+<p><img src="images/shape_context_menu.png" alt="Shape context menu" class="inline_image_r" /></p>
+<ul>
+	<li>Save allows you to save your shape when you have finished editing it</li>
+	<li>Save Layout will save all the shapes and their arrangement on your desktop into a layout. Please refer to the <a href="#layout">Layout</a> section for more information.</li>
+	<li>Clone allows you to create a copy of the shape</li>
+	<li><a href="#edit_text">Edit Text</a> allows you to edit the shape's text (message, font color and font style)</li>
+	<li><a href="#edit_image">Edit Image</a> allows you to edit the shape's image (background, border and cutout region)</li>
+	<li><a href="#edit_transparency">Edit Transparency</a> allows you to make the shape semi-transparent</li>
+	<li><a href="#resizing_shapes">Resize</a> lets you change the width and height of your window</li>
+	<li>Anti-Alias lets you adjust the rendering quality of the shape; a higher quality shape will take more time to draw</li>
+	<li>Close will close/hide the shape on your desktop</li>
+	<li>Close All will close all shapes on your desktop</li>
+	<li>Refresh will redraw the shape</li>
+</ul>
+<h3 id="edit_text">Edit Text</h3>
+<p><img src="images/text_properties_window.png" alt="Text Properties window" /></p>
+<p><img src="images/screen_annotation_example_outlined.png" alt="Example of a screen annotation outlined for text editing" /></p>
+<p>Notice the text is surrounded by a dotted rectangle after you have chosen the Edit Text command. You can move and resize the dotted rectangle by dragging it with your mouse.</p>
+<p>Clicking on the Font Button allows you to choose the Font Name, Font Style (Bold, Italic, Underline) and Font Color of the shape's text. The three buttons are used for setting the alignment of text. The Choose Language / Encoding button allows you to choose an appropriate font for your language if it is non-Western (English, French, German etc). This feature is available only on Windows 2000 and XP.</p>
+<p><img src="images/text_alignment_buttons.png" alt="Font buttons" /></p>
+<h3 id="edit_image">Edit Image</h3>
+<p>Select Edit Image from the context menu to change the text of the shape.</p>
+<p><img src="images/edit_image_dialog.png" alt="Edit image dialog" /></p>
+<p>The Cutout / Transparent Region allow you to create non-rectangular windows. It refers to the region that allows the background to show through. There are two methods to create a cutout region:</p>
+<ol>
+	<li>By transparency color<p>All areas of the image with the specified transparency color will be made transparent. For example, if the transparency color is Black, the image <img src="images/original_image.png" alt="Original image" /> will be transformed into <img src="images/transparency_color_result.png" alt="Resultant image" /></p></li>
+	<li>By using a predefined shape<p>Currently, the predefined shapes are round-rectangle, ellipse and rectangle. For example, a round-rectangle cutout region for the image <img src="images/original_image.png" alt="Original image" /> will be something like <img src="images/cutout_result.png" alt="Resultant image" /></p></li>
+</ol>
+<p>For a predefined cutout region, you can add a border, and set the color and size of the border.</p>
+<p>You can set the Background color for a shape if the shape does not have an image. Otherwise, you can click the Load New Image button to change the background image to a new file. The file formats that are accepted are BMP, GIF and JPEG.</p>
+<h3 id="edit_transparency">Edit Transparency</h3>
+<p>Select Edit Transparency from the context menu to change the shape's transparency. This feature is available only in Windows 2000 and XP.</p>
+<p><img src="images/edit_transparency_dialog.png" alt="Edit Transparency dialog" /></p>
+<p><img src="images/screen_annotation_example_transparent.png" alt="Screen annotation example with transparency" /></p>
+<p>Note that recording a transparent window will cause the frame rate to drop significantly. You will also have to enable the Program Options->Capture Translucent / Layered Window setting for the shape to be properly captured into the AVI movie.</p>
+<h3 id="resizing_shapes">Resizing Shapes</h3>
+<p>Select Resize from the context menu to resize the shape.</p>
+<p><img src="images/resize_annotation_dialog.png" alt="Resize annotation dialog" /></p>
+<p>Note that a shape with a large size will be drawn and displayed very slowly.</p>
+<h3>Managing &amp; Creating Shapes</h3>
+<p>In the Screen Annotations dialog box, right click on an item to display a context menu for managing and creating shapes.</p>
+<p><img src="images/screen_annotations_dialog_context.png" alt="Screen annotations dialog with context menu shown" /></p>
+<p>You can create a new shape by choosing the New Shape command and you can Copy, Paste or Remove shapes in the Screen Annotations dialog box using these commands. You can also rename a shape by choosing the Edit Shape Name command or selecting a shape and pressing F2.</p>
+<p>You can rearrange the order of the shapes in the list by dragging a shape onto another. For example, to switch the order of the 'Flat Text' and 'Dialog', simply drag 'Dialog' onto the 'Flat Text' item.</p>
+<p>The Shape Library menu lets you:</p>
+<ol>
+	<li>Save all your existing shapes into a file</li>
+	<li>Load a shape library file into the Screen Annotations dialog box and</li>
+	<li>Create a new (empty) shape library</li>
+</ol>
+<p><img src="images/shape_library_context_menu.png" alt="Shape library context menu" /></p>
+<p class="emphasize">Note: In the event your default shape library file CamShapes.ini gets corrupted and is unable to load on startup, you can restore the default shapes by opening the file default.shapes in the installed directory of CamStudio.</p>
+<p>The New Shape command will launch a dialog box where you can specify the:</p>
+<ol>
+	<li>Name of the new shape</li>
+	<li>Image of the new shape</li>
+	<li>Size of the new shape and its</li>
+	<li>Initial text</li>
+</ol>
+<p><img src="images/new_shape_dialog.png" alt="New shape dialog" /></p>
+<h2>Layouts</h2>
+<p>A layout is just the arrangement of one or more shapes on your desktop. An example is shown below:</p>
+<p><img src="images/layout_example.png" alt="Layout example" /></p>
+<p>You usually prepare all your layouts before recording starts. When you start recording, you will click a hotkey/shortcut key to cycle through the layouts to display the appropriate captions at the proper time.</p>
+<p>You can mange your layout by clicking on the layout tab of the Screen Annotations dialog.</p>
+<p><img src="images/screen_annotations_layout_tab.png" alt="Screen Annotations layout tab" /></p>
+<ul>
+	<li>Select a layout and right-click on it to display a context menu for managing the layouts.</li>
+	<li>You can rename a layout by choosing the Edit Layout Name command or selecting a layout and press F2.</li>
+	<li>You can rearrange the order of the layouts in the list by dragging a layout onto another. For example, to switch the order of the 'Layout 1' and 'Layout 2', simply drag 'Layout 1' onto the 'Layout 2' item.</li>
+	<li>You use the Copy Layout, Paste Layout  and Remove Layout commands to copy, paste and remove layouts in the Screen Annotations dialog box.</li>
+	<li>The Layout Library command lets you:
+		<ol>
+			<li>Save all your existing shapes into a file</li>
+			<li>Load a shape library file into the Screen Annotations dialog box</li>
+			<li>Create a new (empty) shape library</li>
+		</ol>
+	</li>
+</ul>
+<h3>Instantiating Layouts</h3>
+<p>You instantiate a layout by simply double clicking on the layout item or drag it out of the Screen Annotations dialog box. By doing so, all the shapes that are saved into the layout will be displayed on the desktop in their correct order and position.</p>
+<h3>Saving Layouts</h3>
+<p>To save a layout, first, arrange your shapes in their correct position and order. Right click on any of the shapes to bring up a context menu, and select the Save Layout command.</p>
+<h3>Cycling Through Layouts</h3>
+<p>You can cycle through the layouts by clicking the Next Layout key in the Screen Annotations dialog box. Every click will close all existing shapes on the desktop and instantiate a new layout. Alternatively, you can use a hotkey / keyboard shortcuts to perform the cycling. To customize the keys for navigating the layouts, you can choose Options->Keyboard Shortcuts from the main menu or Objects->Layout Shortcuts from the Screen Annotations menu.</p>
+<h3>Layout Shortcuts</h3>
+<p>The keys for cycling through the layouts are:</p>
+<ul>
+	<li>Next Layout Key - key for displaying the next layout</li>
+	<li>Previous Layout Key - key for displaying the previous layout</li>
+	<li>Show / Hide Layout Key - key for showing / hiding the current layout</li>
+</ul>
+</body>
+</html>

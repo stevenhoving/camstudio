@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="copyright" content="Copyright &copy; 2001 RenderSoft Software and Web Publishing, Copyright &copy; 2008 CamStudio Group &amp; Contributors." />
+<meta name="creator" content="RenderSoft Software and Web Publishing, CamStudio Group &amp; Contributors." />
+<meta name="language" content="en-us" />
+<link href="../help.css" rel="stylesheet" type="text/css" />
+<title>Video Annotations</title>
+</head>
+<body>
+<h1>Video Annotations</h1>
+<p class="getting_there">(From the main menu, choose Tools->Video Annotations)</p>
+<p>This feature requires a webcam to be installed on your system. The Video Annotations window is essentially a webcam window. By placing a webcam window on your desktop, you can record its content along with other screen content when the webcam window is inside your recording region.</p>
+<p><img src="images/video_annotations.png" alt="Video Annotations" class="inline_image_r" /></p>
+<p>The Video Annotation window does not only stream video content to your desktop. You can also add a text caption, make a cutout region, or set transparency values (Win 2000 / XP only) to the video annotation just like you did for screen annotations. To do so, right-click on the webcam window to display a menu like this:</p>
+<p><img src="images/video_annotations_context_menu.png" alt="Video Annotations context menu" /></p>
+<p>The Edit Text, Edit Image and Edit Transparency commands have already been covered in the section on <a href="screen_annotations.html">Screen Annotations</a> and will not be re-explained here.</p>
+<h2>Refresh Rate</h2>
+<p><img src="images/edit_refresh_rate_dialog.png" alt="Edit Refresh Rate dialog" class="inline_image_r" /></p>
+<p>The refresh rate indicates the number of times (frames) CamStudio will attempt to capture an image from your webcam and display it on your screen. The actual rate will usually be much lesser, especially for large sized images.</p>
+<p class="standout">Important:</p>
+<ul>
+	<li><p>Setting a high refresh rate will degrade the recordings of CamStudio considerably. This is especially true if transparency is turned on. It has been observed that some dialog boxes will not appear when they are selected when the Video Annotation window is shown. To stop the blocking of these dialog boxes, you will need to close the Video Annotation window first.</p></li>
+	<li><p>The slowdown in the recording rate will be observed even if the Video Annotations window is not inside the recording region. In fact, the presence of the Video Annotations window will even affect the performance of other programs in your system. Therefore, it is highly advised that you close the Video Annotations window when it is not needed.</p></li>
+	<li><p>Sometimes, especially on slower systems, the video of the webcam images will appear to be slightly behind the audio track on playback. This is because the acquisition of an image and its display on the screen is quite demanding on your system resources. The computer will take some time to process the acquired image before showing it on the screen. This latency problem can usually be resolved by:</p>
+		<ol>
+			<li>Choosing a smaller dimension for your video format, or...</li>
+			<li>Shifting the video track slightly to align it with the audio track. More information can be found in the section <a href="audio_video_sync.html">Audio &amp; Video Synchronization</a>.</li>
+		</ol>
+	</li>
+</ul>
+<h2>Video Source</h2>
+<p>You can use the video source dialog to select your webcam or video source for the video annotation. You can also set the brightness, contrast, gain, exposure and other settings related to your webcam video.</p>
+<h2>Video Format</h2>
+<p>The video format dialog is used for selecting the dimensions of your webcam or video source image. You can also set the pixel depth and compression (e.g RGB24, RGB32) of your video.</p>
+<p class="emphasize"><span class="standout">Note:</span> You are advised to choose a small dimension (e.g 160 x 120) for the video format, as a large sized format will slow down your system significantly.</p>
+<p class="emphasize">The video source and video format dialog boxes will vary on different systems. Its implementation will very much depend on the vendor of your webcam.</p>
+</body>
+</html>
