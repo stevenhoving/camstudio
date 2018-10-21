@@ -22,3 +22,6 @@
 [submodule "dep/yuvconvert"]
 	path = dep/yuvconvert
 	url = https://github.com/stevenhoving/yuvconvert.git
+[submodule "dep/spdlog"]
+	path = dep/spdlog
+	url = git@github.com:stevenhoving/spdlog.git

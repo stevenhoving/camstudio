@@ -21,6 +21,7 @@ add_subdirectory(fmt)
 add_subdirectory(mouse_simulation)
 add_subdirectory(googletest)
 add_subdirectory(google_benchmark)
+add_subdirectory(spdlog)
 add_subdirectory(yuvconvert)
 
 # cpptoml settings
@@ -30,4 +31,5 @@ add_subdirectory(cpptoml)
 # fmt format library settings.
 set_target_properties(fmt PROPERTIES FOLDER "External/fmt")
 set_target_properties(mouse_simulation PROPERTIES FOLDER "External/mouse_simulation")
+set_target_properties(spdlog_headers_for_ide PROPERTIES FOLDER "External/spdlog")
 set_target_properties(yuvconvert PROPERTIES FOLDER "External/yuvconvert")
