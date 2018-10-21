@@ -31,15 +31,11 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 
-IDB_BITMAP1             BITMAP                  "res\\bitmap1.bmp"
-
 IDB_TOOLBAR256          BITMAP                  "res\\ToolbarPalette256.bmp"
 
 IDB_TOOLBARMASK         BITMAP                  "res\\ToolbarMask.bmp"
 
 IDB_BITMAP4             BITMAP                  "res\\Recorder_logo.bmp"
-
-IDB_BITMAP10            BITMAP                  "res\\info-icon.bmp"
 
 IDB_BITMAP3             BITMAP                  "res\\CamStudioPanel2.bmp"
 
@@ -94,84 +90,6 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\Recorder.ico"
-
-IDI_ICON1               ICON                    "res\\icon1.ico"
-
-IDI_CUSTOMICON_CONTEXTHELP ICON                    "res\\icon2.ico"
-
-IDI_CUSTOMICON_MAGNIFY  ICON                    "res\\ico00001.ico"
-
-IDI_CUSTOMICON_NODRAG   ICON                    "res\\ico00002.ico"
-
-IDI_CUSTOMICON_SPLITBARH ICON                    "res\\customic.ico"
-
-IDI_CUSTOMICON_SPLITBARV ICON                    "res\\ico00003.ico"
-
-IDI_CUSTOMICON_TOPOFTABLE ICON                    "res\\ico00004.ico"
-
-IDI_CUSTOMICON_BOOK1    ICON                    "res\\icon3.ico"
-
-IDI_CUSTOMICON_BOOK2    ICON                    "res\\ico00005.ico"
-
-IDI_CUSTOMICON_CLIP1    ICON                    "res\\ico00006.ico"
-
-IDI_CUSTOMICON_CLIP2    ICON                    "res\\ico00007.ico"
-
-IDI_CUSTOMICON_CLOCK1   ICON                    "res\\ico00008.ico"
-
-IDI_CUSTOMICON_CLOCK2   ICON                    "res\\ico00009.ico"
-
-IDI_CUSTOMICON_CARDFILE1 ICON                    "res\\ico00010.ico"
-
-IDI_CUSTOMICON_CARDFILE2 ICON                    "res\\ico00011.ico"
-
-IDI_CUSTOMICON_DISK1    ICON                    "res\\ico00012.ico"
-
-IDI_CUSTOMICON_DISK2    ICON                    "res\\ico00013.ico"
-
-IDI_CUSTOMICON_FILES1   ICON                    "res\\ico00014.ico"
-
-IDI_CUSTOMICON_FILES2   ICON                    "res\\ico00015.ico"
-
-IDI_CUSTOMICON_FOLDER2  ICON                    "res\\ico00016.ico"
-
-IDI_CUSTOMICON_FOLDER1  ICON                    "res\\ico00017.ico"
-
-IDI_CUSTOMICON_MAIL1    ICON                    "res\\ico00018.ico"
-
-IDI_CUSTOMICON_MAIL2    ICON                    "res\\ico00019.ico"
-
-IDI_CUSTOMICON_NOTE1    ICON                    "res\\ico00020.ico"
-
-IDI_CUSTOMICON_NOTE2    ICON                    "res\\ico00021.ico"
-
-IDI_CUSTOMICON_PEN1     ICON                    "res\\ico00022.ico"
-
-IDI_CUSTOMICON_PEN2     ICON                    "res\\ico00023.ico"
-
-IDI_CUSTOMICON_PENCIL1  ICON                    "res\\ico00024.ico"
-
-IDI_CUSTOMICON_PENCIL2  ICON                    "res\\ico00025.ico"
-
-IDI_CUSTOMICON_PHONE1   ICON                    "res\\ico00026.ico"
-
-IDI_CUSTOMICON_PHONE2   ICON                    "res\\ico00027.ico"
-
-IDI_CUSTOMICON_POINT1   ICON                    "res\\ico00028.ico"
-
-IDI_CUSTOMICON_POINT2   ICON                    "res\\ico00029.ico"
-
-IDI_CUSTOMICON_SERCURITY ICON                    "res\\ico00030.ico"
-
-IDI_CUSTOMICON_SECURITY2 ICON                    "res\\ico00031.ico"
-
-IDI_ICONCROSSHAIR       ICON                    "res\\ico00032.ico"
-
-IDI_ICONJUSTIFYLEFT     ICON                    "res\\ico00033.ico"
-
-IDI_ICONJUSTIFYCENTER   ICON                    "res\\ico00034.ico"
-
-IDI_ICONJUSTIFYRIGHT    ICON                    "res\\ico00035.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -242,23 +160,6 @@ END
 // Accelerator
 //
 
-IDR_MAINFRAME ACCELERATORS
-BEGIN
-    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
-    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
-    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
-    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
-    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
-    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
-    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
-    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
-    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
-    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
-    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
-    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
-    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
-    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
-END
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -656,18 +557,6 @@ BEGIN
 
     0
 END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Cursor
-//
-
-IDC_CURSOR4             CURSOR                  "res\\cur00002.cur"
-
-IDC_CURSORDROPPER       CURSOR                  "res\\cursor4.cur"
-
-IDC_CURSORDRAG          CURSOR                  "res\\cur00001.cur"
 
 
 /////////////////////////////////////////////////////////////////////////////

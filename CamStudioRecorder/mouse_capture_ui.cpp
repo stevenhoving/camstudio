@@ -73,7 +73,7 @@ void mouse_capture_ui::register_window_class(HINSTANCE instance)
     wc.style = CS_HREDRAW | CS_VREDRAW;
     wc.lpfnWndProc = wnd_proc;
     wc.hInstance = instance;
-    // wc.hCursor = LoadIcon(instance, MAKEINTRESOURCE(IDI_ICONCROSSHAIR));
+    // wc.hCursor = LoadIcon(instance, IDC_CROSS);
     wc.lpszClassName = capture_class_name;
 
     // \todo handle RegisterClass failure.
@@ -96,7 +96,7 @@ HWND mouse_capture_ui::create_capture_window(HINSTANCE instance, HWND parent, CR
 void mouse_capture_ui::show(const cam::rect<int> region, const capture_type type)
 {
     // \todo make this load the correct icon based on the modify mode
-    HICON icon = ::LoadIcon(instance_, MAKEINTRESOURCE(IDI_ICONCROSSHAIR));
+    HICON icon = ::LoadIcon(instance_, IDC_CROSS);
     ::SetCursor(icon);
 
     // \todo also set max capture rect here.
