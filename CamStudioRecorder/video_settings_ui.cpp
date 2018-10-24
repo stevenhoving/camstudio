@@ -16,8 +16,6 @@
  */
 
 #include "stdafx.h"
-#include "afxwinappex.h"
-#include "afxdialogex.h"
 #include "video_settings_ui.h"
 
 IMPLEMENT_DYNAMIC(video_settings_ui, CDialogEx)

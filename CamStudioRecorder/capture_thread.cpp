@@ -17,11 +17,13 @@
 
 #include "stdafx.h"
 #include "capture_thread.h"
+#include "logging/logging.h"
 #include <CamEncoder/av_encoder.h>
 #include <CamCapture/cam_stop_watch.h>
 #include <CamCapture/annotations/cam_annotation_cursor.h>
-#include <fmt/printf.h>
 #include <algorithm>
+
+static auto logger = logging::get_logger("capture thread");
 
 av_muxer_type cam_create_container(video_container container)
 {
@@ -145,7 +147,7 @@ void capture_thread::start(capture_settings settings)
 {
     if (run_ || capture_state_ != capture_state::stopped)
     {
-        fmt::print("capture_thread: unable to start capturing 2x\n");
+        logger->error("capture_thread: unable to start capturing 2x");
         return;
     }
 
@@ -154,7 +156,7 @@ void capture_thread::start(capture_settings settings)
     capture_settings_ = settings;
     capture_thread_ = std::thread([this](){run();});
 
-    fmt::print("recording started, {}\n", settings.filename);
+    logger->debug("capturing started, {}", settings.filename);
 }
 
 void capture_thread::stop()
@@ -165,11 +167,13 @@ void capture_thread::stop()
     run_ = false;
 
     capture_state_ = capture_state::stopping;
+    logger->debug("capturing stopping");
 
     if (capture_thread_.joinable())
         capture_thread_.join();
 
     capture_state_ = capture_state::stopped;
+    logger->debug("capturing stopped");
 }
 
 void capture_thread::cancel()
@@ -180,11 +184,13 @@ void capture_thread::cancel()
     run_ = false;
 
     capture_state_ = capture_state::canceling;
+    logger->debug("capturing canceling");
 
     if (capture_thread_.joinable())
         capture_thread_.join();
 
     capture_state_ = capture_state::canceled;
+    logger->debug("capturing canceled");
 }
 
 void capture_thread::pause()
@@ -214,8 +220,8 @@ void capture_thread::run()
     auto current_desktop = ::OpenInputDesktop(0, FALSE, GENERIC_ALL);
     if (!current_desktop)
     {
-        fmt::print("capture_thread: unable to get current desktop\n");
-        // \todo we might retry getting the current desktop
+        logger->error("capture_thread: unable to get current desktop");
+        // \todo we might retry getting the current desktop.
         return;
     }
 
@@ -225,8 +231,8 @@ void capture_thread::run()
     current_desktop = nullptr;
     if (!desktop_attached)
     {
-        fmt::print("capture_thread: unable to bind desktop to current thread\n");
-        // we might retry getting the current desktop
+        logger->error("capture_thread: unable to bind desktop to current thread");
+        // \todo we might retry getting the current desktop.
         return;
     }
 
@@ -269,7 +275,7 @@ void capture_thread::run()
     const auto pre_frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
     if (pre_frame == nullptr)
     {
-        fmt::print("capture_thread: unable to capture a pre frame\n");
+        logger->error("capture_thread: unable to capture the pre frame");
         return;
     }
 
@@ -286,16 +292,12 @@ void capture_thread::run()
     video_encoder->add_stream(cam_create_video_codec(config));
     video_encoder->open();
 
-    //cam::stop_watch stopwatch;
-    //stopwatch.time_start();
-
     cam::stop_watch frame_limiter;
     frame_limiter.time_start();
 
     const double max_frame_time = 1.0/capture_settings_.video_settings.video_source_fps_;
     while (run_)
     {
-        //stopwatch.time_start();
         double time_capture_start = frame_limiter.time_now();
         const auto frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
 
@@ -313,15 +315,12 @@ void capture_thread::run()
         if (sleep_for > 0)
             std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(ceil(sleep_for * 1000.0))));
 
-        //dt = stopwatch.time_since();
-        //fmt::print("fps: {}\n", 1.0 / dt);
-
         while (capture_state_ == capture_state::paused && run_ == true)
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     video_encoder.reset();
-    fmt::print("capture_thread: completed recording");
+    logger->debug("capture_thread: completed capturing");
 
     if (capture_state_ == capture_state::stopping)
         on_recording_completed_();

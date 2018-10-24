@@ -12,7 +12,6 @@
 
 #include "MainFrm.h" // only for g_maxx_screen and alike
 #include <CamLib/CamError.h>
-#include <fmt/printf.h>
 
 IMPLEMENT_DYNAMIC(CFixedRegionDlg, CDialog)
 

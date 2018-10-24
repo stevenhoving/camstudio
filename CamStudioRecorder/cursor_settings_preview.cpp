@@ -17,19 +17,11 @@
 
 #include "stdafx.h"
 #include "cursor_settings_preview.h"
-#include <fmt/printf.h>
 
 IMPLEMENT_DYNAMIC(cursor_settings_preview, CStatic)
 BEGIN_MESSAGE_MAP(cursor_settings_preview, CStatic)
     ON_WM_CREATE()
-    //ON_WM_PAINT()
-    //ON_WM_SIZE()
-    //ON_WM_ERASEBKGND()
-    //ON_WM_SETFOCUS()
-    //ON_WM_ENABLE()
     ON_WM_GETDLGCODE()
-    //ON_WM_SETFONT()
-    //ON_WM_GETFONT()
     ON_WM_LBUTTONDOWN()
     ON_WM_RBUTTONDOWN()
     ON_WM_MBUTTONDOWN()
@@ -135,13 +127,13 @@ void cursor_settings_preview::OnMButtonUp(UINT /*nFlags*/, CPoint /*point*/)
 
 BOOL cursor_settings_preview::OnMouseWheel(UINT /*nFlags*/, short /*zDelta*/, CPoint /*pt*/)
 {
-    fmt::print("mouse wheel\n");
+    /* \todo implement mouse wheel annotation animation */
     return TRUE;
 }
 
 void cursor_settings_preview::OnMouseHWheel(UINT /*nFlags*/, short /*zDelta*/, CPoint /*pt*/)
 {
-    fmt::print("mouse H wheel\n");
+    /* \todo implement mouse wheel annotation animation */
 }
 
 void cursor_settings_preview::_init()

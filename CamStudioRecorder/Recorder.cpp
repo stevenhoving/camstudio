@@ -10,12 +10,15 @@
 #include "RecorderView.h"
 #include "AboutDlg.h"
 
+#include "buildinfo.h"
 #include "gdi_plus_initializer.h"
 #include "utility/string_convert.h"
 #include "utility/filesystem.h"
+#include "logging/logging.h"
 #include <CamLib/CamError.h>
-
 #include <filesystem>
+
+static auto logger = logging::get_logger("recorder");
 
 static bool bClassRegistered = false;
 
@@ -25,8 +28,6 @@ constexpr auto CAMSTUDIO_MUTEX = _T("VSCAP_CAB648E2_684F_4FF1_B574_9714ACAC6D57"
 constexpr auto CAMSTUDIO_CLASS_NAME = L"CamStudio";
 
 BEGIN_MESSAGE_MAP(CRecorderApp, CWinApp)
-//ON_COMMAND(ID_FILE_NEW, &CWinApp::OnFileNew)
-//ON_COMMAND(ID_FILE_OPEN, &CWinApp::OnFileOpen)
 ON_COMMAND(ID_APP_ABOUT, &CRecorderApp::OnAppAbout)
 ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinApp::OnFilePrintSetup)
 END_MESSAGE_MAP()
@@ -43,6 +44,12 @@ CRecorderApp::~CRecorderApp() = default;
 
 BOOL CRecorderApp::InitInstance()
 {
+    const auto app_data_path = utility::get_app_data_path();
+    std::filesystem::create_directories(app_data_path);
+
+    logger->info("CamStudio started, version: {}, builddate: {}", buildinfo::full_version,
+        buildinfo::build_date);
+
     CWinApp::InitInstance();
     AfxInitRichEdit2();
 
@@ -51,9 +58,6 @@ BOOL CRecorderApp::InitInstance()
 
     ::OnError(_T("CRecorderApp::InitInstance"));
     AfxEnableControlContainer();
-
-    const auto app_data_path = utility::get_app_data_path();
-    std::filesystem::create_directories(app_data_path);
 
     if (!FirstInstance())
         return FALSE;
@@ -95,6 +99,8 @@ BOOL CRecorderApp::InitInstance()
 
 int CRecorderApp::ExitInstance()
 {
+    spdlog::shutdown();
+
     if (bClassRegistered)
         ::UnregisterClass(CAMSTUDIO_CLASS_NAME, AfxGetInstanceHandle());
 
@@ -162,7 +168,7 @@ bool CRecorderApp::RegisterWindowClass()
     wndcls.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
     wndcls.lpfnWndProc = ::DefWindowProc;
     wndcls.hInstance = AfxGetInstanceHandle();
-    wndcls.hIcon = LoadIcon(IDR_MAINFRAME); // or load a different icon
+    wndcls.hIcon = LoadIcon(IDR_MAINFRAME);
     wndcls.hCursor = LoadCursor(IDC_ARROW);
     wndcls.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wndcls.lpszMenuName = nullptr;

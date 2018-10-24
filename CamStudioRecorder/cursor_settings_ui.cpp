@@ -19,14 +19,16 @@
 #include "cursor_settings_ui.h"
 #include "settings_model.h"
 #include "utility/window_util.h"
-#include "afxdialogex.h"
+#include "logging/logging.h"
+
 #include <CamCapture/annotations/cam_annotation_cursor.h>
 #include <CamCapture/cam_color.h>
 #include <CamCapture/cam_rect.h>
 #include <CamCapture/cam_gdiplus.h>
 #include <CamCapture/cam_draw_data.h>
 #include <CamCapture/cam_stop_watch.h>
-#include <fmt/printf.h>
+
+static auto logger = logging::get_logger("cursor_settings_ui");
 
 IMPLEMENT_DYNAMIC(cursor_settings_ui, CDialogEx)
 
@@ -224,7 +226,7 @@ void cursor_settings_ui::_draw_cursor_preview(cam_mouse_button::type mouse_butto
 
     HBITMAP bitmap;
     if (const auto ret = image.GetHBITMAP(Gdiplus::Color(255, 255, 255, 255), &bitmap); ret != Gdiplus::Status::Ok)
-        fmt::print("failed to get bitmap from bitmap\n");
+        logger->warn("failed to get HBitmap from gdiplug bitmap");
 
     HBITMAP hbmOld = cursor_preview_.SetBitmap(bitmap);
     if (hbmOld != nullptr)

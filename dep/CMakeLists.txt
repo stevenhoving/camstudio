@@ -21,6 +21,9 @@ add_subdirectory(fmt)
 add_subdirectory(mouse_simulation)
 add_subdirectory(googletest)
 add_subdirectory(google_benchmark)
+
+# spdlog settings
+set(SPDLOG_FMT_EXTERNAL ON CACHE BOOL "" FORCE)
 add_subdirectory(spdlog)
 add_subdirectory(yuvconvert)
 

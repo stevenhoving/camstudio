@@ -18,7 +18,6 @@
 #include "CamCapture/annotations/cam_annotation_cursor.h"
 #include "CamCapture/cam_gdiplus.h"
 #include "CamCapture/cam_draw_data.h"
-#include <fmt/printf.h>
 #include <windows.h>
 
 cam_annotation_cursor::cam_annotation_cursor(const bool cursor_enabled,

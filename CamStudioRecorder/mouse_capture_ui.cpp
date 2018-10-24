@@ -26,9 +26,6 @@
 #include <CamCapture/cam_gdiplus.h>
 #include <CamCapture/cam_rect.h>
 
-#include <fmt/printf.h>
-#include <fmt/ostream.h>
-
 LRESULT WINAPI wnd_proc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam)
 {
     const auto mouse_capture_ptr = reinterpret_cast<void *>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));

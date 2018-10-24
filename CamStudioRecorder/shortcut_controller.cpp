@@ -19,7 +19,6 @@
 #include "shortcut_controller.h"
 #include "utility/string_convert.h"
 #include <fmt/format.h>
-#include <fmt/printf.h>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -224,7 +223,5 @@ void shortcut_controller::register_action(const shortcut_definition &definition,
 
 void shortcut_controller::handle_action(int shortcut_id)
 {
-    fmt::print("handle shortcut action\n");
     shortcut_lambda_map_.at(shortcut_id)();
 }
-

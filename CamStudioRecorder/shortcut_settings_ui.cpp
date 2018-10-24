@@ -19,7 +19,7 @@
 #include "shortcut_settings_ui.h"
 #include "settings_model.h"
 #include "utility/make_array.h"
-#include <afxdialogex.h>
+
 
 using namespace std::string_literals;
 

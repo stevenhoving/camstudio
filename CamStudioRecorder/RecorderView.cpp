@@ -15,6 +15,8 @@
 #include "AutopanSpeedDlg.h"
 #include "FixedRegionDlg.h"
 
+#include "logging/logging.h"
+
 #include <CamLib/TrayIcon.h>
 #include <CamLib/CamError.h>
 #include <CamLib/CamFile.h>
@@ -49,6 +51,8 @@
 #include <ctime>
 
 constexpr auto TEMPFILETAGINDICATOR = L"~temp";
+
+static auto logger = logging::get_logger("recorder-view");
 
 /////////////////////////////////////////////////////////////////////////////
 // CRecorderView
@@ -97,8 +101,6 @@ END_MESSAGE_MAP()
 
 BEGIN_EVENTSINK_MAP(CRecorderView, CView)
 END_EVENTSINK_MAP()
-
-
 
 CRecorderView::CRecorderView()
     : CView()
@@ -387,12 +389,15 @@ std::string CRecorderView::generate_temp_filename()
 
 LRESULT CRecorderView::OnRecordStart(WPARAM /*wParam*/, LPARAM lParam)
 {
+    logger->debug("record start");
+
     CStatusBar *pStatus = (CStatusBar *)AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
     pStatus->SetPaneText(0, _T("Press the Stop Button to stop recording"));
 
     if (settings_model_->get_application_minimize_on_capture_start())
         ::PostMessage(AfxGetMainWnd()->m_hWnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 
+    logger->debug("mouse hook attach");
     mouse_capture_hook_->attach();
 
     capture_settings settings;
@@ -428,6 +433,8 @@ void CRecorderView::_interrupt_recording(const record_interrupt_reason reason)
 {
     if (!capture_thread_)
         return;
+
+    logger->debug("record interupted");
 
     if (capture_thread_->get_capture_state() == capture_state::paused)
     {
@@ -557,6 +564,8 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM wParam, LPARAM /*lParam*/)
 
     if (wParam != 0)
     {
+        logger->debug("canceled, recording removed");
+
         // recording was canceled, so remove the temp file.
         std::filesystem::remove(temp_video_filepath_);
         temp_video_filepath_.clear();
@@ -586,6 +595,8 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM wParam, LPARAM /*lParam*/)
 
             if (file_dialog.DoModal() != IDOK)
             {
+                logger->debug("no filename given, recording removed");
+
                 std::filesystem::remove(temp_video_filepath_);
                 temp_video_filepath_.clear();
                 return 0;
@@ -625,6 +636,8 @@ LRESULT CRecorderView::OnUserGeneric(WPARAM wParam, LPARAM /*lParam*/)
     std::filesystem::rename(temp_video_filepath_, target_filepath, ec);
     if (ec)
     {
+        logger->error("File rename failed: {}", ec);
+
         // Unable to rename/copy file.
         // In case of an move problem we do nothing. Source has an unique name and not to delete the source file
         // don't cause problems any longer The file may be opened by another application. Please use another
@@ -754,6 +767,8 @@ void CRecorderView::OnPause()
     if (!capture_thread_ || capture_thread_->get_capture_state() == capture_state::paused)
         return;
 
+    logger->debug("record pause");
+
     capture_thread_->pause();
     mouse_capture_hook_->pause();
 
@@ -838,7 +853,7 @@ void CRecorderView::OnUpdateRegionWindow(CCmdUI *pCmdUI)
 
 void CRecorderView::OnCaptureChanged(CWnd *pWnd)
 {
-    fmt::print("OnCaptureChanged\n");
+    logger->debug("OnCaptureChanged");
 #if 0
     CPoint ptMouse;
     VERIFY(GetCursorPos(&ptMouse));

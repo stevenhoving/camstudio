@@ -17,16 +17,16 @@
 
 #include "stdafx.h"
 #include "window_select_dwm.h"
-#include <fmt/printf.h>
+#include "logging/logging.h"
 
-dwm_thumbnail::~dwm_thumbnail()
-{
-}
+static auto logger = logging::get_logger("window_select_dwm");
+
+dwm_thumbnail::~dwm_thumbnail() = default;
 
 void dwm_thumbnail::link(HWND dst, HWND src)
 {
     if (const auto ret = DwmRegisterThumbnail(dst, src, &thumbnail_); ret != S_OK)
-        fmt::print("unable to register dwm thumbnail relation - {}\n", ret);
+        logger->error("unable to register dwm thumbnail relation - {}", ret);
 }
 
 void dwm_thumbnail::unlink()
@@ -44,7 +44,7 @@ void dwm_thumbnail::set_size(cam::rect<int> dst_size)
     dskThumbProps.opacity = 255; //(255 * 70) / 100;
     dskThumbProps.rcDestination = {dst_size.left(), dst_size.top(), dst_size.right(), dst_size.bottom()};
     if (const auto ret = DwmUpdateThumbnailProperties(thumbnail_, &dskThumbProps); ret < 0)
-        fmt::print("unable to update thumbnail props\n");
+        logger->error("unable to update thumbnail properties");
 }
 
 cam::rect<int> dwm_thumbnail::_get_src_size()
@@ -52,7 +52,7 @@ cam::rect<int> dwm_thumbnail::_get_src_size()
     SIZE src_size;
     if (const auto ret = DwmQueryThumbnailSourceSize(thumbnail_, &src_size); ret != S_OK)
     {
-        fmt::print("failed to query source file\n");
+        logger->error("failed to query source file\n");
         return {0, 0, 0, 0};
     }
     return {0, 0, src_size.cx, src_size.cy};

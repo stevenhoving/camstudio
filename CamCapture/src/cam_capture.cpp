@@ -23,7 +23,6 @@
 #include "CamCapture/annotations/cam_annotation_cursor.h"
 #include "CamCapture/annotations/cam_annotation_systemtime.h"
 #include <cam_hook/cam_hook.h>
-#include <fmt/printf.h>
 #include <memory>
 #include <cassert>
 #include <ctime>

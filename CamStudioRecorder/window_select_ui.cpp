@@ -20,9 +20,7 @@
 #include "utility/window_util.h"
 #include "fmt_helper.h"
 
-#include <afxdialogex.h>
 #include <psapi.h>
-#include <fmt/printf.h>
 #include <vector>
 #include <string>
 
