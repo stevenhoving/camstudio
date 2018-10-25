@@ -24,6 +24,7 @@ add_subdirectory(google_benchmark)
 
 # spdlog settings
 set(SPDLOG_FMT_EXTERNAL ON CACHE BOOL "" FORCE)
+set(SPDLOG_NO_ATOMIC_LEVELS ON CACHE BOOL "" FORCE)
 add_subdirectory(spdlog)
 add_subdirectory(yuvconvert)
 
