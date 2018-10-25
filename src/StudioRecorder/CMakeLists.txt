@@ -86,10 +86,6 @@ set(RECORDER_UI_SOURCE
     ui/listbox_base_ui.h
 )
 
-set(RECORDER_LOGGING
-    logging/logging.h
-)
-
 # legacy
 set(RECORDER_SOURCE
     AboutDlg.cpp
@@ -127,7 +123,6 @@ add_executable(CamStudioRecorder WIN32
     ${RECORDER_SETTINGS_SOURCE}
     ${RECORDER_UTILITY_SOURCE}
     ${RECORDER_UI_SOURCE}
-    ${RECORDER_LOGGING}
     ${RECORDER_RESOURCE}
 )
 
@@ -145,10 +140,6 @@ source_group(src\\utility FILES
 
 source_group(src\\ui FILES
     ${RECORDER_UI_SOURCE}
-)
-
-source_group(src\\logging FILES
-    ${RECORDER_LOGGING}
 )
 
 source_group(src\\legacy FILES
@@ -195,9 +186,9 @@ target_link_libraries(CamStudioRecorder
     cam_hook
     CamCapture
     CamEncoder
+    logging
     cpptoml
-    fmt
-    spdlog
+
     gdi32.lib
     winmm.lib
     vfw32.lib

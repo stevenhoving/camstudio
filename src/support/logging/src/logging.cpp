@@ -15,22 +15,27 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include <logging/logging.h>
+#include <spdlog/async.h>
+#include <spdlog/sinks/basic_file_sink.h>
+#include <filesystem>
 
-#include <CamCapture/cam_rect.h>
-
-namespace utility
+auto logging::get() -> logging &
 {
-
-static auto from_rect(const CRect &rect) -> cam::rect<int>
-{
-    return { rect.left, rect.top, rect.right, rect.bottom };
+    static auto global_logger = logging();
+    return global_logger;
 }
 
-static auto from_rect(const cam::rect<int> &rect) -> CRect
+void logging::init(std::wstring log_filename)
 {
-    return { rect.left(), rect.top(), rect.right(), rect.bottom() };
+    const auto filename = std::filesystem::path(log_filename);
+    std::filesystem::create_directories(filename.parent_path());
+
+    auto async_file = spdlog::basic_logger_mt<spdlog::async_factory>("main", filename.string());
+    spdlog::set_default_logger(async_file);
 }
 
-} // namespace utility
-
+auto logging::get_logger(std::string logger_name) -> std::shared_ptr<spdlog::logger>
+{
+    return spdlog::default_logger()->clone(std::move(logger_name));
+}

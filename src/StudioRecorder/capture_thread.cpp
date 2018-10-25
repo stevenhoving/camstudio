@@ -210,9 +210,11 @@ capture_state capture_thread::get_capture_state() const noexcept
     return capture_state_;
 }
 
-bool capture_thread::capture_screen_frame(const cam::rect<int> &capture_dst_rect)
+const cam_frame *capture_thread::capture_screen_frame(const cam::rect<int> &capture_dst_rect)
 {
-    return capture_source_->capture_frame(capture_dst_rect);
+    if (!capture_source_->capture_frame(capture_dst_rect))
+        return nullptr;
+    return capture_source_->get_frame();
 }
 
 void capture_thread::run()
@@ -272,7 +274,7 @@ void capture_thread::run()
             mouse_action_config{ show_cursor_halo_clicks_enabled, halo_size, settings.get_cursor_click_middle_color() }
     ));
 
-    const auto pre_frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
+    const auto pre_frame = capture_screen_frame(capture_settings_.capture_rect_);
     if (pre_frame == nullptr)
     {
         logger->error("capture_thread: unable to capture the pre frame");
@@ -280,7 +282,7 @@ void capture_thread::run()
     }
 
     /* Setup ffmpeg video encoder */
-    // \todo video encoder framerate is ignored atm..
+    // \todo video encoder framerate is ignored atm.
     const auto config = cam_create_video_config(
         pre_frame->width,
         pre_frame->height,
@@ -295,25 +297,23 @@ void capture_thread::run()
     cam::stop_watch frame_limiter;
     frame_limiter.time_start();
 
-    const double max_frame_time = 1.0/capture_settings_.video_settings.video_source_fps_;
+    const auto max_frame_time = 1.0/capture_settings_.video_settings.video_source_fps_;
     while (run_)
     {
-        double time_capture_start = frame_limiter.time_now();
-        const auto frame = capture_screen_frame(capture_settings_.capture_rect_) ? capture_source_->get_frame() : nullptr;
+        const auto timestamp_capture_start = frame_limiter.time_now();
+        const auto frame = capture_screen_frame(capture_settings_.capture_rect_);
 
         if (frame != nullptr)
         {
-            const auto timestamp = static_cast<timestamp_t>(time_capture_start * 1000.0);
+            const auto timestamp = static_cast<timestamp_t>(timestamp_capture_start * 1000.0);
             video_encoder->encode_frame(timestamp, frame->bitmap_data, frame->width, frame->height,
                 frame->stride);
         }
 
-        const double time_capture_end = frame_limiter.time_now();
-        const double dt = time_capture_end - time_capture_start;
-
-        const double sleep_for = max_frame_time - dt;
-        if (sleep_for > 0)
-            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(ceil(sleep_for * 1000.0))));
+        const auto timestamp_capture_end = frame_limiter.time_now();
+        
+        if (const auto sleep_for = max_frame_time - (timestamp_capture_end - timestamp_capture_start); sleep_for > 0)
+            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(std::ceil(sleep_for * 1000.0))));
 
         while (capture_state_ == capture_state::paused && run_ == true)
             std::this_thread::sleep_for(std::chrono::milliseconds(100));

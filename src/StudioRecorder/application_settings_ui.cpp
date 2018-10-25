@@ -34,9 +34,7 @@ application_settings_ui::application_settings_ui(CWnd* pParent, settings_model &
 {
 }
 
-application_settings_ui::~application_settings_ui()
-{
-}
+application_settings_ui::~application_settings_ui() = default;
 
 BOOL application_settings_ui::OnInitDialog()
 {

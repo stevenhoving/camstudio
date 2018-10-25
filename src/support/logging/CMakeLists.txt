@@ -13,8 +13,44 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-add_subdirectory(Hook)
-add_subdirectory(support)
-add_subdirectory(Capture)
-add_subdirectory(Encoder)
-add_subdirectory(StudioRecorder)
+project(logging)
+
+set(LOGGING_SOURCE
+    src/logging.cpp
+)
+
+set(LOGGING_INCLUDE
+    include/logging/logging.h
+)
+
+source_group(src FILES
+    ${LOGGING_SOURCE}
+    ${LOGGING_INCLUDE}
+)
+
+add_library(logging STATIC
+    ${LOGGING_SOURCE}
+    ${LOGGING_INCLUDE}
+)
+
+target_link_libraries(logging
+  PUBLIC
+    spdlog
+    fmt
+)
+
+target_include_directories(logging
+  PUBLIC
+    include
+)
+
+
+#target_compile_definitions(CamLib
+#  PRIVATE
+#    _UNICODE
+#    UNICODE
+#    _AFXDLL
+#)
+
+
+#add_subdirectory(tests)

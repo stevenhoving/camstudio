@@ -72,7 +72,7 @@ public:
 
 protected:
     void run();
-    bool capture_screen_frame(const cam::rect<int> &capture_dst_rect);
+    const cam_frame *capture_screen_frame(const cam::rect<int> &capture_dst_rect);
 
 private:
     capture_settings capture_settings_;

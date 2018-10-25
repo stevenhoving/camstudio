@@ -14,7 +14,7 @@
 #include "gdi_plus_initializer.h"
 #include "utility/string_convert.h"
 #include "utility/filesystem.h"
-#include "logging/logging.h"
+#include <logging/logging.h>
 #include <CamLib/CamError.h>
 #include <filesystem>
 
