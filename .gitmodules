@@ -24,4 +24,4 @@
 	url = https://github.com/stevenhoving/yuvconvert.git
 [submodule "dep/spdlog"]
 	path = dep/spdlog
-	url = git@github.com:stevenhoving/spdlog.git
+	url = https://github.com/stevenhoving/spdlog.git
