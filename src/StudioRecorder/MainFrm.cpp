@@ -68,10 +68,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     wnd_toolbar_.SetBarStyle(wnd_toolbar_.GetBarStyle() | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
 
     tray_icon_.SetNotifyWnd(*this);
-    tray_icon_.TraySetIcon(IDR_MAINFRAME);
-    tray_icon_.TraySetToolTip(_T("CamStudio"));
-    tray_icon_.TraySetMenu(IDR_TRAYMENU);
-    tray_icon_.TrayShow();
+    tray_icon_.SetIcon(IDR_MAINFRAME);
+    tray_icon_.SetToolTip(_T("CamStudio"));
+    tray_icon_.SetMenu(IDR_TRAYMENU);
+    tray_icon_.Show();
 
     SetWindowText(_T("CamStudio"));
     return 0;

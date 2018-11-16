@@ -18,7 +18,7 @@
 #include "stdafx.h"
 #include "window_select_ui.h"
 #include "utility/window_util.h"
-#include "fmt_helper.h"
+#include "utility/fmt_helper.h"
 
 #include <psapi.h>
 #include <vector>

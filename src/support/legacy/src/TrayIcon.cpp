@@ -5,8 +5,8 @@
 // NOTIFYICONDATA IconData;
 
 CTrayIcon::CTrayIcon()
+    : m_nid({})
 {
-    ::ZeroMemory(&m_nid, sizeof(m_nid));
     m_nid.cbSize = sizeof(NOTIFYICONDATA);
     m_nid.uID = 1;
     m_nid.uFlags = NIF_MESSAGE;
@@ -48,7 +48,7 @@ void CTrayIcon::finishTrayIconData()
     }
 }
 
-void CTrayIcon::TraySetIcon(HICON hIcon)
+void CTrayIcon::SetIcon(HICON hIcon)
 {
     ASSERT(hIcon);
 
@@ -56,7 +56,7 @@ void CTrayIcon::TraySetIcon(HICON hIcon)
     m_nid.uFlags |= NIF_ICON;
 }
 
-void CTrayIcon::TraySetIcon(UINT nResourceID)
+void CTrayIcon::SetIcon(UINT nResourceID)
 {
     ASSERT(nResourceID > 0);
     HICON hIcon = AfxGetApp()->LoadIcon(nResourceID);
@@ -71,7 +71,7 @@ void CTrayIcon::TraySetIcon(UINT nResourceID)
     }
 }
 
-void CTrayIcon::TraySetIcon(const TCHAR *lpszResourceName)
+void CTrayIcon::SetIcon(const TCHAR *lpszResourceName)
 {
     HICON hIcon = AfxGetApp()->LoadIcon(lpszResourceName);
     if (hIcon)
@@ -85,7 +85,7 @@ void CTrayIcon::TraySetIcon(const TCHAR *lpszResourceName)
     }
 }
 
-void CTrayIcon::TraySetToolTip(const TCHAR *lpszToolTip)
+void CTrayIcon::SetToolTip(const TCHAR *lpszToolTip)
 {
     ASSERT((_tcslen(lpszToolTip) > 0) && (_tcslen(lpszToolTip) < 64));
 
@@ -93,7 +93,7 @@ void CTrayIcon::TraySetToolTip(const TCHAR *lpszToolTip)
     m_nid.uFlags |= NIF_TIP;
 }
 
-BOOL CTrayIcon::TrayShow()
+BOOL CTrayIcon::Show()
 {
     BOOL bSuccess = FALSE;
     if (!m_bTrayIconVisible)
@@ -111,7 +111,7 @@ BOOL CTrayIcon::TrayShow()
     return bSuccess;
 }
 
-BOOL CTrayIcon::TrayHide()
+BOOL CTrayIcon::Hide()
 {
     BOOL bSuccess = FALSE;
     if (m_bTrayIconVisible)
@@ -143,21 +143,21 @@ BOOL CTrayIcon::TrayUpdate()
     return bSuccess;
 }
 
-BOOL CTrayIcon::TraySetMenu(UINT nResourceID, UINT /*nDefaultPos*/)
+BOOL CTrayIcon::SetMenu(UINT nResourceID, UINT /*nDefaultPos*/)
 {
     BOOL bSuccess;
     bSuccess = m_TrayMenu.LoadMenu(nResourceID);
     return bSuccess;
 }
 
-BOOL CTrayIcon::TraySetMenu(const TCHAR *lpszMenuName, UINT /*nDefaultPos*/)
+BOOL CTrayIcon::SetMenu(const TCHAR *lpszMenuName, UINT /*nDefaultPos*/)
 {
     BOOL bSuccess;
     bSuccess = m_TrayMenu.LoadMenu(lpszMenuName);
     return bSuccess;
 }
 
-BOOL CTrayIcon::TraySetMenu(HMENU hMenu, UINT /*nDefaultPos*/)
+BOOL CTrayIcon::SetMenu(HMENU hMenu, UINT /*nDefaultPos*/)
 {
     m_TrayMenu.Attach(hMenu);
     return TRUE;
@@ -188,6 +188,11 @@ void CTrayIcon::OnTrayRButtonDblClk(CPoint /*pt*/)
 
 void CTrayIcon::OnTrayMouseMove(CPoint /*pt*/)
 {
+}
+
+BOOL CTrayIcon::MinimizeToTray() const
+{
+    return m_bMinimizeToTray;
 }
 
 LRESULT CTrayIcon::OnTrayNotify(WPARAM wParam, LPARAM lParam)

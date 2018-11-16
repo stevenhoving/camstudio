@@ -16,27 +16,23 @@ public:
     void initTrayIconData(HWND hWnd);
     void finishTrayIconData();
 
-    void TraySetIcon(HICON hIcon);
-    void TraySetIcon(UINT nResourceID);
-    void TraySetIcon(const TCHAR * lpszResourceName);
-    void TraySetToolTip(const TCHAR *lpszToolTip);
+    void SetIcon(HICON hIcon);
+    void SetIcon(UINT nResourceID);
+    void SetIcon(const TCHAR * lpszResourceName);
+    void SetToolTip(const TCHAR *lpszToolTip);
     //void TraySetMinimizeToTray(BOOL bMinimizeToTray = TRUE);
-    BOOL TraySetMenu(UINT nResourceID, UINT nDefaultPos = 0);
-    BOOL TraySetMenu(HMENU hMenu, UINT nDefaultPos = 0);
-    BOOL TraySetMenu(const TCHAR * lpszMenuName, UINT nDefaultPos = 0);
+    BOOL SetMenu(UINT nResourceID, UINT nDefaultPos = 0);
+    BOOL SetMenu(HMENU hMenu, UINT nDefaultPos = 0);
+    BOOL SetMenu(const TCHAR * lpszMenuName, UINT nDefaultPos = 0);
     BOOL TrayUpdate();
-    BOOL TrayShow();
-    BOOL TrayHide();
+    BOOL Show();
+    BOOL Hide();
+    BOOL MinimizeToTray() const;
     void OnTrayLButtonDown(CPoint pt);
     void OnTrayLButtonDblClk(CPoint pt);
     void OnTrayRButtonDown(CPoint pt);
     void OnTrayRButtonDblClk(CPoint pt);
     void OnTrayMouseMove(CPoint pt);
-
-    BOOL MinimizeToTray() const
-    {
-        return m_bMinimizeToTray;
-    }
 
     afx_msg LRESULT OnTrayNotify(WPARAM wParam, LPARAM lParam);
 

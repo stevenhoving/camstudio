@@ -30,7 +30,6 @@ set(RECORDER_NEW_SOURCE
     application_settings_ui.cpp
     background_capture_source.h
     background_capture_source.cpp
-    fmt_helper.h
     mouse_capture_ui.h
     mouse_capture_ui.cpp
     cursor_settings_ui.h
@@ -70,6 +69,7 @@ set(RECORDER_UTILITY_SOURCE
     utility/string_convert.cpp
     utility/window_util.h
     utility/window_util.cpp
+    utility/fmt_helper.h
 )
 
 set(RECORDER_SETTINGS_SOURCE
@@ -96,7 +96,6 @@ set(RECORDER_SOURCE
     BasicMessageDlg.h
     FixedRegionDlg.cpp
     FixedRegionDlg.h
-
     MainFrm.cpp
     MainFrm.h
     Recorder.cpp
@@ -188,7 +187,6 @@ target_link_libraries(CamStudioRecorder
     CamEncoder
     logging
     cpptoml
-
     gdi32.lib
     winmm.lib
     vfw32.lib
