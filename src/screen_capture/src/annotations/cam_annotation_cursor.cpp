@@ -15,9 +15,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "CamCapture/annotations/cam_annotation_cursor.h"
-#include "CamCapture/cam_gdiplus.h"
-#include "CamCapture/cam_draw_data.h"
+#include "screen_capture/annotations/cam_annotation_cursor.h"
+#include "screen_capture/cam_gdiplus.h"
+#include "screen_capture/cam_draw_data.h"
 #include <windows.h>
 
 cam_annotation_cursor::cam_annotation_cursor(const bool cursor_enabled,

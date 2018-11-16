@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include <CamCapture/cam_rect.h>
+#include <screen_capture/cam_rect.h>
 #include <windows.h>
 #include <cassert>
 

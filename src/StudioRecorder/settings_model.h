@@ -20,8 +20,8 @@
 #include "settings/application_settings.h"
 #include "settings/shortcut_settings.h"
 #include "utility/make_array.h"
-#include <CamCapture/cam_rect.h>
-#include <CamCapture/cam_color.h>
+#include <screen_capture/cam_rect.h>
+#include <screen_capture/cam_color.h>
 #include <map>
 
 enum class capture_type

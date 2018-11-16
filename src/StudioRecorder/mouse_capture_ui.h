@@ -18,8 +18,8 @@
 #pragma once
 
 #include "settings_model.h"
-#include <CamCapture/cam_virtual_screen_info.h>
-#include <CamCapture/cam_gdiplus_fwd.h>
+#include <screen_capture/cam_virtual_screen_info.h>
+#include <screen_capture/cam_gdiplus_fwd.h>
 
 #include <atltypes.h>
 #include <functional>

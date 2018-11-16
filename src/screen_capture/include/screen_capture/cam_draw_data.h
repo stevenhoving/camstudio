@@ -17,22 +17,28 @@
 
 #pragma once
 
-#include "CamCapture/cam_annotarion.h"
-#include "CamCapture/cam_point.h"
-#include "CamCapture/cam_color.h"
-#include <memory>
+#include "screen_capture/cam_mouse_button.h"
 
+template<typename T>
+class rect;
 
-class cam_annotation_systemtime : public cam_iannotation
+template<typename T>
+class point;
+
+class cam_draw_data
 {
 public:
-    cam_annotation_systemtime() noexcept = default;
-    cam_annotation_systemtime(point<int> systemtime_position, cam::color systemtime_color) noexcept;
-    ~cam_annotation_systemtime() override;
+    constexpr cam_draw_data(const double frame_delta, const cam::rect<int> &canvas_rect,
+                            const point<int> &mouse_pos, const cam_mouse_button::type mouse_button_state) noexcept
+        : frame_delta_(frame_delta)
+        , canvas_rect_(canvas_rect)
+        , mouse_pos_(mouse_pos)
+        , mouse_button_state_(mouse_button_state)
+    {
+    }
 
-    void draw(Gdiplus::Graphics &canvas, const cam_draw_data &draw_data) override;
-private:
-    point<int> systemtime_position_;
-    cam::color systemtime_color_;
-    std::unique_ptr<struct font_ptr> font_pimpl_;
+    double frame_delta_;
+    const cam::rect<int> &canvas_rect_;
+    const point<int> &mouse_pos_;
+    cam_mouse_button::type mouse_button_state_;
 };

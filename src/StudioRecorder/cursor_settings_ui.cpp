@@ -21,12 +21,12 @@
 #include "utility/window_util.h"
 #include "logging/logging.h"
 
-#include <CamCapture/annotations/cam_annotation_cursor.h>
-#include <CamCapture/cam_color.h>
-#include <CamCapture/cam_rect.h>
-#include <CamCapture/cam_gdiplus.h>
-#include <CamCapture/cam_draw_data.h>
-#include <CamCapture/cam_stop_watch.h>
+#include <screen_capture/annotations/cam_annotation_cursor.h>
+#include <screen_capture/cam_color.h>
+#include <screen_capture/cam_rect.h>
+#include <screen_capture/cam_gdiplus.h>
+#include <screen_capture/cam_draw_data.h>
+#include <screen_capture/cam_stop_watch.h>
 
 static auto logger = logging::get_logger("cursor_settings_ui");
 

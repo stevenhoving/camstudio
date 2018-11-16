@@ -15,6 +15,6 @@
 
 add_subdirectory(Hook)
 add_subdirectory(support)
-add_subdirectory(Capture)
+add_subdirectory(screen_capture)
 add_subdirectory(Encoder)
 add_subdirectory(StudioRecorder)

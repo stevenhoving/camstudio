@@ -28,7 +28,7 @@
 #endif              // _AFX_NO_AFXCMN_SUPPORT
 
 // just use camcapture gdiplus helper file for now
-#include <CamCapture/cam_gdiplus.h>
+#include <screen_capture/cam_gdiplus.h>
 
 #include <afxcontrolbars.h> // MFC support for ribbons and control bars
 #include <afxdialogex.h>

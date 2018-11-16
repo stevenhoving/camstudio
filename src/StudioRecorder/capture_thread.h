@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include <CamCapture/cam_capture.h>
-#include <CamCapture/cam_rect.h>
+#include <screen_capture/cam_capture.h>
+#include <screen_capture/cam_rect.h>
 
 #include "video_settings_ui.h"
 #include "settings_model.h"

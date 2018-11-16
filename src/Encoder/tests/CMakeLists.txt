@@ -26,7 +26,10 @@ add_unit_test_suite(
         test_utilities.h
     INCLUDES
         ${CMAKE_CURRENT_BINARY_DIR}
-    LIBRARIES CamEncoder CamCapture fmt
+    LIBRARIES
+        CamEncoder
+        screen_capture
+        fmt
     FOLDER tests/CamEncoder
 )
 

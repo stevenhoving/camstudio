@@ -19,7 +19,7 @@
 
 #include <memory>
 
-#include <CamCapture/cam_gdiplus_fwd.h>
+#include <screen_capture/cam_gdiplus_fwd.h>
 
 class gdi_plus
 {

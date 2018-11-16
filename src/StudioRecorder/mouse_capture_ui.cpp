@@ -23,8 +23,8 @@
 
 #include <CamLib/rect.h>
 
-#include <CamCapture/cam_gdiplus.h>
-#include <CamCapture/cam_rect.h>
+#include <screen_capture/cam_gdiplus.h>
+#include <screen_capture/cam_rect.h>
 
 LRESULT WINAPI wnd_proc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam)
 {

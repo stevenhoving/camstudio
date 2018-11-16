@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-#include "CamCapture/cam_capture.h"
-#include "CamCapture/cam_point.h"
-#include "CamCapture/cam_size.h"
-#include "CamCapture/cam_draw_data.h"
-#include "CamCapture/cam_stop_watch.h"
-#include "CamCapture/cam_gdiplus.h"
-#include "CamCapture/annotations/cam_annotation_cursor.h"
-#include "CamCapture/annotations/cam_annotation_systemtime.h"
+#include "screen_capture/cam_capture.h"
+#include "screen_capture/cam_point.h"
+#include "screen_capture/cam_size.h"
+#include "screen_capture/cam_draw_data.h"
+#include "screen_capture/cam_stop_watch.h"
+#include "screen_capture/cam_gdiplus.h"
+#include "screen_capture/annotations/cam_annotation_cursor.h"
+#include "screen_capture/annotations/cam_annotation_systemtime.h"
 #include <cam_hook/cam_hook.h>
 #include <memory>
 #include <cassert>

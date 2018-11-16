@@ -18,8 +18,8 @@
 #pragma once
 
 #include "cursor_settings_preview.h"
-#include <CamCapture/cam_annotarion.h>
-#include <CamCapture/cam_mouse_button.h>
+#include <screen_capture/cam_annotarion.h>
+#include <screen_capture/cam_mouse_button.h>
 #include <vector>
 
 class settings_model;

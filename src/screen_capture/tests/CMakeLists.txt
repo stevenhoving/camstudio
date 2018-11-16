@@ -18,16 +18,16 @@ set(GTEST_CATCH_EXCEPTIONS 0)
 include(Unittests)
 
 add_unit_test_suite(
-    TARGET test_cam_capture
+    TARGET test_screen_capture
     SOURCES
-        test_cam_capture.cpp
+        test_screen_capture.cpp
     INCLUDES
         ${CMAKE_CURRENT_BINARY_DIR}
-    LIBRARIES CamCapture
-    FOLDER tests/CamCapture
+    LIBRARIES screen_capture
+    FOLDER tests/screen_capture
 )
 
-set_target_properties(test_cam_capture PROPERTIES
+set_target_properties(test_screen_capture PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$(Configuration)
 )

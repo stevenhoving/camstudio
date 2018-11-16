@@ -18,9 +18,9 @@
 #pragma once
 
 #include "utility/string_convert.h"
-#include <CamCapture/cam_color.h>
-#include <CamCapture/cam_rect.h>
-#include <CamCapture/cam_size.h>
+#include <screen_capture/cam_color.h>
+#include <screen_capture/cam_rect.h>
+#include <screen_capture/cam_size.h>
 #include <cpptoml.h>
 #include <cassert>
 

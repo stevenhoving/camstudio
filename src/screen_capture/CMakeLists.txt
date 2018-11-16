@@ -13,13 +13,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-project(CamCapture)
+project(screen_capture)
 
 set(ANNOTATIONS_SOURCE
     src/annotations/cam_annotation_cursor.cpp
     src/annotations/cam_annotation_systemtime.cpp
-    include/CamCapture/annotations/cam_annotation_cursor.h
-    include/CamCapture/annotations/cam_annotation_systemtime.h
+    include/screen_capture/annotations/cam_annotation_cursor.h
+    include/screen_capture/annotations/cam_annotation_systemtime.h
 )
 
 set(CAPTURE_SOURCE
@@ -28,18 +28,18 @@ set(CAPTURE_SOURCE
 )
 
 set(CAPTURE_INCLUDE
-    include/CamCapture/cam_annotarion.h
-    include/CamCapture/cam_capture.h
-    include/CamCapture/cam_color.h
-    include/CamCapture/cam_draw_data.h
-    include/CamCapture/cam_gdiplus.h
-    include/CamCapture/cam_gdiplus_fwd.h
-    include/CamCapture/cam_mouse_button.h
-    include/CamCapture/cam_rect.h
-    include/CamCapture/cam_point.h
-    include/CamCapture/cam_size.h
-    include/CamCapture/cam_stop_watch.h
-    include/CamCapture/cam_virtual_screen_info.h
+    include/screen_capture/cam_annotarion.h
+    include/screen_capture/cam_capture.h
+    include/screen_capture/cam_color.h
+    include/screen_capture/cam_draw_data.h
+    include/screen_capture/cam_gdiplus.h
+    include/screen_capture/cam_gdiplus_fwd.h
+    include/screen_capture/cam_mouse_button.h
+    include/screen_capture/cam_rect.h
+    include/screen_capture/cam_point.h
+    include/screen_capture/cam_size.h
+    include/screen_capture/cam_stop_watch.h
+    include/screen_capture/cam_virtual_screen_info.h
 )
 
 source_group(src FILES
@@ -51,20 +51,20 @@ source_group(src\\annotations FILES
     ${ANNOTATIONS_SOURCE}
 )
 
-add_library(CamCapture STATIC
+add_library(screen_capture STATIC
     ${CAPTURE_SOURCE}
     ${CAPTURE_INCLUDE}
     ${ANNOTATIONS_SOURCE}
 )
 
-target_include_directories(CamCapture
+target_include_directories(screen_capture
   PUBLIC
     include
   PRIVATE
-    include/CamCapture
+    include/screen_capture
 )
 
-target_compile_definitions(CamCapture
+target_compile_definitions(screen_capture
   PRIVATE
     -DNOMINMAX
     -D_UNICODE
@@ -72,14 +72,14 @@ target_compile_definitions(CamCapture
     #-DWIN32_LEAN_AND_MEAN
 )
 
-target_compile_options(CamCapture
+target_compile_options(screen_capture
   PRIVATE
     /experimental:external
     /external:W0
     /external:anglebrackets
 )
 
-target_link_libraries(CamCapture
+target_link_libraries(screen_capture
   PUBLIC
     fmt
     cam_hook

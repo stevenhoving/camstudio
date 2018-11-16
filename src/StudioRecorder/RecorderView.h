@@ -1,8 +1,7 @@
 #pragma once
 
 #include "settings/video_settings.h"
-#include <CamCapture/cam_virtual_screen_info.h>
-
+#include <screen_capture/cam_virtual_screen_info.h>
 #include <filesystem>
 #include <memory>
 #include <string>

@@ -19,8 +19,8 @@
 #include "capture_thread.h"
 #include "logging/logging.h"
 #include <CamEncoder/av_encoder.h>
-#include <CamCapture/cam_stop_watch.h>
-#include <CamCapture/annotations/cam_annotation_cursor.h>
+#include <screen_capture/cam_stop_watch.h>
+#include <screen_capture/annotations/cam_annotation_cursor.h>
 #include <algorithm>
 
 static auto logger = logging::get_logger("capture thread");
