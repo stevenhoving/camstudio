@@ -1,6 +1,6 @@
 #pragma once
 
-#include <CamLib/TrayIcon.h>
+#include "TrayIcon.h"
 #include <iostream>
 #include <sstream>
 #include <string>

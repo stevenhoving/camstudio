@@ -13,8 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-set(GTEST_CATCH_EXCEPTIONS 0)
-
 include(Unittests)
 
 add_unit_test_suite(

@@ -106,6 +106,8 @@ set(RECORDER_SOURCE
     RecorderView.h
     stdafx.cpp
     stdafx.h
+    TrayIcon.cpp
+    TrayIcon.h
 )
 
 set(RECORDER_RESOURCE

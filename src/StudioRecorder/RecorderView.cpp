@@ -17,7 +17,6 @@
 
 #include "logging/logging.h"
 
-#include <CamLib/TrayIcon.h>
 #include <CamLib/CamError.h>
 #include <CamLib/CamFile.h>
 #include <CamEncoder/av_encoder.h>

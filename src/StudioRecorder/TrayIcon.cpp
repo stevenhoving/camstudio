@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CamLib/TrayIcon.h"
+#include "TrayIcon.h"
 
 // Tray Icon
 // NOTIFYICONDATA IconData;

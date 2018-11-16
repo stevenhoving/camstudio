@@ -18,7 +18,6 @@ project(CamLib)
 set(LIB_SOURCE
     src/CamError.cpp
     src/CamFile.cpp
-    src/TrayIcon.cpp
     src/targetver.h
     src/stdafx.h
     src/stdafx.cpp
@@ -27,7 +26,6 @@ set(LIB_SOURCE
 set(LIB_INCLUDE
     include/CamLib/CamError.h
     include/CamLib/CamFile.h
-    include/CamLib/TrayIcon.h
     include/CamLib/console.h
     include/CamLib/rect.h
 )
