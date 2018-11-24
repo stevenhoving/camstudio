@@ -83,7 +83,6 @@ target_compile_options(CamEncoder
     /experimental:external
     /external:W0
     /external:anglebrackets
-    /experimental:preprocessor
 )
 
 target_link_libraries(CamEncoder
