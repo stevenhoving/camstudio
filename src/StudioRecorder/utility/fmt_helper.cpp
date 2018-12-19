@@ -15,15 +15,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include "stdafx.h"
+#include "utility/fmt_helper.h"
 
-#include <iostream>
-#include <atltypes.h>
+#include <fmt/format.h>
 
-// fmt user defined helpers
-[[maybe_unused]]
-std::ostream &operator<<(std::ostream &os, const CRect &rect);
+std::ostream &operator<<(std::ostream &os, const CRect &rect)
+{
+    return os << fmt::format("{} {} {} {}", rect.left, rect.top, rect.right, rect.bottom);
+}
 
-
-[[maybe_unused]]
-std::ostream &operator<<(std::ostream &os, const CPoint &point);
+std::ostream &operator<<(std::ostream &os, const CPoint &point)
+{
+    return os << fmt::format("{} {}", point.x, point.y);
+}

@@ -15,15 +15,23 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include "stdafx.h"
+#include "utility/rect_util.h"
 
-#include <iostream>
-#include <atltypes.h>
+#include <screen_capture/cam_rect.h>
 
-// fmt user defined helpers
-[[maybe_unused]]
-std::ostream &operator<<(std::ostream &os, const CRect &rect);
+namespace utility
+{
 
+auto from_rect(const CRect &rect) -> cam::rect<int>
+{
+    return { rect.left, rect.top, rect.right, rect.bottom };
+}
 
-[[maybe_unused]]
-std::ostream &operator<<(std::ostream &os, const CPoint &point);
+auto from_rect(const cam::rect<int> &rect) -> CRect
+{
+    return { rect.left(), rect.top(), rect.right(), rect.bottom() };
+}
+
+} // namespace utility
+

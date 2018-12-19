@@ -65,10 +65,12 @@ set(RECORDER_UTILITY_SOURCE
     utility/filesystem.cpp
     utility/make_array.h
     utility/rect_util.h
+    utility/rect_util.cpp
     utility/string_convert.h
     utility/string_convert.cpp
     utility/window_util.h
     utility/window_util.cpp
+    utility/fmt_helper.cpp
     utility/fmt_helper.h
 )
 
@@ -173,7 +175,6 @@ target_compile_options(CamStudioRecorder
     /external:W0
     /external:anglebrackets
     /W4
-    /wd4505 # warning C4505: unreferenced local function has been removed
 )
 
 set_target_properties(CamStudioRecorder PROPERTIES
