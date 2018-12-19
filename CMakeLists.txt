@@ -41,6 +41,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
 add_compile_options(/permissive-) # vs conformance mode.
 add_compile_options(/Zc:rvalueCast)
 add_compile_options(/Zc:ternary)
+add_compile_options(/Zc:referenceBinding)
 
 ###############################################################################
 
