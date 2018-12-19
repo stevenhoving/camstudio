@@ -19,6 +19,12 @@
 
 #include "video_settings_model.h"
 
+enum class constant_quality_normalize
+{
+    no,
+    yes
+};
+
 class video_settings_ui : public CDialogEx
 {
     DECLARE_DYNAMIC(video_settings_ui)
@@ -42,7 +48,7 @@ public:
 
 private:
     void _set_codec_quality_mode(video_quality_type mode);
-    void _set_codec_quality_constant(int q);
+    void _set_codec_quality_constant(int q, constant_quality_normalize normalize);
     void _set_codec_preset_index(int index);
 
 protected:

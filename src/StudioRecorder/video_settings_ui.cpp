@@ -20,6 +20,8 @@
 
 IMPLEMENT_DYNAMIC(video_settings_ui, CDialogEx)
 
+constexpr auto VIDEO_QUALITY_MAX = 51;
+
 video_settings_ui::video_settings_ui(CWnd* pParent /*=nullptr*/)
     : CDialogEx(IDD_VIDEO_SETTINGS_UI, pParent)
 {
@@ -79,13 +81,12 @@ BOOL video_settings_ui::OnInitDialog()
     video_codec_level_.SetCurSel(model_->video_codec_level_.get_index());
 
     /* codec quality */
-    video_codec_constant_quality_slider_.SetRange(0, 51);
+    video_codec_constant_quality_slider_.SetRange(0, VIDEO_QUALITY_MAX);
     _set_codec_quality_mode(model_->video_codec_quality_type_);
 
     const auto quality = model_->video_codec_quality_constant_;
-    video_codec_constant_quality_slider_.SetPos(quality);
-    const auto quality_str = std::to_wstring(quality);
-    video_codec_quality_value_label_.SetWindowText(quality_str.c_str());
+    _set_codec_quality_constant(quality, constant_quality_normalize::no);
+    video_codec_constant_quality_slider_.SetPos(VIDEO_QUALITY_MAX - quality);
 
     const auto bitrate = std::to_wstring(model_->video_codec_quality_bitrate_);
     codec_quality_bitrate_edit_.SetWindowText(bitrate.c_str());
@@ -120,10 +121,13 @@ void video_settings_ui::_set_codec_quality_mode(video_quality_type mode)
     model_->video_codec_quality_type_ = mode;
 }
 
-void video_settings_ui::_set_codec_quality_constant(int q)
+void video_settings_ui::_set_codec_quality_constant(int q, constant_quality_normalize normalize)
 {
-    const auto index_text = std::to_wstring(q);
-    model_->video_codec_quality_constant_ = q;
+    const auto normalized_quality = (normalize == constant_quality_normalize::yes) ?
+        VIDEO_QUALITY_MAX - q : q;
+
+    const auto index_text = std::to_wstring(normalized_quality);
+    model_->video_codec_quality_constant_ = normalized_quality;
     video_codec_quality_value_label_.SetWindowText(index_text.c_str());
 }
 
@@ -236,21 +240,33 @@ void video_settings_ui::OnBnClickedCodecQualityBitrate()
 
 void video_settings_ui::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
-    if (nSBCode == SB_THUMBPOSITION || nSBCode == SB_THUMBTRACK)
+    CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
+
+    CSliderCtrl *slider = nullptr;
+    const auto id = pScrollBar->GetDlgCtrlID();
+    switch (id)
     {
-        const auto id = pScrollBar->GetDlgCtrlID();
-        switch(id)
-        {
-        case IDC_CODEC_CONSTANT_QUALITY_SLIDER:
-            _set_codec_quality_constant(static_cast<int>(nPos));
-            break;
-        case IDC_CODEC_PRESET_SLIDER:
-            _set_codec_preset_index(static_cast<int>(nPos));
-            break;
-        }
+    case IDC_CODEC_CONSTANT_QUALITY_SLIDER:
+        slider = &video_codec_constant_quality_slider_;
+        break;
+    case IDC_CODEC_PRESET_SLIDER:
+        slider = &video_codec_preset_slider_;
+        break;
+    default:
+        return;
     }
 
-    CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
+    const auto abs_slider_position = slider->GetPos();
+
+    switch (id)
+    {
+    case IDC_CODEC_CONSTANT_QUALITY_SLIDER:
+        _set_codec_quality_constant(abs_slider_position, constant_quality_normalize::yes);
+        break;
+    case IDC_CODEC_PRESET_SLIDER:
+        _set_codec_preset_index(abs_slider_position);
+        break;
+    }
 }
 
 void video_settings_ui::OnEnChangeCodecQualityBitrateEdit()
