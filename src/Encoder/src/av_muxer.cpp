@@ -266,6 +266,8 @@ void av_muxer::open_audio(AVFormatContext *format_context, AVCodec *codec, av_tr
 
 int av_muxer::write_audio_frame(av_track *track, AVFrame *frame)
 {
+    assert(false && !"muxing audio frames is not implemented yet");
+
     AVCodecContext *c = nullptr;
     AVPacket pkt = {}; // data and size must be 0;
 
@@ -289,8 +291,8 @@ int av_muxer::write_audio_frame(av_track *track, AVFrame *frame)
          * make sure we do not overwrite it here
          */
         // ret = av_frame_make_writable(track->frame);
-        if (ret < 0)
-            exit(1);
+        //if (ret < 0)
+            //exit(1);
 
         /* convert to destination format */
         // ret = swr_convert(track->swr_ctx,
