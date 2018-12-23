@@ -25,7 +25,7 @@
 
 static auto logger = logging::get_logger("capture thread");
 
-av_muxer_type cam_create_container(video_container container)
+av_muxer_type cam_create_container(const video_container &container)
 {
     switch (container.get_index())
     {
@@ -36,7 +36,7 @@ av_muxer_type cam_create_container(video_container container)
     return {};
 }
 
-video::codec cam_create_codec(video_codec codec)
+video::codec cam_create_codec(const video_codec &codec)
 {
     switch (codec.get_index())
     {
@@ -46,7 +46,7 @@ video::codec cam_create_codec(video_codec codec)
     return {};
 }
 
-std::optional<video::preset> cam_create_codec_preset(video_codec_preset preset)
+std::optional<video::preset> cam_create_codec_preset(const video_codec_preset &preset)
 {
     switch(preset.get_index())
     {
@@ -63,7 +63,7 @@ std::optional<video::preset> cam_create_codec_preset(video_codec_preset preset)
     return {};
 }
 
-std::optional<video::tune> cam_create_codec_tune(video_codec_tune tune)
+std::optional<video::tune> cam_create_codec_tune(const video_codec_tune &tune)
 {
     switch(tune.get_index())
     {
@@ -78,7 +78,7 @@ std::optional<video::tune> cam_create_codec_tune(video_codec_tune tune)
     return {};
 }
 
-std::optional<video::profile> cam_create_codec_profile(video_codec_profile profile)
+std::optional<video::profile> cam_create_codec_profile(const video_codec_profile &profile)
 {
     switch(profile.get_index())
     {
@@ -93,7 +93,7 @@ std::optional<video::profile> cam_create_codec_profile(video_codec_profile profi
     return {};
 }
 
-av_video_meta cam_create_video_config(const int width, const int height, const int fps, video_settings_model &settings)
+av_video_meta cam_create_video_config(const int width, const int height, const int fps, const video_settings_model &settings)
 {
     av_video_meta meta;
 
@@ -153,7 +153,7 @@ void capture_thread::start(capture_settings settings)
 
     run_ = true;
     capture_state_ = capture_state::capturing;
-    capture_settings_ = settings;
+    capture_settings_ = std::move(settings);
     capture_thread_ = std::thread([this](){run();});
 
     logger->debug("capturing started, {}", settings.filename);

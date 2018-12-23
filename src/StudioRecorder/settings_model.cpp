@@ -266,7 +266,7 @@ auto settings_model::get_cursor_ring_click_middle_color() const -> cam::color
 
 void settings_model::set_shortcut(shortcut_action::type shortcut_type, std::wstring shortcut)
 {
-    shortcut_settings_.at(shortcut_type).shortcut = shortcut;
+    shortcut_settings_.at(shortcut_type).shortcut = std::move(shortcut);
 }
 
 auto settings_model::get_shortcut(shortcut_action::type shortcut_type) -> std::wstring
@@ -316,7 +316,7 @@ temp_output_directory::type settings_model::get_application_temp_directory_type(
 
 void settings_model::set_application_temp_directory(std::string temp_directory)
 {
-    application_temp_directory_ = temp_directory;
+    application_temp_directory_ = std::move(temp_directory);
 }
 
 const std::string &settings_model::get_application_temp_directory() const noexcept
@@ -336,7 +336,7 @@ application_output_directory::type settings_model::get_application_output_direct
 
 void settings_model::set_application_output_directory(std::string output_directory)
 {
-    application_output_directory_ = output_directory;
+    application_output_directory_ = std::move(output_directory);
 }
 
 const std::string &settings_model::get_application_output_directory() const noexcept
@@ -443,7 +443,7 @@ void settings_model::_load_capture_settings(const cpptoml::table &root)
     capture_type_ = capture.get_optional<capture_type>(config::capture::type, capture_type::fullscreen);
     capture_fixed_ = capture.get_optional<bool>(config::capture::region_fixed, false);
     capture_mouse_drag_ = capture.get_optional<bool>(config::capture::region_mouse_drag, false);
-    capture_rect_ = capture.get_optional<cam::rect<int>>(config::capture::rect, {0, 0, 0, 0});
+    capture_rect_ = capture.get_optional<cam::rect<int>>(config::capture::rect, {});
 }
 
 void settings_model::_load_cursor_settings(const cpptoml::table &root)

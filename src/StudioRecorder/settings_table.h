@@ -86,7 +86,7 @@ public:
     }
 
     template<typename T>
-    auto get_optional(const std::string &key, const T default_value) const
+    auto get_optional(const std::string &key, const T &default_value) const
     {
         if (!table_)
             return default_value;
@@ -101,7 +101,7 @@ public:
     }
 
     template<>
-    auto get_optional<cam::color>(const std::string &key, const cam::color default_value) const
+    auto get_optional<cam::color>(const std::string &key, const cam::color &default_value) const
     {
         const auto value = table_->get_as<uint32_t>(key);
         if (!value)
@@ -112,7 +112,7 @@ public:
 
     // cookie cutter of a cookie cutter is preferred.
     template<>
-    auto get_optional<cam::rect<int>>(const std::string &key, const cam::rect<int> default_value) const
+    auto get_optional<cam::rect<int>>(const std::string &key, const cam::rect<int> &default_value) const
     {
         const auto value = table_->get_array_of<int64_t>(key);
         if (!value)
@@ -128,7 +128,7 @@ public:
     }
 
     template<>
-    auto get_optional<std::wstring>(const std::string &key, const std::wstring default_value) const
+    auto get_optional<std::wstring>(const std::string &key, const std::wstring &default_value) const
     {
         const auto value = table_->get_as<std::string>(key);
         if (!value)

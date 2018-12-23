@@ -79,7 +79,7 @@ void mouse_capture_ui::register_window_class(HINSTANCE instance)
     g_capture_window_registered = true;
 }
 
-HWND mouse_capture_ui::create_capture_window(HINSTANCE instance, HWND parent, CRect size)
+HWND mouse_capture_ui::create_capture_window(HINSTANCE instance, HWND parent, const CRect &size)
 {
     // \todo handle window creation failure.
     HWND hwnd = CreateWindowEx(WS_EX_TOPMOST, capture_class_name, NULL, WS_POPUP, size.left, size.top, size.Width(),
@@ -90,7 +90,7 @@ HWND mouse_capture_ui::create_capture_window(HINSTANCE instance, HWND parent, CR
     return hwnd;
 }
 
-void mouse_capture_ui::show(const cam::rect<int> region, const capture_type type)
+void mouse_capture_ui::show(const cam::rect<int> &region, const capture_type type)
 {
     // \todo make this load the correct icon based on the modify mode
     HICON icon = ::LoadIcon(instance_, IDC_CROSS);

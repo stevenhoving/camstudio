@@ -45,7 +45,7 @@ public:
     mouse_capture_ui(const mouse_capture_ui &) = delete;
     mouse_capture_ui &operator = (const mouse_capture_ui &) = delete;
 
-    void show(const cam::rect<int> region, const capture_type type);
+    void show(const cam::rect<int> &region, const capture_type type);
     void hide();
     void set_modify_mode(modify_mode mode);
     void set_cancel_hotkey(int hotkey);
@@ -53,7 +53,7 @@ public:
 
 private:
     void register_window_class(HINSTANCE instance);
-    HWND create_capture_window(HINSTANCE instance, HWND parent, CRect size);
+    HWND create_capture_window(HINSTANCE instance, HWND parent, const CRect &size);
 
     void on_mouse_move(HWND hWnd);
     void on_lbutton_up(HWND hWnd);

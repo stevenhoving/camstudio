@@ -20,7 +20,7 @@
 #include <atltypes.h>
 
 /* \note this function assumes that rect_boundary is always bigger than rect */
-static CRect clamp_rect(CRect rect, const CRect rect_boundary)
+static CRect clamp_rect(CRect rect, const CRect &rect_boundary)
 {
     if (rect.left < rect_boundary.left)
         rect += CPoint(rect_boundary.left - rect.left, 0);
@@ -37,7 +37,7 @@ static CRect clamp_rect(CRect rect, const CRect rect_boundary)
     return rect;
 }
 
-CRect merge_rect(const CRect a, const CRect b)
+CRect merge_rect(const CRect &a, const CRect &b)
 {
     CRect result = a;
     if (b.left < a.left)
@@ -54,14 +54,13 @@ CRect merge_rect(const CRect a, const CRect b)
     return result;
 }
 
-CRect align_rect(const CRect rect)
+CRect align_rect(CRect rect)
 {
-    CRect result = rect;
-    if (result.Width() % 2 != 0)
-        result.right++;
+    if (rect.Width() % 2 != 0)
+        rect.right++;
 
-    if (result.Height() % 2 != 0)
-        result.bottom++;
+    if (rect.Height() % 2 != 0)
+        rect.bottom++;
 
-    return result;
+    return rect;
 }

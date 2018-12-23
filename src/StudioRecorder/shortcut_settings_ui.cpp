@@ -226,7 +226,7 @@ LRESULT shortcut_settings_ui::OnUpdateShortcutTextMessage(WPARAM /*wParam*/, LPA
 
 void shortcut_settings_ui::_set_current_shortcut(std::wstring shortcut)
 {
-    current_shortcut_ = shortcut;
+    current_shortcut_ = std::move(shortcut);
     PostMessage(WM_UPDATE_SHORTCUT_TEXT_MESSAGE);
 }
 

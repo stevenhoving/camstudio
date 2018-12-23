@@ -39,7 +39,7 @@ public:
     {
     }
 
-    constexpr rect(const point<T> left_top, const size_type width_height) noexcept
+    constexpr rect(const point<T> &left_top, const size_type &width_height) noexcept
         : left_(left_top.x())
         , top_(left_top.y())
         , right_(left_top.x() + width_height.width())
