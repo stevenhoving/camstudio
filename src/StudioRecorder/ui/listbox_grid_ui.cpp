@@ -188,8 +188,6 @@ void listbox_grid::_on_get_disp_info(NMHDR *notify_message_header, LRESULT *resu
 
     auto item = &reinterpret_cast<LV_DISPINFO*>(notify_message_header)->item;
 
-    ENSURE(item != nullptr);
-
     if (item->mask & LVIF_IMAGE)
         item->iImage = on_get_image(item);
 
@@ -204,7 +202,6 @@ void listbox_grid::_on_item_changed(NMHDR *notify_message_header, LRESULT *resul
     ENSURE(notify_message_header != nullptr);
 
     auto notify_message_list_view = reinterpret_cast<NM_LISTVIEW*>(notify_message_header);
-    ENSURE(notify_message_list_view != nullptr);
 
     if (notify_message_list_view->uChanged == LVIF_STATE
         && (notify_message_list_view->uOldState & LVIS_SELECTED) != (notify_message_list_view->uNewState & LVIS_SELECTED))
