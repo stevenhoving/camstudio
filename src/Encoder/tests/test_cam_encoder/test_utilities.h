@@ -87,6 +87,9 @@ static BITMAPINFO *create_bmpinfo(int width, int height, AVPixelFormat pixel_for
     const auto frame_size = sizeof(BITMAPINFOHEADER) + image_size;
 
     BITMAPINFO *frame = (BITMAPINFO *)malloc(frame_size + 1);
+    if (frame == nullptr)
+        return nullptr;
+
     memset(frame, 0, frame_size);
     frame->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
     frame->bmiHeader.biClrUsed = 0;
