@@ -170,6 +170,15 @@ void CRecorderView::set_shortcuts()
     );
 }
 
+void CRecorderView::set_window_title(const std::string &title)
+{
+    auto pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
+    if (pFrame != nullptr)
+    {
+        pFrame->SetTitle(reinterpret_cast<LPCTSTR>(title.c_str()));
+    }
+}
+
 #ifdef _DEBUG
 void CRecorderView::AssertValid() const
 {
@@ -437,8 +446,7 @@ void CRecorderView::_interrupt_recording(const record_interrupt_reason reason)
 
     if (capture_thread_->get_capture_state() == capture_state::paused)
     {
-        auto pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
-        pFrame->SetTitle(_T("CamStudio"));
+        set_window_title("CamStudio");
     }
 
     if (reason == record_interrupt_reason::stopped)
@@ -661,8 +669,7 @@ void CRecorderView::OnRecord()
         mouse_capture_hook_->unpause();
 
         // Set Title Bar
-        auto pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
-        pFrame->SetTitle(_T("CamStudio"));
+        set_window_title("CamStudio");
 
         return;
     }
@@ -725,8 +732,7 @@ void CRecorderView::OnStop()
     if (capture_thread_->get_capture_state() == capture_state::paused)
     {
         // Set Title Bar
-        CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
-        pFrame->SetTitle(_T("CamStudio"));
+        set_window_title("CamStudio");
     }
 
     _interrupt_recording(record_interrupt_reason::stopped);
@@ -740,8 +746,7 @@ void CRecorderView::OnCancel()
     if (capture_thread_->get_capture_state() == capture_state::paused)
     {
         // Set Title Bar
-        CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
-        pFrame->SetTitle(_T("CamStudio"));
+        set_window_title("CamStudio");
     }
 
     _interrupt_recording(record_interrupt_reason::canceled);
@@ -775,8 +780,7 @@ void CRecorderView::OnPause()
     pStatus->SetPaneText(0, _T("Recording Paused"));
 
     // Set Title Bar
-    CMainFrame *pFrame = dynamic_cast<CMainFrame *>(AfxGetMainWnd());
-    pFrame->SetTitle(_T("Paused"));
+    set_window_title("CamStudio - Paused");
 }
 
 void CRecorderView::OnUpdatePause(CCmdUI *pCmdUI)

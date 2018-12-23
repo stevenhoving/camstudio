@@ -51,6 +51,8 @@ private:
 
     void set_shortcuts();
 
+    void set_window_title(const std::string &title);
+
 protected:
     void OnRecord();
     void OnStop();
