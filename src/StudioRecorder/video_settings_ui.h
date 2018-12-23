@@ -32,7 +32,7 @@ class video_settings_ui : public CDialogEx
 public:
     video_settings_ui(CWnd* pParent = nullptr);
     video_settings_ui(CWnd* pParent, video_settings_model &model);
-    virtual ~video_settings_ui();
+    virtual ~video_settings_ui() = default;
     video_settings_ui(const video_settings_ui &) = delete;
     video_settings_ui &operator = (const video_settings_ui &) = delete;
 

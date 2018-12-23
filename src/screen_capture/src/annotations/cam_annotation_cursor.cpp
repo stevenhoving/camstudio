@@ -258,7 +258,9 @@ void cam_annotation_cursor::_draw_rings(Gdiplus::Graphics &canvas, const cam::re
 
     for (const auto &dead_ring : dead_rings)
     {
-        queued_rings_.erase(std::find(queued_rings_.begin(), queued_rings_.end(), *dead_ring));
+        if (const auto itr = std::find(queued_rings_.begin(), queued_rings_.end(), *dead_ring);
+            itr != queued_rings_.end())
+            queued_rings_.erase(itr);
     }
 }
 

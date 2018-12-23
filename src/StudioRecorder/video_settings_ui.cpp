@@ -27,13 +27,9 @@ video_settings_ui::video_settings_ui(CWnd* pParent /*=nullptr*/)
 {
 }
 
-video_settings_ui::video_settings_ui(CWnd *pParent /*= nullptr*/, video_settings_model &model)
+video_settings_ui::video_settings_ui(CWnd *pParent, video_settings_model &model)
     : CDialogEx(IDD_VIDEO_SETTINGS_UI, pParent)
     , model_(&model)
-{
-}
-
-video_settings_ui::~video_settings_ui()
 {
 }
 

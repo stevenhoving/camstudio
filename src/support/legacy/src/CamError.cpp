@@ -78,7 +78,7 @@ void ErrorMsg(const TCHAR *frmt, ...)
 
     const COORD _80x50 = {80, 50};
     static BOOL startup = (AllocConsole(), SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), _80x50));
-    WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buf, (DWORD)lstrlen(buf), &written, nullptr);
+    WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buf, (DWORD)wcslen(buf), &written, nullptr);
 }
 
 int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus)

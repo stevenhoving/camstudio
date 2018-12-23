@@ -93,7 +93,8 @@ bool rect_empty(const CRect &rect)
 
 bool is_top_most(HWND hwnd)
 {
-    return GetWindowLong(hwnd, GWL_EXSTYLE) & WS_EX_TOPMOST;
+    const auto exstyle = static_cast<unsigned int>(::GetWindowLongPtr(hwnd, GWL_EXSTYLE));
+    return exstyle & WS_EX_TOPMOST;
 }
 
 HWND get_root_parent(HWND hwnd)

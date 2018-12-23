@@ -700,7 +700,8 @@ void CRecorderView::OnRecord()
         window_select_ui window_select(this,
             [hwnd](const HWND selected_window)
             {
-                const unsigned long style = ::GetWindowLong(selected_window, GWL_STYLE);
+                const auto style = static_cast<unsigned int>(::GetWindowLongPtr(selected_window,
+                    GWL_STYLE));
                 if ((style & WS_MINIMIZE) == WS_MINIMIZE)
                     ::ShowWindow(selected_window, SW_SHOWNORMAL);
                 ::BringWindowToTop(selected_window);

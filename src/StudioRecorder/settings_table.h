@@ -118,7 +118,8 @@ public:
         if (!value)
             return default_value;
 
-        assert(value->size() == 4);
+        constexpr auto rect_item_count = 4;
+        assert(value->size() == rect_item_count);
         return cam::rect<int>(
             static_cast<int>(value->at(0)),
             static_cast<int>(value->at(1)),
