@@ -137,7 +137,7 @@ BOOL CRecorderApp::FirstInstance()
         // previous instance exists
         ::OnError(_T("CRecorderApp::FirstInstance fails"));
         // todo: activate running instance
-        return !bPrevInstance;
+        return false;
     }
 
     // check older version class name
