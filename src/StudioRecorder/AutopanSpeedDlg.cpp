@@ -73,7 +73,7 @@ void CAutopanSpeedDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar
     if (SB_THUMBTRACK == nSBCode)
     { // this (temporarily) fixes reset of the counter to 0 when slider is released
         CString maxpanspeedstr;
-        maxpanspeedstr.Format(_T("%d"), nPos);
+        maxpanspeedstr.Format(_T("%u"), nPos);
         m_ctrlStaticMaxSpeed.SetWindowText(maxpanspeedstr);
     }
 
