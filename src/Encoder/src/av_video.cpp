@@ -48,7 +48,7 @@ AVRational truncate_fps(AVRational fps)
  */
 int calculate_gop_size(const av_video_meta &meta)
 {
-    double gob_size = ((meta.fps.num / meta.fps.den) + 0.5);
+    double gob_size = ((static_cast<double>(meta.fps.num) / meta.fps.den) + 0.5);
     return static_cast<int>(gob_size);
 }
 
