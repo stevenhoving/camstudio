@@ -47,7 +47,7 @@ public:
 private:
     auto generate_temp_filename() -> std::string;
     void restore_window();
-    auto generate_auto_filename() -> std::filesystem::path ;
+    auto generate_auto_filename() -> std::filesystem::path;
 
     void set_shortcuts();
 
