@@ -35,7 +35,7 @@ void dwm_thumbnail::unlink()
     thumbnail_ = nullptr;
 }
 
-void dwm_thumbnail::set_size(cam::rect<int> dst_size)
+void dwm_thumbnail::set_size(const cam::rect<int> &dst_size)
 {
     DWM_THUMBNAIL_PROPERTIES dskThumbProps;
     dskThumbProps.dwFlags = DWM_TNP_RECTDESTINATION | DWM_TNP_VISIBLE | DWM_TNP_SOURCECLIENTAREAONLY;

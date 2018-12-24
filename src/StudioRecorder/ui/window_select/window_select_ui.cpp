@@ -79,7 +79,7 @@ bool is_window_candidate(HWND hwnd)
     bool result = false;
 
     CRect rect;
-    const unsigned long style = ::GetWindowLong(hwnd, GWL_STYLE);
+    const auto style = static_cast<unsigned int>(::GetWindowLongPtr(hwnd, GWL_STYLE));
     if ((::GetWindowRect(hwnd, &rect) < 1 || !utility::rect_empty(rect))
         && (style & WS_VISIBLE) ==  WS_VISIBLE
         /*&& (style & WS_MINIMIZE) != WS_MINIMIZE*/)
@@ -95,8 +95,8 @@ bool is_window_candidate(HWND hwnd)
 
         } while(hwnd_walk);
 
-        const unsigned long exstyle_prev = ::GetWindowLong(hwnd_walk_prev, GWL_EXSTYLE);
-        const unsigned long exstyle_hwnd = ::GetWindowLong(hwnd, GWL_EXSTYLE);
+        const auto exstyle_prev = static_cast<unsigned int>(::GetWindowLongPtr(hwnd_walk_prev, GWL_EXSTYLE));
+        const auto exstyle_hwnd = static_cast<unsigned int>(::GetWindowLongPtr(hwnd, GWL_EXSTYLE));
 
         unsigned int exstyle;
         if (hwnd_walk_prev != hwnd)
@@ -106,9 +106,10 @@ bool is_window_candidate(HWND hwnd)
 
         if (hwnd_walk_prev == hwnd || !hwnd_candidate || (exstyle & WS_EX_APPWINDOW) == WS_EX_APPWINDOW)
         {
-            result = !(exstyle_prev & WS_EX_TOOLWINDOW)
+            result =
+                  !(exstyle_prev & WS_EX_TOOLWINDOW)
                 || (exstyle & WS_EX_APPWINDOW)
-                || !(exstyle & WS_EX_TOOLWINDOW) && (exstyle & WS_EX_CONTROLPARENT);
+                || (!(exstyle & WS_EX_TOOLWINDOW) && (exstyle & WS_EX_CONTROLPARENT));
         }
     }
     return result;

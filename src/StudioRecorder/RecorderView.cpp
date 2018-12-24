@@ -33,7 +33,7 @@
 
 #include "settings_model.h"
 #include "mouse_capture_ui.h"
-#include "window_select_ui.h"
+#include "ui/window_select/window_select_ui.h"
 #include "shortcut_settings_ui.h"
 #include "shortcut_controller.h"
 

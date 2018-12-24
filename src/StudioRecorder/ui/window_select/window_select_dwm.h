@@ -33,7 +33,7 @@ public:
 
     void link(HWND dst, HWND src);
     void unlink();
-    void set_size(cam::rect<int> dst_size);
+    void set_size(const cam::rect<int> &dst_size);
 private:
     cam::rect<int> _get_src_size();
 

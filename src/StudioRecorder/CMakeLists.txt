@@ -46,13 +46,6 @@ set(RECORDER_NEW_SOURCE
     video_settings_ui.cpp
     video_settings_model.h
     video_settings_model.cpp
-    window_select_data.h
-    window_select_ui.h
-    window_select_ui.cpp
-    window_select_dwm.h
-    window_select_dwm.cpp
-    window_thumbnail_widget.h
-    window_thumbnail_widget.cpp
     capture_thread.h
     capture_thread.cpp
     settings_model.h
@@ -86,6 +79,15 @@ set(RECORDER_UI_SOURCE
     ui/listbox_grid_ui.h
     ui/listbox_base_ui.cpp
     ui/listbox_base_ui.h
+
+set(RECORDER_UI_WINDOW_SELECT_SOURCE
+    ui/window_select/window_select_data.h
+    ui/window_select/window_select_ui.h
+    ui/window_select/window_select_ui.cpp
+    ui/window_select/window_select_dwm.h
+    ui/window_select/window_select_dwm.cpp
+    ui/window_select/window_thumbnail_widget.h
+    ui/window_select/window_thumbnail_widget.cpp
 )
 
 # legacy
@@ -126,6 +128,7 @@ add_executable(CamStudioRecorder WIN32
     ${RECORDER_SETTINGS_SOURCE}
     ${RECORDER_UTILITY_SOURCE}
     ${RECORDER_UI_SOURCE}
+    ${RECORDER_UI_WINDOW_SELECT_SOURCE}
     ${RECORDER_RESOURCE}
 )
 
@@ -143,6 +146,10 @@ source_group(src\\utility FILES
 
 source_group(src\\ui FILES
     ${RECORDER_UI_SOURCE}
+)
+
+source_group(src\\ui\\window_select FILES
+    ${RECORDER_UI_WINDOW_SELECT_SOURCE}
 )
 
 source_group(src\\legacy FILES

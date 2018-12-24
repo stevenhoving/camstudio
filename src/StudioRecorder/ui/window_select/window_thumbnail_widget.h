@@ -80,7 +80,7 @@ public:
     window_button (window_button &&) = delete;
     window_button &operator = (window_button &&) = delete;
 
-    void create(CRect rect, const unsigned int id);
+    void create(const CRect &rect, const unsigned int id);
     window_data &get_data() noexcept;
 
     void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) override;
