@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include <string_view>
+#include <string>
 #include <array>
 #include <variant>
 #include <cstdint>
@@ -32,13 +32,13 @@ public:
     class av_mapped_type
     {
     public:
-        av_mapped_type(AVDictionary **dict, const std::string_view &key) noexcept;
-        av_mapped_type& operator=(std::string_view value);
+        av_mapped_type(AVDictionary **dict, const std::string &key) noexcept;
+        av_mapped_type& operator=(std::string value);
         av_mapped_type& operator=(const int64_t value);
         operator const char *() const;
     private:
         AVDictionary **dict_;
-        std::string_view key_;
+        std::string key_;
     };
 
     struct av_dict_iterator
@@ -67,7 +67,7 @@ public:
     };
 
     using creation_value_type = std::variant<std::string, int64_t>;
-    using creation_pair_type = std::pair<std::string_view, creation_value_type>;
+    using creation_pair_type = std::pair<std::string, creation_value_type>;
 
     av_dict() noexcept;
     ~av_dict() noexcept;
@@ -92,7 +92,7 @@ public:
     void clear() noexcept;
 
     // \todo make this a bit mode std::map style...
-    AVDictionaryEntry *at(const std::string_view &key, const AVDictionaryEntry *prev = nullptr,
+    AVDictionaryEntry *at(const std::string &key, const AVDictionaryEntry *prev = nullptr,
         int flags = 0);
 
     auto begin()
@@ -119,7 +119,7 @@ public:
         return av_dict_iterator(dict_);
     }
 
-    av_mapped_type operator[](const std::string_view &key) noexcept;
+    av_mapped_type operator[](const std::string &key) noexcept;
 
     operator AVDictionary **() noexcept;
 

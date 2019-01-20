@@ -52,7 +52,7 @@ void av_dict::clear() noexcept
     av_dict_free(&dict_);
 }
 
-AVDictionaryEntry * av_dict::at(const std::string_view &key, const AVDictionaryEntry *prev /*= nullptr*/, int flags /*= 0*/)
+AVDictionaryEntry * av_dict::at(const std::string &key, const AVDictionaryEntry *prev /*= nullptr*/, int flags /*= 0*/)
 {
     auto key_value = av_dict_get(dict_, key.data(), prev, flags);
     if (key_value == nullptr)
@@ -60,7 +60,7 @@ AVDictionaryEntry * av_dict::at(const std::string_view &key, const AVDictionaryE
     return key_value;
 }
 
-av_dict::av_mapped_type av_dict::operator[](const std::string_view &key) noexcept
+av_dict::av_mapped_type av_dict::operator[](const std::string &key) noexcept
 {
     return av_mapped_type(&dict_, key);
 }
@@ -100,7 +100,7 @@ void av_dict::create_from_data(const creation_pair_type *items, int item_count)
     }
 }
 
-av_dict::av_mapped_type::av_mapped_type(AVDictionary **dict, const std::string_view &key) noexcept
+av_dict::av_mapped_type::av_mapped_type(AVDictionary **dict, const std::string &key) noexcept
     : dict_(dict)
     , key_(key)
 {
@@ -122,7 +122,7 @@ av_dict::av_mapped_type& av_dict::av_mapped_type::operator=(const int64_t value)
     return *this;
 }
 
-av_dict::av_mapped_type& av_dict::av_mapped_type::operator=(std::string_view value)
+av_dict::av_mapped_type& av_dict::av_mapped_type::operator=(std::string value)
 {
     if (int ret = av_dict_set(dict_, key_.data(), value.data(), 0); ret < 0)
         throw std::runtime_error("value insertion/assignment failed");
