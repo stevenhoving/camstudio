@@ -33,15 +33,7 @@ std::wstring get_window_text(const CWnd &window)
     return window_text;
 }
 
-auto get_window_title(HWND hwnd) -> std::wstring
-{
-    std::wstring title;
-    const auto title_length = static_cast<std::size_t>(GetWindowTextLength(hwnd));
-    title.resize(title_length + 1);
-    GetWindowText(hwnd, &title[0], (int)title.size());
-    title.resize(title_length);
-    return title;
-}
+
 
 void label_auto_size(CStatic *label)
 {
@@ -99,7 +91,7 @@ bool is_top_most(HWND hwnd)
 
 HWND get_root_parent(HWND hwnd)
 {
-    HWND result = GetParent(hwnd);
+    HWND result = ::GetParent(hwnd);
     if (result)
         result = get_root_parent(result);
     return hwnd;

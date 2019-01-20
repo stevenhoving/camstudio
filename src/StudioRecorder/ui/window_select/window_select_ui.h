@@ -18,7 +18,6 @@
 #pragma once
 
 #include "background_capture_source.h"
-#include "window_select_dwm.h"
 #include "window_thumbnail_widget.h"
 #include "window_select_data.h"
 #include <windef.h>
@@ -48,7 +47,7 @@ public:
     window_select_ui(const window_select_ui &) = delete;
     window_select_ui &operator = (const window_select_ui &) = delete;
 
-    std::vector<window_data> get_windows();
+    std::vector<window_data> get_windows() const;
 
     BOOL OnInitDialog() override;
     BOOL OnCmdMsg(UINT nID, int nCode, void *pExtra, AFX_CMDHANDLERINFO *pHandlerInfo) override;

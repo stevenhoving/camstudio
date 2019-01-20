@@ -17,32 +17,25 @@
 
 #pragma once
 
+#include <windows.h>
+#include <functional>
 #include <string>
-#include <array>
 
-class CWnd;
-class CStatic;
-class CDC;
-
-namespace utility
+namespace winapi
 {
-auto get_window_text(const CWnd &window) -> std::wstring;
+namespace display
+{
+using enum_monitor_lambda = std::function<void(const MONITORINFOEX &monitor)>;
+void enum_monitors(enum_monitor_lambda pred);
+} // namespace display
 
-// function to automatically resize a static label based on its window text.
-void label_auto_size(CStatic *label);
+namespace window
+{
+using enum_windows_lambda = std::function<void(HWND hwnd)>;
+void enum_windows(enum_windows_lambda pred);
 
-void draw_bitmap(CDC *pDC, HBITMAP hbitmap, CRect size);
+auto get_thread_process_id(HWND hWnd) -> DWORD;
+auto get_title(HWND hwnd) -> std::wstring;
 
-// returns true if point is within the bounds of rect
-auto is_in_rect(const CRect &rect, const CPoint &point) -> bool;
-
-// returns true if rect is empty
-auto rect_empty(const CRect &rect) -> bool;
-
-auto is_top_most(HWND hwnd) -> bool;
-
-auto get_root_parent(HWND hwnd) -> HWND;
-
-auto get_process_name(unsigned int process_id) -> std::tuple<std::wstring, std::wstring>;
-
-} // namespace utility
+} // namespace window
+} // namespace winapi

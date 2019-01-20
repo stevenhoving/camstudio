@@ -19,6 +19,7 @@
 #include "window_select_ui.h"
 #include "utility/window_util.h"
 #include "utility/fmt_helper.h"
+#include "utility/windows_api.h"
 
 #include <psapi.h>
 #include <vector>
@@ -37,41 +38,7 @@ IMPLEMENT_DYNAMIC(window_select_ui, CDialogEx)
 constexpr auto button_width = 250;
 constexpr auto button_height = 250;
 
-#if 0
-
-/* this used to work perfect for win xp */
-BOOL CALLBACK enum_windows_callback(HWND hwnd, LPARAM lparam)
-{
-    if (!IsAltTabWindow(hwnd))
-        return TRUE;
-
-    const auto window_set = reinterpret_cast<get_windows_info*>(lparam);
-    if ( hwnd != window_set->ignore_camstudio_wnd
-      && hwnd != window_set->ignore_progman_wnd
-      && hwnd != window_set->ignore_shell_tray_wnd
-      && IsWindowVisible(hwnd)
-      && !IsIconic(hwnd)
-      && GetWindowLong(hwnd, GWL_STYLE) & WS_VISIBLE)
-    {
-        DWORD process_id = 0;
-        GetWindowThreadProcessId(hwnd, &process_id);
-        const auto [process_name, process_filepath] = get_process_name(process_id);
-
-        // \todo don't use process names to exclude windows from the list
-        if (process_name.empty() || process_name == L"CamStudioRecorder.exe")
-            return TRUE;
-
-        const auto window_title = get_window_title(hwnd);
-
-        window_data data = {process_id, process_name, process_filepath, window_title, hwnd};
-        window_set->windows.emplace_back(data);
-    }
-
-    return TRUE;
-}
-#endif
-
-/* wierdness that seems to work... okey ish for win 7 - 10 (I hope) */
+/* weirdness that seems to work... okey ish for win 7 - 10 (I hope) */
 bool is_window_candidate(HWND hwnd)
 {
     HWND hwnd_candidate = nullptr;
@@ -115,42 +82,7 @@ bool is_window_candidate(HWND hwnd)
     return result;
 }
 
-BOOL CALLBACK enum_windows_callback(HWND hwnd, LPARAM lparam) noexcept
-{
-    const auto window_set = reinterpret_cast<get_windows_info *>(lparam);
-    if (window_set == nullptr)
-        return TRUE;
-
-    DWORD window_thread_process_id;
-    ::GetWindowThreadProcessId(hwnd, &window_thread_process_id);
-    if (window_thread_process_id != window_set->ignore_current_process_id
-        && is_window_candidate(hwnd))
-    {
-        DWORD process_id = 0;
-        ::GetWindowThreadProcessId(hwnd, &process_id);
-
-        try
-        {
-            const auto [process_name, process_filepath] = utility::get_process_name(process_id);
-
-            if (process_name.empty())
-                return TRUE;
-
-            const auto window_title = utility::get_window_title(hwnd);
-
-            window_data data = { process_id, process_name, process_filepath, window_title, hwnd };
-            window_set->windows.emplace_back(data);
-        }
-        catch(const std::exception & /*ex*/)
-        {
-            return FALSE;
-        }
-    }
-
-    return TRUE;
-}
-
-std::vector<window_data> window_select_ui::get_windows()
+std::vector<window_data> window_select_ui::get_windows() const
 {
     get_windows_info result;
 
@@ -159,7 +91,24 @@ std::vector<window_data> window_select_ui::get_windows()
     result.ignore_progman_wnd = ::FindWindow(L"Progman", 0); // DWM Thumbnail desktop
     result.ignore_current_process_id = ::GetCurrentProcessId();
 
-    EnumWindows(enum_windows_callback, reinterpret_cast<LPARAM>(&result));
+    winapi::window::enum_windows(
+        [&result](HWND hwnd)
+        {
+            const auto process_id = winapi::window::get_thread_process_id(hwnd);
+            if (process_id != result.ignore_current_process_id && is_window_candidate(hwnd))
+            {
+                const auto[process_name, process_filepath] = utility::get_process_name(process_id);
+
+                if (process_name.empty())
+                    return;
+
+                const auto window_title = winapi::window::get_title(hwnd);
+
+                window_data data = { process_id, process_name, process_filepath, window_title, hwnd };
+                result.windows.emplace_back(data);
+            }
+        }
+    );
     return result.windows;
 }
 

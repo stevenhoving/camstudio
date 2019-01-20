@@ -65,6 +65,8 @@ set(RECORDER_UTILITY_SOURCE
     utility/window_util.cpp
     utility/fmt_helper.cpp
     utility/fmt_helper.h
+    utility/windows_api.cpp
+    utility/windows_api.h
 )
 
 set(RECORDER_SETTINGS_SOURCE
