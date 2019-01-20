@@ -20,23 +20,28 @@
 #include <windef.h>
 #include <dwmapi.h>
 
+namespace dwm
+{
+
 /*
  * \note only for win 7 it is possible to disable DWM. This means that we have to check for OS
  * version and supply a alternative method.
  * From win 8 it is no longer possible to disable DWM.
  */
-class dwm_thumbnail
+class thumbnail
 {
 public:
-    dwm_thumbnail() = default;
-    ~dwm_thumbnail();
+    thumbnail() = default;
+    ~thumbnail();
 
     void link(HWND dst, HWND src);
     void unlink();
-    void set_size(const cam::rect<int> &dst_size);
+    void set_viewport(const cam::rect<int> &src_rect, const cam::rect<int> &dst_rect);
 private:
     cam::rect<int> _get_src_size();
 
 private:
     HTHUMBNAIL thumbnail_{ INVALID_HANDLE_VALUE };
 };
+
+} // namespace dwm

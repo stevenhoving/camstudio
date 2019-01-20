@@ -16,38 +16,53 @@
  */
 
 #include "stdafx.h"
-#include "window_select_dwm.h"
+#include "ui/dwm/dwm_thumbnail.h"
 #include "logging/logging.h"
+#include <fmt/printf.h>
 
-static auto logger = logging::get_logger("window_select_dwm");
+static auto logger = logging::get_logger("dwm::thumbnail");
 
-dwm_thumbnail::~dwm_thumbnail() = default;
-
-void dwm_thumbnail::link(HWND dst, HWND src)
+namespace dwm
 {
-    if (const auto ret = DwmRegisterThumbnail(dst, src, &thumbnail_); ret != S_OK)
-        logger->error("unable to register dwm thumbnail relation - {}", ret);
+
+thumbnail::~thumbnail()
+{
+    unlink();
 }
 
-void dwm_thumbnail::unlink()
+void thumbnail::link(HWND dst, HWND src)
+{
+    if (const auto ret = DwmRegisterThumbnail(dst, src, &thumbnail_); ret != S_OK)
+    {
+        logger->error("unable to register dwm thumbnail relation - {}", ret);
+        fmt::print("unable to register dwm thumbnail relation - {}\n", ret);
+    }
+}
+
+void thumbnail::unlink()
 {
     DwmUnregisterThumbnail(thumbnail_);
     thumbnail_ = nullptr;
 }
 
-void dwm_thumbnail::set_size(const cam::rect<int> &dst_size)
+void thumbnail::set_viewport(const cam::rect<int> &src_rect, const cam::rect<int> &dst_rect)
 {
     DWM_THUMBNAIL_PROPERTIES dskThumbProps;
     dskThumbProps.dwFlags = DWM_TNP_RECTDESTINATION | DWM_TNP_VISIBLE | DWM_TNP_SOURCECLIENTAREAONLY;
     dskThumbProps.fSourceClientAreaOnly = FALSE;
     dskThumbProps.fVisible = TRUE;
     dskThumbProps.opacity = 255; //(255 * 70) / 100;
-    dskThumbProps.rcDestination = {dst_size.left(), dst_size.top(), dst_size.right(), dst_size.bottom()};
+    dskThumbProps.rcSource = {src_rect.left(), src_rect.top(), src_rect.right(), src_rect.bottom()};
+    dskThumbProps.rcDestination = {dst_rect.left(), dst_rect.top(), dst_rect.right(), dst_rect.bottom()};
+
     if (const auto ret = DwmUpdateThumbnailProperties(thumbnail_, &dskThumbProps); ret < 0)
+    {
         logger->error("unable to update thumbnail properties");
+        fmt::print("unable to update thumbnail properties\n");
+    }
 }
 
-cam::rect<int> dwm_thumbnail::_get_src_size()
+cam::rect<int> thumbnail::_get_src_size()
 {
     SIZE src_size;
     if (const auto ret = DwmQueryThumbnailSourceSize(thumbnail_, &src_size); ret != S_OK)
@@ -57,3 +72,5 @@ cam::rect<int> dwm_thumbnail::_get_src_size()
     }
     return {0, 0, src_size.cx, src_size.cy};
 }
+
+} // namespace dwm

@@ -79,13 +79,17 @@ set(RECORDER_UI_SOURCE
     ui/listbox_grid_ui.h
     ui/listbox_base_ui.cpp
     ui/listbox_base_ui.h
+)
+
+set(RECORDER_UI_DWM_SOURCE
+    ui/dwm/dwm_thumbnail.h
+    ui/dwm/dwm_thumbnail.cpp
+)
 
 set(RECORDER_UI_WINDOW_SELECT_SOURCE
     ui/window_select/window_select_data.h
     ui/window_select/window_select_ui.h
     ui/window_select/window_select_ui.cpp
-    ui/window_select/window_select_dwm.h
-    ui/window_select/window_select_dwm.cpp
     ui/window_select/window_thumbnail_widget.h
     ui/window_select/window_thumbnail_widget.cpp
 )
@@ -120,7 +124,8 @@ set(RECORDER_RESOURCE
     targetver.h
 )
 
-set(CMAKE_MFC_FLAG 1)
+set(CMAKE_MFC_FLAG 1
+)
 
 add_executable(CamStudioRecorder WIN32
     ${RECORDER_NEW_SOURCE}
@@ -128,6 +133,7 @@ add_executable(CamStudioRecorder WIN32
     ${RECORDER_SETTINGS_SOURCE}
     ${RECORDER_UTILITY_SOURCE}
     ${RECORDER_UI_SOURCE}
+    ${RECORDER_UI_DWM_SOURCE}
     ${RECORDER_UI_WINDOW_SELECT_SOURCE}
     ${RECORDER_RESOURCE}
 )
@@ -146,6 +152,10 @@ source_group(src\\utility FILES
 
 source_group(src\\ui FILES
     ${RECORDER_UI_SOURCE}
+)
+
+source_group(src\\ui\\dwm FILES
+    ${RECORDER_UI_DWM_SOURCE}
 )
 
 source_group(src\\ui\\window_select FILES
@@ -185,10 +195,12 @@ target_compile_options(CamStudioRecorder
 )
 
 set_target_properties(CamStudioRecorder PROPERTIES
-    COMPILE_FLAGS /Yustdafx.h)
+    COMPILE_FLAGS /Yustdafx.h
+)
 
 set_source_files_properties(stdafx.cpp PROPERTIES
-    COMPILE_FLAGS /Ycstdafx.h)
+    COMPILE_FLAGS /Ycstdafx.h
+)
 
 target_link_libraries(CamStudioRecorder
     CamLib
