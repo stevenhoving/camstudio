@@ -18,6 +18,7 @@
 #include <gtest/gtest.h>
 #include <CamEncoder/av_dict.h>
 #include <CamEncoder/av_ffmpeg.h>
+#include <fmt/printf.h>
 
 TEST(test_dict, test_assignment)
 {
@@ -80,4 +81,18 @@ TEST(test_dict, test_copy_constructor)
     EXPECT_TRUE(dict.empty());
     const auto value = dict_copy["test"];
     ASSERT_STREQ(value, "42");
+}
+
+TEST(test_dict, test_make_av_dict)
+{
+    auto dict = make_av_dict({
+        {"test", "42"}
+    });
+
+    EXPECT_FALSE(dict.empty());
+    for (auto itr : dict)
+        fmt::print("{} {}\n", itr.key, itr.value);
+
+    const auto value = dict.at("test");
+    ASSERT_STREQ(value->value, "42");
 }

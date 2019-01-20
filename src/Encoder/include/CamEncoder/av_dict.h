@@ -17,8 +17,9 @@
 
 #pragma once
 
-
 #include <string_view>
+#include <array>
+#include <variant>
 #include <cstdint>
 
 struct AVDictionary;
@@ -40,11 +41,44 @@ public:
         std::string_view key_;
     };
 
+    struct av_dict_iterator
+    {
+        using pointer = AVDictionaryEntry *;
+        using value_type = typename std::iterator_traits<pointer>::value_type;
+        using difference_type = typename std::iterator_traits<pointer>::difference_type;
+        using reference = typename std::iterator_traits<pointer>::reference;
+
+        av_dict_iterator(AVDictionary *dict) noexcept;
+
+        bool operator== (const av_dict_iterator &other) const;
+        bool operator!= (const av_dict_iterator &other) const;
+
+        auto operator*() -> reference;
+        auto operator->() -> pointer;
+
+        // pre increment
+        auto operator++() -> av_dict_iterator&;
+
+        // post increment
+        auto operator++(int) -> av_dict_iterator;
+    private:
+        pointer it_;
+        AVDictionary *dict_;
+    };
+
+    using creation_value_type = std::variant<std::string, int64_t>;
+    using creation_pair_type = std::pair<std::string_view, creation_value_type>;
+
     av_dict() noexcept;
     ~av_dict() noexcept;
 
-    av_dict(const av_dict &dict);
+    template<int Size>
+    av_dict(std::array<creation_pair_type, Size> init)
+    {
+        create_from_data(init.data(), Size);
+    }
 
+    av_dict(const av_dict &dict);
     av_dict &operator=(const av_dict &dict);
 
     // disallow move.
@@ -61,10 +95,45 @@ public:
     AVDictionaryEntry *at(const std::string_view &key, const AVDictionaryEntry *prev = nullptr,
         int flags = 0);
 
+    auto begin()
+    {
+        auto itr = av_dict_iterator(dict_);
+        itr++;
+        return itr;
+    }
+
+    auto begin() const -> const av_dict_iterator
+    {
+        auto itr = av_dict_iterator(dict_);
+        itr++;
+        return itr;
+    }
+
+    auto end() -> av_dict_iterator
+    {
+        return av_dict_iterator(dict_);
+    }
+
+    auto end() const -> const av_dict_iterator
+    {
+        return av_dict_iterator(dict_);
+    }
+
     av_mapped_type operator[](const std::string_view &key) noexcept;
 
     operator AVDictionary **() noexcept;
 
+    AVDictionary *release() noexcept;
+
 private:
-    AVDictionary *dict_{ nullptr };
+    void create_from_data(const av_dict::creation_pair_type *items, int item_count);
+    AVDictionary *dict_{nullptr};
 };
+
+template <std::size_t N>
+auto make_av_dict(const av_dict::creation_pair_type (&init)[N])
+{
+    std::array<av_dict::creation_pair_type, N> a;
+    std::copy(init, init + N, a.begin());
+    return  av_dict(a);
+}

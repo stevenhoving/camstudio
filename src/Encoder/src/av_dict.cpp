@@ -17,6 +17,7 @@
 
 #include "CamEncoder/av_dict.h"
 #include "CamEncoder/av_ffmpeg.h"
+#include <cassert>
 
 av_dict & av_dict::operator=(const av_dict &dict)
 {
@@ -29,9 +30,7 @@ av_dict::av_dict(const av_dict &dict)
     av_dict_copy(&dict_, dict.dict_, 0);
 }
 
-av_dict::av_dict() noexcept
-{
-}
+av_dict::av_dict() noexcept = default;
 
 av_dict::~av_dict() noexcept
 {
@@ -71,6 +70,36 @@ av_dict::operator AVDictionary **() noexcept
     return &dict_;
 }
 
+AVDictionary *av_dict::release() noexcept
+{
+    auto ptr = dict_;
+    dict_ = nullptr;
+    return ptr;
+}
+
+void av_dict::create_from_data(const creation_pair_type *items, int item_count)
+{
+    for (int i = 0; i < item_count; ++i)
+    {
+        const auto element = items[i];
+        const auto value_index = element.second.index();
+        if (value_index == 0) // std::string
+        {
+            const auto key = element.first;
+            const auto value = std::get<std::string>(element.second);
+            if (const auto ret = av_dict_set(&dict_, key.data(), value.data(), 0); ret < 0)
+                throw std::runtime_error("key value insertion/assignment failed");
+        }
+        else if (value_index == 1) // int64_t
+        {
+            const auto key = element.first;
+            const auto value = std::get<int64_t>(element.second);
+            if (const auto ret = av_dict_set_int(&dict_, key.data(), value, 0); ret < 0)
+                throw std::runtime_error("key value insertion/assignment failed");
+        }
+    }
+}
+
 av_dict::av_mapped_type::av_mapped_type(AVDictionary **dict, const std::string_view &key) noexcept
     : dict_(dict)
     , key_(key)
@@ -97,5 +126,44 @@ av_dict::av_mapped_type& av_dict::av_mapped_type::operator=(std::string_view val
 {
     if (int ret = av_dict_set(dict_, key_.data(), value.data(), 0); ret < 0)
         throw std::runtime_error("value insertion/assignment failed");
+    return *this;
+}
+
+bool av_dict::av_dict_iterator::operator!=(const av_dict_iterator &other) const
+{
+    return !(*this == other);
+}
+
+bool av_dict::av_dict_iterator::operator==(const av_dict_iterator &other) const
+{
+    return it_ == other.it_;
+}
+
+av_dict::av_dict_iterator::av_dict_iterator(AVDictionary *dict) noexcept
+    : dict_(dict)
+    , it_(nullptr)
+{
+}
+
+av_dict::av_dict_iterator::reference av_dict::av_dict_iterator::operator*()
+{
+    return *it_;
+}
+
+av_dict::av_dict_iterator::pointer av_dict::av_dict_iterator::operator->()
+{
+    return it_;
+}
+
+av_dict::av_dict_iterator av_dict::av_dict_iterator::operator++(int)
+{
+    av_dict_iterator rc(*this);
+    operator++();
+    return rc;
+}
+
+av_dict::av_dict::av_dict_iterator& av_dict::av_dict_iterator::operator++()
+{
+    it_ = av_dict_get(dict_, "", it_, AV_DICT_IGNORE_SUFFIX);
     return *this;
 }
