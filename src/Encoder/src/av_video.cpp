@@ -285,7 +285,7 @@ void av_video::open(AVStream *stream, av_dict &dict)
         for (int i = 0; i < av_opts.size(); ++i)
         {
             t = av_opts.at("", t, AV_DICT_IGNORE_SUFFIX);
-            _log("av_video: unknown avcodec option: {}", t->key);
+            _log("av_video: unknown avcodec option: {}\n", t->key);
         }
     }
 
