@@ -123,6 +123,7 @@ public:
 
     operator AVDictionary **() noexcept;
 
+    [[nodiscard]]
     AVDictionary *release() noexcept;
 
 private:
