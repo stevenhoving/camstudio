@@ -93,6 +93,32 @@ std::optional<video::profile> cam_create_codec_profile(const video_codec_profile
     return {};
 }
 
+std::optional<video::codec_level> cam_create_codec_level(video_codec_level level)
+{
+    switch (level.get_index())
+    {
+    case video_codec_level::type::none: return video::codec_level::none;
+    case video_codec_level::type::level1_0: return video::codec_level::level1_0;
+    case video_codec_level::type::level1_b: return video::codec_level::level1_b;
+    case video_codec_level::type::level1_1: return video::codec_level::level1_1;
+    case video_codec_level::type::level1_2: return video::codec_level::level1_2;
+    case video_codec_level::type::level1_3: return video::codec_level::level1_3;
+    case video_codec_level::type::level2_0: return video::codec_level::level2_0;
+    case video_codec_level::type::level2_1: return video::codec_level::level2_1;
+    case video_codec_level::type::level2_2: return video::codec_level::level2_2;
+    case video_codec_level::type::level3_0: return video::codec_level::level3_0;
+    case video_codec_level::type::level3_1: return video::codec_level::level3_1;
+    case video_codec_level::type::level3_2: return video::codec_level::level3_2;
+    case video_codec_level::type::level4_0: return video::codec_level::level4_0;
+    case video_codec_level::type::level4_1: return video::codec_level::level4_1;
+    case video_codec_level::type::level4_2: return video::codec_level::level4_2;
+    case video_codec_level::type::level5_0: return video::codec_level::level5_0;
+    case video_codec_level::type::level5_1: return video::codec_level::level5_1;
+    case video_codec_level::type::level5_2: return video::codec_level::level5_2;
+    }
+    return {};
+}
+
 av_video_meta cam_create_video_config(const int width, const int height, const int fps, const video_settings_model &settings)
 {
     av_video_meta meta;
@@ -118,6 +144,7 @@ av_video_meta cam_create_video_config(const int width, const int height, const i
     meta.preset = cam_create_codec_preset(settings.video_codec_preset_);
     meta.profile = cam_create_codec_profile(settings.video_codec_profile_);
     meta.tune = cam_create_codec_tune(settings.video_codec_tune_);
+    meta.level = cam_create_codec_level(settings.video_codec_level_);
 
     return meta;
 }
