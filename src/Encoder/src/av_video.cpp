@@ -79,6 +79,16 @@ void apply_profile(av_dict &av_opts, std::optional<video::profile> profile)
     av_opts["profile"] = profile_name;
 }
 
+void apply_level(AVCodecContext *condext, std::optional<video::codec_level> level)
+{
+    if (!level)
+        return;
+
+    const auto level_idx = static_cast<int>(level.value());
+    const auto level_value = video::codec_level_values.at(level_idx);
+    condext->level = level_value;
+}
+
 void dump_context(AVCodecContext *context)
 {
     AVCodecParameters * params = avcodec_parameters_alloc();
@@ -192,6 +202,7 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
         apply_preset(av_opts_, meta.preset);
         apply_tune(av_opts_, meta.tune);
         apply_profile(av_opts_, meta.profile);
+        apply_level(context_, meta.level);
 
         switch(meta.container)
         {
