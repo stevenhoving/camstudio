@@ -257,7 +257,8 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
     context_->width = meta.width;
     context_->height = meta.height;
     context_->pix_fmt = output_pixel_format_;
-    context_->sample_aspect_ratio.num = 0;
+    context_->sample_aspect_ratio.num = 1;
+    context_->sample_aspect_ratio.den = 1;
 
     // \todo we have no grayscale settings for now
     //if (grayscale)
