@@ -133,6 +133,25 @@ AVFrame *create_video_frame(AVPixelFormat pix_fmt, int width, int height, bool c
     return video_frame;
 }
 
+void set_colorspace(AVCodecContext *context, av_video_colorspace colorspace)
+{
+    switch (colorspace)
+    {
+    case av_video_colorspace::JPEG:
+        context->color_range = AVCOL_RANGE_JPEG; // specifies the full range 0 - 255
+        context->color_trc = AVCOL_TRC_GAMMA22;
+        context->color_primaries = AVCOL_PRI_UNSPECIFIED;
+        context->colorspace = AVCOL_SPC_UNSPECIFIED;
+        break;
+    case av_video_colorspace::BT709:
+        context->color_range = AVCOL_RANGE_MPEG;
+        context->color_trc = AVCOL_TRC_BT709;
+        context->color_primaries = AVCOL_PRI_BT709;
+        context->colorspace = AVCOL_SPC_BT709;
+        break;
+    }
+}
+
 void my_av_log_callback(void *avcl, int level, const char *fmt, va_list vl)
 {
     char log_buffer[1024] = {};
@@ -259,6 +278,8 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
     context_->pix_fmt = output_pixel_format_;
     context_->sample_aspect_ratio.num = 1;
     context_->sample_aspect_ratio.den = 1;
+
+    set_colorspace(context_, av_video_colorspace::JPEG);
 
     // \todo we have no grayscale settings for now
     //if (grayscale)

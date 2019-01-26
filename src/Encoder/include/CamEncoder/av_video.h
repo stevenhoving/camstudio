@@ -33,6 +33,12 @@ enum class av_video_codec_type
     cscd, // cam codec encoder
 };
 
+enum class av_video_colorspace
+{
+    BT709,  /* limited */
+    JPEG    /* 0 - 255 */
+};
+
 class av_video : public av_icodec
 {
 public:
