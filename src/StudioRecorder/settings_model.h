@@ -28,7 +28,7 @@ enum class capture_type
 {
     fixed,
     variable,
-    fullscreen,
+    select_screen,
     window,
     allscreens
 };

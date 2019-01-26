@@ -440,7 +440,7 @@ void settings_model::_save_shotcut_settings(cpptoml::table &root)
 void settings_model::_load_capture_settings(const cpptoml::table &root)
 {
     table capture = root.get_table(config::capture::settings);
-    capture_type_ = capture.get_optional<capture_type>(config::capture::type, capture_type::fullscreen);
+    capture_type_ = capture.get_optional<capture_type>(config::capture::type, capture_type::select_screen);
     capture_fixed_ = capture.get_optional<bool>(config::capture::region_fixed, false);
     capture_mouse_drag_ = capture.get_optional<bool>(config::capture::region_mouse_drag, false);
     capture_rect_ = capture.get_optional<cam::rect<int>>(config::capture::rect, {});

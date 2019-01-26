@@ -497,13 +497,13 @@ void CRecorderView::OnUpdateRegionPanregion(CCmdUI *pCmdUI)
 
 void CRecorderView::OnRegionSelectScreen()
 {
-    settings_model_->set_capture_mode(capture_type::fullscreen);
+    settings_model_->set_capture_mode(capture_type::select_screen);
 }
 
 void CRecorderView::OnUpdateRegionSelectScreen(CCmdUI *pCmdUI)
 {
     const auto capture_mode = settings_model_->get_capture_mode();
-    pCmdUI->SetCheck(capture_mode == capture_type::fullscreen);
+    pCmdUI->SetCheck(capture_mode == capture_type::select_screen);
 }
 
 void CRecorderView::OnRegionFullscreen()
@@ -713,7 +713,7 @@ void CRecorderView::OnRecord()
         window_select.DoModal();
 
     } break;
-    case capture_type::fullscreen:
+    case capture_type::select_screen:
         /* \todo rewrite this as the monitor selection function */
 
         auto message_window = std::make_unique<CBasicMessageDlg>();
