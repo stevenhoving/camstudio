@@ -80,7 +80,9 @@ void test_muxer(const int width, const int height, const int fps, av_muxer_type 
         break;
     }
 
-    av_muxer muxer(filename.c_str(), muxer_type);
+    av_metadata metadata{"test"};
+
+    av_muxer muxer(filename.c_str(), muxer_type, metadata);
     muxer.add_stream(create_video_codec(config, pixel_format));
     muxer.open();
 

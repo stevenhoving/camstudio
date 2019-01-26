@@ -21,6 +21,7 @@
 #include "av_log.h"
 
 #include <fmt/format.h>
+#include <fmt/time.h>
 
 void av_log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
 {
@@ -33,8 +34,9 @@ void av_log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
                pkt->stream_index);
 }
 
-av_muxer::av_muxer(const char *filename, const av_muxer_type muxer_type)
-    : filename_(filename)
+av_muxer::av_muxer(std::string filename, const av_muxer_type muxer_type, av_metadata metadata)
+    : filename_(std::move(filename))
+    , metadata_(std::move(metadata))
 {
     const auto muxer_type_name = av_muxer_type_names.at(static_cast<int>(muxer_type));
 
@@ -77,14 +79,14 @@ av_muxer::~av_muxer()
      * close the CodecContexts open when you wrote the header; otherwise
      * av_write_trailer() may try to use memory that was freed on
      * av_codec_close(). */
-    av_write_trailer(format_context_);
-
-    /* Close each codec. */
-    video_codec_.reset();
+    int ret = av_write_trailer(format_context_);
+    assert(ret == 0);
 
     //if (have_audio)
     //    close_stream(format_context_, &audio_track);
 
+    /* Close each codec. */
+    video_codec_.reset();
     if (!(output_format_->flags & AVFMT_NOFILE))
         /* Close the output file. */
         avio_closep(&format_context_->pb);
@@ -122,6 +124,14 @@ void av_muxer::open()
                 av_error_to_string(ret)));
     }
 
+    std::time_t t = std::time(nullptr);
+    auto metadata = make_av_dict({
+        {"encoding_tool", metadata_.encoding_tool},
+        {"creation_time", fmt::format("{:%Y-%m-%dT%H:%M:%S}Z", *std::localtime(&t))}
+    });
+
+    format_context_->metadata = metadata.release();
+
     /* Write the stream header, if any. */
     if (int ret = avformat_write_header(format_context_, avargs); ret < 0)
         throw std::runtime_error(fmt::format("Error occurred when opening output file: {}",
@@ -140,6 +150,8 @@ void av_muxer::encode_frame(timestamp_t timestamp, unsigned char *data, int widt
     AVPacket pkt = {};
     av_init_packet(&pkt);
 
+    const auto time_base = video_codec_->get_time_base();
+
     for(bool valid_packet = true; valid_packet;)
     {
         if (!video_codec_->pull_encoded_packet(&pkt, &valid_packet))
@@ -148,7 +160,6 @@ void av_muxer::encode_frame(timestamp_t timestamp, unsigned char *data, int widt
         if (!valid_packet)
             break;
 
-        const auto time_base = video_codec_->get_time_base();
         write_frame(time_base, video_track.stream, &pkt);
         av_packet_unref(&pkt);
     }
@@ -157,9 +168,10 @@ void av_muxer::encode_frame(timestamp_t timestamp, unsigned char *data, int widt
 void av_muxer::add_stream(std::unique_ptr<av_video> video_codec)
 {
     video_codec_ = std::move(video_codec);
-    auto codec_context = video_codec_->get_codec_context();
+    const auto codec_context = video_codec_->get_codec_context();
 
-    av_track track;
+    av_track track = {};
+    track.type = av_track_type::video;
     track.stream = avformat_new_stream(format_context_, codec_context->codec);
     if (!track.stream)
         throw std::runtime_error("Could not allocate stream");
@@ -339,7 +351,11 @@ int av_muxer::write_frame(const AVRational &time_base, AVStream *stream, AVPacke
     av_packet_rescale_ts(pkt, time_base, stream->time_base);
     pkt->stream_index = stream->index;
 
-    /* Write the compressed frame to the media file. */
+    /* Log packet info */
     //av_log_packet(format_context_, pkt);
-    return av_interleaved_write_frame(format_context_, pkt);
+
+    /* Write the compressed frame to the media file. */
+    const auto ret = av_interleaved_write_frame(format_context_, pkt);
+    assert(ret == 0);
+    return ret;
 }

@@ -17,15 +17,17 @@
 
 #include "stdafx.h"
 #include "capture_thread.h"
+#include "buildinfo.h"
 #include "logging/logging.h"
 #include <CamEncoder/av_encoder.h>
 #include <screen_capture/cam_stop_watch.h>
 #include <screen_capture/annotations/cam_annotation_cursor.h>
 #include <algorithm>
+#include <fmt/format.h>
 
 static auto logger = logging::get_logger("capture thread");
 
-av_muxer_type cam_create_container(const video_container &container)
+av_muxer_type cam_get_file_container(const video_container &container)
 {
     switch (container.get_index())
     {
@@ -316,8 +318,13 @@ void capture_thread::run()
         30,
         capture_settings_.video_settings);
 
-    auto video_encoder = std::make_unique<av_muxer>(capture_settings_.filename.c_str(),
-        cam_create_container(capture_settings_.video_settings.video_container_));
+    const av_metadata metadata = {fmt::format("CamStudio {}", buildinfo::full_version)};
+
+    auto video_encoder = std::make_unique<av_muxer>(
+        capture_settings_.filename,
+        cam_get_file_container(capture_settings_.video_settings.video_container_),
+        metadata);
+
     video_encoder->add_stream(cam_create_video_codec(config));
     video_encoder->open();
 

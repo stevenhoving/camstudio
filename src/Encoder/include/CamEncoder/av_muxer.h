@@ -56,10 +56,15 @@ struct av_track
     int sample_count;
 };
 
+struct av_metadata
+{
+    std::string encoding_tool;
+};
+
 class av_muxer
 {
 public:
-    av_muxer(const char *filename, const av_muxer_type muxer_type);
+    av_muxer(std::string filename, const av_muxer_type muxer_type, av_metadata metadata);
     ~av_muxer();
 
     // open the muxer so its ready to encode stuff.
@@ -96,7 +101,8 @@ private:
     //std::unique_ptr<av_audio> audio_codec_;
     av_track video_track{};
     av_track audio_track{};
-    const std::string filename_{};
+    std::string filename_{};
+    av_metadata metadata_{};
     AVRational time_base_{1, 0};
 
     // Commented, because we do not handle audio yet.
