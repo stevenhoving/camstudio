@@ -87,10 +87,16 @@ av_muxer::~av_muxer()
 
     /* Close each codec. */
     video_codec_.reset();
+
     if (!(output_format_->flags & AVFMT_NOFILE))
         /* Close the output file. */
         avio_closep(&format_context_->pb);
 
+    if (format_context_->url != nullptr)
+    {
+        free(format_context_->url);
+        format_context_->url = nullptr;
+    }
     /* free the stream */
     avformat_free_context(format_context_);
 }
@@ -119,6 +125,7 @@ void av_muxer::open()
     /* open the output file, if needed */
     if (!(output_format_->flags & AVFMT_NOFILE))
     {
+        format_context_->url = ::_strdup(filename_.c_str());
         if (int ret = avio_open(&format_context_->pb, filename_.c_str(), AVIO_FLAG_WRITE); ret < 0)
             throw std::runtime_error(fmt::format("Could not open '{}': {}", filename_,
                 av_error_to_string(ret)));

@@ -188,7 +188,7 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
         }
     }
 
-    // this allows for variable framerate with ms timestamps.
+    // always force variable framerate with ms timestamps.
     context_->time_base = { 1, 1000 };
 
     if (codec_type_ != av_video_codec_type::cscd)
