@@ -107,6 +107,70 @@ namespace video
         "high444"
     };
 
+    enum class codec_level
+    {
+        none,
+        level1_0,
+        level1_b,
+        level1_1,
+        level1_2,
+        level1_3,
+        level2_0,
+        level2_1,
+        level2_2,
+        level3_0,
+        level3_1,
+        level3_2,
+        level4_0,
+        level4_1,
+        level4_2,
+        level5_0,
+        level5_1,
+        level5_2,
+    };
+
+    constexpr std::array<std::string_view, 18> codec_level_names = {
+        "Auto",
+        "1.0",
+        "1b",
+        "1.1",
+        "1.2",
+        "1.3",
+        "2.0",
+        "2.1",
+        "2.2",
+        "3.0",
+        "3.1",
+        "3.2",
+        "4.0",
+        "4.1",
+        "4.2",
+        "5.0",
+        "5.1",
+        "5.2"
+    };
+
+    constexpr std::array<int, 18> codec_level_values =
+    {
+        -1,
+        10,
+        9,
+        11,
+        12,
+        13,
+        20,
+        21,
+        22,
+        30,
+        31,
+        32,
+        40,
+        41,
+        42,
+        50,
+        51,
+        52
+    };
 } // namespace video
 
 struct frame_rate
@@ -130,6 +194,7 @@ struct av_video_meta
     std::optional<video::preset> preset;
     std::optional<video::tune> tune;
     std::optional<video::profile> profile; // for example h264
+    std::optional<video::codec_level> level;
 };
 
 struct av_video_codec
