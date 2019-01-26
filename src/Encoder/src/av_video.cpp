@@ -209,7 +209,11 @@ av_video::av_video(const av_video_codec &config, const av_video_meta &meta)
         case video::container::mp4:
         {
             av_opts_["brand"] = "mp42";
-            av_opts_["movflags"] = "+disable_chpl";
+
+            /*
+             * disable_chpl: Disable Nero chapter markers (chpl atom)
+             */
+            av_opts_["movflags"] = "disable_chpl";
         } break;
         }
 
