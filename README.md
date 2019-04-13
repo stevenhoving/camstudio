@@ -1,5 +1,6 @@
 # CamStudio
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/29e969698868466190418f95c7f72ca4)](https://app.codacy.com/app/stevenhoving/camstudio?utm_source=github.com&utm_medium=referral&utm_content=stevenhoving/camstudio&utm_campaign=Badge_Grade_Dashboard)
 [![Build status](https://ci.appveyor.com/api/projects/status/fj6dyhgs69l6s2jg?svg=true)](https://ci.appveyor.com/project/stevenhoving/camstudio)
 
 
