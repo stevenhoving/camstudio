@@ -2,6 +2,7 @@
 // TODO: Temporpary class implementation; new one on the way....
 
 #pragma once
+#include <string>
 
 class CTrayIcon
 {
@@ -19,7 +20,7 @@ public:
     void SetIcon(HICON hIcon);
     void SetIcon(UINT nResourceID);
     void SetIcon(const TCHAR * lpszResourceName);
-    void SetToolTip(const TCHAR *lpszToolTip);
+    void SetToolTip(const std::wstring &lpszToolTip);
     //void TraySetMinimizeToTray(BOOL bMinimizeToTray = TRUE);
     BOOL SetMenu(UINT nResourceID, UINT nDefaultPos = 0);
     BOOL SetMenu(HMENU hMenu, UINT nDefaultPos = 0);

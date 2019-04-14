@@ -85,11 +85,11 @@ void CTrayIcon::SetIcon(const TCHAR *lpszResourceName)
     }
 }
 
-void CTrayIcon::SetToolTip(const TCHAR *lpszToolTip)
+void CTrayIcon::SetToolTip(const std::wstring &lpszToolTip)
 {
-    ASSERT((_tcslen(lpszToolTip) > 0) && (_tcslen(lpszToolTip) < 64));
+    ASSERT((lpszToolTip.size() > 0) && (lpszToolTip.size() < 64));
 
-    _tcscpy_s(m_nid.szTip, lpszToolTip);
+    _tcscpy_s(m_nid.szTip, lpszToolTip.c_str());
     m_nid.uFlags |= NIF_TIP;
 }
 
