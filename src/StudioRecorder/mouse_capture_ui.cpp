@@ -70,7 +70,7 @@ void mouse_capture_ui::register_window_class(HINSTANCE instance)
     wc.style = CS_HREDRAW | CS_VREDRAW;
     wc.lpfnWndProc = wnd_proc;
     wc.hInstance = instance;
-    // wc.hCursor = LoadIcon(instance, IDC_CROSS);
+    wc.hCursor = LoadCursor(nullptr, IDC_CROSS);
     wc.lpszClassName = capture_class_name;
 
     // \todo handle RegisterClass failure.
@@ -84,6 +84,7 @@ HWND mouse_capture_ui::create_capture_window(HINSTANCE instance, HWND parent, co
     // \todo handle window creation failure.
     HWND hwnd = CreateWindowEx(WS_EX_TOPMOST, capture_class_name, NULL, WS_POPUP, size.left, size.top, size.Width(),
                                size.Height(), parent, NULL, instance, NULL);
+    assert(hwnd);
 
     ::SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 
@@ -93,8 +94,9 @@ HWND mouse_capture_ui::create_capture_window(HINSTANCE instance, HWND parent, co
 void mouse_capture_ui::show(const cam::rect<int> &region, const capture_type type)
 {
     // \todo make this load the correct icon based on the modify mode
-    HICON icon = ::LoadIcon(instance_, IDC_CROSS);
-    ::SetCursor(icon);
+    const auto cursor = ::LoadCursor(nullptr, IDC_CROSS);
+    assert(cursor);
+    ::SetCursor(cursor);
 
     // \todo also set max capture rect here.
     // \todo move this to separate function.
