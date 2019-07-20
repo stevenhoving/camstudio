@@ -178,6 +178,10 @@ BOOL CFixedRegionDlg::OnInitDialog()
 
     capture_rect_ = settings_.get_capture_rect();
 
+    /* When capture rect is empty, default back to full screen */
+    if (capture_rect_.empty())
+        capture_rect_ = screen_info_.size;
+
     UpdateData(FALSE);
 
     const auto capture_fixed = settings_.get_region_fixed();

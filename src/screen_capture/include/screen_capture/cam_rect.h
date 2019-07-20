@@ -112,6 +112,11 @@ public:
         return { width(), height() };
     }
 
+    constexpr bool empty() const noexcept
+    {
+        return left_ == right_ || top_ == bottom_;
+    }
+
     T left_{ static_cast<T>(0) };
     T top_{ static_cast<T>(0) };
     T right_{ static_cast<T>(0) };
