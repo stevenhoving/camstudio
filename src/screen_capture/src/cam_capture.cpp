@@ -143,7 +143,7 @@ void cam_capture_source::_draw_annotations(const cam::rect<int> &capture_rect)
         if (mouse_event_count > 0)
         {
             mouse_events_.resize(mouse_event_count);
-            mouse_hook::get().get_mouse_events(&mouse_events_[0], mouse_event_count);
+            mouse_hook::get().get_mouse_events(std::data(mouse_events_), std::size(mouse_events_));
         }
 
         unsigned int mouse_status = 0;
