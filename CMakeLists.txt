@@ -29,9 +29,9 @@ enable_testing()
 
 find_package(InnoSetup)
 
-if(NOT DEFINED MSVC OR MSVC_VERSION LESS 1915)
-  message(FATAL_ERROR "camstudio currently only builds with visual studio 2017 15.8 for now.")
-endif()
+#if(NOT DEFINED MSVC OR MSVC_VERSION LESS 1915)
+#  message(FATAL_ERROR "camstudio currently only builds with visual studio 2017 15.8 for now.")
+#endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D_DEBUG")
