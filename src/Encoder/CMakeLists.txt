@@ -23,6 +23,7 @@ set(ENCODER_SOURCE
     src/av_error.cpp
     src/av_muxer.cpp
     src/av_video.cpp
+    src/circular_frame_buffer.cpp
     src/av_log.h
 )
 
@@ -36,6 +37,7 @@ set(ENCODER_INCLUDE
     include/CamEncoder/av_video.h
     include/CamEncoder/av_ffmpeg.h
     include/CamEncoder/av_encoder.h
+    include/CamEncoder/circular_frame_buffer.h
 )
 
 set(ENCODER_CAM_ENCODER_SOURCE
