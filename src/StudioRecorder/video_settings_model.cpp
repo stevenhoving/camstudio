@@ -39,6 +39,7 @@ void video_settings_model::save()
     auto capture = cpptoml::make_table();
     capture->insert("source", video_source_.get_index());
     capture->insert("fps", video_source_fps_);
+    capture->insert("max_capture_time", max_capture_time_);
     videosettings->insert("video-capture", capture);
 
     /* video codec */
@@ -82,6 +83,7 @@ void video_settings_model::load()
     const auto capture = videosettings->get_table("video-capture");
     video_source_.set_index(*capture->get_as<int>("source"));
     video_source_fps_ = *capture->get_as<int>("fps");
+    max_capture_time_ = *capture->get_as<int>("max_capture_time");
 
     /* video codec */
     const auto codec = videosettings->get_table("video-codec");

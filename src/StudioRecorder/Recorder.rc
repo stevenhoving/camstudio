@@ -1,5 +1,7 @@
 // Microsoft Visual C++ generated resource script.
 //
+#pragma code_page(65001)
+
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -22,7 +24,6 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -157,13 +158,6 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Accelerator
-//
-
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // Dialog
 //
 
@@ -244,43 +238,45 @@ BEGIN
     EDITTEXT        IDC_MESSAGE,15,18,239,29,ES_MULTILINE | ES_AUTOHSCROLL | ES_OEMCONVERT | ES_READONLY | NOT WS_BORDER
 END
 
-IDD_VIDEO_SETTINGS_UI DIALOGEX 0, 0, 410, 267
+IDD_VIDEO_SETTINGS_UI DIALOGEX 0, 0, 411, 306
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Video Settings"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,346,246,57,14
-    GROUPBOX        "Capture",IDC_STATIC,7,7,396,32
+    DEFPUSHBUTTON   "OK",IDOK,347,285,57,14
+    GROUPBOX        "Capture",IDC_STATIC,7,7,397,47
     COMBOBOX        IDC_VIDEO_SOURCE_COMBO,67,18,102,61,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Source:",IDC_STATIC,37,20,27,8
     LTEXT           "Framerate (FPS):",IDC_STATIC,188,20,58,8
-    EDITTEXT        IDC_FPS,249,18,65,14,ES_AUTOHSCROLL | ES_NUMBER
-    GROUPBOX        "Output Settings",IDC_STATIC,7,41,396,200
-    COMBOBOX        IDC_VIDEO_CONTAINER_COMBO,67,54,64,68,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Container:",IDC_STATIC,29,55,35,8
-    LTEXT           "Video Codec:",IDC_STATIC,20,90,44,8
-    COMBOBOX        IDC_VIDEO_CODEC_COMBO,67,89,64,59,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Video",IDC_STATIC,17,76,19,8
-    LTEXT           "Optimize Video",IDC_STATIC,17,143,50,8
-    CONTROL         "",IDC_CODEC_PRESET_SLIDER,"msctls_trackbar32",TBS_AUTOTICKS | TBS_BOTH | TBS_NOTICKS | TBS_NOTIFYBEFOREMOVE | WS_TABSTOP,67,155,85,12
-    LTEXT           "Encoder Preset:",IDC_STATIC,11,156,53,8
-    LTEXT           "Encoder Tune:",IDC_STATIC,15,171,49,8
-    LTEXT           "Encoder Profile:",IDC_STATIC,11,187,53,8
-    COMBOBOX        IDC_CODEC_TUNE_COMBO,67,169,67,91,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_CODEC_PROFILE_COMBO,67,186,67,74,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Encoder Level:",IDC_STATIC,154,187,49,8
-    COMBOBOX        IDC_CODEC_LEVEL_COMBO_,206,186,67,74,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    EDITTEXT        IDC_VIDEO_CODEC_EXTRA,67,206,332,31
-    LTEXT           "Extra Options:",IDC_STATIC,17,214,47,8
-    LTEXT           "Quality",IDC_STATIC,202,76,23,8
-    CONTROL         "Constant Quality:",IDC_CODEC_QUALITY_CONSTANT,"Button",BS_AUTORADIOBUTTON | BS_NOTIFY | WS_GROUP,205,89,72,10
-    CONTROL         "",IDC_CODEC_CONSTANT_QUALITY_SLIDER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,211,104,175,13
-    LTEXT           "| Lower Quality",IDC_CODEC_CONSTANT_QUALITY_LOW_LABEL,215,118,51,8
-    LTEXT           "Higher Quality |",IDC_CODEC_CONSTANT_QUALITY_HIGH_LABEL,330,118,52,8
-    CONTROL         "Avg Bitrate (kbps):",IDC_CODEC_QUALITY_BITRATE,"Button",BS_AUTORADIOBUTTON | BS_NOTIFY | WS_GROUP,205,135,73,10
-    EDITTEXT        IDC_CODEC_QUALITY_BITRATE_EDIT,281,134,65,14,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "Ultrafast",IDC_CODEC_PRESET_NAME,152,156,71,8
-    LTEXT           "25",IDC_CODEC_QUALITY_VALUE,281,90,9,8
+    EDITTEXT        IDC_FPS,254,18,65,14,ES_AUTOHSCROLL | ES_NUMBER
+    GROUPBOX        "Output Settings",IDC_STATIC,7,56,397,200
+    COMBOBOX        IDC_VIDEO_CONTAINER_COMBO,67,69,64,68,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Container:",IDC_STATIC,29,70,35,8
+    LTEXT           "Video Codec:",IDC_STATIC,20,105,44,8
+    COMBOBOX        IDC_VIDEO_CODEC_COMBO,67,104,64,59,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Video",IDC_STATIC,17,91,19,8
+    LTEXT           "Optimize Video",IDC_STATIC,17,158,50,8
+    CONTROL         "",IDC_CODEC_PRESET_SLIDER,"msctls_trackbar32",TBS_AUTOTICKS | TBS_BOTH | TBS_NOTICKS | TBS_NOTIFYBEFOREMOVE | WS_TABSTOP,67,170,85,12
+    LTEXT           "Encoder Preset:",IDC_STATIC,11,171,53,8
+    LTEXT           "Encoder Tune:",IDC_STATIC,15,186,49,8
+    LTEXT           "Encoder Profile:",IDC_STATIC,11,202,53,8
+    COMBOBOX        IDC_CODEC_TUNE_COMBO,67,184,67,91,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_CODEC_PROFILE_COMBO,67,201,67,74,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Encoder Level:",IDC_STATIC,154,202,49,8
+    COMBOBOX        IDC_CODEC_LEVEL_COMBO_,206,201,67,74,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_VIDEO_CODEC_EXTRA,67,221,332,31
+    LTEXT           "Extra Options:",IDC_STATIC,17,229,47,8
+    LTEXT           "Quality",IDC_STATIC,202,91,23,8
+    CONTROL         "Constant Quality:",IDC_CODEC_QUALITY_CONSTANT,"Button",BS_AUTORADIOBUTTON | BS_NOTIFY | WS_GROUP,205,104,72,10
+    CONTROL         "",IDC_CODEC_CONSTANT_QUALITY_SLIDER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,211,119,175,13
+    LTEXT           "| Lower Quality",IDC_CODEC_CONSTANT_QUALITY_LOW_LABEL,215,133,51,8
+    LTEXT           "Higher Quality |",IDC_CODEC_CONSTANT_QUALITY_HIGH_LABEL,330,133,52,8
+    CONTROL         "Avg Bitrate (kbps):",IDC_CODEC_QUALITY_BITRATE,"Button",BS_AUTORADIOBUTTON | BS_NOTIFY | WS_GROUP,205,150,73,10
+    EDITTEXT        IDC_CODEC_QUALITY_BITRATE_EDIT,281,149,65,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Ultrafast",IDC_CODEC_PRESET_NAME,152,171,71,8
+    LTEXT           "25",IDC_CODEC_QUALITY_VALUE,281,105,9,8
+    EDITTEXT        IDC_MAX_CAPTURE_TIME,254,35,65,14,ES_AUTOHSCROLL
+    LTEXT           "Recording time (s):",IDC_STATIC,188,36,62,8
 END
 
 IDD_WINDOW_SELECT DIALOGEX 0, 0, 310, 94
@@ -409,7 +405,7 @@ BEGIN
             VALUE "Comments", "CamStudio Recorder"
             VALUE "FileDescription", "CamStudio Recorder"
             VALUE "FileVersion", "3.0.0.0"
-            VALUE "LegalCopyright", "Copyright (C) 2018  Steven Hoving, Copyright © 2009 CamStudio Group & Contributors, Copyright © 2001 RenderSoft Software and Web Publishing"
+            VALUE "LegalCopyright", "Copyright (C) 2018  Steven Hoving, Copyright Â© 2009 CamStudio Group & Contributors, Copyright Â© 2001 RenderSoft Software and Web Publishing"
             VALUE "ProductName", "CamStudio Recorder"
             VALUE "ProductVersion", "3.0.0.0"
         END
@@ -470,9 +466,9 @@ BEGIN
     IDD_VIDEO_SETTINGS_UI, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 403
+        RIGHTMARGIN, 404
         TOPMARGIN, 7
-        BOTTOMMARGIN, 260
+        BOTTOMMARGIN, 299
     END
 
     IDD_WINDOW_SELECT, DIALOG
@@ -599,6 +595,8 @@ BEGIN
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,

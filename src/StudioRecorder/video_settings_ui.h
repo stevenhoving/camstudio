@@ -57,6 +57,7 @@ protected:
     DECLARE_MESSAGE_MAP()
 private:
     CEdit video_source_fps_;
+    CEdit max_capture_time_;
     CComboBox video_source_combo_;
     CComboBox video_container_combo_;
     CComboBox video_codec_combo_;
@@ -80,6 +81,7 @@ public:
     afx_msg void OnCbnSelchangeCodecProfileCombo();
     afx_msg void OnCbnSelchangeCodecLevelCombo();
     afx_msg void OnEnChangeFps();
+    afx_msg void OnEnChangeMaxCaptureTime();
     afx_msg void OnBnClickedCodecQualityConstant();
     afx_msg void OnBnClickedCodecQualityBitrate();
     afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);

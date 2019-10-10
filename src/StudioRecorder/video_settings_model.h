@@ -25,6 +25,7 @@ public:
     std::wstring get_video_container_file_extension() const;
     video_source video_source_{video_source::type::gdi};
     int video_source_fps_{30}; // this is heavily depending on the source and the OS.
+    int max_capture_time_{0}; // 0 means no maximum on capture time.
     video_container video_container_{video_container::type::mp4};
     video_codec video_codec_{video_codec::type::x264};
     video_codec_preset video_codec_preset_{video_codec_preset::type::ultrafast};

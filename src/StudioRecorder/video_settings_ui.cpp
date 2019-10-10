@@ -41,9 +41,13 @@ BOOL video_settings_ui::OnInitDialog()
     const auto fps_text = std::to_wstring(model_->video_source_fps_);
     video_source_fps_.SetWindowText(fps_text.c_str());
 
-    /* source name */
-    for (const auto video_source_name : video_source::names())
-        video_source_combo_.AddString(video_source_name);
+    /* maximum capture time*/
+    const auto capture_time_text = std::to_wstring(model_->max_capture_time_);
+    max_capture_time_.SetWindowText(capture_time_text.c_str());
+
+   /* source name */
+   for (const auto video_source_name : video_source::names())
+       video_source_combo_.AddString(video_source_name);
     video_source_combo_.SetCurSel(model_->video_source_.get_index());
 
     /* video container */
@@ -145,6 +149,7 @@ void video_settings_ui::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_CODEC_PROFILE_COMBO, video_codec_profile_);
     DDX_Control(pDX, IDC_CODEC_LEVEL_COMBO_, video_codec_level_);
     DDX_Control(pDX, IDC_FPS, video_source_fps_);
+    DDX_Control(pDX, IDC_MAX_CAPTURE_TIME, max_capture_time_);
     DDX_Control(pDX, IDC_CODEC_QUALITY_CONSTANT, codec_constant_quality_radio_);
     DDX_Control(pDX, IDC_CODEC_QUALITY_BITRATE, codec_constant_bitrate_radio_);
     DDX_Control(pDX, IDC_CODEC_CONSTANT_QUALITY_SLIDER, video_codec_constant_quality_slider_);
@@ -168,6 +173,7 @@ BEGIN_MESSAGE_MAP(video_settings_ui, CDialogEx)
     ON_WM_HSCROLL()
     ON_EN_CHANGE(IDC_CODEC_QUALITY_BITRATE_EDIT, &video_settings_ui::OnEnChangeCodecQualityBitrateEdit)
     ON_BN_CLICKED(IDOK, &video_settings_ui::OnBnClickedOk)
+ON_EN_CHANGE(IDC_MAX_CAPTURE_TIME, &video_settings_ui::OnEnChangeMaxCaptureTime)
 END_MESSAGE_MAP()
 
 
@@ -181,6 +187,21 @@ void video_settings_ui::OnEnChangeFps()
     {
         const auto fps = std::stoi(fps_text);
         model_->video_source_fps_ = fps;
+    }
+    catch (std::exception &)
+    {
+        // blindly ignore the exception on purpose
+    }
+}
+
+void video_settings_ui::OnEnChangeMaxCaptureTime()
+{
+    wchar_t max_capture_time_text[10 + 1] = {};
+    max_capture_time_.GetWindowText(max_capture_time_text, 10);
+    try
+    {
+        const auto time = std::stoi(max_capture_time_text);
+        model_->max_capture_time_ = time;
     }
     catch (std::exception &)
     {
