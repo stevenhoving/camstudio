@@ -76,6 +76,7 @@ target_compile_definitions(CamEncoder
     NOMINMAX
     _UNICODE
     UNICODE
+    -D__CRT_SECURE_NO_WARNINGS
 )
 
 target_compile_options(CamEncoder

@@ -25,6 +25,7 @@
 
 #include <atomic>
 #include <thread>
+#include <functional>
 
 struct capture_settings
 {

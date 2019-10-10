@@ -17,6 +17,7 @@
 
 #include "CamEncoder/av_error.h"
 #include "CamEncoder/av_ffmpeg.h"
+#include <stdexcept>
 
 std::string av_error_to_string(int error_number)
 {
