@@ -66,21 +66,6 @@ void OnError(const TCHAR *lpszFunction)
         dwChars ? wszMsgBuff : L"Error message not found.");
 }
 
-void ErrorMsg(const TCHAR *frmt, ...)
-{
-    DWORD written = 0;
-    TCHAR buf[5000];
-    va_list val;
-
-    va_start(val, frmt);
-    _vstprintf_s(buf, frmt, val); // Save replacement
-    va_end(val);
-
-    const COORD _80x50 = {80, 50};
-    static BOOL startup = (AllocConsole(), SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), _80x50));
-    WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), buf, (DWORD)wcslen(buf), &written, nullptr);
-}
-
 int MessageOut(HWND hWnd, long strMsg, long strTitle, UINT mbstatus)
 {
     CString tstr("");
