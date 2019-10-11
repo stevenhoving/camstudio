@@ -47,7 +47,7 @@ public:
     {
     }
 
-    constexpr auto left() const noexcept -> T
+    constexpr auto left() const noexcept
     {
         return left_;
     }
@@ -57,7 +57,7 @@ public:
         left_ = new_left;
     }
 
-    constexpr auto top() const noexcept -> T
+    constexpr auto top() const noexcept
     {
         return top_;
     }
@@ -67,7 +67,7 @@ public:
         top_ = new_top;
     }
 
-    constexpr auto right() const noexcept -> T
+    constexpr auto right() const noexcept
     {
         return right_;
     }
@@ -77,7 +77,7 @@ public:
         right_ = new_right;
     }
 
-    constexpr auto bottom() const noexcept -> T
+    constexpr auto bottom() const noexcept
     {
         return bottom_;
     }
