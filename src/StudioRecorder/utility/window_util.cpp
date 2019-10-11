@@ -55,7 +55,7 @@ void label_auto_size(CStatic *label)
     label->SetWindowPos(0, 0, 0, r.Width(), r.Height(), SWP_NOMOVE);
 }
 
-void draw_bitmap(CDC *pDC, HBITMAP hbitmap, CRect size)
+void draw_bitmap(CDC *pDC, HBITMAP hbitmap, const CRect &size)
 {
     CBitmap *pBitmap = CBitmap::FromHandle(hbitmap);
     BITMAP bm;

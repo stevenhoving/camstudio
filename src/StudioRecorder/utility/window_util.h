@@ -31,7 +31,7 @@ auto get_window_text(const CWnd &window) -> std::wstring;
 // function to automatically resize a static label based on its window text.
 void label_auto_size(CStatic *label);
 
-void draw_bitmap(CDC *pDC, HBITMAP hbitmap, CRect size);
+void draw_bitmap(CDC *pDC, HBITMAP hbitmap, const CRect &size);
 
 // returns true if point is within the bounds of rect
 auto is_in_rect(const CRect &rect, const CPoint &point) -> bool;
