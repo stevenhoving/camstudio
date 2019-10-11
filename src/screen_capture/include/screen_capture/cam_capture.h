@@ -21,6 +21,10 @@
 #include "cam_annotarion.h"
 #include "cam_virtual_screen_info.h"
 
+#include <screen_capture_desktop_duplication/dxgi_adapters.h>
+#include <screen_capture_desktop_duplication/dxgi_device.h>
+#include <screen_capture_desktop_duplication/dxgi_output_duplication.h>
+
 #include <windows.h>
 #include <memory>
 #include <vector>
@@ -50,8 +54,7 @@ public:
      * \param[in] src_capture_rect the rectangle of the capture source.
      * \todo the src_capture_rect does not belong here...
      */
-    bool capture_frame(const cam::rect<int> &capture_rect);
-    const cam_frame *get_frame();
+    bool capture_frame(unsigned int timeout, const cam::rect<int> &capture_rect, cam_frame* frame);
 
     void enable_annotations();
 
@@ -62,24 +65,32 @@ protected:
     auto _translate_from_virtual(const POINT &mouse_position) -> point<int>;
 
 private:
-    BITMAPINFO bitmap_info_;
-    HBITMAP bitmap_frame_;
-    HWND hwnd_;
-    HDC desktop_dc_;
-    HDC memory_dc_;
-    cam::rect<int> src_rect_;
+	std::unique_ptr<dxgi_system> system_adapter_;
+	std::unique_ptr<dxgi_device> device_;
+	std::unique_ptr<dxgi_output_duplication> duplication_;
+	dxgi_adapter adapter_;
+	Microsoft::WRL::ComPtr<IDXGIOutput1> output_;
+	dxgi_texture_staging* previouse_frame_{nullptr};
+
+
+    //BITMAPINFO bitmap_info_;
+    //HBITMAP bitmap_frame_;
+    //HWND hwnd_;
+    //HDC desktop_dc_;
+    //HDC memory_dc_;
+    //cam::rect<int> src_rect_;
     cam::virtual_screen_info virtual_screen_info_;
-
-    unsigned char *bitmap_data_{nullptr};
-    cam_frame frame_;
-    cam::rect<int> captured_rect_;
-
-    HGDIOBJ old_selected_bitmap_{nullptr};
-
+	//
+    //unsigned char *bitmap_data_{nullptr};
+    //cam_frame frame_;
+    //cam::rect<int> captured_rect_;
+	//
+    //HGDIOBJ old_selected_bitmap_{nullptr};
+	//
     bool enable_annotations_{false};
     std::vector<std::unique_ptr<cam_iannotation>> annotations_;
     std::unique_ptr<cam::stop_watch> stopwatch_;
-
-    // hack...
-    std::vector<MSLLHOOKSTRUCT> mouse_events_;
+	//
+    //// hack...
+    //std::vector<MSLLHOOKSTRUCT> mouse_events_;
 };

@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "windows_api.h"
+#include <cassert>
 
 namespace winapi
 {
@@ -64,7 +65,7 @@ auto get_title(HWND hwnd) -> std::wstring
 
 namespace detail
 {
-BOOL CALLBACK enum_display_monitor_callback(HMONITOR monitor, HDC hdc, LPRECT rect, LPARAM lparam)
+BOOL CALLBACK enum_display_monitor_callback(HMONITOR monitor, HDC /*hdc*/, LPRECT /*rect*/, LPARAM lparam)
 {
     const auto user_data = reinterpret_cast<display::enum_monitor_lambda*>(lparam);
     if (user_data == nullptr)

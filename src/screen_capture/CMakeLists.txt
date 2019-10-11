@@ -83,6 +83,7 @@ target_link_libraries(screen_capture
   PUBLIC
     fmt
     cam_hook
+	screen_capture_desktop_duplication
 )
 
 add_subdirectory(tests)

@@ -29,6 +29,9 @@
 
 constexpr auto CAPTURE_BPP = 32;
 
+
+
+#if 0
 cam_capture_source::cam_capture_source(HWND hwnd, const cam::rect<int> & /*view*/)
     : bitmap_info_{}
     , bitmap_frame_{nullptr}
@@ -74,45 +77,54 @@ cam_capture_source::cam_capture_source(HWND hwnd, const cam::rect<int> & /*view*
 
     stopwatch_->time_start();
 }
+#endif
 
-cam_capture_source::~cam_capture_source()
+cam_capture_source::cam_capture_source(HWND hwnd, const cam::rect<int>& /*view*/)
+	: stopwatch_(std::make_unique<cam::stop_watch>())
+	, virtual_screen_info_(cam::get_virtual_screen_info())
+	, system_adapter_(std::make_unique<dxgi_system>())
 {
-    ::DeleteDC(memory_dc_);
-    ::ReleaseDC(hwnd_, desktop_dc_);
+	// atm I don't care.. I just want this to work for now... we are missing abstractions.
+	const auto& adapters = system_adapter_->get_adapters();
+
+	// just as part of the experiment we just use the first adapter
+	adapter_ = adapters.front();
+	device_ = std::make_unique<dxgi_device>(adapter_.get_adapter());
+	const auto& outputs = adapter_.get_outputs();
+	output_ = outputs.front();
+
+	duplication_ = std::make_unique<dxgi_output_duplication>(*device_, output_);
+	duplication_->duplicate_output();
+
+	stopwatch_->time_start();
 }
 
-bool cam_capture_source::capture_frame(const cam::rect<int> &capture_rect)
+cam_capture_source::~cam_capture_source() = default;
+
+bool cam_capture_source::capture_frame(unsigned int timeout_in_ms, const cam::rect<int> &capture_rect, cam_frame* frame)
 {
-    old_selected_bitmap_ = ::SelectObject(memory_dc_, bitmap_frame_);
-    const auto ret = ::BitBlt(memory_dc_, 0, 0,
-        capture_rect.width(), capture_rect.height(),
-        desktop_dc_,
-        capture_rect.left(), capture_rect.top(),
-        SRCCOPY | CAPTUREBLT);
+	if (previouse_frame_)
+	{
+		duplication_->frame_release();
+	}
 
-    assert(ret);
-    if (!ret)
-    {
-        ::SelectObject(memory_dc_, old_selected_bitmap_);
-        return false;
-    }
+	const auto data = duplication_->frame_acquire(timeout_in_ms);
+	frame->bitmap_data = (unsigned char*)data->data(); // change bitmap data to void*
+	frame->width = data->width();
+	frame->height = data->height();
+	frame->stride = data->row_pitch();
 
-    captured_rect_ = capture_rect;
-
-    _draw_annotations(capture_rect);
-
-    ::SelectObject(memory_dc_, old_selected_bitmap_);
-
+	previouse_frame_ = data;
     return true;
 }
 
-const cam_frame *cam_capture_source::get_frame()
-{
-    frame_.width = captured_rect_.width();
-    frame_.height = captured_rect_.height();
-    frame_.stride = src_rect_.width() * (CAPTURE_BPP / 8);
-    return &frame_;
-}
+//const cam_frame *cam_capture_source::get_frame()
+//{
+//    frame_.width = captured_rect_.width();
+//    frame_.height = captured_rect_.height();
+//    frame_.stride = src_rect_.width() * (CAPTURE_BPP / 8);
+//    return &frame_;
+//}
 
 void cam_capture_source::enable_annotations()
 {
@@ -126,6 +138,8 @@ void cam_capture_source::add_annotation(std::unique_ptr<cam_iannotation> annotat
 
 void cam_capture_source::_draw_annotations(const cam::rect<int> &capture_rect)
 {
+	(void)capture_rect;
+#if 0
     if (!enable_annotations_)
         return;
     if (annotations_.empty())
@@ -171,6 +185,7 @@ void cam_capture_source::_draw_annotations(const cam::rect<int> &capture_rect)
         for (const auto &annotation : annotations_)
             annotation->draw(canvas, draw_data);
     }
+#endif
 }
 
 auto cam_capture_source::_translate_from_virtual(const POINT &mouse_position) -> point<int>

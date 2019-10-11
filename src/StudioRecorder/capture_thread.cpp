@@ -24,6 +24,7 @@
 #include <screen_capture/annotations/cam_annotation_cursor.h>
 #include <algorithm>
 #include <fmt/format.h>
+#include <fmt/printf.h>
 
 static auto logger = logging::get_logger("capture thread");
 
@@ -241,9 +242,12 @@ capture_state capture_thread::get_capture_state() const noexcept
 
 const cam_frame *capture_thread::capture_screen_frame(const cam::rect<int> &capture_dst_rect)
 {
-    if (!capture_source_->capture_frame(capture_dst_rect))
+	const auto fps = capture_settings_.video_settings.video_source_fps_;
+	const auto interval_in_ms = (1000/fps) * 10;
+
+    if (!capture_source_->capture_frame(interval_in_ms, capture_dst_rect, &captured_frame_))
         return nullptr;
-    return capture_source_->get_frame();
+    return &captured_frame_;
 }
 
 void capture_thread::run()
@@ -332,6 +336,7 @@ void capture_thread::run()
     frame_limiter.time_start();
 
     const auto max_frame_time = 1.0/capture_settings_.video_settings.video_source_fps_;
+	int i = 0;
     while (run_)
     {
         const auto timestamp_capture_start = frame_limiter.time_now();
@@ -351,13 +356,24 @@ void capture_thread::run()
 
         while (capture_state_ == capture_state::paused && run_ == true)
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+		if (!(i++ % 120)) // once every 2 seconds
+		{
+			const auto timestamp_capture_end_with_sleep = frame_limiter.time_now();
+			const auto dt = (timestamp_capture_end_with_sleep - timestamp_capture_start);
+			fmt::print("fps: {}\n", 1.0 / dt);
+		}
     }
 
     video_encoder.reset();
     logger->debug("capture_thread: completed capturing");
 
     if (capture_state_ == capture_state::stopping)
+	{
         on_recording_completed_();
-    else /* if (capture_state == capture_state::canceling) */
+	}
+	else /* if (capture_state == capture_state::canceling) */
+	{
         on_recording_canceled_();
+	}
 }

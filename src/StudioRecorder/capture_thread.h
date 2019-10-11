@@ -25,6 +25,7 @@
 
 #include <atomic>
 #include <thread>
+#include <functional>
 
 struct capture_settings
 {
@@ -77,10 +78,10 @@ protected:
 private:
     capture_settings capture_settings_;
     std::unique_ptr<cam_capture_source> capture_source_;
+	cam_frame captured_frame_;
     std::thread capture_thread_;
     std::atomic<bool> run_{false};
     std::atomic<capture_state> capture_state_{capture_state::stopped};
-
     cam::rect<int> capture_dst_rect_{0, 0, 0, 0};
 
     std::function<void()> on_recording_completed_;
