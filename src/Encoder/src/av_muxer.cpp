@@ -131,10 +131,9 @@ void av_muxer::open()
                 av_error_to_string(ret)));
     }
 
-    std::time_t t = std::time(nullptr);
     auto metadata = make_av_dict({
         {"encoding_tool", metadata_.encoding_tool},
-        {"creation_time", fmt::format("{:%Y-%m-%dT%H:%M:%S}Z", *std::localtime(&t))}
+        {"creation_time", fmt::format("{:%Y-%m-%dT%H:%M:%S}Z", fmt::localtime(time(nullptr)))}
     });
 
     format_context_->metadata = metadata.release();
