@@ -10,7 +10,6 @@
 #include "mouse_capture_ui.h"
 #include "utility/rect_util.h"
 
-#include "MainFrm.h" // only for g_maxx_screen and alike
 #include <CamLib/CamError.h>
 
 IMPLEMENT_DYNAMIC(CFixedRegionDlg, CDialog)
@@ -21,10 +20,8 @@ CFixedRegionDlg::CFixedRegionDlg(CWnd *pParent, cam::virtual_screen_info screen_
     , settings_(settings)
     , screen_info_(screen_info)
 {
-    capture_ = std::make_unique<mouse_capture_ui>(AfxGetInstanceHandle(), GetSafeHwnd(),
-        screen_info_,
-        [this](const CRect &capture_rect)
-        {
+    capture_ = std::make_unique<mouse_capture_ui>(AfxGetInstanceHandle(), GetSafeHwnd(), screen_info_,
+        [this](const CRect &capture_rect) {
             if (!m_ctrlButtonFixTopLeft.GetCheck())
             {
                 capture_rect_.left(capture_rect.left);
@@ -36,10 +33,10 @@ CFixedRegionDlg::CFixedRegionDlg(CWnd *pParent, cam::virtual_screen_info screen_
             settings_.set_capture_rect(capture_rect_);
 
             UpdateData(FALSE);
-        }
-    );
+        });
 
     capture_rect_ = settings_.get_capture_rect();
+
 }
 
 void CFixedRegionDlg::DoDataExchange(CDataExchange *pDX)
@@ -97,7 +94,8 @@ void CFixedRegionDlg::OnOK()
 
     if (maxWidth < capture_rect_.width())
     {
-        MessageOut(m_hWnd, IDS_STRING_WIDTHSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, screen_info_.size.width());
+        MessageOut(m_hWnd, IDS_STRING_WIDTHSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,
+                   screen_info_.size.width());
         return;
     }
 
@@ -109,7 +107,8 @@ void CFixedRegionDlg::OnOK()
 
     if (maxHeight < capture_rect_.height())
     {
-        MessageOut(m_hWnd, IDS_STRING_HEIGHTSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, screen_info_.size.height());
+        MessageOut(m_hWnd, IDS_STRING_HEIGHTSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,
+                   screen_info_.size.height());
         return;
     }
 
@@ -124,7 +123,8 @@ void CFixedRegionDlg::OnOK()
 
         if (capture_rect_.left_ >= screen_info_.size.right())
         {
-            MessageOut(this->m_hWnd, IDS_STRING_LEFTSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, screen_info_.size.right());
+            MessageOut(this->m_hWnd, IDS_STRING_LEFTSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,
+                       screen_info_.size.right());
             return;
         }
 
@@ -136,7 +136,8 @@ void CFixedRegionDlg::OnOK()
 
         if (capture_rect_.top_ >= screen_info_.size.bottom())
         {
-            MessageOut(m_hWnd, IDS_STRING_TOPSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, screen_info_.size.bottom());
+            MessageOut(m_hWnd, IDS_STRING_TOPSMALLER, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,
+                       screen_info_.size.bottom());
             return;
         }
 
@@ -148,7 +149,8 @@ void CFixedRegionDlg::OnOK()
                 capture_rect_.left_ = screen_info_.size.left() + 100;
                 capture_rect_.width(320);
             }
-            MessageOut(m_hWnd, IDS_STRING_VALUEEXCEEDWIDTH, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, capture_rect_.width());
+            MessageOut(m_hWnd, IDS_STRING_VALUEEXCEEDWIDTH, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,
+                       capture_rect_.width());
         }
 
         if (maxHeight < (capture_rect_.top_ + capture_rect_.height()))
@@ -161,7 +163,8 @@ void CFixedRegionDlg::OnOK()
                 capture_rect_.top_ = screen_info_.size.top() + 100;
                 capture_rect_.height(240);
             }
-            MessageOut(m_hWnd, IDS_STRING_VALUEEXCEEDHEIGHT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION, capture_rect_.height());
+            MessageOut(m_hWnd, IDS_STRING_VALUEEXCEEDHEIGHT, IDS_STRING_NOTE, MB_OK | MB_ICONEXCLAMATION,
+                       capture_rect_.height());
         }
     }
 
