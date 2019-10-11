@@ -282,8 +282,9 @@ void av_muxer::open_audio(AVFormatContext *format_context, AVCodec *codec, av_tr
     //}
 }
 
-int av_muxer::write_audio_frame(av_track *track, AVFrame *frame)
+int av_muxer::write_audio_frame(av_track * /*track*/, AVFrame * /*frame*/)
 {
+#if 0
     assert(false && !"muxing audio frames is not implemented yet");
 
     AVCodecContext *c = nullptr;
@@ -344,6 +345,8 @@ int av_muxer::write_audio_frame(av_track *track, AVFrame *frame)
     }
 
     return (frame || got_packet) ? 0 : 1;
+#endif
+    return false;
 }
 
 void av_muxer::close_stream(AVFormatContext *format_context, av_track *ost)
