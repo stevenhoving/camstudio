@@ -37,8 +37,8 @@ public:
         av_mapped_type& operator=(const int64_t value);
         operator const char *() const;
     private:
-        AVDictionary **dict_;
-        std::string key_;
+        AVDictionary **dict_{nullptr};
+        std::string key_{};
     };
 
     struct av_dict_iterator
@@ -62,8 +62,8 @@ public:
         // post increment
         auto operator++(int) -> av_dict_iterator;
     private:
-        pointer it_;
-        AVDictionary *dict_;
+        pointer it_{};
+        AVDictionary *dict_{};
     };
 
     using creation_value_type = std::variant<std::string, int64_t>;
