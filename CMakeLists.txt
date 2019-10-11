@@ -47,7 +47,7 @@ add_compile_options(/Zc:referenceBinding)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
+set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install")
 
 ###############################################################################
 
