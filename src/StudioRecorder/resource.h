@@ -99,6 +99,7 @@
 #define IDC_RIGHT_CLICK_COLOR_ALPHA     1323
 #define IDC_AUTO_FILENAME_GENERATION    1323
 #define IDC_HALO_RIGHT_CLICK_COLOR_ALPHA 1323
+#define IDC_MAX_CAPTURE_TIME            1323
 #define IDC_TEMP_DIRECTORY_COMBOBOX     1324
 #define IDC_CLICK_MIDDLE_COLOR          1324
 #define IDC_HALO_CLICK_MIDDLE_COLOR     1324
@@ -135,6 +136,8 @@
 #define IDC_CAMSTUDIO_LINK              1352
 #define IDC_GITHUB_LINK                 1353
 #define IDC_SHOW_RINGS                  1354
+#define IDC_EDIT1                       1355
+#define IDC_recording_time              1356
 #define IDD_ABOUTBOX                    5100
 #define IDD_VIDEO_SETTINGS_UI           5106
 #define ID_REGION_RUBBER                32771
@@ -336,7 +339,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        251
 #define _APS_NEXT_COMMAND_VALUE         32955
-#define _APS_NEXT_CONTROL_VALUE         1355
+#define _APS_NEXT_CONTROL_VALUE         1357
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

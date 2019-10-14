@@ -22,6 +22,7 @@
 
 #include <fmt/format.h>
 #include <fmt/time.h>
+#include <memory>
 
 void av_log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
 {
@@ -34,9 +35,11 @@ void av_log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
                pkt->stream_index);
 }
 
-av_muxer::av_muxer(std::string filename, const av_muxer_type muxer_type, av_metadata metadata)
+av_muxer::av_muxer(muxer_settings settings, std::string filename, const av_muxer_type muxer_type, av_metadata metadata)
     : filename_(std::move(filename))
     , metadata_(std::move(metadata))
+    , buffer_(settings.circular_buffer_time)
+    , settings_(settings)
 {
     const auto muxer_type_name = av_muxer_type_names.at(static_cast<int>(muxer_type));
 
@@ -148,27 +151,39 @@ void av_muxer::open()
 void av_muxer::flush()
 {
     encode_frame(0, nullptr, 0, 0, 0);
+
+    if (settings_.use_circular_buffer)
+    {
+        write_circular_frame_buffer();
+    }
 }
 
 void av_muxer::encode_frame(timestamp_t timestamp, unsigned char *data, int width, int height, int stride)
 {
     video_codec_->push_encode_frame(timestamp, data, width, height, stride);
 
-    AVPacket pkt = {};
-    av_init_packet(&pkt);
-
     const auto time_base = video_codec_->get_time_base();
 
-    for(bool valid_packet = true; valid_packet;)
+    for (bool valid_packet = true; valid_packet;)
     {
-        if (!video_codec_->pull_encoded_packet(&pkt, &valid_packet))
+        auto pkt = std::make_unique<AVPacket>();
+        av_init_packet(pkt.get());
+
+        if (!video_codec_->pull_encoded_packet(pkt.get(), &valid_packet))
             throw std::runtime_error("pull encoded packet failed");
 
         if (!valid_packet)
             break;
 
-        write_frame(time_base, video_track.stream, &pkt);
-        av_packet_unref(&pkt);
+        if (settings_.use_circular_buffer)
+        {
+            buffer_.append_packet(std::move(pkt));
+        }
+        else
+        {
+            write_frame(time_base, video_track.stream, pkt.get());
+            av_packet_unref(pkt.get());
+        }
     }
 }
 
@@ -288,13 +303,13 @@ int av_muxer::write_audio_frame(av_track *track, AVFrame *frame)
     assert(false && !"muxing audio frames is not implemented yet");
 
     AVCodecContext *c = nullptr;
-    AVPacket pkt = {}; // data and size must be 0;
+    auto pkt = std::make_unique<AVPacket>(); // data and size must be 0;
 
     int ret = 0;
     int got_packet = 0;
     int dst_nb_samples = 0;
 
-    av_init_packet(&pkt);
+    av_init_packet(pkt.get());
     c = track->codec_context;
 
     if (frame)
@@ -327,7 +342,7 @@ int av_muxer::write_audio_frame(av_track *track, AVFrame *frame)
         // track->samples_count += dst_nb_samples;
     }
 
-    ret = avcodec_encode_audio2(c, &pkt, frame, &got_packet);
+    ret = avcodec_encode_audio2(c, pkt.get(), frame, &got_packet);
     if (ret < 0)
     {
         _log("Error encoding audio frame: {}\n", av_error_to_string(ret));
@@ -336,7 +351,8 @@ int av_muxer::write_audio_frame(av_track *track, AVFrame *frame)
 
     if (got_packet)
     {
-        ret = write_frame(c->time_base, track->stream, &pkt);
+        ret = write_frame(c->time_base, track->stream, pkt.get());
+        av_packet_unref(pkt.get());
         if (ret < 0)
         {
             _log("Error while writing audio frame: {}\n", av_error_to_string(ret));
@@ -363,6 +379,29 @@ int av_muxer::write_frame(const AVRational &time_base, AVStream *stream, AVPacke
 
     /* Write the compressed frame to the media file. */
     const auto ret = av_interleaved_write_frame(format_context_, pkt);
+
     assert(ret == 0);
     return ret;
+}
+
+void av_muxer::write_circular_frame_buffer()
+{
+    const auto time_base = video_codec_->get_time_base();
+
+    // Overwrite dts and pts
+    auto &first_packet = *buffer_.begin();
+    const auto begin_dts = first_packet->dts;
+    const auto begin_pts = first_packet->pts;
+
+    for (auto &pkt : buffer_)
+    {
+        auto &packet = *pkt;
+        packet.dts = packet.dts - begin_dts;
+        packet.pts = packet.pts - begin_pts;
+    }
+
+    for (auto &pkt : buffer_)
+    {
+        write_frame(time_base, video_track.stream, pkt.get());
+    }
 }

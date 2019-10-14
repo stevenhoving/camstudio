@@ -320,7 +320,11 @@ void capture_thread::run()
 
     const av_metadata metadata = {fmt::format("CamStudio {}", buildinfo::full_version)};
 
-    auto video_encoder = std::make_unique<av_muxer>(
+    const bool limit_capture_time = (capture_settings_.video_settings.max_capture_time_ > 0);
+    const muxer_settings muxer_settings = {limit_capture_time, capture_settings_.video_settings.max_capture_time_};
+
+    auto video_encoder =
+        std::make_unique<av_muxer>(muxer_settings,
         capture_settings_.filename,
         cam_get_file_container(capture_settings_.video_settings.video_container_),
         metadata);

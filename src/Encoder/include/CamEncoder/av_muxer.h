@@ -20,6 +20,7 @@
 #include "av_config.h"
 #include "av_audio.h"
 #include "av_video.h"
+#include "circular_frame_buffer.h"
 
 #include <memory>
 #include <string>
@@ -61,10 +62,16 @@ struct av_metadata
     std::string encoding_tool;
 };
 
+struct muxer_settings
+{
+    bool use_circular_buffer{false};
+    int circular_buffer_time{0};
+};
+
 class av_muxer
 {
 public:
-    av_muxer(std::string filename, const av_muxer_type muxer_type, av_metadata metadata);
+    av_muxer(muxer_settings settings, std::string filename, const av_muxer_type muxer_type, av_metadata metadata);
     ~av_muxer();
 
     // open the muxer so its ready to encode stuff.
@@ -94,6 +101,8 @@ public:
 
 private:
     int write_frame(const AVRational &time_base, AVStream *st, AVPacket *pkt);
+    void write_circular_frame_buffer();
+
 private:
     AVFormatContext *format_context_{ nullptr };
     AVOutputFormat *output_format_{ nullptr };
@@ -104,6 +113,8 @@ private:
     std::string filename_{};
     av_metadata metadata_{};
     AVRational time_base_{1, 0};
+    circular_frame_buffer buffer_;
+    muxer_settings settings_;
 
     // Commented, because we do not handle audio yet.
     //int have_audio{0};
