@@ -109,6 +109,9 @@ bool cam_capture_source::capture_frame(unsigned int timeout_in_ms, const cam::re
 	}
 
 	const auto data = duplication_->frame_acquire(timeout_in_ms);
+	if (!data)
+		return false;
+
 	frame->bitmap_data = (unsigned char*)data->data(); // change bitmap data to void*
 	frame->width = data->width();
 	frame->height = data->height();

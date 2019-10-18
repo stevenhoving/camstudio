@@ -1,15 +1,15 @@
 #project(CamStudioDesktopDupe)
 
 set(SOURCE
-	#main.cpp
-    #main_old.cpp
-	src/dxgi_adapters.cpp
+	src/dxgi_adapter.cpp
 	src/dxgi_device.cpp
 	src/dxgi_output_duplication.cpp
+	src/dxgi_system.cpp
 	src/dxgi_texture_staging.cpp
-	include/screen_capture_desktop_duplication/dxgi_adapters.h
+	include/screen_capture_desktop_duplication/dxgi_adapter.h
     include/screen_capture_desktop_duplication/dxgi_device.h
 	include/screen_capture_desktop_duplication/dxgi_output_duplication.h
+	include/screen_capture_desktop_duplication/dxgi_system.h
     include/screen_capture_desktop_duplication/dxgi_texture_staging.h
 )
 

@@ -21,7 +21,7 @@
 #include "cam_annotarion.h"
 #include "cam_virtual_screen_info.h"
 
-#include <screen_capture_desktop_duplication/dxgi_adapters.h>
+#include <screen_capture_desktop_duplication/dxgi_system.h>
 #include <screen_capture_desktop_duplication/dxgi_device.h>
 #include <screen_capture_desktop_duplication/dxgi_output_duplication.h>
 

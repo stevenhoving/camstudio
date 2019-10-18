@@ -51,27 +51,41 @@ void dxgi_output_duplication::report_acquisition_error(HRESULT hr)
 
 dxgi_texture_staging* dxgi_output_duplication::frame_acquire(unsigned int timeout_in_ms)
 {
+	// because we rely on external scheduling we do not really have to rely on the dx one.
+	timeout_in_ms = 0;
+
 	// frame acquisition
 	DXGI_OUTDUPL_FRAME_INFO frame_info{};
-	Microsoft::WRL::ComPtr<IDXGIResource> desktop_resource;
-	if (const auto hr = duplication_->AcquireNextFrame(timeout_in_ms, &frame_info, &desktop_resource); hr != S_OK)
+	Microsoft::WRL::ComPtr<IDXGIResource> frame_resource;
+
+	const auto error = duplication_->AcquireNextFrame(timeout_in_ms, &frame_info, &frame_resource);
+	if (error != S_OK && error != DXGI_ERROR_WAIT_TIMEOUT)
 	{
-		report_acquisition_error(hr);
-		assert(false);
+		report_acquisition_error(error);
+		//assert(false);
 		return nullptr;
 	}
 
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
-	if (const auto hr = desktop_resource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&texture); hr != S_OK)
+	// check if we have a valid frame if not nothing has changed.
+	if (error == S_OK && frame_info.AccumulatedFrames > 0 && frame_resource)
 	{
-		fmt::print("Error: failed to query the ID3D11Texture2D interface on the IDXGIResource we got.\n");
-		assert(false);
-		return nullptr;
+		Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
+		if (const auto hr = frame_resource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&texture); hr != S_OK)
+		{
+			fmt::print("Error: failed to query the ID3D11Texture2D interface on the IDXGIResource we got.\n");
+			assert(false);
+			return nullptr;
+		}
+
+		texture_.copy_from_texture(frame_info, texture.Get());
+		texture_.map();
+		return &texture_;
+		
 	}
 
-	texture_.copy_from_texture(frame_info, texture.Get());
-	texture_.map();
-	return &texture_;
+	// this is wrong, we need a canvas so we can draw our annotations on them
+	// nothing has changed. Don't
+	return nullptr;	
 }
 
 void dxgi_output_duplication::frame_release()

@@ -12,7 +12,7 @@ public:
 	dxgi_output_duplication(const dxgi_device& device, const Microsoft::WRL::ComPtr<IDXGIOutput1>& output);
 	void duplicate_output();
 
-	dxgi_texture_staging* frame_acquire(unsigned int timeout_in_ms);
+	auto frame_acquire(unsigned int timeout_in_ms) -> dxgi_texture_staging*;
 	void frame_release();
 protected:
 	void report_acquisition_error(HRESULT hr);
@@ -24,5 +24,4 @@ private:
 
 	// currently we only support staging textures. But it is possible to use desktop mapped textures (igp).
 	dxgi_texture_staging texture_;
-	
 };
