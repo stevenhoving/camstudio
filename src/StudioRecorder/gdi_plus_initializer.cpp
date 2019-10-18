@@ -21,8 +21,8 @@
 #include <cassert>
 
 gdi_plus::gdi_plus()
-{
-    input = std::make_unique<Gdiplus::GdiplusStartupInput>();
+	: input(std::make_unique<Gdiplus::GdiplusStartupInput>())
+{    
     const auto ret = Gdiplus::GdiplusStartup(&gdiplusToken, input.get(), nullptr);
     assert(ret == Gdiplus::Status::Ok);
     (void)ret;

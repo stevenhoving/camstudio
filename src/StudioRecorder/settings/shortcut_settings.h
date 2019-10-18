@@ -31,27 +31,21 @@ public:
         autopan = 4
     };
 
-    static constexpr auto names()
-    {
-        return make_array(
-            L"Start a new or pause current recording",
-            L"Stop the current recording",
-            L"Cancel the current recording",
-            L"Zoom",
-            L"Autopan"
-        );
-    }
+    static inline constexpr auto names = make_array(
+        L"Start a new or pause current recording",
+        L"Stop the current recording",
+        L"Cancel the current recording",
+        L"Zoom",
+        L"Autopan"
+    );
 
-    static constexpr auto setting_keys()
-    {
-        return make_array(
-            "start_pause",
-            "stop",
-            "cancel",
-            "zoom",
-            "autopan"
-        );
-    }
+    static inline constexpr auto setting_keys = make_array(
+        "start_pause",
+        "stop",
+        "cancel",
+        "zoom",
+        "autopan"
+    );
 };
 
 class shortcut_enabled
@@ -64,38 +58,11 @@ public:
         unsupported = 2
     };
 
-    static constexpr auto names()
-    {
-        return make_array(
-            L"Enabled",
-            L"Disabled",
-            L"Unsupported"
-        );
-    }
-
-    shortcut_enabled(type new_type) noexcept
-        : type_(new_type)
-    {
-    }
-
-#if 0
-    
-    auto get_index() const noexcept
-    {
-        return static_cast<int>(type_);
-    }
-    void set_index(const type new_type) noexcept
-    {
-        type_ = new_type;
-    }
-    void set_index(const int new_type) noexcept
-    {
-        type_ = static_cast<type>(new_type);
-    }
-#endif
-
-private:
-    type type_;
+    static inline constexpr auto names = make_array(
+        L"Enabled",
+        L"Disabled",
+        L"Unsupported"
+    );
 };
 
 struct shortcut_definition

@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "capture_thread.h"
 #include "buildinfo.h"
 #include "logging/logging.h"

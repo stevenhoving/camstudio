@@ -28,6 +28,8 @@ class background_capture_source
 {
 public:
     background_capture_source(HWND hwnd);
+    background_capture_source(HWND hwnd, RECT rect);
+    ~background_capture_source() = default;
 
     void capture_frame();
     HBITMAP get_frame();

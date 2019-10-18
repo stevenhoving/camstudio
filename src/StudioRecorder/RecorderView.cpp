@@ -12,7 +12,6 @@
 #include "MainFrm.h"
 
 #include "BasicMessageDlg.h"
-#include "AutopanSpeedDlg.h"
 #include "FixedRegionDlg.h"
 
 #include "logging/logging.h"
@@ -34,6 +33,7 @@
 #include "settings_model.h"
 #include "mouse_capture_ui.h"
 #include "ui/window_select/window_select_ui.h"
+#include "ui/display_select/display_select_ui.h"
 #include "shortcut_settings_ui.h"
 #include "shortcut_controller.h"
 
@@ -114,12 +114,12 @@ CRecorderView::CRecorderView()
     settings_model_->load();
 }
 
+CRecorderView::~CRecorderView() = default;
+
 void CRecorderView::OnDraw(CDC *pCDC)
 {
     CView::OnDraw(pCDC);
 }
-
-CRecorderView::~CRecorderView() = default;
 
 void CRecorderView::shutdown()
 {
@@ -244,7 +244,6 @@ int CRecorderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
     if (CView::OnCreate(lpCreateStruct) == -1)
         return -1;
 
-    //g_hWndGlobal = m_hWnd;
     shortcut_controller_ = std::make_unique<shortcut_controller>(m_hWnd);
     set_shortcuts();
 
@@ -442,7 +441,7 @@ void CRecorderView::_interrupt_recording(const record_interrupt_reason reason)
     if (!capture_thread_)
         return;
 
-    logger->debug("record interupted");
+    logger->debug("record interrupted");
 
     if (capture_thread_->get_capture_state() == capture_state::paused)
     {
@@ -534,18 +533,14 @@ void CRecorderView::OnRegionAllScreens()
 
 void CRecorderView::OnUpdateRegionAllScreens(CCmdUI *pCmdUI)
 {
-    if (::GetSystemMetrics(SM_CMONITORS) == 1)
+    if (const auto monitor_count = ::GetSystemMetrics(SM_CMONITORS); monitor_count == 1)
     {
-        const auto capture_mode = settings_model_->get_capture_mode();
-        pCmdUI->SetCheck(capture_mode == capture_type::allscreens);
         pCmdUI->m_pMenu->RemoveMenu(ID_SCREENS_SELECTSCREEN, MF_BYCOMMAND);
         pCmdUI->m_pMenu->RemoveMenu(ID_SCREENS_ALLSCREENS, MF_BYCOMMAND);
     }
-    else
-    {
-        settings_model_->set_capture_mode(capture_type::allscreens);
-        //pCmdUI->SetCheck(cRegionOpts.isCaptureMode(CAPTURE_ALLSCREENS));
-    }
+
+    const auto capture_mode = settings_model_->get_capture_mode();
+    pCmdUI->SetCheck(capture_mode == capture_type::allscreens);
 }
 
 void CRecorderView::restore_window()
@@ -689,6 +684,8 @@ void CRecorderView::OnRecord()
 
     case capture_type::allscreens:
     {
+        fmt::print("all screens...\n");
+
         // Applicable when Option region is set as 'Full Screen'
         settings_model_->set_capture_rect(virtual_screen_info_.size);
         ::PostMessage(m_hWnd, WM_USER_RECORDSTART, 0, 0);
@@ -714,12 +711,35 @@ void CRecorderView::OnRecord()
 
     } break;
     case capture_type::select_screen:
+        fmt::print("capture_type::select_screen\n");
+        const auto hwnd = m_hWnd;
+        display_select_ui display_select(this,
+            //[hwnd](const HWND selected_window)
+            [hwnd]()
+            {
+                fmt::print("something\n");
+                //const auto style = static_cast<unsigned int>(::GetWindowLongPtr(selected_window,
+                //    GWL_STYLE));
+                //if ((style & WS_MINIMIZE) == WS_MINIMIZE)
+                //    ::ShowWindow(selected_window, SW_SHOWNORMAL);
+                //::BringWindowToTop(selected_window);
+
+                //::PostMessage(hwnd, WM_USER_RECORDSTART, 0,
+                //    reinterpret_cast<LPARAM>(selected_window));
+            }
+        );
+
+        display_select.DoModal();
+
+#if 0
         /* \todo rewrite this as the monitor selection function */
+        fmt::print("select_screen...\n");
 
         auto message_window = std::make_unique<CBasicMessageDlg>();
         message_window->Create(CBasicMessageDlg::IDD);
         message_window->SetText(_T("Click on screen to be captured."));
         message_window->ShowWindow(SW_SHOW);
+#endif
         SetCapture();
         break;
     }

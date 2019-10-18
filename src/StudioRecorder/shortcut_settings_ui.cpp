@@ -20,7 +20,6 @@
 #include "settings_model.h"
 #include "utility/make_array.h"
 
-
 using namespace std::string_literals;
 
 #define WM_UPDATE_SHORTCUT_TEXT_MESSAGE (WM_USER + 100)
@@ -46,9 +45,7 @@ shortcut_settings_ui::shortcut_settings_ui(CWnd* pParent, settings_model *settin
 {
 }
 
-shortcut_settings_ui::~shortcut_settings_ui()
-{
-}
+shortcut_settings_ui::~shortcut_settings_ui() = default;
 
 BOOL shortcut_settings_ui::OnInitDialog()
 {
@@ -87,17 +84,14 @@ auto shortcut_settings_ui::get_shortcut_data(int item_index, int itemsub_index) 
         return nullptr;
 
     const auto &row_entry = shortcut_table_data_.at(item_index);
-
-    constexpr auto shortcut_enabled_names = shortcut_enabled::names();
-    constexpr auto shortcut_action_names = shortcut_action::names();
     switch(itemsub_index)
     {
     case 0: // Action
-        return shortcut_action_names.at(row_entry->action);
+        return shortcut_action::names.at(row_entry->action);
     case 1: // Shortcut
         return row_entry->shortcut.c_str();
     case 2: // State
-        return shortcut_enabled_names.at(row_entry->is_enabled);
+        return shortcut_enabled::names.at(row_entry->is_enabled);
     }
     return nullptr;
 }

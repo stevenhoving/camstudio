@@ -14,23 +14,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
 #pragma once
 
-#include <memory>
-#include <screen_capture/cam_gdiplus_fwd.h>
+#include "display_select_data.h"
+#include "display_thumbnail_button.h"
 
-/* Scoped to init and deinit gdi plus */
-class gdi_plus
+class display_thumbnail_widget : public CDialogEx
+//class display_thumbnail_widget : public CFrameWndEx
 {
+    DECLARE_DYNAMIC(display_thumbnail_widget)
+
 public:
-    gdi_plus();
-    ~gdi_plus();
+    display_thumbnail_widget(CWnd* pParent = nullptr);
+    display_thumbnail_widget(CWnd* pParent, const display_data &data);
 
-    gdi_plus(const gdi_plus &) = delete;
-	gdi_plus(gdi_plus &&) = delete;
-	auto operator = (const gdi_plus &) -> gdi_plus & = delete;
-	auto operator = (const gdi_plus &&) -> gdi_plus & = delete;
+    //BOOL Create(UINT nIDTemplate, CWnd* pParentWnd = NULL) = override;
 
-    std::unique_ptr<Gdiplus::GdiplusStartupInput> input;
-    ULONG_PTR gdiplusToken;
+// Dialog Data
+#ifdef AFX_DESIGN_TIME
+    enum { IDD = IDD_DISPLAY_SELECT_WIDGET };
+#endif
+
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX);
+
+    DECLARE_MESSAGE_MAP()
+public:
+    display_button display_select_button_;
+    CStatic display_select_widget_title_;
 };

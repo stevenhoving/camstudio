@@ -5,7 +5,6 @@
 #define IDSELECT                        3
 #define IDR_MAINFRAME                   128
 #define IDS_STRING_REC_CAN              130
-#define IDD_AUTOPANSPEED                172
 #define IDD_FIXEDREGION                 173
 #define IDB_TOOLBAR256                  183
 #define IDB_TOOLBARMASK                 185
@@ -15,16 +14,15 @@
 #define IDD_BASICMESSAGE                203
 #define IDB_BITMAP3                     220
 #define IDD_WINDOW_SELECT               234
+#define IDD_DISPLAY_SELECT              235
 #define IDD_CURSOR_SETTINGS_UI          236
 #define IDD_APPLICATION_SETTINGS_UI     239
 #define IDD_SHORTCUTS_SETTINGS_UI       242
 #define IDB_RECORDER_ICON               248
+#define IDD_DISPLAY_SELECT_WIDGET       251
 #define IDC_FPS                         1007
-#define IDC_PANSLIDER                   1007
 #define IDC_VIDEO_CONTAINER_COMBO       1008
-#define IDC_GROUPBOX                    1013
 #define IDC_WIDTH                       1013
-#define IDC_MAXSPEED                    1014
 #define IDC_HEIGHT                      1014
 #define IDC_STATIC_SIZE                 1016
 #define IDC_X                           1016
@@ -55,6 +53,7 @@
 #define IDC_CODEC_PRESET_NAME           1098
 #define IDC_REGION_MOVE                 1099
 #define IDC_WINDOW_SELECT_BUTTON        1100
+#define IDC_DISPLAY_SELECT_BUTTON       1101
 #define IDC_VIDEO_CODEC_COMBO           1291
 #define IDC_VIDEO_SOURCE_COMBO          1292
 #define IDC_CODEC_PRESET_SLIDER         1293
@@ -135,6 +134,8 @@
 #define IDC_CAMSTUDIO_LINK              1352
 #define IDC_GITHUB_LINK                 1353
 #define IDC_SHOW_RINGS                  1354
+#define IDC_BUTTON1                     1355
+#define IDC_DISPLAY_SELECT_WIDGET_TITLE 1356
 #define IDD_ABOUTBOX                    5100
 #define IDD_VIDEO_SETTINGS_UI           5106
 #define ID_REGION_RUBBER                32771
@@ -334,9 +335,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        251
+#define _APS_NEXT_RESOURCE_VALUE        253
 #define _APS_NEXT_COMMAND_VALUE         32955
-#define _APS_NEXT_CONTROL_VALUE         1355
+#define _APS_NEXT_CONTROL_VALUE         1357
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

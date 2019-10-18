@@ -20,8 +20,8 @@
 #include <screen_capture/cam_capture.h>
 #include <screen_capture/cam_rect.h>
 
-#include "video_settings_ui.h"
 #include "settings_model.h"
+#include "video_settings_model.h"
 
 #include <atomic>
 #include <thread>

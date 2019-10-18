@@ -43,8 +43,8 @@ struct mouse_action_config
 class cam_mouse_ring_state
 {
 public:
-    constexpr cam_mouse_ring_state(const point<int> &ring_center, const cam_mouse_button::type ring_type) noexcept
-        : ring_center_(ring_center)
+    cam_mouse_ring_state(point<int> ring_center, cam_mouse_button::type ring_type) noexcept
+        : ring_center_(std::move(ring_center))
         , ring_type_(ring_type)
     {
     }

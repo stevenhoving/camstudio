@@ -42,8 +42,11 @@ public:
     mouse_capture_ui(HINSTANCE instance, HWND parent, const cam::virtual_screen_info &screen_info,
         const std::function<void(const CRect &capture_rect)> &completed);
     ~mouse_capture_ui();
+
     mouse_capture_ui(const mouse_capture_ui &) = delete;
-    mouse_capture_ui &operator = (const mouse_capture_ui &) = delete;
+    mouse_capture_ui(mouse_capture_ui &&) = delete;
+    auto operator = (const mouse_capture_ui &) -> mouse_capture_ui & = delete;
+    auto operator = (mouse_capture_ui &&) -> mouse_capture_ui & = delete;
 
     void show(const cam::rect<int> &region, const capture_type type);
     void hide();
@@ -53,7 +56,7 @@ public:
 
 private:
     void register_window_class(HINSTANCE instance);
-    HWND create_capture_window(HINSTANCE instance, HWND parent, const CRect &size);
+    auto create_capture_window(HINSTANCE instance, HWND parent, const CRect &size) -> HWND;
 
     void on_mouse_move(HWND hWnd);
     void on_lbutton_up(HWND hWnd);

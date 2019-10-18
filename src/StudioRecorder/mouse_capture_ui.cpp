@@ -25,6 +25,8 @@
 
 #include <screen_capture/cam_gdiplus.h>
 #include <screen_capture/cam_rect.h>
+#include <fmt/format.h>
+
 
 LRESULT WINAPI wnd_proc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam)
 {
@@ -49,7 +51,7 @@ mouse_capture_ui::mouse_capture_ui(HINSTANCE instance, HWND parent, const cam::v
     hwnd_ = create_capture_window(instance, parent, max_screen_rect_);
     background_capture_ = std::make_unique<background_capture_source>(nullptr);
 
-    hatched_brush_ = (HBRUSH)::CreateHatchBrush(HS_BDIAGONAL, RGB(0, 0, 100));
+    hatched_brush_ = ::CreateHatchBrush(HS_BDIAGONAL, RGB(0, 0, 100));
 }
 
 mouse_capture_ui::~mouse_capture_ui()
@@ -59,6 +61,19 @@ mouse_capture_ui::~mouse_capture_ui()
 }
 
 constexpr auto capture_class_name = _T("mouse_capture_window");
+
+std::wstring format_error_code(DWORD dw)
+{
+    LPVOID lpMsgBuf;
+
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, dw,
+                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL);
+
+    const auto result = fmt::format(L"{}: {}", dw, (const wchar_t *)lpMsgBuf);
+
+    LocalFree(lpMsgBuf);
+    return result;
+}
 
 void mouse_capture_ui::register_window_class(HINSTANCE instance)
 {
@@ -141,8 +156,8 @@ void mouse_capture_ui::on_paint(HWND hWnd, WPARAM /*wParam*/, LPARAM /*lParam*/)
     // Select the bitmap into the off-screen DC.
     auto hbmOld = (HBITMAP)::SelectObject(hdc_mem, hbmMem);
 
-    // Render the image into the offscreen DC.
-    // \note using gdiplus to draw something is not fast...
+    // Render the image into the off screen DC.
+    // \note using gdi-plus to draw something is not fast...
     Gdiplus::Graphics canvas(hdc_mem);
 
     const Gdiplus::RectF paint_rect(
@@ -349,8 +364,7 @@ void mouse_capture_ui::on_rbutton_down(HWND /*hWnd*/)
 
 void mouse_capture_ui::on_key_down(HWND /*hWnd*/, WPARAM wParam, LPARAM /*lParam*/)
 {
-    int nVirtKey = (int)wParam; // virtual-key code
-
+    const auto nVirtKey = static_cast<int>(wParam); // virtual-key code
     if (nVirtKey == cancel_vkey_)
     {
         select_rect_ = false;

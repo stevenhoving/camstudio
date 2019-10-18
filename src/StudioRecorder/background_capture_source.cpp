@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "background_capture_source.h"
+#include "utility/rect_util.h"
 
  background_capture_source::background_capture_source(HWND hwnd)
     : hwnd_{hwnd}
@@ -55,6 +56,47 @@
     bitmap_frame_ = ::CreateCompatibleBitmap(desktop_dc_, src_rect_.width(), src_rect_.height());
     assert(bitmap_frame_);
 }
+
+ background_capture_source::background_capture_source(HWND hwnd, RECT rect)
+     : hwnd_{ hwnd }
+     , desktop_dc_{ ::GetDC(hwnd_) }
+     , memory_dc_{ ::CreateCompatibleDC(desktop_dc_) }
+ {
+     assert(desktop_dc_);
+     assert(memory_dc_);
+     if (hwnd == nullptr)
+     {
+         //src_rect_.left(::GetSystemMetrics(SM_XVIRTUALSCREEN));
+         //src_rect_.top(::GetSystemMetrics(SM_YVIRTUALSCREEN));
+         //src_rect_.width(::GetSystemMetrics(SM_CXVIRTUALSCREEN));
+         //src_rect_.bottom(::GetSystemMetrics(SM_CYVIRTUALSCREEN));
+         src_rect_ = utility::from_rect(rect);
+     }
+     else
+     {
+         RECT window_rect = {};
+         BOOL ret = ::GetWindowRect(hwnd, &window_rect);
+         assert(ret != 0 && "Failed to get window rect.");
+         (void)ret;
+
+         src_rect_ = utility::from_rect(rect);
+
+         //src_rect_.left(window_rect.left);
+         //src_rect_.top(window_rect.top);
+         //src_rect_.right(window_rect.right);
+         //src_rect_.bottom(window_rect.bottom);
+     }
+
+     bitmap_info_.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+     bitmap_info_.bmiHeader.biWidth = src_rect_.width();
+     bitmap_info_.bmiHeader.biHeight = -src_rect_.height();
+     bitmap_info_.bmiHeader.biPlanes = 1;
+     bitmap_info_.bmiHeader.biBitCount = 32;
+     bitmap_info_.bmiHeader.biCompression = BI_RGB;
+
+     bitmap_frame_ = ::CreateCompatibleBitmap(desktop_dc_, src_rect_.width(), src_rect_.height());
+     assert(bitmap_frame_);
+ }
 
 void background_capture_source::capture_frame()
 {

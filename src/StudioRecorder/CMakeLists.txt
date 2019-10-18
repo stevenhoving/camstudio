@@ -81,6 +81,8 @@ set(RECORDER_UI_SOURCE
     ui/listbox_grid_ui.h
     ui/listbox_base_ui.cpp
     ui/listbox_base_ui.h
+    ui/settings_enum_combo_ui.cpp
+    ui/settings_enum_combo_ui.h
 )
 
 set(RECORDER_UI_DWM_SOURCE
@@ -96,12 +98,22 @@ set(RECORDER_UI_WINDOW_SELECT_SOURCE
     ui/window_select/window_thumbnail_widget.cpp
 )
 
+set(RECORDER_UI_DISPLAY_SELECT_SOURCE
+    ui/display_select/display_select_data.h
+    ui/display_select/display_select_ui.h
+    ui/display_select/display_select_ui.cpp
+    ui/display_select/display_thumbnail_button.h
+    ui/display_select/display_thumbnail_button.cpp
+    ui/display_select/display_thumbnail_widget.h
+    ui/display_select/display_thumbnail_widget.cpp
+    ui/display_select/display_thumbnail_widget_base.h
+    ui/display_select/display_thumbnail_widget_base.cpp
+)
+
 # legacy
 set(RECORDER_SOURCE
     AboutDlg.cpp
     AboutDlg.h
-    AutopanSpeedDlg.cpp
-    AutopanSpeedDlg.h
     BasicMessageDlg.cpp
     BasicMessageDlg.h
     FixedRegionDlg.cpp
@@ -114,17 +126,20 @@ set(RECORDER_SOURCE
     RecorderDoc.h
     RecorderView.cpp
     RecorderView.h
-    stdafx.cpp
-    stdafx.h
     TrayIcon.cpp
     TrayIcon.h
+    stdafx.cpp
+    stdafx.h
 )
 
 set(RECORDER_RESOURCE
     Recorder.rc
     resource.h
     targetver.h
+    res/Recorder.rc2
 )
+
+#set_source_files_properties(Recorder.rc res/Recorder.rc2 PROPERTIES LANGUAGE RC)
 
 set(CMAKE_MFC_FLAG 1
 )
@@ -137,6 +152,7 @@ add_executable(CamStudioRecorder WIN32
     ${RECORDER_UI_SOURCE}
     ${RECORDER_UI_DWM_SOURCE}
     ${RECORDER_UI_WINDOW_SELECT_SOURCE}
+    ${RECORDER_UI_DISPLAY_SELECT_SOURCE}
     ${RECORDER_RESOURCE}
 )
 
@@ -162,6 +178,10 @@ source_group(src\\ui\\dwm FILES
 
 source_group(src\\ui\\window_select FILES
     ${RECORDER_UI_WINDOW_SELECT_SOURCE}
+)
+
+source_group(src\\ui\\display_select FILES
+    ${RECORDER_UI_DISPLAY_SELECT_SOURCE}
 )
 
 source_group(src\\legacy FILES
@@ -196,13 +216,13 @@ target_compile_options(CamStudioRecorder
     /W4
 )
 
-set_target_properties(CamStudioRecorder PROPERTIES
-    COMPILE_FLAGS /Yustdafx.h
-)
+#set_target_properties(CamStudioRecorder PROPERTIES
+#    COMPILE_FLAGS /Yustdafx.h
+#)
 
-set_source_files_properties(stdafx.cpp PROPERTIES
-    COMPILE_FLAGS /Ycstdafx.h
-)
+#set_source_files_properties(stdafx.cpp PROPERTIES
+#    COMPILE_FLAGS /Ycstdafx.h
+#)
 
 target_link_libraries(CamStudioRecorder
     CamLib

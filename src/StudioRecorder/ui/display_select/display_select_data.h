@@ -14,23 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
 #pragma once
 
-#include <memory>
-#include <screen_capture/cam_gdiplus_fwd.h>
+#include <windef.h>
 
-/* Scoped to init and deinit gdi plus */
-class gdi_plus
+struct display_data
 {
-public:
-    gdi_plus();
-    ~gdi_plus();
-
-    gdi_plus(const gdi_plus &) = delete;
-	gdi_plus(gdi_plus &&) = delete;
-	auto operator = (const gdi_plus &) -> gdi_plus & = delete;
-	auto operator = (const gdi_plus &&) -> gdi_plus & = delete;
-
-    std::unique_ptr<Gdiplus::GdiplusStartupInput> input;
-    ULONG_PTR gdiplusToken;
+    constexpr display_data() = default;
+    constexpr display_data(int index, MONITORINFOEX info) noexcept
+        : index(index)
+        , info(std::move(info))
+    {
+    }
+    int index{0}; // fake display index.
+    MONITORINFOEX info{};
 };
