@@ -13,20 +13,24 @@ static void _log(fmt::string_view format_str, const Args &... args)
 
 static std::ostream &operator<<(std::ostream &os, const AVMediaType d)
 {
-    return os << av_get_media_type_string(d);
+    os << av_get_media_type_string(d);
+    return os;
 }
 
 static std::ostream &operator<<(std::ostream &os, const AVCodecID d)
 {
-    return os << avcodec_get_name(d);
+    os << avcodec_get_name(d);
+    return os;
 }
 
 static std::ostream &operator<<(std::ostream &os, const AVRational d)
 {
-    return os << d.den << '/' << d.num;
+    os << d.den << '/' << d.num;
+    return os;
 }
 
 static std::ostream &operator<<(std::ostream &os, const AVPixelFormat d)
 {
-    return os << av_get_pix_fmt_name(d);
+    os << av_get_pix_fmt_name(d);
+    return os;
 }
