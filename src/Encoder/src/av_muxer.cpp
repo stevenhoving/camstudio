@@ -1,5 +1,5 @@
 /**
- * Copyright(C) 2018  Steven Hoving
+ * Copyright(C) 2018 - 2020  Steven Hoving
  *
  * This program is free software : you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 #include <fmt/format.h>
 #include <fmt/chrono.h>
+#include <cassert>
 
 void av_log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
 {

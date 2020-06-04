@@ -1,5 +1,5 @@
 /**
- * Copyright(C) 2018  Steven Hoving
+ * Copyright(C) 2018 - 2020  Steven Hoving
  *
  * This program is free software : you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include <cassert> // workaround missing cassert include in spdlog version we use.
 #include <spdlog/spdlog.h>
 #include <memory>
 #include <string>
