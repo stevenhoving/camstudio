@@ -43,7 +43,7 @@ public:
 
 protected:
     static auto CALLBACK global_message_proc(int nCode, WPARAM wParam, LPARAM lParam) -> LRESULT;
-    auto message_proc(int nCode, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    auto CALLBACK message_proc(int nCode, WPARAM wParam, LPARAM lParam) -> LRESULT;
 
 private:
     void _detach_impl();
