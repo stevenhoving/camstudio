@@ -474,7 +474,7 @@ std::wstring get_module_folderpath(HMODULE mod)
         std::wstring long_filename(long_path_length, L'\0');
         actual_length = GetModuleFileNameW(mod, long_filename.data(), long_path_length);
         PathRemoveFileSpecW(long_filename.data());
-        long_filename.resize(std::wcslen(long_filename.data()));
+        long_filename.resize(actual_length);
         long_filename.shrink_to_fit();
         return long_filename;
     }
