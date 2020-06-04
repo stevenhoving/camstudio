@@ -42,6 +42,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
 add_compile_options(/Zc:rvalueCast)
 add_compile_options(/Zc:ternary)
 add_compile_options(/Zc:referenceBinding)
+add_compile_options(/W3)
 
 ###############################################################################
 
