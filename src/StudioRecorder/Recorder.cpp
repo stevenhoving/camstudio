@@ -56,7 +56,7 @@ BOOL CRecorderApp::InitInstance()
     // Initialize GDI+.
     m_gdi = std::make_unique<gdi_plus>();
 
-    ::OnError(_T("CRecorderApp::InitInstance"));
+    logger->info("CRecorderApp::InitInstance");
     AfxEnableControlContainer();
 
     if (!FirstInstance())
@@ -65,7 +65,7 @@ BOOL CRecorderApp::InitInstance()
     // new class and exit if it fails
     if (!RegisterWindowClass())
     {
-        TRACE("Class Registration Failed\n");
+        logger->error("CRecorderApp::InitInstance, Class Registration Failed");
         return FALSE;
     }
 
@@ -122,28 +122,24 @@ void CRecorderApp::OnAppAbout()
 // return TRUE if no previous instance running;    FALSE otherwise
 BOOL CRecorderApp::FirstInstance()
 {
-    BOOL bPrevInstance = FALSE;
-    m_hAppMutex = ::CreateMutex(0, TRUE, CAMSTUDIO_MUTEX);
-    bPrevInstance = (0 != m_hAppMutex);
-    if (!bPrevInstance)
+    m_hAppMutex = ::CreateMutex(nullptr, TRUE, CAMSTUDIO_MUTEX);
+    if (m_hAppMutex == nullptr)
     {
-        ::OnError(_T("CRecorderApp::FirstInstance"));
-        return bPrevInstance; // unable to check mutext, assume previous instance and quit.
+        logger->error("CRecorderApp::FirstInstance, unable to create named mutex");
+        return false; // unable to check mutex, assume previous instance and quit.
     }
     // check last error to see if mutex existed
-    bPrevInstance = (ERROR_ALREADY_EXISTS == ::GetLastError());
-    if (bPrevInstance)
+    if (::GetLastError() == ERROR_ALREADY_EXISTS)
     {
         // previous instance exists
-        ::OnError(_T("CRecorderApp::FirstInstance fails"));
+        logger->info("CRecorderApp::FirstInstance, previous instance exists");
         // todo: activate running instance
         return false;
     }
 
     // check older version class name
     CWnd *pWndPrev = CWnd::FindWindow(CAMSTUDIO_CLASS_NAME, nullptr);
-    bPrevInstance = (0 != pWndPrev);
-    if (bPrevInstance)
+    if (pWndPrev != nullptr)
     {
         // If iconic, restore the main window
         if (pWndPrev->IsIconic())
@@ -155,8 +151,8 @@ BOOL CRecorderApp::FirstInstance()
         CWnd *pWndChild = pWndPrev->GetLastActivePopup();
         pWndChild->SetForegroundWindow(); // and we are done activating the previous one.
     }
-    TRACE("FirstInstance: %s\n", bPrevInstance ? "false" : "true");
-    return !bPrevInstance;
+    TRACE("FirstInstance: %s\n", (pWndPrev != nullptr) ? "false" : "true");
+    return pWndPrev == nullptr;
 }
 
 // unique application class name that we wish to use
