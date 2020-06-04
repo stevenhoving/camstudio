@@ -17,7 +17,7 @@
 
 #include "annotations/cam_annotation_systemtime.h"
 #include "cam_gdiplus.h"
-#include <fmt/time.h>
+#include <fmt/chrono.h>
 #include <windows.h>
 #include <chrono>
 
@@ -49,10 +49,7 @@ void cam_annotation_systemtime::draw(Gdiplus::Graphics &canvas, const cam_draw_d
     const auto fraction = tp - seconds;
     const auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(fraction);
 
-    std::tm time_data;
-    localtime_s(&time_data, &t);
-
-    const auto str = fmt::format(L"{:%Y-%m-%d %H:%M:%S}.{:03d}", time_data,
+    const auto str = fmt::format(L"{:%Y-%m-%d %H:%M:%S}.{:03d}", fmt::localtime(t),
         milliseconds.count());
 
     Gdiplus::PointF pos;

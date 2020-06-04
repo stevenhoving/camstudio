@@ -21,7 +21,7 @@
 #include "av_log.h"
 
 #include <fmt/format.h>
-#include <fmt/time.h>
+#include <fmt/chrono.h>
 
 void av_log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
 {
@@ -134,7 +134,7 @@ void av_muxer::open()
     std::time_t t = std::time(nullptr);
     auto metadata = make_av_dict({
         {"encoding_tool", metadata_.encoding_tool},
-        {"creation_time", fmt::format("{:%Y-%m-%dT%H:%M:%S}Z", *std::localtime(&t))}
+        {"creation_time", fmt::format("{:%Y-%m-%dT%H:%M:%S}Z", fmt::localtime(t))}
     });
 
     format_context_->metadata = metadata.release();

@@ -41,7 +41,7 @@
 
 #include <fmt/format.h>
 #include <fmt/printf.h>
-#include <fmt/time.h>
+#include <fmt/chrono.h>
 
 #include <memory>
 #include <algorithm>
