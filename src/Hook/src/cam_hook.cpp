@@ -45,7 +45,7 @@ auto mouse_hook::get() -> mouse_hook &
     return hook;
 }
 
-auto CALLBACK mouse_hook::global_message_proc(int nCode, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto mouse_hook::global_message_proc(int nCode, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     return mouse_hook::get().message_proc(nCode, wParam, lParam);
 }
@@ -110,7 +110,7 @@ void mouse_hook::_detach_impl()
     clear_mouse_events();
 }
 
-auto CALLBACK mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto mouse_hook::message_proc(int nCode, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
 #if DEPLOY_BUILD == 0
     // for debugging..
