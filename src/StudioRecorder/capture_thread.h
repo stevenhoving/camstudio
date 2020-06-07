@@ -23,6 +23,7 @@
 #include "video_settings_ui.h"
 #include "settings_model.h"
 
+#include <functional>
 #include <atomic>
 #include <thread>
 

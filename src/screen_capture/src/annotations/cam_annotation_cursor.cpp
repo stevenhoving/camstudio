@@ -19,6 +19,8 @@
 #include "screen_capture/cam_gdiplus.h"
 #include "screen_capture/cam_draw_data.h"
 #include <windows.h>
+#include <stdexcept>
+#include <cmath>
 
 cam_annotation_cursor::cam_annotation_cursor(const bool cursor_enabled,
                                              const bool ring_enabled,
