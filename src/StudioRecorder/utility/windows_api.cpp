@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "windows_api.h"
+#include <assert.h>
 
 namespace winapi
 {
