@@ -17,7 +17,7 @@
 
 #include "stdafx.h"
 #include "windows_api.h"
-#include <assert.h>
+#include <cassert>
 
 namespace winapi
 {
