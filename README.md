@@ -35,6 +35,7 @@ Besides creating a clean installer for camstudio I have found myself a couple of
 ## Removed features
 * swf support.
 * xnote support.
+* audio recording support (re-implement audio recording is planned)
 
 ## How to clone/build
 1. `git clone https://github.com/stevenhoving/camstudio.git --recursive`
