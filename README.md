@@ -45,6 +45,7 @@ Besides creating a clean installer for camstudio I have found myself a couple of
 ## The source forge project
 https://sourceforge.net/p/camstudio
 
+
 ## Dependencies
 State | Name | Project
 ----- | -----|--------
