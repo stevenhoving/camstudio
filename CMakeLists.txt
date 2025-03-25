@@ -21,7 +21,6 @@ set(GTEST_CATCH_EXCEPTIONS 0)
 
 list(APPEND CMAKE_MODULE_PATH
   "${CMAKE_SOURCE_DIR}/dep/cmake"
-  "${CMAKE_SOURCE_DIR}/dep/cmake_utility"
 )
 
 include(CTest)
